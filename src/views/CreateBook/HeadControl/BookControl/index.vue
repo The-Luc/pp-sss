@@ -4,7 +4,7 @@
       :isActive="currentView === bookViewType.PRINT"
       type="btn"
       @click="onChangeView(bookViewType.PRINT)"
-      linkTo="/create-book/print"
+      linkTo="/edit/print"
     >
       Print Edition
     </PpButton>
@@ -13,7 +13,7 @@
       :isActive="currentView === bookViewType.MANAGER"
       type="btn"
       @click="onChangeView(bookViewType.MANAGER)"
-      linkTo="/create-book/manager"
+      linkTo="/edit/manager"
     >
       Manager
     </PpButton>
@@ -22,7 +22,7 @@
       :isActive="currentView === bookViewType.DIGITAL"
       type="btn"
       @click="onChangeView(bookViewType.DIGITAL)"
-      linkTo="/create-book/digital"
+      linkTo="/edit/digital"
     >
       Digital Edition
     </PpButton>

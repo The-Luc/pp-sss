@@ -7,4 +7,4 @@
     </div>
   </div>
 </template>
-<script src="./redirectHomePage" />
+<script src="./script" />
