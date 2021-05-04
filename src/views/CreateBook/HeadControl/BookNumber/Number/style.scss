@@ -1,0 +1,9 @@
+.book-number-information {
+  width: 120px;
+  color: rgb(199, 212, 218);
+
+  &.active {
+    font-family: $font-700;
+    color: #42738D;
+  }
+}

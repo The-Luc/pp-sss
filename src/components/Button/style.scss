@@ -1,0 +1,17 @@
+.pp-btn {
+  font-size: $sm-size;
+  font-family: $font-500;
+  text-decoration: none;
+  height: 26px;
+  color: rgb(161, 185, 198);
+  border: 0.5px solid #42738D;
+  border-radius: 6px;
+  min-width: 120px;
+  opacity: 0.5;
+
+  &.active {
+    color: white;
+    background-color: #42738D;
+    opacity: 1;
+  }
+}

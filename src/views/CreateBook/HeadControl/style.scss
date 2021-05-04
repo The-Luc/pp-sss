@@ -1,0 +1,19 @@
+.book {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid rgb(153, 158, 162);
+
+  &-information {
+    background: #C3D2D9;
+    justify-content: space-between;
+    height: 42px;
+  }
+
+  &-control {
+    justify-content: center;
+    height: 45px;
+    .pp-btn {
+      text-transform: uppercase;
+    }
+  }
+}

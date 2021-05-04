@@ -1,0 +1,42 @@
+.book-name-control {
+  .v-input {
+    padding: 0;
+    margin: 0;
+    &:hover {
+      border: 1px dashed gray;
+    }
+
+    &--is-focused {
+      border: 0 !important
+    }
+
+    .v-text-field {
+      &__details {
+        display: none;
+      }
+
+      &__slot {
+        margin: 0;
+        &::before {
+          border: 0;
+        }
+        input {
+          color: #42738D;
+          font-family: $font-500;
+          font-size: $lg-size;
+          line-height: 22px;
+          text-align: center;
+        }
+      }
+     }
+
+     &__control {
+       .v-input__slot {
+          margin: 0;
+          &::before {
+            border: 0;
+          }
+       }
+     }
+  }
+}
