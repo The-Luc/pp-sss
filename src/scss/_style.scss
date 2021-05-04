@@ -1,0 +1,31 @@
+@import './_extend';
+
+p,
+.container,
+.row,
+.row+.row,
+.col {
+  @extend %no-padding-margin;
+}
+
+@for $i from 2 through 12 {
+  .col-#{$i} {
+    @extend %no-padding-margin;
+  }
+}
+
+img {
+  width: 100%;
+  height: auto;
+}
+
+.hide {
+  display: none !important;
+}
+
+html,
+body,
+.container {
+  height: 100%;
+  overflow: hidden;
+}

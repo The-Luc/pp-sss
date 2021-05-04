@@ -1,5 +1,6 @@
 <template>
-  <div>
+  <!-- dummy style, resolve later -->
+  <div style="height: 100%;">
     <HeaderControl />
     <router-view></router-view>
   </div>
