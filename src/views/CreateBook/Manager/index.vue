@@ -1,6 +1,3 @@
-<style lang="scss">
-@import "./style.scss";
-</style>
 <template lang="">
   <div class="title-page text-100">
     This is Manager page
@@ -9,3 +6,5 @@
 <script>
 export default {};
 </script>
+
+<style lang="scss" src="./style.scss" />

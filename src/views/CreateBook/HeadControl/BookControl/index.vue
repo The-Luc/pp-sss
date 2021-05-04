@@ -1,28 +1,28 @@
 <template>
   <div class="book book-control">
     <PpButton
-      :isActive="currentView === bookViewType.PRINT"
+      :is-active="currentView === bookViewType.PRINT"
       type="btn"
+      link-to="/edit/print"
       @click="onChangeView(bookViewType.PRINT)"
-      linkTo="/edit/print"
     >
       Print Edition
     </PpButton>
     <LineVertical />
     <PpButton
-      :isActive="currentView === bookViewType.MANAGER"
+      :is-active="currentView === bookViewType.MANAGER"
       type="btn"
+      link-to="/edit/manager"
       @click="onChangeView(bookViewType.MANAGER)"
-      linkTo="/edit/manager"
     >
       Manager
     </PpButton>
     <LineVertical />
     <PpButton
-      :isActive="currentView === bookViewType.DIGITAL"
+      :is-active="currentView === bookViewType.DIGITAL"
       type="btn"
+      link-to="/edit/digital"
       @click="onChangeView(bookViewType.DIGITAL)"
-      linkTo="/edit/digital"
     >
       Digital Edition
     </PpButton>

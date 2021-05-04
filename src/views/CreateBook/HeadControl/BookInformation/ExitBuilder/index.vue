@@ -1,7 +1,3 @@
-<style lang="scss" scoped>
-@import "./style.scss";
-</style>
-
 <template>
   <div class="btn-exit pointer">
     <img
@@ -25,3 +21,5 @@ export default {
   }
 };
 </script>
+
+<style lang="scss" scoped src="./style.scss" />
