@@ -29,7 +29,7 @@ $height-header: 135px;
     width: calc(100% - #{$width-summary});
     max-width: calc(100% - #{$width-summary});
 
-    &.collapse {
+    &[data-toggle="collapse"] {
       width: calc(100% - #{$width-summary-collapse});
       max-width: calc(100% - #{$width-summary-collapse});
     }
@@ -40,7 +40,7 @@ $height-header: 135px;
 
     width: $width-summary;
 
-    &.collapse {
+    &[data-toggle="collapse"] {
       width: $width-summary-collapse;
     }
   }

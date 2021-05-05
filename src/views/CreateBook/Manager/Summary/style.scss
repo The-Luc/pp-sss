@@ -10,13 +10,7 @@ $spacing: 15px;
     right: 0;
     overflow-x: auto;
 
-    &.collapse {
-      .summary-title {
-        span {
-          display: none;
-        }
-      }
-
+    &[data-toggle="collapse"] {
       .summary-detail {
         display: none;
       }
@@ -24,20 +18,6 @@ $spacing: 15px;
 
     .summary-title {
       margin-bottom: $spacing;
-      line-height: 15px;
-
-      img {
-        width: 13px;
-        height: 11px;
-        margin-right: 5px;
-        cursor: pointer;
-      }
-
-      span {
-        color: #42738d;
-        font-size: 13px;
-        text-transform: uppercase;
-      }
     }
 
     .summary-detail {
@@ -65,14 +45,6 @@ $spacing: 15px;
         .info-detail {
           line-height: 17px;
           font-size: 14px;
-
-          &.countdown {
-            color: #42738d;
-          }
-        }
-
-        img {
-          border: 0.5px solid #d3d3d3;
         }
       }
     }
