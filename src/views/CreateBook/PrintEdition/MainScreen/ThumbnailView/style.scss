@@ -13,7 +13,7 @@
 
 .thumbnail-view-item:first-child {
     .thumbnail-view-container {
-        border-left: none;
+        border-left: 1px solid transparent;
         padding-left: 0px;
         margin-left: 37px;
     }
@@ -21,7 +21,7 @@
 
 .thumbnail-view-item:nth-child(4n + 1) {
     .thumbnail-view-container {
-        border-left: none;
+        border-left: 1px solid transparent;
         padding-left: 0px;
         margin-left: 37px;
     }

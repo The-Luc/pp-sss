@@ -6,7 +6,7 @@
               <div class="header-color"></div>
               <div class="header-name">Cover</div>
             </div>
-            <div class="header-more">
+            <!-- <div class="header-more">
               <v-icon class="icon-more">more_horiz</v-icon>
               <div class="header-more-container">
                 <div class="header-more-item">
@@ -40,15 +40,15 @@
                   </div>
                 </div>
               </div>
-            </div>
+            </div> -->
           </div>
 
           <div class="thumbnail-view-thumbnail">
+            <img src="@/assets/image/chart.png" />
             <div class="thumbnail-edit">
               <v-icon class="icon-edit">edit</v-icon>
             </div>
-            <div class="thumbnail-left"></div>
-            <div class="thumbnail-right"></div>
+            
           </div>
           <div class="thumbnail-view-number-page">
             <div class="number-page-left">Back Cover</div>
