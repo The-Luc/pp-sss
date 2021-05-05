@@ -1,5 +1,5 @@
 <template>
-  <component :is="ModalComponent" v-bind="modalData" />
+  <component :is="renderModal" v-bind="modalData" />
 </template>
 
 <script src="./script.js" />

@@ -1,7 +1,10 @@
-import App from "./const";
+import APP from './const';
 
 export const mutations = {
-  [App._MUTATES.HANDLEISDIALOG](state) {
-    state.isDialog = !state.isDialog;
+  [APP._MUTATES.TOGGLE_MODAL](state, payload) {
+    const { isOpenModal, modalData } = payload;
+    state.modal.isOpen = isOpenModal;
+    state.modal.data.props = modalData?.props || {};
+    state.modal.data.type = modalData?.type || '';
   }
 };

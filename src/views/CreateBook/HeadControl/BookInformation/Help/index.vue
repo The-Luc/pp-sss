@@ -4,9 +4,6 @@
     <p class="text-500 text-size-xxs white--text text-center mb-0">
       Help
     </p>
-    <Modal title="Need help?" show-icon-close>
-      Ahiiiiiiii
-    </Modal>
   </div>
 </template>
 

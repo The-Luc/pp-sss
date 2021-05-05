@@ -4,5 +4,10 @@ export default {
       type: String,
       default: ''
     }
+  },
+  methods: {
+    onCloseModal() {
+      this.$emit('onCloseModal');
+    }
   }
 };

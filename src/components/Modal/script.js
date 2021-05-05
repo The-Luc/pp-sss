@@ -1,3 +1,6 @@
+import { mapGetters, mapMutations } from 'vuex';
+
+import { GETTERS, MUTATES } from '@/store/modules/app/const';
 import Header from './Header';
 
 export default {
@@ -18,9 +21,19 @@ export default {
       default: '500'
     }
   },
-  data() {
-    return {
-      dialog: false
-    };
+  computed: {
+    ...mapGetters({
+      isOpenModal: GETTERS.IS_OPEN_MODAL
+    })
+  },
+  methods: {
+    ...mapMutations({
+      toggleModal: MUTATES.TOGGLE_MODAL
+    }),
+    onCloseModal() {
+      this.toggleModal({
+        isOpenModal: false
+      });
+    }
   }
 };
