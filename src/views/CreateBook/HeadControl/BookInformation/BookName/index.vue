@@ -1,7 +1,3 @@
-<style lang="scss">
-@import "./style.scss";
-</style>
-
 <template>
   <div class="book-name-control">
     <v-text-field v-model="bookName" @blur="onBlur" />
@@ -22,3 +18,5 @@ export default {
   }
 };
 </script>
+
+<style lang="scss" src="./style.scss" />

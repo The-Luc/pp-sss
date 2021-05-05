@@ -1,12 +1,8 @@
-<style lang="scss">
-@import "./style.scss";
-</style>
-
 <template>
   <div>
     <BookInformation />
-    <BookControl :currentView="currentView" @onChangeView="onChangeView" />
-    <BookNumber :currentView="currentView" />
+    <BookControl :current-view="currentView" @onChangeView="onChangeView" />
+    <BookNumber :current-view="currentView" />
   </div>
 </template>
 
@@ -35,3 +31,5 @@ export default {
   }
 };
 </script>
+
+<style lang="scss" src="./style.scss" />

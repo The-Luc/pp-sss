@@ -1,8 +1,6 @@
-
-import Vue from "vue";
-import axios from "axios";
-import VueCompositionAPI from "@vue/composition-api";
-
+import Vue from 'vue';
+import axios from 'axios';
+import VueCompositionAPI from '@vue/composition-api';
 
 import App from './App.vue';
 import router from './router';

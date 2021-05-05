@@ -1,7 +1,3 @@
-<style lang="scss" scoped>
-@import "./style.scss";
-</style>
-
 <template>
   <div>
     <router-link
@@ -12,8 +8,8 @@
         active: isActive,
         disabled: isDisabled
       }"
-      @click="onClick"
       :style="ovStyle"
+      @click="onClick"
     >
       <slot />
     </router-link>
@@ -24,8 +20,8 @@
         active: isActive,
         disabled: isDisabled
       }"
-      @click="onClick"
       :style="ovStyle"
+      @click="onClick"
     >
       <slot />
     </div>
@@ -34,15 +30,30 @@
 
 <script>
 export default {
-  name: "pp-btn",
+  name: "PpBtn",
   props: {
-    type: String,
-    linkTo: String,
+    type: {
+      type: String,
+      default: "btn"
+    },
+    linkTo: {
+      type: String,
+      default: ""
+    },
     isActive: Boolean,
     isDisabled: Boolean,
-    addClass: Array,
-    ovStyle: Object,
-    action: Function
+    addClass: {
+      type: Array,
+      default: () => []
+    },
+    ovStyle: {
+      type: Object,
+      default: () => ({})
+    },
+    action: {
+      type: Function,
+      default: () => {}
+    }
   },
   methods: {
     onClick() {
@@ -51,3 +62,5 @@ export default {
   }
 };
 </script>
+
+<style lang="scss" scoped src="./style.scss" />
