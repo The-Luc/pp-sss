@@ -1,9 +1,14 @@
 <template lang="">
   <div>
-    This is Print Edition page
+    <MainScreen/>
   </div>
 </template>
 <script>
-export default {};
+import MainScreen from './MainScreen'
+export default {
+  components: {
+    MainScreen
+  }
+};
 </script>
-<style lang=""></style>
+<style lang="scss"></style>
