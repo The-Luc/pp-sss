@@ -1,11 +1,11 @@
-import Vue from "vue";
-import axios from "axios";
-import VueCompositionAPI from "@vue/composition-api";
+import Vue from 'vue';
+import axios from 'axios';
+import VueCompositionAPI from '@vue/composition-api';
 
-import App from "./App.vue";
-import router from "./router";
-import store from "./store";
-import vuetify from "./plugins/vuetity";
+import App from './App.vue';
+import router from './router';
+import store from './store';
+import vuetify from './plugins/vuetity';
 
 Vue.prototype.axios = axios;
 
@@ -17,4 +17,4 @@ new Vue({
   store,
   vuetify,
   render: h => h(App)
-}).$mount("#app");
+}).$mount('#app');

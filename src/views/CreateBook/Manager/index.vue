@@ -1,10 +1,10 @@
 <template lang="">
-  <div class="title-page text-100">
-    This is Manager page
-  </div>
+  <v-row class="manager-main">
+    <SectionList :project="project" />
+    <Summary />
+  </v-row>
 </template>
-<script>
-export default {};
-</script>
+
+<script src="./script.js"></script>
 
 <style lang="scss" src="./style.scss" />
