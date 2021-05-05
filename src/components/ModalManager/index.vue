@@ -23,4 +23,4 @@
   </v-row>
 </template>
 
-<script src="./ModalManager.js" />
+<script src="./script.js" />

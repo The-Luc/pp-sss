@@ -5,11 +5,14 @@
   "scripts": {
     "start": "vue-cli-service serve",
     "build": "vue-cli-service build",
+    "build-qa": "vue-cli-service build --mode qa",
+    "build-testing": "vue-cli-service build --mode testing",
     "test:unit": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint",
     "test": "jest"
   },
   "dependencies": {
+    "@vue/composition-api": "^1.0.0-rc.8",
     "@vuelidate/core": "*",
     "@vuelidate/validators": "*",
     "axios": "^0.21.1",

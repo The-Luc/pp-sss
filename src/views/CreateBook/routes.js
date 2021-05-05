@@ -1,13 +1,13 @@
-const CreateBook = () => import("../CreateBook");
+const Edit = () => import("../CreateBook");
 const Manager = () => import("./Manager");
 const PrintEdition = () => import("./PrintEdition");
 const DigitalEdition = () => import("./DigitalEdition");
 
 export default [
   {
-    path: "/create-book",
-    name: "createBook",
-    component: CreateBook,
+    path: "/edit",
+    name: "edit",
+    component: Edit,
     children: [
       {
         path: "manager",
