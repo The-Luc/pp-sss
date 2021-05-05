@@ -1,8 +1,13 @@
 $red-color: #DB0000;
+$color-white: #FFFFFF;
+$color-gray: #BBBBBD;
+$color-gray2: #8C8C8C;
+$color-darkblue: #42738D;
 
 // Font Family
 $font-100: 'MuseoSans 100';
 $font-100-italic: 'MuseoSans 100 Italic';
+$font-300: 'MuseoSans 300';
 $font-300-italic: 'MuseoSans 300 Italic';
 $font-500: 'MuseoSans 500';
 $font-500-italic: 'MuseoSans 500 Italic';
@@ -18,3 +23,4 @@ $sm-size: 12px;
 $md-size: 13px;
 $lg-size: 18px;
 
+$border: 1px solid $color-gray;
