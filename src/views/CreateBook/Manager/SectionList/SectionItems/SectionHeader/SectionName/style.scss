@@ -1,6 +1,6 @@
 @charset "utf-8";
 
-@import '@/scss/variables';
+@import "@/scss/variables";
 
 .manager-main {
   .manager-section-list {
@@ -9,20 +9,35 @@
         display: flex;
         flex-direction: row;
         align-items: center;
-  
+
         .dot {
           height: 12px;
           width: 12px;
           margin-right: 8px;
-          background-color: #925DDB;
+          background-color: #925ddb;
           border-radius: 50%;
           display: inline-block;
         }
-  
+
+        input {
+          padding: 2px;
+          min-width: 25%;
+          height: 100%;
+          border: 1px dashed transparent;
+          &:hover {
+            border: 1px dashed $color-gray;
+          }
+
+          &:focus {
+            outline: none;
+            border: 1px solid $color-darkblue;
+          }
+        }
+
         img {
           width: 5px;
           height: 10px;
-          margin-right: 6px;
+          margin-right: 4px;
 
           &[data-toggle="expand"] {
             transform: rotate(90deg);
