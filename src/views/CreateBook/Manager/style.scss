@@ -1,3 +1,47 @@
-.title-page {
-  color: $red-color;
+@charset "utf-8";
+
+@import '@/scss/variables';
+
+$padding: 20px;
+
+$width-summary: 280px;
+$width-summary-collapse: 30px;
+$height-header: 135px;
+
+%panel-default-setting {
+  height: 100%;
+  max-height: calc(100vh - #{$height-header});
+  padding: $padding;
+}
+
+.manager-main {
+  position: relative;
+  height: 100%;
+  line-height: 14px;
+  color: #565656;
+  font-family: $font-500;
+  font-size: 12px;
+  background-color: #f4f4f4;
+
+  .manager-section-list {
+    @extend %panel-default-setting;
+
+    width: calc(100% - #{$width-summary});
+    max-width: calc(100% - #{$width-summary});
+
+    &.collapse {
+      width: calc(100% - #{$width-summary-collapse});
+      max-width: calc(100% - #{$width-summary-collapse});
+    }
+  }
+
+  .manager-summary {
+    @extend %panel-default-setting;
+
+    width: $width-summary;
+
+    &.collapse {
+      width: $width-summary-collapse;
+    }
+  }
 }
