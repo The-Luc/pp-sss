@@ -6,7 +6,6 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  font: normal normal normal 8px/8px $font-500;
 
   .arrow-left {
     margin-bottom: 5px;
@@ -15,5 +14,6 @@
 
   .text {
     color: #f7f7f7;
+    font: normal normal normal 9px/9px $font-500;
   }
 }
