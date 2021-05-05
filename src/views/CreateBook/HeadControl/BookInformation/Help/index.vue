@@ -1,7 +1,3 @@
-<style lang="scss" scoped>
-@import "./style.scss";
-</style>
-
 <template>
   <div class="btn-help item-center pointer">
     <img class="help" :src="ICON_LOCAL.HELP" alt="help" width="14" />
@@ -20,3 +16,5 @@ export default {
   }
 };
 </script>
+
+<style lang="scss" scoped src="./style.scss" />

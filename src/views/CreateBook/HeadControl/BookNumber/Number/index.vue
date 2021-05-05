@@ -1,7 +1,3 @@
-<style lang="scss">
-@import "./style.scss";
-</style>
-
 <template>
   <p
     class="book-number-information text-300 text-size-md text-center mb-0"
@@ -60,3 +56,5 @@ export default {
   }
 };
 </script>
+
+<style lang="scss" src="./style.scss" />
