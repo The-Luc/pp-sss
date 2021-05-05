@@ -1,11 +1,4 @@
-.print-thumbnail-view {
-    margin: 0;
-}
 
-.row.thumbnail-view-row {
-    margin: 0;
-    padding: 0;
-}
 
 .thumbnail-view-container {
     padding: 22px 37px;
@@ -26,7 +19,15 @@
     }
 }
 
-.thumbnail-view-item:last-child {
+.thumbnail-view-item:nth-child(4n + 1) {
+    .thumbnail-view-container {
+        border-left: none;
+        padding-left: 0px;
+        margin-left: 37px;
+    }
+}
+
+.thumbnail-view-item:nth-child(4n) {
     .thumbnail-view-container {
         margin-right: 37px;
         padding-right: 0px;

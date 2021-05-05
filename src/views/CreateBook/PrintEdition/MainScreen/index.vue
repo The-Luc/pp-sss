@@ -3,6 +3,16 @@
     <div class="row col-12 thumbnail-view-row">
       <ThumbnailView />
       <ThumbnailView />
+      <ThumbnailView />
+      <ThumbnailView />
+      <ThumbnailView />
+      <ThumbnailView />
+      <ThumbnailView />
+      <ThumbnailView />
+      <ThumbnailView />
+      <ThumbnailView />
+      <ThumbnailView />
+      <ThumbnailView />
     </div>
   </div>
 </template>
