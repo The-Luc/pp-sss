@@ -1,6 +1,6 @@
 .btn-exit {
   width: 70px;
-  background: #42738D;
+  background: #42738d;
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -10,9 +10,10 @@
 
   .arrow-left {
     margin-bottom: 5px;
+    width: 14px;
   }
 
   .text {
-    color: #F7F7F7
+    color: #f7f7f7;
   }
 }

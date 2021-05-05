@@ -1,7 +1,3 @@
-<style lang="scss" scoped>
-@import "./style.scss";
-</style>
-
 <template>
   <div class="btn-exit pointer">
     <img
@@ -16,12 +12,6 @@
   </div>
 </template>
 
-<script>
-import ICON_LOCAL from "@/common/constants/icon";
+<script src="./script.js" />
 
-export default {
-  created() {
-    this.ICON_LOCAL = ICON_LOCAL;
-  }
-};
-</script>
+<style lang="scss" scoped src="./style.scss" />
