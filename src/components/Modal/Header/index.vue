@@ -1,7 +1,7 @@
 <template>
   <v-card-title class="pp-modal-title">
     <span class="top-bg" />
-    {{ title }}
+    <span class="text-size-xl text-title">{{ title }}</span>
     <v-icon class="icon-close" @click="onCloseModal">
       mdi-close
     </v-icon>
