@@ -1,7 +1,15 @@
 import { mapState, mapMutations } from 'vuex';
+
 import draggable from 'vuedraggable';
+import { MUTATES } from '@/store/modules/app/const';
+import { MODAL_TYPES } from '@/common/constants';
 
 export default {
+  data() {
+    return {
+      isOpen: false
+    };
+  },
   components: {
     draggable
   },
@@ -29,6 +37,9 @@ export default {
   },
   methods: {
     ...mapMutations('project', ['updateSection']),
+    ...mapMutations({
+      toggleModal: MUTATES.TOGGLE_MODAL
+    }),
     onMove({ relatedContext, draggedContext }) {
       const relatedElement = relatedContext.element;
       const draggedElement = draggedContext.element;
@@ -36,6 +47,15 @@ export default {
       return (
         (!relatedElement || !relatedElement.fixed) && !draggedElement.fixed
       );
+    },
+
+    openModal() {
+      this.toggleModal({
+        isOpenModal: true,
+        modalData: {
+          type: MODAL_TYPES.DELETE_SHEET
+        }
+      });
     }
   }
 };

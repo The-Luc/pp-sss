@@ -13,7 +13,9 @@
           <v-row>
             <v-col
               :class="sheet.type == 'half' ? 'vertical' : 'horizontal'"
-            ></v-col>
+            >
+            <div @click="openModal">div</div>
+            </v-col>
           </v-row>
 
           <v-row>
