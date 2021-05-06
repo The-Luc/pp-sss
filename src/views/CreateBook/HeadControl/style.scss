@@ -1,10 +1,10 @@
 .book {
   display: flex;
   align-items: center;
-  border-bottom: 1px solid rgb(153, 158, 162);
+  border-bottom: 1px solid #808184;
 
   &-information {
-    background: #C3D2D9;
+    background: #c3d2d9;
     justify-content: space-between;
     height: 42px;
   }
