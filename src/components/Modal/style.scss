@@ -1,0 +1,11 @@
+.v-dialog.pp-modal {
+  border-radius: 0;
+
+  .v-sheet.v-card {
+    border-radius: 0;
+
+    .v-card__text {
+      padding-top: 20px;
+    }
+  }
+}

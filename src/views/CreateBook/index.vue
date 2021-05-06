@@ -6,7 +6,7 @@
   </div>
 </template>
 <script>
-import HeaderControl from "./HeadControl";
+import HeaderControl from './HeadControl';
 
 export default {
   components: {
