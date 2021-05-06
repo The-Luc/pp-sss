@@ -8,6 +8,7 @@ export default {
   methods: {
     saveTitle(event) {
       event.target.blur();
+      this.sectionNameCurrent = this.sectionNameCurrent || 'Untitled'
     },
     keyUpEsc(event) {
       event.target.blur();
