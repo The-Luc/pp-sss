@@ -1,17 +1,13 @@
-<style lang="scss">
-@import "./style.scss";
-</style>
-
 <template>
   <div>
     <BookInformation />
-    <BookControl :currentView="currentView" @onChangeView="onChangeView" />
-    <BookNumber :currentView="currentView" />
+    <BookControl :current-view="currentView" @onChangeView="onChangeView" />
+    <BookNumber :current-view="currentView" />
   </div>
 </template>
 
 <script>
-import { BOOK_VIEW_TYPE } from "@/common/constants/book";
+import { BOOK_VIEW_TYPE } from "@/common/constants";
 import BookInformation from "./BookInformation";
 import BookControl from "./BookControl";
 import BookNumber from "./BookNumber";
@@ -30,8 +26,10 @@ export default {
   methods: {
     onChangeView(view) {
       this.currentView = view;
-      this.$router.push(`/create-book/${view.toLowerCase()}`);
+      this.$router.push(`/edit/${view.toLowerCase()}`);
     }
   }
 };
 </script>
+
+<style lang="scss" src="./style.scss" />

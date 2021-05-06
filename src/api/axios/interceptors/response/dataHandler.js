@@ -1,7 +1,7 @@
-const dataHandler = data => ({
-  data: data && data.data ? data.data.data : [],
-  method: data.config.method,
-  url: data.config.url
+const dataHandler = response => ({
+  data: response.data?.data || [],
+  method: response.config.method,
+  url: response.config.url
 });
 
 export default dataHandler;

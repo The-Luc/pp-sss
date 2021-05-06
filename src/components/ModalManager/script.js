@@ -1,12 +1,11 @@
-import { fetchErrorAPI } from "../../api/error";
-import { mapMutations } from "vuex";
+import { mapState, mapMutations } from "vuex";
 import { MUTATES } from "../../store/modules/app/const";
 
 export default {
+  computed: mapState({
+    dialog: state => state.app.isDialog
+  }),
   methods: {
-    handleClick(code) {
-      fetchErrorAPI(code);
-    },
     ...mapMutations({
       handleIsDialog: MUTATES.HANDLEISDIALOG
     })

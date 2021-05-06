@@ -1,7 +1,3 @@
-<style lang="scss" scoped>
-@import "./style.scss";
-</style>
-
 <template>
   <hr class="line" :style="{ height: `${height}px` }" />
 </template>
@@ -16,3 +12,5 @@ export default {
   }
 };
 </script>
+
+<style lang="scss" scoped src="./style.scss" />

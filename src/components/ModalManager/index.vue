@@ -1,5 +1,5 @@
 <template>
-  <v-row justify="center" v-if="dialog" class="positionFixed">
+  <v-row v-if="dialog" justify="center" class="positionFixed">
     <v-dialog v-model="dialog" persistent max-width="290">
       <v-card>
         <v-card-title class="headline">
@@ -23,4 +23,4 @@
   </v-row>
 </template>
 
-<script src="./ModalManager.js" />
+<script src="./script.js" />
