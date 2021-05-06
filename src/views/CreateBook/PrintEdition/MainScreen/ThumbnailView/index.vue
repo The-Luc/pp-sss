@@ -29,17 +29,5 @@
     </div>
   </div>
 </template>
-<script>
-export default {
-  props: {
-    section: Object,
-    sheet: Object
-  },
-  computed: {
-    isTypeFull() {
-      return this.sheet.type == 'full';
-    }
-  }
-};
-</script>
+<script src="./script.js" />
 <style lang="scss" scoped src="./style.scss" />

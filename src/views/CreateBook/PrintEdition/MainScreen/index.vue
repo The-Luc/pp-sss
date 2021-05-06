@@ -7,18 +7,5 @@
     </div>
   </div>
 </template>
-<script>
-import ThumbnailView from './ThumbnailView';
-import project from '@/mock/project'
-export default {
-  components: {
-    ThumbnailView
-  },
-  data(){
-    return {
-      project: project
-    }
-  },
-};
-</script>
+<script src="./script.js" />
 <style lang="scss" scoped src="./style.scss" />
