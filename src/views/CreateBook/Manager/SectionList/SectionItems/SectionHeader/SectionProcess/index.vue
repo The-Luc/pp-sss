@@ -6,12 +6,10 @@
     <span class="process last"></span>
 
     <span class="first-release">{{ releaseDate }}</span>
-    <Menu :sectionId="sectionId" />
+    <Menu :src="moreIcon" nudge-width="160" :items="items" />
   </v-col>
 </template>
 
 <script src="./script.js"></script>
 
-<style lang="scss">
-@import './style.scss';
-</style>
+<style lang="scss" src="./style.scss" />
