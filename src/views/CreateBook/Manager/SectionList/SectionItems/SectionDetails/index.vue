@@ -14,7 +14,9 @@
             <v-col
               :class="sheet.type == 'half' ? 'vertical' : 'horizontal'"
             >
-            <div @click="openModal">div</div>
+            <Menu :src="moreIcon" nudge-width="160" :items="items">
+              <ButtonDelete @click.native="openModal(sheet.id, sectionId)" title="Delete This Sheet" />
+            </Menu>
             </v-col>
           </v-row>
 

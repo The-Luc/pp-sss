@@ -3,15 +3,24 @@ import { mapState, mapMutations } from 'vuex';
 import draggable from 'vuedraggable';
 import { MUTATES } from '@/store/modules/app/const';
 import { MODAL_TYPES } from '@/common/constants';
+import Menu from '@/components/Menu';
+import ButtonDelete from '@/components/Menu/ButtonDelete';
+import ICON_LOCAL from '@/common/constants/icon';
 
 export default {
   data() {
     return {
-      isOpen: false
+      isOpen: false,
+      items: [
+        { title: 'Move To', value: 'Choose a Section' }
+      ],
+      moreIcon : ICON_LOCAL.MORE_ICON
     };
   },
   components: {
-    draggable
+    draggable,
+    Menu,
+    ButtonDelete
   },
   props: {
     sectionId: String,
@@ -49,11 +58,12 @@ export default {
       );
     },
 
-    openModal() {
+    openModal(idSheet, idSection) {
       this.toggleModal({
         isOpenModal: true,
         modalData: {
-          type: MODAL_TYPES.DELETE_SHEET
+          type: MODAL_TYPES.DELETE_SHEET,
+          props: { idSheet, idSection }
         }
       });
     }
