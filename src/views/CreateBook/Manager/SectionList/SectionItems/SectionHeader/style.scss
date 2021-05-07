@@ -2,16 +2,24 @@
 
 @import '@/scss/variables';
 
+$width-process-container: 251px;
+
 .manager-main {
   .manager-section-list {
     .section-item {
-      margin-bottom: 10px;
-
       .section-header {
         padding: 10px 10px 10px 30px;
         background-color: $color-white;
         font-family: $font-700;
         cursor: pointer;
+
+        .section-name {
+          max-width: calc(100% - #{$width-process-container});
+        }
+
+        .section-process {
+          min-width: $width-process-container;
+        }
       }
     }
   }

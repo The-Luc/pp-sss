@@ -1,0 +1,25 @@
+@charset "utf-8";
+
+.manager-main {
+  .manager-section-list {
+    .section-item {
+      margin-bottom: 10px;
+
+      &.indicator {
+        > .col {
+          > .row {
+            display: none;
+          }
+
+          .indicator {
+            display: block;
+          }
+        }
+      }
+
+      .indicator {
+        display: none;
+      }
+    }
+  }
+}
