@@ -1,0 +1,27 @@
+@charset "utf-8";
+
+@import '@/scss/variables';
+@import '../common.scss';
+
+.print-editor {
+  .print-editor-header {
+    border-top: $border;
+    padding: 16px 0 !important;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+  span {
+    font-family: $font-700;
+    text-transform: uppercase;
+  }
+  .btn-save {
+    height: 26px !important;
+    position: absolute;
+    left: 20px;
+    span {
+      font-size: 12px;
+      font-family: $font-500;
+    }
+  }
+}
