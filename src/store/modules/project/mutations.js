@@ -15,4 +15,10 @@ export const mutations = {
     });
     state.project.sections[sectionIndex].sheets = state.project.sections[sectionIndex].sheets.filter(item => item.id !== idSheet);
   },
+  deleteSection(state, payload) {
+    const { idSection } = payload;
+    state.project.sections = state.project.sections.filter(
+      item => item.id !== idSection
+    );
+  }
 };

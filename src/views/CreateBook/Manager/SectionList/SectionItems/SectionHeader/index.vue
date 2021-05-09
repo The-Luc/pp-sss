@@ -16,6 +16,7 @@
           :sectionId="section.id"
           :color="section.color"
           :releaseDate="releaseDate"
+          :sectionName="section.name"
         />
       </v-row>
     </v-col>

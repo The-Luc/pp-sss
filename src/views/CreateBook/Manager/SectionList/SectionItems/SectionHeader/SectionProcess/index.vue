@@ -6,7 +6,12 @@
     <span class="process last"></span>
 
     <span class="first-release">{{ releaseDate }}</span>
-    <Menu :src="moreIcon" nudge-width="160" :items="items" />
+    <Menu :src="moreIcon" nudge-width="160" :items="items">
+      <ButtonDelete
+        title="Delete This Section"
+        @click.native="onOpenModal(sectionId, sectionName)"
+      />
+    </Menu>
   </v-col>
 </template>
 
