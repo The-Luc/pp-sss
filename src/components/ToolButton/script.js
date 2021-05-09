@@ -13,5 +13,10 @@ export default {
       type: Number,
       default: 38,
     }
+  },
+  methods: {
+    onClick() {
+      this.$emit("click");
+    }
   }
 }
