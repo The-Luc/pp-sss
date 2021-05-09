@@ -3,15 +3,16 @@ import draggable from 'vuedraggable';
 
 import Header from './SectionHeader';
 import Details from './SectionDetails';
+import Indicator from './SectionIndicator';
 
-var dragGhost = {};
-
-let oldDraggableIndex = -1;
+let selectedIndex = -1;
+let moveToIndex = -1;
 
 export default {
   components: {
     Header,
     Details,
+    Indicator,
     draggable
   },
   data() {
@@ -31,68 +32,75 @@ export default {
     }
   },
   methods: {
-    setData: function (/*dataTransfer, dragEl*/) {
-      // Create the clone (with content)
-      // dragGhost = dragEl.cloneNode(true);
-      // Stylize it
-      // dragGhost.classList.add('custom-drag-ghost');
-
-      //dragGhost.style.width = dragEl.offsetWidth + 'px';
-      //dragGhost.style.height = dragEl.offsetHeight + 'px';
-      // Place it into the DOM tree
-      // document.getElementById('manager-section-list').appendChild(dragGhost);
-      // Set the new stylized "drag image" of the dragged element
-      // dataTransfer.setDragImage(dragGhost, 0, 0);
-      // dragGhost.classList.add('hide');
-    },
-    onMove(evt) {
-      const relatedElement = evt.relatedContext.element;
-      const draggedElement = evt.draggedContext.element;
-
-      const isAllow = (!relatedElement || !relatedElement.fixed) && !draggedElement.fixed;
-
-      return isAllow;
-    },
     onChoose: function(evt) {
       console.log('choose')
-      oldDraggableIndex = evt.oldDraggableIndex;
+      moveToIndex = -1;
 
-      dragGhost = evt.item.cloneNode(true);
-
-      dragGhost.classList.add('clone-ghost');
-
-      // evt.item.parentNode.insertBefore(dragGhost, evt.item);
+      selectedIndex = this.project.sections[evt.oldIndex].fixed ? -1 : evt.oldIndex;
     },
-    onChange: function(evt) {
-      console.log('change')
-      console.log('-------------------------------')
-      //console.log(evt)
-      //console.log(evt.target)
+    onMove: function(evt) {
+      this.clearAllIndicator();
 
-      if (evt.newDraggableIndex === oldDraggableIndex) {
-        if (dragGhost.parentNode !== null) {
-          dragGhost.parentNode.removeChild(dragGhost);
-        }
-
-        evt.item.classList.remove('indicator');
+      if (selectedIndex < 0) {
+        return false;
       }
-      else {
-        const plusPosition = evt.newDraggableIndex > oldDraggableIndex ? 0 : 1;
-        const ghostPosition = oldDraggableIndex + plusPosition;
 
-        evt.item.classList.add('indicator');
-        evt.item.parentNode.insertBefore(dragGhost, evt.item.parentNode.children[ghostPosition]);
+      const relateSection = evt.relatedContext.element;
+
+      const isAllowMoveTo = !relateSection || !relateSection.fixed;
+
+      if (!isAllowMoveTo) {
+        moveToIndex = -1;
+
+        return false;
       }
+
+      moveToIndex = evt.draggedContext.futureIndex;
+      
+      if (evt.related === null) {
+        return false;
+      }
+
+      if (moveToIndex < selectedIndex) {
+        evt.related.classList.add('move-to-top');
+      }
+      else if (moveToIndex > selectedIndex) {
+        evt.related.classList.add('move-to-bottom');
+      }
+
+      return false;
     },
-    onEnd: function(evt) {
-      this.drag = false;
-      console.log('end')
+    onEnd: function() {
+      this.clearAllIndicator();
 
-      if (dragGhost.parentNode !== null) {
-        dragGhost.parentNode.removeChild(dragGhost);
+      if (selectedIndex < 0 || moveToIndex < 0 || selectedIndex === moveToIndex) {
+        return;
       }
 
-      evt.item.classList.remove('indicator');
+      const selectedSection = this.project.sections[selectedIndex];
+
+      const _items = Object.assign([], this.project.sections);
+
+      if (moveToIndex < selectedIndex) {
+        _items.splice(selectedIndex, 1);
+        _items.splice(moveToIndex, 0, selectedSection);
+      } else if (moveToIndex > selectedIndex) {
+        _items.splice(moveToIndex + 1, 0, selectedSection);
+        _items.splice(selectedIndex, 1);
+      }
+
+      this.project.sections = _items;
+      
+      selectedIndex = -1;
+      moveToIndex = -1;
+    },
+    clearAllIndicator: function() {
+      const moveToElements = document.querySelectorAll('.move-to-top, .move-to-bottom');
+
+      moveToElements.forEach(e => {
+        e.classList.remove('move-to-top');
+        e.classList.remove('move-to-bottom');
+      });
     },
     getTotalSheetUntilLastSection: function(index) {
       if (index === 0) {

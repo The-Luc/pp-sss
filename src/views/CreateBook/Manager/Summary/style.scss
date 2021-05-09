@@ -34,7 +34,7 @@ $spacing: 15px;
       }
 
       span {
-        color: #42738d;
+        color: $color-darkblue;
         font-size: 13px;
         text-transform: uppercase;
       }
@@ -67,12 +67,12 @@ $spacing: 15px;
           font-size: 14px;
 
           &.countdown {
-            color: #42738d;
+            color: $color-darkblue;
           }
         }
 
         img {
-          border: 0.5px solid #d3d3d3;
+          border: 0.5px solid $color-gray;
         }
       }
     }
