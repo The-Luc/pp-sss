@@ -1,3 +1,4 @@
 export const MODAL_TYPES = {
-  HELP: 'Help'
+  HELP: 'Help',
+  EMPTY_SECTION: 'EmptySection',
 };

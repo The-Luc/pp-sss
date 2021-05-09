@@ -5,11 +5,13 @@ import { MODAL_TYPES } from '@/common/constants';
 
 // Modal component
 import HelpModal from '@/views/CreateBook/HeadControl/BookInformation/Help/Modal';
+import EmptySection from '@/components/ModalEmptySection';
 
-const { HELP } = MODAL_TYPES;
+const { HELP, EMPTY_SECTION } = MODAL_TYPES;
 
 const ModalList = {
-  [HELP]: HELP
+  [HELP]: HELP,
+  [EMPTY_SECTION]: EMPTY_SECTION
 };
 
 export default {
@@ -19,7 +21,8 @@ export default {
     };
   },
   components: {
-    [MODAL_TYPES.HELP]: HelpModal
+    [MODAL_TYPES.HELP]: HelpModal,
+    [MODAL_TYPES.EMPTY_SECTION]: EmptySection
   },
   computed: {
     ...mapGetters({
