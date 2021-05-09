@@ -1,6 +1,9 @@
+import { mapGetters, mapMutations } from 'vuex';
+
 import ICON_LOCAL from '@/common/constants/icon';
 import Menu from '@/components/Menu';
 import Action from './Action';
+import { GETTERS, MUTATES } from '@/store/modules/app/const';
 
 export default {
   props: ['color', 'releaseDate', 'sectionId'],
@@ -13,11 +16,12 @@ export default {
       isOpenCalendar: false,
       isOpen: false,
       calendarWidth: 600,
-      currentId: '',
       calendarPosition: {
         x: 0,
         y: 0
       },
+      menuX: 0,
+      menuY: 0,
       items: [
         { title: 'Status', value: 'Not Started', name: 'status' },
         { title: 'Due Date', value: '05/21/21', name: 'dueDate' },
@@ -25,20 +29,38 @@ export default {
       ]
     };
   },
+  computed: {
+    ...mapGetters({
+      sectionSelected: GETTERS.SECTION_SELECTED
+    })
+  },
   created() {
     this.moreIcon = ICON_LOCAL.MORE_ICON;
   },
   methods: {
+    ...mapMutations({
+      setSectionSelected: MUTATES.SET_SELECTION_SELECTED
+    }),
+    setIsOpenMenu() {
+      if (!this.sectionSelected || this.sectionSelected !== this.sectionId) {
+        this.setSectionSelected({
+          sectionSelected: this.sectionId
+        });
+      } else if (
+        this.sectionSelected &&
+        this.sectionSelected === this.sectionId
+      ) {
+        this.setSectionSelected({
+          sectionSelected: ''
+        });
+      }
+    },
     openCalendar(event) {
       this.isOpenCalendar = true;
       const parentElement = event.target.parentElement;
       const { x, y } = parentElement.getBoundingClientRect();
       this.calendarPosition.x = x - this.calendarWidth;
       this.calendarPosition.y = y;
-    },
-    onMenuToggle(isOpen) {
-      this.isOpenCalendar = isOpen;
-      console.log('isOpen', isOpen);
     },
     onItemClick({ event, item }) {
       switch (item.name) {
@@ -49,8 +71,13 @@ export default {
           break;
       }
     },
-    onIconClick(id) {
-      this.currentId = id;
+    toggleMenu(event) {
+      event.stopPropagation();
+      const element = event.target;
+      const { x, y } = element.getBoundingClientRect();
+      this.menuX = x - 70;
+      this.menuY = y;
+      this.setIsOpenMenu();
     }
   }
 };

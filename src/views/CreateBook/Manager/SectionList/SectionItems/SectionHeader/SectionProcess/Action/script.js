@@ -1,16 +1,33 @@
 /* eslint-disable no-self-assign */
 import moment from 'moment';
+import { mapGetters } from 'vuex';
 import ICON_LOCAL from '@/common/constants/icon';
 import Menu from '@/components/Menu';
+import { GETTERS } from '@/store/modules/app/const';
 
 const dueDate = '09/15/22';
 export default {
-  props: ['releaseDate', 'isOpenCalendar', 'calendarWidth', 'calendarPosition'],
+  props: [
+    'releaseDate',
+    'isOpenCalendar',
+    'calendarWidth',
+    'calendarPosition',
+    'menuX',
+    'menuY',
+    'items',
+    'sectionId'
+  ],
   components: {
     Menu
   },
+  computed: {
+    ...mapGetters({
+      sectionSelected: GETTERS.SECTION_SELECTED
+    })
+  },
   data() {
     return {
+      isOpenMenu: false,
       dueDateData: '',
       monthRelease: '',
       yearRelease: '',
@@ -28,6 +45,9 @@ export default {
           .split('-');
         this.setDateSelect(year, month);
       }
+    },
+    sectionSelected(value) {
+      this.setIsOpenMenu(value);
     }
   },
   mounted() {
@@ -62,6 +82,17 @@ export default {
     },
     onMenuToggle(isOpen) {
       this.$emit('onMenuToggle', isOpen);
+    },
+    onItemClick({ event, item }) {
+      this.$emit('onItemClick', { event, item });
+    },
+    setIsOpenMenu(sectionSelected) {
+      console.log('setIsOpenMenu', sectionSelected, this.sectionId);
+      if (sectionSelected === this.sectionId) {
+        this.isOpenMenu = true;
+      } else {
+        this.isOpenMenu = false;
+      }
     }
   }
 };
