@@ -6,44 +6,6 @@
   .manager-section-list {
     .section-item {
       margin-bottom: 10px;
-
-      &.move-to-top {
-        .indicator-top {
-          display: block;
-        }
-      }
-
-      &.move-to-bottom {
-        .indicator-bottom {
-          display: block;
-        }
-      }
-
-      .indicator {
-        display: none;
-
-        &.indicator-top {
-          margin-top: -6px;
-          margin-bottom: 4px;
-        }
-
-        &.indicator-bottom {
-          margin-top: 4px;
-          margin-bottom: -6px;
-        }
-
-        > div {
-          height: 2px;
-          background-color: $color-darkblue;
-          position: relative;
-        }
-
-        img {
-          width: 4px;
-          position: absolute;
-          top: -3px;
-        }
-      }
     }
   }
 }

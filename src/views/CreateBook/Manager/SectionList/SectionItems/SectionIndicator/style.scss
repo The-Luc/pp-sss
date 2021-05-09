@@ -4,29 +4,42 @@
 
 .manager-main {
   .manager-section-list {
-    .section-header {
-      .section-name {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-  
-        .dot {
-          height: 12px;
-          width: 12px;
-          margin-right: 8px;
-          background-color: #925DDB;
-          border-radius: 50%;
-          display: inline-block;
+    .section-item {
+      &.move-to-top {
+        .indicator-top {
+          display: block;
         }
-  
-        img {
-          width: 5px;
-          height: 10px;
-          margin-right: 6px;
+      }
 
-          &[data-toggle="expand"] {
-            transform: rotate(90deg);
-          }
+      &.move-to-bottom {
+        .indicator-bottom {
+          display: block;
+        }
+      }
+
+      .indicator {
+        display: none;
+
+        &.indicator-top {
+          margin-top: -6px;
+          margin-bottom: 4px;
+        }
+
+        &.indicator-bottom {
+          margin-top: 4px;
+          margin-bottom: -6px;
+        }
+
+        > div {
+          height: 2px;
+          background-color: $color-darkblue;
+          position: relative;
+        }
+
+        img {
+          width: 4px;
+          position: absolute;
+          top: -3px;
         }
       }
     }

@@ -5,6 +5,8 @@
       data-toggle="collapse"
       :data-target="section.id"
       v-on:click="toggleDetail"
+      v-on:mouseover="showDragControl"
+      v-on:mouseleave="hideDragControl"
     >
       <v-row>
         <SectionName
@@ -24,6 +26,4 @@
 
 <script src="./script.js"></script>
 
-<style lang="scss">
-@import './style.scss';
-</style>
+<style lang="scss" src="./style.scss"></style>

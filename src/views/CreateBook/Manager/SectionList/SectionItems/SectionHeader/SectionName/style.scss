@@ -2,6 +2,8 @@
 
 @import '@/scss/variables';
 
+$margin-right: 8px;
+
 .manager-main {
   .manager-section-list {
     .section-header {
@@ -9,14 +11,32 @@
         display: flex;
         flex-direction: row;
         align-items: center;
+
+        .drag-control {
+          display: flex;
+          margin-right: $margin-right;
+
+          div {
+            display: flex;
+            flex-direction: column;
+
+            span {
+              display: inline-block;
+              height: 5px;
+              width: 5px;
+              margin: 1px;
+              background-color: $color-gray;
+              border-radius: 50%;
+            }
+          }
+        }
   
         .dot {
+          display: inline-block;
           height: 12px;
           width: 12px;
-          margin-right: 8px;
-          background-color: #925DDB;
+          margin-right: $margin-right;
           border-radius: 50%;
-          display: inline-block;
         }
   
         img {
