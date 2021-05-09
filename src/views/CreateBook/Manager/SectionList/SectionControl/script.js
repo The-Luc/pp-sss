@@ -35,6 +35,10 @@ export default {
       document
         .getElementById('btn-ec-all')
         .setAttribute('data-toggle', this.isCollapse ? COLLAPSE : EXPAND);
+    },
+
+    addSection() {
+      console.log(1);
     }
   }
 };

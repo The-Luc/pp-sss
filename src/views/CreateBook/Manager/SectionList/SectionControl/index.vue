@@ -5,7 +5,7 @@
         >{{ isCollapse ? 'Expand' : 'Collapse' }} All
         Sections</v-btn
       >
-      <v-btn class="btn-solid">
+      <v-btn class="btn-solid" @click.native="addSection">
         <img src="@/assets/icons/plus.svg" />
         Add a Section
       </v-btn>
