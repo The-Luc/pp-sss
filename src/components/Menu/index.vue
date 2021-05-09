@@ -9,7 +9,7 @@
     :close-on-content-click="false"
     :nudge-left="nudgeWidth / 2"
   >
-  <slot />
+    <slot />
     <template #activator="{  }">
       <img :src="src" @click="onClick" />
     </template>
@@ -19,7 +19,7 @@
           :title="item.title"
           :value="item.value"
           @onItemClick="event => onItemClick(event, item)"
-        >
+        />
       </v-list-item>
     </v-list>
   </v-menu>
