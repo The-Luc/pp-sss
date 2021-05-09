@@ -1,9 +1,7 @@
-@import './_extend';
-
 p,
 .container,
 .row,
-.row+.row,
+.row + .row,
 .col {
   @extend %no-padding-margin;
 }

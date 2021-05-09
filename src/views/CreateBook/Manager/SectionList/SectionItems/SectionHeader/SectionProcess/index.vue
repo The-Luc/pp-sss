@@ -6,7 +6,22 @@
     <span class="process last"></span>
 
     <span class="first-release">{{ releaseDate }}</span>
-    <Menu :src="moreIcon" nudge-width="160" :items="items" />
+    <Menu
+      :id="sectionId"
+      :current-id="currentId"
+      :src="moreIcon"
+      nudge-width="160"
+      :items="items"
+      @onIconClick="onIconClick"
+      @onItemClick="onItemClick"
+    />
+    <Action
+      :is-open-calendar="isOpenCalendar"
+      :calendar-width="calendarWidth"
+      :release-date="releaseDate"
+      :calendar-position="calendarPosition"
+      @onMenuToggle="onMenuToggle"
+    />
   </v-col>
 </template>
 

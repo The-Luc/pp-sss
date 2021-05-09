@@ -91,8 +91,8 @@ const project = {
       fixed: false,
       name: 'OOO',
       color: 'orange',
-      sheets: [
-      ]
+      releaseDate: '06/08/21',
+      sheets: []
     },
     {
       id: '54',

@@ -2,7 +2,10 @@
   <div class="manager-summary" id="manager-summary">
     <div class="row">
       <div class="col-12 summary-title">
-        <img src="@/assets/icons/double-arrow-right.svg" v-on:click="toogleSummary" />
+        <img
+          src="@/assets/icons/double-arrow-right.svg"
+          v-on:click="toogleSummary"
+        />
         <span class="text-700">PROGRAM SUMMARY</span>
       </div>
     </div>
@@ -22,7 +25,7 @@
             <p class="group-detail">
               <span class="info-name">File Release Due Date:</span>
               <br />
-              <span class="info-detail">05/21/21</span>
+              <span class="info-detail">07/08/21</span>
             </p>
 
             <p class="group-detail">

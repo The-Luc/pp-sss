@@ -4,6 +4,7 @@
       class="section-header"
       data-toggle="collapse"
       :data-target="section.id"
+      v-on:click="toggleDetail"
     >
       <v-row>
         <SectionName
@@ -14,7 +15,7 @@
         <SectionProcess
           :sectionId="section.id"
           :color="section.color"
-          :releaseDate="releaseDate"
+          :releaseDate="section.releaseDate"
         />
       </v-row>
     </v-col>

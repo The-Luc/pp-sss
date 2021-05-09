@@ -1,0 +1,104 @@
+.pp-calendar {
+  background-color: white;
+  padding: 16px;
+
+  .v-picker {
+    width: 100%;
+  }
+  .pp-date-picker {
+    .v-date-picker-header__value {
+      pointer-events: none;
+    }
+  }
+  .v-btn__content {
+    font-family: $font-700;
+    font-size: 11px;
+    line-height: 13px;
+    color: #565656;
+    text-transform: none;
+  }
+}
+
+.pp-calendar-month {
+  .v-date-picker-header {
+    padding: 4px 30px;
+  }
+
+  .v-date-picker-table {
+    height: auto;
+    tr {
+      td {
+        height: 40px;
+        width: 40px;
+
+        .v-btn {
+          border-radius: 0;
+          height: 40px;
+          padding: 0;
+          min-width: 40px;
+          width: 40px;
+        }
+      }
+    }
+  }
+
+  .v-picker__actions {
+    width: 290px;
+
+    .v-btn {
+      background-color: #0099b3;
+      text-transform: inherit;
+      border-radius: 2px;
+
+      .v-btn__content {
+        color: white !important;
+      }
+    }
+  }
+}
+
+.v-picker {
+  .v-date-picker-header {
+    .v-btn {
+      .v-icon {
+        font-size: 13px;
+        margin: 0;
+      }
+    }
+
+    .v-date-picker-header__value {
+      position: absolute;
+      font-size: 13px;
+      font-family: $font-700;
+    }
+  }
+
+  .v-date-picker-table {
+    .v-btn {
+      &:hover,
+      &:focus,
+      &--active {
+        background-color: #eaf2f5 !important;
+        border-radius: 0 !important;
+        &::before {
+          background-color: #eaf2f5 !important;
+        }
+      }
+      &--disabled {
+        .v-btn__content {
+          color: #d3d3d3;
+        }
+      }
+
+      &.v-date-picker-table__current {
+        background-color: #f4f4f4;
+        border-radius: 0;
+        border: 0;
+      }
+    }
+  }
+
+  :first-child {
+    margin-left: auto;
+  }
+}
