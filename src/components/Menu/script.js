@@ -34,6 +34,9 @@ export default {
         event,
         item
       });
+    },
+    onClickOutSideMenu() {
+      this.$emit('onClickOutSideMenu');
     }
   }
 };

@@ -8,16 +8,12 @@
     <span class="first-release">{{ releaseDate }}</span>
     <img :src="moreIcon" @click="toggleMenu" />
     <Action
-      :is-open-calendar="isOpenCalendar"
-      :calendar-width="calendarWidth"
       :release-date="releaseDate"
-      :calendar-position="calendarPosition"
       nudge-width="160"
       :items="items"
       :menu-x="menuX"
       :menu-y="menuY"
       :section-id="sectionId"
-      @onItemClick="onItemClick"
     />
   </v-col>
 </template>

@@ -8,7 +8,7 @@
     :position-x="menuX"
     :position-y="menuY"
   >
-    <v-list>
+    <v-list v-click-outside="onClickOutSideMenu">
       <v-list-item v-for="(item, i) in items" :key="i">
         <Item
           :title="item.title"

@@ -13,13 +13,7 @@ export default {
   },
   data() {
     return {
-      isOpenCalendar: false,
       isOpen: false,
-      calendarWidth: 600,
-      calendarPosition: {
-        x: 0,
-        y: 0
-      },
       menuX: 0,
       menuY: 0,
       items: [
@@ -53,22 +47,6 @@ export default {
         this.setSectionSelected({
           sectionSelected: ''
         });
-      }
-    },
-    openCalendar(event) {
-      this.isOpenCalendar = true;
-      const parentElement = event.target.parentElement;
-      const { x, y } = parentElement.getBoundingClientRect();
-      this.calendarPosition.x = x - this.calendarWidth;
-      this.calendarPosition.y = y;
-    },
-    onItemClick({ event, item }) {
-      switch (item.name) {
-        case 'dueDate':
-          this.openCalendar(event);
-          break;
-        default:
-          break;
       }
     },
     toggleMenu(event) {

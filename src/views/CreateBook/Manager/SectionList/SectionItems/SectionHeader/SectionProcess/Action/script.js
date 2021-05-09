@@ -1,24 +1,17 @@
 /* eslint-disable no-self-assign */
 import moment from 'moment';
 import { mapGetters } from 'vuex';
+
 import ICON_LOCAL from '@/common/constants/icon';
 import Menu from '@/components/Menu';
 import { GETTERS } from '@/store/modules/app/const';
+import Calendar from './Calendar';
 
-const dueDate = '09/15/22';
 export default {
-  props: [
-    'releaseDate',
-    'isOpenCalendar',
-    'calendarWidth',
-    'calendarPosition',
-    'menuX',
-    'menuY',
-    'items',
-    'sectionId'
-  ],
+  props: ['releaseDate', 'menuX', 'menuY', 'items', 'sectionId'],
   components: {
-    Menu
+    Menu,
+    Calendar
   },
   computed: {
     ...mapGetters({
@@ -28,13 +21,11 @@ export default {
   data() {
     return {
       isOpenMenu: false,
-      dueDateData: '',
-      monthRelease: '',
-      yearRelease: '',
-      dayRelease: '',
-      dateSelected: '',
-      monthSelected: '',
-      nowDate: new Date().toISOString().slice(0, 10)
+      isOpenCalendar: false,
+      calendarX: 0,
+      calendarY: 0,
+      calendarWidth: 600,
+      minDate: new Date().toISOString().slice(0, 10)
     };
   },
   watch: {
@@ -52,47 +43,44 @@ export default {
   },
   mounted() {
     this.moreIcon = ICON_LOCAL.MORE_ICON;
-    const [year, month, day] = moment(this.releaseDate)
-      .format('YYYY-MM-DD')
-      .split('-');
-    this.monthRelease = month;
-    this.yearRelease = year;
-    this.dayRelease = day;
-    this.dateSelected = `${year}-${month}-${day}`;
-    this.monthSelected = `${year}-${month}`;
-    this.dueDateData = moment(dueDate).format('YYYY-MM-DD');
   },
   methods: {
-    setDateSelect(year, month) {
-      if (year === this.yearRelease && month === this.monthRelease) {
-        this.dateSelected = `${year}-${month}-${this.dayRelease}`;
-      } else {
-        this.dateSelected = `${year}-${month}`;
+    onClickOutSideCalendar() {
+      console.log('onClickOutSideCalendar');
+      this.isOpenCalendar = false;
+    },
+    onClickOutSideMenu() {
+      if (this.isOpenMenu && !this.isOpenCalendar) {
+        console.log('close Menu');
+        this.isOpenMenu = false;
       }
-      this.yearRelease = this.yearRelease;
-      this.monthRelease = this.monthRelease;
     },
-    onChangeMonth(value) {
-      const [year, month] = value.split('-');
-      this.setDateSelect(year, month);
-    },
-    onGoCurrentDate() {
-      this.monthSelected = `${this.yearRelease}-${this.monthRelease}`;
-      this.dateSelected = `${this.yearRelease}-${this.monthRelease}-${this.dayRelease}`;
-    },
-    onMenuToggle(isOpen) {
-      this.$emit('onMenuToggle', isOpen);
+    openCalendar(event) {
+      this.isOpenCalendar = true;
+      const parentElement = event.target.parentElement;
+      const { x, y } = parentElement.getBoundingClientRect();
+      this.calendarX = x - (this.calendarWidth + 50);
+      this.calendarY = y;
     },
     onItemClick({ event, item }) {
-      this.$emit('onItemClick', { event, item });
+      switch (item.name) {
+        case 'dueDate':
+          this.openCalendar(event);
+          break;
+        default:
+          break;
+      }
     },
     setIsOpenMenu(sectionSelected) {
-      console.log('setIsOpenMenu', sectionSelected, this.sectionId);
       if (sectionSelected === this.sectionId) {
         this.isOpenMenu = true;
       } else {
         this.isOpenMenu = false;
       }
+    },
+    onSelectedDay(value) {
+      console.log('onSelectedDay', value);
+      this.isOpenCalendar = false;
     }
   }
 };
