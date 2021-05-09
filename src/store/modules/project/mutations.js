@@ -16,9 +16,9 @@ export const mutations = {
     state.project.sections[sectionIndex].sheets = state.project.sections[sectionIndex].sheets.filter(item => item.id !== idSheet);
   },
   deleteSection(state, payload) {
-    const { idSection } = payload;
+    const { sectionId } = payload;
     state.project.sections = state.project.sections.filter(
-      item => item.id !== idSection
+      item => item.id !== sectionId
     );
   }
 };
