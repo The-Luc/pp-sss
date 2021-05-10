@@ -1,1 +1,6 @@
-export const getters = {};
+
+export const getters = {
+  getSection(state){
+   return state.project.sections;
+  }
+};
