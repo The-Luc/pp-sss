@@ -1,5 +1,6 @@
 import ICON_LOCAL from '@/common/constants/icon';
 import Menu from '@/components/Menu';
+import { mapMutations } from 'vuex';
 
 export default {
   props: ['color', 'releaseDate', 'sectionId'],
@@ -17,5 +18,13 @@ export default {
   },
   created() {
     this.moreIcon = ICON_LOCAL.MORE_ICON;
+  },
+  methods: {
+    ...mapMutations('project', ['addSheet']),
+    onAddSheet(sectionId) {
+      this.addSheet({
+        sectionId
+      });
+    }
   }
 };

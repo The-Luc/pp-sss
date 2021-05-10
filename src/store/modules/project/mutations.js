@@ -7,5 +7,9 @@ export const mutations = {
         break;
       }
     }
+  },
+  addSheet(state, payload) {
+    // const { idSection } = payload;
+    console.log(payload);
   }
 };
