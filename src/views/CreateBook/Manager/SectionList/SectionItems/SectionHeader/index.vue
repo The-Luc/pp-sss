@@ -3,6 +3,7 @@
     <v-col
       class="section-header"
       data-toggle="collapse"
+      :data-fixed="section.fixed"
       :data-target="section.id"
       v-on:click="toggleDetail"
       v-on:mouseover="showDragControl"

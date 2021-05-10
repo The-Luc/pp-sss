@@ -1,3 +1,13 @@
 export default {
-  props: ['sectionId', 'sectionName', 'sectionColor']
+  props: {
+    sectionId: {
+      type: String
+    },
+    sectionName: {
+      type: String
+    },
+    sectionColor: {
+      type: String
+    }
+  }
 };

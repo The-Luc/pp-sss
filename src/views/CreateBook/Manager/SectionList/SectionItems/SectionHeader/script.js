@@ -40,6 +40,10 @@ export default {
     showDragControl: function(evt) {
       const sectionHeader = evt.target.closest('.section-header');
 
+      if (sectionHeader.getAttribute('data-fixed') === 'true') {
+        return;
+      }
+
       sectionHeader.querySelector('.drag-control').classList.remove('invisible');
     },
     hideDragControl: function(evt) {

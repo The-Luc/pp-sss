@@ -33,7 +33,6 @@ export default {
   },
   methods: {
     onChoose: function(evt) {
-      console.log('choose')
       moveToIndex = -1;
 
       selectedIndex = this.project.sections[evt.oldIndex].fixed ? -1 : evt.oldIndex;
@@ -44,6 +43,16 @@ export default {
       if (selectedIndex < 0) {
         return false;
       }
+      
+      if (evt.related === null) {
+        return false;
+      }
+
+      moveToIndex = evt.draggedContext.futureIndex;
+
+      if (moveToIndex === selectedIndex) {
+        return false;
+      }
 
       const relateSection = evt.relatedContext.element;
 
@@ -52,12 +61,6 @@ export default {
       if (!isAllowMoveTo) {
         moveToIndex = -1;
 
-        return false;
-      }
-
-      moveToIndex = evt.draggedContext.futureIndex;
-      
-      if (evt.related === null) {
         return false;
       }
 
