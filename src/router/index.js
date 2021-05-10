@@ -55,12 +55,10 @@ const router = new VueRouter({
 });
 router.beforeEach(async (to, from, next) => {
   if (to.path === '/edit/print' || to.path === '/edit/digital') {
-    
     const sections = store.state.project.project?.sections;
     const emptySections = sections.filter(item => item.sheets?.length === 0);
-    console.log(emptySections);
     if (emptySections.length !== 0) {
-      await next()
+      await next();
       store.commit(MUTATES.TOGGLE_MODAL, {
         isOpenModal: true,
         modalData: {
@@ -69,8 +67,6 @@ router.beforeEach(async (to, from, next) => {
         }
       });
     }
-    // const sections = store.state.project.project?.sections;
-    // const emptySections = sections.filter(item => item.sheets?.length === 0)
   } else {
     next();
   }
