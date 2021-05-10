@@ -2,7 +2,7 @@
   <v-card-title class="pp-modal-title">
     <span class="top-bg" />
     <span class="text-size-xl text-title">{{ title }}</span>
-    <v-icon class="icon-close" @click="onCloseModal">
+    <v-icon v-show="showIconClose" class="icon-close" @click="onCloseModal">
       mdi-close
     </v-icon>
   </v-card-title>

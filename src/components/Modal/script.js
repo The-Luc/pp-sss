@@ -14,7 +14,7 @@ export default {
     },
     showIconClose: {
       type: Boolean,
-      default: false
+      default: true
     },
     width: {
       type: String,
