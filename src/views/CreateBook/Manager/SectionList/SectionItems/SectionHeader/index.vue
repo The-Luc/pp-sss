@@ -1,9 +1,11 @@
 <template>
   <v-row>
     <v-col
+      :id="`section-${section.id}`"
       class="section-header"
       data-toggle="collapse"
       :data-target="section.id"
+      v-on:click="toggleDetail"
     >
       <v-row>
         <SectionName

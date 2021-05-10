@@ -1,3 +1,5 @@
+import { mapMutations } from 'vuex';
+
 const COLLAPSE = 'collapse';
 const EXPAND = 'expand';
 
@@ -7,13 +9,14 @@ export default {
       isCollapse: true
     };
   },
-  mounted: function() {
+  mounted: function () {
     this.$root.$on('tooglesection', () => {
       this.toggleEcButton();
     });
   },
   methods: {
-    toggleDetail: function(ev) {
+    ...mapMutations('project', ['addSection']),
+    toggleDetail: function (ev) {
       const button = ev.target.closest('#btn-ec-all');
       const collapse = button.getAttribute('data-toggle');
 
@@ -25,7 +28,7 @@ export default {
 
       this.isCollapse = collapse !== COLLAPSE;
     },
-    toggleEcButton: function() {
+    toggleEcButton: function () {
       const sectionCollaps = document.querySelectorAll(
         '.section-header:not([data-toggle="' + EXPAND + '"])'
       );
@@ -36,9 +39,8 @@ export default {
         .getElementById('btn-ec-all')
         .setAttribute('data-toggle', this.isCollapse ? COLLAPSE : EXPAND);
     },
-
-    addSection() {
-      console.log(1);
+    onAddSection() {
+      this.addSection();
     }
   }
 };
