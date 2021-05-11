@@ -58,24 +58,16 @@ router.beforeEach(async (to, from, next) => {
     const sections = store.state.project.project?.sections;
     const emptySections = sections.filter(item => item.sheets?.length === 0);
     if (emptySections.length !== 0) {
-      if (from.path === '/edit/manager') {
-        store.commit(MUTATES.TOGGLE_MODAL, {
-          isOpenModal: true,
-          modalData: {
-            type: MODAL_TYPES.EMPTY_SECTION,
-            props: { sections: emptySections }
-          }
-        });
-      } else {
+      if (from.path !== '/edit/manager') {
         await next();
-        store.commit(MUTATES.TOGGLE_MODAL, {
-          isOpenModal: true,
-          modalData: {
-            type: MODAL_TYPES.EMPTY_SECTION,
-            props: { sections: emptySections }
-          }
-        });
       }
+      store.commit(MUTATES.TOGGLE_MODAL, {
+        isOpenModal: true,
+        modalData: {
+          type: MODAL_TYPES.EMPTY_SECTION,
+          props: { sections: emptySections }
+        }
+      });
     }
   } else {
     next();
