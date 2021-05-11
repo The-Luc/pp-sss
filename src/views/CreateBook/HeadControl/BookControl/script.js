@@ -13,6 +13,7 @@ export default {
       required: true
     }
   },
+
   data() {
     return {
       bookViewType: BOOK_VIEW_TYPE

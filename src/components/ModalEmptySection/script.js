@@ -20,8 +20,11 @@ export default {
       toggleModal: MUTATES.TOGGLE_MODAL
     }),
     onChangeView() {
-       setItem(LOCAL_STORAGE.CURRENT_SCREEN, BOOK_VIEW_TYPE.MANAGER);
-      this.$router.push('/edit/manager');
+      setItem(LOCAL_STORAGE.CURRENT_SCREEN, BOOK_VIEW_TYPE.MANAGER);
+      let currentUrl = this.$router.history.current.fullPath;
+      if (currentUrl !== '/edit/manager') {
+        this.$router.push('/edit/manager');
+      }
       this.toggleModal({
         isOpenModal: false
       });
