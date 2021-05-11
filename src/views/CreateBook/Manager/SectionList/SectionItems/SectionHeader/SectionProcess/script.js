@@ -1,4 +1,5 @@
 import { mapGetters, mapMutations } from 'vuex';
+import moment from 'moment';
 
 import ICON_LOCAL from '@/common/constants/icon';
 import Menu from '@/components/Menu';
@@ -16,9 +17,10 @@ export default {
       isOpen: false,
       menuX: 0,
       menuY: 0,
+      sectionStatus: 0,
       items: [
         { title: 'Status', value: 'Not Started', name: 'status' },
-        { title: 'Due Date', value: '05/21/21', name: 'dueDate' },
+        { title: 'Due Date', value: this.releaseDate, name: 'dueDate' },
         { title: 'Assigned To', value: 'Unassigned', name: 'assigned' }
       ]
     };
@@ -56,6 +58,13 @@ export default {
       this.menuX = x - 70;
       this.menuY = y;
       this.setIsOpenMenu();
+    },
+    onSelectedStatus(status) {
+      this.items[0].value = status.label;
+      this.sectionStatus = status.value;
+    },
+    onSelectedDate(date) {
+      this.items[1].value = moment(date).format('MM/DD/YY');
     }
   }
 };

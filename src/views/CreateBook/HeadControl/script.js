@@ -1,4 +1,4 @@
-import { BOOK_VIEW_TYPE, LOCAL_STORAGE } from '@/common/constants';
+import { CURRENT_SCREEN, LOCAL_STORAGE } from '@/common/constants';
 import BookInformation from './BookInformation';
 import BookControl from './BookControl';
 import BookNumber from './BookNumber';
@@ -13,8 +13,11 @@ export default {
   data() {
     return {
       currentView:
-        getItem(LOCAL_STORAGE.CURRENT_SCREEN) || BOOK_VIEW_TYPE.MANAGER
+        getItem(LOCAL_STORAGE.CURRENT_SCREEN) || CURRENT_SCREEN.MANAGER
     };
+  },
+  mounted() {
+    console.log('currentView', this.$router);
   },
   methods: {
     onChangeView(view) {

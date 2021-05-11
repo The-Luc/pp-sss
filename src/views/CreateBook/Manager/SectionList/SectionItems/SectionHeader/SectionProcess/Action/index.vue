@@ -7,6 +7,7 @@
       :menu-x="menuX"
       :menu-y="menuY"
       :is-open="isOpenMenu"
+      :section-status="sectionStatus"
       @onClickOutSideMenu="onClickOutSideMenu"
       @onItemClick="onItemClick"
     />
@@ -19,7 +20,17 @@
       :min-date="minDate"
       :calendar-y="calendarY"
       @onClickOutSideCalendar="onClickOutSideCalendar"
-      @onSelectedDay="onSelectedDay"
+      @onSelectedDate="onSelectedDate"
+    />
+    <SectionStatus
+      v-if="isOpenStatus"
+      :section-status="sectionStatus"
+      :is-open-status="isOpenStatus"
+      :status-width="statusWidth"
+      :status-x="statusX"
+      :status-y="statusY"
+      @onClickOutSideStatus="onClickOutSideStatus"
+      @onSelectedStatus="onSelectedStatus"
     />
   </div>
 </template>

@@ -1,12 +1,13 @@
 const project = {
   name: 'Year Book',
-  releaseDate: '05/21/21',
+  releaseDate: '07/21/21',
   sections: [
     {
       id: '1',
       name: 'Cover',
       fixed: true,
       color: 'blue',
+      releaseDate: '06/09/21',
       sheets: [
         {
           id: 1,
@@ -21,6 +22,7 @@ const project = {
       name: 'Letter',
       fixed: true,
       color: 'pink',
+      releaseDate: '06/10/21',
       sheets: [
         {
           id: 2,
@@ -59,6 +61,7 @@ const project = {
       name: 'Admin & Staff',
       fixed: false,
       color: 'black',
+      releaseDate: '06/11/21',
       sheets: [
         {
           id: 6,
@@ -91,7 +94,7 @@ const project = {
       fixed: false,
       name: 'OOO',
       color: 'orange',
-      releaseDate: '06/08/21',
+      releaseDate: '06/12/21',
       sheets: []
     },
     {
@@ -99,6 +102,7 @@ const project = {
       fixed: true,
       name: 'Signatures',
       color: 'yellow',
+      releaseDate: '06/13/21',
       sheets: [
         {
           id: 11,

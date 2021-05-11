@@ -6,12 +6,21 @@ import ICON_LOCAL from '@/common/constants/icon';
 import Menu from '@/components/Menu';
 import { GETTERS } from '@/store/modules/app/const';
 import Calendar from './Calendar';
+import SectionStatus from './SectionStatus';
 
 export default {
-  props: ['releaseDate', 'menuX', 'menuY', 'items', 'sectionId'],
+  props: [
+    'releaseDate',
+    'menuX',
+    'menuY',
+    'items',
+    'sectionId',
+    'sectionStatus'
+  ],
   components: {
     Menu,
-    Calendar
+    Calendar,
+    SectionStatus
   },
   computed: {
     ...mapGetters({
@@ -22,9 +31,13 @@ export default {
     return {
       isOpenMenu: false,
       isOpenCalendar: false,
+      isOpenStatus: false,
       calendarX: 0,
       calendarY: 0,
       calendarWidth: 600,
+      statusX: 0,
+      statusY: 0,
+      statusWidth: 180,
       minDate: new Date().toISOString().slice(0, 10)
     };
   },
@@ -46,11 +59,14 @@ export default {
   },
   methods: {
     onClickOutSideCalendar() {
-      console.log('onClickOutSideCalendar');
       this.isOpenCalendar = false;
     },
+    onClickOutSideStatus() {
+      console.log('onClickOutSideStatus');
+      this.isOpenStatus = false;
+    },
     onClickOutSideMenu() {
-      if (this.isOpenMenu && !this.isOpenCalendar) {
+      if (this.isOpenMenu && !this.isOpenCalendar && !this.isOpenStatus) {
         console.log('close Menu');
         this.isOpenMenu = false;
       }
@@ -62,10 +78,21 @@ export default {
       this.calendarX = x - (this.calendarWidth + 50);
       this.calendarY = y;
     },
+    openSectionStatus(event) {
+      console.log('openSectionStatus');
+      this.isOpenStatus = true;
+      const parentElement = event.target.parentElement;
+      const { x, y } = parentElement.getBoundingClientRect();
+      this.statusX = x - this.statusWidth;
+      this.statusY = y;
+    },
     onItemClick({ event, item }) {
       switch (item.name) {
         case 'dueDate':
           this.openCalendar(event);
+          break;
+        case 'status':
+          this.openSectionStatus(event);
           break;
         default:
           break;
@@ -78,9 +105,17 @@ export default {
         this.isOpenMenu = false;
       }
     },
-    onSelectedDay(value) {
-      console.log('onSelectedDay', value);
-      this.isOpenCalendar = false;
+    onSelectedDate(date) {
+      this.$emit('onSelectedDate', date);
+      setTimeout(() => {
+        this.isOpenCalendar = false;
+      }, 0);
+    },
+    onSelectedStatus(status) {
+      this.$emit('onSelectedStatus', status);
+      setTimeout(() => {
+        this.isOpenStatus = false;
+      }, 0);
     }
   }
 };

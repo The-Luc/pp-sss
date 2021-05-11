@@ -1,9 +1,14 @@
+import { mapGetters } from 'vuex';
 import moment from 'moment';
 
-const dueDate = '09/15/22';
+import project from '@/mock/project';
+import { GETTERS } from '@/store/modules/app/const';
+
+const dueDate = project.releaseDate;
+const daysOfWeek = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
 export default {
   props: {
-    releaseDate: {
+    date: {
       type: String
     },
     calendarX: {
@@ -32,8 +37,14 @@ export default {
       monthSelected: ''
     };
   },
+  computed: {
+    ...mapGetters({
+      sectionSelected: GETTERS.SECTION_SELECTED
+    })
+  },
   mounted() {
-    const [year, month, day] = moment(this.releaseDate)
+    console.log('date', this.date);
+    const [year, month, day] = moment(this.date)
       .format('YYYY-MM-DD')
       .split('-');
     this.monthRelease = month;
@@ -44,6 +55,11 @@ export default {
     this.dueDateData = moment(dueDate).format('YYYY-MM-DD');
   },
   methods: {
+    /**
+     * Base on year and month value to set dateSelected
+     * @param  {Number} year The year value
+     * @param  {Number} month The month value
+     */
     setDateSelect(year, month) {
       if (year === this.yearRelease && month === this.monthRelease) {
         this.dateSelected = `${year}-${month}-${this.dayRelease}`;
@@ -59,13 +75,21 @@ export default {
       this.monthSelected = `${this.yearRelease}-${this.monthRelease}`;
       this.dateSelected = `${this.yearRelease}-${this.monthRelease}-${this.dayRelease}`;
     },
-    onSelectedDay(value) {
-      this.$emit('onSelectedDay', value);
+    onSelectedDate(value) {
+      const currentSection = project.sections.find(
+        section => section.id === this.sectionSelected
+      );
+      currentSection.releaseDate = moment(value).format('MM/DD/YY');
+      this.$emit('onSelectedDate', value);
     },
     onClickOutSideCalendar() {
       if (this.isOpenCalendar) {
         this.$emit('onClickOutSideCalendar');
       }
+    },
+    getDay(date) {
+      let i = new Date(date).getDay(date);
+      return daysOfWeek[i];
     }
   }
 };

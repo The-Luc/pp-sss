@@ -11,13 +11,14 @@
       <v-col cols="5">
         <v-date-picker
           :value="dateSelected"
+          :weekday-format="getDay"
           :picker-date.sync="dateSelected"
           class="pp-calendar-date-picker"
           no-title
           :min="minDate"
           :max="dueDateData"
           scrollable
-          @change="onSelectedDay"
+          @change="onSelectedDate"
         />
       </v-col>
       <v-col cols="1">
