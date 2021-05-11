@@ -1,9 +1,13 @@
 <template>
-  <v-row class="section-detail-container" data-toggle="collapse" :data-id="sectionId">
+  <v-row
+    class="section-detail-container"
+    data-toggle="collapse"
+    :data-id="sectionId"
+  >
     <v-col class="section-details-wrapper">
       <draggable
-        class="section-details"
         v-model="sheets"
+        class="section-details"
         group="sheet"
         :move="onMove"
         @start="drag = true"
@@ -29,6 +33,4 @@
 
 <script src="./script.js"></script>
 
-<style lang="scss">
-@import './style.scss';
-</style>
+<style lang="scss" src="./style.scss"></style>

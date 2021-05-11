@@ -3,7 +3,7 @@
 p,
 .container,
 .row,
-.row+.row,
+.row + .row,
 .col {
   @extend %no-padding-margin;
 }
@@ -21,6 +21,10 @@ img {
 
 .hide {
   display: none !important;
+}
+
+.invisible {
+  visibility: hidden !important;
 }
 
 html,

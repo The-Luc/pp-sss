@@ -11,7 +11,7 @@ const project = {
         {
           id: 1,
           type: 'full',
-          fixed: true,
+          fixed: 'both',
           name: 'A'
         }
       ]
@@ -25,31 +25,31 @@ const project = {
         {
           id: 2,
           type: 'half',
-          fixed: true,
+          fixed: 'first',
           name: 'B'
         },
         {
           id: 3,
           type: 'full',
-          fixed: false,
+          fixed: null,
           name: 'C'
         },
         {
           id: 4,
           type: 'full',
-          fixed: false,
+          fixed: null,
           name: 'D'
         },
         {
           id: 5,
           type: 'full',
-          fixed: false,
+          fixed: null,
           name: 'E'
         },
         {
           id: 20,
           type: 'full',
-          fixed: false,
+          fixed: null,
           name: 'F'
         }
       ]
@@ -63,25 +63,25 @@ const project = {
         {
           id: 6,
           type: 'full',
-          fixed: false,
+          fixed: null,
           name: 'G'
         },
         {
           id: 7,
           type: 'full',
-          fixed: false,
+          fixed: null,
           name: 'H'
         },
         {
           id: 8,
           type: 'full',
-          fixed: false,
+          fixed: null,
           name: 'I'
         },
         {
           id: 9,
           type: 'full',
-          fixed: false,
+          fixed: null,
           name: 'J'
         }
       ]
@@ -91,8 +91,7 @@ const project = {
       fixed: false,
       name: 'OOO',
       color: 'orange',
-      sheets: [
-      ]
+      sheets: []
     },
     {
       id: '54',
@@ -103,7 +102,7 @@ const project = {
         {
           id: 11,
           type: 'half',
-          fixed: true
+          fixed: 'last'
         }
       ]
     }
