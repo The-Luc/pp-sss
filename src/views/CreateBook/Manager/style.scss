@@ -5,13 +5,16 @@
 $padding: 20px;
 $padding-small: 15px;
 
-$width-summary: 280px;
+$width-summary-view: 280px + $width-scroll;
+$width-summary: $width-summary-view + $margin-scroll;
 $width-summary-collapse: 30px;
 $height-header: 135px;
 
 %panel-default-setting {
   height: 100%;
   max-height: calc(100vh - #{$height-header});
+  padding: $padding;
+  overflow-x: auto;
 }
 
 .manager-main {
@@ -24,8 +27,6 @@ $height-header: 135px;
   background-color: #f4f4f4;
 
   .manager-section-list {
-    @extend %panel-default-setting;
-
     width: calc(100% - #{$width-summary});
     max-width: calc(100% - #{$width-summary});
     padding: $padding $padding-small $padding 49px;
@@ -34,16 +35,31 @@ $height-header: 135px;
       width: calc(100% - #{$width-summary-collapse});
       max-width: calc(100% - #{$width-summary-collapse});
     }
+
+    .scroll-container {
+      @extend %panel-default-setting;
+
+      padding: 20px 15px 20px 37px;
+    }
   }
 
   .manager-summary {
-    @extend %panel-default-setting;
-
     width: $width-summary;
     padding: $padding 25px $padding $padding-small;
 
     &.collapse {
       width: $width-summary-collapse;
+
+      .scroll-container {
+        padding-left: 10px;
+      }
+    }
+
+    .scroll-container {
+      @extend %panel-default-setting;
+
+      width: $width-summary-view;
+      padding-left: 15px;
     }
   }
 }

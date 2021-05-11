@@ -1,4 +1,5 @@
 @import './_extend';
+@import './variables';
 
 p,
 .container,
@@ -32,4 +33,29 @@ body,
 .container {
   height: 100%;
   overflow: hidden;
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: $width-scroll;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  box-shadow: 0 0 $margin-scroll transparent;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: $color-darkblue;
+  border-radius: $margin-scroll;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: $color-darkblue;
+}
+
+.scroll-container {
+  margin-right: $margin-scroll;
 }
