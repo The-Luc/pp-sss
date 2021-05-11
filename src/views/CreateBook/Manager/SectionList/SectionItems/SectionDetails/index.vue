@@ -2,8 +2,8 @@
   <v-row class="section-detail-container" data-toggle="collapse" :data-id="sectionId">
     <v-col class="section-details-wrapper">
       <draggable
-        v-model="sheets"
         class="section-details"
+        v-model="sheets"
         group="sheet"
         :move="onMove"
         @start="drag = true"
@@ -15,6 +15,7 @@
               :class="sheet.type == 'half' ? 'vertical' : 'horizontal'"
             ></v-col>
           </v-row>
+
           <v-row>
             <v-col class="sheet-name"
               >{{ startSeq + index }}{{ sheet.name }}</v-col
