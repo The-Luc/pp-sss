@@ -3,7 +3,7 @@ import draggable from 'vuedraggable';
 
 import Header from './SectionHeader';
 import Details from './SectionDetails';
-import Indicator from './SectionIndicator';
+import DragDropIndicator from '@/components/DragDropIndicator';
 
 let selectedIndex = -1;
 let moveToIndex = -1;
@@ -12,7 +12,7 @@ export default {
   components: {
     Header,
     Details,
-    Indicator,
+    DragDropIndicator,
     draggable
   },
   data() {
@@ -32,7 +32,7 @@ export default {
         : evt.oldIndex;
     },
     onMove: function(evt) {
-      this.clearAllIndicator();
+      this.hideAllIndicator();
 
       if (selectedIndex < 0) {
         return false;
@@ -59,15 +59,15 @@ export default {
       }
 
       if (moveToIndex < selectedIndex) {
-        evt.related.classList.add('move-to-top');
+        this.$root.$emit('showIndicator', 'section-top-' + relateSection.id);
       } else if (moveToIndex > selectedIndex) {
-        evt.related.classList.add('move-to-bottom');
+        this.$root.$emit('showIndicator', 'section-bottom-' + relateSection.id);
       }
 
       return false;
     },
     onEnd: function() {
-      this.clearAllIndicator();
+      this.hideAllIndicator();
 
       if (
         selectedIndex < 0 ||
@@ -94,15 +94,8 @@ export default {
       selectedIndex = -1;
       moveToIndex = -1;
     },
-    clearAllIndicator: function() {
-      const moveToElements = document.querySelectorAll(
-        '.move-to-top, .move-to-bottom'
-      );
-
-      moveToElements.forEach(e => {
-        e.classList.remove('move-to-top');
-        e.classList.remove('move-to-bottom');
-      });
+    hideAllIndicator: function() {
+      this.$root.$emit('hideIndicator');
     },
     getTotalSheetUntilLastSection: function(index) {
       if (index === 0) {

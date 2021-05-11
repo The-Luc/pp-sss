@@ -6,6 +6,16 @@
   .manager-section-list {
     .section-item {
       margin-bottom: 10px;
+
+      .indicator-top {
+        margin-top: -6px;
+        margin-bottom: 4px;
+      }
+
+      .indicator-bottom {
+        margin-top: 4px;
+        margin-bottom: -6px;
+      }
     }
   }
 }

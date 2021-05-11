@@ -14,14 +14,20 @@
         class="section-item"
       >
         <v-col>
-          <Indicator :is-top="true" />
+          <DragDropIndicator
+            :id="'section-top-' + section.id"
+            custom-class-name="indicator-top"
+          />
           <Header :section="section" :release-date="project.releaseDate" />
           <Details
             :sheets="section.sheets"
             :section-id="section.id"
             :start-seq="getStartSeq(index)"
           />
-          <Indicator />
+          <DragDropIndicator
+            :id="'section-bottom-' + section.id"
+            custom-class-name="indicator-bottom"
+          />
         </v-col>
       </v-row>
     </draggable>
