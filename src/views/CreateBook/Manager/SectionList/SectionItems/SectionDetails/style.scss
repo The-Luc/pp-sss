@@ -31,7 +31,6 @@ $detail-padding: 30px;
           width: $box-width;
           float: left;
           margin: $detail-padding $detail-padding 0 $detail-padding;
-          position: relative;
 
           .vertical {
             width: $box-vertical-width;
@@ -52,21 +51,62 @@ $detail-padding: 30px;
             text-align: center;
           }
 
-          .horizontal {
-            img {
+          .horizontal,
+          .vertical {
+            position: relative;
+            .menu {
+              display: flex;
               position: absolute;
-              top: 4px;
-              right: 4px;
-              width: 18px;
-              height: 18px;
-              cursor: pointer;
-              display: none;
-            }
-            &:hover {
-              img {
-                display: block;
+              top: 3px;
+              left: calc(100% - 102px);
+              flex-direction: column;
+              align-items: center;
+              z-index: 2;
+              width: 178px;
+              .menu-icon {
+                width: 18px;
+                height: 18px;
+              }
+              .menu-detail {
+                padding: 10px;
+                border-radius: 4px;
+                width: 100%;
+                background-color: #fff;
+                box-shadow: 0 0 8px 2px rgba(0, 0, 0, 0.25);
+                margin-top: 16px;
+                position: relative;
+                .menu-item {
+                  width: 100%;
+                  border-bottom: 0.5px solid #8c8c8c;
+                  .arrow-down {
+                    width: 10px;
+                    margin: 0 5px 0 1px;
+                  }
+                }
+                .menu-button {
+                  padding: 0;
+                }
+                &::before {
+                  position: absolute;
+                  content: "";
+                  top: 0;
+                  left: 50%;
+                  transform: translateX(-50%);
+                  transform: translate(-50%, -100%);
+                  width: 4px;
+                  height: 13px;
+                  border-left: 7px solid transparent;
+                  border-right: 7px solid transparent;
+                  border-bottom: 13px solid #fff;
+                }
               }
             }
+
+            // &:hover {
+            //   .menu {
+            //     display: flex;
+            //   }
+            // }
           }
         }
       }

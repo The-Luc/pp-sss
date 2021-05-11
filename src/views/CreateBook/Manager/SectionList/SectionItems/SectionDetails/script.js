@@ -14,7 +14,15 @@ export default {
       items: [
         { title: 'Move To', value: 'Choose a Section' }
       ],
-      moreIcon : ICON_LOCAL.MORE_ICON
+      isShowMenu: false,
+      currentSheetId: '',
+      moreIcon: ICON_LOCAL.MORE_ICON,
+      arrowDown: ICON_LOCAL.ARROW_DOWN,
+      isOpenMenu: false
+      // config: {
+      //   handler: this.test3,
+      //   events: ["dblclick", "click"]
+      // }
     };
   },
   components: {
@@ -66,6 +74,24 @@ export default {
           props: { idSheet, idSection }
         }
       });
+    },
+    onCheckIsShowMenu(id) {
+      return this.currentSheetId == id;
+    },
+    setCurrentSheetId(id = '') {
+      if (!this.isShowMenu) {
+        this.currentSheetId = id;
+      }
+    },
+    onChangeStatusMenuDetail() {
+      this.isShowMenu = !this.isShowMenu
+    },
+    onCloseMenu() {
+      this.isShowMenu = false;
+      this.setCurrentSheetId();
+    },
+    onCheckIsShowMenuDetail(id) {
+      return (this.isShowMenu && this.currentSheetId == id);
     }
   }
 };
