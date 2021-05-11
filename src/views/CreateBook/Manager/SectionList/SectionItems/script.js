@@ -21,21 +21,15 @@ export default {
     };
   },
   computed: {
-    ...mapState('project', ['project']),
-    dragOptions() {
-      return {
-        animation: 200,
-        group: 'description',
-        disabled: false,
-        ghostClass: 'ghost'
-      };
-    }
+    ...mapState('project', ['project'])
   },
   methods: {
     onChoose: function(evt) {
       moveToIndex = -1;
 
-      selectedIndex = this.project.sections[evt.oldIndex].fixed ? -1 : evt.oldIndex;
+      selectedIndex = this.project.sections[evt.oldIndex].fixed
+        ? -1
+        : evt.oldIndex;
     },
     onMove: function(evt) {
       this.clearAllIndicator();
@@ -43,7 +37,7 @@ export default {
       if (selectedIndex < 0) {
         return false;
       }
-      
+
       if (evt.related === null) {
         return false;
       }
@@ -66,8 +60,7 @@ export default {
 
       if (moveToIndex < selectedIndex) {
         evt.related.classList.add('move-to-top');
-      }
-      else if (moveToIndex > selectedIndex) {
+      } else if (moveToIndex > selectedIndex) {
         evt.related.classList.add('move-to-bottom');
       }
 
@@ -76,7 +69,11 @@ export default {
     onEnd: function() {
       this.clearAllIndicator();
 
-      if (selectedIndex < 0 || moveToIndex < 0 || selectedIndex === moveToIndex) {
+      if (
+        selectedIndex < 0 ||
+        moveToIndex < 0 ||
+        selectedIndex === moveToIndex
+      ) {
         return;
       }
 
@@ -93,12 +90,14 @@ export default {
       }
 
       this.project.sections = _items;
-      
+
       selectedIndex = -1;
       moveToIndex = -1;
     },
     clearAllIndicator: function() {
-      const moveToElements = document.querySelectorAll('.move-to-top, .move-to-bottom');
+      const moveToElements = document.querySelectorAll(
+        '.move-to-top, .move-to-bottom'
+      );
 
       moveToElements.forEach(e => {
         e.classList.remove('move-to-top');

@@ -21,12 +21,11 @@ export default {
         sectionHeader.getAttribute('data-toggle') === COLLAPSE
       );
 
-      sectionHeader.setAttribute(
-        'data-toggle',
-        isCollapse ? COLLAPSE : EXPAND
-      );
+      sectionHeader.setAttribute('data-toggle', isCollapse ? COLLAPSE : EXPAND);
 
-      const img = sectionHeader.querySelector('.section-name').querySelector('img');
+      const img = sectionHeader
+        .querySelector('.section-name')
+        .querySelector('img');
 
       img.setAttribute('data-toggle', isCollapse ? COLLAPSE : EXPAND);
 
@@ -44,7 +43,9 @@ export default {
         return;
       }
 
-      sectionHeader.querySelector('.drag-control').classList.remove('invisible');
+      sectionHeader
+        .querySelector('.drag-control')
+        .classList.remove('invisible');
     },
     hideDragControl: function(evt) {
       const sectionHeader = evt.target.closest('.section-header');

@@ -5,20 +5,20 @@
       data-toggle="collapse"
       :data-fixed="section.fixed"
       :data-target="section.id"
-      v-on:click="toggleDetail"
-      v-on:mouseover="showDragControl"
-      v-on:mouseleave="hideDragControl"
+      @click="toggleDetail"
+      @mouseover="showDragControl"
+      @mouseleave="hideDragControl"
     >
       <v-row>
         <SectionName
-          :sectionId="section.id"
-          :sectionName="section.name"
-          :sectionColor="section.color"
+          :section-id="section.id"
+          :section-name="section.name"
+          :section-color="section.color"
         />
         <SectionProcess
-          :sectionId="section.id"
-          :color="section.color"
-          :releaseDate="releaseDate"
+          :section-id="section.id"
+          :section-color="section.color"
+          :release-date="releaseDate"
         />
       </v-row>
     </v-col>
