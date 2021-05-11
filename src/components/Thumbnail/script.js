@@ -1,6 +1,5 @@
 export default {
   props: {
-    section: Object,
     sheet: Object
   },
   computed: {
