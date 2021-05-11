@@ -29,7 +29,6 @@ $height-header: 135px;
   .manager-section-list {
     width: calc(100% - #{$width-summary});
     max-width: calc(100% - #{$width-summary});
-    padding: $padding $padding-small $padding 49px;
 
     &.collapse {
       width: calc(100% - #{$width-summary-collapse});
@@ -39,13 +38,12 @@ $height-header: 135px;
     .scroll-container {
       @extend %panel-default-setting;
 
-      padding: 20px 15px 20px 37px;
+      padding: $padding $padding-small $padding 49px;
     }
   }
 
   .manager-summary {
     width: $width-summary;
-    padding: $padding 25px $padding $padding-small;
 
     &.collapse {
       width: $width-summary-collapse;
@@ -59,7 +57,7 @@ $height-header: 135px;
       @extend %panel-default-setting;
 
       width: $width-summary-view;
-      padding-left: 15px;
+      padding: $padding 25px $padding $padding-small;
     }
   }
 }
