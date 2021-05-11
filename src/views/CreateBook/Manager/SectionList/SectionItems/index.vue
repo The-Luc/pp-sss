@@ -14,12 +14,12 @@
         class="section-item"
       >
         <v-col>
-          <Indicator :isTop="true" />
-          <Header :section="section" :releaseDate="project.releaseDate" />
+          <Indicator :is-top="true" />
+          <Header :section="section" :release-date="project.releaseDate" />
           <Details
             :sheets="section.sheets"
-            :sectionId="section.id"
-            :startSeq="getStartSeq(index)"
+            :section-id="section.id"
+            :start-seq="getStartSeq(index)"
           />
           <Indicator />
         </v-col>

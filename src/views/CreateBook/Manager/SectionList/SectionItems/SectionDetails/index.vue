@@ -6,9 +6,9 @@
   >
     <v-col class="section-details-wrapper">
       <draggable
-        class="section-details"
         v-model="sheets"
         v-bind="dragOptions"
+        class="section-details"
         group="sheet"
         :move="onMove"
         @start="drag = true"
