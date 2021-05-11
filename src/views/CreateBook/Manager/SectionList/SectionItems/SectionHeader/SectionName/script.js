@@ -1,8 +1,8 @@
-import DragControl from '@/components/DragControl';
+import DragDropControl from '@/components/DragDropControl';
 
 export default {
   components: {
-    DragControl
+    DragDropControl
   },
   props: {
     sectionId: {
