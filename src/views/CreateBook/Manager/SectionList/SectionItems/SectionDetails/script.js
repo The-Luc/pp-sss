@@ -9,11 +9,6 @@ export default {
     sectionId: String,
     startSeq: Number
   },
-  data() {
-    return {
-      drag: false
-    };
-  },
   computed: {
     ...mapState('project', ['project']),
     sheets: {
@@ -30,14 +25,6 @@ export default {
           sheets: newSheets
         });
       }
-    },
-    dragOptions() {
-      return {
-        animation: 200,
-        group: 'description',
-        disabled: false,
-        ghostClass: 'ghost'
-      };
     }
   },
   methods: {
