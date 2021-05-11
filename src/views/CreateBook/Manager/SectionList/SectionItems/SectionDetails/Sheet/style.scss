@@ -1,0 +1,41 @@
+@charset "utf-8";
+
+@import '@/scss/variables';
+
+$border-album: 1px $color-gray2 solid;
+$box-height: 140px;
+$box-vertical-width: 109px;
+
+.manager-main {
+  .manager-section-list {
+    .section-details-wrapper {
+      .section-details {
+        .sheet-box {
+          width: $length-sheet;
+          float: left;
+          margin: $length-sheet-padding;
+          margin-bottom: 0;
+
+          .vertical {
+            width: $box-vertical-width;
+            max-width: $box-vertical-width;
+            height: $box-height;
+            margin: auto;
+            border: $border-album;
+          }
+
+          .horizontal {
+            width: 100%;
+            height: $box-height;
+            border: $border-album;
+          }
+
+          .sheet-name {
+            margin-top: 10px;
+            text-align: center;
+          }
+        }
+      }
+    }
+  }
+}

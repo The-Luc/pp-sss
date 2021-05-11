@@ -4,6 +4,7 @@
       class="section-header"
       data-toggle="collapse"
       :data-target="section.id"
+      @click="toggleDetail"
     >
       <v-row>
         <SectionName

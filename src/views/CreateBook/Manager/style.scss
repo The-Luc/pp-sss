@@ -3,6 +3,7 @@
 @import '@/scss/variables';
 
 $padding: 20px;
+$padding-small: 15px;
 
 $width-summary: 280px;
 $width-summary-collapse: 30px;
@@ -11,7 +12,6 @@ $height-header: 135px;
 %panel-default-setting {
   height: 100%;
   max-height: calc(100vh - #{$height-header});
-  padding: $padding;
 }
 
 .manager-main {
@@ -28,6 +28,7 @@ $height-header: 135px;
 
     width: calc(100% - #{$width-summary});
     max-width: calc(100% - #{$width-summary});
+    padding: $padding $padding-small $padding 49px;
 
     &.collapse {
       width: calc(100% - #{$width-summary-collapse});
@@ -39,6 +40,7 @@ $height-header: 135px;
     @extend %panel-default-setting;
 
     width: $width-summary;
+    padding: $padding 25px $padding $padding-small;
 
     &.collapse {
       width: $width-summary-collapse;

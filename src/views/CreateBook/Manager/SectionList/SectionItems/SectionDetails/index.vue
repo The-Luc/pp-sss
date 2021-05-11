@@ -13,19 +13,13 @@
         @start="drag = true"
         @end="drag = false"
       >
-        <div v-for="(sheet, index) in sheets" :key="sheet.id" class="sheet-box">
-          <v-row>
-            <v-col
-              :class="sheet.type == 'half' ? 'vertical' : 'horizontal'"
-            ></v-col>
-          </v-row>
-
-          <v-row>
-            <v-col class="sheet-name"
-              >{{ startSeq + index }}{{ sheet.name }}</v-col
-            >
-          </v-row>
-        </div>
+        <Sheet
+          v-for="(sheet, index) in sheets"
+          :key="sheet.id"
+          :sequence="startSeq + index"
+          :sheet-name="sheet.name"
+          :sheet-type="sheet.type"
+        ></Sheet>
       </draggable>
     </v-col>
   </v-row>

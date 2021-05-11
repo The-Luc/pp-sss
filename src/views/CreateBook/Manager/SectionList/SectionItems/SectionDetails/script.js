@@ -1,9 +1,12 @@
 import { mapState, mapMutations } from 'vuex';
 import draggable from 'vuedraggable';
 
+import Sheet from './Sheet';
+
 export default {
   components: {
-    draggable
+    draggable,
+    Sheet
   },
   props: {
     sectionId: String,
