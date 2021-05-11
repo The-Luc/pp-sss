@@ -4,19 +4,6 @@
   </div>
 </template>
 
-<script>
-export default {
-  data() {
-    return {
-      bookName: "SMS Yearbook 2021"
-    };
-  },
-  methods: {
-    onBlur() {
-      console.log(this.bookName);
-    }
-  }
-};
-</script>
+<script src="./script.js" />
 
 <style lang="scss" src="./style.scss" />

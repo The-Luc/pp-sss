@@ -1,3 +1,9 @@
 export const state = {
-  isDialog: false
+  modal: {
+    isOpen: false,
+    data: {
+      type: '',
+      props: {}
+    }
+  }
 };

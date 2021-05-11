@@ -7,6 +7,8 @@ import router from './router';
 import store from './store';
 import vuetify from './plugins/vuetity';
 
+import './scss/_index.scss';
+
 Vue.prototype.axios = axios;
 
 Vue.config.productionTip = false;
