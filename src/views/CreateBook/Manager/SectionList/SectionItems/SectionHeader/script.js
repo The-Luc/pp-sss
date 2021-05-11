@@ -43,14 +43,10 @@ export default {
         return;
       }
 
-      sectionHeader
-        .querySelector('.drag-control')
-        .classList.remove('invisible');
+      this.$root.$emit('showDragControl', 'section' + this.section.id);
     },
-    hideDragControl: function(evt) {
-      const sectionHeader = evt.target.closest('.section-header');
-
-      sectionHeader.querySelector('.drag-control').classList.add('invisible');
+    hideDragControl: function() {
+      this.$root.$emit('hideDragControl');
     }
   }
 };

@@ -13,22 +13,7 @@ $margin-right: 8px;
         align-items: center;
 
         .drag-control {
-          display: flex;
           margin-right: $margin-right;
-
-          div {
-            display: flex;
-            flex-direction: column;
-
-            span {
-              display: inline-block;
-              height: 5px;
-              width: 5px;
-              margin: 1px;
-              background-color: $color-gray;
-              border-radius: 50%;
-            }
-          }
         }
   
         .dot {
