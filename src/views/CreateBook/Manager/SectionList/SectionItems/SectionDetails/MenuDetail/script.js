@@ -1,18 +1,31 @@
-import Item from './item';
+import { mapGetters } from 'vuex';
+import MoveSheet from './MoveSheet';
 
 export default {
   components: {
-    Item
+    MoveSheet
   },
   data() {
     return {
       isShow: false
     }
   },
-  method: {
-    onChangeMenuSheet() {
-      console.log(1);
-      // this.isShow = !this.isShow
+  props: {
+    sectionId: String
+  },
+  computed: {
+    ...mapGetters('book', [
+      'getSections',
+    ]),
+    sections() {
+      return this.getSections.filter(item => {
+        return item.order !== 0 && item.id != this.sectionId;
+      })
+    }
+  },
+  methods: {
+    onChangeMenuMove() {
+      this.isShow = !this.isShow
     }
   }
 };

@@ -9,6 +9,18 @@ export default {
     value: {
       type: String,
       default: ''
+    },
+    isShow: {
+      type: Boolean,
+      default: false
+    },
+    sections: {
+      type: Array
+    }
+  },
+  methods: {
+    onChangeStatus() {
+      this.$emit('onChangeStatus');
     }
   },
   created() {

@@ -30,6 +30,7 @@
                 <MenuDetail
                   v-if="onCheckIsShowMenuDetail(sheet.id)"
                   v-click-outside="onCloseMenu"
+                  :sectionId="sectionId"
                 >
                   <ButtonDelete
                     title="Delete This Sheet"

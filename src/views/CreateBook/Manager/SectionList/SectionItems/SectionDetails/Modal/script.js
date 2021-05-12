@@ -18,7 +18,7 @@ export default {
     },
   },
   methods: {
-    ...mapMutations('project', ['deleteSheet']),
+    ...mapMutations('book', ['deleteSheet']),
     ...mapMutations({
       toggleModal: MUTATES.TOGGLE_MODAL,
 
@@ -30,7 +30,7 @@ export default {
       });
     },
     onDeleteSheet(idSheet, idSection) {
-      this.deleteSheet({idSheet, idSection});
+      this.deleteSheet({ idSheet, idSection });
       this.onCloseModal();
     }
   }

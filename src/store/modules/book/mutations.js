@@ -7,5 +7,12 @@ export const mutations = {
         break;
       }
     }
-  }
+  },
+  deleteSheet(state, payload) {
+    const { idSheet, idSection } = payload;
+    const sectionIndex = state.book.sections.findIndex(item => {
+      return item.id === idSection;
+    });
+    state.book.sections[sectionIndex].sheets = state.book.sections[sectionIndex].sheets.filter(item => item.id !== idSheet);
+  },
 };

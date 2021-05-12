@@ -1,58 +1,13 @@
 <template>
   <div class="menu-detail">
-    <Item
+    <MoveSheet
       title="Move To"
       value="Choose a Section"
-      @click.native="isShow = !isShow"
+      :isShow="isShow"
+      :sections="sections"
+      @onChangeStatus="onChangeMenuMove"
     >
-      <div v-if="isShow" class="menu-move-sheet">
-        <div class="menu-move-sheet-item">
-          <div
-            class="menu-move-sheet-color"
-            :style="{ 'background-color': 'red' }"
-          ></div>
-          <div class="text-500 menu-move-sheet-title">
-            Administration & Staff
-          </div>
-        </div>
-        <div class="menu-move-sheet-item">
-          <div
-            class="menu-move-sheet-color"
-            :style="{ 'background-color': 'red' }"
-          ></div>
-          <div class="text-500 menu-move-sheet-title">
-            Administration & Staff
-          </div>
-        </div>
-        <div class="menu-move-sheet-item">
-          <div
-            class="menu-move-sheet-color"
-            :style="{ 'background-color': 'red' }"
-          ></div>
-          <div class="text-500 menu-move-sheet-title">
-            Administration & Staff
-          </div>
-        </div>
-        <div class="menu-move-sheet-item">
-          <div
-            class="menu-move-sheet-color"
-            :style="{ 'background-color': 'red' }"
-          ></div>
-          <div class="text-500 menu-move-sheet-title">
-            Administration & Staff
-          </div>
-        </div>
-        <div class="menu-move-sheet-item">
-          <div
-            class="menu-move-sheet-color"
-            :style="{ 'background-color': 'red' }"
-          ></div>
-          <div class="text-500 menu-move-sheet-title">
-            Administration & Staff
-          </div>
-        </div>
-      </div>
-    </Item>
+    </MoveSheet>
     <slot />
   </div>
 </template>
