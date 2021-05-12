@@ -1,13 +1,29 @@
 <template>
-  <div class="sheet-box">
+  <v-col class="sheet-box">
     <v-row>
-      <v-col :class="sheetType == 'half' ? 'vertical' : 'horizontal'"></v-col>
-    </v-row>
+      <DragDropIndicator
+        :id="'sheet-left-' + sheetId"
+        custom-class-name="indicator-left"
+      />
 
-    <v-row>
-      <v-col class="sheet-name"> {{ sequence }}{{ sheetId }} </v-col>
+      <v-col>
+        <v-row>
+          <v-col
+            :class="sheetType == 'half' ? 'vertical' : 'horizontal'"
+          ></v-col>
+        </v-row>
+
+        <v-row>
+          <v-col class="sheet-name"> {{ sequence }}{{ sheetId }} </v-col>
+        </v-row>
+      </v-col>
+
+      <DragDropIndicator
+        :id="'sheet-right-' + sheetId"
+        custom-class-name="indicator-right"
+      />
     </v-row>
-  </div>
+  </v-col>
 </template>
 
 <script src="./script.js"></script>

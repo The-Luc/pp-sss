@@ -10,8 +10,23 @@ $box-vertical-width: 109px;
   .manager-section-list {
     .section-details-wrapper {
       .section-details {
+        .indicator {
+          height: 140px;
+
+          &.indicator-left {
+            margin-left: -40px;
+            margin-right: 38px;
+          }
+
+          &.indicator-right {
+            margin-left: 38px;
+            margin-right: -40px;
+          }
+        }
+
         .sheet-box {
-          width: $length-sheet;
+          flex-basis: $length-sheet;
+          flex-grow: 0;
           float: left;
           margin: $length-sheet-padding;
           margin-bottom: 0;

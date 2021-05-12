@@ -1,4 +1,9 @@
+import DragDropIndicator from '@/components/DragDropIndicatorVertical';
+
 export default {
+  components: {
+    DragDropIndicator
+  },
   props: {
     sequence: {
       type: Number,
