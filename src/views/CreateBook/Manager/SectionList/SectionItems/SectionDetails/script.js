@@ -3,7 +3,7 @@ import { mapState, mapMutations } from 'vuex';
 import draggable from 'vuedraggable';
 import { MUTATES } from '@/store/modules/app/const';
 import { MODAL_TYPES } from '@/common/constants';
-import Menu from '@/components/Menu';
+import MenuDetail from './MenuDetail';
 import ButtonDelete from '@/components/Menu/ButtonDelete';
 import ICON_LOCAL from '@/common/constants/icon';
 
@@ -18,15 +18,11 @@ export default {
       moreIcon: ICON_LOCAL.MORE_ICON,
       arrowDown: ICON_LOCAL.ARROW_DOWN,
       isOpenMenu: false
-      // config: {
-      //   handler: this.test3,
-      //   events: ["dblclick", "click"]
-      // }
     };
   },
   components: {
     draggable,
-    Menu,
+    MenuDetail,
     ButtonDelete
   },
   props: {
@@ -74,20 +70,15 @@ export default {
         }
       });
     },
-    // onCheckIsShowMenu(id) {
-    //   return this.currentSheetId == id;
-    // },
     setCurrentSheetId(id = '') {
       this.currentSheetHover = id;
     },
     onChangeStatusMenuDetail(id) {
       if (!this.currentSheetId) {
-        console.log(1);
         this.currentSheetId = this.currentSheetHover;
         this.isShowMenu = !this.isShowMenu;
       } else {
         if (this.currentSheetId == id) {
-          console.log(2);
           this.isShowMenu = !this.isShowMenu;
         } else {
           this.currentSheetId = this.currentSheetHover;
@@ -97,7 +88,6 @@ export default {
     },
     onCloseMenu() {
       if (!this.currentSheetHover) {
-        console.log(4);
         this.isShowMenu = false;
       }
     },

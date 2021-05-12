@@ -75,11 +75,16 @@ $detail-padding: 30px;
                 margin-top: 16px;
                 position: relative;
                 .menu-item {
+                  cursor: pointer;
                   width: 100%;
                   border-bottom: 0.5px solid #8c8c8c;
                   .arrow-down {
                     width: 10px;
                     margin: 0 5px 0 1px;
+                  }
+                  label {
+                    display: block;
+                    margin-bottom: 2px;
                   }
                 }
                 .menu-button {
