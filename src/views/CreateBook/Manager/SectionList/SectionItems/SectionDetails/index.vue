@@ -17,7 +17,7 @@
           v-for="(sheet, index) in sheets"
           :key="sheet.id"
           :sequence="startSeq + index"
-          :sheet-name="sheet.name"
+          :sheet-id="sheet.id"
           :sheet-type="sheet.type"
         ></Sheet>
       </draggable>

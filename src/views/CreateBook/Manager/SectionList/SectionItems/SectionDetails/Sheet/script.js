@@ -4,8 +4,8 @@ export default {
       type: Number,
       require: true
     },
-    sheetName: {
-      type: String
+    sheetId: {
+      type: Number
     },
     sheetType: {
       type: String

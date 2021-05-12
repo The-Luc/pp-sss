@@ -5,7 +5,7 @@
     </v-row>
 
     <v-row>
-      <v-col class="sheet-name"> {{ sequence }}{{ sheetName }} </v-col>
+      <v-col class="sheet-name"> {{ sequence }}{{ sheetId }} </v-col>
     </v-row>
   </div>
 </template>
