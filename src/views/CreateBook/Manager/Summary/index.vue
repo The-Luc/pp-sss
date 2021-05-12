@@ -1,7 +1,6 @@
 <template>
   <v-col class="manager-summary" id="manager-summary">
     <Header />
-
     <v-row>
       <v-col>
         <ImportantDates />

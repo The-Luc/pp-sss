@@ -2,19 +2,19 @@ import { mapState } from 'vuex';
 import moment from 'moment';
 export default {
   computed: {
-    ...mapState('project', ['project']),
+    ...mapState('book', ['book']),
     dueDate() {
-      let date = moment(new Date(this.project.releaseDate)).format('MM/DD/YY');
+      let date = moment(new Date(this.book.releaseDate)).format('MM/DD/YY');
       return date;
     },
     deliveryDate() {
-      let date = moment(new Date(this.project.releaseDate))
+      let date = moment(new Date(this.book.releaseDate))
         .add(14, 'days')
         .format('MM/DD/YY');
       return date;
     },
-    countdown(){
-      let dueDate =  moment(this.project.releaseDate, 'MM/DD/YYYY');
+    countdown() {
+      let dueDate = moment(this.book.releaseDate, 'MM/DD/YYYY');
       let currentDate = moment(new Date());
       return moment(dueDate).diff(currentDate, 'days');
     }

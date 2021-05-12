@@ -1,9 +1,9 @@
 import { mapState } from 'vuex';
 export default {
   computed: {
-    ...mapState('project', ['project']),
+    ...mapState('book', ['book']),
     price() {
-      return this.project.price.toFixed(2);
+      return this.book.price.toFixed(2);
     }
   }
 };
