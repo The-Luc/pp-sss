@@ -4,9 +4,6 @@ export default {
   components: {
     Item
   },
-  data() {
-    return {};
-  },
   props: {
     nudgeWidth: {
       type: String,

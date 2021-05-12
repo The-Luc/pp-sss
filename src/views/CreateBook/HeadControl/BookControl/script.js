@@ -7,12 +7,6 @@ export default {
     PpButton,
     LineVertical
   },
-  props: {
-    currentView: {
-      type: String,
-      required: true
-    }
-  },
   data() {
     return {
       screen: SCREEN,

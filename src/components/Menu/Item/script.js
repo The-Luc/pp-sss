@@ -2,9 +2,6 @@ import ICON_LOCAL from '@/common/constants/icon';
 
 export default {
   props: {
-    on: {
-      type: Function
-    },
     title: {
       type: String,
       default: ''

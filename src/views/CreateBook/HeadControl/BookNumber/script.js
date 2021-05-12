@@ -7,12 +7,6 @@ export default {
     Number,
     LineVertical
   },
-  props: {
-    currentView: {
-      type: String,
-      default: ''
-    }
-  },
   data() {
     return {
       path: this.$route.path,
