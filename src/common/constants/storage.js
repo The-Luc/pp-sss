@@ -1,3 +1,4 @@
 export const LOCAL_STORAGE = {
-  TOKEN: "TOKEN"
+  TOKEN: 'TOKEN',
+  CURRENT_SCREEN: 'CURRENT_SCREEN'
 };
