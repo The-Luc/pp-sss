@@ -10,10 +10,10 @@ export default {
     startSeq: Number
   },
   computed: {
-    ...mapState('project', ['project']),
+    ...mapState('book', ['book']),
     sheets: {
       get() {
-        const section = this.project.sections.filter(
+        const section = this.book.sections.filter(
           s => s.id === this.sectionId
         );
 
@@ -28,7 +28,7 @@ export default {
     }
   },
   methods: {
-    ...mapMutations('project', ['updateSection']),
+    ...mapMutations('book', ['updateSection']),
     onMove({ relatedContext, draggedContext }) {
       const relatedElement = relatedContext.element;
       const draggedElement = draggedContext.element;

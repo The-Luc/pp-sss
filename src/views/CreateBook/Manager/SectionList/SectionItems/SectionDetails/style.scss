@@ -6,7 +6,7 @@ $border-album: 1px $color-gray2 solid;
 $box-width: 217px;
 $box-height: 140px;
 $box-vertical-width: 109px;
-$detail-padding: 30px;
+$detail-padding: 39px;
 
 .manager-main {
   .manager-section-list {
@@ -19,7 +19,7 @@ $detail-padding: 30px;
     .section-details-wrapper {
       width: 100%;
       min-height: 225px;
-      padding: 0 80px $detail-padding 80px;
+      padding: 0 12px $detail-padding 55px;
       font-family: $font-700;
       background-color: $color-white;
       border-top: $border;
@@ -30,7 +30,8 @@ $detail-padding: 30px;
         .sheet-box {
           width: $box-width;
           float: left;
-          margin: $detail-padding $detail-padding 0 $detail-padding;
+          margin: $detail-padding;
+          margin-bottom: 0px;
 
           .vertical {
             width: $box-vertical-width;

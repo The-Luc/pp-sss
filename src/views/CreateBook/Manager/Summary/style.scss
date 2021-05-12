@@ -8,9 +8,18 @@ $spacing: 15px;
   .manager-summary {
     position: fixed;
     right: 0;
-    overflow-x: auto;
 
-    &[data-toggle="collapse"] {
+    &.collapse {
+      .summary-title {
+        img {
+          transform: rotate(-180deg);
+        }
+
+        span {
+          display: none;
+        }
+      }
+
       .summary-detail {
         display: none;
       }
