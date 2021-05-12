@@ -32,7 +32,7 @@
         }
         &--disabled {
           .v-btn__content {
-            color: #d3d3d3;
+            opacity: 0.3;
           }
         }
 
@@ -93,6 +93,7 @@
 
     .v-picker__actions {
       width: 290px;
+      margin-top: 50px;
 
       .v-btn {
         background-color: #0099b3;
