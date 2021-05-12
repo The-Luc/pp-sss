@@ -55,15 +55,14 @@ $detail-padding: 30px;
           .vertical {
             position: relative;
             .menu {
-              display: flex;
               position: absolute;
               top: 3px;
               left: calc(100% - 102px);
-              flex-direction: column;
-              align-items: center;
               z-index: 2;
               width: 178px;
               .menu-icon {
+                margin: 0 auto;
+                display: none;
                 width: 18px;
                 height: 18px;
               }
@@ -102,11 +101,13 @@ $detail-padding: 30px;
               }
             }
 
-            // &:hover {
-            //   .menu {
-            //     display: flex;
-            //   }
-            // }
+            &:hover {
+              .menu {
+                .menu-icon {
+                  display: block;
+                }
+              }
+            }
           }
         }
       }

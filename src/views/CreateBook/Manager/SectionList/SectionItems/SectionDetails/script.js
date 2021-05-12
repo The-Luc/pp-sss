@@ -11,11 +11,10 @@ export default {
   data() {
     return {
       isOpen: false,
-      items: [
-        { title: 'Move To', value: 'Choose a Section' }
-      ],
+      items: [{ title: 'Move To', value: 'Choose a Section' }],
       isShowMenu: false,
       currentSheetId: '',
+      currentSheetHover: '',
       moreIcon: ICON_LOCAL.MORE_ICON,
       arrowDown: ICON_LOCAL.ARROW_DOWN,
       isOpenMenu: false
@@ -75,23 +74,35 @@ export default {
         }
       });
     },
-    onCheckIsShowMenu(id) {
-      return this.currentSheetId == id;
-    },
+    // onCheckIsShowMenu(id) {
+    //   return this.currentSheetId == id;
+    // },
     setCurrentSheetId(id = '') {
-      if (!this.isShowMenu) {
-        this.currentSheetId = id;
+      this.currentSheetHover = id;
+    },
+    onChangeStatusMenuDetail(id) {
+      if (!this.currentSheetId) {
+        console.log(1);
+        this.currentSheetId = this.currentSheetHover;
+        this.isShowMenu = !this.isShowMenu;
+      } else {
+        if (this.currentSheetId == id) {
+          console.log(2);
+          this.isShowMenu = !this.isShowMenu;
+        } else {
+          this.currentSheetId = this.currentSheetHover;
+          this.isShowMenu = true;
+        }
       }
     },
-    onChangeStatusMenuDetail() {
-      this.isShowMenu = !this.isShowMenu
-    },
     onCloseMenu() {
-      this.isShowMenu = false;
-      this.setCurrentSheetId();
+      if (!this.currentSheetHover) {
+        console.log(4);
+        this.isShowMenu = false;
+      }
     },
     onCheckIsShowMenuDetail(id) {
-      return (this.isShowMenu && this.currentSheetId == id);
+      return this.isShowMenu && this.currentSheetId == id;
     }
   }
 };

@@ -15,11 +15,7 @@
       >
         <div v-for="(sheet, index) in sheets" :key="sheet.id" class="sheet-box">
           <v-row>
-            <v-col
-              :class="sheet.type == 'half' ? 'vertical' : 'horizontal'"
-              @mouseover="setCurrentSheetId(sheet.id)"
-              @mouseleave="setCurrentSheetId()"
-            >
+            <v-col :class="sheet.type == 'half' ? 'vertical' : 'horizontal'">
               <!-- <Menu
                 class="menu"
                 :src="moreIcon"
@@ -33,10 +29,14 @@
               </Menu> -->
               <div class="menu">
                 <img
-                  v-if="onCheckIsShowMenu(sheet.id)"
-                  class="menu-icon"
+                  @mouseover="setCurrentSheetId(sheet.id)"
+                  @mouseleave="setCurrentSheetId()"
+                  :class="[
+                    'menu-icon',
+                    onCheckIsShowMenuDetail(sheet.id) ? 'd-block' : ''
+                  ]"
                   :src="moreIcon"
-                  @click="onChangeStatusMenuDetail"
+                  @click="onChangeStatusMenuDetail(sheet.id)"
                 />
                 <div
                   class="menu-detail"
