@@ -43,7 +43,6 @@ export default {
     })
   },
   mounted() {
-    console.log('date', this.date);
     const [year, month, day] = moment(this.date)
       .format('YYYY-MM-DD')
       .split('-');

@@ -1,4 +1,3 @@
-/* eslint-disable no-self-assign */
 import moment from 'moment';
 import { mapGetters } from 'vuex';
 
@@ -62,12 +61,10 @@ export default {
       this.isOpenCalendar = false;
     },
     onClickOutSideStatus() {
-      console.log('onClickOutSideStatus');
       this.isOpenStatus = false;
     },
     onClickOutSideMenu() {
       if (this.isOpenMenu && !this.isOpenCalendar && !this.isOpenStatus) {
-        console.log('close Menu');
         this.isOpenMenu = false;
       }
     },
@@ -79,7 +76,6 @@ export default {
       this.calendarY = y;
     },
     openSectionStatus(event) {
-      console.log('openSectionStatus');
       this.isOpenStatus = true;
       const parentElement = event.target.parentElement;
       const { x, y } = parentElement.getBoundingClientRect();

@@ -46,8 +46,5 @@ export default {
     onClickOutSideStatus() {
       this.$emit('onClickOutSideStatus');
     }
-  },
-  mounted() {
-    console.log('status', this.selectedStatus);
   }
 };
