@@ -3,8 +3,10 @@
     <MoveSheet
       title="Move To"
       value="Choose a Section"
-      :isShow="isShow"
+      :is-show="isShow"
       :sections="sections"
+      :sheet-id="sheetId"
+      :section-id="sectionId"
       @onChangeStatus="onChangeMenuMove"
     >
     </MoveSheet>

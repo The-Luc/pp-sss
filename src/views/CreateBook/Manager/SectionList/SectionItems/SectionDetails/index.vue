@@ -16,21 +16,23 @@
         <div v-for="(sheet, index) in sheets" :key="sheet.id" class="sheet-box">
           <v-row>
             <v-col :class="sheet.type == 'half' ? 'vertical' : 'horizontal'">
-              <div class="menu">
+              <div v-if="onCheckActions(sheet.type)" class="menu">
                 <img
+                  :src="moreIcon"
+                  :class="[
+                    onCheckIsShowMenuDetail(sheet.id) ? 'd-block' : '',
+                    'menu-icon'
+                  ]"
                   @mouseover="setCurrentSheetId(sheet.id)"
                   @mouseleave="setCurrentSheetId()"
-                  :class="[
-                    'menu-icon',
-                    onCheckIsShowMenuDetail(sheet.id) ? 'd-block' : '',
-                  ]"
-                  :src="moreIcon"
                   @click="onChangeStatusMenuDetail(sheet.id)"
                 />
                 <MenuDetail
                   v-if="onCheckIsShowMenuDetail(sheet.id)"
                   v-click-outside="onCloseMenu"
-                  :sectionId="sectionId"
+                  :section-id="sectionId"
+                  :sheet-id="sheet.id"
+                  :get-sections="getSections"
                 >
                   <ButtonDelete
                     title="Delete This Sheet"

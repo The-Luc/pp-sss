@@ -1,4 +1,5 @@
 import ICON_LOCAL from '@/common/constants/icon';
+import { mapMutations } from 'vuex';
 
 export default {
   props: {
@@ -16,11 +17,25 @@ export default {
     },
     sections: {
       type: Array
+    },
+    sheetId: {
+      type: Number
+    },
+    sectionId: {
+      type: String
     }
   },
   methods: {
+    ...mapMutations('book', ['moveSheet']),
     onChangeStatus() {
       this.$emit('onChangeStatus');
+    },
+    onMoveSheet(id) {
+      this.moveSheet({
+        sheetId: this.sheetId,
+        sectionId: this.sectionId,
+        currentSectionId: id
+      });
     }
   },
   created() {

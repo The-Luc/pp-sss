@@ -10,7 +10,7 @@
         v-for="section in sections"
         :key="section.order"
         class="menu-move-sheet-item"
-        @click="section.id;"
+        @click="onMoveSheet(section.id)"
       >
         <div
           class="menu-move-sheet-color"

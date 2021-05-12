@@ -1,4 +1,3 @@
-import { mapGetters } from 'vuex';
 import MoveSheet from './MoveSheet';
 
 export default {
@@ -8,24 +7,23 @@ export default {
   data() {
     return {
       isShow: false
-    }
+    };
   },
   props: {
-    sectionId: String
+    sectionId: String,
+    sheetId: Number,
+    getSections: Array
   },
   computed: {
-    ...mapGetters('book', [
-      'getSections',
-    ]),
     sections() {
       return this.getSections.filter(item => {
         return item.order !== 0 && item.id != this.sectionId;
-      })
+      });
     }
   },
   methods: {
     onChangeMenuMove() {
-      this.isShow = !this.isShow
+      this.isShow = !this.isShow;
     }
   }
 };
