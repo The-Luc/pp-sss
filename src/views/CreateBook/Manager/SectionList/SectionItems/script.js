@@ -27,9 +27,9 @@ export default {
     onChoose: function(evt) {
       moveToIndex = -1;
 
-      selectedIndex = this.project.sections[evt.oldIndex].fixed
-        ? -1
-        : evt.oldIndex;
+      selectedIndex = this.book.sections[evt.oldIndex].draggable
+        ? evt.oldIndex
+        : -1;
     },
     onMove: function(evt) {
       this.hideAllIndicator();
@@ -50,7 +50,7 @@ export default {
 
       const relateSection = evt.relatedContext.element;
 
-      const isAllowMoveTo = !relateSection || !relateSection.fixed;
+      const isAllowMoveTo = !relateSection || relateSection.draggable;
 
       if (!isAllowMoveTo) {
         moveToIndex = -1;
@@ -77,9 +77,9 @@ export default {
         return;
       }
 
-      const selectedSection = this.project.sections[selectedIndex];
+      const selectedSection = this.book.sections[selectedIndex];
 
-      const _items = Object.assign([], this.project.sections);
+      const _items = Object.assign([], this.book.sections);
 
       if (moveToIndex < selectedIndex) {
         _items.splice(selectedIndex, 1);
@@ -89,7 +89,7 @@ export default {
         _items.splice(selectedIndex, 1);
       }
 
-      this.project.sections = _items;
+      this.book.sections = _items;
 
       selectedIndex = -1;
       moveToIndex = -1;

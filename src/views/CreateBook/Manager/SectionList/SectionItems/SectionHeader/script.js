@@ -39,7 +39,7 @@ export default {
     showDragControl: function(evt) {
       const sectionHeader = evt.target.closest('.section-header');
 
-      if (sectionHeader.getAttribute('data-fixed') === 'true') {
+      if (sectionHeader.getAttribute('data-draggable') !== 'true') {
         return;
       }
 
