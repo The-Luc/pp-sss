@@ -1,7 +1,7 @@
 import SectionList from './SectionList';
 import Summary from './Summary';
 
-import project from '@/mock/project';
+import book from '@/mock/book';
 
 export default {
   components: {
@@ -10,7 +10,7 @@ export default {
   },
   data() {
     return {
-      project: project
+      book: book
     };
   }
 };
