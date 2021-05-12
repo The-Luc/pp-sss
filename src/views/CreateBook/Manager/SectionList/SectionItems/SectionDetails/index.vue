@@ -6,12 +6,15 @@
   >
     <v-col class="section-details-wrapper">
       <draggable
+        v-if="sheets.length > 0"
         v-model="sheets"
         class="row section-details"
+        :data-section="sectionId"
         group="sheet"
         :move="onMove"
+        @choose="onChoose"
         @start="drag = true"
-        @end="drag = false"
+        @end="onEnd"
       >
         <Sheet
           v-for="(sheet, index) in sheets"
@@ -19,6 +22,23 @@
           :sequence="startSeq + index"
           :sheet-id="sheet.id"
           :sheet-type="sheet.type"
+        ></Sheet>
+      </draggable>
+      <draggable
+        v-else
+        v-model="sheets"
+        class="row section-details"
+        :data-section="sectionId"
+        group="sheet"
+        :move="onMove"
+        @choose="onChoose"
+        @start="drag = true"
+        @end="onEnd"
+      >
+        <Sheet
+          :sequence="-1"
+          :sheet-id="-sectionId"
+          sheet-type="full"
         ></Sheet>
       </draggable>
     </v-col>

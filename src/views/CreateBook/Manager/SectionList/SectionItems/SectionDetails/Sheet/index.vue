@@ -6,7 +6,7 @@
         custom-class-name="indicator-left"
       />
 
-      <v-col>
+      <v-col :class="sheetId < 0 ? 'hide': ''">
         <v-row>
           <v-col
             :class="sheetType == 'half' ? 'vertical' : 'horizontal'"
