@@ -31,6 +31,18 @@ $box-vertical-width: 109px;
           margin: $length-sheet-padding;
           margin-bottom: 0;
 
+          .sheet {
+            &:hover {
+              cursor: pointer;
+              background-color: $color-white2;
+              border-color: $color-gray3;
+            }
+
+            .drag-control {
+              margin: 2px;
+            }
+          }
+
           .vertical {
             width: $box-vertical-width;
             max-width: $box-vertical-width;

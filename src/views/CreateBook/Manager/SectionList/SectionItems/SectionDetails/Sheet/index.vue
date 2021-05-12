@@ -6,11 +6,16 @@
         custom-class-name="indicator-left"
       />
 
-      <v-col :class="sheetId < 0 ? 'hide': ''">
+      <v-col :class="sheetId < 0 ? 'hide' : ''">
         <v-row>
           <v-col
-            :class="sheetType == 'half' ? 'vertical' : 'horizontal'"
-          ></v-col>
+            :class="['sheet', sheetType == 'half' ? 'vertical' : 'horizontal']"
+            :data-draggable="draggable"
+            @mouseover="showDragControl"
+            @mouseleave="hideDragControl"
+          >
+            <DragDropControl :id="'sheet' + sheetId" />
+          </v-col>
         </v-row>
 
         <v-row>

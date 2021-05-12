@@ -22,6 +22,7 @@
           :sequence="startSeq + index"
           :sheet-id="sheet.id"
           :sheet-type="sheet.type"
+          :draggable="sheet.draggable"
         ></Sheet>
       </draggable>
       <draggable
@@ -39,6 +40,7 @@
           :sequence="-1"
           :sheet-id="-sectionId"
           sheet-type="full"
+          :draggable="false"
         ></Sheet>
       </draggable>
     </v-col>
