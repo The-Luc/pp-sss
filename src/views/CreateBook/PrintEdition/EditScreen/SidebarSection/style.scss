@@ -1,65 +1,65 @@
-.sidebar-section {      
-    padding: 0;
-    .section-item {
-      margin-top: 14px;
-      .section-header {
-        display: flex;
-        align-items: center;
-        padding: 0 14px;
-        font-size: 10px;
-        .header-color {
-          width: 8px;
-          height: 8px;
-          background-color: brown;
-          border-radius: 100%;
-        }
-        .header-arrow { 
-          display: block;
-          width: 16px;
-          height: 16px;
-          line-height: 16px;
-          color: #000;
-        }
-        .header-name {
-          font-weight: 600;
-          margin: 0 4px;
-        }
+.sidebar-section {
+  padding: 0;
+  .section-item {
+    margin-top: 14px;
+    .section-header {
+      display: flex;
+      align-items: center;
+      padding: 0 14px;
+      font-size: 10px;
+      .header-color {
+        width: 8px;
+        height: 8px;
+        background-color: brown;
+        border-radius: 100%;
       }
-      .section-body {
-        width: 128px;
-        margin: 10px auto 0;
-        .section-thumbnail {
-          width: 100%;
-          height: 84px;
-          border: 1px solid #707070;
-          .thumbnail-left {
-            width: 50%;
-            height: 100%;
-            border-right: 1px solid #707070;
-          }
-          .thumbnail-left.inside-cover,
-          .thumbnail-right.inside-cover {
-            background-color: #d9d9d9;
-          }
-        }
-        .section-number-page {
-          color: #8c8c8c;
-          width: 100%;
-          display: flex;
-          justify-content: space-between;
-          font-size: 8px;
-          .number-page-left {
-            text-align: left;
-          }
-          .number-page-right {
-            text-align: right;
-          }
-        }
+      .header-arrow {
+        display: block;
+        width: 16px;
+        height: 16px;
+        line-height: 16px;
+        color: #000;
+      }
+      .header-name {
+        font-weight: 600;
+        margin: 0 4px;
       }
     }
-    .section-item.active {
+    .section-body {
+      width: 128px;
+      margin: 10px auto 0;
       .section-thumbnail {
-        border: solid 2px #42738d;
+        width: 100%;
+        height: 84px;
+        border: 1px solid #707070;
+        .thumbnail-left {
+          width: 50%;
+          height: 100%;
+          border-right: 1px solid #707070;
+        }
+        .thumbnail-left.inside-cover,
+        .thumbnail-right.inside-cover {
+          background-color: #d9d9d9;
+        }
+      }
+      .section-number-page {
+        color: #8c8c8c;
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        font-size: 8px;
+        .number-page-left {
+          text-align: left;
+        }
+        .number-page-right {
+          text-align: right;
+        }
       }
     }
   }
+  .section-item.active {
+    .section-thumbnail {
+      border: solid 2px #42738d;
+    }
+  }
+}

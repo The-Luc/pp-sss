@@ -1,14 +1,8 @@
-<template lang="">
+<template>
   <div>
-    <EditScreen/>
+    <EditScreen />
   </div>
 </template>
-<script>
-import EditScreen from './EditScreen'
-export default {
-  components: {
-    EditScreen,
-  }
-};
-</script>
-<style ></style>
+
+<script src="./script.js"></script>
+<style></style>

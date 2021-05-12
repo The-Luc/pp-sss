@@ -4,8 +4,8 @@
 
 $gray: #bbbbbd;
 $border: 1px solid $gray;
-%btn-border{
-  border: 0.5px solid #D1D3D4;
+%btn-border {
+  border: 0.5px solid #d1d3d4;
   border-radius: 2px;
 }
 .print-editor {
@@ -14,54 +14,14 @@ $border: 1px solid $gray;
     padding: 7px 0 !important;
     align-items: center;
     justify-content: space-between;
-    .tool-left {
+    .tool-left,
+    .tool-right {
       display: flex;
       .item-tool:last-child {
         border-right: none;
       }
       .item-tool:first-child {
         margin-left: 20px;
-      }
-    }
-    .tool-right {
-      .item-tool {
-        border-right: none;
-      }
-    }
-    .item-tool {
-      margin-left: 15px;
-      border-right: $border;
-      display: flex;
-      align-items: center;
-      .item {
-        flex-direction: column;
-        align-items: center;
-        display: flex;
-        margin-right: 15px;
-        width: 38px;
-        .item-icon {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          height: 24px;
-          cursor: pointer;
-          width: 100%;
-          @extend %btn-border;
-          .v-icon {
-            font-size: 18px;
-            color: #58595b;
-          }
-          img {
-            height: 15px;
-            width: 15px;
-          }
-        }
-        p {
-          text-overflow: ellipsis;
-          white-space: nowrap;
-          font-family: $font-300;
-          font-size: 9px;
-        }
       }
     }
   }

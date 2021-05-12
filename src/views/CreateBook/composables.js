@@ -7,10 +7,8 @@ export const useYearBookInformation = yearbook => {
   const fetchYearbook = async () => {
     book.value = 123;
   };
-
   onMounted(fetchYearbook);
   watch(yearbook, fetchYearbook);
-
   return {
     book,
     fetchYearbook
