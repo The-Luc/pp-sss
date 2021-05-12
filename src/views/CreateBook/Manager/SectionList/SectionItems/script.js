@@ -21,7 +21,7 @@ export default {
     };
   },
   computed: {
-    ...mapState('project', ['project'])
+    ...mapState('book', ['book'])
   },
   methods: {
     onChoose: function(evt) {
@@ -102,7 +102,7 @@ export default {
         return 0;
       }
 
-      const totalSheetEachSection = this.project.sections
+      const totalSheetEachSection = this.book.sections
         .filter((s, ind) => ind < index)
         .map(s => s.sheets.length);
       const total = totalSheetEachSection.reduce((a, v) => {

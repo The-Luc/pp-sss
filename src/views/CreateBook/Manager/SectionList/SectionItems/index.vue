@@ -1,7 +1,7 @@
 <template>
   <v-row>
     <draggable
-      v-model="project.sections"
+      v-model="book.sections"
       class="col"
       :move="onMove"
       @choose="onChoose"
@@ -9,7 +9,7 @@
       @end="onEnd"
     >
       <v-row
-        v-for="(section, index) in project.sections"
+        v-for="(section, index) in book.sections"
         :key="section.id"
         class="section-item"
       >
@@ -18,7 +18,7 @@
             :id="'section-top-' + section.id"
             custom-class-name="indicator-top"
           />
-          <Header :section="section" :release-date="project.releaseDate" />
+          <Header :section="section" :release-date="book.releaseDate" />
           <Details
             :sheets="section.sheets"
             :section-id="section.id"
