@@ -21,16 +21,5 @@
   </div>
 </template>
 
-<script>
-import './index.scss';
-export default {
-  name: 'SidebarSection',
-  data() {
-    return {};
-  },
-  computed: {},
-  methods: {}
-};
-</script>
-
-<style lang=""></style>
+<script src="./script.js"></script>
+<style lang="scss" scoped src="./style.scss" />

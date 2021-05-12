@@ -1,12 +1,8 @@
 <template lang="">
-<div class="col-10 page-edition">
+  <div class="col-10 page-edition">
     col10
-</div>
+  </div>
 </template>
 
-<script>
-import './index.scss';
-export default {};
-</script>
-
-<style lang=""></style>
+<script src="./script.js"></script>
+<style lang="scss" scoped src="./style.scss" />
