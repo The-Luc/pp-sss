@@ -10,7 +10,7 @@
 
       <div class="group-detail">
         <div class="info-name">Fundraising $ Earned:</div>
-        <div class="info-detail">$0.00</div>
+        <div class="info-detail">${{price}}</div>
       </div>
     </v-col>
   </v-row>

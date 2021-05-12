@@ -1,6 +1,7 @@
 const project = {
   name: 'Year Book',
-  releaseDate: '05/21/21',
+  releaseDate: '05/21/2021',
+  price: 9,
   sections: [
     {
       id: '1',
