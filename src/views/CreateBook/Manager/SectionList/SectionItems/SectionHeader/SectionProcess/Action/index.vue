@@ -13,7 +13,7 @@
     />
     <Calendar
       v-if="isOpenCalendar"
-      :date="releaseDate"
+      :date="dueDate"
       :is-open-calendar="isOpenCalendar"
       :calendar-width="calendarWidth"
       :calendar-x="calendarX"

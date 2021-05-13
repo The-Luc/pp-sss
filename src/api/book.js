@@ -7,7 +7,17 @@ const bookService = {
   updateTitle: (bookId, title) => ({
     data: title,
     isSuccess: true
-  })
+  }),
+  updateSection: (bookId, sectionId, data) => {
+    return {
+      isSuccess: true,
+      data: {
+        bookId,
+        sectionId,
+        data
+      }
+    };
+  }
 };
 
 export default bookService;

@@ -13,8 +13,7 @@ export default {
     SectionProcess
   },
   props: {
-    section: Object,
-    releaseDate: String
+    section: Object
   },
   data() {
     return {

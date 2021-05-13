@@ -1,13 +1,13 @@
 import { mapGetters, mapMutations } from 'vuex';
-import moment from 'moment';
 
 import ICON_LOCAL from '@/common/constants/icon';
 import Menu from '@/components/Menu';
 import Action from './Action';
 import { GETTERS, MUTATES } from '@/store/modules/app/const';
+import { SECTION_STATUS } from '@/common/constants/status';
 
 export default {
-  props: ['color', 'releaseDate', 'sectionId'],
+  props: ['color', 'dueDate', 'sectionId', 'status'],
   components: {
     Menu,
     Action
@@ -19,8 +19,12 @@ export default {
       menuY: 0,
       sectionStatus: 0,
       items: [
-        { title: 'Status', value: 'Not Started', name: 'status' },
-        { title: 'Due Date', value: this.releaseDate, name: 'dueDate' },
+        {
+          title: 'Status',
+          value: this.convertTextCap(this.status),
+          name: 'status'
+        },
+        { title: 'Due Date', value: this.dueDate, name: 'dueDate' },
         { title: 'Assigned To', value: 'Unassigned', name: 'assigned' }
       ]
     };
@@ -30,6 +34,15 @@ export default {
       sectionSelected: GETTERS.SECTION_SELECTED
     })
   },
+  watch: {
+    dueDate(val) {
+      this.items[1].value = val;
+    },
+    status(val) {
+      this.items[0].value = this.convertTextCap(val);
+      this.mapStatusNumberic(val);
+    }
+  },
   created() {
     this.moreIcon = ICON_LOCAL.MORE_ICON;
   },
@@ -37,6 +50,27 @@ export default {
     ...mapMutations({
       setSectionSelected: MUTATES.SET_SELECTION_SELECTED
     }),
+    convertTextCap(string) {
+      return string.replace(/\b\w/g, l => l.toUpperCase());
+    },
+    mapStatusNumberic(statusText) {
+      switch (statusText) {
+        case SECTION_STATUS.NOT_STARTED.text:
+          this.sectionStatus = SECTION_STATUS.NOT_STARTED.number;
+          break;
+        case SECTION_STATUS.IN_PROGRESS.text:
+          this.sectionStatus = SECTION_STATUS.IN_PROGRESS.number;
+          break;
+        case SECTION_STATUS.COMPLETED.text:
+          this.sectionStatus = SECTION_STATUS.COMPLETED.number;
+          break;
+        case SECTION_STATUS.APPROVED.text:
+          this.sectionStatus = SECTION_STATUS.APPROVED.number;
+          break;
+        default:
+          break;
+      }
+    },
     setIsOpenMenu() {
       if (!this.sectionSelected || this.sectionSelected !== this.sectionId) {
         this.setSectionSelected({
@@ -58,13 +92,6 @@ export default {
       this.menuX = x - 70;
       this.menuY = y;
       this.setIsOpenMenu();
-    },
-    onSelectedStatus(status) {
-      this.items[0].value = status.label;
-      this.sectionStatus = status.value;
-    },
-    onSelectedDate(date) {
-      this.items[1].value = moment(date).format('MM/DD/YY');
     }
   }
 };

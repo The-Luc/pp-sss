@@ -1,6 +1,6 @@
 import { useGetters, useMutations } from 'vuex-composition-helpers';
 
-import { useBook, useUpdateTitle } from '@/views/CreateBook/composables';
+import { useBook, useUpdateTitle } from '@/hooks';
 import { GETTERS, MUTATES } from '@/store/modules/book/const';
 
 export default {
@@ -57,8 +57,7 @@ export default {
         this.title
       );
       if (isSuccess) {
-        const newBook = { ...this.book, title: data };
-        this.mutateBook(newBook);
+        this.book.title = data;
       }
     }
   }

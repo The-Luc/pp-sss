@@ -17,18 +17,16 @@
       :style="[sectionStatus >= 3 && { backgroundColor: color }]"
     ></span>
 
-    <span class="first-release">{{ releaseDate || '06/08/21' }}</span>
+    <span class="first-release">{{ dueDate }}</span>
     <img :src="moreIcon" @click="toggleMenu" />
     <Action
-      :release-date="releaseDate"
+      :due-date="dueDate"
       nudge-width="160"
       :items="items"
       :menu-x="menuX"
       :menu-y="menuY"
       :section-status="sectionStatus"
       :section-id="sectionId"
-      @onSelectedStatus="onSelectedStatus"
-      @onSelectedDate="onSelectedDate"
     />
   </v-col>
 </template>

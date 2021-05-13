@@ -3,8 +3,9 @@ import moment from 'moment';
 
 import project from '@/mock/project';
 import { GETTERS } from '@/store/modules/app/const';
+import book from '@/mock/book';
 
-const dueDate = project.releaseDate;
+const dueDate = book.releaseDate;
 const daysOfWeek = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
 export default {
   props: {

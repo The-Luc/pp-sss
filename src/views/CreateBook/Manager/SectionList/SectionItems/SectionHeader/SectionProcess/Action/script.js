@@ -6,16 +6,20 @@ import Menu from '@/components/Menu';
 import { GETTERS } from '@/store/modules/app/const';
 import Calendar from './Calendar';
 import SectionStatus from './SectionStatus';
+import { useBook, useMutationSection } from '@/hooks';
 
 export default {
-  props: [
-    'releaseDate',
-    'menuX',
-    'menuY',
-    'items',
-    'sectionId',
-    'sectionStatus'
-  ],
+  setup() {
+    const { updateSection } = useMutationSection();
+    const { book, getBook } = useBook();
+
+    return {
+      updateSection,
+      book,
+      getBook
+    };
+  },
+  props: ['dueDate', 'menuX', 'menuY', 'items', 'sectionId', 'sectionStatus'],
   components: {
     Menu,
     Calendar,
@@ -101,14 +105,39 @@ export default {
         this.isOpenMenu = false;
       }
     },
-    onSelectedDate(date) {
-      this.$emit('onSelectedDate', date);
+    async onSelectedDate(date) {
+      const dueDate = moment(date).format('MM/DD/YY');
+      const { isSuccess } = await this.updateSection(
+        this.book.id,
+        this.sectionId,
+        {
+          dueDate
+        }
+      );
+      if (isSuccess) {
+        const section = this.book.sections.find(
+          section => section.id === this.sectionId
+        );
+        section.dueDate = dueDate;
+      }
       setTimeout(() => {
         this.isOpenCalendar = false;
       }, 0);
     },
-    onSelectedStatus(status) {
-      this.$emit('onSelectedStatus', status);
+    async onSelectedStatus(status) {
+      const { isSuccess } = await this.updateSection(
+        this.book.id,
+        this.sectionId,
+        {
+          status
+        }
+      );
+      if (isSuccess) {
+        const section = this.book.sections.find(
+          section => section.id === this.sectionId
+        );
+        section.status = status.label;
+      }
       setTimeout(() => {
         this.isOpenStatus = false;
       }, 0);
