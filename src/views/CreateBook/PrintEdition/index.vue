@@ -1,8 +1,14 @@
 <template>
   <div>
-    <EditScreen />
+    <MainScreen />
   </div>
 </template>
-
-<script src="./script.js"></script>
-<style></style>
+<script>
+import MainScreen from './MainScreen';
+export default {
+  components: {
+    MainScreen
+  }
+};
+</script>
+<style lang="scss"></style>
