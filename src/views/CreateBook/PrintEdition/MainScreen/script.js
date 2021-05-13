@@ -1,6 +1,6 @@
 import Frames from './Frames';
 import Thumbnail from '@/components//Thumbnail';
-import project from '@/mock/project';
+import book from '@/mock/book';
 export default {
   components: {
     Frames,
@@ -8,7 +8,7 @@ export default {
   },
   data() {
     return {
-      project: project
+      book: book
     };
   }
 };

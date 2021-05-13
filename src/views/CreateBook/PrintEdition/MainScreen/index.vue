@@ -1,13 +1,13 @@
 <template>
   <div class="row">
     <div class="row col-12 thumbnail-view-row">
-      <template v-for="section in project.sections">
+      <template v-for="section in book.sections">
         <Frames
           v-for="sheet in section.sheets"
-          :section="section"
           :key="sheet.id"
+          :section="section"
         >
-          <Thumbnail :sheet="sheet"/>
+          <Thumbnail :sheet="sheet" />
         </Frames>
       </template>
     </div>
