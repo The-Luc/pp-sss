@@ -1,19 +1,23 @@
 <template>
   <v-menu
     content-class="pp-menu"
-    :close-on-content-click="false"
     :nudge-width="nudgeWidth"
-    :nudge-left="nudgeWidth / 2"
+    :value="isOpen"
+    :close-on-click="false"
+    :close-on-content-click="false"
+    :position-x="menuX"
+    :position-y="menuY"
   >
-    <template #activator="{ on }">
-      <img :src="src" v-on="on" />
-    </template>
-    <v-list>
+    <v-list v-click-outside="onClickOutSideMenu">
       <v-list-item v-for="(item, i) in items" :key="i">
-        <Item :title="item.title" :value="item.value" />
+        <Item
+          :title="item.title"
+          :value="item.value"
+          @onItemClick="(event) => onItemClick(event, item)"
+        />
       </v-list-item>
-      <slot />
     </v-list>
+    <slot />
   </v-menu>
 </template>
 

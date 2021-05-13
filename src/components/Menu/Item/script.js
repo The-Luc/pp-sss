@@ -13,5 +13,10 @@ export default {
   },
   created() {
     this.arrowDown = ICON_LOCAL.ARROW_DOWN;
+  },
+  methods: {
+    onItemClick(event) {
+      this.$emit('onItemClick', event);
+    }
   }
 };
