@@ -1,4 +1,4 @@
-import AUTH from "./const";
+import AUTH from './const';
 
 export const actions = {
   [AUTH._ACTIONS.LOGIN]({ commit }) {

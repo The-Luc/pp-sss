@@ -13,9 +13,7 @@ export default {
     ...mapState('book', ['book']),
     sheets: {
       get() {
-        const section = this.book.sections.filter(
-          s => s.id === this.sectionId
-        );
+        const section = this.book.sections.filter(s => s.id === this.sectionId);
 
         return section == null || section.length == 0 ? [] : section[0].sheets;
       },
