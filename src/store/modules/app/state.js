@@ -5,5 +5,6 @@ export const state = {
       type: '',
       props: {}
     }
-  }
+  },
+  sectionSelected: ''
 };

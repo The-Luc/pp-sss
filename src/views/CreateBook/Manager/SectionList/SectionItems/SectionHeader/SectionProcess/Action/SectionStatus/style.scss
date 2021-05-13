@@ -1,0 +1,17 @@
+.pp-status {
+  .v-list-item {
+    padding: 0 10px;
+    &-group {
+      padding: 0 10px;
+    }
+    &--active {
+      background-color: #eaf2f5;
+    }
+    &__content {
+    }
+
+    &__title {
+      color: #565656;
+    }
+  }
+}

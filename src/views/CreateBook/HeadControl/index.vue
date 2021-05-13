@@ -1,8 +1,8 @@
 <template>
   <div>
     <BookInformation />
-    <BookControl :current-view="currentView" @onChangeView="onChangeView" />
-    <BookNumber :current-view="currentView" />
+    <BookControl />
+    <BookNumber />
   </div>
 </template>
 

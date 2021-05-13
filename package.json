@@ -19,10 +19,11 @@
     "core-js": "^3.10.2",
     "fabric": "^4.4.0",
     "lodash": "^4.17.21",
+    "moment": "^2.29.1",
     "vue": "^2.6.12",
     "vue-router": "^3.5.1",
     "vuedraggable": "github:lnvu1983/Vue.Draggable",
-    "vuetify": "^2.4.11",
+    "vuetify": "github:Koo-SSS/vuetify",
     "vuex": "^3.6.2"
   },
   "devDependencies": {
