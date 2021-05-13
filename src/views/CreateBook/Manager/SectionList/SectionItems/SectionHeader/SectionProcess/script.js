@@ -1,4 +1,4 @@
-import { mapMutations } from 'vuex';
+import { mapMutations, mapGetters } from 'vuex';
 
 import ICON_LOCAL from '@/common/constants/icon';
 import Menu from '@/components/Menu';
@@ -21,6 +21,18 @@ export default {
       ],
       moreIcon: ICON_LOCAL.MORE_ICON
     };
+  },
+  computed: {
+    ...mapGetters('book', ['getSections']),
+    isShowDelete() {
+      const index = this.getSections.findIndex(
+        item => item.id === this.sectionId
+      );
+      if (index !== 0 && index !== 1 && index !== this.getSections.length - 1) {
+        return true;
+      }
+      return false;
+    }
   },
   methods: {
     ...mapMutations({

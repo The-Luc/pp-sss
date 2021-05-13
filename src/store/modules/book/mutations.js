@@ -10,9 +10,12 @@ export const mutations = {
   },
   deleteSection(state, payload) {
     const { sectionId } = payload;
-    state.book.sections = state.book.sections.filter(
-      item => item.id !== sectionId
-    );
+    const { sections } = state.book;
+    const index = sections.findIndex(item => item.id == sectionId);
+    state.book.sections = sections.filter(item => item.id !== sectionId);
+    state.book.totalPages -= sections[index].sheets.length * 2;
+    state.book.totalSheets -= sections[index].sheets.length;
+    state.book.totalScreens -= sections[index].sheets.length;
   },
   deleteSheet(state, payload) {
     const { idSheet, idSection } = payload;

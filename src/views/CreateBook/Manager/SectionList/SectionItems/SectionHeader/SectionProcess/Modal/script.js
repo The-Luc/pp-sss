@@ -18,9 +18,9 @@ export default {
     }
   },
   methods: {
-    ...mapMutations('book', ['deleteSection']),
     ...mapMutations({
-      toggleModal: MUTATES.TOGGLE_MODAL
+      toggleModal: MUTATES.TOGGLE_MODAL,
+      deleteSection: 'book/deleteSection'
     }),
     onCloseModal() {
       this.toggleModal({

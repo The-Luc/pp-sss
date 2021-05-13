@@ -8,6 +8,7 @@
     <span class="first-release">{{ releaseDate }}</span>
     <Menu :src="moreIcon" nudge-width="160" :items="items">
       <ButtonDelete
+        v-if="isShowDelete"
         title="Delete This Section"
         @click.native="onOpenModal(sectionId, sectionName)"
       />
