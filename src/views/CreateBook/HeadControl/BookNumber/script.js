@@ -1,3 +1,4 @@
+import { mapGetters } from 'vuex';
 import { BOOK_NUMBER_TYPE, SCREEN } from '@/common/constants/book';
 import Number from './Number';
 import LineVertical from '../LineVertical';
@@ -13,6 +14,9 @@ export default {
       bookNumberType: BOOK_NUMBER_TYPE,
       screen: SCREEN
     };
+  },
+  computed: {
+    ...mapGetters('book', ['getTotalInfo'])
   },
   watch: {
     $route(to) {
