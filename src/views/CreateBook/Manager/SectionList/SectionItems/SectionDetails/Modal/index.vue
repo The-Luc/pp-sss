@@ -1,7 +1,8 @@
 <template>
   <Modal title="Delete?" width="425">
     <div class="text-300 item-title">
-      Please confirm that you want to delete sheet <span>"{{ idSheet }}"</span>
+      Please confirm that you want to delete sheet
+      <span>"{{ indexSheet }}"</span>
     </div>
     <div class="d-flex justify-space-between">
       <PpButton class="mr-3 w-100 btn-detail" @click.native="onCloseModal"
@@ -19,4 +20,4 @@
 
 <script src="./script.js" />
 
-<style lang="scss" src="./style.scss" scoped />
+<style lang="scss" src="./style.scss" />

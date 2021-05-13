@@ -3,19 +3,19 @@
     <Number
       :is-active="currentView === bookViewType.PRINT"
       :type="bookNumberType.PAGES"
-      total-page="56"
+      :total="getTotalInfo.totalPages"
     />
     <LineVertical height="16" />
     <Number
       :is-active="currentView === bookViewType.MANAGER"
       :type="bookNumberType.SHEETS"
-      total-page="56"
+      :total="getTotalInfo.totalSheets"
     />
     <LineVertical height="16" />
     <Number
       :is-active="currentView === bookViewType.DIGITAL"
       :type="bookNumberType.SCREENS"
-      total-page="56"
+      :total="getTotalInfo.totalScreens"
     />
   </div>
 </template>
