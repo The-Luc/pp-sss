@@ -6,8 +6,8 @@
   >
     <v-col class="section-details-wrapper">
       <draggable
-        class="section-details"
         v-model="sheets"
+        class="section-details"
         group="sheet"
         :move="onMove"
         @start="drag = true"
@@ -15,12 +15,13 @@
       >
         <div v-for="(sheet, index) in sheets" :key="sheet.id" class="sheet-box">
           <v-row>
-            <v-col
-              :class="sheet.type == 'half' ? 'vertical' : 'horizontal'"
-            >
-            <Menu :src="moreIcon" nudge-width="160" :items="items">
-              <ButtonDelete @click.native="openModal(sheet.id, sectionId)" title="Delete This Sheet" />
-            </Menu>
+            <v-col :class="sheet.type == 'half' ? 'vertical' : 'horizontal'">
+              <Menu :src="moreIcon" nudge-width="160" :items="items">
+                <ButtonDelete
+                  title="Delete This Sheet"
+                  @click.native="openModal(sheet.id, sectionId)"
+                />
+              </Menu>
             </v-col>
           </v-row>
 

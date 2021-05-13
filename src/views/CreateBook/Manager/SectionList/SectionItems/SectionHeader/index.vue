@@ -4,19 +4,19 @@
       class="section-header"
       data-toggle="collapse"
       :data-target="section.id"
-      v-on:click="toggleDetail"
+      @click="toggleDetail"
     >
       <v-row>
         <SectionName
-          :sectionId="section.id"
-          :sectionName="section.name"
-          :sectionColor="section.color"
+          :section-id="section.id"
+          :section-name="section.name"
+          :section-color="section.color"
         />
         <SectionProcess
-          :sectionId="section.id"
+          :section-id="section.id"
           :color="section.color"
-          :releaseDate="releaseDate"
-          :sectionName="section.name"
+          :release-date="releaseDate"
+          :section-name="section.name"
         />
       </v-row>
     </v-col>

@@ -11,10 +11,8 @@ export default {
   data() {
     return {
       isOpen: false,
-      items: [
-        { title: 'Move To', value: 'Choose a Section' }
-      ],
-      moreIcon : ICON_LOCAL.MORE_ICON
+      items: [{ title: 'Move To', value: 'Choose a Section' }],
+      moreIcon: ICON_LOCAL.MORE_ICON
     };
   },
   components: {
@@ -30,9 +28,7 @@ export default {
     ...mapState('book', ['book']),
     sheets: {
       get() {
-        const section = this.book.sections.filter(
-          s => s.id === this.sectionId
-        );
+        const section = this.book.sections.filter(s => s.id === this.sectionId);
 
         return section == null || section.length == 0 ? [] : section[0].sheets;
       },

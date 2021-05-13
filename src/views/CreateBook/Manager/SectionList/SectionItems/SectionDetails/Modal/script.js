@@ -15,14 +15,12 @@ export default {
     },
     idSection() {
       return this.$attrs.props.idSection;
-    },
+    }
   },
   methods: {
     ...mapMutations('project', ['deleteSheet']),
     ...mapMutations({
-      toggleModal: MUTATES.TOGGLE_MODAL,
-
-
+      toggleModal: MUTATES.TOGGLE_MODAL
     }),
     onCloseModal() {
       this.toggleModal({
@@ -30,7 +28,7 @@ export default {
       });
     },
     onDeleteSheet(idSheet, idSection) {
-      this.deleteSheet({idSheet, idSection});
+      this.deleteSheet({ idSheet, idSection });
       this.onCloseModal();
     }
   }

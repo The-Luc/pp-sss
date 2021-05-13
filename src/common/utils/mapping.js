@@ -1,5 +1,5 @@
-import { difference, keys } from "lodash";
-import { warn } from "./log";
+import { difference, keys } from 'lodash';
+import { warn } from './log';
 
 export const bindErrorToSlack = (method, url, errors) => {
   warn(`${method.toUpperCase()} ${url}: Wrong structure data in:

@@ -13,7 +13,7 @@
       </PpButton>
       <PpButton
         class="w-100"
-        isActive
+        is-active
         @click.native="onDeleteSection(sectionId)"
       >
         Yes, Delete Section
