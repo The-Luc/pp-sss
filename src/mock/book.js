@@ -23,6 +23,7 @@ const book = {
       draggable: false,
       color: '#fcd726',
       status: 'not started',
+      releaseDate: '08/07/21',
       order: 0,
       assigneeId: 123456789,
       sheets: [
@@ -49,6 +50,7 @@ const book = {
       draggable: true,
       color: '#a4ca52',
       status: 'in process',
+      releaseDate: '08/07/21',
       order: 1,
       assigneeId: 123456789,
       sheets: [
@@ -135,6 +137,7 @@ const book = {
       draggable: true,
       color: '#bc72c2',
       status: 'completed',
+      releaseDate: '08/07/21',
       order: 2,
       assigneeId: 123456789,
       sheets: [
@@ -206,6 +209,7 @@ const book = {
       name: 'OOO',
       color: 'orange',
       status: 'not started',
+      releaseDate: '08/07/21',
       order: 3,
       assigneeId: 123456789,
       sheets: []
@@ -216,6 +220,7 @@ const book = {
       name: 'Signatures',
       color: '#0b49f5',
       status: 'approved',
+      releaseDate: '08/07/21',
       order: 4,
       assigneeId: 123456789,
       sheets: [

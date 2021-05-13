@@ -1,11 +1,11 @@
 <template>
   <v-col class="col-3 section-process">
-    <span class="dot" :style="'background-color: ' + color"></span>
+    <span class="dot" :style="'background-color: ' + sectionColor"></span>
     <span class="process first"></span>
     <span class="process"></span>
     <span class="process last"></span>
 
-    <span class="first-release">{{ releaseDate }}</span>
+    <span class="first-release">{{ sectionReleaseDate }}</span>
     <Menu :src="moreIcon" nudge-width="160" :items="items" />
   </v-col>
 </template>

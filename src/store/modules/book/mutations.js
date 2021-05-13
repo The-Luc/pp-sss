@@ -1,11 +1,18 @@
-export const mutations = {
-  updateSection(state, payload) {
-    for (let i = 0; i < state.book.sections.length; i++) {
-      if (payload.sectionId == state.book.sections[i].id) {
-        state.book.sections[i].sheets = payload.sheets;
+import APP from './const';
 
-        break;
-      }
+export const mutations = {
+  [APP._MUTATES.UPDATE_SECTIONS](state, payload) {
+    const { sections } = payload;
+
+    state.sections = sections;
+  },
+  [APP._MUTATES.UPDATE_SHEETS](state, payload) {
+    const { sectionId, sheets } = payload;
+
+    const index = state.sections.findIndex(s => s.id === sectionId);
+
+    if (index >= 0) {
+      state.sections[index].sheets = sheets;
     }
   }
 };

@@ -2,7 +2,16 @@ import ICON_LOCAL from '@/common/constants/icon';
 import Menu from '@/components/Menu';
 
 export default {
-  props: ['color', 'releaseDate', 'sectionId'],
+  props: {
+    sectionColor: {
+      type: String,
+      require: true
+    },    
+    sectionReleaseDate: {
+      type: String,
+      require: true
+    }
+  },
   components: {
     Menu
   },

@@ -10,8 +10,22 @@ export default {
     SectionProcess
   },
   props: {
-    section: Object,
-    releaseDate: String
+    sectionId: {
+      type: String,
+      require: true
+    },    
+    sectionName: {
+      type: String,
+      require: true
+    },    
+    sectionColor: {
+      type: String,
+      require: true
+    },    
+    sectionReleaseDate: {
+      type: String,
+      require: true
+    }
   },
   methods: {
     toggleDetail: function(ev) {

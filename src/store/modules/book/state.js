@@ -1,5 +1,5 @@
-import book from '@/mock/book';
+const sections = [];
 
 export const state = {
-  book: book
+  sections: sections
 };

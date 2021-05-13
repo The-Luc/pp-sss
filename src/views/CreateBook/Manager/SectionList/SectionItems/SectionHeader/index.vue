@@ -3,19 +3,19 @@
     <v-col
       class="section-header"
       data-toggle="collapse"
-      :data-target="section.id"
+      :data-target="sectionId"
       @click="toggleDetail"
     >
       <v-row>
         <SectionName
-          :sectionId="section.id"
-          :sectionName="section.name"
-          :sectionColor="section.color"
+          :section-id="sectionId"
+          :section-name="sectionName"
+          :section-color="sectionColor"
         />
         <SectionProcess
-          :sectionId="section.id"
-          :color="section.color"
-          :releaseDate="releaseDate"
+          :section-id="sectionId"
+          :section-color="sectionColor"
+          :section-release-date="sectionReleaseDate"
         />
       </v-row>
     </v-col>

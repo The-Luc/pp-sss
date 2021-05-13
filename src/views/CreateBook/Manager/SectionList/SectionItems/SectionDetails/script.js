@@ -1,5 +1,8 @@
-import { mapState, mapMutations } from 'vuex';
+import { mapGetters, mapMutations } from 'vuex';
 import draggable from 'vuedraggable';
+
+import { GETTERS, MUTATES } from '@/store/modules/book/const';
+import { useSheets } from './composables';
 
 import Sheet from './Sheet';
 
@@ -17,21 +20,40 @@ export default {
     sectionId: String,
     startSeq: Number
   },
+  setup() {
+    return {
+      ...mapGetters({
+        getSectionIndex: GETTERS.SECTION_INDEX,
+        getSheets: GETTERS.SHEETS,
+        getListOfSheetBySectionIndex: GETTERS.SHEETS_BY_SECTION_INDEX
+      }),
+      ...mapMutations({
+        updateSheets: MUTATES.UPDATE_SHEETS
+      })
+    };
+  },
+  mounted: function() {
+    const { sheets } = useSheets(this.sectionId);
+
+    this.updateSheets({
+      sectionId: this.sectionId,
+      sheets: sheets
+    });
+  },
   data() {
     return {
       drag: false
     };
   },
   computed: {
-    ...mapState('book', ['book']),
     sheets: {
       get() {
-        const section = this.book.sections.filter(s => s.id === this.sectionId);
+        const getSheets = this.getSheets();
 
-        return section == null || section.length == 0 ? [] : section[0].sheets;
+        return getSheets(this.sectionId);
       },
       set(newSheets) {
-        this.updateSection({
+        this.updateSheets({
           sectionId: this.sectionId,
           sheets: newSheets
         });
@@ -39,16 +61,23 @@ export default {
     }
   },
   methods: {
-    ...mapMutations('book', ['updateSection']),
+    getIndexOfSectionById: function(sectionId) {
+      const getSectionIndex = this.getSectionIndex();
+
+      return getSectionIndex(sectionId);
+    },
+    getSheetsBySectionIndex: function(sectionId) {
+      const getListOfSheetBySectionIndex = this.getListOfSheetBySectionIndex();
+
+      return getListOfSheetBySectionIndex(sectionId);
+    },
     onChoose: function(evt) {
       moveToIndex = -1;
       moveToSectionIndex = -1;
 
       selectedIndex = this.sheets[evt.oldIndex].draggable ? evt.oldIndex : -1;
 
-      selectedSectionIndex = this.book.sections.findIndex(
-        s => s.id === this.sectionId
-      );
+      selectedSectionIndex = this.getIndexOfSectionById(this.sectionId);
     },
     onMove: function(evt) {
       this.hideAllIndicator();
@@ -65,6 +94,7 @@ export default {
         typeof evt.relatedContext.element === 'undefined'
           ? null
           : evt.relatedContext.element;
+
       const relateSectionId = evt.relatedContext.component.$el.getAttribute(
         'data-section'
       );
@@ -116,7 +146,7 @@ export default {
       if (moveToSectionIndex !== selectedSectionIndex) {
         this.sheets.splice(selectedIndex, 1);
 
-        this.book.sections[moveToSectionIndex].sheets.splice(
+        this.getSheetsBySectionIndex(moveToSectionIndex).splice(
           moveToIndex,
           0,
           selectedSheet
@@ -142,9 +172,7 @@ export default {
     getMoveToIndex: function(evt, relateSectionId) {
       moveToIndex = evt.draggedContext.futureIndex;
 
-      moveToSectionIndex = this.book.sections.findIndex(
-        s => s.id === relateSectionId
-      );
+      moveToSectionIndex = this.getIndexOfSectionById(relateSectionId);
     },
     isSameElement: function() {
       return (
