@@ -2,10 +2,6 @@
 
 @import '@/scss/variables';
 
-$border-album: 1px $color-gray2 solid;
-$box-height: 140px;
-$box-vertical-width: 109px;
-
 .manager-main {
   .manager-section-list {
     .section-details-wrapper {
@@ -32,6 +28,9 @@ $box-vertical-width: 109px;
           margin-bottom: 0;
 
           .sheet {
+            height: 140px;
+            border: 1px $color-gray2 solid;
+
             &:hover {
               cursor: pointer;
               background-color: $color-white2;
@@ -44,17 +43,13 @@ $box-vertical-width: 109px;
           }
 
           .vertical {
-            width: $box-vertical-width;
-            max-width: $box-vertical-width;
-            height: $box-height;
+            width: 50%;
+            max-width: 50%;
             margin: auto;
-            border: $border-album;
           }
 
           .horizontal {
             width: 100%;
-            height: $box-height;
-            border: $border-album;
           }
 
           .sheet-name {
