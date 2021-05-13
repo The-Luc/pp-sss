@@ -1,14 +1,8 @@
 <template lang="">
   <div>
-    <MainScreen/>
+    <MainScreen />
   </div>
 </template>
-<script>
-import MainScreen from './MainScreen'
-export default {
-  components: {
-    MainScreen
-  }
-};
-</script>
-<style lang="scss"></style>
+
+<script src="./script.js" />
+<style lang="scss" scoped src="./style.scss" />
