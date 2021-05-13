@@ -10,15 +10,16 @@ export const mutations = {
   },
   deleteSheet(state, payload) {
     const { idSheet, idSection } = payload;
-    const sectionIndex = state.book.sections.findIndex(item => {
+    const {totalPages, totalSheets, totalScreens, sections } = state.book
+    const sectionIndex = sections.findIndex(item => {
       return item.id === idSection;
     });
-    state.book.sections[sectionIndex].sheets = state.book.sections[
+    state.book.sections[sectionIndex].sheets = sections[
       sectionIndex
     ].sheets.filter(item => item.id !== idSheet);
-    state.book.totalPages = state.book.totalPages - 2;
-    state.book.totalSheets = state.book.totalSheets - 1;
-    state.book.totalScreens = state.book.totalScreens - 1;
+    state.book.totalPages = totalPages - 2;
+    state.book.totalSheets = totalSheets - 1;
+    state.book.totalScreens = totalScreens - 1;
   },
   moveSheet(state, payload) {
     const { sheetId, sectionId, currentSectionId } = payload;

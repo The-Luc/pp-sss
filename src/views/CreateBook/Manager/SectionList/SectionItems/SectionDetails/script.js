@@ -1,11 +1,11 @@
-import { mapState, mapMutations } from 'vuex';
-import { mapGetters } from 'vuex';
+import { mapState, mapMutations, mapGetters } from 'vuex';
 import draggable from 'vuedraggable';
 import { MUTATES } from '@/store/modules/app/const';
 import { MODAL_TYPES } from '@/common/constants';
 import MenuDetail from './MenuDetail';
 import ButtonDelete from '@/components/Menu/ButtonDelete';
 import ICON_LOCAL from '@/common/constants/icon';
+import { SHEET_TYPES } from '@/common/constants/sheetTypes';
 
 export default {
   data() {
@@ -17,11 +17,12 @@ export default {
       currentSheetHover: '',
       moreIcon: ICON_LOCAL.MORE_ICON,
       arrowDown: ICON_LOCAL.ARROW_DOWN,
-      isOpenMenu: false
+      isOpenMenu: false,
+      sheetTypes: SHEET_TYPES
     };
   },
   components: {
-    draggable,
+    Draggable: draggable,
     MenuDetail,
     ButtonDelete
   },
@@ -47,9 +48,9 @@ export default {
     }
   },
   methods: {
-    ...mapMutations('book', ['updateSection']),
     ...mapMutations({
-      toggleModal: MUTATES.TOGGLE_MODAL
+      toggleModal: MUTATES.TOGGLE_MODAL,
+      updateSection: 'book/updateSection'
     }),
     onMove({ relatedContext, draggedContext }) {
       const relatedElement = relatedContext.element;
@@ -97,7 +98,7 @@ export default {
       const index = this.getSections.findIndex(
         item => item.id == this.sectionId
       );
-      if (index == 0 || type == 'half') {
+      if (index == 0 || type == this.sheetTypes.HALF) {
         return false;
       }
       return true;

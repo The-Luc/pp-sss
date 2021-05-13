@@ -5,7 +5,7 @@
     :data-id="sectionId"
   >
     <v-col class="section-details-wrapper">
-      <draggable
+      <Draggable
         v-model="sheets"
         class="section-details"
         group="sheet"
@@ -15,7 +15,7 @@
       >
         <div v-for="(sheet, index) in sheets" :key="sheet.id" class="sheet-box">
           <v-row>
-            <v-col :class="sheet.type == 'half' ? 'vertical' : 'horizontal'">
+            <v-col :class="sheet.type == sheetTypes.HALF ? 'vertical' : 'horizontal'">
               <div v-if="onCheckActions(sheet.type)" class="menu">
                 <img
                   :src="moreIcon"
@@ -49,7 +49,7 @@
             <v-col class="sheet-name">{{ startSeq + index }}</v-col>
           </v-row>
         </div>
-      </draggable>
+      </Draggable>
     </v-col>
   </v-row>
 </template>
