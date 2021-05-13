@@ -21,12 +21,11 @@ export default {
         sectionHeader.getAttribute('data-toggle') === COLLAPSE
       );
 
-      sectionHeader.setAttribute(
-        'data-toggle',
-        isCollapse ? COLLAPSE : EXPAND
-      );
+      sectionHeader.setAttribute('data-toggle', isCollapse ? COLLAPSE : EXPAND);
 
-      const img = sectionHeader.querySelector('.section-name').querySelector('img');
+      const img = sectionHeader
+        .querySelector('.section-name')
+        .querySelector('img');
 
       img.setAttribute('data-toggle', isCollapse ? COLLAPSE : EXPAND);
 

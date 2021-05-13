@@ -3,6 +3,6 @@ export default {
     title: {
       type: String,
       default: 'Delete'
-    },
+    }
   }
 };

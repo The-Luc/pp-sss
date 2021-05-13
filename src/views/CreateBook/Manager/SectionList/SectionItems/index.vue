@@ -1,8 +1,8 @@
 <template>
   <v-row>
     <draggable
-      class="col"
       v-model="book.sections"
+      class="col"
       :move="onMove"
       @start="drag = true"
       @end="drag = false"
@@ -13,11 +13,11 @@
         class="section-item"
       >
         <v-col>
-          <Header :section="section" :releaseDate="book.releaseDate" />
+          <Header :section="section" :release-date="book.releaseDate" />
           <Details
             :sheets="section.sheets"
-            :sectionId="section.id"
-            :startSeq="getStartSeq({ index })"
+            :section-id="section.id"
+            :start-seq="getStartSeq({ index })"
           />
         </v-col>
       </v-row>

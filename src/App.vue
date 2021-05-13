@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import ModalManager from "./components/ModalManager";
+import ModalManager from './components/ModalManager';
 export default {
   components: {
     ModalManager

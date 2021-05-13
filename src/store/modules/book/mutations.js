@@ -10,7 +10,7 @@ export const mutations = {
   },
   deleteSheet(state, payload) {
     const { idSheet, idSection } = payload;
-    const {totalPages, totalSheets, totalScreens, sections } = state.book
+    const { totalPages, totalSheets, totalScreens, sections } = state.book;
     const sectionIndex = sections.findIndex(item => {
       return item.id === idSection;
     });

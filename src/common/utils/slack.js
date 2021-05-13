@@ -1,5 +1,5 @@
-import axios from "axios";
-import { WEBHOOK_URL } from "../constants/api";
+import axios from 'axios';
+import { WEBHOOK_URL } from '../constants/api';
 
 export const slackHook = error => {
   return axios.post(
@@ -7,7 +7,7 @@ export const slackHook = error => {
     { text: error },
     {
       headers: {
-        "Content-Type": "application/x-www-form-urlencoded"
+        'Content-Type': 'application/x-www-form-urlencoded'
       }
     }
   );

@@ -1,5 +1,5 @@
-import dataHandler from "./dataHandler";
-import errorHandler from "./errorHandler";
+import dataHandler from './dataHandler';
+import errorHandler from './errorHandler';
 
 const configResponse = async response => {
   response.use(dataHandler, errorHandler);

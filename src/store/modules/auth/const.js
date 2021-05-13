@@ -1,10 +1,10 @@
-export const MODULE_NAME = "auth";
+export const MODULE_NAME = 'auth';
 
 const _GETTERS = {};
 
 const _ACTIONS = {
-  LOGIN: "login",
-  LOGOUT: "logout"
+  LOGIN: 'login',
+  LOGOUT: 'logout'
 };
 
 export const ACTIONS = {
@@ -13,8 +13,8 @@ export const ACTIONS = {
 };
 
 const _MUTATES = {
-  LOGIN: "login",
-  LOGOUT: "logout"
+  LOGIN: 'login',
+  LOGOUT: 'logout'
 };
 
 export default {

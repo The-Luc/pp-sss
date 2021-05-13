@@ -1,5 +1,5 @@
-import { LOCAL_STORAGE } from "../../../../common/constants";
-import { getItem } from "../../../../common/storage";
+import { LOCAL_STORAGE } from '../../../../common/constants';
+import { getItem } from '../../../../common/storage';
 
 const tokenHandler = config => {
   const token = getItem(LOCAL_STORAGE.TOKEN);
