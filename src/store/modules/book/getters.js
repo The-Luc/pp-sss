@@ -1,6 +1,8 @@
-
 export const getters = {
-  getSection(state){
-   return state.project.sections;
+  getSection(state) {
+    return state.book.sections;
+  },
+  getBook(state) {
+    return state.book;
   }
 };

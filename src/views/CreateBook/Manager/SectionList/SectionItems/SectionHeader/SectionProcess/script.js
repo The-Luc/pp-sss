@@ -13,22 +13,25 @@ export default {
         { title: 'Status', value: 'Not Started' },
         { title: 'Due Date', value: 'Due Date' },
         { title: 'Assigned To', value: 'Unassigned' }
-      ],
-
+      ]
     };
   },
   created() {
     this.moreIcon = ICON_LOCAL.MORE_ICON;
   },
   computed: {
-    ...mapGetters('project',['getSection']),
-    isAddSheet(){
-      let index = this.getSection.findIndex( item => item.id === this.sectionId );
-      return !!index;
+    ...mapGetters('book', ['getSection', 'getBook']),
+    isAddSheet() {
+      let index = this.getSection.findIndex(item => item.id === this.sectionId);
+      if (this.getBook.totalPages >= this.getBook.numberMaxPages || !index) {
+        return false;
+      } else {
+        return true;
+      }
     }
   },
   methods: {
-    ...mapMutations('project', ['addSheet']),
+    ...mapMutations('book', ['addSheet']),
     onAddSheet(sectionId) {
       this.addSheet({
         sectionId

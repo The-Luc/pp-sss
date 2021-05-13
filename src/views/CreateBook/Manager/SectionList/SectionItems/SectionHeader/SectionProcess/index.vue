@@ -7,8 +7,8 @@
 
     <span class="first-release">{{ releaseDate }}</span>
     <Menu :src="moreIcon" nudge-width="160" :items="items">
-      <div class="menu-button">
-        <button v-show="isAddSheet" @click="onAddSheet(sectionId)">Add a sheet</button>
+      <div v-if="isAddSheet" class="menu-button">
+        <button @click="onAddSheet(sectionId)">Add a sheet {{ pages }}</button>
       </div>
     </Menu>
   </v-col>
