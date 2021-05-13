@@ -7,5 +7,11 @@ export const mutations = {
         break;
       }
     }
+  },
+  deleteSection(state, payload) {
+    const { sectionId } = payload;
+    state.book.sections = state.book.sections.filter(
+      item => item.id !== sectionId
+    );
   }
 };

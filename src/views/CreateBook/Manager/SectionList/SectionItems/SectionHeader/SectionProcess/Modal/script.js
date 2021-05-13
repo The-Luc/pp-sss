@@ -18,7 +18,7 @@ export default {
     }
   },
   methods: {
-    ...mapMutations('project', ['deleteSection']),
+    ...mapMutations('book', ['deleteSection']),
     ...mapMutations({
       toggleModal: MUTATES.TOGGLE_MODAL
     }),
