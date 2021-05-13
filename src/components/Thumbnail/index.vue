@@ -1,7 +1,7 @@
 <template>
   <div>
     <div :class="[{ 'half-left': !isTypeFull }, 'thumbnail-view-thumbnail']">
-      <img src="@/assets/image/chart.png" />
+      <img src="@/assets/image/white.png" />
       <div class="thumbnail-edit">
         <v-icon class="icon-edit">edit</v-icon>
       </div>
