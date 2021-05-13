@@ -1,5 +1,9 @@
 <template>
-  <v-row class="section-detail-container" data-toggle="collapse" :data-id="sectionId">
+  <v-row
+    class="section-detail-container"
+    data-toggle="collapse"
+    :data-id="sectionId"
+  >
     <v-col class="section-details-wrapper">
       <draggable
         class="section-details"
