@@ -7,7 +7,7 @@ import Action from './Action';
 import { GETTERS, MUTATES } from '@/store/modules/app/const';
 
 export default {
-  props: ['color', 'releaseDate', 'sectionId'],
+  props: ['sectionColor', 'releaseDate', 'sectionId'],
   components: {
     Menu,
     Action

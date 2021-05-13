@@ -3,19 +3,22 @@
     <v-col
       class="section-header"
       data-toggle="collapse"
+      :data-draggable="section.draggable"
       :data-target="section.id"
-      v-on:click="toggleDetail"
+      @click="toggleDetail"
+      @mouseover="showDragControl"
+      @mouseleave="hideDragControl"
     >
       <v-row>
         <SectionName
-          :sectionId="section.id"
-          :sectionName="section.name"
-          :sectionColor="section.color"
+          :section-id="section.id"
+          :section-name="section.name"
+          :section-color="section.color"
         />
         <SectionProcess
-          :sectionId="section.id"
-          :color="section.color"
-          :releaseDate="section.releaseDate"
+          :section-id="section.id"
+          :section-color="section.color"
+          :release-date="releaseDate"
         />
       </v-row>
     </v-col>

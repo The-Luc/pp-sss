@@ -46,7 +46,7 @@ const book = {
     {
       id: '2',
       name: 'Letter',
-      draggable: true,
+      draggable: false,
       color: '#a4ca52',
       status: 'in process',
       order: 1,
