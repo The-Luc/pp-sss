@@ -14,8 +14,8 @@ export default {
     releaseDate: String
   },
   methods: {
-    toggleDetail: function(ev) {
-      const sectionHeader = ev.target.closest('.section-header');
+    toggleDetail: function(evt) {
+      const sectionHeader = evt.target.closest('.section-header');
 
       const isCollapse = !(
         sectionHeader.getAttribute('data-toggle') === COLLAPSE
@@ -35,6 +35,18 @@ export default {
       target.setAttribute('data-toggle', isCollapse ? COLLAPSE : EXPAND);
 
       this.$root.$emit('tooglesection');
+    },
+    showDragControl: function(evt) {
+      const sectionHeader = evt.target.closest('.section-header');
+
+      if (sectionHeader.getAttribute('data-draggable') !== 'true') {
+        return;
+      }
+
+      this.$root.$emit('showDragControl', 'section' + this.section.id);
+    },
+    hideDragControl: function() {
+      this.$root.$emit('hideDragControl');
     }
   }
 };
