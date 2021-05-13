@@ -60,12 +60,12 @@ export default {
       );
     },
 
-    openModal(idSheet, idSection) {
+    openModal(indexSheet, idSheet, idSection) {
       this.toggleModal({
         isOpenModal: true,
         modalData: {
           type: MODAL_TYPES.DELETE_SHEET,
-          props: { idSheet, idSection }
+          props: { indexSheet, idSheet, idSection }
         }
       });
     },

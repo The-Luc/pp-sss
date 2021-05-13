@@ -16,39 +16,40 @@ export const mutations = {
     state.book.sections[sectionIndex].sheets = state.book.sections[
       sectionIndex
     ].sheets.filter(item => item.id !== idSheet);
+    state.book.totalPages = state.book.totalPages - 2;
+    state.book.totalSheets = state.book.totalSheets - 1;
+    state.book.totalScreens = state.book.totalScreens - 1;
   },
   moveSheet(state, payload) {
     const { sheetId, sectionId, currentSectionId } = payload;
-    const indexSection = state.book.sections.findIndex(
-      item => item.id == sectionId
-    );
-    const indexCurrentSection = state.book.sections.findIndex(
+    const { sections } = state.book;
+    const indexSection = sections.findIndex(item => item.id == sectionId);
+    const indexCurrentSection = sections.findIndex(
       item => item.id == currentSectionId
     );
-    const indexSheet = state.book.sections[indexSection].sheets.findIndex(
+    const indexSheet = sections[indexSection].sheets.findIndex(
       item => item.id == sheetId
     );
-    const sheet = { ...state.book.sections[indexSection].sheets[indexSheet] };
-    state.book.sections[indexSection].sheets = [
-      ...state.book.sections[indexSection].sheets.slice(0, indexSheet),
-      ...state.book.sections[indexSection].sheets.slice(indexSheet + 1)
+    const sheet = { ...sections[indexSection].sheets[indexSheet] };
+    sections[indexSection].sheets = [
+      ...sections[indexSection].sheets.slice(0, indexSheet),
+      ...sections[indexSection].sheets.slice(indexSheet + 1)
     ];
 
-    if (indexCurrentSection !== state.book.sections.length - 1) {
-      console.log(1);
+    if (indexCurrentSection !== sections.length - 1) {
       state.book.sections[indexCurrentSection].sheets = [
-        ...state.book.sections[indexCurrentSection].sheets,
+        ...sections[indexCurrentSection].sheets,
         sheet
       ];
     } else {
       state.book.sections[indexCurrentSection].sheets = [
-        ...state.book.sections[indexCurrentSection].sheets.slice(
+        ...sections[indexCurrentSection].sheets.slice(
           0,
-          state.book.sections[indexCurrentSection].sheets.length - 1
+          sections[indexCurrentSection].sheets.length - 1
         ),
         sheet,
-        ...state.book.sections[indexCurrentSection].sheets.slice(
-          state.book.sections[indexCurrentSection].sheets.length - 1
+        ...sections[indexCurrentSection].sheets.slice(
+          sections[indexCurrentSection].sheets.length - 1
         )
       ];
     }

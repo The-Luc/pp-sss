@@ -15,6 +15,9 @@ export default {
     },
     idSection() {
       return this.$attrs.props.idSection;
+    },
+    indexSheet() {
+      return this.$attrs.props.indexSheet;
     }
   },
   methods: {

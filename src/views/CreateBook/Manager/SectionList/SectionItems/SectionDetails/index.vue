@@ -6,8 +6,8 @@
   >
     <v-col class="section-details-wrapper">
       <draggable
-        class="section-details"
         v-model="sheets"
+        class="section-details"
         group="sheet"
         :move="onMove"
         @start="drag = true"
@@ -36,7 +36,9 @@
                 >
                   <ButtonDelete
                     title="Delete This Sheet"
-                    @click.native="openModal(sheet.id, sectionId)"
+                    @click.native="
+                      openModal(startSeq + index, sheet.id, sectionId)
+                    "
                   />
                 </MenuDetail>
               </div>
@@ -44,9 +46,7 @@
           </v-row>
 
           <v-row>
-            <v-col class="sheet-name"
-              >{{ startSeq + index }}{{ sheet.name }}</v-col
-            >
+            <v-col class="sheet-name">{{ startSeq + index }}</v-col>
           </v-row>
         </div>
       </draggable>
