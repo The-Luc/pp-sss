@@ -1,32 +1,32 @@
-import { ref, onMounted, watch } from '@vue/composition-api';
+import { useActions, useGetters } from 'vuex-composition-helpers';
 
-import albumService from '@/api/album';
+import { ACTIONS, GETTERS } from '@/store/modules/book/const';
+import bookService from '@/api/book';
 
-export const useYearBookInformation = yearbook => {
-  const book = ref({});
-  const fetchYearbook = async () => {
-    book.value = 123;
-  };
+export const useBook = () => {
+  const { getBook } = useActions({
+    getBook: ACTIONS.GET_BOOK
+  });
 
-  onMounted(fetchYearbook);
-  watch(yearbook, fetchYearbook);
-
+  const { book } = useGetters({
+    book: GETTERS.BOOK_DETAIL
+  });
   return {
     book,
-    fetchYearbook
+    getBook
   };
 };
 
-export const useUpdateAlbum = () => {
-  const updateAlbum = async (data, onSettled) => {
-    if (!data.albumId) {
-      return;
-    }
-    const { data: response, status } = await albumService.updateAlbum(data);
-    onSettled(response, status !== 200);
+export const useUpdateTitle = () => {
+  const updateTitle = async (bookId, title) => {
+    const { data, isSuccess } = await bookService.updateTitle(bookId, title);
+    return {
+      data,
+      isSuccess
+    };
   };
 
   return {
-    updateAlbum
+    updateTitle
   };
 };
