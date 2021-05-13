@@ -4,8 +4,8 @@ export const BOOK_NUMBER_TYPE = {
   SCREENS: 'Screens'
 };
 
-export const BOOK_VIEW_TYPE = {
-  MANAGER: 'Manager',
-  PRINT: 'Print',
-  DIGITAL: 'Digital'
+export const SCREEN = {
+  MANAGER: '/edit/manager',
+  PRINT: '/edit/print',
+  DIGITAL: '/edit/digital'
 };

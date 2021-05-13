@@ -27,6 +27,20 @@ $spacing: 15px;
 
     .summary-title {
       margin-bottom: $spacing;
+      line-height: 15px;
+
+      img {
+        width: 13px;
+        height: 11px;
+        margin-right: 5px;
+        cursor: pointer;
+      }
+
+      span {
+        color: $color-darkblue;
+        font-size: 13px;
+        text-transform: uppercase;
+      }
     }
 
     .summary-detail {
@@ -54,6 +68,14 @@ $spacing: 15px;
         .info-detail {
           line-height: 17px;
           font-size: 14px;
+
+          &.countdown {
+            color: $color-darkblue;
+          }
+        }
+
+        img {
+          border: 0.5px solid $color-gray;
         }
       }
     }

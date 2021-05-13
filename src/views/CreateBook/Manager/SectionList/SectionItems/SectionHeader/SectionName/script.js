@@ -1,3 +1,18 @@
+import DragDropControl from '@/components/DragDropControl';
+
 export default {
-  props: ['sectionId', 'sectionName', 'sectionColor']
+  components: {
+    DragDropControl
+  },
+  props: {
+    sectionId: {
+      type: String
+    },
+    sectionName: {
+      type: String
+    },
+    sectionColor: {
+      type: String
+    }
+  }
 };
