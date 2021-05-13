@@ -1,4 +1,4 @@
-import { BOOK_NUMBER_TYPE, BOOK_VIEW_TYPE } from '@/common/constants/book';
+import { BOOK_NUMBER_TYPE, SCREEN } from '@/common/constants/book';
 import Number from './Number';
 import LineVertical from '../LineVertical';
 
@@ -7,16 +7,16 @@ export default {
     Number,
     LineVertical
   },
-  props: {
-    currentView: {
-      type: String,
-      default: ''
-    }
-  },
   data() {
     return {
+      path: this.$route.path,
       bookNumberType: BOOK_NUMBER_TYPE,
-      bookViewType: BOOK_VIEW_TYPE
+      screen: SCREEN
     };
+  },
+  watch: {
+    $route(to) {
+      this.path = to.path;
+    }
   }
 };

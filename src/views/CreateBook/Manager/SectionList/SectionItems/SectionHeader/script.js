@@ -1,3 +1,6 @@
+import { mapGetters } from 'vuex';
+
+import { GETTERS } from '@/store/modules/app/const';
 import SectionName from './SectionName';
 import SectionProcess from './SectionProcess';
 
@@ -13,9 +16,31 @@ export default {
     section: Object,
     releaseDate: String
   },
+  data() {
+    return {
+      isOpenMenu: false
+    };
+  },
+  computed: {
+    ...mapGetters({
+      sectionSelected: GETTERS.SECTION_SELECTED
+    })
+  },
+  watch: {
+    sectionSelected(val) {
+      this.setIsOpenMenu(val);
+    }
+  },
   methods: {
-    toggleDetail: function(evt) {
-      const sectionHeader = evt.target.closest('.section-header');
+    setIsOpenMenu(sectionSelected) {
+      if (!sectionSelected || sectionSelected !== this.section.id) {
+        this.isOpenMenu = true;
+      } else if (sectionSelected && sectionSelected === this.section.id) {
+        this.isOpenMenu = false;
+      }
+    },
+    toggleDetail: function(ev) {
+      const sectionHeader = ev.target.closest('.section-header');
 
       const isCollapse = !(
         sectionHeader.getAttribute('data-toggle') === COLLAPSE
