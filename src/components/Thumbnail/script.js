@@ -1,6 +1,14 @@
 export default {
   props: {
-    sheet: Object
+    sheet: Object,
+    edit: {
+      type: Boolean,
+      default: true
+    },
+    link: {
+      type: Boolean,
+      default: true
+    }
   },
   computed: {
     isTypeFull() {

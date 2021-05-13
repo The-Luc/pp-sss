@@ -1,5 +1,20 @@
-  .page-edition {
-    padding: 0;
-    border: 1px solid #808184;
-    height: 1000px;
+.page-edition {
+  padding: 0;
+  border-left: 1px solid #808184;
+  height: 1000px;
+  .container-edition {
+    width: 85%;
+    height: 700px;
+    background: #ed1c24;
+    opacity: 20%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 20px 0 0 20px;
+    canvas {
+      width: 100%;
+      margin: 45px 60px;
+      background: white;
+    }
   }
+}

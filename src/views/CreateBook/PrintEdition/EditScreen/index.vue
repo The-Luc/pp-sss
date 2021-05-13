@@ -1,6 +1,6 @@
 <template lang="">
   <div class="row print-main">
-    <Header nameEditor="print editor" />
+    <Header name-editor="print editor" />
     <ToolBar />
     <FeedbackBar />
     <SidebarSection />

@@ -1,6 +1,8 @@
 <template lang="">
   <div class="col-10 page-edition">
-    col10
+    <div class="container-edition">
+      <canvas />
+    </div>
   </div>
 </template>
 

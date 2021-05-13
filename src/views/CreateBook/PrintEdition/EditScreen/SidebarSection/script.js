@@ -1,8 +1,12 @@
+import Thumbnail from '@/components//Thumbnail';
+import project from '@/mock/project';
 export default {
-  name: 'SidebarSection',
-  data() {
-    return {};
+  components: {
+    Thumbnail
   },
-  computed: {},
-  methods: {}
+  data() {
+    return {
+      project: project
+    };
+  }
 };

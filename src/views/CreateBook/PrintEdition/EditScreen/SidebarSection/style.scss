@@ -1,65 +1,34 @@
-.sidebar-section {
-  padding: 0;
-  .section-item {
-    margin-top: 14px;
-    .section-header {
-      display: flex;
-      align-items: center;
-      padding: 0 14px;
-      font-size: 10px;
-      .header-color {
-        width: 8px;
-        height: 8px;
-        background-color: brown;
-        border-radius: 100%;
-      }
-      .header-arrow {
-        display: block;
-        width: 16px;
-        height: 16px;
-        line-height: 16px;
-        color: #000;
-      }
-      .header-name {
-        font-weight: 600;
-        margin: 0 4px;
-      }
-    }
-    .section-body {
-      width: 128px;
-      margin: 10px auto 0;
-      .section-thumbnail {
-        width: 100%;
-        height: 84px;
-        border: 1px solid #707070;
-        .thumbnail-left {
-          width: 50%;
-          height: 100%;
-          border-right: 1px solid #707070;
-        }
-        .thumbnail-left.inside-cover,
-        .thumbnail-right.inside-cover {
-          background-color: #d9d9d9;
-        }
-      }
-      .section-number-page {
-        color: #8c8c8c;
-        width: 100%;
-        display: flex;
-        justify-content: space-between;
-        font-size: 8px;
-        .number-page-left {
-          text-align: left;
-        }
-        .number-page-right {
-          text-align: right;
-        }
-      }
+.thumbnail-view-container {
+  padding: 10px 20px 10px 15px;
+  .body-thumbnail {
+    padding: 10px 0px 10px 8px;
+  }
+}
+.thumbnail-view-header {
+  padding-left: -8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+}
+
+.thumbnail-view-header > div {
+  display: flex;
+  align-items: center;
+  .header-color {
+    width: 12px;
+    height: 12px;
+    background-color: brown;
+    border-radius: 100%;
+  }
+  .header-name {
+    font-family: $font-700;
+    span {
+      font-family: $font-300;
     }
   }
-  .section-item.active {
-    .section-thumbnail {
-      border: solid 2px #42738d;
-    }
+  .v-icon {
+    font-size: 28px;
+    color: #58595b;
   }
 }
