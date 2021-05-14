@@ -1,11 +1,11 @@
-import Vue from "vue";
-import VueRouter from "vue-router";
+import Vue from 'vue';
+import VueRouter from 'vue-router';
 
-import moduleCreateBook from "@/views/CreateBook/routes";
-import store from "../store";
+import moduleCreateBook from '@/views/CreateBook/routes';
+import store from '../store';
 
-const PageNotFound = () => import("../views/PageNotFound");
-const Manager = () => import("../views/CreateBook/Manager");
+const PageNotFound = () => import('../views/PageNotFound');
+const Manager = () => import('../views/CreateBook/Manager');
 
 Vue.use(VueRouter);
 
@@ -14,13 +14,13 @@ const authGuard = {
     const redirect = () => {
       next();
       if (store.state.auth.token) {
-        if (to.path === "/login") {
-          next("/");
+        if (to.path === '/login') {
+          next('/');
         } else {
           next();
         }
       } else {
-        next("/login");
+        next('/login');
       }
     };
     redirect();
@@ -29,22 +29,22 @@ const authGuard = {
 
 const routes = [
   {
-    path: "/",
-    redirect: "/edit/manager",
+    path: '/',
+    redirect: '/edit/manager',
     component: Manager,
     ...authGuard
   },
   {
-    path: "/edit",
-    redirect: "/edit/manager",
+    path: '/edit',
+    redirect: '/edit/manager',
     component: Manager,
     ...authGuard
   },
-  { path: "*", component: PageNotFound }
+  { path: '*', component: PageNotFound }
 ];
 
 const router = new VueRouter({
-  mode: "history",
+  mode: 'history',
   base: process.env.BASE_URL,
   routes: [...routes, ...moduleCreateBook],
   scrollBehavior() {

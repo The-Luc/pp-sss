@@ -7,7 +7,7 @@ export default {
   props: {
     height: {
       type: String,
-      default: "25"
+      default: '25'
     }
   }
 };

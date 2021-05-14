@@ -1,24 +1,24 @@
-const Edit = () => import("../CreateBook");
-const Manager = () => import("./Manager");
-const PrintEdition = () => import("./PrintEdition");
-const DigitalEdition = () => import("./DigitalEdition");
+const Edit = () => import('../CreateBook');
+const Manager = () => import('./Manager');
+const PrintEdition = () => import('./PrintEdition');
+const DigitalEdition = () => import('./DigitalEdition');
 
 export default [
   {
-    path: "/edit",
-    name: "edit",
+    path: '/edit',
+    name: 'edit',
     component: Edit,
     children: [
       {
-        path: "manager",
+        path: 'manager',
         component: Manager
       },
       {
-        path: "print",
+        path: 'print',
         component: PrintEdition
       },
       {
-        path: "digital",
+        path: 'digital',
         component: DigitalEdition
       }
     ]

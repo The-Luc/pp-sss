@@ -9,11 +9,31 @@ export default {
       type: String,
       default: '160'
     },
-    src: {
-      type: String
-    },
     items: {
       type: Array
+    },
+    id: {
+      type: String
+    },
+    menuX: {
+      type: Number
+    },
+    menuY: {
+      type: Number
+    },
+    isOpen: {
+      type: Boolean
+    }
+  },
+  methods: {
+    onItemClick(event, item) {
+      this.$emit('onItemClick', {
+        event,
+        item
+      });
+    },
+    onClickOutSideMenu() {
+      this.$emit('onClickOutSideMenu');
     }
   }
 };
