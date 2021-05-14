@@ -1,9 +1,8 @@
 <template>
   <v-row>
     <v-col class="section-control">
-      <v-btn id="btn-ec-all" data-toggle="collapse" v-on:click="toggleDetail"
-        >{{ isCollapse ? 'Expand' : 'Collapse' }} All
-        Sections</v-btn
+      <v-btn id="btn-ec-all" data-toggle="collapse" @click="toggleDetail"
+        >{{ isCollapse ? 'Expand' : 'Collapse' }} All Sections</v-btn
       >
       <v-btn class="btn-solid">
         <img src="@/assets/icons/plus.svg" />

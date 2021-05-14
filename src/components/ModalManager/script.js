@@ -5,11 +5,13 @@ import { MODAL_TYPES } from '@/common/constants';
 
 // Modal component
 import HelpModal from '@/views/CreateBook/HeadControl/BookInformation/Help/Modal';
+import DeleteSheetModal from '@/views/CreateBook/Manager/SectionList/SectionItems/SectionDetails/Modal';
 
-const { HELP } = MODAL_TYPES;
+const { HELP, DELETE_SHEET } = MODAL_TYPES;
 
 const ModalList = {
-  [HELP]: HELP
+  [HELP]: HELP,
+  [DELETE_SHEET]: DELETE_SHEET
 };
 
 export default {
@@ -19,7 +21,8 @@ export default {
     };
   },
   components: {
-    [MODAL_TYPES.HELP]: HelpModal
+    [MODAL_TYPES.HELP]: HelpModal,
+    [MODAL_TYPES.DELETE_SHEET]: DeleteSheetModal
   },
   computed: {
     ...mapGetters({
