@@ -6,7 +6,11 @@
         :key="sheet.id"
         :section="section"
       >
-        <Thumbnail :sheet="sheet" />
+        <Thumbnail
+          :sections="book.sections"
+          :section-id="section.id"
+          :sheet="sheet"
+        />
       </Frames>
     </template>
   </div>

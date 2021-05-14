@@ -146,11 +146,11 @@ const book = {
           order: 0,
           printData: {
             thumbnailUrl: null,
-            link: 'link'
+            link: 'unlink'
           },
           digitalData: {
             thumbnailUrl: null,
-            link: 'link'
+            link: 'unlink'
           }
         },
         {
