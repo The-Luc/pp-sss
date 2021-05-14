@@ -1,13 +1,17 @@
 .menu-button {
-  padding: 0 10px;
+  padding: 0 10px 10px 10px;
 
   button {
     font-family: $font-500;
-    color: #565656;
+    color: #494949;
     font-size: 13px;
     background-color: #f4f4f4;
     width: 100%;
     text-align: center;
     padding: 8px 0;
+    .v-icon {
+      font-size: 20px;
+      margin-right: 3px;
+    }
   }
 }

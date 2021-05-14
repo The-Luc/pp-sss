@@ -1,6 +1,8 @@
 <template>
   <div class="menu-button">
-    <button class="item-center">{{ title }}</button>
+    <button class="item-center">
+      <v-icon>add_circle_outline</v-icon>{{ title }}
+    </button>
   </div>
 </template>
 

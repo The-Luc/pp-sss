@@ -4,7 +4,7 @@
     :nudge-width="nudgeWidth"
     :value="isOpen"
     :close-on-click="false"
-    :close-on-content-click="false"
+    :close-on-content-click="isCloseMenu"
     :position-x="menuX"
     :position-y="menuY"
   >

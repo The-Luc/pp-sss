@@ -2,6 +2,7 @@ import moment from 'moment';
 import { mapGetters, mapMutations } from 'vuex';
 
 import ButtonDelete from '@/components/Menu/ButtonDelete';
+import ButtonAdd from '@/components/Menu/ButtonAdd';
 import ICON_LOCAL from '@/common/constants/icon';
 import Menu from '@/components/Menu';
 import { GETTERS, MUTATES } from '@/store/modules/app/const';
@@ -18,13 +19,15 @@ export default {
     'sectionId',
     'sectionStatus',
     'sectionName',
-    'isShowDelete'
+    'isShowDelete',
+    'isShowAdd'
   ],
   components: {
     Menu,
     Calendar,
     SectionStatus,
-    ButtonDelete
+    ButtonDelete,
+    ButtonAdd
   },
   computed: {
     ...mapGetters({
@@ -42,7 +45,8 @@ export default {
       statusX: 0,
       statusY: 0,
       statusWidth: 180,
-      minDate: new Date().toISOString().slice(0, 10)
+      minDate: new Date().toISOString().slice(0, 10),
+      isCloseMenu: false
     };
   },
   watch: {
@@ -63,7 +67,8 @@ export default {
   },
   methods: {
     ...mapMutations({
-      toggleModal: MUTATES.TOGGLE_MODAL
+      toggleModal: MUTATES.TOGGLE_MODAL,
+      addSheet: 'book/addSheet'
     }),
     onOpenModal(sectionId, sectionName) {
       this.toggleModal({
@@ -129,6 +134,12 @@ export default {
       setTimeout(() => {
         this.isOpenStatus = false;
       }, 0);
+    },
+    onAddSheet(sectionId) {
+      this.isCloseMenu = true;
+      this.addSheet({
+        sectionId
+      });
     }
   }
 };
