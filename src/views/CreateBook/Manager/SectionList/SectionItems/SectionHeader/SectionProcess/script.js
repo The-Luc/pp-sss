@@ -1,4 +1,4 @@
-import { mapGetters, mapMutations } from 'vuex';
+import { mapMutations, mapGetters } from 'vuex';
 import moment from 'moment';
 
 import ICON_LOCAL from '@/common/constants/icon';
@@ -10,6 +10,10 @@ export default {
   props: {
     sectionId: {
       type: Number,
+      require: true
+    },
+    sectionName: {
+      type: String,
       require: true
     },
     sectionColor: {
@@ -40,16 +44,26 @@ export default {
   },
   computed: {
     ...mapGetters({
-      sectionSelected: GETTERS.SECTION_SELECTED
-    })
+      sectionSelected: GETTERS.SECTION_SELECTED,
+      sections: 'book/getSections'
+    }),
+    isShowDelete() {
+      const index = this.sections.findIndex(item => item.id === this.sectionId);
+      if (index !== 0 && index !== 1 && index !== this.sections.length - 1) {
+        return true;
+      }
+      return false;
+    }
   },
   created() {
     this.moreIcon = ICON_LOCAL.MORE_ICON;
   },
   methods: {
     ...mapMutations({
-      setSectionSelected: MUTATES.SET_SELECTION_SELECTED
+      setSectionSelected: MUTATES.SET_SELECTION_SELECTED,
+      toggleModal: MUTATES.TOGGLE_MODAL
     }),
+
     setIsOpenMenu() {
       if (!this.sectionSelected || this.sectionSelected !== this.sectionId) {
         this.setSectionSelected({

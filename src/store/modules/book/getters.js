@@ -13,10 +13,12 @@ export const getters = {
       totalScreens: state.book.totalScreens
     };
   },
-
   [APP._GETTERS.SECTIONS]: state => {
     return state.book.sections.sort((firstEl, secondEl) => {
       return firstEl.order - secondEl.order;
     });
+  },
+  getTotalSections: state => {
+    return state.book.sections.length;
   }
 };

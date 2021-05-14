@@ -1,4 +1,6 @@
 import APP from './const';
+import randomcolor from 'randomcolor';
+import { uniqueId } from 'lodash';
 
 export const mutations = {
   [APP._MUTATES.UPDATE_SECTIONS](state, payload) {
@@ -55,6 +57,15 @@ export const mutations = {
 
     sections[selectedSectionIndex].sheets = _items;
   },
+  deleteSection(state, payload) {
+    const { sectionId } = payload;
+    const { sections } = state.book;
+    const index = sections.findIndex(item => item.id == sectionId);
+    state.book.sections = sections.filter(item => item.id !== sectionId);
+    state.book.totalPages -= sections[index].sheets.length * 2;
+    state.book.totalSheets -= sections[index].sheets.length;
+    state.book.totalScreens -= sections[index].sheets.length;
+  },
   deleteSheet(state, payload) {
     const { idSheet, idSection } = payload;
     const { totalPages, totalSheets, totalScreens, sections } = state.book;
@@ -101,5 +112,39 @@ export const mutations = {
         )
       ];
     }
+  },
+  addSection(state) {
+    const { sections } = state.book;
+    const newSectionId = uniqueId('id-');
+    state.book.sections = [
+      ...sections.slice(0, sections.length - 1),
+      {
+        color: randomcolor(),
+        fixed: false,
+        id: newSectionId,
+        name: '',
+        sheets: []
+      },
+      ...sections.slice(sections.length - 1)
+    ];
+    setTimeout(() => {
+      const collapse = document
+        .querySelector('#btn-ec-all')
+        .getAttribute('data-toggle');
+      let el = document.querySelector(`#section-${newSectionId}`);
+      if (collapse !== 'collapse') {
+        el.click();
+      }
+      let input = el.querySelector('input');
+      input.focus();
+    }, 0);
+  },
+  editSectionName(state, payload) {
+    const { sectionId } = payload;
+    let { sectionName } = payload;
+    sectionName = sectionName || 'Untitled';
+    const { sections } = state.book;
+    const indexSection = sections.findIndex(item => item.id == sectionId);
+    state.book.sections[indexSection].name = sectionName;
   }
 };

@@ -17,10 +17,12 @@
       :style="[sectionStatus >= 3 && { backgroundColor: sectionColor }]"
     ></span>
 
-    <span class="first-release">{{ sectionReleaseDate || '06/08/21' }}</span>
+    <span class="first-release">{{ sectionReleaseDate }}</span>
     <img :src="moreIcon" @click="toggleMenu" />
     <Action
       :release-date="sectionReleaseDate"
+      :is-show-delete="isShowDelete"
+      :section-name="sectionName"
       nudge-width="160"
       :items="items"
       :menu-x="menuX"

@@ -1,7 +1,7 @@
 export const MODULE_NAME = 'book';
 
 const _GETTERS = {
-  SECTIONS: 'sections',
+  SECTIONS: 'sections'
 };
 
 export const GETTERS = {
