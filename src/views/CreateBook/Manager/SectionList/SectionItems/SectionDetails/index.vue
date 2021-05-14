@@ -23,7 +23,7 @@
                   :src="moreIcon"
                   :class="[
                     onCheckIsShowMenuDetail(sheet.id) ? 'd-block' : '',
-                    'menu-icon',
+                    'menu-icon'
                   ]"
                   @mouseover="setCurrentSheetId(sheet.id)"
                   @mouseleave="setCurrentSheetId()"

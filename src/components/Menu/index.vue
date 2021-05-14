@@ -13,7 +13,7 @@
         <Item
           :title="item.title"
           :value="item.value"
-          @onItemClick="(event) => onItemClick(event, item)"
+          @onItemClick="event => onItemClick(event, item)"
         />
       </v-list-item>
       <slot />
