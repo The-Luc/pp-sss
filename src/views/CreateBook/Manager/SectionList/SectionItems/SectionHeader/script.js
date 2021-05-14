@@ -59,6 +59,18 @@ export default {
       target.setAttribute('data-toggle', isCollapse ? COLLAPSE : EXPAND);
 
       this.$root.$emit('tooglesection');
+    },
+    showDragControl: function(evt) {
+      const sectionHeader = evt.target.closest('.section-header');
+
+      if (sectionHeader.getAttribute('data-draggable') !== 'true') {
+        return;
+      }
+
+      this.$root.$emit('showDragControl', 'section' + this.section.id);
+    },
+    hideDragControl: function() {
+      this.$root.$emit('hideDragControl');
     }
   }
 };

@@ -3,8 +3,11 @@
     <v-col
       class="section-header"
       data-toggle="collapse"
+      :data-draggable="section.draggable"
       :data-target="section.id"
       @click="toggleDetail"
+      @mouseover="showDragControl"
+      @mouseleave="hideDragControl"
     >
       <v-row>
         <SectionName
@@ -17,6 +20,8 @@
           :color="section.color"
           :status="section.status"
           :due-date="section.dueDate"
+          :section-color="section.color"
+          :release-date="releaseDate"
         />
       </v-row>
     </v-col>

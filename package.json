@@ -22,7 +22,7 @@
     "moment": "^2.29.1",
     "vue": "^2.6.12",
     "vue-router": "^3.5.1",
-    "vuedraggable": "^2.24.3",
+    "vuedraggable": "github:lnvu1983/Vue.Draggable",
     "vuetify": "github:Koo-SSS/vuetify",
     "vuex": "^3.6.2",
     "vuex-composition-helpers": "^1.0.23"

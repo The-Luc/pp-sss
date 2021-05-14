@@ -1,5 +1,5 @@
 /* eslint-disable no-console, prefer-destructuring */
-import { slackHook } from "./slack";
+import { slackHook } from './slack';
 
 export const log = console.log;
 export const info = console.info;

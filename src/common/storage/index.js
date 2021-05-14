@@ -1,1 +1,1 @@
-export * from "./local.helper";
+export * from './local.helper';

@@ -7,7 +7,14 @@ import { GETTERS, MUTATES } from '@/store/modules/app/const';
 import { SECTION_STATUS } from '@/common/constants/status';
 
 export default {
-  props: ['color', 'dueDate', 'sectionId', 'status'],
+  props: [
+    'sectionColor',
+    'releaseDate',
+    'sectionId',
+    'color',
+    'dueDate',
+    'status'
+  ],
   components: {
     Menu,
     Action
