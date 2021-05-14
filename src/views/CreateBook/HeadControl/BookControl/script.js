@@ -1,4 +1,4 @@
-import { BOOK_VIEW_TYPE } from '@/common/constants/book';
+import { SCREEN } from '@/common/constants/book';
 import PpButton from '@/components/Button';
 import LineVertical from '../LineVertical';
 
@@ -7,21 +7,20 @@ export default {
     PpButton,
     LineVertical
   },
-  props: {
-    currentView: {
-      type: String,
-      required: true
-    }
-  },
-
   data() {
     return {
-      bookViewType: BOOK_VIEW_TYPE
+      screen: SCREEN,
+      path: this.$route.path
     };
+  },
+  watch: {
+    $route(to) {
+      this.path = to.path;
+    }
   },
   methods: {
     onChangeView(newView) {
-      this.$emit('onChangeView', newView);
+      this.$router.push(`${newView.toLowerCase()}`);
     }
   }
 };

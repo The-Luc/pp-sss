@@ -1,28 +1,31 @@
 <template>
   <div class="book book-control">
     <PpButton
-      :is-active="currentView === bookViewType.PRINT"
+      v-if="screen"
+      :is-active="path.indexOf(screen.PRINT) > -1"
       type="btn"
       link-to="/edit/print"
-      @click="onChangeView(bookViewType.PRINT)"
+      @click="onChangeView(screen.PRINT)"
     >
       Print Edition
     </PpButton>
     <LineVertical />
     <PpButton
-      :is-active="currentView === bookViewType.MANAGER"
+      v-if="screen"
+      :is-active="path.indexOf(screen.MANAGER) > -1"
       type="btn"
       link-to="/edit/manager"
-      @click="onChangeView(bookViewType.MANAGER)"
+      @click="onChangeView(screen.MANAGER)"
     >
       Manager
     </PpButton>
     <LineVertical />
     <PpButton
-      :is-active="currentView === bookViewType.DIGITAL"
+      v-if="screen"
+      :is-active="path.indexOf(screen.DIGITAL) > -1"
       type="btn"
       link-to="/edit/digital"
-      @click="onChangeView(bookViewType.DIGITAL)"
+      @click="onChangeView(screen.DIGITAL)"
     >
       Digital Edition
     </PpButton>

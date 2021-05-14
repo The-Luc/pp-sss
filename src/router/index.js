@@ -55,7 +55,7 @@ const router = new VueRouter({
 });
 router.beforeEach(async (to, from, next) => {
   if (to.path === '/edit/print' || to.path === '/edit/digital') {
-    const sections = store.state.project.project?.sections;
+    const sections = store.state.book.book?.sections;
     const emptySections = sections.filter(item => item.sheets?.length === 0);
     if (emptySections.length !== 0) {
       if (from.path !== '/edit/manager') {

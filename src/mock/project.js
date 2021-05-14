@@ -91,8 +91,7 @@ const project = {
       fixed: false,
       name: 'OOO',
       color: 'orange',
-      sheets: [
-      ]
+      sheets: []
     },
     {
       id: '10',

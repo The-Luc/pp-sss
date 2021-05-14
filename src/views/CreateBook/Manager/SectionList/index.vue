@@ -1,12 +1,14 @@
 <template>
-  <v-col class="manager-section-list" id="manager-section-list">
-    <Items />
-    <Control />
+  <v-col id="manager-section-list" class="manager-section-list">
+    <v-row>
+      <v-col class="scroll-container">
+        <Items />
+        <Control />
+      </v-col>
+    </v-row>
   </v-col>
 </template>
 
 <script src="./script.js"></script>
 
-<style lang="scss">
-@import './style.scss';
-</style>
+<style lang="scss" src="./style.scss"></style>
