@@ -96,7 +96,7 @@ export default {
       event.stopPropagation();
       const element = event.target;
       const { x, y } = element.getBoundingClientRect();
-      this.menuX = x - 70;
+      this.menuX = x - 80;
       this.menuY = y;
       this.setIsOpenMenu();
     }

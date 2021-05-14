@@ -1,9 +1,9 @@
 import moment from 'moment';
-import { mapGetters } from 'vuex';
+import { mapGetters, mapMutations } from 'vuex';
 
 import ICON_LOCAL from '@/common/constants/icon';
 import Menu from '@/components/Menu';
-import { GETTERS } from '@/store/modules/app/const';
+import { GETTERS, MUTATES } from '@/store/modules/app/const';
 import Calendar from './Calendar';
 import SectionStatus from './SectionStatus';
 import { useBook, useMutationSection } from '@/hooks';
@@ -37,7 +37,7 @@ export default {
       isOpenStatus: false,
       calendarX: 0,
       calendarY: 0,
-      calendarWidth: 600,
+      calendarWidth: 550,
       statusX: 0,
       statusY: 0,
       statusWidth: 180,
@@ -61,6 +61,10 @@ export default {
     this.moreIcon = ICON_LOCAL.MORE_ICON;
   },
   methods: {
+    ...mapMutations({
+      setSectionSelected: MUTATES.SET_SELECTION_SELECTED
+    }),
+
     onClickOutSideCalendar() {
       this.isOpenCalendar = false;
     },
@@ -70,13 +74,14 @@ export default {
     onClickOutSideMenu() {
       if (this.isOpenMenu && !this.isOpenCalendar && !this.isOpenStatus) {
         this.isOpenMenu = false;
+        this.setSectionSelected('');
       }
     },
     openCalendar(event) {
       this.isOpenCalendar = true;
       const parentElement = event.target.parentElement;
       const { x, y } = parentElement.getBoundingClientRect();
-      this.calendarX = x - (this.calendarWidth + 50);
+      this.calendarX = x - this.calendarWidth;
       this.calendarY = y;
     },
     openSectionStatus(event) {
@@ -133,14 +138,18 @@ export default {
         }
       );
       if (isSuccess) {
-        const section = this.book.sections.find(
-          section => section.id === this.sectionId
-        );
+        const section = this.book.sections.find(s => s.id === this.sectionId);
         section.status = status.label;
       }
       setTimeout(() => {
         this.isOpenStatus = false;
       }, 0);
+    },
+    onScroll() {
+      if (this.isOpenMenu) {
+        this.isOpenMenu = false;
+        this.setSectionSelected('');
+      }
     }
   }
 };

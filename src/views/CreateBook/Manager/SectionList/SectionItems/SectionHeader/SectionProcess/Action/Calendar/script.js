@@ -35,13 +35,22 @@ export default {
       yearRelease: '',
       dayRelease: '',
       dateSelected: '',
-      monthSelected: ''
+      monthSelected: '',
+      yearSelected: ''
     };
   },
   computed: {
     ...mapGetters({
       sectionSelected: GETTERS.SECTION_SELECTED
     })
+  },
+  watch: {
+    dateSelected(val) {
+      const [year, month] = val.split('-');
+      if (year === this.yearRelease && month === this.monthRelease) {
+        this.setDateSelect(year, month);
+      }
+    }
   },
   mounted() {
     const [year, month, day] = moment(this.date)

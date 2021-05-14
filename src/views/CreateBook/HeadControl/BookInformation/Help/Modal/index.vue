@@ -1,5 +1,5 @@
 <template>
-  <Modal title="Need help?" width="425">
+  <Modal title="Need help?" width="425" show-icon-close>
     <Item title="Check out our Yearbook FAQ:">
       <a class="item-content" href="#">Resource Library</a>
     </Item>

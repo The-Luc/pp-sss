@@ -5,7 +5,7 @@
     :position-x="calendarX"
     :position-y="calendarY"
     :close-on-content-click="false"
-    :nudge-width="calendarWidth"
+    :max-width="calendarWidth"
   >
     <v-row v-click-outside="onClickOutSideCalendar">
       <v-col cols="5">
@@ -15,8 +15,10 @@
           :picker-date.sync="dateSelected"
           class="pp-calendar-date-picker"
           no-title
+          :width="calendarWidth / 2"
           :min="minDate"
           :max="dueDateData"
+          show-adjacent-months
           scrollable
           @change="onSelectedDate"
         />
@@ -27,7 +29,7 @@
       <v-col cols="5">
         <v-date-picker
           :value="monthSelected"
-          :picker-date.sync="monthSelected"
+          :width="calendarWidth / 2"
           class="pp-calendar-month"
           type="month"
           :min="minDate"
@@ -35,11 +37,10 @@
           no-title
           scrollable
           @change="onChangeMonth"
-        >
-          <v-btn text color="primary" @click="onGoCurrentDate">
-            Go to today
-          </v-btn>
-        </v-date-picker>
+        />
+        <v-btn class="go-today" text color="primary" @click="onGoCurrentDate">
+          Go to today
+        </v-btn>
       </v-col>
     </v-row>
   </v-menu>

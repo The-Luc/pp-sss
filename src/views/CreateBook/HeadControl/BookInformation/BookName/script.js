@@ -48,13 +48,16 @@ export default {
       this.$refs.nameInput.blur();
     },
     async onSubmit() {
+      if (!this.title) {
+        this.title = 'Untitled';
+      }
       if (this.isCancel || this.title === this.rootTitle) {
         this.isCancel = false;
         return;
       }
       const { data, isSuccess } = await this.updateTitle(
         this.bookId,
-        this.title
+        this.title.trim()
       );
       if (isSuccess) {
         this.book.title = data;

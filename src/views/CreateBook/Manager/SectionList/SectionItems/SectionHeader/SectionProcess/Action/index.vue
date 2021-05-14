@@ -1,8 +1,8 @@
 <template>
-  <div>
+  <div v-scroll:#scroll-section="onScroll">
     <Menu
       v-if="isOpenMenu"
-      nudge-width="160"
+      nudge-width="180"
       :items="items"
       :menu-x="menuX"
       :menu-y="menuY"
