@@ -1,5 +1,5 @@
 <template>
-  <Modal title="Empty Section(s)" width="560" :show-icon-close="false">
+  <Modal title="Empty Section(s)" width="560">
     <div class="text-500 title-notification">The following sections are empty:</div>
     <div class="box">
       <div v-for="(section,index) in sections" :key="index"> 
