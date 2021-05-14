@@ -94,6 +94,13 @@ const project = {
       sheets: []
     },
     {
+      id: '10',
+      name: 'Empty section',
+      fixed: true,
+      color: 'blue',
+      sheets: []
+    },
+    {
       id: '54',
       fixed: true,
       name: 'Signatures',
