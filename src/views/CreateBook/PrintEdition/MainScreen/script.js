@@ -1,14 +1,15 @@
-import Frames from '@/components/Frames'
-import Thumbnail from '@/components//Thumbnail'
-import project from '@/mock/project'
+import Frames from './Frames';
+import Thumbnail from '@/components//Thumbnail';
+import book from '@/mock/book';
+
 export default {
   components: {
-    Frames, 
+    Frames,
     Thumbnail
   },
-  data(){
+  data() {
     return {
-      project: project
-    }
-  },
+      book: book
+    };
+  }
 };

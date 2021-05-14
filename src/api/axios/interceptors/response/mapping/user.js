@@ -1,12 +1,12 @@
-import { bindErrorToSlack, compareDiffKeys } from "../../../../../common/utils";
-import { USER_MODEL } from "../../../../../model/user";
+import { bindErrorToSlack, compareDiffKeys } from '../../../../../common/utils';
+import { USER_MODEL } from '../../../../../model/user';
 
 const usersDto = ({ Id, FirstName, LastName, Email, DOB }) => ({
-  id: Id || "--",
-  firstName: FirstName || "--",
-  lastName: LastName || "--",
-  email: Email || "--",
-  birthday: DOB || "--"
+  id: Id || '--',
+  firstName: FirstName || '--',
+  lastName: LastName || '--',
+  email: Email || '--',
+  birthday: DOB || '--'
 });
 
 export const mappingListUsers = (data, url, method) => {

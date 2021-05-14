@@ -3,6 +3,10 @@ export default {
     title: {
       type: String,
       default: ''
+    },
+    showIconClose: {
+      type: Boolean,
+      default: false
     }
   },
   methods: {

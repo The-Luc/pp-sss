@@ -8,7 +8,7 @@
     </div>
     <div class="thumbnail-view-number-page">
       <div class="number-page-left">1</div>
-      <div v-show="link" v-if="isTypeFull" :class="['number-page-link']">
+      <div v-if="isTypeFull && link" :class="['number-page-link']">
         <v-icon class="icon-link">link</v-icon>
       </div>
       <div class="number-page-right">2</div>

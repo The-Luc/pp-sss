@@ -4,7 +4,7 @@ export default {
   },
   computed: {
     isTypeFull() {
-      return this.sheet.type == 'full';
+      return this.sheet.type === 'full';
     }
   }
 };

@@ -13,7 +13,7 @@
           <v-icon class="icon-more">more_horiz</v-icon>
         </div>
       </div>
-      <slot/>
+      <slot />
     </div>
   </div>
 </template>

@@ -1,17 +1,15 @@
 @charset "utf-8";
 
-@import '@/scss/variables';
-
 $border-album: 1px $color-gray2 solid;
 $box-width: 217px;
 $box-height: 140px;
 $box-vertical-width: 109px;
-$detail-padding: 30px;
+$detail-padding: 39px;
 
 .manager-main {
   .manager-section-list {
     .section-detail-container {
-      &[data-toggle='collapse'] {
+      &[data-toggle="collapse"] {
         display: none !important;
       }
     }
@@ -19,7 +17,7 @@ $detail-padding: 30px;
     .section-details-wrapper {
       width: 100%;
       min-height: 225px;
-      padding: 0 80px $detail-padding 80px;
+      padding: 0 12px $detail-padding 55px;
       font-family: $font-700;
       background-color: $color-white;
       border-top: $border;
@@ -30,7 +28,8 @@ $detail-padding: 30px;
         .sheet-box {
           width: $box-width;
           float: left;
-          margin: $detail-padding $detail-padding 0 $detail-padding;
+          margin: $detail-padding;
+          margin-bottom: 0px;
 
           .vertical {
             width: $box-vertical-width;
@@ -49,6 +48,102 @@ $detail-padding: 30px;
           .sheet-name {
             margin-top: 10px;
             text-align: center;
+          }
+
+          .horizontal,
+          .vertical {
+            position: relative;
+            .menu {
+              position: absolute;
+              top: 3px;
+              left: calc(100% - 102px);
+              z-index: 2;
+              width: 178px;
+              .menu-icon {
+                margin: 0 auto;
+                display: none;
+                width: 18px;
+                height: 18px;
+              }
+              .menu-detail {
+                padding: 10px;
+                border-radius: 4px;
+                width: 100%;
+                background-color: #fff;
+                box-shadow: 0 0 8px 2px rgba(0, 0, 0, 0.25);
+                margin-top: 16px;
+                position: relative;
+                .menu-item {
+                  cursor: pointer;
+                  width: 100%;
+                  border-bottom: 0.5px solid #8c8c8c;
+                  position: relative;
+                  .title {
+                    .arrow-down {
+                      width: 10px;
+                      margin: 0 5px 0 1px;
+                    }
+                    span {
+                      opacity: 0.5;
+                    }
+                  }
+
+                  label {
+                    display: block;
+                    margin-bottom: 2px;
+                  }
+                  .menu-move-sheet {
+                    background-color: #fff;
+                    position: absolute;
+                    box-shadow: 0 0 8px 2px rgba(0, 0, 0, 0.25);
+                    border-radius: 3px;
+                    top: 0;
+                    left: 100%;
+                    width: 220px;
+                    padding: 8px;
+                    .menu-move-sheet-item {
+                      display: flex;
+                      align-items: center;
+                      padding: 8px;
+                      font-size: 13px;
+                      .menu-move-sheet-color {
+                        width: 10px;
+                        height: 10px;
+                        border-radius: 50%;
+                        margin-right: 6px;
+                      }
+                      &:hover {
+                        background-color: #eaf2f5;
+                      }
+                    }
+                  }
+                }
+                .menu-button {
+                  padding: 0;
+                }
+                &::before {
+                  position: absolute;
+                  content: "";
+                  top: 0;
+                  left: 50%;
+                  transform: translateX(-50%);
+                  transform: translate(-50%, -100%);
+                  width: 4px;
+                  height: 13px;
+                  border-left: 7px solid transparent;
+                  border-right: 7px solid transparent;
+                  border-bottom: 13px solid #fff;
+                }
+              }
+            }
+
+            &:hover {
+              .menu {
+                .menu-icon {
+                  display: block;
+                }
+              }
+            }
           }
         }
       }
