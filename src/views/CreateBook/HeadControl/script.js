@@ -7,5 +7,27 @@ export default {
     BookInformation,
     BookControl,
     BookNumber
+  },
+  data() {
+    return {
+      showHeader: true
+    };
+  },
+  watch: {
+    ['$route.path'](path) {
+      this.haha(path);
+    }
+  },
+  methods: {
+    haha(path) {
+      if (path === '/edit/print/edit-screen') {
+        this.showHeader = false;
+      } else {
+        this.showHeader = true;
+      }
+    }
+  },
+  created() {
+    this.haha(this.$route.path);
   }
 };

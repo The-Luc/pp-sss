@@ -1,8 +1,8 @@
 <template>
   <div>
     <BookInformation />
-    <BookControl />
-    <BookNumber />
+    <BookControl v-if="showHeader" />
+    <BookNumber v-if="showHeader" />
   </div>
 </template>
 

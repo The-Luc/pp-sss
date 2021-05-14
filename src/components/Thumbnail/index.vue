@@ -11,7 +11,9 @@
     >
       <img :src="image" />
       <div class="thumbnail-edit">
-        <v-icon class="icon-edit">edit</v-icon>
+        <router-link to="/edit/print/edit-screen">
+          <v-icon class="icon-edit">edit</v-icon>
+        </router-link>
       </div>
     </div>
     <div class="thumbnail-view-number-page">
