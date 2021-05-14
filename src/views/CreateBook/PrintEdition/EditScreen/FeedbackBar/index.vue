@@ -26,7 +26,7 @@
         <option value="volvo">Scale to Fit</option>
         <option value="saab">Saab</option>
       </select>
-      <!-- <v-icon>arrow_drop_down</v-icon> -->
+      <v-icon>arrow_drop_down</v-icon>
     </div>
   </div>
 </template>

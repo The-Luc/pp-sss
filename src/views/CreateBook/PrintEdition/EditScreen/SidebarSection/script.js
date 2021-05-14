@@ -1,18 +1,15 @@
-import Thumbnail from '@/components//Thumbnail';
-import project from '@/mock/project';
+import book from '@/mock/book';
+import Thumbnail from '@/components/Thumbnail';
+import HeaderContainer from './HeaderContainer'
+
 export default {
   components: {
-    Thumbnail
+    Thumbnail,
+    HeaderContainer
   },
   data() {
     return {
-      project: project,
-      isOpen: true
+      book: book,
     };
-  },
-  methods: {
-    a() {
-      console.log(1);
-    }
   }
 };

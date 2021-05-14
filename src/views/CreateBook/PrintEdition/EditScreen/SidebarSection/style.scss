@@ -1,35 +1,14 @@
+.sidebar-section {
+  height: calc(100vh - 172px);
+  overflow: auto;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
 .thumbnail-view-container {
   padding: 10px 20px 10px 15px;
   .body-thumbnail {
     padding: 10px 0px 10px 8px;
-  }
-}
-.thumbnail-view-header {
-  .header-container {
-    padding-left: -8px;
-    display: flex;
-    align-items: center;
-    font-size: 12px;
-  }
-}
-
-.thumbnail-view-header > div {
-  align-items: center;
-  cursor: pointer;
-  .header-color {
-    width: 12px;
-    height: 12px;
-    background-color: brown;
-    border-radius: 100%;
-  }
-  .header-name {
-    font-family: $font-700;
-    span {
-      font-family: $font-300;
-    }
-  }
-  .v-icon {
-    font-size: 28px;
-    color: #58595b;
   }
 }
