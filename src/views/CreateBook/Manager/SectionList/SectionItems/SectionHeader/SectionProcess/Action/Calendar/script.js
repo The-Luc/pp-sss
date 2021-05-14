@@ -1,7 +1,6 @@
 import { mapGetters } from 'vuex';
 import moment from 'moment';
 
-import project from '@/mock/project';
 import { GETTERS } from '@/store/modules/app/const';
 import book from '@/mock/book';
 
@@ -85,7 +84,7 @@ export default {
       this.dateSelected = `${this.yearRelease}-${this.monthRelease}-${this.dayRelease}`;
     },
     onSelectedDate(value) {
-      const currentSection = project.sections.find(
+      const currentSection = book.sections.find(
         section => section.id === this.sectionSelected
       );
       currentSection.releaseDate = moment(value).format('MM/DD/YY');

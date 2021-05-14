@@ -1,29 +1,27 @@
 <template>
   <v-row>
     <v-col
-      :id="`section-${section.id}`"
+      :id="`section-${sectionId}`"
       class="section-header"
       data-toggle="collapse"
-      :data-draggable="section.draggable"
-      :data-target="section.id"
+      :data-draggable="sectionDraggable"
+      :data-target="sectionId"
       @click="toggleDetail"
       @mouseover="showDragControl"
       @mouseleave="hideDragControl"
     >
       <v-row>
         <SectionName
-          :section-id="section.id"
-          :section-name="section.name"
-          :section-color="section.color"
+          :section-id="sectionId"
+          :section-name="sectionName"
+          :section-color="sectionColor"
         />
         <SectionProcess
-          :section-id="section.id"
-          :color="section.color"
-          :status="section.status"
-          :due-date="section.dueDate"
-          :section-color="section.color"
-          :release-date="releaseDate"
-          :section-name="section.name"
+          :status="sectionStatus"
+          :due-date="dueDate"
+          :section-id="sectionId"
+          :section-name="sectionName"
+          :section-color="sectionColor"
         />
       </v-row>
     </v-col>

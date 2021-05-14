@@ -1,14 +1,14 @@
 import moment from 'moment';
 import { mapGetters, mapMutations } from 'vuex';
 
-import ButtonDelete from '@/components/Menu/ButtonDelete';
-import ICON_LOCAL from '@/common/constants/icon';
-import Menu from '@/components/Menu';
+import { useBook, useMutationSection } from '@/hooks';
+import { MODAL_TYPES, ICON_LOCAL } from '@/common/constants';
+
 import { GETTERS, MUTATES } from '@/store/modules/app/const';
+import ButtonDelete from '@/components/Menu/ButtonDelete';
+import Menu from '@/components/Menu';
 import Calendar from './Calendar';
 import SectionStatus from './SectionStatus';
-import { useBook, useMutationSection } from '@/hooks';
-import { MODAL_TYPES } from '@/common/constants';
 
 export default {
   setup() {
@@ -22,12 +22,11 @@ export default {
     };
   },
   props: [
-    'releaseDate',
     'menuX',
     'menuY',
     'items',
     'sectionId',
-    'sectionStatus',
+    'status',
     'sectionName',
     'isShowDelete',
     'dueDate'

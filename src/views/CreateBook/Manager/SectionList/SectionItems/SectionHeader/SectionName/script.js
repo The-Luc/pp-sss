@@ -12,13 +12,16 @@ export default {
   },
   props: {
     sectionId: {
-      type: String
+      type: Number,
+      require: true
     },
     sectionName: {
-      type: String
+      type: String,
+      require: true
     },
     sectionColor: {
-      type: String
+      type: String,
+      require: true
     }
   },
   methods: {

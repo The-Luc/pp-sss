@@ -1,0 +1,17 @@
+@charset "utf-8";
+
+@import '@/scss/variables';
+
+.indicator {
+  max-width: 2px;
+  background-color: $color-darkblue;
+  position: relative;
+
+  img {
+    transform: rotate(90deg);
+    width: 4px;
+    position: absolute;
+    top: -2px;
+    left: -1px;
+  }
+}

@@ -1,17 +1,63 @@
+import APP from './const';
 import randomcolor from 'randomcolor';
 import { uniqueId } from 'lodash';
 
 import BOOK from './const';
 
 export const mutations = {
-  updateSection(state, payload) {
-    for (let i = 0; i < state.book.sections.length; i++) {
-      if (payload.sectionId == state.book.sections[i].id) {
-        state.book.sections[i].sheets = payload.sheets;
+  [APP._MUTATES.UPDATE_SECTIONS](state, payload) {
+    const { sections } = payload;
 
-        break;
-      }
+    state.book.sections = sections;
+  },
+  [APP._MUTATES.UPDATE_SHEETS](state, payload) {
+    const { sectionId, sheets } = payload;
+
+    const index = state.book.sections.findIndex(s => s.id === sectionId);
+
+    if (index >= 0) {
+      state.book.sections[index].sheets = sheets;
     }
+  },
+  [APP._MUTATES.UPDATE_SHEET_POSITION](state, payload) {
+    const {
+      moveToSectionId,
+      moveToIndex,
+      selectedSectionId,
+      selectedIndex
+    } = payload;
+
+    const { sections } = state.book;
+
+    const selectedSectionIndex = sections.findIndex(
+      s => s.id === selectedSectionId
+    );
+
+    const sheet = sections[selectedSectionIndex].sheets[selectedIndex];
+
+    const moveToSectionIndex = sections.findIndex(
+      s => s.id === moveToSectionId
+    );
+
+    if (moveToSectionId !== selectedSectionId) {
+      sections[selectedSectionIndex].sheets.splice(selectedIndex, 1);
+
+      sections[moveToSectionIndex].sheets.splice(moveToIndex, 0, sheet);
+
+      return;
+    }
+
+    const _items = Object.assign([], sections[moveToSectionIndex].sheets);
+
+    if (moveToIndex < selectedIndex) {
+      _items.splice(selectedIndex, 1);
+      _items.splice(moveToIndex, 0, sheet);
+    } else if (moveToIndex > selectedIndex) {
+      _items.splice(moveToIndex + 1, 0, sheet);
+      _items.splice(selectedIndex, 1);
+    }
+
+    sections[selectedSectionIndex].sheets = _items;
   },
   [BOOK._MUTATES.GET_BOOK_SUCCESS](state, payload) {
     state.book = payload;

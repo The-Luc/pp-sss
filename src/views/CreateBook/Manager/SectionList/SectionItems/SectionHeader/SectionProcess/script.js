@@ -1,28 +1,38 @@
 import { mapMutations, mapGetters } from 'vuex';
 
-import ICON_LOCAL from '@/common/constants/icon';
-import Menu from '@/components/Menu';
+import { ICON_LOCAL } from '@/common/constants';
 import Action from './Action';
 import { GETTERS, MUTATES } from '@/store/modules/app/const';
 import { SECTION_STATUS } from '@/common/constants/status';
 
 export default {
-  props: [
-    'sectionColor',
-    'releaseDate',
-    'sectionId',
-    'color',
-    'dueDate',
-    'status',
-    'sectionName'
-  ],
+  props: {
+    sectionId: {
+      type: Number,
+      require: true
+    },
+    dueDate: {
+      type: String,
+      default: ''
+    },
+    status: {
+      type: String,
+      default: ''
+    },
+    sectionName: {
+      type: String,
+      require: true
+    },
+    sectionColor: {
+      type: String,
+      require: true
+    }
+  },
   components: {
-    Menu,
     Action
   },
   data() {
     return {
-      isOpen: false,
       menuX: 0,
       menuY: 0,
       sectionStatus: 0,
