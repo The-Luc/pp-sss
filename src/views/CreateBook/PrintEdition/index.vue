@@ -1,9 +1,8 @@
-<template lang="">
+<template>
   <div>
-    This is Print Edition page
+    <MainScreen />
   </div>
 </template>
-<script>
-export default {};
-</script>
-<style lang=""></style>
+
+<script src="./script.js" />
+<style lang="scss" scoped src="./style.scss" />
