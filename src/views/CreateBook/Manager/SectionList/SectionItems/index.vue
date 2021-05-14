@@ -25,6 +25,7 @@
             :section-color="section.color"
             :section-release-date="section.releaseDate"
             :section-draggable="section.draggable"
+            :section-status="section.status"
           />
 
           <Details

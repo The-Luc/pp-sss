@@ -23,7 +23,8 @@ export default {
         getSections: GETTERS.SECTIONS
       }),
       ...mapMutations({
-        updateSections: MUTATES.UPDATE_SECTIONS
+        updateSections: MUTATES.UPDATE_SECTIONS,
+        updateSectionPosition: MUTATES.UPDATE_SECTION_POSITION
       })
     };
   },
@@ -96,19 +97,10 @@ export default {
         return;
       }
 
-      const selectedSection = this.sections[selectedIndex];
-
-      const _items = Object.assign([], this.sections);
-
-      if (moveToIndex < selectedIndex) {
-        _items.splice(selectedIndex, 1);
-        _items.splice(moveToIndex, 0, selectedSection);
-      } else if (moveToIndex > selectedIndex) {
-        _items.splice(moveToIndex + 1, 0, selectedSection);
-        _items.splice(selectedIndex, 1);
-      }
-
-      this.sections = _items;
+      this.updateSectionPosition({
+        moveToIndex: moveToIndex,
+        selectedIndex: selectedIndex
+      });
 
       selectedIndex = -1;
       moveToIndex = -1;

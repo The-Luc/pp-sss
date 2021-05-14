@@ -14,9 +14,7 @@ export const getters = {
     };
   },
   [APP._GETTERS.SECTIONS]: state => {
-    return state.book.sections.sort((firstEl, secondEl) => {
-      return firstEl.order - secondEl.order;
-    });
+    return state.book.sections;
   },
   getTotalSections: state => {
     return state.book.sections.length;

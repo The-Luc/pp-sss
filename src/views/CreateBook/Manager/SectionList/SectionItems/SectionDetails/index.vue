@@ -41,7 +41,7 @@
         <Sheet
           :sequence="-1"
           :sheet-id="-sectionId"
-          sheet-type="full"
+          :sheet-type="3"
           :draggable="false"
         ></Sheet>
       </draggable>

@@ -32,6 +32,10 @@ export default {
     sectionDraggable: {
       type: Boolean,
       require: true
+    },
+    sectionStatus: {
+      type: Number,
+      require: true
     }
   },
   data() {

@@ -21,6 +21,7 @@
           :section-name="sectionName"
           :section-color="sectionColor"
           :section-release-date="sectionReleaseDate"
+          :section-status="sectionStatus"
         />
       </v-row>
     </v-col>

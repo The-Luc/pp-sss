@@ -24,16 +24,20 @@ export default {
       require: true
     },
     sheetId: {
-      type: Number
+      type: Number,
+      require: true
     },
     sheetType: {
-      type: String
+      type: Number,
+      require: true
     },
     sheetDraggable: {
-      type: Boolean
+      type: Boolean,
+      require: true
     },
     sectionId: {
-      type: Number
+      type: Number,
+      require: true
     }
   },
   setup() {

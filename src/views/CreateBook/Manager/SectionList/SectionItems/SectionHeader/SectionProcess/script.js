@@ -1,10 +1,14 @@
 import { mapMutations, mapGetters } from 'vuex';
 import moment from 'moment';
 
-import ICON_LOCAL from '@/common/constants/icon';
 import Menu from '@/components/Menu';
+
 import Action from './Action';
+
 import { GETTERS, MUTATES } from '@/store/modules/app/const';
+
+import ICON_LOCAL from '@/common/constants/icon';
+import { PROCESS_STATUS } from '@/common/constants/processStatus';
 
 export default {
   props: {
@@ -23,6 +27,10 @@ export default {
     sectionReleaseDate: {
       type: String,
       require: true
+    },
+    sectionStatus: {
+      type: Number,
+      require: true
     }
   },
   components: {
@@ -30,13 +38,23 @@ export default {
     Action
   },
   data() {
+    const processStatus = {};
+
+    Object.keys(PROCESS_STATUS).forEach(k => {
+      processStatus[k] = PROCESS_STATUS[k].value;
+    });
+
     return {
       isOpen: false,
       menuX: 0,
       menuY: 0,
-      sectionStatus: 0,
+      processStatus: processStatus,
       items: [
-        { title: 'Status', value: 'Not Started', name: 'status' },
+        {
+          title: 'Status',
+          value: PROCESS_STATUS.NOT_STARTED.name,
+          name: 'status'
+        },
         { title: 'Due Date', value: this.releaseDate, name: 'dueDate' },
         { title: 'Assigned To', value: 'Unassigned', name: 'assigned' }
       ]

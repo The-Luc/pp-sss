@@ -16,8 +16,8 @@ export default {
   },
   computed: {
     sections() {
-      return this.getSections.filter(item => {
-        return item.order !== 0 && item.id != this.sectionId;
+      return this.getSections.filter((item, index) => {
+        return index !== 0 && item.id != this.sectionId;
       });
     }
   },
