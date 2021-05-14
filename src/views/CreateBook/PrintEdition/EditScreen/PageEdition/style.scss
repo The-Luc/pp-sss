@@ -5,16 +5,42 @@
   .container-edition {
     width: 85%;
     height: 700px;
-    background: #ed1c24;
-    opacity: 20%;
+    background: #fbccce;
     display: flex;
-    align-items: center;
-    justify-content: center;
     margin: 20px 0 0 20px;
-    canvas {
+    position: relative;
+    .canvas {
       width: 100%;
       margin: 45px 60px;
       background: white;
+      border: 1px solid #ed1c24;
     }
+    &::before {
+      content: '';
+      width: 20px;
+      border-left: 1px solid #707070;
+      border-right: 1px solid #707070;
+      height: 100%;
+      margin-left: calc(50% - 10px);
+      position: absolute;
+    }
+  }
+}
+.page {
+  display: flex;
+  justify-content: space-between;
+  padding: 25px;
+  height: 100%;
+  .page-left,
+  .page-right {
+    height: 100%;
+    width: 100%;
+    border: 1px solid #27aae1;
+  }
+  .page-left {
+    margin-right: 35px;
+  }
+  .page-right {
+    margin-left: 35px;
   }
 }

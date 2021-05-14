@@ -1,24 +1,33 @@
 <template>
   <div class="col-2 sidebar-section">
     <div class="thumbnail-view-container">
-      <div class="thumbnail-view-header">
-        <div>
+      <div
+        v-for="section in project.sections"
+        :key="section.id"
+        class="thumbnail-view-header"
+      >
+        <div class="header-container" @click="isOpen = !isOpen">
           <div
             class="header-color"
-            :style="{ 'background-color': 'blue' }"
+            :style="{ 'background-color': `${section.color}` }"
           ></div>
           <v-icon>arrow_drop_down</v-icon>
           <div class="header-name">
-            Cover
+            {{ section.name }}
             <span>(1)</span>
           </div>
         </div>
-      </div>
-      <template v-for="section in project.sections">
-        <div v-for="sheet in section.sheets" :section="section" :key="sheet.id">
-          <Thumbnail :sheet="sheet" :edit="false" :link="false" />
+
+        <div v-show="isOpen" class="sheet-container">
+          <Thumbnail
+            v-for="sheet in section.sheets"
+            :key="sheet.id"
+            :sheet="sheet"
+            :edit="false"
+            :link="false"
+          />
         </div>
-      </template>
+      </div>
     </div>
   </div>
 </template>

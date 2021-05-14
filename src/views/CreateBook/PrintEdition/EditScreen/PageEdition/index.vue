@@ -1,7 +1,12 @@
 <template lang="">
   <div class="col-10 page-edition">
     <div class="container-edition">
-      <canvas />
+      <div class="canvas">
+        <div class="page">
+          <div class="page-left"></div>
+          <div class="page-right"></div>
+        </div>
+      </div>
     </div>
   </div>
 </template>

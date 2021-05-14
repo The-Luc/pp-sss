@@ -6,7 +6,13 @@ export default {
   },
   data() {
     return {
-      project: project
+      project: project,
+      isOpen: true
     };
+  },
+  methods: {
+    a() {
+      console.log(1);
+    }
   }
 };
