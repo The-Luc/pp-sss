@@ -1,5 +1,7 @@
 <template>
   <v-col class="col-9 section-name">
+    <DragDropControl :id="'section' + sectionId" />
+
     <span class="dot" :style="'background-color: ' + sectionColor"></span>
     <img src="@/assets/icons/collapse.svg" data-toggle="collapse" />
     <span>{{ sectionName }}</span>

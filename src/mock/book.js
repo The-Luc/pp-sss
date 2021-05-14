@@ -2,7 +2,7 @@ const book = {
   id: 1719,
   communityId: 28,
   title: 'Year Book 2021',
-  totalPages: 20,
+  totalPages: 18,
   totalSheets: 11,
   totalScreens: 11,
   deliveryDate: '08/21/21',
@@ -18,7 +18,7 @@ const book = {
   },
   sections: [
     {
-      id: '1',
+      id: 1,
       name: 'Cover',
       draggable: false,
       color: '#fcd726',
@@ -29,7 +29,7 @@ const book = {
       sheets: [
         {
           id: 1,
-          type: 'full',
+          type: 'cover',
           draggable: false,
           positionFixed: 'all',
           order: 0,
@@ -45,9 +45,9 @@ const book = {
       ]
     },
     {
-      id: '2',
+      id: 2,
       name: 'Letter',
-      draggable: true,
+      draggable: false,
       color: '#a4ca52',
       status: 'in process',
       releaseDate: '08/07/21',
@@ -56,7 +56,7 @@ const book = {
       sheets: [
         {
           id: 2,
-          type: 'half',
+          type: 'intro',
           draggable: false,
           positionFixed: 'first',
           order: 0,
@@ -71,7 +71,7 @@ const book = {
         },
         {
           id: 3,
-          type: 'full',
+          type: 'normal',
           draggable: true,
           positionFixed: 'none',
           order: 1,
@@ -86,7 +86,7 @@ const book = {
         },
         {
           id: 4,
-          type: 'full',
+          type: 'normal',
           draggable: true,
           positionFixed: 'none',
           order: 2,
@@ -101,7 +101,7 @@ const book = {
         },
         {
           id: 5,
-          type: 'full',
+          type: 'normal',
           draggable: true,
           positionFixed: 'none',
           order: 3,
@@ -116,7 +116,7 @@ const book = {
         },
         {
           id: 20,
-          type: 'full',
+          type: 'normal',
           draggable: true,
           positionFixed: 'none',
           order: 4,
@@ -132,7 +132,7 @@ const book = {
       ]
     },
     {
-      id: '3',
+      id: 3,
       name: 'Admin & Staff',
       draggable: true,
       color: '#bc72c2',
@@ -143,7 +143,7 @@ const book = {
       sheets: [
         {
           id: 6,
-          type: 'full',
+          type: 'normal',
           draggable: true,
           positionFixed: 'none',
           order: 0,
@@ -158,7 +158,7 @@ const book = {
         },
         {
           id: 7,
-          type: 'full',
+          type: 'normal',
           draggable: true,
           positionFixed: 'none',
           order: 1,
@@ -173,7 +173,7 @@ const book = {
         },
         {
           id: 8,
-          type: 'full',
+          type: 'normal',
           draggable: true,
           positionFixed: 'none',
           order: 2,
@@ -188,7 +188,7 @@ const book = {
         },
         {
           id: 9,
-          type: 'full',
+          type: 'normal',
           draggable: true,
           positionFixed: 'none',
           order: 3,
@@ -204,7 +204,7 @@ const book = {
       ]
     },
     {
-      id: '4',
+      id: 4,
       draggable: true,
       name: 'OOO',
       color: 'orange',
@@ -215,7 +215,7 @@ const book = {
       sheets: []
     },
     {
-      id: '54',
+      id: 55,
       draggable: false,
       name: 'Signatures',
       color: '#0b49f5',
@@ -226,7 +226,7 @@ const book = {
       sheets: [
         {
           id: 11,
-          type: 'half',
+          type: 'signature',
           draggable: false,
           positionFixed: 'last',
           order: 0,

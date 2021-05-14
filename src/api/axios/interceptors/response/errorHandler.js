@@ -1,33 +1,33 @@
-import { Notification } from "../../../../components/Notification";
+import { Notification } from '../../../../components/Notification';
 
 const handleBadRequest = () =>
-  Notification({ type: "error", title: "400", text: "Bad Request" });
+  Notification({ type: 'error', title: '400', text: 'Bad Request' });
 
 const handleNetworkError = () =>
   Notification({
-    type: "error",
-    title: "Disconect Internet",
-    text: "Net Work Error!!!"
+    type: 'error',
+    title: 'Disconect Internet',
+    text: 'Net Work Error!!!'
   });
 
 const handleUnauthorized = () =>
-  Notification({ type: "error", title: "401", text: "Unauthorized!!!" });
+  Notification({ type: 'error', title: '401', text: 'Unauthorized!!!' });
 
 const handleForbidden = () =>
-  Notification({ type: "error", title: "403", text: "Forbidden!!!" });
+  Notification({ type: 'error', title: '403', text: 'Forbidden!!!' });
 
 const handleRequestNotFound = () =>
-  Notification({ type: "error", title: "404", text: "Request not found!!!" });
+  Notification({ type: 'error', title: '404', text: 'Request not found!!!' });
 
 const handleMethodNotAllowed = () =>
-  Notification({ type: "error", title: "405", text: "Method not allow!!!" });
+  Notification({ type: 'error', title: '405', text: 'Method not allow!!!' });
 
 const handleServerError = () =>
-  Notification({ type: "error", title: "500", text: "Server error!!!" });
+  Notification({ type: 'error', title: '500', text: 'Server error!!!' });
 
 const errorHandler = error => {
   const { status } = error.response;
-  if (error.message === "Network Error" && !error.response) {
+  if (error.message === 'Network Error' && !error.response) {
     handleNetworkError();
   }
   switch (status) {

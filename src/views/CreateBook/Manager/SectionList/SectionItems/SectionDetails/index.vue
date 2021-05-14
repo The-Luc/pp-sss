@@ -22,9 +22,11 @@
           :sequence="startSeq + index"
           :sheet-id="sheet.id"
           :sheet-type="sheet.type"
-          :draggable="sheet.draggable"
+          :sheet-draggable="sheet.draggable"
+          :section-id="sectionId"
         ></Sheet>
       </draggable>
+
       <draggable
         v-else
         v-model="sheets"

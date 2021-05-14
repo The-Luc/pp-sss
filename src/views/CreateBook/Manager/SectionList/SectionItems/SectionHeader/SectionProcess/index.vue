@@ -1,12 +1,35 @@
 <template>
   <v-col class="col-3 section-process">
-    <span class="dot" :style="'background-color: ' + sectionColor"></span>
-    <span class="process first"></span>
-    <span class="process"></span>
-    <span class="process last"></span>
+    <span
+      class="dot"
+      :style="[sectionStatus >= 0 && { backgroundColor: sectionColor }]"
+    ></span>
+    <span
+      class="process in-progress"
+      :style="[sectionStatus >= 1 && { backgroundColor: sectionColor }]"
+    ></span>
+    <span
+      class="process completed"
+      :style="[sectionStatus >= 2 && { backgroundColor: sectionColor }]"
+    ></span>
+    <span
+      class="process approved"
+      :style="[sectionStatus >= 3 && { backgroundColor: sectionColor }]"
+    ></span>
 
-    <span class="first-release">{{ sectionReleaseDate }}</span>
-    <Menu :src="moreIcon" nudge-width="160" :items="items" />
+    <span class="first-release">{{ sectionReleaseDate || '06/08/21' }}</span>
+    <img :src="moreIcon" @click="toggleMenu" />
+    <Action
+      :release-date="sectionReleaseDate"
+      nudge-width="160"
+      :items="items"
+      :menu-x="menuX"
+      :menu-y="menuY"
+      :section-status="sectionStatus"
+      :section-id="sectionId"
+      @onSelectedStatus="onSelectedStatus"
+      @onSelectedDate="onSelectedDate"
+    />
   </v-col>
 </template>
 

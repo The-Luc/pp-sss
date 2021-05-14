@@ -6,5 +6,9 @@ export const mutations = {
     state.modal.isOpen = isOpenModal;
     state.modal.data.props = modalData?.props || {};
     state.modal.data.type = modalData?.type || '';
+  },
+  [APP._MUTATES.SET_SELECTION_SELECTED](state, payload) {
+    const { sectionSelected } = payload;
+    state.sectionSelected = sectionSelected;
   }
 };

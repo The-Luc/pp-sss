@@ -9,12 +9,39 @@
       <v-col :class="sheetId < 0 ? 'hide' : ''">
         <v-row>
           <v-col
-            :class="['sheet', sheetType == 'half' ? 'vertical' : 'horizontal']"
-            :data-draggable="draggable"
+            :class="['sheet', isHalfSheet(sheetType) ? 'vertical' : 'horizontal']"
+            :data-draggable="sheetDraggable"
             @mouseover="showDragControl"
             @mouseleave="hideDragControl"
           >
             <DragDropControl :id="'sheet' + sheetId" />
+
+            <div v-if="onCheckActions(sheetType)" class="menu">
+                <img
+                  :src="moreIcon"
+                  :class="[
+                    onCheckIsShowMenuDetail(sheetId) ? 'd-block' : '',
+                    'menu-icon'
+                  ]"
+                  @mouseover="setCurrentSheetId(sheetId)"
+                  @mouseleave="setCurrentSheetId()"
+                  @click="onChangeStatusMenuDetail(sheetId)"
+                />
+                <MenuDetail
+                  v-if="onCheckIsShowMenuDetail(sheetId)"
+                  v-click-outside="onCloseMenu"
+                  :section-id="sectionId"
+                  :sheet-id="sheetId"
+                  :get-sections="getSectionsForMove()"
+                >
+                  <ButtonDelete
+                    title="Delete This Sheet"
+                    @click.native="
+                      openModal(startSeq + index, sheetId, sectionId)
+                    "
+                  />
+                </MenuDetail>
+              </div>
           </v-col>
         </v-row>
 

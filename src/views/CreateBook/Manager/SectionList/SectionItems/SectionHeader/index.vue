@@ -3,8 +3,11 @@
     <v-col
       class="section-header"
       data-toggle="collapse"
+      :data-draggable="sectionDraggable"
       :data-target="sectionId"
       @click="toggleDetail"
+      @mouseover="showDragControl"
+      @mouseleave="hideDragControl"
     >
       <v-row>
         <SectionName

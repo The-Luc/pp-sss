@@ -1,15 +1,13 @@
-import { mapGetters, mapMutations } from 'vuex';
 import draggable from 'vuedraggable';
+import { mapMutations } from 'vuex';
 
-import { GETTERS, MUTATES } from '@/store/modules/book/const';
-import { useSheets } from './composables';
+import { MUTATES } from '@/store/modules/book/const';
 
 import Sheet from './Sheet';
 
 let selectedIndex = -1;
 let moveToIndex = -1;
-let selectedSectionIndex = -1;
-let moveToSectionIndex = -1;
+let moveToSectionId = null;
 
 export default {
   components: {
@@ -17,67 +15,37 @@ export default {
     Sheet
   },
   props: {
-    sectionId: String,
-    startSeq: Number
+    sectionId: {
+      type: Number,
+      require: true
+    },
+    startSeq: {
+      type: Number,
+      require: true
+    },
+    sheets: {
+      type: Array,
+      require: true
+    }
   },
   setup() {
     return {
-      ...mapGetters({
-        getSectionIndex: GETTERS.SECTION_INDEX,
-        getSheets: GETTERS.SHEETS,
-        getListOfSheetBySectionIndex: GETTERS.SHEETS_BY_SECTION_INDEX
-      }),
       ...mapMutations({
-        updateSheets: MUTATES.UPDATE_SHEETS
+        updateSheetPosition: MUTATES.UPDATE_SHEET_POSITION
       })
     };
-  },
-  mounted: function() {
-    const { sheets } = useSheets(this.sectionId);
-
-    this.updateSheets({
-      sectionId: this.sectionId,
-      sheets: sheets
-    });
   },
   data() {
     return {
       drag: false
     };
   },
-  computed: {
-    sheets: {
-      get() {
-        const getSheets = this.getSheets();
-
-        return getSheets(this.sectionId);
-      },
-      set(newSheets) {
-        this.updateSheets({
-          sectionId: this.sectionId,
-          sheets: newSheets
-        });
-      }
-    }
-  },
   methods: {
-    getIndexOfSectionById: function(sectionId) {
-      const getSectionIndex = this.getSectionIndex();
-
-      return getSectionIndex(sectionId);
-    },
-    getSheetsBySectionIndex: function(sectionId) {
-      const getListOfSheetBySectionIndex = this.getListOfSheetBySectionIndex();
-
-      return getListOfSheetBySectionIndex(sectionId);
-    },
     onChoose: function(evt) {
       moveToIndex = -1;
-      moveToSectionIndex = -1;
+      moveToSectionId = null;
 
       selectedIndex = this.sheets[evt.oldIndex].draggable ? evt.oldIndex : -1;
-
-      selectedSectionIndex = this.getIndexOfSectionById(this.sectionId);
     },
     onMove: function(evt) {
       this.hideAllIndicator();
@@ -141,47 +109,27 @@ export default {
         return;
       }
 
-      const selectedSheet = this.sheets[selectedIndex];
-
-      if (moveToSectionIndex !== selectedSectionIndex) {
-        this.sheets.splice(selectedIndex, 1);
-
-        this.getSheetsBySectionIndex(moveToSectionIndex).splice(
-          moveToIndex,
-          0,
-          selectedSheet
-        );
-
-        this.endDragDropProcess();
-      }
-
-      const _items = Object.assign([], this.sheets);
-
-      if (moveToIndex < selectedIndex) {
-        _items.splice(selectedIndex, 1);
-        _items.splice(moveToIndex, 0, selectedSheet);
-      } else if (moveToIndex > selectedIndex) {
-        _items.splice(moveToIndex + 1, 0, selectedSheet);
-        _items.splice(selectedIndex, 1);
-      }
-
-      this.sheets = _items;
+      this.updateSheetPosition({
+        moveToSectionId: moveToSectionId,
+        moveToIndex: moveToIndex,
+        selectedSectionId: this.sectionId,
+        selectedIndex: selectedIndex
+      });
 
       this.endDragDropProcess();
     },
     getMoveToIndex: function(evt, relateSectionId) {
       moveToIndex = evt.draggedContext.futureIndex;
 
-      moveToSectionIndex = this.getIndexOfSectionById(relateSectionId);
+      moveToSectionId = parseInt(relateSectionId, 10);
     },
     isSameElement: function() {
       return (
-        moveToSectionIndex === selectedSectionIndex &&
-        moveToIndex === selectedIndex
+        moveToSectionId === this.sectionId && moveToIndex === selectedIndex
       );
     },
     isInsertAfter: function(willInsertAfter) {
-      if (moveToSectionIndex === selectedSectionIndex) {
+      if (moveToSectionId === this.sectionId) {
         return moveToIndex > selectedIndex;
       }
 
@@ -191,8 +139,7 @@ export default {
       selectedIndex = -1;
       moveToIndex = -1;
 
-      selectedSectionIndex = -1;
-      moveToSectionIndex = -1;
+      moveToSectionId = null;
 
       this.drag = false;
     },
