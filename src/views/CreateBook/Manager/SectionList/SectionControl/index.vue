@@ -4,7 +4,10 @@
       <v-btn id="btn-ec-all" data-toggle="collapse" @click="toggleDetail"
         >{{ isCollapse ? 'Expand' : 'Collapse' }} All Sections</v-btn
       >
-      <v-btn class="btn-solid" @click.native="onAddSection">
+      <v-btn
+        :class="['btn-solid', { 'btn-disabled': isDisibleAdd }]"
+        @click.native="onAddSection"
+      >
         <img src="@/assets/icons/plus.svg" />
         Add a Section
       </v-btn>

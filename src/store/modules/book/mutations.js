@@ -1,3 +1,6 @@
+import randomcolor from 'randomcolor';
+import { uniqueId } from 'lodash';
+
 export const mutations = {
   updateSection(state, payload) {
     for (let i = 0; i < state.book.sections.length; i++) {
@@ -63,5 +66,39 @@ export const mutations = {
         )
       ];
     }
+  },
+  addSection(state) {
+    const { sections } = state.book;
+    const newSectionId = uniqueId('id-');
+    state.book.sections = [
+      ...sections.slice(0, sections.length - 1),
+      {
+        color: randomcolor(),
+        fixed: false,
+        id: newSectionId,
+        name: '',
+        sheets: []
+      },
+      ...sections.slice(sections.length - 1)
+    ];
+    setTimeout(() => {
+      const collapse = document
+        .querySelector('#btn-ec-all')
+        .getAttribute('data-toggle');
+      let el = document.querySelector(`#section-${newSectionId}`);
+      if (collapse !== 'collapse') {
+        el.click();
+      }
+      let input = el.querySelector('input');
+      input.focus();
+    }, 0);
+  },
+  editSectionName(state, payload) {
+    const { sectionId } = payload;
+    let { sectionName } = payload;
+    sectionName = sectionName || 'Untitle';
+    const { sections } = state.book;
+    const indexSection = sections.findIndex(item => item.id == sectionId);
+    state.book.sections[indexSection].name = sectionName;
   }
 };

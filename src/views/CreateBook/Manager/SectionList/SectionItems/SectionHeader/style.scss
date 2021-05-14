@@ -15,6 +15,7 @@ $width-process-container: 251px;
 
         &:hover {
           background-color: $color-gray3;
+        }
         .section-name {
           max-width: calc(100% - #{$width-process-container});
         }

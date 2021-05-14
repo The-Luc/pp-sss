@@ -5,12 +5,12 @@
     <span class="dot" :style="'background-color: ' + sectionColor"></span>
     <img src="@/assets/icons/collapse.svg" data-toggle="collapse" />
     <input
+      v-model="sectionNameCurrent"
       type="text"
       maxlength="50"
-      v-model="sectionNameCurrent"
       @click="$event.stopPropagation()"
-      @keyup.enter="saveTitle($event)"
-      @keyup.esc="keyUpEsc($event)"
+      @keyup.enter="keyUpEnter"
+      @keyup.esc="keyUpEsc"
       @blur="saveTitle"
     />
   </v-col>
