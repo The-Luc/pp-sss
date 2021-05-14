@@ -30,15 +30,15 @@
 
 <script>
 export default {
-  name: "PpBtn",
+  name: 'PpBtn',
   props: {
     type: {
       type: String,
-      default: "btn"
+      default: 'btn'
     },
     linkTo: {
       type: String,
-      default: ""
+      default: ''
     },
     isActive: Boolean,
     isDisabled: Boolean,
@@ -57,7 +57,7 @@ export default {
   },
   methods: {
     onClick() {
-      this.$emit("click");
+      this.$emit('click');
     }
   }
 };

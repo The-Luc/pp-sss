@@ -1,8 +1,20 @@
 export const getters = {
-  getSection(state) {
-    return state.book.sections;
+  getSections: state => {
+    return state.book.sections.sort((firstEl, secondEl) => {
+      return firstEl.order - secondEl.order;
+    });
   },
-  getBook(state) {
-    return state.book;
+  getTotalInfo: state => {
+    return {
+      totalPages: state.book.totalPages,
+      totalSheets: state.book.totalSheets,
+      totalScreens: state.book.totalScreens
+    };
+  },
+  getTotalSections: state => {
+    return state.book.sections.length;
+  },
+  getMaxPage: state => {
+    return state.book.numberMaxPages;
   }
 };
