@@ -13,12 +13,12 @@ export default {
     ...mapGetters({
       getTotalSections: 'book/getTotalSections'
     }),
-    isDisibleAdd() {
+    isDisableAdd() {
       return this.getTotalSections >= 50;
     }
   },
   mounted: function() {
-    this.$root.$on('tooglesection', () => {
+    this.$root.$on('toggleSection', () => {
       this.toggleEcButton();
     });
   },
@@ -48,7 +48,7 @@ export default {
         .setAttribute('data-toggle', this.isCollapse ? COLLAPSE : EXPAND);
     },
     onAddSection() {
-      if (!this.isDisibleAdd) {
+      if (!this.isDisableAdd) {
         this.addSection();
       }
     }

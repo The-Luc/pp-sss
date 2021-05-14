@@ -5,7 +5,7 @@
         >{{ isCollapse ? 'Expand' : 'Collapse' }} All Sections</v-btn
       >
       <v-btn
-        :class="['btn-solid', { 'btn-disabled': isDisibleAdd }]"
+        :class="['btn-solid', { 'btn-disabled': isDisableAdd }]"
         @click.native="onAddSection"
       >
         <img src="@/assets/icons/plus.svg" />

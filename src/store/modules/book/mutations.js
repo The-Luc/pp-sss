@@ -96,7 +96,7 @@ export const mutations = {
   editSectionName(state, payload) {
     const { sectionId } = payload;
     let { sectionName } = payload;
-    sectionName = sectionName || 'Untitle';
+    sectionName = sectionName || 'Untitled';
     const { sections } = state.book;
     const indexSection = sections.findIndex(item => item.id == sectionId);
     state.book.sections[indexSection].name = sectionName;
