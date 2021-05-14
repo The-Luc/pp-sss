@@ -1,6 +1,6 @@
+import { mapMutations } from 'vuex';
 import Modal from '@/components/Modal';
 import PpButton from '@/components/Button';
-import { mapMutations } from 'vuex';
 import { MUTATES } from '@/store/modules/app/const';
 import { SCREEN } from '@/common/constants/book';
 
