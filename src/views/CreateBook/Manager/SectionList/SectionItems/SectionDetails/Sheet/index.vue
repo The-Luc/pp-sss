@@ -37,7 +37,7 @@
                   <ButtonDelete
                     title="Delete This Sheet"
                     @click.native="
-                      openModal(startSeq + index, sheetId, sectionId)
+                      openModal(sequence, sheetId, sectionId)
                     "
                   />
                 </MenuDetail>
