@@ -8,9 +8,7 @@ export default {
       return date;
     },
     deliveryDate() {
-      let date = moment(new Date(this.book.releaseDate))
-        .add(14, 'days')
-        .format('MM/DD/YY');
+      let date = moment(new Date(this.book.deliveryDate)).format('MM/DD/YY');
       return date;
     },
     countdown() {
