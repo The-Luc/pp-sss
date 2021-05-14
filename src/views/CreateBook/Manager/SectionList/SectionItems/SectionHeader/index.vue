@@ -1,7 +1,7 @@
 <template>
   <v-row>
     <v-col
-      :id="`section-${section.id}`"
+      :id="`section-${sectionId}`"
       class="section-header"
       data-toggle="collapse"
       :data-draggable="sectionDraggable"
