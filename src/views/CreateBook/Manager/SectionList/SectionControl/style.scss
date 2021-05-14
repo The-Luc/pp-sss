@@ -22,7 +22,11 @@ $border-album: 1px $color-gray2 solid;
 
         &.btn-solid {
           color: $color-white;
-          background-color: $color-darkblue !important;
+          background-color: $color-darkblue;
+          &.btn-disabled {
+            opacity: 40%;
+            cursor: not-allowed;
+          }
         }
 
         img {
