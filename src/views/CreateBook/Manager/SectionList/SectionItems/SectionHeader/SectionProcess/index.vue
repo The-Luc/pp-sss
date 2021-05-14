@@ -21,6 +21,9 @@
     <img :src="moreIcon" @click="toggleMenu" />
     <Action
       :due-date="dueDate"
+      :release-date="releaseDate"
+      :is-show-delete="isShowDelete"
+      :section-name="sectionName"
       nudge-width="160"
       :items="items"
       :menu-x="menuX"

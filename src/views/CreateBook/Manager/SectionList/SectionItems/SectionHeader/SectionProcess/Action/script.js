@@ -1,12 +1,14 @@
 import moment from 'moment';
 import { mapGetters, mapMutations } from 'vuex';
 
+import ButtonDelete from '@/components/Menu/ButtonDelete';
 import ICON_LOCAL from '@/common/constants/icon';
 import Menu from '@/components/Menu';
 import { GETTERS, MUTATES } from '@/store/modules/app/const';
 import Calendar from './Calendar';
 import SectionStatus from './SectionStatus';
 import { useBook, useMutationSection } from '@/hooks';
+import { MODAL_TYPES } from '@/common/constants';
 
 export default {
   setup() {
@@ -19,11 +21,22 @@ export default {
       getBook
     };
   },
-  props: ['dueDate', 'menuX', 'menuY', 'items', 'sectionId', 'sectionStatus'],
+  props: [
+    'releaseDate',
+    'menuX',
+    'menuY',
+    'items',
+    'sectionId',
+    'sectionStatus',
+    'sectionName',
+    'isShowDelete',
+    'dueDate'
+  ],
   components: {
     Menu,
     Calendar,
-    SectionStatus
+    SectionStatus,
+    ButtonDelete
   },
   computed: {
     ...mapGetters({
@@ -62,9 +75,18 @@ export default {
   },
   methods: {
     ...mapMutations({
-      setSectionSelected: MUTATES.SET_SELECTION_SELECTED
+      setSectionSelected: MUTATES.SET_SELECTION_SELECTED,
+      toggleModal: MUTATES.TOGGLE_MODAL
     }),
-
+    onOpenModal(sectionId, sectionName) {
+      this.toggleModal({
+        isOpenModal: true,
+        modalData: {
+          type: MODAL_TYPES.DELETE_SECTION,
+          props: { sectionId, sectionName }
+        }
+      });
+    },
     onClickOutSideCalendar() {
       this.isOpenCalendar = false;
     },
@@ -120,9 +142,7 @@ export default {
         }
       );
       if (isSuccess) {
-        const section = this.book.sections.find(
-          section => section.id === this.sectionId
-        );
+        const section = this.book.sections.find(s => s.id === this.sectionId);
         section.dueDate = dueDate;
       }
       setTimeout(() => {

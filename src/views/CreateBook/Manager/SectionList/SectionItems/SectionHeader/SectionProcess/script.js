@@ -1,4 +1,4 @@
-import { mapGetters, mapMutations } from 'vuex';
+import { mapMutations, mapGetters } from 'vuex';
 
 import ICON_LOCAL from '@/common/constants/icon';
 import Menu from '@/components/Menu';
@@ -13,7 +13,8 @@ export default {
     'sectionId',
     'color',
     'dueDate',
-    'status'
+    'status',
+    'sectionName'
   ],
   components: {
     Menu,
@@ -38,8 +39,16 @@ export default {
   },
   computed: {
     ...mapGetters({
-      sectionSelected: GETTERS.SECTION_SELECTED
-    })
+      sectionSelected: GETTERS.SECTION_SELECTED,
+      sections: 'book/getSections'
+    }),
+    isShowDelete() {
+      const index = this.sections.findIndex(item => item.id === this.sectionId);
+      if (index !== 0 && index !== 1 && index !== this.sections.length - 1) {
+        return true;
+      }
+      return false;
+    }
   },
   watch: {
     dueDate(val) {
@@ -55,7 +64,8 @@ export default {
   },
   methods: {
     ...mapMutations({
-      setSectionSelected: MUTATES.SET_SELECTION_SELECTED
+      setSectionSelected: MUTATES.SET_SELECTION_SELECTED,
+      toggleModal: MUTATES.TOGGLE_MODAL
     }),
     convertTextCap(string) {
       return string.replace(/\b\w/g, l => l.toUpperCase());

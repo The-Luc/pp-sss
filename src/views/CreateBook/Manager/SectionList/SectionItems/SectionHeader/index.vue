@@ -1,6 +1,7 @@
 <template>
   <v-row>
     <v-col
+      :id="`section-${section.id}`"
       class="section-header"
       data-toggle="collapse"
       :data-draggable="section.draggable"
@@ -22,6 +23,7 @@
           :due-date="section.dueDate"
           :section-color="section.color"
           :release-date="releaseDate"
+          :section-name="section.name"
         />
       </v-row>
     </v-col>

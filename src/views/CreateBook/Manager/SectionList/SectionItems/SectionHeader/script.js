@@ -58,7 +58,7 @@ export default {
 
       target.setAttribute('data-toggle', isCollapse ? COLLAPSE : EXPAND);
 
-      this.$root.$emit('tooglesection');
+      this.$root.$emit('toggleSection');
     },
     showDragControl: function(evt) {
       const sectionHeader = evt.target.closest('.section-header');
