@@ -12,7 +12,7 @@
         <v-list-item v-for="(item, i) in status" :key="i">
           <v-list-item-content @click="onSelectedStatus(item)">
             <v-list-item-title
-              class="text-500 text-size-md text-caption"
+              class="text-500 text-size-md"
               v-text="item.label"
             />
           </v-list-item-content>
