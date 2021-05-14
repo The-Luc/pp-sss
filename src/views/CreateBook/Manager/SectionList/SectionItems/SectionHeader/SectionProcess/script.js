@@ -62,6 +62,9 @@ export default {
   created() {
     this.moreIcon = ICON_LOCAL.MORE_ICON;
   },
+  mounted() {
+    this.mapStatusNumberic(this.status);
+  },
   methods: {
     ...mapMutations({
       setSectionSelected: MUTATES.SET_SELECTION_SELECTED,

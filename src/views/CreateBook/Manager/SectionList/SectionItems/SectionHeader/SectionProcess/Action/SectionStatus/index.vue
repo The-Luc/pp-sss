@@ -1,4 +1,4 @@
-<template lang="">
+<template>
   <v-menu
     :value="isOpenStatus"
     content-class="pp-status"
