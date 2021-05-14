@@ -11,5 +11,8 @@ export const getters = {
       totalSheets: state.book.totalSheets,
       totalScreens: state.book.totalScreens
     };
+  },
+  getTotalSections: state => {
+    return state.book.sections.length;
   }
 };

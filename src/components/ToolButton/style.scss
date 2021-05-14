@@ -1,0 +1,29 @@
+@import '@/scss/variables';
+
+.item {
+  flex-direction: column;
+  align-items: center;
+  display: flex;
+  margin-right: 18px;
+  .item-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 25px;
+    cursor: pointer;
+    width: 100%;
+    border: 0.5px solid #d1d3d4;
+    border-radius: 2px;
+    .v-icon {
+      font-size: 18px;
+      color: #58595b;
+    }
+  }
+  p {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-family: $font-300;
+    font-size: 9px;
+    margin-bottom: 0px;
+  }
+}

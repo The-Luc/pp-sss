@@ -1,11 +1,13 @@
 import moment from 'moment';
-import { mapGetters } from 'vuex';
+import { mapGetters, mapMutations } from 'vuex';
 
+import ButtonDelete from '@/components/Menu/ButtonDelete';
 import ICON_LOCAL from '@/common/constants/icon';
 import Menu from '@/components/Menu';
-import { GETTERS } from '@/store/modules/app/const';
+import { GETTERS, MUTATES } from '@/store/modules/app/const';
 import Calendar from './Calendar';
 import SectionStatus from './SectionStatus';
+import { MODAL_TYPES } from '@/common/constants';
 
 export default {
   props: [
@@ -14,12 +16,15 @@ export default {
     'menuY',
     'items',
     'sectionId',
-    'sectionStatus'
+    'sectionStatus',
+    'sectionName',
+    'isShowDelete'
   ],
   components: {
     Menu,
     Calendar,
-    SectionStatus
+    SectionStatus,
+    ButtonDelete
   },
   computed: {
     ...mapGetters({
@@ -57,6 +62,18 @@ export default {
     this.moreIcon = ICON_LOCAL.MORE_ICON;
   },
   methods: {
+    ...mapMutations({
+      toggleModal: MUTATES.TOGGLE_MODAL
+    }),
+    onOpenModal(sectionId, sectionName) {
+      this.toggleModal({
+        isOpenModal: true,
+        modalData: {
+          type: MODAL_TYPES.DELETE_SECTION,
+          props: { sectionId, sectionName }
+        }
+      });
+    },
     onClickOutSideCalendar() {
       this.isOpenCalendar = false;
     },

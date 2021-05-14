@@ -16,6 +16,7 @@
           @onItemClick="event => onItemClick(event, item)"
         />
       </v-list-item>
+      <slot />
     </v-list>
   </v-menu>
 </template>

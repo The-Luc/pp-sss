@@ -10,7 +10,13 @@
       :section-status="sectionStatus"
       @onClickOutSideMenu="onClickOutSideMenu"
       @onItemClick="onItemClick"
-    />
+    >
+      <ButtonDelete
+        v-if="isShowDelete"
+        title="Delete This Section"
+        @click.native="onOpenModal(sectionId, sectionName)"
+      />
+    </Menu>
     <Calendar
       v-if="isOpenCalendar"
       :date="releaseDate"

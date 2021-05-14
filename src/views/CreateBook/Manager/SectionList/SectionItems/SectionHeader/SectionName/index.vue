@@ -4,7 +4,15 @@
 
     <span class="dot" :style="'background-color: ' + sectionColor"></span>
     <img src="@/assets/icons/collapse.svg" data-toggle="collapse" />
-    <span>{{ sectionName }}</span>
+    <input
+      v-model="sectionNameCurrent"
+      type="text"
+      maxlength="50"
+      @click="$event.stopPropagation()"
+      @keyup.enter="keyUpEnter"
+      @keyup.esc="keyUpEsc"
+      @blur="saveTitle"
+    />
   </v-col>
 </template>
 
