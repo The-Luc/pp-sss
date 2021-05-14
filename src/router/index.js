@@ -69,6 +69,8 @@ router.beforeEach(async (to, from, next) => {
           props: { sections: emptySections }
         }
       });
+    } else {
+      next();
     }
   } else {
     next();
