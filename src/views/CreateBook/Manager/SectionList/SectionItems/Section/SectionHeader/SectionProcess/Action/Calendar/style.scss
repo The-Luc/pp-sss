@@ -27,6 +27,8 @@
 
     .v-date-picker-table {
       padding-left: 0;
+      overflow: hidden;
+
       th {
         color: #565656;
       }
@@ -71,7 +73,7 @@
   }
 
   .divider {
-    margin-left: 45px;
+    margin-left: 47px;
     position: relative;
     z-index: 99;
   }

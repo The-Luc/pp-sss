@@ -28,14 +28,14 @@ export default {
     return {
       menuX: 0,
       menuY: 0,
-      processStatus: processStatus,
+      processStatus,
       items: [
         {
           title: 'Status',
-          value: PROCESS_STATUS.NOT_STARTED.name,
+          value: this.getStatusName(this.section.status),
           name: 'status'
         },
-        { title: 'Due Date', value: this.dueDate, name: 'dueDate' },
+        { title: 'Due Date', value: this.section.dueDate, name: 'dueDate' },
         { title: 'Assigned To', value: 'Unassigned', name: 'assigned' }
       ]
     };
@@ -46,48 +46,36 @@ export default {
       sections: 'book/getSections',
       MaxPage: 'book/getMaxPage',
       TotalInfo: 'book/getTotalInfo'
-    }),
+    })
   },
   watch: {
-    dueDate(val) {
+    'section.dueDate': function(val) {
       this.items[1].value = val;
     },
-    status(val) {
-      this.items[0].value = this.convertTextCap(val);
-      this.mapStatusNumberic(val);
+    'section.status': function(val) {
+      const statusName = this.getStatusName(val);
+      this.items[0].value = this.convertTextCap(statusName);
     }
   },
   created() {
     this.moreIcon = ICON_LOCAL.MORE_ICON;
-  },
-  mounted() {
-    this.mapStatusNumberic(this.status);
   },
   methods: {
     ...mapMutations({
       setSectionSelected: MUTATES.SET_SELECTION_SELECTED,
       toggleModal: MUTATES.TOGGLE_MODAL
     }),
+    getStatusName(status) {
+      let res = '';
+      Object.keys(PROCESS_STATUS).forEach(k => {
+        if (status === PROCESS_STATUS[k].value) {
+          res = PROCESS_STATUS[k].name;
+        }
+      });
+      return res;
+    },
     convertTextCap(string) {
       return string.replace(/\b\w/g, l => l.toUpperCase());
-    },
-    mapStatusNumberic(statusText) {
-      switch (statusText) {
-        case SECTION_STATUS.NOT_STARTED.text:
-          this.sectionStatus = SECTION_STATUS.NOT_STARTED.number;
-          break;
-        case SECTION_STATUS.IN_PROGRESS.text:
-          this.sectionStatus = SECTION_STATUS.IN_PROGRESS.number;
-          break;
-        case SECTION_STATUS.COMPLETED.text:
-          this.sectionStatus = SECTION_STATUS.COMPLETED.number;
-          break;
-        case SECTION_STATUS.APPROVED.text:
-          this.sectionStatus = SECTION_STATUS.APPROVED.number;
-          break;
-        default:
-          break;
-      }
     },
     setIsOpenMenu() {
       if (!this.sectionSelected || this.sectionSelected !== this.section.id) {
@@ -112,4 +100,4 @@ export default {
       this.setIsOpenMenu();
     }
   }
-}
+};

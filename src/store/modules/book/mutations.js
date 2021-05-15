@@ -258,5 +258,8 @@ export const mutations = {
     const { sections } = state.book;
     const indexSection = sections.findIndex(item => item.id == sectionId);
     state.book.sections[indexSection].name = sectionName;
+  },
+  [APP._MUTATES.GET_BOOK_SUCCESS](state, payload) {
+    state.book = payload;
   }
 };
