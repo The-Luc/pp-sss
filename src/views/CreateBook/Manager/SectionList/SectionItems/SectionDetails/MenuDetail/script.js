@@ -10,7 +10,7 @@ export default {
     };
   },
   props: {
-    sectionId: String,
+    sectionId: Number,
     sheetId: Number,
     getSections: Array
   },

@@ -1,20 +1,71 @@
+import APP from './const';
 import randomcolor from 'randomcolor';
 import { uniqueId } from 'lodash';
 
-export const mutations = {
-  updateSection(state, payload) {
-    for (let i = 0; i < state.book.sections.length; i++) {
-      if (payload.sectionId == state.book.sections[i].id) {
-        state.book.sections[i].sheets = payload.sheets;
+import BOOK from './const';
 
-        break;
-      }
+export const mutations = {
+  [APP._MUTATES.UPDATE_SECTIONS](state, payload) {
+    const { sections } = payload;
+
+    state.book.sections = sections;
+  },
+  [APP._MUTATES.UPDATE_SHEETS](state, payload) {
+    const { sectionId, sheets } = payload;
+
+    const index = state.book.sections.findIndex(s => s.id === sectionId);
+
+    if (index >= 0) {
+      state.book.sections[index].sheets = sheets;
     }
+  },
+  [APP._MUTATES.UPDATE_SHEET_POSITION](state, payload) {
+    const {
+      moveToSectionId,
+      moveToIndex,
+      selectedSectionId,
+      selectedIndex
+    } = payload;
+
+    const { sections } = state.book;
+
+    const selectedSectionIndex = sections.findIndex(
+      s => s.id === selectedSectionId
+    );
+
+    const sheet = sections[selectedSectionIndex].sheets[selectedIndex];
+
+    const moveToSectionIndex = sections.findIndex(
+      s => s.id === moveToSectionId
+    );
+
+    if (moveToSectionId !== selectedSectionId) {
+      sections[selectedSectionIndex].sheets.splice(selectedIndex, 1);
+
+      sections[moveToSectionIndex].sheets.splice(moveToIndex, 0, sheet);
+
+      return;
+    }
+
+    const _items = Object.assign([], sections[moveToSectionIndex].sheets);
+
+    if (moveToIndex < selectedIndex) {
+      _items.splice(selectedIndex, 1);
+      _items.splice(moveToIndex, 0, sheet);
+    } else if (moveToIndex > selectedIndex) {
+      _items.splice(moveToIndex + 1, 0, sheet);
+      _items.splice(selectedIndex, 1);
+    }
+
+    sections[selectedSectionIndex].sheets = _items;
+  },
+  [BOOK._MUTATES.GET_BOOK_SUCCESS](state, payload) {
+    state.book = payload;
   },
   addSheet(state, payload) {
     const { sectionId } = payload;
     const { totalPages, totalSheets, totalScreens, sections } = state.book;
-    const newSectionId = uniqueId('id-');
+    const newSectionId = parseInt(uniqueId()) + 20;
 
     let index = sections.findIndex(item => item.id === sectionId);
     if (index !== sections.length - 1) {
@@ -40,7 +91,7 @@ export const mutations = {
       sections[index].sheets = [
         ...sections[index].sheets.slice(0, sections[index].sheets.length - 1),
         {
-          id: newSectionId,
+          id: newSectionId + 20,
           type: 'full',
           draggable: true,
           positionFixed: 'none',
@@ -56,6 +107,8 @@ export const mutations = {
         },
         ...sections[index].sheets.slice(sections[index].sheets.length - 1)
       ];
+      sections[index].sheets[sections[index].sheets.length - 1].order += 1;
+      console.log(sections[index]);
     }
     state.book.totalPages = totalPages + 2;
     state.book.totalSheets = totalSheets + 1;

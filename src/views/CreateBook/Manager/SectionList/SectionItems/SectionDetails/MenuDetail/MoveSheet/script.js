@@ -1,4 +1,4 @@
-import ICON_LOCAL from '@/common/constants/icon';
+import { ICON_LOCAL } from '@/common/constants';
 import { mapMutations } from 'vuex';
 
 export default {
@@ -22,7 +22,7 @@ export default {
       type: Number
     },
     sectionId: {
-      type: String
+      type: Number
     }
   },
   methods: {

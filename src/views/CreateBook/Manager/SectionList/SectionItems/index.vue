@@ -1,7 +1,7 @@
 <template>
   <v-row>
     <draggable
-      v-model="book.sections"
+      v-model="sections"
       class="col"
       :move="onMove"
       @choose="onChoose"
@@ -9,7 +9,7 @@
       @end="onEnd"
     >
       <v-row
-        v-for="(section, index) in book.sections"
+        v-for="(section, index) in sections"
         :key="section.id"
         class="section-item"
       >
@@ -18,12 +18,22 @@
             :id="'section-top-' + section.id"
             custom-class-name="indicator-top"
           />
-          <Header :section="section" :release-date="book.releaseDate" />
+
+          <Header
+            :section-id="section.id"
+            :section-name="section.name"
+            :section-color="section.color"
+            :status="section.status"
+            :due-date="section.dueDate"
+            :section-draggable="section.draggable"
+          />
+
           <Details
-            :sheets="section.sheets"
             :section-id="section.id"
             :start-seq="getStartSeq(index)"
+            :sheets="getSheetsOfSection(section.id)"
           />
+
           <DragDropIndicator
             :id="'section-bottom-' + section.id"
             custom-class-name="indicator-bottom"

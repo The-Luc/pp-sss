@@ -1,38 +1,67 @@
-import { useUpdateAlbum } from '@/views/CreateBook/composables';
+import { useGetters, useMutations } from 'vuex-composition-helpers';
 
-const rootName = 'SMS Yearbook 2021';
+import { useBook, useUpdateTitle } from '@/hooks';
+import { GETTERS, MUTATES } from '@/store/modules/book/const';
+
 export default {
   setup() {
-    const { updateAlbum } = useUpdateAlbum();
+    const { getBook, book } = useBook();
+    const { updateTitle } = useUpdateTitle();
+    const { bookId } = useGetters({
+      bookId: GETTERS.BOOK_ID
+    });
+    const { mutateBook } = useMutations({
+      mutateBook: MUTATES.GET_BOOK_SUCCESS
+    });
+
     return {
-      updateAlbum
+      book,
+      bookId,
+      getBook,
+      mutateBook,
+      updateTitle
     };
   },
   data() {
     return {
-      albumName: rootName,
+      rootTitle: '',
+      title: '',
       isCancel: false
     };
   },
+  watch: {
+    book: {
+      deep: true,
+      handler(book) {
+        this.rootTitle = book.title;
+        this.title = book.title;
+      }
+    }
+  },
   methods: {
     onCancel() {
-      this.albumName = rootName;
+      this.title = this.rootTitle;
       this.isCancel = true;
       this.$refs.nameInput.blur();
     },
     onEnter() {
       this.$refs.nameInput.blur();
     },
-    onSubmit() {
-      if (this.isCancel) {
+    async onSubmit() {
+      if (!this.title) {
+        this.title = 'Untitled';
+      }
+      if (this.isCancel || this.title === this.rootTitle) {
         this.isCancel = false;
         return;
       }
-      this.updateAlbum({ bookId: 123, title: 'new' }, (res, error) => {
-        console.log('res', res);
-        console.log('error', error);
-        // TODO later
-      });
+      const { data, isSuccess } = await this.updateTitle(
+        this.bookId,
+        this.title.trim()
+      );
+      if (isSuccess) {
+        this.book.title = data;
+      }
     }
   }
 };

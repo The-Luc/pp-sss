@@ -1,6 +1,6 @@
 <template lang="">
   <v-row class="manager-main">
-    <SectionList :book="book" />
+    <SectionList />
     <Summary />
   </v-row>
 </template>
