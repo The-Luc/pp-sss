@@ -1,5 +1,8 @@
 <template>
-  <div class="menu-item" :class="{ 'mb-2': !isLastItem }">
+  <div
+    class="menu-item"
+    :class="{ 'mb-2': !isLastItem, 'last-item': isLastItem }"
+  >
     <label class="text-300 text-size-sm text-line-14">{{ title }}:</label>
     <div class="d-flex align-center pointer mb-3" @click="onItemClick">
       <img :src="arrowDown" class="arrow-down" alt="arrow-down" />
