@@ -1,25 +1,25 @@
 <template>
-  <div>
+  <div v-scroll:#scroll-section="onScroll">
     <Menu
       v-if="isOpenMenu"
-      nudge-width="160"
+      nudge-width="180"
       :items="items"
       :menu-x="menuX"
       :menu-y="menuY"
       :is-open="isOpenMenu"
-      :section-status="sectionStatus"
       @onClickOutSideMenu="onClickOutSideMenu"
       @onItemClick="onItemClick"
     >
       <ButtonDelete
         v-if="isShowDelete"
+        class="btn-delete"
         title="Delete This Section"
         @click.native="onOpenModal(sectionId, sectionName)"
       />
     </Menu>
     <Calendar
       v-if="isOpenCalendar"
-      :date="releaseDate"
+      :date="dueDate"
       :is-open-calendar="isOpenCalendar"
       :calendar-width="calendarWidth"
       :calendar-x="calendarX"
@@ -30,7 +30,7 @@
     />
     <SectionStatus
       v-if="isOpenStatus"
-      :section-status="sectionStatus"
+      :status="status"
       :is-open-status="isOpenStatus"
       :status-width="statusWidth"
       :status-x="statusX"

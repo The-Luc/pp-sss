@@ -5,7 +5,7 @@ import DragDropIndicator from '@/components/DragDropIndicatorVertical';
 import ButtonDelete from '@/components/Menu/ButtonDelete';
 import MenuDetail from '../MenuDetail';
 
-import ICON_LOCAL from '@/common/constants/icon';
+import { ICON_LOCAL } from '@/common/constants';
 
 import { GETTERS } from '@/store/modules/book/const';
 import { MODAL_TYPES } from '@/common/constants';

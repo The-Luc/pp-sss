@@ -1,6 +1,7 @@
 import APP from './const';
 import randomcolor from 'randomcolor';
 import { uniqueId } from 'lodash';
+import BOOK from './const';
 
 const getIndexById = (items, id) => {
   return items.findIndex(s => s.id === id);

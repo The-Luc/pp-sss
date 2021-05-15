@@ -53,6 +53,8 @@ export default {
       moveToIndex = evt.draggedContext.futureIndex;
 
       if (moveToIndex === selectedIndex) {
+        moveToIndex = -1;
+
         return false;
       }
 
@@ -77,11 +79,7 @@ export default {
     onEnd: function() {
       this.hideAllIndicator();
 
-      if (
-        selectedIndex < 0 ||
-        moveToIndex < 0 ||
-        selectedIndex === moveToIndex
-      ) {
+      if (selectedIndex < 0 || moveToIndex < 0) {
         return;
       }
 
@@ -124,7 +122,7 @@ export default {
         id,
         name,
         color,
-        releaseDate,
+        dueDate,
         draggable,
         status,
         sheets
@@ -134,7 +132,7 @@ export default {
         id: id,
         name: name,
         color: color,
-        releaseDate: releaseDate,
+        dueDate: dueDate,
         draggable: draggable,
         status: status,
         sheets: this.getSheets(sheets)
@@ -142,12 +140,13 @@ export default {
     },
     getSheets: function(sheetList) {
       const sheets = sheetList.map(s => {
-        const { id, type, draggable } = s;
+        const { id, type, draggable, positionFixed } = s;
 
         return {
           id: id,
           type: type,
-          draggable: draggable
+          draggable: draggable,
+          positionFixed: positionFixed
         };
       });
 

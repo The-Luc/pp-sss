@@ -76,13 +76,13 @@ export default {
       this.$root.$emit('hideDragControl');
     },
     getSection: function() {
-      const { id, name, color, releaseDate, status } = this.section;
+      const { id, name, color, dueDate, status } = this.section;
 
       return {
         id: id,
         name: name,
         color: color,
-        releaseDate: releaseDate,
+        dueDate: dueDate,
         status: status
       };
     }

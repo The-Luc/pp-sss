@@ -20,13 +20,13 @@ export default {
   },
   methods: {
     getSection: function() {
-      const { id, name, color, releaseDate, draggable, status } = this.section;
+      const { id, name, color, dueDate, draggable, status } = this.section;
 
       return {
         id: id,
         name: name,
         color: color,
-        releaseDate: releaseDate,
+        dueDate: dueDate,
         draggable: draggable,
         status: status
       };

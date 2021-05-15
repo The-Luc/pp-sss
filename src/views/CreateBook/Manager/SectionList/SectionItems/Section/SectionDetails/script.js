@@ -55,6 +55,8 @@ export default {
       }
 
       if (evt.related === null) {
+        this.cancelMove();
+
         return false;
       }
 
@@ -79,7 +81,7 @@ export default {
         relateSheet === null || relateSheet.positionFixed !== 'all';
 
       if (!isPosibleToMove) {
-        moveToIndex = -1;
+        this.cancelMove();
 
         return false;
       }
@@ -87,15 +89,32 @@ export default {
       this.getMoveToIndex(evt, relateSectionId);
 
       if (this.isSameElement()) {
+        this.cancelMove();
+
         return false;
       }
 
       const isInsertAfter = this.isInsertAfter(evt.willInsertAfter);
 
-      if (!isInsertAfter && relateSheet.positionFixed !== 'first') {
+      const isAllowInsertBefore = !isInsertAfter && relateSheet.positionFixed !== 'first';
+      const isAllowInsertAfter = isInsertAfter && relateSheet.positionFixed !== 'last';
+
+      if (!isAllowInsertBefore && !isAllowInsertAfter) {
+        this.cancelMove();
+
+        return false;
+      }
+
+      if (isAllowInsertBefore) {
         this.$root.$emit('showIndicator', 'sheet-left-' + relateSheet.id);
-      } else if (isInsertAfter && relateSheet.positionFixed !== 'last') {
+
+        return false;
+      }
+      
+      if (isAllowInsertAfter) {
         this.$root.$emit('showIndicator', 'sheet-right-' + relateSheet.id);
+
+        return false;
       }
 
       return false;
@@ -103,7 +122,7 @@ export default {
     onEnd: function() {
       this.hideAllIndicator();
 
-      if (selectedIndex < 0 || moveToIndex < 0 || this.isSameElement()) {
+      if (selectedIndex < 0 || moveToIndex < 0) {
         this.drag = false;
 
         return;
@@ -149,6 +168,9 @@ export default {
         type: 3,
         draggable: false
       }
+    },
+    cancelMove: function() {
+      moveToIndex = -1;
     }
   }
 };

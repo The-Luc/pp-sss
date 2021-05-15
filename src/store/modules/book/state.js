@@ -11,5 +11,5 @@ book.sections.forEach(s => {
 });
 
 export const state = {
-  book: book
+  book
 };

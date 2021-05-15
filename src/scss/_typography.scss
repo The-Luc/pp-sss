@@ -17,7 +17,7 @@
   }
 
   &-500 {
-    font-family: $font-500;
+    font-family: $font-500 !important;
   }
 
   &-500-italic {
@@ -54,7 +54,7 @@
   }
 
   &-size-md {
-    font-size: $md-size;
+    font-size: $md-size !important;
   }
 
   &-size-lg {

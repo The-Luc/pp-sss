@@ -1,4 +1,4 @@
-import APP from './const';
+import BOOK from './const';
 
 export const getters = {
   getSections: state => {
@@ -13,7 +13,9 @@ export const getters = {
       totalScreens: state.book.totalScreens
     };
   },
-  [APP._GETTERS.SECTIONS]: state => {
+  [BOOK._GETTERS.BOOK_DETAIL]: ({ book }) => book,
+  [BOOK._GETTERS.BOOK_ID]: ({ book }) => book.id,
+  [BOOK._GETTERS.SECTIONS]: state => {
     return state.book.sections;
   },
   getTotalSections: state => {

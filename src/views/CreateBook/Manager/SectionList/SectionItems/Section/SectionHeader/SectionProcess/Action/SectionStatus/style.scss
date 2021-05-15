@@ -7,11 +7,10 @@
     &--active {
       background-color: #eaf2f5;
     }
-    &__content {
-    }
 
     &__title {
       color: #565656;
+      text-transform: capitalize;
     }
   }
 }

@@ -26,21 +26,17 @@
       ]"
     ></span>
 
-    <span class="first-release">{{ section.releaseDate }}</span>
+    <span class="first-release">{{ section.dueDate }}</span>
     <img :src="moreIcon" @click="toggleMenu" />
-    <!--<Action
-      :release-date="sectionReleaseDate"
-      :is-show-delete="isShowDelete"
-      :section-name="sectionName"
-      nudge-width="160"
+    <Action
+      :due-date="section.dueDate"
+      :section-name="section.name"
       :items="items"
       :menu-x="menuX"
       :menu-y="menuY"
-      :section-status="sectionStatus"
-      :section-id="sectionId"
-      @onSelectedStatus="onSelectedStatus"
-      @onSelectedDate="onSelectedDate"
-    /> -->
+      :status="section.status"
+      :section-id="section.id"
+    />
   </v-col>
 </template>
 

@@ -2,7 +2,7 @@
   <div class="book-name-control">
     <v-text-field
       ref="nameInput"
-      v-model="albumName"
+      v-model="title"
       counter="10"
       maxlength="50"
       @blur="onSubmit"

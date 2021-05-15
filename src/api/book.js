@@ -1,10 +1,25 @@
 import api from '@/api/axios';
 import { ENDPOINT } from '@/common/constants';
-
 import book from '@/mock/book';
 
 const bookService = {
-  getBook: () => api.get(ENDPOINT.GET_BOOK),
+  getBook: bookId => {
+    return book;
+  },
+  updateTitle: (bookId, title) => ({
+    data: title,
+    isSuccess: true
+  }),
+  updateSection: (bookId, sectionId, data) => {
+    return {
+      isSuccess: true,
+      data: {
+        bookId,
+        sectionId,
+        data
+      }
+    };
+  },
   getSections: function(bookId) {
     return book.sections;
   },
