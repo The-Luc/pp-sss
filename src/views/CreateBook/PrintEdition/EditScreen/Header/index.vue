@@ -1,0 +1,13 @@
+<template lang="">
+  <div class="col-12 print-editor">
+    <div class="row print-editor-header">
+      <PpButton type="btn" class="btn-save">
+        SAVE & EXIT
+      </PpButton>
+      <span>{{ nameEditor }}</span>
+    </div>
+  </div>
+</template>
+
+<script src="./script.js"></script>
+<style lang="scss" src="./style.scss" />

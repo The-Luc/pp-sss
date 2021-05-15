@@ -1,0 +1,36 @@
+.feedback-bar {
+  font-size: 11px;
+  padding: 0;
+  background-color: #4d4d4f;
+  display: flex;
+  .feedback-name,
+  .feedback-text,
+  .feedback-select,
+  .feedback-title {
+    display: flex;
+    align-items: center;
+    padding: 7px 13px;
+    border-right: 1px solid #808184;
+    color: #bbbdbf;
+  }
+  .feedback-text {
+    min-width: 90px;
+  }
+  .feedback-value {
+    display: inline-block;
+    margin-left: 4px;
+    color: #ffffff;
+  }
+  .feedback-select {
+    select {
+      color: #ffffff;
+    }
+    img {
+      width: 10px;
+      height: 10px;
+    }
+    .v-icon {
+      color: #ffffff;
+    }
+  }
+}

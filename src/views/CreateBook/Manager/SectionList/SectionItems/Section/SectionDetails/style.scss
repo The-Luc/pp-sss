@@ -1,0 +1,26 @@
+@charset "utf-8";
+
+@import '@/scss/variables';
+
+.manager-main {
+  .manager-section-list {
+    .section-detail-container {
+      &[data-toggle='collapse'] {
+        display: none !important;
+      }
+    }
+
+    .section-details-wrapper {
+      width: 100%;
+      min-height: 243px;
+      padding: 0 12px $length-sheet-padding 55px;
+      font-family: $font-700;
+      background-color: $color-white;
+      border-top: $border;
+
+      .section-details {
+        max-width: ($length-sheet + ($length-sheet-padding * 2)) * 4;
+      }
+    }
+  }
+}

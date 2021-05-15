@@ -16,11 +16,12 @@ export const getters = {
   [BOOK._GETTERS.BOOK_DETAIL]: ({ book }) => book,
   [BOOK._GETTERS.BOOK_ID]: ({ book }) => book.id,
   [BOOK._GETTERS.SECTIONS]: state => {
-    return state.book.sections.sort((firstEl, secondEl) => {
-      return firstEl.order - secondEl.order;
-    });
+    return state.book.sections;
   },
   getTotalSections: state => {
     return state.book.sections.length;
+  },
+  getMaxPage: state => {
+    return state.book.numberMaxPages;
   }
 };

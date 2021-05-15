@@ -22,14 +22,14 @@ const book = {
       name: 'Cover',
       draggable: false,
       color: '#fcd726',
-      status: 'not started',
+      status: 0,
       dueDate: '05/20/21',
       order: 0,
       assigneeId: 123456789,
       sheets: [
         {
           id: 1,
-          type: 'cover',
+          type: 0,
           draggable: false,
           positionFixed: 'all',
           order: 0,
@@ -49,14 +49,14 @@ const book = {
       name: 'Letter',
       draggable: false,
       color: '#a4ca52',
-      status: 'in process',
+      status: 1,
       dueDate: '05/23/21',
       order: 1,
       assigneeId: 123456789,
       sheets: [
         {
           id: 2,
-          type: 'intro',
+          type: 1,
           draggable: false,
           positionFixed: 'first',
           order: 0,
@@ -71,7 +71,7 @@ const book = {
         },
         {
           id: 3,
-          type: 'normal',
+          type: 3,
           draggable: true,
           positionFixed: 'none',
           order: 1,
@@ -86,7 +86,7 @@ const book = {
         },
         {
           id: 4,
-          type: 'normal',
+          type: 3,
           draggable: true,
           positionFixed: 'none',
           order: 2,
@@ -101,7 +101,7 @@ const book = {
         },
         {
           id: 5,
-          type: 'normal',
+          type: 3,
           draggable: true,
           positionFixed: 'none',
           order: 3,
@@ -116,7 +116,7 @@ const book = {
         },
         {
           id: 20,
-          type: 'normal',
+          type: 3,
           draggable: true,
           positionFixed: 'none',
           order: 4,
@@ -136,29 +136,29 @@ const book = {
       name: 'Admin & Staff',
       draggable: true,
       color: '#bc72c2',
-      status: 'completed',
+      status: 2,
       dueDate: '05/25/21',
       order: 2,
       assigneeId: 123456789,
       sheets: [
         {
           id: 6,
-          type: 'normal',
+          type: 3,
           draggable: true,
           positionFixed: 'none',
           order: 0,
           printData: {
             thumbnailUrl: null,
-            link: 'link'
+            link: 'unlink'
           },
           digitalData: {
             thumbnailUrl: null,
-            link: 'link'
+            link: 'unlink'
           }
         },
         {
           id: 7,
-          type: 'normal',
+          type: 3,
           draggable: true,
           positionFixed: 'none',
           order: 1,
@@ -173,7 +173,7 @@ const book = {
         },
         {
           id: 8,
-          type: 'normal',
+          type: 3,
           draggable: true,
           positionFixed: 'none',
           order: 2,
@@ -188,7 +188,7 @@ const book = {
         },
         {
           id: 9,
-          type: 'normal',
+          type: 3,
           draggable: true,
           positionFixed: 'none',
           order: 3,
@@ -208,7 +208,7 @@ const book = {
       draggable: true,
       name: 'OOO',
       color: 'orange',
-      status: 'not started',
+      status: 0,
       dueDate: '05/27/21',
       order: 3,
       assigneeId: 123456789,
@@ -219,14 +219,14 @@ const book = {
       draggable: false,
       name: 'Signatures',
       color: '#0b49f5',
-      status: 'approved',
+      status: 3,
       dueDate: '06/01/21',
       order: 4,
       assigneeId: 123456789,
       sheets: [
         {
           id: 11,
-          type: 'signature',
+          type: 2,
           draggable: false,
           positionFixed: 'last',
           order: 0,
