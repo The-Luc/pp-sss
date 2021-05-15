@@ -85,7 +85,6 @@ export default {
     }
   },
   mounted() {
-    console.log('status', this.status);
     this.moreIcon = ICON_LOCAL.MORE_ICON;
     this.setIsShowDelete();
   },
@@ -179,12 +178,12 @@ export default {
         this.book.id,
         this.sectionId,
         {
-          status
+          status: status.value
         }
       );
       if (isSuccess) {
         const section = this.book.sections.find(s => s.id === this.sectionId);
-        section.status = status.label;
+        section.status = status.value;
       }
       setTimeout(() => {
         this.isOpenStatus = false;

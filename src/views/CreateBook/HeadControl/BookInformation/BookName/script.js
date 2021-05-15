@@ -38,6 +38,10 @@ export default {
       }
     }
   },
+  mounted() {
+    this.title = this.book.title;
+    this.rootTitle = this.book.title;
+  },
   methods: {
     onCancel() {
       this.title = this.rootTitle;

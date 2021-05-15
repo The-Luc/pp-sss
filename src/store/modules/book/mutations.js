@@ -1,7 +1,8 @@
-import APP from './const';
 import randomcolor from 'randomcolor';
 import { uniqueId } from 'lodash';
-import BOOK from './const';
+import moment from 'moment';
+
+import APP from './const';
 
 const getIndexById = (items, id) => {
   return items.findIndex(s => s.id === id);
@@ -235,6 +236,8 @@ export const mutations = {
         fixed: false,
         id: newSectionId,
         name: '',
+        status: 0,
+        dueDate: moment(new Date()).format('MM/DD/YY'),
         sheets: []
       },
       ...sections.slice(sections.length - 1)
@@ -258,5 +261,8 @@ export const mutations = {
     const { sections } = state.book;
     const indexSection = sections.findIndex(item => item.id == sectionId);
     state.book.sections[indexSection].name = sectionName;
+  },
+  [APP._MUTATES.GET_BOOK_SUCCESS](state, payload) {
+    state.book = payload;
   }
 };

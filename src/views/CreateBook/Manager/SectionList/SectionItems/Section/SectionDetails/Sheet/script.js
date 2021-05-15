@@ -24,7 +24,7 @@ export default {
       require: true
     },
     sectionId: {
-      type: Number,
+      type: [Number, String],
       require: true
     },
     sheet: {
