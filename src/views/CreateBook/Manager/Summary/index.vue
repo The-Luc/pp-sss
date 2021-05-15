@@ -1,12 +1,17 @@
 <template>
   <v-col class="manager-summary" id="manager-summary">
-    <Header />
     <v-row>
-      <v-col>
-        <ImportantDates />
-        <Specification />
-        <Sales />
-        <Progress />
+      <v-col class="scroll-container">
+        <Header />
+
+        <v-row>
+          <v-col>
+            <ImportantDates />
+            <Specification />
+            <Sales />
+            <Progress />
+          </v-col>
+        </v-row>
       </v-col>
     </v-row>
   </v-col>
