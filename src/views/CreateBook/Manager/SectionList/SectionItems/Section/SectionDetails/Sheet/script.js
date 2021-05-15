@@ -23,17 +23,13 @@ export default {
       type: Number,
       require: true
     },
-    sheetId: {
-      type: Number
-    },
-    sheetType: {
-      type: String
-    },
-    sheetDraggable: {
-      type: Boolean
-    },
     sectionId: {
-      type: Number
+      type: Number,
+      require: true
+    },
+    sheet: {
+      type: Object,
+      require: true
     }
   },
   setup() {
@@ -59,8 +55,8 @@ export default {
   methods: {
     isHalfSheet: function() {
       return (
-        this.sheetType === this.sheetTypes.INTRO ||
-        this.sheetType === this.sheetTypes.SIGNATURE
+        this.sheet.type === this.sheetTypes.INTRO ||
+        this.sheet.type === this.sheetTypes.SIGNATURE
       );
     },
     showDragControl: function(evt) {
@@ -68,7 +64,7 @@ export default {
         return;
       }
 
-      this.$root.$emit('showDragControl', 'sheet' + this.sheetId);
+      this.$root.$emit('showDragControl', 'sheet' + this.sheet.id);
     },
     hideDragControl: function() {
       this.$root.$emit('hideDragControl');
@@ -106,14 +102,14 @@ export default {
     onCheckIsShowMenuDetail(id) {
       return this.isShowMenu && this.currentSheetId == id;
     },
-    onCheckActions(type) {
+    onCheckActions() {
       const restrictSheetTypes = [
         this.sheetTypes.COVER,
         this.sheetTypes.INTRO,
         this.sheetTypes.SIGNATURE
       ];
 
-      return restrictSheetTypes.indexOf(type) < 0;
+      return restrictSheetTypes.indexOf(this.sheet.type) < 0;
     },
     getSectionsForMove() {
       return this.getSections().map(s => {

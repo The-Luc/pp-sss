@@ -13,29 +13,8 @@ export default {
     SectionProcess
   },
   props: {
-    section: Object,
-    sectionId: {
-      type: Number,
-      require: true
-    },
-    sectionName: {
-      type: String,
-      require: true
-    },
-    status: {
-      type: String,
-      require: true
-    },
-    dueDate: {
-      type: String,
-      require: true
-    },
-    sectionColor: {
-      type: String,
-      require: true
-    },
-    sectionDraggable: {
-      type: Boolean,
+    section: {
+      type: Object,
       require: true
     }
   },
@@ -56,9 +35,9 @@ export default {
   },
   methods: {
     setIsOpenMenu(sectionSelected) {
-      if (!sectionSelected || sectionSelected !== this.sectionId) {
+      if (!sectionSelected || sectionSelected !== this.section.id) {
         this.isOpenMenu = true;
-      } else if (sectionSelected && sectionSelected === this.sectionId) {
+      } else if (sectionSelected && sectionSelected === this.section.id) {
         this.isOpenMenu = false;
       }
     },
@@ -91,10 +70,21 @@ export default {
         return;
       }
 
-      this.$root.$emit('showDragControl', 'section' + this.sectionId);
+      this.$root.$emit('showDragControl', 'section' + this.section.id);
     },
     hideDragControl: function() {
       this.$root.$emit('hideDragControl');
+    },
+    getSection: function() {
+      const { id, name, color, dueDate, status } = this.section;
+
+      return {
+        id: id,
+        name: name,
+        color: color,
+        dueDate: dueDate,
+        status: status
+      };
     }
   }
 };
