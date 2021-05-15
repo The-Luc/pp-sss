@@ -1,12 +1,9 @@
-import { mapState } from 'vuex';
+import { mapGetters } from 'vuex';
+import { GETTERS } from '@/store/modules/book/const';
 export default {
   computed: {
-    ...mapState('book', ['book']),
-    booksSold() {
-      return this.book.booksSold;
-    },
-    fundraisingEarned() {
-      return this.book.fundraisingEarned.toFixed(2);
-    }
+    ...mapGetters({
+      book: GETTERS.BOOK_DETAIL
+    })
   }
 };

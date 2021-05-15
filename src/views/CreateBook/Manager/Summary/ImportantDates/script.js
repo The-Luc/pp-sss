@@ -1,8 +1,11 @@
-import { mapState } from 'vuex';
+import { mapGetters } from 'vuex';
+import { GETTERS } from '@/store/modules/book/const';
 import moment from 'moment';
 export default {
   computed: {
-    ...mapState('book', ['book']),
+    ...mapGetters({
+      book: GETTERS.BOOK_DETAIL
+    }),
     dueDate() {
       let date = moment(new Date(this.book.releaseDate)).format('MM/DD/YY');
       return date;

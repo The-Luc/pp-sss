@@ -1,21 +1,9 @@
-import { mapState } from 'vuex';
+import { mapGetters } from 'vuex';
+import { GETTERS } from '@/store/modules/book/const';
 export default {
   computed: {
-    ...mapState('book', ['book']),
-    coverOption() {
-      return this.book.coverOption;
-    },
-    numberMaxPages() {
-      return this.book.numberMaxPages;
-    },
-    deliveryOption() {
-      return this.book.deliveryOption;
-    },
-    minEstimated() {
-      return this.book.estimatedQuantity.min;
-    },
-    maxEstimated() {
-      return this.book.estimatedQuantity.max;
-    }
+    ...mapGetters({
+      book: GETTERS.BOOK_DETAIL
+    })
   }
 };
