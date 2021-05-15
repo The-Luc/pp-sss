@@ -1,4 +1,4 @@
-import ICON_LOCAL from '@/common/constants/icon';
+import { ICON_LOCAL } from '@/common/constants';
 
 export default {
   props: {
@@ -9,6 +9,10 @@ export default {
     value: {
       type: String,
       default: ''
+    },
+    isLastItem: {
+      type: Boolean,
+      default: false
     }
   },
   created() {

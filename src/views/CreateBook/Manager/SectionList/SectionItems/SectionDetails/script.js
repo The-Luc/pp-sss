@@ -1,107 +1,150 @@
-import { mapState, mapMutations, mapGetters } from 'vuex';
 import draggable from 'vuedraggable';
-import { MUTATES } from '@/store/modules/app/const';
-import { MODAL_TYPES } from '@/common/constants';
-import MenuDetail from './MenuDetail';
-import ButtonDelete from '@/components/Menu/ButtonDelete';
-import ICON_LOCAL from '@/common/constants/icon';
-import { SHEET_TYPES } from '@/common/constants/sheetTypes';
+import { mapMutations } from 'vuex';
+
+import { MUTATES } from '@/store/modules/book/const';
+
+import Sheet from './Sheet';
+
+let selectedIndex = -1;
+let moveToIndex = -1;
+let moveToSectionId = null;
 
 export default {
-  data() {
-    return {
-      isOpen: false,
-      items: [{ title: 'Move To', value: 'Choose a Section' }],
-      isShowMenu: false,
-      currentSheetId: '',
-      currentSheetHover: '',
-      moreIcon: ICON_LOCAL.MORE_ICON,
-      arrowDown: ICON_LOCAL.ARROW_DOWN,
-      isOpenMenu: false,
-      sheetTypes: SHEET_TYPES
-    };
-  },
   components: {
-    Draggable: draggable,
-    MenuDetail,
-    ButtonDelete
+    draggable,
+    Sheet
   },
   props: {
-    sectionId: String,
-    startSeq: Number
-  },
-  computed: {
-    ...mapState('book', ['book']),
-    ...mapGetters('book', ['getSections']),
+    sectionId: {
+      type: Number,
+      require: true
+    },
+    startSeq: {
+      type: Number,
+      require: true
+    },
     sheets: {
-      get() {
-        const section = this.book.sections.filter(s => s.id === this.sectionId);
-
-        return section == null || section.length == 0 ? [] : section[0].sheets;
-      },
-      set(newSheets) {
-        this.updateSection({
-          sectionId: this.sectionId,
-          sheets: newSheets
-        });
-      }
+      type: Array,
+      require: true
     }
   },
+  setup() {
+    return {
+      ...mapMutations({
+        updateSheetPosition: MUTATES.UPDATE_SHEET_POSITION
+      })
+    };
+  },
+  data() {
+    return {
+      drag: false
+    };
+  },
   methods: {
-    ...mapMutations({
-      toggleModal: MUTATES.TOGGLE_MODAL,
-      updateSection: 'book/updateSection'
-    }),
-    onMove({ relatedContext, draggedContext }) {
-      const relatedElement = relatedContext.element;
-      const draggedElement = draggedContext.element;
+    onChoose: function(evt) {
+      moveToIndex = -1;
+      moveToSectionId = null;
 
-      return (
-        (!relatedElement || !relatedElement.fixed) && !draggedElement.fixed
-      );
+      selectedIndex = this.sheets[evt.oldIndex].draggable ? evt.oldIndex : -1;
     },
+    onMove: function(evt) {
+      this.hideAllIndicator();
 
-    openModal(indexSheet, idSheet, idSection) {
-      this.toggleModal({
-        isOpenModal: true,
-        modalData: {
-          type: MODAL_TYPES.DELETE_SHEET,
-          props: { indexSheet, idSheet, idSection }
-        }
-      });
-    },
-    setCurrentSheetId(id = '') {
-      this.currentSheetHover = id;
-    },
-    onChangeStatusMenuDetail(id) {
-      if (!this.currentSheetId) {
-        this.currentSheetId = this.currentSheetHover;
-        this.isShowMenu = !this.isShowMenu;
-      } else {
-        if (this.currentSheetId == id) {
-          this.isShowMenu = !this.isShowMenu;
-        } else {
-          this.currentSheetId = this.currentSheetHover;
-          this.isShowMenu = true;
-        }
-      }
-    },
-    onCloseMenu() {
-      if (!this.currentSheetHover) {
-        this.isShowMenu = false;
-      }
-    },
-    onCheckIsShowMenuDetail(id) {
-      return this.isShowMenu && this.currentSheetId == id;
-    },
-    onCheckActions(type) {
-      const index = this.getSections.findIndex(
-        item => item.id == this.sectionId
-      );
-      if (index == 0 || type == this.sheetTypes.HALF) {
+      if (selectedIndex < 0) {
         return false;
       }
-      return true;
+
+      if (evt.related === null) {
+        return false;
+      }
+
+      const relateSheet =
+        typeof evt.relatedContext.element === 'undefined'
+          ? null
+          : evt.relatedContext.element;
+
+      const relateSectionId = evt.relatedContext.component.$el.getAttribute(
+        'data-section'
+      );
+
+      if (relateSheet === null) {
+        this.getMoveToIndex(evt, relateSectionId);
+
+        this.$root.$emit('showIndicator', 'sheet-left-' + -relateSectionId);
+
+        return false;
+      }
+
+      const isPosibleToMove =
+        relateSheet === null || relateSheet.positionFixed !== 'all';
+
+      if (!isPosibleToMove) {
+        moveToIndex = -1;
+
+        return false;
+      }
+
+      this.getMoveToIndex(evt, relateSectionId);
+
+      if (this.isSameElement()) {
+        return false;
+      }
+
+      const isInsertAfter = this.isInsertAfter(evt.willInsertAfter);
+
+      if (!isInsertAfter && relateSheet.positionFixed !== 'first') {
+        this.$root.$emit('showIndicator', 'sheet-left-' + relateSheet.id);
+      } else if (isInsertAfter && relateSheet.positionFixed !== 'last') {
+        this.$root.$emit('showIndicator', 'sheet-right-' + relateSheet.id);
+      }
+
+      return false;
+    },
+    onEnd: function() {
+      this.hideAllIndicator();
+
+      if (selectedIndex < 0 || moveToIndex < 0 || this.isSameElement()) {
+        this.drag = false;
+
+        return;
+      }
+
+      this.updateSheetPosition({
+        moveToSectionId: moveToSectionId,
+        moveToIndex: moveToIndex,
+        selectedSectionId: this.sectionId,
+        selectedIndex: selectedIndex
+      });
+
+      this.endDragDropProcess();
+    },
+    getMoveToIndex: function(evt, relateSectionId) {
+      moveToIndex = evt.draggedContext.futureIndex;
+
+      moveToSectionId = parseInt(relateSectionId, 10);
+    },
+    isSameElement: function() {
+      return (
+        moveToSectionId === this.sectionId && moveToIndex === selectedIndex
+      );
+    },
+    isInsertAfter: function(willInsertAfter) {
+      if (moveToSectionId === this.sectionId) {
+        return moveToIndex > selectedIndex;
+      }
+
+      return willInsertAfter;
+    },
+    endDragDropProcess: function() {
+      selectedIndex = -1;
+      moveToIndex = -1;
+
+      moveToSectionId = null;
+
+      this.drag = false;
+    },
+    hideAllIndicator: function() {
+      this.$root.$emit('hideIndicator');
     }
   }
 };

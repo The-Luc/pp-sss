@@ -1,4 +1,4 @@
-import ICON_LOCAL from '@/common/constants/icon';
+import { ICON_LOCAL } from '@/common/constants';
 
 export default {
   created() {
