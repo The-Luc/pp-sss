@@ -11,7 +11,7 @@
     >
       <img :src="image" />
       <div v-if="edit" class="thumbnail-edit">
-        <router-link :to="toLink">
+        <router-link tag="div" :to="toLink">
           <v-icon class="icon-edit">edit</v-icon>
         </router-link>
       </div>

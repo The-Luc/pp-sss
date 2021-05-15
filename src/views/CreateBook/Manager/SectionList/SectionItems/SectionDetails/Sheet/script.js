@@ -1,10 +1,10 @@
-import { mapGetters } from 'vuex';
+import { mapGetters, mapMutations } from 'vuex';
 
 import DragDropControl from '@/components/DragDropControl';
 import DragDropIndicator from '@/components/DragDropIndicatorVertical';
 import ButtonDelete from '@/components/Menu/ButtonDelete';
 import MenuDetail from '../MenuDetail';
-
+import { MUTATES } from '@/store/modules/app/const';
 import { ICON_LOCAL } from '@/common/constants';
 
 import { GETTERS } from '@/store/modules/book/const';
@@ -57,6 +57,9 @@ export default {
     };
   },
   methods: {
+    ...mapMutations({
+      toggleModal: MUTATES.TOGGLE_MODAL
+    }),
     isHalfSheet: function() {
       return (
         this.sheetType === this.sheetTypes.INTRO ||
