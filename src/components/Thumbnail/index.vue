@@ -10,8 +10,8 @@
       ]"
     >
       <img :src="image" />
-      <div class="thumbnail-edit">
-        <router-link v-if="edit" to="/edit/print/edit-screen">
+      <div v-if="edit" class="thumbnail-edit">
+        <router-link :to="toLink">
           <v-icon class="icon-edit">edit</v-icon>
         </router-link>
       </div>

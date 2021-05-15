@@ -3,13 +3,10 @@ import project from '@/mock/project';
 export default {
   data() {
     return {
-      isOpen: true,
+      isOpen: true
     };
   },
   props: {
     section: Object
-  },
-  created(){
-    console.log(this.section);
   }
 };

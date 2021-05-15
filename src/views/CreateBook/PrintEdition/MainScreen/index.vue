@@ -7,8 +7,8 @@
         :section="section"
       >
         <Thumbnail
-          :sections="book.sections"
-          :section-id="section.id"
+          to-link="/edit/print/edit-screen"
+          :number-page="numberPage(section.id, sheet)"
           :sheet="sheet"
         />
       </Frames>
