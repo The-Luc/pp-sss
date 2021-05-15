@@ -20,5 +20,8 @@ export const getters = {
   },
   getTotalSections: state => {
     return state.book.sections.length;
+  },
+  getMaxPage: state => {
+    return state.book.numberMaxPages;
   }
 };

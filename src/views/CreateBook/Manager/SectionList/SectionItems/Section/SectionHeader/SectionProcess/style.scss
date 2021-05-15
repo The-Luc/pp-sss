@@ -58,3 +58,16 @@ $space: 15px;
     }
   }
 }
+.menu-button {
+  padding: 0 10px;
+
+  button {
+    font-family: 'MuseoSans 500';
+    color: #565656;
+    font-size: 13px;
+    background-color: #f4f4f4;
+    width: 100%;
+    text-align: center;
+    padding: 8px 0;
+  }
+}

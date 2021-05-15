@@ -23,6 +23,10 @@ export default {
     },
     isOpen: {
       type: Boolean
+    },
+    isCloseMenu: {
+      type: Boolean,
+      default: false
     }
   },
   methods: {

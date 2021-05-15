@@ -3,6 +3,7 @@
     <Menu
       v-if="isOpenMenu"
       nudge-width="180"
+      :is-close-menu="isCloseMenu"
       :items="items"
       :menu-x="menuX"
       :menu-y="menuY"
@@ -10,6 +11,11 @@
       @onClickOutSideMenu="onClickOutSideMenu"
       @onItemClick="onItemClick"
     >
+      <ButtonAdd
+        v-if="isShowAdd"
+        title="Add a sheet"
+        @click.native="onAddSheet(sectionId)"
+      />
       <ButtonDelete
         v-if="isShowDelete"
         class="btn-delete"
