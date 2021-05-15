@@ -42,8 +42,18 @@ export default {
   computed: {
     ...mapGetters({
       sectionSelected: GETTERS.SECTION_SELECTED,
-      sections: BOOK_GETTERS.SECTIONS
-    })
+      sections: BOOK_GETTERS.SECTIONS,
+      maxPage: 'book/getMaxPage',
+      totalInfo: 'book/getTotalInfo',
+    }),
+    isShowAdd() {
+      let index = this.sections.findIndex(item => item.id === this.sectionId);
+      if (this.totalInfo.totalPages >= this.maxPage || !index) {
+        return false;
+      } else {
+        return true;
+      }
+    },
   },
   data() {
     return {
@@ -52,7 +62,6 @@ export default {
       isOpenStatus: false,
       calendarX: 0,
       calendarY: 0,
-      isShowAdd: false,
       isShowDelete: false,
       calendarWidth: 550,
       statusX: 0,
@@ -79,14 +88,11 @@ export default {
     console.log('status', this.status);
     this.moreIcon = ICON_LOCAL.MORE_ICON;
     this.setIsShowDelete();
-    this.setIsShowAdd();
   },
   methods: {
     ...mapMutations({
       toggleModal: MUTATES.TOGGLE_MODAL,
       addSheet: 'book/addSheet',
-      maxPage: 'book/getMaxPage',
-      totalInfo: 'book/getTotalInfo',
       setSectionSelected: MUTATES.SET_SELECTION_SELECTED
     }),
     setIsShowDelete() {
@@ -95,14 +101,6 @@ export default {
         this.isShowDelete = true;
       } else {
         this.isShowDelete = false;
-      }
-    },
-    setIsShowAdd() {
-      let index = this.sections.findIndex(item => item.id === this.sectionId);
-      if (this.totalInfo.totalPages >= this.maxPage || !index) {
-        this.isShowAdd = false;
-      } else {
-        this.isShowAdd = true;
       }
     },
     onOpenModal(sectionId, sectionName) {
@@ -193,6 +191,7 @@ export default {
       }, 0);
     },
     onAddSheet(sectionId) {
+      console.log(this.isShowAdd );
       this.isCloseMenu = true;
       this.addSheet({
         sectionId
