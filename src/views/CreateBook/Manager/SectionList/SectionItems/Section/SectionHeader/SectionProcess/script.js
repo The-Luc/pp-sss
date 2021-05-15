@@ -12,24 +12,8 @@ import { PROCESS_STATUS } from '@/common/constants/processStatus';
 
 export default {
   props: {
-    sectionId: {
-      type: Number,
-      require: true
-    },
-    sectionName: {
-      type: String,
-      require: true
-    },
-    sectionColor: {
-      type: String,
-      require: true
-    },
-    sectionReleaseDate: {
-      type: String,
-      require: true
-    },
-    sectionStatus: {
-      type: Number,
+    section: {
+      type: Object,
       require: true
     }
   },
@@ -66,7 +50,9 @@ export default {
       sections: 'book/getSections'
     }),
     isShowDelete() {
-      const index = this.sections.findIndex(item => item.id === this.sectionId);
+      const index = this.sections.findIndex(
+        item => item.id === this.section.id
+      );
       if (index !== 0 && index !== 1 && index !== this.sections.length - 1) {
         return true;
       }
@@ -83,13 +69,13 @@ export default {
     }),
 
     setIsOpenMenu() {
-      if (!this.sectionSelected || this.sectionSelected !== this.sectionId) {
+      if (!this.sectionSelected || this.sectionSelected !== this.section.id) {
         this.setSectionSelected({
-          sectionSelected: this.sectionId
+          sectionSelected: this.section.id
         });
       } else if (
         this.sectionSelected &&
-        this.sectionSelected === this.sectionId
+        this.sectionSelected === this.section.id
       ) {
         this.setSectionSelected({
           sectionSelected: ''

@@ -1,32 +1,32 @@
 <template>
   <v-col class="col-3 section-process">
-    <span class="dot" :style="[{ backgroundColor: sectionColor }]"></span>
+    <span class="dot" :style="[{ backgroundColor: section.color }]"></span>
     <span
       class="process in-progress"
       :style="[
-        sectionStatus >= processStatus.IN_PROCESS && {
-          backgroundColor: sectionColor
+        section.status >= processStatus.IN_PROCESS && {
+          backgroundColor: section.color
         }
       ]"
     ></span>
     <span
       class="process completed"
       :style="[
-        sectionStatus >= processStatus.COMPLETED && {
-          backgroundColor: sectionColor
+        section.status >= processStatus.COMPLETED && {
+          backgroundColor: section.color
         }
       ]"
     ></span>
     <span
       class="process approved"
       :style="[
-        sectionStatus >= processStatus.APPROVED && {
-          backgroundColor: sectionColor
+        section.status >= processStatus.APPROVED && {
+          backgroundColor: section.color
         }
       ]"
     ></span>
 
-    <span class="first-release">{{ sectionReleaseDate }}</span>
+    <span class="first-release">{{ section.releaseDate }}</span>
     <img :src="moreIcon" @click="toggleMenu" />
     <!--<Action
       :release-date="sectionReleaseDate"

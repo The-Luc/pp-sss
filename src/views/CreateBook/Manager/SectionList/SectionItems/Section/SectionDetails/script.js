@@ -1,4 +1,4 @@
-import draggable from 'vuedraggable';
+import Draggable from 'vuedraggable';
 import { mapMutations } from 'vuex';
 
 import { MUTATES } from '@/store/modules/book/const';
@@ -11,7 +11,7 @@ let moveToSectionId = null;
 
 export default {
   components: {
-    draggable,
+    Draggable,
     Sheet
   },
   props: {
@@ -19,7 +19,7 @@ export default {
       type: Number,
       require: true
     },
-    startSeq: {
+    startSequence: {
       type: Number,
       require: true
     },
@@ -116,7 +116,12 @@ export default {
         selectedIndex: selectedIndex
       });
 
-      this.endDragDropProcess();
+      selectedIndex = -1;
+      moveToIndex = -1;
+
+      moveToSectionId = null;
+
+      this.drag = false;
     },
     getMoveToIndex: function(evt, relateSectionId) {
       moveToIndex = evt.draggedContext.futureIndex;
@@ -135,16 +140,15 @@ export default {
 
       return willInsertAfter;
     },
-    endDragDropProcess: function() {
-      selectedIndex = -1;
-      moveToIndex = -1;
-
-      moveToSectionId = null;
-
-      this.drag = false;
-    },
     hideAllIndicator: function() {
       this.$root.$emit('hideIndicator');
+    },
+    getVirtualSheet: function() {
+      return {
+        id: -this.sectionId,
+        type: 3,
+        draggable: false
+      }
     }
   }
 };

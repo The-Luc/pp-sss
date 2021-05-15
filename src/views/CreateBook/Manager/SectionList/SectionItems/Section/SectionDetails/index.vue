@@ -5,7 +5,7 @@
     :data-id="sectionId"
   >
     <v-col class="section-details-wrapper">
-      <draggable
+      <Draggable
         v-if="sheets.length > 0"
         v-model="sheets"
         class="row section-details"
@@ -19,15 +19,13 @@
         <Sheet
           v-for="(sheet, index) in sheets"
           :key="sheet.id"
-          :sequence="startSeq + index"
-          :sheet-id="sheet.id"
-          :sheet-type="sheet.type"
-          :sheet-draggable="sheet.draggable"
+          :sequence="startSequence + index"
           :section-id="sectionId"
+          :sheet="sheet"
         ></Sheet>
-      </draggable>
+      </Draggable>
 
-      <draggable
+      <Draggable
         v-else
         v-model="sheets"
         class="row section-details"
@@ -40,11 +38,10 @@
       >
         <Sheet
           :sequence="-1"
-          :sheet-id="-sectionId"
-          :sheet-type="3"
-          :draggable="false"
+          :section-id="sectionId"
+          :sheet="getVirtualSheet()"
         ></Sheet>
-      </draggable>
+      </Draggable>
     </v-col>
   </v-row>
 </template>

@@ -2,44 +2,44 @@
   <v-col class="sheet-box">
     <v-row>
       <DragDropIndicator
-        :id="'sheet-left-' + sheetId"
+        :id="'sheet-left-' + sheet.id"
         custom-class-name="indicator-left"
       />
 
-      <v-col :class="sheetId < 0 ? 'hide' : ''">
+      <v-col :class="sheet.id < 0 ? 'hide' : ''">
         <v-row>
           <v-col
             :class="[
               'sheet',
-              isHalfSheet(sheetType) ? 'vertical' : 'horizontal'
+              isHalfSheet() ? 'vertical' : 'horizontal'
             ]"
-            :data-draggable="sheetDraggable"
+            :data-draggable="sheet.draggable"
             @mouseover="showDragControl"
             @mouseleave="hideDragControl"
           >
-            <DragDropControl :id="'sheet' + sheetId" />
+            <DragDropControl :id="'sheet' + sheet.id" />
 
-            <div v-if="onCheckActions(sheetType)" class="menu">
+            <div v-if="onCheckActions()" class="menu">
               <img
                 :src="moreIcon"
                 :class="[
-                  onCheckIsShowMenuDetail(sheetId) ? 'd-block' : '',
+                  onCheckIsShowMenuDetail(sheet.id) ? 'd-block' : '',
                   'menu-icon'
                 ]"
-                @mouseover="setCurrentSheetId(sheetId)"
+                @mouseover="setCurrentSheetId(sheet.id)"
                 @mouseleave="setCurrentSheetId()"
-                @click="onChangeStatusMenuDetail(sheetId)"
+                @click="onChangeStatusMenuDetail(sheet.id)"
               />
               <MenuDetail
-                v-if="onCheckIsShowMenuDetail(sheetId)"
+                v-if="onCheckIsShowMenuDetail(sheet.id)"
                 v-click-outside="onCloseMenu"
                 :section-id="sectionId"
-                :sheet-id="sheetId"
+                :sheet-id="sheet.id"
                 :get-sections="getSectionsForMove()"
               >
                 <ButtonDelete
                   title="Delete This Sheet"
-                  @click.native="openModal(sequence, sheetId, sectionId)"
+                  @click.native="openModal(sequence, sheet.id, sectionId)"
                 />
               </MenuDetail>
             </div>
@@ -47,12 +47,12 @@
         </v-row>
 
         <v-row>
-          <v-col class="sheet-name"> {{ sequence }}{{ sheetId }} </v-col>
+          <v-col class="sheet-name"> {{ sequence }}{{ sheet.id }} </v-col>
         </v-row>
       </v-col>
 
       <DragDropIndicator
-        :id="'sheet-right-' + sheetId"
+        :id="'sheet-right-' + sheet.id"
         custom-class-name="indicator-right"
       />
     </v-row>
