@@ -3,7 +3,6 @@ import { mapMutations, mapGetters } from 'vuex';
 import Action from './Action';
 
 import { GETTERS, MUTATES } from '@/store/modules/app/const';
-import { SECTION_STATUS } from '@/common/constants/status';
 
 import { ICON_LOCAL } from '@/common/constants';
 import { PROCESS_STATUS } from '@/common/constants/processStatus';

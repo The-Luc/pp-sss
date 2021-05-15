@@ -28,11 +28,6 @@ export default {
       if (this.sectionSelected) {
         this.setSectionSelected('');
       }
-      const targetClassList = document.getElementById('manager-summary')
-        .classList;
-      const sectionListClassList = document.getElementById(
-        'manager-section-list'
-      ).classList;
     }
   }
 };

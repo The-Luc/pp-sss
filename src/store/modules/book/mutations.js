@@ -1,8 +1,8 @@
 import randomcolor from 'randomcolor';
-import { uniqueId } from 'lodash';
 import moment from 'moment';
 
 import APP from './const';
+import { SHEET_TYPES } from '@/common/constants/sheetTypes';
 
 const getIndexById = (items, id) => {
   return items.findIndex(s => s.id === id);
@@ -60,6 +60,36 @@ const moveItem = (item, currentIndex, moveToIndex, items) => {
   }
 
   return _items;
+};
+
+const nextId = items => {
+  const maxId = Math.max(...items.map(e => e.id), 0);
+
+  return maxId + 1;
+};
+
+const makeNewSection = (sections, sectionIndex) => {
+  const newId = Math.max(...sections.map(s => nextId(s.sheets)), 1);
+
+  const totalSheets = sections[sectionIndex].sheets.length;
+  const order =
+    sectionIndex === sections.length - 1 ? totalSheets - 1 : totalSheets;
+
+  return {
+    id: newId,
+    type: SHEET_TYPES.NORMAL,
+    draggable: true,
+    positionFixed: 'none',
+    order: order,
+    printData: {
+      thumbnailUrl: null,
+      link: 'link'
+    },
+    digitalData: {
+      thumbnailUrl: null,
+      link: 'link'
+    }
+  };
 };
 
 export const mutations = {
@@ -126,50 +156,20 @@ export const mutations = {
   addSheet(state, payload) {
     const { sectionId } = payload;
     const { totalPages, totalSheets, totalScreens, sections } = state.book;
-    const newSectionId = parseInt(uniqueId()) + 20;
 
     let index = sections.findIndex(item => item.id === sectionId);
     if (index !== sections.length - 1) {
       sections[index].sheets = [
         ...sections[index].sheets,
-        {
-          id: newSectionId,
-          type: 'full',
-          draggable: true,
-          positionFixed: 'none',
-          order: sections[index].sheets.length,
-          printData: {
-            thumbnailUrl: null,
-            link: 'link'
-          },
-          digitalData: {
-            thumbnailUrl: null,
-            link: 'link'
-          }
-        }
+        makeNewSection(sections, index)
       ];
     } else {
       sections[index].sheets = [
         ...sections[index].sheets.slice(0, sections[index].sheets.length - 1),
-        {
-          id: newSectionId + 20,
-          type: 'full',
-          draggable: true,
-          positionFixed: 'none',
-          order: sections[index].sheets.length - 1,
-          printData: {
-            thumbnailUrl: null,
-            link: 'link'
-          },
-          digitalData: {
-            thumbnailUrl: null,
-            link: 'link'
-          }
-        },
+        makeNewSection(sections, index),
         ...sections[index].sheets.slice(sections[index].sheets.length - 1)
       ];
       sections[index].sheets[sections[index].sheets.length - 1].order += 1;
-      console.log(sections[index]);
     }
     state.book.totalPages = totalPages + 2;
     state.book.totalSheets = totalSheets + 1;
@@ -228,7 +228,8 @@ export const mutations = {
   },
   addSection(state) {
     const { sections } = state.book;
-    const newSectionId = uniqueId('id-');
+    const newSectionId = nextId(sections);
+
     state.book.sections = [
       ...sections.slice(0, sections.length - 1),
       {
@@ -237,6 +238,7 @@ export const mutations = {
         id: newSectionId,
         name: '',
         status: 0,
+        draggable: true,
         dueDate: moment(new Date()).format('MM/DD/YY'),
         sheets: []
       },

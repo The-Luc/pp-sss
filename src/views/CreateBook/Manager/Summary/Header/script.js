@@ -10,15 +10,14 @@ export default {
 
       if (target.getAttribute(DATA_TOGGLE) === COLLPAPSE) {
         this.setToggleData(EXPAND);
-      }
-      else {
+      } else {
         this.setToggleData(COLLPAPSE);
       }
     },
     setToggleData: function(toggleData) {
       const target = document.getElementById('manager-summary');
       const sectionList = document.getElementById('manager-section-list');
-  
+
       target.setAttribute(DATA_TOGGLE, toggleData);
       sectionList.setAttribute(DATA_TOGGLE, toggleData);
     }

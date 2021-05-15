@@ -1,22 +1,22 @@
 export default {
   props: {
     iconName: {
-      type: String,
+      type: String
     },
     title: {
-      type: String,
+      type: String
     },
     textName: {
-      type: String,
-    }, 
+      type: String
+    },
     width: {
       type: Number,
-      default: 38,
+      default: 38
     }
   },
   methods: {
     onClick() {
-      this.$emit("click");
+      this.$emit('click');
     }
   }
-}
+};
