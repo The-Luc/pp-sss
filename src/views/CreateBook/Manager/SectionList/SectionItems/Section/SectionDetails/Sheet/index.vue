@@ -9,10 +9,7 @@
       <v-col :class="sheet.id < 0 ? 'hide' : ''">
         <v-row>
           <v-col
-            :class="[
-              'sheet',
-              isHalfSheet() ? 'vertical' : 'horizontal'
-            ]"
+            :class="['sheet', isHalfSheet() ? 'vertical' : 'horizontal']"
             :data-draggable="sheet.draggable"
             @mouseover="showDragControl"
             @mouseleave="hideDragControl"

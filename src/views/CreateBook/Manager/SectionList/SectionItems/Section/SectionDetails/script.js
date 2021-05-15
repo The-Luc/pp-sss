@@ -96,8 +96,10 @@ export default {
 
       const isInsertAfter = this.isInsertAfter(evt.willInsertAfter);
 
-      const isAllowInsertBefore = !isInsertAfter && relateSheet.positionFixed !== 'first';
-      const isAllowInsertAfter = isInsertAfter && relateSheet.positionFixed !== 'last';
+      const isAllowInsertBefore =
+        !isInsertAfter && relateSheet.positionFixed !== 'first';
+      const isAllowInsertAfter =
+        isInsertAfter && relateSheet.positionFixed !== 'last';
 
       if (!isAllowInsertBefore && !isAllowInsertAfter) {
         this.cancelMove();
@@ -110,7 +112,7 @@ export default {
 
         return false;
       }
-      
+
       if (isAllowInsertAfter) {
         this.$root.$emit('showIndicator', 'sheet-right-' + relateSheet.id);
 
@@ -167,7 +169,7 @@ export default {
         id: -this.sectionId,
         type: 3,
         draggable: false
-      }
+      };
     },
     cancelMove: function() {
       moveToIndex = -1;
