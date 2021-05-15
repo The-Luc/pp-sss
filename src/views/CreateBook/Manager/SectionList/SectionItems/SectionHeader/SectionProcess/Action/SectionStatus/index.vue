@@ -8,8 +8,8 @@
     :nudge-width="statusWidth"
   >
     <v-list v-click-outside="onClickOutSideStatus" dense>
-      <v-list-item-group :value="sectionStatus" color="primary">
-        <v-list-item v-for="(item, i) in status" :key="i">
+      <v-list-item-group :value="status" color="primary">
+        <v-list-item v-for="(item, i) in statusList" :key="i">
           <v-list-item-content @click="onSelectedStatus(item)">
             <v-list-item-title
               class="text-500 text-size-md"

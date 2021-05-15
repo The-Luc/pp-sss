@@ -22,7 +22,7 @@ export default {
       type: String,
       require: true
     },
-    sectionStatus: {
+    status: {
       type: String,
       require: true
     },

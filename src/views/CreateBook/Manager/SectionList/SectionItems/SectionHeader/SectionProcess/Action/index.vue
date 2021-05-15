@@ -7,12 +7,12 @@
       :menu-x="menuX"
       :menu-y="menuY"
       :is-open="isOpenMenu"
-      :section-status="sectionStatus"
       @onClickOutSideMenu="onClickOutSideMenu"
       @onItemClick="onItemClick"
     >
       <ButtonDelete
         v-if="isShowDelete"
+        class="btn-delete"
         title="Delete This Section"
         @click.native="onOpenModal(sectionId, sectionName)"
       />
@@ -30,7 +30,7 @@
     />
     <SectionStatus
       v-if="isOpenStatus"
-      :section-status="sectionStatus"
+      :status="status"
       :is-open-status="isOpenStatus"
       :status-width="statusWidth"
       :status-x="statusX"

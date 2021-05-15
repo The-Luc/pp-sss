@@ -23,7 +23,7 @@
             :section-id="section.id"
             :section-name="section.name"
             :section-color="section.color"
-            :section-status="section.status"
+            :status="section.status"
             :due-date="section.dueDate"
             :section-draggable="section.draggable"
           />

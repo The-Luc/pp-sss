@@ -49,16 +49,8 @@ export default {
   },
   computed: {
     ...mapGetters({
-      sectionSelected: GETTERS.SECTION_SELECTED,
-      sections: 'book/getSections'
-    }),
-    isShowDelete() {
-      const index = this.sections.findIndex(item => item.id === this.sectionId);
-      if (index !== 0 && index !== 1 && index !== this.sections.length - 1) {
-        return true;
-      }
-      return false;
-    }
+      sectionSelected: GETTERS.SECTION_SELECTED
+    })
   },
   watch: {
     dueDate(val) {

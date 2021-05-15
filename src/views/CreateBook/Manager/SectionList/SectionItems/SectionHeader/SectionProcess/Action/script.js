@@ -5,6 +5,7 @@ import { useBook, useMutationSection } from '@/hooks';
 import { MODAL_TYPES, ICON_LOCAL } from '@/common/constants';
 
 import { GETTERS, MUTATES } from '@/store/modules/app/const';
+import { GETTERS as BOOK_GETTERS } from '@/store/modules/book/const';
 import ButtonDelete from '@/components/Menu/ButtonDelete';
 import Menu from '@/components/Menu';
 import Calendar from './Calendar';
@@ -28,7 +29,6 @@ export default {
     'sectionId',
     'status',
     'sectionName',
-    'isShowDelete',
     'dueDate'
   ],
   components: {
@@ -39,7 +39,8 @@ export default {
   },
   computed: {
     ...mapGetters({
-      sectionSelected: GETTERS.SECTION_SELECTED
+      sectionSelected: GETTERS.SECTION_SELECTED,
+      sections: BOOK_GETTERS.SECTIONS
     })
   },
   data() {
@@ -49,6 +50,7 @@ export default {
       isOpenStatus: false,
       calendarX: 0,
       calendarY: 0,
+      isShowDelete: false,
       calendarWidth: 550,
       statusX: 0,
       statusY: 0,
@@ -70,13 +72,23 @@ export default {
     }
   },
   mounted() {
+    console.log('status', this.status);
     this.moreIcon = ICON_LOCAL.MORE_ICON;
+    this.setIsShowDelete();
   },
   methods: {
     ...mapMutations({
       setSectionSelected: MUTATES.SET_SELECTION_SELECTED,
       toggleModal: MUTATES.TOGGLE_MODAL
     }),
+    setIsShowDelete() {
+      const index = this.sections.findIndex(item => item.id === this.sectionId);
+      if (index !== 0 && index !== 1 && index !== this.sections.length - 1) {
+        this.isShowDelete = true;
+      } else {
+        this.isShowDelete = false;
+      }
+    },
     onOpenModal(sectionId, sectionName) {
       this.toggleModal({
         isOpenModal: true,

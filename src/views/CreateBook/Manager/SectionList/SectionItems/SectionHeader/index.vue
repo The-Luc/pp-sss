@@ -17,7 +17,7 @@
           :section-color="sectionColor"
         />
         <SectionProcess
-          :status="sectionStatus"
+          :status="status"
           :due-date="dueDate"
           :section-id="sectionId"
           :section-name="sectionName"

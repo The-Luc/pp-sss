@@ -9,6 +9,10 @@ export default {
     value: {
       type: String,
       default: ''
+    },
+    isLastItem: {
+      type: Boolean,
+      default: false
     }
   },
   created() {
