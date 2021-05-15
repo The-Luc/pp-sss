@@ -5,17 +5,17 @@
 
       <div class="group-detail">
         <div class="info-name">Requested Delivery Date:</div>
-        <div class="info-detail">{{deliveryDate}}</div>
+        <div class="info-detail">{{ deliveryDate }}</div>
       </div>
 
       <div class="group-detail">
         <div class="info-name">File Release Due Date:</div>
-        <div class="info-detail">{{dueDate}}</div>
+        <div class="info-detail">{{ dueDate }}</div>
       </div>
 
       <div class="group-detail">
         <div class="info-name">Countdown:</div>
-        <div class="info-detail countdown">{{countdown}} days remaining</div>
+        <div class="info-detail countdown">{{ countdown }} days remaining</div>
       </div>
     </v-col>
   </v-row>

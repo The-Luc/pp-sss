@@ -15,7 +15,9 @@
 
       <div class="group-detail">
         <div class="info-name">Estimated Quantity:</div>
-        <div class="info-detail">{{ book.estimatedQuantity.min }} - {{ book.estimatedQuantity.max }}</div>
+        <div class="info-detail">
+          {{ book.estimatedQuantity.min }} - {{ book.estimatedQuantity.max }}
+        </div>
       </div>
 
       <div class="group-detail">

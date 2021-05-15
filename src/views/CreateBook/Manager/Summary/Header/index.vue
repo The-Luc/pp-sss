@@ -1,10 +1,7 @@
 <template>
   <v-row>
     <v-col class="summary-title">
-      <img
-        src="@/assets/icons/double-arrow-right.svg"
-        v-on:click="toogleSummary"
-      />
+      <img src="@/assets/icons/double-arrow-right.svg" @click="toogleSummary" />
       <span class="text-700">PROGRAM SUMMARY</span>
     </v-col>
   </v-row>

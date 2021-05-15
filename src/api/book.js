@@ -1,5 +1,3 @@
-import api from '@/api/axios';
-import { ENDPOINT } from '@/common/constants';
 import book from '@/mock/book';
 
 const bookService = {

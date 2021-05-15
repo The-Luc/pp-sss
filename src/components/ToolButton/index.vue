@@ -1,5 +1,5 @@
 <template>
-  <div class="item" :style="{width: `${width}px`}" @click="onClick">
+  <div class="item" :style="{ width: `${width}px` }" @click="onClick">
     <div class="item-icon">
       <v-icon v-if="iconName">{{ iconName }}</v-icon>
       <span v-else>{{ textName }}</span>

@@ -9,7 +9,7 @@ $spacing: 15px;
     position: fixed;
     right: 0;
 
-    &.collapse {
+    &[data-toggle=collapse] {
       .summary-title {
         img {
           transform: rotate(-180deg);

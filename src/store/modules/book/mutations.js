@@ -1,5 +1,4 @@
 import randomcolor from 'randomcolor';
-import { uniqueId } from 'lodash';
 import moment from 'moment';
 
 import APP from './const';
@@ -73,7 +72,8 @@ const makeNewSection = (sections, sectionIndex) => {
   const newId = Math.max(...sections.map(s => nextId(s.sheets)), 1);
 
   const totalSheets = sections[sectionIndex].sheets.length;
-  const order = sectionIndex === sections.length - 1 ? totalSheets - 1: totalSheets;
+  const order =
+    sectionIndex === sections.length - 1 ? totalSheets - 1 : totalSheets;
 
   return {
     id: newId,
@@ -166,8 +166,7 @@ export const mutations = {
     } else {
       sections[index].sheets = [
         ...sections[index].sheets.slice(0, sections[index].sheets.length - 1),
-        makeNewSection(sections, index)
-        ,
+        makeNewSection(sections, index),
         ...sections[index].sheets.slice(sections[index].sheets.length - 1)
       ];
       sections[index].sheets[sections[index].sheets.length - 1].order += 1;
