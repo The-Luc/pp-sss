@@ -54,14 +54,6 @@ export default {
       MaxPage: 'book/getMaxPage',
       TotalInfo: 'book/getTotalInfo'
     }),
-    // isShowAdd() {
-    //   let index = this.sections.findIndex(item => item.id === this.sectionId);
-    //   if (this.TotalInfo.totalPages >= this.MaxPage || !index) {
-    //     return false;
-    //   } else {
-    //     return true;
-    //   }
-    // }
   },
   watch: {
     dueDate(val) {

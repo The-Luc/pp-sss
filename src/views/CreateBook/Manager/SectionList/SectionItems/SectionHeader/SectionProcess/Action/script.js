@@ -85,8 +85,8 @@ export default {
     ...mapMutations({
       toggleModal: MUTATES.TOGGLE_MODAL,
       addSheet: 'book/addSheet',
-      MaxPage: 'book/getMaxPage',
-      TotalInfo: 'book/getTotalInfo',
+      maxPage: 'book/getMaxPage',
+      totalInfo: 'book/getTotalInfo',
       setSectionSelected: MUTATES.SET_SELECTION_SELECTED
     }),
     setIsShowDelete() {
@@ -99,7 +99,7 @@ export default {
     },
     setIsShowAdd() {
       let index = this.sections.findIndex(item => item.id === this.sectionId);
-      if (this.TotalInfo.totalPages >= this.MaxPage || !index) {
+      if (this.totalInfo.totalPages >= this.maxPage || !index) {
         this.isShowAdd = false;
       } else {
         this.isShowAdd = true;
