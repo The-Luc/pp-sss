@@ -5,6 +5,12 @@
   .v-picker {
     width: 100%;
     .v-date-picker-header {
+      padding: 0 5px 0 0;
+      line-height: 0;
+      height: 40px;
+      display: flex;
+      align-items: center;
+
       .v-btn {
         .v-icon {
           font-size: 13px;
@@ -20,6 +26,10 @@
     }
 
     .v-date-picker-table {
+      padding-left: 0;
+      th {
+        color: #565656;
+      }
       .v-btn {
         &:hover,
         &:focus,
@@ -34,6 +44,9 @@
           .v-btn__content {
             opacity: 0.3;
           }
+        }
+        &::before {
+          background-color: transparent;
         }
 
         &.v-date-picker-table__current {
@@ -59,22 +72,31 @@
 
   .divider {
     margin-left: 45px;
+    position: relative;
+    z-index: 99;
   }
 
   &-date-picker {
     .v-date-picker-header__value {
       pointer-events: none;
     }
+    .v-picker__body {
+      padding-right: 10px;
+    }
   }
 
   &-month {
+    padding-left: 15px;
     .v-date-picker-header {
-      padding: 4px 30px;
+      padding-right: 15px !important;
+    }
+
+    .v-picker__body {
+      padding-right: 20px;
     }
 
     .v-date-picker-table {
       height: auto;
-      padding-left: 0;
       tr {
         td {
           height: 40px;
@@ -92,7 +114,6 @@
     }
 
     .v-picker__actions {
-      width: 290px;
       margin-top: 50px;
 
       .v-btn {
@@ -104,6 +125,19 @@
           color: white !important;
         }
       }
+    }
+  }
+
+  .go-today {
+    background-color: #0099b3;
+    text-transform: inherit;
+    border-radius: 2px;
+    position: absolute;
+    bottom: 1rem;
+    right: 1rem;
+
+    .v-btn__content {
+      color: white !important;
     }
   }
 }
