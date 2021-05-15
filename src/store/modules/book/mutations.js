@@ -62,6 +62,58 @@ export const mutations = {
   [BOOK._MUTATES.GET_BOOK_SUCCESS](state, payload) {
     state.book = payload;
   },
+  addSheet(state, payload) {
+    const { sectionId } = payload;
+    const { totalPages, totalSheets, totalScreens, sections } = state.book;
+    const newSectionId = parseInt(uniqueId()) + 20;
+
+    let index = sections.findIndex(item => item.id === sectionId);
+    if (index !== sections.length - 1) {
+      sections[index].sheets = [
+        ...sections[index].sheets,
+        {
+          id: newSectionId,
+          type: 'full',
+          draggable: true,
+          positionFixed: 'none',
+          order: sections[index].sheets.length,
+          printData: {
+            thumbnailUrl: null,
+            link: 'link'
+          },
+          digitalData: {
+            thumbnailUrl: null,
+            link: 'link'
+          }
+        }
+      ];
+    } else {
+      sections[index].sheets = [
+        ...sections[index].sheets.slice(0, sections[index].sheets.length - 1),
+        {
+          id: newSectionId + 20,
+          type: 'full',
+          draggable: true,
+          positionFixed: 'none',
+          order: sections[index].sheets.length - 1,
+          printData: {
+            thumbnailUrl: null,
+            link: 'link'
+          },
+          digitalData: {
+            thumbnailUrl: null,
+            link: 'link'
+          }
+        },
+        ...sections[index].sheets.slice(sections[index].sheets.length - 1)
+      ];
+      sections[index].sheets[sections[index].sheets.length - 1].order += 1;
+      console.log(sections[index]);
+    }
+    state.book.totalPages = totalPages + 2;
+    state.book.totalSheets = totalSheets + 1;
+    state.book.totalScreens = totalScreens + 1;
+  },
   deleteSection(state, payload) {
     const { sectionId } = payload;
     const { sections } = state.book;

@@ -49,8 +49,11 @@ export default {
   },
   computed: {
     ...mapGetters({
-      sectionSelected: GETTERS.SECTION_SELECTED
-    })
+      sectionSelected: GETTERS.SECTION_SELECTED,
+      sections: 'book/getSections',
+      MaxPage: 'book/getMaxPage',
+      TotalInfo: 'book/getTotalInfo'
+    }),
   },
   watch: {
     dueDate(val) {
@@ -116,4 +119,4 @@ export default {
       this.setIsOpenMenu();
     }
   }
-};
+}

@@ -7,6 +7,7 @@ import { MODAL_TYPES, ICON_LOCAL } from '@/common/constants';
 import { GETTERS, MUTATES } from '@/store/modules/app/const';
 import { GETTERS as BOOK_GETTERS } from '@/store/modules/book/const';
 import ButtonDelete from '@/components/Menu/ButtonDelete';
+import ButtonAdd from '@/components/Menu/ButtonAdd';
 import Menu from '@/components/Menu';
 import Calendar from './Calendar';
 import SectionStatus from './SectionStatus';
@@ -35,7 +36,8 @@ export default {
     Menu,
     Calendar,
     SectionStatus,
-    ButtonDelete
+    ButtonDelete,
+    ButtonAdd
   },
   computed: {
     ...mapGetters({
@@ -50,12 +52,14 @@ export default {
       isOpenStatus: false,
       calendarX: 0,
       calendarY: 0,
+      isShowAdd: false,
       isShowDelete: false,
       calendarWidth: 550,
       statusX: 0,
       statusY: 0,
       statusWidth: 180,
-      minDate: new Date().toISOString().slice(0, 10)
+      minDate: new Date().toISOString().slice(0, 10),
+      isCloseMenu: false
     };
   },
   watch: {
@@ -75,11 +79,15 @@ export default {
     console.log('status', this.status);
     this.moreIcon = ICON_LOCAL.MORE_ICON;
     this.setIsShowDelete();
+    this.setIsShowAdd();
   },
   methods: {
     ...mapMutations({
-      setSectionSelected: MUTATES.SET_SELECTION_SELECTED,
-      toggleModal: MUTATES.TOGGLE_MODAL
+      toggleModal: MUTATES.TOGGLE_MODAL,
+      addSheet: 'book/addSheet',
+      maxPage: 'book/getMaxPage',
+      totalInfo: 'book/getTotalInfo',
+      setSectionSelected: MUTATES.SET_SELECTION_SELECTED
     }),
     setIsShowDelete() {
       const index = this.sections.findIndex(item => item.id === this.sectionId);
@@ -87,6 +95,14 @@ export default {
         this.isShowDelete = true;
       } else {
         this.isShowDelete = false;
+      }
+    },
+    setIsShowAdd() {
+      let index = this.sections.findIndex(item => item.id === this.sectionId);
+      if (this.totalInfo.totalPages >= this.maxPage || !index) {
+        this.isShowAdd = false;
+      } else {
+        this.isShowAdd = true;
       }
     },
     onOpenModal(sectionId, sectionName) {
@@ -176,6 +192,12 @@ export default {
         this.isOpenStatus = false;
       }, 0);
     },
+    onAddSheet(sectionId) {
+      this.isCloseMenu = true;
+      this.addSheet({
+        sectionId
+      });
+    },
     onScroll() {
       if (this.isOpenMenu) {
         this.isOpenMenu = false;
@@ -183,4 +205,4 @@ export default {
       }
     }
   }
-};
+}
