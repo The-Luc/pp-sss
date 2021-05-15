@@ -7,7 +7,7 @@ export default {
   },
   data() {
     return {
-      itemToolLeft: [
+      itemsToolLeft: [
         [
           {
             iconName: 'photo_filter',
@@ -77,7 +77,7 @@ export default {
           }
         ]
       ],
-      itemToolRight: [
+      itemsToolRight: [
         [
           {
             iconName: 'list_alt',

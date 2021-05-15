@@ -3,16 +3,16 @@
     <div class="row print-editor-tool">
       <div class="tool-left">
         <ItemTool
-          v-for="(item, index) in itemToolLeft"
+          v-for="(item, index) in itemsToolLeft"
           :key="index"
-          :item="item"
+          :items="item"
         />
       </div>
       <div class="tool-right">
         <ItemTool
-          v-for="(item, index) in itemToolRight"
+          v-for="(item, index) in itemsToolRight"
           :key="index"
-          :item="item"
+          :items="item"
         />
       </div>
     </div>

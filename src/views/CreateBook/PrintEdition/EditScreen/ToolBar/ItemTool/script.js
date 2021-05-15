@@ -4,7 +4,7 @@ export default {
     ToolButton
   },
   props: {
-    item: Array
+    items: Array
   },
   methods: {
     themes() {

@@ -1,7 +1,7 @@
 <template>
   <div class="item-tool">
     <ToolButton
-      v-for="(icon, index) in item"
+      v-for="(icon, index) in items"
       :key="index"
       :icon-name="icon.iconName"
       :title="icon.title"

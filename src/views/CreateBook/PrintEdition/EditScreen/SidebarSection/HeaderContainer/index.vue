@@ -9,7 +9,7 @@
       <v-icon v-else>arrow_right</v-icon>
       <div class="header-name">
         {{ section.name }}
-        <span>({{section.sheets.length}})</span>
+        <span>({{ section.sheets.length }})</span>
       </div>
     </div>
 
@@ -21,5 +21,3 @@
 
 <script src="./script.js"></script>
 <style lang="scss" scoped src="./style.scss" />
-
-

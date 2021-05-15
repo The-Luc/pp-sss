@@ -15,11 +15,11 @@ export default {
   },
   watch: {
     ['$route.path'](path) {
-      this.haha(path);
+      this.checkShowHeader(path);
     }
   },
   methods: {
-    haha(path) {
+    checkShowHeader(path) {
       if (path === '/edit/print/edit-screen') {
         this.showHeader = false;
       } else {
@@ -28,6 +28,6 @@ export default {
     }
   },
   created() {
-    this.haha(this.$route.path);
+    this.checkShowHeader(this.$route.path);
   }
 };
