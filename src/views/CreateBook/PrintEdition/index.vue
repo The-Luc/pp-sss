@@ -1,6 +1,6 @@
 <template>
   <div>
-    <MainScreen />
+    <router-view></router-view>
   </div>
 </template>
 

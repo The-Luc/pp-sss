@@ -1,17 +1,36 @@
 <template>
   <div>
-    <div :class="[{ 'half-left': !isTypeFull }, 'thumbnail-view-thumbnail']">
-      <img :src="blank" />
-      <div class="thumbnail-edit">
-        <v-icon class="icon-edit">edit</v-icon>
+    <div
+      :class="[
+        {
+          'half-left': sheet.type === SHEET_TYPES.INTRO,
+          'half-right': sheet.type === SHEET_TYPES.SIGNATURE
+        },
+        'thumbnail-view-thumbnail'
+      ]"
+    >
+      <img :src="image" />
+      <div v-if="edit" class="thumbnail-edit">
+        <router-link tag="div" :to="toLink">
+          <v-icon class="icon-edit">edit</v-icon>
+        </router-link>
       </div>
     </div>
     <div class="thumbnail-view-number-page">
-      <div class="number-page-left">1</div>
+      <div class="number-page-left">{{ numberPage.numberLeft }}</div>
       <div v-if="isTypeFull" class="number-page-link">
-        <v-icon class="icon-link">link</v-icon>
+        <v-icon
+          v-if="sheet.printData.link === LINK_STATUS.LINK && link"
+          class="icon-link"
+          >link</v-icon
+        >
+        <v-icon
+          v-if="sheet.printData.link === LINK_STATUS.UNLINK && link"
+          class="icon-link"
+          >link_off</v-icon
+        >
       </div>
-      <div class="number-page-right">2</div>
+      <div class="number-page-right">{{ numberPage.numberRight }}</div>
     </div>
   </div>
 </template>

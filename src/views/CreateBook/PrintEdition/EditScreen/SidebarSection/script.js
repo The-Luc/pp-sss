@@ -1,11 +1,11 @@
-import Frames from './Frames';
-import Thumbnail from '@/components//Thumbnail';
 import book from '@/mock/book';
+import Thumbnail from '@/components/Thumbnail';
+import HeaderContainer from './HeaderContainer';
 
 export default {
   components: {
-    Frames,
-    Thumbnail
+    Thumbnail,
+    HeaderContainer
   },
   data() {
     return {
