@@ -14,7 +14,30 @@ export default {
   },
   props: {
     section: Object,
-    releaseDate: String
+    sectionId: {
+      type: Number,
+      require: true
+    },
+    sectionName: {
+      type: String,
+      require: true
+    },
+    status: {
+      type: String,
+      require: true
+    },
+    dueDate: {
+      type: String,
+      require: true
+    },
+    sectionColor: {
+      type: String,
+      require: true
+    },
+    sectionDraggable: {
+      type: Boolean,
+      require: true
+    }
   },
   data() {
     return {
@@ -33,9 +56,9 @@ export default {
   },
   methods: {
     setIsOpenMenu(sectionSelected) {
-      if (!sectionSelected || sectionSelected !== this.section.id) {
+      if (!sectionSelected || sectionSelected !== this.sectionId) {
         this.isOpenMenu = true;
-      } else if (sectionSelected && sectionSelected === this.section.id) {
+      } else if (sectionSelected && sectionSelected === this.sectionId) {
         this.isOpenMenu = false;
       }
     },
@@ -59,7 +82,7 @@ export default {
 
       target.setAttribute('data-toggle', isCollapse ? COLLAPSE : EXPAND);
 
-      this.$root.$emit('tooglesection');
+      this.$root.$emit('toggleSection');
     },
     showDragControl: function(evt) {
       const sectionHeader = evt.target.closest('.section-header');
@@ -68,7 +91,7 @@ export default {
         return;
       }
 
-      this.$root.$emit('showDragControl', 'section' + this.section.id);
+      this.$root.$emit('showDragControl', 'section' + this.sectionId);
     },
     hideDragControl: function() {
       this.$root.$emit('hideDragControl');

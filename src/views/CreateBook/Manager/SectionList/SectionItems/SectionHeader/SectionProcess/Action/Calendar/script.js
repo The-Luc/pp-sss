@@ -1,10 +1,10 @@
 import { mapGetters } from 'vuex';
 import moment from 'moment';
 
-import project from '@/mock/project';
 import { GETTERS } from '@/store/modules/app/const';
+import book from '@/mock/book';
 
-const dueDate = project.releaseDate;
+const dueDate = book.releaseDate;
 const daysOfWeek = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
 export default {
   props: {
@@ -34,13 +34,22 @@ export default {
       yearRelease: '',
       dayRelease: '',
       dateSelected: '',
-      monthSelected: ''
+      monthSelected: '',
+      yearSelected: ''
     };
   },
   computed: {
     ...mapGetters({
       sectionSelected: GETTERS.SECTION_SELECTED
     })
+  },
+  watch: {
+    dateSelected(val) {
+      const [year, month] = val.split('-');
+      if (year === this.yearRelease && month === this.monthRelease) {
+        this.setDateSelect(year, month);
+      }
+    }
   },
   mounted() {
     const [year, month, day] = moment(this.date)
@@ -75,7 +84,7 @@ export default {
       this.dateSelected = `${this.yearRelease}-${this.monthRelease}-${this.dayRelease}`;
     },
     onSelectedDate(value) {
-      const currentSection = project.sections.find(
+      const currentSection = book.sections.find(
         section => section.id === this.sectionSelected
       );
       currentSection.releaseDate = moment(value).format('MM/DD/YY');

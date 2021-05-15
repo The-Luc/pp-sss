@@ -13,9 +13,11 @@
         <Item
           :title="item.title"
           :value="item.value"
+          :is-last-item="i === items.length - 1"
           @onItemClick="event => onItemClick(event, item)"
         />
       </v-list-item>
+      <slot />
     </v-list>
   </v-menu>
 </template>

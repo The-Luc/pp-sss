@@ -1,3 +1,5 @@
+import { mapGetters, mapMutations } from 'vuex';
+
 const COLLAPSE = 'collapse';
 const EXPAND = 'expand';
 
@@ -7,12 +9,21 @@ export default {
       isCollapse: true
     };
   },
+  computed: {
+    ...mapGetters({
+      getTotalSections: 'book/getTotalSections'
+    }),
+    isDisableAdd() {
+      return this.getTotalSections >= 50;
+    }
+  },
   mounted: function() {
-    this.$root.$on('tooglesection', () => {
+    this.$root.$on('toggleSection', () => {
       this.toggleEcButton();
     });
   },
   methods: {
+    ...mapMutations('book', ['addSection']),
     toggleDetail: function(ev) {
       const button = ev.target.closest('#btn-ec-all');
       const collapse = button.getAttribute('data-toggle');
@@ -35,6 +46,11 @@ export default {
       document
         .getElementById('btn-ec-all')
         .setAttribute('data-toggle', this.isCollapse ? COLLAPSE : EXPAND);
+    },
+    onAddSection() {
+      if (!this.isDisableAdd) {
+        this.addSection();
+      }
     }
   }
 };

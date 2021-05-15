@@ -13,28 +13,28 @@ export default {
     statusWidth: {
       type: Number
     },
-    sectionStatus: {
+    status: {
       type: Number
     }
   },
   data() {
     return {
-      status: [
+      statusList: [
         {
           value: 0,
-          label: 'Not Started'
+          label: 'not started'
         },
         {
           value: 1,
-          label: 'In Process'
+          label: 'in process'
         },
         {
           value: 2,
-          label: 'Completed'
+          label: 'completed'
         },
         {
           value: 3,
-          label: 'Approved'
+          label: 'approved'
         }
       ]
     };
