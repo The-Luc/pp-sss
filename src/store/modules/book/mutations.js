@@ -62,6 +62,12 @@ const moveItem = (item, currentIndex, moveToIndex, items) => {
   return _items;
 };
 
+const nextId = (items) => {
+  const maxId = Math.max(...items.map(e => e.id), 0);
+
+  return maxId + 1;
+}
+
 export const mutations = {
   [APP._MUTATES.UPDATE_SECTIONS](state, payload) {
     const { sections } = payload;
@@ -228,7 +234,8 @@ export const mutations = {
   },
   addSection(state) {
     const { sections } = state.book;
-    const newSectionId = uniqueId('id-');
+    const newSectionId = nextId(sections);
+
     state.book.sections = [
       ...sections.slice(0, sections.length - 1),
       {
@@ -237,6 +244,7 @@ export const mutations = {
         id: newSectionId,
         name: '',
         status: 0,
+        draggable: true,
         dueDate: moment(new Date()).format('MM/DD/YY'),
         sheets: []
       },
