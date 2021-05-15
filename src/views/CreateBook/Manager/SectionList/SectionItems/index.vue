@@ -1,6 +1,6 @@
 <template>
   <v-row>
-    <draggable
+    <Draggable
       v-model="sections"
       class="col"
       :move="onMove"
@@ -8,39 +8,13 @@
       @start="drag = true"
       @end="onEnd"
     >
-      <v-row
+      <Section
         v-for="(section, index) in sections"
         :key="section.id"
-        class="section-item"
-      >
-        <v-col>
-          <DragDropIndicator
-            :id="'section-top-' + section.id"
-            custom-class-name="indicator-top"
-          />
-
-          <Header
-            :section-id="section.id"
-            :section-name="section.name"
-            :section-color="section.color"
-            :status="section.status"
-            :due-date="section.dueDate"
-            :section-draggable="section.draggable"
-          />
-
-          <Details
-            :section-id="section.id"
-            :start-seq="getStartSeq(index)"
-            :sheets="getSheetsOfSection(section.id)"
-          />
-
-          <DragDropIndicator
-            :id="'section-bottom-' + section.id"
-            custom-class-name="indicator-bottom"
-          />
-        </v-col>
-      </v-row>
-    </draggable>
+        :start-sequence="getStartSeq(index)"
+        :section="getSection(index)"
+      ></Section>
+    </Draggable>
   </v-row>
 </template>
 

@@ -1,30 +1,17 @@
 import { mapMutations, mapGetters } from 'vuex';
 
-import { ICON_LOCAL } from '@/common/constants';
 import Action from './Action';
+
 import { GETTERS, MUTATES } from '@/store/modules/app/const';
 import { SECTION_STATUS } from '@/common/constants/status';
 
+import { ICON_LOCAL } from '@/common/constants';
+import { PROCESS_STATUS } from '@/common/constants/processStatus';
+
 export default {
   props: {
-    sectionId: {
-      type: Number,
-      require: true
-    },
-    dueDate: {
-      type: String,
-      default: ''
-    },
-    status: {
-      type: String,
-      default: ''
-    },
-    sectionName: {
-      type: String,
-      require: true
-    },
-    sectionColor: {
-      type: String,
+    section: {
+      type: Object,
       require: true
     }
   },
@@ -32,14 +19,20 @@ export default {
     Action
   },
   data() {
+    const processStatus = {};
+
+    Object.keys(PROCESS_STATUS).forEach(k => {
+      processStatus[k] = PROCESS_STATUS[k].value;
+    });
+
     return {
       menuX: 0,
       menuY: 0,
-      sectionStatus: 0,
+      processStatus: processStatus,
       items: [
         {
           title: 'Status',
-          value: this.convertTextCap(this.status),
+          value: PROCESS_STATUS.NOT_STARTED.name,
           name: 'status'
         },
         { title: 'Due Date', value: this.dueDate, name: 'dueDate' },
@@ -97,13 +90,13 @@ export default {
       }
     },
     setIsOpenMenu() {
-      if (!this.sectionSelected || this.sectionSelected !== this.sectionId) {
+      if (!this.sectionSelected || this.sectionSelected !== this.section.id) {
         this.setSectionSelected({
-          sectionSelected: this.sectionId
+          sectionSelected: this.section.id
         });
       } else if (
         this.sectionSelected &&
-        this.sectionSelected === this.sectionId
+        this.sectionSelected === this.section.id
       ) {
         this.setSectionSelected({
           sectionSelected: ''
