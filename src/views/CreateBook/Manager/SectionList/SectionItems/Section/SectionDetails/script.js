@@ -16,7 +16,7 @@ export default {
   },
   props: {
     sectionId: {
-      type: Number,
+      type: [Number, String],
       require: true
     },
     startSequence: {
