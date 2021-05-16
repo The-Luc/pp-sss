@@ -8,7 +8,7 @@
       </div>
       <div class="group-detail">
         <div class="info-name">Fundraising $ Earned:</div>
-        <div class="info-detail">${{ book.fundraisingEarned }}</div>
+        <div class="info-detail">${{ book.fundraisingEarned.toFixed(2) }}</div>
       </div>
     </v-col>
   </v-row>
