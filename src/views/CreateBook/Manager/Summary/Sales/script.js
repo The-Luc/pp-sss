@@ -4,6 +4,9 @@ export default {
   computed: {
     ...mapGetters({
       book: GETTERS.BOOK_DETAIL
-    })
+    }),
+    fundraisingEarned() {
+      return this.book.fundraisingEarned.toFixed(2);
+    }
   }
 };
