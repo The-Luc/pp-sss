@@ -3,7 +3,7 @@
     <span class="top-bg" />
     <span class="text-size-xl text-title">{{ title }}</span>
     <v-icon v-if="showIconClose" class="icon-close" @click="onCloseModal">
-      mdi-close
+      close
     </v-icon>
   </v-card-title>
 </template>

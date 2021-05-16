@@ -29,6 +29,7 @@
       <v-col cols="5">
         <v-date-picker
           :value="monthSelected"
+          :picker-date.sync="monthSelected"
           :width="calendarWidth / 2"
           class="pp-calendar-month"
           type="month"

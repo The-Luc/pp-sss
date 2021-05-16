@@ -46,8 +46,15 @@ export default {
   watch: {
     dateSelected(val) {
       const [year, month] = val.split('-');
+
       if (year === this.yearRelease && month === this.monthRelease) {
         this.setDateSelect(year, month);
+      }
+    },
+    monthSelected(val) {
+      const [year] = val.split('-');
+      if (year === this.yearRelease) {
+        this.setMonthSelected(year);
       }
     }
   },
@@ -75,13 +82,19 @@ export default {
         this.dateSelected = `${year}-${month}`;
       }
     },
+    setMonthSelected(year) {
+      this.monthSelected = `${year}-${this.monthRelease}`;
+    },
     onChangeMonth(value) {
       const [year, month] = value.split('-');
       this.setDateSelect(year, month);
     },
     onGoCurrentDate() {
-      this.monthSelected = `${this.yearRelease}-${this.monthRelease}`;
-      this.dateSelected = `${this.yearRelease}-${this.monthRelease}-${this.dayRelease}`;
+      const [year, month] = moment(new Date())
+        .format('YYYY-MM-DD')
+        .split('-');
+      this.monthSelected = `${year}`;
+      this.dateSelected = `${year}-${month}`;
     },
     onSelectedDate(value) {
       const currentSection = book.sections.find(
