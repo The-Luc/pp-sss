@@ -33,6 +33,7 @@
       :section-name="section.name"
       :items="items"
       :menu-x="menuX"
+      :menu-class="menuClass"
       :menu-y="menuY"
       :status="section.status"
       :section-id="section.id"

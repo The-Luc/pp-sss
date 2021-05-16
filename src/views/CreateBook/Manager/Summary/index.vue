@@ -1,5 +1,5 @@
 <template>
-  <v-col id="manager-summary" class="manager-summary">
+  <v-col id="manager-summary" ref="summary" class="manager-summary">
     <v-row>
       <v-col class="scroll-container">
         <Header />

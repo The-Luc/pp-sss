@@ -29,5 +29,8 @@ export default {
         this.setSectionSelected('');
       }
     }
+  },
+  mounted() {
+    this.$root.$emit('summary', this.$refs.summary);
   }
 };

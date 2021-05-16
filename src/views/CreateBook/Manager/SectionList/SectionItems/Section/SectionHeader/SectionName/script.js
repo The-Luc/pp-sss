@@ -43,8 +43,5 @@ export default {
       this.sectionNameCurrent = this.sectionName;
       this.saveTitle();
     }
-  },
-  mounted() {
-    console.log('sectionId', this.sectionId);
   }
 };

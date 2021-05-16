@@ -2,11 +2,13 @@
   <div v-scroll:#scroll-section="onScroll">
     <Menu
       v-if="isOpenMenu"
+      ref="sectionMenu"
       nudge-width="180"
       :is-close-menu="isCloseMenu"
       :items="items"
       :menu-x="menuX"
       :menu-y="menuY"
+      :content-class="menuClass"
       :is-open="isOpenMenu"
       @onClickOutSideMenu="onClickOutSideMenu"
       @onItemClick="onItemClick"

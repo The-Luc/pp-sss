@@ -30,7 +30,8 @@ export default {
     'sectionId',
     'status',
     'sectionName',
-    'dueDate'
+    'dueDate',
+    'menuClass'
   ],
   components: {
     Menu,
