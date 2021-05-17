@@ -24,6 +24,9 @@ export default {
   methods: {
     onChangeMenuMove() {
       this.isShow = !this.isShow;
+    },
+    onCloseMenuMove() {
+      this.isShow = false;
     }
   }
 };
