@@ -9,14 +9,14 @@
     </div>
     <div class="d-flex justify-space-between btn-ctn">
       <PpButton class="mr-3 w-100 btn-detail" @click.native="onCloseModal">
-        No, Do not Delete
+        No, Do Not Delete
       </PpButton>
       <PpButton
         class="w-100"
         is-active
         @click.native="onDeleteSection(sectionId)"
       >
-        Yes, Delete Section
+        Yes, Delete This Section
       </PpButton>
     </div>
   </Modal>

@@ -17,11 +17,14 @@ export default {
       const sectionIndex = this.book.sections.findIndex(
         item => item.id == sectionId
       );
+      const indexSheet = this.book.sections[sectionIndex].sheets.findIndex(
+        item => item.id == sheet.id
+      );
       let indexInSections = 0;
       for (let i = 0; i < sectionIndex; i++) {
         indexInSections += this.book.sections[i].sheets.length;
       }
-      indexInSections += sheet.order + 1;
+      indexInSections += indexSheet + 1;
       let numberLeft = indexInSections * 2 - 4;
       let numberRight = indexInSections * 2 - 3;
       if (numberLeft < 10) {
@@ -39,7 +42,7 @@ export default {
           };
           break;
         case 1:
-          if (sheet.order === 0) {
+          if (indexSheet === 0) {
             numberPage = {
               numberLeft: 'Inside Front Cover',
               numberRight
@@ -53,7 +56,7 @@ export default {
           break;
         case this.book.sections.length - 1:
           if (
-            sheet.order ===
+            indexSheet ===
             this.book.sections[sectionIndex].sheets.length - 1
           ) {
             numberPage = {
