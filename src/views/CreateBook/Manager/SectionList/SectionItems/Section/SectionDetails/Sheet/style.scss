@@ -172,6 +172,35 @@
               }
             }
           }
+
+          @media screen and (max-width: 1366px) {
+            &:nth-child(3n) {
+              .sheet {
+                .menu {
+                  .menu-detail {
+                    .menu-item {
+                      .menu-move-sheet {
+                        left: -140%;
+                      }
+                    }
+                  }
+                }
+              }
+            }
+            &:nth-child(4n) {
+              .sheet {
+                .menu {
+                  .menu-detail {
+                    .menu-item {
+                      .menu-move-sheet {
+                        left: 100%;
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
         }
       }
     }
