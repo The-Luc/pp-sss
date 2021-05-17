@@ -6,13 +6,13 @@
     </div>
     <div class="d-flex justify-space-between">
       <PpButton class="mr-3 w-100 btn-detail" @click.native="onCloseModal"
-        >No, Do not Delete</PpButton
+        >No, Do Not Delete</PpButton
       >
       <PpButton
         class="w-100"
         is-active
         @click.native="onDeleteSheet(idSheet, idSection)"
-        >Yes, Delete Sheet</PpButton
+        >Yes, Delete This Sheet</PpButton
       >
     </div>
   </Modal>
