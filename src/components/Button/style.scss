@@ -1,6 +1,6 @@
 .pp-btn {
   font-size: $sm-size;
-  font-family: $font-500;
+  font-family: $font-300;
   text-decoration: none;
   height: 26px;
   color: #42738d;
@@ -10,7 +10,7 @@
   opacity: 0.5;
 
   &.active {
-    font-family: $font-700;
+    font-family: $font-500;
     color: #ffffff;
     background-color: #42738d;
     opacity: 1;
