@@ -4,9 +4,9 @@
       :class="[
         {
           'half-left': sheet.type === SHEET_TYPES.INTRO,
-          'half-right': sheet.type === SHEET_TYPES.SIGNATURE
+          'half-right': sheet.type === SHEET_TYPES.SIGNATURE,
         },
-        'thumbnail-view-thumbnail'
+        'thumbnail-view-thumbnail',
       ]"
     >
       <img :src="image" />
@@ -18,7 +18,7 @@
     </div>
     <div class="thumbnail-view-number-page">
       <div class="number-page-left">{{ numberPage.numberLeft }}</div>
-      <div v-if="isTypeFull" class="number-page-link">
+      <div class="number-page-link">
         <v-icon
           v-if="sheet.printData.link === LINK_STATUS.LINK && link"
           class="icon-link"
