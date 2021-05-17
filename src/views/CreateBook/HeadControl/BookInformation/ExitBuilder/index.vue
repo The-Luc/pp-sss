@@ -1,5 +1,5 @@
 <template>
-  <div class="btn-exit pointer">
+  <div :class="['btn-exit', 'pointer', { 'hidden-btn': !showExit }]">
     <img
       class="arrow-left"
       :src="ICON_LOCAL.ARROW_LEFT"
