@@ -9,12 +9,13 @@ $border-album: 1px $color-gray2 solid;
     .section-control {
       padding-top: 30px;
       font-family: $font-700;
-      font-size: 12px;
+      font-size: $sm-size;
 
       button {
         height: 32px;
         margin-right: 20px;
         color: $color-darkblue;
+        font-size: $sm-size;
         text-transform: capitalize;
         border: 1px solid $color-darkblue;
         border-radius: 6px;
