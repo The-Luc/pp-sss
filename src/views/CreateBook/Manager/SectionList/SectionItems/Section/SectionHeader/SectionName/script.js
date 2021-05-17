@@ -29,7 +29,7 @@ export default {
       editSectionName: 'book/editSectionName'
     }),
     saveTitle() {
-      this.sectionNameCurrent = this.sectionNameCurrent || 'Untitled';
+      this.sectionNameCurrent = this.sectionNameCurrent.trim() || 'Untitled';
       this.editSectionName({
         sectionName: this.sectionNameCurrent,
         sectionId: this.sectionId

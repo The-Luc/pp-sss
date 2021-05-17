@@ -8,5 +8,10 @@ export default {
       type: String,
       required: true
     }
+  },
+  methods: {
+    onChangeView() {
+      this.$router.go(-1);
+    }
   }
 };
