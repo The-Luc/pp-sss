@@ -17,11 +17,7 @@ export default {
   },
   methods: {
     checkShowExit(path) {
-      if (path === '/edit/print/edit-screen') {
-        this.showExit = false;
-      } else {
-        this.showExit = true;
-      }
+      this.showExit = path !== '/edit/print/edit-screen';
     }
   }
 };
