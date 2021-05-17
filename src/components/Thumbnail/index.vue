@@ -20,12 +20,12 @@
       <div class="number-page-left">{{ numberPage.numberLeft }}</div>
       <div class="number-page-link">
         <v-icon
-          v-if="sheet.printData.link === LINK_STATUS.LINK && link"
+          v-if="sheet.printData.link === LINK_STATUS.LINK && isShowLink"
           class="icon-link"
           >link</v-icon
         >
         <v-icon
-          v-if="sheet.printData.link === LINK_STATUS.UNLINK && link"
+          v-if="sheet.printData.link === LINK_STATUS.UNLINK && isShowLink"
           class="icon-link"
           >link_off</v-icon
         >

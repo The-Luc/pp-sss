@@ -18,7 +18,7 @@ export default {
       type: Boolean,
       default: true
     },
-    link: {
+    isShowLink: {
       type: Boolean,
       default: true
     },
