@@ -35,7 +35,6 @@ export default {
       toggleModal: MUTATES.TOGGLE_MODAL
     }),
     onCloseModal() {
-      console.log('isCloseOutSide', this.isCloseOutSide);
       if (this.isCloseOutSide) {
         this.toggleModal({
           isOpenModal: false
