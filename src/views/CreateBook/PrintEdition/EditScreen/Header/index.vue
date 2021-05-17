@@ -1,7 +1,7 @@
 <template lang="">
   <div class="col-12 print-editor">
     <div class="row print-editor-header">
-      <PpButton type="btn" class="btn-save">
+      <PpButton type="btn" class="btn-save" @click="onChangeView(screen.PRINT)">
         SAVE & EXIT
       </PpButton>
       <span>{{ nameEditor }}</span>
