@@ -70,7 +70,7 @@ export default {
       const that = this;
       setTimeout(() => {
         that.currentMenuHeight = data.$el.clientHeight;
-      }, 0);
+      }, 10);
     });
   },
   methods: {
@@ -120,14 +120,15 @@ export default {
         this.menuClass = 'pp-menu section-menu';
       }
       this.menuY = y;
-      // setTimeout(() => {
-      //   console.log('this.currentMenuHeight', this.currentMenuHeight);
-      //   if (windowHeight - elementY < 327) {
-      //     this.menuY = y - this.currentMenuHeight - 50;
-      //   } else {
-      //     this.menuY = y;
-      //   }
-      // }, 10);
+      setTimeout(() => {
+        if (windowHeight - elementY < this.currentMenuHeight) {
+          this.menuY = y - this.currentMenuHeight - 50;
+          this.menuClass = `${this.menuClass} section-menu-top`;
+        } else {
+          this.menuClass = `${this.menuClass} section-menu-bottom`;
+          this.menuY = y;
+        }
+      }, 100);
       this.setIsOpenMenu();
     }
   }
