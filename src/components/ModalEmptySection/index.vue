@@ -1,5 +1,5 @@
 <template>
-  <Modal title="Empty Section(s)" width="560">
+  <Modal :is-close-out-side="false" title="Empty Section(s)" width="560">
     <div class="text-500 title-notification">
       The following sections are empty:
     </div>

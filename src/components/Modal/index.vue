@@ -1,5 +1,6 @@
 <template>
   <v-dialog
+    :persistent="!isCloseOutSide"
     :value="isOpenModal"
     content-class="pp-modal"
     :width="width"
