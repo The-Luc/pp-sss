@@ -22,3 +22,11 @@ $border: 1px solid $gray;
     }
   }
 }
+@media screen and (max-width: 1366px) {
+  .print-editor {
+    .print-editor-tool {
+      border-top: $border;
+      padding: 7px 0 !important;
+    }
+  }
+}
