@@ -68,8 +68,7 @@ export default {
       statusX: 0,
       statusY: 0,
       statusWidth: 180,
-      minDate: new Date().toISOString().slice(0, 10),
-      isCloseMenu: false
+      minDate: new Date().toISOString().slice(0, 10)
     };
   },
   watch: {
@@ -191,8 +190,8 @@ export default {
       }, 0);
     },
     onAddSheet(sectionId) {
-      console.log(this.isShowAdd);
-      this.isCloseMenu = true;
+      this.isOpenMenu = false;
+      this.setSectionSelected('');
       this.addSheet({
         sectionId
       });
