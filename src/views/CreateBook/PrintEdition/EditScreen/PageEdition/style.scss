@@ -3,8 +3,8 @@
   border-left: 1px solid #808184;
   height: 1000px;
   .container-edition {
-    width: 85%;
-    height: 700px;
+    width: 80%;
+    height: 750px;
     background: #fbccce;
     display: flex;
     margin: 20px 0 0 20px;
@@ -42,5 +42,13 @@
   }
   .page-right {
     margin-left: 35px;
+  }
+}
+@media screen and (max-width: 1366px) {
+  .page-edition {
+    .container-edition {
+      width: 75%;
+      height: 580px;
+    }
   }
 }
