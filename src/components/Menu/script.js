@@ -27,6 +27,10 @@ export default {
     isCloseMenu: {
       type: Boolean,
       default: false
+    },
+    contentClass: {
+      type: String,
+      default: 'pp-menu'
     }
   },
   methods: {

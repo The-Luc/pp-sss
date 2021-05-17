@@ -1,5 +1,5 @@
 <template>
-  <div class="menu-button">
+  <div class="menu-button add-sheet">
     <button class="item-center">
       <v-icon>add_circle_outline</v-icon>{{ title }}
     </button>

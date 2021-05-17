@@ -6,8 +6,8 @@ import { MODAL_TYPES } from '@/common/constants';
 // Modal component
 import HelpModal from '@/views/CreateBook/HeadControl/BookInformation/Help/Modal';
 import EmptySection from '@/components/ModalEmptySection';
-import DeleteSheetModal from '@/views/CreateBook/Manager/SectionList/SectionItems/SectionDetails/Modal';
-import DeleteSectionModal from '@/views/CreateBook/Manager/SectionList/SectionItems/SectionHeader/SectionProcess/Modal';
+import DeleteSheetModal from '@/views/CreateBook/Manager/SectionList/SectionItems/Section/SectionDetails/Modal';
+import DeleteSectionModal from '@/views/CreateBook/Manager/SectionList/SectionItems/Section/SectionHeader/SectionProcess/Modal';
 
 const { HELP, DELETE_SHEET, DELETE_SECTION, EMPTY_SECTION } = MODAL_TYPES;
 

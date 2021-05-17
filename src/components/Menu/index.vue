@@ -1,6 +1,6 @@
 <template>
   <v-menu
-    content-class="pp-menu"
+    :content-class="contentClass"
     :nudge-width="nudgeWidth"
     :value="isOpen"
     :close-on-click="false"

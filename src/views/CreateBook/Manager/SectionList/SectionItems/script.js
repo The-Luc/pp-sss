@@ -1,21 +1,17 @@
 import { mapGetters, mapMutations } from 'vuex';
-import draggable from 'vuedraggable';
+import Draggable from 'vuedraggable';
 
 import { GETTERS, MUTATES } from '@/store/modules/book/const';
 
-import Header from './SectionHeader';
-import Details from './SectionDetails';
-import DragDropIndicator from '@/components/DragDropIndicator';
+import Section from './Section';
 
 let selectedIndex = -1;
 let moveToIndex = -1;
 
 export default {
   components: {
-    Header,
-    Details,
-    DragDropIndicator,
-    draggable
+    Section,
+    Draggable
   },
   setup() {
     return {
@@ -23,7 +19,7 @@ export default {
         getSections: GETTERS.SECTIONS
       }),
       ...mapMutations({
-        updateSections: MUTATES.UPDATE_SECTIONS
+        updateSectionPosition: MUTATES.UPDATE_SECTION_POSITION
       })
     };
   },
@@ -33,15 +29,8 @@ export default {
     };
   },
   computed: {
-    sections: {
-      get() {
-        return this.getSections();
-      },
-      set(newSections) {
-        this.updateSections({
-          sections: newSections
-        });
-      }
+    sections: function() {
+      return this.getSections();
     }
   },
   methods: {
@@ -64,6 +53,8 @@ export default {
       moveToIndex = evt.draggedContext.futureIndex;
 
       if (moveToIndex === selectedIndex) {
+        moveToIndex = -1;
+
         return false;
       }
 
@@ -88,27 +79,14 @@ export default {
     onEnd: function() {
       this.hideAllIndicator();
 
-      if (
-        selectedIndex < 0 ||
-        moveToIndex < 0 ||
-        selectedIndex === moveToIndex
-      ) {
+      if (selectedIndex < 0 || moveToIndex < 0) {
         return;
       }
 
-      const selectedSection = this.sections[selectedIndex];
-
-      const _items = Object.assign([], this.sections);
-
-      if (moveToIndex < selectedIndex) {
-        _items.splice(selectedIndex, 1);
-        _items.splice(moveToIndex, 0, selectedSection);
-      } else if (moveToIndex > selectedIndex) {
-        _items.splice(moveToIndex + 1, 0, selectedSection);
-        _items.splice(selectedIndex, 1);
-      }
-
-      this.sections = _items;
+      this.updateSectionPosition({
+        moveToIndex: moveToIndex,
+        selectedIndex: selectedIndex
+      });
 
       selectedIndex = -1;
       moveToIndex = -1;
@@ -138,6 +116,41 @@ export default {
       const section = this.sections.find(s => s.id === sectionId);
 
       return section.sheets;
+    },
+    getSection: function(index) {
+      const {
+        id,
+        name,
+        color,
+        dueDate,
+        draggable,
+        status,
+        sheets
+      } = this.sections[index];
+
+      return {
+        id: id,
+        name: name,
+        color: color,
+        dueDate: dueDate,
+        draggable: draggable,
+        status: status,
+        sheets: this.getSheets(sheets)
+      };
+    },
+    getSheets: function(sheetList) {
+      const sheets = sheetList.map(s => {
+        const { id, type, draggable, positionFixed } = s;
+
+        return {
+          id: id,
+          type: type,
+          draggable: draggable,
+          positionFixed: positionFixed
+        };
+      });
+
+      return sheets;
     }
   }
 };

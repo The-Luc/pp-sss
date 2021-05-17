@@ -6,7 +6,11 @@
         :key="sheet.id"
         :section="section"
       >
-        <Thumbnail :sheet="sheet" />
+        <Thumbnail
+          to-link="/edit/print/edit-screen"
+          :number-page="numberPage(section.id, sheet)"
+          :sheet="sheet"
+        />
       </Frames>
     </template>
   </div>
