@@ -16,8 +16,8 @@ export default {
     };
   },
   methods: {
-    onChangeView(newView) {
-      this.$router.push(`${newView.toLowerCase()}`);
+    onChangeView() {
+      this.$router.go(-1);
     }
   }
 };
