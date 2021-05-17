@@ -43,5 +43,8 @@ export default {
     onClickOutSideMenu() {
       this.$emit('onClickOutSideMenu');
     }
+  },
+  mounted() {
+    this.$root.$emit('menu', this.$refs.menu);
   }
 };

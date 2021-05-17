@@ -52,7 +52,7 @@ export default {
       this.$refs.nameInput.blur();
     },
     async onSubmit() {
-      if (!this.title) {
+      if (!this.title.trim()) {
         this.title = 'Untitled';
       }
       if (this.isCancel || this.title === this.rootTitle) {
@@ -64,7 +64,8 @@ export default {
         this.title.trim()
       );
       if (isSuccess) {
-        this.book.title = data;
+        this.title = data.trim();
+        this.book.title = data.trim();
       }
     }
   }
