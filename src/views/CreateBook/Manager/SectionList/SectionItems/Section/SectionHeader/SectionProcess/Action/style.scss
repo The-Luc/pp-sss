@@ -1,5 +1,15 @@
-.pp-menu.collapsed-summary {
-  &::before {
-    left: 69%;
+.pp-menu {
+  &.collapsed-summary {
+    &::before {
+      left: 69%;
+    }
+  }
+
+  &.section-menu-top {
+    &::before {
+      border-top: 13px solid #fff;
+      border-bottom: 0;
+      top: 104%;
+    }
   }
 }

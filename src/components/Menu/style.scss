@@ -9,7 +9,6 @@
     content: '';
     top: 0;
     left: 50%;
-    transform: translateX(-50%);
     transform: translate(-50%, -100%);
     width: 4px;
     height: 13px;
@@ -17,6 +16,7 @@
     border-right: 7px solid transparent;
     border-bottom: 13px solid #fff;
   }
+
   .v-list {
     border-radius: 4px;
     &-item {
