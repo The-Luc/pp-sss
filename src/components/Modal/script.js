@@ -19,6 +19,10 @@ export default {
     width: {
       type: String,
       default: '500'
+    },
+    isCloseOutSide: {
+      type: Boolean,
+      default: true
     }
   },
   computed: {
@@ -31,9 +35,11 @@ export default {
       toggleModal: MUTATES.TOGGLE_MODAL
     }),
     onCloseModal() {
-      this.toggleModal({
-        isOpenModal: false
-      });
+      if (this.isCloseOutSide) {
+        this.toggleModal({
+          isOpenModal: false
+        });
+      }
     }
   }
 };

@@ -27,7 +27,8 @@ export default {
     return {
       menuX: 0,
       menuY: 0,
-      menuClass: 'pp-menu',
+      currentMenuHeight: 0,
+      menuClass: 'pp-menu section-menu',
       processStatus,
       summaryEl: null,
       items: [
@@ -64,6 +65,12 @@ export default {
   mounted() {
     this.$root.$on('summary', data => {
       this.summaryEl = data;
+    });
+    this.$root.$on('menu', data => {
+      const that = this;
+      setTimeout(() => {
+        that.currentMenuHeight = data.$el.clientHeight;
+      }, 0);
     });
   },
   methods: {
@@ -105,18 +112,22 @@ export default {
 
       const { x, y } = element.getBoundingClientRect();
       this.menuX = x - 80;
-      // if (windowHeight - elementY < 327) {
-      //   this.menuY = y - 327 - 50;
-      // } else {
-      //   this.menuY = y;
-      // }
-      this.menuY = y;
+
       const dataToggle = this.summaryEl?.getAttribute('data-toggle');
       if (dataToggle && dataToggle === 'collapse') {
         this.menuClass = `${this.menuClass} collapsed-summary`;
       } else {
-        this.menuClass = 'pp-menu';
+        this.menuClass = 'pp-menu section-menu';
       }
+      this.menuY = y;
+      // setTimeout(() => {
+      //   console.log('this.currentMenuHeight', this.currentMenuHeight);
+      //   if (windowHeight - elementY < 327) {
+      //     this.menuY = y - this.currentMenuHeight - 50;
+      //   } else {
+      //     this.menuY = y;
+      //   }
+      // }, 10);
       this.setIsOpenMenu();
     }
   }
