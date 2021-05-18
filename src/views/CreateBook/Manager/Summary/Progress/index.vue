@@ -3,7 +3,12 @@
     <v-col>
       <div class="text-700 group-title">Progress</div>
 
-      <div class="group-detail">
+      <div class="group-detail progress">
+        <div class="cover">
+          <div>
+            Click to view latest Progress
+          </div>
+        </div>
         <img src="@/assets/image/chart.png" alt="chart" />
       </div>
     </v-col>
