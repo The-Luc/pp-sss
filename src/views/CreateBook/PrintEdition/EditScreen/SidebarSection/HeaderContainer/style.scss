@@ -1,9 +1,12 @@
 .thumbnail-view-header {
   .header-container {
-    padding-left: -8px;
+    margin-left: -5px;
     display: flex;
     align-items: center;
     font-size: 12px;
+  }
+  .sheet-container > div {
+    margin-bottom: 13px;
   }
 }
 
@@ -18,12 +21,28 @@
   }
   .header-name {
     font-family: $font-700;
-    span {
-      font-family: $font-300;
-    }
+    max-width: 130px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  span {
+    font-family: $font-300;
+    margin-left: 5px;
   }
   .v-icon {
     font-size: 28px;
     color: #58595b;
+  }
+}
+@media screen and (max-width: 1366px) {
+  .thumbnail-view-header > div {
+    .header-color {
+      width: 10px;
+      height: 10px;
+    }
+    .header-name {
+      font-size: 10px;
+    }
   }
 }

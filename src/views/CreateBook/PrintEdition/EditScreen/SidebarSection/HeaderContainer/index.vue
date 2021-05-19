@@ -9,8 +9,8 @@
       <v-icon v-else>arrow_right</v-icon>
       <div class="header-name">
         {{ section.name }}
-        <span>({{ section.sheets.length }})</span>
       </div>
+      <span>({{ section.sheets.length }})</span>
     </div>
 
     <div v-show="isOpen" class="sheet-container">
