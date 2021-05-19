@@ -11,7 +11,7 @@
           :key="sheet.id"
           :sheet="sheet"
           :edit="false"
-          :link="false"
+          :is-show-link="false"
           :number-page="numberPage(section.id, sheet)"
         />
       </HeaderContainer>
