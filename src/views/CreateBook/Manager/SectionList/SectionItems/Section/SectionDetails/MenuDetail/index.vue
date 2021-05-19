@@ -1,6 +1,7 @@
 <template>
   <div class="menu-detail">
     <MoveSheet
+      v-click-outside="onCloseMenuMove"
       title="Move To"
       value="Choose a Section"
       :is-show="isShow"

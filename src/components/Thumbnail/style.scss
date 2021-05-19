@@ -7,14 +7,14 @@
   flex-wrap: nowrap;
   position: relative;
   &::before {
-    content: "";
+    content: '';
     height: 100%;
     border-right: 1px solid #8c8c8c;
     margin-left: calc(50% - 1px);
     position: absolute;
   }
   &.half-left::before {
-    content: "";
+    content: '';
     height: 100%;
     background: #f4f4f4;
     border-right: 1px solid #8c8c8c;
@@ -23,7 +23,7 @@
     position: absolute;
   }
   &.half-right::before {
-    content: "";
+    content: '';
     height: 100%;
     background: #f4f4f4;
     border-left: 1px solid #8c8c8c;
@@ -62,9 +62,10 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 11px;
+  font-size: 10px;
   margin-top: 6px;
   position: relative;
+  font-family: $font-300;
 }
 
 .number-page-link {
