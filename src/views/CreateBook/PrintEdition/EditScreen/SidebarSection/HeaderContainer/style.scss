@@ -21,7 +21,7 @@
   }
   .header-name {
     font-family: $font-700;
-    max-width: 130px;
+    max-width: 220px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -35,6 +35,13 @@
     color: #58595b;
   }
 }
+@media only screen and (max-width: 1600px) {
+  .thumbnail-view-header > div {
+    .header-name {
+      max-width: 170px;
+    }
+  }
+}
 @media screen and (max-width: 1366px) {
   .thumbnail-view-header > div {
     .header-color {
@@ -43,6 +50,7 @@
     }
     .header-name {
       font-size: 10px;
+      max-width: 130px;
     }
   }
 }

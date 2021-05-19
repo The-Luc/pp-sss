@@ -30,17 +30,15 @@
   justify-content: space-between;
   padding: 25px;
   height: 100%;
-  .page-left,
-  .page-right {
-    height: 100%;
-    width: 100%;
+  #page-left,
+  #page-right {
     border: 1px solid #27aae1;
   }
-  .page-left {
-    margin-right: 35px;
+  #page-left {
+    margin-right: 30px;
   }
-  .page-right {
-    margin-left: 35px;
+  #page-right {
+    margin-left: 30px;
   }
 }
 

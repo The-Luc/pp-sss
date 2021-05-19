@@ -3,8 +3,8 @@
     <div class="container-edition">
       <div class="canvas">
         <div class="page">
-          <div class="page-left"></div>
-          <div class="page-right"></div>
+          <canvas id="page-left"></canvas>
+          <canvas id="page-right"></canvas>
         </div>
       </div>
     </div>
