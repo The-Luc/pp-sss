@@ -1,10 +1,9 @@
 .page-edition {
   padding: 0;
   border-left: 1px solid #808184;
-  height: 1000px;
   .container-edition {
     width: 80%;
-    height: 750px;
+    height: 780px;
     background: #fbccce;
     display: flex;
     margin: 20px 0 0 20px;
@@ -44,11 +43,48 @@
     margin-left: 35px;
   }
 }
+
+@media only screen and (max-width: 1600px) {
+  .page-edition {
+    .container-edition {
+      margin: 20px 0 0 20px;
+      width: 70%;
+      height: 600px;
+      &::before {
+        width: 14px;
+        margin-left: calc(50% - 7px);
+      }
+      .canvas {
+        margin: 35px 45px;
+        .page {
+          padding: 15px;
+          &-left {
+            margin-right: 25px;
+          }
+          &-right {
+            margin-left: 20px;
+          }
+        }
+      }
+    }
+  }
+}
 @media screen and (max-width: 1366px) {
   .page-edition {
     .container-edition {
-      width: 75%;
-      height: 580px;
+      margin: 15px 0 0 15px;
+      height: 475px;
+      .canvas {
+        margin: 30px 40px;
+        .page {
+          &-left {
+            margin-right: 20px;
+          }
+          &-right {
+            margin-left: 20px;
+          }
+        }
+      }
     }
   }
 }
