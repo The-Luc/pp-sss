@@ -227,7 +227,7 @@ export const mutations = {
     );
   },
   addSection(state) {
-    const { sections } = state.book;
+    const { sections, releaseDate } = state.book;
     const newSectionId = nextId(sections);
 
     state.book.sections = [
@@ -239,7 +239,7 @@ export const mutations = {
         name: '',
         status: 0,
         draggable: true,
-        dueDate: moment(new Date()).format('MM/DD/YY'),
+        dueDate: moment(releaseDate).format('MM/DD/YY'),
         sheets: []
       },
       ...sections.slice(sections.length - 1)
