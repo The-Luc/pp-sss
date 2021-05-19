@@ -1,6 +1,6 @@
 <template>
   <Modal title="Delete?" width="425">
-    <div class="text-300 item-title">
+    <div class="text-300 item-title mb-0">
       Please confirm that you want to delete section
     </div>
     <div class="text-300 item-title">

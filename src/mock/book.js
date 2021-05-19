@@ -5,8 +5,10 @@ const book = {
   totalPages: 18,
   totalSheets: 11,
   totalScreens: 11,
+  createdDate: '11/27/20',
   deliveryDate: '08/21/21',
   releaseDate: '08/07/21',
+  saleDate: '05/16/21',
   coverOption: 'Hardcover',
   numberMaxPages: 48,
   deliveryOption: 'Bulk Ship To School',
@@ -15,6 +17,14 @@ const book = {
   estimatedQuantity: {
     min: 50,
     max: 100
+  },
+  printData: {
+    theme: 1,
+    layout: 1
+  },
+  digitalData: {
+    theme: 1,
+    layout: 1
   },
   sections: [
     {
@@ -35,7 +45,13 @@ const book = {
           order: 0,
           printData: {
             thumbnailUrl: null,
-            link: 'none'
+            link: 'none',
+            pages: [
+              {
+                id: 1,
+                data: []
+              }
+            ]
           },
           digitalData: {
             thumbnailUrl: null,
@@ -62,7 +78,13 @@ const book = {
           order: 0,
           printData: {
             thumbnailUrl: null,
-            link: 'none'
+            link: 'none',
+            pages: [
+              {
+                id: 2,
+                data: []
+              }
+            ]
           },
           digitalData: {
             thumbnailUrl: null,
@@ -77,7 +99,18 @@ const book = {
           order: 1,
           printData: {
             thumbnailUrl: null,
-            link: 'link'
+            link: 'link',
+            pages: [
+              {
+                id: 3,
+                data: []
+              },
+
+              {
+                id: 4,
+                data: []
+              }
+            ]
           },
           digitalData: {
             thumbnailUrl: null,
@@ -92,7 +125,18 @@ const book = {
           order: 2,
           printData: {
             thumbnailUrl: null,
-            link: 'link'
+            link: 'link',
+            pages: [
+              {
+                id: 5,
+                data: []
+              },
+
+              {
+                id: 6,
+                data: []
+              }
+            ]
           },
           digitalData: {
             thumbnailUrl: null,
@@ -107,7 +151,18 @@ const book = {
           order: 3,
           printData: {
             thumbnailUrl: null,
-            link: 'link'
+            link: 'link',
+            pages: [
+              {
+                id: 7,
+                data: []
+              },
+
+              {
+                id: 8,
+                data: []
+              }
+            ]
           },
           digitalData: {
             thumbnailUrl: null,
@@ -122,7 +177,18 @@ const book = {
           order: 4,
           printData: {
             thumbnailUrl: null,
-            link: 'link'
+            link: 'link',
+            pages: [
+              {
+                id: 9,
+                data: []
+              },
+
+              {
+                id: 10,
+                data: []
+              }
+            ]
           },
           digitalData: {
             thumbnailUrl: null,
@@ -149,7 +215,18 @@ const book = {
           order: 0,
           printData: {
             thumbnailUrl: null,
-            link: 'unlink'
+            link: 'unlink',
+            pages: [
+              {
+                id: 11,
+                data: []
+              },
+
+              {
+                id: 12,
+                data: []
+              }
+            ]
           },
           digitalData: {
             thumbnailUrl: null,
@@ -168,7 +245,18 @@ const book = {
           },
           digitalData: {
             thumbnailUrl: null,
-            link: 'link'
+            link: 'link',
+            pages: [
+              {
+                id: 13,
+                data: []
+              },
+
+              {
+                id: 14,
+                data: []
+              }
+            ]
           }
         },
         {
@@ -179,22 +267,18 @@ const book = {
           order: 2,
           printData: {
             thumbnailUrl: null,
-            link: 'link'
-          },
-          digitalData: {
-            thumbnailUrl: null,
-            link: 'link'
-          }
-        },
-        {
-          id: 9,
-          type: 3,
-          draggable: true,
-          positionFixed: 'none',
-          order: 3,
-          printData: {
-            thumbnailUrl: null,
-            link: 'link'
+            link: 'link',
+            pages: [
+              {
+                id: 15,
+                data: []
+              },
+
+              {
+                id: 16,
+                data: []
+              }
+            ]
           },
           digitalData: {
             thumbnailUrl: null,
@@ -212,7 +296,34 @@ const book = {
       dueDate: '05/27/21',
       order: 3,
       assigneeId: 123456789,
-      sheets: []
+      sheets: [
+        {
+          id: 9,
+          type: 3,
+          draggable: true,
+          positionFixed: 'none',
+          order: 3,
+          printData: {
+            thumbnailUrl: null,
+            link: 'link',
+            pages: [
+              {
+                id: 17,
+                data: []
+              },
+
+              {
+                id: 18,
+                data: []
+              }
+            ]
+          },
+          digitalData: {
+            thumbnailUrl: null,
+            link: 'link'
+          }
+        }
+      ]
     },
     {
       id: 55,
@@ -232,7 +343,13 @@ const book = {
           order: 0,
           printData: {
             thumbnailUrl: null,
-            link: 'unlink'
+            link: 'unlink',
+            pages: [
+              {
+                id: 19,
+                data: []
+              }
+            ]
           },
           digitalData: {
             thumbnailUrl: null,
