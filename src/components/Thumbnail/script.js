@@ -24,6 +24,10 @@ export default {
     },
     toLink: {
       type: String
+    },
+    isActive: {
+      type: Boolean,
+      default: false
     }
   },
   created() {

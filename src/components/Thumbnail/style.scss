@@ -6,6 +6,9 @@
   display: flex;
   flex-wrap: nowrap;
   position: relative;
+  &.active {
+    border: 2px solid #42738d;
+  }
   &::before {
     content: '';
     height: 100%;

@@ -8,11 +8,14 @@
     display: flex;
     margin: 20px 0 0 20px;
     position: relative;
-    .canvas {
+    .canvas-soft-cover {
       width: 100%;
-      margin: 45px 60px;
+      margin: 10px;
       background: white;
       border: 1px solid #ed1c24;
+    }
+    .canvas-hard-cover {
+      margin: 45px 60px;
     }
     &::before {
       content: '';
@@ -52,8 +55,8 @@
         width: 14px;
         margin-left: calc(50% - 7px);
       }
-      .canvas {
-        margin: 35px 45px;
+      .canvas-soft-cover {
+        margin: 10px;
         .page {
           padding: 15px;
           &-left {
@@ -64,6 +67,9 @@
           }
         }
       }
+      .canvas-hard-cover {
+        margin: 30px 40px;
+      }
     }
   }
 }
@@ -72,16 +78,18 @@
     .container-edition {
       margin: 15px 0 0 15px;
       height: 475px;
-      .canvas {
-        margin: 30px 40px;
-        .page {
-          &-left {
-            margin-right: 20px;
-          }
-          &-right {
-            margin-left: 20px;
-          }
+      .canvas-soft-cover {
+        margin: 10px;
+        .page-left {
+          width: 100%;
+          margin-right: 20px;
         }
+        .page-right {
+          margin-left: 20px;
+        }
+      }
+      .canvas-hard-cover {
+        margin: 30px 40px;
       }
     }
   }

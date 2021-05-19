@@ -264,6 +264,10 @@ export const mutations = {
     const indexSection = sections.findIndex(item => item.id == sectionId);
     state.book.sections[indexSection].name = sectionName;
   },
+  selectSheet(state, payload) {
+    const { sheetId } = payload;
+    state.pageSelected = sheetId;
+  },
   [APP._MUTATES.GET_BOOK_SUCCESS](state, payload) {
     state.book = payload;
   }
