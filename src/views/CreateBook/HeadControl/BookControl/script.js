@@ -1,6 +1,10 @@
+import { mapGetters } from 'vuex';
+
 import { SCREEN } from '@/common/constants/book';
 import PpButton from '@/components/Button';
 import LineVertical from '../LineVertical';
+import { GETTERS } from '@/store/modules/book/const';
+import { ROUTE_NAME } from '@/common/constants';
 
 export default {
   components: {
@@ -10,6 +14,7 @@ export default {
   data() {
     return {
       screen: SCREEN,
+      routeName: ROUTE_NAME,
       path: this.$route.path
     };
   },
@@ -18,9 +23,14 @@ export default {
       this.path = to.path;
     }
   },
+  computed: {
+    ...mapGetters({
+      bookId: GETTERS.BOOK_ID
+    })
+  },
   methods: {
     onChangeView(newView) {
-      this.$router.push(`${newView.toLowerCase()}`);
+      this.$router.push(`/book/${this.bookId}${newView.toLowerCase()}`);
     }
   }
 };

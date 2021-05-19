@@ -37,8 +37,8 @@ export default {
       default: 'btn'
     },
     linkTo: {
-      type: String,
-      default: ''
+      type: Object,
+      default: () => ({})
     },
     isActive: Boolean,
     isDisabled: Boolean,
@@ -52,7 +52,7 @@ export default {
     },
     action: {
       type: Function,
-      default: () => {}
+      default: () => ({})
     }
   },
   methods: {

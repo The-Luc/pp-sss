@@ -4,7 +4,7 @@
       v-if="screen"
       :is-active="path.indexOf(screen.PRINT) > -1"
       type="btn"
-      link-to="/edit/print"
+      :link-to="{ name: routeName.PRINT }"
       @click="onChangeView(screen.PRINT)"
     >
       Print Edition
@@ -14,7 +14,7 @@
       v-if="screen"
       :is-active="path.indexOf(screen.MANAGER) > -1"
       type="btn"
-      link-to="/edit/manager"
+      :link-to="{ name: routeName.MANAGER }"
       @click="onChangeView(screen.MANAGER)"
     >
       Manager
@@ -24,7 +24,7 @@
       v-if="screen"
       :is-active="path.indexOf(screen.DIGITAL) > -1"
       type="btn"
-      link-to="/edit/digital"
+      :link-to="{ name: routeName.DIGITAL }"
       @click="onChangeView(screen.DIGITAL)"
     >
       Digital Edition
