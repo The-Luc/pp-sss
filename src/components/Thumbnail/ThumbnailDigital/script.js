@@ -4,16 +4,11 @@ export default {
   props: {
     numberPage: {
       type: Object,
-      default: () => {
-        return {
-          numberLeft: 'Back Cover',
-          numberRight: 'Front Cover'
-        };
-      }
+      default: {}
     },
     sheet: {
       type: Object,
-      require: true
+      required: true
     },
     edit: {
       type: Boolean,
@@ -21,7 +16,7 @@ export default {
     },
     toLink: {
       type: String,
-      require: true
+      required: true
     },
     isActive: {
       type: Boolean,
