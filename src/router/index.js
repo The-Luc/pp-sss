@@ -1,14 +1,21 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 
-import moduleCreateBook from '@/views/CreateBook/routes';
 import store from '../store';
 import { MUTATES } from '@/store/modules/app/const';
-import { MODAL_TYPES } from '@/common/constants';
-import { SCREEN } from '@/common/constants/book';
+import { MODAL_TYPES, ROUTE_NAME } from '@/common/constants';
+import { ENV_CONFIG } from '@/common/constants/config';
 
 const PageNotFound = () => import('../views/PageNotFound');
 const Manager = () => import('../views/CreateBook/Manager');
+const PrintEdition = () => import('../views/CreateBook/PrintEdition');
+const PrintMainScreen = () =>
+  import('../views/CreateBook/PrintEdition/MainScreen');
+const PrintEditScreen = () =>
+  import('../views/CreateBook/PrintEdition/EditScreen');
+const DigitalMainScreen = () =>
+  import('../views/CreateBook/DigitalEdition/MainScreen');
+const DigitalEdition = () => import('../views/CreateBook/DigitalEdition');
 
 Vue.use(VueRouter);
 
@@ -33,15 +40,40 @@ const authGuard = {
 const routes = [
   {
     path: '/',
-    redirect: '/edit/manager',
-    component: Manager,
+    redirect: `/book/${ENV_CONFIG.BOOK_ID}/edit/manager`,
     ...authGuard
   },
   {
-    path: '/edit',
-    redirect: '/edit/manager',
-    component: Manager,
-    ...authGuard
+    path: '/book/:bookId/edit/manager',
+    name: ROUTE_NAME.MANAGER,
+    component: Manager
+  },
+  {
+    path: '/book/:bookId/edit/print',
+    component: PrintEdition,
+    children: [
+      {
+        path: '/',
+        name: ROUTE_NAME.PRINT,
+        component: PrintMainScreen
+      },
+      {
+        path: 'edit-screen',
+        name: ROUTE_NAME.PRINT_EDIT,
+        component: PrintEditScreen
+      }
+    ]
+  },
+  {
+    path: '/book/:bookId/edit/digital',
+    component: DigitalEdition,
+    children: [
+      {
+        path: '/',
+        name: ROUTE_NAME.DIGITAL,
+        component: DigitalMainScreen
+      }
+    ]
   },
   { path: '*', component: PageNotFound }
 ];
@@ -49,17 +81,18 @@ const routes = [
 const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
-  routes: [...routes, ...moduleCreateBook],
+  routes,
   scrollBehavior() {
     return { x: 0, y: 0 };
   }
 });
+
 router.beforeEach(async (to, from, next) => {
-  if (to.path === SCREEN.PRINT || to.path === SCREEN.DIGITAL) {
+  if (to.name !== ROUTE_NAME.MANAGER) {
     const sections = store.state.book.book?.sections;
     const emptySections = sections.filter(item => item.sheets?.length === 0);
     if (emptySections.length !== 0) {
-      if (from.path !== SCREEN.MANAGER) {
+      if (from.name !== ROUTE_NAME.MANAGER) {
         await next();
       }
       store.commit(MUTATES.TOGGLE_MODAL, {

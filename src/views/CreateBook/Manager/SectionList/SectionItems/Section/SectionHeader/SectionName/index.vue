@@ -4,15 +4,21 @@
 
     <span class="dot" :style="'background-color: ' + sectionColor"></span>
     <img src="@/assets/icons/collapse.svg" data-toggle="collapse" />
-    <input
-      v-model="sectionNameCurrent"
-      type="text"
-      maxlength="50"
-      @click="$event.stopPropagation()"
-      @keyup.enter="keyUpEnter"
-      @keyup.esc="keyUpEsc"
-      @blur="saveTitle"
-    />
+    <div class="input-container" @click="click">
+      <div ref="text" class="text">
+        {{ sectionNameCurrent }}
+      </div>
+      <input
+        ref="input"
+        v-model="sectionNameCurrent"
+        type="text"
+        maxlength="50"
+        @click.stop
+        @keyup.enter="keyUpEnter"
+        @keyup.esc="keyUpEsc"
+        @blur="saveTitle"
+      />
+    </div>
   </v-col>
 </template>
 

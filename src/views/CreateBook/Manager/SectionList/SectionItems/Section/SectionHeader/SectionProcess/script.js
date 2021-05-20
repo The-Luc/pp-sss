@@ -107,7 +107,6 @@ export default {
       }
     },
     toggleMenu(event) {
-      event.stopPropagation();
       const element = event.target;
       const windowHeight = window.innerHeight;
       const elementY = event.y;

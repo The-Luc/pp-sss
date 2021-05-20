@@ -6,3 +6,5 @@ export * from './storage';
 export * from './time';
 export * from './linkStatus';
 export * from './sheetTypes';
+export * from './routeName';
+export * from './objectType';

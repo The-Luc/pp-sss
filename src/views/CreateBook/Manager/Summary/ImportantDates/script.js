@@ -17,7 +17,8 @@ export default {
     countdown() {
       let dueDate = moment(this.book.releaseDate, 'MM/DD/YYYY');
       let currentDate = moment(new Date());
-      return moment(dueDate).diff(currentDate, 'days');
+      const countdown = moment(dueDate).diff(currentDate, 'days');
+      return countdown < 0 ? 0 : countdown;
     }
   }
 };

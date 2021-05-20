@@ -1,16 +1,19 @@
-import Frames from './Frames';
-import Thumbnail from '@/components//Thumbnail';
-import book from '@/mock/book';
+import { mapGetters } from 'vuex';
+
+import Frames from '@/components/Thumbnail/Frames';
+import Thumbnail from '@/components/Thumbnail/ThumbnailPrint';
+import { GETTERS } from '@/store/modules/book/const';
 
 export default {
   components: {
     Frames,
     Thumbnail
   },
-  data() {
-    return {
-      book: book
-    };
+  computed: {
+    ...mapGetters({
+      bookId: GETTERS.BOOK_ID,
+      book: GETTERS.BOOK_DETAIL
+    })
   },
   methods: {
     numberPage(sectionId, sheet) {

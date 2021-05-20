@@ -7,7 +7,7 @@
         :section="section"
       >
         <Thumbnail
-          to-link="/edit/print/edit-screen"
+          :to-link="`/book/${bookId}/edit/print/edit-screen`"
           :number-page="numberPage(section.id, sheet)"
           :sheet="sheet"
         />
