@@ -13,7 +13,7 @@
         v-model="sectionNameCurrent"
         type="text"
         maxlength="50"
-        @click="$event.stopPropagation()"
+        @click.stop
         @keyup.enter="keyUpEnter"
         @keyup.esc="keyUpEsc"
         @blur="saveTitle"
