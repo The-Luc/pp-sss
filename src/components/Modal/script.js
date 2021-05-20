@@ -23,6 +23,10 @@ export default {
     isCloseOutSide: {
       type: Boolean,
       default: true
+    },
+    showTopBg: {
+      type: Boolean,
+      default: true
     }
   },
   computed: {

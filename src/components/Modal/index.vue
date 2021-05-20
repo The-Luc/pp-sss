@@ -8,6 +8,7 @@
   >
     <v-card>
       <Header
+        :show-top-bg="showTopBg"
         :title="title"
         :show-icon-close="showIconClose"
         @onCloseModal="onCloseModal"

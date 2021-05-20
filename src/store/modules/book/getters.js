@@ -23,5 +23,8 @@ export const getters = {
   },
   getMaxPage: state => {
     return state.book.numberMaxPages;
+  },
+  getThemes: state => {
+    return state.themes;
   }
 };

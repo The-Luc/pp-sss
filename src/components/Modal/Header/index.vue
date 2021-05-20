@@ -1,6 +1,6 @@
 <template>
-  <v-card-title class="pp-modal-title">
-    <span class="top-bg" />
+  <v-card-title :class="['pp-modal-title', { 'padding-top-26': showTopBg }]">
+    <span v-show="showTopBg" class="top-bg" />
     <span class="text-size-xl text-title">{{ title }}</span>
     <v-icon v-if="showIconClose" class="icon-close" @click="onCloseModal">
       close

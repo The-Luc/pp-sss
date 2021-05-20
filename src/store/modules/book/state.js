@@ -1,4 +1,6 @@
 import book from '@/mock/book';
+import themes from '@/mock/themes';
+import layouts from '@/mock/layouts';
 
 const compare = (firstEl, secondEl) => {
   return firstEl.order - secondEl.order;
@@ -11,5 +13,7 @@ book.sections.forEach(s => {
 });
 
 export const state = {
-  book
+  book,
+  themes,
+  layouts
 };

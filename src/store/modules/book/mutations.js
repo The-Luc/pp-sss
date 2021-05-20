@@ -270,5 +270,9 @@ export const mutations = {
   },
   [APP._MUTATES.GET_BOOK_SUCCESS](state, payload) {
     state.book = payload;
+  },
+  selectTheme(state, payload) {
+    const { themeId } = payload;
+    state.book.printData.theme = themeId;
   }
 };

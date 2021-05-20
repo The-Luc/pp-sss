@@ -7,6 +7,10 @@ export default {
     showIconClose: {
       type: Boolean,
       default: false
+    },
+    showTopBg: {
+      type: Boolean,
+      default: true
     }
   },
   methods: {

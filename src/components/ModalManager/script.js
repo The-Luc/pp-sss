@@ -8,14 +8,22 @@ import HelpModal from '@/views/CreateBook/HeadControl/BookInformation/Help/Modal
 import EmptySection from '@/components/ModalEmptySection';
 import DeleteSheetModal from '@/views/CreateBook/Manager/SectionList/SectionItems/Section/SectionDetails/Modal';
 import DeleteSectionModal from '@/views/CreateBook/Manager/SectionList/SectionItems/Section/SectionHeader/SectionProcess/Modal';
+import SelectTheme from '@/views/CreateBook/PrintEdition/EditScreen/Modal';
 
-const { HELP, DELETE_SHEET, DELETE_SECTION, EMPTY_SECTION } = MODAL_TYPES;
+const {
+  HELP,
+  DELETE_SHEET,
+  DELETE_SECTION,
+  EMPTY_SECTION,
+  SELECT_THEME
+} = MODAL_TYPES;
 
 const ModalList = {
   [HELP]: HELP,
   [DELETE_SHEET]: DELETE_SHEET,
   [DELETE_SECTION]: DELETE_SECTION,
-  [EMPTY_SECTION]: EMPTY_SECTION
+  [EMPTY_SECTION]: EMPTY_SECTION,
+  [SELECT_THEME]: SELECT_THEME
 };
 
 export default {
@@ -28,7 +36,8 @@ export default {
     [MODAL_TYPES.HELP]: HelpModal,
     [MODAL_TYPES.DELETE_SHEET]: DeleteSheetModal,
     [MODAL_TYPES.DELETE_SECTION]: DeleteSectionModal,
-    [MODAL_TYPES.EMPTY_SECTION]: EmptySection
+    [MODAL_TYPES.EMPTY_SECTION]: EmptySection,
+    [MODAL_TYPES.SELECT_THEME]: SelectTheme
   },
   computed: {
     ...mapGetters({
