@@ -8,7 +8,7 @@ export default {
     },
     width: {
       type: Number,
-      default: 320
+      default: 370
     }
   },
   components: {

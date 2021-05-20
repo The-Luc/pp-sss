@@ -1,8 +1,7 @@
 <template>
-  <div>
-    <TextStyle />
-    <Fonts />
-  </div>
+  <v-tabs class="pp-tab-menu">
+    <slot />
+  </v-tabs>
 </template>
 
 <script src="./script.js" />
