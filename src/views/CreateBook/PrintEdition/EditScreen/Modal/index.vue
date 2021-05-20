@@ -28,7 +28,9 @@
       </div>
     </div>
     <div class="modal-theme-footer">
-      <PpButton class="button-select" is-active>Select</PpButton>
+      <PpButton class="button-select" is-active @click.native="onSubmitThemeId"
+        >Select</PpButton
+      >
     </div>
   </Modal>
 </template>

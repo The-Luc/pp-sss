@@ -22,7 +22,8 @@ export default {
   methods: {
     ...mapMutations({
       toggleModal: MUTATES.TOGGLE_MODAL,
-      deleteSheet: 'book/deleteSheet'
+      deleteSheet: 'book/deleteSheet',
+      selectTheme: 'book/selectTheme'
     }),
     onCloseModal() {
       this.toggleModal({
@@ -35,6 +36,11 @@ export default {
     },
     onSelectTheme(themeId) {
       this.selectedThemeId = themeId;
+    },
+    onSubmitThemeId() {
+      this.selectTheme({
+        themeId: this.selectedThemeId
+      });
     }
   },
   created() {
