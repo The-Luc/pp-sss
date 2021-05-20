@@ -1,8 +1,9 @@
-<template lang="">
+<template>
   <div>
-    This is Digital Edition page
+    <router-view></router-view>
   </div>
 </template>
+
 <script>
 export default {};
 </script>

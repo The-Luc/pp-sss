@@ -1,6 +1,5 @@
-
 import book from '@/mock/book';
-import Thumbnail from '@/components/Thumbnail';
+import Thumbnail from '@/components/Thumbnail/ThumbnailPrint';
 import HeaderContainer from './HeaderContainer';
 import { mapGetters, mapMutations } from 'vuex';
 

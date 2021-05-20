@@ -1,7 +1,7 @@
 import { mapGetters } from 'vuex';
 
-import Frames from './Frames';
-import Thumbnail from '@/components//Thumbnail';
+import Frames from '@/components/Thumbnail/Frames';
+import Thumbnail from '@/components/Thumbnail/ThumbnailPrint';
 import book from '@/mock/book';
 import { GETTERS } from '@/store/modules/book/const';
 
