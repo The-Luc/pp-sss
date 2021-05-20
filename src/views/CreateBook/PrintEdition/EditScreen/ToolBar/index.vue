@@ -6,6 +6,7 @@
           v-for="(item, index) in itemsToolLeft"
           :key="index"
           :items="item"
+          @click="data => onClickLeftTool(data)"
         />
       </div>
       <div class="tool-right">
@@ -13,6 +14,7 @@
           v-for="(item, index) in itemsToolRight"
           :key="index"
           :items="item"
+          @click="data => onClickRightTool(data)"
         />
       </div>
     </div>

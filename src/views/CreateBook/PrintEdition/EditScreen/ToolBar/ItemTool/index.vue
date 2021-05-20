@@ -1,10 +1,11 @@
 <template>
   <div class="item-tool">
     <ToolButton
-      v-for="(icon, index) in items"
+      v-for="(item, index) in items"
       :key="index"
-      :icon-name="icon.iconName"
-      :title="icon.title"
+      :icon-name="item.iconName"
+      :title="item.title"
+      @click="onClick(item)"
     />
   </div>
 </template>

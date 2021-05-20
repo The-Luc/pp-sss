@@ -1,0 +1,13 @@
+.pp-select {
+  .v-input__control {
+    .v-input__slot {
+      min-height: auto;
+
+      box-shadow: none !important;
+      border: 1px solid #bcbec0;
+    }
+    .v-text-field__details {
+      display: none;
+    }
+  }
+}
