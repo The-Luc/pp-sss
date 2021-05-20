@@ -11,7 +11,7 @@ $margin-right: 8px;
         .drag-control {
           margin-right: $margin-right;
         }
-  
+
         .dot {
           display: inline-block;
           height: 12px;
@@ -21,18 +21,34 @@ $margin-right: 8px;
           border-radius: 50%;
         }
 
-        input {
-          padding: 2px;
+        .input-container {
           min-width: 25%;
-          height: 100%;
-          border: 1px dashed transparent;
-          &:hover {
-            border: 1px dashed $color-gray;
+          div {
+            cursor: text;
+            padding: 2px;
+            padding-right: 4px;
+            height: 100%;
+            border: 1px dashed transparent;
+            &:hover {
+              border: 1px dashed $color-gray;
+            }
           }
 
-          &:focus {
-            outline: none;
-            border: 1px solid $color-darkblue;
+          input {
+            display: none;
+            padding: 2px;
+            padding-right: 4px;
+            min-width: 25%;
+            height: 100%;
+            border: 1px dashed transparent;
+            &:hover {
+              border: 1px dashed $color-gray;
+            }
+
+            &:focus {
+              outline: none;
+              border: 1px solid $color-darkblue;
+            }
           }
         }
 
@@ -41,7 +57,7 @@ $margin-right: 8px;
           height: 10px;
           margin-right: 4px;
 
-          &[data-toggle="expand"] {
+          &[data-toggle='expand'] {
             transform: rotate(90deg);
           }
         }

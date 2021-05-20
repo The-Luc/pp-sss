@@ -253,6 +253,10 @@ export const mutations = {
         el.click();
       }
       let input = el.querySelector('input');
+      let text = el.querySelector('.text');
+      text.style.display = 'none';
+      input.style.display = 'block';
+      input.style.width = '100%';
       input.focus();
     }, 0);
   },
@@ -263,6 +267,10 @@ export const mutations = {
     const { sections } = state.book;
     const indexSection = sections.findIndex(item => item.id == sectionId);
     state.book.sections[indexSection].name = sectionName;
+  },
+  selectSheet(state, payload) {
+    const { sheetId } = payload;
+    state.pageSelected = sheetId;
   },
   [APP._MUTATES.GET_BOOK_SUCCESS](state, payload) {
     state.book = payload;
