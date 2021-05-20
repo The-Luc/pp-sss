@@ -4,7 +4,6 @@
 
 $space: 15px;
 $process-width: 45px;
-$process-height: 6px;
 
 .manager-main {
   .manager-section-list {
@@ -17,28 +16,7 @@ $process-height: 6px;
 
         .process-bar {
           width: ($process-width * 3) + 3;
-          height: $process-height;          
           margin-right: $space;
-
-          .process-container {
-            &[data-process='in-process'] {
-              .process {
-                margin-left: -($process-height / 2);
-              }
-            }
-
-            &[data-process='approved'] {
-              .process {
-                border-top-right-radius: $process-height / 2;
-                border-bottom-right-radius: $process-height / 2;
-              }
-            }
-
-            .dot {
-              width: $process-height;
-              min-width: $process-height;
-            }
-          }
         }
 
         .first-release {
