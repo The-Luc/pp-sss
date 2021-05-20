@@ -1,0 +1,12 @@
+.properties-header {
+  height: 25px;
+  background-color: #42738d;
+  padding: 0 10px;
+
+  &-title {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    color: #ffffff;
+  }
+}
