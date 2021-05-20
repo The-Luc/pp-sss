@@ -7,7 +7,7 @@
           'half-right': sheet.type === SHEET_TYPES.SIGNATURE,
           active: isActive
         },
-        'thumbnail-view-thumbnail',
+        'thumbnail-view-thumbnail'
       ]"
     >
       <img :src="image" />

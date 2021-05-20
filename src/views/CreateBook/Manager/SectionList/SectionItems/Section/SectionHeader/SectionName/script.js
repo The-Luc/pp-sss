@@ -34,6 +34,9 @@ export default {
         sectionName: this.sectionNameCurrent,
         sectionId: this.sectionId
       });
+      const { text, input } = this.$refs;
+      text.style.display = 'block';
+      input.style.display = 'none';
     },
     keyUpEnter(event) {
       event.target.blur();
@@ -42,6 +45,15 @@ export default {
       event.target.blur();
       this.sectionNameCurrent = this.sectionName;
       this.saveTitle();
+    },
+    click(event) {
+      event.stopPropagation();
+      const { text, input } = this.$refs;
+      const width = text.clientWidth;
+      text.style.display = 'none';
+      input.style.display = 'block';
+      input.style.width = width + 'px';
+      input.focus();
     }
   }
 };
