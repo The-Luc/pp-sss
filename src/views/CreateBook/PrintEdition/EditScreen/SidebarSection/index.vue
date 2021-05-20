@@ -13,6 +13,8 @@
           :edit="false"
           :is-show-link="false"
           :number-page="numberPage(section.id, sheet)"
+          :is-active="checkIsActive(sheet.id)"
+          @click.native="onSelectSheet(sheet.id)"
         />
       </HeaderContainer>
     </div>

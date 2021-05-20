@@ -1,48 +1,9 @@
-$white: #ffffff;
-$gray: #bbbbbd;
-
-$padding: 20px;
-
-$border: 1px solid $gray;
-
-%no-padding-margin {
-  padding: 0;
-  margin: 0;
-}
-%boder-padding {
-  border-top: $border;
-  padding: 16px 0;
-}
-%btn-border {
-  border: 0.5px solid #d1d3d4;
-  border-radius: 2px;
-}
-
 .print-main {
-  @extend %no-padding-margin;
   font-size: 14px;
-
   .print-editor {
-    @extend %no-padding-margin;
     line-height: 14px;
     color: #565656;
     font-family: $font-500;
     font-size: 12px;
-    p,
-    .row,
-    .col {
-      @extend %no-padding-margin;
-    }
-
-    img {
-      width: 100%;
-      height: auto;
-    }
-
-    @for $i from 2 through 12 {
-      .col-#{$i} {
-        @extend %no-padding-margin;
-      }
-    }
   }
 }

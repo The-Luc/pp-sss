@@ -1,6 +1,8 @@
+
 import book from '@/mock/book';
 import Thumbnail from '@/components/Thumbnail';
 import HeaderContainer from './HeaderContainer';
+import { mapGetters, mapMutations } from 'vuex';
 
 export default {
   components: {
@@ -12,7 +14,15 @@ export default {
       book: book
     };
   },
+  computed: {
+    ...mapGetters({
+      pageSelected: 'book/getPageSelected'
+    })
+  },
   methods: {
+    ...mapMutations({
+      selectSheet: 'book/selectSheet'
+    }),
     numberPage(sectionId, sheet) {
       const sectionIndex = this.book.sections.findIndex(
         item => item.id == sectionId
@@ -78,6 +88,12 @@ export default {
           break;
       }
       return numberPage;
+    },
+    checkIsActive(sheetId) {
+      return sheetId === this.pageSelected;
+    },
+    onSelectSheet(sheetId) {
+      this.selectSheet({ sheetId });
     }
   }
 };
