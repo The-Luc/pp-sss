@@ -13,7 +13,7 @@ export default {
     },
     sheet: {
       type: Object,
-      require: true
+      required: true
     },
     edit: {
       type: Boolean,
@@ -25,7 +25,7 @@ export default {
     },
     toLink: {
       type: String,
-      require: true
+      required: true
     },
     isActive: {
       type: Boolean,
