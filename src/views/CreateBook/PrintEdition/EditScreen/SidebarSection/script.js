@@ -1,21 +1,18 @@
-import book from '@/mock/book';
+import { mapGetters, mapMutations } from 'vuex';
+
 import Thumbnail from '@/components/Thumbnail/ThumbnailPrint';
 import HeaderContainer from './HeaderContainer';
-import { mapGetters, mapMutations } from 'vuex';
+import { GETTERS } from '@/store/modules/book/const';
 
 export default {
   components: {
     Thumbnail,
     HeaderContainer
   },
-  data() {
-    return {
-      book: book
-    };
-  },
   computed: {
     ...mapGetters({
-      pageSelected: 'book/getPageSelected'
+      pageSelected: 'book/getPageSelected',
+      book: GETTERS.BOOK_DETAIL
     })
   },
   methods: {

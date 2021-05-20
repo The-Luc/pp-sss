@@ -8,12 +8,10 @@
     background: #fbccce;
     display: flex;
     margin: 20px 0 0 20px;
-    position: relative;
     .canvas-soft-cover {
       width: calc(100% - 20px);
       height: calc(100% - 20px);
       position: absolute;
-      width: 100%;
       margin: 10px;
       background: white;
       border: 1px solid #ed1c24;

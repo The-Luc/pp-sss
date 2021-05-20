@@ -5,6 +5,9 @@ export default {
     };
   },
   props: {
-    section: Object
+    section: {
+      type: Object,
+      require: true
+    }
   }
 };

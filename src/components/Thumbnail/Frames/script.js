@@ -1,6 +1,8 @@
 export default {
   props: {
-    section: Object
-  },
-  computed: {}
+    section: {
+      type: Object,
+      require: true
+    }
+  }
 };

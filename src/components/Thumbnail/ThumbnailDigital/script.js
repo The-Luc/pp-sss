@@ -12,14 +12,16 @@ export default {
       }
     },
     sheet: {
-      type: Object
+      type: Object,
+      require: true
     },
     edit: {
       type: Boolean,
       default: true
     },
     toLink: {
-      type: String
+      type: String,
+      require: true
     },
     isActive: {
       type: Boolean,
