@@ -1,33 +1,10 @@
 <template>
   <v-col class="col-3 section-process">
-    <span class="dot" :style="[{ backgroundColor: section.color }]"></span>
-    <span
-      class="process in-progress"
-      :style="[
-        section.status >= processStatus.IN_PROCESS && {
-          backgroundColor: section.color
-        }
-      ]"
-    ></span>
-    <span
-      class="process completed"
-      :style="[
-        section.status >= processStatus.COMPLETED && {
-          backgroundColor: section.color
-        }
-      ]"
-    ></span>
-    <span
-      class="process approved"
-      :style="[
-        section.status >= processStatus.APPROVED && {
-          backgroundColor: section.color
-        }
-      ]"
-    ></span>
+    <ProcessBar :color="section.color" :status="section.status" />
 
     <span class="first-release">{{ section.dueDate }}</span>
     <img :src="moreIcon" @click="toggleMenu" />
+
     <Action
       :due-date="section.dueDate"
       :section-name="section.name"

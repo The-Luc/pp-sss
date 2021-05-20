@@ -3,6 +3,8 @@
 @import '@/scss/variables';
 
 $space: 15px;
+$process-width: 45px;
+$process-height: 6px;
 
 .manager-main {
   .manager-section-list {
@@ -10,34 +12,32 @@ $space: 15px;
       .section-process {
         display: flex;
         flex-direction: row;
-        align-items: center;
         justify-content: flex-end;
+        align-items: center;
 
-        .dot {
-          height: 6px;
-          width: 6px;
-          z-index: 1;
-          border-radius: 50%;
-          display: inline-block;
-        }
+        .process-bar {
+          width: ($process-width * 3) + 3;
+          height: $process-height;          
+          margin-right: $space;
 
-        .process {
-          width: 45px;
-          height: 6px;
-          margin-right: 1px;
-          background-color: $color-gray;
+          .process-container {
+            &[data-process='in-process'] {
+              .process {
+                margin-left: -($process-height / 2);
+              }
+            }
 
-          &.in-progress {
-            margin-left: -3px !important;
-          }
+            &[data-process='approved'] {
+              .process {
+                border-top-right-radius: $process-height / 2;
+                border-bottom-right-radius: $process-height / 2;
+              }
+            }
 
-          &.completed {
-          }
-
-          &.approved {
-            margin-right: $space;
-            border-top-right-radius: 3px;
-            border-bottom-right-radius: 3px;
+            .dot {
+              width: $process-height;
+              min-width: $process-height;
+            }
           }
         }
 
