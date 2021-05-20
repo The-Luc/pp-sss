@@ -9,8 +9,12 @@ import { ENV_CONFIG } from '@/common/constants/config';
 const PageNotFound = () => import('../views/PageNotFound');
 const Manager = () => import('../views/CreateBook/Manager');
 const PrintEdition = () => import('../views/CreateBook/PrintEdition');
-const MainScreen = () => import('../views/CreateBook/PrintEdition/MainScreen');
-const EditScreen = () => import('../views/CreateBook/PrintEdition/EditScreen');
+const PrintMainScreen = () =>
+  import('../views/CreateBook/PrintEdition/MainScreen');
+const PrintEditScreen = () =>
+  import('../views/CreateBook/PrintEdition/EditScreen');
+const DigitalMainScreen = () =>
+  import('../views/CreateBook/DigitalEdition/MainScreen');
 const DigitalEdition = () => import('../views/CreateBook/DigitalEdition');
 
 Vue.use(VueRouter);
@@ -51,19 +55,25 @@ const routes = [
       {
         path: '/',
         name: ROUTE_NAME.PRINT,
-        component: MainScreen
+        component: PrintMainScreen
       },
       {
         path: 'edit-screen',
         name: ROUTE_NAME.PRINT_EDIT,
-        component: EditScreen
+        component: PrintEditScreen
       }
     ]
   },
   {
     path: '/book/:bookId/edit/digital',
-    name: ROUTE_NAME.DIGITAL,
-    component: DigitalEdition
+    component: DigitalEdition,
+    children: [
+      {
+        path: '/',
+        name: ROUTE_NAME.DIGITAL,
+        component: DigitalMainScreen
+      }
+    ]
   },
   { path: '*', component: PageNotFound }
 ];

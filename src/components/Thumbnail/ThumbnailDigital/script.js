@@ -4,26 +4,19 @@ export default {
   props: {
     numberPage: {
       type: Object,
-      default: () => {
-        return {
-          numberLeft: 'Back Cover',
-          numberRight: 'Front Cover'
-        };
-      }
+      default: {}
     },
     sheet: {
-      type: Object
+      type: Object,
+      required: true
     },
     edit: {
       type: Boolean,
       default: true
     },
-    isShowLink: {
-      type: Boolean,
-      default: true
-    },
     toLink: {
-      type: String
+      type: String,
+      required: true
     },
     isActive: {
       type: Boolean,
