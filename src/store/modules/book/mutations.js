@@ -253,6 +253,10 @@ export const mutations = {
         el.click();
       }
       let input = el.querySelector('input');
+      let text = el.querySelector('.text');
+      text.style.display = 'none';
+      input.style.display = 'block';
+      input.style.width = '100%';
       input.focus();
     }, 0);
   },

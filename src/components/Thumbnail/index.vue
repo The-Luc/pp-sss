@@ -4,9 +4,9 @@
       :class="[
         {
           'half-left': sheet.type === SHEET_TYPES.INTRO,
-          'half-right': sheet.type === SHEET_TYPES.SIGNATURE,
+          'half-right': sheet.type === SHEET_TYPES.SIGNATURE
         },
-        'thumbnail-view-thumbnail',
+        'thumbnail-view-thumbnail'
       ]"
     >
       <img :src="image" />
