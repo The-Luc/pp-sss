@@ -1,6 +1,7 @@
 <template>
   <div>
     <TextStyle />
+    <Fonts />
   </div>
 </template>
 
