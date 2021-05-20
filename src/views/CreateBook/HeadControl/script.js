@@ -1,6 +1,7 @@
 import BookInformation from './BookInformation';
 import BookControl from './BookControl';
 import BookNumber from './BookNumber';
+import { ROUTE_NAME } from '@/common/constants';
 
 export default {
   components: {
@@ -14,13 +15,13 @@ export default {
     };
   },
   watch: {
-    ['$route.path'](path) {
-      this.checkShowHeader(path);
+    ['$route.name'](name) {
+      this.checkShowHeader(name);
     }
   },
   methods: {
-    checkShowHeader(path) {
-      if (path === '/edit/print/edit-screen') {
+    checkShowHeader(name) {
+      if (name === ROUTE_NAME.PRINT_EDIT) {
         this.showHeader = false;
       } else {
         this.showHeader = true;
