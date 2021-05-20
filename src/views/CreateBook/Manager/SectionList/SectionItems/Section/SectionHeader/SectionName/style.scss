@@ -26,6 +26,7 @@ $margin-right: 8px;
           div {
             cursor: text;
             padding: 2px;
+            padding-right: 4px;
             height: 100%;
             border: 1px dashed transparent;
             &:hover {
@@ -36,6 +37,7 @@ $margin-right: 8px;
           input {
             display: none;
             padding: 2px;
+            padding-right: 4px;
             min-width: 25%;
             height: 100%;
             border: 1px dashed transparent;

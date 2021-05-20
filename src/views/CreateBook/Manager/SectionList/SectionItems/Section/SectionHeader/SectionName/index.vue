@@ -5,7 +5,7 @@
     <span class="dot" :style="'background-color: ' + sectionColor"></span>
     <img src="@/assets/icons/collapse.svg" data-toggle="collapse" />
     <div class="input-container" @click="click">
-      <div class="text" ref="text">
+      <div ref="text" class="text">
         {{ sectionNameCurrent }}
       </div>
       <input
