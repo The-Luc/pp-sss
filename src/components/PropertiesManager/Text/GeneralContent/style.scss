@@ -1,0 +1,11 @@
+.text-style-container {
+  padding: 10px;
+  border-bottom: 1px solid #919191;
+}
+
+.properties-title {
+  display: inline-block;
+  font-size: $xs-size + 1;
+  font-family: $font-500;
+  margin-bottom: 5px;
+}
