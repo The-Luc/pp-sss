@@ -1,6 +1,8 @@
 <template>
   <div class="effect-container">
     <Color />
+    <Presentation />
+    <TextCase />
   </div>
 </template>
 
