@@ -1,4 +1,4 @@
-import { mapGetters } from 'vuex';
+import { mapGetters, mapMutations } from 'vuex';
 
 import Frames from '@/components/Thumbnail/Frames';
 import Thumbnail from '@/components/Thumbnail/ThumbnailPrint';
@@ -16,6 +16,9 @@ export default {
     })
   },
   methods: {
+    ...mapMutations({
+      selectSheet: 'book/selectSheet'
+    }),
     numberPage(sectionId, sheet) {
       const sectionIndex = this.book.sections.findIndex(
         item => item.id == sectionId
@@ -81,6 +84,9 @@ export default {
           break;
       }
       return numberPage;
+    },
+    onSelectSheet(sheetId) {
+      this.selectSheet({ sheetId });
     }
   }
 };
