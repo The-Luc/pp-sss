@@ -4,7 +4,7 @@
       <div class="text-700 group-title">Progress</div>
 
       <div class="group-detail progress">
-        <div class="cover">
+        <div class="cover" @click="openChart">
           <div>
             Click to view latest Progress
           </div>

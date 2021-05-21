@@ -4,7 +4,7 @@
       v-for="(item, index) in items"
       :key="index"
       :color="item.color"
-      :text="item.texts"
+      :text="item.text"
       :data-attribute="item.dataAttributes"
     />
   </div>

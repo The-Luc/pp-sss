@@ -30,5 +30,15 @@ export const getters = {
   },
   getPageSelected: state => {
     return state.pageSelected;
+  },
+  [BOOK._GETTERS.GET_BOOK_DATES]: state => {
+    const { createdDate, saleDate, releaseDate, deliveryDate } = state.book;
+
+    return {
+      createdDate: createdDate,
+      saleDate: saleDate,
+      releaseDate: releaseDate,
+      deliveryDate: deliveryDate
+    };
   }
 };
