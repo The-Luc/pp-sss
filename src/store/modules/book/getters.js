@@ -15,10 +15,6 @@ export const getters = {
   },
   [BOOK._GETTERS.BOOK_DETAIL]: ({ book }) => book,
   [BOOK._GETTERS.BOOK_ID]: ({ book }) => book.id,
-  [BOOK._GETTERS.SELECTED_OBJECT_TYPE]: ({ selectedObjectType }) =>
-    selectedObjectType,
-  [BOOK._GETTERS.IS_OPEN_MENU_PROPERTIES]: ({ isOpenProperties }) =>
-    isOpenProperties,
   [BOOK._GETTERS.SECTIONS]: state => {
     return state.book.sections;
   },

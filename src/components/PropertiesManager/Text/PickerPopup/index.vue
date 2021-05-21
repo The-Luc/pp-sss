@@ -1,9 +1,5 @@
 <template>
-  <div>
-    <TextStyle />
-    <Fonts />
-    <Effect />
-  </div>
+  <div class="color-picker-container"></div>
 </template>
 
 <script src="./script.js" />
