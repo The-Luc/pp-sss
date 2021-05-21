@@ -3,9 +3,9 @@
     <div
       :class="[
         {
-          active: isActive
+          active: isActive,
         },
-        'thumbnail-view-thumbnail'
+        'thumbnail-view-thumbnail',
       ]"
     >
       <img :src="image" />
@@ -16,7 +16,7 @@
       </div>
     </div>
     <div class="thumbnail-view-number-page">
-      01
+      {{ numberScreen }}
     </div>
   </div>
 </template>
