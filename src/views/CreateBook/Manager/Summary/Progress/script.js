@@ -12,6 +12,9 @@ export default {
     };
   },
   methods: {
+    /**
+     * Open Gantt Chart
+     */
     openChart: function() {
       this.toggleChartModel({
         isOpenModal: true,
