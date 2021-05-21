@@ -21,8 +21,13 @@
           @click="onSelectTheme(theme.id)"
         >
           <div class="modal-theme-img">
-            <img :src="require(`@/assets/image/${theme.imageUrl}`)" alt="" />
-            {{ `@/assets/image/${theme.imageUrl}` }}
+            <img :src="require('@/assets/image/theme.jpg')" alt="" />
+            <div class="modal-theme-layer">
+              <div class="modal-theme-icon" @click.stop="onPreview(theme.id)">
+                <v-icon class="icon">pageview</v-icon>
+              </div>
+              <div>Preview</div>
+            </div>
           </div>
           <div class="modal-theme-name">{{ theme.name }}</div>
         </div>

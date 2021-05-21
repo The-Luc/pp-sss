@@ -31,15 +31,45 @@
         font-size: 13px;
       }
       .modal-theme-img {
+        position: relative;
+        border: 2px solid #fff;
+        cursor: pointer;
         img {
-          border: 2px solid #fff;
+          vertical-align: bottom;
+        }
+        .modal-theme-layer {
+          top: 0;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          background-color: rgba(180, 132, 132, 0.5);
+          position: absolute;
+          display: none;
+          align-items: center;
+          flex-direction: column;
+          justify-content: center;
+          .modal-theme-icon {
+            background-color: #58595b;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 28px;
+            .icon {
+              font-size: 18px;
+              color: rgba(255, 255, 255, 0.75);
+            }
+          }
+        }
+        &:hover {
+          .modal-theme-layer {
+            display: flex;
+          }
         }
       }
       &.active {
         .modal-theme-img {
-          img {
-            border: 2px solid #42738d;
-          }
+          border: 2px solid #42738d;
         }
       }
     }

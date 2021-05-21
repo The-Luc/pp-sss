@@ -41,6 +41,9 @@ export default {
       this.selectTheme({
         themeId: this.selectedThemeId
       });
+    },
+    onPreview(themeId) {
+      console.log(themeId);
     }
   },
   created() {
