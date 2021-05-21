@@ -6,6 +6,12 @@ import { GETTERS, MUTATES } from '@/store/modules/book/const';
 import { OBJECT_TYPE } from '@/common/constants';
 
 export default {
+  props: {
+    isDigitalEditor: {
+      type: Boolean,
+      default: false
+    }
+  },
   components: {
     ToolButton,
     ItemTool
@@ -98,6 +104,29 @@ export default {
       ]
     };
   },
+  created() {
+    if (!this.isDigitalEditor) return;
+    this.itemsToolRight = [
+      [
+        {
+          iconName: 'play_circle_outline',
+          title: 'Playback',
+          name: 'playback'
+        },
+        {
+          iconName: 'auto_awesome_motion',
+          title: 'Transitions',
+          name: 'transitions'
+        },
+        {
+          iconName: 'animation',
+          title: 'Animations',
+          name: 'animations'
+        }
+      ],
+      ...this.itemsToolRight
+    ];
+  },
   computed: {
     ...mapGetters({
       selectedObjectType: GETTERS.SELECTED_OBJECT_TYPE,
@@ -109,9 +138,6 @@ export default {
       setObjectTypeSelected: MUTATES.SET_OBJECT_TYPE_SELECTED,
       setIsOpenProperties: MUTATES.TOGGLE_MENU_PROPERTIES
     }),
-    themes() {
-      console.log(0);
-    },
     /**
      * Detect click on item on right creation tool
      * @param  {Object} item Receive item information

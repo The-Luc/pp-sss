@@ -2,10 +2,6 @@ import IMAGE_LOCAL from '@/common/constants/image';
 import { LINK_STATUS, SHEET_TYPES } from '@/common/constants';
 export default {
   props: {
-    numberPage: {
-      type: Object,
-      default: {}
-    },
     sheet: {
       type: Object,
       required: true
@@ -16,7 +12,7 @@ export default {
     },
     toLink: {
       type: String,
-      required: true
+      default: ''
     },
     isActive: {
       type: Boolean,
