@@ -10,8 +10,11 @@
     persistent-hint
     @change="onChange"
   >
-    <template #append>
-      <img :src="arrowSelect" alt="arrow-select" />
+    <template v-if="prependedIcon" #prepend>
+      <img :src="prependedIcon" alt="prepend-icon" class="prepend-icon" />
+    </template>
+    <template v-if="appendedIcon" #append>
+      <img :src="appendedIcon" alt="arrow-select" />
     </template>
   </v-select>
 </template>
