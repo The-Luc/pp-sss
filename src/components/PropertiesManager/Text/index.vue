@@ -23,6 +23,7 @@
           <ArrangeContent />
         </v-tab-item>
       </TabMenu>
+      <PickerPopup v-if="isOpenColorPicker" />
     </Properties>
   </div>
 </template>

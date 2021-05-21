@@ -1,7 +1,7 @@
 import { mapGetters } from 'vuex';
 
 import PropertiesManager from '@/components/PropertiesManager';
-import { GETTERS } from '@/store/modules/book/const';
+import { GETTERS } from '@/store/modules/app/const';
 
 export default {
   components: {

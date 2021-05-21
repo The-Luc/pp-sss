@@ -10,5 +10,19 @@ export const mutations = {
   [APP._MUTATES.SET_SELECTION_SELECTED](state, payload) {
     const { sectionSelected } = payload;
     state.sectionSelected = sectionSelected;
+  },
+  [APP._MUTATES.TOGGLE_COLOR_PICKER](state, { isOpen }) {
+    state.isOpenColorPicker = isOpen;
+  },
+  [APP._MUTATES.SET_OBJECT_TYPE_SELECTED](state, { type }) {
+    state.selectedObjectType = type;
+  },
+  [APP._MUTATES.TOGGLE_MENU_PROPERTIES](state, { isOpen }) {
+    state.isOpenProperties = isOpen;
+  },
+  [APP._MUTATES.RESET_PRINT_CONFIG](state) {
+    state.isOpenProperties = false;
+    state.isOpenColorPicker = false;
+    state.selectedObjectType = '';
   }
 };

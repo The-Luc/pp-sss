@@ -2,7 +2,7 @@ import { mapMutations, mapGetters } from 'vuex';
 
 import ToolButton from '@/components/ToolButton';
 import ItemTool from './ItemTool';
-import { GETTERS, MUTATES } from '@/store/modules/book/const';
+import { GETTERS, MUTATES } from '@/store/modules/app/const';
 import { OBJECT_TYPE } from '@/common/constants';
 
 export default {

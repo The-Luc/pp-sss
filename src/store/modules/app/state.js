@@ -6,5 +6,8 @@ export const state = {
       props: {}
     }
   },
-  sectionSelected: ''
+  sectionSelected: '',
+  isOpenColorPicker: false,
+  isOpenProperties: false,
+  selectedObjectType: ''
 };

@@ -1,6 +1,6 @@
 import { mapGetters } from 'vuex';
 
-import { GETTERS } from '@/store/modules/book/const';
+import { GETTERS } from '@/store/modules/app/const';
 import { OBJECT_TYPE } from '@/common/constants';
 
 // Object component
