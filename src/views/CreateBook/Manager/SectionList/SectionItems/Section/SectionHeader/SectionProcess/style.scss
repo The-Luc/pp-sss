@@ -1,44 +1,17 @@
-@charset "utf-8";
-
-@import '@/scss/variables';
-
 $space: 15px;
+$process-width: 45px;
 
 .manager-main {
   .manager-section-list {
     .section-header {
       .section-process {
         display: flex;
-        flex-direction: row;
-        align-items: center;
         justify-content: flex-end;
+        align-items: center;
 
-        .dot {
-          height: 6px;
-          width: 6px;
-          z-index: 1;
-          border-radius: 50%;
-          display: inline-block;
-        }
-
-        .process {
-          width: 45px;
-          height: 6px;
-          margin-right: 1px;
-          background-color: $color-gray;
-
-          &.in-progress {
-            margin-left: -3px !important;
-          }
-
-          &.completed {
-          }
-
-          &.approved {
-            margin-right: $space;
-            border-top-right-radius: 3px;
-            border-bottom-right-radius: 3px;
-          }
+        .process-bar {
+          width: ($process-width * 3) + 3;
+          margin-right: $space;
         }
 
         .first-release {
