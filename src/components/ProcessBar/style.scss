@@ -4,7 +4,6 @@ $radius: $width / 2;
 .process-bar {
   display: flex;
   height: $width;
-  flex-direction: row;
   align-items: center;
 
   .dot {

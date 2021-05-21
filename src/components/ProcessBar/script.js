@@ -40,7 +40,7 @@ export default {
   methods: {
     /**
      * Get Color for this process or null if current status is not pass this process
-     * @param   {Object} validStatus
+     * @param   {Object} validStatus the process status need to pass to validate
      * @returns {String}
      */
     getColor: function(validStatus) {
@@ -48,7 +48,7 @@ export default {
     },
     /**
      * Get value of data attribute base on process name
-     * @param   {Object} processStatus
+     * @param   {Object} processStatus process status use to get name to get attribute value
      * @returns {String}
      */
     getAttrDataValue: function(processStatus) {
@@ -58,7 +58,7 @@ export default {
     },
     /**
      * Get data attribute
-     * @param   {Object} processStatus
+     * @param   {Object} processStatus process status use to get data attribute value
      * @returns {Object}
      */
     getDataAttribute: function(processStatus) {
