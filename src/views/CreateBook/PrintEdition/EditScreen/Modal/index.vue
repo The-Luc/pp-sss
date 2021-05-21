@@ -21,7 +21,8 @@
           @click="onSelectTheme(theme.id)"
         >
           <div class="modal-theme-img">
-            <img src="@/assets/image/theme.jpg" alt="" />
+            <img :src="require(`@/assets/image/${theme.imageUrl}`)" alt="" />
+            {{ `@/assets/image/${theme.imageUrl}` }}
           </div>
           <div class="modal-theme-name">{{ theme.name }}</div>
         </div>

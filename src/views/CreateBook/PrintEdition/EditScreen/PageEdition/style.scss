@@ -1,19 +1,25 @@
 .page-edition {
   padding: 0;
   border-left: 1px solid #808184;
-  height: 1000px;
   .container-edition {
+    position: relative;
     width: 80%;
-    height: 750px;
+    height: 780px;
     background: #fbccce;
     display: flex;
     margin: 20px 0 0 20px;
-    position: relative;
-    .canvas {
-      width: 100%;
-      margin: 45px 60px;
+    .canvas-soft-cover {
+      width: calc(100% - 20px);
+      height: calc(100% - 20px);
+      position: absolute;
+      margin: 10px;
       background: white;
       border: 1px solid #ed1c24;
+    }
+    .canvas-hard-cover {
+      width: calc(100% - 120px);
+      height: calc(100% - 90px);
+      margin: 45px 60px;
     }
     &::before {
       content: '';
@@ -23,6 +29,7 @@
       height: 100%;
       margin-left: calc(50% - 10px);
       position: absolute;
+      z-index: 1;
     }
   }
 }
@@ -33,22 +40,71 @@
   height: 100%;
   .page-left,
   .page-right {
-    height: 100%;
     width: 100%;
     border: 1px solid #27aae1;
   }
   .page-left {
-    margin-right: 35px;
+    margin-right: 30px;
   }
   .page-right {
-    margin-left: 35px;
+    margin-left: 30px;
+  }
+}
+
+@media only screen and (max-width: 1600px) {
+  .page-edition {
+    .container-edition {
+      margin: 20px 0 0 20px;
+      width: 70%;
+      height: 600px;
+      &::before {
+        width: 14px;
+        margin-left: calc(50% - 7px);
+      }
+      .canvas-soft-cover {
+        width: calc(100% - 20px);
+        height: calc(100% - 20px);
+        margin: 10px;
+        .page {
+          padding: 15px;
+          &-left {
+            margin-right: 25px;
+          }
+          &-right {
+            margin-left: 20px;
+          }
+        }
+      }
+      .canvas-hard-cover {
+        width: calc(100% - 80px);
+        height: calc(100% - 60px);
+        margin: 30px 40px;
+      }
+    }
   }
 }
 @media screen and (max-width: 1366px) {
   .page-edition {
     .container-edition {
-      width: 75%;
-      height: 580px;
+      margin: 15px 0 0 15px;
+      height: 475px;
+      .canvas-soft-cover {
+        width: calc(100% - 20px);
+        height: calc(100% - 20px);
+        margin: 10px;
+        .page-left {
+          width: 100%;
+          margin-right: 20px;
+        }
+        .page-right {
+          margin-left: 20px;
+        }
+      }
+      .canvas-hard-cover {
+        width: calc(100% - 80px);
+        height: calc(100% - 60px);
+        margin: 30px 40px;
+      }
     }
   }
 }

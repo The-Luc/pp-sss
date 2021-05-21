@@ -1,7 +1,9 @@
 <template lang="">
   <div class="col-10 page-edition">
     <div class="container-edition">
-      <div class="canvas">
+      <canvas id="page-left"></canvas>
+      <canvas id="page-right"></canvas>
+      <div :class="['canvas-soft-cover', { 'canvas-hard-cover': isHardCover }]">
         <div class="page">
           <div class="page-left"></div>
           <div class="page-right"></div>

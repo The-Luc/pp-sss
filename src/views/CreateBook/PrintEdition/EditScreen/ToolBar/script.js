@@ -1,5 +1,10 @@
+import { mapMutations, mapGetters } from 'vuex';
+
 import ToolButton from '@/components/ToolButton';
 import ItemTool from './ItemTool';
+import { GETTERS, MUTATES } from '@/store/modules/book/const';
+import { OBJECT_TYPE } from '@/common/constants';
+
 export default {
   components: {
     ToolButton,
@@ -81,19 +86,60 @@ export default {
         [
           {
             iconName: 'list_alt',
-            title: 'Page Info'
+            title: 'Page Info',
+            name: 'pageInfo'
           },
           {
             iconName: 'wysiwyg',
-            title: 'Properties'
+            title: 'Properties',
+            name: 'properties'
           }
         ]
       ]
     };
   },
+  computed: {
+    ...mapGetters({
+      selectedObjectType: GETTERS.SELECTED_OBJECT_TYPE,
+      isOpenMenuProperties: GETTERS.IS_OPEN_MENU_PROPERTIES
+    })
+  },
   methods: {
+    ...mapMutations({
+      setObjectTypeSelected: MUTATES.SET_OBJECT_TYPE_SELECTED,
+      setIsOpenProperties: MUTATES.TOGGLE_MENU_PROPERTIES
+    }),
     themes() {
       console.log(0);
+    },
+    /**
+     * Detect click on item on right creation tool
+     * @param  {Object} item Receive item information
+     */
+    onClickRightTool(item) {
+      switch (item.name) {
+        case 'properties':
+          // if (!this.selectedObjectType) {
+          //   return;
+          // }
+          this.setIsOpenProperties({
+            isOpen: !this.isOpenMenuProperties
+          });
+          this.setObjectTypeSelected({
+            type: OBJECT_TYPE.TEXT
+          });
+          break;
+
+        default:
+          break;
+      }
+    },
+    /**
+     * Detect click on item on left creattion tool
+     * @param  {Object} item Receive item information
+     */
+    onClickLeftTool(data) {
+      // To do later
     }
   }
 };

@@ -2,27 +2,27 @@ const themes = [
   {
     id: 1,
     name: 'Color Block',
-    imageUrl: ''
+    imageUrl: 'theme.jpg'
   },
   {
     id: 2,
     name: 'Comic Too',
-    imageUrl: ''
+    imageUrl: 'theme.jpg'
   },
   {
     id: 3,
     name: 'Paint Spill',
-    imageUrl: ''
+    imageUrl: 'theme.jpg'
   },
   {
     id: 4,
     name: 'Chalkboard',
-    imageUrl: ''
+    imageUrl: 'theme.jpg'
   },
   {
     id: 5,
     name: 'Color Block',
-    imageUrl: ''
+    imageUrl: 'theme.jpg'
   },
   {
     id: 6,

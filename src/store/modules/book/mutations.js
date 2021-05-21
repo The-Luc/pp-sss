@@ -1,7 +1,7 @@
 import randomcolor from 'randomcolor';
 import moment from 'moment';
 
-import APP from './const';
+import BOOK from './const';
 import { SHEET_TYPES } from '@/common/constants/sheetTypes';
 
 const getIndexById = (items, id) => {
@@ -93,12 +93,12 @@ const makeNewSection = (sections, sectionIndex) => {
 };
 
 export const mutations = {
-  [APP._MUTATES.UPDATE_SECTIONS](state, payload) {
+  [BOOK._MUTATES.UPDATE_SECTIONS](state, payload) {
     const { sections } = payload;
 
     state.book.sections = sections;
   },
-  [APP._MUTATES.UPDATE_SHEETS](state, payload) {
+  [BOOK._MUTATES.UPDATE_SHEETS](state, payload) {
     const { sectionId, sheets } = payload;
 
     const index = state.book.sections.findIndex(s => s.id === sectionId);
@@ -107,7 +107,7 @@ export const mutations = {
       state.book.sections[index].sheets = sheets;
     }
   },
-  [APP._MUTATES.UPDATE_SHEET_POSITION](state, payload) {
+  [BOOK._MUTATES.UPDATE_SHEET_POSITION](state, payload) {
     const {
       moveToSectionId,
       moveToIndex,
@@ -139,7 +139,7 @@ export const mutations = {
       sections[moveToSectionIndex].sheets
     );
   },
-  [APP._MUTATES.UPDATE_SECTION_POSITION](state, payload) {
+  [BOOK._MUTATES.UPDATE_SECTION_POSITION](state, payload) {
     const { moveToIndex, selectedIndex } = payload;
 
     let { sections } = state.book;
@@ -268,11 +268,21 @@ export const mutations = {
     const indexSection = sections.findIndex(item => item.id == sectionId);
     state.book.sections[indexSection].name = sectionName;
   },
-  [APP._MUTATES.GET_BOOK_SUCCESS](state, payload) {
+  selectSheet(state, payload) {
+    const { sheetId } = payload;
+    state.pageSelected = sheetId;
+  },
+  [BOOK._MUTATES.GET_BOOK_SUCCESS](state, payload) {
     state.book = payload;
   },
   selectTheme(state, payload) {
     const { themeId } = payload;
     state.book.printData.theme = themeId;
+  },
+  [BOOK._MUTATES.SET_OBJECT_TYPE_SELECTED](state, { type }) {
+    state.selectedObjectType = type;
+  },
+  [BOOK._MUTATES.TOGGLE_MENU_PROPERTIES](state, { isOpen }) {
+    state.isOpenProperties = isOpen;
   }
 };

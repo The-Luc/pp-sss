@@ -1,7 +1,7 @@
 import BACKGROUND_WHITE from '@/assets/image/white.png';
+import THEME from '@/assets/image/theme.jpg';
 
-const IMAGE_LOCAL = {
-  BACKGROUND_WHITE
+export const IMAGE_LOCAL = {
+  BACKGROUND_WHITE,
+  THEME
 };
-
-export default IMAGE_LOCAL;

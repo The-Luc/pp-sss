@@ -28,6 +28,9 @@
       </select>
       <v-icon>arrow_drop_down</v-icon>
     </div>
+    <transition name="slide-fade">
+      <PropertiesManager v-show="isOpenMenuProperties" />
+    </transition>
   </div>
 </template>
 
