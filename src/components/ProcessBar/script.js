@@ -16,17 +16,6 @@ export default {
       require: true
     }
   },
-  data() {
-    const processAttrs = [
-      this.getDataAttribute(PROCESS_STATUS.IN_PROCESS),
-      this.getDataAttribute(PROCESS_STATUS.COMPLETED),
-      this.getDataAttribute(PROCESS_STATUS.APPROVED)
-    ];
-
-    return {
-      processAttrs: processAttrs
-    };
-  },
   computed: {
     isShowDot: function() {
       return this.status === PROCESS_STATUS.NOT_STARTED.value;
@@ -35,15 +24,15 @@ export default {
       return [
         {
           color: this.getColor(PROCESS_STATUS.NOT_STARTED),
-          dataAttributes: this.processAttrs[0]
+          dataAttributes: this.getDataAttribute(PROCESS_STATUS.IN_PROCESS)
         },
         {
           color: this.getColor(PROCESS_STATUS.IN_PROCESS),
-          dataAttributes: this.processAttrs[1]
+          dataAttributes: this.getDataAttribute(PROCESS_STATUS.COMPLETED)
         },
         {
           color: this.getColor(PROCESS_STATUS.COMPLETED),
-          dataAttributes: this.processAttrs[2]
+          dataAttributes: this.getDataAttribute(PROCESS_STATUS.APPROVED)
         }
       ];
     }
@@ -51,14 +40,16 @@ export default {
   methods: {
     /**
      * Get Color for this process or null if current status is not pass this process
-     * @param  {Object} validStatus
+     * @param   {Object} validStatus
+     * @returns {String}
      */
     getColor: function(validStatus) {
       return this.status > validStatus.value ? this.color : null;
     },
     /**
      * Get value of data attribute base on process name
-     * @param  {Object} processStatus
+     * @param   {Object} processStatus
+     * @returns {String}
      */
     getAttrDataValue: function(processStatus) {
       const lowerCaseName = processStatus.name.toLowerCase();
@@ -67,7 +58,8 @@ export default {
     },
     /**
      * Get data attribute
-     * @param  {Object} processStatus
+     * @param   {Object} processStatus
+     * @returns {Object}
      */
     getDataAttribute: function(processStatus) {
       return [

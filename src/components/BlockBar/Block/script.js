@@ -1,16 +1,13 @@
 export default {
   props: {
     color: {
-      type: String,
-      required: false
+      type: String
     },
     text: {
-      type: String,
-      required: false
+      type: String
     },
     dataAttribute: {
       type: Array, // each: name, value
-      required: false,
       default: () => []
     }
   },
