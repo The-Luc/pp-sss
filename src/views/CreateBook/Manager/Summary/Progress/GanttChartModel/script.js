@@ -17,8 +17,6 @@ export default {
     months: function() {
       const {
         createdDate,
-        //saleDate,
-        //releaseDate,
         deliveryDate
       } = this.getBookEventDates();
 
@@ -54,7 +52,7 @@ export default {
       toggleModal: MUTATES.TOGGLE_MODAL
     }),
     /**
-     * Close model
+     * Close modal
      */
     onCloseModal() {
       this.toggleModal({
