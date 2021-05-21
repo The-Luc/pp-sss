@@ -1,0 +1,48 @@
+.pp-button-group.v-btn-toggle {
+  &:not(.v-btn-toggle--group) {
+    > .v-btn {
+      background-color: transparent;
+      height: 25px !important;
+      min-width: 32px !important;
+      padding: 0;
+      border: 1px solid #919191;
+      border-left-width: 1px !important;
+      border-radius: 2px;
+      border-top-left-radius: 2px !important;
+      border-bottom-left-radius: 2px !important;
+
+      &:not(:last-child) {
+        margin-right: 3px;
+      }
+
+      &:last-child {
+        border-radius: 2px;
+      }
+
+      &.v-btn--active {
+        border-color: #58595b !important;
+        border-width: 2px !important;
+
+        .v-btn__content {
+          .v-icon {
+            color: #58595b !important;
+          }
+        }
+        &::before {
+          opacity: 0;
+        }
+      }
+
+      .v-btn__content {
+        img {
+          width: auto;
+        }
+      }
+
+      .v-icon {
+        font-size: 16px;
+        color: #919191 !important;
+      }
+    }
+  }
+}
