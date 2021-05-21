@@ -24,15 +24,15 @@ export default {
       return [
         {
           color: this.getColor(PROCESS_STATUS.NOT_STARTED),
-          dataAttributes: this.getDataAttribute(PROCESS_STATUS.IN_PROCESS)
+          dataAttributes: [this.getDataAttribute(PROCESS_STATUS.IN_PROCESS)]
         },
         {
           color: this.getColor(PROCESS_STATUS.IN_PROCESS),
-          dataAttributes: this.getDataAttribute(PROCESS_STATUS.COMPLETED)
+          dataAttributes: [this.getDataAttribute(PROCESS_STATUS.COMPLETED)]
         },
         {
           color: this.getColor(PROCESS_STATUS.COMPLETED),
-          dataAttributes: this.getDataAttribute(PROCESS_STATUS.APPROVED)
+          dataAttributes: [this.getDataAttribute(PROCESS_STATUS.APPROVED)]
         }
       ];
     }
@@ -62,12 +62,10 @@ export default {
      * @returns {Object}
      */
     getDataAttribute: function(processStatus) {
-      return [
-        {
-          name: 'data-process',
-          value: this.getAttrDataValue(processStatus)
-        }
-      ];
+      return {
+        name: 'data-process',
+        value: this.getAttrDataValue(processStatus)
+      };
     }
   }
 };
