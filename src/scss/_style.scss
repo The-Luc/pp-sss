@@ -59,3 +59,10 @@ body,
 .scroll-container {
   margin-right: $margin-scroll;
 }
+
+.color-picker-popover {
+  height: 360px;
+  .color-picker-content {
+    height: 100%;
+  }
+}
