@@ -16,7 +16,7 @@ export default {
     },
     toLink: {
       type: String,
-      required: true
+      default: ''
     },
     isActive: {
       type: Boolean,

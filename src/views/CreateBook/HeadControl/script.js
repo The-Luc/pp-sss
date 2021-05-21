@@ -21,7 +21,7 @@ export default {
   },
   methods: {
     checkShowHeader(name) {
-      if (name === ROUTE_NAME.PRINT_EDIT) {
+      if (name === ROUTE_NAME.PRINT_EDIT || name === ROUTE_NAME.DIGITAL_EDIT) {
         this.showHeader = false;
       } else {
         this.showHeader = true;

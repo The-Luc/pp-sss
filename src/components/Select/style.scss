@@ -2,12 +2,21 @@
   .v-input__control {
     .v-input__slot {
       min-height: auto;
-
+      height: 25px;
       box-shadow: none !important;
       border: 1px solid #bcbec0;
     }
     .v-text-field__details {
       display: none;
     }
+  }
+
+  .prepend-icon {
+    width: 14px;
+  }
+
+  .v-input__prepend-outer {
+    margin-top: 1px !important;
+    height: 25px;
   }
 }
