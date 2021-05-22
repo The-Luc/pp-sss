@@ -38,6 +38,7 @@
     margin-top: -6px;
     padding-left: 14px;
     color: $color-gray5;
+    text-align: justify;
 
     .description {
       white-space: nowrap;
@@ -45,6 +46,7 @@
     }
 
     .event-date {
+      margin-top: -2px;
       font-size: $sm-size;
     }
   }
