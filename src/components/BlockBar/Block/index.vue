@@ -9,6 +9,8 @@
     v-bind="dataAttrs"
   >
     {{ text }}
+
+    <slot></slot>
   </span>
 </template>
 

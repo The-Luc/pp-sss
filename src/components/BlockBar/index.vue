@@ -6,7 +6,9 @@
       :color="item.color"
       :text="item.text"
       :data-attribute="item.dataAttributes"
-    />
+    >
+      <slot :name="item.slotName"></slot>
+    </Block>
   </div>
 </template>
 

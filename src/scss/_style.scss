@@ -62,7 +62,16 @@ body,
 
 .color-picker-popover {
   height: 360px;
+
   .color-picker-content {
     height: 100%;
   }
+}
+
+.dot {
+  width: 6px;
+  min-width: 6px;
+  max-width: 6px;
+  height: 6px;
+  border-radius: 50%;
 }
