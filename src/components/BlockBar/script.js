@@ -8,6 +8,9 @@ export default {
     items: {
       type: Array, // each: color (string), text (string) , dataAttributes (array)
       required: true
+    },
+    customClass: {
+      type: String
     }
   }
 };

@@ -1,5 +1,5 @@
 <template>
-  <div class="blocks">
+  <div class="blocks" :class="customClass">
     <Block
       v-for="(item, index) in items"
       :key="index"

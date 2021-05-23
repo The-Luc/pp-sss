@@ -39,12 +39,41 @@ export default {
 
       const slotData = Array.from({ length: totalMonthToShow }, (v, index) => {
         return {
-          slots: this.getSlot(index),
-          id: index
+          id: index,
+          slots: this.getSlot(index)
         };
       });
 
       return slotData.filter(s => s.slots.length > 0);
+    },
+    monthNames: function() {
+      const totalMonthToShow = this.getTotalMonthToShow();
+
+      const monthData = Array.from({ length: totalMonthToShow }, (v, index) => {
+        return {
+          slotName: `slot${index}`
+        };
+      });
+
+      return monthData;
+    },
+    slotNames: function() {
+      const totalMonthToShow = this.getTotalMonthToShow();
+
+      const { createdDate } = this.getBookEventDates();
+
+      const slotData = Array.from({ length: totalMonthToShow }, (v, index) => {
+        const checkTime = moment(createdDate, 'MM/DD/YY').add(index, 'M');
+
+        const isShowName = index > 0 && index < totalMonthToShow;
+
+        return {
+          id: index,
+          name: isShowName ? checkTime.format('MMM') : ''
+        };
+      });
+
+      return slotData.filter(s => s.name.length > 0);
     }
   },
   methods: {
