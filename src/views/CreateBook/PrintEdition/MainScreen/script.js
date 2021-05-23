@@ -2,7 +2,7 @@ import { mapGetters, mapMutations } from 'vuex';
 
 import Frames from '@/components/Thumbnail/Frames';
 import Thumbnail from '@/components/Thumbnail/ThumbnailPrint';
-import { GETTERS } from '@/store/modules/book/const';
+import { GETTERS, MUTATES } from '@/store/modules/book/const';
 
 export default {
   components: {
@@ -17,7 +17,7 @@ export default {
   },
   methods: {
     ...mapMutations({
-      selectSheet: 'book/selectSheet'
+      selectSheet: MUTATES.SELECT_SHEET
     }),
     numberPage(sectionId, sheet) {
       const sectionIndex = this.book.sections.findIndex(
