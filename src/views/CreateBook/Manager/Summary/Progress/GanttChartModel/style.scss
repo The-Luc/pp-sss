@@ -28,7 +28,6 @@ $border-radius: 6px;
           }
 
           &:last-of-type {
-            margin-right: 0;
             border-top-right-radius: $border-radius;
             border-bottom-right-radius: $border-radius;
           }
@@ -41,7 +40,7 @@ $border-radius: 6px;
         height: 15px;
 
         .block {
-          margin-right: 0;
+          margin: 0;
           padding: 0;
           background-color: transparent;
 
