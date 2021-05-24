@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 import BOOK from './const';
 
 export const getters = {
@@ -24,7 +26,7 @@ export const getters = {
   [BOOK._GETTERS.GET_MAX_PAGE]: ({ book }) => {
     return book.numberMaxPages;
   },
-  [BOOK._GETTERS.GET_BOOK_DATES]: ({ book }) => {
+  [BOOK._GETTERS.BOOK_DATES]: ({ book }) => {
     const { createdDate, saleDate, releaseDate, deliveryDate } = book;
 
     return {
@@ -36,5 +38,15 @@ export const getters = {
   },
   [BOOK._GETTERS.GET_PAGE_SELECTED]: ({ pageSelected }) => {
     return pageSelected;
+  },
+  [BOOK._GETTERS.TOTAL_MONTH_SHOW_ON_CHART]: ({ book }) => {
+    const { createdDate, deliveryDate } = book;
+
+    const beginTime = moment(createdDate, 'MM/DD/YY');
+    const endTime = moment(deliveryDate, 'MM/DD/YY')
+      .add(1, 'M')
+      .set('date', beginTime.date());
+
+    return endTime.diff(beginTime, 'months', false) + 1;
   }
 };
