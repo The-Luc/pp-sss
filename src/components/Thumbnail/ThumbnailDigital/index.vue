@@ -3,9 +3,9 @@
     <div
       :class="[
         {
-          active: isActive,
+          active: isActive
         },
-        'thumbnail-view-thumbnail',
+        'thumbnail-view-thumbnail'
       ]"
     >
       <img :src="image" />
