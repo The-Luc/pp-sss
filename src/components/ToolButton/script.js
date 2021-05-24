@@ -1,3 +1,6 @@
+import { GETTERS } from '@/store/modules/app/const';
+import { mapGetters } from 'vuex';
+
 export default {
   props: {
     iconName: {
@@ -9,9 +12,6 @@ export default {
     name: {
       type: String
     },
-    iconNameActive: {
-      type: String
-    },
     textName: {
       type: String
     },
@@ -19,6 +19,11 @@ export default {
       type: Number,
       default: 38
     }
+  },
+  computed: {
+    ...mapGetters({
+      selectedToolTheme: GETTERS.SELECTED_TOOL_NAME
+    })
   },
   methods: {
     onClick() {

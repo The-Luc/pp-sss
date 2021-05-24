@@ -1,7 +1,7 @@
 <template>
   <div
     class="item"
-    :class="{ 'item--active': iconNameActive && iconNameActive === name }"
+    :class="{ 'item--active': selectedToolTheme && selectedToolTheme === name }"
     :style="{ width: `${width}px` }"
     @click="onClick"
   >
