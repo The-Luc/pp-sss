@@ -7,11 +7,7 @@ $radius: $width / 2;
   align-items: center;
 
   .dot {
-    min-width: $width;
-    max-width: $width;
-    height: $width;
     z-index: 1;
-    border-radius: 50%;
   }
 
   &::v-deep .blocks {

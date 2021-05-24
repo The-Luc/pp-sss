@@ -8,6 +8,7 @@
   >
     <v-card>
       <Header
+        v-if="isShowHeader"
         :title="title"
         :show-icon-close="showIconClose"
         @onCloseModal="onCloseModal"

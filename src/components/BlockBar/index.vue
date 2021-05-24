@@ -1,12 +1,14 @@
 <template>
-  <div class="blocks">
+  <div class="blocks" :class="customClass">
     <Block
       v-for="(item, index) in items"
       :key="index"
       :color="item.color"
-      :text="item.texts"
+      :text="item.text"
       :data-attribute="item.dataAttributes"
-    />
+    >
+      <slot :name="item.slotName"></slot>
+    </Block>
   </div>
 </template>
 

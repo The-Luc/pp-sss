@@ -6,8 +6,11 @@ export default {
   },
   props: {
     items: {
-      type: Array, // item: color (string), text (string)
+      type: Array, // each: color (string), text (string) , dataAttributes (array)
       required: true
+    },
+    customClass: {
+      type: String
     }
   }
 };
