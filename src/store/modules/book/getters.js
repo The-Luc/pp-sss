@@ -31,10 +31,10 @@ export const getters = {
     const { createdDate, saleDate, releaseDate, deliveryDate } = state.book;
 
     return {
-      createdDate: createdDate,
-      saleDate: saleDate,
-      releaseDate: releaseDate,
-      deliveryDate: deliveryDate
+      createdDate,
+      saleDate,
+      releaseDate,
+      deliveryDate
     };
   }
 };

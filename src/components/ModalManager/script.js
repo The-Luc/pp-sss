@@ -8,7 +8,7 @@ import HelpModal from '@/views/CreateBook/HeadControl/BookInformation/Help/Modal
 import EmptySection from '@/components/ModalEmptySection';
 import DeleteSheetModal from '@/views/CreateBook/Manager/SectionList/SectionItems/Section/SectionDetails/Modal';
 import DeleteSectionModal from '@/views/CreateBook/Manager/SectionList/SectionItems/Section/SectionHeader/SectionProcess/Modal';
-import GanttChartModel from '@/views/CreateBook/Manager/Summary/Progress/GanttChartModel';
+import GanttChartModal from '@/views/CreateBook/Manager/Summary/Progress/GanttChartModal';
 
 const {
   HELP,
@@ -37,7 +37,7 @@ export default {
     [MODAL_TYPES.DELETE_SHEET]: DeleteSheetModal,
     [MODAL_TYPES.DELETE_SECTION]: DeleteSectionModal,
     [MODAL_TYPES.EMPTY_SECTION]: EmptySection,
-    [MODAL_TYPES.GANTT_CHART]: GanttChartModel
+    [MODAL_TYPES.GANTT_CHART]: GanttChartModal
   },
   computed: {
     ...mapGetters({

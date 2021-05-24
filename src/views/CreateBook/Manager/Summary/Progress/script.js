@@ -4,16 +4,12 @@ import { MUTATES } from '@/store/modules/app/const';
 import { MODAL_TYPES } from '@/common/constants';
 
 export default {
-  setup() {
-    return {
-      ...mapMutations({
-        toggleChartModel: MUTATES.TOGGLE_MODAL
-      })
-    };
-  },
   methods: {
+    ...mapMutations({
+      toggleChartModel: MUTATES.TOGGLE_MODAL
+    }),
     /**
-     * Open Gantt Chart
+     * openChart - open the chart by trigger mutation
      */
     openChart: function() {
       this.toggleChartModel({

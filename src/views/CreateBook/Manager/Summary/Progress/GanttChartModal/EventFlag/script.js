@@ -17,9 +17,9 @@ export default {
   },
   methods: {
     /**
-     * Get left value base on position
+     * getPosition - Get css left value base on position
      *
-     * @returns {String}
+     * @returns {String}  the css value
      */
     getPosition: function() {
       if (this.position > 1) return `${this.position}px`;

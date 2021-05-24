@@ -84,9 +84,9 @@ export default {
       toggleModal: MUTATES.TOGGLE_MODAL
     }),
     /**
-     * Get Total Month to show in Timeline
+     * getTotalMonthToShow - Get total month to show in timeline
      *
-     * @returns {Number}
+     * @returns {Number}  the total month will be displayed in timeline
      */
     getTotalMonthToShow: function() {
       const { createdDate, deliveryDate } = this.getBookEventDates();
@@ -99,10 +99,10 @@ export default {
       return endTime.diff(beginTime, 'months', false) + 1;
     },
     /**
-     * Get month data use for generate timeline
+     * getMonthData - Get data of month use for generate timeline
      *
-     * @param  {Number} index index of month in timeline
-     * @returns {Object}
+     * @param   {Number} index index of month in timeline
+     * @returns {Object}       the data of chosen month
      */
     getMonthData: function(index) {
       const { createdDate } = this.getBookEventDates();
@@ -117,10 +117,10 @@ export default {
       };
     },
     /**
-     * Get list of slot will be use for checked month
+     * getSlot - Get list of slot will be use for checked month
      *
-     * @param  {Number} index index of month in timeline
-     * @returns {Array}
+     * @param   {Number} index  Index of month in timeline
+     * @returns {Array}         List of slot with data
      */
     getSlot: function(index) {
       const {
@@ -175,14 +175,14 @@ export default {
       return slots;
     },
     /**
-     * Get slot data
+     * getSlotData - Get data for slot of timeline
      *
-     * @param  {Number} index index of month in timeline
-     * @param  {String} eventDate event date (sale/release/delivery)
-     * @param  {String} slotType type of slot (sale/release/delivery)
-     * @param  {String} description description of event date
-     * @param  {Boolean} isDelivery is event date delivery or not
-     * @returns {Object}
+     * @param   {Number}  index       index of month in timeline
+     * @param   {String}  eventDate   event date (sale/release/delivery)
+     * @param   {String}  slotType    type of slot (sale/release/delivery)
+     * @param   {String}  description description of event date
+     * @param   {Boolean} isDelivery  is event date delivery or not
+     * @returns {Object}              the data of chosen slot
      */
     getSlotData: function(index, eventDate, slotType, description, isDelivery) {
       const event = moment(eventDate, 'MM/DD/YY');
@@ -197,7 +197,7 @@ export default {
       };
     },
     /**
-     * Close modal
+     * onCloseModal - Close modal by trigger the mutation with payload
      */
     onCloseModal() {
       this.toggleModal({
