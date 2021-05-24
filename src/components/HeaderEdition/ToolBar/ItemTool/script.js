@@ -1,4 +1,5 @@
 import ToolButton from '@/components/ToolButton';
+
 export default {
   components: {
     ToolButton
@@ -7,14 +8,9 @@ export default {
     items: Array
   },
   methods: {
-    themes() {
-      console.log(0);
-    },
     /**
      * Emit event click when click on icon
-     * @param  {[type]} arg1 [description]
-     * @param  {[type]} arg2 [description]
-     * @return {[type]}      [description]
+     * @param  {object} item Icon's object selected
      */
     onClick(item) {
       this.$emit('click', item);

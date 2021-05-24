@@ -22,25 +22,30 @@ export default {
         [
           {
             iconName: 'photo_filter',
-            title: 'Themes'
+            title: 'Themes',
+            name: 'themes'
           },
           {
             iconName: 'import_contacts',
-            title: 'Layouts'
+            title: 'Layouts',
+            name: 'layouts'
           },
           {
             iconName: 'texture',
-            title: 'Backgrounds'
+            title: 'Backgrounds',
+            name: 'backgrounds'
           },
           {
             iconName: 'local_florist',
-            title: 'Clip Art'
+            title: 'Clip Art',
+            name: 'clipArt'
           }
         ],
         [
           {
             iconName: 'star',
-            title: 'Shapes'
+            title: 'Shapes',
+            name: 'shapes'
           },
           {
             iconName: 'text_format',
@@ -165,6 +170,7 @@ export default {
      * @param  {Object} item Receive item information
      */
     onClickLeftTool(data) {
+      console.log('data', data);
       // To do later
     }
   }
