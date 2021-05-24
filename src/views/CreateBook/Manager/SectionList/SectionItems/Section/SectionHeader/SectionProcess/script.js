@@ -49,8 +49,8 @@ export default {
     ...mapGetters({
       sectionSelected: GETTERS.SECTION_SELECTED,
       sections: BOOK_GETTERS.GET_SECTIONS,
-      MaxPage: BOOK_GETTERS.GET_MAX_PAGE,
-      TotalInfo: BOOK_GETTERS.GET_TOTAL_INFO
+      maxPage: BOOK_GETTERS.GET_MAX_PAGE,
+      totalInfo: BOOK_GETTERS.GET_TOTAL_INFO
     })
   },
   watch: {
