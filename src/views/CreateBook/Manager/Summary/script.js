@@ -1,8 +1,6 @@
 import Header from './Header';
-import ImportantDates from './ImportantDates';
-import Specification from './Specification';
-import Sales from './Sales';
-import Progress from './Progress';
+import SummaryInfo from './SummaryInfo';
+
 import { mapMutations, mapGetters } from 'vuex';
 
 import { GETTERS, MUTATES } from '@/store/modules/app/const';
@@ -10,10 +8,7 @@ import { GETTERS, MUTATES } from '@/store/modules/app/const';
 export default {
   components: {
     Header,
-    ImportantDates,
-    Specification,
-    Sales,
-    Progress
+    SummaryInfo
   },
   computed: {
     ...mapGetters({

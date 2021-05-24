@@ -1,17 +1,13 @@
-import { mapGetters, mapMutations } from 'vuex';
+import { mapGetters } from 'vuex';
 import moment from 'moment';
 
 import EventFlag from './EventFlag';
 import BlockBar from '@/components/BlockBar';
 
-import { MUTATES } from '@/store/modules/app/const';
 import { GETTERS } from '@/store/modules/book/const';
-
-import Modal from '@/components/Modal';
 
 export default {
   components: {
-    Modal,
     BlockBar,
     EventFlag
   },
@@ -25,14 +21,14 @@ export default {
     };
   },
   computed: {
-    months: function() {
+    events: function() {
       const totalMonthToShow = this.getTotalMonthToShow();
 
-      const monthData = Array.from({ length: totalMonthToShow }, (v, index) => {
-        return this.getMonthData(index);
+      const events = Array.from({ length: totalMonthToShow }, (v, index) => {
+        return this.getEventData(index);
       });
 
-      return monthData;
+      return events;
     },
     slots: function() {
       const totalMonthToShow = this.getTotalMonthToShow();
@@ -45,66 +41,20 @@ export default {
       });
 
       return slotData.filter(s => s.slots.length > 0);
-    },
-    monthNames: function() {
-      const totalMonthToShow = this.getTotalMonthToShow();
-
-      const monthData = Array.from({ length: totalMonthToShow }, (v, index) => {
-        return {
-          slotName: `slot${index}`
-        };
-      });
-
-      return monthData;
-    },
-    slotNames: function() {
-      const totalMonthToShow = this.getTotalMonthToShow();
-
-      const { createdDate } = this.getBookEventDates();
-
-      const slotData = Array.from({ length: totalMonthToShow }, (v, index) => {
-        const checkTime = moment(createdDate, 'MM/DD/YY').add(index, 'M');
-
-        const isShowName = index > 0 && index < totalMonthToShow;
-
-        return {
-          id: index,
-          name: isShowName ? checkTime.format('MMM') : ''
-        };
-      });
-
-      return slotData.filter(s => s.name.length > 0);
     }
   },
   methods: {
     ...mapGetters({
-      getBookEventDates: GETTERS.GET_BOOK_DATES
-    }),
-    ...mapMutations({
-      toggleModal: MUTATES.TOGGLE_MODAL
+      getBookEventDates: GETTERS.BOOK_DATES,
+      getTotalMonthToShow: GETTERS.TOTAL_MONTH_SHOW_ON_CHART
     }),
     /**
-     * getTotalMonthToShow - Get total month to show in timeline
-     *
-     * @returns {Number}  the total month will be displayed in timeline
-     */
-    getTotalMonthToShow: function() {
-      const { createdDate, deliveryDate } = this.getBookEventDates();
-
-      const beginTime = moment(createdDate, 'MM/DD/YY');
-      const endTime = moment(deliveryDate, 'MM/DD/YY')
-        .add(1, 'M')
-        .set('date', beginTime.date());
-
-      return endTime.diff(beginTime, 'months', false) + 1;
-    },
-    /**
-     * getMonthData - Get data of month use for generate timeline
+     * getEventData - Get data of month use for generate timeline
      *
      * @param   {Number} index index of month in timeline
      * @returns {Object}       the data of chosen month
      */
-    getMonthData: function(index) {
+    getEventData: function(index) {
       const { createdDate } = this.getBookEventDates();
 
       const checkTime = moment(createdDate, 'MM/DD/YY').add(index, 'M');
@@ -195,14 +145,6 @@ export default {
         position: event.date() / event.daysInMonth(),
         isShort: isDelivery
       };
-    },
-    /**
-     * onCloseModal - Close modal by trigger the mutation with payload
-     */
-    onCloseModal() {
-      this.toggleModal({
-        isOpenModal: false
-      });
     }
   }
 };

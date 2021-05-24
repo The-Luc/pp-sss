@@ -8,7 +8,7 @@ import HelpModal from '@/views/CreateBook/HeadControl/BookInformation/Help/Modal
 import EmptySection from '@/components/ModalEmptySection';
 import DeleteSheetModal from '@/views/CreateBook/Manager/SectionList/SectionItems/Section/SectionDetails/Modal';
 import DeleteSectionModal from '@/views/CreateBook/Manager/SectionList/SectionItems/Section/SectionHeader/SectionProcess/Modal';
-import GanttChartModal from '@/views/CreateBook/Manager/Summary/Progress/GanttChartModal';
+import GanttChartModal from '@/views/CreateBook/Manager/Summary/SummaryInfo/Progress/GanttChartModal';
 
 const {
   HELP,

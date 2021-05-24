@@ -4,14 +4,7 @@
       <v-col class="scroll-container">
         <Header />
 
-        <v-row>
-          <v-col>
-            <ImportantDates />
-            <Specification />
-            <Sales />
-            <Progress />
-          </v-col>
-        </v-row>
+        <SummaryInfo />
       </v-col>
     </v-row>
   </v-col>
