@@ -3,15 +3,20 @@ import { MUTATES } from '@/store/modules/app/const';
 
 import Modal from '@/components/Modal';
 import PpButton from '@/components/Button';
+import Themes from './Themes';
+import Preview from './Preview';
 
 export default {
   components: {
     Modal,
-    PpButton
+    PpButton,
+    Themes,
+    Preview
   },
   data() {
     return {
-      selectedThemeId: ''
+      selectedThemeId: '',
+      themePreview: null
     };
   },
   computed: {
@@ -22,7 +27,6 @@ export default {
   methods: {
     ...mapMutations({
       toggleModal: MUTATES.TOGGLE_MODAL,
-      deleteSheet: 'book/deleteSheet',
       selectTheme: 'book/selectTheme'
     }),
     onCloseModal() {
@@ -30,20 +34,17 @@ export default {
         isOpenModal: false
       });
     },
-    onDeleteSheet(idSheet, idSection) {
-      this.deleteSheet({ idSheet, idSection });
-      this.onCloseModal();
-    },
-    onSelectTheme(themeId) {
+    onSelectTheme({ themeId }) {
       this.selectedThemeId = themeId;
     },
     onSubmitThemeId() {
       this.selectTheme({
         themeId: this.selectedThemeId
       });
+      this.onCloseModal();
     },
-    onPreview(themeId) {
-      console.log(themeId);
+    onPreviewTheme({ themeId }) {
+      this.themePreview = themeId;
     }
   },
   created() {

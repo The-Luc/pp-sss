@@ -19,7 +19,7 @@
   .modal-theme-container {
     display: flex;
     flex-wrap: wrap;
-    height: 390px;
+    max-height: 390px;
     overflow: auto;
     .modal-theme-item {
       width: 16%;
@@ -42,7 +42,7 @@
           bottom: 0;
           left: 0;
           right: 0;
-          background-color: rgba(180, 132, 132, 0.5);
+          background-color: rgba(0, 0, 0, 0.5);
           position: absolute;
           display: none;
           align-items: center;
@@ -50,15 +50,22 @@
           justify-content: center;
           .modal-theme-icon {
             background-color: #58595b;
+            opacity: 1;
             width: 28px;
             height: 28px;
             border-radius: 50%;
-            text-align: center;
-            line-height: 28px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             .icon {
               font-size: 18px;
               color: rgba(255, 255, 255, 0.75);
             }
+          }
+          .modal-theme-label {
+            font-size: 13px;
+            color: #fff;
+            opacity: 0.75;
           }
         }
         &:hover {
@@ -77,7 +84,7 @@
 }
 
 .modal-theme-footer {
-  border-top: 1px solid #b7b9bb;
+  border-top: 1px solid #707070;
   padding: 26px;
   .pp-btn {
     width: 20%;

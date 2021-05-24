@@ -6,37 +6,19 @@
     :show-top-bg="false"
   >
     <div class="modal-theme-body">
-      <div class="modal-theme-title">Select a theme to get started</div>
-      <div class="modal-theme-note">
-        (Don’t worry, you can change this selection at any time.)
-      </div>
-      <div class="modal-theme-container">
-        <div
-          v-for="theme in themes"
-          :key="theme.id"
-          :class="[
-            'modal-theme-item',
-            { active: selectedThemeId === theme.id },
-          ]"
-          @click="onSelectTheme(theme.id)"
-        >
-          <div class="modal-theme-img">
-            <img :src="require('@/assets/image/theme.jpg')" alt="" />
-            <div class="modal-theme-layer">
-              <div class="modal-theme-icon" @click.stop="onPreview(theme.id)">
-                <v-icon class="icon">pageview</v-icon>
-              </div>
-              <div>Preview</div>
-            </div>
-          </div>
-          <div class="modal-theme-name">{{ theme.name }}</div>
-        </div>
-      </div>
+      <Themes
+        v-if="!themePreview"
+        :themes="themes"
+        :selected-theme-id="selectedThemeId"
+        @onSelectTheme="onSelectTheme($event)"
+        @onPreviewTheme="onPreviewTheme($event)"
+      />
+      <Preview v-if="themePreview" />
     </div>
     <div class="modal-theme-footer">
-      <PpButton class="button-select" is-active @click.native="onSubmitThemeId"
-        >Select</PpButton
-      >
+      <PpButton class="button-select" is-active @click.native="onSubmitThemeId">
+        Select
+      </PpButton>
     </div>
   </Modal>
 </template>

@@ -33,5 +33,8 @@ export const getters = {
   },
   getPageSelected: state => {
     return state.pageSelected;
+  },
+  [BOOK._GETTERS.IS_SELECTED_PRINT_THEME]: ({ book }) => {
+    return book.printData.theme;
   }
 };

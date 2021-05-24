@@ -19,7 +19,7 @@ const book = {
     max: 100
   },
   printData: {
-    theme: 1,
+    theme: null,
     layout: 1
   },
   digitalData: {
