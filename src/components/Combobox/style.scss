@@ -1,6 +1,9 @@
-.pp-select {
+.pp-combobox {
   .v-input__control {
+    max-width: 92px;
     min-height: auto !important;
+    position: relative;
+
     .v-input__slot {
       min-height: auto;
       height: 25px;
@@ -10,6 +13,17 @@
 
       .v-select__selection--comma {
         font-size: $md-size + 1;
+      }
+
+      .v-select__slot {
+        .v-input__append-inner {
+          img {
+            width: 25px;
+          }
+        }
+        input {
+          min-width: 43px;
+        }
       }
     }
     .v-text-field__details {

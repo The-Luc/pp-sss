@@ -1,7 +1,7 @@
 <template>
   <div class="text-case-container">
     <span class="properties-title">Text Case:</span>
-    <PpButtonGroup v-model="currentItem" :current-item-active="currentItem">
+    <PpButtonGroup :item="item" @change="onChange">
       <v-btn>
         <img :src="upperCase" alt="uppercase" />
       </v-btn>

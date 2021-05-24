@@ -1,8 +1,16 @@
 .text-style-container,
 .font-container,
-.effect-container {
-  padding: 5px 13px;
+.effect-container,
+.alignment-container,
+.spacing-container {
+  padding: 10px 12px;
   border-bottom: 1px solid #919191;
+}
+
+.presentation-container,
+.text-case-container {
+  display: flex;
+  flex-direction: column;
 }
 
 .properties-title {
@@ -10,4 +18,15 @@
   font-size: $xs-size + 1;
   font-family: $font-500;
   margin-bottom: 5px;
+}
+
+.alignment-container {
+  display: flex;
+}
+
+.font-size-container,
+.spacing-container {
+  .v-input__slot {
+    padding-right: 0 !important;
+  }
 }

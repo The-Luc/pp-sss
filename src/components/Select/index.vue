@@ -4,8 +4,6 @@
     :items="items"
     item-text="label"
     item-value="value"
-    label="Solo field"
-    :value="items[0].value"
     solo
     persistent-hint
     @change="onChange"

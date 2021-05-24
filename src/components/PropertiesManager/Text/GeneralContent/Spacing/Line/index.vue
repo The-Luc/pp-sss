@@ -1,11 +1,10 @@
 <template>
-  <div class="font-size-container">
-    <span class="properties-title">Font Size:</span>
+  <div class="mr-4">
+    <span class="properties-title">Line Spacing:</span>
     <PpCombobox
       :items="items"
       :prepended-icon="prependedIcon"
       :appended-icon="appendedIcon"
-      @change="onChange"
     />
   </div>
 </template>

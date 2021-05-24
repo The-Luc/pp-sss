@@ -1,11 +1,14 @@
-.v-dialog.pp-modal {
-  border-radius: 0;
-
-  .v-sheet.v-card {
+.v-dialog__content {
+  z-index: 9999999 !important;
+  .v-dialog.pp-modal {
     border-radius: 0;
 
-    .v-card__text {
-      padding-top: 20px;
+    .v-sheet.v-card {
+      border-radius: 0;
+
+      .v-card__text {
+        padding-top: 20px;
+      }
     }
   }
 }

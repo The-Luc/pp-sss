@@ -5,19 +5,15 @@ export default {
   components: {
     PpCombobox
   },
-  props: {
-    items: {
-      type: Array,
-      required: true
-    }
-  },
   data() {
     return {
       appendedIcon: ICON_LOCAL.APPENED_ICON,
-      prependedIcon: ICON_LOCAL.PREPENDED_FONT_SIZE
+      items: [
+        {
+          label: 'Auto',
+          value: 'auto'
+        }
+      ]
     };
-  },
-  methods: {
-    onChange(val) {}
   }
 };

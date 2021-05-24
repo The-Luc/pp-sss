@@ -1,7 +1,7 @@
 <template>
   <div class="presentation-container">
     <span class="properties-title">Presentation:</span>
-    <PpButtonGroup v-model="currentItem" :current-item-active="currentItem">
+    <PpButtonGroup :item="item" multiple @change="onChange">
       <v-btn>
         <v-icon>format_bold</v-icon>
       </v-btn>

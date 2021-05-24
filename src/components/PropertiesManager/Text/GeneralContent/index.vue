@@ -3,6 +3,11 @@
     <TextStyle />
     <Fonts />
     <Effect />
+    <div class="alignment-container">
+      <Alignment />
+      <Vertical />
+    </div>
+    <Spacing />
   </div>
 </template>
 

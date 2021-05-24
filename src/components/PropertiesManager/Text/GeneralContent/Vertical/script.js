@@ -1,13 +1,13 @@
 import PpButtonGroup from '@/components/ButtonGroup';
 
 export default {
-  data() {
-    return {
-      item: []
-    };
-  },
   components: {
     PpButtonGroup
+  },
+  data() {
+    return {
+      item: null
+    };
   },
   methods: {
     onChange(val) {}

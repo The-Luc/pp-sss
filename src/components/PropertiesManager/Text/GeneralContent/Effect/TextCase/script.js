@@ -4,7 +4,7 @@ import PpButtonGroup from '@/components/ButtonGroup';
 export default {
   data() {
     return {
-      currentItem: 0,
+      item: null,
       upperCase: ICON_LOCAL.TEXT_UPPERCASE,
       lowerCase: ICON_LOCAL.TEXT_LOWERCASE,
       capitalize: ICON_LOCAL.TEXT_CAPITALIZE
@@ -12,5 +12,8 @@ export default {
   },
   components: {
     PpButtonGroup
+  },
+  methods: {
+    onChange(val) {}
   }
 };

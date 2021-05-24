@@ -1,6 +1,6 @@
 <template>
   <div class="font-container">
-    <div class="col-6">
+    <div class="col-7">
       <FontFamily :items="fontFamily" />
     </div>
     <div class="col-4">

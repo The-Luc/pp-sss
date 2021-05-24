@@ -1,5 +1,10 @@
 <template>
-  <v-btn-toggle :value="currentItemActive" class="pp-button-group">
+  <v-btn-toggle
+    class="pp-button-group"
+    :value="item"
+    :multiple="multiple"
+    @change="onChange"
+  >
     <slot />
   </v-btn-toggle>
 </template>
