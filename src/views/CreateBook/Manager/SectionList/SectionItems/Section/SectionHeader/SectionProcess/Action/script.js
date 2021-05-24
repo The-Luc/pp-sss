@@ -47,8 +47,8 @@ export default {
     ...mapGetters({
       sectionSelected: GETTERS.SECTION_SELECTED,
       sections: BOOK_GETTERS.SECTIONS,
-      maxPage: 'book/getMaxPage',
-      totalInfo: 'book/getTotalInfo'
+      maxPage: BOOK_GETTERS.GET_MAX_PAGE,
+      totalInfo: BOOK_GETTERS.GET_TOTAL_INFO
     }),
     isShowAdd() {
       let index = this.sections.findIndex(item => item.id === this.sectionId);

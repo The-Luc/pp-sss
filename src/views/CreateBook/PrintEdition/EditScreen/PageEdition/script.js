@@ -4,7 +4,7 @@ export default {
   computed: {
     ...mapGetters({
       book: GETTERS.BOOK_DETAIL,
-      pageSelected: 'book/getPageSelected'
+      pageSelected: GETTERS.GET_PAGE_SELECTED
     }),
     isHardCover() {
       const { coverOption, sections } = this.book;

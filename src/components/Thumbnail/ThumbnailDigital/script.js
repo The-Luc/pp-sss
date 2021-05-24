@@ -2,7 +2,7 @@ import IMAGE_LOCAL from '@/common/constants/image';
 import { LINK_STATUS, SHEET_TYPES } from '@/common/constants';
 export default {
   props: {
-    numberScreen: {
+    orderScreen: {
       type: String,
       default: ''
     },
