@@ -1,34 +1,31 @@
 import BOOK from './const';
 
 export const getters = {
-  getSections: state => {
-    return state.book.sections.sort((firstEl, secondEl) => {
+  [BOOK._GETTERS.GET_SECTIONS]: ({ book }) => {
+    return book.sections.sort((firstEl, secondEl) => {
       return firstEl.order - secondEl.order;
     });
   },
-  getTotalInfo: state => {
+  [BOOK._GETTERS.GET_TOTAL_INFO]: ({ book }) => {
     return {
-      totalPages: state.book.totalPages,
-      totalSheets: state.book.totalSheets,
-      totalScreens: state.book.totalScreens
+      totalPages: book.totalPages,
+      totalSheets: book.totalSheets,
+      totalScreens: book.totalScreens
     };
   },
   [BOOK._GETTERS.BOOK_DETAIL]: ({ book }) => book,
   [BOOK._GETTERS.BOOK_ID]: ({ book }) => book.id,
-  [BOOK._GETTERS.SECTIONS]: state => {
-    return state.book.sections;
+  [BOOK._GETTERS.SECTIONS]: ({ book }) => {
+    return book.sections;
   },
-  getTotalSections: state => {
-    return state.book.sections.length;
+  [BOOK._GETTERS.GET_TOTAL_SECTIONS]: ({ book }) => {
+    return book.sections.length;
   },
-  getMaxPage: state => {
-    return state.book.numberMaxPages;
+  [BOOK._GETTERS.GET_MAX_PAGE]: ({ book }) => {
+    return book.numberMaxPages;
   },
-  getPageSelected: state => {
-    return state.pageSelected;
-  },
-  [BOOK._GETTERS.GET_BOOK_DATES]: state => {
-    const { createdDate, saleDate, releaseDate, deliveryDate } = state.book;
+  [BOOK._GETTERS.GET_BOOK_DATES]: ({ book }) => {
+    const { createdDate, saleDate, releaseDate, deliveryDate } = book;
 
     return {
       createdDate,
@@ -36,5 +33,8 @@ export const getters = {
       releaseDate,
       deliveryDate
     };
+  },
+  [BOOK._GETTERS.GET_PAGE_SELECTED]: ({ pageSelected }) => {
+    return pageSelected;
   }
 };

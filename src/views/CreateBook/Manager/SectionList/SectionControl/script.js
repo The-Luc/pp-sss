@@ -1,5 +1,10 @@
 import { mapGetters, mapMutations } from 'vuex';
 
+import {
+  MUTATES as BOOK_MUTATES,
+  GETTERS as BOOK_GETTERS
+} from '@/store/modules/book/const';
+
 const COLLAPSE = 'collapse';
 const EXPAND = 'expand';
 
@@ -11,7 +16,7 @@ export default {
   },
   computed: {
     ...mapGetters({
-      getTotalSections: 'book/getTotalSections'
+      getTotalSections: BOOK_GETTERS.GET_TOTAL_SECTIONS
     }),
     isDisableAdd() {
       return this.getTotalSections >= 50;
@@ -23,7 +28,9 @@ export default {
     });
   },
   methods: {
-    ...mapMutations('book', ['addSection']),
+    ...mapMutations({
+      addSection: BOOK_MUTATES.ADD_SECTION
+    }),
     toggleDetail: function(ev) {
       const button = ev.target.closest('#btn-ec-all');
       const collapse = button.getAttribute('data-toggle');

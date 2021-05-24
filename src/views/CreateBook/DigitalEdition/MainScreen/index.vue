@@ -9,6 +9,7 @@
         <Thumbnail
           :to-link="`/book/${bookId}/edit/digital/edit-screen`"
           :sheet="sheet"
+          :order-screen="orderScreen(section.id, sheet)"
         />
       </Frames>
     </template>

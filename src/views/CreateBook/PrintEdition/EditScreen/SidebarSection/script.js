@@ -11,7 +11,7 @@ export default {
   },
   computed: {
     ...mapGetters({
-      pageSelected: 'book/getPageSelected',
+      pageSelected: GETTERS.GET_PAGE_SELECTED,
       book: GETTERS.BOOK_DETAIL
     })
   },
