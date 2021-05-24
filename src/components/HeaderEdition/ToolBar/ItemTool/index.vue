@@ -3,6 +3,7 @@
     <ToolButton
       v-for="(item, index) in items"
       :key="index"
+      :name="item.name"
       :icon-name="item.iconName"
       :title="item.title"
       @click="onClick(item)"
