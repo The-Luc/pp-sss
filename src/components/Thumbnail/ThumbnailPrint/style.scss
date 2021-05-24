@@ -6,6 +6,7 @@
   display: flex;
   flex-wrap: nowrap;
   position: relative;
+  box-sizing: border-box;
   &.active {
     border: 2px solid #42738d;
   }

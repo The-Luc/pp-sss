@@ -8,6 +8,7 @@
   >
     <v-card>
       <Header
+        v-if="isShowHeader"
         :show-top-bg="showTopBg"
         :title="title"
         :show-icon-close="showIconClose"

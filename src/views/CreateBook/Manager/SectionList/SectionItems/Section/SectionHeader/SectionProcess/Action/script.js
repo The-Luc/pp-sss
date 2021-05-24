@@ -5,7 +5,10 @@ import { useBook, useMutationSection } from '@/hooks';
 import { MODAL_TYPES, ICON_LOCAL } from '@/common/constants';
 
 import { GETTERS, MUTATES } from '@/store/modules/app/const';
-import { GETTERS as BOOK_GETTERS } from '@/store/modules/book/const';
+import {
+  GETTERS as BOOK_GETTERS,
+  MUTATES as BOOK_MUTATES
+} from '@/store/modules/book/const';
 import ButtonDelete from '@/components/Menu/ButtonDelete';
 import ButtonAdd from '@/components/Menu/ButtonAdd';
 import Menu from '@/components/Menu';
@@ -44,8 +47,8 @@ export default {
     ...mapGetters({
       sectionSelected: GETTERS.SECTION_SELECTED,
       sections: BOOK_GETTERS.SECTIONS,
-      maxPage: 'book/getMaxPage',
-      totalInfo: 'book/getTotalInfo'
+      maxPage: BOOK_GETTERS.GET_MAX_PAGE,
+      totalInfo: BOOK_GETTERS.GET_TOTAL_INFO
     }),
     isShowAdd() {
       let index = this.sections.findIndex(item => item.id === this.sectionId);
@@ -91,7 +94,7 @@ export default {
   methods: {
     ...mapMutations({
       toggleModal: MUTATES.TOGGLE_MODAL,
-      addSheet: 'book/addSheet',
+      addSheet: BOOK_MUTATES.ADD_SHEET,
       setSectionSelected: MUTATES.SET_SELECTION_SELECTED
     }),
     setIsShowDelete() {

@@ -1,0 +1,23 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  width="24.7"
+  height="24.249"
+  viewBox="0 0 24.7 24.249"
+>
+<defs>
+  <style>
+  .a{fill:#58595b;}
+  .b{fill:#fff; }
+  </style>
+</defs>
+  <path
+    class="a"
+    d="M317.5,555.622l-1,.527H293.7V531.9h22.9l1,.738.8,1.265v20.454Z"
+    transform="translate(-293.7 -531.9)"
+  />
+  <path
+    class="b"
+    d="M302.1,541.3h10.149l-5.074,6.061Z"
+    transform="translate(-295 -532)"
+  />
+</svg>

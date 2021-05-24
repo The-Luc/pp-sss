@@ -2,11 +2,11 @@ import { mapMutations, mapGetters } from 'vuex';
 import { MUTATES } from '@/store/modules/app/const';
 import { GETTERS as BOOK_GETTERS } from '@/store/modules/book/const';
 import { MODAL_TYPES } from '@/common/constants';
-import ToolBar from './ToolBar';
-import Header from './Header';
-import FeedbackBar from './FeedbackBar';
-import PageEdition from './PageEdition';
+import ToolBar from '@/components/HeaderEdition/ToolBar';
+import Header from '@/components/HeaderEdition/Header';
+import FeedbackBar from '@/components/HeaderEdition/FeedbackBar';
 import SidebarSection from './SidebarSection';
+import PageEdition from './PageEdition';
 
 export default {
   components: {
@@ -23,7 +23,8 @@ export default {
   },
   methods: {
     ...mapMutations({
-      toggleModal: MUTATES.TOGGLE_MODAL
+      toggleModal: MUTATES.TOGGLE_MODAL,
+      resetPrintConfigs: MUTATES.RESET_PRINT_CONFIG
     })
   },
   created() {
@@ -35,5 +36,8 @@ export default {
         }
       });
     }
+  },
+  destroyed() {
+    this.resetPrintConfigs();
   }
 };

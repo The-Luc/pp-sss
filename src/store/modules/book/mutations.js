@@ -153,7 +153,7 @@ export const mutations = {
       sections
     );
   },
-  addSheet(state, payload) {
+  [BOOK._MUTATES.ADD_SHEET](state, payload) {
     const { sectionId } = payload;
     const { totalPages, totalSheets, totalScreens, sections } = state.book;
 
@@ -175,7 +175,7 @@ export const mutations = {
     state.book.totalSheets = totalSheets + 1;
     state.book.totalScreens = totalScreens + 1;
   },
-  deleteSection(state, payload) {
+  [BOOK._MUTATES.DELETE_SECTION](state, payload) {
     const { sectionId } = payload;
     const { sections } = state.book;
     const index = sections.findIndex(item => item.id == sectionId);
@@ -184,7 +184,7 @@ export const mutations = {
     state.book.totalSheets -= sections[index].sheets.length;
     state.book.totalScreens -= sections[index].sheets.length;
   },
-  deleteSheet(state, payload) {
+  [BOOK._MUTATES.DELETE_SHEET](state, payload) {
     const { idSheet, idSection } = payload;
     const { totalPages, totalSheets, totalScreens, sections } = state.book;
     const sectionIndex = sections.findIndex(item => {
@@ -197,7 +197,7 @@ export const mutations = {
     state.book.totalSheets = totalSheets - 1;
     state.book.totalScreens = totalScreens - 1;
   },
-  moveSheet(state, payload) {
+  [BOOK._MUTATES.MOVE_SHEET](state, payload) {
     const { sheetId, sectionId, currentSectionId } = payload;
 
     const { sections } = state.book;
@@ -226,7 +226,7 @@ export const mutations = {
       sections
     );
   },
-  addSection(state) {
+  [BOOK._MUTATES.ADD_SECTION](state) {
     const { sections, releaseDate } = state.book;
     const newSectionId = nextId(sections);
 
@@ -260,7 +260,7 @@ export const mutations = {
       input.focus();
     }, 0);
   },
-  editSectionName(state, payload) {
+  [BOOK._MUTATES.EDIT_SECTION_NAME](state, payload) {
     const { sectionId } = payload;
     let { sectionName } = payload;
     sectionName = sectionName || 'Untitled';
@@ -268,14 +268,14 @@ export const mutations = {
     const indexSection = sections.findIndex(item => item.id == sectionId);
     state.book.sections[indexSection].name = sectionName;
   },
-  selectSheet(state, payload) {
+  [BOOK._MUTATES.SELECT_SHEET](state, payload) {
     const { sheetId } = payload;
     state.pageSelected = sheetId;
   },
   [BOOK._MUTATES.GET_BOOK_SUCCESS](state, payload) {
     state.book = payload;
   },
-  selectTheme(state, payload) {
+  [BOOK._MUTATES.SELECT_THEME](state, payload) {
     const { themeId } = payload;
     state.book.printData.theme = themeId;
   },

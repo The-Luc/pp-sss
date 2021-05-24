@@ -6,6 +6,12 @@ export default {
     title: {
       type: String
     },
+    name: {
+      type: String
+    },
+    iconNameActive: {
+      type: String
+    },
     textName: {
       type: String
     },

@@ -1,40 +1,58 @@
+import moment from 'moment';
+
 import BOOK from './const';
 
 export const getters = {
-  getSections: state => {
-    return state.book.sections.sort((firstEl, secondEl) => {
+  [BOOK._GETTERS.GET_SECTIONS]: ({ book }) => {
+    return book.sections.sort((firstEl, secondEl) => {
       return firstEl.order - secondEl.order;
     });
   },
-  getTotalInfo: state => {
+  [BOOK._GETTERS.GET_TOTAL_INFO]: ({ book }) => {
     return {
-      totalPages: state.book.totalPages,
-      totalSheets: state.book.totalSheets,
-      totalScreens: state.book.totalScreens
+      totalPages: book.totalPages,
+      totalSheets: book.totalSheets,
+      totalScreens: book.totalScreens
     };
   },
   [BOOK._GETTERS.BOOK_DETAIL]: ({ book }) => book,
   [BOOK._GETTERS.BOOK_ID]: ({ book }) => book.id,
-  [BOOK._GETTERS.SELECTED_OBJECT_TYPE]: ({ selectedObjectType }) =>
-    selectedObjectType,
-  [BOOK._GETTERS.IS_OPEN_MENU_PROPERTIES]: ({ isOpenProperties }) =>
-    isOpenProperties,
-  [BOOK._GETTERS.SECTIONS]: state => {
-    return state.book.sections;
+  [BOOK._GETTERS.SECTIONS]: ({ book }) => {
+    return book.sections;
   },
-  getTotalSections: state => {
-    return state.book.sections.length;
+  [BOOK._GETTERS.GET_TOTAL_SECTIONS]: ({ book }) => {
+    return book.sections.length;
   },
-  getMaxPage: state => {
-    return state.book.numberMaxPages;
+  [BOOK._GETTERS.GET_MAX_PAGE]: ({ book }) => {
+    return book.numberMaxPages;
   },
-  getThemes: state => {
-    return state.themes;
+  [BOOK._GETTERS.BOOK_DATES]: ({ book }) => {
+    const { createdDate, saleDate, releaseDate, deliveryDate } = book;
+
+    return {
+      createdDate,
+      saleDate,
+      releaseDate,
+      deliveryDate
+    };
   },
-  getPageSelected: state => {
-    return state.pageSelected;
+  [BOOK._GETTERS.GET_PAGE_SELECTED]: ({ pageSelected }) => {
+    return pageSelected;
+  },
+  [BOOK._GETTERS.GET_THEMES]: ({ themes }) => {
+    return themes;
   },
   [BOOK._GETTERS.IS_SELECTED_PRINT_THEME]: ({ book }) => {
     return book.printData.theme;
+  },
+  [BOOK._GETTERS.TOTAL_MONTH_SHOW_ON_CHART]: ({ book }) => {
+    const { createdDate, deliveryDate } = book;
+
+    const beginTime = moment(createdDate, 'MM/DD/YY');
+    const endTime = moment(deliveryDate, 'MM/DD/YY')
+      .add(1, 'M')
+      .set('date', beginTime.date());
+
+    return endTime.diff(beginTime, 'months', false) + 1;
   }
 };

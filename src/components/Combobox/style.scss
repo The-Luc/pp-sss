@@ -1,0 +1,42 @@
+.pp-combobox {
+  .v-input__control {
+    max-width: 92px;
+    min-height: auto !important;
+    position: relative;
+
+    .v-input__slot {
+      min-height: auto;
+      height: 25px;
+      box-shadow: none !important;
+      border: 1px solid #bcbec0;
+      margin-bottom: 5px;
+
+      .v-select__selection--comma {
+        font-size: $md-size + 1;
+      }
+
+      .v-select__slot {
+        .v-input__append-inner {
+          img {
+            width: 25px;
+          }
+        }
+        input {
+          min-width: 43px;
+        }
+      }
+    }
+    .v-text-field__details {
+      display: none;
+    }
+  }
+
+  .prepend-icon {
+    width: 14px;
+  }
+
+  .v-input__prepend-outer {
+    margin-top: 1px !important;
+    height: 25px;
+  }
+}

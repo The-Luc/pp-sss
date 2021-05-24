@@ -16,7 +16,7 @@
       </div>
     </div>
     <div class="thumbnail-view-number-page">
-      01
+      {{ orderScreen }}
     </div>
   </div>
 </template>

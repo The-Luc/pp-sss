@@ -3,6 +3,7 @@
   align-items: center;
   display: flex;
   margin-right: 18px;
+
   .item-icon {
     display: flex;
     justify-content: center;
@@ -23,5 +24,14 @@
     font-family: $font-300;
     font-size: 9px;
     margin-bottom: 0px;
+  }
+
+  &--active {
+    .item-icon {
+      background-color: #42738d;
+      .v-icon {
+        color: white !important;
+      }
+    }
   }
 }

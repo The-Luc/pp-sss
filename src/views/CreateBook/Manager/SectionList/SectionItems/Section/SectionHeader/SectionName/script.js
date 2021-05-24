@@ -1,5 +1,6 @@
 import { mapMutations } from 'vuex';
 import DragDropControl from '@/components/DragDropControl';
+import { MUTATES as BOOK_MUTATES } from '@/store/modules/book/const';
 
 export default {
   components: {
@@ -26,7 +27,7 @@ export default {
   },
   methods: {
     ...mapMutations({
-      editSectionName: 'book/editSectionName'
+      editSectionName: BOOK_MUTATES.EDIT_SECTION_NAME
     }),
     saveTitle() {
       this.sectionNameCurrent = this.sectionNameCurrent.trim() || 'Untitled';

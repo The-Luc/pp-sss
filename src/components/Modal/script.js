@@ -27,6 +27,10 @@ export default {
     showTopBg: {
       type: Boolean,
       default: true
+    },
+    isShowHeader: {
+      type: Boolean,
+      default: true
     }
   },
   computed: {

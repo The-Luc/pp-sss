@@ -1,0 +1,53 @@
+.event-flag {
+  display: flex;
+  position: absolute;
+  height: 75px;
+  bottom: 60%;
+
+  &.short {
+    height: 45px;
+  }
+
+  .flag-item {
+    display: flex;
+    position: relative;
+    width: 1px;
+    height: 100%;
+    flex-direction: column;
+    background-color: $color-red;
+
+    .flag {
+      position: absolute;
+      width: 14px;
+      height: 12px;
+      top: 0;
+      left: -1px;
+    }
+
+    .dot {
+      position: absolute;
+      bottom: 0;
+      left: -3px;
+      min-width: 7px;
+      max-width: 7px;
+      background-color: $color-red;
+    }
+  }
+
+  .flag-text {
+    margin-top: -6px;
+    padding-left: 14px;
+    color: $color-gray5;
+    text-align: justify;
+
+    .description {
+      white-space: nowrap;
+      font-size: $xs-size;
+    }
+
+    .event-date {
+      margin-top: -2px;
+      font-size: $sm-size;
+    }
+  }
+}

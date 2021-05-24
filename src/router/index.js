@@ -15,6 +15,8 @@ const PrintEditScreen = () =>
   import('../views/CreateBook/PrintEdition/EditScreen');
 const DigitalMainScreen = () =>
   import('../views/CreateBook/DigitalEdition/MainScreen');
+const DigitalEditScreen = () =>
+  import('../views/CreateBook/DigitalEdition/EditScreen');
 const DigitalEdition = () => import('../views/CreateBook/DigitalEdition');
 
 Vue.use(VueRouter);
@@ -72,6 +74,11 @@ const routes = [
         path: '/',
         name: ROUTE_NAME.DIGITAL,
         component: DigitalMainScreen
+      },
+      {
+        path: 'edit-screen',
+        name: ROUTE_NAME.DIGITAL_EDIT,
+        component: DigitalEditScreen
       }
     ]
   },

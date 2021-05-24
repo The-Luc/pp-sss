@@ -1,8 +1,12 @@
 import PpSelect from '@/components/Select';
+import FontSize from './Size';
+import FontFamily from './Family';
 
 export default {
   components: {
-    PpSelect
+    PpSelect,
+    FontSize,
+    FontFamily
   },
   data() {
     return {
