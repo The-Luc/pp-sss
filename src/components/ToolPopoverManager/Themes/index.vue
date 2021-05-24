@@ -1,6 +1,8 @@
 <template>
-  <div class="toolname-container">
-    <component :is="toolComponent" />
+  <div class="themes-container">
+    <PpToolPopover title="Themes">
+      ahihi
+    </PpToolPopover>
   </div>
 </template>
 
