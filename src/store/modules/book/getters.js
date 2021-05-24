@@ -1,16 +1,16 @@
 import BOOK from './const';
 
 export const getters = {
-  getSections: state => {
-    return state.book.sections.sort((firstEl, secondEl) => {
+  [BOOK._GETTERS.GET_SECTIONS]: ({ book }) => {
+    return book.sections.sort((firstEl, secondEl) => {
       return firstEl.order - secondEl.order;
     });
   },
-  getTotalInfo: state => {
+  [BOOK._GETTERS.GET_TOTAL_INFO]: ({ book }) => {
     return {
-      totalPages: state.book.totalPages,
-      totalSheets: state.book.totalSheets,
-      totalScreens: state.book.totalScreens
+      totalPages: book.totalPages,
+      totalSheets: book.totalSheets,
+      totalScreens: book.totalScreens
     };
   },
   [BOOK._GETTERS.BOOK_DETAIL]: ({ book }) => book,
@@ -18,13 +18,13 @@ export const getters = {
   [BOOK._GETTERS.SECTIONS]: state => {
     return state.book.sections;
   },
-  getTotalSections: state => {
-    return state.book.sections.length;
+  [BOOK._GETTERS.GET_TOTAL_SECTIONS]: ({ book }) => {
+    return book.sections.length;
   },
-  getMaxPage: state => {
-    return state.book.numberMaxPages;
+  [BOOK._GETTERS.GET_MAX_PAGE]: ({ book }) => {
+    return book.numberMaxPages;
   },
-  getPageSelected: state => {
-    return state.pageSelected;
+  [BOOK._GETTERS.GET_PAGE_SELECTED]: ({ pageSelected }) => {
+    return pageSelected;
   }
 };

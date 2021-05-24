@@ -1,5 +1,7 @@
-import { ICON_LOCAL } from '@/common/constants';
 import { mapMutations } from 'vuex';
+
+import { ICON_LOCAL } from '@/common/constants';
+import { MUTATES as BOOK_MUTATES } from '@/store/modules/book/const';
 
 export default {
   props: {
@@ -26,7 +28,9 @@ export default {
     }
   },
   methods: {
-    ...mapMutations('book', ['moveSheet']),
+    ...mapMutations({
+      moveSheet: BOOK_MUTATES.MOVE_SHEET
+    }),
     onChangeStatus() {
       this.$emit('onChangeStatus');
     },

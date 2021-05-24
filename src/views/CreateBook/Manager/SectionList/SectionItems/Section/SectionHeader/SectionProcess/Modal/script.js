@@ -1,5 +1,6 @@
 import { mapMutations } from 'vuex';
 import { MUTATES } from '@/store/modules/app/const';
+import { MUTATES as BOOK_MUTATES } from '@/store/modules/book/const';
 
 import Modal from '@/components/Modal';
 import PpButton from '@/components/Button';
@@ -20,7 +21,7 @@ export default {
   methods: {
     ...mapMutations({
       toggleModal: MUTATES.TOGGLE_MODAL,
-      deleteSection: 'book/deleteSection'
+      deleteSection: BOOK_MUTATES.DELETE_SECTION
     }),
     onCloseModal() {
       this.toggleModal({

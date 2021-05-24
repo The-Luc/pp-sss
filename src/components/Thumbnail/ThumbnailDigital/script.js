@@ -2,6 +2,10 @@ import IMAGE_LOCAL from '@/common/constants/image';
 import { LINK_STATUS, SHEET_TYPES } from '@/common/constants';
 export default {
   props: {
+    orderScreen: {
+      type: String,
+      default: ''
+    },
     sheet: {
       type: Object,
       required: true
