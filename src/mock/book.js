@@ -215,7 +215,7 @@ const book = {
           order: 0,
           printData: {
             thumbnailUrl: null,
-            link: 'unlink',
+            link: 'link',
             pages: [
               {
                 id: 11,
@@ -230,7 +230,7 @@ const book = {
           },
           digitalData: {
             thumbnailUrl: null,
-            link: 'unlink'
+            link: 'link'
           }
         },
         {
@@ -343,7 +343,7 @@ const book = {
           order: 0,
           printData: {
             thumbnailUrl: null,
-            link: 'unlink',
+            link: 'link',
             pages: [
               {
                 id: 19,
@@ -353,7 +353,7 @@ const book = {
           },
           digitalData: {
             thumbnailUrl: null,
-            link: 'unlink'
+            link: 'link'
           }
         }
       ]
