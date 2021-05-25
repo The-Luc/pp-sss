@@ -24,6 +24,10 @@ export default {
       type: Boolean,
       default: true
     },
+    themeModal: {
+      type: Boolean,
+      default: false
+    },
     isShowHeader: {
       type: Boolean,
       default: true

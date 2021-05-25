@@ -8,4 +8,5 @@ export * from './linkStatus';
 export * from './sheetTypes';
 export * from './routeName';
 export * from './objectType';
+export * from './image';
 export * from './toolName';

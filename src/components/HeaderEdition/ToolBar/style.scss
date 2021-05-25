@@ -7,7 +7,7 @@ $border: 1px solid $gray;
 .print-editor {
   .print-editor-tool {
     border-top: $border;
-    padding: 7px 0 !important;
+    padding: 5px 0 !important;
     align-items: center;
     justify-content: space-between;
     .tool-left,
@@ -19,14 +19,6 @@ $border: 1px solid $gray;
       .item-tool:first-child {
         margin-left: 20px;
       }
-    }
-  }
-}
-@media screen and (max-width: 1366px) {
-  .print-editor {
-    .print-editor-tool {
-      border-top: $border;
-      padding: 7px 0 !important;
     }
   }
 }

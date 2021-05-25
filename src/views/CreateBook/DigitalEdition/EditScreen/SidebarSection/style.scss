@@ -1,0 +1,15 @@
+.sidebar-section {
+  width: 167px;
+  height: calc(100vh - 163px);
+  overflow: auto;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.thumbnail-view-container {
+  padding: 10px 20px 10px 20px;
+  .body-thumbnail {
+    padding: 10px 0px 10px 8px;
+  }
+}

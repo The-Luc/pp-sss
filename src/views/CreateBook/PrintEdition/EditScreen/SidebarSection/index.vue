@@ -1,5 +1,5 @@
 <template>
-  <div class="col-2 sidebar-section">
+  <div class="sidebar-section">
     <div class="thumbnail-view-container">
       <HeaderContainer
         v-for="section in book.sections"

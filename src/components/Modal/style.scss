@@ -8,6 +8,9 @@
 
       .v-card__text {
         padding-top: 20px;
+        &.card-text-theme-modal {
+          padding: 0;
+        }
       }
     }
   }
