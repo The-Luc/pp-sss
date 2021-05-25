@@ -1,7 +1,7 @@
-.v-dialog > .v-card > .v-card__title {
-  margin: 0 26px;
-  padding: 0;
-}
+// .v-dialog > .v-card > .v-card__title {
+//   margin: 0 26px;
+//   padding: 0;
+// }
 .modal-theme-body {
   padding: 16px 26px;
   .modal-theme-title {
@@ -9,6 +9,7 @@
     font-size: 14px;
     text-align: center;
     color: #565656;
+    line-height: 14px;
   }
   .modal-theme-note {
     text-align: center;
@@ -85,13 +86,14 @@
 
 .modal-theme-footer {
   border-top: 1px solid #707070;
-  padding: 26px;
+  padding: 16px;
   .pp-btn {
-    width: 20%;
+    width: 114px;
+    height: 32px;
     margin: 0 auto;
   }
 }
 
-.v-dialog.pp-modal .v-sheet.v-card .v-card__text {
-  padding: 0px;
-}
+// .v-dialog.pp-modal .v-sheet.v-card .v-card__text {
+//   padding: 0px;
+// }

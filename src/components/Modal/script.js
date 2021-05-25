@@ -24,9 +24,9 @@ export default {
       type: Boolean,
       default: true
     },
-    showTopBg: {
+    themeModal: {
       type: Boolean,
-      default: true
+      default: false
     },
     isShowHeader: {
       type: Boolean,

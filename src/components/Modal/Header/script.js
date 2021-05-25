@@ -8,9 +8,9 @@ export default {
       type: Boolean,
       default: false
     },
-    showTopBg: {
+    themeModal: {
       type: Boolean,
-      default: true
+      default: false
     }
   },
   methods: {
