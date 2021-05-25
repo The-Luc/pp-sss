@@ -1,8 +1,10 @@
 <template>
-  <div class="process">
-    <Merchandising v-if="isSale" />
-    <Sections />
-    <Production />
+  <div class="process-item">
+    <Header :name="name" />
+
+    <div class="process-body">
+      <slot />
+    </div>
   </div>
 </template>
 

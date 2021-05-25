@@ -1,5 +1,19 @@
 <template>
-  <div class="merchandising"></div>
+  <div class="merchandising">
+    <ProcessItem name="Merchandising">
+      <SaleProcess
+        class="pre-sale"
+        description="Pre-Sale Period"
+        :style="{
+          marginLeft: preSalePosition,
+          width: preSaleLength,
+          minWidth: preSaleLength
+        }"
+      />
+
+      <SaleProcess class="demand-sale" description="On-Demand Sales" />
+    </ProcessItem>
+  </div>
 </template>
 
 <script src="./script.js"></script>

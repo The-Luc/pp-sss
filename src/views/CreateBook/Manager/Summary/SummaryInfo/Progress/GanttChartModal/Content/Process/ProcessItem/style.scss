@@ -1,0 +1,10 @@
+.process-item {
+  display: flex;
+  width: 100%;
+
+  .process-body {
+    display: flex;
+    width: 850px;
+    max-width: 850px;
+  }
+}

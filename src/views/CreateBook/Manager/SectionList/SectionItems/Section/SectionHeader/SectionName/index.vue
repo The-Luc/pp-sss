@@ -3,7 +3,14 @@
     <DragDropControl :id="'section' + sectionId" />
 
     <span class="dot" :style="'background-color: ' + sectionColor"></span>
-    <img src="@/assets/icons/collapse.svg" data-toggle="collapse" />
+
+    <img
+      src="@/assets/icons/collapse.svg"
+      data-toggle="collapse"
+      alt="expand/collapse icon"
+      title="expand/collapse icon"
+    />
+
     <div class="input-container" @click="click">
       <div ref="text" class="text">
         {{ sectionNameCurrent }}

@@ -1,8 +1,7 @@
 <template>
-  <div class="process">
-    <Merchandising v-if="isSale" />
-    <Sections />
-    <Production />
+  <div class="sale-process">
+    <div class="process"></div>
+    <div class="description text-300">{{ description }}</div>
   </div>
 </template>
 
