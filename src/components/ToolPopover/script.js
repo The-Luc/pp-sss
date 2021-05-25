@@ -3,6 +3,14 @@ export default {
     title: {
       type: String,
       default: ''
+    },
+    actionText: {
+      type: String,
+      default: 'Select'
     }
+  },
+  methods: {
+    onCancel() {},
+    onAction() {}
   }
 };

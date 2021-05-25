@@ -1,25 +1,36 @@
-.pp-selected-theme {
-  &--header {
-    height: 45px;
+.themes-container {
+  .theme-item-container {
     display: flex;
-    align-items: center;
-    border-bottom: 1px solid gray;
-    padding: 0 12px;
+    flex-wrap: wrap;
+  }
 
-    &--selected-title {
-      font-size: 11px;
-      font-family: $font-300;
-      margin-right: 10px;
-      margin-top: 2px;
-    }
+  .tool-popover-content {
+    padding: 10px 15px 50px;
+  }
 
-    .pp-select {
-      .v-input__slot {
-        width: 200px;
-        margin-bottom: 0;
+  .pp-selected-theme {
+    &--header {
+      height: 45px;
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid gray;
+      padding: 0 12px;
 
-        .v-select__selection {
-          font-family: $font-500;
+      &--selected-title {
+        font-size: 11px;
+        font-family: $font-300;
+        margin-right: 10px;
+        margin-top: 2px;
+      }
+
+      .pp-select {
+        .v-input__slot {
+          width: 200px;
+          margin-bottom: 0;
+
+          .v-select__selection {
+            font-family: $font-500;
+          }
         }
       }
     }

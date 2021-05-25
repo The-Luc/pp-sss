@@ -5,6 +5,8 @@
     item-text="label"
     item-value="value"
     solo
+    :value="selectedVal"
+    return-object
     persistent-hint
     :menu-props="{
       maxHeight: 'auto',
