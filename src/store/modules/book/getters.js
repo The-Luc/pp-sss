@@ -51,5 +51,31 @@ export const getters = {
       .set('date', beginTime.date());
 
     return endTime.diff(beginTime, 'months', false) + 1;
+  },
+  [BOOK._GETTERS.TOTAL_DAYS_SHOW_ON_CHART]: ({ book }) => {
+    const { createdDate, deliveryDate } = book;
+
+    const beginTime = moment(createdDate, 'MM/DD/YY').set('date', 1);
+    const endTime = moment(deliveryDate, 'MM/DD/YY').add(1, 'M');
+
+    endTime.set('date', endTime.daysInMonth());
+
+    return endTime.diff(beginTime, 'days', false) + 1;
+  },
+  [BOOK._GETTERS.SALE_DAY_FROM_BEGINNING]: ({ book }) => {
+    const { createdDate, saleDate } = book;
+
+    const beginTime = moment(createdDate, 'MM/DD/YY').set('date', 1);
+    const saleTime = moment(saleDate, 'MM/DD/YY');
+
+    return saleTime.diff(beginTime, 'days', false) + 1;
+  },
+  [BOOK._GETTERS.RELEASE_DAY_FROM_BEGINNING]: ({ book }) => {
+    const { createdDate, releaseDate } = book;
+
+    const beginTime = moment(createdDate, 'MM/DD/YY').set('date', 1);
+    const releaseTime = moment(releaseDate, 'MM/DD/YY');
+
+    return releaseTime.diff(beginTime, 'days', false) + 1;
   }
 };

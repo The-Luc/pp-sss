@@ -1,7 +1,11 @@
 <template>
   <v-row :class="['hide', 'indicator', customClassName]">
     <v-col>
-      <img src="@/assets/icons/collapse_dark-blue.svg" />
+      <img
+        src="@/assets/icons/collapse_dark-blue.svg"
+        alt="indicator icon"
+        title="indicator icon"
+      />
     </v-col>
   </v-row>
 </template>
