@@ -1,11 +1,14 @@
 <template>
   <div class="themes-container">
     <PpToolPopover title="Themes">
-      <p>ahihi</p>
-      <p>ahihi</p>
-      <p>ahihi</p>
-      <p>ahihi</p>
-      <p>ahihi</p>
+      <div class="pp-selected-theme">
+        <div class="pp-selected-theme--header">
+          <span class="pp-selected-theme--header--selected-title"
+            >Selected Theme:</span
+          >
+          <PpSelect :items="items" />
+        </div>
+      </div>
     </PpToolPopover>
   </div>
 </template>

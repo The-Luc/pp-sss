@@ -10,6 +10,7 @@ import PREPENDED_FONT_SIZE from '@/assets/icons/prepended-font-size.svg';
 import TEXT_UPPERCASE from '@/assets/icons/text-uppercase.svg';
 import TEXT_LOWERCASE from '@/assets/icons/text-lowercase.svg';
 import TEXT_CAPITALIZE from '@/assets/icons/text-capitalize.svg';
+import ACTIVE_MENU from '@/assets/icons/active-menu.svg';
 
 export const ICON_LOCAL = {
   ARROW_LEFT,
@@ -23,5 +24,6 @@ export const ICON_LOCAL = {
   PREPENDED_FONT_SIZE,
   TEXT_UPPERCASE,
   TEXT_LOWERCASE,
-  TEXT_CAPITALIZE
+  TEXT_CAPITALIZE,
+  ACTIVE_MENU
 };
