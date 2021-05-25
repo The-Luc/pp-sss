@@ -1,14 +1,14 @@
 import { mapGetters } from 'vuex';
 
 import ProcessItem from '../ProcessItem';
-import SaleProcess from './SaleProcess';
+import MiniProcess from '@/components/MiniProcess';
 
 import { GETTERS } from '@/store/modules/book/const';
 
 export default {
   components: {
     ProcessItem,
-    SaleProcess
+    MiniProcess
   },
   computed: {
     preSalePosition() {
@@ -16,12 +16,12 @@ export default {
         100}%`;
     },
     preSaleLength() {
-      const salePosition =
-        this.getSaleDateFromBeginning() / this.getTotalDayToShow();
-      const releasePosistion =
-        this.getReleaseDateFromBeginning() / this.getTotalDayToShow();
+      const diffDate =
+        this.getReleaseDateFromBeginning() -
+        this.getSaleDateFromBeginning() +
+        1;
 
-      return `${(releasePosistion - salePosition) * 100}%`;
+      return `${(diffDate / this.getTotalDayToShow()) * 100}%`;
     }
   },
   methods: {

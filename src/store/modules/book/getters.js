@@ -2,6 +2,20 @@ import moment from 'moment';
 
 import BOOK from './const';
 
+/**
+ * Get total different day between 2 dates in day (included begin date)
+ *
+ * @param   {String}  beginDate (in format 'MM/DD/YY')
+ * @param   {String}  endDate (in format 'MM/DD/YY')
+ * @returns {Number}  total different day
+ */
+function getDiffDays(beginDate, endDate) {
+  const beginTime = moment(beginDate, 'MM/DD/YY').set('date', 1);
+  const endTime = moment(endDate, 'MM/DD/YY');
+
+  return endTime.diff(beginTime, 'days', false) + 1;
+}
+
 export const getters = {
   [BOOK._GETTERS.GET_SECTIONS]: ({ book }) => {
     return book.sections.sort((firstEl, secondEl) => {
@@ -65,17 +79,21 @@ export const getters = {
   [BOOK._GETTERS.SALE_DAY_FROM_BEGINNING]: ({ book }) => {
     const { createdDate, saleDate } = book;
 
-    const beginTime = moment(createdDate, 'MM/DD/YY').set('date', 1);
-    const saleTime = moment(saleDate, 'MM/DD/YY');
-
-    return saleTime.diff(beginTime, 'days', false) + 1;
+    return getDiffDays(createdDate, saleDate);
   },
   [BOOK._GETTERS.RELEASE_DAY_FROM_BEGINNING]: ({ book }) => {
     const { createdDate, releaseDate } = book;
 
-    const beginTime = moment(createdDate, 'MM/DD/YY').set('date', 1);
-    const releaseTime = moment(releaseDate, 'MM/DD/YY');
+    return getDiffDays(createdDate, releaseDate);
+  },
+  [BOOK._GETTERS.CREATED_DAY_FROM_BEGINNING]: ({ book }) => {
+    const { createdDate } = book;
 
-    return releaseTime.diff(beginTime, 'days', false) + 1;
+    return getDiffDays(createdDate, createdDate);
+  },
+  [BOOK._GETTERS.DELIVERY_DAY_FROM_BEGINNING]: ({ book }) => {
+    const { createdDate, deliveryDate } = book;
+
+    return getDiffDays(createdDate, deliveryDate);
   }
 };

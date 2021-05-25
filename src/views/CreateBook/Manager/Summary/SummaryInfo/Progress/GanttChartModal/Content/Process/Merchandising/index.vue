@@ -1,7 +1,7 @@
 <template>
   <div class="merchandising">
     <ProcessItem name="Merchandising">
-      <SaleProcess
+      <MiniProcess
         class="pre-sale"
         description="Pre-Sale Period"
         :style="{
@@ -11,7 +11,7 @@
         }"
       />
 
-      <SaleProcess class="demand-sale" description="On-Demand Sales" />
+      <MiniProcess class="demand-sale" description="On-Demand Sales" />
     </ProcessItem>
   </div>
 </template>
