@@ -1,7 +1,11 @@
 <template>
   <div class="themes-container">
     <PpToolPopover title="Themes">
-      ahihi
+      <p>ahihi</p>
+      <p>ahihi</p>
+      <p>ahihi</p>
+      <p>ahihi</p>
+      <p>ahihi</p>
     </PpToolPopover>
   </div>
 </template>
