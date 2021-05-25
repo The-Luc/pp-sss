@@ -1,22 +1,20 @@
 ::v-deep {
-  &.blocks {
-    &.months {
-      margin-top: 3px;
-      padding: 1px 0;
-      height: 15px;
+  &.months {
+    margin-top: 3px;
+    padding: 1px 0;
+    height: 15px;
 
-      .block {
-        margin: 0;
-        padding: 0;
-        background-color: transparent;
+    .block {
+      margin: 0;
+      padding: 0;
+      background-color: transparent;
 
-        span {
-          margin-left: -100%;
-          color: $color-gray5;
-          text-align: center;
-          line-height: $md-size;
-          font-size: 11px;
-        }
+      span {
+        margin-left: calc(-100% - 2px);
+        color: $color-gray5;
+        text-align: center;
+        line-height: $md-size;
+        font-size: 11px;
       }
     }
   }

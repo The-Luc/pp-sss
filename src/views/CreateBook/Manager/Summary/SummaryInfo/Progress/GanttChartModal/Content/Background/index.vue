@@ -1,5 +1,5 @@
 <template>
-  <BlockBar :items="[]" custom-class="background"></BlockBar>
+  <BlockBar :items="months" custom-class="background"></BlockBar>
 </template>
 
 <script src="./script.js"></script>

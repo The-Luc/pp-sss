@@ -2,10 +2,13 @@
   <Section title="Progress">
     <div class="group-detail progress">
       <div class="cover" @click="openChart">
-        <div>
-          Click to view latest Progress
+        <img src="@/assets/image/chart.png" alt="chart" />
+
+        <div class="content">
+          <div class="text-700">Click to view latest Progress</div>
         </div>
       </div>
+
       <img src="@/assets/image/chart.png" alt="chart" />
     </div>
   </Section>

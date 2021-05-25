@@ -1,6 +1,7 @@
 <template>
   <span
     class="block"
+    :class="isSpaceByBorder && 'border'"
     :style="[
       !!color && {
         backgroundColor: color

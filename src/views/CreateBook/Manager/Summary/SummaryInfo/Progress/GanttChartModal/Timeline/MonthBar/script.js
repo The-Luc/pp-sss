@@ -15,6 +15,7 @@ export default {
 
       const monthData = Array.from({ length: totalMonthToShow }, (v, index) => {
         return {
+          isUseBorder: true,
           slotName: `slot${index}`
         };
       });
