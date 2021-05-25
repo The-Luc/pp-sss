@@ -39,9 +39,6 @@ export const getters = {
   [BOOK._GETTERS.GET_PAGE_SELECTED]: ({ pageSelected }) => {
     return pageSelected;
   },
-  [BOOK._GETTERS.GET_THEMES]: ({ themes }) => {
-    return themes;
-  },
   [BOOK._GETTERS.IS_SELECTED_PRINT_THEME]: ({ book }) => {
     return book.printData.theme;
   },
