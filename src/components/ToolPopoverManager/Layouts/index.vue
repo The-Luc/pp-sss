@@ -1,5 +1,9 @@
 <template>
-  <div>This is layout</div>
+  <div class="layouts-container">
+    <PpToolPopover title="Layouts">
+      layouts
+    </PpToolPopover>
+  </div>
 </template>
 
 <script src="./script.js" />
