@@ -34,7 +34,8 @@
       margin-bottom: 5px;
     }
 
-    &.v-list-item--active {
+    &.v-list-item--active,
+    &:hover {
       background-color: #42738d;
 
       .v-list-item__content {
