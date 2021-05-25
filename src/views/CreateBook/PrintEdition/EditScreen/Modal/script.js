@@ -1,10 +1,7 @@
 import { mapGetters, mapMutations } from 'vuex';
 import { MUTATES } from '@/store/modules/app/const';
-import {
-  GETTERS as BOOK_GETTERS,
-  MUTATES as BOOK_MUTATES
-} from '@/store/modules/book/const';
-
+import { MUTATES as BOOK_MUTATES } from '@/store/modules/book/const';
+import { GETTERS as THEME_GETTERS } from '@/store/modules/theme/const';
 import Modal from '@/components/Modal';
 import PpButton from '@/components/Button';
 import Themes from './Themes';
@@ -25,7 +22,7 @@ export default {
   },
   computed: {
     ...mapGetters({
-      themes: BOOK_GETTERS.GET_THEMES
+      themes: THEME_GETTERS.GET_THEMES
     })
   },
   methods: {
