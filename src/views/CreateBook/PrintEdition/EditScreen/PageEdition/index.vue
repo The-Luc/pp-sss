@@ -1,5 +1,5 @@
 <template lang="">
-  <div class="col-10 page-edition">
+  <div class="page-edition">
     <div class="container-edition">
       <canvas id="page-left"></canvas>
       <canvas id="page-right"></canvas>

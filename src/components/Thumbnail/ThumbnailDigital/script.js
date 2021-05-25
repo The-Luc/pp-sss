@@ -21,6 +21,10 @@ export default {
     isActive: {
       type: Boolean,
       default: false
+    },
+    leftNumberPage: {
+      type: Boolean,
+      default: false
     }
   },
   created() {

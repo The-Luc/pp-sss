@@ -1,7 +1,7 @@
 import { mapGetters, mapMutations } from 'vuex';
 
 import Thumbnail from '@/components/Thumbnail/ThumbnailPrint';
-import HeaderContainer from './HeaderContainer';
+import HeaderContainer from '@/components/Thumbnail/HeaderContainer';
 import { GETTERS, MUTATES } from '@/store/modules/book/const';
 
 export default {

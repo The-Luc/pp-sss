@@ -1,4 +1,4 @@
-import { ICON_LOCAL } from '@/common/constants';
+import { ICON_LOCAL, ROUTE_NAME } from '@/common/constants';
 
 export default {
   data() {
@@ -11,13 +11,24 @@ export default {
     this.checkShowExit(this.$route.path);
   },
   watch: {
-    ['$route.path'](path) {
+    ['$route.name'](path) {
       this.checkShowExit(path);
     }
   },
   methods: {
-    checkShowExit(path) {
-      this.showExit = path !== '/edit/print/edit-screen';
+    /**
+     * Check show Exit Yearbook Builder button with path name
+     * @param  {String} pathName Current path name
+     */
+    checkShowExit(pathName) {
+      if (
+        pathName === ROUTE_NAME.PRINT_EDIT ||
+        pathName === ROUTE_NAME.DIGITAL_EDIT
+      ) {
+        this.showExit = false;
+      } else {
+        this.showExit = true;
+      }
     }
   }
 };
