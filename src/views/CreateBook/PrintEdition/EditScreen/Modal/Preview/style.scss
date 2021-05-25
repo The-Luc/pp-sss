@@ -1,0 +1,27 @@
+.modal-preview-header {
+  text-align: center;
+  .modal-preview-title {
+    font-family: $font-700;
+    font-size: 18px;
+    color: #565656;
+  }
+}
+
+.modal-preview-container {
+  display: flex;
+  flex-wrap: wrap;
+  max-height: 390px;
+  overflow: auto;
+  .modal-preview-item {
+    width: 30%;
+    margin-right: 3.333333%;
+    margin-bottom: 16px;
+    .modal-preview-img {
+      display: flex;
+      .modal-preview-img-left {
+      }
+      .modal-preview-img-right {
+      }
+    }
+  }
+}

@@ -13,7 +13,7 @@
         @onSelectTheme="onSelectTheme($event)"
         @onPreviewTheme="onPreviewTheme($event)"
       />
-      <Preview v-if="themePreview" />
+      <Preview v-if="themePreview" :layouts="layoutsOfThemePreview" />
     </div>
     <div class="modal-theme-footer">
       <PpButton class="button-select" is-active @click.native="onSubmitThemeId">

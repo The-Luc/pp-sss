@@ -22,8 +22,12 @@ export default {
   },
   computed: {
     ...mapGetters({
-      themes: THEME_GETTERS.GET_THEMES
-    })
+      themes: THEME_GETTERS.GET_THEMES,
+      layouts: THEME_GETTERS.GET_LAYOUTS
+    }),
+    layoutsOfThemePreview() {
+      return this.layouts.filter(item => item.themeId == this.themePreview);
+    }
   },
   methods: {
     ...mapMutations({
