@@ -1,5 +1,6 @@
 import moment from 'moment';
 
+import { getDiffDays } from '@/common/utils';
 import BOOK from './const';
 
 export const getters = {
@@ -65,17 +66,21 @@ export const getters = {
   [BOOK._GETTERS.SALE_DAY_FROM_BEGINNING]: ({ book }) => {
     const { createdDate, saleDate } = book;
 
-    const beginTime = moment(createdDate, 'MM/DD/YY').set('date', 1);
-    const saleTime = moment(saleDate, 'MM/DD/YY');
-
-    return saleTime.diff(beginTime, 'days', false) + 1;
+    return getDiffDays(createdDate, saleDate);
   },
   [BOOK._GETTERS.RELEASE_DAY_FROM_BEGINNING]: ({ book }) => {
     const { createdDate, releaseDate } = book;
 
-    const beginTime = moment(createdDate, 'MM/DD/YY').set('date', 1);
-    const releaseTime = moment(releaseDate, 'MM/DD/YY');
+    return getDiffDays(createdDate, releaseDate);
+  },
+  [BOOK._GETTERS.CREATED_DAY_FROM_BEGINNING]: ({ book }) => {
+    const { createdDate } = book;
 
-    return releaseTime.diff(beginTime, 'days', false) + 1;
+    return getDiffDays(createdDate, createdDate);
+  },
+  [BOOK._GETTERS.DELIVERY_DAY_FROM_BEGINNING]: ({ book }) => {
+    const { createdDate, deliveryDate } = book;
+
+    return getDiffDays(createdDate, deliveryDate);
   }
 };

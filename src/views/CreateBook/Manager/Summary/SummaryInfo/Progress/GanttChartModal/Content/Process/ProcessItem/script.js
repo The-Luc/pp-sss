@@ -8,6 +8,9 @@ export default {
     name: {
       type: String,
       required: true
+    },
+    headerColor: {
+      type: String
     }
   }
 };

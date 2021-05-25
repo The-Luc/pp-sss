@@ -1,6 +1,6 @@
 <template>
   <div class="process-item">
-    <Header :name="name" />
+    <Header :name="name" :color="headerColor" />
 
     <div class="process-body">
       <slot />

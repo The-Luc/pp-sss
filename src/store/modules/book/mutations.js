@@ -1,6 +1,8 @@
 import randomcolor from 'randomcolor';
 import moment from 'moment';
 
+import { nextId } from '@/common/utils';
+
 import BOOK from './const';
 import { SHEET_TYPES } from '@/common/constants/sheetTypes';
 
@@ -60,12 +62,6 @@ const moveItem = (item, currentIndex, moveToIndex, items) => {
   }
 
   return _items;
-};
-
-const nextId = items => {
-  const maxId = Math.max(...items.map(e => e.id), 0);
-
-  return maxId + 1;
 };
 
 const makeNewSection = (sections, sectionIndex) => {
