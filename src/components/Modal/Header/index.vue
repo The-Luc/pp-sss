@@ -1,6 +1,8 @@
 <template>
-  <v-card-title class="pp-modal-title">
-    <span class="top-bg" />
+  <v-card-title
+    :class="['pp-modal-title', { 'pp-modal-title-theme': themeModal }]"
+  >
+    <span v-show="!themeModal" class="top-bg" />
     <span class="text-size-xl text-title">{{ title }}</span>
     <v-icon v-if="showIconClose" class="icon-close" @click="onCloseModal">
       close

@@ -1,4 +1,4 @@
-import IMAGE_LOCAL from '@/common/constants/image';
+import { IMAGE_LOCAL } from '@/common/constants';
 import { LINK_STATUS, SHEET_TYPES } from '@/common/constants';
 export default {
   props: {

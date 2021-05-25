@@ -274,5 +274,15 @@ export const mutations = {
   },
   [BOOK._MUTATES.GET_BOOK_SUCCESS](state, payload) {
     state.book = payload;
+  },
+  [BOOK._MUTATES.SELECT_THEME](state, payload) {
+    const { themeId } = payload;
+    state.book.printData.theme = themeId;
+  },
+  [BOOK._MUTATES.SET_OBJECT_TYPE_SELECTED](state, { type }) {
+    state.selectedObjectType = type;
+  },
+  [BOOK._MUTATES.TOGGLE_MENU_PROPERTIES](state, { isOpen }) {
+    state.isOpenProperties = isOpen;
   }
 };

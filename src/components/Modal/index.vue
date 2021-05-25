@@ -9,11 +9,12 @@
     <v-card>
       <Header
         v-if="isShowHeader"
+        :theme-modal="themeModal"
         :title="title"
         :show-icon-close="showIconClose"
         @onCloseModal="onCloseModal"
       />
-      <v-card-text>
+      <v-card-text :class="{ 'card-text-theme-modal': themeModal }">
         <slot></slot>
       </v-card-text>
     </v-card>

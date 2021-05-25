@@ -7,6 +7,10 @@ export default {
     showIconClose: {
       type: Boolean,
       default: false
+    },
+    themeModal: {
+      type: Boolean,
+      default: false
     }
   },
   methods: {
