@@ -1,5 +1,7 @@
 <template>
-  <div></div>
+  <div class="toolname-container">
+    <component :is="toolComponent" />
+  </div>
 </template>
 
 <script src="./script.js" />

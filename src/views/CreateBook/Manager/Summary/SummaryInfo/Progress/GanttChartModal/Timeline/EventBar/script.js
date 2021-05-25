@@ -63,6 +63,7 @@ export default {
 
       return {
         text: isShowYear ? checkTime.format('yyyy') : null,
+        isUseBorder: true,
         slotName: `slot${index}`
       };
     },

@@ -7,7 +7,11 @@ export const state = {
     }
   },
   sectionSelected: '',
+  // Object properties
   isOpenColorPicker: false,
   isOpenProperties: false,
-  selectedObjectType: ''
+  selectedObjectType: '',
+
+  // Tool icon popover
+  selectedToolName: ''
 };

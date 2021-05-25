@@ -31,6 +31,7 @@
     <transition name="slide-fade">
       <PropertiesManager v-show="isOpenMenuProperties" />
     </transition>
+    <ToolPopoverManager v-show="selectedToolName" />
   </div>
 </template>
 

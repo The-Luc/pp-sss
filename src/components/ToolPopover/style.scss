@@ -1,0 +1,33 @@
+.tool-popover {
+  &-container {
+    width: 562px;
+  }
+  &-header {
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    height: 38px;
+    background-color: #42738d;
+    display: flex;
+    align-items: center;
+    color: white;
+
+    &::before {
+      position: absolute;
+      content: '';
+      top: 0;
+      left: 20px;
+      transform: translate(-50%, -100%);
+      width: 2px;
+      height: 10px;
+      border-left: 7px solid transparent;
+      border-right: 7px solid transparent;
+      border-bottom: 10px solid #42738d;
+    }
+  }
+
+  &-footer {
+    border-radius: 0px 0px 4px 4px;
+    height: 55px;
+    background-color: rgba(255, 255, 255, 0.3);
+  }
+}

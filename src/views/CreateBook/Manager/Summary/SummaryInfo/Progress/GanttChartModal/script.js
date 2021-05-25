@@ -1,7 +1,7 @@
 import { mapMutations } from 'vuex';
 
 import Timeline from './Timeline';
-import BlockBar from '@/components/BlockBar';
+import Content from './Content';
 
 import { MUTATES } from '@/store/modules/app/const';
 
@@ -11,7 +11,7 @@ export default {
   components: {
     Modal,
     Timeline,
-    BlockBar
+    Content
   },
   methods: {
     ...mapMutations({

@@ -1,1 +1,8 @@
-export default {};
+export default {
+  props: {
+    title: {
+      type: String,
+      default: ''
+    }
+  }
+};

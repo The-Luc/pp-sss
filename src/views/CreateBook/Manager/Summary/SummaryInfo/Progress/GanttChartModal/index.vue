@@ -3,7 +3,7 @@
     <div class="chart-container">
       <Timeline />
 
-      <div class="chart-body"></div>
+      <Content />
     </div>
   </Modal>
 </template>

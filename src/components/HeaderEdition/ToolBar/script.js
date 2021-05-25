@@ -3,7 +3,7 @@ import { mapMutations, mapGetters } from 'vuex';
 import ToolButton from '@/components/ToolButton';
 import ItemTool from './ItemTool';
 import { GETTERS, MUTATES } from '@/store/modules/app/const';
-import { OBJECT_TYPE } from '@/common/constants';
+import { OBJECT_TYPE, TOOL_NAME } from '@/common/constants';
 
 export default {
   props: {
@@ -23,12 +23,12 @@ export default {
           {
             iconName: 'photo_filter',
             title: 'Themes',
-            name: 'themes'
+            name: TOOL_NAME.THEMES
           },
           {
             iconName: 'import_contacts',
             title: 'Layouts',
-            name: 'layouts'
+            name: TOOL_NAME.LAYOUTS
           },
           {
             iconName: 'texture',
@@ -135,13 +135,15 @@ export default {
   computed: {
     ...mapGetters({
       selectedObjectType: GETTERS.SELECTED_OBJECT_TYPE,
-      isOpenMenuProperties: GETTERS.IS_OPEN_MENU_PROPERTIES
+      isOpenMenuProperties: GETTERS.IS_OPEN_MENU_PROPERTIES,
+      selectedToolName: GETTERS.SELECTED_TOOL_NAME
     })
   },
   methods: {
     ...mapMutations({
       setObjectTypeSelected: MUTATES.SET_OBJECT_TYPE_SELECTED,
-      setIsOpenProperties: MUTATES.TOGGLE_MENU_PROPERTIES
+      setIsOpenProperties: MUTATES.TOGGLE_MENU_PROPERTIES,
+      setToolNameSelected: MUTATES.SET_TOOL_NAME_SELECTED
     }),
     /**
      * Detect click on item on right creation tool
@@ -170,8 +172,10 @@ export default {
      * @param  {Object} item Receive item information
      */
     onClickLeftTool(data) {
-      console.log('data', data);
-      // To do later
+      const toolName = this.selectedToolName === data?.name ? '' : data?.name;
+      this.setToolNameSelected({
+        name: toolName
+      });
     }
   }
 };

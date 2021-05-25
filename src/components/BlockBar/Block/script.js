@@ -9,6 +9,10 @@ export default {
     dataAttribute: {
       type: Array, // each: name, value
       default: () => []
+    },
+    isSpaceByBorder: {
+      type: Boolean,
+      default: false
     }
   },
   computed: {
