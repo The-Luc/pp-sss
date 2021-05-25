@@ -1,7 +1,7 @@
 const themes = [
   {
     id: 1,
-    name: 'Color Block',
+    name: 'Confetti',
     imageUrl: 'theme1.jpg'
   },
   {
