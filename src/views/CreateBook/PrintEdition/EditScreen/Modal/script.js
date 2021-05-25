@@ -27,6 +27,15 @@ export default {
     }),
     layoutsOfThemePreview() {
       return this.layouts.filter(item => item.themeId == this.themePreview);
+    },
+    themeNamePreview() {
+      let name;
+      if (!this.themePreview) {
+        name = '';
+      } else {
+        name = this.themes.find(item => item.id == this.themePreview).name;
+      }
+      return name;
     }
   },
   methods: {
@@ -66,6 +75,10 @@ export default {
      */
     onPreviewTheme({ themeId }) {
       this.themePreview = themeId;
+      this.selectedThemeId = themeId;
+    },
+    onClosePreview() {
+      this.themePreview = null;
     }
   },
   created() {

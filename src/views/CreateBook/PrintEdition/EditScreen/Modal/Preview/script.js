@@ -9,7 +9,11 @@ export default {
       default: 'Confetti'
     }
   },
-  methods: {},
+  methods: {
+    onClosePreview() {
+      this.$emit('onClosePreview');
+    }
+  },
   created() {
     console.log(this.layouts);
   }

@@ -13,8 +13,8 @@ const layouts = [
   },
   {
     id: 3,
-    imageUrlLeft: 'layout3l.jpg',
-    imageUrlRight: 'layout3r.jpg',
+    imageUrlLeft: 'layout4l.jpg',
+    imageUrlRight: 'layout4r.jpg',
     themeId: 1
   },
   {
@@ -73,8 +73,8 @@ const layouts = [
   },
   {
     id: 13,
-    imageUrlLeft: 'layout13l.jpg',
-    imageUrlRight: 'layout13r.jpg',
+    imageUrlLeft: 'layout14l.jpg',
+    imageUrlRight: 'layout14r.jpg',
     themeId: 2
   },
   {
@@ -97,8 +97,8 @@ const layouts = [
   },
   {
     id: 17,
-    imageUrlLeft: 'layout13l.jpg',
-    imageUrlRight: 'layout13r.jpg',
+    imageUrlLeft: 'layout14l.jpg',
+    imageUrlRight: 'layout14r.jpg',
     themeId: 4
   },
   {
@@ -130,6 +130,66 @@ const layouts = [
     imageUrlLeft: 'layout1l.jpg',
     imageUrlRight: 'layout1r.jpg',
     themeId: 5
+  },
+  {
+    id: 23,
+    imageUrlLeft: 'layout14l.jpg',
+    imageUrlRight: 'layout14r.jpg',
+    themeId: 6
+  },
+  {
+    id: 24,
+    imageUrlLeft: 'layout14l.jpg',
+    imageUrlRight: 'layout14r.jpg',
+    themeId: 6
+  },
+  {
+    id: 25,
+    imageUrlLeft: 'layout15l.jpg',
+    imageUrlRight: 'layout15r.jpg',
+    themeId: 9
+  },
+  {
+    id: 26,
+    imageUrlLeft: 'layout12l.jpg',
+    imageUrlRight: 'layout12r.jpg',
+    themeId: 10
+  },
+  {
+    id: 27,
+    imageUrlLeft: 'layout14l.jpg',
+    imageUrlRight: 'layout14r.jpg',
+    themeId: 11
+  },
+  {
+    id: 28,
+    imageUrlLeft: 'layout14l.jpg',
+    imageUrlRight: 'layout14r.jpg',
+    themeId: 10
+  },
+  {
+    id: 29,
+    imageUrlLeft: 'layout4l.jpg',
+    imageUrlRight: 'layout4r.jpg',
+    themeId: 9
+  },
+  {
+    id: 30,
+    imageUrlLeft: 'layout2l.jpg',
+    imageUrlRight: 'layout2r.jpg',
+    themeId: 6
+  },
+  {
+    id: 31,
+    imageUrlLeft: 'layout2l.jpg',
+    imageUrlRight: 'layout2r.jpg',
+    themeId: 9
+  },
+  {
+    id: 32,
+    imageUrlLeft: 'layout1l.jpg',
+    imageUrlRight: 'layout1r.jpg',
+    themeId: 6
   }
 ];
 
