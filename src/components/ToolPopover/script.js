@@ -10,7 +10,11 @@ export default {
     }
   },
   methods: {
-    onCancel() {},
-    onAction() {}
+    onCancel() {
+      this.$emit('cancel');
+    },
+    onAction() {
+      this.$emit('change');
+    }
   }
 };

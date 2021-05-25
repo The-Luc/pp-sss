@@ -3,6 +3,7 @@ import { mapMutations, mapGetters } from 'vuex';
 import ToolButton from '@/components/ToolButton';
 import ItemTool from './ItemTool';
 import { GETTERS, MUTATES } from '@/store/modules/app/const';
+import { GETTERS as BOOK_GETTERS } from '@/store/modules/book/const';
 import { OBJECT_TYPE, TOOL_NAME } from '@/common/constants';
 
 export default {
@@ -136,7 +137,8 @@ export default {
     ...mapGetters({
       selectedObjectType: GETTERS.SELECTED_OBJECT_TYPE,
       isOpenMenuProperties: GETTERS.IS_OPEN_MENU_PROPERTIES,
-      selectedToolName: GETTERS.SELECTED_TOOL_NAME
+      selectedToolName: GETTERS.SELECTED_TOOL_NAME,
+      printThemeSelectedId: BOOK_GETTERS.PRINT_THEME_SELECTED_ID
     })
   },
   methods: {
@@ -150,6 +152,9 @@ export default {
      * @param  {Object} item Receive item information
      */
     onClickRightTool(item) {
+      if (!this.printThemeSelectedId) {
+        return;
+      }
       switch (item.name) {
         case 'properties':
           // if (!this.selectedObjectType) {
@@ -172,6 +177,9 @@ export default {
      * @param  {Object} item Receive item information
      */
     onClickLeftTool(data) {
+      if (!this.printThemeSelectedId) {
+        return;
+      }
       const toolName = this.selectedToolName === data?.name ? '' : data?.name;
       this.setToolNameSelected({
         name: toolName

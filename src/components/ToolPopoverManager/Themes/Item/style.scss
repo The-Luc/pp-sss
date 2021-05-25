@@ -1,6 +1,7 @@
 .theme-item {
-  width: 105px;
-  margin-bottom: 15px;
+  width: 100px;
+  margin-bottom: 30px;
+  height: 130px;
 
   &-name {
     font-size: 13px;
@@ -8,13 +9,20 @@
     text-align: center;
   }
 
+  &-active {
+    .theme-item-img {
+      border: 2px solid #42738d;
+    }
+
+    .theme-item-name {
+      color: #42738d;
+      font-family: $font-500;
+    }
+  }
+
   &-img {
     border: 2px solid transparent;
     cursor: pointer;
-
-    &-active {
-      border: 2px solid #42738d;
-    }
   }
 
   &:not(:nth-child(4n)) {

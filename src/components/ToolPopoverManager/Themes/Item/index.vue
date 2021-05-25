@@ -1,9 +1,11 @@
 <template>
-  <div class="theme-item">
+  <div
+    class="theme-item"
+    :class="{ 'theme-item-active': selectedThemeId === theme.id }"
+  >
     <img
       v-if="theme.imageUrl"
       class="theme-item-img"
-      :class="{ 'theme-item-img-active': selectedThemeId === theme.id }"
       :src="require(`@/assets/image/themes/${theme.imageUrl}`)"
       @click="onClick"
     />
