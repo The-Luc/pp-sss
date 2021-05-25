@@ -40,7 +40,7 @@ export const getters = {
     return pageSelected;
   },
   [BOOK._GETTERS.IS_SELECTED_PRINT_THEME]: ({ book }) => {
-    return book.printData.theme;
+    return !!book.printData.theme;
   },
   [BOOK._GETTERS.TOTAL_MONTH_SHOW_ON_CHART]: ({ book }) => {
     const { createdDate, deliveryDate } = book;
