@@ -1,5 +1,5 @@
 <template>
-  <div class="chart-header">
+  <div class="chart-timeline">
     <EventBar />
     <MonthBar />
   </div>

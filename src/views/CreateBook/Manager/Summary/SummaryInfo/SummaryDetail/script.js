@@ -5,7 +5,7 @@ export default {
       required: true
     },
     description: {
-      type: String,
+      type: [Number, String],
       required: true
     },
     customClass: {
