@@ -24,6 +24,7 @@ export const mutations = {
     state.isOpenProperties = false;
     state.isOpenColorPicker = false;
     state.selectedObjectType = '';
+    state.selectedToolName = '';
   },
   [APP._MUTATES.SET_TOOL_NAME_SELECTED](state, { name }) {
     state.selectedToolName = name;
