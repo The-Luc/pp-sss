@@ -1,6 +1,6 @@
 <template>
   <div class="merchandising">
-    <ProcessItem name="Merchandising">
+    <ProcessItem name="Merchandising" header-color="#9CB6C4">
       <MiniProcess
         class="pre-sale"
         description="Pre-Sale Period"

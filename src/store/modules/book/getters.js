@@ -1,20 +1,7 @@
 import moment from 'moment';
 
+import { getDiffDays } from '@/common/utils';
 import BOOK from './const';
-
-/**
- * Get total different day between 2 dates in day (included begin date)
- *
- * @param   {String}  beginDate (in format 'MM/DD/YY')
- * @param   {String}  endDate (in format 'MM/DD/YY')
- * @returns {Number}  total different day
- */
-function getDiffDays(beginDate, endDate) {
-  const beginTime = moment(beginDate, 'MM/DD/YY').set('date', 1);
-  const endTime = moment(endDate, 'MM/DD/YY');
-
-  return endTime.diff(beginTime, 'days', false) + 1;
-}
 
 export const getters = {
   [BOOK._GETTERS.GET_SECTIONS]: ({ book }) => {
