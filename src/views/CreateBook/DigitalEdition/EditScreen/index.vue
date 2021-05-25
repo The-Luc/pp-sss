@@ -3,6 +3,8 @@
     <Header name-editor="digital editor" />
     <ToolBar :is-digital-editor="true" />
     <FeedbackBar />
+    <SidebarSection />
+    <PageEdition />
   </div>
 </template>
 

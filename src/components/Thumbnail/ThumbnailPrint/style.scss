@@ -3,7 +3,6 @@
   border: 1px solid #8c8c8c;
   position: relative;
   background-color: #fff;
-  display: flex;
   flex-wrap: nowrap;
   position: relative;
   box-sizing: border-box;
@@ -66,7 +65,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 10px;
+  font-size: 8px;
   margin-top: 6px;
   position: relative;
   font-family: $font-300;

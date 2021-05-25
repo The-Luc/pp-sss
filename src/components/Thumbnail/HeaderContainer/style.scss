@@ -1,0 +1,35 @@
+.thumbnail-view-header {
+  .header-container {
+    margin-left: -5px;
+    display: flex;
+    align-items: center;
+    font-size: 10px;
+  }
+  .sheet-container > div {
+    margin-bottom: 13px;
+  }
+  & > div {
+    align-items: center;
+    cursor: pointer;
+    .header-color {
+      width: 10px;
+      height: 10px;
+      background-color: brown;
+      border-radius: 100%;
+    }
+    .header-name {
+      font-family: $font-700;
+      max-width: 75px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    span {
+      font-family: $font-300;
+      margin-left: 5px;
+    }
+    .v-icon {
+      color: #58595b;
+    }
+  }
+}

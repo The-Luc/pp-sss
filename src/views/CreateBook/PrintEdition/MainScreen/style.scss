@@ -9,4 +9,7 @@
   height: calc(100vh - 135px);
   overflow: auto;
   align-content: flex-start;
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }

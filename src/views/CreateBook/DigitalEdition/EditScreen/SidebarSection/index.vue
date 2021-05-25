@@ -11,8 +11,8 @@
           :key="sheet.id"
           :sheet="sheet"
           :edit="false"
-          :is-show-link="false"
-          :number-page="numberPage(section.id, sheet)"
+          :left-number-page="true"
+          :order-screen="orderScreen(section.id, sheet)"
           :is-active="checkIsActive(sheet.id)"
           @click.native="onSelectSheet(sheet.id)"
         />

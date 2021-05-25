@@ -15,7 +15,9 @@
         </router-link>
       </div>
     </div>
-    <div class="thumbnail-view-number-page">
+    <div
+      :class="['thumbnail-view-number-page', { 'number-page': leftNumberPage }]"
+    >
       {{ orderScreen }}
     </div>
   </div>
