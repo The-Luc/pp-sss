@@ -1,14 +1,18 @@
+const { LAYOUT_TYPES } = require('@/common/constants');
+
 const layouts = [
   {
     id: 1,
     imageUrlLeft: 'layout1l.jpg',
     imageUrlRight: 'layout1r.jpg',
+    type: LAYOUT_TYPES.COVER.value,
     themeId: 1
   },
   {
     id: 2,
     imageUrlLeft: 'layout2l.jpg',
     imageUrlRight: 'layout2r.jpg',
+    type: LAYOUT_TYPES.COVER.value,
     themeId: 1
   },
   {
@@ -189,6 +193,17 @@ const layouts = [
     id: 32,
     imageUrlLeft: 'layout1l.jpg',
     imageUrlRight: 'layout1r.jpg',
+    themeId: 6
+  },
+  {
+    id: 33,
+    imageUrlLeft: 'layout1l.jpg',
+    type: LAYOUT_TYPES.SINGLE_PAGE.value,
+    themeId: 6
+  },
+  {
+    id: 34,
+    imageUrlLeft: 'layout1l.jpg',
     themeId: 6
   }
 ];

@@ -10,3 +10,4 @@ export * from './routeName';
 export * from './objectType';
 export * from './image';
 export * from './toolName';
+export * from './layoutTypes';
