@@ -1,8 +1,8 @@
-import { mapGetters } from 'vuex';
+import { mapGetters, mapMutations } from 'vuex';
 
 import Frames from '@/components/Thumbnail/Frames';
 import Thumbnail from '@/components/Thumbnail/ThumbnailDigital';
-import { GETTERS } from '@/store/modules/book/const';
+import { GETTERS, MUTATES } from '@/store/modules/book/const';
 
 export default {
   components: {
@@ -33,6 +33,14 @@ export default {
           return '' + indexInSections;
         }
       };
+    }
+  },
+  methods: {
+    ...mapMutations({
+      selectSheet: MUTATES.SELECT_SHEET
+    }),
+    onSelectScreen(sheetId) {
+      this.selectSheet({ sheetId });
     }
   }
 };
