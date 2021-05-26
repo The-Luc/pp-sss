@@ -82,5 +82,11 @@ export const getters = {
     const { createdDate, deliveryDate } = book;
 
     return getDiffDays(createdDate, deliveryDate);
+  },
+  [BOOK._GETTERS.SHEET_LAYOUT]: ({ book }) => sheetId => {
+    console.log('SHEET_LAYOUT', sheetId);
+  },
+  [BOOK._GETTERS.SHEET_THEME]: ({ book }) => sheetId => {
+    console.log('SHEET_THEME', sheetId);
   }
 };
