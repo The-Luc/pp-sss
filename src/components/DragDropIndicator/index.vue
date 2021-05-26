@@ -4,7 +4,6 @@
       <img
         src="@/assets/icons/collapse_dark-blue.svg"
         alt="indicator icon"
-        title="indicator icon"
       />
     </v-col>
   </v-row>
