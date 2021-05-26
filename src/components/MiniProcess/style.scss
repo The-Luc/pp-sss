@@ -2,7 +2,7 @@ $space-under: 5px;
 
 .process-container {
   position: relative;
-  border-left: 1px solid $color-gray5;
+  border-left: $process-section-border2;
 
   .process {
     width: 100%;
@@ -14,7 +14,7 @@ $space-under: 5px;
     width: 100%;
     height: 50%;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-end;
     padding-left: 4px;
     color: $color-gray5;
     line-height: $sm-size;

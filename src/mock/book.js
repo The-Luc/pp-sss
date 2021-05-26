@@ -41,6 +41,7 @@ const book = {
           id: 1,
           type: 0,
           draggable: false,
+          isVisited: false,
           positionFixed: 'all',
           order: 0,
           printData: {
@@ -74,6 +75,7 @@ const book = {
           id: 2,
           type: 1,
           draggable: false,
+          isVisited: false,
           positionFixed: 'first',
           order: 0,
           printData: {
@@ -95,6 +97,7 @@ const book = {
           id: 3,
           type: 3,
           draggable: true,
+          isVisited: false,
           positionFixed: 'none',
           order: 1,
           printData: {
@@ -121,6 +124,7 @@ const book = {
           id: 4,
           type: 3,
           draggable: true,
+          isVisited: false,
           positionFixed: 'none',
           order: 2,
           printData: {
@@ -147,6 +151,7 @@ const book = {
           id: 5,
           type: 3,
           draggable: true,
+          isVisited: false,
           positionFixed: 'none',
           order: 3,
           printData: {
@@ -173,6 +178,7 @@ const book = {
           id: 20,
           type: 3,
           draggable: true,
+          isVisited: false,
           positionFixed: 'none',
           order: 4,
           printData: {
@@ -211,6 +217,7 @@ const book = {
           id: 6,
           type: 3,
           draggable: true,
+          isVisited: false,
           positionFixed: 'none',
           order: 0,
           printData: {
@@ -237,6 +244,7 @@ const book = {
           id: 7,
           type: 3,
           draggable: true,
+          isVisited: false,
           positionFixed: 'none',
           order: 1,
           printData: {
@@ -263,6 +271,7 @@ const book = {
           id: 8,
           type: 3,
           draggable: true,
+          isVisited: false,
           positionFixed: 'none',
           order: 2,
           printData: {
@@ -290,7 +299,7 @@ const book = {
     {
       id: 4,
       draggable: true,
-      name: 'OOO',
+      name: 'Student of the best class of Year 2019',
       color: 'orange',
       status: 0,
       dueDate: '05/27/21',
@@ -301,6 +310,7 @@ const book = {
           id: 9,
           type: 3,
           draggable: true,
+          isVisited: false,
           positionFixed: 'none',
           order: 3,
           printData: {
@@ -339,6 +349,7 @@ const book = {
           id: 11,
           type: 2,
           draggable: false,
+          isVisited: false,
           positionFixed: 'last',
           order: 0,
           printData: {

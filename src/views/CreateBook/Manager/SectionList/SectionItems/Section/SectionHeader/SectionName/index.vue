@@ -8,7 +8,6 @@
       src="@/assets/icons/collapse.svg"
       data-toggle="collapse"
       alt="expand/collapse icon"
-      title="expand/collapse icon"
     />
 
     <div class="input-container" @click="click">

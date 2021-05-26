@@ -172,8 +172,11 @@ export default {
           break;
       }
     },
+    /**
+     * Add text box in print canvas
+     */
     addText() {
-      var text = new fabric.IText('hello world', {
+      var text = new fabric.IText('Text', {
         fontFamily: 'Comic Sans',
         originX: 'left',
         originY: 'top',

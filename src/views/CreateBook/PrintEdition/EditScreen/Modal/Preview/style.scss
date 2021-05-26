@@ -39,6 +39,11 @@
     margin-bottom: 16px;
     .modal-preview-img {
       display: flex;
+      height: 145px;
+      img {
+        max-height: 100%;
+        object-fit: contain;
+      }
     }
   }
 }
