@@ -34,6 +34,16 @@ export default {
       );
     }
   },
+  methods: {
+    // addLine(a, b, c, d, color) {
+    //   let horizontal = new fabric.Line([a, b, c, d], {
+    //     stroke: color,
+    //     strokeWidth: 1,
+    //     selectable: false
+    //   });
+    //   window.printCanvas.add(horizontal);
+    // }
+  },
   mounted() {
     let el = this.$refs.canvas;
     window.printCanvas = new fabric.Canvas(el);
@@ -47,7 +57,21 @@ export default {
     fabric.Object.prototype.setControlsVisibility({
       mtr: false
     });
-    window.printCanvas.setWidth(1200);
-    window.printCanvas.setHeight(770);
+    window.printCanvas.setWidth(1205);
+    window.printCanvas.setHeight(768);
+    // this.addLine(86, 70, 86, 698, '#27AAE1');
+    // this.addLine(86, 70, 570, 70, '#27AAE1');
+    // this.addLine(570, 70, 570, 698, '#27AAE1');
+    // this.addLine(86, 698, 570, 698, '#27AAE1');
+
+    // this.addLine(1205 - 86, 70, 1205 - 86, 698, '#27AAE1');
+    // this.addLine(1205 - 86, 70, 1205 - 570, 70, '#27AAE1');
+    // this.addLine(1205 - 570, 70, 1205 - 570, 698, '#27AAE1');
+    // this.addLine(1205 - 86, 698, 1205 - 570, 698, '#27AAE1');
+
+    // this.addLine(60, 45, 60, 768 - 60, '#27AAE1');
+    // this.addLine(1205 - 86, 70, 1205 - 570, 70, '#27AAE1');
+    // this.addLine(1205 - 570, 70, 1205 - 570, 698, '#27AAE1');
+    // this.addLine(1205 - 86, 698, 1205 - 570, 698, '#27AAE1');
   }
 };

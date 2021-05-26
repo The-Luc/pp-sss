@@ -9,9 +9,8 @@
         v-for="theme in themes"
         :key="theme.id"
         :class="['modal-theme-item', { active: selectedThemeId === theme.id }]"
-        @click="onSelectTheme(theme.id)"
       >
-        <div class="modal-theme-img">
+        <div class="modal-theme-img" @click="onSelectTheme(theme.id)">
           <img
             v-if="theme.imageUrl"
             :src="require(`@/assets/image/themes/${theme.imageUrl}`)"
