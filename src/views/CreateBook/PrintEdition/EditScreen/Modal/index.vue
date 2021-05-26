@@ -2,7 +2,7 @@
   <Modal
     class="modal-theme"
     title="Yearbook Theme"
-    width="800"
+    width="786"
     :theme-modal="true"
   >
     <div class="modal-theme-body">

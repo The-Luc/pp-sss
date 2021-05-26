@@ -1,13 +1,21 @@
+.pp-modal-title-theme {
+  .text-size-xl.text-title {
+    font-family: $font-500;
+    font-size: 18px;
+  }
+}
+
 .modal-theme-title {
-  font-family: $font-700;
-  font-size: 14px;
+  font-family: $font-500;
+  font-size: 13px;
   text-align: center;
   color: #565656;
   line-height: 14px;
 }
 .modal-theme-note {
+  font-family: $font-300;
   text-align: center;
-  font-size: 13px;
+  font-size: 11px;
   font-style: italic;
   margin-bottom: 16px;
 }
@@ -21,9 +29,11 @@
     margin-right: 4%;
     margin-bottom: 14px;
     .modal-theme-name {
-      font-family: $font-700;
+      margin-top: 4px;
+      font-family: $font-500;
       text-align: center;
       font-size: 13px;
+      color: #58595b;
     }
     .modal-theme-img {
       position: relative;
@@ -58,6 +68,7 @@
           }
         }
         .modal-theme-label {
+          font-family: $font-500;
           font-size: 13px;
           color: #fff;
           opacity: 0.75;
@@ -72,6 +83,9 @@
     &.active {
       .modal-theme-img {
         border: 2px solid #42738d;
+      }
+      .modal-theme-name {
+        color: #42738d;
       }
     }
   }
