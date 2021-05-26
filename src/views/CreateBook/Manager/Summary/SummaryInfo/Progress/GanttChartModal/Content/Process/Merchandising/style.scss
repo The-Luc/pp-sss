@@ -1,3 +1,23 @@
 .merchandising {
   width: 100%;
+  padding-bottom: $process-section-padding;
+  border-bottom: $process-section-border;
+
+  ::v-deep {
+    &.pre-sale {
+      .process {
+        opacity: 0.8;
+        background-color: $color-blue;
+      }
+    }
+
+    &.demand-sale {
+      width: 100%;
+
+      .process {
+        opacity: 0.6;
+        background-color: $color-blue;
+      }
+    }
+  }
 }

@@ -13,6 +13,14 @@ export default {
     appendedIcon: {
       type: String,
       default: ICON_LOCAL.ARROW_SELECT
+    },
+    activeMenuIcon: {
+      type: String,
+      default: ICON_LOCAL.ACTIVE_MENU
+    },
+    selectedVal: {
+      type: Object,
+      default: {}
     }
   },
   methods: {

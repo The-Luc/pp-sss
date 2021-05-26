@@ -18,7 +18,7 @@ export default {
   },
   computed: {
     ...mapGetters({
-      isSelectedPrintTheme: BOOK_GETTERS.IS_SELECTED_PRINT_THEME
+      printThemeSelected: BOOK_GETTERS.PRINT_THEME_SELECTED_ID
     })
   },
   methods: {
@@ -28,7 +28,7 @@ export default {
     })
   },
   created() {
-    if (!this.isSelectedPrintTheme) {
+    if (!this.printThemeSelected) {
       this.toggleModal({
         isOpenModal: true,
         modalData: {

@@ -5,7 +5,13 @@
     :style="{ left: getPosition() }"
   >
     <div class="flag-item">
-      <img class="flag" src="@/assets/icons/event-flag-red.svg" />
+      <img
+        class="flag"
+        src="@/assets/icons/event-flag-red.svg"
+        alt="flag icon"
+        title="flag icon"
+      />
+
       <span class="dot" />
     </div>
 

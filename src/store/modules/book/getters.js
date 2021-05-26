@@ -1,5 +1,6 @@
 import moment from 'moment';
 
+import { getDiffDays } from '@/common/utils';
 import BOOK from './const';
 
 export const getters = {
@@ -39,10 +40,7 @@ export const getters = {
   [BOOK._GETTERS.GET_PAGE_SELECTED]: ({ pageSelected }) => {
     return pageSelected;
   },
-  [BOOK._GETTERS.GET_THEMES]: ({ themes }) => {
-    return themes;
-  },
-  [BOOK._GETTERS.IS_SELECTED_PRINT_THEME]: ({ book }) => {
+  [BOOK._GETTERS.PRINT_THEME_SELECTED_ID]: ({ book }) => {
     return book.printData.theme;
   },
   [BOOK._GETTERS.TOTAL_MONTH_SHOW_ON_CHART]: ({ book }) => {
@@ -54,5 +52,35 @@ export const getters = {
       .set('date', beginTime.date());
 
     return endTime.diff(beginTime, 'months', false) + 1;
+  },
+  [BOOK._GETTERS.TOTAL_DAYS_SHOW_ON_CHART]: ({ book }) => {
+    const { createdDate, deliveryDate } = book;
+
+    const beginTime = moment(createdDate, 'MM/DD/YY').set('date', 1);
+    const endTime = moment(deliveryDate, 'MM/DD/YY').add(1, 'M');
+
+    endTime.set('date', endTime.daysInMonth());
+
+    return endTime.diff(beginTime, 'days', false) + 1;
+  },
+  [BOOK._GETTERS.SALE_DAY_FROM_BEGINNING]: ({ book }) => {
+    const { createdDate, saleDate } = book;
+
+    return getDiffDays(createdDate, saleDate);
+  },
+  [BOOK._GETTERS.RELEASE_DAY_FROM_BEGINNING]: ({ book }) => {
+    const { createdDate, releaseDate } = book;
+
+    return getDiffDays(createdDate, releaseDate);
+  },
+  [BOOK._GETTERS.CREATED_DAY_FROM_BEGINNING]: ({ book }) => {
+    const { createdDate } = book;
+
+    return getDiffDays(createdDate, createdDate);
+  },
+  [BOOK._GETTERS.DELIVERY_DAY_FROM_BEGINNING]: ({ book }) => {
+    const { createdDate, deliveryDate } = book;
+
+    return getDiffDays(createdDate, deliveryDate);
   }
 };

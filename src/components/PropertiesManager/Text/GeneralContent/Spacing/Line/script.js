@@ -1,5 +1,6 @@
 import PpCombobox from '@/components/Combobox';
 import { ICON_LOCAL } from '@/common/constants';
+import { LINE_SPACING } from '@/mock/lineSpacing';
 
 export default {
   components: {
@@ -9,12 +10,7 @@ export default {
     return {
       prependedIcon: ICON_LOCAL.PREPENDED_LINE,
       appendedIcon: ICON_LOCAL.APPENED_ICON,
-      items: [
-        {
-          label: 'Auto',
-          value: 'auto'
-        }
-      ]
+      items: LINE_SPACING
     };
   }
 };

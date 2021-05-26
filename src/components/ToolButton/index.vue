@@ -1,7 +1,7 @@
 <template>
   <div
     class="item"
-    :class="{ 'item--active': selectedToolTheme && selectedToolTheme === name }"
+    :class="{ 'item--active': isActive }"
     :style="{ width: `${width}px` }"
     @click="onClick"
   >

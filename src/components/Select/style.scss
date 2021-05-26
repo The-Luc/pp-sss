@@ -25,4 +25,40 @@
     margin-top: 1px !important;
     height: 25px;
   }
+
+  &--item {
+    min-height: 20px;
+    padding: 0 10px;
+
+    &:not(:last-child) {
+      margin-bottom: 5px;
+    }
+
+    &.v-list-item--active,
+    &:hover {
+      background-color: #42738d;
+
+      .v-list-item__content {
+        color: white;
+      }
+    }
+
+    .icon-ative {
+      margin-right: 5px;
+      width: 10px;
+      margin-bottom: 2px;
+    }
+
+    .v-list-item__action {
+      margin: 0 5px 0 0 !important;
+    }
+
+    .v-list-item__content {
+      padding: 0;
+      span {
+        font-size: 14px;
+        font-family: $font-500;
+      }
+    }
+  }
 }

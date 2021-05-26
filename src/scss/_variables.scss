@@ -8,7 +8,9 @@ $color-gray4: #6f6f6f;
 $color-gray5: #565656;
 $color-gray6: #808184;
 $color-gray7: #d3d3d3;
-$color-gray8: #d0d0d0;
+$color-gray8: #d0d0d050;
+$color-gray9: #a2a2a2;
+$color-blue: #9cb6c4;
 $color-darkblue: #42738d;
 
 // Font Family
@@ -38,3 +40,6 @@ $width-scroll: 6px;
 $margin-scroll: 3px;
 
 $properties-width: 370px;
+
+$process-section-padding: 8px;
+$process-section-border: 1px solid $color-gray2;

@@ -1,6 +1,6 @@
 <template>
   <div class="process">
-    <Merchandising />
+    <Merchandising v-if="isSale" />
     <Sections />
     <Production />
   </div>

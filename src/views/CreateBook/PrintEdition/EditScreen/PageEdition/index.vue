@@ -1,12 +1,32 @@
-<template lang="">
+<template>
   <div class="page-edition">
-    <div class="container-edition">
+    <div
+      class="container-edition"
+      :class="[
+        { 'canvas-soft-cover': isSoftCover },
+        { 'canvas-hard-cover': isHardCover },
+        { intro: isIntro },
+        { signature: isSignature }
+      ]"
+    >
       <canvas id="page-left"></canvas>
       <canvas id="page-right"></canvas>
-      <div :class="['canvas-soft-cover', { 'canvas-hard-cover': isHardCover }]">
+      <div class="page-container">
         <div class="page">
-          <div class="page-left"></div>
-          <div class="page-right"></div>
+          <div class="page-left">
+            <div v-if="isIntro" class="front-cover">
+              <div>Inside Front Cover</div>
+              <div>THIS PAGE</div>
+              <div>DOES NOT PRINT</div>
+            </div>
+          </div>
+          <div class="page-right">
+            <div v-if="isSignature" class="front-cover">
+              <div>Inside Front Cover</div>
+              <div>THIS PAGE</div>
+              <div>DOES NOT PRINT</div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
