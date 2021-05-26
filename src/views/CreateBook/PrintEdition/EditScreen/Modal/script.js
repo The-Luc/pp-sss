@@ -22,8 +22,19 @@ export default {
   },
   computed: {
     ...mapGetters({
-      themes: THEME_GETTERS.GET_THEMES
-    })
+      themes: THEME_GETTERS.GET_THEMES,
+      layouts: THEME_GETTERS.GET_LAYOUTS
+    }),
+    layoutsOfThemePreview() {
+      return this.layouts.filter(item => item.themeId == this.themePreview);
+    },
+    themeNamePreview() {
+      let name = '';
+      if (this.themePreview) {
+        name = this.themes.find(item => item.id == this.themePreview).name;
+      }
+      return name;
+    }
   },
   methods: {
     ...mapMutations({
@@ -62,6 +73,13 @@ export default {
      */
     onPreviewTheme({ themeId }) {
       this.themePreview = themeId;
+      this.selectedThemeId = themeId;
+    },
+    /**
+     * Set preview theme's id empty and close preview
+     */
+    onClosePreview() {
+      this.themePreview = null;
     }
   },
   created() {
