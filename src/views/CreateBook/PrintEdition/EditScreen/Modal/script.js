@@ -77,6 +77,9 @@ export default {
       this.themePreview = themeId;
       this.selectedThemeId = themeId;
     },
+    /**
+     * Set preview theme's id empty and close preview
+     */
     onClosePreview() {
       this.themePreview = null;
     }

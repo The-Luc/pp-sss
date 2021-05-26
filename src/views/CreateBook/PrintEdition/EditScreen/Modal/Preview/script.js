@@ -10,6 +10,9 @@ export default {
     }
   },
   methods: {
+    /**
+     * Set preview theme's id empty and emit
+     */
     onClosePreview() {
       this.$emit('onClosePreview');
     }
