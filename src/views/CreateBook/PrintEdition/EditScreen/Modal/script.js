@@ -26,7 +26,7 @@ export default {
       layouts: THEME_GETTERS.GET_LAYOUTS
     }),
     layoutsOfThemePreview() {
-      return this.layouts.filter(item => item.themeId == this.themePreview);
+      return this.layouts(this.themePreview);
     },
     themeNamePreview() {
       let name = '';
