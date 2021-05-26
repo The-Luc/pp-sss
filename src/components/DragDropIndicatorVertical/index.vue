@@ -1,9 +1,8 @@
 <template>
   <v-col :class="['hide', 'indicator', customClassName]">
     <img
-      src="@/assets/icons/collapse_dark-blue.svg"
+      src="@/assets/icons/collapse-dark-blue.svg"
       alt="indicator icon"
-      title="indicator icon"
     />
   </v-col>
 </template>
