@@ -39,6 +39,10 @@ export default {
     ...mapMutations({
       selectSheet: MUTATES.SELECT_SHEET
     }),
+    /**
+     * Set selected sheet's id
+     * @param  {String} sheetId Sheet's id selected
+     */
     onSelectScreen(sheetId) {
       this.selectSheet({ sheetId });
     }

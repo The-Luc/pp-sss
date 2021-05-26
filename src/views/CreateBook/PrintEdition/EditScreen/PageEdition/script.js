@@ -45,7 +45,7 @@ export default {
     fabric.Object.prototype.transparentCorners = false;
     fabric.Object.prototype.borderScaleFactor = 1.5;
     fabric.Object.prototype.setControlsVisibility({
-      mtr: false // I think you get it
+      mtr: false
     });
     window.printCanvas.setWidth(1200);
     window.printCanvas.setHeight(770);
