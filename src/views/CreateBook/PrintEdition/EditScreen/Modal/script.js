@@ -29,10 +29,8 @@ export default {
       return this.layouts.filter(item => item.themeId == this.themePreview);
     },
     themeNamePreview() {
-      let name;
-      if (!this.themePreview) {
-        name = '';
-      } else {
+      let name = '';
+      if (this.themePreview) {
         name = this.themes.find(item => item.id == this.themePreview).name;
       }
       return name;

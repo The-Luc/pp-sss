@@ -16,8 +16,5 @@ export default {
     onClosePreview() {
       this.$emit('onClosePreview');
     }
-  },
-  created() {
-    console.log(this.layouts);
   }
 };
