@@ -145,9 +145,6 @@ export default {
             type: OBJECT_TYPE.TEXT
           });
           break;
-        case 'text':
-          console.log(1);
-          break;
         default:
           break;
       }
@@ -184,6 +181,8 @@ export default {
         top: 282
       });
       window.printCanvas.add(text);
+      const index = window.printCanvas.getObjects().length - 1;
+      window.printCanvas.setActiveObject(window.printCanvas.item(index));
     }
   }
 };
