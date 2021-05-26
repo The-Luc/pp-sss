@@ -1,6 +1,9 @@
 <template>
   <div class="process-container">
-    <div class="process"></div>
+    <div class="process">
+      <slot name="process"></slot>
+    </div>
+
     <div
       class="description text-300"
       :class="isDisplayDescriptionUnder && 'under'"

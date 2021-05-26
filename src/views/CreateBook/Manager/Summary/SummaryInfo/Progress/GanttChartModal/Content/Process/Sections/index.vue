@@ -1,6 +1,6 @@
 <template>
   <div class="sections">
-    <Section />
+    <Section v-for="section in sections" :key="section.id" :section="section" />
   </div>
 </template>
 
