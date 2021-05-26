@@ -1,5 +1,5 @@
 import { mapMutations, mapGetters } from 'vuex';
-
+import { fabric } from 'fabric';
 import ToolButton from '@/components/ToolButton';
 import ItemTool from './ItemTool';
 import { GETTERS, MUTATES } from '@/store/modules/app/const';
@@ -50,7 +50,8 @@ export default {
           },
           {
             iconName: 'text_format',
-            title: 'Text'
+            title: 'Text',
+            name: 'text'
           },
           {
             iconName: 'photo_size_select_large',
@@ -167,7 +168,9 @@ export default {
             type: OBJECT_TYPE.TEXT
           });
           break;
-
+        case 'text':
+          console.log(1);
+          break;
         default:
           break;
       }
@@ -181,9 +184,29 @@ export default {
         return;
       }
       const toolName = this.selectedToolName === data?.name ? '' : data?.name;
-      this.setToolNameSelected({
-        name: toolName
+      switch (data.name) {
+        case 'text':
+          this.addText();
+          break;
+        default:
+          this.setToolNameSelected({
+            name: toolName
+          });
+          break;
+      }
+    },
+    /**
+     * Add text box in print canvas
+     */
+    addText() {
+      var text = new fabric.IText('Text', {
+        fontFamily: 'Comic Sans',
+        originX: 'left',
+        originY: 'top',
+        left: 51,
+        top: 282
       });
+      window.printCanvas.add(text);
     }
   }
 };

@@ -1,4 +1,5 @@
 import { mapGetters } from 'vuex';
+import { fabric } from 'fabric';
 import { GETTERS } from '@/store/modules/book/const';
 export default {
   computed: {
@@ -32,5 +33,11 @@ export default {
         lastSection.sheets[lastSection.sheets.length - 1].id
       );
     }
+  },
+  mounted() {
+    let el = this.$refs.canvas;
+    window.printCanvas = new fabric.Canvas(el);
+    window.printCanvas.setWidth(1200);
+    window.printCanvas.setHeight(770);
   }
 };
