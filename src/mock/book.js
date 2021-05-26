@@ -290,7 +290,7 @@ const book = {
     {
       id: 4,
       draggable: true,
-      name: 'OOO',
+      name: 'Student of the best class of Year 2019',
       color: 'orange',
       status: 0,
       dueDate: '05/27/21',

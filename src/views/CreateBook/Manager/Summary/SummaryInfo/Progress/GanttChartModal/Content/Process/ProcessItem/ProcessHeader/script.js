@@ -8,9 +8,19 @@ export default {
       type: String
     }
   },
+  data() {
+    return {
+      isElementReady: false
+    };
+  },
+  mounted() {
+    this.isElementReady = true;
+  },
   computed: {
-    useName() {
-      return this.name;
+    isTruncated: function() {
+      if (!this.isElementReady) return false;
+
+      return this.$refs.section.offsetWidth < this.$refs.section.scrollWidth;
     }
   }
 };
