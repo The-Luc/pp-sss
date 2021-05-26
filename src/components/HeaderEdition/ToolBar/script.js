@@ -195,6 +195,9 @@ export default {
           break;
       }
     },
+    /**
+     * Add text box in print canvas
+     */
     addText() {
       var text = new fabric.IText('hello world', {
         fontFamily: 'Comic Sans',
