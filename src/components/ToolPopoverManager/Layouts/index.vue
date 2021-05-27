@@ -4,7 +4,12 @@
       <template #action>
         <div class="pp-layouts-action-container">
           <SelectTheme :items="themesOptions" @change="onChangeTheme" />
-          <SelectLayout :items="layouts" @change="onChangeLayout" />
+          <SelectLayout
+            :items="layouts"
+            :disabled="disabled"
+            :layout-selected="layoutSelected"
+            @change="onChangeLayout"
+          />
         </div>
       </template>
 

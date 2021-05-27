@@ -8,6 +8,14 @@ export default {
     items: {
       type: Array,
       required: true
+    },
+    disabled: {
+      type: Boolean,
+      default: false
+    },
+    layoutSelected: {
+      type: Object,
+      default: () => ({})
     }
   },
   methods: {

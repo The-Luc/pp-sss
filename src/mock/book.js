@@ -49,6 +49,8 @@ const book = {
           order: 0,
           printData: {
             thumbnailUrl: null,
+            theme: null,
+            layout: null,
             link: 'none',
             pages: [
               {

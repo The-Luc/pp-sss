@@ -1,6 +1,6 @@
 import moment from 'moment';
 
-import { getDiffDays } from '@/common/utils';
+import { getAllSheets, getDiffDays } from '@/common/utils';
 import BOOK from './const';
 
 export const getters = {
@@ -84,9 +84,13 @@ export const getters = {
     return getDiffDays(createdDate, deliveryDate);
   },
   [BOOK._GETTERS.SHEET_LAYOUT]: ({ book }) => sheetId => {
-    console.log('SHEET_LAYOUT', sheetId);
+    const sheets = getAllSheets(book.sections);
+    const sheet = sheets.find(s => s.id === sheetId);
+    return sheet?.printData?.layout;
   },
   [BOOK._GETTERS.SHEET_THEME]: ({ book }) => sheetId => {
-    console.log('SHEET_THEME', sheetId);
+    const sheets = getAllSheets(book.sections);
+    const sheet = sheets.find(s => s.id === sheetId);
+    return sheet?.printData?.theme;
   }
 };

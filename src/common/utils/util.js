@@ -25,3 +25,11 @@ export const getDiffDays = (beginDate, endDate) => {
 
   return endTime.diff(beginTime, 'days', false) + 1;
 };
+
+export const getAllSheets = sections => {
+  let sheets = [];
+  sections.forEach(s => {
+    sheets = [...sheets, ...s.sheets];
+  });
+  return sheets;
+};

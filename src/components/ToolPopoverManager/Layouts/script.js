@@ -10,7 +10,7 @@ import SelectLayout from './SelectLayout';
 import SelectTheme from './SelectTheme';
 import Item from './Item';
 import { LAYOUT_TYPES_OPTIONs } from '@/mock/layoutTypes';
-import { TOOL_NAME } from '@/common/constants';
+import { LAYOUT_TYPES, TOOL_NAME } from '@/common/constants';
 
 export default {
   components: {
@@ -25,7 +25,8 @@ export default {
       themes: THEME_GETTERS.GET_THEMES,
       book: BOOK_GETTERS.BOOK_DETAIL,
       pageSelected: BOOK_GETTERS.GET_PAGE_SELECTED,
-      selectedToolName: APP_GETTERS.SELECTED_TOOL_NAME
+      selectedToolName: APP_GETTERS.SELECTED_TOOL_NAME,
+      sheetLayout: BOOK_GETTERS.SHEET_LAYOUT
     })
   },
   watch: {
@@ -41,34 +42,75 @@ export default {
       layouts: LAYOUT_TYPES_OPTIONs,
       isCover: false,
       isSinglePage: false,
+      disabled: false,
       layoutSelected: {},
       themeSelected: {}
     };
   },
   mounted() {
-    console.log('book', this.book);
-    console.log('pageSelected', this.pageSelected);
     this.initData();
   },
   methods: {
+    /**
+     * Set up inital data to render in view
+     */
     initData() {
-      console.log('initData');
+      this.setLayoutSelected(this.pageSelected);
+      this.setDisabledLayout(this.pageSelected);
     },
     /**
-     * [someFunction description]
+     * Set default selected for layout base on id of sheet: Cover, Single Page or Collage
+     * @param  {Number} pageSelected Id of sheet selected
      */
-    setLayoutSelected() {
-      // Check exist sheet's layout
-      // yes: layoutSelected = sheet's layout
-      // no:
-      // isCover, isSinglePage
+    setLayoutSelected(pageSelected) {
+      const { coverId, insideBackCoverId, insideFrontCoverId } = this.book;
+      switch (pageSelected) {
+        case coverId:
+          {
+            const coverOption = this.layouts.find(
+              l => l.value === LAYOUT_TYPES.COVER.value
+            );
+            this.layoutSelected = coverOption;
+          }
+          break;
+        case insideBackCoverId:
+        case insideFrontCoverId:
+          {
+            const singlePageOption = this.layouts.find(
+              l => l.value === LAYOUT_TYPES.SINGLE_PAGE.value
+            );
+            this.layoutSelected = singlePageOption;
+          }
+          break;
+        default:
+          {
+            const res = this.sheetLayout(pageSelected);
+            if (res) {
+              this.layoutSelected = res;
+            } else {
+              const collageOption = this.layouts.find(
+                l => l.value === LAYOUT_TYPES.COLLAGE.value
+              );
+              this.layoutSelected = collageOption;
+            }
+          }
+          break;
+      }
     },
-    setDisabledLayout() {
-      // disable: isCover || isSinglePage
+    /**
+     * Set disabled select layout base on id of sheet are cover or half-sheet
+     * @param  {Number} pageSelected Id of sheet selected
+     */
+    setDisabledLayout(pageSelected) {
+      const { coverId, insideBackCoverId, insideFrontCoverId } = this.book;
+      const isDisabled = [
+        coverId,
+        insideBackCoverId,
+        insideFrontCoverId
+      ].includes(pageSelected);
+      this.disabled = isDisabled;
     },
-    setThemeSelected() {
-      //
-    },
+    setThemeSelected() {},
     onChangeTheme(theme) {
       console.log('theme', theme);
     },
