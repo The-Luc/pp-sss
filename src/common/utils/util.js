@@ -26,6 +26,12 @@ export const getDiffDays = (beginDate, endDate) => {
   return endTime.diff(beginTime, 'days', false) + 1;
 };
 
+/**
+ * Get total sheets into sections of book
+ *
+ * @param   {Array}  sections - All sections of book
+ * @returns {Array} - Total sheets
+ */
 export const getAllSheets = sections => {
   let sheets = [];
   sections.forEach(s => {
