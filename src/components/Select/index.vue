@@ -5,6 +5,8 @@
     item-text="label"
     item-value="value"
     solo
+    :disabled="disabled"
+    append-icon=""
     :value="selectedVal"
     return-object
     persistent-hint
@@ -38,7 +40,7 @@
     <template v-if="prependedIcon" #prepend>
       <img :src="prependedIcon" alt="prepend-icon" class="prepend-icon" />
     </template>
-    <template v-if="appendedIcon" #append>
+    <template v-if="appendedIcon && !disabled" #append>
       <img :src="appendedIcon" alt="arrow-select" />
     </template>
   </v-select>

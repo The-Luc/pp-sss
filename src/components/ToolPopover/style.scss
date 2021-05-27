@@ -10,7 +10,6 @@
     background-color: #42738d;
     display: flex;
     align-items: center;
-    color: white;
 
     &::before {
       position: absolute;
@@ -23,6 +22,10 @@
       border-left: 7px solid transparent;
       border-right: 7px solid transparent;
       border-bottom: 10px solid #42738d;
+    }
+
+    p {
+      color: $color-white;
     }
   }
 

@@ -2,19 +2,18 @@
   <div class="layouts-container">
     <PpToolPopover title="Layouts">
       <template #action>
-        <div class="pp-selected-theme">
-          <div class="pp-selected-theme--header">
-            <SelectLayout :items="items" @change="onChangeTheme" />
-
-            <span class="pp-selected-theme--header--selected-title"
-              >Theme:</span
-            >
-            <PpSelect :items="items" @change="onChangeTheme" />
-          </div>
+        <div class="pp-layouts-action-container">
+          <SelectTheme :items="themesOptions" @change="onChangeTheme" />
+          <SelectLayout
+            :items="layouts"
+            :disabled="disabled"
+            :layout-selected="layoutSelected"
+            @change="onChangeLayout"
+          />
         </div>
       </template>
 
-      <template #content>
+      <!-- <template #content>
         <div class="theme-item-container">
           <Item
             v-for="theme in themes"
@@ -25,7 +24,7 @@
             @click="onSelectTheme"
           />
         </div>
-      </template>
+      </template> -->
     </PpToolPopover>
   </div>
 </template>
