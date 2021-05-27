@@ -47,6 +47,16 @@ export default {
   mounted() {
     let el = this.$refs.canvas;
     window.printCanvas = new fabric.Canvas(el);
+    fabric.Object.prototype.cornerColor = '#fff';
+    fabric.Object.prototype.borderColor = '#8C8C8C';
+    fabric.Object.prototype.borderSize = 1.25;
+    fabric.Object.prototype.cornerSize = 9;
+    fabric.Object.prototype.cornerStrokeColor = '#8C8C8C';
+    fabric.Object.prototype.transparentCorners = false;
+    fabric.Object.prototype.borderScaleFactor = 1.5;
+    fabric.Object.prototype.setControlsVisibility({
+      mtr: false
+    });
     window.printCanvas.setWidth(1205);
     window.printCanvas.setHeight(768);
     // this.addLine(86, 70, 86, 698, '#27AAE1');

@@ -30,6 +30,10 @@ export default {
     isActive: {
       type: Boolean,
       default: false
+    },
+    fontSize: {
+      type: String,
+      default: '10px'
     }
   },
   created() {

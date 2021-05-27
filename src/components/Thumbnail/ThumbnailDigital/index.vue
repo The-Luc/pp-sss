@@ -17,6 +17,7 @@
     </div>
     <div
       :class="['thumbnail-view-number-page', { 'number-page': leftNumberPage }]"
+      :style="{ fontSize: fontSize }"
     >
       {{ orderScreen }}
     </div>
