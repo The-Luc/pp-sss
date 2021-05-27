@@ -85,9 +85,17 @@ export default {
       }
       return numberPage;
     },
+    /**
+     * Check if that sheet is selected
+     * @param  {String} sheetId Sheet's id selected
+     */
     checkIsActive(sheetId) {
       return sheetId === this.pageSelected;
     },
+    /**
+     * Set selected sheet's id
+     * @param  {String} sheetId Sheet's id selected
+     */
     onSelectSheet(sheetId) {
       this.selectSheet({ sheetId });
     }

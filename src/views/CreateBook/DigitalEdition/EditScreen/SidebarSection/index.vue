@@ -12,6 +12,7 @@
           :sheet="sheet"
           :edit="false"
           :left-number-page="true"
+          font-size="8px"
           :order-screen="orderScreen(section.id, sheet)"
           :is-active="checkIsActive(sheet.id)"
           @click.native="onSelectSheet(sheet.id)"

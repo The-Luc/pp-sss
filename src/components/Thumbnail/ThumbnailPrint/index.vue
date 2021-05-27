@@ -17,7 +17,7 @@
         </router-link>
       </div>
     </div>
-    <div class="thumbnail-view-number-page">
+    <div class="thumbnail-view-number-page" :style="{ fontSize: fontSize }">
       <div class="number-page-left">{{ numberPage.numberLeft }}</div>
       <div class="number-page-link">
         <v-icon

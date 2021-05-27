@@ -10,6 +10,7 @@
           :to-link="`/book/${bookId}/edit/digital/edit-screen`"
           :sheet="sheet"
           :order-screen="orderScreen(section.id, sheet)"
+          @click.native="onSelectScreen(sheet.id)"
         />
       </Frames>
     </template>

@@ -18,11 +18,12 @@
       border-radius: 100%;
     }
     .header-name {
-      font-family: $font-700;
+      font-family: $font-300;
       max-width: 75px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      color: #565656;
     }
     span {
       font-family: $font-300;

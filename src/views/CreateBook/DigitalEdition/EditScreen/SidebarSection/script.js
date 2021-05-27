@@ -41,7 +41,7 @@ export default {
     }),
     /**
      * Check if that sheet is selected
-     * @param  {Number} sheetId Sheet's id selected
+     * @param  {String} sheetId Sheet's id selected
      */
     checkIsActive(sheetId) {
       return sheetId === this.pageSelected;
