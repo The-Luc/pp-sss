@@ -2,7 +2,7 @@
   <Modal
     class="modal-theme"
     title="Yearbook Theme"
-    width="800"
+    width="786"
     :theme-modal="true"
   >
     <div class="modal-theme-body">
@@ -13,7 +13,12 @@
         @onSelectTheme="onSelectTheme($event)"
         @onPreviewTheme="onPreviewTheme($event)"
       />
-      <Preview v-if="themePreview" />
+      <Preview
+        v-if="themePreview"
+        :theme-name="themeNamePreview"
+        :layouts="layoutsOfThemePreview"
+        @onClosePreview="onClosePreview"
+      />
     </div>
     <div class="modal-theme-footer">
       <PpButton class="button-select" is-active @click.native="onSubmitThemeId">

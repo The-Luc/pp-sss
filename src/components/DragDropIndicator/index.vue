@@ -2,9 +2,8 @@
   <v-row :class="['hide', 'indicator', customClassName]">
     <v-col>
       <img
-        src="@/assets/icons/collapse_dark-blue.svg"
+        src="@/assets/icons/collapse-dark-blue.svg"
         alt="indicator icon"
-        title="indicator icon"
       />
     </v-col>
   </v-row>

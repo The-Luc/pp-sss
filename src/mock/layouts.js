@@ -1,113 +1,210 @@
+const { LAYOUT_TYPES } = require('@/common/constants');
+
 const layouts = [
   {
     id: 1,
-    imageUrl: '',
+    imageUrlLeft: 'layout1l.jpg',
+    imageUrlRight: 'layout1r.jpg',
+    type: LAYOUT_TYPES.COVER.value,
     themeId: 1
   },
   {
     id: 2,
-    imageUrl: '',
+    imageUrlLeft: 'layout2l.jpg',
+    imageUrlRight: 'layout2r.jpg',
+    type: LAYOUT_TYPES.COVER.value,
     themeId: 1
   },
   {
     id: 3,
-    imageUrl: '',
+    imageUrlLeft: 'layout4l.jpg',
+    imageUrlRight: 'layout4r.jpg',
     themeId: 1
   },
   {
     id: 4,
-    imageUrl: '',
+    imageUrlLeft: 'layout4l.jpg',
+    imageUrlRight: 'layout4r.jpg',
     themeId: 1
   },
   {
     id: 5,
-    imageUrl: '',
+    imageUrlLeft: 'layout5l.jpg',
+    imageUrlRight: 'layout5r.jpg',
     themeId: 1
   },
   {
     id: 6,
-    imageUrl: '',
+    imageUrlLeft: 'layout6l.jpg',
+    imageUrlRight: 'layout6r.jpg',
     themeId: 1
   },
   {
     id: 7,
-    imageUrl: '',
+    imageUrlLeft: 'layout7l.jpg',
+    imageUrlRight: 'layout7r.jpg',
     themeId: 1
   },
   {
     id: 8,
-    imageUrl: '',
+    imageUrlLeft: 'layout8l.jpg',
+    imageUrlRight: 'layout8r.jpg',
     themeId: 1
   },
   {
     id: 9,
-    imageUrl: '',
+    imageUrlLeft: 'layout9l.jpg',
+    imageUrlRight: 'layout9r.jpg',
     themeId: 1
   },
   {
     id: 10,
-    imageUrl: '',
+    imageUrlLeft: 'layout10l.jpg',
+    imageUrlRight: 'layout10r.jpg',
     themeId: 1
   },
   {
     id: 11,
-    imageUrl: '',
+    imageUrlLeft: 'layout11l.jpg',
+    imageUrlRight: 'layout11r.jpg',
     themeId: 7
   },
   {
     id: 12,
-    imageUrl: '',
+    imageUrlLeft: 'layout12l.jpg',
+    imageUrlRight: 'layout12r.jpg',
     themeId: 3
   },
   {
     id: 13,
-    imageUrl: '',
+    imageUrlLeft: 'layout14l.jpg',
+    imageUrlRight: 'layout14r.jpg',
     themeId: 2
   },
   {
     id: 14,
-    imageUrl: '',
+    imageUrlLeft: 'layout14l.jpg',
+    imageUrlRight: 'layout14r.jpg',
     themeId: 4
   },
   {
     id: 15,
-    imageUrl: '',
+    imageUrlLeft: 'layout15l.jpg',
+    imageUrlRight: 'layout15r.jpg',
     themeId: 3
   },
   {
     id: 16,
-    imageUrl: '',
+    imageUrlLeft: 'layout12l.jpg',
+    imageUrlRight: 'layout12r.jpg',
     themeId: 2
   },
   {
     id: 17,
-    imageUrl: '',
+    imageUrlLeft: 'layout14l.jpg',
+    imageUrlRight: 'layout14r.jpg',
     themeId: 4
   },
   {
     id: 18,
-    imageUrl: '',
+    imageUrlLeft: 'layout14l.jpg',
+    imageUrlRight: 'layout14r.jpg',
     themeId: 8
   },
   {
     id: 19,
-    imageUrl: '',
+    imageUrlLeft: 'layout4l.jpg',
+    imageUrlRight: 'layout4r.jpg',
     themeId: 8
   },
   {
     id: 20,
-    imageUrl: '',
+    imageUrlLeft: 'layout2l.jpg',
+    imageUrlRight: 'layout2r.jpg',
     themeId: 2
   },
   {
     id: 21,
-    imageUrl: '',
+    imageUrlLeft: 'layout2l.jpg',
+    imageUrlRight: 'layout2r.jpg',
     themeId: 4
   },
   {
     id: 22,
-    imageUrl: '',
+    imageUrlLeft: 'layout1l.jpg',
+    imageUrlRight: 'layout1r.jpg',
     themeId: 5
+  },
+  {
+    id: 23,
+    imageUrlLeft: 'layout14l.jpg',
+    imageUrlRight: 'layout14r.jpg',
+    themeId: 6
+  },
+  {
+    id: 24,
+    imageUrlLeft: 'layout14l.jpg',
+    imageUrlRight: 'layout14r.jpg',
+    themeId: 6
+  },
+  {
+    id: 25,
+    imageUrlLeft: 'layout15l.jpg',
+    imageUrlRight: 'layout15r.jpg',
+    themeId: 9
+  },
+  {
+    id: 26,
+    imageUrlLeft: 'layout12l.jpg',
+    imageUrlRight: 'layout12r.jpg',
+    themeId: 10
+  },
+  {
+    id: 27,
+    imageUrlLeft: 'layout14l.jpg',
+    imageUrlRight: 'layout14r.jpg',
+    themeId: 11
+  },
+  {
+    id: 28,
+    imageUrlLeft: 'layout14l.jpg',
+    imageUrlRight: 'layout14r.jpg',
+    themeId: 10
+  },
+  {
+    id: 29,
+    imageUrlLeft: 'layout4l.jpg',
+    imageUrlRight: 'layout4r.jpg',
+    themeId: 9
+  },
+  {
+    id: 30,
+    imageUrlLeft: 'layout2l.jpg',
+    imageUrlRight: 'layout2r.jpg',
+    themeId: 6
+  },
+  {
+    id: 31,
+    imageUrlLeft: 'layout2l.jpg',
+    imageUrlRight: 'layout2r.jpg',
+    themeId: 9
+  },
+  {
+    id: 32,
+    imageUrlLeft: 'layout1l.jpg',
+    imageUrlRight: 'layout1r.jpg',
+    themeId: 6
+  },
+  {
+    id: 33,
+    imageUrlLeft: 'layout1l.jpg',
+    type: LAYOUT_TYPES.SINGLE_PAGE.value,
+    themeId: 6
+  },
+  {
+    id: 34,
+    imageUrlLeft: 'layout1l.jpg',
+    themeId: 6
   }
 ];
 

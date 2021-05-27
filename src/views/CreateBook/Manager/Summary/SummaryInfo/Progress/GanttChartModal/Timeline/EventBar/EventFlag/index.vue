@@ -9,7 +9,6 @@
         class="flag"
         src="@/assets/icons/event-flag-red.svg"
         alt="flag icon"
-        title="flag icon"
       />
 
       <span class="dot" />

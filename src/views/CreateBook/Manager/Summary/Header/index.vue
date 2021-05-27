@@ -4,7 +4,6 @@
       <img
         src="@/assets/icons/double-arrow-right.svg"
         alt="toggle summary icon"
-        title="toggle summary icon"
         @click="toogleSummary"
       />
 
