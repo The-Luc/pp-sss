@@ -1,4 +1,4 @@
-import ToolBar from '@/components/HeaderEdition/ToolBar';
+import ToolBar from './ToolBar';
 import Header from '@/components/HeaderEdition/Header';
 import FeedbackBar from '@/components/HeaderEdition/FeedbackBar';
 import PageEdition from './PageEdition';

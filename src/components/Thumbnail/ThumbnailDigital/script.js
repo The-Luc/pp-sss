@@ -1,5 +1,4 @@
 import { IMAGE_LOCAL } from '@/common/constants';
-import { LINK_STATUS, SHEET_TYPES } from '@/common/constants';
 export default {
   props: {
     orderScreen: {
@@ -25,12 +24,14 @@ export default {
     leftNumberPage: {
       type: Boolean,
       default: false
+    },
+    fontSize: {
+      type: String,
+      default: '10px'
     }
   },
   created() {
     this.image =
       this.sheet.printData.thumbnailUrl || IMAGE_LOCAL.BACKGROUND_WHITE;
-    this.LINK_STATUS = LINK_STATUS;
-    this.SHEET_TYPES = SHEET_TYPES;
   }
 };

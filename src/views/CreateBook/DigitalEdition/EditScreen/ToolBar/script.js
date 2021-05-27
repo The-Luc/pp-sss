@@ -1,5 +1,4 @@
 import { mapMutations, mapGetters } from 'vuex';
-import { fabric } from 'fabric';
 import ToolButton from '@/components/ToolButton';
 import ItemTool from './ItemTool';
 import { GETTERS, MUTATES } from '@/store/modules/app/const';
@@ -98,6 +97,23 @@ export default {
       itemsToolRight: [
         [
           {
+            iconName: 'play_circle_outline',
+            title: 'Playback',
+            name: 'playback'
+          },
+          {
+            iconName: 'auto_awesome_motion',
+            title: 'Transitions',
+            name: 'transitions'
+          },
+          {
+            iconName: 'animation',
+            title: 'Animations',
+            name: 'animations'
+          }
+        ],
+        [
+          {
             iconName: 'list_alt',
             title: 'Page Info',
             name: 'pageInfo'
@@ -110,29 +126,6 @@ export default {
         ]
       ]
     };
-  },
-  created() {
-    if (!this.isDigitalEditor) return;
-    this.itemsToolRight = [
-      [
-        {
-          iconName: 'play_circle_outline',
-          title: 'Playback',
-          name: 'playback'
-        },
-        {
-          iconName: 'auto_awesome_motion',
-          title: 'Transitions',
-          name: 'transitions'
-        },
-        {
-          iconName: 'animation',
-          title: 'Animations',
-          name: 'animations'
-        }
-      ],
-      ...this.itemsToolRight
-    ];
   },
   computed: {
     ...mapGetters({
@@ -184,29 +177,16 @@ export default {
         return;
       }
       const toolName = this.selectedToolName === data?.name ? '' : data?.name;
+      this.setToolNameSelected({
+        name: toolName
+      });
       switch (data.name) {
         case 'text':
-          this.addText();
+          console.log(1);
           break;
         default:
-          this.setToolNameSelected({
-            name: toolName
-          });
           break;
       }
-    },
-    /**
-     * Add text box in print canvas
-     */
-    addText() {
-      var text = new fabric.IText('Text', {
-        fontFamily: 'Comic Sans',
-        originX: 'left',
-        originY: 'top',
-        left: 51,
-        top: 282
-      });
-      window.printCanvas.add(text);
     }
   }
 };
