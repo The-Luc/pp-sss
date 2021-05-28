@@ -3,12 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "build-qa": "vue-cli-service build --mode qa",
-    "build-testing": "vue-cli-service build --mode testing",
-    "test:unit": "vue-cli-service test:unit",
-    "lint": "vue-cli-service lint",
+    "start": "./node_modules/.bin/vue-cli-service serve",
+    "build": "./node_modules/.bin/vue-cli-service build",
+    "build-qa": "./node_modules/.bin/vue-cli-service build --mode qa",
+    "build-testing": "./node_modules/.bin/vue-cli-service build --mode testing",
+    "test:unit": "./node_modules/.bin/vue-cli-service test:unit",
+    "lint": "./node_modules/.bin/vue-cli-service lint",
     "test": "jest"
   },
   "dependencies": {
