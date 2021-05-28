@@ -10,5 +10,6 @@ export const getters = {
     selectedObjectType,
   [APP._GETTERS.IS_OPEN_MENU_PROPERTIES]: ({ isOpenProperties }) =>
     isOpenProperties,
-  [APP._GETTERS.SELECTED_TOOL_NAME]: ({ selectedToolName }) => selectedToolName
+  [APP._GETTERS.SELECTED_TOOL_NAME]: ({ selectedToolName }) => selectedToolName,
+  [APP._GETTERS.IS_PROMPT]: ({ isPrompt }) => isPrompt
 };

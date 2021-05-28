@@ -1,6 +1,10 @@
 <template>
   <div class="layouts-container">
-    <PpToolPopover title="Layouts">
+    <PpToolPopover
+      title="Layouts"
+      @cancel="onCancel"
+      @change="setThemeLayoutForSheet"
+    >
       <template #action>
         <div class="pp-layouts-action-container">
           <SelectTheme
@@ -9,7 +13,7 @@
             @change="onChangeTheme"
           />
           <SelectLayout
-            :items="layoutsOpt"
+            :items="layoutsOpts"
             :disabled="disabled"
             :layout-selected="layoutSelected"
             @change="onChangeLayout"
