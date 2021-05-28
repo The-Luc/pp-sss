@@ -8,18 +8,25 @@
   .pp-layouts-action-container {
     display: flex;
     justify-content: space-between;
-    padding: 10px;
+    padding: 10px 17px;
 
     .pp-select {
       width: 200px;
     }
+  }
 
-    .pp-layouts-select {
-      &-theme {
-      }
+  .layout-item-container {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 25px 65px;
+    min-height: 240px;
+    flex-wrap: wrap;
 
-      &-layout {
-      }
+    .empty-layout {
+      font-size: 25px;
+      margin-top: 70px;
+      width: 100%;
+      text-align: center;
     }
   }
 }

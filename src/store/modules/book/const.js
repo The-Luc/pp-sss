@@ -19,8 +19,8 @@ const _GETTERS = {
   SALE_DAY_FROM_BEGINNING: 'saleDayFromBeginning',
   RELEASE_DAY_FROM_BEGINNING: 'releaseDayFromBeginning',
   DELIVERY_DAY_FROM_BEGINNING: 'deliveryDayFromBeginning',
-  SHEET_THEME: 'SHEET_THEME',
-  SHEET_LAYOUT: 'SHEET_LAYOUT'
+  SHEET_THEME: 'sheetTheme',
+  SHEET_LAYOUT: 'sheetLayout'
 };
 
 export const GETTERS = {

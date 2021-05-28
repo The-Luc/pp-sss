@@ -3,9 +3,13 @@
     <PpToolPopover title="Layouts">
       <template #action>
         <div class="pp-layouts-action-container">
-          <SelectTheme :items="themesOptions" @change="onChangeTheme" />
+          <SelectTheme
+            :items="themesOptions"
+            :theme-selected="themeSelected"
+            @change="onChangeTheme"
+          />
           <SelectLayout
-            :items="layouts"
+            :items="layoutsOpt"
             :disabled="disabled"
             :layout-selected="layoutSelected"
             @change="onChangeLayout"
@@ -13,18 +17,21 @@
         </div>
       </template>
 
-      <!-- <template #content>
-        <div class="theme-item-container">
+      <template #content>
+        <div class="layout-item-container">
+          <div v-show="layouts.length === 0" class="empty-layout">
+            No Layout Matches
+          </div>
           <Item
-            v-for="theme in themes"
-            :ref="`theme${theme.id}`"
-            :key="theme.id"
-            :theme="theme"
-            :selected-theme-id="selectedThemeId"
-            @click="onSelectTheme"
+            v-for="layout in layouts"
+            :ref="`layout${layout.id}`"
+            :key="layout.id"
+            :layout="layout"
+            :selected-layout-id="tempLayoutIdSelected"
+            @click="onSelectLayout"
           />
         </div>
-      </template> -->
+      </template>
     </PpToolPopover>
   </div>
 </template>

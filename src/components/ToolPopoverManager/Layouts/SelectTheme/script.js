@@ -8,6 +8,10 @@ export default {
     items: {
       type: Array,
       required: true
+    },
+    themeSelected: {
+      type: Object,
+      default: () => ({})
     }
   },
   methods: {
