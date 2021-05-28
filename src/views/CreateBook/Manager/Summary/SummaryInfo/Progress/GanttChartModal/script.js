@@ -13,6 +13,24 @@ export default {
     Timeline,
     Content
   },
+  mounted() {
+    let merchandisingHeight = document.querySelector('.merchandising')
+      .offsetHeight;
+    let sectionsHeight = document.querySelector('.sections').offsetHeight;
+    let productionHeight = document.querySelector('.production').offsetHeight;
+
+    const chartContentHeight =
+      merchandisingHeight + sectionsHeight + productionHeight;
+
+    const chartContent = document.querySelector('.chart-content');
+
+    chartContent.style.height = `${chartContentHeight}px`;
+    chartContent.style.minHeight = `${chartContentHeight}px`;
+
+    document.querySelector(
+      '.v-dialog--active'
+    ).style.minHeight = `${chartContentHeight + 226}px`;
+  },
   methods: {
     ...mapMutations({
       toggleModal: MUTATES.TOGGLE_MODAL

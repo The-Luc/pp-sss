@@ -1,0 +1,15 @@
+.pp-layouts-select-theme {
+  display: flex;
+  align-items: center;
+
+  &-title {
+    margin-bottom: 5px;
+    margin-right: 10px;
+    font-size: 11px;
+    font-family: $font-300;
+  }
+
+  .pp-select {
+    width: 200px;
+  }
+}

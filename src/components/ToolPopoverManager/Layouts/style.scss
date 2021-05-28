@@ -1,0 +1,25 @@
+.layouts-container {
+  .tool-popover-header {
+    &::before {
+      left: 70px;
+    }
+  }
+
+  .pp-layouts-action-container {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+
+    .pp-select {
+      width: 200px;
+    }
+
+    .pp-layouts-select {
+      &-theme {
+      }
+
+      &-layout {
+      }
+    }
+  }
+}

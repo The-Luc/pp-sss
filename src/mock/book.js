@@ -14,6 +14,9 @@ const book = {
   deliveryOption: 'Bulk Ship To School',
   booksSold: 0,
   fundraisingEarned: 0,
+  coverId: 1,
+  insideFrontCoverId: 2,
+  insideBackCoverId: 11,
   estimatedQuantity: {
     min: 50,
     max: 100
@@ -46,6 +49,8 @@ const book = {
           order: 0,
           printData: {
             thumbnailUrl: null,
+            theme: null,
+            layout: null,
             link: 'none',
             pages: [
               {
@@ -79,6 +84,8 @@ const book = {
           positionFixed: 'first',
           order: 0,
           printData: {
+            theme: null,
+            layout: null,
             thumbnailUrl: null,
             link: 'none',
             pages: [
@@ -102,6 +109,8 @@ const book = {
           order: 1,
           printData: {
             thumbnailUrl: null,
+            theme: null,
+            layout: null,
             link: 'link',
             pages: [
               {
@@ -129,6 +138,8 @@ const book = {
           order: 2,
           printData: {
             thumbnailUrl: null,
+            theme: null,
+            layout: null,
             link: 'link',
             pages: [
               {
@@ -156,6 +167,8 @@ const book = {
           order: 3,
           printData: {
             thumbnailUrl: null,
+            theme: null,
+            layout: null,
             link: 'link',
             pages: [
               {
@@ -183,6 +196,8 @@ const book = {
           order: 4,
           printData: {
             thumbnailUrl: null,
+            theme: null,
+            layout: null,
             link: 'link',
             pages: [
               {
@@ -222,6 +237,8 @@ const book = {
           order: 0,
           printData: {
             thumbnailUrl: null,
+            theme: null,
+            layout: null,
             link: 'link',
             pages: [
               {
@@ -249,6 +266,8 @@ const book = {
           order: 1,
           printData: {
             thumbnailUrl: null,
+            theme: null,
+            layout: null,
             link: 'link'
           },
           digitalData: {
@@ -276,6 +295,8 @@ const book = {
           order: 2,
           printData: {
             thumbnailUrl: null,
+            theme: null,
+            layout: null,
             link: 'link',
             pages: [
               {
@@ -315,6 +336,8 @@ const book = {
           order: 3,
           printData: {
             thumbnailUrl: null,
+            theme: null,
+            layout: null,
             link: 'link',
             pages: [
               {
@@ -354,6 +377,8 @@ const book = {
           order: 0,
           printData: {
             thumbnailUrl: null,
+            theme: null,
+            layout: null,
             link: 'link',
             pages: [
               {

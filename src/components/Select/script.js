@@ -20,7 +20,11 @@ export default {
     },
     selectedVal: {
       type: Object,
-      default: {}
+      default: () => ({})
+    },
+    disabled: {
+      type: Boolean,
+      default: false
     }
   },
   methods: {
