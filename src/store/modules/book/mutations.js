@@ -1,7 +1,7 @@
 import randomcolor from 'randomcolor';
 import moment from 'moment';
 
-import { nextId } from '@/common/utils';
+import { getAllSheets, nextId } from '@/common/utils';
 
 import BOOK from './const';
 import { SHEET_TYPES } from '@/common/constants/sheetTypes';
@@ -280,5 +280,14 @@ export const mutations = {
   },
   [BOOK._MUTATES.TOGGLE_MENU_PROPERTIES](state, { isOpen }) {
     state.isOpenProperties = isOpen;
+  },
+  [BOOK._MUTATES.UPDATE_SHEET_THEME_LAYOUT](
+    state,
+    { sheetId, themeId, layoutId }
+  ) {
+    const allSheets = getAllSheets(state.book.sections);
+    const currentSheet = allSheets.find(sheet => sheet.id === sheetId);
+    currentSheet.printData.layout = layoutId;
+    currentSheet.printData.theme = themeId;
   }
 };

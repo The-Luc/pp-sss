@@ -3,8 +3,15 @@ import { mapGetters, mapMutations } from 'vuex';
 import Thumbnail from '@/components/Thumbnail/ThumbnailPrint';
 import HeaderContainer from '@/components/Thumbnail/HeaderContainer';
 import { GETTERS, MUTATES } from '@/store/modules/book/const';
+import { useResetPrintConfig } from '@/hooks';
 
 export default {
+  setup() {
+    const { resetPrintConfig } = useResetPrintConfig();
+    return {
+      resetPrintConfig
+    };
+  },
   components: {
     Thumbnail,
     HeaderContainer
@@ -98,6 +105,7 @@ export default {
      */
     onSelectSheet(sheetId) {
       this.selectSheet({ sheetId });
+      this.resetPrintConfig();
     }
   }
 };
