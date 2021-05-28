@@ -1,7 +1,11 @@
 <template>
   <div class="pp-layouts-select-theme">
     <span class="pp-layouts-select-theme-title">Theme:</span>
-    <PpSelect :items="items" @change="onChangeTheme" />
+    <PpSelect
+      :items="items"
+      :selected-val="themeSelected"
+      @change="onChangeTheme"
+    />
   </div>
 </template>
 
