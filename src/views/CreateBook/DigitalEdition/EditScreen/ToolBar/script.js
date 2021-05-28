@@ -89,8 +89,8 @@ export default {
             title: 'Actions'
           },
           {
-            iconName: 'note_add',
-            title: 'Page Notes'
+            iconName: 'post_add',
+            title: 'Screen Notes'
           }
         ]
       ],
