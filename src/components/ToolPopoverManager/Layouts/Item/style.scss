@@ -1,0 +1,35 @@
+.layout-item {
+  padding: 10px 10px 5px;
+  margin-right: 13px;
+  border: 0.5px solid #afafaf;
+  cursor: pointer;
+  margin-bottom: 20px;
+
+  &-active {
+    border: 3px solid #42738d;
+  }
+
+  .layout-preview-img {
+    display: flex;
+
+    img {
+      width: 103px;
+      height: 133px;
+      object-fit: cover;
+    }
+  }
+
+  .layout-preview-img-footer {
+    display: flex;
+    justify-content: space-between;
+
+    .layout-name {
+      font-size: 11px;
+      font-family: $font-300;
+    }
+
+    .v-icon {
+      font-size: 9px;
+    }
+  }
+}
