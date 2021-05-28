@@ -1,4 +1,4 @@
-import { Photoshop } from 'vue-color';
+import { Mix } from 'vue-color';
 
 let defaultProps = {
   hex: '#194d33e6',
@@ -25,7 +25,7 @@ let defaultProps = {
 
 export default {
   components: {
-    'photoshop-picker': Photoshop
+    'photoshop-picker': Mix
   },
   data() {
     return {

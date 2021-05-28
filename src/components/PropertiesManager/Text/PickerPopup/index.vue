@@ -1,6 +1,6 @@
 <template>
   <div class="color-picker-container">
-    <photoshop-picker v-model="colors" @ok="onOk" @cancel="onCancel"></photoshop-picker>
+    <photoshop-picker v-model="colors" @ok="onOk" @cancel="onCancel" :disableFields="false" />
   </div>
 </template>
 
