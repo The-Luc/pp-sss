@@ -92,15 +92,5 @@ export const getters = {
     const sheets = getAllSheets(book.sections);
     const sheet = sheets.find(s => s.id === sheetId);
     return sheet?.printData?.theme;
-  },
-  [BOOK._GETTERS.GET_LAYOUT_BY_TYPE]: (state, getter, rootState) => (
-    themeId,
-    layoutType
-  ) => {
-    const allLayouts = rootState.theme.layouts;
-    const currentLayouts = allLayouts.filter(
-      layout => layout.themeId === themeId && layout.type === layoutType
-    );
-    return currentLayouts;
   }
 };

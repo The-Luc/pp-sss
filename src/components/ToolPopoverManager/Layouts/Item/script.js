@@ -10,6 +10,9 @@ export default {
     }
   },
   methods: {
+    /**
+     * Emit layout selected to parent
+     */
     onClick() {
       this.$emit('click', this.layout);
     }

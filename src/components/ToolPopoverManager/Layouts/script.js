@@ -38,7 +38,7 @@ export default {
       selectedToolName: APP_GETTERS.SELECTED_TOOL_NAME,
       sheetLayout: BOOK_GETTERS.SHEET_LAYOUT,
       sheetTheme: BOOK_GETTERS.SHEET_THEME,
-      getLayoutByType: BOOK_GETTERS.GET_LAYOUT_BY_TYPE
+      getLayoutByType: THEME_GETTERS.GET_LAYOUT_BY_TYPE
     }),
 
     layouts() {
