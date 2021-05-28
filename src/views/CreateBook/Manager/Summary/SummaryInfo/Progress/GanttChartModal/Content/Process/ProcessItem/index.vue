@@ -2,8 +2,10 @@
   <div class="process-item">
     <Header :name="name" :color="headerColor" />
 
-    <div class="process-body">
-      <slot />
+    <div class="process-body-wrapper">
+      <div class="process-body">
+        <slot />
+      </div>
     </div>
   </div>
 </template>
