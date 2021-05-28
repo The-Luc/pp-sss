@@ -3,12 +3,28 @@ import { mapGetters, mapMutations } from 'vuex';
 import Thumbnail from '@/components/Thumbnail/ThumbnailPrint';
 import HeaderContainer from '@/components/Thumbnail/HeaderContainer';
 import { GETTERS, MUTATES } from '@/store/modules/book/const';
-import { useResetPrintConfig } from '@/hooks';
+import { GETTERS as APP_GETTERS } from '@/store/modules/app/const';
+import {
+  useLayoutPrompt,
+  useResetPrintConfig,
+  usePopoverCreationTool
+} from '@/hooks';
+import { TOOL_NAME } from '@/common/constants';
 
 export default {
   setup() {
     const { resetPrintConfig } = useResetPrintConfig();
+    const { setToolNameSelected } = usePopoverCreationTool();
+    const {
+      checkSheetIsVisited,
+      updateVisited,
+      setIsPrompt
+    } = useLayoutPrompt();
     return {
+      checkSheetIsVisited,
+      updateVisited,
+      setIsPrompt,
+      setToolNameSelected,
       resetPrintConfig
     };
   },
@@ -19,7 +35,9 @@ export default {
   computed: {
     ...mapGetters({
       pageSelected: GETTERS.GET_PAGE_SELECTED,
-      book: GETTERS.BOOK_DETAIL
+      book: GETTERS.BOOK_DETAIL,
+      isOpenMenuProperties: APP_GETTERS.IS_OPEN_MENU_PROPERTIES,
+      selectedToolName: APP_GETTERS.SELECTED_TOOL_NAME
     })
   },
   methods: {
@@ -105,7 +123,19 @@ export default {
      */
     onSelectSheet(sheetId) {
       this.selectSheet({ sheetId });
-      this.resetPrintConfig();
+      const isVisited = this.checkSheetIsVisited(sheetId);
+      if (this.isOpenMenuProperties || this.selectedToolName) {
+        this.resetPrintConfig();
+      }
+      if (!isVisited) {
+        this.setToolNameSelected(TOOL_NAME.LAYOUTS);
+        this.setIsPrompt({
+          isPrompt: true
+        });
+        this.updateVisited({
+          sheetId
+        });
+      }
     }
   }
 };

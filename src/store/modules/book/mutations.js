@@ -289,5 +289,10 @@ export const mutations = {
     const currentSheet = allSheets.find(sheet => sheet.id === sheetId);
     currentSheet.printData.layout = layoutId;
     currentSheet.printData.theme = themeId;
+  },
+  [BOOK._MUTATES.UPDATE_SHEET_VISITED](state, { sheetId }) {
+    const allSheets = getAllSheets(state.book.sections);
+    const currentSheet = allSheets.find(sheet => sheet.id === sheetId);
+    currentSheet.isVisited = true;
   }
 };

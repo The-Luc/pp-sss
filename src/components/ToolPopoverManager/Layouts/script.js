@@ -1,6 +1,7 @@
 import { mapGetters, mapMutations } from 'vuex';
 
 import { GETTERS as THEME_GETTERS } from '@/store/modules/theme/const';
+import { GETTERS as APP_GETTERS } from '@/store/modules/app/const';
 import {
   GETTERS as BOOK_GETTERS,
   MUTATES as BOOK_MUTATES
@@ -17,7 +18,11 @@ import {
   getThemeOptSelectedById,
   getLayoutOptSelectedById
 } from '@/common/utils';
-import { usePopoverCreationTool, useSheetSelected } from '@/hooks';
+import {
+  usePopoverCreationTool,
+  useSheetSelected,
+  useLayoutPrompt
+} from '@/hooks';
 
 export default {
   setup() {
@@ -54,7 +59,8 @@ export default {
       pageSelected: BOOK_GETTERS.GET_PAGE_SELECTED,
       sheetLayout: BOOK_GETTERS.SHEET_LAYOUT,
       sheetTheme: BOOK_GETTERS.SHEET_THEME,
-      getLayoutByType: THEME_GETTERS.GET_LAYOUT_BY_TYPE
+      getLayoutByType: THEME_GETTERS.GET_LAYOUT_BY_TYPE,
+      isPrompt: APP_GETTERS.IS_PROMPT
     }),
 
     layouts() {
@@ -65,6 +71,9 @@ export default {
         );
       }
       return [];
+    },
+    obIsPrompt() {
+      return this.isPrompt;
     }
   },
   watch: {
@@ -75,6 +84,9 @@ export default {
     },
     layouts() {
       this.setLayoutActive();
+    },
+    obIsPrompt(val) {
+      console.log('ahihihi', val);
     }
   },
   mounted() {

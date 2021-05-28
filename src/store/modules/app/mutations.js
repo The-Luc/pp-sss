@@ -28,5 +28,8 @@ export const mutations = {
   },
   [APP._MUTATES.SET_TOOL_NAME_SELECTED](state, { name }) {
     state.selectedToolName = name;
+  },
+  [APP._MUTATES.SET_IS_PROMPT](state, { isPrompt }) {
+    state.isPrompt = isPrompt;
   }
 };

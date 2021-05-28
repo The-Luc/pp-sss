@@ -92,5 +92,10 @@ export const getters = {
     const sheets = getAllSheets(book.sections);
     const sheet = sheets.find(s => s.id === sheetId);
     return sheet?.printData?.theme;
+  },
+  [BOOK._GETTERS.SHEET_IS_VISITED]: ({ book }) => sheetId => {
+    const sheets = getAllSheets(book.sections);
+    const sheet = sheets.find(s => s.id === sheetId);
+    return sheet?.isVisited;
   }
 };
