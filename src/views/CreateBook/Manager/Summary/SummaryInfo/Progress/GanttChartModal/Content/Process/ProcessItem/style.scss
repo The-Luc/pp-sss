@@ -2,9 +2,14 @@
   display: flex;
   width: 100%;
 
-  .process-body {
+  .process-body-wrapper {
     display: flex;
-    width: 850px;
-    max-width: 850px;
+    padding-left: 14px;
+
+    .process-body {
+      display: flex;
+      min-width: 850px;
+      max-width: 850px;
+    }
   }
 }

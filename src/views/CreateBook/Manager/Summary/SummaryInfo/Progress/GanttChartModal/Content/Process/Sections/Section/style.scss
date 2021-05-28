@@ -3,9 +3,27 @@ $padding-bottom: 2px;
 
 .section {
   width: 100%;
-  padding: 2px 0;
+  padding-top: 5px;
+
+  &:first-of-type {
+    padding-top: 0;
+  }
+
+  &:last-of-type {
+    ::v-deep {
+      .process-body-wrapper {
+        margin-bottom: -2px;
+        border-bottom: none;
+      }
+    }
+  }
 
   ::v-deep {
+    .process-body-wrapper {
+      margin-bottom: -3px;
+      border-bottom: 1px solid $color-gray8;
+    }
+
     .section-process {
       padding-top: $padding-top;
       padding-bottom: $padding-bottom;
@@ -34,6 +52,7 @@ $padding-bottom: 2px;
       border: none;
 
       .process {
+        height: 30%;
         border-left: $process-section-border2;
       }
 
