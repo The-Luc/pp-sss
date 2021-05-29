@@ -39,3 +39,17 @@ export const usePopoverCreationTool = () => {
     selectedToolName
   };
 };
+
+/**
+ * Trigger mutation to close popover, menu properties from icon creation tool
+ * @return {Object} Function to reset print config
+ */
+export const useObjectProperties = () => {
+  const { toggleMenuProperties } = useMutations({
+    toggleMenuProperties: MUTATES.TOGGLE_MENU_PROPERTIES
+  });
+
+  return {
+    toggleMenuProperties
+  };
+};

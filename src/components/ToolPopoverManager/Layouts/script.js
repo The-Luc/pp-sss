@@ -11,6 +11,7 @@ import PpToolPopover from '@/components/ToolPopover';
 import PpSelect from '@/components/Select';
 import SelectLayout from './SelectLayout';
 import SelectTheme from './SelectTheme';
+import GotIt from './GotIt';
 import Item from './Item';
 import { LAYOUT_TYPES_OPTIONs } from '@/mock/layoutTypes';
 import { LAYOUT_TYPES, TOOL_NAME } from '@/common/constants';
@@ -28,10 +29,18 @@ export default {
   setup() {
     const { setToolNameSelected, selectedToolName } = usePopoverCreationTool();
     const { selectedSheet } = useSheetSelected();
+    const {
+      checkSheetIsVisited,
+      updateVisited,
+      setIsPrompt
+    } = useLayoutPrompt();
     return {
       selectedToolName,
       selectedSheet,
-      setToolNameSelected
+      setToolNameSelected,
+      checkSheetIsVisited,
+      updateVisited,
+      setIsPrompt
     };
   },
   components: {
@@ -39,7 +48,8 @@ export default {
     PpSelect,
     Item,
     SelectTheme,
-    SelectLayout
+    SelectLayout,
+    GotIt
   },
   data() {
     return {
@@ -62,7 +72,10 @@ export default {
       getLayoutByType: THEME_GETTERS.GET_LAYOUT_BY_TYPE,
       isPrompt: APP_GETTERS.IS_PROMPT
     }),
-
+    isVisited() {
+      const isVisited = this.checkSheetIsVisited(this.pageSelected);
+      return isVisited;
+    },
     layouts() {
       if (this.themeSelected?.id && this.layoutSelected?.value) {
         return this.getLayoutByType(
@@ -71,9 +84,6 @@ export default {
         );
       }
       return [];
-    },
-    obIsPrompt() {
-      return this.isPrompt;
     }
   },
   watch: {
@@ -82,11 +92,11 @@ export default {
         this.initData();
       }
     },
+    pageSelected() {
+      this.initData();
+    },
     layouts() {
       this.setLayoutActive();
-    },
-    obIsPrompt(val) {
-      console.log('ahihihi', val);
     }
   },
   mounted() {
@@ -236,6 +246,17 @@ export default {
         });
         this.onCancel();
       }
+    },
+    /**
+     * Trigger mutation set prompt false and update isVisited true for current sheet
+     */
+    onClickGotIt() {
+      this.setIsPrompt({
+        isPrompt: false
+      });
+      this.updateVisited({
+        sheetId: this.pageSelected
+      });
     }
   }
 };

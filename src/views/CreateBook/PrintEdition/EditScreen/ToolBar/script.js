@@ -5,8 +5,15 @@ import ItemTool from './ItemTool';
 import { GETTERS, MUTATES } from '@/store/modules/app/const';
 import { GETTERS as BOOK_GETTERS } from '@/store/modules/book/const';
 import { OBJECT_TYPE, TOOL_NAME } from '@/common/constants';
+import { useLayoutPrompt } from '@/hooks';
 
 export default {
+  setup() {
+    const { isPrompt } = useLayoutPrompt();
+    return {
+      isPrompt
+    };
+  },
   props: {
     isDigitalEditor: {
       type: Boolean,
@@ -163,6 +170,9 @@ export default {
           this.addText();
           break;
         default:
+          if (data.name === TOOL_NAME.LAYOUTS && this.isPrompt) {
+            return;
+          }
           this.setToolNameSelected({
             name: toolName
           });

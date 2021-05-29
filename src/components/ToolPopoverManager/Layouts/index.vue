@@ -1,5 +1,10 @@
 <template>
-  <div class="layouts-container">
+  <div
+    class="layouts-container"
+    :class="{ 'layouts-container-prompt': !isVisited }"
+  >
+    <div v-if="!isVisited" class="prompt"></div>
+    <GotIt v-if="!isVisited" @click="onClickGotIt" />
     <PpToolPopover
       title="Layouts"
       @cancel="onCancel"

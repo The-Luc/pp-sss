@@ -7,7 +7,8 @@ import { GETTERS as APP_GETTERS } from '@/store/modules/app/const';
 import {
   useLayoutPrompt,
   useResetPrintConfig,
-  usePopoverCreationTool
+  usePopoverCreationTool,
+  useObjectProperties
 } from '@/hooks';
 import { TOOL_NAME } from '@/common/constants';
 
@@ -15,12 +16,14 @@ export default {
   setup() {
     const { resetPrintConfig } = useResetPrintConfig();
     const { setToolNameSelected } = usePopoverCreationTool();
+    const { toggleMenuProperties } = useObjectProperties();
     const {
       checkSheetIsVisited,
       updateVisited,
       setIsPrompt
     } = useLayoutPrompt();
     return {
+      toggleMenuProperties,
       checkSheetIsVisited,
       updateVisited,
       setIsPrompt,
@@ -124,16 +127,16 @@ export default {
     onSelectSheet(sheetId) {
       this.selectSheet({ sheetId });
       const isVisited = this.checkSheetIsVisited(sheetId);
-      if (this.isOpenMenuProperties || this.selectedToolName) {
-        this.resetPrintConfig();
+      if (this.isOpenMenuProperties) {
+        this.toggleMenuProperties({
+          isOpenMenuProperties: false
+        });
       }
+
       if (!isVisited) {
         this.setToolNameSelected(TOOL_NAME.LAYOUTS);
         this.setIsPrompt({
           isPrompt: true
-        });
-        this.updateVisited({
-          sheetId
         });
       }
     }

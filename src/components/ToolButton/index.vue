@@ -1,7 +1,7 @@
 <template>
   <div
     class="item"
-    :class="{ 'item--active': isActive }"
+    :class="{ 'item--active': isActive, 'item--prompt': isActive && isPrompt }"
     :style="{ width: `${width}px` }"
     @click="onClick"
   >

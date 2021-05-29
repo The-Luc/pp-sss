@@ -1,4 +1,10 @@
+import { useLayoutPrompt } from '@/hooks';
+
 export default {
+  setup() {
+    const { isPrompt } = useLayoutPrompt();
+    return { isPrompt };
+  },
   props: {
     iconName: {
       type: String

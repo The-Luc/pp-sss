@@ -10,9 +10,10 @@ import {
 } from '@/store/modules/app/const';
 
 export const useLayoutPrompt = () => {
-  const { checkSheetIsVisited, isPrompt } = useGetters({
+  const { checkSheetIsVisited, isPrompt, pageSelected } = useGetters({
     checkSheetIsVisited: BOOK_GETTERS.SHEET_IS_VISITED,
-    isPrompt: APP_GETTERS.IS_PROMPT
+    isPrompt: APP_GETTERS.IS_PROMPT,
+    pageSelected: BOOK_GETTERS.GET_PAGE_SELECTED
   });
 
   const { updateVisited } = useMutations({
@@ -28,6 +29,7 @@ export const useLayoutPrompt = () => {
     checkSheetIsVisited,
     updateVisited,
     isPrompt,
-    setIsPrompt
+    setIsPrompt,
+    pageSelected
   };
 };
