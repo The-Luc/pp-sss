@@ -1,51 +1,37 @@
 import { Mix } from 'vue-color';
+import { mapGetters, mapMutations } from 'vuex';
 
-let defaultProps = {
-  hex: '#194d33e6',
-  hsl: {
-    h: 150,
-    s: 0.5,
-    l: 0.2,
-    a: 0.9
-  },
-  hsv: {
-    h: 150,
-    s: 0.66,
-    v: 0.3,
-    a: 0.9
-  },
-  rgba: {
-    r: 159,
-    g: 96,
-    b: 43,
-    a: 0.9
-  },
-  a: 0.9
-};
+import { GETTERS, MUTATES } from '@/store/modules/app/const';
 
 export default {
   components: {
-    'photoshop-picker': Mix
-  },
-  data() {
-    return {
-      colors: defaultProps
-    };
+    ColorPicker: Mix
   },
   computed: {
-    bgc() {
-      return this.colors.hex;
-    }
+    ...mapGetters({
+      color: GETTERS.COLOR_PICKER_COLOR,
+      presets: GETTERS.COLOR_PICKER_PRESETS
+    })
   },
   methods: {
-    onOk() {
-      console.log('ok');
+    ...mapMutations({
+      setPresets: MUTATES.SET_COLOR_PICKER_PRESETS
+    }),
+    /**
+     * Method will be fired when the color of Color Picker is changed
+     *
+     * @param {String}  newColor  new color from Color Picker (HEX)
+     */
+    updateColor(newColor) {
+      this.$root.$emit('colorChange', newColor.hex8);
     },
-    onCancel() {
-      console.log('cancel');
-    },
-    updateValue(value) {
-      this.colors = value;
+    /**
+     * Method will be fired when new preset is added in the Color Picker
+     *
+     * @param {String}  newPreset  new preset added in Color Picker (HEX)
+     */
+    addPreset(newPreset) {
+      this.setPresets({ preset: newPreset });
     }
   }
 };

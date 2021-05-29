@@ -11,8 +11,9 @@ export const mutations = {
     const { sectionSelected } = payload;
     state.sectionSelected = sectionSelected;
   },
-  [APP._MUTATES.TOGGLE_COLOR_PICKER](state, { isOpen }) {
-    state.isOpenColorPicker = isOpen;
+  [APP._MUTATES.TOGGLE_COLOR_PICKER](state, { isOpen, data }) {
+    state.colorPicker.isOpen = isOpen;
+    state.colorPicker.data.color = data?.color || '';
   },
   [APP._MUTATES.SET_OBJECT_TYPE_SELECTED](state, { type }) {
     state.selectedObjectType = type;
@@ -22,11 +23,20 @@ export const mutations = {
   },
   [APP._MUTATES.RESET_PRINT_CONFIG](state) {
     state.isOpenProperties = false;
-    state.isOpenColorPicker = false;
+    state.colorPicker.isOpen = false;
     state.selectedObjectType = '';
     state.selectedToolName = '';
   },
   [APP._MUTATES.SET_TOOL_NAME_SELECTED](state, { name }) {
     state.selectedToolName = name;
+  },
+  [APP._MUTATES.SET_COLOR_PICKER_PRESETS](state, { preset }) {
+    const { max, next } = state.colorPicker.data.presets;
+
+    state.colorPicker.data.presets.values.splice(next, 1, preset);
+
+    const newIndex = next >= max - 1 ? 0 : next + 1;
+
+    state.colorPicker.data.presets.next = newIndex;
   }
 };

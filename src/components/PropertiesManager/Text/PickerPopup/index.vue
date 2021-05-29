@@ -1,6 +1,11 @@
 <template>
   <div class="color-picker-container">
-    <photoshop-picker v-model="colors" @ok="onOk" @cancel="onCancel" :disableFields="false" />
+    <ColorPicker
+      :value="color"
+      :preset-colors="presets"
+      @input="updateColor"
+      @addPreset="addPreset"
+    />
   </div>
 </template>
 

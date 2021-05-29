@@ -8,6 +8,11 @@ export default {
       currentColor: '#0B1717'
     };
   },
+  mounted: function() {
+    this.$root.$on('colorChange', color => {
+      this.currentColor = color;
+    });
+  },
   computed: {
     ...mapGetters({
       isOpenColorPicker: GETTERS.IS_OPEN_COLOR_PICKER
@@ -22,7 +27,10 @@ export default {
      */
     onOpenColorPicker() {
       this.toggleColorPicker({
-        isOpen: !this.isOpenColorPicker
+        isOpen: !this.isOpenColorPicker,
+        data: {
+          color: this.currentColor
+        }
       });
     }
   }
