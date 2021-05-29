@@ -8,7 +8,17 @@ export const state = {
   },
   sectionSelected: '',
   // Object properties
-  isOpenColorPicker: false,
+  colorPicker: {
+    isOpen: false,
+    data: {
+      color: '',
+      presets: {
+        next: 0,
+        max: 10,
+        values: []
+      }
+    }
+  },
   isOpenProperties: false,
   selectedObjectType: '',
 
