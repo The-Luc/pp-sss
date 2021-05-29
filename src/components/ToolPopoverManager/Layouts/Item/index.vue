@@ -4,6 +4,7 @@
     :class="{ 'layout-item-active': selectedLayoutId === layout.id }"
     @click="onClick"
   >
+    <div class="border-inside"></div>
     <div class="layout-preview-img">
       <div class="layout-preview-img-left">
         <img

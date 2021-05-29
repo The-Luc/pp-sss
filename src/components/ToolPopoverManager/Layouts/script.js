@@ -1,8 +1,11 @@
-import { mapGetters } from 'vuex';
+import { mapGetters, mapMutations } from 'vuex';
 
 import { GETTERS as THEME_GETTERS } from '@/store/modules/theme/const';
-import { GETTERS as BOOK_GETTERS } from '@/store/modules/book/const';
 import { GETTERS as APP_GETTERS } from '@/store/modules/app/const';
+import {
+  GETTERS as BOOK_GETTERS,
+  MUTATES as BOOK_MUTATES
+} from '@/store/modules/book/const';
 import { THEMES_LIST } from '@/mock/themesList';
 import PpToolPopover from '@/components/ToolPopover';
 import PpSelect from '@/components/Select';
@@ -11,8 +14,22 @@ import SelectTheme from './SelectTheme';
 import Item from './Item';
 import { LAYOUT_TYPES_OPTIONs } from '@/mock/layoutTypes';
 import { LAYOUT_TYPES, TOOL_NAME } from '@/common/constants';
+import {
+  getThemeOptSelectedById,
+  getLayoutOptSelectedById
+} from '@/common/utils';
+import { usePopoverCreationTool, useSheetSelected } from '@/hooks';
 
 export default {
+  setup() {
+    const { setToolNameSelected, selectedToolName } = usePopoverCreationTool();
+    const { selectedSheet } = useSheetSelected();
+    return {
+      selectedToolName,
+      selectedSheet,
+      setToolNameSelected
+    };
+  },
   components: {
     PpToolPopover,
     PpSelect,
@@ -23,7 +40,7 @@ export default {
   data() {
     return {
       themesOptions: THEMES_LIST,
-      layoutsOpt: LAYOUT_TYPES_OPTIONs,
+      layoutsOpts: LAYOUT_TYPES_OPTIONs,
       disabled: false,
       layoutSelected: {},
       themeSelected: {},
@@ -33,12 +50,13 @@ export default {
   computed: {
     ...mapGetters({
       themes: THEME_GETTERS.GET_THEMES,
+      listLayouts: THEME_GETTERS.GET_LAYOUTS,
       book: BOOK_GETTERS.BOOK_DETAIL,
       pageSelected: BOOK_GETTERS.GET_PAGE_SELECTED,
-      selectedToolName: APP_GETTERS.SELECTED_TOOL_NAME,
       sheetLayout: BOOK_GETTERS.SHEET_LAYOUT,
       sheetTheme: BOOK_GETTERS.SHEET_THEME,
-      getLayoutByType: THEME_GETTERS.GET_LAYOUT_BY_TYPE
+      getLayoutByType: THEME_GETTERS.GET_LAYOUT_BY_TYPE,
+      isPrompt: APP_GETTERS.IS_PROMPT
     }),
 
     layouts() {
@@ -49,6 +67,9 @@ export default {
         );
       }
       return [];
+    },
+    obIsPrompt() {
+      return this.isPrompt;
     }
   },
   watch: {
@@ -56,12 +77,21 @@ export default {
       if (val && val === TOOL_NAME.LAYOUTS) {
         this.initData();
       }
+    },
+    layouts() {
+      this.setLayoutActive();
+    },
+    obIsPrompt(val) {
+      console.log('ahihihi', val);
     }
   },
   mounted() {
     this.initData();
   },
   methods: {
+    ...mapMutations({
+      updateSheetThemeLayout: BOOK_MUTATES.UPDATE_SHEET_THEME_LAYOUT
+    }),
     /**
      * Set up inital data to render in view
      */
@@ -80,7 +110,7 @@ export default {
       switch (pageSelected) {
         case coverId:
           {
-            const coverOption = this.layoutsOpt.find(
+            const coverOption = this.layoutsOpts.find(
               l => l.value === LAYOUT_TYPES.COVER.value
             );
             this.layoutSelected = coverOption;
@@ -89,7 +119,7 @@ export default {
         case insideBackCoverId:
         case insideFrontCoverId:
           {
-            const singlePageOption = this.layoutsOpt.find(
+            const singlePageOption = this.layoutsOpts.find(
               l => l.value === LAYOUT_TYPES.SINGLE_PAGE.value
             );
             this.layoutSelected = singlePageOption;
@@ -98,11 +128,16 @@ export default {
         default:
           {
             // Use default layout if the sheet no have private layout
-            const currentSheetLayout = this.sheetLayout(pageSelected);
-            if (currentSheetLayout) {
-              this.layoutSelected = currentSheetLayout;
+            const sheetLayoutId = this.sheetLayout(pageSelected);
+            if (sheetLayoutId) {
+              const layoutOpt = getLayoutOptSelectedById(
+                this.listLayouts(),
+                this.layoutsOpts,
+                sheetLayoutId
+              );
+              this.layoutSelected = layoutOpt;
             } else {
-              const collageOption = this.layoutsOpt.find(
+              const collageOption = this.layoutsOpts.find(
                 l => l.value === LAYOUT_TYPES.COLLAGE.value
               );
               this.layoutSelected = collageOption;
@@ -129,10 +164,15 @@ export default {
      * @param  {Number} pageSelected Id of sheet selected
      */
     setThemeSelected(pageSelected) {
-      const currentSheetTheme = this.sheetTheme(pageSelected);
+      const currentSheetThemeId = this.sheetTheme(pageSelected);
+
       const defaultThemeId = this.book.printData.theme;
-      if (currentSheetTheme) {
-        this.themeSelected = currentSheetTheme;
+      if (currentSheetThemeId) {
+        const themeOpt = getThemeOptSelectedById(
+          this.themesOptions,
+          currentSheetThemeId
+        );
+        this.themeSelected = themeOpt;
       } else {
         const themeSelected = this.themesOptions.find(
           t => t.id === defaultThemeId
@@ -161,10 +201,10 @@ export default {
         this.tempLayoutIdSelected = this.layouts[0].id;
         const sheetLayout = this.sheetLayout(this.pageSelected);
         if (sheetLayout) {
-          const isExistInLayouts = this.layouts.find(
+          const sheetLayoutObj = this.layouts.find(
             layout => layout.id === sheetLayout
           );
-          this.tempLayoutIdSelected = isExistInLayouts;
+          this.tempLayoutIdSelected = sheetLayoutObj.id;
         }
       }
     },
@@ -173,6 +213,25 @@ export default {
      */
     onSelectLayout(layout) {
       this.tempLayoutIdSelected = layout.id;
+    },
+    /**
+     * Trigger hooks to set tool name is empty and then close popover when click Cancel button
+     */
+    onCancel() {
+      this.setToolNameSelected('');
+    },
+    /**
+     * Trigger mutation to set theme and layout for sheet after that close popover when click Cancel button
+     */
+    setThemeLayoutForSheet() {
+      if (this.layouts.length > 0 && this.tempLayoutIdSelected) {
+        this.updateSheetThemeLayout({
+          sheetId: this.selectedSheet,
+          themeId: this.themeSelected.id,
+          layoutId: this.tempLayoutIdSelected
+        });
+        this.onCancel();
+      }
     }
   }
 };

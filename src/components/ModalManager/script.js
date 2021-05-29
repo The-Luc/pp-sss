@@ -5,11 +5,13 @@ import { MODAL_TYPES } from '@/common/constants';
 
 // Modal component
 import HelpModal from '@/views/CreateBook/HeadControl/BookInformation/Help/Modal';
-import EmptySection from '@/components/ModalEmptySection';
 import DeleteSheetModal from '@/views/CreateBook/Manager/SectionList/SectionItems/Section/SectionDetails/Modal';
 import DeleteSectionModal from '@/views/CreateBook/Manager/SectionList/SectionItems/Section/SectionHeader/SectionProcess/Modal';
-import SelectTheme from '@/views/CreateBook/PrintEdition/EditScreen/Modal';
 import GanttChartModal from '@/views/CreateBook/Manager/Summary/SummaryInfo/Progress/GanttChartModal';
+
+// Don't allow close when click outside
+import EmptySection from '@/components/ModalEmptySection';
+import SelectTheme from '@/views/CreateBook/PrintEdition/EditScreen/Modal';
 
 const {
   HELP,

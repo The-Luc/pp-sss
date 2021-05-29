@@ -29,7 +29,7 @@ export const getDiffDays = (beginDate, endDate) => {
 /**
  * Get total sheets into sections of book
  *
- * @param   {Array}  sections - All sections of book
+ * @param   {Array} sections - All sections of book
  * @returns {Array} - Total sheets
  */
 export const getAllSheets = sections => {
@@ -38,4 +38,33 @@ export const getAllSheets = sections => {
     sheets = [...sheets, ...s.sheets];
   });
   return sheets;
+};
+
+/**
+ * Get layout option from list layouts option by id
+ *
+ * @param   {Array} listLayouts - List layouts. It include themeId, layout type
+ * @param   {Array} listLayoutType - List layout option of select
+ * @param   {Number} layoutId - Layout id of sheet
+ * @returns {Object} Object layout option
+ */
+export const getLayoutOptSelectedById = (
+  listLayouts,
+  listLayoutType,
+  layoutId
+) => {
+  const layoutType = listLayouts.find(layout => layout.id === layoutId).type;
+  const layoutOpt = listLayoutType.find(layout => layout.value === layoutType);
+  return layoutOpt;
+};
+
+/**
+ * Get theme option from list themes option by id
+ *
+ * @param   {Array} listThemeOpts - List theme options.
+ * @param   {Number} themeId - Theme id of sheet
+ * @returns {Object} Object theme option
+ */
+export const getThemeOptSelectedById = (listThemeOpts, themeId) => {
+  return listThemeOpts.find(themeOpt => themeOpt.id === themeId);
 };

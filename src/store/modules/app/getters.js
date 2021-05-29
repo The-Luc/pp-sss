@@ -12,5 +12,6 @@ export const getters = {
   [APP._GETTERS.SELECTED_TOOL_NAME]: ({ selectedToolName }) => selectedToolName,
   [APP._GETTERS.COLOR_PICKER_COLOR]: ({ colorPicker: { data } }) => data.color,
   [APP._GETTERS.COLOR_PICKER_PRESETS]: ({ colorPicker: { data } }) =>
-    data.presets.values
+    data.presets.values,
+  [APP._GETTERS.IS_PROMPT]: ({ isPrompt }) => isPrompt
 };

@@ -38,5 +38,8 @@ export const mutations = {
     const newIndex = next >= max - 1 ? 0 : next + 1;
 
     state.colorPicker.data.presets.next = newIndex;
+  },
+  [APP._MUTATES.SET_IS_PROMPT](state, { isPrompt }) {
+    state.isPrompt = isPrompt;
   }
 };
