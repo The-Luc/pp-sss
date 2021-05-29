@@ -1,5 +1,12 @@
 <template>
-  <div class="color-picker-container"></div>
+  <div class="color-picker-container">
+    <ColorPicker
+      :value="color"
+      :preset-colors="presets"
+      @input="updateColor"
+      @addPreset="addPreset"
+    />
+  </div>
 </template>
 
 <script src="./script.js" />

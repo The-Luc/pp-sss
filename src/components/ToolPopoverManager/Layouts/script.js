@@ -84,6 +84,9 @@ export default {
         );
       }
       return [];
+    },
+    obIsPrompt() {
+      return this.isPrompt;
     }
   },
   watch: {

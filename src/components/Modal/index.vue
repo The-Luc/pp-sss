@@ -5,6 +5,7 @@
     content-class="pp-modal"
     :width="width"
     @click:outside="onCloseModal"
+    @keydown="onKeyDown"
   >
     <v-card>
       <Header
