@@ -3,6 +3,7 @@
     class="modal-theme"
     title="Yearbook Theme"
     width="786"
+    :is-close-out-side="false"
     :theme-modal="true"
   >
     <div class="modal-theme-body">

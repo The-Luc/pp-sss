@@ -1,6 +1,6 @@
 <template>
   <div class="page-edition">
-    <canvas class="printCanvas" id="canvas" ref="canvas"></canvas>
+    <canvas id="canvas" ref="canvas" class="printCanvas"></canvas>
   </div>
 </template>
 

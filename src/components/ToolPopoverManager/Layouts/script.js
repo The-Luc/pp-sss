@@ -18,11 +18,7 @@ import {
   getThemeOptSelectedById,
   getLayoutOptSelectedById
 } from '@/common/utils';
-import {
-  usePopoverCreationTool,
-  useSheetSelected,
-  useLayoutPrompt
-} from '@/hooks';
+import { usePopoverCreationTool, useSheetSelected } from '@/hooks';
 
 export default {
   setup() {

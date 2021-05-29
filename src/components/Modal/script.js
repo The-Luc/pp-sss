@@ -42,11 +42,23 @@ export default {
     ...mapMutations({
       toggleModal: MUTATES.TOGGLE_MODAL
     }),
+    /**
+     * Trigger mutation update state to close modal
+     */
     onCloseModal() {
       if (this.isCloseOutSide) {
         this.toggleModal({
           isOpenModal: false
         });
+      }
+    },
+    /**
+     * Catch when user click Escape and then call onCloseModal function to update state
+     */
+    onKeyDown(event) {
+      if (event.keyCode === 27) {
+        // Escape
+        this.onCloseModal();
       }
     }
   }
