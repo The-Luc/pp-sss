@@ -7,6 +7,10 @@ export default {
     selectedLayoutId: {
       type: Number,
       default: 0
+    },
+    isEmpty: {
+      type: Boolean,
+      default: false
     }
   },
   methods: {

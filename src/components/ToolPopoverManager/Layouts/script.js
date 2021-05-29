@@ -58,7 +58,8 @@ export default {
       disabled: false,
       layoutSelected: {},
       themeSelected: {},
-      tempLayoutIdSelected: null
+      tempLayoutIdSelected: null,
+      layoutEmptyLength: 4
     };
   },
   computed: {

@@ -16,13 +16,18 @@ export default {
     const { resetPrintConfig } = useResetPrintConfig();
     const { setToolNameSelected } = usePopoverCreationTool();
     const { toggleMenuProperties } = useObjectProperties();
-    const { checkSheetIsVisited, updateVisited } = useLayoutPrompt();
+    const {
+      checkSheetIsVisited,
+      updateVisited,
+      openPrompt
+    } = useLayoutPrompt();
     return {
       toggleMenuProperties,
       checkSheetIsVisited,
       updateVisited,
       setToolNameSelected,
-      resetPrintConfig
+      resetPrintConfig,
+      openPrompt
     };
   },
   components: {

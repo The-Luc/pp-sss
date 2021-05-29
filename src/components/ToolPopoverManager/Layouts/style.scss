@@ -6,6 +6,37 @@
       }
     }
   }
+
+  &.empty-layout-container {
+    font-size: 25px;
+    width: 100%;
+    text-align: center;
+
+    .tool-popover-content {
+      overflow: hidden;
+    }
+
+    .empty-layout-content {
+      display: flex;
+      flex-wrap: wrap;
+
+      .empty-layout-text {
+        font-size: 16px;
+        font-family: $font-500;
+        position: absolute;
+        left: 34%;
+        top: 35%;
+      }
+
+      .layout-item {
+        min-width: 225px;
+        height: 172px;
+        margin-right: 20px;
+        margin-bottom: 20px;
+      }
+    }
+  }
+
   .prompt {
     position: absolute;
     width: 100%;
@@ -23,8 +54,10 @@
 
   .pp-layouts-action-container {
     display: flex;
+    padding: 0 18px 0 10px;
+    height: 45px;
     justify-content: space-between;
-    padding: 10px 17px;
+    border-bottom: 1px solid #bcbec0;
 
     .pp-select {
       width: 200px;
@@ -34,15 +67,8 @@
   .layout-item-container {
     display: flex;
     justify-content: space-between;
-    padding: 0 25px 65px;
+    padding: 20px 25px 65px;
     min-height: 240px;
     flex-wrap: wrap;
-
-    .empty-layout {
-      font-size: 25px;
-      margin-top: 70px;
-      width: 100%;
-      text-align: center;
-    }
   }
 }

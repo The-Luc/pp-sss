@@ -1,5 +1,6 @@
 <template>
   <div
+    v-if="!isEmpty"
     class="layout-item"
     :class="{ 'layout-item-active': selectedLayoutId === layout.id }"
     @click="onClick"
@@ -28,6 +29,7 @@
       </v-icon>
     </div>
   </div>
+  <div v-else class="layout-item" />
 </template>
 
 <script src="./script.js" />
