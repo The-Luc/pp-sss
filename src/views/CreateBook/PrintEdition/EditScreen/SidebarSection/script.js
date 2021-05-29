@@ -10,23 +10,17 @@ import {
   usePopoverCreationTool,
   useObjectProperties
 } from '@/hooks';
-import { TOOL_NAME } from '@/common/constants';
 
 export default {
   setup() {
     const { resetPrintConfig } = useResetPrintConfig();
     const { setToolNameSelected } = usePopoverCreationTool();
     const { toggleMenuProperties } = useObjectProperties();
-    const {
-      checkSheetIsVisited,
-      updateVisited,
-      setIsPrompt
-    } = useLayoutPrompt();
+    const { checkSheetIsVisited, updateVisited } = useLayoutPrompt();
     return {
       toggleMenuProperties,
       checkSheetIsVisited,
       updateVisited,
-      setIsPrompt,
       setToolNameSelected,
       resetPrintConfig
     };
@@ -39,8 +33,7 @@ export default {
     ...mapGetters({
       pageSelected: GETTERS.GET_PAGE_SELECTED,
       book: GETTERS.BOOK_DETAIL,
-      isOpenMenuProperties: APP_GETTERS.IS_OPEN_MENU_PROPERTIES,
-      selectedToolName: APP_GETTERS.SELECTED_TOOL_NAME
+      isOpenMenuProperties: APP_GETTERS.IS_OPEN_MENU_PROPERTIES
     })
   },
   methods: {
@@ -134,10 +127,7 @@ export default {
       }
 
       if (!isVisited) {
-        this.setToolNameSelected(TOOL_NAME.LAYOUTS);
-        this.setIsPrompt({
-          isPrompt: true
-        });
+        this.openPrompt();
       }
     }
   }

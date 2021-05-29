@@ -8,6 +8,7 @@ import {
   MUTATES as APP_MUTATES,
   GETTERS as APP_GETTERS
 } from '@/store/modules/app/const';
+import { TOOL_NAME } from '@/common/constants';
 
 export const useLayoutPrompt = () => {
   const { checkSheetIsVisited, isPrompt, pageSelected } = useGetters({
@@ -16,20 +17,23 @@ export const useLayoutPrompt = () => {
     pageSelected: BOOK_GETTERS.GET_PAGE_SELECTED
   });
 
-  const { updateVisited } = useMutations({
-    updateVisited: BOOK_MUTATES.UPDATE_SHEET_VISITED
+  const { updateVisited, setIsPrompt, setToolNameSelected } = useMutations({
+    updateVisited: BOOK_MUTATES.UPDATE_SHEET_VISITED,
+    setIsPrompt: APP_MUTATES.SET_IS_PROMPT,
+    setToolNameSelected: APP_MUTATES.SET_TOOL_NAME_SELECTED
   });
 
-  const { setToolNameSelected, setIsPrompt } = useMutations({
-    setIsPrompt: APP_MUTATES.SET_IS_PROMPT
-  });
+  const openPrompt = () => {
+    setIsPrompt({ isPrompt: true });
+    setToolNameSelected({ name: TOOL_NAME.LAYOUTS });
+  };
 
   return {
-    setToolNameSelected,
     checkSheetIsVisited,
     updateVisited,
     isPrompt,
     setIsPrompt,
-    pageSelected
+    pageSelected,
+    openPrompt
   };
 };
