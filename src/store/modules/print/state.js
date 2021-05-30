@@ -4,9 +4,11 @@ export const state = {
     style: {
       fontFamily: '',
       fontSize: '',
-      fontWeight: '',
-      fontStyle: '',
+      isBold: false,
+      isItalic: false,
+      isUnderline: false,
       color: ''
-    }
+    },
+    styleId: ''
   }
 };

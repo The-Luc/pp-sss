@@ -3,8 +3,14 @@ import { fabric } from 'fabric';
 
 import { useDrawLayout } from '@/hooks';
 
+import { isEmpty } from '@/common/utils';
+
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
 import { GETTERS, MUTATES as BOOK_MUTATES } from '@/store/modules/book/const';
+import {
+  GETTERS as PRINT_GETTERS,
+  MUTATES as PRINT_MUTATES
+} from '@/store/modules/print/const';
 import { OBJECT_TYPE } from '@/common/constants';
 export default {
   setup() {
@@ -59,7 +65,12 @@ export default {
     ...mapMutations({
       setIsOpenProperties: MUTATES.TOGGLE_MENU_PROPERTIES,
       setObjectTypeSelected: MUTATES.SET_OBJECT_TYPE_SELECTED,
-      setTextProperties: BOOK_MUTATES.TEXT_PROPERTIES
+      setTextProperties: BOOK_MUTATES.TEXT_PROPERTIES,
+      setTextStyle: PRINT_MUTATES.SET_TEXT_STYLE,
+      setStyleId: PRINT_MUTATES.SET_TEXT_STYLE_ID
+    }),
+    ...mapGetters({
+      getTextStyle: PRINT_GETTERS.TEXT_STYLE
     }),
     /**
      * Open text properties modal and set default properties
@@ -102,6 +113,77 @@ export default {
     setLayoutForSheet(layoutData) {
       let { imageUrlLeft, imageUrlRight } = layoutData;
       this.drawLayout(imageUrlLeft, imageUrlRight);
+    },
+    /**
+     * Event fired when an object of canvas is selected
+     *
+     * @param {Object}  target  the selected object
+     */
+    objectSelected: function({ target }) {
+      // currently only code for text
+      this.textSelected(target);
+
+      this.openProperties();
+    },
+    /**
+     * Event fired when text object of canvas is selected
+     *
+     * @param {Object}  target  the selected text
+     */
+    textSelected: function(target) {
+      const {
+        fontFamily,
+        fontSize,
+        fontWeight,
+        fontStyle,
+        textDecoration,
+        fill,
+        styleId
+      } = target;
+
+      this.setTextStyle({
+        fontFamily,
+        fontSize,
+        isBold: !isEmpty(fontWeight),
+        isItalic: !isEmpty(fontStyle),
+        isUnderline: !isEmpty(textDecoration),
+        color: fill
+      });
+
+      this.setStyleId(isEmpty(styleId) ? '' : styleId);
+    },
+    /**
+     * Event fire when user click on Text button on Toolbar to add new text on canvas
+     */
+    addText: function() {
+      const text = new fabric.Textbox('Text', {
+        lockUniScaling: false,
+        fontSize: '60',
+        fontFamily: 'arial',
+        fill: '#000000',
+        fontWeight: '',
+        fontStyle: '',
+        originX: 'left',
+        originY: 'top',
+        left: 51,
+        top: 282
+      });
+
+      window.printCanvas.add(text);
+
+      const index = window.printCanvas.getObjects().length - 1;
+
+      window.printCanvas.setActiveObject(window.printCanvas.item(index));
+    },
+    /**
+     * Event fire when user change any style of selected text on the Text Properties
+     */
+    changeTextStyle: function(style) {
+      Object.keys(style).forEach(k => {
+        window.printCanvas.getActiveObject().set(k, style[k]);
+      });
+
+      window.printCanvas.renderAll();
     }
   },
   mounted() {
@@ -121,9 +203,17 @@ export default {
     window.printCanvas.setWidth(1205);
     window.printCanvas.setHeight(768);
     window.printCanvas.on({
-      'selection:updated': this.openProperties,
+      'selection:updated': this.objectSelected,
       'selection:cleared': this.closeProperties,
-      'selection:created': this.openProperties
+      'selection:created': this.objectSelected
+    });
+
+    this.$root.$on('printAddText', () => {
+      this.addText();
+    });
+
+    this.$root.$on('printChangeTextStyle', style => {
+      this.changeTextStyle(style);
     });
   }
 };

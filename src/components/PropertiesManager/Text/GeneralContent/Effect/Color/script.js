@@ -7,26 +7,26 @@ import {
 } from '@/store/modules/print/const';
 
 export default {
-  data() {
-    return {
-      currentColor: '#0B1717'
-    };
-  },
   mounted() {
     this.$root.$on('colorChange', color => {
-      this.currentColor = color;
+      this.setTextStyle({
+        color: color
+      });
 
-      this.$root.$emit('textStyleChange', { fill: color });
+      this.$root.$emit('printChangeTextStyle', { fill: color });
     });
-
-    const { color } = this.getTextStyle();
-
-    this.currentColor = color || '#0B1717';
   },
   computed: {
     ...mapGetters({
       isOpenColorPicker: GETTERS.IS_OPEN_COLOR_PICKER
-    })
+    }),
+    color() {
+      const color = this.getTextStyle().color || '#0B1717';
+
+      this.setColorPickerColor({ color: color });
+
+      return color;
+    }
   },
   methods: {
     ...mapGetters({
@@ -34,7 +34,8 @@ export default {
     }),
     ...mapMutations({
       toggleColorPicker: MUTATES.TOGGLE_COLOR_PICKER,
-      setTextStyle: PRINT_MUTATES.SET_TEXT_STYLE
+      setTextStyle: PRINT_MUTATES.SET_TEXT_STYLE,
+      setColorPickerColor: MUTATES.SET_COLOR_PICKER_COLOR
     }),
     /**
      * Triggers mutation to toggle color picker popover
@@ -43,7 +44,7 @@ export default {
       this.toggleColorPicker({
         isOpen: !this.isOpenColorPicker,
         data: {
-          color: this.currentColor
+          color: this.color
         }
       });
     }

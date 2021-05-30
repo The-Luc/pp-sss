@@ -15,11 +15,13 @@ const _ACTIONS = {};
 export const ACTIONS = {};
 
 const _MUTATES = {
-  SET_TEXT_STYLE: 'setTextStyle'
+  SET_TEXT_STYLE: 'setTextStyle',
+  SET_TEXT_STYLE_ID: 'setTextStyleId'
 };
 
 export const MUTATES = {
-  SET_TEXT_STYLE: `${MODULE_NAME}/${_MUTATES.SET_TEXT_STYLE}`
+  SET_TEXT_STYLE: `${MODULE_NAME}/${_MUTATES.SET_TEXT_STYLE}`,
+  SET_TEXT_STYLE_ID: `${MODULE_NAME}/${_MUTATES.SET_TEXT_STYLE_ID}`
 };
 
 export default {
