@@ -1,14 +1,22 @@
 import { mapGetters, mapMutations } from 'vuex';
 import { fabric } from 'fabric';
-import { GETTERS, MUTATES } from '@/store/modules/app/const';
-import { MUTATES as BOOK_MUTATES } from '@/store/modules/book/const';
+
+import { useDrawLayout } from '@/hooks';
+
+import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
+import { GETTERS, MUTATES as BOOK_MUTATES } from '@/store/modules/book/const';
 import { OBJECT_TYPE } from '@/common/constants';
 export default {
+  setup() {
+    const { drawLayout } = useDrawLayout();
+    return { drawLayout };
+  },
   computed: {
     ...mapGetters({
       book: GETTERS.BOOK_DETAIL,
       pageSelected: GETTERS.GET_PAGE_SELECTED,
-      isOpenMenuProperties: GETTERS.IS_OPEN_MENU_PROPERTIES
+      selectedLayout: GETTERS.SHEET_LAYOUT,
+      isOpenMenuProperties: APP_GETTERS.IS_OPEN_MENU_PROPERTIES
     }),
     isHardCover() {
       const { coverOption, sections } = this.book;
@@ -35,6 +43,16 @@ export default {
         this.pageSelected ===
         lastSection.sheets[lastSection.sheets.length - 1].id
       );
+    }
+  },
+  watch: {
+    pageSelected(val) {
+      const layoutData = this.selectedLayout(val);
+      if (layoutData) {
+        this.setLayoutForSheet(layoutData);
+      } else {
+        this.setLayoutForSheet({});
+      }
     }
   },
   methods: {
@@ -76,6 +94,14 @@ export default {
       this.setObjectTypeSelected({
         type: OBJECT_TYPE.TEXT
       });
+    },
+    /**
+     * Draw layout in print canvas
+     * @param {Object} layoutData - Current layout object data
+     */
+    setLayoutForSheet(layoutData) {
+      let { imageUrlLeft, imageUrlRight } = layoutData;
+      this.drawLayout(imageUrlLeft, imageUrlRight);
     }
   },
   mounted() {
@@ -94,7 +120,6 @@ export default {
     });
     window.printCanvas.setWidth(1205);
     window.printCanvas.setHeight(768);
-
     window.printCanvas.on({
       'selection:updated': this.openProperties,
       'selection:cleared': this.closeProperties,

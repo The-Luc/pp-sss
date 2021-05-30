@@ -12,6 +12,7 @@ import GanttChartModal from '@/views/CreateBook/Manager/Summary/SummaryInfo/Prog
 // Don't allow close when click outside
 import EmptySection from '@/components/ModalEmptySection';
 import SelectTheme from '@/views/CreateBook/PrintEdition/EditScreen/Modal';
+import ModalSelectPage from '@/views/CreateBook/PrintEdition/EditScreen/PageEdition/ModalSelectPage';
 
 const {
   HELP,
@@ -19,7 +20,8 @@ const {
   DELETE_SECTION,
   EMPTY_SECTION,
   SELECT_THEME,
-  GANTT_CHART
+  GANTT_CHART,
+  SELECT_PAGE
 } = MODAL_TYPES;
 
 const ModalList = {
@@ -28,7 +30,8 @@ const ModalList = {
   [DELETE_SECTION]: DELETE_SECTION,
   [EMPTY_SECTION]: EMPTY_SECTION,
   [SELECT_THEME]: SELECT_THEME,
-  [GANTT_CHART]: GANTT_CHART
+  [GANTT_CHART]: GANTT_CHART,
+  [SELECT_PAGE]: SELECT_PAGE
 };
 
 export default {
@@ -43,7 +46,8 @@ export default {
     [MODAL_TYPES.DELETE_SECTION]: DeleteSectionModal,
     [MODAL_TYPES.EMPTY_SECTION]: EmptySection,
     [MODAL_TYPES.SELECT_THEME]: SelectTheme,
-    [MODAL_TYPES.GANTT_CHART]: GanttChartModal
+    [MODAL_TYPES.GANTT_CHART]: GanttChartModal,
+    [MODAL_TYPES.SELECT_PAGE]: ModalSelectPage
   },
   computed: {
     ...mapGetters({

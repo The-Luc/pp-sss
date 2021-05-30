@@ -1,5 +1,6 @@
 import randomcolor from 'randomcolor';
 import moment from 'moment';
+import { cloneDeep } from 'lodash';
 
 import { getAllSheets, nextId } from '@/common/utils';
 
@@ -293,16 +294,30 @@ export const mutations = {
   },
   [BOOK._MUTATES.UPDATE_SHEET_THEME_LAYOUT](
     state,
-    { sheetId, themeId, layoutId }
+    { sheetId, themeId, layoutId, pagePosition = '' }
   ) {
     const allSheets = getAllSheets(state.book.sections);
+    const layouts = cloneDeep(this.state.theme.layouts);
     const currentSheet = allSheets.find(sheet => sheet.id === sheetId);
-    currentSheet.printData.layout = layoutId;
+    const layoutObj = layouts.find(layout => layout.id === layoutId);
+    const leftLayout = layoutObj.imageUrlLeft;
+    if (sheetId === state.book.insideFrontCoverId || pagePosition === 'right') {
+      layoutObj.imageUrlRight = layoutObj.imageUrlLeft;
+      layoutObj.imageUrlLeft = '';
+    }
+    if (sheetId === state.book.insideBackCoverId || pagePosition === 'left') {
+      layoutObj.imageUrlLeft = leftLayout;
+      layoutObj.imageUrlRight = '';
+    }
+    currentSheet.printData.layout = layoutObj;
     currentSheet.printData.theme = themeId;
   },
   [BOOK._MUTATES.UPDATE_SHEET_VISITED](state, { sheetId }) {
     const allSheets = getAllSheets(state.book.sections);
     const currentSheet = allSheets.find(sheet => sheet.id === sheetId);
     currentSheet.isVisited = true;
+  },
+  [BOOK._MUTATES.SET_SECTION_ID](state, { sectionId }) {
+    state.sectionId = sectionId;
   }
 };

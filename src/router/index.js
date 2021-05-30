@@ -101,10 +101,18 @@ window.addEventListener('popstate', () => {
 
 router.beforeEach(async (to, from, next) => {
   const isBackFromBrowser = window.popStateDetected;
-  if (isBackFromBrowser && store.state.app.modal.isOpen) {
-    store.commit(MUTATES.TOGGLE_MODAL, {
-      isOpenModal: false
-    });
+  if (isBackFromBrowser) {
+    if (store.state.app.modal.isOpen) {
+      store.commit(MUTATES.TOGGLE_MODAL, {
+        isOpenModal: false
+      });
+    }
+
+    if (store.state.app.isPrompt) {
+      store.commit(MUTATES.SET_IS_PROMPT, {
+        isPrompt: false
+      });
+    }
   }
   if (to.name !== ROUTE_NAME.MANAGER) {
     const sections = store.state.book.book?.sections;

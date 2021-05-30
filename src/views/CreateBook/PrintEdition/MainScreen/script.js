@@ -3,8 +3,13 @@ import { mapGetters, mapMutations } from 'vuex';
 import Frames from '@/components/Thumbnail/Frames';
 import Thumbnail from '@/components/Thumbnail/ThumbnailPrint';
 import { GETTERS, MUTATES } from '@/store/modules/book/const';
+import { useDrawLayout } from '@/hooks';
 
 export default {
+  setup() {
+    const { drawLayout } = useDrawLayout();
+    return { drawLayout };
+  },
   components: {
     Frames,
     Thumbnail
@@ -12,12 +17,14 @@ export default {
   computed: {
     ...mapGetters({
       bookId: GETTERS.BOOK_ID,
-      book: GETTERS.BOOK_DETAIL
+      book: GETTERS.BOOK_DETAIL,
+      selectedLayout: GETTERS.SHEET_LAYOUT
     })
   },
   methods: {
     ...mapMutations({
-      selectSheet: MUTATES.SELECT_SHEET
+      selectSheet: MUTATES.SELECT_SHEET,
+      setSectionId: MUTATES.SET_SECTION_ID
     }),
     numberPage(sectionId, sheet) {
       const sectionIndex = this.book.sections.findIndex(
@@ -85,8 +92,19 @@ export default {
       }
       return numberPage;
     },
-    onSelectSheet(sheetId) {
+    /**
+     * Set selected sheet's id and section's id and then draw layout in print cavnas
+     * @param  {String} sheetId Sheet's id selected
+     * @param  {String} sectionId Section id contains sheet
+     */
+    onSelectSheet(sheetId, sectionId) {
       this.selectSheet({ sheetId });
+      this.setSectionId({ sectionId });
+      const layoutData = this.selectedLayout(sheetId);
+      if (layoutData) {
+        const { imageUrlLeft, imageUrlRight } = layoutData;
+        this.drawLayout(imageUrlLeft, imageUrlRight);
+      }
     }
   }
 };

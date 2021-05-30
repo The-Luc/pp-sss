@@ -1,4 +1,5 @@
 import { useMutations, useGetters } from 'vuex-composition-helpers';
+import { fabric } from 'fabric';
 
 import {
   GETTERS as BOOK_GETTERS,
@@ -35,5 +36,49 @@ export const useLayoutPrompt = () => {
     setIsPrompt,
     pageSelected,
     openPrompt
+  };
+};
+/**
+ * Using fabric to clear if image empty or read file
+ * @param {String} imgSrc - Layout image source
+ * @param {Function} callback - Callback function after get image data from fabric
+ */
+const handleDrawLayout = (imgSrc, callback) => {
+  if (!imgSrc) {
+    window.printCanvas.clear().renderAll();
+    return;
+  }
+  fabric.Image.fromURL(require(`@/assets/image/layouts/${imgSrc}`), function(
+    img
+  ) {
+    callback(img);
+  });
+};
+
+export const useDrawLayout = () => {
+  /**
+   * Draw layout by take left and right layout image data
+   * @param {String} leftLayout - Layout left image source
+   * @param {String} rightLayout - Layout right image source
+   */
+  const drawLayout = (leftLayout, rightLayout) => {
+    handleDrawLayout(leftLayout, img => {
+      img.selectable = false;
+      img.scaleX = window.printCanvas.width / img.width / 2;
+      img.scaleY = window.printCanvas.height / img.height;
+      window.printCanvas.add(img);
+    });
+
+    handleDrawLayout(rightLayout, img => {
+      img.selectable = false;
+      img.left = window.printCanvas.width / 2;
+      img.scaleX = window.printCanvas.width / img.width / 2;
+      img.scaleY = window.printCanvas.height / img.height;
+      window.printCanvas.add(img);
+    });
+  };
+
+  return {
+    drawLayout
   };
 };

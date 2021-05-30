@@ -1,7 +1,10 @@
 import { mapGetters, mapMutations } from 'vuex';
 
 import { GETTERS as THEME_GETTERS } from '@/store/modules/theme/const';
-import { GETTERS as APP_GETTERS } from '@/store/modules/app/const';
+import {
+  GETTERS as APP_GETTERS,
+  MUTATES as APP_MUTATES
+} from '@/store/modules/app/const';
 import {
   GETTERS as BOOK_GETTERS,
   MUTATES as BOOK_MUTATES
@@ -14,7 +17,7 @@ import SelectTheme from './SelectTheme';
 import GotIt from './GotIt';
 import Item from './Item';
 import { LAYOUT_TYPES_OPTIONs } from '@/mock/layoutTypes';
-import { LAYOUT_TYPES, TOOL_NAME } from '@/common/constants';
+import { LAYOUT_TYPES, MODAL_TYPES, TOOL_NAME } from '@/common/constants';
 import {
   getThemeOptSelectedById,
   getLayoutOptSelectedById
@@ -22,7 +25,8 @@ import {
 import {
   usePopoverCreationTool,
   useSheetSelected,
-  useLayoutPrompt
+  useLayoutPrompt,
+  useDrawLayout
 } from '@/hooks';
 
 export default {
@@ -34,13 +38,15 @@ export default {
       updateVisited,
       setIsPrompt
     } = useLayoutPrompt();
+    const { drawLayout } = useDrawLayout();
     return {
       selectedToolName,
       selectedSheet,
       setToolNameSelected,
       checkSheetIsVisited,
       updateVisited,
-      setIsPrompt
+      setIsPrompt,
+      drawLayout
     };
   },
   components: {
@@ -59,7 +65,8 @@ export default {
       layoutSelected: {},
       themeSelected: {},
       tempLayoutIdSelected: null,
-      layoutEmptyLength: 4
+      layoutEmptyLength: 4,
+      layoutObjSelected: {}
     };
   },
   computed: {
@@ -71,7 +78,8 @@ export default {
       sheetLayout: BOOK_GETTERS.SHEET_LAYOUT,
       sheetTheme: BOOK_GETTERS.SHEET_THEME,
       getLayoutByType: THEME_GETTERS.GET_LAYOUT_BY_TYPE,
-      isPrompt: APP_GETTERS.IS_PROMPT
+      isPrompt: APP_GETTERS.IS_PROMPT,
+      sectionId: BOOK_GETTERS.SECTION_ID
     }),
     isVisited() {
       const isVisited = this.checkSheetIsVisited(this.pageSelected);
@@ -85,9 +93,6 @@ export default {
         );
       }
       return [];
-    },
-    obIsPrompt() {
-      return this.isPrompt;
     }
   },
   watch: {
@@ -108,7 +113,8 @@ export default {
   },
   methods: {
     ...mapMutations({
-      updateSheetThemeLayout: BOOK_MUTATES.UPDATE_SHEET_THEME_LAYOUT
+      updateSheetThemeLayout: BOOK_MUTATES.UPDATE_SHEET_THEME_LAYOUT,
+      toggleModal: APP_MUTATES.TOGGLE_MODAL
     }),
     /**
      * Set up inital data to render in view
@@ -146,12 +152,12 @@ export default {
         default:
           {
             // Use default layout if the sheet no have private layout
-            const sheetLayoutId = this.sheetLayout(pageSelected);
-            if (sheetLayoutId) {
+            const sheetLayout = this.sheetLayout(pageSelected);
+            if (sheetLayout?.id) {
               const layoutOpt = getLayoutOptSelectedById(
                 this.listLayouts(),
                 this.layoutsOpts,
-                sheetLayoutId
+                sheetLayout.id
               );
               this.layoutSelected = layoutOpt;
             } else {
@@ -217,10 +223,11 @@ export default {
     setLayoutActive() {
       if (this.layouts.length > 0) {
         this.tempLayoutIdSelected = this.layouts[0].id;
+        this.layoutObjSelected = this.layouts[0];
         const sheetLayout = this.sheetLayout(this.pageSelected);
-        if (sheetLayout) {
+        if (sheetLayout?.id) {
           const sheetLayoutObj = this.layouts.find(
-            layout => layout.id === sheetLayout
+            layout => layout.id === sheetLayout.id
           );
           this.tempLayoutIdSelected = sheetLayoutObj.id;
         }
@@ -230,6 +237,7 @@ export default {
      * Set current layout active when user click layout which they want change
      */
     onSelectLayout(layout) {
+      this.layoutObjSelected = layout;
       this.tempLayoutIdSelected = layout.id;
     },
     /**
@@ -239,10 +247,75 @@ export default {
       this.setToolNameSelected('');
     },
     /**
-     * Trigger mutation to set theme and layout for sheet after that close popover when click Cancel button
+     * Base on section id and sheet id to get page number of sheet
+     * @param {Number} sectionId - Current section id of sheet
+     * @param {Number} sheetId - Current sheet id
+     * @returns {Object} Page number left and right of sheet
+     */
+    numberPage(sectionId, sheetId) {
+      const sectionIndex = this.book.sections.findIndex(
+        item => item.id === sectionId
+      );
+      const indexSheet = this.book.sections[sectionIndex].sheets.findIndex(
+        item => item.id === sheetId
+      );
+      let indexInSections = 0;
+      for (let i = 0; i < sectionIndex; i++) {
+        indexInSections += this.book.sections[i].sheets.length;
+      }
+      indexInSections += indexSheet + 1;
+      let numberPageLeft = indexInSections * 2 - 4;
+      let numberPageRight = indexInSections * 2 - 3;
+      return {
+        numberPageLeft,
+        numberPageRight
+      };
+    },
+    /**
+     * Trigger mutation to set theme and layout for sheet after that close popover when click Select button
      */
     setThemeLayoutForSheet() {
       if (this.layouts.length > 0 && this.tempLayoutIdSelected) {
+        // insideFrontCoverId: 2, insideBackCoverId: 11,
+        let { imageUrlLeft, imageUrlRight } = this.layoutObjSelected;
+        if (this.pageSelected === this.book.insideFrontCoverId) {
+          imageUrlRight = imageUrlLeft;
+          imageUrlLeft = '';
+        }
+
+        if (this.pageSelected === this.book.insideBackCoverId) {
+          imageUrlRight = '';
+        }
+
+        if (
+          this.layoutObjSelected.type === LAYOUT_TYPES.SINGLE_PAGE.value &&
+          ![this.book.insideFrontCoverId, this.book.insideBackCoverId].includes(
+            this.pageSelected
+          )
+        ) {
+          // Show choose layout modal
+          const { numberPageLeft, numberPageRight } = this.numberPage(
+            this.sectionId,
+            this.pageSelected
+          );
+          this.onCancel();
+          this.toggleModal({
+            isOpenModal: true,
+            modalData: {
+              type: MODAL_TYPES.SELECT_PAGE,
+              props: {
+                imageUrlLeft,
+                numberPageLeft,
+                numberPageRight,
+                sheetId: this.selectedSheet,
+                themeId: this.themeSelected.id,
+                layoutId: this.tempLayoutIdSelected
+              }
+            }
+          });
+          return;
+        }
+        this.drawLayout(imageUrlLeft, imageUrlRight);
         this.updateSheetThemeLayout({
           sheetId: this.selectedSheet,
           themeId: this.themeSelected.id,

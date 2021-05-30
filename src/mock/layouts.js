@@ -326,7 +326,6 @@ const layouts = [
   {
     id: 37,
     imageUrlLeft: 'layout14l.jpg',
-    imageUrlRight: 'layout14r.jpg',
     type: LAYOUT_TYPES.SINGLE_PAGE.value,
     name: 'Collage 8',
     isFavorites: false,
@@ -336,7 +335,6 @@ const layouts = [
   {
     id: 38,
     imageUrlLeft: 'layout1l.jpg',
-    imageUrlRight: 'layout1r.jpg',
     type: LAYOUT_TYPES.SINGLE_PAGE.value,
     name: 'Collage 36',
     isFavorites: false,

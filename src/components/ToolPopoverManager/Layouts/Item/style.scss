@@ -5,6 +5,7 @@
   border: 1px solid #afafaf;
   cursor: pointer;
   margin-bottom: 20px;
+  width: 228px;
 
   .border-inside {
     width: 100%;
@@ -24,6 +25,7 @@
 
   .layout-preview-img {
     display: flex;
+    justify-content: center;
 
     img {
       width: 103px;

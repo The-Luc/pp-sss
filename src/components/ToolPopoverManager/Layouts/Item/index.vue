@@ -9,14 +9,14 @@
     <div class="layout-preview-img">
       <div class="layout-preview-img-left">
         <img
-          v-show="layout.imageUrlLeft"
+          v-if="layout.imageUrlLeft"
           :src="require(`@/assets/image/layouts/${layout.imageUrlLeft}`)"
           alt="left-layout"
         />
       </div>
       <div class="modal-preview-img-right">
         <img
-          v-show="layout.imageUrlRight"
+          v-if="layout.imageUrlRight"
           alt="right-layout"
           :src="require(`@/assets/image/layouts/${layout.imageUrlRight}`)"
         />

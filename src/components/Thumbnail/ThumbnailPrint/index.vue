@@ -1,6 +1,7 @@
 <template>
   <div>
     <div
+      ref="thumbnailContainer"
       :class="[
         {
           'half-left': sheet.type === SHEET_TYPES.INTRO,
@@ -10,7 +11,7 @@
         'thumbnail-view-thumbnail'
       ]"
     >
-      <img :src="image" />
+      <canvas :ref="`thumbnail${sheet.id}`" class="thumbnail-canvas"></canvas>
       <div v-if="edit" class="thumbnail-edit">
         <router-link tag="div" :to="toLink">
           <v-icon class="icon-edit">edit</v-icon>
@@ -35,5 +36,6 @@
     </div>
   </div>
 </template>
+
 <script src="./script.js" />
 <style lang="scss" scoped src="./style.scss" />

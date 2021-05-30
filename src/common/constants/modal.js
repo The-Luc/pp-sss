@@ -4,5 +4,6 @@ export const MODAL_TYPES = {
   DELETE_SECTION: 'DeleteSection',
   EMPTY_SECTION: 'EmptySection',
   SELECT_THEME: 'SelectTheme',
-  GANTT_CHART: 'GanttChart'
+  GANTT_CHART: 'GanttChart',
+  SELECT_PAGE: 'SelectPage'
 };

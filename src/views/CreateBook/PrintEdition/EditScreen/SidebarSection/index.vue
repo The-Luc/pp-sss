@@ -15,7 +15,7 @@
           font-size="8px"
           :number-page="numberPage(section.id, sheet)"
           :is-active="checkIsActive(sheet.id)"
-          @click.native="onSelectSheet(sheet.id)"
+          @click.native="onSelectSheet(sheet.id, section.id)"
         />
       </HeaderContainer>
     </div>

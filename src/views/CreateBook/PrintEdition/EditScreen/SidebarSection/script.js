@@ -43,7 +43,8 @@ export default {
   },
   methods: {
     ...mapMutations({
-      selectSheet: MUTATES.SELECT_SHEET
+      selectSheet: MUTATES.SELECT_SHEET,
+      setSectionId: MUTATES.SET_SECTION_ID
     }),
     numberPage(sectionId, sheet) {
       const sectionIndex = this.book.sections.findIndex(
@@ -119,11 +120,13 @@ export default {
       return sheetId === this.pageSelected;
     },
     /**
-     * Set selected sheet's id
+     * Set selected sheet's id and section'sid and then show prompt when sheet the first time access
      * @param  {String} sheetId Sheet's id selected
+     * @param  {String} sectionId Section id contains sheet
      */
-    onSelectSheet(sheetId) {
+    onSelectSheet(sheetId, sectionId) {
       this.selectSheet({ sheetId });
+      this.setSectionId({ sectionId });
       const isVisited = this.checkSheetIsVisited(sheetId);
       if (this.isOpenMenuProperties) {
         this.toggleMenuProperties({

@@ -10,7 +10,8 @@
           :to-link="`/book/${bookId}/edit/print/edit-screen`"
           :number-page="numberPage(section.id, sheet)"
           :sheet="sheet"
-          @click.native="onSelectSheet(sheet.id)"
+          :canvas-height="207"
+          @click.native="onSelectSheet(sheet.id, section.id)"
         />
       </Frames>
     </template>
