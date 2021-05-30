@@ -3,15 +3,13 @@
     <span class="properties-title">Text Case:</span>
     <PpButtonGroup :item="item" @change="onChange">
       <v-btn>
-        <img :src="upperCase" alt="uppercase" />
+        <img :src="iconUpperCase" alt="uppercase" />
       </v-btn>
-
       <v-btn>
-        <img :src="lowerCase" alt="lowerCase" />
+        <img :src="iconLowerCase" alt="lowerCase" />
       </v-btn>
-
       <v-btn>
-        <img :src="capitalize" alt="capitalize" />
+        <img :src="iconCapitalize" alt="capitalize" />
       </v-btn>
     </PpButtonGroup>
   </div>

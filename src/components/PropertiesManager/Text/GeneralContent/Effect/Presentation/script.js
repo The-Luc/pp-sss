@@ -5,7 +5,8 @@ import { GETTERS } from '@/store/modules/book/const';
 export default {
   data() {
     return {
-      item: []
+      item: [],
+      obj: {}
     };
   },
   components: {
@@ -52,7 +53,7 @@ export default {
       const canvas = window.printCanvas;
       let obj = canvas.getActiveObject();
       const isBold = this.getStyle(obj, 'fontWeight') === 'bold';
-      this.setStyle(obj, 'fontWeight', isBold ? 'normal' : 'bold');
+      this.setStyle(obj, 'fontWeight', isBold ? '' : 'bold');
       canvas.renderAll();
     },
     /**
@@ -68,27 +69,34 @@ export default {
     /**
      * Check text box selected is under line
      */
-    underLine() {
+    isUnderLine() {
       const canvas = window.printCanvas;
       let obj = canvas.getActiveObject();
-      const under = this.getStyle(obj, 'textDecoration') === 'underline';
-      this.setStyle(obj, 'textDecoration', under ? '' : 'underline');
-      console.log(obj);
+      const isUnder = this.getStyle(obj, 'underline') === true;
+      if (obj.setSelectionStyles && obj.isEditing) {
+        obj.setSelectionStyles({
+          underline: !isUnder
+        });
+      } else {
+        obj.styles = {};
+        obj.set({
+          underline: !isUnder
+        });
+      }
       canvas.renderAll();
     },
     /**
      * Set data of text properties modal
      */
     setDataTextProperties() {
-      if (
-        this.textProperties.bold &&
-        this.textProperties.fontStyle &&
-        this.textProperties.underLine
-      ) {
-        // if (!this.item.includes(1)) {
-        this.item.push(0, 1, 2);
-      } else {
-        this.item.pop();
+      if (this.textProperties.bold) {
+        this.item.push(0);
+      }
+      if (this.textProperties.fontStyle) {
+        this.item.push(1);
+      }
+      if (this.textProperties.underLine) {
+        this.item.push(2);
       }
     },
     /**

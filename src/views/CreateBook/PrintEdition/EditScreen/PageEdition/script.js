@@ -50,8 +50,7 @@ export default {
       const obj = window.printCanvas.getActiveObject();
       const bold = obj.fontWeight && obj.fontWeight === 'bold';
       const fontStyle = obj.fontStyle && obj.fontStyle === 'italic';
-      const underLine =
-        obj.textDecoration && obj.textDecoration === 'underline';
+      const underLine = obj.underline && obj.underline === true;
       const { fontFamily, fontSize } = obj;
       this.setTextProperties({
         bold,

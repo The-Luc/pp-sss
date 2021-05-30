@@ -5,15 +5,12 @@
       <v-btn>
         <v-icon>format_align_left</v-icon>
       </v-btn>
-
       <v-btn>
         <v-icon>format_align_center</v-icon>
       </v-btn>
-
       <v-btn>
         <v-icon>format_align_right</v-icon>
       </v-btn>
-
       <v-btn>
         <v-icon>format_align_justify</v-icon>
       </v-btn>

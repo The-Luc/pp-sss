@@ -5,12 +5,10 @@
       <v-btn @click.native="isBold">
         <v-icon>format_bold</v-icon>
       </v-btn>
-
       <v-btn @click.native="isItalic">
         <v-icon>format_italic</v-icon>
       </v-btn>
-
-      <v-btn @click.native="underLine">
+      <v-btn @click.native="isUnderLine">
         <v-icon>format_underlined</v-icon>
       </v-btn>
     </PpButtonGroup>
