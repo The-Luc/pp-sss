@@ -1,9 +1,5 @@
 #!/bin/bash
 
-#
-# Shell script for remote deployment and execution of programs.
-#
-
 func_init(){
 	env=$ENV;
 	cd /home/ppdeploy/jenkins/workspace/dev-pp-tools
