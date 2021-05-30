@@ -68,3 +68,27 @@ export const getLayoutOptSelectedById = (
 export const getThemeOptSelectedById = (listThemeOpts, themeId) => {
   return listThemeOpts.find(themeOpt => themeOpt.id === themeId);
 };
+
+/**
+ * Check if the object is empty or not
+ *
+ * @param   {Object}  obj the object to be checked
+ * @returns {Boolean} checked object is empty or not
+ */
+export const isEmpty = obj => {
+  if (obj === null) return true;
+
+  const objType = typeof obj;
+
+  if (objType === 'undefined') return true;
+
+  if (objType === 'string') return obj.trim().length === 0;
+
+  if (objType === 'object' && isNaN(parseInt(obj.length, 10))) {
+    return JSON.stringify(obj) === JSON.stringify({});
+  }
+
+  if (objType === 'object') return obj.length === 0;
+
+  return false;
+};

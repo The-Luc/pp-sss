@@ -4,6 +4,7 @@ import ToolButton from '@/components/ToolButton';
 import ItemTool from './ItemTool';
 import { GETTERS, MUTATES } from '@/store/modules/app/const';
 import { GETTERS as BOOK_GETTERS } from '@/store/modules/book/const';
+import { MUTATES as PRINT_MUTATES } from '@/store/modules/print/const';
 import { OBJECT_TYPE, TOOL_NAME } from '@/common/constants';
 import { useLayoutPrompt } from '@/hooks';
 
@@ -118,6 +119,15 @@ export default {
       ]
     };
   },
+  mounted() {
+    this.$root.$on('textStyleChange', style => {
+      Object.keys(style).forEach(k => {
+        window.printCanvas.getActiveObject().set(k, style[k]);
+      });
+
+      window.printCanvas.renderAll();
+    });
+  },
   computed: {
     ...mapGetters({
       selectedObjectType: GETTERS.SELECTED_OBJECT_TYPE,
@@ -130,7 +140,8 @@ export default {
     ...mapMutations({
       setObjectTypeSelected: MUTATES.SET_OBJECT_TYPE_SELECTED,
       setIsOpenProperties: MUTATES.TOGGLE_MENU_PROPERTIES,
-      setToolNameSelected: MUTATES.SET_TOOL_NAME_SELECTED
+      setToolNameSelected: MUTATES.SET_TOOL_NAME_SELECTED,
+      setTextStyle: PRINT_MUTATES.SET_TEXT_STYLE
     }),
     /**
      * Detect click on item on right creation tool
@@ -185,6 +196,10 @@ export default {
     addText() {
       var text = new fabric.IText('Text', {
         fontFamily: 'Comic Sans',
+        fontSize: '50',
+        fontWeight: 'bold',
+        fontStyle: 'italic',
+        fill: '#ff00005e',
         originX: 'left',
         originY: 'top',
         left: 51,
@@ -193,6 +208,14 @@ export default {
       window.printCanvas.add(text);
       const index = window.printCanvas.getObjects().length - 1;
       window.printCanvas.setActiveObject(window.printCanvas.item(index));
+
+      this.setTextStyle({
+        fontFamily: 'Comic Sans',
+        fontSize: '50',
+        fontWeight: 'bold',
+        fontStyle: 'italic',
+        color: '#ff00005e'
+      });
     }
   }
 };
