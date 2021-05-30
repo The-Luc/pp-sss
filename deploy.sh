@@ -6,6 +6,8 @@
 
 func_init(){
 	env=$ENV;
+	cd /home/ppdeploy/jenkins/workspace/dev-pp-tools
+	sudo chmod +x deploy.sh
 	echo 'init'
 }
 
