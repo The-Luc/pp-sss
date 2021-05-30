@@ -6,10 +6,12 @@
 
 func_init(){
 	env=$ENV;
+	echo 'init'
 }
 
 func_installEVN(){
 	nvm install 14.17.0
+	echo 'installEVN'
 }
 
 func_build(){
@@ -23,6 +25,7 @@ func_build(){
 		npm run build-qa
 		;;
 	esac
+	echo 'build'
 }
 
 func_deploy(){
@@ -45,6 +48,7 @@ func_deploy(){
 		pm2 start index.dev.js
 		;;
 	esac
+	echo 'deploy'
 }
 
 #
