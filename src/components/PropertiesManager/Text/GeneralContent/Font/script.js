@@ -12,9 +12,13 @@ export default {
   data() {
     return {
       fontFamily: [
-        { label: 'Roboto Condensed', value: 'robotoCondensed' },
         { label: 'Arial', value: 'arial' },
-        { label: 'Time News Roman', value: 'timeNewsRoman' }
+        { label: 'Time News Roman', value: 'timeNewsRoman' },
+        { label: 'Verdana', value: 'verdana' },
+        { label: 'Georgia', value: 'georgia' },
+        { label: 'Courier', value: 'courier' },
+        { label: 'Comic Sans Ms', value: 'comic sans ms' },
+        { label: 'Impact', value: 'impact' }
       ],
       fontSize: FONT_SIZE
     };

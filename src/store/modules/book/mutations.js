@@ -281,6 +281,16 @@ export const mutations = {
   [BOOK._MUTATES.TOGGLE_MENU_PROPERTIES](state, { isOpen }) {
     state.isOpenProperties = isOpen;
   },
+  [BOOK._MUTATES.TEXT_PROPERTIES](
+    state,
+    { bold, fontStyle, underLine, fontFamily, fontSize }
+  ) {
+    state.textProperties.bold = bold;
+    state.textProperties.fontStyle = fontStyle;
+    state.textProperties.underLine = underLine;
+    state.textProperties.fontFamily = fontFamily;
+    state.textProperties.fontSize = fontSize;
+  },
   [BOOK._MUTATES.UPDATE_SHEET_THEME_LAYOUT](
     state,
     { sheetId, themeId, layoutId }

@@ -1,7 +1,11 @@
 <template>
   <div>
     <span class="properties-title">Font Family:</span>
-    <PpSelect :items="items" />
+    <PpSelect
+      :selected-val="selectedVal"
+      :items="items"
+      @change="changeFontFamily($event)"
+    />
   </div>
 </template>
 

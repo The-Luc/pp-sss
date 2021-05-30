@@ -179,6 +179,12 @@ export default {
       switch (data.name) {
         case 'text':
           this.addText();
+          this.setObjectTypeSelected({
+            type: OBJECT_TYPE.TEXT
+          });
+          this.setIsOpenProperties({
+            isOpen: true
+          });
           break;
         default:
           if (data.name === TOOL_NAME.LAYOUTS && this.isPrompt) {
@@ -194,28 +200,19 @@ export default {
      * Add text box in print canvas
      */
     addText() {
-      var text = new fabric.IText('Text', {
-        fontFamily: 'Comic Sans',
-        fontSize: '50',
-        fontWeight: 'bold',
-        fontStyle: 'italic',
-        fill: '#ff00005e',
+      const canvas = window.printCanvas;
+      let text = new fabric.Textbox('Text', {
+        lockUniScaling: false,
+        fontSize: '60',
+        fontFamily: 'arial',
         originX: 'left',
         originY: 'top',
         left: 51,
         top: 282
       });
-      window.printCanvas.add(text);
-      const index = window.printCanvas.getObjects().length - 1;
-      window.printCanvas.setActiveObject(window.printCanvas.item(index));
-
-      this.setTextStyle({
-        fontFamily: 'Comic Sans',
-        fontSize: '50',
-        fontWeight: 'bold',
-        fontStyle: 'italic',
-        color: '#ff00005e'
-      });
+      canvas.add(text);
+      const index = canvas.getObjects().length - 1;
+      canvas.setActiveObject(canvas.item(index));
     }
   }
 };

@@ -2,15 +2,15 @@
   <div class="presentation-container">
     <span class="properties-title">Presentation:</span>
     <PpButtonGroup :item="item" multiple @change="onChange">
-      <v-btn>
+      <v-btn @click.native="isBold">
         <v-icon>format_bold</v-icon>
       </v-btn>
 
-      <v-btn>
+      <v-btn @click.native="isItalic">
         <v-icon>format_italic</v-icon>
       </v-btn>
 
-      <v-btn>
+      <v-btn @click.native="underLine">
         <v-icon>format_underlined</v-icon>
       </v-btn>
     </PpButtonGroup>

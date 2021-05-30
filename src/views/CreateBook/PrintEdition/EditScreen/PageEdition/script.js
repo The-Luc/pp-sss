@@ -1,11 +1,14 @@
-import { mapGetters } from 'vuex';
+import { mapGetters, mapMutations } from 'vuex';
 import { fabric } from 'fabric';
-import { GETTERS } from '@/store/modules/book/const';
+import { GETTERS, MUTATES } from '@/store/modules/app/const';
+import { MUTATES as BOOK_MUTATES } from '@/store/modules/book/const';
+import { OBJECT_TYPE } from '@/common/constants';
 export default {
   computed: {
     ...mapGetters({
       book: GETTERS.BOOK_DETAIL,
-      pageSelected: GETTERS.GET_PAGE_SELECTED
+      pageSelected: GETTERS.GET_PAGE_SELECTED,
+      isOpenMenuProperties: GETTERS.IS_OPEN_MENU_PROPERTIES
     }),
     isHardCover() {
       const { coverOption, sections } = this.book;
@@ -35,43 +38,68 @@ export default {
     }
   },
   methods: {
-    // addLine(a, b, c, d, color) {
-    //   let horizontal = new fabric.Line([a, b, c, d], {
-    //     stroke: color,
-    //     strokeWidth: 1,
-    //     selectable: false
-    //   });
-    //   window.printCanvas.add(horizontal);
-    // }
+    ...mapMutations({
+      setIsOpenProperties: MUTATES.TOGGLE_MENU_PROPERTIES,
+      setObjectTypeSelected: MUTATES.SET_OBJECT_TYPE_SELECTED,
+      setTextProperties: BOOK_MUTATES.TEXT_PROPERTIES
+    }),
+    /**
+     * Open text properties modal and set default properties
+     */
+    openProperties() {
+      const obj = window.printCanvas.getActiveObject();
+      const bold = obj.fontWeight && obj.fontWeight === 'bold';
+      const fontStyle = obj.fontStyle && obj.fontStyle === 'italic';
+      const underLine =
+        obj.textDecoration && obj.textDecoration === 'underline';
+      const { fontFamily, fontSize } = obj;
+      this.setTextProperties({
+        bold,
+        fontStyle,
+        underLine,
+        fontFamily,
+        fontSize
+      });
+      this.setIsOpenProperties({
+        isOpen: true
+      });
+      this.setObjectTypeSelected({
+        type: OBJECT_TYPE.TEXT
+      });
+    },
+    /**
+     * Close text properties modal
+     */
+    closeProperties() {
+      this.setIsOpenProperties({
+        isOpen: false
+      });
+      this.setObjectTypeSelected({
+        type: OBJECT_TYPE.TEXT
+      });
+    }
   },
   mounted() {
     let el = this.$refs.canvas;
     window.printCanvas = new fabric.Canvas(el);
-    fabric.Object.prototype.cornerColor = '#fff';
-    fabric.Object.prototype.borderColor = '#8C8C8C';
-    fabric.Object.prototype.borderSize = 1.25;
-    fabric.Object.prototype.cornerSize = 9;
-    fabric.Object.prototype.cornerStrokeColor = '#8C8C8C';
-    fabric.Object.prototype.transparentCorners = false;
-    fabric.Object.prototype.borderScaleFactor = 1.5;
-    fabric.Object.prototype.setControlsVisibility({
+    let fabricPrototype = fabric.Object.prototype;
+    fabricPrototype.cornerColor = '#fff';
+    fabricPrototype.borderColor = '#8C8C8C';
+    fabricPrototype.borderSize = 1.25;
+    fabricPrototype.cornerSize = 9;
+    fabricPrototype.cornerStrokeColor = '#8C8C8C';
+    fabricPrototype.transparentCorners = false;
+    fabricPrototype.borderScaleFactor = 1.5;
+    fabricPrototype.setControlsVisibility({
       mtr: false
     });
     window.printCanvas.setWidth(1205);
     window.printCanvas.setHeight(768);
-    // this.addLine(86, 70, 86, 698, '#27AAE1');
-    // this.addLine(86, 70, 570, 70, '#27AAE1');
-    // this.addLine(570, 70, 570, 698, '#27AAE1');
-    // this.addLine(86, 698, 570, 698, '#27AAE1');
 
-    // this.addLine(1205 - 86, 70, 1205 - 86, 698, '#27AAE1');
-    // this.addLine(1205 - 86, 70, 1205 - 570, 70, '#27AAE1');
-    // this.addLine(1205 - 570, 70, 1205 - 570, 698, '#27AAE1');
-    // this.addLine(1205 - 86, 698, 1205 - 570, 698, '#27AAE1');
-
-    // this.addLine(60, 45, 60, 768 - 60, '#27AAE1');
-    // this.addLine(1205 - 86, 70, 1205 - 570, 70, '#27AAE1');
-    // this.addLine(1205 - 570, 70, 1205 - 570, 698, '#27AAE1');
-    // this.addLine(1205 - 86, 698, 1205 - 570, 698, '#27AAE1');
+    window.printCanvas.on({
+      'selection:updated': this.openProperties,
+      'selection:cleared': this.closeProperties,
+      'selection:created': this.openProperties
+    });
   }
 };

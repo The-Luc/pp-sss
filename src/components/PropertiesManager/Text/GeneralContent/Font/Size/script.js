@@ -14,10 +14,36 @@ export default {
   data() {
     return {
       appendedIcon: ICON_LOCAL.APPENED_ICON,
-      prependedIcon: ICON_LOCAL.PREPENDED_FONT_SIZE
+      prependedIcon: ICON_LOCAL.PREPENDED_FONT_SIZE,
+      selectedVal: {
+        value: 'arial'
+      }
     };
   },
   methods: {
-    onChange(val) {}
+    /**
+     * Set size for object text
+     * @param   {Any} val size of text (string or object)
+     */
+    onChange(val) {
+      val = typeof val === 'string' ? { value: val } : val;
+      this.selectedVal = {
+        value: val.value
+      };
+      let canvas = window.printCanvas;
+      let obj = canvas.getActiveObject();
+      if (!obj) return;
+      if (obj.getSelectionStyles().length > 0) {
+        obj.setSelectionStyles({
+          fontSize: val.value
+        });
+      } else {
+        obj.styles = {};
+        obj.set({
+          fontSize: val.value
+        });
+      }
+      canvas.renderAll();
+    }
   }
 };

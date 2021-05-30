@@ -15,5 +15,12 @@ export const state = {
   book,
   pageSelected,
   isOpenProperties: false,
-  selectedObjectType: ''
+  selectedObjectType: '',
+  textProperties: {
+    bold: false,
+    fontStyle: false,
+    underLine: false,
+    fontFamily: 'arial',
+    fontSize: '60'
+  }
 };

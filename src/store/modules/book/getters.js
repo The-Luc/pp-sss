@@ -83,6 +83,9 @@ export const getters = {
 
     return getDiffDays(createdDate, deliveryDate);
   },
+  [BOOK._GETTERS.GET_TEXT_PROPERTIES]: ({ textProperties }) => {
+    return textProperties;
+  },
   [BOOK._GETTERS.SHEET_LAYOUT]: ({ book }) => sheetId => {
     const sheets = getAllSheets(book.sections);
     const sheet = sheets.find(s => s.id === sheetId);
