@@ -1,4 +1,5 @@
 import { mapGetters, mapMutations } from 'vuex';
+
 import { MUTATES } from '@/store/modules/app/const';
 import { MUTATES as BOOK_MUTATES } from '@/store/modules/book/const';
 import { GETTERS as THEME_GETTERS } from '@/store/modules/theme/const';
@@ -6,8 +7,15 @@ import Modal from '@/components/Modal';
 import PpButton from '@/components/Button';
 import Themes from './Themes';
 import Preview from './Preview';
+import { useLayoutPrompt } from '@/hooks';
 
 export default {
+  setup() {
+    const { openPrompt } = useLayoutPrompt();
+    return {
+      openPrompt
+    };
+  },
   components: {
     Modal,
     PpButton,
@@ -65,6 +73,7 @@ export default {
         themeId: this.selectedThemeId
       });
       this.onCloseModal();
+      this.openPrompt();
     },
     /**
      * Set preview theme's id

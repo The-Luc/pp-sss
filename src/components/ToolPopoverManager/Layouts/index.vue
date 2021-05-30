@@ -1,5 +1,13 @@
 <template>
-  <div class="layouts-container">
+  <div
+    class="layouts-container"
+    :class="{
+      'layouts-container-prompt': !isVisited,
+      'empty-layout-container': layouts.length === 0
+    }"
+  >
+    <div v-if="!isVisited" class="prompt"></div>
+    <GotIt v-if="!isVisited" @click="onClickGotIt" />
     <PpToolPopover
       title="Layouts"
       @cancel="onCancel"
@@ -23,8 +31,13 @@
 
       <template #content>
         <div class="layout-item-container">
-          <div v-show="layouts.length === 0" class="empty-layout">
-            No Layout Matches
+          <div v-show="layouts.length === 0" class="empty-layout-content">
+            <p class="empty-layout-text">No Layout Matches</p>
+            <Item
+              v-for="(layout, index) in layoutEmptyLength"
+              :key="index"
+              is-empty
+            />
           </div>
           <Item
             v-for="layout in layouts"

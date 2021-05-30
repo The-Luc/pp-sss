@@ -28,6 +28,10 @@ img {
   visibility: hidden !important;
 }
 
+.theme--light.v-application {
+  color: $color-main;
+}
+
 html,
 body,
 .container {
