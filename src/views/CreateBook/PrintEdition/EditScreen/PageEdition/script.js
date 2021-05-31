@@ -133,7 +133,7 @@ export default {
     textSelected: function(target) {
       const {
         fontFamily,
-        fontSize,
+        originalFontSize,
         fontWeight,
         fontStyle,
         textDecoration,
@@ -143,7 +143,7 @@ export default {
 
       this.setTextStyle({
         fontFamily,
-        fontSize,
+        fontSize: originalFontSize,
         isBold: !isEmpty(fontWeight),
         isItalic: !isEmpty(fontStyle),
         isUnderline: !isEmpty(textDecoration),
@@ -159,6 +159,7 @@ export default {
       const text = new fabric.Textbox('Text', {
         lockUniScaling: false,
         fontSize: '60',
+        originalFontSize: '60',
         fontFamily: 'arial',
         fill: '#000000',
         fontWeight: '',
@@ -176,11 +177,22 @@ export default {
       window.printCanvas.setActiveObject(window.printCanvas.item(index));
     },
     /**
-     * Event fire when user change any style of selected text on the Text Properties
+     * Event fire when user change any property of selected text on the Text Properties
      */
-    changeTextStyle: function(style) {
+    changeTextProp: function(style) {
+      const activeObj = window.printCanvas.getActiveObject();
+
       Object.keys(style).forEach(k => {
-        window.printCanvas.getActiveObject().set(k, style[k]);
+        const val = style[k];
+        if (k !== 'fontSize') {
+          activeObj.set(k, val);
+
+          return;
+        }
+
+        activeObj.set('originalFontSize', val);
+
+        activeObj.set(k, (window.printCanvas.width / 1205) * val);
       });
 
       window.printCanvas.renderAll();
@@ -212,8 +224,8 @@ export default {
       this.addText();
     });
 
-    this.$root.$on('printChangeTextStyle', style => {
-      this.changeTextStyle(style);
+    this.$root.$on('printChangeTextProp', style => {
+      this.changeTextProp(style);
     });
   }
 };

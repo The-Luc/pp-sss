@@ -2,6 +2,8 @@ import { mapGetters, mapMutations } from 'vuex';
 
 import PpSelect from '@/components/Select';
 
+import { styleToCssStyle } from '@/common/utils';
+
 import {
   GETTERS as PRINT_GETTERS,
   MUTATES as PRINT_MUTATES
@@ -48,6 +50,18 @@ export default {
       const selected = this.items.find(item => item.value === selectedId);
 
       return selected;
+    },
+    selectBoxItems() {
+      return this.items.map(item => {
+        const { label, value, style } = item;
+
+        return {
+          label,
+          value,
+          style,
+          cssStyle: styleToCssStyle(style)
+        };
+      });
     }
   },
   methods: {
@@ -101,9 +115,9 @@ export default {
       this.setTextStyle(style);
       this.setStyleId(value);
 
-      this.$root.$emit('printChangeTextStyle', styles);
+      this.$root.$emit('printChangeTextProp', styles);
 
-      this.$root.$emit('printChangeTextStyle', { styleId: value });
+      this.$root.$emit('printChangeTextProp', { styleId: value });
     }
   }
 };

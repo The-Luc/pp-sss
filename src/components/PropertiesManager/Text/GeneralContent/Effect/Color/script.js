@@ -13,7 +13,7 @@ export default {
         color: color
       });
 
-      this.$root.$emit('printChangeTextStyle', { fill: color });
+      this.$root.$emit('printChangeTextProp', { fill: color });
     });
   },
   computed: {

@@ -5,6 +5,7 @@
       :items="items"
       :prepended-icon="prependedIcon"
       :appended-icon="appendedIcon"
+      :selected-val="selectedSize"
       @change="onChange"
     />
   </div>

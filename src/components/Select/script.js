@@ -42,44 +42,26 @@ export default {
      * Get css style of item base on its style
      *
      * @param   {Object} style  style of item
-     * @returns {Array}         css style of item
+     * @returns {Object}         css style of item
      */
-    getStyle(style) {
-      if (isEmpty(style)) return [];
+    getStyle(cssStyle) {
+      if (isEmpty(cssStyle)) return {};
 
-      const styles = {};
+      const style = {};
 
-      Object.keys(style).forEach(k => {
-        const value = style[k];
-
-        if (k === 'fontSize') {
-          styles[k] = `${value / 4}pt`;
+      Object.keys(cssStyle).forEach(k => {
+        if (k !== 'fontSize') {
+          style[k] = cssStyle[k];
 
           return;
         }
 
-        if (k === 'isBold') {
-          styles['fontWeight'] = value ? 'bold' : 'normal';
+        const fontSize = parseInt(cssStyle[k], 10) / 3;
 
-          return;
-        }
-
-        if (k === 'isItalic') {
-          styles['fontStyle'] = value ? 'italic' : 'normal';
-
-          return;
-        }
-
-        if (k === 'isUnderline') {
-          styles['textDecoration'] = value ? 'underline' : 'none';
-
-          return;
-        }
-
-        styles[k] = value;
+        style[k] = `${fontSize > 50 ? 50 : fontSize}px`;
       });
 
-      return styles;
+      return style;
     }
   }
 };
