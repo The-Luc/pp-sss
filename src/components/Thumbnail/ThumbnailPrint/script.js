@@ -119,12 +119,12 @@ export default {
         canvas.clear().renderAll();
         return;
       }
-      // fabric.Image.fromURL(require(`@/assets/image/layouts/${src}`), img => {
-      //   img.selectable = false;
-      //   img.scaleX = canvas.width / img.width / 2;
-      //   img.scaleY = canvas.height / img.height;
-      //   canvas.add(img);
-      // });
+      fabric.Image.fromURL(require(`@/assets/image/layouts/${src}`), img => {
+        img.selectable = false;
+        img.scaleX = canvas.width / img.width / 2;
+        img.scaleY = canvas.height / img.height;
+        canvas.add(img);
+      });
     },
     /**
      * Using fabric to draw right layout in thumnail
@@ -136,13 +136,13 @@ export default {
         canvas.clear().renderAll();
         return;
       }
-      // fabric.Image.fromURL(require(`@/assets/image/layouts/${src}`), img => {
-      //   img.selectable = false;
-      //   img.left = canvas.width / 2;
-      //   img.scaleX = canvas.width / img.width / 2;
-      //   img.scaleY = canvas.height / img.height;
-      //   canvas.add(img);
-      // });
+      fabric.Image.fromURL(require(`@/assets/image/layouts/${src}`), img => {
+        img.selectable = false;
+        img.left = canvas.width / 2;
+        img.scaleX = canvas.width / img.width / 2;
+        img.scaleY = canvas.height / img.height;
+        canvas.add(img);
+      });
     },
     /**
      * Get layout data to draw

@@ -101,7 +101,7 @@ export default {
      */
     setLayoutForSheet(layoutData) {
       let { imageUrlLeft, imageUrlRight } = layoutData;
-      // this.drawLayout(imageUrlLeft, imageUrlRight);
+      this.drawLayout(imageUrlLeft, imageUrlRight);
     }
   },
   mounted() {
