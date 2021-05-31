@@ -1,13 +1,10 @@
-import { mapGetters, mapMutations } from 'vuex';
+import { mapGetters } from 'vuex';
 
 import PpSelect from '@/components/Select';
 
 import { styleToCssStyle } from '@/common/utils';
 
-import {
-  GETTERS as PRINT_GETTERS,
-  MUTATES as PRINT_MUTATES
-} from '@/store/modules/print/const';
+import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 
 export default {
   components: {
@@ -21,7 +18,7 @@ export default {
           value: 'coverHeadline',
           style: {
             fontFamily: 'Time News Roman',
-            fontSize: 80,
+            fontSize: 72,
             isBold: true,
             isItalic: true,
             isUnderline: false,
@@ -45,7 +42,7 @@ export default {
   },
   computed: {
     selectedItem() {
-      const selectedId = this.getStyleId();
+      const selectedId = this.getTextProp().styleId;
 
       const selected = this.items.find(item => item.value === selectedId);
 
@@ -67,11 +64,7 @@ export default {
   methods: {
     ...mapGetters({
       getTextStyle: PRINT_GETTERS.TEXT_STYLE,
-      getStyleId: PRINT_GETTERS.TEXT_STYLE_ID
-    }),
-    ...mapMutations({
-      setTextStyle: PRINT_MUTATES.SET_TEXT_STYLE,
-      setStyleId: PRINT_MUTATES.SET_TEXT_STYLE_ID
+      getTextProp: PRINT_GETTERS.TEXT_PROPERTY
     }),
     /**
      * Event fired when user choose an item on list
@@ -80,42 +73,7 @@ export default {
      * @param {Object}  style attribute style of style
      */
     onChange({ value, style }) {
-      const styles = {};
-
-      Object.keys(style).forEach(k => {
-        const val = style[k];
-
-        if (k === 'isBold') {
-          styles['fontWeight'] = val ? 'bold' : '';
-
-          return;
-        }
-
-        if (k === 'isItalic') {
-          styles['fontStyle'] = val ? 'italic' : '';
-
-          return;
-        }
-
-        if (k === 'isUnderline') {
-          styles['underline'] = val;
-
-          return;
-        }
-
-        if (k === 'color') {
-          styles['fill'] = val;
-
-          return;
-        }
-
-        styles[k] = val;
-      });
-
-      this.setTextStyle(style);
-      this.setStyleId(value);
-
-      this.$root.$emit('printChangeTextProp', styles);
+      this.$root.$emit('printChangeTextStyle', style);
 
       this.$root.$emit('printChangeTextProp', { styleId: value });
     }

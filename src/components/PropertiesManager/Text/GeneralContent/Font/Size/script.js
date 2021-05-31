@@ -1,14 +1,11 @@
-import { mapGetters, mapMutations } from 'vuex';
+import { mapGetters } from 'vuex';
 
 import PpCombobox from '@/components/Combobox';
 import { ICON_LOCAL } from '@/common/constants';
 
 import { isEmpty } from '@/common/utils';
 
-import {
-  GETTERS as PRINT_GETTERS,
-  MUTATES as PRINT_MUTATES
-} from '@/store/modules/print/const';
+import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 
 export default {
   components: {
@@ -45,9 +42,6 @@ export default {
     ...mapGetters({
       getTextStyle: PRINT_GETTERS.TEXT_STYLE
     }),
-    ...mapMutations({
-      setTextStyle: PRINT_MUTATES.SET_TEXT_STYLE
-    }),
     /**
      * Set size for object text
      * @param   {Any} val size of text (string or object)
@@ -57,11 +51,7 @@ export default {
 
       const value = typeof data === 'string' ? data : data.value;
 
-      const styles = { fontSize: value };
-
-      this.setTextStyle(styles);
-
-      this.$root.$emit('printChangeTextProp', styles);
+      this.$root.$emit('printChangeTextStyle', { fontSize: value });
     }
   }
 };

@@ -9,6 +9,8 @@ export const state = {
       isUnderline: false,
       color: ''
     },
-    styleId: ''
+    property: {
+      styleId: ''
+    }
   }
 };

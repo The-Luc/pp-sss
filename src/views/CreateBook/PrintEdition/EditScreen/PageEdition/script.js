@@ -3,7 +3,13 @@ import { fabric } from 'fabric';
 
 import { useDrawLayout } from '@/hooks';
 
-import { isEmpty } from '@/common/utils';
+import {
+  isEmpty,
+  styleToFabricStyle,
+  fabricStyleToStyle,
+  propToFabricProp,
+  fabricPropToProp
+} from '@/common/utils';
 
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
 import { GETTERS, MUTATES as BOOK_MUTATES } from '@/store/modules/book/const';
@@ -61,13 +67,47 @@ export default {
       }
     }
   },
+  mounted() {
+    let el = this.$refs.canvas;
+    window.printCanvas = new fabric.Canvas(el);
+    let fabricPrototype = fabric.Object.prototype;
+    fabricPrototype.cornerColor = '#fff';
+    fabricPrototype.borderColor = '#8C8C8C';
+    fabricPrototype.borderSize = 1.25;
+    fabricPrototype.cornerSize = 9;
+    fabricPrototype.cornerStrokeColor = '#8C8C8C';
+    fabricPrototype.transparentCorners = false;
+    fabricPrototype.borderScaleFactor = 1.5;
+    fabricPrototype.setControlsVisibility({
+      mtr: false
+    });
+    window.printCanvas.setWidth(1205);
+    window.printCanvas.setHeight(768);
+    window.printCanvas.on({
+      'selection:updated': this.objectSelected,
+      'selection:cleared': this.closeProperties,
+      'selection:created': this.objectSelected
+    });
+
+    this.$root.$on('printAddText', () => {
+      this.addText();
+    });
+
+    this.$root.$on('printChangeTextStyle', style => {
+      this.changeObjectStyle(style);
+    });
+
+    this.$root.$on('printChangeTextProp', prop => {
+      this.changeObjectProperties(prop);
+    });
+  },
   methods: {
     ...mapMutations({
       setIsOpenProperties: MUTATES.TOGGLE_MENU_PROPERTIES,
       setObjectTypeSelected: MUTATES.SET_OBJECT_TYPE_SELECTED,
       setTextProperties: BOOK_MUTATES.TEXT_PROPERTIES,
       setTextStyle: PRINT_MUTATES.SET_TEXT_STYLE,
-      setStyleId: PRINT_MUTATES.SET_TEXT_STYLE_ID
+      setTextProp: PRINT_MUTATES.SET_TEXT_PROPERTY
     }),
     ...mapGetters({
       getTextStyle: PRINT_GETTERS.TEXT_STYLE
@@ -136,21 +176,27 @@ export default {
         originalFontSize,
         fontWeight,
         fontStyle,
-        textDecoration,
+        underline,
         fill,
         styleId
       } = target;
 
-      this.setTextStyle({
+      const style = fabricStyleToStyle({
         fontFamily,
-        fontSize: originalFontSize,
-        isBold: !isEmpty(fontWeight),
-        isItalic: !isEmpty(fontStyle),
-        isUnderline: !isEmpty(textDecoration),
-        color: fill
+        originalFontSize,
+        fontWeight,
+        fontStyle,
+        underline,
+        fill
       });
 
-      this.setStyleId(isEmpty(styleId) ? '' : styleId);
+      this.setTextStyle(style);
+
+      const prop = fabricPropToProp({
+        styleId: isEmpty(styleId) ? '' : styleId
+      });
+
+      this.setTextProp(prop);
     },
     /**
      * Event fire when user click on Text button on Toolbar to add new text on canvas
@@ -178,54 +224,53 @@ export default {
     },
     /**
      * Event fire when user change any property of selected text on the Text Properties
+     *
+     * @param {Object}  style  new style
      */
-    changeTextProp: function(style) {
+    changeObjectStyle: function(style) {
+      if (isEmpty(style)) return;
+
       const activeObj = window.printCanvas.getActiveObject();
 
-      Object.keys(style).forEach(k => {
-        const val = style[k];
-        if (k !== 'fontSize') {
-          activeObj.set(k, val);
+      if (isEmpty(activeObj)) return;
 
-          return;
+      const fabricStyle = styleToFabricStyle(style);
+
+      Object.keys(fabricStyle).forEach(k => {
+        const value = fabricStyle[k];
+
+        if (k === 'originalFontSize') {
+          activeObj.set('fontSize', (window.printCanvas.width / 1205) * value);
         }
 
-        activeObj.set('originalFontSize', val);
-
-        activeObj.set(k, (window.printCanvas.width / 1205) * val);
+        activeObj.set(k, value);
       });
 
       window.printCanvas.renderAll();
+
+      this.setTextStyle(style);
+    },
+    /**
+     * Event fire when user change any property of selected text
+     *
+     * @param {Object}  prop  new prop data
+     */
+    changeObjectProperties: function(prop) {
+      if (isEmpty(prop)) return;
+
+      const activeObj = window.printCanvas.getActiveObject();
+
+      if (isEmpty(activeObj)) return;
+
+      const fabricProp = propToFabricProp(prop);
+
+      Object.keys(fabricProp).forEach(k => {
+        activeObj.set(k, fabricProp[k]);
+      });
+
+      // window.printCanvas.renderAll();
+
+      this.setTextProp(prop);
     }
-  },
-  mounted() {
-    let el = this.$refs.canvas;
-    window.printCanvas = new fabric.Canvas(el);
-    let fabricPrototype = fabric.Object.prototype;
-    fabricPrototype.cornerColor = '#fff';
-    fabricPrototype.borderColor = '#8C8C8C';
-    fabricPrototype.borderSize = 1.25;
-    fabricPrototype.cornerSize = 9;
-    fabricPrototype.cornerStrokeColor = '#8C8C8C';
-    fabricPrototype.transparentCorners = false;
-    fabricPrototype.borderScaleFactor = 1.5;
-    fabricPrototype.setControlsVisibility({
-      mtr: false
-    });
-    window.printCanvas.setWidth(1205);
-    window.printCanvas.setHeight(768);
-    window.printCanvas.on({
-      'selection:updated': this.objectSelected,
-      'selection:cleared': this.closeProperties,
-      'selection:created': this.objectSelected
-    });
-
-    this.$root.$on('printAddText', () => {
-      this.addText();
-    });
-
-    this.$root.$on('printChangeTextProp', style => {
-      this.changeTextProp(style);
-    });
   }
 };

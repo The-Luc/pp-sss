@@ -13,9 +13,9 @@ export const mutations = {
       fontStyle || state.selectedText.fontStyle;
     state.selectedText.style.color = color || state.selectedText.color;
   },
-  [PRINT._MUTATES.SET_TEXT_STYLE_ID](state, payload) {
+  [PRINT._MUTATES.SET_TEXT_PROPERTY](state, payload) {
     const { styleId } = payload;
 
-    state.selectedText.styleId = styleId;
+    state.selectedText.property.styleId = styleId;
   }
 };

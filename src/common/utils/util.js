@@ -129,12 +129,6 @@ export const styleToCssStyle = style => {
       return;
     }
 
-    if (k === 'color') {
-      cssStyle['fill'] = value;
-
-      return;
-    }
-
     cssStyle[k] = value;
   });
 
@@ -173,6 +167,12 @@ export const styleToFabricStyle = style => {
 
     if (k === 'color') {
       fabricStyle['fill'] = value;
+
+      return;
+    }
+
+    if (k === 'fontSize') {
+      fabricStyle['originalFontSize'] = parseInt(`${value}`, 10);
 
       return;
     }
@@ -219,8 +219,46 @@ export const fabricStyleToStyle = fabricStyle => {
       return;
     }
 
+    if (k === 'originalFontSize') {
+      style['fontSize'] = parseInt(`${value}`, 10);
+
+      return;
+    }
+
     style[k] = value;
   });
 
   return style;
+};
+
+/**
+ * Convert stored properties to fabric properties
+ *
+ * @param   {Object}  prop  stored properties
+ * @returns {Object}        fabric properties
+ */
+export const propToFabricProp = prop => {
+  const fabricProp = {};
+
+  Object.keys(prop).forEach(k => {
+    fabricProp[k] = prop[k];
+  });
+
+  return fabricProp;
+};
+
+/**
+ * Convert fabric properties to stored properties
+ *
+ * @param   {Object}  fabricProp  fabric properties
+ * @returns {Object}              stored properties
+ */
+export const fabricPropToProp = fabricProp => {
+  const prop = {};
+
+  Object.keys(fabricProp).forEach(k => {
+    prop[k] = fabricProp[k];
+  });
+
+  return prop;
 };

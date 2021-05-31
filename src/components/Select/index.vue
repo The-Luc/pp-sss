@@ -44,7 +44,7 @@
         <v-list-item-content>
           <v-list-item-title>
             <v-row no-gutters align="center">
-              <span :style="getStyle(item.style)">{{ item.label }}</span>
+              <span :style="getStyle(item.cssStyle)">{{ item.label }}</span>
             </v-row>
           </v-list-item-title>
         </v-list-item-content>

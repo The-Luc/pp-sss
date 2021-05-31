@@ -1,19 +1,12 @@
 import { mapGetters, mapMutations } from 'vuex';
 
 import { GETTERS, MUTATES } from '@/store/modules/app/const';
-import {
-  GETTERS as PRINT_GETTERS,
-  MUTATES as PRINT_MUTATES
-} from '@/store/modules/print/const';
+import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 
 export default {
   mounted() {
     this.$root.$on('colorChange', color => {
-      this.setTextStyle({
-        color: color
-      });
-
-      this.$root.$emit('printChangeTextProp', { fill: color });
+      this.$root.$emit('printChangeTextStyle', { color: color });
     });
   },
   computed: {
@@ -34,7 +27,6 @@ export default {
     }),
     ...mapMutations({
       toggleColorPicker: MUTATES.TOGGLE_COLOR_PICKER,
-      setTextStyle: PRINT_MUTATES.SET_TEXT_STYLE,
       setColorPickerColor: MUTATES.SET_COLOR_PICKER_COLOR
     }),
     /**
