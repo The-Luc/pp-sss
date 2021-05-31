@@ -299,16 +299,32 @@ export const mutations = {
     const allSheets = getAllSheets(state.book.sections);
     const layouts = cloneDeep(this.state.theme.layouts);
     const currentSheet = allSheets.find(sheet => sheet.id === sheetId);
+    const sheetObj = cloneDeep(currentSheet);
     const layoutObj = layouts.find(layout => layout.id === layoutId);
-    const leftLayout = layoutObj.imageUrlLeft;
-    if (sheetId === state.book.insideFrontCoverId || pagePosition === 'right') {
-      layoutObj.imageUrlRight = layoutObj.imageUrlLeft;
+    const obj = cloneDeep(layoutObj);
+    const singleLayoutSelected = obj.imageUrlLeft; // For single layout, always on left canvas
+    const sheetLeftLayout = sheetObj?.printData?.layout?.imageUrlLeft;
+    const sheetRightLayout = sheetObj?.printData?.layout?.imageUrlRight;
+
+    if (sheetId === state.book.insideFrontCoverId) {
+      layoutObj.imageUrlRight = singleLayoutSelected;
       layoutObj.imageUrlLeft = '';
     }
-    if (sheetId === state.book.insideBackCoverId || pagePosition === 'left') {
-      layoutObj.imageUrlLeft = leftLayout;
+    if (sheetId === state.book.insideBackCoverId) {
+      layoutObj.imageUrlLeft = singleLayoutSelected;
       layoutObj.imageUrlRight = '';
     }
+
+    if (pagePosition === 'right') {
+      layoutObj.imageUrlRight = singleLayoutSelected;
+      layoutObj.imageUrlLeft = sheetLeftLayout;
+    }
+
+    if (pagePosition === 'left') {
+      layoutObj.imageUrlLeft = singleLayoutSelected;
+      layoutObj.imageUrlRight = sheetRightLayout;
+    }
+
     currentSheet.printData.layout = layoutObj;
     currentSheet.printData.theme = themeId;
   },

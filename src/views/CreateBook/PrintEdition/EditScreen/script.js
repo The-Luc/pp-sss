@@ -1,7 +1,7 @@
 import { mapMutations, mapGetters } from 'vuex';
 import { MUTATES } from '@/store/modules/app/const';
 import { GETTERS as BOOK_GETTERS } from '@/store/modules/book/const';
-import { MODAL_TYPES } from '@/common/constants';
+import { MODAL_TYPES, TOOL_NAME } from '@/common/constants';
 import ToolBar from './ToolBar';
 import Header from '@/components/HeaderEdition/Header';
 import FeedbackBar from '@/components/HeaderEdition/FeedbackBar';
@@ -11,13 +11,17 @@ import { useLayoutPrompt, usePopoverCreationTool } from '@/hooks';
 
 export default {
   setup() {
-    const { checkSheetIsVisited, pageSelected, openPrompt } = useLayoutPrompt();
+    const {
+      checkSheetIsVisited,
+      pageSelected,
+      updateVisited
+    } = useLayoutPrompt();
     const { setToolNameSelected } = usePopoverCreationTool();
     return {
       pageSelected,
       checkSheetIsVisited,
       setToolNameSelected,
-      openPrompt
+      updateVisited
     };
   },
   components: {
@@ -68,7 +72,10 @@ export default {
     setIsPromptLayout(pageSelected) {
       const isVisited = this.checkSheetIsVisited(pageSelected);
       if (!isVisited) {
-        this.openPrompt();
+        this.setToolNameSelected(TOOL_NAME.LAYOUTS);
+        this.updateVisited({
+          sheetId: pageSelected
+        });
       }
     }
   }

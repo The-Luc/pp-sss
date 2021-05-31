@@ -229,7 +229,9 @@ export default {
           const sheetLayoutObj = this.layouts.find(
             layout => layout.id === sheetLayout.id
           );
-          this.tempLayoutIdSelected = sheetLayoutObj.id;
+          if (sheetLayoutObj?.id) {
+            this.tempLayoutIdSelected = sheetLayoutObj.id;
+          }
         }
       }
     },

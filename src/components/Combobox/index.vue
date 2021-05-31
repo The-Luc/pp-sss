@@ -6,6 +6,7 @@
     :items="items"
     item-text="label"
     item-value="value"
+    :value="selectedVal"
     solo
     no-filter
     hide-no-data
