@@ -284,13 +284,14 @@ export const mutations = {
   },
   [BOOK._MUTATES.TEXT_PROPERTIES](
     state,
-    { bold, fontStyle, underLine, fontFamily, fontSize }
+    { bold, fontStyle, underLine, fontFamily, fontSize, textAlign }
   ) {
     state.textProperties.bold = bold;
     state.textProperties.fontStyle = fontStyle;
     state.textProperties.underLine = underLine;
     state.textProperties.fontFamily = fontFamily;
     state.textProperties.fontSize = fontSize;
+    state.textProperties.textAlign = textAlign;
   },
   [BOOK._MUTATES.UPDATE_SHEET_THEME_LAYOUT](
     state,

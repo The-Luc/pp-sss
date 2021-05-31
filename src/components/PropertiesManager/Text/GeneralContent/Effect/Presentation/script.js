@@ -91,12 +91,18 @@ export default {
     setDataTextProperties() {
       if (this.textProperties.bold) {
         this.item.push(0);
+      } else {
+        this.item = this.item.filter(item => item !== 0);
       }
       if (this.textProperties.fontStyle) {
         this.item.push(1);
+      } else {
+        this.item = this.item.filter(item => item !== 1);
       }
       if (this.textProperties.underLine) {
         this.item.push(2);
+      } else {
+        this.item = this.item.filter(item => item !== 2);
       }
     },
     /**

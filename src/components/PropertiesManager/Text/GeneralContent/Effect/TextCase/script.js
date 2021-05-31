@@ -13,12 +13,20 @@ export default {
   components: {
     PpButtonGroup
   },
+  mounted() {
+    window.printCanvas.on({
+      'selection:updated': this.clearTextCase,
+      'selection:created': this.clearTextCase,
+      'selection:cleared': this.clearTextCase
+    });
+  },
   methods: {
     /**
      * Detect click on item on textcase properties
      * @param  {Object} val Receive item information
      */
     onChange(val) {
+      this.item = val;
       switch (val) {
         case 0:
           this.upperCase();
@@ -40,7 +48,25 @@ export default {
     upperCase() {
       const canvas = window.printCanvas;
       let obj = canvas.getActiveObject();
-      obj.text = obj.text.toUpperCase();
+      let text = obj.text;
+      if (obj.setSelectionStyles && obj.isEditing) {
+        text = text.split('');
+        console.log(text);
+        for (
+          let i = obj.setSelectionStyles().selectionStart;
+          i < obj.setSelectionStyles().selectionEnd;
+          i++
+        ) {
+          text[i] = text[i].toUpperCase();
+        }
+        obj.set({
+          text: text.join('')
+        });
+      } else {
+        obj.set({
+          text: text.toUpperCase()
+        });
+      }
       canvas.renderAll();
     },
     /**
@@ -49,7 +75,24 @@ export default {
     lowerCase() {
       const canvas = window.printCanvas;
       let obj = canvas.getActiveObject();
-      obj.text = obj.text.toLowerCase();
+      let text = obj.text;
+      if (obj.setSelectionStyles && obj.isEditing) {
+        text = text.split('');
+        for (
+          let i = obj.setSelectionStyles().selectionStart;
+          i < obj.setSelectionStyles().selectionEnd;
+          i++
+        ) {
+          text[i] = text[i].toLowerCase();
+        }
+        obj.set({
+          text: text.join('')
+        });
+      } else {
+        obj.set({
+          text: text.toLowerCase()
+        });
+      }
       canvas.renderAll();
     },
     /**
@@ -69,6 +112,12 @@ export default {
       let obj = canvas.getActiveObject();
       obj.text = upperFirst(obj.text.toLowerCase());
       canvas.renderAll();
+    },
+    /**
+     * Clear data of text properties modal
+     */
+    clearTextCase() {
+      this.item = null;
     }
   }
 };
