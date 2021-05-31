@@ -300,13 +300,13 @@ export default {
             this.sectionId,
             this.pageSelected
           );
+
           this.onCancel();
           this.toggleModal({
             isOpenModal: true,
             modalData: {
               type: MODAL_TYPES.SELECT_PAGE,
               props: {
-                imageUrlLeft,
                 numberPageLeft,
                 numberPageRight,
                 sheetId: this.selectedSheet,

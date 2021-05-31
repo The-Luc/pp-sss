@@ -14,7 +14,7 @@ const pageSelected = book.sections[0].sheets[0].id;
 export const state = {
   book,
   pageSelected,
-  sectionId: 0,
+  sectionId: 1,
   isOpenProperties: false,
   selectedObjectType: '',
   textProperties: {
