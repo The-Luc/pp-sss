@@ -18,7 +18,6 @@
   >
     <template #selection="{ item }">
       <v-list-item class="pp-select--item item-selected">
-        <img class="icon-ative" :src="activeMenuIcon" />
         <v-list-item-content>
           <v-list-item-title>
             <v-row no-gutters align="center">
