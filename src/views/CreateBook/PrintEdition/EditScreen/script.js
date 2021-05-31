@@ -11,12 +11,17 @@ import { useLayoutPrompt, usePopoverCreationTool } from '@/hooks';
 
 export default {
   setup() {
-    const { checkSheetIsVisited, pageSelected } = useLayoutPrompt();
+    const {
+      checkSheetIsVisited,
+      pageSelected,
+      updateVisited
+    } = useLayoutPrompt();
     const { setToolNameSelected } = usePopoverCreationTool();
     return {
       pageSelected,
       checkSheetIsVisited,
-      setToolNameSelected
+      setToolNameSelected,
+      updateVisited
     };
   },
   components: {
@@ -68,6 +73,9 @@ export default {
       const isVisited = this.checkSheetIsVisited(pageSelected);
       if (!isVisited) {
         this.setToolNameSelected(TOOL_NAME.LAYOUTS);
+        this.updateVisited({
+          sheetId: pageSelected
+        });
       }
     }
   }

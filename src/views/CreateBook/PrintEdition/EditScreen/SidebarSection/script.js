@@ -139,6 +139,9 @@ export default {
         this.setIsPrompt({
           isPrompt: false
         });
+        this.updateVisited({
+          sheetId
+        });
         this.setToolNameSelected(TOOL_NAME.LAYOUTS);
       }
     }
