@@ -1,5 +1,11 @@
+import { mapGetters } from 'vuex';
+
 import PpCombobox from '@/components/Combobox';
 import { ICON_LOCAL } from '@/common/constants';
+
+import { isEmpty } from '@/common/utils';
+
+import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 
 export default {
   components: {
@@ -14,36 +20,38 @@ export default {
   data() {
     return {
       appendedIcon: ICON_LOCAL.APPENED_ICON,
-      prependedIcon: ICON_LOCAL.PREPENDED_FONT_SIZE,
-      selectedVal: {
-        value: 'arial'
-      }
+      prependedIcon: ICON_LOCAL.PREPENDED_FONT_SIZE
     };
   },
+  computed: {
+    selectedSize() {
+      const selectedSize = this.getTextStyle().fontSize;
+
+      const selected = this.items.find(
+        item => `${item.value}` === `${selectedSize}`
+      );
+
+      const selectedFontSize = isEmpty(selected)
+        ? { label: `${selectedSize} pt`, value: selectedSize }
+        : selected;
+
+      return selectedFontSize;
+    }
+  },
   methods: {
+    ...mapGetters({
+      getTextStyle: PRINT_GETTERS.TEXT_STYLE
+    }),
     /**
      * Set size for object text
      * @param   {Any} val size of text (string or object)
      */
-    onChange(val) {
-      val = typeof val === 'string' ? { value: val } : val;
-      this.selectedVal = {
-        value: val.value
-      };
-      let canvas = window.printCanvas;
-      let obj = canvas.getActiveObject();
-      if (!obj) return;
-      if (obj.getSelectionStyles().length > 0) {
-        obj.setSelectionStyles({
-          fontSize: val.value
-        });
-      } else {
-        obj.styles = {};
-        obj.set({
-          fontSize: val.value
-        });
-      }
-      canvas.renderAll();
+    onChange(data) {
+      if (isEmpty(data)) return;
+
+      const value = typeof data === 'string' ? data : data.value;
+
+      this.$root.$emit('printChangeTextStyle', { fontSize: value });
     }
   }
 };

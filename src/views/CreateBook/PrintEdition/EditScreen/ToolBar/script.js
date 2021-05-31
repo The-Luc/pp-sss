@@ -1,10 +1,8 @@
 import { mapMutations, mapGetters } from 'vuex';
-import { fabric } from 'fabric';
 import ToolButton from '@/components/ToolButton';
 import ItemTool from './ItemTool';
 import { GETTERS, MUTATES } from '@/store/modules/app/const';
 import { GETTERS as BOOK_GETTERS } from '@/store/modules/book/const';
-import { MUTATES as PRINT_MUTATES } from '@/store/modules/print/const';
 import { OBJECT_TYPE, TOOL_NAME } from '@/common/constants';
 import { useLayoutPrompt } from '@/hooks';
 
@@ -119,15 +117,7 @@ export default {
       ]
     };
   },
-  mounted() {
-    this.$root.$on('textStyleChange', style => {
-      Object.keys(style).forEach(k => {
-        window.printCanvas.getActiveObject().set(k, style[k]);
-      });
-
-      window.printCanvas.renderAll();
-    });
-  },
+  mounted() {},
   computed: {
     ...mapGetters({
       selectedObjectType: GETTERS.SELECTED_OBJECT_TYPE,
@@ -140,8 +130,8 @@ export default {
     ...mapMutations({
       setObjectTypeSelected: MUTATES.SET_OBJECT_TYPE_SELECTED,
       setIsOpenProperties: MUTATES.TOGGLE_MENU_PROPERTIES,
-      setToolNameSelected: MUTATES.SET_TOOL_NAME_SELECTED,
-      setTextStyle: PRINT_MUTATES.SET_TEXT_STYLE
+      toggleColorPicker: MUTATES.TOGGLE_COLOR_PICKER,
+      setToolNameSelected: MUTATES.SET_TOOL_NAME_SELECTED
     }),
     /**
      * Detect click on item on right creation tool
@@ -153,14 +143,17 @@ export default {
       }
       switch (item.name) {
         case 'properties':
-          // if (!this.selectedObjectType) {
-          //   return;
-          // }
+          if (!this.selectedObjectType) {
+            return;
+          }
           this.setIsOpenProperties({
             isOpen: !this.isOpenMenuProperties
           });
+          this.toggleColorPicker({
+            isOpen: false
+          });
           this.setObjectTypeSelected({
-            type: OBJECT_TYPE.TEXT
+            type: this.selectedObjectType
           });
           break;
         default:
@@ -200,19 +193,7 @@ export default {
      * Add text box in print canvas
      */
     addText() {
-      const canvas = window.printCanvas;
-      let text = new fabric.Textbox('Text', {
-        lockUniScaling: false,
-        fontSize: '60',
-        fontFamily: 'arial',
-        originX: 'left',
-        originY: 'top',
-        left: 51,
-        top: 282
-      });
-      canvas.add(text);
-      const index = canvas.getObjects().length - 1;
-      canvas.setActiveObject(canvas.item(index));
+      this.$root.$emit('printAddText');
     }
   }
 };

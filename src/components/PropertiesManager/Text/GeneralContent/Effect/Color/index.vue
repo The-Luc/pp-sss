@@ -4,7 +4,7 @@
     <div class="color-content">
       <div class="box-color">
         <div
-          :style="{ backgroundColor: currentColor }"
+          :style="{ backgroundColor: color }"
           class="box-color-active"
           @click="onOpenColorPicker"
         />

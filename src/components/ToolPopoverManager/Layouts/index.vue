@@ -6,8 +6,8 @@
       'empty-layout-container': layouts.length === 0
     }"
   >
-    <div v-if="!isVisited" class="prompt"></div>
-    <GotIt v-if="!isVisited" @click="onClickGotIt" />
+    <div v-if="!isVisited && isPrompt" class="prompt"></div>
+    <GotIt v-if="!isVisited && isPrompt" @click="onClickGotIt" />
     <PpToolPopover
       title="Layouts"
       @cancel="onCancel"

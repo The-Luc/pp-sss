@@ -16,6 +16,19 @@
     }"
     @change="onChange"
   >
+    <template #selection="{ item }">
+      <v-list-item class="pp-select--item item-selected">
+        <img class="icon-ative" :src="activeMenuIcon" />
+        <v-list-item-content>
+          <v-list-item-title>
+            <v-row no-gutters align="center">
+              <span :style="getStyle(item.cssStyle)">{{ item.label }}</span>
+            </v-row>
+          </v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
+    </template>
+
     <template #item="{ item, attrs, on }">
       <v-list-item
         v-slot="{ active }"
@@ -31,7 +44,7 @@
         <v-list-item-content>
           <v-list-item-title>
             <v-row no-gutters align="center">
-              <span>{{ item.label }}</span>
+              <span :style="getStyle(item.cssStyle)">{{ item.label }}</span>
             </v-row>
           </v-list-item-title>
         </v-list-item-content>
