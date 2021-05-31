@@ -48,11 +48,11 @@ const handleDrawLayout = (imgSrc, callback) => {
     window.printCanvas.clear().renderAll();
     return;
   }
-  fabric.Image.fromURL(require(`@/assets/image/layouts/${imgSrc}`), function(
-    img
-  ) {
-    callback(img);
-  });
+  // fabric.Image.fromURL(require(`@/assets/image/layouts/${imgSrc}`), function(
+  //   img
+  // ) {
+  //   callback(img);
+  // });
 };
 
 export const useDrawLayout = () => {

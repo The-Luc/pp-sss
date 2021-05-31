@@ -315,7 +315,7 @@ export default {
           });
           return;
         }
-        this.drawLayout(imageUrlLeft, imageUrlRight);
+        // this.drawLayout(imageUrlLeft, imageUrlRight);
         this.updateSheetThemeLayout({
           sheetId: this.selectedSheet,
           themeId: this.themeSelected.id,
