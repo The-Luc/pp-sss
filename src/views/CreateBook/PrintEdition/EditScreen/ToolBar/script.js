@@ -130,7 +130,6 @@ export default {
     ...mapMutations({
       setObjectTypeSelected: MUTATES.SET_OBJECT_TYPE_SELECTED,
       setIsOpenProperties: MUTATES.TOGGLE_MENU_PROPERTIES,
-      setToolNameSelected: MUTATES.SET_TOOL_NAME_SELECTED,
       toggleColorPicker: MUTATES.TOGGLE_COLOR_PICKER,
       setToolNameSelected: MUTATES.SET_TOOL_NAME_SELECTED
     }),
