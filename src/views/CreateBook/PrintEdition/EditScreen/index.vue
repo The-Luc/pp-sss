@@ -1,6 +1,6 @@
 <template lang="">
   <div class="row print-main">
-    <Header name-editor="print editor" />
+    <Header name-editor="print editor" @onClickSave="onClickSavePrintCanvas" />
     <ToolBar />
     <FeedbackBar />
     <SidebarSection />

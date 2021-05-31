@@ -10,8 +10,11 @@ export default {
     }
   },
   methods: {
-    onChangeView() {
-      this.$router.go(-1);
+    /**
+     * Click save and emit save button
+     */
+    onClickSave() {
+      this.$emit('onClickSave');
     }
   }
 };

@@ -335,5 +335,14 @@ export const mutations = {
   },
   [BOOK._MUTATES.SET_SECTION_ID](state, { sectionId }) {
     state.sectionId = sectionId;
+  },
+  [BOOK._MUTATES.SAVE_PRINT_CANVAS](state, { data }) {
+    const { pageSelected, sectionId, book } = state;
+    const sectionIndex = book.sections.findIndex(item => item.id === sectionId);
+    const sheetIndex = book.sections[sectionIndex].sheets.findIndex(
+      item => item.id === pageSelected
+    );
+    let printData = book.sections[sectionIndex].sheets[sheetIndex].printData;
+    printData.pages = data;
   }
 };

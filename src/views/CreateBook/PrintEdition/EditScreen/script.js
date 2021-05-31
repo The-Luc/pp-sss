@@ -1,6 +1,9 @@
 import { mapMutations, mapGetters } from 'vuex';
 import { MUTATES } from '@/store/modules/app/const';
-import { GETTERS as BOOK_GETTERS } from '@/store/modules/book/const';
+import {
+  GETTERS as BOOK_GETTERS,
+  MUTATES as BOOK_MUTATES
+} from '@/store/modules/book/const';
 import { MODAL_TYPES, TOOL_NAME } from '@/common/constants';
 import ToolBar from './ToolBar';
 import Header from '@/components/HeaderEdition/Header';
@@ -52,7 +55,8 @@ export default {
   methods: {
     ...mapMutations({
       toggleModal: MUTATES.TOGGLE_MODAL,
-      resetPrintConfigs: MUTATES.RESET_PRINT_CONFIG
+      resetPrintConfigs: MUTATES.RESET_PRINT_CONFIG,
+      savePrintCanvas: BOOK_MUTATES.SAVE_PRINT_CANVAS
     }),
     /**
      * Trigger mutation to open theme modal
@@ -77,6 +81,17 @@ export default {
           sheetId: pageSelected
         });
       }
+    },
+    /**
+     * Save print canvas and change view
+     */
+    onClickSavePrintCanvas() {
+      const canvas = window.printCanvas;
+      let objs = canvas.getObjects();
+      this.savePrintCanvas({
+        data: objs
+      });
+      this.$router.go(-1);
     }
   }
 };
