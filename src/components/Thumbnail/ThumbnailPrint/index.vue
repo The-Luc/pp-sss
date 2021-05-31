@@ -11,6 +11,7 @@
         'thumbnail-view-thumbnail'
       ]"
     >
+      <div class="border-inside"></div>
       <canvas :ref="`thumbnail${sheet.id}`" class="thumbnail-canvas"></canvas>
       <div v-if="edit" class="thumbnail-edit">
         <router-link tag="div" :to="toLink">

@@ -10,6 +10,7 @@ import {
   usePopoverCreationTool,
   useObjectProperties
 } from '@/hooks';
+import { TOOL_NAME } from '@/common/constants';
 
 export default {
   setup() {
@@ -19,7 +20,7 @@ export default {
     const {
       checkSheetIsVisited,
       updateVisited,
-      openPrompt
+      setIsPrompt
     } = useLayoutPrompt();
     return {
       toggleMenuProperties,
@@ -27,7 +28,7 @@ export default {
       updateVisited,
       setToolNameSelected,
       resetPrintConfig,
-      openPrompt
+      setIsPrompt
     };
   },
   components: {
@@ -135,7 +136,10 @@ export default {
       }
 
       if (!isVisited) {
-        this.openPrompt();
+        this.setIsPrompt({
+          isPrompt: false
+        });
+        this.setToolNameSelected(TOOL_NAME.LAYOUTS);
       }
     }
   }

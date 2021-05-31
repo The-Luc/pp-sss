@@ -1,7 +1,7 @@
 <template>
   <div class="got-it-container">
-    <p class="got-it-title">Select a Layout</p>
-    <p class="got-it-content">
+    <p class="got-it-title text-left">Select a Layout</p>
+    <p class="got-it-content text-left">
       The best way to get started is by selecting a layout. As a shortcut, the
       layouts from your selecting theme will be presented first.
     </p>
