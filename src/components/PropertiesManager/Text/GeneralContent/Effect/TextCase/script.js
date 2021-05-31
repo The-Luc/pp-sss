@@ -4,7 +4,7 @@ import { startCase, upperFirst } from 'lodash';
 export default {
   data() {
     return {
-      item: [],
+      item: null,
       iconUpperCase: ICON_LOCAL.TEXT_UPPERCASE,
       iconLowerCase: ICON_LOCAL.TEXT_LOWERCASE,
       iconCapitalize: ICON_LOCAL.TEXT_CAPITALIZE
@@ -14,8 +14,9 @@ export default {
     PpButtonGroup
   },
   mounted() {
-    this.item[0] = 3;
     window.printCanvas.on({
+      'selection:updated': this.clearTextCase,
+      'selection:created': this.clearTextCase,
       'selection:cleared': this.clearTextCase
     });
   },
@@ -25,8 +26,7 @@ export default {
      * @param  {Object} val Receive item information
      */
     onChange(val) {
-      this.item[0] = val;
-      console.log(this.item);
+      this.item = val;
       switch (val) {
         case 0:
           this.upperCase();
@@ -78,7 +78,6 @@ export default {
       let text = obj.text;
       if (obj.setSelectionStyles && obj.isEditing) {
         text = text.split('');
-        console.log(text);
         for (
           let i = obj.setSelectionStyles().selectionStart;
           i < obj.setSelectionStyles().selectionEnd;
@@ -114,10 +113,11 @@ export default {
       obj.text = upperFirst(obj.text.toLowerCase());
       canvas.renderAll();
     },
+    /**
+     * Clear data of text properties modal
+     */
     clearTextCase() {
-      // console.log(this.item);
-      // // this.item = null;
-      // console.log(1);
+      this.item = null;
     }
   }
 };

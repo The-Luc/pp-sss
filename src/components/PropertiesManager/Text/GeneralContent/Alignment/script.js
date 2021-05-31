@@ -1,4 +1,7 @@
+import { mapGetters } from 'vuex';
 import PpButtonGroup from '@/components/ButtonGroup';
+import { GETTERS } from '@/store/modules/book/const';
+import { TEXT_ALIGN } from '@/common/constants/textAlign';
 
 export default {
   components: {
@@ -9,73 +12,55 @@ export default {
       item: null
     };
   },
+  mounted() {
+    window.printCanvas.on({
+      'selection:updated': this.setDataTextProperties,
+      'selection:created': this.setDataTextProperties,
+      'selection:cleared': this.clearDataTextProperties
+    });
+  },
+  computed: {
+    ...mapGetters({
+      textProperties: GETTERS.GET_TEXT_PROPERTIES
+    })
+  },
   methods: {
     /**
      * Detect click on item on textcase properties
-     * @param  {Object} val Receive item information
+     * @param  {Number} val Receive item information
      */
     onChange(val) {
-      switch (val) {
-        case 0:
-          this.textAlignLeft();
+      this.item = val;
+      this.setTextAlign(TEXT_ALIGN[val]);
+    },
+    /**
+     * Set text box selected text align
+     * @param  {String} position position of text align
+     */
+    setTextAlign(position) {
+      const canvas = window.printCanvas;
+      let obj = canvas.getActiveObject();
+      obj.set({
+        textAlign: position
+      });
+      canvas.renderAll();
+    },
+    setDataTextProperties() {
+      switch (this.textProperties.textAlign) {
+        case TEXT_ALIGN[0]:
+          this.item = 0;
           break;
-        case 1:
-          this.textAlignCenter();
+        case TEXT_ALIGN[1]:
+          this.item = 1;
           break;
-        case 2:
-          this.textAlignRight();
+        case TEXT_ALIGN[2]:
+          this.item = 2;
           break;
-        case 3:
-          this.textAlignJustify();
-          break;
+        case TEXT_ALIGN[3]:
         default:
-          this.textAlignLeft();
+          this.item = null;
           break;
       }
-    },
-    /**
-     * Set text box selected text align left
-     */
-    textAlignLeft() {
-      const canvas = window.printCanvas;
-      let obj = canvas.getActiveObject();
-      obj.set({
-        textAlign: 'left'
-      });
-      canvas.renderAll();
-    },
-    /**
-     * Set text box selected text align center
-     */
-    textAlignCenter() {
-      const canvas = window.printCanvas;
-      let obj = canvas.getActiveObject();
-      obj.set({
-        textAlign: 'center'
-      });
-      canvas.renderAll();
-    },
-    /**
-     * Set text box selected text align right
-     */
-    textAlignRight() {
-      const canvas = window.printCanvas;
-      let obj = canvas.getActiveObject();
-      obj.set({
-        textAlign: 'right'
-      });
-      canvas.renderAll();
-    },
-    /**
-     * Set text box selected text align justify
-     */
-    textAlignJustify() {
-      const canvas = window.printCanvas;
-      let obj = canvas.getActiveObject();
-      obj.set({
-        textAlign: 'justify'
-      });
-      canvas.renderAll();
     }
   }
 };

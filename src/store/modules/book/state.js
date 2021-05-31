@@ -22,6 +22,7 @@ export const state = {
     fontStyle: false,
     underLine: false,
     fontFamily: 'arial',
-    fontSize: '60'
+    fontSize: '60',
+    textAlign: ''
   }
 };

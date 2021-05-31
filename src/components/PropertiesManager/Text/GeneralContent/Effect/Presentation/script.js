@@ -1,7 +1,6 @@
 import PpButtonGroup from '@/components/ButtonGroup';
 import { mapGetters } from 'vuex';
 import { GETTERS } from '@/store/modules/book/const';
-import { findIndex } from '@/mock/users';
 
 export default {
   data() {
