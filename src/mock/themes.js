@@ -52,7 +52,7 @@ const themes = [
   {
     id: 11,
     name: 'None',
-    imageUrl: 'theme11.jpg'
+    imageUrl: 'none.png'
   }
 ];
 

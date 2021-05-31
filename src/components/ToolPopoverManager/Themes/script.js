@@ -99,7 +99,10 @@ export default {
      * Scroll to theme postion which choose from select
      */
     scrollToElement(el) {
-      el.scrollIntoView({ behavior: 'smooth' });
+      el.scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest'
+      });
     },
     /**
      * Trigger mutation set tool name selected is empty to close popover after click Cancel button

@@ -151,9 +151,9 @@ export default {
       }
       switch (item.name) {
         case 'properties':
-          // if (!this.selectedObjectType) {
-          //   return;
-          // }
+          if (!this.selectedObjectType) {
+            return;
+          }
           this.setIsOpenProperties({
             isOpen: !this.isOpenMenuProperties
           });

@@ -236,8 +236,8 @@ const layouts = [
   },
   {
     id: 27,
-    imageUrlLeft: 'layout14l.jpg',
-    imageUrlRight: 'layout14r.jpg',
+    imageUrlLeft: 'none.png',
+    imageUrlRight: 'none.png',
     type: LAYOUT_TYPES.SIMPLE.value,
     name: 'Simple 11',
     isFavorites: false,
