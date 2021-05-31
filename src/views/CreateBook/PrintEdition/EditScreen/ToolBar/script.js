@@ -140,6 +140,7 @@ export default {
     ...mapMutations({
       setObjectTypeSelected: MUTATES.SET_OBJECT_TYPE_SELECTED,
       setIsOpenProperties: MUTATES.TOGGLE_MENU_PROPERTIES,
+      toggleColorPicker: MUTATES.TOGGLE_COLOR_PICKER,
       setToolNameSelected: MUTATES.SET_TOOL_NAME_SELECTED,
       setTextStyle: PRINT_MUTATES.SET_TEXT_STYLE
     }),
@@ -153,14 +154,17 @@ export default {
       }
       switch (item.name) {
         case 'properties':
-          // if (!this.selectedObjectType) {
-          //   return;
-          // }
+          if (!this.selectedObjectType) {
+            return;
+          }
           this.setIsOpenProperties({
             isOpen: !this.isOpenMenuProperties
           });
+          this.toggleColorPicker({
+            isOpen: false
+          });
           this.setObjectTypeSelected({
-            type: OBJECT_TYPE.TEXT
+            type: this.selectedObjectType
           });
           break;
         default:
