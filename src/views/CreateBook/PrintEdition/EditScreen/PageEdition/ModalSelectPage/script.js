@@ -56,7 +56,7 @@ export default {
       });
     },
     onLeftClick() {
-      this.drawLayout(this.imageUrlLeft, '');
+      // this.drawLayout(this.imageUrlLeft, '');
       this.updateSheet('left');
       this.closeModal();
     },

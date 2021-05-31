@@ -103,7 +103,7 @@ export default {
       const layoutData = this.selectedLayout(sheetId);
       if (layoutData) {
         const { imageUrlLeft, imageUrlRight } = layoutData;
-        this.drawLayout(imageUrlLeft, imageUrlRight);
+        // this.drawLayout(imageUrlLeft, imageUrlRight);
       }
     }
   }
