@@ -41,5 +41,8 @@ export const mutations = {
   },
   [APP._MUTATES.SET_IS_PROMPT](state, { isPrompt }) {
     state.isPrompt = isPrompt;
+  },
+  [APP._MUTATES.SET_COLOR_PICKER_COLOR](state, { color }) {
+    state.colorPicker.data.color = color;
   }
 };

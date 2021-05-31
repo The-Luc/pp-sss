@@ -38,7 +38,7 @@
     }
 
     &.v-list-item--active,
-    &:hover {
+    &:not(.item-selected):hover {
       background-color: #42738d;
 
       .v-list-item__content {

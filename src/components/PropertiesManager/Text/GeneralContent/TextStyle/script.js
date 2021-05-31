@@ -1,4 +1,10 @@
+import { mapGetters } from 'vuex';
+
 import PpSelect from '@/components/Select';
+
+import { styleToCssStyle } from '@/common/utils';
+
+import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 
 export default {
   components: {
@@ -8,19 +14,68 @@ export default {
     return {
       items: [
         {
-          label: 'Cover Heading',
-          value: 'coverHeading'
+          label: 'Cover Headline',
+          value: 'coverHeadline',
+          style: {
+            fontFamily: 'Time News Roman',
+            fontSize: 72,
+            isBold: true,
+            isItalic: true,
+            isUnderline: false,
+            color: '#00FF00'
+          }
         },
         {
-          label: 'Body Text',
-          value: 'bodyText'
+          label: 'Page Headline',
+          value: 'pageHeadline',
+          style: {
+            fontFamily: 'Arial',
+            fontSize: 40,
+            isBold: false,
+            isItalic: false,
+            isUnderline: true,
+            color: '#FF0000'
+          }
         }
       ]
     };
   },
+  computed: {
+    selectedItem() {
+      const selectedId = this.getTextProp().styleId;
+
+      const selected = this.items.find(item => item.value === selectedId);
+
+      return selected;
+    },
+    selectBoxItems() {
+      return this.items.map(item => {
+        const { label, value, style } = item;
+
+        return {
+          label,
+          value,
+          style,
+          cssStyle: styleToCssStyle(style)
+        };
+      });
+    }
+  },
   methods: {
-    onChange(data) {
-      console.log('data', data);
+    ...mapGetters({
+      getTextStyle: PRINT_GETTERS.TEXT_STYLE,
+      getTextProp: PRINT_GETTERS.TEXT_PROPERTY
+    }),
+    /**
+     * Event fired when user choose an item on list
+     *
+     * @param {String}  value id of style
+     * @param {Object}  style attribute style of style
+     */
+    onChange({ value, style }) {
+      this.$root.$emit('printChangeTextStyle', style);
+
+      this.$root.$emit('printChangeTextProp', { styleId: value });
     }
   }
 };

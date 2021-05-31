@@ -3,8 +3,20 @@ import { fabric } from 'fabric';
 
 import { useDrawLayout } from '@/hooks';
 
+import {
+  isEmpty,
+  styleToFabricStyle,
+  fabricStyleToStyle,
+  propToFabricProp,
+  fabricPropToProp
+} from '@/common/utils';
+
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
 import { GETTERS, MUTATES as BOOK_MUTATES } from '@/store/modules/book/const';
+import {
+  GETTERS as PRINT_GETTERS,
+  MUTATES as PRINT_MUTATES
+} from '@/store/modules/print/const';
 import { OBJECT_TYPE } from '@/common/constants';
 export default {
   setup() {
@@ -55,11 +67,50 @@ export default {
       }
     }
   },
+  mounted() {
+    let el = this.$refs.canvas;
+    window.printCanvas = new fabric.Canvas(el);
+    let fabricPrototype = fabric.Object.prototype;
+    fabricPrototype.cornerColor = '#fff';
+    fabricPrototype.borderColor = '#8C8C8C';
+    fabricPrototype.borderSize = 1.25;
+    fabricPrototype.cornerSize = 9;
+    fabricPrototype.cornerStrokeColor = '#8C8C8C';
+    fabricPrototype.transparentCorners = false;
+    fabricPrototype.borderScaleFactor = 1.5;
+    fabricPrototype.setControlsVisibility({
+      mtr: false
+    });
+    window.printCanvas.setWidth(1205);
+    window.printCanvas.setHeight(768);
+    window.printCanvas.on({
+      'selection:updated': this.objectSelected,
+      'selection:cleared': this.closeProperties,
+      'selection:created': this.objectSelected
+    });
+
+    this.$root.$on('printAddText', () => {
+      this.addText();
+    });
+
+    this.$root.$on('printChangeTextStyle', style => {
+      this.changeObjectStyle(style);
+    });
+
+    this.$root.$on('printChangeTextProp', prop => {
+      this.changeObjectProperties(prop);
+    });
+  },
   methods: {
     ...mapMutations({
       setIsOpenProperties: MUTATES.TOGGLE_MENU_PROPERTIES,
       setObjectTypeSelected: MUTATES.SET_OBJECT_TYPE_SELECTED,
-      setTextProperties: BOOK_MUTATES.TEXT_PROPERTIES
+      setTextProperties: BOOK_MUTATES.TEXT_PROPERTIES,
+      setTextStyle: PRINT_MUTATES.SET_TEXT_STYLE,
+      setTextProp: PRINT_MUTATES.SET_TEXT_PROPERTY
+    }),
+    ...mapGetters({
+      getTextStyle: PRINT_GETTERS.TEXT_STYLE
     }),
     /**
      * Open text properties modal and set default properties
@@ -102,28 +153,124 @@ export default {
     setLayoutForSheet(layoutData) {
       let { imageUrlLeft, imageUrlRight } = layoutData;
       this.drawLayout(imageUrlLeft, imageUrlRight);
+    },
+    /**
+     * Event fired when an object of canvas is selected
+     *
+     * @param {Object}  target  the selected object
+     */
+    objectSelected: function({ target }) {
+      // currently only code for text
+      this.textSelected(target);
+
+      this.openProperties();
+    },
+    /**
+     * Event fired when text object of canvas is selected
+     *
+     * @param {Object}  target  the selected text
+     */
+    textSelected: function(target) {
+      const {
+        fontFamily,
+        originalFontSize,
+        fontWeight,
+        fontStyle,
+        underline,
+        fill,
+        styleId
+      } = target;
+
+      const style = fabricStyleToStyle({
+        fontFamily,
+        originalFontSize,
+        fontWeight,
+        fontStyle,
+        underline,
+        fill
+      });
+
+      this.setTextStyle(style);
+
+      const prop = fabricPropToProp({
+        styleId: isEmpty(styleId) ? '' : styleId
+      });
+
+      this.setTextProp(prop);
+    },
+    /**
+     * Event fire when user click on Text button on Toolbar to add new text on canvas
+     */
+    addText: function() {
+      const text = new fabric.Textbox('Text', {
+        lockUniScaling: false,
+        fontSize: '60',
+        originalFontSize: '60',
+        fontFamily: 'arial',
+        fill: '#000000',
+        fontWeight: '',
+        fontStyle: '',
+        originX: 'left',
+        originY: 'top',
+        left: 51,
+        top: 282
+      });
+
+      window.printCanvas.add(text);
+
+      const index = window.printCanvas.getObjects().length - 1;
+
+      window.printCanvas.setActiveObject(window.printCanvas.item(index));
+    },
+    /**
+     * Event fire when user change any property of selected text on the Text Properties
+     *
+     * @param {Object}  style  new style
+     */
+    changeObjectStyle: function(style) {
+      if (isEmpty(style)) return;
+
+      const activeObj = window.printCanvas.getActiveObject();
+
+      if (isEmpty(activeObj)) return;
+
+      const fabricStyle = styleToFabricStyle(style);
+
+      Object.keys(fabricStyle).forEach(k => {
+        const value = fabricStyle[k];
+
+        if (k === 'originalFontSize') {
+          activeObj.set('fontSize', (window.printCanvas.width / 1205) * value);
+        }
+
+        activeObj.set(k, value);
+      });
+
+      window.printCanvas.renderAll();
+
+      this.setTextStyle(style);
+    },
+    /**
+     * Event fire when user change any property of selected text
+     *
+     * @param {Object}  prop  new prop data
+     */
+    changeObjectProperties: function(prop) {
+      if (isEmpty(prop)) return;
+
+      const activeObj = window.printCanvas.getActiveObject();
+
+      if (isEmpty(activeObj)) return;
+
+      const fabricProp = propToFabricProp(prop);
+
+      Object.keys(fabricProp).forEach(k => {
+        activeObj.set(k, fabricProp[k]);
+      });
+
+      // window.printCanvas.renderAll();
+
+      this.setTextProp(prop);
     }
-  },
-  mounted() {
-    let el = this.$refs.canvas;
-    window.printCanvas = new fabric.Canvas(el);
-    let fabricPrototype = fabric.Object.prototype;
-    fabricPrototype.cornerColor = '#fff';
-    fabricPrototype.borderColor = '#8C8C8C';
-    fabricPrototype.borderSize = 1.25;
-    fabricPrototype.cornerSize = 9;
-    fabricPrototype.cornerStrokeColor = '#8C8C8C';
-    fabricPrototype.transparentCorners = false;
-    fabricPrototype.borderScaleFactor = 1.5;
-    fabricPrototype.setControlsVisibility({
-      mtr: false
-    });
-    window.printCanvas.setWidth(1205);
-    window.printCanvas.setHeight(768);
-    window.printCanvas.on({
-      'selection:updated': this.openProperties,
-      'selection:cleared': this.closeProperties,
-      'selection:created': this.openProperties
-    });
   }
 };
