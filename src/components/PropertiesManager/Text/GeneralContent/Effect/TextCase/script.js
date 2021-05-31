@@ -4,7 +4,7 @@ import { startCase, upperFirst } from 'lodash';
 export default {
   data() {
     return {
-      item: null,
+      item: [],
       iconUpperCase: ICON_LOCAL.TEXT_UPPERCASE,
       iconLowerCase: ICON_LOCAL.TEXT_LOWERCASE,
       iconCapitalize: ICON_LOCAL.TEXT_CAPITALIZE
@@ -13,12 +13,20 @@ export default {
   components: {
     PpButtonGroup
   },
+  mounted() {
+    this.item[0] = 3;
+    window.printCanvas.on({
+      'selection:cleared': this.clearTextCase
+    });
+  },
   methods: {
     /**
      * Detect click on item on textcase properties
      * @param  {Object} val Receive item information
      */
     onChange(val) {
+      this.item[0] = val;
+      console.log(this.item);
       switch (val) {
         case 0:
           this.upperCase();
@@ -40,7 +48,25 @@ export default {
     upperCase() {
       const canvas = window.printCanvas;
       let obj = canvas.getActiveObject();
-      obj.text = obj.text.toUpperCase();
+      let text = obj.text;
+      if (obj.setSelectionStyles && obj.isEditing) {
+        text = text.split('');
+        console.log(text);
+        for (
+          let i = obj.setSelectionStyles().selectionStart;
+          i < obj.setSelectionStyles().selectionEnd;
+          i++
+        ) {
+          text[i] = text[i].toUpperCase();
+        }
+        obj.set({
+          text: text.join('')
+        });
+      } else {
+        obj.set({
+          text: text.toUpperCase()
+        });
+      }
       canvas.renderAll();
     },
     /**
@@ -49,7 +75,25 @@ export default {
     lowerCase() {
       const canvas = window.printCanvas;
       let obj = canvas.getActiveObject();
-      obj.text = obj.text.toLowerCase();
+      let text = obj.text;
+      if (obj.setSelectionStyles && obj.isEditing) {
+        text = text.split('');
+        console.log(text);
+        for (
+          let i = obj.setSelectionStyles().selectionStart;
+          i < obj.setSelectionStyles().selectionEnd;
+          i++
+        ) {
+          text[i] = text[i].toLowerCase();
+        }
+        obj.set({
+          text: text.join('')
+        });
+      } else {
+        obj.set({
+          text: text.toLowerCase()
+        });
+      }
       canvas.renderAll();
     },
     /**
@@ -69,6 +113,11 @@ export default {
       let obj = canvas.getActiveObject();
       obj.text = upperFirst(obj.text.toLowerCase());
       canvas.renderAll();
+    },
+    clearTextCase() {
+      // console.log(this.item);
+      // // this.item = null;
+      // console.log(1);
     }
   }
 };
