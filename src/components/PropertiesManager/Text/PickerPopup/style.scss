@@ -16,8 +16,8 @@ $transform: $pointer / 2;
 .color-picker-container {
   width: 325px;
   position: absolute;
-  top: 95px;
-  right: 368px;
+  top: 60px;
+  right: $properties-width;
   padding: 10px;
   padding-left: 5px;
   background-color: white;
