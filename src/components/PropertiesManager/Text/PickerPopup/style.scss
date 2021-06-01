@@ -1,4 +1,5 @@
 $border-radius: 3px;
+$container-border-radius: 4px;
 $pointer: 7px;
 $transform: $pointer / 2;
 
@@ -21,7 +22,7 @@ $transform: $pointer / 2;
   padding-left: 5px;
   background-color: white;
   box-shadow: 0px 0px 10px #0000008c;
-  border-radius: 3px;
+  border-radius: $container-border-radius;
 
   &::before {
     content: '';
@@ -32,7 +33,7 @@ $transform: $pointer / 2;
     width: 20px;
     position: absolute;
     right: 0px;
-    top: 50%;
+    top: 185px;
     transform: translate(50%, -50%) rotate(45deg);
   }
 
@@ -55,22 +56,40 @@ $transform: $pointer / 2;
 
     .vc-mix-main-control {
       .vc-mix-saturation-wrap {
-        .vc-saturation-circle {
-          width: $pointer;
-          height: $pointer;
-          transform: translate(-$transform, -$transform);
-          box-shadow: 0 0 0 2px #fff, inset 0 0 1px 1px rgb(0 0 0 / 30%),
-            0 0 1.5px 3px rgb(0 0 0 / 40%);
+        .vc-saturation {
+          border-radius: $container-border-radius;
+
+          .vc-saturation--white {
+            border-radius: $container-border-radius;
+          }
+
+          .vc-saturation--black {
+            border-radius: $container-border-radius;
+          }
+
+          .vc-saturation-circle {
+            width: $pointer;
+            height: $pointer;
+            transform: translate(-$transform, -$transform);
+            box-shadow: 0 0 0 2px #fff, inset 0 0 1px 1px rgb(0 0 0 / 30%),
+              0 0 1.5px 3px rgb(0 0 0 / 40%);
+          }
         }
       }
 
       .vc-mix-hue-wrap {
-        .vc-hue-picker {
-          @extend %slider-pointer;
+        .vc-hue {
+          border-radius: $container-border-radius;
+
+          .vc-hue-picker {
+            @extend %slider-pointer;
+          }
         }
       }
 
       .vc-mix-alpha-wrap {
+        border-radius: $container-border-radius;
+
         .vc-alpha-picker {
           @extend %slider-pointer;
         }

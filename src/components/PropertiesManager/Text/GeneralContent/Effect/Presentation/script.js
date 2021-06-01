@@ -18,7 +18,7 @@ export default {
     })
   },
   methods: {
-    onChange(val) {},
+    onChange() {},
     /**
      * Set style for object text
      * @param   {Object} object object text to set
