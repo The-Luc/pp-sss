@@ -1,6 +1,6 @@
 <template>
   <div class="properties-header">
-    <p class="properties-header-title text-300 text-size-xs mb-0">
+    <p class="properties-header-title mb-0">
       {{ title }}
     </p>
   </div>
