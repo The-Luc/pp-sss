@@ -30,6 +30,7 @@ export default {
      * @param  {Number} val Receive item information
      */
     onChange(val) {
+      if (val !== 0 && !val) return;
       this.item = val;
       this.setTextAlign(TEXT_ALIGN[val]);
     },
@@ -45,6 +46,9 @@ export default {
       });
       canvas.renderAll();
     },
+    /**
+     * Set data of text properties modal to active
+     */
     setDataTextProperties() {
       switch (this.textProperties.textAlign) {
         case TEXT_ALIGN[0]:
@@ -57,10 +61,18 @@ export default {
           this.item = 2;
           break;
         case TEXT_ALIGN[3]:
+          this.item = 3;
+          break;
         default:
           this.item = null;
           break;
       }
+    },
+    /**
+     * Clear data of text properties modal
+     */
+    clearDataTextProperties() {
+      this.item = null;
     }
   }
 };

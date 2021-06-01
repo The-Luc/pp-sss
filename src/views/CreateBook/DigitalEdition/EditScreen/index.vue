@@ -1,6 +1,9 @@
 <template lang="">
   <div class="row print-main">
-    <Header name-editor="digital editor" />
+    <Header
+      name-editor="digital editor"
+      @onClickSave="onClickSaveDigitalCanvas"
+    />
     <ToolBar :is-digital-editor="true" />
     <FeedbackBar />
     <SidebarSection />

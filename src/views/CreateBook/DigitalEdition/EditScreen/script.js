@@ -11,5 +11,13 @@ export default {
     FeedbackBar,
     PageEdition,
     SidebarSection
+  },
+  methods: {
+    /**
+     * Save digital canvas and change view
+     */
+    onClickSaveDigitalCanvas() {
+      this.$router.go(-1);
+    }
   }
 };

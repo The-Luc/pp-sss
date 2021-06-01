@@ -214,13 +214,11 @@ export default {
         originX: 'left',
         originY: 'top',
         left: 51,
-        top: 282
+        top: 282,
+        textAlign: ''
       });
-
       window.printCanvas.add(text);
-
       const index = window.printCanvas.getObjects().length - 1;
-
       window.printCanvas.setActiveObject(window.printCanvas.item(index));
     },
     /**
