@@ -20,22 +20,21 @@ export default {
   data() {
     return {
       appendedIcon: ICON_LOCAL.APPENED_ICON,
-      prependedIcon: ICON_LOCAL.PREPENDED_FONT_SIZE
+      prependedIcon: ICON_LOCAL.PREPENDED_FONT_SIZE,
+      triggerChange: true
     };
   },
   computed: {
     selectedSize() {
+      if (this.triggerChange) {
+        // just for trigger the change
+      }
+
       const selectedSize = this.getTextStyle().fontSize;
 
-      const selected = this.items.find(
-        item => `${item.value}` === `${selectedSize}`
-      );
+      const selected = this.items.find(item => item.value === selectedSize);
 
-      const selectedFontSize = isEmpty(selected)
-        ? { label: `${selectedSize} pt`, value: selectedSize }
-        : selected;
-
-      return selectedFontSize;
+      return this.getFontSizeItem(selected || selectedSize);
     }
   },
   methods: {
@@ -49,9 +48,35 @@ export default {
     onChange(data) {
       if (isEmpty(data)) return;
 
-      const value = typeof data === 'string' ? data : data.value;
+      const isString = typeof data === 'string';
 
-      this.$root.$emit('printChangeTextStyle', { fontSize: value });
+      const digitRegex = new RegExp(/^[\d]{1,}$/g);
+
+      if (isString && !digitRegex.test(data)) {
+        this.triggerChange = !this.triggerChange;
+
+        return;
+      }
+
+      const value = isString ? parseInt(data, 10) : data.value;
+
+      const acceptValue = value > 500 ? 500 : value < 1 ? 1 : value;
+
+      this.$root.$emit('printChangeTextStyle', { fontSize: acceptValue });
+
+      this.triggerChange = !this.triggerChange;
+    },
+    /**
+     * Get font size item from data
+     * @param   {Any} data  data to make font size item (font value of font item)
+     * @returns             font size item
+     */
+    getFontSizeItem(data) {
+      if (typeof data === 'object') {
+        return { label: data.label, value: data.value };
+      }
+
+      return { label: `${data} pt`, value: data };
     }
   }
 };

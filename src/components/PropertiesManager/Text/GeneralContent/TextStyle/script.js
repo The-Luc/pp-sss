@@ -14,6 +14,18 @@ export default {
     return {
       items: [
         {
+          label: 'Default',
+          value: 'default',
+          style: {
+            fontFamily: 'Arial',
+            fontSize: 60,
+            isBold: false,
+            isItalic: false,
+            isUnderline: false,
+            color: '#000000'
+          }
+        },
+        {
           label: 'Cover Headline',
           value: 'coverHeadline',
           style: {

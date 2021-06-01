@@ -194,7 +194,7 @@ export default {
       this.setTextStyle(style);
 
       const prop = fabricPropToProp({
-        styleId: isEmpty(styleId) ? '' : styleId
+        styleId: isEmpty(styleId) ? 'default' : styleId
       });
 
       this.setTextProp(prop);
@@ -205,8 +205,8 @@ export default {
     addText: function() {
       const text = new fabric.Textbox('Text', {
         lockUniScaling: false,
-        fontSize: '60',
-        originalFontSize: '60',
+        fontSize: (window.printCanvas.width / 1205) * 60,
+        originalFontSize: 60,
         fontFamily: 'arial',
         fill: '#000000',
         fontWeight: '',
@@ -215,7 +215,8 @@ export default {
         originY: 'top',
         left: 51,
         top: 282,
-        textAlign: ''
+        textAlign: '',
+        styleId: 'default'
       });
       window.printCanvas.add(text);
       const index = window.printCanvas.getObjects().length - 1;
