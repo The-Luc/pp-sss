@@ -15,10 +15,10 @@
       closeOnContentClick: true,
       closeOnClick: true,
       maxHeight: 'auto',
-      positionX: menuX + 23, // 23: width of .v-input__prepend-outer + margin
+      positionX: menuX + 23, // width of .v-input__prepend-outer + margin
       positionY: menuY,
       absolute: true,
-      nudgeWidth: 92 // 92: Width of .v-input__control
+      nudgeWidth
     }"
     @change="onChange"
   >

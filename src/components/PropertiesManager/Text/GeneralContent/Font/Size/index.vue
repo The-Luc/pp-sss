@@ -3,6 +3,7 @@
     <span class="properties-title">Font Size:</span>
     <PpCombobox
       :items="items"
+      :nudge-width="76"
       :prepended-icon="prependedIcon"
       :appended-icon="appendedIcon"
       :selected-val="selectedSize"

@@ -1,5 +1,5 @@
 <template>
-  <div class="mr-4">
+  <div class="mr-3">
     <span class="properties-title">Letter Spacing:</span>
     <PpCombobox
       :items="items"

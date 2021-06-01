@@ -21,6 +21,10 @@ export default {
     selectedVal: {
       type: Object,
       default: () => ({ label: '', value: '' })
+    },
+    nudgeWidth: {
+      type: Number,
+      default: 73
     }
   },
   data() {

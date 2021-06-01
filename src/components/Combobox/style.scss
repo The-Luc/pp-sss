@@ -1,10 +1,11 @@
 .pp-combobox {
   .v-input__control {
-    max-width: 92px;
+    max-width: 73px;
     min-height: auto !important;
     position: relative;
 
     .v-input__slot {
+      padding-left: 0 !important;
       min-height: auto;
       height: 25px;
       box-shadow: none !important;
@@ -23,6 +24,10 @@
         }
         input {
           min-width: 43px;
+          padding-left: 5px;
+          font-size: 11px;
+          font-family: $font-500;
+          color: $color-main;
         }
       }
     }
