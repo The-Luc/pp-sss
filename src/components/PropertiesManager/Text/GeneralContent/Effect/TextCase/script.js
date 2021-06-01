@@ -1,6 +1,9 @@
+import { startCase, upperFirst } from 'lodash';
+import { mapGetters } from 'vuex';
 import { ICON_LOCAL } from '@/common/constants';
 import PpButtonGroup from '@/components/ButtonGroup';
-import { startCase, upperFirst } from 'lodash';
+import { GETTERS } from '@/store/modules/book/const';
+
 export default {
   data() {
     return {
@@ -13,10 +16,15 @@ export default {
   components: {
     PpButtonGroup
   },
+  computed: {
+    ...mapGetters({
+      textProperties: GETTERS.GET_TEXT_PROPERTIES
+    })
+  },
   mounted() {
     window.printCanvas.on({
-      'selection:updated': this.clearTextCase,
-      'selection:created': this.clearTextCase,
+      'selection:updated': this.setDataTextProperties,
+      'selection:created': this.setDataTextProperties,
       'selection:cleared': this.clearTextCase
     });
   },
@@ -64,7 +72,8 @@ export default {
         });
       } else {
         obj.set({
-          text: text.toUpperCase()
+          text: text.toUpperCase(),
+          textCase: 'uppercase'
         });
       }
       canvas.renderAll();
@@ -90,7 +99,8 @@ export default {
         });
       } else {
         obj.set({
-          text: text.toLowerCase()
+          text: text.toLowerCase(),
+          textCase: 'lowercase'
         });
       }
       canvas.renderAll();
@@ -102,6 +112,9 @@ export default {
       const canvas = window.printCanvas;
       let obj = canvas.getActiveObject();
       obj.text = startCase(obj.text.toLowerCase());
+      obj.set({
+        textCase: 'capitalize'
+      });
       canvas.renderAll();
     },
     /**
@@ -112,6 +125,25 @@ export default {
       let obj = canvas.getActiveObject();
       obj.text = upperFirst(obj.text.toLowerCase());
       canvas.renderAll();
+    },
+    /**
+     * Set data of text properties modal to active
+     */
+    setDataTextProperties() {
+      switch (this.textProperties.textCase) {
+        case 'uppercase':
+          this.item = 0;
+          break;
+        case 'lowercase':
+          this.item = 1;
+          break;
+        case 'capitalize':
+          this.item = 2;
+          break;
+        default:
+          this.item = null;
+          break;
+      }
     },
     /**
      * Clear data of text properties modal

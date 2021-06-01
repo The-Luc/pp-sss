@@ -3,7 +3,8 @@
     <div
       :class="[
         {
-          active: isActive
+          active: isActive,
+          'main-screen': mainScreen
         },
         'thumbnail-view-thumbnail'
       ]"

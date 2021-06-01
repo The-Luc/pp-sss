@@ -9,6 +9,9 @@
   &.active {
     border: 2px solid #42738d;
   }
+  &.main-screen {
+    border-radius: 40px 2px 40px 2px;
+  }
 }
 
 .thumbnail-edit {

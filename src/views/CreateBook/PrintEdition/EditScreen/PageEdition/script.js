@@ -120,14 +120,15 @@ export default {
       const bold = obj.fontWeight && obj.fontWeight === 'bold';
       const fontStyle = obj.fontStyle && obj.fontStyle === 'italic';
       const underLine = obj.underline && obj.underline === true;
-      const { fontFamily, fontSize, textAlign } = obj;
+      const { fontFamily, fontSize, textAlign, textCase } = obj;
       this.setTextProperties({
         bold,
         fontStyle,
         underLine,
         fontFamily,
         fontSize,
-        textAlign
+        textAlign,
+        textCase
       });
       this.setIsOpenProperties({
         isOpen: true
@@ -216,6 +217,7 @@ export default {
         left: 51,
         top: 282,
         textAlign: '',
+        textCase: '',
         styleId: 'default'
       });
       window.printCanvas.add(text);

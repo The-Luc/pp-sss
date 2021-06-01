@@ -28,6 +28,10 @@ export default {
     fontSize: {
       type: String,
       default: '10px'
+    },
+    mainScreen: {
+      type: Boolean,
+      default: false
     }
   },
   created() {
