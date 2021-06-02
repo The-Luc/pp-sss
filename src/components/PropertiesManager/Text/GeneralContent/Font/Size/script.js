@@ -46,7 +46,11 @@ export default {
      * @param   {Any} val size of text (string or object)
      */
     onChange(data) {
-      if (isEmpty(data)) return;
+      if (isEmpty(data)) {
+        this.triggerChange = !this.triggerChange;
+
+        return;
+      }
 
       const isString = typeof data === 'string';
 

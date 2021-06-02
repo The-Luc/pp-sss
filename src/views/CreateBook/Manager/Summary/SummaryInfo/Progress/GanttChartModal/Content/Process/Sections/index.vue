@@ -1,5 +1,5 @@
 <template>
-  <div class="sections">
+  <div class="sections" :class="sections.length > 8 && 'long'">
     <Section v-for="section in sections" :key="section.id" :section="section" />
   </div>
 </template>
