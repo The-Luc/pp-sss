@@ -39,18 +39,22 @@ $transform: $pointer / 2;
 
   .vc-mix {
     .vc-mix-header-control {
-      .vc-mix-color-label {
-        border-top-left-radius: $border-radius;
-        border-bottom-left-radius: $border-radius;
-      }
+      .vc-mix-color-wrap {
+        border-color: $color-gray10;
 
-      #vc-mix-color-code {
-        border-top-right-radius: $border-radius;
-        border-bottom-right-radius: $border-radius;
-      }
+        .vc-mix-color-label {
+          border-top-left-radius: $border-radius;
+          border-bottom-left-radius: $border-radius;
+        }
 
-      #vc-mix-color-alpha {
-        border-radius: $border-radius;
+        #vc-mix-color-code {
+          border-top-right-radius: $border-radius;
+          border-bottom-right-radius: $border-radius;
+        }
+
+        #vc-mix-color-alpha {
+          border-radius: $border-radius;
+        }
       }
     }
 
@@ -101,6 +105,10 @@ $transform: $pointer / 2;
         background-image: url('~@/assets/icons/plus-2.svg');
         background-position: 50%;
         border: none;
+      }
+
+      .vc-mix-presets-color {
+        border-color: $color-gray10;
       }
     }
   }
