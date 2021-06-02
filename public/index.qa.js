@@ -2,7 +2,7 @@ const compression = require('compression');
 var express = require('express');
 var server = express();
 server.use(compression());
-var indexFile = 'index.html', path = process.env.PATH;
+var indexFile = 'index.html', path = '/var/www/frontend/pp-tools-qa';
 server.use('/', express.static(path, {
   index: indexFile,
   setHeaders: function (res) {
@@ -16,4 +16,4 @@ server.get('*', function(req, res) {
     },
   });
 });
-server.listen(process.env.PORT);
+server.listen(3003);
