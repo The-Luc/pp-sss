@@ -7,6 +7,10 @@ export default {
     multiple: {
       type: Boolean,
       default: false
+    },
+    ppActiveClass: {
+      type: String,
+      default: 'active-class'
     }
   },
   methods: {

@@ -284,7 +284,7 @@ export const mutations = {
   },
   [BOOK._MUTATES.TEXT_PROPERTIES](
     state,
-    { bold, fontStyle, underLine, fontFamily, fontSize, textAlign, textCase }
+    { bold, fontStyle, underLine, fontFamily, fontSize, textAlign }
   ) {
     state.textProperties.bold = bold;
     state.textProperties.fontStyle = fontStyle;
@@ -292,7 +292,6 @@ export const mutations = {
     state.textProperties.fontFamily = fontFamily;
     state.textProperties.fontSize = fontSize;
     state.textProperties.textAlign = textAlign;
-    state.textProperties.textCase = textCase;
   },
   [BOOK._MUTATES.UPDATE_SHEET_THEME_LAYOUT](
     state,

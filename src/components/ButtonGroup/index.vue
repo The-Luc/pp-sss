@@ -1,6 +1,7 @@
 <template>
   <v-btn-toggle
     class="pp-button-group"
+    :active-class="ppActiveClass"
     :value="item"
     :multiple="multiple"
     @change="onChange"
