@@ -56,9 +56,7 @@ export default {
     selectedItem() {
       const selectedId = this.getTextProp().styleId;
 
-      const selected = this.items.find(item => item.value === selectedId);
-
-      return selected;
+      return this.items.find(item => item.value === selectedId);
     },
     selectBoxItems() {
       return this.items.map(item => {

@@ -8,7 +8,7 @@
         :class="['btn-solid', { 'btn-disabled': isDisableAdd }]"
         @click.native="onAddSection"
       >
-        <img src="@/assets/icons/plus.svg" />
+        <img src="@/assets/icons/plus.svg" alt="Add section" />
         Add a Section
       </v-btn>
     </v-col>

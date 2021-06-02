@@ -103,11 +103,9 @@ export default {
         .filter((s, ind) => ind < index)
         .map(s => s.sheets.length);
 
-      const total = totalSheetEachSection.reduce((a, v) => {
+      return totalSheetEachSection.reduce((a, v) => {
         return a + v;
       });
-
-      return total;
     },
     getStartSeq: function(index) {
       return this.getTotalSheetUntilLastSection(index) + 1;
@@ -139,7 +137,7 @@ export default {
       };
     },
     getSheets: function(sheetList) {
-      const sheets = sheetList.map(s => {
+      return sheetList.map(s => {
         const { id, type, draggable, positionFixed } = s;
 
         return {
@@ -149,8 +147,6 @@ export default {
           positionFixed: positionFixed
         };
       });
-
-      return sheets;
     }
   }
 };

@@ -1,8 +1,12 @@
 import { mapGetters } from 'vuex';
 import { fabric } from 'fabric';
 
-import { IMAGE_LOCAL, ROUTE_NAME } from '@/common/constants';
-import { LINK_STATUS, SHEET_TYPES } from '@/common/constants';
+import {
+  LINK_STATUS,
+  SHEET_TYPES,
+  IMAGE_LOCAL,
+  ROUTE_NAME
+} from '@/common/constants';
 import { useDrawLayout } from '@/hooks';
 import { GETTERS } from '@/store/modules/book/const';
 

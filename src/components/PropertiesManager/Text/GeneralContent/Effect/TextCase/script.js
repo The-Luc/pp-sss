@@ -1,6 +1,7 @@
 import { startCase } from 'lodash';
 import { ICON_LOCAL } from '@/common/constants';
 import PpButtonGroup from '@/components/ButtonGroup';
+import { isEmpty } from '@/common/utils';
 
 export default {
   data() {
@@ -73,19 +74,16 @@ export default {
     capitalize() {
       const canvas = window.printCanvas;
       let obj = canvas.getActiveObject();
-      let text = obj.text;
       if (obj.setSelectionStyles && obj.isEditing) {
-        text = text.split('');
+        const text = obj.text?.split('') || [];
         for (
           let i = obj.setSelectionStyles().selectionStart;
           i < obj.setSelectionStyles().selectionEnd;
           i++
         ) {
-          text[i - 1] === undefined ||
-          text[i - 1] === ' ' ||
-          text[i - 1] === '\n'
-            ? (text[i] = text[i].toUpperCase())
-            : (text[i] = text[i].toLowerCase());
+          text[i] = isEmpty(text[i - 1])
+            ? text[i].toUpperCase()
+            : text[i].toLowerCase();
         }
         obj.set({
           text: text.join('')

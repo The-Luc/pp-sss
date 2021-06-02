@@ -44,9 +44,7 @@ export default {
     toggleDetail: function(ev) {
       const sectionHeader = ev.target.closest('.section-header');
 
-      const isCollapse = !(
-        sectionHeader.getAttribute('data-toggle') === COLLAPSE
-      );
+      const isCollapse = sectionHeader.getAttribute('data-toggle') !== COLLAPSE;
 
       sectionHeader.setAttribute('data-toggle', isCollapse ? COLLAPSE : EXPAND);
 

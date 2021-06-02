@@ -5,10 +5,9 @@ import DragDropIndicator from '@/components/DragDropIndicatorVertical';
 import ButtonDelete from '@/components/Menu/ButtonDelete';
 import MenuDetail from '../MenuDetail';
 import { MUTATES } from '@/store/modules/app/const';
-import { ICON_LOCAL } from '@/common/constants';
+import { ICON_LOCAL, MODAL_TYPES } from '@/common/constants';
 
 import { GETTERS } from '@/store/modules/book/const';
-import { MODAL_TYPES } from '@/common/constants';
 import { SHEET_TYPES } from '@/common/constants/sheetTypes';
 
 export default {

@@ -12,13 +12,11 @@ export default {
     months: function() {
       const totalMonthToShow = this.getTotalMonthToShow();
 
-      const monthData = Array.from({ length: totalMonthToShow }, () => {
+      return Array.from({ length: totalMonthToShow }, () => {
         return {
           isUseBorder: true
         };
       });
-
-      return monthData;
     }
   },
   methods: {

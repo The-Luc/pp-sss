@@ -3,7 +3,7 @@
     <ProcessBar :color="section.color" :status="section.status" />
 
     <span class="first-release">{{ section.dueDate }}</span>
-    <img :src="moreIcon" @click.stop="toggleMenu" />
+    <img :src="moreIcon" alt="more icon" @click.stop="toggleMenu" />
 
     <Action
       :due-date="section.dueDate"

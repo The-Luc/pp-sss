@@ -52,11 +52,8 @@ export default {
     }),
     isShowAdd() {
       let index = this.sections.findIndex(item => item.id === this.sectionId);
-      if (this.totalInfo.totalPages >= this.maxPage || !index) {
-        return false;
-      } else {
-        return true;
-      }
+
+      return !(this.totalInfo.totalPages >= this.maxPage || !index);
     }
   },
   data() {
