@@ -81,7 +81,9 @@ export default {
           i < obj.setSelectionStyles().selectionEnd;
           i++
         ) {
-          text[i - 1] === undefined || text[i - 1] === ' '
+          text[i - 1] === undefined ||
+          text[i - 1] === ' ' ||
+          text[i - 1] === '\n'
             ? (text[i] = text[i].toUpperCase())
             : (text[i] = text[i].toLowerCase());
         }
