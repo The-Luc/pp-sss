@@ -75,7 +75,7 @@ export default {
       const canvas = window.printCanvas;
       let obj = canvas.getActiveObject();
       if (obj.setSelectionStyles && obj.isEditing) {
-        const text = obj.text?.split('') || [];
+        const text = obj.text.split('') || [];
         for (
           let i = obj.setSelectionStyles().selectionStart;
           i < obj.setSelectionStyles().selectionEnd;
