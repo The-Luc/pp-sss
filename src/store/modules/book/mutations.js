@@ -274,7 +274,7 @@ export const mutations = {
   },
   [BOOK._MUTATES.SELECT_THEME](state, payload) {
     const { themeId } = payload;
-    state.book.printData.theme = themeId;
+    state.book.printData.themeId = themeId;
   },
   [BOOK._MUTATES.SET_OBJECT_TYPE_SELECTED](state, { type }) {
     state.selectedObjectType = type;

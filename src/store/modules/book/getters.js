@@ -41,7 +41,7 @@ export const getters = {
     return pageSelected;
   },
   [BOOK._GETTERS.PRINT_THEME_SELECTED_ID]: ({ book }) => {
-    return book.printData.theme;
+    return book.printData.themeId;
   },
   [BOOK._GETTERS.TOTAL_MONTH_SHOW_ON_CHART]: ({ book }) => {
     const { createdDate, deliveryDate } = book;

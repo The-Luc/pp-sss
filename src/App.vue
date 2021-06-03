@@ -16,7 +16,7 @@ import { onMounted } from '@vue/composition-api';
 
 import { ENV_CONFIG } from '@/common/constants/config';
 import { useBook, useLayoutPrompt } from '@/hooks';
-import ModalManager from './components/ModalManager';
+import ModalManager from './containers/ModalManager';
 import HeaderControl from './views/CreateBook/HeadControl';
 import { GETTERS } from './store/modules/book/const';
 import { GETTERS as APP_GETTER } from './store/modules/app/const';

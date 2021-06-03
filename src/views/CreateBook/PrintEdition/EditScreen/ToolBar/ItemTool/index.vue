@@ -3,6 +3,7 @@
     <ToolButton
       v-for="(item, index) in items"
       :key="index"
+      :is-prompt="isPrompt"
       :is-active="isActive(item.name)"
       :icon-name="item.iconName"
       :title="item.title"

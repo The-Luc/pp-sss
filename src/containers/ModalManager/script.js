@@ -10,7 +10,7 @@ import DeleteSectionModal from '@/views/CreateBook/Manager/SectionList/SectionIt
 import GanttChartModal from '@/views/CreateBook/Manager/Summary/SummaryInfo/Progress/GanttChartModal';
 
 // Don't allow close when click outside
-import EmptySection from '@/components/ModalEmptySection';
+import EmptySection from '@/containers/ModalEmptySection';
 import SelectTheme from '@/views/CreateBook/PrintEdition/EditScreen/Modal';
 import ModalSelectPage from '@/views/CreateBook/PrintEdition/EditScreen/PageEdition/ModalSelectPage';
 

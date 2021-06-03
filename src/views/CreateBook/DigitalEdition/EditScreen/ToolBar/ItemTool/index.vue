@@ -6,6 +6,7 @@
       :is-active="isActive(item.name)"
       :icon-name="item.iconName"
       :title="item.title"
+      :is-prompt="isPrompt"
       @click="onClick(item)"
     />
   </div>
