@@ -5,7 +5,10 @@
       @onClickSave="onClickSaveDigitalCanvas"
     />
     <ToolBar :is-digital-editor="true" />
-    <FeedbackBar />
+    <FeedbackBar
+      :is-open-menu-properties="isOpenMenuProperties"
+      :selected-tool-name="selectedToolName"
+    />
     <SidebarSection />
     <PageEdition />
   </div>

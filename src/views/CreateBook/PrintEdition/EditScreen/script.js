@@ -1,5 +1,6 @@
 import { mapMutations, mapGetters } from 'vuex';
-import { MUTATES } from '@/store/modules/app/const';
+
+import { MUTATES, GETTERS as APP_GETTERS } from '@/store/modules/app/const';
 import {
   GETTERS as BOOK_GETTERS,
   MUTATES as BOOK_MUTATES
@@ -36,7 +37,9 @@ export default {
   },
   computed: {
     ...mapGetters({
-      printThemeSelected: BOOK_GETTERS.PRINT_THEME_SELECTED_ID
+      printThemeSelected: BOOK_GETTERS.PRINT_THEME_SELECTED_ID,
+      isOpenMenuProperties: APP_GETTERS.IS_OPEN_MENU_PROPERTIES,
+      selectedToolName: APP_GETTERS.SELECTED_TOOL_NAME
     })
   },
   watch: {
