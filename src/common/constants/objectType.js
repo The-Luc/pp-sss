@@ -1,4 +1,7 @@
 export const OBJECT_TYPE = {
-  TEXT: 'TextProperties',
-  IMAGE: 'ImageProperties'
+  TEXT: 'Text',
+  IMAGE: 'Image',
+  BACKGROUND: 'Background',
+  CLIP_ART: 'ClipArt',
+  SHAPE: 'Shape',
 };

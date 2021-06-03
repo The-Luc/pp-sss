@@ -22,12 +22,10 @@ const book = {
     max: 100
   },
   printData: {
-    theme: null,
-    layout: 1
+    themeId: null,
   },
   digitalData: {
-    theme: 1,
-    layout: 1
+    themeId: 1,
   },
   sections: [
     {
@@ -42,7 +40,7 @@ const book = {
       sheets: [
         {
           id: 1,
-          type: 0,
+          type: 0, // enum
           draggable: false,
           isVisited: false,
           positionFixed: 'all',
@@ -55,7 +53,8 @@ const book = {
             pages: [
               {
                 id: 1,
-                data: []
+                layoutId: 1,
+                objects: [],
               }
             ]
           },
