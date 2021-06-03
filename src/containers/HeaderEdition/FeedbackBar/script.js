@@ -1,5 +1,5 @@
 import PropertiesManager from '@/containers/PropertiesManager';
-import ToolPopoverManager from '@/components/ToolPopoverManager';
+import ToolPopoverManager from '@/containers/ToolPopoverManager';
 
 export default {
   components: {

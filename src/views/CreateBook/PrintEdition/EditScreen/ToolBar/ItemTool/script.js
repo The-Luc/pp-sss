@@ -2,8 +2,13 @@ import { mapGetters } from 'vuex';
 
 import { GETTERS } from '@/store/modules/app/const';
 import ToolButton from '@/components/ToolButton';
+import { useLayoutPrompt } from '@/hooks';
 
 export default {
+  setup() {
+    const { isPrompt } = useLayoutPrompt();
+    return { isPrompt };
+  },
   components: {
     ToolButton
   },
