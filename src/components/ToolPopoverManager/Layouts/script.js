@@ -82,8 +82,7 @@ export default {
       sectionId: BOOK_GETTERS.SECTION_ID
     }),
     isVisited() {
-      const isVisited = this.checkSheetIsVisited(this.pageSelected);
-      return isVisited;
+      return this.checkSheetIsVisited(this.pageSelected);
     },
     layouts() {
       if (this.themeSelected?.id && this.layoutSelected?.value) {

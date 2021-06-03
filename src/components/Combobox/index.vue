@@ -33,6 +33,7 @@
           :style="{ visibility: active ? 'visible' : 'hidden' }"
           class="icon-ative"
           :src="activeMenuIcon"
+          alt="icon-active"
         />
         <v-list-item-content>
           <v-list-item-title>

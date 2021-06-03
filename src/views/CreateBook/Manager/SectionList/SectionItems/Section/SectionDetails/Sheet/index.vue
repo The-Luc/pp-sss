@@ -23,6 +23,7 @@
                   onCheckIsShowMenuDetail(sheet.id) ? 'd-block' : '',
                   'menu-icon'
                 ]"
+                alt="more"
                 @mouseover="setCurrentSheetId(sheet.id)"
                 @mouseleave="setCurrentSheetId()"
                 @click="onChangeStatusMenuDetail(sheet.id)"

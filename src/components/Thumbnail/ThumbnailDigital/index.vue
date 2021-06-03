@@ -9,7 +9,7 @@
         'thumbnail-view-thumbnail'
       ]"
     >
-      <img :src="image" />
+      <img :src="image" alt="thumbnail" />
       <div v-if="edit" class="thumbnail-edit">
         <router-link tag="div" :to="toLink">
           <v-icon class="icon-edit">edit</v-icon>

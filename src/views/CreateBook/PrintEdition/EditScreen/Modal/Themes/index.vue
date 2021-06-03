@@ -14,6 +14,7 @@
           <img
             v-if="theme.imageUrl"
             :src="require(`@/assets/image/themes/${theme.imageUrl}`)"
+            alt="theme"
           />
           <div class="modal-theme-layer">
             <div

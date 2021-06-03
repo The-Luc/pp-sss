@@ -13,14 +13,12 @@ export default {
     months: function() {
       const totalMonthToShow = this.getTotalMonthToShow();
 
-      const monthData = Array.from({ length: totalMonthToShow }, (v, index) => {
+      return Array.from({ length: totalMonthToShow }, (v, index) => {
         return {
           isUseBorder: true,
           slotName: `slot${index}`
         };
       });
-
-      return monthData;
     },
     slots: function() {
       const totalMonthToShow = this.getTotalMonthToShow();

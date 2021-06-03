@@ -1,5 +1,6 @@
 import { ICON_LOCAL } from '@/common/constants';
 import PpButtonGroup from '@/components/ButtonGroup';
+import { isEmpty } from '@/common/utils';
 
 export default {
   data() {
@@ -22,12 +23,9 @@ export default {
      */
     capitalizeText(startText, endText, textArray) {
       for (let i = startText; i < endText; i++) {
-        textArray[i] =
-          textArray[i - 1] === undefined ||
-          textArray[i - 1] === ' ' ||
-          textArray[i - 1] === '\n'
-            ? textArray[i].toUpperCase()
-            : textArray[i].toLowerCase();
+        textArray[i] = isEmpty(textArray[i - 1])
+          ? textArray[i].toUpperCase()
+          : textArray[i].toLowerCase();
       }
       return textArray.join('');
     },

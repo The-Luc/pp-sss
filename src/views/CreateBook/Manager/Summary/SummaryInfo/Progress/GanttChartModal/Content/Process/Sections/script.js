@@ -23,7 +23,7 @@ export default {
 
       const length = `${(diffDate / this.getTotalDayToShow()) * 100}%`;
 
-      const sectionData = sections.map(s => {
+      return sections.map(s => {
         const { id, name, color, status, dueDate } = s;
 
         return {
@@ -36,8 +36,6 @@ export default {
           length
         };
       });
-
-      return sectionData;
     }
   },
   methods: {

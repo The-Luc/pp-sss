@@ -279,8 +279,6 @@ export default {
         activeObj.set(k, fabricProp[k]);
       });
 
-      // window.printCanvas.renderAll();
-
       this.setTextProp(prop);
     }
   }

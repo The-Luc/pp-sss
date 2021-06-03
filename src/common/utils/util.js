@@ -82,7 +82,9 @@ export const isEmpty = obj => {
 
   if (objType === 'undefined') return true;
 
-  if (objType === 'string') return obj.trim().length === 0;
+  if (objType === 'string') {
+    return obj.trim().length === 0 || obj.trim() === '\n';
+  }
 
   if (objType === 'object' && isNaN(parseInt(obj.length, 10))) {
     return JSON.stringify(obj) === JSON.stringify({});

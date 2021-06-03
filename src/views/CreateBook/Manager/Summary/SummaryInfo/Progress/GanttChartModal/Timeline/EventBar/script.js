@@ -24,11 +24,9 @@ export default {
     events: function() {
       const totalMonthToShow = this.getTotalMonthToShow();
 
-      const events = Array.from({ length: totalMonthToShow }, (v, index) => {
+      return Array.from({ length: totalMonthToShow }, (v, index) => {
         return this.getEventData(index);
       });
-
-      return events;
     },
     slots: function() {
       const totalMonthToShow = this.getTotalMonthToShow();

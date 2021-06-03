@@ -11,10 +11,8 @@ export const getters = {
     return layouts;
   },
   [THEME._GETTERS.GET_LAYOUT_BY_TYPE]: state => (themeId, layoutType) => {
-    const allLayouts = state.layouts;
-    const currentLayouts = allLayouts.filter(
+    return state.layouts.filter(
       layout => layout.themeId === themeId && layout.type === layoutType
     );
-    return currentLayouts;
   }
 };
