@@ -1,8 +1,8 @@
 import { mapGetters } from 'vuex';
 
 import ToolBar from './ToolBar';
-import Header from '@/components/HeaderEdition/Header';
-import FeedbackBar from '@/components/HeaderEdition/FeedbackBar';
+import Header from '@/containers/HeaderEdition/Header';
+import FeedbackBar from '@/containers/HeaderEdition/FeedbackBar';
 import PageEdition from './PageEdition';
 import SidebarSection from './SidebarSection';
 import { GETTERS } from '@/store/modules/app/const';
