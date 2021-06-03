@@ -5,7 +5,7 @@ import Content from './Content';
 
 import { GETTERS, MUTATES } from '@/store/modules/app/const';
 
-import Modal from '@/components/Modal';
+import Modal from '@/containers/Modal';
 
 export default {
   components: {
