@@ -2,7 +2,10 @@
   <div class="row print-main">
     <Header name-editor="print editor" @onClickSave="onClickSavePrintCanvas" />
     <ToolBar />
-    <FeedbackBar />
+    <FeedbackBar
+      :is-open-menu-properties="isOpenMenuProperties"
+      :selected-tool-name="selectedToolName"
+    />
     <SidebarSection />
     <PageEdition />
   </div>
