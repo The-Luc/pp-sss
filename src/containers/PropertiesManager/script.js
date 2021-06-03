@@ -4,8 +4,8 @@ import { GETTERS } from '@/store/modules/app/const';
 import { OBJECT_TYPE } from '@/common/constants';
 
 // Object component
-import TextProperties from '@/components/PropertiesManager/Text';
-import ImageProperties from '@/components/PropertiesManager/Image';
+import TextProperties from '@/containers/PropertiesManager/Text';
+import ImageProperties from '@/containers/PropertiesManager/Image';
 
 const { TEXT, IMAGE } = OBJECT_TYPE;
 

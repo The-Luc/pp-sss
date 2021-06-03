@@ -1,7 +1,7 @@
 import { mapGetters, mapMutations } from 'vuex';
 
 import Frames from '@/components/Thumbnail/Frames';
-import Thumbnail from '@/components/Thumbnail/ThumbnailPrint';
+import Thumbnail from '@/containers/ThumbnailPrint';
 import { GETTERS, MUTATES } from '@/store/modules/book/const';
 import { useDrawLayout } from '@/hooks';
 

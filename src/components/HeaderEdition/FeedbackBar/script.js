@@ -1,4 +1,4 @@
-import PropertiesManager from '@/components/PropertiesManager';
+import PropertiesManager from '@/containers/PropertiesManager';
 import ToolPopoverManager from '@/components/ToolPopoverManager';
 
 export default {
