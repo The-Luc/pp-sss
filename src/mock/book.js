@@ -22,10 +22,10 @@ const book = {
     max: 100
   },
   printData: {
-    themeId: null,
+    themeId: null
   },
   digitalData: {
-    themeId: 1,
+    themeId: 1
   },
   sections: [
     {
@@ -54,7 +54,7 @@ const book = {
               {
                 id: 1,
                 layoutId: 1,
-                objects: [],
+                objects: []
               }
             ]
           },
