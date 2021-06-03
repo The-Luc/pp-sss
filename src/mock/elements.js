@@ -7,7 +7,7 @@ export const BaseProperty = {
     type: 0, // TODO: Define constants 0: No Border, 1: Line
     color: '',
     width: 0,
-    style: '',
+    style: ''
   },
   shadow: {
     enabled: false,
@@ -15,20 +15,20 @@ export const BaseProperty = {
     offset: 0,
     opacity: 0,
     angle: 0,
-    blur: 0,
+    blur: 0
   },
   flip: {
     horiziontal: false,
-    vertical: false,
-  },
+    vertical: false
+  }
 };
 
 export const BasePrintProperty = {
-  ...BaseProperty,
+  ...BaseProperty
 };
 
 export const BaseDigitalProperty = {
-  ...BaseProperty,
+  ...BaseProperty
 };
 
 export const BaseElement = {
@@ -61,11 +61,11 @@ export const TextElement = {
     textCase: '', // UPPERCASE, LOWERCASE, CAPITALIZE
     alignment: {
       horiziontal: '', // LEFT, CENTER, RIGHT, JUSTIFY
-      vertical: '', // TOP, MIDDLE, BOTTOM
+      vertical: '' // TOP, MIDDLE, BOTTOM
     },
     letterSpacing: 0,
-    lineSpacing: 'auto',// 1.2 * em
-    column: 1,
+    lineSpacing: 'auto', // 1.2 * em
+    column: 1
   }
 };
 
@@ -101,7 +101,7 @@ export const ClipArtElement = {
     category: '',
     name: '',
     thumbnail: '',
-    vector: '', // imgUrl
+    vector: '' // imgUrl
   }
 };
 
@@ -113,6 +113,6 @@ export const ShapeElement = {
     category: '',
     name: '',
     thumbnail: '',
-    pathData: 'img.svg', // TODO: Need discuss with FM to get instruction on using shape
+    pathData: 'img.svg' // TODO: Need discuss with FM to get instruction on using shape
   }
 };

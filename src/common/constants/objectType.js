@@ -3,5 +3,5 @@ export const OBJECT_TYPE = {
   IMAGE: 'Image',
   BACKGROUND: 'Background',
   CLIP_ART: 'ClipArt',
-  SHAPE: 'Shape',
+  SHAPE: 'Shape'
 };

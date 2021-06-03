@@ -10,6 +10,6 @@ export default {
     };
   },
   methods: {
-    onChange(val) {}
+    onChange() {}
   }
 };

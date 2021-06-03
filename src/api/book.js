@@ -1,7 +1,7 @@
 import book from '@/mock/book';
 
 const bookService = {
-  getBook: bookId => {
+  getBook: () => {
     return book;
   },
   updateTitle: (bookId, title) => ({
@@ -18,7 +18,7 @@ const bookService = {
       }
     };
   },
-  getSections: function(bookId) {
+  getSections: function() {
     return book.sections;
   },
   getSection: function(sectionId) {
@@ -38,7 +38,7 @@ const bookService = {
 
     return index < 0 ? null : sheets[index];
   },
-  updateBook: data => {
+  updateBook: () => {
     // api.put(`${ENDPOINT.GET_BOOK}/${data.albumId}`, data);
     return {
       status: 200,
