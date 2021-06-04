@@ -104,6 +104,10 @@ export default {
       this.addText();
     });
 
+    this.$root.$on('printDeleteElements', () => {
+      this.deleteElements();
+    });
+
     this.$root.$on('printChangeTextStyle', style => {
       this.changeObjectStyle(style);
     });
@@ -280,6 +284,18 @@ export default {
       });
 
       this.setTextProp(prop);
+    },
+    /**
+     * Event fire when user click on Delete button on Toolbar to delete selected elements on canvas
+     */
+    deleteElements() {
+      const activeObj = window.printCanvas.getActiveObject();
+      if (isEmpty(activeObj)) return;
+      if (activeObj._objects) {
+        activeObj._objects.forEach(e => window.printCanvas.remove(e));
+      }
+      window.printCanvas.remove(activeObj);
+      window.printCanvas.discardActiveObject().renderAll();
     }
   }
 };
