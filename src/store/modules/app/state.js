@@ -14,7 +14,7 @@ export const state = {
       color: '',
       presets: {
         next: 0,
-        max: 10,
+        max: 9,
         values: []
       }
     }

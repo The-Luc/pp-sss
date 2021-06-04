@@ -13,27 +13,20 @@ export default {
     Section,
     Draggable
   },
-  setup() {
-    return {
-      ...mapGetters({
-        getSections: GETTERS.SECTIONS
-      }),
-      ...mapMutations({
-        updateSectionPosition: MUTATES.UPDATE_SECTION_POSITION
-      })
-    };
-  },
   data() {
     return {
       drag: false
     };
   },
   computed: {
-    sections: function() {
-      return this.getSections();
-    }
+    ...mapGetters({
+      sections: GETTERS.SECTIONS
+    })
   },
   methods: {
+    ...mapMutations({
+      updateSectionPosition: MUTATES.UPDATE_SECTION_POSITION
+    }),
     onChoose: function(evt) {
       moveToIndex = -1;
 

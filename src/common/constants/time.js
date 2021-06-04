@@ -12,3 +12,7 @@ export const TIME_FORMAT = {
   TB: 'HH:mm a,',
   DT: 'dd-MMM-yyyy'
 };
+
+export const DATE_FORMAT = {
+  BASE: 'MM/DD/YY'
+};

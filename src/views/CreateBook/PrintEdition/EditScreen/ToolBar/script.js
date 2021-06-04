@@ -87,7 +87,8 @@ export default {
           },
           {
             iconName: 'delete',
-            title: 'Delete'
+            title: 'Delete',
+            name: TOOL_NAME.DELETE
           }
         ],
         [
@@ -179,6 +180,9 @@ export default {
             isOpen: true
           });
           break;
+        case TOOL_NAME.DELETE:
+          this.deleteElements();
+          break;
         default:
           if (data.name === TOOL_NAME.LAYOUTS && this.isPrompt) {
             return;
@@ -194,6 +198,12 @@ export default {
      */
     addText() {
       this.$root.$emit('printAddText');
+    },
+    /**
+     * Delete selected elements in print canvas
+     */
+    deleteElements() {
+      this.$root.$emit('printDeleteElements');
     }
   }
 };

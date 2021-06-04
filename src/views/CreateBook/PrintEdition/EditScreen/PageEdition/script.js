@@ -13,11 +13,9 @@ import {
 
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
 import { GETTERS, MUTATES as BOOK_MUTATES } from '@/store/modules/book/const';
-import {
-  GETTERS as PRINT_GETTERS,
-  MUTATES as PRINT_MUTATES
-} from '@/store/modules/print/const';
+
 import { OBJECT_TYPE, SHEET_TYPES } from '@/common/constants';
+import { MUTATES as PROP_MUTATES } from '@/store/modules/property/const';
 export default {
   setup() {
     const { drawLayout } = useDrawLayout();
@@ -113,6 +111,10 @@ export default {
       this.addText();
     });
 
+    this.$root.$on('printDeleteElements', () => {
+      this.deleteElements();
+    });
+
     this.$root.$on('printChangeTextStyle', style => {
       this.changeObjectStyle(style);
     });
@@ -121,16 +123,18 @@ export default {
       this.changeObjectProperties(prop);
     });
   },
+  beforeDestroy() {
+    this.$root.$off('printDeleteElements', () => {
+      this.deleteElements();
+    });
+  },
   methods: {
     ...mapMutations({
       setIsOpenProperties: MUTATES.TOGGLE_MENU_PROPERTIES,
       setObjectTypeSelected: MUTATES.SET_OBJECT_TYPE_SELECTED,
       setTextProperties: BOOK_MUTATES.TEXT_PROPERTIES,
-      setTextStyle: PRINT_MUTATES.SET_TEXT_STYLE,
-      setTextProp: PRINT_MUTATES.SET_TEXT_PROPERTY
-    }),
-    ...mapGetters({
-      getTextStyle: PRINT_GETTERS.TEXT_STYLE
+      setTextStyle: PROP_MUTATES.SET_TEXT_STYLE,
+      setTextProp: PROP_MUTATES.SET_TEXT_PROPERTY
     }),
     /**
      * Open text properties modal and set default properties
@@ -281,6 +285,19 @@ export default {
       });
 
       this.setTextProp(prop);
+    },
+    /**
+     * Event fire when user click on Delete button on Toolbar to delete selected elements on canvas
+     */
+    deleteElements() {
+      const activeObj = window.printCanvas.getActiveObject();
+      if (isEmpty(activeObj)) return;
+      if (activeObj._objects) {
+        activeObj._objects.forEach(object => window.printCanvas.remove(object));
+      } else {
+        window.printCanvas.remove(activeObj);
+      }
+      window.printCanvas.discardActiveObject().renderAll();
     }
   }
 };

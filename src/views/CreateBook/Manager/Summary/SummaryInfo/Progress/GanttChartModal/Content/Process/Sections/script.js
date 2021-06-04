@@ -9,9 +9,13 @@ export default {
     Section
   },
   computed: {
+    ...mapGetters({
+      originSections: GETTERS.SECTIONS,
+      getTotalDayToShow: GETTERS.TOTAL_DAYS_SHOW_ON_CHART,
+      getCreatedDateFromBeginning: GETTERS.CREATED_DAY_FROM_BEGINNING,
+      getReleaseDateFromBeginning: GETTERS.RELEASE_DAY_FROM_BEGINNING
+    }),
     sections() {
-      const sections = this.getSections();
-
       const position = `${(this.getCreatedDateFromBeginning() /
         this.getTotalDayToShow()) *
         100}%`;
@@ -23,7 +27,7 @@ export default {
 
       const length = `${(diffDate / this.getTotalDayToShow()) * 100}%`;
 
-      return sections.map(s => {
+      return this.originSections.map(s => {
         const { id, name, color, status, dueDate } = s;
 
         return {
@@ -37,13 +41,5 @@ export default {
         };
       });
     }
-  },
-  methods: {
-    ...mapGetters({
-      getSections: GETTERS.SECTIONS,
-      getTotalDayToShow: GETTERS.TOTAL_DAYS_SHOW_ON_CHART,
-      getCreatedDateFromBeginning: GETTERS.CREATED_DAY_FROM_BEGINNING,
-      getReleaseDateFromBeginning: GETTERS.RELEASE_DAY_FROM_BEGINNING
-    })
   }
 };

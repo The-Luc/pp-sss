@@ -4,7 +4,7 @@ import PpSelect from '@/components/Select';
 
 import { styleToCssStyle } from '@/common/utils';
 
-import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
+import { GETTERS as PROP_GETTERS } from '@/store/modules/property/const';
 
 export default {
   components: {
@@ -53,8 +53,11 @@ export default {
     };
   },
   computed: {
+    ...mapGetters({
+      textProp: PROP_GETTERS.TEXT_PROPERTY
+    }),
     selectedItem() {
-      const selectedId = this.getTextProp().styleId;
+      const selectedId = this.textProp.styleId;
 
       return this.items.find(item => item.value === selectedId);
     },
@@ -72,10 +75,6 @@ export default {
     }
   },
   methods: {
-    ...mapGetters({
-      getTextStyle: PRINT_GETTERS.TEXT_STYLE,
-      getTextProp: PRINT_GETTERS.TEXT_PROPERTY
-    }),
     /**
      * Event fired when user choose an item on list
      *
