@@ -180,7 +180,7 @@ export default {
             isOpen: true
           });
           break;
-        case 'delete':
+        case TOOL_NAME.DELETE:
           this.deleteElements();
           break;
         default:

@@ -116,6 +116,11 @@ export default {
       this.changeObjectProperties(prop);
     });
   },
+  beforeDestroy() {
+    this.$root.$off('printDeleteElements', () => {
+      this.deleteElements();
+    });
+  },
   methods: {
     ...mapMutations({
       setIsOpenProperties: MUTATES.TOGGLE_MENU_PROPERTIES,
@@ -292,7 +297,7 @@ export default {
       const activeObj = window.printCanvas.getActiveObject();
       if (isEmpty(activeObj)) return;
       if (activeObj._objects) {
-        activeObj._objects.forEach(e => window.printCanvas.remove(e));
+        activeObj._objects.forEach(object => window.printCanvas.remove(object));
       }
       window.printCanvas.remove(activeObj);
       window.printCanvas.discardActiveObject().renderAll();
