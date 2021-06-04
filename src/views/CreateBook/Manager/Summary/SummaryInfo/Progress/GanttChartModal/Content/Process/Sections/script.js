@@ -1,8 +1,8 @@
+import Section from './Section';
+
 import { mapGetters } from 'vuex';
 
 import { GETTERS } from '@/store/modules/book/const';
-
-import Section from './Section';
 
 export default {
   components: {
@@ -11,24 +11,24 @@ export default {
   computed: {
     ...mapGetters({
       originSections: GETTERS.SECTIONS,
-      getTotalDayToShow: GETTERS.TOTAL_DAYS_SHOW_ON_CHART,
-      getCreatedDateFromBeginning: GETTERS.CREATED_DAY_FROM_BEGINNING,
-      getReleaseDateFromBeginning: GETTERS.RELEASE_DAY_FROM_BEGINNING
+      totalDayToShow: GETTERS.TOTAL_DAYS_SHOW_ON_CHART,
+      createdDateFromBeginning: GETTERS.CREATED_DATE_FROM_BEGINNING,
+      dueDateFromBeginning: GETTERS.DUE_DATE_FROM_BEGINNING
     }),
     sections() {
-      const position = `${(this.getCreatedDateFromBeginning() /
-        this.getTotalDayToShow()) *
+      const position = `${(this.createdDateFromBeginning /
+        this.totalDayToShow) *
         100}%`;
-
-      const diffDate =
-        this.getReleaseDateFromBeginning() -
-        this.getCreatedDateFromBeginning() +
-        1;
-
-      const length = `${(diffDate / this.getTotalDayToShow()) * 100}%`;
 
       return this.originSections.map(s => {
         const { id, name, color, status, dueDate } = s;
+
+        const diffDate =
+          this.dueDateFromBeginning(dueDate) -
+          this.createdDateFromBeginning +
+          1;
+
+        const length = `${(diffDate / this.totalDayToShow) * 100}%`;
 
         return {
           id,

@@ -14,3 +14,4 @@ export * from './layoutTypes';
 export * from './processStatus';
 export * from './canvas';
 export * from './textAlign';
+export * from './moment';

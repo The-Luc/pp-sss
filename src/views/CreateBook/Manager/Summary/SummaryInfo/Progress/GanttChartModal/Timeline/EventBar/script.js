@@ -77,7 +77,7 @@ export default {
         saleDate,
         releaseDate,
         deliveryDate
-      } = this.eventDates();
+      } = this.eventDates;
 
       const saleMonth =
         saleDate === null ? -1 : moment(saleDate, DATE_FORMAT.BASE).month();

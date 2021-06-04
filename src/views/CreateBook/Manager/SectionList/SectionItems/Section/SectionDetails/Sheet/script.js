@@ -1,14 +1,13 @@
-import { mapGetters, mapMutations } from 'vuex';
-
 import DragDropControl from '@/components/DragDropControl';
 import DragDropIndicator from '@/components/DragDropIndicatorVertical';
 import ButtonDelete from '@/components/Menu/ButtonDelete';
 import MenuDetail from '../MenuDetail';
-import { MUTATES } from '@/store/modules/app/const';
-import { ICON_LOCAL, MODAL_TYPES } from '@/common/constants';
 
+import { mapGetters, mapMutations } from 'vuex';
+
+import { ICON_LOCAL, MODAL_TYPES, SHEET_TYPES } from '@/common/constants';
+import { MUTATES } from '@/store/modules/app/const';
 import { GETTERS } from '@/store/modules/book/const';
-import { SHEET_TYPES } from '@/common/constants/sheetTypes';
 
 export default {
   components: {
@@ -40,8 +39,7 @@ export default {
       currentSheetHover: '',
       moreIcon: ICON_LOCAL.MORE_ICON,
       arrowDown: ICON_LOCAL.ARROW_DOWN,
-      isOpenMenu: false,
-      sheetTypes: SHEET_TYPES
+      isOpenMenu: false
     };
   },
   computed: {
@@ -55,8 +53,8 @@ export default {
     }),
     isHalfSheet: function() {
       return (
-        this.sheet.type === this.sheetTypes.INTRO ||
-        this.sheet.type === this.sheetTypes.SIGNATURE
+        this.sheet.type === SHEET_TYPES.FRONT_COVER ||
+        this.sheet.type === SHEET_TYPES.BACK_COVER
       );
     },
     showDragControl: function(evt) {
@@ -104,9 +102,9 @@ export default {
     },
     onCheckActions() {
       const restrictSheetTypes = [
-        this.sheetTypes.COVER,
-        this.sheetTypes.INTRO,
-        this.sheetTypes.SIGNATURE
+        SHEET_TYPES.COVER,
+        SHEET_TYPES.FRONT_COVER,
+        SHEET_TYPES.BACK_COVER
       ];
 
       return restrictSheetTypes.indexOf(this.sheet.type) < 0;

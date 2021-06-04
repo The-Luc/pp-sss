@@ -1,7 +1,13 @@
 import moment from 'moment';
 
-import { getAllSheets, getDiffDaysFOMBeginDate } from '@/common/utils';
+import { DATE_FORMAT, MOMENT_TYPE } from '@/common/constants';
 import BOOK from './const';
+import {
+  getAllSheets,
+  getDiffDaysFOM,
+  getDiffMonths,
+  getDiffDaysFOMToEOM
+} from '@/common/utils';
 
 export const getters = {
   [BOOK._GETTERS.GET_SECTIONS]: ({ book }) => {
@@ -46,42 +52,37 @@ export const getters = {
   [BOOK._GETTERS.TOTAL_MONTH_SHOW_ON_CHART]: ({ book }) => {
     const { createdDate, deliveryDate } = book;
 
-    const beginTime = moment(createdDate, 'MM/DD/YY');
-    const endTime = moment(deliveryDate, 'MM/DD/YY')
-      .add(1, 'M')
-      .set('date', beginTime.date());
-
-    return endTime.diff(beginTime, 'months', false) + 1;
+    return getDiffMonths(createdDate, deliveryDate);
   },
   [BOOK._GETTERS.TOTAL_DAYS_SHOW_ON_CHART]: ({ book }) => {
     const { createdDate, deliveryDate } = book;
 
-    const beginTime = moment(createdDate, 'MM/DD/YY').set('date', 1);
-    const endTime = moment(deliveryDate, 'MM/DD/YY').add(1, 'M');
+    const endTime = moment(deliveryDate, DATE_FORMAT.BASE).add(
+      1,
+      MOMENT_TYPE.MONTH
+    );
 
-    endTime.set('date', endTime.daysInMonth());
-
-    return endTime.diff(beginTime, 'days', false) + 1;
+    return getDiffDaysFOMToEOM(createdDate, endTime.format(DATE_FORMAT.BASE));
   },
-  [BOOK._GETTERS.SALE_DAY_FROM_BEGINNING]: ({ book }) => {
+  [BOOK._GETTERS.SALE_DATE_FROM_BEGINNING]: ({ book }) => {
     const { createdDate, saleDate } = book;
 
-    return getDiffDaysFOMBeginDate(createdDate, saleDate);
+    return getDiffDaysFOM(createdDate, saleDate);
   },
-  [BOOK._GETTERS.RELEASE_DAY_FROM_BEGINNING]: ({ book }) => {
+  [BOOK._GETTERS.RELEASE_DATE_FROM_BEGINNING]: ({ book }) => {
     const { createdDate, releaseDate } = book;
 
-    return getDiffDaysFOMBeginDate(createdDate, releaseDate);
+    return getDiffDaysFOM(createdDate, releaseDate);
   },
-  [BOOK._GETTERS.CREATED_DAY_FROM_BEGINNING]: ({ book }) => {
+  [BOOK._GETTERS.CREATED_DATE_FROM_BEGINNING]: ({ book }) => {
     const { createdDate } = book;
 
-    return getDiffDaysFOMBeginDate(createdDate, createdDate);
+    return getDiffDaysFOM(createdDate, createdDate);
   },
-  [BOOK._GETTERS.DELIVERY_DAY_FROM_BEGINNING]: ({ book }) => {
+  [BOOK._GETTERS.DELIVERY_DATE_FROM_BEGINNING]: ({ book }) => {
     const { createdDate, deliveryDate } = book;
 
-    return getDiffDaysFOMBeginDate(createdDate, deliveryDate);
+    return getDiffDaysFOM(createdDate, deliveryDate);
   },
   [BOOK._GETTERS.GET_TEXT_PROPERTIES]: ({ textProperties }) => {
     return textProperties;
@@ -98,5 +99,10 @@ export const getters = {
   },
   [BOOK._GETTERS.SECTION_ID]: ({ sectionId }) => {
     return sectionId;
+  },
+  [BOOK._GETTERS.DUE_DATE_FROM_BEGINNING]: ({ book }) => dueDate => {
+    const { createdDate } = book;
+
+    return getDiffDaysFOM(createdDate, dueDate);
   }
 };
