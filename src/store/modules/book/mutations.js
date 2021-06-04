@@ -332,7 +332,7 @@ export const mutations = {
     const { pageSelected, sectionId, book } = state;
     const sectionIndex = book.sections.findIndex(item => item.id === sectionId);
     const sheetIndex = book.sections[sectionIndex].sheets.findIndex(
-      item => item.id === pageSelected
+      item => item.id === pageSelected.id
     );
     let printData = book.sections[sectionIndex].sheets[sheetIndex].printData;
     printData.pages = data;
