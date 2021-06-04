@@ -19,12 +19,12 @@ export default {
     details() {
       const deliveryDate = {
         name: 'Requested Delivery Date:',
-        description: moment(new Date(this.book().deliveryDate)).format(
+        description: moment(new Date(this.book.deliveryDate)).format(
           DATE_FORMAT.BASE
         )
       };
 
-      const releaseDate = moment(new Date(this.book().releaseDate));
+      const releaseDate = moment(new Date(this.book.releaseDate));
 
       const dueDate = {
         name: 'File Release Due Date:',

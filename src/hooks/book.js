@@ -38,16 +38,3 @@ export const useUpdateTitle = () => {
     updateTitle
   };
 };
-
-/**
- * The hook getter sheet selected from store
- * @return {Object} Sheet's id selected
- */
-export const useSheetSelected = () => {
-  const { selectedSheet } = useGetters({
-    selectedSheet: GETTERS.GET_PAGE_SELECTED
-  });
-  return {
-    selectedSheet
-  };
-};

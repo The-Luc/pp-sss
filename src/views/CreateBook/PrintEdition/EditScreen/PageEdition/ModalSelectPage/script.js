@@ -32,8 +32,8 @@ export default {
     themeId() {
       return this.$attrs.props.themeId;
     },
-    layoutId() {
-      return this.$attrs.props.layoutId;
+    layout() {
+      return this.$attrs.props.layout;
     }
   },
   methods: {
@@ -57,7 +57,7 @@ export default {
       this.updateSheetThemeLayout({
         sheetId: this.sheetId,
         themeId: this.themeId,
-        layoutId: this.layoutId,
+        layout: this.layout,
         pagePosition
       });
     },
@@ -65,9 +65,7 @@ export default {
      * Get sheet's layout and draw
      */
     drawLayoutSinglePage() {
-      const sheetLayout = this.sheetLayout(this.pageSelected);
-      const { imageUrlLeft, imageUrlRight } = sheetLayout;
-      this.drawLayout(imageUrlLeft, imageUrlRight);
+      this.drawLayout(this.pageSelected.printData.layout);
     },
     /**
      * Update layout to sheet, draw layout and then close modal

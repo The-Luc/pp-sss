@@ -15,15 +15,10 @@ import { useLayoutPrompt, usePopoverCreationTool } from '@/hooks';
 
 export default {
   setup() {
-    const {
-      checkSheetIsVisited,
-      pageSelected,
-      updateVisited
-    } = useLayoutPrompt();
+    const { pageSelected, updateVisited } = useLayoutPrompt();
     const { setToolNameSelected } = usePopoverCreationTool();
     return {
       pageSelected,
-      checkSheetIsVisited,
       setToolNameSelected,
       updateVisited
     };
@@ -43,8 +38,13 @@ export default {
     })
   },
   watch: {
-    pageSelected(newVal) {
-      this.setIsPromptLayout(newVal);
+    pageSelected: {
+      deep: true,
+      handler(newVal, oldVal) {
+        if (newVal.id !== oldVal.id) {
+          this.setIsPromptLayout(newVal);
+        }
+      }
     }
   },
   mounted() {
@@ -77,11 +77,10 @@ export default {
      * @param  {Number} pageSelected - Curent page(sheet) selected id
      */
     setIsPromptLayout(pageSelected) {
-      const isVisited = this.checkSheetIsVisited(pageSelected);
-      if (!isVisited) {
+      if (!pageSelected.isVisited) {
         this.setToolNameSelected(TOOL_NAME.LAYOUTS);
         this.updateVisited({
-          sheetId: pageSelected
+          sheetId: pageSelected?.id
         });
       }
     },

@@ -7,20 +7,7 @@
   >
     <div class="border-inside"></div>
     <div class="layout-preview-img">
-      <div class="layout-preview-img-left">
-        <img
-          v-if="layout.imageUrlLeft"
-          :src="require(`@/assets/image/layouts/${layout.imageUrlLeft}`)"
-          alt="left-layout"
-        />
-      </div>
-      <div class="modal-preview-img-right">
-        <img
-          v-if="layout.imageUrlRight"
-          alt="right-layout"
-          :src="require(`@/assets/image/layouts/${layout.imageUrlRight}`)"
-        />
-      </div>
+      <img :src="layout.previewImageUrl" alt="layout-preview" />
     </div>
     <div class="layout-preview-img-footer">
       <span class="layout-name">{{ layout.name }}</span>
