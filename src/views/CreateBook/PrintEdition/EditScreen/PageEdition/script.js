@@ -298,8 +298,9 @@ export default {
       if (isEmpty(activeObj)) return;
       if (activeObj._objects) {
         activeObj._objects.forEach(object => window.printCanvas.remove(object));
+      } else {
+        window.printCanvas.remove(activeObj);
       }
-      window.printCanvas.remove(activeObj);
       window.printCanvas.discardActiveObject().renderAll();
     }
   }
