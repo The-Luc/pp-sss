@@ -17,14 +17,9 @@ export default {
     const { resetPrintConfig } = useResetPrintConfig();
     const { setToolNameSelected } = usePopoverCreationTool();
     const { toggleMenuProperties } = useObjectProperties();
-    const {
-      checkSheetIsVisited,
-      updateVisited,
-      setIsPrompt
-    } = useLayoutPrompt();
+    const { updateVisited, setIsPrompt } = useLayoutPrompt();
     return {
       toggleMenuProperties,
-      checkSheetIsVisited,
       updateVisited,
       setToolNameSelected,
       resetPrintConfig,
@@ -118,24 +113,24 @@ export default {
      * @param  {String} sheetId Sheet's id selected
      */
     checkIsActive(sheetId) {
-      return sheetId === this.pageSelected;
+      return sheetId === this.pageSelected.id;
     },
     /**
      * Set selected sheet's id and section'sid and then show prompt when sheet the first time access
-     * @param  {String} sheetId Sheet's id selected
+     * @param  {String} sheet Sheet selected
      * @param  {String} sectionId Section id contains sheet
      */
-    onSelectSheet(sheetId, sectionId) {
-      this.selectSheet({ sheetId });
+    onSelectSheet(sheet, sectionId) {
+      const sheetId = sheet?.id;
+      this.selectSheet({ sheet });
       this.setSectionId({ sectionId });
-      const isVisited = this.checkSheetIsVisited(sheetId);
       if (this.isOpenMenuProperties) {
         this.toggleMenuProperties({
           isOpenMenuProperties: false
         });
       }
 
-      if (!isVisited) {
+      if (!sheet.isVisited) {
         this.setIsPrompt({
           isPrompt: false
         });

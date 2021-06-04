@@ -15,7 +15,7 @@ import { mapGetters } from 'vuex';
 import { onMounted } from '@vue/composition-api';
 
 import { ENV_CONFIG } from '@/common/constants/config';
-import { useBook, useLayoutPrompt } from '@/hooks';
+import { useBook } from '@/hooks';
 import ModalManager from './containers/ModalManager';
 import HeaderControl from './views/CreateBook/HeadControl';
 import { GETTERS } from './store/modules/book/const';
@@ -27,13 +27,8 @@ export default {
     HeaderControl
   },
   setup() {
-    const { checkSheetIsVisited } = useLayoutPrompt();
     const { getBook } = useBook();
     onMounted(() => getBook(ENV_CONFIG.BOOK_ID));
-    return {
-      getBook,
-      checkSheetIsVisited
-    };
   },
   computed: {
     ...mapGetters({
@@ -41,8 +36,7 @@ export default {
       isPrompt: APP_GETTER.IS_PROMPT
     }),
     isVisited() {
-      const isVisited = this.checkSheetIsVisited(this.pageSelected);
-      return isVisited;
+      return this.pageSelected.isVisited;
     }
   }
 };

@@ -17,14 +17,18 @@ import SelectTheme from './SelectTheme';
 import GotIt from './GotIt';
 import Item from './Item';
 import { LAYOUT_TYPES_OPTIONs } from '@/mock/layoutTypes';
-import { LAYOUT_TYPES, MODAL_TYPES, TOOL_NAME } from '@/common/constants';
+import {
+  LAYOUT_TYPES,
+  MODAL_TYPES,
+  SHEET_TYPES,
+  TOOL_NAME
+} from '@/common/constants';
 import {
   getThemeOptSelectedById,
   getLayoutOptSelectedById
 } from '@/common/utils';
 import {
   usePopoverCreationTool,
-  useSheetSelected,
   useLayoutPrompt,
   useDrawLayout
 } from '@/hooks';
@@ -32,18 +36,11 @@ import {
 export default {
   setup() {
     const { setToolNameSelected, selectedToolName } = usePopoverCreationTool();
-    const { selectedSheet } = useSheetSelected();
-    const {
-      checkSheetIsVisited,
-      updateVisited,
-      setIsPrompt
-    } = useLayoutPrompt();
+    const { updateVisited, setIsPrompt } = useLayoutPrompt();
     const { drawLayout } = useDrawLayout();
     return {
       selectedToolName,
-      selectedSheet,
       setToolNameSelected,
-      checkSheetIsVisited,
       updateVisited,
       setIsPrompt,
       drawLayout
@@ -82,7 +79,7 @@ export default {
       sectionId: BOOK_GETTERS.SECTION_ID
     }),
     isVisited() {
-      return this.checkSheetIsVisited(this.pageSelected);
+      return this.pageSelected.isVisited;
     },
     layouts() {
       if (this.themeSelected?.id && this.layoutSelected?.value) {
@@ -100,8 +97,13 @@ export default {
         this.initData();
       }
     },
-    pageSelected() {
-      this.initData();
+    pageSelected: {
+      deep: true,
+      handler(newVal, oldVal) {
+        if (newVal.id !== oldVal.id) {
+          this.initData();
+        }
+      }
     },
     layouts() {
       this.setLayoutActive();
@@ -129,9 +131,9 @@ export default {
      * @param  {Number} pageSelected Id of sheet selected
      */
     setLayoutSelected(pageSelected) {
-      const { coverId, insideBackCoverId, insideFrontCoverId } = this.book;
-      switch (pageSelected) {
-        case coverId:
+      const sheetType = pageSelected.type;
+      switch (sheetType) {
+        case SHEET_TYPES.COVER:
           {
             const coverOption = this.layoutsOpts.find(
               l => l.value === LAYOUT_TYPES.COVER.value
@@ -139,8 +141,8 @@ export default {
             this.layoutSelected = coverOption;
           }
           break;
-        case insideBackCoverId:
-        case insideFrontCoverId:
+        case SHEET_TYPES.FRONT_COVER:
+        case SHEET_TYPES.BACK_COVER:
           {
             const singlePageOption = this.layoutsOpts.find(
               l => l.value === LAYOUT_TYPES.SINGLE_PAGE.value
@@ -151,7 +153,7 @@ export default {
         default:
           {
             // Use default layout if the sheet no have private layout
-            const sheetLayout = this.sheetLayout(pageSelected);
+            const sheetLayout = this.pageSelected.printData.layout;
             if (sheetLayout?.id) {
               const layoutOpt = getLayoutOptSelectedById(
                 this.listLayouts(),
@@ -174,12 +176,11 @@ export default {
      * @param  {Number} pageSelected Id of sheet selected
      */
     setDisabledLayout(pageSelected) {
-      const { coverId, insideBackCoverId, insideFrontCoverId } = this.book;
       const isDisabled = [
-        coverId,
-        insideBackCoverId,
-        insideFrontCoverId
-      ].includes(pageSelected);
+        SHEET_TYPES.COVER,
+        SHEET_TYPES.FRONT_COVER,
+        SHEET_TYPES.BACK_COVER
+      ].includes(pageSelected.type);
       this.disabled = isDisabled;
     },
     /**
@@ -188,8 +189,7 @@ export default {
      */
     setThemeSelected(pageSelected) {
       const currentSheetThemeId = this.sheetTheme(pageSelected);
-
-      const defaultThemeId = this.book.printData.theme;
+      const defaultThemeId = this.book.printData.themeId;
       if (currentSheetThemeId) {
         const themeOpt = getThemeOptSelectedById(
           this.themesOptions,
@@ -223,7 +223,7 @@ export default {
       if (this.layouts.length > 0) {
         this.tempLayoutIdSelected = this.layouts[0].id;
         this.layoutObjSelected = this.layouts[0];
-        const sheetLayout = this.sheetLayout(this.pageSelected);
+        const sheetLayout = this.pageSelected.printData.layout;
         if (sheetLayout?.id) {
           const sheetLayoutObj = this.layouts.find(
             layout => layout.id === sheetLayout.id
@@ -277,21 +277,19 @@ export default {
      */
     setThemeLayoutForSheet() {
       if (this.layouts.length > 0 && this.tempLayoutIdSelected) {
-        // insideFrontCoverId: 2, insideBackCoverId: 11,
-        let { imageUrlLeft, imageUrlRight } = this.layoutObjSelected;
-        if (this.pageSelected === this.book.insideFrontCoverId) {
-          imageUrlRight = imageUrlLeft;
-          imageUrlLeft = '';
+        let position = '';
+        if (this.pageSelected.type === SHEET_TYPES.FRONT_COVER) {
+          position = 'right';
         }
 
-        if (this.pageSelected === this.book.insideBackCoverId) {
-          imageUrlRight = '';
+        if (this.pageSelected.type === SHEET_TYPES.BACK_COVER) {
+          position = 'left';
         }
 
         if (
           this.layoutObjSelected.type === LAYOUT_TYPES.SINGLE_PAGE.value &&
-          ![this.book.insideFrontCoverId, this.book.insideBackCoverId].includes(
-            this.pageSelected
+          ![SHEET_TYPES.FRONT_COVER, SHEET_TYPES.BACK_COVER].includes(
+            this.pageSelected.type
           )
         ) {
           // Show choose layout modal
@@ -308,19 +306,19 @@ export default {
               props: {
                 numberPageLeft,
                 numberPageRight,
-                sheetId: this.selectedSheet,
+                sheetId: this.pageSelected.id,
                 themeId: this.themeSelected.id,
-                layoutId: this.tempLayoutIdSelected
+                layout: this.layoutObjSelected
               }
             }
           });
           return;
         }
-        this.drawLayout(imageUrlLeft, imageUrlRight);
+        this.drawLayout(this.layoutObjSelected, position);
         this.updateSheetThemeLayout({
-          sheetId: this.selectedSheet,
+          sheetId: this.pageSelected.id,
           themeId: this.themeSelected.id,
-          layoutId: this.tempLayoutIdSelected
+          layout: this.layoutObjSelected
         });
         this.onCancel();
       }
@@ -333,7 +331,7 @@ export default {
         isPrompt: false
       });
       this.updateVisited({
-        sheetId: this.pageSelected
+        sheetId: this.pageSelected?.id
       });
     }
   }

@@ -4,8 +4,8 @@
       ref="thumbnailContainer"
       :class="[
         {
-          'half-left': sheet.type === SHEET_TYPES.INTRO,
-          'half-right': sheet.type === SHEET_TYPES.SIGNATURE,
+          'half-left': sheet.type === SHEET_TYPES.FRONT_COVER,
+          'half-right': sheet.type === SHEET_TYPES.BACK_COVER,
           active: isActive
         },
         'thumbnail-view-thumbnail'

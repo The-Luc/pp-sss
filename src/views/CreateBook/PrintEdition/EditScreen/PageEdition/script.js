@@ -13,8 +13,9 @@ import {
 
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
 import { GETTERS, MUTATES as BOOK_MUTATES } from '@/store/modules/book/const';
+
+import { OBJECT_TYPE, SHEET_TYPES } from '@/common/constants';
 import { MUTATES as PROP_MUTATES } from '@/store/modules/property/const';
-import { OBJECT_TYPE } from '@/common/constants';
 export default {
   setup() {
     const { drawLayout } = useDrawLayout();
@@ -31,19 +32,19 @@ export default {
       const { coverOption, sections } = this.book;
       return (
         coverOption === 'Hardcover' &&
-        this.pageSelected === sections[0].sheets[0].id
+        this.pageSelected.id === sections[0].sheets[0].id
       );
     },
     isSoftCover() {
       const { coverOption, sections } = this.book;
       return (
         coverOption === 'Softcover' &&
-        this.pageSelected === sections[0].sheets[0].id
+        this.pageSelected.id === sections[0].sheets[0].id
       );
     },
     isIntro() {
       const { sections } = this.book;
-      return this.pageSelected === sections[1].sheets[0].id;
+      return this.pageSelected.id === sections[1].sheets[0].id;
     },
     isSignature() {
       const { sections } = this.book;
@@ -55,12 +56,21 @@ export default {
     }
   },
   watch: {
-    pageSelected(val) {
-      const layoutData = this.selectedLayout(val);
-      if (layoutData) {
-        this.setLayoutForSheet(layoutData);
-      } else {
-        this.setLayoutForSheet({});
+    pageSelected: {
+      deep: true,
+      handler(val, oldVal) {
+        if (val.id !== oldVal.id) {
+          let position = '';
+          if (val.type === SHEET_TYPES.FRONT_COVER) {
+            position = 'right';
+          }
+
+          if (val.type === SHEET_TYPES.BACK_COVER) {
+            position = 'left';
+          }
+          const layoutData = val?.printData?.layout;
+          this.drawLayout(layoutData, position);
+        }
       }
     }
   },
@@ -101,12 +111,21 @@ export default {
       this.addText();
     });
 
+    this.$root.$on('printDeleteElements', () => {
+      this.deleteElements();
+    });
+
     this.$root.$on('printChangeTextStyle', style => {
       this.changeObjectStyle(style);
     });
 
     this.$root.$on('printChangeTextProp', prop => {
       this.changeObjectProperties(prop);
+    });
+  },
+  beforeDestroy() {
+    this.$root.$off('printDeleteElements', () => {
+      this.deleteElements();
     });
   },
   methods: {
@@ -151,14 +170,6 @@ export default {
       this.setObjectTypeSelected({
         type: OBJECT_TYPE.TEXT
       });
-    },
-    /**
-     * Draw layout in print canvas
-     * @param {Object} layoutData - Current layout object data
-     */
-    setLayoutForSheet(layoutData) {
-      let { imageUrlLeft, imageUrlRight } = layoutData;
-      this.drawLayout(imageUrlLeft, imageUrlRight);
     },
     /**
      * Event fired when an object of canvas is selected
@@ -274,6 +285,19 @@ export default {
       });
 
       this.setTextProp(prop);
+    },
+    /**
+     * Event fire when user click on Delete button on Toolbar to delete selected elements on canvas
+     */
+    deleteElements() {
+      const activeObj = window.printCanvas.getActiveObject();
+      if (isEmpty(activeObj)) return;
+      if (activeObj._objects) {
+        activeObj._objects.forEach(object => window.printCanvas.remove(object));
+      } else {
+        window.printCanvas.remove(activeObj);
+      }
+      window.printCanvas.discardActiveObject().renderAll();
     }
   }
 };

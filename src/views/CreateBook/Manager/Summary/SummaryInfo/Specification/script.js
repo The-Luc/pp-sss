@@ -27,9 +27,7 @@ export default {
 
       const estimatedQuantity = {
         name: 'Estimated Quantity:',
-        description: `${this.book.estimatedQuantity.min} - ${
-          this.book.estimatedQuantity.max
-        }`
+        description: `${this.book.estimatedQuantity.min} - ${this.book.estimatedQuantity.max}`
       };
 
       const deliveryOption = {
