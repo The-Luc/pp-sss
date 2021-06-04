@@ -14,9 +14,9 @@ import {
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
 import { GETTERS, MUTATES as BOOK_MUTATES } from '@/store/modules/book/const';
 import {
-  GETTERS as PRINT_GETTERS,
-  MUTATES as PRINT_MUTATES
-} from '@/store/modules/print/const';
+  GETTERS as PROP_GETTERS,
+  MUTATES as PROP_MUTATES
+} from '@/store/modules/property/const';
 import { OBJECT_TYPE } from '@/common/constants';
 export default {
   setup() {
@@ -117,11 +117,11 @@ export default {
       setIsOpenProperties: MUTATES.TOGGLE_MENU_PROPERTIES,
       setObjectTypeSelected: MUTATES.SET_OBJECT_TYPE_SELECTED,
       setTextProperties: BOOK_MUTATES.TEXT_PROPERTIES,
-      setTextStyle: PRINT_MUTATES.SET_TEXT_STYLE,
-      setTextProp: PRINT_MUTATES.SET_TEXT_PROPERTY
+      setTextStyle: PROP_MUTATES.SET_TEXT_STYLE,
+      setTextProp: PROP_MUTATES.SET_TEXT_PROPERTY
     }),
     ...mapGetters({
-      getTextStyle: PRINT_GETTERS.TEXT_STYLE
+      getTextStyle: PROP_GETTERS.TEXT_STYLE
     }),
     /**
      * Open text properties modal and set default properties

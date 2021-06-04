@@ -1,8 +1,9 @@
+import BlockBar from '@/components/BlockBar';
+
 import { mapGetters } from 'vuex';
 import moment from 'moment';
 
-import BlockBar from '@/components/BlockBar';
-
+import { DATE_FORMAT } from '@/common/constants';
 import { GETTERS } from '@/store/modules/book/const';
 
 export default {
@@ -26,7 +27,7 @@ export default {
       const { createdDate } = this.getBookEventDates();
 
       const slotData = Array.from({ length: totalMonthToShow }, (v, index) => {
-        const checkTime = moment(createdDate, 'MM/DD/YY').add(index, 'M');
+        const checkTime = moment(createdDate, DATE_FORMAT.BASE).add(index, 'M');
 
         const isShowName = index > 0 && index < totalMonthToShow;
 

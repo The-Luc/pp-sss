@@ -1,11 +1,14 @@
 import { mapGetters } from 'vuex';
 import moment from 'moment';
 
+import { DATE_FORMAT } from '@/common/constants';
 import { GETTERS } from '@/store/modules/app/const';
+
 import book from '@/mock/book';
 
 const dueDate = book.releaseDate;
 const daysOfWeek = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
+
 export default {
   props: {
     date: {
@@ -100,7 +103,7 @@ export default {
       const currentSection = book.sections.find(
         section => section.id === this.sectionSelected
       );
-      currentSection.releaseDate = moment(value).format('MM/DD/YY');
+      currentSection.releaseDate = moment(value).format(DATE_FORMAT.BASE);
       this.$emit('onSelectedDate', value);
     },
     onClickOutSideCalendar() {

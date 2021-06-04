@@ -1,7 +1,7 @@
 import { mapGetters, mapMutations } from 'vuex';
 
 import { GETTERS, MUTATES } from '@/store/modules/app/const';
-import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
+import { GETTERS as PROP_GETTERS } from '@/store/modules/property/const';
 
 export default {
   mounted() {
@@ -23,7 +23,7 @@ export default {
   },
   methods: {
     ...mapGetters({
-      getTextStyle: PRINT_GETTERS.TEXT_STYLE
+      getTextStyle: PROP_GETTERS.TEXT_STYLE
     }),
     ...mapMutations({
       toggleColorPicker: MUTATES.TOGGLE_COLOR_PICKER,

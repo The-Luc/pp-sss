@@ -1,6 +1,6 @@
 import moment from 'moment';
 
-import { getAllSheets, getDiffDays } from '@/common/utils';
+import { getAllSheets, getDiffDaysFOMBeginDate } from '@/common/utils';
 import BOOK from './const';
 
 export const getters = {
@@ -66,22 +66,22 @@ export const getters = {
   [BOOK._GETTERS.SALE_DAY_FROM_BEGINNING]: ({ book }) => {
     const { createdDate, saleDate } = book;
 
-    return getDiffDays(createdDate, saleDate);
+    return getDiffDaysFOMBeginDate(createdDate, saleDate);
   },
   [BOOK._GETTERS.RELEASE_DAY_FROM_BEGINNING]: ({ book }) => {
     const { createdDate, releaseDate } = book;
 
-    return getDiffDays(createdDate, releaseDate);
+    return getDiffDaysFOMBeginDate(createdDate, releaseDate);
   },
   [BOOK._GETTERS.CREATED_DAY_FROM_BEGINNING]: ({ book }) => {
     const { createdDate } = book;
 
-    return getDiffDays(createdDate, createdDate);
+    return getDiffDaysFOMBeginDate(createdDate, createdDate);
   },
   [BOOK._GETTERS.DELIVERY_DAY_FROM_BEGINNING]: ({ book }) => {
     const { createdDate, deliveryDate } = book;
 
-    return getDiffDays(createdDate, deliveryDate);
+    return getDiffDaysFOMBeginDate(createdDate, deliveryDate);
   },
   [BOOK._GETTERS.GET_TEXT_PROPERTIES]: ({ textProperties }) => {
     return textProperties;

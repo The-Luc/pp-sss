@@ -1,9 +1,10 @@
+import BlockBar from '@/components/BlockBar';
+import EventFlag from './EventFlag';
+
 import { mapGetters } from 'vuex';
 import moment from 'moment';
 
-import EventFlag from './EventFlag';
-import BlockBar from '@/components/BlockBar';
-
+import { DATE_FORMAT } from '@/common/constants';
 import { GETTERS } from '@/store/modules/book/const';
 
 export default {
@@ -55,7 +56,7 @@ export default {
     getEventData: function(index) {
       const { createdDate } = this.getBookEventDates();
 
-      const checkTime = moment(createdDate, 'MM/DD/YY').add(index, 'M');
+      const checkTime = moment(createdDate, DATE_FORMAT.BASE).add(index, 'M');
 
       const isShowYear = index === 0 || checkTime.month() === 0;
 
@@ -80,12 +81,12 @@ export default {
       } = this.getBookEventDates();
 
       const saleMonth =
-        saleDate === null ? -1 : moment(saleDate, 'MM/DD/YY').month();
+        saleDate === null ? -1 : moment(saleDate, DATE_FORMAT.BASE).month();
 
-      const releaseMonth = moment(releaseDate, 'MM/DD/YY').month();
-      const deliveryMonth = moment(deliveryDate, 'MM/DD/YY').month();
+      const releaseMonth = moment(releaseDate, DATE_FORMAT.BASE).month();
+      const deliveryMonth = moment(deliveryDate, DATE_FORMAT.BASE).month();
 
-      const checkTime = moment(createdDate, 'MM/DD/YY').add(index, 'M');
+      const checkTime = moment(createdDate, DATE_FORMAT.BASE).add(index, 'M');
       const month = checkTime.month();
 
       const slots = [];
@@ -134,7 +135,7 @@ export default {
      * @returns {Object}              the data of chosen slot
      */
     getSlotData: function(index, eventDate, slotType, description, isDelivery) {
-      const event = moment(eventDate, 'MM/DD/YY');
+      const event = moment(eventDate, DATE_FORMAT.BASE);
 
       return {
         id: `${index}${slotType}`,

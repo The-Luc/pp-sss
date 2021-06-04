@@ -5,7 +5,7 @@ import { ICON_LOCAL } from '@/common/constants';
 
 import { isEmpty } from '@/common/utils';
 
-import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
+import { GETTERS as PROP_GETTERS } from '@/store/modules/property/const';
 
 export default {
   components: {
@@ -39,7 +39,7 @@ export default {
   },
   methods: {
     ...mapGetters({
-      getTextStyle: PRINT_GETTERS.TEXT_STYLE
+      getTextStyle: PROP_GETTERS.TEXT_STYLE
     }),
     /**
      * Set size for object text

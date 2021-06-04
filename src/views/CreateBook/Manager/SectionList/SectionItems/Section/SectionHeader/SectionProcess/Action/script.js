@@ -1,19 +1,19 @@
-import moment from 'moment';
-import { mapGetters, mapMutations } from 'vuex';
-
-import { useBook, useMutationSection } from '@/hooks';
-import { MODAL_TYPES, ICON_LOCAL } from '@/common/constants';
-
-import { GETTERS, MUTATES } from '@/store/modules/app/const';
-import {
-  GETTERS as BOOK_GETTERS,
-  MUTATES as BOOK_MUTATES
-} from '@/store/modules/book/const';
 import ButtonDelete from '@/components/Menu/ButtonDelete';
 import ButtonAdd from '@/components/Menu/ButtonAdd';
 import Menu from '@/components/Menu';
 import Calendar from './Calendar';
 import SectionStatus from './SectionStatus';
+
+import { mapGetters, mapMutations } from 'vuex';
+import moment from 'moment';
+
+import { MODAL_TYPES, ICON_LOCAL, DATE_FORMAT } from '@/common/constants';
+import { GETTERS, MUTATES } from '@/store/modules/app/const';
+import {
+  GETTERS as BOOK_GETTERS,
+  MUTATES as BOOK_MUTATES
+} from '@/store/modules/book/const';
+import { useBook, useMutationSection } from '@/hooks';
 
 export default {
   setup() {
@@ -157,7 +157,7 @@ export default {
       }
     },
     async onSelectedDate(date) {
-      const dueDate = moment(date).format('MM/DD/YY');
+      const dueDate = moment(date).format(DATE_FORMAT.BASE);
       const { isSuccess } = await this.updateSection(
         this.book.id,
         this.sectionId,

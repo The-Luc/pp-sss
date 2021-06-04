@@ -4,7 +4,7 @@ import PpSelect from '@/components/Select';
 
 import { styleToCssStyle } from '@/common/utils';
 
-import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
+import { GETTERS as PROP_GETTERS } from '@/store/modules/property/const';
 
 export default {
   components: {
@@ -73,8 +73,8 @@ export default {
   },
   methods: {
     ...mapGetters({
-      getTextStyle: PRINT_GETTERS.TEXT_STYLE,
-      getTextProp: PRINT_GETTERS.TEXT_PROPERTY
+      getTextStyle: PROP_GETTERS.TEXT_STYLE,
+      getTextProp: PROP_GETTERS.TEXT_PROPERTY
     }),
     /**
      * Event fired when user choose an item on list
