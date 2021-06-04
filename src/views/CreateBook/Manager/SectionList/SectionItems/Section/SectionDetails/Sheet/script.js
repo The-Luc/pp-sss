@@ -112,7 +112,7 @@ export default {
       return restrictSheetTypes.indexOf(this.sheet.type) < 0;
     },
     getSectionsForMove() {
-      return this.sections().map(s => {
+      return this.sections.map(s => {
         return {
           id: s.id,
           name: s.name,
