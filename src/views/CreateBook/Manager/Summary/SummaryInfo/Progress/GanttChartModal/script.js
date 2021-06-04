@@ -47,8 +47,9 @@ export default {
      * Calculate the height of chart when open
      */
     calculateHeight() {
-      const merchandisingHeight = document.querySelector('.merchandising')
-        .offsetHeight;
+      const merchandisingHeight =
+        document.querySelector('.merchandising')?.offsetHeight || 0;
+
       const sectionsHeight = document.querySelector('.sections').offsetHeight;
       const productionHeight = document.querySelector('.production')
         .offsetHeight;
