@@ -9,19 +9,15 @@ export default {
     BlockBar
   },
   computed: {
+    ...mapGetters({
+      totalMonthToShow: GETTERS.TOTAL_MONTH_SHOW_ON_CHART
+    }),
     months: function() {
-      const totalMonthToShow = this.getTotalMonthToShow();
-
-      return Array.from({ length: totalMonthToShow }, () => {
+      return Array.from({ length: this.totalMonthToShow }, () => {
         return {
           isUseBorder: true
         };
       });
     }
-  },
-  methods: {
-    ...mapGetters({
-      getTotalMonthToShow: GETTERS.TOTAL_MONTH_SHOW_ON_CHART
-    })
   }
 };

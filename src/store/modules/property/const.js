@@ -1,4 +1,4 @@
-export const MODULE_NAME = 'print';
+export const MODULE_NAME = 'property';
 
 const _GETTERS = {
   TEXT_STYLE: 'getTextStyle',

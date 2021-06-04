@@ -2,7 +2,7 @@ import ProcessItem from '../../ProcessItem';
 import MiniProcess from '@/components/MiniProcess';
 import ProcessBar from '@/components/ProcessBar';
 
-import { PROCESS_STATUS } from '@/common/constants/processStatus';
+import { PROCESS_STATUS } from '@/common/constants';
 
 export default {
   components: {

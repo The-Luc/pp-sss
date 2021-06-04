@@ -1,5 +1,7 @@
 import moment from 'moment';
 
+import { DATE_FORMAT } from '@/common/constants';
+
 /**
  * Get the next id of item list
  *
@@ -20,10 +22,23 @@ export const nextId = items => {
  * @returns {Number}  total different day
  */
 export const getDiffDays = (beginDate, endDate) => {
-  const beginTime = moment(beginDate, 'MM/DD/YY').set('date', 1);
-  const endTime = moment(endDate, 'MM/DD/YY');
+  const beginTime = moment(beginDate, DATE_FORMAT.BASE);
+  const endTime = moment(endDate, DATE_FORMAT.BASE);
 
   return endTime.diff(beginTime, 'days', false) + 1;
+};
+
+/**
+ * Get total different day between end date and first date of month of begin date
+ *
+ * @param   {String}  beginDate (in format 'MM/DD/YY')
+ * @param   {String}  endDate (in format 'MM/DD/YY')
+ * @returns {Number}  total different day
+ */
+export const getDiffDaysFOMBeginDate = (beginDate, endDate) => {
+  const beginTime = moment(beginDate, DATE_FORMAT.BASE).set('date', 1);
+
+  return getDiffDays(beginTime.format(DATE_FORMAT.BASE), endDate);
 };
 
 /**

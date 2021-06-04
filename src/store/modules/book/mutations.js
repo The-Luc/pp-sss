@@ -1,11 +1,11 @@
+import { cloneDeep } from 'lodash';
 import randomcolor from 'randomcolor';
 import moment from 'moment';
-import { cloneDeep } from 'lodash';
 
+import { SHEET_TYPES, DATE_FORMAT } from '@/common/constants';
 import { getAllSheets, nextId } from '@/common/utils';
 
 import BOOK from './const';
-import { SHEET_TYPES } from '@/common/constants/sheetTypes';
 
 const getIndexById = (items, id) => {
   return items.findIndex(s => s.id === id);
@@ -236,7 +236,7 @@ export const mutations = {
         name: '',
         status: 0,
         draggable: true,
-        dueDate: moment(releaseDate).format('MM/DD/YY'),
+        dueDate: moment(releaseDate).format(DATE_FORMAT.BASE),
         sheets: []
       },
       ...sections.slice(sections.length - 1)

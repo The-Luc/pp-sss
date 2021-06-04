@@ -1,7 +1,7 @@
 import { mapGetters, mapMutations } from 'vuex';
 
 import { GETTERS, MUTATES } from '@/store/modules/app/const';
-import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
+import { GETTERS as PROP_GETTERS } from '@/store/modules/property/const';
 
 export default {
   mounted() {
@@ -11,10 +11,11 @@ export default {
   },
   computed: {
     ...mapGetters({
-      isOpenColorPicker: GETTERS.IS_OPEN_COLOR_PICKER
+      isOpenColorPicker: GETTERS.IS_OPEN_COLOR_PICKER,
+      textStyle: PROP_GETTERS.TEXT_STYLE
     }),
     color() {
-      const color = this.getTextStyle().color || '#0B1717';
+      const color = this.textStyle.color || '#0B1717';
 
       this.setColorPickerColor({ color: color });
 
@@ -22,9 +23,6 @@ export default {
     }
   },
   methods: {
-    ...mapGetters({
-      getTextStyle: PRINT_GETTERS.TEXT_STYLE
-    }),
     ...mapMutations({
       toggleColorPicker: MUTATES.TOGGLE_COLOR_PICKER,
       setColorPickerColor: MUTATES.SET_COLOR_PICKER_COLOR
