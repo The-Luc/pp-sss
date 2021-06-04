@@ -266,8 +266,8 @@ export const mutations = {
     state.book.sections[indexSection].name = sectionName;
   },
   [BOOK._MUTATES.SELECT_SHEET](state, payload) {
-    const { sheetId } = payload;
-    state.pageSelected = sheetId;
+    const { sheet } = payload;
+    state.pageSelected = sheet;
   },
   [BOOK._MUTATES.GET_BOOK_SUCCESS](state, payload) {
     state.book = payload;
@@ -295,35 +295,26 @@ export const mutations = {
   },
   [BOOK._MUTATES.UPDATE_SHEET_THEME_LAYOUT](
     state,
-    { sheetId, themeId, layoutId, pagePosition = '' }
+    { sheetId, themeId, layout, pagePosition }
   ) {
     const allSheets = getAllSheets(state.book.sections);
-    const layouts = cloneDeep(this.state.theme.layouts);
+    const layoutObj = cloneDeep(layout);
     const currentSheet = allSheets.find(sheet => sheet.id === sheetId);
     const sheetObj = cloneDeep(currentSheet);
-    const layoutObj = layouts.find(layout => layout.id === layoutId);
-    const obj = cloneDeep(layoutObj);
-    const singleLayoutSelected = obj.imageUrlLeft; // For single layout, always on left canvas
-    const sheetLeftLayout = sheetObj?.printData?.layout?.imageUrlLeft;
-    const sheetRightLayout = sheetObj?.printData?.layout?.imageUrlRight;
 
-    if (sheetId === state.book.insideFrontCoverId) {
-      layoutObj.imageUrlRight = singleLayoutSelected;
-      layoutObj.imageUrlLeft = '';
-    }
-    if (sheetId === state.book.insideBackCoverId) {
-      layoutObj.imageUrlLeft = singleLayoutSelected;
-      layoutObj.imageUrlRight = '';
-    }
+    const singleLayoutSelected = layoutObj.pages[0]; // For single layout, data object always on left canvas
+    // Current sheet's layout
+    const sheetLeftLayout = sheetObj?.printData?.layout?.pages[0];
+    const sheetRightLayout = sheetObj?.printData?.layout?.pages[1];
 
     if (pagePosition === 'right') {
-      layoutObj.imageUrlRight = singleLayoutSelected;
-      layoutObj.imageUrlLeft = sheetLeftLayout;
+      layoutObj.pages[0] = sheetLeftLayout;
+      layoutObj.pages[1] = singleLayoutSelected;
     }
 
     if (pagePosition === 'left') {
-      layoutObj.imageUrlLeft = singleLayoutSelected;
-      layoutObj.imageUrlRight = sheetRightLayout;
+      layoutObj.pages[0] = singleLayoutSelected;
+      layoutObj.pages[1] = sheetRightLayout;
     }
 
     currentSheet.printData.layout = layoutObj;

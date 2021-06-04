@@ -11,7 +11,7 @@
           :number-page="numberPage(section.id, sheet)"
           :sheet="sheet"
           :canvas-height="207"
-          @click.native="onSelectSheet(sheet.id, section.id)"
+          @click.native="onSelectSheet(sheet, section.id)"
         />
       </Frames>
     </template>

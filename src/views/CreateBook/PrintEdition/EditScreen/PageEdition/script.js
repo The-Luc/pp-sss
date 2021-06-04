@@ -17,7 +17,7 @@ import {
   GETTERS as PRINT_GETTERS,
   MUTATES as PRINT_MUTATES
 } from '@/store/modules/print/const';
-import { OBJECT_TYPE } from '@/common/constants';
+import { OBJECT_TYPE, SHEET_TYPES } from '@/common/constants';
 export default {
   setup() {
     const { drawLayout } = useDrawLayout();
@@ -34,19 +34,19 @@ export default {
       const { coverOption, sections } = this.book;
       return (
         coverOption === 'Hardcover' &&
-        this.pageSelected === sections[0].sheets[0].id
+        this.pageSelected.id === sections[0].sheets[0].id
       );
     },
     isSoftCover() {
       const { coverOption, sections } = this.book;
       return (
         coverOption === 'Softcover' &&
-        this.pageSelected === sections[0].sheets[0].id
+        this.pageSelected.id === sections[0].sheets[0].id
       );
     },
     isIntro() {
       const { sections } = this.book;
-      return this.pageSelected === sections[1].sheets[0].id;
+      return this.pageSelected.id === sections[1].sheets[0].id;
     },
     isSignature() {
       const { sections } = this.book;
@@ -58,12 +58,21 @@ export default {
     }
   },
   watch: {
-    pageSelected(val) {
-      const layoutData = this.selectedLayout(val);
-      if (layoutData) {
-        this.setLayoutForSheet(layoutData);
-      } else {
-        this.setLayoutForSheet({});
+    pageSelected: {
+      deep: true,
+      handler(val, oldVal) {
+        if (val.id !== oldVal.id) {
+          let position = '';
+          if (val.type === SHEET_TYPES.FRONT_COVER) {
+            position = 'right';
+          }
+
+          if (val.type === SHEET_TYPES.BACK_COVER) {
+            position = 'left';
+          }
+          const layoutData = val?.printData?.layout;
+          this.drawLayout(layoutData, position);
+        }
       }
     }
   },
@@ -157,14 +166,6 @@ export default {
       this.setObjectTypeSelected({
         type: OBJECT_TYPE.TEXT
       });
-    },
-    /**
-     * Draw layout in print canvas
-     * @param {Object} layoutData - Current layout object data
-     */
-    setLayoutForSheet(layoutData) {
-      let { imageUrlLeft, imageUrlRight } = layoutData;
-      this.drawLayout(imageUrlLeft, imageUrlRight);
     },
     /**
      * Event fired when an object of canvas is selected

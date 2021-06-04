@@ -94,17 +94,13 @@ export default {
     },
     /**
      * Set selected sheet's id and section's id and then draw layout in print cavnas
-     * @param  {String} sheetId Sheet's id selected
+     * @param  {String} sheet Sheet selected
      * @param  {String} sectionId Section id contains sheet
      */
-    onSelectSheet(sheetId, sectionId) {
-      this.selectSheet({ sheetId });
+    onSelectSheet(sheet, sectionId) {
+      this.selectSheet({ sheet });
       this.setSectionId({ sectionId });
-      const layoutData = this.selectedLayout(sheetId);
-      if (layoutData) {
-        const { imageUrlLeft, imageUrlRight } = layoutData;
-        this.drawLayout(imageUrlLeft, imageUrlRight);
-      }
+      this.drawLayout(sheet?.printData?.layout);
     }
   }
 };

@@ -44,14 +44,14 @@ export default {
      * @param  {String} sheetId Sheet's id selected
      */
     checkIsActive(sheetId) {
-      return sheetId === this.pageSelected;
+      return sheetId === this.pageSelected.id;
     },
     /**
      * Set selected sheet's id
      * @param  {String} sheetId Sheet's id selected
      */
-    onSelectSheet(sheetId) {
-      this.selectSheet({ sheetId });
+    onSelectSheet(sheet) {
+      this.selectSheet({ sheet });
     }
   }
 };

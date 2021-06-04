@@ -114,51 +114,20 @@ export default {
       }
     },
     /**
-     * Using fabric to draw left layout in thumnail
-     * @param {String} src - Layout url
-     * @param {Refs} canvas - Thumbnail refs
-     */
-    drawLeftLayout(src, canvas) {
-      if (!src) {
-        canvas.clear().renderAll();
-        return;
-      }
-      fabric.Image.fromURL(require(`@/assets/image/layouts/${src}`), img => {
-        img.selectable = false;
-        img.scaleX = canvas.width / img.width / 2;
-        img.scaleY = canvas.height / img.height;
-        canvas.add(img);
-      });
-    },
-    /**
-     * Using fabric to draw right layout in thumnail
-     * @param {String} src - Layout url
-     * @param {Refs} canvas - Thumbnail refs
-     */
-    drawRightLayout(src, canvas) {
-      if (!src) {
-        canvas.clear().renderAll();
-        return;
-      }
-      fabric.Image.fromURL(require(`@/assets/image/layouts/${src}`), img => {
-        img.selectable = false;
-        img.left = canvas.width / 2;
-        img.scaleX = canvas.width / img.width / 2;
-        img.scaleY = canvas.height / img.height;
-        canvas.add(img);
-      });
-    },
-    /**
      * Get layout data to draw
      * @param {Object} layout - Layout data
      * @param {Refs} canvas - Thumbnail refs
      */
     drawThumbnailLayout(layout, canvas) {
-      if (layout) {
-        let { imageUrlLeft, imageUrlRight } = layout;
-        this.drawLeftLayout(imageUrlLeft, canvas);
-        this.drawRightLayout(imageUrlRight, canvas);
+      let position = '';
+      if (this.sheet.type === SHEET_TYPES.FRONT_COVER) {
+        position = 'right';
       }
+
+      if (this.sheet.type === SHEET_TYPES.BACK_COVER) {
+        position = 'left';
+      }
+      this.drawLayout(layout, position, canvas);
     }
   }
 };
