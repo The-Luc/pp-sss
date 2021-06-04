@@ -53,8 +53,11 @@ export default {
     };
   },
   computed: {
+    ...mapGetters({
+      textProp: PROP_GETTERS.TEXT_PROPERTY
+    }),
     selectedItem() {
-      const selectedId = this.getTextProp().styleId;
+      const selectedId = this.textProp.styleId;
 
       return this.items.find(item => item.value === selectedId);
     },
@@ -72,10 +75,6 @@ export default {
     }
   },
   methods: {
-    ...mapGetters({
-      getTextStyle: PROP_GETTERS.TEXT_STYLE,
-      getTextProp: PROP_GETTERS.TEXT_PROPERTY
-    }),
     /**
      * Event fired when user choose an item on list
      *

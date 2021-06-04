@@ -13,6 +13,9 @@ export default {
     Detail
   },
   computed: {
+    ...mapGetters({
+      book: GETTERS.BOOK_DETAIL
+    }),
     details() {
       const deliveryDate = {
         name: 'Requested Delivery Date:',
@@ -38,10 +41,5 @@ export default {
 
       return [deliveryDate, dueDate, countdown];
     }
-  },
-  methods: {
-    ...mapGetters({
-      book: GETTERS.BOOK_DETAIL
-    })
   }
 };

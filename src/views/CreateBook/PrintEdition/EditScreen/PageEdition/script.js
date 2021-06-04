@@ -13,10 +13,7 @@ import {
 
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
 import { GETTERS, MUTATES as BOOK_MUTATES } from '@/store/modules/book/const';
-import {
-  GETTERS as PROP_GETTERS,
-  MUTATES as PROP_MUTATES
-} from '@/store/modules/property/const';
+import { MUTATES as PROP_MUTATES } from '@/store/modules/property/const';
 import { OBJECT_TYPE } from '@/common/constants';
 export default {
   setup() {
@@ -119,9 +116,6 @@ export default {
       setTextProperties: BOOK_MUTATES.TEXT_PROPERTIES,
       setTextStyle: PROP_MUTATES.SET_TEXT_STYLE,
       setTextProp: PROP_MUTATES.SET_TEXT_PROPERTY
-    }),
-    ...mapGetters({
-      getTextStyle: PROP_GETTERS.TEXT_STYLE
     }),
     /**
      * Open text properties modal and set default properties

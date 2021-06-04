@@ -11,6 +11,9 @@ export default {
     Detail
   },
   computed: {
+    ...mapGetters({
+      book: GETTERS.BOOK_DETAIL
+    }),
     details() {
       const bookSold = {
         name: 'Books Sold:',
@@ -24,10 +27,5 @@ export default {
 
       return [bookSold, fundraisingEarned];
     }
-  },
-  methods: {
-    ...mapGetters({
-      book: GETTERS.BOOK_DETAIL
-    })
   }
 };

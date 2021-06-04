@@ -31,13 +31,6 @@ export default {
       require: true
     }
   },
-  setup() {
-    return {
-      ...mapGetters({
-        getSections: GETTERS.SECTIONS
-      })
-    };
-  },
   data() {
     return {
       isOpen: false,
@@ -50,6 +43,11 @@ export default {
       isOpenMenu: false,
       sheetTypes: SHEET_TYPES
     };
+  },
+  computed: {
+    ...mapGetters({
+      sections: GETTERS.SECTIONS
+    })
   },
   methods: {
     ...mapMutations({
@@ -114,7 +112,7 @@ export default {
       return restrictSheetTypes.indexOf(this.sheet.type) < 0;
     },
     getSectionsForMove() {
-      return this.getSections().map(s => {
+      return this.sections().map(s => {
         return {
           id: s.id,
           name: s.name,

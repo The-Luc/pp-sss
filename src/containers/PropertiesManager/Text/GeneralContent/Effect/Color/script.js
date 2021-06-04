@@ -11,10 +11,11 @@ export default {
   },
   computed: {
     ...mapGetters({
-      isOpenColorPicker: GETTERS.IS_OPEN_COLOR_PICKER
+      isOpenColorPicker: GETTERS.IS_OPEN_COLOR_PICKER,
+      textStyle: PROP_GETTERS.TEXT_STYLE
     }),
     color() {
-      const color = this.getTextStyle().color || '#0B1717';
+      const color = this.textStyle.color || '#0B1717';
 
       this.setColorPickerColor({ color: color });
 
@@ -22,9 +23,6 @@ export default {
     }
   },
   methods: {
-    ...mapGetters({
-      getTextStyle: PROP_GETTERS.TEXT_STYLE
-    }),
     ...mapMutations({
       toggleColorPicker: MUTATES.TOGGLE_COLOR_PICKER,
       setColorPickerColor: MUTATES.SET_COLOR_PICKER_COLOR

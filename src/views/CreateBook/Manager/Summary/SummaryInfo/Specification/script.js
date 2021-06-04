@@ -11,6 +11,9 @@ export default {
     Detail
   },
   computed: {
+    ...mapGetters({
+      book: GETTERS.BOOK_DETAIL
+    }),
     details() {
       const coverOption = {
         name: 'Cover Option:',
@@ -36,10 +39,5 @@ export default {
 
       return [coverOption, numberMaxPages, estimatedQuantity, deliveryOption];
     }
-  },
-  methods: {
-    ...mapGetters({
-      book: GETTERS.BOOK_DETAIL
-    })
   }
 };

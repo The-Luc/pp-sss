@@ -13,6 +13,12 @@ export default {
     MiniProcess
   },
   computed: {
+    ...mapGetters({
+      getTotalDayToShow: GETTERS.TOTAL_DAYS_SHOW_ON_CHART,
+      getCreatedDateFromBeginning: GETTERS.CREATED_DAY_FROM_BEGINNING,
+      getReleaseDateFromBeginning: GETTERS.RELEASE_DAY_FROM_BEGINNING,
+      getDeliveryDateFromBeginning: GETTERS.DELIVERY_DAY_FROM_BEGINNING
+    }),
     createdPosition() {
       return `${(this.getCreatedDateFromBeginning() /
         this.getTotalDayToShow()) *
@@ -37,13 +43,5 @@ export default {
 
       return `${(diffDate / this.getTotalDayToShow()) * 100}%`;
     }
-  },
-  methods: {
-    ...mapGetters({
-      getTotalDayToShow: GETTERS.TOTAL_DAYS_SHOW_ON_CHART,
-      getCreatedDateFromBeginning: GETTERS.CREATED_DAY_FROM_BEGINNING,
-      getReleaseDateFromBeginning: GETTERS.RELEASE_DAY_FROM_BEGINNING,
-      getDeliveryDateFromBeginning: GETTERS.DELIVERY_DAY_FROM_BEGINNING
-    })
   }
 };

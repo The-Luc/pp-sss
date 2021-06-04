@@ -25,12 +25,15 @@ export default {
     };
   },
   computed: {
+    ...mapGetters({
+      textStyle: PROP_GETTERS.TEXT_STYLE
+    }),
     selectedSize() {
       if (this.triggerChange) {
         // just for trigger the change
       }
 
-      const selectedSize = this.getTextStyle().fontSize;
+      const selectedSize = this.textStyle.fontSize;
 
       const selected = this.items.find(item => item.value === selectedSize);
 
@@ -38,9 +41,6 @@ export default {
     }
   },
   methods: {
-    ...mapGetters({
-      getTextStyle: PROP_GETTERS.TEXT_STYLE
-    }),
     /**
      * Set size for object text
      * @param   {Any} val size of text (string or object)

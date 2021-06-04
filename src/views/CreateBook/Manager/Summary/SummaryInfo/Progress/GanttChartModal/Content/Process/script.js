@@ -1,10 +1,11 @@
-import { mapGetters } from 'vuex';
-
 import Merchandising from './Merchandising';
 import Sections from './Sections';
 import Production from './Production';
 
+import { mapGetters } from 'vuex';
+
 import { GETTERS } from '@/store/modules/book/const';
+import { isEmpty } from '@/common/utils';
 
 export default {
   components: {
@@ -13,15 +14,11 @@ export default {
     Production
   },
   computed: {
-    isSale() {
-      const { saleDate } = this.getBookEventDates();
-
-      return !!saleDate;
-    }
-  },
-  methods: {
     ...mapGetters({
-      getBookEventDates: GETTERS.BOOK_DATES
-    })
+      eventDates: GETTERS.BOOK_DATES
+    }),
+    isSale() {
+      return isEmpty(this.eventDates?.saleDate || null);
+    }
   }
 };

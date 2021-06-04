@@ -11,6 +11,11 @@ export default {
     MiniProcess
   },
   computed: {
+    ...mapGetters({
+      getTotalDayToShow: GETTERS.TOTAL_DAYS_SHOW_ON_CHART,
+      getSaleDateFromBeginning: GETTERS.SALE_DAY_FROM_BEGINNING,
+      getReleaseDateFromBeginning: GETTERS.RELEASE_DAY_FROM_BEGINNING
+    }),
     preSalePosition() {
       return `${(this.getSaleDateFromBeginning() / this.getTotalDayToShow()) *
         100}%`;
@@ -23,12 +28,5 @@ export default {
 
       return `${(diffDate / this.getTotalDayToShow()) * 100}%`;
     }
-  },
-  methods: {
-    ...mapGetters({
-      getTotalDayToShow: GETTERS.TOTAL_DAYS_SHOW_ON_CHART,
-      getSaleDateFromBeginning: GETTERS.SALE_DAY_FROM_BEGINNING,
-      getReleaseDateFromBeginning: GETTERS.RELEASE_DAY_FROM_BEGINNING
-    })
   }
 };
