@@ -10,7 +10,7 @@
       :selected-tool-name="selectedToolName"
     />
     <SidebarSection />
-    <PageEdition />
+    <ScreenEdition />
   </div>
 </template>
 

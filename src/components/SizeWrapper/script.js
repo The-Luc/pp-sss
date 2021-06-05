@@ -5,10 +5,11 @@ export default {
       const el = this.$refs.sizeWp;
       const elWidth = el.clientWidth;
       const elHeight = el.clientHeight;
+      const offset = 0;
       const avaiSize = {
-        width: elWidth - 10,
-        height: elHeight - 10,
-        ratio: (elWidth - 10) / (elHeight - 10)
+        width: elWidth - offset,
+        height: elHeight - offset,
+        ratio: (elWidth - offset) / (elHeight - offset)
       };
       return avaiSize;
     },

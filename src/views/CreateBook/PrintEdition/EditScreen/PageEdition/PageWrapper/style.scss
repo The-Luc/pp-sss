@@ -7,6 +7,7 @@ $rulerWidth: 23px;
   top: 0;
   left: 0;
   overflow: hidden;
+  background-color: #f4f4f4;
 
   .ruler-wrapper {
     position: absolute;
@@ -54,9 +55,8 @@ $rulerWidth: 23px;
   .inner-ruler-wrapper {
     position: absolute;
     top: $rulerWidth;
-    bottom: 0;
+    bottom: 10px;
     left: $rulerWidth;
-    right: 0;
-    background-color: #f4f4f4;
+    right: 10px;
   }
 }
