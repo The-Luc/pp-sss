@@ -3,6 +3,7 @@ export const PRINT_PAGE_SIZE = {
   DOUBLE_WIDTH: 17,
   HEIGHT: 11,
   BLEED: 0.125,
+  PDF_DOUBLE_WIDTH: (8.5 + 0.125) * 2, // for render canvas, not use for PDF rendering
   PDF_WIDTH: 8.75, // must include bleed to left and right for each page
   PDF_HEIGHT: 11.25 // must include bleed to top and bottom for each page
 };

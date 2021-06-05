@@ -16,6 +16,24 @@ import {
 export const inchesToPixels = inches => inches * PRINT_DPI;
 
 /**
+ * Convert Object Inches to Pixels value
+ *
+ * @param   {Object}  obj an object with inche values to be converted
+ * @returns {Object}  an object contain px values
+ */
+ export const objectInchesToPixels = obj => {
+   const pixelObject = {};
+   Object.keys(obj).forEach(key => {
+     if (typeof obj[key] === 'number') {
+      pixelObject[key] = inchesToPixels(obj[key]);
+     } else {
+      pixelObject[key] = obj[key];
+     }
+   });
+   return pixelObject;
+ };
+
+/**
  * Get Print size for a Cover sheet
  *
  * @param   {Boolean}  isHardCover  true for hardcover and false for softcover
@@ -57,13 +75,7 @@ export const getCoverPagePrintSize = (isHardCover, pageCount) => {
     ratio: pdfFinalPageSize.PDF_DOUBLE_WIDTH / pdfFinalPageSize.PDF_HEIGHT
   };
   const pixels = {
-    pdfWidth: inchesToPixels(inches.pdfWidth),
-    pdfHeight: inchesToPixels(inches.pdfHeight),
-    pageWidth: inchesToPixels(inches.pageWidth),
-    pageHeight: inchesToPixels(inches.pageHeight),
-    spineWidth: inchesToPixels(inches.spineWidth),
-    bleedX: inchesToPixels(inches.bleedX),
-    bleedY: inchesToPixels(inches.bleedY),
+    ...objectInchesToPixels(inches),
     ratio: inches.ratio
   };
   return {
@@ -80,23 +92,17 @@ export const getCoverPagePrintSize = (isHardCover, pageCount) => {
  */
 export const getPagePrintSize = () => {
   const inches = {
-    pdfWidth: PRINT_PAGE_SIZE.PDF_WIDTH,
+    pdfWidth: PRINT_PAGE_SIZE.PDF_DOUBLE_WIDTH,
     pdfHeight: PRINT_PAGE_SIZE.PDF_HEIGHT,
     pageWidth: PRINT_PAGE_SIZE.WIDTH,
     pageHeight: PRINT_PAGE_SIZE.HEIGHT,
     spineWidth: 0,
     bleedX: PRINT_PAGE_SIZE.BLEED,
     bleedY: PRINT_PAGE_SIZE.BLEED,
-    ratio: PRINT_PAGE_SIZE.PDF_WIDTH / PRINT_PAGE_SIZE.PDF_HEIGHT
+    ratio: PRINT_PAGE_SIZE.PDF_DOUBLE_WIDTH / PRINT_PAGE_SIZE.PDF_HEIGHT
   };
   const pixels = {
-    pdfWidth: inchesToPixels(inches.pdfWidth),
-    pdfHeight: inchesToPixels(inches.pdfHeight),
-    pageWidth: inchesToPixels(inches.pageWidth),
-    pageHeight: inchesToPixels(inches.pageHeight),
-    spineWidth: inchesToPixels(inches.spineWidth),
-    bleedX: inchesToPixels(inches.bleedX),
-    bleedY: inchesToPixels(inches.bleedY),
+    ...objectInchesToPixels(inches),
     ratio: inches.ratio
   };
   return {
