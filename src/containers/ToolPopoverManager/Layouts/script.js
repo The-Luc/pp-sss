@@ -277,15 +277,6 @@ export default {
      */
     setThemeLayoutForSheet() {
       if (this.layouts.length > 0 && this.tempLayoutIdSelected) {
-        let position = '';
-        if (this.pageSelected.type === SHEET_TYPES.FRONT_COVER) {
-          position = 'right';
-        }
-
-        if (this.pageSelected.type === SHEET_TYPES.BACK_COVER) {
-          position = 'left';
-        }
-
         if (
           this.layoutObjSelected.type === LAYOUT_TYPES.SINGLE_PAGE.value &&
           ![SHEET_TYPES.FRONT_COVER, SHEET_TYPES.BACK_COVER].includes(
@@ -314,12 +305,12 @@ export default {
           });
           return;
         }
-        this.drawLayout(this.layoutObjSelected, position);
         this.updateSheetThemeLayout({
           sheetId: this.pageSelected.id,
           themeId: this.themeSelected.id,
           layout: this.layoutObjSelected
         });
+        this.drawLayout(this.pageSelected?.printData?.layout);
         this.onCancel();
       }
     },

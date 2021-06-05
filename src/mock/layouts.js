@@ -14,7 +14,7 @@ const text1 = {
     height: 50
   },
   coord: {
-    x: 500,
+    x: 250,
     y: 250,
     rotation: 20 // degree
   },
@@ -38,8 +38,8 @@ const text2 = {
     height: 100
   },
   coord: {
-    x: 500,
-    y: 50,
+    x: 750,
+    y: 250,
     rotation: 0 // degree
   },
   property: {
@@ -161,6 +161,98 @@ const shape1 = {
     name: '',
     thumbnail: '',
     pathData: 'img.svg' // TODO: Need discuss with FM to get instruction on using shape
+  }
+};
+
+const textSinglePage1 = {
+  ...TextElement,
+  id: 'text-single-1',
+  size: {
+    width: 500,
+    height: 176.6071428571429
+  },
+  coord: {
+    x: 183.3333333333334,
+    y: 193.3333333333333,
+    rotation: 20 // degree
+  },
+  property: {
+    styleId: 'default',
+    text: 'Text Single 1',
+    fontFamily: 'Arial',
+    fontSize: 20,
+    isBold: true,
+    isItalic: true,
+    isUnderline: false,
+    color: '#FF0000'
+  }
+};
+
+const textSinglePage2 = {
+  ...TextElement,
+  id: 'text-single-1',
+  size: {
+    width: 500,
+    height: 176.6071428571429
+  },
+  coord: {
+    x: 183.3333333333334,
+    y: 193.3333333333333,
+    rotation: 20 // degree
+  },
+  property: {
+    styleId: 'default',
+    text: 'Text Single 2',
+    fontFamily: 'Arial',
+    fontSize: 20,
+    isBold: true,
+    isItalic: true,
+    isUnderline: false,
+    color: '#FF0000'
+  }
+};
+
+const bgSinglePage1 = {
+  ...BackgroundElement,
+  id: 'bg-single-1',
+  size: {
+    width: 0,
+    height: 0
+  },
+  coord: {
+    x: 0,
+    y: 0,
+    rotation: 0 // degree
+  },
+  property: {
+    category: 'single',
+    name: 'watercolorbackground.jpg',
+    thumbnail:
+      'http://s3.amazonaws.com/fms.prod/yb_backgrounds/global/1348/original_whiter-right.jpg?2017',
+    imageUrl:
+      'http://s3.amazonaws.com/fms.prod/yb_backgrounds/global/1348/original_whiter-right.jpg?2017'
+  }
+};
+
+const bgSinglePage2 = {
+  ...BackgroundElement,
+  id: 'bg-single-1',
+  size: {
+    width: 0,
+    height: 0
+  },
+  coord: {
+    x: 0,
+    y: 0,
+    rotation: 0 // degree
+  },
+  property: {
+    category: 'single',
+    name: 'watercolorbackground.jpg',
+    thumbnail:
+      'http://s3.amazonaws.com/fms.prod/yb_backgrounds/global/1345/original_greenboard-left.jpg?2017',
+    imageUrl:
+      'http://s3.amazonaws.com/fms.prod/yb_backgrounds/global/1345/original_greenboard-left.jpg?2017'
   }
 };
 
@@ -859,8 +951,8 @@ const layouts = [
     id: 34,
     type: LAYOUT_TYPES.SINGLE_PAGE.value,
     size: {
-      width: 1000,
-      height: 500
+      width: 2625,
+      height: 3375
     },
     pages: [
       {
@@ -870,7 +962,7 @@ const layouts = [
     name: 'Single 7',
     isFavorites: false,
     previewImageUrl:
-      'https://fms-stage.s3.amazonaws.com/templates/2334/ea90833e672078265455a76fb437f9a5139a81b8.jpg?1619013144',
+      'https://fms-stage.s3.amazonaws.com/templates/2326/f95301bacceccd2c84a8282c2226b60aac6016c2.jpg?1612487744',
     themeId: 6
   },
   {
@@ -925,10 +1017,10 @@ const layouts = [
     },
     pages: [
       {
-        objects: [text1, bg1]
+        objects: [textSinglePage1, bgSinglePage1]
       }
     ],
-    name: 'Collage 8',
+    name: 'Single 1',
     isFavorites: false,
     previewImageUrl:
       'https://fms-stage.s3.amazonaws.com/templates/2334/ea90833e672078265455a76fb437f9a5139a81b8.jpg?1619013144',
@@ -939,18 +1031,18 @@ const layouts = [
     id: 38,
     type: LAYOUT_TYPES.SINGLE_PAGE.value,
     size: {
-      width: 1000,
-      height: 500
+      width: 2625,
+      height: 3375
     },
     pages: [
       {
-        objects: [text1, bg1]
+        objects: [textSinglePage2, bgSinglePage2]
       }
     ],
-    name: 'Collage 36',
+    name: 'Single 2',
     isFavorites: false,
     previewImageUrl:
-      'https://fms-stage.s3.amazonaws.com/templates/2334/ea90833e672078265455a76fb437f9a5139a81b8.jpg?1619013144',
+      'https://fms-stage.s3.amazonaws.com/templates/2326/f95301bacceccd2c84a8282c2226b60aac6016c2.jpg?1612487744',
     themeId: 1
   }
 ];

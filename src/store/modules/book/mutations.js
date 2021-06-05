@@ -301,22 +301,45 @@ export const mutations = {
     const layoutObj = cloneDeep(layout);
     const currentSheet = allSheets.find(sheet => sheet.id === sheetId);
     const sheetObj = cloneDeep(currentSheet);
+    const singleLayoutSelected = layoutObj.pages[0]; // For single layout, data object always first item
+    let currentPosition = pagePosition; // Check whether user has add single page or not. Value: left or right with single page else undefine
 
-    const singleLayoutSelected = layoutObj.pages[0]; // For single layout, data object always on left canvas
+    if (sheetObj.type === SHEET_TYPES.FRONT_COVER) {
+      // Front cover always has the right page
+      currentPosition = 'right';
+    }
+
+    if (sheetObj.type === SHEET_TYPES.BACK_COVER) {
+      // Back cover always has the left page
+      currentPosition = 'left';
+    }
     // Current sheet's layout
     const sheetLeftLayout = sheetObj?.printData?.layout?.pages[0];
     const sheetRightLayout = sheetObj?.printData?.layout?.pages[1];
-
-    if (pagePosition === 'right') {
-      layoutObj.pages[0] = sheetLeftLayout;
-      layoutObj.pages[1] = singleLayoutSelected;
+    //
+    let pages = new Array(2);
+    pages[0] = sheetLeftLayout; // Assign left layout of current sheet to first item
+    pages[1] = sheetRightLayout; // Assign right layout of current sheet to first item
+    let res = pages;
+    if (currentPosition) {
+      // User select single page type
+      // Check user apply layout to left or right of page
+      const indexPage = currentPosition === 'left' ? 0 : 1;
+      res = pages.map((page, index) => {
+        if (index === indexPage) {
+          return {
+            ...singleLayoutSelected
+          };
+        }
+        return {
+          ...page
+        };
+      });
+    } else {
+      // Apply whole layout's pages selected
+      res = layout.pages;
     }
-
-    if (pagePosition === 'left') {
-      layoutObj.pages[0] = singleLayoutSelected;
-      layoutObj.pages[1] = sheetRightLayout;
-    }
-
+    layoutObj.pages = res;
     currentSheet.printData.layout = layoutObj;
     currentSheet.printData.theme = themeId;
   },
