@@ -21,17 +21,17 @@ export const inchesToPixels = inches => inches * PRINT_DPI;
  * @param   {Object}  obj an object with inche values to be converted
  * @returns {Object}  an object contain px values
  */
- export const objectInchesToPixels = obj => {
-   const pixelObject = {};
-   Object.keys(obj).forEach(key => {
-     if (typeof obj[key] === 'number') {
+export const objectInchesToPixels = obj => {
+  const pixelObject = {};
+  Object.keys(obj).forEach(key => {
+    if (typeof obj[key] === 'number') {
       pixelObject[key] = inchesToPixels(obj[key]);
-     } else {
+    } else {
       pixelObject[key] = obj[key];
-     }
-   });
-   return pixelObject;
- };
+    }
+  });
+  return pixelObject;
+};
 
 /**
  * Get Print size for a Cover sheet

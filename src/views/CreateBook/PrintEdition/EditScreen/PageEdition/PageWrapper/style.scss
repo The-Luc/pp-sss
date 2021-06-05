@@ -1,6 +1,6 @@
 $rulerWidth: 23px;
 
-.page-size-wrapper {
+.page-wrapper {
   position: absolute;
   width: 100%;
   height: 100%;
@@ -57,6 +57,6 @@ $rulerWidth: 23px;
     bottom: 0;
     left: $rulerWidth;
     right: 0;
-    overflow: hidden;
+    background-color: #f4f4f4;
   }
 }

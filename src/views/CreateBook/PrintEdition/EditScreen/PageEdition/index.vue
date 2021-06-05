@@ -1,8 +1,10 @@
 <template>
   <div class="page-edition">
-    <PageSizeWrapper @mounted="onContainerReady" @updated="onContainerResized">
-      <canvas id="canvas" ref="canvas" class="printCanvas"></canvas>
-    </PageSizeWrapper>
+    <PageWrapper>
+      <SizeWrapper @mounted="onContainerReady" @updated="onContainerResized">
+        <canvas id="canvas" ref="canvas" class="print-canvas"></canvas>
+      </SizeWrapper>
+    </PageWrapper>
   </div>
 </template>
 

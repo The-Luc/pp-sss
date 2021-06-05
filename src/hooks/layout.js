@@ -132,7 +132,9 @@ const handleDrawBackgroundLayout = (layoutData, position, targetCanvas) => {
   );
   const backgroundUrl = backrgoundObj?.property?.imageUrl;
   if (!backgroundUrl) {
-    targetCanvas.clear().renderAll();
+    targetCanvas.clear();
+    targetCanvas.backgroundColor = 'white';
+    targetCanvas.renderAll();
     return;
   }
   fabric.Image.fromURL(
@@ -187,7 +189,9 @@ export const useDrawLayout = () => {
         layout.size
       );
     } else {
-      window.printCanvas.clear().renderAll();
+      targetCanvas.clear();
+      targetCanvas.backgroundColor = 'white';
+      targetCanvas.renderAll();
     }
   };
 

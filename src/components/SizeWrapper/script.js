@@ -2,7 +2,7 @@ export default {
   computed: {},
   methods: {
     getAvailableSize() {
-      const el = this.$refs.pageSizeWp;
+      const el = this.$refs.sizeWp;
       const elWidth = el.clientWidth;
       const elHeight = el.clientHeight;
       const avaiSize = {
