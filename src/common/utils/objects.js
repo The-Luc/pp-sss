@@ -15,16 +15,18 @@ export const computedObjectData = (
 ) => {
   const { width: canvasWidth, height: canvasHeight } = targetCanvas;
   const { width: layoutWidth, height: layoutHeight } = layoutSize;
+  const { x: objectPostionX, y: objecPositionY } = objCoord;
+  const { width: objectWidth, height: objectHeight } = objSize;
 
-  const ratioWidth = canvasWidth / layoutWidth;
-  const ratioHeight = canvasHeight / layoutHeight;
-  const centerLeftPoint = (objSize.width / 2) * ratioWidth;
-  const centerTopPoint = (objSize.height / 2) * ratioHeight;
+  const ratioLayoutWidth = canvasWidth / layoutWidth;
+  const ratioLayoutHeight = canvasHeight / layoutHeight;
+  const centerLeftPoint = (objectWidth / 2) * ratioLayoutWidth;
+  const centerTopPoint = (objectHeight / 2) * ratioLayoutHeight;
 
-  let left = objCoord.x * ratioWidth - centerLeftPoint;
-  let top = objCoord.y * ratioHeight - centerTopPoint;
-  const width = objSize.width * ratioWidth;
-  const height = objSize.height * ratioHeight;
+  let left = objectPostionX * ratioLayoutWidth - centerLeftPoint;
+  let top = objecPositionY * ratioLayoutHeight - centerTopPoint;
+  const width = objectWidth * ratioLayoutWidth;
+  const height = objectHeight * ratioLayoutHeight;
   // if (position === 'right') {// TODO later
   //   // Adjust left position when use select right from single page
   //   left += canvasWidth / 2;

@@ -109,6 +109,7 @@ export default {
       }
       window.printCanvas.setWidth(canvasSize.width);
       window.printCanvas.setHeight(canvasSize.height);
+      this.drawLayout(this.pageSelected?.printData?.layout);
     },
     onContainerReady(containerSize) {
       let el = this.$refs.canvas;

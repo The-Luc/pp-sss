@@ -116,7 +116,7 @@ const handleDrawBackgroundLayout = (
   );
   const backgroundUrl = backrgoundObj?.property?.imageUrl;
   if (!pageData?.objects) {
-    targetCanvas.clear().renderAll();
+    targetCanvas?.clear().renderAll();
     return;
   }
   fabric.Image.fromURL(backgroundUrl, function(img) {
@@ -157,7 +157,7 @@ export const useDrawLayout = () => {
         );
       });
     } else {
-      targetCanvas.clear().renderAll(); // Clear canvas when click on empty spread
+      targetCanvas?.clear().renderAll(); // Clear canvas when click on empty spread
     }
   };
   return {

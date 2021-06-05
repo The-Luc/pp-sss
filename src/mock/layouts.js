@@ -22,7 +22,7 @@ const text1 = {
     styleId: 'default',
     text: 'Sample Text',
     fontFamily: 'Arial',
-    fontSize: 20,
+    fontSize: 100,
     isBold: true,
     isItalic: true,
     isUnderline: false,
@@ -46,7 +46,7 @@ const text2 = {
     styleId: 'default',
     text: 'Header Text',
     fontFamily: 'Arial',
-    fontSize: 20,
+    fontSize: 100,
     isBold: true,
     isItalic: true,
     isUnderline: false,
@@ -172,7 +172,7 @@ const textSinglePage1 = {
     height: 176.6071428571429
   },
   coord: {
-    x: 183.3333333333334,
+    x: 500,
     y: 193.3333333333333,
     rotation: 20 // degree
   },
@@ -180,7 +180,7 @@ const textSinglePage1 = {
     styleId: 'default',
     text: 'Text Single 1',
     fontFamily: 'Arial',
-    fontSize: 20,
+    fontSize: 100,
     isBold: true,
     isItalic: true,
     isUnderline: false,
@@ -196,7 +196,7 @@ const textSinglePage2 = {
     height: 176.6071428571429
   },
   coord: {
-    x: 183.3333333333334,
+    x: 500,
     y: 193.3333333333333,
     rotation: 20 // degree
   },
@@ -204,7 +204,7 @@ const textSinglePage2 = {
     styleId: 'default',
     text: 'Text Single 2',
     fontFamily: 'Arial',
-    fontSize: 20,
+    fontSize: 100,
     isBold: true,
     isItalic: true,
     isUnderline: false,
