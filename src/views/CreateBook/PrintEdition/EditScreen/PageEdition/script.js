@@ -8,7 +8,9 @@ import {
   styleToFabricStyle,
   fabricStyleToStyle,
   propToFabricProp,
-  fabricPropToProp
+  fabricPropToProp,
+  getCoverPagePrintSize,
+  getPagePrintSize
 } from '@/common/utils';
 
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
@@ -16,7 +18,12 @@ import { GETTERS, MUTATES as BOOK_MUTATES } from '@/store/modules/book/const';
 
 import { OBJECT_TYPE, SHEET_TYPES } from '@/common/constants';
 import { MUTATES as PROP_MUTATES } from '@/store/modules/property/const';
+import PageSizeWrapper from '@/components/PageSizeWrapper';
+
 export default {
+  components: {
+    PageSizeWrapper
+  },
   setup() {
     const { drawLayout } = useDrawLayout();
     return { drawLayout };
@@ -28,18 +35,21 @@ export default {
       selectedLayout: GETTERS.SHEET_LAYOUT,
       isOpenMenuProperties: APP_GETTERS.IS_OPEN_MENU_PROPERTIES
     }),
+    isCover() {
+      return this.pageSelected.type === SHEET_TYPES.COVER;
+    },
     isHardCover() {
-      const { coverOption, sections } = this.book;
+      const { coverOption } = this.book;
       return (
         coverOption === 'Hardcover' &&
-        this.pageSelected.id === sections[0].sheets[0].id
+        this.pageSelected.type === SHEET_TYPES.COVER
       );
     },
     isSoftCover() {
-      const { coverOption, sections } = this.book;
+      const { coverOption } = this.book;
       return (
         coverOption === 'Softcover' &&
-        this.pageSelected.id === sections[0].sheets[0].id
+        this.pageSelected.type === SHEET_TYPES.COVER
       );
     },
     isIntro() {
@@ -50,7 +60,7 @@ export default {
       const { sections } = this.book;
       const lastSection = sections[sections.length - 1];
       return (
-        this.pageSelected ===
+        this.pageSelected.id ===
         lastSection.sheets[lastSection.sheets.length - 1].id
       );
     }
@@ -67,53 +77,7 @@ export default {
     }
   },
   mounted() {
-    let el = this.$refs.canvas;
-    window.printCanvas = new fabric.Canvas(el);
-    let fabricPrototype = fabric.Object.prototype;
-    fabricPrototype.cornerColor = '#fff';
-    fabricPrototype.borderColor = '#8C8C8C';
-    fabricPrototype.borderSize = 1.25;
-    fabricPrototype.cornerSize = 9;
-    fabricPrototype.cornerStrokeColor = '#8C8C8C';
-    fabricPrototype.transparentCorners = false;
-    fabricPrototype.borderScaleFactor = 1.5;
-    fabricPrototype.setControlsVisibility({
-      mtr: false
-    });
-    window.printCanvas.setWidth(1205);
-    window.printCanvas.setHeight(768);
-    window.printCanvas.on({
-      'selection:updated': this.objectSelected,
-      'selection:cleared': this.closeProperties,
-      'selection:created': this.objectSelected,
-      'object:scaling': e => {
-        const w = e.target.width;
-        const h = e.target.height;
-        const scaleX = e.target.scaleX;
-        const scaleY = e.target.scaleY;
-
-        e.target.set('scaleX', 1);
-        e.target.set('scaleY', 1);
-        e.target.set('width', w * scaleX);
-        e.target.set('height', h * scaleY);
-      }
-    });
-
-    this.$root.$on('printAddText', () => {
-      this.addText();
-    });
-
-    this.$root.$on('printDeleteElements', () => {
-      this.deleteElements();
-    });
-
-    this.$root.$on('printChangeTextStyle', style => {
-      this.changeObjectStyle(style);
-    });
-
-    this.$root.$on('printChangeTextProp', prop => {
-      this.changeObjectProperties(prop);
-    });
+    // moved to onContainerReady
   },
   beforeDestroy() {
     this.$root.$off('printDeleteElements', () => {
@@ -128,6 +92,75 @@ export default {
       setTextStyle: PROP_MUTATES.SET_TEXT_STYLE,
       setTextProp: PROP_MUTATES.SET_TEXT_PROPERTY
     }),
+    updateCanvasSize(containerSize) {
+      const printSize = this.isCover
+        ? getCoverPagePrintSize(this.isHardCover, this.book.totalPages)
+        : getPagePrintSize();
+      const canvasSize = {
+        width: 0,
+        height: 0
+      };
+      if (containerSize.ratio > printSize.inches.ratio) {
+        canvasSize.height = containerSize.height;
+        canvasSize.width = canvasSize.height * printSize.inches.ratio;
+      } else {
+        canvasSize.width = containerSize.width;
+        canvasSize.height = canvasSize.width / printSize.inches.ratio;
+      }
+      window.printCanvas.setWidth(canvasSize.width);
+      window.printCanvas.setHeight(canvasSize.height);
+    },
+    onContainerReady(containerSize) {
+      let el = this.$refs.canvas;
+      window.printCanvas = new fabric.Canvas(el);
+      let fabricPrototype = fabric.Object.prototype;
+      fabricPrototype.cornerColor = '#fff';
+      fabricPrototype.borderColor = '#8C8C8C';
+      fabricPrototype.borderSize = 1.25;
+      fabricPrototype.cornerSize = 9;
+      fabricPrototype.cornerStrokeColor = '#8C8C8C';
+      fabricPrototype.transparentCorners = false;
+      fabricPrototype.borderScaleFactor = 1.5;
+      fabricPrototype.setControlsVisibility({
+        mtr: false
+      });
+      this.updateCanvasSize(containerSize);
+      window.printCanvas.on({
+        'selection:updated': this.objectSelected,
+        'selection:cleared': this.closeProperties,
+        'selection:created': this.objectSelected,
+        'object:scaling': e => {
+          const w = e.target.width;
+          const h = e.target.height;
+          const scaleX = e.target.scaleX;
+          const scaleY = e.target.scaleY;
+
+          e.target.set('scaleX', 1);
+          e.target.set('scaleY', 1);
+          e.target.set('width', w * scaleX);
+          e.target.set('height', h * scaleY);
+        }
+      });
+
+      this.$root.$on('printAddText', () => {
+        this.addText();
+      });
+
+      this.$root.$on('printDeleteElements', () => {
+        this.deleteElements();
+      });
+
+      this.$root.$on('printChangeTextStyle', style => {
+        this.changeObjectStyle(style);
+      });
+
+      this.$root.$on('printChangeTextProp', prop => {
+        this.changeObjectProperties(prop);
+      });
+    },
+    onContainerResized(containerSize) {
+      this.updateCanvasSize(containerSize);
+    },
     /**
      * Open text properties modal and set default properties
      */

@@ -12,21 +12,18 @@ export default {
   },
   computed: {
     ...mapGetters({
-      getTotalDayToShow: GETTERS.TOTAL_DAYS_SHOW_ON_CHART,
-      getSaleDateFromBeginning: GETTERS.SALE_DAY_FROM_BEGINNING,
-      getReleaseDateFromBeginning: GETTERS.RELEASE_DAY_FROM_BEGINNING
+      totalDayToShow: GETTERS.TOTAL_DAYS_SHOW_ON_CHART,
+      saleDateFromBeginning: GETTERS.SALE_DATE_FROM_BEGINNING,
+      releaseDateFromBeginning: GETTERS.RELEASE_DATE_FROM_BEGINNING
     }),
     preSalePosition() {
-      return `${(this.getSaleDateFromBeginning() / this.getTotalDayToShow()) *
-        100}%`;
+      return `${(this.saleDateFromBeginning / this.totalDayToShow) * 100}%`;
     },
     preSaleLength() {
       const diffDate =
-        this.getReleaseDateFromBeginning() -
-        this.getSaleDateFromBeginning() +
-        1;
+        this.releaseDateFromBeginning - this.saleDateFromBeginning + 1;
 
-      return `${(diffDate / this.getTotalDayToShow()) * 100}%`;
+      return `${(diffDate / this.totalDayToShow) * 100}%`;
     }
   }
 };

@@ -18,7 +18,7 @@ export default {
       eventDates: GETTERS.BOOK_DATES
     }),
     isSale() {
-      return isEmpty(this.eventDates?.saleDate || null);
+      return !isEmpty(this.eventDates?.saleDate || null);
     }
   }
 };

@@ -1,11 +1,10 @@
 import { mapGetters } from 'vuex';
 
-import ProcessItem from '../ProcessItem';
 import MiniProcess from '@/components/MiniProcess';
+import ProcessItem from '../ProcessItem';
 
 import { GETTERS } from '@/store/modules/book/const';
-
-const APPROVAL_DAYS = 10;
+import { APPROVAL_DAYS } from '@/common/constants';
 
 export default {
   components: {
@@ -14,34 +13,29 @@ export default {
   },
   computed: {
     ...mapGetters({
-      getTotalDayToShow: GETTERS.TOTAL_DAYS_SHOW_ON_CHART,
-      getCreatedDateFromBeginning: GETTERS.CREATED_DAY_FROM_BEGINNING,
-      getReleaseDateFromBeginning: GETTERS.RELEASE_DAY_FROM_BEGINNING,
-      getDeliveryDateFromBeginning: GETTERS.DELIVERY_DAY_FROM_BEGINNING
+      totalDayToShow: GETTERS.TOTAL_DAYS_SHOW_ON_CHART,
+      createdDateFromBeginning: GETTERS.CREATED_DATE_FROM_BEGINNING,
+      releaseDateFromBeginning: GETTERS.RELEASE_DATE_FROM_BEGINNING,
+      deliveryDateFromBeginning: GETTERS.DELIVERY_DATE_FROM_BEGINNING
     }),
     createdPosition() {
-      return `${(this.getCreatedDateFromBeginning() /
-        this.getTotalDayToShow()) *
-        100}%`;
+      return `${(this.createdDateFromBeginning / this.totalDayToShow) * 100}%`;
     },
     createdLength() {
       const diffDate =
-        this.getReleaseDateFromBeginning() -
-        this.getCreatedDateFromBeginning() +
-        1;
+        this.releaseDateFromBeginning - this.createdDateFromBeginning + 1;
 
-      return `${(diffDate / this.getTotalDayToShow()) * 100}%`;
+      return `${(diffDate / this.totalDayToShow) * 100}%`;
     },
     approvalLength() {
-      return `${(APPROVAL_DAYS / this.getTotalDayToShow()) * 100}%`;
+      return `${(APPROVAL_DAYS / this.totalDayToShow) * 100}%`;
     },
     printLength() {
-      const endDayOfApproval = this.getReleaseDateFromBeginning + APPROVAL_DAYS;
+      const endDayOfApproval = this.releaseDateFromBeginning + APPROVAL_DAYS;
 
-      const diffDate =
-        this.getDeliveryDateFromBeginning() - endDayOfApproval + 1;
+      const diffDate = this.deliveryDateFromBeginning - endDayOfApproval + 1;
 
-      return `${(diffDate / this.getTotalDayToShow()) * 100}%`;
+      return `${(diffDate / this.totalDayToShow) * 100}%`;
     }
   }
 };
