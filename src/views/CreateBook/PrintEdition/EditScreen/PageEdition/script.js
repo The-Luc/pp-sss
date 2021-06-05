@@ -8,17 +8,22 @@ import {
   styleToFabricStyle,
   fabricStyleToStyle,
   propToFabricProp,
-  fabricPropToProp
+  fabricPropToProp,
+  getCoverPagePrintSize,
+  getPagePrintSize
 } from '@/common/utils';
 
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
 import { GETTERS, MUTATES as BOOK_MUTATES } from '@/store/modules/book/const';
-import {
-  GETTERS as PRINT_GETTERS,
-  MUTATES as PRINT_MUTATES
-} from '@/store/modules/print/const';
-import { OBJECT_TYPE } from '@/common/constants';
+
+import { OBJECT_TYPE, SHEET_TYPES } from '@/common/constants';
+import { MUTATES as PROP_MUTATES } from '@/store/modules/property/const';
+import PageSizeWrapper from '@/components/PageSizeWrapper';
+
 export default {
+  components: {
+    PageSizeWrapper
+  },
   setup() {
     const { drawLayout } = useDrawLayout();
     return { drawLayout };
@@ -30,86 +35,61 @@ export default {
       selectedLayout: GETTERS.SHEET_LAYOUT,
       isOpenMenuProperties: APP_GETTERS.IS_OPEN_MENU_PROPERTIES
     }),
+    isCover() {
+      return this.pageSelected.type === SHEET_TYPES.COVER;
+    },
     isHardCover() {
-      const { coverOption, sections } = this.book;
+      const { coverOption } = this.book;
       return (
         coverOption === 'Hardcover' &&
-        this.pageSelected === sections[0].sheets[0].id
+        this.pageSelected.type === SHEET_TYPES.COVER
       );
     },
     isSoftCover() {
-      const { coverOption, sections } = this.book;
+      const { coverOption } = this.book;
       return (
         coverOption === 'Softcover' &&
-        this.pageSelected === sections[0].sheets[0].id
+        this.pageSelected.type === SHEET_TYPES.COVER
       );
     },
     isIntro() {
       const { sections } = this.book;
-      return this.pageSelected === sections[1].sheets[0].id;
+      return this.pageSelected.id === sections[1].sheets[0].id;
     },
     isSignature() {
       const { sections } = this.book;
       const lastSection = sections[sections.length - 1];
       return (
-        this.pageSelected ===
+        this.pageSelected.id ===
         lastSection.sheets[lastSection.sheets.length - 1].id
       );
     }
   },
   watch: {
-    pageSelected(val) {
-      const layoutData = this.selectedLayout(val);
-      if (layoutData) {
-        this.setLayoutForSheet(layoutData);
-      } else {
-        this.setLayoutForSheet({});
+    pageSelected: {
+      deep: true,
+      handler(val, oldVal) {
+        if (val.id !== oldVal.id) {
+          let position = '';
+          if (val.type === SHEET_TYPES.FRONT_COVER) {
+            position = 'right';
+          }
+
+          if (val.type === SHEET_TYPES.BACK_COVER) {
+            position = 'left';
+          }
+          const layoutData = val?.printData?.layout;
+          this.drawLayout(layoutData, position);
+        }
       }
     }
   },
   mounted() {
-    let el = this.$refs.canvas;
-    window.printCanvas = new fabric.Canvas(el);
-    let fabricPrototype = fabric.Object.prototype;
-    fabricPrototype.cornerColor = '#fff';
-    fabricPrototype.borderColor = '#8C8C8C';
-    fabricPrototype.borderSize = 1.25;
-    fabricPrototype.cornerSize = 9;
-    fabricPrototype.cornerStrokeColor = '#8C8C8C';
-    fabricPrototype.transparentCorners = false;
-    fabricPrototype.borderScaleFactor = 1.5;
-    fabricPrototype.setControlsVisibility({
-      mtr: false
-    });
-    window.printCanvas.setWidth(1205);
-    window.printCanvas.setHeight(768);
-    window.printCanvas.on({
-      'selection:updated': this.objectSelected,
-      'selection:cleared': this.closeProperties,
-      'selection:created': this.objectSelected,
-      'object:scaling': e => {
-        const w = e.target.width;
-        const h = e.target.height;
-        const scaleX = e.target.scaleX;
-        const scaleY = e.target.scaleY;
-
-        e.target.set('scaleX', 1);
-        e.target.set('scaleY', 1);
-        e.target.set('width', w * scaleX);
-        e.target.set('height', h * scaleY);
-      }
-    });
-
-    this.$root.$on('printAddText', () => {
-      this.addText();
-    });
-
-    this.$root.$on('printChangeTextStyle', style => {
-      this.changeObjectStyle(style);
-    });
-
-    this.$root.$on('printChangeTextProp', prop => {
-      this.changeObjectProperties(prop);
+    // moved to onContainerReady
+  },
+  beforeDestroy() {
+    this.$root.$off('printDeleteElements', () => {
+      this.deleteElements();
     });
   },
   methods: {
@@ -117,12 +97,78 @@ export default {
       setIsOpenProperties: MUTATES.TOGGLE_MENU_PROPERTIES,
       setObjectTypeSelected: MUTATES.SET_OBJECT_TYPE_SELECTED,
       setTextProperties: BOOK_MUTATES.TEXT_PROPERTIES,
-      setTextStyle: PRINT_MUTATES.SET_TEXT_STYLE,
-      setTextProp: PRINT_MUTATES.SET_TEXT_PROPERTY
+      setTextStyle: PROP_MUTATES.SET_TEXT_STYLE,
+      setTextProp: PROP_MUTATES.SET_TEXT_PROPERTY
     }),
-    ...mapGetters({
-      getTextStyle: PRINT_GETTERS.TEXT_STYLE
-    }),
+    updateCanvasSize(containerSize) {
+      const printSize = this.isCover
+        ? getCoverPagePrintSize(this.isHardCover, this.book.totalPages)
+        : getPagePrintSize();
+      const canvasSize = {
+        width: 0,
+        height: 0
+      };
+      if (containerSize.ratio > printSize.inches.ratio) {
+        canvasSize.height = containerSize.height;
+        canvasSize.width = canvasSize.height * printSize.inches.ratio;
+      } else {
+        canvasSize.width = containerSize.width;
+        canvasSize.height = canvasSize.width / printSize.inches.ratio;
+      }
+      window.printCanvas.setWidth(canvasSize.width);
+      window.printCanvas.setHeight(canvasSize.height);
+    },
+    onContainerReady(containerSize) {
+      let el = this.$refs.canvas;
+      window.printCanvas = new fabric.Canvas(el);
+      let fabricPrototype = fabric.Object.prototype;
+      fabricPrototype.cornerColor = '#fff';
+      fabricPrototype.borderColor = '#8C8C8C';
+      fabricPrototype.borderSize = 1.25;
+      fabricPrototype.cornerSize = 9;
+      fabricPrototype.cornerStrokeColor = '#8C8C8C';
+      fabricPrototype.transparentCorners = false;
+      fabricPrototype.borderScaleFactor = 1.5;
+      fabricPrototype.setControlsVisibility({
+        mtr: false
+      });
+      this.updateCanvasSize(containerSize);
+      window.printCanvas.on({
+        'selection:updated': this.objectSelected,
+        'selection:cleared': this.closeProperties,
+        'selection:created': this.objectSelected,
+        'object:scaling': e => {
+          const w = e.target.width;
+          const h = e.target.height;
+          const scaleX = e.target.scaleX;
+          const scaleY = e.target.scaleY;
+
+          e.target.set('scaleX', 1);
+          e.target.set('scaleY', 1);
+          e.target.set('width', w * scaleX);
+          e.target.set('height', h * scaleY);
+        }
+      });
+
+      this.$root.$on('printAddText', () => {
+        this.addText();
+      });
+
+      this.$root.$on('printDeleteElements', () => {
+        this.deleteElements();
+      });
+
+      this.$root.$on('printChangeTextStyle', style => {
+        this.changeObjectStyle(style);
+      });
+
+      this.$root.$on('printChangeTextProp', prop => {
+        this.changeObjectProperties(prop);
+      });
+    },
+    onContainerResized(containerSize) {
+      this.updateCanvasSize(containerSize);
+    },
     /**
      * Open text properties modal and set default properties
      */
@@ -157,14 +203,6 @@ export default {
       this.setObjectTypeSelected({
         type: OBJECT_TYPE.TEXT
       });
-    },
-    /**
-     * Draw layout in print canvas
-     * @param {Object} layoutData - Current layout object data
-     */
-    setLayoutForSheet(layoutData) {
-      let { imageUrlLeft, imageUrlRight } = layoutData;
-      this.drawLayout(imageUrlLeft, imageUrlRight);
     },
     /**
      * Event fired when an object of canvas is selected
@@ -280,6 +318,19 @@ export default {
       });
 
       this.setTextProp(prop);
+    },
+    /**
+     * Event fire when user click on Delete button on Toolbar to delete selected elements on canvas
+     */
+    deleteElements() {
+      const activeObj = window.printCanvas.getActiveObject();
+      if (isEmpty(activeObj)) return;
+      if (activeObj._objects) {
+        activeObj._objects.forEach(object => window.printCanvas.remove(object));
+      } else {
+        window.printCanvas.remove(activeObj);
+      }
+      window.printCanvas.discardActiveObject().renderAll();
     }
   }
 };

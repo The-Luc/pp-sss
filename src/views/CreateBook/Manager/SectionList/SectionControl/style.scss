@@ -8,16 +8,16 @@
       button {
         height: 32px;
         margin-right: 20px;
-        color: $color-darkblue;
+        color: $color-stoodio-blue;
         font-size: $sm-size;
         text-transform: capitalize;
-        border: 1px solid $color-darkblue;
+        border: 1px solid $color-stoodio-blue;
         border-radius: 6px;
         box-shadow: none;
 
         &.btn-solid {
           color: $color-white;
-          background-color: $color-darkblue;
+          background-color: $color-stoodio-blue;
           &.btn-disabled {
             opacity: 40%;
             cursor: not-allowed;

@@ -1,9 +1,10 @@
+import BlockBar from '@/components/BlockBar';
+import EventFlag from './EventFlag';
+
 import { mapGetters } from 'vuex';
 import moment from 'moment';
 
-import EventFlag from './EventFlag';
-import BlockBar from '@/components/BlockBar';
-
+import { DATE_FORMAT } from '@/common/constants';
 import { GETTERS } from '@/store/modules/book/const';
 
 export default {
@@ -21,31 +22,30 @@ export default {
     };
   },
   computed: {
+    ...mapGetters({
+      eventDates: GETTERS.BOOK_DATES,
+      totalMonthToShow: GETTERS.TOTAL_MONTH_SHOW_ON_CHART
+    }),
     events: function() {
-      const totalMonthToShow = this.getTotalMonthToShow();
-
-      return Array.from({ length: totalMonthToShow }, (v, index) => {
+      return Array.from({ length: this.totalMonthToShow }, (v, index) => {
         return this.getEventData(index);
       });
     },
     slots: function() {
-      const totalMonthToShow = this.getTotalMonthToShow();
-
-      const slotData = Array.from({ length: totalMonthToShow }, (v, index) => {
-        return {
-          id: index,
-          slots: this.getSlot(index)
-        };
-      });
+      const slotData = Array.from(
+        { length: this.totalMonthToShow },
+        (v, index) => {
+          return {
+            id: index,
+            slots: this.getSlot(index)
+          };
+        }
+      );
 
       return slotData.filter(s => s.slots.length > 0);
     }
   },
   methods: {
-    ...mapGetters({
-      getBookEventDates: GETTERS.BOOK_DATES,
-      getTotalMonthToShow: GETTERS.TOTAL_MONTH_SHOW_ON_CHART
-    }),
     /**
      * getEventData - Get data of month use for generate timeline
      *
@@ -53,9 +53,9 @@ export default {
      * @returns {Object}       the data of chosen month
      */
     getEventData: function(index) {
-      const { createdDate } = this.getBookEventDates();
+      const { createdDate } = this.eventDates;
 
-      const checkTime = moment(createdDate, 'MM/DD/YY').add(index, 'M');
+      const checkTime = moment(createdDate, DATE_FORMAT.BASE).add(index, 'M');
 
       const isShowYear = index === 0 || checkTime.month() === 0;
 
@@ -77,15 +77,15 @@ export default {
         saleDate,
         releaseDate,
         deliveryDate
-      } = this.getBookEventDates();
+      } = this.eventDates;
 
       const saleMonth =
-        saleDate === null ? -1 : moment(saleDate, 'MM/DD/YY').month();
+        saleDate === null ? -1 : moment(saleDate, DATE_FORMAT.BASE).month();
 
-      const releaseMonth = moment(releaseDate, 'MM/DD/YY').month();
-      const deliveryMonth = moment(deliveryDate, 'MM/DD/YY').month();
+      const releaseMonth = moment(releaseDate, DATE_FORMAT.BASE).month();
+      const deliveryMonth = moment(deliveryDate, DATE_FORMAT.BASE).month();
 
-      const checkTime = moment(createdDate, 'MM/DD/YY').add(index, 'M');
+      const checkTime = moment(createdDate, DATE_FORMAT.BASE).add(index, 'M');
       const month = checkTime.month();
 
       const slots = [];
@@ -134,7 +134,7 @@ export default {
      * @returns {Object}              the data of chosen slot
      */
     getSlotData: function(index, eventDate, slotType, description, isDelivery) {
-      const event = moment(eventDate, 'MM/DD/YY');
+      const event = moment(eventDate, DATE_FORMAT.BASE);
 
       return {
         id: `${index}${slotType}`,

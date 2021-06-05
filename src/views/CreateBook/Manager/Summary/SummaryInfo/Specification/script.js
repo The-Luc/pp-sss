@@ -11,35 +11,31 @@ export default {
     Detail
   },
   computed: {
+    ...mapGetters({
+      book: GETTERS.BOOK_DETAIL
+    }),
     details() {
       const coverOption = {
         name: 'Cover Option:',
-        description: this.book().coverOption
+        description: this.book.coverOption
       };
 
       const numberMaxPages = {
         name: 'Number of Pages (maximum):',
-        description: this.book().numberMaxPages
+        description: this.book.numberMaxPages
       };
 
       const estimatedQuantity = {
         name: 'Estimated Quantity:',
-        description: `${this.book().estimatedQuantity.min} - ${
-          this.book().estimatedQuantity.max
-        }`
+        description: `${this.book.estimatedQuantity.min} - ${this.book.estimatedQuantity.max}`
       };
 
       const deliveryOption = {
         name: 'Delivery Option:',
-        description: this.book().deliveryOption
+        description: this.book.deliveryOption
       };
 
       return [coverOption, numberMaxPages, estimatedQuantity, deliveryOption];
     }
-  },
-  methods: {
-    ...mapGetters({
-      book: GETTERS.BOOK_DETAIL
-    })
   }
 };

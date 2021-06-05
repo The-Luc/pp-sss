@@ -1,4 +1,4 @@
-import { PROCESS_STATUS } from '@/common/constants/processStatus';
+import { PROCESS_STATUS } from '@/common/constants';
 
 import BlockBar from '@/components/BlockBar';
 

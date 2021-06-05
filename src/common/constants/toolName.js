@@ -1,4 +1,5 @@
 export const TOOL_NAME = {
   THEMES: 'Themes',
-  LAYOUTS: 'Layouts'
+  LAYOUTS: 'Layouts',
+  DELETE: 'Delete'
 };

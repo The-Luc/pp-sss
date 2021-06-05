@@ -11,3 +11,7 @@ export * from './objectType';
 export * from './image';
 export * from './toolName';
 export * from './layoutTypes';
+export * from './processStatus';
+export * from './canvas';
+export * from './textAlign';
+export * from './moment';

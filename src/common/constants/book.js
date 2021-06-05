@@ -9,3 +9,5 @@ export const SCREEN = {
   PRINT: '/edit/print',
   DIGITAL: '/edit/digital'
 };
+
+export const APPROVAL_DAYS = 10;

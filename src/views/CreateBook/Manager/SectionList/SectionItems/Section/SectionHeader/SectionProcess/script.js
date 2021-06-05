@@ -6,8 +6,7 @@ import Action from './Action';
 import { GETTERS, MUTATES } from '@/store/modules/app/const';
 import { GETTERS as BOOK_GETTERS } from '@/store/modules/book/const';
 
-import { ICON_LOCAL } from '@/common/constants';
-import { PROCESS_STATUS } from '@/common/constants/processStatus';
+import { ICON_LOCAL, PROCESS_STATUS } from '@/common/constants';
 
 export default {
   props: {

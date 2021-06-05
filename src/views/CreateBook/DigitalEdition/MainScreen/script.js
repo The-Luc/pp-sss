@@ -41,10 +41,10 @@ export default {
     }),
     /**
      * Set selected sheet's id
-     * @param  {String} sheetId Sheet's id selected
+     * @param  {String} sheet Sheet selected
      */
-    onSelectScreen(sheetId) {
-      this.selectSheet({ sheetId });
+    onSelectScreen(sheet) {
+      this.selectSheet({ sheet });
     }
   }
 };

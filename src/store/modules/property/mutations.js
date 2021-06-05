@@ -1,7 +1,7 @@
-import PRINT from './const';
+import PROP from './const';
 
 export const mutations = {
-  [PRINT._MUTATES.SET_TEXT_STYLE](state, payload) {
+  [PROP._MUTATES.SET_TEXT_STYLE](state, payload) {
     const { fontFamily, fontSize, fontWeight, fontStyle, color } = payload;
 
     state.selectedText.style.fontFamily =
@@ -14,7 +14,7 @@ export const mutations = {
       fontStyle || state.selectedText.style.fontStyle;
     state.selectedText.style.color = color || state.selectedText.style.color;
   },
-  [PRINT._MUTATES.SET_TEXT_PROPERTY](state, payload) {
+  [PROP._MUTATES.SET_TEXT_PROPERTY](state, payload) {
     const { styleId } = payload;
 
     state.selectedText.property.styleId = styleId;

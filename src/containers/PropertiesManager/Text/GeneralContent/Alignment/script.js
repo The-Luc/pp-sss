@@ -1,7 +1,7 @@
 import { mapGetters } from 'vuex';
 import PpButtonGroup from '@/components/ButtonGroup';
 import { GETTERS } from '@/store/modules/book/const';
-import { TEXT_ALIGN } from '@/common/constants/textAlign';
+import { TEXT_ALIGN } from '@/common/constants';
 
 export default {
   components: {

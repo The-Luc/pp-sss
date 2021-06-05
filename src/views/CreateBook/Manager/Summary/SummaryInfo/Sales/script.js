@@ -11,23 +11,21 @@ export default {
     Detail
   },
   computed: {
+    ...mapGetters({
+      book: GETTERS.BOOK_DETAIL
+    }),
     details() {
       const bookSold = {
         name: 'Books Sold:',
-        description: this.book().booksSold
+        description: this.book.booksSold
       };
 
       const fundraisingEarned = {
         name: 'Fundraising $ Earned:',
-        description: `$${this.book().fundraisingEarned.toFixed(2)}`
+        description: `$${this.book.fundraisingEarned.toFixed(2)}`
       };
 
       return [bookSold, fundraisingEarned];
     }
-  },
-  methods: {
-    ...mapGetters({
-      book: GETTERS.BOOK_DETAIL
-    })
   }
 };

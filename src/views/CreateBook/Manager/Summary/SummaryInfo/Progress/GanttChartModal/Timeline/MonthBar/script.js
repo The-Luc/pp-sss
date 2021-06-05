@@ -1,8 +1,9 @@
+import BlockBar from '@/components/BlockBar';
+
 import { mapGetters } from 'vuex';
 import moment from 'moment';
 
-import BlockBar from '@/components/BlockBar';
-
+import { DATE_FORMAT } from '@/common/constants';
 import { GETTERS } from '@/store/modules/book/const';
 
 export default {
@@ -10,10 +11,12 @@ export default {
     BlockBar
   },
   computed: {
+    ...mapGetters({
+      eventDates: GETTERS.BOOK_DATES,
+      totalMonthToShow: GETTERS.TOTAL_MONTH_SHOW_ON_CHART
+    }),
     months: function() {
-      const totalMonthToShow = this.getTotalMonthToShow();
-
-      return Array.from({ length: totalMonthToShow }, (v, index) => {
+      return Array.from({ length: this.totalMonthToShow }, (v, index) => {
         return {
           isUseBorder: true,
           slotName: `slot${index}`
@@ -21,28 +24,26 @@ export default {
       });
     },
     slots: function() {
-      const totalMonthToShow = this.getTotalMonthToShow();
+      const { createdDate } = this.eventDates;
 
-      const { createdDate } = this.getBookEventDates();
+      const slotData = Array.from(
+        { length: this.totalMonthToShow },
+        (v, index) => {
+          const checkTime = moment(createdDate, DATE_FORMAT.BASE).add(
+            index,
+            'M'
+          );
 
-      const slotData = Array.from({ length: totalMonthToShow }, (v, index) => {
-        const checkTime = moment(createdDate, 'MM/DD/YY').add(index, 'M');
+          const isShowName = index > 0 && index < this.totalMonthToShow;
 
-        const isShowName = index > 0 && index < totalMonthToShow;
-
-        return {
-          id: index,
-          name: isShowName ? checkTime.format('MMM') : ''
-        };
-      });
+          return {
+            id: index,
+            name: isShowName ? checkTime.format('MMM') : ''
+          };
+        }
+      );
 
       return slotData.filter(s => s.name.length > 0);
     }
-  },
-  methods: {
-    ...mapGetters({
-      getBookEventDates: GETTERS.BOOK_DATES,
-      getTotalMonthToShow: GETTERS.TOTAL_MONTH_SHOW_ON_CHART
-    })
   }
 };
