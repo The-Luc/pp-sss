@@ -1,0 +1,25 @@
+.send-container,
+.size-container,
+.position-container,
+.flip-container,
+.rotate-container {
+    text-transform: initial;
+    padding: 5.5px 12px 6px;
+    border-bottom: 1px solid #bcbec0;
+    .properties-title {
+        font-family: 700;
+        font-weight: 600;
+    }
+}
+
+.flip-container,
+.rotate-container {
+    border: none;
+}
+
+.group-container {
+    display: flex;
+    .item-vertical {
+        margin: 0;
+    }
+}
