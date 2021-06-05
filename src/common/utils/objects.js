@@ -1,10 +1,10 @@
 /**
- * Computed ratio and return coordinate and dimenssion of object
+ * Computed ratio and return coordinate and dimension of object
  * @param {Object} objCoord - Coordinate of object include x and y
  * @param {String} objSize - The size of object box include width and height
  * @param {Ref} targetCanvas - Target canvas to draw objects
  * @param {Object} layoutSize - The size of layout  include width and height
- * @return {Object} {left, top, width, height} - Return coordinate and dimenssion of object after computed ratio
+ * @return {Object} {left, top, width, height} - Return coordinate and dimension of object after computed ratio
  */
 export const computedObjectData = (
   objCoord,
@@ -15,7 +15,7 @@ export const computedObjectData = (
 ) => {
   const { width: canvasWidth, height: canvasHeight } = targetCanvas;
   const { width: layoutWidth, height: layoutHeight } = layoutSize;
-  const { x: objectPostionX, y: objecPositionY } = objCoord;
+  const { x: objectPositionX, y: objectPositionY } = objCoord;
   const { width: objectWidth, height: objectHeight } = objSize;
 
   const ratioLayoutWidth = canvasWidth / layoutWidth;
@@ -23,8 +23,8 @@ export const computedObjectData = (
   const centerLeftPoint = (objectWidth / 2) * ratioLayoutWidth;
   const centerTopPoint = (objectHeight / 2) * ratioLayoutHeight;
 
-  let left = objectPostionX * ratioLayoutWidth - centerLeftPoint;
-  let top = objecPositionY * ratioLayoutHeight - centerTopPoint;
+  let left = objectPositionX * ratioLayoutWidth - centerLeftPoint;
+  let top = objectPositionY * ratioLayoutHeight - centerTopPoint;
   const width = objectWidth * ratioLayoutWidth;
   const height = objectHeight * ratioLayoutHeight;
   // if (position === 'right') {// TODO later
