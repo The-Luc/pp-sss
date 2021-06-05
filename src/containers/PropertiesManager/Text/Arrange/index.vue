@@ -1,6 +1,13 @@
 <template>
   <div>
-    This is arrange
+    <Send />
+    <Size />
+    <Position />
+    <div class="group-container">
+      <Rotate />
+      <v-divider vertical class="item-vertical"></v-divider>
+      <Flip />
+    </div>
   </div>
 </template>
 

@@ -1,0 +1,36 @@
+.size-container {
+    .container-radio {
+        text-align: center;
+        font-size: 11px;
+        position: relative;
+        bottom: 10px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        input {
+            display: none;
+            &:checked ~ .checkmark:after {
+                display: block;
+            }
+        }
+        .checkmark {
+            box-sizing: border-box;
+            position: relative;
+            height: 12px;
+            width: 12px;
+            border: 1px solid #58595b;
+            border-radius: 2px;
+            margin-right: 6px;
+            &:after {
+                content: "";
+                position: absolute;
+                display: none;
+                left: 1px;
+                top: 1px;
+                width: 8px;
+                height: 8px;
+                background-color: #42738d;
+            }
+        }
+    }
+}
