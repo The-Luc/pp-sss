@@ -2,15 +2,15 @@ export default {
   computed: {},
   methods: {
     getAvailableSize() {
-      const el = this.$refs.pageSizeWp;
-      const elWidth = el.clientWidth;
-      const elHeight = el.clientHeight;
-      const avaiSize = {
-        width: elWidth - 10,
-        height: elHeight - 10,
-        ratio: (elWidth - 10) / (elHeight - 10)
+      const { clientWidth, clientHeight } = this.$refs.sizeWrapper;
+      const offset = 0;
+      const width = clientWidth - offset;
+      const height = clientHeight - offset;
+      return {
+        width,
+        height,
+        ratio: width / height
       };
-      return avaiSize;
     },
     onResized() {
       this.$emit('updated', this.getAvailableSize());

@@ -1,5 +1,5 @@
 <template>
-  <div class="page-size-wrapper">
+  <div class="page-wrapper">
     <div class="ruler-wrapper">
       <div class="ruler-x-placeholder">
         <slot name="ruler-x"></slot>
@@ -8,7 +8,7 @@
     <div class="ruler-y-placeholder">
       <slot name="ruler-y"></slot>
     </div>
-    <div ref="pageSizeWp" class="inner-ruler-wrapper">
+    <div class="inner-ruler-wrapper">
       <slot></slot>
     </div>
   </div>

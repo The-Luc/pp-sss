@@ -18,11 +18,13 @@ import { GETTERS, MUTATES as BOOK_MUTATES } from '@/store/modules/book/const';
 
 import { OBJECT_TYPE, SHEET_TYPES } from '@/common/constants';
 import { MUTATES as PROP_MUTATES } from '@/store/modules/property/const';
-import PageSizeWrapper from '@/components/PageSizeWrapper';
+import SizeWrapper from '@/components/SizeWrapper';
+import PageWrapper from './PageWrapper';
 
 export default {
   components: {
-    PageSizeWrapper
+    PageWrapper,
+    SizeWrapper
   },
   setup() {
     const { drawLayout } = useDrawLayout();
@@ -83,6 +85,7 @@ export default {
     this.$root.$off('printDeleteElements', () => {
       this.deleteElements();
     });
+    window.printCanvas = null;
   },
   methods: {
     ...mapMutations({
@@ -113,7 +116,9 @@ export default {
     },
     onContainerReady(containerSize) {
       let el = this.$refs.canvas;
-      window.printCanvas = new fabric.Canvas(el);
+      window.printCanvas = new fabric.Canvas(el, {
+        backgroundColor: '#ffffff'
+      });
       let fabricPrototype = fabric.Object.prototype;
       fabricPrototype.cornerColor = '#fff';
       fabricPrototype.borderColor = '#8C8C8C';
