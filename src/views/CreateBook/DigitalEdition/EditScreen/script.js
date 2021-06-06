@@ -3,7 +3,7 @@ import { mapGetters } from 'vuex';
 import ToolBar from './ToolBar';
 import Header from '@/containers/HeaderEdition/Header';
 import FeedbackBar from '@/containers/HeaderEdition/FeedbackBar';
-import PageEdition from './PageEdition';
+import ScreenEdition from './ScreenEdition';
 import SidebarSection from './SidebarSection';
 import { GETTERS } from '@/store/modules/app/const';
 
@@ -12,7 +12,7 @@ export default {
     ToolBar,
     Header,
     FeedbackBar,
-    PageEdition,
+    ScreenEdition,
     SidebarSection
   },
   methods: {

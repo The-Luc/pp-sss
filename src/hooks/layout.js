@@ -187,7 +187,7 @@ export const useDrawLayout = () => {
         layout.size
       );
     } else {
-      window.printCanvas.clear().renderAll();
+      targetCanvas.clear().renderAll();
     }
   };
 
