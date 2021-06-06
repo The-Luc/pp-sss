@@ -72,16 +72,8 @@ export default {
       deep: true,
       handler(val, oldVal) {
         if (val.id !== oldVal.id) {
-          let position = '';
-          if (val.type === SHEET_TYPES.FRONT_COVER) {
-            position = 'right';
-          }
-
-          if (val.type === SHEET_TYPES.BACK_COVER) {
-            position = 'left';
-          }
           const layoutData = val?.printData?.layout;
-          this.drawLayout(layoutData, position);
+          this.drawLayout(layoutData);
         }
       }
     }
@@ -120,6 +112,7 @@ export default {
       }
       window.printCanvas.setWidth(canvasSize.width);
       window.printCanvas.setHeight(canvasSize.height);
+      this.drawLayout(this.pageSelected?.printData?.layout);
     },
     onContainerReady(containerSize) {
       let el = this.$refs.canvas;

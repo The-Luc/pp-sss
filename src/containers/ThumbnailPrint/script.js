@@ -119,15 +119,7 @@ export default {
      * @param {Refs} canvas - Thumbnail refs
      */
     drawThumbnailLayout(layout, canvas) {
-      let position = '';
-      if (this.sheet.type === SHEET_TYPES.FRONT_COVER) {
-        position = 'right';
-      }
-
-      if (this.sheet.type === SHEET_TYPES.BACK_COVER) {
-        position = 'left';
-      }
-      this.drawLayout(layout, position, canvas);
+      this.drawLayout(layout, canvas);
     }
   }
 };

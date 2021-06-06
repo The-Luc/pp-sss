@@ -10,6 +10,8 @@ import {
   GETTERS as APP_GETTERS
 } from '@/store/modules/app/const';
 import { OBJECT_TYPE, TOOL_NAME } from '@/common/constants';
+import { PRINT_CANVAS_SIZE } from '@/common/constants/canvas';
+import { computedObjectData } from '@/common/utils';
 
 export const useLayoutPrompt = () => {
   const { isPrompt, pageSelected } = useGetters({
@@ -37,54 +39,20 @@ export const useLayoutPrompt = () => {
   };
 };
 
-// TODO later
-const getObjectCoordByPositionPage = (
-  objCoord,
-  objSize,
-  positionPage,
-  targetCanvas,
-  layoutSize
-) => {
-  const { width: canvasWidth, height: canvasHeight } = targetCanvas;
-  const { width: layoutWidth, height: layoutHeight } = layoutSize;
-  let left = 0;
-  let top = 0;
-  const ratioWidth = layoutWidth / canvasWidth;
-  const ratioHeight = layoutHeight / canvasHeight;
-  const centerLeftPoint = objSize.width / 2;
-  const centerTopPoint = objSize.height / 2;
-  if (positionPage === 'left') {
-    left = objCoord.x * ratioWidth;
-  }
-  return {
-    left,
-    top: objCoord.y
-  };
-};
-
-// TODO later
+/**
+ * Get all text objects then draw it by fabric after that add to target canvas
+ * @param {Object} page - Page data
+ * @param {String} position - Page position to draw left or right
+ * @param {Ref} targetCanvas - Target canvas to draw objects
+ * @param {Object} layoutSize - Layout size include width and height
+ */
 const handleDrawTextLayout = (page, position, targetCanvas, layoutSize) => {
-  console.log('page', page);
-  console.log('position', position);
-  console.log('targetCanvas', targetCanvas);
-  console.log('layoutSize', layoutSize);
-
-  const textObjects = page.objects.filter(obj => obj.type === OBJECT_TYPE.TEXT);
-
-  console.log('textObjects', textObjects);
-  console.log('-----------------------------------------');
-  if (textObjects.length > 0) {
+  const textObjects = page?.objects.filter(
+    obj => obj.type === OBJECT_TYPE.TEXT
+  );
+  if (textObjects?.length > 0) {
     textObjects.forEach(obj => {
-      const { width, height } = obj.size;
       const { rotation } = obj.coord;
-      const { left, top } = getObjectCoordByPositionPage(
-        obj.coord,
-        obj.size,
-        position,
-        targetCanvas,
-        layoutSize
-      );
-      console.log('top', top);
       const {
         color,
         fontFamily,
@@ -95,20 +63,30 @@ const handleDrawTextLayout = (page, position, targetCanvas, layoutSize) => {
         styleId,
         text
       } = obj.property;
+
+      const { left, top, width, height } = computedObjectData(
+        obj.coord,
+        obj.size,
+        targetCanvas,
+        layoutSize,
+        position
+      );
+
+      const fontSizeRatio =
+        (targetCanvas.width / PRINT_CANVAS_SIZE.WIDTH) * fontSize;
       const textObj = new fabric.Textbox(text, {
-        // styleId: 'default'
         lockUniScaling: false,
         width,
         height,
+        left,
+        top,
         fontWeight: isBold ? 'bold' : 'normal',
         fontStyle: isItalic ? 'italic' : 'normal',
         underline: isUnderline,
-        left,
         textAlign: 'left',
-        top,
         rotate: rotation,
         fontFamily,
-        fontSize,
+        fontSize: fontSizeRatio,
         isBold,
         isItalic,
         isUnderline,
@@ -121,76 +99,67 @@ const handleDrawTextLayout = (page, position, targetCanvas, layoutSize) => {
 };
 
 /**
- * Get background source from layout and draw it on target canvas by fabric
- * @param {Object} layoutData - Layout object
- * @param {String} position - Layout postion to draw // left or right
- * @param {Ref} targetCanvas - Target canvas to draw objects
- */
-const handleDrawBackgroundLayout = (layoutData, position, targetCanvas) => {
-  const backrgoundObj = layoutData?.objects.find(
-    obj => obj.type === OBJECT_TYPE.BACKGROUND
-  );
-  const backgroundUrl = backrgoundObj?.property?.imageUrl;
-  if (!backgroundUrl) {
-    targetCanvas.clear().renderAll();
-    return;
-  }
-  fabric.Image.fromURL(
-    backgroundUrl,
-    function(img) {
-      img.selectable = false;
-      img.left = position === 'right' ? targetCanvas.width / 2 : 0;
-      img.scaleX = targetCanvas.width / img.width / 2;
-      img.scaleY = targetCanvas.height / img.height;
-      targetCanvas.add(img);
-      targetCanvas.sendToBack(img);
-    },
-    {
-      objectCaching: true
-    }
-  );
-};
-
-/**
- * Add objects by type to target canvas
- * @param {Object} layoutData - Layout object
- * @param {String} position - Layout postion to draw // left or right
+ * Get background source from page data and draw it on target canvas by fabric after that draw objects
+ * @param {Object} pageData - Page object data
+ * @param {String} position - Page position to draw left or right
  * @param {Ref} targetCanvas - Target canvas to draw objects
  * @param {Object} layoutSize - Layout object size
  */
-const handleDrawLayout = (layoutData, position, targetCanvas, layoutSize) => {
-  handleDrawBackgroundLayout(layoutData, position, targetCanvas);
-  handleDrawTextLayout(layoutData, position, targetCanvas, layoutSize);
+const handleDrawBackgroundLayout = (
+  pageData,
+  position,
+  targetCanvas,
+  layoutSize
+) => {
+  const backrgoundObj = pageData?.objects?.find(
+    obj => obj.type === OBJECT_TYPE.BACKGROUND
+  );
+  const backgroundUrl = backrgoundObj?.property?.imageUrl;
+  if (!pageData?.objects) {
+    targetCanvas?.clear().renderAll();
+    return;
+  }
+  fabric.Image.fromURL(backgroundUrl, function(img) {
+    img.selectable = false;
+    img.left = position === 'right' ? targetCanvas.width / 2 : 0;
+    img.scaleX = targetCanvas.width / img.width / 2;
+    img.scaleY = targetCanvas.height / img.height;
+    targetCanvas.add(img);
+    handleDrawTextLayout(pageData, position, targetCanvas, layoutSize);
+  });
+};
+
+/**
+ * Pass params to function handleDrawBackgroundLayout to draw background
+ * @param {Object} pageData - Page object data
+ * @param {String} position - Page position to draw left or right
+ * @param {Ref} targetCanvas - Target canvas to draw objects
+ * @param {Object} layoutSize - Layout object size
+ */
+const handleDrawLayout = (pageData, position, targetCanvas, layoutSize) => {
+  handleDrawBackgroundLayout(pageData, position, targetCanvas, layoutSize);
 };
 
 export const useDrawLayout = () => {
   /**
-   * Draw layout by take left and right layout image data
-   * @param {Object} layout - Layout object
-   * @param {String} position - Layout postion to draw // left or right
+   * Draw layout with layout data or reset canvas when layout not exist
+   * @param {Object} layout - Layout object data
    * @param {Ref} targetCanvas - Target canvas to draw objects
    */
-  const drawLayout = (layout, position, targetCanvas = window.printCanvas) => {
+  const drawLayout = (layout, targetCanvas = window.printCanvas) => {
     if (layout?.id) {
-      const leftLayout = layout?.pages[0];
-      const rightLayout = layout?.pages[1];
-      handleDrawLayout(
-        leftLayout,
-        position || 'left',
-        targetCanvas,
-        layout.size
-      );
-      handleDrawLayout(
-        rightLayout,
-        position || 'right',
-        targetCanvas,
-        layout.size
-      );
+      layout.pages.forEach((page, index) => {
+        handleDrawLayout(
+          page,
+          index === 0 ? 'left' : 'right',
+          targetCanvas,
+          layout.size
+        );
+      });
     } else {
-      targetCanvas.clear().renderAll();
+      targetCanvas?.clear().renderAll(); // Clear canvas when click on empty spread
     }
   };
-
   return {
     drawLayout
   };
