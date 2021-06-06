@@ -42,7 +42,7 @@ export const useLayoutPrompt = () => {
 /**
  * Get all text objects then draw it by fabric after that add to target canvas
  * @param {Object} page - Page data
- * @param {String} position - Page postion to draw left or right
+ * @param {String} position - Page position to draw left or right
  * @param {Ref} targetCanvas - Target canvas to draw objects
  * @param {Object} layoutSize - Layout size include width and height
  */
@@ -101,7 +101,7 @@ const handleDrawTextLayout = (page, position, targetCanvas, layoutSize) => {
 /**
  * Get background source from page data and draw it on target canvas by fabric after that draw objects
  * @param {Object} pageData - Page object data
- * @param {String} position - Page postion to draw left or right
+ * @param {String} position - Page position to draw left or right
  * @param {Ref} targetCanvas - Target canvas to draw objects
  * @param {Object} layoutSize - Layout object size
  */
@@ -132,7 +132,7 @@ const handleDrawBackgroundLayout = (
 /**
  * Pass params to function handleDrawBackgroundLayout to draw background
  * @param {Object} pageData - Page object data
- * @param {String} position - Page postion to draw left or right
+ * @param {String} position - Page position to draw left or right
  * @param {Ref} targetCanvas - Target canvas to draw objects
  * @param {Object} layoutSize - Layout object size
  */

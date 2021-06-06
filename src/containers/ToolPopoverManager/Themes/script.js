@@ -96,7 +96,7 @@ export default {
       }
     },
     /**
-     * Scroll to theme postion which choose from select
+     * Scroll to theme position which choose from select
      */
     scrollToElement(el) {
       el.scrollIntoView({
