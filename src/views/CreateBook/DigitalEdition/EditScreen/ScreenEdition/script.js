@@ -25,7 +25,7 @@ export default {
       window.digitalCanvas.setHeight(canvasSize.height);
     },
     onContainerReady(containerSize) {
-      let el = this.$refs.canvas;
+      let el = this.$refs.digitalCanvas;
       window.digitalCanvas = new fabric.Canvas(el);
       let fabricPrototype = fabric.Object.prototype;
       fabricPrototype.cornerColor = '#fff';

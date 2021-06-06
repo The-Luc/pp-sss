@@ -1,5 +1,5 @@
 <template>
-  <div ref="sizeWp" class="size-wrapper">
+  <div ref="sizeWrapper" class="size-wrapper">
     <slot></slot>
   </div>
 </template>
