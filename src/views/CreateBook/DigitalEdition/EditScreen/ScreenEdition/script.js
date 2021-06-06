@@ -43,5 +43,8 @@ export default {
     onContainerResized(containerSize) {
       this.updateCanvasSize(containerSize);
     }
+  },
+  beforeDestroy() {
+    window.digitalCanvas = null;
   }
 };

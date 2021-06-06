@@ -93,6 +93,7 @@ export default {
     this.$root.$off('printDeleteElements', () => {
       this.deleteElements();
     });
+    window.printCanvas = null;
   },
   methods: {
     ...mapMutations({
