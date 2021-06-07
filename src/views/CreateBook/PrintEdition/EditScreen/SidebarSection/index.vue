@@ -1,5 +1,5 @@
 <template>
-  <div class="sidebar-section">
+  <div ref="sideBarSection" class="sidebar-section">
     <div class="thumbnail-view-container">
       <HeaderContainer
         v-for="section in book.sections"
@@ -9,6 +9,7 @@
         <Thumbnail
           v-for="sheet in section.sheets"
           :key="sheet.id"
+          :ref="`spread${sheet.id}`"
           :sheet="sheet"
           :edit="false"
           :is-show-link="false"

@@ -3,6 +3,7 @@ import { mapGetters, mapMutations } from 'vuex';
 import Thumbnail from '@/components/Thumbnail/ThumbnailDigital';
 import HeaderContainer from '@/components/Thumbnail/HeaderContainer';
 import { GETTERS, MUTATES } from '@/store/modules/book/const';
+import { scrollToElement } from '@/common/utils';
 
 export default {
   components: {
@@ -35,10 +36,23 @@ export default {
       };
     }
   },
+  mounted() {
+    setTimeout(() => {
+      this.autoScrollToScreen(this.pageSelected.id);
+    }, 500);
+  },
   methods: {
     ...mapMutations({
       selectSheet: MUTATES.SELECT_SHEET
     }),
+    /**
+     * Get screen refs by sheet's id and handle auto scroll
+     * @param  {Number} pageSelected Sheet's id selected
+     */
+    autoScrollToScreen(pageSelected) {
+      const currentScreendActive = this.$refs[`screen${pageSelected}`];
+      scrollToElement(currentScreendActive[0].$el);
+    },
     /**
      * Check if that sheet is selected
      * @param  {String} sheetId Sheet's id selected
