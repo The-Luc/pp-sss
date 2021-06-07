@@ -9,6 +9,7 @@
         <Thumbnail
           v-for="sheet in section.sheets"
           :key="sheet.id"
+          :ref="`screen${sheet.id}`"
           :sheet="sheet"
           :edit="false"
           :left-number-page="true"

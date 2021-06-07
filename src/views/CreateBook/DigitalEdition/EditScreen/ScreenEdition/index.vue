@@ -2,7 +2,11 @@
   <div class="screen-edition">
     <div class="row digital-canvas-container">
       <SizeWrapper @mounted="onContainerReady" @updated="onContainerResized">
-        <canvas id="digitalCanvas" ref="digitalCanvas" class="digital-canvas"></canvas>
+        <canvas
+          id="digitalCanvas"
+          ref="digitalCanvas"
+          class="digital-canvas"
+        ></canvas>
       </SizeWrapper>
     </div>
     <div class="digital-frame">

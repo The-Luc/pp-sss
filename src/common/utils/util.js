@@ -328,3 +328,21 @@ export const fabricPropToProp = fabricProp => {
 
   return prop;
 };
+
+/**
+ * Handle scroll to element's position with configs
+ *
+ * @param   {Ref}  el  Element need to scroll
+ * @param   {Object}  opts  Options when scrolling
+ */
+export const scrollToElement = (el, opts) => {
+  const baseOpts = {
+    behavior: 'smooth',
+    block: 'nearest'
+  };
+
+  el.scrollIntoView({
+    ...baseOpts,
+    ...opts
+  });
+};

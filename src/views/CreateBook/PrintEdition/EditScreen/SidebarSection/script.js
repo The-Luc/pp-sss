@@ -11,6 +11,7 @@ import {
   useObjectProperties
 } from '@/hooks';
 import { TOOL_NAME } from '@/common/constants';
+import { scrollToElement } from '@/common/utils';
 
 export default {
   setup() {
@@ -37,11 +38,24 @@ export default {
       isOpenMenuProperties: APP_GETTERS.IS_OPEN_MENU_PROPERTIES
     })
   },
+  mounted() {
+    setTimeout(() => {
+      this.autoScrollToSpread(this.pageSelected.id);
+    }, 500);
+  },
   methods: {
     ...mapMutations({
       selectSheet: MUTATES.SELECT_SHEET,
       setSectionId: MUTATES.SET_SECTION_ID
     }),
+    /**
+     * Get spread refs by sheet's id and handle auto scroll
+     * @param  {Number} pageSelected Sheet's id selected
+     */
+    autoScrollToSpread(pageSelected) {
+      const currentSpreadActive = this.$refs[`spread${pageSelected}`];
+      scrollToElement(currentSpreadActive[0].$el);
+    },
     numberPage(sectionId, sheet) {
       const sectionIndex = this.book.sections.findIndex(
         item => item.id == sectionId

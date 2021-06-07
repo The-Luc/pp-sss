@@ -103,15 +103,18 @@ export default {
         width: 0,
         height: 0
       };
-      if (containerSize.ratio > printSize.inches.ratio) {
+      const { ratio: printRatio, sheetWidth } = printSize.pixels;
+      if (containerSize.ratio > printRatio) {
         canvasSize.height = containerSize.height;
-        canvasSize.width = canvasSize.height * printSize.inches.ratio;
+        canvasSize.width = canvasSize.height * printRatio;
       } else {
         canvasSize.width = containerSize.width;
-        canvasSize.height = canvasSize.width / printSize.inches.ratio;
+        canvasSize.height = canvasSize.width / printRatio;
       }
+      const currentZoom = canvasSize.width / sheetWidth;
       window.printCanvas.setWidth(canvasSize.width);
       window.printCanvas.setHeight(canvasSize.height);
+      window.printCanvas.setZoom(currentZoom);
       this.drawLayout(this.pageSelected?.printData?.layout);
     },
     onContainerReady(containerSize) {

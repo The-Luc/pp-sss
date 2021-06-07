@@ -1,6 +1,6 @@
 import { fabric } from 'fabric';
 
-import { getPagePrintSize } from '@/common/utils';
+import { DIGITAL_CANVAS_SIZE } from '@/common/constants/canvas';
 import SizeWrapper from '@/components/SizeWrapper';
 
 export default {
@@ -9,17 +9,16 @@ export default {
   },
   methods: {
     updateCanvasSize(containerSize) {
-      const pageSize = getPagePrintSize();
       const canvasSize = {
         width: 0,
         height: 0
       };
-      if (containerSize.ratio > pageSize.inches.ratio) {
+      if (containerSize.ratio > DIGITAL_CANVAS_SIZE.RATIO) {
         canvasSize.height = containerSize.height;
-        canvasSize.width = canvasSize.height * pageSize.inches.ratio;
+        canvasSize.width = canvasSize.height * DIGITAL_CANVAS_SIZE.RATIO;
       } else {
         canvasSize.width = containerSize.width;
-        canvasSize.height = canvasSize.width / pageSize.inches.ratio;
+        canvasSize.height = canvasSize.width / DIGITAL_CANVAS_SIZE.RATIO;
       }
       window.digitalCanvas.setWidth(canvasSize.width);
       window.digitalCanvas.setHeight(canvasSize.height);
