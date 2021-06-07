@@ -121,6 +121,6 @@ export const getPagePrintSize = () => {
  * @param   {Number}  size the size that need to be converted
  * @returns {Number}  the scaled-size
  */
-export const scaleSize = (size) => (
+export const scaleSize = size => (
   size * PRINT_DPI / 72
 );
