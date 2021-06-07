@@ -63,6 +63,8 @@ export const getCoverPagePrintSize = (isHardCover, pageCount) => {
   const inches = {
     pdfWidth: pdfFinalPageSize.PDF_DOUBLE_WIDTH,
     pdfHeight: pdfFinalPageSize.PDF_HEIGHT,
+    sheetWidth: pdfFinalPageSize.PDF_DOUBLE_WIDTH,
+    sheetHeight: pdfFinalPageSize.PDF_HEIGHT,
     pageWidth: PRINT_PAGE_SIZE.WIDTH,
     pageHeight: PRINT_PAGE_SIZE.HEIGHT,
     spineWidth: spineWidth,
@@ -94,6 +96,8 @@ export const getPagePrintSize = () => {
   const inches = {
     pdfWidth: PRINT_PAGE_SIZE.PDF_DOUBLE_WIDTH,
     pdfHeight: PRINT_PAGE_SIZE.PDF_HEIGHT,
+    sheetWidth: PRINT_PAGE_SIZE.PDF_DOUBLE_WIDTH,
+    sheetHeight: PRINT_PAGE_SIZE.PDF_HEIGHT,
     pageWidth: PRINT_PAGE_SIZE.WIDTH,
     pageHeight: PRINT_PAGE_SIZE.HEIGHT,
     spineWidth: 0,
@@ -109,4 +113,17 @@ export const getPagePrintSize = () => {
     inches,
     pixels
   };
+};
+
+/**
+ * Responsively convert size to a correct scale size base on current canvas zoom level
+ *
+ * @param   {Number}  size the size that need to be converted
+ * @param   {Object}  fabricCanvas the currently active canvas
+ * @returns {Number}  the scaled-size
+ */
+ export const scaleSize = (size, fabricCanvas = null) => {
+  const canvas = fabricCanvas || window.printCanvas || window.digitalCanvas;
+  const zoom = canvas ? canvas.getZoom() : 1;
+  return size / zoom;
 };
