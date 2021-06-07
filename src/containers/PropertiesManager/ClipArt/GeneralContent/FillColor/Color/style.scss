@@ -1,0 +1,33 @@
+.color-container {
+  .color-content {
+    display: flex;
+
+    .box-color {
+      border: 1px solid #bcbec0;
+      border-radius: 3px;
+      width: 106px;
+      height: 25px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 5px;
+
+      &-active {
+        border-radius: 3px;
+        height: 15px;
+        width: 96px;
+      }
+    }
+
+    .v-icon {
+      font-size: 16px;
+      color: #58595b;
+      cursor: pointer;
+    }
+
+    .color-picker-content {
+      height: 360px;
+    }
+  }
+}

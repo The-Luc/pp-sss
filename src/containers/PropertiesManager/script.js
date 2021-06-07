@@ -6,12 +6,14 @@ import { OBJECT_TYPE } from '@/common/constants';
 // Object component
 import TextProperties from '@/containers/PropertiesManager/Text';
 import ImageProperties from '@/containers/PropertiesManager/Image';
+import ClipArt from '@/containers/PropertiesManager/ClipArt';
 
-const { TEXT, IMAGE } = OBJECT_TYPE;
+const { TEXT, IMAGE, CLIP_ART } = OBJECT_TYPE;
 
 const ObjectList = {
   [TEXT]: TEXT,
-  [IMAGE]: IMAGE
+  [IMAGE]: IMAGE,
+  [CLIP_ART]: CLIP_ART
 };
 
 export default {
@@ -22,7 +24,8 @@ export default {
   },
   components: {
     [OBJECT_TYPE.TEXT]: TextProperties,
-    [OBJECT_TYPE.IMAGE]: ImageProperties
+    [OBJECT_TYPE.IMAGE]: ImageProperties,
+    [OBJECT_TYPE.CLIP_ART]: ClipArt
   },
   computed: {
     ...mapGetters({

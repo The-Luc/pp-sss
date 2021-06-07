@@ -15,16 +15,9 @@
         <div class="modal-preview-img">
           <div class="modal-preview-img-left">
             <img
-              v-if="layout.imageUrlLeft"
-              :src="require(`@/assets/image/layouts/${layout.imageUrlLeft}`)"
+              v-if="layout.previewImageUrl"
+              :src="layout.previewImageUrl"
               alt="left thumbnail"
-            />
-          </div>
-          <div class="modal-preview-img-right">
-            <img
-              v-if="layout.imageUrlRight"
-              :src="require(`@/assets/image/layouts/${layout.imageUrlRight}`)"
-              alt="right thumbnail"
             />
           </div>
         </div>
