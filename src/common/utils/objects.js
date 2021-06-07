@@ -10,8 +10,8 @@ export const computedObjectData = (
   objCoord,
   objSize,
   targetCanvas,
-  layoutSize,
-  position
+  layoutSize
+  // position
 ) => {
   const { width: canvasWidth, height: canvasHeight } = targetCanvas;
   const { width: layoutWidth, height: layoutHeight } = layoutSize;

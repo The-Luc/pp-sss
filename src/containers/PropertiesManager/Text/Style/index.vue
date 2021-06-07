@@ -1,9 +1,8 @@
-<template lang="">
+<template>
   <div>
     This is Style
   </div>
 </template>
-<script>
-export default {};
-</script>
-<style lang=""></style>
+
+<script src="./script.js" />
+<style lang="scss" src="./style.scss" />
