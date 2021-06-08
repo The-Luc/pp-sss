@@ -10,9 +10,7 @@ export default {
     }),
     color() {
       const color = this.textStyle.color || '#0B1717';
-
       this.setColorPickerColor({ color: color });
-
       return color;
     }
   },
