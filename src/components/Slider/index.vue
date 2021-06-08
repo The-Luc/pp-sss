@@ -1,5 +1,5 @@
 <template>
-  <div class="slider-container">
+  <div class="pp-slider-container">
     <div class="control-input">
       <v-slider
         class="pp-slider"

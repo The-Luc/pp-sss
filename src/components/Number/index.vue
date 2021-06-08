@@ -7,6 +7,7 @@
     :value="value"
     type="number"
     :suffix="suffix"
+    @keydown.esc="onEsc"
     @change="onChangeInput"
   />
 </template>
