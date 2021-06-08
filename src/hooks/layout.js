@@ -49,14 +49,6 @@ export const useLayoutPrompt = () => {
 const handleDrawTextLayout = (page, position, targetCanvas, objects) => {
   const objectIds = cloneDeep(page.objects);
   const objectsData = pick(objects, [...objectIds]);
-  let res = {};
-  let textObjects = [];
-  Object.keys(objectsData).forEach(key => {
-    if (objectsData[key].type === OBJECT_TYPE.TEXT) {
-      res = objectsData[key];
-      textObjects.push(res);
-    }
-  });
   Object.values(objectsData).forEach(obj => {
     if (obj.type === OBJECT_TYPE.TEXT) {
       const {
