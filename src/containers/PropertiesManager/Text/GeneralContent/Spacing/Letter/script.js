@@ -2,7 +2,6 @@ import { mapGetters } from 'vuex';
 
 import PpCombobox from '@/components/Combobox';
 import { ICON_LOCAL } from '@/common/constants';
-import { LETTER_SPACING } from '@/mock/letterSpacing';
 
 import { isEmpty } from '@/common/utils';
 import { GETTERS } from '@/store/modules/book/const';
@@ -11,11 +10,16 @@ export default {
   components: {
     PpCombobox
   },
+  props: {
+    items: {
+      type: Array,
+      required: true
+    }
+  },
   data() {
     return {
       prependedIcon: ICON_LOCAL.PREPENDED_LETTER,
-      appendedIcon: ICON_LOCAL.APPENED_ICON,
-      items: LETTER_SPACING
+      appendedIcon: ICON_LOCAL.APPENED_ICON
     };
   },
   computed: {

@@ -1,0 +1,13 @@
+.border-color-picker-container {
+  margin-left: 15px;
+
+  .color-content {
+    .box-color {
+      width: 80px;
+      &-active {
+        width: 100%;
+        margin: 0 10px;
+      }
+    }
+  }
+}

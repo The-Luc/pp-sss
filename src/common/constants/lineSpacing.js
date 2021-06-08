@@ -1,4 +1,5 @@
 export const LINE_SPACING = [
+  { name: 'Auto', value: 'auto' },
   { name: '6 pt', value: 6 },
   { name: '7 pt', value: 7 },
   { name: '8 pt', value: 8 },

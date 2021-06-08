@@ -1,6 +1,9 @@
+import { mapGetters } from 'vuex';
+
 import Opacity from './Opacity';
 import Border from './Border';
 import Shadow from './Shadow';
+import { GETTERS } from '@/store/modules/book/const';
 
 export default {
   components: {
@@ -10,9 +13,6 @@ export default {
   },
   data() {
     return {
-      textStyles: {
-        opacity: 50
-      },
       borderOptions: [
         {
           name: 'No border',
@@ -43,13 +43,33 @@ export default {
       }
     };
   },
+  computed: {
+    ...mapGetters({
+      selectedId: GETTERS.SELECTED_OBJECT_ID,
+      selectedOpacity: GETTERS.PROP_OBJECT_BY_ID,
+      triggerChange: GETTERS.TRIGGER_OBJECT_CHANGE
+    }),
+    opacityValue() {
+      if (this.triggerChange) {
+        // just for trigger the change
+      }
+
+      const res = this.selectedOpacity({
+        id: this.selectedId,
+        prop: 'opacity'
+      });
+      return res * 100;
+    }
+  },
   methods: {
     /**
      * Receive value opacity from children
      * @param   {Number}  value Value user input
      */
     onChange(value) {
-      this.textStyles.opacity = value;
+      this.$root.$emit('printChangeTextProperties', {
+        opacity: value / 100
+      });
     },
     /**
      * Receive value border from children

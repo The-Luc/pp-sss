@@ -277,6 +277,9 @@ export const toFabricTextProp = prop => {
       },
       LetterSpacing: {
         name: 'charSpacing'
+      },
+      opacity: {
+        name: 'opacity'
       }
     },
     restrict: [
@@ -285,7 +288,6 @@ export const toFabricTextProp = prop => {
       'type',
       'textCase',
       'text',
-      'opacity',
       'border',
       'shadow',
       'flip'
