@@ -4,7 +4,7 @@
     v-click-outside="onClickOutCombobox"
     class="pp-combobox"
     :items="items"
-    item-text="label"
+    item-text="name"
     item-value="value"
     :value="selectedVal"
     solo
@@ -38,7 +38,7 @@
         <v-list-item-content>
           <v-list-item-title>
             <v-row no-gutters align="center">
-              <span>{{ item.label }}</span>
+              <span>{{ item.name }}</span>
             </v-row>
           </v-list-item-title>
         </v-list-item-content>

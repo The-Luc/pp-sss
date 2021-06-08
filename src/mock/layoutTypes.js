@@ -2,7 +2,7 @@ import { LAYOUT_TYPES } from '@/common/constants/layoutTypes';
 
 const getLayoutTypesOptions = () => {
   return Object.keys(LAYOUT_TYPES).map(key => ({
-    label: LAYOUT_TYPES[key].label,
+    name: LAYOUT_TYPES[key].name,
     value: LAYOUT_TYPES[key].value
   }));
 };

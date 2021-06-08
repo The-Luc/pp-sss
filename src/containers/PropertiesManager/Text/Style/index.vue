@@ -1,9 +1,18 @@
-<template lang="">
+<template>
   <div>
-    This is Style
+    <Opacity :value="textStyles.opacity" @change="onChange" />
+    <Border
+      :selected-border="selectedBorder"
+      :options="borderOptions"
+      @change="onChangeBorder"
+    />
+    <Shadow
+      :selected-shadow="selectedShadow"
+      :options="shadowOptions"
+      @change="onChangeShadow"
+    />
   </div>
 </template>
-<script>
-export default {};
-</script>
-<style lang=""></style>
+
+<script src="./script.js" />
+<style lang="scss" src="./style.scss" />

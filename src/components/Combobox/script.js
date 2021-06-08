@@ -20,7 +20,7 @@ export default {
     },
     selectedVal: {
       type: Object,
-      default: () => ({ label: '', value: '' })
+      default: () => ({ name: '', value: '' })
     },
     nudgeWidth: {
       type: Number,

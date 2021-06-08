@@ -10,19 +10,19 @@ export default {
       appendedIcon: ICON_LOCAL.APPENED_ICON,
       items: [
         {
-          label: '1',
+          name: '1',
           value: 1
         },
         {
-          label: '2',
+          name: '2',
           value: 2
         },
         {
-          label: '3',
+          name: '3',
           value: 3
         },
         {
-          label: '4',
+          name: '4',
           value: 4
         }
       ]

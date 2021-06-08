@@ -1,0 +1,45 @@
+.pp-number {
+  /* Chrome, Safari, Edge, Opera */
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  /* Firefox */
+  input[type='number'] {
+    -moz-appearance: textfield;
+  }
+
+  padding-top: 0;
+  margin-top: 0;
+  border: 0.5px solid #bfbfbf;
+  border-radius: 2px;
+  max-width: 50px;
+
+  .v-input__slot {
+    height: 26px;
+
+    &::before,
+    &::after {
+      display: none;
+    }
+
+    .v-text-field__slot {
+      position: relative;
+      justify-content: center;
+      font-size: 11px;
+
+      input {
+        text-align: center;
+        max-width: 19px;
+        color: #58595b;
+      }
+
+      .v-text-field__suffix {
+        padding-left: 0;
+        color: #58595b;
+      }
+    }
+  }
+}
