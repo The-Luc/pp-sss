@@ -12,8 +12,8 @@
       >
         <div class="modal-theme-img" @click="onSelectTheme(theme.id)">
           <img
-            v-if="theme.imageUrl"
-            :src="require(`@/assets/image/themes/${theme.imageUrl}`)"
+            v-if="theme.previewImageUrl"
+            :src="require(`@/assets/image/themes/${theme.previewImageUrl}`)"
             alt="theme"
           />
           <div class="modal-theme-layer">

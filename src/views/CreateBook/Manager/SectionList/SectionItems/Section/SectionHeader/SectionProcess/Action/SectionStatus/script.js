@@ -22,19 +22,19 @@ export default {
       statusList: [
         {
           value: 0,
-          label: 'Not Started'
+          name: 'Not Started'
         },
         {
           value: 1,
-          label: 'In Process'
+          name: 'In Process'
         },
         {
           value: 2,
-          label: 'Completed'
+          name: 'Completed'
         },
         {
           value: 3,
-          label: 'Approved'
+          name: 'Approved'
         }
       ]
     };

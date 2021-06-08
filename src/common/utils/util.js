@@ -162,6 +162,14 @@ export const isEmpty = obj => {
   return false;
 };
 
+/**
+ * Map source object to other object using rules
+ *
+ * @param   {Object}  sourceObject  the source object is used to map
+ * @param   {Object}  rules         rules use when mapping
+ *
+ * @returns {Object}                mapped object
+ */
 export const mapObject = (sourceObject, rules) => {
   const resultObject = {};
 

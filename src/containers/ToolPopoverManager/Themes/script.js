@@ -2,7 +2,7 @@ import { mapGetters, mapMutations } from 'vuex';
 
 import PpToolPopover from '@/components/ToolPopover';
 import PpSelect from '@/components/Select';
-import { THEMES_LIST } from '@/mock/themesList';
+import { themeOptions } from '@/mock/themes';
 import { GETTERS as THEME_GETTERS } from '@/store/modules/theme/const';
 import {
   GETTERS as BOOK_GETTER,
@@ -23,7 +23,7 @@ export default {
   },
   data() {
     return {
-      items: THEMES_LIST,
+      items: themeOptions,
       selectedThemeId: null,
       optionThemeSelected: {}
     };

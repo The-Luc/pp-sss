@@ -6,11 +6,11 @@ export default {
     },
     title: {
       type: String,
-      require: true
+      required: true
     },
     label: {
       type: String,
-      require: true
+      required: true
     },
     style: {
       type: Object,
