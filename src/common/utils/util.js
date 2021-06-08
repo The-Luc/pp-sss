@@ -275,7 +275,7 @@ export const toFabricTextProp = prop => {
       horiziontal: {
         name: 'textAlign'
       },
-      LetterSpacing: {
+      letterSpacing: {
         name: 'charSpacing'
       },
       opacity: {
