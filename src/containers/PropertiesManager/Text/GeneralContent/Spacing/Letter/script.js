@@ -38,7 +38,6 @@ export default {
       const selected = this.items.find(
         item => item.value === selectedCharSpacing
       );
-      console.log(this.getValLetterSpacing(selected || selectedCharSpacing));
       return this.getValLetterSpacing(selected || selectedCharSpacing);
     }
   },
