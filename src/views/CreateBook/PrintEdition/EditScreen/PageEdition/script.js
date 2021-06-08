@@ -35,6 +35,7 @@ export default {
       book: GETTERS.BOOK_DETAIL,
       pageSelected: GETTERS.GET_PAGE_SELECTED,
       selectedLayout: GETTERS.SHEET_LAYOUT,
+      getObjectsBySheetId: GETTERS.GET_OBJECTS_BY_SHEET_ID,
       isOpenMenuProperties: APP_GETTERS.IS_OPEN_MENU_PROPERTIES
     }),
     isCover() {
@@ -73,7 +74,8 @@ export default {
       handler(val, oldVal) {
         if (val.id !== oldVal.id) {
           const layoutData = val?.printData?.layout;
-          this.drawLayout(layoutData);
+          const objects = this.getObjectsBySheetId(val.id);
+          this.drawLayout(layoutData, objects);
         }
       }
     }
@@ -114,8 +116,9 @@ export default {
       const currentZoom = canvasSize.width / sheetWidth;
       window.printCanvas.setWidth(canvasSize.width);
       window.printCanvas.setHeight(canvasSize.height);
+      const objects = this.getObjectsBySheetId(this.pageSelected.id);
+      this.drawLayout(this.pageSelected?.printData?.layout, objects);
       window.printCanvas.setZoom(currentZoom);
-      this.drawLayout(this.pageSelected?.printData?.layout);
     },
     onContainerReady(containerSize) {
       let el = this.$refs.canvas;

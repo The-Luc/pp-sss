@@ -119,11 +119,8 @@ export const getPagePrintSize = () => {
  * Responsively convert size to a correct scale size base on current canvas zoom level
  *
  * @param   {Number}  size the size that need to be converted
- * @param   {Object}  fabricCanvas the currently active canvas
  * @returns {Number}  the scaled-size
  */
- export const scaleSize = (size, fabricCanvas = null) => {
-  const canvas = fabricCanvas || window.printCanvas || window.digitalCanvas;
-  const zoom = canvas ? canvas.getZoom() : 1;
-  return size / zoom;
-};
+export const scaleSize = size => (
+  size * PRINT_DPI / 72
+);

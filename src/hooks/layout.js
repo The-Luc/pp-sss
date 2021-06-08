@@ -1,5 +1,6 @@
 import { useMutations, useGetters } from 'vuex-composition-helpers';
 import { fabric } from 'fabric';
+import { pick, cloneDeep } from 'lodash';
 
 import {
   GETTERS as BOOK_GETTERS,
@@ -45,11 +46,25 @@ export const useLayoutPrompt = () => {
  * @param {String} position - Page position to draw left or right
  * @param {Ref} targetCanvas - Target canvas to draw objects
  * @param {Object} layoutSize - Layout size include width and height
+ * @param {Array} objects - All objects user addeed
  */
-const handleDrawTextLayout = (page, position, targetCanvas, layoutSize) => {
-  const textObjects = page?.objects.filter(
-    obj => obj.type === OBJECT_TYPE.TEXT
-  );
+const handleDrawTextLayout = (
+  page,
+  position,
+  targetCanvas,
+  layoutSize,
+  objects
+) => {
+  const objectIds = cloneDeep(page.objects);
+  const objectsData = pick(objects, [...objectIds]);
+  let res = {};
+  let textObjects = [];
+  Object.keys(objectsData).forEach(key => {
+    if (objectsData[key].type === OBJECT_TYPE.TEXT) {
+      res = objectsData[key];
+      textObjects.push(res);
+    }
+  });
   if (textObjects?.length > 0) {
     textObjects.forEach(obj => {
       const { rotation } = obj.coord;
@@ -104,18 +119,25 @@ const handleDrawTextLayout = (page, position, targetCanvas, layoutSize) => {
  * @param {String} position - Page position to draw left or right
  * @param {Ref} targetCanvas - Target canvas to draw objects
  * @param {Object} layoutSize - Layout object size
+ * @param {Array} objects - All objects user addeed
  */
 const handleDrawBackgroundLayout = (
   pageData,
   position,
   targetCanvas,
-  layoutSize
+  layoutSize,
+  objects
 ) => {
-  const backrgoundObj = pageData?.objects?.find(
-    obj => obj.type === OBJECT_TYPE.BACKGROUND
-  );
+  const objectIds = cloneDeep(pageData.objects);
+  const objectsData = pick(objects, [...objectIds]);
+  let backrgoundObj = {};
+  Object.keys(objectsData).find(key => {
+    if (objectsData[key].type === OBJECT_TYPE.BACKGROUND) {
+      backrgoundObj = objectsData[key];
+    }
+  });
   const backgroundUrl = backrgoundObj?.property?.imageUrl;
-  if (!pageData?.objects) {
+  if (pageData?.objects.length === 0) {
     targetCanvas?.clear().renderAll();
     return;
   }
@@ -125,35 +147,49 @@ const handleDrawBackgroundLayout = (
     img.scaleX = targetCanvas.width / img.width / 2;
     img.scaleY = targetCanvas.height / img.height;
     targetCanvas.add(img);
-    handleDrawTextLayout(pageData, position, targetCanvas, layoutSize);
+    handleDrawTextLayout(pageData, position, targetCanvas, layoutSize, objects);
   });
 };
 
 /**
- * Pass params to function handleDrawBackgroundLayout to draw background
+ * Pass params to function objects to draw background
  * @param {Object} pageData - Page object data
  * @param {String} position - Page position to draw left or right
  * @param {Ref} targetCanvas - Target canvas to draw objects
  * @param {Object} layoutSize - Layout object size
  */
-const handleDrawLayout = (pageData, position, targetCanvas, layoutSize) => {
-  handleDrawBackgroundLayout(pageData, position, targetCanvas, layoutSize);
+const handleDrawLayout = (
+  pageData,
+  position,
+  targetCanvas,
+  layoutSize,
+  objects
+) => {
+  handleDrawBackgroundLayout(
+    pageData,
+    position,
+    targetCanvas,
+    layoutSize,
+    objects
+  );
 };
 
 export const useDrawLayout = () => {
   /**
    * Draw layout with layout data or reset canvas when layout not exist
    * @param {Object} layout - Layout object data
+   * @param {Array} objects - All objects user addeed
    * @param {Ref} targetCanvas - Target canvas to draw objects
    */
-  const drawLayout = (layout, targetCanvas = window.printCanvas) => {
+  const drawLayout = (layout, objects, targetCanvas = window.printCanvas) => {
     if (layout?.id) {
       layout.pages.forEach((page, index) => {
         handleDrawLayout(
           page,
           index === 0 ? 'left' : 'right',
           targetCanvas,
-          layout.size
+          layout.size,
+          objects
         );
       });
     } else {

@@ -8,7 +8,6 @@ import {
 
 const text1 = {
   ...TextElement,
-  id: 'text-1',
   size: {
     width: 100,
     height: 50
@@ -32,7 +31,6 @@ const text1 = {
 
 const text2 = {
   ...TextElement,
-  id: 'text-2',
   size: {
     width: 200,
     height: 100
@@ -56,7 +54,6 @@ const text2 = {
 
 const bg1 = {
   ...BackgroundElement,
-  id: 'bg-1',
   size: {
     width: 0,
     height: 0
@@ -78,7 +75,6 @@ const bg1 = {
 
 const bg2 = {
   ...BackgroundElement,
-  id: 'bg-2',
   size: {
     width: 0,
     height: 0
@@ -100,7 +96,6 @@ const bg2 = {
 
 const clipArt1 = {
   ...ClipArtElement,
-  id: 'clip-art-1',
   size: {
     width: 100,
     height: 100
@@ -124,7 +119,6 @@ const clipArt1 = {
 
 const clipArt2 = {
   ...ClipArtElement,
-  id: 'clip-art-2',
   size: {
     width: 100,
     height: 100
@@ -146,7 +140,6 @@ const clipArt2 = {
 
 const shape1 = {
   ...ShapeElement,
-  id: 'shape-1',
   size: {
     width: 100,
     height: 100
@@ -166,7 +159,6 @@ const shape1 = {
 
 const textSinglePage1 = {
   ...TextElement,
-  id: 'text-single-1',
   size: {
     width: 500,
     height: 176.6071428571429
@@ -190,7 +182,6 @@ const textSinglePage1 = {
 
 const textSinglePage2 = {
   ...TextElement,
-  id: 'text-single-1',
   size: {
     width: 500,
     height: 176.6071428571429
@@ -214,7 +205,6 @@ const textSinglePage2 = {
 
 const bgSinglePage1 = {
   ...BackgroundElement,
-  id: 'bg-single-1',
   size: {
     width: 0,
     height: 0
@@ -236,7 +226,6 @@ const bgSinglePage1 = {
 
 const bgSinglePage2 = {
   ...BackgroundElement,
-  id: 'bg-single-1',
   size: {
     width: 0,
     height: 0

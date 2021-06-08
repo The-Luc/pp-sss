@@ -1,4 +1,4 @@
-import { cloneDeep } from 'lodash';
+import { cloneDeep, uniqueId, omit, pick } from 'lodash';
 import randomcolor from 'randomcolor';
 import moment from 'moment';
 
@@ -297,13 +297,29 @@ export const mutations = {
     state,
     { sheetId, themeId, layout, pagePosition }
   ) {
+    // Assign unique id to objects
+    const pagesWithObjectId = layout.pages.map(page => ({
+      objects: page.objects.map(obj => ({
+        ...obj,
+        id: uniqueId()
+      }))
+    }));
     const allSheets = getAllSheets(state.book.sections);
     const layoutObj = cloneDeep(layout);
+    layoutObj.pages = pagesWithObjectId;
     const currentSheet = allSheets.find(sheet => sheet.id === sheetId);
     const sheetObj = cloneDeep(currentSheet);
+    // Reset objects of current sheet
+    if (sheetObj.printData.layout?.id && !pagePosition) {
+      sheetObj.printData.layout.pages.forEach(page => {
+        page.objects.forEach(objectId => {
+          state.objects = omit(state.objects, [objectId]);
+        });
+      });
+    }
+
     const singleLayoutSelected = layoutObj.pages[0]; // For single layout, data object always first item
     let currentPosition = pagePosition; // Check whether user has add single page or not. Value: left or right with single page else undefine
-
     if (sheetObj.type === SHEET_TYPES.FRONT_COVER) {
       // Front cover always has the right page
       currentPosition = 'right';
@@ -314,22 +330,43 @@ export const mutations = {
       currentPosition = 'left';
     }
     // Current sheet's layout
-    const sheetLeftLayout = sheetObj?.printData?.layout?.pages[0];
-    const sheetRightLayout = sheetObj?.printData?.layout?.pages[1];
-    //
+    let sheetLeftLayout = sheetObj?.printData?.layout?.pages[0];
+    let sheetRightLayout = sheetObj?.printData?.layout?.pages[1];
+
+    if (sheetLeftLayout) {
+      // Convert object from string to object by object id to compare data
+      const objectKeys = Object.keys(
+        pick(state.objects, [...sheetLeftLayout?.objects])
+      );
+      sheetLeftLayout = {
+        ...sheetLeftLayout,
+        objects: objectKeys.map(key => state.objects[key])
+      };
+    }
+
+    if (sheetRightLayout) {
+      // Convert object from string to object by object id to compare data
+      const objectKeys = Object.keys(
+        pick(state.objects, [...sheetRightLayout?.objects])
+      );
+      sheetRightLayout = {
+        ...sheetRightLayout,
+        objects: objectKeys.map(key => state.objects[key])
+      };
+    }
+
     let pages = new Array(2);
     pages[0] = sheetLeftLayout; // Assign left layout of current sheet to first item
     pages[1] = sheetRightLayout; // Assign right layout of current sheet to first item
-    let res = pages;
+    let initPages = pages;
+
     if (currentPosition) {
       // User select single page type
       // Check user apply layout to left or right of page
       const indexPage = currentPosition === 'left' ? 0 : 1;
-      res = pages.map((page, index) => {
+      initPages = pages.map((page, index) => {
         if (index === indexPage) {
-          return {
-            ...singleLayoutSelected
-          };
+          return singleLayoutSelected;
         }
         return {
           ...page
@@ -337,9 +374,38 @@ export const mutations = {
       });
     } else {
       // Apply whole layout's pages selected
-      res = layout.pages;
+      initPages = layoutObj.pages;
     }
-    layoutObj.pages = res;
+
+    // Update objects state
+    let objects = {};
+    initPages.forEach(page => {
+      if (page?.objects) {
+        page?.objects.forEach(obj => {
+          objects[obj.id] = {
+            ...obj
+          };
+        });
+      }
+    });
+    state.objects = {
+      ...state.objects,
+      ...objects
+    };
+
+    // Convert objects to objectId into pages
+    const objectsId = initPages.map(page => {
+      if (page?.objects) {
+        return {
+          objects: page?.objects?.map(obj => obj.id)
+        };
+      }
+      return {
+        objects: []
+      };
+    });
+
+    layoutObj.pages = objectsId;
     currentSheet.printData.layout = layoutObj;
     currentSheet.printData.theme = themeId;
   },
@@ -352,12 +418,12 @@ export const mutations = {
     state.sectionId = sectionId;
   },
   [BOOK._MUTATES.SAVE_PRINT_CANVAS](state, { data }) {
-    const { pageSelected, sectionId, book } = state;
-    const sectionIndex = book.sections.findIndex(item => item.id === sectionId);
-    const sheetIndex = book.sections[sectionIndex].sheets.findIndex(
-      item => item.id === pageSelected.id
-    );
-    let printData = book.sections[sectionIndex].sheets[sheetIndex].printData;
-    printData.pages = data;
+    // const { pageSelected, sectionId, book } = state;
+    // const sectionIndex = book.sections.findIndex(item => item.id === sectionId);
+    // const sheetIndex = book.sections[sectionIndex].sheets.findIndex(
+    //   item => item.id === pageSelected.id
+    // );
+    // let printData = book.sections[sectionIndex].sheets[sheetIndex].printData;
+    // printData.pages = data;
   }
 };

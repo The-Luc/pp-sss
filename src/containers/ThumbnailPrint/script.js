@@ -64,7 +64,8 @@ export default {
   computed: {
     ...mapGetters({
       sheetLayout: GETTERS.SHEET_LAYOUT,
-      book: GETTERS.BOOK_DETAIL
+      book: GETTERS.BOOK_DETAIL,
+      getObjectsBySheetId: GETTERS.GET_OBJECTS_BY_SHEET_ID
     }),
     currentLayout() {
       return this.sheetLayout(this.sheet.id);
@@ -119,7 +120,8 @@ export default {
      * @param {Refs} canvas - Thumbnail refs
      */
     drawThumbnailLayout(layout, canvas) {
-      this.drawLayout(layout, canvas);
+      const objects = this.getObjectsBySheetId(this.sheet.id);
+      this.drawLayout(layout, objects, canvas);
     }
   }
 };
