@@ -1,6 +1,7 @@
 import Opacity from './Opacity';
 import Border from './Border';
 import Shadow from './Shadow';
+import { THINKNESS_OPTIONS } from '@/common/constants';
 
 export default {
   components: {
