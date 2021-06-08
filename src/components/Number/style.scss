@@ -17,6 +17,32 @@
   border-radius: 2px;
   max-width: 50px;
 
+  &.length {
+    &-0 {
+      input {
+        max-width: 1px !important;
+      }
+    }
+
+    &-1 {
+      input {
+        max-width: 6px !important;
+      }
+    }
+
+    &-2 {
+      input {
+        max-width: 12px !important;
+      }
+    }
+
+    &-3 {
+      input {
+        max-width: 19px !important;
+      }
+    }
+  }
+
   .v-input__slot {
     height: 26px;
 
