@@ -183,6 +183,15 @@ export default {
      */
     onClickLeftTool(data) {
       if (!this.printThemeSelectedId) {
+        this.setIsOpenProperties({
+          isOpen: !this.isOpenMenuProperties
+        });
+        this.toggleColorPicker({
+          isOpen: false
+        });
+        this.setObjectTypeSelected({
+          type: OBJECT_TYPE.CLIP_ART
+        });
         return;
       }
       const toolName = this.selectedToolName === data?.name ? '' : data?.name;
