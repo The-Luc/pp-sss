@@ -27,6 +27,10 @@ export default {
     disabled: {
       type: Boolean,
       default: false
+    },
+    isBorder: {
+      type: Boolean,
+      default: false
     }
   },
   methods: {
