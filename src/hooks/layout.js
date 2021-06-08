@@ -130,7 +130,7 @@ const handleDrawBackgroundLayout = (
 ) => {
   const objectIds = cloneDeep(pageData.objects);
   const objectsData = pick(objects, [...objectIds]);
-  let backrgoundObj = Object.values(objectsData).find(
+  const backrgoundObj = Object.values(objectsData).find(
     ({ type }) => type === OBJECT_TYPE.BACKGROUND
   );
   const backgroundUrl = backrgoundObj?.property?.imageUrl;
