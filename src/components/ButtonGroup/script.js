@@ -1,7 +1,7 @@
 export default {
   props: {
     item: {
-      type: [Number, Array],
+      type: [Number, String, Array],
       default: null
     },
     multiple: {
@@ -11,6 +11,10 @@ export default {
     ppActiveClass: {
       type: String,
       default: 'active-class'
+    },
+    mandatory: {
+      type: Boolean,
+      default: false
     }
   },
   methods: {

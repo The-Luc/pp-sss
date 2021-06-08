@@ -22,7 +22,7 @@ export default {
     },
     selectedVal: {
       type: Object,
-      default: () => ({})
+      default: () => ({ name: '', value: '' })
     },
     disabled: {
       type: Boolean,
@@ -42,7 +42,7 @@ export default {
      * Get css style of item base on its style
      *
      * @param   {Object} style  style of item
-     * @returns {Object}         css style of item
+     * @returns {Object}        css style of item
      */
     getStyle(cssStyle) {
       if (isEmpty(cssStyle)) return {};

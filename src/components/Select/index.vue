@@ -2,7 +2,7 @@
   <v-select
     class="pp-select"
     :items="items"
-    item-text="label"
+    item-text="name"
     item-value="value"
     solo
     :disabled="disabled"
@@ -21,7 +21,7 @@
         <v-list-item-content>
           <v-list-item-title>
             <v-row no-gutters align="center">
-              <span :style="getStyle(item.cssStyle)">{{ item.label }}</span>
+              <span :style="getStyle(item.cssStyle)">{{ item.name }}</span>
             </v-row>
           </v-list-item-title>
         </v-list-item-content>
@@ -44,7 +44,7 @@
         <v-list-item-content>
           <v-list-item-title>
             <v-row no-gutters align="center">
-              <span :style="getStyle(item.cssStyle)">{{ item.label }}</span>
+              <span :style="getStyle(item.cssStyle)">{{ item.name }}</span>
             </v-row>
           </v-list-item-title>
         </v-list-item-content>

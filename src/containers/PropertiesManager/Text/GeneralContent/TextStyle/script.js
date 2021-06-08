@@ -2,76 +2,86 @@ import { mapGetters } from 'vuex';
 
 import PpSelect from '@/components/Select';
 
-import { styleToCssStyle } from '@/common/utils';
+import { toCssStyle } from '@/common/utils';
 
-import { GETTERS as PROP_GETTERS } from '@/store/modules/property/const';
+import { GETTERS } from '@/store/modules/book/const';
 
 export default {
   components: {
     PpSelect
   },
   data() {
-    return {
-      items: [
-        {
-          label: 'Default',
-          value: 'default',
-          style: {
-            fontFamily: 'Arial',
-            fontSize: 60,
-            isBold: false,
-            isItalic: false,
-            isUnderline: false,
-            color: '#000000'
-          }
-        },
-        {
-          label: 'Cover Headline',
-          value: 'coverHeadline',
-          style: {
-            fontFamily: 'Time News Roman',
-            fontSize: 72,
-            isBold: true,
-            isItalic: true,
-            isUnderline: false,
-            color: '#00FF00'
-          }
-        },
-        {
-          label: 'Page Headline',
-          value: 'pageHeadline',
-          style: {
-            fontFamily: 'Arial',
-            fontSize: 40,
-            isBold: false,
-            isItalic: false,
-            isUnderline: true,
-            color: '#FF0000'
-          }
+    const items = [
+      {
+        name: 'Default',
+        value: 'default',
+        style: {
+          fontFamily: 'Arial',
+          fontSize: 60,
+          isBold: false,
+          isItalic: false,
+          isUnderline: false,
+          color: '#000000'
         }
-      ]
+      },
+      {
+        name: 'Cover Headline',
+        value: 'coverHeadline',
+        style: {
+          fontFamily: 'Time News Roman',
+          fontSize: 90,
+          isBold: true,
+          isItalic: true,
+          isUnderline: false,
+          color: '#00FF00'
+        }
+      },
+      {
+        name: 'Page Headline',
+        value: 'pageHeadline',
+        style: {
+          fontFamily: 'Arial',
+          fontSize: 35,
+          isBold: false,
+          isItalic: false,
+          isUnderline: true,
+          color: '#FF0000'
+        }
+      }
+    ];
+
+    const selectBoxItems = items.map(item => {
+      const { name, value, style } = item;
+
+      return {
+        name,
+        value,
+        style,
+        cssStyle: toCssStyle(style)
+      };
+    });
+
+    return {
+      items,
+      selectBoxItems
     };
   },
   computed: {
     ...mapGetters({
-      textProp: PROP_GETTERS.TEXT_PROPERTY
+      selectedId: GETTERS.SELECTED_OBJECT_ID,
+      selectedStyleId: GETTERS.PROP_OBJECT_BY_ID,
+      triggerChange: GETTERS.TRIGGER_OBJECT_CHANGE
     }),
     selectedItem() {
-      const selectedId = this.textProp.styleId;
+      if (this.triggerChange) {
+        // just for trigger the change
+      }
+
+      const selectedId =
+        this.selectedStyleId({ id: this.selectedId, prop: 'styleId' }) ||
+        'default';
 
       return this.items.find(item => item.value === selectedId);
-    },
-    selectBoxItems() {
-      return this.items.map(item => {
-        const { label, value, style } = item;
-
-        return {
-          label,
-          value,
-          style,
-          cssStyle: styleToCssStyle(style)
-        };
-      });
     }
   },
   methods: {
@@ -82,9 +92,9 @@ export default {
      * @param {Object}  style attribute style of style
      */
     onChange({ value, style }) {
-      this.$root.$emit('printChangeTextStyle', style);
+      this.$root.$emit('printChangeTextProperties', style);
 
-      this.$root.$emit('printChangeTextProp', { styleId: value });
+      this.$root.$emit('printChangeTextProperties', { styleId: value });
     }
   }
 };

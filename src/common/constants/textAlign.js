@@ -1,6 +1,12 @@
-export const TEXT_ALIGN = {
-  0: 'left',
-  1: 'center',
-  2: 'right',
-  3: 'justify'
+export const TEXT_HORIZIONTAL_ALIGN = {
+  LEFT: 'left',
+  RIGHT: 'right',
+  CENTER: 'center',
+  JUSTIFY: 'justify'
+};
+
+export const TEXT_VERTICAL_ALIGN = {
+  TOP: 'top',
+  MIDDLE: 'middle',
+  BOTTOM: 'bottom'
 };

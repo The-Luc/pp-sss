@@ -1,5 +1,5 @@
 import moment from 'moment';
-import { cloneDeep, pick } from 'lodash';
+import { pick } from 'lodash';
 
 import { DATE_FORMAT, MOMENT_TYPE } from '@/common/constants';
 import BOOK from './const';
@@ -85,9 +85,6 @@ export const getters = {
 
     return getDiffDaysFOM(createdDate, deliveryDate);
   },
-  [BOOK._GETTERS.GET_TEXT_PROPERTIES]: ({ textProperties }) => {
-    return textProperties;
-  },
   [BOOK._GETTERS.SHEET_LAYOUT]: ({ book }) => sheetId => {
     const sheets = getAllSheets(book.sections);
     const sheet = sheets.find(s => s.id === sheetId);
@@ -116,5 +113,13 @@ export const getters = {
       });
     });
     return pick(objects, [...objIds]);
-  }
+  },
+  [BOOK._GETTERS.SELECTED_OBJECT_ID]: ({ objectSelectedId }) =>
+    objectSelectedId,
+  [BOOK._GETTERS.OBJECT_BY_ID]: ({ objects }) => id => objects[id],
+  [BOOK._GETTERS.PROP_OBJECT_BY_ID]: ({ objects }) => ({ id, prop }) => {
+    return objects[id]?.property[prop] || null;
+  },
+  [BOOK._GETTERS.TRIGGER_OBJECT_CHANGE]: ({ triggerObjectChange }) =>
+    triggerObjectChange
 };

@@ -1,7 +1,9 @@
 import { mapGetters } from 'vuex';
 import PpButtonGroup from '@/components/ButtonGroup';
 import { GETTERS } from '@/store/modules/book/const';
-import { TEXT_ALIGN } from '@/common/constants';
+import { TEXT_HORIZIONTAL_ALIGN } from '@/common/constants';
+
+import { isEmpty } from '@/common/utils';
 
 export default {
   components: {
@@ -9,70 +11,42 @@ export default {
   },
   data() {
     return {
-      item: null
+      JUSTIFY: TEXT_HORIZIONTAL_ALIGN.JUSTIFY,
+      LEFT: TEXT_HORIZIONTAL_ALIGN.LEFT,
+      RIGHT: TEXT_HORIZIONTAL_ALIGN.RIGHT,
+      CENTER: TEXT_HORIZIONTAL_ALIGN.CENTER
     };
-  },
-  mounted() {
-    window.printCanvas.on({
-      'selection:updated': this.setDataTextProperties,
-      'selection:created': this.setDataTextProperties,
-      'selection:cleared': this.clearDataTextProperties
-    });
   },
   computed: {
     ...mapGetters({
-      textProperties: GETTERS.GET_TEXT_PROPERTIES
-    })
+      selectedId: GETTERS.SELECTED_OBJECT_ID,
+      selectedAlign: GETTERS.PROP_OBJECT_BY_ID,
+      triggerChange: GETTERS.TRIGGER_OBJECT_CHANGE
+    }),
+    selectedAlignment() {
+      if (this.triggerChange) {
+        // just for trigger the change
+      }
+
+      return (
+        this.selectedAlign({
+          id: this.selectedId,
+          prop: 'alignment'
+        })?.horiziontal || this.LEFT
+      );
+    }
   },
   methods: {
     /**
-     * Detect click on item on textcase properties
-     * @param  {Number} val Receive item information
+     * Detect click on item on text alignment properties
+     * @param  {String} data Receive item information
      */
-    onChange(val) {
-      if (val !== 0 && !val) return;
-      this.item = val;
-      this.setTextAlign(TEXT_ALIGN[val]);
-    },
-    /**
-     * Set text box selected text align
-     * @param  {String} position position of text align
-     */
-    setTextAlign(position) {
-      const canvas = window.printCanvas;
-      let obj = canvas.getActiveObject();
-      obj.set({
-        textAlign: position
+    onChange(data) {
+      const value = isEmpty(data) ? TEXT_HORIZIONTAL_ALIGN.LEFT : data;
+
+      this.$root.$emit('printChangeTextProperties', {
+        alignment: { horiziontal: value }
       });
-      canvas.renderAll();
-    },
-    /**
-     * Set data of text properties modal to active
-     */
-    setDataTextProperties() {
-      switch (this.textProperties.textAlign) {
-        case TEXT_ALIGN[0]:
-          this.item = 0;
-          break;
-        case TEXT_ALIGN[1]:
-          this.item = 1;
-          break;
-        case TEXT_ALIGN[2]:
-          this.item = 2;
-          break;
-        case TEXT_ALIGN[3]:
-          this.item = 3;
-          break;
-        default:
-          this.item = null;
-          break;
-      }
-    },
-    /**
-     * Clear data of text properties modal
-     */
-    clearDataTextProperties() {
-      this.item = null;
     }
   }
 };

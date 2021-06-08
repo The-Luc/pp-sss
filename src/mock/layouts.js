@@ -4,7 +4,7 @@ import {
   BackgroundElement,
   ClipArtElement,
   ShapeElement
-} from './elements';
+} from '../common/models';
 
 const text1 = {
   ...TextElement,

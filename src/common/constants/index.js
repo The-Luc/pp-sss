@@ -15,3 +15,7 @@ export * from './processStatus';
 export * from './canvas';
 export * from './textAlign';
 export * from './moment';
+export * from './sheetPositionFixed';
+export * from './textCase';
+export * from './defaultProperty';
+export * from './fontSize';

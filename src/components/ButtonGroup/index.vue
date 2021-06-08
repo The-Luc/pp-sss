@@ -4,6 +4,7 @@
     :active-class="ppActiveClass"
     :value="item"
     :multiple="multiple"
+    :mandatory="mandatory"
     @change="onChange"
   >
     <slot />

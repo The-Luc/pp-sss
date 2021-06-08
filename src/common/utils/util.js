@@ -1,6 +1,9 @@
+import { cloneDeep, merge } from 'lodash';
 import moment from 'moment';
 
 import { DATE_FORMAT, MOMENT_TYPE } from '@/common/constants';
+
+import { scaleSize } from './canvas';
 
 /**
  * Get the next id of item list
@@ -159,174 +162,126 @@ export const isEmpty = obj => {
   return false;
 };
 
+export const mapObject = (sourceObject, rules) => {
+  const resultObject = {};
+
+  Object.keys(sourceObject).forEach(k => {
+    if (rules.restrict.indexOf(k) >= 0) return;
+
+    if (typeof sourceObject[k] === 'object') {
+      const useRules = cloneDeep(rules);
+      const subRules = isEmpty(rules.data[k]) ? {} : rules.data[k];
+
+      merge(useRules, subRules);
+
+      const subObject = mapObject(sourceObject[k], useRules);
+
+      merge(resultObject, subObject);
+
+      return;
+    }
+
+    if (isEmpty(rules.data[k])) {
+      resultObject[k] = sourceObject[k];
+
+      return;
+    }
+
+    const mapName = rules.data[k].name;
+
+    resultObject[mapName] = isEmpty(rules.data[k].parse)
+      ? sourceObject[k]
+      : rules.data[k].parse(sourceObject[k]);
+  });
+
+  return resultObject;
+};
+
 /**
  * Convert stored style to css style
  *
  * @param   {Object}  style stored style
  * @returns {Object}        css style
  */
-export const styleToCssStyle = style => {
-  const cssStyle = {};
+export const toCssStyle = style => {
+  const mapRules = {
+    data: {
+      isBold: {
+        name: 'fontWeight',
+        parse: value => (value ? 'bold' : 'normal')
+      },
+      isItalic: {
+        name: 'fontStyle',
+        parse: value => (value ? 'italic' : 'normal')
+      },
+      isUnderline: {
+        name: 'isUnderline',
+        parse: value => (value ? 'underline' : 'none')
+      },
+      fontSize: {
+        name: 'fontSize',
+        parse: value => `${value}px`
+      }
+    },
+    restrict: []
+  };
 
-  Object.keys(style).forEach(k => {
-    const value = style[k];
-
-    if (k === 'fontSize') {
-      cssStyle[k] = `${value}px`;
-
-      return;
-    }
-
-    if (k === 'isBold') {
-      cssStyle['fontWeight'] = value ? 'bold' : 'normal';
-
-      return;
-    }
-
-    if (k === 'isItalic') {
-      cssStyle['fontStyle'] = value ? 'italic' : 'normal';
-
-      return;
-    }
-
-    if (k === 'isUnderline') {
-      cssStyle['textDecoration'] = value ? 'underline' : 'none';
-
-      return;
-    }
-
-    cssStyle[k] = value;
-  });
-
-  return cssStyle;
+  return mapObject(style, mapRules);
 };
 
 /**
- * Convert stored style to fabric style
+ * Convert stored text properties to fabric properties
  *
- * @param   {Object}  style stored style
- * @returns {Object}        fabric style
- */
-export const styleToFabricStyle = style => {
-  const fabricStyle = {};
-
-  Object.keys(style).forEach(k => {
-    const value = style[k];
-
-    if (k === 'isBold') {
-      fabricStyle['fontWeight'] = value ? 'bold' : '';
-
-      return;
-    }
-
-    if (k === 'isItalic') {
-      fabricStyle['fontStyle'] = value ? 'italic' : '';
-
-      return;
-    }
-
-    if (k === 'isUnderline') {
-      fabricStyle['underline'] = value;
-
-      return;
-    }
-
-    if (k === 'color') {
-      fabricStyle['fill'] = value;
-
-      return;
-    }
-
-    if (k === 'fontSize') {
-      fabricStyle['originalFontSize'] = parseInt(`${value}`, 10);
-
-      return;
-    }
-
-    fabricStyle[k] = value;
-  });
-
-  return fabricStyle;
-};
-
-/**
- * Convert fabric style to stored style
- *
- * @param   {Object}  fabricStyle fabric style
- * @returns {Object}              stored style
- */
-export const fabricStyleToStyle = fabricStyle => {
-  const style = {};
-
-  Object.keys(fabricStyle).forEach(k => {
-    const value = fabricStyle[k];
-
-    if (k === 'fontWeight') {
-      style['isBold'] = !isEmpty(value);
-
-      return;
-    }
-
-    if (k === 'fontStyle') {
-      style['isItalic'] = !isEmpty(value);
-
-      return;
-    }
-
-    if (k === 'underline') {
-      style['isUnderline'] = value;
-
-      return;
-    }
-
-    if (k === 'fill') {
-      style['color'] = value;
-
-      return;
-    }
-
-    if (k === 'originalFontSize') {
-      style['fontSize'] = parseInt(`${value}`, 10);
-
-      return;
-    }
-
-    style[k] = value;
-  });
-
-  return style;
-};
-
-/**
- * Convert stored properties to fabric properties
- *
- * @param   {Object}  prop  stored properties
+ * @param   {Object}  style stored text properties
  * @returns {Object}        fabric properties
  */
-export const propToFabricProp = prop => {
-  const fabricProp = {};
+export const toFabricTextProp = prop => {
+  const mapRules = {
+    data: {
+      x: {
+        name: 'left',
+        parse: value => scaleSize(value)
+      },
+      y: {
+        name: 'top',
+        parse: value => scaleSize(value)
+      },
+      isBold: {
+        name: 'fontWeight',
+        parse: value => (value ? 'bold' : '')
+      },
+      isItalic: {
+        name: 'fontStyle',
+        parse: value => (value ? 'italic' : '')
+      },
+      isUnderline: {
+        name: 'underline'
+      },
+      color: {
+        name: 'fill'
+      },
+      fontSize: {
+        name: 'fontSize',
+        parse: value => scaleSize(value)
+      },
+      horiziontal: {
+        name: 'textAlign'
+      }
+    },
+    restrict: [
+      'id',
+      'size',
+      'type',
+      'textCase',
+      'text',
+      'opacity',
+      'border',
+      'shadow',
+      'flip'
+    ]
+  };
 
-  Object.keys(prop).forEach(k => {
-    fabricProp[k] = prop[k];
-  });
-
-  return fabricProp;
-};
-
-/**
- * Convert fabric properties to stored properties
- *
- * @param   {Object}  fabricProp  fabric properties
- * @returns {Object}              stored properties
- */
-export const fabricPropToProp = fabricProp => {
-  const prop = {};
-
-  Object.keys(fabricProp).forEach(k => {
-    prop[k] = fabricProp[k];
-  });
-
-  return prop;
+  return mapObject(prop, mapRules);
 };
 
 /**

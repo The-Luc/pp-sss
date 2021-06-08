@@ -5,7 +5,7 @@ import { ICON_LOCAL } from '@/common/constants';
 
 import { isEmpty } from '@/common/utils';
 
-import { GETTERS as PROP_GETTERS } from '@/store/modules/property/const';
+import { GETTERS } from '@/store/modules/book/const';
 
 export default {
   components: {
@@ -20,20 +20,22 @@ export default {
   data() {
     return {
       appendedIcon: ICON_LOCAL.APPENED_ICON,
-      prependedIcon: ICON_LOCAL.PREPENDED_FONT_SIZE,
-      triggerChange: true
+      prependedIcon: ICON_LOCAL.PREPENDED_FONT_SIZE
     };
   },
   computed: {
     ...mapGetters({
-      textStyle: PROP_GETTERS.TEXT_STYLE
+      selectedId: GETTERS.SELECTED_OBJECT_ID,
+      selectedFontSize: GETTERS.PROP_OBJECT_BY_ID,
+      triggerChange: GETTERS.TRIGGER_OBJECT_CHANGE
     }),
     selectedSize() {
       if (this.triggerChange) {
         // just for trigger the change
       }
 
-      const selectedSize = this.textStyle.fontSize;
+      const selectedSize =
+        this.selectedFontSize({ id: this.selectedId, prop: 'fontSize' }) || 60;
 
       const selected = this.items.find(item => item.value === selectedSize);
 
@@ -43,11 +45,11 @@ export default {
   methods: {
     /**
      * Set size for object text
-     * @param   {Any} val size of text (string or object)
+     * @param {Any} val size of text (string or object)
      */
     onChange(data) {
       if (isEmpty(data)) {
-        this.triggerChange = !this.triggerChange;
+        this.$root.$emit('printChangeTextProperties', {});
 
         return;
       }
@@ -57,7 +59,7 @@ export default {
       const digitRegex = new RegExp(/^[\d]{1,}$/g);
 
       if (isString && !digitRegex.test(data)) {
-        this.triggerChange = !this.triggerChange;
+        this.$root.$emit('printChangeTextProperties', {});
 
         return;
       }
@@ -66,9 +68,7 @@ export default {
 
       const acceptValue = value > 500 ? 500 : value < 1 ? 1 : value;
 
-      this.$root.$emit('printChangeTextStyle', { fontSize: acceptValue });
-
-      this.triggerChange = !this.triggerChange;
+      this.$root.$emit('printChangeTextProperties', { fontSize: acceptValue });
     },
     /**
      * Get font size item from data
@@ -77,10 +77,10 @@ export default {
      */
     getFontSizeItem(data) {
       if (typeof data === 'object') {
-        return { label: data.label, value: data.value };
+        return { name: data.name, value: data.value };
       }
 
-      return { label: `${data} pt`, value: data };
+      return { name: `${data} pt`, value: data };
     }
   }
 };

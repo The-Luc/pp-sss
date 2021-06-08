@@ -1,7 +1,7 @@
 import PpSelect from '@/components/Select';
 import FontSize from './Size';
 import FontFamily from './Family';
-import { FONT_SIZE } from '@/mock/fontSize';
+import { FONT_SIZE } from '@/common/constants';
 
 export default {
   components: {
@@ -11,15 +11,7 @@ export default {
   },
   data() {
     return {
-      fontFamily: [
-        { label: 'Arial', value: 'arial' },
-        { label: 'Time News Roman', value: 'timeNewsRoman' },
-        { label: 'Verdana', value: 'verdana' },
-        { label: 'Georgia', value: 'georgia' },
-        { label: 'Courier', value: 'courier' },
-        { label: 'Comic Sans Ms', value: 'comic sans ms' },
-        { label: 'Impact', value: 'impact' }
-      ],
+      fontFamily: ['Arial', 'Time News Roman', 'Verdana', 'Georgia', 'Courier'],
       fontSize: FONT_SIZE
     };
   }

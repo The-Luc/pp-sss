@@ -1,3 +1,5 @@
+import { POSITION_FIXED } from '@/common/constants';
+
 const book = {
   id: 1719,
   communityId: 28,
@@ -43,7 +45,7 @@ const book = {
           type: 0, // enum
           draggable: false,
           isVisited: false,
-          positionFixed: 'all',
+          positionFixed: POSITION_FIXED.ALL,
           order: 0,
           printData: {
             thumbnailUrl: null,
@@ -73,7 +75,7 @@ const book = {
           type: 1,
           draggable: false,
           isVisited: false,
-          positionFixed: 'first',
+          positionFixed: POSITION_FIXED.FIRST,
           order: 0,
           printData: {
             theme: null,
@@ -91,7 +93,7 @@ const book = {
           type: 3,
           draggable: true,
           isVisited: false,
-          positionFixed: 'none',
+          positionFixed: POSITION_FIXED.NONE,
           order: 1,
           printData: {
             thumbnailUrl: null,
@@ -109,7 +111,7 @@ const book = {
           type: 3,
           draggable: true,
           isVisited: false,
-          positionFixed: 'none',
+          positionFixed: POSITION_FIXED.NONE,
           order: 2,
           printData: {
             thumbnailUrl: null,
@@ -127,7 +129,7 @@ const book = {
           type: 3,
           draggable: true,
           isVisited: false,
-          positionFixed: 'none',
+          positionFixed: POSITION_FIXED.NONE,
           order: 3,
           printData: {
             thumbnailUrl: null,
@@ -145,7 +147,7 @@ const book = {
           type: 3,
           draggable: true,
           isVisited: false,
-          positionFixed: 'none',
+          positionFixed: POSITION_FIXED.NONE,
           order: 4,
           printData: {
             thumbnailUrl: null,
@@ -175,7 +177,7 @@ const book = {
           type: 3,
           draggable: true,
           isVisited: false,
-          positionFixed: 'none',
+          positionFixed: POSITION_FIXED.NONE,
           order: 0,
           printData: {
             thumbnailUrl: null,
@@ -193,7 +195,7 @@ const book = {
           type: 3,
           draggable: true,
           isVisited: false,
-          positionFixed: 'none',
+          positionFixed: POSITION_FIXED.NONE,
           order: 1,
           printData: {
             thumbnailUrl: null,
@@ -211,7 +213,7 @@ const book = {
           type: 3,
           draggable: true,
           isVisited: false,
-          positionFixed: 'none',
+          positionFixed: POSITION_FIXED.NONE,
           order: 2,
           printData: {
             thumbnailUrl: null,
@@ -241,7 +243,7 @@ const book = {
           type: 3,
           draggable: true,
           isVisited: false,
-          positionFixed: 'none',
+          positionFixed: POSITION_FIXED.NONE,
           order: 3,
           printData: {
             thumbnailUrl: null,
@@ -270,7 +272,7 @@ const book = {
           type: 2,
           draggable: false,
           isVisited: false,
-          positionFixed: 'last',
+          positionFixed: POSITION_FIXED.LAST,
           order: 0,
           printData: {
             thumbnailUrl: null,
@@ -288,4 +290,4 @@ const book = {
   ]
 };
 
-module.exports = book;
+export default book;
