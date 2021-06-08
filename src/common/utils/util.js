@@ -274,6 +274,9 @@ export const toFabricTextProp = prop => {
       },
       horiziontal: {
         name: 'textAlign'
+      },
+      opacity: {
+        name: 'opacity'
       }
     },
     restrict: [
@@ -282,7 +285,6 @@ export const toFabricTextProp = prop => {
       'type',
       'textCase',
       'text',
-      'opacity',
       'border',
       'shadow',
       'flip'

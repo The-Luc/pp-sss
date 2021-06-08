@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Opacity :value="textStyles.opacity" @change="onChange" />
+    <Opacity :value="opacityValue" @change="onChange" />
     <Border
       :selected-border="selectedBorder"
       :options="borderOptions"

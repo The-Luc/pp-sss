@@ -27,5 +27,6 @@ export const DEFAULT_TEXT = {
     X: 0,
     Y: 0
   },
-  LOCK_UNI_SCALE: false
+  LOCK_UNI_SCALE: false,
+  OPACITY: 1
 };
