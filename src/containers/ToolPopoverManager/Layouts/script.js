@@ -76,7 +76,8 @@ export default {
       sheetTheme: BOOK_GETTERS.SHEET_THEME,
       getLayoutByType: THEME_GETTERS.GET_LAYOUT_BY_TYPE,
       isPrompt: APP_GETTERS.IS_PROMPT,
-      sectionId: BOOK_GETTERS.SECTION_ID
+      sectionId: BOOK_GETTERS.SECTION_ID,
+      getObjectsBySheetId: BOOK_GETTERS.GET_OBJECTS_BY_SHEET_ID
     }),
     isVisited() {
       return this.pageSelected.isVisited;
@@ -310,7 +311,8 @@ export default {
           themeId: this.themeSelected.id,
           layout: this.layoutObjSelected
         });
-        this.drawLayout(this.pageSelected?.printData?.layout);
+        const objects = this.getObjectsBySheetId(this.pageSelected?.id);
+        this.drawLayout(this.pageSelected?.printData?.layout, objects);
         this.onCancel();
       }
     },

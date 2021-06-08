@@ -18,7 +18,8 @@ export default {
   computed: {
     ...mapGetters({
       pageSelected: GETTERS.GET_PAGE_SELECTED,
-      sheetLayout: GETTERS.SHEET_LAYOUT
+      sheetLayout: GETTERS.SHEET_LAYOUT,
+      getObjectsBySheetId: GETTERS.GET_OBJECTS_BY_SHEET_ID
     }),
     numberPageLeft() {
       return this.$attrs.props.numberPageLeft;
@@ -65,7 +66,8 @@ export default {
      * Get sheet's layout and draw
      */
     drawLayoutSinglePage() {
-      this.drawLayout(this.pageSelected.printData.layout);
+      const objects = this.getObjectsBySheetId(this.pageSelected.id);
+      this.drawLayout(this.pageSelected.printData.layout, objects);
     },
     /**
      * Update layout to sheet, draw layout and then close modal

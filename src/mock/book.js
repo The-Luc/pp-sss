@@ -49,14 +49,7 @@ const book = {
             thumbnailUrl: null,
             theme: null,
             layout: null,
-            link: 'none',
-            pages: [
-              {
-                id: 1,
-                layoutId: 1,
-                objects: []
-              }
-            ]
+            link: 'none'
           },
           digitalData: {
             thumbnailUrl: null,
@@ -86,13 +79,7 @@ const book = {
             theme: null,
             layout: null,
             thumbnailUrl: null,
-            link: 'none',
-            pages: [
-              {
-                id: 2,
-                data: []
-              }
-            ]
+            link: 'none'
           },
           digitalData: {
             thumbnailUrl: null,
@@ -110,18 +97,7 @@ const book = {
             thumbnailUrl: null,
             theme: null,
             layout: null,
-            link: 'link',
-            pages: [
-              {
-                id: 3,
-                data: []
-              },
-
-              {
-                id: 4,
-                data: []
-              }
-            ]
+            link: 'link'
           },
           digitalData: {
             thumbnailUrl: null,
@@ -139,18 +115,7 @@ const book = {
             thumbnailUrl: null,
             theme: null,
             layout: null,
-            link: 'link',
-            pages: [
-              {
-                id: 5,
-                data: []
-              },
-
-              {
-                id: 6,
-                data: []
-              }
-            ]
+            link: 'link'
           },
           digitalData: {
             thumbnailUrl: null,
@@ -168,18 +133,7 @@ const book = {
             thumbnailUrl: null,
             theme: null,
             layout: null,
-            link: 'link',
-            pages: [
-              {
-                id: 7,
-                data: []
-              },
-
-              {
-                id: 8,
-                data: []
-              }
-            ]
+            link: 'link'
           },
           digitalData: {
             thumbnailUrl: null,
@@ -197,18 +151,7 @@ const book = {
             thumbnailUrl: null,
             theme: null,
             layout: null,
-            link: 'link',
-            pages: [
-              {
-                id: 9,
-                data: []
-              },
-
-              {
-                id: 10,
-                data: []
-              }
-            ]
+            link: 'link'
           },
           digitalData: {
             thumbnailUrl: null,
@@ -238,18 +181,7 @@ const book = {
             thumbnailUrl: null,
             theme: null,
             layout: null,
-            link: 'link',
-            pages: [
-              {
-                id: 11,
-                data: []
-              },
-
-              {
-                id: 12,
-                data: []
-              }
-            ]
+            link: 'link'
           },
           digitalData: {
             thumbnailUrl: null,
@@ -271,18 +203,7 @@ const book = {
           },
           digitalData: {
             thumbnailUrl: null,
-            link: 'link',
-            pages: [
-              {
-                id: 13,
-                data: []
-              },
-
-              {
-                id: 14,
-                data: []
-              }
-            ]
+            link: 'link'
           }
         },
         {
@@ -296,18 +217,7 @@ const book = {
             thumbnailUrl: null,
             theme: null,
             layout: null,
-            link: 'link',
-            pages: [
-              {
-                id: 15,
-                data: []
-              },
-
-              {
-                id: 16,
-                data: []
-              }
-            ]
+            link: 'link'
           },
           digitalData: {
             thumbnailUrl: null,
@@ -336,19 +246,7 @@ const book = {
           printData: {
             thumbnailUrl: null,
             theme: null,
-            layout: null,
-            link: 'link',
-            pages: [
-              {
-                id: 17,
-                data: []
-              },
-
-              {
-                id: 18,
-                data: []
-              }
-            ]
+            layout: null
           },
           digitalData: {
             thumbnailUrl: null,
@@ -378,13 +276,7 @@ const book = {
             thumbnailUrl: null,
             theme: null,
             layout: null,
-            link: 'link',
-            pages: [
-              {
-                id: 19,
-                data: []
-              }
-            ]
+            link: 'link'
           },
           digitalData: {
             thumbnailUrl: null,

@@ -13,6 +13,7 @@ const pageSelected = book.sections[0].sheets[0];
 
 export const state = {
   book,
+  objects: {}, // { objectId: { ...objectData } }
   pageSelected,
   sectionId: 1,
   isOpenProperties: false,
