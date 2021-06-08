@@ -144,6 +144,18 @@ export default {
       }
       switch (item.name) {
         case 'properties':
+          if (!this.selectedObjectType) {
+            this.setIsOpenProperties({
+              isOpen: !this.isOpenMenuProperties
+            });
+            this.toggleColorPicker({
+              isOpen: false
+            });
+            this.setObjectTypeSelected({
+              type: OBJECT_TYPE.CLIP_ART
+            });
+            return;
+          }
           this.setIsOpenProperties({
             isOpen: !this.isOpenMenuProperties
           });
@@ -151,27 +163,8 @@ export default {
             isOpen: false
           });
           this.setObjectTypeSelected({
-            type: OBJECT_TYPE.CLIP_ART
+            type: this.selectedObjectType
           });
-          if (!this.selectedObjectType) {
-            return;
-          }
-          switch (this.selectedObjectType) {
-            case OBJECT_TYPE.TEXT:
-              this.setIsOpenProperties({
-                isOpen: !this.isOpenMenuProperties
-              });
-              this.toggleColorPicker({
-                isOpen: false
-              });
-              this.setObjectTypeSelected({
-                type: this.selectedObjectType
-              });
-              break;
-            default:
-              break;
-          }
-
           break;
         default:
           break;
@@ -183,15 +176,6 @@ export default {
      */
     onClickLeftTool(data) {
       if (!this.printThemeSelectedId) {
-        this.setIsOpenProperties({
-          isOpen: !this.isOpenMenuProperties
-        });
-        this.toggleColorPicker({
-          isOpen: false
-        });
-        this.setObjectTypeSelected({
-          type: OBJECT_TYPE.CLIP_ART
-        });
         return;
       }
       const toolName = this.selectedToolName === data?.name ? '' : data?.name;
