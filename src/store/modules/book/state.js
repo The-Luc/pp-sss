@@ -13,16 +13,8 @@ const pageSelected = book.sections[0].sheets[0];
 
 export const state = {
   book,
+  objects: {}, // { objectId: { ...objectData } }
+  selectedObjectId: null,
   pageSelected,
-  sectionId: 1,
-  isOpenProperties: false,
-  selectedObjectType: '',
-  textProperties: {
-    bold: false,
-    fontStyle: false,
-    underLine: false,
-    fontFamily: 'arial',
-    fontSize: '60',
-    textAlign: ''
-  }
+  sectionId: 1
 };

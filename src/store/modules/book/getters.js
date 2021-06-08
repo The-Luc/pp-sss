@@ -1,4 +1,5 @@
 import moment from 'moment';
+import { cloneDeep, pick } from 'lodash';
 
 import { DATE_FORMAT, MOMENT_TYPE } from '@/common/constants';
 import BOOK from './const';
@@ -104,5 +105,16 @@ export const getters = {
     const { createdDate } = book;
 
     return getDiffDaysFOM(createdDate, dueDate);
+  },
+  [BOOK._GETTERS.GET_OBJECTS_BY_SHEET_ID]: ({ book, objects }) => sheetId => {
+    const sheets = getAllSheets(book.sections);
+    const sheet = sheets.find(s => s.id === sheetId);
+    const objIds = [];
+    sheet?.printData?.layout?.pages?.forEach(page => {
+      page?.objects?.forEach(objId => {
+        objIds.push(objId);
+      });
+    });
+    return pick(objects, [...objIds]);
   }
 };

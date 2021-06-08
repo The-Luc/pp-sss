@@ -21,6 +21,7 @@ export default {
   computed: {
     ...mapGetters({
       isOpenColorPicker: GETTERS.IS_OPEN_COLOR_PICKER
+      // selectedObject: TODO: map selectedObject here
     })
   }
 };

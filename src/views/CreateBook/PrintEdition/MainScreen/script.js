@@ -18,7 +18,8 @@ export default {
     ...mapGetters({
       bookId: GETTERS.BOOK_ID,
       book: GETTERS.BOOK_DETAIL,
-      selectedLayout: GETTERS.SHEET_LAYOUT
+      selectedLayout: GETTERS.SHEET_LAYOUT,
+      getObjectsBySheetId: GETTERS.GET_OBJECTS_BY_SHEET_ID
     })
   },
   methods: {
@@ -100,7 +101,8 @@ export default {
     onSelectSheet(sheet, sectionId) {
       this.selectSheet({ sheet });
       this.setSectionId({ sectionId });
-      this.drawLayout(sheet?.printData?.layout);
+      const objects = this.getObjectsBySheetId(sheet.id);
+      this.drawLayout(sheet?.printData?.layout, objects);
     }
   }
 };
