@@ -1,6 +1,6 @@
 import { useMutations, useGetters } from 'vuex-composition-helpers';
 import { fabric } from 'fabric';
-import { pick, cloneDeep } from 'lodash';
+import { pick, cloneDeep, uniqueId } from 'lodash';
 
 import {
   GETTERS as BOOK_GETTERS,
@@ -72,6 +72,8 @@ const handleDrawTextLayout = (page, position, targetCanvas, objects) => {
         left += baseLeft;
       }
       const textObj = new fabric.Textbox(text, {
+        id: uniqueId(),
+        type: OBJECT_TYPE.TEXT,
         lockUniScaling: false,
         width: scaleSize(width),
         height: scaleSize(height),

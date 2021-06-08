@@ -189,7 +189,9 @@ export default {
       this.setIsOpenProperties({
         isOpen: false
       });
-
+      this.setObjectTypeSelected({
+        type: ''
+      });
       this.setSelectedObjectId({ id: '' });
     },
     /**
@@ -199,15 +201,15 @@ export default {
      */
     objectSelected: function({ target }) {
       const { id } = target;
-
       this.setSelectedObjectId({ id: id });
 
       const objectType =
-        this.selectedObject(this.selectedObjectId)?.Type || null;
+        this.selectedObject(this.selectedObjectId)?.Type || target.type;
 
       this.setObjectTypeSelected({ type: objectType });
-
-      this.openProperties();
+      if (objectType) {
+        this.openProperties();
+      }
     },
     /**
      * Event fire when user click on Text button on Toolbar to add new text on canvas
