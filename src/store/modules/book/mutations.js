@@ -1,4 +1,4 @@
-import { cloneDeep, uniqueId, omit, pick } from 'lodash';
+import { cloneDeep, uniqueId, omit, pick, merge } from 'lodash';
 import randomcolor from 'randomcolor';
 import moment from 'moment';
 
@@ -6,6 +6,7 @@ import { SHEET_TYPES, DATE_FORMAT } from '@/common/constants';
 import { getAllSheets, nextId } from '@/common/utils';
 
 import BOOK from './const';
+import { POSITION_FIXED } from '@/common/constants';
 
 const getIndexById = (items, id) => {
   return items.findIndex(s => s.id === id);
@@ -76,7 +77,7 @@ const makeNewSection = (sections, sectionIndex) => {
     id: newId,
     type: SHEET_TYPES.NORMAL,
     draggable: true,
-    positionFixed: 'none',
+    positionFixed: POSITION_FIXED.NONE,
     order: order,
     printData: {
       thumbnailUrl: null,
@@ -425,5 +426,17 @@ export const mutations = {
     // );
     // let printData = book.sections[sectionIndex].sheets[sheetIndex].printData;
     // printData.pages = data;
+  },
+  [BOOK._MUTATES.SET_SELECTED_OBJECT_ID](state, { id }) {
+    state.objectSelectedId = id;
+  },
+  [BOOK._MUTATES.SET_PROP](state, { id, property }) {
+    merge(state.objects[id].property, property);
+  },
+  [BOOK._MUTATES.ADD_OBJECT](state, { id, newObject }) {
+    state.objects[id] = newObject;
+  },
+  [BOOK._MUTATES.UPDATE_TRIGGER_OBJECT_CHANGE](state) {
+    state.triggerObjectChange = !state.triggerObjectChange;
   }
 };

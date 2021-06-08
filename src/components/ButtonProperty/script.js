@@ -6,7 +6,7 @@ export default {
     },
     title: {
       type: String,
-      require: true
+      required: true
     }
   }
 };

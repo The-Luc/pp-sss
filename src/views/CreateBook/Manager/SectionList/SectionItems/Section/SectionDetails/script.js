@@ -1,6 +1,8 @@
 import Draggable from 'vuedraggable';
+
 import { mapMutations } from 'vuex';
 
+import { POSITION_FIXED } from '@/common/constants';
 import { MUTATES } from '@/store/modules/book/const';
 
 import Sheet from './Sheet';
@@ -78,7 +80,8 @@ export default {
       }
 
       const isPosibleToMove =
-        relateSheet === null || relateSheet.positionFixed !== 'all';
+        relateSheet === null ||
+        relateSheet.positionFixed !== POSITION_FIXED.ALL;
 
       if (!isPosibleToMove) {
         this.cancelMove();
@@ -97,9 +100,9 @@ export default {
       const isInsertAfter = this.isInsertAfter(evt.willInsertAfter);
 
       const isAllowInsertBefore =
-        !isInsertAfter && relateSheet.positionFixed !== 'first';
+        !isInsertAfter && relateSheet.positionFixed !== POSITION_FIXED.FIRST;
       const isAllowInsertAfter =
-        isInsertAfter && relateSheet.positionFixed !== 'last';
+        isInsertAfter && relateSheet.positionFixed !== POSITION_FIXED.LAST;
 
       if (!isAllowInsertBefore && !isAllowInsertAfter) {
         this.cancelMove();

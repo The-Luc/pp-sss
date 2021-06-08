@@ -1,25 +1,27 @@
 import { mapGetters, mapMutations } from 'vuex';
 import { fabric } from 'fabric';
+import { cloneDeep } from 'lodash';
 
 import { useDrawLayout } from '@/hooks';
 
 import {
   isEmpty,
-  styleToFabricStyle,
-  fabricStyleToStyle,
-  propToFabricProp,
-  fabricPropToProp,
+  toFabricTextProp,
   getCoverPagePrintSize,
-  getPagePrintSize
+  getPagePrintSize,
+  scaleSize
 } from '@/common/utils';
 
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
 import { GETTERS, MUTATES as BOOK_MUTATES } from '@/store/modules/book/const';
 
-import { OBJECT_TYPE, SHEET_TYPES } from '@/common/constants';
-import { MUTATES as PROP_MUTATES } from '@/store/modules/property/const';
+import { TextElement } from '@/common/models';
+import { SHEET_TYPES, TEXT_CASE, DEFAULT_TEXT } from '@/common/constants';
+
 import SizeWrapper from '@/components/SizeWrapper';
 import PageWrapper from './PageWrapper';
+
+let newId = 0;
 
 export default {
   components: {
@@ -36,7 +38,10 @@ export default {
       pageSelected: GETTERS.GET_PAGE_SELECTED,
       selectedLayout: GETTERS.SHEET_LAYOUT,
       getObjectsBySheetId: GETTERS.GET_OBJECTS_BY_SHEET_ID,
-      isOpenMenuProperties: APP_GETTERS.IS_OPEN_MENU_PROPERTIES
+      isOpenMenuProperties: APP_GETTERS.IS_OPEN_MENU_PROPERTIES,
+      selectedObjectId: GETTERS.SELECTED_OBJECT_ID,
+      selectedObject: GETTERS.OBJECT_BY_ID,
+      selectedProp: GETTERS.PROP_OBJECT_BY_ID
     }),
     isCover() {
       return this.pageSelected.type === SHEET_TYPES.COVER;
@@ -80,9 +85,6 @@ export default {
       }
     }
   },
-  mounted() {
-    // moved to onContainerReady
-  },
   beforeDestroy() {
     this.$root.$off('printDeleteElements', () => {
       this.deleteElements();
@@ -93,9 +95,10 @@ export default {
     ...mapMutations({
       setIsOpenProperties: MUTATES.TOGGLE_MENU_PROPERTIES,
       setObjectTypeSelected: MUTATES.SET_OBJECT_TYPE_SELECTED,
-      setTextProperties: BOOK_MUTATES.TEXT_PROPERTIES,
-      setTextStyle: PROP_MUTATES.SET_TEXT_STYLE,
-      setTextProp: PROP_MUTATES.SET_TEXT_PROPERTY
+      setSelectedObjectId: BOOK_MUTATES.SET_SELECTED_OBJECT_ID,
+      addNewObject: BOOK_MUTATES.ADD_OBJECT,
+      setObjectProp: BOOK_MUTATES.SET_PROP,
+      updateTriggerChange: BOOK_MUTATES.UPDATE_TRIGGER_OBJECT_CHANGE
     }),
     updateCanvasSize(containerSize) {
       const printSize = this.isCover
@@ -162,12 +165,8 @@ export default {
         this.deleteElements();
       });
 
-      this.$root.$on('printChangeTextStyle', style => {
-        this.changeObjectStyle(style);
-      });
-
-      this.$root.$on('printChangeTextProp', prop => {
-        this.changeObjectProperties(prop);
+      this.$root.$on('printChangeTextProperties', prop => {
+        this.changeTextProperties(prop);
       });
     },
     onContainerResized(containerSize) {
@@ -177,25 +176,11 @@ export default {
      * Open text properties modal and set default properties
      */
     openProperties() {
-      const obj = window.printCanvas.getActiveObject();
-      const bold = obj.fontWeight && obj.fontWeight === 'bold';
-      const fontStyle = obj.fontStyle && obj.fontStyle === 'italic';
-      const underLine = obj.underline && obj.underline === true;
-      const { fontFamily, fontSize, textAlign } = obj;
-      this.setTextProperties({
-        bold,
-        fontStyle,
-        underLine,
-        fontFamily,
-        fontSize,
-        textAlign
-      });
       this.setIsOpenProperties({
         isOpen: true
       });
-      this.setObjectTypeSelected({
-        type: OBJECT_TYPE.TEXT
-      });
+
+      this.updateTriggerChange();
     },
     /**
      * Close text properties modal
@@ -204,9 +189,8 @@ export default {
       this.setIsOpenProperties({
         isOpen: false
       });
-      this.setObjectTypeSelected({
-        type: OBJECT_TYPE.TEXT
-      });
+
+      this.setSelectedObjectId({ id: '' });
     },
     /**
      * Event fired when an object of canvas is selected
@@ -214,63 +198,42 @@ export default {
      * @param {Object}  target  the selected object
      */
     objectSelected: function({ target }) {
-      // currently only code for text
-      this.textSelected(target);
+      const { id } = target;
+
+      this.setSelectedObjectId({ id: id });
+
+      const objectType =
+        this.selectedObject(this.selectedObjectId)?.Type || null;
+
+      this.setObjectTypeSelected({ type: objectType });
 
       this.openProperties();
-    },
-    /**
-     * Event fired when text object of canvas is selected
-     *
-     * @param {Object}  target  the selected text
-     */
-    textSelected: function(target) {
-      const {
-        fontFamily,
-        originalFontSize,
-        fontWeight,
-        fontStyle,
-        underline,
-        fill,
-        styleId
-      } = target;
-
-      const style = fabricStyleToStyle({
-        fontFamily,
-        originalFontSize,
-        fontWeight,
-        fontStyle,
-        underline,
-        fill
-      });
-
-      this.setTextStyle(style);
-
-      const prop = fabricPropToProp({
-        styleId: isEmpty(styleId) ? 'default' : styleId
-      });
-
-      this.setTextProp(prop);
     },
     /**
      * Event fire when user click on Text button on Toolbar to add new text on canvas
      */
     addText: function() {
-      const text = new fabric.Textbox('Text', {
-        lockUniScaling: false,
-        fontSize: (window.printCanvas.width / 1205) * 60,
-        originalFontSize: 60,
-        fontFamily: 'arial',
-        fill: '#000000',
-        fontWeight: '',
-        fontStyle: '',
-        originX: 'left',
-        originY: 'top',
-        left: 51,
-        top: 282,
-        textAlign: '',
-        styleId: 'default'
+      newId++;
+
+      const newText = cloneDeep(TextElement);
+
+      this.addNewObject({
+        id: newId,
+        newObject: {
+          ...newText
+        }
       });
+
+      const fabricProp = toFabricTextProp(newText);
+
+      const text = new fabric.Textbox(DEFAULT_TEXT.TEXT, {
+        ...fabricProp,
+        id: newId,
+        lockUniScaling: DEFAULT_TEXT.LOCK_UNI_SCALE,
+        originX: scaleSize(DEFAULT_TEXT.ORIGIN.X),
+        originY: scaleSize(DEFAULT_TEXT.ORIGIN.Y)
+      });
+
       window.printCanvas.add(text);
       const index = window.printCanvas.getObjects().length - 1;
       window.printCanvas.setActiveObject(window.printCanvas.item(index));
@@ -280,48 +243,66 @@ export default {
      *
      * @param {Object}  style  new style
      */
-    changeObjectStyle: function(style) {
-      if (isEmpty(style)) return;
+    changeTextProperties: function(prop) {
+      if (isEmpty(prop)) {
+        this.updateTriggerChange();
+
+        return;
+      }
 
       const activeObj = window.printCanvas.getActiveObject();
 
       if (isEmpty(activeObj)) return;
 
-      const fabricStyle = styleToFabricStyle(style);
+      this.setObjectProp({ id: this.selectedObjectId, property: prop });
 
-      Object.keys(fabricStyle).forEach(k => {
-        const value = fabricStyle[k];
+      this.updateTriggerChange();
 
-        if (k === 'originalFontSize') {
-          activeObj.set('fontSize', (window.printCanvas.width / 1205) * value);
-        }
-
-        activeObj.set(k, value);
-      });
-
-      window.printCanvas.renderAll();
-
-      this.setTextStyle(style);
-    },
-    /**
-     * Event fire when user change any property of selected text
-     *
-     * @param {Object}  prop  new prop data
-     */
-    changeObjectProperties: function(prop) {
-      if (isEmpty(prop)) return;
-
-      const activeObj = window.printCanvas.getActiveObject();
-
-      if (isEmpty(activeObj)) return;
-
-      const fabricProp = propToFabricProp(prop);
+      const fabricProp = toFabricTextProp(prop);
 
       Object.keys(fabricProp).forEach(k => {
         activeObj.set(k, fabricProp[k]);
       });
 
-      this.setTextProp(prop);
+      if (isEmpty(prop['textCase'])) {
+        window.printCanvas.renderAll();
+
+        return;
+      }
+
+      const text =
+        this.selectedProp({ id: this.selectedObjectId, prop: 'text' }) || '';
+
+      if (isEmpty(text)) {
+        window.printCanvas.renderAll();
+
+        return;
+      }
+
+      if (prop['textCase'] === TEXT_CASE.NONE) {
+        activeObj.set('text', text);
+      }
+
+      if (prop['textCase'] === TEXT_CASE.UPPER) {
+        activeObj.set('text', text.toUpperCase());
+      }
+
+      if (prop['textCase'] === TEXT_CASE.LOWER) {
+        activeObj.set('text', text.toLowerCase());
+      }
+
+      if (prop['textCase'] === TEXT_CASE.CAPITALIZE) {
+        const changedText = text
+          .split(' ')
+          .map(t => {
+            return `${t.charAt(0).toUpperCase()}${t.toLowerCase().slice(1)}`;
+          })
+          .join(' ');
+
+        activeObj.set('text', changedText);
+      }
+
+      window.printCanvas.renderAll();
     },
     /**
      * Event fire when user click on Delete button on Toolbar to delete selected elements on canvas
