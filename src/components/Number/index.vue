@@ -2,12 +2,14 @@
   <v-text-field
     :key="componentKey"
     class="pp-number"
+    :class="`length-${valueLength > 3 ? 3 : valueLength}`"
     hide-details
     single-line
     :value="value"
     type="number"
     :suffix="suffix"
     @keydown.esc="onEsc"
+    @input="onNumberChange"
     @change="onChangeInput"
   />
 </template>

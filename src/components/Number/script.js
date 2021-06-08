@@ -19,10 +19,18 @@ export default {
   },
   data() {
     return {
-      componentKey: 0
+      componentKey: 0,
+      valueLength: String(this.value).length
     };
   },
   methods: {
+    /**
+     * Catch event user change on input
+     * @param   {String}  value Value user input
+     */
+    onNumberChange(value) {
+      this.valueLength = value.length;
+    },
     /**
      * Check if value within min and max and then emit value to parent else return previous value by force render component
      * @param   {String}  value Value user input

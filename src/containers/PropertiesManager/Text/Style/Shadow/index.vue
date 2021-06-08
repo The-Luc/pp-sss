@@ -1,5 +1,5 @@
 <template>
-  <div class="shadow-container">
+  <div class="pp-shadow-container">
     <label class="properties-title">Shadow:</label>
     <Select
       :items="options"
