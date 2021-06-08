@@ -14,7 +14,7 @@ export default {
     return {
       items: [
         {
-          label: 'Default',
+          name: 'Default',
           value: 'default',
           style: {
             fontFamily: 'Arial',
@@ -26,7 +26,7 @@ export default {
           }
         },
         {
-          label: 'Cover Headline',
+          name: 'Cover Headline',
           value: 'coverHeadline',
           style: {
             fontFamily: 'Time News Roman',
@@ -38,7 +38,7 @@ export default {
           }
         },
         {
-          label: 'Page Headline',
+          name: 'Page Headline',
           value: 'pageHeadline',
           style: {
             fontFamily: 'Arial',
@@ -63,10 +63,10 @@ export default {
     },
     selectBoxItems() {
       return this.items.map(item => {
-        const { label, value, style } = item;
+        const { name, value, style } = item;
 
         return {
-          label,
+          name,
           value,
           style,
           cssStyle: styleToCssStyle(style)

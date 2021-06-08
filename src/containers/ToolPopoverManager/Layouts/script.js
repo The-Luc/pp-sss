@@ -9,7 +9,7 @@ import {
   GETTERS as BOOK_GETTERS,
   MUTATES as BOOK_MUTATES
 } from '@/store/modules/book/const';
-import { THEMES_LIST } from '@/mock/themesList';
+import { themeOptions } from '@/mock/themes';
 import PpToolPopover from '@/components/ToolPopover';
 import PpSelect from '@/components/Select';
 import SelectLayout from './SelectLayout';
@@ -56,7 +56,7 @@ export default {
   },
   data() {
     return {
-      themesOptions: THEMES_LIST,
+      themesOptions: themeOptions,
       layoutsOpts: LAYOUT_TYPES_OPTIONs,
       disabled: false,
       layoutSelected: {},

@@ -13,7 +13,7 @@
           <v-list-item-content @click="onSelectedStatus(item)">
             <v-list-item-title
               class="text-500 text-size-md"
-              v-text="item.label"
+              v-text="item.name"
             />
           </v-list-item-content>
         </v-list-item>

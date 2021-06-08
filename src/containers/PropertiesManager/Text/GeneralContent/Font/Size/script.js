@@ -77,10 +77,10 @@ export default {
      */
     getFontSizeItem(data) {
       if (typeof data === 'object') {
-        return { label: data.label, value: data.value };
+        return { name: data.name, value: data.value };
       }
 
-      return { label: `${data} pt`, value: data };
+      return { name: `${data} pt`, value: data };
     }
   }
 };

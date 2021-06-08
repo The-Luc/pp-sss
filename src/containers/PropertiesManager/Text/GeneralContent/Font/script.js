@@ -12,13 +12,13 @@ export default {
   data() {
     return {
       fontFamily: [
-        { label: 'Arial', value: 'arial' },
-        { label: 'Time News Roman', value: 'timeNewsRoman' },
-        { label: 'Verdana', value: 'verdana' },
-        { label: 'Georgia', value: 'georgia' },
-        { label: 'Courier', value: 'courier' },
-        { label: 'Comic Sans Ms', value: 'comic sans ms' },
-        { label: 'Impact', value: 'impact' }
+        { name: 'Arial', value: 'arial' },
+        { name: 'Time News Roman', value: 'timeNewsRoman' },
+        { name: 'Verdana', value: 'verdana' },
+        { name: 'Georgia', value: 'georgia' },
+        { name: 'Courier', value: 'courier' },
+        { name: 'Comic Sans Ms', value: 'comic sans ms' },
+        { name: 'Impact', value: 'impact' }
       ],
       fontSize: FONT_SIZE
     };
