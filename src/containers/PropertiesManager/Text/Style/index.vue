@@ -1,6 +1,6 @@
 <template>
   <div>
-    This is Style
+    <Opactiy :value="textStyles.opacity" @change="onChange" />
   </div>
 </template>
 
