@@ -130,22 +130,21 @@ const handleDrawBackgroundLayout = (
 ) => {
   const objectIds = cloneDeep(pageData.objects);
   const objectsData = pick(objects, [...objectIds]);
-  let backrgoundObj = {};
-  Object.keys(objectsData).find(key => {
-    if (objectsData[key].type === OBJECT_TYPE.BACKGROUND) {
-      backrgoundObj = objectsData[key];
-    }
-  });
+  let backrgoundObj = Object.values(objectsData).find(
+    ({ type }) => type === OBJECT_TYPE.BACKGROUND
+  );
   const backgroundUrl = backrgoundObj?.property?.imageUrl;
   if (pageData?.objects.length === 0) {
     targetCanvas?.clear().renderAll();
     return;
   }
   fabric.Image.fromURL(backgroundUrl, function(img) {
+    const { width, height } = targetCanvas;
+    const zoom = targetCanvas.getZoom();
     img.selectable = false;
-    img.left = position === 'right' ? targetCanvas.width / 2 : 0;
-    img.scaleX = targetCanvas.width / img.width / 2;
-    img.scaleY = targetCanvas.height / img.height;
+    img.left = position === 'right' ? width / zoom / 2 : 0;
+    img.scaleX = width / zoom / img.width / 2;
+    img.scaleY = height / zoom / img.height;
     targetCanvas.add(img);
     handleDrawTextLayout(pageData, position, targetCanvas, layoutSize, objects);
   });
