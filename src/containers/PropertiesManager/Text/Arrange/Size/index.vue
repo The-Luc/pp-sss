@@ -3,9 +3,9 @@
     <span class="properties-title">Size:</span>
     <div class="d-flex">
       <TextFieldProperty value="3.32" title="Width" label="in." />
-      <TextFieldProperty value="5.51" title="Height" label="in." />
+      <TextFieldProperty value="4.51" title="Height" label="in." />
       <label class="container-radio">
-        <input type="checkbox" />
+        <input type="checkbox" checked />
         <div class="checkmark"></div>
         <div>Constrain proportions</div>
       </label>

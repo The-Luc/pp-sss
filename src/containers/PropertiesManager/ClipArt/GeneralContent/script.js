@@ -9,16 +9,37 @@ export default {
   },
   data() {
     return {
-      shadowItems: [
+      shadowOptions: [
         {
-          value: 'noShadow',
-          label: 'No Shadow'
+          name: 'No Shadow',
+          value: 'noShadow'
         },
         {
-          value: 'solid',
-          label: 'Solid'
+          name: 'Drop Shadow',
+          value: 'dropShadow'
         }
-      ]
+      ],
+      selectedShadow: {
+        name: 'No Shadow',
+        value: 'noShadow'
+      },
+      opacityValue: 100
     };
+  },
+  methods: {
+    /**
+     * Change value of opacity
+     * @param {Number} value value opacity
+     */
+    onChange(value) {
+      this.opacityValue = value;
+    },
+    /**
+     * Receive value shadow from children
+     * @param   {Object}  value Value user selecte
+     */
+    onChangeShadow(value) {
+      this.selectedShadow = value;
+    }
   }
 };
