@@ -1,8 +1,14 @@
 import Select from '@/components/Select';
+import BorderStyle from './Settings/Style';
+import BorderColor from './Settings/Color';
+import BorderThickness from './Settings/Thickness';
 
 export default {
   components: {
-    Select
+    Select,
+    BorderStyle,
+    BorderColor,
+    BorderThickness
   },
   props: {
     selectedBorder: {
@@ -12,6 +18,19 @@ export default {
     options: {
       type: Array,
       required: true
+    }
+  },
+  data() {
+    return {
+      isShowStyle: false
+    };
+  },
+  watch: {
+    selectedBorder: {
+      deep: true,
+      handler(border) {
+        this.isShowStyle = border.value === 'line';
+      }
     }
   },
   methods: {

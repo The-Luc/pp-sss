@@ -28,7 +28,7 @@
       </v-list-item>
     </template>
 
-    <template #item="{ item, attrs, on }">
+    <template v-if="!isBorder" #item="{ item, attrs, on }">
       <v-list-item
         v-slot="{ active }"
         class="pp-select--item"
@@ -50,6 +50,30 @@
         </v-list-item-content>
       </v-list-item>
     </template>
+
+    <template v-else #item="{ item, attrs, on }">
+      <v-list-item
+        v-slot="{ active }"
+        class="pp-select--item"
+        v-bind="attrs"
+        v-on="on"
+      >
+        <img
+          :style="{ visibility: active ? 'visible' : 'hidden' }"
+          class="icon-ative"
+          :src="activeMenuIcon"
+          alt="icon-active"
+        />
+        <v-list-item-content>
+          <v-list-item-title>
+            <v-row no-gutters align="center">
+              <span :style="getStyle(item.cssStyle)">todo later</span>
+            </v-row>
+          </v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
+    </template>
+
     <template v-if="prependedIcon" #prepend>
       <img :src="prependedIcon" alt="prepend-icon" class="prepend-icon" />
     </template>
