@@ -2,7 +2,7 @@
   <v-text-field
     :key="componentKey"
     class="pp-number"
-    :class="valueLength < 3 ? `length-${valueLength}` : 'length-3'"
+    :class="`length-${valueLength > 3 ? 3 : valueLength}`"
     hide-details
     single-line
     :value="value"
