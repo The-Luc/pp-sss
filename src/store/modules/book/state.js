@@ -16,5 +16,7 @@ export const state = {
   objects: {}, // { objectId: { ...objectData } }
   selectedObjectId: null,
   pageSelected,
-  sectionId: 1
+  sectionId: 1,
+  objectSelectedId: '',
+  triggerObjectChange: false
 };

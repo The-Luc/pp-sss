@@ -1,108 +1,56 @@
-import { ICON_LOCAL } from '@/common/constants';
 import PpButtonGroup from '@/components/ButtonGroup';
+
+import { mapGetters } from 'vuex';
+
+import { ICON_LOCAL, TEXT_CASE } from '@/common/constants';
+import { GETTERS } from '@/store/modules/book/const';
+
 import { isEmpty } from '@/common/utils';
 
 export default {
+  components: {
+    PpButtonGroup
+  },
   data() {
     return {
       iconUpperCase: ICON_LOCAL.TEXT_UPPERCASE,
       iconLowerCase: ICON_LOCAL.TEXT_LOWERCASE,
-      iconCapitalize: ICON_LOCAL.TEXT_CAPITALIZE
+      iconCapitalize: ICON_LOCAL.TEXT_CAPITALIZE,
+      UPPER: TEXT_CASE.UPPER,
+      LOWER: TEXT_CASE.LOWER,
+      CAPITALIZE: TEXT_CASE.CAPITALIZE
     };
   },
-  components: {
-    PpButtonGroup
+  computed: {
+    ...mapGetters({
+      selectedId: GETTERS.SELECTED_OBJECT_ID,
+      selectedTextCase: GETTERS.PROP_OBJECT_BY_ID,
+      triggerChange: GETTERS.TRIGGER_OBJECT_CHANGE
+    }),
+    selectedCase() {
+      if (this.triggerChange) {
+        // just for trigger the change
+      }
+
+      return (
+        this.selectedTextCase({
+          id: this.selectedId,
+          prop: 'textCase'
+        }) || null
+      );
+    }
   },
   methods: {
     /**
-     * Get string text capitalize
-     * @param   {Number} startText Selected first position of text in array after split
-     * @param   {Number} endText Selected end position of text in array after split
-     * @param   {Array} text Text in array after split
-     * @returns {String}
+     * Detect click on item on text case properties
+     * @param  {String} data Receive item information
      */
-    capitalizeText(startText, endText, textArray) {
-      for (let i = startText; i < endText; i++) {
-        textArray[i] = isEmpty(textArray[i - 1])
-          ? textArray[i].toUpperCase()
-          : textArray[i].toLowerCase();
-      }
-      return textArray.join('');
-    },
-    /**
-     * Set text box selected to uppercase
-     */
-    upperCase() {
-      const canvas = window.printCanvas;
-      let obj = canvas.getActiveObject();
-      let text = obj.text;
-      let textArray = text.split('') || [];
-      if (obj.setSelectionStyles && obj.isEditing) {
-        for (
-          let i = obj.setSelectionStyles().selectionStart;
-          i < obj.setSelectionStyles().selectionEnd;
-          i++
-        ) {
-          textArray[i] = textArray[i].toUpperCase();
-        }
-        obj.set({
-          text: textArray.join('')
-        });
-      } else {
-        obj.set({
-          text: text.toUpperCase()
-        });
-      }
-      canvas.renderAll();
-    },
-    /**
-     * Set text box selected to lowercase
-     */
-    lowerCase() {
-      const canvas = window.printCanvas;
-      let obj = canvas.getActiveObject();
-      let text = obj.text;
-      let textArray = text.split('') || [];
-      if (obj.setSelectionStyles && obj.isEditing) {
-        for (
-          let i = obj.setSelectionStyles().selectionStart;
-          i < obj.setSelectionStyles().selectionEnd;
-          i++
-        ) {
-          textArray[i] = textArray[i].toLowerCase();
-        }
-        obj.set({
-          text: textArray.join('')
-        });
-      } else {
-        obj.set({
-          text: text.toLowerCase()
-        });
-      }
-      canvas.renderAll();
-    },
-    /**
-     * Set text box selected to capitalize
-     */
-    capitalize() {
-      const canvas = window.printCanvas;
-      let obj = canvas.getActiveObject();
-      let text = obj.text;
-      let textArray = text.split('') || [];
-      if (obj.setSelectionStyles && obj.isEditing) {
-        obj.set({
-          text: this.capitalizeText(
-            obj.setSelectionStyles().selectionStart,
-            obj.setSelectionStyles().selectionEnd,
-            textArray
-          )
-        });
-      } else {
-        obj.set({
-          text: this.capitalizeText(0, obj.text.length, textArray)
-        });
-      }
-      canvas.renderAll();
+    onChange(data) {
+      const value = isEmpty(data) ? TEXT_CASE.NONE : data;
+
+      this.$root.$emit('printChangeTextProperties', {
+        textCase: value
+      });
     }
   }
 };

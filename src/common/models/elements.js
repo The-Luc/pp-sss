@@ -1,4 +1,4 @@
-import { OBJECT_TYPE } from '@/common/constants/objectType';
+import { OBJECT_TYPE, DEFAULT_TEXT } from '@/common/constants';
 
 export const BaseProperty = {
   color: '',
@@ -48,24 +48,29 @@ export const BaseElement = {
 export const TextElement = {
   ...BaseElement,
   type: OBJECT_TYPE.TEXT,
+  coord: {
+    x: DEFAULT_TEXT.COORD.X,
+    y: DEFAULT_TEXT.COORD.Y,
+    rotation: DEFAULT_TEXT.COORD.ROTATION // degree
+  },
   property: {
     ...BasePrintProperty,
-    styleId: '',
-    text: '',
-    fontFamily: '',
-    fontSize: '',
-    isBold: false,
-    isItalic: false,
-    isUnderline: false,
-    color: '',
-    textCase: '', // UPPERCASE, LOWERCASE, CAPITALIZE
+    styleId: DEFAULT_TEXT.STYLE_ID,
+    text: DEFAULT_TEXT.TEXT,
+    fontFamily: DEFAULT_TEXT.FONT_FAMILY,
+    fontSize: DEFAULT_TEXT.FONT_SIZE,
+    isBold: DEFAULT_TEXT.IS_BOLD,
+    isItalic: DEFAULT_TEXT.IS_ITALIC,
+    isUnderline: DEFAULT_TEXT.IS_UNDERLINE,
+    color: DEFAULT_TEXT.COLOR,
+    textCase: DEFAULT_TEXT.TEXT_CASE, // UPPERCASE, LOWERCASE, CAPITALIZE
     alignment: {
-      horiziontal: '', // LEFT, CENTER, RIGHT, JUSTIFY
-      vertical: '' // TOP, MIDDLE, BOTTOM
+      horiziontal: DEFAULT_TEXT.ALIGNMENT.HORIZIONTAL, // LEFT, CENTER, RIGHT, JUSTIFY
+      vertical: DEFAULT_TEXT.ALIGNMENT.VERTICAL // TOP, MIDDLE, BOTTOM
     },
-    letterSpacing: 0,
-    lineSpacing: 'auto', // 1.2 * em
-    column: 1
+    letterSpacing: DEFAULT_TEXT.LETTER_SPACING,
+    lineSpacing: DEFAULT_TEXT.LINE_SPACING, // 1.2 * em
+    column: DEFAULT_TEXT.COLUMN
   }
 };
 

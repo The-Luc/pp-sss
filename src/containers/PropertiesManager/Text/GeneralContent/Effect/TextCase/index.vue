@@ -1,14 +1,14 @@
 <template>
   <div class="text-case-container">
     <span class="properties-title">Text Case:</span>
-    <PpButtonGroup pp-active-class="not-active">
-      <v-btn @click.native="upperCase">
+    <PpButtonGroup :item="selectedCase" @change="onChange">
+      <v-btn :value="UPPER">
         <img :src="iconUpperCase" alt="uppercase" />
       </v-btn>
-      <v-btn @click.native="lowerCase">
+      <v-btn :value="LOWER">
         <img :src="iconLowerCase" alt="lowerCase" />
       </v-btn>
-      <v-btn @click.native="capitalize">
+      <v-btn :value="CAPITALIZE">
         <img :src="iconCapitalize" alt="capitalize" />
       </v-btn>
     </PpButtonGroup>

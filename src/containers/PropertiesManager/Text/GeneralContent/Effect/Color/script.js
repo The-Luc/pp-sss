@@ -1,21 +1,28 @@
 import { mapGetters, mapMutations } from 'vuex';
 
 import { GETTERS, MUTATES } from '@/store/modules/app/const';
-import { GETTERS as PROP_GETTERS } from '@/store/modules/property/const';
+import { GETTERS as BOOK_GETTERS } from '@/store/modules/book/const';
 
 export default {
   mounted() {
     this.$root.$on('colorChange', color => {
-      this.$root.$emit('printChangeTextStyle', { color: color });
+      this.$root.$emit('printChangeTextProperties', { color: color });
     });
   },
   computed: {
     ...mapGetters({
       isOpenColorPicker: GETTERS.IS_OPEN_COLOR_PICKER,
-      textStyle: PROP_GETTERS.TEXT_STYLE
+      selectedId: BOOK_GETTERS.SELECTED_OBJECT_ID,
+      selectedColor: BOOK_GETTERS.PROP_OBJECT_BY_ID,
+      triggerChange: BOOK_GETTERS.TRIGGER_OBJECT_CHANGE
     }),
     color() {
-      const color = this.textStyle.color || '#0B1717';
+      if (this.triggerChange) {
+        // just for trigger the change
+      }
+
+      const color =
+        this.selectedColor({ id: this.selectedId, prop: 'color' }) || '#0B1717';
 
       this.setColorPickerColor({ color: color });
 
