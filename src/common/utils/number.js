@@ -37,7 +37,13 @@ export const isPositiveFloat = val => /^(0|[1-9]\d*)(\.\d+)?$/.test(val);
  * @param {Array} items all available options
  * @returns {Number|String|Boolean} number/string value if the input is found valid, else return false
  */
-export const getNumberOnChanged = (data, min, max, decimalPlaces = 0, items = []) => {
+export const getNumberOnChanged = (
+  data,
+  min,
+  max,
+  decimalPlaces = 0,
+  items = []
+) => {
   if (isEmpty(data)) {
     return false;
   }
