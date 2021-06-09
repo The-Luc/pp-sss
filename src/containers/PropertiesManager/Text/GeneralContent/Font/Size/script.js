@@ -38,7 +38,7 @@ export default {
 
       const selected = this.items.find(item => item.value === selectedSize);
 
-      return getSelectedOption(selected || selectedSize);
+      return getSelectedOption(selected || selectedSize, 'pt');
     }
   },
   methods: {
