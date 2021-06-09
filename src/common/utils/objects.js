@@ -1,3 +1,5 @@
+import { FABRIC_OBJECT_TYPE } from '../constants';
+
 /**
  * Computed ratio and return coordinate and dimension of object
  * @param {Object} objCoord - Coordinate of object include x and y
@@ -37,4 +39,16 @@ export const computedObjectData = (
     width,
     height
   };
+};
+
+/**
+ * Convert fabric object type to our custom type
+ * @param {String} fabricObjType - Fabric object type of current object
+ * @return {String} Return custom object type
+ */
+export const convertFabricObjType = fabricObjType => {
+  const currentObjType = Object.values(FABRIC_OBJECT_TYPE).find(
+    fabricObj => fabricObj.name === fabricObjType
+  );
+  return currentObjType.value;
 };
