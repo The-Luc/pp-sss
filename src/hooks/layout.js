@@ -1,6 +1,6 @@
 import { useMutations, useGetters } from 'vuex-composition-helpers';
 import { fabric } from 'fabric';
-import { pick, cloneDeep } from 'lodash';
+import { pick, cloneDeep, uniqueId } from 'lodash';
 
 import {
   GETTERS as BOOK_GETTERS,
@@ -63,7 +63,8 @@ const handleDrawTextLayout = (page, position, targetCanvas, objects) => {
         isItalic,
         isUnderline,
         styleId,
-        text
+        text,
+        opacity
       } = obj.property;
 
       let left = scaleSize(x);
@@ -72,6 +73,8 @@ const handleDrawTextLayout = (page, position, targetCanvas, objects) => {
         left += baseLeft;
       }
       const textObj = new fabric.Textbox(text, {
+        id: obj.id,
+        type: OBJECT_TYPE.TEXT,
         lockUniScaling: false,
         width: scaleSize(width),
         height: scaleSize(height),
@@ -88,6 +91,7 @@ const handleDrawTextLayout = (page, position, targetCanvas, objects) => {
         isItalic,
         isUnderline,
         styleId,
+        opacity: opacity === 0 || opacity ? opacity : 1,
         fill: color
       });
       targetCanvas.add(textObj);

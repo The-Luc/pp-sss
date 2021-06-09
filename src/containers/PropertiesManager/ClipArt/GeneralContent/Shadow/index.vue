@@ -2,7 +2,11 @@
   <div class="shadow-container">
     <span class="properties-title">Shadow: </span>
     <div>
-      <PpSelect :selected-val="selectedVal" :items="items" />
+      <PpSelect
+        :items="options"
+        :selected-val="selectedShadow"
+        @change="onChange"
+      />
     </div>
   </div>
 </template>

@@ -145,15 +145,6 @@ export default {
       switch (item.name) {
         case 'properties':
           if (!this.selectedObjectType) {
-            this.setIsOpenProperties({
-              isOpen: !this.isOpenMenuProperties
-            });
-            this.toggleColorPicker({
-              isOpen: false
-            });
-            this.setObjectTypeSelected({
-              type: OBJECT_TYPE.CLIP_ART
-            });
             return;
           }
           this.setIsOpenProperties({
@@ -206,7 +197,7 @@ export default {
      * Add text box in print canvas
      */
     addText() {
-      this.$root.$emit('printAddText');
+      this.$root.$emit('printAddElement', 'TEXT');
     },
     /**
      * Delete selected elements in print canvas

@@ -32,6 +32,11 @@ export default {
     const { drawLayout } = useDrawLayout();
     return { drawLayout };
   },
+  data() {
+    return {
+      awaitingAdd: ''
+    };
+  },
   computed: {
     ...mapGetters({
       book: GETTERS.BOOK_DETAIL,
@@ -154,12 +159,25 @@ export default {
           e.target.set('scaleY', 1);
           e.target.set('width', w * scaleX);
           e.target.set('height', h * scaleY);
+        },
+        'mouse:up': event => {
+          if (this.awaitingAdd) {
+            this.$root.$emit('printInstructionEnd');
+            this.addText(event.e.offsetX, event.e.offsetY);
+            this.awaitingAdd = '';
+          }
         }
       });
 
-      this.$root.$on('printAddText', () => {
-        this.addText();
+      this.$root.$on('printAddElement', element => {
+        this.$root.$emit('printInstructionEnd');
+        this.awaitingAdd = element;
+        this.$root.$emit('printInstructionStart', { element });
       });
+
+      // this.$root.$on('printAddText', () => {
+      //   this.addText();
+      // });
 
       this.$root.$on('printDeleteElements', () => {
         this.deleteElements();
@@ -189,7 +207,9 @@ export default {
       this.setIsOpenProperties({
         isOpen: false
       });
-
+      this.setObjectTypeSelected({
+        type: ''
+      });
       this.setSelectedObjectId({ id: '' });
     },
     /**
@@ -199,20 +219,20 @@ export default {
      */
     objectSelected: function({ target }) {
       const { id } = target;
-
       this.setSelectedObjectId({ id: id });
 
       const objectType =
-        this.selectedObject(this.selectedObjectId)?.Type || null;
+        this.selectedObject(this.selectedObjectId)?.Type || target.type;
 
       this.setObjectTypeSelected({ type: objectType });
-
-      this.openProperties();
+      if (objectType) {
+        this.openProperties();
+      }
     },
     /**
      * Event fire when user click on Text button on Toolbar to add new text on canvas
      */
-    addText: function() {
+    addText: function(x, y) {
       newId++;
 
       const newText = cloneDeep(TextElement);
@@ -220,7 +240,12 @@ export default {
       this.addNewObject({
         id: newId,
         newObject: {
-          ...newText
+          ...newText,
+          coord: {
+            ...newText.coord,
+            x,
+            y
+          }
         }
       });
 
@@ -230,8 +255,10 @@ export default {
         ...fabricProp,
         id: newId,
         lockUniScaling: DEFAULT_TEXT.LOCK_UNI_SCALE,
-        originX: scaleSize(DEFAULT_TEXT.ORIGIN.X),
-        originY: scaleSize(DEFAULT_TEXT.ORIGIN.Y)
+        originX: scaleSize(x),
+        originY: scaleSize(y)
+        // originX: scaleSize(DEFAULT_TEXT.ORIGIN.X),
+        // originY: scaleSize(DEFAULT_TEXT.ORIGIN.Y)
       });
 
       window.printCanvas.add(text);
