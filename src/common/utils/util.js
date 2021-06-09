@@ -295,6 +295,44 @@ export const toFabricTextProp = prop => {
 };
 
 /**
+ * Convert stored image properties to fabric properties
+ *
+ * @param   {Object}  prop stored image properties
+ * @returns {Object}        fabric properties
+ */
+export const toFabricImageProp = prop => {
+  const mapRules = {
+    data: {
+      x: {
+        name: 'left',
+        parse: value => scaleSize(value)
+      },
+      y: {
+        name: 'top',
+        parse: value => scaleSize(value)
+      },
+      color: {
+        name: 'fill'
+      },
+      opacity: {
+        name: 'opacity'
+      }
+    },
+    restrict: [
+      'id',
+      'size',
+      'type',
+      'textCase',
+      'text',
+      'border',
+      'shadow',
+      'flip'
+    ]
+  };
+  return mapObject(prop, mapRules);
+};
+
+/**
  * Handle scroll to element's position with configs
  *
  * @param   {Ref}  el  Element need to scroll
