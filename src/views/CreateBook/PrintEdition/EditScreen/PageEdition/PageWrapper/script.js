@@ -30,7 +30,6 @@ export default {
   },
   mounted() {
     const handleBodyMouseMove = ({ clientX, clientY }) => {
-      console.log(clientX, clientY);
       const canvas = window.printCanvas || window.digitalCanvas;
       if (canvas) {
         const {

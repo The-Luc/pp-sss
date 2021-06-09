@@ -174,12 +174,6 @@ export default {
       switch (data.name) {
         case TOOL_NAME.Text:
           this.addText();
-          this.setObjectTypeSelected({
-            type: OBJECT_TYPE.TEXT
-          });
-          this.setIsOpenProperties({
-            isOpen: true
-          });
           break;
         case TOOL_NAME.DELETE:
           this.deleteElements();
