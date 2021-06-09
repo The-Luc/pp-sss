@@ -91,7 +91,7 @@ const handleDrawTextLayout = (page, position, targetCanvas, objects) => {
         isItalic,
         isUnderline,
         styleId,
-        opacity: opacity || 1,
+        opacity: opacity === 0 || opacity ? opacity : 1,
         fill: color
       });
       targetCanvas.add(textObj);
