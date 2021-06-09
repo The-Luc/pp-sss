@@ -1,5 +1,5 @@
 import { ICON_LOCAL } from '@/common/constants';
-import { UnFocus } from '@/mixins';
+import { unFocus } from '@/common/utils';
 
 export default {
   props: {
@@ -35,7 +35,6 @@ export default {
       menuY: 0
     };
   },
-  mixins: [UnFocus],
   methods: {
     /**
      * Set menu's position base on element clicked and set data to open menu
@@ -55,7 +54,7 @@ export default {
     },
     onEsc() {
       this.onChange(this.selectedVal);
-      this.unFocus();
+      unFocus();
     },
     /**
      * Close menu when click out combobox
