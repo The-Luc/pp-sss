@@ -152,9 +152,7 @@ export default {
       fabricPrototype.cornerStrokeColor = '#8C8C8C';
       fabricPrototype.transparentCorners = false;
       fabricPrototype.borderScaleFactor = 1.5;
-      fabricPrototype.setControlsVisibility({
-        mtr: false
-      });
+
       this.updateCanvasSize(containerSize);
       window.printCanvas.on({
         'selection:updated': this.objectSelected,
@@ -181,6 +179,7 @@ export default {
               this.currentRect.set('text', DEFAULT_TEXT.TEXT);
               this.currentRect.set('width', width);
               this.currentRect.set('height', height);
+              this.currentRect.set('cornerSize', 11);
             }
             this.awaitingAdd = '';
             window.printCanvas.renderAll();
@@ -189,6 +188,9 @@ export default {
         },
         'mouse:move': event => {
           if (!this.awaitingAdd || !this.currentRect) return;
+          window.printCanvas.setCursor('default');
+          window.printCanvas.renderAll();
+
           const pointer = window.printCanvas.getPointer(event.e);
           this.currentRect.set({ width: Math.abs(this.origX - pointer.x) });
           this.currentRect.set({ height: Math.abs(this.origY - pointer.y) });
@@ -197,6 +199,9 @@ export default {
         'mouse:down': event => {
           if (this.awaitingAdd) {
             this.$root.$emit('printInstructionEnd');
+            window.printCanvas.setCursor('crosshair');
+            window.printCanvas.renderAll();
+
             const pointer = window.printCanvas.getPointer(event.e);
             this.origX = pointer.x;
             this.origY = pointer.y;
@@ -298,13 +303,13 @@ export default {
         left: x,
         top: y
       });
-      text.setControlsVisibility({
-        mtr: false
-      });
+
+      // Hide dimenssion and corner when draw
+      text.set('width', 0);
+      text.set('height', 0);
+      text.set('cornerSize', 0);
       this.currentRect = text;
       window.printCanvas.add(text);
-      const index = window.printCanvas.getObjects().length - 1;
-      window.printCanvas.setActiveObject(window.printCanvas.item(index));
     },
     addImageBox() {
       newId++;
