@@ -176,7 +176,8 @@ const textSinglePage1 = {
     isBold: true,
     isItalic: true,
     isUnderline: false,
-    color: '#FF0000'
+    color: '#FF0000',
+    opacity: 0.5
   }
 };
 
@@ -199,7 +200,8 @@ const textSinglePage2 = {
     isBold: true,
     isItalic: true,
     isUnderline: false,
-    color: '#FF0000'
+    color: '#FF0000',
+    opacity: 0.7
   }
 };
 
