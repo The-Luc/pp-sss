@@ -103,7 +103,7 @@ export default {
       this.setSectionId({ sectionId });
       setTimeout(() => {
         const objects = this.getObjectsBySheetId(sheet.id);
-        this.drawLayout(sheet?.printData?.layout, objects);
+        this.drawLayout(sheet.printData.layout, objects);
       }, 50);
     }
   }
