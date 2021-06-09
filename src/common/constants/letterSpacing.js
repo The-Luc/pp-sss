@@ -1,5 +1,4 @@
 export const LETTER_SPACING = [
-  { name: 'Auto', value: 'auto' },
   { name: '-100', value: -100 },
   { name: '-75', value: -75 },
   { name: '-50', value: -50 },

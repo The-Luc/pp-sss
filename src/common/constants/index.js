@@ -20,3 +20,5 @@ export * from './textCase';
 export * from './defaultProperty';
 export * from './fontSize';
 export * from './textProperties';
+export * from './letterSpacing';
+export * from './lineSpacing';
