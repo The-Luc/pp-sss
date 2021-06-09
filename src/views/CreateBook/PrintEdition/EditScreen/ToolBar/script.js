@@ -57,11 +57,12 @@ export default {
           {
             iconName: 'text_format',
             title: 'Text',
-            name: 'text'
+            name: TOOL_NAME.Text
           },
           {
             iconName: 'photo_size_select_large',
-            title: 'Image Box'
+            title: 'Image Box',
+            name: TOOL_NAME.IMAGE_BOX
           },
           {
             iconName: 'collections',
@@ -171,7 +172,7 @@ export default {
       }
       const toolName = this.selectedToolName === data?.name ? '' : data?.name;
       switch (data.name) {
-        case 'text':
+        case TOOL_NAME.Text:
           this.addText();
           this.setObjectTypeSelected({
             type: OBJECT_TYPE.TEXT
@@ -182,6 +183,9 @@ export default {
           break;
         case TOOL_NAME.DELETE:
           this.deleteElements();
+          break;
+        case TOOL_NAME.IMAGE_BOX:
+          this.addImageBox();
           break;
         default:
           if (data.name === TOOL_NAME.LAYOUTS && this.isPrompt) {
@@ -198,6 +202,12 @@ export default {
      */
     addText() {
       this.$root.$emit('printAddText');
+    },
+    /**
+     * Add image box in print canvas
+     */
+    addImageBox() {
+      this.$root.$emit('printAddImageBox');
     },
     /**
      * Delete selected elements in print canvas

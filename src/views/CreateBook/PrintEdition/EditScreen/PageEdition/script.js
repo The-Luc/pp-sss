@@ -9,14 +9,21 @@ import {
   toFabricTextProp,
   getCoverPagePrintSize,
   getPagePrintSize,
-  scaleSize
+  scaleSize,
+  toFabricImageProp,
+  convertFabricObjType
 } from '@/common/utils';
 
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
 import { GETTERS, MUTATES as BOOK_MUTATES } from '@/store/modules/book/const';
 
-import { TextElement } from '@/common/models';
-import { SHEET_TYPES, TEXT_CASE, DEFAULT_TEXT } from '@/common/constants';
+import { ImageElement, TextElement } from '@/common/models';
+import {
+  SHEET_TYPES,
+  TEXT_CASE,
+  DEFAULT_TEXT,
+  FABRIC_OBJECT_TYPE
+} from '@/common/constants';
 
 import SizeWrapper from '@/components/SizeWrapper';
 import PageWrapper from './PageWrapper';
@@ -145,20 +152,27 @@ export default {
         'selection:cleared': this.closeProperties,
         'selection:created': this.objectSelected,
         'object:scaling': e => {
-          const w = e.target.width;
-          const h = e.target.height;
-          const scaleX = e.target.scaleX;
-          const scaleY = e.target.scaleY;
-
-          e.target.set('scaleX', 1);
-          e.target.set('scaleY', 1);
-          e.target.set('width', w * scaleX);
-          e.target.set('height', h * scaleY);
+          const objectFabricType = e.target.get('type');
+          // Maybe update condition base on requirment
+          if (objectFabricType !== FABRIC_OBJECT_TYPE.IMAGE.name) {
+            const w = e.target.width;
+            const h = e.target.height;
+            const scaleX = e.target.scaleX;
+            const scaleY = e.target.scaleY;
+            e.target.set('scaleX', 1);
+            e.target.set('scaleY', 1);
+            e.target.set('width', w * scaleX);
+            e.target.set('height', h * scaleY);
+          }
         }
       });
 
       this.$root.$on('printAddText', () => {
         this.addText();
+      });
+
+      this.$root.$on('printAddImageBox', () => {
+        this.addImageBox();
       });
 
       this.$root.$on('printDeleteElements', () => {
@@ -202,10 +216,9 @@ export default {
     objectSelected: function({ target }) {
       const { id } = target;
       this.setSelectedObjectId({ id: id });
-
+      const targetType = convertFabricObjType(target.type);
       const objectType =
-        this.selectedObject(this.selectedObjectId)?.Type || target.type;
-
+        this.selectedObject(this.selectedObjectId)?.Type || targetType;
       this.setObjectTypeSelected({ type: objectType });
       if (objectType) {
         this.openProperties();
@@ -239,6 +252,37 @@ export default {
       window.printCanvas.add(text);
       const index = window.printCanvas.getObjects().length - 1;
       window.printCanvas.setActiveObject(window.printCanvas.item(index));
+    },
+    addImageBox() {
+      newId++;
+      const newImage = cloneDeep(ImageElement);
+      this.addNewObject({
+        id: newId,
+        newObject: {
+          ...newImage
+        }
+      });
+
+      const fabricProp = toFabricImageProp(newImage);
+      const { width, height } = window.printCanvas;
+      const zoom = window.printCanvas.getZoom();
+      new fabric.Image.fromURL(
+        require('../../../../../assets/image/content-placeholder.jpg'),
+        function(image) {
+          image.setControlsVisibility({
+            mtr: true
+          });
+          window.printCanvas.add(image);
+          const index = window.printCanvas.getObjects().length - 1;
+          window.printCanvas.setActiveObject(window.printCanvas.item(index));
+        },
+        {
+          ...fabricProp,
+          id: newId,
+          left: width / zoom / 2,
+          top: height / zoom / 2
+        }
+      );
     },
     /**
      * Event fire when user change any property of selected text on the Text Properties
