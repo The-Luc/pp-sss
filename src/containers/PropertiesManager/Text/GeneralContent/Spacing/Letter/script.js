@@ -25,7 +25,7 @@ export default {
   computed: {
     ...mapGetters({
       selectedId: GETTERS.SELECTED_OBJECT_ID,
-      selectedFontSize: GETTERS.PROP_OBJECT_BY_ID,
+      selectedSpacing: GETTERS.PROP_OBJECT_BY_ID,
       triggerChange: GETTERS.TRIGGER_OBJECT_CHANGE
     }),
     selectedLetterSpacing() {
@@ -33,8 +33,7 @@ export default {
         // just for trigger the change
       }
       const selectedCharSpacing =
-        this.selectedFontSize({ id: this.selectedId, prop: 'charSpacing' }) ||
-        0;
+        this.selectedSpacing({ id: this.selectedId, prop: 'charSpacing' }) || 0;
       const selected = this.items.find(
         item => item.value === selectedCharSpacing
       );
