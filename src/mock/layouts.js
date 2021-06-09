@@ -36,7 +36,7 @@ const text2 = {
     height: 100
   },
   coord: {
-    x: 750,
+    x: 250,
     y: 250,
     rotation: 0 // degree
   },
