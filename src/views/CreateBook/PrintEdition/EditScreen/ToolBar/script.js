@@ -201,7 +201,7 @@ export default {
      * Add text box in print canvas
      */
     addText() {
-      this.$root.$emit('printAddText');
+      this.$root.$emit('printAddElement', 'TEXT');
     },
     /**
      * Add image box in print canvas
