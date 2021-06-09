@@ -92,6 +92,7 @@ export default {
       deep: true,
       handler(val, oldVal) {
         if (val.id !== oldVal.id) {
+          this.setSelectedObjectId({ id: '' });
           const layoutData = val?.printData?.layout;
           const objects = this.getObjectsBySheetId(val.id);
           this.drawLayout(layoutData, objects);
