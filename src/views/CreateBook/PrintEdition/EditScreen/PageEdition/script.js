@@ -168,15 +168,6 @@ export default {
             e.target.set('scaleY', 1);
             e.target.set('width', w * scaleX);
             e.target.set('height', h * scaleY);
-            const w = e.target.width;
-            const h = e.target.height;
-            const scaleX = e.target.scaleX;
-            const scaleY = e.target.scaleY;
-
-            e.target.set('scaleX', 1);
-            e.target.set('scaleY', 1);
-            e.target.set('width', w * scaleX);
-            e.target.set('height', h * scaleY);
           }
         },
         'mouse:up': event => {
