@@ -10,6 +10,7 @@
     </div>
     <div class="inner-ruler-wrapper">
       <slot></slot>
+      <AddBoxInstruction v-if="visible" :element="element" :x="x" :y="y" />
     </div>
   </div>
 </template>
