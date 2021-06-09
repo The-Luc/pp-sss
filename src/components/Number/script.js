@@ -62,6 +62,7 @@ export default {
      * Trigger render component by increase component key
      */
     forceRenderComponent() {
+      this.valueLength = String(this.value).length;
       this.componentKey += 1;
     }
   }
