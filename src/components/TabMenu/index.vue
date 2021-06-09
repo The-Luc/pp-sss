@@ -1,5 +1,5 @@
 <template>
-  <v-tabs class="pp-tab-menu">
+  <v-tabs class="pp-tab-menu" @change="onChange">
     <slot />
   </v-tabs>
 </template>
