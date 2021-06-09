@@ -7,12 +7,6 @@ export const OBJECT_TYPE = {
 };
 
 export const FABRIC_OBJECT_TYPE = {
-  TEXT: {
-    name: 'textbox',
-    value: OBJECT_TYPE.TEXT
-  },
-  IMAGE: {
-    name: 'image',
-    value: OBJECT_TYPE.IMAGE
-  }
+  TEXT: 'textbox',
+  IMAGE: 'image'
 };
