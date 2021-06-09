@@ -1,6 +1,6 @@
 import { useMutations, useGetters } from 'vuex-composition-helpers';
 import { fabric } from 'fabric';
-import { pick, cloneDeep } from 'lodash';
+import { pick, cloneDeep, uniqueId } from 'lodash';
 
 import {
   GETTERS as BOOK_GETTERS,
@@ -11,8 +11,7 @@ import {
   GETTERS as APP_GETTERS
 } from '@/store/modules/app/const';
 import { OBJECT_TYPE, TOOL_NAME } from '@/common/constants';
-import { PRINT_CANVAS_SIZE } from '@/common/constants/canvas';
-import { computedObjectData } from '@/common/utils';
+import { scaleSize } from '@/common/utils';
 
 export const useLayoutPrompt = () => {
   const { isPrompt, pageSelected } = useGetters({
@@ -45,29 +44,17 @@ export const useLayoutPrompt = () => {
  * @param {Object} page - Page data
  * @param {String} position - Page position to draw left or right
  * @param {Ref} targetCanvas - Target canvas to draw objects
- * @param {Object} layoutSize - Layout size include width and height
  * @param {Array} objects - All objects user addeed
  */
-const handleDrawTextLayout = (
-  page,
-  position,
-  targetCanvas,
-  layoutSize,
-  objects
-) => {
+const handleDrawTextLayout = (page, position, targetCanvas, objects) => {
   const objectIds = cloneDeep(page.objects);
   const objectsData = pick(objects, [...objectIds]);
-  let res = {};
-  let textObjects = [];
-  Object.keys(objectsData).forEach(key => {
-    if (objectsData[key].type === OBJECT_TYPE.TEXT) {
-      res = objectsData[key];
-      textObjects.push(res);
-    }
-  });
-  if (textObjects?.length > 0) {
-    textObjects.forEach(obj => {
-      const { rotation } = obj.coord;
+  Object.values(objectsData).forEach(obj => {
+    if (obj.type === OBJECT_TYPE.TEXT) {
+      const {
+        coord: { x, y, rotation },
+        size: { width, height }
+      } = obj;
       const {
         color,
         fontFamily,
@@ -79,29 +66,26 @@ const handleDrawTextLayout = (
         text
       } = obj.property;
 
-      const { left, top, width, height } = computedObjectData(
-        obj.coord,
-        obj.size,
-        targetCanvas,
-        layoutSize,
-        position
-      );
-
-      const fontSizeRatio =
-        (targetCanvas.width / PRINT_CANVAS_SIZE.WIDTH) * fontSize;
+      let left = scaleSize(x);
+      if (position === 'right') {
+        const baseLeft = targetCanvas.width / targetCanvas.getZoom() / 2;
+        left += baseLeft;
+      }
       const textObj = new fabric.Textbox(text, {
+        id: uniqueId(),
+        type: OBJECT_TYPE.TEXT,
         lockUniScaling: false,
-        width,
-        height,
+        width: scaleSize(width),
+        height: scaleSize(height),
         left,
-        top,
+        top: scaleSize(y),
         fontWeight: isBold ? 'bold' : 'normal',
         fontStyle: isItalic ? 'italic' : 'normal',
         underline: isUnderline,
         textAlign: 'left',
         rotate: rotation,
         fontFamily,
-        fontSize: fontSizeRatio,
+        fontSize: scaleSize(fontSize),
         isBold,
         isItalic,
         isUnderline,
@@ -109,8 +93,8 @@ const handleDrawTextLayout = (
         fill: color
       });
       targetCanvas.add(textObj);
-    });
-  }
+    }
+  });
 };
 
 /**
@@ -130,24 +114,23 @@ const handleDrawBackgroundLayout = (
 ) => {
   const objectIds = cloneDeep(pageData.objects);
   const objectsData = pick(objects, [...objectIds]);
-  let backrgoundObj = {};
-  Object.keys(objectsData).find(key => {
-    if (objectsData[key].type === OBJECT_TYPE.BACKGROUND) {
-      backrgoundObj = objectsData[key];
-    }
-  });
+  const backrgoundObj = Object.values(objectsData).find(
+    ({ type }) => type === OBJECT_TYPE.BACKGROUND
+  );
   const backgroundUrl = backrgoundObj?.property?.imageUrl;
   if (pageData?.objects.length === 0) {
     targetCanvas?.clear().renderAll();
     return;
   }
   fabric.Image.fromURL(backgroundUrl, function(img) {
+    const { width, height } = targetCanvas;
+    const zoom = targetCanvas.getZoom();
     img.selectable = false;
-    img.left = position === 'right' ? targetCanvas.width / 2 : 0;
-    img.scaleX = targetCanvas.width / img.width / 2;
-    img.scaleY = targetCanvas.height / img.height;
+    img.left = position === 'right' ? width / zoom / 2 : 0;
+    img.scaleX = width / zoom / img.width / 2;
+    img.scaleY = height / zoom / img.height;
     targetCanvas.add(img);
-    handleDrawTextLayout(pageData, position, targetCanvas, layoutSize, objects);
+    handleDrawTextLayout(pageData, position, targetCanvas, objects);
   });
 };
 

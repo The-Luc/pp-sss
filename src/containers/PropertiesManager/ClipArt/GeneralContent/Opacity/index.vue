@@ -1,7 +1,7 @@
 <template>
   <div class="opacity-container">
     <span class="properties-title">Opacity: </span>
-    <SliderOpacity :pp-value="value" />
+    <SliderOpacity :value="value" @change="onChange" />
   </div>
 </template>
 
