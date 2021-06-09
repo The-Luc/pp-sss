@@ -1,0 +1,64 @@
+.add-box-instruction {
+  position: absolute;
+  padding: 10px;
+  background-color: #d5d5d5;
+  pointer-events: none;
+
+  .add-box-content {
+    border: 1px solid white;
+    padding: 10px 30px;
+    box-shadow: 1px 1px 0px rgba(0, 0, 0, 0.3), inset 1px 1px 0px rgba(0, 0, 0, 0.3);
+    background-color: transparent;
+    position: relative;
+
+    p {
+      margin: 0;
+      color: #6a6b6c;
+      font-family: $font-500;
+      font-size: 9px;
+    }
+
+    .small-box {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background-color: white;
+      border: 1px solid #9f9fa2;
+      transform: translate(-50%, -50%);
+
+      &.box-top-left,
+      &.box-top-center,
+      &.box-top-right {
+        top: 0;
+      }
+
+      &.box-top-left,
+      &.box-bottom-left,
+      &.box-middle-left {
+        left: 0;
+      }
+
+      &.box-top-center,
+      &.box-bottom-center {
+        left: 50%;
+      }
+
+      &.box-top-right,
+      &.box-bottom-right,
+      &.box-middle-right {
+        right: -10px;
+      }
+
+      &.box-bottom-left,
+      &.box-bottom-center,
+      &.box-bottom-right {
+        bottom: -10px;
+      }
+
+      &.box-middle-left,
+      &.box-middle-right {
+        top: 50%;
+      }
+    }
+  }
+}
