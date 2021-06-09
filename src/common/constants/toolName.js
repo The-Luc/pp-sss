@@ -1,5 +1,7 @@
 export const TOOL_NAME = {
   THEMES: 'Themes',
   LAYOUTS: 'Layouts',
-  DELETE: 'Delete'
+  DELETE: 'Delete',
+  IMAGE_BOX: 'ImageBox',
+  Text: 'Text'
 };

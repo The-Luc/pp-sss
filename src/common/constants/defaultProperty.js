@@ -30,3 +30,12 @@ export const DEFAULT_TEXT = {
   LOCK_UNI_SCALE: false,
   OPACITY: 1
 };
+
+export const DEFAULT_IMAGE = {
+  category: 'Cover',
+  name: '',
+  thumbnail:
+    'https://willis.fluidmedia.cloud/images/yearbook_builder/content_placeholder.jpg',
+  imageUrl:
+    'https://willis.fluidmedia.cloud/images/yearbook_builder/content_placeholder.jpg'
+};
