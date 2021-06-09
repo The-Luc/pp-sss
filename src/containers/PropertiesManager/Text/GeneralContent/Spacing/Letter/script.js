@@ -2,8 +2,8 @@ import { mapGetters } from 'vuex';
 
 import PpCombobox from '@/components/Combobox';
 import { ICON_LOCAL } from '@/common/constants';
+import { getSelectedOption, getNumberOnChanged } from '@/common/utils';
 
-import { isEmpty } from '@/common/utils';
 import { GETTERS } from '@/store/modules/book/const';
 
 export default {
@@ -37,7 +37,7 @@ export default {
       const selected = this.items.find(
         item => item.value === selectedCharSpacing
       );
-      return this.getValLetterSpacing(selected || selectedCharSpacing);
+      return getSelectedOption(selected || selectedCharSpacing, '');
     }
   },
   methods: {
@@ -46,39 +46,14 @@ export default {
      * @param   {Any} val value letter spacing of text (string or object)
      */
     onChange(data) {
-      if (isEmpty(data)) {
+      const result = getNumberOnChanged(data, -100, 1500, 0, this.items);
+      if (result === false) {
         this.$root.$emit('printChangeTextProperties', {});
-
         return;
       }
-
-      const isString = typeof data === 'string';
-
-      const digitRegex = new RegExp(/^-?[\d]{1,}$/g);
-      if (isString && !digitRegex.test(data)) {
-        this.$root.$emit('printChangeTextProperties', {});
-
-        return;
-      }
-
-      const value = isString ? parseInt(data, 10) : data.value;
-
-      const acceptValue = value > 1500 ? 1500 : value < -100 ? -100 : value;
-
       this.$root.$emit('printChangeTextProperties', {
-        charSpacing: acceptValue
+        charSpacing: result
       });
-    },
-    /**
-     * Get value letter spacing item from data
-     * @param   {Any} data  data to make value letter spacing item
-     * @returns             value letter spacing item
-     */
-    getValLetterSpacing(data) {
-      if (typeof data === 'object') {
-        return { name: data.name, value: data.value };
-      }
-      return { name: `${data}`, value: data };
     }
   }
 };
