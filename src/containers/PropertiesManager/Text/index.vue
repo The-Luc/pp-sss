@@ -1,7 +1,7 @@
 <template>
   <div class="text-properties-container">
     <Properties title="Text Properties">
-      <TabMenu>
+      <TabMenu @change="onChangeTabMenu">
         <v-tab href="#general">
           General
         </v-tab>

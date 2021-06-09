@@ -1,4 +1,4 @@
-import { mapGetters } from 'vuex';
+import { mapGetters, mapMutations } from 'vuex';
 
 import Properties from '@/components/Properties';
 import TabMenu from '@/components/TabMenu';
@@ -7,7 +7,7 @@ import StyleContent from './Style';
 import ArrangeContent from './Arrange';
 import PickerPopup from './PickerPopup';
 
-import { GETTERS } from '@/store/modules/app/const';
+import { GETTERS, MUTATES } from '@/store/modules/app/const';
 
 export default {
   components: {
@@ -23,5 +23,18 @@ export default {
       isOpenColorPicker: GETTERS.IS_OPEN_COLOR_PICKER
       // selectedObject: TODO: map selectedObject here
     })
+  },
+  methods: {
+    ...mapMutations({
+      toggleColorPicker: MUTATES.TOGGLE_COLOR_PICKER
+    }),
+    /**
+     * Close color picker (if opening) when change tab
+     */
+    onChangeTabMenu() {
+      if (this.isOpenColorPicker) {
+        this.toggleColorPicker({ isOpen: false });
+      }
+    }
   }
 };

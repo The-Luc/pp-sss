@@ -17,6 +17,9 @@
       box-shadow: 0px 0px 3px #000 !important;
       width: 15px;
       height: 15px;
+      &::before {
+        background: transparent;
+      }
     }
   }
 
