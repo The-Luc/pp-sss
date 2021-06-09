@@ -54,7 +54,7 @@ export default {
      */
     autoScrollToSpread(pageSelected) {
       const currentSpreadActive = this.$refs[`spread${pageSelected}`];
-      scrollToElement(currentSpreadActive[0].$el);
+      scrollToElement(currentSpreadActive[0]?.$el);
     },
     numberPage(sectionId, sheet) {
       const sectionIndex = this.book.sections.findIndex(

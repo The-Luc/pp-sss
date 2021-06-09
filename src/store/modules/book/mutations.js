@@ -72,7 +72,6 @@ const makeNewSection = (sections, sectionIndex) => {
   const totalSheets = sections[sectionIndex].sheets.length;
   const order =
     sectionIndex === sections.length - 1 ? totalSheets - 1 : totalSheets;
-
   return {
     id: newId,
     type: SHEET_TYPES.NORMAL,
@@ -80,6 +79,7 @@ const makeNewSection = (sections, sectionIndex) => {
     positionFixed: POSITION_FIXED.NONE,
     order: order,
     printData: {
+      layout: null,
       thumbnailUrl: null,
       link: 'link'
     },
@@ -298,8 +298,9 @@ export const mutations = {
     state,
     { sheetId, themeId, layout, pagePosition }
   ) {
+    const layoutPages = cloneDeep(layout.pages);
     // Assign unique id to objects
-    const pagesWithObjectId = layout.pages.map(page => ({
+    const pagesWithObjectId = layoutPages.map(page => ({
       objects: page.objects.map(obj => ({
         ...obj,
         id: uniqueId()

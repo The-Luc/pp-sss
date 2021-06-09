@@ -63,7 +63,8 @@ const handleDrawTextLayout = (page, position, targetCanvas, objects) => {
         isItalic,
         isUnderline,
         styleId,
-        text
+        text,
+        opacity
       } = obj.property;
 
       let left = scaleSize(x);
@@ -72,7 +73,7 @@ const handleDrawTextLayout = (page, position, targetCanvas, objects) => {
         left += baseLeft;
       }
       const textObj = new fabric.Textbox(text, {
-        id: uniqueId(),
+        id: obj.id,
         type: OBJECT_TYPE.TEXT,
         lockUniScaling: false,
         width: scaleSize(width),
@@ -90,6 +91,7 @@ const handleDrawTextLayout = (page, position, targetCanvas, objects) => {
         isItalic,
         isUnderline,
         styleId,
+        opacity: opacity || 1,
         fill: color
       });
       targetCanvas.add(textObj);
