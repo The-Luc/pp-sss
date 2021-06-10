@@ -57,7 +57,7 @@ export default {
           {
             iconName: 'text_format',
             title: 'Text',
-            name: TOOL_NAME.Text
+            name: TOOL_NAME.TEXT
           },
           {
             iconName: 'photo_size_select_large',
@@ -172,14 +172,20 @@ export default {
       }
       const toolName = this.selectedToolName === data?.name ? '' : data?.name;
       switch (data.name) {
-        case TOOL_NAME.Text:
+        case TOOL_NAME.TEXT:
           this.addText();
+          this.setToolNameSelected({
+            name: TOOL_NAME.TEXT
+          });
           break;
         case TOOL_NAME.DELETE:
           this.deleteElements();
           break;
         case TOOL_NAME.IMAGE_BOX:
           this.addImageBox();
+          this.setToolNameSelected({
+            name: TOOL_NAME.IMAGE_BOX
+          });
           break;
         default:
           if (data.name === TOOL_NAME.LAYOUTS && this.isPrompt) {
@@ -201,7 +207,7 @@ export default {
      * Add image box in print canvas
      */
     addImageBox() {
-      this.$root.$emit('printAddImageBox');
+      this.$root.$emit('printAddElement', 'IMAGE');
     },
     /**
      * Delete selected elements in print canvas

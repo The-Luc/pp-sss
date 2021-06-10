@@ -58,7 +58,7 @@ export default {
         id: this.selectedId,
         prop: 'opacity'
       });
-      return res ? res * 100 : 100;
+      return !res ? 0 : res * 100;
     }
   },
   methods: {
@@ -66,7 +66,7 @@ export default {
      * Receive value opacity from children
      * @param   {Number}  value Value user input
      */
-    onChange(value) {
+    onChangeOpacity(value) {
       this.$root.$emit('printChangeTextProperties', {
         opacity: value / 100
       });

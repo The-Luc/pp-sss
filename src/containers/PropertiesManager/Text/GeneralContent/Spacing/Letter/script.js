@@ -2,7 +2,11 @@ import { mapGetters } from 'vuex';
 
 import PpCombobox from '@/components/Combobox';
 import { ICON_LOCAL } from '@/common/constants';
-import { getSelectedOption, getNumberOnChanged } from '@/common/utils';
+import {
+  getSelectedOption,
+  getValueInput,
+  validateInputOption
+} from '@/common/utils';
 
 import { GETTERS } from '@/store/modules/book/const';
 
@@ -46,14 +50,15 @@ export default {
      * @param   {Any} val value letter spacing of text (string or object)
      */
     onChange(data) {
-      const result = getNumberOnChanged(data, -100, 1500, 0, this.items);
-      if (result === false) {
-        this.$root.$emit('printChangeTextProperties', {});
-        return;
-      }
-      this.$root.$emit('printChangeTextProperties', {
-        charSpacing: result
-      });
+      const { isValid, value: charSpacing } = validateInputOption(
+        getValueInput(data),
+        -100,
+        1500,
+        0,
+        this.items
+      );
+      const updateData = isValid ? { charSpacing } : {};
+      this.$root.$emit('printChangeTextProperties', updateData);
     }
   }
 };

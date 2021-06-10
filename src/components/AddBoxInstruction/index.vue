@@ -4,9 +4,7 @@
     :style="{ transform: `translate(${x}px, ${y}px)` }"
   >
     <div class="add-box-content">
-      <p class="add-box-content-message">
-        Click and drag to add a {{ element }}
-      </p>
+      <p class="add-box-content-message">Click and drag to add {{ element }}</p>
       <div class="small-box box-top-left">&nbsp;</div>
       <div class="small-box box-top-center">&nbsp;</div>
       <div class="small-box box-top-right">&nbsp;</div>

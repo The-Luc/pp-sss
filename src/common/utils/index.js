@@ -1,5 +1,6 @@
 export * from './canvas';
 export * from './dom';
+export * from './input';
 export * from './log';
 export * from './mapping';
 export * from './number';
