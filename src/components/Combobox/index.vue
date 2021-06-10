@@ -21,6 +21,7 @@
       nudgeWidth
     }"
     @change="onChange"
+    @keydown.enter="onEnter"
     @keydown.esc="onEsc"
   >
     <template #item="{ item, attrs, on }">

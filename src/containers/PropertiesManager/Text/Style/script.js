@@ -66,7 +66,7 @@ export default {
      * Receive value opacity from children
      * @param   {Number}  value Value user input
      */
-    onChange(value) {
+    onChangeOpacity(value) {
       this.$root.$emit('printChangeTextProperties', {
         opacity: value / 100
       });

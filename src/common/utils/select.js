@@ -9,5 +9,5 @@ export const getSelectedOption = (data, unit) => {
     return { name: data.name, value: data.value };
   }
 
-  return { name: `${data} ${unit}`, value: data };
+  return { name: unit ? `${data} ${unit}` : data, value: data };
 };

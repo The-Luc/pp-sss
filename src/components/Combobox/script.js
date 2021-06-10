@@ -52,6 +52,16 @@ export default {
       this.isOpenMenu = false;
       this.$emit('change', val);
     },
+    /**
+     * Trigger change value when user press enter
+     * @param {KeyboardEvent} e - keypress event object
+     */
+    onEnter(e) {
+      this.onChange(e.target.value);
+    },
+    /**
+     * Revert to previous data and Un focus input element
+     */
     onEsc() {
       this.onChange(this.selectedVal);
       unFocus();

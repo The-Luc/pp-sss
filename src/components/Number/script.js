@@ -1,3 +1,5 @@
+import { unFocus } from '@/common/utils';
+
 export default {
   props: {
     suffix: {
@@ -57,6 +59,7 @@ export default {
      */
     onEsc() {
       this.forceRenderComponent();
+      unFocus();
     },
     /**
      * Trigger render component by increase component key
