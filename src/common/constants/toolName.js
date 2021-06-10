@@ -3,5 +3,5 @@ export const TOOL_NAME = {
   LAYOUTS: 'Layouts',
   DELETE: 'Delete',
   IMAGE_BOX: 'ImageBox',
-  Text: 'Text'
+  TEXT: 'Text'
 };

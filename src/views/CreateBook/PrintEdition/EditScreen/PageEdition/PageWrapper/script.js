@@ -1,7 +1,7 @@
 import AddBoxInstruction from '@/components/AddBoxInstruction';
 const ELEMENTS = {
-  TEXT: 'text box',
-  IMAGE: 'image box'
+  TEXT: 'a text box',
+  IMAGE: 'an image box'
 };
 
 export default {

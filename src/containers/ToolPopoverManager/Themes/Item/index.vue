@@ -4,9 +4,9 @@
     :class="{ 'theme-item-active': selectedThemeId === theme.id }"
   >
     <img
-      v-if="theme.imageUrl"
+      v-if="theme.previewImageUrl"
       class="theme-item-img"
-      :src="require(`@/assets/image/themes/${theme.imageUrl}`)"
+      :src="require(`@/assets/image/themes/${theme.previewImageUrl}`)"
       alt="theme"
       @click="onClick"
     />
