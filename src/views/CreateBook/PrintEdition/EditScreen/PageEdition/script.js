@@ -104,6 +104,7 @@ export default {
     }
   },
   beforeDestroy() {
+    document.body.removeEventListener('keyup', this.handleDeleteKey);
     window.printCanvas = null;
   },
   methods: {
@@ -116,6 +117,10 @@ export default {
       setObjectProp: BOOK_MUTATES.SET_PROP,
       updateTriggerChange: BOOK_MUTATES.UPDATE_TRIGGER_OBJECT_CHANGE
     }),
+    /**
+     * Auto resize canvas to fit the container size
+     * @param {Object} containerSize - the size object
+     */
     updateCanvasSize(containerSize) {
       const printSize = this.isCover
         ? getCoverPagePrintSize(this.isHardCover, this.book.totalPages)
@@ -139,6 +144,10 @@ export default {
       this.drawLayout(this.pageSelected?.printData?.layout, objects);
       window.printCanvas.setZoom(currentZoom);
     },
+    /**
+     * Event triggered once the container that hold the canvas is finished rendering
+     * @param {Object} containerSize - the size object
+     */
     onContainerReady(containerSize) {
       let el = this.$refs.canvas;
       window.printCanvas = new fabric.Canvas(el, {
@@ -205,9 +214,21 @@ export default {
       this.$root.$on('printChangeTextProperties', prop => {
         this.changeTextProperties(prop);
       });
+
+      document.body.addEventListener('keyup', this.handleDeleteKey);
     },
+    /**
+     * Event handle when container is resized by user action
+     * @param {Object} containerSize - the size object
+     */
     onContainerResized(containerSize) {
       this.updateCanvasSize(containerSize);
+    },
+    handleDeleteKey(event) {
+      const key = event.keyCode || event.charCode;
+      if (event.target === document.body && key == 8) {
+        deleteSelectedObjects(window.printCanvas);
+      }
     },
     /**
      * Open text properties modal and set default properties

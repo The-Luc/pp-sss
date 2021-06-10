@@ -2,7 +2,11 @@ import { mapGetters } from 'vuex';
 
 import PpCombobox from '@/components/Combobox';
 import { ICON_LOCAL } from '@/common/constants';
-import { getSelectedOption, getValueInput, validateInputOption } from '@/common/utils';
+import {
+  getSelectedOption,
+  getValueInput,
+  validateInputOption
+} from '@/common/utils';
 
 import { GETTERS } from '@/store/modules/book/const';
 
@@ -47,7 +51,13 @@ export default {
      * @param {Any} val size of text (string or object)
      */
     onChange(data) {
-      const { isValid, value } = validateInputOption(getValueInput(data), 1, 500, 0, this.items);
+      const { isValid, value } = validateInputOption(
+        getValueInput(data),
+        1,
+        500,
+        0,
+        this.items
+      );
       const updateData = isValid ? { fontSize: value } : {};
       this.$root.$emit('printChangeTextProperties', updateData);
     }
