@@ -21,6 +21,7 @@
       nudgeWidth
     }"
     @change="onChange"
+    @keydown.esc="onEsc"
   >
     <template #item="{ item, attrs, on }">
       <v-list-item

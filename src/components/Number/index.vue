@@ -5,7 +5,7 @@
     :class="`length-${valueLength > 3 ? 3 : valueLength}`"
     hide-details
     single-line
-    :value="value"
+    :value="roundVal"
     type="number"
     :suffix="suffix"
     @keydown.esc="onEsc"

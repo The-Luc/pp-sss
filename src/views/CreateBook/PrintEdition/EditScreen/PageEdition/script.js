@@ -9,14 +9,20 @@ import {
   toFabricTextProp,
   getCoverPagePrintSize,
   getPagePrintSize,
-  scaleSize
+  toFabricImageProp
 } from '@/common/utils';
 
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
 import { GETTERS, MUTATES as BOOK_MUTATES } from '@/store/modules/book/const';
 
-import { TextElement } from '@/common/models';
-import { SHEET_TYPES, TEXT_CASE, DEFAULT_TEXT } from '@/common/constants';
+import { ImageElement, TextElement } from '@/common/models';
+import {
+  SHEET_TYPES,
+  TEXT_CASE,
+  DEFAULT_TEXT,
+  FABRIC_OBJECT_TYPE,
+  OBJECT_TYPE
+} from '@/common/constants';
 
 import SizeWrapper from '@/components/SizeWrapper';
 import PageWrapper from './PageWrapper';
@@ -34,7 +40,10 @@ export default {
   },
   data() {
     return {
-      awaitingAdd: ''
+      awaitingAdd: '',
+      origX: 0,
+      origY: 0,
+      currentRect: null
     };
   },
   computed: {
@@ -83,6 +92,8 @@ export default {
       deep: true,
       handler(val, oldVal) {
         if (val.id !== oldVal.id) {
+          this.setSelectedObjectId({ id: '' });
+          window.printCanvas.discardActiveObject().renderAll();
           const layoutData = val?.printData?.layout;
           const objects = this.getObjectsBySheetId(val.id);
           this.drawLayout(layoutData, objects);
@@ -150,21 +161,46 @@ export default {
         'selection:cleared': this.closeProperties,
         'selection:created': this.objectSelected,
         'object:scaling': e => {
-          const w = e.target.width;
-          const h = e.target.height;
-          const scaleX = e.target.scaleX;
-          const scaleY = e.target.scaleY;
-
-          e.target.set('scaleX', 1);
-          e.target.set('scaleY', 1);
-          e.target.set('width', w * scaleX);
-          e.target.set('height', h * scaleY);
+          const objectFabricType = e.target.get('type');
+          // Maybe update condition base on requirment
+          if (objectFabricType !== FABRIC_OBJECT_TYPE.IMAGE) {
+            const w = e.target.width;
+            const h = e.target.height;
+            const scaleX = e.target.scaleX;
+            const scaleY = e.target.scaleY;
+            e.target.set('scaleX', 1);
+            e.target.set('scaleY', 1);
+            e.target.set('width', w * scaleX);
+            e.target.set('height', h * scaleY);
+          }
         },
-        'mouse:up': event => {
+        'mouse:up': () => {
+          if (this.awaitingAdd) {
+            const { width, height } = this.currentRect;
+            if (this.awaitingAdd === 'TEXT') {
+              this.currentRect.set('text', DEFAULT_TEXT.TEXT);
+              this.currentRect.set('width', width);
+              this.currentRect.set('height', height);
+            }
+            this.awaitingAdd = '';
+            window.printCanvas.renderAll();
+            this.currentRect = null;
+          }
+        },
+        'mouse:move': event => {
+          if (!this.awaitingAdd || !this.currentRect) return;
+          const pointer = window.printCanvas.getPointer(event.e);
+          this.currentRect.set({ width: Math.abs(this.origX - pointer.x) });
+          this.currentRect.set({ height: Math.abs(this.origY - pointer.y) });
+          window.printCanvas.renderAll();
+        },
+        'mouse:down': event => {
           if (this.awaitingAdd) {
             this.$root.$emit('printInstructionEnd');
-            this.addText(event.e.offsetX, event.e.offsetY);
-            this.awaitingAdd = '';
+            const pointer = window.printCanvas.getPointer(event.e);
+            this.origX = pointer.x;
+            this.origY = pointer.y;
+            this.addText(pointer.x, pointer.y);
           }
         }
       });
@@ -173,6 +209,10 @@ export default {
         this.$root.$emit('printInstructionEnd');
         this.awaitingAdd = element;
         this.$root.$emit('printInstructionStart', { element });
+      });
+
+      this.$root.$on('printAddImageBox', () => {
+        this.addImageBox();
       });
 
       // this.$root.$on('printAddText', () => {
@@ -218,14 +258,17 @@ export default {
      * @param {Object}  target  the selected object
      */
     objectSelected: function({ target }) {
+      if (this.awaitingAdd) {
+        return;
+      }
       const { id } = target;
-      this.setSelectedObjectId({ id: id });
-
-      const objectType =
-        this.selectedObject(this.selectedObjectId)?.Type || target.type;
-
-      this.setObjectTypeSelected({ type: objectType });
+      this.setSelectedObjectId({ id });
+      const objectType = this.selectedObject(this.selectedObjectId)?.type;
+      target.setControlsVisibility({
+        mtr: objectType !== OBJECT_TYPE.TEXT
+      });
       if (objectType) {
+        this.setObjectTypeSelected({ type: objectType });
         this.openProperties();
       }
     },
@@ -239,6 +282,7 @@ export default {
 
       this.addNewObject({
         id: newId,
+        type: OBJECT_TYPE.TEXT,
         newObject: {
           ...newText,
           coord: {
@@ -251,19 +295,48 @@ export default {
 
       const fabricProp = toFabricTextProp(newText);
 
-      const text = new fabric.Textbox(DEFAULT_TEXT.TEXT, {
+      const text = new fabric.Textbox('', {
         ...fabricProp,
         id: newId,
         lockUniScaling: DEFAULT_TEXT.LOCK_UNI_SCALE,
-        originX: scaleSize(x),
-        originY: scaleSize(y)
-        // originX: scaleSize(DEFAULT_TEXT.ORIGIN.X),
-        // originY: scaleSize(DEFAULT_TEXT.ORIGIN.Y)
+        left: x,
+        top: y
       });
-
+      text.setControlsVisibility({
+        mtr: false
+      });
+      this.currentRect = text;
       window.printCanvas.add(text);
       const index = window.printCanvas.getObjects().length - 1;
       window.printCanvas.setActiveObject(window.printCanvas.item(index));
+    },
+    addImageBox() {
+      newId++;
+      const newImage = cloneDeep(ImageElement);
+      this.addNewObject({
+        id: newId,
+        newObject: {
+          ...newImage
+        }
+      });
+
+      const fabricProp = toFabricImageProp(newImage);
+      const { width, height } = window.printCanvas;
+      const zoom = window.printCanvas.getZoom();
+      new fabric.Image.fromURL(
+        require('../../../../../assets/image/content-placeholder.jpg'),
+        function(image) {
+          window.printCanvas.add(image);
+          const index = window.printCanvas.getObjects().length - 1;
+          window.printCanvas.setActiveObject(window.printCanvas.item(index));
+        },
+        {
+          ...fabricProp,
+          id: newId,
+          left: width / zoom / 2,
+          top: height / zoom / 2
+        }
+      );
     },
     /**
      * Event fire when user change any property of selected text on the Text Properties

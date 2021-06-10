@@ -1,4 +1,4 @@
-import { OBJECT_TYPE, DEFAULT_TEXT } from '@/common/constants';
+import { OBJECT_TYPE, DEFAULT_TEXT, DEFAULT_IMAGE } from '@/common/constants';
 
 export const BaseProperty = {
   color: '',
@@ -82,8 +82,8 @@ export const ImageElement = {
     ...BasePrintProperty,
     category: 'Cover',
     name: '',
-    thumbnail: '',
-    imageUrl: ''
+    thumbnail: DEFAULT_IMAGE.thumbnail,
+    imageUrl: DEFAULT_IMAGE.imageUrl
   }
 };
 

@@ -2,8 +2,7 @@ import { mapGetters } from 'vuex';
 
 import PpCombobox from '@/components/Combobox';
 import { ICON_LOCAL } from '@/common/constants';
-
-import { isEmpty } from '@/common/utils';
+import { getSelectedOption, getNumberOnChanged } from '@/common/utils';
 
 import { GETTERS } from '@/store/modules/book/const';
 
@@ -39,7 +38,7 @@ export default {
 
       const selected = this.items.find(item => item.value === selectedSize);
 
-      return this.getFontSizeItem(selected || selectedSize);
+      return getSelectedOption(selected || selectedSize, 'pt');
     }
   },
   methods: {
@@ -48,39 +47,12 @@ export default {
      * @param {Any} val size of text (string or object)
      */
     onChange(data) {
-      if (isEmpty(data)) {
+      const result = getNumberOnChanged(data, 1, 500, 0, this.items);
+      if (result === false) {
         this.$root.$emit('printChangeTextProperties', {});
-
         return;
       }
-
-      const isString = typeof data === 'string';
-
-      const digitRegex = new RegExp(/^[\d]{1,}$/g);
-
-      if (isString && !digitRegex.test(data)) {
-        this.$root.$emit('printChangeTextProperties', {});
-
-        return;
-      }
-
-      const value = isString ? parseInt(data, 10) : data.value;
-
-      const acceptValue = value > 500 ? 500 : value < 1 ? 1 : value;
-
-      this.$root.$emit('printChangeTextProperties', { fontSize: acceptValue });
-    },
-    /**
-     * Get font size item from data
-     * @param   {Any} data  data to make font size item (font value of font item)
-     * @returns             font size item
-     */
-    getFontSizeItem(data) {
-      if (typeof data === 'object') {
-        return { name: data.name, value: data.value };
-      }
-
-      return { name: `${data} pt`, value: data };
+      this.$root.$emit('printChangeTextProperties', { fontSize: result });
     }
   }
 };

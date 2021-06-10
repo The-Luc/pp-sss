@@ -36,7 +36,7 @@ const text2 = {
     height: 100
   },
   coord: {
-    x: 750,
+    x: 250,
     y: 250,
     rotation: 0 // degree
   },
@@ -176,7 +176,8 @@ const textSinglePage1 = {
     isBold: true,
     isItalic: true,
     isUnderline: false,
-    color: '#FF0000'
+    color: '#FF0000',
+    opacity: 0.5
   }
 };
 
@@ -199,7 +200,8 @@ const textSinglePage2 = {
     isBold: true,
     isItalic: true,
     isUnderline: false,
-    color: '#FF0000'
+    color: '#FF0000',
+    opacity: 0.7
   }
 };
 

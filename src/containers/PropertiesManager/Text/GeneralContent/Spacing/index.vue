@@ -1,7 +1,7 @@
 <template>
   <div class="spacing-container">
-    <Letter />
-    <LineSpacing />
+    <Letter :items="letterSpacing" />
+    <LineSpacing :items="lineSpacing" />
     <Column />
   </div>
 </template>

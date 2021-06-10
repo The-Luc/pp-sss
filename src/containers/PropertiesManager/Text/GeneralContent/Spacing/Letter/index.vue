@@ -5,6 +5,8 @@
       :items="items"
       :prepended-icon="prependedIcon"
       :appended-icon="appendedIcon"
+      :selected-val="selectedLetterSpacing"
+      @change="onChange"
     />
   </div>
 </template>

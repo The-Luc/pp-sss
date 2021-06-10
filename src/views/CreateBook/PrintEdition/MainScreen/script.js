@@ -101,8 +101,10 @@ export default {
     onSelectSheet(sheet, sectionId) {
       this.selectSheet({ sheet });
       this.setSectionId({ sectionId });
-      const objects = this.getObjectsBySheetId(sheet.id);
-      this.drawLayout(sheet?.printData?.layout, objects);
+      setTimeout(() => {
+        const objects = this.getObjectsBySheetId(sheet.id);
+        this.drawLayout(sheet.printData.layout, objects);
+      }, 50);
     }
   }
 };
