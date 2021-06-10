@@ -6,6 +6,7 @@ import {
   PRINT_DPI,
   PRINT_PAGE_SIZE
 } from '@/common/constants/canvas';
+import { isEmpty } from './util';
 
 /**
  * Convert Object Inches to Pixels value

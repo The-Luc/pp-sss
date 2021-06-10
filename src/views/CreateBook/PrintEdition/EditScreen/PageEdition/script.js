@@ -10,7 +10,8 @@ import {
   getCoverPagePrintSize,
   getPagePrintSize,
   toFabricImageProp,
-  selectLatestObject
+  selectLatestObject,
+  deleteSelectedObjects
 } from '@/common/utils';
 
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
