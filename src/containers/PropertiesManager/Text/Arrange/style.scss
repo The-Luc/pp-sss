@@ -4,11 +4,12 @@
 .flip-container,
 .rotate-container {
     text-transform: initial;
-    padding: 5.5px 12px 6px;
+    padding: 5.5px 12px 8px;
     border-bottom: 1px solid #bcbec0;
     .properties-title {
-        font-family: 700;
+        font-family: $font-500;
         font-weight: 600;
+        height: 13px;
     }
 }
 
