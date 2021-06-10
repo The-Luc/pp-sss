@@ -320,6 +320,9 @@ export default {
       this.currentRect = text;
       window.printCanvas.add(text);
     },
+    /**
+     * Event fire when user click on Image button on Toolbar to add new image on canvas
+     */
     addImageBox(x, y, width, height) {
       newId++;
       const newImage = cloneDeep(ImageElement);
