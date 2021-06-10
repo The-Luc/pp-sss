@@ -224,6 +224,10 @@ export default {
     onContainerResized(containerSize) {
       this.updateCanvasSize(containerSize);
     },
+    /**
+     * Event handler for when user press key at body scope
+     * @param {KeyBoardEvent} event - the KeyBoardEvent object
+     */
     handleDeleteKey(event) {
       const key = event.keyCode || event.charCode;
       if (event.target === document.body && key == 8) {
