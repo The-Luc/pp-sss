@@ -41,7 +41,7 @@ export default {
     pageSelected: {
       deep: true,
       handler(newVal, oldVal) {
-        if (newVal.id !== oldVal.id) {
+        if (newVal.id !== oldVal.id && this.printThemeSelected) {
           this.setIsPromptLayout(newVal);
         }
       }

@@ -110,6 +110,7 @@ export default {
   methods: {
     ...mapMutations({
       setIsOpenProperties: MUTATES.TOGGLE_MENU_PROPERTIES,
+      setToolNameSelected: MUTATES.SET_TOOL_NAME_SELECTED,
       setObjectTypeSelected: MUTATES.SET_OBJECT_TYPE_SELECTED,
       setSelectedObjectId: BOOK_MUTATES.SET_SELECTED_OBJECT_ID,
       addNewObject: BOOK_MUTATES.ADD_OBJECT,
@@ -181,7 +182,13 @@ export default {
               this.currentRect.set('height', height);
               this.currentRect.set('cornerSize', 11);
             }
+
+            if (this.awaitingAdd === 'IMAGE') {
+              this.addImageBox(this.origX, this.origY, width, height);
+            }
+
             this.awaitingAdd = '';
+            this.setToolNameSelected({ name: '' });
             window.printCanvas.renderAll();
             this.currentRect = null;
           }
@@ -205,7 +212,13 @@ export default {
             const pointer = window.printCanvas.getPointer(event.e);
             this.origX = pointer.x;
             this.origY = pointer.y;
-            this.addText(pointer.x, pointer.y);
+            if (this.awaitingAdd === 'TEXT') {
+              this.addText(pointer.x, pointer.y);
+            }
+
+            if (this.awaitingAdd === 'IMAGE') {
+              this.currentRect = new fabric.Rect();
+            }
           }
         }
       });
@@ -214,10 +227,6 @@ export default {
         this.$root.$emit('printInstructionEnd');
         this.awaitingAdd = element;
         this.$root.$emit('printInstructionStart', { element });
-      });
-
-      this.$root.$on('printAddImageBox', () => {
-        this.addImageBox();
       });
 
       this.$root.$on('printDeleteElements', () => {
@@ -311,22 +320,34 @@ export default {
       this.currentRect = text;
       window.printCanvas.add(text);
     },
-    addImageBox() {
+    /**
+     * Event fire when user click on Image button on Toolbar to add new image on canvas
+     */
+    addImageBox(x, y, width, height) {
       newId++;
       const newImage = cloneDeep(ImageElement);
+
       this.addNewObject({
         id: newId,
         newObject: {
-          ...newImage
+          ...newImage,
+          coord: {
+            ...newImage.coord,
+            x,
+            y
+          }
         }
       });
-
       const fabricProp = toFabricImageProp(newImage);
-      const { width, height } = window.printCanvas;
-      const zoom = window.printCanvas.getZoom();
       new fabric.Image.fromURL(
         require('../../../../../assets/image/content-placeholder.jpg'),
-        function(image) {
+        image => {
+          image.set({
+            left: x,
+            top: y
+          });
+          image.scaleX = width / image.width;
+          image.scaleY = height / image.height;
           window.printCanvas.add(image);
           const index = window.printCanvas.getObjects().length - 1;
           window.printCanvas.setActiveObject(window.printCanvas.item(index));
@@ -334,8 +355,8 @@ export default {
         {
           ...fabricProp,
           id: newId,
-          left: width / zoom / 2,
-          top: height / zoom / 2
+          cornerSize: 11,
+          lockUniScaling: false
         }
       );
     },

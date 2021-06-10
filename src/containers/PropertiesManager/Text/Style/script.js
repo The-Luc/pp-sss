@@ -58,7 +58,7 @@ export default {
         id: this.selectedId,
         prop: 'opacity'
       });
-      return res ? res * 100 : 100;
+      return !res ? 0 : res * 100;
     }
   },
   methods: {
