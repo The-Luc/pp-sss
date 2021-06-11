@@ -53,8 +53,8 @@ export const createTextBox = (x, y, width, height) => {
     left: 0,
     top: 0,
     width,
-    originX: 'center',
-    originY: 'center'
+    originX: 'left',
+    originY: 'top'
   });
   // text height must be updated after width
   if (height > text.height) {
@@ -84,8 +84,8 @@ export const createTextBox = (x, y, width, height) => {
     height: height,
     left: 0,
     top: 0,
-    originX: 'center',
-    originY: 'center'
+    originX: 'left',
+    originY: 'top'
   });
 
   const group = new fabric.Group([rect, text], {
@@ -98,6 +98,8 @@ export const createTextBox = (x, y, width, height) => {
     const target = e.transform?.target;
     if (target) {
       const newData = {
+        top: -1 * target.height / 2,
+        left: -1 * target.width / 2,
         width: target.width,
         height: target.height
       };
