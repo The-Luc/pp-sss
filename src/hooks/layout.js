@@ -167,6 +167,7 @@ export const useDrawLayout = () => {
    * @param {Ref} targetCanvas - Target canvas to draw objects
    */
   const drawLayout = (layout, objects, targetCanvas = window.printCanvas) => {
+    window.printCanvas.remove(...window.printCanvas.getObjects()).renderAll(); // Remove objects added before when select layout
     if (layout?.id) {
       layout.pages.forEach((page, index) => {
         handleDrawLayout(

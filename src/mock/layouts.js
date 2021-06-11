@@ -18,6 +18,7 @@ const text1 = {
     rotation: 20 // degree
   },
   property: {
+    ...TextElement.property,
     styleId: 'default',
     text: 'Sample Text',
     fontFamily: 'Arial',
@@ -41,6 +42,7 @@ const text2 = {
     rotation: 0 // degree
   },
   property: {
+    ...TextElement.property,
     styleId: 'default',
     text: 'Header Text',
     fontFamily: 'Arial',
