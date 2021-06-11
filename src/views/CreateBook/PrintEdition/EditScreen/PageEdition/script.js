@@ -1,6 +1,6 @@
 import { mapGetters, mapMutations } from 'vuex';
 import { fabric } from 'fabric';
-import { cloneDeep } from 'lodash';
+import { cloneDeep, uniqueId } from 'lodash';
 
 import { useDrawLayout } from '@/hooks';
 import { startDrawBox } from '@/common/fabricObjects/drawingBox';
@@ -28,8 +28,6 @@ import {
 } from '@/common/constants';
 import SizeWrapper from '@/components/SizeWrapper';
 import PageWrapper from './PageWrapper';
-
-let newId = 0;
 
 export default {
   components: {
@@ -95,7 +93,10 @@ export default {
       handler(val, oldVal) {
         if (val.id !== oldVal.id) {
           this.setSelectedObjectId({ id: '' });
-          window.printCanvas.discardActiveObject().renderAll();
+          window.printCanvas
+            .discardActiveObject()
+            .remove(...window.printCanvas.getObjects())
+            .renderAll();
           const layoutData = val?.printData?.layout;
           const objects = this.getObjectsBySheetId(val.id);
           this.drawLayout(layoutData, objects);
@@ -230,7 +231,7 @@ export default {
      */
     handleDeleteKey(event) {
       const key = event.keyCode || event.charCode;
-      if (event.target === document.body && key == 8) {
+      if (event.target === document.body && (key == 8 || key == 46)) {
         deleteSelectedObjects(window.printCanvas);
       }
     },
@@ -280,12 +281,10 @@ export default {
      * Event fire when user click on Text button on Toolbar to add new text on canvas
      */
     addText: function(x, y, width, height) {
-      newId++;
-
       const newText = cloneDeep(TextElement);
-
+      const id = uniqueId();
       this.addNewObject({
-        id: newId,
+        id,
         type: OBJECT_TYPE.TEXT,
         newObject: {
           ...newText,
@@ -305,7 +304,7 @@ export default {
 
       const text = new fabric.Textbox(DEFAULT_TEXT.TEXT, {
         ...fabricProp,
-        id: newId,
+        id,
         lockUniScaling: DEFAULT_TEXT.LOCK_UNI_SCALE,
         left: x,
         top: y,
@@ -324,11 +323,10 @@ export default {
      * Event fire when user click on Image button on Toolbar to add new image on canvas
      */
     addImageBox(x, y, width, height) {
-      newId++;
       const newImage = cloneDeep(ImageElement);
-
+      const id = uniqueId();
       this.addNewObject({
-        id: newId,
+        id,
         newObject: {
           ...newImage,
           coord: {
@@ -354,7 +352,7 @@ export default {
         },
         {
           ...fabricProp,
-          id: newId,
+          id,
           cornerSize: 11,
           lockUniScaling: false,
           crossOrigin: 'anonymous'

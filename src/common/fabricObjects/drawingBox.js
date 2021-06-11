@@ -3,9 +3,9 @@ import { fabric } from 'fabric';
 export const startDrawBox = (canvas, event) =>
   new Promise(resolve => {
     canvas.selection = false;
+    canvas.setCursor('crosshair');
     canvas.isDrawingMode = true;
     canvas.freeDrawingBrush.color = 'transparent';
-
     let rect, isMouseDown;
     const onMouseDown = () => {
       isMouseDown = true;
