@@ -42,24 +42,36 @@ export const validateInputOption = (
   min,
   max,
   decimalPlaces = 0,
-  items = []
+  items = [],
+  unit = ''
 ) => {
   if (isEmpty(data)) {
     return { isValid: false, value: '' };
   }
-  const stringVal = String(data);
+  const stringVal = String(data).trim();
+  const [stringValueWithUnit, stringUnit] = stringVal.split(' ');
   const foundOption = getMatchedValueFromOptions(stringVal, items);
   if (foundOption) {
     return { isValid: true, value: foundOption.value };
   }
-  if (decimalPlaces > 0 && !isFloat(stringVal)) {
+  if (decimalPlaces > 0 && !isFloat(stringValueWithUnit)) {
     return { isValid: false, value: '' };
   }
-  if (decimalPlaces <= 0 && !isInteger(stringVal)) {
-    return { isValid: false, value: '' };
-  }
+
   const value = decimalPlaces > 0 ? parseFloat(stringVal) : parseInt(data, 10);
+
   if (value < min || value > max) {
+    return { isValid: false, value: '' };
+  }
+
+  if (unit && stringUnit && unit !== stringUnit) {
+    return {
+      isValid: false,
+      value: ''
+    };
+  }
+
+  if (decimalPlaces <= 0 && !isInteger(stringValueWithUnit)) {
     return { isValid: false, value: '' };
   }
   return {

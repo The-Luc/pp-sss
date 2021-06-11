@@ -51,11 +51,20 @@ export default {
         this.visible = visible;
       }
     };
+
+    const handleKeyPress = event => {
+      const key = event.keyCode || event.charCode;
+      if (key === 27) {
+        this.$root.$emit('enscapeInstruction');
+      }
+    };
+
     this.$root.$on('printInstructionStart', ({ element }) => {
       if (ELEMENTS[element] !== this.element) {
         this.element = ELEMENTS[element] || 'box';
       }
       document.body.addEventListener('mousemove', handleBodyMouseMove);
+      document.body.addEventListener('keyup', handleKeyPress);
     });
     this.$root.$on('printInstructionEnd', () => {
       this.element = '';
@@ -63,6 +72,7 @@ export default {
       this.x = 0;
       this.y = 0;
       document.body.removeEventListener('mousemove', handleBodyMouseMove);
+      document.body.removeEventListener('keyup', handleKeyPress);
     });
   }
 };
