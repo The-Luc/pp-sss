@@ -42,12 +42,15 @@ export const validateInputOption = (
   min,
   max,
   decimalPlaces = 0,
-  items = []
+  items = [],
+  unit = ''
 ) => {
   if (isEmpty(data)) {
     return { isValid: false, value: '' };
   }
   const stringVal = String(data);
+  const stringUnit = stringVal.trim().split(' ')[1];
+  const stringValueWithUnit = stringVal.trim().split(' ')[0];
   const foundOption = getMatchedValueFromOptions(stringVal, items);
   if (foundOption) {
     return { isValid: true, value: foundOption.value };
@@ -55,11 +58,26 @@ export const validateInputOption = (
   if (decimalPlaces > 0 && !isFloat(stringVal)) {
     return { isValid: false, value: '' };
   }
-  if (decimalPlaces <= 0 && !isInteger(stringVal)) {
+
+  const value = decimalPlaces > 0 ? parseFloat(stringVal) : parseInt(data, 10);
+
+  if (value < min || value > max) {
     return { isValid: false, value: '' };
   }
-  const value = decimalPlaces > 0 ? parseFloat(stringVal) : parseInt(data, 10);
-  if (value < min || value > max) {
+
+  if (
+    unit &&
+    stringUnit &&
+    unit === stringUnit &&
+    isInteger(stringValueWithUnit)
+  ) {
+    return {
+      isValid: true,
+      value: decimalPlaces > 0 ? value.toFixed(decimalPlaces) : value
+    };
+  }
+
+  if (decimalPlaces <= 0 && !isInteger(stringVal)) {
     return { isValid: false, value: '' };
   }
   return {

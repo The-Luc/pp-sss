@@ -59,7 +59,8 @@ export default {
         1,
         500,
         0,
-        this.items
+        this.items,
+        'pt'
       );
       const updateData = isValid ? { lineSpacing: isAuto ? 0 : value } : {};
       this.$root.$emit('printChangeTextProperties', updateData);

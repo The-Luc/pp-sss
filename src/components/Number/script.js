@@ -1,4 +1,4 @@
-import { unFocus } from '@/common/utils';
+import { unFocus, validateInputOption } from '@/common/utils';
 
 export default {
   props: {
@@ -48,7 +48,8 @@ export default {
      * @param   {String}  value Value user input
      */
     onChangeInput(value) {
-      if (+value > this.max || +value < this.min || !value) {
+      const { isValid } = validateInputOption(value, 0, 100, 0);
+      if (+value > this.max || +value < this.min || !value || !isValid) {
         this.forceRenderComponent();
       } else {
         this.$emit('change', +value);
