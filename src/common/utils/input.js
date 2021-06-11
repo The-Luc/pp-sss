@@ -54,7 +54,7 @@ export const validateInputOption = (
   if (foundOption) {
     return { isValid: true, value: foundOption.value };
   }
-  if (decimalPlaces > 0 && !isFloat(stringVal)) {
+  if (decimalPlaces > 0 && !isFloat(stringValueWithUnit)) {
     return { isValid: false, value: '' };
   }
 
