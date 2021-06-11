@@ -4,6 +4,7 @@
   background-color: #4d4d4f;
   display: flex;
   position: relative;
+  font-family: $font-300;
 
   .feedback-name,
   .feedback-text,
@@ -11,7 +12,7 @@
   .feedback-title {
     display: flex;
     align-items: center;
-    padding: 2px 13px;
+    padding: 1px 13px;
     border-right: 1px solid #808184;
     color: #bbbdbf;
   }
@@ -19,11 +20,12 @@
     min-width: 90px;
   }
   .feedback-value {
-    display: inline-block;
     margin-left: 4px;
     color: #ffffff;
+    justify-content: space-between;
   }
   .feedback-select {
+    width: 150px;
     select {
       color: #ffffff;
     }
@@ -33,6 +35,7 @@
     }
     .v-icon {
       color: #ffffff;
+      top: -1px;
     }
   }
 }
