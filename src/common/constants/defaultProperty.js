@@ -22,6 +22,7 @@ export const DEFAULT_TEXT = {
   },
   LETTER_SPACING: 0,
   LINE_SPACING: 0,
+  LINE_HEIGHT: 1,
   COLUMN: 1,
   ORIGIN: {
     X: 0,

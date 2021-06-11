@@ -7,7 +7,7 @@
       <label class="container-radio">
         <input type="checkbox" checked />
         <div class="checkmark"></div>
-        <div>Constrain proportions</div>
+        <div class="container-radio-label">Constrain proportions</div>
       </label>
     </div>
   </div>

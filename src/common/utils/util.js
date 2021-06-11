@@ -281,6 +281,9 @@ export const toFabricTextProp = prop => {
       letterSpacing: {
         name: 'charSpacing'
       },
+      lineHeight: {
+        name: 'lineHeight'
+      },
       opacity: {
         name: 'opacity'
       }
