@@ -230,7 +230,7 @@ export default {
      */
     handleDeleteKey(event) {
       const key = event.keyCode || event.charCode;
-      if (event.target === document.body && key == 8) {
+      if (event.target === document.body && (key == 8 || key == 46)) {
         deleteSelectedObjects(window.printCanvas);
       }
     },
