@@ -48,9 +48,8 @@ export const validateInputOption = (
   if (isEmpty(data)) {
     return { isValid: false, value: '' };
   }
-  const stringVal = String(data);
-  const stringUnit = stringVal.trim().split(' ')[1];
-  const stringValueWithUnit = stringVal.trim().split(' ')[0];
+  const stringVal = String(data).trim();
+  const [stringValueWithUnit, stringUnit] = stringVal.split(' ');
   const foundOption = getMatchedValueFromOptions(stringVal, items);
   if (foundOption) {
     return { isValid: true, value: foundOption.value };
@@ -65,19 +64,14 @@ export const validateInputOption = (
     return { isValid: false, value: '' };
   }
 
-  if (
-    unit &&
-    stringUnit &&
-    unit === stringUnit &&
-    isInteger(stringValueWithUnit)
-  ) {
+  if (unit && stringUnit && unit !== stringUnit) {
     return {
-      isValid: true,
-      value: decimalPlaces > 0 ? value.toFixed(decimalPlaces) : value
+      isValid: false,
+      value: ''
     };
   }
 
-  if (decimalPlaces <= 0 && !isInteger(stringVal)) {
+  if (decimalPlaces <= 0 && !isInteger(stringValueWithUnit)) {
     return { isValid: false, value: '' };
   }
   return {

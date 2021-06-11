@@ -48,8 +48,8 @@ export default {
      * @param   {String}  value Value user input
      */
     onChangeInput(value) {
-      const { isValid } = validateInputOption(value, 0, 100, 0);
-      if (+value > this.max || +value < this.min || !value || !isValid) {
+      const { isValid } = validateInputOption(value, this.min, this.max, 0);
+      if (!isValid) {
         this.forceRenderComponent();
       } else {
         this.$emit('change', +value);
