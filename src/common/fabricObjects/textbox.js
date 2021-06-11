@@ -14,7 +14,12 @@ import {
   ptToPx
 } from '@/common/utils';
 
-import { TEXT_CASE, OBJECT_TYPE, DEFAULT_SPACING, DEFAULT_TEXT } from '@/common/constants';
+import {
+  TEXT_CASE,
+  OBJECT_TYPE,
+  DEFAULT_SPACING,
+  DEFAULT_TEXT
+} from '@/common/constants';
 
 /**
  * Handle creating a TextBox into canvas
@@ -44,6 +49,7 @@ export const createTextBox = (x, y, width, height) => {
 
   const text = new fabric.Textbox(DEFAULT_TEXT.TEXT, {
     ...textProp,
+    id,
     left: 0,
     top: 0,
     width,
@@ -55,10 +61,25 @@ export const createTextBox = (x, y, width, height) => {
     text.height = height;
   }
 
+  const updateTextListeners = canvas => {
+    text.__eventListeners = {};
+
+    const onDoneEditText = () => {
+      canvas.remove(text);
+      canvas.remove(rect);
+      const grp = new fabric.Group([rect, text], { id });
+      canvas.add(grp);
+      addGroupEvents(grp);
+    };
+
+    text.on('editing:exited', onDoneEditText);
+  };
+
   const borderProp = toFabricTextBorderProp(dataObject);
 
   const rect = new fabric.Rect({
     ...borderProp,
+    id,
     width: width,
     height: height,
     left: 0,
@@ -73,7 +94,7 @@ export const createTextBox = (x, y, width, height) => {
     top: y
   });
 
-  group.on('scaling', e => {
+  const handleScale = e => {
     const target = e.transform?.target;
     if (target) {
       const newData = {
@@ -84,7 +105,34 @@ export const createTextBox = (x, y, width, height) => {
       text.set('height', target.height);
       rect.set(newData);
     }
-  });
+  };
+
+  const ungroup = function(g) {
+    const { canvas } = g;
+    g._restoreObjectsState();
+    canvas.remove(g);
+    canvas.add(rect);
+    canvas.add(text);
+    canvas.renderAll();
+  };
+
+  const handleDbClick = e => {
+    const canvas = e.target.canvas;
+    if (canvas) {
+      ungroup(e.target);
+      updateTextListeners(canvas);
+      canvas.setActiveObject(text);
+      text.enterEditing();
+      text.selectAll();
+    }
+  };
+
+  const addGroupEvents = g => {
+    g.on('scaled', handleScale);
+    g.on('mousedblclick', handleDbClick);
+  };
+
+  addGroupEvents(group);
 
   return { object: group, data: dataObject };
 };
