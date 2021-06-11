@@ -21,7 +21,7 @@ export const DEFAULT_TEXT = {
     VERTICAL: TEXT_VERTICAL_ALIGN.TOP
   },
   LETTER_SPACING: 0,
-  LINE_SPACING: 'auto',
+  LINE_SPACING: 0,
   COLUMN: 1,
   ORIGIN: {
     X: 0,

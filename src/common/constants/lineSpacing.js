@@ -16,3 +16,7 @@ export const LINE_SPACING = [
   { name: '60 pt', value: 60 },
   { name: '72 pt', value: 72 }
 ];
+
+export const DEFAULT_SPACING = {
+  VALUE: 1.2
+};

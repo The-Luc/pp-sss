@@ -21,9 +21,9 @@ import {
   TEXT_CASE,
   DEFAULT_TEXT,
   FABRIC_OBJECT_TYPE,
-  OBJECT_TYPE
+  OBJECT_TYPE,
+  DEFAULT_SPACING
 } from '@/common/constants';
-
 import SizeWrapper from '@/components/SizeWrapper';
 import PageWrapper from './PageWrapper';
 
@@ -371,7 +371,6 @@ export default {
 
         return;
       }
-
       const activeObj = window.printCanvas.getActiveObject();
 
       if (isEmpty(activeObj)) return;
@@ -381,14 +380,35 @@ export default {
       this.updateTriggerChange();
 
       const fabricProp = toFabricTextProp(prop);
-
       Object.keys(fabricProp).forEach(k => {
         activeObj.set(k, fabricProp[k]);
       });
 
+      if (prop['fontSize']) {
+        const lineSpacing = this.selectedProp({
+          id: this.selectedObjectId,
+          prop: 'lineSpacing'
+        });
+        const value =
+          lineSpacing === 0 || lineSpacing === null
+            ? 1
+            : lineSpacing / (DEFAULT_SPACING.VALUE * prop['fontSize']);
+        activeObj.set('lineHeight', value);
+      }
+
+      if (prop['lineSpacing'] || prop['lineSpacing'] === 0) {
+        const fontSize = this.selectedProp({
+          id: this.selectedObjectId,
+          prop: 'fontSize'
+        });
+        const value =
+          prop['lineSpacing'] === 0
+            ? 1
+            : prop['lineSpacing'] / (DEFAULT_SPACING.VALUE * fontSize);
+        activeObj.set('lineHeight', value);
+      }
       if (isEmpty(prop['textCase'])) {
         window.printCanvas.renderAll();
-
         return;
       }
 
@@ -397,7 +417,6 @@ export default {
 
       if (isEmpty(text)) {
         window.printCanvas.renderAll();
-
         return;
       }
 
@@ -423,7 +442,6 @@ export default {
 
         activeObj.set('text', changedText);
       }
-
       window.printCanvas.renderAll();
     },
     /**
