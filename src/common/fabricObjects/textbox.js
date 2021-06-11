@@ -98,8 +98,8 @@ export const createTextBox = (x, y, width, height) => {
     const target = e.transform?.target;
     if (target) {
       const newData = {
-        top: -1 * target.height / 2,
-        left: -1 * target.width / 2,
+        top: (-1 * target.height) / 2,
+        left: (-1 * target.width) / 2,
         width: target.width,
         height: target.height
       };
