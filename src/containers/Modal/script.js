@@ -56,7 +56,8 @@ export default {
      * Catch when user click Escape and then call onCloseModal function to update state
      */
     onKeyDown(event) {
-      if (event.keyCode === 27) {
+      const key = event.keyCode || event.charCode;
+      if (key === 27) {
         // Escape
         this.onCloseModal();
       }

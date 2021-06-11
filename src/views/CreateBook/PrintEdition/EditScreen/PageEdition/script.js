@@ -204,6 +204,12 @@ export default {
         }
       });
 
+      this.$root.$on('enscapeInstruction', () => {
+        this.awaitingAdd = '';
+        this.$root.$emit('printInstructionEnd');
+        this.setToolNameSelected({ name: '' });
+      });
+
       this.$root.$on('printAddElement', element => {
         this.$root.$emit('printInstructionEnd');
         this.awaitingAdd = element;
