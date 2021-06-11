@@ -28,6 +28,7 @@ import {
 } from '@/common/constants';
 import SizeWrapper from '@/components/SizeWrapper';
 import PageWrapper from './PageWrapper';
+import { useDrawControls } from '@/plugins/fabric';
 
 export default {
   components: {
@@ -155,6 +156,7 @@ export default {
         backgroundColor: '#ffffff'
       });
       let fabricPrototype = fabric.Object.prototype;
+      useDrawControls(fabricPrototype);
       fabricPrototype.cornerColor = '#fff';
       fabricPrototype.borderColor = '#8C8C8C';
       fabricPrototype.borderSize = 1.25;
