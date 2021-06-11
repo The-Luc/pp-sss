@@ -3,13 +3,15 @@ import { fabric } from 'fabric';
 import { cloneDeep } from 'lodash';
 
 import { useDrawLayout } from '@/hooks';
-
+import { startDrawBox } from '@/common/fabricObjects/drawingBox';
 import {
   isEmpty,
   toFabricTextProp,
   getCoverPagePrintSize,
   getPagePrintSize,
-  toFabricImageProp
+  toFabricImageProp,
+  selectLatestObject,
+  deleteSelectedObjects
 } from '@/common/utils';
 
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
@@ -102,9 +104,7 @@ export default {
     }
   },
   beforeDestroy() {
-    this.$root.$off('printDeleteElements', () => {
-      this.deleteElements();
-    });
+    document.body.removeEventListener('keyup', this.handleDeleteKey);
     window.printCanvas = null;
   },
   methods: {
@@ -117,6 +117,10 @@ export default {
       setObjectProp: BOOK_MUTATES.SET_PROP,
       updateTriggerChange: BOOK_MUTATES.UPDATE_TRIGGER_OBJECT_CHANGE
     }),
+    /**
+     * Auto resize canvas to fit the container size
+     * @param {Object} containerSize - the size object
+     */
     updateCanvasSize(containerSize) {
       const printSize = this.isCover
         ? getCoverPagePrintSize(this.isHardCover, this.book.totalPages)
@@ -140,6 +144,10 @@ export default {
       this.drawLayout(this.pageSelected?.printData?.layout, objects);
       window.printCanvas.setZoom(currentZoom);
     },
+    /**
+     * Event triggered once the container that hold the canvas is finished rendering
+     * @param {Object} containerSize - the size object
+     */
     onContainerReady(containerSize) {
       let el = this.$refs.canvas;
       window.printCanvas = new fabric.Canvas(el, {
@@ -173,52 +181,22 @@ export default {
             e.target.set('height', h * scaleY);
           }
         },
-        'mouse:up': () => {
-          if (this.awaitingAdd) {
-            const { width, height } = this.currentRect;
-            if (this.awaitingAdd === 'TEXT') {
-              this.currentRect.set('text', DEFAULT_TEXT.TEXT);
-              this.currentRect.set('width', width);
-              this.currentRect.set('height', height);
-              this.currentRect.set('cornerSize', 11);
-            }
-
-            if (this.awaitingAdd === 'IMAGE') {
-              this.addImageBox(this.origX, this.origY, width, height);
-            }
-
-            this.awaitingAdd = '';
-            this.setToolNameSelected({ name: '' });
-            window.printCanvas.renderAll();
-            this.currentRect = null;
-          }
-        },
-        'mouse:move': event => {
-          if (!this.awaitingAdd || !this.currentRect) return;
-          window.printCanvas.setCursor('default');
-          window.printCanvas.renderAll();
-
-          const pointer = window.printCanvas.getPointer(event.e);
-          this.currentRect.set({ width: Math.abs(this.origX - pointer.x) });
-          this.currentRect.set({ height: Math.abs(this.origY - pointer.y) });
-          window.printCanvas.renderAll();
-        },
-        'mouse:down': event => {
+        'mouse:down': e => {
           if (this.awaitingAdd) {
             this.$root.$emit('printInstructionEnd');
-            window.printCanvas.setCursor('crosshair');
-            window.printCanvas.renderAll();
-
-            const pointer = window.printCanvas.getPointer(event.e);
-            this.origX = pointer.x;
-            this.origY = pointer.y;
-            if (this.awaitingAdd === 'TEXT') {
-              this.addText(pointer.x, pointer.y);
-            }
-
-            if (this.awaitingAdd === 'IMAGE') {
-              this.currentRect = new fabric.Rect();
-            }
+            window.printCanvas.discardActiveObject().renderAll();
+            this.setToolNameSelected({ name: '' });
+            startDrawBox(window.printCanvas, e).then(
+              ({ left, top, width, height }) => {
+                if (this.awaitingAdd === 'TEXT') {
+                  this.addText(left, top, width, height);
+                }
+                if (this.awaitingAdd === 'IMAGE') {
+                  this.addImageBox(left, top, width, height);
+                }
+                this.awaitingAdd = '';
+              }
+            );
           }
         }
       });
@@ -230,15 +208,31 @@ export default {
       });
 
       this.$root.$on('printDeleteElements', () => {
-        this.deleteElements();
+        deleteSelectedObjects(window.printCanvas);
       });
 
       this.$root.$on('printChangeTextProperties', prop => {
         this.changeTextProperties(prop);
       });
+
+      document.body.addEventListener('keyup', this.handleDeleteKey);
     },
+    /**
+     * Event handle when container is resized by user action
+     * @param {Object} containerSize - the size object
+     */
     onContainerResized(containerSize) {
       this.updateCanvasSize(containerSize);
+    },
+    /**
+     * Event handler for when user press key at body scope
+     * @param {KeyBoardEvent} event - the KeyBoardEvent object
+     */
+    handleDeleteKey(event) {
+      const key = event.keyCode || event.charCode;
+      if (event.target === document.body && key == 8) {
+        deleteSelectedObjects(window.printCanvas);
+      }
     },
     /**
      * Open text properties modal and set default properties
@@ -285,7 +279,7 @@ export default {
     /**
      * Event fire when user click on Text button on Toolbar to add new text on canvas
      */
-    addText: function(x, y) {
+    addText: function(x, y, width, height) {
       newId++;
 
       const newText = cloneDeep(TextElement);
@@ -299,26 +293,32 @@ export default {
             ...newText.coord,
             x,
             y
+          },
+          property: {
+            ...newText.property,
+            text: DEFAULT_TEXT.TEXT
           }
         }
       });
 
       const fabricProp = toFabricTextProp(newText);
 
-      const text = new fabric.Textbox('', {
+      const text = new fabric.Textbox(DEFAULT_TEXT.TEXT, {
         ...fabricProp,
         id: newId,
         lockUniScaling: DEFAULT_TEXT.LOCK_UNI_SCALE,
         left: x,
-        top: y
+        top: y,
+        width,
+        cornerSize: 11
       });
 
-      // Hide dimenssion and corner when draw
-      text.set('width', 0);
-      text.set('height', 0);
-      text.set('cornerSize', 0);
-      this.currentRect = text;
+      text.set('height', height);
+
       window.printCanvas.add(text);
+      setTimeout(() => {
+        selectLatestObject(window.printCanvas);
+      });
     },
     /**
      * Event fire when user click on Image button on Toolbar to add new image on canvas
@@ -348,15 +348,16 @@ export default {
           });
           image.scaleX = width / image.width;
           image.scaleY = height / image.height;
+
           window.printCanvas.add(image);
-          const index = window.printCanvas.getObjects().length - 1;
-          window.printCanvas.setActiveObject(window.printCanvas.item(index));
+          selectLatestObject(window.printCanvas);
         },
         {
           ...fabricProp,
           id: newId,
           cornerSize: 11,
-          lockUniScaling: false
+          lockUniScaling: false,
+          crossOrigin: 'anonymous'
         }
       );
     },
@@ -443,19 +444,6 @@ export default {
         activeObj.set('text', changedText);
       }
       window.printCanvas.renderAll();
-    },
-    /**
-     * Event fire when user click on Delete button on Toolbar to delete selected elements on canvas
-     */
-    deleteElements() {
-      const activeObj = window.printCanvas.getActiveObject();
-      if (isEmpty(activeObj)) return;
-      if (activeObj._objects) {
-        activeObj._objects.forEach(object => window.printCanvas.remove(object));
-      } else {
-        window.printCanvas.remove(activeObj);
-      }
-      window.printCanvas.discardActiveObject().renderAll();
     }
   }
 };

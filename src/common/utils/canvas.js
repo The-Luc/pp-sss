@@ -6,14 +6,7 @@ import {
   PRINT_DPI,
   PRINT_PAGE_SIZE
 } from '@/common/constants/canvas';
-
-/**
- * Convert Inches to Pixels value
- *
- * @param   {Number}  inches  the value to be converted
- * @returns {Number}  px value
- */
-export const inchesToPixels = inches => inches * PRINT_DPI;
+import { isEmpty } from './util';
 
 /**
  * Convert Object Inches to Pixels value
@@ -25,7 +18,7 @@ export const objectInchesToPixels = obj => {
   const pixelObject = {};
   Object.keys(obj).forEach(key => {
     if (typeof obj[key] === 'number') {
-      pixelObject[key] = inchesToPixels(obj[key]);
+      pixelObject[key] = inToPx(obj[key]);
     } else {
       pixelObject[key] = obj[key];
     }
@@ -116,9 +109,61 @@ export const getPagePrintSize = () => {
 };
 
 /**
- * Responsively convert size to a correct scale size base on current canvas zoom level
+ * Responsively convert size to a correct scale size base on current DPI
  *
- * @param   {Number}  size the size that need to be converted
+ * @param   {Number}  size - the size that need to be converted
  * @returns {Number}  the scaled-size
  */
 export const scaleSize = size => (size * PRINT_DPI) / 72;
+
+/**
+ * Convert pt to px
+ *
+ * @param   {Number}  val - the pt value that need to be converted
+ * @returns {Number}  the result px
+ */
+export const ptToPx = val => scaleSize(val);
+
+/**
+ * Conver inch to px
+ *
+ * @param   {Number}  val - the inch value that need to be converted
+ * @returns {Number}  the result px
+ */
+export const inToPx = val => val * PRINT_DPI;
+
+/**
+ * Conver px to inch
+ *
+ * @param   {Number}  val - the px value that need to be converted
+ * @returns {Number}  the result inch
+ */
+export const pxToIn = val => val / PRINT_DPI;
+
+/**
+ * To select the last object added into canvas
+ * @param {Any} canvas - the canvas to check
+ */
+export const selectLatestObject = canvas => {
+  const objectCount = canvas.getObjects().length;
+  if (objectCount) {
+    const index = canvas.getObjects().length - 1;
+    canvas.setActiveObject(canvas.item(index));
+    canvas.renderAll();
+  }
+};
+
+/**
+ * To delete all selected objects in the provided canvas
+ * @param {Any} canvas - the canvas to check
+ */
+export const deleteSelectedObjects = canvas => {
+  const activeObj = canvas.getActiveObject();
+  if (isEmpty(activeObj)) return;
+  if (activeObj._objects) {
+    activeObj._objects.forEach(object => canvas.remove(object));
+  } else {
+    canvas.remove(activeObj);
+  }
+  canvas.discardActiveObject().renderAll();
+};
