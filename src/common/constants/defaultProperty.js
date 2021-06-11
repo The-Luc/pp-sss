@@ -29,7 +29,11 @@ export const DEFAULT_TEXT = {
     Y: 0
   },
   LOCK_UNI_SCALE: false,
-  OPACITY: 1
+  OPACITY: 1,
+  BORDER: {
+    FILL: false,
+    STROKE: '#000000'
+  }
 };
 
 export const DEFAULT_IMAGE = {
