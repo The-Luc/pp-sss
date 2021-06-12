@@ -1,5 +1,11 @@
 import { TEXT_CASE } from './textCase';
 import { TEXT_HORIZIONTAL_ALIGN, TEXT_VERTICAL_ALIGN } from './textAlign';
+import { BACKGROUND_TYPE, BACKGROUND_PAGE_TYPE } from './backgroundType';
+
+export const DEFAULT_PROP = {
+  OPACITY: 1,
+  COLOR: '#000000'
+};
 
 export const DEFAULT_TEXT = {
   TEXT: 'Text',
@@ -15,7 +21,6 @@ export const DEFAULT_TEXT = {
   IS_BOLD: false,
   IS_ITALIC: false,
   IS_UNDERLINE: false,
-  COLOR: '#000000',
   ALIGNMENT: {
     HORIZIONTAL: TEXT_HORIZIONTAL_ALIGN.LEFT,
     VERTICAL: TEXT_VERTICAL_ALIGN.TOP
@@ -28,8 +33,7 @@ export const DEFAULT_TEXT = {
     X: 0,
     Y: 0
   },
-  LOCK_UNI_SCALE: false,
-  OPACITY: 1
+  LOCK_UNI_SCALE: false
 };
 
 export const DEFAULT_IMAGE = {
@@ -39,4 +43,9 @@ export const DEFAULT_IMAGE = {
     'https://willis.fluidmedia.cloud/images/yearbook_builder/content_placeholder.jpg',
   imageUrl:
     'https://willis.fluidmedia.cloud/images/yearbook_builder/content_placeholder.jpg'
+};
+
+export const DEFAULT_BACKGROUND = {
+  TYPE: BACKGROUND_TYPE.THEME.id,
+  PAGE_TYPE: BACKGROUND_PAGE_TYPE.FULL_PAGE.id
 };

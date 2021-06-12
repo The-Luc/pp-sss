@@ -24,7 +24,7 @@ export default {
     ...mapGetters({
       selectedId: GETTERS.SELECTED_OBJECT_ID,
       selectedFontFamily: GETTERS.PROP_OBJECT_BY_ID,
-      triggerChange: GETTERS.TRIGGER_OBJECT_CHANGE
+      triggerChange: GETTERS.TRIGGER_TEXT_CHANGE
     }),
     selectedFont() {
       if (this.triggerChange) {
