@@ -6,6 +6,11 @@
       :selected-val="selectedShadow"
       @change="onChange"
     />
+    <div v-if="isShowShadow" class="shadow-setting-container">
+      <Blur :value="blurValue" @change="onChangeBlur" />
+      <Offset :value="offsetValue" @change="onChangeOffset" />
+      <Opacity :value="opacityValue" @change="onChangeOpacity" />
+    </div>
   </div>
 </template>
 

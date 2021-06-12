@@ -1,8 +1,14 @@
 import Select from '@/components/Select';
+import Blur from './Settings/Blur';
+import Offset from './Settings/Offset';
+import Opacity from './Settings/Opacity';
 
 export default {
   components: {
-    Select
+    Select,
+    Blur,
+    Offset,
+    Opacity
   },
   props: {
     selectedShadow: {
@@ -14,6 +20,39 @@ export default {
       required: true
     }
   },
+  computed: {
+    blurValue() {
+      if (this.triggerChange) {
+        // just for trigger the change
+      }
+      return 10;
+    },
+    offsetValue() {
+      if (this.triggerChange) {
+        // just for trigger the change
+      }
+      return 10;
+    },
+    opacityValue() {
+      if (this.triggerChange) {
+        // just for trigger the change
+      }
+      return 10;
+    }
+  },
+  data() {
+    return {
+      isShowShadow: false
+    };
+  },
+  watch: {
+    selectedShadow: {
+      deep: true,
+      handler(shadow) {
+        this.isShowShadow = shadow.value === 'dropShadow';
+      }
+    }
+  },
   methods: {
     /**
      * Emit shadow value to parent
@@ -21,6 +60,15 @@ export default {
      */
     onChange(value) {
       this.$emit('change', value);
+    },
+    onChangeBlur(value) {
+      console.log(value);
+    },
+    onChangeOffset(value) {
+      console.log(value);
+    },
+    onChangeOpacity(value) {
+      console.log(value);
     }
   }
 };
