@@ -8,23 +8,33 @@ export default {
     this.$root.$on('colorChange', color => {
       this.$root.$emit('printChangeTextProperties', { color: color });
     });
+    this.$root.$on('borderChange', color => {
+      this.$root.$emit('printChangeTextProperties', {
+        border: {
+          stroke: color
+        }
+      });
+    });
   },
   computed: {
     ...mapGetters({
       isOpenColorPicker: GETTERS.IS_OPEN_COLOR_PICKER,
       selectedId: BOOK_GETTERS.SELECTED_OBJECT_ID,
       selectedColor: BOOK_GETTERS.PROP_OBJECT_BY_ID,
-      triggerChange: BOOK_GETTERS.TRIGGER_TEXT_CHANGE
+      triggerChange: BOOK_GETTERS.TRIGGER_TEXT_CHANGE,
+      colorPickerProps: GETTERS.COLOR_PICKER_CUSTOM_PROPS
     }),
     color() {
       if (this.triggerChange) {
         // just for trigger the change
       }
-
-      const color =
-        this.selectedColor({ id: this.selectedId, prop: 'color' }) || '#0B1717';
-
-      this.setColorPickerColor({ color: color });
+      let color = '#0B1717';
+      if (this.colorPickerProps.tabActive === 'general') {
+        color =
+          this.selectedColor({ id: this.selectedId, prop: 'color' }) ||
+          '#0B1717';
+        this.setColorPickerColor({ color: color });
+      }
 
       return color;
     }
@@ -41,6 +51,7 @@ export default {
       this.toggleColorPicker({
         isOpen: !this.isOpenColorPicker,
         data: {
+          eventName: 'colorChange',
           color: this.color
         }
       });

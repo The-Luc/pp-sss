@@ -1,10 +1,10 @@
 export default {
   methods: {
     /**
-     * Emit event change tab to parent
+     * Emit event change tab with current data to parent
      */
-    onChange() {
-      this.$emit('change');
+    onChange(data) {
+      this.$emit('change', data);
     }
   }
 };

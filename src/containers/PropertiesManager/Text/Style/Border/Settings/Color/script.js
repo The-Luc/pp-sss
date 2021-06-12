@@ -16,40 +16,37 @@ export default {
       selectedId: BOOK_GETTERS.SELECTED_OBJECT_ID,
       isOpenColorPicker: GETTERS.IS_OPEN_COLOR_PICKER,
       triggerChange: BOOK_GETTERS.TRIGGER_TEXT_CHANGE,
-      selectedColor: BOOK_GETTERS.PROP_OBJECT_BY_ID
+      selectedColor: BOOK_GETTERS.PROP_OBJECT_BY_ID,
+      colorPickerProps: GETTERS.COLOR_PICKER_CUSTOM_PROPS
     }),
-    color() {
+    borderColor() {
       if (this.triggerChange) {
         // just for trigger the change
       }
-
-      const color =
-        this.selectedColor({ id: this.selectedId, prop: 'color' }) || '#0B1717';
-
-      this.setColorPickerColor({ color: color });
-
-      return color;
+      let border = {};
+      if (this.colorPickerProps.tabActive === 'style') {
+        border = this.selectedColor({ id: this.selectedId, prop: 'border' });
+        this.setColorPickerColor({
+          stroke: border?.stroke
+        });
+      }
+      return border?.stroke || '#000000';
     }
   },
   methods: {
     ...mapMutations({
-      toggleColorPicker: MUTATES.TOGGLE_COLOR_PICKER,
-      setColorPickerColor: MUTATES.SET_COLOR_PICKER_COLOR
+      setColorPickerColor: MUTATES.SET_COLOR_PICKER_COLOR,
+      toggleColorPicker: MUTATES.TOGGLE_COLOR_PICKER
     }),
-    /**
-     * Triggers mutation to toggle color picker popover and custom class
-     */
     onOpenColorPicker() {
       this.toggleColorPicker({
         isOpen: !this.isOpenColorPicker,
         data: {
-          color: this.color,
+          eventName: 'borderChange',
+          color: this.borderColor,
           customClass: this.customClass
         }
       });
     }
-  },
-  mounted() {
-    this.$root.$on('colorChange', color => {});
   }
 };

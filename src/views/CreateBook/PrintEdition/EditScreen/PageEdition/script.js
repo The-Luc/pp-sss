@@ -60,6 +60,7 @@ export default {
       selectedLayout: GETTERS.SHEET_LAYOUT,
       getObjectsBySheetId: GETTERS.GET_OBJECTS_BY_SHEET_ID,
       isOpenMenuProperties: APP_GETTERS.IS_OPEN_MENU_PROPERTIES,
+      isOpenColorPicker: APP_GETTERS.IS_OPEN_COLOR_PICKER,
       selectedObjectId: GETTERS.SELECTED_OBJECT_ID,
       selectedObject: GETTERS.OBJECT_BY_ID,
       selectedProp: GETTERS.PROP_OBJECT_BY_ID
@@ -119,6 +120,7 @@ export default {
     ...mapMutations({
       setIsOpenProperties: MUTATES.TOGGLE_MENU_PROPERTIES,
       setToolNameSelected: MUTATES.SET_TOOL_NAME_SELECTED,
+      toggleColorPicker: MUTATES.TOGGLE_COLOR_PICKER,
       setObjectTypeSelected: MUTATES.SET_OBJECT_TYPE_SELECTED,
       setSelectedObjectId: BOOK_MUTATES.SET_SELECTED_OBJECT_ID,
       addNewObject: BOOK_MUTATES.ADD_OBJECT,
@@ -263,6 +265,23 @@ export default {
       if (isRequireTrigger) this.updateTriggerChange();
     },
     /**
+     * Reset configs text properties when close object
+     */
+    resetConfigTextProperties() {
+      if (this.isOpenColorPicker) {
+        this.toggleColorPicker({
+          isOpen: false
+        });
+      }
+      this.setIsOpenProperties({
+        isOpen: false
+      });
+      this.setObjectTypeSelected({
+        type: ''
+      });
+      this.setSelectedObjectId({ id: '' });
+    },
+    /**
      * Close text properties modal
      */
     closeProperties() {
@@ -272,30 +291,24 @@ export default {
           strokeWidth: 0
         });
         this.rectObj = null;
+        this.groupSelected = null;
       }
-      // this.groupSelected = null;
-      this.setIsOpenProperties({
-        isOpen: false
-      });
-      this.setObjectTypeSelected({
-        type: ''
-      });
-      this.setSelectedObjectId({ id: '' });
+      this.resetConfigTextProperties();
     },
-    //TODO later
-    setBorderObject: function(rectObj, groupSize, objectData) {
-      // this.rectObj = rectObj;
-      console.log('rectObj', rectObj);
-      console.log('groupSize', groupSize);
+    /**
+     * Get border data from store and set to Rect object
+     */
+    setBorderObject: function(rectObj, objectData) {
+      this.rectObj = rectObj;
+      const { strokeWidth, stroke } = objectData.property.border;
       console.log('objectData', objectData);
-      const { strokeWidth, stroke } = objectData;
-      const { width, height } = groupSize;
       rectObj.set({
-        height: height - strokeWidth,
-        width: width - strokeWidth,
         strokeWidth,
-        stroke: 'red'
+        stroke
       });
+      setTimeout(() => {
+        rectObj.canvas.renderAll();
+      }, 0);
     },
     /**
      * Set border color when selected group object
@@ -317,27 +330,17 @@ export default {
       if (this.awaitingAdd) {
         return;
       }
-      const { id, width, height } = target;
+      const { id } = target;
       const targetType = target.get('type');
-
       this.setSelectedObjectId({ id });
       this.setBorderHighLight(target);
-
       const objectData = this.selectedObject(this.selectedObjectId);
-      console.log('objectData', objectData);
       if (targetType === 'group') {
+        this.groupSelected = target;
         const rectObj = target.getObjects(OBJECT_TYPE.RECT)[0];
-        this.setBorderObject(
-          rectObj,
-          {
-            width,
-            height
-          },
-          objectData
-        );
+        this.setBorderObject(rectObj, objectData);
       }
       const objectType = objectData?.type;
-      console.log('objectType', objectType);
       if (isEmpty(objectType)) return;
 
       this.setObjectTypeSelected({ type: objectType });
