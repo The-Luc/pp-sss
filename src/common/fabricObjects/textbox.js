@@ -245,12 +245,12 @@ const applyTextRectProperties = function(textObject, prop, groupSelected) {
   if (!rect) return;
 
   const rectProp = toFabricTextBorderProp(prop);
-  if (Object.keys(rectProp).includes('strokeWidth')) {
+  if (Object.keys(rectProp).includes('strokeWidth') && groupSelected) {
     const { strokeWidth } = rectProp;
     rect.set({
       ...rect,
-      width: groupSelected.width - strokeWidth,
-      height: groupSelected.height - strokeWidth
+      width: groupSelected?.width - strokeWidth,
+      height: groupSelected?.height - strokeWidth
     });
   }
 

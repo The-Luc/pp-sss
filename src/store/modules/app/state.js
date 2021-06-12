@@ -11,6 +11,8 @@ export const state = {
   colorPicker: {
     isOpen: false,
     data: {
+      tabActive: '',
+      eventName: '',
       color: '',
       customClass: '',
       presets: {

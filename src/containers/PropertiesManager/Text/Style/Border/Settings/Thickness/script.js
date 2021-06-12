@@ -21,7 +21,7 @@ export default {
     ...mapGetters({
       selectedId: GETTERS.SELECTED_OBJECT_ID,
       onSelectedThickNess: GETTERS.PROP_OBJECT_BY_ID,
-      triggerChange: GETTERS.TRIGGER_OBJECT_CHANGE
+      triggerChange: GETTERS.TRIGGER_TEXT_CHANGE
     }),
     selectedThickness() {
       if (this.triggerChange) {
@@ -29,10 +29,12 @@ export default {
       }
       const selectedThickness = this.onSelectedThickNess({
         id: this.selectedId,
-        prop: 'strokeWidth'
+        prop: 'border'
       });
       const thicknessValue =
-        selectedThickness || selectedThickness === 0 ? selectedThickness : 1;
+        selectedThickness?.strokeWidth || selectedThickness === 0
+          ? selectedThickness?.strokeWidth
+          : 1;
       const selected = this.items.find(item => item.value === thicknessValue);
 
       return getSelectedOption(selected || thicknessValue, 'pt');
