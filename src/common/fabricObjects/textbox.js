@@ -6,11 +6,6 @@ import {
   toFabricTextProp,
   toFabricTextBorderProp,
   isEmpty,
-  getCoverPagePrintSize,
-  getPagePrintSize,
-  toFabricImageProp,
-  selectLatestObject,
-  deleteSelectedObjects,
   ptToPx,
   scaleSize
 } from '@/common/utils';

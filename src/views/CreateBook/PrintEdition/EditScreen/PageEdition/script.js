@@ -6,7 +6,6 @@ import { useDrawLayout } from '@/hooks';
 import { startDrawBox } from '@/common/fabricObjects/drawingBox';
 import {
   isEmpty,
-  toFabricTextProp,
   getCoverPagePrintSize,
   getPagePrintSize,
   toFabricImageProp,
@@ -22,16 +21,13 @@ import {
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
 import { GETTERS, MUTATES as BOOK_MUTATES } from '@/store/modules/book/const';
 
-import { ImageElement, TextElement, BackgroundElement } from '@/common/models';
+import { ImageElement, BackgroundElement } from '@/common/models';
 import {
   SHEET_TYPE,
   HALF_SHEET,
   HALF_LEFT,
-  TEXT_CASE,
-  DEFAULT_TEXT,
   FABRIC_OBJECT_TYPE,
   OBJECT_TYPE,
-  DEFAULT_SPACING,
   BACKGROUND_PAGE_TYPE
 } from '@/common/constants';
 import SizeWrapper from '@/components/SizeWrapper';
@@ -339,59 +335,35 @@ export default {
      */
     addText: function(x, y, width, height) {
       const { object, data } = createTextBox(x, y, width, height);
-      // const newText = cloneDeep(TextElement);
-      // const id = uniqueId();
+
       this.addNewObject(data);
 
-      // const fabricProp = toFabricTextProp(newText);
-
-      // const text = new fabric.Textbox(DEFAULT_TEXT.TEXT, {
-      //   ...fabricProp,
-      //   id,
-      //   left: 0,
-      //   top: 0,
-      //   width,
-      //   originX: 'center',
-      //   originY: 'center'
-      //   // cornerSize: 11
-      // });
-
-      // text.height = height;
-
-      // const rect = new fabric.Rect({
-      //   width: width, height: height,
-      //   fill: false,
-      //   stroke: '#000',
-      //   left: 0,
-      //   top: 0,
-      //   originX: 'center',
-      //   originY: 'center'
-      // });
-
-      // const group = new fabric.Group(
-      //   [rect, text], {
-      //   left: x, top: y,
-      // });
-
-      // group.on('scaling', e => {
-      //   const target = e.transform?.target;
-      //   if (target) {
-      //     const newData = {
-      //       left: 0,
-      //       top: 0,
-      //       width: target.width,
-      //       height: target.height
-      //     };
-      //     text.set(newData);
-      //     text.set('height', target.height);
-      //     rect.set(newData);
-      //   }
-      // });
-
       window.printCanvas.add(object);
+
       setTimeout(() => {
         selectLatestObject(window.printCanvas);
       });
+    },
+    /**
+     * Event fire when user change any property of selected text on the Text Properties
+     *
+     * @param {Object}  style  new style
+     */
+    changeTextProperties: function(prop) {
+      if (isEmpty(prop)) {
+        this.updateTriggerChange();
+
+        return;
+      }
+      const activeObj = window.printCanvas.getActiveObject();
+
+      if (isEmpty(activeObj)) return;
+
+      this.setObjectProp({ id: this.selectedObjectId, property: prop });
+
+      this.updateTriggerChange();
+
+      applyTextBoxProperties(activeObj, prop);
     },
     /**
      * Event fire when user click on Image button on Toolbar to add new image on canvas
@@ -508,92 +480,6 @@ export default {
 
         window.printCanvas.renderAll();
       });
-    },
-    /**
-     * Event fire when user change any property of selected text on the Text Properties
-     *
-     * @param {Object}  style  new style
-     */
-    changeTextProperties: function(prop) {
-      if (isEmpty(prop)) {
-        this.updateTriggerChange();
-
-        return;
-      }
-      const activeObj = window.printCanvas.getActiveObject();
-
-      if (isEmpty(activeObj)) return;
-
-      this.setObjectProp({ id: this.selectedObjectId, property: prop });
-
-      this.updateTriggerChange();
-
-      applyTextBoxProperties(activeObj, prop);
-
-      // const fabricProp = toFabricTextProp(prop);
-      // Object.keys(fabricProp).forEach(k => {
-      //   activeObj.set(k, fabricProp[k]);
-      // });
-
-      // if (prop['fontSize']) {
-      //   const lineSpacing = this.selectedProp({
-      //     id: this.selectedObjectId,
-      //     prop: 'lineSpacing'
-      //   });
-      //   const value =
-      //     lineSpacing === 0 || lineSpacing === null
-      //       ? 1
-      //       : lineSpacing / (DEFAULT_SPACING.VALUE * prop['fontSize']);
-      //   activeObj.set('lineHeight', value);
-      // }
-
-      // if (prop['lineSpacing'] || prop['lineSpacing'] === 0) {
-      //   const fontSize = this.selectedProp({
-      //     id: this.selectedObjectId,
-      //     prop: 'fontSize'
-      //   });
-      //   const value =
-      //     prop['lineSpacing'] === 0
-      //       ? 1
-      //       : prop['lineSpacing'] / (DEFAULT_SPACING.VALUE * fontSize);
-      //   activeObj.set('lineHeight', value);
-      // }
-      // if (isEmpty(prop['textCase'])) {
-      //   window.printCanvas.renderAll();
-      //   return;
-      // }
-
-      // const text =
-      //   this.selectedProp({ id: this.selectedObjectId, prop: 'text' }) || '';
-
-      // if (isEmpty(text)) {
-      //   window.printCanvas.renderAll();
-      //   return;
-      // }
-
-      // if (prop['textCase'] === TEXT_CASE.NONE) {
-      //   activeObj.set('text', text);
-      // }
-
-      // if (prop['textCase'] === TEXT_CASE.UPPER) {
-      //   activeObj.set('text', text.toUpperCase());
-      // }
-
-      // if (prop['textCase'] === TEXT_CASE.LOWER) {
-      //   activeObj.set('text', text.toLowerCase());
-      // }
-
-      // if (prop['textCase'] === TEXT_CASE.CAPITALIZE) {
-      //   const changedText = text
-      //     .split(' ')
-      //     .map(t => {
-      //       return `${t.charAt(0).toUpperCase()}${t.toLowerCase().slice(1)}`;
-      //     })
-      //     .join(' ');
-
-      //   activeObj.set('text', changedText);
-      // }
-      // window.printCanvas.renderAll();
     }
   }
 };
