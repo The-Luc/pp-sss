@@ -402,7 +402,7 @@ export default {
      */
     changeTextProperties: function(prop) {
       if (isEmpty(prop)) {
-        this.updateTriggerChange();
+        this.updateTriggerTextChange();
 
         return;
       }
@@ -412,7 +412,7 @@ export default {
 
       this.setObjectProp({ id: this.selectedObjectId, property: prop });
 
-      this.updateTriggerChange();
+      this.updateTriggerTextChange();
 
       applyTextBoxProperties(activeObj, prop, this.groupSelected);
     },
