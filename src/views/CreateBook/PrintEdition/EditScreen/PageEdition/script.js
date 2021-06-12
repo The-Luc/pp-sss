@@ -10,13 +10,15 @@ import {
   getPagePrintSize,
   toFabricImageProp,
   selectLatestObject,
-  deleteSelectedObjects,
-  toFabricBackgroundProp
+  deleteSelectedObjects
 } from '@/common/utils';
+
 import {
   createTextBox,
-  applyTextBoxProperties
-} from '@/common/fabricObjects/textbox';
+  applyTextBoxProperties,
+  addPrintBackground as insertBackground,
+  updatePrintBackground as updateBackground
+} from '@/common/fabricObjects';
 
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
 import { GETTERS, MUTATES as BOOK_MUTATES } from '@/store/modules/book/const';
@@ -24,12 +26,8 @@ import { GETTERS, MUTATES as BOOK_MUTATES } from '@/store/modules/book/const';
 import { ImageElement, BackgroundElement } from '@/common/models';
 import {
   SHEET_TYPE,
-  HALF_SHEET,
-  HALF_LEFT,
   FABRIC_OBJECT_TYPE,
-  OBJECT_TYPE,
-  BACKGROUND_PAGE_TYPE,
-  DEFAULT_FABRIC_BACKGROUND
+  OBJECT_TYPE
 } from '@/common/constants';
 import SizeWrapper from '@/components/SizeWrapper';
 import PrintCanvasLines from './PrintCanvasLines';
@@ -44,6 +42,7 @@ export default {
   },
   setup() {
     const { drawLayout } = useDrawLayout();
+
     return { drawLayout };
   },
   data() {
@@ -135,7 +134,8 @@ export default {
       updateTriggerTextChange: BOOK_MUTATES.UPDATE_TRIGGER_TEXT_CHANGE,
       addNewBackground: BOOK_MUTATES.ADD_BACKGROUND,
       updateTriggerBackgroundChange:
-        BOOK_MUTATES.UPDATE_TRIGGER_BACKGROUND_CHANGE
+        BOOK_MUTATES.UPDATE_TRIGGER_BACKGROUND_CHANGE,
+      deleteObject: BOOK_MUTATES.DELETE_OBJECT
     }),
     /**
      * Auto resize canvas to fit the container size
@@ -236,7 +236,7 @@ export default {
       });
 
       this.$root.$on('printDeleteElements', () => {
-        deleteSelectedObjects(window.printCanvas);
+        this.removeObject();
       });
 
       this.$root.$on('printChangeTextProperties', prop => {
@@ -269,7 +269,7 @@ export default {
       const key = event.keyCode || event.charCode;
 
       if (event.target === document.body && (key == 8 || key == 46)) {
-        deleteSelectedObjects(window.printCanvas);
+        this.removeObject();
       }
     },
     /**
@@ -282,10 +282,6 @@ export default {
 
       if (objectType === OBJECT_TYPE.TEXT) {
         this.updateTriggerTextChange();
-      }
-
-      if (objectType === OBJECT_TYPE.BACKGROUND) {
-        this.updateTriggerBackgroundChange();
       }
     },
     /**
@@ -327,7 +323,7 @@ export default {
     /**
      * Get border data from store and set to Rect object
      */
-    setBorderObject: function(rectObj, objectData) {
+    setBorderObject(rectObj, objectData) {
       if (this.rectObj) {
         this.hideStrokeObject();
       }
@@ -346,7 +342,7 @@ export default {
      *
      * @param {Element}  group  Group object
      */
-    setBorderHighLight: function(group) {
+    setBorderHighLight(group) {
       const layout = this.selectedLayout(this.pageSelected.id);
       group.set({
         borderColor: layout?.id ? 'white' : '#bcbec0'
@@ -384,7 +380,7 @@ export default {
     /**
      * Event fire when user click on Text button on Toolbar to add new text on canvas
      */
-    addText: function(x, y, width, height) {
+    addText(x, y, width, height) {
       const { object, data } = createTextBox(x, y, width, height);
       this.groupSelected = object;
       this.addNewObject(data);
@@ -400,7 +396,7 @@ export default {
      *
      * @param {Object}  style  new style
      */
-    changeTextProperties: function(prop) {
+    changeTextProperties(prop) {
       if (isEmpty(prop)) {
         this.updateTriggerChange();
 
@@ -477,59 +473,12 @@ export default {
         newBackground
       });
 
-      const { width, height } = window.printCanvas;
-      const zoom = window.printCanvas.getZoom();
-
-      const currentBackgrounds = window.printCanvas
-        .getObjects()
-        .filter(function(o) {
-          return o.objectType === OBJECT_TYPE.BACKGROUND;
-        });
-
-      const isAddingFullBackground =
-        background.property.pageType === BACKGROUND_PAGE_TYPE.FULL_PAGE.id;
-
-      const isCurrentFullBackground =
-        !isEmpty(currentBackgrounds) &&
-        currentBackgrounds[0].pageType === BACKGROUND_PAGE_TYPE.FULL_PAGE.id;
-
-      const isHalfSheet = HALF_SHEET.indexOf(this.pageSelected.type) >= 0;
-      const isHalfLeft =
-        isHalfSheet && HALF_LEFT.indexOf(this.pageSelected.type) >= 0;
-
-      const isAddToLeftFullSheet =
-        !isHalfSheet && (isAddingFullBackground || isLeft);
-
-      const isAddToLeft = isHalfLeft || isAddToLeftFullSheet;
-
-      if (isHalfSheet || isAddingFullBackground || isCurrentFullBackground) {
-        currentBackgrounds.forEach(bg => window.printCanvas.remove(bg));
-      }
-
-      if (!isAddingFullBackground && !isEmpty(currentBackgrounds)) {
-        currentBackgrounds.forEach(bg => {
-          if (bg.isLeftPage === isAddToLeft) window.printCanvas.remove(bg);
-        });
-      }
-
-      const scaleX = isAddingFullBackground ? 1 : 2;
-
-      const fabricProp = toFabricBackgroundProp(newBackground);
-
-      fabric.Image.fromURL(background.property.imageUrl, img => {
-        img.set({
-          ...fabricProp,
-          id,
-          left: !isAddToLeft ? width / zoom / 2 : 0,
-          isLeftPage: isAddToLeft,
-          scaleX: width / zoom / img.width / scaleX,
-          scaleY: height / zoom / img.height,
-          ...DEFAULT_FABRIC_BACKGROUND
-        });
-
-        window.printCanvas.add(img);
-
-        window.printCanvas.sendToBack(img);
+      insertBackground({
+        id,
+        backgroundProp: newBackground,
+        isLeftBackground: isLeft,
+        sheetType: this.pageSelected.type,
+        canvas: window.printCanvas
       });
     },
     /**
@@ -544,21 +493,23 @@ export default {
         return;
       }
 
-      const activeObj = window.printCanvas.getActiveObject();
+      const background = window.printCanvas.getActiveObject();
 
-      if (isEmpty(activeObj)) return;
+      if (isEmpty(background)) return;
 
       this.setObjectProp({ id: this.selectedObjectId, property: prop });
 
       this.updateTriggerBackgroundChange();
 
-      const fabricProp = toFabricBackgroundProp(prop);
-
-      Object.keys(fabricProp).forEach(k => {
-        activeObj.set(k, fabricProp[k]);
+      updateBackground({ background, prop, canvas: window.printCanvas });
+    },
+    removeObject() {
+      this.deleteObject({
+        id: this.selectedObjectId,
+        sheetId: this.pageSelected.id
       });
 
-      window.printCanvas.renderAll();
+      deleteSelectedObjects(window.printCanvas);
     }
   }
 };
