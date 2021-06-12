@@ -277,9 +277,6 @@ export default {
       const { id } = target;
       this.setSelectedObjectId({ id });
       const objectType = this.selectedObject(this.selectedObjectId)?.type;
-      target.setControlsVisibility({
-        mtr: objectType !== OBJECT_TYPE.TEXT
-      });
       if (objectType) {
         this.setObjectTypeSelected({ type: objectType });
         this.openProperties();
