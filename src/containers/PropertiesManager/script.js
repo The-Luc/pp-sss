@@ -7,13 +7,15 @@ import { OBJECT_TYPE } from '@/common/constants';
 import TextProperties from '@/containers/PropertiesManager/Text';
 import ImageProperties from '@/containers/PropertiesManager/Image';
 import ClipArt from '@/containers/PropertiesManager/ClipArt';
+import Background from '@/containers/PropertiesManager/Background';
 
-const { TEXT, IMAGE, CLIP_ART } = OBJECT_TYPE;
+const { TEXT, IMAGE, CLIP_ART, BACKGROUND } = OBJECT_TYPE;
 
 const ObjectList = {
   [TEXT]: TEXT,
   [IMAGE]: IMAGE,
-  [CLIP_ART]: CLIP_ART
+  [CLIP_ART]: CLIP_ART,
+  [BACKGROUND]: BACKGROUND
 };
 
 export default {
@@ -25,7 +27,8 @@ export default {
   components: {
     [OBJECT_TYPE.TEXT]: TextProperties,
     [OBJECT_TYPE.IMAGE]: ImageProperties,
-    [OBJECT_TYPE.CLIP_ART]: ClipArt
+    [OBJECT_TYPE.CLIP_ART]: ClipArt,
+    [OBJECT_TYPE.BACKGROUND]: Background
   },
   computed: {
     ...mapGetters({
