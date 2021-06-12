@@ -122,8 +122,8 @@ export const getters = {
     const data = objects[id]?.property[prop];
     return data || data === 0 ? objects[id]?.property[prop] : null;
   },
-  [BOOK._GETTERS.TRIGGER_TEXT_CHANGE]: ({ triggerObjectChange }) =>
-    triggerObjectChange,
+  [BOOK._GETTERS.TRIGGER_TEXT_CHANGE]: ({ triggerTextChange }) =>
+    triggerTextChange,
   [BOOK._GETTERS.SHEET_BACKGROUNDS]: ({ book, objects }) => sheetId => {
     const sheets = getAllSheets(book.sections);
     const sheet = sheets.find(s => s.id === sheetId);
@@ -149,5 +149,7 @@ export const getters = {
     const sheet = sheets.find(s => s.id === sheetId);
 
     return isEmpty(sheet) ? '' : sheet.type;
-  }
+  },
+  [BOOK._GETTERS.TRIGGER_BACKGROUND_CHANGE]: ({ triggerBackgroundChange }) =>
+    triggerBackgroundChange
 };

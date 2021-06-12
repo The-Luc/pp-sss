@@ -240,7 +240,7 @@ export const toCssStyle = style => {
 /**
  * Convert stored text properties to fabric properties
  *
- * @param   {Object}  style stored text properties
+ * @param   {Object}  prop  stored text properties
  * @returns {Object}        fabric properties
  */
 export const toFabricTextProp = prop => {
@@ -275,17 +275,8 @@ export const toFabricTextProp = prop => {
       horiziontal: {
         name: 'textAlign'
       },
-      lineSpacing: {
-        name: 'lineSpacing'
-      },
       letterSpacing: {
         name: 'charSpacing'
-      },
-      lineHeight: {
-        name: 'lineHeight'
-      },
-      opacity: {
-        name: 'opacity'
       }
     },
     restrict: [
@@ -345,7 +336,7 @@ export const toFabricTextBorderProp = prop => {
 /**
  * Convert stored image properties to fabric properties
  *
- * @param   {Object}  prop stored image properties
+ * @param   {Object}  prop  stored image properties
  * @returns {Object}        fabric properties
  */
 export const toFabricImageProp = prop => {
@@ -377,6 +368,40 @@ export const toFabricImageProp = prop => {
       'flip'
     ]
   };
+  return mapObject(prop, mapRules);
+};
+
+/**
+ * Convert stored text properties to fabric properties
+ *
+ * @param   {Object}  prop  stored text properties
+ * @returns {Object}        fabric properties
+ */
+export const toFabricBackgroundProp = prop => {
+  const mapRules = {
+    data: {
+      type: {
+        name: 'objectType'
+      },
+      property: {
+        restrict: ['type']
+      }
+    },
+    restrict: [
+      'id',
+      'size',
+      'coord',
+      'categoryId',
+      'name',
+      'thumbnail',
+      'imageUrl',
+      'color',
+      'border',
+      'shadow',
+      'flip'
+    ]
+  };
+
   return mapObject(prop, mapRules);
 };
 

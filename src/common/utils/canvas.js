@@ -61,6 +61,7 @@ export const getCoverPagePrintSize = (isHardCover, pageCount) => {
     pageWidth: PRINT_PAGE_SIZE.WIDTH,
     pageHeight: PRINT_PAGE_SIZE.HEIGHT,
     spineWidth: spineWidth,
+    safeMargin: PRINT_PAGE_SIZE.SAFE_MARGIN,
     bleedX:
       (pdfFinalPageSize.PDF_DOUBLE_WIDTH -
         PRINT_PAGE_SIZE.WIDTH * 2 -
@@ -94,6 +95,7 @@ export const getPagePrintSize = () => {
     pageWidth: PRINT_PAGE_SIZE.WIDTH,
     pageHeight: PRINT_PAGE_SIZE.HEIGHT,
     spineWidth: 0,
+    safeMargin: PRINT_PAGE_SIZE.SAFE_MARGIN,
     bleedX: PRINT_PAGE_SIZE.BLEED,
     bleedY: PRINT_PAGE_SIZE.BLEED,
     ratio: PRINT_PAGE_SIZE.PDF_DOUBLE_WIDTH / PRINT_PAGE_SIZE.PDF_HEIGHT
