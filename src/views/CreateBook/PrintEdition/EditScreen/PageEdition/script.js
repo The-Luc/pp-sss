@@ -11,7 +11,8 @@ import {
   getPagePrintSize,
   toFabricImageProp,
   selectLatestObject,
-  deleteSelectedObjects
+  deleteSelectedObjects,
+  scaleSize
 } from '@/common/utils';
 import {
   createTextBox,
@@ -33,6 +34,7 @@ import {
 import SizeWrapper from '@/components/SizeWrapper';
 import PageWrapper from './PageWrapper';
 import { useDrawControls } from '@/plugins/fabric';
+import { STROKE_WIDTH } from '@/common/constants/config';
 
 export default {
   components: {
@@ -48,7 +50,8 @@ export default {
       awaitingAdd: '',
       origX: 0,
       origY: 0,
-      currentRect: null
+      currentRect: null,
+      rectObj: null
     };
   },
   computed: {
@@ -261,6 +264,14 @@ export default {
      * Close text properties modal
      */
     closeProperties() {
+      if (this.rectObj) {
+        // Reset stroke when click outside object
+        this.rectObj.set({
+          strokeWidth: 0
+        });
+        this.rectObj = null;
+      }
+
       this.setIsOpenProperties({
         isOpen: false
       });
@@ -268,6 +279,18 @@ export default {
         type: ''
       });
       this.setSelectedObjectId({ id: '' });
+    },
+    //TODO later
+    setBorderObject: function(rectObj, groupSize) {
+      this.rectObj = rectObj;
+      const strokeWidth = scaleSize(STROKE_WIDTH);
+      const { width, height } = groupSize;
+      rectObj.set({
+        height: height - strokeWidth,
+        width: width - strokeWidth,
+        stroke: 'red',
+        strokeWidth: strokeWidth
+      });
     },
     /**
      * Event fired when an object of canvas is selected
@@ -278,8 +301,25 @@ export default {
       if (this.awaitingAdd) {
         return;
       }
-      const { id } = target;
+      const { id, width, height } = target;
+      const targetType = target.get('type');
+      const layout = this.selectedLayout(this.pageSelected.id);
       this.setSelectedObjectId({ id });
+
+      // Highlight border group
+      target.set({
+        borderColor: layout?.id ? 'white' : '#bcbec0'
+      });
+
+      if (targetType === 'group') {
+        const rectObj = target.getObjects(OBJECT_TYPE.RECT)[0];
+        //TODO later
+        // this.setBorderObject(rectObj, {
+        //   width,
+        //   height
+        // });
+      }
+
       const objectType = this.selectedObject(this.selectedObjectId)?.type;
       if (objectType) {
         this.setObjectTypeSelected({ type: objectType });

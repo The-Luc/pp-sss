@@ -11,7 +11,8 @@ import {
   toFabricImageProp,
   selectLatestObject,
   deleteSelectedObjects,
-  ptToPx
+  ptToPx,
+  scaleSize
 } from '@/common/utils';
 
 import {
@@ -20,6 +21,7 @@ import {
   DEFAULT_SPACING,
   DEFAULT_TEXT
 } from '@/common/constants';
+import { STROKE_WIDTH } from '../constants/config';
 
 /**
  * Handle creating a TextBox into canvas
@@ -74,11 +76,12 @@ export const createTextBox = (x, y, width, height) => {
 
     text.on('editing:exited', onDoneEditText);
   };
+  const strokeWidth = scaleSize(STROKE_WIDTH);
 
   const borderProp = toFabricTextBorderProp(dataObject);
-
   const rect = new fabric.Rect({
     ...borderProp,
+    type: OBJECT_TYPE.RECT,
     id,
     width: width,
     height: height,
@@ -105,7 +108,11 @@ export const createTextBox = (x, y, width, height) => {
       };
       text.set(newData);
       text.set('height', target.height);
-      rect.set(newData);
+      rect.set({
+        ...newData,
+        width: target.width - strokeWidth,
+        height: target.height - strokeWidth
+      });
     }
   };
 
