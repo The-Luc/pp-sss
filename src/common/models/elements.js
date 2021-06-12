@@ -1,25 +1,25 @@
 import {
   OBJECT_TYPE,
+  DEFAULT_PROP,
   DEFAULT_TEXT,
   DEFAULT_IMAGE,
-  BACKGROUND_TYPE,
-  BACKGROUND_PAGE_TYPE
+  DEFAULT_BACKGROUND
 } from '@/common/constants';
 
 export const BaseProperty = {
-  color: '',
-  opacity: 1,
+  color: DEFAULT_PROP.COLOR,
+  opacity: DEFAULT_PROP.OPACITY,
   border: {
     type: 0, // TODO: Define constants 0: No Border, 1: Line
-    color: '',
+    color: DEFAULT_PROP.COLOR,
     width: 0,
     style: ''
   },
   shadow: {
     enabled: false,
-    color: '',
+    color: DEFAULT_PROP.COLOR,
     offset: 0,
-    opacity: 0,
+    opacity: DEFAULT_PROP.OPACITY,
     angle: 0,
     blur: 0
   },
@@ -68,7 +68,6 @@ export const TextElement = {
     isBold: DEFAULT_TEXT.IS_BOLD,
     isItalic: DEFAULT_TEXT.IS_ITALIC,
     isUnderline: DEFAULT_TEXT.IS_UNDERLINE,
-    color: DEFAULT_TEXT.COLOR,
     textCase: DEFAULT_TEXT.TEXT_CASE, // UPPERCASE, LOWERCASE, CAPITALIZE
     alignment: {
       horiziontal: DEFAULT_TEXT.ALIGNMENT.HORIZIONTAL, // LEFT, CENTER, RIGHT, JUSTIFY
@@ -103,9 +102,9 @@ export const BackgroundElement = {
   type: OBJECT_TYPE.BACKGROUND,
   property: {
     ...BasePrintProperty,
-    categoryId: 'Cover',
-    type: BACKGROUND_TYPE.THEME.id,
-    pageType: BACKGROUND_PAGE_TYPE.FULL_PAGE.id,
+    categoryId: '',
+    type: DEFAULT_BACKGROUND.TYPE,
+    pageType: DEFAULT_BACKGROUND.PAGE_TYPE,
     name: '',
     thumbnail: '',
     imageUrl: ''

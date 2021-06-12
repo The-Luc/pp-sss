@@ -25,7 +25,7 @@ export default {
     ...mapGetters({
       selectedId: GETTERS.SELECTED_OBJECT_ID,
       selectedTextCase: GETTERS.PROP_OBJECT_BY_ID,
-      triggerChange: GETTERS.TRIGGER_OBJECT_CHANGE
+      triggerChange: GETTERS.TRIGGER_TEXT_CHANGE
     }),
     selectedCase() {
       if (this.triggerChange) {

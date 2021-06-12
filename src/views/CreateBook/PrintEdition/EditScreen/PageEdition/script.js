@@ -123,7 +123,7 @@ export default {
       setSelectedObjectId: BOOK_MUTATES.SET_SELECTED_OBJECT_ID,
       addNewObject: BOOK_MUTATES.ADD_OBJECT,
       setObjectProp: BOOK_MUTATES.SET_PROP,
-      updateTriggerChange: BOOK_MUTATES.UPDATE_TRIGGER_OBJECT_CHANGE,
+      updateTriggerChange: BOOK_MUTATES.UPDATE_TRIGGER_TEXT_CHANGE,
       addNewBackground: BOOK_MUTATES.ADD_BACKGROUND
     }),
     /**
@@ -257,12 +257,10 @@ export default {
     /**
      * Open text properties modal and set default properties
      */
-    openProperties() {
-      this.setIsOpenProperties({
-        isOpen: true
-      });
+    openProperties(isRequireTrigger = false) {
+      this.setIsOpenProperties({ isOpen: true });
 
-      this.updateTriggerChange();
+      if (isRequireTrigger) this.updateTriggerChange();
     },
     /**
      * Close text properties modal
@@ -342,10 +340,11 @@ export default {
       }
 
       const objectType = objectData?.type;
-      if (objectType) {
-        this.setObjectTypeSelected({ type: objectType });
-        this.openProperties();
-      }
+      if (isEmpty(objectType)) return;
+
+      this.setObjectTypeSelected({ type: objectType });
+
+      this.openProperties(objectType === OBJECT_TYPE.TEXT);
     },
     /**
      * Event fire when user click on Text button on Toolbar to add new text on canvas
@@ -411,6 +410,7 @@ export default {
           image.scaleY = height / image.height;
 
           window.printCanvas.add(image);
+
           selectLatestObject(window.printCanvas);
         },
         {
@@ -443,7 +443,7 @@ export default {
         }
       });
 
-      const { width, height } = window.printCanvas;
+      const { width } = window.printCanvas;
       const zoom = window.printCanvas.getZoom();
 
       const currentBackgrounds = window.printCanvas
@@ -480,22 +480,30 @@ export default {
 
       const scaleX = isAddingFullBackground ? 1 : 2;
 
-      fabric.Image.fromURL(background.property.imageUrl, function(img) {
-        img.id = id;
-        img.selectable = false;
-        img.left = !isAddToLeft ? width / zoom / 2 : 0;
-        img.scaleX = width / zoom / img.width / scaleX;
-        img.scaleY = height / zoom / img.height;
+      const fabricProp = {
+        id,
+        left: !isAddToLeft ? width / zoom / 2 : 0,
+        scaleX: 1 / zoom / scaleX,
+        scaleY: 1 / zoom,
+        objectType: background.type,
+        pageType: background.property.pageType,
+        isLeftPage: isAddToLeft,
+        opacity: background.property.opacity,
+        hasBorders: false,
+        hasControls: false,
+        lockRotation: true,
+        lockScalingX: true,
+        lockScalingY: true,
+        lockMovementX: true,
+        lockMovementY: true
+      };
 
-        img.objectType = background.type;
-        img.pageType = background.property.pageType;
-        img.isLeftPage = isAddToLeft;
+      fabric.Image.fromURL(background.property.imageUrl, img => {
+        img.set(fabricProp);
 
         window.printCanvas.add(img);
 
         window.printCanvas.sendToBack(img);
-
-        window.printCanvas.renderAll();
       });
     }
   }

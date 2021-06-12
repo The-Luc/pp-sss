@@ -122,7 +122,7 @@ export const getters = {
     const data = objects[id]?.property[prop];
     return data || data === 0 ? objects[id]?.property[prop] : null;
   },
-  [BOOK._GETTERS.TRIGGER_OBJECT_CHANGE]: ({ triggerObjectChange }) =>
+  [BOOK._GETTERS.TRIGGER_TEXT_CHANGE]: ({ triggerObjectChange }) =>
     triggerObjectChange,
   [BOOK._GETTERS.SHEET_BACKGROUNDS]: ({ book, objects }) => sheetId => {
     const sheets = getAllSheets(book.sections);
