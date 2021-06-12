@@ -296,9 +296,6 @@ export default {
         strokeWidth,
         stroke: 'red'
       });
-      setTimeout(() => {
-        selectLatestObject(rectObj.canvas);
-      });
     },
     /**
      * Set border color when selected group object
@@ -327,6 +324,7 @@ export default {
       this.setBorderHighLight(target);
 
       const objectData = this.selectedObject(this.selectedObjectId);
+      console.log('objectData', objectData);
       if (targetType === 'group') {
         const rectObj = target.getObjects(OBJECT_TYPE.RECT)[0];
         this.setBorderObject(
@@ -338,8 +336,8 @@ export default {
           objectData
         );
       }
-
       const objectType = objectData?.type;
+      console.log('objectType', objectType);
       if (isEmpty(objectType)) return;
 
       this.setObjectTypeSelected({ type: objectType });
