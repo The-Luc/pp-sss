@@ -289,6 +289,9 @@ export default {
 
       this.setObjectTypeSelected({ type: objectType });
 
+      window.printCanvas.preserveObjectStacking =
+        objectType === OBJECT_TYPE.BACKGROUND;
+
       this.openProperties(objectType === OBJECT_TYPE.TEXT);
     },
     /**
@@ -396,7 +399,7 @@ export default {
         }
       });
 
-      const { width } = window.printCanvas;
+      const { width, height } = window.printCanvas;
       const zoom = window.printCanvas.getZoom();
 
       const currentBackgrounds = window.printCanvas
@@ -436,12 +439,11 @@ export default {
       const fabricProp = {
         id,
         left: !isAddToLeft ? width / zoom / 2 : 0,
-        scaleX: 1 / zoom / scaleX,
-        scaleY: 1 / zoom,
         objectType: background.type,
         pageType: background.property.pageType,
         isLeftPage: isAddToLeft,
         opacity: background.property.opacity,
+        hoverCursor: 'default',
         hasBorders: false,
         hasControls: false,
         lockRotation: true,
@@ -452,7 +454,11 @@ export default {
       };
 
       fabric.Image.fromURL(background.property.imageUrl, img => {
-        img.set(fabricProp);
+        img.set({
+          ...fabricProp,
+          scaleX: width / zoom / img.width / scaleX,
+          scaleY: height / zoom / img.height
+        });
 
         window.printCanvas.add(img);
 
