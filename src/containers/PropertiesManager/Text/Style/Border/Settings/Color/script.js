@@ -15,7 +15,7 @@ export default {
     ...mapGetters({
       selectedId: BOOK_GETTERS.SELECTED_OBJECT_ID,
       isOpenColorPicker: GETTERS.IS_OPEN_COLOR_PICKER,
-      triggerChange: BOOK_GETTERS.TRIGGER_OBJECT_CHANGE,
+      triggerChange: BOOK_GETTERS.TRIGGER_TEXT_CHANGE,
       selectedColor: BOOK_GETTERS.PROP_OBJECT_BY_ID
     }),
     color() {

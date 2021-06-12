@@ -121,7 +121,7 @@ export const getters = {
   [BOOK._GETTERS.PROP_OBJECT_BY_ID]: ({ objects }) => ({ id, prop }) => {
     return objects[id]?.property[prop] || null;
   },
-  [BOOK._GETTERS.TRIGGER_OBJECT_CHANGE]: ({ triggerObjectChange }) =>
+  [BOOK._GETTERS.TRIGGER_TEXT_CHANGE]: ({ triggerObjectChange }) =>
     triggerObjectChange,
   [BOOK._GETTERS.SHEET_BACKGROUNDS]: ({ book, objects }) => sheetId => {
     const sheets = getAllSheets(book.sections);

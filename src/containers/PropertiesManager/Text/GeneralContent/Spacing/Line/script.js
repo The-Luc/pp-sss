@@ -29,7 +29,7 @@ export default {
     ...mapGetters({
       selectedId: GETTERS.SELECTED_OBJECT_ID,
       selectedObject: GETTERS.PROP_OBJECT_BY_ID,
-      triggerChange: GETTERS.TRIGGER_OBJECT_CHANGE
+      triggerChange: GETTERS.TRIGGER_TEXT_CHANGE
     }),
     selectedLineSpacing() {
       if (this.triggerChange) {

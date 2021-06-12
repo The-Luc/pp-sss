@@ -444,7 +444,7 @@ export const mutations = {
   [BOOK._MUTATES.ADD_OBJECT](state, { id, newObject }) {
     state.objects[id] = newObject;
   },
-  [BOOK._MUTATES.UPDATE_TRIGGER_OBJECT_CHANGE](state) {
+  [BOOK._MUTATES.UPDATE_TRIGGER_TEXT_CHANGE](state) {
     state.triggerObjectChange = !state.triggerObjectChange;
   },
   [BOOK._MUTATES.ADD_BACKGROUND](

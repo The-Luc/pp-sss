@@ -14,7 +14,7 @@ export default {
       isOpenColorPicker: GETTERS.IS_OPEN_COLOR_PICKER,
       selectedId: BOOK_GETTERS.SELECTED_OBJECT_ID,
       selectedColor: BOOK_GETTERS.PROP_OBJECT_BY_ID,
-      triggerChange: BOOK_GETTERS.TRIGGER_OBJECT_CHANGE
+      triggerChange: BOOK_GETTERS.TRIGGER_TEXT_CHANGE
     }),
     color() {
       if (this.triggerChange) {
