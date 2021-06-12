@@ -2,8 +2,15 @@ import { cloneDeep, uniqueId, omit, pick, merge } from 'lodash';
 import randomcolor from 'randomcolor';
 import moment from 'moment';
 
-import { SHEET_TYPES, DATE_FORMAT } from '@/common/constants';
-import { getAllSheets, nextId } from '@/common/utils';
+import {
+  SHEET_TYPE,
+  DATE_FORMAT,
+  BACKGROUND_PAGE_TYPE,
+  OBJECT_TYPE,
+  HALF_SHEET,
+  HALF_LEFT
+} from '@/common/constants';
+import { getAllSheets, nextId, isEmpty } from '@/common/utils';
 
 import BOOK from './const';
 import { POSITION_FIXED } from '@/common/constants';
@@ -74,7 +81,7 @@ const makeNewSection = (sections, sectionIndex) => {
     sectionIndex === sections.length - 1 ? totalSheets - 1 : totalSheets;
   return {
     id: newId,
-    type: SHEET_TYPES.NORMAL,
+    type: SHEET_TYPE.NORMAL,
     draggable: true,
     positionFixed: POSITION_FIXED.NONE,
     order: order,
@@ -322,12 +329,12 @@ export const mutations = {
 
     const singleLayoutSelected = layoutObj.pages[0]; // For single layout, data object always first item
     let currentPosition = pagePosition; // Check whether user has add single page or not. Value: left or right with single page else undefine
-    if (sheetObj.type === SHEET_TYPES.FRONT_COVER) {
+    if (sheetObj.type === SHEET_TYPE.FRONT_COVER) {
       // Front cover always has the right page
       currentPosition = 'right';
     }
 
-    if (sheetObj.type === SHEET_TYPES.BACK_COVER) {
+    if (sheetObj.type === SHEET_TYPE.BACK_COVER) {
       // Back cover always has the left page
       currentPosition = 'left';
     }
@@ -439,5 +446,78 @@ export const mutations = {
   },
   [BOOK._MUTATES.UPDATE_TRIGGER_OBJECT_CHANGE](state) {
     state.triggerObjectChange = !state.triggerObjectChange;
+  },
+  [BOOK._MUTATES.ADD_BACKGROUND](
+    state,
+    { id, sheetId, isLeft = true, newBackground }
+  ) {
+    const sheets = getAllSheets(state.book.sections);
+    const sheet = sheets.find(s => s.id === sheetId);
+
+    if (isEmpty(sheet)) return;
+
+    if (isEmpty(sheet.printData.layout)) {
+      sheet.printData.layout = { pages: [{ objects: [] }, { objects: [] }] };
+    }
+
+    if (sheet.printData.layout.pages.length < 2) {
+      sheet.printData.layout.pages.push({ objects: [] });
+    }
+
+    const pageData = sheet.printData.layout.pages;
+
+    const firstId = isEmpty(pageData[0].objects) ? '' : pageData[0].objects[0];
+    const secondId = isEmpty(pageData[1].objects) ? '' : pageData[1].objects[0];
+
+    const firstBackground =
+      state.objects[firstId]?.type === OBJECT_TYPE.BACKGROUND
+        ? state.objects[firstId]
+        : null;
+
+    const secondBackground =
+      state.objects[secondId]?.type === OBJECT_TYPE.BACKGROUND
+        ? state.objects[secondId]
+        : null;
+
+    const isAddingFullBackground =
+      newBackground.property.pageType === BACKGROUND_PAGE_TYPE.FULL_PAGE.id;
+
+    const isCurrentFullBackground =
+      !isEmpty(firstBackground) &&
+      firstBackground.property.pageType === BACKGROUND_PAGE_TYPE.FULL_PAGE.id;
+
+    const isHalfSheet = HALF_SHEET.indexOf(sheet.type) >= 0;
+    const isHalfLeft = isHalfSheet && HALF_LEFT.indexOf(sheet.type) >= 0;
+
+    const isRemoveAllBackground =
+      isHalfSheet || isAddingFullBackground || isCurrentFullBackground;
+
+    const isAddToLeftFullSheet =
+      !isHalfSheet && (isAddingFullBackground || isLeft);
+
+    const isAddToLeft = isHalfLeft || isAddToLeftFullSheet;
+
+    const isRemoveLeft =
+      !isEmpty(firstBackground) && (isRemoveAllBackground || isAddToLeft);
+    const isRemoveRight =
+      !isEmpty(secondBackground) && (isRemoveAllBackground || !isAddToLeft);
+
+    if (isRemoveLeft) {
+      sheet.printData.layout.pages[0].objects.shift();
+
+      delete state.objects[firstId];
+    }
+
+    if (isRemoveRight) {
+      sheet.printData.layout.pages[1].objects.shift();
+
+      delete state.objects[secondId];
+    }
+
+    const pageIndex = isAddToLeft ? 0 : 1;
+
+    sheet.printData.layout.pages[pageIndex].objects.unshift(id);
+
+    state.objects[id] = newBackground;
   }
 };

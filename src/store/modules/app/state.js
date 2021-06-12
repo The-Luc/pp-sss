@@ -12,6 +12,7 @@ export const state = {
     isOpen: false,
     data: {
       color: '',
+      customClass: '',
       presets: {
         next: 0,
         max: 9,

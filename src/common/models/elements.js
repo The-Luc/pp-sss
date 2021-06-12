@@ -1,4 +1,10 @@
-import { OBJECT_TYPE, DEFAULT_TEXT, DEFAULT_IMAGE } from '@/common/constants';
+import {
+  OBJECT_TYPE,
+  DEFAULT_TEXT,
+  DEFAULT_IMAGE,
+  BACKGROUND_TYPE,
+  BACKGROUND_PAGE_TYPE
+} from '@/common/constants';
 
 export const BaseProperty = {
   color: '',
@@ -85,7 +91,7 @@ export const ImageElement = {
   type: OBJECT_TYPE.IMAGE,
   property: {
     ...BasePrintProperty,
-    category: 'Cover',
+    categoryId: 'Cover',
     name: '',
     thumbnail: DEFAULT_IMAGE.thumbnail,
     imageUrl: DEFAULT_IMAGE.imageUrl
@@ -97,7 +103,9 @@ export const BackgroundElement = {
   type: OBJECT_TYPE.BACKGROUND,
   property: {
     ...BasePrintProperty,
-    category: 'Cover',
+    categoryId: 'Cover',
+    type: BACKGROUND_TYPE.THEME.id,
+    pageType: BACKGROUND_PAGE_TYPE.FULL_PAGE.id,
     name: '',
     thumbnail: '',
     imageUrl: ''

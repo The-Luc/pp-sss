@@ -11,10 +11,6 @@ export default {
     label: {
       type: String,
       required: true
-    },
-    style: {
-      type: Object,
-      default: {}
     }
   },
   methods: {

@@ -20,7 +20,7 @@ import { LAYOUT_TYPES_OPTIONs } from '@/mock/layoutTypes';
 import {
   LAYOUT_TYPES,
   MODAL_TYPES,
-  SHEET_TYPES,
+  SHEET_TYPE,
   TOOL_NAME
 } from '@/common/constants';
 import {
@@ -134,7 +134,7 @@ export default {
     setLayoutSelected(pageSelected) {
       const sheetType = pageSelected.type;
       switch (sheetType) {
-        case SHEET_TYPES.COVER:
+        case SHEET_TYPE.COVER:
           {
             const coverOption = this.layoutsOpts.find(
               l => l.value === LAYOUT_TYPES.COVER.value
@@ -142,8 +142,8 @@ export default {
             this.layoutSelected = coverOption;
           }
           break;
-        case SHEET_TYPES.FRONT_COVER:
-        case SHEET_TYPES.BACK_COVER:
+        case SHEET_TYPE.FRONT_COVER:
+        case SHEET_TYPE.BACK_COVER:
           {
             const singlePageOption = this.layoutsOpts.find(
               l => l.value === LAYOUT_TYPES.SINGLE_PAGE.value
@@ -178,9 +178,9 @@ export default {
      */
     setDisabledLayout(pageSelected) {
       const isDisabled = [
-        SHEET_TYPES.COVER,
-        SHEET_TYPES.FRONT_COVER,
-        SHEET_TYPES.BACK_COVER
+        SHEET_TYPE.COVER,
+        SHEET_TYPE.FRONT_COVER,
+        SHEET_TYPE.BACK_COVER
       ].includes(pageSelected.type);
       this.disabled = isDisabled;
     },
@@ -280,7 +280,7 @@ export default {
       if (this.layouts.length > 0 && this.tempLayoutIdSelected) {
         if (
           this.layoutObjSelected.type === LAYOUT_TYPES.SINGLE_PAGE.value &&
-          ![SHEET_TYPES.FRONT_COVER, SHEET_TYPES.BACK_COVER].includes(
+          ![SHEET_TYPE.FRONT_COVER, SHEET_TYPE.BACK_COVER].includes(
             this.pageSelected.type
           )
         ) {

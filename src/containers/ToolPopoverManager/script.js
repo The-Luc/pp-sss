@@ -5,12 +5,14 @@ import { TOOL_NAME } from '@/common/constants';
 
 import Themes from './Themes';
 import Layouts from './Layouts';
+import Backgrounds from './Backgrounds';
 
-const { THEMES, LAYOUTS } = TOOL_NAME;
+const { THEMES, LAYOUTS, BACKGROUNDS } = TOOL_NAME;
 
 const ToolList = {
   [THEMES]: THEMES,
-  [LAYOUTS]: LAYOUTS
+  [LAYOUTS]: LAYOUTS,
+  [BACKGROUNDS]: BACKGROUNDS
 };
 
 export default {
@@ -21,7 +23,8 @@ export default {
   },
   components: {
     [TOOL_NAME.THEMES]: Themes,
-    [TOOL_NAME.LAYOUTS]: Layouts
+    [TOOL_NAME.LAYOUTS]: Layouts,
+    [TOOL_NAME.BACKGROUNDS]: Backgrounds
   },
   computed: {
     ...mapGetters({
