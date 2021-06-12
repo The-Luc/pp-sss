@@ -14,6 +14,7 @@ export const mutations = {
   [APP._MUTATES.TOGGLE_COLOR_PICKER](state, { isOpen, data }) {
     state.colorPicker.isOpen = isOpen;
     state.colorPicker.data.color = data?.color || '';
+    state.colorPicker.data.customClass = data?.customClass || '';
   },
   [APP._MUTATES.SET_OBJECT_TYPE_SELECTED](state, { type }) {
     state.selectedObjectType = type;

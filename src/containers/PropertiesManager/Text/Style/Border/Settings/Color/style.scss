@@ -3,11 +3,16 @@
 
   .color-content {
     .box-color {
-      width: 80px;
+      width: 80px !important;
       &-active {
-        width: 100%;
-        margin: 0 10px;
+        width: 100% !important;
+        margin: 0 10px !important;
       }
     }
   }
+}
+
+.color-picker-container.color-picker-border-text {
+  top: 40px;
+  right: 211px;
 }
