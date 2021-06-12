@@ -1,19 +1,25 @@
-import { OBJECT_TYPE, DEFAULT_TEXT, DEFAULT_IMAGE } from '@/common/constants';
+import {
+  OBJECT_TYPE,
+  DEFAULT_PROP,
+  DEFAULT_TEXT,
+  DEFAULT_IMAGE,
+  DEFAULT_BACKGROUND
+} from '@/common/constants';
 
 export const BaseProperty = {
-  color: '',
-  opacity: 1,
+  color: DEFAULT_PROP.COLOR,
+  opacity: DEFAULT_PROP.OPACITY,
   border: {
     type: 0, // TODO: Define constants 0: No Border, 1: Line
-    color: '',
+    color: DEFAULT_PROP.COLOR,
     width: 0,
     style: ''
   },
   shadow: {
     enabled: false,
-    color: '',
+    color: DEFAULT_PROP.COLOR,
     offset: 0,
-    opacity: 0,
+    opacity: DEFAULT_PROP.OPACITY,
     angle: 0,
     blur: 0
   },
@@ -62,7 +68,6 @@ export const TextElement = {
     isBold: DEFAULT_TEXT.IS_BOLD,
     isItalic: DEFAULT_TEXT.IS_ITALIC,
     isUnderline: DEFAULT_TEXT.IS_UNDERLINE,
-    color: DEFAULT_TEXT.COLOR,
     textCase: DEFAULT_TEXT.TEXT_CASE, // UPPERCASE, LOWERCASE, CAPITALIZE
     alignment: {
       horiziontal: DEFAULT_TEXT.ALIGNMENT.HORIZIONTAL, // LEFT, CENTER, RIGHT, JUSTIFY
@@ -71,8 +76,7 @@ export const TextElement = {
     letterSpacing: DEFAULT_TEXT.LETTER_SPACING,
     lineSpacing: DEFAULT_TEXT.LINE_SPACING, // 1.2 * em
     lineHeight: DEFAULT_TEXT.LINE_HEIGHT,
-    column: DEFAULT_TEXT.COLUMN,
-    opacity: DEFAULT_TEXT.OPACITY
+    column: DEFAULT_TEXT.COLUMN
   }
 };
 
@@ -81,7 +85,7 @@ export const ImageElement = {
   type: OBJECT_TYPE.IMAGE,
   property: {
     ...BasePrintProperty,
-    category: 'Cover',
+    categoryId: 'Cover',
     name: '',
     thumbnail: DEFAULT_IMAGE.thumbnail,
     imageUrl: DEFAULT_IMAGE.imageUrl
@@ -93,7 +97,9 @@ export const BackgroundElement = {
   type: OBJECT_TYPE.BACKGROUND,
   property: {
     ...BasePrintProperty,
-    category: 'Cover',
+    categoryId: '',
+    type: DEFAULT_BACKGROUND.TYPE,
+    pageType: DEFAULT_BACKGROUND.PAGE_TYPE,
     name: '',
     thumbnail: '',
     imageUrl: ''

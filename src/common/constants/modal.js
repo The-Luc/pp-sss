@@ -5,5 +5,6 @@ export const MODAL_TYPES = {
   EMPTY_SECTION: 'EmptySection',
   SELECT_THEME: 'SelectTheme',
   GANTT_CHART: 'GanttChart',
-  SELECT_PAGE: 'SelectPage'
+  SELECT_PAGE: 'SelectPage',
+  BACKGROUND_SELECT_PAGE: 'BackgroundSelectPage'
 };

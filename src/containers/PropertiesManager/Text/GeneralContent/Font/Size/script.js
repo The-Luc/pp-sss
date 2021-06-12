@@ -30,7 +30,7 @@ export default {
     ...mapGetters({
       selectedId: GETTERS.SELECTED_OBJECT_ID,
       selectedFontSize: GETTERS.PROP_OBJECT_BY_ID,
-      triggerChange: GETTERS.TRIGGER_OBJECT_CHANGE
+      triggerChange: GETTERS.TRIGGER_TEXT_CHANGE
     }),
     selectedSize() {
       if (this.triggerChange) {

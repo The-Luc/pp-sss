@@ -10,6 +10,7 @@ export default {
   computed: {
     ...mapGetters({
       color: GETTERS.COLOR_PICKER_COLOR,
+      customClass: GETTERS.COLOR_PICKER_CLASS,
       presets: GETTERS.COLOR_PICKER_PRESETS
     })
   },

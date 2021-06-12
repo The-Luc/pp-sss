@@ -17,14 +17,17 @@ import {
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
 import { GETTERS, MUTATES as BOOK_MUTATES } from '@/store/modules/book/const';
 
-import { ImageElement, TextElement } from '@/common/models';
+import { ImageElement, TextElement, BackgroundElement } from '@/common/models';
 import {
-  SHEET_TYPES,
+  SHEET_TYPE,
+  HALF_SHEET,
+  HALF_LEFT,
   TEXT_CASE,
   DEFAULT_TEXT,
   FABRIC_OBJECT_TYPE,
   OBJECT_TYPE,
-  DEFAULT_SPACING
+  DEFAULT_SPACING,
+  BACKGROUND_PAGE_TYPE
 } from '@/common/constants';
 import SizeWrapper from '@/components/SizeWrapper';
 import PageWrapper from './PageWrapper';
@@ -59,20 +62,20 @@ export default {
       selectedProp: GETTERS.PROP_OBJECT_BY_ID
     }),
     isCover() {
-      return this.pageSelected.type === SHEET_TYPES.COVER;
+      return this.pageSelected.type === SHEET_TYPE.COVER;
     },
     isHardCover() {
       const { coverOption } = this.book;
       return (
         coverOption === 'Hardcover' &&
-        this.pageSelected.type === SHEET_TYPES.COVER
+        this.pageSelected.type === SHEET_TYPE.COVER
       );
     },
     isSoftCover() {
       const { coverOption } = this.book;
       return (
         coverOption === 'Softcover' &&
-        this.pageSelected.type === SHEET_TYPES.COVER
+        this.pageSelected.type === SHEET_TYPE.COVER
       );
     },
     isIntro() {
@@ -117,7 +120,8 @@ export default {
       setSelectedObjectId: BOOK_MUTATES.SET_SELECTED_OBJECT_ID,
       addNewObject: BOOK_MUTATES.ADD_OBJECT,
       setObjectProp: BOOK_MUTATES.SET_PROP,
-      updateTriggerChange: BOOK_MUTATES.UPDATE_TRIGGER_OBJECT_CHANGE
+      updateTriggerChange: BOOK_MUTATES.UPDATE_TRIGGER_TEXT_CHANGE,
+      addNewBackground: BOOK_MUTATES.ADD_BACKGROUND
     }),
     /**
      * Auto resize canvas to fit the container size
@@ -224,6 +228,10 @@ export default {
         this.changeTextProperties(prop);
       });
 
+      this.$root.$on('printAddBackground', ({ background, isLeft }) => {
+        this.addBackground({ background, isLeft });
+      });
+
       document.body.addEventListener('keyup', this.handleDeleteKey);
     },
     /**
@@ -246,23 +254,19 @@ export default {
     /**
      * Open text properties modal and set default properties
      */
-    openProperties() {
-      this.setIsOpenProperties({
-        isOpen: true
-      });
+    openProperties(isRequireTrigger = false) {
+      this.setIsOpenProperties({ isOpen: true });
 
-      this.updateTriggerChange();
+      if (isRequireTrigger) this.updateTriggerChange();
     },
     /**
      * Close text properties modal
      */
     closeProperties() {
-      this.setIsOpenProperties({
-        isOpen: false
-      });
-      this.setObjectTypeSelected({
-        type: ''
-      });
+      this.setIsOpenProperties({ isOpen: false });
+
+      this.setObjectTypeSelected({ type: '' });
+
       this.setSelectedObjectId({ id: '' });
     },
     /**
@@ -274,13 +278,18 @@ export default {
       if (this.awaitingAdd) {
         return;
       }
+
       const { id } = target;
+
       this.setSelectedObjectId({ id });
+
       const objectType = this.selectedObject(this.selectedObjectId)?.type;
-      if (objectType) {
-        this.setObjectTypeSelected({ type: objectType });
-        this.openProperties();
-      }
+
+      if (isEmpty(objectType)) return;
+
+      this.setObjectTypeSelected({ type: objectType });
+
+      this.openProperties(objectType === OBJECT_TYPE.TEXT);
     },
     /**
      * Event fire when user click on Text button on Toolbar to add new text on canvas
@@ -320,6 +329,7 @@ export default {
       text.set('height', height);
 
       window.printCanvas.add(text);
+
       setTimeout(() => {
         selectLatestObject(window.printCanvas);
       });
@@ -353,6 +363,7 @@ export default {
           image.scaleY = height / image.height;
 
           window.printCanvas.add(image);
+
           selectLatestObject(window.printCanvas);
         },
         {
@@ -363,6 +374,90 @@ export default {
           crossOrigin: 'anonymous'
         }
       );
+    },
+    /**
+     * Adding background to canvas & store
+     *
+     * @param {Object}  background  the object of adding background
+     * @param {Boolean} isLeft      is add to the left page or right page
+     */
+    addBackground({ background, isLeft }) {
+      const id = uniqueId();
+
+      const newBackground = cloneDeep(BackgroundElement);
+
+      this.addNewBackground({
+        id,
+        sheetId: this.pageSelected.id,
+        isLeft,
+        newBackground: {
+          ...newBackground,
+          ...background
+        }
+      });
+
+      const { width } = window.printCanvas;
+      const zoom = window.printCanvas.getZoom();
+
+      const currentBackgrounds = window.printCanvas
+        .getObjects()
+        .filter(function(o) {
+          return o.objectType === OBJECT_TYPE.BACKGROUND;
+        });
+
+      const isAddingFullBackground =
+        background.property.pageType === BACKGROUND_PAGE_TYPE.FULL_PAGE.id;
+
+      const isCurrentFullBackground =
+        !isEmpty(currentBackgrounds) &&
+        currentBackgrounds[0].pageType === BACKGROUND_PAGE_TYPE.FULL_PAGE.id;
+
+      const isHalfSheet = HALF_SHEET.indexOf(this.pageSelected.type) >= 0;
+      const isHalfLeft =
+        isHalfSheet && HALF_LEFT.indexOf(this.pageSelected.type) >= 0;
+
+      const isAddToLeftFullSheet =
+        !isHalfSheet && (isAddingFullBackground || isLeft);
+
+      const isAddToLeft = isHalfLeft || isAddToLeftFullSheet;
+
+      if (isHalfSheet || isAddingFullBackground || isCurrentFullBackground) {
+        currentBackgrounds.forEach(bg => window.printCanvas.remove(bg));
+      }
+
+      if (!isAddingFullBackground && !isEmpty(currentBackgrounds)) {
+        currentBackgrounds.forEach(bg => {
+          if (bg.isLeftPage === isAddToLeft) window.printCanvas.remove(bg);
+        });
+      }
+
+      const scaleX = isAddingFullBackground ? 1 : 2;
+
+      const fabricProp = {
+        id,
+        left: !isAddToLeft ? width / zoom / 2 : 0,
+        scaleX: 1 / zoom / scaleX,
+        scaleY: 1 / zoom,
+        objectType: background.type,
+        pageType: background.property.pageType,
+        isLeftPage: isAddToLeft,
+        opacity: background.property.opacity,
+        hasBorders: false,
+        hasControls: false,
+        lockRotation: true,
+        lockScalingX: true,
+        lockScalingY: true,
+        lockMovementX: true,
+        lockMovementY: true
+      };
+
+      fabric.Image.fromURL(background.property.imageUrl, img => {
+        img.set(fabricProp);
+
+        window.printCanvas.add(img);
+
+        window.printCanvas.sendToBack(img);
+      });
     },
     /**
      * Event fire when user change any property of selected text on the Text Properties
@@ -384,6 +479,7 @@ export default {
       this.updateTriggerChange();
 
       const fabricProp = toFabricTextProp(prop);
+
       Object.keys(fabricProp).forEach(k => {
         activeObj.set(k, fabricProp[k]);
       });
@@ -411,8 +507,10 @@ export default {
             : prop['lineSpacing'] / (DEFAULT_SPACING.VALUE * fontSize);
         activeObj.set('lineHeight', value);
       }
+
       if (isEmpty(prop['textCase'])) {
         window.printCanvas.renderAll();
+
         return;
       }
 
@@ -421,6 +519,7 @@ export default {
 
       if (isEmpty(text)) {
         window.printCanvas.renderAll();
+
         return;
       }
 
@@ -446,6 +545,7 @@ export default {
 
         activeObj.set('text', changedText);
       }
+
       window.printCanvas.renderAll();
     }
   }

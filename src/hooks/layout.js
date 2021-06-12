@@ -1,6 +1,6 @@
 import { useMutations, useGetters } from 'vuex-composition-helpers';
 import { fabric } from 'fabric';
-import { pick, cloneDeep, uniqueId } from 'lodash';
+import { pick, cloneDeep } from 'lodash';
 
 import {
   GETTERS as BOOK_GETTERS,
@@ -124,13 +124,20 @@ const handleDrawBackgroundLayout = (
     targetCanvas?.clear().renderAll();
     return;
   }
+
   fabric.Image.fromURL(backgroundUrl, function(img) {
     const { width, height } = targetCanvas;
     const zoom = targetCanvas.getZoom();
+
     img.selectable = false;
     img.left = position === 'right' ? width / zoom / 2 : 0;
     img.scaleX = width / zoom / img.width / 2;
     img.scaleY = height / zoom / img.height;
+
+    img.objectType = OBJECT_TYPE.BACKGROUND;
+    img.pageType = backrgoundObj?.property?.pageType;
+    img.isLeftPage = position !== 'right';
+
     targetCanvas.add(img);
     handleDrawTextLayout(pageData, position, targetCanvas, objects);
   });

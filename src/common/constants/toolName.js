@@ -3,5 +3,6 @@ export const TOOL_NAME = {
   LAYOUTS: 'Layouts',
   DELETE: 'Delete',
   IMAGE_BOX: 'ImageBox',
-  TEXT: 'Text'
+  TEXT: 'Text',
+  BACKGROUNDS: 'Backgrounds'
 };

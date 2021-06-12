@@ -223,7 +223,7 @@ export const toCssStyle = style => {
         parse: value => (value ? 'italic' : 'normal')
       },
       isUnderline: {
-        name: 'isUnderline',
+        name: 'textDecoration',
         parse: value => (value ? 'underline' : 'none')
       },
       fontSize: {
