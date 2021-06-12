@@ -7,11 +7,11 @@
       @change="onChange"
     />
     <div v-if="isShowShadow" class="shadow-setting-container">
-      <Blur :value="blurValue" @change="onChangeBlur" />
-      <Offset :value="offsetValue" @change="onChangeOffset" />
-      <Opacity :value="opacityValue" @change="onChangeOpacity" />
+      <Blur :value="blurValue" @changeBlur="onChangeBlur" />
+      <Offset :value="offsetValue" @changeOffset="onChangeOffset" />
+      <Opacity :value="opacityValue" @changeOpacity="onChangeOpacity" />
       <div class="group-setting-container">
-        <Angle />
+        <Angle :value="angleValue" @changeAngle="onChangeAngle" />
         <ShadowColor />
       </div>
     </div>

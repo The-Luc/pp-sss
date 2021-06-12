@@ -5,9 +5,9 @@
     <PpNumber
       suffix="°"
       :value="value"
-      :max="max"
-      :min="min"
-      @change="onChangeInput"
+      :max="270"
+      :min="0"
+      @change="onChange"
     />
   </div>
 </template>

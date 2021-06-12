@@ -15,7 +15,7 @@ export default {
   methods: {
     onChange(val) {
       const { isValid, value } = validateInputOption(val, 0, 100, 0);
-      this.$emit('change', isValid ? value : this.value);
+      this.$emit('changeOpacity', isValid ? value : this.value);
     }
   }
 };

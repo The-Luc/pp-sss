@@ -1,4 +1,5 @@
 import PpNumber from '@/components/Number';
+import { validateInputOption } from '@/common/utils';
 export default {
   components: {
     PpNumber
@@ -11,7 +12,8 @@ export default {
   },
   methods: {
     onChange(val) {
-      console.log(val);
+      const { isValid, value } = validateInputOption(val, 0, 270, 0);
+      this.$emit('changeAngle', isValid ? value : this.value);
     }
   }
 };

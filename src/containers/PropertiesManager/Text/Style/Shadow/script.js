@@ -42,6 +42,12 @@ export default {
         // just for trigger the change
       }
       return 10;
+    },
+    angleValue() {
+      if (this.triggerChange) {
+        // just for trigger the change
+      }
+      return 10;
     }
   },
   data() {
@@ -72,6 +78,9 @@ export default {
       console.log(value);
     },
     onChangeOpacity(value) {
+      console.log(value);
+    },
+    onChangeAngle(value) {
       console.log(value);
     }
   }
