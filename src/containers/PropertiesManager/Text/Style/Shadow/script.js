@@ -2,13 +2,17 @@ import Select from '@/components/Select';
 import Blur from './Settings/Blur';
 import Offset from './Settings/Offset';
 import Opacity from './Settings/Opacity';
+import ShadowColor from './Settings/Color';
+import Angle from './Settings/Angle';
 
 export default {
   components: {
     Select,
     Blur,
     Offset,
-    Opacity
+    Opacity,
+    ShadowColor,
+    Angle
   },
   props: {
     selectedShadow: {

@@ -10,6 +10,10 @@
       <Blur :value="blurValue" @change="onChangeBlur" />
       <Offset :value="offsetValue" @change="onChangeOffset" />
       <Opacity :value="opacityValue" @change="onChangeOpacity" />
+      <div class="group-setting-container">
+        <Angle />
+        <ShadowColor />
+      </div>
     </div>
   </div>
 </template>
