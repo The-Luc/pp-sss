@@ -5,7 +5,7 @@ import MenuDetail from '../MenuDetail';
 
 import { mapGetters, mapMutations } from 'vuex';
 
-import { ICON_LOCAL, MODAL_TYPES, SHEET_TYPES } from '@/common/constants';
+import { ICON_LOCAL, MODAL_TYPES, SHEET_TYPE } from '@/common/constants';
 import { MUTATES } from '@/store/modules/app/const';
 import { GETTERS } from '@/store/modules/book/const';
 
@@ -53,8 +53,8 @@ export default {
     }),
     isHalfSheet: function() {
       return (
-        this.sheet.type === SHEET_TYPES.FRONT_COVER ||
-        this.sheet.type === SHEET_TYPES.BACK_COVER
+        this.sheet.type === SHEET_TYPE.FRONT_COVER ||
+        this.sheet.type === SHEET_TYPE.BACK_COVER
       );
     },
     showDragControl: function(evt) {
@@ -102,9 +102,9 @@ export default {
     },
     onCheckActions() {
       const restrictSheetTypes = [
-        SHEET_TYPES.COVER,
-        SHEET_TYPES.FRONT_COVER,
-        SHEET_TYPES.BACK_COVER
+        SHEET_TYPE.COVER,
+        SHEET_TYPE.FRONT_COVER,
+        SHEET_TYPE.BACK_COVER
       ];
 
       return restrictSheetTypes.indexOf(this.sheet.type) < 0;

@@ -264,10 +264,10 @@ const layouts = [
     },
     pages: [
       {
-        objects: [text1, clipArt1, bg1]
+        objects: [bg1, text1, clipArt1]
       },
       {
-        objects: [text2, clipArt2, bg2, shape1]
+        objects: [bg2, text2, clipArt2, shape1]
       }
     ]
   },
@@ -285,10 +285,10 @@ const layouts = [
     },
     pages: [
       {
-        objects: [text1, bg1]
+        objects: [bg1, text1]
       },
       {
-        objects: [text2, bg2]
+        objects: [bg2, text2]
       }
     ]
   },
@@ -306,10 +306,10 @@ const layouts = [
     },
     pages: [
       {
-        objects: [text1, bg1]
+        objects: [bg1, text1]
       },
       {
-        objects: [text2, bg2]
+        objects: [bg2, text2]
       }
     ]
   },
@@ -327,10 +327,10 @@ const layouts = [
     },
     pages: [
       {
-        objects: [text1, bg1]
+        objects: [bg1, text1]
       },
       {
-        objects: [text2, bg2]
+        objects: [bg2, text2]
       }
     ]
   },
@@ -348,10 +348,10 @@ const layouts = [
     },
     pages: [
       {
-        objects: [text1, bg1]
+        objects: [bg1, text1]
       },
       {
-        objects: [text2, bg2]
+        objects: [bg2, text2]
       }
     ]
   },
@@ -363,10 +363,10 @@ const layouts = [
     },
     pages: [
       {
-        objects: [text1, bg1]
+        objects: [bg1, text1]
       },
       {
-        objects: [text2, bg2]
+        objects: [bg2, text2]
       }
     ],
     type: LAYOUT_TYPES.SIGNATURES.value,
@@ -384,10 +384,10 @@ const layouts = [
     },
     pages: [
       {
-        objects: [text1, bg1]
+        objects: [bg1, text1]
       },
       {
-        objects: [text2, bg2]
+        objects: [bg2, text2]
       }
     ],
     type: LAYOUT_TYPES.AWARDS_SUPERLATIVE.value,
@@ -405,10 +405,10 @@ const layouts = [
     },
     pages: [
       {
-        objects: [text1, bg1]
+        objects: [bg1, text1]
       },
       {
-        objects: [text2, bg2]
+        objects: [bg2, text2]
       }
     ],
     type: LAYOUT_TYPES.ADMIN_STAFF.value,
@@ -426,10 +426,10 @@ const layouts = [
     },
     pages: [
       {
-        objects: [text1, bg1]
+        objects: [bg1, text1]
       },
       {
-        objects: [text2, bg2]
+        objects: [bg2, text2]
       }
     ],
     type: LAYOUT_TYPES.GRADUATION.value,
@@ -447,10 +447,10 @@ const layouts = [
     },
     pages: [
       {
-        objects: [text1, bg1]
+        objects: [bg1, text1]
       },
       {
-        objects: [text2, bg2]
+        objects: [bg2, text2]
       }
     ],
     type: LAYOUT_TYPES.INTRO_OPENING_PAGE.value,
@@ -468,10 +468,10 @@ const layouts = [
     },
     pages: [
       {
-        objects: [text1, bg1]
+        objects: [bg1, text1]
       },
       {
-        objects: [text2, bg2]
+        objects: [bg2, text2]
       }
     ],
     type: LAYOUT_TYPES.CLUBS_GROUPS_TEAMS.value,
@@ -489,10 +489,10 @@ const layouts = [
     },
     pages: [
       {
-        objects: [text1, bg1]
+        objects: [bg1, text1]
       },
       {
-        objects: [text2, bg2]
+        objects: [bg2, text2]
       }
     ],
     type: LAYOUT_TYPES.SIMPLE.value,
@@ -510,10 +510,10 @@ const layouts = [
     },
     pages: [
       {
-        objects: [text1, bg1]
+        objects: [bg1, text1]
       },
       {
-        objects: [text2, bg2]
+        objects: [bg2, text2]
       }
     ],
     type: LAYOUT_TYPES.AWARDS_SUPERLATIVE.value,
@@ -531,10 +531,10 @@ const layouts = [
     },
     pages: [
       {
-        objects: [text1, bg1]
+        objects: [bg1, text1]
       },
       {
-        objects: [text2, bg2]
+        objects: [bg2, text2]
       }
     ],
     type: LAYOUT_TYPES.AWARDS_SUPERLATIVE.value,
@@ -552,10 +552,10 @@ const layouts = [
     },
     pages: [
       {
-        objects: [text1, bg1]
+        objects: [bg1, text1]
       },
       {
-        objects: [text2, bg2]
+        objects: [bg2, text2]
       }
     ],
     type: LAYOUT_TYPES.AWARDS_SUPERLATIVE.value,
@@ -573,10 +573,10 @@ const layouts = [
     },
     pages: [
       {
-        objects: [text1, bg1]
+        objects: [bg1, text1]
       },
       {
-        objects: [text2, bg2]
+        objects: [bg2, text2]
       }
     ],
     type: LAYOUT_TYPES.GRADUATION.value,
@@ -594,10 +594,10 @@ const layouts = [
     },
     pages: [
       {
-        objects: [text1, bg1]
+        objects: [bg1, text1]
       },
       {
-        objects: [text2, bg2]
+        objects: [bg2, text2]
       }
     ],
     type: LAYOUT_TYPES.GRADUATION.value,
@@ -615,10 +615,10 @@ const layouts = [
     },
     pages: [
       {
-        objects: [text1, bg1]
+        objects: [bg1, text1]
       },
       {
-        objects: [text2, bg2]
+        objects: [bg2, text2]
       }
     ],
     type: LAYOUT_TYPES.COLLAGE.value,
@@ -636,10 +636,10 @@ const layouts = [
     },
     pages: [
       {
-        objects: [text1, bg1]
+        objects: [bg1, text1]
       },
       {
-        objects: [text2, bg2]
+        objects: [bg2, text2]
       }
     ],
     type: LAYOUT_TYPES.COLLAGE.value,
@@ -657,10 +657,10 @@ const layouts = [
     },
     pages: [
       {
-        objects: [text1, bg1]
+        objects: [bg1, text1]
       },
       {
-        objects: [text2, bg2]
+        objects: [bg2, text2]
       }
     ],
     type: LAYOUT_TYPES.INTRO_OPENING_PAGE.value,
@@ -678,10 +678,10 @@ const layouts = [
     },
     pages: [
       {
-        objects: [text1, bg1]
+        objects: [bg1, text1]
       },
       {
-        objects: [text2, bg2]
+        objects: [bg2, text2]
       }
     ],
     type: LAYOUT_TYPES.YEAR_IN_REVIEW.value,
@@ -699,10 +699,10 @@ const layouts = [
     },
     pages: [
       {
-        objects: [text1, bg1]
+        objects: [bg1, text1]
       },
       {
-        objects: [text2, bg2]
+        objects: [bg2, text2]
       }
     ],
     type: LAYOUT_TYPES.YEAR_IN_REVIEW.value,
@@ -720,10 +720,10 @@ const layouts = [
     },
     pages: [
       {
-        objects: [text1, bg1]
+        objects: [bg1, text1]
       },
       {
-        objects: [text2, bg2]
+        objects: [bg2, text2]
       }
     ],
     type: LAYOUT_TYPES.YEAR_IN_REVIEW.value,
@@ -741,10 +741,10 @@ const layouts = [
     },
     pages: [
       {
-        objects: [text1, bg1]
+        objects: [bg1, text1]
       },
       {
-        objects: [text2, bg2]
+        objects: [bg2, text2]
       }
     ],
     type: LAYOUT_TYPES.SIGNATURES.value,
@@ -762,10 +762,10 @@ const layouts = [
     },
     pages: [
       {
-        objects: [text1, bg1]
+        objects: [bg1, text1]
       },
       {
-        objects: [text2, bg2]
+        objects: [bg2, text2]
       }
     ],
     type: LAYOUT_TYPES.YEAR_IN_REVIEW.value,
@@ -783,10 +783,10 @@ const layouts = [
     },
     pages: [
       {
-        objects: [text1, bg1]
+        objects: [bg1, text1]
       },
       {
-        objects: [text2, bg2]
+        objects: [bg2, text2]
       }
     ],
     type: LAYOUT_TYPES.SIMPLE.value,
@@ -804,10 +804,10 @@ const layouts = [
     },
     pages: [
       {
-        objects: [text1, bg1]
+        objects: [bg1, text1]
       },
       {
-        objects: [text2, bg2]
+        objects: [bg2, text2]
       }
     ],
     type: LAYOUT_TYPES.SIMPLE.value,
@@ -825,10 +825,10 @@ const layouts = [
     },
     pages: [
       {
-        objects: [text1, bg1]
+        objects: [bg1, text1]
       },
       {
-        objects: [text2, bg2]
+        objects: [bg2, text2]
       }
     ],
     type: LAYOUT_TYPES.AWARDS_SUPERLATIVE.value,
@@ -846,10 +846,10 @@ const layouts = [
     },
     pages: [
       {
-        objects: [text1, bg1]
+        objects: [bg1, text1]
       },
       {
-        objects: [text2, bg2]
+        objects: [bg2, text2]
       }
     ],
     type: LAYOUT_TYPES.YEAR_IN_REVIEW.value,
@@ -867,10 +867,10 @@ const layouts = [
     },
     pages: [
       {
-        objects: [text1, bg1]
+        objects: [bg1, text1]
       },
       {
-        objects: [text2, bg2]
+        objects: [bg2, text2]
       }
     ],
     type: LAYOUT_TYPES.SIMPLE.value,
@@ -888,10 +888,10 @@ const layouts = [
     },
     pages: [
       {
-        objects: [text1, bg1]
+        objects: [bg1, text1]
       },
       {
-        objects: [text2, bg2]
+        objects: [bg2, text2]
       }
     ],
     type: LAYOUT_TYPES.SIMPLE.value,
@@ -909,10 +909,10 @@ const layouts = [
     },
     pages: [
       {
-        objects: [text1, bg1]
+        objects: [bg1, text1]
       },
       {
-        objects: [text2, bg2]
+        objects: [bg2, text2]
       }
     ],
     type: LAYOUT_TYPES.GRADUATION.value,
@@ -931,7 +931,7 @@ const layouts = [
     },
     pages: [
       {
-        objects: [text1, bg1]
+        objects: [bg1, text1]
       }
     ],
     name: 'Single 6',
@@ -949,7 +949,7 @@ const layouts = [
     },
     pages: [
       {
-        objects: [text1, bg1]
+        objects: [bg1, text1]
       }
     ],
     name: 'Single 7',
@@ -966,10 +966,10 @@ const layouts = [
     },
     pages: [
       {
-        objects: [text1, bg1]
+        objects: [bg1, text1]
       },
       {
-        objects: [text2, bg2]
+        objects: [bg2, text2]
       }
     ],
     type: LAYOUT_TYPES.COLLAGE.value,
@@ -988,10 +988,10 @@ const layouts = [
     },
     pages: [
       {
-        objects: [text1, bg1]
+        objects: [bg1, text1]
       },
       {
-        objects: [text2, bg2]
+        objects: [bg2, text2]
       }
     ],
     type: LAYOUT_TYPES.COLLAGE.value,
@@ -1010,7 +1010,7 @@ const layouts = [
     },
     pages: [
       {
-        objects: [textSinglePage1, bgSinglePage1]
+        objects: [bgSinglePage1, textSinglePage1]
       }
     ],
     name: 'Single 1',
@@ -1029,7 +1029,7 @@ const layouts = [
     },
     pages: [
       {
-        objects: [textSinglePage2, bgSinglePage2]
+        objects: [bgSinglePage2, textSinglePage2]
       }
     ],
     name: 'Single 2',

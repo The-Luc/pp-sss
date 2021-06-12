@@ -1,4 +1,4 @@
-import { isEmpty } from '@/common/utils';
+import { isEmpty, mapObject } from '@/common/utils';
 
 import { ICON_LOCAL } from '@/common/constants';
 
@@ -51,21 +51,21 @@ export default {
     getStyle(cssStyle) {
       if (isEmpty(cssStyle)) return {};
 
-      const style = {};
+      const mapRules = {
+        data: {
+          fontSize: {
+            name: 'fontSize',
+            parse: value => {
+              const fontSize = parseInt(value, 10) / 3;
 
-      Object.keys(cssStyle).forEach(k => {
-        if (k !== 'fontSize') {
-          style[k] = cssStyle[k];
+              return `${fontSize > 50 ? 50 : fontSize}px`;
+            }
+          }
+        },
+        restrict: []
+      };
 
-          return;
-        }
-
-        const fontSize = parseInt(cssStyle[k], 10) / 3;
-
-        style[k] = `${fontSize > 50 ? 50 : fontSize}px`;
-      });
-
-      return style;
+      return mapObject(cssStyle, mapRules);
     }
   }
 };

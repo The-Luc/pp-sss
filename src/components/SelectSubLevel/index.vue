@@ -1,0 +1,32 @@
+<template>
+  <v-list class="pp-select-sub" @click.native="onSubContainerClick($event)">
+    <v-list-item
+      v-for="item in displayItems"
+      :key="item.id"
+      class="pp-select-sub--item"
+      :class="isSelected(item) && 'v-list-item--active'"
+      @click.native="onSubClick(item)"
+    >
+      <img
+        :style="{
+          visibility: isSelected(item) ? 'visible' : 'hidden'
+        }"
+        class="icon-ative"
+        :src="activeMenuIcon"
+        alt="icon-active"
+      />
+
+      <v-list-item-content>
+        <v-list-item-title>
+          <v-row no-gutters align="center">
+            <span>{{ item.name }}</span>
+          </v-row>
+        </v-list-item-title>
+      </v-list-item-content>
+    </v-list-item>
+  </v-list>
+</template>
+
+<script src="./script.js" />
+
+<style lang="scss" src="./style.scss" />

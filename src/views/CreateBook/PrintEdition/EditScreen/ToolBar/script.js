@@ -3,7 +3,7 @@ import ToolButton from '@/components/ToolButton';
 import ItemTool from './ItemTool';
 import { GETTERS, MUTATES } from '@/store/modules/app/const';
 import { GETTERS as BOOK_GETTERS } from '@/store/modules/book/const';
-import { OBJECT_TYPE, TOOL_NAME } from '@/common/constants';
+import { TOOL_NAME } from '@/common/constants';
 import { useLayoutPrompt } from '@/hooks';
 
 export default {
@@ -40,7 +40,7 @@ export default {
           {
             iconName: 'texture',
             title: 'Backgrounds',
-            name: 'backgrounds'
+            name: TOOL_NAME.BACKGROUNDS
           },
           {
             iconName: 'local_florist',
@@ -119,7 +119,6 @@ export default {
       ]
     };
   },
-  mounted() {},
   computed: {
     ...mapGetters({
       selectedObjectType: GETTERS.SELECTED_OBJECT_TYPE,
@@ -170,7 +169,9 @@ export default {
       if (!this.printThemeSelectedId) {
         return;
       }
+
       const toolName = this.selectedToolName === data?.name ? '' : data?.name;
+
       switch (data.name) {
         case TOOL_NAME.TEXT:
           this.addText();
@@ -185,6 +186,11 @@ export default {
           this.addImageBox();
           this.setToolNameSelected({
             name: TOOL_NAME.IMAGE_BOX
+          });
+          break;
+        case TOOL_NAME.BACKGROUNDS:
+          this.setToolNameSelected({
+            name: TOOL_NAME.BACKGROUNDS
           });
           break;
         default:

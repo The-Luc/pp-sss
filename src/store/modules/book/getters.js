@@ -4,6 +4,7 @@ import { pick } from 'lodash';
 import { DATE_FORMAT, MOMENT_TYPE } from '@/common/constants';
 import BOOK from './const';
 import {
+  isEmpty,
   getAllSheets,
   getDiffDaysFOM,
   getDiffMonths,
@@ -121,5 +122,31 @@ export const getters = {
     return objects[id]?.property[prop] || null;
   },
   [BOOK._GETTERS.TRIGGER_OBJECT_CHANGE]: ({ triggerObjectChange }) =>
-    triggerObjectChange
+    triggerObjectChange,
+  [BOOK._GETTERS.SHEET_BACKGROUNDS]: ({ book, objects }) => sheetId => {
+    const sheets = getAllSheets(book.sections);
+    const sheet = sheets.find(s => s.id === sheetId);
+
+    const pageData = sheet?.printData?.layout?.pages || null;
+
+    if (isEmpty(pageData)) return [];
+
+    const firstBackground = isEmpty(pageData[0].objects)
+      ? ''
+      : pageData[0].objects[0];
+    const secondBackground =
+      pageData.length > 1 && !isEmpty(pageData[1].objects)
+        ? pageData[1].objects[0]
+        : '';
+
+    const backgroundIds = [firstBackground, secondBackground];
+
+    return backgroundIds.filter(id => !isEmpty(id)).map(id => objects[id]);
+  },
+  [BOOK._GETTERS.SHEET_TYPE]: ({ book }) => sheetId => {
+    const sheets = getAllSheets(book.sections);
+    const sheet = sheets.find(s => s.id === sheetId);
+
+    return isEmpty(sheet) ? '' : sheet.type;
+  }
 };

@@ -1,0 +1,212 @@
+import { BackgroundElement } from '@/common/models';
+import { BACKGROUND_TYPE, BACKGROUND_PAGE_TYPE } from '@/common/constants';
+
+import THEME_1 from '@/assets/image/backgrounds/theme-1.png';
+import THEME_2 from '@/assets/image/backgrounds/theme-2.png';
+import THEME_3 from '@/assets/image/backgrounds/theme-3.png';
+import THEME_4 from '@/assets/image/backgrounds/theme-4.png';
+import THEME_5 from '@/assets/image/backgrounds/theme-5.png';
+import THEME_6 from '@/assets/image/backgrounds/theme-6.png';
+import THEME_7 from '@/assets/image/backgrounds/theme-7.png';
+
+import COLOR_1 from '@/assets/image/backgrounds/color-1.png';
+import COLOR_2 from '@/assets/image/backgrounds/color-2.png';
+import COLOR_3 from '@/assets/image/backgrounds/color-3.png';
+import COLOR_4 from '@/assets/image/backgrounds/color-4.png';
+import COLOR_5 from '@/assets/image/backgrounds/color-5.png';
+import COLOR_6 from '@/assets/image/backgrounds/color-6.png';
+import COLOR_7 from '@/assets/image/backgrounds/color-7.png';
+
+export const BACKGROUND_CATEGORIES = [
+  {
+    id: 0,
+    name: 'Abstract'
+  },
+  {
+    id: 1,
+    name: 'Cartoon'
+  },
+  {
+    id: 2,
+    name: 'Color'
+  },
+  {
+    id: 3,
+    name: 'Holiday'
+  },
+  {
+    id: 4,
+    name: 'USA'
+  }
+];
+
+export const BACKGROUNDS = [
+  {
+    ...BackgroundElement,
+    id: 0,
+    property: {
+      categoryId: 1,
+      type: BACKGROUND_TYPE.THEME.id,
+      pageType: BACKGROUND_PAGE_TYPE.FULL_PAGE.id,
+      name: 'Comic Too 1',
+      thumbnail: THEME_1,
+      imageUrl: THEME_1
+    }
+  },
+  {
+    ...BackgroundElement,
+    id: 1,
+    property: {
+      categoryId: 1,
+      type: BACKGROUND_TYPE.THEME.id,
+      pageType: BACKGROUND_PAGE_TYPE.FULL_PAGE.id,
+      name: 'Comic Too 2',
+      thumbnail: THEME_2,
+      imageUrl: THEME_2
+    }
+  },
+  {
+    ...BackgroundElement,
+    id: 2,
+    property: {
+      categoryId: 1,
+      type: BACKGROUND_TYPE.THEME.id,
+      pageType: BACKGROUND_PAGE_TYPE.FULL_PAGE.id,
+      name: 'Comic Too 3',
+      thumbnail: THEME_3,
+      imageUrl: THEME_3
+    }
+  },
+  {
+    ...BackgroundElement,
+    id: 3,
+    property: {
+      categoryId: 1,
+      type: BACKGROUND_TYPE.THEME.id,
+      pageType: BACKGROUND_PAGE_TYPE.FULL_PAGE.id,
+      name: 'Comic Too 4',
+      thumbnail: THEME_4,
+      imageUrl: THEME_4
+    }
+  },
+  {
+    ...BackgroundElement,
+    id: 4,
+    property: {
+      categoryId: 1,
+      type: BACKGROUND_TYPE.THEME.id,
+      pageType: BACKGROUND_PAGE_TYPE.FULL_PAGE.id,
+      name: 'Comic Too 5',
+      thumbnail: THEME_5,
+      imageUrl: THEME_5
+    }
+  },
+  {
+    ...BackgroundElement,
+    id: 5,
+    property: {
+      categoryId: 2,
+      type: BACKGROUND_TYPE.CATEGORY.id,
+      pageType: BACKGROUND_PAGE_TYPE.FULL_PAGE.id,
+      name: 'Color 1',
+      thumbnail: COLOR_1,
+      imageUrl: COLOR_1
+    }
+  },
+  {
+    ...BackgroundElement,
+    id: 6,
+    property: {
+      categoryId: 2,
+      type: BACKGROUND_TYPE.CATEGORY.id,
+      pageType: BACKGROUND_PAGE_TYPE.FULL_PAGE.id,
+      name: 'Color 2',
+      thumbnail: COLOR_2,
+      imageUrl: COLOR_2
+    }
+  },
+  {
+    ...BackgroundElement,
+    id: 7,
+    property: {
+      categoryId: 2,
+      type: BACKGROUND_TYPE.CATEGORY.id,
+      pageType: BACKGROUND_PAGE_TYPE.FULL_PAGE.id,
+      name: 'Color 3',
+      thumbnail: COLOR_3,
+      imageUrl: COLOR_3
+    }
+  },
+  {
+    ...BackgroundElement,
+    id: 8,
+    property: {
+      categoryId: 2,
+      type: BACKGROUND_TYPE.CATEGORY.id,
+      pageType: BACKGROUND_PAGE_TYPE.FULL_PAGE.id,
+      name: 'Color 4',
+      thumbnail: COLOR_4,
+      imageUrl: COLOR_4
+    }
+  },
+  {
+    ...BackgroundElement,
+    id: 9,
+    property: {
+      categoryId: 2,
+      type: BACKGROUND_TYPE.CATEGORY.id,
+      pageType: BACKGROUND_PAGE_TYPE.FULL_PAGE.id,
+      name: 'Color 5',
+      thumbnail: COLOR_5,
+      imageUrl: COLOR_5
+    }
+  },
+  {
+    ...BackgroundElement,
+    id: 10,
+    property: {
+      categoryId: 2,
+      type: BACKGROUND_TYPE.CATEGORY.id,
+      pageType: BACKGROUND_PAGE_TYPE.SINGLE_PAGE.id,
+      name: 'Color 6',
+      thumbnail: COLOR_6,
+      imageUrl: COLOR_6
+    }
+  },
+  {
+    ...BackgroundElement,
+    id: 11,
+    property: {
+      categoryId: 2,
+      type: BACKGROUND_TYPE.CATEGORY.id,
+      pageType: BACKGROUND_PAGE_TYPE.SINGLE_PAGE.id,
+      name: 'Color 7',
+      thumbnail: COLOR_7,
+      imageUrl: COLOR_7
+    }
+  },
+  {
+    ...BackgroundElement,
+    id: 12,
+    property: {
+      categoryId: 1,
+      type: BACKGROUND_TYPE.THEME.id,
+      pageType: BACKGROUND_PAGE_TYPE.SINGLE_PAGE.id,
+      name: 'Category - 6',
+      thumbnail: THEME_6,
+      imageUrl: THEME_6
+    }
+  },
+  {
+    ...BackgroundElement,
+    id: 13,
+    property: {
+      categoryId: 1,
+      type: BACKGROUND_TYPE.THEME.id,
+      pageType: BACKGROUND_PAGE_TYPE.SINGLE_PAGE.id,
+      name: 'Category - 7',
+      thumbnail: THEME_7,
+      imageUrl: THEME_7
+    }
+  }
+];

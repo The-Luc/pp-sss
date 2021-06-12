@@ -3,7 +3,7 @@ import { fabric } from 'fabric';
 
 import {
   LINK_STATUS,
-  SHEET_TYPES,
+  SHEET_TYPE,
   IMAGE_LOCAL,
   ROUTE_NAME
 } from '@/common/constants';
@@ -80,7 +80,7 @@ export default {
     this.image =
       this.sheet.printData.thumbnailUrl || IMAGE_LOCAL.BACKGROUND_WHITE;
     this.LINK_STATUS = LINK_STATUS;
-    this.SHEET_TYPES = SHEET_TYPES;
+    this.SHEET_TYPE = SHEET_TYPE;
   },
   mounted() {
     const refs = this.$refs[`thumbnail${this.sheet.id}`];

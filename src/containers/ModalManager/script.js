@@ -13,6 +13,7 @@ import GanttChartModal from '@/views/CreateBook/Manager/Summary/SummaryInfo/Prog
 import EmptySection from '@/containers/ModalEmptySection';
 import SelectTheme from '@/views/CreateBook/PrintEdition/EditScreen/Modal';
 import ModalSelectPage from '@/views/CreateBook/PrintEdition/EditScreen/PageEdition/ModalSelectPage';
+import ModalBackgroundSelectPage from '@/containers/ToolPopoverManager/Backgrounds/ModalSelectPage';
 
 const {
   HELP,
@@ -21,7 +22,8 @@ const {
   EMPTY_SECTION,
   SELECT_THEME,
   GANTT_CHART,
-  SELECT_PAGE
+  SELECT_PAGE,
+  BACKGROUND_SELECT_PAGE
 } = MODAL_TYPES;
 
 const ModalList = {
@@ -31,7 +33,8 @@ const ModalList = {
   [EMPTY_SECTION]: EMPTY_SECTION,
   [SELECT_THEME]: SELECT_THEME,
   [GANTT_CHART]: GANTT_CHART,
-  [SELECT_PAGE]: SELECT_PAGE
+  [SELECT_PAGE]: SELECT_PAGE,
+  [BACKGROUND_SELECT_PAGE]: BACKGROUND_SELECT_PAGE
 };
 
 export default {
@@ -47,7 +50,8 @@ export default {
     [MODAL_TYPES.EMPTY_SECTION]: EmptySection,
     [MODAL_TYPES.SELECT_THEME]: SelectTheme,
     [MODAL_TYPES.GANTT_CHART]: GanttChartModal,
-    [MODAL_TYPES.SELECT_PAGE]: ModalSelectPage
+    [MODAL_TYPES.SELECT_PAGE]: ModalSelectPage,
+    [MODAL_TYPES.BACKGROUND_SELECT_PAGE]: ModalBackgroundSelectPage
   },
   computed: {
     ...mapGetters({
