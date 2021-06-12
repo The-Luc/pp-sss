@@ -1,7 +1,7 @@
 <template>
   <div class="background-properties-container">
     <Properties title="Background Properties">
-      <OpacityProp :value="selectedOpacity" @change="onChangeOpacity" />
+      <OpacityProp :value="selectedOpacityValue" @change="onChangeOpacity" />
 
       <div class="group-container">
         <FlipProp />

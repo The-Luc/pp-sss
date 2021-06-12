@@ -10,7 +10,11 @@ import {
   MUTATES as APP_MUTATES,
   GETTERS as APP_GETTERS
 } from '@/store/modules/app/const';
-import { OBJECT_TYPE, TOOL_NAME } from '@/common/constants';
+import {
+  OBJECT_TYPE,
+  TOOL_NAME,
+  DEFAULT_FABRIC_BACKGROUND
+} from '@/common/constants';
 import { scaleSize } from '@/common/utils';
 
 export const useLayoutPrompt = () => {
@@ -129,14 +133,16 @@ const handleDrawBackgroundLayout = (
     const { width, height } = targetCanvas;
     const zoom = targetCanvas.getZoom();
 
-    img.selectable = false;
     img.left = position === 'right' ? width / zoom / 2 : 0;
     img.scaleX = width / zoom / img.width / 2;
     img.scaleY = height / zoom / img.height;
 
     img.objectType = OBJECT_TYPE.BACKGROUND;
     img.pageType = backrgoundObj?.property?.pageType;
+    img.opacity = 1;
     img.isLeftPage = position !== 'right';
+
+    img.set(DEFAULT_FABRIC_BACKGROUND);
 
     targetCanvas.add(img);
     handleDrawTextLayout(pageData, position, targetCanvas, objects);

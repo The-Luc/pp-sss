@@ -1,6 +1,6 @@
 import { mapGetters, mapMutations } from 'vuex';
 import { fabric } from 'fabric';
-import { cloneDeep, uniqueId } from 'lodash';
+import { cloneDeep, uniqueId, merge } from 'lodash';
 
 import { useDrawLayout } from '@/hooks';
 import { startDrawBox } from '@/common/fabricObjects/drawingBox';
@@ -11,7 +11,7 @@ import {
   toFabricImageProp,
   selectLatestObject,
   deleteSelectedObjects,
-  scaleSize
+  toFabricBackgroundProp
 } from '@/common/utils';
 import {
   createTextBox,
@@ -28,7 +28,8 @@ import {
   HALF_LEFT,
   FABRIC_OBJECT_TYPE,
   OBJECT_TYPE,
-  BACKGROUND_PAGE_TYPE
+  BACKGROUND_PAGE_TYPE,
+  DEFAULT_FABRIC_BACKGROUND
 } from '@/common/constants';
 import SizeWrapper from '@/components/SizeWrapper';
 import PrintCanvasLines from './PrintCanvasLines';
@@ -131,8 +132,10 @@ export default {
       setSelectedObjectId: BOOK_MUTATES.SET_SELECTED_OBJECT_ID,
       addNewObject: BOOK_MUTATES.ADD_OBJECT,
       setObjectProp: BOOK_MUTATES.SET_PROP,
-      updateTriggerChange: BOOK_MUTATES.UPDATE_TRIGGER_TEXT_CHANGE,
-      addNewBackground: BOOK_MUTATES.ADD_BACKGROUND
+      updateTriggerTextChange: BOOK_MUTATES.UPDATE_TRIGGER_TEXT_CHANGE,
+      addNewBackground: BOOK_MUTATES.ADD_BACKGROUND,
+      updateTriggerBackgroundChange:
+        BOOK_MUTATES.UPDATE_TRIGGER_BACKGROUND_CHANGE
     }),
     /**
      * Auto resize canvas to fit the container size
@@ -244,6 +247,10 @@ export default {
         this.addBackground({ background, isLeft });
       });
 
+      this.$root.$on('printChangeBackgroundProperties', prop => {
+        this.changeBackgroundProperties(prop);
+      });
+
       document.body.addEventListener('keyup', this.handleDeleteKey);
     },
     /**
@@ -260,17 +267,26 @@ export default {
      */
     handleDeleteKey(event) {
       const key = event.keyCode || event.charCode;
+
       if (event.target === document.body && (key == 8 || key == 46)) {
         deleteSelectedObjects(window.printCanvas);
       }
     },
     /**
      * Open text properties modal and set default properties
+     *
+     * @param {String}  objectType  type of selected object
      */
-    openProperties(isRequireTrigger = false) {
+    openProperties(objectType) {
       this.setIsOpenProperties({ isOpen: true });
 
-      if (isRequireTrigger) this.updateTriggerChange();
+      if (objectType === OBJECT_TYPE.TEXT) {
+        this.updateTriggerTextChange();
+      }
+
+      if (objectType === OBJECT_TYPE.BACKGROUND) {
+        this.updateTriggerBackgroundChange();
+      }
     },
     /**
      * Reset configs text properties when close object
@@ -341,7 +357,7 @@ export default {
      *
      * @param {Object}  target  the selected object
      */
-    objectSelected: function({ target }) {
+    objectSelected({ target }) {
       if (this.awaitingAdd) {
         return;
       }
@@ -363,7 +379,7 @@ export default {
       window.printCanvas.preserveObjectStacking =
         objectType === OBJECT_TYPE.BACKGROUND;
 
-      this.openProperties(objectType === OBJECT_TYPE.TEXT);
+      this.openProperties(objectType);
     },
     /**
      * Event fire when user click on Text button on Toolbar to add new text on canvas
@@ -452,14 +468,13 @@ export default {
 
       const newBackground = cloneDeep(BackgroundElement);
 
+      merge(newBackground, background);
+
       this.addNewBackground({
         id,
         sheetId: this.pageSelected.id,
         isLeft,
-        newBackground: {
-          ...newBackground,
-          ...background
-        }
+        newBackground
       });
 
       const { width, height } = window.printCanvas;
@@ -499,34 +514,51 @@ export default {
 
       const scaleX = isAddingFullBackground ? 1 : 2;
 
-      const fabricProp = {
-        id,
-        left: !isAddToLeft ? width / zoom / 2 : 0,
-        objectType: background.type,
-        pageType: background.property.pageType,
-        isLeftPage: isAddToLeft,
-        opacity: background.property.opacity,
-        hoverCursor: 'default',
-        hasBorders: false,
-        hasControls: false,
-        lockRotation: true,
-        lockScalingX: true,
-        lockScalingY: true,
-        lockMovementX: true,
-        lockMovementY: true
-      };
+      const fabricProp = toFabricBackgroundProp(newBackground);
 
       fabric.Image.fromURL(background.property.imageUrl, img => {
         img.set({
           ...fabricProp,
+          id,
+          left: !isAddToLeft ? width / zoom / 2 : 0,
+          isLeftPage: isAddToLeft,
           scaleX: width / zoom / img.width / scaleX,
-          scaleY: height / zoom / img.height
+          scaleY: height / zoom / img.height,
+          ...DEFAULT_FABRIC_BACKGROUND
         });
 
         window.printCanvas.add(img);
 
         window.printCanvas.sendToBack(img);
       });
+    },
+    /**
+     * Event fire when user change any property of selected background
+     *
+     * @param {Object}  prop  new prop
+     */
+    changeBackgroundProperties(prop) {
+      if (isEmpty(prop)) {
+        this.updateTriggerBackgroundChange();
+
+        return;
+      }
+
+      const activeObj = window.printCanvas.getActiveObject();
+
+      if (isEmpty(activeObj)) return;
+
+      this.setObjectProp({ id: this.selectedObjectId, property: prop });
+
+      this.updateTriggerBackgroundChange();
+
+      const fabricProp = toFabricBackgroundProp(prop);
+
+      Object.keys(fabricProp).forEach(k => {
+        activeObj.set(k, fabricProp[k]);
+      });
+
+      window.printCanvas.renderAll();
     }
   }
 };

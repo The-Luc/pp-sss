@@ -445,7 +445,7 @@ export const mutations = {
     state.objects[id] = newObject;
   },
   [BOOK._MUTATES.UPDATE_TRIGGER_TEXT_CHANGE](state) {
-    state.triggerObjectChange = !state.triggerObjectChange;
+    state.triggerTextChange = !state.triggerTextChange;
   },
   [BOOK._MUTATES.ADD_BACKGROUND](
     state,
@@ -519,5 +519,8 @@ export const mutations = {
     sheet.printData.layout.pages[pageIndex].objects.unshift(id);
 
     state.objects[id] = newBackground;
+  },
+  [BOOK._MUTATES.UPDATE_TRIGGER_BACKGROUND_CHANGE](state) {
+    state.triggerBackgroundChange = !state.triggerBackgroundChange;
   }
 };

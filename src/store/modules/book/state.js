@@ -18,5 +18,6 @@ export const state = {
   pageSelected,
   sectionId: 1,
   objectSelectedId: '',
-  triggerObjectChange: false
+  triggerTextChange: false,
+  triggerBackgroundChange: false
 };

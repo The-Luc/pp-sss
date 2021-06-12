@@ -20,20 +20,30 @@ export default {
   computed: {
     ...mapGetters({
       selectedId: GETTERS.SELECTED_OBJECT_ID,
-      selectedOpacity: GETTERS.PROP_OBJECT_BY_ID
+      selectedOpacity: GETTERS.PROP_OBJECT_BY_ID,
+      triggerChange: GETTERS.TRIGGER_BACKGROUND_CHANGE
     }),
-    selectedOpacity() {
-      return 100;
+    selectedOpacityValue() {
+      if (this.triggerChange) {
+        // just for trigger the change
+      }
+
+      const opacity = this.selectedOpacity({
+        id: this.selectedId,
+        prop: 'opacity'
+      });
+
+      return opacity * 100;
     }
   },
   methods: {
     /**
-     * Fire when opacity is changed from child component
+     * Fire when opacity is changed from opacity component
      *
-     * @param {Number}  data the data from child
+     * @param {Number}  data opacity data
      */
     onChangeOpacity(data) {
-      this.$root.$emit('printChangeTextProperties', {
+      this.$root.$emit('printChangeBackgroundProperties', {
         opacity: data / 100
       });
     }
