@@ -9,5 +9,13 @@ export default {
     return {
       options: BORDER_STYLE
     };
+  },
+  methods: {
+    //TODO later
+    onChange(val) {
+      // parse dash array
+      console.log('val', val);
+      // emit
+    }
   }
 };

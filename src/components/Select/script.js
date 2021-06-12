@@ -28,7 +28,7 @@ export default {
       type: Boolean,
       default: false
     },
-    isBorder: {
+    isImgOpts: {
       type: Boolean,
       default: false
     }
