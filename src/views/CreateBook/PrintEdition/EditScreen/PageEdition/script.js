@@ -13,6 +13,10 @@ import {
   selectLatestObject,
   deleteSelectedObjects
 } from '@/common/utils';
+import {
+  createTextBox,
+  applyTextBoxProperties
+} from '@/common/fabricObjects/textbox';
 
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
 import { GETTERS, MUTATES as BOOK_MUTATES } from '@/store/modules/book/const';
@@ -286,40 +290,57 @@ export default {
      * Event fire when user click on Text button on Toolbar to add new text on canvas
      */
     addText: function(x, y, width, height) {
-      const newText = cloneDeep(TextElement);
-      const id = uniqueId();
-      this.addNewObject({
-        id,
-        type: OBJECT_TYPE.TEXT,
-        newObject: {
-          ...newText,
-          coord: {
-            ...newText.coord,
-            x,
-            y
-          },
-          property: {
-            ...newText.property,
-            text: DEFAULT_TEXT.TEXT
-          }
-        }
-      });
+      const { object, data } = createTextBox(x, y, width, height);
+      // const newText = cloneDeep(TextElement);
+      // const id = uniqueId();
+      this.addNewObject(data);
 
-      const fabricProp = toFabricTextProp(newText);
+      // const fabricProp = toFabricTextProp(newText);
 
-      const text = new fabric.Textbox(DEFAULT_TEXT.TEXT, {
-        ...fabricProp,
-        id,
-        lockUniScaling: DEFAULT_TEXT.LOCK_UNI_SCALE,
-        left: x,
-        top: y,
-        width,
-        cornerSize: 11
-      });
+      // const text = new fabric.Textbox(DEFAULT_TEXT.TEXT, {
+      //   ...fabricProp,
+      //   id,
+      //   left: 0,
+      //   top: 0,
+      //   width,
+      //   originX: 'center',
+      //   originY: 'center'
+      //   // cornerSize: 11
+      // });
 
-      text.set('height', height);
+      // text.height = height;
 
-      window.printCanvas.add(text);
+      // const rect = new fabric.Rect({
+      //   width: width, height: height,
+      //   fill: false,
+      //   stroke: '#000',
+      //   left: 0,
+      //   top: 0,
+      //   originX: 'center',
+      //   originY: 'center'
+      // });
+
+      // const group = new fabric.Group(
+      //   [rect, text], {
+      //   left: x, top: y,
+      // });
+
+      // group.on('scaling', e => {
+      //   const target = e.transform?.target;
+      //   if (target) {
+      //     const newData = {
+      //       left: 0,
+      //       top: 0,
+      //       width: target.width,
+      //       height: target.height
+      //     };
+      //     text.set(newData);
+      //     text.set('height', target.height);
+      //     rect.set(newData);
+      //   }
+      // });
+
+      window.printCanvas.add(object);
       setTimeout(() => {
         selectLatestObject(window.printCanvas);
       });
@@ -383,70 +404,72 @@ export default {
 
       this.updateTriggerChange();
 
-      const fabricProp = toFabricTextProp(prop);
-      Object.keys(fabricProp).forEach(k => {
-        activeObj.set(k, fabricProp[k]);
-      });
+      applyTextBoxProperties(activeObj, prop);
 
-      if (prop['fontSize']) {
-        const lineSpacing = this.selectedProp({
-          id: this.selectedObjectId,
-          prop: 'lineSpacing'
-        });
-        const value =
-          lineSpacing === 0 || lineSpacing === null
-            ? 1
-            : lineSpacing / (DEFAULT_SPACING.VALUE * prop['fontSize']);
-        activeObj.set('lineHeight', value);
-      }
+      // const fabricProp = toFabricTextProp(prop);
+      // Object.keys(fabricProp).forEach(k => {
+      //   activeObj.set(k, fabricProp[k]);
+      // });
 
-      if (prop['lineSpacing'] || prop['lineSpacing'] === 0) {
-        const fontSize = this.selectedProp({
-          id: this.selectedObjectId,
-          prop: 'fontSize'
-        });
-        const value =
-          prop['lineSpacing'] === 0
-            ? 1
-            : prop['lineSpacing'] / (DEFAULT_SPACING.VALUE * fontSize);
-        activeObj.set('lineHeight', value);
-      }
-      if (isEmpty(prop['textCase'])) {
-        window.printCanvas.renderAll();
-        return;
-      }
+      // if (prop['fontSize']) {
+      //   const lineSpacing = this.selectedProp({
+      //     id: this.selectedObjectId,
+      //     prop: 'lineSpacing'
+      //   });
+      //   const value =
+      //     lineSpacing === 0 || lineSpacing === null
+      //       ? 1
+      //       : lineSpacing / (DEFAULT_SPACING.VALUE * prop['fontSize']);
+      //   activeObj.set('lineHeight', value);
+      // }
 
-      const text =
-        this.selectedProp({ id: this.selectedObjectId, prop: 'text' }) || '';
+      // if (prop['lineSpacing'] || prop['lineSpacing'] === 0) {
+      //   const fontSize = this.selectedProp({
+      //     id: this.selectedObjectId,
+      //     prop: 'fontSize'
+      //   });
+      //   const value =
+      //     prop['lineSpacing'] === 0
+      //       ? 1
+      //       : prop['lineSpacing'] / (DEFAULT_SPACING.VALUE * fontSize);
+      //   activeObj.set('lineHeight', value);
+      // }
+      // if (isEmpty(prop['textCase'])) {
+      //   window.printCanvas.renderAll();
+      //   return;
+      // }
 
-      if (isEmpty(text)) {
-        window.printCanvas.renderAll();
-        return;
-      }
+      // const text =
+      //   this.selectedProp({ id: this.selectedObjectId, prop: 'text' }) || '';
 
-      if (prop['textCase'] === TEXT_CASE.NONE) {
-        activeObj.set('text', text);
-      }
+      // if (isEmpty(text)) {
+      //   window.printCanvas.renderAll();
+      //   return;
+      // }
 
-      if (prop['textCase'] === TEXT_CASE.UPPER) {
-        activeObj.set('text', text.toUpperCase());
-      }
+      // if (prop['textCase'] === TEXT_CASE.NONE) {
+      //   activeObj.set('text', text);
+      // }
 
-      if (prop['textCase'] === TEXT_CASE.LOWER) {
-        activeObj.set('text', text.toLowerCase());
-      }
+      // if (prop['textCase'] === TEXT_CASE.UPPER) {
+      //   activeObj.set('text', text.toUpperCase());
+      // }
 
-      if (prop['textCase'] === TEXT_CASE.CAPITALIZE) {
-        const changedText = text
-          .split(' ')
-          .map(t => {
-            return `${t.charAt(0).toUpperCase()}${t.toLowerCase().slice(1)}`;
-          })
-          .join(' ');
+      // if (prop['textCase'] === TEXT_CASE.LOWER) {
+      //   activeObj.set('text', text.toLowerCase());
+      // }
 
-        activeObj.set('text', changedText);
-      }
-      window.printCanvas.renderAll();
+      // if (prop['textCase'] === TEXT_CASE.CAPITALIZE) {
+      //   const changedText = text
+      //     .split(' ')
+      //     .map(t => {
+      //       return `${t.charAt(0).toUpperCase()}${t.toLowerCase().slice(1)}`;
+      //     })
+      //     .join(' ');
+
+      //   activeObj.set('text', changedText);
+      // }
+      // window.printCanvas.renderAll();
     }
   }
 };

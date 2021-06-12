@@ -304,6 +304,39 @@ export const toFabricTextProp = prop => {
 };
 
 /**
+ * Convert stored text border properties to fabric properties
+ *
+ * @param   {Object}  style stored text border properties
+ * @returns {Object}        fabric properties
+ */
+export const toFabricTextBorderProp = prop => {
+  const mapRules = {
+    data: {
+      x: {
+        name: 'left',
+        parse: value => scaleSize(value)
+      },
+      y: {
+        name: 'top',
+        parse: value => scaleSize(value)
+      },
+      fill: {
+        name: 'fill'
+      },
+      stroke: {
+        name: 'stroke'
+      },
+      opacity: {
+        name: 'opacity'
+      }
+    },
+    restrict: ['id', 'shadow']
+  };
+
+  return mapObject(prop, mapRules);
+};
+
+/**
  * Convert stored image properties to fabric properties
  *
  * @param   {Object}  prop stored image properties
