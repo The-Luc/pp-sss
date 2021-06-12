@@ -76,7 +76,12 @@ export const TextElement = {
     letterSpacing: DEFAULT_TEXT.LETTER_SPACING,
     lineSpacing: DEFAULT_TEXT.LINE_SPACING, // 1.2 * em
     lineHeight: DEFAULT_TEXT.LINE_HEIGHT,
-    column: DEFAULT_TEXT.COLUMN
+    column: DEFAULT_TEXT.COLUMN,
+    opacity: DEFAULT_TEXT.OPACITY,
+    border: {
+      fill: DEFAULT_TEXT.BORDER.FILL,
+      stroke: DEFAULT_TEXT.BORDER.STROKE
+    }
   }
 };
 

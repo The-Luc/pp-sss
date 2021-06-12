@@ -2,6 +2,7 @@
   <div class="thickness-container">
     <label class="properties-title">Thickness:</label>
     <PpCombobox
+      :key="componentKey"
       :items="items"
       :nudge-width="76"
       :appended-icon="appendedIcon"

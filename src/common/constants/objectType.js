@@ -3,7 +3,8 @@ export const OBJECT_TYPE = {
   IMAGE: 'ImageObject',
   BACKGROUND: 'BackgroundObject',
   CLIP_ART: 'ClipArtObject',
-  SHAPE: 'ShapeObject'
+  SHAPE: 'ShapeObject',
+  RECT: 'RectObject'
 };
 
 export const FABRIC_OBJECT_TYPE = {

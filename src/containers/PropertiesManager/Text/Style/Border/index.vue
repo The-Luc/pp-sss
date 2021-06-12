@@ -9,7 +9,7 @@
     <div v-if="isShowStyle" class="border-setting-container">
       <BorderStyle />
       <BorderColor />
-      <BorderThickness />
+      <BorderThickness @change="onChangeThickness" />
     </div>
   </div>
 </template>

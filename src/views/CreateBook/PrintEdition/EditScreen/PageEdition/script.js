@@ -6,27 +6,28 @@ import { useDrawLayout } from '@/hooks';
 import { startDrawBox } from '@/common/fabricObjects/drawingBox';
 import {
   isEmpty,
-  toFabricTextProp,
   getCoverPagePrintSize,
   getPagePrintSize,
   toFabricImageProp,
   selectLatestObject,
-  deleteSelectedObjects
+  deleteSelectedObjects,
+  scaleSize
 } from '@/common/utils';
+import {
+  createTextBox,
+  applyTextBoxProperties
+} from '@/common/fabricObjects/textbox';
 
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
 import { GETTERS, MUTATES as BOOK_MUTATES } from '@/store/modules/book/const';
 
-import { ImageElement, TextElement, BackgroundElement } from '@/common/models';
+import { ImageElement, BackgroundElement } from '@/common/models';
 import {
   SHEET_TYPE,
   HALF_SHEET,
   HALF_LEFT,
-  TEXT_CASE,
-  DEFAULT_TEXT,
   FABRIC_OBJECT_TYPE,
   OBJECT_TYPE,
-  DEFAULT_SPACING,
   BACKGROUND_PAGE_TYPE
 } from '@/common/constants';
 import SizeWrapper from '@/components/SizeWrapper';
@@ -47,7 +48,9 @@ export default {
       awaitingAdd: '',
       origX: 0,
       origY: 0,
-      currentRect: null
+      currentRect: null,
+      rectObj: null,
+      groupSelected: null
     };
   },
   computed: {
@@ -263,11 +266,47 @@ export default {
      * Close text properties modal
      */
     closeProperties() {
-      this.setIsOpenProperties({ isOpen: false });
-
-      this.setObjectTypeSelected({ type: '' });
-
+      if (this.rectObj) {
+        // Reset stroke when click outside object
+        this.rectObj.set({
+          strokeWidth: 0
+        });
+        this.rectObj = null;
+      }
+      // this.groupSelected = null;
+      this.setIsOpenProperties({
+        isOpen: false
+      });
+      this.setObjectTypeSelected({
+        type: ''
+      });
       this.setSelectedObjectId({ id: '' });
+    },
+    //TODO later
+    setBorderObject: function(rectObj, groupSize, objectData) {
+      // this.rectObj = rectObj;
+      console.log('rectObj', rectObj);
+      console.log('groupSize', groupSize);
+      console.log('objectData', objectData);
+      const { strokeWidth, stroke } = objectData;
+      const { width, height } = groupSize;
+      rectObj.set({
+        height: height - strokeWidth,
+        width: width - strokeWidth,
+        strokeWidth,
+        stroke: 'red'
+      });
+    },
+    /**
+     * Set border color when selected group object
+     *
+     * @param {Element}  group  Group object
+     */
+    setBorderHighLight: function(group) {
+      const layout = this.selectedLayout(this.pageSelected.id);
+      group.set({
+        borderColor: layout?.id ? 'white' : '#bcbec0'
+      });
     },
     /**
      * Event fired when an object of canvas is selected
@@ -278,13 +317,27 @@ export default {
       if (this.awaitingAdd) {
         return;
       }
-
-      const { id } = target;
+      const { id, width, height } = target;
+      const targetType = target.get('type');
 
       this.setSelectedObjectId({ id });
+      this.setBorderHighLight(target);
 
-      const objectType = this.selectedObject(this.selectedObjectId)?.type;
-
+      const objectData = this.selectedObject(this.selectedObjectId);
+      console.log('objectData', objectData);
+      if (targetType === 'group') {
+        const rectObj = target.getObjects(OBJECT_TYPE.RECT)[0];
+        this.setBorderObject(
+          rectObj,
+          {
+            width,
+            height
+          },
+          objectData
+        );
+      }
+      const objectType = objectData?.type;
+      console.log('objectType', objectType);
       if (isEmpty(objectType)) return;
 
       this.setObjectTypeSelected({ type: objectType });
@@ -298,44 +351,36 @@ export default {
      * Event fire when user click on Text button on Toolbar to add new text on canvas
      */
     addText: function(x, y, width, height) {
-      const newText = cloneDeep(TextElement);
-      const id = uniqueId();
-      this.addNewObject({
-        id,
-        type: OBJECT_TYPE.TEXT,
-        newObject: {
-          ...newText,
-          coord: {
-            ...newText.coord,
-            x,
-            y
-          },
-          property: {
-            ...newText.property,
-            text: DEFAULT_TEXT.TEXT
-          }
-        }
-      });
+      const { object, data } = createTextBox(x, y, width, height);
+      this.groupSelected = object;
+      this.addNewObject(data);
 
-      const fabricProp = toFabricTextProp(newText);
-
-      const text = new fabric.Textbox(DEFAULT_TEXT.TEXT, {
-        ...fabricProp,
-        id,
-        lockUniScaling: DEFAULT_TEXT.LOCK_UNI_SCALE,
-        left: x,
-        top: y,
-        width,
-        cornerSize: 11
-      });
-
-      text.set('height', height);
-
-      window.printCanvas.add(text);
+      window.printCanvas.add(object);
 
       setTimeout(() => {
         selectLatestObject(window.printCanvas);
       });
+    },
+    /**
+     * Event fire when user change any property of selected text on the Text Properties
+     *
+     * @param {Object}  style  new style
+     */
+    changeTextProperties: function(prop) {
+      if (isEmpty(prop)) {
+        this.updateTriggerChange();
+
+        return;
+      }
+      const activeObj = window.printCanvas.getActiveObject();
+
+      if (isEmpty(activeObj)) return;
+
+      this.setObjectProp({ id: this.selectedObjectId, property: prop });
+
+      this.updateTriggerChange();
+
+      applyTextBoxProperties(activeObj, prop, this.groupSelected);
     },
     /**
      * Event fire when user click on Image button on Toolbar to add new image on canvas
@@ -464,95 +509,6 @@ export default {
 
         window.printCanvas.sendToBack(img);
       });
-    },
-    /**
-     * Event fire when user change any property of selected text on the Text Properties
-     *
-     * @param {Object}  style  new style
-     */
-    changeTextProperties: function(prop) {
-      if (isEmpty(prop)) {
-        this.updateTriggerChange();
-
-        return;
-      }
-      const activeObj = window.printCanvas.getActiveObject();
-
-      if (isEmpty(activeObj)) return;
-
-      this.setObjectProp({ id: this.selectedObjectId, property: prop });
-
-      this.updateTriggerChange();
-
-      const fabricProp = toFabricTextProp(prop);
-
-      Object.keys(fabricProp).forEach(k => {
-        activeObj.set(k, fabricProp[k]);
-      });
-
-      if (prop['fontSize']) {
-        const lineSpacing = this.selectedProp({
-          id: this.selectedObjectId,
-          prop: 'lineSpacing'
-        });
-        const value =
-          lineSpacing === 0 || lineSpacing === null
-            ? 1
-            : lineSpacing / (DEFAULT_SPACING.VALUE * prop['fontSize']);
-        activeObj.set('lineHeight', value);
-      }
-
-      if (prop['lineSpacing'] || prop['lineSpacing'] === 0) {
-        const fontSize = this.selectedProp({
-          id: this.selectedObjectId,
-          prop: 'fontSize'
-        });
-        const value =
-          prop['lineSpacing'] === 0
-            ? 1
-            : prop['lineSpacing'] / (DEFAULT_SPACING.VALUE * fontSize);
-        activeObj.set('lineHeight', value);
-      }
-
-      if (isEmpty(prop['textCase'])) {
-        window.printCanvas.renderAll();
-
-        return;
-      }
-
-      const text =
-        this.selectedProp({ id: this.selectedObjectId, prop: 'text' }) || '';
-
-      if (isEmpty(text)) {
-        window.printCanvas.renderAll();
-
-        return;
-      }
-
-      if (prop['textCase'] === TEXT_CASE.NONE) {
-        activeObj.set('text', text);
-      }
-
-      if (prop['textCase'] === TEXT_CASE.UPPER) {
-        activeObj.set('text', text.toUpperCase());
-      }
-
-      if (prop['textCase'] === TEXT_CASE.LOWER) {
-        activeObj.set('text', text.toLowerCase());
-      }
-
-      if (prop['textCase'] === TEXT_CASE.CAPITALIZE) {
-        const changedText = text
-          .split(' ')
-          .map(t => {
-            return `${t.charAt(0).toUpperCase()}${t.toLowerCase().slice(1)}`;
-          })
-          .join(' ');
-
-        activeObj.set('text', changedText);
-      }
-
-      window.printCanvas.renderAll();
     }
   }
 };
