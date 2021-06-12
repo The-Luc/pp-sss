@@ -23,11 +23,13 @@ export default {
       if (this.triggerChange) {
         // just for trigger the change
       }
-      let border = {};
-      if (this.colorPickerProps.tabActive === 'style') {
-        border = this.selectedColor({ id: this.selectedId, prop: 'border' });
+      const isTabStyle = this.colorPickerProps.tabActive === 'style';
+      const border = isTabStyle
+        ? this.selectedColor({ id: this.selectedId, prop: 'border' })
+        : {};
+      if (isTabStyle) {
         this.setColorPickerColor({
-          stroke: border?.stroke
+          color: border?.stroke || '#000000'
         });
       }
       return border?.stroke || '#000000';
