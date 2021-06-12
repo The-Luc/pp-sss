@@ -31,13 +31,15 @@ import {
   BACKGROUND_PAGE_TYPE
 } from '@/common/constants';
 import SizeWrapper from '@/components/SizeWrapper';
+import PrintCanvasLines from './PrintCanvasLines';
 import PageWrapper from './PageWrapper';
 import { useDrawControls } from '@/plugins/fabric';
 
 export default {
   components: {
     PageWrapper,
-    SizeWrapper
+    SizeWrapper,
+    PrintCanvasLines
   },
   setup() {
     const { drawLayout } = useDrawLayout();
@@ -45,6 +47,9 @@ export default {
   },
   data() {
     return {
+      containerSize: null,
+      canvasSize: null,
+      printSize: null,
       awaitingAdd: '',
       origX: 0,
       origY: 0,
@@ -104,6 +109,7 @@ export default {
             .discardActiveObject()
             .remove(...window.printCanvas.getObjects())
             .renderAll();
+          this.updateCanvasSize();
           const layoutData = val?.printData?.layout;
           const objects = this.getObjectsBySheetId(val.id);
           this.drawLayout(layoutData, objects);
@@ -128,25 +134,25 @@ export default {
     }),
     /**
      * Auto resize canvas to fit the container size
-     * @param {Object} containerSize - the size object
      */
-    updateCanvasSize(containerSize) {
-      const printSize = this.isCover
+    updateCanvasSize() {
+      this.printSize = this.isCover
         ? getCoverPagePrintSize(this.isHardCover, this.book.totalPages)
         : getPagePrintSize();
       const canvasSize = {
         width: 0,
         height: 0
       };
-      const { ratio: printRatio, sheetWidth } = printSize.pixels;
-      if (containerSize.ratio > printRatio) {
-        canvasSize.height = containerSize.height;
+      const { ratio: printRatio, sheetWidth } = this.printSize.pixels;
+      if (this.containerSize.ratio > printRatio) {
+        canvasSize.height = this.containerSize.height;
         canvasSize.width = canvasSize.height * printRatio;
       } else {
-        canvasSize.width = containerSize.width;
+        canvasSize.width = this.containerSize.width;
         canvasSize.height = canvasSize.width / printRatio;
       }
       const currentZoom = canvasSize.width / sheetWidth;
+      this.canvasSize = { ...canvasSize, zoom: currentZoom };
       window.printCanvas.setWidth(canvasSize.width);
       window.printCanvas.setHeight(canvasSize.height);
       const objects = this.getObjectsBySheetId(this.pageSelected.id);
@@ -158,6 +164,7 @@ export default {
      * @param {Object} containerSize - the size object
      */
     onContainerReady(containerSize) {
+      this.containerSize = containerSize;
       let el = this.$refs.canvas;
       window.printCanvas = new fabric.Canvas(el, {
         backgroundColor: '#ffffff'
@@ -172,7 +179,7 @@ export default {
       fabricPrototype.transparentCorners = false;
       fabricPrototype.borderScaleFactor = 1.5;
 
-      this.updateCanvasSize(containerSize);
+      this.updateCanvasSize();
       window.printCanvas.on({
         'selection:updated': this.objectSelected,
         'selection:cleared': this.closeProperties,
@@ -242,7 +249,8 @@ export default {
      * @param {Object} containerSize - the size object
      */
     onContainerResized(containerSize) {
-      this.updateCanvasSize(containerSize);
+      this.containerSize = containerSize;
+      this.updateCanvasSize();
     },
     /**
      * Event handler for when user press key at body scope

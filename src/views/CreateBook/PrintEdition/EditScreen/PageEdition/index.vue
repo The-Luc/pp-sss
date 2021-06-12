@@ -3,6 +3,11 @@
     <PageWrapper>
       <SizeWrapper @mounted="onContainerReady" @updated="onContainerResized">
         <canvas id="canvas" ref="canvas" class="print-canvas"></canvas>
+        <PrintCanvasLines
+          :canvas-size="canvasSize"
+          :page-size="printSize"
+          :sheet-type="pageSelected.type"
+        />
       </SizeWrapper>
     </PageWrapper>
   </div>
