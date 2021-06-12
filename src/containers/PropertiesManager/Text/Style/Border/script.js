@@ -40,6 +40,16 @@ export default {
      */
     onChange(value) {
       this.$emit('change', value);
+    },
+    /**
+     * Emit thickness value to root
+     * @param   {Number}  value Value user selected
+     */
+    onChangeThickness(value) {
+      console.log('onChangeThickness', value);
+      this.$root.$emit('printChangeTextProperties', {
+        strokeWidth: value
+      });
     }
   }
 };

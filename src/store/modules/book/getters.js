@@ -119,7 +119,8 @@ export const getters = {
     objectSelectedId,
   [BOOK._GETTERS.OBJECT_BY_ID]: ({ objects }) => id => objects[id],
   [BOOK._GETTERS.PROP_OBJECT_BY_ID]: ({ objects }) => ({ id, prop }) => {
-    return objects[id]?.property[prop] || null;
+    const data = objects[id]?.property[prop];
+    return data || data === 0 ? objects[id]?.property[prop] : null;
   },
   [BOOK._GETTERS.TRIGGER_OBJECT_CHANGE]: ({ triggerObjectChange }) =>
     triggerObjectChange,

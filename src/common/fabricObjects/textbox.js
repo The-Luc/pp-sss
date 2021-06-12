@@ -6,8 +6,7 @@ import {
   toFabricTextProp,
   toFabricTextBorderProp,
   isEmpty,
-  ptToPx,
-  scaleSize
+  ptToPx
 } from '@/common/utils';
 
 import {
@@ -16,7 +15,6 @@ import {
   DEFAULT_SPACING,
   DEFAULT_TEXT
 } from '@/common/constants';
-import { STROKE_WIDTH } from '../constants/config';
 
 /**
  * Handle creating a TextBox into canvas
@@ -71,7 +69,6 @@ export const createTextBox = (x, y, width, height) => {
 
     text.on('editing:exited', onDoneEditText);
   };
-  const strokeWidth = scaleSize(STROKE_WIDTH);
 
   const borderProp = toFabricTextBorderProp(dataObject);
   const rect = new fabric.Rect({
@@ -103,6 +100,7 @@ export const createTextBox = (x, y, width, height) => {
       };
       text.set(newData);
       text.set('height', target.height);
+      const strokeWidth = rect.strokeWidth || 1;
       rect.set({
         ...newData,
         width: target.width - strokeWidth,
@@ -238,7 +236,7 @@ const applyTextProperties = function(textObject, prop) {
  *
  * @param {Object}  textObject  the object to be updated
  */
-const applyTextRectProperties = function(textObject, prop) {
+const applyTextRectProperties = function(textObject, prop, groupSelected) {
   if (isEmpty(textObject) || !textObject.canvas) {
     return;
   }
@@ -247,13 +245,26 @@ const applyTextRectProperties = function(textObject, prop) {
   if (!rect) return;
 
   const rectProp = toFabricTextBorderProp(prop);
+  if (Object.keys(rectProp).includes('strokeWidth')) {
+    const { strokeWidth } = rectProp;
+    rect.set({
+      ...rect,
+      width: groupSelected.width - strokeWidth,
+      height: groupSelected.height - strokeWidth
+    });
+  }
+
   Object.keys(rectProp).forEach(k => {
     rect.set(k, rectProp[k]);
   });
   canvas.renderAll();
 };
 
-export const applyTextBoxProperties = function(textObject, prop) {
+export const applyTextBoxProperties = function(
+  textObject,
+  prop,
+  groupSelected
+) {
   applyTextProperties(textObject, prop);
-  applyTextRectProperties(textObject, prop);
+  applyTextRectProperties(textObject, prop, groupSelected);
 };

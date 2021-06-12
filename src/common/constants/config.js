@@ -4,5 +4,3 @@ export const ENV_CONFIG = {
   API_URL,
   BOOK_ID
 };
-
-export const STROKE_WIDTH = 10; // Just data test, will remove later

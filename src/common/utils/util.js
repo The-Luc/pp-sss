@@ -326,6 +326,12 @@ export const toFabricTextBorderProp = prop => {
       stroke: {
         name: 'stroke'
       },
+      strokeWidth: {
+        name: 'strokeWidth'
+      },
+      strokeDashArray: {
+        name: 'strokeDashArray' // Border style
+      },
       opacity: {
         name: 'opacity'
       }
@@ -391,3 +397,41 @@ export const scrollToElement = (el, opts) => {
     ...opts
   });
 };
+
+// export const getRectDashes = (width, height) => {
+//   var w_array = getLineDashes(width, 0, 0, 0);
+//   var h_array = getLineDashes(0, height, 0, 0);
+//   const dashArray = [].concat.apply(
+//     [],
+//     [w_array, 0, h_array, 0, w_array, 0, h_array]
+//   );
+//   console.log('dashArray', dashArray);
+//   return dashArray;
+// };
+// // same as previous snippet except that it does return all the segment's dashes
+// function getLineDashes(x1, y1, x2, y2) {
+//   var length = Math.hypot(x2 - x1, y2 - y1);
+//   var dash_length = length / 8;
+//   var nb_of_dashes = length / dash_length;
+
+//   var dash_gap = dash_length * 0.66666;
+//   dash_length -= dash_gap * 0.3333;
+
+//   var total_length = 0;
+//   var dasharray = [];
+//   var next;
+//   while (total_length < length) {
+//     next = dasharray.length % 2 ? dash_gap : dash_length;
+//     total_length += next;
+//     dasharray.push(next);
+//   }
+//   return dasharray;
+// }
+
+// export const clearContext = function(ctx, width, height) {
+//   console.log('ctx', ctx);
+//   var a = ctx.getContext('2d');
+//   console.log('a');
+//   a.clearRect(0, 0, width, height);
+//   return this;
+// };

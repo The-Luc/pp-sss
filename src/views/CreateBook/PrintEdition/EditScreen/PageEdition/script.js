@@ -33,7 +33,6 @@ import {
 import SizeWrapper from '@/components/SizeWrapper';
 import PageWrapper from './PageWrapper';
 import { useDrawControls } from '@/plugins/fabric';
-import { STROKE_WIDTH } from '@/common/constants/config';
 
 export default {
   components: {
@@ -50,7 +49,8 @@ export default {
       origX: 0,
       origY: 0,
       currentRect: null,
-      rectObj: null
+      rectObj: null,
+      groupSelected: null
     };
   },
   computed: {
@@ -275,7 +275,7 @@ export default {
         });
         this.rectObj = null;
       }
-
+      // this.groupSelected = null;
       this.setIsOpenProperties({
         isOpen: false
       });
@@ -285,15 +285,32 @@ export default {
       this.setSelectedObjectId({ id: '' });
     },
     //TODO later
-    setBorderObject: function(rectObj, groupSize) {
-      this.rectObj = rectObj;
-      const strokeWidth = scaleSize(STROKE_WIDTH);
+    setBorderObject: function(rectObj, groupSize, objectData) {
+      // this.rectObj = rectObj;
+      console.log('rectObj', rectObj);
+      console.log('groupSize', groupSize);
+      console.log('objectData', objectData);
+      const { strokeWidth, stroke } = objectData;
       const { width, height } = groupSize;
       rectObj.set({
         height: height - strokeWidth,
         width: width - strokeWidth,
-        stroke: 'red',
-        strokeWidth: strokeWidth
+        strokeWidth,
+        stroke: 'red'
+      });
+      setTimeout(() => {
+        selectLatestObject(rectObj.canvas);
+      });
+    },
+    /**
+     * Set border color when selected group object
+     *
+     * @param {Element}  group  Group object
+     */
+    setBorderHighLight: function(group) {
+      const layout = this.selectedLayout(this.pageSelected.id);
+      group.set({
+        borderColor: layout?.id ? 'white' : '#bcbec0'
       });
     },
     /**
@@ -307,24 +324,24 @@ export default {
       }
       const { id, width, height } = target;
       const targetType = target.get('type');
-      const layout = this.selectedLayout(this.pageSelected.id);
+
       this.setSelectedObjectId({ id });
+      this.setBorderHighLight(target);
 
-      // Highlight border group
-      target.set({
-        borderColor: layout?.id ? 'white' : '#bcbec0'
-      });
-
+      const objectData = this.selectedObject(this.selectedObjectId);
       if (targetType === 'group') {
         const rectObj = target.getObjects(OBJECT_TYPE.RECT)[0];
-        //TODO later
-        // this.setBorderObject(rectObj, {
-        //   width,
-        //   height
-        // });
+        this.setBorderObject(
+          rectObj,
+          {
+            width,
+            height
+          },
+          objectData
+        );
       }
 
-      const objectType = this.selectedObject(this.selectedObjectId)?.type;
+      const objectType = objectData?.type;
       if (objectType) {
         this.setObjectTypeSelected({ type: objectType });
         this.openProperties();
@@ -335,7 +352,7 @@ export default {
      */
     addText: function(x, y, width, height) {
       const { object, data } = createTextBox(x, y, width, height);
-
+      this.groupSelected = object;
       this.addNewObject(data);
 
       window.printCanvas.add(object);
@@ -363,7 +380,7 @@ export default {
 
       this.updateTriggerChange();
 
-      applyTextBoxProperties(activeObj, prop);
+      applyTextBoxProperties(activeObj, prop, this.groupSelected);
     },
     /**
      * Event fire when user click on Image button on Toolbar to add new image on canvas
