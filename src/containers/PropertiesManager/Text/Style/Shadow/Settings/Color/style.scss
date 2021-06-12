@@ -10,11 +10,15 @@
   }
   .color-content {
     .box-color {
-      width: 80px;
+      width: 80px !important;
       &-active {
-        width: 100%;
-        margin: 0 10px;
+        width: 100% !important;
+        margin: 0 6px !important;
       }
     }
   }
+}
+.color-picker-container.color-picker-shadow-text {
+  top: 225px;
+  right: 170px;
 }

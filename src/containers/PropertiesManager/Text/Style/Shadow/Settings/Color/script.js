@@ -8,7 +8,7 @@ export default {
   },
   data() {
     return {
-      customClass: 'color-picker-border-text'
+      customClass: 'color-picker-shadow-text'
     };
   },
   computed: {
