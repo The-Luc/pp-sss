@@ -7,7 +7,7 @@ export default {
       default: () => ({ id: '', property: {} })
     },
     selectedVal: {
-      type: Object,
+      type: Array,
       default: () => [{ id: '', property: {} }]
     },
     isEmpty: {
