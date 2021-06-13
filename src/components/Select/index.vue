@@ -21,20 +21,49 @@
         <v-list-item-content>
           <v-list-item-title>
             <v-row no-gutters align="center">
-              <span :style="getStyle(item.cssStyle)">{{ item.name }}</span>
+              <template v-if="isImgOpts">
+                <img :src="item.previewImageUrl" style="max-width: 70px" />
+              </template>
+              <template v-else>
+                <span :style="getStyle(item.cssStyle)">{{ item.name }}</span>
+              </template>
             </v-row>
           </v-list-item-title>
         </v-list-item-content>
       </v-list-item>
     </template>
 
-    <template v-if="!isBorder" #item="{ item, attrs, on }">
+    <template #item="{ item, attrs, on }">
       <v-list-item
         v-slot="{ active }"
         class="pp-select--item"
         v-bind="attrs"
         v-on="on"
       >
+        <img
+          v-if="!isImgOpts"
+          :style="{ visibility: active ? 'visible' : 'hidden' }"
+          class="icon-ative"
+          :src="activeMenuIcon"
+          alt="icon-active"
+        />
+        <v-list-item-content>
+          <v-list-item-title>
+            <v-row no-gutters align="center">
+              <template v-if="isImgOpts">
+                <img :src="item.previewImageUrl" style="max-width: 70px" />
+              </template>
+              <template v-else>
+                <span :style="getStyle(item.cssStyle)">{{ item.name }}</span>
+              </template>
+            </v-row>
+          </v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
+    </template>
+
+    <!-- <template v-else #item="{ item, attrs, on }">
+      <v-list-item class="pp-select--item" v-bind="attrs" v-on="on">
         <img
           :style="{ visibility: active ? 'visible' : 'hidden' }"
           class="icon-ative"
@@ -44,35 +73,12 @@
         <v-list-item-content>
           <v-list-item-title>
             <v-row no-gutters align="center">
-              <span :style="getStyle(item.cssStyle)">{{ item.name }}</span>
+              <img :src="item.previewImageUrl" style="max-width: 70px" />
             </v-row>
           </v-list-item-title>
         </v-list-item-content>
       </v-list-item>
-    </template>
-
-    <template v-else #item="{ item, attrs, on }">
-      <v-list-item
-        v-slot="{ active }"
-        class="pp-select--item"
-        v-bind="attrs"
-        v-on="on"
-      >
-        <img
-          :style="{ visibility: active ? 'visible' : 'hidden' }"
-          class="icon-ative"
-          :src="activeMenuIcon"
-          alt="icon-active"
-        />
-        <v-list-item-content>
-          <v-list-item-title>
-            <v-row no-gutters align="center">
-              <span :style="getStyle(item.cssStyle)">todo later</span>
-            </v-row>
-          </v-list-item-title>
-        </v-list-item-content>
-      </v-list-item>
-    </template>
+    </template> -->
 
     <template v-if="prependedIcon" #prepend>
       <img :src="prependedIcon" alt="prepend-icon" class="prepend-icon" />

@@ -11,7 +11,8 @@ import {
   toFabricImageProp,
   selectLatestObject,
   deleteSelectedObjects,
-  toFabricBackgroundProp
+  toFabricBackgroundProp,
+  getRectDashes
 } from '@/common/utils';
 import {
   createTextBox,
@@ -332,14 +333,22 @@ export default {
         this.hideStrokeObject();
       }
       this.rectObj = rectObj;
-      const { strokeWidth, stroke } = objectData.property.border;
+      const { strokeWidth, stroke, strokeLineCap } = objectData.property.border;
+      const strokeDashArrayVal = getRectDashes(
+        rectObj.width,
+        rectObj.height,
+        strokeLineCap,
+        strokeWidth
+      );
       rectObj.set({
         strokeWidth,
-        stroke
+        stroke,
+        strokeLineCap,
+        strokeDashArray: strokeDashArrayVal
       });
       setTimeout(() => {
         rectObj.canvas.renderAll();
-      }, 0);
+      });
     },
     /**
      * Set border color when selected group object

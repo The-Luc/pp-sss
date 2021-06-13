@@ -176,6 +176,10 @@ export const mapObject = (sourceObject, rules) => {
   Object.keys(sourceObject).forEach(k => {
     if (rules.restrict.indexOf(k) >= 0) return;
 
+    if (Array.isArray(sourceObject[k])) {
+      resultObject[k] = sourceObject[k];
+      return;
+    }
     if (typeof sourceObject[k] === 'object') {
       const useRules = cloneDeep(rules);
       const subRules = isEmpty(rules.data[k]) ? {} : rules.data[k];
@@ -196,7 +200,6 @@ export const mapObject = (sourceObject, rules) => {
     }
 
     const mapName = rules.data[k].name;
-
     resultObject[mapName] = isEmpty(rules.data[k].parse)
       ? sourceObject[k]
       : rules.data[k].parse(sourceObject[k]);
@@ -324,7 +327,10 @@ export const toFabricTextBorderProp = prop => {
         name: 'strokeWidth'
       },
       strokeDashArray: {
-        name: 'strokeDashArray' // Border style
+        name: 'strokeDashArray'
+      },
+      strokeLineCap: {
+        name: 'strokeLineCap'
       },
       opacity: {
         name: 'opacity'
@@ -426,40 +432,36 @@ export const scrollToElement = (el, opts) => {
   });
 };
 
-// export const getRectDashes = (width, height) => {
-//   var w_array = getLineDashes(width, 0, 0, 0);
-//   var h_array = getLineDashes(0, height, 0, 0);
-//   const dashArray = [].concat.apply(
-//     [],
-//     [w_array, 0, h_array, 0, w_array, 0, h_array]
-//   );
-//   console.log('dashArray', dashArray);
-//   return dashArray;
-// };
-// // same as previous snippet except that it does return all the segment's dashes
-// function getLineDashes(x1, y1, x2, y2) {
-//   var length = Math.hypot(x2 - x1, y2 - y1);
-//   var dash_length = length / 8;
-//   var nb_of_dashes = length / dash_length;
+export const getRectDashes = (width, height, value, strokeWidth) => {
+  if (value === 'solid') {
+    return [];
+  }
 
-//   var dash_gap = dash_length * 0.66666;
-//   dash_length -= dash_gap * 0.3333;
+  const widthArray = getLineDashes(width, 0, 0, 0);
+  const heightArray = getLineDashes(0, height, 0, 0);
+  const res =
+    value === 'round'
+      ? [0, strokeWidth * 2, 0, strokeWidth * 2]
+      : [widthArray, 0, heightArray, 0, widthArray, 0, heightArray];
+  const dashArray = [].concat.apply([], res);
+  return dashArray;
+};
+// same as previous snippet except that it does return all the segment's dashes
+function getLineDashes(x1, y1, x2, y2) {
+  const length = Math.hypot(x2 - x1, y2 - y1); // ()
+  let dash_length = length / 8;
+  const nb_of_dashes = length / dash_length;
 
-//   var total_length = 0;
-//   var dasharray = [];
-//   var next;
-//   while (total_length < length) {
-//     next = dasharray.length % 2 ? dash_gap : dash_length;
-//     total_length += next;
-//     dasharray.push(next);
-//   }
-//   return dasharray;
-// }
+  const dash_gap = dash_length * 0.66666;
+  dash_length -= dash_gap * 0.3333;
 
-// export const clearContext = function(ctx, width, height) {
-//   console.log('ctx', ctx);
-//   var a = ctx.getContext('2d');
-//   console.log('a');
-//   a.clearRect(0, 0, width, height);
-//   return this;
-// };
+  let total_length = 0;
+  const dasharray = [];
+  let next;
+  while (total_length < length) {
+    next = dasharray.length % 2 ? dash_gap : dash_length;
+    total_length += next;
+    dasharray.push(next);
+  }
+  return dasharray;
+}

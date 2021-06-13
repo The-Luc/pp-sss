@@ -6,7 +6,8 @@ import {
   toFabricTextProp,
   toFabricTextBorderProp,
   isEmpty,
-  ptToPx
+  ptToPx,
+  getRectDashes
 } from '@/common/utils';
 
 import {
@@ -16,7 +17,6 @@ import {
   DEFAULT_TEXT,
   TEXT_VERTICAL_ALIGN
 } from '@/common/constants';
-import { relativeTimeRounding } from 'moment';
 
 /**
  * Handle creating a TextBox into canvas
@@ -105,6 +105,7 @@ export const createTextBox = (x, y, width, height) => {
   const handleScaled = e => {
     const target = e.transform?.target;
     if (isEmpty(target)) return;
+
     const textData = {
       top: target.height * -0.5, // TEXT_VERTICAL_ALIGN.TOP
       left: target.width * -0.5,
@@ -122,11 +123,19 @@ export const createTextBox = (x, y, width, height) => {
 
     const strokeWidth = rect.strokeWidth || 1;
 
+    const strokeDashArray = getRectDashes(
+      target.width,
+      target.height,
+      rect.strokeLineCap,
+      strokeWidth
+    );
+
     rect.set({
       top: target.height * -0.5,
       left: target.width * -0.5,
       width: adjustedWidth - strokeWidth,
-      height: adjustedHeight - strokeWidth
+      height: adjustedHeight - strokeWidth,
+      strokeDashArray
     });
   };
 
@@ -180,9 +189,11 @@ const getAdjustedTextDimension = function(text, targetWidth, targetHeight) {
  */
 export const textVerticalAlignOnAdjust = function(text, rectHeight) {
   if (text.height === rectHeight) return;
+
   if (text.verticalAlign === TEXT_VERTICAL_ALIGN.MIDDLE) {
     text.set({ top: text.top + (rectHeight - text.height) / 2 });
   }
+
   if (text.verticalAlign === TEXT_VERTICAL_ALIGN.BOTTOM) {
     text.set({ top: text.top + (rectHeight - text.height) });
   }
@@ -194,17 +205,20 @@ export const textVerticalAlignOnAdjust = function(text, rectHeight) {
  */
 export const textVerticalAlignOnApplyProperty = function(text) {
   if (!text.group || text.height === text.group.height) return;
+
   switch (text.verticalAlign) {
     case TEXT_VERTICAL_ALIGN.MIDDLE:
       text.set({
         top: text.group.height * -0.5 + (text.group.height - text.height) / 2
       });
       break;
+
     case TEXT_VERTICAL_ALIGN.BOTTOM:
       text.set({
         top: text.group.height * -0.5 + (text.group.height - text.height)
       });
       break;
+
     default:
       text.set({
         top: text.group.height * -0.5
@@ -315,12 +329,17 @@ const applyTextRectProperties = function(textObject, prop, groupSelected) {
   if (!rect) return;
 
   const rectProp = toFabricTextBorderProp(prop);
-  if (Object.keys(rectProp).includes('strokeWidth') && groupSelected) {
+  const keyRect = Object.keys(rectProp);
+  if (
+    groupSelected &&
+    (keyRect.includes('strokeWidth') || keyRect.includes('strokeLineCap'))
+  ) {
     const { strokeWidth } = rectProp;
+    const strokeWidthVal = strokeWidth || rect.strokeWidth;
     rect.set({
       ...rect,
-      width: groupSelected?.width - strokeWidth,
-      height: groupSelected?.height - strokeWidth
+      width: groupSelected.width - strokeWidthVal,
+      height: groupSelected.height - strokeWidthVal
     });
   }
 

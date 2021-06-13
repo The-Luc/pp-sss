@@ -132,7 +132,7 @@ const handleDrawBackgroundLayout = (
   fabric.Image.fromURL(backgroundUrl, function(img) {
     const { width, height } = targetCanvas;
     const zoom = targetCanvas.getZoom();
-
+    img.selectable = false; // Right now, can not select background from layout, todo later
     img.left = position === 'right' ? width / zoom / 2 : 0;
     img.scaleX = width / zoom / img.width / 2;
     img.scaleY = height / zoom / img.height;
