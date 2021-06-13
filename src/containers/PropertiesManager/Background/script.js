@@ -33,19 +33,17 @@ export default {
         prop: 'opacity'
       });
 
-      return opacity * 100;
+      return opacity || 0;
     }
   },
   methods: {
     /**
      * Fire when opacity is changed from opacity component
      *
-     * @param {Number}  data opacity data
+     * @param {Number}  opacity - the opacity data
      */
-    onChangeOpacity(data) {
-      this.$root.$emit('printChangeBackgroundProperties', {
-        opacity: data / 100
-      });
+    onChangeOpacity(opacity) {
+      this.$root.$emit('printChangeBackgroundProperties', { opacity });
     }
   }
 };

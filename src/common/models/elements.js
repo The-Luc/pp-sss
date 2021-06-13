@@ -84,6 +84,14 @@ export const TextElement = {
       strokeWidth: DEFAULT_TEXT.BORDER.STROKE_WIDTH,
       strokeDashArray: DEFAULT_TEXT.BORDER.STROKE_DASH_ARRAY,
       strokeLineCap: DEFAULT_TEXT.BORDER.STROKE_LINE_CAP
+    },
+    shadow: {
+      dropShadow: DEFAULT_TEXT.SHADOW.DROP_SHADOW,
+      shadowBlur: DEFAULT_TEXT.SHADOW.BLUR,
+      shadowOffset: DEFAULT_TEXT.SHADOW.OFFSET,
+      shadowOpacity: DEFAULT_TEXT.SHADOW.OPACITY,
+      shadowAngle: DEFAULT_TEXT.SHADOW.ANGLE,
+      shadowColor: DEFAULT_TEXT.SHADOW.COLOR
     }
   }
 };
