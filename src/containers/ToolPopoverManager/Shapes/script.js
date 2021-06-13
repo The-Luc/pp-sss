@@ -7,9 +7,7 @@ import { mapGetters, mapMutations } from 'vuex';
 import { MUTATES as APP_MUTATES } from '@/store/modules/app/const';
 import { GETTERS as BOOK_GETTERS } from '@/store/modules/book/const';
 
-import {
-  TOOL_NAME
-} from '@/common/constants';
+import { TOOL_NAME } from '@/common/constants';
 
 import { usePopoverCreationTool } from '@/hooks';
 
@@ -50,9 +48,7 @@ export default {
   },
   watch: {
     selectedToolName(val) {
-      if (val && val === TOOL_NAME.SHAPES) {
-        this.initData();
-      }
+      if (val === TOOL_NAME.SHAPES) this.initData();
     },
     currentSheet: {
       deep: true,
