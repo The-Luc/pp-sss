@@ -71,7 +71,8 @@ export const createTextBox = (x, y, width, height) => {
     left: 0,
     top: 0,
     originX: 'left',
-    originY: 'top'
+    originY: 'top',
+    selectable: false
   });
 
   const group = new fabric.Group([rect, text], { id, left: x, top: y });
