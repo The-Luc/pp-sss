@@ -6,7 +6,8 @@ import {
   toFabricTextProp,
   toFabricTextBorderProp,
   isEmpty,
-  ptToPx
+  ptToPx,
+  getRectDashes
 } from '@/common/utils';
 
 import {
@@ -101,10 +102,17 @@ export const createTextBox = (x, y, width, height) => {
       text.set(newData);
       text.set('height', target.height);
       const strokeWidth = rect.strokeWidth || 1;
+      const strokeDashArray = getRectDashes(
+        target.width,
+        target.height,
+        rect.strokeLineCap,
+        strokeWidth
+      );
       rect.set({
         ...newData,
         width: target.width - strokeWidth,
-        height: target.height - strokeWidth
+        height: target.height - strokeWidth,
+        strokeDashArray
       });
     }
   };
@@ -245,12 +253,17 @@ const applyTextRectProperties = function(textObject, prop, groupSelected) {
   if (!rect) return;
 
   const rectProp = toFabricTextBorderProp(prop);
-  if (Object.keys(rectProp).includes('strokeWidth') && groupSelected) {
+  const keyRect = Object.keys(rectProp);
+  if (
+    groupSelected &&
+    (keyRect.includes('strokeWidth') || keyRect.includes('strokeLineCap'))
+  ) {
     const { strokeWidth } = rectProp;
+    const strokeWidthVal = strokeWidth || rect.strokeWidth;
     rect.set({
       ...rect,
-      width: groupSelected?.width - strokeWidth,
-      height: groupSelected?.height - strokeWidth
+      width: groupSelected.width - strokeWidthVal,
+      height: groupSelected.height - strokeWidthVal
     });
   }
 
