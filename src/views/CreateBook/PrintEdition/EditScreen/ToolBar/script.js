@@ -45,7 +45,7 @@ export default {
           {
             iconName: 'local_florist',
             title: 'Clip Art',
-            name: 'clipArt'
+            name: TOOL_NAME.CLIP_ART
           }
         ],
         [
