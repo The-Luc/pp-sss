@@ -78,7 +78,7 @@ export const createTextBox = (x, y, width, height) => {
   const group = new fabric.Group([rect, text], { id, left: x, top: y });
 
   const updateTextListeners = canvas => {
-    text.__eventListeners = {};
+    if (text.editingExitedListener) return;
 
     const onDoneEditText = () => {
       canvas.remove(text);
@@ -89,6 +89,7 @@ export const createTextBox = (x, y, width, height) => {
     };
 
     text.on('editing:exited', onDoneEditText);
+    text.editingExitedListener = true;
   };
 
   const handleScaling = e => {
