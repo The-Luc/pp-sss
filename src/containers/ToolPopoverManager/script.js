@@ -18,7 +18,8 @@ const ToolList = {
 export default {
   data() {
     return {
-      toolComponent: ''
+      toolComponent: '',
+      componentKey: true
     };
   },
   components: {
@@ -37,6 +38,10 @@ export default {
         this.toolComponent = null;
         return;
       }
+
+      this.componentKey =
+        toolName === TOOL_NAME.BACKGROUNDS ? !this.componentKey : '';
+
       if (toolName) {
         this.setToolComponent(toolName);
       }
@@ -49,6 +54,7 @@ export default {
      */
     setToolComponent(toolName) {
       const ToolContentComponent = ToolList[toolName];
+
       if (ToolContentComponent) {
         this.toolComponent = ToolContentComponent;
       }

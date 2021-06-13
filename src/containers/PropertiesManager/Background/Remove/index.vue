@@ -1,6 +1,6 @@
 <template>
   <div class="remove-background">
-    <v-btn class="remove-background-button">
+    <v-btn class="remove-background-button" @click.native="onRemove">
       <img src="@/assets/icons/restrict.svg" alt="Remove background" />
       Remove Background
     </v-btn>

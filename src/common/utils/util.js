@@ -178,8 +178,10 @@ export const mapObject = (sourceObject, rules) => {
 
     if (Array.isArray(sourceObject[k])) {
       resultObject[k] = sourceObject[k];
+
       return;
     }
+
     if (typeof sourceObject[k] === 'object') {
       const useRules = cloneDeep(rules);
       const subRules = isEmpty(rules.data[k]) ? {} : rules.data[k];
@@ -200,6 +202,7 @@ export const mapObject = (sourceObject, rules) => {
     }
 
     const mapName = rules.data[k].name;
+
     resultObject[mapName] = isEmpty(rules.data[k].parse)
       ? sourceObject[k]
       : rules.data[k].parse(sourceObject[k]);
