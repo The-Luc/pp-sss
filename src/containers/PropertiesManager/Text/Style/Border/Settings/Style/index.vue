@@ -1,7 +1,12 @@
 <template>
   <div class="border-style-container">
     <label class="properties-title">Style:</label>
-    <Select :items="options" is-img-opts @change="onChange" />
+    <Select
+      :items="options"
+      is-img-opts
+      :selected-val="selectedBorderStyle"
+      @change="onChange"
+    />
   </div>
 </template>
 

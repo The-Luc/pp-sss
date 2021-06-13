@@ -2,6 +2,7 @@ import Select from '@/components/Select';
 import BorderStyle from './Settings/Style';
 import BorderColor from './Settings/Color';
 import BorderThickness from './Settings/Thickness';
+import { getRectDashes } from '@/common/utils';
 
 export default {
   components: {
@@ -22,7 +23,9 @@ export default {
   },
   data() {
     return {
-      isShowStyle: false
+      isShowStyle: false,
+      strokeWidth: 0,
+      borderStyle: 'solid'
     };
   },
   watch: {
@@ -38,17 +41,49 @@ export default {
      * Emit border value to parent
      * @param   {Object}  value Value user selected
      */
-    onChange(value) {
+    onChangeSelectedBorder(value) {
       this.$emit('change', value);
     },
     /**
-     * Emit thickness value to root
+     * Computed dash array base on width and height of object
+     * @returns   {Array}  Array specifying dash pattern of an object's stroke
+     */
+    computedDashArray() {
+      const objectActive = window.printCanvas.getActiveObject();
+      const { width, height } = objectActive;
+      const strokeDashArray = getRectDashes(
+        width,
+        height,
+        this.borderStyle,
+        this.strokeWidth
+      );
+      return strokeDashArray;
+    },
+    /**
+     * Set data local and emit stroke width(thickness), stroke dash array value to text properties through root
      * @param   {Number}  value Value user selected
      */
     onChangeThickness(value) {
+      this.strokeWidth = value;
+      const strokeDashArray = this.computedDashArray();
       this.$root.$emit('printChangeTextProperties', {
         border: {
+          strokeDashArray,
           strokeWidth: value
+        }
+      });
+    },
+    /**
+     * Set data local and emit stroke line cap, stroke dash array value to text properties through root
+     * @param   {Number}  value Value user selected
+     */
+    onChangeBorderStyle({ value }) {
+      this.borderStyle = value;
+      const strokeDashArray = this.computedDashArray();
+      this.$root.$emit('printChangeTextProperties', {
+        border: {
+          strokeDashArray,
+          strokeLineCap: value
         }
       });
     }

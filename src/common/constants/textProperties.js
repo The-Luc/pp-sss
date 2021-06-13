@@ -25,8 +25,8 @@ export const THINKNESS_OPTIONS = [
 export const BORDER_STYLE = [
   { previewImageUrl: IMAGE_LOCAL.SOLID, value: 'solid', name: 'solid' },
   { previewImageUrl: IMAGE_LOCAL.DOBULE, value: 'double', name: 'double' },
-  { previewImageUrl: IMAGE_LOCAL.DASHED, value: 'dashed', name: 'dashed' },
-  { previewImageUrl: IMAGE_LOCAL.DOTTED, value: 'dotted', name: 'dotted' },
+  { previewImageUrl: IMAGE_LOCAL.DASHED, value: 'square', name: 'dashed' },
+  { previewImageUrl: IMAGE_LOCAL.DOTTED, value: 'round', name: 'dotted' },
   {
     previewImageUrl: IMAGE_LOCAL.ROUGH_THICK,
     value: 'roughThick',
