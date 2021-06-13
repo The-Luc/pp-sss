@@ -425,7 +425,6 @@ const getShadowBaseOnConfig = function({
 const applyShadowToObject = function(fabricObject, shadowConfig) {
   if (isEmpty(fabricObject) || isEmpty(shadowConfig)) return;
   const shadow = getShadowBaseOnConfig(shadowConfig);
-  console.log('shadow', shadow);
   fabricObject.set({ shadow });
 };
 
