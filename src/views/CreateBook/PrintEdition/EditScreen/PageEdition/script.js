@@ -11,6 +11,7 @@ import {
   toFabricImageProp,
   selectLatestObject,
   deleteSelectedObjects,
+  toFabricClipArtProp,
   getRectDashes
 } from '@/common/utils';
 
@@ -25,7 +26,11 @@ import {
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
 import { GETTERS, MUTATES as BOOK_MUTATES } from '@/store/modules/book/const';
 
-import { ImageElement, BackgroundElement } from '@/common/models';
+import {
+  ImageElement,
+  BackgroundElement,
+  ClipArtElement
+} from '@/common/models';
 import {
   SHEET_TYPE,
   FABRIC_OBJECT_TYPE,
@@ -194,7 +199,10 @@ export default {
         'object:scaling': e => {
           const objectFabricType = e.target.get('type');
           // Maybe update condition base on requirment
-          if (objectFabricType !== FABRIC_OBJECT_TYPE.IMAGE) {
+          if (
+            objectFabricType !== FABRIC_OBJECT_TYPE.IMAGE &&
+            objectFabricType !== FABRIC_OBJECT_TYPE.CLIP_ART
+          ) {
             const w = e.target.width;
             const h = e.target.height;
             const scaleX = e.target.scaleX;
@@ -235,6 +243,10 @@ export default {
         this.$root.$emit('printInstructionEnd');
         this.awaitingAdd = element;
         this.$root.$emit('printInstructionStart', { element });
+      });
+
+      this.$root.$on('printAddClipArt', clipArts => {
+        this.addClipArt(clipArts);
       });
 
       this.$root.$on('printDeleteElements', () => {
@@ -526,6 +538,54 @@ export default {
       });
 
       deleteSelectedObjects(window.printCanvas);
+    },
+    /**
+     * Event fire when user click on Clip art button on Toolbar to add new clip art on canvas
+     * @param {Array} clipArts - list clip art add on Canvas
+     */
+    addClipArt(clipArts) {
+      const { width, height } = window.printCanvas;
+      const zoom = window.printCanvas.getZoom();
+      clipArts.forEach((item, index) => {
+        let id = uniqueId();
+        let newClipArt = cloneDeep(ClipArtElement);
+        this.addNewObject({
+          id: id,
+          type: OBJECT_TYPE.CLIP_ART,
+          newObject: {
+            ...newClipArt
+          }
+        });
+        let fabricProp = toFabricClipArtProp(newClipArt);
+        fabric.loadSVGFromURL(
+          require(`../../../../../assets/image/clip-art/${item.property.vector}`),
+          (objects, options) => {
+            let svgData = fabric.util.groupSVGElements(objects, options);
+            svgData
+              .set({
+                ...fabricProp,
+                id: id,
+                type: OBJECT_TYPE.CLIP_ART,
+                top: 1000,
+                left: 1500 + 800 * index,
+                fill: '#58595b'
+              })
+              .setCoords();
+
+            svgData.scaleToHeight((height / zoom / svgData.height) * 8);
+            svgData.scaleToWidth((width / zoom / svgData.width) * 8);
+            window.printCanvas.add(svgData);
+          }
+        );
+      });
+
+      if (clipArts.length !== 1) {
+        this.closeProperties();
+      } else {
+        setTimeout(() => {
+          selectLatestObject(window.printCanvas);
+        }, 500);
+      }
     }
   }
 };

@@ -85,7 +85,7 @@ export const createTextBox = (x, y, width, height, textProperties) => {
   });
 
   const updateTextListeners = canvas => {
-    text.__eventListeners = {};
+    if (text.editingExitedListener) return;
 
     const onDoneEditText = () => {
       canvas.remove(text);
@@ -96,6 +96,7 @@ export const createTextBox = (x, y, width, height, textProperties) => {
     };
 
     text.on('editing:exited', onDoneEditText);
+    text.editingExitedListener = true;
   };
 
   const handleScaling = e => {

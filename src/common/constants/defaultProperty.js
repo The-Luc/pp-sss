@@ -44,6 +44,19 @@ export const DEFAULT_TEXT = {
   }
 };
 
+export const DEFAULT_CLIP_ART = {
+  COORD: {
+    X: 51,
+    Y: 282,
+    ROTATION: 0
+  },
+  COLOR: '#000000',
+  ORIGIN: {
+    X: 0,
+    Y: 0
+  },
+  OPACITY: 1
+};
 export const DEFAULT_IMAGE = {
   category: 'Cover',
   name: '',
