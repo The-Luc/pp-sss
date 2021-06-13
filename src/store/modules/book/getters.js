@@ -1,7 +1,7 @@
 import moment from 'moment';
 import { pick } from 'lodash';
 
-import { DATE_FORMAT, MOMENT_TYPE } from '@/common/constants';
+import { DATE_FORMAT, MOMENT_TYPE, OBJECT_TYPE } from '@/common/constants';
 import BOOK from './const';
 import {
   isEmpty,
@@ -132,17 +132,19 @@ export const getters = {
 
     if (isEmpty(pageData)) return [];
 
-    const firstBackground = isEmpty(pageData[0].objects)
-      ? ''
-      : pageData[0].objects[0];
-    const secondBackground =
+    const firstId = isEmpty(pageData[0].objects) ? '' : pageData[0].objects[0];
+    const secondId =
       pageData.length > 1 && !isEmpty(pageData[1].objects)
         ? pageData[1].objects[0]
         : '';
 
-    const backgroundIds = [firstBackground, secondBackground];
+    const existedBackgroundIds = [firstId, secondId].filter(id => {
+      if (isEmpty(id)) return false;
 
-    return backgroundIds.filter(id => !isEmpty(id)).map(id => objects[id]);
+      return objects[id]?.type === OBJECT_TYPE.BACKGROUND;
+    });
+
+    return existedBackgroundIds.map(id => objects[id]);
   },
   [BOOK._GETTERS.SHEET_TYPE]: ({ book }) => sheetId => {
     const sheets = getAllSheets(book.sections);
