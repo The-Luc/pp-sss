@@ -1,3 +1,5 @@
+import { IMAGE_LOCAL } from './image';
+
 export const THINKNESS_OPTIONS = [
   { name: '0.25 pt', value: 0.25 },
   { name: '0.5 pt', value: 0.5 },
@@ -21,7 +23,23 @@ export const THINKNESS_OPTIONS = [
 ];
 
 export const BORDER_STYLE = [
-  { name: '', value: 'solid', cssStyle: '2px solid #0B1717' },
-  { name: '', value: 'solid', cssStyle: '2px solid #0B1717' },
-  { name: '', value: 'solid', cssStyle: '2px solid #0B1717' }
+  { previewImageUrl: IMAGE_LOCAL.SOLID, value: 'solid', name: 'solid' },
+  { previewImageUrl: IMAGE_LOCAL.DOBULE, value: 'double', name: 'double' },
+  { previewImageUrl: IMAGE_LOCAL.DASHED, value: 'square', name: 'dashed' },
+  { previewImageUrl: IMAGE_LOCAL.DOTTED, value: 'round', name: 'dotted' },
+  {
+    previewImageUrl: IMAGE_LOCAL.ROUGH_THICK,
+    value: 'roughThick',
+    name: 'roughThick'
+  },
+  {
+    previewImageUrl: IMAGE_LOCAL.ROUGH_MEDIUM,
+    value: 'roughMedium',
+    name: 'roughMedium'
+  },
+  {
+    previewImageUrl: IMAGE_LOCAL.ROUGH_THIN,
+    value: 'roughThin',
+    name: 'roughThin'
+  }
 ];

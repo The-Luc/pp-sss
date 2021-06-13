@@ -4,10 +4,10 @@
     <Select
       :items="options"
       :selected-val="selectedBorder"
-      @change="onChange"
+      @change="onChangeSelectedBorder"
     />
     <div v-if="isShowStyle" class="border-setting-container">
-      <BorderStyle />
+      <BorderStyle @change="onChangeBorderStyle" />
       <BorderColor />
       <BorderThickness @change="onChangeThickness" />
     </div>

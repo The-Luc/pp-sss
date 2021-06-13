@@ -80,7 +80,10 @@ export const TextElement = {
     opacity: DEFAULT_TEXT.OPACITY,
     border: {
       fill: DEFAULT_TEXT.BORDER.FILL,
-      stroke: DEFAULT_TEXT.BORDER.STROKE
+      stroke: DEFAULT_TEXT.BORDER.STROKE,
+      strokeWidth: DEFAULT_TEXT.BORDER.STROKE_WIDTH,
+      strokeDashArray: DEFAULT_TEXT.BORDER.STROKE_DASH_ARRAY,
+      strokeLineCap: DEFAULT_TEXT.BORDER.STROKE_LINE_CAP
     }
   }
 };
