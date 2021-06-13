@@ -138,15 +138,13 @@ export const getters = {
         ? pageData[1].objects[0]
         : '';
 
-    const backgroundIds = [firstId, secondId];
-
-    const exitedBackgrounds = backgroundIds.filter(id => {
+    const existedBackgroundIds = [firstId, secondId].filter(id => {
       if (isEmpty(id)) return false;
 
       return objects[id]?.type === OBJECT_TYPE.BACKGROUND;
     });
 
-    return exitedBackgrounds.map(id => objects[id]);
+    return existedBackgroundIds.map(id => objects[id]);
   },
   [BOOK._GETTERS.SHEET_TYPE]: ({ book }) => sheetId => {
     const sheets = getAllSheets(book.sections);
