@@ -1,12 +1,4 @@
 .shapes-container {
-  &-prompt {
-    .tool-popover-header {
-      &::before {
-        border-bottom-color: #b3c7d1;
-      }
-    }
-  }
-
   &.empty-shape-container {
     font-size: 25px;
     width: 100%;
@@ -40,9 +32,13 @@
     }
   }
 
-  .tool-popover-header {
-    &::before {
-      left: 247px;
+  .tool-popover-container {
+    width: 582px;
+
+    .tool-popover-header {
+      &::before {
+        left: 247px;
+      }
     }
   }
 
