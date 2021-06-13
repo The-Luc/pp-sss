@@ -1,16 +1,14 @@
 <template>
   <div>
-    <Opacity :value="opacityValue" @change="onChangeOpacity" />
+    <div class="opacity-container">
+      <Opacity :value="opacityValue" @change="onChangeOpacity" />
+    </div>
     <Border
       :selected-border="selectedBorder"
       :options="borderOptions"
       @change="onChangeBorder"
     />
-    <Shadow
-      :selected-shadow="selectedShadow"
-      :options="shadowOptions"
-      @change="onChangeShadow"
-    />
+    <Shadow />
   </div>
 </template>
 

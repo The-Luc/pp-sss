@@ -6,23 +6,24 @@ export default {
   components: {
     Mix
   },
+  props: {
+    color: {
+      type: String,
+      required: true
+    }
+  },
   data() {
     return {
-      customClass: 'color-picker-shadow-text'
+      customClass: 'color-picker-shadow-text',
+      customEventName: 'textShadowColorChange'
     };
   },
   computed: {
     ...mapGetters({
       selectedId: BOOK_GETTERS.SELECTED_OBJECT_ID,
       isOpenColorPicker: GETTERS.IS_OPEN_COLOR_PICKER,
-      selectedColor: BOOK_GETTERS.PROP_OBJECT_BY_ID
+      triggerChange: BOOK_GETTERS.TRIGGER_TEXT_CHANGE,
     }),
-    color() {
-      if (this.triggerChange) {
-        // just for trigger the change
-      }
-      return '#0B1717';
-    }
   },
   methods: {
     ...mapMutations({
@@ -36,11 +37,20 @@ export default {
       this.toggleColorPicker({
         isOpen: !this.isOpenColorPicker,
         data: {
+          eventName: 'textShadowColorChange',
           color: this.color,
           customClass: this.customClass
         }
       });
+    },
+    onColorChanged(color) {
+      this.$emit('change', color);
     }
   },
-  mounted() {}
+  mounted() {
+    this.$root.$on(this.customEventName, this.onColorChanged);
+  },
+  beforeDestroy() {
+    this.$root.$off(this.customEventName, this.onColorChanged);
+  }
 };

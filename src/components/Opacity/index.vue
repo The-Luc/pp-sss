@@ -1,7 +1,7 @@
 <template>
   <div>
     <label class="text-500 text-size-xsm">Opacity:</label>
-    <Slider :value="value" @change="onChange" />
+    <Slider :value="opacity" @change="onChange" />
   </div>
 </template>
 <script src="./script.js" />

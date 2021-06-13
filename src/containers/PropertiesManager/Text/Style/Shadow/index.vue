@@ -3,16 +3,16 @@
     <label class="properties-title">Shadow:</label>
     <Select
       :items="options"
-      :selected-val="selectedShadow"
-      @change="onChange"
+      :selected-val="selectedOption"
+      @change="onChangeDropShadow"
     />
-    <div v-if="isShowShadow" class="shadow-setting-container">
-      <Blur :value="blurValue" @changeBlur="onChangeBlur" />
-      <Offset :value="offsetValue" @changeOffset="onChangeOffset" />
-      <Opacity :value="opacityValue" @changeOpacity="onChangeOpacity" />
+    <div v-if="dropShadow" class="shadow-setting-container">
+      <Blur :value="currentShadow.shadowBlur" @change="onChangeBlur" />
+      <Offset :value="currentShadow.shadowOffset" @change="onChangeOffset" />
+      <Opacity :value="currentShadow.shadowOpacity" @change="onChangeOpacity" />
       <div class="group-setting-container">
-        <Angle :value="angleValue" @changeAngle="onChangeAngle" />
-        <ShadowColor />
+        <Angle :value="currentShadow.shadowAngle" @change="onChangeAngle" />
+        <ShadowColor :color="currentShadow.shadowColor" @change="onChangeColor" />
       </div>
     </div>
   </div>

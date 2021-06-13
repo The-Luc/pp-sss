@@ -12,10 +12,29 @@ export default {
     }
   },
 
+  data() {
+    return {
+      opacity: 0
+    };
+  },
+
+  watch: {
+    value(val) {
+      this.refreshOpacity(val);
+    }
+  },
+
+  mounted() {
+    this.refreshOpacity(this.value);
+  },
+
   methods: {
+    refreshOpacity(value) {
+      this.opacity = +(value || 0) * 100;
+    },
     onChange(val) {
       const { isValid, value } = validateInputOption(val, 0, 100, 0);
-      this.$emit('changeOpacity', isValid ? value : this.value);
+      this.$emit('change', (isValid ? value : this.value) / 100);
     }
   }
 };

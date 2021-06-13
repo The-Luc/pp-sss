@@ -15,7 +15,7 @@ export default {
   methods: {
     onChange(val) {
       const { isValid, value } = validateInputOption(val, 0, 50, 0);
-      this.$emit('changeOffset', isValid ? value : this.value);
+      this.$emit('change', isValid ? value : this.value);
     }
   }
 };

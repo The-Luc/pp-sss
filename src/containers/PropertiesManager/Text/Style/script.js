@@ -1,6 +1,6 @@
 import { mapGetters } from 'vuex';
 
-import Opacity from './Opacity';
+import Opacity from '@/components/Opacity';
 import Border from './Border';
 import Shadow from './Shadow';
 import { GETTERS } from '@/store/modules/book/const';
@@ -24,23 +24,9 @@ export default {
           value: 'line'
         }
       ],
-      shadowOptions: [
-        {
-          name: 'No Shadow',
-          value: 'noShadow'
-        },
-        {
-          name: 'Drop Shadow',
-          value: 'dropShadow'
-        }
-      ],
       selectedBorder: {
         name: 'No border',
         value: 'noBorder'
-      },
-      selectedShadow: {
-        name: 'No Shadow',
-        value: 'noShadow'
       }
     };
   },
@@ -59,18 +45,16 @@ export default {
         id: this.selectedId,
         prop: 'opacity'
       });
-      return !res ? 0 : res * 100;
+      return !res ? 0 : res;
     }
   },
   methods: {
     /**
      * Receive value opacity from children
-     * @param   {Number}  value Value user input
+     * @param   {Number}  opacity Value user input
      */
-    onChangeOpacity(value) {
-      this.$root.$emit('printChangeTextProperties', {
-        opacity: value / 100
-      });
+    onChangeOpacity(opacity) {
+      this.$root.$emit('printChangeTextProperties', { opacity });
     },
     /**
      * Receive value border from children

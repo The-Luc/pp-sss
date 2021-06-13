@@ -12,8 +12,8 @@ export default {
   },
   methods: {
     onChange(val) {
-      const { isValid, value } = validateInputOption(val, 0, 270, 0);
-      this.$emit('changeAngle', isValid ? value : this.value);
+      const { isValid, value } = validateInputOption(val, 0, 360, 0);
+      this.$emit('change', isValid ? value : this.value);
     }
   }
 };
