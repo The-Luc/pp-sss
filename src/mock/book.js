@@ -1,5 +1,19 @@
 import { POSITION_FIXED } from '@/common/constants';
 
+const defaultLayout = {
+  id: null,
+  isFavorites: false,
+  name: '',
+  pages: [{ objects: [] }, { objects: [] }],
+  previewImageUrl: '',
+  size: {
+    width: 0,
+    height: 0
+  },
+  themeId: null,
+  type: ''
+};
+
 const book = {
   id: 1719,
   communityId: 28,
@@ -50,7 +64,7 @@ const book = {
           printData: {
             thumbnailUrl: null,
             theme: null,
-            layout: null,
+            layout: defaultLayout,
             link: 'none'
           },
           digitalData: {
@@ -79,7 +93,7 @@ const book = {
           order: 0,
           printData: {
             theme: null,
-            layout: null,
+            layout: defaultLayout,
             thumbnailUrl: null,
             link: 'none'
           },
@@ -98,7 +112,7 @@ const book = {
           printData: {
             thumbnailUrl: null,
             theme: null,
-            layout: null,
+            layout: defaultLayout,
             link: 'link'
           },
           digitalData: {
@@ -116,7 +130,7 @@ const book = {
           printData: {
             thumbnailUrl: null,
             theme: null,
-            layout: null,
+            layout: defaultLayout,
             link: 'link'
           },
           digitalData: {
@@ -134,7 +148,7 @@ const book = {
           printData: {
             thumbnailUrl: null,
             theme: null,
-            layout: null,
+            layout: defaultLayout,
             link: 'link'
           },
           digitalData: {
@@ -152,7 +166,7 @@ const book = {
           printData: {
             thumbnailUrl: null,
             theme: null,
-            layout: null,
+            layout: defaultLayout,
             link: 'link'
           },
           digitalData: {
@@ -182,7 +196,7 @@ const book = {
           printData: {
             thumbnailUrl: null,
             theme: null,
-            layout: null,
+            layout: defaultLayout,
             link: 'link'
           },
           digitalData: {
@@ -200,7 +214,7 @@ const book = {
           printData: {
             thumbnailUrl: null,
             theme: null,
-            layout: null,
+            layout: defaultLayout,
             link: 'link'
           },
           digitalData: {
@@ -218,7 +232,7 @@ const book = {
           printData: {
             thumbnailUrl: null,
             theme: null,
-            layout: null,
+            layout: defaultLayout,
             link: 'link'
           },
           digitalData: {
@@ -248,7 +262,7 @@ const book = {
           printData: {
             thumbnailUrl: null,
             theme: null,
-            layout: null
+            layout: defaultLayout
           },
           digitalData: {
             thumbnailUrl: null,
@@ -277,7 +291,7 @@ const book = {
           printData: {
             thumbnailUrl: null,
             theme: null,
-            layout: null,
+            layout: defaultLayout,
             link: 'link'
           },
           digitalData: {
