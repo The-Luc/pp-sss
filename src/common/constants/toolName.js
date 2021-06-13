@@ -4,5 +4,6 @@ export const TOOL_NAME = {
   DELETE: 'Delete',
   IMAGE_BOX: 'ImageBox',
   TEXT: 'Text',
-  BACKGROUNDS: 'Backgrounds'
+  BACKGROUNDS: 'Backgrounds',
+  SHAPES: 'Shapes'
 };

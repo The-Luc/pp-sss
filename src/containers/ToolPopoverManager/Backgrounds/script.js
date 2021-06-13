@@ -203,7 +203,7 @@ export default {
   },
   watch: {
     selectedToolName(val) {
-      if (val && val === TOOL_NAME.LAYOUTS) {
+      if (val && val === TOOL_NAME.BACKGROUNDS) {
         this.initData();
       }
     },

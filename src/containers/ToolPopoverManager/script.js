@@ -6,13 +6,15 @@ import { TOOL_NAME } from '@/common/constants';
 import Themes from './Themes';
 import Layouts from './Layouts';
 import Backgrounds from './Backgrounds';
+import Shapes from './Shapes';
 
-const { THEMES, LAYOUTS, BACKGROUNDS } = TOOL_NAME;
+const { THEMES, LAYOUTS, BACKGROUNDS, SHAPES } = TOOL_NAME;
 
 const ToolList = {
   [THEMES]: THEMES,
   [LAYOUTS]: LAYOUTS,
-  [BACKGROUNDS]: BACKGROUNDS
+  [BACKGROUNDS]: BACKGROUNDS,
+  [SHAPES]: SHAPES
 };
 
 export default {
@@ -25,7 +27,8 @@ export default {
   components: {
     [TOOL_NAME.THEMES]: Themes,
     [TOOL_NAME.LAYOUTS]: Layouts,
-    [TOOL_NAME.BACKGROUNDS]: Backgrounds
+    [TOOL_NAME.BACKGROUNDS]: Backgrounds,
+    [TOOL_NAME.SHAPES]: Shapes
   },
   computed: {
     ...mapGetters({
