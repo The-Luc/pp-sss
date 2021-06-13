@@ -113,10 +113,18 @@ export const getPagePrintSize = () => {
 /**
  * Responsively convert size to a correct scale size base on current DPI
  *
- * @param   {Number}  size - the size that need to be converted
+ * @param   {Number}  size - the size pt that need to be converted
  * @returns {Number}  the scaled-size
  */
 export const scaleSize = size => (size * PRINT_DPI) / 72;
+
+/**
+ * Responsively convert size to a correct scale size base on current DPI
+ *
+ * @param   {Number}  size - the size px that need to be converted
+ * @returns {Number}  the scaled-size
+ */
+export const unscaleSize = size => (size * 72) / PRINT_DPI;
 
 /**
  * Convert pt to px
@@ -125,6 +133,15 @@ export const scaleSize = size => (size * PRINT_DPI) / 72;
  * @returns {Number}  the result px
  */
 export const ptToPx = val => scaleSize(val);
+
+
+/**
+ * Convert px to pt
+ *
+ * @param   {Number}  val - the pt value that need to be converted
+ * @returns {Number}  the result pt
+ */
+export const pxToPt = val => unscaleSize(val);
 
 /**
  * Conver inch to px
