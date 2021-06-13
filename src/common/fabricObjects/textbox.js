@@ -1,6 +1,7 @@
 import { fabric } from 'fabric';
 import { cloneDeep, uniqueId } from 'lodash';
 import { TextElement } from '@/common/models';
+import Color from 'color';
 
 import {
   toFabricTextProp,
@@ -77,6 +78,10 @@ export const createTextBox = (x, y, width, height, textProperties) => {
     originY: 'top',
     selectable: false
   });
+
+  // reference to each other for better keep track
+  text._rect = rect;
+  rect._text = text;
 
   const group = new fabric.Group([rect, text], {
     id: dataObject.id,
@@ -325,6 +330,10 @@ const applyTextProperties = function(textObject, prop) {
     textVerticalAlignOnApplyProperty(text);
   }
 
+  if (!isEmpty(prop['shadow'])) {
+    applyShadowToObject(text, prop['shadow']);
+  }
+
   canvas.renderAll();
 };
 
@@ -359,7 +368,65 @@ const applyTextRectProperties = function(textObject, prop, groupSelected) {
   Object.keys(rectProp).forEach(k => {
     rect.set(k, rectProp[k]);
   });
+
+  if (!isEmpty(prop['shadow'])) {
+    applyShadowToObject(rect, prop['shadow']);
+  }
+
   canvas.renderAll();
+};
+
+/**
+ * Get
+ * @param {Boolean} dropShadow - have shadow or not
+ * @param {Number} shadowBlur - the level of blur in pt
+ * @param {Number} shadowOffset - the level of blur in pt
+ * @param {Number} shadowOpacity - the level of blur in pt
+ * @param {Number} shadowAngle - the level of blur in pt
+ * @param {String} shadowColor - the color to apply to shadow
+ * @returns {Object} the Fabric Shadow Object
+ */
+const getShadowBaseOnConfig = function({
+  dropShadow,
+  shadowBlur,
+  shadowOffset,
+  shadowOpacity,
+  shadowAngle,
+  shadowColor
+}) {
+  if (!dropShadow) {
+    return null;
+  }
+
+  const clr = Color(shadowColor).alpha(shadowOpacity).toString();
+
+  const adjustedAngle = (shadowAngle + 180) % 360;
+  const rad = adjustedAngle * Math.PI / 180;
+
+  const offsetX = shadowOffset * Math.sin(rad);
+  const offsetY = shadowOffset * Math.cos(rad);
+
+  const shadow = new fabric.Shadow({
+    color: clr,
+    offsetX: ptToPx(offsetX),
+    offsetY: ptToPx(offsetY),
+    blur: ptToPx(shadowBlur)
+  });
+
+  return shadow;
+};
+
+/**
+ * Apply Shadow to Fabric Object
+ * @param {Object} fabricObject
+ * @param {Object} shadowConfig - the shadow config by user, contains
+ * { dropShadow, shadowBlur, shadowOffset, shadowOpacity, shadowAngle, shadowColor }
+ */
+const applyShadowToObject = function(fabricObject, shadowConfig) {
+  if (isEmpty(fabricObject) || isEmpty(shadowConfig)) return;
+  const shadow = getShadowBaseOnConfig(shadowConfig);
+  console.log('shadow', shadow);
+  fabricObject.set({ shadow });
 };
 
 export const applyTextBoxProperties = function(

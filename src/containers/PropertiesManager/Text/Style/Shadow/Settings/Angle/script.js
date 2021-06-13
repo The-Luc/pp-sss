@@ -11,6 +11,9 @@ export default {
     }
   },
   methods: {
+    onAngleRotated(val) {
+      console.log('onAngleRotated', val);
+    },
     onChange(val) {
       const { isValid, value } = validateInputOption(val, 0, 360, 0);
       this.$emit('change', isValid ? value : this.value);
