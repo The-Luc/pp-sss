@@ -16,6 +16,7 @@ import {
   DEFAULT_FABRIC_BACKGROUND
 } from '@/common/constants';
 import { scaleSize } from '@/common/utils';
+import { createTextBox } from '@/common/fabricObjects';
 
 export const useLayoutPrompt = () => {
   const { isPrompt, pageSelected } = useGetters({
@@ -56,49 +57,31 @@ const handleDrawTextLayout = (page, position, targetCanvas, objects) => {
   Object.values(objectsData).forEach(obj => {
     if (obj.type === OBJECT_TYPE.TEXT) {
       const {
-        coord: { x, y, rotation },
-        size: { width, height }
+        coord: { x, y },
+        size: { width, height },
+        property
       } = obj;
-      const {
-        color,
-        fontFamily,
-        fontSize,
-        isBold,
-        isItalic,
-        isUnderline,
-        styleId,
-        text,
-        opacity
-      } = obj.property;
 
       let left = scaleSize(x);
       if (position === 'right') {
         const baseLeft = targetCanvas.width / targetCanvas.getZoom() / 2;
         left += baseLeft;
       }
-      const textObj = new fabric.Textbox(text, {
+      const properties = {
         id: obj.id,
         type: OBJECT_TYPE.TEXT,
-        lockUniScaling: false,
-        width: scaleSize(width),
-        height: scaleSize(height),
+        size: obj.size,
+        coord: obj.coord,
+        property
+      };
+      const { object } = createTextBox(
         left,
-        top: scaleSize(y),
-        fontWeight: isBold ? 'bold' : 'normal',
-        fontStyle: isItalic ? 'italic' : 'normal',
-        underline: isUnderline,
-        textAlign: 'left',
-        rotate: rotation,
-        fontFamily,
-        fontSize: scaleSize(fontSize),
-        isBold,
-        isItalic,
-        isUnderline,
-        styleId,
-        opacity: opacity === 0 || opacity ? opacity : 1,
-        fill: color
-      });
-      targetCanvas.add(textObj);
+        scaleSize(y),
+        scaleSize(width),
+        scaleSize(height),
+        properties
+      );
+      targetCanvas.add(object);
     }
   });
 };
