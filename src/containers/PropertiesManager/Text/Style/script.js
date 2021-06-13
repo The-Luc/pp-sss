@@ -1,6 +1,6 @@
 import { mapGetters } from 'vuex';
 
-import Opacity from '@/components/Opacity';
+import Opacity from '@/components/Property/Opacity';
 import Border from './Border';
 import Shadow from './Shadow';
 import { GETTERS } from '@/store/modules/book/const';

@@ -3,7 +3,7 @@ import { DEFAULT_SHADOW } from '@/common/constants/defaultProperty';
 import { mapGetters } from 'vuex';
 import { GETTERS } from '@/store/modules/book/const';
 import Select from '@/components/Select';
-import Opacity from '@/components/Opacity';
+import Opacity from '@/components/Property/Opacity';
 import Blur from './Settings/Blur';
 import Offset from './Settings/Offset';
 import ShadowColor from './Settings/Color';
@@ -68,10 +68,12 @@ export default {
      * @param {Object} shadowCfg - the new shadow configs
      */
     emitChangeShadow(shadowCfg) {
-      this.$root.$emit('printChangeTextProperties', { shadow: {
-        ...this.currentShadow,
-        ...shadowCfg,
-      } });
+      this.$root.$emit('printChangeTextProperties', {
+        shadow: {
+          ...this.currentShadow,
+          ...shadowCfg
+        }
+      });
     },
     /**
      * Handle update shadow config base on enable/disable of dropShadow

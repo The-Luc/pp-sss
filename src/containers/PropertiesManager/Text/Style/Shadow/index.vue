@@ -12,7 +12,10 @@
       <Opacity :value="currentShadow.shadowOpacity" @change="onChangeOpacity" />
       <div class="group-setting-container">
         <Angle :value="currentShadow.shadowAngle" @change="onChangeAngle" />
-        <ShadowColor :color="currentShadow.shadowColor" @change="onChangeColor" />
+        <ShadowColor
+          :color="currentShadow.shadowColor"
+          @change="onChangeColor"
+        />
       </div>
     </div>
   </div>
