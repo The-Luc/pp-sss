@@ -14,7 +14,8 @@ import {
   TEXT_CASE,
   OBJECT_TYPE,
   DEFAULT_SPACING,
-  DEFAULT_TEXT
+  DEFAULT_TEXT,
+  TEXT_VERTICAL_ALIGN
 } from '@/common/constants';
 
 /**
@@ -52,10 +53,29 @@ export const createTextBox = (x, y, width, height) => {
     originX: 'left',
     originY: 'top'
   });
-  // text height must be updated after width
-  if (height > text.height) {
-    text.height = height;
-  }
+
+  const {
+    width: adjustedWidth,
+    height: adjustedHeight
+  } = getAdjustedTextDimension(text, width, height);
+
+  textVerticalAlignOnAdjust(text, adjustedHeight);
+
+  const borderProp = toFabricTextBorderProp(dataObject);
+  const rect = new fabric.Rect({
+    ...borderProp,
+    type: OBJECT_TYPE.RECT,
+    id,
+    width: adjustedWidth,
+    height: adjustedHeight,
+    left: 0,
+    top: 0,
+    originX: 'left',
+    originY: 'top',
+    selectable: false
+  });
+
+  const group = new fabric.Group([rect, text], { id, left: x, top: y });
 
   const updateTextListeners = canvas => {
     text.__eventListeners = {};
@@ -71,50 +91,53 @@ export const createTextBox = (x, y, width, height) => {
     text.on('editing:exited', onDoneEditText);
   };
 
-  const borderProp = toFabricTextBorderProp(dataObject);
-  const rect = new fabric.Rect({
-    ...borderProp,
-    type: OBJECT_TYPE.RECT,
-    id,
-    width: width,
-    height: height,
-    left: 0,
-    top: 0,
-    originX: 'left',
-    originY: 'top'
-  });
-
-  const group = new fabric.Group([rect, text], {
-    id,
-    left: x,
-    top: y
-  });
-
-  const handleScale = e => {
+  const handleScaling = e => {
     const target = e.transform?.target;
-    if (target) {
-      const newData = {
-        top: (-1 * target.height) / 2,
-        left: (-1 * target.width) / 2,
-        width: target.width,
-        height: target.height
-      };
-      text.set(newData);
-      text.set('height', target.height);
-      const strokeWidth = rect.strokeWidth || 1;
-      const strokeDashArray = getRectDashes(
-        target.width,
-        target.height,
-        rect.strokeLineCap,
-        strokeWidth
-      );
-      rect.set({
-        ...newData,
-        width: target.width - strokeWidth,
-        height: target.height - strokeWidth,
-        strokeDashArray
-      });
+    if (isEmpty(target)) return;
+    text.set('width', target.width);
+    if (target.width < text.width) {
+      target.set('width', text.width);
     }
+    if (target.height < text.height) {
+      target.set('height', text.height);
+    }
+  };
+
+  const handleScaled = e => {
+    const target = e.transform?.target;
+    if (isEmpty(target)) return;
+
+    const textData = {
+      top: target.height * -0.5, // TEXT_VERTICAL_ALIGN.TOP
+      left: target.width * -0.5,
+      width: target.width
+    };
+
+    text.set(textData);
+
+    const {
+      width: adjustedWidth,
+      height: adjustedHeight
+    } = getAdjustedTextDimension(text, target.width, target.height);
+
+    textVerticalAlignOnAdjust(text, adjustedHeight);
+
+    const strokeWidth = rect.strokeWidth || 1;
+
+    const strokeDashArray = getRectDashes(
+      target.width,
+      target.height,
+      rect.strokeLineCap,
+      strokeWidth
+    );
+
+    rect.set({
+      top: target.height * -0.5,
+      left: target.width * -0.5,
+      width: adjustedWidth - strokeWidth,
+      height: adjustedHeight - strokeWidth,
+      strokeDashArray
+    });
   };
 
   const ungroup = function(g) {
@@ -128,23 +151,81 @@ export const createTextBox = (x, y, width, height) => {
 
   const handleDbClick = e => {
     const canvas = e.target.canvas;
-    if (canvas) {
-      ungroup(e.target);
-      updateTextListeners(canvas);
-      canvas.setActiveObject(text);
-      text.enterEditing();
-      text.selectAll();
-    }
+    if (isEmpty(canvas)) return;
+    ungroup(e.target);
+    updateTextListeners(canvas);
+    canvas.setActiveObject(text);
+    text.enterEditing();
+    text.selectAll();
   };
 
   const addGroupEvents = g => {
-    g.on('scaled', handleScale);
+    g.on('scaling', handleScaling);
+    g.on('scaled', handleScaled);
     g.on('mousedblclick', handleDbClick);
   };
 
   addGroupEvents(group);
 
   return { object: group, data: dataObject };
+};
+
+/**
+ * Get text dimensions { width, height } after auto adjusted by fabric
+ * @param {Object} text - the fabric textbox object
+ * @param {Number} targetWidth - the target width to compare
+ * @param {Number} targetHeight - the target height to compare
+ * @returns {Object} dimensions { width, height } that text can use
+ */
+const getAdjustedTextDimension = function(text, targetWidth, targetHeight) {
+  const width = text.width > targetWidth ? text.width : targetWidth;
+  const height = text.height > targetHeight ? text.height : targetHeight;
+  return { width, height };
+};
+
+/**
+ * To adjust Text Alignment in vertical dimension
+ * @param {Object} text - the Fabric text object
+ * @param {Number} rectHeight - the new rect height to align text
+ */
+export const textVerticalAlignOnAdjust = function(text, rectHeight) {
+  if (text.height === rectHeight) return;
+
+  if (text.verticalAlign === TEXT_VERTICAL_ALIGN.MIDDLE) {
+    text.set({ top: text.top + (rectHeight - text.height) / 2 });
+  }
+
+  if (text.verticalAlign === TEXT_VERTICAL_ALIGN.BOTTOM) {
+    text.set({ top: text.top + (rectHeight - text.height) });
+  }
+};
+
+/**
+ * To adjust Text Alignment in vertical dimension when user change Text Properties
+ * @param {Object} text - the Fabric text object
+ */
+export const textVerticalAlignOnApplyProperty = function(text) {
+  if (!text.group || text.height === text.group.height) return;
+
+  switch (text.verticalAlign) {
+    case TEXT_VERTICAL_ALIGN.MIDDLE:
+      text.set({
+        top: text.group.height * -0.5 + (text.group.height - text.height) / 2
+      });
+      break;
+
+    case TEXT_VERTICAL_ALIGN.BOTTOM:
+      text.set({
+        top: text.group.height * -0.5 + (text.group.height - text.height)
+      });
+      break;
+
+    default:
+      text.set({
+        top: text.group.height * -0.5
+      });
+      break;
+  }
 };
 
 /**
@@ -204,38 +285,34 @@ const applyTextProperties = function(textObject, prop) {
     text.set('lineHeight', newLineSpacing);
   }
 
-  if (isEmpty(prop['textCase'])) {
-    canvas.renderAll();
-    return;
-  }
-
   const textString = text.get('text');
+  if (!isEmpty(prop['textCase']) && !isEmpty(textString)) {
+    if (prop['textCase'] === TEXT_CASE.NONE) {
+      text.set('text', textString);
+    }
 
-  if (isEmpty(textString)) {
-    canvas.renderAll();
-    return;
+    if (prop['textCase'] === TEXT_CASE.UPPER) {
+      text.set('text', textString.toUpperCase());
+    }
+
+    if (prop['textCase'] === TEXT_CASE.LOWER) {
+      text.set('text', textString.toLowerCase());
+    }
+
+    if (prop['textCase'] === TEXT_CASE.CAPITALIZE) {
+      const changedText = textString
+        .split(' ')
+        .map(t => `${t.charAt(0).toUpperCase()}${t.toLowerCase().slice(1)}`)
+        .join(' ');
+
+      text.set('text', changedText);
+    }
   }
 
-  if (prop['textCase'] === TEXT_CASE.NONE) {
-    text.set('text', textString);
+  if (!isEmpty(textProp['verticalAlign'])) {
+    textVerticalAlignOnApplyProperty(text);
   }
 
-  if (prop['textCase'] === TEXT_CASE.UPPER) {
-    text.set('text', textString.toUpperCase());
-  }
-
-  if (prop['textCase'] === TEXT_CASE.LOWER) {
-    text.set('text', textString.toLowerCase());
-  }
-
-  if (prop['textCase'] === TEXT_CASE.CAPITALIZE) {
-    const changedText = textString
-      .split(' ')
-      .map(t => `${t.charAt(0).toUpperCase()}${t.toLowerCase().slice(1)}`)
-      .join(' ');
-
-    text.set('text', changedText);
-  }
   canvas.renderAll();
 };
 
