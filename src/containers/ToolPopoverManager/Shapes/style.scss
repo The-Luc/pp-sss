@@ -19,13 +19,16 @@
     .empty-shape-content {
       display: flex;
       flex-wrap: wrap;
+      position: relative;
 
       .empty-shape-text {
+        display: flex;
+        justify-content: center;
+        width: calc(100% - 21px);
         font-size: 16px;
         font-family: $font-500;
         position: absolute;
-        left: 34%;
-        top: 35%;
+        top: 50px;
       }
 
       .shape-item {
