@@ -1,7 +1,7 @@
 import moment from 'moment';
 import { pick } from 'lodash';
 
-import { DATE_FORMAT, MOMENT_TYPE } from '@/common/constants';
+import { DATE_FORMAT, MOMENT_TYPE, OBJECT_TYPE } from '@/common/constants';
 import BOOK from './const';
 import {
   isEmpty,
@@ -119,10 +119,11 @@ export const getters = {
     objectSelectedId,
   [BOOK._GETTERS.OBJECT_BY_ID]: ({ objects }) => id => objects[id],
   [BOOK._GETTERS.PROP_OBJECT_BY_ID]: ({ objects }) => ({ id, prop }) => {
-    return objects[id]?.property[prop] || null;
+    const data = objects[id]?.property[prop];
+    return data || data === 0 ? objects[id]?.property[prop] : null;
   },
-  [BOOK._GETTERS.TRIGGER_TEXT_CHANGE]: ({ triggerObjectChange }) =>
-    triggerObjectChange,
+  [BOOK._GETTERS.TRIGGER_TEXT_CHANGE]: ({ triggerTextChange }) =>
+    triggerTextChange,
   [BOOK._GETTERS.SHEET_BACKGROUNDS]: ({ book, objects }) => sheetId => {
     const sheets = getAllSheets(book.sections);
     const sheet = sheets.find(s => s.id === sheetId);
@@ -131,22 +132,26 @@ export const getters = {
 
     if (isEmpty(pageData)) return [];
 
-    const firstBackground = isEmpty(pageData[0].objects)
-      ? ''
-      : pageData[0].objects[0];
-    const secondBackground =
+    const firstId = isEmpty(pageData[0].objects) ? '' : pageData[0].objects[0];
+    const secondId =
       pageData.length > 1 && !isEmpty(pageData[1].objects)
         ? pageData[1].objects[0]
         : '';
 
-    const backgroundIds = [firstBackground, secondBackground];
+    const existedBackgroundIds = [firstId, secondId].filter(id => {
+      if (isEmpty(id)) return false;
 
-    return backgroundIds.filter(id => !isEmpty(id)).map(id => objects[id]);
+      return objects[id]?.type === OBJECT_TYPE.BACKGROUND;
+    });
+
+    return existedBackgroundIds.map(id => objects[id]);
   },
   [BOOK._GETTERS.SHEET_TYPE]: ({ book }) => sheetId => {
     const sheets = getAllSheets(book.sections);
     const sheet = sheets.find(s => s.id === sheetId);
 
     return isEmpty(sheet) ? '' : sheet.type;
-  }
+  },
+  [BOOK._GETTERS.TRIGGER_BACKGROUND_CHANGE]: ({ triggerBackgroundChange }) =>
+    triggerBackgroundChange
 };

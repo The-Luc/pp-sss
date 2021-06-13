@@ -5,7 +5,7 @@
       <div class="color-content">
         <div class="box-color">
           <div
-            :style="{ backgroundColor: color }"
+            :style="{ backgroundColor: borderColor }"
             class="box-color-active"
             @click="onOpenColorPicker"
           />
@@ -13,7 +13,6 @@
         <v-icon>colorize</v-icon>
       </div>
     </div>
-    <!-- <Mix :value="color" /> -->
   </div>
 </template>
 

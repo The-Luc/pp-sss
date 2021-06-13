@@ -10,7 +10,7 @@ export default {
   computed: {
     ...mapGetters({
       color: GETTERS.COLOR_PICKER_COLOR,
-      customClass: GETTERS.COLOR_PICKER_CLASS,
+      propsData: GETTERS.COLOR_PICKER_CUSTOM_PROPS,
       presets: GETTERS.COLOR_PICKER_PRESETS
     })
   },
@@ -24,7 +24,7 @@ export default {
      * @param {String}  newColor  new color from Color Picker (HEX)
      */
     updateColor(newColor) {
-      this.$root.$emit('colorChange', newColor.hex8);
+      this.$root.$emit(this.propsData.eventName, newColor.hex8); // eventName: colorChange, borderChange
     },
     /**
      * Method will be fired when new preset is added in the Color Picker

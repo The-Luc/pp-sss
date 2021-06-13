@@ -15,6 +15,7 @@ export const mutations = {
     state.colorPicker.isOpen = isOpen;
     state.colorPicker.data.color = data?.color || '';
     state.colorPicker.data.customClass = data?.customClass || '';
+    state.colorPicker.data.eventName = data?.eventName || '';
   },
   [APP._MUTATES.SET_OBJECT_TYPE_SELECTED](state, { type }) {
     state.selectedObjectType = type;
@@ -43,7 +44,10 @@ export const mutations = {
   [APP._MUTATES.SET_IS_PROMPT](state, { isPrompt }) {
     state.isPrompt = isPrompt;
   },
-  [APP._MUTATES.SET_COLOR_PICKER_COLOR](state, { color }) {
-    state.colorPicker.data.color = color;
+  [APP._MUTATES.SET_COLOR_PICKER_COLOR](state, props) {
+    state.colorPicker.data = {
+      ...state.colorPicker.data,
+      ...props
+    };
   }
 };

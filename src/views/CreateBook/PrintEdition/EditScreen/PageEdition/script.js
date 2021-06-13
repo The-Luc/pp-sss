@@ -1,53 +1,62 @@
 import { mapGetters, mapMutations } from 'vuex';
 import { fabric } from 'fabric';
-import { cloneDeep, uniqueId } from 'lodash';
+import { cloneDeep, uniqueId, merge } from 'lodash';
 
 import { useDrawLayout } from '@/hooks';
 import { startDrawBox } from '@/common/fabricObjects/drawingBox';
 import {
   isEmpty,
-  toFabricTextProp,
   getCoverPagePrintSize,
   getPagePrintSize,
   toFabricImageProp,
   selectLatestObject,
-  deleteSelectedObjects
+  deleteSelectedObjects,
+  getRectDashes
 } from '@/common/utils';
+
+import {
+  createTextBox,
+  applyTextBoxProperties,
+  addPrintBackground as insertBackground,
+  updatePrintBackground as updateBackground
+} from '@/common/fabricObjects';
 
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
 import { GETTERS, MUTATES as BOOK_MUTATES } from '@/store/modules/book/const';
 
-import { ImageElement, TextElement, BackgroundElement } from '@/common/models';
+import { ImageElement, BackgroundElement } from '@/common/models';
 import {
   SHEET_TYPE,
-  HALF_SHEET,
-  HALF_LEFT,
-  TEXT_CASE,
-  DEFAULT_TEXT,
   FABRIC_OBJECT_TYPE,
-  OBJECT_TYPE,
-  DEFAULT_SPACING,
-  BACKGROUND_PAGE_TYPE
+  OBJECT_TYPE
 } from '@/common/constants';
 import SizeWrapper from '@/components/SizeWrapper';
+import PrintCanvasLines from './PrintCanvasLines';
 import PageWrapper from './PageWrapper';
 import { useDrawControls } from '@/plugins/fabric';
 
 export default {
   components: {
     PageWrapper,
-    SizeWrapper
+    SizeWrapper,
+    PrintCanvasLines
   },
   setup() {
     const { drawLayout } = useDrawLayout();
+
     return { drawLayout };
   },
   data() {
     return {
+      containerSize: null,
+      canvasSize: null,
+      printSize: null,
       awaitingAdd: '',
       origX: 0,
       origY: 0,
-      currentRect: null
+      currentRect: null,
+      rectObj: null,
+      groupSelected: null
     };
   },
   computed: {
@@ -57,6 +66,7 @@ export default {
       selectedLayout: GETTERS.SHEET_LAYOUT,
       getObjectsBySheetId: GETTERS.GET_OBJECTS_BY_SHEET_ID,
       isOpenMenuProperties: APP_GETTERS.IS_OPEN_MENU_PROPERTIES,
+      isOpenColorPicker: APP_GETTERS.IS_OPEN_COLOR_PICKER,
       selectedObjectId: GETTERS.SELECTED_OBJECT_ID,
       selectedObject: GETTERS.OBJECT_BY_ID,
       selectedProp: GETTERS.PROP_OBJECT_BY_ID
@@ -101,6 +111,7 @@ export default {
             .discardActiveObject()
             .remove(...window.printCanvas.getObjects())
             .renderAll();
+          this.updateCanvasSize();
           const layoutData = val?.printData?.layout;
           const objects = this.getObjectsBySheetId(val.id);
           this.drawLayout(layoutData, objects);
@@ -116,34 +127,38 @@ export default {
     ...mapMutations({
       setIsOpenProperties: MUTATES.TOGGLE_MENU_PROPERTIES,
       setToolNameSelected: MUTATES.SET_TOOL_NAME_SELECTED,
+      toggleColorPicker: MUTATES.TOGGLE_COLOR_PICKER,
       setObjectTypeSelected: MUTATES.SET_OBJECT_TYPE_SELECTED,
       setSelectedObjectId: BOOK_MUTATES.SET_SELECTED_OBJECT_ID,
       addNewObject: BOOK_MUTATES.ADD_OBJECT,
       setObjectProp: BOOK_MUTATES.SET_PROP,
-      updateTriggerChange: BOOK_MUTATES.UPDATE_TRIGGER_TEXT_CHANGE,
-      addNewBackground: BOOK_MUTATES.ADD_BACKGROUND
+      updateTriggerTextChange: BOOK_MUTATES.UPDATE_TRIGGER_TEXT_CHANGE,
+      addNewBackground: BOOK_MUTATES.ADD_BACKGROUND,
+      updateTriggerBackgroundChange:
+        BOOK_MUTATES.UPDATE_TRIGGER_BACKGROUND_CHANGE,
+      deleteObject: BOOK_MUTATES.DELETE_OBJECT
     }),
     /**
      * Auto resize canvas to fit the container size
-     * @param {Object} containerSize - the size object
      */
-    updateCanvasSize(containerSize) {
-      const printSize = this.isCover
+    updateCanvasSize() {
+      this.printSize = this.isCover
         ? getCoverPagePrintSize(this.isHardCover, this.book.totalPages)
         : getPagePrintSize();
       const canvasSize = {
         width: 0,
         height: 0
       };
-      const { ratio: printRatio, sheetWidth } = printSize.pixels;
-      if (containerSize.ratio > printRatio) {
-        canvasSize.height = containerSize.height;
+      const { ratio: printRatio, sheetWidth } = this.printSize.pixels;
+      if (this.containerSize.ratio > printRatio) {
+        canvasSize.height = this.containerSize.height;
         canvasSize.width = canvasSize.height * printRatio;
       } else {
-        canvasSize.width = containerSize.width;
+        canvasSize.width = this.containerSize.width;
         canvasSize.height = canvasSize.width / printRatio;
       }
       const currentZoom = canvasSize.width / sheetWidth;
+      this.canvasSize = { ...canvasSize, zoom: currentZoom };
       window.printCanvas.setWidth(canvasSize.width);
       window.printCanvas.setHeight(canvasSize.height);
       const objects = this.getObjectsBySheetId(this.pageSelected.id);
@@ -155,6 +170,7 @@ export default {
      * @param {Object} containerSize - the size object
      */
     onContainerReady(containerSize) {
+      this.containerSize = containerSize;
       let el = this.$refs.canvas;
       window.printCanvas = new fabric.Canvas(el, {
         backgroundColor: '#ffffff'
@@ -169,7 +185,7 @@ export default {
       fabricPrototype.transparentCorners = false;
       fabricPrototype.borderScaleFactor = 1.5;
 
-      this.updateCanvasSize(containerSize);
+      this.updateCanvasSize();
       window.printCanvas.on({
         'selection:updated': this.objectSelected,
         'selection:cleared': this.closeProperties,
@@ -221,7 +237,7 @@ export default {
       });
 
       this.$root.$on('printDeleteElements', () => {
-        deleteSelectedObjects(window.printCanvas);
+        this.removeObject();
       });
 
       this.$root.$on('printChangeTextProperties', prop => {
@@ -232,6 +248,10 @@ export default {
         this.addBackground({ background, isLeft });
       });
 
+      this.$root.$on('printChangeBackgroundProperties', prop => {
+        this.changeBackgroundProperties(prop);
+      });
+
       document.body.addEventListener('keyup', this.handleDeleteKey);
     },
     /**
@@ -239,7 +259,8 @@ export default {
      * @param {Object} containerSize - the size object
      */
     onContainerResized(containerSize) {
-      this.updateCanvasSize(containerSize);
+      this.containerSize = containerSize;
+      this.updateCanvasSize();
     },
     /**
      * Event handler for when user press key at body scope
@@ -247,92 +268,158 @@ export default {
      */
     handleDeleteKey(event) {
       const key = event.keyCode || event.charCode;
+
       if (event.target === document.body && (key == 8 || key == 46)) {
-        deleteSelectedObjects(window.printCanvas);
+        this.removeObject();
       }
     },
     /**
      * Open text properties modal and set default properties
+     *
+     * @param {String}  objectType  type of selected object
      */
-    openProperties(isRequireTrigger = false) {
+    openProperties(objectType) {
       this.setIsOpenProperties({ isOpen: true });
 
-      if (isRequireTrigger) this.updateTriggerChange();
+      if (objectType === OBJECT_TYPE.TEXT) {
+        this.updateTriggerTextChange();
+      }
+    },
+    /**
+     * Reset configs text properties when close object
+     */
+    resetConfigTextProperties() {
+      if (this.isOpenColorPicker) {
+        this.toggleColorPicker({
+          isOpen: false
+        });
+      }
+      this.setIsOpenProperties({
+        isOpen: false
+      });
+      this.setObjectTypeSelected({
+        type: ''
+      });
+      this.setSelectedObjectId({ id: '' });
+    },
+    /**
+     * Reset stroke when click outside object or switch to another object
+     */
+    hideStrokeObject() {
+      this.rectObj.set({
+        strokeWidth: 0
+      });
+      this.rectObj = null;
     },
     /**
      * Close text properties modal
      */
     closeProperties() {
-      this.setIsOpenProperties({ isOpen: false });
-
-      this.setObjectTypeSelected({ type: '' });
-
-      this.setSelectedObjectId({ id: '' });
+      if (this.rectObj) {
+        this.hideStrokeObject();
+      }
+      this.groupSelected = null;
+      this.resetConfigTextProperties();
+    },
+    /**
+     * Get border data from store and set to Rect object
+     */
+    setBorderObject(rectObj, objectData) {
+      if (this.rectObj) {
+        this.hideStrokeObject();
+      }
+      this.rectObj = rectObj;
+      const { strokeWidth, stroke, strokeLineCap } = objectData.property.border;
+      const strokeDashArrayVal = getRectDashes(
+        rectObj.width,
+        rectObj.height,
+        strokeLineCap,
+        strokeWidth
+      );
+      rectObj.set({
+        strokeWidth,
+        stroke,
+        strokeLineCap,
+        strokeDashArray: strokeDashArrayVal
+      });
+      setTimeout(() => {
+        rectObj.canvas.renderAll();
+      });
+    },
+    /**
+     * Set border color when selected group object
+     *
+     * @param {Element}  group  Group object
+     */
+    setBorderHighLight(group) {
+      const layout = this.selectedLayout(this.pageSelected.id);
+      group.set({
+        borderColor: layout?.id ? 'white' : '#bcbec0'
+      });
     },
     /**
      * Event fired when an object of canvas is selected
      *
      * @param {Object}  target  the selected object
      */
-    objectSelected: function({ target }) {
+    objectSelected({ target }) {
       if (this.awaitingAdd) {
         return;
       }
-
       const { id } = target;
-
+      const targetType = target.get('type');
       this.setSelectedObjectId({ id });
-
-      const objectType = this.selectedObject(this.selectedObjectId)?.type;
-
+      this.setBorderHighLight(target);
+      const objectData = this.selectedObject(this.selectedObjectId);
+      if (targetType === 'group') {
+        this.groupSelected = target;
+        const rectObj = target.getObjects(OBJECT_TYPE.RECT)[0];
+        this.setBorderObject(rectObj, objectData);
+      }
+      const objectType = objectData?.type;
       if (isEmpty(objectType)) return;
 
       this.setObjectTypeSelected({ type: objectType });
 
-      this.openProperties(objectType === OBJECT_TYPE.TEXT);
+      window.printCanvas.preserveObjectStacking =
+        objectType === OBJECT_TYPE.BACKGROUND;
+
+      this.openProperties(objectType);
     },
     /**
      * Event fire when user click on Text button on Toolbar to add new text on canvas
      */
-    addText: function(x, y, width, height) {
-      const newText = cloneDeep(TextElement);
-      const id = uniqueId();
-      this.addNewObject({
-        id,
-        type: OBJECT_TYPE.TEXT,
-        newObject: {
-          ...newText,
-          coord: {
-            ...newText.coord,
-            x,
-            y
-          },
-          property: {
-            ...newText.property,
-            text: DEFAULT_TEXT.TEXT
-          }
-        }
-      });
+    addText(x, y, width, height) {
+      const { object, data } = createTextBox(x, y, width, height);
+      this.groupSelected = object;
+      this.addNewObject(data);
 
-      const fabricProp = toFabricTextProp(newText);
-
-      const text = new fabric.Textbox(DEFAULT_TEXT.TEXT, {
-        ...fabricProp,
-        id,
-        lockUniScaling: DEFAULT_TEXT.LOCK_UNI_SCALE,
-        left: x,
-        top: y,
-        width,
-        cornerSize: 11
-      });
-
-      text.set('height', height);
-
-      window.printCanvas.add(text);
+      window.printCanvas.add(object);
 
       setTimeout(() => {
         selectLatestObject(window.printCanvas);
       });
+    },
+    /**
+     * Event fire when user change any property of selected text on the Text Properties
+     *
+     * @param {Object}  style  new style
+     */
+    changeTextProperties(prop) {
+      if (isEmpty(prop)) {
+        this.updateTriggerTextChange();
+
+        return;
+      }
+      const activeObj = window.printCanvas.getActiveObject();
+
+      if (isEmpty(activeObj)) return;
+
+      this.setObjectProp({ id: this.selectedObjectId, property: prop });
+
+      this.updateTriggerTextChange();
+
+      applyTextBoxProperties(activeObj, prop, this.groupSelected);
     },
     /**
      * Event fire when user click on Image button on Toolbar to add new image on canvas
@@ -386,167 +473,52 @@ export default {
 
       const newBackground = cloneDeep(BackgroundElement);
 
+      merge(newBackground, background);
+
       this.addNewBackground({
         id,
         sheetId: this.pageSelected.id,
         isLeft,
-        newBackground: {
-          ...newBackground,
-          ...background
-        }
+        newBackground
       });
 
-      const { width } = window.printCanvas;
-      const zoom = window.printCanvas.getZoom();
-
-      const currentBackgrounds = window.printCanvas
-        .getObjects()
-        .filter(function(o) {
-          return o.objectType === OBJECT_TYPE.BACKGROUND;
-        });
-
-      const isAddingFullBackground =
-        background.property.pageType === BACKGROUND_PAGE_TYPE.FULL_PAGE.id;
-
-      const isCurrentFullBackground =
-        !isEmpty(currentBackgrounds) &&
-        currentBackgrounds[0].pageType === BACKGROUND_PAGE_TYPE.FULL_PAGE.id;
-
-      const isHalfSheet = HALF_SHEET.indexOf(this.pageSelected.type) >= 0;
-      const isHalfLeft =
-        isHalfSheet && HALF_LEFT.indexOf(this.pageSelected.type) >= 0;
-
-      const isAddToLeftFullSheet =
-        !isHalfSheet && (isAddingFullBackground || isLeft);
-
-      const isAddToLeft = isHalfLeft || isAddToLeftFullSheet;
-
-      if (isHalfSheet || isAddingFullBackground || isCurrentFullBackground) {
-        currentBackgrounds.forEach(bg => window.printCanvas.remove(bg));
-      }
-
-      if (!isAddingFullBackground && !isEmpty(currentBackgrounds)) {
-        currentBackgrounds.forEach(bg => {
-          if (bg.isLeftPage === isAddToLeft) window.printCanvas.remove(bg);
-        });
-      }
-
-      const scaleX = isAddingFullBackground ? 1 : 2;
-
-      const fabricProp = {
+      insertBackground({
         id,
-        left: !isAddToLeft ? width / zoom / 2 : 0,
-        scaleX: 1 / zoom / scaleX,
-        scaleY: 1 / zoom,
-        objectType: background.type,
-        pageType: background.property.pageType,
-        isLeftPage: isAddToLeft,
-        opacity: background.property.opacity,
-        hasBorders: false,
-        hasControls: false,
-        lockRotation: true,
-        lockScalingX: true,
-        lockScalingY: true,
-        lockMovementX: true,
-        lockMovementY: true
-      };
-
-      fabric.Image.fromURL(background.property.imageUrl, img => {
-        img.set(fabricProp);
-
-        window.printCanvas.add(img);
-
-        window.printCanvas.sendToBack(img);
+        backgroundProp: newBackground,
+        isLeftBackground: isLeft,
+        sheetType: this.pageSelected.type,
+        canvas: window.printCanvas
       });
     },
     /**
-     * Event fire when user change any property of selected text on the Text Properties
+     * Event fire when user change any property of selected background
      *
-     * @param {Object}  style  new style
+     * @param {Object}  prop  new prop
      */
-    changeTextProperties: function(prop) {
+    changeBackgroundProperties(prop) {
       if (isEmpty(prop)) {
-        this.updateTriggerChange();
+        this.updateTriggerBackgroundChange();
 
         return;
       }
-      const activeObj = window.printCanvas.getActiveObject();
 
-      if (isEmpty(activeObj)) return;
+      const background = window.printCanvas.getActiveObject();
+
+      if (isEmpty(background)) return;
 
       this.setObjectProp({ id: this.selectedObjectId, property: prop });
 
-      this.updateTriggerChange();
+      this.updateTriggerBackgroundChange();
 
-      const fabricProp = toFabricTextProp(prop);
-
-      Object.keys(fabricProp).forEach(k => {
-        activeObj.set(k, fabricProp[k]);
+      updateBackground({ background, prop, canvas: window.printCanvas });
+    },
+    removeObject() {
+      this.deleteObject({
+        id: this.selectedObjectId,
+        sheetId: this.pageSelected.id
       });
 
-      if (prop['fontSize']) {
-        const lineSpacing = this.selectedProp({
-          id: this.selectedObjectId,
-          prop: 'lineSpacing'
-        });
-        const value =
-          lineSpacing === 0 || lineSpacing === null
-            ? 1
-            : lineSpacing / (DEFAULT_SPACING.VALUE * prop['fontSize']);
-        activeObj.set('lineHeight', value);
-      }
-
-      if (prop['lineSpacing'] || prop['lineSpacing'] === 0) {
-        const fontSize = this.selectedProp({
-          id: this.selectedObjectId,
-          prop: 'fontSize'
-        });
-        const value =
-          prop['lineSpacing'] === 0
-            ? 1
-            : prop['lineSpacing'] / (DEFAULT_SPACING.VALUE * fontSize);
-        activeObj.set('lineHeight', value);
-      }
-
-      if (isEmpty(prop['textCase'])) {
-        window.printCanvas.renderAll();
-
-        return;
-      }
-
-      const text =
-        this.selectedProp({ id: this.selectedObjectId, prop: 'text' }) || '';
-
-      if (isEmpty(text)) {
-        window.printCanvas.renderAll();
-
-        return;
-      }
-
-      if (prop['textCase'] === TEXT_CASE.NONE) {
-        activeObj.set('text', text);
-      }
-
-      if (prop['textCase'] === TEXT_CASE.UPPER) {
-        activeObj.set('text', text.toUpperCase());
-      }
-
-      if (prop['textCase'] === TEXT_CASE.LOWER) {
-        activeObj.set('text', text.toLowerCase());
-      }
-
-      if (prop['textCase'] === TEXT_CASE.CAPITALIZE) {
-        const changedText = text
-          .split(' ')
-          .map(t => {
-            return `${t.charAt(0).toUpperCase()}${t.toLowerCase().slice(1)}`;
-          })
-          .join(' ');
-
-        activeObj.set('text', changedText);
-      }
-
-      window.printCanvas.renderAll();
+      deleteSelectedObjects(window.printCanvas);
     }
   }
 };

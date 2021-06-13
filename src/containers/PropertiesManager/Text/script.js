@@ -21,17 +21,20 @@ export default {
   computed: {
     ...mapGetters({
       isOpenColorPicker: GETTERS.IS_OPEN_COLOR_PICKER
-      // selectedObject: TODO: map selectedObject here
     })
   },
   methods: {
     ...mapMutations({
-      toggleColorPicker: MUTATES.TOGGLE_COLOR_PICKER
+      toggleColorPicker: MUTATES.TOGGLE_COLOR_PICKER,
+      setColorPicker: MUTATES.SET_COLOR_PICKER_COLOR
     }),
     /**
      * Close color picker (if opening) when change tab
      */
-    onChangeTabMenu() {
+    onChangeTabMenu(data) {
+      this.setColorPicker({
+        tabActive: data
+      });
       if (this.isOpenColorPicker) {
         this.toggleColorPicker({ isOpen: false });
       }

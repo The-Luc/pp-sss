@@ -445,7 +445,7 @@ export const mutations = {
     state.objects[id] = newObject;
   },
   [BOOK._MUTATES.UPDATE_TRIGGER_TEXT_CHANGE](state) {
-    state.triggerObjectChange = !state.triggerObjectChange;
+    state.triggerTextChange = !state.triggerTextChange;
   },
   [BOOK._MUTATES.ADD_BACKGROUND](
     state,
@@ -519,5 +519,24 @@ export const mutations = {
     sheet.printData.layout.pages[pageIndex].objects.unshift(id);
 
     state.objects[id] = newBackground;
+  },
+  [BOOK._MUTATES.UPDATE_TRIGGER_BACKGROUND_CHANGE](state) {
+    state.triggerBackgroundChange = !state.triggerBackgroundChange;
+  },
+  [BOOK._MUTATES.DELETE_OBJECT](state, { id, sheetId }) {
+    const sheets = getAllSheets(state.book.sections);
+    const sheet = sheets.find(s => s.id === sheetId);
+
+    if (isEmpty(sheet) && isEmpty(sheet.printData.layout)) return;
+
+    sheet.printData.layout.pages.forEach(p => {
+      if (isEmpty(p.objects)) return;
+
+      const index = p.objects.indexOf(id);
+
+      if (index >= 0) p.objects.splice(index, 1);
+    });
+
+    delete state.objects[id];
   }
 };

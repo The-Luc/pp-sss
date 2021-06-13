@@ -33,7 +33,15 @@ export const DEFAULT_TEXT = {
     X: 0,
     Y: 0
   },
-  LOCK_UNI_SCALE: false
+  LOCK_UNI_SCALE: false,
+  OPACITY: 1,
+  BORDER: {
+    FILL: false,
+    STROKE: '#000000',
+    STROKE_WIDTH: 0,
+    STROKE_DASH_ARRAY: [],
+    STROKE_LINE_CAP: 'solid'
+  }
 };
 
 export const DEFAULT_IMAGE = {

@@ -1,5 +1,5 @@
 <template>
-  <div :class="['color-picker-container', customClass]">
+  <div :class="['color-picker-container', propsData.customClass]">
     <ColorPicker
       :value="color"
       :preset-colors="presets"

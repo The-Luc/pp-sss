@@ -1,6 +1,6 @@
 <template>
   <div class="toolname-container">
-    <component :is="toolComponent" />
+    <component :is="toolComponent" :key="componentKey" />
   </div>
 </template>
 

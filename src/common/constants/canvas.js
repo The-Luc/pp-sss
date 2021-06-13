@@ -5,7 +5,8 @@ export const PRINT_PAGE_SIZE = {
   BLEED: 0.125,
   PDF_DOUBLE_WIDTH: (8.5 + 0.125) * 2, // for render canvas, not use for PDF rendering
   PDF_WIDTH: 8.75, // must include bleed to left and right for each page
-  PDF_HEIGHT: 11.25 // must include bleed to top and bottom for each page
+  PDF_HEIGHT: 11.25, // must include bleed to top and bottom for each page
+  SAFE_MARGIN: 0.5
 };
 
 export const SOFTCOVER_SPINE_SIZES = {
@@ -55,7 +56,8 @@ export const PRINT_DPI = 300;
 // normal page size
 export const PRINT_CANVAS_SIZE = {
   WIDTH: (PRINT_PAGE_SIZE.DOUBLE_WIDTH + PRINT_PAGE_SIZE.BLEED * 2) * PRINT_DPI,
-  HEIGHT: (PRINT_PAGE_SIZE.HEIGHT + PRINT_PAGE_SIZE.BLEED * 2) * PRINT_DPI
+  HEIGHT: (PRINT_PAGE_SIZE.HEIGHT + PRINT_PAGE_SIZE.BLEED * 2) * PRINT_DPI,
+  SAFE_MARGIN: PRINT_PAGE_SIZE.SAFE_MARGIN * PRINT_DPI
 };
 
 export const DIGITAL_CANVAS_SIZE = {

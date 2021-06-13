@@ -176,6 +176,12 @@ export const mapObject = (sourceObject, rules) => {
   Object.keys(sourceObject).forEach(k => {
     if (rules.restrict.indexOf(k) >= 0) return;
 
+    if (Array.isArray(sourceObject[k])) {
+      resultObject[k] = sourceObject[k];
+
+      return;
+    }
+
     if (typeof sourceObject[k] === 'object') {
       const useRules = cloneDeep(rules);
       const subRules = isEmpty(rules.data[k]) ? {} : rules.data[k];
@@ -240,7 +246,7 @@ export const toCssStyle = style => {
 /**
  * Convert stored text properties to fabric properties
  *
- * @param   {Object}  style stored text properties
+ * @param   {Object}  prop  stored text properties
  * @returns {Object}        fabric properties
  */
 export const toFabricTextProp = prop => {
@@ -275,17 +281,11 @@ export const toFabricTextProp = prop => {
       horiziontal: {
         name: 'textAlign'
       },
-      lineSpacing: {
-        name: 'lineSpacing'
+      vertical: {
+        name: 'verticalAlign'
       },
       letterSpacing: {
         name: 'charSpacing'
-      },
-      lineHeight: {
-        name: 'lineHeight'
-      },
-      opacity: {
-        name: 'opacity'
       }
     },
     restrict: [
@@ -304,9 +304,51 @@ export const toFabricTextProp = prop => {
 };
 
 /**
+ * Convert stored text border properties to fabric properties
+ *
+ * @param   {Object}  style stored text border properties
+ * @returns {Object}        fabric properties
+ */
+export const toFabricTextBorderProp = prop => {
+  const mapRules = {
+    data: {
+      x: {
+        name: 'left',
+        parse: value => scaleSize(value)
+      },
+      y: {
+        name: 'top',
+        parse: value => scaleSize(value)
+      },
+      fill: {
+        name: 'fill'
+      },
+      stroke: {
+        name: 'stroke'
+      },
+      strokeWidth: {
+        name: 'strokeWidth'
+      },
+      strokeDashArray: {
+        name: 'strokeDashArray'
+      },
+      strokeLineCap: {
+        name: 'strokeLineCap'
+      },
+      opacity: {
+        name: 'opacity'
+      }
+    },
+    restrict: ['id', 'shadow']
+  };
+
+  return mapObject(prop, mapRules);
+};
+
+/**
  * Convert stored image properties to fabric properties
  *
- * @param   {Object}  prop stored image properties
+ * @param   {Object}  prop  stored image properties
  * @returns {Object}        fabric properties
  */
 export const toFabricImageProp = prop => {
@@ -342,6 +384,40 @@ export const toFabricImageProp = prop => {
 };
 
 /**
+ * Convert stored text properties to fabric properties
+ *
+ * @param   {Object}  prop  stored text properties
+ * @returns {Object}        fabric properties
+ */
+export const toFabricBackgroundProp = prop => {
+  const mapRules = {
+    data: {
+      type: {
+        name: 'objectType'
+      },
+      property: {
+        restrict: ['type']
+      }
+    },
+    restrict: [
+      'id',
+      'size',
+      'coord',
+      'categoryId',
+      'name',
+      'thumbnail',
+      'imageUrl',
+      'color',
+      'border',
+      'shadow',
+      'flip'
+    ]
+  };
+
+  return mapObject(prop, mapRules);
+};
+
+/**
  * Handle scroll to element's position with configs
  *
  * @param   {Ref}  el  Element need to scroll
@@ -358,3 +434,37 @@ export const scrollToElement = (el, opts) => {
     ...opts
   });
 };
+
+export const getRectDashes = (width, height, value, strokeWidth) => {
+  if (value === 'solid') {
+    return [];
+  }
+
+  const widthArray = getLineDashes(width, 0, 0, 0);
+  const heightArray = getLineDashes(0, height, 0, 0);
+  const res =
+    value === 'round'
+      ? [0, strokeWidth * 2, 0, strokeWidth * 2]
+      : [widthArray, 0, heightArray, 0, widthArray, 0, heightArray];
+  const dashArray = [].concat.apply([], res);
+  return dashArray;
+};
+// same as previous snippet except that it does return all the segment's dashes
+function getLineDashes(x1, y1, x2, y2) {
+  const length = Math.hypot(x2 - x1, y2 - y1); // ()
+  let dash_length = length / 8;
+  const nb_of_dashes = length / dash_length;
+
+  const dash_gap = dash_length * 0.66666;
+  dash_length -= dash_gap * 0.3333;
+
+  let total_length = 0;
+  const dasharray = [];
+  let next;
+  while (total_length < length) {
+    next = dasharray.length % 2 ? dash_gap : dash_length;
+    total_length += next;
+    dasharray.push(next);
+  }
+  return dasharray;
+}

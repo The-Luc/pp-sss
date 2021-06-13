@@ -23,3 +23,4 @@ export * from './textProperties';
 export * from './letterSpacing';
 export * from './lineSpacing';
 export * from './backgroundType';
+export * from './defaultFabricProperty';
