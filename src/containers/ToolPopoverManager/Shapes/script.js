@@ -14,6 +14,8 @@ import { usePopoverCreationTool } from '@/hooks';
 import { cloneDeep } from 'lodash';
 import { isEmpty } from '@/common/utils';
 
+import { SHAPES } from '@/mock/shapes';
+
 export default {
   components: {
     PpToolPopover,
@@ -43,7 +45,7 @@ export default {
       return this.chosenShapes;
     },
     shapes() {
-      return [];
+      return SHAPES;
     }
   },
   watch: {
@@ -70,10 +72,16 @@ export default {
      * Set up inital data to render in view
      */
     initData() {
-      this.chosenShapes = {};
+      this.chosenShapes = [];
     },
     onSelectShape(data) {
-      this.chosenShapes = data;
+      const index = this.chosenShapes.findIndex(s => s.id === data.id);
+
+      if (index >= 0) {
+        this.chosenShapes.splice(index, 1);
+      } else {
+        this.chosenShapes.push(data);
+      }
     },
     /**
      * Trigger hooks to set tool name is empty and then close popover when click Cancel button

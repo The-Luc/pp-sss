@@ -1,11 +1,11 @@
 .shape-item {
-  padding: 10px 10px 5px;
-  margin-right: 13px;
   position: relative;
+  width: 115px;
+  height: 108px;
+  margin-right: 12.5px;
+  margin-bottom: 12.5px;
   border: 1px solid #afafaf;
   cursor: pointer;
-  margin-bottom: 20px;
-  width: 228px;
 
   .border-inside {
     width: 100%;
@@ -25,20 +25,14 @@
   }
 
   .shape-preview-img {
+    height: 100%;
     display: flex;
     justify-content: center;
 
     img {
-      height: 133px;
-      object-fit: cover;
-
-      &.single-page {
-        width: 103px;
-      }
-
-      &.full-page {
-        width: 100%;
-      }
+      width: 70px;
+      height: auto;
+      object-fit: fill;
     }
   }
 

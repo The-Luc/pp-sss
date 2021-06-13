@@ -2,17 +2,13 @@
   <div
     v-if="!isEmpty"
     class="shape-item"
-    :class="{ 'shape-item-active': selectedVal.id === item.id }"
+    :class="{ 'shape-item-active': isSelected }"
     @click="onClick"
   >
     <div class="border-inside"></div>
 
     <div class="shape-preview-img">
       <img :src="item.property.thumbnail" alt="shape-preview" />
-    </div>
-
-    <div class="shape-preview-img-footer">
-      <span class="shape-name">{{ item.property.name }}</span>
     </div>
   </div>
 

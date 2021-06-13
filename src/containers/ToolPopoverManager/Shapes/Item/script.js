@@ -1,4 +1,4 @@
-import { BACKGROUND_PAGE_TYPE } from '@/common/constants';
+import { isEmpty } from '@/common/utils';
 
 export default {
   props: {
@@ -8,7 +8,7 @@ export default {
     },
     selectedVal: {
       type: Array,
-      default: () => [{ id: '', property: {} }]
+      default: () => []
     },
     isEmpty: {
       type: Boolean,
@@ -17,7 +17,11 @@ export default {
   },
   computed: {
     isSelected() {
-      return false;
+      if (isEmpty(this.selectedVal)) return false;
+
+      const selected = this.selectedVal.find(s => s.id === this.item.id);
+
+      return !isEmpty(selected);
     }
   },
   methods: {
