@@ -377,12 +377,12 @@ const applyTextRectProperties = function(textObject, prop, groupSelected) {
 };
 
 /**
- * Get
+ * Calculate shadow base on config from user
  * @param {Boolean} dropShadow - have shadow or not
  * @param {Number} shadowBlur - the level of blur in pt
- * @param {Number} shadowOffset - the level of blur in pt
- * @param {Number} shadowOpacity - the level of blur in pt
- * @param {Number} shadowAngle - the level of blur in pt
+ * @param {Number} shadowOffset - the offset in pt
+ * @param {Number} shadowOpacity - the opacity of the shadow
+ * @param {Number} shadowAngle - the angle to apply shadow
  * @param {String} shadowColor - the color to apply to shadow
  * @returns {Object} the Fabric Shadow Object
  */
