@@ -4,6 +4,7 @@ import Opacity from './Opacity';
 import Border from './Border';
 import Shadow from './Shadow';
 import { GETTERS } from '@/store/modules/book/const';
+import { DEFAULT_TEXT } from '@/common/constants';
 
 export default {
   components: {
@@ -73,10 +74,20 @@ export default {
     },
     /**
      * Receive value border from children
-     * @param   {Object}  value Value user selecte
+     * @param   {Object}  data Value user selecte
      */
-    onChangeBorder(value) {
-      this.selectedBorder = value;
+    onChangeBorder(data) {
+      if (data.value === 'noBorder') {
+        this.$root.$emit('printChangeTextProperties', {
+          border: {
+            stroke: DEFAULT_TEXT.BORDER.STROKE,
+            strokeDashArray: DEFAULT_TEXT.BORDER.STROKE_DASH_ARRAY,
+            strokeLineCap: DEFAULT_TEXT.BORDER.STROKE_LINE_CAP,
+            strokeWidth: DEFAULT_TEXT.BORDER.STROKE_WIDTH
+          }
+        });
+      }
+      this.selectedBorder = data;
     },
     /**
      * Receive value shadow from children
