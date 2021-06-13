@@ -16,6 +16,7 @@ import {
   DEFAULT_TEXT,
   TEXT_VERTICAL_ALIGN
 } from '@/common/constants';
+import { relativeTimeRounding } from 'moment';
 
 /**
  * Handle creating a TextBox into canvas
@@ -91,44 +92,42 @@ export const createTextBox = (x, y, width, height) => {
 
   const handleScaling = e => {
     const target = e.transform?.target;
-    if (target) {
-      text.set('width', target.width);
-      if (target.width < text.width) {
-        target.set('width', text.width);
-      }
-      if (target.height < text.height) {
-        target.set('height', text.height);
-      }
+    if (isEmpty(target)) return;
+    text.set('width', target.width);
+    if (target.width < text.width) {
+      target.set('width', text.width);
+    }
+    if (target.height < text.height) {
+      target.set('height', text.height);
     }
   };
 
   const handleScaled = e => {
     const target = e.transform?.target;
-    if (target) {
-      const textData = {
-        top: target.height * -0.5, // TEXT_VERTICAL_ALIGN.TOP
-        left: target.width * -0.5,
-        width: target.width
-      };
+    if (isEmpty(target)) return;
+    const textData = {
+      top: target.height * -0.5, // TEXT_VERTICAL_ALIGN.TOP
+      left: target.width * -0.5,
+      width: target.width
+    };
 
-      text.set(textData);
+    text.set(textData);
 
-      const {
-        width: adjustedWidth,
-        height: adjustedHeight
-      } = getAdjustedTextDimension(text, target.width, target.height);
+    const {
+      width: adjustedWidth,
+      height: adjustedHeight
+    } = getAdjustedTextDimension(text, target.width, target.height);
 
-      textVerticalAlignOnAdjust(text, adjustedHeight);
+    textVerticalAlignOnAdjust(text, adjustedHeight);
 
-      const strokeWidth = rect.strokeWidth || 1;
+    const strokeWidth = rect.strokeWidth || 1;
 
-      rect.set({
-        top: target.height * -0.5,
-        left: target.width * -0.5,
-        width: adjustedWidth - strokeWidth,
-        height: adjustedHeight - strokeWidth
-      });
-    }
+    rect.set({
+      top: target.height * -0.5,
+      left: target.width * -0.5,
+      width: adjustedWidth - strokeWidth,
+      height: adjustedHeight - strokeWidth
+    });
   };
 
   const ungroup = function(g) {
@@ -142,13 +141,12 @@ export const createTextBox = (x, y, width, height) => {
 
   const handleDbClick = e => {
     const canvas = e.target.canvas;
-    if (canvas) {
-      ungroup(e.target);
-      updateTextListeners(canvas);
-      canvas.setActiveObject(text);
-      text.enterEditing();
-      text.selectAll();
-    }
+    if (isEmpty(canvas)) return;
+    ungroup(e.target);
+    updateTextListeners(canvas);
+    canvas.setActiveObject(text);
+    text.enterEditing();
+    text.selectAll();
   };
 
   const addGroupEvents = g => {
@@ -181,13 +179,12 @@ const getAdjustedTextDimension = function(text, targetWidth, targetHeight) {
  * @param {Number} rectHeight - the new rect height to align text
  */
 export const textVerticalAlignOnAdjust = function(text, rectHeight) {
-  if (text.height !== rectHeight) {
-    if (text.verticalAlign === TEXT_VERTICAL_ALIGN.MIDDLE) {
-      text.set({ top: text.top + (rectHeight - text.height) / 2 });
-    }
-    if (text.verticalAlign === TEXT_VERTICAL_ALIGN.BOTTOM) {
-      text.set({ top: text.top + (rectHeight - text.height) });
-    }
+  if (text.height === rectHeight) return;
+  if (text.verticalAlign === TEXT_VERTICAL_ALIGN.MIDDLE) {
+    text.set({ top: text.top + (rectHeight - text.height) / 2 });
+  }
+  if (text.verticalAlign === TEXT_VERTICAL_ALIGN.BOTTOM) {
+    text.set({ top: text.top + (rectHeight - text.height) });
   }
 };
 
@@ -196,24 +193,23 @@ export const textVerticalAlignOnAdjust = function(text, rectHeight) {
  * @param {Object} text - the Fabric text object
  */
 export const textVerticalAlignOnApplyProperty = function(text) {
-  if (text.group && text.height !== text.group.height) {
-    switch (text.verticalAlign) {
-      case TEXT_VERTICAL_ALIGN.MIDDLE:
-        text.set({
-          top: text.group.height * -0.5 + (text.group.height - text.height) / 2
-        });
-        break;
-      case TEXT_VERTICAL_ALIGN.BOTTOM:
-        text.set({
-          top: text.group.height * -0.5 + (text.group.height - text.height)
-        });
-        break;
-      default:
-        text.set({
-          top: text.group.height * -0.5
-        });
-        break;
-    }
+  if (!text.group || text.height === text.group.height) return;
+  switch (text.verticalAlign) {
+    case TEXT_VERTICAL_ALIGN.MIDDLE:
+      text.set({
+        top: text.group.height * -0.5 + (text.group.height - text.height) / 2
+      });
+      break;
+    case TEXT_VERTICAL_ALIGN.BOTTOM:
+      text.set({
+        top: text.group.height * -0.5 + (text.group.height - text.height)
+      });
+      break;
+    default:
+      text.set({
+        top: text.group.height * -0.5
+      });
+      break;
   }
 };
 
