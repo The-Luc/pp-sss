@@ -6,12 +6,14 @@ import { TOOL_NAME } from '@/common/constants';
 import Themes from './Themes';
 import Layouts from './Layouts';
 import Backgrounds from './Backgrounds';
+import ClipArt from './ClipArt';
 
-const { THEMES, LAYOUTS, BACKGROUNDS } = TOOL_NAME;
+const { THEMES, LAYOUTS, BACKGROUNDS, CLIP_ART } = TOOL_NAME;
 
 const ToolList = {
   [THEMES]: THEMES,
   [LAYOUTS]: LAYOUTS,
+  [CLIP_ART]: CLIP_ART,
   [BACKGROUNDS]: BACKGROUNDS
 };
 
@@ -25,6 +27,7 @@ export default {
   components: {
     [TOOL_NAME.THEMES]: Themes,
     [TOOL_NAME.LAYOUTS]: Layouts,
+    [TOOL_NAME.CLIP_ART]: ClipArt,
     [TOOL_NAME.BACKGROUNDS]: Backgrounds
   },
   computed: {

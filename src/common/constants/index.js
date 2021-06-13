@@ -23,4 +23,5 @@ export * from './textProperties';
 export * from './letterSpacing';
 export * from './lineSpacing';
 export * from './backgroundType';
+export * from './clipArtType';
 export * from './defaultFabricProperty';
