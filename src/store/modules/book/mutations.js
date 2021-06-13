@@ -522,5 +522,21 @@ export const mutations = {
   },
   [BOOK._MUTATES.UPDATE_TRIGGER_BACKGROUND_CHANGE](state) {
     state.triggerBackgroundChange = !state.triggerBackgroundChange;
+  },
+  [BOOK._MUTATES.DELETE_OBJECT](state, { id, sheetId }) {
+    const sheets = getAllSheets(state.book.sections);
+    const sheet = sheets.find(s => s.id === sheetId);
+
+    if (isEmpty(sheet) && isEmpty(sheet.printData.layout)) return;
+
+    sheet.printData.layout.pages.forEach(p => {
+      if (isEmpty(p.objects)) return;
+
+      const index = p.objects.indexOf(id);
+
+      if (index >= 0) p.objects.splice(index, 1);
+    });
+
+    delete state.objects[id];
   }
 };
