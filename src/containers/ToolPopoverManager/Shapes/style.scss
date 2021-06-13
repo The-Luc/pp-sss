@@ -1,5 +1,5 @@
-.backgrounds-container {
-  &.empty-background-container {
+.shapes-container {
+  &.empty-shape-container {
     font-size: 25px;
     width: 100%;
     text-align: center;
@@ -8,12 +8,12 @@
       overflow: hidden;
     }
 
-    .empty-background-content {
+    .empty-shape-content {
       display: flex;
       flex-wrap: wrap;
       position: relative;
 
-      .empty-background-text {
+      .empty-shape-text {
         display: flex;
         justify-content: center;
         width: calc(100% - 21px);
@@ -23,7 +23,7 @@
         top: 50px;
       }
 
-      .background-item {
+      .shape-item {
         min-width: 225px;
         height: 172px;
         margin-right: 20px;
@@ -32,13 +32,17 @@
     }
   }
 
-  .tool-popover-header {
-    &::before {
-      left: 124px;
+  .tool-popover-container {
+    width: 582px;
+
+    .tool-popover-header {
+      &::before {
+        left: 247px;
+      }
     }
   }
 
-  .pp-backgrounds-action-container {
+  .pp-shapes-action-container {
     display: flex;
     padding: 0 18px 0 10px;
     height: 45px;
@@ -46,7 +50,7 @@
     border-bottom: 1px solid #bcbec0;
   }
 
-  .background-item-container {
+  .shape-item-container {
     display: flex;
     justify-content: space-between;
     padding: 20px 25px 65px;

@@ -203,9 +203,7 @@ export default {
   },
   watch: {
     selectedToolName(val) {
-      if (val && val === TOOL_NAME.LAYOUTS) {
-        this.initData();
-      }
+      if (val === TOOL_NAME.BACKGROUNDS) this.initData();
     },
     currentSheet: {
       deep: true,

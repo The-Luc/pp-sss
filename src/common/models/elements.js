@@ -139,7 +139,6 @@ export const ShapeElement = {
   type: OBJECT_TYPE.SHAPE,
   property: {
     ...BasePrintProperty,
-    category: '',
     name: '',
     thumbnail: '',
     pathData: 'img.svg' // TODO: Need discuss with FM to get instruction on using shape

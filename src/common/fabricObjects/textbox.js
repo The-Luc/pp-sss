@@ -21,32 +21,35 @@ import {
 /**
  * Handle creating a TextBox into canvas
  */
-export const createTextBox = (x, y, width, height) => {
+export const createTextBox = (x, y, width, height, textProperties) => {
   const newText = cloneDeep(TextElement);
-  const id = uniqueId();
+  let isHasTextId = !!textProperties?.id;
+
   const dataObject = {
-    id,
+    id: isHasTextId ? textProperties?.id : uniqueId(),
     type: OBJECT_TYPE.TEXT,
     size: {
-      ...newText.size,
-      width,
-      height
+      width: isHasTextId ? textProperties.size.width : width,
+      height: isHasTextId ? textProperties.size.height : height
     },
     newObject: {
-      ...newText,
+      ...(isHasTextId ? { ...textProperties } : { ...newText }),
       coord: {
-        ...newText.coord,
-        x,
-        y
+        x: isHasTextId ? textProperties?.coord?.x : x,
+        y: isHasTextId ? textProperties?.coord?.y : y,
+        rotation: isHasTextId
+          ? textProperties?.coord?.rotation
+          : newText.coord.rotation
       }
     }
   };
 
   const textProp = toFabricTextProp(dataObject);
 
-  const text = new fabric.Textbox(DEFAULT_TEXT.TEXT, {
+  const textVal = dataObject?.newObject?.property?.text || DEFAULT_TEXT.TEXT;
+  const text = new fabric.Textbox(textVal, {
     ...textProp,
-    id,
+    id: dataObject.id,
     left: 0,
     top: 0,
     width,
@@ -57,7 +60,7 @@ export const createTextBox = (x, y, width, height) => {
   const {
     width: adjustedWidth,
     height: adjustedHeight
-  } = getAdjustedTextDimension(text, width, height);
+  } = getAdjustedObjectDimension(text, width, height);
 
   textVerticalAlignOnAdjust(text, adjustedHeight);
 
@@ -65,7 +68,7 @@ export const createTextBox = (x, y, width, height) => {
   const rect = new fabric.Rect({
     ...borderProp,
     type: OBJECT_TYPE.RECT,
-    id,
+    id: dataObject.id,
     width: adjustedWidth,
     height: adjustedHeight,
     left: 0,
@@ -75,7 +78,11 @@ export const createTextBox = (x, y, width, height) => {
     selectable: false
   });
 
-  const group = new fabric.Group([rect, text], { id, left: x, top: y });
+  const group = new fabric.Group([rect, text], {
+    id: dataObject.id,
+    left: x,
+    top: y
+  });
 
   const updateTextListeners = canvas => {
     if (text.editingExitedListener) return;
@@ -83,7 +90,7 @@ export const createTextBox = (x, y, width, height) => {
     const onDoneEditText = () => {
       canvas.remove(text);
       canvas.remove(rect);
-      const grp = new fabric.Group([rect, text], { id });
+      const grp = new fabric.Group([rect, text], { id: dataObject.id });
       canvas.add(grp);
       addGroupEvents(grp);
     };
@@ -119,7 +126,7 @@ export const createTextBox = (x, y, width, height) => {
     const {
       width: adjustedWidth,
       height: adjustedHeight
-    } = getAdjustedTextDimension(text, target.width, target.height);
+    } = getAdjustedObjectDimension(text, target.width, target.height);
 
     textVerticalAlignOnAdjust(text, adjustedHeight);
 
@@ -178,7 +185,11 @@ export const createTextBox = (x, y, width, height) => {
  * @param {Number} targetHeight - the target height to compare
  * @returns {Object} dimensions { width, height } that text can use
  */
-const getAdjustedTextDimension = function(text, targetWidth, targetHeight) {
+export const getAdjustedObjectDimension = function(
+  text,
+  targetWidth,
+  targetHeight
+) {
   const width = text.width > targetWidth ? text.width : targetWidth;
   const height = text.height > targetHeight ? text.height : targetHeight;
   return { width, height };
