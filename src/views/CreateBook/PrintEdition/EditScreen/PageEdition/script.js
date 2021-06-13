@@ -19,7 +19,8 @@ import {
   createTextBox,
   applyTextBoxProperties,
   addPrintBackground as insertBackground,
-  updatePrintBackground as updateBackground
+  updatePrintBackground as updateBackground,
+  getAdjustedObjectDimension
 } from '@/common/fabricObjects';
 
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
@@ -454,12 +455,18 @@ export default {
       new fabric.Image.fromURL(
         require('../../../../../assets/image/content-placeholder.jpg'),
         image => {
+          const {
+            width: adjustedWidth,
+            height: adjustedHeight
+          } = getAdjustedObjectDimension(image, width, height);
+
           image.set({
             left: x,
             top: y
           });
-          image.scaleX = width / image.width;
-          image.scaleY = height / image.height;
+
+          image.scaleX = adjustedWidth / image.width;
+          image.scaleY = adjustedHeight / image.height;
 
           window.printCanvas.add(image);
 

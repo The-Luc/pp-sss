@@ -439,7 +439,9 @@ export const mutations = {
     state.objectSelectedId = id;
   },
   [BOOK._MUTATES.SET_PROP](state, { id, property }) {
-    merge(state.objects[id].property, property);
+    const currentProps = cloneDeep(state.objects[id].property);
+    const newProps = merge(currentProps, property);
+    state.objects[id].property = newProps;
   },
   [BOOK._MUTATES.ADD_OBJECT](state, { id, newObject }) {
     state.objects[id] = newObject;
