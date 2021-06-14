@@ -287,7 +287,7 @@ export default {
           // Show choose layout modal
           const { numberPageLeft, numberPageRight } = this.numberPage(
             this.sectionId,
-            this.pageSelected
+            this.pageSelected.id
           );
 
           this.onCancel();

@@ -319,12 +319,13 @@ const applyTextProperties = function(textObject, prop) {
     }
 
     if (prop['textCase'] === TEXT_CASE.CAPITALIZE) {
-      const changedText = textString
-        .split(' ')
-        .map(t => `${t.charAt(0).toUpperCase()}${t.toLowerCase().slice(1)}`)
-        .join(' ');
-
-      text.set('text', changedText);
+      const changedText = textString.split('');
+      for (let i = 0; i < changedText.length; i++) {
+        changedText[i] = isEmpty(changedText[i - 1])
+          ? changedText[i].toUpperCase()
+          : changedText[i].toLowerCase();
+      }
+      text.set('text', changedText.join(''));
     }
   }
 
