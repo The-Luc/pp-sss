@@ -400,8 +400,8 @@ const getShadowBaseOnConfig = function({
 
   const clr = Color(shadowColor).alpha(shadowOpacity).toString();
 
-  const adjustedAngle = (shadowAngle + 180) % 360;
-  const rad = adjustedAngle * Math.PI / 180;
+  const adjustedAngle = (shadowAngle) % 360;
+  const rad = -1 * adjustedAngle * Math.PI / 180;
 
   const offsetX = shadowOffset * Math.sin(rad);
   const offsetY = shadowOffset * Math.cos(rad);
