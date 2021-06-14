@@ -61,16 +61,17 @@ export default {
      * @param   {Object}  data Value user selecte
      */
     onChangeBorder(data) {
-      if (data.value === 'noBorder') {
-        this.$root.$emit('printChangeTextProperties', {
-          border: {
-            stroke: DEFAULT_TEXT.BORDER.STROKE,
-            strokeDashArray: DEFAULT_TEXT.BORDER.STROKE_DASH_ARRAY,
-            strokeLineCap: DEFAULT_TEXT.BORDER.STROKE_LINE_CAP,
-            strokeWidth: DEFAULT_TEXT.BORDER.STROKE_WIDTH
-          }
-        });
-      }
+      const border = {
+        stroke: DEFAULT_TEXT.BORDER.STROKE,
+        strokeDashArray: DEFAULT_TEXT.BORDER.STROKE_DASH_ARRAY,
+        strokeLineCap: DEFAULT_TEXT.BORDER.STROKE_LINE_CAP,
+        strokeWidth:
+          data.value === 'noBorder' ? DEFAULT_TEXT.BORDER.STROKE_WIDTH : 1
+      };
+
+      this.$root.$emit('printChangeTextProperties', {
+        border
+      });
       this.selectedBorder = data;
     },
     /**
