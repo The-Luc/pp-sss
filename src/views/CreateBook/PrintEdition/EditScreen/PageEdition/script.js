@@ -612,7 +612,8 @@ export default {
         };
       });
 
-      /*this.addNewBackground({
+      /* todo
+      this.addNewBackground({
         id,
         sheetId: this.pageSelected.id,
         newBackground
@@ -626,20 +627,7 @@ export default {
      * @param {Object}  prop  new prop
      */
     changeShapeProperties(prop) {
-      if (isEmpty(prop)) {
-        this.updateTriggerBackgroundChange();
-
-        return;
-      }
-
-      const background = window.printCanvas.getActiveObject();
-
-      if (isEmpty(background)) return;
-
-      this.setObjectProp({ id: this.selectedObjectId, property: prop });
-
-      this.updateTriggerBackgroundChange();
-
+      // todo
       //updatePrintShape({ background, prop, canvas: window.printCanvas });
     }
   }

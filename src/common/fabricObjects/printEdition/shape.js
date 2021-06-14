@@ -97,9 +97,7 @@ export const addPrintShapes = async (shapes, canvas) => {
   const zoom = window.printCanvas.getZoom();
 
   const svgs = await Promise.all(
-    shapes.map(s => {
-      return getSvgData(s.id, s.object, zoom);
-    })
+    shapes.map(s => getSvgData(s.id, s.object, zoom))
   );
 
   if (isEmpty(svgs) || svgs.length != shapes.length) return;
