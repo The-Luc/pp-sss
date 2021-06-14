@@ -200,7 +200,7 @@ export const getSvgData = (svgUrl, elementProperty, expectedHeight, zoom) => {
 };
 
 /**
- * Adding element to canvas
+ * Adding svg element to canvas
  *
  * @param {Object}  svg     svg data of will be added element
  * @param {Object}  canvas  the canvas contain new element
@@ -219,7 +219,7 @@ export const addSingleSvg = (
 };
 
 /**
- * Adding elements to canvas
+ * Adding svg elements to canvas
  *
  * @param {Array}   svgs    list of svg data of will be added element
  * @param {Object}  canvas  the canvas contain new element
