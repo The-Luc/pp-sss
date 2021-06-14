@@ -148,8 +148,8 @@ export const createTextBox = (x, y, width, height, textProperties) => {
     rect.set({
       top: target.height * -0.5,
       left: target.width * -0.5,
-      width: adjustedWidth - strokeWidth,
-      height: adjustedHeight - strokeWidth,
+      width: adjustedWidth - strokeWidth * 2,
+      height: adjustedHeight - strokeWidth * 2,
       strokeDashArray
     });
   };
@@ -319,13 +319,12 @@ const applyTextProperties = function(textObject, prop) {
     }
 
     if (prop['textCase'] === TEXT_CASE.CAPITALIZE) {
-      const changedText = textString.split('');
-      for (let i = 0; i < changedText.length; i++) {
-        changedText[i] = isEmpty(changedText[i - 1])
-          ? changedText[i].toUpperCase()
-          : changedText[i].toLowerCase();
-      }
-      text.set('text', changedText.join(''));
+      const changedText = textString
+        .split(' ')
+        .map(t => `${t.charAt(0).toUpperCase()}${t.toLowerCase().slice(1)}`)
+        .join(' ');
+
+      text.set('text', changedText);
     }
   }
 
