@@ -8,7 +8,9 @@ import {
   DEFAULT_FABRIC_BACKGROUND
 } from '@/common/constants';
 
-import { isEmpty, toFabricBackgroundProp } from '@/common/utils';
+import { updateElement, toFabricBackgroundProp } from '../common';
+
+import { isEmpty } from '@/common/utils';
 
 /**
  * Adding background to canvas
@@ -86,14 +88,6 @@ export const addPrintBackground = ({
  * @param {Object}  prop        new property
  * @param {Object}  canvas      the canvas contain background
  */
-export const updatePrintBackground = ({ background, prop, canvas }) => {
-  if (isEmpty(prop)) return;
-
-  const fabricProp = toFabricBackgroundProp(prop);
-
-  Object.keys(fabricProp).forEach(k => {
-    background.set(k, fabricProp[k]);
-  });
-
-  canvas.renderAll();
+export const updatePrintBackground = (background, prop, canvas) => {
+  updateElement(background, prop, canvas);
 };

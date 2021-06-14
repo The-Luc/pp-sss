@@ -93,6 +93,10 @@ export default {
      * Trigger mutation to add shapes
      */
     applyChosenShapes() {
+      if (isEmpty(this.chosenShapes)) return;
+
+      this.$root.$emit('printAddShapes', cloneDeep(this.chosenShapes));
+
       this.onClose();
     }
   }

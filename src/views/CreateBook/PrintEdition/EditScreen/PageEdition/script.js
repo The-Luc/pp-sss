@@ -19,9 +19,11 @@ import {
 import {
   createTextBox,
   applyTextBoxProperties,
-  addPrintBackground as insertBackground,
-  updatePrintBackground as updateBackground,
-  getAdjustedObjectDimension
+  addPrintBackground,
+  updatePrintBackground,
+  getAdjustedObjectDimension,
+  addPrintShapes,
+  updatePrintShape
 } from '@/common/fabricObjects';
 
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
@@ -30,7 +32,8 @@ import { GETTERS, MUTATES as BOOK_MUTATES } from '@/store/modules/book/const';
 import {
   ImageElement,
   BackgroundElement,
-  ClipArtElement
+  ClipArtElement,
+  ShapeElement
 } from '@/common/models';
 import {
   SHEET_TYPE,
@@ -201,10 +204,7 @@ export default {
         'object:scaling': e => {
           const objectFabricType = e.target.get('type');
           // Maybe update condition base on requirment
-          if (
-            objectFabricType !== FABRIC_OBJECT_TYPE.IMAGE &&
-            objectFabricType !== FABRIC_OBJECT_TYPE.CLIP_ART
-          ) {
+          if (objectFabricType === FABRIC_OBJECT_TYPE.TEXT) {
             const w = e.target.width;
             const h = e.target.height;
             const scaleX = e.target.scaleX;
@@ -265,6 +265,14 @@ export default {
 
       this.$root.$on('printChangeBackgroundProperties', prop => {
         this.changeBackgroundProperties(prop);
+      });
+
+      this.$root.$on('printAddShapes', shapes => {
+        this.addShapes(shapes);
+      });
+
+      this.$root.$on('printChangeShapeProperties', prop => {
+        this.changeShapeProperties(prop);
       });
 
       document.body.addEventListener('keyup', this.handleDeleteKey);
@@ -503,7 +511,7 @@ export default {
         newBackground
       });
 
-      insertBackground({
+      addPrintBackground({
         id,
         backgroundProp: newBackground,
         isLeftBackground: isLeft,
@@ -531,7 +539,7 @@ export default {
 
       this.updateTriggerBackgroundChange();
 
-      updateBackground({ background, prop, canvas: window.printCanvas });
+      updatePrintBackground(background, prop, window.printCanvas);
     },
     removeObject() {
       this.deleteObject({
@@ -588,6 +596,41 @@ export default {
           selectLatestObject(window.printCanvas);
         }, 500);
       }
+    },
+    /**
+     * Adding shapes to canvas & store
+     *
+     * @param {Array} shapes  list of object of adding shapes
+     */
+    addShapes(shapes) {
+      const tobeAddedShapes = shapes.map(s => {
+        const newShape = cloneDeep(ShapeElement);
+
+        merge(newShape, s);
+
+        return {
+          id: uniqueId(),
+          object: newShape
+        };
+      });
+
+      /* todo
+      this.addNewBackground({
+        id,
+        sheetId: this.pageSelected.id,
+        newBackground
+      });*/
+
+      addPrintShapes(tobeAddedShapes, window.printCanvas);
+    },
+    /**
+     * Event fire when user change any property of selected shape
+     *
+     * @param {Object}  prop  new prop
+     */
+    changeShapeProperties(prop) {
+      // todo
+      //updatePrintShape({ background, prop, canvas: window.printCanvas });
     }
   }
 };
