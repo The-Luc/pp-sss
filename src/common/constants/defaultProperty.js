@@ -44,6 +44,7 @@ export const DEFAULT_TEXT = {
   },
   LOCK_UNI_SCALE: false,
   OPACITY: 1,
+  EDITING_BORDER_COLOR: 'transparent',
   BORDER: {
     FILL: false,
     STROKE: '#000000',
