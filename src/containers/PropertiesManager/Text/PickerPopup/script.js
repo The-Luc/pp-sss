@@ -16,7 +16,8 @@ export default {
   },
   methods: {
     ...mapMutations({
-      setPresets: MUTATES.SET_COLOR_PICKER_PRESETS
+      setPresets: MUTATES.SET_COLOR_PICKER_PRESETS,
+      toggleColorPicker: MUTATES.TOGGLE_COLOR_PICKER
     }),
     /**
      * Method will be fired when the color of Color Picker is changed
@@ -33,6 +34,15 @@ export default {
      */
     addPreset(newPreset) {
       this.setPresets({ preset: newPreset });
+    },
+    /**
+     * Trigger mutation close color picker when click outside
+     *
+     */
+    onClosePicker() {
+      this.toggleColorPicker({
+        isopen: false
+      });
     }
   }
 };

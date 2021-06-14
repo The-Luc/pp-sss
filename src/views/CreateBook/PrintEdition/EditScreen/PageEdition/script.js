@@ -12,7 +12,8 @@ import {
   selectLatestObject,
   deleteSelectedObjects,
   toFabricClipArtProp,
-  getRectDashes
+  getRectDashes,
+  scaleSize
 } from '@/common/utils';
 
 import {
@@ -350,7 +351,7 @@ export default {
         strokeWidth
       );
       rectObj.set({
-        strokeWidth,
+        strokeWidth: scaleSize(strokeWidth),
         stroke,
         strokeLineCap,
         strokeDashArray: strokeDashArrayVal

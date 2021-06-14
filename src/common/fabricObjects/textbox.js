@@ -136,7 +136,7 @@ export const createTextBox = (x, y, width, height, textProperties) => {
       target.width,
       target.height,
       rect.strokeLineCap,
-      strokeWidth
+      dataObject.newObject.property.border.strokeWidth
     );
 
     rect.set({

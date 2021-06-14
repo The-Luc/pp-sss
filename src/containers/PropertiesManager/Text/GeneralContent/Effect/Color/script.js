@@ -48,13 +48,15 @@ export default {
      * Triggers mutation to toggle color picker popover
      */
     onOpenColorPicker() {
-      this.toggleColorPicker({
-        isOpen: !this.isOpenColorPicker,
-        data: {
-          eventName: 'colorChange',
-          color: this.color
-        }
-      });
+      if (!this.isOpenColorPicker) {
+        this.toggleColorPicker({
+          isOpen: !this.isOpenColorPicker,
+          data: {
+            eventName: 'colorChange',
+            color: this.color
+          }
+        });
+      }
     }
   }
 };
