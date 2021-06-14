@@ -290,17 +290,6 @@ export const mutations = {
   [BOOK._MUTATES.TOGGLE_MENU_PROPERTIES](state, { isOpen }) {
     state.isOpenProperties = isOpen;
   },
-  [BOOK._MUTATES.TEXT_PROPERTIES](
-    state,
-    { bold, fontStyle, underLine, fontFamily, fontSize, textAlign }
-  ) {
-    state.textProperties.bold = bold;
-    state.textProperties.fontStyle = fontStyle;
-    state.textProperties.underLine = underLine;
-    state.textProperties.fontFamily = fontFamily;
-    state.textProperties.fontSize = fontSize;
-    state.textProperties.textAlign = textAlign;
-  },
   [BOOK._MUTATES.UPDATE_SHEET_THEME_LAYOUT](
     state,
     { sheetId, themeId, layout, pagePosition }
@@ -449,7 +438,7 @@ export const mutations = {
   [BOOK._MUTATES.UPDATE_TRIGGER_TEXT_CHANGE](state) {
     state.triggerTextChange = !state.triggerTextChange;
   },
-  [BOOK._MUTATES.ADD_BACKGROUND](
+  [BOOK._MUTATES.ADD_PRINT_BACKGROUND](
     state,
     { id, sheetId, isLeft = true, newBackground }
   ) {
@@ -525,7 +514,7 @@ export const mutations = {
   [BOOK._MUTATES.UPDATE_TRIGGER_BACKGROUND_CHANGE](state) {
     state.triggerBackgroundChange = !state.triggerBackgroundChange;
   },
-  [BOOK._MUTATES.DELETE_OBJECT](state, { id, sheetId }) {
+  [BOOK._MUTATES.DELETE_PRINT_OBJECT](state, { id, sheetId }) {
     const sheets = getAllSheets(state.book.sections);
     const sheet = sheets.find(s => s.id === sheetId);
 

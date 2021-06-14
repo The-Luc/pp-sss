@@ -1,7 +1,8 @@
+import { fabric } from 'fabric';
+
 import { OBJECT_TYPE } from '@/common/constants';
 
-import { cloneDeep, merge } from 'lodash';
-import { isEmpty, mapObject, scaleSize, mergeArray } from '@/common/utils';
+import { isEmpty, mapObject, scaleSize } from '@/common/utils';
 
 const DEFAULT_RULE_DATA = {
   TYPE: {
@@ -124,9 +125,135 @@ export const updateElement = (element, prop, canvas) => {
 
   const fabricProp = getFabricProp(element.objectType, prop);
 
-  Object.keys(fabricProp).forEach(k => {
-    element.set(k, fabricProp[k]);
-  });
+  setElementProp(fabricProp);
 
   canvas.renderAll();
+};
+
+/**
+ * Update element property (include group)
+ *
+ * @param {Object}  element the selected element
+ * @param {Object}  prop    new property
+ */
+export const setElementProp = (element, prop) => {
+  element.set(prop);
+
+  if (element.getObjects) element.getObjects().forEach(o => o.set(prop));
+};
+
+/**
+ * Move the element to the center of the page
+ *
+ * @param {Object}  element             the element will be change property
+ * @param {Boolean} isAddedToSinglePage is container a single page
+ * @param {Boolean} isPlaceInLeftPage   is place in left single page
+ */
+export const moveToCenterPage = (
+  element,
+  isAddedToSinglePage = false,
+  isPlaceInLeftPage = false
+) => {
+  element.viewportCenter().setCoords();
+
+  if (!isAddedToSinglePage) return;
+
+  const ratio = isPlaceInLeftPage ? 0.5 : 1.5;
+
+  element.set('left', element.get('left') * ratio).setCoords();
+};
+
+/**
+ * Get svg data
+ *
+ * @param {String}  svgUrl          the url of svg file
+ * @param {Object}  elementProperty the fabric property of element
+ * @param {Number}  expectedHeight  the view height of svg element
+ * @param {Number}  zoom            current zoom of canvas
+ */
+export const getSvgData = (svgUrl, elementProperty, expectedHeight, zoom) => {
+  return new Promise(resolve => {
+    fabric.loadSVGFromURL(svgUrl, (objects, options) => {
+      const svg = fabric.util.groupSVGElements(objects, options);
+
+      const scale = scaleSize(expectedHeight) / zoom / svg.height;
+
+      svg.set({
+        ...elementProperty,
+        width: svg.width,
+        height: svg.height,
+        originX: 'center',
+        originY: 'center',
+        scaleX: scale,
+        scaleY: scale
+      });
+
+      const { fill, stroke } = svg;
+
+      setElementProp(svg, { fill, stroke });
+
+      resolve(svg);
+    });
+  });
+};
+
+/**
+ * Adding element to canvas
+ *
+ * @param {Object}  svg     svg data of will be added element
+ * @param {Object}  canvas  the canvas contain new element
+ */
+export const addSingleSvg = (
+  svg,
+  canvas,
+  isAddedToSinglePage,
+  isPlaceInLeftPage
+) => {
+  canvas.add(svg);
+
+  canvas.bringToFront(svg);
+
+  moveToCenterPage(svg, isAddedToSinglePage, isPlaceInLeftPage);
+};
+
+/**
+ * Adding elements to canvas
+ *
+ * @param {Array}   svgs    list of svg data of will be added element
+ * @param {Object}  canvas  the canvas contain new element
+ */
+export const addMultiSvg = (
+  svgs,
+  canvas,
+  isAddedToSinglePage,
+  isPlaceInLeftPage
+) => {
+  let left = 0;
+
+  svgs.forEach(s => {
+    s.set({ left });
+
+    left += scaleSize(11) + s.width * s.scaleX;
+  });
+
+  const group = new fabric.Group(svgs, {
+    originX: 'center',
+    originY: 'center'
+  });
+
+  group.setCoords();
+
+  canvas.add(group);
+
+  moveToCenterPage(group, isAddedToSinglePage, isPlaceInLeftPage);
+
+  group.getObjects().forEach(item => {
+    canvas.add(item);
+
+    canvas.bringToFront(item);
+  });
+
+  group.destroy();
+
+  canvas.remove(group);
 };

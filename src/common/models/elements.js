@@ -141,6 +141,8 @@ export const ShapeElement = {
     ...BasePrintProperty,
     name: '',
     thumbnail: '',
-    pathData: 'img.svg' // TODO: Need discuss with FM to get instruction on using shape
+    pathData: 'img.svg', // TODO: Need discuss with FM to get instruction on using shape
+    color: DEFAULT_PROP.COLOR,
+    stroke: DEFAULT_PROP.COLOR
   }
 };
