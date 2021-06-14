@@ -13,6 +13,10 @@ export default {
     value: {
       type: Number,
       default: 0
+    },
+    suffix: {
+      type: String,
+      default: '%'
     }
   },
   components: {

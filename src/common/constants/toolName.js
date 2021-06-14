@@ -5,5 +5,6 @@ export const TOOL_NAME = {
   CLIP_ART: 'ClipArt',
   IMAGE_BOX: 'ImageBox',
   TEXT: 'Text',
-  BACKGROUNDS: 'Backgrounds'
+  BACKGROUNDS: 'Backgrounds',
+  SHAPES: 'Shapes'
 };

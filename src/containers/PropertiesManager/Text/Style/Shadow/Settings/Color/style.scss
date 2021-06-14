@@ -1,0 +1,24 @@
+.shadow-color-picker-container {
+  margin-left: 15px;
+  .color-container {
+    display: flex;
+    align-items: center;
+    .properties-title {
+      margin: 0;
+      padding: 0 7px 0 0;
+    }
+  }
+  .color-content {
+    .box-color {
+      width: 80px !important;
+      &-active {
+        width: 100% !important;
+        margin: 0 6px !important;
+      }
+    }
+  }
+}
+.color-picker-container.color-picker-shadow-text {
+  top: 225px;
+  right: 170px;
+}

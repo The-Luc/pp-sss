@@ -39,7 +39,7 @@ export default {
           },
           {
             iconName: 'texture',
-            title: 'Backgrounds',
+            title: TOOL_NAME.BACKGROUNDS,
             name: TOOL_NAME.BACKGROUNDS
           },
           {
@@ -51,8 +51,8 @@ export default {
         [
           {
             iconName: 'star',
-            title: 'Shapes',
-            name: 'shapes'
+            title: TOOL_NAME.SHAPES,
+            name: TOOL_NAME.SHAPES
           },
           {
             iconName: 'text_format',
@@ -191,6 +191,11 @@ export default {
         case TOOL_NAME.BACKGROUNDS:
           this.setToolNameSelected({
             name: TOOL_NAME.BACKGROUNDS
+          });
+          break;
+        case TOOL_NAME.SHAPES:
+          this.setToolNameSelected({
+            name: TOOL_NAME.SHAPES
           });
           break;
         default:

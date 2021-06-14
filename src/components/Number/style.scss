@@ -63,6 +63,8 @@
       }
 
       .v-text-field__suffix {
+        text-transform: none;
+        white-space: pre;
         padding-left: 0;
         color: #58595b;
       }

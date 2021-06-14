@@ -33,13 +33,17 @@
             v-show="backgrounds.length === 0"
             class="empty-background-content"
           >
-            <p class="empty-background-text">No Background</p>
+            <div class="empty-background-text">
+              <span>No Background</span>
+            </div>
+
             <Item
               v-for="(background, index) in noBackgroundLength"
               :key="index"
               is-empty
             />
           </div>
+
           <Item
             v-for="background in backgrounds"
             :ref="`background${background.id}`"
