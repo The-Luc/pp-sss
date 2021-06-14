@@ -1,3 +1,5 @@
+import { CORNER_SIZE } from '@/common/constants';
+
 /**
  * Change cursor in mtl corner by override drawControls in fabric
  *
@@ -6,6 +8,7 @@
  */
 export const useDrawControls = object => {
   object.drawControls = function(ctx, styleOverride) {
+    const rotationIcon = require('@/assets/icons/rotation.svg');
     styleOverride = styleOverride || {};
     ctx.save();
     ctx.setTransform(
@@ -31,7 +34,8 @@ export const useDrawControls = object => {
     this.forEachControl(function(control, key, fabricObject) {
       if (control.getVisibility(fabricObject, key)) {
         if (control.actionName === 'rotate') {
-          control.cursorStyleHandler = () => 'w-resize';
+          control.cursorStyleHandler = () =>
+            `url(${rotationIcon}) ${CORNER_SIZE} ${CORNER_SIZE}, auto`;
         }
         control.render(
           ctx,
