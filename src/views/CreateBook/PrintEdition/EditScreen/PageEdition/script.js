@@ -200,20 +200,6 @@ export default {
         'selection:updated': this.objectSelected,
         'selection:cleared': this.closeProperties,
         'selection:created': this.objectSelected,
-        'object:scaling': e => {
-          const objectFabricType = e.target.get('type');
-          // Maybe update condition base on requirment
-          if (objectFabricType === FABRIC_OBJECT_TYPE.TEXT) {
-            const w = e.target.width;
-            const h = e.target.height;
-            const scaleX = e.target.scaleX;
-            const scaleY = e.target.scaleY;
-            e.target.set('scaleX', 1);
-            e.target.set('scaleY', 1);
-            e.target.set('width', w * scaleX);
-            e.target.set('height', h * scaleY);
-          }
-        },
         'mouse:down': e => {
           if (this.awaitingAdd) {
             this.$root.$emit('printInstructionEnd');
