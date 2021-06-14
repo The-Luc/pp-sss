@@ -30,14 +30,15 @@ const DEFAULT_RULE_DATA = {
   }
 };
 
-const DEFAULT_RULE_RESTRICT = ['id', 'name'];
+// TODO use later
+/* const DEFAULT_RULE_RESTRICT = ['id', 'name'];
 
 const NORMAL_RULES = {
   data: {
     type: DEFAULT_RULE_DATA.TYPE
   },
   restrict: DEFAULT_RULE_RESTRICT
-};
+}; */
 
 /**
  * Convert stored properties to fabric properties
@@ -166,10 +167,11 @@ export const moveToCenterPage = (
 /**
  * Get svg data
  *
- * @param {String}  svgUrl          the url of svg file
- * @param {Object}  elementProperty the fabric property of element
- * @param {Number}  expectedHeight  the view height of svg element
- * @param {Number}  zoom            current zoom of canvas
+ * @param   {String}  svgUrl          the url of svg file
+ * @param   {Object}  elementProperty the fabric property of element
+ * @param   {Number}  expectedHeight  the view height of svg element
+ * @param   {Number}  zoom            current zoom of canvas
+ * @returns {Object}                  the svg data
  */
 export const getSvgData = (svgUrl, elementProperty, expectedHeight, zoom) => {
   return new Promise(resolve => {

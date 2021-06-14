@@ -1,6 +1,6 @@
 import Select from '@/components/Select';
-import BorderStyle from './Settings/Style';
-import BorderColor from './Settings/Color';
+import BorderStyle from '@/containers/Property/Style';
+import BorderColor from '@/containers/Property/Color';
 import BorderThickness from './Settings/Thickness';
 import { getRectDashes } from '@/common/utils';
 

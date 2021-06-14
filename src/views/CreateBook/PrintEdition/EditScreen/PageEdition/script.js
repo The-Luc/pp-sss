@@ -37,7 +37,7 @@ import {
 } from '@/common/models';
 import {
   SHEET_TYPE,
-  FABRIC_OBJECT_TYPE,
+  // FABRIC_OBJECT_TYPE,
   OBJECT_TYPE,
   CORNER_SIZE,
   HALF_SHEET,
@@ -610,6 +610,11 @@ export default {
      */
     changeShapeProperties(prop) {
       // todo
+      const shape = window.printCanvas.getActiveObject();
+
+      if (isEmpty(shape)) return;
+
+      updatePrintShape(shape, prop, window.printCanvas);
     }
   }
 };
