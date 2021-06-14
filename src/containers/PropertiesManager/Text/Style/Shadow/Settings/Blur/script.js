@@ -11,6 +11,7 @@ export default {
       required: true
     }
   },
+
   methods: {
     onChange(val) {
       const { isValid, value } = validateInputOption(val, 0, 100, 0);

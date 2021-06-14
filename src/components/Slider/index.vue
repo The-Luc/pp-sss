@@ -16,7 +16,13 @@
         @input="onChangeSlider"
       >
       </v-slider>
-      <PpNumber :value="value" :max="max" :min="min" @change="onChangeInput" />
+      <PpNumber
+        :suffix="suffix"
+        :value="value"
+        :max="max"
+        :min="min"
+        @change="onChangeInput"
+      />
     </div>
   </div>
 </template>

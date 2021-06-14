@@ -7,6 +7,15 @@ export const DEFAULT_PROP = {
   COLOR: '#000000'
 };
 
+export const DEFAULT_SHADOW = {
+  DROP_SHADOW: false,
+  BLUR: 5,
+  OFFSET: 2,
+  OPACITY: 0.5,
+  ANGLE: 270,
+  COLOR: '#000000'
+};
+
 export const DEFAULT_TEXT = {
   TEXT: 'Text',
   COORD: {
@@ -41,6 +50,9 @@ export const DEFAULT_TEXT = {
     STROKE_WIDTH: 0,
     STROKE_DASH_ARRAY: [],
     STROKE_LINE_CAP: 'solid'
+  },
+  SHADOW: {
+    ...DEFAULT_SHADOW
   }
 };
 

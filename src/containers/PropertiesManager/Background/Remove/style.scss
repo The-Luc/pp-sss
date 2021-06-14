@@ -18,11 +18,8 @@
     border: 0.62px solid $color-stoodio-blue;
     box-shadow: none;
 
-    &:hover {
-      &::before {
-        opacity: 1;
-        background-color: $color-white !important;
-      }
+    &::before {
+      background-color: transparent !important;
     }
 
     img {
