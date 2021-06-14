@@ -1,4 +1,4 @@
-import { cloneDeep, merge } from 'lodash';
+import { cloneDeep, merge, intersection } from 'lodash';
 import moment from 'moment';
 
 import { DATE_FORMAT, MOMENT_TYPE } from '@/common/constants';
@@ -163,6 +163,17 @@ export const isEmpty = obj => {
 };
 
 /**
+ * Merge 2 arrays without duplicate
+ *
+ * @param   {Array} array1  first array to merge
+ * @param   {Array} array2  second array to merge
+ * @returns {Array}         after merge array
+ */
+export const mergeArray = (array1, array2) => {
+  return intersection([...array1, ...array2]);
+};
+
+/**
  * Map source object to other object using rules
  *
  * @param   {Object}  sourceObject  the source object is used to map
@@ -183,10 +194,19 @@ export const mapObject = (sourceObject, rules) => {
     }
 
     if (typeof sourceObject[k] === 'object') {
-      const useRules = cloneDeep(rules);
-      const subRules = isEmpty(rules.data[k]) ? {} : rules.data[k];
+      const isNoSubRule = isEmpty(rules.data[k]);
+      const isNoSubRuleData = isNoSubRule || isEmpty(rules.data[k].data);
+      const isNoSubRuleRestrict =
+        isNoSubRule || isEmpty(rules.data[k].restrict);
 
-      merge(useRules, subRules);
+      const subData = isNoSubRuleData ? {} : rules.data[k].data;
+      const subRestrict = isNoSubRuleRestrict ? [] : rules.data[k].restrict;
+
+      const useRules = cloneDeep(rules);
+
+      merge(useRules, subData);
+
+      useRules.restrict = mergeArray(useRules.restrict, subRestrict);
 
       const subObject = mapObject(sourceObject[k], useRules);
 
@@ -384,40 +404,6 @@ export const toFabricImageProp = prop => {
 };
 
 /**
- * Convert stored text properties to fabric properties
- *
- * @param   {Object}  prop  stored text properties
- * @returns {Object}        fabric properties
- */
-export const toFabricBackgroundProp = prop => {
-  const mapRules = {
-    data: {
-      type: {
-        name: 'objectType'
-      },
-      property: {
-        restrict: ['type']
-      }
-    },
-    restrict: [
-      'id',
-      'size',
-      'coord',
-      'categoryId',
-      'name',
-      'thumbnail',
-      'imageUrl',
-      'color',
-      'border',
-      'shadow',
-      'flip'
-    ]
-  };
-
-  return mapObject(prop, mapRules);
-};
-
-/**
  * Handle scroll to element's position with configs
  *
  * @param   {Ref}  el  Element need to scroll
@@ -466,6 +452,7 @@ export const getRectDashes = (width, height, value, strokeWidth) => {
   const dashArray = [].concat.apply([], res);
   return dashArray;
 };
+
 // same as previous snippet except that it does return all the segment's dashes
 function getLineDashes(x1, y1, x2, y2) {
   const length = Math.hypot(x2 - x1, y2 - y1); // ()
