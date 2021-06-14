@@ -1,6 +1,7 @@
 <template>
   <div :class="['color-picker-container', propsData.customClass]">
     <ColorPicker
+      v-click-outside="onClosePicker"
       :value="color"
       :preset-colors="presets"
       @input="updateColor"

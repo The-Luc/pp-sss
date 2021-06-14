@@ -41,14 +41,16 @@ export default {
       toggleColorPicker: MUTATES.TOGGLE_COLOR_PICKER
     }),
     onOpenColorPicker() {
-      this.toggleColorPicker({
-        isOpen: !this.isOpenColorPicker,
-        data: {
-          eventName: 'borderChange',
-          color: this.borderColor,
-          customClass: this.customClass
-        }
-      });
+      if (!this.isOpenColorPicker) {
+        this.toggleColorPicker({
+          isOpen: !this.isOpenColorPicker,
+          data: {
+            eventName: 'borderChange',
+            color: this.borderColor,
+            customClass: this.customClass
+          }
+        });
+      }
     }
   }
 };

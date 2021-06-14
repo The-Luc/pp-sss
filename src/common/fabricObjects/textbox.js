@@ -141,7 +141,7 @@ export const createTextBox = (x, y, width, height, textProperties) => {
       target.width,
       target.height,
       rect.strokeLineCap,
-      strokeWidth
+      dataObject.newObject.property.border.strokeWidth
     );
 
     rect.set({
@@ -398,10 +398,12 @@ const getShadowBaseOnConfig = function({
     return null;
   }
 
-  const clr = Color(shadowColor).alpha(shadowOpacity).toString();
+  const clr = Color(shadowColor)
+    .alpha(shadowOpacity)
+    .toString();
 
   const adjustedAngle = (shadowAngle + 180) % 360;
-  const rad = adjustedAngle * Math.PI / 180;
+  const rad = (adjustedAngle * Math.PI) / 180;
 
   const offsetX = shadowOffset * Math.sin(rad);
   const offsetY = shadowOffset * Math.cos(rad);

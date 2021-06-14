@@ -327,7 +327,8 @@ export const toFabricTextBorderProp = prop => {
         name: 'stroke'
       },
       strokeWidth: {
-        name: 'strokeWidth'
+        name: 'strokeWidth',
+        parse: value => scaleSize(value)
       },
       strokeDashArray: {
         name: 'strokeDashArray'
@@ -456,12 +457,11 @@ export const getRectDashes = (width, height, value, strokeWidth) => {
   if (value === 'solid') {
     return [];
   }
-
   const widthArray = getLineDashes(width, 0, 0, 0);
   const heightArray = getLineDashes(0, height, 0, 0);
   const res =
     value === 'round'
-      ? [0, strokeWidth * 2, 0, strokeWidth * 2]
+      ? [0, scaleSize(strokeWidth * 2), 0, scaleSize(strokeWidth * 2)]
       : [widthArray, 0, heightArray, 0, widthArray, 0, heightArray];
   const dashArray = [].concat.apply([], res);
   return dashArray;
