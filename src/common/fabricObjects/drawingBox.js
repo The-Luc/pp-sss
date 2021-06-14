@@ -1,4 +1,5 @@
 import { fabric } from 'fabric';
+import { DEFAULT_TEXT } from '../constants';
 
 export const startDrawBox = (canvas, event) =>
   new Promise(resolve => {
@@ -52,3 +53,27 @@ export const startDrawBox = (canvas, event) =>
     canvas.on('mouse:move', onMouseMove);
     canvas.on('mouse:up', onMouseUp);
   });
+
+/**
+ * Toggle stroke of rect
+ * @param {Element} rect Rect object
+ * @param {Boolean} isShow Variable to decide show or hidden stroke, default is false
+ */
+export const toggleStroke = (rect, isShow = false) => {
+  if (!isShow) {
+    rect.set({
+      strokeWidth: 0
+    });
+    return;
+  }
+
+  rect.set({
+    strokeWidth: 1,
+    stroke: DEFAULT_TEXT.BORDER.STROKE,
+    strokeLineCap: DEFAULT_TEXT.BORDER.STROKE_LINE_CAP,
+    strokeDashArray: []
+  });
+  setTimeout(() => {
+    rect.canvas.renderAll();
+  });
+};

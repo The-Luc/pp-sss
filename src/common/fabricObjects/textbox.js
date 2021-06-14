@@ -18,6 +18,7 @@ import {
   DEFAULT_TEXT,
   TEXT_VERTICAL_ALIGN
 } from '@/common/constants';
+import { toggleStroke } from './drawingBox';
 
 /**
  * Handle creating a TextBox into canvas
@@ -91,8 +92,8 @@ export const createTextBox = (x, y, width, height, textProperties) => {
 
   const updateTextListeners = canvas => {
     if (text.editingExitedListener) return;
-
     const onDoneEditText = () => {
+      toggleStroke(rect, false);
       canvas.remove(text);
       canvas.remove(rect);
       const grp = new fabric.Group([rect, text], { id: dataObject.id });
@@ -147,8 +148,8 @@ export const createTextBox = (x, y, width, height, textProperties) => {
     rect.set({
       top: target.height * -0.5,
       left: target.width * -0.5,
-      width: adjustedWidth - strokeWidth,
-      height: adjustedHeight - strokeWidth,
+      width: adjustedWidth - strokeWidth * 2,
+      height: adjustedHeight - strokeWidth * 2,
       strokeDashArray
     });
   };
@@ -166,6 +167,7 @@ export const createTextBox = (x, y, width, height, textProperties) => {
     const canvas = e.target.canvas;
     if (isEmpty(canvas)) return;
     ungroup(e.target);
+    toggleStroke(rect, true);
     updateTextListeners(canvas);
     canvas.setActiveObject(text);
     text.enterEditing();
