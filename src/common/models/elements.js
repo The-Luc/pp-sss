@@ -78,6 +78,7 @@ export const TextElement = {
     lineHeight: DEFAULT_TEXT.LINE_HEIGHT,
     column: DEFAULT_TEXT.COLUMN,
     opacity: DEFAULT_TEXT.OPACITY,
+    editingBorderColor: DEFAULT_TEXT.EDITING_BORDER_COLOR,
     border: {
       fill: DEFAULT_TEXT.BORDER.FILL,
       stroke: DEFAULT_TEXT.BORDER.STROKE,
