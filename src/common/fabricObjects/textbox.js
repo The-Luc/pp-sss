@@ -112,16 +112,17 @@ export const createTextBox = (x, y, width, height, textProperties) => {
     const target = e.transform?.target;
     if (isEmpty(target)) return;
 
-    const w = target.width, h = target.height;
-    const scaleX = target.scaleX, scaleY = target.scaleY;
+    const { width: w, height: h, scaleX, scaleY } = target;
 
     const scaledWidth = w * scaleX;
     const scaledHeight = h * scaleY;
 
-    target.set('scaleX', 1);
-    target.set('scaleY', 1);
-    target.set('width', scaledWidth);
-    target.set('height', scaledHeight);
+    target.set({
+      scaleX: 1,
+      scaleY: 1,
+      width: scaledWidth,
+      height: scaledHeight
+    });
 
     if (scaledWidth < text.width) {
       target.set('width', text.width);
