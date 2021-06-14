@@ -5,7 +5,7 @@
     <PpNumber
       suffix="°"
       :value="value"
-      :max="270"
+      :max="360"
       :min="0"
       @change="onChange"
     />

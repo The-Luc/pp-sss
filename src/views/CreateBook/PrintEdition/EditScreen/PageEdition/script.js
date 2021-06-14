@@ -68,8 +68,7 @@ export default {
       origX: 0,
       origY: 0,
       currentRect: null,
-      rectObj: null,
-      groupSelected: null
+      rectObj: null
     };
   },
   computed: {
@@ -203,20 +202,6 @@ export default {
         'selection:updated': this.objectSelected,
         'selection:cleared': this.closeProperties,
         'selection:created': this.objectSelected,
-        'object:scaling': e => {
-          const objectFabricType = e.target.get('type');
-          // Maybe update condition base on requirment
-          if (objectFabricType === FABRIC_OBJECT_TYPE.TEXT) {
-            const w = e.target.width;
-            const h = e.target.height;
-            const scaleX = e.target.scaleX;
-            const scaleY = e.target.scaleY;
-            e.target.set('scaleX', 1);
-            e.target.set('scaleY', 1);
-            e.target.set('width', w * scaleX);
-            e.target.set('height', h * scaleY);
-          }
-        },
         'mouse:down': e => {
           if (this.awaitingAdd) {
             this.$root.$emit('printInstructionEnd');
@@ -328,21 +313,9 @@ export default {
       this.setSelectedObjectId({ id: '' });
     },
     /**
-     * Reset stroke when click outside object or switch to another object
-     */
-    hideStrokeObject() {
-      this.rectObj.set({
-        strokeWidth: 0
-      });
-      this.rectObj = null;
-    },
-    /**
      * Close text properties modal
      */
     closeProperties() {
-      if (this.rectObj) {
-        this.hideStrokeObject();
-      }
       this.groupSelected = null;
       this.resetConfigTextProperties();
     },
@@ -350,10 +323,6 @@ export default {
      * Get border data from store and set to Rect object
      */
     setBorderObject(rectObj, objectData) {
-      if (this.rectObj) {
-        this.hideStrokeObject();
-      }
-      this.rectObj = rectObj;
       const { strokeWidth, stroke, strokeLineCap } = objectData.property.border;
       const strokeDashArrayVal = getRectDashes(
         rectObj.width,
@@ -397,7 +366,6 @@ export default {
       this.setBorderHighLight(target);
       const objectData = this.selectedObject(this.selectedObjectId);
       if (targetType === 'group') {
-        this.groupSelected = target;
         const rectObj = target.getObjects(OBJECT_TYPE.RECT)[0];
         this.setBorderObject(rectObj, objectData);
       }
@@ -416,7 +384,6 @@ export default {
      */
     addText(x, y, width, height) {
       const { object, data } = createTextBox(x, y, width, height);
-      this.groupSelected = object;
       this.addNewObject(data);
 
       window.printCanvas.add(object);
@@ -444,7 +411,7 @@ export default {
 
       this.updateTriggerTextChange();
 
-      applyTextBoxProperties(activeObj, prop, this.groupSelected);
+      applyTextBoxProperties(activeObj, prop);
     },
     /**
      * Event fire when user click on Image button on Toolbar to add new image on canvas
