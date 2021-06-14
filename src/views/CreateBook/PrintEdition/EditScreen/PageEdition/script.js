@@ -12,7 +12,8 @@ import {
   selectLatestObject,
   deleteSelectedObjects,
   toFabricClipArtProp,
-  getRectDashes
+  getRectDashes,
+  scaleSize
 } from '@/common/utils';
 
 import {
@@ -34,7 +35,8 @@ import {
 import {
   SHEET_TYPE,
   FABRIC_OBJECT_TYPE,
-  OBJECT_TYPE
+  OBJECT_TYPE,
+  CORNER_SIZE
 } from '@/common/constants';
 import SizeWrapper from '@/components/SizeWrapper';
 import PrintCanvasLines from './PrintCanvasLines';
@@ -186,7 +188,7 @@ export default {
       fabricPrototype.cornerColor = '#fff';
       fabricPrototype.borderColor = '#8C8C8C';
       fabricPrototype.borderSize = 1.25;
-      fabricPrototype.cornerSize = 9;
+      fabricPrototype.cornerSize = CORNER_SIZE;
       fabricPrototype.cornerStrokeColor = '#8C8C8C';
       fabricPrototype.transparentCorners = false;
       fabricPrototype.borderScaleFactor = 1.5;
@@ -350,7 +352,7 @@ export default {
         strokeWidth
       );
       rectObj.set({
-        strokeWidth,
+        strokeWidth: scaleSize(strokeWidth),
         stroke,
         strokeLineCap,
         strokeDashArray: strokeDashArrayVal
@@ -475,7 +477,7 @@ export default {
         {
           ...fabricProp,
           id,
-          cornerSize: 11,
+          cornerSize: CORNER_SIZE,
           lockUniScaling: false,
           crossOrigin: 'anonymous'
         }

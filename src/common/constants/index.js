@@ -25,3 +25,4 @@ export * from './lineSpacing';
 export * from './backgroundType';
 export * from './clipArtType';
 export * from './defaultFabricProperty';
+export * from './controls';

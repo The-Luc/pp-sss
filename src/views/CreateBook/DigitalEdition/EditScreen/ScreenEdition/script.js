@@ -2,6 +2,7 @@ import { fabric } from 'fabric';
 
 import { DIGITAL_CANVAS_SIZE } from '@/common/constants/canvas';
 import SizeWrapper from '@/components/SizeWrapper';
+import { CORNER_SIZE } from '@/common/constants';
 
 export default {
   components: {
@@ -30,7 +31,7 @@ export default {
       fabricPrototype.cornerColor = '#fff';
       fabricPrototype.borderColor = '#8C8C8C';
       fabricPrototype.borderSize = 1.25;
-      fabricPrototype.cornerSize = 9;
+      fabricPrototype.cornerSize = CORNER_SIZE;
       fabricPrototype.cornerStrokeColor = '#8C8C8C';
       fabricPrototype.transparentCorners = false;
       fabricPrototype.borderScaleFactor = 1.5;

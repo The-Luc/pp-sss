@@ -7,7 +7,7 @@ import StyleContent from './Style';
 import ArrangeContent from './Arrange';
 import PickerPopup from './PickerPopup';
 
-import { GETTERS, MUTATES } from '@/store/modules/app/const';
+import { MUTATES, GETTERS } from '@/store/modules/app/const';
 
 export default {
   components: {
@@ -25,7 +25,6 @@ export default {
   },
   methods: {
     ...mapMutations({
-      toggleColorPicker: MUTATES.TOGGLE_COLOR_PICKER,
       setColorPicker: MUTATES.SET_COLOR_PICKER_COLOR
     }),
     /**
@@ -35,9 +34,6 @@ export default {
       this.setColorPicker({
         tabActive: data
       });
-      if (this.isOpenColorPicker) {
-        this.toggleColorPicker({ isOpen: false });
-      }
     }
   }
 };

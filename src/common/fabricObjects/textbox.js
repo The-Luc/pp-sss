@@ -141,7 +141,7 @@ export const createTextBox = (x, y, width, height, textProperties) => {
       target.width,
       target.height,
       rect.strokeLineCap,
-      strokeWidth
+      dataObject.newObject.property.border.strokeWidth
     );
 
     rect.set({
@@ -317,12 +317,13 @@ const applyTextProperties = function(textObject, prop) {
     }
 
     if (prop['textCase'] === TEXT_CASE.CAPITALIZE) {
-      const changedText = textString
-        .split(' ')
-        .map(t => `${t.charAt(0).toUpperCase()}${t.toLowerCase().slice(1)}`)
-        .join(' ');
-
-      text.set('text', changedText);
+      const changedText = textString.split('');
+      for (let i = 0; i < changedText.length; i++) {
+        changedText[i] = isEmpty(changedText[i - 1])
+          ? changedText[i].toUpperCase()
+          : changedText[i].toLowerCase();
+      }
+      text.set('text', changedText.join(''));
     }
   }
 
@@ -398,10 +399,12 @@ const getShadowBaseOnConfig = function({
     return null;
   }
 
-  const clr = Color(shadowColor).alpha(shadowOpacity).toString();
+  const clr = Color(shadowColor)
+    .alpha(shadowOpacity)
+    .toString();
 
-  const adjustedAngle = (shadowAngle) % 360;
-  const rad = -1 * adjustedAngle * Math.PI / 180;
+  const adjustedAngle = shadowAngle % 360;
+  const rad = (-1 * adjustedAngle * Math.PI) / 180;
 
   const offsetX = shadowOffset * Math.sin(rad);
   const offsetY = shadowOffset * Math.cos(rad);
