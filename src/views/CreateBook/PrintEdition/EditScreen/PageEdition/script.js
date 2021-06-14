@@ -326,21 +326,9 @@ export default {
       this.setSelectedObjectId({ id: '' });
     },
     /**
-     * Reset stroke when click outside object or switch to another object
-     */
-    hideStrokeObject() {
-      this.rectObj.set({
-        strokeWidth: 0
-      });
-      this.rectObj = null;
-    },
-    /**
      * Close text properties modal
      */
     closeProperties() {
-      if (this.rectObj) {
-        this.hideStrokeObject();
-      }
       this.groupSelected = null;
       this.resetConfigTextProperties();
     },
@@ -348,10 +336,6 @@ export default {
      * Get border data from store and set to Rect object
      */
     setBorderObject(rectObj, objectData) {
-      if (this.rectObj) {
-        this.hideStrokeObject();
-      }
-      this.rectObj = rectObj;
       const { strokeWidth, stroke, strokeLineCap } = objectData.property.border;
       const strokeDashArrayVal = getRectDashes(
         rectObj.width,

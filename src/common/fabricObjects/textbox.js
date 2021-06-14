@@ -148,8 +148,8 @@ export const createTextBox = (x, y, width, height, textProperties) => {
     rect.set({
       top: target.height * -0.5,
       left: target.width * -0.5,
-      width: adjustedWidth - strokeWidth,
-      height: adjustedHeight - strokeWidth,
+      width: adjustedWidth - strokeWidth * 2,
+      height: adjustedHeight - strokeWidth * 2,
       strokeDashArray
     });
   };
