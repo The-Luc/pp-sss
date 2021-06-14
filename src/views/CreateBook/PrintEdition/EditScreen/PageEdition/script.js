@@ -63,8 +63,7 @@ export default {
       origX: 0,
       origY: 0,
       currentRect: null,
-      rectObj: null,
-      groupSelected: null
+      rectObj: null
     };
   },
   computed: {
@@ -333,7 +332,6 @@ export default {
       if (this.rectObj) {
         this.hideStrokeObject();
       }
-      this.groupSelected = null;
       this.resetConfigTextProperties();
     },
     /**
@@ -387,7 +385,6 @@ export default {
       this.setBorderHighLight(target);
       const objectData = this.selectedObject(this.selectedObjectId);
       if (targetType === 'group') {
-        this.groupSelected = target;
         const rectObj = target.getObjects(OBJECT_TYPE.RECT)[0];
         this.setBorderObject(rectObj, objectData);
       }
@@ -406,7 +403,6 @@ export default {
      */
     addText(x, y, width, height) {
       const { object, data } = createTextBox(x, y, width, height);
-      this.groupSelected = object;
       this.addNewObject(data);
 
       window.printCanvas.add(object);
@@ -434,7 +430,7 @@ export default {
 
       this.updateTriggerTextChange();
 
-      applyTextBoxProperties(activeObj, prop, this.groupSelected);
+      applyTextBoxProperties(activeObj, prop);
     },
     /**
      * Event fire when user click on Image button on Toolbar to add new image on canvas

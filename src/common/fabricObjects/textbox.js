@@ -311,8 +311,8 @@ export const getObjectsFromTextBox = function(textObject) {
 
 /**
  * Handle update fabric object rendered on canvas
- *
- * @param {Object}  text  the object to be updated
+ * @param {Object}  text - the object to be updated
+ * @param {Object}  prop - the prop change
  */
 const applyTextProperties = function(text, prop) {
   if (isEmpty(text) || !text.canvas) {
@@ -418,10 +418,10 @@ const updateObjectDimensionsIfSmaller = function(obj, width, height) {
 
 /**
  * Handle update fabric object rendered on canvas
- *
- * @param {Object}  rect  the object to be updated
+ * @param {Object}  rect - the object to be updated
+ * @param {Object}  prop - the prop change
  */
-const applyTextRectProperties = function(rect, prop, groupSelected) {
+const applyTextRectProperties = function(rect, prop) {
   if (isEmpty(rect) || !rect.canvas) {
     return;
   }
@@ -430,15 +430,15 @@ const applyTextRectProperties = function(rect, prop, groupSelected) {
   const rectProp = toFabricTextBorderProp(prop);
   const keyRect = Object.keys(rectProp);
   if (
-    groupSelected &&
+    !isEmpty(rect.group) &&
     (keyRect.includes('strokeWidth') || keyRect.includes('strokeLineCap'))
   ) {
     const { strokeWidth } = rectProp;
     const strokeWidthVal = strokeWidth || rect.strokeWidth;
     rect.set({
       ...rect,
-      width: groupSelected.width - strokeWidthVal,
-      height: groupSelected.height - strokeWidthVal
+      width: rect.group.width - strokeWidthVal,
+      height: rect.group.height - strokeWidthVal
     });
   }
 
@@ -497,7 +497,7 @@ const getShadowBaseOnConfig = function({
 
 /**
  * Apply Shadow to Fabric Object
- * @param {Object} fabricObject
+ * @param {Object} fabricObject - the object to be updated
  * @param {Object} shadowConfig - the shadow config by user, contains
  * { dropShadow, shadowBlur, shadowOffset, shadowOpacity, shadowAngle, shadowColor }
  */
@@ -507,12 +507,13 @@ const applyShadowToObject = function(fabricObject, shadowConfig) {
   fabricObject.set({ shadow });
 };
 
-export const applyTextBoxProperties = function(
-  textObject,
-  prop,
-  groupSelected
-) {
+/**
+ * Apply Text Properties Changed to Text Box
+ * @param {Object} textObject - the object to be updated
+ * @param {Object} prop - the prop change
+ */
+export const applyTextBoxProperties = function(textObject, prop) {
   const [rect, text] = getObjectsFromTextBox(textObject);
   applyTextProperties(text, prop);
-  applyTextRectProperties(rect, prop, groupSelected);
+  applyTextRectProperties(rect, prop);
 };
