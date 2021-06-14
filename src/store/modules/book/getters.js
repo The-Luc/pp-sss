@@ -141,7 +141,14 @@ export const getters = {
     const existedBackgroundIds = [firstId, secondId].filter(id => {
       if (isEmpty(id)) return false;
 
-      return objects[id]?.type === OBJECT_TYPE.BACKGROUND;
+      const element = objects[id];
+
+      if (isEmpty(element)) return false;
+
+      const isBackground = element.type === OBJECT_TYPE.BACKGROUND;
+      const backgroundType = isBackground ? element.property.type : '';
+
+      return !isEmpty(backgroundType);
     });
 
     return existedBackgroundIds.map(id => objects[id]);
