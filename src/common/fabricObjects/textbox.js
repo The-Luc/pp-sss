@@ -96,7 +96,10 @@ export const createTextBox = (x, y, width, height, textProperties) => {
       toggleStroke(rect, false);
       canvas.remove(text);
       canvas.remove(rect);
-      const grp = new fabric.Group([rect, text], { id: dataObject.id });
+      const angle = text.angle;
+      text.set({ angle: 0 });
+      rect.set({ angle: 0 });
+      const grp = new fabric.Group([rect, text], { id: dataObject.id, angle });
       canvas.add(grp);
       addGroupEvents(grp);
     };
@@ -223,8 +226,8 @@ export const textVerticalAlignOnAdjust = function(text, rectHeight) {
  * To adjust Text Alignment in vertical dimension when user change Text Properties
  * @param {Object} text - the Fabric text object
  */
-export const textVerticalAlignOnApplyProperty = function(text) {
-  if (!text.group || text.height === text.group.height) return;
+const textVerticalAlignWithGroup = function(text) {
+  if (!text.group) return;
 
   switch (text.verticalAlign) {
     case TEXT_VERTICAL_ALIGN.MIDDLE:
@@ -248,29 +251,76 @@ export const textVerticalAlignOnApplyProperty = function(text) {
 };
 
 /**
+ * To adjust Text Alignment in vertical dimension when user change Text Properties
+ * @param {Object} text - the Fabric text object
+ */
+const textVerticalAlignWithRect = function(text) {
+  if (!text._rect) return;
+
+  const rect = text._rect;
+
+  switch (text.verticalAlign) {
+    case TEXT_VERTICAL_ALIGN.MIDDLE:
+      text.set({
+        top: rect.top + (rect.height - text.height) / 2
+      });
+      break;
+
+    case TEXT_VERTICAL_ALIGN.BOTTOM:
+      text.set({
+        top: rect.top + (rect.height - text.height)
+      });
+      break;
+
+    default:
+      text.set({
+        top: rect.top
+      });
+      break;
+  }
+};
+
+/**
+ * To adjust Text Alignment in vertical dimension when user change Text Properties
+ * @param {Object} text - the Fabric text object
+ */
+export const textVerticalAlignOnApplyProperty = function(text) {
+  if (text.group) {
+    textVerticalAlignWithGroup(text);
+  } else {
+    textVerticalAlignWithRect(text);
+  }
+};
+
+/**
  * Get all objects within a TextBox Group
  * @param {Object} textObject - the Fabric group object added to canvas
  * @returns {Array} list of objects
  */
 export const getObjectsFromTextBox = function(textObject) {
-  if (isEmpty(textObject) || !textObject._objects) {
+  if (isEmpty(textObject)) {
     return [];
   }
-  return textObject._objects || [];
+  let text, rect;
+  if (textObject.type === 'group') {
+    [rect, text] = textObject._objects;
+  } else {
+    text = textObject;
+    rect = text._rect;
+  }
+  return [rect, text];
 };
 
 /**
  * Handle update fabric object rendered on canvas
- *
- * @param {Object}  textObject  the object to be updated
+ * @param {Object}  text - the object to be updated
+ * @param {Object}  prop - the prop change
  */
-const applyTextProperties = function(textObject, prop) {
-  if (isEmpty(textObject) || !textObject.canvas) {
+const applyTextProperties = function(text, prop) {
+  if (isEmpty(text) || !text.canvas) {
     return;
   }
-  const canvas = textObject.canvas;
-  const text = getObjectsFromTextBox(textObject)[1];
-  if (!text) return;
+  const canvas = text.canvas;
 
   let curFontSize = text.get('fontSize');
   let curLineHeight = text.get('lineHeight'); // if = 1.2 => auto
@@ -329,42 +379,68 @@ const applyTextProperties = function(textObject, prop) {
     }
   }
 
-  if (!isEmpty(textProp['verticalAlign'])) {
-    textVerticalAlignOnApplyProperty(text);
-  }
-
   if (!isEmpty(prop['shadow'])) {
     applyShadowToObject(text, prop['shadow']);
   }
+
+  updateTextBoxBaseOnNewTextSize(text);
+
+  textVerticalAlignOnApplyProperty(text);
 
   canvas.renderAll();
 };
 
 /**
- * Handle update fabric object rendered on canvas
- *
- * @param {Object}  textObject  the object to be updated
+ * Handle resize group & rect if text size bigger than original
+ * @param {Object} text - the text object that was updated
  */
-const applyTextRectProperties = function(textObject, prop, groupSelected) {
-  if (isEmpty(textObject) || !textObject.canvas) {
+const updateTextBoxBaseOnNewTextSize = function(textObject) {
+  const [rect, text] = getObjectsFromTextBox(textObject);
+  updateObjectDimensionsIfSmaller(rect, text.width, text.height);
+  updateObjectDimensionsIfSmaller(text.group, text.width, text.height);
+};
+
+/**
+ * Check and update a Fabric Object dimension if smaller than input width, height
+ * @param {Object} obj - the object to be resized
+ * @param {Number} width - the base width to compare
+ * @param {Number} height - the base height to compare
+ */
+const updateObjectDimensionsIfSmaller = function(obj, width, height) {
+  if (isEmpty(obj)) return;
+
+  if (width > obj.width) {
+    obj.set({ width: width });
+  }
+
+  if (height > obj.height) {
+    obj.set({ height: height });
+  }
+};
+
+/**
+ * Handle update fabric object rendered on canvas
+ * @param {Object}  rect - the object to be updated
+ * @param {Object}  prop - the prop change
+ */
+const applyTextRectProperties = function(rect, prop) {
+  if (isEmpty(rect) || !rect.canvas) {
     return;
   }
-  const canvas = textObject.canvas;
-  const rect = getObjectsFromTextBox(textObject)[0];
-  if (!rect) return;
+  const canvas = rect.canvas;
 
   const rectProp = toFabricTextBorderProp(prop);
   const keyRect = Object.keys(rectProp);
   if (
-    groupSelected &&
+    !isEmpty(rect.group) &&
     (keyRect.includes('strokeWidth') || keyRect.includes('strokeLineCap'))
   ) {
     const { strokeWidth } = rectProp;
     const strokeWidthVal = strokeWidth || rect.strokeWidth;
     rect.set({
       ...rect,
-      width: groupSelected.width - strokeWidthVal,
-      height: groupSelected.height - strokeWidthVal
+      width: rect.group.width - strokeWidthVal,
+      height: rect.group.height - strokeWidthVal
     });
   }
 
@@ -405,8 +481,8 @@ const getShadowBaseOnConfig = function({
     .alpha(shadowOpacity)
     .toString();
 
-  const adjustedAngle = (shadowAngle + 180) % 360;
-  const rad = (adjustedAngle * Math.PI) / 180;
+  const adjustedAngle = shadowAngle % 360;
+  const rad = (-1 * adjustedAngle * Math.PI) / 180;
 
   const offsetX = shadowOffset * Math.sin(rad);
   const offsetY = shadowOffset * Math.cos(rad);
@@ -423,7 +499,7 @@ const getShadowBaseOnConfig = function({
 
 /**
  * Apply Shadow to Fabric Object
- * @param {Object} fabricObject
+ * @param {Object} fabricObject - the object to be updated
  * @param {Object} shadowConfig - the shadow config by user, contains
  * { dropShadow, shadowBlur, shadowOffset, shadowOpacity, shadowAngle, shadowColor }
  */
@@ -433,11 +509,13 @@ const applyShadowToObject = function(fabricObject, shadowConfig) {
   fabricObject.set({ shadow });
 };
 
-export const applyTextBoxProperties = function(
-  textObject,
-  prop,
-  groupSelected
-) {
-  applyTextProperties(textObject, prop);
-  applyTextRectProperties(textObject, prop, groupSelected);
+/**
+ * Apply Text Properties Changed to Text Box
+ * @param {Object} textObject - the object to be updated
+ * @param {Object} prop - the prop change
+ */
+export const applyTextBoxProperties = function(textObject, prop) {
+  const [rect, text] = getObjectsFromTextBox(textObject);
+  applyTextProperties(text, prop);
+  applyTextRectProperties(rect, prop);
 };
