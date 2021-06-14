@@ -8,7 +8,7 @@ import TextProperties from '@/containers/PropertiesManager/Text';
 import ImageProperties from '@/containers/PropertiesManager/Image';
 import ClipArt from '@/containers/PropertiesManager/ClipArt';
 import Background from '@/containers/PropertiesManager/Background';
-import Shape from '@/containers/PropertiesManager/Shape'
+import Shape from '@/containers/PropertiesManager/Shape';
 
 const { TEXT, IMAGE, CLIP_ART, BACKGROUND, SHAPE } = OBJECT_TYPE;
 
