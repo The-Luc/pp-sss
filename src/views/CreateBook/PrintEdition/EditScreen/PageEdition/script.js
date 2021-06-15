@@ -47,6 +47,7 @@ import SizeWrapper from '@/components/SizeWrapper';
 import PrintCanvasLines from './PrintCanvasLines';
 import PageWrapper from './PageWrapper';
 import { useDrawControls } from '@/plugins/fabric';
+import { addSingleSvg, addMultiSvg } from '@/common/fabricObjects/common';
 
 export default {
   components: {
@@ -534,41 +535,49 @@ export default {
      * Event fire when user click on Clip art button on Toolbar to add new clip art on canvas
      * @param {Array} clipArts - list clip art add on Canvas
      */
-    addClipArt(clipArts) {
+    async addClipArt(clipArts) {
       const { width, height } = window.printCanvas;
       const zoom = window.printCanvas.getZoom();
-      clipArts.forEach((item, index) => {
-        let id = uniqueId();
-        let newClipArt = cloneDeep(ClipArtElement);
-        this.addNewObject({
-          id: id,
-          type: OBJECT_TYPE.CLIP_ART,
-          newObject: {
-            ...newClipArt
-          }
-        });
-        let fabricProp = toFabricClipArtProp(newClipArt);
-        fabric.loadSVGFromURL(
-          require(`../../../../../assets/image/clip-art/${item.property.vector}`),
-          (objects, options) => {
-            let svgData = fabric.util.groupSVGElements(objects, options);
-            svgData
-              .set({
-                ...fabricProp,
-                id: id,
-                type: OBJECT_TYPE.CLIP_ART,
-                top: 1000,
-                left: 1500 + 800 * index,
-                fill: '#58595b'
-              })
-              .setCoords();
+      const isHalfSheet = HALF_SHEET.indexOf(this.pageSelected.type) >= 0;
+      const isLeftSheet = HALF_LEFT.indexOf(this.pageSelected.type) >= 0;
+      const svgs = await Promise.all(
+        clipArts.map(item => {
+          let id = uniqueId();
+          let newClipArt = cloneDeep(ClipArtElement);
+          this.addNewObject({
+            id: id,
+            type: OBJECT_TYPE.CLIP_ART,
+            newObject: {
+              ...newClipArt
+            }
+          });
+          let fabricProp = toFabricClipArtProp(newClipArt);
+          return new Promise(resolve => {
+            fabric.loadSVGFromURL(
+              require(`../../../../../assets/image/clip-art/${item.property.vector}`),
+              (objects, options) => {
+                let svgData = fabric.util.groupSVGElements(objects, options);
+                svgData
+                  .set({
+                    ...fabricProp,
+                    id: id,
+                    type: OBJECT_TYPE.CLIP_ART,
+                    fill: '#58595b'
+                  })
+                  .setCoords();
+                svgData.scaleToHeight((height / zoom / svgData.height) * 8);
+                svgData.scaleToWidth((width / zoom / svgData.width) * 8);
+                resolve(svgData);
+              }
+            );
+          });
+        })
+      );
+      svgs.length == 1
+        ? addSingleSvg(svgs[0], window.printCanvas, isHalfSheet, isLeftSheet)
+        : addMultiSvg(svgs, window.printCanvas, isHalfSheet, isLeftSheet);
 
-            svgData.scaleToHeight((height / zoom / svgData.height) * 8);
-            svgData.scaleToWidth((width / zoom / svgData.width) * 8);
-            window.printCanvas.add(svgData);
-          }
-        );
-      });
+      window.printCanvas.renderAll();
 
       if (clipArts.length !== 1) {
         this.closeProperties();
