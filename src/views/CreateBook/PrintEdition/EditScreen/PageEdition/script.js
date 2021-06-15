@@ -189,7 +189,7 @@ export default {
       window.printCanvas = new fabric.Canvas(el, {
         backgroundColor: '#ffffff'
       });
-      usePrintOverrides();
+      usePrintOverrides(fabric.Object.prototype);
       this.updateCanvasSize();
       window.printCanvas.on({
         'selection:updated': this.objectSelected,

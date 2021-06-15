@@ -3,7 +3,11 @@
   align-items: center;
   .properties-title {
     margin: 0;
-    padding: 0 7px;
+    padding: 0 7px 0 0;
+  }
+  .angle-separator {
+    width: 7px;
+    height: 30px;
   }
   .pp-number {
     width: 50px;

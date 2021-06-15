@@ -1,8 +1,11 @@
 import PpNumber from '@/components/Number';
 import { validateInputOption } from '@/common/utils';
+import AnglePicker from '@/components/AnglePicker';
+
 export default {
   components: {
-    PpNumber
+    PpNumber,
+    AnglePicker
   },
   props: {
     value: {

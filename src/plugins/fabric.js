@@ -3,7 +3,8 @@ import { CORNER_SIZE } from '@/common/constants';
 
 const BORDER_COLOR = {
   OUTER: '#ffffff',
-  INNER: '#8C8C8C'
+  INNER: '#8C8C8C',
+  NONE: 'transparent'
 };
 
 /**
@@ -27,7 +28,13 @@ const drawBorders = function(ctx, styleOverride) {
         : this.hasControls;
 
   ctx.save();
-  ctx.strokeStyle = BORDER_COLOR.OUTER;
+
+  const isTransparent =
+    (styleOverride.borderColor || this.borderColor) === BORDER_COLOR.NONE;
+  const outerStyle = isTransparent ? BORDER_COLOR.NONE : BORDER_COLOR.OUTER;
+  const innerStyle = isTransparent ? BORDER_COLOR.NONE : BORDER_COLOR.INNER;
+
+  ctx.strokeStyle = outerStyle;
   this._setLineDash(
     ctx,
     styleOverride.borderDashArray || this.borderDashArray,
@@ -41,7 +48,7 @@ const drawBorders = function(ctx, styleOverride) {
     height + strokeWidth
   );
 
-  ctx.strokeStyle = BORDER_COLOR.INNER;
+  ctx.strokeStyle = innerStyle;
   ctx.strokeRect(
     -width / 2,
     -height / 2,
@@ -57,7 +64,7 @@ const drawBorders = function(ctx, styleOverride) {
   this.forEachControl(function(control, key, fabricObject) {
     if (control.withConnection && control.getVisibility(fabricObject, key)) {
       ctx.beginPath();
-      ctx.strokeStyle = BORDER_COLOR.OUTER;
+      ctx.strokeStyle = outerStyle;
       ctx.moveTo(control.x * width, control.y * height);
       ctx.lineTo(
         control.x * width + control.offsetX,
@@ -66,7 +73,7 @@ const drawBorders = function(ctx, styleOverride) {
       ctx.stroke();
       ctx.beginPath();
       ctx.moveTo(control.x * width + strokeWidth, control.y * height);
-      ctx.strokeStyle = BORDER_COLOR.INNER;
+      ctx.strokeStyle = innerStyle;
       ctx.lineTo(
         control.x * width + control.offsetX + strokeWidth,
         control.y * height + control.offsetY
@@ -131,34 +138,37 @@ const drawControls = function(ctx, styleOverride) {
 
 /**
  * Override Fabric base Object Prototype for Print version
+ * @param {fabric.Object} object - the object to be prototyped
  */
-export const usePrintOverrides = () => {
-  const fabricPrototype = fabric.Object.prototype;
-  fabricPrototype.cornerColor = BORDER_COLOR.OUTER;
-  fabricPrototype.borderColor = BORDER_COLOR.INNER;
-  fabricPrototype.borderSize = 1.25;
-  fabricPrototype.cornerSize = CORNER_SIZE;
-  fabricPrototype.cornerStrokeColor = BORDER_COLOR.INNER;
-  fabricPrototype.transparentCorners = false;
-  fabricPrototype.borderScaleFactor = 1.5;
-  fabricPrototype.prototype.drawBorders = drawBorders;
-  fabricPrototype.prototype.drawControls = drawControls;
+const commonFabricOverrides = (object) => {
+  object.cornerColor = BORDER_COLOR.OUTER;
+  object.borderColor = BORDER_COLOR.INNER;
+  object.borderSize = 1;
+  object.cornerSize = CORNER_SIZE;
+  object.cornerStrokeColor = BORDER_COLOR.INNER;
+  object.transparentCorners = false;
+  object.borderScaleFactor = 1;
+};
+
+/**
+ * Override Fabric base Object Prototype for Print version
+ * @param {fabric.Object} object - the object to be prototyped
+ */
+export const usePrintOverrides = (object) => {
+  const objectPrototype = object || fabric.Object.prototype;
+  commonFabricOverrides(objectPrototype);
+  objectPrototype.drawBorders = drawBorders;
+  objectPrototype.drawControls = drawControls;
 };
 
 /**
  * Override Fabric base Object Prototype for Digital version
+ * @param {fabric.Object} object - the object to be prototyped
  */
-export const useDigitalOverrides = () => {
-  const fabricPrototype = fabric.Object.prototype;
-  fabricPrototype.cornerColor = BORDER_COLOR.OUTER;
-  fabricPrototype.borderColor = BORDER_COLOR.INNER;
-  fabricPrototype.borderSize = 1.25;
-  fabricPrototype.cornerSize = CORNER_SIZE;
-  fabricPrototype.cornerStrokeColor = BORDER_COLOR.INNER;
-  fabricPrototype.transparentCorners = false;
-  fabricPrototype.borderScaleFactor = 1.5;
-
-  fabricPrototype.setControlsVisibility({
+export const useDigitalOverrides = (object) => {
+  const objectPrototype = object || fabric.Object.prototype;
+  commonFabricOverrides(objectPrototype);
+  objectPrototype.setControlsVisibility({
     mtr: false
   });
 };

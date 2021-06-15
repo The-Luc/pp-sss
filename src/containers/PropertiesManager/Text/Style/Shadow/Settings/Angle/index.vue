@@ -1,7 +1,8 @@
 <template>
   <div class="angle-container">
     <span class="properties-title">Angle: </span>
-    <div class="angle-content"></div>
+    <AnglePicker :angle="value" @change="onChange" />
+    <div class="angle-separator">&nbsp;</div>
     <PpNumber
       suffix="°"
       :value="value"

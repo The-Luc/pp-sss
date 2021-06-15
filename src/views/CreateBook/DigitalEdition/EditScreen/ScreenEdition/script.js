@@ -27,7 +27,7 @@ export default {
     onContainerReady(containerSize) {
       let el = this.$refs.digitalCanvas;
       window.digitalCanvas = new fabric.Canvas(el);
-      useDigitalOverrides();
+      useDigitalOverrides(fabric.Object.prototype);
       this.updateCanvasSize(containerSize);
     },
     onContainerResized(containerSize) {
