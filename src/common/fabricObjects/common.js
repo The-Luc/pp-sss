@@ -126,7 +126,7 @@ export const updateElement = (element, prop, canvas) => {
 
   const fabricProp = getFabricProp(element.objectType, prop);
 
-  setElementProp(fabricProp);
+  setElementProp(element, fabricProp);
 
   canvas.renderAll();
 };

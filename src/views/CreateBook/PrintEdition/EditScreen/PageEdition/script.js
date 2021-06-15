@@ -373,11 +373,15 @@ export default {
       this.setSelectedObjectId({ id });
       this.setBorderHighLight(target);
       const objectData = this.selectedObject(this.selectedObjectId);
-      if (targetType === 'group') {
+
+      if (targetType === 'group' && target.objectType !== OBJECT_TYPE.SHAPE) {
         const rectObj = target.getObjects(OBJECT_TYPE.RECT)[0];
+
         this.setBorderObject(rectObj, objectData);
       }
+
       const objectType = objectData?.type;
+
       if (isEmpty(objectType)) return;
 
       this.setObjectTypeSelected({ type: objectType });
