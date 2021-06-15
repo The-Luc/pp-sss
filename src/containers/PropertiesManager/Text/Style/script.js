@@ -4,34 +4,27 @@ import Opacity from '@/components/Property/Opacity';
 import Border from './Border';
 import Shadow from './Shadow';
 import { GETTERS } from '@/store/modules/book/const';
-import { DEFAULT_TEXT } from '@/common/constants';
-
+import { GETTERS as APP_GETTERS } from '@/store/modules/app/const';
 export default {
   components: {
     Opacity,
     Border,
     Shadow
   },
-  data() {
-    return {
-      borderOptions: [
-        {
-          name: 'No border',
-          value: 'noBorder'
-        },
-        {
-          name: 'Line',
-          value: 'line'
-        }
-      ],
-      selectedBorder: {
-        name: 'No border',
-        value: 'noBorder'
-      }
-    };
+  props: {
+    borderOptions: {
+      type: Array,
+      required: true
+    },
+    selectedBorder: {
+      type: Object,
+      required: true
+    }
   },
   computed: {
     ...mapGetters({
+      selectedColor: GETTERS.PROP_OBJECT_BY_ID,
+      colorPickerProps: APP_GETTERS.COLOR_PICKER_CUSTOM_PROPS,
       selectedId: GETTERS.SELECTED_OBJECT_ID,
       selectedOpacity: GETTERS.PROP_OBJECT_BY_ID,
       triggerChange: GETTERS.TRIGGER_TEXT_CHANGE
@@ -61,18 +54,7 @@ export default {
      * @param   {Object}  data Value user selecte
      */
     onChangeBorder(data) {
-      const border = {
-        stroke: DEFAULT_TEXT.BORDER.STROKE,
-        strokeDashArray: DEFAULT_TEXT.BORDER.STROKE_DASH_ARRAY,
-        strokeLineCap: DEFAULT_TEXT.BORDER.STROKE_LINE_CAP,
-        strokeWidth:
-          data.value === 'noBorder' ? DEFAULT_TEXT.BORDER.STROKE_WIDTH : 1
-      };
-
-      this.$root.$emit('printChangeTextProperties', {
-        border
-      });
-      this.selectedBorder = data;
+      this.$emit('changeBorderOption', data);
     },
     /**
      * Receive value shadow from children

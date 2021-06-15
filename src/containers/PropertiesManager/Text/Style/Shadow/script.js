@@ -59,6 +59,9 @@ export default {
       });
     },
     dropShadow() {
+      if (this.currentShadow?.dropShadow) {
+        this.selectedOption = SHADOW_OPTIONS[1];
+      }
       return this.currentShadow && this.currentShadow.dropShadow;
     }
   },

@@ -23,18 +23,9 @@ export default {
   },
   data() {
     return {
-      isShowStyle: false,
       strokeWidth: 0,
       borderStyle: 'solid'
     };
-  },
-  watch: {
-    selectedBorder: {
-      deep: true,
-      handler(border) {
-        this.isShowStyle = border.value === 'line';
-      }
-    }
   },
   methods: {
     /**
