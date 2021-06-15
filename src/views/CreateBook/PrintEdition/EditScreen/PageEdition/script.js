@@ -36,10 +36,12 @@ import {
   ShapeElement
 } from '@/common/models';
 import {
+  TOOL_NAME,
   SHEET_TYPE,
-  FABRIC_OBJECT_TYPE,
   OBJECT_TYPE,
-  CORNER_SIZE
+  CORNER_SIZE,
+  HALF_SHEET,
+  HALF_LEFT
 } from '@/common/constants';
 import SizeWrapper from '@/components/SizeWrapper';
 import PrintCanvasLines from './PrintCanvasLines';
@@ -143,10 +145,10 @@ export default {
       addNewObject: BOOK_MUTATES.ADD_OBJECT,
       setObjectProp: BOOK_MUTATES.SET_PROP,
       updateTriggerTextChange: BOOK_MUTATES.UPDATE_TRIGGER_TEXT_CHANGE,
-      addNewBackground: BOOK_MUTATES.ADD_BACKGROUND,
+      addNewBackground: BOOK_MUTATES.ADD_PRINT_BACKGROUND,
       updateTriggerBackgroundChange:
         BOOK_MUTATES.UPDATE_TRIGGER_BACKGROUND_CHANGE,
-      deleteObject: BOOK_MUTATES.DELETE_OBJECT
+      deleteObject: BOOK_MUTATES.DELETE_PRINT_OBJECT
     }),
     /**
      * Auto resize canvas to fit the container size
@@ -207,10 +209,10 @@ export default {
             this.setToolNameSelected({ name: '' });
             startDrawBox(window.printCanvas, e).then(
               ({ left, top, width, height }) => {
-                if (this.awaitingAdd === 'TEXT') {
+                if (this.awaitingAdd === OBJECT_TYPE.TEXT) {
                   this.addText(left, top, width, height);
                 }
-                if (this.awaitingAdd === 'IMAGE') {
+                if (this.awaitingAdd === OBJECT_TYPE.IMAGE) {
                   this.addImageBox(left, top, width, height);
                 }
                 this.awaitingAdd = '';
@@ -220,16 +222,24 @@ export default {
         }
       });
 
-      this.$root.$on('enscapeInstruction', () => {
-        this.awaitingAdd = '';
+      this.$root.$on('printSwitchTool', toolName => {
+        if (toolName !== TOOL_NAME.DELETE) {
+          window.printCanvas.discardActiveObject().renderAll();
+        }
         this.$root.$emit('printInstructionEnd');
-        this.setToolNameSelected({ name: '' });
+        this.awaitingAdd = '';
       });
 
       this.$root.$on('printAddElement', element => {
         this.$root.$emit('printInstructionEnd');
         this.awaitingAdd = element;
         this.$root.$emit('printInstructionStart', { element });
+      });
+
+      this.$root.$on('enscapeInstruction', () => {
+        this.awaitingAdd = '';
+        this.$root.$emit('printInstructionEnd');
+        this.setToolNameSelected({ name: '' });
       });
 
       this.$root.$on('printAddClipArt', clipArts => {
@@ -363,11 +373,15 @@ export default {
       this.setSelectedObjectId({ id });
       this.setBorderHighLight(target);
       const objectData = this.selectedObject(this.selectedObjectId);
-      if (targetType === 'group') {
+
+      if (targetType === 'group' && target.objectType !== OBJECT_TYPE.SHAPE) {
         const rectObj = target.getObjects(OBJECT_TYPE.RECT)[0];
+
         this.setBorderObject(rectObj, objectData);
       }
+
       const objectType = objectData?.type;
+
       if (isEmpty(objectType)) return;
 
       this.setObjectTypeSelected({ type: objectType });
@@ -569,8 +583,8 @@ export default {
      *
      * @param {Array} shapes  list of object of adding shapes
      */
-    addShapes(shapes) {
-      const tobeAddedShapes = shapes.map(s => {
+    async addShapes(shapes) {
+      const toBeAddedShapes = shapes.map(s => {
         const newShape = cloneDeep(ShapeElement);
 
         merge(newShape, s);
@@ -581,14 +595,25 @@ export default {
         };
       });
 
-      /* todo
-      this.addNewBackground({
-        id,
-        sheetId: this.pageSelected.id,
-        newBackground
-      });*/
+      toBeAddedShapes.forEach(s => {
+        this.addNewObject({ id: s.id, newObject: s.object });
+      });
 
-      addPrintShapes(tobeAddedShapes, window.printCanvas);
+      const isHalfSheet = HALF_SHEET.indexOf(this.pageSelected.type) >= 0;
+      const isLeftSheet = HALF_LEFT.indexOf(this.pageSelected.type) >= 0;
+
+      await addPrintShapes(
+        toBeAddedShapes,
+        window.printCanvas,
+        isHalfSheet,
+        isLeftSheet
+      );
+
+      if (toBeAddedShapes.length === 1) {
+        selectLatestObject(window.printCanvas);
+      } else {
+        this.closeProperties();
+      }
     },
     /**
      * Event fire when user change any property of selected shape
@@ -597,7 +622,11 @@ export default {
      */
     changeShapeProperties(prop) {
       // todo
-      //updatePrintShape({ background, prop, canvas: window.printCanvas });
+      const shape = window.printCanvas.getActiveObject();
+
+      if (isEmpty(shape)) return;
+
+      updatePrintShape(shape, prop, window.printCanvas);
     }
   }
 };

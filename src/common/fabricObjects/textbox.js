@@ -8,6 +8,7 @@ import {
   toFabricTextBorderProp,
   isEmpty,
   ptToPx,
+  inToPx,
   getRectDashes
 } from '@/common/utils';
 
@@ -16,7 +17,8 @@ import {
   OBJECT_TYPE,
   DEFAULT_SPACING,
   DEFAULT_TEXT,
-  TEXT_VERTICAL_ALIGN
+  TEXT_VERTICAL_ALIGN,
+  OBJECT_MIN_SIZE
 } from '@/common/constants';
 import { toggleStroke } from './drawingBox';
 
@@ -86,6 +88,7 @@ export const createTextBox = (x, y, width, height, textProperties) => {
 
   const group = new fabric.Group([rect, text], {
     id: dataObject.id,
+    objectType: OBJECT_TYPE.TEXT,
     left: x,
     top: y
   });
@@ -99,7 +102,7 @@ export const createTextBox = (x, y, width, height, textProperties) => {
       const angle = text.angle;
       text.set({ angle: 0 });
       rect.set({ angle: 0 });
-      const grp = new fabric.Group([rect, text], { id: dataObject.id, angle });
+      const grp = new fabric.Group([rect, text], { id: dataObject.id, angle, objectType: OBJECT_TYPE.TEXT });
       canvas.add(grp);
       addGroupEvents(grp);
     };
@@ -114,7 +117,12 @@ export const createTextBox = (x, y, width, height, textProperties) => {
 
     const { width: w, height: h, scaleX, scaleY } = target;
 
-    const scaledWidth = w * scaleX;
+    let scaledWidth = w * scaleX;
+
+    if (scaledWidth < inToPx(OBJECT_MIN_SIZE)) {
+      scaledWidth = inToPx(OBJECT_MIN_SIZE);
+    }
+
     const scaledHeight = h * scaleY;
 
     target.set({
@@ -124,11 +132,13 @@ export const createTextBox = (x, y, width, height, textProperties) => {
       height: scaledHeight
     });
 
-    if (scaledWidth < text.width) {
-      target.set('width', text.width);
+    if (scaledWidth < text.getMinWidth()) {
+      text.set({ width: text.getMinWidth() });
+      target.set({ width: text.getMinWidth() });
     }
+
     if (scaledHeight < text.height) {
-      target.set('height', text.height);
+      target.set({ height: text.height });
     }
   };
 

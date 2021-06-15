@@ -1,7 +1,9 @@
+import { OBJECT_TYPE } from '@/common/constants';
 import AddBoxInstruction from '@/components/AddBoxInstruction';
+
 const ELEMENTS = {
-  TEXT: 'a text box',
-  IMAGE: 'an image box'
+  [OBJECT_TYPE.TEXT]: 'a text box',
+  [OBJECT_TYPE.IMAGE]: 'an image box'
 };
 
 export default {
