@@ -2,7 +2,7 @@ import { fabric } from 'fabric';
 
 import { DIGITAL_CANVAS_SIZE } from '@/common/constants/canvas';
 import SizeWrapper from '@/components/SizeWrapper';
-import { CORNER_SIZE } from '@/common/constants';
+import { useDigitalOverrides } from '@/plugins/fabric';
 
 export default {
   components: {
@@ -27,17 +27,7 @@ export default {
     onContainerReady(containerSize) {
       let el = this.$refs.digitalCanvas;
       window.digitalCanvas = new fabric.Canvas(el);
-      let fabricPrototype = fabric.Object.prototype;
-      fabricPrototype.cornerColor = '#fff';
-      fabricPrototype.borderColor = '#8C8C8C';
-      fabricPrototype.borderSize = 1.25;
-      fabricPrototype.cornerSize = CORNER_SIZE;
-      fabricPrototype.cornerStrokeColor = '#8C8C8C';
-      fabricPrototype.transparentCorners = false;
-      fabricPrototype.borderScaleFactor = 1.5;
-      fabricPrototype.setControlsVisibility({
-        mtr: false
-      });
+      useDigitalOverrides();
       this.updateCanvasSize(containerSize);
     },
     onContainerResized(containerSize) {

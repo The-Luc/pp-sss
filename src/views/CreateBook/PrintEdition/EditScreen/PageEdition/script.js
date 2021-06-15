@@ -2,6 +2,8 @@ import { mapGetters, mapMutations } from 'vuex';
 import { fabric } from 'fabric';
 import { cloneDeep, uniqueId, merge } from 'lodash';
 
+import { usePrintOverrides } from '@/plugins/fabric';
+
 import { useDrawLayout } from '@/hooks';
 import { startDrawBox } from '@/common/fabricObjects/drawingBox';
 import {
@@ -46,7 +48,6 @@ import {
 import SizeWrapper from '@/components/SizeWrapper';
 import PrintCanvasLines from './PrintCanvasLines';
 import PageWrapper from './PageWrapper';
-import { useDrawControls } from '@/plugins/fabric';
 import { addSingleSvg, addMultiSvg } from '@/common/fabricObjects/common';
 
 export default {
@@ -188,16 +189,7 @@ export default {
       window.printCanvas = new fabric.Canvas(el, {
         backgroundColor: '#ffffff'
       });
-      let fabricPrototype = fabric.Object.prototype;
-      useDrawControls(fabricPrototype);
-      fabricPrototype.cornerColor = '#fff';
-      fabricPrototype.borderColor = '#8C8C8C';
-      fabricPrototype.borderSize = 1.25;
-      fabricPrototype.cornerSize = CORNER_SIZE;
-      fabricPrototype.cornerStrokeColor = '#8C8C8C';
-      fabricPrototype.transparentCorners = false;
-      fabricPrototype.borderScaleFactor = 1.5;
-
+      usePrintOverrides();
       this.updateCanvasSize();
       window.printCanvas.on({
         'selection:updated': this.objectSelected,

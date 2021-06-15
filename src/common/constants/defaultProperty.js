@@ -22,7 +22,7 @@ export const DEFAULT_SHADOW = {
   OFFSET: 2,
   OPACITY: 0.5,
   ANGLE: 270,
-  COLOR: DEFAULT_PROP.COLOR,
+  COLOR: DEFAULT_PROP.COLOR
 };
 
 export const DEFAULT_TEXT = {
@@ -73,7 +73,7 @@ export const DEFAULT_CLIP_ART = {
     X: 0,
     Y: 0
   },
-  OPACITY: DEFAULT_PROP.OPACITY,
+  OPACITY: DEFAULT_PROP.OPACITY
 };
 export const DEFAULT_IMAGE = {
   category: 'Cover',

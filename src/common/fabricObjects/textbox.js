@@ -102,7 +102,11 @@ export const createTextBox = (x, y, width, height, textProperties) => {
       const angle = text.angle;
       text.set({ angle: 0 });
       rect.set({ angle: 0 });
-      const grp = new fabric.Group([rect, text], { id: dataObject.id, angle, objectType: OBJECT_TYPE.TEXT });
+      const grp = new fabric.Group([rect, text], {
+        id: dataObject.id,
+        angle,
+        objectType: OBJECT_TYPE.TEXT
+      });
       canvas.add(grp);
       addGroupEvents(grp);
     };
