@@ -36,8 +36,8 @@ import {
   ShapeElement
 } from '@/common/models';
 import {
+  TOOL_NAME,
   SHEET_TYPE,
-  // FABRIC_OBJECT_TYPE,
   OBJECT_TYPE,
   CORNER_SIZE,
   HALF_SHEET,
@@ -209,10 +209,10 @@ export default {
             this.setToolNameSelected({ name: '' });
             startDrawBox(window.printCanvas, e).then(
               ({ left, top, width, height }) => {
-                if (this.awaitingAdd === 'TEXT') {
+                if (this.awaitingAdd === OBJECT_TYPE.TEXT) {
                   this.addText(left, top, width, height);
                 }
-                if (this.awaitingAdd === 'IMAGE') {
+                if (this.awaitingAdd === OBJECT_TYPE.IMAGE) {
                   this.addImageBox(left, top, width, height);
                 }
                 this.awaitingAdd = '';
@@ -222,16 +222,24 @@ export default {
         }
       });
 
-      this.$root.$on('enscapeInstruction', () => {
-        this.awaitingAdd = '';
+      this.$root.$on('printSwitchTool', toolName => {
+        if (toolName !== TOOL_NAME.DELETE) {
+          window.printCanvas.discardActiveObject().renderAll();
+        }
         this.$root.$emit('printInstructionEnd');
-        this.setToolNameSelected({ name: '' });
+        this.awaitingAdd = '';
       });
 
       this.$root.$on('printAddElement', element => {
         this.$root.$emit('printInstructionEnd');
         this.awaitingAdd = element;
         this.$root.$emit('printInstructionStart', { element });
+      });
+
+      this.$root.$on('enscapeInstruction', () => {
+        this.awaitingAdd = '';
+        this.$root.$emit('printInstructionEnd');
+        this.setToolNameSelected({ name: '' });
       });
 
       this.$root.$on('printAddClipArt', clipArts => {

@@ -3,7 +3,7 @@ import ToolButton from '@/components/ToolButton';
 import ItemTool from './ItemTool';
 import { GETTERS, MUTATES } from '@/store/modules/app/const';
 import { GETTERS as BOOK_GETTERS } from '@/store/modules/book/const';
-import { TOOL_NAME } from '@/common/constants';
+import { TOOL_NAME, OBJECT_TYPE } from '@/common/constants';
 import { useLayoutPrompt } from '@/hooks';
 
 export default {
@@ -171,10 +171,11 @@ export default {
       }
 
       const toolName = this.selectedToolName === data?.name ? '' : data?.name;
+      this.$root.$emit('printSwitchTool', toolName);
 
       switch (data.name) {
         case TOOL_NAME.TEXT:
-          this.addText();
+          this.addElement(OBJECT_TYPE.TEXT);
           this.setToolNameSelected({
             name: TOOL_NAME.TEXT
           });
@@ -183,7 +184,7 @@ export default {
           this.deleteElements();
           break;
         case TOOL_NAME.IMAGE_BOX:
-          this.addImageBox();
+          this.addElement(OBJECT_TYPE.IMAGE);
           this.setToolNameSelected({
             name: TOOL_NAME.IMAGE_BOX
           });
@@ -209,16 +210,10 @@ export default {
       }
     },
     /**
-     * Add text box in print canvas
+     * Add element in print canvas
      */
-    addText() {
-      this.$root.$emit('printAddElement', 'TEXT');
-    },
-    /**
-     * Add image box in print canvas
-     */
-    addImageBox() {
-      this.$root.$emit('printAddElement', 'IMAGE');
+    addElement(objectType) {
+      this.$root.$emit('printAddElement', objectType);
     },
     /**
      * Delete selected elements in print canvas

@@ -1,10 +1,19 @@
 import { TEXT_CASE } from './textCase';
 import { TEXT_HORIZIONTAL_ALIGN, TEXT_VERTICAL_ALIGN } from './textAlign';
 import { BACKGROUND_TYPE, BACKGROUND_PAGE_TYPE } from './backgroundType';
+import { PRINT_PAGE_SIZE } from './canvas';
+
+export const OBJECT_MIN_SIZE = 0.5; // inch
 
 export const DEFAULT_PROP = {
   OPACITY: 1,
   COLOR: '#000000'
+};
+
+export const DEFAULT_COORD = {
+  X: PRINT_PAGE_SIZE.PDF_WIDTH * 0.5, // center
+  Y: PRINT_PAGE_SIZE.PDF_HEIGHT * 0.5, // middle
+  ROTATION: 0
 };
 
 export const DEFAULT_SHADOW = {
@@ -13,15 +22,13 @@ export const DEFAULT_SHADOW = {
   OFFSET: 2,
   OPACITY: 0.5,
   ANGLE: 270,
-  COLOR: '#000000'
+  COLOR: DEFAULT_PROP.COLOR,
 };
 
 export const DEFAULT_TEXT = {
   TEXT: 'Text',
   COORD: {
-    X: 51,
-    Y: 282,
-    ROTATION: 0
+    ...DEFAULT_COORD
   },
   TEXT_CASE: TEXT_CASE.NONE,
   STYLE_ID: 'default',
@@ -43,11 +50,11 @@ export const DEFAULT_TEXT = {
     Y: 0
   },
   LOCK_UNI_SCALE: false,
-  OPACITY: 1,
+  OPACITY: DEFAULT_PROP.OPACITY,
   EDITING_BORDER_COLOR: 'transparent',
   BORDER: {
     FILL: false,
-    STROKE: '#000000',
+    STROKE: DEFAULT_PROP.COLOR,
     STROKE_WIDTH: 0,
     STROKE_DASH_ARRAY: [],
     STROKE_LINE_CAP: 'solid'
@@ -59,16 +66,14 @@ export const DEFAULT_TEXT = {
 
 export const DEFAULT_CLIP_ART = {
   COORD: {
-    X: 51,
-    Y: 282,
-    ROTATION: 0
+    ...DEFAULT_COORD
   },
-  COLOR: '#000000',
+  COLOR: DEFAULT_PROP.COLOR,
   ORIGIN: {
     X: 0,
     Y: 0
   },
-  OPACITY: 1
+  OPACITY: DEFAULT_PROP.OPACITY,
 };
 export const DEFAULT_IMAGE = {
   category: 'Cover',
