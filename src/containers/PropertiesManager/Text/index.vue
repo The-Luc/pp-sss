@@ -13,7 +13,11 @@
           Style
         </v-tab>
         <v-tab-item value="style">
-          <StyleContent />
+          <StyleContent
+            :border-options="borderOptions"
+            :selected-border="selectedBorder"
+            @changeBorderOption="changeBorderOption"
+          />
         </v-tab-item>
 
         <v-tab href="#arrange">
