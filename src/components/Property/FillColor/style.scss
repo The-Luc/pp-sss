@@ -1,0 +1,12 @@
+.fill-color-container {
+  .color-container {
+    .color-content {
+      .box-color {
+        width: 106px;
+        &-active {
+          width: 96px;
+        }
+      }
+    }
+  }
+}

@@ -87,4 +87,4 @@ export const DEFAULT_BACKGROUND = {
 export const DEFAULT_SHAPE = {
   WIDTH: 20,
   HEIGHT: 20
-}
+};

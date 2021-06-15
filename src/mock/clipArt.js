@@ -1,18 +1,5 @@
 import { ClipArtElement } from '@/common/models/elements';
 
-const mockClipArt = {
-  ...ClipArtElement,
-  size: {
-    width: 100,
-    height: 100
-  },
-  coord: {
-    x: 230,
-    y: 250,
-    rotation: 0 // degree
-  }
-};
-
 export const CLIP_ART_CATEGORIES = [
   {
     id: 0,

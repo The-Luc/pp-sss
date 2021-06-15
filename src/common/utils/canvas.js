@@ -134,7 +134,6 @@ export const unscaleSize = size => (size * 72) / PRINT_DPI;
  */
 export const ptToPx = val => scaleSize(val);
 
-
 /**
  * Convert px to pt
  *
