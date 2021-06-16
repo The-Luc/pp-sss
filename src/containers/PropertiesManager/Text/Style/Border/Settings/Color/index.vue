@@ -1,18 +1,6 @@
 <template>
   <div class="border-color-picker-container">
-    <div class="color-container">
-      <span class="properties-title">Color: </span>
-      <div class="color-content">
-        <div class="box-color">
-          <div
-            :style="{ backgroundColor: borderColor }"
-            class="box-color-active"
-            @click="onOpenColorPicker"
-          />
-        </div>
-        <v-icon>colorize</v-icon>
-      </div>
-    </div>
+    <Color :color="borderColor" :event-name="eventName" />
   </div>
 </template>
 

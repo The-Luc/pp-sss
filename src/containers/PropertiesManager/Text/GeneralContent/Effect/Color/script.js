@@ -2,19 +2,16 @@ import { mapGetters, mapMutations } from 'vuex';
 
 import { GETTERS, MUTATES } from '@/store/modules/app/const';
 import { GETTERS as BOOK_GETTERS } from '@/store/modules/book/const';
+import Color from '@/containers/Color';
 
 export default {
-  mounted() {
-    this.$root.$on('colorChange', color => {
-      this.$root.$emit('printChangeTextProperties', { color: color });
-    });
-    this.$root.$on('borderChange', color => {
-      this.$root.$emit('printChangeTextProperties', {
-        border: {
-          stroke: color
-        }
-      });
-    });
+  components: {
+    Color
+  },
+  data() {
+    return {
+      eventName: 'colorChange'
+    };
   },
   computed: {
     ...mapGetters({
@@ -41,22 +38,7 @@ export default {
   },
   methods: {
     ...mapMutations({
-      toggleColorPicker: MUTATES.TOGGLE_COLOR_PICKER,
       setColorPickerColor: MUTATES.SET_COLOR_PICKER_COLOR
-    }),
-    /**
-     * Triggers mutation to toggle color picker popover
-     */
-    onOpenColorPicker() {
-      if (!this.isOpenColorPicker) {
-        this.toggleColorPicker({
-          isOpen: !this.isOpenColorPicker,
-          data: {
-            eventName: 'colorChange',
-            color: this.color
-          }
-        });
-      }
-    }
+    })
   }
 };

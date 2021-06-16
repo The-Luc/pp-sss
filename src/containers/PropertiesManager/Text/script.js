@@ -5,9 +5,8 @@ import TabMenu from '@/components/TabMenu';
 import GeneralContent from './GeneralContent';
 import StyleContent from './Style';
 import ArrangeContent from './Arrange';
-import PickerPopup from './PickerPopup';
 
-import { MUTATES, GETTERS } from '@/store/modules/app/const';
+import { MUTATES } from '@/store/modules/app/const';
 import { GETTERS as BOOK_GETTERS } from '@/store/modules/book/const';
 import { DEFAULT_TEXT } from '@/common/constants';
 
@@ -17,12 +16,10 @@ export default {
     GeneralContent,
     StyleContent,
     ArrangeContent,
-    TabMenu,
-    PickerPopup
+    TabMenu
   },
   computed: {
     ...mapGetters({
-      isOpenColorPicker: GETTERS.IS_OPEN_COLOR_PICKER,
       selectedColor: BOOK_GETTERS.PROP_OBJECT_BY_ID,
       selectedId: BOOK_GETTERS.SELECTED_OBJECT_ID
     })

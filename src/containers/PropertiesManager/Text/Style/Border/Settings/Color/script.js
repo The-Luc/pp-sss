@@ -1,20 +1,21 @@
-import { Mix } from 'vue-color';
 import { mapGetters, mapMutations } from 'vuex';
+
 import { GETTERS as BOOK_GETTERS } from '@/store/modules/book/const';
 import { GETTERS, MUTATES } from '@/store/modules/app/const';
+import Color from '@/containers/Color';
+
 export default {
   components: {
-    Mix
+    Color
   },
   data() {
     return {
-      customClass: 'color-picker-border-text'
+      eventName: 'borderChange'
     };
   },
   computed: {
     ...mapGetters({
       selectedId: BOOK_GETTERS.SELECTED_OBJECT_ID,
-      isOpenColorPicker: GETTERS.IS_OPEN_COLOR_PICKER,
       triggerChange: BOOK_GETTERS.TRIGGER_TEXT_CHANGE,
       selectedColor: BOOK_GETTERS.PROP_OBJECT_BY_ID,
       colorPickerProps: GETTERS.COLOR_PICKER_CUSTOM_PROPS
@@ -37,20 +38,7 @@ export default {
   },
   methods: {
     ...mapMutations({
-      setColorPickerColor: MUTATES.SET_COLOR_PICKER_COLOR,
-      toggleColorPicker: MUTATES.TOGGLE_COLOR_PICKER
-    }),
-    onOpenColorPicker() {
-      if (!this.isOpenColorPicker) {
-        this.toggleColorPicker({
-          isOpen: !this.isOpenColorPicker,
-          data: {
-            eventName: 'borderChange',
-            color: this.borderColor,
-            customClass: this.customClass
-          }
-        });
-      }
-    }
+      setColorPickerColor: MUTATES.SET_COLOR_PICKER_COLOR
+    })
   }
 };
