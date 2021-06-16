@@ -36,8 +36,7 @@ export default {
   computed: {
     ...mapGetters({
       themes: THEME_GETTERS.GET_PRINT_THEMES,
-      layouts: THEME_GETTERS.GET_PRINT_LAYOUTS,
-      isLayoutEmpty: THEME_GETTERS.IS_PRINT_LAYOUT_EMPTY
+      layouts: THEME_GETTERS.GET_PRINT_LAYOUTS_BY_THEME_ID
     }),
     layoutsOfThemePreview() {
       return this.layouts(this.themePreview);
@@ -106,7 +105,7 @@ export default {
       await this.setPrintThemes();
     }
     this.selectedThemeId = this.themes[0]?.id;
-    if (this.isLayoutEmpty) {
+    if (this.layouts().length === 0) {
       const layouts = await loadLayouts();
       this.setPrintLayouts({
         layouts

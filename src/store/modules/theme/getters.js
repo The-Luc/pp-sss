@@ -4,14 +4,13 @@ export const getters = {
   [THEME._GETTERS.GET_PRINT_THEMES]: ({ printThemes }) => {
     return printThemes;
   },
-  [THEME._GETTERS.GET_PRINT_LAYOUTS]: ({ printLayouts }) => themeId => {
+  [THEME._GETTERS.GET_PRINT_LAYOUTS_BY_THEME_ID]: ({
+    printLayouts
+  }) => themeId => {
     if (themeId) {
       return printLayouts.filter(l => l.themeId === themeId);
     }
     return printLayouts;
-  },
-  [THEME._GETTERS.IS_PRINT_LAYOUT_EMPTY]: ({ printLayouts }) => {
-    return printLayouts.length === 0;
   },
   [THEME._GETTERS.GET_PRINT_LAYOUT_BY_TYPE]: state => (themeId, layoutType) => {
     return state.printLayouts.filter(

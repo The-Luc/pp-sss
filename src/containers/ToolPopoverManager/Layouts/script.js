@@ -74,7 +74,7 @@ export default {
   computed: {
     ...mapGetters({
       themes: THEME_GETTERS.GET_THEMES,
-      listLayouts: THEME_GETTERS.GET_PRINT_LAYOUTS,
+      listLayouts: THEME_GETTERS.GET_PRINT_LAYOUTS_BY_THEME_ID,
       book: BOOK_GETTERS.BOOK_DETAIL,
       pageSelected: BOOK_GETTERS.GET_PAGE_SELECTED,
       sheetLayout: BOOK_GETTERS.SHEET_LAYOUT,
@@ -82,8 +82,7 @@ export default {
       getLayoutByType: THEME_GETTERS.GET_PRINT_LAYOUT_BY_TYPE,
       isPrompt: APP_GETTERS.IS_PROMPT,
       sectionId: BOOK_GETTERS.SECTION_ID,
-      getObjectsBySheetId: BOOK_GETTERS.GET_OBJECTS_BY_SHEET_ID,
-      isLayoutEmpty: THEME_GETTERS.IS_PRINT_LAYOUT_EMPTY
+      getObjectsBySheetId: BOOK_GETTERS.GET_OBJECTS_BY_SHEET_ID
     }),
     isVisited() {
       return this.pageSelected.isVisited;
@@ -336,7 +335,7 @@ export default {
     }
   },
   async created() {
-    if (this.isLayoutEmpty) {
+    if (this.listLayouts.length === 0) {
       const layouts = await loadLayouts();
       this.setPrintLayouts({
         layouts
