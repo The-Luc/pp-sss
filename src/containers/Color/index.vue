@@ -1,6 +1,6 @@
 <template>
   <div class="color-container">
-    <span class="properties-title">Color: </span>
+    <span class="properties-title">{{ label }}: </span>
     <div class="color-content">
       <div ref="boxColor" class="box-color">
         <div

@@ -11,6 +11,10 @@ export default {
     color: {
       type: String,
       required: true
+    },
+    label: {
+      type: String,
+      default: 'Color'
     }
   },
   mounted() {
