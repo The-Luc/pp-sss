@@ -1,8 +1,11 @@
-import { mapGetters, mapMutations } from 'vuex';
+import { mapActions, mapGetters, mapMutations } from 'vuex';
 
 import { MUTATES } from '@/store/modules/app/const';
 import { MUTATES as BOOK_MUTATES } from '@/store/modules/book/const';
-import { GETTERS as THEME_GETTERS } from '@/store/modules/theme/const';
+import {
+  GETTERS as THEME_GETTERS,
+  ACTIONS as THEME_ACCTIONS
+} from '@/store/modules/theme/const';
 import Modal from '@/containers/Modal';
 import PpButton from '@/components/Button';
 import Themes from './Themes';
@@ -30,7 +33,7 @@ export default {
   },
   computed: {
     ...mapGetters({
-      themes: THEME_GETTERS.GET_THEMES,
+      themes: THEME_GETTERS.GET_PRINT_THEMES,
       layouts: THEME_GETTERS.GET_LAYOUTS
     }),
     layoutsOfThemePreview() {
@@ -45,6 +48,9 @@ export default {
     }
   },
   methods: {
+    ...mapActions({
+      getThemes: THEME_ACCTIONS.GET_PRINT_THEMES
+    }),
     ...mapMutations({
       toggleModal: MUTATES.TOGGLE_MODAL,
       selectTheme: BOOK_MUTATES.SELECT_THEME
@@ -91,7 +97,10 @@ export default {
       this.themePreview = null;
     }
   },
-  created() {
+  async created() {
+    if (this.themes.length === 0) {
+      this.getThemes();
+    }
     this.selectedThemeId = this.themes[0]?.id;
   }
 };
