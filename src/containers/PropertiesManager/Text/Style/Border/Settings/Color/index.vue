@@ -1,6 +1,6 @@
 <template>
   <div class="border-color-picker-container">
-    <Color :color="borderColor" :event-name="eventName" />
+    <Color :color="borderColor" @change="onChange" />
   </div>
 </template>
 

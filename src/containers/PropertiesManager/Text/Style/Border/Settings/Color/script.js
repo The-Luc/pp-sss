@@ -8,11 +8,6 @@ export default {
   components: {
     Color
   },
-  data() {
-    return {
-      eventName: 'borderChange'
-    };
-  },
   computed: {
     ...mapGetters({
       selectedId: BOOK_GETTERS.SELECTED_OBJECT_ID,
@@ -39,6 +34,17 @@ export default {
   methods: {
     ...mapMutations({
       setColorPickerColor: MUTATES.SET_COLOR_PICKER_COLOR
-    })
+    }),
+    /**
+     * Callback function to get bordercolor and emit to text properties
+     * @param {String} color Border color value
+     */
+    onChange(color) {
+      this.$root.$emit('printChangeTextProperties', {
+        border: {
+          stroke: color
+        }
+      });
+    }
   }
 };

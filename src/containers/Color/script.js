@@ -1,13 +1,10 @@
 import { mapGetters, mapMutations } from 'vuex';
+import { uniqueId } from 'lodash';
 
 import { GETTERS, MUTATES } from '@/store/modules/app/const';
 
 export default {
   props: {
-    eventName: {
-      type: String,
-      required: true
-    },
     color: {
       type: String,
       required: true
@@ -18,16 +15,14 @@ export default {
     }
   },
   mounted() {
-    this.$root.$on('colorChange', color => {
-      this.$root.$emit('printChangeTextProperties', { color });
+    this.$root.$on(this.eventName, color => {
+      this.$emit('change', color);
     });
-    this.$root.$on('borderChange', color => {
-      this.$root.$emit('printChangeTextProperties', {
-        border: {
-          stroke: color
-        }
-      });
-    });
+  },
+  data() {
+    return {
+      eventName: `color-${uniqueId()}`
+    };
   },
   computed: {
     ...mapGetters({

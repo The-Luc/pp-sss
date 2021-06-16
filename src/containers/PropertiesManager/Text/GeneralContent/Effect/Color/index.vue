@@ -1,5 +1,5 @@
 <template>
-  <Color :color="color" :event-name="eventName" />
+  <Color :color="color" @change="onChange" />
 </template>
 
 <script src="./script.js" />

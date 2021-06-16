@@ -8,11 +8,6 @@ export default {
   components: {
     Color
   },
-  data() {
-    return {
-      eventName: 'colorChange'
-    };
-  },
   computed: {
     ...mapGetters({
       isOpenColorPicker: GETTERS.IS_OPEN_COLOR_PICKER,
@@ -39,6 +34,13 @@ export default {
   methods: {
     ...mapMutations({
       setColorPickerColor: MUTATES.SET_COLOR_PICKER_COLOR
-    })
+    }),
+    /**
+     * Callback function to get color and emit to text properties
+     * @param {String} color Color value
+     */
+    onChange(color) {
+      this.$root.$emit('printChangeTextProperties', { color });
+    }
   }
 };
