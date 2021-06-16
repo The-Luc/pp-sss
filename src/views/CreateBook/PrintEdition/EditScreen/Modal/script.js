@@ -2,12 +2,16 @@ import { mapGetters, mapMutations } from 'vuex';
 
 import { MUTATES } from '@/store/modules/app/const';
 import { MUTATES as BOOK_MUTATES } from '@/store/modules/book/const';
-import { GETTERS as THEME_GETTERS } from '@/store/modules/theme/const';
+import {
+  GETTERS as THEME_GETTERS,
+  MUTATES as THEME_MUTATES
+} from '@/store/modules/theme/const';
 import Modal from '@/containers/Modal';
 import PpButton from '@/components/Button';
 import Themes from './Themes';
 import Preview from './Preview';
 import { useLayoutPrompt } from '@/hooks';
+import { loadLayouts } from '@/api/layouts';
 
 export default {
   setup() {
@@ -31,7 +35,8 @@ export default {
   computed: {
     ...mapGetters({
       themes: THEME_GETTERS.GET_THEMES,
-      layouts: THEME_GETTERS.GET_LAYOUTS
+      layouts: THEME_GETTERS.GET_PRINT_LAYOUTS,
+      isLayoutEmpty: THEME_GETTERS.IS_PRINT_LAYOUT_EMPTY
     }),
     layoutsOfThemePreview() {
       return this.layouts(this.themePreview);
@@ -47,7 +52,8 @@ export default {
   methods: {
     ...mapMutations({
       toggleModal: MUTATES.TOGGLE_MODAL,
-      selectTheme: BOOK_MUTATES.SELECT_THEME
+      selectTheme: BOOK_MUTATES.SELECT_THEME,
+      setPrintLayouts: THEME_MUTATES.PRINT_LAYOUTS
     }),
     /**
      * Close Modal
@@ -91,7 +97,13 @@ export default {
       this.themePreview = null;
     }
   },
-  created() {
+  async created() {
     this.selectedThemeId = this.themes[0]?.id;
+    if (this.isLayoutEmpty) {
+      const layouts = await loadLayouts();
+      this.setPrintLayouts({
+        layouts
+      });
+    }
   }
 };
