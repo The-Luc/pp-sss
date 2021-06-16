@@ -1,6 +1,9 @@
 import { mapGetters, mapMutations } from 'vuex';
 
-import { GETTERS as THEME_GETTERS } from '@/store/modules/theme/const';
+import {
+  GETTERS as THEME_GETTERS,
+  MUTATES as THEME_MUTATES
+} from '@/store/modules/theme/const';
 import {
   GETTERS as APP_GETTERS,
   MUTATES as APP_MUTATES
@@ -32,6 +35,8 @@ import {
   useLayoutPrompt,
   useDrawLayout
 } from '@/hooks';
+
+import { loadLayouts } from '@/api/layouts';
 
 export default {
   setup() {
@@ -69,15 +74,16 @@ export default {
   computed: {
     ...mapGetters({
       themes: THEME_GETTERS.GET_THEMES,
-      listLayouts: THEME_GETTERS.GET_LAYOUTS,
+      listLayouts: THEME_GETTERS.GET_PRINT_LAYOUTS,
       book: BOOK_GETTERS.BOOK_DETAIL,
       pageSelected: BOOK_GETTERS.GET_PAGE_SELECTED,
       sheetLayout: BOOK_GETTERS.SHEET_LAYOUT,
       sheetTheme: BOOK_GETTERS.SHEET_THEME,
-      getLayoutByType: THEME_GETTERS.GET_LAYOUT_BY_TYPE,
+      getLayoutByType: THEME_GETTERS.GET_PRINT_LAYOUT_BY_TYPE,
       isPrompt: APP_GETTERS.IS_PROMPT,
       sectionId: BOOK_GETTERS.SECTION_ID,
-      getObjectsBySheetId: BOOK_GETTERS.GET_OBJECTS_BY_SHEET_ID
+      getObjectsBySheetId: BOOK_GETTERS.GET_OBJECTS_BY_SHEET_ID,
+      isLayoutEmpty: THEME_GETTERS.IS_PRINT_LAYOUT_EMPTY
     }),
     isVisited() {
       return this.pageSelected.isVisited;
@@ -116,7 +122,8 @@ export default {
   methods: {
     ...mapMutations({
       updateSheetThemeLayout: BOOK_MUTATES.UPDATE_SHEET_THEME_LAYOUT,
-      toggleModal: APP_MUTATES.TOGGLE_MODAL
+      toggleModal: APP_MUTATES.TOGGLE_MODAL,
+      setPrintLayouts: THEME_MUTATES.PRINT_LAYOUTS
     }),
     /**
      * Set up inital data to render in view
@@ -325,6 +332,14 @@ export default {
       });
       this.updateVisited({
         sheetId: this.pageSelected?.id
+      });
+    }
+  },
+  async created() {
+    if (this.isLayoutEmpty) {
+      const layouts = await loadLayouts();
+      this.setPrintLayouts({
+        layouts
       });
     }
   }

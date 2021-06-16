@@ -4,13 +4,15 @@ import { MUTATES } from '@/store/modules/app/const';
 import { MUTATES as BOOK_MUTATES } from '@/store/modules/book/const';
 import {
   GETTERS as THEME_GETTERS,
-  ACTIONS as THEME_ACCTIONS
+  MUTATES as THEME_MUTATES,
+  ACTIONS as THEME_ACTIONS
 } from '@/store/modules/theme/const';
 import Modal from '@/containers/Modal';
 import PpButton from '@/components/Button';
 import Themes from './Themes';
 import Preview from './Preview';
 import { useLayoutPrompt } from '@/hooks';
+import { loadLayouts } from '@/api/layouts';
 
 export default {
   setup() {
@@ -27,14 +29,15 @@ export default {
   },
   data() {
     return {
-      selectedThemeId: '',
+      selectedThemeId: null,
       themePreview: null
     };
   },
   computed: {
     ...mapGetters({
       themes: THEME_GETTERS.GET_PRINT_THEMES,
-      layouts: THEME_GETTERS.GET_LAYOUTS
+      layouts: THEME_GETTERS.GET_PRINT_LAYOUTS,
+      isLayoutEmpty: THEME_GETTERS.IS_PRINT_LAYOUT_EMPTY
     }),
     layoutsOfThemePreview() {
       return this.layouts(this.themePreview);
@@ -49,11 +52,12 @@ export default {
   },
   methods: {
     ...mapActions({
-      getThemes: THEME_ACCTIONS.GET_PRINT_THEMES
+      setPrintThemes: THEME_ACTIONS.GET_PRINT_THEMES
     }),
     ...mapMutations({
       toggleModal: MUTATES.TOGGLE_MODAL,
-      selectTheme: BOOK_MUTATES.SELECT_THEME
+      selectTheme: BOOK_MUTATES.SELECT_THEME,
+      setPrintLayouts: THEME_MUTATES.PRINT_LAYOUTS
     }),
     /**
      * Close Modal
@@ -99,8 +103,14 @@ export default {
   },
   async created() {
     if (this.themes.length === 0) {
-      this.getThemes();
+      await this.setPrintThemes();
     }
     this.selectedThemeId = this.themes[0]?.id;
+    if (this.isLayoutEmpty) {
+      const layouts = await loadLayouts();
+      this.setPrintLayouts({
+        layouts
+      });
+    }
   }
 };
