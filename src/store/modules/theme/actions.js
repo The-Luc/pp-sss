@@ -1,5 +1,5 @@
 import THEME from './const';
-import { loadPrintThemes } from '@/api/theme';
+import { loadPrintThemes } from '@/api/themes';
 
 export const actions = {
   async [THEME._ACTIONS.GET_PRINT_THEMES]({ commit }) {
