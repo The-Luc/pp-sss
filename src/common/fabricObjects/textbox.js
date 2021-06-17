@@ -32,12 +32,12 @@ export const createTextBox = (x, y, width, height, textProperties) => {
   const dataObject = {
     id: isHasTextId ? textProperties?.id : uniqueId(),
     type: OBJECT_TYPE.TEXT,
-    size: {
-      width: isHasTextId ? textProperties.size.width : width,
-      height: isHasTextId ? textProperties.size.height : height
-    },
     newObject: {
       ...(isHasTextId ? { ...textProperties } : { ...newText }),
+      size: {
+        width: isHasTextId ? textProperties.size.width : width,
+        height: isHasTextId ? textProperties.size.height : height
+      },
       coord: {
         x: isHasTextId ? textProperties?.coord?.x : x,
         y: isHasTextId ? textProperties?.coord?.y : y,
@@ -49,7 +49,7 @@ export const createTextBox = (x, y, width, height, textProperties) => {
   };
 
   const textProp = toFabricTextProp(dataObject);
-  const textVal = dataObject?.newObject?.property?.text || DEFAULT_TEXT.TEXT;
+  const textVal = dataObject?.newObject?.text || DEFAULT_TEXT.TEXT;
   const text = new fabric.Textbox(textVal, {
     ...textProp,
     id: dataObject.id,
@@ -172,7 +172,7 @@ export const createTextBox = (x, y, width, height, textProperties) => {
       target.width,
       target.height,
       rect.strokeLineCap,
-      dataObject.newObject.property.border.strokeWidth
+      dataObject.newObject.border.strokeWidth
     );
 
     rect.set({
@@ -183,7 +183,6 @@ export const createTextBox = (x, y, width, height, textProperties) => {
       strokeDashArray
     });
   };
-
   const ungroup = function(g) {
     const { canvas } = g;
     g._restoreObjectsState();

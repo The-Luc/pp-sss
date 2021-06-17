@@ -119,8 +119,8 @@ export const getters = {
     objectSelectedId,
   [BOOK._GETTERS.OBJECT_BY_ID]: ({ objects }) => id => objects[id],
   [BOOK._GETTERS.PROP_OBJECT_BY_ID]: ({ objects }) => ({ id, prop }) => {
-    const data = objects[id]?.property[prop];
-    return data || data === 0 ? objects[id]?.property[prop] : null;
+    const data = objects[id]?.[prop];
+    return data || data === 0 || data === false ? objects[id]?.[prop] : null;
   },
   [BOOK._GETTERS.TRIGGER_TEXT_CHANGE]: ({ triggerTextChange }) =>
     triggerTextChange,

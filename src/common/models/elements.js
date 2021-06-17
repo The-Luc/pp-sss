@@ -59,43 +59,41 @@ export const TextElement = {
     y: DEFAULT_TEXT.COORD.Y,
     rotation: DEFAULT_TEXT.COORD.ROTATION // degree
   },
-  property: {
-    ...BasePrintProperty,
-    styleId: DEFAULT_TEXT.STYLE_ID,
-    text: DEFAULT_TEXT.TEXT,
-    fontFamily: DEFAULT_TEXT.FONT_FAMILY,
-    fontSize: DEFAULT_TEXT.FONT_SIZE,
-    isBold: DEFAULT_TEXT.IS_BOLD,
-    isItalic: DEFAULT_TEXT.IS_ITALIC,
-    isUnderline: DEFAULT_TEXT.IS_UNDERLINE,
-    textCase: DEFAULT_TEXT.TEXT_CASE, // UPPERCASE, LOWERCASE, CAPITALIZE
-    alignment: {
-      horiziontal: DEFAULT_TEXT.ALIGNMENT.HORIZIONTAL, // LEFT, CENTER, RIGHT, JUSTIFY
-      vertical: DEFAULT_TEXT.ALIGNMENT.VERTICAL // TOP, MIDDLE, BOTTOM
-    },
-    letterSpacing: DEFAULT_TEXT.LETTER_SPACING,
-    lineSpacing: DEFAULT_TEXT.LINE_SPACING, // 1.2 * em
-    lineHeight: DEFAULT_TEXT.LINE_HEIGHT,
-    column: DEFAULT_TEXT.COLUMN,
-    opacity: DEFAULT_TEXT.OPACITY,
-    editingBorderColor: DEFAULT_TEXT.EDITING_BORDER_COLOR,
-    border: {
-      fill: DEFAULT_TEXT.BORDER.FILL,
-      stroke: DEFAULT_TEXT.BORDER.STROKE,
-      strokeWidth: DEFAULT_TEXT.BORDER.STROKE_WIDTH,
-      strokeDashArray: DEFAULT_TEXT.BORDER.STROKE_DASH_ARRAY,
-      strokeLineCap: DEFAULT_TEXT.BORDER.STROKE_LINE_CAP
-    },
-    shadow: {
-      dropShadow: DEFAULT_TEXT.SHADOW.DROP_SHADOW,
-      shadowBlur: DEFAULT_TEXT.SHADOW.BLUR,
-      shadowOffset: DEFAULT_TEXT.SHADOW.OFFSET,
-      shadowOpacity: DEFAULT_TEXT.SHADOW.OPACITY,
-      shadowAngle: DEFAULT_TEXT.SHADOW.ANGLE,
-      shadowColor: DEFAULT_TEXT.SHADOW.COLOR
-    },
-    isConstrain: DEFAULT_TEXT.IS_CONSTRAIN
-  }
+  size: DEFAULT_TEXT.SIZE,
+  styleId: DEFAULT_TEXT.STYLE_ID,
+  text: DEFAULT_TEXT.TEXT,
+  fontFamily: DEFAULT_TEXT.FONT_FAMILY,
+  fontSize: DEFAULT_TEXT.FONT_SIZE,
+  isBold: DEFAULT_TEXT.IS_BOLD,
+  isItalic: DEFAULT_TEXT.IS_ITALIC,
+  isUnderline: DEFAULT_TEXT.IS_UNDERLINE,
+  textCase: DEFAULT_TEXT.TEXT_CASE, // UPPERCASE, LOWERCASE, CAPITALIZE
+  alignment: {
+    horiziontal: DEFAULT_TEXT.ALIGNMENT.HORIZIONTAL, // LEFT, CENTER, RIGHT, JUSTIFY
+    vertical: DEFAULT_TEXT.ALIGNMENT.VERTICAL // TOP, MIDDLE, BOTTOM
+  },
+  letterSpacing: DEFAULT_TEXT.LETTER_SPACING,
+  lineSpacing: DEFAULT_TEXT.LINE_SPACING, // 1.2 * em
+  lineHeight: DEFAULT_TEXT.LINE_HEIGHT,
+  column: DEFAULT_TEXT.COLUMN,
+  opacity: DEFAULT_TEXT.OPACITY,
+  editingBorderColor: DEFAULT_TEXT.EDITING_BORDER_COLOR,
+  border: {
+    fill: DEFAULT_TEXT.BORDER.FILL,
+    stroke: DEFAULT_TEXT.BORDER.STROKE,
+    strokeWidth: DEFAULT_TEXT.BORDER.STROKE_WIDTH,
+    strokeDashArray: DEFAULT_TEXT.BORDER.STROKE_DASH_ARRAY,
+    strokeLineCap: DEFAULT_TEXT.BORDER.STROKE_LINE_CAP
+  },
+  shadow: {
+    dropShadow: DEFAULT_TEXT.SHADOW.DROP_SHADOW,
+    shadowBlur: DEFAULT_TEXT.SHADOW.BLUR,
+    shadowOffset: DEFAULT_TEXT.SHADOW.OFFSET,
+    shadowOpacity: DEFAULT_TEXT.SHADOW.OPACITY,
+    shadowAngle: DEFAULT_TEXT.SHADOW.ANGLE,
+    shadowColor: DEFAULT_TEXT.SHADOW.COLOR
+  },
+  isConstrain: DEFAULT_TEXT.IS_CONSTRAIN
 };
 
 export const ImageElement = {

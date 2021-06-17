@@ -1,8 +1,8 @@
 export default {
   props: {
     value: {
-      type: String,
-      default: ''
+      type: Number,
+      required: true
     },
     title: {
       type: String,
