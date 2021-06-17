@@ -1,20 +1,16 @@
-import { Mix } from 'vue-color';
 import { mapGetters, mapMutations } from 'vuex';
+
 import { GETTERS as BOOK_GETTERS } from '@/store/modules/book/const';
 import { GETTERS, MUTATES } from '@/store/modules/app/const';
+import Color from '@/containers/Color';
+
 export default {
   components: {
-    Mix
-  },
-  data() {
-    return {
-      customClass: 'color-picker-border-text'
-    };
+    Color
   },
   computed: {
     ...mapGetters({
       selectedId: BOOK_GETTERS.SELECTED_OBJECT_ID,
-      isOpenColorPicker: GETTERS.IS_OPEN_COLOR_PICKER,
       triggerChange: BOOK_GETTERS.TRIGGER_TEXT_CHANGE,
       selectedColor: BOOK_GETTERS.PROP_OBJECT_BY_ID,
       colorPickerProps: GETTERS.COLOR_PICKER_CUSTOM_PROPS
@@ -37,20 +33,18 @@ export default {
   },
   methods: {
     ...mapMutations({
-      setColorPickerColor: MUTATES.SET_COLOR_PICKER_COLOR,
-      toggleColorPicker: MUTATES.TOGGLE_COLOR_PICKER
+      setColorPickerColor: MUTATES.SET_COLOR_PICKER_COLOR
     }),
-    onOpenColorPicker() {
-      if (!this.isOpenColorPicker) {
-        this.toggleColorPicker({
-          isOpen: !this.isOpenColorPicker,
-          data: {
-            eventName: 'borderChange',
-            color: this.borderColor,
-            customClass: this.customClass
-          }
-        });
-      }
+    /**
+     * Callback function to get bordercolor and emit to text properties
+     * @param {String} color Border color value
+     */
+    onChange(color) {
+      this.$root.$emit('printChangeTextProperties', {
+        border: {
+          stroke: color
+        }
+      });
     }
   }
 };

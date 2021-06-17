@@ -16,8 +16,6 @@ $transform: $pointer / 2;
 .color-picker-container {
   width: 325px;
   position: absolute;
-  top: 80px;
-  right: $properties-width;
   padding: 10px;
   padding-left: 5px;
   background-color: white;
@@ -35,6 +33,19 @@ $transform: $pointer / 2;
     right: 0px;
     top: 185px;
     transform: translate(50%, -50%) rotate(45deg);
+    box-shadow: 9px 0 10px #0e02028c;
+  }
+
+  &::after {
+    content: '';
+    background-color: white;
+    border-right: 1px solid white;
+    border-top: 1px solid white;
+    height: 40px;
+    width: 15px;
+    position: absolute;
+    right: 0px;
+    top: 170px;
   }
 
   .vc-mix {

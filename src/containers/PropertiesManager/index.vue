@@ -1,6 +1,7 @@
 <template>
-  <div class="properties-container">
+  <div ref="propertiesContainer" class="properties-container">
     <component :is="renderObject" />
+    <PickerPopup v-if="isOpenColorPicker" :top="top" :right="right" />
   </div>
 </template>
 

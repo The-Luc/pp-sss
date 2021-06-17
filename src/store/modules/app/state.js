@@ -14,7 +14,8 @@ export const state = {
       tabActive: '',
       eventName: '',
       color: '',
-      customClass: '',
+      top: 0,
+      left: 0,
       presets: {
         next: 0,
         max: 9,

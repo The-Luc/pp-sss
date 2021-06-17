@@ -7,12 +7,25 @@ export default {
   components: {
     ColorPicker: Mix
   },
+  props: {
+    top: {
+      type: Number,
+      default: 0
+    },
+    right: {
+      type: Number,
+      default: 0
+    }
+  },
   computed: {
     ...mapGetters({
       color: GETTERS.COLOR_PICKER_COLOR,
       propsData: GETTERS.COLOR_PICKER_CUSTOM_PROPS,
       presets: GETTERS.COLOR_PICKER_PRESETS
     })
+  },
+  mounted() {
+    this.$root.$emit('pickerComponent', this.$refs.colorPicker);
   },
   methods: {
     ...mapMutations({
