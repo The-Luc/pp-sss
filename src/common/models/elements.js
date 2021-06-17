@@ -107,7 +107,7 @@ export const BackgroundElement = {
   ...BaseElement,
   type: OBJECT_TYPE.BACKGROUND,
   categoryId: '',
-  type: DEFAULT_BACKGROUND.TYPE,
+  backgroundType: DEFAULT_BACKGROUND.TYPE,
   pageType: DEFAULT_BACKGROUND.PAGE_TYPE,
   name: '',
   thumbnail: '',
