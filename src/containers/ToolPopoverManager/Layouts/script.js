@@ -335,7 +335,7 @@ export default {
     }
   },
   async created() {
-    if (this.listLayouts.length === 0) {
+    if (this.listLayouts().length === 0) {
       const layouts = await loadLayouts();
       this.setPrintLayouts({
         layouts
