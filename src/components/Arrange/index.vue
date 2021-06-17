@@ -1,12 +1,8 @@
 <template>
   <div>
-    <Send @click="onClick" />
-    <Size
-      :width="size.width"
-      :height="size.height"
-      :is-constrain="isConstrain"
-    />
-    <!-- <Position /> -->
+    <Send />
+    <Size />
+    <Position />
     <div class="group-container">
       <Rotate />
       <v-divider vertical class="item-vertical"></v-divider>

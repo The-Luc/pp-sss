@@ -208,6 +208,17 @@ export default {
         'selection:updated': this.objectSelected,
         'selection:cleared': this.closeProperties,
         'selection:created': this.objectSelected,
+        'object:scaled': ({ target }) => {
+          const { width, height } = target;
+          const propAdjust = {
+            size: {
+              width,
+              height
+            }
+          };
+          this.setObjectProp({ id: target.id, property: propAdjust });
+          this.updateTriggerTextChange();
+        },
         'mouse:down': e => {
           if (this.awaitingAdd) {
             this.$root.$emit('printInstructionEnd');
@@ -337,7 +348,7 @@ export default {
      * Get border data from store and set to Rect object
      */
     setBorderObject(rectObj, objectData) {
-      const { strokeWidth, stroke, strokeLineCap } = objectData.property.border;
+      const { strokeWidth, stroke, strokeLineCap } = objectData.border;
       const strokeDashArrayVal = getRectDashes(
         rectObj.width,
         rectObj.height,
@@ -366,6 +377,16 @@ export default {
       });
     },
     /**
+     * Set canvas uniform scaling (constrain proportions)
+     *
+     * @param {Boolean}  isConstrain  the selected object
+     */
+    setCanvasUniformScaling(isConstrain) {
+      window.printCanvas.set({
+        uniformScaling: isConstrain
+      });
+    },
+    /**
      * Event fired when an object of canvas is selected
      *
      * @param {Object}  target  the selected object
@@ -379,17 +400,19 @@ export default {
       this.setSelectedObjectId({ id });
       this.setBorderHighLight(target);
       const objectData = this.selectedObject(this.selectedObjectId);
-
       if (targetType === 'group' && target.objectType !== OBJECT_TYPE.SHAPE) {
         const rectObj = target.getObjects(OBJECT_TYPE.RECT)[0];
 
         this.setBorderObject(rectObj, objectData);
       }
-
       const objectType = objectData?.type;
-
+      const isSelectMultiObject = !objectType;
+      if (isSelectMultiObject) {
+        this.setCanvasUniformScaling(true);
+      } else {
+        this.setCanvasUniformScaling(objectData.isConstrain);
+      }
       if (isEmpty(objectType)) return;
-
       this.setObjectTypeSelected({ type: objectType });
 
       window.printCanvas.preserveObjectStacking =
@@ -403,7 +426,8 @@ export default {
     addText(x, y, width, height) {
       const { object, data } = createTextBox(x, y, width, height);
       this.addNewObject(data);
-
+      const isConstrain = data.newObject.isConstrain;
+      this.setCanvasUniformScaling(isConstrain);
       window.printCanvas.add(object);
 
       setTimeout(() => {

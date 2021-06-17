@@ -1,9 +1,12 @@
-import { mapGetters, mapMutations } from 'vuex';
+import { mapActions, mapGetters, mapMutations } from 'vuex';
 
 import PpToolPopover from '@/components/ToolPopover';
 import PpSelect from '@/components/Select';
 import { themeOptions } from '@/mock/themes';
-import { GETTERS as THEME_GETTERS } from '@/store/modules/theme/const';
+import {
+  GETTERS as THEME_GETTERS,
+  ACTIONS as THEME_ACTIONS
+} from '@/store/modules/theme/const';
 import {
   GETTERS as BOOK_GETTER,
   MUTATES as BOOK_MUTATES
@@ -30,7 +33,7 @@ export default {
   },
   computed: {
     ...mapGetters({
-      themes: THEME_GETTERS.GET_THEMES,
+      themes: THEME_GETTERS.GET_PRINT_THEMES,
       printThemeSelectedId: BOOK_GETTER.PRINT_THEME_SELECTED_ID,
       selectedToolName: APP_GETTERS.SELECTED_TOOL_NAME
     })
@@ -52,6 +55,9 @@ export default {
     }
   },
   methods: {
+    ...mapActions({
+      setPrintThemes: THEME_ACTIONS.GET_PRINT_THEMES
+    }),
     ...mapMutations({
       triggerThemeIdSelected: BOOK_MUTATES.SELECT_THEME,
       setToolNameSelected: APP_MUTATES.SET_TOOL_NAME_SELECTED
@@ -122,6 +128,11 @@ export default {
       this.setToolNameSelected({
         name: ''
       });
+    }
+  },
+  async created() {
+    if (this.themes.length === 0) {
+      await this.setPrintThemes();
     }
   }
 };

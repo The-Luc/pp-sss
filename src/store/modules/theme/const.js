@@ -1,24 +1,34 @@
 export const MODULE_NAME = 'theme';
 
 const _GETTERS = {
-  GET_THEMES: 'getThemes',
-  GET_LAYOUTS: 'getLayouts',
-  GET_LAYOUT_BY_TYPE: 'getLayoutByType'
+  GET_PRINT_THEMES: 'getPrintThemes',
+  GET_PRINT_LAYOUTS_BY_THEME_ID: 'getPrintLayouts',
+  GET_PRINT_LAYOUT_BY_TYPE: 'getPrintLayoutByType'
 };
 
 export const GETTERS = {
-  GET_THEMES: `${MODULE_NAME}/${_GETTERS.GET_THEMES}`,
-  GET_LAYOUTS: `${MODULE_NAME}/${_GETTERS.GET_LAYOUTS}`,
-  GET_LAYOUT_BY_TYPE: `${MODULE_NAME}/${_GETTERS.GET_LAYOUT_BY_TYPE}`
+  GET_PRINT_THEMES: `${MODULE_NAME}/${_GETTERS.GET_PRINT_THEMES}`,
+  GET_PRINT_LAYOUTS_BY_THEME_ID: `${MODULE_NAME}/${_GETTERS.GET_PRINT_LAYOUTS_BY_THEME_ID}`,
+  GET_PRINT_LAYOUT_BY_TYPE: `${MODULE_NAME}/${_GETTERS.GET_PRINT_LAYOUT_BY_TYPE}`
 };
 
-const _ACTIONS = {};
+const _ACTIONS = {
+  GET_PRINT_THEMES: 'getPrintThemes'
+};
 
-export const ACTIONS = {};
+export const ACTIONS = {
+  GET_PRINT_THEMES: `${MODULE_NAME}/${_ACTIONS.GET_PRINT_THEMES}`
+};
 
-const _MUTATES = {};
+const _MUTATES = {
+  PRINT_THEMES: 'printThemes',
+  PRINT_LAYOUTS: 'printLayouts'
+};
 
-export const MUTATES = {};
+export const MUTATES = {
+  PRINT_THEMES: `${MODULE_NAME}/${_MUTATES.PRINT_THEMES}`,
+  PRINT_LAYOUTS: `${MODULE_NAME}/${_MUTATES.PRINT_LAYOUTS}`
+};
 
 export default {
   _GETTERS,
