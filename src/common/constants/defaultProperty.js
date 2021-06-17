@@ -30,6 +30,10 @@ export const DEFAULT_TEXT = {
   COORD: {
     ...DEFAULT_COORD
   },
+  SIZE: {
+    width: 0,
+    height: 0
+  },
   TEXT_CASE: TEXT_CASE.NONE,
   STYLE_ID: 'default',
   FONT_FAMILY: 'Arial',

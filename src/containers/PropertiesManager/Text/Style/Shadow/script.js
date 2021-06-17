@@ -1,6 +1,7 @@
+import { mapGetters } from 'vuex';
+
 import { SHADOW_TYPE, SHADOW_OPTIONS } from '@/common/constants/shadow';
 import { DEFAULT_SHADOW } from '@/common/constants/defaultProperty';
-import { mapGetters } from 'vuex';
 import { GETTERS } from '@/store/modules/book/const';
 import Select from '@/components/Select';
 import Opacity from '@/components/Property/Opacity';
