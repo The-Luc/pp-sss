@@ -6,7 +6,18 @@ import {
   DEFAULT_BACKGROUND
 } from '@/common/constants';
 
-export const BaseProperty = {
+export const BaseElement = {
+  id: '',
+  type: '',
+  size: {
+    width: 0,
+    height: 0
+  },
+  coord: {
+    x: 0,
+    y: 0,
+    rotation: 0 // degree
+  },
   color: DEFAULT_PROP.COLOR,
   opacity: DEFAULT_PROP.OPACITY,
   border: {
@@ -26,29 +37,16 @@ export const BaseProperty = {
   flip: {
     horiziontal: false,
     vertical: false
-  }
+  },
+  zIndex: 0
 };
 
 export const BasePrintProperty = {
-  ...BaseProperty
+  ...BaseElement
 };
 
 export const BaseDigitalProperty = {
-  ...BaseProperty
-};
-
-export const BaseElement = {
-  id: '',
-  type: '',
-  size: {
-    width: 0,
-    height: 0
-  },
-  coord: {
-    x: 0,
-    y: 0,
-    rotation: 0 // degree
-  }
+  ...BaseElement
 };
 
 export const TextElement = {
@@ -99,50 +97,38 @@ export const TextElement = {
 export const ImageElement = {
   ...BaseElement,
   type: OBJECT_TYPE.IMAGE,
-  property: {
-    ...BasePrintProperty,
-    categoryId: 'Cover',
-    name: '',
-    thumbnail: DEFAULT_IMAGE.thumbnail,
-    imageUrl: DEFAULT_IMAGE.imageUrl
-  }
+  categoryId: 'Cover',
+  name: '',
+  thumbnail: DEFAULT_IMAGE.thumbnail,
+  imageUrl: DEFAULT_IMAGE.imageUrl
 };
 
 export const BackgroundElement = {
   ...BaseElement,
   type: OBJECT_TYPE.BACKGROUND,
-  property: {
-    ...BasePrintProperty,
-    categoryId: '',
-    type: DEFAULT_BACKGROUND.TYPE,
-    pageType: DEFAULT_BACKGROUND.PAGE_TYPE,
-    name: '',
-    thumbnail: '',
-    imageUrl: ''
-  }
+  categoryId: '',
+  type: DEFAULT_BACKGROUND.TYPE,
+  pageType: DEFAULT_BACKGROUND.PAGE_TYPE,
+  name: '',
+  thumbnail: '',
+  imageUrl: ''
 };
 
 export const ClipArtElement = {
   ...BaseElement,
   type: OBJECT_TYPE.CLIP_ART,
-  property: {
-    ...BasePrintProperty,
-    category: '',
-    name: '',
-    thumbnail: '',
-    vector: '' // imgUrl
-  }
+  category: '',
+  name: '',
+  thumbnail: '',
+  vector: '' // imgUrl
 };
 
 export const ShapeElement = {
   ...BaseElement,
   type: OBJECT_TYPE.SHAPE,
-  property: {
-    ...BasePrintProperty,
-    name: '',
-    thumbnail: '',
-    pathData: 'img.svg', // TODO: Need discuss with FM to get instruction on using shape
-    color: DEFAULT_PROP.COLOR,
-    stroke: DEFAULT_PROP.COLOR
-  }
+  name: '',
+  thumbnail: '',
+  pathData: 'img.svg', // TODO: Need discuss with FM to get instruction on using shape
+  color: DEFAULT_PROP.COLOR,
+  stroke: DEFAULT_PROP.COLOR
 };
