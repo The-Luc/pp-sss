@@ -49,7 +49,6 @@ export const createTextBox = (x, y, width, height, textProperties) => {
   };
 
   const textProp = toFabricTextProp(dataObject);
-
   const textVal = dataObject?.newObject?.property?.text || DEFAULT_TEXT.TEXT;
   const text = new fabric.Textbox(textVal, {
     ...textProp,
@@ -85,12 +84,14 @@ export const createTextBox = (x, y, width, height, textProperties) => {
   // reference to each other for better keep track
   text._rect = rect;
   rect._text = text;
-
   const group = new fabric.Group([rect, text], {
     id: dataObject.id,
     objectType: OBJECT_TYPE.TEXT,
     left: x,
-    top: y
+    top: y,
+    lockScalingY: false,
+    lockScalingX: false,
+    isConstrain: text.isConstrain
   });
 
   const updateTextListeners = canvas => {

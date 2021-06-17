@@ -8,5 +8,10 @@ export default {
       type: String,
       required: true
     }
+  },
+  methods: {
+    onClick(event) {
+      this.$emit('click', event);
+    }
   }
 };

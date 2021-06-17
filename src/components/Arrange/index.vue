@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Send @click="onClick" />
+    <Send />
     <Size />
     <Position />
     <div class="group-container">

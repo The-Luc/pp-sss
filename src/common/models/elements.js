@@ -93,7 +93,8 @@ export const TextElement = {
       shadowOpacity: DEFAULT_TEXT.SHADOW.OPACITY,
       shadowAngle: DEFAULT_TEXT.SHADOW.ANGLE,
       shadowColor: DEFAULT_TEXT.SHADOW.COLOR
-    }
+    },
+    isConstrain: DEFAULT_TEXT.IS_CONSTRAIN
   }
 };
 
