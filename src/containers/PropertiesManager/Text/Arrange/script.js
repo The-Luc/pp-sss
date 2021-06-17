@@ -1,8 +1,8 @@
-import Send from './Send';
-import Size from './Size';
-import Position from './Position';
-import Flip from './Flip';
-import Rotate from './Rotate';
+import Send from '@/components/Arrange/Send';
+import Size from '@/components/Arrange/Size';
+import Position from '@/components/Arrange/Position';
+import Flip from '@/components/Arrange/Flip';
+import Rotate from '@/components/Arrange/Rotate';
 
 export default {
   components: {
@@ -11,5 +11,10 @@ export default {
     Position,
     Flip,
     Rotate
+  },
+  methods: {
+    onClick(event) {
+      console.log('event', event);
+    }
   }
 };

@@ -61,7 +61,8 @@ export const DEFAULT_TEXT = {
   },
   SHADOW: {
     ...DEFAULT_SHADOW
-  }
+  },
+  IS_CONSTRAIN: false
 };
 
 export const DEFAULT_CLIP_ART = {

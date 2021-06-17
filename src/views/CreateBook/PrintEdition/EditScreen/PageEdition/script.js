@@ -353,6 +353,16 @@ export default {
       });
     },
     /**
+     * Set canvas uniform scaling (constrain proportions)
+     *
+     * @param {Boolean}  isConstrain  the selected object
+     */
+    setCanvasUniformScaling(isConstrain) {
+      window.printCanvas.set({
+        uniformScaling: isConstrain
+      });
+    },
+    /**
      * Event fired when an object of canvas is selected
      *
      * @param {Object}  target  the selected object
@@ -366,17 +376,19 @@ export default {
       this.setSelectedObjectId({ id });
       this.setBorderHighLight(target);
       const objectData = this.selectedObject(this.selectedObjectId);
-
       if (targetType === 'group' && target.objectType !== OBJECT_TYPE.SHAPE) {
         const rectObj = target.getObjects(OBJECT_TYPE.RECT)[0];
 
         this.setBorderObject(rectObj, objectData);
       }
-
       const objectType = objectData?.type;
-
+      const isSelectMultiObject = !objectType;
+      if (isSelectMultiObject) {
+        this.setCanvasUniformScaling(true);
+      } else {
+        this.setCanvasUniformScaling(objectData.property.isConstrain);
+      }
       if (isEmpty(objectType)) return;
-
       this.setObjectTypeSelected({ type: objectType });
 
       window.printCanvas.preserveObjectStacking =
@@ -390,7 +402,8 @@ export default {
     addText(x, y, width, height) {
       const { object, data } = createTextBox(x, y, width, height);
       this.addNewObject(data);
-
+      const isConstrain = data.newObject.property.isConstrain;
+      this.setCanvasUniformScaling(isConstrain);
       window.printCanvas.add(object);
 
       setTimeout(() => {
