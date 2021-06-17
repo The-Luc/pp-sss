@@ -1,4 +1,4 @@
-import { mapGetters, mapMutations } from 'vuex';
+import { mapGetters, mapMutations, mapActions } from 'vuex';
 import { fabric } from 'fabric';
 import { cloneDeep, uniqueId, merge } from 'lodash';
 
@@ -30,6 +30,10 @@ import {
 
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
 import { GETTERS, MUTATES as BOOK_MUTATES } from '@/store/modules/book/const';
+import {
+  ACTIONS as PRINT_ACTIONS,
+  MUTATES as PRINT_MUTATES
+} from '@/store/modules/print/const';
 
 import {
   ImageElement,
@@ -137,8 +141,17 @@ export default {
     document.body.removeEventListener('keyup', this.handleDeleteKey);
     window.printCanvas = null;
   },
+  mounted() {
+    this.setBasicInfo({ bookId: 1719, sectionId: '', sheetId: '' });
+
+    this.getDataPageEdit();
+  },
   methods: {
+    ...mapActions({
+      getDataPageEdit: PRINT_ACTIONS.GET_DATA_EDIT
+    }),
     ...mapMutations({
+      setBasicInfo: PRINT_MUTATES.SET_BASE_INFO,
       setIsOpenProperties: MUTATES.TOGGLE_MENU_PROPERTIES,
       setToolNameSelected: MUTATES.SET_TOOL_NAME_SELECTED,
       toggleColorPicker: MUTATES.TOGGLE_COLOR_PICKER,

@@ -8,3 +8,4 @@ export * from './objects';
 export * from './select';
 export * from './slack';
 export * from './util';
+export * from './sheet';

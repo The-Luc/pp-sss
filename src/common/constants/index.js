@@ -26,3 +26,4 @@ export * from './backgroundType';
 export * from './clipArtType';
 export * from './defaultFabricProperty';
 export * from './controls';
+export * from './queryStatus';
