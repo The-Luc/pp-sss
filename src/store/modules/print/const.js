@@ -1,11 +1,13 @@
 export const MODULE_NAME = 'print';
 
 const _GETTERS = {
-  BOOK_ID: 'getBookId'
+  CURRENT_SHEET: 'getCurrentSheet',
+  BACKGROUNDS: 'getCurrentBackground'
 };
 
 export const GETTERS = {
-  BOOK_ID: `${MODULE_NAME}/${_GETTERS.BOOK_ID}`
+  CURRENT_SHEET: `${MODULE_NAME}/${_GETTERS.CURRENT_SHEET}`,
+  BACKGROUNDS: `${MODULE_NAME}/${_GETTERS.BACKGROUNDS}`
 };
 
 const _ACTIONS = {

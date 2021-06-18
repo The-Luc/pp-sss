@@ -8,11 +8,11 @@ import { mapGetters, mapMutations } from 'vuex';
 
 import { MUTATES as APP_MUTATES } from '@/store/modules/app/const';
 import { GETTERS as BOOK_GETTERS } from '@/store/modules/book/const';
+import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 
 import {
   MODAL_TYPES,
   TOOL_NAME,
-  HALF_SHEET,
   BACKGROUND_TYPE,
   BACKGROUND_PAGE_TYPE
 } from '@/common/constants';
@@ -20,7 +20,7 @@ import {
 import { usePopoverCreationTool } from '@/hooks';
 
 import { cloneDeep } from 'lodash';
-import { isEmpty } from '@/common/utils';
+import { isEmpty, isHalfSheet as isSheetHalfSheet } from '@/common/utils';
 
 import { themeOptions } from '@/mock/themes';
 import { BACKGROUNDS, BACKGROUND_CATEGORIES } from '@/mock/backgrounds';
@@ -89,19 +89,15 @@ export default {
   computed: {
     ...mapGetters({
       book: BOOK_GETTERS.BOOK_DETAIL,
-      sectionId: BOOK_GETTERS.SECTION_ID,
-      currentSheet: BOOK_GETTERS.GET_PAGE_SELECTED,
+      currentSheet: PRINT_GETTERS.CURRENT_SHEET,
       currentThemeId: BOOK_GETTERS.PRINT_THEME_SELECTED_ID,
-      sheetBackgrounds: BOOK_GETTERS.SHEET_BACKGROUNDS,
-      sheetType: BOOK_GETTERS.SHEET_TYPE
+      sheetBackgrounds: PRINT_GETTERS.BACKGROUNDS
     }),
     isHalfSheet() {
-      return HALF_SHEET.indexOf(this.sheetType(this.currentSheet.id)) >= 0;
+      return isSheetHalfSheet(this.currentSheet);
     },
     alreadyAppliedBackground() {
-      const currentBackgrounds = this.sheetBackgrounds(this.currentSheet.id);
-
-      return isEmpty(currentBackgrounds) ? {} : currentBackgrounds[0];
+      return isEmpty(this.sheetBackgrounds) ? {} : this.sheetBackgrounds[0];
     },
     selectedBackgroundType() {
       if (!isEmpty(this.chosenBackgroundType)) {
@@ -340,7 +336,7 @@ export default {
 
       if (!this.isHalfSheet && isSinglePageType) {
         const { numberPageLeft, numberPageRight } = this.numberPage(
-          this.sectionId,
+          this.currentSheet.sectionId,
           this.currentSheet.id
         );
 

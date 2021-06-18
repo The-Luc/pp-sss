@@ -10,6 +10,7 @@ import {
   MUTATES as APP_MUTATES,
   GETTERS as APP_GETTERS
 } from '@/store/modules/app/const';
+import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 import {
   OBJECT_TYPE,
   TOOL_NAME,
@@ -21,7 +22,7 @@ import { createTextBox } from '@/common/fabricObjects';
 export const useLayoutPrompt = () => {
   const { isPrompt, pageSelected } = useGetters({
     isPrompt: APP_GETTERS.IS_PROMPT,
-    pageSelected: BOOK_GETTERS.GET_PAGE_SELECTED
+    pageSelected: PRINT_GETTERS.CURRENT_SHEET
   });
 
   const { updateVisited, setIsPrompt, setToolNameSelected } = useMutations({
