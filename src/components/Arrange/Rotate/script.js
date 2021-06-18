@@ -14,16 +14,16 @@ export default {
     },
     value: {
       type: Number,
-      required: true
+      default: 0
     }
   },
   methods: {
     /**
      * Emit rotate value to parent
-     * @param {Number}  val value user entered
+     * @param {Number}  val rotate value user entered
      */
     onChange(val) {
-      this.$emit('change', val);
+      this.$emit('change', { rotate: val });
     }
   }
 };

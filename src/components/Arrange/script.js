@@ -21,17 +21,9 @@ export default {
     Rotate
   },
   props: {
-    positionX: {
-      type: Number,
-      required: true
-    },
-    positionY: {
-      type: Number,
-      required: true
-    },
-    valueRotate: {
-      type: Number,
-      required: true
+    currentArrange: {
+      type: Object,
+      default: {}
     },
     minRotate: {
       type: Number,
@@ -43,34 +35,50 @@ export default {
     }
   },
   computed: {
-    size() {
-      if (this.triggerChange) {
-        // just for trigger the change
-      }
-      const res = this.selectObjectProp('size');
-      return {
-        width: res?.width || 0,
-        height: res?.height || 0
-      };
-    },
     isConstrain() {
       if (this.triggerChange) {
         // just for trigger the change
       }
       const isConstrain = this.selectObjectProp('isConstrain');
       return isConstrain;
+    },
+    sizeWidth() {
+      return this.currentArrange.size?.width;
+    },
+    sizeHeight() {
+      return this.currentArrange.size?.height;
+    },
+    positionX() {
+      return this.currentArrange.coord?.x;
+    },
+    positionY() {
+      return this.currentArrange.coord?.y;
+    },
+    valueRotate() {
+      return this.currentArrange.coord?.rotation;
     }
   },
   methods: {
-    onClick(event) {
-      console.log('event', event);
+    /**
+     * Emit z-index value to parent
+     * @param {String}  actionName action name user clicked
+     */
+    changeZIndex(actionName) {
+      this.$emit('changeZIndex', actionName);
     },
     /**
-     * Emit rotate value to parent
-     * @param {Number}  val value user entered
+     * Emit flip value to parent
+     * @param {String}  actionName action name user clicked
      */
-    changeRotate(val) {
-      this.$emit('changeRotate', val);
+    changeFlip(actionName) {
+      this.$emit('changeFlip', actionName);
+    },
+    /**
+     * Emit size, position or rotate value to parent
+     * @param {Object}  object object containing the value of update size, position or rotate user entered
+     */
+    onChange(object) {
+      this.$emit('change', object);
     }
   }
 };

@@ -6,11 +6,27 @@ export default {
   props: {
     valueX: {
       type: Number,
-      required: true
+      default: 0
     },
     valueY: {
       type: Number,
-      required: true
+      default: 0
+    }
+  },
+  methods: {
+    /**
+     * Emit position x to parent
+     * @param {Number}  val position y value user entered
+     */
+    onChangeValueX(val) {
+      this.$emit('change', { position: { x: val } });
+    },
+    /**
+     * Emit position x value to parent
+     * @param {Number}  val position x value user entered
+     */
+    onChangeValueY(val) {
+      this.$emit('change', { position: { y: val } });
     }
   }
 };

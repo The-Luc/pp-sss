@@ -21,8 +21,19 @@ export default {
   computed: {
     ...mapGetters({
       selectedColor: BOOK_GETTERS.PROP_OBJECT_BY_ID,
-      selectedId: BOOK_GETTERS.SELECTED_OBJECT_ID
-    })
+      selectedId: BOOK_GETTERS.SELECTED_OBJECT_ID,
+      getObjectById: BOOK_GETTERS.OBJECT_BY_ID,
+      triggerChange: BOOK_GETTERS.TRIGGER_TEXT_CHANGE
+    }),
+    currentArrange() {
+      if (this.triggerChange) {
+        // just for trigger the change
+      }
+      if (!this.selectedId) {
+        return {};
+      }
+      return this.getObjectById(this.selectedId);
+    }
   },
   watch: {
     selectedId() {
@@ -89,6 +100,27 @@ export default {
         border
       });
       this.selectedBorder = data;
+    },
+    /**
+     * Handle update z-index for Shape
+     * @param {String} actionName action name
+     */
+    changeZIndex(actionName) {
+      console.log(actionName);
+    },
+    /**
+     * Handle update flip for Shape
+     * @param {String} actionName action name
+     */
+    changeFlip(actionName) {
+      console.log(actionName);
+    },
+    /**
+     * Handle update size, position or rotate for Shape
+     * @param {Object} object object containing the value of update size, position or rotate
+     */
+    onChange(object) {
+      console.log(object);
     }
   }
 };
