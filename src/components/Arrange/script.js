@@ -67,7 +67,7 @@ export default {
     },
     /**
      * Emit rotate value to parent
-     * @param {Object}  value value user entered
+     * @param {Number}  val value user entered
      */
     changeRotate(val) {
       this.$emit('changeRotate', val);

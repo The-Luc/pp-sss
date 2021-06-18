@@ -3,7 +3,7 @@ import { mapGetters, mapMutations } from 'vuex';
 import Properties from '@/components/Properties';
 import TabMenu from '@/components/TabMenu';
 import GeneralContent from './GeneralContent';
-import ArrangeContent from '@/components/Arrange';
+import Arrange from '@/components/Arrange';
 
 import { MUTATES, GETTERS } from '@/store/modules/app/const';
 
@@ -12,7 +12,7 @@ export default {
     Properties,
     TabMenu,
     GeneralContent,
-    ArrangeContent
+    Arrange
   },
   computed: {
     ...mapGetters({
@@ -31,6 +31,10 @@ export default {
         tabActive: data
       });
     },
+    /**
+     * Handle update rotate for Shape
+     * @param {Number} val Value user entered
+     */
     changeRotate(val) {
       console.log(val);
     }

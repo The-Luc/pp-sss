@@ -13,7 +13,7 @@
           Arrange
         </v-tab>
         <v-tab-item value="arrange">
-          <ArrangeContent
+          <Arrange
             :position-x="3.21"
             :position-y="4.32"
             :value-rotate="10"

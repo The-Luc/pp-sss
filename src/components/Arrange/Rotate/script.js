@@ -20,7 +20,7 @@ export default {
   methods: {
     /**
      * Emit rotate value to parent
-     * @param {Object}  value value user entered
+     * @param {Number}  val value user entered
      */
     onChange(val) {
       this.$emit('change', val);
