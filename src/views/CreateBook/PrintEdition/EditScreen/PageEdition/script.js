@@ -65,6 +65,11 @@ export default {
 
     return { drawLayout };
   },
+  created() {
+    this.setBookId({ bookId: 1719 });
+
+    this.getDataPageEdit();
+  },
   data() {
     return {
       containerSize: null,
@@ -141,17 +146,12 @@ export default {
     document.body.removeEventListener('keyup', this.handleDeleteKey);
     window.printCanvas = null;
   },
-  mounted() {
-    this.setBasicInfo({ bookId: 1719, sectionId: '', sheetId: '' });
-
-    this.getDataPageEdit();
-  },
   methods: {
     ...mapActions({
       getDataPageEdit: PRINT_ACTIONS.GET_DATA_EDIT
     }),
     ...mapMutations({
-      setBasicInfo: PRINT_MUTATES.SET_BASE_INFO,
+      setBookId: PRINT_MUTATES.SET_BOOK_ID,
       setIsOpenProperties: MUTATES.TOGGLE_MENU_PROPERTIES,
       setToolNameSelected: MUTATES.SET_TOOL_NAME_SELECTED,
       toggleColorPicker: MUTATES.TOGGLE_COLOR_PICKER,

@@ -9,3 +9,4 @@ export * from './select';
 export * from './slack';
 export * from './util';
 export * from './sheet';
+export * from './background';

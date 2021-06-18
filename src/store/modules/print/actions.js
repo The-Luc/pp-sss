@@ -1,7 +1,8 @@
+import { cloneDeep } from 'lodash';
 import { isEmpty } from '@/common/utils';
 import printService from '@/api/print';
 
-import { STATUS } from '@/common/constants';
+import { STATUS, OBJECT_TYPE } from '@/common/constants';
 
 import PRINT from './const';
 
@@ -31,32 +32,33 @@ export const actions = {
       sectionsSheets: queryResults[1].data
     });
 
-    const currentSectionId = isEmpty(state.book.sectionId)
-      ? queryResults[1].data[0].id
-      : state.book.sectionId;
-    const currentSheetId = isEmpty(state.book.sheetId)
-      ? queryResults[1].data[0].sheets[0].id
-      : state.book.sheetId;
+    if (isEmpty(state.currentSheet) || isEmpty(state.currentSheet.id)) {
+      const defaultSheetId = state.sections[0].sheets[0];
 
-    commit(PRINT._MUTATES.SET_BASE_INFO, {
-      sectionId: currentSectionId,
-      sheetId: currentSheetId
-    });
+      commit(PRINT._MUTATES.SET_CURRENT_SHEET, {
+        sheet: cloneDeep(state.sheets[defaultSheetId])
+      });
+    }
 
-    dispatch(PRINT._ACTIONS.GET_DATA_CANVAS, {
-      sectionId: currentSectionId,
-      sheetId: currentSheetId
-    });
+    dispatch(PRINT._ACTIONS.GET_DATA_CANVAS);
   },
   async [PRINT._ACTIONS.GET_DATA_CANVAS]({ state, commit }) {
     const queryObjectResult = await printService.getSheetObjects(
       state.book.id,
-      state.book.sectionId,
-      state.book.sheetId
+      state.currentSheet.sectionId,
+      state.currentSheet.id
     );
 
     if (isEmpty(queryObjectResult.data)) return;
 
     commit(PRINT._MUTATES.SET_OBJECTS, { objectList: queryObjectResult.data });
+
+    const backgrounds = queryObjectResult.data.filter(
+      o => o.type === OBJECT_TYPE.BACKGROUND
+    );
+
+    backgrounds.forEach(bg =>
+      commit(PRINT._MUTATES.SET_BACKGROUNDS, { background: bg })
+    );
   }
 };

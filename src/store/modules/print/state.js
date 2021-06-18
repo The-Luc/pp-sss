@@ -3,11 +3,9 @@ import { getNewPrintBackground } from '@/common/models';
 export const state = {
   book: {
     id: null,
-    sectionId: '',
-    sheetId: '',
     defaultThemeId: ''
   },
-  sections: {},
+  sections: [],
   sheets: {},
   currentSheet: {},
   objectIds: [],
