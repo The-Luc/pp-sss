@@ -1,27 +1,14 @@
 .rotate-container {
-    .item-container {
-        .item-input {
-            width: 60px;
-            height: 25px;
-            border: 1px solid #bcbec0;
-            border-radius: 3px;
-            overflow: hidden;
-            input {
-                padding: 0 4px;
-                height: 100%;
-                width: 100%;
-                outline: none;
-                text-align: center;
-            }
-        }
-        .item-title {
-            font-family: $font-300;
-            text-align: center;
-            font-size: 10px;
-            height: 12px;
-            margin: 0;
-            margin-top: 2px;
-            color: #58595b;
-        }
+  .item-container {
+    .pp-number {
+      width: 60px;
+      max-width: 60px;
+      height: 25px;
     }
+    .item-title {
+      font-size: 10px;
+      height: 12px;
+      margin-bottom: 0;
+    }
+  }
 }
