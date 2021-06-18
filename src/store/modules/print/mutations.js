@@ -77,42 +77,5 @@ export const mutations = {
 
     state.background.left = isSheetLeft ? background : {};
     state.background.right = isSheetLeft ? {} : background;
-
-    /*if (background.isLeft) {
-      state.background.right = rightBackground;
-    } else {
-      state.background.left = leftBackground;
-    }*/
-
-    /*const isFullBackground =
-      background.pageType === BACKGROUND_PAGE_TYPE.FULL_PAGE.id;
-
-    if (background.pageType === BACKGROUND_PAGE_TYPE.FULL_PAGE.id)
-      const isCurrentFullBackground =
-        !isEmpty(background.left) &&
-        state.background.left.pageType === BACKGROUND_PAGE_TYPE.FULL_PAGE.id;
-
-    const isSheetHalf = isHalfSheet(state.currentSheet);
-    const isSheetLeft = isHalfLeft(state.currentSheet);
-
-    const isRemoveAllBackground =
-      isSheetHalf || isFullBackground || isCurrentFullBackground;
-
-    const isAddToLeftFullSheet =
-      !isSheetHalf && (isFullBackground || background.isLeft);
-
-    const isAddToLeft = isSheetLeft || isAddToLeftFullSheet;
-
-    if (isRemoveAllBackground || isAddToLeft) {
-      state.background.left = {};
-    }
-
-    if (isRemoveAllBackground || !isAddToLeft) {
-      state.background.right = {};
-    }
-
-    const leftRight = isAddToLeft ? 'left' : 'right';
-
-    state.background[leftRight] = background;*/
   }
 };
