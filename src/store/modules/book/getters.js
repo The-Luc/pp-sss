@@ -160,5 +160,7 @@ export const getters = {
     return isEmpty(sheet) ? '' : sheet.type;
   },
   [BOOK._GETTERS.TRIGGER_BACKGROUND_CHANGE]: ({ triggerBackgroundChange }) =>
-    triggerBackgroundChange
+    triggerBackgroundChange,
+  [BOOK._GETTERS.TRIGGER_SHAPE_CHANGE]: ({ triggerShapeChange }) =>
+    triggerShapeChange
 };
