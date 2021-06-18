@@ -7,8 +7,9 @@ export const state = {
   },
   sections: [],
   sheets: {},
-  currentSheet: {},
+  currentSheetId: '',
   objectIds: [],
   objects: {},
+  currentObjectId: '',
   background: getNewPrintBackground()
 };

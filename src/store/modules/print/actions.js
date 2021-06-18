@@ -32,11 +32,11 @@ export const actions = {
       sectionsSheets: queryResults[1].data
     });
 
-    if (isEmpty(state.currentSheet) || isEmpty(state.currentSheet.id)) {
+    if (isEmpty(state.currentSheetId)) {
       const defaultSheetId = state.sections[0].sheets[0];
 
-      commit(PRINT._MUTATES.SET_CURRENT_SHEET, {
-        sheet: cloneDeep(state.sheets[defaultSheetId])
+      commit(PRINT._MUTATES.SET_CURRENT_SHEET_ID, {
+        id: state.sheets[defaultSheetId].id
       });
     }
 
@@ -45,8 +45,8 @@ export const actions = {
   async [PRINT._ACTIONS.GET_DATA_CANVAS]({ state, commit }) {
     const queryObjectResult = await printService.getSheetObjects(
       state.book.id,
-      state.currentSheet.sectionId,
-      state.currentSheet.id
+      state.sheets[state.currentSheetId].sectionId,
+      state.currentSheetId
     );
 
     if (isEmpty(queryObjectResult.data)) return;

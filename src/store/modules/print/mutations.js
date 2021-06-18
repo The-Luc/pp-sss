@@ -50,8 +50,8 @@ export const mutations = {
 
     state.objects = objects;
   },
-  [PRINT._MUTATES.SET_CURRENT_SHEET](state, { sheet }) {
-    state.currentSheet = sheet;
+  [PRINT._MUTATES.SET_CURRENT_SHEET_ID](state, { id }) {
+    state.currentSheetId = id;
   },
   [PRINT._MUTATES.SET_BACKGROUNDS](state, { background }) {
     if (isFullBackground(background)) {
@@ -63,7 +63,7 @@ export const mutations = {
       return;
     }
 
-    if (!isHalfSheet(state.currentSheet)) {
+    if (!isHalfSheet(state.sheets[state.currentSheetId])) {
       const position = background.isLeft ? 'left' : 'right';
 
       state.background[position] = background;
@@ -71,7 +71,7 @@ export const mutations = {
       return;
     }
 
-    const isSheetLeft = isHalfLeft(state.currentSheet);
+    const isSheetLeft = isHalfLeft(state.sheets[state.currentSheetId]);
 
     background.isLeft = isSheetLeft;
 
