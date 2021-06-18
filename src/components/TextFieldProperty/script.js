@@ -18,8 +18,8 @@ export default {
      * Emit event change input
      * @param   {Object}   event event change change of input
      */
-    change(event) {
-      this.$emit('change', event);
+    onChange(event) {
+      this.$emit('change', event.target.value);
     }
   }
 };

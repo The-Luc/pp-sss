@@ -109,6 +109,7 @@ export const BackgroundElement = {
   categoryId: '',
   backgroundType: DEFAULT_BACKGROUND.TYPE,
   pageType: DEFAULT_BACKGROUND.PAGE_TYPE,
+  isLeft: true,
   name: '',
   thumbnail: '',
   imageUrl: ''

@@ -161,6 +161,8 @@ export const getters = {
   },
   [BOOK._GETTERS.TRIGGER_BACKGROUND_CHANGE]: ({ triggerBackgroundChange }) =>
     triggerBackgroundChange,
+  [BOOK._GETTERS.TRIGGER_CLIPART_CHANGE]: ({ triggerClipArtChange }) =>
+    triggerClipArtChange,
   [BOOK._GETTERS.TRIGGER_SHAPE_CHANGE]: ({ triggerShapeChange }) =>
     triggerShapeChange
 };
