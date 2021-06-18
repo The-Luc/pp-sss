@@ -150,7 +150,8 @@ export default {
       addNewBackground: BOOK_MUTATES.ADD_PRINT_BACKGROUND,
       updateTriggerBackgroundChange:
         BOOK_MUTATES.UPDATE_TRIGGER_BACKGROUND_CHANGE,
-      deleteObject: BOOK_MUTATES.DELETE_PRINT_OBJECT
+      deleteObject: BOOK_MUTATES.DELETE_PRINT_OBJECT,
+      updateTriggerShapeChange: BOOK_MUTATES.UPDATE_TRIGGER_SHAPE_CHANGE
     }),
     /**
      * Auto resize canvas to fit the container size
@@ -646,10 +647,17 @@ export default {
      * @param {Object}  prop  new prop
      */
     changeShapeProperties(prop) {
-      // todo
+      if (isEmpty(prop)) {
+        this.updateTriggerShapeChange();
+        return;
+      }
       const shape = window.printCanvas.getActiveObject();
 
       if (isEmpty(shape)) return;
+
+      this.setObjectProp({ id: this.selectedObjectId, property: prop });
+
+      this.updateTriggerShapeChange();
 
       updatePrintShape(shape, prop, window.printCanvas);
     }

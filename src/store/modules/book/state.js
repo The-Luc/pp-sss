@@ -19,5 +19,6 @@ export const state = {
   sectionId: 1,
   objectSelectedId: '',
   triggerTextChange: false,
-  triggerBackgroundChange: false
+  triggerBackgroundChange: false,
+  triggerShapeChange: false
 };

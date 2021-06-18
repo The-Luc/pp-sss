@@ -529,5 +529,8 @@ export const mutations = {
     });
 
     delete state.objects[id];
+  },
+  [BOOK._MUTATES.UPDATE_TRIGGER_SHAPE_CHANGE](state) {
+    state.triggerShapeChange = !state.triggerShapeChange;
   }
 };
