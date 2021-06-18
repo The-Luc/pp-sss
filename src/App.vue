@@ -18,8 +18,8 @@ import { ENV_CONFIG } from '@/common/constants/config';
 import { useBook } from '@/hooks';
 import ModalManager from './containers/ModalManager';
 import HeaderControl from './views/CreateBook/HeadControl';
-import { GETTERS } from './store/modules/book/const';
 import { GETTERS as APP_GETTER } from './store/modules/app/const';
+import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 
 export default {
   components: {
@@ -32,11 +32,11 @@ export default {
   },
   computed: {
     ...mapGetters({
-      pageSelected: GETTERS.GET_PAGE_SELECTED,
+      pageSelected: PRINT_GETTERS.CURRENT_SHEET,
       isPrompt: APP_GETTER.IS_PROMPT
     }),
     isVisited() {
-      return this.pageSelected.isVisited;
+      return this.pageSelected?.isVisited || false;
     }
   }
 };

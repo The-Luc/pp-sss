@@ -1,7 +1,7 @@
 import moment from 'moment';
 import { pick } from 'lodash';
 
-import { DATE_FORMAT, MOMENT_TYPE, OBJECT_TYPE } from '@/common/constants';
+import { DATE_FORMAT, MOMENT_TYPE } from '@/common/constants';
 import BOOK from './const';
 import {
   isEmpty,
@@ -44,9 +44,6 @@ export const getters = {
       releaseDate,
       deliveryDate
     };
-  },
-  [BOOK._GETTERS.GET_PAGE_SELECTED]: ({ pageSelected }) => {
-    return pageSelected;
   },
   [BOOK._GETTERS.PRINT_THEME_SELECTED_ID]: ({ book }) => {
     return book.printData.themeId;
@@ -124,35 +121,6 @@ export const getters = {
   },
   [BOOK._GETTERS.TRIGGER_TEXT_CHANGE]: ({ triggerTextChange }) =>
     triggerTextChange,
-  [BOOK._GETTERS.SHEET_BACKGROUNDS]: ({ book, objects }) => sheetId => {
-    const sheets = getAllSheets(book.sections);
-    const sheet = sheets.find(s => s.id === sheetId);
-
-    const pageData = sheet?.printData?.layout?.pages || null;
-
-    if (isEmpty(pageData)) return [];
-
-    const firstId = isEmpty(pageData[0].objects) ? '' : pageData[0].objects[0];
-    const secondId =
-      pageData.length > 1 && !isEmpty(pageData[1].objects)
-        ? pageData[1].objects[0]
-        : '';
-
-    const existedBackgroundIds = [firstId, secondId].filter(id => {
-      if (isEmpty(id)) return false;
-
-      const element = objects[id];
-
-      if (isEmpty(element)) return false;
-
-      const isBackground = element.type === OBJECT_TYPE.BACKGROUND;
-      const backgroundType = isBackground ? element.property.type : '';
-
-      return !isEmpty(backgroundType);
-    });
-
-    return existedBackgroundIds.map(id => objects[id]);
-  },
   [BOOK._GETTERS.SHEET_TYPE]: ({ book }) => sheetId => {
     const sheets = getAllSheets(book.sections);
     const sheet = sheets.find(s => s.id === sheetId);

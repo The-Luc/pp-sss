@@ -12,6 +12,7 @@ import {
   GETTERS as BOOK_GETTERS,
   MUTATES as BOOK_MUTATES
 } from '@/store/modules/book/const';
+import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 import { themeOptions } from '@/mock/themes';
 import PpToolPopover from '@/components/ToolPopover';
 import PpSelect from '@/components/Select';
@@ -76,7 +77,7 @@ export default {
       themes: THEME_GETTERS.GET_THEMES,
       listLayouts: THEME_GETTERS.GET_PRINT_LAYOUTS_BY_THEME_ID,
       book: BOOK_GETTERS.BOOK_DETAIL,
-      pageSelected: BOOK_GETTERS.GET_PAGE_SELECTED,
+      pageSelected: PRINT_GETTERS.CURRENT_SHEET,
       sheetLayout: BOOK_GETTERS.SHEET_LAYOUT,
       sheetTheme: BOOK_GETTERS.SHEET_THEME,
       getLayoutByType: THEME_GETTERS.GET_PRINT_LAYOUT_BY_TYPE,
@@ -85,7 +86,7 @@ export default {
       getObjectsBySheetId: BOOK_GETTERS.GET_OBJECTS_BY_SHEET_ID
     }),
     isVisited() {
-      return this.pageSelected.isVisited;
+      return this.pageSelected?.isVisited;
     },
     layouts() {
       if (this.themeSelected?.id && this.layoutSelected?.value) {
@@ -160,7 +161,7 @@ export default {
         default:
           {
             // Use default layout if the sheet no have private layout
-            const sheetLayout = this.pageSelected.printData.layout;
+            const sheetLayout = this.pageSelected?.printData?.layout;
             if (sheetLayout?.id) {
               const layoutOpt = getLayoutOptSelectedById(
                 this.listLayouts(),
@@ -230,7 +231,7 @@ export default {
       if (this.layouts.length > 0) {
         this.tempLayoutIdSelected = this.layouts[0].id;
         this.layoutObjSelected = this.layouts[0];
-        const sheetLayout = this.pageSelected.printData.layout;
+        const sheetLayout = this.pageSelected?.printData?.layout;
         if (sheetLayout?.id) {
           const sheetLayoutObj = this.layouts.find(
             layout => layout.id === sheetLayout.id
@@ -287,13 +288,13 @@ export default {
         if (
           this.layoutObjSelected.type === LAYOUT_TYPES.SINGLE_PAGE.value &&
           ![SHEET_TYPE.FRONT_COVER, SHEET_TYPE.BACK_COVER].includes(
-            this.pageSelected.type
+            this.pageSelected?.type
           )
         ) {
           // Show choose layout modal
           const { numberPageLeft, numberPageRight } = this.numberPage(
             this.sectionId,
-            this.pageSelected.id
+            this.pageSelected?.id
           );
 
           this.onCancel();
@@ -304,8 +305,8 @@ export default {
               props: {
                 numberPageLeft,
                 numberPageRight,
-                sheetId: this.pageSelected.id,
-                themeId: this.themeSelected.id,
+                sheetId: this.pageSelected?.id,
+                themeId: this.themeSelected?.id,
                 layout: this.layoutObjSelected
               }
             }
@@ -313,8 +314,8 @@ export default {
           return;
         }
         this.updateSheetThemeLayout({
-          sheetId: this.pageSelected.id,
-          themeId: this.themeSelected.id,
+          sheetId: this.pageSelected?.id,
+          themeId: this.themeSelected?.id,
           layout: this.layoutObjSelected
         });
         const objects = this.getObjectsBySheetId(this.pageSelected?.id);

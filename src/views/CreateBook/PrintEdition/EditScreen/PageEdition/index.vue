@@ -6,7 +6,7 @@
         <PrintCanvasLines
           :canvas-size="canvasSize"
           :page-size="printSize"
-          :sheet-type="pageSelected.type"
+          :sheet-type="currentSheetType"
         />
       </SizeWrapper>
     </PageWrapper>

@@ -4,6 +4,7 @@ import Thumbnail from '@/components/Thumbnail/ThumbnailDigital';
 import HeaderContainer from '@/components/Thumbnail/HeaderContainer';
 import { GETTERS, MUTATES } from '@/store/modules/book/const';
 import { scrollToElement } from '@/common/utils';
+import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 
 export default {
   components: {
@@ -12,7 +13,7 @@ export default {
   },
   computed: {
     ...mapGetters({
-      pageSelected: GETTERS.GET_PAGE_SELECTED,
+      pageSelected: PRINT_GETTERS.CURRENT_SHEET,
       book: GETTERS.BOOK_DETAIL
     }),
     orderScreen() {

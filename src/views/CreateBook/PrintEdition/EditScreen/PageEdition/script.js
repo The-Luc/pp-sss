@@ -32,6 +32,7 @@ import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
 import { GETTERS, MUTATES as BOOK_MUTATES } from '@/store/modules/book/const';
 import {
   ACTIONS as PRINT_ACTIONS,
+  GETTERS as PRINT_GETTERS,
   MUTATES as PRINT_MUTATES
 } from '@/store/modules/print/const';
 
@@ -85,7 +86,7 @@ export default {
   computed: {
     ...mapGetters({
       book: GETTERS.BOOK_DETAIL,
-      pageSelected: GETTERS.GET_PAGE_SELECTED,
+      pageSelected: PRINT_GETTERS.CURRENT_SHEET,
       selectedLayout: GETTERS.SHEET_LAYOUT,
       getObjectsBySheetId: GETTERS.GET_OBJECTS_BY_SHEET_ID,
       isOpenMenuProperties: APP_GETTERS.IS_OPEN_MENU_PROPERTIES,
@@ -95,40 +96,43 @@ export default {
       selectedProp: GETTERS.PROP_OBJECT_BY_ID
     }),
     isCover() {
-      return this.pageSelected.type === SHEET_TYPE.COVER;
+      return this.pageSelected?.type === SHEET_TYPE.COVER;
     },
     isHardCover() {
       const { coverOption } = this.book;
       return (
         coverOption === 'Hardcover' &&
-        this.pageSelected.type === SHEET_TYPE.COVER
+        this.pageSelected?.type === SHEET_TYPE.COVER
       );
     },
     isSoftCover() {
       const { coverOption } = this.book;
       return (
         coverOption === 'Softcover' &&
-        this.pageSelected.type === SHEET_TYPE.COVER
+        this.pageSelected?.type === SHEET_TYPE.COVER
       );
     },
     isIntro() {
       const { sections } = this.book;
-      return this.pageSelected.id === sections[1].sheets[0].id;
+      return this.pageSelected?.id === sections[1].sheets[0].id;
     },
     isSignature() {
       const { sections } = this.book;
       const lastSection = sections[sections.length - 1];
       return (
-        this.pageSelected.id ===
+        this.pageSelected?.id ===
         lastSection.sheets[lastSection.sheets.length - 1].id
       );
+    },
+    currentSheetType() {
+      return this.pageSelected?.type || -1;
     }
   },
   watch: {
     pageSelected: {
       deep: true,
       handler(val, oldVal) {
-        if (val.id !== oldVal.id) {
+        if (val?.id !== oldVal?.id) {
           this.setSelectedObjectId({ id: '' });
           window.printCanvas
             .discardActiveObject()
@@ -189,7 +193,7 @@ export default {
       this.canvasSize = { ...canvasSize, zoom: currentZoom };
       window.printCanvas.setWidth(canvasSize.width);
       window.printCanvas.setHeight(canvasSize.height);
-      const objects = this.getObjectsBySheetId(this.pageSelected.id);
+      const objects = this.getObjectsBySheetId(this.pageSelected?.id);
       this.drawLayout(this.pageSelected?.printData?.layout, objects);
       window.printCanvas.setZoom(currentZoom);
     },
@@ -372,7 +376,7 @@ export default {
      * @param {Element}  group  Group object
      */
     setBorderHighLight(group) {
-      const layout = this.selectedLayout(this.pageSelected.id);
+      const layout = this.selectedLayout(this.pageSelected?.id);
       group.set({
         borderColor: layout?.id ? 'white' : '#bcbec0'
       });
