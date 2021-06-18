@@ -1,4 +1,4 @@
-export const ARRANGE_POSITION = {
+export const ARRANGE_SEND = {
   BACK: 'back',
   FRONT: 'front',
   FORWARD: 'forward',
