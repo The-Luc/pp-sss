@@ -5,22 +5,26 @@
       <ButtonProperty
         icon-name="flip_to_back"
         title="To Back"
-        @click="onClick"
+        @click="onClick('toBack')"
       />
       <ButtonProperty
         icon-name="flip_to_front"
         title="To Front"
-        @click="onClick"
+        @click="onClick('toFront')"
       />
       <v-divider vertical class="item-vertical"></v-divider>
       <ButtonProperty
         icon-name="flip_to_back"
         title="Backward"
-        @click="onClick"
+        @click="onClick('backward')"
       >
         <img slot="icon" class="icon-right" src="@/assets/icons/forward.svg" />
       </ButtonProperty>
-      <ButtonProperty icon-name="flip_to_back" title="Forward" @click="onClick">
+      <ButtonProperty
+        icon-name="flip_to_back"
+        title="Forward"
+        @click="onClick('forward')"
+      >
         <img slot="icon" class="icon-right" src="@/assets/icons/backward.svg" />
       </ButtonProperty>
     </div>

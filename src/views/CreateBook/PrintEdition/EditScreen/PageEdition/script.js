@@ -188,8 +188,10 @@ export default {
       this.containerSize = containerSize;
       let el = this.$refs.canvas;
       window.printCanvas = new fabric.Canvas(el, {
-        backgroundColor: '#ffffff'
+        backgroundColor: '#fff',
+        preserveObjectStacking: true
       });
+
       usePrintOverrides(fabric.Object.prototype);
       this.updateCanvasSize();
       window.printCanvas.on({
@@ -402,9 +404,6 @@ export default {
       }
       if (isEmpty(objectType)) return;
       this.setObjectTypeSelected({ type: objectType });
-
-      window.printCanvas.preserveObjectStacking =
-        objectType === OBJECT_TYPE.BACKGROUND;
 
       this.openProperties(objectType);
     },
