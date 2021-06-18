@@ -1,4 +1,4 @@
-import { mapGetters, mapMutations } from 'vuex';
+import { mapGetters, mapMutations, mapActions } from 'vuex';
 import { fabric } from 'fabric';
 import { cloneDeep, uniqueId, merge } from 'lodash';
 
@@ -30,6 +30,10 @@ import {
 
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
 import { GETTERS, MUTATES as BOOK_MUTATES } from '@/store/modules/book/const';
+import {
+  ACTIONS as PRINT_ACTIONS,
+  MUTATES as PRINT_MUTATES
+} from '@/store/modules/print/const';
 
 import {
   ImageElement,
@@ -60,6 +64,11 @@ export default {
     const { drawLayout } = useDrawLayout();
 
     return { drawLayout };
+  },
+  created() {
+    this.setBookId({ bookId: 1719 });
+
+    this.getDataPageEdit();
   },
   data() {
     return {
@@ -138,7 +147,11 @@ export default {
     window.printCanvas = null;
   },
   methods: {
+    ...mapActions({
+      getDataPageEdit: PRINT_ACTIONS.GET_DATA_EDIT
+    }),
     ...mapMutations({
+      setBookId: PRINT_MUTATES.SET_BOOK_ID,
       setIsOpenProperties: MUTATES.TOGGLE_MENU_PROPERTIES,
       setToolNameSelected: MUTATES.SET_TOOL_NAME_SELECTED,
       toggleColorPicker: MUTATES.TOGGLE_COLOR_PICKER,
@@ -150,7 +163,8 @@ export default {
       addNewBackground: BOOK_MUTATES.ADD_PRINT_BACKGROUND,
       updateTriggerBackgroundChange:
         BOOK_MUTATES.UPDATE_TRIGGER_BACKGROUND_CHANGE,
-      deleteObject: BOOK_MUTATES.DELETE_PRINT_OBJECT
+      deleteObject: BOOK_MUTATES.DELETE_PRINT_OBJECT,
+      updateTriggerShapeChange: BOOK_MUTATES.UPDATE_TRIGGER_SHAPE_CHANGE
     }),
     /**
      * Auto resize canvas to fit the container size
@@ -646,10 +660,17 @@ export default {
      * @param {Object}  prop  new prop
      */
     changeShapeProperties(prop) {
-      // todo
+      if (isEmpty(prop)) {
+        this.updateTriggerShapeChange();
+        return;
+      }
       const shape = window.printCanvas.getActiveObject();
 
       if (isEmpty(shape)) return;
+
+      this.setObjectProp({ id: this.selectedObjectId, property: prop });
+
+      this.updateTriggerShapeChange();
 
       updatePrintShape(shape, prop, window.printCanvas);
     }

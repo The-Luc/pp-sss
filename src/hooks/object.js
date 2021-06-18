@@ -7,10 +7,16 @@ import { GETTERS } from '@/store/modules/book/const';
  *  @return {Object} {selectObjectProp: The function to connect to getter, triggerChange: state to trigger change}
  */
 export const useObject = () => {
-  const { selectedId, onSelectedObject, triggerChange } = useGetters({
+  const {
+    selectedId,
+    onSelectedObject,
+    triggerChange,
+    triggerShapeChange
+  } = useGetters({
     onSelectedObject: GETTERS.PROP_OBJECT_BY_ID,
     selectedId: GETTERS.SELECTED_OBJECT_ID,
-    triggerChange: GETTERS.TRIGGER_TEXT_CHANGE
+    triggerChange: GETTERS.TRIGGER_TEXT_CHANGE,
+    triggerShapeChange: GETTERS.TRIGGER_SHAPE_CHANGE
   });
   /**
    * The fuction to connect to store to getter object's properties
@@ -27,6 +33,7 @@ export const useObject = () => {
 
   return {
     selectObjectProp,
-    triggerChange
+    triggerChange,
+    triggerShapeChange
   };
 };
