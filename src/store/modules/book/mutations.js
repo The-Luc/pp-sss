@@ -510,6 +510,12 @@ export const mutations = {
   [BOOK._MUTATES.UPDATE_TRIGGER_BACKGROUND_CHANGE](state) {
     state.triggerBackgroundChange = !state.triggerBackgroundChange;
   },
+  [BOOK._MUTATES.UPDATE_TRIGGER_CLIPART_CHANGE](state) {
+    state.triggerClipArtChange = !state.triggerClipArtChange;
+  },
+  [BOOK._MUTATES.UPDATE_TRIGGER_SHAPE_CHANGE](state) {
+    state.triggerShapeChange = !state.triggerShapeChange;
+  },
   [BOOK._MUTATES.DELETE_PRINT_OBJECT](state, { id, sheetId }) {
     const sheets = getAllSheets(state.book.sections);
     const sheet = sheets.find(s => s.id === sheetId);
@@ -525,8 +531,5 @@ export const mutations = {
     });
 
     delete state.objects[id];
-  },
-  [BOOK._MUTATES.UPDATE_TRIGGER_SHAPE_CHANGE](state) {
-    state.triggerShapeChange = !state.triggerShapeChange;
   }
 };

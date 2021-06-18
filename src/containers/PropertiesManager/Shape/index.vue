@@ -13,7 +13,14 @@
           Arrange
         </v-tab>
         <v-tab-item value="arrange">
-          <ArrangeContent />
+          <ArrangeContent
+            :current-arrange="currentArrange"
+            :min-rotate="-360"
+            :max-rotate="360"
+            @changeZIndex="changeZIndex"
+            @changeFlip="changeFlip"
+            @change="onChange"
+          />
         </v-tab-item>
       </TabMenu>
     </Properties>

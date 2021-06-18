@@ -20,5 +20,6 @@ export const state = {
   objectSelectedId: '',
   triggerTextChange: false,
   triggerBackgroundChange: false,
-  triggerShapeChange: false
+  triggerShapeChange: false,
+  triggerClipArtChange: false
 };

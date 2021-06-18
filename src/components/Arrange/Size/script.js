@@ -4,11 +4,11 @@ export default {
   props: {
     width: {
       type: Number,
-      required: true
+      default: 0
     },
     height: {
       type: Number,
-      required: true
+      default: 0
     },
     isConstrain: {
       type: Boolean,
@@ -24,6 +24,22 @@ export default {
     },
     heightPt() {
       return pxToIn(this.height);
+    }
+  },
+  methods: {
+    /**
+     * Emit size width value to parent
+     * @param {Number}  val size width value user entered
+     */
+    onChangeWidth(val) {
+      this.$emit('change', { size: { width: val } });
+    },
+    /**
+     * Emit size height value to parent
+     * @param {Number}  val size height value user entered
+     */
+    onChangeHeight(val) {
+      this.$emit('change', { size: { height: val } });
     }
   }
 };
