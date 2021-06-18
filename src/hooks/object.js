@@ -11,12 +11,14 @@ export const useObject = () => {
     selectedId,
     onSelectedObject,
     triggerChange,
-    triggerShapeChange
+    triggerShapeChange,
+    triggerClipArtChange
   } = useGetters({
     onSelectedObject: GETTERS.PROP_OBJECT_BY_ID,
     selectedId: GETTERS.SELECTED_OBJECT_ID,
     triggerChange: GETTERS.TRIGGER_TEXT_CHANGE,
-    triggerShapeChange: GETTERS.TRIGGER_SHAPE_CHANGE
+    triggerShapeChange: GETTERS.TRIGGER_SHAPE_CHANGE,
+    triggerClipArtChange: GETTERS.TRIGGER_CLIP_ART_CHANGE
   });
   /**
    * The fuction to connect to store to getter object's properties
@@ -34,6 +36,7 @@ export const useObject = () => {
   return {
     selectObjectProp,
     triggerChange,
-    triggerShapeChange
+    triggerShapeChange,
+    triggerClipArtChange
   };
 };

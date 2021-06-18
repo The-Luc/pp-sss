@@ -13,7 +13,6 @@ import {
   toFabricImageProp,
   selectLatestObject,
   deleteSelectedObjects,
-  toFabricClipArtProp,
   getRectDashes,
   scaleSize
 } from '@/common/utils';
@@ -27,6 +26,13 @@ import {
   addPrintShapes,
   updatePrintShape
 } from '@/common/fabricObjects';
+
+import {
+  toFabricClipArtProp,
+  updateElement
+} from '@/common/fabricObjects/common';
+
+// import { toFabricClipArtProp } from '@/common/fabricObjects/common';
 
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
 import { GETTERS, MUTATES as BOOK_MUTATES } from '@/store/modules/book/const';
@@ -164,7 +170,8 @@ export default {
       updateTriggerBackgroundChange:
         BOOK_MUTATES.UPDATE_TRIGGER_BACKGROUND_CHANGE,
       deleteObject: BOOK_MUTATES.DELETE_PRINT_OBJECT,
-      updateTriggerShapeChange: BOOK_MUTATES.UPDATE_TRIGGER_SHAPE_CHANGE
+      updateTriggerShapeChange: BOOK_MUTATES.UPDATE_TRIGGER_SHAPE_CHANGE,
+      updateTriggerClipArtChange: BOOK_MUTATES.UPDATE_TRIGGER_CLIP_ART_CHANGE
     }),
     /**
      * Auto resize canvas to fit the container size
@@ -286,6 +293,10 @@ export default {
 
       this.$root.$on('printChangeShapeProperties', prop => {
         this.changeShapeProperties(prop);
+      });
+
+      this.$root.$on('printChangeClipArtProperties', prop => {
+        this.changeClipArtProperties(prop);
       });
 
       document.body.addEventListener('keyup', this.handleDeleteKey);
@@ -574,14 +585,16 @@ export default {
         clipArts.map(item => {
           let id = uniqueId();
           let newClipArt = cloneDeep(ClipArtElement);
+          merge(newClipArt, item);
           this.addNewObject({
             id: id,
-            type: OBJECT_TYPE.CLIP_ART,
             newObject: {
               ...newClipArt
             }
           });
           let fabricProp = toFabricClipArtProp(newClipArt);
+          console.log(newClipArt);
+          console.log(fabricProp);
           return new Promise(resolve => {
             fabric.loadSVGFromURL(
               require(`../../../../../assets/image/clip-art/${item.property.vector}`),
@@ -590,6 +603,8 @@ export default {
                 svgData
                   .set({
                     ...fabricProp,
+                    width: svgData.width,
+                    height: svgData.height,
                     id: id,
                     type: OBJECT_TYPE.CLIP_ART,
                     fill: '#58595b'
@@ -673,6 +688,27 @@ export default {
       this.updateTriggerShapeChange();
 
       updatePrintShape(shape, prop, window.printCanvas);
+    },
+    /**
+     * Event fire when user change any property of selected shape
+     *
+     * @param {Object}  prop  new prop
+     */
+    changeClipArtProperties(prop) {
+      if (isEmpty(prop)) {
+        this.updateTriggerClipArtChange();
+        return;
+      }
+
+      const clipArt = window.printCanvas.getActiveObject();
+
+      if (isEmpty(clipArt)) return;
+
+      this.setObjectProp({ id: this.selectedObjectId, property: prop });
+
+      this.updateTriggerClipArtChange();
+
+      updateElement(clipArt, prop, window.printCanvas);
     }
   }
 };

@@ -6,6 +6,7 @@ import Item from './Item';
 import ClipArtType from './ClipArtType';
 import { MUTATES as APP_MUTATES } from '@/store/modules/app/const';
 import { CLIP_ART_TYPE } from '@/common/constants';
+import { cloneDeep } from 'lodash';
 export default {
   components: {
     PpToolPopover,
@@ -70,7 +71,7 @@ export default {
       const addClipArts = this.clipArtList.filter(item => {
         return this.selectedClipArtId.includes(item.id);
       });
-      this.$root.$emit('printAddClipArt', addClipArts);
+      this.$root.$emit('printAddClipArt', cloneDeep(addClipArts));
       this.onCancel();
     },
     /**

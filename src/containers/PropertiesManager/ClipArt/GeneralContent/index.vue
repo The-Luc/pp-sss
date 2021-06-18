@@ -1,7 +1,7 @@
 <template>
   <div>
     <FillColor />
-    <Opacity :value="opacityValue" @change="onChange" />
+    <Opacity :value="opacityValue" @change="onChangeOpacity" />
     <Shadow
       :selected-shadow="selectedShadow"
       :options="shadowOptions"

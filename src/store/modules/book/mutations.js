@@ -532,5 +532,8 @@ export const mutations = {
   },
   [BOOK._MUTATES.UPDATE_TRIGGER_SHAPE_CHANGE](state) {
     state.triggerShapeChange = !state.triggerShapeChange;
+  },
+  [BOOK._MUTATES.UPDATE_TRIGGER_CLIP_ART_CHANGE](state) {
+    state.triggerClipArtChange = !state.triggerClipArtChange;
   }
 };
