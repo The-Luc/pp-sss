@@ -4,6 +4,7 @@ import { ICON_LOCAL, THINKNESS_OPTIONS } from '@/common/constants';
 import { getValueInput, validateInputOption } from '@/common/utils/input';
 import PpCombobox from '@/components/Combobox';
 import { GETTERS } from '@/store/modules/book/const';
+import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 import { getSelectedOption } from '@/common/utils';
 
 export default {
@@ -19,18 +20,14 @@ export default {
   },
   computed: {
     ...mapGetters({
-      selectedId: GETTERS.SELECTED_OBJECT_ID,
-      onSelectedThickNess: GETTERS.PROP_OBJECT_BY_ID,
-      triggerChange: GETTERS.TRIGGER_TEXT_CHANGE
+      onSelectedThickNess: PRINT_GETTERS.SELECT_PROP_CURRENT_OBJECT,
+      triggerChange: PRINT_GETTERS.TRIGGER_TEXT_CHANGE
     }),
     selectedThickness() {
       if (this.triggerChange) {
         // just for trigger the change
       }
-      const selectedThickness = this.onSelectedThickNess({
-        id: this.selectedId,
-        prop: 'border'
-      });
+      const selectedThickness = this.onSelectedThickNess('border');
       const thicknessValue =
         selectedThickness?.strokeWidth || selectedThickness === 0
           ? selectedThickness?.strokeWidth

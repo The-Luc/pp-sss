@@ -2,6 +2,7 @@ import { mapGetters, mapMutations } from 'vuex';
 
 import { GETTERS, MUTATES } from '@/store/modules/app/const';
 import { GETTERS as BOOK_GETTERS } from '@/store/modules/book/const';
+import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 import Color from '@/containers/Color';
 
 export default {
@@ -11,9 +12,8 @@ export default {
   computed: {
     ...mapGetters({
       isOpenColorPicker: GETTERS.IS_OPEN_COLOR_PICKER,
-      selectedId: BOOK_GETTERS.SELECTED_OBJECT_ID,
-      selectedColor: BOOK_GETTERS.PROP_OBJECT_BY_ID,
-      triggerChange: BOOK_GETTERS.TRIGGER_TEXT_CHANGE,
+      selectedColor: PRINT_GETTERS.SELECT_PROP_CURRENT_OBJECT,
+      triggerChange: PRINT_GETTERS.TRIGGER_TEXT_CHANGE,
       colorPickerProps: GETTERS.COLOR_PICKER_CUSTOM_PROPS
     }),
     color() {
@@ -22,9 +22,8 @@ export default {
       }
       let color = '#0B1717';
       if (this.colorPickerProps.tabActive === 'general') {
-        color =
-          this.selectedColor({ id: this.selectedId, prop: 'color' }) ||
-          '#0B1717';
+        color = this.selectedColor('color') || '#0B1717';
+
         this.setColorPickerColor({ color: color });
       }
 

@@ -9,6 +9,7 @@ import {
 } from '@/common/utils';
 
 import { GETTERS } from '@/store/modules/book/const';
+import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 
 export default {
   components: {
@@ -28,16 +29,14 @@ export default {
   },
   computed: {
     ...mapGetters({
-      selectedId: GETTERS.SELECTED_OBJECT_ID,
-      selectedSpacing: GETTERS.PROP_OBJECT_BY_ID,
-      triggerChange: GETTERS.TRIGGER_TEXT_CHANGE
+      selectedSpacing: PRINT_GETTERS.SELECT_PROP_CURRENT_OBJECT,
+      triggerChange: PRINT_GETTERS.TRIGGER_TEXT_CHANGE
     }),
     selectedLetterSpacing() {
       if (this.triggerChange) {
         // just for trigger the change
       }
-      const selectedCharSpacing =
-        this.selectedSpacing({ id: this.selectedId, prop: 'charSpacing' }) || 0;
+      const selectedCharSpacing = this.selectedSpacing('charSpacing') || 0;
       const selected = this.items.find(
         item => item.value === selectedCharSpacing
       );

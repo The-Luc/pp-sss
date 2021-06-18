@@ -11,5 +11,11 @@ export const state = {
   objectIds: [],
   objects: {},
   currentObjectId: '',
-  background: getNewPrintBackground()
+  background: getNewPrintBackground(),
+  triggerChange: {
+    text: true,
+    background: true,
+    shape: true,
+    clipArt: true
+  }
 };

@@ -4,7 +4,6 @@ import { pick } from 'lodash';
 import { DATE_FORMAT, MOMENT_TYPE } from '@/common/constants';
 import BOOK from './const';
 import {
-  isEmpty,
   getAllSheets,
   getDiffDaysFOM,
   getDiffMonths,
@@ -111,26 +110,5 @@ export const getters = {
       });
     });
     return pick(objects, [...objIds]);
-  },
-  [BOOK._GETTERS.SELECTED_OBJECT_ID]: ({ objectSelectedId }) =>
-    objectSelectedId,
-  [BOOK._GETTERS.OBJECT_BY_ID]: ({ objects }) => id => objects[id],
-  [BOOK._GETTERS.PROP_OBJECT_BY_ID]: ({ objects }) => ({ id, prop }) => {
-    const data = objects[id]?.[prop];
-    return data || data === 0 || data === false ? objects[id]?.[prop] : null;
-  },
-  [BOOK._GETTERS.TRIGGER_TEXT_CHANGE]: ({ triggerTextChange }) =>
-    triggerTextChange,
-  [BOOK._GETTERS.SHEET_TYPE]: ({ book }) => sheetId => {
-    const sheets = getAllSheets(book.sections);
-    const sheet = sheets.find(s => s.id === sheetId);
-
-    return isEmpty(sheet) ? '' : sheet.type;
-  },
-  [BOOK._GETTERS.TRIGGER_BACKGROUND_CHANGE]: ({ triggerBackgroundChange }) =>
-    triggerBackgroundChange,
-  [BOOK._GETTERS.TRIGGER_CLIPART_CHANGE]: ({ triggerClipArtChange }) =>
-    triggerClipArtChange,
-  [BOOK._GETTERS.TRIGGER_SHAPE_CHANGE]: ({ triggerShapeChange }) =>
-    triggerShapeChange
+  }
 };

@@ -2,6 +2,7 @@ import { mapGetters } from 'vuex';
 
 import PpSelect from '@/components/Select';
 import { GETTERS } from '@/store/modules/book/const';
+import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 
 export default {
   components: {
@@ -22,18 +23,15 @@ export default {
   },
   computed: {
     ...mapGetters({
-      selectedId: GETTERS.SELECTED_OBJECT_ID,
-      selectedFontFamily: GETTERS.PROP_OBJECT_BY_ID,
-      triggerChange: GETTERS.TRIGGER_TEXT_CHANGE
+      selectedFontFamily: PRINT_GETTERS.SELECT_PROP_CURRENT_OBJECT,
+      triggerChange: PRINT_GETTERS.TRIGGER_TEXT_CHANGE
     }),
     selectedFont() {
       if (this.triggerChange) {
         // just for trigger the change
       }
 
-      const selectedFont =
-        this.selectedFontFamily({ id: this.selectedId, prop: 'fontFamily' }) ||
-        'Arial';
+      const selectedFont = this.selectedFontFamily('fontFamily') || 'Arial';
 
       const selected = this.items.find(
         font => font.toLowerCase() === selectedFont.toLowerCase()
