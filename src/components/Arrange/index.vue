@@ -6,9 +6,14 @@
       :height="size.height"
       :is-constrain="isConstrain"
     />
-    <Position />
+    <Position :value-x="positionX" :value-y="positionY" />
     <div class="group-container">
-      <Rotate :value="0" />
+      <Rotate
+        :value="valueRotate"
+        :max="maxRotate"
+        :min="minRotate"
+        @change="changeRotate"
+      />
       <v-divider vertical class="item-vertical"></v-divider>
       <Flip />
     </div>

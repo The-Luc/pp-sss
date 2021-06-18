@@ -20,6 +20,28 @@ export default {
     Flip,
     Rotate
   },
+  props: {
+    positionX: {
+      type: Number,
+      required: true
+    },
+    positionY: {
+      type: Number,
+      required: true
+    },
+    valueRotate: {
+      type: Number,
+      required: true
+    },
+    minRotate: {
+      type: Number,
+      required: true
+    },
+    maxRotate: {
+      type: Number,
+      required: true
+    }
+  },
   computed: {
     size() {
       if (this.triggerChange) {
@@ -42,6 +64,13 @@ export default {
   methods: {
     onClick(event) {
       console.log('event', event);
+    },
+    /**
+     * Emit rotate value to parent
+     * @param {Object}  value value user entered
+     */
+    changeRotate(val) {
+      this.$emit('changeRotate', val);
     }
   }
 };

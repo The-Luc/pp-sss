@@ -3,7 +3,7 @@ import { mapGetters, mapMutations } from 'vuex';
 import Properties from '@/components/Properties';
 import TabMenu from '@/components/TabMenu';
 import GeneralContent from './GeneralContent';
-import ArrangeContent from './Arrange';
+import ArrangeContent from '@/components/Arrange';
 
 import { MUTATES, GETTERS } from '@/store/modules/app/const';
 
@@ -30,6 +30,9 @@ export default {
       this.setColorPicker({
         tabActive: data
       });
+    },
+    changeRotate(val) {
+      console.log(val);
     }
   }
 };

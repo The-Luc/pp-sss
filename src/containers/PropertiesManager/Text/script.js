@@ -4,7 +4,7 @@ import Properties from '@/components/Properties';
 import TabMenu from '@/components/TabMenu';
 import GeneralContent from './GeneralContent';
 import StyleContent from './Style';
-import ArrangeContent from './Arrange';
+import ArrangeContent from '@/components/Arrange';
 
 import { MUTATES } from '@/store/modules/app/const';
 import { GETTERS as BOOK_GETTERS } from '@/store/modules/book/const';
