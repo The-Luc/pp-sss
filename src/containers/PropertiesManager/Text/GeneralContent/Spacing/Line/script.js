@@ -1,5 +1,5 @@
 import { mapGetters } from 'vuex';
-import PpCombobox from '@/components/Combobox';
+import PpCombobox from '@/components/Selectors/Combobox';
 import { ICON_LOCAL } from '@/common/constants';
 import {
   getSelectedOption,

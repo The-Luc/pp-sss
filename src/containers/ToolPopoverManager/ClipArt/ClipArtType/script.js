@@ -1,4 +1,4 @@
-import PpSelect from '@/components/SelectMultiLevel';
+import PpSelect from '@/components/Selectors/SelectMultiLevel';
 
 export default {
   components: {

@@ -1,5 +1,5 @@
 import { mapMutations } from 'vuex';
-import PpSelect from '@/components/Select';
+import PpSelect from '@/components/Selectors/Select';
 import PpToolPopover from '@/components/ToolPopover';
 import { loadClipArts, loadClipArtCategories } from '@/api/clipArt';
 import Item from './Item';
