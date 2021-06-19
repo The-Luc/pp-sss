@@ -1,6 +1,6 @@
 import Header from './SectionHeader';
 import Details from './SectionDetails';
-import DragDropIndicator from '@/components/DragDropIndicator';
+import DragDropIndicator from '@/components/DragDrops/DragDropIndicator';
 
 export default {
   components: {

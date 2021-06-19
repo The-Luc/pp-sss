@@ -1,7 +1,7 @@
 import { mapGetters } from 'vuex';
 
 import { GETTERS } from '@/store/modules/app/const';
-import ToolButton from '@/components/ToolButton';
+import ToolButton from '@/components/Buttons/ToolButton';
 import { useLayoutPrompt } from '@/hooks';
 
 export default {

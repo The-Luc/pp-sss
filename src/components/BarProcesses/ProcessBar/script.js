@@ -1,6 +1,6 @@
 import { PROCESS_STATUS } from '@/common/constants';
 
-import BlockBar from '@/components/BlockBar';
+import BlockBar from '@/components/BarProcesses/BlockBar';
 
 export default {
   components: {

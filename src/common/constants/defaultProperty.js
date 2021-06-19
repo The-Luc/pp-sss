@@ -80,6 +80,7 @@ export const DEFAULT_CLIP_ART = {
   },
   OPACITY: DEFAULT_PROP.OPACITY
 };
+
 export const DEFAULT_IMAGE = {
   category: 'Cover',
   name: '',
@@ -90,8 +91,9 @@ export const DEFAULT_IMAGE = {
 };
 
 export const DEFAULT_BACKGROUND = {
-  TYPE: BACKGROUND_TYPE.THEME.id,
-  PAGE_TYPE: BACKGROUND_PAGE_TYPE.FULL_PAGE.id
+  BACKGROUND_TYPE: BACKGROUND_TYPE.THEME.id,
+  PAGE_TYPE: BACKGROUND_PAGE_TYPE.FULL_PAGE.id,
+  IS_LEFT: true
 };
 
 export const DEFAULT_SHAPE = {

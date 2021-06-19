@@ -1,6 +1,6 @@
 import { mapGetters } from 'vuex';
 
-import BlockBar from '@/components/BlockBar';
+import BlockBar from '@/components/BarProcesses/BlockBar';
 
 import { GETTERS } from '@/store/modules/book/const';
 

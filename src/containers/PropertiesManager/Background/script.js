@@ -1,6 +1,6 @@
-import Properties from '@/components/Properties';
-import OpacityProp from '@/components/Property/Opacity';
-import FlipProp from '@/components/Property/Flip';
+import Properties from '@/components/Properties/BoxProperties';
+import OpacityProp from '@/components/Properties/Features/Opacity';
+import FlipProp from '@/components/Properties/Features/Flip';
 import Remove from './Remove';
 
 import { mapGetters } from 'vuex';

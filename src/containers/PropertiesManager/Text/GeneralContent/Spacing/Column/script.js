@@ -1,4 +1,4 @@
-import PpCombobox from '@/components/Combobox';
+import PpCombobox from '@/components/Selectors/Combobox';
 import { ICON_LOCAL } from '@/common/constants';
 
 export default {
