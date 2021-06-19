@@ -1,10 +1,5 @@
-import { cloneDeep } from 'lodash';
-import {
-  isEmpty,
-  isHalfSheet,
-  isHalfLeft,
-  isFullBackground
-} from '@/common/utils';
+import { cloneDeep, merge } from 'lodash';
+import { isHalfSheet, isHalfLeft, isFullBackground } from '@/common/utils';
 
 import { OBJECT_TYPE } from '@/common/constants';
 import PRINT from './const';
@@ -50,8 +45,8 @@ export const mutations = {
 
     state.objects = objects;
   },
-  [PRINT._MUTATES.SET_CURRENT_SHEET](state, { sheet }) {
-    state.currentSheet = sheet;
+  [PRINT._MUTATES.SET_CURRENT_SHEET_ID](state, { id }) {
+    state.currentSheetId = id;
   },
   [PRINT._MUTATES.SET_BACKGROUNDS](state, { background }) {
     if (isFullBackground(background)) {
@@ -63,7 +58,7 @@ export const mutations = {
       return;
     }
 
-    if (!isHalfSheet(state.currentSheet)) {
+    if (!isHalfSheet(state.sheets[state.currentSheetId])) {
       const position = background.isLeft ? 'left' : 'right';
 
       state.background[position] = background;
@@ -71,11 +66,49 @@ export const mutations = {
       return;
     }
 
-    const isSheetLeft = isHalfLeft(state.currentSheet);
+    const isSheetLeft = isHalfLeft(state.sheets[state.currentSheetId]);
 
     background.isLeft = isSheetLeft;
 
     state.background.left = isSheetLeft ? background : {};
     state.background.right = isSheetLeft ? {} : background;
+  },
+  [PRINT._MUTATES.SET_CURRENT_OBJECT_ID](state, { id }) {
+    state.currentObjectId = id;
+  },
+  [PRINT._MUTATES.ADD_OBJECT](state, { id, newObject }) {
+    state.objectIds.push(id);
+
+    state.objects[id] = newObject;
+  },
+  [PRINT._MUTATES.SET_PROP](state, { prop }) {
+    const currentProps = cloneDeep(state.objects[state.currentObjectId]);
+
+    merge(currentProps, prop);
+
+    state.objects[state.currentObjectId] = currentProps;
+  },
+  [PRINT._MUTATES.DELETE_OBJECTS](state, { ids }) {
+    ids.forEach(id => {
+      const index = state.objectIds.indexOf(id);
+
+      if (index >= 0) {
+        state.objectIds.splice(index, 1);
+      }
+
+      delete state.objects[id];
+    });
+  },
+  [PRINT._MUTATES.UPDATE_TRIGGER_TEXT_CHANGE](state) {
+    state.triggerChange.text = !state.triggerChange.text;
+  },
+  [PRINT._MUTATES.UPDATE_TRIGGER_BACKGROUND_CHANGE](state) {
+    state.triggerChange.background = !state.triggerChange.background;
+  },
+  [PRINT._MUTATES.UPDATE_TRIGGER_CLIPART_CHANGE](state) {
+    state.triggerChange.clipArt = !state.triggerChange.clipArt;
+  },
+  [PRINT._MUTATES.UPDATE_TRIGGER_SHAPE_CHANGE](state) {
+    state.triggerChange.shape = !state.triggerChange.shape;
   }
 };

@@ -7,8 +7,15 @@ export const state = {
   },
   sections: [],
   sheets: {},
-  currentSheet: {},
+  currentSheetId: '',
   objectIds: [],
   objects: {},
-  background: getNewPrintBackground()
+  currentObjectId: '',
+  background: getNewPrintBackground(),
+  triggerChange: {
+    text: true,
+    background: true,
+    shape: true,
+    clipArt: true
+  }
 };

@@ -4,10 +4,11 @@ import Properties from '@/components/Properties';
 import TabMenu from '@/components/TabMenu';
 import GeneralContent from './GeneralContent';
 import StyleContent from './Style';
-import ArrangeContent from './Arrange';
+import ArrangeContent from '@/components/Arrange';
 
 import { MUTATES } from '@/store/modules/app/const';
 import { GETTERS as BOOK_GETTERS } from '@/store/modules/book/const';
+import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 import { DEFAULT_TEXT } from '@/common/constants';
 
 export default {
@@ -20,9 +21,18 @@ export default {
   },
   computed: {
     ...mapGetters({
-      selectedColor: BOOK_GETTERS.PROP_OBJECT_BY_ID,
-      selectedId: BOOK_GETTERS.SELECTED_OBJECT_ID
-    })
+      selectedColor: PRINT_GETTERS.SELECT_PROP_CURRENT_OBJECT,
+      selectedId: PRINT_GETTERS.CURRENT_OBJECT_ID,
+      getObjectById: PRINT_GETTERS.CURRENT_OBJECT,
+      triggerChange: PRINT_GETTERS.TRIGGER_TEXT_CHANGE
+    }),
+    currentArrange() {
+      if (this.triggerChange) {
+        // just for trigger the change
+      }
+
+      return this.getObjectById;
+    }
   },
   watch: {
     selectedId() {
@@ -66,10 +76,7 @@ export default {
      * Set default selected border
      */
     setSelectedBorder() {
-      const border = this.selectedColor({
-        id: this.selectedId,
-        prop: 'border'
-      });
+      const border = this.selectedColor('border');
       this.selectedBorder = this.borderOptions[border?.isBorder ? 1 : 0];
     },
     /**
@@ -89,6 +96,27 @@ export default {
         border
       });
       this.selectedBorder = data;
+    },
+    /**
+     * Handle update z-index for Shape
+     * @param {String} actionName action name
+     */
+    changeZIndex(actionName) {
+      console.log(actionName);
+    },
+    /**
+     * Handle update flip for Shape
+     * @param {String} actionName action name
+     */
+    changeFlip(actionName) {
+      console.log(actionName);
+    },
+    /**
+     * Handle update size, position or rotate for Shape
+     * @param {Object} object object containing the value of update size, position or rotate
+     */
+    onChange(object) {
+      console.log(object);
     }
   }
 };

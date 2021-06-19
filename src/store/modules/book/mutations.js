@@ -1,16 +1,9 @@
-import { cloneDeep, uniqueId, omit, pick, merge } from 'lodash';
+import { cloneDeep, uniqueId, omit, pick } from 'lodash';
 import randomcolor from 'randomcolor';
 import moment from 'moment';
 
-import {
-  SHEET_TYPE,
-  DATE_FORMAT,
-  BACKGROUND_PAGE_TYPE,
-  OBJECT_TYPE,
-  HALF_SHEET,
-  HALF_LEFT
-} from '@/common/constants';
-import { getAllSheets, nextId, isEmpty } from '@/common/utils';
+import { SHEET_TYPE, DATE_FORMAT } from '@/common/constants';
+import { getAllSheets, nextId } from '@/common/utils';
 
 import BOOK from './const';
 import { POSITION_FIXED } from '@/common/constants';
@@ -273,10 +266,6 @@ export const mutations = {
     const indexSection = sections.findIndex(item => item.id == sectionId);
     state.book.sections[indexSection].name = sectionName;
   },
-  [BOOK._MUTATES.SELECT_SHEET](state, payload) {
-    const { sheet } = payload;
-    state.pageSelected = sheet;
-  },
   [BOOK._MUTATES.GET_BOOK_SUCCESS](state, payload) {
     state.book = payload;
   },
@@ -423,117 +412,5 @@ export const mutations = {
     // );
     // let printData = book.sections[sectionIndex].sheets[sheetIndex].printData;
     // printData.pages = data;
-  },
-  [BOOK._MUTATES.SET_SELECTED_OBJECT_ID](state, { id }) {
-    state.objectSelectedId = id;
-  },
-  [BOOK._MUTATES.SET_PROP](state, { id, property }) {
-    const currentProps = cloneDeep(state.objects[id]);
-    const newProps = merge(currentProps, property);
-    state.objects[id] = newProps;
-  },
-  [BOOK._MUTATES.ADD_OBJECT](state, { id, newObject }) {
-    state.objects[id] = newObject;
-  },
-  [BOOK._MUTATES.UPDATE_TRIGGER_TEXT_CHANGE](state) {
-    state.triggerTextChange = !state.triggerTextChange;
-  },
-  [BOOK._MUTATES.ADD_PRINT_BACKGROUND](
-    state,
-    { id, sheetId, isLeft = true, newBackground }
-  ) {
-    const sheets = getAllSheets(state.book.sections);
-    const sheet = sheets.find(s => s.id === sheetId);
-
-    if (isEmpty(sheet)) return;
-
-    if (isEmpty(sheet.printData.layout)) {
-      sheet.printData.layout = { pages: [{ objects: [] }, { objects: [] }] };
-    }
-
-    if (sheet.printData.layout.pages.length < 2) {
-      sheet.printData.layout.pages.push({ objects: [] });
-    }
-
-    const pageData = sheet.printData.layout.pages;
-
-    const firstId = isEmpty(pageData[0].objects) ? '' : pageData[0].objects[0];
-    const secondId = isEmpty(pageData[1].objects) ? '' : pageData[1].objects[0];
-
-    const firstBackground =
-      state.objects[firstId]?.type === OBJECT_TYPE.BACKGROUND
-        ? state.objects[firstId]
-        : null;
-
-    const secondBackground =
-      state.objects[secondId]?.type === OBJECT_TYPE.BACKGROUND
-        ? state.objects[secondId]
-        : null;
-
-    const isAddingFullBackground =
-      newBackground.property.pageType === BACKGROUND_PAGE_TYPE.FULL_PAGE.id;
-
-    const isCurrentFullBackground =
-      !isEmpty(firstBackground) &&
-      firstBackground.property.pageType === BACKGROUND_PAGE_TYPE.FULL_PAGE.id;
-
-    const isHalfSheet = HALF_SHEET.indexOf(sheet.type) >= 0;
-    const isHalfLeft = isHalfSheet && HALF_LEFT.indexOf(sheet.type) >= 0;
-
-    const isRemoveAllBackground =
-      isHalfSheet || isAddingFullBackground || isCurrentFullBackground;
-
-    const isAddToLeftFullSheet =
-      !isHalfSheet && (isAddingFullBackground || isLeft);
-
-    const isAddToLeft = isHalfLeft || isAddToLeftFullSheet;
-
-    const isRemoveLeft =
-      !isEmpty(firstBackground) && (isRemoveAllBackground || isAddToLeft);
-    const isRemoveRight =
-      !isEmpty(secondBackground) && (isRemoveAllBackground || !isAddToLeft);
-
-    if (isRemoveLeft) {
-      sheet.printData.layout.pages[0].objects.shift();
-
-      delete state.objects[firstId];
-    }
-
-    if (isRemoveRight) {
-      sheet.printData.layout.pages[1].objects.shift();
-
-      delete state.objects[secondId];
-    }
-
-    const pageIndex = isAddToLeft ? 0 : 1;
-
-    sheet.printData.layout.pages[pageIndex].objects.unshift(id);
-
-    state.objects[id] = newBackground;
-  },
-  [BOOK._MUTATES.UPDATE_TRIGGER_BACKGROUND_CHANGE](state) {
-    state.triggerBackgroundChange = !state.triggerBackgroundChange;
-  },
-  [BOOK._MUTATES.DELETE_PRINT_OBJECT](state, { id, sheetId }) {
-    const sheets = getAllSheets(state.book.sections);
-    const sheet = sheets.find(s => s.id === sheetId);
-
-    if (isEmpty(sheet) && isEmpty(sheet.printData.layout)) return;
-
-    sheet.printData.layout.pages.forEach(p => {
-      if (isEmpty(p.objects)) return;
-
-      const index = p.objects.indexOf(id);
-
-      if (index >= 0) p.objects.splice(index, 1);
-    });
-
-    delete state.objects[id];
-  },
-  [BOOK._MUTATES.UPDATE_TRIGGER_SHAPE_CHANGE](state) {
-    state.triggerShapeChange = !state.triggerShapeChange;
-  },
-  [BOOK._MUTATES.UPDATE_TRIGGER_CLIP_ART_CHANGE](state) {
-    state.triggerClipArtChange = !state.triggerClipArtChange;
   }
 };

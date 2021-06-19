@@ -1,6 +1,7 @@
 import { mapGetters } from 'vuex';
 import PpButtonGroup from '@/components/ButtonGroup';
 import { GETTERS } from '@/store/modules/book/const';
+import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 import { TEXT_HORIZIONTAL_ALIGN } from '@/common/constants';
 
 import { isEmpty } from '@/common/utils';
@@ -19,21 +20,15 @@ export default {
   },
   computed: {
     ...mapGetters({
-      selectedId: GETTERS.SELECTED_OBJECT_ID,
-      selectedAlign: GETTERS.PROP_OBJECT_BY_ID,
-      triggerChange: GETTERS.TRIGGER_TEXT_CHANGE
+      selectedAlign: PRINT_GETTERS.SELECT_PROP_CURRENT_OBJECT,
+      triggerChange: PRINT_GETTERS.TRIGGER_TEXT_CHANGE
     }),
     selectedAlignment() {
       if (this.triggerChange) {
         // just for trigger the change
       }
 
-      return (
-        this.selectedAlign({
-          id: this.selectedId,
-          prop: 'alignment'
-        })?.horiziontal || this.LEFT
-      );
+      return this.selectedAlign('alignment')?.horiziontal || this.LEFT;
     }
   },
   methods: {

@@ -3,6 +3,7 @@ import { mapGetters, mapMutations } from 'vuex';
 import Frames from '@/components/Thumbnail/Frames';
 import Thumbnail from '@/containers/ThumbnailPrint';
 import { GETTERS, MUTATES } from '@/store/modules/book/const';
+import { MUTATES as PRINT_MUTATES } from '@/store/modules/print/const';
 import { useDrawLayout } from '@/hooks';
 
 export default {
@@ -24,7 +25,7 @@ export default {
   },
   methods: {
     ...mapMutations({
-      selectSheet: MUTATES.SELECT_SHEET,
+      selectSheet: PRINT_MUTATES.SET_CURRENT_SHEET_ID,
       setSectionId: MUTATES.SET_SECTION_ID
     }),
     numberPage(sectionId, sheet) {
@@ -99,7 +100,7 @@ export default {
      * @param  {String} sectionId Section id contains sheet
      */
     onSelectSheet(sheet, sectionId) {
-      this.selectSheet({ sheet });
+      this.selectSheet({ id: sheet.id });
       this.setSectionId({ sectionId });
       setTimeout(() => {
         const objects = this.getObjectsBySheetId(sheet.id);

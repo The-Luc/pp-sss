@@ -3,6 +3,7 @@ import { mapGetters } from 'vuex';
 import { SHADOW_TYPE, SHADOW_OPTIONS } from '@/common/constants/shadow';
 import { DEFAULT_SHADOW } from '@/common/constants/defaultProperty';
 import { GETTERS } from '@/store/modules/book/const';
+import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 import Select from '@/components/Select';
 import Opacity from '@/components/Property/Opacity';
 import Blur from './Settings/Blur';
@@ -40,9 +41,8 @@ export default {
   },
   computed: {
     ...mapGetters({
-      selectedObjectId: GETTERS.SELECTED_OBJECT_ID,
-      getPropObjectById: GETTERS.PROP_OBJECT_BY_ID,
-      triggerChange: GETTERS.TRIGGER_TEXT_CHANGE
+      getPropObjectById: PRINT_GETTERS.SELECT_PROP_CURRENT_OBJECT,
+      triggerChange: PRINT_GETTERS.TRIGGER_TEXT_CHANGE
     }),
     options() {
       return SHADOW_OPTIONS;
@@ -51,13 +51,8 @@ export default {
       if (this.triggerChange) {
         // just for trigger the change
       }
-      if (!this.selectedObjectId) {
-        return null;
-      }
-      return this.getPropObjectById({
-        id: this.selectedObjectId,
-        prop: 'shadow'
-      });
+
+      return this.getPropObjectById('shadow');
     },
     dropShadow() {
       if (this.currentShadow?.dropShadow) {

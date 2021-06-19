@@ -3,8 +3,11 @@ import { mapGetters } from 'vuex';
 import Opacity from '@/components/Property/Opacity';
 import Border from './Border';
 import Shadow from './Shadow';
+
 import { GETTERS } from '@/store/modules/book/const';
 import { GETTERS as APP_GETTERS } from '@/store/modules/app/const';
+import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
+
 export default {
   components: {
     Opacity,
@@ -23,21 +26,16 @@ export default {
   },
   computed: {
     ...mapGetters({
-      selectedColor: GETTERS.PROP_OBJECT_BY_ID,
       colorPickerProps: APP_GETTERS.COLOR_PICKER_CUSTOM_PROPS,
-      selectedId: GETTERS.SELECTED_OBJECT_ID,
-      selectedOpacity: GETTERS.PROP_OBJECT_BY_ID,
-      triggerChange: GETTERS.TRIGGER_TEXT_CHANGE
+      selectedOpacity: PRINT_GETTERS.SELECT_PROP_CURRENT_OBJECT,
+      triggerChange: PRINT_GETTERS.TRIGGER_TEXT_CHANGE
     }),
     opacityValue() {
       if (this.triggerChange) {
         // just for trigger the change
       }
 
-      const res = this.selectedOpacity({
-        id: this.selectedId,
-        prop: 'opacity'
-      });
+      const res = this.selectedOpacity('opacity');
       return !res ? 0 : res;
     }
   },

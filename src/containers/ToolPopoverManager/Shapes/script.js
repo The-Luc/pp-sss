@@ -6,6 +6,7 @@ import { mapGetters, mapMutations } from 'vuex';
 
 import { MUTATES as APP_MUTATES } from '@/store/modules/app/const';
 import { GETTERS as BOOK_GETTERS } from '@/store/modules/book/const';
+import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 
 import { TOOL_NAME } from '@/common/constants';
 
@@ -39,7 +40,7 @@ export default {
     ...mapGetters({
       book: BOOK_GETTERS.BOOK_DETAIL,
       sectionId: BOOK_GETTERS.SECTION_ID,
-      currentSheet: BOOK_GETTERS.GET_PAGE_SELECTED
+      currentSheet: PRINT_GETTERS.CURRENT_SHEET
     }),
     selectedShapes() {
       return this.chosenShapes;

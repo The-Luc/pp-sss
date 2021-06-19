@@ -2,7 +2,8 @@ import { mapGetters, mapMutations } from 'vuex';
 
 import Frames from '@/components/Thumbnail/Frames';
 import Thumbnail from '@/components/Thumbnail/ThumbnailDigital';
-import { GETTERS, MUTATES } from '@/store/modules/book/const';
+import { GETTERS } from '@/store/modules/book/const';
+import { MUTATES as PRINT_MUTATES } from '@/store/modules/print/const';
 
 export default {
   components: {
@@ -37,14 +38,14 @@ export default {
   },
   methods: {
     ...mapMutations({
-      selectSheet: MUTATES.SELECT_SHEET
+      selectSheet: PRINT_MUTATES.SET_CURRENT_SHEET_ID
     }),
     /**
      * Set selected sheet's id
      * @param  {String} sheet Sheet selected
      */
     onSelectScreen(sheet) {
-      this.selectSheet({ sheet });
+      this.selectSheet({ id: sheet.id });
     }
   }
 };
