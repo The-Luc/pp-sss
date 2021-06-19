@@ -239,6 +239,24 @@ export default {
               }
             );
           }
+        },
+        'object:added': ({ target }) => {
+          console.log('----------create an object');
+          console.log('objectType: ' + target.objectType);
+          console.log('type: ' + target.type);
+          console.log('id: ' + target.id);
+          // adding z-index for objects except background
+          if (
+            target.objectType != OBJECT_TYPE.BACKGROUND &&
+            target.zIndex == -1 // -1 is inital vaule
+          ) {
+            this.setObjectProp({
+              id: target.id,
+              property: {
+                zIndex: window.printCanvas.getObjects().length
+              }
+            });
+          }
         }
       });
 
@@ -580,6 +598,7 @@ export default {
               ...newClipArt
             }
           });
+
           let fabricProp = toFabricClipArtProp(newClipArt);
           return new Promise(resolve => {
             fabric.loadSVGFromURL(

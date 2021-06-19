@@ -102,13 +102,6 @@ export default {
       this.selectedBorder = data;
     },
     /**
-     * Handle update z-index for Shape
-     * @param {String} actionName action name
-     */
-    changeZIndex(actionName) {
-      console.log(actionName);
-    },
-    /**
      * Handle update flip for Shape
      * @param {String} actionName action name
      */
