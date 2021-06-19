@@ -8,7 +8,7 @@ import {
   ACTIONS as THEME_ACTIONS
 } from '@/store/modules/theme/const';
 import Modal from '@/containers/Modal';
-import PpButton from '@/components/Button';
+import PpButton from '@/components/Buttons/Button';
 import Themes from './Themes';
 import Preview from './Preview';
 import { useLayoutPrompt } from '@/hooks';
