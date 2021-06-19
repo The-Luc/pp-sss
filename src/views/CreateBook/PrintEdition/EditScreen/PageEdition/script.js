@@ -15,7 +15,9 @@ import {
   deleteSelectedObjects,
   toFabricClipArtProp,
   getRectDashes,
-  scaleSize
+  scaleSize,
+  isHalfSheet,
+  isHalfLeft
 } from '@/common/utils';
 
 import {
@@ -29,7 +31,7 @@ import {
 } from '@/common/fabricObjects';
 
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
-import { GETTERS, MUTATES as BOOK_MUTATES } from '@/store/modules/book/const';
+import { GETTERS } from '@/store/modules/book/const';
 import {
   ACTIONS as PRINT_ACTIONS,
   GETTERS as PRINT_GETTERS,
@@ -91,9 +93,7 @@ export default {
       getObjectsBySheetId: GETTERS.GET_OBJECTS_BY_SHEET_ID,
       isOpenMenuProperties: APP_GETTERS.IS_OPEN_MENU_PROPERTIES,
       isOpenColorPicker: APP_GETTERS.IS_OPEN_COLOR_PICKER,
-      selectedObjectId: GETTERS.SELECTED_OBJECT_ID,
-      selectedObject: GETTERS.OBJECT_BY_ID,
-      selectedProp: GETTERS.PROP_OBJECT_BY_ID
+      selectedObject: PRINT_GETTERS.CURRENT_OBJECT
     }),
     isCover() {
       return this.pageSelected?.type === SHEET_TYPE.COVER;
@@ -160,15 +160,15 @@ export default {
       setToolNameSelected: MUTATES.SET_TOOL_NAME_SELECTED,
       toggleColorPicker: MUTATES.TOGGLE_COLOR_PICKER,
       setObjectTypeSelected: MUTATES.SET_OBJECT_TYPE_SELECTED,
-      setSelectedObjectId: BOOK_MUTATES.SET_SELECTED_OBJECT_ID,
-      addNewObject: BOOK_MUTATES.ADD_OBJECT,
-      setObjectProp: BOOK_MUTATES.SET_PROP,
-      updateTriggerTextChange: BOOK_MUTATES.UPDATE_TRIGGER_TEXT_CHANGE,
-      addNewBackground: BOOK_MUTATES.ADD_PRINT_BACKGROUND,
+      setSelectedObjectId: PRINT_MUTATES.SET_CURRENT_OBJECT_ID,
+      addNewObject: PRINT_MUTATES.ADD_OBJECT,
+      setObjectProp: PRINT_MUTATES.SET_PROP,
+      updateTriggerTextChange: PRINT_MUTATES.UPDATE_TRIGGER_TEXT_CHANGE,
+      addNewBackground: PRINT_MUTATES.SET_BACKGROUNDS,
       updateTriggerBackgroundChange:
-        BOOK_MUTATES.UPDATE_TRIGGER_BACKGROUND_CHANGE,
-      deleteObject: BOOK_MUTATES.DELETE_PRINT_OBJECT,
-      updateTriggerShapeChange: BOOK_MUTATES.UPDATE_TRIGGER_SHAPE_CHANGE
+        PRINT_MUTATES.UPDATE_TRIGGER_BACKGROUND_CHANGE,
+      deleteObjects: PRINT_MUTATES.DELETE_OBJECTS,
+      updateTriggerShapeChange: PRINT_MUTATES.UPDATE_TRIGGER_SHAPE_CHANGE
     }),
     /**
      * Auto resize canvas to fit the container size
@@ -404,20 +404,26 @@ export default {
       const targetType = target.get('type');
       this.setSelectedObjectId({ id });
       this.setBorderHighLight(target);
-      const objectData = this.selectedObject(this.selectedObjectId);
+
+      const objectData = this.selectedObject;
+
       if (targetType === 'group' && target.objectType !== OBJECT_TYPE.SHAPE) {
         const rectObj = target.getObjects(OBJECT_TYPE.RECT)[0];
 
         this.setBorderObject(rectObj, objectData);
       }
+
       const objectType = objectData?.type;
       const isSelectMultiObject = !objectType;
+
       if (isSelectMultiObject) {
         this.setCanvasUniformScaling(true);
       } else {
         this.setCanvasUniformScaling(objectData.isConstrain);
       }
+
       if (isEmpty(objectType)) return;
+
       this.setObjectTypeSelected({ type: objectType });
 
       window.printCanvas.preserveObjectStacking =
@@ -454,7 +460,7 @@ export default {
 
       if (isEmpty(activeObj)) return;
 
-      this.setObjectProp({ id: this.selectedObjectId, property: prop });
+      this.setObjectProp({ prop });
 
       this.updateTriggerTextChange();
 
@@ -513,19 +519,16 @@ export default {
      * @param {Object}  background  the object of adding background
      * @param {Boolean} isLeft      is add to the left page or right page
      */
-    addBackground({ background, isLeft }) {
+    addBackground({ background, isLeft = true }) {
       const id = uniqueId();
 
       const newBackground = cloneDeep(BackgroundElement);
 
       merge(newBackground, background);
 
-      this.addNewBackground({
-        id,
-        sheetId: this.pageSelected.id,
-        isLeft,
-        newBackground
-      });
+      newBackground.isLeft = isLeft;
+
+      this.addNewBackground({ background: newBackground });
 
       addPrintBackground({
         id,
@@ -551,17 +554,15 @@ export default {
 
       if (isEmpty(background)) return;
 
-      this.setObjectProp({ id: this.selectedObjectId, property: prop });
+      //this.setObjectProp({ id: this.selectedObjectId, property: prop });
 
       this.updateTriggerBackgroundChange();
 
       updatePrintBackground(background, prop, window.printCanvas);
     },
     removeObject() {
-      this.deleteObject({
-        id: this.selectedObjectId,
-        sheetId: this.pageSelected.id
-      });
+      const ids = window.printCanvas.getActiveObjects().map(o => o.id);
+      this.deleteObjects({ ids });
 
       deleteSelectedObjects(window.printCanvas);
     },
@@ -572,8 +573,8 @@ export default {
     async addClipArt(clipArts) {
       const { width, height } = window.printCanvas;
       const zoom = window.printCanvas.getZoom();
-      const isHalfSheet = HALF_SHEET.indexOf(this.pageSelected.type) >= 0;
-      const isLeftSheet = HALF_LEFT.indexOf(this.pageSelected.type) >= 0;
+      const isAHalfSheet = HALF_SHEET.indexOf(this.pageSelected.type) >= 0;
+      const isALeftSheet = HALF_LEFT.indexOf(this.pageSelected.type) >= 0;
       const svgs = await Promise.all(
         clipArts.map(item => {
           let id = uniqueId();
@@ -608,8 +609,8 @@ export default {
         })
       );
       svgs.length == 1
-        ? addSingleSvg(svgs[0], window.printCanvas, isHalfSheet, isLeftSheet)
-        : addMultiSvg(svgs, window.printCanvas, isHalfSheet, isLeftSheet);
+        ? addSingleSvg(svgs[0], window.printCanvas, isAHalfSheet, isALeftSheet)
+        : addMultiSvg(svgs, window.printCanvas, isAHalfSheet, isALeftSheet);
 
       window.printCanvas.renderAll();
 
@@ -642,14 +643,11 @@ export default {
         this.addNewObject({ id: s.id, newObject: s.object });
       });
 
-      const isHalfSheet = HALF_SHEET.indexOf(this.pageSelected.type) >= 0;
-      const isLeftSheet = HALF_LEFT.indexOf(this.pageSelected.type) >= 0;
-
       await addPrintShapes(
         toBeAddedShapes,
         window.printCanvas,
-        isHalfSheet,
-        isLeftSheet
+        isHalfSheet(this.pageSelected),
+        isHalfLeft(this.pageSelected)
       );
 
       if (toBeAddedShapes.length === 1) {
