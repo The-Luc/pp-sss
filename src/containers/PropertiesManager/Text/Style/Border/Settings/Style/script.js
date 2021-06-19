@@ -1,8 +1,9 @@
 import { mapGetters } from 'vuex';
 
 import { BORDER_STYLE } from '@/common/constants';
-import Select from '@/components/Select';
+import Select from '@/components/Selectors/Select';
 import { GETTERS } from '@/store/modules/book/const';
+import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 
 export default {
   components: {
@@ -15,18 +16,14 @@ export default {
   },
   computed: {
     ...mapGetters({
-      selectedId: GETTERS.SELECTED_OBJECT_ID,
-      onSelectedBorderStyle: GETTERS.PROP_OBJECT_BY_ID,
-      triggerChange: GETTERS.TRIGGER_TEXT_CHANGE
+      onSelectedBorderStyle: PRINT_GETTERS.SELECT_PROP_CURRENT_OBJECT,
+      triggerChange: PRINT_GETTERS.TRIGGER_TEXT_CHANGE
     }),
     selectedBorderStyle() {
       if (this.triggerChange) {
         // just for trigger the change
       }
-      const selectedBorderStyle = this.onSelectedBorderStyle({
-        id: this.selectedId,
-        prop: 'border'
-      });
+      const selectedBorderStyle = this.onSelectedBorderStyle('border');
       const borderStyleValue = selectedBorderStyle?.strokeLineCap
         ? selectedBorderStyle?.strokeLineCap
         : 'solid';

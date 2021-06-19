@@ -1,5 +1,5 @@
 import { mapGetters } from 'vuex';
-import PpCombobox from '@/components/Combobox';
+import PpCombobox from '@/components/Selectors/Combobox';
 import { ICON_LOCAL } from '@/common/constants';
 import {
   getSelectedOption,
@@ -8,6 +8,7 @@ import {
 } from '@/common/utils';
 
 import { GETTERS } from '@/store/modules/book/const';
+import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 
 export default {
   components: {
@@ -27,16 +28,14 @@ export default {
   },
   computed: {
     ...mapGetters({
-      selectedId: GETTERS.SELECTED_OBJECT_ID,
-      selectedObject: GETTERS.PROP_OBJECT_BY_ID,
-      triggerChange: GETTERS.TRIGGER_TEXT_CHANGE
+      selectedObject: PRINT_GETTERS.SELECT_PROP_CURRENT_OBJECT,
+      triggerChange: PRINT_GETTERS.TRIGGER_TEXT_CHANGE
     }),
     selectedLineSpacing() {
       if (this.triggerChange) {
         // just for trigger the change
       }
-      const selectedLineSpacing =
-        this.selectedObject({ id: this.selectedId, prop: 'lineSpacing' }) || 0;
+      const selectedLineSpacing = this.selectedObject('lineSpacing') || 0;
       const selected = this.items.find(
         item => item.value === selectedLineSpacing
       );

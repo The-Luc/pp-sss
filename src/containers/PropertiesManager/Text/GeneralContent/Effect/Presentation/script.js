@@ -1,6 +1,7 @@
-import PpButtonGroup from '@/components/ButtonGroup';
+import PpButtonGroup from '@/components/Buttons/ButtonGroup';
 import { mapGetters } from 'vuex';
 import { GETTERS } from '@/store/modules/book/const';
+import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 
 export default {
   data() {
@@ -15,24 +16,19 @@ export default {
   },
   computed: {
     ...mapGetters({
-      selectedId: GETTERS.SELECTED_OBJECT_ID,
-      selectedStyle: GETTERS.PROP_OBJECT_BY_ID,
-      triggerChange: GETTERS.TRIGGER_TEXT_CHANGE
+      selectedStyle: PRINT_GETTERS.SELECT_PROP_CURRENT_OBJECT,
+      triggerChange: PRINT_GETTERS.TRIGGER_TEXT_CHANGE
     }),
     selectedStyles() {
       if (this.triggerChange) {
         // just for trigger the change
       }
 
-      const isBold =
-        this.selectedStyle({ id: this.selectedId, prop: 'isBold' }) || false;
+      const isBold = this.selectedStyle('isBold') || false;
 
-      const isItalic =
-        this.selectedStyle({ id: this.selectedId, prop: 'isItalic' }) || false;
+      const isItalic = this.selectedStyle('isItalic') || false;
 
-      const isUnderline =
-        this.selectedStyle({ id: this.selectedId, prop: 'isUnderline' }) ||
-        false;
+      const isUnderline = this.selectedStyle('isUnderline') || false;
 
       const selected = [
         isBold ? this.BOLD : '',

@@ -1,7 +1,7 @@
 import { mapGetters } from 'vuex';
 
 import { SCREEN } from '@/common/constants/book';
-import PpButton from '@/components/Button';
+import PpButton from '@/components/Buttons/Button';
 import LineVertical from '../LineVertical';
 import { GETTERS } from '@/store/modules/book/const';
 import { ROUTE_NAME } from '@/common/constants';

@@ -1,6 +1,6 @@
 import { mapGetters, mapMutations } from 'vuex';
 
-import Properties from '@/components/Properties';
+import Properties from '@/components/Properties/BoxProperties';
 import TabMenu from '@/components/TabMenu';
 import GeneralContent from './GeneralContent';
 import StyleContent from './Style';
@@ -8,6 +8,7 @@ import ArrangeContent from '@/components/Arrange';
 
 import { MUTATES } from '@/store/modules/app/const';
 import { GETTERS as BOOK_GETTERS } from '@/store/modules/book/const';
+import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 import { DEFAULT_TEXT } from '@/common/constants';
 
 export default {
@@ -20,19 +21,17 @@ export default {
   },
   computed: {
     ...mapGetters({
-      selectedColor: BOOK_GETTERS.PROP_OBJECT_BY_ID,
-      selectedId: BOOK_GETTERS.SELECTED_OBJECT_ID,
-      getObjectById: BOOK_GETTERS.OBJECT_BY_ID,
-      triggerChange: BOOK_GETTERS.TRIGGER_TEXT_CHANGE
+      selectedColor: PRINT_GETTERS.SELECT_PROP_CURRENT_OBJECT,
+      selectedId: PRINT_GETTERS.CURRENT_OBJECT_ID,
+      getObjectById: PRINT_GETTERS.CURRENT_OBJECT,
+      triggerChange: PRINT_GETTERS.TRIGGER_TEXT_CHANGE
     }),
     currentArrange() {
       if (this.triggerChange) {
         // just for trigger the change
       }
-      if (!this.selectedId) {
-        return {};
-      }
-      return this.getObjectById(this.selectedId);
+
+      return this.getObjectById;
     }
   },
   watch: {
@@ -77,10 +76,7 @@ export default {
      * Set default selected border
      */
     setSelectedBorder() {
-      const border = this.selectedColor({
-        id: this.selectedId,
-        prop: 'border'
-      });
+      const border = this.selectedColor('border');
       this.selectedBorder = this.borderOptions[border?.isBorder ? 1 : 0];
     },
     /**

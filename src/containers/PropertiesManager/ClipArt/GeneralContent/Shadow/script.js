@@ -1,4 +1,4 @@
-import PpSelect from '@/components/Select';
+import PpSelect from '@/components/Selectors/Select';
 
 export default {
   components: {

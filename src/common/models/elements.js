@@ -107,9 +107,9 @@ export const BackgroundElement = {
   ...BaseElement,
   type: OBJECT_TYPE.BACKGROUND,
   categoryId: '',
-  backgroundType: DEFAULT_BACKGROUND.TYPE,
+  backgroundType: DEFAULT_BACKGROUND.BACKGROUND_TYPE,
   pageType: DEFAULT_BACKGROUND.PAGE_TYPE,
-  isLeft: true,
+  isLeft: DEFAULT_BACKGROUND.IS_LEFT,
   name: '',
   thumbnail: '',
   imageUrl: ''
@@ -121,7 +121,8 @@ export const ClipArtElement = {
   category: '',
   name: '',
   thumbnail: '',
-  vector: '' // imgUrl
+  vector: '', // imgUrl
+  isMonochrome: false
 };
 
 export const ShapeElement = {
@@ -131,5 +132,5 @@ export const ShapeElement = {
   thumbnail: '',
   pathData: 'img.svg', // TODO: Need discuss with FM to get instruction on using shape
   color: DEFAULT_PROP.COLOR,
-  stroke: DEFAULT_PROP.COLOR
+  stroke: DEFAULT_PROP.COLOR,
 };

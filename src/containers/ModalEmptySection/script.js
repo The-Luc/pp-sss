@@ -1,6 +1,6 @@
 import { mapMutations, mapGetters } from 'vuex';
 import Modal from '@/containers/Modal';
-import PpButton from '@/components/Button';
+import PpButton from '@/components/Buttons/Button';
 import { MUTATES } from '@/store/modules/app/const';
 import { SCREEN } from '@/common/constants/book';
 import { GETTERS } from '@/store/modules/book/const';

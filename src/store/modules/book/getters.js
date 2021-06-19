@@ -1,10 +1,9 @@
 import moment from 'moment';
 import { pick } from 'lodash';
 
-import { DATE_FORMAT, MOMENT_TYPE, OBJECT_TYPE } from '@/common/constants';
+import { DATE_FORMAT, MOMENT_TYPE } from '@/common/constants';
 import BOOK from './const';
 import {
-  isEmpty,
   getAllSheets,
   getDiffDaysFOM,
   getDiffMonths,
@@ -44,9 +43,6 @@ export const getters = {
       releaseDate,
       deliveryDate
     };
-  },
-  [BOOK._GETTERS.GET_PAGE_SELECTED]: ({ pageSelected }) => {
-    return pageSelected;
   },
   [BOOK._GETTERS.PRINT_THEME_SELECTED_ID]: ({ book }) => {
     return book.printData.themeId;
@@ -114,55 +110,5 @@ export const getters = {
       });
     });
     return pick(objects, [...objIds]);
-  },
-  [BOOK._GETTERS.SELECTED_OBJECT_ID]: ({ objectSelectedId }) =>
-    objectSelectedId,
-  [BOOK._GETTERS.OBJECT_BY_ID]: ({ objects }) => id => objects[id],
-  [BOOK._GETTERS.PROP_OBJECT_BY_ID]: ({ objects }) => ({ id, prop }) => {
-    const data = objects[id]?.[prop];
-    return data || data === 0 || data === false ? objects[id]?.[prop] : null;
-  },
-  [BOOK._GETTERS.TRIGGER_TEXT_CHANGE]: ({ triggerTextChange }) =>
-    triggerTextChange,
-  [BOOK._GETTERS.SHEET_BACKGROUNDS]: ({ book, objects }) => sheetId => {
-    const sheets = getAllSheets(book.sections);
-    const sheet = sheets.find(s => s.id === sheetId);
-
-    const pageData = sheet?.printData?.layout?.pages || null;
-
-    if (isEmpty(pageData)) return [];
-
-    const firstId = isEmpty(pageData[0].objects) ? '' : pageData[0].objects[0];
-    const secondId =
-      pageData.length > 1 && !isEmpty(pageData[1].objects)
-        ? pageData[1].objects[0]
-        : '';
-
-    const existedBackgroundIds = [firstId, secondId].filter(id => {
-      if (isEmpty(id)) return false;
-
-      const element = objects[id];
-
-      if (isEmpty(element)) return false;
-
-      const isBackground = element.type === OBJECT_TYPE.BACKGROUND;
-      const backgroundType = isBackground ? element.property.type : '';
-
-      return !isEmpty(backgroundType);
-    });
-
-    return existedBackgroundIds.map(id => objects[id]);
-  },
-  [BOOK._GETTERS.SHEET_TYPE]: ({ book }) => sheetId => {
-    const sheets = getAllSheets(book.sections);
-    const sheet = sheets.find(s => s.id === sheetId);
-
-    return isEmpty(sheet) ? '' : sheet.type;
-  },
-  [BOOK._GETTERS.TRIGGER_BACKGROUND_CHANGE]: ({ triggerBackgroundChange }) =>
-    triggerBackgroundChange,
-  [BOOK._GETTERS.TRIGGER_CLIPART_CHANGE]: ({ triggerClipArtChange }) =>
-    triggerClipArtChange,
-  [BOOK._GETTERS.TRIGGER_SHAPE_CHANGE]: ({ triggerShapeChange }) =>
-    triggerShapeChange
+  }
 };

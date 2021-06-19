@@ -1,6 +1,6 @@
 import ProcessItem from '../../ProcessItem';
-import MiniProcess from '@/components/MiniProcess';
-import ProcessBar from '@/components/ProcessBar';
+import MiniProcess from '@/components/BarProcesses/MiniProcess';
+import ProcessBar from '@/components/BarProcesses/ProcessBar';
 
 import { PROCESS_STATUS } from '@/common/constants';
 

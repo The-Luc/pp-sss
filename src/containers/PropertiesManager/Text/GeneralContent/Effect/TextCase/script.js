@@ -1,9 +1,10 @@
-import PpButtonGroup from '@/components/ButtonGroup';
+import PpButtonGroup from '@/components/Buttons/ButtonGroup';
 
 import { mapGetters } from 'vuex';
 
 import { ICON_LOCAL, TEXT_CASE } from '@/common/constants';
 import { GETTERS } from '@/store/modules/book/const';
+import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 
 import { isEmpty } from '@/common/utils';
 
@@ -23,21 +24,15 @@ export default {
   },
   computed: {
     ...mapGetters({
-      selectedId: GETTERS.SELECTED_OBJECT_ID,
-      selectedTextCase: GETTERS.PROP_OBJECT_BY_ID,
-      triggerChange: GETTERS.TRIGGER_TEXT_CHANGE
+      selectedTextCase: PRINT_GETTERS.SELECT_PROP_CURRENT_OBJECT,
+      triggerChange: PRINT_GETTERS.TRIGGER_TEXT_CHANGE
     }),
     selectedCase() {
       if (this.triggerChange) {
         // just for trigger the change
       }
 
-      return (
-        this.selectedTextCase({
-          id: this.selectedId,
-          prop: 'textCase'
-        }) || null
-      );
+      return this.selectedTextCase('textCase') || null;
     }
   },
   methods: {

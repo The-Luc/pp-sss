@@ -4,6 +4,7 @@ import Modal from '@/containers/Modal';
 import { useDrawLayout } from '@/hooks';
 import { GETTERS, MUTATES } from '@/store/modules/book/const';
 import { MUTATES as APP_MUTATES } from '@/store/modules/app/const';
+import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 
 export default {
   setup() {
@@ -17,7 +18,7 @@ export default {
   },
   computed: {
     ...mapGetters({
-      pageSelected: GETTERS.GET_PAGE_SELECTED,
+      pageSelected: PRINT_GETTERS.CURRENT_SHEET,
       sheetLayout: GETTERS.SHEET_LAYOUT,
       getObjectsBySheetId: GETTERS.GET_OBJECTS_BY_SHEET_ID
     }),

@@ -1,6 +1,6 @@
 import { mapGetters, mapMutations } from 'vuex';
 
-import Properties from '@/components/Properties';
+import Properties from '@/components/Properties/BoxProperties';
 import TabMenu from '@/components/TabMenu';
 import GeneralContent from './GeneralContent';
 import ArrangeContent from '@/components/Arrange';
@@ -10,6 +10,7 @@ import {
   GETTERS as APP_GETTERS
 } from '@/store/modules/app/const';
 import { GETTERS } from '@/store/modules/book/const';
+import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 
 export default {
   components: {
@@ -21,18 +22,15 @@ export default {
   computed: {
     ...mapGetters({
       isOpenColorPicker: APP_GETTERS.IS_OPEN_COLOR_PICKER,
-      selectedObjectId: GETTERS.SELECTED_OBJECT_ID,
-      getObjectById: GETTERS.OBJECT_BY_ID,
-      triggerChange: GETTERS.TRIGGER_SHAPE_CHANGE
+      getObjectById: PRINT_GETTERS.CURRENT_OBJECT,
+      triggerChange: PRINT_GETTERS.TRIGGER_SHAPE_CHANGE
     }),
     currentArrange() {
       if (this.triggerChange) {
         // just for trigger the change
       }
-      if (!this.selectedObjectId) {
-        return {};
-      }
-      return this.getObjectById(this.selectedObjectId);
+
+      return this.getObjectById;
     }
   },
   methods: {

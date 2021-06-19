@@ -5,6 +5,10 @@ import HeaderContainer from '@/components/Thumbnail/HeaderContainer';
 import { GETTERS, MUTATES } from '@/store/modules/book/const';
 import { GETTERS as APP_GETTERS } from '@/store/modules/app/const';
 import {
+  GETTERS as PRINT_GETTERS,
+  MUTATES as PRINT_MUTATES
+} from '@/store/modules/print/const';
+import {
   useLayoutPrompt,
   useResetPrintConfig,
   usePopoverCreationTool,
@@ -33,7 +37,7 @@ export default {
   },
   computed: {
     ...mapGetters({
-      pageSelected: GETTERS.GET_PAGE_SELECTED,
+      pageSelected: PRINT_GETTERS.CURRENT_SHEET,
       book: GETTERS.BOOK_DETAIL,
       isOpenMenuProperties: APP_GETTERS.IS_OPEN_MENU_PROPERTIES
     })
@@ -45,7 +49,7 @@ export default {
   },
   methods: {
     ...mapMutations({
-      selectSheet: MUTATES.SELECT_SHEET,
+      selectSheet: PRINT_MUTATES.SET_CURRENT_SHEET_ID,
       setSectionId: MUTATES.SET_SECTION_ID
     }),
     /**
@@ -127,7 +131,7 @@ export default {
      * @param  {String} sheetId Sheet's id selected
      */
     checkIsActive(sheetId) {
-      return sheetId === this.pageSelected.id;
+      return sheetId === this.pageSelected?.id;
     },
     /**
      * Set selected sheet's id and section'sid and then show prompt when sheet the first time access
@@ -136,7 +140,7 @@ export default {
      */
     onSelectSheet(sheet, sectionId) {
       const sheetId = sheet?.id;
-      this.selectSheet({ sheet });
+      this.selectSheet({ id: sheet.id });
       this.setSectionId({ sectionId });
       if (this.isOpenMenuProperties) {
         this.toggleMenuProperties({

@@ -1,10 +1,11 @@
 import { mapGetters } from 'vuex';
 
-import PpSelect from '@/components/Select';
+import PpSelect from '@/components/Selectors/Select';
 
 import { toCssStyle } from '@/common/utils';
 
 import { GETTERS } from '@/store/modules/book/const';
+import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 
 export default {
   components: {
@@ -68,18 +69,15 @@ export default {
   },
   computed: {
     ...mapGetters({
-      selectedId: GETTERS.SELECTED_OBJECT_ID,
-      selectedStyleId: GETTERS.PROP_OBJECT_BY_ID,
-      triggerChange: GETTERS.TRIGGER_TEXT_CHANGE
+      selectedStyleId: PRINT_GETTERS.SELECT_PROP_CURRENT_OBJECT,
+      triggerChange: PRINT_GETTERS.TRIGGER_TEXT_CHANGE
     }),
     selectedItem() {
       if (this.triggerChange) {
         // just for trigger the change
       }
 
-      const selectedId =
-        this.selectedStyleId({ id: this.selectedId, prop: 'styleId' }) ||
-        'default';
+      const selectedId = this.selectedStyleId('styleId') || 'default';
 
       return this.items.find(item => item.value === selectedId);
     }
