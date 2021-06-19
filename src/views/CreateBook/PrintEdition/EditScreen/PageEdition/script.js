@@ -34,8 +34,6 @@ import {
   updateElement
 } from '@/common/fabricObjects/common';
 
-// import { toFabricClipArtProp } from '@/common/fabricObjects/common';
-
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
 import { GETTERS } from '@/store/modules/book/const';
 import {
