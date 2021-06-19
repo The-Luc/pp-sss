@@ -5,7 +5,7 @@ import { DEFAULT_SHADOW } from '@/common/constants/defaultProperty';
 import { GETTERS } from '@/store/modules/book/const';
 import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 import Select from '@/components/Selectors/Select';
-import Opacity from '@/components/Property/Opacity';
+import Opacity from '@/components/Properties/Features/Opacity';
 import Blur from './Settings/Blur';
 import Offset from './Settings/Offset';
 import ShadowColor from './Settings/Color';

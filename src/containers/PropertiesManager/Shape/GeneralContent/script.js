@@ -1,8 +1,8 @@
 import { useObject } from '@/hooks';
-import FillColor from '@/components/Property/FillColor';
-import Opacity from '@/components/Property/Opacity';
-import Border from '@/components/Property/Border';
-import Shadow from '@/components/Property/Shadow';
+import FillColor from '@/components/Properties/Features/FillColor';
+import Opacity from '@/components/Properties/Features/Opacity';
+import Border from '@/components/Properties/Features/Border';
+import Shadow from '@/components/Properties/Features/Shadow';
 
 export default {
   components: {
