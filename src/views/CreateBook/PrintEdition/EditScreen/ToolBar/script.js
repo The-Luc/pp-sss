@@ -1,5 +1,5 @@
 import { mapMutations, mapGetters } from 'vuex';
-import ToolButton from '@/components/ToolButton';
+import ToolButton from '@/components/Buttons/ToolButton';
 import ItemTool from './ItemTool';
 import { GETTERS, MUTATES } from '@/store/modules/app/const';
 import { GETTERS as BOOK_GETTERS } from '@/store/modules/book/const';

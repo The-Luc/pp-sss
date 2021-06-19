@@ -1,6 +1,6 @@
 import { mapGetters } from 'vuex';
 
-import MiniProcess from '@/components/MiniProcess';
+import MiniProcess from '@/components/BarProcesses/MiniProcess';
 import ProcessItem from '../ProcessItem';
 
 import { GETTERS } from '@/store/modules/book/const';

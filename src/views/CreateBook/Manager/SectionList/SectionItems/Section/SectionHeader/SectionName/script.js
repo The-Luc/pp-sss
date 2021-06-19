@@ -1,5 +1,5 @@
 import { mapMutations } from 'vuex';
-import DragDropControl from '@/components/DragDropControl';
+import DragDropControl from '@/components/DragDrops/DragDropControl';
 import { MUTATES as BOOK_MUTATES } from '@/store/modules/book/const';
 
 export default {

@@ -2,7 +2,7 @@ import { mapGetters } from 'vuex';
 
 import { ICON_LOCAL, THINKNESS_OPTIONS } from '@/common/constants';
 import { getValueInput, validateInputOption } from '@/common/utils/input';
-import PpCombobox from '@/components/Combobox';
+import PpCombobox from '@/components/Selectors/Combobox';
 import { GETTERS } from '@/store/modules/book/const';
 import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 import { getSelectedOption } from '@/common/utils';

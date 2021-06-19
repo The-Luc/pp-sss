@@ -1,4 +1,4 @@
-import Select from '@/components/Select';
+import Select from '@/components/Selectors/Select';
 import BorderStyle from '@/containers/Property/Style';
 import BorderColor from '@/containers/Property/Color';
 import BorderThickness from './Settings/Thickness';

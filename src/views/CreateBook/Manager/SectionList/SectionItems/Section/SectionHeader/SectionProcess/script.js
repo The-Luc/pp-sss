@@ -1,6 +1,6 @@
 import { mapMutations, mapGetters } from 'vuex';
 
-import ProcessBar from '@/components/ProcessBar';
+import ProcessBar from '@/components/BarProcesses/ProcessBar';
 import Action from './Action';
 
 import { GETTERS, MUTATES } from '@/store/modules/app/const';

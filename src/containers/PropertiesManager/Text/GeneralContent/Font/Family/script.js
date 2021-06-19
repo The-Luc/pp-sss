@@ -1,6 +1,6 @@
 import { mapGetters } from 'vuex';
 
-import PpSelect from '@/components/Select';
+import PpSelect from '@/components/Selectors/Select';
 import { GETTERS } from '@/store/modules/book/const';
 import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 
