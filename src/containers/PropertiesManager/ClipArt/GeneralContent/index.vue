@@ -1,12 +1,10 @@
 <template>
   <div>
     <FillColor />
+
     <Opacity :value="opacityValue" @change="onChangeOpacity" />
-    <Shadow
-      :selected-shadow="selectedShadow"
-      :options="shadowOptions"
-      @change="onChangeShadow"
-    />
+
+    <Shadow :selected-shadow="selectedShadow" :options="shadowOptions" />
   </div>
 </template>
 
