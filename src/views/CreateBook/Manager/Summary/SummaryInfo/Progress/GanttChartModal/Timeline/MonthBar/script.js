@@ -1,4 +1,4 @@
-import BlockBar from '@/components/BlockBar';
+import BlockBar from '@/components/BarProcesses/BlockBar';
 
 import { mapGetters } from 'vuex';
 import moment from 'moment';
