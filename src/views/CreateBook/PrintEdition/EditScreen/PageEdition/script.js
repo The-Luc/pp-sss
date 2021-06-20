@@ -163,6 +163,7 @@ export default {
       setSelectedObjectId: PRINT_MUTATES.SET_CURRENT_OBJECT_ID,
       addNewObject: PRINT_MUTATES.ADD_OBJECT,
       setObjectProp: PRINT_MUTATES.SET_PROP,
+      setObjectPropById: PRINT_MUTATES.SET_PROP_BY_ID,
       updateTriggerTextChange: PRINT_MUTATES.UPDATE_TRIGGER_TEXT_CHANGE,
       addNewBackground: PRINT_MUTATES.SET_BACKGROUNDS,
       updateTriggerBackgroundChange:
@@ -245,22 +246,35 @@ export default {
           }
         },
         'object:added': ({ target }) => {
-          console.log('----------create an object');
+          // FOR-DEBUG ===================================
+          console.log('----------create an object listener----------');
           console.log('objectType: ' + target.objectType);
           console.log('type: ' + target.type);
           console.log('id: ' + target.id);
-          // adding z-index for objects except background
+          // =============================================
+
+          // this.$root.$emit('updateZIndexToStore');
           if (
-            target.objectType != OBJECT_TYPE.BACKGROUND &&
-            target.zIndex == -1 // -1 is inital vaule
+            target.objectType &&
+            target.objectType !== OBJECT_TYPE.BACKGROUND
           ) {
-            this.setObjectProp({
-              id: target.id,
-              property: {
-                zIndex: window.printCanvas.getObjects().length
-              }
-            });
+            this.$root.$emit('updateZIndexToStore');
           }
+          // } else if (target.id)
+          // // this.$root.$emit('updateZIndexToStore');
+          // // adding z-index for objects except background
+          // if (
+          //   target.objectType != OBJECT_TYPE.BACKGROUND &&
+          //   target.zIndex == -1 // -1 is inital vaule
+          // ) {
+          //   this.setObjectPropById({
+          //     id: target.id,
+          //     prop: {
+          //       // zIndex: 8
+          //       zIndex: window.printCanvas.getObjects().length
+          //     }
+          //   });
+          // }
         }
       });
 
@@ -310,6 +324,10 @@ export default {
 
       this.$root.$on('printChangeShapeProperties', prop => {
         this.changeShapeProperties(prop);
+      });
+
+      this.$root.$on('updateZIndexToStore', () => {
+        this.updateZIndexToStore();
       });
 
       document.body.addEventListener('keyup', this.handleDeleteKey);
@@ -453,6 +471,7 @@ export default {
      */
     addText(x, y, width, height) {
       const { object, data } = createTextBox(x, y, width, height);
+      console.log(data);
       this.addNewObject(data);
       const isConstrain = data.newObject.isConstrain;
       this.setCanvasUniformScaling(isConstrain);
@@ -493,6 +512,7 @@ export default {
         id,
         newObject: {
           ...newImage,
+          id,
           coord: {
             ...newImage.coord,
             x,
@@ -600,7 +620,8 @@ export default {
             id: id,
             type: OBJECT_TYPE.CLIP_ART,
             newObject: {
-              ...newClipArt
+              ...newClipArt,
+              id
             }
           });
 
@@ -648,12 +669,16 @@ export default {
     async addShapes(shapes) {
       const toBeAddedShapes = shapes.map(s => {
         const newShape = cloneDeep(ShapeElement);
+        const id = uniqueId();
 
         merge(newShape, s);
 
         return {
-          id: uniqueId(),
-          object: newShape
+          id,
+          object: {
+            ...newShape,
+            id
+          }
         };
       });
 
@@ -693,6 +718,18 @@ export default {
       this.updateTriggerShapeChange();
 
       updatePrintShape(shape, prop, window.printCanvas);
+    },
+
+    /**
+     * to update z-index of objecs on canvas to the store (print/objects Z-index)
+     */
+    updateZIndexToStore() {
+      const allObjects = window.printCanvas.getObjects();
+      // // z-index is equvalent to the index of object in allObjects array
+      allObjects.forEach((o, index) => {
+        if (o.objectType && o.objectType != OBJECT_TYPE.BACKGROUND)
+          this.setObjectPropById({ id: o.id, prop: { zIndex: index } });
+      });
     }
   }
 };

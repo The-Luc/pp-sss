@@ -52,6 +52,9 @@ export const mutations = {
     if (isFullBackground(background)) {
       background.isLeft = true;
 
+      // adding z-index to background
+      background.zIndex = 0;
+
       state.background.left = background;
       state.background.right = {};
 
@@ -70,6 +73,9 @@ export const mutations = {
 
     background.isLeft = isSheetLeft;
 
+    // adding z-index to background
+    background.zIndex = isSheetLeft ? 0 : 1;
+
     state.background.left = isSheetLeft ? background : {};
     state.background.right = isSheetLeft ? {} : background;
   },
@@ -87,6 +93,12 @@ export const mutations = {
     merge(currentProps, prop);
 
     state.objects[state.currentObjectId] = currentProps;
+  },
+  [PRINT._MUTATES.SET_PROP_BY_ID](state, { id, prop }) {
+    const currentProps = cloneDeep(state.objects[id]);
+
+    merge(currentProps, prop);
+    state.objects[id] = currentProps;
   },
   [PRINT._MUTATES.DELETE_OBJECTS](state, { ids }) {
     ids.forEach(id => {

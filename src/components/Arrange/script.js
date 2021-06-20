@@ -1,4 +1,4 @@
-import { mapMutations, mapGetters } from 'vuex';
+import { mapMutations } from 'vuex';
 import Send from '@/components/Arrange/Send';
 import Size from '@/components/Arrange/Size';
 import Position from '@/components/Arrange/Position';
@@ -7,7 +7,7 @@ import Rotate from '@/components/Arrange/Rotate';
 import { useObject } from '@/hooks';
 import { OBJECT_TYPE } from '@/common/constants';
 import { ARRANGE_SEND } from '@/common/constants/arrange';
-import { MUTATES as BOOK_MUTATES } from '@/store/modules/book/const';
+import { MUTATES as PRINT_MUTATES } from '@/store/modules/print/const';
 
 export default {
   setup() {
@@ -64,12 +64,11 @@ export default {
   },
   methods: {
     ...mapMutations({
-      setObjectProp: BOOK_MUTATES.SET_PROP
+      setObjectPropById: PRINT_MUTATES.SET_PROP_BY_ID
     }),
     /**
      * Handle events when user click on "send" buttons
      * @param {String}  actionName indicated which type of "send" button was click
-     *
      */
     changeZIndex(actionName) {
       const selectedObject = window.printCanvas.getActiveObject();
@@ -111,7 +110,11 @@ export default {
           selectedObject.bringForward();
           break;
       }
+
+      // update to strore
+      this.$root.$emit('updateZIndexToStore');
     },
+
     /**
      * Emit flip value to parent
      * @param {String}  actionName action name user clicked
