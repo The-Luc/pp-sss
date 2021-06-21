@@ -685,19 +685,20 @@ export default {
     handleShapeScaled(e) {
       const target = e.transform?.target;
       if (isEmpty(target)) return;
-      if (target._objects) {
-        // TODO later
-        const svg = fabric.util.groupSVGElements(target._objectsects);
-      } else {
-        const currentWidthInch = pxToIn(target.width * target.scaleX);
-        const currentHeightInch = pxToIn(target.height * target.scaleY);
-        this.changeShapeProperties({
-          size: {
-            width: currentWidthInch,
-            height: currentHeightInch
-          }
-        });
-      }
+      const currentWidthInch = pxToIn(target.width * target.scaleX);
+      const currentHeightInch = pxToIn(target.height * target.scaleY);
+      this.changeShapeProperties({
+        size: {
+          width:
+            currentWidthInch < DEFAULT_SHAPE.MIN_SIZE
+              ? DEFAULT_SHAPE.MIN_SIZE
+              : currentWidthInch,
+          height:
+            currentHeightInch < DEFAULT_SHAPE.MIN_SIZE
+              ? DEFAULT_SHAPE.MIN_SIZE
+              : currentHeightInch
+        }
+      });
     },
     /**
      * Adding shapes to canvas & store
