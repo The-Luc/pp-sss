@@ -148,7 +148,7 @@ export default {
         });
       }
 
-      if (!sheet.isVisited) {
+      if (!this.pageSelected.isVisited) {
         this.setIsPrompt({
           isPrompt: false
         });

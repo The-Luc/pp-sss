@@ -1,5 +1,6 @@
-import { isEmpty } from '@/common/utils';
+import { pick } from 'lodash';
 
+import { isEmpty } from '@/common/utils';
 import PRINT from './const';
 
 export const getters = {
@@ -45,5 +46,42 @@ export const getters = {
   [PRINT._GETTERS.TRIGGER_CLIPART_CHANGE]: ({ triggerChange }) =>
     triggerChange.clipArt,
   [PRINT._GETTERS.TRIGGER_SHAPE_CHANGE]: ({ triggerChange }) =>
-    triggerChange.shape
+    triggerChange.shape,
+  [PRINT._GETTERS.GET_OBJECTS_BY_SHEET_ID]: ({
+    currentSheetId,
+    objects,
+    sheets
+  }) => sheetId => {
+    const sheet = sheets[currentSheetId];
+    if (sheet) {
+      // const sheetObjIds = sheet.objects;
+      // const res = [];
+      // sheetObjIds.forEach(objId => {
+      //   // const realId = objId.split('-')[1];
+      //   res.push(objects[objId]);
+      // });
+      return sheet.objects;
+    }
+    return [];
+  },
+  [PRINT._GETTERS.SHEET_LAYOUT]: ({ sheets, objects }) => sheetId => {
+    const sheet = sheets[sheetId];
+
+    const sheetLayoutId = sheet?.layoutId;
+    if (!sheetLayoutId) {
+      return {};
+    }
+    const sheetObjIds = sheet.objects;
+    const sheetLayout = new Array([], []);
+    if (sheetObjIds.length > 0) {
+      sheetObjIds.forEach((objId, index) => {
+        const data = pick(objects, ...objId);
+        sheetLayout[index] = Object.values(data);
+      });
+    }
+    return sheetLayout;
+  },
+  [PRINT._GETTERS.GET_SHEETS]: ({ sheets }) => {
+    return sheets;
+  }
 };
