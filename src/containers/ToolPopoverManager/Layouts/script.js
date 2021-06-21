@@ -8,11 +8,11 @@ import {
   GETTERS as APP_GETTERS,
   MUTATES as APP_MUTATES
 } from '@/store/modules/app/const';
+import { GETTERS as BOOK_GETTERS } from '@/store/modules/book/const';
 import {
-  GETTERS as BOOK_GETTERS,
-  MUTATES as BOOK_MUTATES
-} from '@/store/modules/book/const';
-import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
+  GETTERS as PRINT_GETTERS,
+  MUTATES as PRINT_MUTATES
+} from '@/store/modules/print/const';
 import { themeOptions } from '@/mock/themes';
 import PpToolPopover from '@/components/ToolPopover';
 import PpSelect from '@/components/Select';
@@ -78,12 +78,11 @@ export default {
       listLayouts: THEME_GETTERS.GET_PRINT_LAYOUTS_BY_THEME_ID,
       book: BOOK_GETTERS.BOOK_DETAIL,
       pageSelected: PRINT_GETTERS.CURRENT_SHEET,
-      sheetLayout: BOOK_GETTERS.SHEET_LAYOUT,
+      sheetLayout: PRINT_GETTERS.SHEET_LAYOUT,
       sheetTheme: BOOK_GETTERS.SHEET_THEME,
       getLayoutByType: THEME_GETTERS.GET_PRINT_LAYOUT_BY_TYPE,
       isPrompt: APP_GETTERS.IS_PROMPT,
-      sectionId: BOOK_GETTERS.SECTION_ID,
-      getObjectsBySheetId: BOOK_GETTERS.GET_OBJECTS_BY_SHEET_ID
+      sectionId: BOOK_GETTERS.SECTION_ID
     }),
     isVisited() {
       return this.pageSelected?.isVisited;
@@ -121,7 +120,7 @@ export default {
   },
   methods: {
     ...mapMutations({
-      updateSheetThemeLayout: BOOK_MUTATES.UPDATE_SHEET_THEME_LAYOUT,
+      updateSheetThemeLayout: PRINT_MUTATES.UPDATE_SHEET_THEME_LAYOUT,
       toggleModal: APP_MUTATES.TOGGLE_MODAL,
       setPrintLayouts: THEME_MUTATES.PRINT_LAYOUTS
     }),
@@ -161,12 +160,12 @@ export default {
         default:
           {
             // Use default layout if the sheet no have private layout
-            const sheetLayout = this.pageSelected?.printData?.layout;
-            if (sheetLayout?.id) {
+            const layoutId = this.pageSelected?.layoutId;
+            if (layoutId) {
               const layoutOpt = getLayoutOptSelectedById(
                 this.listLayouts(),
                 this.layoutsOpts,
-                sheetLayout.id
+                layoutId
               );
               this.layoutSelected = layoutOpt;
             } else {
@@ -196,7 +195,7 @@ export default {
      * @param  {Number} pageSelected Id of sheet selected
      */
     setThemeSelected(pageSelected) {
-      const currentSheetThemeId = this.sheetTheme(pageSelected);
+      const currentSheetThemeId = pageSelected.themeId;
       const defaultThemeId = this.book.printData.themeId;
       if (currentSheetThemeId) {
         const themeOpt = getThemeOptSelectedById(
@@ -231,10 +230,10 @@ export default {
       if (this.layouts.length > 0) {
         this.tempLayoutIdSelected = this.layouts[0].id;
         this.layoutObjSelected = this.layouts[0];
-        const sheetLayout = this.pageSelected?.printData?.layout;
-        if (sheetLayout?.id) {
+        const layoutId = this.pageSelected?.layoutId;
+        if (layoutId) {
           const sheetLayoutObj = this.layouts.find(
-            layout => layout.id === sheetLayout.id
+            layout => layout.id === layoutId
           );
           if (sheetLayoutObj?.id) {
             this.tempLayoutIdSelected = sheetLayoutObj.id;
@@ -318,8 +317,8 @@ export default {
           themeId: this.themeSelected?.id,
           layout: this.layoutObjSelected
         });
-        const objects = this.getObjectsBySheetId(this.pageSelected?.id);
-        this.drawLayout(this.pageSelected?.printData?.layout, objects);
+        const sheetLayout = this.sheetLayout(this.pageSelected?.id);
+        this.drawLayout(sheetLayout);
         this.onCancel();
       }
     },

@@ -1,3 +1,5 @@
+import { uniqueId } from 'lodash';
+
 import { LAYOUT_TYPES } from '@/common/constants/layoutTypes';
 import {
   TextElement,
@@ -8,6 +10,7 @@ import {
 
 const text1 = {
   ...TextElement,
+  id: uniqueId(),
   size: {
     width: 100,
     height: 50
@@ -17,21 +20,19 @@ const text1 = {
     y: 250,
     rotation: 20 // degree
   },
-  property: {
-    ...TextElement.property,
-    styleId: 'default',
-    text: 'Sample Text',
-    fontFamily: 'Arial',
-    fontSize: 100,
-    isBold: true,
-    isItalic: true,
-    isUnderline: false,
-    color: '#FF0000'
-  }
+  styleId: 'default',
+  text: 'Sample Text',
+  fontFamily: 'Arial',
+  fontSize: 100,
+  isBold: true,
+  isItalic: true,
+  isUnderline: false,
+  color: '#FF0000'
 };
 
 const text2 = {
   ...TextElement,
+  id: uniqueId(),
   size: {
     width: 200,
     height: 100
@@ -41,21 +42,19 @@ const text2 = {
     y: 250,
     rotation: 0 // degree
   },
-  property: {
-    ...TextElement.property,
-    styleId: 'default',
-    text: 'Header Text',
-    fontFamily: 'Arial',
-    fontSize: 100,
-    isBold: true,
-    isItalic: true,
-    isUnderline: false,
-    color: '#FF0000'
-  }
+  styleId: 'default',
+  text: 'Header Text',
+  fontFamily: 'Arial',
+  fontSize: 100,
+  isBold: true,
+  isItalic: true,
+  isUnderline: false,
+  color: '#FF0000'
 };
 
 const bg1 = {
   ...BackgroundElement,
+  id: uniqueId(),
   size: {
     width: 0,
     height: 0
@@ -77,6 +76,7 @@ const bg1 = {
 
 const bg2 = {
   ...BackgroundElement,
+  id: uniqueId(),
   size: {
     width: 0,
     height: 0
@@ -98,6 +98,7 @@ const bg2 = {
 
 const clipArt1 = {
   ...ClipArtElement,
+  id: uniqueId(),
   size: {
     width: 100,
     height: 100
@@ -121,6 +122,7 @@ const clipArt1 = {
 
 const clipArt2 = {
   ...ClipArtElement,
+  id: uniqueId(),
   size: {
     width: 100,
     height: 100
@@ -142,6 +144,7 @@ const clipArt2 = {
 
 const shape1 = {
   ...ShapeElement,
+  id: uniqueId(),
   size: {
     width: 100,
     height: 100
@@ -161,6 +164,7 @@ const shape1 = {
 
 const textSinglePage1 = {
   ...TextElement,
+  id: uniqueId(),
   size: {
     width: 500,
     height: 176.6071428571429
@@ -170,21 +174,20 @@ const textSinglePage1 = {
     y: 193.3333333333333,
     rotation: 20 // degree
   },
-  property: {
-    styleId: 'default',
-    text: 'Text Single 1',
-    fontFamily: 'Arial',
-    fontSize: 100,
-    isBold: true,
-    isItalic: true,
-    isUnderline: false,
-    color: '#FF0000',
-    opacity: 0.5
-  }
+  styleId: 'default',
+  text: 'Text Single 1',
+  fontFamily: 'Arial',
+  fontSize: 100,
+  isBold: true,
+  isItalic: true,
+  isUnderline: false,
+  color: '#FF0000',
+  opacity: 0.5
 };
 
 const textSinglePage2 = {
   ...TextElement,
+  id: uniqueId(),
   size: {
     width: 500,
     height: 176.6071428571429
@@ -194,21 +197,20 @@ const textSinglePage2 = {
     y: 193.3333333333333,
     rotation: 20 // degree
   },
-  property: {
-    styleId: 'default',
-    text: 'Text Single 2',
-    fontFamily: 'Arial',
-    fontSize: 100,
-    isBold: true,
-    isItalic: true,
-    isUnderline: false,
-    color: '#FF0000',
-    opacity: 0.7
-  }
+  styleId: 'default',
+  text: 'Text Single 2',
+  fontFamily: 'Arial',
+  fontSize: 100,
+  isBold: true,
+  isItalic: true,
+  isUnderline: false,
+  color: '#FF0000',
+  opacity: 0.7
 };
 
 const bgSinglePage1 = {
   ...BackgroundElement,
+  id: uniqueId(),
   size: {
     width: 0,
     height: 0
@@ -230,6 +232,7 @@ const bgSinglePage1 = {
 
 const bgSinglePage2 = {
   ...BackgroundElement,
+  id: uniqueId(),
   size: {
     width: 0,
     height: 0
