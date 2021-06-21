@@ -28,10 +28,10 @@ import { toggleStroke } from './drawingBox';
 export const createTextBox = (x, y, width, height, textProperties, sheetId) => {
   const newText = cloneDeep(TextElement);
   let isHasTextId = !!textProperties?.id;
-  const id = isHasTextId ? textProperties?.id : uniqueId();
+  const id = isHasTextId ? textProperties?.id : `${sheetId}-${uniqueId()}`;
 
   const dataObject = {
-    id: isHasTextId ? textProperties?.id : `${sheetId}-${uniqueId()}`,
+    id,
     type: OBJECT_TYPE.TEXT,
     newObject: {
       ...(isHasTextId ? { ...textProperties } : { ...newText }),
