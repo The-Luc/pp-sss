@@ -13,7 +13,6 @@ import {
   toFabricImageProp,
   selectLatestObject,
   deleteSelectedObjects,
-  toFabricClipArtProp,
   getRectDashes,
   scaleSize,
   isHalfSheet,
@@ -29,6 +28,11 @@ import {
   addPrintShapes,
   updatePrintShape
 } from '@/common/fabricObjects';
+
+import {
+  toFabricClipArtProp,
+  updateElement
+} from '@/common/fabricObjects/common';
 
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
 import { GETTERS } from '@/store/modules/book/const';
@@ -168,7 +172,8 @@ export default {
       updateTriggerBackgroundChange:
         PRINT_MUTATES.UPDATE_TRIGGER_BACKGROUND_CHANGE,
       deleteObjects: PRINT_MUTATES.DELETE_OBJECTS,
-      updateTriggerShapeChange: PRINT_MUTATES.UPDATE_TRIGGER_SHAPE_CHANGE
+      updateTriggerShapeChange: PRINT_MUTATES.UPDATE_TRIGGER_SHAPE_CHANGE,
+      updateTriggerClipArtChange: PRINT_MUTATES.UPDATE_TRIGGER_CLIPART_CHANGE
     }),
     /**
      * Auto resize canvas to fit the container size
@@ -290,6 +295,10 @@ export default {
 
       this.$root.$on('printChangeShapeProperties', prop => {
         this.changeShapeProperties(prop);
+      });
+
+      this.$root.$on('printChangeClipArtProperties', prop => {
+        this.changeClipArtProperties(prop);
       });
 
       document.body.addEventListener('keyup', this.handleDeleteKey);
@@ -579,9 +588,9 @@ export default {
         clipArts.map(item => {
           let id = uniqueId();
           let newClipArt = cloneDeep(ClipArtElement);
+          merge(newClipArt, item);
           this.addNewObject({
             id: id,
-            type: OBJECT_TYPE.CLIP_ART,
             newObject: {
               ...newClipArt
             }
@@ -595,6 +604,8 @@ export default {
                 svgData
                   .set({
                     ...fabricProp,
+                    width: svgData.width,
+                    height: svgData.height,
                     id: id,
                     type: OBJECT_TYPE.CLIP_ART,
                     fill: '#58595b'
@@ -670,11 +681,32 @@ export default {
 
       if (isEmpty(shape)) return;
 
-      this.setObjectProp({ id: this.selectedObjectId, property: prop });
+      this.setObjectProp({ prop });
 
       this.updateTriggerShapeChange();
 
       updatePrintShape(shape, prop, window.printCanvas);
+    },
+    /**
+     * Event fire when user change any property of selected shape
+     *
+     * @param {Object}  prop  new prop
+     */
+    changeClipArtProperties(prop) {
+      if (isEmpty(prop)) {
+        this.updateTriggerClipArtChange();
+        return;
+      }
+
+      const clipArt = window.printCanvas.getActiveObject();
+
+      if (isEmpty(clipArt)) return;
+
+      this.setObjectProp({ prop });
+
+      this.updateTriggerClipArtChange();
+
+      updateElement(clipArt, prop, window.printCanvas);
     }
   }
 };

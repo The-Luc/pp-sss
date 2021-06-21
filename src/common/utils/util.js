@@ -422,23 +422,6 @@ export const scrollToElement = (el, opts) => {
   });
 };
 
-export const toFabricClipArtProp = prop => {
-  const mapRules = {
-    data: {
-      x: {
-        name: 'left',
-        parse: value => scaleSize(value)
-      },
-      y: {
-        name: 'top',
-        parse: value => scaleSize(value)
-      }
-    },
-    restrict: ['id', 'size', 'type', 'border', 'shadow', 'flip']
-  };
-  return mapObject(prop, mapRules);
-};
-
 export const getRectDashes = (width, height, value, strokeWidth) => {
   if (value === 'solid') {
     return [];

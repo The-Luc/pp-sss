@@ -8,10 +8,16 @@ import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
  *  @return {Object} {selectObjectProp: The function to connect to getter, triggerChange: state to trigger change}
  */
 export const useObject = () => {
-  const { onSelectedObject, triggerChange, triggerShapeChange } = useGetters({
+  const {
+    onSelectedObject,
+    triggerChange,
+    triggerShapeChange,
+    triggerClipArtChange
+  } = useGetters({
     onSelectedObject: PRINT_GETTERS.SELECT_PROP_CURRENT_OBJECT,
     triggerChange: PRINT_GETTERS.TRIGGER_TEXT_CHANGE,
-    triggerShapeChange: PRINT_GETTERS.TRIGGER_SHAPE_CHANGE
+    triggerShapeChange: PRINT_GETTERS.TRIGGER_SHAPE_CHANGE,
+    triggerClipArtChange: PRINT_GETTERS.TRIGGER_CLIPART_CHANGE
   });
   /**
    * The fuction to connect to store to getter object's properties
@@ -26,6 +32,7 @@ export const useObject = () => {
   return {
     selectObjectProp,
     triggerChange,
-    triggerShapeChange
+    triggerShapeChange,
+    triggerClipArtChange
   };
 };
