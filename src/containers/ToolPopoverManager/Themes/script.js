@@ -1,7 +1,7 @@
 import { mapActions, mapGetters, mapMutations } from 'vuex';
 
 import PpToolPopover from '@/components/ToolPopover';
-import PpSelect from '@/components/Select';
+import PpSelect from '@/components/Selectors/Select';
 import { themeOptions } from '@/mock/themes';
 import {
   GETTERS as THEME_GETTERS,

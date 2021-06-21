@@ -1,6 +1,6 @@
 import { mapGetters, mapMutations } from 'vuex';
 
-import Properties from '@/components/Properties';
+import Properties from '@/components/Properties/BoxProperties';
 import TabMenu from '@/components/TabMenu';
 import GeneralContent from './GeneralContent';
 import StyleContent from './Style';

@@ -1,5 +1,5 @@
-import DragDropControl from '@/components/DragDropControl';
-import DragDropIndicator from '@/components/DragDropIndicatorVertical';
+import DragDropControl from '@/components/DragDrops/DragDropControl';
+import DragDropIndicator from '@/components/DragDrops/DragDropIndicatorVertical';
 import ButtonDelete from '@/components/Menu/ButtonDelete';
 import MenuDetail from '../MenuDetail';
 

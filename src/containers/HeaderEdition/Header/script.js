@@ -1,4 +1,4 @@
-import PpButton from '@/components/Button';
+import PpButton from '@/components/Buttons/Button';
 export default {
   components: {
     PpButton

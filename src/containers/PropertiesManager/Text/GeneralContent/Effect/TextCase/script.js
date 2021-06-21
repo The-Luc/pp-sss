@@ -1,4 +1,4 @@
-import PpButtonGroup from '@/components/ButtonGroup';
+import PpButtonGroup from '@/components/Buttons/ButtonGroup';
 
 import { mapGetters } from 'vuex';
 

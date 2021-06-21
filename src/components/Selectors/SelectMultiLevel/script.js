@@ -1,4 +1,4 @@
-import SelectSubLevel from '@/components/SelectSubLevel';
+import SelectSubLevel from './SelectSubLevel';
 
 import { cloneDeep } from 'lodash';
 

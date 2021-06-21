@@ -1,11 +1,12 @@
 import { mapMutations } from 'vuex';
-import PpSelect from '@/components/Select';
+import PpSelect from '@/components/Selectors/Select';
 import PpToolPopover from '@/components/ToolPopover';
 import { loadClipArts, loadClipArtCategories } from '@/api/clipArt';
 import Item from './Item';
 import ClipArtType from './ClipArtType';
 import { MUTATES as APP_MUTATES } from '@/store/modules/app/const';
 import { CLIP_ART_TYPE } from '@/common/constants';
+import { cloneDeep } from 'lodash';
 export default {
   components: {
     PpToolPopover,
@@ -70,7 +71,7 @@ export default {
       const addClipArts = this.clipArtList.filter(item => {
         return this.selectedClipArtId.includes(item.id);
       });
-      this.$root.$emit('printAddClipArt', addClipArts);
+      this.$root.$emit('printAddClipArt', cloneDeep(addClipArts));
       this.onCancel();
     },
     /**
