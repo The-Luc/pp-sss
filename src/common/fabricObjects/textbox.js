@@ -97,6 +97,9 @@ export const createTextBox = (x, y, width, height, textProperties) => {
   });
 
   const updateTextListeners = canvas => {
+    console.log('update text');
+    console.log(group);
+
     if (text.editingExitedListener) return;
     const onDoneEditText = () => {
       toggleStroke(rect, false);
@@ -110,6 +113,9 @@ export const createTextBox = (x, y, width, height, textProperties) => {
         angle,
         objectType: OBJECT_TYPE.TEXT
       });
+      // update z-index
+      grp.moveTo(group.zIndex);
+
       canvas.add(grp);
       addGroupEvents(grp);
     };

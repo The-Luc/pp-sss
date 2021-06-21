@@ -247,10 +247,10 @@ export default {
         },
         'object:added': ({ target }) => {
           // FOR-DEBUG ===================================
-          console.log('----------create an object listener----------');
-          console.log('objectType: ' + target.objectType);
-          console.log('type: ' + target.type);
-          console.log('id: ' + target.id);
+          // console.log('----------create an object listener----------');
+          // console.log('objectType: ' + target.objectType);
+          // console.log('type: ' + target.type);
+          // console.log('id: ' + target.id);
           // =============================================
 
           // this.$root.$emit('updateZIndexToStore');
@@ -471,7 +471,6 @@ export default {
      */
     addText(x, y, width, height) {
       const { object, data } = createTextBox(x, y, width, height);
-      console.log(data);
       this.addNewObject(data);
       const isConstrain = data.newObject.isConstrain;
       this.setCanvasUniformScaling(isConstrain);
@@ -728,7 +727,10 @@ export default {
       // // z-index is equvalent to the index of object in allObjects array
       allObjects.forEach((o, index) => {
         if (o.objectType && o.objectType != OBJECT_TYPE.BACKGROUND)
+          // update to the store object
           this.setObjectPropById({ id: o.id, prop: { zIndex: index } });
+        // update on fabric object
+        o.zIndex = index;
       });
     }
   }
