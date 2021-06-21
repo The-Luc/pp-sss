@@ -25,12 +25,12 @@ import { toggleStroke } from './drawingBox';
 /**
  * Handle creating a TextBox into canvas
  */
-export const createTextBox = (x, y, width, height, textProperties) => {
+export const createTextBox = (x, y, width, height, textProperties, sheetId) => {
   const newText = cloneDeep(TextElement);
   let isHasTextId = !!textProperties?.id;
 
   const dataObject = {
-    id: isHasTextId ? textProperties?.id : uniqueId(),
+    id: isHasTextId ? textProperties?.id : `${sheetId}-${uniqueId()}`,
     type: OBJECT_TYPE.TEXT,
     newObject: {
       ...(isHasTextId ? { ...textProperties } : { ...newText }),
@@ -178,8 +178,8 @@ export const createTextBox = (x, y, width, height, textProperties) => {
     rect.set({
       top: target.height * -0.5,
       left: target.width * -0.5,
-      width: adjustedWidth - strokeWidth * 2,
-      height: adjustedHeight - strokeWidth * 2,
+      width: adjustedWidth - strokeWidth,
+      height: adjustedHeight - strokeWidth,
       strokeDashArray
     });
   };

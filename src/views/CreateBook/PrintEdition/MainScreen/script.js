@@ -3,7 +3,10 @@ import { mapGetters, mapMutations } from 'vuex';
 import Frames from '@/components/Thumbnail/Frames';
 import Thumbnail from '@/containers/ThumbnailPrint';
 import { GETTERS, MUTATES } from '@/store/modules/book/const';
-import { MUTATES as PRINT_MUTATES } from '@/store/modules/print/const';
+import {
+  MUTATES as PRINT_MUTATES,
+  GETTERS as PRINT_GETTERS
+} from '@/store/modules/print/const';
 import { useDrawLayout } from '@/hooks';
 
 export default {
@@ -19,8 +22,7 @@ export default {
     ...mapGetters({
       bookId: GETTERS.BOOK_ID,
       book: GETTERS.BOOK_DETAIL,
-      selectedLayout: GETTERS.SHEET_LAYOUT,
-      getObjectsBySheetId: GETTERS.GET_OBJECTS_BY_SHEET_ID
+      sheetLayout: PRINT_GETTERS.SHEET_LAYOUT
     })
   },
   methods: {
@@ -103,8 +105,8 @@ export default {
       this.selectSheet({ id: sheet.id });
       this.setSectionId({ sectionId });
       setTimeout(() => {
-        const objects = this.getObjectsBySheetId(sheet.id);
-        this.drawLayout(sheet.printData.layout, objects);
+        const sheetPrintData = this.sheetLayout(sheet.id);
+        this.drawLayout(sheetPrintData);
       }, 50);
     }
   }

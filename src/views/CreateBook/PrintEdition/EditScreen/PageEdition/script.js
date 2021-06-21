@@ -1,6 +1,6 @@
 import { mapGetters, mapMutations, mapActions } from 'vuex';
 import { fabric } from 'fabric';
-import { cloneDeep, uniqueId, merge } from 'lodash';
+import { cloneDeep, uniqueId, merge, debounce } from 'lodash';
 
 import { usePrintOverrides } from '@/plugins/fabric';
 
@@ -96,8 +96,7 @@ export default {
     ...mapGetters({
       book: GETTERS.BOOK_DETAIL,
       pageSelected: PRINT_GETTERS.CURRENT_SHEET,
-      selectedLayout: GETTERS.SHEET_LAYOUT,
-      getObjectsBySheetId: GETTERS.GET_OBJECTS_BY_SHEET_ID,
+      sheetLayout: PRINT_GETTERS.SHEET_LAYOUT,
       isOpenMenuProperties: APP_GETTERS.IS_OPEN_MENU_PROPERTIES,
       isOpenColorPicker: APP_GETTERS.IS_OPEN_COLOR_PICKER,
       selectedObject: PRINT_GETTERS.CURRENT_OBJECT
@@ -145,10 +144,8 @@ export default {
             .discardActiveObject()
             .remove(...window.printCanvas.getObjects())
             .renderAll();
-          this.updateCanvasSize();
-          const layoutData = val?.printData?.layout;
-          const objects = this.getObjectsBySheetId(val.id);
-          this.drawLayout(layoutData, objects);
+          const sheetPrintData = this.sheetLayout(val.id);
+          this.drawLayout(sheetPrintData);
         }
       }
     }
@@ -176,6 +173,7 @@ export default {
         PRINT_MUTATES.UPDATE_TRIGGER_BACKGROUND_CHANGE,
       deleteObjects: PRINT_MUTATES.DELETE_OBJECTS,
       updateTriggerShapeChange: PRINT_MUTATES.UPDATE_TRIGGER_SHAPE_CHANGE,
+      setThumbnail: PRINT_MUTATES.UPDATE_SHEET_THUMBNAIL,
       updateTriggerClipArtChange: PRINT_MUTATES.UPDATE_TRIGGER_CLIPART_CHANGE
     }),
     /**
@@ -201,10 +199,17 @@ export default {
       this.canvasSize = { ...canvasSize, zoom: currentZoom };
       window.printCanvas.setWidth(canvasSize.width);
       window.printCanvas.setHeight(canvasSize.height);
-      const objects = this.getObjectsBySheetId(this.pageSelected?.id);
-      this.drawLayout(this.pageSelected?.printData?.layout, objects);
+      const sheetPrintData = this.sheetLayout(this.pageSelected?.id);
+      this.drawLayout(sheetPrintData);
       window.printCanvas.setZoom(currentZoom);
     },
+    getThumbnailUrl: debounce(function() {
+      const thumbnailUrl = window.printCanvas.toDataURL();
+      this.setThumbnail({
+        sheetId: this.pageSelected?.id,
+        thumbnailUrl
+      });
+    }, 1000),
     /**
      * Event triggered once the container that hold the canvas is finished rendering
      * @param {Object} containerSize - the size object
@@ -221,6 +226,11 @@ export default {
         'selection:updated': this.objectSelected,
         'selection:cleared': this.closeProperties,
         'selection:created': this.objectSelected,
+        'object:modified': () => {
+          if (window.printCanvas) {
+            this.getThumbnailUrl();
+          }
+        },
         'object:scaled': ({ target }) => {
           const { width, height } = target;
           const propAdjust = {
@@ -281,6 +291,7 @@ export default {
       });
 
       this.$root.$on('printChangeTextProperties', prop => {
+        this.getThumbnailUrl();
         this.changeTextProperties(prop);
       });
 
@@ -388,7 +399,7 @@ export default {
      * @param {Element}  group  Group object
      */
     setBorderHighLight(group) {
-      const layout = this.selectedLayout(this.pageSelected?.id);
+      const layout = this.sheetLayout(this.pageSelected?.id);
       group.set({
         borderColor: layout?.id ? 'white' : '#bcbec0'
       });
@@ -447,11 +458,19 @@ export default {
      * Event fire when user click on Text button on Toolbar to add new text on canvas
      */
     addText(x, y, width, height) {
-      const { object, data } = createTextBox(x, y, width, height);
+      const { object, data } = createTextBox(
+        x,
+        y,
+        width,
+        height,
+        {},
+        this.pageSelected.id
+      );
       this.addNewObject(data);
       const isConstrain = data.newObject.isConstrain;
       this.setCanvasUniformScaling(isConstrain);
       window.printCanvas.add(object);
+      this.getThumbnailUrl();
 
       setTimeout(() => {
         selectLatestObject(window.printCanvas);
