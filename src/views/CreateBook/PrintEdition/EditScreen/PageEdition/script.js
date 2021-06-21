@@ -246,35 +246,12 @@ export default {
           }
         },
         'object:added': ({ target }) => {
-          // FOR-DEBUG ===================================
-          // console.log('----------create an object listener----------');
-          // console.log('objectType: ' + target.objectType);
-          // console.log('type: ' + target.type);
-          // console.log('id: ' + target.id);
-          // =============================================
-
-          // this.$root.$emit('updateZIndexToStore');
           if (
             target.objectType &&
             target.objectType !== OBJECT_TYPE.BACKGROUND
           ) {
             this.$root.$emit('updateZIndexToStore');
           }
-          // } else if (target.id)
-          // // this.$root.$emit('updateZIndexToStore');
-          // // adding z-index for objects except background
-          // if (
-          //   target.objectType != OBJECT_TYPE.BACKGROUND &&
-          //   target.zIndex == -1 // -1 is inital vaule
-          // ) {
-          //   this.setObjectPropById({
-          //     id: target.id,
-          //     prop: {
-          //       // zIndex: 8
-          //       zIndex: window.printCanvas.getObjects().length
-          //     }
-          //   });
-          // }
         }
       });
 
@@ -471,6 +448,7 @@ export default {
      */
     addText(x, y, width, height) {
       const { object, data } = createTextBox(x, y, width, height);
+
       this.addNewObject(data);
       const isConstrain = data.newObject.isConstrain;
       this.setCanvasUniformScaling(isConstrain);
@@ -720,11 +698,13 @@ export default {
     },
 
     /**
-     * to update z-index of objecs on canvas to the store (print/objects Z-index)
+     * update z-index of objecs on canvas to:
+     *   + objects in the store (print/objects Z-index)
+     *   + objects on fabric canvas
      */
     updateZIndexToStore() {
       const allObjects = window.printCanvas.getObjects();
-      // // z-index is equvalent to the index of object in allObjects array
+      // z-index is equvalent to the index of object in allObjects array
       allObjects.forEach((o, index) => {
         if (o.objectType && o.objectType != OBJECT_TYPE.BACKGROUND)
           // update to the store object

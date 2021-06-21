@@ -66,9 +66,10 @@ export default {
     ...mapMutations({
       setObjectPropById: PRINT_MUTATES.SET_PROP_BY_ID
     }),
+
     /**
      * Handle events when user click on "send" buttons
-     * @param {String}  actionName indicated which type of "send" button was click
+     * @param {String}  actionName indicated which type of "send" button was clicked
      */
     changeZIndex(actionName) {
       const selectedObject = window.printCanvas.getActiveObject();
@@ -76,8 +77,6 @@ export default {
       if (!selectedObject) return;
 
       const allObjects = window.printCanvas.getObjects();
-      // const index = this.selectObjectProp('zIndex');
-      // console.log(index);
       const hasBackground = allObjects[0].objectType === OBJECT_TYPE.BACKGROUND;
       let numOfBackground = 0;
 
@@ -111,7 +110,7 @@ export default {
           break;
       }
 
-      // update to strore
+      // update to objects in strore and fabric objects
       this.$root.$emit('updateZIndexToStore');
     },
 

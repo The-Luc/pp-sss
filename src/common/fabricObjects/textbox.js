@@ -97,10 +97,8 @@ export const createTextBox = (x, y, width, height, textProperties) => {
   });
 
   const updateTextListeners = canvas => {
-    console.log('update text');
-    console.log(group);
-
     if (text.editingExitedListener) return;
+
     const onDoneEditText = () => {
       toggleStroke(rect, false);
       canvas.remove(text);
@@ -113,10 +111,11 @@ export const createTextBox = (x, y, width, height, textProperties) => {
         angle,
         objectType: OBJECT_TYPE.TEXT
       });
-      // update z-index
-      grp.moveTo(group.zIndex);
 
-      canvas.add(grp);
+      // add grp to canvas at the same z-index as the one before editing
+      canvas._objects.splice(groupZIndex, 0, grp);
+      canvas._onObjectAdded(grp);
+
       addGroupEvents(grp);
     };
 
@@ -191,6 +190,7 @@ export const createTextBox = (x, y, width, height, textProperties) => {
       strokeDashArray
     });
   };
+
   const ungroup = function(g) {
     const { canvas } = g;
     g._restoreObjectsState();
@@ -200,9 +200,15 @@ export const createTextBox = (x, y, width, height, textProperties) => {
     canvas.renderAll();
   };
 
+  // keeping track z-index and assign back the group after recreating
+  let groupZIndex;
+
   const handleDbClick = e => {
     const canvas = e.target.canvas;
     if (isEmpty(canvas)) return;
+
+    groupZIndex = e.target.zIndex;
+
     ungroup(e.target);
     toggleStroke(rect, true);
     updateTextListeners(canvas);
