@@ -4,6 +4,12 @@ export default {
   components: {
     ButtonProperty
   },
+  props: {
+    disabled: {
+      type: Boolean,
+      default: false
+    }
+  },
   methods: {
     /**
      * Emit to back value to parent

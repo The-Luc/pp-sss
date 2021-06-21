@@ -1,8 +1,13 @@
 <template>
   <div class="text-field-property">
-    <div class="item-container">
+    <div class="item-container" :class="{ disabled }">
       <div class="item-input">
-        <input :value="value" type="text" @change="onChange" />
+        <input
+          :value="value"
+          type="text"
+          :disabled="disabled"
+          @change="onChange"
+        />
         <div class="input-label">{{ label }}</div>
       </div>
       <div class="item-title">{{ title }}</div>

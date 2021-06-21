@@ -21,6 +21,10 @@ export default {
     maxSize: {
       type: Number,
       default: 100
+    },
+    disabled: {
+      type: Boolean,
+      default: false
     }
   },
   components: {

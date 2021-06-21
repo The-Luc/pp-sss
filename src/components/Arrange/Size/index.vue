@@ -4,19 +4,22 @@
     <div class="d-flex">
       <TextFieldProperty
         :value="widthPt"
+        :disabled="disabled"
         title="Width"
         label="in."
         @change="onChangeWidth"
       />
       <TextFieldProperty
         :value="heightPt"
+        :disabled="disabled"
         title="Height"
         label="in."
         @change="onChangeHeight"
       />
-      <label class="container-radio">
+      <label class="container-radio" :class="{ disabled }">
         <input
           type="checkbox"
+          :disabled="disabled"
           :checked="isConstrain"
           @change="onChangeConstrain"
         />
