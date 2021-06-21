@@ -10,9 +10,19 @@
         },
         'thumbnail-view-thumbnail'
       ]"
+      :style="{
+        height: `${canvasHeight}px`
+      }"
     >
       <div class="border-inside"></div>
-      <canvas :ref="`thumbnail${sheet.id}`" class="thumbnail-canvas"></canvas>
+      <img
+        :src="thumbnailUrl"
+        :style="{
+          height: `${canvasHeight}px`,
+          objectFit: 'cover'
+        }"
+        class="thumbnail-canvas"
+      />
       <div v-if="edit" class="thumbnail-edit">
         <router-link tag="div" :to="toLink">
           <v-icon class="icon-edit">edit</v-icon>

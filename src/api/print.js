@@ -72,12 +72,7 @@ const printService = {
       const data = books[bookId].sections.map(section => {
         const sheets = section.sheets.map(sheet => {
           const { id, type, isVisited } = sheet;
-          const {
-            thumbnailUrl,
-            theme: themeId,
-            layout: layoutId
-          } = sheet.printData;
-
+          const { thumbnailUrl, theme: themeId, layout } = sheet.printData;
           const pageLeftName = '';
           const pageRightName = '';
 
@@ -87,7 +82,8 @@ const printService = {
             thumbnailUrl,
             isVisited,
             themeId,
-            layoutId,
+            objects: [],
+            layoutId: layout?.id || null,
             pageLeftName,
             pageRightName
           };
