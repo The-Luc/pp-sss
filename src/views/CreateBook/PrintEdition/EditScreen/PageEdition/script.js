@@ -666,11 +666,11 @@ export default {
       const currentWidthInch = pxToIn(width * scaleX);
       const currentHeightInch = pxToIn(height * scaleY);
       const minScale = inToPx(DEFAULT_SHAPE.MIN_SIZE) / width;
-      if (currentWidthInch < 0.5) {
+      if (currentWidthInch < DEFAULT_SHAPE.MIN_SIZE) {
         scaleX = minScale;
       }
 
-      if (currentHeightInch < 0.5) {
+      if (currentHeightInch < DEFAULT_SHAPE.MIN_SIZE) {
         scaleY = minScale;
       }
       target.set({
