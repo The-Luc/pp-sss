@@ -10,11 +10,13 @@ import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 export const useObject = () => {
   const {
     onSelectedObject,
+    getCurrentObject,
     triggerChange,
     triggerShapeChange,
     triggerClipArtChange
   } = useGetters({
     onSelectedObject: PRINT_GETTERS.SELECT_PROP_CURRENT_OBJECT,
+    getCurrentObject: PRINT_GETTERS.CURRENT_OBJECT,
     triggerChange: PRINT_GETTERS.TRIGGER_TEXT_CHANGE,
     triggerShapeChange: PRINT_GETTERS.TRIGGER_SHAPE_CHANGE,
     triggerClipArtChange: PRINT_GETTERS.TRIGGER_CLIPART_CHANGE
@@ -31,6 +33,7 @@ export const useObject = () => {
 
   return {
     selectObjectProp,
+    getCurrentObject,
     triggerChange,
     triggerShapeChange,
     triggerClipArtChange

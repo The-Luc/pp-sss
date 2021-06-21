@@ -608,7 +608,9 @@ export default {
                     height: svgData.height,
                     id: id,
                     type: OBJECT_TYPE.CLIP_ART,
-                    fill: '#58595b'
+                    fill: '#58595b',
+                    originX: 'center',
+                    originY: 'center'
                   })
                   .setCoords();
                 svgData.scaleToHeight((height / zoom / svgData.height) * 8);

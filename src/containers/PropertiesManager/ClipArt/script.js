@@ -1,15 +1,12 @@
-import { mapGetters, mapMutations } from 'vuex';
+import { mapMutations } from 'vuex';
 
+import { useObject } from '@/hooks';
 import Properties from '@/components/Properties/BoxProperties';
 import TabMenu from '@/components/TabMenu';
 import GeneralContent from './GeneralContent';
 import ArrangeContent from '@/components/Arrange';
 
-import {
-  MUTATES as APP_MUTATES,
-  GETTERS as APP_GETTERS
-} from '@/store/modules/app/const';
-import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
+import { MUTATES as APP_MUTATES } from '@/store/modules/app/const';
 
 export default {
   components: {
@@ -18,18 +15,24 @@ export default {
     GeneralContent,
     ArrangeContent
   },
+  setup() {
+    const {
+      getCurrentObject,
+      triggerClipArtChange,
+      selectObjectProp
+    } = useObject();
+    return {
+      getCurrentObject,
+      triggerClipArtChange,
+      selectObjectProp
+    };
+  },
   computed: {
-    ...mapGetters({
-      isOpenColorPicker: APP_GETTERS.IS_OPEN_COLOR_PICKER,
-      getObjectById: PRINT_GETTERS.CURRENT_OBJECT,
-      triggerChange: PRINT_GETTERS.TRIGGER_CLIPART_CHANGE
-    }),
     currentArrange() {
-      if (this.triggerChange) {
+      if (this.triggerClipArtChange) {
         // just for trigger the change
       }
-
-      return this.getObjectById;
+      return this.getCurrentObject;
     }
   },
   methods: {
@@ -63,7 +66,10 @@ export default {
      * @param {Object} object object containing the value of update size, position or rotate
      */
     onChange(object) {
-      console.log(object);
+      const { rotate } = object;
+      this.$root.$emit('printChangeClipArtProperties', {
+        coord: { rotation: rotate }
+      });
     }
   }
 };

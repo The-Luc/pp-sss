@@ -1,15 +1,12 @@
-import { mapGetters, mapMutations } from 'vuex';
+import { mapMutations } from 'vuex';
 
+import { useObject } from '@/hooks';
 import Properties from '@/components/Properties/BoxProperties';
 import TabMenu from '@/components/TabMenu';
 import GeneralContent from './GeneralContent';
 import ArrangeContent from '@/components/Arrange';
 
-import {
-  MUTATES as APP_MUTATES,
-  GETTERS as APP_GETTERS
-} from '@/store/modules/app/const';
-import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
+import { MUTATES as APP_MUTATES } from '@/store/modules/app/const';
 
 export default {
   components: {
@@ -18,18 +15,25 @@ export default {
     GeneralContent,
     ArrangeContent
   },
+  setup() {
+    const {
+      getCurrentObject,
+      triggerShapeChange,
+      selectObjectProp
+    } = useObject();
+    return {
+      getCurrentObject,
+      triggerShapeChange,
+      selectObjectProp
+    };
+  },
   computed: {
-    ...mapGetters({
-      isOpenColorPicker: APP_GETTERS.IS_OPEN_COLOR_PICKER,
-      getObjectById: PRINT_GETTERS.CURRENT_OBJECT,
-      triggerChange: PRINT_GETTERS.TRIGGER_SHAPE_CHANGE
-    }),
     currentArrange() {
-      if (this.triggerChange) {
+      if (this.triggerShapeChange) {
         // just for trigger the change
       }
-
-      return this.getObjectById;
+      console.log(this.selectObjectProp('coord'));
+      return this.getCurrentObject;
     }
   },
   methods: {
