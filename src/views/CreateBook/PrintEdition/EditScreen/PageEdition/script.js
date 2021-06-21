@@ -16,7 +16,9 @@ import {
   getRectDashes,
   scaleSize,
   isHalfSheet,
-  isHalfLeft
+  isHalfLeft,
+  pxToIn,
+  inToPx
 } from '@/common/utils';
 
 import {
@@ -54,7 +56,8 @@ import {
   OBJECT_TYPE,
   CORNER_SIZE,
   HALF_SHEET,
-  HALF_LEFT
+  HALF_LEFT,
+  DEFAULT_SHAPE
 } from '@/common/constants';
 import SizeWrapper from '@/components/SizeWrapper';
 import PrintCanvasLines from './PrintCanvasLines';
@@ -634,6 +637,50 @@ export default {
       }
     },
     /**
+     * Callback function for handle scaling to set scale for shape base on width and height
+     * @param {Object} e - Shape element
+     */
+    handleShapeScaling(e) {
+      const target = e.transform?.target;
+      if (isEmpty(target)) return;
+      let { scaleX, scaleY, width, height } = target;
+      const currentWidthInch = pxToIn(width * scaleX);
+      const currentHeightInch = pxToIn(height * scaleY);
+      const minScale = inToPx(DEFAULT_SHAPE.MIN_SIZE) / width;
+      if (currentWidthInch < 0.5) {
+        scaleX = minScale;
+      }
+
+      if (currentHeightInch < 0.5) {
+        scaleY = minScale;
+      }
+      target.set({
+        scaleX,
+        scaleY
+      });
+    },
+    /**
+     * Callback function for handle scaled to update shape's dimension
+     * @param {Object} e - Shape element
+     */
+    handleShapeScaled(e) {
+      const target = e.transform?.target;
+      if (isEmpty(target)) return;
+      if (target._objects) {
+        // TODO later
+        const svg = fabric.util.groupSVGElements(target._objectsects);
+      } else {
+        const currentWidthInch = pxToIn(target.width * target.scaleX);
+        const currentHeightInch = pxToIn(target.height * target.scaleY);
+        this.changeShapeProperties({
+          size: {
+            width: currentWidthInch,
+            height: currentHeightInch
+          }
+        });
+      }
+    },
+    /**
      * Adding shapes to canvas & store
      *
      * @param {Array} shapes  list of object of adding shapes
@@ -657,15 +704,9 @@ export default {
         isHalfLeft(this.pageSelected)
       );
       toBeAddedShapes.forEach(s => {
-        printShapes.forEach(ps => {
-          if (s.id === ps.id) {
-            s.object.size.width = ps.width;
-            s.object.size.height = ps.height;
-          }
-          this.addNewObject({
-            id: s.id,
-            newObject: s.object
-          });
+        this.addNewObject({
+          id: s.id,
+          newObject: s.object
         });
       });
       if (toBeAddedShapes.length === 1) {
@@ -673,6 +714,10 @@ export default {
       } else {
         this.closeProperties();
       }
+      printShapes.forEach(shape => {
+        shape.on('scaling', this.handleShapeScaling);
+        shape.on('scaled', this.handleShapeScaled);
+      });
     },
     /**
      * Event fire when user change any property of selected shape
@@ -685,13 +730,12 @@ export default {
         return;
       }
       const shape = window.printCanvas.getActiveObject();
-
       if (isEmpty(shape)) return;
-
       this.setObjectProp({ prop });
-
+      if (Object.keys(prop).includes('isConstrain')) {
+        this.setCanvasUniformScaling(prop.isConstrain);
+      }
       this.updateTriggerShapeChange();
-
       updatePrintShape(shape, prop, window.printCanvas);
     },
     /**

@@ -32,15 +32,29 @@ export default {
     maxRotate: {
       type: Number,
       required: true
+    },
+    minSize: {
+      type: Number,
+      default: 0
+    },
+    maxSize: {
+      type: Number,
+      default: 100
+    },
+    sizeWidth: {
+      type: Number,
+      default: 0
+    },
+    sizeHeight: {
+      type: Number,
+      default: 0
+    },
+    isConstrain: {
+      type: Boolean,
+      default: false
     }
   },
   computed: {
-    sizeWidth() {
-      return this.currentArrange.size?.width;
-    },
-    sizeHeight() {
-      return this.currentArrange.size?.height;
-    },
     positionX() {
       return this.currentArrange.coord?.x;
     },
@@ -49,9 +63,6 @@ export default {
     },
     valueRotate() {
       return this.currentArrange.coord?.rotation;
-    },
-    isConstrain() {
-      return this.currentArrange.isConstrain;
     }
   },
   methods: {

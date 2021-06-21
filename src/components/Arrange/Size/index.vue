@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex flex-column size-container">
+  <div :key="componentKey" class="d-flex flex-column size-container">
     <span class="properties-title">Size:</span>
     <div class="d-flex">
       <TextFieldProperty

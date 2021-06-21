@@ -4,6 +4,8 @@
     <Size
       :width="sizeWidth"
       :height="sizeHeight"
+      :min-size="minSize"
+      :max-size="maxSize"
       :is-constrain="isConstrain"
       @change="onChange"
       @changeConstrain="onChangeConstrain"
