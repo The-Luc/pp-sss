@@ -29,8 +29,10 @@ export default {
     })
   },
   methods: {
-    onChangeView(newView) {
-      this.$router.push(`/book/${this.bookId}${newView.toLowerCase()}`);
+    onChangeView(newView, routeName) {
+      if (this.$route.name !== routeName) {
+        this.$router.push(`/book/${this.bookId}${newView.toLowerCase()}`);
+      }
     }
   }
 };

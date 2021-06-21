@@ -96,6 +96,29 @@ export const toFabricShapeProp = prop => {
 };
 
 /**
+ * Convert stored properties to fabric properties
+ *
+ * @param   {Object}  prop  stored properties
+ * @returns {Object}        fabric properties
+ */
+export const toFabricClipArtProp = prop => {
+  const mapRules = {
+    data: {
+      type: DEFAULT_RULE_DATA.TYPE,
+      x: DEFAULT_RULE_DATA.X,
+      y: DEFAULT_RULE_DATA.Y,
+      rotation: DEFAULT_RULE_DATA.ROTATION,
+      color: DEFAULT_RULE_DATA.COLOR,
+      horiziontal: DEFAULT_RULE_DATA.HORIZIONTAL,
+      vertical: DEFAULT_RULE_DATA.VERTICAL
+    },
+    restrict: ['id', 'name', 'thumbnail', 'border', 'shadow']
+  };
+
+  return mapObject(prop, mapRules);
+};
+
+/**
  * Get fabric property base on element type from property
  *
  * @param   {String}  elementType   the type of selected element
@@ -109,6 +132,10 @@ const getFabricProp = (elementType, prop) => {
 
   if (elementType === OBJECT_TYPE.SHAPE) {
     return toFabricShapeProp(prop);
+  }
+
+  if (elementType === OBJECT_TYPE.CLIP_ART) {
+    return toFabricClipArtProp(prop);
   }
 
   return {};

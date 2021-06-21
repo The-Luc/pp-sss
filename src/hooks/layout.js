@@ -1,16 +1,14 @@
 import { useMutations, useGetters } from 'vuex-composition-helpers';
 import { fabric } from 'fabric';
-import { pick, cloneDeep } from 'lodash';
 
-import {
-  GETTERS as BOOK_GETTERS,
-  MUTATES as BOOK_MUTATES
-} from '@/store/modules/book/const';
 import {
   MUTATES as APP_MUTATES,
   GETTERS as APP_GETTERS
 } from '@/store/modules/app/const';
-import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
+import {
+  GETTERS as PRINT_GETTERS,
+  MUTATES as PRINT_MUTATES
+} from '@/store/modules/print/const';
 import {
   OBJECT_TYPE,
   TOOL_NAME,
@@ -26,7 +24,7 @@ export const useLayoutPrompt = () => {
   });
 
   const { updateVisited, setIsPrompt, setToolNameSelected } = useMutations({
-    updateVisited: BOOK_MUTATES.UPDATE_SHEET_VISITED,
+    updateVisited: PRINT_MUTATES.UPDATE_SHEET_VISITED,
     setIsPrompt: APP_MUTATES.SET_IS_PROMPT,
     setToolNameSelected: APP_MUTATES.SET_TOOL_NAME_SELECTED
   });
@@ -47,20 +45,17 @@ export const useLayoutPrompt = () => {
 
 /**
  * Get all text objects then draw it by fabric after that add to target canvas
- * @param {Object} page - Page data
+ * @param {Object} objectsData - Page objects data
  * @param {String} position - Page position to draw left or right
  * @param {Ref} targetCanvas - Target canvas to draw objects
  * @param {Array} objects - All objects user addeed
  */
-const handleDrawTextLayout = (page, position, targetCanvas, objects) => {
-  const objectIds = cloneDeep(page.objects);
-  const objectsData = pick(objects, [...objectIds]);
-  Object.values(objectsData).forEach(obj => {
+const handleDrawTextLayout = (objectsData, position, targetCanvas) => {
+  objectsData.forEach(obj => {
     if (obj.type === OBJECT_TYPE.TEXT) {
       const {
         coord: { x, y },
-        size: { width, height },
-        property
+        size: { width, height }
       } = obj;
 
       let left = scaleSize(x);
@@ -68,19 +63,12 @@ const handleDrawTextLayout = (page, position, targetCanvas, objects) => {
         const baseLeft = targetCanvas.width / targetCanvas.getZoom() / 2;
         left += baseLeft;
       }
-      const properties = {
-        id: obj.id,
-        type: OBJECT_TYPE.TEXT,
-        size: obj.size,
-        coord: obj.coord,
-        property
-      };
       const { object } = createTextBox(
         left,
         scaleSize(y),
         scaleSize(width),
         scaleSize(height),
-        properties
+        obj
       );
       targetCanvas.add(object);
     }
@@ -89,90 +77,73 @@ const handleDrawTextLayout = (page, position, targetCanvas, objects) => {
 
 /**
  * Get background source from page data and draw it on target canvas by fabric after that draw objects
- * @param {Object} pageData - Page object data
+ * @param {Object} objectsData - Page objects data
  * @param {String} position - Page position to draw left or right
  * @param {Ref} targetCanvas - Target canvas to draw objects
- * @param {Object} layoutSize - Layout object size
- * @param {Array} objects - All objects user addeed
  */
-const handleDrawBackgroundLayout = (
-  pageData,
-  position,
-  targetCanvas,
-  layoutSize,
-  objects
-) => {
-  const objectIds = cloneDeep(pageData.objects);
-  const objectsData = pick(objects, [...objectIds]);
-  const backrgoundObj = Object.values(objectsData).find(
+const handleDrawBackgroundLayout = (objectsData, position, targetCanvas) => {
+  const backrgoundObj = objectsData.find(
     ({ type }) => type === OBJECT_TYPE.BACKGROUND
   );
   const backgroundUrl = backrgoundObj?.property?.imageUrl;
-  if (pageData?.objects.length === 0) {
+  if (objectsData.length === 0) {
     targetCanvas?.clear().renderAll();
     return;
   }
 
-  fabric.Image.fromURL(backgroundUrl, function(img) {
-    const { width, height } = targetCanvas;
-    const zoom = targetCanvas.getZoom();
-    img.selectable = false; // Right now, can not select background from layout, todo later
-    img.left = position === 'right' ? width / zoom / 2 : 0;
-    img.scaleX = width / zoom / img.width / 2;
-    img.scaleY = height / zoom / img.height;
+  fabric.Image.fromURL(
+    backgroundUrl,
+    function(img) {
+      const { width, height } = targetCanvas;
+      const zoom = targetCanvas.getZoom();
+      img.selectable = false; // Right now, can not select background from layout, todo later
+      img.left = position === 'right' ? width / zoom / 2 : 0;
+      img.scaleX = width / zoom / img.width / 2;
+      img.scaleY = height / zoom / img.height;
 
-    img.objectType = OBJECT_TYPE.BACKGROUND;
-    img.pageType = backrgoundObj?.property?.pageType;
-    img.opacity = 1;
-    img.isLeftPage = position !== 'right';
+      img.objectType = OBJECT_TYPE.BACKGROUND;
+      img.pageType = backrgoundObj?.property?.pageType;
+      img.opacity = 1;
+      img.isLeftPage = position !== 'right';
 
-    img.set(DEFAULT_FABRIC_BACKGROUND);
+      img.set(DEFAULT_FABRIC_BACKGROUND);
 
-    targetCanvas.add(img);
-    handleDrawTextLayout(pageData, position, targetCanvas, objects);
-  });
+      targetCanvas.add(img);
+      handleDrawTextLayout(objectsData, position, targetCanvas);
+    },
+    {
+      crossOrigin: 'anonymous'
+    }
+  );
 };
 
 /**
  * Pass params to function objects to draw background
- * @param {Object} pageData - Page object data
+ * @param {Object} objectsData - Sheet objects data
  * @param {String} position - Page position to draw left or right
- * @param {Ref} targetCanvas - Target canvas to draw objects
- * @param {Object} layoutSize - Layout object size
+ * @param {Ref} targetCanvas - Target canvas to draw obj
  */
-const handleDrawLayout = (
-  pageData,
-  position,
-  targetCanvas,
-  layoutSize,
-  objects
-) => {
-  handleDrawBackgroundLayout(
-    pageData,
-    position,
-    targetCanvas,
-    layoutSize,
-    objects
-  );
+const handleDrawLayout = (objectsData, position, targetCanvas) => {
+  handleDrawBackgroundLayout(objectsData, position, targetCanvas);
 };
 
 export const useDrawLayout = () => {
   /**
    * Draw layout with layout data or reset canvas when layout not exist
-   * @param {Object} layout - Layout object data
-   * @param {Array} objects - All objects user addeed
+   * @param {Object} sheetPrintData - Layout object data
    * @param {Ref} targetCanvas - Target canvas to draw objects
    */
-  const drawLayout = (layout, objects, targetCanvas = window.printCanvas) => {
-    window.printCanvas.remove(...window.printCanvas.getObjects()).renderAll(); // Remove objects added before when select layout
-    if (layout?.id) {
-      layout.pages.forEach((page, index) => {
+  const drawLayout = (sheetPrintData, targetCanvas = window.printCanvas) => {
+    if (
+      Array.isArray(sheetPrintData) &&
+      sheetPrintData.length > 0 &&
+      targetCanvas
+    ) {
+      sheetPrintData.forEach((objectData, index) => {
         handleDrawLayout(
-          page,
+          objectData,
           index === 0 ? 'left' : 'right',
-          targetCanvas,
-          layout.size,
-          objects
+          targetCanvas
         );
       });
     } else {

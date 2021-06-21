@@ -82,11 +82,6 @@ export const getters = {
 
     return getDiffDaysFOM(createdDate, deliveryDate);
   },
-  [BOOK._GETTERS.SHEET_LAYOUT]: ({ book }) => sheetId => {
-    const sheets = getAllSheets(book.sections);
-    const sheet = sheets.find(s => s.id === sheetId);
-    return sheet?.printData?.layout;
-  },
   [BOOK._GETTERS.SHEET_THEME]: ({ book }) => sheetId => {
     const sheets = getAllSheets(book.sections);
     const sheet = sheets.find(s => s.id === sheetId);
@@ -99,16 +94,5 @@ export const getters = {
     const { createdDate } = book;
 
     return getDiffDaysFOM(createdDate, dueDate);
-  },
-  [BOOK._GETTERS.GET_OBJECTS_BY_SHEET_ID]: ({ book, objects }) => sheetId => {
-    const sheets = getAllSheets(book.sections);
-    const sheet = sheets.find(s => s.id === sheetId);
-    const objIds = [];
-    sheet?.printData?.layout?.pages?.forEach(page => {
-      page?.objects?.forEach(objId => {
-        objIds.push(objId);
-      });
-    });
-    return pick(objects, [...objIds]);
   }
 };

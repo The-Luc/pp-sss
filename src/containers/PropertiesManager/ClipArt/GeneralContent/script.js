@@ -1,6 +1,7 @@
-import FillColor from './FillColor';
-import Shadow from './Shadow';
-import Opacity from './Opacity';
+import { useObject } from '@/hooks';
+import FillColor from '@/components/Properties/Features/FillColor';
+import Opacity from '@/components/Properties/Features/Opacity';
+import Shadow from '@/components/Properties/Features/Shadow';
 export default {
   components: {
     FillColor,
@@ -22,17 +23,34 @@ export default {
       selectedShadow: {
         name: 'No Shadow',
         value: 'noShadow'
-      },
-      opacityValue: 100
+      }
     };
+  },
+  setup() {
+    const { selectObjectProp, triggerClipArtChange } = useObject();
+    return {
+      selectObjectProp,
+      triggerClipArtChange
+    };
+  },
+  computed: {
+    opacityValue() {
+      if (this.triggerClipArtChange) {
+        // just for trigger the change
+      }
+
+      const res = this.selectObjectProp('opacity');
+
+      return !res ? 0 : res;
+    }
   },
   methods: {
     /**
-     * Change value of opacity
-     * @param {Number} value value opacity
+     * Receive value opacity from children
+     * @param   {Number}  opacity Value user input
      */
-    onChange(value) {
-      this.opacityValue = value;
+    onChangeOpacity(opacity) {
+      this.$root.$emit('printChangeClipArtProperties', { opacity });
     },
     /**
      * Receive value shadow from children
