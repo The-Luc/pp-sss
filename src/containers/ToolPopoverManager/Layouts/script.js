@@ -15,7 +15,7 @@ import {
 } from '@/store/modules/print/const';
 import { themeOptions } from '@/mock/themes';
 import PpToolPopover from '@/components/ToolPopover';
-import PpSelect from '@/components/Select';
+import PpSelect from '@/components/Selectors/Select';
 import SelectLayout from './SelectLayout';
 import SelectTheme from './SelectTheme';
 import GotIt from './GotIt';

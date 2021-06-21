@@ -1,6 +1,6 @@
 import { mapGetters } from 'vuex';
 
-import PpSelect from '@/components/Select';
+import PpSelect from '@/components/Selectors/Select';
 
 import { toCssStyle } from '@/common/utils';
 

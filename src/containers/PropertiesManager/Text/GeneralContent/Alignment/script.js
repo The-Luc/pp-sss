@@ -1,5 +1,5 @@
 import { mapGetters } from 'vuex';
-import PpButtonGroup from '@/components/ButtonGroup';
+import PpButtonGroup from '@/components/Buttons/ButtonGroup';
 import { GETTERS } from '@/store/modules/book/const';
 import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 import { TEXT_HORIZIONTAL_ALIGN } from '@/common/constants';

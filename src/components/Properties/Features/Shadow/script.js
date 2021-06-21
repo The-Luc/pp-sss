@@ -1,4 +1,4 @@
-import PpSelect from '@/components/Select';
+import PpSelect from '@/components/Selectors/Select';
 
 export default {
   components: {
@@ -17,7 +17,7 @@ export default {
   methods: {
     /**
      * Emit shadow value to parent
-     * @param   {Object}  value Value user selected
+     * @param {Object}  value value user selected
      */
     onChange(value) {
       this.$emit('change', value);
