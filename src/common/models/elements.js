@@ -133,4 +133,5 @@ export const ShapeElement = {
   pathData: 'img.svg', // TODO: Need discuss with FM to get instruction on using shape
   color: DEFAULT_PROP.COLOR,
   stroke: DEFAULT_PROP.COLOR,
+  isConstrain: true
 };

@@ -9,7 +9,6 @@ import {
   MUTATES as APP_MUTATES,
   GETTERS as APP_GETTERS
 } from '@/store/modules/app/const';
-import { GETTERS } from '@/store/modules/book/const';
 import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 
 export default {
@@ -29,7 +28,6 @@ export default {
       if (this.triggerChange) {
         // just for trigger the change
       }
-
       return this.getObjectById;
     }
   },
@@ -65,6 +63,9 @@ export default {
      */
     onChange(object) {
       console.log(object);
+    },
+    onChangeConstrain(val) {
+      console.log('onChangeConstrain', val);
     }
   }
 };

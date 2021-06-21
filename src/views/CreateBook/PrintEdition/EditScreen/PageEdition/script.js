@@ -650,17 +650,24 @@ export default {
         };
       });
 
-      toBeAddedShapes.forEach(s => {
-        this.addNewObject({ id: s.id, newObject: s.object });
-      });
-
-      await addPrintShapes(
+      const printShapes = await addPrintShapes(
         toBeAddedShapes,
         window.printCanvas,
         isHalfSheet(this.pageSelected),
         isHalfLeft(this.pageSelected)
       );
-
+      toBeAddedShapes.forEach(s => {
+        printShapes.forEach(ps => {
+          if (s.id === ps.id) {
+            s.object.size.width = ps.width;
+            s.object.size.height = ps.height;
+          }
+          this.addNewObject({
+            id: s.id,
+            newObject: s.object
+          });
+        });
+      });
       if (toBeAddedShapes.length === 1) {
         selectLatestObject(window.printCanvas);
       } else {

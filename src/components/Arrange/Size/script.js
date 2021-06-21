@@ -40,6 +40,13 @@ export default {
      */
     onChangeHeight(val) {
       this.$emit('change', { size: { height: val } });
+    },
+    /**
+     * Emit constrain value to parent
+     * @param {Number}  val Constrain value
+     */
+    onChangeConstrain(val) {
+      this.$emit('changeConstrain', val);
     }
   }
 };

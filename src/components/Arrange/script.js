@@ -35,13 +35,6 @@ export default {
     }
   },
   computed: {
-    isConstrain() {
-      if (this.triggerChange) {
-        // just for trigger the change
-      }
-      const isConstrain = this.selectObjectProp('isConstrain');
-      return isConstrain;
-    },
     sizeWidth() {
       return this.currentArrange.size?.width;
     },
@@ -56,6 +49,9 @@ export default {
     },
     valueRotate() {
       return this.currentArrange.coord?.rotation;
+    },
+    isConstrain() {
+      return this.currentArrange.isConstrain;
     }
   },
   methods: {
@@ -79,6 +75,13 @@ export default {
      */
     onChange(object) {
       this.$emit('change', object);
+    },
+    /**
+     * Emit constrain value to parent
+     * @param {Object}  val Constrain value
+     */
+    onChangeConstrain(val) {
+      this.$emit('changeConstrain', val);
     }
   }
 };

@@ -15,7 +15,11 @@
         @change="onChangeHeight"
       />
       <label class="container-radio">
-        <input type="checkbox" :checked="isConstrain" />
+        <input
+          type="checkbox"
+          :checked="isConstrain"
+          @change="onChangeConstrain"
+        />
         <div class="checkmark"></div>
         <div class="container-radio-label">Constrain proportions</div>
       </label>

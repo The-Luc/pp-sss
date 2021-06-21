@@ -20,6 +20,7 @@
             @changeZIndex="changeZIndex"
             @changeFlip="changeFlip"
             @change="onChange"
+            @changeConstrain="onChangeConstrain"
           />
         </v-tab-item>
       </TabMenu>

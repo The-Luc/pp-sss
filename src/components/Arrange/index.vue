@@ -6,6 +6,7 @@
       :height="sizeHeight"
       :is-constrain="isConstrain"
       @change="onChange"
+      @changeConstrain="onChangeConstrain"
     />
     <Position :value-x="positionX" :value-y="positionY" @change="onChange" />
     <div class="group-container">
