@@ -18,14 +18,14 @@
         title="Backward"
         @click="onClickBackward"
       >
-        <img slot="icon" class="icon-right" src="@/assets/icons/forward.svg" />
+        <img slot="icon" class="icon-right" src="@/assets/icons/backward.svg" />
       </ButtonProperty>
       <ButtonProperty
         icon-name="flip_to_back"
         title="Forward"
         @click="onClickForward"
       >
-        <img slot="icon" class="icon-right" src="@/assets/icons/backward.svg" />
+        <img slot="icon" class="icon-right" src="@/assets/icons/forward.svg" />
       </ButtonProperty>
     </div>
   </div>

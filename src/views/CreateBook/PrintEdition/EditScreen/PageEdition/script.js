@@ -636,6 +636,19 @@ export default {
       }
     },
     /**
+     * Callback function for handle rotated to update shape's dimension
+     * @param {Object} e - Shape element
+     */
+    handleShapeRotated(e) {
+      const target = e.transform?.target;
+      if (isEmpty(target)) return;
+      this.changeShapeProperties({
+        coord: {
+          rotation: target.rotation
+        }
+      });
+    },
+    /**
      * Adding shapes to canvas & store
      *
      * @param {Array} shapes  list of object of adding shapes

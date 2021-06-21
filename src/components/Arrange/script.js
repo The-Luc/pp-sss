@@ -32,6 +32,10 @@ export default {
     maxRotate: {
       type: Number,
       required: true
+    },
+    valRotate: {
+      type: Number,
+      default: 0
     }
   },
   computed: {
@@ -53,9 +57,6 @@ export default {
     },
     positionY() {
       return this.currentArrange.coord?.y;
-    },
-    valueRotate() {
-      return this.currentArrange.coord?.rotation;
     }
   },
   methods: {

@@ -10,7 +10,7 @@
     <Position :value-x="positionX" :value-y="positionY" @change="onChange" />
     <div class="group-container">
       <Rotate
-        :value="valueRotate"
+        :value="valRotate"
         :max="maxRotate"
         :min="minRotate"
         @change="onChange"

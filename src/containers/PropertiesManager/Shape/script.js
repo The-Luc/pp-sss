@@ -1,4 +1,5 @@
 import { mapMutations } from 'vuex';
+import { cloneDeep } from 'lodash';
 
 import { useObject } from '@/hooks';
 import Properties from '@/components/Properties/BoxProperties';
@@ -32,8 +33,15 @@ export default {
       if (this.triggerShapeChange) {
         // just for trigger the change
       }
-      console.log(this.selectObjectProp('coord'));
+
       return this.getCurrentObject;
+    },
+    valRotate() {
+      if (this.triggerShapeChange) {
+        // just for trigger the change
+      }
+      const rotate = this.selectObjectProp('coord');
+      return rotate?.rotation || 0;
     }
   },
   methods: {
@@ -67,10 +75,12 @@ export default {
      * @param {Object} object object containing the value of update size, position or rotate
      */
     onChange(object) {
-      const { rotate } = object;
-      this.$root.$emit('printChangeShapeProperties', {
-        coord: { rotation: rotate }
-      });
+      const data = cloneDeep(object);
+      const key = Object.keys(data);
+      if (key.includes('rotate')) {
+        data.coord = { ...(data?.rotate && { rotate: data.rotate }) };
+      }
+      this.$root.$emit('printChangeShapeProperties', data);
     }
   }
 };

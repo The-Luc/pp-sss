@@ -23,7 +23,7 @@ export default {
      * @param {Number}  val rotate value user entered
      */
     onChange(val) {
-      this.$emit('change', { rotate: val });
+      this.$emit('change', { coord: { rotation: val } });
     }
   }
 };
