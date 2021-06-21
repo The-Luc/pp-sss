@@ -670,8 +670,7 @@ export default {
 
       if (isEmpty(shape)) return;
 
-      this.setObjectProp({ id: this.selectedObjectId, property: prop });
-
+      this.setObjectProp({ prop });
       this.updateTriggerShapeChange();
 
       updatePrintShape(shape, prop, window.printCanvas);

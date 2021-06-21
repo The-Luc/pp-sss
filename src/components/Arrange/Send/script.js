@@ -1,5 +1,5 @@
 import ButtonProperty from '@/components/ButtonProperty';
-import { ARRANGE_POSITION } from '@/common/constants/arrange';
+import { ARRANGE_SEND } from '@/common/constants/arrange';
 export default {
   components: {
     ButtonProperty
@@ -9,25 +9,25 @@ export default {
      * Emit to back value to parent
      */
     onClickToBack() {
-      this.$emit('change', ARRANGE_POSITION.BACK);
+      this.$emit('change', ARRANGE_SEND.BACK);
     },
     /**
      * Emit to front value to parent
      */
     onClickToFront() {
-      this.$emit('change', ARRANGE_POSITION.FRONT);
+      this.$emit('change', ARRANGE_SEND.FRONT);
     },
     /**
      * Emit backward value to parent
      */
     onClickBackward() {
-      this.$emit('change', ARRANGE_POSITION.BACKWARD);
+      this.$emit('change', ARRANGE_SEND.BACKWARD);
     },
     /**
      * Emit forward value to parent
      */
     onClickForward() {
-      this.$emit('change', ARRANGE_POSITION.FORWARD);
+      this.$emit('change', ARRANGE_SEND.FORWARD);
     }
   }
 };

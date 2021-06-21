@@ -9,7 +9,6 @@ import {
   MUTATES as APP_MUTATES,
   GETTERS as APP_GETTERS
 } from '@/store/modules/app/const';
-import { GETTERS } from '@/store/modules/book/const';
 import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 
 export default {
@@ -64,7 +63,10 @@ export default {
      * @param {Object} object object containing the value of update size, position or rotate
      */
     onChange(object) {
-      console.log(object);
+      const { rotate } = object;
+      this.$root.$emit('printChangeShapeProperties', {
+        coord: { rotation: rotate }
+      });
     }
   }
 };

@@ -9,7 +9,6 @@ import {
   MUTATES as APP_MUTATES,
   GETTERS as APP_GETTERS
 } from '@/store/modules/app/const';
-import { GETTERS } from '@/store/modules/book/const';
 import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 
 export default {
