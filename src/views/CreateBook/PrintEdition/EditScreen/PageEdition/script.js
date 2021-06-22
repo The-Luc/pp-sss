@@ -165,6 +165,7 @@ export default {
       addNewObject: PRINT_MUTATES.ADD_OBJECT,
       setObjectProp: PRINT_MUTATES.SET_PROP,
       setObjectPropById: PRINT_MUTATES.SET_PROP_BY_ID,
+      setPropOfMutiObject: PRINT_MUTATES.SET_PROP_OF_MULIPLE_OBJECTS,
       updateTriggerTextChange: PRINT_MUTATES.UPDATE_TRIGGER_TEXT_CHANGE,
       addNewBackground: PRINT_MUTATES.SET_BACKGROUNDS,
       updateTriggerBackgroundChange:
@@ -732,14 +733,18 @@ export default {
     updateZIndexToStore() {
       const allObjects = window.printCanvas.getObjects();
       // z-index is equvalent to the index of object in allObjects array
+      const data = [];
       allObjects.forEach((o, index) => {
         if (o.objectType && o.objectType != OBJECT_TYPE.BACKGROUND)
-          // update to the store object
-          this.setObjectPropById({ id: o.id, prop: { zIndex: index } });
+          data.push({ id: o.id, prop: { zIndex: index } });
         // update on fabric object
         o.zIndex = index;
       });
+
+      // call mutation to update to store
+      this.setPropOfMutiObject(data);
     },
+
     /**
      * Event fire when user change any property of selected shape
      *
