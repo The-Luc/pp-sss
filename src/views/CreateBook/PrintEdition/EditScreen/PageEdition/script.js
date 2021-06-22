@@ -54,7 +54,8 @@ import {
   OBJECT_TYPE,
   CORNER_SIZE,
   HALF_SHEET,
-  HALF_LEFT
+  HALF_LEFT,
+  COVER_TYPE
 } from '@/common/constants';
 import SizeWrapper from '@/components/SizeWrapper';
 import PrintCanvasLines from './PrintCanvasLines';
@@ -104,14 +105,14 @@ export default {
     isHardCover() {
       const { coverOption } = this.book;
       return (
-        coverOption === 'Hardcover' &&
+        coverOption === COVER_TYPE.HARD_OVER &&
         this.pageSelected?.type === SHEET_TYPE.COVER
       );
     },
     isSoftCover() {
       const { coverOption } = this.book;
       return (
-        coverOption === 'Softcover' &&
+        coverOption === COVER_TYPE.SOFT_COVER &&
         this.pageSelected?.type === SHEET_TYPE.COVER
       );
     },
@@ -141,6 +142,7 @@ export default {
             .discardActiveObject()
             .remove(...window.printCanvas.getObjects())
             .renderAll();
+          this.updateCanvasSize();
           const sheetPrintData = this.sheetLayout(val.id);
           this.drawLayout(sheetPrintData);
         }
