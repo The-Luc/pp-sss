@@ -38,7 +38,7 @@ export const BaseElement = {
     horiziontal: false,
     vertical: false
   },
-  zIndex: 0
+  zIndex: -1
 };
 
 export const BasePrintProperty = {

@@ -164,6 +164,8 @@ export default {
       setSelectedObjectId: PRINT_MUTATES.SET_CURRENT_OBJECT_ID,
       addNewObject: PRINT_MUTATES.ADD_OBJECT,
       setObjectProp: PRINT_MUTATES.SET_PROP,
+      setObjectPropById: PRINT_MUTATES.SET_PROP_BY_ID,
+      setPropOfMutiObjects: PRINT_MUTATES.SET_PROP_OF_MULIPLE_OBJECTS,
       updateTriggerTextChange: PRINT_MUTATES.UPDATE_TRIGGER_TEXT_CHANGE,
       addNewBackground: PRINT_MUTATES.SET_BACKGROUNDS,
       updateTriggerBackgroundChange:
@@ -215,8 +217,10 @@ export default {
       this.containerSize = containerSize;
       let el = this.$refs.canvas;
       window.printCanvas = new fabric.Canvas(el, {
-        backgroundColor: '#ffffff'
+        backgroundColor: '#fff',
+        preserveObjectStacking: true
       });
+
       usePrintOverrides(fabric.Object.prototype);
       this.updateCanvasSize();
       window.printCanvas.on({
@@ -255,6 +259,14 @@ export default {
                 this.awaitingAdd = '';
               }
             );
+          }
+        },
+        'object:added': ({ target }) => {
+          if (
+            target.objectType &&
+            target.objectType !== OBJECT_TYPE.BACKGROUND
+          ) {
+            this.$root.$emit('updateZIndexToStore');
           }
         }
       });
@@ -306,6 +318,10 @@ export default {
 
       this.$root.$on('printChangeShapeProperties', prop => {
         this.changeShapeProperties(prop);
+      });
+
+      this.$root.$on('updateZIndexToStore', () => {
+        this.updateZIndexToStore();
       });
 
       this.$root.$on('printChangeClipArtProperties', prop => {
@@ -446,9 +462,6 @@ export default {
 
       this.setObjectTypeSelected({ type: objectType });
 
-      window.printCanvas.preserveObjectStacking =
-        objectType === OBJECT_TYPE.BACKGROUND;
-
       this.openProperties(objectType);
     },
     /**
@@ -504,6 +517,7 @@ export default {
         id,
         newObject: {
           ...newImage,
+          id,
           coord: {
             ...newImage.coord,
             x,
@@ -611,9 +625,11 @@ export default {
           this.addNewObject({
             id: id,
             newObject: {
-              ...newClipArt
+              ...newClipArt,
+              id
             }
           });
+
           let fabricProp = toFabricClipArtProp(newClipArt);
           return new Promise(resolve => {
             fabric.loadSVGFromURL(
@@ -660,12 +676,16 @@ export default {
     async addShapes(shapes) {
       const toBeAddedShapes = shapes.map(s => {
         const newShape = cloneDeep(ShapeElement);
+        const id = uniqueId();
 
         merge(newShape, s);
 
         return {
-          id: uniqueId(),
-          object: newShape
+          id,
+          object: {
+            ...newShape,
+            id
+          }
         };
       });
 
@@ -706,6 +726,27 @@ export default {
 
       updatePrintShape(shape, prop, window.printCanvas);
     },
+
+    /**
+     * update z-index of objecs on canvas to:
+     *   + objects in the store (print/objects Z-index)
+     *   + objects on fabric canvas
+     */
+    updateZIndexToStore() {
+      const allObjects = window.printCanvas.getObjects();
+      // z-index is equvalent to the index of object in allObjects array
+      const data = [];
+      allObjects.forEach((o, index) => {
+        if (o.objectType && o.objectType != OBJECT_TYPE.BACKGROUND)
+          data.push({ id: o.id, prop: { zIndex: index } });
+        // update on fabric object
+        o.zIndex = index;
+      });
+
+      // call mutation to update to store
+      this.setPropOfMutiObjects(data);
+    },
+
     /**
      * Event fire when user change any property of selected shape
      *
