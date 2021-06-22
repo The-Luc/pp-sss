@@ -18,7 +18,8 @@ import {
   isHalfSheet,
   isHalfLeft,
   pxToIn,
-  inToPx
+  inToPx,
+  isJsonString
 } from '@/common/utils';
 
 import {
@@ -65,6 +66,8 @@ import PageWrapper from './PageWrapper';
 import XRuler from './Rulers/XRuler';
 import YRuler from './Rulers/YRuler';
 import { addSingleSvg, addMultiSvg } from '@/common/fabricObjects/common';
+import { isFabricObject } from '@/common/utils/string';
+import { COPY_OBJECT_KEY } from '@/common/constants/config';
 
 export default {
   components: {
@@ -103,7 +106,8 @@ export default {
       sheetLayout: PRINT_GETTERS.SHEET_LAYOUT,
       isOpenMenuProperties: APP_GETTERS.IS_OPEN_MENU_PROPERTIES,
       isOpenColorPicker: APP_GETTERS.IS_OPEN_COLOR_PICKER,
-      selectedObject: PRINT_GETTERS.CURRENT_OBJECT
+      selectedObject: PRINT_GETTERS.CURRENT_OBJECT,
+      toolNameSelected: APP_GETTERS.SELECTED_TOOL_NAME
     }),
     isCover() {
       return this.pageSelected?.type === SHEET_TYPE.COVER;
@@ -156,8 +160,14 @@ export default {
       }
     }
   },
+  mounted() {
+    window.addEventListener('copy', this.handleCopy);
+    window.addEventListener('paste', this.handlePaste);
+  },
   beforeDestroy() {
     document.body.removeEventListener('keyup', this.handleDeleteKey);
+    window.removeEventListener('copy', this.handleCopy);
+    window.removeEventListener('paste', this.handlePaste);
     window.printCanvas = null;
   },
   methods: {
@@ -182,8 +192,38 @@ export default {
       deleteObjects: PRINT_MUTATES.DELETE_OBJECTS,
       updateTriggerShapeChange: PRINT_MUTATES.UPDATE_TRIGGER_SHAPE_CHANGE,
       setThumbnail: PRINT_MUTATES.UPDATE_SHEET_THUMBNAIL,
-      updateTriggerClipArtChange: PRINT_MUTATES.UPDATE_TRIGGER_CLIPART_CHANGE
+      updateTriggerClipArtChange: PRINT_MUTATES.UPDATE_TRIGGER_CLIPART_CHANGE,
+      toggleActiveObjects: MUTATES.TOGGLE_ACTIVE_OBJECTS
     }),
+    /**
+     * Function handle to get object(s) be copied from clipboard when user press Ctrl + V (Windows), Command + V (macOS), or from action menu
+     */
+    handlePaste() {
+      navigator.clipboard.readText().then(clipText => {
+        const isJson = isJsonString(clipText);
+        if (isJson) {
+          const isValid = isFabricObject(clipText);
+          if (isValid) {
+            const data = JSON.parse(clipText);
+            console.log('handlePaste', data);
+          }
+        }
+      });
+    },
+    /**
+     * Function handle to set object(s) to clipboard when user press Ctrl + C (Windows), Command + C (macOS), or from action menu
+     */
+    handleCopy() {
+      const activeObj = window.printCanvas.getActiveObject();
+      if (activeObj) {
+        const cacheData = {
+          [COPY_OBJECT_KEY]: {
+            activeObj
+          }
+        };
+        navigator.clipboard.writeText(JSON.stringify(cacheData));
+      }
+    },
     /**
      * Auto resize canvas to fit the container size
      */
@@ -341,6 +381,10 @@ export default {
         this.changeClipArtProperties(prop);
       });
 
+      this.$root.$on('printCopyObj', () => {
+        this.handleCopy();
+      });
+
       document.body.addEventListener('keyup', this.handleDeleteKey);
     },
     /**
@@ -383,13 +427,21 @@ export default {
           isOpen: false
         });
       }
+
       this.setIsOpenProperties({
         isOpen: false
       });
+
       this.setObjectTypeSelected({
         type: ''
       });
+
+      this.toggleActiveObjects(false);
+
       this.setSelectedObjectId({ id: '' });
+      if (this.toolNameSelected === TOOL_NAME.ACTIONS) {
+        this.setToolNameSelected({ name: '' });
+      }
     },
     /**
      * Close text properties modal
@@ -449,6 +501,8 @@ export default {
       if (this.awaitingAdd) {
         return;
       }
+      this.toggleActiveObjects(true);
+
       const { id } = target;
       const targetType = target.get('type');
       this.setSelectedObjectId({ id });
