@@ -3,18 +3,10 @@ import Size from '@/components/Arrange/Size';
 import Position from '@/components/Arrange/Position';
 import Flip from '@/components/Arrange/Flip';
 import Rotate from '@/components/Arrange/Rotate';
-import { useObject } from '@/hooks';
 import { OBJECT_TYPE } from '@/common/constants';
 import { ARRANGE_SEND } from '@/common/constants/arrange';
 
 export default {
-  setup() {
-    const { selectObjectProp, triggerChange } = useObject();
-    return {
-      selectObjectProp,
-      triggerChange
-    };
-  },
   components: {
     Send,
     Size,
@@ -23,9 +15,9 @@ export default {
     Rotate
   },
   props: {
-    currentArrange: {
+    positionValue: {
       type: Object,
-      default: {}
+      default: () => ({ x: 0, y: 0 })
     },
     rotateValue: {
       type: Number,
@@ -54,14 +46,6 @@ export default {
     disabled: {
       type: Boolean,
       default: false
-    }
-  },
-  computed: {
-    positionX() {
-      return this.currentArrange.coord?.x;
-    },
-    positionY() {
-      return this.currentArrange.coord?.y;
     }
   },
   methods: {

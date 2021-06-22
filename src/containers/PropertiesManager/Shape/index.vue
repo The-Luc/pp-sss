@@ -14,7 +14,7 @@
         </v-tab>
         <v-tab-item value="arrange">
           <ArrangeContent
-            :current-arrange="currentArrange"
+            :position-value="positionValue"
             :rotate-value="rotateValue"
             :size-width="sizeWidth"
             :size-height="sizeHeight"

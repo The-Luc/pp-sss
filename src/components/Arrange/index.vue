@@ -12,8 +12,8 @@
       @changeConstrain="onChangeConstrain"
     />
     <Position
-      :value-x="positionX"
-      :value-y="positionY"
+      :value-x="positionValue.x"
+      :value-y="positionValue.y"
       :disabled="disabled"
       @change="onChange"
     />
