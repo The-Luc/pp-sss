@@ -49,10 +49,7 @@ const NORMAL_RULES = {
 export const toFabricBackgroundProp = prop => {
   const mapRules = {
     data: {
-      type: DEFAULT_RULE_DATA.TYPE,
-      property: {
-        restrict: ['type']
-      }
+      type: DEFAULT_RULE_DATA.TYPE
     },
     restrict: [
       'id',
@@ -65,7 +62,8 @@ export const toFabricBackgroundProp = prop => {
       'color',
       'border',
       'shadow',
-      'flip'
+      'flip',
+      'backgroundType'
     ]
   };
 
@@ -145,6 +143,7 @@ export const toFabricClipArtProp = prop => {
  */
 const getFabricProp = (element, prop) => {
   const { objectType } = element;
+
   if (objectType === OBJECT_TYPE.BACKGROUND) {
     return toFabricBackgroundProp(prop);
   }
@@ -188,12 +187,16 @@ export const updateElement = (element, prop, canvas) => {
  */
 export const setElementProp = (element, prop) => {
   element.set(prop);
+
   const key = Object.keys(prop);
+
   const isSvgEl = element?.objectType === OBJECT_TYPE.SHAPE;
   const isModifySize = ['scaleX', 'scaleY'].includes(key[0]);
   const isModifyRotate = ['angle'].includes(key[0]);
+
   if (element.getObjects) {
     if ((isSvgEl && isModifySize) || isModifyRotate) return;
+
     element.getObjects().forEach(o => o.set(prop));
   }
 };
@@ -232,6 +235,7 @@ export const getSvgData = (svgUrl, elementProperty, expectedHeight) => {
     fabric.loadSVGFromURL(svgUrl, (objects, options) => {
       const svg = fabric.util.groupSVGElements(objects, options);
       const scale = inToPx(expectedHeight) / svg.height;
+
       svg.set({
         ...elementProperty,
         width: svg.width,
@@ -254,8 +258,8 @@ export const getSvgData = (svgUrl, elementProperty, expectedHeight) => {
 /**
  * Adding svg element to canvas
  *
- * @param {Object}  svg     svg data of will be added element
- * @param {Object}  canvas  the canvas contain new element
+ * @param {Object}  svg              svg data of will be added element
+ * @param {Object}  canvas           the canvas contain new element
  */
 export const addSingleSvg = (
   svg,
@@ -273,8 +277,8 @@ export const addSingleSvg = (
 /**
  * Adding svg elements to canvas
  *
- * @param {Array}   svgs    list of svg data of will be added element
- * @param {Object}  canvas  the canvas contain new element
+ * @param {Array}   svgs            list of svg data of will be added element
+ * @param {Object}  canvas          the canvas contain new element
  */
 export const addMultiSvg = (
   svgs,
@@ -310,4 +314,16 @@ export const addMultiSvg = (
   group.destroy();
 
   canvas.remove(group);
+};
+
+/**
+ * Adding event listener to element
+ *
+ * @param {Object}  element         element will be added event
+ * @param {Object}  eventListeners  event list {name, eventHandling}
+ */
+export const addEventListeners = (element, eventListeners) => {
+  Object.keys(eventListeners).forEach(k => {
+    element.on(k, eventListeners[k]);
+  });
 };

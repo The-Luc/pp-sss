@@ -822,41 +822,53 @@ export default {
     async addShapes(shapes) {
       const toBeAddedShapes = shapes.map(s => {
         const newShape = cloneDeep(ShapeElement);
-        const id = uniqueId();
 
         merge(newShape, s);
 
         return {
-          id,
-          object: {
-            ...newShape,
-            id
-          }
+          id: uniqueId(),
+          object: newShape
         };
       });
 
-      const printShapes = await addPrintShapes(
+      const eventListeners = {
+        scaling: this.handleShapeScaling,
+        scaled: this.handleShapeScaled,
+        rotated: this.handleRotated
+      };
+
+      await addPrintShapes(
         toBeAddedShapes,
         window.printCanvas,
         isHalfSheet(this.pageSelected),
-        isHalfLeft(this.pageSelected)
+        isHalfLeft(this.pageSelected),
+        eventListeners
       );
+
       toBeAddedShapes.forEach(s => {
+        const fabricObject = window.printCanvas
+          .getObjects()
+          .find(o => o.id === s.id);
+
+        const { top, left } = fabricObject;
+
         this.addNewObject({
           id: s.id,
-          newObject: s.object
+          newObject: {
+            ...s.object,
+            coord: {
+              x: pxToIn(left),
+              y: pxToIn(top)
+            }
+          }
         });
       });
+
       if (toBeAddedShapes.length === 1) {
         selectLatestObject(window.printCanvas);
       } else {
         this.closeProperties();
       }
-      printShapes.forEach(shape => {
-        shape.on('scaling', this.handleShapeScaling);
-        shape.on('scaled', this.handleShapeScaled);
-        shape.on('rotated', this.handleRotated);
-      });
     },
     /**
      * Event fire when user change any property of selected shape
@@ -870,7 +882,6 @@ export default {
         this.updateTriggerShapeChange
       );
     },
-
     /**
      * update z-index of objecs on canvas to:
      *   + objects in the store (print/objects Z-index)

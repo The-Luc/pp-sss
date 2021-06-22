@@ -4,7 +4,7 @@ export default {
   props: {
     item: {
       type: Object,
-      default: () => ({ id: '', property: {} })
+      default: () => ({ id: '' })
     },
     selectedVal: {
       type: Array,

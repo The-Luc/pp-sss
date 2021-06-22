@@ -115,11 +115,10 @@ export default {
       }
 
       const backgroundType = Object.keys(BACKGROUND_TYPE).find(
-        k =>
-          BACKGROUND_TYPE[k].id === this.alreadyAppliedBackground.property.type
+        k => BACKGROUND_TYPE[k].id === this.alreadyAppliedBackground.type
       );
 
-      if (isEmpty(backgroundType)) return { id: '', property: {} };
+      if (isEmpty(backgroundType)) return { id: '' };
 
       return {
         ...BACKGROUND_TYPE[backgroundType],
@@ -145,8 +144,7 @@ export default {
 
       const selectedBgPageType = Object.keys(BACKGROUND_PAGE_TYPE).find(k => {
         return (
-          BACKGROUND_PAGE_TYPE[k].id ===
-          this.alreadyAppliedBackground.property.pageType
+          BACKGROUND_PAGE_TYPE[k].id === this.alreadyAppliedBackground.pageType
         );
       });
 
@@ -176,9 +174,7 @@ export default {
       }
 
       this.chosenBackground =
-        this.backgrounds.length > 0
-          ? this.backgrounds[0]
-          : { id: '', property: {} };
+        this.backgrounds.length > 0 ? this.backgrounds[0] : { id: '' };
 
       return this.chosenBackground;
     },
@@ -187,7 +183,7 @@ export default {
     },
     backgrounds() {
       return BACKGROUNDS.filter(b => {
-        const { type, categoryId, pageType } = b.property;
+        const { type, categoryId, pageType } = b;
 
         if (type !== this.selectedBackgroundType.id) return false;
 
@@ -234,7 +230,7 @@ export default {
     getSelectedBackgroundType(backgroundTypeId) {
       if (backgroundTypeId === BACKGROUND_TYPE.THEME.id) {
         return themeOptions.find(
-          t => t.id === this.alreadyAppliedBackground.property.categoryId
+          t => t.id === this.alreadyAppliedBackground.categoryId
         );
       }
 
@@ -242,7 +238,7 @@ export default {
         const category = Object.keys(BACKGROUND_CATEGORIES).find(
           k =>
             BACKGROUND_CATEGORIES[k].id ===
-            this.alreadyAppliedBackground.property.categoryId
+            this.alreadyAppliedBackground.categoryId
         );
 
         return {
@@ -329,7 +325,7 @@ export default {
      * Trigger mutation to set Background
      */
     applyChosenBackground() {
-      const { pageType: selectedPageType } = this.selectedBackground.property;
+      const { pageType: selectedPageType } = this.selectedBackground;
 
       const isSinglePageType =
         selectedPageType === BACKGROUND_PAGE_TYPE.SINGLE_PAGE.id;
@@ -366,17 +362,13 @@ export default {
       }
 
       if (isAppliedBackground) {
-        const {
-          categoryId,
-          type,
-          pageType
-        } = this.alreadyAppliedBackground.property;
+        const { categoryId, type, pageType } = this.alreadyAppliedBackground;
 
         const {
           categoryId: chosenCategoryId,
           type: chosenType,
           pageType: chosenPageType
-        } = this.chosenBackground.property;
+        } = this.chosenBackground;
 
         if (
           categoryId === chosenCategoryId &&
