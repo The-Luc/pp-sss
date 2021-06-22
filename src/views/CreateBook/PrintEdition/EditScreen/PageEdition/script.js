@@ -165,7 +165,7 @@ export default {
       addNewObject: PRINT_MUTATES.ADD_OBJECT,
       setObjectProp: PRINT_MUTATES.SET_PROP,
       setObjectPropById: PRINT_MUTATES.SET_PROP_BY_ID,
-      setPropOfMutiObject: PRINT_MUTATES.SET_PROP_OF_MULIPLE_OBJECTS,
+      setPropOfMutiObjects: PRINT_MUTATES.SET_PROP_OF_MULIPLE_OBJECTS,
       updateTriggerTextChange: PRINT_MUTATES.UPDATE_TRIGGER_TEXT_CHANGE,
       addNewBackground: PRINT_MUTATES.SET_BACKGROUNDS,
       updateTriggerBackgroundChange:
@@ -742,7 +742,7 @@ export default {
       });
 
       // call mutation to update to store
-      this.setPropOfMutiObject(data);
+      this.setPropOfMutiObjects(data);
     },
 
     /**
