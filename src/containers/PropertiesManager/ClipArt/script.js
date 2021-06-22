@@ -1,5 +1,4 @@
 import { mapGetters, mapMutations } from 'vuex';
-import { cloneDeep } from 'lodash';
 
 import { useObject } from '@/hooks';
 import Properties from '@/components/Properties/BoxProperties';
@@ -26,13 +25,13 @@ export default {
   },
   computed: {
     ...mapGetters({
-      getObjectById: PRINT_GETTERS.CURRENT_OBJECT
+      currentObject: PRINT_GETTERS.CURRENT_OBJECT
     }),
     currentArrange() {
       if (this.triggerClipArtChange) {
         // just for trigger the change
       }
-      return this.getObjectById;
+      return this.currentObject;
     },
     rotateValue() {
       if (this.triggerClipArtChange) {
@@ -66,12 +65,7 @@ export default {
      * @param {Object} object object containing the value of update size, position or rotate
      */
     onChange(object) {
-      const data = cloneDeep(object);
-      const key = Object.keys(data);
-      if (key.includes('rotate')) {
-        data.coord = { ...{ rotate: data.rotate } };
-      }
-      this.$root.$emit('printChangeShapeProperties', data);
+      this.$root.$emit('printChangeShapeProperties', object);
     }
   }
 };

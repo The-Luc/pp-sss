@@ -27,13 +27,13 @@ export default {
   },
   computed: {
     ...mapGetters({
-      getObjectById: PRINT_GETTERS.CURRENT_OBJECT
+      currentObject: PRINT_GETTERS.CURRENT_OBJECT
     }),
     currentArrange() {
       if (this.triggerShapeChange) {
         // just for trigger the change
       }
-      return this.getObjectById;
+      return this.currentObject;
     },
     rotateValue() {
       if (this.triggerShapeChange) {
@@ -118,9 +118,6 @@ export default {
           ...(data?.size?.width && { width: data.size.width }),
           ...(data?.size?.height && { height: data.size.height })
         };
-      }
-      if (key.includes('rotate')) {
-        data.coord = { ...{ rotate: data.rotate } };
       }
       this.$root.$emit('printChangeShapeProperties', data);
     },
