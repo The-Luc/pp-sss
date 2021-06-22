@@ -6,7 +6,7 @@
     hide-details
     single-line
     :value="roundVal"
-    type="number"
+    :type="type"
     :suffix="suffix"
     @keydown.esc="onEsc"
     @input="onNumberChange"
