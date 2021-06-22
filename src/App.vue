@@ -11,24 +11,18 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
-import { onMounted } from '@vue/composition-api';
+import { mapGetters, mapActions } from 'vuex';
 
-import { ENV_CONFIG } from '@/common/constants/config';
-import { useBook } from '@/hooks';
-import ModalManager from './containers/ModalManager';
-import HeaderControl from './views/CreateBook/HeadControl';
-import { GETTERS as APP_GETTER } from './store/modules/app/const';
+import ModalManager from '@/containers/ModalManager';
+import HeaderControl from '@/views/CreateBook/HeadControl';
+import { GETTERS as APP_GETTER } from '@/store/modules/app/const';
 import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
+import { ACTIONS } from '@/store/modules/book/const';
 
 export default {
   components: {
     ModalManager,
     HeaderControl
-  },
-  setup() {
-    const { getBook } = useBook();
-    onMounted(() => getBook(ENV_CONFIG.BOOK_ID));
   },
   computed: {
     ...mapGetters({
@@ -38,6 +32,18 @@ export default {
     isVisited() {
       return this.pageSelected?.isVisited || false;
     }
+  },
+  watch: {
+    $route(to) {
+      if (to.name) {
+        this.getBook(to.params.bookId);
+      }
+    }
+  },
+  methods: {
+    ...mapActions({
+      getBook: ACTIONS.GET_BOOK
+    })
   }
 };
 </script>

@@ -11,3 +11,8 @@ export const SCREEN = {
 };
 
 export const APPROVAL_DAYS = 10;
+
+export const COVER_TYPE = {
+  HARD_OVER: 'HardCover',
+  SOFT_COVER: 'SoftCover'
+};

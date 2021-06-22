@@ -4,7 +4,6 @@ import VueRouter from 'vue-router';
 import store from '../store';
 import { MUTATES } from '@/store/modules/app/const';
 import { MODAL_TYPES, ROUTE_NAME } from '@/common/constants';
-import { ENV_CONFIG } from '@/common/constants/config';
 
 const PageNotFound = () => import('../views/PageNotFound');
 const Manager = () => import('../views/CreateBook/Manager');
@@ -42,7 +41,7 @@ const authGuard = {
 const routes = [
   {
     path: '/',
-    redirect: `/book/${ENV_CONFIG.BOOK_ID}/edit/manager`,
+    redirect: '/book/1719/edit/manager',
     ...authGuard
   },
   {
@@ -116,18 +115,22 @@ router.beforeEach(async (to, from, next) => {
   }
   if (to.name !== ROUTE_NAME.MANAGER) {
     const sections = store.state.book.book?.sections;
-    const emptySections = sections.filter(item => item.sheets?.length === 0);
-    if (emptySections.length !== 0) {
-      if (from.name !== ROUTE_NAME.MANAGER) {
-        await next();
-      }
-      store.commit(MUTATES.TOGGLE_MODAL, {
-        isOpenModal: true,
-        modalData: {
-          type: MODAL_TYPES.EMPTY_SECTION,
-          props: { sections: emptySections }
+    if (sections) {
+      const emptySections = sections?.filter(item => item.sheets?.length === 0);
+      if (emptySections?.length !== 0) {
+        if (from.name !== ROUTE_NAME.MANAGER) {
+          await next();
         }
-      });
+        store.commit(MUTATES.TOGGLE_MODAL, {
+          isOpenModal: true,
+          modalData: {
+            type: MODAL_TYPES.EMPTY_SECTION,
+            props: { sections: emptySections }
+          }
+        });
+      } else {
+        next();
+      }
     } else {
       next();
     }

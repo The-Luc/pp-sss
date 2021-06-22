@@ -17,6 +17,10 @@ export default {
     max: {
       type: Number,
       default: 100
+    },
+    disabled: {
+      type: Boolean,
+      default: false
     }
   },
   data() {

@@ -68,6 +68,7 @@ export const addPrintBackground = ({
     img.set({
       ...fabricProp,
       id,
+      selectable: false,
       left: !isAddToLeft ? width / zoom / 2 : 0,
       isLeftPage: isAddToLeft,
       scaleX: width / zoom / img.width / scaleX,

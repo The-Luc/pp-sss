@@ -32,6 +32,13 @@ export default {
       }
 
       return this.getObjectById;
+    },
+    disabled() {
+      if (this.triggerChange) {
+        // just for trigger the change
+      }
+      const activeObj = window.printCanvas.getActiveObject();
+      return !!activeObj.isEditing;
     }
   },
   watch: {
@@ -96,13 +103,6 @@ export default {
         border
       });
       this.selectedBorder = data;
-    },
-    /**
-     * Handle update z-index for Shape
-     * @param {String} actionName action name
-     */
-    changeZIndex(actionName) {
-      console.log(actionName);
     },
     /**
      * Handle update flip for Shape

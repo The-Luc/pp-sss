@@ -1,33 +1,27 @@
+import { ARRANGE_SEND } from '@/common/constants/arrange';
 import ButtonProperty from '@/components/Buttons/ButtonProperty';
-import { ARRANGE_POSITION } from '@/common/constants/arrange';
+
 export default {
   components: {
     ButtonProperty
+  },
+  props: {
+    disabled: {
+      type: Boolean,
+      default: false
+    }
+  },
+  data() {
+    return {
+      SEND: ARRANGE_SEND
+    };
   },
   methods: {
     /**
      * Emit to back value to parent
      */
-    onClickToBack() {
-      this.$emit('change', ARRANGE_POSITION.BACK);
-    },
-    /**
-     * Emit to front value to parent
-     */
-    onClickToFront() {
-      this.$emit('change', ARRANGE_POSITION.FRONT);
-    },
-    /**
-     * Emit backward value to parent
-     */
-    onClickBackward() {
-      this.$emit('change', ARRANGE_POSITION.BACKWARD);
-    },
-    /**
-     * Emit forward value to parent
-     */
-    onClickForward() {
-      this.$emit('change', ARRANGE_POSITION.FORWARD);
+    onClick(actionName) {
+      this.$emit('change', actionName);
     }
   }
 };
