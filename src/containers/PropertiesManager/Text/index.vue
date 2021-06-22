@@ -28,7 +28,6 @@
             :current-arrange="currentArrange"
             :min-rotate="-360"
             :max-rotate="360"
-            :disabled="disabled"
             @changeFlip="changeFlip"
             @change="onChange"
           />

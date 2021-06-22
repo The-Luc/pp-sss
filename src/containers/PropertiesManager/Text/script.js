@@ -32,13 +32,6 @@ export default {
       }
 
       return this.getObjectById;
-    },
-    disabled() {
-      if (this.triggerChange) {
-        // just for trigger the change
-      }
-      const activeObj = window.printCanvas.getActiveObject();
-      return !!activeObj.isEditing;
     }
   },
   watch: {

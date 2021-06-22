@@ -1,5 +1,5 @@
 import { isEmpty } from './util';
-import { isFloat, isInteger, splitNumberByDecimal } from './number';
+import { isFloat, isInteger } from './number';
 
 /**
  * Get the value of the input data
@@ -43,8 +43,7 @@ export const validateInputOption = (
   max,
   decimalPlaces = 0,
   items = [],
-  unit = '',
-  isGetMin = false
+  unit = ''
 ) => {
   if (isEmpty(data)) {
     return { isValid: false, value: '' };
@@ -60,14 +59,6 @@ export const validateInputOption = (
   }
 
   const value = decimalPlaces > 0 ? parseFloat(stringVal) : parseInt(data, 10);
-
-  if (value < min && isGetMin) {
-    return {
-      isValid: true,
-      value: min,
-      isForce: true
-    };
-  }
 
   if (value < min || value > max) {
     return { isValid: false, value: '' };
@@ -85,7 +76,6 @@ export const validateInputOption = (
   }
   return {
     isValid: true,
-    value:
-      decimalPlaces > 0 ? splitNumberByDecimal(value, decimalPlaces) : value
+    value: decimalPlaces > 0 ? value.toFixed(decimalPlaces) : value
   };
 };

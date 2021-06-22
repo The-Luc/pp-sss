@@ -5,7 +5,6 @@
       <div class="item-container">
         <PpNumber
           suffix="°"
-          :disabled="disabled"
           :value="value"
           :max="max"
           :min="min"

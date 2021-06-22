@@ -3,8 +3,7 @@ import {
   DEFAULT_PROP,
   DEFAULT_TEXT,
   DEFAULT_IMAGE,
-  DEFAULT_BACKGROUND,
-  DEFAULT_SHAPE
+  DEFAULT_BACKGROUND
 } from '@/common/constants';
 
 export const BaseElement = {
@@ -129,14 +128,9 @@ export const ClipArtElement = {
 export const ShapeElement = {
   ...BaseElement,
   type: OBJECT_TYPE.SHAPE,
-  size: {
-    width: DEFAULT_SHAPE.WIDTH,
-    height: DEFAULT_SHAPE.HEIGHT
-  },
   name: '',
   thumbnail: '',
   pathData: 'img.svg', // TODO: Need discuss with FM to get instruction on using shape
   color: DEFAULT_PROP.COLOR,
   stroke: DEFAULT_PROP.COLOR,
-  isConstrain: true
 };
