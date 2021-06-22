@@ -706,6 +706,7 @@ export default {
               require(`../../../../../assets/image/clip-art/${item.vector}`),
               (objects, options) => {
                 let svgData = fabric.util.groupSVGElements(objects, options);
+                svgData.on('rotated', this.handleRotated);
                 svgData
                   .set({
                     ...fabricProp,
@@ -739,10 +740,6 @@ export default {
           selectLatestObject(window.printCanvas);
         }, 500);
       }
-
-      svgs.forEach(clipArt => {
-        clipArt.on('rotated', this.handleRotated);
-      });
     },
     /**
      * Callback function for handle rotated to update

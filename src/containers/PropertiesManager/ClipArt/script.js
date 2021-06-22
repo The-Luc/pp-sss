@@ -1,6 +1,6 @@
 import { mapGetters, mapMutations } from 'vuex';
 
-import { useObject } from '@/hooks';
+import { useClipArtProperties } from '@/hooks';
 import Properties from '@/components/Properties/BoxProperties';
 import TabMenu from '@/components/TabMenu';
 import GeneralContent from './GeneralContent';
@@ -11,10 +11,10 @@ import { MUTATES as APP_MUTATES } from '@/store/modules/app/const';
 
 export default {
   setup() {
-    const { triggerClipArtChange, selectObjectProp } = useObject();
+    const { triggerChange, getProperty } = useClipArtProperties();
     return {
-      triggerClipArtChange,
-      selectObjectProp
+      triggerChange,
+      getProperty
     };
   },
   components: {
@@ -28,16 +28,16 @@ export default {
       currentObject: PRINT_GETTERS.CURRENT_OBJECT
     }),
     currentArrange() {
-      if (this.triggerClipArtChange) {
+      if (this.triggerChange) {
         // just for trigger the change
       }
       return this.currentObject;
     },
     rotateValue() {
-      if (this.triggerClipArtChange) {
+      if (this.triggerChange) {
         // just for trigger the change
       }
-      const coord = this.selectObjectProp('coord');
+      const coord = this.getProperty('coord');
       return coord?.rotation || 0;
     }
   },

@@ -1,5 +1,6 @@
 import { mapGetters, mapMutations } from 'vuex';
 
+import { useObject } from '@/hooks';
 import Properties from '@/components/Properties/BoxProperties';
 import TabMenu from '@/components/TabMenu';
 import GeneralContent from './GeneralContent';
@@ -18,19 +19,23 @@ export default {
     ArrangeContent,
     TabMenu
   },
+  setup() {
+    const { triggerChange, selectObjectProp } = useObject();
+    return {
+      triggerChange,
+      selectObjectProp
+    };
+  },
   computed: {
     ...mapGetters({
-      selectObjectProp: PRINT_GETTERS.SELECT_PROP_CURRENT_OBJECT,
-      selectedId: PRINT_GETTERS.CURRENT_OBJECT_ID,
-      getObjectById: PRINT_GETTERS.CURRENT_OBJECT,
-      triggerChange: PRINT_GETTERS.TRIGGER_TEXT_CHANGE
+      currentObject: PRINT_GETTERS.CURRENT_OBJECT
     }),
     currentArrange() {
       if (this.triggerChange) {
         // just for trigger the change
       }
 
-      return this.getObjectById;
+      return this.currentObject;
     },
     rotateValue() {
       if (this.triggerChange) {
