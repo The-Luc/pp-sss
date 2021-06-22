@@ -1,4 +1,4 @@
-import { mapMutations } from 'vuex';
+import { mapGetters, mapMutations } from 'vuex';
 import { cloneDeep } from 'lodash';
 
 import { useObject } from '@/hooks';
@@ -7,40 +7,39 @@ import TabMenu from '@/components/TabMenu';
 import GeneralContent from './GeneralContent';
 import ArrangeContent from '@/components/Arrange';
 
+import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 import { MUTATES as APP_MUTATES } from '@/store/modules/app/const';
 
 export default {
+  setup() {
+    const { triggerClipArtChange, selectObjectProp } = useObject();
+    return {
+      triggerClipArtChange,
+      selectObjectProp
+    };
+  },
   components: {
     Properties,
     TabMenu,
     GeneralContent,
     ArrangeContent
   },
-  setup() {
-    const {
-      getCurrentObject,
-      triggerClipArtChange,
-      selectObjectProp
-    } = useObject();
-    return {
-      getCurrentObject,
-      triggerClipArtChange,
-      selectObjectProp
-    };
-  },
   computed: {
+    ...mapGetters({
+      getObjectById: PRINT_GETTERS.CURRENT_OBJECT
+    }),
     currentArrange() {
       if (this.triggerClipArtChange) {
         // just for trigger the change
       }
-      return this.getCurrentObject;
+      return this.getObjectById;
     },
-    valRotate() {
+    rotateValue() {
       if (this.triggerClipArtChange) {
         // just for trigger the change
       }
-      const rotate = this.selectObjectProp('coord');
-      return rotate?.rotation || 0;
+      const coord = this.selectObjectProp('coord');
+      return coord?.rotation || 0;
     }
   },
   methods: {

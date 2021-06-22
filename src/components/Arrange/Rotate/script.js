@@ -4,14 +4,6 @@ export default {
     PpNumber
   },
   props: {
-    min: {
-      type: Number,
-      required: true
-    },
-    max: {
-      type: Number,
-      required: true
-    },
     value: {
       type: Number,
       default: 0

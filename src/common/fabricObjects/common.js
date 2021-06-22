@@ -185,10 +185,12 @@ export const updateElement = (element, prop, canvas) => {
 export const setElementProp = (element, prop) => {
   element.set(prop);
   const key = Object.keys(prop);
-  if (element.type === OBJECT_TYPE.TEXT) {
-    if (element.getObjects && !['scaleX', 'scaleY'].includes(key[0]))
-      element.getObjects().forEach(o => o.set(prop));
-  }
+  if (
+    element.getObjects &&
+    !['scaleX', 'scaleY'].includes(key[0]) &&
+    !['angle'].includes(key[0])
+  )
+    element.getObjects().forEach(o => o.set(prop));
 };
 
 /**

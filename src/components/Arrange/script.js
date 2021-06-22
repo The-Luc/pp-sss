@@ -27,15 +27,7 @@ export default {
       type: Object,
       default: {}
     },
-    minRotate: {
-      type: Number,
-      required: true
-    },
-    maxRotate: {
-      type: Number,
-      required: true
-    },
-    valRotate: {
+    rotateValue: {
       type: Number,
       default: 0
     },

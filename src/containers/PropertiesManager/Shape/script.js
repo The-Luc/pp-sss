@@ -1,4 +1,4 @@
-import { mapMutations } from 'vuex';
+import { mapGetters, mapMutations } from 'vuex';
 import { cloneDeep } from 'lodash';
 
 import { useObject } from '@/hooks';
@@ -7,6 +7,7 @@ import TabMenu from '@/components/TabMenu';
 import GeneralContent from './GeneralContent';
 import ArrangeContent from '@/components/Arrange';
 
+import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 import { MUTATES as APP_MUTATES } from '@/store/modules/app/const';
 import { DEFAULT_SHAPE, OBJECT_TYPE } from '@/common/constants';
 
@@ -30,18 +31,21 @@ export default {
     };
   },
   computed: {
+    ...mapGetters({
+      getObjectById: PRINT_GETTERS.CURRENT_OBJECT
+    }),
     currentArrange() {
       if (this.triggerShapeChange) {
         // just for trigger the change
       }
-      return this.getCurrentObject;
+      return this.getObjectById;
     },
-    valRotate() {
+    rotateValue() {
       if (this.triggerShapeChange) {
         // just for trigger the change
       }
-      const rotate = this.selectObjectProp('coord');
-      return rotate?.rotation || 0;
+      const coord = this.selectObjectProp('coord');
+      return coord?.rotation || 0;
     },
     sizeWidth() {
       if (this.triggerChange) {
@@ -121,7 +125,7 @@ export default {
         };
       }
       if (key.includes('rotate')) {
-        data.coord = { ...(data?.rotate && { rotate: data.rotate }) };
+        data.coord = { ...{ rotate: data.rotate } };
       }
       this.$root.$emit('printChangeShapeProperties', data);
     },
