@@ -19,13 +19,8 @@ export default {
     ArrangeContent
   },
   setup() {
-    const {
-      getCurrentObject,
-      triggerShapeChange,
-      selectObjectProp
-    } = useObject();
+    const { triggerShapeChange, selectObjectProp } = useObject();
     return {
-      getCurrentObject,
       triggerShapeChange,
       selectObjectProp
     };
