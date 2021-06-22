@@ -45,7 +45,7 @@ export default {
       }
     },
     /**
-     * Emit position x value to parent
+     * Emit position y value to parent
      * @param {Number}  val position y value user entered
      */
     onChangeValueY(val) {
