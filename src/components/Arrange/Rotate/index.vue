@@ -7,8 +7,8 @@
           suffix="°"
           :disabled="disabled"
           :value="value"
-          :max="max"
-          :min="min"
+          :max="360"
+          :min="-360"
           @change="onChange"
         />
         <div class="item-title">Angle</div>

@@ -7,7 +7,6 @@ import StyleContent from './Style';
 import ArrangeContent from '@/components/Arrange';
 
 import { MUTATES } from '@/store/modules/app/const';
-import { GETTERS as BOOK_GETTERS } from '@/store/modules/book/const';
 import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 import { DEFAULT_TEXT } from '@/common/constants';
 

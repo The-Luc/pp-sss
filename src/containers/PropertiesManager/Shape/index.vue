@@ -15,8 +15,7 @@
         <v-tab-item value="arrange">
           <ArrangeContent
             :current-arrange="currentArrange"
-            :min-rotate="-360"
-            :max-rotate="360"
+            :rotate-value="rotateValue"
             :size-width="sizeWidth"
             :size-height="sizeHeight"
             :min-size="minSize"

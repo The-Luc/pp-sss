@@ -1,8 +1,11 @@
-import { useObject } from '@/hooks';
-import FillColor from '@/components/Properties/Features/FillColor';
+import FillColor from '@/containers/Properties/Features/FillColor';
 import Opacity from '@/components/Properties/Features/Opacity';
 import Border from '@/components/Properties/Features/Border';
 import Shadow from '@/components/Properties/Features/Shadow';
+
+import { useShapeProperties } from '@/hooks';
+
+import { DEFAULT_PROP } from '@/common/constants';
 
 export default {
   components: {
@@ -44,21 +47,38 @@ export default {
     };
   },
   setup() {
-    const { selectObjectProp, triggerShapeChange } = useObject();
+    const {
+      getProperty,
+      triggerChange,
+      setColorPickerData
+    } = useShapeProperties();
+
     return {
-      selectObjectProp,
-      triggerShapeChange
+      getProperty,
+      triggerChange,
+      setColorPickerData
     };
   },
   computed: {
     opacityValue() {
-      if (this.triggerShapeChange) {
+      if (this.triggerChange) {
         // just for trigger the change
       }
 
-      const res = this.selectObjectProp('opacity');
+      const res = this.getProperty('opacity');
 
       return !res ? 0 : res;
+    },
+    colorValue() {
+      if (this.triggerChange) {
+        // just for trigger the change
+      }
+
+      const color = this.getProperty('color') || DEFAULT_PROP.COLOR;
+
+      this.setColorPickerData({ color: color });
+
+      return color;
     }
   },
   methods: {
@@ -68,6 +88,13 @@ export default {
      */
     onChangeOpacity(opacity) {
       this.$root.$emit('printChangeShapeProperties', { opacity });
+    },
+    /**
+     * Receive value opacity from children
+     * @param {String}  color value user input
+     */
+    onChangeColor(color) {
+      this.$root.$emit('printChangeShapeProperties', { color });
     }
   }
 };

@@ -1,63 +1,66 @@
 import { mapGetters, mapMutations } from 'vuex';
 import { cloneDeep } from 'lodash';
 
+import { useShapeProperties } from '@/hooks';
 import Properties from '@/components/Properties/BoxProperties';
 import TabMenu from '@/components/TabMenu';
 import GeneralContent from './GeneralContent';
 import ArrangeContent from '@/components/Arrange';
 
-import {
-  MUTATES as APP_MUTATES,
-  GETTERS as APP_GETTERS
-} from '@/store/modules/app/const';
 import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
+import { MUTATES as APP_MUTATES } from '@/store/modules/app/const';
 import { DEFAULT_SHAPE, OBJECT_TYPE } from '@/common/constants';
-import { useObject } from '@/hooks';
 
 export default {
-  setup() {
-    const { selectObjectProp } = useObject();
-    return {
-      selectObjectProp
-    };
-  },
   components: {
     Properties,
     TabMenu,
     GeneralContent,
     ArrangeContent
   },
+  setup() {
+    const { triggerChange, getProperty } = useShapeProperties();
+    return {
+      triggerChange,
+      getProperty
+    };
+  },
   computed: {
     ...mapGetters({
-      isOpenColorPicker: APP_GETTERS.IS_OPEN_COLOR_PICKER,
-      getObjectById: PRINT_GETTERS.CURRENT_OBJECT,
-      triggerChange: PRINT_GETTERS.TRIGGER_SHAPE_CHANGE
+      currentObject: PRINT_GETTERS.CURRENT_OBJECT
     }),
     currentArrange() {
       if (this.triggerChange) {
         // just for trigger the change
       }
-      return this.getObjectById;
+      return this.currentObject;
+    },
+    rotateValue() {
+      if (this.triggerChange) {
+        // just for trigger the change
+      }
+      const coord = this.getProperty('coord');
+      return coord?.rotation || 0;
     },
     sizeWidth() {
       if (this.triggerChange) {
         // just for trigger the change
       }
-      const size = this.selectObjectProp('size');
+      const size = this.getProperty('size');
       return size?.width || 0;
     },
     sizeHeight() {
       if (this.triggerChange) {
         // just for trigger the change
       }
-      const size = this.selectObjectProp('size');
+      const size = this.getProperty('size');
       return size?.height || 0;
     },
     isConstrain() {
       if (this.triggerChange) {
         // just for trigger the change
       }
-      return this.selectObjectProp('isConstrain');
+      return this.getProperty('isConstrain');
     },
     minSize() {
       const objectType = this.currentArrange.type;

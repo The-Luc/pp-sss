@@ -1,5 +1,4 @@
 import { fabric } from 'fabric';
-import { cloneDeep } from 'lodash';
 
 import { OBJECT_TYPE } from '@/common/constants';
 
@@ -146,13 +145,11 @@ export const toFabricClipArtProp = prop => {
  */
 const getFabricProp = (element, prop) => {
   const { objectType } = element;
-  const originalElement = cloneDeep(element);
   if (objectType === OBJECT_TYPE.BACKGROUND) {
     return toFabricBackgroundProp(prop);
   }
-
   if (objectType === OBJECT_TYPE.SHAPE) {
-    return toFabricShapeProp(prop, originalElement);
+    return toFabricShapeProp(prop, element);
   }
 
   if (objectType === OBJECT_TYPE.CLIP_ART) {
@@ -171,8 +168,15 @@ const getFabricProp = (element, prop) => {
  */
 export const updateElement = (element, prop, canvas) => {
   if (isEmpty(element) || isEmpty(prop)) return;
+
   const fabricProp = getFabricProp(element, prop);
+
   setElementProp(element, fabricProp);
+
+  if (Object.keys(prop).includes('isConstrain')) {
+    canvas.set({ uniformScaling: prop.isConstrain });
+  }
+
   canvas.renderAll();
 };
 
@@ -185,8 +189,13 @@ export const updateElement = (element, prop, canvas) => {
 export const setElementProp = (element, prop) => {
   element.set(prop);
   const key = Object.keys(prop);
-  if (element.getObjects && !['scaleX', 'scaleY'].includes(key[0]))
+  const isSvgEl = element?.objectType === OBJECT_TYPE.SHAPE;
+  const isModifySize = ['scaleX', 'scaleY'].includes(key[0]);
+  const isModifyRotate = ['angle'].includes(key[0]);
+  if (element.getObjects) {
+    if ((isSvgEl && isModifySize) || isModifyRotate) return;
     element.getObjects().forEach(o => o.set(prop));
+  }
 };
 
 /**

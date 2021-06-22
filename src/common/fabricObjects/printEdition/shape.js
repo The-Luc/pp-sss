@@ -37,6 +37,7 @@ export const addPrintShapes = async (
   );
 
   if (isEmpty(svgs) || svgs.length != shapes.length) return;
+
   svgs.length == 1
     ? addSingleSvg(svgs[0], canvas, isAddedToSinglePage, isPlaceInLeftPage)
     : addMultiSvg(svgs, canvas, isAddedToSinglePage, isPlaceInLeftPage);

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <FillColor />
+    <FillColor :value="colorValue" @change="onChangeColor" />
 
     <Opacity :value="opacityValue" @change="onChangeOpacity" />
 

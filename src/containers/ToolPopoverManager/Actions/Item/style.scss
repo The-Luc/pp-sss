@@ -1,0 +1,20 @@
+.action-item {
+  font-family: $font-500;
+  font-size: $xsm-size;
+  color: $color-stoodio-toolbartext;
+  line-height: 18px;
+
+  &.disabled {
+    label {
+      cursor: initial;
+      opacity: 0.5;
+    }
+  }
+
+  label {
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
+    display: inline-block;
+  }
+}

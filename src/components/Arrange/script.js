@@ -27,13 +27,9 @@ export default {
       type: Object,
       default: {}
     },
-    minRotate: {
+    rotateValue: {
       type: Number,
-      required: true
-    },
-    maxRotate: {
-      type: Number,
-      required: true
+      default: 0
     },
     minSize: {
       type: Number,
@@ -66,9 +62,6 @@ export default {
     },
     positionY() {
       return this.currentArrange.coord?.y;
-    },
-    valueRotate() {
-      return this.currentArrange.coord?.rotation;
     }
   },
   methods: {

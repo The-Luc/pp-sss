@@ -4,7 +4,6 @@ import Opacity from '@/components/Properties/Features/Opacity';
 import Border from './Border';
 import Shadow from './Shadow';
 
-import { GETTERS } from '@/store/modules/book/const';
 import { GETTERS as APP_GETTERS } from '@/store/modules/app/const';
 import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 
