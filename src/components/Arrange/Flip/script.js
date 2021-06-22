@@ -1,6 +1,12 @@
 import ButtonProperty from '@/components/Buttons/ButtonProperty';
 import { ARRANGE_FLIP } from '@/common/constants/arrange';
 export default {
+  props: {
+    disabled: {
+      type: Boolean,
+      default: false
+    }
+  },
   components: {
     ButtonProperty
   },

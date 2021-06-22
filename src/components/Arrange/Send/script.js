@@ -5,13 +5,17 @@ export default {
   components: {
     ButtonProperty
   },
-
+  props: {
+    disabled: {
+      type: Boolean,
+      default: false
+    }
+  },
   data() {
     return {
       SEND: ARRANGE_SEND
     };
   },
-
   methods: {
     /**
      * Emit to back value to parent

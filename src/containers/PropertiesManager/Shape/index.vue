@@ -17,8 +17,14 @@
             :current-arrange="currentArrange"
             :min-rotate="-360"
             :max-rotate="360"
+            :size-width="sizeWidth"
+            :size-height="sizeHeight"
+            :min-size="minSize"
+            :max-size="maxSize"
+            :is-constrain="isConstrain"
             @changeFlip="changeFlip"
             @change="onChange"
+            @changeConstrain="onChangeConstrain"
           />
         </v-tab-item>
       </TabMenu>
