@@ -65,7 +65,7 @@ export default {
       return color;
     },
     isAllowFillColor() {
-      return this.getProperty('isMonochrome');
+      return !this.getProperty('isColorful');
     }
   },
   methods: {
@@ -81,7 +81,10 @@ export default {
      * @param {String}  color value user input
      */
     onChangeColor(color) {
-      this.$root.$emit('printChangeClipArtProperties', { color });
+      this.$root.$emit('printChangeClipArtProperties', {
+        color,
+        stroke: color
+      });
     },
     /**
      * Receive value shadow from children

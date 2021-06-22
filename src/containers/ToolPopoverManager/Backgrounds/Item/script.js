@@ -4,11 +4,11 @@ export default {
   props: {
     item: {
       type: Object,
-      default: () => ({ id: '', property: {} })
+      default: () => ({ id: '' })
     },
     selectedVal: {
       type: Object,
-      default: () => ({ id: '', property: {} })
+      default: () => ({ id: '' })
     },
     isEmpty: {
       type: Boolean,
@@ -17,9 +17,7 @@ export default {
   },
   computed: {
     isSinglePage() {
-      return (
-        this.item.property.pageType === BACKGROUND_PAGE_TYPE.SINGLE_PAGE.id
-      );
+      return this.item.pageType === BACKGROUND_PAGE_TYPE.SINGLE_PAGE.id;
     }
   },
   methods: {

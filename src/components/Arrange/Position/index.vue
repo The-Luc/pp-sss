@@ -1,17 +1,17 @@
 <template>
-  <div class="d-flex flex-column position-container">
+  <div :key="componentKey" class="d-flex flex-column position-container">
     <span class="properties-title">Position:</span>
     <div class="d-flex">
       <TextFieldProperty
         :disabled="disabled"
-        :value="valueX"
+        :value="valueXPt"
         title="X"
         label="in."
         @change="onChangeValueX"
       />
       <TextFieldProperty
         :disabled="disabled"
-        :value="valueY"
+        :value="valueYPt"
         title="Y"
         label="in."
         @change="onChangeValueY"

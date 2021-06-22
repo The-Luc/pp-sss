@@ -15,10 +15,6 @@ export default {
     Rotate
   },
   props: {
-    positionValue: {
-      type: Object,
-      default: () => ({ x: 0, y: 0 })
-    },
     rotateValue: {
       type: Number,
       default: 0
@@ -46,6 +42,18 @@ export default {
     disabled: {
       type: Boolean,
       default: false
+    },
+    position: {
+      type: Object,
+      default: () => ({})
+    },
+    minPosition: {
+      type: Number,
+      default: 0
+    },
+    maxPosition: {
+      type: Number,
+      default: 100
     }
   },
   methods: {

@@ -8,7 +8,7 @@ import { cloneDeep } from 'lodash';
 import { useShapeProperties } from '@/hooks';
 
 import { DEFAULT_SHAPE } from '@/common/constants';
-import { isEmpty } from '@/common/utils';
+import { splitNumberByDecimal } from '@/common/utils';
 
 export default {
   components: {
@@ -82,6 +82,24 @@ export default {
     },
     maxSize() {
       return 60;
+    },
+    minPosition() {
+      return -100;
+    },
+    maxPosition() {
+      return 100;
+    },
+    position() {
+      if (this.triggerChange) {
+        // just for trigger the change
+      }
+
+      const coord = this.getProperty('coord');
+
+      return {
+        x: coord?.x || 0,
+        y: coord?.y || 0
+      };
     }
   },
   methods: {
@@ -109,11 +127,20 @@ export default {
      */
     onChange(object) {
       const data = cloneDeep(object);
+      const key = Object.keys(data);
 
-      if (Object.keys(data).includes('size')) {
+      if (key.includes('size')) {
         data.size = {
           ...(data?.size?.width && { width: data.size.width }),
           ...(data?.size?.height && { height: data.size.height })
+        };
+      }
+
+      if (key.includes('coord')) {
+        data.coord = {
+          ...(data?.coord?.x && { x: splitNumberByDecimal(data.coord.x) }),
+          ...(data?.coord?.y && { y: splitNumberByDecimal(data.coord.y) }),
+          ...(data?.coord?.rotation && { rotation: data.coord.rotation })
         };
       }
 

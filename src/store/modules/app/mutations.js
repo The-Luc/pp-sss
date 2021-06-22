@@ -50,5 +50,8 @@ export const mutations = {
       ...state.colorPicker.data,
       ...props
     };
+  },
+  [APP._MUTATES.TOGGLE_ACTIVE_OBJECTS](state, data) {
+    state.hasActiveObjects = data;
   }
 };
