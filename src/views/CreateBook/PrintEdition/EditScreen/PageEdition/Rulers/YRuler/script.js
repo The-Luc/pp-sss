@@ -16,37 +16,43 @@ export default {
   },
   computed: {
     config() {
-      const conf = {
-        count: 0,
-        height: 0,
-        bleedY: 0
-      };
-      if (this.pageSize && this.canvasSize) {
-        const {
-          inches: { pdfHeight, bleedY, spineWidth }
-        } = this.pageSize;
-        const { height } = this.canvasSize;
-        conf.height = height / pdfHeight;
-        conf.count = Math.floor(pdfHeight);
-        conf.bleedY = spineWidth > 0 ? 0 : bleedY;
+      if (!this.pageSize || !this.canvasSize) {
+        return {
+          count: 0,
+          height: 0,
+          bleedY: 0
+        };
       }
-      return conf;
+
+      const {
+        inches: { pdfHeight, bleedY, spineWidth }
+      } = this.pageSize;
+      const { height } = this.canvasSize;
+
+      return {
+        height: height / pdfHeight,
+        count: Math.floor(pdfHeight),
+        bleedY: spineWidth > 0 ? 0 : bleedY
+      };
     },
     unitArray() {
-      const units = [];
       const { count, height } = this.config;
-      if (height) {
-        let i = 0;
-        while (i <= count) {
-          const unitData = {
-            number: Math.abs(i),
-            topBorder: true,
-            bottomBorder: i === count
-          };
-          units.push(unitData);
-          i++;
-        }
+
+      if (!height) return [];
+
+      const units = [];
+
+      let i = 0;
+      while (i <= count) {
+        const unitData = {
+          number: Math.abs(i),
+          topBorder: true,
+          bottomBorder: i === count
+        };
+        units.push(unitData);
+        i++;
       }
+
       return units;
     },
     containerStyle() {
