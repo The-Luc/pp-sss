@@ -146,13 +146,11 @@ export const toFabricClipArtProp = prop => {
  */
 const getFabricProp = (element, prop) => {
   const { objectType } = element;
-  const originalElement = cloneDeep(element);
   if (objectType === OBJECT_TYPE.BACKGROUND) {
     return toFabricBackgroundProp(prop);
   }
-
   if (objectType === OBJECT_TYPE.SHAPE) {
-    return toFabricShapeProp(prop, originalElement);
+    return toFabricShapeProp(prop, element);
   }
 
   if (objectType === OBJECT_TYPE.CLIP_ART) {
@@ -185,8 +183,12 @@ export const updateElement = (element, prop, canvas) => {
 export const setElementProp = (element, prop) => {
   element.set(prop);
   const key = Object.keys(prop);
-  if (element.getObjects && !['scaleX', 'scaleY'].includes(key[0]))
+  const isSvgEl = element?.objectType === OBJECT_TYPE.SHAPE;
+  const isModifySize = ['scaleX', 'scaleY'].includes(key[0]);
+  if (element.getObjects) {
+    if (isSvgEl && isModifySize) return;
     element.getObjects().forEach(o => o.set(prop));
+  }
 };
 
 /**
