@@ -16,7 +16,7 @@
         @input="onChangeSlider"
       >
       </v-slider>
-      <PpNumber
+      <PpInput
         :suffix="suffix"
         :value="value"
         :max="max"
