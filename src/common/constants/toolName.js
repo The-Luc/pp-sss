@@ -6,5 +6,14 @@ export const TOOL_NAME = {
   IMAGE_BOX: 'ImageBox',
   TEXT: 'Text',
   BACKGROUNDS: 'Backgrounds',
-  SHAPES: 'Shapes'
+  SHAPES: 'Shapes',
+  ACTIONS: 'Actions'
+};
+
+export const ACTIONS = {
+  COPY: 'copy',
+  PASTE: 'past',
+  SAVE_LAYOUT: 'saveLayout',
+  SAVE_STYLE: 'saveStyle',
+  GENERATE_PDF: 'generatePdf'
 };

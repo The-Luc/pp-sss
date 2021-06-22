@@ -35,6 +35,9 @@ export const isPositiveFloat = val => /^(0|[1-9]\d*)(\.\d+)?$/.test(val);
 export const splitNumberByDecimal = (value, decimalCount = 2) => {
   const trunc = Math.trunc(value);
   let decimal = String(value).split('.')[1];
+
+  if (!decimal) return parseFloat(trunc);
+
   if (String(decimal).length > 2) {
     decimal = String(decimal).substring(0, decimalCount);
   }

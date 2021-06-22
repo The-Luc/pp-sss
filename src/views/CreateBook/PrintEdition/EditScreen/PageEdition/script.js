@@ -277,7 +277,11 @@ export default {
       });
 
       this.$root.$on('printSwitchTool', toolName => {
-        if (toolName !== TOOL_NAME.DELETE) {
+        const isDiscard =
+          toolName &&
+          toolName !== TOOL_NAME.DELETE &&
+          toolName !== TOOL_NAME.ACTIONS;
+        if (isDiscard) {
           window.printCanvas.discardActiveObject().renderAll();
         }
         this.$root.$emit('printInstructionEnd');
