@@ -1,4 +1,3 @@
-import { mapMutations } from 'vuex';
 import Send from '@/components/Arrange/Send';
 import Size from '@/components/Arrange/Size';
 import Position from '@/components/Arrange/Position';
@@ -7,7 +6,6 @@ import Rotate from '@/components/Arrange/Rotate';
 import { useObject } from '@/hooks';
 import { OBJECT_TYPE } from '@/common/constants';
 import { ARRANGE_SEND } from '@/common/constants/arrange';
-import { MUTATES as PRINT_MUTATES } from '@/store/modules/print/const';
 
 export default {
   setup() {
@@ -36,22 +34,33 @@ export default {
     maxRotate: {
       type: Number,
       required: true
+    },
+    minSize: {
+      type: Number,
+      default: 0
+    },
+    maxSize: {
+      type: Number,
+      default: 100
+    },
+    sizeWidth: {
+      type: Number,
+      default: 0
+    },
+    sizeHeight: {
+      type: Number,
+      default: 0
+    },
+    isConstrain: {
+      type: Boolean,
+      default: false
+    },
+    disabled: {
+      type: Boolean,
+      default: false
     }
   },
   computed: {
-    isConstrain() {
-      if (this.triggerChange) {
-        // just for trigger the change
-      }
-      const isConstrain = this.selectObjectProp('isConstrain');
-      return isConstrain;
-    },
-    sizeWidth() {
-      return this.currentArrange.size?.width;
-    },
-    sizeHeight() {
-      return this.currentArrange.size?.height;
-    },
     positionX() {
       return this.currentArrange.coord?.x;
     },
@@ -63,10 +72,6 @@ export default {
     }
   },
   methods: {
-    ...mapMutations({
-      setObjectPropById: PRINT_MUTATES.SET_PROP_BY_ID
-    }),
-
     /**
      * Handle events when user click on "send" buttons
      * @param {String}  actionName indicated which type of "send" button was clicked
@@ -127,6 +132,13 @@ export default {
      */
     onChange(object) {
       this.$emit('change', object);
+    },
+    /**
+     * Emit constrain value to parent
+     * @param {Object}  val Constrain value
+     */
+    onChangeConstrain(val) {
+      this.$emit('changeConstrain', val);
     }
   }
 };
