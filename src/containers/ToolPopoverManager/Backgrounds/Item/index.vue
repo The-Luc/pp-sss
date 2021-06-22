@@ -10,13 +10,13 @@
     <div class="background-preview-img">
       <img
         :class="isSinglePage ? 'single-page' : 'full-page'"
-        :src="item.property.thumbnail"
+        :src="item.thumbnail"
         alt="background-preview"
       />
     </div>
 
     <div class="background-preview-img-footer">
-      <span class="background-name">{{ item.property.name }}</span>
+      <span class="background-name">{{ item.name }}</span>
 
       <v-icon>
         favorite_border

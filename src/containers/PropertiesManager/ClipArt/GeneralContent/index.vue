@@ -1,6 +1,10 @@
 <template>
   <div>
-    <FillColor />
+    <FillColor
+      v-if="isAllowFillColor"
+      :value="colorValue"
+      @change="onChangeColor"
+    />
 
     <Opacity :value="opacityValue" @change="onChangeOpacity" />
 

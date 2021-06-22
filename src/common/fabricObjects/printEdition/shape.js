@@ -7,7 +7,8 @@ import {
   getSvgData,
   addSingleSvg,
   addMultiSvg,
-  toFabricShapeProp
+  toFabricShapeProp,
+  addEventListeners
 } from '../common';
 
 /**
@@ -17,19 +18,21 @@ import {
  * @param {Object}  canvas              the canvas contain new shapes
  * @param {Boolean} isAddedToSinglePage is shape will be added to single page
  * @param {Boolean} isPlaceInLeftPage   is shape will be added to left page
+ * @param {Object}  eventListeners      shape event list {name, eventHandling}
  */
 export const addPrintShapes = async (
   shapes,
   canvas,
   isAddedToSinglePage = false,
-  isPlaceInLeftPage = false
+  isPlaceInLeftPage = false,
+  eventListeners = {}
 ) => {
   const svgs = await Promise.all(
     shapes.map(s => {
       const fabricProp = toFabricShapeProp(s.object);
 
       return getSvgData(
-        s.object.property.pathData,
+        s.object.pathData,
         { ...fabricProp, id: s.id },
         DEFAULT_SHAPE.HEIGHT
       );
@@ -38,12 +41,13 @@ export const addPrintShapes = async (
 
   if (isEmpty(svgs) || svgs.length != shapes.length) return;
 
+  svgs.forEach(s => addEventListeners(s, eventListeners));
+
   svgs.length == 1
     ? addSingleSvg(svgs[0], canvas, isAddedToSinglePage, isPlaceInLeftPage)
     : addMultiSvg(svgs, canvas, isAddedToSinglePage, isPlaceInLeftPage);
 
   canvas.renderAll();
-  return svgs;
 };
 
 /**

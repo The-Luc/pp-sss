@@ -1,9 +1,8 @@
-import { cloneDeep, uniqueId, omit, pick } from 'lodash';
 import randomcolor from 'randomcolor';
 import moment from 'moment';
 
 import { SHEET_TYPE, DATE_FORMAT } from '@/common/constants';
-import { getAllSheets, nextId } from '@/common/utils';
+import { nextId } from '@/common/utils';
 
 import BOOK from './const';
 import { POSITION_FIXED } from '@/common/constants';
@@ -282,13 +281,5 @@ export const mutations = {
   [BOOK._MUTATES.SET_SECTION_ID](state, { sectionId }) {
     state.sectionId = sectionId;
   },
-  [BOOK._MUTATES.SAVE_PRINT_CANVAS](state, { data }) {
-    // const { pageSelected, sectionId, book } = state;
-    // const sectionIndex = book.sections.findIndex(item => item.id === sectionId);
-    // const sheetIndex = book.sections[sectionIndex].sheets.findIndex(
-    //   item => item.id === pageSelected.id
-    // );
-    // let printData = book.sections[sectionIndex].sheets[sheetIndex].printData;
-    // printData.pages = data;
-  }
+  [BOOK._MUTATES.SAVE_PRINT_CANVAS]() {}
 };

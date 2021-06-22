@@ -1,7 +1,11 @@
-import { useObject } from '@/hooks';
-import FillColor from '@/components/Properties/Features/FillColor';
+import FillColor from '@/containers/Properties/Features/FillColor';
 import Opacity from '@/components/Properties/Features/Opacity';
 import Shadow from '@/components/Properties/Features/Shadow';
+
+import { useClipArtProperties } from '@/hooks';
+
+import { DEFAULT_PROP } from '@/common/constants';
+
 export default {
   components: {
     FillColor,
@@ -27,21 +31,41 @@ export default {
     };
   },
   setup() {
-    const { selectObjectProp, triggerClipArtChange } = useObject();
+    const {
+      getProperty,
+      triggerChange,
+      setColorPickerData
+    } = useClipArtProperties();
+
     return {
-      selectObjectProp,
-      triggerClipArtChange
+      getProperty,
+      triggerChange,
+      setColorPickerData
     };
   },
   computed: {
     opacityValue() {
-      if (this.triggerClipArtChange) {
+      if (this.triggerChange) {
         // just for trigger the change
       }
 
-      const res = this.selectObjectProp('opacity');
+      const res = this.getProperty('opacity');
 
       return !res ? 0 : res;
+    },
+    colorValue() {
+      if (this.triggerChange) {
+        // just for trigger the change
+      }
+
+      const color = this.getProperty('color') || DEFAULT_PROP.COLOR;
+
+      this.setColorPickerData({ color });
+
+      return color;
+    },
+    isAllowFillColor() {
+      return this.getProperty('isMonochrome');
     }
   },
   methods: {
@@ -51,6 +75,13 @@ export default {
      */
     onChangeOpacity(opacity) {
       this.$root.$emit('printChangeClipArtProperties', { opacity });
+    },
+    /**
+     * Receive value opacity from children
+     * @param {String}  color value user input
+     */
+    onChangeColor(color) {
+      this.$root.$emit('printChangeClipArtProperties', { color });
     },
     /**
      * Receive value shadow from children

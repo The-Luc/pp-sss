@@ -8,7 +8,7 @@
     <div class="border-inside"></div>
 
     <div class="shape-preview-img">
-      <img :src="item.property.thumbnail" alt="shape-preview" />
+      <img :src="item.thumbnail" alt="shape-preview" />
     </div>
   </div>
 

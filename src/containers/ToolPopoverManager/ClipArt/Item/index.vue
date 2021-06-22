@@ -7,7 +7,7 @@
   >
     <div class="border-inside"></div>
     <div class="clip-art-preview-img">
-      <img :src="clipArt.property.thumbnail" alt="clip-art-preview" />
+      <img :src="clipArt.thumbnail" alt="clip-art-preview" />
     </div>
     <div class="clip-art-preview-img-footer">
       <v-icon>

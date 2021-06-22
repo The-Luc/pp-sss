@@ -3,7 +3,7 @@ import moment from 'moment';
 
 import { DATE_FORMAT, MOMENT_TYPE } from '@/common/constants';
 
-import { scaleSize } from './canvas';
+import { scaleSize, inToPx } from './canvas';
 
 /**
  * Get the next id of item list
@@ -274,11 +274,11 @@ export const toFabricTextProp = prop => {
     data: {
       x: {
         name: 'left',
-        parse: value => scaleSize(value)
+        parse: value => inToPx(value)
       },
       y: {
         name: 'top',
-        parse: value => scaleSize(value)
+        parse: value => inToPx(value)
       },
       isBold: {
         name: 'fontWeight',
@@ -443,7 +443,6 @@ export const getRectDashes = (width, height, value, strokeWidth) => {
 function getLineDashes(x1, y1, x2, y2) {
   const length = Math.hypot(x2 - x1, y2 - y1); // ()
   let dash_length = length / 8;
-  const nb_of_dashes = length / dash_length;
 
   const dash_gap = dash_length * 0.66666;
   dash_length -= dash_gap * 0.3333;

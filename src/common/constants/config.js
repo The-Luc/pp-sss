@@ -4,3 +4,5 @@ export const ENV_CONFIG = {
   API_URL,
   BOOK_ID
 };
+
+export const COPY_OBJECT_KEY = 'ppObject';

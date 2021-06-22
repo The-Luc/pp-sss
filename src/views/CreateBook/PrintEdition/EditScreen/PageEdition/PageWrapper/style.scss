@@ -28,6 +28,7 @@ $rulerWidth: 23px;
   .ruler-x-placeholder,
   .ruler-y-placeholder {
     position: absolute;
+    overflow: hidden;
   }
 
   .ruler-x-placeholder {
