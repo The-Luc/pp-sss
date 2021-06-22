@@ -97,7 +97,6 @@ export const DEFAULT_BACKGROUND = {
 };
 
 export const DEFAULT_SHAPE = {
-  WIDTH: 1.5, // inch
-  HEIGHT: 1.5, // inch
-  MIN_SIZE: 0.5 // inch
+  WIDTH: 20,
+  HEIGHT: 20
 };

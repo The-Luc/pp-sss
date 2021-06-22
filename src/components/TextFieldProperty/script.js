@@ -11,10 +11,6 @@ export default {
     label: {
       type: String,
       required: true
-    },
-    disabled: {
-      type: Boolean,
-      default: false
     }
   },
   methods: {

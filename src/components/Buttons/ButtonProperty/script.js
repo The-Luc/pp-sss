@@ -7,10 +7,6 @@ export default {
     title: {
       type: String,
       required: true
-    },
-    disabled: {
-      type: Boolean,
-      default: false
     }
   },
   methods: {

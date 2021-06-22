@@ -1,9 +1,8 @@
 import { fabric } from 'fabric';
-import { cloneDeep } from 'lodash';
 
 import { OBJECT_TYPE } from '@/common/constants';
 
-import { inToPx, isEmpty, mapObject, scaleSize } from '@/common/utils';
+import { isEmpty, mapObject, scaleSize } from '@/common/utils';
 
 const DEFAULT_RULE_DATA = {
   TYPE: {
@@ -79,7 +78,7 @@ export const toFabricBackgroundProp = prop => {
  * @param   {Object}  prop  stored properties
  * @returns {Object}        fabric properties
  */
-export const toFabricShapeProp = (prop, originalElement) => {
+export const toFabricShapeProp = prop => {
   const mapRules = {
     data: {
       type: DEFAULT_RULE_DATA.TYPE,
@@ -88,25 +87,7 @@ export const toFabricShapeProp = (prop, originalElement) => {
       rotation: DEFAULT_RULE_DATA.ROTATION,
       color: DEFAULT_RULE_DATA.COLOR,
       horiziontal: DEFAULT_RULE_DATA.HORIZIONTAL,
-      vertical: DEFAULT_RULE_DATA.VERTICAL,
-      width: {
-        name: 'scaleX',
-        parse: value => {
-          if (originalElement) {
-            return inToPx(value) / originalElement.width;
-          }
-          return 1;
-        }
-      },
-      height: {
-        name: 'scaleY',
-        parse: value => {
-          if (originalElement) {
-            return inToPx(value) / originalElement.height;
-          }
-          return 1;
-        }
-      }
+      vertical: DEFAULT_RULE_DATA.VERTICAL
     },
     restrict: ['id', 'name', 'thumbnail', 'pathData', 'border', 'shadow']
   };
@@ -144,18 +125,16 @@ export const toFabricClipArtProp = prop => {
  * @param   {Object}  prop          new property
  * @returns {Object}                fabric property
  */
-const getFabricProp = (element, prop) => {
-  const { objectType } = element;
-  const originalElement = cloneDeep(element);
-  if (objectType === OBJECT_TYPE.BACKGROUND) {
+const getFabricProp = (elementType, prop) => {
+  if (elementType === OBJECT_TYPE.BACKGROUND) {
     return toFabricBackgroundProp(prop);
   }
 
-  if (objectType === OBJECT_TYPE.SHAPE) {
-    return toFabricShapeProp(prop, originalElement);
+  if (elementType === OBJECT_TYPE.SHAPE) {
+    return toFabricShapeProp(prop);
   }
 
-  if (objectType === OBJECT_TYPE.CLIP_ART) {
+  if (elementType === OBJECT_TYPE.CLIP_ART) {
     return toFabricClipArtProp(prop);
   }
 
@@ -171,8 +150,11 @@ const getFabricProp = (element, prop) => {
  */
 export const updateElement = (element, prop, canvas) => {
   if (isEmpty(element) || isEmpty(prop)) return;
-  const fabricProp = getFabricProp(element, prop);
+
+  const fabricProp = getFabricProp(element.objectType, prop);
+
   setElementProp(element, fabricProp);
+
   canvas.renderAll();
 };
 
@@ -184,9 +166,8 @@ export const updateElement = (element, prop, canvas) => {
  */
 export const setElementProp = (element, prop) => {
   element.set(prop);
-  const key = Object.keys(prop);
-  if (element.getObjects && !['scaleX', 'scaleY'].includes(key[0]))
-    element.getObjects().forEach(o => o.set(prop));
+
+  if (element.getObjects) element.getObjects().forEach(o => o.set(prop));
 };
 
 /**
@@ -216,13 +197,16 @@ export const moveToCenterPage = (
  * @param   {String}  svgUrl          the url of svg file
  * @param   {Object}  elementProperty the fabric property of element
  * @param   {Number}  expectedHeight  the view height of svg element
+ * @param   {Number}  zoom            current zoom of canvas
  * @returns {Object}                  the svg data
  */
-export const getSvgData = (svgUrl, elementProperty, expectedHeight) => {
+export const getSvgData = (svgUrl, elementProperty, expectedHeight, zoom) => {
   return new Promise(resolve => {
     fabric.loadSVGFromURL(svgUrl, (objects, options) => {
       const svg = fabric.util.groupSVGElements(objects, options);
-      const scale = inToPx(expectedHeight) / svg.height;
+
+      const scale = scaleSize(expectedHeight) / zoom / svg.height;
+
       svg.set({
         ...elementProperty,
         width: svg.width,

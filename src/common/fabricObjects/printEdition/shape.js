@@ -24,6 +24,8 @@ export const addPrintShapes = async (
   isAddedToSinglePage = false,
   isPlaceInLeftPage = false
 ) => {
+  const zoom = canvas.getZoom();
+
   const svgs = await Promise.all(
     shapes.map(s => {
       const fabricProp = toFabricShapeProp(s.object);
@@ -31,18 +33,19 @@ export const addPrintShapes = async (
       return getSvgData(
         s.object.property.pathData,
         { ...fabricProp, id: s.id },
-        DEFAULT_SHAPE.HEIGHT
+        DEFAULT_SHAPE.HEIGHT,
+        zoom
       );
     })
   );
 
   if (isEmpty(svgs) || svgs.length != shapes.length) return;
+
   svgs.length == 1
     ? addSingleSvg(svgs[0], canvas, isAddedToSinglePage, isPlaceInLeftPage)
     : addMultiSvg(svgs, canvas, isAddedToSinglePage, isPlaceInLeftPage);
 
   canvas.renderAll();
-  return svgs;
 };
 
 /**

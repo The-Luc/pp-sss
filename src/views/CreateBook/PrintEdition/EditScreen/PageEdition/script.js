@@ -16,9 +16,7 @@ import {
   getRectDashes,
   scaleSize,
   isHalfSheet,
-  isHalfLeft,
-  pxToIn,
-  inToPx
+  isHalfLeft
 } from '@/common/utils';
 
 import {
@@ -57,7 +55,6 @@ import {
   CORNER_SIZE,
   HALF_SHEET,
   HALF_LEFT,
-  DEFAULT_SHAPE,
   COVER_TYPE
 } from '@/common/constants';
 import SizeWrapper from '@/components/SizeWrapper';
@@ -674,51 +671,6 @@ export default {
       }
     },
     /**
-     * Callback function for handle scaling to set scale for shape base on width and height
-     * @param {Object} e - Shape element
-     */
-    handleShapeScaling(e) {
-      const target = e.transform?.target;
-      if (isEmpty(target)) return;
-      let { scaleX, scaleY, width, height } = target;
-      const currentWidthInch = pxToIn(width * scaleX);
-      const currentHeightInch = pxToIn(height * scaleY);
-      const minScale = inToPx(DEFAULT_SHAPE.MIN_SIZE) / width;
-      if (currentWidthInch < DEFAULT_SHAPE.MIN_SIZE) {
-        scaleX = minScale;
-      }
-
-      if (currentHeightInch < DEFAULT_SHAPE.MIN_SIZE) {
-        scaleY = minScale;
-      }
-      target.set({
-        scaleX,
-        scaleY
-      });
-    },
-    /**
-     * Callback function for handle scaled to update shape's dimension
-     * @param {Object} e - Shape element
-     */
-    handleShapeScaled(e) {
-      const target = e.transform?.target;
-      if (isEmpty(target)) return;
-      const currentWidthInch = pxToIn(target.width * target.scaleX);
-      const currentHeightInch = pxToIn(target.height * target.scaleY);
-      this.changeShapeProperties({
-        size: {
-          width:
-            currentWidthInch < DEFAULT_SHAPE.MIN_SIZE
-              ? DEFAULT_SHAPE.MIN_SIZE
-              : currentWidthInch,
-          height:
-            currentHeightInch < DEFAULT_SHAPE.MIN_SIZE
-              ? DEFAULT_SHAPE.MIN_SIZE
-              : currentHeightInch
-        }
-      });
-    },
-    /**
      * Adding shapes to canvas & store
      *
      * @param {Array} shapes  list of object of adding shapes
@@ -739,27 +691,22 @@ export default {
         };
       });
 
-      const printShapes = await addPrintShapes(
+      toBeAddedShapes.forEach(s => {
+        this.addNewObject({ id: s.id, newObject: s.object });
+      });
+
+      await addPrintShapes(
         toBeAddedShapes,
         window.printCanvas,
         isHalfSheet(this.pageSelected),
         isHalfLeft(this.pageSelected)
       );
-      toBeAddedShapes.forEach(s => {
-        this.addNewObject({
-          id: s.id,
-          newObject: s.object
-        });
-      });
+
       if (toBeAddedShapes.length === 1) {
         selectLatestObject(window.printCanvas);
       } else {
         this.closeProperties();
       }
-      printShapes.forEach(shape => {
-        shape.on('scaling', this.handleShapeScaling);
-        shape.on('scaled', this.handleShapeScaled);
-      });
     },
     /**
      * Event fire when user change any property of selected shape
@@ -772,12 +719,13 @@ export default {
         return;
       }
       const shape = window.printCanvas.getActiveObject();
+
       if (isEmpty(shape)) return;
+
       this.setObjectProp({ prop });
-      if (Object.keys(prop).includes('isConstrain')) {
-        this.setCanvasUniformScaling(prop.isConstrain);
-      }
+
       this.updateTriggerShapeChange();
+
       updatePrintShape(shape, prop, window.printCanvas);
     },
 

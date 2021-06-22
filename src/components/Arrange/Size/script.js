@@ -1,4 +1,4 @@
-import { splitNumberByDecimal, validateInputOption } from '@/common/utils';
+import { pxToIn } from '@/common/utils';
 import TextFieldProperty from '@/components/TextFieldProperty';
 export default {
   props: {
@@ -13,18 +13,6 @@ export default {
     isConstrain: {
       type: Boolean,
       default: false
-    },
-    minSize: {
-      type: Number,
-      default: 0
-    },
-    maxSize: {
-      type: Number,
-      default: 100
-    },
-    disabled: {
-      type: Boolean,
-      default: false
     }
   },
   components: {
@@ -32,16 +20,11 @@ export default {
   },
   computed: {
     widthPt() {
-      return splitNumberByDecimal(this.width);
+      return pxToIn(this.width);
     },
     heightPt() {
-      return splitNumberByDecimal(this.height);
+      return pxToIn(this.height);
     }
-  },
-  data() {
-    return {
-      componentKey: 0
-    };
   },
   methods: {
     /**
@@ -49,43 +32,14 @@ export default {
      * @param {Number}  val size width value user entered
      */
     onChangeWidth(val) {
-      const { isValid, value, isForce } = validateInputOption(
-        val,
-        this.minSize,
-        this.maxSize,
-        2
-      );
-      if (isValid) {
-        this.$emit('change', { size: { width: value } });
-        if (isForce) {
-          this.componentKey++;
-        }
-      } else {
-        this.componentKey++;
-      }
+      this.$emit('change', { size: { width: val } });
     },
     /**
      * Emit size height value to parent
      * @param {Number}  val size height value user entered
      */
     onChangeHeight(val) {
-      const { isValid, value } = validateInputOption(
-        val,
-        this.minSize,
-        this.maxSize,
-        2
-      );
-      if (isValid) {
-        this.$emit('change', { size: { height: value } });
-      } else {
-        this.componentKey++;
-      }
-    },
-    /**
-     * Emit constrain value to parent
-     */
-    onChangeConstrain() {
-      this.$emit('changeConstrain', !this.isConstrain);
+      this.$emit('change', { size: { height: val } });
     }
   }
 };
