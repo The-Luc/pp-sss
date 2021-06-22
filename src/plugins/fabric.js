@@ -140,7 +140,7 @@ const drawControls = function(ctx, styleOverride) {
  * Override Fabric base Object Prototype for Print version
  * @param {fabric.Object} object - the object to be prototyped
  */
-const commonFabricOverrides = (object) => {
+const commonFabricOverrides = object => {
   object.cornerColor = BORDER_COLOR.OUTER;
   object.borderColor = BORDER_COLOR.INNER;
   object.borderSize = 1;
@@ -154,7 +154,7 @@ const commonFabricOverrides = (object) => {
  * Override Fabric base Object Prototype for Print version
  * @param {fabric.Object} object - the object to be prototyped
  */
-export const usePrintOverrides = (object) => {
+export const usePrintOverrides = object => {
   const objectPrototype = object || fabric.Object.prototype;
   commonFabricOverrides(objectPrototype);
   objectPrototype.drawBorders = drawBorders;
@@ -165,7 +165,7 @@ export const usePrintOverrides = (object) => {
  * Override Fabric base Object Prototype for Digital version
  * @param {fabric.Object} object - the object to be prototyped
  */
-export const useDigitalOverrides = (object) => {
+export const useDigitalOverrides = object => {
   const objectPrototype = object || fabric.Object.prototype;
   commonFabricOverrides(objectPrototype);
   objectPrototype.setControlsVisibility({

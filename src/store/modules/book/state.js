@@ -12,7 +12,7 @@ book.sections.forEach(s => {
 const pageSelected = book.sections[0].sheets[0];
 
 export const state = {
-  book,
+  book: {},
   objects: {}, // { objectId: { ...objectData } }
   selectedObjectId: null,
   pageSelected,

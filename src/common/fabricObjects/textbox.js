@@ -28,12 +28,14 @@ import { toggleStroke } from './drawingBox';
 export const createTextBox = (x, y, width, height, textProperties, sheetId) => {
   const newText = cloneDeep(TextElement);
   let isHasTextId = !!textProperties?.id;
+  const id = isHasTextId ? textProperties?.id : `${sheetId}-${uniqueId()}`;
 
   const dataObject = {
-    id: isHasTextId ? textProperties?.id : `${sheetId}-${uniqueId()}`,
+    id,
     type: OBJECT_TYPE.TEXT,
     newObject: {
       ...(isHasTextId ? { ...textProperties } : { ...newText }),
+      id,
       size: {
         width: isHasTextId ? textProperties.size.width : width,
         height: isHasTextId ? textProperties.size.height : height
@@ -96,6 +98,7 @@ export const createTextBox = (x, y, width, height, textProperties, sheetId) => {
 
   const updateTextListeners = canvas => {
     if (text.editingExitedListener) return;
+
     const onDoneEditText = () => {
       toggleStroke(rect, false);
       canvas.remove(text);
@@ -108,7 +111,11 @@ export const createTextBox = (x, y, width, height, textProperties, sheetId) => {
         angle,
         objectType: OBJECT_TYPE.TEXT
       });
-      canvas.add(grp);
+
+      // add grp to canvas at the same z-index as the one before editing
+      canvas._objects.splice(groupZIndex, 0, grp);
+      canvas._onObjectAdded(grp);
+
       addGroupEvents(grp);
     };
 
@@ -183,6 +190,7 @@ export const createTextBox = (x, y, width, height, textProperties, sheetId) => {
       strokeDashArray
     });
   };
+
   const ungroup = function(g) {
     const { canvas } = g;
     g._restoreObjectsState();
@@ -192,9 +200,15 @@ export const createTextBox = (x, y, width, height, textProperties, sheetId) => {
     canvas.renderAll();
   };
 
+  // keeping track z-index and assign back the group after recreating
+  let groupZIndex;
+
   const handleDbClick = e => {
     const canvas = e.target.canvas;
     if (isEmpty(canvas)) return;
+
+    groupZIndex = e.target.zIndex;
+
     ungroup(e.target);
     toggleStroke(rect, true);
     updateTextListeners(canvas);

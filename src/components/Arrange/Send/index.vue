@@ -6,20 +6,20 @@
         :disabled="disabled"
         icon-name="flip_to_back"
         title="To Back"
-        @click="onClickToBack"
+        @click="onClick(SEND.BACK)"
       />
       <ButtonProperty
         :disabled="disabled"
         icon-name="flip_to_front"
         title="To Front"
-        @click="onClickToFront"
+        @click="onClick(SEND.FRONT)"
       />
       <v-divider vertical class="item-vertical"></v-divider>
       <ButtonProperty
         :disabled="disabled"
         icon-name="flip_to_back"
         title="Backward"
-        @click="onClickBackward"
+        @click="onClick(SEND.BACKWARD)"
       >
         <img slot="icon" class="icon-right" src="@/assets/icons/forward.svg" />
       </ButtonProperty>
@@ -27,7 +27,7 @@
         :disabled="disabled"
         icon-name="flip_to_back"
         title="Forward"
-        @click="onClickForward"
+        @click="onClick(SEND.FORWARD)"
       >
         <img slot="icon" class="icon-right" src="@/assets/icons/backward.svg" />
       </ButtonProperty>

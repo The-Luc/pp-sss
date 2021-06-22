@@ -34,7 +34,8 @@ export default {
     ...mapGetters({
       printThemeSelected: BOOK_GETTERS.PRINT_THEME_SELECTED_ID,
       isOpenMenuProperties: APP_GETTERS.IS_OPEN_MENU_PROPERTIES,
-      selectedToolName: APP_GETTERS.SELECTED_TOOL_NAME
+      selectedToolName: APP_GETTERS.SELECTED_TOOL_NAME,
+      bookId: BOOK_GETTERS.BOOK_ID
     })
   },
   watch: {
@@ -93,7 +94,7 @@ export default {
       this.savePrintCanvas({
         data: objs
       });
-      this.$router.go(-1);
+      this.$router.push(`/book/${this.bookId}/edit/print`);
     }
   }
 };

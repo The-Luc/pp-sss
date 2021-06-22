@@ -22,7 +22,6 @@
             :min-size="minSize"
             :max-size="maxSize"
             :is-constrain="isConstrain"
-            @changeZIndex="changeZIndex"
             @changeFlip="changeFlip"
             @change="onChange"
             @changeConstrain="onChangeConstrain"
