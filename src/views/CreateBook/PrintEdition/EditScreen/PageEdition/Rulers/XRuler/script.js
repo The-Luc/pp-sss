@@ -29,7 +29,7 @@ export default {
         const { width } = this.canvasSize;
         conf.canvasWidth = width;
         conf.width = width / pdfWidth;
-        conf.count = Math.floor(spineWidth > 0 ? pdfWidth - 1 : pageWidth);
+        conf.count = Math.ceil(spineWidth > 0 ? pdfWidth : pageWidth) - 1;
         conf.double = spineWidth === 0;
       }
       return conf;

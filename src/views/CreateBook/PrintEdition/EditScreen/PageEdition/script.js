@@ -189,7 +189,7 @@ export default {
      */
     updateCanvasSize() {
       this.printSize = this.isCover
-        ? getCoverPagePrintSize(this.isHardCover, this.book.totalPages)
+        ? getCoverPagePrintSize(this.isHardCover, this.book.numberMaxPages)
         : getPagePrintSize();
       const canvasSize = {
         width: 0,

@@ -306,7 +306,9 @@ const book = {
 
 export const modifyBookData = ({ coverType, maxPage }) => {
   book.coverOption =
-    coverType == 0 ? COVER_TYPE.HARD_OVER : COVER_TYPE.SOFT_COVER;
+    coverType === COVER_TYPE.HARD_OVER
+      ? COVER_TYPE.HARD_OVER
+      : COVER_TYPE.SOFT_COVER;
   book.numberMaxPages = maxPage;
   return book;
 };

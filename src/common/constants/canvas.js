@@ -32,13 +32,14 @@ export const SOFTCOVER_SPINE_SIZES = {
 };
 
 export const HARDCOVER_SPINE_SIZES = {
-  60: 0.32, // for 20-60 pages
-  100: 0.4, // for 62-100 pages
+  60: 0.316, // for 20-60 pages
+  100: 0.392, // for 62-100 pages
   140: 0.5, // for 102-140 pages
   180: 0.6, // for 142-180 pages
   220: 0.7, // for 182-220 pages
   260: 0.8, // for 222-260 pages
-  300: 0.9 // for 262-300 pages
+  300: 0.9, // for 262-300 pages
+  340: 1 // for 302-340 pages
 };
 
 export const PRINT_SOFTCOVER_PAGE_SIZE = {
