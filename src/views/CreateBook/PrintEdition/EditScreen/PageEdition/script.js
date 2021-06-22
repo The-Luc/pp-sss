@@ -16,7 +16,9 @@ import {
   getRectDashes,
   scaleSize,
   isHalfSheet,
-  isHalfLeft
+  isHalfLeft,
+  pxToIn,
+  inToPx
 } from '@/common/utils';
 
 import {
@@ -54,7 +56,9 @@ import {
   OBJECT_TYPE,
   CORNER_SIZE,
   HALF_SHEET,
-  HALF_LEFT
+  HALF_LEFT,
+  DEFAULT_SHAPE,
+  COVER_TYPE
 } from '@/common/constants';
 import SizeWrapper from '@/components/SizeWrapper';
 import PrintCanvasLines from './PrintCanvasLines';
@@ -104,14 +108,14 @@ export default {
     isHardCover() {
       const { coverOption } = this.book;
       return (
-        coverOption === 'Hardcover' &&
+        coverOption === COVER_TYPE.HARD_OVER &&
         this.pageSelected?.type === SHEET_TYPE.COVER
       );
     },
     isSoftCover() {
       const { coverOption } = this.book;
       return (
-        coverOption === 'Softcover' &&
+        coverOption === COVER_TYPE.SOFT_COVER &&
         this.pageSelected?.type === SHEET_TYPE.COVER
       );
     },
@@ -141,6 +145,7 @@ export default {
             .discardActiveObject()
             .remove(...window.printCanvas.getObjects())
             .renderAll();
+          this.updateCanvasSize();
           const sheetPrintData = this.sheetLayout(val.id);
           this.drawLayout(sheetPrintData);
         }
@@ -164,6 +169,8 @@ export default {
       setSelectedObjectId: PRINT_MUTATES.SET_CURRENT_OBJECT_ID,
       addNewObject: PRINT_MUTATES.ADD_OBJECT,
       setObjectProp: PRINT_MUTATES.SET_PROP,
+      setObjectPropById: PRINT_MUTATES.SET_PROP_BY_ID,
+      setPropOfMutiObjects: PRINT_MUTATES.SET_PROP_OF_MULIPLE_OBJECTS,
       updateTriggerTextChange: PRINT_MUTATES.UPDATE_TRIGGER_TEXT_CHANGE,
       addNewBackground: PRINT_MUTATES.SET_BACKGROUNDS,
       updateTriggerBackgroundChange:
@@ -215,8 +222,10 @@ export default {
       this.containerSize = containerSize;
       let el = this.$refs.canvas;
       window.printCanvas = new fabric.Canvas(el, {
-        backgroundColor: '#ffffff'
+        backgroundColor: '#fff',
+        preserveObjectStacking: true
       });
+
       usePrintOverrides(fabric.Object.prototype);
       this.updateCanvasSize();
       window.printCanvas.on({
@@ -255,6 +264,14 @@ export default {
                 this.awaitingAdd = '';
               }
             );
+          }
+        },
+        'object:added': ({ target }) => {
+          if (
+            target.objectType &&
+            target.objectType !== OBJECT_TYPE.BACKGROUND
+          ) {
+            this.$root.$emit('updateZIndexToStore');
           }
         }
       });
@@ -306,6 +323,10 @@ export default {
 
       this.$root.$on('printChangeShapeProperties', prop => {
         this.changeShapeProperties(prop);
+      });
+
+      this.$root.$on('updateZIndexToStore', () => {
+        this.updateZIndexToStore();
       });
 
       this.$root.$on('printChangeClipArtProperties', prop => {
@@ -446,9 +467,6 @@ export default {
 
       this.setObjectTypeSelected({ type: objectType });
 
-      window.printCanvas.preserveObjectStacking =
-        objectType === OBJECT_TYPE.BACKGROUND;
-
       this.openProperties(objectType);
     },
     /**
@@ -504,6 +522,7 @@ export default {
         id,
         newObject: {
           ...newImage,
+          id,
           coord: {
             ...newImage.coord,
             x,
@@ -611,9 +630,11 @@ export default {
           this.addNewObject({
             id: id,
             newObject: {
-              ...newClipArt
+              ...newClipArt,
+              id
             }
           });
+
           let fabricProp = toFabricClipArtProp(newClipArt);
           return new Promise(resolve => {
             fabric.loadSVGFromURL(
@@ -687,6 +708,51 @@ export default {
       }
     },
     /**
+     * Callback function for handle scaling to set scale for shape base on width and height
+     * @param {Object} e - Shape element
+     */
+    handleShapeScaling(e) {
+      const target = e.transform?.target;
+      if (isEmpty(target)) return;
+      let { scaleX, scaleY, width, height } = target;
+      const currentWidthInch = pxToIn(width * scaleX);
+      const currentHeightInch = pxToIn(height * scaleY);
+      const minScale = inToPx(DEFAULT_SHAPE.MIN_SIZE) / width;
+      if (currentWidthInch < DEFAULT_SHAPE.MIN_SIZE) {
+        scaleX = minScale;
+      }
+
+      if (currentHeightInch < DEFAULT_SHAPE.MIN_SIZE) {
+        scaleY = minScale;
+      }
+      target.set({
+        scaleX,
+        scaleY
+      });
+    },
+    /**
+     * Callback function for handle scaled to update shape's dimension
+     * @param {Object} e - Shape element
+     */
+    handleShapeScaled(e) {
+      const target = e.transform?.target;
+      if (isEmpty(target)) return;
+      const currentWidthInch = pxToIn(target.width * target.scaleX);
+      const currentHeightInch = pxToIn(target.height * target.scaleY);
+      this.changeShapeProperties({
+        size: {
+          width:
+            currentWidthInch < DEFAULT_SHAPE.MIN_SIZE
+              ? DEFAULT_SHAPE.MIN_SIZE
+              : currentWidthInch,
+          height:
+            currentHeightInch < DEFAULT_SHAPE.MIN_SIZE
+              ? DEFAULT_SHAPE.MIN_SIZE
+              : currentHeightInch
+        }
+      });
+    },
+    /**
      * Adding shapes to canvas & store
      *
      * @param {Array} shapes  list of object of adding shapes
@@ -694,31 +760,41 @@ export default {
     async addShapes(shapes) {
       const toBeAddedShapes = shapes.map(s => {
         const newShape = cloneDeep(ShapeElement);
+        const id = uniqueId();
 
         merge(newShape, s);
 
         return {
-          id: uniqueId(),
-          object: newShape
+          id,
+          object: {
+            ...newShape,
+            id
+          }
         };
       });
 
-      toBeAddedShapes.forEach(s => {
-        this.addNewObject({ id: s.id, newObject: s.object });
-      });
-
-      await addPrintShapes(
+      const printShapes = await addPrintShapes(
         toBeAddedShapes,
         window.printCanvas,
         isHalfSheet(this.pageSelected),
         isHalfLeft(this.pageSelected)
       );
-
+      toBeAddedShapes.forEach(s => {
+        this.addNewObject({
+          id: s.id,
+          newObject: s.object
+        });
+      });
       if (toBeAddedShapes.length === 1) {
         selectLatestObject(window.printCanvas);
       } else {
         this.closeProperties();
       }
+      printShapes.forEach(shape => {
+        shape.on('scaling', this.handleShapeScaling);
+        shape.on('scaled', this.handleShapeScaled);
+        shape.on('rotated', this.handleRotated);
+      });
     },
     /**
      * Event fire when user change any property of selected shape
@@ -731,14 +807,35 @@ export default {
         return;
       }
       const shape = window.printCanvas.getActiveObject();
-
       if (isEmpty(shape)) return;
-
       this.setObjectProp({ prop });
+      if (Object.keys(prop).includes('isConstrain')) {
+        this.setCanvasUniformScaling(prop.isConstrain);
+      }
       this.updateTriggerShapeChange();
-
       updatePrintShape(shape, prop, window.printCanvas);
     },
+
+    /**
+     * update z-index of objecs on canvas to:
+     *   + objects in the store (print/objects Z-index)
+     *   + objects on fabric canvas
+     */
+    updateZIndexToStore() {
+      const allObjects = window.printCanvas.getObjects();
+      // z-index is equvalent to the index of object in allObjects array
+      const data = [];
+      allObjects.forEach((o, index) => {
+        if (o.objectType && o.objectType != OBJECT_TYPE.BACKGROUND)
+          data.push({ id: o.id, prop: { zIndex: index } });
+        // update on fabric object
+        o.zIndex = index;
+      });
+
+      // call mutation to update to store
+      this.setPropOfMutiObjects(data);
+    },
+
     /**
      * Event fire when user change any property of selected shape
      *

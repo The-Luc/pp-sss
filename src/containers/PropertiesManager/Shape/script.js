@@ -8,6 +8,7 @@ import GeneralContent from './GeneralContent';
 import ArrangeContent from '@/components/Arrange';
 
 import { MUTATES as APP_MUTATES } from '@/store/modules/app/const';
+import { DEFAULT_SHAPE, OBJECT_TYPE } from '@/common/constants';
 
 export default {
   components: {
@@ -33,7 +34,6 @@ export default {
       if (this.triggerShapeChange) {
         // just for trigger the change
       }
-
       return this.getCurrentObject;
     },
     valRotate() {
@@ -42,6 +42,50 @@ export default {
       }
       const rotate = this.selectObjectProp('coord');
       return rotate?.rotation || 0;
+    },
+    sizeWidth() {
+      if (this.triggerChange) {
+        // just for trigger the change
+      }
+      const size = this.selectObjectProp('size');
+      return size?.width || 0;
+    },
+    sizeHeight() {
+      if (this.triggerChange) {
+        // just for trigger the change
+      }
+      const size = this.selectObjectProp('size');
+      return size?.height || 0;
+    },
+    isConstrain() {
+      if (this.triggerChange) {
+        // just for trigger the change
+      }
+      return this.selectObjectProp('isConstrain');
+    },
+    minSize() {
+      const objectType = this.currentArrange.type;
+      let res = 0;
+      switch (objectType) {
+        case OBJECT_TYPE.SHAPE:
+          res = DEFAULT_SHAPE.MIN_SIZE;
+          break;
+        default:
+          break;
+      }
+      return res;
+    },
+    maxSize() {
+      const objectType = this.currentArrange.type;
+      let res = 0;
+      switch (objectType) {
+        case OBJECT_TYPE.SHAPE:
+          res = 60;
+          break;
+        default:
+          break;
+      }
+      return res;
     }
   },
   methods: {
@@ -57,13 +101,6 @@ export default {
       });
     },
     /**
-     * Handle update z-index for Shape
-     * @param {String} actionName action name
-     */
-    changeZIndex(actionName) {
-      console.log(actionName);
-    },
-    /**
      * Handle update flip for Shape
      * @param {String} actionName action name
      */
@@ -77,10 +114,21 @@ export default {
     onChange(object) {
       const data = cloneDeep(object);
       const key = Object.keys(data);
+      if (key.includes('size')) {
+        data.size = {
+          ...(data?.size?.width && { width: data.size.width }),
+          ...(data?.size?.height && { height: data.size.height })
+        };
+      }
       if (key.includes('rotate')) {
         data.coord = { ...(data?.rotate && { rotate: data.rotate }) };
       }
       this.$root.$emit('printChangeShapeProperties', data);
+    },
+    onChangeConstrain(val) {
+      this.$root.$emit('printChangeShapeProperties', {
+        isConstrain: val
+      });
     }
   }
 };

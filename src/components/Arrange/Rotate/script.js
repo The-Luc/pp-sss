@@ -15,6 +15,10 @@ export default {
     value: {
       type: Number,
       default: 0
+    },
+    disabled: {
+      type: Boolean,
+      default: false
     }
   },
   methods: {

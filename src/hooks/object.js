@@ -1,6 +1,5 @@
 import { useGetters } from 'vuex-composition-helpers';
 
-import { GETTERS } from '@/store/modules/book/const';
 import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 
 /**

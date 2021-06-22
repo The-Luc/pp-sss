@@ -17,7 +17,6 @@
             :min-rotate="-360"
             :max-rotate="360"
             :val-rotate="valRotate"
-            @changeZIndex="changeZIndex"
             @changeFlip="changeFlip"
             @change="onChange"
           />

@@ -36,5 +36,11 @@
       margin-top: 2px;
       color: #58595b;
     }
+
+    &.disabled {
+      .input-label {
+        background-color: $color-disabled;
+      }
+    }
   }
 }
