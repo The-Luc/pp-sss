@@ -14,15 +14,15 @@
         </v-tab>
         <v-tab-item value="arrange">
           <ArrangeContent
-            :current-arrange="currentArrange"
-            :position-y="positionY"
-            :position-x="positionX"
+            :position="position"
             :rotate-value="rotateValue"
             :size-width="sizeWidth"
             :size-height="sizeHeight"
             :min-size="minSize"
             :max-size="maxSize"
             :is-constrain="isConstrain"
+            :min-position="minPosition"
+            :max-position="maxPosition"
             @changeFlip="changeFlip"
             @change="onChange"
             @changeConstrain="onChangeConstrain"

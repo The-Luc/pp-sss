@@ -16,6 +16,14 @@ export default {
     disabled: {
       type: Boolean,
       default: false
+    },
+    min: {
+      type: Number,
+      default: 0
+    },
+    max: {
+      type: Boolean,
+      default: 100
     }
   },
   computed: {
@@ -28,7 +36,7 @@ export default {
   },
   data() {
     return {
-      componentKey: 0
+      componentKey: true
     };
   },
   methods: {
@@ -37,11 +45,16 @@ export default {
      * @param {Number}  val position x value user entered
      */
     onChangeValueX(val) {
-      const { isValid, value } = validateInputOption(val, -100, 100, 2);
+      const { isValid, value } = validateInputOption(
+        val,
+        this.min,
+        this.max,
+        2
+      );
       if (isValid) {
         this.$emit('change', { coord: { x: value } });
       } else {
-        this.componentKey++;
+        this.componentKey = !this.componentKey;
       }
     },
     /**
@@ -49,11 +62,16 @@ export default {
      * @param {Number}  val position y value user entered
      */
     onChangeValueY(val) {
-      const { isValid, value } = validateInputOption(val, -100, 100, 2);
+      const { isValid, value } = validateInputOption(
+        val,
+        this.min,
+        this.max,
+        2
+      );
       if (isValid) {
         this.$emit('change', { coord: { y: value } });
       } else {
-        this.componentKey++;
+        this.componentKey = !this.componentKey;
       }
     }
   }

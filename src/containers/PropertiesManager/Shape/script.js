@@ -87,19 +87,41 @@ export default {
       }
       return res;
     },
-    positionX() {
-      if (this.triggerChange) {
-        // just for trigger the change
+    minPosition() {
+      const objectType = this.currentArrange.type;
+      let res = 0;
+      switch (objectType) {
+        case OBJECT_TYPE.SHAPE:
+          res = -100;
+          break;
+        default:
+          break;
       }
-      const coord = this.getProperty('coord');
-      return coord?.x || 0;
+      return res;
     },
-    positionY() {
+    maxPosition() {
+      const objectType = this.currentArrange.type;
+      let res = 0;
+      switch (objectType) {
+        case OBJECT_TYPE.SHAPE:
+          res = 100;
+          break;
+        default:
+          break;
+      }
+      return res;
+    },
+    position() {
       if (this.triggerChange) {
         // just for trigger the change
       }
+
       const coord = this.getProperty('coord');
-      return coord?.y || 0;
+
+      return {
+        x: coord?.x || 0,
+        y: coord?.y || 0
+      };
     }
   },
   methods: {
