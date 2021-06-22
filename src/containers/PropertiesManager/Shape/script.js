@@ -43,21 +43,21 @@ export default {
       return coord?.rotation || 0;
     },
     sizeWidth() {
-      if (this.triggerChange) {
+      if (this.triggerShapeChange) {
         // just for trigger the change
       }
       const size = this.getProperty('size');
       return size?.width || 0;
     },
     sizeHeight() {
-      if (this.triggerChange) {
+      if (this.triggerShapeChange) {
         // just for trigger the change
       }
       const size = this.getProperty('size');
       return size?.height || 0;
     },
     isConstrain() {
-      if (this.triggerChange) {
+      if (this.triggerShapeChange) {
         // just for trigger the change
       }
       return this.getProperty('isConstrain');
