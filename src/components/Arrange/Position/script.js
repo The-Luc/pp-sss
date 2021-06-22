@@ -22,7 +22,7 @@ export default {
       default: 0
     },
     max: {
-      type: Boolean,
+      type: Number,
       default: 100
     }
   },

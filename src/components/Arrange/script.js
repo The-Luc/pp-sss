@@ -60,7 +60,7 @@ export default {
       default: 0
     },
     maxPosition: {
-      type: Boolean,
+      type: Number,
       default: 100
     }
   },
