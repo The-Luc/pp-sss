@@ -705,6 +705,8 @@ export default {
       if (isEmpty(target)) return;
       const currentWidthInch = pxToIn(target.width * target.scaleX);
       const currentHeightInch = pxToIn(target.height * target.scaleY);
+      const currentXInch = pxToIn(target.left);
+      const currentYInch = pxToIn(target.top);
       this.changeShapeProperties({
         size: {
           width:
@@ -715,6 +717,10 @@ export default {
             currentHeightInch < DEFAULT_SHAPE.MIN_SIZE
               ? DEFAULT_SHAPE.MIN_SIZE
               : currentHeightInch
+        },
+        coord: {
+          x: currentXInch,
+          y: currentYInch
         }
       });
     },
@@ -751,6 +757,21 @@ export default {
           newObject: s.object
         });
       });
+
+      printShapes.forEach(item => {
+        const currentXInch = pxToIn(item.left);
+        const currentYInch = pxToIn(item.top);
+        this.setObjectPropById({
+          id: item.id,
+          prop: {
+            coord: {
+              x: currentXInch,
+              y: currentYInch
+            }
+          }
+        });
+      });
+
       if (toBeAddedShapes.length === 1) {
         selectLatestObject(window.printCanvas);
       } else {
@@ -759,6 +780,8 @@ export default {
       printShapes.forEach(shape => {
         shape.on('scaling', this.handleShapeScaling);
         shape.on('scaled', this.handleShapeScaled);
+        shape.on('moving', this.handleShapeMoving);
+        shape.on('moved', this.handleShapeMoved);
       });
     },
     /**
@@ -821,6 +844,22 @@ export default {
       this.updateTriggerClipArtChange();
 
       updateElement(clipArt, prop, window.printCanvas);
+    },
+    /**
+     * Callback function for handle moved to update shape's dimension
+     * @param {Object} e - Shape element
+     */
+    handleShapeMoved(e) {
+      const target = e.transform?.target;
+      if (isEmpty(target)) return;
+      const currentXInch = pxToIn(target.left);
+      const currentYInch = pxToIn(target.top);
+      this.changeShapeProperties({
+        coord: {
+          x: currentXInch,
+          y: currentYInch
+        }
+      });
     }
   }
 };

@@ -17,6 +17,8 @@
             :current-arrange="currentArrange"
             :min-rotate="-360"
             :max-rotate="360"
+            :position-y="positionY"
+            :position-x="positionX"
             :size-width="sizeWidth"
             :size-height="sizeHeight"
             :min-size="minSize"

@@ -58,15 +58,17 @@ export default {
     disabled: {
       type: Boolean,
       default: false
+    },
+    positionX: {
+      type: Number,
+      default: 0
+    },
+    positionY: {
+      type: Number,
+      default: 0
     }
   },
   computed: {
-    positionX() {
-      return this.currentArrange.coord?.x;
-    },
-    positionY() {
-      return this.currentArrange.coord?.y;
-    },
     valueRotate() {
       return this.currentArrange.coord?.rotation;
     }

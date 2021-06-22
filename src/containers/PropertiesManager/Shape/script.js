@@ -1,6 +1,7 @@
 import { mapGetters, mapMutations } from 'vuex';
 import { cloneDeep } from 'lodash';
 
+import { splitNumberByDecimal } from '@/common/utils';
 import Properties from '@/components/Properties/BoxProperties';
 import TabMenu from '@/components/TabMenu';
 import GeneralContent from './GeneralContent';
@@ -82,6 +83,20 @@ export default {
           break;
       }
       return res;
+    },
+    positionX() {
+      if (this.triggerChange) {
+        // just for trigger the change
+      }
+      const coord = this.selectObjectProp('coord');
+      return coord?.x || 0;
+    },
+    positionY() {
+      if (this.triggerChange) {
+        // just for trigger the change
+      }
+      const coord = this.selectObjectProp('coord');
+      return coord?.y || 0;
     }
   },
   methods: {
@@ -114,6 +129,12 @@ export default {
         data.size = {
           ...(data?.size?.width && { width: data.size.width }),
           ...(data?.size?.height && { height: data.size.height })
+        };
+      }
+      if (key.includes('coord')) {
+        data.coord = {
+          ...(data?.coord?.x && { x: splitNumberByDecimal(data.coord.x) }),
+          ...(data?.coord?.y && { y: splitNumberByDecimal(data.coord.y) })
         };
       }
       this.$root.$emit('printChangeShapeProperties', data);

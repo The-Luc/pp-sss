@@ -83,8 +83,14 @@ export const toFabricShapeProp = (prop, originalElement) => {
   const mapRules = {
     data: {
       type: DEFAULT_RULE_DATA.TYPE,
-      x: DEFAULT_RULE_DATA.X,
-      y: DEFAULT_RULE_DATA.Y,
+      x: {
+        name: 'left',
+        parse: value => inToPx(value)
+      },
+      y: {
+        name: 'top',
+        parse: value => inToPx(value)
+      },
       rotation: DEFAULT_RULE_DATA.ROTATION,
       color: DEFAULT_RULE_DATA.COLOR,
       horiziontal: DEFAULT_RULE_DATA.HORIZIONTAL,
