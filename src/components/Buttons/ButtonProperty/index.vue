@@ -1,7 +1,7 @@
 <template>
   <div class="button-property">
     <div class="item-container">
-      <v-btn class="item-btn" @click="onClick">
+      <v-btn class="item-btn" :disabled="disabled" @click="onClick">
         <v-icon v-if="!$slots.icon">{{ iconName }}</v-icon>
         <slot name="icon" />
       </v-btn>
