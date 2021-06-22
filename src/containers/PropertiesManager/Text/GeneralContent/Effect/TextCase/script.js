@@ -3,7 +3,6 @@ import PpButtonGroup from '@/components/Buttons/ButtonGroup';
 import { mapGetters } from 'vuex';
 
 import { ICON_LOCAL, TEXT_CASE } from '@/common/constants';
-import { GETTERS } from '@/store/modules/book/const';
 import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 
 import { isEmpty } from '@/common/utils';

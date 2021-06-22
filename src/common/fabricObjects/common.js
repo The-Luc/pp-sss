@@ -168,8 +168,15 @@ const getFabricProp = (element, prop) => {
  */
 export const updateElement = (element, prop, canvas) => {
   if (isEmpty(element) || isEmpty(prop)) return;
+
   const fabricProp = getFabricProp(element, prop);
+
   setElementProp(element, fabricProp);
+
+  if (Object.keys(prop).includes('isConstrain')) {
+    canvas.set({ uniformScaling: prop.isConstrain });
+  }
+
   canvas.renderAll();
 };
 

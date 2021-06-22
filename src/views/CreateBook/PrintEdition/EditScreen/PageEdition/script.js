@@ -27,8 +27,7 @@ import {
   addPrintBackground,
   updatePrintBackground,
   getAdjustedObjectDimension,
-  addPrintShapes,
-  updatePrintShape
+  addPrintShapes
 } from '@/common/fabricObjects';
 
 import {
@@ -642,7 +641,7 @@ export default {
           let fabricProp = toFabricClipArtProp(newClipArt);
           return new Promise(resolve => {
             fabric.loadSVGFromURL(
-              require(`../../../../../assets/image/clip-art/${item.property.vector}`),
+              require(`../../../../../assets/image/clip-art/${item.vector}`),
               (objects, options) => {
                 let svgData = fabric.util.groupSVGElements(objects, options);
                 svgData
@@ -806,18 +805,11 @@ export default {
      * @param {Object}  prop  new prop
      */
     changeShapeProperties(prop) {
-      if (isEmpty(prop)) {
-        this.updateTriggerShapeChange();
-        return;
-      }
-      const shape = window.printCanvas.getActiveObject();
-      if (isEmpty(shape)) return;
-      this.setObjectProp({ prop });
-      if (Object.keys(prop).includes('isConstrain')) {
-        this.setCanvasUniformScaling(prop.isConstrain);
-      }
-      this.updateTriggerShapeChange();
-      updatePrintShape(shape, prop, window.printCanvas);
+      this.changeElementProperties(
+        prop,
+        OBJECT_TYPE.SHAPE,
+        this.updateTriggerShapeChange
+      );
     },
 
     /**
@@ -846,20 +838,35 @@ export default {
      * @param {Object}  prop  new prop
      */
     changeClipArtProperties(prop) {
+      this.changeElementProperties(
+        prop,
+        OBJECT_TYPE.CLIP_ART,
+        this.updateTriggerClipArtChange
+      );
+    },
+    /**
+     * Change properties of current element
+     *
+     * @param {Object}  prop            new prop
+     * @param {String}  objectType      object type want to check
+     * @param {Object}  updateTriggerFn mutate update trigger function
+     */
+    changeElementProperties(prop, objectType, updateTriggerFn = null) {
       if (isEmpty(prop)) {
-        this.updateTriggerClipArtChange();
+        if (updateTriggerFn !== null) updateTriggerFn();
+
         return;
       }
 
-      const clipArt = window.printCanvas.getActiveObject();
+      const element = window.printCanvas.getActiveObject();
 
-      if (isEmpty(clipArt)) return;
+      if (isEmpty(element) || element.objectType !== objectType) return;
 
       this.setObjectProp({ prop });
 
-      this.updateTriggerClipArtChange();
+      if (updateTriggerFn !== null) updateTriggerFn();
 
-      updateElement(clipArt, prop, window.printCanvas);
+      updateElement(element, prop, window.printCanvas);
     }
   }
 };

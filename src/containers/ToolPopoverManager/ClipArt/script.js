@@ -34,9 +34,7 @@ export default {
   },
   computed: {
     clipArt() {
-      return this.clipArtList.filter(
-        item => item.property.category === this.category
-      );
+      return this.clipArtList.filter(item => item.category === this.category);
     }
   },
   methods: {
