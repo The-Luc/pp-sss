@@ -1,4 +1,4 @@
-import PpNumber from '@/components/Number';
+import PpNumber from '@/components/InputProperty';
 export default {
   components: {
     PpNumber

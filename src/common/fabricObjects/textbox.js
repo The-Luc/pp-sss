@@ -431,7 +431,7 @@ const applyTextProperties = function(text, prop) {
       top: text.height * -0.5,
       left: text.width * -0.5
     };
-    text.set(textData)
+    text.set(textData);
   }
 
   if (!isEmpty(prop['shadow'])) {

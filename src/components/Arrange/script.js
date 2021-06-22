@@ -23,10 +23,6 @@ export default {
     Rotate
   },
   props: {
-    currentArrange: {
-      type: Object,
-      default: {}
-    },
     rotateValue: {
       type: Number,
       default: 0
@@ -54,14 +50,18 @@ export default {
     disabled: {
       type: Boolean,
       default: false
-    }
-  },
-  computed: {
-    positionX() {
-      return this.currentArrange.coord?.x;
     },
-    positionY() {
-      return this.currentArrange.coord?.y;
+    position: {
+      type: Object,
+      default: () => ({})
+    },
+    minPosition: {
+      type: Number,
+      default: 0
+    },
+    maxPosition: {
+      type: Number,
+      default: 100
     }
   },
   methods: {
