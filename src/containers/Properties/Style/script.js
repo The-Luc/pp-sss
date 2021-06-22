@@ -2,7 +2,6 @@ import { mapGetters } from 'vuex';
 
 import { BORDER_STYLE } from '@/common/constants';
 import Select from '@/components/Selectors/Select';
-import { GETTERS } from '@/store/modules/book/const';
 import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 
 export default {

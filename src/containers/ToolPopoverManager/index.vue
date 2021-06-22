@@ -1,5 +1,10 @@
 <template>
-  <div class="toolname-container">
+  <div
+    class="toolname-container"
+    :class="{
+      actions: toolComponent === 'Actions'
+    }"
+  >
     <component :is="toolComponent" :key="componentKey" />
   </div>
 </template>

@@ -47,19 +47,9 @@ export const getters = {
     triggerChange.clipArt,
   [PRINT._GETTERS.TRIGGER_SHAPE_CHANGE]: ({ triggerChange }) =>
     triggerChange.shape,
-  [PRINT._GETTERS.GET_OBJECTS_BY_SHEET_ID]: ({
-    currentSheetId,
-    objects,
-    sheets
-  }) => sheetId => {
+  [PRINT._GETTERS.GET_OBJECTS_BY_SHEET_ID]: ({ currentSheetId, sheets }) => {
     const sheet = sheets[currentSheetId];
     if (sheet) {
-      // const sheetObjIds = sheet.objects;
-      // const res = [];
-      // sheetObjIds.forEach(objId => {
-      //   // const realId = objId.split('-')[1];
-      //   res.push(objects[objId]);
-      // });
       return sheet.objects;
     }
     return [];

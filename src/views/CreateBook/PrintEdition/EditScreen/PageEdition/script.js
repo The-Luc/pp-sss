@@ -27,8 +27,7 @@ import {
   addPrintBackground,
   updatePrintBackground,
   getAdjustedObjectDimension,
-  addPrintShapes,
-  updatePrintShape
+  addPrintShapes
 } from '@/common/fabricObjects';
 
 import {
@@ -277,7 +276,11 @@ export default {
       });
 
       this.$root.$on('printSwitchTool', toolName => {
-        if (toolName !== TOOL_NAME.DELETE) {
+        const isDiscard =
+          toolName &&
+          toolName !== TOOL_NAME.DELETE &&
+          toolName !== TOOL_NAME.ACTIONS;
+        if (isDiscard) {
           window.printCanvas.discardActiveObject().renderAll();
         }
         this.$root.$emit('printInstructionEnd');
@@ -638,7 +641,7 @@ export default {
           let fabricProp = toFabricClipArtProp(newClipArt);
           return new Promise(resolve => {
             fabric.loadSVGFromURL(
-              require(`../../../../../assets/image/clip-art/${item.property.vector}`),
+              require(`../../../../../assets/image/clip-art/${item.vector}`),
               (objects, options) => {
                 let svgData = fabric.util.groupSVGElements(objects, options);
                 svgData
@@ -648,7 +651,9 @@ export default {
                     height: svgData.height,
                     id: id,
                     type: OBJECT_TYPE.CLIP_ART,
-                    fill: '#58595b'
+                    fill: '#58595b',
+                    originX: 'center',
+                    originY: 'center'
                   })
                   .setCoords();
                 svgData.scaleToHeight((height / zoom / svgData.height) * 8);
@@ -671,6 +676,38 @@ export default {
         setTimeout(() => {
           selectLatestObject(window.printCanvas);
         }, 500);
+      }
+
+      svgs.forEach(clipArt => {
+        clipArt.on('rotated', this.handleRotated);
+      });
+    },
+    /**
+     * Callback function for handle rotated to update
+     * @param {Object} e - Shape or Clip art element
+     */
+    handleRotated(e) {
+      const target = e.transform?.target;
+      if (isEmpty(target)) return;
+
+      const objectType = target.objectType;
+      switch (objectType) {
+        case OBJECT_TYPE.SHAPE:
+          this.changeShapeProperties({
+            coord: {
+              rotation: target.angle
+            }
+          });
+          break;
+        case OBJECT_TYPE.CLIP_ART:
+          this.changeClipArtProperties({
+            coord: {
+              rotation: target.angle
+            }
+          });
+          break;
+        default:
+          return;
       }
     },
     /**
@@ -780,8 +817,8 @@ export default {
       printShapes.forEach(shape => {
         shape.on('scaling', this.handleShapeScaling);
         shape.on('scaled', this.handleShapeScaled);
-        shape.on('moving', this.handleShapeMoving);
         shape.on('moved', this.handleShapeMoved);
+        shape.on('rotated', this.handleRotated);
       });
     },
     /**
@@ -790,18 +827,11 @@ export default {
      * @param {Object}  prop  new prop
      */
     changeShapeProperties(prop) {
-      if (isEmpty(prop)) {
-        this.updateTriggerShapeChange();
-        return;
-      }
-      const shape = window.printCanvas.getActiveObject();
-      if (isEmpty(shape)) return;
-      this.setObjectProp({ prop });
-      if (Object.keys(prop).includes('isConstrain')) {
-        this.setCanvasUniformScaling(prop.isConstrain);
-      }
-      this.updateTriggerShapeChange();
-      updatePrintShape(shape, prop, window.printCanvas);
+      this.changeElementProperties(
+        prop,
+        OBJECT_TYPE.SHAPE,
+        this.updateTriggerShapeChange
+      );
     },
 
     /**
@@ -830,20 +860,35 @@ export default {
      * @param {Object}  prop  new prop
      */
     changeClipArtProperties(prop) {
+      this.changeElementProperties(
+        prop,
+        OBJECT_TYPE.CLIP_ART,
+        this.updateTriggerClipArtChange
+      );
+    },
+    /**
+     * Change properties of current element
+     *
+     * @param {Object}  prop            new prop
+     * @param {String}  objectType      object type want to check
+     * @param {Object}  updateTriggerFn mutate update trigger function
+     */
+    changeElementProperties(prop, objectType, updateTriggerFn = null) {
       if (isEmpty(prop)) {
-        this.updateTriggerClipArtChange();
+        if (updateTriggerFn !== null) updateTriggerFn();
+
         return;
       }
 
-      const clipArt = window.printCanvas.getActiveObject();
+      const element = window.printCanvas.getActiveObject();
 
-      if (isEmpty(clipArt)) return;
+      if (isEmpty(element) || element.objectType !== objectType) return;
 
       this.setObjectProp({ prop });
 
-      this.updateTriggerClipArtChange();
+      if (updateTriggerFn !== null) updateTriggerFn();
 
-      updateElement(clipArt, prop, window.printCanvas);
+      updateElement(element, prop, window.printCanvas);
     },
     /**
      * Callback function for handle moved to update shape's dimension

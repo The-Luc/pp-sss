@@ -8,15 +8,17 @@ import Layouts from './Layouts';
 import Backgrounds from './Backgrounds';
 import Shapes from './Shapes';
 import ClipArt from './ClipArt';
+import Actions from './Actions';
 
-const { THEMES, LAYOUTS, BACKGROUNDS, CLIP_ART, SHAPES } = TOOL_NAME;
+const { THEMES, LAYOUTS, BACKGROUNDS, CLIP_ART, SHAPES, ACTIONS } = TOOL_NAME;
 
 const ToolList = {
   [THEMES]: THEMES,
   [LAYOUTS]: LAYOUTS,
   [BACKGROUNDS]: BACKGROUNDS,
   [CLIP_ART]: CLIP_ART,
-  [SHAPES]: SHAPES
+  [SHAPES]: SHAPES,
+  [ACTIONS]: ACTIONS
 };
 
 export default {
@@ -31,7 +33,8 @@ export default {
     [TOOL_NAME.LAYOUTS]: Layouts,
     [TOOL_NAME.BACKGROUNDS]: Backgrounds,
     [TOOL_NAME.CLIP_ART]: ClipArt,
-    [TOOL_NAME.SHAPES]: Shapes
+    [TOOL_NAME.SHAPES]: Shapes,
+    [TOOL_NAME.ACTIONS]: Actions
   },
   computed: {
     ...mapGetters({
