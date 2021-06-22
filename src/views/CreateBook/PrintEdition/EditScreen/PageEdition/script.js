@@ -322,11 +322,13 @@ export default {
 
       this.$root.$on('updateZIndexToStore', () => {
         this.updateZIndexToStore();
-      }),
-        this.$root.$on('printChangeClipArtProperties', prop => {
-          this.changeClipArtProperties(prop);
-        }),
-        document.body.addEventListener('keyup', this.handleDeleteKey);
+      });
+
+      this.$root.$on('printChangeClipArtProperties', prop => {
+        this.changeClipArtProperties(prop);
+      });
+
+      document.body.addEventListener('keyup', this.handleDeleteKey);
     },
     /**
      * Event handle when container is resized by user action
