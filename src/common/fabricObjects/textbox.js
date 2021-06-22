@@ -425,7 +425,7 @@ const applyTextProperties = function(text, prop) {
     }
   }
 
-  const target = canvas.getActiveObject()
+  const target = canvas.getActiveObject();
   if (!isEmpty(prop['fontSize']) && target !== text) {
     const textData = {
       top: text.height * -0.5,
