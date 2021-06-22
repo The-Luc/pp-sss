@@ -15,11 +15,15 @@
         <v-tab-item value="arrange">
           <ArrangeContent
             :current-arrange="currentArrange"
-            :min-rotate="-360"
-            :max-rotate="360"
-            @changeZIndex="changeZIndex"
+            :rotate-value="rotateValue"
+            :size-width="sizeWidth"
+            :size-height="sizeHeight"
+            :min-size="minSize"
+            :max-size="maxSize"
+            :is-constrain="isConstrain"
             @changeFlip="changeFlip"
             @change="onChange"
+            @changeConstrain="onChangeConstrain"
           />
         </v-tab-item>
       </TabMenu>

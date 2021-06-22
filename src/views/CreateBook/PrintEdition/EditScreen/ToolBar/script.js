@@ -95,7 +95,8 @@ export default {
         [
           {
             iconName: 'smart_button',
-            title: 'Actions'
+            title: 'Actions',
+            name: TOOL_NAME.ACTIONS
           },
           {
             iconName: 'note_add',
@@ -197,6 +198,11 @@ export default {
         case TOOL_NAME.SHAPES:
           this.setToolNameSelected({
             name: TOOL_NAME.SHAPES
+          });
+          break;
+        case TOOL_NAME.ACTIONS:
+          this.setToolNameSelected({
+            name: toolName
           });
           break;
         default:

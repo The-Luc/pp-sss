@@ -55,6 +55,9 @@ export const mutations = {
     if (isFullBackground(background)) {
       background.isLeft = true;
 
+      // adding z-index to background
+      background.zIndex = 0;
+
       state.background.left = background;
       state.background.right = {};
 
@@ -72,6 +75,9 @@ export const mutations = {
     const isSheetLeft = isHalfLeft(state.sheets[state.currentSheetId]);
 
     background.isLeft = isSheetLeft;
+
+    // adding z-index to background
+    background.zIndex = isSheetLeft ? 0 : 1;
 
     state.background.left = isSheetLeft ? background : {};
     state.background.right = isSheetLeft ? {} : background;
@@ -91,6 +97,26 @@ export const mutations = {
 
     state.objects[state.currentObjectId] = currentProps;
   },
+  [PRINT._MUTATES.SET_PROP_BY_ID](state, { id, prop }) {
+    const currentProps = cloneDeep(state.objects[id]);
+
+    merge(currentProps, prop);
+    state.objects[id] = currentProps;
+  },
+  /**
+   * to set prop for mulitple objects
+   * @param {Object} state the stoer data
+   * @param {Array} data [{id: ObjectID, prop: {propName: value}}]
+   */
+  [PRINT._MUTATES.SET_PROP_OF_MULIPLE_OBJECTS](state, data) {
+    data.forEach(({ id, prop }) => {
+      const currentProps = cloneDeep(state.objects[id]);
+      merge(currentProps, prop);
+
+      state.objects[id] = currentProps;
+    });
+  },
+
   [PRINT._MUTATES.DELETE_OBJECTS](state, { ids }) {
     ids.forEach(id => {
       const index = state.objectIds.indexOf(id);

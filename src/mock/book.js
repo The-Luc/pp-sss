@@ -1,4 +1,4 @@
-import { POSITION_FIXED } from '@/common/constants';
+import { COVER_TYPE, POSITION_FIXED } from '@/common/constants';
 
 const defaultLayout = {
   id: null,
@@ -25,7 +25,7 @@ const book = {
   deliveryDate: '08/21/21',
   releaseDate: '08/07/21',
   saleDate: '05/16/21',
-  coverOption: 'Hardcover',
+  coverOption: COVER_TYPE.HARD_OVER,
   numberMaxPages: 48,
   deliveryOption: 'Bulk Ship To School',
   booksSold: 0,
@@ -302,6 +302,13 @@ const book = {
       ]
     }
   ]
+};
+
+export const modifyBookData = ({ coverType, maxPage }) => {
+  book.coverOption =
+    coverType == 0 ? COVER_TYPE.HARD_OVER : COVER_TYPE.SOFT_COVER;
+  book.numberMaxPages = maxPage;
+  return book;
 };
 
 export default book;

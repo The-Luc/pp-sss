@@ -7,7 +7,6 @@ import StyleContent from './Style';
 import ArrangeContent from '@/components/Arrange';
 
 import { MUTATES } from '@/store/modules/app/const';
-import { GETTERS as BOOK_GETTERS } from '@/store/modules/book/const';
 import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 import { DEFAULT_TEXT } from '@/common/constants';
 
@@ -32,6 +31,13 @@ export default {
       }
 
       return this.getObjectById;
+    },
+    disabled() {
+      if (this.triggerChange) {
+        // just for trigger the change
+      }
+      const activeObj = window.printCanvas.getActiveObject();
+      return !!activeObj.isEditing;
     }
   },
   watch: {
@@ -96,13 +102,6 @@ export default {
         border
       });
       this.selectedBorder = data;
-    },
-    /**
-     * Handle update z-index for Shape
-     * @param {String} actionName action name
-     */
-    changeZIndex(actionName) {
-      console.log(actionName);
     },
     /**
      * Handle update flip for Shape

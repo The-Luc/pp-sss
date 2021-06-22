@@ -1,9 +1,6 @@
 <template>
   <div class="fill-color-container">
-    <span class="properties-title">Fill Color: </span>
-    <div>
-      <Color />
-    </div>
+    <Color label="Fill Color" :color="value" @change="onChange" />
   </div>
 </template>
 

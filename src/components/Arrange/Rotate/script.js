@@ -4,17 +4,13 @@ export default {
     PpNumber
   },
   props: {
-    min: {
-      type: Number,
-      required: true
-    },
-    max: {
-      type: Number,
-      required: true
-    },
     value: {
       type: Number,
       default: 0
+    },
+    disabled: {
+      type: Boolean,
+      default: false
     }
   },
   methods: {
@@ -23,7 +19,7 @@ export default {
      * @param {Number}  val rotate value user entered
      */
     onChange(val) {
-      this.$emit('change', { rotate: val });
+      this.$emit('change', { coord: { rotation: val } });
     }
   }
 };

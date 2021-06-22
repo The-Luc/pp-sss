@@ -1,6 +1,5 @@
 import { mapGetters, mapMutations } from 'vuex';
 
-import { GETTERS as BOOK_GETTERS } from '@/store/modules/book/const';
 import { GETTERS, MUTATES } from '@/store/modules/app/const';
 import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 import Color from '@/containers/Color';

@@ -2,7 +2,6 @@ import { mapGetters } from 'vuex';
 
 import { SHADOW_TYPE, SHADOW_OPTIONS } from '@/common/constants/shadow';
 import { DEFAULT_SHADOW } from '@/common/constants/defaultProperty';
-import { GETTERS } from '@/store/modules/book/const';
 import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 import Select from '@/components/Selectors/Select';
 import Opacity from '@/components/Properties/Features/Opacity';

@@ -14,9 +14,7 @@
         <v-tab-item value="arrange">
           <ArrangeContent
             :current-arrange="currentArrange"
-            :min-rotate="-360"
-            :max-rotate="360"
-            @changeZIndex="changeZIndex"
+            :rotate-value="rotateValue"
             @changeFlip="changeFlip"
             @change="onChange"
           />

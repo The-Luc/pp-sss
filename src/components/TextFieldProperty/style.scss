@@ -14,6 +14,7 @@
         width: 100%;
         outline: none;
         text-align: center;
+        font-family: $font-500;
       }
       .input-label {
         font-family: $font-300;
@@ -34,6 +35,12 @@
       margin: 0;
       margin-top: 2px;
       color: #58595b;
+    }
+
+    &.disabled {
+      .input-label {
+        background-color: $color-disabled;
+      }
     }
   }
 }
