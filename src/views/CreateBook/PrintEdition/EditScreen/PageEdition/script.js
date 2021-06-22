@@ -59,13 +59,17 @@ import {
 import SizeWrapper from '@/components/SizeWrapper';
 import PrintCanvasLines from './PrintCanvasLines';
 import PageWrapper from './PageWrapper';
+import XRuler from './Rulers/XRuler';
+import YRuler from './Rulers/YRuler';
 import { addSingleSvg, addMultiSvg } from '@/common/fabricObjects/common';
 
 export default {
   components: {
     PageWrapper,
     SizeWrapper,
-    PrintCanvasLines
+    PrintCanvasLines,
+    XRuler,
+    YRuler
   },
   setup() {
     const { drawLayout } = useDrawLayout();
@@ -137,6 +141,7 @@ export default {
       handler(val, oldVal) {
         if (val?.id !== oldVal?.id) {
           this.setSelectedObjectId({ id: '' });
+          this.updateCanvasSize();
           window.printCanvas
             .discardActiveObject()
             .remove(...window.printCanvas.getObjects())
