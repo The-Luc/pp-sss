@@ -1,0 +1,33 @@
+.y-unit {
+  display: flex;
+  width: 23px;
+  position: relative;
+  border: 1px solid $color-gray12;
+  border-width: 0;
+
+  .sy-unit {
+    position: absolute;
+    right: 0;
+    border-bottom: 1px solid $color-gray12;
+    width: 40%;
+    height: 10%;
+    @for $i from 1 through 9 {
+      &:nth-of-type(#{$i}) {
+        top: ($i - 1) * 10%;
+      }
+    }
+    &:nth-of-type(5) {
+      width: 66%;
+    }
+  }
+
+  .y-unit-number {
+    position: absolute;
+    height: auto;
+    font-size: 7px;
+    line-height: 7px;
+    color: $color-stoodio-toolbartext;
+    left: 3px;
+    top: 7%;
+  }
+}
