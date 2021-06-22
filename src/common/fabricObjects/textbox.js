@@ -119,6 +119,12 @@ export const createTextBox = (x, y, width, height, textProperties, sheetId) => {
       addGroupEvents(grp);
     };
 
+    const onTextChanged = () => {
+      updateObjectDimensionsIfSmaller(rect, text.width, text.height);
+      canvas.renderAll();
+    };
+
+    text.on('changed', onTextChanged);
     text.on('editing:exited', onDoneEditText);
     text.editingExitedListener = true;
   };
@@ -419,6 +425,17 @@ const applyTextProperties = function(text, prop) {
     }
   }
 
+  const target = canvas.getActiveObject()
+  if (!isEmpty(prop['fontSize']) && target !== text) {
+    const width = text.get('width');
+    const height = text.get('height');
+    const textData = {
+      top: height * -0.5,
+      left: width * -0.5
+    };
+    text.set(textData)
+  }
+
   if (!isEmpty(prop['shadow'])) {
     applyShadowToObject(text, prop['shadow']);
   }
@@ -485,7 +502,12 @@ const applyTextRectProperties = function(rect, prop) {
   }
 
   Object.keys(rectProp).forEach(k => {
-    rect.set(k, rectProp[k]);
+    if (k.includes('fontSize')) {
+      const { top, left } = rect._text || {};
+      rect.set({ top, left });
+    } else {
+      rect.set(k, rectProp[k]);
+    }
   });
 
   if (!isEmpty(prop['shadow'])) {
