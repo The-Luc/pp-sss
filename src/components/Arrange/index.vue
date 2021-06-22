@@ -18,13 +18,7 @@
       @change="onChange"
     />
     <div class="group-container">
-      <Rotate
-        :disabled="disabled"
-        :value="valueRotate"
-        :max="maxRotate"
-        :min="minRotate"
-        @change="onChange"
-      />
+      <Rotate :disabled="disabled" :value="rotateValue" @change="onChange" />
       <v-divider vertical class="item-vertical"></v-divider>
       <Flip :disabled="disabled" @change="changeFlip" />
     </div>

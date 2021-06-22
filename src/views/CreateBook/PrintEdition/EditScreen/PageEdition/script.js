@@ -652,7 +652,9 @@ export default {
                     height: svgData.height,
                     id: id,
                     type: OBJECT_TYPE.CLIP_ART,
-                    fill: '#58595b'
+                    fill: '#58595b',
+                    originX: 'center',
+                    originY: 'center'
                   })
                   .setCoords();
                 svgData.scaleToHeight((height / zoom / svgData.height) * 8);
@@ -675,6 +677,38 @@ export default {
         setTimeout(() => {
           selectLatestObject(window.printCanvas);
         }, 500);
+      }
+
+      svgs.forEach(clipArt => {
+        clipArt.on('rotated', this.handleRotated);
+      });
+    },
+    /**
+     * Callback function for handle rotated to update
+     * @param {Object} e - Shape or Clip art element
+     */
+    handleRotated(e) {
+      const target = e.transform?.target;
+      if (isEmpty(target)) return;
+
+      const objectType = target.objectType;
+      switch (objectType) {
+        case OBJECT_TYPE.SHAPE:
+          this.changeShapeProperties({
+            coord: {
+              rotation: target.angle
+            }
+          });
+          break;
+        case OBJECT_TYPE.CLIP_ART:
+          this.changeClipArtProperties({
+            coord: {
+              rotation: target.angle
+            }
+          });
+          break;
+        default:
+          return;
       }
     },
     /**
@@ -763,6 +797,7 @@ export default {
       printShapes.forEach(shape => {
         shape.on('scaling', this.handleShapeScaling);
         shape.on('scaled', this.handleShapeScaled);
+        shape.on('rotated', this.handleRotated);
       });
     },
     /**

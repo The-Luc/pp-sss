@@ -1,43 +1,46 @@
 import { mapGetters, mapMutations } from 'vuex';
 import { cloneDeep } from 'lodash';
 
+import { useObject } from '@/hooks';
 import Properties from '@/components/Properties/BoxProperties';
 import TabMenu from '@/components/TabMenu';
 import GeneralContent from './GeneralContent';
 import ArrangeContent from '@/components/Arrange';
 
-import {
-  MUTATES as APP_MUTATES,
-  GETTERS as APP_GETTERS
-} from '@/store/modules/app/const';
 import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
+import { MUTATES as APP_MUTATES } from '@/store/modules/app/const';
 import { DEFAULT_SHAPE, OBJECT_TYPE } from '@/common/constants';
-import { useObject } from '@/hooks';
 
 export default {
-  setup() {
-    const { selectObjectProp } = useObject();
-    return {
-      selectObjectProp
-    };
-  },
   components: {
     Properties,
     TabMenu,
     GeneralContent,
     ArrangeContent
   },
+  setup() {
+    const { triggerShapeChange, selectObjectProp } = useObject();
+    return {
+      triggerShapeChange,
+      selectObjectProp
+    };
+  },
   computed: {
     ...mapGetters({
-      isOpenColorPicker: APP_GETTERS.IS_OPEN_COLOR_PICKER,
-      getObjectById: PRINT_GETTERS.CURRENT_OBJECT,
-      triggerChange: PRINT_GETTERS.TRIGGER_SHAPE_CHANGE
+      currentObject: PRINT_GETTERS.CURRENT_OBJECT
     }),
     currentArrange() {
-      if (this.triggerChange) {
+      if (this.triggerShapeChange) {
         // just for trigger the change
       }
-      return this.getObjectById;
+      return this.currentObject;
+    },
+    rotateValue() {
+      if (this.triggerShapeChange) {
+        // just for trigger the change
+      }
+      const coord = this.selectObjectProp('coord');
+      return coord?.rotation || 0;
     },
     sizeWidth() {
       if (this.triggerChange) {

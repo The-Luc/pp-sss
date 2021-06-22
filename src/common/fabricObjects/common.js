@@ -1,5 +1,4 @@
 import { fabric } from 'fabric';
-import { cloneDeep } from 'lodash';
 
 import { OBJECT_TYPE } from '@/common/constants';
 
@@ -185,8 +184,9 @@ export const setElementProp = (element, prop) => {
   const key = Object.keys(prop);
   const isSvgEl = element?.objectType === OBJECT_TYPE.SHAPE;
   const isModifySize = ['scaleX', 'scaleY'].includes(key[0]);
+  const isModifyRotate = ['angle'].includes(key[0]);
   if (element.getObjects) {
-    if (isSvgEl && isModifySize) return;
+    if ((isSvgEl && isModifySize) || isModifyRotate) return;
     element.getObjects().forEach(o => o.set(prop));
   }
 };
