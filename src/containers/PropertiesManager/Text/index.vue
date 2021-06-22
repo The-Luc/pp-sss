@@ -29,7 +29,6 @@
             :min-rotate="-360"
             :max-rotate="360"
             :disabled="disabled"
-            @changeZIndex="changeZIndex"
             @changeFlip="changeFlip"
             @change="onChange"
           />
