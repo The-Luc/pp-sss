@@ -61,7 +61,7 @@ export const validateInputOption = (
 
   const value = decimalPlaces > 0 ? parseFloat(stringVal) : parseInt(data, 10);
 
-  if (value < min && isGetMin) {
+  if (isGetMin && value < min) {
     return {
       isValid: true,
       value: min,
