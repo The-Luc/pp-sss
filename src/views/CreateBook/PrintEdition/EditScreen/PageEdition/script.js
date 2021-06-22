@@ -653,19 +653,38 @@ export default {
           selectLatestObject(window.printCanvas);
         }, 500);
       }
+
+      svgs.forEach(clipArt => {
+        clipArt.on('rotated', this.handleRotated);
+      });
     },
     /**
-     * Callback function for handle rotated to update shape's dimension
-     * @param {Object} e - Shape element
+     * Callback function for handle rotated to update
+     * @param {Object} e - Shape or Clip art element
      */
-    handleShapeRotated(e) {
+    handleRotated(e) {
       const target = e.transform?.target;
       if (isEmpty(target)) return;
-      this.changeShapeProperties({
-        coord: {
-          rotation: target.rotation
-        }
-      });
+
+      const objectType = target.objectType;
+      switch (objectType) {
+        case OBJECT_TYPE.SHAPE:
+          this.changeShapeProperties({
+            coord: {
+              rotation: target.angle
+            }
+          });
+          break;
+        case OBJECT_TYPE.CLIP_ART:
+          this.changeClipArtProperties({
+            coord: {
+              rotation: target.angle
+            }
+          });
+          break;
+        default:
+          return;
+      }
     },
     /**
      * Adding shapes to canvas & store
