@@ -8,7 +8,6 @@ import {
   validateInputOption
 } from '@/common/utils';
 
-import { GETTERS } from '@/store/modules/book/const';
 import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 
 export default {

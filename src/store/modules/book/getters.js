@@ -1,5 +1,4 @@
 import moment from 'moment';
-import { pick } from 'lodash';
 
 import { DATE_FORMAT, MOMENT_TYPE } from '@/common/constants';
 import BOOK from './const';

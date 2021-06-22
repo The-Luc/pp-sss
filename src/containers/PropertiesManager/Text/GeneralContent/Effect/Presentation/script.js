@@ -1,6 +1,5 @@
 import PpButtonGroup from '@/components/Buttons/ButtonGroup';
 import { mapGetters } from 'vuex';
-import { GETTERS } from '@/store/modules/book/const';
 import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 
 export default {
