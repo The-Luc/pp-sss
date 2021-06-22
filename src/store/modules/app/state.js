@@ -28,5 +28,6 @@ export const state = {
 
   // Tool icon popover
   selectedToolName: '',
-  isPrompt: false
+  isPrompt: false,
+  hasActiveObjects: false
 };

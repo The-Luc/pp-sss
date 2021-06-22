@@ -85,7 +85,7 @@ const handleDrawBackgroundLayout = (objectsData, position, targetCanvas) => {
   const backrgoundObj = objectsData.find(
     ({ type }) => type === OBJECT_TYPE.BACKGROUND
   );
-  const backgroundUrl = backrgoundObj?.property?.imageUrl;
+  const backgroundUrl = backrgoundObj?.imageUrl;
   if (objectsData.length === 0) {
     targetCanvas?.clear().renderAll();
     return;
@@ -102,7 +102,7 @@ const handleDrawBackgroundLayout = (objectsData, position, targetCanvas) => {
       img.scaleY = height / zoom / img.height;
 
       img.objectType = OBJECT_TYPE.BACKGROUND;
-      img.pageType = backrgoundObj?.property?.pageType;
+      img.pageType = backrgoundObj?.pageType;
       img.opacity = 1;
       img.isLeftPage = position !== 'right';
 
