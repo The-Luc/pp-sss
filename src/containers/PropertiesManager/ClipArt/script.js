@@ -69,7 +69,7 @@ export default {
       const data = cloneDeep(object);
       const key = Object.keys(data);
       if (key.includes('rotate')) {
-        data.coord = { ...(data?.rotate && { rotate: data.rotate }) };
+        data.coord = { ...{ rotate: data.rotate } };
       }
       this.$root.$emit('printChangeShapeProperties', data);
     }
