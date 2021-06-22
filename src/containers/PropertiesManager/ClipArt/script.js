@@ -65,7 +65,7 @@ export default {
      * @param {Object} object object containing the value of update size, position or rotate
      */
     onChange(object) {
-      this.$root.$emit('printChangeShapeProperties', object);
+      this.$root.$emit('printChangeClipArtProperties', object);
     }
   }
 };

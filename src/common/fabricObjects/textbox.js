@@ -1,6 +1,7 @@
 import { fabric } from 'fabric';
 import { cloneDeep, uniqueId } from 'lodash';
 import { TextElement } from '@/common/models';
+import { updateElement } from '@/common/fabricObjects/common';
 import Color from 'color';
 
 import {
@@ -93,6 +94,8 @@ export const createTextBox = (x, y, width, height, textProperties, sheetId) => {
     top: y,
     lockScalingY: false,
     lockScalingX: false,
+    originX: 'center',
+    originY: 'center',
     isConstrain: text.isConstrain
   });
 
@@ -555,7 +558,11 @@ const applyShadowToObject = function(fabricObject, shadowConfig) {
  * @param {Object} prop - the prop change
  */
 export const applyTextBoxProperties = function(textObject, prop) {
-  const [rect, text] = getObjectsFromTextBox(textObject);
-  applyTextProperties(text, prop);
-  applyTextRectProperties(rect, prop);
+  if (prop.coord?.rotation) {
+    updateElement(textObject, prop, textObject.canvas);
+  } else {
+    const [rect, text] = getObjectsFromTextBox(textObject);
+    applyTextProperties(text, prop);
+    applyTextRectProperties(rect, prop);
+  }
 };
