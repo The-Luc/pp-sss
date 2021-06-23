@@ -148,13 +148,6 @@ export default {
      */
     onChange(object) {
       const data = cloneDeep(object);
-      const key = Object.keys(data);
-      if (key.includes('size')) {
-        data.size = {
-          ...(data?.size?.width && { width: data.size.width }),
-          ...(data?.size?.height && { height: data.size.height })
-        };
-      }
       this.$root.$emit('printChangeShapeProperties', data);
     },
     onChangeConstrain(val) {
