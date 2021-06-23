@@ -298,7 +298,7 @@ export const toFabricTextProp = prop => {
         name: 'fontSize',
         parse: value => scaleSize(value)
       },
-      horiziontal: {
+      horizontal: {
         name: 'textAlign'
       },
       vertical: {

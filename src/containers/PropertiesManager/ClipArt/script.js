@@ -1,21 +1,22 @@
-import { mapGetters, mapMutations } from 'vuex';
-
-import { useClipArtProperties } from '@/hooks';
 import Properties from '@/components/Properties/BoxProperties';
 import TabMenu from '@/components/TabMenu';
 import GeneralContent from './GeneralContent';
 import ArrangeContent from '@/components/Arrange';
-
-import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
-import { MUTATES as APP_MUTATES } from '@/store/modules/app/const';
 import { DEFAULT_CLIP_ART, OBJECT_TYPE } from '@/common/constants';
+import { useClipArtProperties } from '@/hooks';
 
 export default {
   setup() {
-    const { triggerChange, getProperty } = useClipArtProperties();
+    const {
+      triggerChange,
+      getProperty,
+      setColorPickerData
+    } = useClipArtProperties();
+
     return {
       triggerChange,
-      getProperty
+      getProperty,
+      setColorPickerData
     };
   },
   components: {
@@ -31,21 +32,39 @@ export default {
     };
   },
   computed: {
-    ...mapGetters({
-      currentObject: PRINT_GETTERS.CURRENT_OBJECT
-    }),
-    currentArrange() {
-      if (this.triggerChange) {
-        // just for trigger the change
-      }
-      return this.currentObject;
-    },
     rotateValue() {
       if (this.triggerChange) {
         // just for trigger the change
       }
+
       const coord = this.getProperty('coord');
+
       return coord?.rotation || 0;
+    },
+    sizeWidth() {
+      if (this.triggerChange) {
+        // just for trigger the change
+      }
+
+      const size = this.getProperty('size');
+
+      return size?.width || 0;
+    },
+    sizeHeight() {
+      if (this.triggerChange) {
+        // just for trigger the change
+      }
+
+      const size = this.getProperty('size');
+
+      return size?.height || 0;
+    },
+    isConstrain() {
+      if (this.triggerChange) {
+        // just for trigger the change
+      }
+
+      return this.getProperty('isConstrain');
     },
     position() {
       if (this.triggerChange) {
@@ -69,46 +88,19 @@ export default {
         height: size?.height || 0
       };
     },
-    isConstrain() {
-      if (this.triggerChange) {
-        // just for trigger the change
-      }
-      return this.getProperty('isConstrain');
-    },
     minSize() {
-      const objectType = this.currentArrange.type;
-      let res = 0;
-      switch (objectType) {
-        case OBJECT_TYPE.CLIP_ART:
-          res = DEFAULT_CLIP_ART.MIN_SIZE;
-          break;
-        default:
-          break;
-      }
-      return res;
+      return DEFAULT_CLIP_ART.MIN_SIZE;
     },
     maxSize() {
-      const objectType = this.currentArrange.type;
-      let res = 0;
-      switch (objectType) {
-        case OBJECT_TYPE.CLIP_ART:
-          res = 60;
-          break;
-        default:
-          break;
-      }
-      return res;
+      return 60;
     }
   },
   methods: {
-    ...mapMutations({
-      setColorPicker: APP_MUTATES.SET_COLOR_PICKER_COLOR
-    }),
     /**
      * Close color picker (if opening) when change tab
      */
     onChangeTabMenu(data) {
-      this.setColorPicker({
+      this.setColorPickerData({
         tabActive: data
       });
     },
@@ -117,7 +109,13 @@ export default {
      * @param {String} actionName action name
      */
     changeFlip(actionName) {
-      console.log(actionName);
+      const currentFlip = {
+        ...this.getProperty('flip')
+      };
+
+      this.$root.$emit('printChangeClipArtProperties', {
+        flip: { [actionName]: !currentFlip[actionName] }
+      });
     },
     /**
      * Handle update size, position or rotate for Clip Art

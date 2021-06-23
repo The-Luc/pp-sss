@@ -1,14 +1,11 @@
-import { mapGetters, mapMutations } from 'vuex';
-
-import { useShapeProperties } from '@/hooks';
 import Properties from '@/components/Properties/BoxProperties';
 import TabMenu from '@/components/TabMenu';
-import GeneralContent from './GeneralContent';
 import ArrangeContent from '@/components/Arrange';
+import GeneralContent from './GeneralContent';
 
-import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
-import { MUTATES as APP_MUTATES } from '@/store/modules/app/const';
-import { DEFAULT_SHAPE, OBJECT_TYPE } from '@/common/constants';
+import { useShapeProperties } from '@/hooks';
+
+import { DEFAULT_SHAPE } from '@/common/constants';
 
 export default {
   components: {
@@ -18,96 +15,64 @@ export default {
     ArrangeContent
   },
   setup() {
-    const { triggerChange, getProperty } = useShapeProperties();
+    const {
+      triggerChange,
+      getProperty,
+      setColorPickerData
+    } = useShapeProperties();
+
     return {
       triggerChange,
-      getProperty
+      getProperty,
+      setColorPickerData
     };
   },
   computed: {
-    ...mapGetters({
-      currentObject: PRINT_GETTERS.CURRENT_OBJECT
-    }),
-    currentArrange() {
-      if (this.triggerChange) {
-        // just for trigger the change
-      }
-      return this.currentObject;
-    },
     rotateValue() {
       if (this.triggerChange) {
         // just for trigger the change
       }
+
       const coord = this.getProperty('coord');
+
       return coord?.rotation || 0;
     },
     sizeWidth() {
       if (this.triggerChange) {
         // just for trigger the change
       }
+
       const size = this.getProperty('size');
+
       return size?.width || 0;
     },
     sizeHeight() {
       if (this.triggerChange) {
         // just for trigger the change
       }
+
       const size = this.getProperty('size');
+
       return size?.height || 0;
     },
     isConstrain() {
       if (this.triggerChange) {
         // just for trigger the change
       }
+
       return this.getProperty('isConstrain');
     },
     minSize() {
-      const objectType = this.currentArrange.type;
-      let res = 0;
-      switch (objectType) {
-        case OBJECT_TYPE.SHAPE:
-          res = DEFAULT_SHAPE.MIN_SIZE;
-          break;
-        default:
-          break;
-      }
-      return res;
+      return DEFAULT_SHAPE.MIN_SIZE;
     },
     maxSize() {
-      const objectType = this.currentArrange.type;
-      let res = 0;
-      switch (objectType) {
-        case OBJECT_TYPE.SHAPE:
-          res = 60;
-          break;
-        default:
-          break;
-      }
-      return res;
+      return 60;
     },
     minPosition() {
-      const objectType = this.currentArrange.type;
-      let res = 0;
-      switch (objectType) {
-        case OBJECT_TYPE.SHAPE:
-          res = -100;
-          break;
-        default:
-          break;
-      }
-      return res;
+      return -100;
     },
     maxPosition() {
-      const objectType = this.currentArrange.type;
-      let res = 0;
-      switch (objectType) {
-        case OBJECT_TYPE.SHAPE:
-          res = 100;
-          break;
-        default:
-          break;
-      }
-      return res;
+      return 100;
     },
     position() {
       if (this.triggerChange) {
@@ -123,14 +88,11 @@ export default {
     }
   },
   methods: {
-    ...mapMutations({
-      setColorPicker: APP_MUTATES.SET_COLOR_PICKER_COLOR
-    }),
     /**
      * Close color picker (if opening) when change tab
      */
     onChangeTabMenu(data) {
-      this.setColorPicker({
+      this.setColorPickerData({
         tabActive: data
       });
     },
@@ -139,7 +101,13 @@ export default {
      * @param {String} actionName action name
      */
     changeFlip(actionName) {
-      console.log(actionName);
+      const currentFlip = {
+        ...this.getProperty('flip')
+      };
+
+      this.$root.$emit('printChangeShapeProperties', {
+        flip: { [actionName]: !currentFlip[actionName] }
+      });
     },
     /**
      * Handle update size, position or rotate for Shape
