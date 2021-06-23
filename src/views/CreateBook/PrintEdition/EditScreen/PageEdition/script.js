@@ -318,10 +318,19 @@ export default {
           toolName &&
           toolName !== TOOL_NAME.DELETE &&
           toolName !== TOOL_NAME.ACTIONS;
+
         if (isDiscard) {
           window.printCanvas.discardActiveObject().renderAll();
         }
+
+        if (this.propertiesObjectType === OBJECT_TYPE.BACKGROUND) {
+          this.setIsOpenProperties({ isOpen: false });
+
+          this.setPropertiesObjectType({ type: '' });
+        }
+
         this.$root.$emit('printInstructionEnd');
+
         this.awaitingAdd = '';
       });
 
