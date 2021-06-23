@@ -52,7 +52,7 @@ export default {
         2
       );
       if (isValid) {
-        this.$emit('change', { coord: { x: value } });
+        this.$emit('change', { coord: { x: splitNumberByDecimal(value) } });
       } else {
         this.componentKey = !this.componentKey;
       }
@@ -69,7 +69,7 @@ export default {
         2
       );
       if (isValid) {
-        this.$emit('change', { coord: { y: value } });
+        this.$emit('change', { coord: { y: splitNumberByDecimal(value) } });
       } else {
         this.componentKey = !this.componentKey;
       }
