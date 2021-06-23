@@ -183,9 +183,9 @@ export default {
     },
     backgrounds() {
       return BACKGROUNDS.filter(b => {
-        const { type, categoryId, pageType } = b;
+        const { backgroundType, categoryId, pageType } = b;
 
-        if (type !== this.selectedBackgroundType.id) return false;
+        if (backgroundType !== this.selectedBackgroundType.id) return false;
 
         if (categoryId !== this.selectedBackgroundType.sub.id) return false;
 

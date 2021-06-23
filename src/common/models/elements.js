@@ -39,8 +39,7 @@ export const BaseElement = {
   flip: {
     horizontal: false,
     vertical: false
-  },
-  zIndex: -1
+  }
 };
 
 export const BasePrintProperty = {
