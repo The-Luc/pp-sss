@@ -141,7 +141,6 @@ export default {
       handler(val, oldVal) {
         if (val?.id !== oldVal?.id) {
           this.setSelectedObjectId({ id: '' });
-          this.updateCanvasSize();
           window.printCanvas
             .discardActiveObject()
             .remove(...window.printCanvas.getObjects())
