@@ -434,7 +434,7 @@ const applyTextProperties = function(text, prop) {
       top: text.height * -0.5,
       left: text.width * -0.5
     };
-    text.set(textData)
+    text.set(textData);
   }
 
   if (!isEmpty(prop['shadow'])) {
@@ -519,6 +519,24 @@ const applyTextRectProperties = function(rect, prop) {
 };
 
 /**
+ * Handle update fabric object rendered on canvas
+ * @param {Object}  textObject - the object to be updated
+ * @param {Object}  prop - the prop change
+ */
+const applyTextGroupProperties = function(textGroup, prop) {
+  if (isEmpty(textGroup) || !textGroup.canvas) {
+    return;
+  }
+  const canvas = textGroup.canvas;
+
+  const textGroupProp = toFabricTextProp(prop);
+
+  textGroup.set(textGroupProp);
+
+  canvas.renderAll();
+};
+
+/**
  * Calculate shadow base on config from user
  * @param {Boolean} dropShadow - have shadow or not
  * @param {Number} shadowBlur - the level of blur in pt
@@ -579,7 +597,7 @@ const applyShadowToObject = function(fabricObject, shadowConfig) {
  */
 export const applyTextBoxProperties = function(textObject, prop) {
   if (prop.coord?.rotation) {
-    updateElement(textObject, prop, textObject.canvas);
+    applyTextGroupProperties(textObject, prop);
   } else {
     const [rect, text] = getObjectsFromTextBox(textObject);
     applyTextProperties(text, prop);

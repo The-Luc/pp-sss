@@ -160,9 +160,6 @@ const getFabricProp = (element, prop) => {
   if (objectType === OBJECT_TYPE.CLIP_ART) {
     return toFabricClipArtProp(prop);
   }
-  if (objectType === OBJECT_TYPE.TEXT) {
-    return toFabricTextProp(prop);
-  }
 
   return {};
 };
