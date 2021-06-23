@@ -38,8 +38,7 @@ export const BaseElement = {
   flip: {
     horiziontal: false,
     vertical: false
-  },
-  zIndex: -1
+  }
 };
 
 export const BasePrintProperty = {

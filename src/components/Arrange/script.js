@@ -4,8 +4,6 @@ import Position from '@/components/Arrange/Position';
 import Flip from '@/components/Arrange/Flip';
 import Rotate from '@/components/Arrange/Rotate';
 import { useObject } from '@/hooks';
-import { OBJECT_TYPE } from '@/common/constants';
-import { ARRANGE_SEND } from '@/common/constants/arrange';
 
 export default {
   setup() {
@@ -70,46 +68,7 @@ export default {
      * @param {String}  actionName indicated which type of "send" button was clicked
      */
     changeZIndex(actionName) {
-      const selectedObject = window.printCanvas.getActiveObject();
-
-      if (!selectedObject) return;
-
-      const allObjects = window.printCanvas.getObjects();
-      const hasBackground = allObjects[0].objectType === OBJECT_TYPE.BACKGROUND;
-      let numOfBackground = 0;
-
-      if (hasBackground) {
-        numOfBackground =
-          allObjects[1].objectType === OBJECT_TYPE.BACKGROUND ? 2 : 1;
-      }
-
-      const selectedObjectIndex = allObjects.indexOf(selectedObject);
-
-      switch (actionName) {
-        case ARRANGE_SEND.BACK:
-          selectedObject.moveTo(hasBackground ? numOfBackground : 0);
-          break;
-
-        case ARRANGE_SEND.FRONT:
-          selectedObject.bringToFront();
-          break;
-
-        case ARRANGE_SEND.BACKWARD:
-          if (hasBackground) {
-            selectedObjectIndex > numOfBackground &&
-              selectedObject.sendBackwards();
-            break;
-          }
-          selectedObject.sendBackwards();
-          break;
-
-        case ARRANGE_SEND.FORWARD:
-          selectedObject.bringForward();
-          break;
-      }
-
-      // update to objects in strore and fabric objects
-      this.$root.$emit('updateZIndexToStore');
+      this.$root.$emit('changeObjectIdsOrder', actionName);
     },
 
     /**
