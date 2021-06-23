@@ -6,7 +6,10 @@ import {
   BackgroundElement,
   ClipArtElement,
   ShapeElement
-} from '../common/models';
+} from '@/common/models';
+
+import LAYOUT_01 from '@/assets/image/layouts/thumb/layout-01.png';
+import LAYOUT_02 from '@/assets/image/layouts/thumb/layout-02.png';
 
 const text1 = {
   ...TextElement,
@@ -244,8 +247,7 @@ const layouts = [
     type: LAYOUT_TYPES.COVER.value, // PRINT ONLY
     name: 'Cover 1',
     isFavorites: false,
-    previewImageUrl:
-      'https://fms-stage.s3.amazonaws.com/templates/2334/ea90833e672078265455a76fb437f9a5139a81b8.jpg?1619013144',
+    previewImageUrl: LAYOUT_01,
     themeId: 1,
     size: {
       width: 1000,
@@ -264,8 +266,7 @@ const layouts = [
     id: 2,
     type: LAYOUT_TYPES.COVER.value,
     name: 'Cover 2',
-    previewImageUrl:
-      'https://fms-stage.s3.amazonaws.com/templates/2334/ea90833e672078265455a76fb437f9a5139a81b8.jpg?1619013144',
+    previewImageUrl: LAYOUT_02,
     themeId: 1,
     isFavorites: false,
     size: {
@@ -286,8 +287,7 @@ const layouts = [
     type: LAYOUT_TYPES.ADMIN_STAFF.value,
     name: 'Collage 1',
     isFavorites: false,
-    previewImageUrl:
-      'https://fms-stage.s3.amazonaws.com/templates/2334/ea90833e672078265455a76fb437f9a5139a81b8.jpg?1619013144',
+    previewImageUrl: LAYOUT_01,
     themeId: 1,
     size: {
       width: 1000,
@@ -307,8 +307,7 @@ const layouts = [
     type: LAYOUT_TYPES.ADMIN_STAFF.value,
     name: 'Admin & staff',
     isFavorites: false,
-    previewImageUrl:
-      'https://fms-stage.s3.amazonaws.com/templates/2334/ea90833e672078265455a76fb437f9a5139a81b8.jpg?1619013144',
+    previewImageUrl: LAYOUT_02,
     themeId: 1,
     size: {
       width: 1000,
@@ -328,8 +327,7 @@ const layouts = [
     type: LAYOUT_TYPES.CLUBS_GROUPS_TEAMS.value,
     name: 'Clubs, Group',
     isFavorites: false,
-    previewImageUrl:
-      'https://fms-stage.s3.amazonaws.com/templates/2334/ea90833e672078265455a76fb437f9a5139a81b8.jpg?1619013144',
+    previewImageUrl: LAYOUT_01,
     themeId: 1,
     size: {
       width: 1000,
@@ -361,8 +359,7 @@ const layouts = [
     type: LAYOUT_TYPES.SIGNATURES.value,
     name: 'Signature',
     isFavorites: false,
-    previewImageUrl:
-      'https://fms-stage.s3.amazonaws.com/templates/2334/ea90833e672078265455a76fb437f9a5139a81b8.jpg?1619013144',
+    previewImageUrl: LAYOUT_02,
     themeId: 1
   },
   {
@@ -382,8 +379,7 @@ const layouts = [
     type: LAYOUT_TYPES.AWARDS_SUPERLATIVE.value,
     name: 'Awards Superlative',
     isFavorites: false,
-    previewImageUrl:
-      'https://fms-stage.s3.amazonaws.com/templates/2334/ea90833e672078265455a76fb437f9a5139a81b8.jpg?1619013144',
+    previewImageUrl: LAYOUT_01,
     themeId: 1
   },
   {
@@ -403,8 +399,7 @@ const layouts = [
     type: LAYOUT_TYPES.ADMIN_STAFF.value,
     name: 'Admin Staff 1',
     isFavorites: false,
-    previewImageUrl:
-      'https://fms-stage.s3.amazonaws.com/templates/2334/ea90833e672078265455a76fb437f9a5139a81b8.jpg?1619013144',
+    previewImageUrl: LAYOUT_02,
     themeId: 1
   },
   {
@@ -424,8 +419,7 @@ const layouts = [
     type: LAYOUT_TYPES.GRADUATION.value,
     name: 'Graduation 1',
     isFavorites: false,
-    previewImageUrl:
-      'https://fms-stage.s3.amazonaws.com/templates/2334/ea90833e672078265455a76fb437f9a5139a81b8.jpg?1619013144',
+    previewImageUrl: LAYOUT_01,
     themeId: 1
   },
   {
@@ -445,8 +439,7 @@ const layouts = [
     type: LAYOUT_TYPES.INTRO_OPENING_PAGE.value,
     name: 'Intro page 1',
     isFavorites: false,
-    previewImageUrl:
-      'https://fms-stage.s3.amazonaws.com/templates/2334/ea90833e672078265455a76fb437f9a5139a81b8.jpg?1619013144',
+    previewImageUrl: LAYOUT_02,
     themeId: 1
   },
   {
@@ -466,8 +459,7 @@ const layouts = [
     type: LAYOUT_TYPES.CLUBS_GROUPS_TEAMS.value,
     name: 'Club 7',
     isFavorites: false,
-    previewImageUrl:
-      'https://fms-stage.s3.amazonaws.com/templates/2334/ea90833e672078265455a76fb437f9a5139a81b8.jpg?1619013144',
+    previewImageUrl: LAYOUT_01,
     themeId: 7
   },
   {
@@ -487,8 +479,7 @@ const layouts = [
     type: LAYOUT_TYPES.SIMPLE.value,
     name: 'Simple  3',
     isFavorites: false,
-    previewImageUrl:
-      'https://fms-stage.s3.amazonaws.com/templates/2334/ea90833e672078265455a76fb437f9a5139a81b8.jpg?1619013144',
+    previewImageUrl: LAYOUT_02,
     themeId: 3
   },
   {
@@ -508,8 +499,7 @@ const layouts = [
     type: LAYOUT_TYPES.AWARDS_SUPERLATIVE.value,
     name: 'Award  2',
     isFavorites: false,
-    previewImageUrl:
-      'https://fms-stage.s3.amazonaws.com/templates/2334/ea90833e672078265455a76fb437f9a5139a81b8.jpg?1619013144',
+    previewImageUrl: LAYOUT_01,
     themeId: 2
   },
   {
@@ -529,8 +519,7 @@ const layouts = [
     type: LAYOUT_TYPES.AWARDS_SUPERLATIVE.value,
     name: 'Award  4',
     isFavorites: false,
-    previewImageUrl:
-      'https://fms-stage.s3.amazonaws.com/templates/2334/ea90833e672078265455a76fb437f9a5139a81b8.jpg?1619013144',
+    previewImageUrl: LAYOUT_01,
     themeId: 4
   },
   {
@@ -550,8 +539,7 @@ const layouts = [
     type: LAYOUT_TYPES.AWARDS_SUPERLATIVE.value,
     name: 'Award 5',
     isFavorites: false,
-    previewImageUrl:
-      'https://fms-stage.s3.amazonaws.com/templates/2334/ea90833e672078265455a76fb437f9a5139a81b8.jpg?1619013144',
+    previewImageUrl: LAYOUT_01,
     themeId: 3
   },
   {
@@ -571,8 +559,7 @@ const layouts = [
     type: LAYOUT_TYPES.GRADUATION.value,
     name: 'Graduation 12',
     isFavorites: false,
-    previewImageUrl:
-      'https://fms-stage.s3.amazonaws.com/templates/2334/ea90833e672078265455a76fb437f9a5139a81b8.jpg?1619013144',
+    previewImageUrl: LAYOUT_01,
     themeId: 2
   },
   {
@@ -592,8 +579,7 @@ const layouts = [
     type: LAYOUT_TYPES.GRADUATION.value,
     name: 'Graduation 4',
     isFavorites: false,
-    previewImageUrl:
-      'https://fms-stage.s3.amazonaws.com/templates/2334/ea90833e672078265455a76fb437f9a5139a81b8.jpg?1619013144',
+    previewImageUrl: LAYOUT_01,
     themeId: 4
   },
   {
@@ -613,8 +599,7 @@ const layouts = [
     type: LAYOUT_TYPES.COLLAGE.value,
     name: 'Collage 8',
     isFavorites: false,
-    previewImageUrl:
-      'https://fms-stage.s3.amazonaws.com/templates/2334/ea90833e672078265455a76fb437f9a5139a81b8.jpg?1619013144',
+    previewImageUrl: LAYOUT_01,
     themeId: 8
   },
   {
@@ -634,8 +619,7 @@ const layouts = [
     type: LAYOUT_TYPES.COLLAGE.value,
     name: 'Collage 9',
     isFavorites: false,
-    previewImageUrl:
-      'https://fms-stage.s3.amazonaws.com/templates/2334/ea90833e672078265455a76fb437f9a5139a81b8.jpg?1619013144',
+    previewImageUrl: LAYOUT_01,
     themeId: 8
   },
   {
@@ -655,8 +639,7 @@ const layouts = [
     type: LAYOUT_TYPES.INTRO_OPENING_PAGE.value,
     name: 'Intro 2',
     isFavorites: false,
-    previewImageUrl:
-      'https://fms-stage.s3.amazonaws.com/templates/2334/ea90833e672078265455a76fb437f9a5139a81b8.jpg?1619013144',
+    previewImageUrl: LAYOUT_01,
     themeId: 2
   },
   {
@@ -676,8 +659,7 @@ const layouts = [
     type: LAYOUT_TYPES.YEAR_IN_REVIEW.value,
     name: 'Year 4',
     isFavorites: false,
-    previewImageUrl:
-      'https://fms-stage.s3.amazonaws.com/templates/2334/ea90833e672078265455a76fb437f9a5139a81b8.jpg?1619013144',
+    previewImageUrl: LAYOUT_01,
     themeId: 4
   },
   {
@@ -697,8 +679,7 @@ const layouts = [
     type: LAYOUT_TYPES.YEAR_IN_REVIEW.value,
     name: 'Year 5',
     isFavorites: false,
-    previewImageUrl:
-      'https://fms-stage.s3.amazonaws.com/templates/2334/ea90833e672078265455a76fb437f9a5139a81b8.jpg?1619013144',
+    previewImageUrl: LAYOUT_01,
     themeId: 5
   },
   {
@@ -718,8 +699,7 @@ const layouts = [
     type: LAYOUT_TYPES.YEAR_IN_REVIEW.value,
     name: 'Year 6',
     isFavorites: false,
-    previewImageUrl:
-      'https://fms-stage.s3.amazonaws.com/templates/2334/ea90833e672078265455a76fb437f9a5139a81b8.jpg?1619013144',
+    previewImageUrl: LAYOUT_01,
     themeId: 6
   },
   {
@@ -739,8 +719,7 @@ const layouts = [
     type: LAYOUT_TYPES.SIGNATURES.value,
     name: 'Signature 6',
     isFavorites: false,
-    previewImageUrl:
-      'https://fms-stage.s3.amazonaws.com/templates/2334/ea90833e672078265455a76fb437f9a5139a81b8.jpg?1619013144',
+    previewImageUrl: LAYOUT_01,
     themeId: 6
   },
   {
@@ -760,8 +739,7 @@ const layouts = [
     type: LAYOUT_TYPES.YEAR_IN_REVIEW.value,
     name: 'Year 9',
     isFavorites: false,
-    previewImageUrl:
-      'https://fms-stage.s3.amazonaws.com/templates/2334/ea90833e672078265455a76fb437f9a5139a81b8.jpg?1619013144',
+    previewImageUrl: LAYOUT_01,
     themeId: 9
   },
   {
@@ -781,8 +759,7 @@ const layouts = [
     type: LAYOUT_TYPES.SIMPLE.value,
     name: 'Simple 10',
     isFavorites: false,
-    previewImageUrl:
-      'https://fms-stage.s3.amazonaws.com/templates/2334/ea90833e672078265455a76fb437f9a5139a81b8.jpg?1619013144',
+    previewImageUrl: LAYOUT_01,
     themeId: 10
   },
   {
@@ -802,8 +779,7 @@ const layouts = [
     type: LAYOUT_TYPES.SIMPLE.value,
     name: 'Simple 11',
     isFavorites: false,
-    previewImageUrl:
-      'https://fms-stage.s3.amazonaws.com/templates/2334/ea90833e672078265455a76fb437f9a5139a81b8.jpg?1619013144',
+    previewImageUrl: LAYOUT_01,
     themeId: 11
   },
   {
@@ -823,8 +799,7 @@ const layouts = [
     type: LAYOUT_TYPES.AWARDS_SUPERLATIVE.value,
     name: 'Awards 10',
     isFavorites: false,
-    previewImageUrl:
-      'https://fms-stage.s3.amazonaws.com/templates/2334/ea90833e672078265455a76fb437f9a5139a81b8.jpg?1619013144',
+    previewImageUrl: LAYOUT_01,
     themeId: 10
   },
   {
@@ -844,8 +819,7 @@ const layouts = [
     type: LAYOUT_TYPES.YEAR_IN_REVIEW.value,
     name: 'Year 9',
     isFavorites: false,
-    previewImageUrl:
-      'https://fms-stage.s3.amazonaws.com/templates/2334/ea90833e672078265455a76fb437f9a5139a81b8.jpg?1619013144',
+    previewImageUrl: LAYOUT_01,
     themeId: 9
   },
   {
@@ -865,8 +839,7 @@ const layouts = [
     type: LAYOUT_TYPES.SIMPLE.value,
     name: 'Year 9',
     isFavorites: false,
-    previewImageUrl:
-      'https://fms-stage.s3.amazonaws.com/templates/2334/ea90833e672078265455a76fb437f9a5139a81b8.jpg?1619013144',
+    previewImageUrl: LAYOUT_01,
     themeId: 6
   },
   {
@@ -886,8 +859,7 @@ const layouts = [
     type: LAYOUT_TYPES.SIMPLE.value,
     name: 'Simple 9',
     isFavorites: false,
-    previewImageUrl:
-      'https://fms-stage.s3.amazonaws.com/templates/2334/ea90833e672078265455a76fb437f9a5139a81b8.jpg?1619013144',
+    previewImageUrl: LAYOUT_01,
     themeId: 9
   },
   {
@@ -907,8 +879,7 @@ const layouts = [
     type: LAYOUT_TYPES.GRADUATION.value,
     name: 'Graduation 6',
     isFavorites: false,
-    previewImageUrl:
-      'https://fms-stage.s3.amazonaws.com/templates/2334/ea90833e672078265455a76fb437f9a5139a81b8.jpg?1619013144',
+    previewImageUrl: LAYOUT_01,
     themeId: 6
   },
   {
@@ -925,8 +896,7 @@ const layouts = [
     ],
     name: 'Single 6',
     isFavorites: false,
-    previewImageUrl:
-      'https://fms-stage.s3.amazonaws.com/templates/2334/ea90833e672078265455a76fb437f9a5139a81b8.jpg?1619013144',
+    previewImageUrl: LAYOUT_01,
     themeId: 6
   },
   {
@@ -943,8 +913,7 @@ const layouts = [
     ],
     name: 'Single 7',
     isFavorites: false,
-    previewImageUrl:
-      'https://fms-stage.s3.amazonaws.com/templates/2326/f95301bacceccd2c84a8282c2226b60aac6016c2.jpg?1612487744',
+    previewImageUrl: LAYOUT_02,
     themeId: 6
   },
   {
@@ -964,8 +933,7 @@ const layouts = [
     type: LAYOUT_TYPES.COLLAGE.value,
     name: 'Collage 8',
     isFavorites: false,
-    previewImageUrl:
-      'https://fms-stage.s3.amazonaws.com/templates/2334/ea90833e672078265455a76fb437f9a5139a81b8.jpg?1619013144',
+    previewImageUrl: LAYOUT_01,
     themeId: 1
   },
 
@@ -986,8 +954,7 @@ const layouts = [
     type: LAYOUT_TYPES.COLLAGE.value,
     name: 'Collage 36',
     isFavorites: false,
-    previewImageUrl:
-      'https://fms-stage.s3.amazonaws.com/templates/2334/ea90833e672078265455a76fb437f9a5139a81b8.jpg?1619013144',
+    previewImageUrl: LAYOUT_01,
     themeId: 1
   },
   {
@@ -1004,8 +971,7 @@ const layouts = [
     ],
     name: 'Single 1',
     isFavorites: false,
-    previewImageUrl:
-      'https://fms-stage.s3.amazonaws.com/templates/2334/ea90833e672078265455a76fb437f9a5139a81b8.jpg?1619013144',
+    previewImageUrl: LAYOUT_01,
     themeId: 1
   },
 
@@ -1023,8 +989,7 @@ const layouts = [
     ],
     name: 'Single 2',
     isFavorites: false,
-    previewImageUrl:
-      'https://fms-stage.s3.amazonaws.com/templates/2326/f95301bacceccd2c84a8282c2226b60aac6016c2.jpg?1612487744',
+    previewImageUrl: LAYOUT_02,
     themeId: 1
   }
 ];
