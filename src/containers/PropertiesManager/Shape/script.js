@@ -117,25 +117,7 @@ export default {
      * @param {Object} object object containing the value of update size, position or rotate
      */
     onChange(object) {
-      const data = cloneDeep(object);
-      const key = Object.keys(data);
-
-      if (key.includes('size')) {
-        data.size = {
-          ...(data?.size?.width && { width: data.size.width }),
-          ...(data?.size?.height && { height: data.size.height })
-        };
-      }
-
-      if (key.includes('coord')) {
-        data.coord = {
-          ...(data?.coord?.x && { x: splitNumberByDecimal(data.coord.x) }),
-          ...(data?.coord?.y && { y: splitNumberByDecimal(data.coord.y) }),
-          ...(data?.coord?.rotation && { rotation: data.coord.rotation })
-        };
-      }
-
-      this.$root.$emit('printChangeShapeProperties', data);
+      this.$root.$emit('printChangeShapeProperties', object);
     },
     onChangeConstrain(val) {
       this.$root.$emit('printChangeShapeProperties', {
