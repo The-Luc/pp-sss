@@ -5,7 +5,7 @@ import { OBJECT_TYPE } from '@/common/constants';
 
 import { inToPx, isEmpty, mapObject, scaleSize } from '@/common/utils';
 
-const DEFAULT_RULE_DATA = {
+export const DEFAULT_RULE_DATA = {
   TYPE: {
     name: 'objectType'
   },
@@ -23,7 +23,7 @@ const DEFAULT_RULE_DATA = {
   COLOR: {
     name: 'fill'
   },
-  HORIZIONTAL: {
+  HORIZONTAL: {
     name: 'flipX'
   },
   VERTICAL: {
@@ -85,7 +85,7 @@ export const toFabricShapeProp = (prop, originalElement) => {
       y: DEFAULT_RULE_DATA.Y,
       rotation: DEFAULT_RULE_DATA.ROTATION,
       color: DEFAULT_RULE_DATA.COLOR,
-      horizontal: DEFAULT_RULE_DATA.HORIZIONTAL,
+      horizontal: DEFAULT_RULE_DATA.HORIZONTAL,
       vertical: DEFAULT_RULE_DATA.VERTICAL,
       width: {
         name: 'scaleX',
@@ -126,7 +126,7 @@ export const toFabricClipArtProp = prop => {
       y: DEFAULT_RULE_DATA.Y,
       rotation: DEFAULT_RULE_DATA.ROTATION,
       color: DEFAULT_RULE_DATA.COLOR,
-      horizontal: DEFAULT_RULE_DATA.HORIZIONTAL,
+      horizontal: DEFAULT_RULE_DATA.HORIZONTAL,
       vertical: DEFAULT_RULE_DATA.VERTICAL
     },
     restrict: ['id', 'name', 'thumbnail', 'border', 'shadow']

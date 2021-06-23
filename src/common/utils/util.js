@@ -2,7 +2,7 @@ import { cloneDeep, merge, intersection } from 'lodash';
 import moment from 'moment';
 
 import { DATE_FORMAT, MOMENT_TYPE } from '@/common/constants';
-
+import { DEFAULT_RULE_DATA } from '@/common/fabricObjects/common';
 import { scaleSize, inToPx } from './canvas';
 
 /**
@@ -272,14 +272,8 @@ export const toCssStyle = style => {
 export const toFabricTextProp = prop => {
   const mapRules = {
     data: {
-      x: {
-        name: 'left',
-        parse: value => inToPx(value)
-      },
-      y: {
-        name: 'top',
-        parse: value => inToPx(value)
-      },
+      x: DEFAULT_RULE_DATA.X,
+      y: DEFAULT_RULE_DATA.Y,
       isBold: {
         name: 'fontWeight',
         parse: value => (value ? 'bold' : '')
@@ -306,9 +300,6 @@ export const toFabricTextProp = prop => {
       },
       letterSpacing: {
         name: 'charSpacing'
-      },
-      rotation: {
-        name: 'angle'
       }
     },
     restrict: [
@@ -319,7 +310,8 @@ export const toFabricTextProp = prop => {
       'text',
       'border',
       'shadow',
-      'flip'
+      'flip',
+      'rotation'
     ]
   };
 
@@ -335,33 +327,33 @@ export const toFabricTextProp = prop => {
 export const toFabricTextBorderProp = prop => {
   const mapRules = {
     data: {
-      x: {
-        name: 'left',
-        parse: value => scaleSize(value)
-      },
-      y: {
-        name: 'top',
-        parse: value => scaleSize(value)
-      },
-      fill: {
-        name: 'fill'
-      },
-      stroke: {
-        name: 'stroke'
-      },
+      x: DEFAULT_RULE_DATA.X,
+      y: DEFAULT_RULE_DATA.Y,
       strokeWidth: {
         name: 'strokeWidth',
         parse: value => scaleSize(value)
-      },
-      strokeDashArray: {
-        name: 'strokeDashArray'
-      },
-      strokeLineCap: {
-        name: 'strokeLineCap'
-      },
-      opacity: {
-        name: 'opacity'
       }
+    },
+    restrict: ['id', 'shadow', 'flip', 'rotation']
+  };
+
+  return mapObject(prop, mapRules);
+};
+
+/**
+ * Convert stored text group properties to fabric properties
+ *
+ * @param   {Object}  style stored text border properties
+ * @returns {Object}        fabric properties
+ */
+export const toFabricTextGroupProp = prop => {
+  const mapRules = {
+    data: {
+      x: DEFAULT_RULE_DATA.X,
+      y: DEFAULT_RULE_DATA.Y,
+      rotation: DEFAULT_RULE_DATA.ROTATION,
+      horizontal: DEFAULT_RULE_DATA.HORIZONTAL,
+      vertical: DEFAULT_RULE_DATA.VERTICAL
     },
     restrict: ['id', 'shadow']
   };
@@ -380,11 +372,11 @@ export const toFabricImageProp = prop => {
     data: {
       x: {
         name: 'left',
-        parse: value => scaleSize(value)
+        parse: value => inToPx(value)
       },
       y: {
         name: 'top',
-        parse: value => scaleSize(value)
+        parse: value => inToPx(value)
       },
       color: {
         name: 'fill'

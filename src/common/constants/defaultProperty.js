@@ -1,5 +1,5 @@
 import { TEXT_CASE } from './textCase';
-import { TEXT_HORIZIONTAL_ALIGN, TEXT_VERTICAL_ALIGN } from './textAlign';
+import { TEXT_HORIZONTAL_ALIGN, TEXT_VERTICAL_ALIGN } from './textAlign';
 import { BACKGROUND_TYPE, BACKGROUND_PAGE_TYPE } from './backgroundType';
 import { PRINT_PAGE_SIZE } from './canvas';
 
@@ -42,7 +42,7 @@ export const DEFAULT_TEXT = {
   IS_ITALIC: false,
   IS_UNDERLINE: false,
   ALIGNMENT: {
-    HORIZIONTAL: TEXT_HORIZIONTAL_ALIGN.LEFT,
+    HORIZONTAL: TEXT_HORIZONTAL_ALIGN.LEFT,
     VERTICAL: TEXT_VERTICAL_ALIGN.TOP
   },
   LETTER_SPACING: 0,
