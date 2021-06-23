@@ -6,6 +6,7 @@ import { usePrintOverrides } from '@/plugins/fabric';
 
 import { useDrawLayout } from '@/hooks';
 import { startDrawBox } from '@/common/fabricObjects/drawingBox';
+
 import {
   isEmpty,
   getCoverPagePrintSize,
@@ -52,6 +53,7 @@ import {
   TOOL_NAME,
   SHEET_TYPE,
   OBJECT_TYPE,
+  ARRANGE_SEND,
   CORNER_SIZE,
   DEFAULT_SHAPE,
   COVER_TYPE
@@ -100,7 +102,8 @@ export default {
       isOpenMenuProperties: APP_GETTERS.IS_OPEN_MENU_PROPERTIES,
       isOpenColorPicker: APP_GETTERS.IS_OPEN_COLOR_PICKER,
       selectedObject: PRINT_GETTERS.CURRENT_OBJECT,
-      toolNameSelected: APP_GETTERS.SELECTED_TOOL_NAME
+      toolNameSelected: APP_GETTERS.SELECTED_TOOL_NAME,
+      currentBackgrounds: PRINT_GETTERS.BACKGROUNDS
     }),
     isCover() {
       return this.pageSelected?.type === SHEET_TYPE.COVER;
@@ -175,8 +178,6 @@ export default {
       setSelectedObjectId: PRINT_MUTATES.SET_CURRENT_OBJECT_ID,
       addNewObject: PRINT_MUTATES.ADD_OBJECT,
       setObjectProp: PRINT_MUTATES.SET_PROP,
-      setObjectPropById: PRINT_MUTATES.SET_PROP_BY_ID,
-      setPropOfMutiObjects: PRINT_MUTATES.SET_PROP_OF_MULIPLE_OBJECTS,
       updateTriggerTextChange: PRINT_MUTATES.UPDATE_TRIGGER_TEXT_CHANGE,
       addNewBackground: PRINT_MUTATES.SET_BACKGROUNDS,
       updateTriggerBackgroundChange:
@@ -185,6 +186,7 @@ export default {
       updateTriggerShapeChange: PRINT_MUTATES.UPDATE_TRIGGER_SHAPE_CHANGE,
       setThumbnail: PRINT_MUTATES.UPDATE_SHEET_THUMBNAIL,
       updateTriggerClipArtChange: PRINT_MUTATES.UPDATE_TRIGGER_CLIPART_CHANGE,
+      reorderObjectIds: PRINT_MUTATES.REORDER_OBJECT_IDS,
       toggleActiveObjects: MUTATES.TOGGLE_ACTIVE_OBJECTS
     }),
     /**
@@ -303,14 +305,6 @@ export default {
               }
             );
           }
-        },
-        'object:added': ({ target }) => {
-          if (
-            target.objectType &&
-            target.objectType !== OBJECT_TYPE.BACKGROUND
-          ) {
-            this.$root.$emit('updateZIndexToStore');
-          }
         }
       });
 
@@ -367,8 +361,8 @@ export default {
         this.changeShapeProperties(prop);
       });
 
-      this.$root.$on('updateZIndexToStore', () => {
-        this.updateZIndexToStore();
+      this.$root.$on('changeObjectIdsOrder', actionName => {
+        this.changeObjectIdsOrder(actionName);
       });
 
       this.$root.$on('printChangeClipArtProperties', prop => {
@@ -877,27 +871,7 @@ export default {
       );
     },
     /**
-     * update z-index of objecs on canvas to:
-     *   + objects in the store (print/objects Z-index)
-     *   + objects on fabric canvas
-     */
-    updateZIndexToStore() {
-      const allObjects = window.printCanvas.getObjects();
-      // z-index is equvalent to the index of object in allObjects array
-      const data = [];
-      allObjects.forEach((o, index) => {
-        if (o.objectType && o.objectType != OBJECT_TYPE.BACKGROUND)
-          data.push({ id: o.id, prop: { zIndex: index } });
-        // update on fabric object
-        o.zIndex = index;
-      });
-
-      // call mutation to update to store
-      this.setPropOfMutiObjects(data);
-    },
-
-    /**
-     * Event fire when user change any property of selected shape
+     * Event fire when user change any property of selected clipart
      *
      * @param {Object}  prop  new prop
      */
@@ -932,6 +906,77 @@ export default {
 
       updateElement(element, prop, window.printCanvas);
     },
+
+    /**
+     * get fired when you click 'send' button
+     * change the objectIds order and update z-index of object on canvas
+     * @param {string} actionName indicated which 'send' button user clicked
+     */
+    changeObjectIdsOrder(actionName) {
+      const selectedObject = window.printCanvas.getActiveObject();
+      if (!selectedObject) return;
+
+      const fabricObjects = window.printCanvas.getObjects();
+
+      const numBackground = this.currentBackgrounds.length;
+
+      // if there is only one object -> return
+      if (fabricObjects.length <= numBackground + 1) return;
+
+      // indexs based on fabric object array
+      let currentObjectIndex = fabricObjects.indexOf(selectedObject);
+      let maxIndex = fabricObjects.length - 1;
+
+      // calculate the indexs exclude the number of background
+      currentObjectIndex -= numBackground;
+      maxIndex -= numBackground;
+
+      /**
+       * to call the mutation to re-order objectIds in store and
+       * to update the order of objects on canvas
+       * @param {Number} oldIndex the current index of the selected object
+       * @param {Number} newIndex the new index that the current object will be moved to
+       */
+      const updateZIndex = (oldIndex, newIndex) => {
+        // update to store
+        this.reorderObjectIds({ oldIndex, newIndex });
+        // udpate to fabric objects on canvas
+        fabricObjects[oldIndex + numBackground].moveTo(
+          newIndex + numBackground
+        );
+      };
+
+      if (actionName === ARRANGE_SEND.BACK && currentObjectIndex === 0) return;
+      if (actionName === ARRANGE_SEND.BACK) {
+        updateZIndex(currentObjectIndex, 0);
+        return;
+      }
+
+      if (actionName === ARRANGE_SEND.FRONT && currentObjectIndex === maxIndex)
+        return;
+      if (actionName === ARRANGE_SEND.FRONT) {
+        updateZIndex(currentObjectIndex, maxIndex);
+        return;
+      }
+
+      if (actionName === ARRANGE_SEND.BACKWARD && currentObjectIndex === 0)
+        return;
+      if (actionName === ARRANGE_SEND.BACKWARD) {
+        updateZIndex(currentObjectIndex, currentObjectIndex - 1);
+        return;
+      }
+
+      if (
+        actionName === ARRANGE_SEND.FORWARD &&
+        currentObjectIndex === maxIndex
+      )
+        return;
+      if (actionName === ARRANGE_SEND.FORWARD) {
+        updateZIndex(currentObjectIndex, currentObjectIndex + 1);
+        return;
+      }
+    },
+
     /**
      * Callback function for handle moved to update shape's dimension
      * @param {Object} e - Shape element

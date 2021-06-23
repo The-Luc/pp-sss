@@ -1,4 +1,5 @@
 import { fabric } from 'fabric';
+import { cloneDeep } from 'lodash';
 
 import { OBJECT_TYPE } from '@/common/constants';
 
@@ -30,15 +31,15 @@ const DEFAULT_RULE_DATA = {
   }
 };
 
-// TODO use later
-/* const DEFAULT_RULE_RESTRICT = ['id', 'name'];
-
-const NORMAL_RULES = {
-  data: {
-    type: DEFAULT_RULE_DATA.TYPE
-  },
-  restrict: DEFAULT_RULE_RESTRICT
-}; */
+const RESTRICT_PROP_CHILD = [
+  'scaleX',
+  'scaleY',
+  'angle',
+  'flipX',
+  'flipY',
+  'top',
+  'left'
+];
 
 /**
  * Convert stored properties to fabric properties
@@ -90,7 +91,7 @@ export const toFabricShapeProp = (prop, originalElement) => {
       },
       rotation: DEFAULT_RULE_DATA.ROTATION,
       color: DEFAULT_RULE_DATA.COLOR,
-      horiziontal: DEFAULT_RULE_DATA.HORIZIONTAL,
+      horizontal: DEFAULT_RULE_DATA.HORIZIONTAL,
       vertical: DEFAULT_RULE_DATA.VERTICAL,
       width: {
         name: 'scaleX',
@@ -131,7 +132,7 @@ export const toFabricClipArtProp = prop => {
       y: DEFAULT_RULE_DATA.Y,
       rotation: DEFAULT_RULE_DATA.ROTATION,
       color: DEFAULT_RULE_DATA.COLOR,
-      horiziontal: DEFAULT_RULE_DATA.HORIZIONTAL,
+      horizontal: DEFAULT_RULE_DATA.HORIZIONTAL,
       vertical: DEFAULT_RULE_DATA.VERTICAL
     },
     restrict: ['id', 'name', 'thumbnail', 'border', 'shadow']
@@ -202,18 +203,16 @@ export const updateElement = (element, prop, canvas) => {
  * @param {Object}  prop    new property
  */
 export const setElementProp = (element, prop) => {
-  element.set(prop);
+  const useProp = cloneDeep(prop);
 
-  const key = Object.keys(prop);
+  element.set(useProp);
 
-  const isSvgEl = element?.objectType === OBJECT_TYPE.SHAPE;
-  const isModifySize = ['scaleX', 'scaleY'].includes(key[0]);
-  const isModifyRotate = ['angle'].includes(key[0]);
+  RESTRICT_PROP_CHILD.forEach(rp => {
+    delete useProp[rp];
+  });
 
   if (element.getObjects) {
-    if ((isSvgEl && isModifySize) || isModifyRotate) return;
-
-    element.getObjects().forEach(o => o.set(prop));
+    element.getObjects().forEach(o => o.set(useProp));
   }
 };
 

@@ -115,8 +115,8 @@ export const createTextBox = (x, y, width, height, textProperties, sheetId) => {
       });
 
       // add grp to canvas at the same z-index as the one before editing
-      canvas._objects.splice(groupZIndex, 0, grp);
-      canvas._onObjectAdded(grp);
+      canvas.add(grp);
+      grp.moveTo(groupZIndex);
 
       addGroupEvents(grp);
     };
@@ -215,7 +215,7 @@ export const createTextBox = (x, y, width, height, textProperties, sheetId) => {
     const canvas = e.target.canvas;
     if (isEmpty(canvas)) return;
 
-    groupZIndex = e.target.zIndex;
+    groupZIndex = canvas.getObjects().indexOf(e.target);
 
     ungroup(e.target);
     toggleStroke(rect, true);

@@ -25,7 +25,7 @@ const mockClipArts = [
     vector: 'clip-art-1.svg',
     large:
       'https://s3.amazonaws.com/fms.prod/yb_clipart/global/3139/set2-35_large.png',
-    isColorful: false
+    isColorful: true
   },
   {
     id: 3138,
@@ -36,7 +36,7 @@ const mockClipArts = [
     vector: 'clip-art-2.svg',
     large:
       'https://s3.amazonaws.com/fms.prod/yb_clipart/global/3138/set2-34_large.png',
-    isColorful: false
+    isColorful: true
   },
   {
     id: 3137,
@@ -135,7 +135,8 @@ const mockClipArts = [
     vector: 'clip-art-11.svg',
     large:
       'https://s3.amazonaws.com/fms.prod/yb_clipart/global/3129/set2-20_large.png',
-    isColorful: true
+    isColorful: false,
+    color: '#ae0210'
   },
   {
     id: 3128,
@@ -157,7 +158,8 @@ const mockClipArts = [
     vector: 'clip-art-13.svg',
     large:
       'https://s3.amazonaws.com/fms.prod/yb_clipart/global/3127/set2-16_large.png',
-    isColorful: true
+    isColorful: false,
+    color: '#808080'
   },
   {
     id: 3126,
@@ -394,13 +396,7 @@ const mockClipArts = [
 
 const mappedClipArts = mockClipArts.map(c => ({
   ...ClipArtElement,
-  id: c.id,
-  name: c.name,
-  category: c.category,
-  thumbnail: c.thumbnail,
-  vector: c.vector,
-  large: c.large,
-  isColorful: c.isColorful
+  ...c
 }));
 
 export default mappedClipArts;

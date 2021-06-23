@@ -55,9 +55,6 @@ export const mutations = {
     if (isFullBackground(background)) {
       background.isLeft = true;
 
-      // adding z-index to background
-      background.zIndex = 0;
-
       state.background.left = background;
       state.background.right = {};
 
@@ -75,9 +72,6 @@ export const mutations = {
     const isSheetLeft = isHalfLeft(state.sheets[state.currentSheetId]);
 
     background.isLeft = isSheetLeft;
-
-    // adding z-index to background
-    background.zIndex = isSheetLeft ? 0 : 1;
 
     state.background.left = isSheetLeft ? background : {};
     state.background.right = isSheetLeft ? {} : background;
@@ -248,5 +242,9 @@ export const mutations = {
   },
   [PRINT._MUTATES.UPDATE_SHEET_THUMBNAIL](state, { thumbnailUrl, sheetId }) {
     state.sheets[sheetId].thumbnailUrl = thumbnailUrl;
+  },
+  [PRINT._MUTATES.REORDER_OBJECT_IDS](state, { oldIndex, newIndex }) {
+    const [id] = state.objectIds.splice(oldIndex, 1);
+    state.objectIds.splice(newIndex, 0, id);
   }
 };

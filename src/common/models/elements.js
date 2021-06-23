@@ -4,7 +4,8 @@ import {
   DEFAULT_TEXT,
   DEFAULT_IMAGE,
   DEFAULT_BACKGROUND,
-  DEFAULT_SHAPE
+  DEFAULT_SHAPE,
+  DEFAULT_CLIP_ART
 } from '@/common/constants';
 
 export const BaseElement = {
@@ -36,10 +37,9 @@ export const BaseElement = {
     blur: 0
   },
   flip: {
-    horiziontal: false,
+    horizontal: false,
     vertical: false
-  },
-  zIndex: -1
+  }
 };
 
 export const BasePrintProperty = {
@@ -68,7 +68,7 @@ export const TextElement = {
   isUnderline: DEFAULT_TEXT.IS_UNDERLINE,
   textCase: DEFAULT_TEXT.TEXT_CASE, // UPPERCASE, LOWERCASE, CAPITALIZE
   alignment: {
-    horiziontal: DEFAULT_TEXT.ALIGNMENT.HORIZIONTAL, // LEFT, CENTER, RIGHT, JUSTIFY
+    horizontal: DEFAULT_TEXT.ALIGNMENT.HORIZIONTAL, // LEFT, CENTER, RIGHT, JUSTIFY
     vertical: DEFAULT_TEXT.ALIGNMENT.VERTICAL // TOP, MIDDLE, BOTTOM
   },
   letterSpacing: DEFAULT_TEXT.LETTER_SPACING,
@@ -119,6 +119,10 @@ export const BackgroundElement = {
 export const ClipArtElement = {
   ...BaseElement,
   type: OBJECT_TYPE.CLIP_ART,
+  size: {
+    width: DEFAULT_CLIP_ART.WIDTH,
+    height: DEFAULT_CLIP_ART.HEIGHT
+  },
   category: '',
   name: '',
   thumbnail: '',

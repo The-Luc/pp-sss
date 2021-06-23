@@ -1,4 +1,5 @@
 export * from './api';
+export * from './arrange';
 export * from './book';
 export * from './icon';
 export * from './modal';
