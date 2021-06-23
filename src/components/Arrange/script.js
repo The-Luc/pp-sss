@@ -3,16 +3,8 @@ import Size from '@/components/Arrange/Size';
 import Position from '@/components/Arrange/Position';
 import Flip from '@/components/Arrange/Flip';
 import Rotate from '@/components/Arrange/Rotate';
-import { useObject } from '@/hooks';
 
 export default {
-  setup() {
-    const { selectObjectProp, triggerChange } = useObject();
-    return {
-      selectObjectProp,
-      triggerChange
-    };
-  },
   components: {
     Send,
     Size,
