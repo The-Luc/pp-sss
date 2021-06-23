@@ -152,8 +152,7 @@ export default {
             .remove(...window.printCanvas.getObjects())
             .renderAll();
           this.updateCanvasSize();
-          const sheetPrintData = this.sheetLayout(val.id);
-          this.drawLayout(sheetPrintData);
+          this.drawLayout(this.sheetLayout);
         }
       }
     }
@@ -170,7 +169,8 @@ export default {
   },
   methods: {
     ...mapActions({
-      getDataPageEdit: PRINT_ACTIONS.GET_DATA_EDIT
+      getDataPageEdit: PRINT_ACTIONS.GET_DATA_EDIT,
+      getDataCanvas: PRINT_ACTIONS.GET_DATA_CANVAS
     }),
     ...mapMutations({
       setBookId: PRINT_MUTATES.SET_BOOK_ID,
@@ -244,8 +244,7 @@ export default {
       this.canvasSize = { ...canvasSize, zoom: currentZoom };
       window.printCanvas.setWidth(canvasSize.width);
       window.printCanvas.setHeight(canvasSize.height);
-      const sheetPrintData = this.sheetLayout(this.pageSelected?.id);
-      this.drawLayout(sheetPrintData);
+      this.drawLayout(this.sheetLayout);
       window.printCanvas.setZoom(currentZoom);
     },
     getThumbnailUrl: debounce(function() {
@@ -468,9 +467,8 @@ export default {
      * @param {Element}  group  Group object
      */
     setBorderHighLight(group) {
-      const layout = this.sheetLayout(this.pageSelected?.id);
       group.set({
-        borderColor: layout?.id ? 'white' : '#bcbec0'
+        borderColor: this.sheetLayout?.id ? 'white' : '#bcbec0'
       });
     },
     /**

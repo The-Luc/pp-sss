@@ -54,22 +54,22 @@ export const getters = {
     }
     return [];
   },
-  [PRINT._GETTERS.SHEET_LAYOUT]: ({ sheets, objects }) => sheetId => {
-    const sheet = sheets[sheetId];
+  [PRINT._GETTERS.SHEET_LAYOUT]: ({
+    sheets,
+    objects,
+    currentSheetId,
+    background
+  }) => {
+    const sheet = sheets[currentSheetId];
 
     const sheetLayoutId = sheet?.layoutId;
     if (!sheetLayoutId) {
       return {};
     }
-    const sheetObjIds = sheet.objects;
-    const sheetLayout = new Array([], []);
-    if (sheetObjIds.length > 0) {
-      sheetObjIds.forEach((objId, index) => {
-        const data = pick(objects, ...objId);
-        sheetLayout[index] = Object.values(data);
-      });
-    }
-    return sheetLayout;
+    return {
+      objects,
+      background
+    };
   },
   [PRINT._GETTERS.GET_SHEETS]: ({ sheets }) => {
     return sheets;
