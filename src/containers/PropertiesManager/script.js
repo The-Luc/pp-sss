@@ -39,13 +39,13 @@ export default {
   },
   computed: {
     ...mapGetters({
-      selectedObjectType: GETTERS.SELECTED_OBJECT_TYPE,
+      propertiesObjectType: GETTERS.PROPERTIES_OBJECT_TYPE,
       isOpenColorPicker: GETTERS.IS_OPEN_COLOR_PICKER,
       propsData: GETTERS.COLOR_PICKER_CUSTOM_PROPS
     })
   },
   watch: {
-    selectedObjectType(objectType) {
+    propertiesObjectType(objectType) {
       if (objectType) {
         this.setObjectComponent(objectType);
       }

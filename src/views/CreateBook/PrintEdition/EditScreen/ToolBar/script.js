@@ -3,8 +3,10 @@ import ToolButton from '@/components/Buttons/ToolButton';
 import ItemTool from './ItemTool';
 import { GETTERS, MUTATES } from '@/store/modules/app/const';
 import { GETTERS as BOOK_GETTERS } from '@/store/modules/book/const';
-import { TOOL_NAME, OBJECT_TYPE } from '@/common/constants';
+import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
+import { TOOL_NAME, OBJECT_TYPE, RIGHT_TOOLS } from '@/common/constants';
 import { useLayoutPrompt } from '@/hooks';
+import { isEmpty } from '@/common/utils';
 
 export default {
   setup() {
@@ -24,6 +26,14 @@ export default {
     ItemTool
   },
   data() {
+    const rightTools = Object.keys(RIGHT_TOOLS).map(k => {
+      return {
+        iconName: RIGHT_TOOLS[k].iconName,
+        title: RIGHT_TOOLS[k].name,
+        name: RIGHT_TOOLS[k].value
+      };
+    });
+
     return {
       itemsToolLeft: [
         [
@@ -104,20 +114,7 @@ export default {
           }
         ]
       ],
-      itemsToolRight: [
-        [
-          {
-            iconName: 'list_alt',
-            title: 'Page Info',
-            name: 'pageInfo'
-          },
-          {
-            iconName: 'wysiwyg',
-            title: 'Properties',
-            name: 'properties'
-          }
-        ]
-      ]
+      itemsToolRight: [rightTools]
     };
   },
   computed: {
@@ -125,7 +122,9 @@ export default {
       selectedObjectType: GETTERS.SELECTED_OBJECT_TYPE,
       isOpenMenuProperties: GETTERS.IS_OPEN_MENU_PROPERTIES,
       selectedToolName: GETTERS.SELECTED_TOOL_NAME,
-      printThemeSelectedId: BOOK_GETTERS.PRINT_THEME_SELECTED_ID
+      printThemeSelectedId: BOOK_GETTERS.PRINT_THEME_SELECTED_ID,
+      currentBackgrounds: PRINT_GETTERS.BACKGROUNDS,
+      propertiesObjectType: GETTERS.PROPERTIES_OBJECT_TYPE
     })
   },
   methods: {
@@ -133,7 +132,8 @@ export default {
       setObjectTypeSelected: MUTATES.SET_OBJECT_TYPE_SELECTED,
       setIsOpenProperties: MUTATES.TOGGLE_MENU_PROPERTIES,
       toggleColorPicker: MUTATES.TOGGLE_COLOR_PICKER,
-      setToolNameSelected: MUTATES.SET_TOOL_NAME_SELECTED
+      setToolNameSelected: MUTATES.SET_TOOL_NAME_SELECTED,
+      setPropertiesObjectType: MUTATES.SET_PROPERTIES_OBJECT_TYPE
     }),
     /**
      * Detect click on item on right creation tool
@@ -143,23 +143,49 @@ export default {
       if (!this.printThemeSelectedId) {
         return;
       }
-      switch (item.name) {
-        case 'properties':
-          if (!this.selectedObjectType) {
-            return;
-          }
-          this.setIsOpenProperties({
-            isOpen: !this.isOpenMenuProperties
-          });
-          this.toggleColorPicker({
-            isOpen: false
-          });
-          this.setObjectTypeSelected({
+
+      if (item.name === RIGHT_TOOLS.PROPERTIES.value) {
+        if (!this.selectedObjectType) {
+          return;
+        }
+
+        this.toggleColorPicker({
+          isOpen: false
+        });
+
+        if (this.propertiesObjectType === OBJECT_TYPE.BACKGROUND) {
+          this.setPropertiesObjectType({
             type: this.selectedObjectType
           });
-          break;
-        default:
-          break;
+
+          this.setIsOpenProperties({
+            isOpen: true
+          });
+
+          return;
+        }
+
+        this.setPropertiesObjectType({
+          type: this.selectedObjectType
+        });
+
+        this.setIsOpenProperties({
+          isOpen: !this.isOpenMenuProperties
+        });
+
+        return;
+      }
+
+      if (item.name === RIGHT_TOOLS.BACKGROUND.value) {
+        const isToggle =
+          isEmpty(this.selectedObjectType) ||
+          this.propertiesObjectType === OBJECT_TYPE.BACKGROUND;
+
+        isToggle
+          ? this.toggleBackgroundProperties()
+          : this.openBackgroundProperties();
+
+        return;
       }
     },
     /**
@@ -226,6 +252,28 @@ export default {
      */
     deleteElements() {
       this.$root.$emit('printDeleteElements');
+    },
+    toggleBackgroundProperties() {
+      this.setPropertiesObjectType({
+        type: OBJECT_TYPE.BACKGROUND
+      });
+
+      this.setIsOpenProperties({
+        isOpen: !this.isOpenMenuProperties
+      });
+    },
+    openBackgroundProperties() {
+      this.toggleColorPicker({
+        isOpen: false
+      });
+
+      this.setPropertiesObjectType({
+        type: OBJECT_TYPE.BACKGROUND
+      });
+
+      this.setIsOpenProperties({
+        isOpen: true
+      });
     }
   }
 };

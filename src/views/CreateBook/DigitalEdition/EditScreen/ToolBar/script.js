@@ -132,14 +132,16 @@ export default {
       selectedObjectType: GETTERS.SELECTED_OBJECT_TYPE,
       isOpenMenuProperties: GETTERS.IS_OPEN_MENU_PROPERTIES,
       selectedToolName: GETTERS.SELECTED_TOOL_NAME,
-      printThemeSelectedId: BOOK_GETTERS.PRINT_THEME_SELECTED_ID
+      printThemeSelectedId: BOOK_GETTERS.PRINT_THEME_SELECTED_ID,
+      propertiesObjectType: GETTERS.PROPERTIES_OBJECT_TYPE
     })
   },
   methods: {
     ...mapMutations({
       setObjectTypeSelected: MUTATES.SET_OBJECT_TYPE_SELECTED,
       setIsOpenProperties: MUTATES.TOGGLE_MENU_PROPERTIES,
-      setToolNameSelected: MUTATES.SET_TOOL_NAME_SELECTED
+      setToolNameSelected: MUTATES.SET_TOOL_NAME_SELECTED,
+      setPropertiesObjectType: MUTATES.SET_PROPERTIES_OBJECT_TYPE
     }),
     /**
      * Detect click on item on right creation tool
