@@ -80,6 +80,8 @@ export default {
     return { drawLayout };
   },
   created() {
+    this.setBookId({ bookId: this.$route.params.bookId });
+
     this.getDataPageEdit();
   },
   data() {
