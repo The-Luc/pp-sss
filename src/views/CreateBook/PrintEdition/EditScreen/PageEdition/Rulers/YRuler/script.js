@@ -25,14 +25,14 @@ export default {
       }
 
       const {
-        inches: { pdfHeight, bleedY, spineWidth }
+        inches: { pdfHeight, bleedTop, spineWidth }
       } = this.pageSize;
       const { height } = this.canvasSize;
 
       return {
         height: height / pdfHeight,
         count: Math.floor(pdfHeight),
-        bleedY: spineWidth > 0 ? 0 : bleedY
+        bleed: spineWidth > 0 ? 0 : bleedTop
       };
     },
     unitArray() {
@@ -56,13 +56,13 @@ export default {
       return units;
     },
     containerStyle() {
-      const { height, bleedY } = this.config;
+      const { height, bleed } = this.config;
       if (!height) {
         return { height: 0 };
       }
       return {
         height: this.unitArray.length * height + 'px',
-        top: (bleedY === 0 ? 0 : bleedY * height) - 1 + 'px'
+        top: (bleed === 0 ? 0 : bleed * height) - 1 + 'px'
       };
     }
   }

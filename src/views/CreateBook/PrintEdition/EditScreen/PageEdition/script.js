@@ -227,7 +227,6 @@ export default {
       this.printSize = this.isCover
         ? getCoverPagePrintSize(this.isHardCover, this.book.numberMaxPages)
         : getPagePrintSize();
-      console.log('this.printSize', this.printSize.inches);
       const canvasSize = {
         width: 0,
         height: 0
