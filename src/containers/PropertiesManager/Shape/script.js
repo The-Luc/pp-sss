@@ -1,6 +1,7 @@
 import { mapGetters, mapMutations } from 'vuex';
 import { cloneDeep } from 'lodash';
 
+import { splitNumberByDecimal } from '@/common/utils';
 import { useShapeProperties } from '@/hooks';
 import Properties from '@/components/Properties/BoxProperties';
 import TabMenu from '@/components/TabMenu';
@@ -85,6 +86,42 @@ export default {
           break;
       }
       return res;
+    },
+    minPosition() {
+      const objectType = this.currentArrange.type;
+      let res = 0;
+      switch (objectType) {
+        case OBJECT_TYPE.SHAPE:
+          res = -100;
+          break;
+        default:
+          break;
+      }
+      return res;
+    },
+    maxPosition() {
+      const objectType = this.currentArrange.type;
+      let res = 0;
+      switch (objectType) {
+        case OBJECT_TYPE.SHAPE:
+          res = 100;
+          break;
+        default:
+          break;
+      }
+      return res;
+    },
+    position() {
+      if (this.triggerChange) {
+        // just for trigger the change
+      }
+
+      const coord = this.getProperty('coord');
+
+      return {
+        x: coord?.x || 0,
+        y: coord?.y || 0
+      };
     }
   },
   methods: {
@@ -117,6 +154,13 @@ export default {
         data.size = {
           ...(data?.size?.width && { width: data.size.width }),
           ...(data?.size?.height && { height: data.size.height })
+        };
+      }
+      if (key.includes('coord')) {
+        data.coord = {
+          ...(data?.coord?.x && { x: splitNumberByDecimal(data.coord.x) }),
+          ...(data?.coord?.y && { y: splitNumberByDecimal(data.coord.y) }),
+          ...(data?.coord?.rotation && { rotation: data.coord.rotation })
         };
       }
       this.$root.$emit('printChangeShapeProperties', data);

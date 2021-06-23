@@ -28,13 +28,11 @@ import {
   addPrintBackground,
   updatePrintBackground,
   getAdjustedObjectDimension,
-  addPrintShapes
+  addPrintShapes,
+  addPrintClipArts
 } from '@/common/fabricObjects';
 
-import {
-  toFabricClipArtProp,
-  updateElement
-} from '@/common/fabricObjects/common';
+import { updateElement } from '@/common/fabricObjects/common';
 
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
 import { GETTERS } from '@/store/modules/book/const';
@@ -55,8 +53,6 @@ import {
   SHEET_TYPE,
   OBJECT_TYPE,
   CORNER_SIZE,
-  HALF_SHEET,
-  HALF_LEFT,
   DEFAULT_SHAPE,
   COVER_TYPE
 } from '@/common/constants';
@@ -65,7 +61,6 @@ import PrintCanvasLines from './PrintCanvasLines';
 import PageWrapper from './PageWrapper';
 import XRuler from './Rulers/XRuler';
 import YRuler from './Rulers/YRuler';
-import { addSingleSvg, addMultiSvg } from '@/common/fabricObjects/common';
 import { isFabricObject } from '@/common/utils/string';
 import { COPY_OBJECT_KEY } from '@/common/constants/config';
 
@@ -512,7 +507,7 @@ export default {
 
       const objectData = this.selectedObject;
 
-      if (targetType === 'group' && target.objectType !== OBJECT_TYPE.SHAPE) {
+      if (targetType === 'group' && target.objectType === OBJECT_TYPE.TEXT) {
         const rectObj = target.getObjects(OBJECT_TYPE.RECT)[0];
 
         this.setBorderObject(rectObj, objectData);
@@ -683,62 +678,58 @@ export default {
      * @param {Array} clipArts - list clip art add on Canvas
      */
     async addClipArt(clipArts) {
-      const { width, height } = window.printCanvas;
-      const zoom = window.printCanvas.getZoom();
-      const isAHalfSheet = HALF_SHEET.indexOf(this.pageSelected.type) >= 0;
-      const isALeftSheet = HALF_LEFT.indexOf(this.pageSelected.type) >= 0;
-      const svgs = await Promise.all(
-        clipArts.map(item => {
-          let id = uniqueId();
-          let newClipArt = cloneDeep(ClipArtElement);
-          merge(newClipArt, item);
-          this.addNewObject({
-            id: id,
-            newObject: {
-              ...newClipArt,
-              id
-            }
-          });
+      const toBeAddedClipArts = clipArts.map(c => {
+        const newClipArt = cloneDeep(ClipArtElement);
 
-          let fabricProp = toFabricClipArtProp(newClipArt);
-          return new Promise(resolve => {
-            fabric.loadSVGFromURL(
-              require(`../../../../../assets/image/clip-art/${item.vector}`),
-              (objects, options) => {
-                let svgData = fabric.util.groupSVGElements(objects, options);
-                svgData.on('rotated', this.handleRotated);
-                svgData
-                  .set({
-                    ...fabricProp,
-                    width: svgData.width,
-                    height: svgData.height,
-                    id: id,
-                    type: OBJECT_TYPE.CLIP_ART,
-                    fill: '#58595b',
-                    originX: 'center',
-                    originY: 'center'
-                  })
-                  .setCoords();
-                svgData.scaleToHeight((height / zoom / svgData.height) * 8);
-                svgData.scaleToWidth((width / zoom / svgData.width) * 8);
-                resolve(svgData);
-              }
-            );
-          });
-        })
+        merge(newClipArt, c);
+
+        return {
+          id: uniqueId(),
+          object: {
+            ...newClipArt,
+            vector: require(`../../../../../assets/image/clip-art/${newClipArt.vector}`)
+          }
+        };
+      });
+
+      const eventListeners = {
+        //scaling: this.handleShapeScaling,
+        //scaled: this.handleShapeScaled,
+        rotated: this.handleRotated
+        //moved: this.handleShapeMoved
+      };
+
+      await addPrintClipArts(
+        toBeAddedClipArts,
+        window.printCanvas,
+        isHalfSheet(this.pageSelected),
+        isHalfLeft(this.pageSelected),
+        eventListeners
       );
-      svgs.length == 1
-        ? addSingleSvg(svgs[0], window.printCanvas, isAHalfSheet, isALeftSheet)
-        : addMultiSvg(svgs, window.printCanvas, isAHalfSheet, isALeftSheet);
 
-      window.printCanvas.renderAll();
+      toBeAddedClipArts.forEach(s => {
+        const fabricObject = window.printCanvas
+          .getObjects()
+          .find(o => o.id === s.id);
 
-      if (clipArts.length !== 1) {
-        this.closeProperties();
+        const { top, left } = fabricObject;
+
+        this.addNewObject({
+          id: s.id,
+          newObject: {
+            ...s.object,
+            coord: {
+              x: pxToIn(left),
+              y: pxToIn(top)
+            }
+          }
+        });
+      });
+
+      if (toBeAddedClipArts.length === 1) {
+        selectLatestObject(window.printCanvas);
       } else {
-        setTimeout(() => {
-          selectLatestObject(window.printCanvas);
-        }, 500);
+        this.closeProperties();
       }
     },
     /**
@@ -800,6 +791,8 @@ export default {
       if (isEmpty(target)) return;
       const currentWidthInch = pxToIn(target.width * target.scaleX);
       const currentHeightInch = pxToIn(target.height * target.scaleY);
+      const currentXInch = pxToIn(target.left);
+      const currentYInch = pxToIn(target.top);
       this.changeShapeProperties({
         size: {
           width:
@@ -810,6 +803,10 @@ export default {
             currentHeightInch < DEFAULT_SHAPE.MIN_SIZE
               ? DEFAULT_SHAPE.MIN_SIZE
               : currentHeightInch
+        },
+        coord: {
+          x: currentXInch,
+          y: currentYInch
         }
       });
     },
@@ -833,7 +830,8 @@ export default {
       const eventListeners = {
         scaling: this.handleShapeScaling,
         scaled: this.handleShapeScaled,
-        rotated: this.handleRotated
+        rotated: this.handleRotated,
+        moved: this.handleShapeMoved
       };
 
       await addPrintShapes(
@@ -936,6 +934,22 @@ export default {
       if (updateTriggerFn !== null) updateTriggerFn();
 
       updateElement(element, prop, window.printCanvas);
+    },
+    /**
+     * Callback function for handle moved to update shape's dimension
+     * @param {Object} e - Shape element
+     */
+    handleShapeMoved(e) {
+      const target = e.transform?.target;
+      if (isEmpty(target)) return;
+      const currentXInch = pxToIn(target.left);
+      const currentYInch = pxToIn(target.top);
+      this.changeShapeProperties({
+        coord: {
+          x: currentXInch,
+          y: currentYInch
+        }
+      });
     }
   }
 };

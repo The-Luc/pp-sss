@@ -86,8 +86,14 @@ export const toFabricShapeProp = (prop, originalElement) => {
   const mapRules = {
     data: {
       type: DEFAULT_RULE_DATA.TYPE,
-      x: DEFAULT_RULE_DATA.X,
-      y: DEFAULT_RULE_DATA.Y,
+      x: {
+        name: 'left',
+        parse: value => inToPx(value)
+      },
+      y: {
+        name: 'top',
+        parse: value => inToPx(value)
+      },
       rotation: DEFAULT_RULE_DATA.ROTATION,
       color: DEFAULT_RULE_DATA.COLOR,
       horiziontal: DEFAULT_RULE_DATA.HORIZIONTAL,
@@ -141,6 +147,29 @@ export const toFabricClipArtProp = prop => {
 };
 
 /**
+ * Get fabric property base on element type
+ *
+ * @param   {String}  elementType   the type of selected element
+ * @param   {Object}  prop          new property
+ * @param   {Object}  element       new property
+ * @returns {Object}                fabric property
+ */
+const getFabricPropByType = (elementType, prop, element) => {
+  if (elementType === OBJECT_TYPE.BACKGROUND) {
+    return toFabricBackgroundProp(prop);
+  }
+  if (elementType === OBJECT_TYPE.SHAPE) {
+    return toFabricShapeProp(prop, element);
+  }
+
+  if (elementType === OBJECT_TYPE.CLIP_ART) {
+    return toFabricClipArtProp(prop);
+  }
+
+  return {};
+};
+
+/**
  * Get fabric property base on element type from property
  *
  * @param   {String}  elementType   the type of selected element
@@ -148,20 +177,7 @@ export const toFabricClipArtProp = prop => {
  * @returns {Object}                fabric property
  */
 const getFabricProp = (element, prop) => {
-  const { objectType } = element;
-
-  if (objectType === OBJECT_TYPE.BACKGROUND) {
-    return toFabricBackgroundProp(prop);
-  }
-  if (objectType === OBJECT_TYPE.SHAPE) {
-    return toFabricShapeProp(prop, element);
-  }
-
-  if (objectType === OBJECT_TYPE.CLIP_ART) {
-    return toFabricClipArtProp(prop);
-  }
-
-  return {};
+  return getFabricPropByType(element.objectType, prop, element);
 };
 
 /**
@@ -252,9 +268,11 @@ export const getSvgData = (svgUrl, elementProperty, expectedHeight) => {
         scaleY: scale
       });
 
-      const { fill, stroke } = svg;
+      if (!svg.isColorful) {
+        const { fill } = svg;
 
-      setElementProp(svg, { fill, stroke });
+        setElementProp(svg, { fill, stroke: fill });
+      }
 
       resolve(svg);
     });
@@ -332,4 +350,47 @@ export const addEventListeners = (element, eventListeners) => {
   Object.keys(eventListeners).forEach(k => {
     element.on(k, eventListeners[k]);
   });
+};
+
+/**
+ * Adding svgs to canvas
+ *
+ * @param {Array}   svgObjects          list of sgv will be added
+ * @param {String}  svgUrlAttrName      the attribute name contain svg url
+ * @param {Nunber}  expectedHeight      the attribute name contain svg url
+ * @param {Object}  canvas              the canvas contain new sgv
+ * @param {Boolean} isAddedToSinglePage is sgv will be added to single page
+ * @param {Boolean} isPlaceInLeftPage   is sgv will be added to left page
+ * @param {Object}  eventListeners      sgv event list {name, eventHandling}
+ */
+export const addPrintSvgs = async (
+  svgObjects,
+  svgUrlAttrName,
+  expectedHeight,
+  canvas,
+  isAddedToSinglePage,
+  isPlaceInLeftPage,
+  eventListeners
+) => {
+  const svgs = await Promise.all(
+    svgObjects.map(s => {
+      const fabricProp = getFabricPropByType(s.object.type, s.object);
+
+      return getSvgData(
+        s.object[svgUrlAttrName],
+        { ...fabricProp, id: s.id },
+        expectedHeight
+      );
+    })
+  );
+
+  if (isEmpty(svgs) || svgs.length != svgObjects.length) return;
+
+  svgs.forEach(s => addEventListeners(s, eventListeners));
+
+  svgs.length == 1
+    ? addSingleSvg(svgs[0], canvas, isAddedToSinglePage, isPlaceInLeftPage)
+    : addMultiSvg(svgs, canvas, isAddedToSinglePage, isPlaceInLeftPage);
+
+  canvas.renderAll();
 };
