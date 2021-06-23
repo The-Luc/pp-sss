@@ -56,6 +56,7 @@ import {
   ARRANGE_SEND,
   CORNER_SIZE,
   DEFAULT_SHAPE,
+  DEFAULT_CLIP_ART,
   COVER_TYPE
 } from '@/common/constants';
 import SizeWrapper from '@/components/SizeWrapper';
@@ -687,10 +688,10 @@ export default {
       });
 
       const eventListeners = {
-        //scaling: this.handleShapeScaling,
-        //scaled: this.handleShapeScaled,
-        rotated: this.handleRotated
-        //moved: this.handleShapeMoved
+        scaling: this.handleScaling,
+        scaled: this.handleScaled,
+        rotated: this.handleRotated,
+        moved: this.handleMoved
       };
 
       await addPrintClipArts(
@@ -706,7 +707,7 @@ export default {
           .getObjects()
           .find(o => o.id === s.id);
 
-        const { top, left } = fabricObject;
+        const { top, left, height, width, scaleX, scaleY } = fabricObject;
 
         this.addNewObject({
           id: s.id,
@@ -715,6 +716,10 @@ export default {
             coord: {
               x: pxToIn(left),
               y: pxToIn(top)
+            },
+            size: {
+              width: pxToIn(width * scaleX),
+              height: pxToIn(height * scaleY)
             }
           }
         });
@@ -755,54 +760,98 @@ export default {
     },
     /**
      * Callback function for handle scaling to set scale for shape base on width and height
-     * @param {Object} e - Shape element
+     * @param {Object} e - Element Fabric
      */
-    handleShapeScaling(e) {
+    handleScaling(e) {
       const target = e.transform?.target;
       if (isEmpty(target)) return;
       let { scaleX, scaleY, width, height } = target;
       const currentWidthInch = pxToIn(width * scaleX);
       const currentHeightInch = pxToIn(height * scaleY);
-      const minScale = inToPx(DEFAULT_SHAPE.MIN_SIZE) / width;
-      if (currentWidthInch < DEFAULT_SHAPE.MIN_SIZE) {
-        scaleX = minScale;
+      const objectType = target.objectType;
+      let minScale = 0;
+      switch (objectType) {
+        case OBJECT_TYPE.SHAPE:
+          minScale = inToPx(DEFAULT_SHAPE.MIN_SIZE) / width;
+          if (currentWidthInch < DEFAULT_SHAPE.MIN_SIZE) {
+            scaleX = minScale;
+          }
+
+          if (currentHeightInch < DEFAULT_SHAPE.MIN_SIZE) {
+            scaleY = minScale;
+          }
+          break;
+        case OBJECT_TYPE.CLIP_ART:
+          minScale = inToPx(DEFAULT_CLIP_ART.MIN_SIZE) / width;
+          if (currentWidthInch < DEFAULT_CLIP_ART.MIN_SIZE) {
+            scaleX = minScale;
+          }
+
+          if (currentHeightInch < DEFAULT_CLIP_ART.MIN_SIZE) {
+            scaleY = minScale;
+          }
+          break;
+        default:
+          return;
       }
 
-      if (currentHeightInch < DEFAULT_SHAPE.MIN_SIZE) {
-        scaleY = minScale;
-      }
       target.set({
         scaleX,
         scaleY
       });
     },
     /**
-     * Callback function for handle scaled to update shape's dimension
-     * @param {Object} e - Shape element
+     * Callback function for handle scaled to update element's dimension
+     * @param {Object} e - Element Fabric
      */
-    handleShapeScaled(e) {
+    handleScaled(e) {
       const target = e.transform?.target;
       if (isEmpty(target)) return;
       const currentWidthInch = pxToIn(target.width * target.scaleX);
       const currentHeightInch = pxToIn(target.height * target.scaleY);
       const currentXInch = pxToIn(target.left);
       const currentYInch = pxToIn(target.top);
-      this.changeShapeProperties({
-        size: {
-          width:
-            currentWidthInch < DEFAULT_SHAPE.MIN_SIZE
-              ? DEFAULT_SHAPE.MIN_SIZE
-              : currentWidthInch,
-          height:
-            currentHeightInch < DEFAULT_SHAPE.MIN_SIZE
-              ? DEFAULT_SHAPE.MIN_SIZE
-              : currentHeightInch
-        },
-        coord: {
-          x: currentXInch,
-          y: currentYInch
-        }
-      });
+      const objectType = target.objectType;
+      switch (objectType) {
+        case OBJECT_TYPE.SHAPE:
+          this.changeShapeProperties({
+            size: {
+              width:
+                currentWidthInch < DEFAULT_SHAPE.MIN_SIZE
+                  ? DEFAULT_SHAPE.MIN_SIZE
+                  : currentWidthInch,
+              height:
+                currentHeightInch < DEFAULT_SHAPE.MIN_SIZE
+                  ? DEFAULT_SHAPE.MIN_SIZE
+                  : currentHeightInch
+            },
+            coord: {
+              x: currentXInch,
+              y: currentYInch
+            }
+          });
+          break;
+        case OBJECT_TYPE.CLIP_ART:
+          this.changeClipArtProperties({
+            size: {
+              width:
+                currentWidthInch < DEFAULT_CLIP_ART.MIN_SIZE
+                  ? DEFAULT_CLIP_ART.MIN_SIZE
+                  : currentWidthInch,
+              height:
+                currentHeightInch < DEFAULT_CLIP_ART.MIN_SIZE
+                  ? DEFAULT_CLIP_ART.MIN_SIZE
+                  : currentHeightInch
+            },
+            coord: {
+              x: currentXInch,
+              y: currentYInch
+            }
+          });
+          break;
+        default:
+          return;
+      }
     },
     /**
      * Adding shapes to canvas & store
@@ -822,10 +871,10 @@ export default {
       });
 
       const eventListeners = {
-        scaling: this.handleShapeScaling,
-        scaled: this.handleShapeScaled,
+        scaling: this.handleScaling,
+        scaled: this.handleScaled,
         rotated: this.handleRotated,
-        moved: this.handleShapeMoved
+        moved: this.handleMoved
       };
 
       await addPrintShapes(
@@ -981,20 +1030,33 @@ export default {
     },
 
     /**
-     * Callback function for handle moved to update shape's dimension
-     * @param {Object} e - Shape element
+     * Callback function for handle moved to update element's dimension
+     * @param {Object} e - Element Fabric
      */
-    handleShapeMoved(e) {
+    handleMoved(e) {
       const target = e.transform?.target;
       if (isEmpty(target)) return;
       const currentXInch = pxToIn(target.left);
       const currentYInch = pxToIn(target.top);
-      this.changeShapeProperties({
+      const objectType = target.objectType;
+
+      const prop = {
         coord: {
           x: currentXInch,
           y: currentYInch
         }
-      });
+      };
+
+      switch (objectType) {
+        case OBJECT_TYPE.SHAPE:
+          this.changeShapeProperties(prop);
+          break;
+        case OBJECT_TYPE.CLIP_ART:
+          this.changeClipArtProperties(prop);
+          break;
+        default:
+          return;
+      }
     }
   }
 };

@@ -81,7 +81,8 @@ export const DEFAULT_CLIP_ART = {
   OPACITY: DEFAULT_PROP.OPACITY,
   WIDTH: 3, // inch
   HEIGHT: 3, // inch
-  MIN_SIZE: 0.5 // inch
+  MIN_SIZE: 0.5, // inch,
+  IS_CONSTRAIN: true
 };
 
 export const DEFAULT_IMAGE = {

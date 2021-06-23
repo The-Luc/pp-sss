@@ -123,12 +123,36 @@ export const toFabricShapeProp = (prop, originalElement) => {
  * @param   {Object}  prop  stored properties
  * @returns {Object}        fabric properties
  */
-export const toFabricClipArtProp = prop => {
+export const toFabricClipArtProp = (prop, originalElement) => {
   const mapRules = {
     data: {
       type: DEFAULT_RULE_DATA.TYPE,
-      x: DEFAULT_RULE_DATA.X,
-      y: DEFAULT_RULE_DATA.Y,
+      x: {
+        name: 'left',
+        parse: value => inToPx(value)
+      },
+      y: {
+        name: 'top',
+        parse: value => inToPx(value)
+      },
+      width: {
+        name: 'scaleX',
+        parse: value => {
+          if (originalElement) {
+            return inToPx(value) / originalElement.width;
+          }
+          return 1;
+        }
+      },
+      height: {
+        name: 'scaleY',
+        parse: value => {
+          if (originalElement) {
+            return inToPx(value) / originalElement.height;
+          }
+          return 1;
+        }
+      },
       rotation: DEFAULT_RULE_DATA.ROTATION,
       color: DEFAULT_RULE_DATA.COLOR,
       horiziontal: DEFAULT_RULE_DATA.HORIZIONTAL,
@@ -157,7 +181,7 @@ const getFabricPropByType = (elementType, prop, element) => {
   }
 
   if (elementType === OBJECT_TYPE.CLIP_ART) {
-    return toFabricClipArtProp(prop);
+    return toFabricClipArtProp(prop, element);
   }
 
   return {};
@@ -206,12 +230,16 @@ export const setElementProp = (element, prop) => {
 
   const key = Object.keys(prop);
 
-  const isSvgEl = element?.objectType === OBJECT_TYPE.SHAPE;
+  const isSvgEl =
+    element?.objectType === OBJECT_TYPE.SHAPE ||
+    element?.objectType === OBJECT_TYPE.CLIP_ART;
   const isModifySize = ['scaleX', 'scaleY'].includes(key[0]);
   const isModifyRotate = ['angle'].includes(key[0]);
+  const isModifyPosition = ['top', 'left'].includes(key[0]);
 
   if (element.getObjects) {
-    if ((isSvgEl && isModifySize) || isModifyRotate) return;
+    if ((isSvgEl && (isModifySize || isModifyPosition)) || isModifyRotate)
+      return;
 
     element.getObjects().forEach(o => o.set(prop));
   }

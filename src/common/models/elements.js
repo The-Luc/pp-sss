@@ -4,7 +4,8 @@ import {
   DEFAULT_TEXT,
   DEFAULT_IMAGE,
   DEFAULT_BACKGROUND,
-  DEFAULT_SHAPE
+  DEFAULT_SHAPE,
+  DEFAULT_CLIP_ART
 } from '@/common/constants';
 
 export const BaseElement = {
@@ -122,7 +123,8 @@ export const ClipArtElement = {
   name: '',
   thumbnail: '',
   vector: '', // imgUrl
-  isColorful: false
+  isColorful: false,
+  isConstrain: DEFAULT_CLIP_ART.IS_CONSTRAIN
 };
 
 export const ShapeElement = {
