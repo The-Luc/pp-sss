@@ -13,8 +13,11 @@
         </v-tab>
         <v-tab-item value="arrange">
           <ArrangeContent
-            :current-arrange="currentArrange"
+            :position="position"
             :rotate-value="rotateValue"
+            :size-width="sizeWidth"
+            :size-height="sizeHeight"
+            :is-constrain="isConstrain"
             @changeFlip="changeFlip"
             @change="onChange"
           />
