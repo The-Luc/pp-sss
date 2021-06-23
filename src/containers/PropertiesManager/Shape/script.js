@@ -1,5 +1,4 @@
 import { mapGetters, mapMutations } from 'vuex';
-import { cloneDeep } from 'lodash';
 
 import { useShapeProperties } from '@/hooks';
 import Properties from '@/components/Properties/BoxProperties';
@@ -147,8 +146,7 @@ export default {
      * @param {Object} object object containing the value of update size, position or rotate
      */
     onChange(object) {
-      const data = cloneDeep(object);
-      this.$root.$emit('printChangeShapeProperties', data);
+      this.$root.$emit('printChangeShapeProperties', object);
     },
     onChangeConstrain(val) {
       this.$root.$emit('printChangeShapeProperties', {
