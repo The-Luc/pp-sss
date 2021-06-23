@@ -1,13 +1,23 @@
 <template>
   <div class="y-unit" :style="style">
     <div class="sy-unit">&nbsp;</div>
+    <div class="sy-unit-separator">&nbsp;</div>
     <div class="sy-unit">&nbsp;</div>
+    <div class="sy-unit-separator">&nbsp;</div>
     <div class="sy-unit">&nbsp;</div>
+    <div class="sy-unit-separator">&nbsp;</div>
     <div class="sy-unit">&nbsp;</div>
+    <div class="sy-unit-separator">&nbsp;</div>
     <div class="sy-unit">&nbsp;</div>
+    <div class="sy-unit-separator-mid">&nbsp;</div>
     <div class="sy-unit">&nbsp;</div>
+    <div class="sy-unit-separator">&nbsp;</div>
     <div class="sy-unit">&nbsp;</div>
+    <div class="sy-unit-separator">&nbsp;</div>
     <div class="sy-unit">&nbsp;</div>
+    <div class="sy-unit-separator">&nbsp;</div>
+    <div class="sy-unit">&nbsp;</div>
+    <div class="sy-unit-separator">&nbsp;</div>
     <div class="sy-unit">&nbsp;</div>
     <div class="y-unit-number">{{ number }}</div>
   </div>

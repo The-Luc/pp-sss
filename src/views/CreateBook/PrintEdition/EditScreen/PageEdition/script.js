@@ -80,7 +80,7 @@ export default {
     return { drawLayout };
   },
   created() {
-    this.setBookId({ bookId: 1719 });
+    this.setBookId({ bookId: this.$route.params.bookId });
 
     this.getDataPageEdit();
   },
@@ -147,7 +147,6 @@ export default {
       handler(val, oldVal) {
         if (val?.id !== oldVal?.id) {
           this.setSelectedObjectId({ id: '' });
-          this.updateCanvasSize();
           window.printCanvas
             .discardActiveObject()
             .remove(...window.printCanvas.getObjects())
