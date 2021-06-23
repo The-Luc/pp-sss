@@ -2,13 +2,7 @@ import { fabric } from 'fabric';
 
 import { OBJECT_TYPE } from '@/common/constants';
 
-import {
-  inToPx,
-  isEmpty,
-  mapObject,
-  scaleSize,
-  toFabricTextProp
-} from '@/common/utils';
+import { inToPx, isEmpty, mapObject, scaleSize } from '@/common/utils';
 
 const DEFAULT_RULE_DATA = {
   TYPE: {

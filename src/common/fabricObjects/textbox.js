@@ -1,7 +1,6 @@
 import { fabric } from 'fabric';
 import { cloneDeep, uniqueId } from 'lodash';
 import { TextElement } from '@/common/models';
-import { updateElement } from '@/common/fabricObjects/common';
 import Color from 'color';
 
 import {
