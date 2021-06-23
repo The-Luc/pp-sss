@@ -78,8 +78,6 @@ export default {
     return { drawLayout };
   },
   created() {
-    this.setBookId({ bookId: 1719 });
-
     this.getDataPageEdit();
   },
   data() {

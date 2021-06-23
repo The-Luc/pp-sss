@@ -48,12 +48,10 @@ export const getCoverPagePrintSize = (isHardCover, pageCount) => {
   let pageLimit = listSizes[listSizes.length - 1];
   for (let index = listSizes.length - 2; index >= 0; index--) {
     const maxPage = listSizes[index];
-    if (maxPage >= pageCount) {
-      pageLimit = maxPage;
-    }
     if (maxPage < pageCount) {
       break;
     }
+    pageLimit = maxPage;
   }
   const spineWidth = sizeObjects[pageLimit];
   const inches = {

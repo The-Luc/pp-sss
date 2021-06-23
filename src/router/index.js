@@ -41,7 +41,8 @@ const authGuard = {
 const routes = [
   {
     path: '/',
-    redirect: '/book/1719/edit/manager',
+    // TODO: remove once integrated with API
+    redirect: '/book/HardCover-140/edit/manager',
     ...authGuard
   },
   {

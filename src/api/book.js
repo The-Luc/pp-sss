@@ -11,6 +11,7 @@ const bookService = {
         maxPage
       });
     }
+    res.id = bookId;
     // End handle for QC test
     return res;
   },
