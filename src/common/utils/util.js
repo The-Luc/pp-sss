@@ -306,6 +306,9 @@ export const toFabricTextProp = prop => {
       },
       letterSpacing: {
         name: 'charSpacing'
+      },
+      rotation: {
+        name: 'angle'
       }
     },
     restrict: [

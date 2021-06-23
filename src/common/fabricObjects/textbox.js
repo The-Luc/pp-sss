@@ -93,6 +93,8 @@ export const createTextBox = (x, y, width, height, textProperties, sheetId) => {
     top: y,
     lockScalingY: false,
     lockScalingX: false,
+    originX: 'center',
+    originY: 'center',
     isConstrain: text.isConstrain
   });
 
@@ -516,6 +518,24 @@ const applyTextRectProperties = function(rect, prop) {
 };
 
 /**
+ * Handle update fabric object rendered on canvas
+ * @param {Object}  textObject - the object to be updated
+ * @param {Object}  prop - the prop change
+ */
+const applyTextGroupProperties = function(textGroup, prop) {
+  if (isEmpty(textGroup) || !textGroup.canvas) {
+    return;
+  }
+  const canvas = textGroup.canvas;
+
+  const textGroupProp = toFabricTextProp(prop);
+
+  textGroup.set(textGroupProp);
+
+  canvas.renderAll();
+};
+
+/**
  * Calculate shadow base on config from user
  * @param {Boolean} dropShadow - have shadow or not
  * @param {Number} shadowBlur - the level of blur in pt
@@ -575,7 +595,11 @@ const applyShadowToObject = function(fabricObject, shadowConfig) {
  * @param {Object} prop - the prop change
  */
 export const applyTextBoxProperties = function(textObject, prop) {
-  const [rect, text] = getObjectsFromTextBox(textObject);
-  applyTextProperties(text, prop);
-  applyTextRectProperties(rect, prop);
+  if (prop.coord) {
+    applyTextGroupProperties(textObject, prop);
+  } else {
+    const [rect, text] = getObjectsFromTextBox(textObject);
+    applyTextProperties(text, prop);
+    applyTextRectProperties(rect, prop);
+  }
 };

@@ -1,5 +1,6 @@
 import { mapGetters, mapMutations } from 'vuex';
 
+import { useObject } from '@/hooks';
 import Properties from '@/components/Properties/BoxProperties';
 import TabMenu from '@/components/TabMenu';
 import GeneralContent from './GeneralContent';
@@ -18,19 +19,30 @@ export default {
     ArrangeContent,
     TabMenu
   },
+  setup() {
+    const { triggerChange, selectObjectProp } = useObject();
+    return {
+      triggerChange,
+      selectObjectProp
+    };
+  },
   computed: {
     ...mapGetters({
-      selectedColor: PRINT_GETTERS.SELECT_PROP_CURRENT_OBJECT,
-      selectedId: PRINT_GETTERS.CURRENT_OBJECT_ID,
-      getObjectById: PRINT_GETTERS.CURRENT_OBJECT,
-      triggerChange: PRINT_GETTERS.TRIGGER_TEXT_CHANGE
+      currentObject: PRINT_GETTERS.CURRENT_OBJECT
     }),
     currentArrange() {
       if (this.triggerChange) {
         // just for trigger the change
       }
 
-      return this.getObjectById;
+      return this.currentObject;
+    },
+    rotateValue() {
+      if (this.triggerChange) {
+        // just for trigger the change
+      }
+      const coord = this.selectObjectProp('coord');
+      return coord?.rotation || 0;
     },
     disabled() {
       if (this.triggerChange) {
@@ -82,7 +94,7 @@ export default {
      * Set default selected border
      */
     setSelectedBorder() {
-      const border = this.selectedColor('border');
+      const border = this.selectObjectProp('border');
       this.selectedBorder = this.borderOptions[border?.isBorder ? 1 : 0];
     },
     /**
@@ -115,7 +127,7 @@ export default {
      * @param {Object} object object containing the value of update size, position or rotate
      */
     onChange(object) {
-      console.log(object);
+      this.$root.$emit('printChangeTextProperties', object);
     }
   }
 };

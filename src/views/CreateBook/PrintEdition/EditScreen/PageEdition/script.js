@@ -295,6 +295,8 @@ export default {
             startDrawBox(window.printCanvas, e).then(
               ({ left, top, width, height }) => {
                 if (this.awaitingAdd === OBJECT_TYPE.TEXT) {
+                  left += width / 2;
+                  top += height / 2;
                   this.addText(left, top, width, height);
                 }
                 if (this.awaitingAdd === OBJECT_TYPE.IMAGE) {
@@ -538,6 +540,7 @@ export default {
         {},
         this.pageSelected.id
       );
+      object.on('rotated', this.handleRotated);
       this.addNewObject(data);
       const isConstrain = data.newObject.isConstrain;
       this.setCanvasUniformScaling(isConstrain);
@@ -736,22 +739,21 @@ export default {
     handleRotated(e) {
       const target = e.transform?.target;
       if (isEmpty(target)) return;
-
+      const prop = {
+        coord: {
+          rotation: target.angle
+        }
+      };
       const objectType = target.objectType;
       switch (objectType) {
         case OBJECT_TYPE.SHAPE:
-          this.changeShapeProperties({
-            coord: {
-              rotation: target.angle
-            }
-          });
+          this.changeShapeProperties(prop);
           break;
         case OBJECT_TYPE.CLIP_ART:
-          this.changeClipArtProperties({
-            coord: {
-              rotation: target.angle
-            }
-          });
+          this.changeClipArtProperties(prop);
+          break;
+        case OBJECT_TYPE.TEXT:
+          this.changeTextProperties(prop);
           break;
         default:
           return;
