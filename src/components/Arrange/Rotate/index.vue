@@ -3,12 +3,13 @@
     <span class="properties-title">Rotate:</span>
     <div class="d-flex">
       <div class="item-container">
-        <PpNumber
+        <PpInput
           suffix="°"
           :disabled="disabled"
           :value="value"
           :max="360"
           :min="-360"
+          type="text"
           @change="onChange"
         />
         <div class="item-title">Angle</div>
