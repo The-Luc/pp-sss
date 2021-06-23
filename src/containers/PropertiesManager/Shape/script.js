@@ -3,10 +3,7 @@ import TabMenu from '@/components/TabMenu';
 import ArrangeContent from '@/components/Arrange';
 import GeneralContent from './GeneralContent';
 
-import { cloneDeep } from 'lodash';
-
 import { useShapeProperties } from '@/hooks';
-import { splitNumberByDecimal } from '@/common/utils';
 
 import { DEFAULT_SHAPE } from '@/common/constants';
 
