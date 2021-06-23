@@ -27,7 +27,7 @@ export default {
         // just for trigger the change
       }
 
-      return this.selectedAlign('alignment')?.horiziontal || this.LEFT;
+      return this.selectedAlign('alignment')?.horizontal || this.LEFT;
     }
   },
   methods: {
@@ -39,7 +39,7 @@ export default {
       const value = isEmpty(data) ? TEXT_HORIZIONTAL_ALIGN.LEFT : data;
 
       this.$root.$emit('printChangeTextProperties', {
-        alignment: { horiziontal: value }
+        alignment: { horizontal: value }
       });
     }
   }
