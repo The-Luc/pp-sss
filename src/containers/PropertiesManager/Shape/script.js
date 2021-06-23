@@ -155,19 +155,6 @@ export default {
           ...(data?.size?.height && { height: data.size.height })
         };
       }
-      if (key.includes('coord')) {
-        data.coord = {
-          ...((data?.coord?.x || data?.coord?.x === 0) && {
-            x: data.coord.x
-          }),
-          ...((data?.coord?.y || data?.coord?.y === 0) && {
-            y: data.coord.y
-          }),
-          ...((data?.coord?.rotation || data?.coord?.rotation === 0) && {
-            rotation: data.coord.rotation
-          })
-        };
-      }
       this.$root.$emit('printChangeShapeProperties', data);
     },
     onChangeConstrain(val) {
