@@ -145,45 +145,13 @@ export default {
       }
 
       if (item.name === RIGHT_TOOLS.PROPERTIES.value) {
-        if (!this.selectedObjectType) {
-          return;
-        }
-
-        this.toggleColorPicker({
-          isOpen: false
-        });
-
-        if (this.propertiesObjectType === OBJECT_TYPE.BACKGROUND) {
-          this.setPropertiesObjectType({
-            type: this.selectedObjectType
-          });
-
-          this.setIsOpenProperties({
-            isOpen: true
-          });
-
-          return;
-        }
-
-        this.setPropertiesObjectType({
-          type: this.selectedObjectType
-        });
-
-        this.setIsOpenProperties({
-          isOpen: !this.isOpenMenuProperties
-        });
+        this.elementPropertiesClick();
 
         return;
       }
 
       if (item.name === RIGHT_TOOLS.BACKGROUND.value) {
-        const isToggle =
-          isEmpty(this.selectedObjectType) ||
-          this.propertiesObjectType === OBJECT_TYPE.BACKGROUND;
-
-        isToggle
-          ? this.toggleBackgroundProperties()
-          : this.openBackgroundProperties();
+        this.backgroundPropertiesClick();
 
         return;
       }
@@ -253,6 +221,65 @@ export default {
     deleteElements() {
       this.$root.$emit('printDeleteElements');
     },
+    /**
+     * Fire when click on Properties button
+     */
+    elementPropertiesClick() {
+      if (!this.selectedObjectType) {
+        return;
+      }
+
+      const isToggle = this.propertiesObjectType !== OBJECT_TYPE.BACKGROUND;
+
+      isToggle ? this.toggleElementProperties() : this.openElementProperties();
+    },
+    /**
+     * Toggle Element Properties by using mutate
+     */
+    toggleElementProperties() {
+      this.toggleColorPicker({
+        isOpen: false
+      });
+
+      this.setPropertiesObjectType({
+        type: this.selectedObjectType
+      });
+
+      this.setIsOpenProperties({
+        isOpen: !this.isOpenMenuProperties
+      });
+    },
+    /**
+     * Open Element Properties by using mutate
+     */
+    openElementProperties() {
+      this.toggleColorPicker({
+        isOpen: false
+      });
+
+      this.setPropertiesObjectType({
+        type: this.selectedObjectType
+      });
+
+      this.setIsOpenProperties({
+        isOpen: true
+      });
+    },
+    /**
+     * Fire when click on Background button
+     */
+    backgroundPropertiesClick() {
+      const isToggle =
+        isEmpty(this.selectedObjectType) ||
+        this.propertiesObjectType === OBJECT_TYPE.BACKGROUND;
+
+      isToggle
+        ? this.toggleBackgroundProperties()
+        : this.openBackgroundProperties();
+    },
+    /**
+     * Toggle Background Properties by using mutate
+     */
     toggleBackgroundProperties() {
       this.setPropertiesObjectType({
         type: OBJECT_TYPE.BACKGROUND
@@ -262,6 +289,9 @@ export default {
         isOpen: !this.isOpenMenuProperties
       });
     },
+    /**
+     * Open Background Properties by using mutate
+     */
     openBackgroundProperties() {
       this.toggleColorPicker({
         isOpen: false
