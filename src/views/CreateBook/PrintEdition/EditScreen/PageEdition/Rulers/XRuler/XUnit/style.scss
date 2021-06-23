@@ -1,0 +1,40 @@
+.x-unit {
+  display: flex;
+  height: 23px;
+  position: relative;
+  border: 1px solid $color-gray12;
+  border-top-width: 0;
+  border-left-width: 0;
+  border-right-width: 0;
+
+  .sx-unit {
+    position: absolute;
+    bottom: 0;
+    border-right: 1px solid $color-gray12;
+    width: 10%;
+    height: 40%;
+    @for $i from 1 through 9 {
+      &:nth-of-type(#{$i}) {
+        left: ($i - 1) * 10%;
+      }
+    }
+    &:nth-of-type(5) {
+      height: 66%;
+    }
+  }
+
+  .x-unit-number {
+    position: absolute;
+    height: auto;
+    font-size: 7px;
+    line-height: 7px;
+    color: $color-stoodio-toolbartext;
+    top: 3px;
+    left: 7%;
+
+    &.at-end {
+      left: auto;
+      right: 7%;
+    }
+  }
+}

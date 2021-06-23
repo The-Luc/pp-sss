@@ -49,10 +49,7 @@ const NORMAL_RULES = {
 export const toFabricBackgroundProp = prop => {
   const mapRules = {
     data: {
-      type: DEFAULT_RULE_DATA.TYPE,
-      property: {
-        restrict: ['type']
-      }
+      type: DEFAULT_RULE_DATA.TYPE
     },
     restrict: [
       'id',
@@ -65,7 +62,8 @@ export const toFabricBackgroundProp = prop => {
       'color',
       'border',
       'shadow',
-      'flip'
+      'flip',
+      'backgroundType'
     ]
   };
 
@@ -143,6 +141,29 @@ export const toFabricClipArtProp = prop => {
 };
 
 /**
+ * Get fabric property base on element type
+ *
+ * @param   {String}  elementType   the type of selected element
+ * @param   {Object}  prop          new property
+ * @param   {Object}  element       new property
+ * @returns {Object}                fabric property
+ */
+const getFabricPropByType = (elementType, prop, element) => {
+  if (elementType === OBJECT_TYPE.BACKGROUND) {
+    return toFabricBackgroundProp(prop);
+  }
+  if (elementType === OBJECT_TYPE.SHAPE) {
+    return toFabricShapeProp(prop, element);
+  }
+
+  if (elementType === OBJECT_TYPE.CLIP_ART) {
+    return toFabricClipArtProp(prop);
+  }
+
+  return {};
+};
+
+/**
  * Get fabric property base on element type from property
  *
  * @param   {String}  elementType   the type of selected element
@@ -150,19 +171,7 @@ export const toFabricClipArtProp = prop => {
  * @returns {Object}                fabric property
  */
 const getFabricProp = (element, prop) => {
-  const { objectType } = element;
-  if (objectType === OBJECT_TYPE.BACKGROUND) {
-    return toFabricBackgroundProp(prop);
-  }
-  if (objectType === OBJECT_TYPE.SHAPE) {
-    return toFabricShapeProp(prop, element);
-  }
-
-  if (objectType === OBJECT_TYPE.CLIP_ART) {
-    return toFabricClipArtProp(prop);
-  }
-
-  return {};
+  return getFabricPropByType(element.objectType, prop, element);
 };
 
 /**
@@ -194,12 +203,16 @@ export const updateElement = (element, prop, canvas) => {
  */
 export const setElementProp = (element, prop) => {
   element.set(prop);
+
   const key = Object.keys(prop);
+
   const isSvgEl = element?.objectType === OBJECT_TYPE.SHAPE;
   const isModifySize = ['scaleX', 'scaleY'].includes(key[0]);
   const isModifyRotate = ['angle'].includes(key[0]);
+
   if (element.getObjects) {
     if ((isSvgEl && isModifySize) || isModifyRotate) return;
+
     element.getObjects().forEach(o => o.set(prop));
   }
 };
@@ -238,6 +251,7 @@ export const getSvgData = (svgUrl, elementProperty, expectedHeight) => {
     fabric.loadSVGFromURL(svgUrl, (objects, options) => {
       const svg = fabric.util.groupSVGElements(objects, options);
       const scale = inToPx(expectedHeight) / svg.height;
+
       svg.set({
         ...elementProperty,
         width: svg.width,
@@ -248,9 +262,11 @@ export const getSvgData = (svgUrl, elementProperty, expectedHeight) => {
         scaleY: scale
       });
 
-      const { fill, stroke } = svg;
+      if (!svg.isColorful) {
+        const { fill } = svg;
 
-      setElementProp(svg, { fill, stroke });
+        setElementProp(svg, { fill, stroke: fill });
+      }
 
       resolve(svg);
     });
@@ -260,8 +276,8 @@ export const getSvgData = (svgUrl, elementProperty, expectedHeight) => {
 /**
  * Adding svg element to canvas
  *
- * @param {Object}  svg     svg data of will be added element
- * @param {Object}  canvas  the canvas contain new element
+ * @param {Object}  svg              svg data of will be added element
+ * @param {Object}  canvas           the canvas contain new element
  */
 export const addSingleSvg = (
   svg,
@@ -279,8 +295,8 @@ export const addSingleSvg = (
 /**
  * Adding svg elements to canvas
  *
- * @param {Array}   svgs    list of svg data of will be added element
- * @param {Object}  canvas  the canvas contain new element
+ * @param {Array}   svgs            list of svg data of will be added element
+ * @param {Object}  canvas          the canvas contain new element
  */
 export const addMultiSvg = (
   svgs,
@@ -316,4 +332,59 @@ export const addMultiSvg = (
   group.destroy();
 
   canvas.remove(group);
+};
+
+/**
+ * Adding event listener to element
+ *
+ * @param {Object}  element         element will be added event
+ * @param {Object}  eventListeners  event list {name, eventHandling}
+ */
+export const addEventListeners = (element, eventListeners) => {
+  Object.keys(eventListeners).forEach(k => {
+    element.on(k, eventListeners[k]);
+  });
+};
+
+/**
+ * Adding svgs to canvas
+ *
+ * @param {Array}   svgObjects          list of sgv will be added
+ * @param {String}  svgUrlAttrName      the attribute name contain svg url
+ * @param {Nunber}  expectedHeight      the attribute name contain svg url
+ * @param {Object}  canvas              the canvas contain new sgv
+ * @param {Boolean} isAddedToSinglePage is sgv will be added to single page
+ * @param {Boolean} isPlaceInLeftPage   is sgv will be added to left page
+ * @param {Object}  eventListeners      sgv event list {name, eventHandling}
+ */
+export const addPrintSvgs = async (
+  svgObjects,
+  svgUrlAttrName,
+  expectedHeight,
+  canvas,
+  isAddedToSinglePage,
+  isPlaceInLeftPage,
+  eventListeners
+) => {
+  const svgs = await Promise.all(
+    svgObjects.map(s => {
+      const fabricProp = getFabricPropByType(s.object.type, s.object);
+
+      return getSvgData(
+        s.object[svgUrlAttrName],
+        { ...fabricProp, id: s.id },
+        expectedHeight
+      );
+    })
+  );
+
+  if (isEmpty(svgs) || svgs.length != svgObjects.length) return;
+
+  svgs.forEach(s => addEventListeners(s, eventListeners));
+
+  svgs.length == 1
+    ? addSingleSvg(svgs[0], canvas, isAddedToSinglePage, isPlaceInLeftPage)
+    : addMultiSvg(svgs, canvas, isAddedToSinglePage, isPlaceInLeftPage);
+
+  canvas.renderAll();
 };

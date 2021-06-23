@@ -1,6 +1,11 @@
 <template>
   <div class="actions-container">
-    <Item v-for="item in items" :key="item.value" :item="item" />
+    <Item
+      v-for="item in items"
+      :key="item.value"
+      :item="item"
+      @click="onClick"
+    />
   </div>
 </template>
 

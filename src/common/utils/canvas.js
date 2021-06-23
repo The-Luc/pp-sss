@@ -41,17 +41,20 @@ export const getCoverPagePrintSize = (isHardCover, pageCount) => {
   const pdfFinalPageSize = isHardCover
     ? { ...PRINT_HARDCOVER_PAGE_SIZE }
     : { ...PRINT_SOFTCOVER_PAGE_SIZE };
-  let pageLimit = 0;
-  Object.keys(sizeObjects).forEach((maxPage, index, arr) => {
-    if (!pageLimit) {
-      if (maxPage >= pageCount) {
-        pageLimit = maxPage;
-      }
-      if (index + 1 === arr.length) {
-        pageLimit = maxPage;
-      }
+
+  const listSizes = Object.keys(sizeObjects)
+    .map(key => Number(key))
+    .sort((a, b) => a - b);
+  let pageLimit = listSizes[listSizes.length - 1];
+  for (let index = listSizes.length - 2; index >= 0; index--) {
+    const maxPage = listSizes[index];
+    if (maxPage >= pageCount) {
+      pageLimit = maxPage;
     }
-  });
+    if (maxPage < pageCount) {
+      break;
+    }
+  }
   const spineWidth = sizeObjects[pageLimit];
   const inches = {
     pdfWidth: pdfFinalPageSize.PDF_DOUBLE_WIDTH,
@@ -70,6 +73,12 @@ export const getCoverPagePrintSize = (isHardCover, pageCount) => {
     bleedY: (pdfFinalPageSize.PDF_HEIGHT - PRINT_PAGE_SIZE.HEIGHT) / 2,
     ratio: pdfFinalPageSize.PDF_DOUBLE_WIDTH / pdfFinalPageSize.PDF_HEIGHT
   };
+  if (!isHardCover) {
+    inches.bleedX = PRINT_PAGE_SIZE.BLEED;
+    inches.bleedY = PRINT_PAGE_SIZE.BLEED;
+    inches.pageWidth = inches.sheetWidth - inches.bleedX * 2 - spineWidth;
+    inches.pageHeight = inches.sheetHeight - inches.bleedY * 2;
+  }
   const pixels = {
     ...objectInchesToPixels(inches),
     ratio: inches.ratio

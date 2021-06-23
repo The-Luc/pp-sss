@@ -36,7 +36,7 @@ export const addPrintBackground = ({
     .filter(o => o.objectType === OBJECT_TYPE.BACKGROUND);
 
   const isAddingFullBackground =
-    backgroundProp.property.pageType === BACKGROUND_PAGE_TYPE.FULL_PAGE.id;
+    backgroundProp.pageType === BACKGROUND_PAGE_TYPE.FULL_PAGE.id;
 
   const isCurrentFullBackground =
     !isEmpty(currentBackgrounds) &&
@@ -64,7 +64,7 @@ export const addPrintBackground = ({
 
   const fabricProp = toFabricBackgroundProp(backgroundProp);
 
-  fabric.Image.fromURL(backgroundProp.property.imageUrl, img => {
+  fabric.Image.fromURL(backgroundProp.imageUrl, img => {
     img.set({
       ...fabricProp,
       id,

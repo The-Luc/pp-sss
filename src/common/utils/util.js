@@ -3,7 +3,7 @@ import moment from 'moment';
 
 import { DATE_FORMAT, MOMENT_TYPE } from '@/common/constants';
 
-import { scaleSize } from './canvas';
+import { scaleSize, inToPx } from './canvas';
 
 /**
  * Get the next id of item list
@@ -274,11 +274,11 @@ export const toFabricTextProp = prop => {
     data: {
       x: {
         name: 'left',
-        parse: value => scaleSize(value)
+        parse: value => inToPx(value)
       },
       y: {
         name: 'top',
-        parse: value => scaleSize(value)
+        parse: value => inToPx(value)
       },
       isBold: {
         name: 'fontWeight',

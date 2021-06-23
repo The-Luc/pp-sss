@@ -64,14 +64,12 @@ const bg1 = {
     y: 0,
     rotation: 0 // degree
   },
-  property: {
-    category: 'Cover',
-    name: 'watercolorbackground.jpg',
-    thumbnail:
-      'http://s3.amazonaws.com/fms.prod/yb_backgrounds/global/700/original_watercolorbackground.jpg',
-    imageUrl:
-      'http://s3.amazonaws.com/fms.prod/yb_backgrounds/global/700/original_watercolorbackground.jpg'
-  }
+  category: 'Cover',
+  name: 'watercolorbackground.jpg',
+  thumbnail:
+    'http://s3.amazonaws.com/fms.prod/yb_backgrounds/global/700/original_watercolorbackground.jpg',
+  imageUrl:
+    'http://s3.amazonaws.com/fms.prod/yb_backgrounds/global/700/original_watercolorbackground.jpg'
 };
 
 const bg2 = {
@@ -86,14 +84,12 @@ const bg2 = {
     y: 0,
     rotation: 0 // degree
   },
-  property: {
-    category: 'Cover',
-    name: 'watercolorbackground.jpg',
-    thumbnail:
-      'http://s3.amazonaws.com/fms.prod/yb_backgrounds/global/233/original_papertree.jpg',
-    imageUrl:
-      'http://s3.amazonaws.com/fms.prod/yb_backgrounds/global/233/original_papertree.jpg'
-  }
+  category: 'Cover',
+  name: 'watercolorbackground.jpg',
+  thumbnail:
+    'http://s3.amazonaws.com/fms.prod/yb_backgrounds/global/233/original_papertree.jpg',
+  imageUrl:
+    'http://s3.amazonaws.com/fms.prod/yb_backgrounds/global/233/original_papertree.jpg'
 };
 
 const clipArt1 = {
@@ -108,16 +104,14 @@ const clipArt1 = {
     y: 250,
     rotation: 0 // degree
   },
-  property: {
-    category: 'MSPHOTO',
-    name: 'LPCA_04531',
-    thumbnail:
-      'http://s3.amazonaws.com/fms.prod/yb_clipart/global/1725/LPCA_04531.png?2013',
-    vector:
-      'https://s3.amazonaws.com/fms.prod/yb_clipart/global/1725/LPCA_04531.svg?2013', // imgUrl
-    fillcolor: '',
-    opacity: 0
-  }
+  category: 'MSPHOTO',
+  name: 'LPCA_04531',
+  thumbnail:
+    'http://s3.amazonaws.com/fms.prod/yb_clipart/global/1725/LPCA_04531.png?2013',
+  vector:
+    'https://s3.amazonaws.com/fms.prod/yb_clipart/global/1725/LPCA_04531.svg?2013', // imgUrl
+  fillcolor: '',
+  opacity: 0
 };
 
 const clipArt2 = {
@@ -132,14 +126,12 @@ const clipArt2 = {
     y: 250,
     rotation: 0 // degree
   },
-  property: {
-    category: 'MSPHOTO',
-    name: 'LPCA_04511',
-    thumbnail:
-      'http://s3.amazonaws.com/fms.prod/yb_clipart/global/1715/LPCA_04511.png?2013',
-    vector:
-      'https://s3.amazonaws.com/fms.prod/yb_clipart/global/1715/LPCA_04511.svg?2013' // imgUrl
-  }
+  category: 'MSPHOTO',
+  name: 'LPCA_04511',
+  thumbnail:
+    'http://s3.amazonaws.com/fms.prod/yb_clipart/global/1715/LPCA_04511.png?2013',
+  vector:
+    'https://s3.amazonaws.com/fms.prod/yb_clipart/global/1715/LPCA_04511.svg?2013' // imgUrl
 };
 
 const shape1 = {
@@ -154,12 +146,10 @@ const shape1 = {
     y: 206,
     rotation: 0 // degree
   },
-  property: {
-    category: '',
-    name: '',
-    thumbnail: '',
-    pathData: 'img.svg' // TODO: Need discuss with FM to get instruction on using shape
-  }
+  category: '',
+  name: '',
+  thumbnail: '',
+  pathData: 'img.svg' // TODO: Need discuss with FM to get instruction on using shape
 };
 
 const textSinglePage1 = {
@@ -220,14 +210,12 @@ const bgSinglePage1 = {
     y: 0,
     rotation: 0 // degree
   },
-  property: {
-    category: 'single',
-    name: 'watercolorbackground.jpg',
-    thumbnail:
-      'http://s3.amazonaws.com/fms.prod/yb_backgrounds/global/1348/original_whiter-right.jpg?2017',
-    imageUrl:
-      'http://s3.amazonaws.com/fms.prod/yb_backgrounds/global/1348/original_whiter-right.jpg?2017'
-  }
+  category: 'single',
+  name: 'watercolorbackground.jpg',
+  thumbnail:
+    'http://s3.amazonaws.com/fms.prod/yb_backgrounds/global/1348/original_whiter-right.jpg?2017',
+  imageUrl:
+    'http://s3.amazonaws.com/fms.prod/yb_backgrounds/global/1348/original_whiter-right.jpg?2017'
 };
 
 const bgSinglePage2 = {
@@ -242,14 +230,12 @@ const bgSinglePage2 = {
     y: 0,
     rotation: 0 // degree
   },
-  property: {
-    category: 'single',
-    name: 'watercolorbackground.jpg',
-    thumbnail:
-      'http://s3.amazonaws.com/fms.prod/yb_backgrounds/global/1345/original_greenboard-left.jpg?2017',
-    imageUrl:
-      'http://s3.amazonaws.com/fms.prod/yb_backgrounds/global/1345/original_greenboard-left.jpg?2017'
-  }
+  category: 'single',
+  name: 'watercolorbackground.jpg',
+  thumbnail:
+    'http://s3.amazonaws.com/fms.prod/yb_backgrounds/global/1345/original_greenboard-left.jpg?2017',
+  imageUrl:
+    'http://s3.amazonaws.com/fms.prod/yb_backgrounds/global/1345/original_greenboard-left.jpg?2017'
 };
 
 const layouts = [

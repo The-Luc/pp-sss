@@ -10,3 +10,4 @@ export * from './slack';
 export * from './util';
 export * from './sheet';
 export * from './background';
+export * from './string';
