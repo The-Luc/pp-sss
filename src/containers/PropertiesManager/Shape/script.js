@@ -6,9 +6,9 @@ import GeneralContent from './GeneralContent';
 import { cloneDeep } from 'lodash';
 
 import { useShapeProperties } from '@/hooks';
+import { splitNumberByDecimal } from '@/common/utils';
 
 import { DEFAULT_SHAPE } from '@/common/constants';
-import { splitNumberByDecimal } from '@/common/utils';
 
 export default {
   components: {
@@ -31,18 +31,6 @@ export default {
     };
   },
   computed: {
-    positionValue() {
-      if (this.triggerChange) {
-        // just for trigger the change
-      }
-
-      const coord = this.getProperty('coord');
-
-      return {
-        x: coord?.x || 0,
-        y: coord?.y || 0
-      };
-    },
     rotateValue() {
       if (this.triggerChange) {
         // just for trigger the change
@@ -116,10 +104,13 @@ export default {
      * @param {String} actionName action name
      */
     changeFlip(actionName) {
-      const flipData = {};
+      const currentFlip = {
+        ...this.getProperty('flip')
+      };
 
-      console.log(actionName);
-      this.$root.$emit('printChangeShapeProperties', actionName);
+      this.$root.$emit('printChangeShapeProperties', {
+        flip: { [actionName]: !currentFlip[actionName] }
+      });
     },
     /**
      * Handle update size, position or rotate for Shape
