@@ -158,9 +158,15 @@ export default {
       }
       if (key.includes('coord')) {
         data.coord = {
-          ...(data?.coord?.x && { x: splitNumberByDecimal(data.coord.x) }),
-          ...(data?.coord?.y && { y: splitNumberByDecimal(data.coord.y) }),
-          ...(data?.coord?.rotation && { rotation: data.coord.rotation })
+          ...((data?.coord?.x || data?.coord?.x === 0) && {
+            x: splitNumberByDecimal(data.coord.x)
+          }),
+          ...((data?.coord?.y || data?.coord?.y === 0) && {
+            y: splitNumberByDecimal(data.coord.y)
+          }),
+          ...((data?.coord?.rotation || data?.coord?.rotation === 0) && {
+            rotation: data.coord.rotation
+          })
         };
       }
       this.$root.$emit('printChangeShapeProperties', data);
