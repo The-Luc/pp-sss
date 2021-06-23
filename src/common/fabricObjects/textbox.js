@@ -595,7 +595,7 @@ const applyShadowToObject = function(fabricObject, shadowConfig) {
  * @param {Object} prop - the prop change
  */
 export const applyTextBoxProperties = function(textObject, prop) {
-  if (prop.coord?.rotation) {
+  if (prop.coord) {
     applyTextGroupProperties(textObject, prop);
   } else {
     const [rect, text] = getObjectsFromTextBox(textObject);
