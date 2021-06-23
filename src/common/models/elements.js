@@ -123,7 +123,7 @@ export const ClipArtElement = {
   name: '',
   thumbnail: '',
   vector: '', // imgUrl
-  isMonochrome: false
+  isColorful: false
 };
 
 export const ShapeElement = {

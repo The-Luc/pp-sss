@@ -18,7 +18,8 @@ import {
   isHalfSheet,
   isHalfLeft,
   pxToIn,
-  inToPx
+  inToPx,
+  isJsonString
 } from '@/common/utils';
 
 import {
@@ -27,13 +28,11 @@ import {
   addPrintBackground,
   updatePrintBackground,
   getAdjustedObjectDimension,
-  addPrintShapes
+  addPrintShapes,
+  addPrintClipArts
 } from '@/common/fabricObjects';
 
-import {
-  toFabricClipArtProp,
-  updateElement
-} from '@/common/fabricObjects/common';
+import { updateElement } from '@/common/fabricObjects/common';
 
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
 import { GETTERS } from '@/store/modules/book/const';
@@ -54,8 +53,6 @@ import {
   SHEET_TYPE,
   OBJECT_TYPE,
   CORNER_SIZE,
-  HALF_SHEET,
-  HALF_LEFT,
   DEFAULT_SHAPE,
   COVER_TYPE
 } from '@/common/constants';
@@ -64,7 +61,8 @@ import PrintCanvasLines from './PrintCanvasLines';
 import PageWrapper from './PageWrapper';
 import XRuler from './Rulers/XRuler';
 import YRuler from './Rulers/YRuler';
-import { addSingleSvg, addMultiSvg } from '@/common/fabricObjects/common';
+import { isFabricObject } from '@/common/utils/string';
+import { COPY_OBJECT_KEY } from '@/common/constants/config';
 
 export default {
   components: {
@@ -103,7 +101,8 @@ export default {
       sheetLayout: PRINT_GETTERS.SHEET_LAYOUT,
       isOpenMenuProperties: APP_GETTERS.IS_OPEN_MENU_PROPERTIES,
       isOpenColorPicker: APP_GETTERS.IS_OPEN_COLOR_PICKER,
-      selectedObject: PRINT_GETTERS.CURRENT_OBJECT
+      selectedObject: PRINT_GETTERS.CURRENT_OBJECT,
+      toolNameSelected: APP_GETTERS.SELECTED_TOOL_NAME
     }),
     isCover() {
       return this.pageSelected?.type === SHEET_TYPE.COVER;
@@ -156,8 +155,14 @@ export default {
       }
     }
   },
+  mounted() {
+    window.addEventListener('copy', this.handleCopy);
+    window.addEventListener('paste', this.handlePaste);
+  },
   beforeDestroy() {
     document.body.removeEventListener('keyup', this.handleDeleteKey);
+    window.removeEventListener('copy', this.handleCopy);
+    window.removeEventListener('paste', this.handlePaste);
     window.printCanvas = null;
   },
   methods: {
@@ -182,8 +187,38 @@ export default {
       deleteObjects: PRINT_MUTATES.DELETE_OBJECTS,
       updateTriggerShapeChange: PRINT_MUTATES.UPDATE_TRIGGER_SHAPE_CHANGE,
       setThumbnail: PRINT_MUTATES.UPDATE_SHEET_THUMBNAIL,
-      updateTriggerClipArtChange: PRINT_MUTATES.UPDATE_TRIGGER_CLIPART_CHANGE
+      updateTriggerClipArtChange: PRINT_MUTATES.UPDATE_TRIGGER_CLIPART_CHANGE,
+      toggleActiveObjects: MUTATES.TOGGLE_ACTIVE_OBJECTS
     }),
+    /**
+     * Function handle to get object(s) be copied from clipboard when user press Ctrl + V (Windows), Command + V (macOS), or from action menu
+     */
+    handlePaste() {
+      navigator.clipboard.readText().then(clipText => {
+        const isJson = isJsonString(clipText);
+        if (isJson) {
+          const isValid = isFabricObject(clipText);
+          if (isValid) {
+            const data = JSON.parse(clipText);
+            console.log('handlePaste', data);
+          }
+        }
+      });
+    },
+    /**
+     * Function handle to set object(s) to clipboard when user press Ctrl + C (Windows), Command + C (macOS), or from action menu
+     */
+    handleCopy() {
+      const activeObj = window.printCanvas.getActiveObject();
+      if (activeObj) {
+        const cacheData = {
+          [COPY_OBJECT_KEY]: {
+            activeObj
+          }
+        };
+        navigator.clipboard.writeText(JSON.stringify(cacheData));
+      }
+    },
     /**
      * Auto resize canvas to fit the container size
      */
@@ -260,6 +295,8 @@ export default {
             startDrawBox(window.printCanvas, e).then(
               ({ left, top, width, height }) => {
                 if (this.awaitingAdd === OBJECT_TYPE.TEXT) {
+                  left += width / 2;
+                  top += height / 2;
                   this.addText(left, top, width, height);
                 }
                 if (this.awaitingAdd === OBJECT_TYPE.IMAGE) {
@@ -341,6 +378,10 @@ export default {
         this.changeClipArtProperties(prop);
       });
 
+      this.$root.$on('printCopyObj', () => {
+        this.handleCopy();
+      });
+
       document.body.addEventListener('keyup', this.handleDeleteKey);
     },
     /**
@@ -383,13 +424,21 @@ export default {
           isOpen: false
         });
       }
+
       this.setIsOpenProperties({
         isOpen: false
       });
+
       this.setObjectTypeSelected({
         type: ''
       });
+
+      this.toggleActiveObjects(false);
+
       this.setSelectedObjectId({ id: '' });
+      if (this.toolNameSelected === TOOL_NAME.ACTIONS) {
+        this.setToolNameSelected({ name: '' });
+      }
     },
     /**
      * Close text properties modal
@@ -449,6 +498,8 @@ export default {
       if (this.awaitingAdd) {
         return;
       }
+      this.toggleActiveObjects(true);
+
       const { id } = target;
       const targetType = target.get('type');
       this.setSelectedObjectId({ id });
@@ -456,7 +507,7 @@ export default {
 
       const objectData = this.selectedObject;
 
-      if (targetType === 'group' && target.objectType !== OBJECT_TYPE.SHAPE) {
+      if (targetType === 'group' && target.objectType === OBJECT_TYPE.TEXT) {
         const rectObj = target.getObjects(OBJECT_TYPE.RECT)[0];
 
         this.setBorderObject(rectObj, objectData);
@@ -489,6 +540,7 @@ export default {
         {},
         this.pageSelected.id
       );
+      object.on('rotated', this.handleRotated);
       this.addNewObject(data);
       const isConstrain = data.newObject.isConstrain;
       this.setCanvasUniformScaling(isConstrain);
@@ -626,66 +678,59 @@ export default {
      * @param {Array} clipArts - list clip art add on Canvas
      */
     async addClipArt(clipArts) {
-      const { width, height } = window.printCanvas;
-      const zoom = window.printCanvas.getZoom();
-      const isAHalfSheet = HALF_SHEET.indexOf(this.pageSelected.type) >= 0;
-      const isALeftSheet = HALF_LEFT.indexOf(this.pageSelected.type) >= 0;
-      const svgs = await Promise.all(
-        clipArts.map(item => {
-          let id = uniqueId();
-          let newClipArt = cloneDeep(ClipArtElement);
-          merge(newClipArt, item);
-          this.addNewObject({
-            id: id,
-            newObject: {
-              ...newClipArt,
-              id
-            }
-          });
+      const toBeAddedClipArts = clipArts.map(c => {
+        const newClipArt = cloneDeep(ClipArtElement);
 
-          let fabricProp = toFabricClipArtProp(newClipArt);
-          return new Promise(resolve => {
-            fabric.loadSVGFromURL(
-              require(`../../../../../assets/image/clip-art/${item.vector}`),
-              (objects, options) => {
-                let svgData = fabric.util.groupSVGElements(objects, options);
-                svgData
-                  .set({
-                    ...fabricProp,
-                    width: svgData.width,
-                    height: svgData.height,
-                    id: id,
-                    type: OBJECT_TYPE.CLIP_ART,
-                    fill: '#58595b',
-                    originX: 'center',
-                    originY: 'center'
-                  })
-                  .setCoords();
-                svgData.scaleToHeight((height / zoom / svgData.height) * 8);
-                svgData.scaleToWidth((width / zoom / svgData.width) * 8);
-                resolve(svgData);
-              }
-            );
-          });
-        })
-      );
-      svgs.length == 1
-        ? addSingleSvg(svgs[0], window.printCanvas, isAHalfSheet, isALeftSheet)
-        : addMultiSvg(svgs, window.printCanvas, isAHalfSheet, isALeftSheet);
+        merge(newClipArt, c);
 
-      window.printCanvas.renderAll();
-
-      if (clipArts.length !== 1) {
-        this.closeProperties();
-      } else {
-        setTimeout(() => {
-          selectLatestObject(window.printCanvas);
-        }, 500);
-      }
-
-      svgs.forEach(clipArt => {
-        clipArt.on('rotated', this.handleRotated);
+        return {
+          id: uniqueId(),
+          object: {
+            ...newClipArt,
+            vector: require(`../../../../../assets/image/clip-art/${newClipArt.vector}`)
+          }
+        };
       });
+
+      const eventListeners = {
+        //scaling: this.handleShapeScaling,
+        //scaled: this.handleShapeScaled,
+        rotated: this.handleRotated
+        //moved: this.handleShapeMoved
+      };
+
+      await addPrintClipArts(
+        toBeAddedClipArts,
+        window.printCanvas,
+        isHalfSheet(this.pageSelected),
+        isHalfLeft(this.pageSelected),
+        eventListeners
+      );
+
+      toBeAddedClipArts.forEach(s => {
+        const fabricObject = window.printCanvas
+          .getObjects()
+          .find(o => o.id === s.id);
+
+        const { top, left } = fabricObject;
+
+        this.addNewObject({
+          id: s.id,
+          newObject: {
+            ...s.object,
+            coord: {
+              x: pxToIn(left),
+              y: pxToIn(top)
+            }
+          }
+        });
+      });
+
+      if (toBeAddedClipArts.length === 1) {
+        selectLatestObject(window.printCanvas);
+      } else {
+        this.closeProperties();
+      }
     },
     /**
      * Callback function for handle rotated to update
@@ -694,22 +739,21 @@ export default {
     handleRotated(e) {
       const target = e.transform?.target;
       if (isEmpty(target)) return;
-
+      const prop = {
+        coord: {
+          rotation: target.angle
+        }
+      };
       const objectType = target.objectType;
       switch (objectType) {
         case OBJECT_TYPE.SHAPE:
-          this.changeShapeProperties({
-            coord: {
-              rotation: target.angle
-            }
-          });
+          this.changeShapeProperties(prop);
           break;
         case OBJECT_TYPE.CLIP_ART:
-          this.changeClipArtProperties({
-            coord: {
-              rotation: target.angle
-            }
-          });
+          this.changeClipArtProperties(prop);
+          break;
+        case OBJECT_TYPE.TEXT:
+          this.changeTextProperties(prop);
           break;
         default:
           return;
@@ -747,6 +791,8 @@ export default {
       if (isEmpty(target)) return;
       const currentWidthInch = pxToIn(target.width * target.scaleX);
       const currentHeightInch = pxToIn(target.height * target.scaleY);
+      const currentXInch = pxToIn(target.left);
+      const currentYInch = pxToIn(target.top);
       this.changeShapeProperties({
         size: {
           width:
@@ -757,6 +803,10 @@ export default {
             currentHeightInch < DEFAULT_SHAPE.MIN_SIZE
               ? DEFAULT_SHAPE.MIN_SIZE
               : currentHeightInch
+        },
+        coord: {
+          x: currentXInch,
+          y: currentYInch
         }
       });
     },
@@ -768,41 +818,54 @@ export default {
     async addShapes(shapes) {
       const toBeAddedShapes = shapes.map(s => {
         const newShape = cloneDeep(ShapeElement);
-        const id = uniqueId();
 
         merge(newShape, s);
 
         return {
-          id,
-          object: {
-            ...newShape,
-            id
-          }
+          id: uniqueId(),
+          object: newShape
         };
       });
 
-      const printShapes = await addPrintShapes(
+      const eventListeners = {
+        scaling: this.handleShapeScaling,
+        scaled: this.handleShapeScaled,
+        rotated: this.handleRotated,
+        moved: this.handleShapeMoved
+      };
+
+      await addPrintShapes(
         toBeAddedShapes,
         window.printCanvas,
         isHalfSheet(this.pageSelected),
-        isHalfLeft(this.pageSelected)
+        isHalfLeft(this.pageSelected),
+        eventListeners
       );
+
       toBeAddedShapes.forEach(s => {
+        const fabricObject = window.printCanvas
+          .getObjects()
+          .find(o => o.id === s.id);
+
+        const { top, left } = fabricObject;
+
         this.addNewObject({
           id: s.id,
-          newObject: s.object
+          newObject: {
+            ...s.object,
+            coord: {
+              x: pxToIn(left),
+              y: pxToIn(top)
+            }
+          }
         });
       });
+
       if (toBeAddedShapes.length === 1) {
         selectLatestObject(window.printCanvas);
       } else {
         this.closeProperties();
       }
-      printShapes.forEach(shape => {
-        shape.on('scaling', this.handleShapeScaling);
-        shape.on('scaled', this.handleShapeScaled);
-        shape.on('rotated', this.handleRotated);
-      });
     },
     /**
      * Event fire when user change any property of selected shape
@@ -816,7 +879,6 @@ export default {
         this.updateTriggerShapeChange
       );
     },
-
     /**
      * update z-index of objecs on canvas to:
      *   + objects in the store (print/objects Z-index)
@@ -872,6 +934,22 @@ export default {
       if (updateTriggerFn !== null) updateTriggerFn();
 
       updateElement(element, prop, window.printCanvas);
+    },
+    /**
+     * Callback function for handle moved to update shape's dimension
+     * @param {Object} e - Shape element
+     */
+    handleShapeMoved(e) {
+      const target = e.transform?.target;
+      if (isEmpty(target)) return;
+      const currentXInch = pxToIn(target.left);
+      const currentYInch = pxToIn(target.top);
+      this.changeShapeProperties({
+        coord: {
+          x: currentXInch,
+          y: currentYInch
+        }
+      });
     }
   }
 };

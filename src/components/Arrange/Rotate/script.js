@@ -1,7 +1,7 @@
-import PpNumber from '@/components/Number';
+import PpInput from '@/components/InputProperty';
 export default {
   components: {
-    PpNumber
+    PpInput
   },
   props: {
     value: {

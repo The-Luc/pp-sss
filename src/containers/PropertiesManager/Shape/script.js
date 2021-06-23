@@ -1,7 +1,6 @@
 import { mapGetters, mapMutations } from 'vuex';
-import { cloneDeep } from 'lodash';
 
-import { useObject } from '@/hooks';
+import { useShapeProperties } from '@/hooks';
 import Properties from '@/components/Properties/BoxProperties';
 import TabMenu from '@/components/TabMenu';
 import GeneralContent from './GeneralContent';
@@ -19,10 +18,10 @@ export default {
     ArrangeContent
   },
   setup() {
-    const { triggerShapeChange, selectObjectProp } = useObject();
+    const { triggerChange, getProperty } = useShapeProperties();
     return {
-      triggerShapeChange,
-      selectObjectProp
+      triggerChange,
+      getProperty
     };
   },
   computed: {
@@ -30,37 +29,37 @@ export default {
       currentObject: PRINT_GETTERS.CURRENT_OBJECT
     }),
     currentArrange() {
-      if (this.triggerShapeChange) {
+      if (this.triggerChange) {
         // just for trigger the change
       }
       return this.currentObject;
     },
     rotateValue() {
-      if (this.triggerShapeChange) {
+      if (this.triggerChange) {
         // just for trigger the change
       }
-      const coord = this.selectObjectProp('coord');
+      const coord = this.getProperty('coord');
       return coord?.rotation || 0;
     },
     sizeWidth() {
       if (this.triggerChange) {
         // just for trigger the change
       }
-      const size = this.selectObjectProp('size');
+      const size = this.getProperty('size');
       return size?.width || 0;
     },
     sizeHeight() {
       if (this.triggerChange) {
         // just for trigger the change
       }
-      const size = this.selectObjectProp('size');
+      const size = this.getProperty('size');
       return size?.height || 0;
     },
     isConstrain() {
       if (this.triggerChange) {
         // just for trigger the change
       }
-      return this.selectObjectProp('isConstrain');
+      return this.getProperty('isConstrain');
     },
     minSize() {
       const objectType = this.currentArrange.type;
@@ -85,6 +84,42 @@ export default {
           break;
       }
       return res;
+    },
+    minPosition() {
+      const objectType = this.currentArrange.type;
+      let res = 0;
+      switch (objectType) {
+        case OBJECT_TYPE.SHAPE:
+          res = -100;
+          break;
+        default:
+          break;
+      }
+      return res;
+    },
+    maxPosition() {
+      const objectType = this.currentArrange.type;
+      let res = 0;
+      switch (objectType) {
+        case OBJECT_TYPE.SHAPE:
+          res = 100;
+          break;
+        default:
+          break;
+      }
+      return res;
+    },
+    position() {
+      if (this.triggerChange) {
+        // just for trigger the change
+      }
+
+      const coord = this.getProperty('coord');
+
+      return {
+        x: coord?.x || 0,
+        y: coord?.y || 0
+      };
     }
   },
   methods: {
@@ -111,15 +146,7 @@ export default {
      * @param {Object} object object containing the value of update size, position or rotate
      */
     onChange(object) {
-      const data = cloneDeep(object);
-      const key = Object.keys(data);
-      if (key.includes('size')) {
-        data.size = {
-          ...(data?.size?.width && { width: data.size.width }),
-          ...(data?.size?.height && { height: data.size.height })
-        };
-      }
-      this.$root.$emit('printChangeShapeProperties', data);
+      this.$root.$emit('printChangeShapeProperties', object);
     },
     onChangeConstrain(val) {
       this.$root.$emit('printChangeShapeProperties', {

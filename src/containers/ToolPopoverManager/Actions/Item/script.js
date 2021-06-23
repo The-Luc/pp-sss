@@ -8,8 +8,8 @@ export default {
   methods: {
     // TODO later
     onClick() {
-      if (this.disabled) return;
-      console.log('onClick', this.item.value);
+      if (this.item.disabled) return;
+      this.$emit('click', this.item.value);
     }
   }
 };

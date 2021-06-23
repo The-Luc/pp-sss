@@ -94,7 +94,7 @@ export default {
      * @param {String}  color value user input
      */
     onChangeColor(color) {
-      this.$root.$emit('printChangeShapeProperties', { color });
+      this.$root.$emit('printChangeShapeProperties', { color, stroke: color });
     }
   }
 };

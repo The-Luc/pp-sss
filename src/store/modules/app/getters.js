@@ -14,5 +14,6 @@ export const getters = {
   [APP._GETTERS.COLOR_PICKER_CUSTOM_PROPS]: ({ colorPicker: { data } }) => data,
   [APP._GETTERS.COLOR_PICKER_PRESETS]: ({ colorPicker: { data } }) =>
     data.presets.values,
-  [APP._GETTERS.IS_PROMPT]: ({ isPrompt }) => isPrompt
+  [APP._GETTERS.IS_PROMPT]: ({ isPrompt }) => isPrompt,
+  [APP._GETTERS.HAS_ACTIVE_OBJECTS]: ({ hasActiveObjects }) => hasActiveObjects
 };

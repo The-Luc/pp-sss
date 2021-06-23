@@ -93,6 +93,8 @@ export const createTextBox = (x, y, width, height, textProperties, sheetId) => {
     top: y,
     lockScalingY: false,
     lockScalingX: false,
+    originX: 'center',
+    originY: 'center',
     isConstrain: text.isConstrain
   });
 
@@ -119,6 +121,12 @@ export const createTextBox = (x, y, width, height, textProperties, sheetId) => {
       addGroupEvents(grp);
     };
 
+    const onTextChanged = () => {
+      updateObjectDimensionsIfSmaller(rect, text.width, text.height);
+      canvas.renderAll();
+    };
+
+    text.on('changed', onTextChanged);
     text.on('editing:exited', onDoneEditText);
     text.editingExitedListener = true;
   };
@@ -419,6 +427,15 @@ const applyTextProperties = function(text, prop) {
     }
   }
 
+  const target = canvas.getActiveObject();
+  if (!isEmpty(prop['fontSize']) && target !== text) {
+    const textData = {
+      top: text.height * -0.5,
+      left: text.width * -0.5
+    };
+    text.set(textData);
+  }
+
   if (!isEmpty(prop['shadow'])) {
     applyShadowToObject(text, prop['shadow']);
   }
@@ -485,12 +502,35 @@ const applyTextRectProperties = function(rect, prop) {
   }
 
   Object.keys(rectProp).forEach(k => {
-    rect.set(k, rectProp[k]);
+    if (k.includes('fontSize')) {
+      const { top, left } = rect._text || {};
+      rect.set({ top, left });
+    } else {
+      rect.set(k, rectProp[k]);
+    }
   });
 
   if (!isEmpty(prop['shadow'])) {
     applyShadowToObject(rect, prop['shadow']);
   }
+
+  canvas.renderAll();
+};
+
+/**
+ * Handle update fabric object rendered on canvas
+ * @param {Object}  textObject - the object to be updated
+ * @param {Object}  prop - the prop change
+ */
+const applyTextGroupProperties = function(textGroup, prop) {
+  if (isEmpty(textGroup) || !textGroup.canvas) {
+    return;
+  }
+  const canvas = textGroup.canvas;
+
+  const textGroupProp = toFabricTextProp(prop);
+
+  textGroup.set(textGroupProp);
 
   canvas.renderAll();
 };
@@ -555,7 +595,11 @@ const applyShadowToObject = function(fabricObject, shadowConfig) {
  * @param {Object} prop - the prop change
  */
 export const applyTextBoxProperties = function(textObject, prop) {
-  const [rect, text] = getObjectsFromTextBox(textObject);
-  applyTextProperties(text, prop);
-  applyTextRectProperties(rect, prop);
+  if (prop.coord) {
+    applyTextGroupProperties(textObject, prop);
+  } else {
+    const [rect, text] = getObjectsFromTextBox(textObject);
+    applyTextProperties(text, prop);
+    applyTextRectProperties(rect, prop);
+  }
 };
