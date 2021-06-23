@@ -1,7 +1,6 @@
 import { mapGetters, mapMutations } from 'vuex';
 import { cloneDeep } from 'lodash';
 
-import { splitNumberByDecimal } from '@/common/utils';
 import { useShapeProperties } from '@/hooks';
 import Properties from '@/components/Properties/BoxProperties';
 import TabMenu from '@/components/TabMenu';
@@ -159,10 +158,10 @@ export default {
       if (key.includes('coord')) {
         data.coord = {
           ...((data?.coord?.x || data?.coord?.x === 0) && {
-            x: splitNumberByDecimal(data.coord.x)
+            x: data.coord.x
           }),
           ...((data?.coord?.y || data?.coord?.y === 0) && {
-            y: splitNumberByDecimal(data.coord.y)
+            y: data.coord.y
           }),
           ...((data?.coord?.rotation || data?.coord?.rotation === 0) && {
             rotation: data.coord.rotation
