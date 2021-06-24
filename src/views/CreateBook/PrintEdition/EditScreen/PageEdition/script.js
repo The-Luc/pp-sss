@@ -941,6 +941,11 @@ export default {
         }
       });
     },
+    /**
+     * Handling event on this screen
+     *
+     * @param {Boolean} isOn if need to set event
+     */
     eventHandling(isOn = true) {
       const elementEvents = {
         printAddElement: element => {
