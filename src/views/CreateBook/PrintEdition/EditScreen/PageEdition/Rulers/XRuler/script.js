@@ -25,11 +25,11 @@ export default {
         };
       }
       const {
-        inches: { pdfWidth, pageWidth, spineWidth }
+        inches: { pdfWidth, spineWidth }
       } = this.pageSize;
       const { width } = this.canvasSize;
       return {
-        count: Math.ceil(spineWidth > 0 ? pdfWidth : pageWidth) - 1,
+        count: Math.ceil(pdfWidth / (spineWidth > 0 ? 1 : 2)) - 1,
         width: width / pdfWidth,
         canvasWidth: width,
         double: spineWidth === 0

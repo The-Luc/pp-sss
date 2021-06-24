@@ -6,21 +6,22 @@
   border-top-width: 0;
   border-left-width: 0;
   border-right-width: 0;
+  align-items: flex-end;
 
   .sx-unit {
-    position: absolute;
-    bottom: 0;
-    border-right: 1px solid $color-gray12;
-    width: 10%;
+    flex: 1;
+    height: 100%;
+  }
+
+  .sx-unit-separator,
+  .sx-unit-separator-mid {
+    width: 1px;
     height: 40%;
-    @for $i from 1 through 9 {
-      &:nth-of-type(#{$i}) {
-        left: ($i - 1) * 10%;
-      }
-    }
-    &:nth-of-type(5) {
-      height: 66%;
-    }
+    background-color: $color-gray12;
+  }
+
+  .sx-unit-separator-mid {
+    height: 66%;
   }
 
   .x-unit-number {

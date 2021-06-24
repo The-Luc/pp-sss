@@ -3,6 +3,8 @@ import { mapGetters } from 'vuex';
 import { GETTERS } from '@/store/modules/app/const';
 import ToolButton from '@/components/Buttons/ToolButton';
 import { useLayoutPrompt } from '@/hooks';
+import { RIGHT_TOOLS, OBJECT_TYPE } from '@/common/constants';
+import { isEmpty } from '@/common/utils';
 
 export default {
   setup() {
@@ -18,8 +20,8 @@ export default {
   computed: {
     ...mapGetters({
       selectedToolName: GETTERS.SELECTED_TOOL_NAME,
-      selectedObjectType: GETTERS.SELECTED_OBJECT_TYPE,
-      isOpenMenuProperties: GETTERS.IS_OPEN_MENU_PROPERTIES
+      isOpenMenuProperties: GETTERS.IS_OPEN_MENU_PROPERTIES,
+      propertiesObjectType: GETTERS.PROPERTIES_OBJECT_TYPE
     }),
     /**
      * Check whether icon tool active or not
@@ -31,7 +33,22 @@ export default {
         if (!iconName) {
           return false;
         }
-        if (iconName === 'properties') {
+
+        const isBackgroundSelected =
+          this.propertiesObjectType === OBJECT_TYPE.BACKGROUND;
+
+        const isBackgroundMenu = RIGHT_TOOLS.BACKGROUND.value === iconName;
+
+        const isBackgroundActive = isBackgroundSelected && isBackgroundMenu;
+
+        const isPropertiesuSelected =
+          !isEmpty(this.propertiesObjectType) && !isBackgroundSelected;
+
+        const isPropertiesMenu = RIGHT_TOOLS.PROPERTIES.value === iconName;
+
+        const isPropertiesActive = isPropertiesuSelected && isPropertiesMenu;
+
+        if (isBackgroundActive || isPropertiesActive) {
           return this.isOpenMenuProperties;
         }
 

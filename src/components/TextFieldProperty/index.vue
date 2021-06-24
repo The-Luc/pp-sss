@@ -6,6 +6,7 @@
           :value="value"
           type="text"
           :disabled="disabled"
+          @keydown.esc="onEsc"
           @change="onChange"
         />
         <div class="input-label">{{ label }}</div>

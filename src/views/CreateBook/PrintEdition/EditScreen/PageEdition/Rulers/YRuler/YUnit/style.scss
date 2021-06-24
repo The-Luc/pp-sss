@@ -1,24 +1,26 @@
 .y-unit {
   display: flex;
+  flex-direction: column;
   width: 23px;
   position: relative;
   border: 1px solid $color-gray12;
   border-width: 0;
+  align-items: flex-end;
 
   .sy-unit {
-    position: absolute;
-    right: 0;
-    border-bottom: 1px solid $color-gray12;
+    flex: 1;
+    width: 100%;
+  }
+
+  .sy-unit-separator,
+  .sy-unit-separator-mid {
     width: 40%;
-    height: 10%;
-    @for $i from 1 through 9 {
-      &:nth-of-type(#{$i}) {
-        top: ($i - 1) * 10%;
-      }
-    }
-    &:nth-of-type(5) {
-      width: 66%;
-    }
+    height: 1px;
+    background-color: $color-gray12;
+  }
+
+  .sy-unit-separator-mid {
+    width: 66%;
   }
 
   .y-unit-number {

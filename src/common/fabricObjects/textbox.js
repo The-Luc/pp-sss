@@ -6,6 +6,7 @@ import Color from 'color';
 import {
   toFabricTextProp,
   toFabricTextBorderProp,
+  toFabricTextGroupProp,
   isEmpty,
   ptToPx,
   inToPx,
@@ -98,39 +99,6 @@ export const createTextBox = (x, y, width, height, textProperties, sheetId) => {
     isConstrain: text.isConstrain
   });
 
-  const updateTextListeners = canvas => {
-    if (text.editingExitedListener) return;
-
-    const onDoneEditText = () => {
-      toggleStroke(rect, false);
-      canvas.remove(text);
-      canvas.remove(rect);
-      const angle = text.angle;
-      text.set({ angle: 0 });
-      rect.set({ angle: 0 });
-      const grp = new fabric.Group([rect, text], {
-        id: dataObject.id,
-        angle,
-        objectType: OBJECT_TYPE.TEXT
-      });
-
-      // add grp to canvas at the same z-index as the one before editing
-      canvas.add(grp);
-      grp.moveTo(groupZIndex);
-
-      addGroupEvents(grp);
-    };
-
-    const onTextChanged = () => {
-      updateObjectDimensionsIfSmaller(rect, text.width, text.height);
-      canvas.renderAll();
-    };
-
-    text.on('changed', onTextChanged);
-    text.on('editing:exited', onDoneEditText);
-    text.editingExitedListener = true;
-  };
-
   const handleScaling = e => {
     const target = e.transform?.target;
     if (isEmpty(target)) return;
@@ -199,30 +167,88 @@ export const createTextBox = (x, y, width, height, textProperties, sheetId) => {
     });
   };
 
-  const ungroup = function(g) {
-    const { canvas } = g;
-    g._restoreObjectsState();
-    canvas.remove(g);
-    canvas.add(rect);
-    canvas.add(text);
-    canvas.renderAll();
+  const updateTextListeners = (textObject, rectObject, group, cachedData) => {
+    const canvas = group.canvas;
+
+    const onTextChanged = () => {
+      updateObjectDimensionsIfSmaller(
+        rectObject,
+        textObject.width,
+        textObject.height
+      );
+      canvas.renderAll();
+    };
+
+    const newProperties = {
+      angle: 0,
+      flipX: false,
+      flipY: false,
+      visible: true
+    };
+
+    const setNewTextProperties = () => {
+      const { text: newVal, top, left, width, height } = textObject;
+      text.set({ ...newProperties, text: newVal, top, left, width, height });
+    };
+
+    const setNewRectProperties = () => {
+      const { top, left, width, height } = rectObject;
+      rect.set({ ...newProperties, strokeWidth: 0, top, left, width, height });
+    };
+
+    const onDoneEditText = () => {
+      setNewTextProperties();
+      setNewRectProperties();
+      group.addWithUpdate();
+
+      textObject.visible = false;
+      rectObject.visible = false;
+
+      canvas.remove(textObject);
+      canvas.remove(rectObject);
+
+      group.set({
+        flipX: cachedData.flipX,
+        flipY: cachedData.flipY,
+        angle: cachedData.angle
+      });
+      canvas.renderAll();
+    };
+
+    textObject.on('changed', onTextChanged);
+    textObject.on('editing:exited', onDoneEditText);
   };
 
-  // keeping track z-index and assign back the group after recreating
-  let groupZIndex;
-
   const handleDbClick = e => {
+    const group = e.target;
     const canvas = e.target.canvas;
     if (isEmpty(canvas)) return;
 
-    groupZIndex = canvas.getObjects().indexOf(e.target);
+    const textForEditing = cloneDeep(text);
+    const rectForEditing = cloneDeep(rect);
+    const { flipX, flipY, angle } = cloneDeep(group);
+    const cachedData = {
+      flipX,
+      flipY,
+      angle
+    };
 
-    ungroup(e.target);
-    toggleStroke(rect, true);
-    updateTextListeners(canvas);
-    canvas.setActiveObject(text);
-    text.enterEditing();
-    text.selectAll();
+    text.visible = false;
+    rect.visible = false;
+
+    group.addWithUpdate();
+
+    updateTextListeners(textForEditing, rectForEditing, group, cachedData);
+
+    canvas.add(textForEditing);
+    canvas.add(rectForEditing);
+
+    canvas.setActiveObject(textForEditing);
+
+    toggleStroke(rectForEditing, true);
+
+    textForEditing.enterEditing();
+    textForEditing.selectAll();
   };
 
   const addGroupEvents = g => {
@@ -528,7 +554,7 @@ const applyTextGroupProperties = function(textGroup, prop) {
   }
   const canvas = textGroup.canvas;
 
-  const textGroupProp = toFabricTextProp(prop);
+  const textGroupProp = toFabricTextGroupProp(prop);
 
   textGroup.set(textGroupProp);
 
@@ -595,11 +621,8 @@ const applyShadowToObject = function(fabricObject, shadowConfig) {
  * @param {Object} prop - the prop change
  */
 export const applyTextBoxProperties = function(textObject, prop) {
-  if (prop.coord) {
-    applyTextGroupProperties(textObject, prop);
-  } else {
-    const [rect, text] = getObjectsFromTextBox(textObject);
-    applyTextProperties(text, prop);
-    applyTextRectProperties(rect, prop);
-  }
+  const [rect, text] = getObjectsFromTextBox(textObject);
+  applyTextGroupProperties(textObject, prop);
+  applyTextProperties(text, prop);
+  applyTextRectProperties(rect, prop);
 };
