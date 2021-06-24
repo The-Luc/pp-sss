@@ -24,6 +24,12 @@ export default {
      */
     onChange(event) {
       this.$emit('change', event.target.value);
+    },
+    /**
+     * Emit event user press Escape
+     */
+    onEsc() {
+      this.$emit('change', this.value);
     }
   }
 };

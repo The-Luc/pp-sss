@@ -49,6 +49,9 @@ export default {
      * @param {Number}  val size width value user entered
      */
     onChangeWidth(val) {
+      if (val == this.widthPt) {
+        this.onEsc();
+      }
       const { isValid, value, isForce } = validateInputOption(
         val,
         this.minSize,
@@ -58,10 +61,10 @@ export default {
       if (isValid) {
         this.$emit('change', { size: { width: value } });
         if (isForce) {
-          this.componentKey++;
+          this.forceRenderComponent();
         }
       } else {
-        this.componentKey++;
+        this.forceRenderComponent();
       }
     },
     /**
@@ -69,6 +72,9 @@ export default {
      * @param {Number}  val size height value user entered
      */
     onChangeHeight(val) {
+      if (val == this.heightPt) {
+        this.onEsc();
+      }
       const { isValid, value } = validateInputOption(
         val,
         this.minSize,
@@ -78,7 +84,7 @@ export default {
       if (isValid) {
         this.$emit('change', { size: { height: value } });
       } else {
-        this.componentKey++;
+        this.forceRenderComponent();
       }
     },
     /**
@@ -86,6 +92,19 @@ export default {
      */
     onChangeConstrain() {
       this.$emit('changeConstrain', !this.isConstrain);
+    },
+    /**
+     * Trigger render component by increase component key
+     * Maybe improve later for performance
+     */
+    forceRenderComponent() {
+      this.componentKey += 1;
+    },
+    /**
+     * Revert to previous data and un focus input element
+     */
+    onEsc() {
+      this.forceRenderComponent();
     }
   }
 };

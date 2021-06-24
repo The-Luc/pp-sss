@@ -1,3 +1,4 @@
+import { computedObjectSize } from '@/common/utils';
 import Properties from '@/components/Properties/BoxProperties';
 import TabMenu from '@/components/TabMenu';
 import ArrangeContent from '@/components/Arrange';
@@ -66,13 +67,13 @@ export default {
       return DEFAULT_SHAPE.MIN_SIZE;
     },
     maxSize() {
-      return 60;
+      return DEFAULT_SHAPE.MAX_SIZE;
     },
     minPosition() {
-      return -100;
+      return DEFAULT_SHAPE.MIN_POSITION;
     },
     maxPosition() {
-      return 100;
+      return DEFAULT_SHAPE.MAX_POSITION;
     },
     position() {
       if (this.triggerChange) {
@@ -114,6 +115,17 @@ export default {
      * @param {Object} object object containing the value of update size, position or rotate
      */
     onChange(object) {
+      const key = Object.keys(object);
+      if (key.includes('size')) {
+        const size = computedObjectSize(
+          object.size,
+          { width: this.sizeWidth, height: this.sizeHeight },
+          DEFAULT_SHAPE.MIN_SIZE,
+          DEFAULT_SHAPE.MAX_SIZE,
+          this.isConstrain
+        );
+        object.size = size;
+      }
       this.$root.$emit('printChangeShapeProperties', object);
     },
     onChangeConstrain(val) {
