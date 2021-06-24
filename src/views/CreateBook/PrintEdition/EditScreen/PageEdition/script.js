@@ -163,9 +163,9 @@ export default {
     document.body.addEventListener('keyup', this.handleDeleteKey);
   },
   beforeDestroy() {
-    document.body.removeEventListener('keyup', this.handleDeleteKey);
     window.removeEventListener('copy', this.handleCopy);
     window.removeEventListener('paste', this.handlePaste);
+
     window.printCanvas = null;
 
     document.body.removeEventListener('keyup', this.handleDeleteKey);
