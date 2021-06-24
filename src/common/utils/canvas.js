@@ -190,3 +190,14 @@ export const deleteSelectedObjects = canvas => {
   activeObj.forEach(object => canvas.remove(object));
   canvas.discardActiveObject().renderAll();
 };
+
+/**
+ * To reset all objects of current sheet, current use for select layout case
+ * @param {Ref} targetCanvas - the canvas want to reset
+ */
+export const resetObjects = targetCanvas => {
+  targetCanvas
+    .discardActiveObject()
+    .remove(...targetCanvas.getObjects())
+    .renderAll();
+};

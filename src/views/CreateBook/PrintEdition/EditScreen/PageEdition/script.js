@@ -20,7 +20,8 @@ import {
   isHalfLeft,
   pxToIn,
   inToPx,
-  isJsonString
+  isJsonString,
+  resetObjects
 } from '@/common/utils';
 
 import {
@@ -143,15 +144,12 @@ export default {
   watch: {
     pageSelected: {
       deep: true,
-      handler(val, oldVal) {
+      async handler(val, oldVal) {
         if (val?.id !== oldVal?.id) {
+          await this.getDataCanvas();
           this.setSelectedObjectId({ id: '' });
           this.updateCanvasSize();
-          window.printCanvas
-            .discardActiveObject()
-            .remove(...window.printCanvas.getObjects())
-            .renderAll();
-          this.updateCanvasSize();
+          resetObjects(window.printCanvas);
           this.drawLayout(this.sheetLayout);
         }
       }

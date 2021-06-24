@@ -1,5 +1,3 @@
-import { pick } from 'lodash';
-
 import { isEmpty } from '@/common/utils';
 import PRINT from './const';
 
@@ -62,14 +60,23 @@ export const getters = {
   }) => {
     const sheet = sheets[currentSheetId];
 
-    const sheetLayoutId = sheet?.layoutId;
-    if (!sheetLayoutId) {
-      return {};
+    if (!sheet?.layoutId) {
+      return [];
     }
-    return {
-      objects,
-      background
-    };
+
+    const allObjects = [];
+    Object.values(background).forEach(bg => {
+      if (bg.id) {
+        allObjects.push(bg);
+      }
+    });
+
+    Object.values(objects).forEach(obj => {
+      if (obj.id) {
+        allObjects.push(obj);
+      }
+    });
+    return allObjects;
   },
   [PRINT._GETTERS.GET_SHEETS]: ({ sheets }) => {
     return sheets;

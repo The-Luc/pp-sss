@@ -29,7 +29,8 @@ import {
 } from '@/common/constants';
 import {
   getThemeOptSelectedById,
-  getLayoutOptSelectedById
+  getLayoutOptSelectedById,
+  resetObjects
 } from '@/common/utils';
 import {
   usePopoverCreationTool,
@@ -319,6 +320,7 @@ export default {
           themeId: this.themeSelected?.id,
           layout: this.layoutObjSelected
         });
+        resetObjects(window.printCanvas);
         this.drawLayout(this.sheetLayout);
         this.onCancel();
       }
