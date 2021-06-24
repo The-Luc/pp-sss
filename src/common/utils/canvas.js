@@ -77,7 +77,7 @@ export const getCoverPagePrintSize = (isHardCover, pageCount) => {
   }
   inches.pageWidth =
     (inches.sheetWidth - inches.bleedLeft - inches.bleedRight - spineWidth) / 2;
-  inches.pageHeight = inches.sheetHeight - inches.bleedTop * 2;
+  inches.pageHeight = inches.sheetHeight - inches.bleedTop - inches.bleedBottom;
   const pixels = {
     ...objectInchesToPixels(inches),
     ratio: inches.ratio
