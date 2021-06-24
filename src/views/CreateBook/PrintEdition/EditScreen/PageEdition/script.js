@@ -318,6 +318,8 @@ export default {
           }
         }
       });
+
+      this.eventHandling();
     },
     /**
      * Event handle when container is resized by user action
