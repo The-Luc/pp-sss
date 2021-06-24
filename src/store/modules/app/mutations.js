@@ -53,5 +53,8 @@ export const mutations = {
   },
   [APP._MUTATES.TOGGLE_ACTIVE_OBJECTS](state, data) {
     state.hasActiveObjects = data;
+  },
+  [APP._MUTATES.SET_PROPERTIES_OBJECT_TYPE](state, { type }) {
+    state.propertiesObjectType = type;
   }
 };

@@ -80,7 +80,7 @@ export default {
     return { drawLayout };
   },
   created() {
-    this.setBookId({ bookId: 1719 });
+    this.setBookId({ bookId: this.$route.params.bookId });
 
     this.getDataPageEdit();
   },
@@ -105,7 +105,8 @@ export default {
       isOpenColorPicker: APP_GETTERS.IS_OPEN_COLOR_PICKER,
       selectedObject: PRINT_GETTERS.CURRENT_OBJECT,
       toolNameSelected: APP_GETTERS.SELECTED_TOOL_NAME,
-      currentBackgrounds: PRINT_GETTERS.BACKGROUNDS
+      currentBackgrounds: PRINT_GETTERS.BACKGROUNDS,
+      propertiesObjectType: APP_GETTERS.PROPERTIES_OBJECT_TYPE
     }),
     isCover() {
       return this.pageSelected?.type === SHEET_TYPE.COVER;
@@ -146,7 +147,6 @@ export default {
       handler(val, oldVal) {
         if (val?.id !== oldVal?.id) {
           this.setSelectedObjectId({ id: '' });
-          this.updateCanvasSize();
           window.printCanvas
             .discardActiveObject()
             .remove(...window.printCanvas.getObjects())
@@ -190,7 +190,8 @@ export default {
       setThumbnail: PRINT_MUTATES.UPDATE_SHEET_THUMBNAIL,
       updateTriggerClipArtChange: PRINT_MUTATES.UPDATE_TRIGGER_CLIPART_CHANGE,
       reorderObjectIds: PRINT_MUTATES.REORDER_OBJECT_IDS,
-      toggleActiveObjects: MUTATES.TOGGLE_ACTIVE_OBJECTS
+      toggleActiveObjects: MUTATES.TOGGLE_ACTIVE_OBJECTS,
+      setPropertiesObjectType: MUTATES.SET_PROPERTIES_OBJECT_TYPE
     }),
     /**
      * Function handle to get object(s) be copied from clipboard when user press Ctrl + V (Windows), Command + V (macOS), or from action menu
@@ -319,10 +320,19 @@ export default {
           toolName &&
           toolName !== TOOL_NAME.DELETE &&
           toolName !== TOOL_NAME.ACTIONS;
+
         if (isDiscard) {
           window.printCanvas.discardActiveObject().renderAll();
         }
+
+        if (this.propertiesObjectType === OBJECT_TYPE.BACKGROUND) {
+          this.setIsOpenProperties({ isOpen: false });
+
+          this.setPropertiesObjectType({ type: '' });
+        }
+
         this.$root.$emit('printInstructionEnd');
+
         this.awaitingAdd = '';
       });
 
@@ -416,18 +426,16 @@ export default {
      */
     resetConfigTextProperties() {
       if (this.isOpenColorPicker) {
-        this.toggleColorPicker({
-          isOpen: false
-        });
+        this.toggleColorPicker({ isOpen: false });
       }
 
-      this.setIsOpenProperties({
-        isOpen: false
-      });
+      if (this.propertiesObjectType !== OBJECT_TYPE.BACKGROUND) {
+        this.setIsOpenProperties({ isOpen: false });
 
-      this.setObjectTypeSelected({
-        type: ''
-      });
+        this.setPropertiesObjectType({ type: '' });
+      }
+
+      this.setObjectTypeSelected({ type: '' });
 
       this.toggleActiveObjects(false);
 
@@ -521,6 +529,8 @@ export default {
       if (isEmpty(objectType)) return;
 
       this.setObjectTypeSelected({ type: objectType });
+
+      this.setPropertiesObjectType({ type: objectType });
 
       this.openProperties(objectType);
     },

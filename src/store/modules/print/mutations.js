@@ -102,7 +102,7 @@ export const mutations = {
    * @param {Object} state the stoer data
    * @param {Array} data [{id: ObjectID, prop: {propName: value}}]
    */
-  [PRINT._MUTATES.SET_PROP_OF_MULIPLE_OBJECTS](state, data) {
+  [PRINT._MUTATES.SET_PROP_OF_MULIPLE_OBJECTS](state, { data }) {
     data.forEach(({ id, prop }) => {
       const currentProps = cloneDeep(state.objects[id]);
       merge(currentProps, prop);

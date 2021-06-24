@@ -1,4 +1,4 @@
-export const TEXT_HORIZIONTAL_ALIGN = {
+export const TEXT_HORIZONTAL_ALIGN = {
   LEFT: 'left',
   RIGHT: 'right',
   CENTER: 'center',
