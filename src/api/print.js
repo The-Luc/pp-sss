@@ -82,7 +82,6 @@ const printService = {
             thumbnailUrl,
             isVisited,
             themeId,
-            objects: [],
             layoutId: layout?.id || null,
             pageLeftName,
             pageRightName

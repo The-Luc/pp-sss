@@ -11,16 +11,23 @@ import {
 import LAYOUT_01 from '@/assets/image/layouts/thumb/layout-01.png';
 import LAYOUT_02 from '@/assets/image/layouts/thumb/layout-02.png';
 
+import BG_1 from '@/assets/image/layouts/background/background-01.jpg';
+import BG_2 from '@/assets/image/layouts/background/background-02.jpg';
+import LPCA_04531 from '@/assets/image/layouts/background/LPCA_04531.png';
+import LPCA_04511 from '@/assets/image/layouts/background/LPCA_04511.png';
+import BG_SINGLE_PAGE_1 from '@/assets/image/layouts/background/bg-single-page-01.jpg';
+import BG_SINGLE_PAGE_2 from '@/assets/image/layouts/background/bg-single-page-02.jpg';
+
 const text1 = {
   ...TextElement,
   id: uniqueId(),
   size: {
-    width: 100,
-    height: 50
+    width: 3,
+    height: 3
   },
   coord: {
-    x: 250,
-    y: 250,
+    x: 3,
+    y: 5,
     rotation: 20 // degree
   },
   styleId: 'default',
@@ -37,12 +44,12 @@ const text2 = {
   ...TextElement,
   id: uniqueId(),
   size: {
-    width: 200,
-    height: 100
+    width: 3,
+    height: 3
   },
   coord: {
-    x: 250,
-    y: 250,
+    x: 12,
+    y: 4,
     rotation: 0 // degree
   },
   styleId: 'default',
@@ -58,26 +65,18 @@ const text2 = {
 const bg1 = {
   ...BackgroundElement,
   id: uniqueId(),
-  size: {
-    width: 0,
-    height: 0
-  },
-  coord: {
-    x: 0,
-    y: 0,
-    rotation: 0 // degree
-  },
+  pageType: 1,
   category: 'Cover',
   name: 'watercolorbackground.jpg',
-  thumbnail:
-    'http://s3.amazonaws.com/fms.prod/yb_backgrounds/global/700/original_watercolorbackground.jpg',
-  imageUrl:
-    'http://s3.amazonaws.com/fms.prod/yb_backgrounds/global/700/original_watercolorbackground.jpg'
+  thumbnail: BG_1,
+  imageUrl: BG_1
 };
 
 const bg2 = {
   ...BackgroundElement,
   id: uniqueId(),
+  pageType: 1,
+  isLeft: false,
   size: {
     width: 0,
     height: 0
@@ -89,30 +88,26 @@ const bg2 = {
   },
   category: 'Cover',
   name: 'watercolorbackground.jpg',
-  thumbnail:
-    'http://s3.amazonaws.com/fms.prod/yb_backgrounds/global/233/original_papertree.jpg',
-  imageUrl:
-    'http://s3.amazonaws.com/fms.prod/yb_backgrounds/global/233/original_papertree.jpg'
+  thumbnail: BG_2,
+  imageUrl: BG_2
 };
 
 const clipArt1 = {
   ...ClipArtElement,
   id: uniqueId(),
   size: {
-    width: 100,
-    height: 100
+    width: 3,
+    height: 3
   },
   coord: {
-    x: 500,
-    y: 250,
+    x: 5,
+    y: 5,
     rotation: 0 // degree
   },
   category: 'MSPHOTO',
   name: 'LPCA_04531',
-  thumbnail:
-    'http://s3.amazonaws.com/fms.prod/yb_clipart/global/1725/LPCA_04531.png?2013',
-  vector:
-    'https://s3.amazonaws.com/fms.prod/yb_clipart/global/1725/LPCA_04531.svg?2013', // imgUrl
+  thumbnail: LPCA_04531,
+  vector: LPCA_04531,
   fillcolor: '',
   opacity: 0
 };
@@ -121,32 +116,30 @@ const clipArt2 = {
   ...ClipArtElement,
   id: uniqueId(),
   size: {
-    width: 100,
-    height: 100
+    width: 3,
+    height: 3
   },
   coord: {
-    x: 230,
-    y: 250,
+    x: 5,
+    y: 5,
     rotation: 0 // degree
   },
   category: 'MSPHOTO',
   name: 'LPCA_04511',
-  thumbnail:
-    'http://s3.amazonaws.com/fms.prod/yb_clipart/global/1715/LPCA_04511.png?2013',
-  vector:
-    'https://s3.amazonaws.com/fms.prod/yb_clipart/global/1715/LPCA_04511.svg?2013' // imgUrl
+  thumbnail: LPCA_04511,
+  vector: LPCA_04511
 };
 
 const shape1 = {
   ...ShapeElement,
   id: uniqueId(),
   size: {
-    width: 100,
-    height: 100
+    width: 3,
+    height: 3
   },
   coord: {
-    x: 100,
-    y: 206,
+    x: 5,
+    y: 5,
     rotation: 0 // degree
   },
   category: '',
@@ -159,12 +152,12 @@ const textSinglePage1 = {
   ...TextElement,
   id: uniqueId(),
   size: {
-    width: 500,
-    height: 176.6071428571429
+    width: 4,
+    height: 5
   },
   coord: {
-    x: 500,
-    y: 193.3333333333333,
+    x: 3,
+    y: 5,
     rotation: 20 // degree
   },
   styleId: 'default',
@@ -182,12 +175,12 @@ const textSinglePage2 = {
   ...TextElement,
   id: uniqueId(),
   size: {
-    width: 500,
-    height: 176.6071428571429
+    width: 5,
+    height: 5
   },
   coord: {
-    x: 500,
-    y: 193.3333333333333,
+    x: 5,
+    y: 4,
     rotation: 20 // degree
   },
   styleId: 'default',
@@ -204,6 +197,8 @@ const textSinglePage2 = {
 const bgSinglePage1 = {
   ...BackgroundElement,
   id: uniqueId(),
+  pageType: 1,
+  isLeft: false,
   size: {
     width: 0,
     height: 0
@@ -215,15 +210,15 @@ const bgSinglePage1 = {
   },
   category: 'single',
   name: 'watercolorbackground.jpg',
-  thumbnail:
-    'http://s3.amazonaws.com/fms.prod/yb_backgrounds/global/1348/original_whiter-right.jpg?2017',
-  imageUrl:
-    'http://s3.amazonaws.com/fms.prod/yb_backgrounds/global/1348/original_whiter-right.jpg?2017'
+  thumbnail: BG_SINGLE_PAGE_1,
+  imageUrl: BG_SINGLE_PAGE_1
 };
 
 const bgSinglePage2 = {
   ...BackgroundElement,
   id: uniqueId(),
+  pageType: 1,
+  isLeft: false,
   size: {
     width: 0,
     height: 0
@@ -235,10 +230,8 @@ const bgSinglePage2 = {
   },
   category: 'single',
   name: 'watercolorbackground.jpg',
-  thumbnail:
-    'http://s3.amazonaws.com/fms.prod/yb_backgrounds/global/1345/original_greenboard-left.jpg?2017',
-  imageUrl:
-    'http://s3.amazonaws.com/fms.prod/yb_backgrounds/global/1345/original_greenboard-left.jpg?2017'
+  thumbnail: BG_SINGLE_PAGE_2,
+  imageUrl: BG_SINGLE_PAGE_2
 };
 
 const layouts = [
@@ -249,18 +242,7 @@ const layouts = [
     isFavorites: false,
     previewImageUrl: LAYOUT_01,
     themeId: 1,
-    size: {
-      width: 1000,
-      height: 500
-    },
-    pages: [
-      {
-        objects: [bg1, text1, clipArt1]
-      },
-      {
-        objects: [bg2, text2, clipArt2, shape1]
-      }
-    ]
+    objects: [bg1, bg2, text1, text2, clipArt1, clipArt2, shape1]
   },
   {
     id: 2,
@@ -269,18 +251,7 @@ const layouts = [
     previewImageUrl: LAYOUT_02,
     themeId: 1,
     isFavorites: false,
-    size: {
-      width: 1000,
-      height: 500
-    },
-    pages: [
-      {
-        objects: [bg1, text1]
-      },
-      {
-        objects: [bg2, text2]
-      }
-    ]
+    objects: [bg1, bg2, text1, text2]
   },
   {
     id: 3,
@@ -289,18 +260,7 @@ const layouts = [
     isFavorites: false,
     previewImageUrl: LAYOUT_01,
     themeId: 1,
-    size: {
-      width: 1000,
-      height: 500
-    },
-    pages: [
-      {
-        objects: [bg1, text1]
-      },
-      {
-        objects: [bg2, text2]
-      }
-    ]
+    objects: [bg1, bg2, text1, text2]
   },
   {
     id: 4,
@@ -309,18 +269,7 @@ const layouts = [
     isFavorites: false,
     previewImageUrl: LAYOUT_02,
     themeId: 1,
-    size: {
-      width: 1000,
-      height: 500
-    },
-    pages: [
-      {
-        objects: [bg1, text1]
-      },
-      {
-        objects: [bg2, text2]
-      }
-    ]
+    objects: [bg1, bg2, text2]
   },
   {
     id: 5,
@@ -329,33 +278,11 @@ const layouts = [
     isFavorites: false,
     previewImageUrl: LAYOUT_01,
     themeId: 1,
-    size: {
-      width: 1000,
-      height: 500
-    },
-    pages: [
-      {
-        objects: [bg1, text1]
-      },
-      {
-        objects: [bg2, text2]
-      }
-    ]
+    objects: [bg1, bg2, text1]
   },
   {
     id: 6,
-    size: {
-      width: 1000,
-      height: 500
-    },
-    pages: [
-      {
-        objects: [bg1, text1]
-      },
-      {
-        objects: [bg2, text2]
-      }
-    ],
+    objects: [bg1, bg2, text1, text2],
     type: LAYOUT_TYPES.SIGNATURES.value,
     name: 'Signature',
     isFavorites: false,
@@ -364,18 +291,7 @@ const layouts = [
   },
   {
     id: 7,
-    size: {
-      width: 1000,
-      height: 500
-    },
-    pages: [
-      {
-        objects: [bg1, text1]
-      },
-      {
-        objects: [bg2, text2]
-      }
-    ],
+    objects: [bg1, bg2, text1, text2],
     type: LAYOUT_TYPES.AWARDS_SUPERLATIVE.value,
     name: 'Awards Superlative',
     isFavorites: false,
@@ -384,18 +300,7 @@ const layouts = [
   },
   {
     id: 8,
-    size: {
-      width: 1000,
-      height: 500
-    },
-    pages: [
-      {
-        objects: [bg1, text1]
-      },
-      {
-        objects: [bg2, text2]
-      }
-    ],
+    objects: [bg1, bg2, text1, text2],
     type: LAYOUT_TYPES.ADMIN_STAFF.value,
     name: 'Admin Staff 1',
     isFavorites: false,
@@ -404,18 +309,7 @@ const layouts = [
   },
   {
     id: 9,
-    size: {
-      width: 1000,
-      height: 500
-    },
-    pages: [
-      {
-        objects: [bg1, text1]
-      },
-      {
-        objects: [bg2, text2]
-      }
-    ],
+    objects: [bg1, bg2, text1, text2],
     type: LAYOUT_TYPES.GRADUATION.value,
     name: 'Graduation 1',
     isFavorites: false,
@@ -424,18 +318,7 @@ const layouts = [
   },
   {
     id: 10,
-    size: {
-      width: 1000,
-      height: 500
-    },
-    pages: [
-      {
-        objects: [bg1, text1]
-      },
-      {
-        objects: [bg2, text2]
-      }
-    ],
+    objects: [bg1, bg2, text1, text2],
     type: LAYOUT_TYPES.INTRO_OPENING_PAGE.value,
     name: 'Intro page 1',
     isFavorites: false,
@@ -444,18 +327,7 @@ const layouts = [
   },
   {
     id: 11,
-    size: {
-      width: 1000,
-      height: 500
-    },
-    pages: [
-      {
-        objects: [bg1, text1]
-      },
-      {
-        objects: [bg2, text2]
-      }
-    ],
+    objects: [bg1, bg2, text1, text2],
     type: LAYOUT_TYPES.CLUBS_GROUPS_TEAMS.value,
     name: 'Club 7',
     isFavorites: false,
@@ -464,18 +336,7 @@ const layouts = [
   },
   {
     id: 12,
-    size: {
-      width: 1000,
-      height: 500
-    },
-    pages: [
-      {
-        objects: [bg1, text1]
-      },
-      {
-        objects: [bg2, text2]
-      }
-    ],
+    objects: [bg1, bg2, text1, text2],
     type: LAYOUT_TYPES.SIMPLE.value,
     name: 'Simple  3',
     isFavorites: false,
@@ -484,18 +345,7 @@ const layouts = [
   },
   {
     id: 13,
-    size: {
-      width: 1000,
-      height: 500
-    },
-    pages: [
-      {
-        objects: [bg1, text1]
-      },
-      {
-        objects: [bg2, text2]
-      }
-    ],
+    objects: [bg1, bg2, text1, text2],
     type: LAYOUT_TYPES.AWARDS_SUPERLATIVE.value,
     name: 'Award  2',
     isFavorites: false,
@@ -504,18 +354,7 @@ const layouts = [
   },
   {
     id: 14,
-    size: {
-      width: 1000,
-      height: 500
-    },
-    pages: [
-      {
-        objects: [bg1, text1]
-      },
-      {
-        objects: [bg2, text2]
-      }
-    ],
+    objects: [bg1, bg2, text1, text2],
     type: LAYOUT_TYPES.AWARDS_SUPERLATIVE.value,
     name: 'Award  4',
     isFavorites: false,
@@ -524,18 +363,7 @@ const layouts = [
   },
   {
     id: 15,
-    size: {
-      width: 1000,
-      height: 500
-    },
-    pages: [
-      {
-        objects: [bg1, text1]
-      },
-      {
-        objects: [bg2, text2]
-      }
-    ],
+    objects: [bg1, bg2, text1, text2],
     type: LAYOUT_TYPES.AWARDS_SUPERLATIVE.value,
     name: 'Award 5',
     isFavorites: false,
@@ -544,18 +372,7 @@ const layouts = [
   },
   {
     id: 16,
-    size: {
-      width: 1000,
-      height: 500
-    },
-    pages: [
-      {
-        objects: [bg1, text1]
-      },
-      {
-        objects: [bg2, text2]
-      }
-    ],
+    objects: [bg1, bg2, text1, text2],
     type: LAYOUT_TYPES.GRADUATION.value,
     name: 'Graduation 12',
     isFavorites: false,
@@ -564,18 +381,7 @@ const layouts = [
   },
   {
     id: 17,
-    size: {
-      width: 1000,
-      height: 500
-    },
-    pages: [
-      {
-        objects: [bg1, text1]
-      },
-      {
-        objects: [bg2, text2]
-      }
-    ],
+    objects: [bg1, bg2, text1, text2],
     type: LAYOUT_TYPES.GRADUATION.value,
     name: 'Graduation 4',
     isFavorites: false,
@@ -584,18 +390,7 @@ const layouts = [
   },
   {
     id: 18,
-    size: {
-      width: 1000,
-      height: 500
-    },
-    pages: [
-      {
-        objects: [bg1, text1]
-      },
-      {
-        objects: [bg2, text2]
-      }
-    ],
+    objects: [bg1, bg2, text1, text2],
     type: LAYOUT_TYPES.COLLAGE.value,
     name: 'Collage 8',
     isFavorites: false,
@@ -604,18 +399,7 @@ const layouts = [
   },
   {
     id: 19,
-    size: {
-      width: 1000,
-      height: 500
-    },
-    pages: [
-      {
-        objects: [bg1, text1]
-      },
-      {
-        objects: [bg2, text2]
-      }
-    ],
+    objects: [bg1, bg2, text1, text2],
     type: LAYOUT_TYPES.COLLAGE.value,
     name: 'Collage 9',
     isFavorites: false,
@@ -624,18 +408,7 @@ const layouts = [
   },
   {
     id: 20,
-    size: {
-      width: 1000,
-      height: 500
-    },
-    pages: [
-      {
-        objects: [bg1, text1]
-      },
-      {
-        objects: [bg2, text2]
-      }
-    ],
+    objects: [bg1, bg2, text1, text2],
     type: LAYOUT_TYPES.INTRO_OPENING_PAGE.value,
     name: 'Intro 2',
     isFavorites: false,
@@ -644,18 +417,7 @@ const layouts = [
   },
   {
     id: 21,
-    size: {
-      width: 1000,
-      height: 500
-    },
-    pages: [
-      {
-        objects: [bg1, text1]
-      },
-      {
-        objects: [bg2, text2]
-      }
-    ],
+    objects: [bg1, bg2, text1, text2],
     type: LAYOUT_TYPES.YEAR_IN_REVIEW.value,
     name: 'Year 4',
     isFavorites: false,
@@ -664,18 +426,7 @@ const layouts = [
   },
   {
     id: 22,
-    size: {
-      width: 1000,
-      height: 500
-    },
-    pages: [
-      {
-        objects: [bg1, text1]
-      },
-      {
-        objects: [bg2, text2]
-      }
-    ],
+    objects: [bg1, bg2, text1, text2],
     type: LAYOUT_TYPES.YEAR_IN_REVIEW.value,
     name: 'Year 5',
     isFavorites: false,
@@ -684,18 +435,7 @@ const layouts = [
   },
   {
     id: 23,
-    size: {
-      width: 1000,
-      height: 500
-    },
-    pages: [
-      {
-        objects: [bg1, text1]
-      },
-      {
-        objects: [bg2, text2]
-      }
-    ],
+    objects: [bg1, bg2, text1, text2],
     type: LAYOUT_TYPES.YEAR_IN_REVIEW.value,
     name: 'Year 6',
     isFavorites: false,
@@ -704,18 +444,7 @@ const layouts = [
   },
   {
     id: 24,
-    size: {
-      width: 1000,
-      height: 500
-    },
-    pages: [
-      {
-        objects: [bg1, text1]
-      },
-      {
-        objects: [bg2, text2]
-      }
-    ],
+    objects: [bg1, bg2, text1, text2],
     type: LAYOUT_TYPES.SIGNATURES.value,
     name: 'Signature 6',
     isFavorites: false,
@@ -724,18 +453,7 @@ const layouts = [
   },
   {
     id: 25,
-    size: {
-      width: 1000,
-      height: 500
-    },
-    pages: [
-      {
-        objects: [bg1, text1]
-      },
-      {
-        objects: [bg2, text2]
-      }
-    ],
+    objects: [bg1, bg2, text1, text2],
     type: LAYOUT_TYPES.YEAR_IN_REVIEW.value,
     name: 'Year 9',
     isFavorites: false,
@@ -744,18 +462,7 @@ const layouts = [
   },
   {
     id: 26,
-    size: {
-      width: 1000,
-      height: 500
-    },
-    pages: [
-      {
-        objects: [bg1, text1]
-      },
-      {
-        objects: [bg2, text2]
-      }
-    ],
+    objects: [bg1, bg2, text1, text2],
     type: LAYOUT_TYPES.SIMPLE.value,
     name: 'Simple 10',
     isFavorites: false,
@@ -764,18 +471,7 @@ const layouts = [
   },
   {
     id: 27,
-    size: {
-      width: 1000,
-      height: 500
-    },
-    pages: [
-      {
-        objects: [bg1, text1]
-      },
-      {
-        objects: [bg2, text2]
-      }
-    ],
+    objects: [bg1, bg2, text1, text2],
     type: LAYOUT_TYPES.SIMPLE.value,
     name: 'Simple 11',
     isFavorites: false,
@@ -784,18 +480,7 @@ const layouts = [
   },
   {
     id: 28,
-    size: {
-      width: 1000,
-      height: 500
-    },
-    pages: [
-      {
-        objects: [bg1, text1]
-      },
-      {
-        objects: [bg2, text2]
-      }
-    ],
+    objects: [bg1, bg2, text1, text2],
     type: LAYOUT_TYPES.AWARDS_SUPERLATIVE.value,
     name: 'Awards 10',
     isFavorites: false,
@@ -804,18 +489,7 @@ const layouts = [
   },
   {
     id: 29,
-    size: {
-      width: 1000,
-      height: 500
-    },
-    pages: [
-      {
-        objects: [bg1, text1]
-      },
-      {
-        objects: [bg2, text2]
-      }
-    ],
+    objects: [bg1, bg2, text1, text2],
     type: LAYOUT_TYPES.YEAR_IN_REVIEW.value,
     name: 'Year 9',
     isFavorites: false,
@@ -824,18 +498,7 @@ const layouts = [
   },
   {
     id: 30,
-    size: {
-      width: 1000,
-      height: 500
-    },
-    pages: [
-      {
-        objects: [bg1, text1]
-      },
-      {
-        objects: [bg2, text2]
-      }
-    ],
+    objects: [bg1, bg2, text1, text2],
     type: LAYOUT_TYPES.SIMPLE.value,
     name: 'Year 9',
     isFavorites: false,
@@ -844,18 +507,7 @@ const layouts = [
   },
   {
     id: 31,
-    size: {
-      width: 1000,
-      height: 500
-    },
-    pages: [
-      {
-        objects: [bg1, text1]
-      },
-      {
-        objects: [bg2, text2]
-      }
-    ],
+    objects: [bg1, bg2, text1, text2],
     type: LAYOUT_TYPES.SIMPLE.value,
     name: 'Simple 9',
     isFavorites: false,
@@ -864,18 +516,7 @@ const layouts = [
   },
   {
     id: 32,
-    size: {
-      width: 1000,
-      height: 500
-    },
-    pages: [
-      {
-        objects: [bg1, text1]
-      },
-      {
-        objects: [bg2, text2]
-      }
-    ],
+    objects: [bg1, bg2, text1, text2],
     type: LAYOUT_TYPES.GRADUATION.value,
     name: 'Graduation 6',
     isFavorites: false,
@@ -885,15 +526,7 @@ const layouts = [
   {
     id: 33,
     type: LAYOUT_TYPES.SINGLE_PAGE.value,
-    size: {
-      width: 1000,
-      height: 500
-    },
-    pages: [
-      {
-        objects: [bg1, text1]
-      }
-    ],
+    objects: [bgSinglePage1, textSinglePage1],
     name: 'Single 6',
     isFavorites: false,
     previewImageUrl: LAYOUT_01,
@@ -902,15 +535,7 @@ const layouts = [
   {
     id: 34,
     type: LAYOUT_TYPES.SINGLE_PAGE.value,
-    size: {
-      width: 2625,
-      height: 3375
-    },
-    pages: [
-      {
-        objects: [bg1, text1]
-      }
-    ],
+    objects: [bgSinglePage1, textSinglePage1],
     name: 'Single 7',
     isFavorites: false,
     previewImageUrl: LAYOUT_02,
@@ -918,18 +543,7 @@ const layouts = [
   },
   {
     id: 35,
-    size: {
-      width: 1000,
-      height: 500
-    },
-    pages: [
-      {
-        objects: [bg1, text1]
-      },
-      {
-        objects: [bg2, text2]
-      }
-    ],
+    objects: [bg1, bg2, text1, text2],
     type: LAYOUT_TYPES.COLLAGE.value,
     name: 'Collage 8',
     isFavorites: false,
@@ -939,18 +553,7 @@ const layouts = [
 
   {
     id: 36,
-    size: {
-      width: 1000,
-      height: 500
-    },
-    pages: [
-      {
-        objects: [bg1, text1]
-      },
-      {
-        objects: [bg2, text2]
-      }
-    ],
+    objects: [bg1, bg2, text1, text2],
     type: LAYOUT_TYPES.COLLAGE.value,
     name: 'Collage 36',
     isFavorites: false,
@@ -960,15 +563,7 @@ const layouts = [
   {
     id: 37,
     type: LAYOUT_TYPES.SINGLE_PAGE.value,
-    size: {
-      width: 1000,
-      height: 500
-    },
-    pages: [
-      {
-        objects: [bgSinglePage1, textSinglePage1]
-      }
-    ],
+    objects: [bgSinglePage1, textSinglePage1],
     name: 'Single 1',
     isFavorites: false,
     previewImageUrl: LAYOUT_01,
@@ -978,15 +573,7 @@ const layouts = [
   {
     id: 38,
     type: LAYOUT_TYPES.SINGLE_PAGE.value,
-    size: {
-      width: 2625,
-      height: 3375
-    },
-    pages: [
-      {
-        objects: [bgSinglePage2, textSinglePage2]
-      }
-    ],
+    objects: [bgSinglePage2, textSinglePage2],
     name: 'Single 2',
     isFavorites: false,
     previewImageUrl: LAYOUT_02,

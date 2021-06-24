@@ -20,7 +20,8 @@ import {
   isHalfLeft,
   pxToIn,
   inToPx,
-  isJsonString
+  isJsonString,
+  resetObjects
 } from '@/common/utils';
 
 import {
@@ -144,16 +145,13 @@ export default {
   watch: {
     pageSelected: {
       deep: true,
-      handler(val, oldVal) {
+      async handler(val, oldVal) {
         if (val?.id !== oldVal?.id) {
+          await this.getDataCanvas();
           this.setSelectedObjectId({ id: '' });
-          window.printCanvas
-            .discardActiveObject()
-            .remove(...window.printCanvas.getObjects())
-            .renderAll();
           this.updateCanvasSize();
-          const sheetPrintData = this.sheetLayout(val.id);
-          this.drawLayout(sheetPrintData);
+          resetObjects(window.printCanvas);
+          this.drawLayout(this.sheetLayout);
         }
       }
     }
@@ -176,7 +174,8 @@ export default {
   },
   methods: {
     ...mapActions({
-      getDataPageEdit: PRINT_ACTIONS.GET_DATA_EDIT
+      getDataPageEdit: PRINT_ACTIONS.GET_DATA_EDIT,
+      getDataCanvas: PRINT_ACTIONS.GET_DATA_CANVAS
     }),
     ...mapMutations({
       setBookId: PRINT_MUTATES.SET_BOOK_ID,
@@ -251,17 +250,21 @@ export default {
       this.canvasSize = { ...canvasSize, zoom: currentZoom };
       window.printCanvas.setWidth(canvasSize.width);
       window.printCanvas.setHeight(canvasSize.height);
-      const sheetPrintData = this.sheetLayout(this.pageSelected?.id);
-      this.drawLayout(sheetPrintData);
+      this.drawLayout(this.sheetLayout);
       window.printCanvas.setZoom(currentZoom);
     },
+
+    /**
+     * call this function to update the active thumbnail
+     */
     getThumbnailUrl: debounce(function() {
       const thumbnailUrl = window.printCanvas.toDataURL();
+
       this.setThumbnail({
         sheetId: this.pageSelected?.id,
         thumbnailUrl
       });
-    }, 1000),
+    }, 250),
     /**
      * Event triggered once the container that hold the canvas is finished rendering
      * @param {Object} containerSize - the size object
@@ -280,11 +283,9 @@ export default {
         'selection:updated': this.objectSelected,
         'selection:cleared': this.closeProperties,
         'selection:created': this.objectSelected,
-        'object:modified': () => {
-          if (window.printCanvas) {
-            this.getThumbnailUrl();
-          }
-        },
+        'object:modified': this.getThumbnailUrl,
+        'object:added': this.getThumbnailUrl,
+        'object:removed': this.getThumbnailUrl,
         'object:scaled': ({ target }) => {
           const { width, height } = target;
           const propAdjust = {
@@ -406,9 +407,8 @@ export default {
      * @param {Element}  group  Group object
      */
     setBorderHighLight(group) {
-      const layout = this.sheetLayout(this.pageSelected?.id);
       group.set({
-        borderColor: layout?.id ? 'white' : '#bcbec0'
+        borderColor: this.sheetLayout?.id ? 'white' : '#bcbec0'
       });
     },
     /**
@@ -479,7 +479,6 @@ export default {
       const isConstrain = data.newObject.isConstrain;
       this.setCanvasUniformScaling(isConstrain);
       window.printCanvas.add(object);
-      this.getThumbnailUrl();
 
       setTimeout(() => {
         selectLatestObject(window.printCanvas);
@@ -505,6 +504,9 @@ export default {
       this.updateTriggerTextChange();
 
       applyTextBoxProperties(activeObj, prop);
+
+      // update thumbnail
+      this.getThumbnailUrl();
     },
     /**
      * Event fire when user click on Image button on Toolbar to add new image on canvas
@@ -848,6 +850,9 @@ export default {
       if (updateTriggerFn !== null) updateTriggerFn();
 
       updateElement(element, prop, window.printCanvas);
+
+      // update thumbnail
+      this.getThumbnailUrl();
     },
     /**
      * get fired when you click 'send' button
@@ -886,6 +891,8 @@ export default {
         fabricObjects[oldIndex + numBackground].moveTo(
           newIndex + numBackground
         );
+        //update thumbnail
+        this.getThumbnailUrl();
       };
 
       if (actionName === ARRANGE_SEND.BACK && currentObjectIndex === 0) return;

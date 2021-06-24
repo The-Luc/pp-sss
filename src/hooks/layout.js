@@ -14,7 +14,7 @@ import {
   TOOL_NAME,
   DEFAULT_FABRIC_BACKGROUND
 } from '@/common/constants';
-import { scaleSize } from '@/common/utils';
+import { inToPx } from '@/common/utils';
 import { createTextBox } from '@/common/fabricObjects';
 
 export const useLayoutPrompt = () => {
@@ -44,53 +44,49 @@ export const useLayoutPrompt = () => {
 };
 
 /**
- * Get all text objects then draw it by fabric after that add to target canvas
- * @param {Object} objectsData - Page objects data
- * @param {String} position - Page position to draw left or right
+ * Draw text by fabric after that add to target canvas
+ * @param {Object} textObject - Page objects data
  * @param {Ref} targetCanvas - Target canvas to draw objects
- * @param {Array} objects - All objects user addeed
+ * @param {Number} index - Index/order of object
  */
-const handleDrawTextLayout = (objectsData, position, targetCanvas) => {
-  objectsData.forEach(obj => {
-    if (obj.type === OBJECT_TYPE.TEXT) {
-      const {
-        coord: { x, y },
-        size: { width, height }
-      } = obj;
-
-      let left = scaleSize(x);
-      if (position === 'right') {
-        const baseLeft = targetCanvas.width / targetCanvas.getZoom() / 2;
-        left += baseLeft;
-      }
-      const { object } = createTextBox(
-        left,
-        scaleSize(y),
-        scaleSize(width),
-        scaleSize(height),
-        obj
-      );
-      targetCanvas.add(object);
-    }
-  });
+const handleDrawTextLayout = (textObject, targetCanvas, index) => {
+  const {
+    coord: { x, y },
+    size: { width, height }
+  } = textObject;
+  let left = inToPx(x);
+  if (textObject.position === 'right') {
+    const baseLeft = targetCanvas.width / targetCanvas.getZoom() / 2;
+    left += baseLeft;
+  }
+  const { object } = createTextBox(
+    left,
+    inToPx(y),
+    inToPx(width),
+    inToPx(height),
+    textObject
+  );
+  targetCanvas.add(object);
+  targetCanvas.moveTo(object, index);
 };
 
 /**
- * Get background source from page data and draw it on target canvas by fabric after that draw objects
- * @param {Object} objectsData - Page objects data
- * @param {String} position - Page position to draw left or right
+ * Draw background on target canvas by fabric
+ * @param {String} backgroundUrl - Background url
+ * @param {String} position - Background's position
  * @param {Ref} targetCanvas - Target canvas to draw objects
+ * @param {Number} index - Index/order of object
  */
-const handleDrawBackgroundLayout = (objectsData, position, targetCanvas) => {
-  const backrgoundObj = objectsData.find(
-    ({ type }) => type === OBJECT_TYPE.BACKGROUND
-  );
-  const backgroundUrl = backrgoundObj?.imageUrl;
-  if (objectsData.length === 0) {
+const handleDrawBackgroundLayout = (
+  backgroundUrl,
+  position,
+  targetCanvas,
+  index
+) => {
+  if (!backgroundUrl) {
     targetCanvas?.clear().renderAll();
     return;
   }
-
   fabric.Image.fromURL(
     backgroundUrl,
     function(img) {
@@ -100,16 +96,12 @@ const handleDrawBackgroundLayout = (objectsData, position, targetCanvas) => {
       img.left = position === 'right' ? width / zoom / 2 : 0;
       img.scaleX = width / zoom / img.width / 2;
       img.scaleY = height / zoom / img.height;
-
       img.objectType = OBJECT_TYPE.BACKGROUND;
-      img.pageType = backrgoundObj?.pageType;
       img.opacity = 1;
       img.isLeftPage = position !== 'right';
-
       img.set(DEFAULT_FABRIC_BACKGROUND);
-
       targetCanvas.add(img);
-      handleDrawTextLayout(objectsData, position, targetCanvas);
+      targetCanvas.moveTo(img, index);
     },
     {
       crossOrigin: 'anonymous'
@@ -118,13 +110,21 @@ const handleDrawBackgroundLayout = (objectsData, position, targetCanvas) => {
 };
 
 /**
- * Pass params to function objects to draw background
- * @param {Object} objectsData - Sheet objects data
- * @param {String} position - Page position to draw left or right
- * @param {Ref} targetCanvas - Target canvas to draw obj
+ * Loop through objects and draw object base on type
+ * @param {Array} objects - Sheet's objects
+ * @param {Ref} targetCanvas - Target canvas to draw objects
  */
-const handleDrawLayout = (objectsData, position, targetCanvas) => {
-  handleDrawBackgroundLayout(objectsData, position, targetCanvas);
+const handleDrawObjects = (objects, targetCanvas) => {
+  objects.forEach((obj, index) => {
+    if (obj.type === OBJECT_TYPE.BACKGROUND) {
+      const position = obj.isLeft ? 'left' : 'right';
+      handleDrawBackgroundLayout(obj.imageUrl, position, targetCanvas, index);
+    }
+
+    if (obj.type === OBJECT_TYPE.TEXT) {
+      handleDrawTextLayout(obj, targetCanvas, index);
+    }
+  });
 };
 
 export const useDrawLayout = () => {
@@ -133,21 +133,14 @@ export const useDrawLayout = () => {
    * @param {Object} sheetPrintData - Layout object data
    * @param {Ref} targetCanvas - Target canvas to draw objects
    */
-  const drawLayout = (sheetPrintData, targetCanvas = window.printCanvas) => {
-    if (
-      Array.isArray(sheetPrintData) &&
-      sheetPrintData.length > 0 &&
-      targetCanvas
-    ) {
-      sheetPrintData.forEach((objectData, index) => {
-        handleDrawLayout(
-          objectData,
-          index === 0 ? 'left' : 'right',
-          targetCanvas
-        );
-      });
-    } else {
+  const drawLayout = async (
+    sheetPrintData,
+    targetCanvas = window.printCanvas
+  ) => {
+    if (sheetPrintData.length === 0) {
       targetCanvas?.clear().renderAll(); // Clear canvas when click on empty spread
+    } else {
+      handleDrawObjects(sheetPrintData, targetCanvas);
     }
   };
   return {

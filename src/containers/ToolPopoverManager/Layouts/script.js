@@ -1,4 +1,4 @@
-import { mapGetters, mapMutations } from 'vuex';
+import { mapGetters, mapMutations, mapActions } from 'vuex';
 
 import {
   GETTERS as THEME_GETTERS,
@@ -11,7 +11,7 @@ import {
 import { GETTERS as BOOK_GETTERS } from '@/store/modules/book/const';
 import {
   GETTERS as PRINT_GETTERS,
-  MUTATES as PRINT_MUTATES
+  ACTIONS as PRINT_ACTIONS
 } from '@/store/modules/print/const';
 import { themeOptions } from '@/mock/themes';
 import PpToolPopover from '@/components/ToolPopover';
@@ -29,7 +29,8 @@ import {
 } from '@/common/constants';
 import {
   getThemeOptSelectedById,
-  getLayoutOptSelectedById
+  getLayoutOptSelectedById,
+  resetObjects
 } from '@/common/utils';
 import {
   usePopoverCreationTool,
@@ -120,9 +121,11 @@ export default {
   },
   methods: {
     ...mapMutations({
-      updateSheetThemeLayout: PRINT_MUTATES.UPDATE_SHEET_THEME_LAYOUT,
       toggleModal: APP_MUTATES.TOGGLE_MODAL,
       setPrintLayouts: THEME_MUTATES.PRINT_LAYOUTS
+    }),
+    ...mapActions({
+      updateSheetThemeLayout: PRINT_ACTIONS.UPDATE_SHEET_THEME_LAYOUT
     }),
     /**
      * Set up inital data to render in view
@@ -317,8 +320,8 @@ export default {
           themeId: this.themeSelected?.id,
           layout: this.layoutObjSelected
         });
-        const sheetLayout = this.sheetLayout(this.pageSelected?.id);
-        this.drawLayout(sheetLayout);
+        resetObjects(window.printCanvas);
+        this.drawLayout(this.sheetLayout);
         this.onCancel();
       }
     },
