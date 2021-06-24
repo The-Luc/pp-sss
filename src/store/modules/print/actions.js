@@ -88,7 +88,6 @@ export const actions = {
 
     if (backgroundObjs.length === 2) {
       backgroundObjs.forEach(bg => {
-        console.log('currentPosition', currentPosition);
         commit(PRINT._MUTATES.SET_BACKGROUNDS, { background: bg });
       });
     }
