@@ -11,6 +11,13 @@ import {
 import LAYOUT_01 from '@/assets/image/layouts/thumb/layout-01.png';
 import LAYOUT_02 from '@/assets/image/layouts/thumb/layout-02.png';
 
+import BG_1 from '@/assets/image/layouts/background/background-01.jpg';
+import BG_2 from '@/assets/image/layouts/background/background-02.jpg';
+import LPCA_04531 from '@/assets/image/layouts/background/LPCA_04531.png';
+import LPCA_04511 from '@/assets/image/layouts/background/LPCA_04511.png';
+import BG_SINGLE_PAGE_1 from '@/assets/image/layouts/background/bg-single-page-01.jpg';
+import BG_SINGLE_PAGE_2 from '@/assets/image/layouts/background/bg-single-page-02.jpg';
+
 const text1 = {
   ...TextElement,
   id: uniqueId(),
@@ -69,10 +76,8 @@ const bg1 = {
   },
   category: 'Cover',
   name: 'watercolorbackground.jpg',
-  thumbnail:
-    'http://s3.amazonaws.com/fms.prod/yb_backgrounds/global/700/original_watercolorbackground.jpg',
-  imageUrl:
-    'http://s3.amazonaws.com/fms.prod/yb_backgrounds/global/700/original_watercolorbackground.jpg'
+  thumbnail: BG_1,
+  imageUrl: BG_1
 };
 
 const bg2 = {
@@ -89,10 +94,8 @@ const bg2 = {
   },
   category: 'Cover',
   name: 'watercolorbackground.jpg',
-  thumbnail:
-    'http://s3.amazonaws.com/fms.prod/yb_backgrounds/global/233/original_papertree.jpg',
-  imageUrl:
-    'http://s3.amazonaws.com/fms.prod/yb_backgrounds/global/233/original_papertree.jpg'
+  thumbnail: BG_2,
+  imageUrl: BG_2
 };
 
 const clipArt1 = {
@@ -109,10 +112,8 @@ const clipArt1 = {
   },
   category: 'MSPHOTO',
   name: 'LPCA_04531',
-  thumbnail:
-    'http://s3.amazonaws.com/fms.prod/yb_clipart/global/1725/LPCA_04531.png?2013',
-  vector:
-    'https://s3.amazonaws.com/fms.prod/yb_clipart/global/1725/LPCA_04531.svg?2013', // imgUrl
+  thumbnail: LPCA_04531,
+  vector: LPCA_04531,
   fillcolor: '',
   opacity: 0
 };
@@ -131,10 +132,8 @@ const clipArt2 = {
   },
   category: 'MSPHOTO',
   name: 'LPCA_04511',
-  thumbnail:
-    'http://s3.amazonaws.com/fms.prod/yb_clipart/global/1715/LPCA_04511.png?2013',
-  vector:
-    'https://s3.amazonaws.com/fms.prod/yb_clipart/global/1715/LPCA_04511.svg?2013' // imgUrl
+  thumbnail: LPCA_04511,
+  vector: LPCA_04511
 };
 
 const shape1 = {
@@ -215,10 +214,8 @@ const bgSinglePage1 = {
   },
   category: 'single',
   name: 'watercolorbackground.jpg',
-  thumbnail:
-    'http://s3.amazonaws.com/fms.prod/yb_backgrounds/global/1348/original_whiter-right.jpg?2017',
-  imageUrl:
-    'http://s3.amazonaws.com/fms.prod/yb_backgrounds/global/1348/original_whiter-right.jpg?2017'
+  thumbnail: BG_SINGLE_PAGE_1,
+  imageUrl: BG_SINGLE_PAGE_1
 };
 
 const bgSinglePage2 = {
@@ -235,10 +232,8 @@ const bgSinglePage2 = {
   },
   category: 'single',
   name: 'watercolorbackground.jpg',
-  thumbnail:
-    'http://s3.amazonaws.com/fms.prod/yb_backgrounds/global/1345/original_greenboard-left.jpg?2017',
-  imageUrl:
-    'http://s3.amazonaws.com/fms.prod/yb_backgrounds/global/1345/original_greenboard-left.jpg?2017'
+  thumbnail: BG_SINGLE_PAGE_2,
+  imageUrl: BG_SINGLE_PAGE_2
 };
 
 const layouts = [
