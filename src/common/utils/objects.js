@@ -38,3 +38,31 @@ export const computedObjectData = (
     height
   };
 };
+
+/**
+ * Compute new dimension of object when user input new size data with constrain condition
+ * @param {Object} newSize - Dimensional data user input, maybe width|height
+ * @param {Object} oldSize - The current/old size of object
+ * @param {Number} minSize - The minimum size of object
+ * @param {Number} maxSize - The maximum size of object
+ * @param {Boolean} isConstrain - The object is constrain mode or not
+ * @return {Object} {width, height} - Return new size of object after calculated
+ */
+export const computedObjectSize = (
+  newSize,
+  oldSize,
+  minSize,
+  maxSize,
+  isConstrain
+) => {
+  if (!isConstrain) return { ...oldSize, ...newSize };
+
+  const key = Object.keys(newSize)[0];
+  const ratio = newSize[key] / oldSize[key];
+  const dimensional = key === 'width' ? 'height' : 'width';
+  const newValue = oldSize[dimensional] * ratio;
+  const dimensionalValue =
+    newValue < minSize ? minSize : newValue > maxSize ? maxSize : newValue;
+
+  return { ...oldSize, ...newSize, [dimensional]: dimensionalValue };
+};
