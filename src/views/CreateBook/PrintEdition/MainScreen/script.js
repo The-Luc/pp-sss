@@ -105,8 +105,7 @@ export default {
       this.selectSheet({ id: sheet.id });
       this.setSectionId({ sectionId });
       setTimeout(() => {
-        const sheetPrintData = this.sheetLayout(sheet.id);
-        this.drawLayout(sheetPrintData);
+        this.drawLayout(this.sheetLayout);
       }, 50);
     }
   }

@@ -1,11 +1,11 @@
-import { mapMutations, mapGetters } from 'vuex';
+import { mapMutations, mapGetters, mapActions } from 'vuex';
 
 import Modal from '@/containers/Modal';
 import { useDrawLayout } from '@/hooks';
 import { MUTATES as APP_MUTATES } from '@/store/modules/app/const';
 import {
   GETTERS as PRINT_GETTERS,
-  MUTATES as PRINT_MUTATES
+  ACTIONS as PRINT_ACTIONS
 } from '@/store/modules/print/const';
 
 export default {
@@ -41,8 +41,10 @@ export default {
   },
   methods: {
     ...mapMutations({
-      updateSheetThemeLayout: PRINT_MUTATES.UPDATE_SHEET_THEME_LAYOUT,
       toggleModal: APP_MUTATES.TOGGLE_MODAL
+    }),
+    ...mapActions({
+      updateSheetThemeLayout: PRINT_ACTIONS.UPDATE_SHEET_THEME_LAYOUT
     }),
     /**
      * Trigger mutation to close modal
@@ -68,8 +70,7 @@ export default {
      * Get sheet's layout and draw
      */
     drawLayoutSinglePage() {
-      const sheetLayout = this.sheetLayout(this.pageSelected.id);
-      this.drawLayout(sheetLayout);
+      this.drawLayout(this.sheetLayout);
     },
     /**
      * Update layout to sheet, draw layout and then close modal
