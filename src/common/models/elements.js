@@ -127,7 +127,8 @@ export const ClipArtElement = {
   name: '',
   thumbnail: '',
   vector: '', // imgUrl
-  isColorful: false
+  isColorful: false,
+  isConstrain: DEFAULT_CLIP_ART.IS_CONSTRAIN
 };
 
 export const ShapeElement = {

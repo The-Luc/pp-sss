@@ -118,12 +118,30 @@ export const toFabricShapeProp = (prop, originalElement) => {
  * @param   {Object}  prop  stored properties
  * @returns {Object}        fabric properties
  */
-export const toFabricClipArtProp = prop => {
+export const toFabricClipArtProp = (prop, originalElement) => {
   const mapRules = {
     data: {
       type: DEFAULT_RULE_DATA.TYPE,
       x: DEFAULT_RULE_DATA.X,
       y: DEFAULT_RULE_DATA.Y,
+      width: {
+        name: 'scaleX',
+        parse: value => {
+          if (originalElement) {
+            return inToPx(value) / originalElement.width;
+          }
+          return 1;
+        }
+      },
+      height: {
+        name: 'scaleY',
+        parse: value => {
+          if (originalElement) {
+            return inToPx(value) / originalElement.height;
+          }
+          return 1;
+        }
+      },
       rotation: DEFAULT_RULE_DATA.ROTATION,
       color: DEFAULT_RULE_DATA.COLOR,
       horizontal: DEFAULT_RULE_DATA.HORIZONTAL,
@@ -152,7 +170,7 @@ const getFabricPropByType = (elementType, prop, element) => {
   }
 
   if (elementType === OBJECT_TYPE.CLIP_ART) {
-    return toFabricClipArtProp(prop);
+    return toFabricClipArtProp(prop, element);
   }
 
   return {};
@@ -380,4 +398,62 @@ export const addPrintSvgs = async (
     : addMultiSvg(svgs, canvas, isAddedToSinglePage, isPlaceInLeftPage);
 
   canvas.renderAll();
+};
+
+/**
+ * Caculation scale element
+ *
+ * @param {Number}  widthElement  width's element
+ * @param {Number}  currentWidthInch  current width inch of element
+ * @param {Nunber}  currentHeightInch current height inch of element
+ * @param {Number}  minSize  min size of element
+ */
+export const calcScaleElement = (
+  widthElement,
+  currentWidthInch,
+  currentHeightInch,
+  minSize
+) => {
+  let scaleX = null;
+  let scaleY = null;
+  const minScale = inToPx(minSize) / widthElement;
+  if (currentWidthInch < minSize) {
+    scaleX = minScale;
+  }
+
+  if (currentHeightInch < minSize) {
+    scaleY = minScale;
+  }
+  return {
+    x: scaleX,
+    y: scaleY
+  };
+};
+
+/**
+ * Mapping Element Properties
+ *
+ * @param {Number}   currentWidthInch current width inch of element
+ * @param {Number}  currentHeightInch current height inch of element
+ * @param {Number}  currentXInch current position x inch of element
+ * @param {Number}  currentYInch current position y inch of element
+ * @param {Number} minSize min size of element
+ */
+export const mappingElementProperties = (
+  currentWidthInch,
+  currentHeightInch,
+  currentXInch,
+  currentYInch,
+  minSize
+) => {
+  return {
+    size: {
+      width: currentWidthInch < minSize ? minSize : currentWidthInch,
+      height: currentHeightInch < minSize ? minSize : currentHeightInch
+    },
+    coord: {
+      x: currentXInch,
+      y: currentYInch
+    }
+  };
 };
