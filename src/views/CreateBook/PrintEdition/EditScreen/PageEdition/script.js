@@ -34,7 +34,7 @@ import {
 } from '@/common/fabricObjects';
 
 import {
-  calcScaleObject,
+  calcScaleElement,
   mappingElementProperties,
   updateElement
 } from '@/common/fabricObjects/common';
@@ -786,7 +786,7 @@ export default {
       let scale = {};
       switch (objectType) {
         case OBJECT_TYPE.SHAPE:
-          scale = calcScaleObject(
+          scale = calcScaleElement(
             width,
             currentWidthInch,
             currentHeightInch,
@@ -794,7 +794,7 @@ export default {
           );
           break;
         case OBJECT_TYPE.CLIP_ART:
-          scale = calcScaleObject(
+          scale = calcScaleElement(
             width,
             currentWidthInch,
             currentHeightInch,

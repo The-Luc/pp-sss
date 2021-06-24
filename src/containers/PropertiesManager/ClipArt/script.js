@@ -4,6 +4,7 @@ import GeneralContent from './GeneralContent';
 import ArrangeContent from '@/components/Arrange';
 import { DEFAULT_CLIP_ART, OBJECT_TYPE } from '@/common/constants';
 import { useClipArtProperties } from '@/hooks';
+import { computedObjectSize } from '@/common/utils';
 
 export default {
   setup() {
@@ -24,12 +25,6 @@ export default {
     TabMenu,
     GeneralContent,
     ArrangeContent
-  },
-  data() {
-    return {
-      minPosition: -100,
-      maxPosition: 100
-    };
   },
   computed: {
     rotateValue() {
@@ -128,6 +123,17 @@ export default {
      * @param {Object} object object containing the value of update size, position or rotate
      */
     onChange(object) {
+      const key = Object.keys(object);
+      if (key.includes('size')) {
+        const size = computedObjectSize(
+          object.size,
+          { width: this.sizeWidth, height: this.sizeHeight },
+          DEFAULT_CLIP_ART.MIN_SIZE,
+          DEFAULT_CLIP_ART.MAX_SIZE,
+          this.isConstrain
+        );
+        object.size = size;
+      }
       this.$root.$emit('printChangeClipArtProperties', object);
     },
     /**
