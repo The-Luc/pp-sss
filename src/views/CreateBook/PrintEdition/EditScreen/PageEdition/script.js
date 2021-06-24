@@ -248,13 +248,18 @@ export default {
       this.drawLayout(sheetPrintData);
       window.printCanvas.setZoom(currentZoom);
     },
+
+    /**
+     * call this function to update the active thumbnail
+     */
     getThumbnailUrl: debounce(function() {
       const thumbnailUrl = window.printCanvas.toDataURL();
+      console.log('ahihi');
       this.setThumbnail({
         sheetId: this.pageSelected?.id,
         thumbnailUrl
       });
-    }, 1000),
+    }, 250),
     /**
      * Event triggered once the container that hold the canvas is finished rendering
      * @param {Object} containerSize - the size object
@@ -273,11 +278,9 @@ export default {
         'selection:updated': this.objectSelected,
         'selection:cleared': this.closeProperties,
         'selection:created': this.objectSelected,
-        'object:modified': () => {
-          if (window.printCanvas) {
-            this.getThumbnailUrl();
-          }
-        },
+        'object:modified': this.getThumbnailUrl,
+        'object:added': this.getThumbnailUrl,
+        'object:removed': this.getThumbnailUrl,
         'object:scaled': ({ target }) => {
           const { width, height } = target;
           const propAdjust = {
@@ -344,7 +347,6 @@ export default {
       });
 
       this.$root.$on('printChangeTextProperties', prop => {
-        this.getThumbnailUrl();
         this.changeTextProperties(prop);
       });
 
@@ -539,7 +541,6 @@ export default {
       const isConstrain = data.newObject.isConstrain;
       this.setCanvasUniformScaling(isConstrain);
       window.printCanvas.add(object);
-      this.getThumbnailUrl();
 
       setTimeout(() => {
         selectLatestObject(window.printCanvas);
@@ -565,6 +566,9 @@ export default {
       this.updateTriggerTextChange();
 
       applyTextBoxProperties(activeObj, prop);
+
+      // update thumbnail
+      this.getThumbnailUrl();
     },
     /**
      * Event fire when user click on Image button on Toolbar to add new image on canvas
@@ -908,6 +912,9 @@ export default {
       if (updateTriggerFn !== null) updateTriggerFn();
 
       updateElement(element, prop, window.printCanvas);
+
+      // update thumbnail
+      this.getThumbnailUrl();
     },
 
     /**
@@ -947,6 +954,8 @@ export default {
         fabricObjects[oldIndex + numBackground].moveTo(
           newIndex + numBackground
         );
+        //update thumbnail
+        this.getThumbnailUrl();
       };
 
       if (actionName === ARRANGE_SEND.BACK && currentObjectIndex === 0) return;
