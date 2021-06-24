@@ -90,8 +90,8 @@ export const DEFAULT_CLIP_ART = {
   MIN_SIZE: 0.5, // inch,
   MAX_SIZE: 60, // inch,
   IS_CONSTRAIN: true,
-  MIN_POSITION: 100,
-  MAX_POSITION: -100
+  MIN_POSITION: -100,
+  MAX_POSITION: 100
 };
 
 export const DEFAULT_IMAGE = {

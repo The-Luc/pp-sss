@@ -433,11 +433,11 @@ export const calcScaleElement = (
 /**
  * Mapping Element Properties
  *
- * @param {Nunber}   currentWidthInch current width inch of element
- * @param {Nunber}  currentHeightInch current height inch of element
- * @param {Nunber}  currentXInch current position x inch of element
- * @param {Nunber}  currentYInch current position y inch of element
- * @param {Nunber} minSize min size of element
+ * @param {Number}   currentWidthInch current width inch of element
+ * @param {Number}  currentHeightInch current height inch of element
+ * @param {Number}  currentXInch current position x inch of element
+ * @param {Number}  currentYInch current position y inch of element
+ * @param {Number} minSize min size of element
  */
 export const mappingElementProperties = (
   currentWidthInch,
