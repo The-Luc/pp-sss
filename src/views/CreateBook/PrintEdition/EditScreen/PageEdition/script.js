@@ -202,6 +202,7 @@ export default {
           const isValid = isFabricObject(clipText);
           if (isValid) {
             const data = JSON.parse(clipText);
+            const object = data[COPY_OBJECT_KEY].activeObj;
             console.log('handlePaste', data);
           }
         }
