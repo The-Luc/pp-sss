@@ -42,14 +42,28 @@ export const HARDCOVER_SPINE_SIZES = {
   340: 1 // for 302-340 pages
 };
 
+export const HARD_COVER_BLEED_X = {
+  60: 1.09, // for 20-60 pages
+  100: 1.05, // for 62-100 pages
+  140: 1, // for 102-140 pages
+  180: 0.95, // for 142-180 pages
+  220: 0.9, // for 182-220 pages
+  260: 0.85, // for 222-260 pages
+  300: 0.8, // for 262-300 pages
+  340: 0.75 // for 302-340 pages
+};
+
 export const PRINT_SOFTCOVER_PAGE_SIZE = {
   PDF_DOUBLE_WIDTH: 17.75, // 2 cover pages + spine + bleed
-  PDF_HEIGHT: 11.25
+  PDF_HEIGHT: 11.25,
+  BLEED: PRINT_PAGE_SIZE.BLEED
 };
 
 export const PRINT_HARDCOVER_PAGE_SIZE = {
   PDF_DOUBLE_WIDTH: 20, // 2 cover pages + spine + bleed
-  PDF_HEIGHT: 12.75
+  PDF_HEIGHT: 12.75,
+  BLEED_TOP: 0.755,
+  BLEED_BOTTOM: 0.749
 };
 
 export const PRINT_DPI = 300;

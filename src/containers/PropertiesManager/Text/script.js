@@ -120,7 +120,12 @@ export default {
      * @param {String} actionName action name
      */
     changeFlip(actionName) {
-      console.log(actionName);
+      const flip = this.selectObjectProp('flip');
+      this.$root.$emit('printChangeTextProperties', {
+        flip: {
+          [actionName]: !flip[actionName]
+        }
+      });
     },
     /**
      * Handle update size, position or rotate for Shape

@@ -2,7 +2,7 @@ import { getSuccessWithData, getErrorWithMessages } from '@/common/models';
 
 import { isEmpty } from '@/common/utils';
 
-import books from '@/mock/books';
+import bookService from './book';
 
 const printService = {
   /**
@@ -13,7 +13,7 @@ const printService = {
    */
   getDefaultThemeId: bookId => {
     return new Promise(resolve => {
-      const data = books[bookId].printData.themeId;
+      const data = bookService.getBook(bookId).printData.themeId;
 
       const result = isEmpty(data)
         ? getErrorWithMessages([])
@@ -31,7 +31,7 @@ const printService = {
    */
   getPrintSectionsSheets: bookId => {
     return new Promise(resolve => {
-      const data = books[bookId].sections.map(section => {
+      const data = bookService.getBook(bookId).sections.map(section => {
         const sheets = section.sheets.map(sheet => {
           const { id, type, thumbnailUrl, link } = sheet;
 
@@ -69,7 +69,7 @@ const printService = {
    */
   getPrintEditSectionsSheets: bookId => {
     return new Promise(resolve => {
-      const data = books[bookId].sections.map(section => {
+      const data = bookService.getBook(bookId).sections.map(section => {
         const sheets = section.sheets.map(sheet => {
           const { id, type, isVisited } = sheet;
           const { thumbnailUrl, theme: themeId, layout } = sheet.printData;
@@ -111,7 +111,9 @@ const printService = {
    */
   getSheetObjects: (bookId, sectionId, sheetId) => {
     return new Promise(resolve => {
-      const section = books[bookId].sections.find(s => sectionId === s.id);
+      const section = bookService
+        .getBook(bookId)
+        .sections.find(s => sectionId === s.id);
 
       if (isEmpty(section)) return {};
 

@@ -1,7 +1,7 @@
 import { mapGetters } from 'vuex';
 import PpButtonGroup from '@/components/Buttons/ButtonGroup';
 import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
-import { TEXT_HORIZIONTAL_ALIGN } from '@/common/constants';
+import { TEXT_HORIZONTAL_ALIGN } from '@/common/constants';
 
 import { isEmpty } from '@/common/utils';
 
@@ -11,10 +11,10 @@ export default {
   },
   data() {
     return {
-      JUSTIFY: TEXT_HORIZIONTAL_ALIGN.JUSTIFY,
-      LEFT: TEXT_HORIZIONTAL_ALIGN.LEFT,
-      RIGHT: TEXT_HORIZIONTAL_ALIGN.RIGHT,
-      CENTER: TEXT_HORIZIONTAL_ALIGN.CENTER
+      JUSTIFY: TEXT_HORIZONTAL_ALIGN.JUSTIFY,
+      LEFT: TEXT_HORIZONTAL_ALIGN.LEFT,
+      RIGHT: TEXT_HORIZONTAL_ALIGN.RIGHT,
+      CENTER: TEXT_HORIZONTAL_ALIGN.CENTER
     };
   },
   computed: {
@@ -36,7 +36,7 @@ export default {
      * @param  {String} data Receive item information
      */
     onChange(data) {
-      const value = isEmpty(data) ? TEXT_HORIZIONTAL_ALIGN.LEFT : data;
+      const value = isEmpty(data) ? TEXT_HORIZONTAL_ALIGN.LEFT : data;
 
       this.$root.$emit('printChangeTextProperties', {
         alignment: { horizontal: value }

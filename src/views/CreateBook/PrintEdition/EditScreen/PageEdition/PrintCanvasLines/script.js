@@ -57,20 +57,24 @@ export default {
       return spineCfg;
     },
     bleedStyle() {
-      const bleed = { x: 0, y: 0 };
-      if (this.pageSize && this.pageSize.pixels) {
-        const {
-          sheetWidth,
-          sheetHeight,
-          bleedX,
-          bleedY
-        } = this.pageSize.pixels;
-        const { width, height } = this.canvas;
-        bleed.x = (bleedX / sheetWidth) * width;
-        bleed.y = (bleedY / sheetHeight) * height;
+      if (!this.pageSize || !this.pageSize.pixels) {
+        return { borderWidth: 0 };
       }
+      const {
+        sheetWidth,
+        sheetHeight,
+        bleedTop,
+        bleedBottom,
+        bleedLeft,
+        bleedRight
+      } = this.pageSize.pixels;
+      const { width, height } = this.canvas;
+      const top = (bleedTop / sheetHeight) * height;
+      const bottom = (bleedBottom / sheetHeight) * height;
+      const left = (bleedLeft / sheetWidth) * width;
+      const right = (bleedRight / sheetWidth) * width;
       return {
-        'border-width': `${bleed.y}px ${bleed.x}px`
+        borderWidth: `${top}px ${right}px ${bottom}px ${left}px`
       };
     },
     safeMargin() {
