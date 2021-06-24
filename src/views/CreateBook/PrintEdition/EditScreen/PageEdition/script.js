@@ -19,7 +19,6 @@ import {
   isHalfSheet,
   isHalfLeft,
   pxToIn,
-  inToPx,
   isJsonString,
   resetObjects
 } from '@/common/utils';
