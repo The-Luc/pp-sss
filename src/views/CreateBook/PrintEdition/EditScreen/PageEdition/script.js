@@ -254,7 +254,7 @@ export default {
      */
     getThumbnailUrl: debounce(function() {
       const thumbnailUrl = window.printCanvas.toDataURL();
-      console.log('ahihi');
+
       this.setThumbnail({
         sheetId: this.pageSelected?.id,
         thumbnailUrl
