@@ -159,12 +159,18 @@ export default {
   mounted() {
     window.addEventListener('copy', this.handleCopy);
     window.addEventListener('paste', this.handlePaste);
+
+    document.body.addEventListener('keyup', this.handleDeleteKey);
   },
   beforeDestroy() {
-    document.body.removeEventListener('keyup', this.handleDeleteKey);
     window.removeEventListener('copy', this.handleCopy);
     window.removeEventListener('paste', this.handlePaste);
+
     window.printCanvas = null;
+
+    document.body.removeEventListener('keyup', this.handleDeleteKey);
+
+    this.eventHandling(false);
   },
   methods: {
     ...mapActions({
@@ -312,81 +318,6 @@ export default {
           }
         }
       });
-
-      this.$root.$on('printSwitchTool', toolName => {
-        const isDiscard =
-          toolName &&
-          toolName !== TOOL_NAME.DELETE &&
-          toolName !== TOOL_NAME.ACTIONS;
-
-        if (isDiscard) {
-          window.printCanvas.discardActiveObject().renderAll();
-        }
-
-        if (this.propertiesObjectType === OBJECT_TYPE.BACKGROUND) {
-          this.setIsOpenProperties({ isOpen: false });
-
-          this.setPropertiesObjectType({ type: '' });
-        }
-
-        this.$root.$emit('printInstructionEnd');
-
-        this.awaitingAdd = '';
-      });
-
-      this.$root.$on('printAddElement', element => {
-        this.$root.$emit('printInstructionEnd');
-        this.awaitingAdd = element;
-        this.$root.$emit('printInstructionStart', { element });
-      });
-
-      this.$root.$on('enscapeInstruction', () => {
-        this.awaitingAdd = '';
-        this.$root.$emit('printInstructionEnd');
-        this.setToolNameSelected({ name: '' });
-      });
-
-      this.$root.$on('printAddClipArt', clipArts => {
-        this.addClipArt(clipArts);
-      });
-
-      this.$root.$on('printDeleteElements', () => {
-        this.removeObject();
-      });
-
-      this.$root.$on('printChangeTextProperties', prop => {
-        this.changeTextProperties(prop);
-      });
-
-      this.$root.$on('printAddBackground', ({ background, isLeft }) => {
-        this.addBackground({ background, isLeft });
-      });
-
-      this.$root.$on('printChangeBackgroundProperties', prop => {
-        this.changeBackgroundProperties(prop);
-      });
-
-      this.$root.$on('printAddShapes', shapes => {
-        this.addShapes(shapes);
-      });
-
-      this.$root.$on('printChangeShapeProperties', prop => {
-        this.changeShapeProperties(prop);
-      });
-
-      this.$root.$on('changeObjectIdsOrder', actionName => {
-        this.changeObjectIdsOrder(actionName);
-      });
-
-      this.$root.$on('printChangeClipArtProperties', prop => {
-        this.changeClipArtProperties(prop);
-      });
-
-      this.$root.$on('printCopyObj', () => {
-        this.handleCopy();
-      });
-
-      document.body.addEventListener('keyup', this.handleDeleteKey);
     },
     /**
      * Event handle when container is resized by user action
@@ -923,7 +854,6 @@ export default {
       // update thumbnail
       this.getThumbnailUrl();
     },
-
     /**
      * get fired when you click 'send' button
      * change the objectIds order and update z-index of object on canvas
@@ -995,7 +925,6 @@ export default {
         return;
       }
     },
-
     /**
      * Callback function for handle moved to update shape's dimension
      * @param {Object} e - Shape element
@@ -1010,6 +939,88 @@ export default {
           x: currentXInch,
           y: currentYInch
         }
+      });
+    },
+    /**
+     * Handling event on this screen
+     *
+     * @param {Boolean} isOn if need to set event
+     */
+    eventHandling(isOn = true) {
+      const elementEvents = {
+        printAddElement: element => {
+          this.$root.$emit('printInstructionEnd');
+          this.awaitingAdd = element;
+          this.$root.$emit('printInstructionStart', { element });
+        },
+        printDeleteElements: this.removeObject,
+        changeObjectIdsOrder: this.changeObjectIdsOrder
+      };
+
+      const textEvents = {
+        printChangeTextProperties: prop => {
+          this.getThumbnailUrl();
+          this.changeTextProperties(prop);
+        }
+      };
+
+      const backgroundEvents = {
+        printAddBackground: this.addBackground,
+        printChangeBackgroundProperties: this.changeBackgroundProperties
+      };
+
+      const shapeEvents = {
+        printAddShapes: this.addShapes,
+        printChangeShapeProperties: this.changeShapeProperties
+      };
+
+      const clipArtEvents = {
+        printAddClipArt: this.addClipArt,
+        printChangeClipArtProperties: this.changeClipArtProperties
+      };
+
+      const otherEvents = {
+        printSwitchTool: toolName => {
+          const isDiscard =
+            toolName &&
+            toolName !== TOOL_NAME.DELETE &&
+            toolName !== TOOL_NAME.ACTIONS;
+
+          if (isDiscard) {
+            window.printCanvas.discardActiveObject().renderAll();
+          }
+
+          if (this.propertiesObjectType === OBJECT_TYPE.BACKGROUND) {
+            this.setIsOpenProperties({ isOpen: false });
+
+            this.setPropertiesObjectType({ type: '' });
+          }
+
+          this.$root.$emit('printInstructionEnd');
+
+          this.awaitingAdd = '';
+        },
+        enscapeInstruction: () => {
+          this.awaitingAdd = '';
+          this.$root.$emit('printInstructionEnd');
+          this.setToolNameSelected({ name: '' });
+        },
+        printCopyObj: this.handleCopy
+      };
+
+      const events = {
+        ...elementEvents,
+        ...textEvents,
+        ...backgroundEvents,
+        ...shapeEvents,
+        ...clipArtEvents,
+        ...otherEvents
+      };
+
+      Object.keys(events).forEach(eventName => {
+        this.$root.$off(eventName);
+
+        if (isOn) this.$root.$on(eventName, events[eventName]);
       });
     }
   }
