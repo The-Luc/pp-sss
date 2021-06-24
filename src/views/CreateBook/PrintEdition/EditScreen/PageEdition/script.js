@@ -33,7 +33,11 @@ import {
   addPrintClipArts
 } from '@/common/fabricObjects';
 
-import { updateElement } from '@/common/fabricObjects/common';
+import {
+  calcScaleObject,
+  mappingElementProperties,
+  updateElement
+} from '@/common/fabricObjects/common';
 
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
 import { GETTERS } from '@/store/modules/book/const';
@@ -779,35 +783,31 @@ export default {
       const currentWidthInch = pxToIn(width * scaleX);
       const currentHeightInch = pxToIn(height * scaleY);
       const objectType = target.objectType;
-      let minScale = 0;
+      let scale = {};
       switch (objectType) {
         case OBJECT_TYPE.SHAPE:
-          minScale = inToPx(DEFAULT_SHAPE.MIN_SIZE) / width;
-          if (currentWidthInch < DEFAULT_SHAPE.MIN_SIZE) {
-            scaleX = minScale;
-          }
-
-          if (currentHeightInch < DEFAULT_SHAPE.MIN_SIZE) {
-            scaleY = minScale;
-          }
+          scale = calcScaleObject(
+            width,
+            currentWidthInch,
+            currentHeightInch,
+            DEFAULT_SHAPE.MIN_SIZE
+          );
           break;
         case OBJECT_TYPE.CLIP_ART:
-          minScale = inToPx(DEFAULT_CLIP_ART.MIN_SIZE) / width;
-          if (currentWidthInch < DEFAULT_CLIP_ART.MIN_SIZE) {
-            scaleX = minScale;
-          }
-
-          if (currentHeightInch < DEFAULT_CLIP_ART.MIN_SIZE) {
-            scaleY = minScale;
-          }
+          scale = calcScaleObject(
+            width,
+            currentWidthInch,
+            currentHeightInch,
+            DEFAULT_CLIP_ART.MIN_SIZE
+          );
           break;
         default:
           return;
       }
 
       target.set({
-        scaleX,
-        scaleY
+        scaleX: scale?.x || scaleX,
+        scaleY: scale?.y || scaleY
       });
     },
     /**
@@ -823,42 +823,29 @@ export default {
       const currentYInch = pxToIn(target.top);
       const objectType = target.objectType;
       switch (objectType) {
-        case OBJECT_TYPE.SHAPE:
-          this.changeShapeProperties({
-            size: {
-              width:
-                currentWidthInch < DEFAULT_SHAPE.MIN_SIZE
-                  ? DEFAULT_SHAPE.MIN_SIZE
-                  : currentWidthInch,
-              height:
-                currentHeightInch < DEFAULT_SHAPE.MIN_SIZE
-                  ? DEFAULT_SHAPE.MIN_SIZE
-                  : currentHeightInch
-            },
-            coord: {
-              x: currentXInch,
-              y: currentYInch
-            }
-          });
+        case OBJECT_TYPE.SHAPE: {
+          const prop = mappingElementProperties(
+            currentWidthInch,
+            currentHeightInch,
+            currentXInch,
+            currentYInch,
+            DEFAULT_SHAPE.MIN_SIZE
+          );
+          this.changeShapeProperties(prop);
           break;
-        case OBJECT_TYPE.CLIP_ART:
-          this.changeClipArtProperties({
-            size: {
-              width:
-                currentWidthInch < DEFAULT_CLIP_ART.MIN_SIZE
-                  ? DEFAULT_CLIP_ART.MIN_SIZE
-                  : currentWidthInch,
-              height:
-                currentHeightInch < DEFAULT_CLIP_ART.MIN_SIZE
-                  ? DEFAULT_CLIP_ART.MIN_SIZE
-                  : currentHeightInch
-            },
-            coord: {
-              x: currentXInch,
-              y: currentYInch
-            }
-          });
+        }
+
+        case OBJECT_TYPE.CLIP_ART: {
+          const prop = mappingElementProperties(
+            currentWidthInch,
+            currentHeightInch,
+            currentXInch,
+            currentYInch,
+            DEFAULT_CLIP_ART.MIN_SIZE
+          );
+          this.changeClipArtProperties(prop);
           break;
+        }
         default:
           return;
       }

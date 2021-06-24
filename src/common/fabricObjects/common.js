@@ -122,14 +122,8 @@ export const toFabricClipArtProp = (prop, originalElement) => {
   const mapRules = {
     data: {
       type: DEFAULT_RULE_DATA.TYPE,
-      x: {
-        name: 'left',
-        parse: value => inToPx(value)
-      },
-      y: {
-        name: 'top',
-        parse: value => inToPx(value)
-      },
+      x: DEFAULT_RULE_DATA.X,
+      y: DEFAULT_RULE_DATA.Y,
       width: {
         name: 'scaleX',
         parse: value => {
@@ -404,4 +398,62 @@ export const addPrintSvgs = async (
     : addMultiSvg(svgs, canvas, isAddedToSinglePage, isPlaceInLeftPage);
 
   canvas.renderAll();
+};
+
+/**
+ * Caculation scale element
+ *
+ * @param {Number}  widthElement  width's element
+ * @param {Number}  currentWidthInch  current width inch of element
+ * @param {Nunber}  currentHeightInch current height inch of element
+ * @param {Number}  minSize  min size of element
+ */
+export const calcScaleElement = (
+  widthElement,
+  currentWidthInch,
+  currentHeightInch,
+  minSize
+) => {
+  let scaleX = null;
+  let scaleY = null;
+  const minScale = inToPx(minSize) / widthElement;
+  if (currentWidthInch < minSize) {
+    scaleX = minScale;
+  }
+
+  if (currentHeightInch < minSize) {
+    scaleY = minScale;
+  }
+  return {
+    x: scaleX,
+    y: scaleY
+  };
+};
+
+/**
+ * Mapping Element Properties
+ *
+ * @param {Nunber}   currentWidthInch current width inch of element
+ * @param {Nunber}  currentHeightInch current height inch of element
+ * @param {Nunber}  currentXInch current position x inch of element
+ * @param {Nunber}  currentYInch current position y inch of element
+ * @param {Nunber} minSize min size of element
+ */
+export const mappingElementProperties = (
+  currentWidthInch,
+  currentHeightInch,
+  currentXInch,
+  currentYInch,
+  minSize
+) => {
+  return {
+    size: {
+      width: currentWidthInch < minSize ? minSize : currentWidthInch,
+      height: currentHeightInch < minSize ? minSize : currentHeightInch
+    },
+    coord: {
+      x: currentXInch,
+      y: currentYInch
+    }
+  };
 };

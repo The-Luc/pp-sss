@@ -93,6 +93,12 @@ export default {
     },
     maxSize() {
       return 60;
+    },
+    minPosition() {
+      return DEFAULT_CLIP_ART.MIN_POSITION;
+    },
+    maxPosition() {
+      return DEFAULT_CLIP_ART.MAX_POSITION;
     }
   },
   methods: {
