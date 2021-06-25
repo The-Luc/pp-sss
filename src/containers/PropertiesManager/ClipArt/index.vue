@@ -1,7 +1,7 @@
 <template>
   <div class="text-properties-container">
     <Properties title="Clip Art Properties">
-      <TabMenu>
+      <TabPropertiesMenu @change="onChangeTabMenu">
         <v-tab href="#general">
           General
         </v-tab>
@@ -27,7 +27,7 @@
             @changeConstrain="onChangeConstrain"
           />
         </v-tab-item>
-      </TabMenu>
+      </TabPropertiesMenu>
     </Properties>
   </div>
 </template>

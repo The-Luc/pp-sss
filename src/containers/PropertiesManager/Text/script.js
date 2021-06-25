@@ -2,7 +2,7 @@ import { mapGetters, mapMutations } from 'vuex';
 
 import { useObject } from '@/hooks';
 import Properties from '@/components/Properties/BoxProperties';
-import TabMenu from '@/components/TabMenu';
+import TabPropertiesMenu from '@/components/TabPropertiesMenu';
 import GeneralContent from './GeneralContent';
 import StyleContent from './Style';
 import ArrangeContent from '@/components/Arrange';
@@ -17,7 +17,7 @@ export default {
     GeneralContent,
     StyleContent,
     ArrangeContent,
-    TabMenu
+    TabPropertiesMenu
   },
   setup() {
     const { triggerChange, selectObjectProp } = useObject();
