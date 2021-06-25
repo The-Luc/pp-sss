@@ -25,6 +25,14 @@ export default {
       type: Number,
       default: 100
     },
+    minHeight: {
+      type: Number,
+      default: 0
+    },
+    minWidth: {
+      type: Number,
+      default: 0
+    },
     sizeWidth: {
       type: Number,
       default: 0

@@ -191,6 +191,7 @@ export default {
       setSelectedObjectId: PRINT_MUTATES.SET_CURRENT_OBJECT_ID,
       addNewObject: PRINT_MUTATES.ADD_OBJECT,
       setObjectProp: PRINT_MUTATES.SET_PROP,
+      setObjectPropById: PRINT_MUTATES.SET_PROP_BY_ID,
       updateTriggerTextChange: PRINT_MUTATES.UPDATE_TRIGGER_TEXT_CHANGE,
       addNewBackground: PRINT_MUTATES.SET_BACKGROUNDS,
       updateTriggerBackgroundChange:
@@ -293,13 +294,13 @@ export default {
         'object:removed': this.getThumbnailUrl,
         'object:scaled': ({ target }) => {
           const { width, height } = target;
-          const propAdjust = {
+          const prop = {
             size: {
-              width,
-              height
+              width: pxToIn(width),
+              height: pxToIn(height)
             }
           };
-          this.setObjectProp({ id: target.id, property: propAdjust });
+          this.setObjectProp({ prop });
           this.updateTriggerTextChange();
         },
         'mouse:down': e => {
@@ -321,6 +322,26 @@ export default {
               }
             );
           }
+        },
+        'text:changed': ({ target }) => {
+          const group = target?.group;
+          if (!group) return;
+
+          const minWidth = target.getMinWidth();
+          const minHeight = target.height;
+
+          const prop = {
+            size: {
+              width: pxToIn(group.width),
+              height: pxToIn(group.height)
+            },
+            minHeight: pxToIn(minHeight),
+            minWidth: pxToIn(minWidth)
+          };
+
+          this.setObjectProp({ prop });
+          this.setObjectPropById({ id: group.id, prop });
+          this.updateTriggerTextChange();
         }
       });
 
@@ -482,6 +503,7 @@ export default {
         this.pageSelected.id
       );
       object.on('rotated', this.handleRotated);
+      object.on('moved', this.handleMoved);
       this.addNewObject(data);
       const isConstrain = data.newObject.isConstrain;
       this.setCanvasUniformScaling(isConstrain);
@@ -1004,6 +1026,9 @@ export default {
           break;
         case OBJECT_TYPE.CLIP_ART:
           this.changeClipArtProperties(prop);
+          break;
+        case OBJECT_TYPE.TEXT:
+          this.changeTextProperties(prop);
           break;
         default:
           return;

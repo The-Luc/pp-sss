@@ -6,6 +6,8 @@
       :height="sizeHeight"
       :min-size="minSize"
       :max-size="maxSize"
+      :min-width="minWidth"
+      :min-height="minHeight"
       :disabled="disabled"
       :is-constrain="isConstrain"
       @change="onChange"
