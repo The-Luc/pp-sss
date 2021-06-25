@@ -20,7 +20,7 @@ import {
   isHalfLeft,
   pxToIn,
   inToPx,
-  isJsonString,
+  getJson,
   resetObjects
 } from '@/common/utils';
 
@@ -34,7 +34,10 @@ import {
   addPrintClipArts
 } from '@/common/fabricObjects';
 
-import { updateElement } from '@/common/fabricObjects/common';
+import {
+  addEventListeners,
+  updateElement
+} from '@/common/fabricObjects/common';
 
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
 import { GETTERS } from '@/store/modules/book/const';
@@ -64,7 +67,7 @@ import PrintCanvasLines from './PrintCanvasLines';
 import PageWrapper from './PageWrapper';
 import XRuler from './Rulers/XRuler';
 import YRuler from './Rulers/YRuler';
-import { isFabricObject } from '@/common/utils/string';
+import { parsePasteObject } from '@/common/utils/string';
 import { COPY_OBJECT_KEY } from '@/common/constants/config';
 
 export default {
@@ -94,7 +97,8 @@ export default {
       origX: 0,
       origY: 0,
       currentRect: null,
-      rectObj: null
+      rectObj: null,
+      objectList: []
     };
   },
   computed: {
@@ -107,7 +111,9 @@ export default {
       selectedObject: PRINT_GETTERS.CURRENT_OBJECT,
       toolNameSelected: APP_GETTERS.SELECTED_TOOL_NAME,
       currentBackgrounds: PRINT_GETTERS.BACKGROUNDS,
-      propertiesObjectType: APP_GETTERS.PROPERTIES_OBJECT_TYPE
+      propertiesObjectType: APP_GETTERS.PROPERTIES_OBJECT_TYPE,
+      object: PRINT_GETTERS.OBJECT_BY_ID,
+      currentObjects: PRINT_GETTERS.GET_OBJECTS
     }),
     isCover() {
       return this.pageSelected?.type === SHEET_TYPE.COVER;
@@ -178,6 +184,7 @@ export default {
       toggleColorPicker: MUTATES.TOGGLE_COLOR_PICKER,
       setObjectTypeSelected: MUTATES.SET_OBJECT_TYPE_SELECTED,
       setSelectedObjectId: PRINT_MUTATES.SET_CURRENT_OBJECT_ID,
+      setObjects: PRINT_MUTATES.SET_OBJECTS,
       addNewObject: PRINT_MUTATES.ADD_OBJECT,
       setObjectProp: PRINT_MUTATES.SET_PROP,
       updateTriggerTextChange: PRINT_MUTATES.UPDATE_TRIGGER_TEXT_CHANGE,
@@ -193,20 +200,102 @@ export default {
       setPropertiesObjectType: MUTATES.SET_PROPERTIES_OBJECT_TYPE
     }),
     /**
+     * Convert custom object's type to fabric's type to can create class
+     * @param {Object} object - Object JSON data
+     */
+    convertCustomTypeToFabricType: object => {
+      object.objects[0].type = 'rect';
+    },
+    /**
+     * Convert json data to fabric class
+     * @param {Object} object - Object JSON data
+     * @return {Promise<fabric>} Fabric object class
+     */
+    convertJsonToFabricObject(originalObj) {
+      if (originalObj.objectType === OBJECT_TYPE.TEXT) {
+        this.convertCustomTypeToFabricType(originalObj);
+      }
+      if (originalObj.type === 'activeSelection') {
+        originalObj.objects.forEach(object => {
+          if (object.objectType === OBJECT_TYPE.TEXT) {
+            this.convertCustomTypeToFabricType(object);
+          }
+        });
+      }
+      fabric.util.enlivenObjects([originalObj], object => {
+        const id = uniqueId();
+        object[0].set({
+          id,
+          objectType: originalObj.objectType,
+          left: originalObj.left + inToPx(0.5),
+          top: originalObj.top + inToPx(0.5)
+        });
+        if (originalObj.type === 'activeSelection') {
+          object[0].canvas = window.printCanvas;
+          object[0].forEachObject(obj => {
+            this.handlePasteObject(obj, object, true);
+            window.printCanvas.add(obj);
+          });
+          object[0].setCoords();
+        } else {
+          this.handlePasteObject(originalObj, object[0]);
+        }
+
+        window.printCanvas.setActiveObject(object[0]);
+
+        window.printCanvas.renderAll();
+
+        this.handleCopy();
+      });
+    },
+
+    handleStoreSingleObject(object, id) {
+      const objectProps = this.object(object.id);
+      const newObjectProp = {
+        ...objectProps,
+        id,
+        objectType: object.objectType,
+        left: object.left + inToPx(0.5),
+        top: object.top + inToPx(0.5)
+      };
+      const currentObjs = Object.keys(this.currentObjects).map(objId => ({
+        ...this.currentObjects[objId],
+        id: objId
+      }));
+      const objectList = currentObjs;
+      objectList.push(newObjectProp);
+      this.setObjects({
+        objectList
+      });
+    },
+    handlePasteObject(object, fabricObject, isMulti = false) {
+      this.handleStoreSingleObject(object, fabricObject.id);
+      // const eventListeners = {
+      //   scaling: this.handleShapeScaling,
+      //   scaled: this.handleShapeScaled,
+      //   rotated: this.handleRotated,
+      //   moved: this.handleShapeMoved
+      // };
+      if (!isMulti) {
+        window.printCanvas.add(fabricObject);
+      }
+      // addEventListeners(fabricObject, eventListeners);
+    },
+    /**
      * Function handle to get object(s) be copied from clipboard when user press Ctrl + V (Windows), Command + V (macOS), or from action menu
      */
     handlePaste() {
-      navigator.clipboard.readText().then(clipText => {
-        const isJson = isJsonString(clipText);
-        if (isJson) {
-          const isValid = isFabricObject(clipText);
-          if (isValid) {
-            const data = JSON.parse(clipText);
-            const object = data[COPY_OBJECT_KEY].activeObj;
-            console.log('handlePaste', data);
-          }
-        }
-      });
+      const clipText = sessionStorage.getItem(COPY_OBJECT_KEY);
+      const data = parsePasteObject(clipText);
+      console.log('handlePaste', data);
+      if (!isEmpty(data)) {
+        const canvas = window.printCanvas;
+        canvas.discardActiveObject();
+        const data = JSON.parse(clipText);
+        const originalObj = data[COPY_OBJECT_KEY].data;
+        console.log('originalObj', originalObj);
+        // this.convertJsonToFabricObject(originalObj);
+      }
     },
     /**
      * Function handle to set object(s) to clipboard when user press Ctrl + C (Windows), Command + C (macOS), or from action menu
@@ -214,12 +303,24 @@ export default {
     handleCopy() {
       const activeObj = window.printCanvas.getActiveObject();
       if (activeObj) {
+        const objects = activeObj._objects
+          ? [...activeObj._objects]
+          : [activeObj];
+        const data = objects.map(obj => ({
+          fabric: obj.toJSON(['objectType', 'top', 'left']),
+          data: {
+            ...this.currentObjects[obj.id],
+            id: null
+          }
+        }));
         const cacheData = {
           [COPY_OBJECT_KEY]: {
-            activeObj
+            // To keep objectType and id for our use
+            data
           }
         };
-        navigator.clipboard.writeText(JSON.stringify(cacheData));
+        console.log('cacheData', cacheData);
+        sessionStorage.setItem(COPY_OBJECT_KEY, JSON.stringify(cacheData));
       }
     },
     /**
@@ -383,10 +484,8 @@ export default {
         this.changeClipArtProperties(prop);
       });
 
-      this.$root.$on('printCopyObj', () => {
-        this.handleCopy();
-      });
-
+      this.$root.$on('printCopyObj', this.handleCopy);
+      this.$root.$on('printPasteObj', this.handlePaste);
       document.body.addEventListener('keyup', this.handleDeleteKey);
     },
     /**
@@ -439,9 +538,9 @@ export default {
       this.toggleActiveObjects(false);
 
       this.setSelectedObjectId({ id: '' });
-      if (this.toolNameSelected === TOOL_NAME.ACTIONS) {
-        this.setToolNameSelected({ name: '' });
-      }
+      // if (this.toolNameSelected === TOOL_NAME.ACTIONS) {
+      //   this.setToolNameSelected({ name: '' });
+      // }
     },
     /**
      * Close text properties modal
@@ -506,12 +605,11 @@ export default {
       const targetType = target.get('type');
       this.setSelectedObjectId({ id });
       this.setBorderHighLight(target);
-
+      console.log('target', target);
       const objectData = this.selectedObject;
 
       if (targetType === 'group' && target.objectType === OBJECT_TYPE.TEXT) {
         const rectObj = target.getObjects(OBJECT_TYPE.RECT)[0];
-
         this.setBorderObject(rectObj, objectData);
       }
 
