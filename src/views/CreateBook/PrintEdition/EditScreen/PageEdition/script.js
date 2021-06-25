@@ -504,6 +504,7 @@ export default {
       );
       object.on('rotated', this.handleRotated);
       object.on('moved', this.handleMoved);
+      object.on('scaled', this.handleTextBoxScaled);
       this.addNewObject(data);
       const isConstrain = data.newObject.isConstrain;
       this.setCanvasUniformScaling(isConstrain);
@@ -677,15 +678,15 @@ export default {
           .getObjects()
           .find(o => o.id === s.id);
 
-        const { top, left, height, width, scaleX, scaleY } = fabricObject;
+        const { height, width, scaleX, scaleY, aCoords } = fabricObject;
 
         this.addNewObject({
           id: s.id,
           newObject: {
             ...s.object,
             coord: {
-              x: pxToIn(left),
-              y: pxToIn(top)
+              x: pxToIn(aCoords.tl.x),
+              y: pxToIn(aCoords.tl.y)
             },
             size: {
               width: pxToIn(width * scaleX),
@@ -788,8 +789,8 @@ export default {
       if (isEmpty(target)) return;
       const currentWidthInch = pxToIn(target.width * target.scaleX);
       const currentHeightInch = pxToIn(target.height * target.scaleY);
-      const currentXInch = pxToIn(target.left);
-      const currentYInch = pxToIn(target.top);
+      const currentXInch = pxToIn(target.aCoords.tl.x);
+      const currentYInch = pxToIn(target.aCoords.tl.y);
       const objectType = target.objectType;
       switch (objectType) {
         case OBJECT_TYPE.SHAPE: {
@@ -856,7 +857,7 @@ export default {
           .getObjects()
           .find(o => o.id === s.id);
 
-        const { top, left } = fabricObject;
+        const { x: left, y: top } = fabricObject.aCoords.tl;
 
         this.addNewObject({
           id: s.id,
@@ -1009,8 +1010,9 @@ export default {
     handleMoved(e) {
       const target = e.transform?.target;
       if (isEmpty(target)) return;
-      const currentXInch = pxToIn(target.left);
-      const currentYInch = pxToIn(target.top);
+      const { x: left, y: top } = target.aCoords.tl;
+      const currentXInch = pxToIn(left);
+      const currentYInch = pxToIn(top);
       const objectType = target.objectType;
 
       const prop = {
@@ -1115,6 +1117,25 @@ export default {
 
         if (isOn) this.$root.$on(eventName, events[eventName]);
       });
+    },
+    /**
+     * Callback function for handle scaled to update text's dimension
+     * @param {Object} e - Text Box
+     */
+    handleTextBoxScaled(e) {
+      const target = e.transform?.target;
+
+      if (isEmpty(target)) return;
+      const currentXInch = pxToIn(target.aCoords.tl.x);
+      const currentYInch = pxToIn(target.aCoords.tl.y);
+
+      const prop = {
+        coord: {
+          x: currentXInch,
+          y: currentYInch
+        }
+      };
+      this.changeTextProperties(prop);
     }
   }
 };

@@ -226,8 +226,14 @@ export const updateElement = (element, prop, canvas) => {
  * @param {Object}  prop    new property
  */
 export const setElementProp = (element, prop) => {
-  element.set(prop);
-
+  const isModifyPosition = !isNaN(prop?.left) || !isNaN(prop?.top);
+  if (!isModifyPosition) {
+    element.set(prop);
+  } else {
+    const x = prop?.left ?? element.aCoords.tl.x;
+    const y = prop?.top ?? element.aCoords.tl.y;
+    element.setPositionByOrigin({ x, y }, 'left', 'top');
+  }
   const useProp = cloneDeep(prop);
 
   RESTRICT_PROP_CHILD.forEach(rp => {
