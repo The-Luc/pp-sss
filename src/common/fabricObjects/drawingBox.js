@@ -77,3 +77,18 @@ export const toggleStroke = (rect, isShow = false) => {
     rect.canvas.renderAll();
   });
 };
+
+/**
+ * Toggle control visibility of canvas
+ * @param {Element} element Fabric object
+ * @param {Boolean} isConstrain Variable to decide show or hidden some controls visibility, default is false
+ */
+
+export const toggleControlsVisibility = (element, isConstrain = false) => {
+  element.setControlsVisibility({
+    mt: !isConstrain,
+    mb: !isConstrain,
+    ml: !isConstrain,
+    mr: !isConstrain
+  });
+};

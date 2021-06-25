@@ -1,8 +1,6 @@
 import { fabric } from 'fabric';
 import { cloneDeep, uniqueId } from 'lodash';
 import { TextElement } from '@/common/models';
-import Color from 'color';
-import { pxToIn } from '@/common/utils';
 import { applyShadowToObject } from './common';
 
 import {
@@ -12,6 +10,7 @@ import {
   isEmpty,
   ptToPx,
   inToPx,
+  pxToIn,
   getRectDashes
 } from '@/common/utils';
 
@@ -23,7 +22,7 @@ import {
   TEXT_VERTICAL_ALIGN,
   OBJECT_MIN_SIZE
 } from '@/common/constants';
-import { toggleStroke } from './drawingBox';
+import { toggleStroke, toggleControlsVisibility } from './drawingBox';
 
 /**
  * Handle creating a TextBox into canvas
@@ -39,10 +38,6 @@ export const createTextBox = (x, y, width, height, textProperties, sheetId) => {
     newObject: {
       ...(isHasTextId ? { ...textProperties } : { ...newText }),
       id,
-      size: {
-        width: isHasTextId ? textProperties.size.width : width,
-        height: isHasTextId ? textProperties.size.height : height
-      },
       coord: {
         x: pxToIn(isHasTextId ? textProperties?.coord?.x : x),
         y: pxToIn(isHasTextId ? textProperties?.coord?.y : y),
@@ -261,6 +256,14 @@ export const createTextBox = (x, y, width, height, textProperties, sheetId) => {
 
   addGroupEvents(group);
 
+  dataObject.newObject.size = {
+    width: pxToIn(group.width),
+    height: pxToIn(group.height)
+  };
+
+  dataObject.newObject.minHeight = pxToIn(text.height);
+  dataObject.newObject.minWidth = pxToIn(text.width);
+
   return { object: group, data: dataObject };
 };
 
@@ -458,14 +461,18 @@ const applyTextProperties = function(text, prop) {
   const target = canvas.getActiveObject();
   if (!isEmpty(prop['fontSize']) && target !== text) {
     const textData = {
-      top: text.height * -0.5,
-      left: text.width * -0.5
+      top: -text.height / 2,
+      left: -text.width / 2
     };
     text.set(textData);
   }
 
   if (!isEmpty(prop['shadow'])) {
     applyShadowToObject(text, prop['shadow']);
+  }
+
+  if (!isEmpty(textProp['width']) || !isEmpty(textProp['height'])) {
+    updateObjectPosition(text, textProp['width'], textProp['height']);
   }
 
   updateTextBoxBaseOnNewTextSize(text);
@@ -500,6 +507,24 @@ const updateObjectDimensionsIfSmaller = function(obj, width, height) {
 
   if (height > obj.height) {
     obj.set({ height: height });
+  }
+};
+
+/**
+ * Update a Fabric Object position base on width, height
+ * @param {Object} obj - the object to be update
+ * @param {Number} width - the base width to calculate
+ * @param {Number} height - the base height to calculate
+ */
+const updateObjectPosition = function(obj, width, height) {
+  if (isEmpty(obj)) return;
+
+  if (width) {
+    obj.set({ left: -width / 2 });
+  }
+
+  if (height) {
+    obj.set({ top: -height / 2 });
   }
 };
 
@@ -542,6 +567,10 @@ const applyTextRectProperties = function(rect, prop) {
     applyShadowToObject(rect, prop['shadow']);
   }
 
+  if (!isEmpty(rectProp['width']) || !isEmpty(rectProp['height'])) {
+    updateObjectPosition(rect, rectProp['width'], rectProp['height']);
+  }
+
   canvas.renderAll();
 };
 
@@ -557,6 +586,11 @@ const applyTextGroupProperties = function(textGroup, prop) {
   const canvas = textGroup.canvas;
 
   const textGroupProp = toFabricTextGroupProp(prop);
+
+  if (!isEmpty(prop['isConstrain'])) {
+    canvas.set({ uniformScaling: prop['isConstrain'] });
+    toggleControlsVisibility(textGroup, prop['isConstrain']);
+  }
 
   textGroup.set(textGroupProp);
 

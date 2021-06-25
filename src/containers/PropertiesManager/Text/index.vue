@@ -28,11 +28,17 @@
             :position="position"
             :min-position="minPosition"
             :max-position="maxPosition"
-            :current-arrange="currentArrange"
             :rotate-value="rotateValue"
+            :size-width="sizeWidth"
+            :size-height="sizeHeight"
+            :max-size="maxSize"
+            :min-height="minHeight"
+            :min-width="minWidth"
+            :is-constrain="isConstrain"
             :disabled="disabled"
             @changeFlip="changeFlip"
             @change="onChange"
+            @changeConstrain="onChangeConstrain"
           />
         </v-tab-item>
       </TabMenu>

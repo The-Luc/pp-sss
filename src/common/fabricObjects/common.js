@@ -29,6 +29,14 @@ export const DEFAULT_RULE_DATA = {
   },
   VERTICAL: {
     name: 'flipY'
+  },
+  WIDTH: {
+    name: 'width',
+    parse: value => inToPx(value)
+  },
+  HEIGHT: {
+    name: 'height',
+    parse: value => inToPx(value)
   }
 };
 

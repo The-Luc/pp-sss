@@ -30,13 +30,6 @@ export default {
     ...mapGetters({
       currentObject: PRINT_GETTERS.CURRENT_OBJECT
     }),
-    currentArrange() {
-      if (this.triggerChange) {
-        // just for trigger the change
-      }
-
-      return this.currentObject;
-    },
     rotateValue() {
       if (this.triggerChange) {
         // just for trigger the change
@@ -68,6 +61,38 @@ export default {
     },
     maxPosition() {
       return DEFAULT_TEXT.MAX_POSITION;
+    },
+    sizeWidth() {
+      if (this.triggerChange) {
+        // just for trigger the change
+      }
+      const size = this.selectObjectProp('size');
+
+      return size?.width || 0;
+    },
+    sizeHeight() {
+      if (this.triggerChange) {
+        // just for trigger the change
+      }
+      const size = this.selectObjectProp('size');
+
+      return size?.height || 0;
+    },
+    isConstrain() {
+      if (this.triggerChange) {
+        // just for trigger the change
+      }
+
+      return this.selectObjectProp('isConstrain');
+    },
+    maxSize() {
+      return DEFAULT_TEXT.MAX_SIZE;
+    },
+    minWidth() {
+      return this.selectObjectProp('minWidth') || DEFAULT_TEXT.MIN_SIZE;
+    },
+    minHeight() {
+      return this.selectObjectProp('minHeight') || DEFAULT_TEXT.MIN_SIZE;
     }
   },
   watch: {
@@ -134,7 +159,7 @@ export default {
       this.selectedBorder = data;
     },
     /**
-     * Handle update flip for Shape
+     * Handle update flip for Text object
      * @param {String} actionName action name
      */
     changeFlip(actionName) {
@@ -146,11 +171,21 @@ export default {
       });
     },
     /**
-     * Handle update size, position or rotate for Shape
+     * Handle update size, position or rotate for Text object
      * @param {Object} object object containing the value of update size, position or rotate
      */
     onChange(object) {
       this.$root.$emit('printChangeTextProperties', object);
+    },
+
+    /**
+     * Handle update constrain property for Text object
+     * @param {Boolean} isConstrain value for isConstrain property of Text object
+     */
+    onChangeConstrain(isConstrain) {
+      this.$root.$emit('printChangeTextProperties', {
+        isConstrain
+      });
     }
   }
 };

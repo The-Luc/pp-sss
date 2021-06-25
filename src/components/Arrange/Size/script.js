@@ -22,6 +22,14 @@ export default {
       type: Number,
       default: 100
     },
+    minWidth: {
+      type: Number,
+      default: 0
+    },
+    minHeight: {
+      type: Number,
+      default: 0
+    },
     disabled: {
       type: Boolean,
       default: false
@@ -54,7 +62,7 @@ export default {
       }
       const { isValid, value, isForce } = validateInputOption(
         val,
-        this.minSize,
+        this.minSize || this.minWidth,
         this.maxSize,
         2
       );
@@ -77,7 +85,7 @@ export default {
       }
       const { isValid, value } = validateInputOption(
         val,
-        this.minSize,
+        this.minSize || this.minHeight,
         this.maxSize,
         2
       );
