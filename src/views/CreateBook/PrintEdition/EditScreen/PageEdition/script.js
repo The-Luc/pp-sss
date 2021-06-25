@@ -111,7 +111,7 @@ export default {
       isOpenColorPicker: APP_GETTERS.IS_OPEN_COLOR_PICKER,
       selectedObject: PRINT_GETTERS.CURRENT_OBJECT,
       toolNameSelected: APP_GETTERS.SELECTED_TOOL_NAME,
-      currentBackgrounds: PRINT_GETTERS.BACKGROUNDS,
+      totalBackground: PRINT_GETTERS.TOTAL_BACKGROUND,
       propertiesObjectType: APP_GETTERS.PROPERTIES_OBJECT_TYPE
     }),
     isCover() {
@@ -920,7 +920,7 @@ export default {
 
       const fabricObjects = window.printCanvas.getObjects();
 
-      const numBackground = this.currentBackgrounds.length;
+      const numBackground = this.totalBackground;
 
       // if there is only one object -> return
       if (fabricObjects.length <= numBackground + 1) return;

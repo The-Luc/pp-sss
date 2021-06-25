@@ -13,6 +13,7 @@
         hide-details
         width="235"
         loader-height="6"
+        :disabled="disabled"
         @input="onChangeSlider"
       >
       </v-slider>
@@ -21,6 +22,7 @@
         :value="value"
         :max="max"
         :min="min"
+        :disabled="disabled"
         type="text"
         @change="onChangeInput"
       />

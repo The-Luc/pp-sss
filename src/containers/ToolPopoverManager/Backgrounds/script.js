@@ -91,13 +91,15 @@ export default {
       book: BOOK_GETTERS.BOOK_DETAIL,
       currentSheet: PRINT_GETTERS.CURRENT_SHEET,
       currentThemeId: BOOK_GETTERS.PRINT_THEME_SELECTED_ID,
-      sheetBackgrounds: PRINT_GETTERS.BACKGROUNDS
+      userSelectedBackground: PRINT_GETTERS.BACKGROUNDS_NO_LAYOUT
     }),
     isHalfSheet() {
       return isSheetHalfSheet(this.currentSheet);
     },
     alreadyAppliedBackground() {
-      return isEmpty(this.sheetBackgrounds) ? {} : this.sheetBackgrounds[0];
+      return isEmpty(this.userSelectedBackground)
+        ? {}
+        : this.userSelectedBackground[0];
     },
     selectedBackgroundType() {
       if (!isEmpty(this.chosenBackgroundType)) {
@@ -115,7 +117,8 @@ export default {
       }
 
       const backgroundType = Object.keys(BACKGROUND_TYPE).find(
-        k => BACKGROUND_TYPE[k].id === this.alreadyAppliedBackground.type
+        k =>
+          BACKGROUND_TYPE[k].id === this.alreadyAppliedBackground.backgroundType
       );
 
       if (isEmpty(backgroundType)) return { id: '' };
