@@ -8,7 +8,11 @@
 
     <Opacity :value="opacityValue" @change="onChangeOpacity" />
 
-    <Shadow :selected-shadow="selectedShadow" :options="shadowOptions" />
+    <Shadow
+      :current-shadow="currentShadow"
+      @change="onChangeShadow"
+      @changeDropShadow="onChangeDropShadow"
+    />
   </div>
 </template>
 
