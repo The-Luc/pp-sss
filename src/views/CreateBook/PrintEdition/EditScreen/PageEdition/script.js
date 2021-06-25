@@ -482,6 +482,7 @@ export default {
         this.pageSelected.id
       );
       object.on('rotated', this.handleRotated);
+      object.on('moved', this.handleMoved);
       this.addNewObject(data);
       const isConstrain = data.newObject.isConstrain;
       this.setCanvasUniformScaling(isConstrain);
@@ -1004,6 +1005,9 @@ export default {
           break;
         case OBJECT_TYPE.CLIP_ART:
           this.changeClipArtProperties(prop);
+          break;
+        case OBJECT_TYPE.TEXT:
+          this.changeTextProperties(prop);
           break;
         default:
           return;

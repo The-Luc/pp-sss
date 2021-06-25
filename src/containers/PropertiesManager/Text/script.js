@@ -50,6 +50,24 @@ export default {
       }
       const activeObj = window.printCanvas.getActiveObject();
       return !!activeObj.isEditing;
+    },
+    position() {
+      if (this.triggerChange) {
+        // just for trigger the change
+      }
+
+      const coord = this.selectObjectProp('coord');
+
+      return {
+        x: coord?.x || 0,
+        y: coord?.y || 0
+      };
+    },
+    minPosition() {
+      return DEFAULT_TEXT.MIN_POSITION;
+    },
+    maxPosition() {
+      return DEFAULT_TEXT.MAX_POSITION;
     }
   },
   watch: {

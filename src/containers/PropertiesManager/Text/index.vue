@@ -25,6 +25,9 @@
         </v-tab>
         <v-tab-item value="arrange">
           <ArrangeContent
+            :position="position"
+            :min-position="minPosition"
+            :max-position="maxPosition"
             :current-arrange="currentArrange"
             :rotate-value="rotateValue"
             :disabled="disabled"

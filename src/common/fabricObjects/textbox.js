@@ -1,6 +1,8 @@
 import { fabric } from 'fabric';
 import { cloneDeep, uniqueId } from 'lodash';
 import { TextElement } from '@/common/models';
+import Color from 'color';
+import { pxToIn } from '@/common/utils';
 import { applyShadowToObject } from './common';
 
 import {
@@ -42,8 +44,8 @@ export const createTextBox = (x, y, width, height, textProperties, sheetId) => {
         height: isHasTextId ? textProperties.size.height : height
       },
       coord: {
-        x: isHasTextId ? textProperties?.coord?.x : x,
-        y: isHasTextId ? textProperties?.coord?.y : y,
+        x: pxToIn(isHasTextId ? textProperties?.coord?.x : x),
+        y: pxToIn(isHasTextId ? textProperties?.coord?.y : y),
         rotation: isHasTextId
           ? textProperties?.coord?.rotation
           : newText.coord.rotation
@@ -569,6 +571,10 @@ const applyTextGroupProperties = function(textGroup, prop) {
 export const applyTextBoxProperties = function(textObject, prop) {
   const [rect, text] = getObjectsFromTextBox(textObject);
   applyTextGroupProperties(textObject, prop);
+
+  const isModifyPosition = !!(prop?.coord?.x || prop?.coord?.y);
+  if (isModifyPosition) return;
+
   applyTextProperties(text, prop);
   applyTextRectProperties(rect, prop);
 };
