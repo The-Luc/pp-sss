@@ -1,7 +1,7 @@
 import { fabric } from 'fabric';
 import { cloneDeep, uniqueId } from 'lodash';
 import { TextElement } from '@/common/models';
-import Color from 'color';
+import { applyShadowToObject } from './common';
 
 import {
   toFabricTextProp,
@@ -559,60 +559,6 @@ const applyTextGroupProperties = function(textGroup, prop) {
   textGroup.set(textGroupProp);
 
   canvas.renderAll();
-};
-
-/**
- * Calculate shadow base on config from user
- * @param {Boolean} dropShadow - have shadow or not
- * @param {Number} shadowBlur - the level of blur in pt
- * @param {Number} shadowOffset - the offset in pt
- * @param {Number} shadowOpacity - the opacity of the shadow
- * @param {Number} shadowAngle - the angle to apply shadow
- * @param {String} shadowColor - the color to apply to shadow
- * @returns {Object} the Fabric Shadow Object
- */
-const getShadowBaseOnConfig = function({
-  dropShadow,
-  shadowBlur,
-  shadowOffset,
-  shadowOpacity,
-  shadowAngle,
-  shadowColor
-}) {
-  if (!dropShadow) {
-    return null;
-  }
-
-  const clr = Color(shadowColor)
-    .alpha(shadowOpacity)
-    .toString();
-
-  const adjustedAngle = shadowAngle % 360;
-  const rad = (-1 * adjustedAngle * Math.PI) / 180;
-
-  const offsetX = shadowOffset * Math.sin(rad);
-  const offsetY = shadowOffset * Math.cos(rad);
-
-  const shadow = new fabric.Shadow({
-    color: clr,
-    offsetX: ptToPx(offsetX),
-    offsetY: ptToPx(offsetY),
-    blur: ptToPx(shadowBlur)
-  });
-
-  return shadow;
-};
-
-/**
- * Apply Shadow to Fabric Object
- * @param {Object} fabricObject - the object to be updated
- * @param {Object} shadowConfig - the shadow config by user, contains
- * { dropShadow, shadowBlur, shadowOffset, shadowOpacity, shadowAngle, shadowColor }
- */
-const applyShadowToObject = function(fabricObject, shadowConfig) {
-  if (isEmpty(fabricObject) || isEmpty(shadowConfig)) return;
-  const shadow = getShadowBaseOnConfig(shadowConfig);
-  fabricObject.set({ shadow });
 };
 
 /**

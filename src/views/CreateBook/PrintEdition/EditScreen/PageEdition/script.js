@@ -36,7 +36,8 @@ import {
 import {
   calcScaleElement,
   mappingElementProperties,
-  updateElement
+  updateElement,
+  applyShadowToObject
 } from '@/common/fabricObjects/common';
 
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
@@ -748,7 +749,20 @@ export default {
      * @param {Object} e - Element Fabric
      */
     handleScaled(e) {
+      const shadow = e.target?.shadow;
       const target = e.transform?.target;
+      if (!isEmpty(shadow)) {
+        const oldTarget = e.transform;
+        const { offsetX, offsetY } = shadow;
+        target.set({
+          shadow: {
+            ...shadow,
+            offsetX: (offsetX * oldTarget.scaleX) / target.scaleX,
+            offsetY: (offsetY * oldTarget.scaleY) / target.scaleY
+          }
+        });
+      }
+
       if (isEmpty(target)) return;
       const currentWidthInch = pxToIn(target.width * target.scaleX);
       const currentHeightInch = pxToIn(target.height * target.scaleY);
@@ -885,6 +899,10 @@ export default {
       this.setObjectProp({ prop });
 
       if (updateTriggerFn !== null) updateTriggerFn();
+
+      if (!isEmpty(prop['shadow'])) {
+        applyShadowToObject(element, prop['shadow']);
+      }
 
       updateElement(element, prop, window.printCanvas);
 
