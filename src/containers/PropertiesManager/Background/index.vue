@@ -1,17 +1,47 @@
 <template>
   <div class="background-properties-container">
-    <Properties title="Background Properties">
-      <OpacityProp :value="selectedOpacityValue" @change="onChangeOpacity" />
+    <Properties v-if="isSingle" title="Background Properties">
+      <PropertiesContent
+        :opacity="opacityValue.left"
+        :disabled="isDisabled.left"
+        :is-left="isLeft.left"
+        @opacityChange="onChangeOpacity"
+        @remove="onRemove"
+      />
+    </Properties>
 
-      <div class="group-container">
-        <FlipProp />
+    <Properties v-else title="Background Properties">
+      <TabMenu class="background-tabs" :active-tab-name="tabActiveName">
+        <v-tab href="#background-left">
+          Left Hand Page
+        </v-tab>
+        <v-tab-item value="background-left">
+          <PropertiesContent
+            :opacity="opacityValue.left"
+            :disabled="isDisabled.left"
+            :is-left="isLeft.left"
+            @opacityChange="onChangeOpacity"
+            @remove="onRemove"
+          />
+        </v-tab-item>
 
-        <v-divider vertical class="item-vertical"></v-divider>
-
-        <Remove />
-      </div>
+        <v-tab href="#background-right">
+          Right Hand Page
+        </v-tab>
+        <v-tab-item value="background-right">
+          <PropertiesContent
+            :opacity="opacityValue.right"
+            :disabled="isDisabled.right"
+            :is-left="isLeft.right"
+            @opacityChange="onChangeOpacity"
+            @remove="onRemove"
+          />
+        </v-tab-item>
+      </TabMenu>
     </Properties>
   </div>
 </template>
 
 <script src="./script.js" />
+
+<style lang="scss" src="./style.scss" />

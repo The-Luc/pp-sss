@@ -9,6 +9,10 @@ export default {
     value: {
       type: Number,
       required: true
+    },
+    disabled: {
+      type: Boolean,
+      default: false
     }
   },
   data() {

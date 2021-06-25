@@ -206,6 +206,8 @@ export const updateElement = (element, prop, canvas) => {
     canvas.set({ uniformScaling: prop.isConstrain });
   }
 
+  element.setCoords();
+
   canvas.renderAll();
 };
 
@@ -216,9 +218,9 @@ export const updateElement = (element, prop, canvas) => {
  * @param {Object}  prop    new property
  */
 export const setElementProp = (element, prop) => {
-  const useProp = cloneDeep(prop);
+  element.set(prop);
 
-  element.set(useProp);
+  const useProp = cloneDeep(prop);
 
   RESTRICT_PROP_CHILD.forEach(rp => {
     delete useProp[rp];

@@ -1,45 +1,112 @@
 import Properties from '@/components/Properties/BoxProperties';
-import OpacityProp from '@/components/Properties/Features/Opacity';
-import FlipProp from '@/components/Properties/Features/Flip';
-import Remove from './Remove';
+import TabMenu from '@/components/TabMenu';
+import PropertiesContent from './PropertiesContent';
 
-import { mapGetters } from 'vuex';
-
-import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
+import { useBackgroundProperties } from '@/hooks';
+import { isEmpty } from '@/common/utils';
 
 export default {
   components: {
     Properties,
-    OpacityProp,
-    FlipProp,
-    Remove
+    TabMenu,
+    PropertiesContent
   },
   data() {
     return {};
   },
+  setup() {
+    const { backgroundsProps, triggerChange } = useBackgroundProperties();
+
+    return {
+      backgroundsProps,
+      triggerChange
+    };
+  },
   computed: {
-    ...mapGetters({
-      selectedOpacity: PRINT_GETTERS.SELECT_PROP_CURRENT_OBJECT,
-      triggerChange: PRINT_GETTERS.TRIGGER_BACKGROUND_CHANGE
-    }),
-    selectedOpacityValue() {
+    isSingle() {
       if (this.triggerChange) {
         // just for trigger the change
       }
 
-      const opacity = this.selectedOpacity('opacity');
+      return isEmpty(this.backgroundsProps) || this.backgroundsProps.isSingle;
+    },
+    opacityValue() {
+      if (this.triggerChange) {
+        // just for trigger the change
+      }
 
-      return opacity || 0;
+      if (isEmpty(this.backgroundsProps)) return { left: 1 };
+
+      if (this.backgroundsProps.isSingle) {
+        return { left: this.backgroundsProps.left.opacity };
+      }
+
+      return {
+        left: this.backgroundsProps.left.opacity || 1,
+        right: this.backgroundsProps.right.opacity || 1
+      };
+    },
+    isDisabled() {
+      if (this.triggerChange) {
+        // just for trigger the change
+      }
+
+      if (isEmpty(this.backgroundsProps)) return { left: true };
+
+      if (this.backgroundsProps.isSingle) return { left: false };
+
+      return {
+        left: this.backgroundsProps.left.isEmpty,
+        right: this.backgroundsProps.right.isEmpty
+      };
+    },
+    isLeft() {
+      if (this.triggerChange) {
+        // just for trigger the change
+      }
+
+      if (isEmpty(this.backgroundsProps)) return { left: true };
+
+      if (this.backgroundsProps.isSingle) {
+        return { left: this.backgroundsProps.left.isLeft };
+      }
+
+      return {
+        left: true,
+        right: false
+      };
+    },
+    tabActiveName() {
+      if (this.triggerChange) {
+        // just for trigger the change
+      }
+
+      if (isEmpty(this.backgroundsProps) || this.backgroundsProps.isSingle) {
+        return '';
+      }
+
+      const position = this.backgroundsProps.left.isEmpty ? 'right' : 'left';
+
+      return `background-${position}`;
     }
   },
   methods: {
     /**
      * Fire when opacity is changed from opacity component
      *
-     * @param {Number}  opacity - the opacity data
+     * @param {Boolean} isLeft  is left background change
+     * @param {Number}  opacity the opacity data
      */
-    onChangeOpacity(opacity) {
-      this.$root.$emit('printChangeBackgroundProperties', { opacity });
+    onChangeOpacity({ isLeft, opacity }) {
+      //this.$root.$emit('printChangeBackgroundProperties', { opacity });
+    },
+    /**
+     * Fire when remove button is click
+     *
+     * @param {Boolean} isLeft  is left background change
+     */
+    onRemove(isLeft) {
+      //this.$root.$emit('printDeleteElements');
     }
   }
 };
