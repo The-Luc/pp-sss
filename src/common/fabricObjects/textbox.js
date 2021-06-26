@@ -39,8 +39,8 @@ export const createTextBox = (x, y, width, height, textProperties, sheetId) => {
       ...(isHasTextId ? { ...textProperties } : { ...newText }),
       id,
       coord: {
-        x: pxToIn(isHasTextId ? textProperties?.coord?.x : x),
-        y: pxToIn(isHasTextId ? textProperties?.coord?.y : y),
+        x: isHasTextId ? textProperties?.coord?.x : x,
+        y: isHasTextId ? textProperties?.coord?.y : y,
         rotation: isHasTextId
           ? textProperties?.coord?.rotation
           : newText.coord.rotation
@@ -259,6 +259,17 @@ export const createTextBox = (x, y, width, height, textProperties, sheetId) => {
   dataObject.newObject.size = {
     width: pxToIn(group.width),
     height: pxToIn(group.height)
+  };
+
+  dataObject.newObject.size = {
+    width: pxToIn(group.width),
+    height: pxToIn(group.height)
+  };
+
+  dataObject.newObject.coord = {
+    ...dataObject.newObject.coord,
+    x: pxToIn(group.aCoords.tl.x),
+    y: pxToIn(group.aCoords.tl.y)
   };
 
   dataObject.newObject.minHeight = pxToIn(text.height);
@@ -603,12 +614,31 @@ const applyTextGroupProperties = function(textGroup, prop) {
  * @param {Object} prop - the prop change
  */
 export const applyTextBoxProperties = function(textObject, prop) {
+  const isModifyPosition = !isNaN(prop?.coord?.x) || !isNaN(prop?.coord?.y);
+
+  if (isModifyPosition) {
+    applyTextBoxPosition(textObject, prop);
+    return;
+  }
+
   const [rect, text] = getObjectsFromTextBox(textObject);
   applyTextGroupProperties(textObject, prop);
-
-  const isModifyPosition = !!(prop?.coord?.x || prop?.coord?.y);
-  if (isModifyPosition) return;
-
   applyTextProperties(text, prop);
   applyTextRectProperties(rect, prop);
+};
+/**
+ * Apply Position Changed to Text Box
+ * @param {Object} textObject - the object to be updated
+ * @param {Object} prop - the prop change
+ */
+export const applyTextBoxPosition = function(textObject, prop) {
+  const x = !isNaN(prop?.coord?.x)
+    ? inToPx(prop?.coord?.x)
+    : textObject.aCoords.tl.x;
+  const y = !isNaN(prop?.coord?.y)
+    ? inToPx(prop?.coord?.y)
+    : textObject.aCoords.tl.y;
+  textObject.setPositionByOrigin({ x, y }, 'left', 'top');
+  textObject.setCoords();
+  window.printCanvas.renderAll();
 };
