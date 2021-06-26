@@ -1,89 +1,102 @@
 import { ShapeElement } from '@/common/models';
+import { SVG_FILL_MODE } from '@/common/constants';
 
-import SHAPE_1 from '@/assets/image/shapes/shape-1.svg';
-import SHAPE_2 from '@/assets/image/shapes/shape-2.svg';
-import SHAPE_3 from '@/assets/image/shapes/shape-3.svg';
-import SHAPE_4 from '@/assets/image/shapes/shape-4.svg';
-import SHAPE_5 from '@/assets/image/shapes/shape-5.svg';
-import SHAPE_6 from '@/assets/image/shapes/shape-6.svg';
-import SHAPE_7 from '@/assets/image/shapes/shape-7.svg';
-import SHAPE_8 from '@/assets/image/shapes/shape-8.svg';
-import SHAPE_9 from '@/assets/image/shapes/shape-9.svg';
-import SHAPE_10 from '@/assets/image/shapes/shape-10.svg';
-import SHAPE_11 from '@/assets/image/shapes/shape-11.svg';
-import SHAPE_12 from '@/assets/image/shapes/shape-12.svg';
+import LINE from '@/assets/image/shapes/line.svg';
+import ARROW from '@/assets/image/shapes/arrow.svg';
+import RECT from '@/assets/image/shapes/rect.svg';
+import RECT_ROUNDED from '@/assets/image/shapes/rect-rounded.svg';
+import CIRCLE from '@/assets/image/shapes/circle.svg';
+import TRIANGLE from '@/assets/image/shapes/triangle.svg';
+import STAR from '@/assets/image/shapes/star.svg';
+import PENTAGON from '@/assets/image/shapes/pentagon.svg';
+import HEXAGON from '@/assets/image/shapes/hexagon.svg';
+import OCTAGON from '@/assets/image/shapes/octagon.svg';
+import TRAPEZOID from '@/assets/image/shapes/trapezoid.svg';
+import RHOMBUS from '@/assets/image/shapes/rhombus.svg';
 
 export const SHAPES = [
   {
     ...ShapeElement,
     id: 0,
-    thumbnail: SHAPE_1,
-    pathData: SHAPE_1
+    thumbnail: LINE,
+    pathData: LINE,
+    fillMode: SVG_FILL_MODE.STROKE
   },
   {
     ...ShapeElement,
     id: 1,
-    thumbnail: SHAPE_2,
-    pathData: SHAPE_2
+    thumbnail: ARROW,
+    pathData: ARROW,
+    fillMode: SVG_FILL_MODE.FILL
   },
   {
     ...ShapeElement,
     id: 2,
-    thumbnail: SHAPE_3,
-    pathData: SHAPE_3
+    thumbnail: RECT,
+    pathData: RECT,
+    fillMode: SVG_FILL_MODE.FILL
   },
   {
     ...ShapeElement,
     id: 3,
-    thumbnail: SHAPE_4,
-    pathData: SHAPE_4
+    thumbnail: RECT_ROUNDED,
+    pathData: RECT_ROUNDED,
+    fillMode: SVG_FILL_MODE.FILL
   },
   {
     ...ShapeElement,
     id: 4,
-    thumbnail: SHAPE_5,
-    pathData: SHAPE_5
+    thumbnail: CIRCLE,
+    pathData: CIRCLE,
+    fillMode: SVG_FILL_MODE.FILL
   },
   {
     ...ShapeElement,
     id: 5,
-    thumbnail: SHAPE_6,
-    pathData: SHAPE_6
+    thumbnail: TRIANGLE,
+    pathData: TRIANGLE,
+    fillMode: SVG_FILL_MODE.FILL
   },
   {
     ...ShapeElement,
     id: 6,
-    thumbnail: SHAPE_7,
-    pathData: SHAPE_7
+    thumbnail: STAR,
+    pathData: STAR,
+    fillMode: SVG_FILL_MODE.FILL
   },
   {
     ...ShapeElement,
     id: 7,
-    thumbnail: SHAPE_8,
-    pathData: SHAPE_8
+    thumbnail: PENTAGON,
+    pathData: PENTAGON,
+    fillMode: SVG_FILL_MODE.FILL
   },
   {
     ...ShapeElement,
     id: 8,
-    thumbnail: SHAPE_9,
-    pathData: SHAPE_9
+    thumbnail: HEXAGON,
+    pathData: HEXAGON,
+    fillMode: SVG_FILL_MODE.FILL
   },
   {
     ...ShapeElement,
     id: 9,
-    thumbnail: SHAPE_10,
-    pathData: SHAPE_10
+    thumbnail: OCTAGON,
+    pathData: OCTAGON,
+    fillMode: SVG_FILL_MODE.FILL
   },
   {
     ...ShapeElement,
     id: 10,
-    thumbnail: SHAPE_11,
-    pathData: SHAPE_11
+    thumbnail: TRAPEZOID,
+    pathData: TRAPEZOID,
+    fillMode: SVG_FILL_MODE.FILL
   },
   {
     ...ShapeElement,
     id: 11,
-    thumbnail: SHAPE_12,
-    pathData: SHAPE_12
+    thumbnail: RHOMBUS,
+    pathData: RHOMBUS,
+    fillMode: SVG_FILL_MODE.FILL
   }
 ];
