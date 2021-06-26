@@ -303,25 +303,22 @@ export default {
     handleCopy() {
       const activeObj = window.printCanvas.getActiveObject();
       if (activeObj) {
-        const objects = activeObj._objects
-          ? [...activeObj._objects]
-          : [activeObj];
-        const jsonData = {
-          data: objects.map(obj => ({
+        let objects = [activeObj];
+        if (activeObj._objects) {
+          objects = [...activeObj._objects];
+          activeObj._restoreObjectsState();
+        }
+        const jsonData = objects.map(obj => ({
+          data: {
             ...this.currentObjects[obj.id],
             id: null
-          })),
-          fabric: activeObj.toJSON(['objectType', 'top', 'left']),
-        };
+          },
+          fabric: obj.toJSON(['objectType']),
+        }));
         const cacheData = {
           [COPY_OBJECT_KEY]: jsonData
         };
         console.log('cacheData', cacheData);
-        activeObj.clone(newObject => {
-          newObject.top += 50;
-          newObject.left += 50;
-          window.printCanvas.add(newObject);
-        });
         sessionStorage.setItem(COPY_OBJECT_KEY, JSON.stringify(cacheData));
       }
     },
