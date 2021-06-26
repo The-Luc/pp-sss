@@ -15,7 +15,7 @@ import { usePopoverCreationTool } from '@/hooks';
 import { cloneDeep } from 'lodash';
 import { isEmpty } from '@/common/utils';
 
-import { SHAPES } from '@/mock/shapes';
+import { SHAPES } from '@/common/constants/shapes';
 
 export default {
   components: {

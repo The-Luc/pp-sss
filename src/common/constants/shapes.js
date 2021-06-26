@@ -1,5 +1,5 @@
 import { ShapeElement } from '@/common/models';
-import { SVG_FILL_MODE } from '@/common/constants';
+import { SVG_FILL_MODE } from '@/common/constants/svgFillMode';
 
 import LINE from '@/assets/image/shapes/line.svg';
 import ARROW from '@/assets/image/shapes/arrow.svg';
