@@ -30,13 +30,14 @@ import {
   updatePrintBackground,
   getAdjustedObjectDimension,
   addPrintShapes,
-  addPrintClipArts
+  addPrintClipArts,
+  updateElement,
+  deleteObjectById
 } from '@/common/fabricObjects';
 
 import {
   calcScaleElement,
   mappingElementProperties,
-  updateElement,
   applyShadowToObject
 } from '@/common/fabricObjects/common';
 
@@ -202,7 +203,9 @@ export default {
       updateTriggerClipArtChange: PRINT_MUTATES.UPDATE_TRIGGER_CLIPART_CHANGE,
       reorderObjectIds: PRINT_MUTATES.REORDER_OBJECT_IDS,
       toggleActiveObjects: MUTATES.TOGGLE_ACTIVE_OBJECTS,
-      setPropertiesObjectType: MUTATES.SET_PROPERTIES_OBJECT_TYPE
+      setPropertiesObjectType: MUTATES.SET_PROPERTIES_OBJECT_TYPE,
+      setBackgroundProp: PRINT_MUTATES.SET_BACKGROUND_PROP,
+      deleteBackground: PRINT_MUTATES.DELETE_BACKGROUND
     }),
     /**
      * Function handle to get object(s) be copied from clipboard when user press Ctrl + V (Windows), Command + V (macOS), or from action menu
@@ -597,11 +600,18 @@ export default {
 
       const newBackground = cloneDeep(BackgroundElement);
 
-      merge(newBackground, background);
+      merge(newBackground, {
+        ...background,
+        backgroundId: background.id
+      });
 
-      newBackground.isLeft = isLeft;
-
-      this.addNewBackground({ background: newBackground });
+      this.addNewBackground({
+        background: {
+          ...newBackground,
+          id,
+          isLeftPage: isLeft
+        }
+      });
 
       addPrintBackground({
         id,
@@ -614,24 +624,40 @@ export default {
     /**
      * Event fire when user change any property of selected background
      *
-     * @param {Object}  prop  new prop
+     * @param {Boolean} isLeftBackground  is selected background is left
+     * @param {Object}  prop              new prop
      */
-    changeBackgroundProperties(prop) {
+    changeBackgroundProperties({ backgroundId, isLeftBackground, prop }) {
       if (isEmpty(prop)) {
         this.updateTriggerBackgroundChange();
 
         return;
       }
 
-      const background = window.printCanvas.getActiveObject();
+      const background = window.printCanvas
+        .getObjects()
+        .find(o => backgroundId === o.id);
 
       if (isEmpty(background)) return;
 
-      //this.setObjectProp({ id: this.selectedObjectId, property: prop });
+      this.setBackgroundProp({ isLeft: isLeftBackground, prop });
 
       this.updateTriggerBackgroundChange();
 
       updatePrintBackground(background, prop, window.printCanvas);
+    },
+    removeBackground({ backgroundId, isLeftBackground }) {
+      this.deleteBackground({ isLeft: isLeftBackground });
+
+      deleteObjectById([backgroundId], window.printCanvas);
+
+      if (this.totalBackground === 0) {
+        this.closeProperties();
+
+        this.setIsOpenProperties({ isOpen: false });
+
+        this.setPropertiesObjectType({ type: '' });
+      }
     },
     removeObject() {
       const ids = window.printCanvas.getActiveObjects().map(o => o.id);
@@ -1061,7 +1087,8 @@ export default {
 
       const backgroundEvents = {
         printAddBackground: this.addBackground,
-        printChangeBackgroundProperties: this.changeBackgroundProperties
+        printChangeBackgroundProperties: this.changeBackgroundProperties,
+        printDeleteBackground: this.removeBackground
       };
 
       const shapeEvents = {

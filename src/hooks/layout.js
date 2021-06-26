@@ -78,6 +78,7 @@ const handleDrawTextLayout = (textObject, targetCanvas, index) => {
  * @param {Number} index - Index/order of object
  */
 const handleDrawBackgroundLayout = (
+  id,
   backgroundUrl,
   position,
   targetCanvas,
@@ -92,6 +93,7 @@ const handleDrawBackgroundLayout = (
     function(img) {
       const { width, height } = targetCanvas;
       const zoom = targetCanvas.getZoom();
+      img.id = id;
       img.selectable = false; // Right now, can not select background from layout, todo later
       img.left = position === 'right' ? width / zoom / 2 : 0;
       img.scaleX = width / zoom / img.width / 2;
@@ -117,8 +119,14 @@ const handleDrawBackgroundLayout = (
 const handleDrawObjects = (objects, targetCanvas) => {
   objects.forEach((obj, index) => {
     if (obj.type === OBJECT_TYPE.BACKGROUND) {
-      const position = obj.isLeft ? 'left' : 'right';
-      handleDrawBackgroundLayout(obj.imageUrl, position, targetCanvas, index);
+      const position = obj.isLeftPage ? 'left' : 'right';
+      handleDrawBackgroundLayout(
+        obj.id,
+        obj.imageUrl,
+        position,
+        targetCanvas,
+        index
+      );
     }
 
     if (obj.type === OBJECT_TYPE.TEXT) {

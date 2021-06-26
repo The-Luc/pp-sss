@@ -107,10 +107,11 @@ export const ImageElement = {
 export const BackgroundElement = {
   ...BaseElement,
   type: OBJECT_TYPE.BACKGROUND,
+  backgroundId: '', // to store the id of background on menu
   categoryId: '',
   backgroundType: DEFAULT_BACKGROUND.BACKGROUND_TYPE,
   pageType: DEFAULT_BACKGROUND.PAGE_TYPE,
-  isLeft: DEFAULT_BACKGROUND.IS_LEFT,
+  isLeftPage: DEFAULT_BACKGROUND.IS_LEFT,
   name: '',
   thumbnail: '',
   imageUrl: ''
