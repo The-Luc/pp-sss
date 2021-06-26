@@ -202,48 +202,45 @@ export default {
       }
       const objectsClone = cloneDeep(objects);
       const { data } = objectsClone.splice(0, 1)[0];
+
+      const distance = sheetId === this.pageSelected.id ? 0.5 : 0;
+
+      const coord = {
+        ...data.coord,
+        x: data.coord.x + distance * this.countPaste,
+        y: data.coord.y + distance * this.countPaste
+      };
+
       if (data.type === OBJECT_TYPE.IMAGE) {
         const id = uniqueId();
         const image = await createImage({
           ...data,
           id,
-          coord: {
-            ...data.coord,
-            x: data.coord.x + 0.5 * this.countPaste,
-            y: data.coord.y + 0.5 * this.countPaste
-          }
+          coord
         });
         const objectToStore = {
           id,
           newObject: {
             ...data,
             id,
-            coord: {
-              ...data.coord,
-              x: data.coord.x + 0.5 * this.countPaste,
-              y: data.coord.y + 0.5 * this.countPaste
-            }
+            coord
           }
         };
         this.addImageToStore(objectToStore);
-        return await this.handlePasteItems(objectsClone, [
-          ...processedItems,
-          image
-        ]);
+        return await this.handlePasteItems(
+          objectsClone,
+          [...processedItems, image],
+          sheetId
+        );
       }
 
       if (data.type === OBJECT_TYPE.SHAPE) {
         const id = uniqueId();
-        const distance = sheetId === this.pageSelected.id ? 0.5 : 0;
         const ojbectData = {
           id,
           object: {
             ...data,
-            coord: {
-              ...data.coord,
-              x: data.coord.x + distance * this.countPaste,
-              y: data.coord.y + distance * this.countPaste
-            }
+            coord
           }
         };
         const eventListeners = {
@@ -267,18 +264,15 @@ export default {
           newObject: {
             ...data,
             id,
-            coord: {
-              ...data.coord,
-              x: data.coord.x + distance * this.countPaste,
-              y: data.coord.y + distance * this.countPaste
-            }
+            coord
           }
         };
         this.addShapesToStore(objectToStore);
-        return await this.handlePasteItems(objectsClone, [
-          ...processedItems,
-          svg[0]
-        ]);
+        return await this.handlePasteItems(
+          objectsClone,
+          [...processedItems, svg[0]],
+          sheetId
+        );
       }
 
       // if (data.type === OBJECT_TYPE.TEXT) {
