@@ -194,23 +194,37 @@ export default {
       toggleActiveObjects: MUTATES.TOGGLE_ACTIVE_OBJECTS,
       setPropertiesObjectType: MUTATES.SET_PROPERTIES_OBJECT_TYPE
     }),
-    async handlePasteSingleItem(objects, processedItems = []) {
+    async handlePasteItems(objects, processedItems = []) {
       if (objects.length === 0) {
         return processedItems;
       }
       const objectsClone = cloneDeep(objects);
       const { data } = objectsClone.splice(0, 1)[0];
       if (data.type === OBJECT_TYPE.IMAGE) {
+        const id = uniqueId();
         const image = await createImage({
           ...data,
-          id: uniqueId(),
+          id,
           coord: {
             ...data.coord,
             x: data.coord.x + 0.5,
             y: data.coord.y + 0.5
           }
         });
-        return await this.handlePasteSingleItem(objectsClone, [
+        const objectToStore = {
+          id,
+          newObject: {
+            ...data,
+            id,
+            coord: {
+              ...data.coord,
+              x: data.coord.x + 0.5,
+              y: data.coord.y + 0.5
+            }
+          }
+        };
+        this.addImageToStore(objectToStore);
+        return await this.handlePasteItems(objectsClone, [
           ...processedItems,
           image
         ]);
@@ -227,7 +241,7 @@ export default {
       if (!isEmpty(objects)) {
         const canvas = window.printCanvas;
         canvas.discardActiveObject();
-        const listPastedObjects = await this.handlePasteSingleItem(objects);
+        const listPastedObjects = await this.handlePasteItems(objects);
         window.printCanvas.add(...listPastedObjects);
         if (listPastedObjects.length === 1) {
           window.printCanvas.setActiveObject(listPastedObjects[0]);
@@ -240,7 +254,7 @@ export default {
       }
       setTimeout(() => {
         this.isProcessingPaste = false;
-      }, 1000);
+      }, 500);
     },
     /**
      * Function handle to set object(s) to clipboard when user press Ctrl + C (Windows), Command + C (macOS), or from action menu
