@@ -303,20 +303,23 @@ export default {
     handleCopy() {
       const activeObj = window.printCanvas.getActiveObject();
       if (activeObj) {
-        const objects = activeObj._objects
-          ? [...activeObj._objects]
-          : [activeObj];
-        const data = objects.map(obj => ({
-          fabric: obj.toJSON(['objectType', 'top', 'left']),
-          data: {
-            ...this.currentObjects[obj.id],
-            id: null
-          }
-        }));
+        let res = {
+          data: [],
+          fabric: {}
+        };
+        if (activeObj._objects) {
+          activeObj._objects.forEach(obj => {
+            res.data.push(this.currentObjects[obj.id]);
+          });
+        } else {
+          res.data = [this.currentObjects[activeObj.id]];
+        }
+        res.fabric = activeObj;
+
         const cacheData = {
           [COPY_OBJECT_KEY]: {
             // To keep objectType and id for our use
-            data
+            data: res
           }
         };
         console.log('cacheData', cacheData);
