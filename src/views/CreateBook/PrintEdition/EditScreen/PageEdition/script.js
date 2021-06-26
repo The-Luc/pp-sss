@@ -306,20 +306,22 @@ export default {
         const objects = activeObj._objects
           ? [...activeObj._objects]
           : [activeObj];
-        const data = objects.map(obj => ({
-          fabric: obj.toJSON(['objectType', 'top', 'left']),
-          data: {
+        const jsonData = {
+          data: objects.map(obj => ({
             ...this.currentObjects[obj.id],
             id: null
-          }
-        }));
+          })),
+          fabric: activeObj.toJSON(['objectType', 'top', 'left']),
+        };
         const cacheData = {
-          [COPY_OBJECT_KEY]: {
-            // To keep objectType and id for our use
-            data
-          }
+          [COPY_OBJECT_KEY]: jsonData
         };
         console.log('cacheData', cacheData);
+        activeObj.clone(newObject => {
+          newObject.top += 50;
+          newObject.left += 50;
+          window.printCanvas.add(newObject);
+        });
         sessionStorage.setItem(COPY_OBJECT_KEY, JSON.stringify(cacheData));
       }
     },
