@@ -22,14 +22,15 @@ import {
   OBJECT_MIN_SIZE
 } from '@/common/constants';
 import { toggleStroke } from './drawingBox';
+import { getAdjustedObjectDimension } from './common';
 
 /**
  * Handle creating a TextBox into canvas
  */
-export const createTextBox = (x, y, width, height, textProperties, sheetId) => {
+export const createTextBox = (x, y, width, height, textProperties) => {
   const newText = cloneDeep(TextElement);
   let isHasTextId = !!textProperties?.id;
-  const id = isHasTextId ? textProperties?.id : `${sheetId}-${uniqueId()}`;
+  const id = isHasTextId ? textProperties?.id : uniqueId();
 
   const dataObject = {
     id,
@@ -260,23 +261,6 @@ export const createTextBox = (x, y, width, height, textProperties, sheetId) => {
   addGroupEvents(group);
 
   return { object: group, data: dataObject };
-};
-
-/**
- * Get text dimensions { width, height } after auto adjusted by fabric
- * @param {Object} text - the fabric textbox object
- * @param {Number} targetWidth - the target width to compare
- * @param {Number} targetHeight - the target height to compare
- * @returns {Object} dimensions { width, height } that text can use
- */
-export const getAdjustedObjectDimension = function(
-  text,
-  targetWidth,
-  targetHeight
-) {
-  const width = text.width > targetWidth ? text.width : targetWidth;
-  const height = text.height > targetHeight ? text.height : targetHeight;
-  return { width, height };
 };
 
 /**

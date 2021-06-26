@@ -381,3 +381,20 @@ export const addPrintSvgs = async (
 
   canvas.renderAll();
 };
+
+/**
+ * Get text dimensions { width, height } after auto adjusted by fabric
+ * @param {Object} object - the fabric object
+ * @param {Number} targetWidth - the target width to compare
+ * @param {Number} targetHeight - the target height to compare
+ * @returns {Object} dimensions { width, height } that text can use
+ */
+export const getAdjustedObjectDimension = function(
+  object,
+  targetWidth,
+  targetHeight
+) {
+  const width = object.width > targetWidth ? object.width : targetWidth;
+  const height = object.height > targetHeight ? object.height : targetHeight;
+  return { width, height };
+};
