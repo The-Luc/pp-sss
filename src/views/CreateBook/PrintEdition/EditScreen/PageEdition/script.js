@@ -31,7 +31,7 @@ import {
   addPrintClipArts
 } from '@/common/fabricObjects';
 
-import { updateElement } from '@/common/fabricObjects/common';
+import { addPrintSvgs, updateElement } from '@/common/fabricObjects/common';
 
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
 import { GETTERS } from '@/store/modules/book/const';
@@ -93,7 +93,8 @@ export default {
       currentRect: null,
       rectObj: null,
       objectList: [],
-      isProcessingPaste: false
+      isProcessingPaste: false,
+      countPaste: 1
     };
   },
   computed: {
@@ -149,6 +150,7 @@ export default {
       async handler(val, oldVal) {
         if (val?.id !== oldVal?.id) {
           await this.getDataCanvas();
+          this.countPaste = 1;
           this.setSelectedObjectId({ id: '' });
           this.updateCanvasSize();
           resetObjects(window.printCanvas);
@@ -207,8 +209,8 @@ export default {
           id,
           coord: {
             ...data.coord,
-            x: data.coord.x + 0.5,
-            y: data.coord.y + 0.5
+            x: data.coord.x + 0.5 * this.countPaste,
+            y: data.coord.y + 0.5 * this.countPaste
           }
         });
         const objectToStore = {
@@ -218,8 +220,8 @@ export default {
             id,
             coord: {
               ...data.coord,
-              x: data.coord.x + 0.5,
-              y: data.coord.y + 0.5
+              x: data.coord.x + 0.5 * this.countPaste,
+              y: data.coord.y + 0.5 * this.countPaste
             }
           }
         };
@@ -229,6 +231,73 @@ export default {
           image
         ]);
       }
+
+      if (data.type === OBJECT_TYPE.SHAPE) {
+        const id = uniqueId();
+        const ojbectData = {
+          id,
+          object: {
+            ...data,
+            coord: {
+              ...data.coord,
+              x: data.coord.x + 0.5 * this.countPaste,
+              y: data.coord.y + 0.5 * this.countPaste
+            }
+          }
+        };
+        const eventListeners = {
+          scaling: this.handleShapeScaling,
+          scaled: this.handleShapeScaled,
+          rotated: this.handleRotated,
+          moved: this.handleShapeMoved
+        };
+        const svg = await addPrintSvgs(
+          [ojbectData],
+          'pathData',
+          data.size.height,
+          window.printCanvas,
+          isHalfSheet(this.pageSelected),
+          isHalfLeft(this.pageSelected),
+          eventListeners,
+          true
+        );
+        const objectToStore = {
+          id,
+          newObject: {
+            ...data,
+            id,
+            coord: {
+              ...data.coord,
+              x: data.coord.x + 0.5 * this.countPaste,
+              y: data.coord.y + 0.5 * this.countPaste
+            }
+          }
+        };
+        this.addShapesToStore(objectToStore);
+        return await this.handlePasteItems(objectsClone, [
+          ...processedItems,
+          svg[0]
+        ]);
+      }
+
+      // if (data.type === OBJECT_TYPE.TEXT) {
+      //   const id = uniqueId();
+      //   const textProperties = {
+      //     ...data,
+      //     id
+      //   };
+      //   const { object, data: objectData } = await createTextBox(
+      //     0,
+      //     0,
+      //     0,
+      //     0,
+      //     textProperties
+      //   );
+      //   return await this.handlePasteItems(objectsClone, [
+      //     ...processedItems,
+      //     object
+      //   ]);
+      // }
     },
     /**
      * Function handle to get object(s) be copied from clipboard when user press Ctrl + V (Windows), Command + V (macOS), or from action menu
@@ -251,6 +320,7 @@ export default {
           });
           window.printCanvas.setActiveObject(sel);
         }
+        this.countPaste += 1;
       }
       setTimeout(() => {
         this.isProcessingPaste = false;
@@ -262,6 +332,7 @@ export default {
     handleCopy() {
       const activeObj = window.printCanvas.getActiveObject();
       if (activeObj) {
+        this.countPaste = 1;
         const test = cloneDeep(activeObj);
         let objects = [test];
         if (test._objects) {
@@ -848,6 +919,9 @@ export default {
         }
       });
     },
+    addShapesToStore(newShape) {
+      this.addNewObject(newShape);
+    },
     /**
      * Adding shapes to canvas & store
      *
@@ -886,8 +960,7 @@ export default {
           .find(o => o.id === s.id);
 
         const { top, left } = fabricObject;
-
-        this.addNewObject({
+        const newShape = {
           id: s.id,
           newObject: {
             ...s.object,
@@ -896,7 +969,8 @@ export default {
               y: pxToIn(top)
             }
           }
-        });
+        };
+        this.addShapesToStore(newShape);
       });
 
       if (toBeAddedShapes.length === 1) {
