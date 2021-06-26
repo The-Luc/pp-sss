@@ -196,7 +196,7 @@ export default {
       toggleActiveObjects: MUTATES.TOGGLE_ACTIVE_OBJECTS,
       setPropertiesObjectType: MUTATES.SET_PROPERTIES_OBJECT_TYPE
     }),
-    async handlePasteItems(objects, processedItems = []) {
+    async handlePasteItems(objects, processedItems = [], sheetId) {
       if (objects.length === 0) {
         return processedItems;
       }
@@ -234,14 +234,15 @@ export default {
 
       if (data.type === OBJECT_TYPE.SHAPE) {
         const id = uniqueId();
+        const distance = sheetId === this.pageSelected.id ? 0.5 : 0;
         const ojbectData = {
           id,
           object: {
             ...data,
             coord: {
               ...data.coord,
-              x: data.coord.x + 0.5 * this.countPaste,
-              y: data.coord.y + 0.5 * this.countPaste
+              x: data.coord.x + distance * this.countPaste,
+              y: data.coord.y + distance * this.countPaste
             }
           }
         };
@@ -268,8 +269,8 @@ export default {
             id,
             coord: {
               ...data.coord,
-              x: data.coord.x + 0.5 * this.countPaste,
-              y: data.coord.y + 0.5 * this.countPaste
+              x: data.coord.x + distance * this.countPaste,
+              y: data.coord.y + distance * this.countPaste
             }
           }
         };
@@ -308,10 +309,16 @@ export default {
       const clipText = sessionStorage.getItem(COPY_OBJECT_KEY);
       const objects = parsePasteObject(clipText);
       if (!isEmpty(objects)) {
+        const { sheetId } = JSON.parse(clipText);
         const canvas = window.printCanvas;
         canvas.discardActiveObject();
-        const listPastedObjects = await this.handlePasteItems(objects);
+        const listPastedObjects = await this.handlePasteItems(
+          objects,
+          [],
+          sheetId
+        );
         window.printCanvas.add(...listPastedObjects);
+
         if (listPastedObjects.length === 1) {
           window.printCanvas.setActiveObject(listPastedObjects[0]);
         } else if (listPastedObjects.length > 1) {
@@ -321,6 +328,9 @@ export default {
           window.printCanvas.setActiveObject(sel);
         }
         this.countPaste += 1;
+        if (sheetId !== this.pageSelected.id) {
+          this.handleCopy();
+        }
       }
       setTimeout(() => {
         this.isProcessingPaste = false;
@@ -347,6 +357,7 @@ export default {
           fabric: obj.toJSON(['objectType'])
         }));
         const cacheData = {
+          sheetId: this.pageSelected.id,
           [COPY_OBJECT_KEY]: jsonData
         };
         sessionStorage.setItem(COPY_OBJECT_KEY, JSON.stringify(cacheData));
