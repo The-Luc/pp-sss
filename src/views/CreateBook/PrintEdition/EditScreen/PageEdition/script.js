@@ -19,7 +19,8 @@ import {
   isHalfLeft,
   pxToIn,
   inToPx,
-  resetObjects
+  resetObjects,
+  isHalfRight
 } from '@/common/utils';
 
 import {
@@ -53,7 +54,8 @@ import {
   OBJECT_TYPE,
   ARRANGE_SEND,
   DEFAULT_SHAPE,
-  COVER_TYPE
+  COVER_TYPE,
+  PRINT_PAGE_SIZE
 } from '@/common/constants';
 import SizeWrapper from '@/components/SizeWrapper';
 import PrintCanvasLines from './PrintCanvasLines';
@@ -196,21 +198,35 @@ export default {
       toggleActiveObjects: MUTATES.TOGGLE_ACTIVE_OBJECTS,
       setPropertiesObjectType: MUTATES.SET_PROPERTIES_OBJECT_TYPE
     }),
+    computedCoordObj(data, sheetId) {
+      const isFrontCover = isHalfRight(this.pageSelected);
+      const isBackCover = isHalfLeft(this.pageSelected);
+      const distance = sheetId === this.pageSelected.id ? 0.5 : 0;
+      const dataClone = cloneDeep(data);
+      if (isFrontCover && dataClone.coord.x < PRINT_PAGE_SIZE.WIDTH) {
+        dataClone.coord.x = PRINT_PAGE_SIZE.WIDTH + PRINT_PAGE_SIZE.WIDTH / 2;
+      }
+
+      if (isBackCover && dataClone.coord.x > PRINT_PAGE_SIZE.WIDTH) {
+        dataClone.coord.x = PRINT_PAGE_SIZE.WIDTH - PRINT_PAGE_SIZE.WIDTH / 2;
+      }
+
+      const coord = {
+        ...dataClone.coord,
+        x: dataClone.coord.x + distance * this.countPaste,
+        y: dataClone.coord.y + distance * this.countPaste
+      };
+      return coord;
+    },
     async handlePasteItems(objects, processedItems = [], sheetId) {
       if (objects.length === 0) {
         return processedItems;
       }
+
       const objectsClone = cloneDeep(objects);
       const { data } = objectsClone.splice(0, 1)[0];
 
-      const distance = sheetId === this.pageSelected.id ? 0.5 : 0;
-
-      const coord = {
-        ...data.coord,
-        x: data.coord.x + distance * this.countPaste,
-        y: data.coord.y + distance * this.countPaste
-      };
-
+      const coord = this.computedCoordObj(data, sheetId);
       if (data.type === OBJECT_TYPE.IMAGE) {
         const id = uniqueId();
         const image = await createImage({
@@ -322,9 +338,9 @@ export default {
           window.printCanvas.setActiveObject(sel);
         }
         this.countPaste += 1;
-        if (sheetId !== this.pageSelected.id) {
-          this.handleCopy();
-        }
+        // if (sheetId !== this.pageSelected.id && this.countPaste === 2) {
+        //   this.handleCopy();
+        // }
       }
       setTimeout(() => {
         this.isProcessingPaste = false;

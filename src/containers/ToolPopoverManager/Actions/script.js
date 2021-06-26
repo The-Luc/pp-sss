@@ -3,7 +3,7 @@ import { mapGetters } from 'vuex';
 import Item from './Item';
 import { ACTIONS } from '@/common/constants';
 import { GETTERS } from '@/store/modules/app/const';
-import { isFabricObject, isJsonString } from '@/common/utils';
+import { isEmpty, parsePasteObject } from '@/common/utils';
 import { COPY_OBJECT_KEY } from '@/common/constants/config';
 
 export default {
@@ -70,13 +70,12 @@ export default {
      */
     setEnablePaste() {
       const items = sessionStorage.getItem(COPY_OBJECT_KEY);
-      const isJson = isJsonString(items);
-      if (isJson) {
-        const isValid = isFabricObject(items);
-        this.items[1].disabled = !isValid;
-      } else {
+      if (!items) {
         this.items[1].disabled = true;
+        return;
       }
+      const objects = parsePasteObject(items);
+      this.items[1].disabled = isEmpty(objects);
     }
   }
 };
