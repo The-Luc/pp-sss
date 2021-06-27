@@ -78,7 +78,7 @@ const bg2 = {
   id: uniqueId(),
   pageType: 1,
   backgroundType: '',
-  isLeft: false,
+  isLeftPage: false,
   size: {
     width: 0,
     height: 0
@@ -201,7 +201,7 @@ const bgSinglePage1 = {
   id: uniqueId(),
   pageType: 1,
   backgroundType: '',
-  isLeft: false,
+  isLeftPage: false,
   size: {
     width: 0,
     height: 0
@@ -222,7 +222,7 @@ const bgSinglePage2 = {
   id: uniqueId(),
   pageType: 1,
   backgroundType: '',
-  isLeft: false,
+  isLeftPage: false,
   size: {
     width: 0,
     height: 0

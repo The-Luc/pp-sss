@@ -99,7 +99,10 @@ export default {
     alreadyAppliedBackground() {
       return isEmpty(this.userSelectedBackground)
         ? {}
-        : this.userSelectedBackground[0];
+        : {
+            ...this.userSelectedBackground[0],
+            id: this.userSelectedBackground[0].backgroundId
+          };
     },
     selectedBackgroundType() {
       if (!isEmpty(this.chosenBackgroundType)) {
@@ -346,7 +349,10 @@ export default {
             props: {
               numberPageLeft,
               numberPageRight,
-              background: cloneDeep(this.selectedBackground)
+              background: {
+                ...cloneDeep(this.selectedBackground),
+                opacity: 1
+              }
             }
           }
         });
@@ -356,37 +362,11 @@ export default {
         return;
       }
 
-      const isAppliedBackground = !isEmpty(this.alreadyAppliedBackground);
-
-      if (isAppliedBackground && isEmpty(this.chosenBackground)) {
-        this.onClose();
-
-        return;
-      }
-
-      if (isAppliedBackground) {
-        const { categoryId, type, pageType } = this.alreadyAppliedBackground;
-
-        const {
-          categoryId: chosenCategoryId,
-          type: chosenType,
-          pageType: chosenPageType
-        } = this.chosenBackground;
-
-        if (
-          categoryId === chosenCategoryId &&
-          type === chosenType &&
-          pageType === chosenPageType &&
-          this.alreadyAppliedBackground.id === this.chosenBackground.id
-        ) {
-          this.onClose();
-
-          return;
-        }
-      }
-
       this.$root.$emit('printAddBackground', {
-        background: cloneDeep(this.selectedBackground),
+        background: {
+          ...cloneDeep(this.selectedBackground),
+          opacity: 1
+        },
         isLeft: true
       });
 

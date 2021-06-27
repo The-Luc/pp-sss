@@ -532,3 +532,14 @@ export const mappingElementProperties = (
     }
   };
 };
+/**
+ * Delete object from canvas by id
+ *
+ * @param {Array}   ids     list of id of object to be removed
+ * @param {Object}  canvas  the canvas contain object
+ */
+export const deleteObjectById = (ids, canvas) => {
+  canvas.getObjects().forEach(o => {
+    if (ids.includes(o.id)) canvas.remove(o);
+  });
+};

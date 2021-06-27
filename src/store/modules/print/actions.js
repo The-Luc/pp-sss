@@ -93,7 +93,7 @@ export const actions = {
     }
 
     if (backgroundObjs.length === 1) {
-      backgroundObjs[0].isLeft = currentPosition === 'left';
+      backgroundObjs[0].isLeftPage = currentPosition === 'left';
       commit(PRINT._MUTATES.SET_BACKGROUNDS, { background: backgroundObjs[0] });
     }
 

@@ -2,6 +2,8 @@ import { TEXT_CASE } from './textCase';
 import { TEXT_HORIZONTAL_ALIGN, TEXT_VERTICAL_ALIGN } from './textAlign';
 import { BACKGROUND_TYPE, BACKGROUND_PAGE_TYPE } from './backgroundType';
 import { PRINT_PAGE_SIZE } from './canvas';
+import { SVG_FILL_MODE } from './svgFillMode';
+import { POSITION_ORIGIN } from './origin';
 
 export const OBJECT_MIN_SIZE = 0.5; // inch
 
@@ -20,6 +22,11 @@ export const DEFAULT_COORD = {
   X: PRINT_PAGE_SIZE.PDF_WIDTH * 0.5, // center
   Y: PRINT_PAGE_SIZE.PDF_HEIGHT * 0.5, // middle
   ROTATION: 0
+};
+
+export const DEFAULT_ORIGIN = {
+  X: POSITION_ORIGIN.LEFT,
+  Y: POSITION_ORIGIN.TOP
 };
 
 export const DEFAULT_SHADOW = {
@@ -56,8 +63,7 @@ export const DEFAULT_TEXT = {
   LINE_HEIGHT: 1,
   COLUMN: 1,
   ORIGIN: {
-    X: 0,
-    Y: 0
+    ...DEFAULT_ORIGIN
   },
   LOCK_UNI_SCALE: false,
   OPACITY: DEFAULT_PROP.OPACITY,
@@ -85,14 +91,14 @@ export const DEFAULT_CLIP_ART = {
   },
   COLOR: DEFAULT_PROP.COLOR,
   ORIGIN: {
-    X: 0,
-    Y: 0
+    ...DEFAULT_ORIGIN
   },
   OPACITY: DEFAULT_PROP.OPACITY,
   WIDTH: 3, // inch
   HEIGHT: 3, // inch
   MIN_SIZE: DEFAULT_PROP.MIN_SIZE,
   MAX_SIZE: DEFAULT_PROP.MAX_SIZE,
+  FILL_MODE: SVG_FILL_MODE.FILL,
   IS_CONSTRAIN: true,
   MIN_POSITION: DEFAULT_PROP.MIN_POSITION,
   MAX_POSITION: DEFAULT_PROP.MAX_POSITION,
@@ -125,5 +131,9 @@ export const DEFAULT_SHAPE = {
   MAX_POSITION: DEFAULT_PROP.MAX_POSITION,
   SHADOW: {
     ...DEFAULT_SHADOW
-  }
+  },
+  ORIGIN: {
+    ...DEFAULT_ORIGIN
+  },
+  FILL_MODE: SVG_FILL_MODE.FILL
 };
