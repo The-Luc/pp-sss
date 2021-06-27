@@ -5,6 +5,7 @@ import { ICON_LOCAL } from '@/common/constants';
 import {
   getSelectedOption,
   getValueInput,
+  pxToIn,
   validateInputOption
 } from '@/common/utils';
 
@@ -57,8 +58,19 @@ export default {
         this.items,
         'pt'
       );
+      const activeObj = window.printCanvas.getActiveObject();
+      const { x, y } = activeObj?.aCoords?.tl || {};
       const updateData = isValid ? { fontSize: value } : {};
       this.$root.$emit('printChangeTextProperties', updateData);
+      
+      if (x && y) {
+        this.$root.$emit('printChangeTextProperties', {
+          coord: {
+            x: pxToIn(x),
+            y: pxToIn(y)
+          }
+        });
+      }
     }
   }
 };

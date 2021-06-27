@@ -361,7 +361,7 @@ export const toFabricTextGroupProp = prop => {
       width: DEFAULT_RULE_DATA.WIDTH,
       height: DEFAULT_RULE_DATA.HEIGHT
     },
-    restrict: ['id', 'shadow', 'alignment']
+    restrict: ['id', 'shadow', 'alignment', 'fontSize']
   };
 
   return mapObject(prop, mapRules);
@@ -431,11 +431,35 @@ export const getRectDashes = (width, height, value, strokeWidth) => {
   const heightArray = getLineDashes(0, height, 0, 0);
   const res =
     value === 'round'
-      ? [0, scaleSize(strokeWidth * 2), 0, scaleSize(strokeWidth * 2)]
+      // ? [0, scaleSize(strokeWidth * 2), 0, scaleSize(strokeWidth * 2)]
+      ? getRoundDashes(width, height)
       : [widthArray, 0, heightArray, 0, widthArray, 0, heightArray];
   const dashArray = [].concat.apply([], res);
   return dashArray;
 };
+
+/**
+ * Calculate points of rounded border
+ *
+ * @param   {Number}  width  Width of element
+ * @param   {Number}  height  Height of element
+ */
+function getRoundDashes(width, height) {
+  const widthDash = [0, width / 5];
+  const heightDash = [0, height / 5];
+  return Array.from({ length: 4 }, (_, index) => {
+    if (index % 2) {
+      return Array.from({ length: 5 }).reduce((rs, item) => {
+        rs.push(...heightDash);
+        return rs;
+      }, []);
+    }
+    return Array.from({ length: 5 }).reduce((rs, item) => {
+      rs.push(...widthDash);
+      return rs
+    }, []);
+  });
+}
 
 // same as previous snippet except that it does return all the segment's dashes
 function getLineDashes(x1, y1, x2, y2) {
