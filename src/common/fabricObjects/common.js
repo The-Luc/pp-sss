@@ -115,7 +115,7 @@ export const toFabricShapeProp = (prop, originalElement) => {
         }
       }
     },
-    restrict: ['id', 'name', 'thumbnail', 'pathData', 'border', 'shadow']
+    restrict: ['id', 'name', 'thumbnail', 'pathData', 'border']
   };
 
   return mapObject(prop, mapRules);
@@ -156,7 +156,7 @@ export const toFabricClipArtProp = (prop, originalElement) => {
       horizontal: DEFAULT_RULE_DATA.HORIZONTAL,
       vertical: DEFAULT_RULE_DATA.VERTICAL
     },
-    restrict: ['id', 'name', 'thumbnail', 'border', 'shadow']
+    restrict: ['id', 'name', 'thumbnail', 'border']
   };
 
   return mapObject(prop, mapRules);

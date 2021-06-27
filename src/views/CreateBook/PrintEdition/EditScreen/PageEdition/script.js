@@ -19,7 +19,8 @@ import {
   isHalfLeft,
   pxToIn,
   resetObjects,
-  isHalfRight
+  isHalfRight,
+  inToPx
 } from '@/common/utils';
 
 import {
@@ -253,8 +254,7 @@ export default {
       }
 
       const objectsClone = cloneDeep(objects);
-      const { data } = objectsClone.splice(0, 1)[0];
-
+      const data = objectsClone.splice(0, 1)[0];
       const coord = this.computePastedObjectCoord(data, sheetId);
 
       if (data.type === OBJECT_TYPE.IMAGE) {
@@ -299,7 +299,7 @@ export default {
           moved: this.handleMoved
         };
 
-        const svg = await addPrintSvgs(
+        const [svg] = await addPrintSvgs(
           [ojbectData],
           data.type === OBJECT_TYPE.CLIP_ART ? 'vector' : 'pathData',
           data.size.height,
@@ -309,6 +309,7 @@ export default {
           eventListeners,
           true
         );
+
         const objectToStore = {
           id,
           newObject: {
@@ -318,31 +319,64 @@ export default {
           }
         };
         this.addObjectToStore(objectToStore);
+
+        const {
+          dropShadow,
+          shadowBlur,
+          shadowOffset,
+          shadowOpacity,
+          shadowAngle,
+          shadowColor
+        } = svg;
+        applyShadowToObject(svg, {
+          dropShadow,
+          shadowBlur,
+          shadowOffset,
+          shadowOpacity,
+          shadowAngle,
+          shadowColor
+        });
+
         return await this.handlePasteItems(
           objectsClone,
-          [...processedItems, svg[0]],
+          [...processedItems, svg],
           sheetId
         );
       }
 
-      // if (data.type === OBJECT_TYPE.TEXT) {
-      //   const id = uniqueId();
-      //   const textProperties = {
-      //     ...data,
-      //     id
-      //   };
-      //   const { object, data: objectData } = await createTextBox(
-      //     0,
-      //     0,
-      //     0,
-      //     0,
-      //     textProperties
-      //   );
-      //   return await this.handlePasteItems(objectsClone, [
-      //     ...processedItems,
-      //     object
-      //   ]);
-      // }
+      if (data.type === OBJECT_TYPE.TEXT) {
+        const id = uniqueId();
+        const {
+          size: { width, height }
+        } = data;
+        const textProperties = {
+          ...data,
+          id,
+          coord
+        };
+
+        const { object, data: objectData } = await createTextBox(
+          inToPx(coord.x),
+          inToPx(coord.y),
+          inToPx(width),
+          inToPx(height),
+          textProperties
+        );
+
+        object.on('rotated', this.handleRotated);
+        object.on('moved', this.handleMoved);
+        object.on('scaled', this.handleTextBoxScaled);
+
+        this.addObjectToStore(objectData);
+
+        applyShadowToObject(object, objectData.newObject.shadow);
+
+        return await this.handlePasteItems(
+          objectsClone,
+          [...processedItems, object],
+          sheetId
+        );
+      }
     },
     /**
      * Function handle active selection of object(s) pasted (single | multiplesingle)
@@ -395,18 +429,18 @@ export default {
         const activeObjClone = cloneDeep(activeObj);
         let objects = [activeObjClone];
         if (activeObjClone._objects) {
-          objects =
-            activeObjClone.objectType === OBJECT_TYPE.CLIP_ART
-              ? [activeObjClone]
-              : [...activeObjClone._objects];
+          const specialObject = [
+            OBJECT_TYPE.CLIP_ART,
+            OBJECT_TYPE.TEXT
+          ].includes(activeObjClone.objectType);
+          objects = specialObject
+            ? [activeObjClone]
+            : [...activeObjClone._objects];
           activeObjClone._restoreObjectsState();
         }
         const jsonData = objects.map(obj => ({
-          data: {
-            ...this.currentObjects[obj.id],
-            id: null
-          },
-          fabric: obj.toJSON(['objectType'])
+          ...this.currentObjects[obj.id],
+          id: null
         }));
         const cacheData = {
           sheetId: this.pageSelected.id,
@@ -493,8 +527,8 @@ export default {
             startDrawBox(window.printCanvas, e).then(
               ({ left, top, width, height }) => {
                 if (this.awaitingAdd === OBJECT_TYPE.TEXT) {
-                  left += width / 2;
-                  top += height / 2;
+                  // left += width / 2;
+                  // top += height / 2;
                   this.addText(left, top, width, height);
                 }
                 if (this.awaitingAdd === OBJECT_TYPE.IMAGE) {
