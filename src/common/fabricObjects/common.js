@@ -309,16 +309,13 @@ export const addSingleSvg = (
   svg,
   canvas,
   isAddedToSinglePage,
-  isPlaceInLeftPage,
-  isPaste = false
+  isPlaceInLeftPage
 ) => {
-  if (!isPaste) {
-    canvas.add(svg);
+  canvas.add(svg);
 
-    canvas.bringToFront(svg);
+  canvas.bringToFront(svg);
 
-    moveToCenterPage(svg, isAddedToSinglePage, isPlaceInLeftPage);
-  }
+  moveToCenterPage(svg, isAddedToSinglePage, isPlaceInLeftPage);
 };
 
 /**
@@ -394,7 +391,7 @@ export const addPrintSvgs = async (
   isAddedToSinglePage,
   isPlaceInLeftPage,
   eventListeners,
-  isPaste
+  isPaste = false
 ) => {
   const svgs = await Promise.all(
     svgObjects.map(s => {
@@ -411,15 +408,12 @@ export const addPrintSvgs = async (
   if (isEmpty(svgs) || svgs.length != svgObjects.length) return;
 
   svgs.forEach(s => addEventListeners(s, eventListeners));
-  svgs.length == 1
-    ? addSingleSvg(
-        svgs[0],
-        canvas,
-        isAddedToSinglePage,
-        isPlaceInLeftPage,
-        isPaste
-      )
-    : addMultiSvg(svgs, canvas, isAddedToSinglePage, isPlaceInLeftPage);
+
+  if (!isPaste) {
+    svgs.length == 1
+      ? addSingleSvg(svgs[0], canvas, isAddedToSinglePage, isPlaceInLeftPage)
+      : addMultiSvg(svgs, canvas, isAddedToSinglePage, isPlaceInLeftPage);
+  }
 
   canvas.renderAll();
 

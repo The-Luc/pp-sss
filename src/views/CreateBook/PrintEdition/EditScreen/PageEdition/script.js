@@ -31,15 +31,12 @@ import {
   addPrintShapes,
   addPrintClipArts,
   updateElement,
-  deleteObjectById
-} from '@/common/fabricObjects';
-
-import {
-  calcScaleElement,
-  mappingElementProperties,
+  deleteObjectById,
   applyShadowToObject,
-  addPrintSvgs
-} from '@/common/fabricObjects/common';
+  addPrintSvgs,
+  mappingElementProperties,
+  calcScaleElement
+} from '@/common/fabricObjects';
 
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
 import { GETTERS } from '@/store/modules/book/const';
@@ -245,6 +242,125 @@ export default {
       return coord;
     },
     /**
+     * Function handle create image object and add properties to store
+     * @param {Object} data - Image's properties
+     * @param {Object} coord - Image's coord
+     * @returns {Object} Image object
+     */
+    async handlePasteImage(data, coord) {
+      const id = uniqueId();
+      const image = await createImage({
+        ...data,
+        id,
+        coord
+      });
+      const objectToStore = {
+        id,
+        newObject: {
+          ...data,
+          id,
+          coord
+        }
+      };
+      this.addObjectToStore(objectToStore);
+      return image;
+    },
+    /**
+     * Function handle create text object and add properties to store
+     * @param {Object} data - Text's properties
+     * @param {Object} coord - Text's coord
+     * @returns {Object} Text object
+     */
+    async handlePasteText(data, coord) {
+      const id = uniqueId();
+      const {
+        size: { width, height }
+      } = data;
+      const textProperties = {
+        ...data,
+        id,
+        coord
+      };
+
+      const { object, data: objectData } = await createTextBox(
+        inToPx(coord.x),
+        inToPx(coord.y),
+        inToPx(width),
+        inToPx(height),
+        textProperties
+      );
+
+      object.on('rotated', this.handleRotated);
+      object.on('moved', this.handleMoved);
+      object.on('scaled', this.handleTextBoxScaled);
+
+      this.addObjectToStore(objectData);
+
+      applyShadowToObject(object, objectData.newObject.shadow);
+      return object;
+    },
+    /**
+     * Function handle create svg object and add properties to store
+     * @param {Object} data - Svg's properties
+     * @param {Object} coord - Svg's coord
+     * @returns {Object} Svg object
+     */
+    async handlePasteSvg(data, coord) {
+      const id = uniqueId();
+      const ojbectData = {
+        id,
+        object: {
+          ...data,
+          coord
+        }
+      };
+      const eventListeners = {
+        scaling: this.handleScaling,
+        scaled: this.handleScaled,
+        rotated: this.handleRotated,
+        moved: this.handleMoved
+      };
+
+      const [svg] = await addPrintSvgs(
+        [ojbectData],
+        data.type === OBJECT_TYPE.CLIP_ART ? 'vector' : 'pathData',
+        data.size.height,
+        window.printCanvas,
+        isHalfSheet(this.pageSelected),
+        isHalfLeft(this.pageSelected),
+        eventListeners,
+        true
+      );
+
+      const objectToStore = {
+        id,
+        newObject: {
+          ...data,
+          id,
+          coord
+        }
+      };
+      this.addObjectToStore(objectToStore);
+
+      const {
+        dropShadow,
+        shadowBlur,
+        shadowOffset,
+        shadowOpacity,
+        shadowAngle,
+        shadowColor
+      } = svg;
+      applyShadowToObject(svg, {
+        dropShadow,
+        shadowBlur,
+        shadowOffset,
+        shadowOpacity,
+        shadowAngle,
+        shadowColor
+      });
+      return svg;
+    },
+    /**
      * Funtion recursive handle create object(s) and add to store through data be copied and return list object(s) processed
      * @param {Array} objects - List object(s) copied
      * @param {Array} processedItems - List object(s) pasted
@@ -261,21 +377,8 @@ export default {
       const coord = this.computePastedObjectCoord(data, sheetId);
 
       if (data.type === OBJECT_TYPE.IMAGE) {
-        const id = uniqueId();
-        const image = await createImage({
-          ...data,
-          id,
-          coord
-        });
-        const objectToStore = {
-          id,
-          newObject: {
-            ...data,
-            id,
-            coord
-          }
-        };
-        this.addObjectToStore(objectToStore);
+        const image = await this.handlePasteImage(data, coord);
+
         return await this.handlePasteItems(
           objectsClone,
           [...processedItems, image],
@@ -287,58 +390,7 @@ export default {
         data.type === OBJECT_TYPE.CLIP_ART ||
         data.type === OBJECT_TYPE.SHAPE
       ) {
-        const id = uniqueId();
-        const ojbectData = {
-          id,
-          object: {
-            ...data,
-            coord
-          }
-        };
-        const eventListeners = {
-          scaling: this.handleScaling,
-          scaled: this.handleScaled,
-          rotated: this.handleRotated,
-          moved: this.handleMoved
-        };
-
-        const [svg] = await addPrintSvgs(
-          [ojbectData],
-          data.type === OBJECT_TYPE.CLIP_ART ? 'vector' : 'pathData',
-          data.size.height,
-          window.printCanvas,
-          isHalfSheet(this.pageSelected),
-          isHalfLeft(this.pageSelected),
-          eventListeners,
-          true
-        );
-
-        const objectToStore = {
-          id,
-          newObject: {
-            ...data,
-            id,
-            coord
-          }
-        };
-        this.addObjectToStore(objectToStore);
-
-        const {
-          dropShadow,
-          shadowBlur,
-          shadowOffset,
-          shadowOpacity,
-          shadowAngle,
-          shadowColor
-        } = svg;
-        applyShadowToObject(svg, {
-          dropShadow,
-          shadowBlur,
-          shadowOffset,
-          shadowOpacity,
-          shadowAngle,
-          shadowColor
-        });
+        const svg = await this.handlePasteSvg(data, coord);
 
         return await this.handlePasteItems(
           objectsClone,
@@ -348,35 +400,11 @@ export default {
       }
 
       if (data.type === OBJECT_TYPE.TEXT) {
-        const id = uniqueId();
-        const {
-          size: { width, height }
-        } = data;
-        const textProperties = {
-          ...data,
-          id,
-          coord
-        };
-
-        const { object, data: objectData } = await createTextBox(
-          inToPx(coord.x),
-          inToPx(coord.y),
-          inToPx(width),
-          inToPx(height),
-          textProperties
-        );
-
-        object.on('rotated', this.handleRotated);
-        object.on('moved', this.handleMoved);
-        object.on('scaled', this.handleTextBoxScaled);
-
-        this.addObjectToStore(objectData);
-
-        applyShadowToObject(object, objectData.newObject.shadow);
+        const text = await this.handlePasteText(data, coord);
 
         return await this.handlePasteItems(
           objectsClone,
-          [...processedItems, object],
+          [...processedItems, text],
           sheetId
         );
       }
@@ -450,40 +478,44 @@ export default {
         this.setObjectPastetActiveSelection(listPastedObjects, canvas);
         this.countPaste += 1;
       }
+
       setTimeout(() => {
         this.isProcessingPaste = false;
-      }, 500);
+      }, 1000);
     },
     /**
      * Function handle to set object(s) to clipboard when user press Ctrl + C (Windows), Command + C (macOS), or from action menu
      */
     handleCopy() {
       const activeObj = window.printCanvas.getActiveObject();
-      if (activeObj) {
-        this.countPaste = 1;
-        this.isProcessingPaste = false;
-        const activeObjClone = cloneDeep(activeObj);
-        let objects = [activeObjClone];
-        if (activeObjClone._objects) {
-          const specialObject = [
-            OBJECT_TYPE.CLIP_ART,
-            OBJECT_TYPE.TEXT
-          ].includes(activeObjClone.objectType);
-          objects = specialObject
-            ? [activeObjClone]
-            : [...activeObjClone._objects];
-          activeObjClone._restoreObjectsState();
-        }
-        const jsonData = objects.map(obj => ({
-          ...this.currentObjects[obj.id],
-          id: null
-        }));
-        const cacheData = {
-          sheetId: this.pageSelected.id,
-          [COPY_OBJECT_KEY]: jsonData
-        };
-        sessionStorage.setItem(COPY_OBJECT_KEY, JSON.stringify(cacheData));
+
+      if (!activeObj) return;
+
+      this.countPaste = 1;
+      this.isProcessingPaste = false;
+      const activeObjClone = cloneDeep(activeObj);
+      let objects = [activeObjClone];
+
+      if (activeObjClone._objects) {
+        const specialObject = [OBJECT_TYPE.CLIP_ART, OBJECT_TYPE.TEXT].includes(
+          activeObjClone.objectType
+        );
+        objects = specialObject
+          ? [activeObjClone]
+          : [...activeObjClone._objects];
+        activeObjClone._restoreObjectsState();
       }
+
+      const jsonData = objects.map(obj => ({
+        ...this.currentObjects[obj.id],
+        id: null
+      }));
+
+      const cacheData = {
+        sheetId: this.pageSelected.id,
+        [COPY_OBJECT_KEY]: jsonData
+      };
+      sessionStorage.setItem(COPY_OBJECT_KEY, JSON.stringify(cacheData));
     },
     /**
      * Auto resize canvas to fit the container size
