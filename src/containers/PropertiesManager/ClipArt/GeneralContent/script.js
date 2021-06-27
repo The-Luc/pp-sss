@@ -12,24 +12,6 @@ export default {
     Shadow,
     Opacity
   },
-  data() {
-    return {
-      shadowOptions: [
-        {
-          name: 'No Shadow',
-          value: 'noShadow'
-        },
-        {
-          name: 'Drop Shadow',
-          value: 'dropShadow'
-        }
-      ],
-      selectedShadow: {
-        name: 'No Shadow',
-        value: 'noShadow'
-      }
-    };
-  },
   setup() {
     const {
       getProperty,
@@ -66,9 +48,42 @@ export default {
     },
     isAllowFillColor() {
       return !this.getProperty('isColorful');
+    },
+    currentShadow() {
+      if (this.triggerChange) {
+        // just for trigger the change
+      }
+
+      return this.getProperty('shadow');
     }
   },
   methods: {
+    /**
+     * Emit Shadow Config change to root
+     * @param {Object} shadowCfg - the new shadow configs
+     */
+    emitChangeShadow(shadowCfg) {
+      this.$root.$emit('printChangeClipArtProperties', {
+        shadow: {
+          ...this.currentShadow,
+          ...shadowCfg
+        }
+      });
+    },
+    /**
+     * Handle update shadow config base on enable/disable of dropShadow
+     * @param {String} value Value user selected
+     */
+    onChangeDropShadow(value) {
+      this.emitChangeShadow(value);
+    },
+    /**
+     * Handle update shadow config after user select shadow value
+     * @param {Object} object the value of shadow will be change
+     */
+    onChangeShadow(object) {
+      this.emitChangeShadow(object);
+    },
     /**
      * Receive value opacity from children
      * @param   {Number}  opacity Value user input
@@ -85,13 +100,6 @@ export default {
         color,
         stroke: color
       });
-    },
-    /**
-     * Receive value shadow from children
-     * @param   {Object}  value Value user selecte
-     */
-    onChangeShadow(value) {
-      this.selectedShadow = value;
     }
   }
 };

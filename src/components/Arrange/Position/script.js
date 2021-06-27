@@ -45,7 +45,10 @@ export default {
      * @param {Number}  val position x value user entered
      */
     onChangeValueX(val) {
-      const { isValid, value } = validateInputOption(
+      if (val == this.valueXPt) {
+        this.onEsc();
+      }
+      const { isValid, value, isForce } = validateInputOption(
         val,
         this.min,
         this.max,
@@ -53,8 +56,11 @@ export default {
       );
       if (isValid) {
         this.$emit('change', { coord: { x: splitNumberByDecimal(value) } });
+        if (isForce) {
+          this.forceRenderComponent();
+        }
       } else {
-        this.componentKey = !this.componentKey;
+        this.forceRenderComponent();
       }
     },
     /**
@@ -62,7 +68,10 @@ export default {
      * @param {Number}  val position y value user entered
      */
     onChangeValueY(val) {
-      const { isValid, value } = validateInputOption(
+      if (val == this.valueYPt) {
+        this.onEsc();
+      }
+      const { isValid, value, isForce } = validateInputOption(
         val,
         this.min,
         this.max,
@@ -70,9 +79,25 @@ export default {
       );
       if (isValid) {
         this.$emit('change', { coord: { y: splitNumberByDecimal(value) } });
+        if (isForce) {
+          this.forceRenderComponent();
+        }
       } else {
-        this.componentKey = !this.componentKey;
+        this.forceRenderComponent();
       }
+    },
+    /**
+     * Trigger render component by increase component key
+     * Maybe improve later for performance
+     */
+    forceRenderComponent() {
+      this.componentKey = !this.componentKey;
+    },
+    /**
+     * Revert to previous data and un focus input element
+     */
+    onEsc() {
+      this.forceRenderComponent();
     }
   }
 };

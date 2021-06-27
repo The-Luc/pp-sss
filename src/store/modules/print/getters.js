@@ -1,4 +1,7 @@
-import { isEmpty } from '@/common/utils';
+import { isEmpty, isHalfSheet, isHalfLeft } from '@/common/utils';
+
+import { BACKGROUND_PAGE_TYPE } from '@/common/constants';
+
 import PRINT from './const';
 
 export const getters = {
@@ -7,10 +10,12 @@ export const getters = {
 
     return isEmpty(currentSheet) ? {} : currentSheet;
   },
-  [PRINT._GETTERS.BACKGROUNDS]: ({ background }) => {
-    return [background.left, background.right].filter(bg => {
+  [PRINT._GETTERS.TOTAL_BACKGROUND]: ({ background }) => {
+    const backgrounds = [background.left, background.right].filter(bg => {
       return !isEmpty(bg);
     });
+
+    return backgrounds.length;
   },
   [PRINT._GETTERS.CURRENT_OBJECT]: ({ objects, currentObjectId }) => {
     const currentObject = objects[currentObjectId];
@@ -76,5 +81,49 @@ export const getters = {
   },
   [PRINT._GETTERS.GET_SHEETS]: ({ sheets }) => {
     return sheets;
+  },
+  [PRINT._GETTERS.BACKGROUNDS_NO_LAYOUT]: ({ background }) => {
+    return [background.left, background.right].filter(bg => {
+      return !isEmpty(bg.backgroundType);
+    });
+  },
+  [PRINT._GETTERS.BACKGROUNDS_PROPERTIES]: ({
+    currentSheetId,
+    sheets,
+    background
+  }) => {
+    const existedBackground = [background.left, background.right].filter(
+      bg => !isEmpty(bg)
+    );
+
+    if (isEmpty(existedBackground)) {
+      return { isSingle: true, isEmpty: true };
+    }
+
+    const isFull =
+      background.left.pageType === BACKGROUND_PAGE_TYPE.FULL_PAGE.id;
+
+    if (isFull) {
+      return {
+        isSingle: true,
+        background: background.left
+      };
+    }
+
+    const isHalf = isHalfSheet(sheets[currentSheetId]);
+    const position = isHalfLeft(sheets[currentSheetId]) ? 'left' : 'right';
+
+    if (isHalf) {
+      return {
+        isSingle: true,
+        background: background[position]
+      };
+    }
+
+    return {
+      isSingle: false,
+      left: background.left,
+      right: background.right
+    };
   }
 };

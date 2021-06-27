@@ -29,12 +29,12 @@ export const BaseElement = {
     style: ''
   },
   shadow: {
-    enabled: false,
-    color: DEFAULT_PROP.COLOR,
-    offset: 0,
-    opacity: DEFAULT_PROP.OPACITY,
-    angle: 0,
-    blur: 0
+    dropShadow: false,
+    shadowBlur: DEFAULT_PROP.COLOR,
+    shadowOffset: 0,
+    shadowOpacity: DEFAULT_PROP.OPACITY,
+    shadowAngle: 0,
+    shadowColor: 0
   },
   flip: {
     horizontal: false,
@@ -107,10 +107,11 @@ export const ImageElement = {
 export const BackgroundElement = {
   ...BaseElement,
   type: OBJECT_TYPE.BACKGROUND,
+  backgroundId: '', // to store the id of background on menu
   categoryId: '',
   backgroundType: DEFAULT_BACKGROUND.BACKGROUND_TYPE,
   pageType: DEFAULT_BACKGROUND.PAGE_TYPE,
-  isLeft: DEFAULT_BACKGROUND.IS_LEFT,
+  isLeftPage: DEFAULT_BACKGROUND.IS_LEFT,
   name: '',
   thumbnail: '',
   imageUrl: ''
@@ -123,11 +124,20 @@ export const ClipArtElement = {
     width: DEFAULT_CLIP_ART.WIDTH,
     height: DEFAULT_CLIP_ART.HEIGHT
   },
+  shadow: {
+    dropShadow: DEFAULT_CLIP_ART.SHADOW.DROP_SHADOW,
+    shadowBlur: DEFAULT_CLIP_ART.SHADOW.BLUR,
+    shadowOffset: DEFAULT_CLIP_ART.SHADOW.OFFSET,
+    shadowOpacity: DEFAULT_CLIP_ART.SHADOW.OPACITY,
+    shadowAngle: DEFAULT_CLIP_ART.SHADOW.ANGLE,
+    shadowColor: DEFAULT_CLIP_ART.SHADOW.COLOR
+  },
   category: '',
   name: '',
   thumbnail: '',
   vector: '', // imgUrl
-  isColorful: false
+  isColorful: false,
+  isConstrain: DEFAULT_CLIP_ART.IS_CONSTRAIN
 };
 
 export const ShapeElement = {
@@ -136,6 +146,14 @@ export const ShapeElement = {
   size: {
     width: DEFAULT_SHAPE.WIDTH,
     height: DEFAULT_SHAPE.HEIGHT
+  },
+  shadow: {
+    dropShadow: DEFAULT_SHAPE.SHADOW.DROP_SHADOW,
+    shadowBlur: DEFAULT_SHAPE.SHADOW.BLUR,
+    shadowOffset: DEFAULT_SHAPE.SHADOW.OFFSET,
+    shadowOpacity: DEFAULT_SHAPE.SHADOW.OPACITY,
+    shadowAngle: DEFAULT_SHAPE.SHADOW.ANGLE,
+    shadowColor: DEFAULT_SHAPE.SHADOW.COLOR
   },
   name: '',
   thumbnail: '',

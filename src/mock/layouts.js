@@ -66,6 +66,7 @@ const bg1 = {
   ...BackgroundElement,
   id: uniqueId(),
   pageType: 1,
+  backgroundType: '',
   category: 'Cover',
   name: 'watercolorbackground.jpg',
   thumbnail: BG_1,
@@ -76,7 +77,8 @@ const bg2 = {
   ...BackgroundElement,
   id: uniqueId(),
   pageType: 1,
-  isLeft: false,
+  backgroundType: '',
+  isLeftPage: false,
   size: {
     width: 0,
     height: 0
@@ -198,7 +200,8 @@ const bgSinglePage1 = {
   ...BackgroundElement,
   id: uniqueId(),
   pageType: 1,
-  isLeft: false,
+  backgroundType: '',
+  isLeftPage: false,
   size: {
     width: 0,
     height: 0
@@ -218,7 +221,8 @@ const bgSinglePage2 = {
   ...BackgroundElement,
   id: uniqueId(),
   pageType: 1,
-  isLeft: false,
+  backgroundType: '',
+  isLeftPage: false,
   size: {
     width: 0,
     height: 0

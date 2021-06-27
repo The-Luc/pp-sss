@@ -65,10 +65,12 @@ export const mutations = {
     if (isEmpty(background)) {
       state.background.left = {};
       state.background.right = {};
+
       return;
     }
+
     if (isFullBackground(background)) {
-      background.isLeft = true;
+      background.isLeftPage = true;
 
       state.background.left = background;
       state.background.right = {};
@@ -77,7 +79,11 @@ export const mutations = {
     }
 
     if (!isHalfSheet(state.sheets[state.currentSheetId])) {
-      const position = background.isLeft ? 'left' : 'right';
+      const position = background.isLeftPage ? 'left' : 'right';
+
+      if (isFullBackground(state.background.left)) {
+        state.background.left = {};
+      }
 
       state.background[position] = background;
 
@@ -85,7 +91,8 @@ export const mutations = {
     }
 
     const isSheetLeft = isHalfLeft(state.sheets[state.currentSheetId]);
-    background.isLeft = isSheetLeft;
+
+    background.isLeftPage = isSheetLeft;
 
     state.background.left = isSheetLeft ? background : {};
     state.background.right = isSheetLeft ? {} : background;
@@ -109,6 +116,7 @@ export const mutations = {
     const currentProps = cloneDeep(state.objects[id]);
 
     merge(currentProps, prop);
+
     state.objects[id] = currentProps;
   },
   /**
@@ -173,5 +181,19 @@ export const mutations = {
         delete state.objects[obj.id];
       }
     });
+  },
+  [PRINT._MUTATES.SET_BACKGROUND_PROP](state, { isLeft, prop }) {
+    const position = isLeft ? 'left' : 'right';
+
+    const currentProps = cloneDeep(state.background[position]);
+
+    merge(currentProps, prop);
+
+    state.background[position] = currentProps;
+  },
+  [PRINT._MUTATES.DELETE_BACKGROUND](state, { isLeft }) {
+    const position = isLeft ? 'left' : 'right';
+
+    state.background[position] = {};
   }
 };

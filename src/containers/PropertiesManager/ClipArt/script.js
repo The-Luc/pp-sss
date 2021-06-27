@@ -2,8 +2,9 @@ import Properties from '@/components/Properties/BoxProperties';
 import TabMenu from '@/components/TabMenu';
 import GeneralContent from './GeneralContent';
 import ArrangeContent from '@/components/Arrange';
-
+import { DEFAULT_CLIP_ART } from '@/common/constants';
 import { useClipArtProperties } from '@/hooks';
+import { computedObjectSize } from '@/common/utils';
 
 export default {
   setup() {
@@ -71,6 +72,28 @@ export default {
         x: coord?.x || 0,
         y: coord?.y || 0
       };
+    },
+    size() {
+      if (this.triggerChange) {
+        // just for trigger the change
+      }
+      const size = this.getProperty('size');
+      return {
+        width: size?.width || 0,
+        height: size?.height || 0
+      };
+    },
+    minSize() {
+      return DEFAULT_CLIP_ART.MIN_SIZE;
+    },
+    maxSize() {
+      return 60;
+    },
+    minPosition() {
+      return DEFAULT_CLIP_ART.MIN_POSITION;
+    },
+    maxPosition() {
+      return DEFAULT_CLIP_ART.MAX_POSITION;
     }
   },
   methods: {
@@ -83,7 +106,7 @@ export default {
       });
     },
     /**
-     * Handle update flip for Shape
+     * Handle update flip for Clip Art
      * @param {String} actionName action name
      */
     changeFlip(actionName) {
@@ -96,11 +119,31 @@ export default {
       });
     },
     /**
-     * Handle update size, position or rotate for Shape
+     * Handle update size, position or rotate for Clip Art
      * @param {Object} object object containing the value of update size, position or rotate
      */
     onChange(object) {
+      const key = Object.keys(object);
+      if (key.includes('size')) {
+        const size = computedObjectSize(
+          object.size,
+          { width: this.sizeWidth, height: this.sizeHeight },
+          DEFAULT_CLIP_ART.MIN_SIZE,
+          DEFAULT_CLIP_ART.MAX_SIZE,
+          this.isConstrain
+        );
+        object.size = size;
+      }
       this.$root.$emit('printChangeClipArtProperties', object);
+    },
+    /**
+     * Handle constrain proportions for Clip Art
+     * @param {Boolean} val
+     */
+    onChangeConstrain(val) {
+      this.$root.$emit('printChangeClipArtProperties', {
+        isConstrain: val
+      });
     }
   }
 };

@@ -300,18 +300,20 @@ export const toFabricTextProp = prop => {
       },
       letterSpacing: {
         name: 'charSpacing'
-      }
+      },
+      width: DEFAULT_RULE_DATA.WIDTH,
+      height: DEFAULT_RULE_DATA.HEIGHT
     },
     restrict: [
       'id',
-      'size',
       'type',
       'textCase',
       'text',
       'border',
       'shadow',
       'flip',
-      'rotation'
+      'rotation',
+      'isConstrain'
     ]
   };
 
@@ -332,9 +334,11 @@ export const toFabricTextBorderProp = prop => {
       strokeWidth: {
         name: 'strokeWidth',
         parse: value => scaleSize(value)
-      }
+      },
+      width: DEFAULT_RULE_DATA.WIDTH,
+      height: DEFAULT_RULE_DATA.HEIGHT
     },
-    restrict: ['id', 'shadow', 'flip', 'rotation']
+    restrict: ['id', 'shadow', 'flip', 'rotation', 'isConstrain']
   };
 
   return mapObject(prop, mapRules);
@@ -353,9 +357,11 @@ export const toFabricTextGroupProp = prop => {
       y: DEFAULT_RULE_DATA.Y,
       rotation: DEFAULT_RULE_DATA.ROTATION,
       horizontal: DEFAULT_RULE_DATA.HORIZONTAL,
-      vertical: DEFAULT_RULE_DATA.VERTICAL
+      vertical: DEFAULT_RULE_DATA.VERTICAL,
+      width: DEFAULT_RULE_DATA.WIDTH,
+      height: DEFAULT_RULE_DATA.HEIGHT
     },
-    restrict: ['id', 'shadow']
+    restrict: ['id', 'shadow', 'alignment']
   };
 
   return mapObject(prop, mapRules);

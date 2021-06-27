@@ -1,9 +1,10 @@
 import { fabric } from 'fabric';
 import { cloneDeep } from 'lodash';
+import Color from 'color';
 
 import { OBJECT_TYPE } from '@/common/constants';
 
-import { inToPx, isEmpty, mapObject, scaleSize } from '@/common/utils';
+import { inToPx, ptToPx, isEmpty, mapObject, scaleSize } from '@/common/utils';
 
 export const DEFAULT_RULE_DATA = {
   TYPE: {
@@ -28,6 +29,14 @@ export const DEFAULT_RULE_DATA = {
   },
   VERTICAL: {
     name: 'flipY'
+  },
+  WIDTH: {
+    name: 'width',
+    parse: value => inToPx(value)
+  },
+  HEIGHT: {
+    name: 'height',
+    parse: value => inToPx(value)
   }
 };
 
@@ -118,12 +127,30 @@ export const toFabricShapeProp = (prop, originalElement) => {
  * @param   {Object}  prop  stored properties
  * @returns {Object}        fabric properties
  */
-export const toFabricClipArtProp = prop => {
+export const toFabricClipArtProp = (prop, originalElement) => {
   const mapRules = {
     data: {
       type: DEFAULT_RULE_DATA.TYPE,
       x: DEFAULT_RULE_DATA.X,
       y: DEFAULT_RULE_DATA.Y,
+      width: {
+        name: 'scaleX',
+        parse: value => {
+          if (originalElement) {
+            return inToPx(value) / originalElement.width;
+          }
+          return 1;
+        }
+      },
+      height: {
+        name: 'scaleY',
+        parse: value => {
+          if (originalElement) {
+            return inToPx(value) / originalElement.height;
+          }
+          return 1;
+        }
+      },
       rotation: DEFAULT_RULE_DATA.ROTATION,
       color: DEFAULT_RULE_DATA.COLOR,
       horizontal: DEFAULT_RULE_DATA.HORIZONTAL,
@@ -152,7 +179,7 @@ const getFabricPropByType = (elementType, prop, element) => {
   }
 
   if (elementType === OBJECT_TYPE.CLIP_ART) {
-    return toFabricClipArtProp(prop);
+    return toFabricClipArtProp(prop, element);
   }
 
   return {};
@@ -187,6 +214,8 @@ export const updateElement = (element, prop, canvas) => {
     canvas.set({ uniformScaling: prop.isConstrain });
   }
 
+  element.setCoords();
+
   canvas.renderAll();
 };
 
@@ -197,9 +226,15 @@ export const updateElement = (element, prop, canvas) => {
  * @param {Object}  prop    new property
  */
 export const setElementProp = (element, prop) => {
+  const isModifyPosition = !isNaN(prop?.left) || !isNaN(prop?.top);
+  if (!isModifyPosition) {
+    element.set(prop);
+  } else {
+    const x = prop?.left ?? element.aCoords.tl.x;
+    const y = prop?.top ?? element.aCoords.tl.y;
+    element.setPositionByOrigin({ x, y }, 'left', 'top');
+  }
   const useProp = cloneDeep(prop);
-
-  element.set(useProp);
 
   RESTRICT_PROP_CHILD.forEach(rp => {
     delete useProp[rp];
@@ -408,4 +443,131 @@ export const getAdjustedObjectDimension = function(
   const width = object.width > targetWidth ? object.width : targetWidth;
   const height = object.height > targetHeight ? object.height : targetHeight;
   return { width, height };
+};
+
+/**
+ * Calculate shadow base on config from user
+ * @param {Boolean} dropShadow - have shadow or not
+ * @param {Number} shadowBlur - the level of blur in pt
+ * @param {Number} shadowOffset - the offset in pt
+ * @param {Number} shadowOpacity - the opacity of the shadow
+ * @param {Number} shadowAngle - the angle to apply shadow
+ * @param {String} shadowColor - the color to apply to shadow
+ * @returns {Object} the Fabric Shadow Object
+ */
+const getShadowBaseOnConfig = function({
+  dropShadow,
+  shadowBlur,
+  shadowOffset,
+  shadowOpacity,
+  shadowAngle,
+  shadowColor
+}) {
+  if (!dropShadow) return {};
+
+  const clr = Color(shadowColor)
+    .alpha(shadowOpacity)
+    .toString();
+
+  const adjustedAngle = shadowAngle % 360;
+  const rad = (-1 * adjustedAngle * Math.PI) / 180;
+
+  const offsetX = shadowOffset * Math.sin(rad);
+  const offsetY = shadowOffset * Math.cos(rad);
+
+  const shadow = new fabric.Shadow({
+    color: clr,
+    offsetX: ptToPx(offsetX),
+    offsetY: ptToPx(offsetY),
+    blur: ptToPx(shadowBlur)
+  });
+
+  return shadow;
+};
+
+/**
+ * Apply Shadow to Fabric Object
+ * @param {Object} fabricObject - the object to be updated
+ * @param {Object} shadowConfig - the shadow config by user, contains
+ * { dropShadow, shadowBlur, shadowOffset, shadowOpacity, shadowAngle, shadowColor }
+ */
+export const applyShadowToObject = function(fabricObject, shadowConfig) {
+  if (isEmpty(fabricObject) || isEmpty(shadowConfig)) return;
+  const shadow = getShadowBaseOnConfig(shadowConfig);
+
+  if (fabricObject.objectType !== OBJECT_TYPE.TEXT) {
+    shadow.offsetX /= fabricObject.scaleX;
+    shadow.offsetY /= fabricObject.scaleY;
+  }
+
+  fabricObject.set({ shadow });
+};
+
+/**
+ * Caculation scale element
+ *
+ * @param {Number}  widthElement  width's element
+ * @param {Number}  currentWidthInch  current width inch of element
+ * @param {Nunber}  currentHeightInch current height inch of element
+ * @param {Number}  minSize  min size of element
+ */
+export const calcScaleElement = (
+  widthElement,
+  currentWidthInch,
+  currentHeightInch,
+  minSize
+) => {
+  let scaleX = null;
+  let scaleY = null;
+  const minScale = inToPx(minSize) / widthElement;
+  if (currentWidthInch < minSize) {
+    scaleX = minScale;
+  }
+
+  if (currentHeightInch < minSize) {
+    scaleY = minScale;
+  }
+  return {
+    x: scaleX,
+    y: scaleY
+  };
+};
+
+/**
+ * Mapping Element Properties
+ *
+ * @param {Number}   currentWidthInch current width inch of element
+ * @param {Number}  currentHeightInch current height inch of element
+ * @param {Number}  currentXInch current position x inch of element
+ * @param {Number}  currentYInch current position y inch of element
+ * @param {Number} minSize min size of element
+ */
+export const mappingElementProperties = (
+  currentWidthInch,
+  currentHeightInch,
+  currentXInch,
+  currentYInch,
+  minSize
+) => {
+  return {
+    size: {
+      width: currentWidthInch < minSize ? minSize : currentWidthInch,
+      height: currentHeightInch < minSize ? minSize : currentHeightInch
+    },
+    coord: {
+      x: currentXInch,
+      y: currentYInch
+    }
+  };
+};
+/**
+ * Delete object from canvas by id
+ *
+ * @param {Array}   ids     list of id of object to be removed
+ * @param {Object}  canvas  the canvas contain object
+ */
+export const deleteObjectById = (ids, canvas) => {
+  canvas.getObjects().forEach(o => {
+    if (ids.includes(o.id)) canvas.remove(o);
+  });
 };

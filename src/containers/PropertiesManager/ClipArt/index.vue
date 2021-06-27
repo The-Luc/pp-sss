@@ -14,12 +14,17 @@
         <v-tab-item value="arrange">
           <ArrangeContent
             :position="position"
-            :rotate-value="rotateValue"
-            :size-width="sizeWidth"
-            :size-height="sizeHeight"
+            :min-position="minPosition"
+            :max-position="maxPosition"
+            :size-width="size.width"
+            :size-height="size.height"
+            :min-size="minSize"
+            :max-size="maxSize"
             :is-constrain="isConstrain"
+            :rotate-value="rotateValue"
             @changeFlip="changeFlip"
             @change="onChange"
+            @changeConstrain="onChangeConstrain"
           />
         </v-tab-item>
       </TabMenu>

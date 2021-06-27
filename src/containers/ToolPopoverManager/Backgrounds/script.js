@@ -91,13 +91,18 @@ export default {
       book: BOOK_GETTERS.BOOK_DETAIL,
       currentSheet: PRINT_GETTERS.CURRENT_SHEET,
       currentThemeId: BOOK_GETTERS.PRINT_THEME_SELECTED_ID,
-      sheetBackgrounds: PRINT_GETTERS.BACKGROUNDS
+      userSelectedBackground: PRINT_GETTERS.BACKGROUNDS_NO_LAYOUT
     }),
     isHalfSheet() {
       return isSheetHalfSheet(this.currentSheet);
     },
     alreadyAppliedBackground() {
-      return isEmpty(this.sheetBackgrounds) ? {} : this.sheetBackgrounds[0];
+      return isEmpty(this.userSelectedBackground)
+        ? {}
+        : {
+            ...this.userSelectedBackground[0],
+            id: this.userSelectedBackground[0].backgroundId
+          };
     },
     selectedBackgroundType() {
       if (!isEmpty(this.chosenBackgroundType)) {
@@ -115,7 +120,8 @@ export default {
       }
 
       const backgroundType = Object.keys(BACKGROUND_TYPE).find(
-        k => BACKGROUND_TYPE[k].id === this.alreadyAppliedBackground.type
+        k =>
+          BACKGROUND_TYPE[k].id === this.alreadyAppliedBackground.backgroundType
       );
 
       if (isEmpty(backgroundType)) return { id: '' };
@@ -343,7 +349,10 @@ export default {
             props: {
               numberPageLeft,
               numberPageRight,
-              background: cloneDeep(this.selectedBackground)
+              background: {
+                ...cloneDeep(this.selectedBackground),
+                opacity: 1
+              }
             }
           }
         });
@@ -353,37 +362,11 @@ export default {
         return;
       }
 
-      const isAppliedBackground = !isEmpty(this.alreadyAppliedBackground);
-
-      if (isAppliedBackground && isEmpty(this.chosenBackground)) {
-        this.onClose();
-
-        return;
-      }
-
-      if (isAppliedBackground) {
-        const { categoryId, type, pageType } = this.alreadyAppliedBackground;
-
-        const {
-          categoryId: chosenCategoryId,
-          type: chosenType,
-          pageType: chosenPageType
-        } = this.chosenBackground;
-
-        if (
-          categoryId === chosenCategoryId &&
-          type === chosenType &&
-          pageType === chosenPageType &&
-          this.alreadyAppliedBackground.id === this.chosenBackground.id
-        ) {
-          this.onClose();
-
-          return;
-        }
-      }
-
       this.$root.$emit('printAddBackground', {
-        background: cloneDeep(this.selectedBackground),
+        background: {
+          ...cloneDeep(this.selectedBackground),
+          opacity: 1
+        },
         isLeft: true
       });
 

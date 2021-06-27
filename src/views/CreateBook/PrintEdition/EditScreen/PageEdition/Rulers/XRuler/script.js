@@ -63,7 +63,7 @@ export default {
       if (!width) {
         return { width: 0 };
       }
-      const containerWidth = this.unitArray.length * width;
+      const containerWidth = Math.ceil(this.unitArray.length * width);
       const left = double ? canvasWidth * 0.5 : 0;
       const translateX = double ? 'translateX(-50%)' : 'none';
       return {

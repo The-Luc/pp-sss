@@ -8,67 +8,64 @@
     position: absolute;
   }
 
-  .print-spines {
-    height: 100%;
+  .print-inside-cover {
     top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-
-    &.single {
-      width: 1px;
-      background-color: #a1a1a1;
-    }
-
-    &.double {
-      border: 1px solid #a1a1a1;
-      border-top-width: 0;
-      border-bottom-width: 0;
-    }
-  }
-
-  .print-inside-front-cover,
-  .print-inside-back-cover {
-    top: 0;
-    width: 50%;
-    height: 100%;
-    background-color: #d9d9d9;
-
-    .print-message-box {
-      top: 50%;
-      left: 50%;
-      padding: 20px 20px;
-      border: 1px solid white;
-      color: #4c4c4d;
-      transform: translate(-50%, -50%);
-
-      p {
-        text-align: center;
-        line-height: 1.3em;
-      }
-
-      p.print-title {
-        font-family: $font-700;
-        padding-bottom: 8px;
-        border-bottom: 1.5px solid;
-        margin-bottom: 10px;
-      }
-
-      p.print-subtitle {
-        font-family: $font-300;
-        margin-bottom: 0;
-        line-height: 1.3em;
-      }
-    }
-  }
-
-  .print-inside-front-cover {
     left: 0;
-    border-right: 1px solid #a1a1a1;
-  }
-
-  .print-inside-back-cover {
+    bottom: 0;
     right: 0;
-    border-left: 1px solid #a1a1a1;
+    display: flex;
+
+    > div {
+      height: 100%;
+      position: relative;
+    }
+
+    .print-inside-front-cover,
+    .print-inside-back-cover {
+      flex: 1;
+      height: 100%;
+      background-color: #d9d9d9;
+
+      .print-message-box {
+        top: 50%;
+        left: 50%;
+        padding: 20px 20px;
+        border: 1px solid white;
+        color: #4c4c4d;
+        transform: translate(-50%, -50%);
+
+        p {
+          text-align: center;
+          line-height: 1.3em;
+        }
+
+        p.print-title {
+          font-family: $font-700;
+          padding-bottom: 8px;
+          border-bottom: 1.5px solid;
+          margin-bottom: 10px;
+        }
+
+        p.print-subtitle {
+          font-family: $font-300;
+          margin-bottom: 0;
+          line-height: 1.3em;
+        }
+      }
+    }
+
+    .print-spines {
+      &.single {
+        width: 1px;
+        background-color: #a1a1a1;
+      }
+  
+      &.double {
+        border: 1px solid #a1a1a1;
+        border-top-width: 0;
+        border-bottom-width: 0;
+      }
+    }
   }
 
   .print-bleed {
@@ -84,7 +81,7 @@
     left: -1px;
     right: -1px;
     bottom: -1px;
-    border: 1px solid #ED1C24;
+    border: 1px solid #ed1c24;
 
     .print-left,
     .print-right {
