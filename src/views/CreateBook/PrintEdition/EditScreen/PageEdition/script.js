@@ -63,7 +63,8 @@ import {
   DEFAULT_SHAPE,
   COVER_TYPE,
   PRINT_PAGE_SIZE,
-  DEFAULT_CLIP_ART
+  DEFAULT_CLIP_ART,
+  FABRIC_OBJECT_TYPE
 } from '@/common/constants';
 import SizeWrapper from '@/components/SizeWrapper';
 import PrintCanvasLines from './PrintCanvasLines';
@@ -181,6 +182,8 @@ export default {
     window.removeEventListener('paste', this.handlePaste);
 
     window.printCanvas = null;
+
+    sessionStorage.removeItem(COPY_OBJECT_KEY);
 
     document.body.removeEventListener('keyup', this.handleDeleteKey);
 
@@ -394,15 +397,47 @@ export default {
       }
     },
     /**
+     * Check whether user's pasting data copy from outside while editing text or not
+     * @param {String} dataOutside Data copy from outside app
+     * @param {Object} objectCopy Canvas's object(s) to be copied
+     * @return {Boolean} User's paste data outside while editing text
+     */
+    isPasteToTextbox(dataOutside) {
+      if (!dataOutside) return false;
+      const activeObj = window.printCanvas.getActiveObject();
+      const objectType = activeObj?.get('type');
+
+      if (
+        dataOutside &&
+        objectType === FABRIC_OBJECT_TYPE.TEXT &&
+        activeObj?.isEditing
+      ) {
+        sessionStorage.removeItem(COPY_OBJECT_KEY);
+        return true;
+      }
+      return false;
+    },
+    /**
      * Function handle to get object(s) be copied from clipboard when user press Ctrl + V (Windows), Command + V (macOS), or from action menu
      */
-    async handlePaste() {
+    async handlePaste(event) {
       if (this.isProcessingPaste) return;
       this.isProcessingPaste = true;
-      const clipText = sessionStorage.getItem(COPY_OBJECT_KEY);
-      const objects = parsePasteObject(clipText);
+
+      const objectCopy = sessionStorage.getItem(COPY_OBJECT_KEY);
+
+      let dataCopyOutside = (
+        event?.clipboardData || window?.clipboardData
+      )?.getData('text');
+
+      const isPasteToTextbox = this.isPasteToTextbox(dataCopyOutside);
+
+      if (isPasteToTextbox) return;
+
+      const objects = parsePasteObject(objectCopy);
+
       if (!isEmpty(objects)) {
-        const { sheetId } = JSON.parse(clipText);
+        const { sheetId } = JSON.parse(objectCopy);
         const canvas = window.printCanvas;
         canvas.discardActiveObject();
         const listPastedObjects = await this.handlePasteItems(
@@ -426,6 +461,7 @@ export default {
       const activeObj = window.printCanvas.getActiveObject();
       if (activeObj) {
         this.countPaste = 1;
+        this.isProcessingPaste = false;
         const activeObjClone = cloneDeep(activeObj);
         let objects = [activeObjClone];
         if (activeObjClone._objects) {

@@ -20,5 +20,8 @@ export const getJson = str => {
  */
 export const parsePasteObject = data => {
   const jsonData = getJson(data);
-  return jsonData[COPY_OBJECT_KEY] || {};
+
+  if (!jsonData) return {};
+
+  return jsonData[COPY_OBJECT_KEY];
 };
