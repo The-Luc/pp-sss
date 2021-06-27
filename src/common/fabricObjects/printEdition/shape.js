@@ -18,7 +18,7 @@ export const addPrintShapes = async (
   isPlaceInLeftPage = false,
   eventListeners = {}
 ) => {
-  return await addPrintSvgs(
+  await addPrintSvgs(
     shapes,
     'pathData',
     DEFAULT_SHAPE.HEIGHT,
