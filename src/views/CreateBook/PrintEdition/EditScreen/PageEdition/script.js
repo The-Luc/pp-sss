@@ -1071,9 +1071,6 @@ export default {
           return;
       }
     },
-    addShapesToStore(newShape) {
-      this.addNewObject(newShape);
-    },
     /**
      * Adding shapes to canvas & store
      *
