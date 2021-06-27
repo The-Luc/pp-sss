@@ -284,8 +284,6 @@ export const getSvgData = (svgUrl, elementProperty, expectedHeight) => {
         ...elementProperty,
         width: svg.width,
         height: svg.height,
-        originX: 'center',
-        originY: 'center',
         scaleX: scale,
         scaleY: scale
       });

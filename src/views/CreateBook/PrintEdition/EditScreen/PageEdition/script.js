@@ -215,7 +215,13 @@ export default {
       setBackgroundProp: PRINT_MUTATES.SET_BACKGROUND_PROP,
       deleteBackground: PRINT_MUTATES.DELETE_BACKGROUND
     }),
-    computedCoordObj(data, sheetId) {
+    /**
+     * Function handle compute pasted object's coord
+     * @param {Object} data Paste object
+     * @param {Number} sheetId - Current sheet id
+     * @returns {Object} New object coord after caculated
+     */
+    computePastedObjectCoord(data, sheetId) {
       const isFrontCover = isHalfRight(this.pageSelected);
       const isBackCover = isHalfLeft(this.pageSelected);
       const distance = sheetId === this.pageSelected.id ? 0.5 : 0;
@@ -227,8 +233,6 @@ export default {
       if (isBackCover && dataClone.coord.x > PRINT_PAGE_SIZE.WIDTH) {
         dataClone.coord.x = PRINT_PAGE_SIZE.WIDTH - PRINT_PAGE_SIZE.WIDTH / 2;
       }
-      console.log('distance', distance);
-      console.log('this.countPaste', this.countPaste);
       const coord = {
         ...dataClone.coord,
         x: dataClone.coord.x + distance * this.countPaste,
@@ -236,6 +240,13 @@ export default {
       };
       return coord;
     },
+    /**
+     * Funtion recursive handle create object(s) and add to store through data be copied and return list object(s) processed
+     * @param {Array} objects - List object(s) copied
+     * @param {Array} processedItems - List object(s) pasted
+     * @param {Number} sheetId - Current sheet id
+     * @returns {Arrray} List object(s) pasted
+     */
     async handlePasteItems(objects, processedItems = [], sheetId) {
       if (objects.length === 0) {
         return processedItems;
@@ -244,8 +255,7 @@ export default {
       const objectsClone = cloneDeep(objects);
       const { data } = objectsClone.splice(0, 1)[0];
 
-      const coord = this.computedCoordObj(data, sheetId);
-      console.log('coord', coord);
+      const coord = this.computePastedObjectCoord(data, sheetId);
 
       if (data.type === OBJECT_TYPE.IMAGE) {
         const id = uniqueId();
@@ -262,7 +272,7 @@ export default {
             coord
           }
         };
-        this.addImageToStore(objectToStore);
+        this.addObjectToStore(objectToStore);
         return await this.handlePasteItems(
           objectsClone,
           [...processedItems, image],
@@ -270,7 +280,10 @@ export default {
         );
       }
 
-      if (data.type === OBJECT_TYPE.SHAPE) {
+      if (
+        data.type === OBJECT_TYPE.CLIP_ART ||
+        data.type === OBJECT_TYPE.SHAPE
+      ) {
         const id = uniqueId();
         const ojbectData = {
           id,
@@ -288,7 +301,7 @@ export default {
 
         const svg = await addPrintSvgs(
           [ojbectData],
-          'pathData',
+          data.type === OBJECT_TYPE.CLIP_ART ? 'vector' : 'pathData',
           data.size.height,
           window.printCanvas,
           isHalfSheet(this.pageSelected),
@@ -304,7 +317,7 @@ export default {
             coord
           }
         };
-        this.addShapesToStore(objectToStore);
+        this.addObjectToStore(objectToStore);
         return await this.handlePasteItems(
           objectsClone,
           [...processedItems, svg[0]],
@@ -332,6 +345,21 @@ export default {
       // }
     },
     /**
+     * Function handle active selection of object(s) pasted (single | multiplesingle)
+     * @param {Array} listPastedObjects - List object(s) pasted
+     * @param {Ref} canvas - Print canvas
+     */
+    setObjectPastetActiveSelection(listPastedObjects, canvas) {
+      if (listPastedObjects.length === 1) {
+        canvas.setActiveObject(listPastedObjects[0]);
+      } else if (listPastedObjects.length > 1) {
+        const sel = new fabric.ActiveSelection(listPastedObjects, {
+          canvas
+        });
+        canvas.setActiveObject(sel);
+      }
+    },
+    /**
      * Function handle to get object(s) be copied from clipboard when user press Ctrl + V (Windows), Command + V (macOS), or from action menu
      */
     async handlePaste() {
@@ -348,21 +376,10 @@ export default {
           [],
           sheetId
         );
-        console.log('listPastedObjects', listPastedObjects);
-        canvas.add(...listPastedObjects);
 
-        if (listPastedObjects.length === 1) {
-          canvas.setActiveObject(listPastedObjects[0]);
-        } else if (listPastedObjects.length > 1) {
-          const sel = new fabric.ActiveSelection(listPastedObjects, {
-            canvas
-          });
-          canvas.setActiveObject(sel);
-        }
+        canvas.add(...listPastedObjects);
+        this.setObjectPastetActiveSelection(listPastedObjects, canvas);
         this.countPaste += 1;
-        // if (sheetId !== this.pageSelected.id && this.countPaste === 2) {
-        //   this.handleCopy();
-        // }
       }
       setTimeout(() => {
         this.isProcessingPaste = false;
@@ -375,11 +392,14 @@ export default {
       const activeObj = window.printCanvas.getActiveObject();
       if (activeObj) {
         this.countPaste = 1;
-        const test = cloneDeep(activeObj);
-        let objects = [test];
-        if (test._objects) {
-          objects = [...test._objects];
-          test._restoreObjectsState();
+        const activeObjClone = cloneDeep(activeObj);
+        let objects = [activeObjClone];
+        if (activeObjClone._objects) {
+          objects =
+            activeObjClone.objectType === OBJECT_TYPE.CLIP_ART
+              ? [activeObjClone]
+              : [...activeObjClone._objects];
+          activeObjClone._restoreObjectsState();
         }
         const jsonData = objects.map(obj => ({
           data: {
@@ -507,20 +527,6 @@ export default {
         }
       });
 
-      this.$root.$on('printChangeShapeProperties', prop => {
-        this.changeShapeProperties(prop);
-      });
-
-      this.$root.$on('changeObjectIdsOrder', actionName => {
-        this.changeObjectIdsOrder(actionName);
-      });
-
-      this.$root.$on('printChangeClipArtProperties', prop => {
-        this.changeClipArtProperties(prop);
-      });
-
-      this.$root.$on('printCopyObj', this.handleCopy);
-      this.$root.$on('printPasteObj', this.handlePaste);
       document.body.addEventListener('keyup', this.handleDeleteKey);
       this.eventHandling();
     },
@@ -574,9 +580,6 @@ export default {
       this.toggleActiveObjects(false);
 
       this.setSelectedObjectId({ id: '' });
-      // if (this.toolNameSelected === TOOL_NAME.ACTIONS) {
-      //   this.setToolNameSelected({ name: '' });
-      // }
     },
     /**
      * Close text properties modal
@@ -674,7 +677,7 @@ export default {
       object.on('rotated', this.handleRotated);
       object.on('moved', this.handleMoved);
       object.on('scaled', this.handleTextBoxScaled);
-      this.addNewObject(data);
+      this.addObjectToStore(data);
       const isConstrain = data.newObject.isConstrain;
       this.setCanvasUniformScaling(isConstrain);
       window.printCanvas.add(object);
@@ -707,8 +710,11 @@ export default {
       // update thumbnail
       this.getThumbnailUrl();
     },
-    addImageToStore(newImage) {
-      this.addNewObject(newImage);
+    /**
+     * Function trigger mutate to add new object to store
+     */
+    addObjectToStore(newObject) {
+      this.addNewObject(newObject);
     },
     /**
      * Event fire when user click on Image button on Toolbar to add new image on canvas
@@ -732,7 +738,7 @@ export default {
         }
       });
 
-      this.addImageToStore(newImage);
+      this.addObjectToStore(newImage);
 
       const image = await createImage(newImage.newObject);
       window.printCanvas.add(image);
@@ -853,22 +859,22 @@ export default {
           .getObjects()
           .find(o => o.id === s.id);
 
-        const { height, width, scaleX, scaleY, aCoords } = fabricObject;
-
-        this.addNewObject({
+        const { height, width, scaleX, scaleY, top, left } = fabricObject;
+        const newClipArt = {
           id: s.id,
           newObject: {
             ...s.object,
             coord: {
-              x: pxToIn(aCoords.tl.x),
-              y: pxToIn(aCoords.tl.y)
+              x: pxToIn(left),
+              y: pxToIn(top)
             },
             size: {
               width: pxToIn(width * scaleX),
               height: pxToIn(height * scaleY)
             }
           }
-        });
+        };
+        this.addObjectToStore(newClipArt);
       });
 
       if (toBeAddedClipArts.length === 1) {
@@ -964,8 +970,8 @@ export default {
       if (isEmpty(target)) return;
       const currentWidthInch = pxToIn(target.width * target.scaleX);
       const currentHeightInch = pxToIn(target.height * target.scaleY);
-      const currentXInch = pxToIn(target.aCoords.tl.x);
-      const currentYInch = pxToIn(target.aCoords.tl.y);
+      const currentXInch = pxToIn(target.left);
+      const currentYInch = pxToIn(target.top);
       const objectType = target.objectType;
       switch (objectType) {
         case OBJECT_TYPE.SHAPE: {
@@ -1046,7 +1052,7 @@ export default {
             }
           }
         };
-        this.addShapesToStore(newShape);
+        this.addObjectToStore(newShape);
       });
 
       if (toBeAddedShapes.length === 1) {
@@ -1188,7 +1194,7 @@ export default {
     handleMoved(e) {
       const target = e.transform?.target;
       if (isEmpty(target)) return;
-      const { x: left, y: top } = target.aCoords.tl;
+      const { left, top } = target;
       const currentXInch = pxToIn(left);
       const currentYInch = pxToIn(top);
       const objectType = target.objectType;
@@ -1279,7 +1285,8 @@ export default {
           this.$root.$emit('printInstructionEnd');
           this.setToolNameSelected({ name: '' });
         },
-        printCopyObj: this.handleCopy
+        printCopyObj: this.handleCopy,
+        printPasteObj: this.handlePaste
       };
 
       const events = {
@@ -1305,8 +1312,8 @@ export default {
       const target = e.transform?.target;
 
       if (isEmpty(target)) return;
-      const currentXInch = pxToIn(target.aCoords.tl.x);
-      const currentYInch = pxToIn(target.aCoords.tl.y);
+      const currentXInch = pxToIn(target.left);
+      const currentYInch = pxToIn(target.top);
 
       const prop = {
         coord: {
