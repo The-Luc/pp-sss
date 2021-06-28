@@ -91,8 +91,6 @@ export const createTextBox = (x, y, width, height, textProperties, sheetId) => {
     top: y,
     lockScalingY: false,
     lockScalingX: false,
-    originX: 'center',
-    originY: 'center',
     isConstrain: text.isConstrain
   });
 
@@ -263,8 +261,8 @@ export const createTextBox = (x, y, width, height, textProperties, sheetId) => {
 
   dataObject.newObject.coord = {
     ...dataObject.newObject.coord,
-    x: pxToIn(group.aCoords.tl.x),
-    y: pxToIn(group.aCoords.tl.y)
+    x: pxToIn(group.left),
+    y: pxToIn(group.top)
   };
 
   dataObject.newObject.minHeight = pxToIn(text.height);
@@ -610,30 +608,11 @@ const applyTextGroupProperties = function(textGroup, prop) {
  */
 export const applyTextBoxProperties = function(textObject, prop) {
   const isModifyPosition = !isNaN(prop?.coord?.x) || !isNaN(prop?.coord?.y);
-
-  if (isModifyPosition) {
-    applyTextBoxPosition(textObject, prop);
-    return;
-  }
-
   const [rect, text] = getObjectsFromTextBox(textObject);
   applyTextGroupProperties(textObject, prop);
+  if (isModifyPosition) {
+    return;
+  }
   applyTextProperties(text, prop);
   applyTextRectProperties(rect, prop);
-};
-/**
- * Apply Position Changed to Text Box
- * @param {Object} textObject - the object to be updated
- * @param {Object} prop - the prop change
- */
-export const applyTextBoxPosition = function(textObject, prop) {
-  const x = !isNaN(prop?.coord?.x)
-    ? inToPx(prop?.coord?.x)
-    : textObject.aCoords.tl.x;
-  const y = !isNaN(prop?.coord?.y)
-    ? inToPx(prop?.coord?.y)
-    : textObject.aCoords.tl.y;
-  textObject.setPositionByOrigin({ x, y }, 'left', 'top');
-  textObject.setCoords();
-  window.printCanvas.renderAll();
 };
