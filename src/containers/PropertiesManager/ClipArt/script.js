@@ -1,7 +1,7 @@
 import Properties from '@/components/Properties/BoxProperties';
-import TabPropertiesMenu from '@/components/TabPropertiesMenu';
-import GeneralContent from './GeneralContent';
+import TabPropertiesMenu from '@/containers/TabPropertiesMenu';
 import ArrangeContent from '@/components/Arrange';
+import GeneralContent from './GeneralContent';
 import { DEFAULT_CLIP_ART } from '@/common/constants';
 import { useClipArtProperties } from '@/hooks';
 import { computedObjectSize } from '@/common/utils';

@@ -1,7 +1,7 @@
 import { mapGetters } from 'vuex';
 import { GETTERS as APP_GETTERS } from '@/store/modules/app/const';
 
-import TabMenu from '../TabMenu';
+import TabMenu from '@/components/TabMenu';
 
 export default {
   components: {

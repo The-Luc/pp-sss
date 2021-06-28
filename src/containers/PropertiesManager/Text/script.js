@@ -2,7 +2,7 @@ import { mapGetters, mapMutations } from 'vuex';
 
 import { useObject } from '@/hooks';
 import Properties from '@/components/Properties/BoxProperties';
-import TabPropertiesMenu from '@/components/TabPropertiesMenu';
+import TabPropertiesMenu from '@/containers/TabPropertiesMenu';
 import GeneralContent from './GeneralContent';
 import StyleContent from './Style';
 import ArrangeContent from '@/components/Arrange';
