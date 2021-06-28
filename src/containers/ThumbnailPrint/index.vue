@@ -11,18 +11,12 @@
         'thumbnail-view-thumbnail'
       ]"
       :style="{
-        height: `${canvasHeight}px`
+        backgroundImage: `url(${thumbnailUrl ||
+          require('@/assets/image/white.png')})`,
+        backgroundSize: 'cover'
       }"
     >
       <div class="border-inside"></div>
-      <img
-        :src="thumbnailUrl"
-        :style="{
-          height: `${canvasHeight}px`,
-          objectFit: 'cover'
-        }"
-        class="thumbnail-canvas"
-      />
       <div v-if="edit" class="thumbnail-edit">
         <router-link tag="div" :to="toLink">
           <v-icon class="icon-edit">edit</v-icon>

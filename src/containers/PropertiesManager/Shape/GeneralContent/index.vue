@@ -4,8 +4,6 @@
 
     <Opacity :value="opacityValue" @change="onChangeOpacity" />
 
-    <Border :selected-border="selectedBorder" :options="borderOptions" />
-
     <Shadow
       :current-shadow="currentShadow"
       @change="onChangeShadow"

@@ -36,7 +36,8 @@ import {
   mappingElementProperties,
   calcScaleElement,
   handleGetSvgData,
-  addEventListeners
+  addEventListeners,
+  handleObjectBlur
 } from '@/common/fabricObjects';
 
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
@@ -290,6 +291,10 @@ export default {
         inToPx(height),
         textProperties
       );
+
+      object.set({
+        angle: objectData.newObject.coord.rotation
+      });
 
       object.on('rotated', this.handleRotated);
       object.on('moved', this.handleMoved);
@@ -1060,12 +1065,13 @@ export default {
       const target = e.transform?.target;
       if (!isEmpty(shadow)) {
         const oldTarget = e.transform;
-        const { offsetX, offsetY } = shadow;
+        const { offsetX, offsetY, blur } = shadow;
         target.set({
           shadow: {
             ...shadow,
             offsetX: (offsetX * oldTarget.scaleX) / target.scaleX,
-            offsetY: (offsetY * oldTarget.scaleY) / target.scaleY
+            offsetY: (offsetY * oldTarget.scaleY) / target.scaleY,
+            blur: handleObjectBlur(blur, oldTarget, target)
           }
         });
       }

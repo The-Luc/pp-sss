@@ -1,6 +1,5 @@
 import FillColor from '@/containers/Properties/Features/FillColor';
 import Opacity from '@/components/Properties/Features/Opacity';
-import Border from '@/components/Properties/Features/Border';
 import Shadow from '@/components/Properties/Features/Shadow';
 
 import { useShapeProperties } from '@/hooks';
@@ -11,7 +10,6 @@ export default {
   components: {
     FillColor,
     Opacity,
-    Border,
     Shadow
   },
   data() {
