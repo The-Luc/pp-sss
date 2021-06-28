@@ -3,7 +3,8 @@ import { mapGetters } from 'vuex';
 import Item from './Item';
 import { ACTIONS } from '@/common/constants';
 import { GETTERS } from '@/store/modules/app/const';
-import { isFabricObject, isJsonString } from '@/common/utils';
+import { isEmpty, parsePasteObject } from '@/common/utils';
+import { COPY_OBJECT_KEY } from '@/common/constants/config';
 
 export default {
   components: {
@@ -13,7 +14,7 @@ export default {
     return {
       items: [
         { name: 'Copy Selected Item', value: ACTIONS.COPY, disabled: true },
-        { name: 'Paste Copied Item', value: ACTIONS.PASTEE, disabled: true },
+        { name: 'Paste Copied Item', value: ACTIONS.PASTE, disabled: true },
         { name: 'Save Layout', value: ACTIONS.SAVE_LAYOUT, disabled: true },
         { name: 'Save Style', value: ACTIONS.SAVE_STYLE, disabled: true },
         { name: 'Generate PDF', value: ACTIONS.GENERATE_PDF, disabled: true }
@@ -59,19 +60,22 @@ export default {
         this.items[1].disabled = false;
         this.$root.$emit('printCopyObj');
       }
+
+      if (actionValue === ACTIONS.PASTE) {
+        this.$root.$emit('printPasteObj');
+      }
     },
     /**
-     * Async function to get object(s) copied and validate data to enabled paste label
+     * Function to get object(s) copied and validate data to enabled paste label
      */
-    async setEnablePaste() {
-      const items = await navigator.clipboard.readText();
-      const isJson = isJsonString(items);
-      if (isJson) {
-        const isValid = isFabricObject(items);
-        this.items[1].disabled = !isValid;
-      } else {
+    setEnablePaste() {
+      const items = sessionStorage.getItem(COPY_OBJECT_KEY);
+      if (!items) {
         this.items[1].disabled = true;
+        return;
       }
+      const objects = parsePasteObject(items);
+      this.items[1].disabled = isEmpty(objects);
     }
   }
 };

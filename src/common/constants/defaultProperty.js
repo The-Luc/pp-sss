@@ -2,6 +2,7 @@ import { TEXT_CASE } from './textCase';
 import { TEXT_HORIZONTAL_ALIGN, TEXT_VERTICAL_ALIGN } from './textAlign';
 import { BACKGROUND_TYPE, BACKGROUND_PAGE_TYPE } from './backgroundType';
 import { PRINT_PAGE_SIZE } from './canvas';
+import { IMAGE_LOCAL } from './image';
 import { SVG_FILL_MODE } from './svgFillMode';
 import { POSITION_ORIGIN } from './origin';
 
@@ -111,10 +112,8 @@ export const DEFAULT_CLIP_ART = {
 export const DEFAULT_IMAGE = {
   category: 'Cover',
   name: '',
-  thumbnail:
-    'https://willis.fluidmedia.cloud/images/yearbook_builder/content_placeholder.jpg',
-  imageUrl:
-    'https://willis.fluidmedia.cloud/images/yearbook_builder/content_placeholder.jpg'
+  thumbnail: IMAGE_LOCAL.PLACE_HOLDER,
+  imageUrl: IMAGE_LOCAL.PLACE_HOLDER
 };
 
 export const DEFAULT_BACKGROUND = {

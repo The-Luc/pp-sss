@@ -11,7 +11,6 @@ import {
   isEmpty,
   getCoverPagePrintSize,
   getPagePrintSize,
-  toFabricImageProp,
   selectLatestObject,
   deleteSelectedObjects,
   getRectDashes,
@@ -19,8 +18,9 @@ import {
   isHalfSheet,
   isHalfLeft,
   pxToIn,
-  isJsonString,
-  resetObjects
+  resetObjects,
+  isHalfRight,
+  inToPx
 } from '@/common/utils';
 
 import {
@@ -28,18 +28,16 @@ import {
   applyTextBoxProperties,
   addPrintBackground,
   updatePrintBackground,
-  getAdjustedObjectDimension,
   addPrintShapes,
   addPrintClipArts,
   updateElement,
-  deleteObjectById
-} from '@/common/fabricObjects';
-
-import {
-  calcScaleElement,
+  deleteObjectById,
+  applyShadowToObject,
   mappingElementProperties,
-  applyShadowToObject
-} from '@/common/fabricObjects/common';
+  calcScaleElement,
+  handleGetSvgData,
+  addEventListeners
+} from '@/common/fabricObjects';
 
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
 import { GETTERS } from '@/store/modules/book/const';
@@ -60,18 +58,20 @@ import {
   SHEET_TYPE,
   OBJECT_TYPE,
   ARRANGE_SEND,
-  CORNER_SIZE,
   DEFAULT_SHAPE,
+  COVER_TYPE,
+  PRINT_PAGE_SIZE,
   DEFAULT_CLIP_ART,
-  COVER_TYPE
+  FABRIC_OBJECT_TYPE
 } from '@/common/constants';
 import SizeWrapper from '@/components/SizeWrapper';
 import PrintCanvasLines from './PrintCanvasLines';
 import PageWrapper from './PageWrapper';
 import XRuler from './Rulers/XRuler';
 import YRuler from './Rulers/YRuler';
-import { isFabricObject } from '@/common/utils/string';
+import { parsePasteObject } from '@/common/utils/string';
 import { COPY_OBJECT_KEY } from '@/common/constants/config';
+import { createImage } from '@/common/fabricObjects/image';
 
 export default {
   components: {
@@ -100,7 +100,10 @@ export default {
       origX: 0,
       origY: 0,
       currentRect: null,
-      rectObj: null
+      rectObj: null,
+      objectList: [],
+      isProcessingPaste: false,
+      countPaste: 1
     };
   },
   computed: {
@@ -112,8 +115,11 @@ export default {
       isOpenColorPicker: APP_GETTERS.IS_OPEN_COLOR_PICKER,
       selectedObject: PRINT_GETTERS.CURRENT_OBJECT,
       toolNameSelected: APP_GETTERS.SELECTED_TOOL_NAME,
-      totalBackground: PRINT_GETTERS.TOTAL_BACKGROUND,
-      propertiesObjectType: APP_GETTERS.PROPERTIES_OBJECT_TYPE
+      currentBackgrounds: PRINT_GETTERS.BACKGROUNDS,
+      propertiesObjectType: APP_GETTERS.PROPERTIES_OBJECT_TYPE,
+      object: PRINT_GETTERS.OBJECT_BY_ID,
+      currentObjects: PRINT_GETTERS.GET_OBJECTS,
+      totalBackground: PRINT_GETTERS.TOTAL_BACKGROUND
     }),
     isCover() {
       return this.pageSelected?.type === SHEET_TYPE.COVER;
@@ -154,6 +160,7 @@ export default {
       async handler(val, oldVal) {
         if (val?.id !== oldVal?.id) {
           await this.getDataCanvas();
+          this.countPaste = 1;
           this.setSelectedObjectId({ id: '' });
           this.updateCanvasSize();
           resetObjects(window.printCanvas);
@@ -174,6 +181,8 @@ export default {
 
     window.printCanvas = null;
 
+    sessionStorage.removeItem(COPY_OBJECT_KEY);
+
     document.body.removeEventListener('keyup', this.handleDeleteKey);
 
     this.eventHandling(false);
@@ -190,6 +199,7 @@ export default {
       toggleColorPicker: MUTATES.TOGGLE_COLOR_PICKER,
       setObjectTypeSelected: MUTATES.SET_OBJECT_TYPE_SELECTED,
       setSelectedObjectId: PRINT_MUTATES.SET_CURRENT_OBJECT_ID,
+      setObjects: PRINT_MUTATES.SET_OBJECTS,
       addNewObject: PRINT_MUTATES.ADD_OBJECT,
       setObjectProp: PRINT_MUTATES.SET_PROP,
       setObjectPropById: PRINT_MUTATES.SET_PROP_BY_ID,
@@ -208,33 +218,306 @@ export default {
       deleteBackground: PRINT_MUTATES.DELETE_BACKGROUND
     }),
     /**
+     * Function handle compute pasted object's coord
+     * @param {Object} data Paste object
+     * @param {Number} sheetId - Current sheet id
+     * @returns {Object} New object coord after caculated
+     */
+    computePastedObjectCoord(data, sheetId) {
+      const isFrontCover = isHalfRight(this.pageSelected);
+      const isBackCover = isHalfLeft(this.pageSelected);
+      const distance = sheetId === this.pageSelected.id ? 0.5 : 0;
+      const dataClone = cloneDeep(data);
+      if (isFrontCover && dataClone.coord.x < PRINT_PAGE_SIZE.WIDTH) {
+        dataClone.coord.x = PRINT_PAGE_SIZE.WIDTH + PRINT_PAGE_SIZE.WIDTH / 2;
+      }
+
+      if (isBackCover && dataClone.coord.x > PRINT_PAGE_SIZE.WIDTH) {
+        dataClone.coord.x = PRINT_PAGE_SIZE.WIDTH - PRINT_PAGE_SIZE.WIDTH / 2;
+      }
+      const coord = {
+        ...dataClone.coord,
+        x: dataClone.coord.x + distance * this.countPaste,
+        y: dataClone.coord.y + distance * this.countPaste
+      };
+      return coord;
+    },
+    /**
+     * Function handle create image object and add properties to store
+     * @param {Object} data - Image's properties
+     * @param {Object} coord - Image's coord
+     * @returns {Object} Image object
+     */
+    async handlePasteImage(data, coord) {
+      const id = uniqueId();
+      const image = await createImage({
+        ...data,
+        id,
+        coord
+      });
+      const objectToStore = {
+        id,
+        newObject: {
+          ...data,
+          id,
+          coord
+        }
+      };
+      this.addObjectToStore(objectToStore);
+      return image;
+    },
+    /**
+     * Function handle create text object and add properties to store
+     * @param {Object} data - Text's properties
+     * @param {Object} coord - Text's coord
+     * @returns {Object} Text object
+     */
+    async handlePasteText(data, coord) {
+      const id = uniqueId();
+      const {
+        size: { width, height }
+      } = data;
+      const textProperties = {
+        ...data,
+        id,
+        coord
+      };
+
+      const { object, data: objectData } = await createTextBox(
+        inToPx(coord.x),
+        inToPx(coord.y),
+        inToPx(width),
+        inToPx(height),
+        textProperties
+      );
+
+      object.on('rotated', this.handleRotated);
+      object.on('moved', this.handleMoved);
+      object.on('scaled', this.handleTextBoxScaled);
+
+      this.addObjectToStore(objectData);
+
+      applyShadowToObject(object, objectData.newObject.shadow);
+      return object;
+    },
+    /**
+     * Function handle create svg object and add properties to store
+     * @param {Object} data - Svg's properties
+     * @param {Object} coord - Svg's coord
+     * @returns {Object} Svg object
+     */
+    async handlePasteSvg(data, coord) {
+      const id = uniqueId();
+      const ojbectData = {
+        id,
+        object: {
+          ...data,
+          coord
+        }
+      };
+      const eventListeners = {
+        scaling: this.handleScaling,
+        scaled: this.handleScaled,
+        rotated: this.handleRotated,
+        moved: this.handleMoved
+      };
+
+      const svg = await handleGetSvgData({
+        svg: ojbectData,
+        svgUrlAttrName:
+          data.type === OBJECT_TYPE.CLIP_ART ? 'vector' : 'pathData',
+        expectedHeight: data.size.height
+      });
+
+      addEventListeners(svg, eventListeners);
+
+      const objectToStore = {
+        id,
+        newObject: {
+          ...data,
+          id,
+          coord
+        }
+      };
+      this.addObjectToStore(objectToStore);
+
+      const {
+        dropShadow,
+        shadowBlur,
+        shadowOffset,
+        shadowOpacity,
+        shadowAngle,
+        shadowColor
+      } = svg;
+      applyShadowToObject(svg, {
+        dropShadow,
+        shadowBlur,
+        shadowOffset,
+        shadowOpacity,
+        shadowAngle,
+        shadowColor
+      });
+      return svg;
+    },
+    /**
+     * Funtion recursive handle create object(s) and add to store through data be copied and return list object(s) processed
+     * @param {Array} objects - List object(s) copied
+     * @param {Array} processedItems - List object(s) pasted
+     * @param {Number} sheetId - Current sheet id
+     * @returns {Arrray} List object(s) pasted
+     */
+    async handlePasteItems(objects, processedItems = [], sheetId) {
+      if (objects.length === 0) {
+        return processedItems;
+      }
+
+      const objectsClone = cloneDeep(objects);
+      const data = objectsClone.splice(0, 1)[0];
+      const coord = this.computePastedObjectCoord(data, sheetId);
+
+      if (data.type === OBJECT_TYPE.IMAGE) {
+        const image = await this.handlePasteImage(data, coord);
+
+        return await this.handlePasteItems(
+          objectsClone,
+          [...processedItems, image],
+          sheetId
+        );
+      }
+
+      if (
+        data.type === OBJECT_TYPE.CLIP_ART ||
+        data.type === OBJECT_TYPE.SHAPE
+      ) {
+        const svg = await this.handlePasteSvg(data, coord);
+
+        return await this.handlePasteItems(
+          objectsClone,
+          [...processedItems, svg],
+          sheetId
+        );
+      }
+
+      if (data.type === OBJECT_TYPE.TEXT) {
+        const text = await this.handlePasteText(data, coord);
+
+        return await this.handlePasteItems(
+          objectsClone,
+          [...processedItems, text],
+          sheetId
+        );
+      }
+    },
+    /**
+     * Function handle active selection of object(s) pasted (single | multiplesingle)
+     * @param {Array} listPastedObjects - List object(s) pasted
+     * @param {Ref} canvas - Print canvas
+     */
+    setObjectPastetActiveSelection(listPastedObjects, canvas) {
+      if (listPastedObjects.length === 1) {
+        canvas.setActiveObject(listPastedObjects[0]);
+      } else if (listPastedObjects.length > 1) {
+        const sel = new fabric.ActiveSelection(listPastedObjects, {
+          canvas
+        });
+        canvas.setActiveObject(sel);
+      }
+    },
+    /**
+     * Check whether user's pasting data copy from outside while editing text or not
+     * @param {String} dataOutside Data copy from outside app
+     * @param {Object} objectCopy Canvas's object(s) to be copied
+     * @return {Boolean} User's paste data outside while editing text
+     */
+    isPasteToTextbox(dataOutside) {
+      if (!dataOutside) return false;
+      const activeObj = window.printCanvas.getActiveObject();
+      const objectType = activeObj?.get('type');
+
+      if (
+        dataOutside &&
+        objectType === FABRIC_OBJECT_TYPE.TEXT &&
+        activeObj?.isEditing
+      ) {
+        sessionStorage.removeItem(COPY_OBJECT_KEY);
+        return true;
+      }
+      return false;
+    },
+    /**
      * Function handle to get object(s) be copied from clipboard when user press Ctrl + V (Windows), Command + V (macOS), or from action menu
      */
-    handlePaste() {
-      navigator.clipboard.readText().then(clipText => {
-        const isJson = isJsonString(clipText);
-        if (isJson) {
-          const isValid = isFabricObject(clipText);
-          if (isValid) {
-            const data = JSON.parse(clipText);
-            console.log('handlePaste', data);
-          }
-        }
-      });
+    async handlePaste(event) {
+      if (this.isProcessingPaste) return;
+      this.isProcessingPaste = true;
+
+      const objectCopy = sessionStorage.getItem(COPY_OBJECT_KEY);
+      const objects = parsePasteObject(objectCopy);
+
+      if (isEmpty(objects)) return;
+
+      let dataCopyOutside = (
+        event?.clipboardData || window?.clipboardData
+      )?.getData('text');
+
+      const isPasteToTextbox = this.isPasteToTextbox(dataCopyOutside);
+
+      if (isPasteToTextbox) return;
+
+      const { sheetId } = JSON.parse(objectCopy);
+
+      const canvas = window.printCanvas;
+      canvas.discardActiveObject();
+
+      const listPastedObjects = await this.handlePasteItems(
+        objects,
+        [],
+        sheetId
+      );
+
+      canvas.add(...listPastedObjects);
+
+      this.setObjectPastetActiveSelection(listPastedObjects, canvas);
+
+      this.countPaste += 1;
+
+      setTimeout(() => {
+        this.isProcessingPaste = false;
+      }, 1000);
     },
     /**
      * Function handle to set object(s) to clipboard when user press Ctrl + C (Windows), Command + C (macOS), or from action menu
      */
     handleCopy() {
       const activeObj = window.printCanvas.getActiveObject();
-      if (activeObj) {
-        const cacheData = {
-          [COPY_OBJECT_KEY]: {
-            activeObj
-          }
-        };
-        navigator.clipboard.writeText(JSON.stringify(cacheData));
+
+      if (!activeObj) return;
+
+      this.countPaste = 1;
+      this.isProcessingPaste = false;
+      const activeObjClone = cloneDeep(activeObj);
+      let objects = [activeObjClone];
+
+      if (activeObjClone._objects) {
+        const specialObject = [OBJECT_TYPE.CLIP_ART, OBJECT_TYPE.TEXT].includes(
+          activeObjClone.objectType
+        );
+        objects = specialObject
+          ? [activeObjClone]
+          : [...activeObjClone._objects];
+        activeObjClone._restoreObjectsState();
       }
+
+      const jsonData = objects.map(obj => ({
+        ...this.currentObjects[obj.id],
+        id: null
+      }));
+
+      const cacheData = {
+        sheetId: this.pageSelected.id,
+        [COPY_OBJECT_KEY]: jsonData
+      };
+      sessionStorage.setItem(COPY_OBJECT_KEY, JSON.stringify(cacheData));
     },
     /**
      * Auto resize canvas to fit the container size
@@ -346,6 +629,7 @@ export default {
         }
       });
 
+      document.body.addEventListener('keyup', this.handleDeleteKey);
       this.eventHandling();
     },
     /**
@@ -398,9 +682,6 @@ export default {
       this.toggleActiveObjects(false);
 
       this.setSelectedObjectId({ id: '' });
-      if (this.toolNameSelected === TOOL_NAME.ACTIONS) {
-        this.setToolNameSelected({ name: '' });
-      }
     },
     /**
      * Close text properties modal
@@ -470,7 +751,6 @@ export default {
 
       if (targetType === 'group' && target.objectType === OBJECT_TYPE.TEXT) {
         const rectObj = target.getObjects(OBJECT_TYPE.RECT)[0];
-
         this.setBorderObject(rectObj, objectData);
       }
 
@@ -495,18 +775,11 @@ export default {
      * Event fire when user click on Text button on Toolbar to add new text on canvas
      */
     addText(x, y, width, height) {
-      const { object, data } = createTextBox(
-        x,
-        y,
-        width,
-        height,
-        {},
-        this.pageSelected.id
-      );
+      const { object, data } = createTextBox(x, y, width, height, {});
       object.on('rotated', this.handleRotated);
       object.on('moved', this.handleMoved);
       object.on('scaled', this.handleTextBoxScaled);
-      this.addNewObject(data);
+      this.addObjectToStore(data);
       const isConstrain = data.newObject.isConstrain;
       this.setCanvasUniformScaling(isConstrain);
       window.printCanvas.add(object);
@@ -540,52 +813,38 @@ export default {
       this.getThumbnailUrl();
     },
     /**
+     * Function trigger mutate to add new object to store
+     */
+    addObjectToStore(newObject) {
+      this.addNewObject(newObject);
+    },
+    /**
      * Event fire when user click on Image button on Toolbar to add new image on canvas
      */
-    addImageBox(x, y, width, height) {
-      const newImage = cloneDeep(ImageElement);
+    async addImageBox(x, y, width, height) {
       const id = uniqueId();
-      this.addNewObject({
+      const newImage = cloneDeep({
         id,
         newObject: {
-          ...newImage,
+          ...ImageElement,
           id,
+          size: {
+            width: pxToIn(width),
+            height: pxToIn(height)
+          },
           coord: {
-            ...newImage.coord,
-            x,
-            y
+            ...ImageElement.coord,
+            x: pxToIn(x),
+            y: pxToIn(y)
           }
         }
       });
-      const fabricProp = toFabricImageProp(newImage);
-      new fabric.Image.fromURL(
-        require('../../../../../assets/image/content-placeholder.jpg'),
-        image => {
-          const {
-            width: adjustedWidth,
-            height: adjustedHeight
-          } = getAdjustedObjectDimension(image, width, height);
 
-          image.set({
-            left: x,
-            top: y
-          });
+      this.addObjectToStore(newImage);
 
-          image.scaleX = adjustedWidth / image.width;
-          image.scaleY = adjustedHeight / image.height;
-
-          window.printCanvas.add(image);
-
-          selectLatestObject(window.printCanvas);
-        },
-        {
-          ...fabricProp,
-          id,
-          cornerSize: CORNER_SIZE,
-          lockUniScaling: false,
-          crossOrigin: 'anonymous'
-        }
-      );
+      const image = await createImage(newImage.newObject);
+      window.printCanvas.add(image);
+      selectLatestObject(window.printCanvas);
     },
     /**
      * Adding background to canvas & store
@@ -704,7 +963,7 @@ export default {
 
         const { height, width, scaleX, scaleY, top, left } = fabricObject;
 
-        this.addNewObject({
+        const newClipArt = {
           id: s.id,
           newObject: {
             ...s.object,
@@ -717,7 +976,8 @@ export default {
               height: pxToIn(height * scaleY)
             }
           }
-        });
+        };
+        this.addObjectToStore(newClipArt);
       });
 
       if (toBeAddedClipArts.length === 1) {
@@ -881,9 +1141,9 @@ export default {
           .getObjects()
           .find(o => o.id === s.id);
 
-        const { left, top } = fabricObject;
+        const { top, left } = fabricObject;
 
-        this.addNewObject({
+        const newShape = {
           id: s.id,
           newObject: {
             ...s.object,
@@ -892,7 +1152,8 @@ export default {
               y: pxToIn(top)
             }
           }
-        });
+        };
+        this.addObjectToStore(newShape);
       });
 
       if (toBeAddedShapes.length === 1) {
@@ -1125,7 +1386,8 @@ export default {
           this.$root.$emit('printInstructionEnd');
           this.setToolNameSelected({ name: '' });
         },
-        printCopyObj: this.handleCopy
+        printCopyObj: this.handleCopy,
+        printPasteObj: this.handlePaste
       };
 
       const events = {

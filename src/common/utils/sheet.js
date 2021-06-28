@@ -7,3 +7,7 @@ export const isHalfSheet = ({ type }) => {
 export const isHalfLeft = ({ type }) => {
   return type === SHEET_TYPE.BACK_COVER;
 };
+
+export const isHalfRight = ({ type }) => {
+  return type === SHEET_TYPE.FRONT_COVER;
+};

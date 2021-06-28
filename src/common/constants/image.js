@@ -7,6 +7,7 @@ import ROUGH_MEDIUM from '@/assets/image/border/rough-medium.png';
 import ROUGH_THICK from '@/assets/image/border/rough-thick.png';
 import ROUGH_THIN from '@/assets/image/border/rough-thin.png';
 import SOLID from '@/assets/image/border/solid.svg';
+import PLACE_HOLDER from '@/assets/image/content-placeholder.jpg';
 
 export const IMAGE_LOCAL = {
   BACKGROUND_WHITE,
@@ -17,5 +18,6 @@ export const IMAGE_LOCAL = {
   ROUGH_MEDIUM,
   ROUGH_THICK,
   ROUGH_THIN,
-  SOLID
+  SOLID,
+  PLACE_HOLDER
 };
