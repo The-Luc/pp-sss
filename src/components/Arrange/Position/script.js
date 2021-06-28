@@ -47,6 +47,7 @@ export default {
     onChangeValueX(val) {
       if (val == this.valueXPt) {
         this.onEsc();
+        return;
       }
       const { isValid, value, isForce } = validateInputOption(
         val,
@@ -70,6 +71,7 @@ export default {
     onChangeValueY(val) {
       if (val == this.valueYPt) {
         this.onEsc();
+        return;
       }
       const { isValid, value, isForce } = validateInputOption(
         val,

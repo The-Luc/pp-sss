@@ -103,7 +103,7 @@ export default {
           return;
         }
 
-        if (newValue !== oldValue) {
+        if (JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
           const name = `background-${newValue.left ? 'right' : 'left'}`;
 
           this.activeTab = name;

@@ -597,8 +597,6 @@ export default {
             startDrawBox(window.printCanvas, e).then(
               ({ left, top, width, height }) => {
                 if (this.awaitingAdd === OBJECT_TYPE.TEXT) {
-                  // left += width / 2;
-                  // top += height / 2;
                   this.addText(left, top, width, height);
                 }
                 if (this.awaitingAdd === OBJECT_TYPE.IMAGE) {
@@ -964,6 +962,7 @@ export default {
           .find(o => o.id === s.id);
 
         const { height, width, scaleX, scaleY, top, left } = fabricObject;
+
         const newClipArt = {
           id: s.id,
           newObject: {
@@ -1143,6 +1142,7 @@ export default {
           .find(o => o.id === s.id);
 
         const { top, left } = fabricObject;
+
         const newShape = {
           id: s.id,
           newObject: {

@@ -260,11 +260,6 @@ export const createTextBox = (x, y, width, height, textProperties) => {
     height: pxToIn(group.height)
   };
 
-  dataObject.newObject.size = {
-    width: pxToIn(group.width),
-    height: pxToIn(group.height)
-  };
-
   dataObject.newObject.coord = {
     ...dataObject.newObject.coord,
     x: pxToIn(group.left),
@@ -597,14 +592,11 @@ const applyTextGroupProperties = function(textGroup, prop) {
  */
 export const applyTextBoxProperties = function(textObject, prop) {
   const isModifyPosition = !isNaN(prop?.coord?.x) || !isNaN(prop?.coord?.y);
-
-  if (isModifyPosition) {
-    applyTextBoxPosition(textObject, prop);
-    return;
-  }
-
   const [rect, text] = getObjectsFromTextBox(textObject);
   applyTextGroupProperties(textObject, prop);
+  if (isModifyPosition) {
+    return;
+  }
   applyTextProperties(text, prop);
   applyTextRectProperties(rect, prop);
 };

@@ -226,14 +226,7 @@ export const updateElement = (element, prop, canvas) => {
  * @param {Object}  prop    new property
  */
 export const setElementProp = (element, prop) => {
-  const isModifyPosition = !isNaN(prop?.left) || !isNaN(prop?.top);
-  if (!isModifyPosition) {
-    element.set(prop);
-  } else {
-    const x = prop?.left ?? element.aCoords.tl.x;
-    const y = prop?.top ?? element.aCoords.tl.y;
-    element.setPositionByOrigin({ x, y }, 'left', 'top');
-  }
+  element.set(prop);
   const useProp = cloneDeep(prop);
 
   RESTRICT_PROP_CHILD.forEach(rp => {
@@ -338,10 +331,7 @@ export const addMultiSvg = (
     left += scaleSize(11) + s.width * s.scaleX;
   });
 
-  const group = new fabric.Group(svgs, {
-    originX: 'center',
-    originY: 'center'
-  });
+  const group = new fabric.Group(svgs);
 
   group.setCoords();
 
