@@ -33,9 +33,10 @@ import {
   updateElement,
   deleteObjectById,
   applyShadowToObject,
-  addPrintSvgs,
   mappingElementProperties,
-  calcScaleElement
+  calcScaleElement,
+  handleGetSvgData,
+  addEventListeners
 } from '@/common/fabricObjects';
 
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
@@ -321,16 +322,14 @@ export default {
         moved: this.handleMoved
       };
 
-      const [svg] = await addPrintSvgs(
-        [ojbectData],
-        data.type === OBJECT_TYPE.CLIP_ART ? 'vector' : 'pathData',
-        data.size.height,
-        window.printCanvas,
-        isHalfSheet(this.pageSelected),
-        isHalfLeft(this.pageSelected),
-        eventListeners,
-        true
-      );
+      const svg = await handleGetSvgData({
+        svg: ojbectData,
+        svgUrlAttrName:
+          data.type === OBJECT_TYPE.CLIP_ART ? 'vector' : 'pathData',
+        expectedHeight: data.size.height
+      });
+
+      addEventListeners(svg, eventListeners);
 
       const objectToStore = {
         id,
@@ -453,6 +452,9 @@ export default {
       this.isProcessingPaste = true;
 
       const objectCopy = sessionStorage.getItem(COPY_OBJECT_KEY);
+      const objects = parsePasteObject(objectCopy);
+
+      if (isEmpty(objects)) return;
 
       let dataCopyOutside = (
         event?.clipboardData || window?.clipboardData
@@ -462,22 +464,22 @@ export default {
 
       if (isPasteToTextbox) return;
 
-      const objects = parsePasteObject(objectCopy);
+      const { sheetId } = JSON.parse(objectCopy);
 
-      if (!isEmpty(objects)) {
-        const { sheetId } = JSON.parse(objectCopy);
-        const canvas = window.printCanvas;
-        canvas.discardActiveObject();
-        const listPastedObjects = await this.handlePasteItems(
-          objects,
-          [],
-          sheetId
-        );
+      const canvas = window.printCanvas;
+      canvas.discardActiveObject();
 
-        canvas.add(...listPastedObjects);
-        this.setObjectPastetActiveSelection(listPastedObjects, canvas);
-        this.countPaste += 1;
-      }
+      const listPastedObjects = await this.handlePasteItems(
+        objects,
+        [],
+        sheetId
+      );
+
+      canvas.add(...listPastedObjects);
+
+      this.setObjectPastetActiveSelection(listPastedObjects, canvas);
+
+      this.countPaste += 1;
 
       setTimeout(() => {
         this.isProcessingPaste = false;

@@ -373,11 +373,50 @@ export const addEventListeners = (element, eventListeners) => {
 };
 
 /**
+ * Function handle svg data with fabric prop
+ * @param {Object} svg - The svg's data
+ * @param {String} svgUrlAttrName - the attribute name contain svg url
+ * @param {Number} expectedHeight - the svg's expected height want to draw
+ * @returns {Object} Svg object
+ */
+export const handleGetSvgData = async ({
+  svg,
+  svgUrlAttrName,
+  expectedHeight
+}) => {
+  const fabricProp = getFabricPropByType(svg.object.type, svg.object);
+
+  return await getSvgData(
+    svg.object[svgUrlAttrName],
+    { ...fabricProp, id: svg.id },
+    expectedHeight
+  );
+};
+
+/**
+ * Function add svgs to canvas
+ * @param {Array} svgs - list of sgv will be added
+ * @param {Ref} canvas - Canvas element
+ * @param {Boolean} params.isAddedToSinglePage - is sgv will be added to single page
+ * @param {Boolean} params.isPlaceInLeftPage - is sgv will be added to left page
+ */
+const handleAddSvgsToCanvas = ({
+  svgs,
+  canvas,
+  isAddedToSinglePage,
+  isPlaceInLeftPage
+}) => {
+  svgs.length == 1
+    ? addSingleSvg(svgs[0], canvas, isAddedToSinglePage, isPlaceInLeftPage)
+    : addMultiSvg(svgs, canvas, isAddedToSinglePage, isPlaceInLeftPage);
+};
+
+/**
  * Adding svgs to canvas
  *
  * @param {Array}   svgObjects          list of sgv will be added
  * @param {String}  svgUrlAttrName      the attribute name contain svg url
- * @param {Nunber}  expectedHeight      the attribute name contain svg url
+ * @param {Number}  expectedHeight      the attribute name contain svg url
  * @param {Object}  canvas              the canvas contain new sgv
  * @param {Boolean} isAddedToSinglePage is sgv will be added to single page
  * @param {Boolean} isPlaceInLeftPage   is sgv will be added to left page
@@ -390,18 +429,15 @@ export const addPrintSvgs = async (
   canvas,
   isAddedToSinglePage,
   isPlaceInLeftPage,
-  eventListeners,
-  isPaste = false
+  eventListeners
 ) => {
   const svgs = await Promise.all(
     svgObjects.map(s => {
-      const fabricProp = getFabricPropByType(s.object.type, s.object);
-
-      return getSvgData(
-        s.object[svgUrlAttrName],
-        { ...fabricProp, id: s.id },
+      return handleGetSvgData({
+        svg: s,
+        svgUrlAttrName,
         expectedHeight
-      );
+      });
     })
   );
 
@@ -409,11 +445,12 @@ export const addPrintSvgs = async (
 
   svgs.forEach(s => addEventListeners(s, eventListeners));
 
-  if (!isPaste) {
-    svgs.length == 1
-      ? addSingleSvg(svgs[0], canvas, isAddedToSinglePage, isPlaceInLeftPage)
-      : addMultiSvg(svgs, canvas, isAddedToSinglePage, isPlaceInLeftPage);
-  }
+  handleAddSvgsToCanvas({
+    svgs,
+    canvas,
+    isAddedToSinglePage,
+    isPlaceInLeftPage
+  });
 
   canvas.renderAll();
 
