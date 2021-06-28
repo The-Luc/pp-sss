@@ -397,8 +397,8 @@ export const handleGetSvgData = async ({
  * Function add svgs to canvas
  * @param {Array} svgs - list of sgv will be added
  * @param {Ref} canvas - Canvas element
- * @param {Boolean} params.isAddedToSinglePage - is sgv will be added to single page
- * @param {Boolean} params.isPlaceInLeftPage - is sgv will be added to left page
+ * @param {Boolean} isAddedToSinglePage - is sgv will be added to single page
+ * @param {Boolean} isPlaceInLeftPage - is sgv will be added to left page
  */
 const handleAddSvgsToCanvas = ({
   svgs,
