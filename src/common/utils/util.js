@@ -361,7 +361,7 @@ export const toFabricTextGroupProp = prop => {
       width: DEFAULT_RULE_DATA.WIDTH,
       height: DEFAULT_RULE_DATA.HEIGHT
     },
-    restrict: ['id', 'shadow', 'alignment']
+    restrict: ['id', 'shadow', 'alignment', 'fontSize']
   };
 
   return mapObject(prop, mapRules);
@@ -376,14 +376,8 @@ export const toFabricTextGroupProp = prop => {
 export const toFabricImageProp = prop => {
   const mapRules = {
     data: {
-      x: {
-        name: 'left',
-        parse: value => inToPx(value)
-      },
-      y: {
-        name: 'top',
-        parse: value => inToPx(value)
-      },
+      x: DEFAULT_RULE_DATA.X,
+      y: DEFAULT_RULE_DATA.Y,
       color: {
         name: 'fill'
       },
@@ -391,16 +385,7 @@ export const toFabricImageProp = prop => {
         name: 'opacity'
       }
     },
-    restrict: [
-      'id',
-      'size',
-      'type',
-      'textCase',
-      'text',
-      'border',
-      'shadow',
-      'flip'
-    ]
+    restrict: ['border', 'shadow', 'flip', 'size']
   };
   return mapObject(prop, mapRules);
 };
@@ -436,6 +421,7 @@ export const getRectDashes = (width, height, value, strokeWidth) => {
   const dashArray = [].concat.apply([], res);
   return dashArray;
 };
+
 
 // same as previous snippet except that it does return all the segment's dashes
 function getLineDashes(x1, y1, x2, y2) {
