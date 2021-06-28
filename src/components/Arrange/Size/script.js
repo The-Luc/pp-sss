@@ -57,12 +57,13 @@ export default {
      * @param {Number}  val size width value user entered
      */
     onChangeWidth(val) {
-      if (val == this.widthPt) {
+      const width = splitNumberByDecimal(val);
+      if (width == this.widthPt) {
         this.onEsc();
         return;
       }
       const { isValid, value, isForce } = validateInputOption(
-        val,
+        width,
         this.minSize || this.minWidth,
         this.maxSize,
         2
@@ -81,12 +82,13 @@ export default {
      * @param {Number}  val size height value user entered
      */
     onChangeHeight(val) {
-      if (val == this.heightPt) {
+      const height = splitNumberByDecimal(val);
+      if (height == this.heightPt) {
         this.onEsc();
         return;
       }
       const { isValid, value } = validateInputOption(
-        val,
+        height,
         this.minSize || this.minHeight,
         this.maxSize,
         2

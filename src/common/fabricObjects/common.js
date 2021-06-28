@@ -517,10 +517,9 @@ export const applyShadowToObject = function(fabricObject, shadowConfig) {
   if (isEmpty(fabricObject) || isEmpty(shadowConfig)) return;
   const shadow = getShadowBaseOnConfig(shadowConfig);
 
-  if (fabricObject.objectType !== OBJECT_TYPE.TEXT) {
-    shadow.offsetX /= fabricObject.scaleX;
-    shadow.offsetY /= fabricObject.scaleY;
-  }
+  shadow.offsetX /= fabricObject.scaleX;
+  shadow.offsetY /= fabricObject.scaleY;
+  shadow.blur /= (fabricObject.scaleX + fabricObject.scaleY) * 0.5;
 
   fabricObject.set({ shadow });
 };
@@ -592,4 +591,18 @@ export const deleteObjectById = (ids, canvas) => {
   canvas.getObjects().forEach(o => {
     if (ids.includes(o.id)) canvas.remove(o);
   });
+};
+/**
+ * Handle update blur value after scale object
+ *
+ * @param {Number}   blurValue blur value before scale object
+ * @param {Object}  oldScale  scale value before scale object
+ * @param {Object}  newScale  scale value after scale object
+ * @returns {Number} blur value after scale object
+ */
+export const handleObjectBlur = (blurValue, oldScale, newScale) => {
+  const blur =
+    (blurValue * (oldScale.scaleX + oldScale.scaleY)) /
+    (newScale.scaleX + newScale.scaleY);
+  return blur;
 };

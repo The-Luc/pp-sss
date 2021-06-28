@@ -45,18 +45,19 @@ export default {
      * @param {Number}  val position x value user entered
      */
     onChangeValueX(val) {
-      if (val == this.valueXPt) {
+      const valueX = splitNumberByDecimal(val);
+      if (valueX == this.valueXPt) {
         this.onEsc();
         return;
       }
       const { isValid, value, isForce } = validateInputOption(
-        val,
+        valueX,
         this.min,
         this.max,
         2
       );
       if (isValid) {
-        this.$emit('change', { coord: { x: splitNumberByDecimal(value) } });
+        this.$emit('change', { coord: { x: value } });
         if (isForce) {
           this.forceRenderComponent();
         }
@@ -69,18 +70,19 @@ export default {
      * @param {Number}  val position y value user entered
      */
     onChangeValueY(val) {
-      if (val == this.valueYPt) {
+      const valueY = splitNumberByDecimal(val);
+      if (valueY == this.valueYPt) {
         this.onEsc();
         return;
       }
       const { isValid, value, isForce } = validateInputOption(
-        val,
+        valueY,
         this.min,
         this.max,
         2
       );
       if (isValid) {
-        this.$emit('change', { coord: { y: splitNumberByDecimal(value) } });
+        this.$emit('change', { coord: { y: value } });
         if (isForce) {
           this.forceRenderComponent();
         }
