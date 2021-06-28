@@ -39,7 +39,8 @@ import {
   addEventListeners,
   getAdjustedObjectDimension,
   textVerticalAlignOnAdjust,
-  updateObjectDimensionsIfSmaller
+  updateObjectDimensionsIfSmaller,
+  handleObjectBlur
 } from '@/common/fabricObjects';
 
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
@@ -1234,12 +1235,13 @@ export default {
       const target = e.transform?.target;
       if (!isEmpty(shadow)) {
         const oldTarget = e.transform;
-        const { offsetX, offsetY } = shadow;
+        const { offsetX, offsetY, blur } = shadow;
         target.set({
           shadow: {
             ...shadow,
             offsetX: (offsetX * oldTarget.scaleX) / target.scaleX,
-            offsetY: (offsetY * oldTarget.scaleY) / target.scaleY
+            offsetY: (offsetY * oldTarget.scaleY) / target.scaleY,
+            blur: handleObjectBlur(blur, oldTarget, target)
           }
         });
       }
