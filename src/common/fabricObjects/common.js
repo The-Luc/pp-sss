@@ -279,7 +279,9 @@ export const getSvgData = (svgUrl, elementProperty, expectedHeight) => {
         height: svg.height,
         scaleX: scale,
         scaleY: scale,
-        strokeWidth: DEFAULT_SHAPE.BORDER.STROKE_WIDTH
+        ...(elementProperty.fillMode === 'fill' && {
+          strokeWidth: DEFAULT_SHAPE.BORDER.STROKE_WIDTH
+        })
       });
 
       if (!svg.isColorful) {
