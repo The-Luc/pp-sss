@@ -22,15 +22,16 @@ import {
   TEXT_VERTICAL_ALIGN,
   OBJECT_MIN_SIZE
 } from '@/common/constants';
+import { getAdjustedObjectDimension } from './common';
 import { toggleStroke, toggleControlsVisibility } from './drawingBox';
 
 /**
  * Handle creating a TextBox into canvas
  */
-export const createTextBox = (x, y, width, height, textProperties, sheetId) => {
+export const createTextBox = (x, y, width, height, textProperties) => {
   const newText = cloneDeep(TextElement);
   let isHasTextId = !!textProperties?.id;
-  const id = isHasTextId ? textProperties?.id : `${sheetId}-${uniqueId()}`;
+  const id = isHasTextId ? textProperties?.id : uniqueId();
 
   const dataObject = {
     id,
@@ -39,8 +40,8 @@ export const createTextBox = (x, y, width, height, textProperties, sheetId) => {
       ...(isHasTextId ? { ...textProperties } : { ...newText }),
       id,
       coord: {
-        x: isHasTextId ? textProperties?.coord?.x : x,
-        y: isHasTextId ? textProperties?.coord?.y : y,
+        x: isHasTextId ? textProperties.coord.x : x,
+        y: isHasTextId ? textProperties.coord.y : y,
         rotation: isHasTextId
           ? textProperties?.coord?.rotation
           : newText.coord.rotation
@@ -269,23 +270,6 @@ export const createTextBox = (x, y, width, height, textProperties, sheetId) => {
   dataObject.newObject.minWidth = pxToIn(text.getMinWidth());
 
   return { object: group, data: dataObject };
-};
-
-/**
- * Get text dimensions { width, height } after auto adjusted by fabric
- * @param {Object} text - the fabric textbox object
- * @param {Number} targetWidth - the target width to compare
- * @param {Number} targetHeight - the target height to compare
- * @returns {Object} dimensions { width, height } that text can use
- */
-export const getAdjustedObjectDimension = function(
-  text,
-  targetWidth,
-  targetHeight
-) {
-  const width = text.width > targetWidth ? text.width : targetWidth;
-  const height = text.height > targetHeight ? text.height : targetHeight;
-  return { width, height };
 };
 
 /**
@@ -615,4 +599,16 @@ export const applyTextBoxProperties = function(textObject, prop) {
   }
   applyTextProperties(text, prop);
   applyTextRectProperties(rect, prop);
+};
+/**
+ * Apply Position Changed to Text Box
+ * @param {Object} textObject - the object to be updated
+ * @param {Object} prop - the prop change
+ */
+export const applyTextBoxPosition = function(textObject, prop) {
+  const x = !isNaN(prop?.coord?.x) ? inToPx(prop?.coord?.x) : textObject.left;
+  const y = !isNaN(prop?.coord?.y) ? inToPx(prop?.coord?.y) : textObject.top;
+  textObject.setPositionByOrigin({ x, y }, 'left', 'top');
+  textObject.setCoords();
+  window.printCanvas.renderAll();
 };

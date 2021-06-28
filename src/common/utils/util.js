@@ -376,14 +376,8 @@ export const toFabricTextGroupProp = prop => {
 export const toFabricImageProp = prop => {
   const mapRules = {
     data: {
-      x: {
-        name: 'left',
-        parse: value => inToPx(value)
-      },
-      y: {
-        name: 'top',
-        parse: value => inToPx(value)
-      },
+      x: DEFAULT_RULE_DATA.X,
+      y: DEFAULT_RULE_DATA.Y,
       color: {
         name: 'fill'
       },
@@ -391,16 +385,7 @@ export const toFabricImageProp = prop => {
         name: 'opacity'
       }
     },
-    restrict: [
-      'id',
-      'size',
-      'type',
-      'textCase',
-      'text',
-      'border',
-      'shadow',
-      'flip'
-    ]
+    restrict: ['border', 'shadow', 'flip', 'size']
   };
   return mapObject(prop, mapRules);
 };

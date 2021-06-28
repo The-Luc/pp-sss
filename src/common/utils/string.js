@@ -1,24 +1,27 @@
 import { COPY_OBJECT_KEY } from '../constants/config';
 
 /**
- * Check input data is json string or not
- * @returns {Boolean} Data is json string or not
+ * The function check data can parse to JSON or not and return object be parse
+ * @param {String} str Data as string
+ * @returns {Object} Data as JSON
  */
-export const isJsonString = str => {
+export const getJson = str => {
   try {
-    JSON.parse(str);
+    return JSON.parse(str);
   } catch {
-    return false;
+    return {};
   }
-  return true;
 };
 
 /**
  * Check data copied has object(s) or not by compare with key special
- * @returns {Boolean} Data copied is fabric object or not
+ * @param {String} data Paste data
+ * @returns {Object} Data is parse to JSON
  */
-export const isFabricObject = data => {
-  const jsonData = JSON.parse(data);
-  const key = Object.keys(jsonData);
-  return key.includes(COPY_OBJECT_KEY);
+export const parsePasteObject = data => {
+  const jsonData = getJson(data);
+
+  if (!jsonData) return {};
+
+  return jsonData[COPY_OBJECT_KEY];
 };

@@ -50,6 +50,9 @@ export const getters = {
     triggerChange.clipArt,
   [PRINT._GETTERS.TRIGGER_SHAPE_CHANGE]: ({ triggerChange }) =>
     triggerChange.shape,
+  [PRINT._GETTERS.GET_OBJECTS]: ({ objects }) => {
+    return objects;
+  },
   [PRINT._GETTERS.SHEET_LAYOUT]: ({
     sheets,
     objects,
