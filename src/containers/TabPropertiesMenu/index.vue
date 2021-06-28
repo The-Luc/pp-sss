@@ -1,5 +1,5 @@
 <template>
-  <TabMenu :active-tab-name="tabDefault"><slot /></TabMenu>
+  <TabMenu :active-tab-name="activeTab" @change="onTabChange"><slot /></TabMenu>
 </template>
 
 <script src="./script.js" />

@@ -1,7 +1,8 @@
-import { mapGetters } from 'vuex';
-import { GETTERS as APP_GETTERS } from '@/store/modules/app/const';
-
 import TabMenu from '@/components/TabMenu';
+
+import { mapGetters } from 'vuex';
+
+import { GETTERS as APP_GETTERS } from '@/store/modules/app/const';
 
 export default {
   components: {
@@ -9,18 +10,17 @@ export default {
   },
   computed: {
     ...mapGetters({
-      isOpenMenuProperties: APP_GETTERS.IS_OPEN_MENU_PROPERTIES
+      selectedObjectId: APP_GETTERS.TAB_SELECTED_OBJECT_ID
     })
   },
   data() {
     return {
-      tabDefault: 'general'
+      activeTab: ''
     };
   },
   watch: {
-    isOpenMenuProperties(val) {
-      if (val) return;
-      this.tabDefault = 'general';
+    selectedObjectId(newVal, oldVal) {
+      if (newVal !== oldVal) this.activeTab = '';
     }
   },
   methods: {
@@ -29,6 +29,14 @@ export default {
      */
     onChange(data) {
       this.$emit('change', data);
+    },
+    /**
+     * Get the name of tab when use change tab
+     *
+     * @param {String}  tabName current tab name
+     */
+    onTabChange(tabName) {
+      this.activeTab = tabName;
     }
   }
 };

@@ -215,8 +215,7 @@ export default {
       toggleActiveObjects: MUTATES.TOGGLE_ACTIVE_OBJECTS,
       setPropertiesObjectType: MUTATES.SET_PROPERTIES_OBJECT_TYPE,
       setBackgroundProp: PRINT_MUTATES.SET_BACKGROUND_PROP,
-      deleteBackground: PRINT_MUTATES.DELETE_BACKGROUND,
-      setObjectIdsPropertiesFirstTab: MUTATES.SET_OBJECT_IDS_FIRST_TAB
+      deleteBackground: PRINT_MUTATES.DELETE_BACKGROUND
     }),
     /**
      * Function handle compute pasted object's coord
@@ -657,8 +656,8 @@ export default {
      *
      * @param {String}  objectType  type of selected object
      */
-    openProperties(objectType) {
-      this.setIsOpenProperties({ isOpen: true });
+    openProperties(objectType, id) {
+      this.setIsOpenProperties({ isOpen: true, objectId: id });
 
       if (objectType === OBJECT_TYPE.TEXT) {
         this.updateTriggerTextChange();
@@ -770,7 +769,7 @@ export default {
 
       this.setPropertiesObjectType({ type: objectType });
 
-      this.openProperties(objectType);
+      this.openProperties(objectType, id);
     },
     /**
      * Event fire when user click on Text button on Toolbar to add new text on canvas

@@ -27,7 +27,7 @@ export const state = {
     isOpen: false,
     selectedObjectType: '',
     propertiesObjectType: '',
-    objectIdsForShowFirstTab: []
+    selectedObjectId: ''
   },
 
   // Tool icon popover

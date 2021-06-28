@@ -1,5 +1,7 @@
 import APP from './const';
 
+import { isEmpty } from '@/common/utils';
+
 export const mutations = {
   [APP._MUTATES.TOGGLE_MODAL](state, payload) {
     const { isOpenModal, modalData } = payload;
@@ -21,8 +23,10 @@ export const mutations = {
   [APP._MUTATES.SET_OBJECT_TYPE_SELECTED](state, { type }) {
     state.propertiesModal.selectedObjectType = type;
   },
-  [APP._MUTATES.TOGGLE_MENU_PROPERTIES](state, { isOpen }) {
+  [APP._MUTATES.TOGGLE_MENU_PROPERTIES](state, { isOpen, objectId }) {
     state.propertiesModal.isOpen = isOpen;
+
+    state.propertiesModal.selectedObjectId = isEmpty(objectId) ? '' : objectId;
   },
   [APP._MUTATES.RESET_PRINT_CONFIG](state) {
     state.propertiesModal.isOpen = false;
@@ -56,8 +60,5 @@ export const mutations = {
   },
   [APP._MUTATES.SET_PROPERTIES_OBJECT_TYPE](state, { type }) {
     state.propertiesModal.propertiesObjectType = type;
-  },
-  [APP._MUTATES.SET_OBJECT_IDS_FIRST_TAB](state, { objectIdsForShowFirstTab }) {
-    state.propertiesModal.objectIdsForShowFirstTab = objectIdsForShowFirstTab;
   }
 };

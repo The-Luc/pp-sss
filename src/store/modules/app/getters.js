@@ -18,6 +18,6 @@ export const getters = {
   [APP._GETTERS.HAS_ACTIVE_OBJECTS]: ({ hasActiveObjects }) => hasActiveObjects,
   [APP._GETTERS.PROPERTIES_OBJECT_TYPE]: ({ propertiesModal }) =>
     propertiesModal.propertiesObjectType,
-  [APP._GETTERS.IS_SHOW_FIRST_TAB]: ({ propertiesModal }) =>
-    propertiesModal.objectIdsForShowFirstTab
+  [APP._GETTERS.TAB_SELECTED_OBJECT_ID]: ({ propertiesModal }) =>
+    propertiesModal.selectedObjectId
 };
