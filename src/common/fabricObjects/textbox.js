@@ -585,7 +585,7 @@ const applyTextGroupProperties = function(textGroup, prop) {
   }
 
   textGroup.set(textGroupProp);
-
+  textGroup.setCoords();
   canvas.renderAll();
 };
 

@@ -99,7 +99,7 @@ window.addEventListener('popstate', () => {
   window.popStateDetected = true;
 });
 
-router.beforeEach(async (to, from, next) => {
+router.beforeEach((to, from, next) => {
   const isBackFromBrowser = window.popStateDetected;
   if (isBackFromBrowser) {
     if (store.state.app.modal.isOpen) {
@@ -120,7 +120,7 @@ router.beforeEach(async (to, from, next) => {
       const emptySections = sections?.filter(item => item.sheets?.length === 0);
       if (emptySections?.length !== 0) {
         if (from.name !== ROUTE_NAME.MANAGER) {
-          await next();
+          next();
         }
         store.commit(MUTATES.TOGGLE_MODAL, {
           isOpenModal: true,
