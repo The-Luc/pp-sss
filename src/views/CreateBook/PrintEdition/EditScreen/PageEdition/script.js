@@ -291,6 +291,10 @@ export default {
         textProperties
       );
 
+      object.set({
+        angle: objectData.newObject.coord.rotation
+      });
+
       object.on('rotated', this.handleRotated);
       object.on('moved', this.handleMoved);
       object.on('scaled', this.handleTextBoxScaled);
