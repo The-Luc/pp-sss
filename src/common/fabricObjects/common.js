@@ -2,7 +2,7 @@ import { fabric } from 'fabric';
 import { cloneDeep } from 'lodash';
 import Color from 'color';
 
-import { OBJECT_TYPE } from '@/common/constants';
+import { DEFAULT_SHAPE, OBJECT_TYPE } from '@/common/constants';
 
 import { inToPx, ptToPx, isEmpty, mapObject, scaleSize } from '@/common/utils';
 
@@ -278,7 +278,10 @@ export const getSvgData = (svgUrl, elementProperty, expectedHeight) => {
         width: svg.width,
         height: svg.height,
         scaleX: scale,
-        scaleY: scale
+        scaleY: scale,
+        ...(elementProperty.fillMode === 'fill' && {
+          strokeWidth: DEFAULT_SHAPE.BORDER.STROKE_WIDTH
+        })
       });
 
       if (!svg.isColorful) {

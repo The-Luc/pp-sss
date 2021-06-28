@@ -16,7 +16,14 @@ export const DEFAULT_PROP = {
   MIN_POSITION: -100,
   MAX_POSITION: 100,
   MIN_SIZE: 0.5,
-  MAX_SIZE: 60
+  MAX_SIZE: 60,
+  BORDER: {
+    FILL: false,
+    STROKE: '#000000',
+    STROKE_WIDTH: 0,
+    STROKE_DASH_ARRAY: [],
+    STROKE_LINE_CAP: 'solid'
+  }
 };
 
 export const DEFAULT_COORD = {
@@ -69,13 +76,7 @@ export const DEFAULT_TEXT = {
   LOCK_UNI_SCALE: false,
   OPACITY: DEFAULT_PROP.OPACITY,
   EDITING_BORDER_COLOR: 'transparent',
-  BORDER: {
-    FILL: false,
-    STROKE: DEFAULT_PROP.COLOR,
-    STROKE_WIDTH: 0,
-    STROKE_DASH_ARRAY: [],
-    STROKE_LINE_CAP: 'solid'
-  },
+  BORDER: DEFAULT_PROP.BORDER,
   SHADOW: {
     ...DEFAULT_SHADOW
   },
@@ -134,5 +135,6 @@ export const DEFAULT_SHAPE = {
   ORIGIN: {
     ...DEFAULT_ORIGIN
   },
-  FILL_MODE: SVG_FILL_MODE.FILL
+  FILL_MODE: SVG_FILL_MODE.FILL,
+  BORDER: DEFAULT_PROP.BORDER
 };
