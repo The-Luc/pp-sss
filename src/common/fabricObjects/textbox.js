@@ -266,7 +266,7 @@ export const createTextBox = (x, y, width, height, textProperties, sheetId) => {
   };
 
   dataObject.newObject.minHeight = pxToIn(text.height);
-  dataObject.newObject.minWidth = pxToIn(text.width);
+  dataObject.newObject.minWidth = pxToIn(text.getMinWidth());
 
   return { object: group, data: dataObject };
 };
