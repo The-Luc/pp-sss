@@ -276,7 +276,7 @@ export const mutations = {
     state.selectedObjectType = type;
   },
   [BOOK._MUTATES.TOGGLE_MENU_PROPERTIES](state, { isOpen }) {
-    state.isOpenProperties = isOpen;
+    state.propertiesModal.isOpen = isOpen;
   },
   [BOOK._MUTATES.SET_SECTION_ID](state, { sectionId }) {
     state.sectionId = sectionId;

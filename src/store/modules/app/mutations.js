@@ -19,15 +19,15 @@ export const mutations = {
     };
   },
   [APP._MUTATES.SET_OBJECT_TYPE_SELECTED](state, { type }) {
-    state.selectedObjectType = type;
+    state.propertiesModal.selectedObjectType = type;
   },
   [APP._MUTATES.TOGGLE_MENU_PROPERTIES](state, { isOpen }) {
-    state.isOpenProperties = isOpen;
+    state.propertiesModal.isOpen = isOpen;
   },
   [APP._MUTATES.RESET_PRINT_CONFIG](state) {
-    state.isOpenProperties = false;
+    state.propertiesModal.isOpen = false;
     state.colorPicker.isOpen = false;
-    state.selectedObjectType = '';
+    state.propertiesModal.selectedObjectType = '';
     state.selectedToolName = '';
   },
   [APP._MUTATES.SET_TOOL_NAME_SELECTED](state, { name }) {
@@ -55,6 +55,9 @@ export const mutations = {
     state.hasActiveObjects = data;
   },
   [APP._MUTATES.SET_PROPERTIES_OBJECT_TYPE](state, { type }) {
-    state.propertiesObjectType = type;
+    state.propertiesModal.propertiesObjectType = type;
+  },
+  [APP._MUTATES.SET_OBJECT_IDS_FIRST_TAB](state, { objectIdsForShowFirstTab }) {
+    state.propertiesModal.objectIdsForShowFirstTab = objectIdsForShowFirstTab;
   }
 };

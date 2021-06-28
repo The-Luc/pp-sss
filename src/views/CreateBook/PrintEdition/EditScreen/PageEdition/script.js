@@ -205,7 +205,8 @@ export default {
       toggleActiveObjects: MUTATES.TOGGLE_ACTIVE_OBJECTS,
       setPropertiesObjectType: MUTATES.SET_PROPERTIES_OBJECT_TYPE,
       setBackgroundProp: PRINT_MUTATES.SET_BACKGROUND_PROP,
-      deleteBackground: PRINT_MUTATES.DELETE_BACKGROUND
+      deleteBackground: PRINT_MUTATES.DELETE_BACKGROUND,
+      setObjectIdsPropertiesFirstTab: MUTATES.SET_OBJECT_IDS_FIRST_TAB
     }),
     /**
      * Function handle to get object(s) be copied from clipboard when user press Ctrl + V (Windows), Command + V (macOS), or from action menu
@@ -718,6 +719,8 @@ export default {
             }
           }
         });
+
+        //
       });
 
       if (toBeAddedClipArts.length === 1) {
