@@ -3,7 +3,7 @@ import moment from 'moment';
 
 import { DATE_FORMAT, MOMENT_TYPE } from '@/common/constants';
 import { DEFAULT_RULE_DATA } from '@/common/fabricObjects/common';
-import { scaleSize, inToPx } from './canvas';
+import { scaleSize } from './canvas';
 
 /**
  * Get the next id of item list
@@ -421,7 +421,6 @@ export const getRectDashes = (width, height, value, strokeWidth) => {
   const dashArray = [].concat.apply([], res);
   return dashArray;
 };
-
 
 // same as previous snippet except that it does return all the segment's dashes
 function getLineDashes(x1, y1, x2, y2) {

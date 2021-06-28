@@ -62,7 +62,7 @@ export default {
       const { x, y } = activeObj?.aCoords?.tl || {};
       const updateData = isValid ? { fontSize: value } : {};
       this.$root.$emit('printChangeTextProperties', updateData);
-      
+
       if (x && y) {
         this.$root.$emit('printChangeTextProperties', {
           coord: {

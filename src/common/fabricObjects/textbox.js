@@ -183,8 +183,8 @@ export const createTextBox = (x, y, width, height, textProperties) => {
     };
 
     const setNewTextProperties = () => {
-      const { text: newVal, top, left, width, height } = textObject;
-      text.set({ ...newProperties, text: newVal, top, left, width, height });
+      const { text: newVal, width, height } = textObject;
+      text.set({ ...newProperties, text: newVal, width, height });
     };
 
     const setNewRectProperties = () => {
@@ -234,10 +234,14 @@ export const createTextBox = (x, y, width, height, textProperties) => {
 
     group.addWithUpdate();
 
+    textForEditing.group = null;
+    textForEditing.top = group.top;
+    textForEditing.left = group.left;
+
     updateTextListeners(textForEditing, rectForEditing, group, cachedData);
 
-    canvas.add(textForEditing);
     canvas.add(rectForEditing);
+    canvas.add(textForEditing);
 
     canvas.setActiveObject(textForEditing);
 
