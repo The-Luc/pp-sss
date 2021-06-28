@@ -5,7 +5,7 @@ import { cloneDeep, uniqueId, merge, debounce } from 'lodash';
 import { usePrintOverrides } from '@/plugins/fabric';
 
 import { useDrawLayout } from '@/hooks';
-import { startDrawBox } from '@/common/fabricObjects/drawingBox';
+import { startDrawBox, toggleStroke } from '@/common/fabricObjects/drawingBox';
 
 import {
   isEmpty,
@@ -36,7 +36,10 @@ import {
   mappingElementProperties,
   calcScaleElement,
   handleGetSvgData,
-  addEventListeners
+  addEventListeners,
+  getAdjustedObjectDimension,
+  textVerticalAlignOnAdjust,
+  updateObjectDimensionsIfSmaller
 } from '@/common/fabricObjects';
 
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
@@ -62,7 +65,8 @@ import {
   COVER_TYPE,
   PRINT_PAGE_SIZE,
   DEFAULT_CLIP_ART,
-  FABRIC_OBJECT_TYPE
+  FABRIC_OBJECT_TYPE,
+  OBJECT_MIN_SIZE
 } from '@/common/constants';
 import SizeWrapper from '@/components/SizeWrapper';
 import PrintCanvasLines from './PrintCanvasLines';
@@ -267,6 +271,22 @@ export default {
       return image;
     },
     /**
+     * Function handle add text event listeners
+     * @param {Element} group - Group object contains rect and text object
+     * @param {Object} data - Object's data
+     */
+    handleAddTextEventListeners(group, data) {
+      const [rect, text] = group._objects;
+
+      group.on({
+        rotated: this.handleRotated,
+        moved: this.handleMoved,
+        scaling: e => this.handleScalingText(e, text),
+        scaled: e => this.handleTextBoxScaled(e, rect, text, data),
+        mousedblclick: e => this.handleDbClickText(e, rect, text)
+      });
+    },
+    /**
      * Function handle create text object and add properties to store
      * @param {Object} data - Text's properties
      * @param {Object} coord - Text's coord
@@ -295,9 +315,7 @@ export default {
         angle: objectData.newObject.coord.rotation
       });
 
-      object.on('rotated', this.handleRotated);
-      object.on('moved', this.handleMoved);
-      object.on('scaled', this.handleTextBoxScaled);
+      this.handleAddTextEventListeners(object, objectData);
 
       this.addObjectToStore(objectData);
 
@@ -717,7 +735,6 @@ export default {
     },
     /**
      * Set border color when selected group object
-     *
      * @param {Element}  group  Group object
      */
     setBorderHighLight(group) {
@@ -727,7 +744,6 @@ export default {
     },
     /**
      * Set canvas uniform scaling (constrain proportions)
-     *
      * @param {Boolean}  isConstrain  the selected object
      */
     setCanvasUniformScaling(isConstrain) {
@@ -737,7 +753,6 @@ export default {
     },
     /**
      * Event fired when an object of canvas is selected
-     *
      * @param {Object}  target  the selected object
      */
     objectSelected({ target }) {
@@ -776,16 +791,171 @@ export default {
       this.openProperties(objectType);
     },
     /**
+     * The function compute target dimenssion while scaling
+     * @param {Object}  e  Text event data
+     * @param {Element}  text  Text object
+     */
+    handleScalingText(e, text) {
+      const target = e.transform?.target;
+      if (isEmpty(target)) return;
+
+      const { width: w, height: h, scaleX, scaleY } = target;
+
+      let scaledWidth = w * scaleX;
+
+      if (scaledWidth < inToPx(OBJECT_MIN_SIZE)) {
+        scaledWidth = inToPx(OBJECT_MIN_SIZE);
+      }
+
+      const scaledHeight = h * scaleY;
+
+      target.set({
+        scaleX: 1,
+        scaleY: 1,
+        width: scaledWidth,
+        height: scaledHeight
+      });
+
+      if (scaledWidth < text.getMinWidth()) {
+        text.set({ width: text.getMinWidth() });
+        target.set({ width: text.getMinWidth() });
+      }
+
+      if (scaledHeight < text.height) {
+        target.set({ height: text.height });
+      }
+    },
+    /**
+     * The function is called while user editing text and update text/rect properties
+     * @param {Object}  textObject  Text object data
+     * @param {Object}  rectObject  Rect object data
+     * @param {Object}  group  The group object contains text and rect object
+     * @param {Object}  cachedData  Group's data is cached
+     */
+    updateTextListeners(textObject, rectObject, group, cachedData) {
+      const canvas = group.canvas;
+      const [rect, text] = group._objects;
+
+      const onTextChanged = () => {
+        updateObjectDimensionsIfSmaller(
+          rectObject,
+          textObject.width,
+          textObject.height
+        );
+        canvas.renderAll();
+      };
+
+      const newProperties = {
+        angle: 0,
+        flipX: false,
+        flipY: false,
+        visible: true
+      };
+
+      const setNewTextProperties = () => {
+        const { text: newVal, width, height } = textObject;
+        text.set({ ...newProperties, text: newVal, width, height });
+      };
+
+      const setNewRectProperties = () => {
+        const { top, left, width, height } = rectObject;
+        rect.set({
+          ...newProperties,
+          strokeWidth: 0,
+          top,
+          left,
+          width,
+          height
+        });
+      };
+
+      const onDoneEditText = () => {
+        const { text } = textObject;
+        this.changeTextProperties({
+          text
+        });
+
+        setNewTextProperties();
+        setNewRectProperties();
+        group.addWithUpdate();
+
+        textObject.visible = false;
+        rectObject.visible = false;
+
+        canvas.remove(textObject);
+        canvas.remove(rectObject);
+
+        group.set({
+          flipX: cachedData.flipX,
+          flipY: cachedData.flipY,
+          angle: cachedData.angle
+        });
+        canvas.renderAll();
+      };
+
+      textObject.on('changed', onTextChanged);
+      textObject.on('editing:exited', onDoneEditText);
+    },
+    /**
+     * Event fire when user double click on Text area and allow user edit text as
+     * @param {Object} e Text event data
+     * @param {Element} rect Rect object
+     * @param {Element} text Text object
+     */
+    handleDbClickText(e, rect, text) {
+      const group = e.target;
+      const canvas = e.target.canvas;
+      if (isEmpty(canvas)) return;
+
+      const textForEditing = cloneDeep(text);
+      const rectForEditing = cloneDeep(rect);
+      const { flipX, flipY, angle } = cloneDeep(group);
+      const cachedData = {
+        flipX,
+        flipY,
+        angle
+      };
+
+      text.visible = false;
+      rect.visible = false;
+
+      group.addWithUpdate();
+
+      textForEditing.group = null;
+      textForEditing.top = group.top;
+      textForEditing.left = group.left;
+
+      this.updateTextListeners(
+        textForEditing,
+        rectForEditing,
+        group,
+        cachedData
+      );
+
+      canvas.add(rectForEditing);
+      canvas.add(textForEditing);
+
+      canvas.setActiveObject(textForEditing);
+
+      toggleStroke(rectForEditing, true);
+
+      textForEditing.enterEditing();
+      textForEditing.selectAll();
+    },
+    /**
      * Event fire when user click on Text button on Toolbar to add new text on canvas
      */
     addText(x, y, width, height) {
       const { object, data } = createTextBox(x, y, width, height, {});
-      object.on('rotated', this.handleRotated);
-      object.on('moved', this.handleMoved);
-      object.on('scaled', this.handleTextBoxScaled);
+
+      this.handleAddTextEventListeners(object, data);
+
       this.addObjectToStore(data);
+
       const isConstrain = data.newObject.isConstrain;
+
       this.setCanvasUniformScaling(isConstrain);
+
       window.printCanvas.add(object);
 
       setTimeout(() => {
@@ -1327,7 +1497,6 @@ export default {
     },
     /**
      * Handling event on this screen
-     *
      * @param {Boolean} isOn if need to set event
      */
     eventHandling(isOn = true) {
@@ -1410,13 +1579,57 @@ export default {
       });
     },
     /**
-     * Callback function for handle scaled to update text's dimension
-     * @param {Object} e - Text Box
+     * The function set new dimenssion for text after scaled
+     * @param {Object} target Text target
+     * @param {Element} rect Rect object
+     * @param {Element} text Text object
+     * @param {Object} dataObject - Text data
      */
-    handleTextBoxScaled(e) {
+    setTextDimensionAfterScaled(target, rect, text, dataObject) {
+      const textData = {
+        top: target.height * -0.5, // TEXT_VERTICAL_ALIGN.TOP
+        left: target.width * -0.5,
+        width: target.width
+      };
+
+      text.set(textData);
+
+      const {
+        width: adjustedWidth,
+        height: adjustedHeight
+      } = getAdjustedObjectDimension(text, target.width, target.height);
+
+      textVerticalAlignOnAdjust(text, adjustedHeight);
+
+      const strokeWidth = rect.strokeWidth || 1;
+
+      const strokeDashArray = getRectDashes(
+        target.width,
+        target.height,
+        rect.strokeLineCap,
+        dataObject.newObject.border.strokeWidth
+      );
+
+      rect.set({
+        top: target.height * -0.5,
+        left: target.width * -0.5,
+        width: adjustedWidth - strokeWidth,
+        height: adjustedHeight - strokeWidth,
+        strokeDashArray
+      });
+    },
+    /**
+     * Callback function for handle scaled to update text's dimension
+     * @param {Object} e - Text event data
+     * @param {Element} rect - Rect object
+     * @param {Element} text - Text object
+     * @param {Object} dataObject - Text data
+     */
+    handleTextBoxScaled(e, rect, text, dataObject) {
       const target = e.transform?.target;
 
       if (isEmpty(target)) return;
+
       const currentXInch = pxToIn(target.left);
       const currentYInch = pxToIn(target.top);
 
@@ -1427,6 +1640,8 @@ export default {
         }
       };
       this.changeTextProperties(prop);
+
+      this.setTextDimensionAfterScaled(target, rect, text, dataObject);
     }
   }
 };

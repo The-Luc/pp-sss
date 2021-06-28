@@ -1,5 +1,6 @@
 import { fabric } from 'fabric';
 import { cloneDeep, uniqueId } from 'lodash';
+
 import { TextElement } from '@/common/models';
 import { applyShadowToObject } from './common';
 
@@ -10,8 +11,7 @@ import {
   isEmpty,
   ptToPx,
   inToPx,
-  pxToIn,
-  getRectDashes
+  pxToIn
 } from '@/common/utils';
 
 import {
@@ -19,11 +19,10 @@ import {
   OBJECT_TYPE,
   DEFAULT_SPACING,
   DEFAULT_TEXT,
-  TEXT_VERTICAL_ALIGN,
-  OBJECT_MIN_SIZE
+  TEXT_VERTICAL_ALIGN
 } from '@/common/constants';
 import { getAdjustedObjectDimension } from './common';
-import { toggleStroke, toggleControlsVisibility } from './drawingBox';
+import { toggleControlsVisibility } from './drawingBox';
 
 /**
  * Handle creating a TextBox into canvas
@@ -94,170 +93,6 @@ export const createTextBox = (x, y, width, height, textProperties) => {
     lockScalingX: false,
     isConstrain: text.isConstrain
   });
-
-  const handleScaling = e => {
-    const target = e.transform?.target;
-    if (isEmpty(target)) return;
-
-    const { width: w, height: h, scaleX, scaleY } = target;
-
-    let scaledWidth = w * scaleX;
-
-    if (scaledWidth < inToPx(OBJECT_MIN_SIZE)) {
-      scaledWidth = inToPx(OBJECT_MIN_SIZE);
-    }
-
-    const scaledHeight = h * scaleY;
-
-    target.set({
-      scaleX: 1,
-      scaleY: 1,
-      width: scaledWidth,
-      height: scaledHeight
-    });
-
-    if (scaledWidth < text.getMinWidth()) {
-      text.set({ width: text.getMinWidth() });
-      target.set({ width: text.getMinWidth() });
-    }
-
-    if (scaledHeight < text.height) {
-      target.set({ height: text.height });
-    }
-  };
-
-  const handleScaled = e => {
-    const target = e.transform?.target;
-    if (isEmpty(target)) return;
-
-    const textData = {
-      top: target.height * -0.5, // TEXT_VERTICAL_ALIGN.TOP
-      left: target.width * -0.5,
-      width: target.width
-    };
-
-    text.set(textData);
-
-    const {
-      width: adjustedWidth,
-      height: adjustedHeight
-    } = getAdjustedObjectDimension(text, target.width, target.height);
-
-    textVerticalAlignOnAdjust(text, adjustedHeight);
-
-    const strokeWidth = rect.strokeWidth || 1;
-
-    const strokeDashArray = getRectDashes(
-      target.width,
-      target.height,
-      rect.strokeLineCap,
-      dataObject.newObject.border.strokeWidth
-    );
-
-    rect.set({
-      top: target.height * -0.5,
-      left: target.width * -0.5,
-      width: adjustedWidth - strokeWidth,
-      height: adjustedHeight - strokeWidth,
-      strokeDashArray
-    });
-  };
-
-  const updateTextListeners = (textObject, rectObject, group, cachedData) => {
-    const canvas = group.canvas;
-
-    const onTextChanged = () => {
-      updateObjectDimensionsIfSmaller(
-        rectObject,
-        textObject.width,
-        textObject.height
-      );
-      canvas.renderAll();
-    };
-
-    const newProperties = {
-      angle: 0,
-      flipX: false,
-      flipY: false,
-      visible: true
-    };
-
-    const setNewTextProperties = () => {
-      const { text: newVal, width, height } = textObject;
-      text.set({ ...newProperties, text: newVal, width, height });
-    };
-
-    const setNewRectProperties = () => {
-      const { top, left, width, height } = rectObject;
-      rect.set({ ...newProperties, strokeWidth: 0, top, left, width, height });
-    };
-
-    const onDoneEditText = () => {
-      setNewTextProperties();
-      setNewRectProperties();
-      group.addWithUpdate();
-
-      textObject.visible = false;
-      rectObject.visible = false;
-
-      canvas.remove(textObject);
-      canvas.remove(rectObject);
-
-      group.set({
-        flipX: cachedData.flipX,
-        flipY: cachedData.flipY,
-        angle: cachedData.angle
-      });
-      canvas.renderAll();
-    };
-
-    textObject.on('changed', onTextChanged);
-    textObject.on('editing:exited', onDoneEditText);
-  };
-
-  const handleDbClick = e => {
-    const group = e.target;
-    const canvas = e.target.canvas;
-    if (isEmpty(canvas)) return;
-
-    const textForEditing = cloneDeep(text);
-    const rectForEditing = cloneDeep(rect);
-    const { flipX, flipY, angle } = cloneDeep(group);
-    const cachedData = {
-      flipX,
-      flipY,
-      angle
-    };
-
-    text.visible = false;
-    rect.visible = false;
-
-    group.addWithUpdate();
-
-    textForEditing.group = null;
-    textForEditing.top = group.top;
-    textForEditing.left = group.left;
-
-    updateTextListeners(textForEditing, rectForEditing, group, cachedData);
-
-    canvas.add(rectForEditing);
-    canvas.add(textForEditing);
-
-    canvas.setActiveObject(textForEditing);
-
-    toggleStroke(rectForEditing, true);
-
-    textForEditing.enterEditing();
-    textForEditing.selectAll();
-  };
-
-  const addGroupEvents = g => {
-    g.on('scaling', handleScaling);
-    g.on('scaled', handleScaled);
-    g.on('mousedblclick', handleDbClick);
-  };
-
-  addGroupEvents(group);
 
   dataObject.newObject.size = {
     width: pxToIn(group.width),
@@ -490,7 +325,7 @@ const updateTextBoxBaseOnNewTextSize = function(textObject) {
  * @param {Number} width - the base width to compare
  * @param {Number} height - the base height to compare
  */
-const updateObjectDimensionsIfSmaller = function(obj, width, height) {
+export const updateObjectDimensionsIfSmaller = function(obj, width, height) {
   if (isEmpty(obj)) return;
 
   if (width > obj.width) {

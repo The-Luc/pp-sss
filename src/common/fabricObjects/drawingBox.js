@@ -74,7 +74,7 @@ export const toggleStroke = (rect, isShow = false) => {
     strokeDashArray: []
   });
   setTimeout(() => {
-    rect.canvas.renderAll();
+    rect?.canvas?.renderAll();
   });
 };
 
