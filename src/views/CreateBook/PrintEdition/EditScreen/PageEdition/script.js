@@ -314,8 +314,6 @@ export default {
             startDrawBox(window.printCanvas, e).then(
               ({ left, top, width, height }) => {
                 if (this.awaitingAdd === OBJECT_TYPE.TEXT) {
-                  left += width / 2;
-                  top += height / 2;
                   this.addText(left, top, width, height);
                 }
                 if (this.awaitingAdd === OBJECT_TYPE.IMAGE) {
@@ -704,15 +702,15 @@ export default {
           .getObjects()
           .find(o => o.id === s.id);
 
-        const { height, width, scaleX, scaleY, aCoords } = fabricObject;
+        const { height, width, scaleX, scaleY, top, left } = fabricObject;
 
         this.addNewObject({
           id: s.id,
           newObject: {
             ...s.object,
             coord: {
-              x: pxToIn(aCoords.tl.x),
-              y: pxToIn(aCoords.tl.y)
+              x: pxToIn(left),
+              y: pxToIn(top)
             },
             size: {
               width: pxToIn(width * scaleX),
@@ -815,8 +813,8 @@ export default {
       if (isEmpty(target)) return;
       const currentWidthInch = pxToIn(target.width * target.scaleX);
       const currentHeightInch = pxToIn(target.height * target.scaleY);
-      const currentXInch = pxToIn(target.aCoords.tl.x);
-      const currentYInch = pxToIn(target.aCoords.tl.y);
+      const currentXInch = pxToIn(target.left);
+      const currentYInch = pxToIn(target.top);
       const objectType = target.objectType;
       switch (objectType) {
         case OBJECT_TYPE.SHAPE: {
@@ -883,7 +881,7 @@ export default {
           .getObjects()
           .find(o => o.id === s.id);
 
-        const { x: left, y: top } = fabricObject.aCoords.tl;
+        const { left, top } = fabricObject;
 
         this.addNewObject({
           id: s.id,
@@ -1036,7 +1034,7 @@ export default {
     handleMoved(e) {
       const target = e.transform?.target;
       if (isEmpty(target)) return;
-      const { x: left, y: top } = target.aCoords.tl;
+      const { left, top } = target;
       const currentXInch = pxToIn(left);
       const currentYInch = pxToIn(top);
       const objectType = target.objectType;
@@ -1153,8 +1151,8 @@ export default {
       const target = e.transform?.target;
 
       if (isEmpty(target)) return;
-      const currentXInch = pxToIn(target.aCoords.tl.x);
-      const currentYInch = pxToIn(target.aCoords.tl.y);
+      const currentXInch = pxToIn(target.left);
+      const currentYInch = pxToIn(target.top);
 
       const prop = {
         coord: {
