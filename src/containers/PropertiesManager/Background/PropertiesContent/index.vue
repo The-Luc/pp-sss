@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="background-prop-content" :class="disabled && 'disabled'">
     <Opacity :value="opacity" :disabled="disabled" @change="onChangeOpacity" />
 
     <div class="group-container">
@@ -13,3 +13,5 @@
 </template>
 
 <script src="./script.js" />
+
+<style lang="scss" src="./style.scss" />

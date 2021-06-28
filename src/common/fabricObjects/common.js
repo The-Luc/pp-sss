@@ -226,14 +226,7 @@ export const updateElement = (element, prop, canvas) => {
  * @param {Object}  prop    new property
  */
 export const setElementProp = (element, prop) => {
-  const isModifyPosition = !isNaN(prop?.left) || !isNaN(prop?.top);
-  if (!isModifyPosition) {
-    element.set(prop);
-  } else {
-    const x = prop?.left ?? element.aCoords.tl.x;
-    const y = prop?.top ?? element.aCoords.tl.y;
-    element.setPositionByOrigin({ x, y }, 'left', 'top');
-  }
+  element.set(prop);
   const useProp = cloneDeep(prop);
 
   RESTRICT_PROP_CHILD.forEach(rp => {
@@ -284,8 +277,6 @@ export const getSvgData = (svgUrl, elementProperty, expectedHeight) => {
         ...elementProperty,
         width: svg.width,
         height: svg.height,
-        originX: 'center',
-        originY: 'center',
         scaleX: scale,
         scaleY: scale
       });
@@ -340,10 +331,7 @@ export const addMultiSvg = (
     left += scaleSize(11) + s.width * s.scaleX;
   });
 
-  const group = new fabric.Group(svgs, {
-    originX: 'center',
-    originY: 'center'
-  });
+  const group = new fabric.Group(svgs);
 
   group.setCoords();
 
@@ -531,4 +519,15 @@ export const mappingElementProperties = (
       y: currentYInch
     }
   };
+};
+/**
+ * Delete object from canvas by id
+ *
+ * @param {Array}   ids     list of id of object to be removed
+ * @param {Object}  canvas  the canvas contain object
+ */
+export const deleteObjectById = (ids, canvas) => {
+  canvas.getObjects().forEach(o => {
+    if (ids.includes(o.id)) canvas.remove(o);
+  });
 };

@@ -28,3 +28,4 @@ export * from './clipArtType';
 export * from './defaultFabricProperty';
 export * from './controls';
 export * from './queryStatus';
+export * from './svgFillMode';

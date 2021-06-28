@@ -94,7 +94,7 @@ export const getters = {
     );
 
     if (isEmpty(existedBackground)) {
-      return {};
+      return { isSingle: true, isEmpty: true };
     }
 
     const isFull =
@@ -103,10 +103,7 @@ export const getters = {
     if (isFull) {
       return {
         isSingle: true,
-        left: {
-          opacity: background.left.opacity,
-          isLeft: true
-        }
+        background: background.left
       };
     }
 
@@ -116,23 +113,14 @@ export const getters = {
     if (isHalf) {
       return {
         isSingle: true,
-        left: {
-          opacity: background[position].opacity,
-          isLeft: background[position].isLeft
-        }
+        background: background[position]
       };
     }
 
     return {
       isSingle: false,
-      left: {
-        isEmpty: isEmpty(background.left),
-        opacity: background.left.opacity
-      },
-      right: {
-        isEmpty: isEmpty(background.right),
-        opacity: background.right.opacity
-      }
+      left: background.left,
+      right: background.right
     };
   }
 };

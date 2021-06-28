@@ -2,16 +2,20 @@
   <div class="background-properties-container">
     <Properties v-if="isSingle" title="Background Properties">
       <PropertiesContent
-        :opacity="opacityValue.left"
-        :disabled="isDisabled.left"
-        :is-left="isLeft.left"
+        :opacity="opacityValue"
+        :disabled="isDisabled"
+        :is-left="isLeft"
         @opacityChange="onChangeOpacity"
         @remove="onRemove"
       />
     </Properties>
 
     <Properties v-else title="Background Properties">
-      <TabMenu class="background-tabs" :active-tab-name="tabActiveName">
+      <TabMenu
+        class="background-tabs"
+        :active-tab-name="activeTab"
+        @change="onTabChange"
+      >
         <v-tab href="#background-left">
           Left Hand Page
         </v-tab>

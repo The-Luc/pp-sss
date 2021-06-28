@@ -59,6 +59,7 @@ export default {
     onChangeWidth(val) {
       if (val == this.widthPt) {
         this.onEsc();
+        return;
       }
       const { isValid, value, isForce } = validateInputOption(
         val,
@@ -82,6 +83,7 @@ export default {
     onChangeHeight(val) {
       if (val == this.heightPt) {
         this.onEsc();
+        return;
       }
       const { isValid, value } = validateInputOption(
         val,
