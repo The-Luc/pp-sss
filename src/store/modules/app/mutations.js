@@ -1,5 +1,7 @@
 import APP from './const';
 
+import { isEmpty } from '@/common/utils';
+
 export const mutations = {
   [APP._MUTATES.TOGGLE_MODAL](state, payload) {
     const { isOpenModal, modalData } = payload;
@@ -19,15 +21,18 @@ export const mutations = {
     };
   },
   [APP._MUTATES.SET_OBJECT_TYPE_SELECTED](state, { type }) {
-    state.selectedObjectType = type;
+    state.propertiesModal.selectedObjectType = type;
   },
-  [APP._MUTATES.TOGGLE_MENU_PROPERTIES](state, { isOpen }) {
-    state.isOpenProperties = isOpen;
+  [APP._MUTATES.TOGGLE_MENU_PROPERTIES](state, { isOpen, objectId }) {
+    state.propertiesModal.isOpen = isOpen;
+
+    state.propertiesModal.selectedObjectId = isEmpty(objectId) ? '' : objectId;
   },
   [APP._MUTATES.RESET_PRINT_CONFIG](state) {
-    state.isOpenProperties = false;
+    state.propertiesModal.isOpen = false;
     state.colorPicker.isOpen = false;
-    state.selectedObjectType = '';
+    state.propertiesModal.selectedObjectType = '';
+    state.propertiesModal.selectedObjectId = '';
     state.selectedToolName = '';
   },
   [APP._MUTATES.SET_TOOL_NAME_SELECTED](state, { name }) {
@@ -55,6 +60,6 @@ export const mutations = {
     state.hasActiveObjects = data;
   },
   [APP._MUTATES.SET_PROPERTIES_OBJECT_TYPE](state, { type }) {
-    state.propertiesObjectType = type;
+    state.propertiesModal.propertiesObjectType = type;
   }
 };
