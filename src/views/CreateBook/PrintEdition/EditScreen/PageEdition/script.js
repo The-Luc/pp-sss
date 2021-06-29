@@ -658,6 +658,11 @@ export default {
           this.setObjectProp({ prop });
           this.setObjectPropById({ id: group.id, prop });
           this.updateTriggerTextChange();
+        },
+        'object:moved': e => {
+          if (!e.target.objectType) {
+            this.handleMultiMoved(e);
+          }
         }
       });
 
@@ -1545,6 +1550,30 @@ export default {
       this.changeTextProperties(prop);
 
       this.setTextDimensionAfterScaled(target, rect, text, dataObject);
+    },
+    /**
+     * Set position to prop when multi move element
+     * @param {Object} e - Event moved of group
+     */
+    handleMultiMoved(e) {
+      const { target } = e;
+      if (isEmpty(target)) return;
+
+      target._objects.forEach(item => {
+        let currentXInch = pxToIn(item.left + target.left + target.width / 2);
+        let currentYInch = pxToIn(item.top + target.top + target.height / 2);
+
+        let prop = {
+          coord: {
+            x: currentXInch,
+            y: currentYInch
+          }
+        };
+
+        this.setObjectPropById({ id: item.id, prop });
+
+        this.updateTriggerTextChange();
+      });
     }
   }
 };
