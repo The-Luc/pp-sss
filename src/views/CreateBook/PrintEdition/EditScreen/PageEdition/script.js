@@ -1559,8 +1559,9 @@ export default {
       const { target } = e;
 
       target._objects.forEach(item => {
-        const currentXInch = pxToIn(item.left + target.left + target.width / 2);
-        const currentYInch = pxToIn(item.top + target.top + target.height / 2);
+        const { id, left, top, objectType } = item;
+        const currentXInch = pxToIn(left + target.left + target.width / 2);
+        const currentYInch = pxToIn(top + target.top + target.height / 2);
 
         const prop = {
           coord: {
@@ -1569,21 +1570,14 @@ export default {
           }
         };
 
-        this.setObjectPropById({ id: item.id, prop });
+        this.setObjectPropById({ id, prop });
 
-        const objectType = item.objectType;
-        switch (objectType) {
-          case OBJECT_TYPE.SHAPE:
-            this.updateTriggerShapeChange();
-            break;
-          case OBJECT_TYPE.CLIP_ART:
-            this.updateTriggerClipArtChange();
-            break;
-          case OBJECT_TYPE.TEXT:
-            this.updateTriggerTextChange();
-            break;
-          default:
-            return;
+        if (objectType === OBJECT_TYPE.SHAPE) {
+          this.updateTriggerShapeChange();
+        } else if (objectType === OBJECT_TYPE.CLIP_ART) {
+          this.updateTriggerClipArtChange();
+        } else if (objectType === OBJECT_TYPE.TEXT) {
+          this.updateTriggerTextChange();
         }
       });
     }
