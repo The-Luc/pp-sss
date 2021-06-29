@@ -40,7 +40,8 @@ import {
   getAdjustedObjectDimension,
   textVerticalAlignOnAdjust,
   updateObjectDimensionsIfSmaller,
-  handleObjectBlur
+  handleObjectBlur,
+  handleScalingText
 } from '@/common/fabricObjects';
 
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
@@ -66,8 +67,7 @@ import {
   COVER_TYPE,
   PRINT_PAGE_SIZE,
   DEFAULT_CLIP_ART,
-  FABRIC_OBJECT_TYPE,
-  OBJECT_MIN_SIZE
+  FABRIC_OBJECT_TYPE
 } from '@/common/constants';
 import SizeWrapper from '@/components/SizeWrapper';
 import PrintCanvasLines from './PrintCanvasLines';
@@ -282,7 +282,7 @@ export default {
       group.on({
         rotated: this.handleRotated,
         moved: this.handleMoved,
-        scaling: e => this.handleScalingText(e, text),
+        scaling: e => handleScalingText(e, text),
         scaled: e => this.handleTextBoxScaled(e, rect, text, data),
         mousedblclick: e => this.handleDbClickText(e, rect, text)
       });
@@ -790,41 +790,6 @@ export default {
       this.setPropertiesObjectType({ type: objectType });
 
       this.openProperties(objectType);
-    },
-    /**
-     * The function compute target dimenssion while scaling
-     * @param {Object}  e  Text event data
-     * @param {Element}  text  Text object
-     */
-    handleScalingText(e, text) {
-      const target = e.transform?.target;
-      if (isEmpty(target)) return;
-
-      const { width: w, height: h, scaleX, scaleY } = target;
-
-      let scaledWidth = w * scaleX;
-
-      if (scaledWidth < inToPx(OBJECT_MIN_SIZE)) {
-        scaledWidth = inToPx(OBJECT_MIN_SIZE);
-      }
-
-      const scaledHeight = h * scaleY;
-
-      target.set({
-        scaleX: 1,
-        scaleY: 1,
-        width: scaledWidth,
-        height: scaledHeight
-      });
-
-      if (scaledWidth < text.getMinWidth()) {
-        text.set({ width: text.getMinWidth() });
-        target.set({ width: text.getMinWidth() });
-      }
-
-      if (scaledHeight < text.height) {
-        target.set({ height: text.height });
-      }
     },
     /**
      * The function is called while user editing text and update text/rect properties

@@ -19,7 +19,8 @@ import {
   OBJECT_TYPE,
   DEFAULT_SPACING,
   DEFAULT_TEXT,
-  TEXT_VERTICAL_ALIGN
+  TEXT_VERTICAL_ALIGN,
+  OBJECT_MIN_SIZE
 } from '@/common/constants';
 import { getAdjustedObjectDimension } from './common';
 import { toggleControlsVisibility } from './drawingBox';
@@ -439,15 +440,39 @@ export const applyTextBoxProperties = function(textObject, prop) {
   applyTextProperties(text, prop);
   applyTextRectProperties(rect, prop);
 };
+
 /**
- * Apply Position Changed to Text Box
- * @param {Object} textObject - the object to be updated
- * @param {Object} prop - the prop change
+ * The function compute target dimenssion while scaling
+ * @param {Object}  e  Text event data
+ * @param {Element}  text  Text object
  */
-export const applyTextBoxPosition = function(textObject, prop) {
-  const x = !isNaN(prop?.coord?.x) ? inToPx(prop?.coord?.x) : textObject.left;
-  const y = !isNaN(prop?.coord?.y) ? inToPx(prop?.coord?.y) : textObject.top;
-  textObject.setPositionByOrigin({ x, y }, 'left', 'top');
-  textObject.setCoords();
-  window.printCanvas.renderAll();
+export const handleScalingText = (e, text) => {
+  const target = e.transform?.target;
+  if (isEmpty(target)) return;
+
+  const { width: w, height: h, scaleX, scaleY } = target;
+
+  let scaledWidth = w * scaleX;
+
+  if (scaledWidth < inToPx(OBJECT_MIN_SIZE)) {
+    scaledWidth = inToPx(OBJECT_MIN_SIZE);
+  }
+
+  const scaledHeight = h * scaleY;
+
+  target.set({
+    scaleX: 1,
+    scaleY: 1,
+    width: scaledWidth,
+    height: scaledHeight
+  });
+
+  if (scaledWidth < text.getMinWidth()) {
+    text.set({ width: text.getMinWidth() });
+    target.set({ width: text.getMinWidth() });
+  }
+
+  if (scaledHeight < text.height) {
+    target.set({ height: text.height });
+  }
 };
