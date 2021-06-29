@@ -727,9 +727,10 @@ export default {
      */
     setBorderObject(rectObj, objectData) {
       const { strokeWidth, stroke, strokeLineCap } = objectData.border;
+      const group = rectObj?.group;
       const strokeDashArrayVal = getRectDashes(
-        rectObj.width,
-        rectObj.height,
+        group?.width || rectObj.width,
+        group?.height || rectObj.height,
         strokeLineCap,
         strokeWidth
       );

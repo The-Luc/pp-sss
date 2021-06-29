@@ -3,7 +3,7 @@ import moment from 'moment';
 
 import { DATE_FORMAT, MOMENT_TYPE } from '@/common/constants';
 import { DEFAULT_RULE_DATA } from '@/common/fabricObjects/common';
-import { scaleSize } from './canvas';
+import { ptToPx, scaleSize } from './canvas';
 
 /**
  * Get the next id of item list
@@ -409,18 +409,49 @@ export const scrollToElement = (el, opts) => {
 };
 
 export const getRectDashes = (width, height, value, strokeWidth) => {
-  if (value === 'solid') {
-    return [];
+  let dashArray = [];
+  if (value === 'round') {
+    dashArray = getRoundDashes(width, height, strokeWidth);
+  } else if (value === 'square') {
+    const widthArray = getLineDashes(width, 0, 0, 0);
+    const heightArray = getLineDashes(0, height, 0, 0);
+    dashArray = [widthArray, 0, heightArray, 0, widthArray, 0, heightArray];
   }
-  const widthArray = getLineDashes(width, 0, 0, 0);
-  const heightArray = getLineDashes(0, height, 0, 0);
-  const res =
-    value === 'round'
-      ? [0, scaleSize(strokeWidth * 2), 0, scaleSize(strokeWidth * 2)]
-      : [widthArray, 0, heightArray, 0, widthArray, 0, heightArray];
-  const dashArray = [].concat.apply([], res);
-  return dashArray;
+  return [].concat(...dashArray);
 };
+
+/**
+ * Calculate points of rounded border
+ *
+ * @param   {Number}  width  Width of element
+ * @param   {Number}  height  Height of element
+ */
+function getRoundDashes(width, height, strokeWidth) {
+  const clientStrokeWidth = ptToPx(strokeWidth || 1);
+
+  const clientWidth = width - clientStrokeWidth; //real width include stroke
+  const clientHeight = height - clientStrokeWidth; //real height include stroke
+
+  const pointsOfWidth = Math.round(clientWidth / (clientStrokeWidth * 2)); //Width points
+  const pointsOfHeight = Math.round(clientHeight / (clientStrokeWidth * 2)); //Height points
+
+  const widthDashTemplate = [0, clientWidth / pointsOfWidth];
+  const heightDashTemplate = [0, clientHeight / pointsOfHeight];
+
+  const calcDashArray = (points, dashTemplate) => {
+    return Array.from({ length: points - 1 }).reduce(arr => {
+      arr.push(...dashTemplate);
+      return arr;
+    }, []);
+  };
+
+  return Array.from({ length: 4 }, (_, index) => {
+    if (index % 2) {
+      return calcDashArray(pointsOfHeight, heightDashTemplate);
+    }
+    return calcDashArray(pointsOfWidth, widthDashTemplate);
+  });
+}
 
 // same as previous snippet except that it does return all the segment's dashes
 function getLineDashes(x1, y1, x2, y2) {
