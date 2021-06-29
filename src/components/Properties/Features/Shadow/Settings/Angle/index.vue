@@ -8,6 +8,7 @@
       :value="value"
       :max="max"
       :min="min"
+      type="text"
       @change="onChange"
     />
   </div>

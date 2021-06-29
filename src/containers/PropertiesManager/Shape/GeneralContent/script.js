@@ -60,8 +60,6 @@ export default {
 
       const color = this.getProperty('color') || DEFAULT_PROP.COLOR;
 
-      this.setColorPickerData({ color: color });
-
       return color;
     },
     currentShadow() {
