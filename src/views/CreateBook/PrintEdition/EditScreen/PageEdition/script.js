@@ -430,7 +430,7 @@ export default {
       }
     },
     /**
-     * Function clear object(s) copied when user paste data from ouside while editing text
+     * Function clear object(s) copied when user paste data from outside while editing text
      * @param {String} dataOutside Data copy from outside app
      */
     clearObjectCopied(dataOutside) {
