@@ -660,7 +660,7 @@ export default {
           this.updateTriggerTextChange();
         },
         'object:moved': e => {
-          if (!e.target.objectType) {
+          if (!e.target?.objectType) {
             this.handleMultiMoved(e);
           }
         }
@@ -1557,7 +1557,6 @@ export default {
      */
     handleMultiMoved(e) {
       const { target } = e;
-      if (isEmpty(target)) return;
 
       target._objects.forEach(item => {
         let currentXInch = pxToIn(item.left + target.left + target.width / 2);
