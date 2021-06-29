@@ -577,6 +577,11 @@ const applyTextGroupProperties = function(textGroup, prop) {
   }
   const canvas = textGroup.canvas;
 
+  // handle rotation case
+  if (prop?.coord?.rotation != undefined) {
+    textGroup.rotate(prop.coord.rotation);
+  }
+
   const textGroupProp = toFabricTextGroupProp(prop);
 
   if (!isEmpty(prop['isConstrain'])) {
