@@ -23,7 +23,6 @@ import {
   OBJECT_MIN_SIZE
 } from '@/common/constants';
 import { getAdjustedObjectDimension } from './common';
-import { toggleControlsVisibility } from './drawingBox';
 
 /**
  * Handle creating a TextBox into canvas
@@ -422,7 +421,6 @@ const applyTextGroupProperties = function(textGroup, prop) {
 
   if (!isEmpty(prop['isConstrain'])) {
     canvas.set({ uniformScaling: prop['isConstrain'] });
-    toggleControlsVisibility(textGroup, prop['isConstrain']);
   }
 
   textGroup.set(textGroupProp);

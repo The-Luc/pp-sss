@@ -62,21 +62,25 @@ export default {
         this.onEsc();
         return;
       }
+      const height = (val * this.height) / this.width;
       const { isValid, value, isForce } = validateInputOption(
         width,
         this.minSize || this.minWidth,
         this.maxSize,
         2
       );
-      if (isValid) {
-        this.$emit('change', { size: { width: value } });
-        if (isForce) {
-          this.forceRenderComponent();
-        }
-      } else {
+
+      if (!isValid || (this.isConstrain && height < this.minHeight)) {
+        this.forceRenderComponent();
+        return;
+      }
+
+      this.$emit('change', { size: { width: value } });
+      if (isForce) {
         this.forceRenderComponent();
       }
     },
+
     /**
      * Emit size height value to parent
      * @param {Number}  val size height value user entered
@@ -87,15 +91,20 @@ export default {
         this.onEsc();
         return;
       }
-      const { isValid, value } = validateInputOption(
+      const width = (val * this.width) / this.height;
+      const { isValid, value, isForce } = validateInputOption(
         height,
         this.minSize || this.minHeight,
         this.maxSize,
         2
       );
-      if (isValid) {
-        this.$emit('change', { size: { height: value } });
-      } else {
+      if (!isValid || (this.isConstrain && width < this.minWidth)) {
+        this.forceRenderComponent();
+        return;
+      }
+
+      this.$emit('change', { size: { height: value } });
+      if (isForce) {
         this.forceRenderComponent();
       }
     },
