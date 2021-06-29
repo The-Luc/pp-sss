@@ -476,3 +476,79 @@ export const handleScalingText = (e, text) => {
     target.set({ height: text.height });
   }
 };
+
+/**
+ * The function is called while user editing text and update text/rect properties
+ * @param {Object}  textObject  Text object data
+ * @param {Object}  rectObject  Rect object data
+ * @param {Object}  group  The group object contains text and rect object
+ * @param {Object}  cachedData  Group's data is cached
+ */
+export const updateTextListeners = (
+  textObject,
+  rectObject,
+  group,
+  cachedData,
+  callback
+) => {
+  const canvas = group.canvas;
+  const [rect, text] = group._objects;
+
+  const onTextChanged = () => {
+    updateObjectDimensionsIfSmaller(
+      rectObject,
+      textObject.width,
+      textObject.height
+    );
+    canvas.renderAll();
+  };
+
+  const newProperties = {
+    angle: 0,
+    flipX: false,
+    flipY: false,
+    visible: true
+  };
+
+  const setNewTextProperties = () => {
+    const { text: newVal, width, height } = textObject;
+    text.set({ ...newProperties, text: newVal, width, height });
+  };
+
+  const setNewRectProperties = () => {
+    const { top, left, width, height } = rectObject;
+    rect.set({
+      ...newProperties,
+      strokeWidth: 0,
+      top,
+      left,
+      width,
+      height
+    });
+  };
+
+  const onDoneEditText = () => {
+    const { text } = textObject;
+    callback(text);
+
+    setNewTextProperties();
+    setNewRectProperties();
+    group.addWithUpdate();
+
+    textObject.visible = false;
+    rectObject.visible = false;
+
+    canvas.remove(textObject);
+    canvas.remove(rectObject);
+
+    group.set({
+      flipX: cachedData.flipX,
+      flipY: cachedData.flipY,
+      angle: cachedData.angle
+    });
+    canvas.renderAll();
+  };
+
+  textObject.on('changed', onTextChanged);
+  textObject.on('editing:exited', onDoneEditText);
+};
