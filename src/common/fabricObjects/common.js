@@ -201,9 +201,8 @@ const getFabricProp = (element, prop) => {
  *
  * @param {Object} element the element will have property changed
  * @param {Object} prop new property
- * @param {Object} canvas the canvas containing element
  */
-const updateSpecificProp = (element, prop, canvas) => {
+const updateSpecificProp = (element, prop) => {
   // update angle of element
   if (!isEmpty(prop?.coord?.rotation)) element.rotate(prop.coord.rotation);
 

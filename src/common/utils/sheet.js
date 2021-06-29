@@ -11,3 +11,55 @@ export const isHalfLeft = ({ type }) => {
 export const isHalfRight = ({ type }) => {
   return type === SHEET_TYPE.FRONT_COVER;
 };
+
+/**
+ * Format page number to name of page
+ *
+ * @param   {Number}  pageNumber  number of page
+ * @returns {String}              name of page after format
+ */
+const formatPageNumber = pageNumber => {
+  return `${pageNumber < 10 ? '0' : ''}${pageNumber}`;
+};
+
+/**
+ * Get name of left page
+ *
+ * @param   {String}  type                    sheet type
+ * @param   {Number}  sheetIndex              current sheet index in section
+ * @param   {Number}  totalSheetUntilPrevious total sheet until previous section
+ * @returns {String}                          name of left page
+ */
+export const getPageLeftName = (
+  { type },
+  sheetIndex,
+  totalSheetUntilPrevious
+) => {
+  if (type === SHEET_TYPE.COVER) return 'Back Cover';
+
+  if (type === SHEET_TYPE.FRONT_COVER) return 'Inside Front Cover';
+
+  return formatPageNumber((totalSheetUntilPrevious + sheetIndex) * 2);
+};
+
+/**
+ * Get name of right page
+ *
+ * @param   {String}  type                    sheet type
+ * @param   {Number}  sheetIndex              current sheet index in section
+ * @param   {Number}  totalSheetUntilPrevious total sheet until previous section
+ * @returns {String}                          name of right page
+ */
+export const getPageRightName = (
+  { type },
+  sheetIndex,
+  totalSheetUntilPrevious
+) => {
+  if (type === SHEET_TYPE.COVER) return 'Front Cover';
+
+  if (type === SHEET_TYPE.FRONT_COVER) return formatPageNumber(1);
+
+  if (type === SHEET_TYPE.BACK_COVER) return 'Inside Back Cover';
+
+  return formatPageNumber((totalSheetUntilPrevious + sheetIndex) * 2 + 1);
+};

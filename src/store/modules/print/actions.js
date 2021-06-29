@@ -8,8 +8,10 @@ import { STATUS, OBJECT_TYPE, SHEET_TYPE } from '@/common/constants';
 import PRINT from './const';
 
 export const actions = {
-  async [PRINT._ACTIONS.GET_DATA_MAIN]({ commit }, { bookId }) {
-    const queryResult = await printService.getPrintSectionsSheets(bookId);
+  async [PRINT._ACTIONS.GET_DATA_MAIN]({ state, commit }) {
+    const queryResult = await printService.getPrintSectionsSheets(
+      state.book.id
+    );
 
     if (queryResult.status !== STATUS.OK) return;
 
@@ -29,7 +31,7 @@ export const actions = {
       themeId: queryResults[0].data
     });
 
-    commit(PRINT._MUTATES.SET_SECTIONS_SHEETS_EDIT, {
+    commit(PRINT._MUTATES.SET_SECTIONS_SHEETS, {
       sectionsSheets: queryResults[1].data
     });
 

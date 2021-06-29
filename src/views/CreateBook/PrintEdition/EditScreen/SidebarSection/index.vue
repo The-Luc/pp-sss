@@ -2,7 +2,7 @@
   <div ref="sideBarSection" class="sidebar-section">
     <div class="thumbnail-view-container">
       <HeaderContainer
-        v-for="section in book.sections"
+        v-for="section in sections"
         :key="section.id"
         :section="section"
       >
@@ -14,7 +14,7 @@
           :edit="false"
           :is-show-link="false"
           font-size="8px"
-          :number-page="numberPage(section.id, sheet)"
+          :number-page="numberPage(sheet)"
           :is-active="checkIsActive(sheet.id)"
           @click.native="onSelectSheet(sheet, section.id)"
         />

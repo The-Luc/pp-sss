@@ -2,7 +2,7 @@ import { mapGetters, mapMutations } from 'vuex';
 
 import Thumbnail from '@/containers/ThumbnailPrint';
 import HeaderContainer from '@/components/Thumbnail/HeaderContainer';
-import { GETTERS, MUTATES } from '@/store/modules/book/const';
+import { MUTATES } from '@/store/modules/book/const';
 import { GETTERS as APP_GETTERS } from '@/store/modules/app/const';
 import {
   GETTERS as PRINT_GETTERS,
@@ -38,7 +38,7 @@ export default {
   computed: {
     ...mapGetters({
       pageSelected: PRINT_GETTERS.CURRENT_SHEET,
-      book: GETTERS.BOOK_DETAIL,
+      sections: PRINT_GETTERS.SECTIONS_SHEETS,
       isOpenMenuProperties: APP_GETTERS.IS_OPEN_MENU_PROPERTIES
     })
   },
@@ -60,71 +60,11 @@ export default {
       const currentSpreadActive = this.$refs[`spread${pageSelected}`];
       scrollToElement(currentSpreadActive[0]?.$el);
     },
-    numberPage(sectionId, sheet) {
-      const sectionIndex = this.book.sections.findIndex(
-        item => item.id == sectionId
-      );
-      const indexSheet = this.book.sections[sectionIndex].sheets.findIndex(
-        item => item.id == sheet.id
-      );
-      let indexInSections = 0;
-      for (let i = 0; i < sectionIndex; i++) {
-        indexInSections += this.book.sections[i].sheets.length;
-      }
-      indexInSections += indexSheet + 1;
-      let numberLeft = indexInSections * 2 - 4;
-      let numberRight = indexInSections * 2 - 3;
-      if (numberLeft < 10) {
-        numberLeft = '0' + numberLeft;
-      }
-      if (numberLeft < 10) {
-        numberRight = '0' + numberRight;
-      }
-      let numberPage;
-      switch (sectionIndex) {
-        case 0:
-          numberPage = {
-            numberLeft: 'Back Cover',
-            numberRight: 'Front Cover'
-          };
-          break;
-        case 1:
-          if (indexSheet === 0) {
-            numberPage = {
-              numberLeft: 'Inside Front Cover',
-              numberRight
-            };
-          } else {
-            numberPage = {
-              numberLeft,
-              numberRight
-            };
-          }
-          break;
-        case this.book.sections.length - 1:
-          if (
-            indexSheet ===
-            this.book.sections[sectionIndex].sheets.length - 1
-          ) {
-            numberPage = {
-              numberLeft,
-              numberRight: 'Inside Back Cover'
-            };
-          } else {
-            numberPage = {
-              numberLeft,
-              numberRight
-            };
-          }
-          break;
-        default:
-          numberPage = {
-            numberLeft,
-            numberRight
-          };
-          break;
-      }
-      return numberPage;
+    numberPage(sheet) {
+      return {
+        numberLeft: sheet.pageLeftName,
+        numberRight: sheet.pageRightName
+      };
     },
     /**
      * Check if that sheet is selected
