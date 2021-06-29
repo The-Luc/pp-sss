@@ -1,17 +1,17 @@
-import { computedObjectSize } from '@/common/utils';
 import Properties from '@/components/Properties/BoxProperties';
-import TabMenu from '@/components/TabMenu';
+import TabPropertiesMenu from '@/containers/TabPropertiesMenu';
 import ArrangeContent from '@/components/Arrange';
 import GeneralContent from './GeneralContent';
 
 import { useShapeProperties } from '@/hooks';
+import { computedObjectSize } from '@/common/utils';
 
 import { DEFAULT_SHAPE } from '@/common/constants';
 
 export default {
   components: {
     Properties,
-    TabMenu,
+    TabPropertiesMenu,
     GeneralContent,
     ArrangeContent
   },
