@@ -6,3 +6,5 @@ export const ENV_CONFIG = {
 };
 
 export const COPY_OBJECT_KEY = 'ppObject';
+
+export const DELAY_PASTE_TIME = 1000; // ms
