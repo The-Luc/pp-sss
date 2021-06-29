@@ -23,9 +23,12 @@ export const state = {
       }
     }
   },
-  isOpenProperties: false,
-  selectedObjectType: '',
-  propertiesObjectType: '',
+  propertiesModal: {
+    isOpen: false,
+    selectedObjectType: '',
+    propertiesObjectType: '',
+    selectedObjectId: ''
+  },
 
   // Tool icon popover
   selectedToolName: '',
