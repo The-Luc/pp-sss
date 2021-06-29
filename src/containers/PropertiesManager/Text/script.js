@@ -10,6 +10,7 @@ import ArrangeContent from '@/components/Arrange';
 import { MUTATES } from '@/store/modules/app/const';
 import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 import { DEFAULT_TEXT } from '@/common/constants';
+import { computedObjectSize } from '@/common/utils';
 
 export default {
   components: {
@@ -175,6 +176,17 @@ export default {
      * @param {Object} object object containing the value of update size, position or rotate
      */
     onChange(object) {
+      const key = Object.keys(object);
+      if (key.includes('size')) {
+        const size = computedObjectSize(
+          object.size,
+          { width: this.sizeWidth, height: this.sizeHeight },
+          DEFAULT_TEXT.MIN_SIZE,
+          DEFAULT_TEXT.MAX_SIZE,
+          this.isConstrain
+        );
+        object.size = size;
+      }
       this.$root.$emit('printChangeTextProperties', object);
     },
 

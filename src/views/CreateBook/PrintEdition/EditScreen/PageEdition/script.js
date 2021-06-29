@@ -727,9 +727,10 @@ export default {
      */
     setBorderObject(rectObj, objectData) {
       const { strokeWidth, stroke, strokeLineCap } = objectData.border;
+      const group = rectObj?.group;
       const strokeDashArrayVal = getRectDashes(
-        rectObj.width,
-        rectObj.height,
+        group?.width || rectObj.width,
+        group?.height || rectObj.height,
         strokeLineCap,
         strokeWidth
       );
@@ -813,21 +814,13 @@ export default {
 
       const textForEditing = cloneDeep(text);
       const rectForEditing = cloneDeep(rect);
-      const { flipX, flipY, angle } = cloneDeep(group);
-      const cachedData = {
-        flipX,
-        flipY,
-        angle
-      };
+      const { flipX, flipY, angle, top, left } = cloneDeep(group);
+      const cachedData = { flipX, flipY, angle, top, left };
 
       text.visible = false;
       rect.visible = false;
 
       group.addWithUpdate();
-
-      textForEditing.group = null;
-      textForEditing.top = group.top;
-      textForEditing.left = group.left;
 
       updateTextListeners(
         textForEditing,

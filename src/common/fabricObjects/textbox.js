@@ -516,8 +516,8 @@ export const updateTextListeners = (
   };
 
   const setNewTextProperties = () => {
-    const { text: newVal, width, height } = textObject;
-    text.set({ ...newProperties, text: newVal, width, height });
+    const { text: newVal, width, height, top, left } = textObject;
+    text.set({ ...newProperties, text: newVal, width, height, top, left });
   };
 
   const setNewRectProperties = () => {
@@ -546,11 +546,7 @@ export const updateTextListeners = (
     canvas.remove(textObject);
     canvas.remove(rectObject);
 
-    group.set({
-      flipX: cachedData.flipX,
-      flipY: cachedData.flipY,
-      angle: cachedData.angle
-    });
+    group.set(cachedData);
     canvas.renderAll();
   };
 
