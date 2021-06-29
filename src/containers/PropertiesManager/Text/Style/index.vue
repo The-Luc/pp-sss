@@ -6,7 +6,11 @@
       :options="borderOptions"
       @change="onChangeBorder"
     />
-    <Shadow />
+    <Shadow
+      :current-shadow="currentShadow"
+      @change="onChangeShadow"
+      @changeDropShadow="onChangeDropShadow"
+    />
   </div>
 </template>
 

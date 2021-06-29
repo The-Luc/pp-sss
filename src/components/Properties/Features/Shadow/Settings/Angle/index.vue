@@ -6,8 +6,8 @@
     <PpNumber
       suffix="°"
       :value="value"
-      :max="360"
-      :min="0"
+      :max="max"
+      :min="min"
       @change="onChange"
     />
   </div>
