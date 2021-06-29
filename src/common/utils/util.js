@@ -361,7 +361,7 @@ export const toFabricTextGroupProp = prop => {
       width: DEFAULT_RULE_DATA.WIDTH,
       height: DEFAULT_RULE_DATA.HEIGHT
     },
-    restrict: ['id', 'shadow', 'alignment', 'fontSize']
+    restrict: ['id', 'shadow', 'alignment', 'fontSize', 'rotation']
   };
 
   return mapObject(prop, mapRules);
@@ -385,7 +385,7 @@ export const toFabricImageProp = prop => {
         name: 'opacity'
       }
     },
-    restrict: ['border', 'shadow', 'flip', 'size']
+    restrict: ['border', 'shadow', 'flip', 'size', 'rotation']
   };
   return mapObject(prop, mapRules);
 };

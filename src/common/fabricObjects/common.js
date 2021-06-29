@@ -115,7 +115,7 @@ export const toFabricShapeProp = (prop, originalElement) => {
         }
       }
     },
-    restrict: ['id', 'name', 'thumbnail', 'pathData', 'border']
+    restrict: ['id', 'name', 'thumbnail', 'pathData', 'border', 'rotation']
   };
 
   return mapObject(prop, mapRules);
@@ -156,7 +156,7 @@ export const toFabricClipArtProp = (prop, originalElement) => {
       horizontal: DEFAULT_RULE_DATA.HORIZONTAL,
       vertical: DEFAULT_RULE_DATA.VERTICAL
     },
-    restrict: ['id', 'name', 'thumbnail', 'border']
+    restrict: ['id', 'name', 'thumbnail', 'border', 'rotation']
   };
 
   return mapObject(prop, mapRules);
@@ -197,6 +197,20 @@ const getFabricProp = (element, prop) => {
 };
 
 /**
+ * Update specific of element on canvas
+ *
+ * @param {Object} element the element will have property changed
+ * @param {Object} prop new property
+ * @param {Object} canvas the canvas containing element
+ */
+const updateSpecificProp = (element, prop, canvas) => {
+  // update angle of element
+  if (!isEmpty(prop?.coord?.rotation)) element.rotate(prop.coord.rotation);
+
+  // code for others specific props
+};
+
+/**
  * Change property of element
  *
  * @param {Object}  element the element will be change property
@@ -205,6 +219,8 @@ const getFabricProp = (element, prop) => {
  */
 export const updateElement = (element, prop, canvas) => {
   if (isEmpty(element) || isEmpty(prop)) return;
+
+  updateSpecificProp(element, prop, canvas);
 
   const fabricProp = getFabricProp(element, prop);
 
@@ -227,6 +243,7 @@ export const updateElement = (element, prop, canvas) => {
  */
 export const setElementProp = (element, prop) => {
   element.set(prop);
+
   const useProp = cloneDeep(prop);
 
   RESTRICT_PROP_CHILD.forEach(rp => {

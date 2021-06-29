@@ -13,3 +13,8 @@ export const SHADOW_OPTIONS = [
     value: SHADOW_TYPE.DROP_SHADOW
   }
 ];
+
+export const SHADOW_VALUE = {
+  MIN_ANGLE: -360,
+  MAX_ANGLE: 360
+};

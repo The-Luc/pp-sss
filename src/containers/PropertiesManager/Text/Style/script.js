@@ -1,11 +1,8 @@
-import { mapGetters } from 'vuex';
-
 import Opacity from '@/components/Properties/Features/Opacity';
+import Shadow from '@/components/Properties/Features/Shadow';
 import Border from './Border';
-import Shadow from './Shadow';
 
-import { GETTERS as APP_GETTERS } from '@/store/modules/app/const';
-import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
+import { useObject } from '@/hooks';
 
 export default {
   components: {
@@ -23,19 +20,29 @@ export default {
       required: true
     }
   },
+  setup() {
+    const { selectObjectProp, triggerChange } = useObject();
+
+    return {
+      selectObjectProp,
+      triggerChange
+    };
+  },
   computed: {
-    ...mapGetters({
-      colorPickerProps: APP_GETTERS.COLOR_PICKER_CUSTOM_PROPS,
-      selectedOpacity: PRINT_GETTERS.SELECT_PROP_CURRENT_OBJECT,
-      triggerChange: PRINT_GETTERS.TRIGGER_TEXT_CHANGE
-    }),
     opacityValue() {
       if (this.triggerChange) {
         // just for trigger the change
       }
 
-      const res = this.selectedOpacity('opacity');
+      const res = this.selectObjectProp('opacity');
       return !res ? 0 : res;
+    },
+    currentShadow() {
+      if (this.triggerChange) {
+        // just for trigger the change
+      }
+
+      return this.selectObjectProp('shadow');
     }
   },
   methods: {
@@ -54,11 +61,30 @@ export default {
       this.$emit('changeBorderOption', data);
     },
     /**
-     * Receive value shadow from children
-     * @param   {Object}  value Value user selecte
+     * Emit Shadow Config change to root
+     * @param {Object} shadowCfg - the new shadow configs
      */
-    onChangeShadow(value) {
-      this.selectedShadow = value;
+    emitChangeShadow(shadowCfg) {
+      this.$root.$emit('printChangeTextProperties', {
+        shadow: {
+          ...this.currentShadow,
+          ...shadowCfg
+        }
+      });
+    },
+    /**
+     * Handle update shadow config base on enable/disable of dropShadow
+     * @param {Object} Object the value of the shadow will be change
+     */
+    onChangeDropShadow(object) {
+      this.emitChangeShadow(object);
+    },
+    /**
+     * Handle update shadow config after user select shadow value
+     * @param {Object} object the value of shadow will be change
+     */
+    onChangeShadow(object) {
+      this.emitChangeShadow(object);
     }
   }
 };
