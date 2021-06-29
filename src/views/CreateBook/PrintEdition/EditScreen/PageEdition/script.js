@@ -1559,10 +1559,10 @@ export default {
       const { target } = e;
 
       target._objects.forEach(item => {
-        let currentXInch = pxToIn(item.left + target.left + target.width / 2);
-        let currentYInch = pxToIn(item.top + target.top + target.height / 2);
+        const currentXInch = pxToIn(item.left + target.left + target.width / 2);
+        const currentYInch = pxToIn(item.top + target.top + target.height / 2);
 
-        let prop = {
+        const prop = {
           coord: {
             x: currentXInch,
             y: currentYInch
@@ -1571,7 +1571,20 @@ export default {
 
         this.setObjectPropById({ id: item.id, prop });
 
-        this.updateTriggerTextChange();
+        const objectType = item.objectType;
+        switch (objectType) {
+          case OBJECT_TYPE.SHAPE:
+            this.updateTriggerShapeChange();
+            break;
+          case OBJECT_TYPE.CLIP_ART:
+            this.updateTriggerClipArtChange();
+            break;
+          case OBJECT_TYPE.TEXT:
+            this.updateTriggerTextChange();
+            break;
+          default:
+            return;
+        }
       });
     }
   }
