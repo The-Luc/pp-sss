@@ -813,21 +813,13 @@ export default {
 
       const textForEditing = cloneDeep(text);
       const rectForEditing = cloneDeep(rect);
-      const { flipX, flipY, angle } = cloneDeep(group);
-      const cachedData = {
-        flipX,
-        flipY,
-        angle
-      };
+      const { flipX, flipY, angle, top, left } = cloneDeep(group);
+      const cachedData = { flipX, flipY, angle, top, left };
 
       text.visible = false;
       rect.visible = false;
 
       group.addWithUpdate();
-
-      textForEditing.group = null;
-      textForEditing.top = group.top;
-      textForEditing.left = group.left;
 
       updateTextListeners(
         textForEditing,
