@@ -7,3 +7,11 @@ export const unFocus = () => {
   tmp.focus();
   document.body.removeChild(tmp);
 };
+
+/**
+ * Clear data copied from clipboard
+ */
+export const clearClipboard = event => {
+  event.clipboardData.setData('text/plain', '');
+  event.preventDefault();
+};

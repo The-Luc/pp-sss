@@ -20,7 +20,8 @@ import {
   pxToIn,
   resetObjects,
   isHalfRight,
-  inToPx
+  inToPx,
+  clearClipboard
 } from '@/common/utils';
 
 import {
@@ -71,7 +72,7 @@ import PageWrapper from './PageWrapper';
 import XRuler from './Rulers/XRuler';
 import YRuler from './Rulers/YRuler';
 import { parsePasteObject } from '@/common/utils/string';
-import { COPY_OBJECT_KEY } from '@/common/constants/config';
+import { COPY_OBJECT_KEY, DELAY_PASTE_TIME } from '@/common/constants/config';
 import { createImage } from '@/common/fabricObjects/image';
 
 export default {
@@ -429,13 +430,12 @@ export default {
       }
     },
     /**
-     * Check whether user's pasting data copy from outside while editing text or not
+     * Function clear object(s) copied when user paste data from outside while editing text
      * @param {String} dataOutside Data copy from outside app
-     * @param {Object} objectCopy Canvas's object(s) to be copied
-     * @return {Boolean} User's paste data outside while editing text
      */
-    isPasteToTextbox(dataOutside) {
-      if (!dataOutside) return false;
+    clearObjectCopied(dataOutside) {
+      if (!dataOutside) return;
+
       const activeObj = window.printCanvas.getActiveObject();
       const objectType = activeObj?.get('type');
 
@@ -445,10 +445,14 @@ export default {
         activeObj?.isEditing
       ) {
         sessionStorage.removeItem(COPY_OBJECT_KEY);
-        return true;
       }
-      return false;
     },
+    /**
+     * Set processing paste state when user pasted base on delay time
+     */
+    setProcessingPaste: debounce(function() {
+      this.isProcessingPaste = false;
+    }, DELAY_PASTE_TIME),
     /**
      * Function handle to get object(s) be copied from clipboard when user press Ctrl + V (Windows), Command + V (macOS), or from action menu
      */
@@ -465,9 +469,12 @@ export default {
         event?.clipboardData || window?.clipboardData
       )?.getData('text');
 
-      const isPasteToTextbox = this.isPasteToTextbox(dataCopyOutside);
+      this.clearObjectCopied(dataCopyOutside);
 
-      if (isPasteToTextbox) return;
+      if (dataCopyOutside) {
+        this.setProcessingPaste();
+        return;
+      }
 
       const { sheetId } = JSON.parse(objectCopy);
 
@@ -486,17 +493,19 @@ export default {
 
       this.countPaste += 1;
 
-      setTimeout(() => {
-        this.isProcessingPaste = false;
-      }, 1000);
+      this.setProcessingPaste();
     },
     /**
      * Function handle to set object(s) to clipboard when user press Ctrl + C (Windows), Command + C (macOS), or from action menu
      */
-    handleCopy() {
+    handleCopy(event) {
       const activeObj = window.printCanvas.getActiveObject();
 
       if (!activeObj) return;
+
+      if (event?.clipboardData) {
+        clearClipboard(event);
+      }
 
       this.countPaste = 1;
       this.isProcessingPaste = false;
