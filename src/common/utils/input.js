@@ -1,5 +1,10 @@
 import { isEmpty } from './util';
-import { isFloat, isInteger, splitNumberByDecimal } from './number';
+import {
+  isValidNumber,
+  getNumberInBoundary,
+  isNumberInBoundary,
+  splitNumberByDecimal
+} from './number';
 
 /**
  * Get the value of the input data
@@ -44,48 +49,41 @@ export const validateInputOption = (
   decimalPlaces = 0,
   items = [],
   unit = '',
-  isGetMin = false
+  fallbackMinMax = false
 ) => {
   if (isEmpty(data)) {
     return { isValid: false, value: '' };
   }
   const stringVal = String(data).trim();
   const [stringValueWithUnit, stringUnit] = stringVal.split(' ');
+
   const foundOption = getMatchedValueFromOptions(stringVal, items);
   if (foundOption) {
     return { isValid: true, value: foundOption.value };
   }
-  if (decimalPlaces > 0 && !isFloat(stringValueWithUnit)) {
+
+  if (!isValidNumber(stringValueWithUnit, decimalPlaces)) {
     return { isValid: false, value: '' };
   }
 
-  const value = decimalPlaces > 0 ? parseFloat(stringVal) : parseInt(data, 10);
-
-  if (isGetMin && value < min) {
-    return {
-      isValid: true,
-      value: min,
-      isForce: true
-    };
-  }
-
-  if (value < min || value > max) {
+  if ((unit || stringUnit) && unit !== stringUnit) {
     return { isValid: false, value: '' };
   }
 
-  if (unit && stringUnit && unit !== stringUnit) {
-    return {
-      isValid: false,
-      value: ''
-    };
+  let isForce = false;
+  let value =
+    decimalPlaces > 0
+      ? splitNumberByDecimal(parseFloat(stringVal), decimalPlaces)
+      : parseInt(data, 10);
+
+  if (fallbackMinMax && !isNumberInBoundary(value, min, max)) {
+    value = getNumberInBoundary(value, min, max);
+    isForce = true;
   }
 
-  if (decimalPlaces <= 0 && !isInteger(stringValueWithUnit)) {
+  if (!isNumberInBoundary(value, min, max)) {
     return { isValid: false, value: '' };
   }
-  return {
-    isValid: true,
-    value:
-      decimalPlaces > 0 ? splitNumberByDecimal(value, decimalPlaces) : value
-  };
+
+  return { isValid: true, value, isForce };
 };

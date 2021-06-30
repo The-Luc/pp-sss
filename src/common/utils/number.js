@@ -27,6 +27,50 @@ export const isFloat = val => /^-?(0|[1-9]\d*)(\.\d+)?$/.test(val);
 export const isPositiveFloat = val => /^(0|[1-9]\d*)(\.\d+)?$/.test(val);
 
 /**
+ * Check if the input number is valid float/integer depend on decimalPlaces
+ * @param {Number} val the numeric value to be checked
+ * @returns {Boolean} true if the input number is valid
+ */
+export const isValidNumber = (val, decimalPlaces = 0) => {
+  if (decimalPlaces > 0 && !isFloat(val)) {
+    return false;
+  }
+
+  if (decimalPlaces <= 0 && !isInteger(val)) {
+    return false;
+  }
+};
+
+/**
+ * Check if the number is inside boundary min/max
+ * @param {Number} val the numeric value
+ * @param {Number} min the smallest value allowed
+ * @param {Number} max the biggest value allowed
+ * @returns {Boolean} true if min <= value <= max
+ */
+export const isNumberInBoundary = (val, min, max) => {
+  if (val < min || val > max) return false;
+
+  return true;
+};
+
+/**
+ * Get the valid value within boundary min/max, return min if value too small
+ * return max if value too big
+ * @param {Number} val the numeric value
+ * @param {Number} min the smallest value allowed
+ * @param {Number} max the biggest value allowed
+ * @returns {Number} the valid value within boundary or min/max if not valid
+ */
+export const getNumberInBoundary = (val, min, max) => {
+  if (val < min) return min;
+
+  if (val > max) return max;
+
+  return val;
+};
+
+/**
  * Split the number by decimal count
  * @param {String|Number} value the numeric value to be split
  * @param {Number} decimalCount decimal count want split
