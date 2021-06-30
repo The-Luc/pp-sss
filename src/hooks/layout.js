@@ -12,7 +12,8 @@ import {
 import {
   OBJECT_TYPE,
   TOOL_NAME,
-  DEFAULT_FABRIC_BACKGROUND
+  DEFAULT_FABRIC_BACKGROUND,
+  BACKGROUND_PAGE_TYPE
 } from '@/common/constants';
 import { inToPx } from '@/common/utils';
 import { createTextBox } from '@/common/fabricObjects';
@@ -80,6 +81,7 @@ const handleDrawTextLayout = (textObject, targetCanvas, index) => {
 const handleDrawBackgroundLayout = (
   id,
   backgroundUrl,
+  backgroundPageType,
   position,
   targetCanvas,
   index
@@ -93,15 +95,20 @@ const handleDrawBackgroundLayout = (
     function(img) {
       const { width, height } = targetCanvas;
       const zoom = targetCanvas.getZoom();
+      const scale =
+        backgroundPageType === BACKGROUND_PAGE_TYPE.FULL_PAGE.id ? 1 : 2;
+
       img.id = id;
       img.selectable = false; // Right now, can not select background from layout, todo later
       img.left = position === 'right' ? width / zoom / 2 : 0;
-      img.scaleX = width / zoom / img.width / 2;
+      img.scaleX = width / zoom / img.width / scale;
       img.scaleY = height / zoom / img.height;
       img.objectType = OBJECT_TYPE.BACKGROUND;
       img.opacity = 1;
       img.isLeftPage = position !== 'right';
+
       img.set(DEFAULT_FABRIC_BACKGROUND);
+
       targetCanvas.add(img);
       targetCanvas.moveTo(img, index);
     },
@@ -123,6 +130,7 @@ const handleDrawObjects = (objects, targetCanvas) => {
       handleDrawBackgroundLayout(
         obj.id,
         obj.imageUrl,
+        obj.pageType,
         position,
         targetCanvas,
         index

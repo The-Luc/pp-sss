@@ -1,6 +1,6 @@
 import { uniqueId } from 'lodash';
 
-import { LAYOUT_TYPES } from '@/common/constants/layoutTypes';
+import { LAYOUT_TYPES, BACKGROUND_PAGE_TYPE } from '@/common/constants';
 import {
   TextElement,
   BackgroundElement,
@@ -13,6 +13,7 @@ import LAYOUT_02 from '@/assets/image/layouts/thumb/layout-02.png';
 
 import BG_1 from '@/assets/image/layouts/background/background-01.jpg';
 import BG_2 from '@/assets/image/layouts/background/background-02.jpg';
+import BG_3 from '@/assets/image/layouts/background/background-03.jpg';
 import LPCA_04531 from '@/assets/image/layouts/background/LPCA_04531.png';
 import LPCA_04511 from '@/assets/image/layouts/background/LPCA_04511.png';
 import BG_SINGLE_PAGE_1 from '@/assets/image/layouts/background/bg-single-page-01.jpg';
@@ -65,7 +66,7 @@ const text2 = {
 const bg1 = {
   ...BackgroundElement,
   id: uniqueId(),
-  pageType: 1,
+  pageType: BACKGROUND_PAGE_TYPE.SINGLE_PAGE.id,
   backgroundType: '',
   category: 'Cover',
   name: 'watercolorbackground.jpg',
@@ -76,22 +77,24 @@ const bg1 = {
 const bg2 = {
   ...BackgroundElement,
   id: uniqueId(),
-  pageType: 1,
+  pageType: BACKGROUND_PAGE_TYPE.SINGLE_PAGE.id,
   backgroundType: '',
   isLeftPage: false,
-  size: {
-    width: 0,
-    height: 0
-  },
-  coord: {
-    x: 0,
-    y: 0,
-    rotation: 0 // degree
-  },
   category: 'Cover',
   name: 'watercolorbackground.jpg',
   thumbnail: BG_2,
   imageUrl: BG_2
+};
+
+const bg3 = {
+  ...BackgroundElement,
+  id: uniqueId(),
+  pageType: BACKGROUND_PAGE_TYPE.FULL_PAGE.id,
+  backgroundType: '',
+  category: 'Cover',
+  name: 'fullbackground.jpg',
+  thumbnail: BG_3,
+  imageUrl: BG_3
 };
 
 const clipArt1 = {
@@ -255,7 +258,7 @@ const layouts = [
     previewImageUrl: LAYOUT_02,
     themeId: 1,
     isFavorites: false,
-    objects: [bg1, bg2, text1, text2]
+    objects: [bg3, text1, text2]
   },
   {
     id: 3,
@@ -273,7 +276,7 @@ const layouts = [
     isFavorites: false,
     previewImageUrl: LAYOUT_02,
     themeId: 1,
-    objects: [bg1, bg2, text2]
+    objects: [bg3, text2]
   },
   {
     id: 5,
