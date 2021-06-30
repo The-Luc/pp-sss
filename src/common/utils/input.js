@@ -66,7 +66,7 @@ export const validateInputOption = (
     return { isValid: false, value: '' };
   }
 
-  if ((unit || stringUnit) && unit !== stringUnit) {
+  if (stringUnit && unit !== stringUnit) {
     return { isValid: false, value: '' };
   }
 
