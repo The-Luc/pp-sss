@@ -42,8 +42,6 @@ export const splitNumberByDecimal = (value, decimalCount = 2) => {
     decimal = String(decimal).substring(0, decimalCount);
   }
   if (trunc == '-0') {
-    console.log(typeof trunc);
-
     return -parseFloat(`${trunc}.${decimal}`);
   }
   return parseFloat(`${trunc}.${decimal}`);
