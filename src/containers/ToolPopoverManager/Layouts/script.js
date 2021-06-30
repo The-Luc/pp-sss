@@ -258,31 +258,6 @@ export default {
       this.setToolNameSelected('');
     },
     /**
-     * Base on section id and sheet id to get page number of sheet
-     * @param {Number} sectionId - Current section id of sheet
-     * @param {Number} sheetId - Current sheet id
-     * @returns {Object} Page number left and right of sheet
-     */
-    numberPage(sectionId, sheetId) {
-      const sectionIndex = this.book.sections.findIndex(
-        item => item.id === sectionId
-      );
-      const indexSheet = this.book.sections[sectionIndex].sheets.findIndex(
-        item => item.id === sheetId
-      );
-      let indexInSections = 0;
-      for (let i = 0; i < sectionIndex; i++) {
-        indexInSections += this.book.sections[i].sheets.length;
-      }
-      indexInSections += indexSheet + 1;
-      let numberPageLeft = indexInSections * 2 - 4;
-      let numberPageRight = indexInSections * 2 - 3;
-      return {
-        numberPageLeft,
-        numberPageRight
-      };
-    },
-    /**
      * Trigger mutation to set theme and layout for sheet after that close popover when click Select button
      */
     setThemeLayoutForSheet() {
@@ -293,20 +268,14 @@ export default {
             this.pageSelected?.type
           )
         ) {
-          // Show choose layout modal
-          const { numberPageLeft, numberPageRight } = this.numberPage(
-            this.sectionId,
-            this.pageSelected?.id
-          );
-
           this.onCancel();
           this.toggleModal({
             isOpenModal: true,
             modalData: {
               type: MODAL_TYPES.SELECT_PAGE,
               props: {
-                numberPageLeft,
-                numberPageRight,
+                numberPageLeft: this.pageSelected?.pageLeftName,
+                numberPageRight: this.pageSelected?.pageRightName,
                 sheetId: this.pageSelected?.id,
                 themeId: this.themeSelected?.id,
                 layout: this.layoutObjSelected

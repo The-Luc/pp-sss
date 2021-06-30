@@ -290,44 +290,6 @@ export default {
       this.setToolNameSelected('');
     },
     /**
-     * Base on section id and sheet id to get page number of sheet
-     * @param   {Number}  sectionId Current section id of sheet
-     * @param   {Number}  sheetId   Current sheet id
-     * @returns {Object}            Page number left and right of sheet
-     */
-    numberPage(sectionId, sheetId) {
-      const sectionIndex = this.book.sections.findIndex(
-        item => item.id === sectionId
-      );
-
-      if (sectionIndex === 0) {
-        return {
-          numberPageLeft: 'Back Cover',
-          numberPageRight: 'Front Cover'
-        };
-      }
-
-      const indexSheet = this.book.sections[sectionIndex].sheets.findIndex(
-        item => item.id === sheetId
-      );
-
-      let indexInSections = 0;
-
-      for (let i = 0; i < sectionIndex; i++) {
-        indexInSections += this.book.sections[i].sheets.length;
-      }
-
-      indexInSections += indexSheet + 1;
-
-      const pageLeftNumber = indexInSections * 2 - 4;
-      const pageRightNumber = indexInSections * 2 - 3;
-
-      return {
-        numberPageLeft: `${pageLeftNumber < 10 ? '0' : ''}${pageLeftNumber}`,
-        numberPageRight: `${pageRightNumber < 10 ? '0' : ''}${pageRightNumber}`
-      };
-    },
-    /**
      * Trigger mutation to set Background
      */
     applyChosenBackground() {
@@ -337,18 +299,13 @@ export default {
         selectedPageType === BACKGROUND_PAGE_TYPE.SINGLE_PAGE.id;
 
       if (!this.isHalfSheet && isSinglePageType) {
-        const { numberPageLeft, numberPageRight } = this.numberPage(
-          this.currentSheet.sectionId,
-          this.currentSheet.id
-        );
-
         this.toggleModal({
           isOpenModal: true,
           modalData: {
             type: MODAL_TYPES.BACKGROUND_SELECT_PAGE,
             props: {
-              numberPageLeft,
-              numberPageRight,
+              numberPageLeft: this.currentSheet.pageLeftName,
+              numberPageRight: this.currentSheet.pageRightName,
               background: {
                 ...cloneDeep(this.selectedBackground),
                 opacity: 1

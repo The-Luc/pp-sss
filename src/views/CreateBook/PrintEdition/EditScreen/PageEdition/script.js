@@ -92,11 +92,6 @@ export default {
 
     return { drawLayout };
   },
-  created() {
-    this.setBookId({ bookId: this.$route.params.bookId });
-
-    this.getDataPageEdit();
-  },
   data() {
     return {
       containerSize: null,
@@ -195,7 +190,6 @@ export default {
   },
   methods: {
     ...mapActions({
-      getDataPageEdit: PRINT_ACTIONS.GET_DATA_EDIT,
       getDataCanvas: PRINT_ACTIONS.GET_DATA_CANVAS
     }),
     ...mapMutations({

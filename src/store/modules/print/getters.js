@@ -125,5 +125,13 @@ export const getters = {
       left: background.left,
       right: background.right
     };
+  },
+  [PRINT._GETTERS.SECTIONS_SHEETS]: ({ sections, sheets }) => {
+    return sections.map(section => {
+      return {
+        ...section,
+        sheets: section.sheets.map(sheetId => sheets[sheetId])
+      };
+    });
   }
 };

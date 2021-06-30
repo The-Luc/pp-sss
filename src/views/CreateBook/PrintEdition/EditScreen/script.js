@@ -1,10 +1,14 @@
-import { mapMutations, mapGetters } from 'vuex';
+import { mapMutations, mapGetters, mapActions } from 'vuex';
 
 import { MUTATES, GETTERS as APP_GETTERS } from '@/store/modules/app/const';
 import {
   GETTERS as BOOK_GETTERS,
   MUTATES as BOOK_MUTATES
 } from '@/store/modules/book/const';
+import {
+  ACTIONS as PRINT_ACTIONS,
+  MUTATES as PRINT_MUTATES
+} from '@/store/modules/print/const';
 import { MODAL_TYPES, TOOL_NAME } from '@/common/constants';
 import ToolBar from './ToolBar';
 import Header from '@/containers/HeaderEdition/Header';
@@ -14,6 +18,13 @@ import PageEdition from './PageEdition';
 import { useLayoutPrompt, usePopoverCreationTool } from '@/hooks';
 
 export default {
+  components: {
+    ToolBar,
+    Header,
+    FeedbackBar,
+    PageEdition,
+    SidebarSection
+  },
   setup() {
     const { pageSelected, updateVisited } = useLayoutPrompt();
     const { setToolNameSelected } = usePopoverCreationTool();
@@ -23,12 +34,10 @@ export default {
       updateVisited
     };
   },
-  components: {
-    ToolBar,
-    Header,
-    FeedbackBar,
-    PageEdition,
-    SidebarSection
+  created() {
+    this.setBookId({ bookId: this.$route.params.bookId });
+
+    this.getDataPageEdit();
   },
   computed: {
     ...mapGetters({
@@ -57,7 +66,11 @@ export default {
     this.resetPrintConfigs();
   },
   methods: {
+    ...mapActions({
+      getDataPageEdit: PRINT_ACTIONS.GET_DATA_EDIT
+    }),
     ...mapMutations({
+      setBookId: PRINT_MUTATES.SET_BOOK_ID,
       toggleModal: MUTATES.TOGGLE_MODAL,
       resetPrintConfigs: MUTATES.RESET_PRINT_CONFIG,
       savePrintCanvas: BOOK_MUTATES.SAVE_PRINT_CANVAS
