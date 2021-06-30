@@ -19,9 +19,10 @@ import {
   isHalfLeft,
   pxToIn,
   resetObjects,
-  isHalfRight,
   inToPx,
-  clearClipboard
+  clearClipboard,
+  getMinPositionObject,
+  computePastedObjectCoord
 } from '@/common/utils';
 
 import {
@@ -66,7 +67,6 @@ import {
   ARRANGE_SEND,
   DEFAULT_SHAPE,
   COVER_TYPE,
-  PRINT_PAGE_SIZE,
   DEFAULT_CLIP_ART,
   FABRIC_OBJECT_TYPE
 } from '@/common/constants';
@@ -76,7 +76,7 @@ import PageWrapper from './PageWrapper';
 import XRuler from './Rulers/XRuler';
 import YRuler from './Rulers/YRuler';
 import { parsePasteObject } from '@/common/utils/string';
-import { COPY_OBJECT_KEY, DELAY_PASTE_TIME } from '@/common/constants/config';
+import { COPY_OBJECT_KEY, PASTE } from '@/common/constants/config';
 import { createImage } from '@/common/fabricObjects/image';
 
 export default {
@@ -218,31 +218,6 @@ export default {
       deleteBackground: PRINT_MUTATES.DELETE_BACKGROUND
     }),
     /**
-     * Function handle compute pasted object's coord
-     * @param {Object} data Paste object
-     * @param {Number} sheetId - Current sheet id
-     * @returns {Object} New object coord after caculated
-     */
-    computePastedObjectCoord(data, sheetId) {
-      const isFrontCover = isHalfRight(this.pageSelected);
-      const isBackCover = isHalfLeft(this.pageSelected);
-      const distance = sheetId === this.pageSelected.id ? 0.5 : 0;
-      const dataClone = cloneDeep(data);
-      if (isFrontCover && dataClone.coord.x < PRINT_PAGE_SIZE.WIDTH) {
-        dataClone.coord.x = PRINT_PAGE_SIZE.WIDTH + PRINT_PAGE_SIZE.WIDTH / 2;
-      }
-
-      if (isBackCover && dataClone.coord.x > PRINT_PAGE_SIZE.WIDTH) {
-        dataClone.coord.x = PRINT_PAGE_SIZE.WIDTH - PRINT_PAGE_SIZE.WIDTH / 2;
-      }
-      const coord = {
-        ...dataClone.coord,
-        x: dataClone.coord.x + distance * this.countPaste,
-        y: dataClone.coord.y + distance * this.countPaste
-      };
-      return coord;
-    },
-    /**
      * Function handle create image object and add properties to store
      * @param {Object} data - Image's properties
      * @param {Object} coord - Image's coord
@@ -333,6 +308,7 @@ export default {
           coord
         }
       };
+
       const eventListeners = {
         scaling: this.handleScaling,
         scaled: this.handleScaled,
@@ -340,11 +316,16 @@ export default {
         moved: this.handleMoved
       };
 
+      const {
+        size: { width, height }
+      } = data;
+
       const svg = await handleGetSvgData({
         svg: ojbectData,
         svgUrlAttrName:
           data.type === OBJECT_TYPE.CLIP_ART ? 'vector' : 'pathData',
-        expectedHeight: data.size.height
+        expectedHeight: height,
+        expectedWidth: width
       });
 
       addEventListeners(svg, eventListeners);
@@ -357,6 +338,7 @@ export default {
           coord
         }
       };
+
       this.addObjectToStore(objectToStore);
 
       const {
@@ -382,16 +364,35 @@ export default {
      * @param {Array} objects - List object(s) copied
      * @param {Array} processedItems - List object(s) pasted
      * @param {Number} sheetId - Current sheet id
+     * @param {Object} fabricObject Fabric's data
+     * @param {Number} minLeft Min left position of list objects
+     * @param {Number} minTop Min top position of list objects
      * @returns {Arrray} List object(s) pasted
      */
-    async handlePasteItems(objects, processedItems = [], sheetId) {
+    async handlePasteItems(
+      objects,
+      processedItems = [],
+      sheetId,
+      fabricObject,
+      minLeft,
+      minTop
+    ) {
       if (objects.length === 0) {
         return processedItems;
       }
 
       const objectsClone = cloneDeep(objects);
       const data = objectsClone.splice(0, 1)[0];
-      const coord = this.computePastedObjectCoord(data, sheetId);
+
+      const coord = computePastedObjectCoord(
+        data,
+        sheetId,
+        fabricObject,
+        minLeft,
+        minTop,
+        this.pageSelected,
+        this.countPaste
+      );
 
       if (data.type === OBJECT_TYPE.IMAGE) {
         const image = await this.handlePasteImage(data, coord);
@@ -399,7 +400,10 @@ export default {
         return await this.handlePasteItems(
           objectsClone,
           [...processedItems, image],
-          sheetId
+          sheetId,
+          fabricObject,
+          minLeft,
+          minTop
         );
       }
 
@@ -412,7 +416,10 @@ export default {
         return await this.handlePasteItems(
           objectsClone,
           [...processedItems, svg],
-          sheetId
+          sheetId,
+          fabricObject,
+          minLeft,
+          minTop
         );
       }
 
@@ -422,7 +429,10 @@ export default {
         return await this.handlePasteItems(
           objectsClone,
           [...processedItems, text],
-          sheetId
+          sheetId,
+          fabricObject,
+          minLeft,
+          minTop
         );
       }
     },
@@ -464,7 +474,7 @@ export default {
      */
     setProcessingPaste: debounce(function() {
       this.isProcessingPaste = false;
-    }, DELAY_PASTE_TIME),
+    }, PASTE.DELAY_TIME),
     /**
      * Function handle to get object(s) be copied from clipboard when user press Ctrl + V (Windows), Command + V (macOS), or from action menu
      */
@@ -487,16 +497,20 @@ export default {
         this.setProcessingPaste();
         return;
       }
-
-      const { sheetId } = JSON.parse(objectCopy);
+      const { sheetId, fabric } = JSON.parse(objectCopy);
 
       const canvas = window.printCanvas;
       canvas.discardActiveObject();
 
+      const { minLeft, minTop } = getMinPositionObject(fabric);
+
       const listPastedObjects = await this.handlePasteItems(
         objects,
         [],
-        sheetId
+        sheetId,
+        fabric,
+        minLeft,
+        minTop
       );
 
       canvas.add(...listPastedObjects);
@@ -541,6 +555,7 @@ export default {
 
       const cacheData = {
         sheetId: this.pageSelected.id,
+        fabric: activeObjClone,
         [COPY_OBJECT_KEY]: jsonData
       };
       sessionStorage.setItem(COPY_OBJECT_KEY, JSON.stringify(cacheData));
@@ -654,6 +669,11 @@ export default {
           this.setObjectProp({ prop });
           this.setObjectPropById({ id: group.id, prop });
           this.updateTriggerTextChange();
+        },
+        'object:moved': e => {
+          if (!e.target?.objectType) {
+            this.handleMultiMoved(e);
+          }
         }
       });
 
@@ -1551,6 +1571,36 @@ export default {
       this.changeTextProperties(prop);
 
       this.setTextDimensionAfterScaled(target, rect, text, dataObject);
+    },
+    /**
+     * Set position to prop when multi move element
+     * @param {Object} e - Event moved of group
+     */
+    handleMultiMoved(e) {
+      const { target } = e;
+
+      target.getObjects().forEach(item => {
+        const { id, left, top, objectType } = item;
+        const currentXInch = pxToIn(left + target.left + target.width / 2);
+        const currentYInch = pxToIn(top + target.top + target.height / 2);
+
+        const prop = {
+          coord: {
+            x: currentXInch,
+            y: currentYInch
+          }
+        };
+
+        this.setObjectPropById({ id, prop });
+
+        if (objectType === OBJECT_TYPE.SHAPE) {
+          this.updateTriggerShapeChange();
+        } else if (objectType === OBJECT_TYPE.CLIP_ART) {
+          this.updateTriggerClipArtChange();
+        } else if (objectType === OBJECT_TYPE.TEXT) {
+          this.updateTriggerTextChange();
+        }
+      });
     }
   }
 };
