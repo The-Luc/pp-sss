@@ -1558,7 +1558,7 @@ export default {
     handleMultiMoved(e) {
       const { target } = e;
 
-      target._objects.forEach(item => {
+      target.getObjects().forEach(item => {
         const { id, left, top, objectType } = item;
         const currentXInch = pxToIn(left + target.left + target.width / 2);
         const currentYInch = pxToIn(top + target.top + target.height / 2);
