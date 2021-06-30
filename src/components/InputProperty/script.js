@@ -55,12 +55,17 @@ export default {
      * Check if value within min and max and then emit value to parent else return previous value by force render component
      * @param   {String}  value Value user input
      */
-    onChangeInput(value) {
-      const { isValid } = validateInputOption(value, this.min, this.max, 0);
+    onChangeInput(val) {
+      const { isValid, value } = validateInputOption(
+        val,
+        this.min,
+        this.max,
+        0
+      );
       if (!isValid) {
         this.forceRenderComponent();
       } else {
-        this.$emit('change', +value);
+        this.$emit('change', value);
       }
     },
     /**
