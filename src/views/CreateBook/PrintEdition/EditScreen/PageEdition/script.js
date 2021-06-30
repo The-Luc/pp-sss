@@ -645,11 +645,13 @@ export default {
 
           const minWidth = target.getMinWidth();
           const minHeight = target.height;
+          const width = Math.max(group.width, target.width);
+          const height = Math.max(group.height, target.height);
 
           const prop = {
             size: {
-              width: pxToIn(group.width),
-              height: pxToIn(group.height)
+              width: pxToIn(width),
+              height: pxToIn(height)
             },
             minHeight: pxToIn(minHeight),
             minWidth: pxToIn(minWidth)
