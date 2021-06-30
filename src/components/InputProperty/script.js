@@ -56,12 +56,16 @@ export default {
      * @param   {String}  value Value user input
      */
     onChangeInput(val) {
-      const isNumber = !isNaN(val);
-      const { isValid } = validateInputOption(val, this.min, this.max, 0);
-      if (!isValid || !isNumber) {
+      const { isValid, value } = validateInputOption(
+        val,
+        this.min,
+        this.max,
+        0
+      );
+      if (!isValid) {
         this.forceRenderComponent();
       } else {
-        this.$emit('change', +val);
+        this.$emit('change', value);
       }
     },
     /**

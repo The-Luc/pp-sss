@@ -39,6 +39,8 @@ export const isValidNumber = (val, decimalPlaces = 0) => {
   if (decimalPlaces <= 0 && !isInteger(val)) {
     return false;
   }
+
+  return true;
 };
 
 /**
