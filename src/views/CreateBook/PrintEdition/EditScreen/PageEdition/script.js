@@ -1510,11 +1510,21 @@ export default {
       );
 
       rect.set({
-        top: target.height * -0.5,
-        left: target.width * -0.5,
+        top: -adjustedHeight / 2,
+        left: -adjustedWidth / 2,
         width: adjustedWidth - strokeWidth,
         height: adjustedHeight - strokeWidth,
         strokeDashArray
+      });
+
+      text.set({
+        top: -adjustedHeight / 2,
+        left: -adjustedWidth / 2,
+      });
+
+      target.set({
+        width: adjustedWidth,
+        height: adjustedHeight,
       });
     },
     /**
