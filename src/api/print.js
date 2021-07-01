@@ -57,7 +57,7 @@ const printService = {
               thumbnailUrl,
               link,
               pageLeftName,
-              pageRightName,
+              pageRightName
             };
           });
 
