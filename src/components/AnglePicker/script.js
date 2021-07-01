@@ -94,7 +94,11 @@ export default {
     onMouseMove(e) {
       if (this.active) {
         e.preventDefault();
-        this.rotate(e);
+        if (e.shiftKey) {
+          this.rotateShift(e);
+        } else {
+          this.rotate(e);
+        }
       }
     },
     /**
@@ -104,7 +108,11 @@ export default {
     onMouseUp(e) {
       if (this.active) {
         e.preventDefault();
-        this.stop();
+        if (e.shiftKey) {
+          this.stopShift();
+        } else {
+          this.stop();
+        }
       }
     },
     /**
@@ -123,12 +131,48 @@ export default {
       this.timer = setTimeout(() => this.emitChange(angle), 100);
     },
     /**
+     * Handle rotation when press hold shift button
+     * @param {MouseEvent} e - the mouse event from user
+     */
+    rotateShift(e) {
+      e.preventDefault();
+      const x = e.clientX - this.center.x;
+      const y = e.clientY - this.center.y;
+      const d = this.calcAngle(x, y);
+      const stopPoints = (360 * 2) / 45 + 1;
+      const angleList = Array.from(
+        { length: stopPoints },
+        (_, i) => i * 45 - 360
+      );
+      const d2 = angleList.filter(item => d >= item)?.pop();
+
+      if (this.currentAngle % 45 !== 0) {
+        this.currentAngle = 45 * Math.floor(this.currentAngle / 45);
+      }
+      this.rotation = d2 - this.currentAngle;
+      const angle = this.getAngleNumber(this.rotation);
+      this.updateStyle(angle);
+      clearTimeout(this.timer);
+      this.timer = setTimeout(() => this.emitChange(angle), 100);
+    },
+    /**
      * Handle stop rotation
      */
     stop() {
       clearTimeout(this.timer);
       this.currentAngle = this.getAngleNumber(
         (this.currentAngle += this.rotation)
+      );
+      this.emitChange(this.currentAngle);
+      this.active = false;
+    },
+    /**
+     * Handle stop rotation when press hold shift button
+     */
+    stopShift() {
+      clearTimeout(this.timer);
+      this.currentAngle = this.getAngleNumber(
+        (this.currentAngle = this.rotation)
       );
       this.emitChange(this.currentAngle);
       this.active = false;
