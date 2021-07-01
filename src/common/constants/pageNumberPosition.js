@@ -1,0 +1,11 @@
+export const PAGE_NUMBER_POSITION = {
+  BOTTOM_CENTER: 'BOTTOM_CENTER',
+  BOTTOM_OUTSIDE_CORNERS: 'BOTTOM_OUTSIDE_CORNERS'
+};
+
+export const PAGE_NUMBER_POSITION_OPTIONS = Object.keys(
+  PAGE_NUMBER_POSITION
+).map(key => ({
+  name: key,
+  value: PAGE_NUMBER_POSITION[key]
+}));
