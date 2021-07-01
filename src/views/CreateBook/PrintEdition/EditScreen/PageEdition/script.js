@@ -43,7 +43,8 @@ import {
   textVerticalAlignOnAdjust,
   handleObjectBlur,
   handleScalingText,
-  updateTextListeners
+  updateTextListeners,
+  updateSpecificProp
 } from '@/common/fabricObjects';
 
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
@@ -282,8 +283,10 @@ export default {
         textProperties
       );
 
-      object.set({
-        angle: objectData.newObject.coord.rotation
+      updateSpecificProp(object, {
+        coord: {
+          rotation: objectData.newObject.coord.rotation
+        }
       });
 
       this.handleAddTextEventListeners(object, objectData);
@@ -291,6 +294,7 @@ export default {
       this.addObjectToStore(objectData);
 
       applyShadowToObject(object, objectData.newObject.shadow);
+
       return object;
     },
     /**
@@ -349,6 +353,13 @@ export default {
         shadowAngle,
         shadowColor
       } = svg;
+
+      updateSpecificProp(svg, {
+        coord: {
+          rotation: objectToStore.newObject.coord.rotation
+        }
+      });
+
       applyShadowToObject(svg, {
         dropShadow,
         shadowBlur,
@@ -1539,12 +1550,12 @@ export default {
 
       text.set({
         top: -adjustedHeight / 2,
-        left: -adjustedWidth / 2,
+        left: -adjustedWidth / 2
       });
 
       target.set({
         width: adjustedWidth,
-        height: adjustedHeight,
+        height: adjustedHeight
       });
     },
     /**
