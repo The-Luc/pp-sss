@@ -1,5 +1,5 @@
 <template>
-  <div class="text-properties-container">
+  <div class="clip-art-properties-container">
     <Properties title="Clip Art Properties">
       <TabPropertiesMenu @change="onChangeTabMenu">
         <v-tab href="#general">
