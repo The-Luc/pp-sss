@@ -16,7 +16,7 @@ export default {
   },
   data() {
     return {
-      appendedIcon: ICON_LOCAL.APPENED_ICON_ZOOM,
+      appendedIcon: ICON_LOCAL.APPENDED_ICON_ZOOM,
       items: ZOOM_VALUE
     };
   },
