@@ -39,13 +39,13 @@ export const mutations = {
     state.selectedToolName = name;
   },
   [APP._MUTATES.SET_COLOR_PICKER_PRESETS](state, { preset }) {
-    const { max, next } = state.colorPicker.data.presets;
+    const { max, next } = state.colorPicker.presets;
 
-    state.colorPicker.data.presets.values.splice(next, 1, preset);
+    state.colorPicker.presets.values.splice(next, 1, preset);
 
     const newIndex = next >= max - 1 ? 0 : next + 1;
 
-    state.colorPicker.data.presets.next = newIndex;
+    state.colorPicker.presets.next = newIndex;
   },
   [APP._MUTATES.SET_IS_PROMPT](state, { isPrompt }) {
     state.isPrompt = isPrompt;
