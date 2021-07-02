@@ -3,6 +3,7 @@ import ToolPopoverManager from '@/containers/ToolPopoverManager';
 import PpCombobox from '@/components/Selectors/Combobox';
 
 import { ICON_LOCAL } from '@/common/constants';
+import { ZOOM_VALUE } from '@/common/constants';
 
 export default {
   components: {
@@ -12,7 +13,8 @@ export default {
   },
   data() {
     return {
-      appendedIcon: ICON_LOCAL.APPENED_ICON_ZOOM
+      appendedIcon: ICON_LOCAL.APPENED_ICON_ZOOM,
+      items: ZOOM_VALUE
     };
   },
   props: {

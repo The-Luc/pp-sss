@@ -15,7 +15,7 @@
       closeOnContentClick: true,
       closeOnClick: true,
       maxHeight: 'auto',
-      positionX: menuX + 23, // width of .v-input__prepend-outer + margin
+      positionX: menuX + marginMenu, // width of .v-input__prepend-outer + margin
       positionY: menuY,
       absolute: true,
       nudgeWidth

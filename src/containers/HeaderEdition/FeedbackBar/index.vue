@@ -23,11 +23,9 @@
     </div>
     <div class="feedback-select feedback-value">
       <PpCombobox
-        :items="[
-          { name: 'aa', value: 1 },
-          { name: 'bb', value: 2 }
-        ]"
-        :nudge-width="120"
+        :items="items"
+        :nudge-width="145"
+        :margin-menu="0"
         :appended-icon="appendedIcon"
         @change="changeZoom"
       />
