@@ -30,6 +30,14 @@ export const state = {
     selectedObjectId: ''
   },
 
+  infoBar: {
+    x: 0,
+    y: 0,
+    w: 0,
+    h: 0,
+    zoom: 0 // 0 = scale to fit, 0.1 = 10%, 0.33 = 33%
+  },
+
   // Tool icon popover
   selectedToolName: '',
   isPrompt: false,

@@ -2,7 +2,7 @@ import { fabric } from 'fabric';
 import { cloneDeep } from 'lodash';
 import Color from 'color';
 
-import { DEFAULT_SHAPE, OBJECT_TYPE } from '@/common/constants';
+import { DEFAULT_SVG, DEFAULT_SHAPE, OBJECT_TYPE } from '@/common/constants';
 
 import { inToPx, ptToPx, isEmpty, mapObject, scaleSize } from '@/common/utils';
 
@@ -202,7 +202,7 @@ const getFabricProp = (element, prop) => {
  * @param {Object} element the element will have property changed
  * @param {Object} prop new property
  */
-const updateSpecificProp = (element, prop) => {
+export const updateSpecificProp = (element, prop) => {
   // update angle of element
   if (!isEmpty(prop?.coord?.rotation)) element.rotate(prop.coord.rotation);
 
@@ -281,20 +281,28 @@ export const moveToCenterPage = (
  * @param   {String}  svgUrl          the url of svg file
  * @param   {Object}  elementProperty the fabric property of element
  * @param   {Number}  expectedHeight  the view height of svg element
+ * @param   {Number}  expectedWidth   the view width of svg element
  * @returns {Object}                  the svg data
  */
-export const getSvgData = (svgUrl, elementProperty, expectedHeight) => {
+export const getSvgData = (
+  svgUrl,
+  elementProperty,
+  expectedHeight,
+  expectedWidth
+) => {
   return new Promise(resolve => {
     fabric.loadSVGFromURL(svgUrl, (objects, options) => {
       const svg = fabric.util.groupSVGElements(objects, options);
-      const scale = inToPx(expectedHeight) / svg.height;
+
+      const scaleY = inToPx(expectedHeight) / svg.height;
+      const scaleX = inToPx(expectedWidth) / svg.width;
 
       svg.set({
         ...elementProperty,
         width: svg.width,
         height: svg.height,
-        scaleX: scale,
-        scaleY: scale,
+        scaleX: scaleX,
+        scaleY: scaleY,
         ...(elementProperty.fillMode === 'fill' && {
           strokeWidth: DEFAULT_SHAPE.BORDER.STROKE_WIDTH
         })
@@ -386,19 +394,22 @@ export const addEventListeners = (element, eventListeners) => {
  * @param {Object} svg - The svg's data
  * @param {String} svgUrlAttrName - the attribute name contain svg url
  * @param {Number} expectedHeight - the svg's expected height want to draw
+ * @param {Number} expectedWidth - the svg's expected width want to draw
  * @returns {Object} Svg object
  */
 export const handleGetSvgData = async ({
   svg,
   svgUrlAttrName,
-  expectedHeight
+  expectedHeight = DEFAULT_SVG.HEIGHT,
+  expectedWidth = DEFAULT_SVG.WIDTH
 }) => {
   const fabricProp = getFabricPropByType(svg.object.type, svg.object);
 
   return await getSvgData(
     svg.object[svgUrlAttrName],
     { ...fabricProp, id: svg.id },
-    expectedHeight
+    expectedHeight,
+    expectedWidth
   );
 };
 

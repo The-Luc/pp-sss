@@ -79,8 +79,7 @@ export const getNumberInBoundary = (val, min, max) => {
  * @returns {Number} The number after split
  */
 export const splitNumberByDecimal = (value, decimalCount = 2) => {
-  const trunc = Math.trunc(value);
-  let decimal = String(value).split('.')[1];
+  let [trunc, decimal] = String(value).split('.');
 
   if (!decimal) return parseFloat(trunc);
 

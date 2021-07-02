@@ -8,22 +8,27 @@ import { POSITION_ORIGIN } from './origin';
 
 export const OBJECT_MIN_SIZE = 0.5; // inch
 
+export const DEFAULT_SVG = {
+  WIDTH: 1.5,
+  HEIGHT: 1.5
+};
+
+export const DEFAULT_BORDER = {
+  FILL: false,
+  STROKE: '#000000',
+  STROKE_WIDTH: 0,
+  STROKE_DASH_ARRAY: [],
+  STROKE_LINE_CAP: 'solid'
+};
+
 export const DEFAULT_PROP = {
   OPACITY: 1,
   COLOR: '#000000',
-  WIDTH: 1.5,
-  HEIGHT: 1.5,
   MIN_POSITION: -100,
   MAX_POSITION: 100,
   MIN_SIZE: 0.5,
   MAX_SIZE: 60,
-  BORDER: {
-    FILL: false,
-    STROKE: '#000000',
-    STROKE_WIDTH: 0,
-    STROKE_DASH_ARRAY: [],
-    STROKE_LINE_CAP: 'solid'
-  }
+  BORDER: { ...DEFAULT_BORDER }
 };
 
 export const DEFAULT_COORD = {
@@ -96,8 +101,8 @@ export const DEFAULT_CLIP_ART = {
     ...DEFAULT_ORIGIN
   },
   OPACITY: DEFAULT_PROP.OPACITY,
-  WIDTH: 3, // inch
-  HEIGHT: 3, // inch
+  WIDTH: DEFAULT_SVG.WIDTH, // inch
+  HEIGHT: DEFAULT_SVG.HEIGHT, // inch
   MIN_SIZE: DEFAULT_PROP.MIN_SIZE,
   MAX_SIZE: DEFAULT_PROP.MAX_SIZE,
   FILL_MODE: SVG_FILL_MODE.FILL,
@@ -110,10 +115,11 @@ export const DEFAULT_CLIP_ART = {
 };
 
 export const DEFAULT_IMAGE = {
-  category: 'Cover',
-  name: '',
-  thumbnail: IMAGE_LOCAL.PLACE_HOLDER,
-  imageUrl: IMAGE_LOCAL.PLACE_HOLDER
+  CATEGORY: 'Cover',
+  STYLE_ID: 'default',
+  NAME: '',
+  THUMBNAIL: IMAGE_LOCAL.PLACE_HOLDER,
+  IMAGE_URL: IMAGE_LOCAL.PLACE_HOLDER
 };
 
 export const DEFAULT_BACKGROUND = {
@@ -123,8 +129,8 @@ export const DEFAULT_BACKGROUND = {
 };
 
 export const DEFAULT_SHAPE = {
-  WIDTH: DEFAULT_PROP.WIDTH,
-  HEIGHT: DEFAULT_PROP.HEIGHT,
+  WIDTH: DEFAULT_SVG.WIDTH,
+  HEIGHT: DEFAULT_SVG.HEIGHT,
   MIN_SIZE: DEFAULT_PROP.MIN_SIZE,
   MAX_SIZE: DEFAULT_PROP.MAX_SIZE,
   MIN_POSITION: DEFAULT_PROP.MIN_POSITION,

@@ -7,4 +7,7 @@ export const ENV_CONFIG = {
 
 export const COPY_OBJECT_KEY = 'ppObject';
 
-export const DELAY_PASTE_TIME = 1000; // ms
+export const PASTE = {
+  DELAY_TIME: 1000, // MS
+  DISTANCE: 0.5 // inch
+};
