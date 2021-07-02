@@ -144,6 +144,15 @@ const printService = {
    */
   getSheetObjects: (bookId, sectionId, sheetId) => {
     return new Promise(resolve => {
+      // load the canvas from sessionStorage if exist
+      const storageData = window.sessionStorage.getItem(`SHEET_ID_${sheetId}`);
+
+      if (!isEmpty(storageData)) {
+        resolve(getSuccessWithData(JSON.parse(storageData)));
+
+        return;
+      }
+
       const section = bookService
         .getBook(bookId)
         .sections.find(s => sectionId === s.id);
@@ -160,6 +169,21 @@ const printService = {
 
       resolve(result);
     });
+  },
+
+  /**
+   * to save state of the canvas to sessionStorage
+   * @param {Number} Id of the active sheet
+   * @param {Object} sheetLayout objects on canvas that will be save on the storage
+   */
+  saveCanvasState: (sheetId, sheetLayout) => {
+    // sheetId is undefined when load the page the first time
+    if (!sheetId) return;
+
+    window.sessionStorage.setItem(
+      `SHEET_ID_${sheetId}`,
+      JSON.stringify(sheetLayout)
+    );
   }
 };
 
