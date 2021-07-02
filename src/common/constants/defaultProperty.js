@@ -65,6 +65,7 @@ export const DEFAULT_TEXT = {
   STYLE_ID: 'default',
   FONT_FAMILY: 'Arial',
   FONT_SIZE: 60,
+  COLOR: DEFAULT_PROP.COLOR,
   IS_BOLD: false,
   IS_ITALIC: false,
   IS_UNDERLINE: false,

@@ -23,7 +23,7 @@ export default {
   },
   data() {
     return {
-      appendedIcon: ICON_LOCAL.APPENED_ICON,
+      appendedIcon: ICON_LOCAL.APPENDED_ICON,
       prependedIcon: ICON_LOCAL.PREPENDED_FONT_SIZE
     };
   },

@@ -26,6 +26,10 @@ export default {
     nudgeWidth: {
       type: Number,
       default: 73
+    },
+    marginMenu: {
+      type: Number,
+      default: 23
     }
   },
   data() {

@@ -7,7 +7,7 @@ export default {
   },
   data() {
     return {
-      appendedIcon: ICON_LOCAL.APPENED_ICON,
+      appendedIcon: ICON_LOCAL.APPENDED_ICON,
       items: [
         {
           name: '1',
