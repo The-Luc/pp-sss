@@ -22,11 +22,15 @@
       Zoom:
     </div>
     <div class="feedback-select feedback-value">
-      <select>
-        <option value="volvo">Scale to Fit</option>
-        <option value="saab">Saab</option>
-      </select>
-      <v-icon>arrow_drop_down</v-icon>
+      <PpCombobox
+        :items="[
+          { name: 'aa', value: 1 },
+          { name: 'bb', value: 2 }
+        ]"
+        :nudge-width="120"
+        :appended-icon="appendedIcon"
+        @change="changeZoom"
+      />
     </div>
     <transition name="slide-fade">
       <PropertiesManager v-show="isOpenMenuProperties" />
@@ -36,4 +40,4 @@
 </template>
 
 <script src="./script.js"></script>
-<style lang="scss" scoped src="./style.scss" />
+<style lang="scss" src="./style.scss" />

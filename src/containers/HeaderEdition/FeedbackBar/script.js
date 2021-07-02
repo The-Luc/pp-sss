@@ -1,10 +1,19 @@
 import PropertiesManager from '@/containers/PropertiesManager';
 import ToolPopoverManager from '@/containers/ToolPopoverManager';
+import PpCombobox from '@/components/Selectors/Combobox';
+
+import { ICON_LOCAL } from '@/common/constants';
 
 export default {
   components: {
     PropertiesManager,
-    ToolPopoverManager
+    ToolPopoverManager,
+    PpCombobox
+  },
+  data() {
+    return {
+      appendedIcon: ICON_LOCAL.APPENED_ICON_ZOOM
+    };
   },
   props: {
     isOpenMenuProperties: {
@@ -14,6 +23,11 @@ export default {
     selectedToolName: {
       type: String,
       default: ''
+    }
+  },
+  methods: {
+    changeZoom(val) {
+      console.log(val);
     }
   }
 };
