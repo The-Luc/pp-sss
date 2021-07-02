@@ -69,7 +69,8 @@ import {
   DEFAULT_SHAPE,
   COVER_TYPE,
   DEFAULT_CLIP_ART,
-  FABRIC_OBJECT_TYPE
+  FABRIC_OBJECT_TYPE,
+  ICON_LOCAL
 } from '@/common/constants';
 import SizeWrapper from '@/components/SizeWrapper';
 import PrintCanvasLines from './PrintCanvasLines';
@@ -105,7 +106,9 @@ export default {
       rectObj: null,
       objectList: [],
       isProcessingPaste: false,
-      countPaste: 1
+      countPaste: 1,
+      awaitPickColor: '',
+      eyeDropperIcon: ICON_LOCAL.EYE_DROPPER
     };
   },
   computed: {
@@ -1487,7 +1490,13 @@ export default {
         enscapeInstruction: () => {
           this.awaitingAdd = '';
           this.$root.$emit('printInstructionEnd');
+          this.awaitPickColor = '';
+          this.$root.$emit('printEyeDropperEnd', this.awaitPickColor);
           this.setToolNameSelected({ name: '' });
+        },
+        printStartPickColor: eventName => {
+          this.$root.$emit('printEyeDropperStart', eventName);
+          this.awaitPickColor = eventName;
         },
         printCopyObj: this.handleCopy,
         printPasteObj: this.handlePaste
@@ -1612,6 +1621,12 @@ export default {
           this.updateTriggerTextChange();
         }
       });
+    },
+    onEyeDropperOverlayClick() {
+      if (this.awaitPickColor) {
+        this.$root.$emit('printEyeDropperEnd', this.awaitPickColor);
+        this.awaitPickColor = '';
+      }
     }
   }
 };

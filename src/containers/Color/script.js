@@ -50,6 +50,12 @@ export default {
           }
         });
       }
+    },
+    /**
+     * Emit event to start pick color
+     */
+    onOpenEyeDropper() {
+      this.$root.$emit('printStartPickColor', this.eventName);
     }
   }
 };

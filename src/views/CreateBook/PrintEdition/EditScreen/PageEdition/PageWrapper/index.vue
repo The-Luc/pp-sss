@@ -11,6 +11,7 @@
     <div class="inner-ruler-wrapper">
       <slot></slot>
       <AddBoxInstruction v-if="visible" :element="element" :x="x" :y="y" />
+      <EyeDropper v-if="visibleEyeDropper" :x="x" :y="y" :color="color" />
     </div>
   </div>
 </template>

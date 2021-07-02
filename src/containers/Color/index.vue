@@ -9,7 +9,7 @@
           @click="onOpenColorPicker"
         />
       </div>
-      <v-icon>colorize</v-icon>
+      <v-icon @click="onOpenEyeDropper">colorize</v-icon>
     </div>
   </div>
 </template>
