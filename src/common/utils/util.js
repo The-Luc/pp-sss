@@ -376,6 +376,7 @@ export const toFabricTextGroupProp = prop => {
 export const toFabricImageProp = prop => {
   const mapRules = {
     data: {
+      type: DEFAULT_RULE_DATA.TYPE,
       x: DEFAULT_RULE_DATA.X,
       y: DEFAULT_RULE_DATA.Y,
       color: {
