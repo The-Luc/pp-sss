@@ -1,4 +1,4 @@
-<template lang="">
+<template>
   <div class="col-12 feedback-bar">
     <div class="feedback-name">
       Info
@@ -12,10 +12,10 @@
     </div>
     <!-- //w,h components -->
     <div class="feedback-text">
-      <span>w:</span> <span class="feedback-value">- - -</span>
+      <span>w:</span> <span class="feedback-value">{{ size.width }}</span>
     </div>
     <div class="feedback-text">
-      <span>h:</span> <span class="feedback-value">- - -</span>
+      <span>h:</span> <span class="feedback-value">{{ size.height }}</span>
     </div>
     <!-- //zoom -->
     <div class="feedback-title">

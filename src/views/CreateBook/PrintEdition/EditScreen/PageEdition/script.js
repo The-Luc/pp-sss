@@ -4,7 +4,7 @@ import { cloneDeep, uniqueId, merge, debounce } from 'lodash';
 
 import { usePrintOverrides } from '@/plugins/fabric';
 
-import { useDrawLayout } from '@/hooks';
+import { useDrawLayout, useInfoBar } from '@/hooks';
 import { startDrawBox, toggleStroke } from '@/common/fabricObjects/drawingBox';
 
 import {
@@ -90,8 +90,9 @@ export default {
   },
   setup() {
     const { drawLayout } = useDrawLayout();
+    const { setInfoBar } = useInfoBar();
 
-    return { drawLayout };
+    return { drawLayout, setInfoBar };
   },
   data() {
     return {
@@ -121,7 +122,8 @@ export default {
       propertiesObjectType: APP_GETTERS.PROPERTIES_OBJECT_TYPE,
       object: PRINT_GETTERS.OBJECT_BY_ID,
       currentObjects: PRINT_GETTERS.GET_OBJECTS,
-      totalBackground: PRINT_GETTERS.TOTAL_BACKGROUND
+      totalBackground: PRINT_GETTERS.TOTAL_BACKGROUND,
+      getProperty: PRINT_GETTERS.SELECT_PROP_CURRENT_OBJECT
     }),
     isCover() {
       return this.pageSelected?.type === SHEET_TYPE.COVER;
@@ -188,6 +190,8 @@ export default {
     document.body.removeEventListener('keyup', this.handleDeleteKey);
 
     this.eventHandling(false);
+
+    this.setInfoBar({ data: { x: 0, y: 0, w: 0, h: 0, zoom: 0 } });
   },
   methods: {
     ...mapActions({
@@ -640,6 +644,10 @@ export default {
           };
           this.setObjectProp({ prop });
           this.updateTriggerTextChange();
+
+          this.setInfoBar({
+            data: { w: prop.size.width, h: prop.size.height }
+          });
         },
         'mouse:down': e => {
           if (this.awaitingAdd) {
@@ -680,6 +688,10 @@ export default {
           this.setObjectProp({ prop });
           this.setObjectPropById({ id: group.id, prop });
           this.updateTriggerTextChange();
+
+          this.setInfoBar({
+            data: { w: prop.size.width, h: prop.size.height }
+          });
         },
         'object:moved': e => {
           if (!e.target?.objectType) {
@@ -748,6 +760,8 @@ export default {
     closeProperties() {
       this.groupSelected = null;
       this.resetConfigTextProperties();
+
+      this.setInfoBar({ data: { w: 0, h: 0 } });
     },
     /**
      * Get border data from store and set to Rect object
@@ -821,6 +835,13 @@ export default {
       }
 
       if (isEmpty(objectType)) return;
+
+      this.setInfoBar({
+        data: {
+          w: this.getProperty('size')?.width,
+          h: this.getProperty('size')?.height
+        }
+      });
 
       this.setObjectTypeSelected({ type: objectType });
 
@@ -909,6 +930,12 @@ export default {
       this.setObjectProp({ prop });
 
       this.updateTriggerTextChange();
+
+      if (!isEmpty(prop.size)) {
+        this.setInfoBar({
+          data: { w: prop.size.width, h: prop.size.height }
+        });
+      }
 
       applyTextBoxProperties(activeObj, prop);
 
@@ -1311,6 +1338,12 @@ export default {
       this.setObjectProp({ prop });
 
       if (updateTriggerFn !== null) updateTriggerFn();
+
+      if (!isEmpty(prop.size)) {
+        this.setInfoBar({
+          data: { w: prop.size.width, h: prop.size.height }
+        });
+      }
 
       if (!isEmpty(prop['shadow'])) {
         applyShadowToObject(element, prop['shadow']);

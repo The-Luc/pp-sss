@@ -61,5 +61,11 @@ export const mutations = {
   },
   [APP._MUTATES.SET_PROPERTIES_OBJECT_TYPE](state, { type }) {
     state.propertiesModal.propertiesObjectType = type;
+  },
+  [APP._MUTATES.SET_INFO_BAR](state, { data }) {
+    state.infoBar = {
+      ...state.infoBar,
+      ...data
+    };
   }
 };
