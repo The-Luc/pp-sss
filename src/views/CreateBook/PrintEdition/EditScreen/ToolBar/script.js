@@ -155,6 +155,12 @@ export default {
 
         return;
       }
+
+      if (item.name === RIGHT_TOOLS.PAGE_INFO.value) {
+        this.pageInfoClick();
+
+        return;
+      }
     },
     /**
      * Detect click on item on left creattion tool
@@ -303,6 +309,15 @@ export default {
 
       this.setIsOpenProperties({
         isOpen: true
+      });
+    },
+    pageInfoClick() {
+      this.setPropertiesObjectType({
+        type: OBJECT_TYPE.PAGE_INFO
+      });
+
+      this.setIsOpenProperties({
+        isOpen: !this.isOpenMenuProperties
       });
     }
   }
