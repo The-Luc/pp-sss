@@ -28,9 +28,6 @@ export const addPrintBackground = ({
   sheetType,
   canvas
 }) => {
-  const { width, height } = canvas;
-  const zoom = canvas.getZoom();
-
   const currentBackgrounds = canvas
     .getObjects()
     .filter(o => o.objectType === OBJECT_TYPE.BACKGROUND);
@@ -60,25 +57,48 @@ export const addPrintBackground = ({
     });
   }
 
-  const scaleX = isAddingFullBackground ? 1 : 2;
+  createBackgroundFabricObject(backgroundProp, canvas, id, isAddToLeft).then(
+    img => {
+      canvas.add(img);
+      canvas.sendToBack(img);
+    }
+  );
+};
+/**
+ * to create an background object
+ * @param {Object} prop background group
+ * @returns fabric background object
+ */
+export const createBackgroundFabricObject = (
+  prop,
+  canvas,
+  newId,
+  isAddToLeft
+) => {
+  const fabricProp = toFabricBackgroundProp(prop);
 
-  const fabricProp = toFabricBackgroundProp(backgroundProp);
+  const { width, height } = canvas;
+  const zoom = canvas.getZoom();
+  const scaleX = prop.pageType === BACKGROUND_PAGE_TYPE.FULL_PAGE.id ? 1 : 2;
 
-  fabric.Image.fromURL(backgroundProp.imageUrl, img => {
-    img.set({
-      ...fabricProp,
-      id,
-      selectable: false,
-      left: !isAddToLeft ? width / zoom / 2 : 0,
-      isLeftPage: isAddToLeft,
-      scaleX: width / zoom / img.width / scaleX,
-      scaleY: height / zoom / img.height,
-      ...DEFAULT_FABRIC_BACKGROUND
+  const id = newId ?? prop.id;
+  const isLeftPage = isAddToLeft ?? prop.isLeftPage;
+
+  return new Promise(resolve => {
+    fabric.Image.fromURL(prop.imageUrl, img => {
+      img.set({
+        ...fabricProp,
+        isLeftPage,
+        id,
+        selectable: false,
+        left: isLeftPage ? 0 : width / zoom / 2,
+        scaleX: width / zoom / img.width / scaleX,
+        scaleY: height / zoom / img.height,
+        ...DEFAULT_FABRIC_BACKGROUND
+      });
+
+      resolve(img);
     });
-
-    canvas.add(img);
-
-    canvas.sendToBack(img);
   });
 };
 

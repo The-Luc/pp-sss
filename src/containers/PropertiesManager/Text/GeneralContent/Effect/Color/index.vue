@@ -1,5 +1,5 @@
 <template>
-  <Color :color="color" @change="onChange" />
+  <ColorPicker :color="color" @change="onChange" />
 </template>
 
 <script src="./script.js" />

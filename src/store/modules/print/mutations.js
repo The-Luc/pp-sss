@@ -40,19 +40,22 @@ export const mutations = {
   },
   [PRINT._MUTATES.SET_OBJECTS](state, { objectList }) {
     if (objectList.length === 0) {
+      state.objectIds = [];
       state.objects = {};
       return;
     }
-    state.objectIds = objectList.map(o => o.id);
 
     const objects = {};
+    const objectIds = [];
 
     objectList.forEach(o => {
       if (o.type === OBJECT_TYPE.BACKGROUND) return;
 
+      objectIds.push(o.id);
       objects[o.id] = o;
     });
 
+    state.objectIds = objectIds;
     state.objects = objects;
   },
   [PRINT._MUTATES.SET_CURRENT_SHEET_ID](state, { id }) {

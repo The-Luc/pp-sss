@@ -1,6 +1,6 @@
 <template>
   <div class="shadow-color-picker-container">
-    <Color :color="color" @change="onColorChanged" />
+    <ColorPicker :color="color" @change="onColorChanged" />
   </div>
 </template>
 
