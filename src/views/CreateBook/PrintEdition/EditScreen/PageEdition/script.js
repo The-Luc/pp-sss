@@ -114,7 +114,6 @@ export default {
       objectList: [],
       isProcessingPaste: false,
       countPaste: 1,
-      awaitPickColor: null,
       eyeDropperIcon: ICON_LOCAL.EYE_DROPPER
     };
   },
@@ -1446,9 +1445,6 @@ export default {
           this.$root.$emit('printInstructionEnd');
           this.awaitingAdd = element;
           this.$root.$emit('printInstructionStart', { element });
-
-          this.awaitPickColor = '';
-          this.$root.$emit('printEyeDropperEnd', this.awaitPickColor);
         },
         printDeleteElements: this.removeObject,
         changeObjectIdsOrder: this.changeObjectIdsOrder
@@ -1502,15 +1498,9 @@ export default {
           this.awaitingAdd = '';
           this.$root.$emit('printInstructionEnd');
 
-          this.awaitPickColor = null;
-          this.$root.$emit('printEyeDropperEnd', this.awaitPickColor);
-
           this.setToolNameSelected({ name: '' });
         },
-        printStartPickColor: callback => {
-          this.$root.$emit('printEyeDropperStart');
-          this.awaitPickColor = callback;
-        },
+
         printCopyObj: this.handleCopy,
         printPasteObj: this.handlePaste
       };
@@ -1668,15 +1658,6 @@ export default {
           this.updateTriggerTextChange();
         }
       });
-    },
-    /**
-     * Callback function catch event user click on overlay to pick color and emit event to stop eye dropper event
-     */
-    onEyeDropperOverlayClick() {
-      if (this.awaitPickColor) {
-        this.$root.$emit('printEyeDropperEnd', this.awaitPickColor);
-        this.awaitPickColor = null;
-      }
     }
   }
 };

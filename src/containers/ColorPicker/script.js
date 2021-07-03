@@ -1,7 +1,18 @@
+import { uniqueId } from 'lodash';
+
 import PickerPopup from './PickerPopup';
+import EyeDropper from '@/components/EyeDropper';
+import { useEyeDropper } from '@/hooks';
 
 export default {
-  components: { PickerPopup },
+  setup() {
+    const { toggleEyeDropper, eyeDropper } = useEyeDropper();
+    return {
+      toggleEyeDropper,
+      eyeDropper
+    };
+  },
+  components: { PickerPopup, EyeDropper },
   props: {
     color: {
       type: String,
@@ -16,8 +27,15 @@ export default {
     return {
       top: 0,
       left: 0,
-      isOpen: false
+      isOpen: false,
+      eventName: `event-${uniqueId()}`
     };
+  },
+  mounted() {
+    this.$root.$on(this.eventName, this.onChange);
+  },
+  beforeDestroy() {
+    this.$root.$off(this.eventName, this.onChange);
   },
   methods: {
     /**
@@ -42,12 +60,10 @@ export default {
       this.$emit('change', color);
     },
     /**
-     * Emit event to start pick color
+     * Mutate to start pick color
      */
     onOpenEyeDropper() {
-      this.$root.$emit('printStartPickColor', color => {
-        this.onChange(color);
-      });
+      this.toggleEyeDropper({ isOpen: true, eventName: this.eventName });
     }
   }
 };

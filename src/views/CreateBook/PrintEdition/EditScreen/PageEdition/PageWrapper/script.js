@@ -1,10 +1,7 @@
-import Color from 'color';
-
 import { KEY_CODE, OBJECT_TYPE } from '@/common/constants';
 import AddBoxInstruction from '@/components/AddBoxInstruction';
-import EyeDropper from '@/components/EyeDropper';
 
-import { getCanvasColor, handleBodyMouseMove } from '@/common/utils';
+import { handleBodyMouseMove } from '@/common/utils';
 
 const ELEMENTS = {
   [OBJECT_TYPE.TEXT]: 'a text box',
@@ -13,25 +10,19 @@ const ELEMENTS = {
 
 export default {
   components: {
-    AddBoxInstruction,
-    EyeDropper
+    AddBoxInstruction
   },
   data() {
     return {
       element: '',
       x: 0,
       y: 0,
-      visible: false,
-      visibleEyeDropper: false,
-      color: ''
+      visible: false
     };
   },
   mounted() {
     this.$root.$on('printInstructionStart', this.handlePrintInstructionStart);
     this.$root.$on('printInstructionEnd', this.handlePrintInstructionEnd);
-
-    this.$root.$on('printEyeDropperStart', this.handlePrintEyeDropperStart);
-    this.$root.$on('printEyeDropperEnd', this.handlePrintEyeDropperEnd);
   },
   methods: {
     /**
@@ -74,49 +65,6 @@ export default {
       this.setCoord(x, y);
 
       this.visible = visible;
-    },
-    /**
-     * Callback function handle when user click eye dropper icon to start pick color
-     */
-    handlePrintEyeDropperStart() {
-      document.body.addEventListener('mousemove', this.handleEyeDropperMove);
-      document.body.addEventListener('keyup', this.handleKeyPress);
-    },
-    /**
-     * Callback function get color after user clicked on object and emit to event name to change to current object property
-     * @param {String} eventName Unique event name to know user want to pick color for what maybe text, border, shadow color of object
-     */
-    handlePrintEyeDropperEnd(callback) {
-      const clr = Color(this.color).hex();
-      if (callback) {
-        callback(clr);
-      }
-
-      this.visibleEyeDropper = false;
-      this.setCoord(0, 0);
-
-      document.body.removeEventListener('mousemove', this.handleEyeDropperMove);
-      document.body.removeEventListener('keyup', this.handleKeyPress);
-    },
-    /**
-     * Callback function set coord of mouse while moving and get color of canvas
-     * @param {Event} event Event mouse move
-     */
-    handleEyeDropperMove(e) {
-      const { clientX, clientY } = e;
-
-      const { visible, canvas, x, y } = handleBodyMouseMove({
-        clientX,
-        clientY
-      });
-
-      this.setCoord(x, y);
-
-      this.visibleEyeDropper = visible;
-
-      const color = getCanvasColor(canvas, e);
-
-      this.color = color;
     },
     /**
      * Set coord and y when user move mouse
