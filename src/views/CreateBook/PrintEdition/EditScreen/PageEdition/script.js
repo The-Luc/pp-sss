@@ -114,7 +114,7 @@ export default {
       objectList: [],
       isProcessingPaste: false,
       countPaste: 1,
-      awaitPickColor: '',
+      awaitPickColor: null,
       eyeDropperIcon: ICON_LOCAL.EYE_DROPPER
     };
   },
@@ -1501,13 +1501,15 @@ export default {
         enscapeInstruction: () => {
           this.awaitingAdd = '';
           this.$root.$emit('printInstructionEnd');
-          this.awaitPickColor = '';
+
+          this.awaitPickColor = null;
           this.$root.$emit('printEyeDropperEnd', this.awaitPickColor);
+
           this.setToolNameSelected({ name: '' });
         },
-        printStartPickColor: eventName => {
-          this.$root.$emit('printEyeDropperStart', eventName);
-          this.awaitPickColor = eventName;
+        printStartPickColor: callback => {
+          this.$root.$emit('printEyeDropperStart');
+          this.awaitPickColor = callback;
         },
         printCopyObj: this.handleCopy,
         printPasteObj: this.handlePaste
@@ -1673,7 +1675,7 @@ export default {
     onEyeDropperOverlayClick() {
       if (this.awaitPickColor) {
         this.$root.$emit('printEyeDropperEnd', this.awaitPickColor);
-        this.awaitPickColor = '';
+        this.awaitPickColor = null;
       }
     }
   }

@@ -86,9 +86,11 @@ export default {
      * Callback function get color after user clicked on object and emit to event name to change to current object property
      * @param {String} eventName Unique event name to know user want to pick color for what maybe text, border, shadow color of object
      */
-    handlePrintEyeDropperEnd(eventName) {
+    handlePrintEyeDropperEnd(callback) {
       const clr = Color(this.color).hex();
-      this.$root.$emit(eventName, clr);
+      if (callback) {
+        callback(clr);
+      }
 
       this.visibleEyeDropper = false;
       this.setCoord(0, 0);

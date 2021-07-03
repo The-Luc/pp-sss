@@ -40,6 +40,14 @@ export default {
      */
     onChange(color) {
       this.$emit('change', color);
+    },
+    /**
+     * Emit event to start pick color
+     */
+    onOpenEyeDropper() {
+      this.$root.$emit('printStartPickColor', color => {
+        this.onChange(color);
+      });
     }
   }
 };
