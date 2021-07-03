@@ -4,7 +4,7 @@ import { cloneDeep, uniqueId, merge, debounce } from 'lodash';
 
 import { usePrintOverrides } from '@/plugins/fabric';
 
-import { useDrawLayout, useInfoBar } from '@/hooks';
+import { useDrawLayout, useEyeDropper, useInfoBar } from '@/hooks';
 import { startDrawBox, toggleStroke } from '@/common/fabricObjects/drawingBox';
 
 import {
@@ -98,8 +98,9 @@ export default {
   setup() {
     const { drawLayout } = useDrawLayout();
     const { setInfoBar } = useInfoBar();
+    const { toggleEyeDropper } = useEyeDropper();
 
-    return { drawLayout, setInfoBar };
+    return { drawLayout, setInfoBar, toggleEyeDropper };
   },
   data() {
     return {
@@ -1445,6 +1446,8 @@ export default {
           this.$root.$emit('printInstructionEnd');
           this.awaitingAdd = element;
           this.$root.$emit('printInstructionStart', { element });
+
+          this.toggleEyeDropper({ isOpen: false, eventName: '' });
         },
         printDeleteElements: this.removeObject,
         changeObjectIdsOrder: this.changeObjectIdsOrder
