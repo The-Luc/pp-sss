@@ -5,6 +5,7 @@
     <FeedbackBar
       :is-open-menu-properties="isOpenMenuProperties"
       :selected-tool-name="selectedToolName"
+      @zoom="onZoom"
     />
     <SidebarSection />
     <PageEdition />
@@ -12,4 +13,5 @@
 </template>
 
 <script src="./script.js"></script>
+
 <style lang="scss" scoped src="./style.scss" />

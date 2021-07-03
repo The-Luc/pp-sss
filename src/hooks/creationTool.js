@@ -55,8 +55,9 @@ export const useObjectProperties = () => {
 };
 
 export const useInfoBar = () => {
-  const { infoBar } = useGetters({
-    infoBar: GETTERS.INFO_BAR
+  const { infoBar, zoom } = useGetters({
+    infoBar: GETTERS.INFO_BAR,
+    zoom: GETTERS.ZOOM
   });
 
   const { setInfoBar } = useMutations({
@@ -65,6 +66,7 @@ export const useInfoBar = () => {
 
   return {
     infoBar,
-    setInfoBar
+    setInfoBar,
+    zoom
   };
 };

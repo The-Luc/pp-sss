@@ -70,7 +70,8 @@ import {
   DEFAULT_SHAPE,
   COVER_TYPE,
   DEFAULT_CLIP_ART,
-  FABRIC_OBJECT_TYPE
+  FABRIC_OBJECT_TYPE,
+  DEFAULT_IMAGE
 } from '@/common/constants';
 import SizeWrapper from '@/components/SizeWrapper';
 import PrintCanvasLines from './PrintCanvasLines';
@@ -96,9 +97,9 @@ export default {
   },
   setup() {
     const { drawLayout } = useDrawLayout();
-    const { setInfoBar } = useInfoBar();
+    const { setInfoBar, zoom } = useInfoBar();
 
-    return { drawLayout, setInfoBar };
+    return { drawLayout, setInfoBar, zoom };
   },
   data() {
     return {
@@ -182,6 +183,9 @@ export default {
           this.drawObjectsOnCanvas(this.sheetLayout);
         }
       }
+    },
+    zoom(newVal, oldVal) {
+      console.log(newVal);
     }
   },
   mounted() {
@@ -566,11 +570,16 @@ export default {
         canvasSize.width = this.containerSize.width;
         canvasSize.height = canvasSize.width / printRatio;
       }
+
       const currentZoom = canvasSize.width / sheetWidth;
+
       this.canvasSize = { ...canvasSize, zoom: currentZoom };
+
       window.printCanvas.setWidth(canvasSize.width);
       window.printCanvas.setHeight(canvasSize.height);
+
       this.drawLayout(this.sheetLayout);
+
       window.printCanvas.setZoom(currentZoom);
     },
 
@@ -940,7 +949,8 @@ export default {
             ...ImageElement.coord,
             x: pxToIn(x),
             y: pxToIn(y)
-          }
+          },
+          imageUrl: DEFAULT_IMAGE.IMAGE_URL
         }
       });
 
