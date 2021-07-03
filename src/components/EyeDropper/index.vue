@@ -2,10 +2,16 @@
   <div
     class="eye-dropper"
     :style="{
-      transform: `translate(${x + 5}px, ${y - 45}px)`,
-      backgroundColor: color
+      transform: `translate(${x}px, ${y}px)`
     }"
-  />
+  >
+    <div
+      class="review-color"
+      :style="{
+        backgroundColor: color
+      }"
+    />
+  </div>
 </template>
 
 <script src="./script.js" />

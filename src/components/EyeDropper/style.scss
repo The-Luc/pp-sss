@@ -1,7 +1,15 @@
 .eye-dropper {
-  width: 30px;
-  height: 30px;
-  position: absolute;
+  position: relative;
+  top: 0;
+  left: 0;
   pointer-events: none;
-  border: 1px solid $color-gray5;
+
+  .review-color {
+    position: absolute;
+    width: 30px;
+    top: -50px;
+    left: 15px;
+    height: 30px;
+    border: 1px solid $color-gray5;
+  }
 }

@@ -1438,6 +1438,9 @@ export default {
           this.$root.$emit('printInstructionEnd');
           this.awaitingAdd = element;
           this.$root.$emit('printInstructionStart', { element });
+
+          this.awaitPickColor = '';
+          this.$root.$emit('printEyeDropperEnd', this.awaitPickColor);
         },
         printDeleteElements: this.removeObject,
         changeObjectIdsOrder: this.changeObjectIdsOrder
@@ -1622,6 +1625,9 @@ export default {
         }
       });
     },
+    /**
+     * Callback function catch event user click on overlay to pick color and emit event to stop eye dropper event
+     */
     onEyeDropperOverlayClick() {
       if (this.awaitPickColor) {
         this.$root.$emit('printEyeDropperEnd', this.awaitPickColor);
