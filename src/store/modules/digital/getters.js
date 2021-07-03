@@ -60,6 +60,7 @@ export const getters = {
     }
 
     const allObjects = [];
+
     if (!isEmpty(background.left.id)) allObjects.push(background.left);
 
     Object.values(objects).forEach(obj => {
@@ -67,6 +68,7 @@ export const getters = {
         allObjects.push(obj);
       }
     });
+    
     return allObjects;
   },
   [DIGITAL._GETTERS.GET_SHEETS]: ({ sheets }) => {
