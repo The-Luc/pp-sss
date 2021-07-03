@@ -1,6 +1,6 @@
 import { getSuccessWithData, getErrorWithMessages } from '@/common/models';
 
-import { isEmpty, getPageLeftName, getPageRightName } from '@/common/utils';
+import { isEmpty } from '@/common/utils';
 
 import bookService from './book';
 
@@ -68,46 +68,25 @@ const digitalService = {
    */
   getDigitalEditSectionsSheets: bookId => {
     return new Promise(resolve => {
-      let totalSheets = 0;
+      const data = bookService.getBook(bookId).sections.map(section => {
+        const sheets = section.sheets.map(sheet => {
+          const { id, type, isVisited } = sheet;
+          const { thumbnailUrl, theme: themeId, layout } = sheet.digitalData;
 
-      const data = bookService
-        .getBook(bookId)
-        .sections.map((section, sectionIndex) => {
-          const sheets = section.sheets.map((sheet, sheetIndex) => {
-            const { id, type, isVisited } = sheet;
-            const { thumbnailUrl, theme: themeId, layout } = sheet.digitalData;
-
-            const pageLeftName = getPageLeftName(
-              sheet,
-              sheetIndex,
-              totalSheets
-            );
-            const pageRightName = getPageRightName(
-              sheet,
-              sheetIndex,
-              totalSheets
-            );
-
-            return {
-              id,
-              type,
-              thumbnailUrl,
-              isVisited,
-              themeId,
-              layoutId: layout?.id || null,
-              pageLeftName,
-              pageRightName
-            };
-          });
-
-          if (sectionIndex > 0) {
-            totalSheets += section.sheets.length;
-          }
-
-          const { name, color } = section;
-
-          return { id: section.id, name, color, sheets: sheets };
+          return {
+            id,
+            type,
+            thumbnailUrl,
+            isVisited,
+            themeId,
+            layoutId: layout?.id || null
+          };
         });
+
+        const { name, color } = section;
+
+        return { id: section.id, name, color, sheets };
+      });
 
       const result = isEmpty(data)
         ? getErrorWithMessages([])
