@@ -476,20 +476,28 @@ function getLineDashes(x1, y1, x2, y2) {
  * Get border data from store and set to Rect object
  */
 export const setBorderObject = (rectObj, objectData) => {
-  const { strokeWidth, stroke, strokeLineCap } = objectData.border;
+  const {
+    border: { strokeWidth, stroke, strokeLineCap }
+  } = objectData;
+
   const group = rectObj?.group;
+  const rectWidth = group?.width || rectObj.width;
+  const rectHeight = group?.height || rectObj.height;
+
   const strokeDashArrayVal = getRectDashes(
-    group?.width || rectObj.width,
-    group?.height || rectObj.height,
+    rectWidth,
+    rectHeight,
     strokeLineCap,
     strokeWidth
   );
+
   rectObj.set({
     strokeWidth: scaleSize(strokeWidth),
     stroke,
     strokeLineCap,
     strokeDashArray: strokeDashArrayVal
   });
+
   setTimeout(() => {
     rectObj.canvas.renderAll();
   });
@@ -498,6 +506,7 @@ export const setBorderObject = (rectObj, objectData) => {
 /**
  * Set border color when selected group object
  * @param {Element}  group  Group object
+ * @param {Object}  sheetLayout  current layout of canvas
  */
 export const setBorderHighLight = (group, sheetLayout) => {
   group.set({
@@ -507,7 +516,8 @@ export const setBorderHighLight = (group, sheetLayout) => {
 
 /**
  * Set canvas uniform scaling (constrain proportions)
- * @param {Boolean}  isConstrain  the selected object
+ * @param {Element} canvas Reference to fabric canvas
+ * @param {Boolean}  isConstrain  Constrain mode of object
  */
 export const setCanvasUniformScaling = (canvas, isConstrain) => {
   canvas.set({

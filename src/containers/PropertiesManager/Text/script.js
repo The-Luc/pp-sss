@@ -46,6 +46,7 @@ export default {
       const canvas = window.printCanvas || window.digitalCanvas;
 
       const activeObj = canvas?.getActiveObject();
+
       return !!activeObj?.isEditing;
     },
     position() {

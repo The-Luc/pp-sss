@@ -29,7 +29,7 @@ const digitalService = {
    * @param   {Number}  bookId  id of current book
    * @returns {Object}          query result
    */
-  geDigitalSectionsSheets: bookId => {
+  getDigitalSectionsSheets: bookId => {
     return new Promise(resolve => {
       let totalSheets = 0;
 

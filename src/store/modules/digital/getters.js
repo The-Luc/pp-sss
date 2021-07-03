@@ -1,6 +1,4 @@
-import { isEmpty, isHalfSheet, isHalfLeft } from '@/common/utils';
-
-import { BACKGROUND_PAGE_TYPE } from '@/common/constants';
+import { isEmpty } from '@/common/utils';
 
 import DIGITAL from './const';
 
@@ -11,9 +9,7 @@ export const getters = {
     return isEmpty(currentSheet) ? {} : currentSheet;
   },
   [DIGITAL._GETTERS.TOTAL_BACKGROUND]: ({ background }) => {
-    const backgrounds = [background.left, background.right].filter(bg => {
-      return !isEmpty(bg);
-    });
+    const backgrounds = [background.left].filter(Boolean);
 
     return backgrounds.length;
   },
@@ -87,43 +83,11 @@ export const getters = {
       return !isEmpty(bg.backgroundType);
     });
   },
-  [DIGITAL._GETTERS.BACKGROUNDS_PROPERTIES]: ({
-    currentSheetId,
-    sheets,
-    background
-  }) => {
-    const existedBackground = [background.left, background.right].filter(
-      bg => !isEmpty(bg)
-    );
-
-    if (isEmpty(existedBackground)) {
-      return { isSingle: true, isEmpty: true };
-    }
-
-    const isFull =
-      background.left.pageType === BACKGROUND_PAGE_TYPE.FULL_PAGE.id;
-
-    if (isFull) {
-      return {
-        isSingle: true,
-        background: background.left
-      };
-    }
-
-    const isHalf = isHalfSheet(sheets[currentSheetId]);
-    const position = isHalfLeft(sheets[currentSheetId]) ? 'left' : 'right';
-
-    if (isHalf) {
-      return {
-        isSingle: true,
-        background: background[position]
-      };
-    }
-
+  [DIGITAL._GETTERS.BACKGROUNDS_PROPERTIES]: ({ background }) => {
     return {
       isSingle: false,
-      left: background.left,
-      right: background.right
+      left: background?.left,
+      right: background?.right
     };
   },
   [DIGITAL._GETTERS.SECTIONS_SHEETS]: ({ sections, sheets }) => {

@@ -9,7 +9,7 @@ import DIGITAL from './const';
 
 export const actions = {
   async [DIGITAL._ACTIONS.GET_DATA_MAIN]({ state, commit }) {
-    const queryResult = await digitalService.geDigitalSectionsSheets(
+    const queryResult = await digitalService.getDigitalSectionsSheets(
       state.book.id
     );
 
@@ -20,19 +20,19 @@ export const actions = {
     });
   },
   async [DIGITAL._ACTIONS.GET_DATA_EDIT]({ state, dispatch, commit }) {
-    const queryResults = await Promise.all([
+    const [themeQuery, sectionsSheetsQuery] = await Promise.all([
       digitalService.getDefaultThemeId(state.book.id),
       digitalService.getDigitalEditSectionsSheets(state.book.id)
     ]);
 
-    if (queryResults[1].status !== STATUS.OK) return;
+    if (sectionsSheetsQuery.status !== STATUS.OK) return;
 
     commit(DIGITAL._MUTATES.SET_DEFAULT_THEME_ID, {
-      themeId: queryResults[0].data
+      themeId: themeQuery.data
     });
 
     commit(DIGITAL._MUTATES.SET_SECTIONS_SHEETS, {
-      sectionsSheets: queryResults[1].data
+      sectionsSheets: sectionsSheetsQuery.data
     });
 
     if (isEmpty(state.currentSheetId)) {
@@ -57,7 +57,9 @@ export const actions = {
       return;
     }
 
-    commit(DIGITAL._MUTATES.SET_OBJECTS, { objectList: queryObjectResult.data });
+    commit(DIGITAL._MUTATES.SET_OBJECTS, {
+      objectList: queryObjectResult.data
+    });
 
     const backgrounds = queryObjectResult.data.filter(
       o => o.type === OBJECT_TYPE.BACKGROUND
@@ -96,7 +98,9 @@ export const actions = {
 
     if (backgroundObjs.length === 1) {
       backgroundObjs[0].isLeftPage = currentPosition === 'left';
-      commit(DIGITAL._MUTATES.SET_BACKGROUNDS, { background: backgroundObjs[0] });
+      commit(DIGITAL._MUTATES.SET_BACKGROUNDS, {
+        background: backgroundObjs[0]
+      });
     }
 
     // Get object(s) rest
