@@ -42,7 +42,10 @@ export default {
       if (this.triggerChange) {
         // just for trigger the change
       }
-      const activeObj = window.printCanvas.getActiveObject();
+
+      const canvas = window.printCanvas || window.digitalCanvas;
+
+      const activeObj = canvas?.getActiveObject();
       return !!activeObj?.isEditing;
     },
     position() {

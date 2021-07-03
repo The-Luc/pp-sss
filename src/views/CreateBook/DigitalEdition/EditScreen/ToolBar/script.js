@@ -4,6 +4,7 @@ import ItemTool from './ItemTool';
 import { GETTERS, MUTATES } from '@/store/modules/app/const';
 import { GETTERS as BOOK_GETTERS } from '@/store/modules/book/const';
 import { OBJECT_TYPE, TOOL_NAME } from '@/common/constants';
+import { EVENT_TYPE } from '@/common/constants/eventType';
 
 export default {
   props: {
@@ -33,28 +34,28 @@ export default {
           {
             iconName: 'texture',
             title: 'Backgrounds',
-            name: 'backgrounds'
+            name: TOOL_NAME.BACKGROUNDS
           },
           {
             iconName: 'local_florist',
             title: 'Clip Art',
-            name: 'clipArt'
+            name: TOOL_NAME.CLIP_ART
           }
         ],
         [
           {
             iconName: 'star',
             title: 'Shapes',
-            name: 'shapes'
+            name: TOOL_NAME.SHAPES
           },
           {
             iconName: 'text_format',
             title: 'Text',
-            name: 'text'
+            name: TOOL_NAME.TEXT
           },
           {
             iconName: 'photo_size_select_large',
-            title: 'Image Box'
+            title: TOOL_NAME.IMAGE_BOX
           },
           {
             iconName: 'collections',
@@ -173,19 +174,23 @@ export default {
      * @param  {Object} item Receive item information
      */
     onClickLeftTool(data) {
-      if (!this.printThemeSelectedId) {
+      if (
+        // !this.printThemeSelectedId || //not yet implemented
+        !data?.name ||
+        this.selectedToolName === data?.name
+      ) {
         return;
       }
-      const toolName = this.selectedToolName === data?.name ? '' : data?.name;
+
       this.setToolNameSelected({
-        name: toolName
+        name: data.name
       });
-      switch (data.name) {
-        case 'text':
-          console.log(1);
-          break;
-        default:
-          break;
+
+      if (data.name === TOOL_NAME.TEXT) {
+        this.$root.$emit(EVENT_TYPE.DIGITAL_ADD_ELEMENT, OBJECT_TYPE.TEXT);
+        this.setToolNameSelected({
+          name: TOOL_NAME.TEXT
+        });
       }
     }
   }

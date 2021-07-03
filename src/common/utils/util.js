@@ -471,3 +471,46 @@ function getLineDashes(x1, y1, x2, y2) {
   }
   return dasharray;
 }
+
+/**
+     * Get border data from store and set to Rect object
+     */
+ export const setBorderObject = (rectObj, objectData) => {
+  const { strokeWidth, stroke, strokeLineCap } = objectData.border;
+  const group = rectObj?.group;
+  const strokeDashArrayVal = getRectDashes(
+    group?.width || rectObj.width,
+    group?.height || rectObj.height,
+    strokeLineCap,
+    strokeWidth
+  );
+  rectObj.set({
+    strokeWidth: scaleSize(strokeWidth),
+    stroke,
+    strokeLineCap,
+    strokeDashArray: strokeDashArrayVal
+  });
+  setTimeout(() => {
+    rectObj.canvas.renderAll();
+  });
+};
+
+/**
+ * Set border color when selected group object
+ * @param {Element}  group  Group object
+ */
+export const setBorderHighLight = (group, sheetLayout) => {
+  group.set({
+    borderColor: sheetLayout?.id ? 'white' : '#bcbec0'
+  });
+};
+
+/**
+ * Set canvas uniform scaling (constrain proportions)
+ * @param {Boolean}  isConstrain  the selected object
+ */
+export const setCanvasUniformScaling = (canvas, isConstrain) => {
+  canvas.set({
+    uniformScaling: isConstrain
+  });
+};
