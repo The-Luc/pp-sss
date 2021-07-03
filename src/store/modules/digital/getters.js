@@ -68,7 +68,7 @@ export const getters = {
         allObjects.push(obj);
       }
     });
-    
+
     return allObjects;
   },
   [DIGITAL._GETTERS.GET_SHEETS]: ({ sheets }) => {
