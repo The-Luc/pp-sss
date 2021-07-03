@@ -60,11 +60,7 @@ export const getters = {
     }
 
     const allObjects = [];
-    Object.values(background).forEach(bg => {
-      if (bg.id) {
-        allObjects.push(bg);
-      }
-    });
+    if (!isEmpty(background.left.id)) allObjects.push(background.left);
 
     Object.values(objects).forEach(obj => {
       if (obj.id) {
@@ -77,15 +73,13 @@ export const getters = {
     return sheets;
   },
   [DIGITAL._GETTERS.BACKGROUNDS_NO_LAYOUT]: ({ background }) => {
-    return [background.left, background.right].filter(bg => {
-      return !isEmpty(bg.backgroundType);
-    });
+    return isEmpty(background.left.backgroundType) ? [background.left] : [];
   },
   [DIGITAL._GETTERS.BACKGROUNDS_PROPERTIES]: ({ background }) => {
     return {
       isSingle: false,
       left: background?.left,
-      right: background?.right
+      right: {}
     };
   },
   [DIGITAL._GETTERS.SECTIONS_SHEETS]: ({ sections, sheets }) => {
