@@ -473,9 +473,9 @@ function getLineDashes(x1, y1, x2, y2) {
 }
 
 /**
-     * Get border data from store and set to Rect object
-     */
- export const setBorderObject = (rectObj, objectData) => {
+ * Get border data from store and set to Rect object
+ */
+export const setBorderObject = (rectObj, objectData) => {
   const { strokeWidth, stroke, strokeLineCap } = objectData.border;
   const group = rectObj?.group;
   const strokeDashArrayVal = getRectDashes(

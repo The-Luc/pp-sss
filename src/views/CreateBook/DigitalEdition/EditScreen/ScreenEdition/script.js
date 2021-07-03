@@ -4,11 +4,23 @@ import { DIGITAL_CANVAS_SIZE } from '@/common/constants/canvas';
 import SizeWrapper from '@/components/SizeWrapper';
 import AddBoxInstruction from '@/components/AddBoxInstruction';
 import { useDigitalOverrides } from '@/plugins/fabric';
-import { COVER_TYPE, OBJECT_TYPE, SHEET_TYPE } from '@/common/constants';
+import { OBJECT_TYPE, SHEET_TYPE } from '@/common/constants';
 import { createTextBox, startDrawBox } from '@/common/fabricObjects';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
-import { CANVAS_EVENT_TYPE, EVENT_TYPE, WINDOW_EVENT_TYPE } from '@/common/constants/eventType';
-import { deleteSelectedObjects, isEmpty, resetObjects, selectLatestObject, setBorderHighLight, setBorderObject, setCanvasUniformScaling } from '@/common/utils';
+import {
+  CANVAS_EVENT_TYPE,
+  EVENT_TYPE,
+  WINDOW_EVENT_TYPE
+} from '@/common/constants/eventType';
+import {
+  deleteSelectedObjects,
+  isEmpty,
+  resetObjects,
+  selectLatestObject,
+  setBorderHighLight,
+  setBorderObject,
+  setCanvasUniformScaling
+} from '@/common/utils';
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
 import { GETTERS } from '@/store/modules/book/const';
 import {
@@ -114,7 +126,7 @@ export default {
      */
     onContainerReady(containerSize) {
       let el = this.$refs.digitalCanvas;
-      window.digitalCanvas = new fabric.Canvas(el);;
+      window.digitalCanvas = new fabric.Canvas(el);
       useDigitalOverrides(fabric.Object.prototype);
       this.updateCanvasSize(containerSize);
       this.digitalCanvas = window.digitalCanvas;
@@ -135,10 +147,12 @@ export default {
      * Update component's event listeners after component has been mouted
      */
     updateDigitalEventListeners() {
-      const events = [{
-        name: EVENT_TYPE.DIGITAL_ADD_ELEMENT,
-        handler: this.onAddElement
-      }];
+      const events = [
+        {
+          name: EVENT_TYPE.DIGITAL_ADD_ELEMENT,
+          handler: this.onAddElement
+        }
+      ];
       events.forEach(event => {
         this.$root.$on(event.name, event.handler);
       });
@@ -148,10 +162,12 @@ export default {
      * Update window event listeners
      */
     updateWindowEventListeners() {
-      const events = [{
-        name: WINDOW_EVENT_TYPE.KEY_UP,
-        handler: this.onKeyUp
-      }];
+      const events = [
+        {
+          name: WINDOW_EVENT_TYPE.KEY_UP,
+          handler: this.onKeyUp
+        }
+      ];
       events.forEach(event => {
         document.body.addEventListener(event.name, event.handler);
       });
@@ -267,7 +283,7 @@ export default {
     onObjectModified() {
       console.log('object:modified');
     },
-    
+
     /**
      * Event fire when fabric object has been removed
      */
@@ -297,7 +313,7 @@ export default {
         this.stopAddingInstruction();
         this.digitalCanvas?.discardActiveObject();
         this.digitalCanvas?.renderAll();
-        
+
         startDrawBox(this.digitalCanvas, event).then(
           ({ left, top, width, height }) => {
             if (this.awaitingAdd === OBJECT_TYPE.TEXT) {
@@ -315,11 +331,10 @@ export default {
     /**
      * Event fire when click on fabric canvas
      */
-     onKeyUp(event) {
+    onKeyUp(event) {
       const key = event.keyCode || event.charCode;
 
       if (event.target === document.body && (key == 8 || key == 46)) {
-
         deleteSelectedObjects(this.digitalCanvas);
       }
     },
@@ -327,7 +342,7 @@ export default {
     /**
      * Event fire when user click on Text button on Toolbar to add new text on canvas
      */
-     addText(x, y, width, height) {
+    addText(x, y, width, height) {
       const { object, data } = createTextBox(x, y, width, height, {});
 
       // this.handleAddTextEventListeners(object, data);
@@ -367,7 +382,7 @@ export default {
       const x = clientX - left;
       const y = clientY - top;
       const visible = x > 0 && y > 0 && width - x > 0 && height - y > 0;
-      
+
       this.x = x;
       this.y = y;
       this.visible = visible;
@@ -412,7 +427,7 @@ export default {
      *
      * @param {String}  objectType  type of selected object
      */
-     openProperties(objectType, id) {
+    openProperties(objectType, id) {
       this.setIsOpenProperties({ isOpen: true, objectId: id });
       if (objectType === OBJECT_TYPE.TEXT) {
         this.updateTriggerTextChange();
@@ -423,11 +438,11 @@ export default {
      * Set border color when selected group object
      * @param {Element}  group  Group object
      */
-     setBorderHighLight(group) {
+    setBorderHighLight(group) {
       group.set({
         borderColor: this.sheetLayout?.id ? 'white' : '#bcbec0'
       });
-    },
+    }
   },
   watch: {
     pageSelected: {

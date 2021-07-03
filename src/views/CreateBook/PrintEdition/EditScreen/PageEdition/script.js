@@ -14,7 +14,6 @@ import {
   selectLatestObject,
   deleteSelectedObjects,
   getRectDashes,
-  scaleSize,
   isHalfSheet,
   isHalfLeft,
   pxToIn,

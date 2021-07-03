@@ -3,7 +3,10 @@ import { mapGetters, mapMutations, mapActions } from 'vuex';
 import Frames from '@/components/Thumbnail/Frames';
 import Thumbnail from '@/components/Thumbnail/ThumbnailDigital';
 import { GETTERS } from '@/store/modules/book/const';
-import { MUTATES as DIGITAL_MUTATES, ACTIONS as DIGITAL_ACTIONS } from '@/store/modules/digital/const';
+import {
+  MUTATES as DIGITAL_MUTATES,
+  ACTIONS as DIGITAL_ACTIONS
+} from '@/store/modules/digital/const';
 
 export default {
   components: {
