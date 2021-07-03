@@ -2,10 +2,11 @@ import {
   OBJECT_TYPE,
   DEFAULT_PROP,
   DEFAULT_TEXT,
-  DEFAULT_IMAGE,
   DEFAULT_BACKGROUND,
   DEFAULT_SHAPE,
-  DEFAULT_CLIP_ART
+  DEFAULT_CLIP_ART,
+  DEFAULT_SHADOW,
+  DEFAULT_BORDER
 } from '@/common/constants';
 
 export const BaseElement = {
@@ -23,18 +24,19 @@ export const BaseElement = {
   color: DEFAULT_PROP.COLOR,
   opacity: DEFAULT_PROP.OPACITY,
   border: {
-    type: 0, // TODO: Define constants 0: No Border, 1: Line
-    color: DEFAULT_PROP.COLOR,
-    width: 0,
-    style: ''
+    fill: DEFAULT_BORDER.FILL,
+    stroke: DEFAULT_BORDER.STROKE,
+    strokeWidth: DEFAULT_BORDER.STROKE_WIDTH,
+    strokeDashArray: DEFAULT_BORDER.STROKE_DASH_ARRAY,
+    strokeLineCap: DEFAULT_BORDER.STROKE_LINE_CAP
   },
   shadow: {
-    dropShadow: false,
-    shadowBlur: DEFAULT_PROP.COLOR,
-    shadowOffset: 0,
-    shadowOpacity: DEFAULT_PROP.OPACITY,
-    shadowAngle: 0,
-    shadowColor: 0
+    dropShadow: DEFAULT_SHADOW.DROP_SHADOW,
+    shadowBlur: DEFAULT_SHADOW.BLUR,
+    shadowOffset: DEFAULT_SHADOW.OFFSET,
+    shadowOpacity: DEFAULT_SHADOW.OPACITY,
+    shadowAngle: DEFAULT_SHADOW.ANGLE,
+    shadowColor: DEFAULT_SHADOW.COLOR
   },
   flip: {
     horizontal: false,
@@ -96,12 +98,16 @@ export const TextElement = {
 };
 
 export const ImageElement = {
-  ...BaseElement,
+  ...BaseElement, // opacity, shadow, border, size
   type: OBJECT_TYPE.IMAGE,
-  categoryId: 'Cover',
-  name: '',
-  thumbnail: DEFAULT_IMAGE.thumbnail,
-  imageUrl: DEFAULT_IMAGE.imageUrl
+  styleId: 0,
+  imageUrl: '',
+  centerCrop: {
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0
+  }
 };
 
 export const BackgroundElement = {

@@ -13,6 +13,14 @@ export const DEFAULT_SVG = {
   HEIGHT: 1.5
 };
 
+export const DEFAULT_BORDER = {
+  FILL: false,
+  STROKE: '#000000',
+  STROKE_WIDTH: 0,
+  STROKE_DASH_ARRAY: [],
+  STROKE_LINE_CAP: 'solid'
+};
+
 export const DEFAULT_PROP = {
   OPACITY: 1,
   COLOR: '#000000',
@@ -20,13 +28,7 @@ export const DEFAULT_PROP = {
   MAX_POSITION: 100,
   MIN_SIZE: 0.5,
   MAX_SIZE: 60,
-  BORDER: {
-    FILL: false,
-    STROKE: '#000000',
-    STROKE_WIDTH: 0,
-    STROKE_DASH_ARRAY: [],
-    STROKE_LINE_CAP: 'solid'
-  }
+  BORDER: { ...DEFAULT_BORDER }
 };
 
 export const DEFAULT_COORD = {
@@ -62,6 +64,7 @@ export const DEFAULT_TEXT = {
   STYLE_ID: 'default',
   FONT_FAMILY: 'Arial',
   FONT_SIZE: 60,
+  COLOR: DEFAULT_PROP.COLOR,
   IS_BOLD: false,
   IS_ITALIC: false,
   IS_UNDERLINE: false,
@@ -113,10 +116,11 @@ export const DEFAULT_CLIP_ART = {
 };
 
 export const DEFAULT_IMAGE = {
-  category: 'Cover',
-  name: '',
-  thumbnail: IMAGE_LOCAL.PLACE_HOLDER,
-  imageUrl: IMAGE_LOCAL.PLACE_HOLDER
+  CATEGORY: 'Cover',
+  STYLE_ID: 'default',
+  NAME: '',
+  THUMBNAIL: IMAGE_LOCAL.PLACE_HOLDER,
+  IMAGE_URL: IMAGE_LOCAL.PLACE_HOLDER
 };
 
 export const DEFAULT_BACKGROUND = {

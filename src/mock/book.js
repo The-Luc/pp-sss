@@ -1,17 +1,33 @@
-import { COVER_TYPE, POSITION_FIXED } from '@/common/constants';
+import {
+  COVER_TYPE,
+  LINK_STATUS,
+  PAGE_NUMBER_POSITION,
+  POSITION_FIXED
+} from '@/common/constants';
+
+const spreadInfo = {
+  leftTitle: '', // spread title use left for link
+  rightTitle: '',
+  isLeftNumberOn: false,
+  isRightNumberOn: false
+};
 
 const defaultLayout = {
   id: null,
   isFavorites: false,
   name: '',
-  pages: [{ objects: [] }, { objects: [] }],
   previewImageUrl: '',
-  size: {
-    width: 0,
-    height: 0
-  },
   themeId: null,
   type: ''
+};
+
+const defaultDigitalLayout = {
+  id: null,
+  name: '',
+  type: '',
+  isFavorites: false,
+  previewImageUrl: '',
+  themeId: ''
 };
 
 const book = {
@@ -38,7 +54,14 @@ const book = {
     max: 100
   },
   printData: {
-    themeId: null
+    themeId: null,
+    pageInfo: {
+      isNumberingOn: false,
+      position: PAGE_NUMBER_POSITION.BOTTOM_CENTER,
+      fontFamily: 'Arial',
+      fontSize: 8,
+      color: '#000000'
+    }
   },
   digitalData: {
     themeId: 1
@@ -63,13 +86,15 @@ const book = {
           order: 0,
           printData: {
             thumbnailUrl: null,
-            theme: null,
+            themeId: null,
             layout: defaultLayout,
-            link: 'none'
+            link: LINK_STATUS.NONE
           },
           digitalData: {
             thumbnailUrl: null,
-            link: 'none'
+            link: LINK_STATUS.NONE,
+            themeId: null,
+            layout: defaultDigitalLayout
           }
         }
       ]
@@ -95,11 +120,14 @@ const book = {
             theme: null,
             layout: defaultLayout,
             thumbnailUrl: null,
-            link: 'none'
+            link: LINK_STATUS.NONE,
+            spreadInfo: { ...spreadInfo }
           },
           digitalData: {
             thumbnailUrl: null,
-            link: 'none'
+            link: LINK_STATUS.NONE,
+            themeId: null,
+            layout: defaultDigitalLayout
           }
         },
         {
@@ -110,14 +138,17 @@ const book = {
           positionFixed: POSITION_FIXED.NONE,
           order: 1,
           printData: {
+            spreadInfo: { ...spreadInfo },
             thumbnailUrl: null,
             theme: null,
             layout: defaultLayout,
-            link: 'link'
+            link: LINK_STATUS.LINK
           },
           digitalData: {
             thumbnailUrl: null,
-            link: 'link'
+            link: LINK_STATUS.LINK,
+            themeId: null,
+            layout: defaultDigitalLayout
           }
         },
         {
@@ -128,14 +159,17 @@ const book = {
           positionFixed: POSITION_FIXED.NONE,
           order: 2,
           printData: {
+            spreadInfo: { ...spreadInfo },
             thumbnailUrl: null,
             theme: null,
             layout: defaultLayout,
-            link: 'link'
+            link: LINK_STATUS.LINK
           },
           digitalData: {
             thumbnailUrl: null,
-            link: 'link'
+            link: LINK_STATUS.LINK,
+            themeId: null,
+            layout: defaultDigitalLayout
           }
         },
         {
@@ -146,14 +180,17 @@ const book = {
           positionFixed: POSITION_FIXED.NONE,
           order: 3,
           printData: {
+            spreadInfo: { ...spreadInfo },
             thumbnailUrl: null,
             theme: null,
             layout: defaultLayout,
-            link: 'link'
+            link: LINK_STATUS.LINK
           },
           digitalData: {
             thumbnailUrl: null,
-            link: 'link'
+            link: LINK_STATUS.LINK,
+            themeId: null,
+            layout: defaultDigitalLayout
           }
         },
         {
@@ -164,14 +201,17 @@ const book = {
           positionFixed: POSITION_FIXED.NONE,
           order: 4,
           printData: {
+            spreadInfo: { ...spreadInfo },
             thumbnailUrl: null,
             theme: null,
             layout: defaultLayout,
-            link: 'link'
+            link: LINK_STATUS.LINK
           },
           digitalData: {
             thumbnailUrl: null,
-            link: 'link'
+            link: LINK_STATUS.LINK,
+            themeId: null,
+            layout: defaultDigitalLayout
           }
         }
       ]
@@ -194,14 +234,17 @@ const book = {
           positionFixed: POSITION_FIXED.NONE,
           order: 0,
           printData: {
+            spreadInfo: { ...spreadInfo },
             thumbnailUrl: null,
             theme: null,
             layout: defaultLayout,
-            link: 'link'
+            link: LINK_STATUS.LINK
           },
           digitalData: {
             thumbnailUrl: null,
-            link: 'link'
+            link: LINK_STATUS.LINK,
+            themeId: null,
+            layout: defaultDigitalLayout
           }
         },
         {
@@ -212,14 +255,17 @@ const book = {
           positionFixed: POSITION_FIXED.NONE,
           order: 1,
           printData: {
+            spreadInfo: { ...spreadInfo },
             thumbnailUrl: null,
             theme: null,
             layout: defaultLayout,
-            link: 'link'
+            link: LINK_STATUS.LINK
           },
           digitalData: {
             thumbnailUrl: null,
-            link: 'link'
+            link: LINK_STATUS.LINK,
+            themeId: null,
+            layout: defaultDigitalLayout
           }
         },
         {
@@ -230,14 +276,17 @@ const book = {
           positionFixed: POSITION_FIXED.NONE,
           order: 2,
           printData: {
+            spreadInfo: { ...spreadInfo },
             thumbnailUrl: null,
             theme: null,
             layout: defaultLayout,
-            link: 'link'
+            link: LINK_STATUS.LINK
           },
           digitalData: {
             thumbnailUrl: null,
-            link: 'link'
+            link: LINK_STATUS.LINK,
+            themeId: null,
+            layout: defaultDigitalLayout
           }
         }
       ]
@@ -260,13 +309,16 @@ const book = {
           positionFixed: POSITION_FIXED.NONE,
           order: 3,
           printData: {
+            spreadInfo: { ...spreadInfo },
             thumbnailUrl: null,
             theme: null,
             layout: defaultLayout
           },
           digitalData: {
             thumbnailUrl: null,
-            link: 'link'
+            link: LINK_STATUS.LINK,
+            themeId: null,
+            layout: defaultDigitalLayout
           }
         }
       ]
@@ -289,14 +341,17 @@ const book = {
           positionFixed: POSITION_FIXED.LAST,
           order: 0,
           printData: {
+            spreadInfo: { ...spreadInfo },
             thumbnailUrl: null,
             theme: null,
             layout: defaultLayout,
-            link: 'link'
+            link: LINK_STATUS.LINK
           },
           digitalData: {
             thumbnailUrl: null,
-            link: 'link'
+            link: LINK_STATUS.LINK,
+            themeId: null,
+            layout: defaultDigitalLayout
           }
         }
       ]

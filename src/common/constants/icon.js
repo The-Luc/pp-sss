@@ -3,7 +3,8 @@ import ARROW_DOWN from '@/assets/icons/arrow-down.svg';
 import MORE_ICON from '@/assets/icons/more.svg';
 import HELP from '@/assets/icons/help.svg';
 import ARROW_SELECT from '@/assets/icons/arrow-select.svg';
-import APPENED_ICON from '@/assets/icons/appened-outer-icon.svg';
+import APPENDED_ICON from '@/assets/icons/appended-outer-icon.svg';
+import APPENDED_ICON_ZOOM from '@/assets/icons/appended-outer-icon-zoom.svg';
 import PREPENDED_LETTER from '@/assets/icons/prepended-letter.svg';
 import PREPENDED_LINE from '@/assets/icons/prepended-line.svg';
 import PREPENDED_FONT_SIZE from '@/assets/icons/prepended-font-size.svg';
@@ -19,7 +20,8 @@ export const ICON_LOCAL = {
   ARROW_DOWN,
   MORE_ICON,
   ARROW_SELECT,
-  APPENED_ICON,
+  APPENDED_ICON,
+  APPENDED_ICON_ZOOM,
   PREPENDED_LETTER,
   PREPENDED_LINE,
   PREPENDED_FONT_SIZE,

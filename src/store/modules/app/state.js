@@ -10,17 +10,10 @@ export const state = {
   // Object properties
   colorPicker: {
     isOpen: false,
-    data: {
-      tabActive: '',
-      eventName: '',
-      color: '',
-      top: 0,
-      left: 0,
-      presets: {
-        next: 0,
-        max: 9,
-        values: []
-      }
+    presets: {
+      next: 0,
+      max: 9,
+      values: []
     }
   },
   propertiesModal: {
@@ -28,6 +21,14 @@ export const state = {
     selectedObjectType: '',
     propertiesObjectType: '',
     selectedObjectId: ''
+  },
+
+  infoBar: {
+    x: 0,
+    y: 0,
+    w: 0,
+    h: 0,
+    zoom: 0 // 0 = scale to fit, 0.1 = 10%, 0.33 = 33%
   },
 
   // Tool icon popover
