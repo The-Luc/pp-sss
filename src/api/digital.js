@@ -31,44 +31,26 @@ const digitalService = {
    */
   getDigitalSectionsSheets: bookId => {
     return new Promise(resolve => {
-      let totalSheets = 0;
+      const data = bookService.getBook(bookId).sections.map(section => {
+        const sheets = section.sheets.map(sheet => {
+          const {
+            id,
+            type,
+            digitalData: { thumbnailUrl, link }
+          } = sheet;
 
-      const data = bookService
-        .getBook(bookId)
-        .sections.map((section, sectionIndex) => {
-          const sheets = section.sheets.map((sheet, sheetIndex) => {
-            const { id, type } = sheet;
-            const { thumbnailUrl, link } = sheet.digitalData;
-
-            const pageLeftName = getPageLeftName(
-              sheet,
-              sheetIndex,
-              totalSheets
-            );
-            const pageRightName = getPageRightName(
-              sheet,
-              sheetIndex,
-              totalSheets
-            );
-
-            return {
-              id,
-              type,
-              thumbnailUrl,
-              link,
-              pageLeftName,
-              pageRightName
-            };
-          });
-
-          if (sectionIndex > 0) {
-            totalSheets += section.sheets.length;
-          }
-
-          const { name, color } = section;
-
-          return { name, color, sheets: sheets };
+          return {
+            id,
+            type,
+            thumbnailUrl,
+            link
+          };
         });
+
+        const { name, color } = section;
+
+        return { name, color, sheets };
+      });
 
       const result = isEmpty(data)
         ? getErrorWithMessages([])

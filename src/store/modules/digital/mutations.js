@@ -1,12 +1,5 @@
 import { cloneDeep, merge } from 'lodash';
 
-import {
-  isHalfSheet,
-  isHalfLeft,
-  isFullBackground,
-  isEmpty
-} from '@/common/utils';
-
 import { OBJECT_TYPE } from '@/common/constants';
 import DIGITAL from './const';
 
@@ -55,41 +48,8 @@ export const mutations = {
   [DIGITAL._MUTATES.SET_CURRENT_SHEET_ID](state, { id }) {
     state.currentSheetId = id;
   },
-  [DIGITAL._MUTATES.SET_BACKGROUNDS](state, { background }) {
-    if (isEmpty(background)) {
-      state.background.left = {};
-      state.background.right = {};
-
-      return;
-    }
-
-    if (isFullBackground(background)) {
-      background.isLeftPage = true;
-
-      state.background.left = background;
-      state.background.right = {};
-
-      return;
-    }
-
-    if (!isHalfSheet(state.sheets[state.currentSheetId])) {
-      const position = background.isLeftPage ? 'left' : 'right';
-
-      if (isFullBackground(state.background.left)) {
-        state.background.left = {};
-      }
-
-      state.background[position] = background;
-
-      return;
-    }
-
-    const isSheetLeft = isHalfLeft(state.sheets[state.currentSheetId]);
-
-    background.isLeftPage = isSheetLeft;
-
-    state.background.left = isSheetLeft ? background : {};
-    state.background.right = isSheetLeft ? {} : background;
+  [DIGITAL._MUTATES.SET_BACKGROUNDS](state, { background = {} }) {
+    state.background.left = background;
   },
   [DIGITAL._MUTATES.SET_CURRENT_OBJECT_ID](state, { id }) {
     state.currentObjectId = id;
@@ -113,11 +73,7 @@ export const mutations = {
 
     state.objects[id] = currentProps;
   },
-  /**
-   * to set prop for mulitple objects
-   * @param {Object} state the stoer data
-   * @param {Array} data objects prop
-   */
+
   [DIGITAL._MUTATES.SET_PROP_OF_MULIPLE_OBJECTS](state, { data }) {
     data.forEach(({ id, prop }) => {
       const currentProps = cloneDeep(state.objects[id]);
@@ -176,18 +132,14 @@ export const mutations = {
       }
     });
   },
-  [DIGITAL._MUTATES.SET_BACKGROUND_PROP](state, { isLeft, prop }) {
-    const position = isLeft ? 'left' : 'right';
-
-    const currentProps = cloneDeep(state.background[position]);
+  [DIGITAL._MUTATES.SET_BACKGROUND_PROP](state, { prop }) {
+    const currentProps = cloneDeep(state.background.left);
 
     merge(currentProps, prop);
 
-    state.background[position] = currentProps;
+    state.background.left = currentProps;
   },
-  [DIGITAL._MUTATES.DELETE_BACKGROUND](state, { isLeft }) {
-    const position = isLeft ? 'left' : 'right';
-
-    state.background[position] = {};
+  [DIGITAL._MUTATES.DELETE_BACKGROUND](state) {
+    state.background.left = {};
   }
 };

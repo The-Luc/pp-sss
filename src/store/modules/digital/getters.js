@@ -9,9 +9,7 @@ export const getters = {
     return isEmpty(currentSheet) ? {} : currentSheet;
   },
   [DIGITAL._GETTERS.TOTAL_BACKGROUND]: ({ background }) => {
-    const backgrounds = [background.left].filter(Boolean);
-
-    return backgrounds.length;
+    return isEmpty(background.left) ? 0 : 1;
   },
   [DIGITAL._GETTERS.CURRENT_OBJECT]: ({ objects, currentObjectId }) => {
     const currentObject = objects[currentObjectId];
