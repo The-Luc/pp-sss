@@ -385,7 +385,7 @@ export const toFabricImageProp = prop => {
         name: 'opacity'
       }
     },
-    restrict: ['border', 'shadow', 'flip', 'size', 'rotation']
+    restrict: ['border', 'shadow', 'flip', 'size', 'rotation', 'centerCrop']
   };
   return mapObject(prop, mapRules);
 };
