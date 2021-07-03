@@ -2,6 +2,7 @@ import { mapGetters, mapMutations } from 'vuex';
 
 import { GETTERS, MUTATES } from '@/store/modules/app/const';
 import Header from './Header';
+import { KEY_CODE } from '@/common/constants';
 
 export default {
   components: {
@@ -57,8 +58,7 @@ export default {
      */
     onKeyDown(event) {
       const key = event.keyCode || event.charCode;
-      if (key === 27) {
-        // Escape
+      if (key === KEY_CODE.ESCAPE) {
         this.onCloseModal();
       }
     }

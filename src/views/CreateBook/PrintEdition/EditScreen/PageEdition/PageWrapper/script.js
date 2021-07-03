@@ -1,6 +1,6 @@
 import Color from 'color';
 
-import { OBJECT_TYPE } from '@/common/constants';
+import { KEY_CODE, OBJECT_TYPE } from '@/common/constants';
 import AddBoxInstruction from '@/components/AddBoxInstruction';
 import EyeDropper from '@/components/EyeDropper';
 
@@ -23,7 +23,7 @@ export default {
       y: 0,
       visible: false,
       visibleEyeDropper: false,
-      color: '#000000'
+      color: ''
     };
   },
   mounted() {
@@ -133,7 +133,7 @@ export default {
      */
     handleKeyPress(event) {
       const key = event.keyCode || event.charCode;
-      if (key === 27) {
+      if (key === KEY_CODE.ESCAPE) {
         this.$root.$emit('enscapeInstruction');
       }
     }
