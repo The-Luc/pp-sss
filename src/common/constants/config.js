@@ -11,3 +11,6 @@ export const PASTE = {
   DELAY_TIME: 1000, // MS
   DISTANCE: 0.5 // inch
 };
+
+// live thumbnail on the left sidebar
+export const THUMBNAIL_IMAGE_QUALITY = 0.2;

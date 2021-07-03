@@ -4,7 +4,7 @@ import { cloneDeep, uniqueId, merge, debounce } from 'lodash';
 
 import { usePrintOverrides } from '@/plugins/fabric';
 
-import { useDrawLayout } from '@/hooks';
+import { useDrawLayout, useInfoBar } from '@/hooks';
 import { startDrawBox, toggleStroke } from '@/common/fabricObjects/drawingBox';
 
 import {
@@ -47,6 +47,7 @@ import {
   handleObjectBlur,
   handleScalingText,
   updateTextListeners,
+  createBackgroundFabricObject,
   updateSpecificProp
 } from '@/common/fabricObjects';
 
@@ -80,8 +81,13 @@ import PageWrapper from './PageWrapper';
 import XRuler from './Rulers/XRuler';
 import YRuler from './Rulers/YRuler';
 import { parsePasteObject } from '@/common/utils/string';
-import { COPY_OBJECT_KEY, PASTE } from '@/common/constants/config';
+import {
+  COPY_OBJECT_KEY,
+  PASTE,
+  THUMBNAIL_IMAGE_QUALITY
+} from '@/common/constants/config';
 import { createImage } from '@/common/fabricObjects/image';
+import printService from '@/api/print';
 
 export default {
   components: {
@@ -93,8 +99,9 @@ export default {
   },
   setup() {
     const { drawLayout } = useDrawLayout();
+    const { setInfoBar } = useInfoBar();
 
-    return { drawLayout };
+    return { drawLayout, setInfoBar };
   },
   data() {
     return {
@@ -124,7 +131,8 @@ export default {
       propertiesObjectType: APP_GETTERS.PROPERTIES_OBJECT_TYPE,
       object: PRINT_GETTERS.OBJECT_BY_ID,
       currentObjects: PRINT_GETTERS.GET_OBJECTS,
-      totalBackground: PRINT_GETTERS.TOTAL_BACKGROUND
+      totalBackground: PRINT_GETTERS.TOTAL_BACKGROUND,
+      getProperty: PRINT_GETTERS.SELECT_PROP_CURRENT_OBJECT
     }),
     isCover() {
       return this.pageSelected?.type === SHEET_TYPE.COVER;
@@ -164,12 +172,17 @@ export default {
       deep: true,
       async handler(val, oldVal) {
         if (val?.id !== oldVal?.id) {
+          // save the previous canvas on sessionStorage
+          printService.saveCanvasState(oldVal.id, this.sheetLayout);
+
+          // get data either from API or sessionStorage
           await this.getDataCanvas();
           this.countPaste = 1;
           this.setSelectedObjectId({ id: '' });
           this.updateCanvasSize();
           resetObjects(window.printCanvas);
-          this.drawLayout(this.sheetLayout);
+
+          this.drawObjectsOnCanvas(this.sheetLayout);
         }
       }
     }
@@ -184,6 +197,9 @@ export default {
     window.removeEventListener('copy', this.handleCopy);
     window.removeEventListener('paste', this.handlePaste);
 
+    // save the current sheet to sessionStorage
+    printService.saveCanvasState(this.pageSelected.id, this.sheetLayout);
+
     window.printCanvas = null;
 
     sessionStorage.removeItem(COPY_OBJECT_KEY);
@@ -191,6 +207,8 @@ export default {
     document.body.removeEventListener('keyup', this.handleDeleteKey);
 
     this.eventHandling(false);
+
+    this.setInfoBar({ data: { x: 0, y: 0, w: 0, h: 0, zoom: 0 } });
   },
   methods: {
     ...mapActions({
@@ -221,30 +239,21 @@ export default {
       setBackgroundProp: PRINT_MUTATES.SET_BACKGROUND_PROP,
       deleteBackground: PRINT_MUTATES.DELETE_BACKGROUND
     }),
+
     /**
-     * Function handle create image object and add properties to store
-     * @param {Object} data - Image's properties
-     * @param {Object} coord - Image's coord
-     * @returns {Object} Image object
+     * create fabric object
+     *
+     * @param {Object} objectData PpData of the of a background object {id, size, coord,...}
+     * @returns {Object} a fabric objec
      */
-    async handlePasteImage(data, coord) {
-      const id = uniqueId();
-      const image = await createImage({
-        ...data,
-        id,
-        coord
-      });
-      const objectToStore = {
-        id,
-        newObject: {
-          ...data,
-          id,
-          coord
-        }
-      };
-      this.addObjectToStore(objectToStore);
+    async createBackgroundFromPpData(backgroundProp) {
+      const image = await createBackgroundFabricObject(
+        backgroundProp,
+        window.printCanvas
+      );
       return image;
     },
+
     /**
      * Function handle add text event listeners
      * @param {Element} group - Group object contains rect and text object
@@ -261,24 +270,32 @@ export default {
         mousedblclick: e => this.handleDbClickText(e, rect, text)
       });
     },
-    /**
-     * Function handle create text object and add properties to store
-     * @param {Object} data - Text's properties
-     * @param {Object} coord - Text's coord
-     * @returns {Object} Text object
-     */
-    async handlePasteText(data, coord) {
-      const id = uniqueId();
-      const {
-        size: { width, height }
-      } = data;
-      const textProperties = {
-        ...data,
-        id,
-        coord
-      };
 
-      const { object, data: objectData } = await createTextBox(
+    /**
+     * add image to the store and create fabric object
+     *
+     * @param {Object} imageProperties PpData of the of an image object {id, size, coord,...}
+     * @returns {Object} a fabric object
+     */
+    async createImageFromPpData(imageProperties) {
+      const image = await createImage(imageProperties);
+
+      return image;
+    },
+
+    /**
+     * add text to the store and create fabric object
+     *
+     * @param {Object} textProperties PpData of the of a text object {id, size, coord,...}
+     * @returns {Object} a fabric object
+     */
+    createTextFromPpData(textProperties) {
+      const {
+        coord,
+        size: { height, width }
+      } = textProperties;
+
+      const { object, data: objectData } = createTextBox(
         inToPx(coord.x),
         inToPx(coord.y),
         inToPx(width),
@@ -294,28 +311,18 @@ export default {
 
       this.handleAddTextEventListeners(object, objectData);
 
-      this.addObjectToStore(objectData);
-
       applyShadowToObject(object, objectData.newObject.shadow);
 
       return object;
     },
-    /**
-     * Function handle create svg object and add properties to store
-     * @param {Object} data - Svg's properties
-     * @param {Object} coord - Svg's coord
-     * @returns {Object} Svg object
-     */
-    async handlePasteSvg(data, coord) {
-      const id = uniqueId();
-      const ojbectData = {
-        id,
-        object: {
-          ...data,
-          coord
-        }
-      };
 
+    /**
+     * add shape/ clipart to the store and create fabric object
+     *
+     * @param {Object} objectData PpData of the of a shape object {id, size, coord,...}
+     * @returns {Object} a fabric object
+     */
+    async createSvgFromPpData(objectData) {
       const eventListeners = {
         scaling: this.handleScaling,
         scaled: this.handleScaled,
@@ -323,30 +330,20 @@ export default {
         moved: this.handleMoved
       };
 
-      const {
-        size: { width, height }
-      } = data;
+      const svgObject = {
+        id: objectData.id,
+        object: objectData
+      };
 
       const svg = await handleGetSvgData({
-        svg: ojbectData,
+        svg: svgObject,
         svgUrlAttrName:
-          data.type === OBJECT_TYPE.CLIP_ART ? 'vector' : 'pathData',
-        expectedHeight: height,
-        expectedWidth: width
+          objectData.type === OBJECT_TYPE.CLIP_ART ? 'vector' : 'pathData',
+        expectedHeight: objectData.size.height,
+        expectedWidth: objectData.size.width
       });
 
       addEventListeners(svg, eventListeners);
-
-      const objectToStore = {
-        id,
-        newObject: {
-          ...data,
-          id,
-          coord
-        }
-      };
-
-      this.addObjectToStore(objectToStore);
 
       const {
         dropShadow,
@@ -359,7 +356,7 @@ export default {
 
       updateSpecificProp(svg, {
         coord: {
-          rotation: objectToStore.newObject.coord.rotation
+          rotation: objectData.coord.rotation
         }
       });
 
@@ -376,80 +373,60 @@ export default {
     /**
      * Funtion recursive handle create object(s) and add to store through data be copied and return list object(s) processed
      * @param {Array} objects - List object(s) copied
-     * @param {Array} processedItems - List object(s) pasted
      * @param {Number} sheetId - Current sheet id
      * @param {Object} fabricObject Fabric's data
      * @param {Number} minLeft Min left position of list objects
      * @param {Number} minTop Min top position of list objects
      * @returns {Arrray} List object(s) pasted
      */
-    async handlePasteItems(
-      objects,
-      processedItems = [],
-      sheetId,
-      fabricObject,
-      minLeft,
-      minTop
-    ) {
-      if (objects.length === 0) {
-        return processedItems;
-      }
+    async handlePasteItems(objects, sheetId, fabricObject, minLeft, minTop) {
+      return Promise.all(
+        objects.map(o => {
+          const obj = cloneDeep(o);
 
-      const objectsClone = cloneDeep(objects);
-      const data = objectsClone.splice(0, 1)[0];
+          const coord = computePastedObjectCoord(
+            obj,
+            sheetId,
+            fabricObject,
+            minLeft,
+            minTop,
+            this.pageSelected,
+            this.countPaste
+          );
 
-      const coord = computePastedObjectCoord(
-        data,
-        sheetId,
-        fabricObject,
-        minLeft,
-        minTop,
-        this.pageSelected,
-        this.countPaste
+          const newData = {
+            ...obj,
+            id: uniqueId(),
+            coord
+          };
+
+          // add to store
+          if (obj.type !== OBJECT_TYPE.BACKGROUND) {
+            this.addObjectToStore({
+              id: newData.id,
+              newObject: newData
+            });
+          }
+
+          // create fabric object
+          if (obj.type === OBJECT_TYPE.IMAGE) {
+            return this.createImageFromPpData(newData);
+          }
+
+          if (
+            obj.type === OBJECT_TYPE.CLIP_ART ||
+            obj.type === OBJECT_TYPE.SHAPE
+          ) {
+            return this.createSvgFromPpData(newData);
+          }
+
+          if (obj.type === OBJECT_TYPE.TEXT) {
+            return this.createTextFromPpData(newData);
+          }
+        })
       );
-
-      if (data.type === OBJECT_TYPE.IMAGE) {
-        const image = await this.handlePasteImage(data, coord);
-
-        return await this.handlePasteItems(
-          objectsClone,
-          [...processedItems, image],
-          sheetId,
-          fabricObject,
-          minLeft,
-          minTop
-        );
-      }
-
-      if (
-        data.type === OBJECT_TYPE.CLIP_ART ||
-        data.type === OBJECT_TYPE.SHAPE
-      ) {
-        const svg = await this.handlePasteSvg(data, coord);
-
-        return await this.handlePasteItems(
-          objectsClone,
-          [...processedItems, svg],
-          sheetId,
-          fabricObject,
-          minLeft,
-          minTop
-        );
-      }
-
-      if (data.type === OBJECT_TYPE.TEXT) {
-        const text = await this.handlePasteText(data, coord);
-
-        return await this.handlePasteItems(
-          objectsClone,
-          [...processedItems, text],
-          sheetId,
-          fabricObject,
-          minLeft,
-          minTop
-        );
-      }
     },
+
     /**
      * Function handle active selection of object(s) pasted (single | multiplesingle)
      * @param {Array} listPastedObjects - List object(s) pasted
@@ -520,7 +497,6 @@ export default {
 
       const listPastedObjects = await this.handlePasteItems(
         objects,
-        [],
         sheetId,
         fabric,
         minLeft,
@@ -605,7 +581,9 @@ export default {
      * call this function to update the active thumbnail
      */
     getThumbnailUrl: debounce(function() {
-      const thumbnailUrl = window.printCanvas.toDataURL();
+      const thumbnailUrl = window.printCanvas.toDataURL({
+        quality: THUMBNAIL_IMAGE_QUALITY
+      });
 
       this.setThumbnail({
         sheetId: this.pageSelected?.id,
@@ -633,6 +611,7 @@ export default {
         'object:modified': this.getThumbnailUrl,
         'object:added': this.getThumbnailUrl,
         'object:removed': this.getThumbnailUrl,
+
         'object:scaled': ({ target }) => {
           const { width, height } = target;
           const prop = {
@@ -643,6 +622,10 @@ export default {
           };
           this.setObjectProp({ prop });
           this.updateTriggerTextChange();
+
+          this.setInfoBar({
+            data: { w: prop.size.width, h: prop.size.height }
+          });
         },
         'mouse:down': e => {
           if (this.awaitingAdd) {
@@ -683,6 +666,10 @@ export default {
           this.setObjectProp({ prop });
           this.setObjectPropById({ id: group.id, prop });
           this.updateTriggerTextChange();
+
+          this.setInfoBar({
+            data: { w: prop.size.width, h: prop.size.height }
+          });
         },
         'object:moved': e => {
           if (!e.target?.objectType) {
@@ -751,6 +738,8 @@ export default {
     closeProperties() {
       this.groupSelected = null;
       this.resetConfigTextProperties();
+
+      this.setInfoBar({ data: { w: 0, h: 0 } });
     },
     /**
      * Event fired when an object of canvas is selected
@@ -784,6 +773,13 @@ export default {
       }
 
       if (isEmpty(objectType)) return;
+
+      this.setInfoBar({
+        data: {
+          w: this.getProperty('size')?.width,
+          h: this.getProperty('size')?.height
+        }
+      });
 
       this.setObjectTypeSelected({ type: objectType });
 
@@ -873,6 +869,12 @@ export default {
 
       this.updateTriggerTextChange();
 
+      if (!isEmpty(prop.size)) {
+        this.setInfoBar({
+          data: { w: prop.size.width, h: prop.size.height }
+        });
+      }
+
       applyTextBoxProperties(activeObj, prop);
 
       // update thumbnail
@@ -893,7 +895,6 @@ export default {
         id,
         newObject: {
           ...ImageElement,
-          id,
           size: {
             width: pxToIn(width),
             height: pxToIn(height)
@@ -995,11 +996,12 @@ export default {
     async addClipArt(clipArts) {
       const toBeAddedClipArts = clipArts.map(c => {
         const newClipArt = cloneDeep(ClipArtElement);
+        const id = uniqueId();
 
         merge(newClipArt, c);
 
         return {
-          id: uniqueId(),
+          id,
           object: {
             ...newClipArt,
             vector: require(`../../../../../assets/image/clip-art/${newClipArt.vector}`)
@@ -1275,6 +1277,12 @@ export default {
 
       if (updateTriggerFn !== null) updateTriggerFn();
 
+      if (!isEmpty(prop.size)) {
+        this.setInfoBar({
+          data: { w: prop.size.width, h: prop.size.height }
+        });
+      }
+
       if (!isEmpty(prop['shadow'])) {
         applyShadowToObject(element, prop['shadow']);
       }
@@ -1471,6 +1479,40 @@ export default {
         if (isOn) this.$root.$on(eventName, events[eventName]);
       });
     },
+
+    /**
+     * create and render objects on the canvas
+     * @param {Object} objects ppObjects that will be rendered
+     */
+    async drawObjectsOnCanvas(objects) {
+      if (isEmpty(objects)) return;
+
+      const allObjectPrommises = objects.map(objectData => {
+        if (
+          objectData.type === OBJECT_TYPE.SHAPE ||
+          objectData.type === OBJECT_TYPE.CLIP_ART
+        ) {
+          return this.createSvgFromPpData(objectData);
+        }
+
+        if (objectData.type === OBJECT_TYPE.TEXT) {
+          return this.createTextFromPpData(objectData);
+        }
+
+        if (objectData.type === OBJECT_TYPE.IMAGE) {
+          return this.createImageFromPpData(objectData);
+        }
+
+        if (objectData.type === OBJECT_TYPE.BACKGROUND) {
+          return this.createBackgroundFromPpData(objectData);
+        }
+      });
+
+      const listFabricObjects = await Promise.all(allObjectPrommises);
+      window.printCanvas.add(...listFabricObjects);
+      window.printCanvas.requestRenderAll();
+    },
+
     /**
      * The function set new dimenssion for text after scaled
      * @param {Object} target Text target

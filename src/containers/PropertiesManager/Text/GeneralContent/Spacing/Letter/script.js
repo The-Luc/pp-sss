@@ -23,7 +23,7 @@ export default {
   data() {
     return {
       prependedIcon: ICON_LOCAL.PREPENDED_LETTER,
-      appendedIcon: ICON_LOCAL.APPENED_ICON
+      appendedIcon: ICON_LOCAL.APPENDED_ICON
     };
   },
   computed: {
