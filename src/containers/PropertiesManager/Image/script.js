@@ -2,13 +2,15 @@ import Properties from '@/components/Properties/BoxProperties';
 import TabPropertiesMenu from '@/containers/TabPropertiesMenu';
 import ArrangeContent from '@/components/Arrange';
 import GeneralContent from './GeneralContent';
+import Reset from './Reset';
 import { DEFAULT_IMAGE } from '@/common/constants';
 export default {
   components: {
     Properties,
     TabPropertiesMenu,
     ArrangeContent,
-    GeneralContent
+    GeneralContent,
+    Reset
   },
   computed: {
     rotateValue() {
@@ -55,16 +57,40 @@ export default {
      * Handle update flip for Image
      * @param {String} actionName action name
      */
-    changeFlip(actionName) {},
+    changeFlip(actionName) {
+      console.log('changeFlip');
+    },
     /**
      * Handle update size, position or rotate for Image
      * @param {Object} object object containing the value of update size, position or rotate
      */
-    onChange(object) {},
+    onChange(object) {
+      console.log('onChange');
+    },
     /**
      * Handle constrain proportions for Image
      * @param {Boolean} val
      */
-    onChangeConstrain(val) {}
+    onChangeConstrain(val) {
+      console.log('onChangeConstrain');
+    },
+    /**
+     * Handle click crop image for Image
+     */
+    onClickCropImage() {
+      console.log('onClickCropImage');
+    },
+    /**
+     * Handle click remove image for Image
+     */
+    onClickRemoveImage() {
+      console.log('onClickRemoveImage');
+    },
+    /**
+     * Handle click background image for Image
+     */
+    onClickBackgroundImage() {
+      console.log('onClickBackgroundImage');
+    }
   }
 };

@@ -31,7 +31,11 @@
           Reset
         </v-tab>
         <v-tab-item value="reset">
-          this is reset
+          <Reset
+            @onClickCropImage="onClickCropImage"
+            @onClickRemoveImage="onClickRemoveImage"
+            @onClickBackgroundImage="onClickBackgroundImage"
+          />
         </v-tab-item>
       </TabPropertiesMenu>
     </Properties>

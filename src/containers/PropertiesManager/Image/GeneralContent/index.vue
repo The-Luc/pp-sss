@@ -1,5 +1,6 @@
 <template>
   <div>
+    <ImageStyle />
     <Opacity :value="opacityValue" @change="onChangeOpacity" />
     <Border
       :selected-border="selectedBorder"

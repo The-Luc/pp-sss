@@ -1,6 +1,6 @@
 import Select from '@/components/Selectors/Select';
-import BorderStyle from '@/containers/Properties/Style';
-import BorderColor from '@/containers/Properties/Color';
+import BorderStyle from './Settings/Style';
+import BorderColor from './Settings/Color';
 import BorderThickness from './Settings/Thickness';
 import { getRectDashes } from '@/common/utils';
 
@@ -23,18 +23,9 @@ export default {
   },
   data() {
     return {
-      isShowStyle: false,
       strokeWidth: 0,
       borderStyle: 'solid'
     };
-  },
-  watch: {
-    selectedBorder: {
-      deep: true,
-      handler(border) {
-        this.isShowStyle = border.value === 'line';
-      }
-    }
   },
   methods: {
     /**

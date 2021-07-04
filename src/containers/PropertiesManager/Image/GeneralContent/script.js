@@ -1,16 +1,16 @@
-import FillColor from '@/containers/Properties/Features/FillColor';
 import Opacity from '@/components/Properties/Features/Opacity';
 import Shadow from '@/components/Properties/Features/Shadow';
 import Border from '@/components/Properties/Features/Border';
+import ImageStyle from './ImageStyle';
 
 import { DEFAULT_PROP } from '@/common/constants';
 import { SHADOW_OPTIONS } from '@/common/constants/shadow';
 export default {
   components: {
-    FillColor,
     Opacity,
     Shadow,
-    Border
+    Border,
+    ImageStyle
   },
   data() {
     return {
