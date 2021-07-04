@@ -1,9 +1,12 @@
-import { mapGetters, mapMutations } from 'vuex';
+import { mapGetters, mapMutations, mapActions } from 'vuex';
 
 import Frames from '@/components/Thumbnail/Frames';
 import Thumbnail from '@/components/Thumbnail/ThumbnailDigital';
 import { GETTERS } from '@/store/modules/book/const';
-import { MUTATES as PRINT_MUTATES } from '@/store/modules/print/const';
+import {
+  MUTATES as DIGITAL_MUTATES,
+  ACTIONS as DIGITAL_ACTIONS
+} from '@/store/modules/digital/const';
 
 export default {
   components: {
@@ -37,9 +40,15 @@ export default {
     }
   },
   methods: {
-    ...mapMutations({
-      selectSheet: PRINT_MUTATES.SET_CURRENT_SHEET_ID
+    ...mapActions({
+      getDataPageEdit: DIGITAL_ACTIONS.GET_DATA_MAIN
     }),
+    ...mapMutations({
+      setBookId: DIGITAL_MUTATES.SET_BOOK_ID,
+      selectSheet: DIGITAL_MUTATES.SET_CURRENT_SHEET_ID,
+      setSectionId: DIGITAL_MUTATES.SET_SECTION_ID
+    }),
+
     /**
      * Set selected sheet's id
      * @param  {String} sheet Sheet selected
@@ -47,5 +56,10 @@ export default {
     onSelectScreen(sheet) {
       this.selectSheet({ id: sheet.id });
     }
+  },
+  created() {
+    this.setBookId({ bookId: this.$route.params.bookId });
+
+    this.getDataPageEdit();
   }
 };
