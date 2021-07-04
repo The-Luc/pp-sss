@@ -2,7 +2,7 @@ export default {
   props: {
     titleNameLeft: {
       type: String,
-      default: 'Left hand page title:'
+      default: 'Project title:'
     },
     titleNameRight: {
       type: String,

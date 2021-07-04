@@ -93,8 +93,13 @@ const printService = {
         .sections.map((section, sectionIndex) => {
           const sheets = section.sheets.map((sheet, sheetIndex) => {
             const { id, type, isVisited } = sheet;
-            const { thumbnailUrl, theme: themeId, layout } = sheet.printData;
-
+            const {
+              link,
+              thumbnailUrl,
+              theme: themeId,
+              layout
+            } = sheet.printData;
+            const spreadInfo = sheet.printData.spreadInfo;
             const pageLeftName = getPageLeftName(
               sheet,
               sheetIndex,
@@ -108,13 +113,15 @@ const printService = {
 
             return {
               id,
+              link,
               type,
               thumbnailUrl,
               isVisited,
               themeId,
               layoutId: layout?.id || null,
               pageLeftName,
-              pageRightName
+              pageRightName,
+              spreadInfo
             };
           });
 
