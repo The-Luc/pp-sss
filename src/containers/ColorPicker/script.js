@@ -10,6 +10,10 @@ export default {
     label: {
       type: String,
       default: 'Color'
+    },
+    colorize: {
+      type: Boolean,
+      default: true
     }
   },
   data() {

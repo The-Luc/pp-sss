@@ -1,0 +1,16 @@
+<template>
+  <div class="title">
+    <div class="title-content">
+      <div class="project-title">{{ titleNameLeft }}</div>
+      <input type="text" :disabled="isDisable" :value="titleValue" />
+    </div>
+    <div v-if="isLink" class="title-content">
+      <div class="project-title">{{ titleNameRight }}</div>
+      <input type="text" :disabled="isDisable" :value="titleValue" />
+    </div>
+  </div>
+</template>
+
+<script src="./script.js" />
+
+<style lang="scss" s src="./style.scss" />

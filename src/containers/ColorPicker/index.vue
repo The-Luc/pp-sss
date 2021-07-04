@@ -9,7 +9,7 @@
           @click="onOpen"
         />
       </div>
-      <v-icon>colorize</v-icon>
+      <v-icon v-if="colorize">colorize</v-icon>
       <PickerPopup
         v-if="isOpen"
         :top="top"
