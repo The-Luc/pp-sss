@@ -25,6 +25,7 @@
         </div>
       </div>
     </div>
+    <AddBoxInstruction v-if="visible" :element="element" :x="x" :y="y" />
   </div>
 </template>
 

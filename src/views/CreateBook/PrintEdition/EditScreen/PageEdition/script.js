@@ -14,7 +14,6 @@ import {
   selectLatestObject,
   deleteSelectedObjects,
   getRectDashes,
-  scaleSize,
   isHalfSheet,
   isHalfLeft,
   pxToIn,
@@ -22,7 +21,10 @@ import {
   inToPx,
   clearClipboard,
   getMinPositionObject,
-  computePastedObjectCoord
+  computePastedObjectCoord,
+  setBorderObject,
+  setCanvasUniformScaling,
+  setBorderHighLight
 } from '@/common/utils';
 
 import {
@@ -70,7 +72,8 @@ import {
   DEFAULT_SHAPE,
   COVER_TYPE,
   DEFAULT_CLIP_ART,
-  FABRIC_OBJECT_TYPE
+  FABRIC_OBJECT_TYPE,
+  DEFAULT_IMAGE
 } from '@/common/constants';
 import SizeWrapper from '@/components/SizeWrapper';
 import PrintCanvasLines from './PrintCanvasLines';
@@ -96,9 +99,9 @@ export default {
   },
   setup() {
     const { drawLayout } = useDrawLayout();
-    const { setInfoBar } = useInfoBar();
+    const { setInfoBar, zoom } = useInfoBar();
 
-    return { drawLayout, setInfoBar };
+    return { drawLayout, setInfoBar, zoom };
   },
   data() {
     return {
@@ -182,6 +185,9 @@ export default {
           this.drawObjectsOnCanvas(this.sheetLayout);
         }
       }
+    },
+    zoom(newVal, oldVal) {
+      console.log(newVal);
     }
   },
   mounted() {
@@ -566,11 +572,16 @@ export default {
         canvasSize.width = this.containerSize.width;
         canvasSize.height = canvasSize.width / printRatio;
       }
+
       const currentZoom = canvasSize.width / sheetWidth;
+
       this.canvasSize = { ...canvasSize, zoom: currentZoom };
+
       window.printCanvas.setWidth(canvasSize.width);
       window.printCanvas.setHeight(canvasSize.height);
+
       this.drawLayout(this.sheetLayout);
+
       window.printCanvas.setZoom(currentZoom);
     },
 
@@ -739,46 +750,6 @@ export default {
       this.setInfoBar({ data: { w: 0, h: 0 } });
     },
     /**
-     * Get border data from store and set to Rect object
-     */
-    setBorderObject(rectObj, objectData) {
-      const { strokeWidth, stroke, strokeLineCap } = objectData.border;
-      const group = rectObj?.group;
-      const strokeDashArrayVal = getRectDashes(
-        group?.width || rectObj.width,
-        group?.height || rectObj.height,
-        strokeLineCap,
-        strokeWidth
-      );
-      rectObj.set({
-        strokeWidth: scaleSize(strokeWidth),
-        stroke,
-        strokeLineCap,
-        strokeDashArray: strokeDashArrayVal
-      });
-      setTimeout(() => {
-        rectObj.canvas.renderAll();
-      });
-    },
-    /**
-     * Set border color when selected group object
-     * @param {Element}  group  Group object
-     */
-    setBorderHighLight(group) {
-      group.set({
-        borderColor: this.sheetLayout?.id ? 'white' : '#bcbec0'
-      });
-    },
-    /**
-     * Set canvas uniform scaling (constrain proportions)
-     * @param {Boolean}  isConstrain  the selected object
-     */
-    setCanvasUniformScaling(isConstrain) {
-      window.printCanvas.set({
-        uniformScaling: isConstrain
-      });
-    },
-    /**
      * Event fired when an object of canvas is selected
      * @param {Object}  target  the selected object
      */
@@ -791,22 +762,22 @@ export default {
       const { id } = target;
       const targetType = target.get('type');
       this.setSelectedObjectId({ id });
-      this.setBorderHighLight(target);
+      setBorderHighLight(target, this.sheetLayout);
 
       const objectData = this.selectedObject;
 
       if (targetType === 'group' && target.objectType === OBJECT_TYPE.TEXT) {
         const rectObj = target.getObjects(OBJECT_TYPE.RECT)[0];
-        this.setBorderObject(rectObj, objectData);
+        setBorderObject(rectObj, objectData);
       }
 
       const objectType = objectData?.type;
       const isSelectMultiObject = !objectType;
 
       if (isSelectMultiObject) {
-        this.setCanvasUniformScaling(true);
+        setCanvasUniformScaling(window.printCanvas, true);
       } else {
-        this.setCanvasUniformScaling(objectData.isConstrain);
+        setCanvasUniformScaling(window.printCanvas, objectData.isConstrain);
       }
 
       if (isEmpty(objectType)) return;
@@ -879,7 +850,7 @@ export default {
 
       const isConstrain = data.newObject.isConstrain;
 
-      this.setCanvasUniformScaling(isConstrain);
+      setCanvasUniformScaling(window.printCanvas, isConstrain);
 
       window.printCanvas.add(object);
 
@@ -941,7 +912,8 @@ export default {
             ...ImageElement.coord,
             x: pxToIn(x),
             y: pxToIn(y)
-          }
+          },
+          imageUrl: DEFAULT_IMAGE.IMAGE_URL
         }
       });
 

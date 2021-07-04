@@ -23,7 +23,9 @@
     </div>
     <div class="feedback-select feedback-value">
       <PpCombobox
-        :items="items"
+        :key="componentKey"
+        :items="zoomOptions"
+        :selected-val="zoom"
         :nudge-width="145"
         :margin-menu="0"
         :appended-icon="appendedIcon"
