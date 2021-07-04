@@ -11,27 +11,22 @@ export const mutations = {
     state.book.defaultThemeId = themeId;
   },
   [DIGITAL._MUTATES.SET_SECTIONS_SHEETS](state, { sectionsSheets }) {
-    const sheets = sectionsSheets.reduce((obj, section) => {
-      section.sheets.forEach(sheet => {
-        obj[sheet.id] = {
-          ...sheet,
-          sectionId: section.id
-        };
-      });
-      return obj;
-    }, {});
-
-    sectionsSheets.map(section => {
-      return {
-        ...section,
-        sheets: section.sheets.map(sheet => sheet.id)
-      };
-    });
     state.sections = sectionsSheets.map(section => {
       return {
         ...section,
         sheets: section.sheets.map(sheet => sheet.id)
       };
+    });
+
+    const sheets = {};
+
+    sectionsSheets.forEach(section => {
+      section.sheets.forEach(sheet => {
+        sheets[sheet.id] = {
+          ...sheet,
+          sectionId: section.id
+        };
+      });
     });
 
     state.sheets = sheets;
