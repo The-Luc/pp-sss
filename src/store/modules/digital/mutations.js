@@ -21,12 +21,6 @@ export const mutations = {
       return obj;
     }, {});
 
-    sectionsSheets.map(section => {
-      return {
-        ...section,
-        sheets: section.sheets.map(sheet => sheet.id)
-      };
-    });
     state.sections = sectionsSheets.map(section => {
       return {
         ...section,
