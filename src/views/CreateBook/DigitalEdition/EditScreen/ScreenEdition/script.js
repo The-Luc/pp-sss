@@ -344,7 +344,8 @@ export default {
       this.updateTriggerTextChange();
 
       this.setInfoBar({
-        data: { w: prop.size.width, h: prop.size.height }
+        w: prop.size.width,
+        h: prop.size.height
       });
     },
 
@@ -568,7 +569,8 @@ export default {
 
       if (!isEmpty(prop.size)) {
         this.setInfoBar({
-          data: { w: prop.size.width, h: prop.size.height }
+          w: prop.size.width,
+          h: prop.size.height
         });
       }
 
