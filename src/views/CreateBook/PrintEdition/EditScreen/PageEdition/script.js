@@ -1421,7 +1421,7 @@ export default {
       };
 
       const textEvents = {
-        printChangeTextProperties: prop => {
+        changeTextProperties: prop => {
           this.getThumbnailUrl();
           this.changeTextProperties(prop);
         }

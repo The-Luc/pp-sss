@@ -4,7 +4,8 @@ export const EVENT_TYPE = {
   PRINT_INSTRUCTION_START: 'printInstructionStart',
   PRINT_INSTRUCTION_END: 'printInstructionEnd',
   DIGITAL_INSTRUCTION_START: 'digitalInstructionStart',
-  DIGITAL_INSTRUCTION_END: 'digitalInstructionEnd'
+  DIGITAL_INSTRUCTION_END: 'digitalInstructionEnd',
+  CHANGE_TEXT_PROPERTIES: 'changeTextProperties'
 };
 
 export const CANVAS_EVENT_TYPE = {

@@ -3,6 +3,7 @@ import Shadow from '@/components/Properties/Features/Shadow';
 import Border from './Border';
 
 import { useObject } from '@/hooks';
+import { EVENT_TYPE } from '@/common/constants/eventType';
 
 export default {
   components: {
@@ -51,7 +52,7 @@ export default {
      * @param   {Number}  opacity Value user input
      */
     onChangeOpacity(opacity) {
-      this.$root.$emit('printChangeTextProperties', { opacity });
+      this.$root.$emit(EVENT_TYPE.CHANGE_TEXT_PROPERTIES, { opacity });
     },
     /**
      * Receive value border from children
@@ -65,7 +66,7 @@ export default {
      * @param {Object} shadowCfg - the new shadow configs
      */
     emitChangeShadow(shadowCfg) {
-      this.$root.$emit('printChangeTextProperties', {
+      this.$root.$emit(EVENT_TYPE.CHANGE_TEXT_PROPERTIES, {
         shadow: {
           ...this.currentShadow,
           ...shadowCfg

@@ -2,6 +2,7 @@ import { mapGetters } from 'vuex';
 
 import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 import ColorPicker from '@/containers/ColorPicker';
+import { EVENT_TYPE } from '@/common/constants/eventType';
 
 export default {
   components: {
@@ -25,7 +26,7 @@ export default {
      * @param {String} color Border color value
      */
     onChange(color) {
-      this.$root.$emit('printChangeTextProperties', {
+      this.$root.$emit(EVENT_TYPE.CHANGE_TEXT_PROPERTIES, {
         border: {
           stroke: color
         }

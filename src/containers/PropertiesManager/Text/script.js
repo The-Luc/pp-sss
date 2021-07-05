@@ -10,7 +10,8 @@ import ArrangeContent from '@/components/Arrange';
 import { MUTATES } from '@/store/modules/app/const';
 import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 import { DEFAULT_TEXT } from '@/common/constants';
-import { computedObjectSize } from '@/common/utils';
+import { computedObjectSize, getActiveCanvas } from '@/common/utils';
+import { EVENT_TYPE } from '@/common/constants/eventType';
 
 export default {
   components: {
@@ -43,7 +44,7 @@ export default {
         // just for trigger the change
       }
 
-      const canvas = window.printCanvas || window.digitalCanvas;
+      const canvas = getActiveCanvas();
 
       const activeObj = canvas?.getActiveObject();
 
@@ -158,7 +159,7 @@ export default {
         strokeWidth:
           data.value === 'noBorder' ? DEFAULT_TEXT.BORDER.STROKE_WIDTH : 1
       };
-      this.$root.$emit('printChangeTextProperties', {
+      this.$root.$emit(EVENT_TYPE.CHANGE_TEXT_PROPERTIES, {
         border
       });
       this.selectedBorder = data;
@@ -169,7 +170,7 @@ export default {
      */
     changeFlip(actionName) {
       const flip = this.selectObjectProp('flip');
-      this.$root.$emit('printChangeTextProperties', {
+      this.$root.$emit(EVENT_TYPE.CHANGE_TEXT_PROPERTIES, {
         flip: {
           [actionName]: !flip[actionName]
         }
@@ -191,7 +192,7 @@ export default {
         );
         object.size = size;
       }
-      this.$root.$emit('printChangeTextProperties', object);
+      this.$root.$emit(EVENT_TYPE.CHANGE_TEXT_PROPERTIES, object);
     },
 
     /**
@@ -199,7 +200,7 @@ export default {
      * @param {Boolean} isConstrain value for isConstrain property of Text object
      */
     onChangeConstrain(isConstrain) {
-      this.$root.$emit('printChangeTextProperties', {
+      this.$root.$emit(EVENT_TYPE.CHANGE_TEXT_PROPERTIES, {
         isConstrain
       });
     }

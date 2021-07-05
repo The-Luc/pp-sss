@@ -524,3 +524,11 @@ export const setCanvasUniformScaling = (canvas, isConstrain) => {
     uniformScaling: isConstrain
   });
 };
+
+/**
+ * Get current canvas is focused
+ */
+export const getActiveCanvas = () => {
+  const { printCanvas, digitalCanvas } = window;
+  return printCanvas || digitalCanvas;
+}

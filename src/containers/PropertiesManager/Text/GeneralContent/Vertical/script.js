@@ -6,6 +6,7 @@ import { TEXT_VERTICAL_ALIGN } from '@/common/constants';
 import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 
 import { isEmpty } from '@/common/utils';
+import { EVENT_TYPE } from '@/common/constants/eventType';
 
 export default {
   components: {
@@ -39,7 +40,7 @@ export default {
     onChange(data) {
       const value = isEmpty(data) ? TEXT_VERTICAL_ALIGN.TOP : data;
 
-      this.$root.$emit('printChangeTextProperties', {
+      this.$root.$emit(EVENT_TYPE.CHANGE_TEXT_PROPERTIES, {
         alignment: { vertical: value }
       });
     }
