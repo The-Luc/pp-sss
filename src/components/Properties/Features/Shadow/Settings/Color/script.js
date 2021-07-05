@@ -1,8 +1,8 @@
-import Color from '@/containers/Color';
+import ColorPicker from '@/containers/ColorPicker';
 
 export default {
   components: {
-    Color
+    ColorPicker
   },
   props: {
     color: {

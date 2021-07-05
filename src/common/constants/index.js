@@ -30,3 +30,4 @@ export * from './controls';
 export * from './queryStatus';
 export * from './svgFillMode';
 export * from './pageNumberPosition';
+export * from './zoom';

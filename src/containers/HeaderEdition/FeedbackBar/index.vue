@@ -1,4 +1,4 @@
-<template lang="">
+<template>
   <div class="col-12 feedback-bar">
     <div class="feedback-name">
       Info
@@ -12,21 +12,25 @@
     </div>
     <!-- //w,h components -->
     <div class="feedback-text">
-      <span>w:</span> <span class="feedback-value">- - -</span>
+      <span>w:</span> <span class="feedback-value">{{ size.width }}</span>
     </div>
     <div class="feedback-text">
-      <span>h:</span> <span class="feedback-value">- - -</span>
+      <span>h:</span> <span class="feedback-value">{{ size.height }}</span>
     </div>
     <!-- //zoom -->
     <div class="feedback-title">
       Zoom:
     </div>
     <div class="feedback-select feedback-value">
-      <select>
-        <option value="volvo">Scale to Fit</option>
-        <option value="saab">Saab</option>
-      </select>
-      <v-icon>arrow_drop_down</v-icon>
+      <PpCombobox
+        :key="componentKey"
+        :items="zoomOptions"
+        :selected-val="zoom"
+        :nudge-width="145"
+        :margin-menu="0"
+        :appended-icon="appendedIcon"
+        @change="changeZoom"
+      />
     </div>
     <transition name="slide-fade">
       <PropertiesManager v-show="isOpenMenuProperties" />
@@ -36,4 +40,4 @@
 </template>
 
 <script src="./script.js"></script>
-<style lang="scss" scoped src="./style.scss" />
+<style lang="scss" src="./style.scss" />

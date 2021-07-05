@@ -163,11 +163,11 @@ const book = {
             thumbnailUrl: null,
             theme: null,
             layout: defaultLayout,
-            link: LINK_STATUS.LINK
+            link: LINK_STATUS.UNLINK
           },
           digitalData: {
             thumbnailUrl: null,
-            link: LINK_STATUS.LINK,
+            link: LINK_STATUS.UNLINK,
             themeId: null,
             layout: defaultDigitalLayout
           }
@@ -238,11 +238,11 @@ const book = {
             thumbnailUrl: null,
             theme: null,
             layout: defaultLayout,
-            link: LINK_STATUS.LINK
+            link: LINK_STATUS.UNLINK
           },
           digitalData: {
             thumbnailUrl: null,
-            link: LINK_STATUS.LINK,
+            link: LINK_STATUS.UNLINK,
             themeId: null,
             layout: defaultDigitalLayout
           }
@@ -312,7 +312,8 @@ const book = {
             spreadInfo: { ...spreadInfo },
             thumbnailUrl: null,
             theme: null,
-            layout: defaultLayout
+            layout: defaultLayout,
+            link: LINK_STATUS.LINK
           },
           digitalData: {
             thumbnailUrl: null,
@@ -345,11 +346,11 @@ const book = {
             thumbnailUrl: null,
             theme: null,
             layout: defaultLayout,
-            link: LINK_STATUS.LINK
+            link: LINK_STATUS.NONE
           },
           digitalData: {
             thumbnailUrl: null,
-            link: LINK_STATUS.LINK,
+            link: LINK_STATUS.NONE,
             themeId: null,
             layout: defaultDigitalLayout
           }

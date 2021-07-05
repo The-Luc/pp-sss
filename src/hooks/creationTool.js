@@ -53,3 +53,20 @@ export const useObjectProperties = () => {
     toggleMenuProperties
   };
 };
+
+export const useInfoBar = () => {
+  const { infoBar, zoom } = useGetters({
+    infoBar: GETTERS.INFO_BAR,
+    zoom: GETTERS.ZOOM
+  });
+
+  const { setInfoBar } = useMutations({
+    setInfoBar: MUTATES.SET_INFO_BAR
+  });
+
+  return {
+    infoBar,
+    setInfoBar,
+    zoom
+  };
+};

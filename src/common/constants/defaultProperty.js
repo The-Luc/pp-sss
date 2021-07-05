@@ -64,6 +64,7 @@ export const DEFAULT_TEXT = {
   STYLE_ID: 'default',
   FONT_FAMILY: 'Arial',
   FONT_SIZE: 60,
+  COLOR: DEFAULT_PROP.COLOR,
   IS_BOLD: false,
   IS_ITALIC: false,
   IS_UNDERLINE: false,
@@ -118,7 +119,6 @@ export const DEFAULT_IMAGE = {
   CATEGORY: 'Cover',
   STYLE_ID: 'default',
   NAME: '',
-  THUMBNAIL: IMAGE_LOCAL.PLACE_HOLDER,
   IMAGE_URL: IMAGE_LOCAL.PLACE_HOLDER
 };
 

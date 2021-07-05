@@ -3,7 +3,12 @@ import { uniqueId } from 'lodash';
 import { isEmpty, isHalfSheet } from '@/common/utils';
 import printService from '@/api/print';
 
-import { STATUS, OBJECT_TYPE, SHEET_TYPE } from '@/common/constants';
+import {
+  STATUS,
+  OBJECT_TYPE,
+  SHEET_TYPE,
+  LINK_STATUS
+} from '@/common/constants';
 
 import PRINT from './const';
 
@@ -46,22 +51,24 @@ export const actions = {
     dispatch(PRINT._ACTIONS.GET_DATA_CANVAS);
   },
   async [PRINT._ACTIONS.GET_DATA_CANVAS]({ state, commit }) {
+    // reset the store
+    commit(PRINT._MUTATES.SET_OBJECTS, { objectList: [] });
+    commit(PRINT._MUTATES.SET_BACKGROUNDS, { background: {} });
+
     const queryObjectResult = await printService.getSheetObjects(
       state.book.id,
       state.sheets[state.currentSheetId].sectionId,
       state.currentSheetId
     );
-    if (isEmpty(queryObjectResult.data)) {
-      commit(PRINT._MUTATES.SET_OBJECTS, { objectList: [] });
-      commit(PRINT._MUTATES.SET_BACKGROUNDS, { background: {} });
-      return;
-    }
 
-    commit(PRINT._MUTATES.SET_OBJECTS, { objectList: queryObjectResult.data });
+    if (isEmpty(queryObjectResult.data)) return;
 
-    const backgrounds = queryObjectResult.data.filter(
-      o => o.type === OBJECT_TYPE.BACKGROUND
-    );
+    const data = queryObjectResult.data;
+
+    const backgrounds = data.filter(o => o.type === OBJECT_TYPE.BACKGROUND);
+    const objects = data.filter(o => o.type !== OBJECT_TYPE.BACKGROUND);
+
+    commit(PRINT._MUTATES.SET_OBJECTS, { objectList: objects });
 
     backgrounds.forEach(bg =>
       commit(PRINT._MUTATES.SET_BACKGROUNDS, { background: bg })
@@ -128,5 +135,11 @@ export const actions = {
       themeId,
       previewImageUrl: layout.previewImageUrl
     });
+  },
+  [PRINT._ACTIONS.UPDATE_SHEET_LINK_STATUS]({ commit }, { link, sheetId }) {
+    const statusLink =
+      link === LINK_STATUS.LINK ? LINK_STATUS.UNLINK : LINK_STATUS.LINK;
+
+    commit(PRINT._MUTATES.SET_SHEET_LINK_STATUS, { statusLink, sheetId });
   }
 };

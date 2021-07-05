@@ -53,31 +53,11 @@ export const getters = {
   [PRINT._GETTERS.GET_OBJECTS]: ({ objects }) => {
     return objects;
   },
-  [PRINT._GETTERS.SHEET_LAYOUT]: ({
-    sheets,
-    objects,
-    currentSheetId,
-    background
-  }) => {
-    const sheet = sheets[currentSheetId];
-
-    if (!sheet?.layoutId) {
-      return [];
-    }
-
-    const allObjects = [];
-    Object.values(background).forEach(bg => {
-      if (bg.id) {
-        allObjects.push(bg);
-      }
-    });
-
-    Object.values(objects).forEach(obj => {
-      if (obj.id) {
-        allObjects.push(obj);
-      }
-    });
-    return allObjects;
+  [PRINT._GETTERS.SHEET_LAYOUT]: ({ objects, background, objectIds }) => {
+    return [
+      ...Object.values(background).filter(bg => !isEmpty(bg)),
+      ...objectIds.map(id => objects[id])
+    ];
   },
   [PRINT._GETTERS.GET_SHEETS]: ({ sheets }) => {
     return sheets;
@@ -126,6 +106,7 @@ export const getters = {
       right: background.right
     };
   },
+
   [PRINT._GETTERS.SECTIONS_SHEETS]: ({ sections, sheets }) => {
     return sections.map(section => {
       return {

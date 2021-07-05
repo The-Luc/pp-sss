@@ -15,7 +15,7 @@ import Header from '@/containers/HeaderEdition/Header';
 import FeedbackBar from '@/containers/HeaderEdition/FeedbackBar';
 import SidebarSection from './SidebarSection';
 import PageEdition from './PageEdition';
-import { useLayoutPrompt, usePopoverCreationTool } from '@/hooks';
+import { useLayoutPrompt, usePopoverCreationTool, useInfoBar } from '@/hooks';
 
 export default {
   components: {
@@ -28,10 +28,13 @@ export default {
   setup() {
     const { pageSelected, updateVisited } = useLayoutPrompt();
     const { setToolNameSelected } = usePopoverCreationTool();
+    const { setInfoBar } = useInfoBar();
+
     return {
       pageSelected,
       setToolNameSelected,
-      updateVisited
+      updateVisited,
+      setInfoBar
     };
   },
   created() {
@@ -108,6 +111,14 @@ export default {
         data: objs
       });
       this.$router.push(`/book/${this.bookId}/edit/print`);
+    },
+    /**
+     * Fire when zoom is changed
+     *
+     * @param {Number} zoom  selected zoom value
+     */
+    onZoom({ zoom }) {
+      this.setInfoBar({ zoom });
     }
   }
 };
