@@ -13,13 +13,6 @@ export const mutations = {
     const { sectionSelected } = payload;
     state.sectionSelected = sectionSelected;
   },
-  [APP._MUTATES.TOGGLE_COLOR_PICKER](state, { isOpen, data }) {
-    state.colorPicker.isOpen = isOpen;
-    state.colorPicker.data = {
-      ...state.colorPicker.data,
-      ...data
-    };
-  },
   [APP._MUTATES.SET_OBJECT_TYPE_SELECTED](state, { type }) {
     state.propertiesModal.selectedObjectType = type;
   },
@@ -49,12 +42,6 @@ export const mutations = {
   },
   [APP._MUTATES.SET_IS_PROMPT](state, { isPrompt }) {
     state.isPrompt = isPrompt;
-  },
-  [APP._MUTATES.SET_COLOR_PICKER_COLOR](state, props) {
-    state.colorPicker.data = {
-      ...state.colorPicker.data,
-      ...props
-    };
   },
   [APP._MUTATES.TOGGLE_ACTIVE_OBJECTS](state, data) {
     state.hasActiveObjects = data;
