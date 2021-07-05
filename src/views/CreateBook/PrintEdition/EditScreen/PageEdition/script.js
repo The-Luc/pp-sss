@@ -14,7 +14,6 @@ import {
   selectLatestObject,
   deleteSelectedObjects,
   getRectDashes,
-  scaleSize,
   isHalfSheet,
   isHalfLeft,
   pxToIn,
@@ -22,7 +21,10 @@ import {
   inToPx,
   clearClipboard,
   getMinPositionObject,
-  computePastedObjectCoord
+  computePastedObjectCoord,
+  setBorderObject,
+  setCanvasUniformScaling,
+  setBorderHighLight
 } from '@/common/utils';
 
 import {
@@ -71,7 +73,7 @@ import {
   COVER_TYPE,
   DEFAULT_CLIP_ART,
   FABRIC_OBJECT_TYPE,
-  ICON_LOCAL
+  DEFAULT_IMAGE
 } from '@/common/constants';
 import SizeWrapper from '@/components/SizeWrapper';
 import PrintCanvasLines from './PrintCanvasLines';
@@ -97,9 +99,9 @@ export default {
   },
   setup() {
     const { drawLayout } = useDrawLayout();
-    const { setInfoBar } = useInfoBar();
+    const { setInfoBar, zoom } = useInfoBar();
 
-    return { drawLayout, setInfoBar };
+    return { drawLayout, setInfoBar, zoom };
   },
   data() {
     return {
@@ -183,6 +185,9 @@ export default {
           this.drawObjectsOnCanvas(this.sheetLayout);
         }
       }
+    },
+    zoom(newVal, oldVal) {
+      console.log(newVal);
     }
   },
   mounted() {
@@ -206,7 +211,7 @@ export default {
 
     this.eventHandling(false);
 
-    this.setInfoBar({ data: { x: 0, y: 0, w: 0, h: 0, zoom: 0 } });
+    this.setInfoBar({ x: 0, y: 0, w: 0, h: 0, zoom: 0 });
   },
   methods: {
     ...mapActions({
@@ -301,15 +306,26 @@ export default {
         textProperties
       );
 
+      const {
+        newObject: {
+          shadow,
+          coord: { rotation }
+        }
+      } = objectData;
+
       updateSpecificProp(object, {
         coord: {
-          rotation: objectData.newObject.coord.rotation
+          rotation
         }
       });
 
       this.handleAddTextEventListeners(object, objectData);
 
-      applyShadowToObject(object, objectData.newObject.shadow);
+      const objects = object.getObjects();
+
+      objects.forEach(obj => {
+        applyShadowToObject(obj, shadow);
+      });
 
       return object;
     },
@@ -567,11 +583,16 @@ export default {
         canvasSize.width = this.containerSize.width;
         canvasSize.height = canvasSize.width / printRatio;
       }
+
       const currentZoom = canvasSize.width / sheetWidth;
+
       this.canvasSize = { ...canvasSize, zoom: currentZoom };
+
       window.printCanvas.setWidth(canvasSize.width);
       window.printCanvas.setHeight(canvasSize.height);
+
       this.drawLayout(this.sheetLayout);
+
       window.printCanvas.setZoom(currentZoom);
     },
 
@@ -604,7 +625,7 @@ export default {
       this.updateCanvasSize();
       window.printCanvas.on({
         'selection:updated': this.objectSelected,
-        'selection:cleared': this.closeProperties,
+        'selection:cleared': this.handleClearSelected,
         'selection:created': this.objectSelected,
         'object:modified': this.getThumbnailUrl,
         'object:added': this.getThumbnailUrl,
@@ -621,9 +642,7 @@ export default {
           this.setObjectProp({ prop });
           this.updateTriggerTextChange();
 
-          this.setInfoBar({
-            data: { w: prop.size.width, h: prop.size.height }
-          });
+          this.setInfoBar({ w: prop.size.width, h: prop.size.height });
         },
         'mouse:down': e => {
           if (this.awaitingAdd) {
@@ -665,9 +684,7 @@ export default {
           this.setObjectPropById({ id: group.id, prop });
           this.updateTriggerTextChange();
 
-          this.setInfoBar({
-            data: { w: prop.size.width, h: prop.size.height }
-          });
+          this.setInfoBar({ w: prop.size.width, h: prop.size.height });
         },
         'object:moved': e => {
           if (!e.target?.objectType) {
@@ -736,48 +753,6 @@ export default {
     closeProperties() {
       this.groupSelected = null;
       this.resetConfigTextProperties();
-
-      this.setInfoBar({ data: { w: 0, h: 0 } });
-    },
-    /**
-     * Get border data from store and set to Rect object
-     */
-    setBorderObject(rectObj, objectData) {
-      const { strokeWidth, stroke, strokeLineCap } = objectData.border;
-      const group = rectObj?.group;
-      const strokeDashArrayVal = getRectDashes(
-        group?.width || rectObj.width,
-        group?.height || rectObj.height,
-        strokeLineCap,
-        strokeWidth
-      );
-      rectObj.set({
-        strokeWidth: scaleSize(strokeWidth),
-        stroke,
-        strokeLineCap,
-        strokeDashArray: strokeDashArrayVal
-      });
-      setTimeout(() => {
-        rectObj.canvas.renderAll();
-      });
-    },
-    /**
-     * Set border color when selected group object
-     * @param {Element}  group  Group object
-     */
-    setBorderHighLight(group) {
-      group.set({
-        borderColor: this.sheetLayout?.id ? 'white' : '#bcbec0'
-      });
-    },
-    /**
-     * Set canvas uniform scaling (constrain proportions)
-     * @param {Boolean}  isConstrain  the selected object
-     */
-    setCanvasUniformScaling(isConstrain) {
-      window.printCanvas.set({
-        uniformScaling: isConstrain
-      });
     },
     /**
      * Event fired when an object of canvas is selected
@@ -792,32 +767,32 @@ export default {
       const { id } = target;
       const targetType = target.get('type');
       this.setSelectedObjectId({ id });
-      this.setBorderHighLight(target);
+      setBorderHighLight(target, this.sheetLayout);
 
       const objectData = this.selectedObject;
 
       if (targetType === 'group' && target.objectType === OBJECT_TYPE.TEXT) {
         const rectObj = target.getObjects(OBJECT_TYPE.RECT)[0];
-        this.setBorderObject(rectObj, objectData);
+        setBorderObject(rectObj, objectData);
       }
 
       const objectType = objectData?.type;
       const isSelectMultiObject = !objectType;
 
       if (isSelectMultiObject) {
-        this.setCanvasUniformScaling(true);
+        setCanvasUniformScaling(window.printCanvas, true);
+
+        this.setInfoBar({ w: 0, h: 0 });
       } else {
-        this.setCanvasUniformScaling(objectData.isConstrain);
+        setCanvasUniformScaling(window.printCanvas, objectData.isConstrain);
+
+        this.setInfoBar({
+          w: this.getProperty('size')?.width,
+          h: this.getProperty('size')?.height
+        });
       }
 
       if (isEmpty(objectType)) return;
-
-      this.setInfoBar({
-        data: {
-          w: this.getProperty('size')?.width,
-          h: this.getProperty('size')?.height
-        }
-      });
 
       this.setObjectTypeSelected({ type: objectType });
 
@@ -880,7 +855,7 @@ export default {
 
       const isConstrain = data.newObject.isConstrain;
 
-      this.setCanvasUniformScaling(isConstrain);
+      setCanvasUniformScaling(window.printCanvas, isConstrain);
 
       window.printCanvas.add(object);
 
@@ -908,9 +883,7 @@ export default {
       this.updateTriggerTextChange();
 
       if (!isEmpty(prop.size)) {
-        this.setInfoBar({
-          data: { w: prop.size.width, h: prop.size.height }
-        });
+        this.setInfoBar({ w: prop.size.width, h: prop.size.height });
       }
 
       applyTextBoxProperties(activeObj, prop);
@@ -941,7 +914,8 @@ export default {
             ...ImageElement.coord,
             x: pxToIn(x),
             y: pxToIn(y)
-          }
+          },
+          imageUrl: DEFAULT_IMAGE.IMAGE_URL
         }
       });
 
@@ -1316,9 +1290,7 @@ export default {
       if (updateTriggerFn !== null) updateTriggerFn();
 
       if (!isEmpty(prop.size)) {
-        this.setInfoBar({
-          data: { w: prop.size.width, h: prop.size.height }
-        });
+        this.setInfoBar({ w: prop.size.width, h: prop.size.height });
       }
 
       if (!isEmpty(prop['shadow'])) {
@@ -1657,6 +1629,14 @@ export default {
           this.updateTriggerTextChange();
         }
       });
+    },
+    /**
+     * Fire when clear selected in canvas
+     */
+    handleClearSelected() {
+      this.setInfoBar({ w: 0, h: 0 });
+
+      this.closeProperties();
     }
   }
 };
