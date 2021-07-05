@@ -34,7 +34,8 @@ export default {
   },
   methods: {
     ...mapActions({
-      getDataPageEdit: PRINT_ACTIONS.GET_DATA_MAIN
+      getDataPageEdit: PRINT_ACTIONS.GET_DATA_MAIN,
+      updateSectionLinkStatus: PRINT_ACTIONS.UPDATE_SHEET_LINK_STATUS
     }),
     ...mapMutations({
       setBookId: PRINT_MUTATES.SET_BOOK_ID,
@@ -58,6 +59,14 @@ export default {
       setTimeout(() => {
         this.drawLayout(this.sheetLayout);
       }, 50);
+    },
+    /**
+     * Set change link status for sheet
+     * @param  {Number} sheetId sheet's id selected
+     * @param  {String} link link status of sheet
+     */
+    changeLinkStatus(sheetId, link) {
+      this.updateSectionLinkStatus({ link, sheetId });
     }
   }
 };

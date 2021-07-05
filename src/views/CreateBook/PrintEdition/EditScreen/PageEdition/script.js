@@ -780,17 +780,17 @@ export default {
       const objectType = objectData?.type;
       const isSelectMultiObject = !objectType;
 
+      this.setInfoBar({
+        w: isSelectMultiObject ? 0 : this.getProperty('size')?.width,
+        h: isSelectMultiObject ? 0 : this.getProperty('size')?.height
+      });
+
       if (isSelectMultiObject) {
         setCanvasUniformScaling(window.printCanvas, true);
 
-        this.setInfoBar({ w: 0, h: 0 });
+        this.closeProperties();
       } else {
         setCanvasUniformScaling(window.printCanvas, objectData.isConstrain);
-
-        this.setInfoBar({
-          w: this.getProperty('size')?.width,
-          h: this.getProperty('size')?.height
-        });
       }
 
       if (isEmpty(objectType)) return;
