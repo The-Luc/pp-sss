@@ -1468,8 +1468,10 @@ export default {
         enscapeInstruction: () => {
           this.awaitingAdd = '';
           this.$root.$emit('printInstructionEnd');
+
           this.setToolNameSelected({ name: '' });
         },
+
         printCopyObj: this.handleCopy,
         printPasteObj: this.handlePaste
       };
