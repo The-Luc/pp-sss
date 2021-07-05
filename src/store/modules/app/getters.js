@@ -20,6 +20,5 @@ export const getters = {
     propertiesModal.propertiesObjectType,
   [APP._GETTERS.TAB_SELECTED_OBJECT_ID]: ({ propertiesModal }) =>
     propertiesModal.selectedObjectId,
-  [APP._GETTERS.INFO_BAR]: ({ infoBar }) => infoBar,
-  [APP._GETTERS.EYE_DROPPER]: ({ eyeDropper }) => eyeDropper
+  [APP._GETTERS.INFO_BAR]: ({ infoBar }) => infoBar
 };

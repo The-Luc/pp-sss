@@ -67,11 +67,5 @@ export const mutations = {
       ...state.infoBar,
       ...data
     };
-  },
-  [APP._MUTATES.TOGGLE_EYE_DROPPER](state, payload) {
-    state.eyeDropper = {
-      ...state.eyeDropper,
-      ...payload
-    };
   }
 };

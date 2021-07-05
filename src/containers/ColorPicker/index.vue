@@ -19,6 +19,12 @@
         @close="onClose"
       />
     </div>
+    <EyeDropper
+      v-if="openEyeDropper"
+      @click="onEyeDropperOverlayClick"
+      @clickOutside="closeEyeDropper"
+      @escape="closeEyeDropper"
+    />
   </div>
 </template>
 

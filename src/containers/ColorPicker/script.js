@@ -1,17 +1,7 @@
-import { uniqueId } from 'lodash';
-
 import PickerPopup from './PickerPopup';
-import EyeDropper from '@/components/EyeDropper';
-import { useEyeDropper } from '@/hooks';
+import EyeDropper from './EyeDropper';
 
 export default {
-  setup() {
-    const { toggleEyeDropper, eyeDropper } = useEyeDropper();
-    return {
-      toggleEyeDropper,
-      eyeDropper
-    };
-  },
   components: { PickerPopup, EyeDropper },
   props: {
     color: {
@@ -28,14 +18,8 @@ export default {
       top: 0,
       left: 0,
       isOpen: false,
-      eventName: `event-${uniqueId()}`
+      openEyeDropper: false
     };
-  },
-  mounted() {
-    this.$root.$on(this.eventName, this.onChange);
-  },
-  beforeDestroy() {
-    this.$root.$off(this.eventName, this.onChange);
   },
   methods: {
     /**
@@ -63,7 +47,20 @@ export default {
      * Mutate to start pick color
      */
     onOpenEyeDropper() {
-      this.toggleEyeDropper({ isOpen: true, eventName: this.eventName });
+      this.openEyeDropper = true;
+    },
+    /**
+     * Callback function catch event user click on overlay to pick color and mutate to stop eye dropper event
+     */
+    onEyeDropperOverlayClick(color) {
+      this.onChange(color);
+      this.closeEyeDropper();
+    },
+    /**
+     * Close eye dropper actions
+     */
+    closeEyeDropper() {
+      this.openEyeDropper = false;
     }
   }
 };

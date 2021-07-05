@@ -34,10 +34,5 @@ export const state = {
   // Tool icon popover
   selectedToolName: '',
   isPrompt: false,
-  hasActiveObjects: false,
-
-  eyeDropper: {
-    isOpen: false,
-    eventName: ''
-  }
+  hasActiveObjects: false
 };
