@@ -2,11 +2,21 @@
   <div class="title">
     <div class="title-content">
       <div class="project-title">{{ titleNameLeft }}</div>
-      <input type="text" :disabled="isDisable" :value="titleValue" />
+      <input
+        type="text"
+        :disabled="isDisable"
+        :value="titleValueLeft"
+        placeholder="Click to add title"
+      />
     </div>
     <div v-if="isLink" class="title-content">
       <div class="project-title">{{ titleNameRight }}</div>
-      <input type="text" :disabled="isDisable" :value="titleValue" />
+      <input
+        type="text"
+        :disabled="isDisable"
+        :value="titleValueRight"
+        placeholder="Click to add title"
+      />
     </div>
   </div>
 </template>

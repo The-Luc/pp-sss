@@ -8,9 +8,13 @@ export default {
       type: String,
       default: 'Right hand page title:'
     },
-    titleValue: {
+    titleValueLeft: {
       type: String,
-      required: true
+      default: ''
+    },
+    titleValueRight: {
+      type: String,
+      default: ''
     },
     isDisable: {
       type: Boolean,

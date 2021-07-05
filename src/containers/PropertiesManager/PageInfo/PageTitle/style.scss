@@ -23,4 +23,8 @@
   input:focus-visible {
     outline: none;
   }
+  input::placeholder {
+    color: #bcbec0;
+    font-family: $font-300;
+  }
 }

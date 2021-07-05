@@ -1,6 +1,6 @@
 <template>
   <div class="page-number">
-    <div class="page-number-title">{{ titleName }}</div>
+    <div class="page-number-title">Page Numbering {{ titleName }}:</div>
     <div class="page-number-container">
       <div class="status-page-number">
         <div class="title-status">{{ statusPageLeft }}</div>

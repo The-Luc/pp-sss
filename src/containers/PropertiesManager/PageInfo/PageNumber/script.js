@@ -7,7 +7,7 @@ export default {
   props: {
     titleName: {
       type: String,
-      default: 'Page Numbering:'
+      default: ''
     },
     statusPageLeft: {
       type: String,
