@@ -37,8 +37,7 @@ export default {
   },
   computed: {
     ...mapGetters({
-      propertiesObjectType: GETTERS.PROPERTIES_OBJECT_TYPE,
-      isOpenColorPicker: GETTERS.IS_OPEN_COLOR_PICKER
+      propertiesObjectType: GETTERS.PROPERTIES_OBJECT_TYPE
     })
   },
   watch: {

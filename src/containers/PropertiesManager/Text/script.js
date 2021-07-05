@@ -1,4 +1,4 @@
-import { mapGetters, mapMutations } from 'vuex';
+import { mapGetters } from 'vuex';
 
 import { useObject } from '@/hooks';
 import Properties from '@/components/Properties/BoxProperties';
@@ -7,7 +7,6 @@ import GeneralContent from './GeneralContent';
 import StyleContent from './Style';
 import ArrangeContent from '@/components/Arrange';
 
-import { MUTATES } from '@/store/modules/app/const';
 import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 import { DEFAULT_TEXT } from '@/common/constants';
 import { computedObjectSize, activeCanvas } from '@/common/utils';
@@ -123,9 +122,6 @@ export default {
     };
   },
   methods: {
-    ...mapMutations({
-      setColorPicker: MUTATES.SET_COLOR_PICKER_COLOR
-    }),
     /**
      * Close color picker (if opening) when change tab
      */
@@ -133,9 +129,6 @@ export default {
       if (data === 'style') {
         this.setSelectedBorder();
       }
-      this.setColorPicker({
-        tabActive: data
-      });
     },
     /**
      * Set default selected border

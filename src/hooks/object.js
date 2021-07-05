@@ -47,16 +47,6 @@ export const useElementProperties = () => {
   };
 };
 
-export const useColorPickerProperties = () => {
-  const { setColorPickerData } = useMutations({
-    setColorPickerData: APP_MUTATES.SET_COLOR_PICKER_COLOR
-  });
-
-  return {
-    setColorPickerData
-  };
-};
-
 export const useShapeProperties = () => {
   const { triggerChange } = useGetters({
     triggerChange: PRINT_GETTERS.TRIGGER_SHAPE_CHANGE
@@ -64,7 +54,6 @@ export const useShapeProperties = () => {
 
   return {
     ...useElementProperties(),
-    ...useColorPickerProperties(),
     triggerChange
   };
 };
@@ -76,7 +65,6 @@ export const useClipArtProperties = () => {
 
   return {
     ...useElementProperties(),
-    ...useColorPickerProperties(),
     triggerChange
   };
 };
