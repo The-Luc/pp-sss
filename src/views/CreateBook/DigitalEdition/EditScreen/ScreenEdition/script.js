@@ -75,7 +75,6 @@ export default {
       pageSelected: DIGITAL_GETTERS.CURRENT_SHEET,
       sheetLayout: DIGITAL_GETTERS.SHEET_LAYOUT,
       isOpenMenuProperties: APP_GETTERS.IS_OPEN_MENU_PROPERTIES,
-      isOpenColorPicker: APP_GETTERS.IS_OPEN_COLOR_PICKER,
       selectedObject: DIGITAL_GETTERS.CURRENT_OBJECT,
       toolNameSelected: APP_GETTERS.SELECTED_TOOL_NAME,
       currentBackgrounds: DIGITAL_GETTERS.BACKGROUNDS,
@@ -103,7 +102,6 @@ export default {
       setBookId: DIGITAL_MUTATES.SET_BOOK_ID,
       setIsOpenProperties: MUTATES.TOGGLE_MENU_PROPERTIES,
       setToolNameSelected: MUTATES.SET_TOOL_NAME_SELECTED,
-      toggleColorPicker: MUTATES.TOGGLE_COLOR_PICKER,
       setObjectTypeSelected: MUTATES.SET_OBJECT_TYPE_SELECTED,
       setSelectedObjectId: DIGITAL_MUTATES.SET_CURRENT_OBJECT_ID,
       setObjects: DIGITAL_MUTATES.SET_OBJECTS,
@@ -290,10 +288,6 @@ export default {
      * Event fire when selection of fabric canvas has been cleared
      */
     onSelectionCleared() {
-      if (this.isOpenColorPicker) {
-        this.toggleColorPicker({ isOpen: false });
-      }
-
       if (this.propertiesObjectType !== OBJECT_TYPE.BACKGROUND) {
         this.setIsOpenProperties({ isOpen: false });
 

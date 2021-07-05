@@ -15,14 +15,12 @@ export default {
   setup() {
     const {
       getProperty,
-      triggerChange,
-      setColorPickerData
+      triggerChange
     } = useClipArtProperties();
 
     return {
       getProperty,
-      triggerChange,
-      setColorPickerData
+      triggerChange
     };
   },
   computed: {

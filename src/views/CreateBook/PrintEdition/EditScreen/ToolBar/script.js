@@ -131,7 +131,6 @@ export default {
     ...mapMutations({
       setObjectTypeSelected: MUTATES.SET_OBJECT_TYPE_SELECTED,
       setIsOpenProperties: MUTATES.TOGGLE_MENU_PROPERTIES,
-      toggleColorPicker: MUTATES.TOGGLE_COLOR_PICKER,
       setToolNameSelected: MUTATES.SET_TOOL_NAME_SELECTED,
       setPropertiesObjectType: MUTATES.SET_PROPERTIES_OBJECT_TYPE
     }),
@@ -237,10 +236,6 @@ export default {
      * Toggle Element Properties by using mutate
      */
     toggleElementProperties() {
-      this.toggleColorPicker({
-        isOpen: false
-      });
-
       this.setPropertiesObjectType({
         type: this.selectedObjectType
       });
@@ -253,10 +248,6 @@ export default {
      * Open Element Properties by using mutate
      */
     openElementProperties() {
-      this.toggleColorPicker({
-        isOpen: false
-      });
-
       this.setPropertiesObjectType({
         type: this.selectedObjectType
       });
@@ -293,10 +284,6 @@ export default {
      * Open Background Properties by using mutate
      */
     openBackgroundProperties() {
-      this.toggleColorPicker({
-        isOpen: false
-      });
-
       this.setPropertiesObjectType({
         type: OBJECT_TYPE.BACKGROUND
       });
