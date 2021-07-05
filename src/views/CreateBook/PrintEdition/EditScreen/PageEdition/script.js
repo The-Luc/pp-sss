@@ -24,7 +24,8 @@ import {
   computePastedObjectCoord,
   setBorderObject,
   setCanvasUniformScaling,
-  setBorderHighLight
+  setBorderHighLight,
+  setActiveCanvas
 } from '@/common/utils';
 
 import {
@@ -620,7 +621,7 @@ export default {
         backgroundColor: '#fff',
         preserveObjectStacking: true
       });
-
+      setActiveCanvas(window.printCanvas);
       usePrintOverrides(fabric.Object.prototype);
       this.updateCanvasSize();
       window.printCanvas.on({
@@ -1422,7 +1423,7 @@ export default {
       };
 
       const textEvents = {
-        printChangeTextProperties: prop => {
+        changeTextProperties: prop => {
           this.getThumbnailUrl();
           this.changeTextProperties(prop);
         }
