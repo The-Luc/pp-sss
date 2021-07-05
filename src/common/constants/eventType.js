@@ -5,7 +5,11 @@ export const EVENT_TYPE = {
   PRINT_INSTRUCTION_END: 'printInstructionEnd',
   DIGITAL_INSTRUCTION_START: 'digitalInstructionStart',
   DIGITAL_INSTRUCTION_END: 'digitalInstructionEnd',
-  CHANGE_TEXT_PROPERTIES: 'changeTextProperties'
+  CHANGE_TEXT_PROPERTIES: 'changeTextProperties',
+  ADD_SHAPES: 'addShapes',
+  CHANGE_SHAPE_PROPERTIES: 'changeShapeProperties',
+  ADD_CLIPARTS: 'addClipArts',
+  CHANGE_CLIPART_PROPERTIES: 'changeClipArtProperties'
 };
 
 export const CANVAS_EVENT_TYPE = {

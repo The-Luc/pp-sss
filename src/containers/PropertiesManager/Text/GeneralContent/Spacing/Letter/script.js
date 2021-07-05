@@ -8,7 +8,7 @@ import {
   validateInputOption
 } from '@/common/utils';
 
-import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
+import { GETTERS as APP_GETTERS } from '@/store/modules/app/const';
 import { EVENT_TYPE } from '@/common/constants/eventType';
 
 export default {
@@ -29,8 +29,8 @@ export default {
   },
   computed: {
     ...mapGetters({
-      selectedSpacing: PRINT_GETTERS.SELECT_PROP_CURRENT_OBJECT,
-      triggerChange: PRINT_GETTERS.TRIGGER_TEXT_CHANGE
+      selectedSpacing: APP_GETTERS.SELECT_PROP_CURRENT_OBJECT,
+      triggerChange: APP_GETTERS.TRIGGER_TEXT_CHANGE
     }),
     selectedLetterSpacing() {
       if (this.triggerChange) {
