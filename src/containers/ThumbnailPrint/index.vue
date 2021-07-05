@@ -25,17 +25,19 @@
     </div>
     <div class="thumbnail-view-number-page" :style="{ fontSize: fontSize }">
       <div class="number-page-left">{{ numberPage.numberLeft }}</div>
-      <div class="number-page-link">
-        <v-icon
-          v-if="sheet.link === LINK_STATUS.LINK && isShowLink"
-          class="icon-link"
-          >link</v-icon
-        >
-        <v-icon
-          v-if="sheet.link === LINK_STATUS.UNLINK && isShowLink"
-          class="icon-link"
-          >link_off</v-icon
-        >
+      <div
+        v-if="sheet.link === LINK_STATUS.LINK && isShowLink"
+        class="number-page-link"
+        @click="changeLinkStatus"
+      >
+        <v-icon class="icon-link">link</v-icon>
+      </div>
+      <div
+        v-if="sheet.link === LINK_STATUS.UNLINK && isShowLink"
+        class="number-page-link"
+        @click="changeLinkStatus"
+      >
+        <v-icon class="icon-link unlink">link_off</v-icon>
       </div>
       <div class="number-page-right">{{ numberPage.numberRight }}</div>
     </div>

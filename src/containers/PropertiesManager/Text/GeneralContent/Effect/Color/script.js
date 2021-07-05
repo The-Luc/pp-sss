@@ -2,6 +2,7 @@ import { mapGetters } from 'vuex';
 import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 import ColorPicker from '@/containers/ColorPicker';
 import { DEFAULT_TEXT } from '@/common/constants';
+import { EVENT_TYPE } from '@/common/constants/eventType';
 
 export default {
   components: {
@@ -25,7 +26,7 @@ export default {
      * @param {String} color Color value
      */
     onChange(color) {
-      this.$root.$emit('printChangeTextProperties', { color });
+      this.$root.$emit(EVENT_TYPE.CHANGE_TEXT_PROPERTIES, { color });
     }
   }
 };
