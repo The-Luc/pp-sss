@@ -5,57 +5,42 @@ const themes = [
   {
     id: 1,
     name: 'Confetti',
-    previewImageUrl: 'theme1.jpg'
+    previewImageUrl: 'confetti.jpg'
   },
   {
     id: 2,
-    name: 'Comic Too',
-    previewImageUrl: 'theme2.jpg'
+    name: '3D',
+    previewImageUrl: '3D.jpg'
   },
   {
     id: 3,
-    name: 'Paint Spill',
-    previewImageUrl: 'theme12.jpg'
+    name: 'Newsprint',
+    previewImageUrl: 'newsprint.jpg'
   },
   {
     id: 4,
-    name: 'Chalkboard',
-    previewImageUrl: 'theme4.jpg'
+    name: 'Tokyo',
+    previewImageUrl: 'tokyo.jpg'
   },
   {
     id: 5,
-    name: 'Color Block',
-    previewImageUrl: 'theme5.jpg'
+    name: 'Glitch',
+    previewImageUrl: 'glitch.jpg'
   },
   {
     id: 6,
-    name: 'Retro Fun',
-    previewImageUrl: 'theme6.jpg'
+    name: 'Nature',
+    previewImageUrl: 'nature.jpg'
   },
   {
     id: 7,
-    name: 'Paper',
-    previewImageUrl: 'theme7.jpg'
+    name: 'Pixel',
+    previewImageUrl: 'pixel.jpg'
   },
   {
     id: 8,
-    name: 'Outerspace',
-    previewImageUrl: 'theme8.jpg'
-  },
-  {
-    id: 9,
-    name: 'Linen',
-    previewImageUrl: 'theme9.jpg'
-  },
-  {
-    id: 10,
-    name: 'Dark',
-    previewImageUrl: 'theme10.jpg'
-  },
-  {
-    id: 11,
-    name: 'None',
-    previewImageUrl: 'none.png'
+    name: 'Scribble',
+    previewImageUrl: 'scribble.jpg'
   }
 ];
 

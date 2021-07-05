@@ -144,5 +144,8 @@ export const mutations = {
   },
   [DIGITAL._MUTATES.DELETE_BACKGROUND](state) {
     state.background.left = {};
+  },
+  [DIGITAL._MUTATES.DEFAULT_THEME_ID](state, { themeId }) {
+    state.book.defaultThemeId = themeId;
   }
 };
