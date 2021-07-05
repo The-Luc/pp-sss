@@ -306,15 +306,26 @@ export default {
         textProperties
       );
 
+      const {
+        newObject: {
+          shadow,
+          coord: { rotation }
+        }
+      } = objectData;
+
       updateSpecificProp(object, {
         coord: {
-          rotation: objectData.newObject.coord.rotation
+          rotation
         }
       });
 
       this.handleAddTextEventListeners(object, objectData);
 
-      applyShadowToObject(object, objectData.newObject.shadow);
+      const objects = object.getObjects();
+
+      objects.forEach(obj => {
+        applyShadowToObject(obj, shadow);
+      });
 
       return object;
     },
