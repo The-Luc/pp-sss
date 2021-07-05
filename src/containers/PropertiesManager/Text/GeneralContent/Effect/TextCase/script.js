@@ -6,6 +6,7 @@ import { ICON_LOCAL, TEXT_CASE } from '@/common/constants';
 import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 
 import { isEmpty } from '@/common/utils';
+import { EVENT_TYPE } from '@/common/constants/eventType';
 
 export default {
   components: {
@@ -42,7 +43,7 @@ export default {
     onChange(data) {
       const value = isEmpty(data) ? TEXT_CASE.NONE : data;
 
-      this.$root.$emit('printChangeTextProperties', {
+      this.$root.$emit(EVENT_TYPE.CHANGE_TEXT_PROPERTIES, {
         textCase: value
       });
     }

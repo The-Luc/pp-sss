@@ -1,6 +1,7 @@
 import PpButtonGroup from '@/components/Buttons/ButtonGroup';
 import { mapGetters } from 'vuex';
 import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
+import { EVENT_TYPE } from '@/common/constants/eventType';
 
 export default {
   data() {
@@ -44,7 +45,7 @@ export default {
       const isItalic = data.indexOf(this.ITALIC) >= 0;
       const isUnderline = data.indexOf(this.UNDERLINE) >= 0;
 
-      this.$root.$emit('printChangeTextProperties', {
+      this.$root.$emit(EVENT_TYPE.CHANGE_TEXT_PROPERTIES, {
         isBold,
         isItalic,
         isUnderline
