@@ -1,3 +1,11 @@
+import {
+  calcAngle,
+  numberToAngle,
+  numberToPositiveAngle,
+  toSnapAngle
+} from '@/common/utils';
+import { debounce } from 'lodash';
+
 export default {
   props: {
     angle: {
@@ -7,8 +15,8 @@ export default {
   },
   data() {
     return {
-      timer: 0,
       active: false,
+      shouldSnap: false,
       currentAngle: 0,
       rotation: 0,
       startAngle: 0,
@@ -29,10 +37,14 @@ export default {
     this.updateStyle(this.angle);
     document.addEventListener('mousemove', this.onMouseMove);
     document.addEventListener('mouseup', this.onMouseUp);
+    document.addEventListener('keydown', this.onKeyPress);
+    document.addEventListener('keyup', this.onKeyPress);
   },
   beforeDestroy() {
     document.removeEventListener('mousemove', this.onMouseMove);
     document.removeEventListener('mouseup', this.onMouseUp);
+    document.removeEventListener('keydown', this.onKeyPress);
+    document.removeEventListener('keyup', this.onKeyPress);
   },
   methods: {
     /**
@@ -49,23 +61,11 @@ export default {
     getBoundingClientRect() {
       return this.$refs.circle.getBoundingClientRect();
     },
-    /**
-     * Calculate current angle base on x, y
-     * @param {Number} x - the current x axis
-     * @param {Number} y - the current y axis
-     * @returns {Number} the angle in deg
-     */
-    calcAngle(x, y) {
-      return (180 / Math.PI) * Math.atan2(y, x);
-    },
-    /**
-     * Get valid number from 0 to 360
-     * @param {Number} val - the current angle value
-     * @returns {Number}
-     */
-    getAngleNumber(val) {
-      const curVal = val % 360;
-      return curVal > 0 ? curVal : 360 - -curVal;
+    onKeyPress(e) {
+      const timer = e.shiftKey ? 0 : 100;
+      setTimeout(() => {
+        this.shouldSnap = e.shiftKey;
+      }, timer);
     },
     /**
      * Handle mouse down event
@@ -84,7 +84,7 @@ export default {
       };
       const x = e.clientX - this.center.x,
         y = e.clientY - this.center.y;
-      this.startAngle = this.calcAngle(x, y);
+      this.startAngle = calcAngle(x, y);
       this.active = true;
     },
     /**
@@ -94,11 +94,7 @@ export default {
     onMouseMove(e) {
       if (this.active) {
         e.preventDefault();
-        if (e.shiftKey) {
-          this.rotateShift(e);
-        } else {
-          this.rotate(e);
-        }
+        this.rotate(e);
       }
     },
     /**
@@ -108,11 +104,7 @@ export default {
     onMouseUp(e) {
       if (this.active) {
         e.preventDefault();
-        if (e.shiftKey) {
-          this.stopShift();
-        } else {
-          this.stop();
-        }
+        this.stop();
       }
     },
     /**
@@ -123,60 +115,34 @@ export default {
       e.preventDefault();
       const x = e.clientX - this.center.x,
         y = e.clientY - this.center.y,
-        d = this.calcAngle(x, y);
-      this.rotation = d - this.startAngle;
-      const angle = this.getAngleNumber(this.currentAngle + this.rotation);
-      this.updateStyle(angle);
-      clearTimeout(this.timer);
-      this.timer = setTimeout(() => this.emitChange(angle), 100);
-    },
-    /**
-     * Handle rotation when press hold shift button
-     * @param {MouseEvent} e - the mouse event from user
-     */
-    rotateShift(e) {
-      e.preventDefault();
-      const x = e.clientX - this.center.x;
-      const y = e.clientY - this.center.y;
-      const d = this.calcAngle(x, y);
-      const stopPoints = (360 * 2) / 45 + 1;
-      const angleList = Array.from(
-        { length: stopPoints },
-        (_, i) => i * 45 - 360
-      );
-      const d2 = angleList.filter(item => d >= item)?.pop();
+        d = calcAngle(x, y);
 
-      if (this.currentAngle % 45 !== 0) {
-        this.currentAngle = 45 * Math.floor(this.currentAngle / 45);
+      this.rotation = d - this.startAngle;
+      let angle = numberToAngle(this.currentAngle + this.rotation);
+      if (this.shouldSnap) {
+        angle = toSnapAngle(angle);
+        this.rotation = angle - this.currentAngle;
       }
-      this.rotation = d2 - this.currentAngle;
-      const angle = this.getAngleNumber(this.rotation);
       this.updateStyle(angle);
-      clearTimeout(this.timer);
-      this.timer = setTimeout(() => this.emitChange(angle), 100);
+      this.triggerChange(numberToPositiveAngle(angle));
     },
     /**
      * Handle stop rotation
      */
     stop() {
-      clearTimeout(this.timer);
-      this.currentAngle = this.getAngleNumber(
+      this.currentAngle = numberToPositiveAngle(
         (this.currentAngle += this.rotation)
       );
       this.emitChange(this.currentAngle);
       this.active = false;
     },
     /**
-     * Handle stop rotation when press hold shift button
+     * Timer function to trigger change while user dragging the mouse
+     * @param {Number} angle - the current angle to emit via event payload
      */
-    stopShift() {
-      clearTimeout(this.timer);
-      this.currentAngle = this.getAngleNumber(
-        (this.currentAngle = this.rotation)
-      );
-      this.emitChange(this.currentAngle);
-      this.active = false;
-    },
+    triggerChange: debounce(function(angle) {
+      this.emitChange(angle);
+    }, 50),
     /**
      * Emit change event to parent component
      * @param {Number} angle - the current angle to emit via event payload
