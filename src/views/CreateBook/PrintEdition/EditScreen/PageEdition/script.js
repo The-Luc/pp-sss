@@ -211,7 +211,7 @@ export default {
 
     this.eventHandling(false);
 
-    this.setInfoBar({ data: { x: 0, y: 0, w: 0, h: 0, zoom: 0 } });
+    this.setInfoBar({ x: 0, y: 0, w: 0, h: 0, zoom: 0 });
   },
   methods: {
     ...mapActions({
@@ -306,15 +306,26 @@ export default {
         textProperties
       );
 
+      const {
+        newObject: {
+          shadow,
+          coord: { rotation }
+        }
+      } = objectData;
+
       updateSpecificProp(object, {
         coord: {
-          rotation: objectData.newObject.coord.rotation
+          rotation
         }
       });
 
       this.handleAddTextEventListeners(object, objectData);
 
-      applyShadowToObject(object, objectData.newObject.shadow);
+      const objects = object.getObjects();
+
+      objects.forEach(obj => {
+        applyShadowToObject(obj, shadow);
+      });
 
       return object;
     },
@@ -614,7 +625,7 @@ export default {
       this.updateCanvasSize();
       window.printCanvas.on({
         'selection:updated': this.objectSelected,
-        'selection:cleared': this.closeProperties,
+        'selection:cleared': this.handleClearSelected,
         'selection:created': this.objectSelected,
         'object:modified': this.getThumbnailUrl,
         'object:added': this.getThumbnailUrl,
@@ -631,9 +642,7 @@ export default {
           this.setObjectProp({ prop });
           this.updateTriggerTextChange();
 
-          this.setInfoBar({
-            data: { w: prop.size.width, h: prop.size.height }
-          });
+          this.setInfoBar({ w: prop.size.width, h: prop.size.height });
         },
         'mouse:down': e => {
           if (this.awaitingAdd) {
@@ -675,9 +684,7 @@ export default {
           this.setObjectPropById({ id: group.id, prop });
           this.updateTriggerTextChange();
 
-          this.setInfoBar({
-            data: { w: prop.size.width, h: prop.size.height }
-          });
+          this.setInfoBar({ w: prop.size.width, h: prop.size.height });
         },
         'object:moved': e => {
           if (!e.target?.objectType) {
@@ -746,8 +753,6 @@ export default {
     closeProperties() {
       this.groupSelected = null;
       this.resetConfigTextProperties();
-
-      this.setInfoBar({ data: { w: 0, h: 0 } });
     },
     /**
      * Event fired when an object of canvas is selected
@@ -776,18 +781,18 @@ export default {
 
       if (isSelectMultiObject) {
         setCanvasUniformScaling(window.printCanvas, true);
+
+        this.setInfoBar({ w: 0, h: 0 });
       } else {
         setCanvasUniformScaling(window.printCanvas, objectData.isConstrain);
+
+        this.setInfoBar({
+          w: this.getProperty('size')?.width,
+          h: this.getProperty('size')?.height
+        });
       }
 
       if (isEmpty(objectType)) return;
-
-      this.setInfoBar({
-        data: {
-          w: this.getProperty('size')?.width,
-          h: this.getProperty('size')?.height
-        }
-      });
 
       this.setObjectTypeSelected({ type: objectType });
 
@@ -878,9 +883,7 @@ export default {
       this.updateTriggerTextChange();
 
       if (!isEmpty(prop.size)) {
-        this.setInfoBar({
-          data: { w: prop.size.width, h: prop.size.height }
-        });
+        this.setInfoBar({ w: prop.size.width, h: prop.size.height });
       }
 
       applyTextBoxProperties(activeObj, prop);
@@ -1287,9 +1290,7 @@ export default {
       if (updateTriggerFn !== null) updateTriggerFn();
 
       if (!isEmpty(prop.size)) {
-        this.setInfoBar({
-          data: { w: prop.size.width, h: prop.size.height }
-        });
+        this.setInfoBar({ w: prop.size.width, h: prop.size.height });
       }
 
       if (!isEmpty(prop['shadow'])) {
@@ -1467,8 +1468,10 @@ export default {
         enscapeInstruction: () => {
           this.awaitingAdd = '';
           this.$root.$emit('printInstructionEnd');
+
           this.setToolNameSelected({ name: '' });
         },
+
         printCopyObj: this.handleCopy,
         printPasteObj: this.handlePaste
       };
@@ -1626,6 +1629,14 @@ export default {
           this.updateTriggerTextChange();
         }
       });
+    },
+    /**
+     * Fire when clear selected in canvas
+     */
+    handleClearSelected() {
+      this.setInfoBar({ w: 0, h: 0 });
+
+      this.closeProperties();
     }
   }
 };
