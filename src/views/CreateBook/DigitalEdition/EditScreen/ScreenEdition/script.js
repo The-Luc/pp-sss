@@ -5,7 +5,13 @@ import SizeWrapper from '@/components/SizeWrapper';
 import AddBoxInstruction from '@/components/AddBoxInstruction';
 import { useDigitalOverrides } from '@/plugins/fabric';
 import { OBJECT_TYPE, SHEET_TYPE } from '@/common/constants';
-import { applyTextBoxProperties, createTextBox, startDrawBox, toggleStroke, updateTextListeners } from '@/common/fabricObjects';
+import {
+  applyTextBoxProperties,
+  createTextBox,
+  startDrawBox,
+  toggleStroke,
+  updateTextListeners
+} from '@/common/fabricObjects';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
 import { useDrawLayout, useInfoBar } from '@/hooks';
 
@@ -20,6 +26,7 @@ import {
   pxToIn,
   resetObjects,
   selectLatestObject,
+  setActiveCanvas,
   setBorderHighLight,
   setBorderObject,
   setCanvasUniformScaling
@@ -144,6 +151,7 @@ export default {
         backgroundColor: '#fff',
         preserveObjectStacking: true
       });
+      setActiveCanvas(window.digitalCanvas);
       useDigitalOverrides(fabric.Object.prototype);
       this.updateCanvasSize();
       this.digitalCanvas = window.digitalCanvas;
@@ -171,13 +179,15 @@ export default {
           handler: this.onAddElement
         }
       ];
-      const textEvents = [{
-        name: EVENT_TYPE.CHANGE_TEXT_PROPERTIES,
-        handler: prop => {
-          this.getThumbnailUrl();
-          this.changeTextProperties(prop);
+      const textEvents = [
+        {
+          name: EVENT_TYPE.CHANGE_TEXT_PROPERTIES,
+          handler: prop => {
+            this.getThumbnailUrl();
+            this.changeTextProperties(prop);
+          }
         }
-      }];
+      ];
       const events = [...elementEvents, ...textEvents];
       events.forEach(event => {
         this.$root.$on(event.name, event.handler);
@@ -248,7 +258,7 @@ export default {
       const { id } = target;
       const targetType = target.get('type');
       this.setSelectedObjectId({ id });
-      console.log(this.selectedObject);
+
       setBorderHighLight(target, this.sheetLayout);
 
       const objectData = this.selectedObject;
@@ -499,7 +509,7 @@ export default {
      * @param {Element} rect Rect object
      * @param {Element} text Text object
      */
-     handleDbClickText(e, rect, text) {
+    handleDbClickText(e, rect, text) {
       const group = e.target;
       const canvas = e.target.canvas;
       if (isEmpty(canvas)) return;
@@ -542,7 +552,7 @@ export default {
      *
      * @param {Object}  style  new style
      */
-     changeTextProperties(prop) {
+    changeTextProperties(prop) {
       if (isEmpty(prop)) {
         this.updateTriggerTextChange();
 
@@ -571,7 +581,7 @@ export default {
     /**
      * call this function to update the active thumbnail
      */
-     getThumbnailUrl: debounce(function() {
+    getThumbnailUrl: debounce(function() {
       const thumbnailUrl = this.digitalCanvas?.toDataURL({
         quality: THUMBNAIL_IMAGE_QUALITY
       });
@@ -580,7 +590,7 @@ export default {
         sheetId: this.pageSelected?.id,
         thumbnailUrl
       });
-    }, 250),
+    }, 250)
   },
   watch: {
     pageSelected: {

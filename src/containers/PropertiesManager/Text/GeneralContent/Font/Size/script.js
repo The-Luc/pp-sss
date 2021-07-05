@@ -3,7 +3,7 @@ import { mapGetters } from 'vuex';
 import PpCombobox from '@/components/Selectors/Combobox';
 import { ICON_LOCAL } from '@/common/constants';
 import {
-  getActiveCanvas,
+  activeCanvas,
   getSelectedOption,
   getValueInput,
   pxToIn,
@@ -60,8 +60,7 @@ export default {
         this.items,
         'pt'
       );
-      
-      const activeCanvas = getActiveCanvas();
+
       const activeObj = activeCanvas?.getActiveObject();
 
       const { x, y } = activeObj?.aCoords?.tl || {};

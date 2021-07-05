@@ -10,7 +10,7 @@ import ArrangeContent from '@/components/Arrange';
 import { MUTATES } from '@/store/modules/app/const';
 import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 import { DEFAULT_TEXT } from '@/common/constants';
-import { computedObjectSize, getActiveCanvas } from '@/common/utils';
+import { computedObjectSize, activeCanvas } from '@/common/utils';
 import { EVENT_TYPE } from '@/common/constants/eventType';
 
 export default {
@@ -44,9 +44,7 @@ export default {
         // just for trigger the change
       }
 
-      const canvas = getActiveCanvas();
-
-      const activeObj = canvas?.getActiveObject();
+      const activeObj = activeCanvas?.getActiveObject();
 
       return !!activeObj?.isEditing;
     },

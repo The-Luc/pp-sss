@@ -46,7 +46,9 @@ export default {
      * @param {Object} data new font family of text box
      */
     onChange(data) {
-      this.$root.$emit(EVENT_TYPE.CHANGE_TEXT_PROPERTIES, { fontFamily: data.value });
+      this.$root.$emit(EVENT_TYPE.CHANGE_TEXT_PROPERTIES, {
+        fontFamily: data.value
+      });
     }
   }
 };

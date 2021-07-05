@@ -2,7 +2,7 @@ import Select from '@/components/Selectors/Select';
 import BorderStyle from './Settings/Style';
 import BorderColor from './Settings/Color';
 import BorderThickness from './Settings/Thickness';
-import { getActiveCanvas, getRectDashes } from '@/common/utils';
+import { activeCanvas, getRectDashes } from '@/common/utils';
 import { EVENT_TYPE } from '@/common/constants/eventType';
 
 export default {
@@ -41,7 +41,6 @@ export default {
      * @returns   {Array}  Array specifying dash pattern of an object's stroke
      */
     computedDashArray() {
-      const activeCanvas = getActiveCanvas();
       const objectActive = activeCanvas?.getActiveObject();
       const { width, height } = objectActive;
       const strokeDashArray = getRectDashes(
