@@ -1,4 +1,5 @@
 import { isEmpty } from '@/common/utils';
+import book from '@/mock/book';
 
 import DIGITAL from './const';
 
@@ -91,5 +92,8 @@ export const getters = {
         sheets: section.sheets.map(sheetId => sheets[sheetId])
       };
     });
+  },
+  [DIGITAL._GETTERS.SET_DEFAULT_THEME_ID]: ({ book }) => {
+    return book.defaultThemeId;
   }
 };

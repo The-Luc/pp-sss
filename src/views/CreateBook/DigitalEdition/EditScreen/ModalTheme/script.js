@@ -1,7 +1,7 @@
 import { mapActions, mapGetters, mapMutations } from 'vuex';
 
 import { MUTATES } from '@/store/modules/app/const';
-import { MUTATES as BOOK_MUTATES } from '@/store/modules/book/const';
+import { MUTATES as DIGITAL_MUTATES } from '@/store/modules/digital/const';
 import {
   GETTERS as THEME_GETTERS,
   MUTATES as THEME_MUTATES,
@@ -11,16 +11,10 @@ import Modal from '@/containers/Modal';
 import PpButton from '@/components/Buttons/Button';
 import Themes from './Themes';
 import Preview from './Preview';
-import { useLayoutPrompt } from '@/hooks';
-import { loadLayouts } from '@/api/layouts';
+import { loadDigitalThemes } from '@/api/themes';
+import { loadDigitalLayouts } from '@/api/layouts';
 
 export default {
-  setup() {
-    const { openPrompt } = useLayoutPrompt();
-    return {
-      openPrompt
-    };
-  },
   components: {
     Modal,
     PpButton,
@@ -35,8 +29,8 @@ export default {
   },
   computed: {
     ...mapGetters({
-      themes: THEME_GETTERS.GET_PRINT_THEMES,
-      layouts: THEME_GETTERS.GET_PRINT_LAYOUTS_BY_THEME_ID
+      themes: THEME_GETTERS.GET_DIGITAL_THEMES,
+      layouts: THEME_GETTERS.GET_DIGITAL_LAYOUTS_BY_THEME_ID
     }),
     layoutsOfThemePreview() {
       return this.layouts(this.selectedThemeId);
@@ -50,38 +44,18 @@ export default {
     }
   },
   methods: {
-    ...mapActions({
-      setPrintThemes: THEME_ACTIONS.GET_PRINT_THEMES
-    }),
     ...mapMutations({
       toggleModal: MUTATES.TOGGLE_MODAL,
-      selectTheme: BOOK_MUTATES.SELECT_THEME,
-      setPrintLayouts: THEME_MUTATES.PRINT_LAYOUTS
+      setDefaultThemId: DIGITAL_MUTATES.SET_DEFAULT_THEME_ID,
+      setDigitalThemes: THEME_MUTATES.DIGITAL_THEMES,
+      setDigitalLayouts: THEME_MUTATES.DIGITAL_LAYOUTS
     }),
-    /**
-     * Close Modal
-     */
-    onCloseModal() {
-      this.toggleModal({
-        isOpenModal: false
-      });
-    },
     /**
      * Set selected theme's id
      * @param  {Number} theme.themeId - Theme's id selected
      */
     onSelectTheme({ themeId }) {
       this.selectedThemeId = themeId;
-    },
-    /**
-     * Set theme for print editor and close modal
-     */
-    onSubmitThemeId() {
-      this.selectTheme({
-        themeId: this.selectedThemeId
-      });
-      this.onCloseModal();
-      this.openPrompt();
     },
     /**
      * Set preview theme's id
@@ -96,16 +70,36 @@ export default {
      */
     onClosePreview() {
       this.isPreviewing = false;
+    },
+    /**
+     * Set theme for print editor and close modal
+     */
+    onSubmitThemeId() {
+      this.setDefaultThemId({
+        themeId: this.selectedThemeId
+      });
+      this.onCloseModal();
+    },
+    /**
+     * Close Modal
+     */
+    onCloseModal() {
+      this.toggleModal({
+        isOpenModal: false
+      });
     }
   },
   async created() {
     if (this.themes.length === 0) {
-      await this.setPrintThemes();
+      const themes = await loadDigitalThemes();
+      this.setDigitalThemes({
+        themes
+      });
     }
     this.selectedThemeId = this.themes[0]?.id;
     if (this.layouts().length === 0) {
-      const layouts = await loadLayouts();
-      this.setPrintLayouts({
+      const layouts = await loadDigitalLayouts();
+      this.setDigitalLayouts({
         layouts
       });
     }

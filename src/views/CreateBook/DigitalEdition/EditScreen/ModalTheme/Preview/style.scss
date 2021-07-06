@@ -1,0 +1,49 @@
+.modal-preview-header {
+  position: relative;
+  text-align: center;
+  line-height: 24px;
+  padding-bottom: 16px;
+  .modal-preview-title {
+    font-family: $font-700;
+    font-size: 18px;
+    color: #565656;
+  }
+  .modal-preview-back {
+    cursor: pointer;
+    width: 24px;
+    height: 24px;
+    text-align: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    border: 1px solid #707070;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .icon {
+      font-size: 15px;
+      color: #707070;
+    }
+  }
+}
+
+.modal-preview-container {
+  display: flex;
+  flex-wrap: wrap;
+  max-height: 400px;
+  overflow: auto;
+  .modal-preview-item {
+    width: 30%;
+    margin-right: 3.333333%;
+    margin-bottom: 16px;
+    .modal-preview-img {
+      display: flex;
+      height: 145px;
+      img {
+        max-height: 100%;
+        object-fit: contain;
+      }
+    }
+  }
+}
