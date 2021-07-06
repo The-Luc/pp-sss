@@ -1,6 +1,4 @@
-import { useGetters, useMutations } from 'vuex-composition-helpers';
-
-import { MUTATES as APP_MUTATES } from '@/store/modules/app/const';
+import { useGetters } from 'vuex-composition-helpers';
 import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 
 /**

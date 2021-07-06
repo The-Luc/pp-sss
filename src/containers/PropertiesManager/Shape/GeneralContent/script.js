@@ -12,29 +12,8 @@ export default {
     Opacity,
     Shadow
   },
-  data() {
-    return {
-      borderOptions: [
-        {
-          name: 'No border',
-          value: 'noBorder'
-        },
-        {
-          name: 'Line',
-          value: 'line'
-        }
-      ],
-      selectedBorder: {
-        name: 'No border',
-        value: 'noBorder'
-      }
-    };
-  },
   setup() {
-    const {
-      getProperty,
-      triggerChange
-    } = useShapeProperties();
+    const { getProperty, triggerChange } = useShapeProperties();
 
     return {
       getProperty,
