@@ -644,6 +644,7 @@ export default {
           this.updateTriggerTextChange();
 
           this.setInfoBar({ w: prop.size.width, h: prop.size.height });
+          this.setCurrentObject(this.currentObjects?.[target?.id]);
         },
         'mouse:down': e => {
           if (this.awaitingAdd) {
@@ -766,7 +767,7 @@ export default {
       this.setSelectedObjectId({ id });
       setBorderHighLight(target, this.sheetLayout);
 
-      const objectData = this.selectedObject;
+      const objectData = this.currentObjects?.[id];
 
       this.setCurrentObject(objectData);
 
@@ -889,6 +890,8 @@ export default {
 
       // update thumbnail
       this.getThumbnailUrl();
+
+      this.setCurrentObject(this.currentObjects?.[activeObj?.id]);
     },
     /**
      * Function trigger mutate to add new object to store
@@ -1300,6 +1303,8 @@ export default {
 
       // update thumbnail
       this.getThumbnailUrl();
+
+      this.setCurrentObject(this.currentObjects?.[element?.id]);
     },
     /**
      * get fired when you click 'send' button
