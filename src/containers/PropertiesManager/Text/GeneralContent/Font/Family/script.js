@@ -2,6 +2,7 @@ import { mapGetters } from 'vuex';
 
 import PpSelect from '@/components/Selectors/Select';
 import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
+import { EVENT_TYPE } from '@/common/constants/eventType';
 
 export default {
   components: {
@@ -45,7 +46,9 @@ export default {
      * @param {Object} data new font family of text box
      */
     onChange(data) {
-      this.$root.$emit('printChangeTextProperties', { fontFamily: data.value });
+      this.$root.$emit(EVENT_TYPE.CHANGE_TEXT_PROPERTIES, {
+        fontFamily: data.value
+      });
     }
   }
 };

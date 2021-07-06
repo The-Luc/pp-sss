@@ -68,5 +68,13 @@ export default {
   created() {
     this.LINK_STATUS = LINK_STATUS;
     this.SHEET_TYPE = SHEET_TYPE;
+  },
+  methods: {
+    /**
+     * Emit event change link status
+     */
+    changeLinkStatus() {
+      this.$emit('change');
+    }
   }
 };

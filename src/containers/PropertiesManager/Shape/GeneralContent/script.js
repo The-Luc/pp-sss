@@ -33,14 +33,12 @@ export default {
   setup() {
     const {
       getProperty,
-      triggerChange,
-      setColorPickerData
+      triggerChange
     } = useShapeProperties();
 
     return {
       getProperty,
-      triggerChange,
-      setColorPickerData
+      triggerChange
     };
   },
   computed: {
