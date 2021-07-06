@@ -6,7 +6,7 @@ export default {
     },
     themeName: {
       type: String,
-      default: 'Confetti'
+      default: ''
     }
   },
   methods: {
