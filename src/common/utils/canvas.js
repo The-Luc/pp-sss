@@ -241,9 +241,9 @@ export const getCanvasColor = (canvas, e) => {
   const ctx = canvas.contextContainer;
   const pointer = canvas.getPointer(e);
 
-  const data = ctx.getImageData(
+  const imageData = ctx.getImageData(
     Math.round(
-      (pointer.x - 50 + canvas.viewportTransform[4]) *
+      (pointer.x - 60 + canvas.viewportTransform[4]) *
         fabric.devicePixelRatio *
         canvas.getZoom()
     ),
@@ -254,7 +254,21 @@ export const getCanvasColor = (canvas, e) => {
     ),
     1,
     1
-  ).data;
+  );
+
+  let { data } = imageData;
+
+  // Made opaque canvas
+  for (let i = 0; i < data.length; i += 4) {
+    if (data[i + 3] < 255) {
+      data[i] = 255;
+      data[i + 1] = 255;
+      data[i + 2] = 255;
+      data[i + 3] = 255;
+    }
+  }
+
+  ctx.putImageData(imageData, 0, 0);
 
   return 'rgb(' + data[0] + ', ' + data[1] + ', ' + data[2] + ')';
 };
@@ -294,7 +308,8 @@ export const handleBodyMouseMove = ({ clientX, clientY }) => {
       x,
       y,
       visible,
-      canvas
+      canvas,
+      width
     };
   }
 };
