@@ -4,7 +4,7 @@ import { cloneDeep, uniqueId, merge, debounce } from 'lodash';
 
 import { usePrintOverrides } from '@/plugins/fabric';
 
-import { useDrawLayout, useInfoBar, useObject } from '@/hooks';
+import { useDrawLayout, useInfoBar, useTextObject } from '@/hooks';
 import { startDrawBox, toggleStroke } from '@/common/fabricObjects/drawingBox';
 
 import {
@@ -101,7 +101,7 @@ export default {
   setup() {
     const { drawLayout } = useDrawLayout();
     const { setInfoBar, zoom } = useInfoBar();
-    const { selectedObject } = useObject();
+    const { selectedObject } = useTextObject();
 
     return { drawLayout, setInfoBar, zoom, selectedObject };
   },

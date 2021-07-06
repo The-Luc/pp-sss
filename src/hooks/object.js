@@ -7,7 +7,7 @@ import { GETTERS as APP_GETTERS } from '@/store/modules/app/const';
  * The hook to connect to store to getter object's properties
  *  @return {Object} {selectObjectProp: The function to connect to getter, triggerChange: state to trigger change}
  */
-export const useObject = (isDigital = false) => {
+export const useTextObject = (isDigital = false) => {
   const GETTERS = isDigital ? DIGITAL_GETTERS : PRINT_GETTERS;
   const { selectedObject, onSelectedObject, triggerChange } = useGetters({
     selectedObject: GETTERS.CURRENT_OBJECT,
