@@ -105,7 +105,10 @@ export default {
      * @param {String}  color value user input
      */
     onChangeColor(color) {
-      this.$root.$emit(EVENT_TYPE.CHANGE_SHAPE_PROPERTIES, { color, stroke: color });
+      this.$root.$emit(EVENT_TYPE.CHANGE_SHAPE_PROPERTIES, {
+        color,
+        stroke: color
+      });
     }
   }
 };

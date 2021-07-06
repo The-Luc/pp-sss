@@ -102,7 +102,8 @@ export default {
       propertiesObjectType: APP_GETTERS.PROPERTIES_OBJECT_TYPE,
       object: DIGITAL_GETTERS.OBJECT_BY_ID,
       currentObjects: DIGITAL_GETTERS.GET_OBJECTS,
-      totalBackground: DIGITAL_GETTERS.TOTAL_BACKGROUND
+      totalBackground: DIGITAL_GETTERS.TOTAL_BACKGROUND,
+      listObjects: DIGITAL_GETTERS.GET_OBJECTS
     }),
     isCover() {
       return this.pageSelected?.type === SHEET_TYPE.COVER;
@@ -198,6 +199,10 @@ export default {
         {
           name: EVENT_TYPE.DIGITAL_ADD_ELEMENT,
           handler: this.onAddElement
+        },
+        {
+          name: EVENT_TYPE.CHANGE_OBJECT_IDS_ORDER,
+          handler: this.changeObjectIdsOrder
         }
       ];
       const textEvents = [
@@ -311,7 +316,7 @@ export default {
 
       setBorderHighLight(target, this.sheetLayout);
 
-      const objectData = this.selectedObject;
+      const objectData = this.listObjects?.[id] || this.selectedObject;
 
       this.setCurrentObject(objectData);
 
@@ -375,7 +380,7 @@ export default {
      * Event fire when fabric object has been removed
      */
     onObjectRemoved() {
-      console.log('object:removed');
+      this.setCurrentObject(null);
     },
 
     /**
@@ -392,6 +397,7 @@ export default {
       };
       this.setObjectProp({ prop });
       this.updateTriggerTextChange();
+      this.setCurrentObject(this.listObjects?.[target?.id]);
 
       this.setInfoBar({
         w: prop.size.width,
@@ -401,9 +407,34 @@ export default {
 
     /**
      * Event fire when fabric object has been moved
+     * @param {Object} e - Event moved of group
      */
-    onObjectMoved() {
-      console.log('object:moved');
+    onObjectMoved(e) {
+      if (e.target?.objectType) return;
+      const { target } = e;
+
+      target?.getObjects()?.forEach(item => {
+        const { id, left, top, objectType } = item;
+        const currentXInch = pxToIn(left + target.left + target.width / 2);
+        const currentYInch = pxToIn(top + target.top + target.height / 2);
+
+        const prop = {
+          coord: {
+            x: currentXInch,
+            y: currentYInch
+          }
+        };
+
+        this.setObjectPropById({ id, prop });
+
+        if (objectType === OBJECT_TYPE.SHAPE) {
+          this.updateTriggerShapeChange();
+        } else if (objectType === OBJECT_TYPE.CLIP_ART) {
+          this.updateTriggerClipArtChange();
+        } else if (objectType === OBJECT_TYPE.TEXT) {
+          this.updateTriggerTextChange();
+        }
+      });
     },
 
     /**
@@ -650,6 +681,8 @@ export default {
 
       // update thumbnail
       this.getThumbnailUrl();
+
+      this.setCurrentObject(this.listObjects?.[activeObj?.id]);
     },
 
     /**

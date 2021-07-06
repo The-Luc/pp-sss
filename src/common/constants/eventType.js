@@ -9,7 +9,8 @@ export const EVENT_TYPE = {
   ADD_SHAPES: 'addShapes',
   CHANGE_SHAPE_PROPERTIES: 'changeShapeProperties',
   ADD_CLIPARTS: 'addClipArts',
-  CHANGE_CLIPART_PROPERTIES: 'changeClipArtProperties'
+  CHANGE_CLIPART_PROPERTIES: 'changeClipArtProperties',
+  CHANGE_OBJECT_IDS_ORDER: 'changeObjectIdsOrder'
 };
 
 export const CANVAS_EVENT_TYPE = {
