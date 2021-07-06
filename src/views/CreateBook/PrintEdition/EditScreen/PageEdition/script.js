@@ -744,7 +744,6 @@ export default {
      * Close text properties modal
      */
     closeProperties() {
-      this.groupSelected = null;
       this.toggleActiveObjects(false);
       this.resetConfigTextProperties();
     },
