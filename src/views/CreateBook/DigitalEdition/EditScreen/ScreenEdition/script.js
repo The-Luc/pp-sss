@@ -157,8 +157,12 @@ export default {
         canvasSize.width = this.containerSize.width;
         canvasSize.height = canvasSize.width / DIGITAL_CANVAS_SIZE.RATIO;
       }
+      const zoom = canvasSize.width / DIGITAL_CANVAS_SIZE.WIDTH;
+      this.canvasSize = { ...canvasSize, zoom };
+
       window.digitalCanvas.setWidth(canvasSize.width);
       window.digitalCanvas.setHeight(canvasSize.height);
+      window.digitalCanvas.setZoom(zoom);
     },
 
     /**
