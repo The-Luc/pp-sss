@@ -1,7 +1,7 @@
 import { mapGetters } from 'vuex';
 
 import { GETTERS } from '@/store/modules/app/const';
-import { OBJECT_TYPE } from '@/common/constants';
+import { OBJECT_TYPE, RIGHT_TOOLS } from '@/common/constants';
 
 // Object component
 import TextProperties from '@/containers/PropertiesManager/Text';
@@ -11,9 +11,10 @@ import Background from '@/containers/PropertiesManager/Background';
 import Shape from '@/containers/PropertiesManager/Shape';
 import PageInfo from '@/containers/PropertiesManager/PageInfo';
 
-const { TEXT, IMAGE, CLIP_ART, BACKGROUND, SHAPE, PAGE_INFO } = OBJECT_TYPE;
+const { TEXT, IMAGE, CLIP_ART, BACKGROUND, SHAPE } = OBJECT_TYPE;
+const PAGE_INFO = RIGHT_TOOLS.PAGE_INFO.value;
 
-const ObjectList = {
+const MenuList = {
   [TEXT]: TEXT,
   [IMAGE]: IMAGE,
   [CLIP_ART]: CLIP_ART,
@@ -36,7 +37,7 @@ export default {
     [OBJECT_TYPE.CLIP_ART]: ClipArt,
     [OBJECT_TYPE.BACKGROUND]: Background,
     [OBJECT_TYPE.SHAPE]: Shape,
-    [OBJECT_TYPE.PAGE_INFO]: PageInfo
+    [PAGE_INFO]: PageInfo
   },
   computed: {
     ...mapGetters({
@@ -56,7 +57,7 @@ export default {
      * @param  {String} objectType Object type when user click on object. Maybe text, image, ...
      */
     setObjectComponent(objectType) {
-      const ObjectComponent = ObjectList[objectType];
+      const ObjectComponent = MenuList[objectType];
       if (ObjectComponent) {
         this.renderObject = ObjectComponent;
       }

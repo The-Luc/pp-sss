@@ -42,9 +42,6 @@ export const getters = {
 
     return isEmpty(propValue) ? null : propValue;
   },
-  [PRINT._GETTERS.GET_PAGE_INFO]: ({ pageInfo }) => {
-    return pageInfo;
-  },
   [PRINT._GETTERS.TRIGGER_TEXT_CHANGE]: ({ triggerChange }) =>
     triggerChange.text,
   [PRINT._GETTERS.TRIGGER_BACKGROUND_CHANGE]: ({ triggerChange }) =>

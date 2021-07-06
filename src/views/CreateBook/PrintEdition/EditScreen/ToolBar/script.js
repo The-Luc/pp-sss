@@ -150,13 +150,13 @@ export default {
       }
 
       if (item.name === RIGHT_TOOLS.BACKGROUND.value) {
-        this.onButtonClick(OBJECT_TYPE.BACKGROUND);
+        this.buttonClick(OBJECT_TYPE.BACKGROUND);
 
         return;
       }
 
       if (item.name === RIGHT_TOOLS.PAGE_INFO.value) {
-        this.onButtonClick(OBJECT_TYPE.PAGE_INFO);
+        this.buttonClick(RIGHT_TOOLS.PAGE_INFO.value);
 
         return;
       }
@@ -243,8 +243,7 @@ export default {
     /**
      * Fire when click on Page Info button or Background Properties button
      */
-    onButtonClick(objectType) {
-      window.printCanvas.discardActiveObject().renderAll();
+    buttonClick(objectType) {
       const isToggle =
         isEmpty(this.selectedObjectType) ||
         this.propertiesObjectType === objectType;

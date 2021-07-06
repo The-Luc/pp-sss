@@ -41,18 +41,18 @@ export default {
         const isBackgroundActive = isBackgroundSelected && isBackgroundMenu;
 
         const isPageInfoSelected =
-          this.propertiesObjectType === OBJECT_TYPE.PAGE_INFO;
+          this.propertiesObjectType === RIGHT_TOOLS.PAGE_INFO.value;
         const isPageInfoMenu = RIGHT_TOOLS.PAGE_INFO.value === iconName;
         const isPageInfoActive = isPageInfoSelected && isPageInfoMenu;
 
-        const isPropertiesuSelected =
+        const isPropertiesSelected =
           !isEmpty(this.propertiesObjectType) &&
           !isBackgroundSelected &&
           !isPageInfoSelected;
 
         const isPropertiesMenu = RIGHT_TOOLS.PROPERTIES.value === iconName;
 
-        const isPropertiesActive = isPropertiesuSelected && isPropertiesMenu;
+        const isPropertiesActive = isPropertiesSelected && isPropertiesMenu;
 
         if (isBackgroundActive || isPropertiesActive || isPageInfoActive) {
           return this.isOpenMenuProperties;

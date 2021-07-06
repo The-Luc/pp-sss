@@ -5,7 +5,7 @@
       <div v-else class="project-title">Left hand page title:</div>
       <input
         type="text"
-        :disabled="isDisable"
+        :disabled="isDisabled"
         :value="titleValueLeft"
         placeholder="Click to add title"
       />
@@ -14,7 +14,7 @@
       <div class="project-title">Right hand page title:</div>
       <input
         type="text"
-        :disabled="isDisable"
+        :disabled="isDisabled"
         :value="titleValueRight"
         placeholder="Click to add title"
       />

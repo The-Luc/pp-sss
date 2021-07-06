@@ -97,9 +97,9 @@ const printService = {
               link,
               thumbnailUrl,
               theme: themeId,
-              layout
+              layout,
+              spreadInfo
             } = sheet.printData;
-            const spreadInfo = sheet.printData.spreadInfo;
             const pageLeftName = getPageLeftName(
               sheet,
               sheetIndex,

@@ -12,7 +12,7 @@ export default {
       type: String,
       default: ''
     },
-    isDisable: {
+    isDisabled: {
       type: Boolean,
       default: false
     },

@@ -93,5 +93,8 @@ export const getters = {
     const { createdDate } = book;
 
     return getDiffDaysFOM(createdDate, dueDate);
+  },
+  [BOOK._GETTERS.GET_PAGE_INFO]: ({ book }) => {
+    return book.printData.pageInfo;
   }
 };

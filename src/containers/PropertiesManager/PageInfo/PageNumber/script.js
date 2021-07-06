@@ -1,5 +1,9 @@
 import PpSelect from '@/components/Selectors/Select';
-import { PAGE_NUMBER_POSITION } from '@/common/constants';
+import {
+  PAGE_NUMBER_POSITION_OPTIONS,
+  STATUS_PAGE_NUMBER_OPTIONS
+} from '@/common/constants';
+
 export default {
   components: {
     PpSelect
@@ -13,7 +17,7 @@ export default {
       type: Boolean,
       default: true
     },
-    isSiglePage: {
+    isSinglePage: {
       type: Boolean,
       default: true
     },
@@ -32,57 +36,48 @@ export default {
   },
   data() {
     return {
-      statusPageNumber: [
-        { name: 'On', value: true },
-        { name: 'Off', value: false }
-      ],
-      positionPageNumber: [
-        { name: 'Bottom Center', value: PAGE_NUMBER_POSITION.BOTTOM_CENTER },
-        {
-          name: 'Bottom Outside Corners',
-          value: PAGE_NUMBER_POSITION.BOTTOM_OUTSIDE_CORNERS
-        }
-      ]
+      statusPageNumber: STATUS_PAGE_NUMBER_OPTIONS,
+      positionPageNumber: PAGE_NUMBER_POSITION_OPTIONS
     };
   },
   computed: {
     selectedPosition() {
-      if (this.position === PAGE_NUMBER_POSITION.BOTTOM_CENTER) {
-        return {
-          name: 'Bottom Center',
-          value: PAGE_NUMBER_POSITION.BOTTOM_CENTER
-        };
-      } else {
-        return {
-          name: 'Bottom Outside Corners',
-          value: PAGE_NUMBER_POSITION.BOTTOM_OUTSIDE_CORNERS
-        };
-      }
+      return this.positionPageNumber.find(
+        ({ value }) => value === this.position
+      );
     },
     selectedLeftNumber() {
-      if (this.isLeftNumberOn) {
-        return { name: 'On', value: true };
-      } else {
-        return { name: 'Off', value: false };
-      }
+      return this.statusPageNumber.find(
+        ({ value }) => value === this.isLeftNumberOn
+      );
     },
     selectedRightNumber() {
-      if (this.isRightNumberOn) {
-        return { name: 'On', value: true };
-      } else {
-        return { name: 'Off', value: false };
-      }
+      return this.statusPageNumber.find(
+        ({ value }) => value === this.isRightNumberOn
+      );
     }
   },
   methods: {
+    /**
+     * Emit Status left page number change to parent
+     * @param {Boolean} val - value status left page number selected
+     */
     onChangeStatusLeft(val) {
-      console.log(val);
+      this.$emit('change', { isLeftNumberOn: val });
     },
+    /**
+     * Emit Status right page number change to parent
+     * @param {Boolean} val - value status right page number selected
+     */
     onChangeStatusRight(val) {
-      console.log(val);
+      this.$emit('change', { isRightNumberOn: val });
     },
+    /**
+     * Emit position change to parent
+     * @param {String} val - value position selected
+     */
     onChangePosition(val) {
-      console.log(val);
+      this.$emit('change', { position: val });
     }
   }
 };

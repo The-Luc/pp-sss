@@ -1,6 +1,8 @@
 import { mapGetters } from 'vuex';
-import { GETTERS } from '@/store/modules/print/const';
 import { useBook } from '@/hooks';
+import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
+import { GETTERS as BOOK_GETTERS } from '@/store/modules/book/const';
+
 import { SHEET_TYPE, LINK_STATUS } from '@/common/constants';
 import Properties from '@/components/Properties/BoxProperties';
 import PageTitle from './PageTitle';
@@ -22,13 +24,13 @@ export default {
   },
   computed: {
     ...mapGetters({
-      currentSheet: GETTERS.CURRENT_SHEET,
-      pageInfo: GETTERS.GET_PAGE_INFO
+      currentSheet: PRINT_GETTERS.CURRENT_SHEET,
+      pageInfo: BOOK_GETTERS.GET_PAGE_INFO
     }),
     isCover() {
       return this.currentSheet.type === SHEET_TYPE.COVER;
     },
-    isSiglePage() {
+    isSinglePage() {
       return (
         this.currentSheet.type === SHEET_TYPE.FRONT_COVER ||
         this.currentSheet.type === SHEET_TYPE.BACK_COVER
@@ -42,6 +44,14 @@ export default {
     },
     spreadInfo() {
       return this.currentSheet?.spreadInfo;
+    }
+  },
+  methods: {
+    onChangePageNumber(val) {
+      console.log(val);
+    },
+    onChangepageInfo(val) {
+      console.log(val);
     }
   }
 };

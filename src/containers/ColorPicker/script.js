@@ -12,7 +12,7 @@ export default {
       type: String,
       default: 'Color'
     },
-    colorize: {
+    isShowColorize: {
       type: Boolean,
       default: true
     }

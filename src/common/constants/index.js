@@ -29,6 +29,6 @@ export * from './defaultFabricProperty';
 export * from './controls';
 export * from './queryStatus';
 export * from './svgFillMode';
-export * from './pageNumberPosition';
+export * from './pageNumber';
 export * from './zoom';
 export * from './fontFamily';

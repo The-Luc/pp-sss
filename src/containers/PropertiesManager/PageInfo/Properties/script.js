@@ -40,14 +40,26 @@ export default {
     }
   },
   methods: {
+    /**
+     * Emit font family change to parent
+     * @param {Boolean} val - value font family selected
+     */
     onChangeFontFamily(val) {
-      console.log(val);
+      this.$emit('change', { fontFamily: val });
     },
+    /**
+     * Emit font size change to parent
+     * @param {Boolean} val - value font size selected
+     */
     onChangeFontSize(val) {
-      console.log(val);
+      this.$emit('change', { fontSize: val });
     },
+    /**
+     * Emit color change to parent
+     * @param {Boolean} val - value color selected
+     */
     onChangeColor(val) {
-      console.log(val);
+      this.$emit('change', { color: val });
     }
   }
 };
