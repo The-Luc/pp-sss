@@ -10,6 +10,11 @@ import {
   MUTATES as PRINT_MUTATES
 } from '@/store/modules/print/const';
 import {
+  GETTERS as DIGITAL_GETTERS,
+  MUTATES as DIGITAL_MUTATES
+} from '@/store/modules/digital/const';
+
+import {
   OBJECT_TYPE,
   TOOL_NAME,
   DEFAULT_FABRIC_BACKGROUND,
@@ -17,15 +22,21 @@ import {
 } from '@/common/constants';
 import { inToPx } from '@/common/utils';
 import { createTextBox } from '@/common/fabricObjects';
+import { EDITION } from '@/common/constants/config';
 
-export const useLayoutPrompt = () => {
+export const useLayoutPrompt = edition => {
+  const EDITION_GETTERS =
+    edition === EDITION.PRINT ? PRINT_GETTERS : DIGITAL_GETTERS;
+  const EDITION_MUTATES =
+    edition === EDITION.PRINT ? PRINT_MUTATES : DIGITAL_MUTATES;
+
   const { isPrompt, pageSelected } = useGetters({
     isPrompt: APP_GETTERS.IS_PROMPT,
-    pageSelected: PRINT_GETTERS.CURRENT_SHEET
+    pageSelected: EDITION_GETTERS.CURRENT_SHEET
   });
 
   const { updateVisited, setIsPrompt, setToolNameSelected } = useMutations({
-    updateVisited: PRINT_MUTATES.UPDATE_SHEET_VISITED,
+    updateVisited: EDITION_MUTATES.UPDATE_SHEET_VISITED,
     setIsPrompt: APP_MUTATES.SET_IS_PROMPT,
     setToolNameSelected: APP_MUTATES.SET_TOOL_NAME_SELECTED
   });

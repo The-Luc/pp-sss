@@ -28,6 +28,7 @@ import {
   GETTERS as DIGITAL_GETTERS,
   MUTATES as DIGITAL_MUTATES
 } from '@/store/modules/digital/const';
+import { useDrawLayout } from '@/hooks';
 
 const ELEMENTS = {
   [OBJECT_TYPE.TEXT]: 'a text box',
@@ -38,6 +39,11 @@ export default {
   components: {
     SizeWrapper,
     AddBoxInstruction
+  },
+  setup() {
+    const { drawLayout } = useDrawLayout();
+
+    return { drawLayout };
   },
   data() {
     return {
@@ -452,7 +458,8 @@ export default {
           await this.getDataCanvas();
           this.countPaste = 1;
           this.setSelectedObjectId({ id: '' });
-          this.updateCanvasSize();
+          // TODO: error, ask later
+          // this.updateCanvasSize();
           resetObjects(this.digitalCanvas);
           this.drawLayout(this.sheetLayout);
         }

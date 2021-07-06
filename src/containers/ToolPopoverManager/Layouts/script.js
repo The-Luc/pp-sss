@@ -13,6 +13,12 @@ import {
   GETTERS as PRINT_GETTERS,
   ACTIONS as PRINT_ACTIONS
 } from '@/store/modules/print/const';
+
+import {
+  GETTERS as DIGITAL_GETTERS,
+  ACTIONS as DIGITAL_ACTIONS
+} from '@/store/modules/digital/const';
+
 import { themeOptions } from '@/mock/themes';
 import PpToolPopover from '@/components/ToolPopover';
 import PpSelect from '@/components/Selectors/Select';
@@ -40,10 +46,15 @@ import {
 
 import { loadLayouts } from '@/api/layouts';
 
+// =========================
+const EDITION_GETTERS = window.printCanvas ? PRINT_GETTERS : DIGITAL_GETTERS;
+// =========================
+
 export default {
   setup() {
     const { setToolNameSelected, selectedToolName } = usePopoverCreationTool();
-    const { updateVisited, setIsPrompt } = useLayoutPrompt();
+    // TODO:
+    const { updateVisited, setIsPrompt } = useLayoutPrompt('digital');
     const { drawLayout } = useDrawLayout();
     return {
       selectedToolName,
@@ -70,7 +81,10 @@ export default {
       themeSelected: {},
       tempLayoutIdSelected: null,
       layoutEmptyLength: 4,
-      layoutObjSelected: {}
+      layoutObjSelected: {},
+      textDisplay: null,
+      // TODO:
+      isDigital: false
     };
   },
   computed: {
@@ -78,10 +92,11 @@ export default {
       themes: THEME_GETTERS.GET_THEMES,
       listLayouts: THEME_GETTERS.GET_PRINT_LAYOUTS_BY_THEME_ID,
       book: BOOK_GETTERS.BOOK_DETAIL,
-      pageSelected: PRINT_GETTERS.CURRENT_SHEET,
+      pageSelected: EDITION_GETTERS.CURRENT_SHEET,
       sheetLayout: PRINT_GETTERS.SHEET_LAYOUT,
       sheetTheme: BOOK_GETTERS.SHEET_THEME,
       getLayoutByType: THEME_GETTERS.GET_PRINT_LAYOUT_BY_TYPE,
+      getDigitalLayoutByType: THEME_GETTERS.GET_DIGITAL_LAYOUT_BY_TYPE,
       isPrompt: APP_GETTERS.IS_PROMPT,
       sectionId: BOOK_GETTERS.SECTION_ID
     }),
@@ -90,7 +105,14 @@ export default {
     },
     layouts() {
       if (this.themeSelected?.id && this.layoutSelected?.value) {
-        return this.getLayoutByType(
+        // TODO:
+        if (window.printCanvas) {
+          return this.getLayoutByType(
+            this.themeSelected?.id,
+            this.layoutSelected?.value
+          );
+        }
+        return this.getDigitalLayoutByType(
           this.themeSelected?.id,
           this.layoutSelected?.value
         );
@@ -107,7 +129,7 @@ export default {
     pageSelected: {
       deep: true,
       handler(newVal, oldVal) {
-        if (newVal.id !== oldVal.id) {
+        if (newVal?.id !== oldVal?.id) {
           this.initData();
         }
       }
@@ -122,7 +144,8 @@ export default {
   methods: {
     ...mapMutations({
       toggleModal: APP_MUTATES.TOGGLE_MODAL,
-      setPrintLayouts: THEME_MUTATES.PRINT_LAYOUTS
+      setPrintLayouts: THEME_MUTATES.PRINT_LAYOUTS,
+      setDigitalLayouts: THEME_MUTATES.DIGITAL_LAYOUTS
     }),
     ...mapActions({
       updateSheetThemeLayout: PRINT_ACTIONS.UPDATE_SHEET_THEME_LAYOUT
@@ -304,14 +327,45 @@ export default {
       this.updateVisited({
         sheetId: this.pageSelected?.id
       });
+    },
+
+    /**
+     * to update the display text for print and digital mode
+     */
+    updateTextDisplay() {
+      const printText = {
+        promptMsg:
+          'The best way to get started is by selecting a layout. As a shortcut, the layouts from your selecting theme will be presented first.',
+        promptHeader: 'Select a Layout',
+        title: 'Layouts',
+        optionTitle: 'Layout Type:'
+      };
+      const digitalText = {
+        promptMsg:
+          'The best way to get started is by selecting a screen layout. As a shortcut, the screens from your selecting theme will be presented first.',
+        promptHeader: 'Select a Screen Layout',
+        title: 'Screen Layouts',
+        optionTitle: 'Screen Type:'
+      };
+
+      return window.printCanvas ? printText : digitalText;
     }
   },
   async created() {
-    if (this.listLayouts().length === 0) {
+    this.textDisplay = this.updateTextDisplay();
+
+    if (this.listLayouts().length !== 0) {
       const layouts = await loadLayouts();
-      this.setPrintLayouts({
-        layouts
-      });
+      // TODO:
+      if (window.printCanvas) {
+        this.setPrintLayouts({
+          layouts
+        });
+      } else {
+        this.setDigitalLayouts({
+          layouts
+        });
+      }
     }
   }
 };

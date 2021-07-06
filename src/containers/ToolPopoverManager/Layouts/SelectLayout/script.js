@@ -13,6 +13,10 @@ export default {
       type: Boolean,
       default: false
     },
+    title: {
+      type: String,
+      required: true
+    },
     layoutSelected: {
       type: Object,
       default: () => ({})

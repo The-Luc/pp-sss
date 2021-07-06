@@ -1,4 +1,5 @@
 export const state = {
   printThemes: [],
-  printLayouts: []
+  printLayouts: [],
+  digitalLayouts: []
 };

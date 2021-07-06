@@ -4,13 +4,18 @@ import ItemTool from './ItemTool';
 import { GETTERS, MUTATES } from '@/store/modules/app/const';
 import { GETTERS as BOOK_GETTERS } from '@/store/modules/book/const';
 import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
-import { TOOL_NAME, OBJECT_TYPE, RIGHT_TOOLS } from '@/common/constants';
+import {
+  TOOL_NAME,
+  OBJECT_TYPE,
+  RIGHT_TOOLS,
+  EDITION
+} from '@/common/constants';
 import { useLayoutPrompt } from '@/hooks';
 import { isEmpty } from '@/common/utils';
 
 export default {
   setup() {
-    const { isPrompt } = useLayoutPrompt();
+    const { isPrompt } = useLayoutPrompt(EDITION.PRINT);
     return {
       isPrompt
     };

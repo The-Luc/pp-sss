@@ -14,7 +14,7 @@ import {
   usePopoverCreationTool,
   useObjectProperties
 } from '@/hooks';
-import { TOOL_NAME } from '@/common/constants';
+import { TOOL_NAME, EDITION } from '@/common/constants';
 import { scrollToElement } from '@/common/utils';
 
 export default {
@@ -22,7 +22,7 @@ export default {
     const { resetPrintConfig } = useResetPrintConfig();
     const { setToolNameSelected } = usePopoverCreationTool();
     const { toggleMenuProperties } = useObjectProperties();
-    const { updateVisited, setIsPrompt } = useLayoutPrompt();
+    const { updateVisited, setIsPrompt } = useLayoutPrompt(EDITION.PRINT);
     return {
       toggleMenuProperties,
       updateVisited,

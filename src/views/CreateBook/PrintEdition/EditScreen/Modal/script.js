@@ -13,10 +13,11 @@ import Themes from './Themes';
 import Preview from './Preview';
 import { useLayoutPrompt } from '@/hooks';
 import { loadLayouts } from '@/api/layouts';
+import { EDITION } from '@/common/constants';
 
 export default {
   setup() {
-    const { openPrompt } = useLayoutPrompt();
+    const { openPrompt } = useLayoutPrompt(EDITION.PRINT);
     return {
       openPrompt
     };
