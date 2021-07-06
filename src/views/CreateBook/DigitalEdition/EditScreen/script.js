@@ -1,6 +1,5 @@
 import { mapGetters, mapMutations, mapActions } from 'vuex';
 
-import { MUTATES, GETTERS as APP_GETTERS } from '@/store/modules/app/const';
 import ToolBar from './ToolBar';
 import Header from '@/containers/HeaderEdition/Header';
 import FeedbackBar from '@/containers/HeaderEdition/FeedbackBar';
@@ -15,7 +14,6 @@ import {
 import { useLayoutPrompt } from '@/hooks';
 import { MODAL_TYPES, TOOL_NAME, EDITION } from '@/common/constants';
 import { GETTERS as DIGITAL_GETTERS } from '@/store/modules/digital/const';
-import { MODAL_TYPES } from '@/common/constants';
 
 export default {
   setup() {
@@ -48,11 +46,6 @@ export default {
       }
     }
   },
-  mounted() {
-    if (!this.printThemeSelected) {
-      this.openSelectThemeModal();
-    }
-  },
   destroyed() {
     this.resetPrintConfigs();
   },
@@ -64,17 +57,6 @@ export default {
       setBookId: DIGITAL_MUTATES.SET_BOOK_ID,
       toggleModal: MUTATES.TOGGLE_MODAL
     }),
-    /**
-     * Trigger mutation to open theme modal
-     */
-    openSelectThemeModal() {
-      this.toggleModal({
-        isOpenModal: true,
-        modalData: {
-          type: MODAL_TYPES.SELECT_THEME
-        }
-      });
-    },
     /**
      * Check current sheet is first time visited or no to open prompt
      * @param  {Number} pageSelected - Curent page(sheet) selected id

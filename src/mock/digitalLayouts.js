@@ -294,12 +294,7 @@ export const packageLayouts = [
   {
     id: 2,
     name: 'Confetti',
-<<<<<<< HEAD
     type: LAYOUT_TYPES.COLLAGE.value,
-=======
-    type: LAYOUT_TYPES.GRADUATION.value,
->>>>>>> 6ec0d9b3372898d6bab4df05cd7da177a7264323
-    frames: [...frames],
     isFavorites: false,
     previewImageUrl: LAYOUT_02,
     themeId: 1
@@ -316,11 +311,7 @@ export const packageLayouts = [
   {
     id: 4,
     name: 'Confetti',
-<<<<<<< HEAD
     type: LAYOUT_TYPES.COLLAGE.value,
-=======
-    type: LAYOUT_TYPES.GRADUATION.value,
->>>>>>> 6ec0d9b3372898d6bab4df05cd7da177a7264323
     frames: [...frames],
     isFavorites: false,
     previewImageUrl: LAYOUT_04,
@@ -329,11 +320,7 @@ export const packageLayouts = [
   {
     id: 5,
     name: 'Confetti',
-<<<<<<< HEAD
     type: LAYOUT_TYPES.COLLAGE.value,
-=======
-    type: LAYOUT_TYPES.GRADUATION.value,
->>>>>>> 6ec0d9b3372898d6bab4df05cd7da177a7264323
     frames: [...frames],
     isFavorites: false,
     previewImageUrl: LAYOUT_05,

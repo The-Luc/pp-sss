@@ -96,7 +96,7 @@ export default {
       sheetLayout: PRINT_GETTERS.SHEET_LAYOUT,
       sheetTheme: BOOK_GETTERS.SHEET_THEME,
       getLayoutByType: THEME_GETTERS.GET_PRINT_LAYOUT_BY_TYPE,
-      getDigitalLayoutByType: THEME_GETTERS.GET_DIGITAL_LAYOUT_BY_TYPE,
+      getDigitalLayoutById: THEME_GETTERS.GET_DIGITAL_LAYOUTS_BY_THEME_ID,
       isPrompt: APP_GETTERS.IS_PROMPT,
       sectionId: BOOK_GETTERS.SECTION_ID
     }),
@@ -112,10 +112,7 @@ export default {
             this.layoutSelected?.value
           );
         }
-        return this.getDigitalLayoutByType(
-          this.themeSelected?.id,
-          this.layoutSelected?.value
-        );
+        return this.getDigitalLayoutById(this.themeSelected?.id);
       }
       return [];
     }

@@ -597,7 +597,7 @@ export default {
           this.countPaste = 1;
           this.setSelectedObjectId({ id: '' });
           // TODO: error, ask later
-          // this.updateCanvasSize();
+          this.updateCanvasSize();
           resetObjects(this.digitalCanvas);
           this.drawLayout(this.sheetLayout);
         }
