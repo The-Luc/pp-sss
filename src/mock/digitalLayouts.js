@@ -8,8 +8,18 @@ import {
   ShapeElement
 } from '@/common/models';
 
-import LAYOUT_01 from '@/assets/image/layouts/thumb/layout-01.png';
-import LAYOUT_02 from '@/assets/image/layouts/thumb/layout-02.png';
+import LAYOUT_01 from '@/assets/image/digital-layouts/thumb/layout-1.jpg';
+import LAYOUT_02 from '@/assets/image/digital-layouts/thumb/layout-2.jpg';
+import LAYOUT_03 from '@/assets/image/digital-layouts/thumb/layout-3.jpg';
+import LAYOUT_04 from '@/assets/image/digital-layouts/thumb/layout-4.jpg';
+import LAYOUT_05 from '@/assets/image/digital-layouts/thumb/layout-5.jpg';
+import LAYOUT_06 from '@/assets/image/digital-layouts/thumb/layout-6.jpg';
+import LAYOUT_07 from '@/assets/image/digital-layouts/thumb/layout-7.jpg';
+import LAYOUT_08 from '@/assets/image/digital-layouts/thumb/layout-8.jpg';
+import LAYOUT_09 from '@/assets/image/digital-layouts/thumb/layout-9.jpg';
+import LAYOUT_10 from '@/assets/image/digital-layouts/thumb/layout-10.jpg';
+import LAYOUT_11 from '@/assets/image/digital-layouts/thumb/layout-11.jpg';
+import LAYOUT_12 from '@/assets/image/digital-layouts/thumb/layout-12.jpg';
 
 import BG_1 from '@/assets/image/layouts/background/background-01.jpg';
 import BG_2 from '@/assets/image/layouts/background/background-02.jpg';
@@ -275,11 +285,191 @@ export const packageLayouts = [
   {
     id: 1,
     name: 'Confetti',
-    type: LAYOUT_TYPES.GRADUATION.value,
+    type: LAYOUT_TYPES.COVER.value,
     frames: [...frames],
     isFavorites: false,
     previewImageUrl: LAYOUT_01,
     themeId: 1
+  },
+  {
+    id: 2,
+    name: 'Confetti',
+    type: LAYOUT_TYPES.GRADUATION.value,
+    frames: [...frames],
+    isFavorites: false,
+    previewImageUrl: LAYOUT_02,
+    themeId: 1
+  },
+  {
+    id: 3,
+    name: 'Confetti',
+    type: LAYOUT_TYPES.COVER.value,
+    frames: [...frames],
+    isFavorites: false,
+    previewImageUrl: LAYOUT_03,
+    themeId: 1
+  },
+  {
+    id: 4,
+    name: 'Confetti',
+    type: LAYOUT_TYPES.GRADUATION.value,
+    frames: [...frames],
+    isFavorites: false,
+    previewImageUrl: LAYOUT_04,
+    themeId: 1
+  },
+  {
+    id: 5,
+    name: 'Confetti',
+    type: LAYOUT_TYPES.GRADUATION.value,
+    frames: [...frames],
+    isFavorites: false,
+    previewImageUrl: LAYOUT_05,
+    themeId: 1
+  },
+  {
+    id: 6,
+    name: 'Confetti',
+    type: LAYOUT_TYPES.ADMIN_STAFF.value,
+    frames: [...frames],
+    isFavorites: false,
+    previewImageUrl: LAYOUT_06,
+    themeId: 1
+  },
+  {
+    id: 7,
+    name: 'Scribble',
+    type: LAYOUT_TYPES.ADMIN_STAFF.value,
+    frames: [...frames],
+    isFavorites: false,
+    previewImageUrl: LAYOUT_07,
+    themeId: 8
+  },
+  {
+    id: 8,
+    name: 'Confetti',
+    type: LAYOUT_TYPES.GRADUATION.value,
+    frames: [...frames],
+    isFavorites: false,
+    previewImageUrl: LAYOUT_08,
+    themeId: 1
+  },
+  {
+    id: 9,
+    name: 'Confetti',
+    type: LAYOUT_TYPES.GRADUATION.value,
+    frames: [...frames],
+    isFavorites: false,
+    previewImageUrl: LAYOUT_09,
+    themeId: 1
+  },
+  {
+    id: 10,
+    name: '3D',
+    type: LAYOUT_TYPES.ADMIN_STAFF.value,
+    frames: [...frames],
+    isFavorites: false,
+    previewImageUrl: LAYOUT_10,
+    themeId: 2
+  },
+  {
+    id: 11,
+    name: 'Newsprint',
+    type: LAYOUT_TYPES.CLUBS_GROUPS_TEAMS.value,
+    frames: [...frames],
+    isFavorites: false,
+    previewImageUrl: LAYOUT_11,
+    themeId: 3
+  },
+  {
+    id: 12,
+    name: 'Tokyo',
+    type: LAYOUT_TYPES.GRADUATION.value,
+    frames: [...frames],
+    isFavorites: false,
+    previewImageUrl: LAYOUT_12,
+    themeId: 4
+  },
+  {
+    id: 13,
+    name: 'Glitch',
+    type: LAYOUT_TYPES.GRADUATION.value,
+    frames: [...frames],
+    isFavorites: false,
+    previewImageUrl: LAYOUT_01,
+    themeId: 5
+  },
+  {
+    id: 14,
+    name: 'Nature',
+    type: LAYOUT_TYPES.COVER.value,
+    frames: [...frames],
+    isFavorites: false,
+    previewImageUrl: LAYOUT_02,
+    themeId: 6
+  },
+  {
+    id: 15,
+    name: 'Pixel',
+    type: LAYOUT_TYPES.GRADUATION.value,
+    frames: [...frames],
+    isFavorites: false,
+    previewImageUrl: LAYOUT_03,
+    themeId: 7
+  },
+  {
+    id: 16,
+    name: 'Scribble',
+    type: LAYOUT_TYPES.ADMIN_STAFF.value,
+    frames: [...frames],
+    isFavorites: false,
+    previewImageUrl: LAYOUT_04,
+    themeId: 8
+  },
+  {
+    id: 17,
+    name: 'Nature',
+    type: LAYOUT_TYPES.GRADUATION.value,
+    frames: [...frames],
+    isFavorites: false,
+    previewImageUrl: LAYOUT_06,
+    themeId: 6
+  },
+  {
+    id: 14,
+    name: 'Nature',
+    type: LAYOUT_TYPES.ADMIN_STAFF.value,
+    frames: [...frames],
+    isFavorites: false,
+    previewImageUrl: LAYOUT_02,
+    themeId: 6
+  },
+  {
+    id: 15,
+    name: 'Pixel',
+    type: LAYOUT_TYPES.GRADUATION.value,
+    frames: [...frames],
+    isFavorites: false,
+    previewImageUrl: LAYOUT_03,
+    themeId: 7
+  },
+  {
+    id: 16,
+    name: 'Scribble',
+    type: LAYOUT_TYPES.GRADUATION.value,
+    frames: [...frames],
+    isFavorites: false,
+    previewImageUrl: LAYOUT_04,
+    themeId: 8
+  },
+  {
+    id: 17,
+    name: 'Scribble',
+    type: LAYOUT_TYPES.COVER.value,
+    frames: [...frames],
+    isFavorites: false,
+    previewImageUrl: LAYOUT_06,
+    themeId: 8
   }
 ];
 

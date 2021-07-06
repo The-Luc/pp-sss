@@ -3,7 +3,7 @@ import { getNewPrintBackground } from '@/common/models';
 export const state = {
   book: {
     id: null,
-    defaultThemeId: ''
+    defaultThemeId: null
   },
   sections: [],
   sheets: {},

@@ -14,6 +14,7 @@ import EmptySection from '@/containers/ModalEmptySection';
 import SelectTheme from '@/views/CreateBook/PrintEdition/EditScreen/Modal';
 import ModalSelectPage from '@/views/CreateBook/PrintEdition/EditScreen/PageEdition/ModalSelectPage';
 import ModalBackgroundSelectPage from '@/containers/ToolPopoverManager/Backgrounds/ModalSelectPage';
+import SelectThemeDigital from '@/views/CreateBook/DigitalEdition/EditScreen/ModalTheme';
 
 const {
   HELP,
@@ -23,7 +24,8 @@ const {
   SELECT_THEME,
   GANTT_CHART,
   SELECT_PAGE,
-  BACKGROUND_SELECT_PAGE
+  BACKGROUND_SELECT_PAGE,
+  SELECT_THEME_DIGITAL
 } = MODAL_TYPES;
 
 const ModalList = {
@@ -34,7 +36,8 @@ const ModalList = {
   [SELECT_THEME]: SELECT_THEME,
   [GANTT_CHART]: GANTT_CHART,
   [SELECT_PAGE]: SELECT_PAGE,
-  [BACKGROUND_SELECT_PAGE]: BACKGROUND_SELECT_PAGE
+  [BACKGROUND_SELECT_PAGE]: BACKGROUND_SELECT_PAGE,
+  [SELECT_THEME_DIGITAL]: SELECT_THEME_DIGITAL
 };
 
 export default {
@@ -51,7 +54,8 @@ export default {
     [MODAL_TYPES.SELECT_THEME]: SelectTheme,
     [MODAL_TYPES.GANTT_CHART]: GanttChartModal,
     [MODAL_TYPES.SELECT_PAGE]: ModalSelectPage,
-    [MODAL_TYPES.BACKGROUND_SELECT_PAGE]: ModalBackgroundSelectPage
+    [MODAL_TYPES.BACKGROUND_SELECT_PAGE]: ModalBackgroundSelectPage,
+    [MODAL_TYPES.SELECT_THEME_DIGITAL]: SelectThemeDigital
   },
   computed: {
     ...mapGetters({
