@@ -1,7 +1,8 @@
 <template>
   <div class="title">
     <div class="title-content">
-      <div class="project-title">{{ titleNameLeft }}</div>
+      <div v-if="!isLink" class="project-title">{{ titleName }}</div>
+      <div v-else class="project-title">Left hand page title:</div>
       <input
         type="text"
         :disabled="isDisable"
@@ -10,7 +11,7 @@
       />
     </div>
     <div v-if="isLink" class="title-content">
-      <div class="project-title">{{ titleNameRight }}</div>
+      <div class="project-title">Right hand page title:</div>
       <input
         type="text"
         :disabled="isDisable"

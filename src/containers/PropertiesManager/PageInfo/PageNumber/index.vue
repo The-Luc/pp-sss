@@ -3,29 +3,29 @@
     <div class="page-number-title">Page Numbering {{ titleName }}:</div>
     <div class="page-number-container">
       <div class="status-page-number">
-        <div class="title-status">{{ statusPageLeft }}</div>
+        <div v-if="!isSiglePage" class="title-status">Left hand page:</div>
+        <div v-else class="title-status">On/Off:</div>
         <PpSelect
           :items="statusPageNumber"
-          :selected-val="{ name: 'On', value: true }"
+          :selected-val="selectedLeftNumber"
           @change="onChangeStatusLeft"
         />
       </div>
+
       <div v-if="!isSiglePage" class="status-page-number">
-        <div class="title-status">{{ statusPageRight }}</div>
+        <div class="title-status">Right hand page:</div>
         <PpSelect
           :items="statusPageNumber"
-          :selected-val="{ name: 'On', value: true }"
+          :selected-val="selectedRightNumber"
           @change="onChangeStatusRight"
         />
       </div>
+
       <div v-if="isCover" class="position-page-number">
         <div class="title-position">Position:</div>
         <PpSelect
           :items="positionPageNumber"
-          :selected-val="{
-            name: 'Bottom Center',
-            value: 'BOTTOM_CENTER'
-          }"
+          :selected-val="selectedPosition"
           @change="onChangePosition"
         />
       </div>

@@ -100,6 +100,9 @@ export const mutations = {
   [PRINT._MUTATES.SET_CURRENT_OBJECT_ID](state, { id }) {
     state.currentObjectId = id;
   },
+  [PRINT._MUTATES.SET_PAGE_INFO](state, { pageInfo }) {
+    state.pageInfo = pageInfo;
+  },
   [PRINT._MUTATES.ADD_OBJECT](state, { id, newObject }) {
     state.objectIds.push(id);
 

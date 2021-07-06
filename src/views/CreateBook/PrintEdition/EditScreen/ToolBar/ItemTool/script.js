@@ -33,22 +33,28 @@ export default {
         if (!iconName) {
           return false;
         }
-
         const isBackgroundSelected =
           this.propertiesObjectType === OBJECT_TYPE.BACKGROUND;
 
         const isBackgroundMenu = RIGHT_TOOLS.BACKGROUND.value === iconName;
 
+        const isPageInfoMenu = RIGHT_TOOLS.PAGE_INFO.value === iconName;
+
+        const isPageInfoSelected =
+          this.propertiesObjectType === OBJECT_TYPE.PAGE_INFO;
         const isBackgroundActive = isBackgroundSelected && isBackgroundMenu;
+        const isPageInfoActive = isPageInfoSelected && isPageInfoMenu;
 
         const isPropertiesuSelected =
-          !isEmpty(this.propertiesObjectType) && !isBackgroundSelected;
+          !isEmpty(this.propertiesObjectType) &&
+          !isBackgroundSelected &&
+          !isPageInfoSelected;
 
         const isPropertiesMenu = RIGHT_TOOLS.PROPERTIES.value === iconName;
 
         const isPropertiesActive = isPropertiesuSelected && isPropertiesMenu;
 
-        if (isBackgroundActive || isPropertiesActive) {
+        if (isBackgroundActive || isPropertiesActive || isPageInfoActive) {
           return this.isOpenMenuProperties;
         }
 

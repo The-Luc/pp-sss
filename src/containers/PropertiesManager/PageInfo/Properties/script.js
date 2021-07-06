@@ -9,14 +9,35 @@ export default {
     PpSelect,
     ColorPicker
   },
+  props: {
+    pageInfo: {
+      type: Object,
+      required: false
+    }
+  },
   data() {
     return {
       appendedIcon: ICON_LOCAL.APPENDED_ICON,
       prependedIcon: ICON_LOCAL.PREPENDED_FONT_SIZE,
       fontSize: FONT_SIZE,
-      fontFamily: FONT_FAMILY,
-      color: '#000000'
+      fontFamily: FONT_FAMILY
     };
+  },
+  computed: {
+    selectedFontFamily() {
+      const font = this.fontFamily.find(
+        item => item.value === this.pageInfo.fontFamily.toLowerCase()
+      );
+
+      return { name: font.name, value: font.value };
+    },
+    selectedFontSize() {
+      const font = this.fontSize.find(
+        item => item.value === this.pageInfo.fontSize
+      );
+
+      return { name: font.name, value: font.value };
+    }
   },
   methods: {
     onChangeFontFamily(val) {

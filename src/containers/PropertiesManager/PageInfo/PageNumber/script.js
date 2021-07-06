@@ -9,14 +9,6 @@ export default {
       type: String,
       default: ''
     },
-    statusPageLeft: {
-      type: String,
-      default: 'On/Off:'
-    },
-    statusPageRight: {
-      type: String,
-      default: 'On/Off:'
-    },
     isCover: {
       type: Boolean,
       default: true
@@ -24,6 +16,18 @@ export default {
     isSiglePage: {
       type: Boolean,
       default: true
+    },
+    isLeftNumberOn: {
+      type: Boolean,
+      required: true
+    },
+    isRightNumberOn: {
+      type: Boolean,
+      required: false
+    },
+    position: {
+      type: String,
+      required: false
     }
   },
   data() {
@@ -40,6 +44,35 @@ export default {
         }
       ]
     };
+  },
+  computed: {
+    selectedPosition() {
+      if (this.position === PAGE_NUMBER_POSITION.BOTTOM_CENTER) {
+        return {
+          name: 'Bottom Center',
+          value: PAGE_NUMBER_POSITION.BOTTOM_CENTER
+        };
+      } else {
+        return {
+          name: 'Bottom Outside Corners',
+          value: PAGE_NUMBER_POSITION.BOTTOM_OUTSIDE_CORNERS
+        };
+      }
+    },
+    selectedLeftNumber() {
+      if (this.isLeftNumberOn) {
+        return { name: 'On', value: true };
+      } else {
+        return { name: 'Off', value: false };
+      }
+    },
+    selectedRightNumber() {
+      if (this.isRightNumberOn) {
+        return { name: 'On', value: true };
+      } else {
+        return { name: 'Off', value: false };
+      }
+    }
   },
   methods: {
     onChangeStatusLeft(val) {

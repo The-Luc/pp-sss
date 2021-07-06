@@ -22,7 +22,8 @@ export const actions = {
   async [PRINT._ACTIONS.GET_DATA_EDIT]({ state, dispatch, commit }) {
     const queryResults = await Promise.all([
       printService.getDefaultThemeId(state.book.id),
-      printService.getPrintEditSectionsSheets(state.book.id)
+      printService.getPrintEditSectionsSheets(state.book.id),
+      printService.getPageInfo(state.book.id)
     ]);
 
     if (queryResults[1].status !== STATUS.OK) return;
@@ -33,6 +34,10 @@ export const actions = {
 
     commit(PRINT._MUTATES.SET_SECTIONS_SHEETS, {
       sectionsSheets: queryResults[1].data
+    });
+
+    commit(PRINT._MUTATES.SET_PAGE_INFO, {
+      pageInfo: queryResults[2].data
     });
 
     if (isEmpty(state.currentSheetId)) {

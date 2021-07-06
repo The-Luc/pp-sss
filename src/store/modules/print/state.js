@@ -11,6 +11,7 @@ export const state = {
   objectIds: [],
   objects: {},
   currentObjectId: '',
+  pageInfo: {},
   background: getNewPrintBackground(),
   triggerChange: {
     text: true,

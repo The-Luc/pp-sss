@@ -191,6 +191,23 @@ const printService = {
       `SHEET_ID_${sheetId}`,
       JSON.stringify(sheetLayout)
     );
+  },
+  /**
+   * Get print page info
+   *
+   * @param   {Number}  bookId  id of current book
+   * @returns {Object}          query result
+   */
+  getPageInfo: bookId => {
+    return new Promise(resolve => {
+      const data = bookService.getBook(bookId).printData.pageInfo;
+
+      const result = isEmpty(data)
+        ? getErrorWithMessages([])
+        : getSuccessWithData(data);
+
+      resolve(result);
+    });
   }
 };
 

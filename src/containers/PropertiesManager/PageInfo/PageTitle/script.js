@@ -1,12 +1,8 @@
 export default {
   props: {
-    titleNameLeft: {
+    titleName: {
       type: String,
       default: 'Project title:'
-    },
-    titleNameRight: {
-      type: String,
-      default: 'Right hand page title:'
     },
     titleValueLeft: {
       type: String,
@@ -18,7 +14,7 @@ export default {
     },
     isDisable: {
       type: Boolean,
-      required: true
+      default: false
     },
     isLink: {
       type: Boolean,

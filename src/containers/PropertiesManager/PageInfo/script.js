@@ -22,7 +22,8 @@ export default {
   },
   computed: {
     ...mapGetters({
-      currentSheet: GETTERS.CURRENT_SHEET
+      currentSheet: GETTERS.CURRENT_SHEET,
+      pageInfo: GETTERS.GET_PAGE_INFO
     }),
     isCover() {
       return this.currentSheet.type === SHEET_TYPE.COVER;
@@ -39,19 +40,8 @@ export default {
     isLink() {
       return this.currentSheet.link === LINK_STATUS.LINK;
     },
-    titleNameLeft() {
-      return this.isLink
-        ? 'Left hand page:'
-        : this.isSiglePage
-        ? 'Page title:'
-        : 'Spread title:';
-    },
-    titleNameNumber() {
-      return this.isSiglePage
-        ? '(for this page only)'
-        : this.isSpread
-        ? '(for this spread only)'
-        : '';
+    spreadInfo() {
+      return this.currentSheet?.spreadInfo;
     }
   }
 };
