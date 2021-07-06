@@ -38,11 +38,11 @@ export default {
 
         const isBackgroundMenu = RIGHT_TOOLS.BACKGROUND.value === iconName;
 
-        const isPageInfoMenu = RIGHT_TOOLS.PAGE_INFO.value === iconName;
+        const isBackgroundActive = isBackgroundSelected && isBackgroundMenu;
 
         const isPageInfoSelected =
           this.propertiesObjectType === OBJECT_TYPE.PAGE_INFO;
-        const isBackgroundActive = isBackgroundSelected && isBackgroundMenu;
+        const isPageInfoMenu = RIGHT_TOOLS.PAGE_INFO.value === iconName;
         const isPageInfoActive = isPageInfoSelected && isPageInfoMenu;
 
         const isPropertiesuSelected =

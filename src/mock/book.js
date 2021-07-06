@@ -142,7 +142,7 @@ const book = {
             thumbnailUrl: null,
             theme: null,
             layout: defaultLayout,
-            link: LINK_STATUS.UNLINK
+            link: LINK_STATUS.LINK
           },
           digitalData: {
             thumbnailUrl: null,
