@@ -65,9 +65,9 @@ const printService = {
             totalSheets += section.sheets.length;
           }
 
-          const { name, color } = section;
+          const { name, color, id } = section;
 
-          return { name, color, sheets: sheets };
+          return { id, name, color, sheets };
         });
 
       const result = isEmpty(data)

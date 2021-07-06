@@ -2,7 +2,8 @@ import Select from '@/components/Selectors/Select';
 import BorderStyle from './Settings/Style';
 import BorderColor from './Settings/Color';
 import BorderThickness from './Settings/Thickness';
-import { getRectDashes } from '@/common/utils';
+import { activeCanvas, getRectDashes } from '@/common/utils';
+import { EVENT_TYPE } from '@/common/constants/eventType';
 
 export default {
   components: {
@@ -40,7 +41,7 @@ export default {
      * @returns   {Array}  Array specifying dash pattern of an object's stroke
      */
     computedDashArray() {
-      const objectActive = window.printCanvas.getActiveObject();
+      const objectActive = activeCanvas?.getActiveObject();
       const { width, height } = objectActive;
       const strokeDashArray = getRectDashes(
         width,
@@ -57,7 +58,7 @@ export default {
     onChangeThickness(value) {
       this.strokeWidth = value;
       const strokeDashArray = this.computedDashArray();
-      this.$root.$emit('printChangeTextProperties', {
+      this.$root.$emit(EVENT_TYPE.CHANGE_TEXT_PROPERTIES, {
         border: {
           strokeDashArray,
           strokeWidth: value
@@ -71,7 +72,7 @@ export default {
     onChangeBorderStyle({ value }) {
       this.borderStyle = value;
       const strokeDashArray = this.computedDashArray();
-      this.$root.$emit('printChangeTextProperties', {
+      this.$root.$emit(EVENT_TYPE.CHANGE_TEXT_PROPERTIES, {
         border: {
           strokeDashArray,
           strokeLineCap: value

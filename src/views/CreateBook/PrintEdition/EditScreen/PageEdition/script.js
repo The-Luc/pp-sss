@@ -24,7 +24,8 @@ import {
   computePastedObjectCoord,
   setBorderObject,
   setCanvasUniformScaling,
-  setBorderHighLight
+  setBorderHighLight,
+  setActiveCanvas
 } from '@/common/utils';
 
 import {
@@ -124,7 +125,6 @@ export default {
       pageSelected: PRINT_GETTERS.CURRENT_SHEET,
       sheetLayout: PRINT_GETTERS.SHEET_LAYOUT,
       isOpenMenuProperties: APP_GETTERS.IS_OPEN_MENU_PROPERTIES,
-      isOpenColorPicker: APP_GETTERS.IS_OPEN_COLOR_PICKER,
       selectedObject: PRINT_GETTERS.CURRENT_OBJECT,
       toolNameSelected: APP_GETTERS.SELECTED_TOOL_NAME,
       currentBackgrounds: PRINT_GETTERS.BACKGROUNDS,
@@ -186,7 +186,7 @@ export default {
         }
       }
     },
-    zoom(newVal, oldVal) {
+    zoom(newVal) {
       console.log(newVal);
     }
   },
@@ -221,7 +221,6 @@ export default {
       setBookId: PRINT_MUTATES.SET_BOOK_ID,
       setIsOpenProperties: MUTATES.TOGGLE_MENU_PROPERTIES,
       setToolNameSelected: MUTATES.SET_TOOL_NAME_SELECTED,
-      toggleColorPicker: MUTATES.TOGGLE_COLOR_PICKER,
       setObjectTypeSelected: MUTATES.SET_OBJECT_TYPE_SELECTED,
       setSelectedObjectId: PRINT_MUTATES.SET_CURRENT_OBJECT_ID,
       setObjects: PRINT_MUTATES.SET_OBJECTS,
@@ -620,7 +619,7 @@ export default {
         backgroundColor: '#fff',
         preserveObjectStacking: true
       });
-
+      setActiveCanvas(window.printCanvas);
       usePrintOverrides(fabric.Object.prototype);
       this.updateCanvasSize();
       window.printCanvas.on({
@@ -731,10 +730,6 @@ export default {
      * Reset configs text properties when close object
      */
     resetConfigTextProperties() {
-      if (this.isOpenColorPicker) {
-        this.toggleColorPicker({ isOpen: false });
-      }
-
       if (this.propertiesObjectType !== OBJECT_TYPE.BACKGROUND) {
         this.setIsOpenProperties({ isOpen: false });
 
@@ -779,17 +774,17 @@ export default {
       const objectType = objectData?.type;
       const isSelectMultiObject = !objectType;
 
+      this.setInfoBar({
+        w: isSelectMultiObject ? 0 : this.getProperty('size')?.width,
+        h: isSelectMultiObject ? 0 : this.getProperty('size')?.height
+      });
+
       if (isSelectMultiObject) {
         setCanvasUniformScaling(window.printCanvas, true);
 
-        this.setInfoBar({ w: 0, h: 0 });
+        this.closeProperties();
       } else {
         setCanvasUniformScaling(window.printCanvas, objectData.isConstrain);
-
-        this.setInfoBar({
-          w: this.getProperty('size')?.width,
-          h: this.getProperty('size')?.height
-        });
       }
 
       if (isEmpty(objectType)) return;
@@ -1422,7 +1417,7 @@ export default {
       };
 
       const textEvents = {
-        printChangeTextProperties: prop => {
+        changeTextProperties: prop => {
           this.getThumbnailUrl();
           this.changeTextProperties(prop);
         }

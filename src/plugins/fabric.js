@@ -168,7 +168,6 @@ export const usePrintOverrides = object => {
 export const useDigitalOverrides = object => {
   const objectPrototype = object || fabric.Object.prototype;
   commonFabricOverrides(objectPrototype);
-  objectPrototype.setControlsVisibility({
-    mtr: false
-  });
+  objectPrototype.drawBorders = drawBorders;
+  objectPrototype.drawControls = drawControls;
 };

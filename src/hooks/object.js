@@ -1,6 +1,4 @@
-import { useGetters, useMutations } from 'vuex-composition-helpers';
-
-import { MUTATES as APP_MUTATES } from '@/store/modules/app/const';
+import { useGetters } from 'vuex-composition-helpers';
 import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 
 /**
@@ -47,16 +45,6 @@ export const useElementProperties = () => {
   };
 };
 
-export const useColorPickerProperties = () => {
-  const { setColorPickerData } = useMutations({
-    setColorPickerData: APP_MUTATES.SET_COLOR_PICKER_COLOR
-  });
-
-  return {
-    setColorPickerData
-  };
-};
-
 export const useShapeProperties = () => {
   const { triggerChange } = useGetters({
     triggerChange: PRINT_GETTERS.TRIGGER_SHAPE_CHANGE
@@ -64,7 +52,6 @@ export const useShapeProperties = () => {
 
   return {
     ...useElementProperties(),
-    ...useColorPickerProperties(),
     triggerChange
   };
 };
@@ -76,7 +63,6 @@ export const useClipArtProperties = () => {
 
   return {
     ...useElementProperties(),
-    ...useColorPickerProperties(),
     triggerChange
   };
 };

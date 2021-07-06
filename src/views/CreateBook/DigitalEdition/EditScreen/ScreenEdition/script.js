@@ -5,8 +5,16 @@ import SizeWrapper from '@/components/SizeWrapper';
 import AddBoxInstruction from '@/components/AddBoxInstruction';
 import { useDigitalOverrides } from '@/plugins/fabric';
 import { OBJECT_TYPE, SHEET_TYPE } from '@/common/constants';
-import { createTextBox, startDrawBox } from '@/common/fabricObjects';
+import {
+  applyTextBoxProperties,
+  createTextBox,
+  startDrawBox,
+  toggleStroke,
+  updateTextListeners
+} from '@/common/fabricObjects';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
+import { useDrawLayout, useInfoBar } from '@/hooks';
+
 import {
   CANVAS_EVENT_TYPE,
   EVENT_TYPE,
@@ -15,8 +23,10 @@ import {
 import {
   deleteSelectedObjects,
   isEmpty,
+  pxToIn,
   resetObjects,
   selectLatestObject,
+  setActiveCanvas,
   setBorderHighLight,
   setBorderObject,
   setCanvasUniformScaling
@@ -28,6 +38,8 @@ import {
   GETTERS as DIGITAL_GETTERS,
   MUTATES as DIGITAL_MUTATES
 } from '@/store/modules/digital/const';
+import { cloneDeep, debounce } from 'lodash';
+import { THUMBNAIL_IMAGE_QUALITY } from '@/common/constants/config';
 
 const ELEMENTS = {
   [OBJECT_TYPE.TEXT]: 'a text box',
@@ -39,8 +51,16 @@ export default {
     SizeWrapper,
     AddBoxInstruction
   },
+  setup() {
+    const { drawLayout } = useDrawLayout();
+    const { setInfoBar, zoom } = useInfoBar();
+
+    return { drawLayout, setInfoBar, zoom };
+  },
   data() {
     return {
+      containerSize: null,
+      canvasSize: null,
       element: '',
       x: 0,
       y: 0,
@@ -55,7 +75,6 @@ export default {
       pageSelected: DIGITAL_GETTERS.CURRENT_SHEET,
       sheetLayout: DIGITAL_GETTERS.SHEET_LAYOUT,
       isOpenMenuProperties: APP_GETTERS.IS_OPEN_MENU_PROPERTIES,
-      isOpenColorPicker: APP_GETTERS.IS_OPEN_COLOR_PICKER,
       selectedObject: DIGITAL_GETTERS.CURRENT_OBJECT,
       toolNameSelected: APP_GETTERS.SELECTED_TOOL_NAME,
       currentBackgrounds: DIGITAL_GETTERS.BACKGROUNDS,
@@ -83,7 +102,6 @@ export default {
       setBookId: DIGITAL_MUTATES.SET_BOOK_ID,
       setIsOpenProperties: MUTATES.TOGGLE_MENU_PROPERTIES,
       setToolNameSelected: MUTATES.SET_TOOL_NAME_SELECTED,
-      toggleColorPicker: MUTATES.TOGGLE_COLOR_PICKER,
       setObjectTypeSelected: MUTATES.SET_OBJECT_TYPE_SELECTED,
       setSelectedObjectId: DIGITAL_MUTATES.SET_CURRENT_OBJECT_ID,
       setObjects: DIGITAL_MUTATES.SET_OBJECTS,
@@ -104,16 +122,16 @@ export default {
       setBackgroundProp: DIGITAL_MUTATES.SET_BACKGROUND_PROP,
       deleteBackground: DIGITAL_MUTATES.DELETE_BACKGROUND
     }),
-    updateCanvasSize(containerSize) {
+    updateCanvasSize() {
       const canvasSize = {
         width: 0,
         height: 0
       };
-      if (containerSize.ratio > DIGITAL_CANVAS_SIZE.RATIO) {
-        canvasSize.height = containerSize.height;
+      if (this.containerSize.ratio > DIGITAL_CANVAS_SIZE.RATIO) {
+        canvasSize.height = this.containerSize.height;
         canvasSize.width = canvasSize.height * DIGITAL_CANVAS_SIZE.RATIO;
       } else {
-        canvasSize.width = containerSize.width;
+        canvasSize.width = this.containerSize.width;
         canvasSize.height = canvasSize.width / DIGITAL_CANVAS_SIZE.RATIO;
       }
       window.digitalCanvas.setWidth(canvasSize.width);
@@ -125,10 +143,15 @@ export default {
      * @param  {Object} containerSize canvas's dimensions
      */
     onContainerReady(containerSize) {
-      let el = this.$refs.digitalCanvas;
-      window.digitalCanvas = new fabric.Canvas(el);
+      this.containerSize = containerSize;
+      const el = this.$refs.digitalCanvas;
+      window.digitalCanvas = new fabric.Canvas(el, {
+        backgroundColor: '#fff',
+        preserveObjectStacking: true
+      });
+      setActiveCanvas(window.digitalCanvas);
       useDigitalOverrides(fabric.Object.prototype);
-      this.updateCanvasSize(containerSize);
+      this.updateCanvasSize();
       this.digitalCanvas = window.digitalCanvas;
       this.updateCanvasEventListeners();
       this.updateDigitalEventListeners();
@@ -140,19 +163,30 @@ export default {
      * @param  {Object} containerSize canvas's dimensions
      */
     onContainerResized(containerSize) {
-      this.updateCanvasSize(containerSize);
+      this.containerSize = containerSize;
+      this.updateCanvasSize();
     },
 
     /**
      * Update component's event listeners after component has been mouted
      */
     updateDigitalEventListeners() {
-      const events = [
+      const elementEvents = [
         {
           name: EVENT_TYPE.DIGITAL_ADD_ELEMENT,
           handler: this.onAddElement
         }
       ];
+      const textEvents = [
+        {
+          name: EVENT_TYPE.CHANGE_TEXT_PROPERTIES,
+          handler: prop => {
+            this.getThumbnailUrl();
+            this.changeTextProperties(prop);
+          }
+        }
+      ];
+      const events = [...elementEvents, ...textEvents];
       events.forEach(event => {
         this.$root.$on(event.name, event.handler);
       });
@@ -222,6 +256,7 @@ export default {
       const { id } = target;
       const targetType = target.get('type');
       this.setSelectedObjectId({ id });
+
       setBorderHighLight(target, this.sheetLayout);
 
       const objectData = this.selectedObject;
@@ -253,10 +288,6 @@ export default {
      * Event fire when selection of fabric canvas has been cleared
      */
     onSelectionCleared() {
-      if (this.isOpenColorPicker) {
-        this.toggleColorPicker({ isOpen: false });
-      }
-
       if (this.propertiesObjectType !== OBJECT_TYPE.BACKGROUND) {
         this.setIsOpenProperties({ isOpen: false });
 
@@ -293,9 +324,23 @@ export default {
 
     /**
      * Event fire when fabric object has been scaled
+     * @param target fabric object selected
      */
-    onObjectScaled() {
-      console.log('object:scaled');
+    onObjectScaled({ target }) {
+      const { width, height } = target;
+      const prop = {
+        size: {
+          width: pxToIn(width),
+          height: pxToIn(height)
+        }
+      };
+      this.setObjectProp({ prop });
+      this.updateTriggerTextChange();
+
+      this.setInfoBar({
+        w: prop.size.width,
+        h: prop.size.height
+      });
     },
 
     /**
@@ -344,8 +389,17 @@ export default {
      */
     addText(x, y, width, height) {
       const { object, data } = createTextBox(x, y, width, height, {});
-
+      const [rect, text] = object._objects;
       // this.handleAddTextEventListeners(object, data);
+      const events = {
+        // rotated: this.handleRotated,
+        // moved: this.handleMoved,
+        // scaling: e => handleScalingText(e, text),
+        // scaled: e => this.handleTextBoxScaled(e, rect, text, data),
+        mousedblclick: e => this.handleDbClickText(e, rect, text)
+      };
+
+      object.on(events);
 
       this.addNewObject(data);
 
@@ -442,7 +496,97 @@ export default {
       group.set({
         borderColor: this.sheetLayout?.id ? 'white' : '#bcbec0'
       });
-    }
+    },
+
+    /**
+     * Event fire when user double click on Text area and allow user edit text as
+     * @param {Object} e Text event data
+     * @param {Element} rect Rect object
+     * @param {Element} text Text object
+     */
+    handleDbClickText(e, rect, text) {
+      const group = e.target;
+      const canvas = e.target.canvas;
+      if (isEmpty(canvas)) return;
+
+      const textForEditing = cloneDeep(text);
+      const rectForEditing = cloneDeep(rect);
+      const { flipX, flipY, angle, top, left } = cloneDeep(group);
+      const cachedData = { flipX, flipY, angle, top, left };
+
+      text.visible = false;
+      rect.visible = false;
+
+      group.addWithUpdate();
+
+      updateTextListeners(
+        textForEditing,
+        rectForEditing,
+        group,
+        cachedData,
+        text => {
+          this.changeTextProperties({
+            text
+          });
+        }
+      );
+
+      canvas.add(rectForEditing);
+      canvas.add(textForEditing);
+
+      canvas.setActiveObject(textForEditing);
+
+      toggleStroke(rectForEditing, true);
+
+      textForEditing.enterEditing();
+      textForEditing.selectAll();
+    },
+
+    /**
+     * Event fire when user change any property of selected text on the Text Properties
+     *
+     * @param {Object}  style  new style
+     */
+    changeTextProperties(prop) {
+      if (isEmpty(prop)) {
+        this.updateTriggerTextChange();
+
+        return;
+      }
+      const activeObj = this.digitalCanvas?.getActiveObject();
+
+      if (isEmpty(activeObj)) return;
+
+      this.setObjectProp({ prop });
+
+      this.updateTriggerTextChange();
+
+      if (!isEmpty(prop.size)) {
+        this.setInfoBar({
+          w: prop.size.width,
+          h: prop.size.height
+        });
+      }
+
+      applyTextBoxProperties(activeObj, prop);
+
+      // update thumbnail
+      this.getThumbnailUrl();
+    },
+
+    /**
+     * call this function to update the active thumbnail
+     */
+    getThumbnailUrl: debounce(function() {
+      const thumbnailUrl = this.digitalCanvas?.toDataURL({
+        quality: THUMBNAIL_IMAGE_QUALITY
+      });
+
+      this.setThumbnail({
+        sheetId: this.pageSelected?.id,
+        thumbnailUrl
+      });
+    }, 250)
   },
   watch: {
     pageSelected: {

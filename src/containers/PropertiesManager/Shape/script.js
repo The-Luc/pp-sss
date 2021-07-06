@@ -16,16 +16,11 @@ export default {
     ArrangeContent
   },
   setup() {
-    const {
-      triggerChange,
-      getProperty,
-      setColorPickerData
-    } = useShapeProperties();
+    const { triggerChange, getProperty } = useShapeProperties();
 
     return {
       triggerChange,
-      getProperty,
-      setColorPickerData
+      getProperty
     };
   },
   computed: {
@@ -89,14 +84,6 @@ export default {
     }
   },
   methods: {
-    /**
-     * Close color picker (if opening) when change tab
-     */
-    onChangeTabMenu(data) {
-      this.setColorPickerData({
-        tabActive: data
-      });
-    },
     /**
      * Handle update flip for Shape
      * @param {String} actionName action name

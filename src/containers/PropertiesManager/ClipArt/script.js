@@ -8,16 +8,11 @@ import { computedObjectSize } from '@/common/utils';
 
 export default {
   setup() {
-    const {
-      triggerChange,
-      getProperty,
-      setColorPickerData
-    } = useClipArtProperties();
+    const { triggerChange, getProperty } = useClipArtProperties();
 
     return {
       triggerChange,
-      getProperty,
-      setColorPickerData
+      getProperty
     };
   },
   components: {
@@ -97,14 +92,6 @@ export default {
     }
   },
   methods: {
-    /**
-     * Close color picker (if opening) when change tab
-     */
-    onChangeTabMenu(data) {
-      this.setColorPickerData({
-        tabActive: data
-      });
-    },
     /**
      * Handle update flip for Clip Art
      * @param {String} actionName action name

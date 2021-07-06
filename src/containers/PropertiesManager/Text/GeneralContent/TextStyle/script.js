@@ -5,6 +5,7 @@ import PpSelect from '@/components/Selectors/Select';
 import { toCssStyle } from '@/common/utils';
 
 import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
+import { EVENT_TYPE } from '@/common/constants/eventType';
 
 export default {
   components: {
@@ -89,9 +90,9 @@ export default {
      * @param {Object}  style attribute style of style
      */
     onChange({ value, style }) {
-      this.$root.$emit('printChangeTextProperties', style);
+      this.$root.$emit(EVENT_TYPE.CHANGE_TEXT_PROPERTIES, style);
 
-      this.$root.$emit('printChangeTextProperties', { styleId: value });
+      this.$root.$emit(EVENT_TYPE.CHANGE_TEXT_PROPERTIES, { styleId: value });
     }
   }
 };

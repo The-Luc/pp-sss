@@ -8,6 +8,7 @@ import {
 } from '@/common/utils';
 
 import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
+import { EVENT_TYPE } from '@/common/constants/eventType';
 
 export default {
   components: {
@@ -61,7 +62,7 @@ export default {
         'pt'
       );
       const updateData = isValid ? { lineSpacing: isAuto ? 0 : value } : {};
-      this.$root.$emit('printChangeTextProperties', updateData);
+      this.$root.$emit(EVENT_TYPE.CHANGE_TEXT_PROPERTIES, updateData);
     }
   }
 };

@@ -3,6 +3,7 @@ import { mapGetters } from 'vuex';
 import PpCombobox from '@/components/Selectors/Combobox';
 import { ICON_LOCAL } from '@/common/constants';
 import {
+  activeCanvas,
   getSelectedOption,
   getValueInput,
   pxToIn,
@@ -10,6 +11,7 @@ import {
 } from '@/common/utils';
 
 import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
+import { EVENT_TYPE } from '@/common/constants/eventType';
 
 export default {
   components: {
@@ -58,13 +60,16 @@ export default {
         this.items,
         'pt'
       );
-      const activeObj = window.printCanvas.getActiveObject();
+
+      const activeObj = activeCanvas?.getActiveObject();
+
       const { x, y } = activeObj?.aCoords?.tl || {};
       const updateData = isValid ? { fontSize: value } : {};
-      this.$root.$emit('printChangeTextProperties', updateData);
+
+      this.$root.$emit(EVENT_TYPE.CHANGE_TEXT_PROPERTIES, updateData);
 
       if (x && y) {
-        this.$root.$emit('printChangeTextProperties', {
+        this.$root.$emit(EVENT_TYPE.CHANGE_TEXT_PROPERTIES, {
           coord: {
             x: pxToIn(x),
             y: pxToIn(y)
