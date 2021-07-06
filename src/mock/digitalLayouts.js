@@ -26,8 +26,6 @@ import BG_2 from '@/assets/image/layouts/background/background-02.jpg';
 import BG_3 from '@/assets/image/layouts/background/background-03.jpg';
 import LPCA_04531 from '@/assets/image/layouts/background/LPCA_04531.png';
 import LPCA_04511 from '@/assets/image/layouts/background/LPCA_04511.png';
-import BG_SINGLE_PAGE_1 from '@/assets/image/layouts/background/bg-single-page-01.jpg';
-import BG_SINGLE_PAGE_2 from '@/assets/image/layouts/background/bg-single-page-02.jpg';
 
 const text1 = {
   ...TextElement,
@@ -161,94 +159,6 @@ const shape1 = {
   name: '',
   thumbnail: '',
   pathData: 'img.svg' // TODO: Need discuss with FM to get instruction on using shape
-};
-
-const textSinglePage1 = {
-  ...TextElement,
-  id: uniqueId(),
-  size: {
-    width: 4,
-    height: 5
-  },
-  coord: {
-    x: 3,
-    y: 5,
-    rotation: 20 // degree
-  },
-  styleId: 'default',
-  text: 'Text Single 1',
-  fontFamily: 'Arial',
-  fontSize: 100,
-  isBold: true,
-  isItalic: true,
-  isUnderline: false,
-  color: '#FF0000',
-  opacity: 0.5
-};
-
-const textSinglePage2 = {
-  ...TextElement,
-  id: uniqueId(),
-  size: {
-    width: 5,
-    height: 5
-  },
-  coord: {
-    x: 5,
-    y: 4,
-    rotation: 20 // degree
-  },
-  styleId: 'default',
-  text: 'Text Single 2',
-  fontFamily: 'Arial',
-  fontSize: 100,
-  isBold: true,
-  isItalic: true,
-  isUnderline: false,
-  color: '#FF0000',
-  opacity: 0.7
-};
-
-const bgSinglePage1 = {
-  ...BackgroundElement,
-  id: uniqueId(),
-  pageType: 1,
-  backgroundType: '',
-  isLeftPage: false,
-  size: {
-    width: 0,
-    height: 0
-  },
-  coord: {
-    x: 0,
-    y: 0,
-    rotation: 0 // degree
-  },
-  category: 'single',
-  name: 'watercolorbackground.jpg',
-  thumbnail: BG_SINGLE_PAGE_1,
-  imageUrl: BG_SINGLE_PAGE_1
-};
-
-const bgSinglePage2 = {
-  ...BackgroundElement,
-  id: uniqueId(),
-  pageType: 1,
-  backgroundType: '',
-  isLeftPage: false,
-  size: {
-    width: 0,
-    height: 0
-  },
-  coord: {
-    x: 0,
-    y: 0,
-    rotation: 0 // degree
-  },
-  category: 'single',
-  name: 'watercolorbackground.jpg',
-  thumbnail: BG_SINGLE_PAGE_2,
-  imageUrl: BG_SINGLE_PAGE_2
 };
 
 const frames = [

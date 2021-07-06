@@ -12,13 +12,13 @@
     >
       <template #action>
         <div class="pp-backgrounds-action-container">
-          <BackgroundTypeSelection
+          <TypeSelection
             :items="displayBackgroundTypes"
             :selected-val="selectedBackgroundType"
             @change="onChangeBackgroundType"
           />
 
-          <BackgroundPageTypeSelection
+          <PageTypeSelection
             :items="displayBackgroundPageType"
             :disabled="isDisablePageTypeSelection"
             :selected-val="selectedBackgroundPageType"

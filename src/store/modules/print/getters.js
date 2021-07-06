@@ -114,5 +114,8 @@ export const getters = {
         sheets: section.sheets.map(sheetId => sheets[sheetId])
       };
     });
+  },
+  [PRINT._GETTERS.DEFAULT_THEME_ID]: ({ book }) => {
+    return book.defaultThemeId;
   }
 };

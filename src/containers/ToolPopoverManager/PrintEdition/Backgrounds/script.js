@@ -1,13 +1,12 @@
 import PpToolPopover from '@/components/ToolPopover';
+import TypeSelection from '@/components/Backgrounds/TypeSelection';
+import Item from '@/components/Backgrounds/Item';
 
-import BackgroundTypeSelection from './BackgroundTypeSelection';
-import BackgroundPageTypeSelection from './BackgroundPageTypeSelection';
-import Item from './Item';
+import PageTypeSelection from './PageTypeSelection';
 
 import { mapGetters, mapMutations } from 'vuex';
 
 import { MUTATES as APP_MUTATES } from '@/store/modules/app/const';
-import { GETTERS as BOOK_GETTERS } from '@/store/modules/book/const';
 import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 
 import {
@@ -29,8 +28,8 @@ export default {
   components: {
     PpToolPopover,
     Item,
-    BackgroundTypeSelection,
-    BackgroundPageTypeSelection
+    TypeSelection,
+    PageTypeSelection
   },
   data() {
     const backgroundTypes = Object.keys(BACKGROUND_TYPE).map(k => {
@@ -88,9 +87,8 @@ export default {
   },
   computed: {
     ...mapGetters({
-      book: BOOK_GETTERS.BOOK_DETAIL,
       currentSheet: PRINT_GETTERS.CURRENT_SHEET,
-      currentThemeId: BOOK_GETTERS.PRINT_THEME_SELECTED_ID,
+      currentThemeId: PRINT_GETTERS.DEFAULT_THEME_ID,
       userSelectedBackground: PRINT_GETTERS.BACKGROUNDS_NO_LAYOUT
     }),
     isHalfSheet() {
