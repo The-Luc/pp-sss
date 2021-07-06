@@ -181,8 +181,6 @@ export default {
       ) {
         return;
       }
-      console.log('digital tool bar data name');
-      console.log(data.name);
       this.setToolNameSelected({
         name: data.name
       });

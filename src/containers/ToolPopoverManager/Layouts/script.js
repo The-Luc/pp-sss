@@ -46,11 +46,7 @@ import {
 } from '@/hooks';
 
 import { loadLayouts } from '@/api/layouts';
-// import { loadDigitalLayouts as loadLayouts } from '@/api/layouts';
-
-// =========================
-const EDITION_GETTERS = window.printCanvas ? PRINT_GETTERS : DIGITAL_GETTERS;
-// =========================
+import { loadDigitalLayouts } from '@/api/layouts';
 
 export default {
   setup({ edition }) {
@@ -96,15 +92,16 @@ export default {
   computed: {
     ...mapGetters({
       themes: THEME_GETTERS.GET_THEMES,
-      listLayouts: THEME_GETTERS.GET_PRINT_LAYOUTS_BY_THEME_ID,
       book: BOOK_GETTERS.BOOK_DETAIL,
       printPageSelected: PRINT_GETTERS.CURRENT_SHEET,
       digitalPageSelected: DIGITAL_GETTERS.CURRENT_SHEET,
       printSheetLayout: PRINT_GETTERS.SHEET_LAYOUT,
       digitalSheetLayout: DIGITAL_GETTERS.SHEET_LAYOUT,
       sheetTheme: BOOK_GETTERS.SHEET_THEME,
-      getLayoutByType: THEME_GETTERS.GET_PRINT_LAYOUT_BY_TYPE,
+      getPrintLayoutByType: THEME_GETTERS.GET_PRINT_LAYOUT_BY_TYPE,
+      getDigitalLayoutByType: THEME_GETTERS.GET_DIGITAL_LAYOUT_BY_TYPE,
       getDigitalLayoutById: THEME_GETTERS.GET_DIGITAL_LAYOUTS_BY_THEME_ID,
+      getPrintLayoutById: THEME_GETTERS.GET_PRINT_LAYOUTS_BY_THEME_ID,
       isPrompt: APP_GETTERS.IS_PROMPT,
       sectionId: BOOK_GETTERS.SECTION_ID
     }),
@@ -117,15 +114,24 @@ export default {
     isVisited() {
       return this.pageSelected?.isVisited;
     },
+    listLayouts() {
+      return this.isDigital
+        ? this.getDigitalLayoutById
+        : this.getPrintLayoutById;
+    },
     layouts() {
       if (this.themeSelected?.id && this.layoutSelected?.value) {
         if (this.isDigital) {
-          return this.getLayoutByType(
+          return this.getDigitalLayoutByType(
             this.themeSelected?.id,
             this.layoutSelected?.value
           );
         }
-        return this.getDigitalLayoutById(this.themeSelected?.id);
+
+        return this.getPrintLayoutByType(
+          this.themeSelected?.id,
+          this.layoutSelected?.value
+        );
       }
       return [];
     }
@@ -152,7 +158,6 @@ export default {
     }
   },
   mounted() {
-    this.isDigital = this.edition === EDITION.DIGITAL;
     this.initData();
   },
   methods: {
@@ -236,7 +241,11 @@ export default {
      */
     setThemeSelected(pageSelected) {
       const currentSheetThemeId = pageSelected.themeId;
-      const defaultThemeId = this.book.printData.themeId;
+
+      const defaultThemeId = this.isDigital
+        ? this.book.digitalData.themeId
+        : this.book.printData.themeId;
+
       if (currentSheetThemeId) {
         const themeOpt = getThemeOptSelectedById(
           this.themesOptions,
@@ -338,7 +347,6 @@ export default {
       this.setIsPrompt({
         isPrompt: false
       });
-      console.log(this.pageSelected);
       this.updateVisited({
         sheetId: this.pageSelected?.id
       });
@@ -363,23 +371,21 @@ export default {
         optionTitle: 'Screen Type:'
       };
 
-      return window.printCanvas ? printText : digitalText;
+      return this.isDigital ? digitalText : printText;
     }
   },
   async created() {
+    this.isDigital = this.edition === EDITION.DIGITAL;
+
     this.textDisplay = this.updateTextDisplay();
 
     if (this.listLayouts().length !== 0) {
-      const layouts = await loadLayouts();
-      // TODO:
-      if (window.printCanvas) {
-        this.setPrintLayouts({
-          layouts
-        });
+      if (this.isDigital) {
+        const layouts = await loadDigitalLayouts();
+        this.setDigitalLayouts({ layouts });
       } else {
-        this.setDigitalLayouts({
-          layouts
-        });
+        const layouts = await loadLayouts();
+        this.setPrintLayouts({ layouts });
       }
     }
   }
