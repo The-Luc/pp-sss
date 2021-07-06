@@ -98,11 +98,6 @@ export default {
       return this.selectObjectProp('minHeight') || DEFAULT_TEXT.MIN_SIZE;
     }
   },
-  watch: {
-    selectedId() {
-      this.setSelectedBorder();
-    }
-  },
   data() {
     return {
       borderOptions: [
@@ -121,15 +116,10 @@ export default {
       }
     };
   },
+  mounted() {
+    this.setSelectedBorder();
+  },
   methods: {
-    /**
-     * Close color picker (if opening) when change tab
-     */
-    onChangeTabMenu(data) {
-      if (data === 'style') {
-        this.setSelectedBorder();
-      }
-    },
     /**
      * Set default selected border
      */

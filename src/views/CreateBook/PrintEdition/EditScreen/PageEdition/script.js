@@ -186,7 +186,7 @@ export default {
         }
       }
     },
-    zoom(newVal, oldVal) {
+    zoom(newVal) {
       console.log(newVal);
     }
   },

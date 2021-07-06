@@ -8,10 +8,7 @@ import { computedObjectSize } from '@/common/utils';
 
 export default {
   setup() {
-    const {
-      triggerChange,
-      getProperty
-    } = useClipArtProperties();
+    const { triggerChange, getProperty } = useClipArtProperties();
 
     return {
       triggerChange,
