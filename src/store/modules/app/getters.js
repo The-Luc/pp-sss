@@ -1,3 +1,4 @@
+import { isEmpty } from '@/common/utils';
 import APP from './const';
 
 export const getters = {
@@ -18,5 +19,12 @@ export const getters = {
   [APP._GETTERS.TAB_SELECTED_OBJECT_ID]: ({ propertiesModal }) =>
     propertiesModal.selectedObjectId,
   [APP._GETTERS.INFO_BAR]: ({ infoBar }) => infoBar,
-  [APP._GETTERS.ZOOM]: ({ infoBar }) => infoBar.zoom
+  [APP._GETTERS.ZOOM]: ({ infoBar }) => infoBar.zoom,
+  [APP._GETTERS.CURRENT_OBJECT]: ({ currentObject }) => currentObject,
+  [APP._GETTERS.SELECT_PROP_CURRENT_OBJECT]: ({ currentObject }) => prop => {
+    const propValue = currentObject?.[prop];
+
+    return isEmpty(propValue) ? null : propValue;
+  },
+  [APP._GETTERS.TRIGGER_TEXT_CHANGE]: ({ triggerChange }) => triggerChange.text
 };

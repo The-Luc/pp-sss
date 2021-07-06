@@ -7,6 +7,7 @@ import { useShapeProperties } from '@/hooks';
 import { computedObjectSize } from '@/common/utils';
 
 import { DEFAULT_SHAPE } from '@/common/constants';
+import { EVENT_TYPE } from '@/common/constants/eventType';
 
 export default {
   components: {
@@ -93,7 +94,7 @@ export default {
         ...this.getProperty('flip')
       };
 
-      this.$root.$emit('printChangeShapeProperties', {
+      this.$root.$emit(EVENT_TYPE.CHANGE_SHAPE_PROPERTIES, {
         flip: { [actionName]: !currentFlip[actionName] }
       });
     },
@@ -113,10 +114,10 @@ export default {
         );
         object.size = size;
       }
-      this.$root.$emit('printChangeShapeProperties', object);
+      this.$root.$emit(EVENT_TYPE.CHANGE_SHAPE_PROPERTIES, object);
     },
     onChangeConstrain(val) {
-      this.$root.$emit('printChangeShapeProperties', {
+      this.$root.$emit(EVENT_TYPE.CHANGE_SHAPE_PROPERTIES, {
         isConstrain: val
       });
     }

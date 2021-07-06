@@ -3,7 +3,7 @@ import { mapGetters } from 'vuex';
 import { ICON_LOCAL, THINKNESS_OPTIONS } from '@/common/constants';
 import { getValueInput, validateInputOption } from '@/common/utils/input';
 import PpCombobox from '@/components/Selectors/Combobox';
-import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
+import { GETTERS as APP_GETTERS } from '@/store/modules/app/const';
 import { getSelectedOption } from '@/common/utils';
 
 export default {
@@ -19,8 +19,8 @@ export default {
   },
   computed: {
     ...mapGetters({
-      onSelectedThickNess: PRINT_GETTERS.SELECT_PROP_CURRENT_OBJECT,
-      triggerChange: PRINT_GETTERS.TRIGGER_TEXT_CHANGE
+      onSelectedThickNess: APP_GETTERS.SELECT_PROP_CURRENT_OBJECT,
+      triggerChange: APP_GETTERS.TRIGGER_TEXT_CHANGE
     }),
     selectedThickness() {
       if (this.triggerChange) {
