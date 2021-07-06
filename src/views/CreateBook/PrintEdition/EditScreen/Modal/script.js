@@ -85,7 +85,6 @@ export default {
     },
     /**
      * Set preview theme's id
-     * @param  {Object} theme - Theme preview
      * @param  {Number} theme.themeId - Theme's id preview
      */
     onPreviewTheme({ themeId }) {
