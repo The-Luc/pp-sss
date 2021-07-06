@@ -24,7 +24,7 @@ export default {
   data() {
     return {
       selectedThemeId: null,
-      themePreview: null
+      isPreviewing: false
     };
   },
   computed: {
@@ -33,12 +33,12 @@ export default {
       layouts: THEME_GETTERS.GET_DIGITAL_LAYOUTS_BY_THEME_ID
     }),
     layoutsOfThemePreview() {
-      return this.layouts(this.themePreview);
+      return this.layouts(this.selectedThemeId);
     },
     themeNamePreview() {
       let name = '';
-      if (this.themePreview) {
-        name = this.themes.find(item => item.id == this.themePreview).name;
+      if (this.isPreviewing) {
+        name = this.themes.find(item => item.id == this.selectedThemeId).name;
       }
       return name;
     }
@@ -46,13 +46,12 @@ export default {
   methods: {
     ...mapMutations({
       toggleModal: MUTATES.TOGGLE_MODAL,
-      selectDefaultThemId: DIGITAL_MUTATES.DEFAULT_THEME_ID,
+      setDefaultThemId: DIGITAL_MUTATES.SET_DEFAULT_THEME_ID,
       setDigitalThemes: THEME_MUTATES.DIGITAL_THEMES,
       setDigitalLayouts: THEME_MUTATES.DIGITAL_LAYOUTS
     }),
     /**
      * Set selected theme's id
-     * @param  {Object} theme - Theme selected
      * @param  {Number} theme.themeId - Theme's id selected
      */
     onSelectTheme({ themeId }) {
@@ -64,20 +63,20 @@ export default {
      * @param  {Number} theme.themeId - Theme's id preview
      */
     onPreviewTheme({ themeId }) {
-      this.themePreview = themeId;
+      this.isPreviewing = true;
       this.selectedThemeId = themeId;
     },
     /**
      * Set preview theme's id empty and close preview
      */
     onClosePreview() {
-      this.themePreview = null;
+      this.isPreviewing = false;
     },
     /**
      * Set theme for print editor and close modal
      */
     onSubmitThemeId() {
-      this.selectDefaultThemId({
+      this.setDefaultThemId({
         themeId: this.selectedThemeId
       });
       this.onCloseModal();

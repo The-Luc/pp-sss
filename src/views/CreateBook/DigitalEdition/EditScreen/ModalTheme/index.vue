@@ -8,14 +8,14 @@
   >
     <div class="modal-theme-body">
       <Themes
-        v-if="!themePreview"
+        v-if="!isPreviewing"
         :themes="themes"
         :selected-theme-id="selectedThemeId"
         @onSelectTheme="onSelectTheme($event)"
         @onPreviewTheme="onPreviewTheme($event)"
       />
       <Preview
-        v-if="themePreview"
+        v-if="isPreviewing"
         :theme-name="themeNamePreview"
         :layouts="layoutsOfThemePreview"
         @onClosePreview="onClosePreview"

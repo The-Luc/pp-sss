@@ -5,7 +5,7 @@ const _GETTERS = {
   GET_PRINT_LAYOUTS_BY_THEME_ID: 'getPrintLayouts',
   GET_PRINT_LAYOUT_BY_TYPE: 'getPrintLayoutByType',
   GET_DIGITAL_THEMES: 'getDigitalThemes',
-  GET_DIGITAL_LAYOUTS_BY_THEME_ID: 'getPrintLayouts'
+  GET_DIGITAL_LAYOUTS_BY_THEME_ID: 'getDigitalLayouts'
 };
 
 export const GETTERS = {

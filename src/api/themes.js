@@ -1,5 +1,6 @@
 import themes from '@/mock/themes';
 import digitalThemes from '@/mock/digitalThemes';
+
 export const loadPrintThemes = () =>
   new Promise(resolve => {
     setTimeout(() => {
