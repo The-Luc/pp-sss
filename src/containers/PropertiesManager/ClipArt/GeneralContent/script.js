@@ -13,10 +13,7 @@ export default {
     Opacity
   },
   setup() {
-    const {
-      getProperty,
-      triggerChange
-    } = useClipArtProperties();
+    const { getProperty, triggerChange } = useClipArtProperties();
 
     return {
       getProperty,

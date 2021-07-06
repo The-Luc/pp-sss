@@ -6,7 +6,7 @@ import Header from '@/containers/HeaderEdition/Header';
 import FeedbackBar from '@/containers/HeaderEdition/FeedbackBar';
 import ScreenEdition from './ScreenEdition';
 import SidebarSection from './SidebarSection';
-import { GETTERS } from '@/store/modules/app/const';
+import { GETTERS, MUTATES } from '@/store/modules/app/const';
 import { GETTERS as BOOK_GETTERS } from '@/store/modules/book/const';
 import {
   ACTIONS as DIGITAL_ACTIONS,
@@ -14,6 +14,8 @@ import {
 } from '@/store/modules/digital/const';
 import { useLayoutPrompt } from '@/hooks';
 import { MODAL_TYPES, TOOL_NAME, EDITION } from '@/common/constants';
+import { GETTERS as DIGITAL_GETTERS } from '@/store/modules/digital/const';
+import { MODAL_TYPES } from '@/common/constants';
 
 export default {
   setup() {
@@ -32,7 +34,8 @@ export default {
       digitalThemeSelected: BOOK_GETTERS.PRINT_THEME_SELECTED_ID,
       isOpenMenuProperties: GETTERS.IS_OPEN_MENU_PROPERTIES,
       selectedToolName: GETTERS.SELECTED_TOOL_NAME,
-      bookId: BOOK_GETTERS.BOOK_ID
+      bookId: BOOK_GETTERS.BOOK_ID,
+      defaultThemeId: DIGITAL_GETTERS.SET_DEFAULT_THEME_ID
     })
   },
   watch: {
@@ -58,7 +61,6 @@ export default {
       getDataPageEdit: DIGITAL_ACTIONS.GET_DATA_EDIT
     }),
     ...mapMutations({
-      resetPrintConfigs: MUTATES.RESET_PRINT_CONFIG,
       setBookId: DIGITAL_MUTATES.SET_BOOK_ID,
       toggleModal: MUTATES.TOGGLE_MODAL
     }),
@@ -90,12 +92,27 @@ export default {
      */
     onClickSaveDigitalCanvas() {
       this.$router.push(`/book/${this.bookId}/edit/digital`);
+    },
+    /**
+     * Trigger mutation to open theme modal
+     */
+    openSelectThemeModal() {
+      this.toggleModal({
+        isOpenModal: true,
+        modalData: {
+          type: MODAL_TYPES.SELECT_THEME_DIGITAL
+        }
+      });
+    }
+  },
+  mounted() {
+    if (!this.defaultThemeId) {
+      this.openSelectThemeModal();
     }
   },
   created() {
     this.setBookId({ bookId: this.$route.params.bookId });
 
     this.getDataPageEdit();
-
   }
 };

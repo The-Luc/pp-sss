@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="modal-theme-digital">
     <div class="modal-theme-title">Select a theme to get started</div>
     <div class="modal-theme-note">
       (Don’t worry, you can change this selection at any time.)

@@ -16,10 +16,7 @@ export default {
     ArrangeContent
   },
   setup() {
-    const {
-      triggerChange,
-      getProperty
-    } = useShapeProperties();
+    const { triggerChange, getProperty } = useShapeProperties();
 
     return {
       triggerChange,
