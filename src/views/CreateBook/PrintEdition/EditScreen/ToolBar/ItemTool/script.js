@@ -33,6 +33,7 @@ export default {
         if (!iconName) {
           return false;
         }
+
         const isBackgroundSelected =
           this.propertiesObjectType === OBJECT_TYPE.BACKGROUND;
 
