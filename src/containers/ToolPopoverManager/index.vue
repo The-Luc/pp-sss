@@ -5,7 +5,7 @@
       actions: toolComponent === 'Actions'
     }"
   >
-    <component :is="toolComponent" :key="componentKey" />
+    <component :is="toolComponent" :key="componentKey" :edition="edition" />
   </div>
 </template>
 

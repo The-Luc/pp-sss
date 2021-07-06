@@ -41,9 +41,15 @@ export const useLayoutPrompt = edition => {
     setToolNameSelected: APP_MUTATES.SET_TOOL_NAME_SELECTED
   });
 
-  const openPrompt = () => {
+  const openPrompt = promptEdtion => {
     setIsPrompt({ isPrompt: true });
-    setToolNameSelected({ name: TOOL_NAME.LAYOUTS });
+
+    const toolName =
+      promptEdtion === EDITION.PRINT
+        ? TOOL_NAME.PRINT_LAYOUTS
+        : TOOL_NAME.DIGITAL_LAYOUTS;
+
+    setToolNameSelected({ name: toolName });
   };
 
   return {

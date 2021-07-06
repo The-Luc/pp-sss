@@ -1,6 +1,7 @@
 export const TOOL_NAME = {
   THEMES: 'Themes',
-  LAYOUTS: 'Layouts',
+  PRINT_LAYOUTS: 'printLayouts',
+  DIGITAL_LAYOUTS: 'digitalLayouts',
   DELETE: 'Delete',
   CLIP_ART: 'ClipArt',
   IMAGE_BOX: 'ImageBox',

@@ -28,6 +28,7 @@ import GotIt from './GotIt';
 import Item from './Item';
 import { LAYOUT_TYPES_OPTIONs } from '@/mock/layoutTypes';
 import {
+  EDITION,
   LAYOUT_TYPES,
   MODAL_TYPES,
   SHEET_TYPE,
@@ -45,16 +46,16 @@ import {
 } from '@/hooks';
 
 import { loadLayouts } from '@/api/layouts';
+// import { loadDigitalLayouts as loadLayouts } from '@/api/layouts';
 
 // =========================
 const EDITION_GETTERS = window.printCanvas ? PRINT_GETTERS : DIGITAL_GETTERS;
 // =========================
 
 export default {
-  setup() {
+  setup({ edition }) {
     const { setToolNameSelected, selectedToolName } = usePopoverCreationTool();
-    // TODO:
-    const { updateVisited, setIsPrompt } = useLayoutPrompt('digital');
+    const { updateVisited, setIsPrompt } = useLayoutPrompt(edition);
     const { drawLayout } = useDrawLayout();
     return {
       selectedToolName,
@@ -72,6 +73,12 @@ export default {
     SelectLayout,
     GotIt
   },
+  props: {
+    edition: {
+      type: String,
+      default: ''
+    }
+  },
   data() {
     return {
       themesOptions: themeOptions,
@@ -83,7 +90,6 @@ export default {
       layoutEmptyLength: 4,
       layoutObjSelected: {},
       textDisplay: null,
-      // TODO:
       isDigital: false
     };
   },
@@ -92,21 +98,28 @@ export default {
       themes: THEME_GETTERS.GET_THEMES,
       listLayouts: THEME_GETTERS.GET_PRINT_LAYOUTS_BY_THEME_ID,
       book: BOOK_GETTERS.BOOK_DETAIL,
-      pageSelected: EDITION_GETTERS.CURRENT_SHEET,
-      sheetLayout: PRINT_GETTERS.SHEET_LAYOUT,
+      printPageSelected: PRINT_GETTERS.CURRENT_SHEET,
+      digitalPageSelected: DIGITAL_GETTERS.CURRENT_SHEET,
+      printSheetLayout: PRINT_GETTERS.SHEET_LAYOUT,
+      digitalSheetLayout: DIGITAL_GETTERS.SHEET_LAYOUT,
       sheetTheme: BOOK_GETTERS.SHEET_THEME,
       getLayoutByType: THEME_GETTERS.GET_PRINT_LAYOUT_BY_TYPE,
       getDigitalLayoutById: THEME_GETTERS.GET_DIGITAL_LAYOUTS_BY_THEME_ID,
       isPrompt: APP_GETTERS.IS_PROMPT,
       sectionId: BOOK_GETTERS.SECTION_ID
     }),
+    pageSelected() {
+      return this.isDigital ? this.digitalPageSelected : this.printPageSelected;
+    },
+    sheetLayout() {
+      return this.isDigital ? this.digitalSheetLayout : this.printSheetLayout;
+    },
     isVisited() {
       return this.pageSelected?.isVisited;
     },
     layouts() {
       if (this.themeSelected?.id && this.layoutSelected?.value) {
-        // TODO:
-        if (window.printCanvas) {
+        if (this.isDigital) {
           return this.getLayoutByType(
             this.themeSelected?.id,
             this.layoutSelected?.value
@@ -119,7 +132,10 @@ export default {
   },
   watch: {
     selectedToolName(val) {
-      if (val && val === TOOL_NAME.LAYOUTS) {
+      if (
+        val &&
+        (val === TOOL_NAME.PRINT_LAYOUTS || val === TOOL_NAME.DIGITAL_LAYOUTS)
+      ) {
         this.initData();
       }
     },
@@ -136,6 +152,7 @@ export default {
     }
   },
   mounted() {
+    this.isDigital = this.edition === EDITION.DIGITAL;
     this.initData();
   },
   methods: {
@@ -321,6 +338,7 @@ export default {
       this.setIsPrompt({
         isPrompt: false
       });
+      console.log(this.pageSelected);
       this.updateVisited({
         sheetId: this.pageSelected?.id
       });

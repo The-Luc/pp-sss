@@ -13,8 +13,16 @@ import Themes from './Themes';
 import Preview from './Preview';
 import { loadDigitalThemes } from '@/api/themes';
 import { loadDigitalLayouts } from '@/api/layouts';
+import { useLayoutPrompt } from '@/hooks';
+import { EDITION } from '@/common/constants';
 
 export default {
+  setup() {
+    const { openPrompt } = useLayoutPrompt(EDITION.PRINT);
+    return {
+      openPrompt
+    };
+  },
   components: {
     Modal,
     PpButton,
@@ -68,6 +76,7 @@ export default {
     /**
      * Set preview theme's id empty and close preview
      */
+
     onClosePreview() {
       this.isPreviewing = false;
     },
@@ -79,6 +88,7 @@ export default {
         themeId: this.selectedThemeId
       });
       this.onCloseModal();
+      this.openPrompt();
     },
     /**
      * Close Modal

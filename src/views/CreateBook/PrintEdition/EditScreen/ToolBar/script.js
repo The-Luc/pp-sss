@@ -50,7 +50,7 @@ export default {
           {
             iconName: 'import_contacts',
             title: 'Layouts',
-            name: TOOL_NAME.LAYOUTS
+            name: TOOL_NAME.PRINT_LAYOUTS
           },
           {
             iconName: 'texture',
@@ -204,7 +204,7 @@ export default {
           });
           break;
         default:
-          if (data.name === TOOL_NAME.LAYOUTS && this.isPrompt) {
+          if (data.name === TOOL_NAME.PRINT_LAYOUTS && this.isPrompt) {
             return;
           }
           this.setToolNameSelected({

@@ -82,7 +82,7 @@ export default {
         themeId: this.selectedThemeId
       });
       this.onCloseModal();
-      this.openPrompt();
+      this.openPrompt(EDITION.PRINT);
     },
     /**
      * Set preview theme's id

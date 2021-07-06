@@ -96,7 +96,7 @@ export default {
      */
     setIsPromptLayout(pageSelected) {
       if (!pageSelected.isVisited) {
-        this.setToolNameSelected(TOOL_NAME.LAYOUTS);
+        this.setToolNameSelected(TOOL_NAME.PRINT_LAYOUTS);
         this.updateVisited({
           sheetId: pageSelected?.id
         });

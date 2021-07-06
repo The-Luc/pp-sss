@@ -95,7 +95,7 @@ export default {
         this.updateVisited({
           sheetId
         });
-        this.setToolNameSelected(TOOL_NAME.LAYOUTS);
+        this.setToolNameSelected(TOOL_NAME.PRINT_LAYOUTS);
       }
     }
   }

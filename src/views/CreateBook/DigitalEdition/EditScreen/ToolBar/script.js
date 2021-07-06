@@ -29,7 +29,7 @@ export default {
           {
             iconName: 'import_contacts',
             title: 'Layouts',
-            name: TOOL_NAME.LAYOUTS
+            name: TOOL_NAME.DIGITAL_LAYOUTS
           },
           {
             iconName: 'texture',
@@ -181,7 +181,8 @@ export default {
       ) {
         return;
       }
-
+      console.log('digital tool bar data name');
+      console.log(data.name);
       this.setToolNameSelected({
         name: data.name
       });
