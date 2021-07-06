@@ -740,8 +740,6 @@ export default {
 
       this.setObjectTypeSelected({ type: '' });
 
-      this.toggleActiveObjects(false);
-
       this.setSelectedObjectId({ id: '' });
 
       this.setCurrentObject(null);
@@ -750,7 +748,7 @@ export default {
      * Close text properties modal
      */
     closeProperties() {
-      this.groupSelected = null;
+      this.toggleActiveObjects(false);
       this.resetConfigTextProperties();
     },
     /**
@@ -788,7 +786,7 @@ export default {
       if (isSelectMultiObject) {
         setCanvasUniformScaling(window.printCanvas, true);
 
-        this.closeProperties();
+        this.resetConfigTextProperties();
       } else {
         setCanvasUniformScaling(window.printCanvas, objectData.isConstrain);
       }

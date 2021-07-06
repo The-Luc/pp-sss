@@ -2,7 +2,7 @@
   <div
     class="eye-dropper"
     :style="{
-      transform: `translate(${x}px, ${y}px)`
+      transform: `translate(${xCoord}px, ${yCoord}px)`
     }"
   >
     <div
