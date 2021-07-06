@@ -126,7 +126,6 @@ export default {
       pageSelected: PRINT_GETTERS.CURRENT_SHEET,
       sheetLayout: PRINT_GETTERS.SHEET_LAYOUT,
       isOpenMenuProperties: APP_GETTERS.IS_OPEN_MENU_PROPERTIES,
-      test: PRINT_GETTERS.CURRENT_OBJECT,
       toolNameSelected: APP_GETTERS.SELECTED_TOOL_NAME,
       currentBackgrounds: PRINT_GETTERS.BACKGROUNDS,
       propertiesObjectType: APP_GETTERS.PROPERTIES_OBJECT_TYPE,
