@@ -1,3 +1,12 @@
+import THEME_01 from '@/assets/image/digital-themes/confetti.jpg';
+import THEME_02 from '@/assets/image/digital-themes/3D.jpg';
+import THEME_03 from '@/assets/image/digital-themes/newsprint.jpg';
+import THEME_04 from '@/assets/image/digital-themes/tokyo.jpg';
+import THEME_05 from '@/assets/image/digital-themes/glitch.jpg';
+import THEME_06 from '@/assets/image/digital-themes/nature.jpg';
+import THEME_07 from '@/assets/image/digital-themes/pixel.jpg';
+import THEME_08 from '@/assets/image/digital-themes/scribble.jpg';
+
 /**
  * TODO: get image 16x9 from design and use as mock data
  */
@@ -5,57 +14,42 @@ const themes = [
   {
     id: 1,
     name: 'Confetti',
-    previewImageUrl: 'theme1.jpg'
+    previewImageUrl: THEME_01
   },
   {
     id: 2,
-    name: 'Comic Too',
-    previewImageUrl: 'theme2.jpg'
+    name: '3D',
+    previewImageUrl: THEME_02
   },
   {
     id: 3,
-    name: 'Paint Spill',
-    previewImageUrl: 'theme12.jpg'
+    name: 'Newsprint',
+    previewImageUrl: THEME_03
   },
   {
     id: 4,
-    name: 'Chalkboard',
-    previewImageUrl: 'theme4.jpg'
+    name: 'Tokyo',
+    previewImageUrl: THEME_04
   },
   {
     id: 5,
-    name: 'Color Block',
-    previewImageUrl: 'theme5.jpg'
+    name: 'Glitch',
+    previewImageUrl: THEME_05
   },
   {
     id: 6,
-    name: 'Retro Fun',
-    previewImageUrl: 'theme6.jpg'
+    name: 'Nature',
+    previewImageUrl: THEME_06
   },
   {
     id: 7,
-    name: 'Paper',
-    previewImageUrl: 'theme7.jpg'
+    name: 'Pixel',
+    previewImageUrl: THEME_07
   },
   {
     id: 8,
-    name: 'Outerspace',
-    previewImageUrl: 'theme8.jpg'
-  },
-  {
-    id: 9,
-    name: 'Linen',
-    previewImageUrl: 'theme9.jpg'
-  },
-  {
-    id: 10,
-    name: 'Dark',
-    previewImageUrl: 'theme10.jpg'
-  },
-  {
-    id: 11,
-    name: 'None',
-    previewImageUrl: 'none.png'
+    name: 'Scribble',
+    previewImageUrl: THEME_08
   }
 ];
 

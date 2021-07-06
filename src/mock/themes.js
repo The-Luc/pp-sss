@@ -1,58 +1,70 @@
+import THEME_01 from '@/assets/image/themes/theme1.jpg';
+import THEME_02 from '@/assets/image/themes/theme2.jpg';
+import THEME_04 from '@/assets/image/themes/theme4.jpg';
+import THEME_05 from '@/assets/image/themes/theme5.jpg';
+import THEME_06 from '@/assets/image/themes/theme6.jpg';
+import THEME_07 from '@/assets/image/themes/theme7.jpg';
+import THEME_08 from '@/assets/image/themes/theme8.jpg';
+import THEME_09 from '@/assets/image/themes/theme9.jpg';
+import THEME_10 from '@/assets/image/themes/theme10.jpg';
+import THEME_11 from '@/assets/image/themes/none.png';
+import THEME_12 from '@/assets/image/themes/theme12.jpg';
+
 const themes = [
   {
     id: 1,
     name: 'Confetti',
-    previewImageUrl: 'theme1.jpg'
+    previewImageUrl: THEME_01
   },
   {
     id: 2,
     name: 'Comic Too',
-    previewImageUrl: 'theme2.jpg'
+    previewImageUrl: THEME_02
   },
   {
     id: 3,
     name: 'Paint Spill',
-    previewImageUrl: 'theme12.jpg'
+    previewImageUrl: THEME_12
   },
   {
     id: 4,
     name: 'Chalkboard',
-    previewImageUrl: 'theme4.jpg'
+    previewImageUrl: THEME_04
   },
   {
     id: 5,
     name: 'Color Block',
-    previewImageUrl: 'theme5.jpg'
+    previewImageUrl: THEME_05
   },
   {
     id: 6,
     name: 'Retro Fun',
-    previewImageUrl: 'theme6.jpg'
+    previewImageUrl: THEME_06
   },
   {
     id: 7,
     name: 'Paper',
-    previewImageUrl: 'theme7.jpg'
+    previewImageUrl: THEME_07
   },
   {
     id: 8,
     name: 'Outerspace',
-    previewImageUrl: 'theme8.jpg'
+    previewImageUrl: THEME_08
   },
   {
     id: 9,
     name: 'Linen',
-    previewImageUrl: 'theme9.jpg'
+    previewImageUrl: THEME_09
   },
   {
     id: 10,
     name: 'Dark',
-    previewImageUrl: 'theme10.jpg'
+    previewImageUrl: THEME_10
   },
   {
     id: 11,
     name: 'None',
-    previewImageUrl: 'none.png'
+    previewImageUrl: THEME_11
   }
 ];
 

@@ -131,7 +131,6 @@ export default {
     ...mapMutations({
       setObjectTypeSelected: MUTATES.SET_OBJECT_TYPE_SELECTED,
       setIsOpenProperties: MUTATES.TOGGLE_MENU_PROPERTIES,
-      toggleColorPicker: MUTATES.TOGGLE_COLOR_PICKER,
       setToolNameSelected: MUTATES.SET_TOOL_NAME_SELECTED,
       setPropertiesObjectType: MUTATES.SET_PROPERTIES_OBJECT_TYPE
     }),
@@ -270,10 +269,6 @@ export default {
      * Open object properties by using mutate
      */
     openObjectProperties(objectType) {
-      this.toggleColorPicker({
-        isOpen: false
-      });
-
       this.setPropertiesObjectType({
         type: objectType
       });

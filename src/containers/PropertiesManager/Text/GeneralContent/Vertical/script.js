@@ -3,9 +3,10 @@ import PpButtonGroup from '@/components/Buttons/ButtonGroup';
 import { mapGetters } from 'vuex';
 
 import { TEXT_VERTICAL_ALIGN } from '@/common/constants';
-import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
+import { GETTERS as APP_GETTERS } from '@/store/modules/app/const';
 
 import { isEmpty } from '@/common/utils';
+import { EVENT_TYPE } from '@/common/constants/eventType';
 
 export default {
   components: {
@@ -20,8 +21,8 @@ export default {
   },
   computed: {
     ...mapGetters({
-      selectedAlign: PRINT_GETTERS.SELECT_PROP_CURRENT_OBJECT,
-      triggerChange: PRINT_GETTERS.TRIGGER_TEXT_CHANGE
+      selectedAlign: APP_GETTERS.SELECT_PROP_CURRENT_OBJECT,
+      triggerChange: APP_GETTERS.TRIGGER_TEXT_CHANGE
     }),
     selectedAlignment() {
       if (this.triggerChange) {
@@ -39,7 +40,7 @@ export default {
     onChange(data) {
       const value = isEmpty(data) ? TEXT_VERTICAL_ALIGN.TOP : data;
 
-      this.$root.$emit('printChangeTextProperties', {
+      this.$root.$emit(EVENT_TYPE.CHANGE_TEXT_PROPERTIES, {
         alignment: { vertical: value }
       });
     }

@@ -3,7 +3,12 @@ import { uniqueId } from 'lodash';
 import { isEmpty, isHalfSheet } from '@/common/utils';
 import printService from '@/api/print';
 
-import { STATUS, OBJECT_TYPE, SHEET_TYPE } from '@/common/constants';
+import {
+  STATUS,
+  OBJECT_TYPE,
+  SHEET_TYPE,
+  LINK_STATUS
+} from '@/common/constants';
 
 import PRINT from './const';
 
@@ -135,5 +140,11 @@ export const actions = {
       themeId,
       previewImageUrl: layout.previewImageUrl
     });
+  },
+  [PRINT._ACTIONS.UPDATE_SHEET_LINK_STATUS]({ commit }, { link, sheetId }) {
+    const statusLink =
+      link === LINK_STATUS.LINK ? LINK_STATUS.UNLINK : LINK_STATUS.LINK;
+
+    commit(PRINT._MUTATES.SET_SHEET_LINK_STATUS, { statusLink, sheetId });
   }
 };

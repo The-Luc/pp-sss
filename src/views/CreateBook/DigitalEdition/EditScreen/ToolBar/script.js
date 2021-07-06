@@ -188,9 +188,6 @@ export default {
 
       if (data.name === TOOL_NAME.TEXT) {
         this.$root.$emit(EVENT_TYPE.DIGITAL_ADD_ELEMENT, OBJECT_TYPE.TEXT);
-        this.setToolNameSelected({
-          name: TOOL_NAME.TEXT
-        });
       }
     }
   }

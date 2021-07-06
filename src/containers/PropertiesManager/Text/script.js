@@ -1,16 +1,15 @@
-import { mapGetters, mapMutations } from 'vuex';
+import { mapGetters } from 'vuex';
 
-import { useObject } from '@/hooks';
 import Properties from '@/components/Properties/BoxProperties';
 import TabPropertiesMenu from '@/containers/TabPropertiesMenu';
 import GeneralContent from './GeneralContent';
 import StyleContent from './Style';
 import ArrangeContent from '@/components/Arrange';
 
-import { MUTATES } from '@/store/modules/app/const';
-import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
+import { GETTERS as APP_GETTERS } from '@/store/modules/app/const';
 import { DEFAULT_TEXT } from '@/common/constants';
-import { computedObjectSize } from '@/common/utils';
+import { computedObjectSize, activeCanvas } from '@/common/utils';
+import { EVENT_TYPE } from '@/common/constants/eventType';
 
 export default {
   components: {
@@ -20,16 +19,11 @@ export default {
     ArrangeContent,
     TabPropertiesMenu
   },
-  setup() {
-    const { triggerChange, selectObjectProp } = useObject();
-    return {
-      triggerChange,
-      selectObjectProp
-    };
-  },
   computed: {
     ...mapGetters({
-      currentObject: PRINT_GETTERS.CURRENT_OBJECT
+      currentObject: APP_GETTERS.CURRENT_OBJECT,
+      selectObjectProp: APP_GETTERS.SELECT_PROP_CURRENT_OBJECT,
+      triggerChange: APP_GETTERS.TRIGGER_TEXT_CHANGE
     }),
     rotateValue() {
       if (this.triggerChange) {
@@ -43,9 +37,7 @@ export default {
         // just for trigger the change
       }
 
-      const canvas = window.printCanvas || window.digitalCanvas;
-
-      const activeObj = canvas?.getActiveObject();
+      const activeObj = activeCanvas?.getActiveObject();
 
       return !!activeObj?.isEditing;
     },
@@ -100,11 +92,6 @@ export default {
       return this.selectObjectProp('minHeight') || DEFAULT_TEXT.MIN_SIZE;
     }
   },
-  watch: {
-    selectedId() {
-      this.setSelectedBorder();
-    }
-  },
   data() {
     return {
       borderOptions: [
@@ -123,21 +110,10 @@ export default {
       }
     };
   },
+  mounted() {
+    this.setSelectedBorder();
+  },
   methods: {
-    ...mapMutations({
-      setColorPicker: MUTATES.SET_COLOR_PICKER_COLOR
-    }),
-    /**
-     * Close color picker (if opening) when change tab
-     */
-    onChangeTabMenu(data) {
-      if (data === 'style') {
-        this.setSelectedBorder();
-      }
-      this.setColorPicker({
-        tabActive: data
-      });
-    },
     /**
      * Set default selected border
      */
@@ -158,7 +134,7 @@ export default {
         strokeWidth:
           data.value === 'noBorder' ? DEFAULT_TEXT.BORDER.STROKE_WIDTH : 1
       };
-      this.$root.$emit('printChangeTextProperties', {
+      this.$root.$emit(EVENT_TYPE.CHANGE_TEXT_PROPERTIES, {
         border
       });
       this.selectedBorder = data;
@@ -169,7 +145,7 @@ export default {
      */
     changeFlip(actionName) {
       const flip = this.selectObjectProp('flip');
-      this.$root.$emit('printChangeTextProperties', {
+      this.$root.$emit(EVENT_TYPE.CHANGE_TEXT_PROPERTIES, {
         flip: {
           [actionName]: !flip[actionName]
         }
@@ -191,7 +167,7 @@ export default {
         );
         object.size = size;
       }
-      this.$root.$emit('printChangeTextProperties', object);
+      this.$root.$emit(EVENT_TYPE.CHANGE_TEXT_PROPERTIES, object);
     },
 
     /**
@@ -199,7 +175,7 @@ export default {
      * @param {Boolean} isConstrain value for isConstrain property of Text object
      */
     onChangeConstrain(isConstrain) {
-      this.$root.$emit('printChangeTextProperties', {
+      this.$root.$emit(EVENT_TYPE.CHANGE_TEXT_PROPERTIES, {
         isConstrain
       });
     }

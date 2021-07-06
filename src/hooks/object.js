@@ -1,17 +1,20 @@
-import { useGetters, useMutations } from 'vuex-composition-helpers';
-
-import { MUTATES as APP_MUTATES } from '@/store/modules/app/const';
+import { useGetters } from 'vuex-composition-helpers';
 import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
+import { GETTERS as DIGITAL_GETTERS } from '@/store/modules/digital/const';
+import { GETTERS as APP_GETTERS } from '@/store/modules/app/const';
 
 /**
  * The hook to connect to store to getter object's properties
  *  @return {Object} {selectObjectProp: The function to connect to getter, triggerChange: state to trigger change}
  */
-export const useObject = () => {
-  const { onSelectedObject, triggerChange } = useGetters({
-    onSelectedObject: PRINT_GETTERS.SELECT_PROP_CURRENT_OBJECT,
-    triggerChange: PRINT_GETTERS.TRIGGER_TEXT_CHANGE
+export const useTextObject = (isDigital = false) => {
+  const GETTERS = isDigital ? DIGITAL_GETTERS : PRINT_GETTERS;
+  const { selectedObject, onSelectedObject, triggerChange } = useGetters({
+    selectedObject: GETTERS.CURRENT_OBJECT,
+    onSelectedObject: APP_GETTERS.SELECT_PROP_CURRENT_OBJECT,
+    triggerChange: APP_GETTERS.TRIGGER_TEXT_CHANGE
   });
+
   /**
    * The fuction to connect to store to getter object's properties
    * @param {String} prop The property name want to get
@@ -23,6 +26,7 @@ export const useObject = () => {
   };
 
   return {
+    selectedObject,
     selectObjectProp,
     triggerChange
   };
@@ -47,16 +51,6 @@ export const useElementProperties = () => {
   };
 };
 
-export const useColorPickerProperties = () => {
-  const { setColorPickerData } = useMutations({
-    setColorPickerData: APP_MUTATES.SET_COLOR_PICKER_COLOR
-  });
-
-  return {
-    setColorPickerData
-  };
-};
-
 export const useShapeProperties = () => {
   const { triggerChange } = useGetters({
     triggerChange: PRINT_GETTERS.TRIGGER_SHAPE_CHANGE
@@ -64,7 +58,6 @@ export const useShapeProperties = () => {
 
   return {
     ...useElementProperties(),
-    ...useColorPickerProperties(),
     triggerChange
   };
 };
@@ -76,7 +69,6 @@ export const useClipArtProperties = () => {
 
   return {
     ...useElementProperties(),
-    ...useColorPickerProperties(),
     triggerChange
   };
 };

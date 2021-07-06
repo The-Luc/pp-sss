@@ -12,3 +12,4 @@ export * from './sheet';
 export * from './background';
 export * from './string';
 export * from './pasteObject';
+export * from './rotation';

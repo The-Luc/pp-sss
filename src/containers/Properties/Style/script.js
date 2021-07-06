@@ -2,7 +2,7 @@ import { mapGetters } from 'vuex';
 
 import { BORDER_STYLE } from '@/common/constants';
 import Select from '@/components/Selectors/Select';
-import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
+import { GETTERS as APP_GETTERS } from '@/store/modules/app/const';
 
 export default {
   components: {
@@ -15,8 +15,8 @@ export default {
   },
   computed: {
     ...mapGetters({
-      onSelectedBorderStyle: PRINT_GETTERS.SELECT_PROP_CURRENT_OBJECT,
-      triggerChange: PRINT_GETTERS.TRIGGER_TEXT_CHANGE
+      onSelectedBorderStyle: APP_GETTERS.SELECT_PROP_CURRENT_OBJECT,
+      triggerChange: APP_GETTERS.TRIGGER_TEXT_CHANGE
     }),
     selectedBorderStyle() {
       if (this.triggerChange) {
