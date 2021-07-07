@@ -98,7 +98,6 @@ export default {
   computed: {
     ...mapGetters({
       themes: THEME_GETTERS.GET_THEMES,
-      book: BOOK_GETTERS.BOOK_DETAIL,
       sheetTheme: BOOK_GETTERS.SHEET_THEME,
       sectionId: BOOK_GETTERS.SECTION_ID,
       isPrompt: APP_GETTERS.IS_PROMPT
