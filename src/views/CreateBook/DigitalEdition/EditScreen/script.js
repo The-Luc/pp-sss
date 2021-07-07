@@ -11,10 +11,21 @@ import {
   ACTIONS as DIGITAL_ACTIONS,
   MUTATES as DIGITAL_MUTATES
 } from '@/store/modules/digital/const';
-import { MODAL_TYPES, TOOL_NAME } from '@/common/constants';
+import { EDITION, MODAL_TYPES, TOOL_NAME } from '@/common/constants';
 import { GETTERS as DIGITAL_GETTERS } from '@/store/modules/digital/const';
+import { useLayoutPrompt, usePopoverCreationTool } from '@/hooks';
 
 export default {
+  setup() {
+    const { pageSelected, updateVisited } = useLayoutPrompt(EDITION.DIGITAL);
+    const { setToolNameSelected } = usePopoverCreationTool();
+
+    return {
+      pageSelected,
+      updateVisited,
+      setToolNameSelected
+    };
+  },
   components: {
     ToolBar,
     Header,
@@ -24,7 +35,6 @@ export default {
   },
   computed: {
     ...mapGetters({
-      digitalThemeSelected: BOOK_GETTERS.PRINT_THEME_SELECTED_ID,
       isOpenMenuProperties: GETTERS.IS_OPEN_MENU_PROPERTIES,
       selectedToolName: GETTERS.SELECTED_TOOL_NAME,
       bookId: BOOK_GETTERS.BOOK_ID,
@@ -35,14 +45,11 @@ export default {
     pageSelected: {
       deep: true,
       handler(newVal, oldVal) {
-        if (newVal?.id !== oldVal?.id && this.printThemeSelected) {
+        if (newVal?.id !== oldVal?.id && this.defaultThemeId) {
           this.setIsPromptLayout(newVal);
         }
       }
     }
-  },
-  destroyed() {
-    this.resetPrintConfigs();
   },
   methods: {
     ...mapActions({
@@ -50,8 +57,7 @@ export default {
     }),
     ...mapMutations({
       setBookId: DIGITAL_MUTATES.SET_BOOK_ID,
-      toggleModal: MUTATES.TOGGLE_MODAL,
-      resetPrintConfigs: MUTATES.RESET_PRINT_CONFIG
+      toggleModal: MUTATES.TOGGLE_MODAL
     }),
     /**
      * Check current sheet is first time visited or no to open prompt
@@ -59,7 +65,7 @@ export default {
      */
     setIsPromptLayout(pageSelected) {
       if (!pageSelected.isVisited) {
-        this.setToolNameSelected({ name: TOOL_NAME.DIGITAL_LAYOUTS });
+        this.setToolNameSelected(TOOL_NAME.DIGITAL_LAYOUTS);
         this.updateVisited({
           sheetId: pageSelected?.id
         });
