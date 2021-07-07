@@ -1,7 +1,7 @@
 import { mapActions, mapGetters, mapMutations } from 'vuex';
 
 import { MUTATES } from '@/store/modules/app/const';
-import { MUTATES as BOOK_MUTATES } from '@/store/modules/book/const';
+import { MUTATES as PRINT_MUTATES } from '@/store/modules/print/const';
 import {
   GETTERS as THEME_GETTERS,
   MUTATES as THEME_MUTATES,
@@ -55,7 +55,7 @@ export default {
     }),
     ...mapMutations({
       toggleModal: MUTATES.TOGGLE_MODAL,
-      selectTheme: BOOK_MUTATES.SELECT_THEME,
+      selectTheme: PRINT_MUTATES.SET_DEFAULT_THEME_ID,
       setPrintLayouts: THEME_MUTATES.PRINT_LAYOUTS
     }),
     /**

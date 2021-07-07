@@ -5,7 +5,7 @@ import { TOOL_NAME } from '@/common/constants';
 
 import Themes from './Themes';
 import Layouts from './Layouts';
-import Backgrounds from './Backgrounds';
+import PrintBackgrounds from './PrintEdition/Backgrounds';
 import Shapes from './Shapes';
 import ClipArt from './ClipArt';
 import Actions from './Actions';
@@ -31,7 +31,7 @@ export default {
   components: {
     [TOOL_NAME.THEMES]: Themes,
     [TOOL_NAME.LAYOUTS]: Layouts,
-    [TOOL_NAME.BACKGROUNDS]: Backgrounds,
+    [TOOL_NAME.BACKGROUNDS]: PrintBackgrounds,
     [TOOL_NAME.CLIP_ART]: ClipArt,
     [TOOL_NAME.SHAPES]: Shapes,
     [TOOL_NAME.ACTIONS]: Actions
