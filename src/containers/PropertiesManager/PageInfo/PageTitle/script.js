@@ -1,4 +1,8 @@
+import InputTitle from './inputTitle';
 export default {
+  components: {
+    InputTitle
+  },
   props: {
     titleName: {
       type: String,

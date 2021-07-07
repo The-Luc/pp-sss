@@ -114,5 +114,8 @@ export const getters = {
         sheets: section.sheets.map(sheetId => sheets[sheetId])
       };
     });
+  },
+  [PRINT._GETTERS.GET_PAGE_INFO]: ({ pageInfo }) => {
+    return pageInfo;
   }
 };

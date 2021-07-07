@@ -41,6 +41,10 @@ export const actions = {
       sectionsSheets: queryResults[1].data
     });
 
+    commit(PRINT._MUTATES.SET_PAGE_INFO, {
+      pageInfo: queryResults[2].data
+    });
+
     if (isEmpty(state.currentSheetId)) {
       const defaultSheetId = state.sections[0].sheets[0];
 

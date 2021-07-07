@@ -1,7 +1,6 @@
 import { mapGetters } from 'vuex';
 import { useBook } from '@/hooks';
 import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
-import { GETTERS as BOOK_GETTERS } from '@/store/modules/book/const';
 
 import { SHEET_TYPE, LINK_STATUS } from '@/common/constants';
 import Properties from '@/components/Properties/BoxProperties';
@@ -25,7 +24,7 @@ export default {
   computed: {
     ...mapGetters({
       currentSheet: PRINT_GETTERS.CURRENT_SHEET,
-      pageInfo: BOOK_GETTERS.GET_PAGE_INFO
+      pageInfo: PRINT_GETTERS.GET_PAGE_INFO
     }),
     isCover() {
       return this.currentSheet.type === SHEET_TYPE.COVER;
@@ -47,9 +46,17 @@ export default {
     }
   },
   methods: {
+    /**
+     * Receive status page number from children
+     * @param   {Object}  val Value user selected
+     */
     onChangePageNumber(val) {
       console.log(val);
     },
+    /**
+     * Receive value page info from children
+     * @param   {Object}  val Value user selected
+     */
     onChangepageInfo(val) {
       console.log(val);
     }
