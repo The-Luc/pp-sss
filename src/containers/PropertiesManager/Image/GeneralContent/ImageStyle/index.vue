@@ -3,17 +3,18 @@
     <label class="properties-title">Image Style:</label>
     <div class="select-box">
       <div class="select-box-items">
-        <div class="item-style active">
-          <img src="@/assets/icons/style-image.svg" />
-        </div>
-        <div class="item-style">
-          <img src="@/assets/icons/style-image.svg" />
-        </div>
-        <div class="item-style">
-          <img src="@/assets/icons/style-image.svg" />
-        </div>
-        <div class="item-style">
-          <img src="@/assets/icons/style-image.svg" />
+        <div
+          v-for="(imageStyleSelectBox, index) in imagesStyleSelectBox"
+          :key="index"
+          :class="[
+            'item-style',
+            { active: imageStyleSelectBox.id === imageStyleSelected }
+          ]"
+        >
+          <img
+            :src="imageStyleSelectBox.imageUrl"
+            @click="onSelectImageStyle(imageStyleSelectBox.id)"
+          />
         </div>
       </div>
       <div class="select-icon-dropdown" @click="onOpenDropdown">
@@ -26,41 +27,17 @@
       class="dropdown-box"
     >
       <div class="dropdown-box-items">
-        <div class="item-style active">
-          <img src="@/assets/icons/style-image.svg" />
-        </div>
-        <div class="item-style">
-          <img src="@/assets/icons/style-image.svg" />
-        </div>
-        <div class="item-style">
-          <img src="@/assets/icons/style-image.svg" />
-        </div>
-        <div class="item-style">
-          <img src="@/assets/icons/style-image.svg" />
-        </div>
-        <div class="item-style">
-          <img src="@/assets/icons/style-image.svg" />
-        </div>
-        <div class="item-style">
-          <img src="@/assets/icons/style-image.svg" />
-        </div>
-        <div class="item-style">
-          <img src="@/assets/icons/style-image.svg" />
-        </div>
-        <div class="item-style">
-          <img src="@/assets/icons/style-image.svg" />
-        </div>
-        <div class="item-style">
-          <img src="@/assets/icons/style-image.svg" />
-        </div>
-        <div class="item-style">
-          <img src="@/assets/icons/style-image.svg" />
-        </div>
-        <div class="item-style">
-          <img src="@/assets/icons/style-image.svg" />
-        </div>
-        <div class="item-style">
-          <img src="@/assets/icons/style-image.svg" />
+        <div
+          v-for="(imageStyle, index) in imagesStyle"
+          :key="index"
+          :class="[
+            'item-style',
+
+            { active: imageStyle.id === imageStyleSelected }
+          ]"
+          @click="onSelectImageStyle(imageStyle.id)"
+        >
+          <img :class="imageStyle.className" :src="imageStyle.imageUrl" />
         </div>
       </div>
     </div>

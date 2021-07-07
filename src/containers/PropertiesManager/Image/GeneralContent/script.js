@@ -2,9 +2,10 @@ import Opacity from '@/components/Properties/Features/Opacity';
 import Shadow from '@/components/Properties/Features/Shadow';
 import Border from '@/components/Properties/Features/Border';
 import ImageStyle from './ImageStyle';
-
+import imagesStyle from '@/mock/imageStyle';
 import { DEFAULT_PROP } from '@/common/constants';
 import { SHADOW_OPTIONS } from '@/common/constants/shadow';
+
 export default {
   components: {
     Opacity,
@@ -27,7 +28,9 @@ export default {
       selectedBorder: {
         name: 'No border',
         value: 'noBorder'
-      }
+      },
+      imagesStyle,
+      imageStyleSelected: null
     };
   },
   computed: {
@@ -75,19 +78,22 @@ export default {
     onChangeOpacity(opacity) {
       this.$root.$emit('printChangeImageProperties', { opacity });
     },
+    /**
+     * Get border option selected and emit to image properties
+     * @param {Object} data Border option selected
+     */
     changeBorderOption(data) {
-      // const border = {
-      //   isBorder: data.value !== 'noBorder',
-      //   stroke: DEFAULT_TEXT.BORDER.STROKE,
-      //   strokeDashArray: DEFAULT_TEXT.BORDER.STROKE_DASH_ARRAY,
-      //   strokeLineCap: DEFAULT_TEXT.BORDER.STROKE_LINE_CAP,
-      //   strokeWidth:
-      //     data.value === 'noBorder' ? DEFAULT_TEXT.BORDER.STROKE_WIDTH : 1
-      // };
-      // this.$root.$emit('printChangeTextProperties', {
-      //   border
-      // });
       this.selectedBorder = data;
+    },
+    /**
+     * Set id's image style to image properties
+     * @param {Number} id - id's image style
+     */
+    onSelectImageStyle(id) {
+      this.imageStyleSelected = id;
     }
+  },
+  created() {
+    this.imageStyleSelected = this.imagesStyle[0].id;
   }
 };
