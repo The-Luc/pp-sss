@@ -32,3 +32,4 @@ export * from './svgFillMode';
 export * from './pageNumberPosition';
 export * from './zoom';
 export * from './config';
+export * from './system';

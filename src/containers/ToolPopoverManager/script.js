@@ -35,7 +35,7 @@ export default {
     return {
       toolComponent: '',
       componentKey: true,
-      edition: EDITION.PRINT
+      edition: ''
     };
   },
   components: {
@@ -59,8 +59,9 @@ export default {
         return;
       }
 
-      this.edition =
-        toolName === TOOL_NAME.PRINT_LAYOUTS ? EDITION.PRINT : EDITION.DIGITAL;
+      if (toolName === TOOL_NAME.PRINT_LAYOUTS) this.edition = EDITION.PRINT;
+      else if (toolName === TOOL_NAME.DIGITAL_LAYOUTS)
+        this.edition = EDITION.DIGITAL;
 
       this.componentKey =
         toolName === TOOL_NAME.BACKGROUNDS ? !this.componentKey : '';

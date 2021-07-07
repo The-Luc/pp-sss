@@ -9,7 +9,8 @@
     <div v-if="!isVisited && isPrompt" class="prompt"></div>
     <GotIt
       v-if="!isVisited && isPrompt"
-      :text-display="textDisplay"
+      :title="textDisplay.promptTitle"
+      :message="textDisplay.promptMsg"
       @click="onClickGotIt"
     />
     <PpToolPopover

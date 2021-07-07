@@ -1,8 +1,8 @@
 <template>
   <div class="got-it-container">
-    <p class="got-it-title text-left">{{ textDisplay.promptHeader }}</p>
+    <p class="got-it-title text-left">{{ title }}</p>
     <p class="got-it-content text-left">
-      {{ textDisplay.promptMsg }}
+      {{ message }}
     </p>
     <p class="got-it-action">
       <span class="got-it-text" @click="onClick">

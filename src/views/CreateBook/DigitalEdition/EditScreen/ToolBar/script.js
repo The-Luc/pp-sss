@@ -181,6 +181,7 @@ export default {
       ) {
         return;
       }
+
       this.setToolNameSelected({
         name: data.name
       });

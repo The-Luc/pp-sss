@@ -335,14 +335,14 @@ export default {
       const printText = {
         promptMsg:
           'The best way to get started is by selecting a layout. As a shortcut, the layouts from your selecting theme will be presented first.',
-        promptHeader: 'Select a Layout',
+        promptTitle: 'Select a Layout',
         title: 'Layouts',
         optionTitle: 'Layout Type:'
       };
       const digitalText = {
         promptMsg:
           'The best way to get started is by selecting a screen layout. As a shortcut, the screens from your selecting theme will be presented first.',
-        promptHeader: 'Select a Screen Layout',
+        promptTitle: 'Select a Screen Layout',
         title: 'Screen Layouts',
         optionTitle: 'Screen Type:'
       };

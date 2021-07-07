@@ -20,12 +20,12 @@ import {
   OBJECT_TYPE,
   TOOL_NAME,
   DEFAULT_FABRIC_BACKGROUND,
-  BACKGROUND_PAGE_TYPE
+  BACKGROUND_PAGE_TYPE,
+  EDITION
 } from '@/common/constants';
 
 import { inToPx } from '@/common/utils';
 import { createTextBox } from '@/common/fabricObjects';
-import { EDITION } from '@/common/constants/config';
 
 export const useLayoutPrompt = edition => {
   const EDITION_GETTERS =
@@ -70,24 +70,39 @@ export const useLayoutPrompt = edition => {
  */
 export const useGetLayouts = edition => {
   if (edition === EDITION.PRINT) {
-    const { sheetLayout, getLayoutsByType, listLayouts } = useGetters({
-      sheetLayout: PRINT_GETTERS.SHEET_LAYOUT,
-      getLayoutsByType: THEME_GETTERS.GET_PRINT_LAYOUT_BY_TYPE,
-      listLayouts: THEME_GETTERS.GET_PRINT_LAYOUTS_BY_THEME_ID
-    });
-
-    return { sheetLayout, getLayoutsByType, listLayouts };
+    return getterPrintLayout();
   } else {
-    const { sheetLayout, getLayoutsByType, listLayouts } = useGetters({
-      sheetLayout: DIGITAL_GETTERS.SHEET_LAYOUT,
-      getLayoutsByType: THEME_GETTERS.GET_DIGITAL_LAYOUT_BY_TYPE,
-      listLayouts: THEME_GETTERS.GET_DIGITAL_LAYOUTS_BY_THEME_ID
-    });
-
-    return { sheetLayout, getLayoutsByType, listLayouts };
+    return getterDigitalLayout();
   }
 };
 
+/**
+ * to return the getters digital layout
+ * @returns getters
+ */
+const getterDigitalLayout = () => {
+  const { sheetLayout, getLayoutsByType, listLayouts } = useGetters({
+    sheetLayout: DIGITAL_GETTERS.SHEET_LAYOUT,
+    getLayoutsByType: THEME_GETTERS.GET_DIGITAL_LAYOUT_BY_TYPE,
+    listLayouts: THEME_GETTERS.GET_DIGITAL_LAYOUTS_BY_THEME_ID
+  });
+
+  return { sheetLayout, getLayoutsByType, listLayouts };
+};
+
+/**
+ * to return the getters print layout
+ * @returns getters
+ */
+const getterPrintLayout = () => {
+  const { sheetLayout, getLayoutsByType, listLayouts } = useGetters({
+    sheetLayout: PRINT_GETTERS.SHEET_LAYOUT,
+    getLayoutsByType: THEME_GETTERS.GET_PRINT_LAYOUT_BY_TYPE,
+    listLayouts: THEME_GETTERS.GET_PRINT_LAYOUTS_BY_THEME_ID
+  });
+
+  return { sheetLayout, getLayoutsByType, listLayouts };
+};
 /**
  * Draw text by fabric after that add to target canvas
  * @param {Object} textObject - Page objects data
