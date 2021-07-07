@@ -21,7 +21,7 @@
     </div>
     <ColorPicker
       :color="pageInfo.color"
-      :is-show-colorize="false"
+      :show-eye-dropper="false"
       @change="onChangeColor"
     />
   </div>

@@ -12,7 +12,7 @@ export default {
       type: String,
       default: 'Color'
     },
-    isShowColorize: {
+    showEyeDropper: {
       type: Boolean,
       default: true
     }
