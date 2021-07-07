@@ -2,7 +2,6 @@ import { mapMutations, mapGetters } from 'vuex';
 import ToolButton from '@/components/Buttons/ToolButton';
 import ItemTool from './ItemTool';
 import { GETTERS, MUTATES } from '@/store/modules/app/const';
-import { GETTERS as BOOK_GETTERS } from '@/store/modules/book/const';
 import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 import {
   TOOL_NAME,
@@ -127,7 +126,7 @@ export default {
       selectedObjectType: GETTERS.SELECTED_OBJECT_TYPE,
       isOpenMenuProperties: GETTERS.IS_OPEN_MENU_PROPERTIES,
       selectedToolName: GETTERS.SELECTED_TOOL_NAME,
-      printThemeSelectedId: BOOK_GETTERS.PRINT_THEME_SELECTED_ID,
+      printThemeSelectedId: PRINT_GETTERS.DEFAULT_THEME_ID,
       currentBackgrounds: PRINT_GETTERS.BACKGROUNDS,
       propertiesObjectType: GETTERS.PROPERTIES_OBJECT_TYPE
     })

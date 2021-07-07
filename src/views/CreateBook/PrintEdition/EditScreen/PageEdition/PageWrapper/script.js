@@ -12,6 +12,12 @@ export default {
   components: {
     AddBoxInstruction
   },
+  props: {
+    rulerSize: {
+      type: Object,
+      required: true
+    }
+  },
   data() {
     return {
       element: '',

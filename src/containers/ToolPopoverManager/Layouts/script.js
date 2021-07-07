@@ -9,8 +9,8 @@ import {
   MUTATES as APP_MUTATES
 } from '@/store/modules/app/const';
 import { GETTERS as BOOK_GETTERS } from '@/store/modules/book/const';
-import { ACTIONS as PRINT_ACTIONS } from '@/store/modules/print/const';
 
+import { ACTIONS as PRINT_ACTIONS } from '@/store/modules/print/const';
 import { themeOptions } from '@/mock/themes';
 import PpToolPopover from '@/components/ToolPopover';
 import PpSelect from '@/components/Selectors/Select';
@@ -96,8 +96,8 @@ export default {
       themes: THEME_GETTERS.GET_THEMES,
       book: BOOK_GETTERS.BOOK_DETAIL,
       sheetTheme: BOOK_GETTERS.SHEET_THEME,
-      isPrompt: APP_GETTERS.IS_PROMPT,
-      sectionId: BOOK_GETTERS.SECTION_ID
+      sectionId: BOOK_GETTERS.SECTION_ID,
+      isPrompt: APP_GETTERS.IS_PROMPT
     }),
     isVisited() {
       return this.pageSelected?.isVisited;
@@ -230,7 +230,7 @@ export default {
         this.themeSelected = themeOpt;
       } else {
         const themeSelected = this.themesOptions.find(
-          t => t.id === defaultThemeId
+          t => t.id === this.defaultThemeId
         );
         this.themeSelected = themeSelected;
       }

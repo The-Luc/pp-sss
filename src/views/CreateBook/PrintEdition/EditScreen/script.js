@@ -7,7 +7,8 @@ import {
 } from '@/store/modules/book/const';
 import {
   ACTIONS as PRINT_ACTIONS,
-  MUTATES as PRINT_MUTATES
+  MUTATES as PRINT_MUTATES,
+  GETTERS as PRINT_GETTERS
 } from '@/store/modules/print/const';
 import { MODAL_TYPES, TOOL_NAME } from '@/common/constants';
 import ToolBar from './ToolBar';
@@ -17,6 +18,7 @@ import SidebarSection from './SidebarSection';
 import PageEdition from './PageEdition';
 import { useLayoutPrompt, usePopoverCreationTool, useInfoBar } from '@/hooks';
 import { EDITION } from '@/common/constants';
+import { isEmpty } from '@/common/utils';
 
 export default {
   components: {
@@ -45,7 +47,7 @@ export default {
   },
   computed: {
     ...mapGetters({
-      printThemeSelected: BOOK_GETTERS.PRINT_THEME_SELECTED_ID,
+      printThemeSelected: PRINT_GETTERS.DEFAULT_THEME_ID,
       isOpenMenuProperties: APP_GETTERS.IS_OPEN_MENU_PROPERTIES,
       selectedToolName: APP_GETTERS.SELECTED_TOOL_NAME,
       bookId: BOOK_GETTERS.BOOK_ID
@@ -55,7 +57,7 @@ export default {
     pageSelected: {
       deep: true,
       handler(newVal, oldVal) {
-        if (newVal?.id !== oldVal?.id && this.printThemeSelected) {
+        if (newVal?.id !== oldVal?.id && !isEmpty(this.printThemeSelected)) {
           this.setIsPromptLayout(newVal);
         }
       }
