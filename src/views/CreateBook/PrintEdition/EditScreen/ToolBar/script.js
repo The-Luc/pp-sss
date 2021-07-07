@@ -154,7 +154,13 @@ export default {
       }
 
       if (item.name === RIGHT_TOOLS.BACKGROUND.value) {
-        this.backgroundPropertiesClick();
+        this.NoneElementPropertiesClick(OBJECT_TYPE.BACKGROUND);
+
+        return;
+      }
+
+      if (item.name === RIGHT_TOOLS.PAGE_INFO.value) {
+        this.NoneElementPropertiesClick(RIGHT_TOOLS.PAGE_INFO.value);
 
         return;
       }
@@ -234,50 +240,28 @@ export default {
 
       const isToggle = this.propertiesObjectType !== OBJECT_TYPE.BACKGROUND;
 
-      isToggle ? this.toggleElementProperties() : this.openElementProperties();
+      isToggle
+        ? this.toggleObjectProperties(this.propertiesObjectType)
+        : this.openObjectProperties(this.propertiesObjectType);
     },
     /**
-     * Toggle Element Properties by using mutate
+     * Fire when click on Page Info button or Background Properties button
      */
-    toggleElementProperties() {
-      this.setPropertiesObjectType({
-        type: this.selectedObjectType
-      });
-
-      this.setIsOpenProperties({
-        isOpen: !this.isOpenMenuProperties
-      });
-    },
-    /**
-     * Open Element Properties by using mutate
-     */
-    openElementProperties() {
-      this.setPropertiesObjectType({
-        type: this.selectedObjectType
-      });
-
-      this.setIsOpenProperties({
-        isOpen: true
-      });
-    },
-    /**
-     * Fire when click on Background button
-     */
-    backgroundPropertiesClick() {
+    NoneElementPropertiesClick(objectType) {
       const isToggle =
         isEmpty(this.selectedObjectType) ||
-        this.propertiesObjectType === OBJECT_TYPE.BACKGROUND;
+        this.propertiesObjectType === objectType;
 
       isToggle
-        ? this.toggleBackgroundProperties()
-        : this.openBackgroundProperties();
+        ? this.toggleObjectProperties(objectType)
+        : this.openObjectProperties(objectType);
     },
     /**
-     * Toggle Background Properties by using mutate
+     * Toggle object properties by using mutate
      */
-    toggleBackgroundProperties() {
+    toggleObjectProperties(objectType) {
       this.setPropertiesObjectType({
-        type: OBJECT_TYPE.BACKGROUND
+        type: objectType
       });
 
       this.setIsOpenProperties({
@@ -285,11 +269,11 @@ export default {
       });
     },
     /**
-     * Open Background Properties by using mutate
+     * Open object properties by using mutate
      */
-    openBackgroundProperties() {
+    openObjectProperties(objectType) {
       this.setPropertiesObjectType({
-        type: OBJECT_TYPE.BACKGROUND
+        type: objectType
       });
 
       this.setIsOpenProperties({

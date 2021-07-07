@@ -1,0 +1,32 @@
+.page-number-properties {
+  display: flex;
+  padding: 10px;
+  .properties-font-family {
+    margin-right: 15px;
+    .v-input {
+      .v-input__control {
+        width: 118px;
+        & > .v-input__slot {
+          padding: 0 8px;
+        }
+      }
+    }
+  }
+  .font-size-container {
+    margin-right: 16px;
+    .pp-combobox {
+      .v-input__control {
+        min-width: 76px;
+      }
+    }
+  }
+  .color-container {
+    .color-content .box-color {
+      width: 52px;
+      margin-right: 0;
+      .box-color-active {
+        width: 40px;
+      }
+    }
+  }
+}
