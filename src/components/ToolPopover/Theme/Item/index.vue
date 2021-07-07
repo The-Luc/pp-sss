@@ -6,7 +6,7 @@
     <img
       v-if="theme.previewImageUrl"
       class="theme-item-img"
-      :src="require(`@/assets/image/themes/${theme.previewImageUrl}`)"
+      :src="theme.previewImageUrl"
       alt="theme"
       @click="onClick"
     />

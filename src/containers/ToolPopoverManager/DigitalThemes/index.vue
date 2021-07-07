@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="digital-themes-tool-popover">
     <ThemesToolPopover
       ref="themesToolPopover"
       :items="items"

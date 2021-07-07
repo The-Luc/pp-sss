@@ -3,18 +3,20 @@ import { mapActions, mapGetters, mapMutations } from 'vuex';
 import { themeOptions } from '@/mock/themes';
 import {
   GETTERS as THEME_GETTERS,
-  ACTIONS as THEME_ACTIONS
+  MUTATES as THEME_MUTATES
 } from '@/store/modules/theme/const';
-import {
-  GETTERS as BOOK_GETTER,
-  MUTATES as BOOK_MUTATES
-} from '@/store/modules/book/const';
+
 import {
   GETTERS as APP_GETTERS,
   MUTATES as APP_MUTATES
 } from '@/store/modules/app/const';
 import { TOOL_NAME } from '@/common/constants';
 import ThemesToolPopover from '@/components/ToolPopover/Theme';
+import {
+  GETTERS as DIGITAL_GETTERS,
+  MUTATES as DIGITAL_MUTATES
+} from '@/store/modules/digital/const';
+import { loadDigitalThemes } from '@/api/themes';
 
 export default {
   components: {
@@ -29,8 +31,8 @@ export default {
   },
   computed: {
     ...mapGetters({
-      themes: THEME_GETTERS.GET_PRINT_THEMES,
-      printThemeSelectedId: BOOK_GETTER.PRINT_THEME_SELECTED_ID,
+      themes: THEME_GETTERS.GET_DIGITAL_THEMES,
+      printThemeSelectedId: DIGITAL_GETTERS.SET_DEFAULT_THEME_ID,
       selectedToolName: APP_GETTERS.SELECTED_TOOL_NAME
     })
   },
@@ -51,12 +53,10 @@ export default {
     }
   },
   methods: {
-    ...mapActions({
-      setPrintThemes: THEME_ACTIONS.GET_PRINT_THEMES
-    }),
     ...mapMutations({
-      triggerThemeIdSelected: BOOK_MUTATES.SELECT_THEME,
-      setToolNameSelected: APP_MUTATES.SET_TOOL_NAME_SELECTED
+      triggerThemeIdSelected: DIGITAL_MUTATES.SET_DEFAULT_THEME_ID,
+      setToolNameSelected: APP_MUTATES.SET_TOOL_NAME_SELECTED,
+      setDigitalThemes: THEME_MUTATES.DIGITAL_THEMES
     }),
     /**
      * Set up needly data to render to view: selectedThemeId, optionThemeSelected
@@ -128,7 +128,10 @@ export default {
   },
   async created() {
     if (this.themes.length === 0) {
-      await this.setPrintThemes();
+      const themes = await loadDigitalThemes();
+      this.setDigitalThemes({
+        themes
+      });
     }
   }
 };

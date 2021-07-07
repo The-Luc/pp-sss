@@ -3,12 +3,13 @@ import { mapGetters } from 'vuex';
 import { GETTERS } from '@/store/modules/app/const';
 import { TOOL_NAME } from '@/common/constants';
 
-import Themes from './Themes';
+import PrintThemes from './Themes';
 import Layouts from './Layouts';
 import Backgrounds from './Backgrounds';
 import Shapes from './Shapes';
 import ClipArt from './ClipArt';
 import Actions from './Actions';
+import DigitalThemes from './DigitalThemes';
 
 const { THEMES, LAYOUTS, BACKGROUNDS, CLIP_ART, SHAPES, ACTIONS } = TOOL_NAME;
 
@@ -29,7 +30,7 @@ export default {
     };
   },
   components: {
-    [TOOL_NAME.THEMES]: Themes,
+    [TOOL_NAME.THEMES]: DigitalThemes,
     [TOOL_NAME.LAYOUTS]: Layouts,
     [TOOL_NAME.BACKGROUNDS]: Backgrounds,
     [TOOL_NAME.CLIP_ART]: ClipArt,
