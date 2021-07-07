@@ -200,6 +200,6 @@ export const mutations = {
     state.sheets[sheetId].link = statusLink;
   },
   [PRINT._MUTATES.SET_PAGE_INFO](state, { pageInfo }) {
-    state.pageInfo = pageInfo;
+    state.book.pageInfo = pageInfo;
   }
 };

@@ -115,8 +115,8 @@ export const getters = {
       };
     });
   },
-  [PRINT._GETTERS.GET_PAGE_INFO]: ({ pageInfo }) => {
-    return pageInfo;
+  [PRINT._GETTERS.GET_PAGE_INFO]: ({ book }) => {
+    return book.pageInfo;
   },
   [PRINT._GETTERS.DEFAULT_THEME_ID]: ({ book }) => {
     return book.defaultThemeId;

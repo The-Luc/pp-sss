@@ -63,7 +63,9 @@ export default {
      * @param {Boolean} val - value status left page number selected
      */
     onChangeStatusLeft(val) {
-      this.$emit('change', { isLeftNumberOn: val });
+      this.isCover
+        ? this.$emit('change', { isNumberOn: val })
+        : this.$emit('change', { isLeftNumberOn: val });
     },
     /**
      * Emit Status right page number change to parent
