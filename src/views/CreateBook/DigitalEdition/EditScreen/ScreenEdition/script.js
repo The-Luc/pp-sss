@@ -3,6 +3,7 @@ import { fabric } from 'fabric';
 import { DIGITAL_CANVAS_SIZE } from '@/common/constants/canvas';
 import SizeWrapper from '@/components/SizeWrapper';
 import AddBoxInstruction from '@/components/AddBoxInstruction';
+import Frames from '@/components/Frames';
 import { useDigitalOverrides } from '@/plugins/fabric';
 import {
   ARRANGE_SEND,
@@ -31,7 +32,7 @@ import {
 } from '@/common/fabricObjects';
 import { createImage } from '@/common/fabricObjects/image';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
-import { useDrawLayout, useInfoBar } from '@/hooks';
+import { useDrawLayout, useInfoBar, useLayoutPrompt } from '@/hooks';
 
 import { ImageElement, ClipArtElement, ShapeElement } from '@/common/models';
 
@@ -70,13 +71,15 @@ const ELEMENTS = {
 export default {
   components: {
     SizeWrapper,
-    AddBoxInstruction
+    AddBoxInstruction,
+    Frames
   },
   setup() {
     const { drawLayout } = useDrawLayout();
     const { setInfoBar, zoom } = useInfoBar();
+    const { openPrompt } = useLayoutPrompt();
 
-    return { drawLayout, setInfoBar, zoom };
+    return { drawLayout, setInfoBar, zoom, openPrompt };
   },
   data() {
     return {
@@ -1215,6 +1218,15 @@ export default {
       } else {
         this.closeProperties();
       }
+    },
+
+    /**
+     * Fire when click add frame button
+     * @param {Object} event mouse event parameter when click element
+     */
+    onAddFrame(event) {
+      console.log(event);
+      this.openPrompt();
     }
   },
   watch: {
