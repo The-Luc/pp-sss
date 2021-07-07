@@ -1,13 +1,12 @@
 import { mapGetters } from 'vuex';
 
-import { useObject } from '@/hooks';
 import Properties from '@/components/Properties/BoxProperties';
 import TabPropertiesMenu from '@/containers/TabPropertiesMenu';
 import GeneralContent from './GeneralContent';
 import StyleContent from './Style';
 import ArrangeContent from '@/components/Arrange';
 
-import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
+import { GETTERS as APP_GETTERS } from '@/store/modules/app/const';
 import { DEFAULT_TEXT } from '@/common/constants';
 import { computedObjectSize, activeCanvas } from '@/common/utils';
 import { EVENT_TYPE } from '@/common/constants/eventType';
@@ -20,16 +19,11 @@ export default {
     ArrangeContent,
     TabPropertiesMenu
   },
-  setup() {
-    const { triggerChange, selectObjectProp } = useObject();
-    return {
-      triggerChange,
-      selectObjectProp
-    };
-  },
   computed: {
     ...mapGetters({
-      currentObject: PRINT_GETTERS.CURRENT_OBJECT
+      currentObject: APP_GETTERS.CURRENT_OBJECT,
+      selectObjectProp: APP_GETTERS.SELECT_PROP_CURRENT_OBJECT,
+      triggerChange: APP_GETTERS.TRIGGER_TEXT_CHANGE
     }),
     rotateValue() {
       if (this.triggerChange) {
@@ -98,11 +92,6 @@ export default {
       return this.selectObjectProp('minHeight') || DEFAULT_TEXT.MIN_SIZE;
     }
   },
-  watch: {
-    selectedId() {
-      this.setSelectedBorder();
-    }
-  },
   data() {
     return {
       borderOptions: [
@@ -121,15 +110,10 @@ export default {
       }
     };
   },
+  mounted() {
+    this.setSelectedBorder();
+  },
   methods: {
-    /**
-     * Close color picker (if opening) when change tab
-     */
-    onChangeTabMenu(data) {
-      if (data === 'style') {
-        this.setSelectedBorder();
-      }
-    },
     /**
      * Set default selected border
      */

@@ -1,6 +1,6 @@
 import { mapGetters } from 'vuex';
 import PpButtonGroup from '@/components/Buttons/ButtonGroup';
-import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
+import { GETTERS as APP_GETTERS } from '@/store/modules/app/const';
 import { TEXT_HORIZONTAL_ALIGN } from '@/common/constants';
 
 import { isEmpty } from '@/common/utils';
@@ -20,8 +20,8 @@ export default {
   },
   computed: {
     ...mapGetters({
-      selectedAlign: PRINT_GETTERS.SELECT_PROP_CURRENT_OBJECT,
-      triggerChange: PRINT_GETTERS.TRIGGER_TEXT_CHANGE
+      selectedAlign: APP_GETTERS.SELECT_PROP_CURRENT_OBJECT,
+      triggerChange: APP_GETTERS.TRIGGER_TEXT_CHANGE
     }),
     selectedAlignment() {
       if (this.triggerChange) {

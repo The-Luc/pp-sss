@@ -16,6 +16,7 @@ import { cloneDeep } from 'lodash';
 import { isEmpty } from '@/common/utils';
 
 import { SHAPES } from '@/common/constants/shapes';
+import { EVENT_TYPE } from '@/common/constants/eventType';
 
 export default {
   components: {
@@ -96,7 +97,7 @@ export default {
     applyChosenShapes() {
       if (isEmpty(this.chosenShapes)) return;
 
-      this.$root.$emit('printAddShapes', cloneDeep(this.chosenShapes));
+      this.$root.$emit(EVENT_TYPE.ADD_SHAPES, cloneDeep(this.chosenShapes));
 
       this.onClose();
     }

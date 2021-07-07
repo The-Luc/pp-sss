@@ -2,8 +2,9 @@ import Opacity from '@/components/Properties/Features/Opacity';
 import Shadow from '@/components/Properties/Features/Shadow';
 import Border from './Border';
 
-import { useObject } from '@/hooks';
 import { EVENT_TYPE } from '@/common/constants/eventType';
+import { mapGetters } from 'vuex';
+import { GETTERS as APP_GETTERS } from '@/store/modules/app/const';
 
 export default {
   components: {
@@ -21,15 +22,11 @@ export default {
       required: true
     }
   },
-  setup() {
-    const { selectObjectProp, triggerChange } = useObject();
-
-    return {
-      selectObjectProp,
-      triggerChange
-    };
-  },
   computed: {
+    ...mapGetters({
+      selectObjectProp: APP_GETTERS.SELECT_PROP_CURRENT_OBJECT,
+      triggerChange: APP_GETTERS.TRIGGER_TEXT_CHANGE
+    }),
     opacityValue() {
       if (this.triggerChange) {
         // just for trigger the change

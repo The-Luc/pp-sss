@@ -54,5 +54,11 @@ export const mutations = {
       ...state.infoBar,
       ...info
     };
+  },
+  [APP._MUTATES.SET_CURRENT_OBJECT](state, currentObject) {
+    state.currentObject = {
+      ...state.currentObject,
+      ...currentObject
+    };
   }
 };
