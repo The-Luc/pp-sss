@@ -9,9 +9,9 @@ import { GETTERS, MUTATES } from '@/store/modules/app/const';
 import { GETTERS as BOOK_GETTERS } from '@/store/modules/book/const';
 import {
   ACTIONS as DIGITAL_ACTIONS,
-  MUTATES as DIGITAL_MUTATES
+  MUTATES as DIGITAL_MUTATES,
+  GETTERS as DIGITAL_GETTERS
 } from '@/store/modules/digital/const';
-import { GETTERS as DIGITAL_GETTERS } from '@/store/modules/digital/const';
 import { MODAL_TYPES } from '@/common/constants';
 
 export default {
@@ -27,7 +27,7 @@ export default {
       isOpenMenuProperties: GETTERS.IS_OPEN_MENU_PROPERTIES,
       selectedToolName: GETTERS.SELECTED_TOOL_NAME,
       bookId: BOOK_GETTERS.BOOK_ID,
-      defaultThemeId: DIGITAL_GETTERS.SET_DEFAULT_THEME_ID
+      defaultThemeId: DIGITAL_GETTERS.GET_DEFAULT_THEME_ID
     })
   },
   methods: {

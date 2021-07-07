@@ -32,7 +32,7 @@ export default {
   computed: {
     ...mapGetters({
       themes: THEME_GETTERS.GET_DIGITAL_THEMES,
-      printThemeSelectedId: DIGITAL_GETTERS.SET_DEFAULT_THEME_ID,
+      printThemeSelectedId: DIGITAL_GETTERS.GET_DEFAULT_THEME_ID,
       selectedToolName: APP_GETTERS.SELECTED_TOOL_NAME
     })
   },
@@ -42,7 +42,7 @@ export default {
         this.selectedThemeId = null;
         this.optionThemeSelected = {};
       }
-      if (this.printThemeSelectedId && toolName === TOOL_NAME.THEMES) {
+      if (this.printThemeSelectedId && toolName === TOOL_NAME.DIGITAL_THEMES) {
         this.initData();
       }
     }

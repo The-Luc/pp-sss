@@ -24,7 +24,7 @@ export default {
           {
             iconName: 'photo_filter',
             title: 'Themes',
-            name: TOOL_NAME.THEMES
+            name: TOOL_NAME.DIGITAL_THEMES
           },
           {
             iconName: 'import_contacts',

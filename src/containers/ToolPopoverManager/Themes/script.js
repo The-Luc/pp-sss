@@ -40,7 +40,7 @@ export default {
         this.selectedThemeId = null;
         this.optionThemeSelected = {};
       }
-      if (this.printThemeSelectedId && toolName === TOOL_NAME.THEMES) {
+      if (this.printThemeSelectedId && toolName === TOOL_NAME.PRINT_THEMES) {
         this.initData();
       }
     }

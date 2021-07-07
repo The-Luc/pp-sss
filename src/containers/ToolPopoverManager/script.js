@@ -11,10 +11,19 @@ import ClipArt from './ClipArt';
 import Actions from './Actions';
 import DigitalThemes from './DigitalThemes';
 
-const { THEMES, LAYOUTS, BACKGROUNDS, CLIP_ART, SHAPES, ACTIONS } = TOOL_NAME;
+const {
+  PRINT_THEMES,
+  DIGITAL_THEMES,
+  LAYOUTS,
+  BACKGROUNDS,
+  CLIP_ART,
+  SHAPES,
+  ACTIONS
+} = TOOL_NAME;
 
 const ToolList = {
-  [THEMES]: THEMES,
+  [PRINT_THEMES]: PRINT_THEMES,
+  [DIGITAL_THEMES]: DIGITAL_THEMES,
   [LAYOUTS]: LAYOUTS,
   [BACKGROUNDS]: BACKGROUNDS,
   [CLIP_ART]: CLIP_ART,
@@ -30,7 +39,8 @@ export default {
     };
   },
   components: {
-    [TOOL_NAME.THEMES]: DigitalThemes,
+    [TOOL_NAME.PRINT_THEMES]: PrintThemes,
+    [TOOL_NAME.DIGITAL_THEMES]: DigitalThemes,
     [TOOL_NAME.LAYOUTS]: Layouts,
     [TOOL_NAME.BACKGROUNDS]: Backgrounds,
     [TOOL_NAME.CLIP_ART]: ClipArt,
