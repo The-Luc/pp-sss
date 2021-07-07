@@ -1,6 +1,6 @@
 import { mapGetters } from 'vuex';
 
-import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
+import { GETTERS as APP_GETTERS } from '@/store/modules/app/const';
 import ColorPicker from '@/containers/ColorPicker';
 import { EVENT_TYPE } from '@/common/constants/eventType';
 
@@ -10,8 +10,8 @@ export default {
   },
   computed: {
     ...mapGetters({
-      selectedObjectProp: PRINT_GETTERS.SELECT_PROP_CURRENT_OBJECT,
-      triggerChange: PRINT_GETTERS.TRIGGER_TEXT_CHANGE
+      selectedObjectProp: APP_GETTERS.SELECT_PROP_CURRENT_OBJECT,
+      triggerChange: APP_GETTERS.TRIGGER_TEXT_CHANGE
     }),
     borderColor() {
       if (this.triggerChange) {

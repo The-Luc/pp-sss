@@ -4,7 +4,7 @@ import { cloneDeep, uniqueId, merge, debounce } from 'lodash';
 
 import { usePrintOverrides } from '@/plugins/fabric';
 
-import { useDrawLayout, useInfoBar } from '@/hooks';
+import { useDrawLayout, useInfoBar, useTextObject } from '@/hooks';
 import { startDrawBox, toggleStroke } from '@/common/fabricObjects/drawingBox';
 
 import {
@@ -101,8 +101,9 @@ export default {
   setup() {
     const { drawLayout } = useDrawLayout();
     const { setInfoBar, zoom } = useInfoBar();
+    const { selectedObject } = useTextObject();
 
-    return { drawLayout, setInfoBar, zoom };
+    return { drawLayout, setInfoBar, zoom, selectedObject };
   },
   data() {
     return {
@@ -125,14 +126,13 @@ export default {
       pageSelected: PRINT_GETTERS.CURRENT_SHEET,
       sheetLayout: PRINT_GETTERS.SHEET_LAYOUT,
       isOpenMenuProperties: APP_GETTERS.IS_OPEN_MENU_PROPERTIES,
-      selectedObject: PRINT_GETTERS.CURRENT_OBJECT,
       toolNameSelected: APP_GETTERS.SELECTED_TOOL_NAME,
       currentBackgrounds: PRINT_GETTERS.BACKGROUNDS,
       propertiesObjectType: APP_GETTERS.PROPERTIES_OBJECT_TYPE,
       object: PRINT_GETTERS.OBJECT_BY_ID,
       currentObjects: PRINT_GETTERS.GET_OBJECTS,
       totalBackground: PRINT_GETTERS.TOTAL_BACKGROUND,
-      getProperty: PRINT_GETTERS.SELECT_PROP_CURRENT_OBJECT
+      getProperty: APP_GETTERS.SELECT_PROP_CURRENT_OBJECT
     }),
     isCover() {
       return this.pageSelected?.type === SHEET_TYPE.COVER;
@@ -179,6 +179,7 @@ export default {
           await this.getDataCanvas();
           this.countPaste = 1;
           this.setSelectedObjectId({ id: '' });
+          this.setCurrentObject(null);
           this.updateCanvasSize();
           resetObjects(window.printCanvas);
 
@@ -223,6 +224,7 @@ export default {
       setToolNameSelected: MUTATES.SET_TOOL_NAME_SELECTED,
       setObjectTypeSelected: MUTATES.SET_OBJECT_TYPE_SELECTED,
       setSelectedObjectId: PRINT_MUTATES.SET_CURRENT_OBJECT_ID,
+      setCurrentObject: MUTATES.SET_CURRENT_OBJECT,
       setObjects: PRINT_MUTATES.SET_OBJECTS,
       addNewObject: PRINT_MUTATES.ADD_OBJECT,
       setObjectProp: PRINT_MUTATES.SET_PROP,
@@ -642,6 +644,7 @@ export default {
           this.updateTriggerTextChange();
 
           this.setInfoBar({ w: prop.size.width, h: prop.size.height });
+          this.setCurrentObject(this.currentObjects?.[target?.id]);
         },
         'mouse:down': e => {
           if (this.awaitingAdd) {
@@ -738,15 +741,15 @@ export default {
 
       this.setObjectTypeSelected({ type: '' });
 
-      this.toggleActiveObjects(false);
-
       this.setSelectedObjectId({ id: '' });
+
+      this.setCurrentObject(null);
     },
     /**
      * Close text properties modal
      */
     closeProperties() {
-      this.groupSelected = null;
+      this.toggleActiveObjects(false);
       this.resetConfigTextProperties();
     },
     /**
@@ -764,7 +767,9 @@ export default {
       this.setSelectedObjectId({ id });
       setBorderHighLight(target, this.sheetLayout);
 
-      const objectData = this.selectedObject;
+      const objectData = this.currentObjects?.[id];
+
+      this.setCurrentObject(objectData);
 
       if (targetType === 'group' && target.objectType === OBJECT_TYPE.TEXT) {
         const rectObj = target.getObjects(OBJECT_TYPE.RECT)[0];
@@ -782,7 +787,7 @@ export default {
       if (isSelectMultiObject) {
         setCanvasUniformScaling(window.printCanvas, true);
 
-        this.closeProperties();
+        this.resetConfigTextProperties();
       } else {
         setCanvasUniformScaling(window.printCanvas, objectData.isConstrain);
       }
@@ -885,6 +890,8 @@ export default {
 
       // update thumbnail
       this.getThumbnailUrl();
+
+      this.setCurrentObject(this.currentObjects?.[activeObj?.id]);
     },
     /**
      * Function trigger mutate to add new object to store
@@ -1296,6 +1303,8 @@ export default {
 
       // update thumbnail
       this.getThumbnailUrl();
+
+      this.setCurrentObject(this.currentObjects?.[element?.id]);
     },
     /**
      * get fired when you click 'send' button
@@ -1430,13 +1439,13 @@ export default {
       };
 
       const shapeEvents = {
-        printAddShapes: this.addShapes,
-        printChangeShapeProperties: this.changeShapeProperties
+        addShapes: this.addShapes,
+        changeShapeProperties: this.changeShapeProperties
       };
 
       const clipArtEvents = {
-        printAddClipArt: this.addClipArt,
-        printChangeClipArtProperties: this.changeClipArtProperties
+        addClipArts: this.addClipArt,
+        changeClipArtProperties: this.changeClipArtProperties
       };
 
       const otherEvents = {

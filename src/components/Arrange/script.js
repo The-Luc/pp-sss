@@ -3,6 +3,7 @@ import Size from '@/components/Arrange/Size';
 import Position from '@/components/Arrange/Position';
 import Flip from '@/components/Arrange/Flip';
 import Rotate from '@/components/Arrange/Rotate';
+import { EVENT_TYPE } from '@/common/constants/eventType';
 
 export default {
   components: {
@@ -68,7 +69,7 @@ export default {
      * @param {String}  actionName indicated which type of "send" button was clicked
      */
     changeZIndex(actionName) {
-      this.$root.$emit('changeObjectIdsOrder', actionName);
+      this.$root.$emit(EVENT_TYPE.CHANGE_OBJECT_IDS_ORDER, actionName);
     },
 
     /**
