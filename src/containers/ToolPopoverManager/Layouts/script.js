@@ -44,9 +44,12 @@ import { loadDigitalLayouts } from '@/api/layouts';
 export default {
   setup({ edition }) {
     const { setToolNameSelected, selectedToolName } = usePopoverCreationTool();
-    const { updateVisited, setIsPrompt, pageSelected } = useLayoutPrompt(
-      edition
-    );
+    const {
+      updateVisited,
+      setIsPrompt,
+      pageSelected,
+      themeId
+    } = useLayoutPrompt(edition);
     const { drawLayout } = useDrawLayout();
     const { sheetLayout, getLayoutsByType, listLayouts } = useGetLayouts(
       edition
@@ -60,7 +63,8 @@ export default {
       pageSelected,
       sheetLayout,
       getLayoutsByType,
-      listLayouts
+      listLayouts,
+      themeId
     };
   },
   components: {
@@ -151,7 +155,7 @@ export default {
     initData() {
       this.setLayoutSelected(this.pageSelected);
       this.setDisabledLayout(this.pageSelected);
-      this.setThemeSelected(this.pageSelected);
+      this.setThemeSelected(this.themeId);
       this.setLayoutActive();
     },
     /**
@@ -215,13 +219,7 @@ export default {
      * Set default selected for theme base on id of sheet. Use default theme when the sheet not have private theme
      * @param  {Number} pageSelected Id of sheet selected
      */
-    setThemeSelected(pageSelected) {
-      const currentSheetThemeId = pageSelected.themeId;
-
-      const defaultThemeId = this.isDigital
-        ? this.book.digitalData.themeId
-        : this.book.printData.themeId;
-
+    setThemeSelected(currentSheetThemeId) {
       if (currentSheetThemeId) {
         const themeOpt = getThemeOptSelectedById(
           this.themesOptions,

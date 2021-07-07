@@ -33,9 +33,10 @@ export const useLayoutPrompt = edition => {
   const EDITION_MUTATES =
     edition === EDITION.PRINT ? PRINT_MUTATES : DIGITAL_MUTATES;
 
-  const { isPrompt, pageSelected } = useGetters({
+  const { isPrompt, pageSelected, themeId } = useGetters({
     isPrompt: APP_GETTERS.IS_PROMPT,
-    pageSelected: EDITION_GETTERS.CURRENT_SHEET
+    pageSelected: EDITION_GETTERS.CURRENT_SHEET,
+    themeId: EDITION_GETTERS.DEFAULT_THEME_ID
   });
 
   const { updateVisited, setIsPrompt, setToolNameSelected } = useMutations({
@@ -60,7 +61,8 @@ export const useLayoutPrompt = edition => {
     isPrompt,
     setIsPrompt,
     pageSelected,
-    openPrompt
+    openPrompt,
+    themeId
   };
 };
 /**

@@ -14,6 +14,7 @@ import {
 import { EDITION, MODAL_TYPES, TOOL_NAME } from '@/common/constants';
 import { GETTERS as DIGITAL_GETTERS } from '@/store/modules/digital/const';
 import { useLayoutPrompt, usePopoverCreationTool } from '@/hooks';
+import { isEmpty } from '@/common/utils';
 
 export default {
   setup() {
@@ -38,14 +39,14 @@ export default {
       isOpenMenuProperties: GETTERS.IS_OPEN_MENU_PROPERTIES,
       selectedToolName: GETTERS.SELECTED_TOOL_NAME,
       bookId: BOOK_GETTERS.BOOK_ID,
-      defaultThemeId: DIGITAL_GETTERS.GET_DEFAULT_THEME_ID
+      defaultThemeId: DIGITAL_GETTERS.DEFAULT_THEME_ID
     })
   },
   watch: {
     pageSelected: {
       deep: true,
       handler(newVal, oldVal) {
-        if (newVal?.id !== oldVal?.id && this.defaultThemeId) {
+        if (newVal?.id !== oldVal?.id && !isEmpty(this.defaultThemeId)) {
           this.setIsPromptLayout(newVal);
         }
       }
