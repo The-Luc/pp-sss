@@ -8,7 +8,6 @@ import {
   GETTERS as APP_GETTERS,
   MUTATES as APP_MUTATES
 } from '@/store/modules/app/const';
-import { GETTERS as BOOK_GETTERS } from '@/store/modules/book/const';
 import {
   GETTERS as PRINT_GETTERS,
   ACTIONS as PRINT_ACTIONS
@@ -77,13 +76,11 @@ export default {
     ...mapGetters({
       themes: THEME_GETTERS.GET_THEMES,
       listLayouts: THEME_GETTERS.GET_PRINT_LAYOUTS_BY_THEME_ID,
-      book: BOOK_GETTERS.BOOK_DETAIL,
+      defaultThemeId: PRINT_GETTERS.DEFAULT_THEME_ID,
       pageSelected: PRINT_GETTERS.CURRENT_SHEET,
       sheetLayout: PRINT_GETTERS.SHEET_LAYOUT,
-      sheetTheme: BOOK_GETTERS.SHEET_THEME,
       getLayoutByType: THEME_GETTERS.GET_PRINT_LAYOUT_BY_TYPE,
-      isPrompt: APP_GETTERS.IS_PROMPT,
-      sectionId: BOOK_GETTERS.SECTION_ID
+      isPrompt: APP_GETTERS.IS_PROMPT
     }),
     isVisited() {
       return this.pageSelected?.isVisited;
@@ -199,7 +196,7 @@ export default {
      */
     setThemeSelected(pageSelected) {
       const currentSheetThemeId = pageSelected.themeId;
-      const defaultThemeId = this.book.printData.themeId;
+
       if (currentSheetThemeId) {
         const themeOpt = getThemeOptSelectedById(
           this.themesOptions,
@@ -208,7 +205,7 @@ export default {
         this.themeSelected = themeOpt;
       } else {
         const themeSelected = this.themesOptions.find(
-          t => t.id === defaultThemeId
+          t => t.id === this.defaultThemeId
         );
         this.themeSelected = themeSelected;
       }

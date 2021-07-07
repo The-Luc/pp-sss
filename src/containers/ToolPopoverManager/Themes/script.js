@@ -6,13 +6,13 @@ import {
   ACTIONS as THEME_ACTIONS
 } from '@/store/modules/theme/const';
 import {
-  GETTERS as BOOK_GETTER,
-  MUTATES as BOOK_MUTATES
-} from '@/store/modules/book/const';
-import {
   GETTERS as APP_GETTERS,
   MUTATES as APP_MUTATES
 } from '@/store/modules/app/const';
+import {
+  GETTERS as PRINT_GETTERS,
+  MUTATES as PRINT_MUTATES
+} from '@/store/modules/print/const';
 import { TOOL_NAME } from '@/common/constants';
 import ThemesToolPopover from '@/components/ToolPopover/Theme';
 
@@ -30,7 +30,7 @@ export default {
   computed: {
     ...mapGetters({
       themes: THEME_GETTERS.GET_PRINT_THEMES,
-      printThemeSelectedId: BOOK_GETTER.PRINT_THEME_SELECTED_ID,
+      printThemeSelectedId: PRINT_GETTERS.DEFAULT_THEME_ID,
       selectedToolName: APP_GETTERS.SELECTED_TOOL_NAME
     })
   },
@@ -55,7 +55,7 @@ export default {
       setPrintThemes: THEME_ACTIONS.GET_PRINT_THEMES
     }),
     ...mapMutations({
-      triggerThemeIdSelected: BOOK_MUTATES.SELECT_THEME,
+      triggerThemeIdSelected: PRINT_MUTATES.SET_DEFAULT_THEME_ID,
       setToolNameSelected: APP_MUTATES.SET_TOOL_NAME_SELECTED
     }),
     /**

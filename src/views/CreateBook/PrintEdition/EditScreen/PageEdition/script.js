@@ -117,7 +117,8 @@ export default {
       rectObj: null,
       objectList: [],
       isProcessingPaste: false,
-      countPaste: 1
+      countPaste: 1,
+      rulerSize: { width: '0', height: '0' }
     };
   },
   computed: {
@@ -187,8 +188,8 @@ export default {
         }
       }
     },
-    zoom(newVal) {
-      console.log(newVal);
+    zoom(newVal, oldVal) {
+      if (newVal !== oldVal) this.updateCanvasSize();
     }
   },
   mounted() {
@@ -576,8 +577,16 @@ export default {
         width: 0,
         height: 0
       };
-      const { ratio: printRatio, sheetWidth } = this.printSize.pixels;
-      if (this.containerSize.ratio > printRatio) {
+      const {
+        ratio: printRatio,
+        sheetWidth,
+        sheetHeight
+      } = this.printSize.pixels;
+
+      if (this.zoom > 0) {
+        canvasSize.height = sheetHeight * this.zoom;
+        canvasSize.width = sheetWidth * this.zoom;
+      } else if (this.containerSize.ratio > printRatio) {
         canvasSize.height = this.containerSize.height;
         canvasSize.width = canvasSize.height * printRatio;
       } else {
@@ -585,7 +594,8 @@ export default {
         canvasSize.height = canvasSize.width / printRatio;
       }
 
-      const currentZoom = canvasSize.width / sheetWidth;
+      const currentZoom =
+        this.zoom === 0 ? canvasSize.width / sheetWidth : this.zoom;
 
       this.canvasSize = { ...canvasSize, zoom: currentZoom };
 
@@ -644,6 +654,7 @@ export default {
           this.updateTriggerTextChange();
 
           this.setInfoBar({ w: prop.size.width, h: prop.size.height });
+          this.setCurrentObject(this.currentObjects?.[target?.id]);
         },
         'mouse:down': e => {
           if (this.awaitingAdd) {
@@ -740,8 +751,6 @@ export default {
 
       this.setObjectTypeSelected({ type: '' });
 
-      this.toggleActiveObjects(false);
-
       this.setSelectedObjectId({ id: '' });
 
       this.setCurrentObject(null);
@@ -750,7 +759,7 @@ export default {
      * Close text properties modal
      */
     closeProperties() {
-      this.groupSelected = null;
+      this.toggleActiveObjects(false);
       this.resetConfigTextProperties();
     },
     /**
@@ -768,7 +777,7 @@ export default {
       this.setSelectedObjectId({ id });
       setBorderHighLight(target, this.sheetLayout);
 
-      const objectData = this.selectedObject;
+      const objectData = this.currentObjects?.[id];
 
       this.setCurrentObject(objectData);
 
@@ -788,7 +797,7 @@ export default {
       if (isSelectMultiObject) {
         setCanvasUniformScaling(window.printCanvas, true);
 
-        this.closeProperties();
+        this.resetConfigTextProperties();
       } else {
         setCanvasUniformScaling(window.printCanvas, objectData.isConstrain);
       }
@@ -891,6 +900,8 @@ export default {
 
       // update thumbnail
       this.getThumbnailUrl();
+
+      this.setCurrentObject(this.currentObjects?.[activeObj?.id]);
     },
     /**
      * Function trigger mutate to add new object to store
@@ -1302,6 +1313,8 @@ export default {
 
       // update thumbnail
       this.getThumbnailUrl();
+
+      this.setCurrentObject(this.currentObjects?.[element?.id]);
     },
     /**
      * get fired when you click 'send' button
@@ -1630,6 +1643,22 @@ export default {
           this.updateTriggerTextChange();
         }
       });
+    },
+    /**
+     * Fire when height of ruler is change
+     *
+     * @param {String}  height  height of ruler with unit (px)
+     */
+    onHeightChange(height) {
+      this.rulerSize.height = height;
+    },
+    /**
+     * Fire when width of ruler is change
+     *
+     * @param {String}  width width of ruler with unit (px)
+     */
+    onWidthChange(width) {
+      this.rulerSize.width = width;
     },
     /**
      * Fire when clear selected in canvas

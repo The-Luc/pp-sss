@@ -27,7 +27,7 @@ export default {
       isOpenMenuProperties: GETTERS.IS_OPEN_MENU_PROPERTIES,
       selectedToolName: GETTERS.SELECTED_TOOL_NAME,
       bookId: BOOK_GETTERS.BOOK_ID,
-      defaultThemeId: DIGITAL_GETTERS.GET_DEFAULT_THEME_ID
+      defaultThemeId: DIGITAL_GETTERS.DEFAULT_THEME_ID
     })
   },
   methods: {

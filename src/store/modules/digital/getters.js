@@ -1,5 +1,4 @@
 import { isEmpty } from '@/common/utils';
-import book from '@/mock/book';
 
 import DIGITAL from './const';
 
@@ -93,7 +92,7 @@ export const getters = {
       };
     });
   },
-  [DIGITAL._GETTERS.GET_DEFAULT_THEME_ID]: ({ book }) => {
+  [DIGITAL._GETTERS.DEFAULT_THEME_ID]: ({ book }) => {
     return book.defaultThemeId;
   }
 };

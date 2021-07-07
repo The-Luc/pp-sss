@@ -32,7 +32,7 @@ export default {
   computed: {
     ...mapGetters({
       themes: THEME_GETTERS.GET_DIGITAL_THEMES,
-      printThemeSelectedId: DIGITAL_GETTERS.GET_DEFAULT_THEME_ID,
+      printThemeSelectedId: DIGITAL_GETTERS.DEFAULT_THEME_ID,
       selectedToolName: APP_GETTERS.SELECTED_TOOL_NAME
     })
   },
