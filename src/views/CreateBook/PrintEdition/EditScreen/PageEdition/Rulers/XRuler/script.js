@@ -1,5 +1,7 @@
 import XUnit from './XUnit';
 
+import { isEmpty } from '@/common/utils';
+
 export default {
   components: {
     XUnit
@@ -71,6 +73,20 @@ export default {
         left: left + 'px',
         transform: translateX
       };
+    }
+  },
+  watch: {
+    containerStyle: {
+      deep: true,
+      handler(newValue, oldValue) {
+        if (isEmpty(newValue)) {
+          return;
+        }
+
+        if (newValue.width !== oldValue.width) {
+          this.$emit('change', newValue.width);
+        }
+      }
     }
   }
 };

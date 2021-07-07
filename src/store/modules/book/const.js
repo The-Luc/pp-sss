@@ -5,7 +5,6 @@ const _GETTERS = {
   BOOK_ID: 'bookId',
   SECTIONS: 'sections',
   SELECTED_OBJECT_TYPE: 'selectedObjectType',
-  IS_OPEN_MENU_PROPERTIES: 'isOpenMenuProperties',
   PRINT_THEME_SELECTED_ID: 'isSelectedPrintTheme',
   BOOK_DATES: 'getBookDates',
   GET_SECTIONS: 'getSections',
