@@ -1,5 +1,7 @@
 import YUnit from './YUnit';
 
+import { isEmpty } from '@/common/utils';
+
 export default {
   components: {
     YUnit
@@ -64,6 +66,20 @@ export default {
         height: this.unitArray.length * height + 'px',
         top: (bleed === 0 ? 0 : bleed * height) - 1 + 'px'
       };
+    }
+  },
+  watch: {
+    containerStyle: {
+      deep: true,
+      handler(newValue, oldValue) {
+        if (isEmpty(newValue)) {
+          return;
+        }
+
+        if (newValue.height !== oldValue.height) {
+          this.$emit('change', newValue.height);
+        }
+      }
     }
   }
 };
