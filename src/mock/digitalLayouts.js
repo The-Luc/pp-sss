@@ -20,6 +20,15 @@ import LAYOUT_09 from '@/assets/image/digital-layouts/thumb/layout-9.jpg';
 import LAYOUT_10 from '@/assets/image/digital-layouts/thumb/layout-10.jpg';
 import LAYOUT_11 from '@/assets/image/digital-layouts/thumb/layout-11.jpg';
 import LAYOUT_12 from '@/assets/image/digital-layouts/thumb/layout-12.jpg';
+import LAYOUT_13 from '@/assets/image/digital-layouts/thumb/layout-13.jpg';
+import LAYOUT_14 from '@/assets/image/digital-layouts/thumb/layout-14.jpg';
+import LAYOUT_15 from '@/assets/image/digital-layouts/thumb/layout-15.jpg';
+import LAYOUT_16 from '@/assets/image/digital-layouts/thumb/layout-16.jpg';
+import LAYOUT_17 from '@/assets/image/digital-layouts/thumb/layout-17.jpg';
+import LAYOUT_18 from '@/assets/image/digital-layouts/thumb/layout-18.jpg';
+import LAYOUT_19 from '@/assets/image/digital-layouts/thumb/layout-19.jpg';
+import LAYOUT_20 from '@/assets/image/digital-layouts/thumb/layout-20.jpg';
+import LAYOUT_21 from '@/assets/image/digital-layouts/thumb/layout-21.jpg';
 
 import BG_1 from '@/assets/image/layouts/background/background-01.jpg';
 import BG_2 from '@/assets/image/layouts/background/background-02.jpg';
@@ -284,11 +293,191 @@ const supplementalFrames = [
 export const packageLayouts = [
   {
     id: 1,
-    name: 'Confetti',
+    name: '3D',
     type: LAYOUT_TYPES.COVER.value,
     frames: [...frames],
     isFavorites: false,
     previewImageUrl: LAYOUT_01,
+    themeId: 2
+  },
+  {
+    id: 2,
+    name: '3D',
+    type: LAYOUT_TYPES.GRADUATION.value,
+    frames: [...frames],
+    isFavorites: false,
+    previewImageUrl: LAYOUT_02,
+    themeId: 2
+  },
+  {
+    id: 3,
+    name: 'Newsprint',
+    type: LAYOUT_TYPES.COVER.value,
+    frames: [...frames],
+    isFavorites: false,
+    previewImageUrl: LAYOUT_03,
+    themeId: 3
+  },
+  {
+    id: 4,
+    name: 'Newsprint',
+    type: LAYOUT_TYPES.GRADUATION.value,
+    frames: [...frames],
+    isFavorites: false,
+    previewImageUrl: LAYOUT_04,
+    themeId: 3
+  },
+  {
+    id: 5,
+    name: 'Tokyo',
+    type: LAYOUT_TYPES.GRADUATION.value,
+    frames: [...frames],
+    isFavorites: false,
+    previewImageUrl: LAYOUT_05,
+    themeId: 4
+  },
+  {
+    id: 6,
+    name: 'Confetti',
+    type: LAYOUT_TYPES.ADMIN_STAFF.value,
+    frames: [...frames],
+    isFavorites: false,
+    previewImageUrl: LAYOUT_06,
+    themeId: 4
+  },
+  {
+    id: 7,
+    name: 'Glitch',
+    type: LAYOUT_TYPES.ADMIN_STAFF.value,
+    frames: [...frames],
+    isFavorites: false,
+    previewImageUrl: LAYOUT_07,
+    themeId: 5
+  },
+  {
+    id: 8,
+    name: 'Glitch',
+    type: LAYOUT_TYPES.GRADUATION.value,
+    frames: [...frames],
+    isFavorites: false,
+    previewImageUrl: LAYOUT_08,
+    themeId: 5
+  },
+  {
+    id: 9,
+    name: '3D',
+    type: LAYOUT_TYPES.GRADUATION.value,
+    frames: [...frames],
+    isFavorites: false,
+    previewImageUrl: LAYOUT_09,
+    themeId: 2
+  },
+  {
+    id: 10,
+    name: 'Nature',
+    type: LAYOUT_TYPES.ADMIN_STAFF.value,
+    frames: [...frames],
+    isFavorites: false,
+    previewImageUrl: LAYOUT_10,
+    themeId: 6
+  },
+  {
+    id: 11,
+    name: 'Pixel',
+    type: LAYOUT_TYPES.CLUBS_GROUPS_TEAMS.value,
+    frames: [...frames],
+    isFavorites: false,
+    previewImageUrl: LAYOUT_11,
+    themeId: 7
+  },
+  {
+    id: 12,
+    name: 'Scribble',
+    type: LAYOUT_TYPES.GRADUATION.value,
+    frames: [...frames],
+    isFavorites: false,
+    previewImageUrl: LAYOUT_12,
+    themeId: 8
+  },
+  {
+    id: 13,
+    name: 'Confetti',
+    type: LAYOUT_TYPES.GRADUATION.value,
+    frames: [...frames],
+    isFavorites: false,
+    previewImageUrl: LAYOUT_13,
+    themeId: 1
+  },
+  {
+    id: 14,
+    name: 'Confetti',
+    type: LAYOUT_TYPES.COVER.value,
+    frames: [...frames],
+    isFavorites: false,
+    previewImageUrl: LAYOUT_14,
+    themeId: 1
+  },
+  {
+    id: 15,
+    name: 'Confetti',
+    type: LAYOUT_TYPES.GRADUATION.value,
+    frames: [...frames],
+    isFavorites: false,
+    previewImageUrl: LAYOUT_15,
+    themeId: 1
+  },
+  {
+    id: 16,
+    name: 'Confetti',
+    type: LAYOUT_TYPES.ADMIN_STAFF.value,
+    frames: [...frames],
+    isFavorites: false,
+    previewImageUrl: LAYOUT_16,
+    themeId: 1
+  },
+  {
+    id: 17,
+    name: 'Confetti',
+    type: LAYOUT_TYPES.GRADUATION.value,
+    frames: [...frames],
+    isFavorites: false,
+    previewImageUrl: LAYOUT_17,
+    themeId: 1
+  },
+  {
+    id: 18,
+    name: 'Confetti',
+    type: LAYOUT_TYPES.ADMIN_STAFF.value,
+    frames: [...frames],
+    isFavorites: false,
+    previewImageUrl: LAYOUT_18,
+    themeId: 1
+  },
+  {
+    id: 19,
+    name: 'Confetti',
+    type: LAYOUT_TYPES.GRADUATION.value,
+    frames: [...frames],
+    isFavorites: false,
+    previewImageUrl: LAYOUT_19,
+    themeId: 1
+  },
+  {
+    id: 20,
+    name: 'Confetti',
+    type: LAYOUT_TYPES.GRADUATION.value,
+    frames: [...frames],
+    isFavorites: false,
+    previewImageUrl: LAYOUT_20,
+    themeId: 1
+  },
+  {
+    id: 21,
+    name: 'Confetti',
+    type: LAYOUT_TYPES.COVER.value,
+    frames: [...frames],
+    isFavorites: false,
+    previewImageUrl: LAYOUT_21,
     themeId: 1
   },
   {
