@@ -11,6 +11,10 @@ export default {
     label: {
       type: String,
       default: 'Color'
+    },
+    showEyeDropper: {
+      type: Boolean,
+      default: true
     }
   },
   data() {
