@@ -9,15 +9,7 @@ import {
   MUTATES as APP_MUTATES
 } from '@/store/modules/app/const';
 import { GETTERS as BOOK_GETTERS } from '@/store/modules/book/const';
-import {
-  GETTERS as PRINT_GETTERS,
-  ACTIONS as PRINT_ACTIONS
-} from '@/store/modules/print/const';
-
-import {
-  GETTERS as DIGITAL_GETTERS,
-  ACTIONS as DIGITAL_ACTIONS
-} from '@/store/modules/digital/const';
+import { ACTIONS as PRINT_ACTIONS } from '@/store/modules/print/const';
 
 import { themeOptions } from '@/mock/themes';
 import PpToolPopover from '@/components/ToolPopover';
@@ -42,7 +34,8 @@ import {
 import {
   usePopoverCreationTool,
   useLayoutPrompt,
-  useDrawLayout
+  useDrawLayout,
+  useGetLayouts
 } from '@/hooks';
 
 import { loadLayouts } from '@/api/layouts';
@@ -51,14 +44,23 @@ import { loadDigitalLayouts } from '@/api/layouts';
 export default {
   setup({ edition }) {
     const { setToolNameSelected, selectedToolName } = usePopoverCreationTool();
-    const { updateVisited, setIsPrompt } = useLayoutPrompt(edition);
+    const { updateVisited, setIsPrompt, pageSelected } = useLayoutPrompt(
+      edition
+    );
     const { drawLayout } = useDrawLayout();
+    const { sheetLayout, getLayoutsByType, listLayouts } = useGetLayouts(
+      edition
+    );
     return {
       selectedToolName,
       setToolNameSelected,
       updateVisited,
       setIsPrompt,
-      drawLayout
+      drawLayout,
+      pageSelected,
+      sheetLayout,
+      getLayoutsByType,
+      listLayouts
     };
   },
   components: {
@@ -93,42 +95,16 @@ export default {
     ...mapGetters({
       themes: THEME_GETTERS.GET_THEMES,
       book: BOOK_GETTERS.BOOK_DETAIL,
-      printPageSelected: PRINT_GETTERS.CURRENT_SHEET,
-      digitalPageSelected: DIGITAL_GETTERS.CURRENT_SHEET,
-      printSheetLayout: PRINT_GETTERS.SHEET_LAYOUT,
-      digitalSheetLayout: DIGITAL_GETTERS.SHEET_LAYOUT,
       sheetTheme: BOOK_GETTERS.SHEET_THEME,
-      getPrintLayoutByType: THEME_GETTERS.GET_PRINT_LAYOUT_BY_TYPE,
-      getDigitalLayoutByType: THEME_GETTERS.GET_DIGITAL_LAYOUT_BY_TYPE,
-      getDigitalLayoutById: THEME_GETTERS.GET_DIGITAL_LAYOUTS_BY_THEME_ID,
-      getPrintLayoutById: THEME_GETTERS.GET_PRINT_LAYOUTS_BY_THEME_ID,
       isPrompt: APP_GETTERS.IS_PROMPT,
       sectionId: BOOK_GETTERS.SECTION_ID
     }),
-    pageSelected() {
-      return this.isDigital ? this.digitalPageSelected : this.printPageSelected;
-    },
-    sheetLayout() {
-      return this.isDigital ? this.digitalSheetLayout : this.printSheetLayout;
-    },
     isVisited() {
       return this.pageSelected?.isVisited;
     },
-    listLayouts() {
-      return this.isDigital
-        ? this.getDigitalLayoutById
-        : this.getPrintLayoutById;
-    },
     layouts() {
       if (this.themeSelected?.id && this.layoutSelected?.value) {
-        if (this.isDigital) {
-          return this.getDigitalLayoutByType(
-            this.themeSelected?.id,
-            this.layoutSelected?.value
-          );
-        }
-
-        return this.getPrintLayoutByType(
+        return this.getLayoutsByType(
           this.themeSelected?.id,
           this.layoutSelected?.value
         );

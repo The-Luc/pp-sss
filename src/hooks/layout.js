@@ -1,6 +1,8 @@
 import { useMutations, useGetters } from 'vuex-composition-helpers';
 import { fabric } from 'fabric';
 
+import { GETTERS as THEME_GETTERS } from '@/store/modules/theme/const';
+
 import {
   MUTATES as APP_MUTATES,
   GETTERS as APP_GETTERS
@@ -20,6 +22,7 @@ import {
   DEFAULT_FABRIC_BACKGROUND,
   BACKGROUND_PAGE_TYPE
 } from '@/common/constants';
+
 import { inToPx } from '@/common/utils';
 import { createTextBox } from '@/common/fabricObjects';
 import { EDITION } from '@/common/constants/config';
@@ -59,6 +62,30 @@ export const useLayoutPrompt = edition => {
     pageSelected,
     openPrompt
   };
+};
+/**
+ * to return the getters of corresponding mode
+ * @param {String} edition indicate which mode is currently active (print / digital)
+ * @returns getters
+ */
+export const useGetLayouts = edition => {
+  if (edition === EDITION.PRINT) {
+    const { sheetLayout, getLayoutsByType, listLayouts } = useGetters({
+      sheetLayout: PRINT_GETTERS.SHEET_LAYOUT,
+      getLayoutsByType: THEME_GETTERS.GET_PRINT_LAYOUT_BY_TYPE,
+      listLayouts: THEME_GETTERS.GET_PRINT_LAYOUTS_BY_THEME_ID
+    });
+
+    return { sheetLayout, getLayoutsByType, listLayouts };
+  } else {
+    const { sheetLayout, getLayoutsByType, listLayouts } = useGetters({
+      sheetLayout: DIGITAL_GETTERS.SHEET_LAYOUT,
+      getLayoutsByType: THEME_GETTERS.GET_DIGITAL_LAYOUT_BY_TYPE,
+      listLayouts: THEME_GETTERS.GET_DIGITAL_LAYOUTS_BY_THEME_ID
+    });
+
+    return { sheetLayout, getLayoutsByType, listLayouts };
+  }
 };
 
 /**

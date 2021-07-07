@@ -365,11 +365,11 @@ export const packageLayouts = [
   {
     id: 10,
     name: '3D',
-    type: LAYOUT_TYPES.ADMIN_STAFF.value,
+    type: LAYOUT_TYPES.SINGLE_PAGE.value,
     frames: [...frames],
     isFavorites: false,
     previewImageUrl: LAYOUT_10,
-    themeId: 2
+    themeId: 1
   },
   {
     id: 11,
