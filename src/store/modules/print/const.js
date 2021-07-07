@@ -18,11 +18,8 @@ const _GETTERS = {
   BACKGROUNDS_NO_LAYOUT: 'getUserSelectedBackground',
   BACKGROUNDS_PROPERTIES: 'getPropertiesOfAllBackgrounds',
   SECTIONS_SHEETS: 'getSectionsAndSheets',
-<<<<<<< HEAD
-  GET_PAGE_INFO: 'getPageInfo'
-=======
+  GET_PAGE_INFO: 'getPageInfo',
   DEFAULT_THEME_ID: 'getDefaultThemeId'
->>>>>>> 93d48414f1a9084c9b6f27ddd9a6ce905a95501e
 };
 
 export const GETTERS = {
