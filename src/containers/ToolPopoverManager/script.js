@@ -3,7 +3,7 @@ import { mapGetters } from 'vuex';
 import { GETTERS } from '@/store/modules/app/const';
 import { TOOL_NAME } from '@/common/constants';
 
-import PrintThemes from './Themes';
+import PrintThemes from './PrintThemes';
 import Layouts from './Layouts';
 import PrintBackgrounds from './PrintEdition/Backgrounds';
 import Shapes from './Shapes';

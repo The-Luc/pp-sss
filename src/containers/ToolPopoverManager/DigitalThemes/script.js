@@ -1,4 +1,4 @@
-import { mapActions, mapGetters, mapMutations } from 'vuex';
+import { mapGetters, mapMutations } from 'vuex';
 
 import { themeOptions } from '@/mock/themes';
 import {
@@ -32,7 +32,7 @@ export default {
   computed: {
     ...mapGetters({
       themes: THEME_GETTERS.GET_DIGITAL_THEMES,
-      printThemeSelectedId: DIGITAL_GETTERS.DEFAULT_THEME_ID,
+      digitalThemeSelectedId: DIGITAL_GETTERS.DEFAULT_THEME_ID,
       selectedToolName: APP_GETTERS.SELECTED_TOOL_NAME
     })
   },
@@ -42,13 +42,16 @@ export default {
         this.selectedThemeId = null;
         this.optionThemeSelected = {};
       }
-      if (this.printThemeSelectedId && toolName === TOOL_NAME.DIGITAL_THEMES) {
+      if (
+        this.digitalThemeSelectedId &&
+        toolName === TOOL_NAME.DIGITAL_THEMES
+      ) {
         this.initData();
       }
     }
   },
   mounted() {
-    if (this.printThemeSelectedId) {
+    if (this.digitalThemeSelectedId) {
       this.initData();
     }
   },
@@ -62,9 +65,9 @@ export default {
      * Set up needly data to render to view: selectedThemeId, optionThemeSelected
      */
     initData() {
-      this.selectedThemeId = this.printThemeSelectedId;
-      this.setOptionThemeSelected(this.printThemeSelectedId);
-      this.getThemeElement(this.printThemeSelectedId);
+      this.selectedThemeId = this.digitalThemeSelectedId;
+      this.setOptionThemeSelected(this.digitalThemeSelectedId);
+      this.getThemeElement(this.digitalThemeSelectedId);
     },
     /**
      * Set selected theme id after click on theme in list of themes
@@ -77,9 +80,8 @@ export default {
      * Set value for select base on theme selected
      */
     setOptionThemeSelected(themeId) {
-      const optionThemeSelected =
+      this.optionThemeSelected =
         this.items.find(item => item.id === themeId) || {};
-      this.optionThemeSelected = optionThemeSelected;
     },
     /**
      * Set selected theme id after change option from select and get theme ref

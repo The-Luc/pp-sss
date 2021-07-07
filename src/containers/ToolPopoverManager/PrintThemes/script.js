@@ -77,9 +77,8 @@ export default {
      * Set value for select base on theme selected
      */
     setOptionThemeSelected(themeId) {
-      const optionThemeSelected =
+      this.optionThemeSelected =
         this.items.find(item => item.id === themeId) || {};
-      this.optionThemeSelected = optionThemeSelected;
     },
     /**
      * Set selected theme id after change option from select and get theme ref
