@@ -93,7 +93,7 @@ export const getters = {
       };
     });
   },
-  [DIGITAL._GETTERS.SET_DEFAULT_THEME_ID]: ({ book }) => {
+  [DIGITAL._GETTERS.GET_DEFAULT_THEME_ID]: ({ book }) => {
     return book.defaultThemeId;
   }
 };
