@@ -5,7 +5,7 @@ import Item from './Item';
 
 import { BACKGROUND_TYPE, BACKGROUND_PAGE_TYPE } from '@/common/constants';
 
-import { isEmpty } from '@/common/utils';
+import { isEmpty, getBackgroundTypeOptions } from '@/common/utils';
 
 export default {
   components: {
@@ -17,15 +17,7 @@ export default {
   props: {
     backgroundTypes: {
       type: Object,
-      default: () => {
-        const types = {};
-
-        Object.keys(BACKGROUND_TYPE).forEach(k => {
-          types[k] = { id: BACKGROUND_TYPE[k].id, value: [] };
-        });
-
-        return types;
-      }
+      default: () => getBackgroundTypeOptions()
     },
     backgrounds: {
       type: Array,

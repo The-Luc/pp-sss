@@ -120,3 +120,13 @@ export const getBackgroundPageType = (background, isHalfSheet) => {
     ? getDefaultPageType(isHalfSheet)
     : getPageType(background, isHalfSheet);
 };
+
+export const getBackgroundTypeOptions = () => {
+  const types = {};
+
+  Object.keys(BACKGROUND_TYPE).forEach(k => {
+    types[k] = { id: BACKGROUND_TYPE[k].id, value: [] };
+  });
+
+  return types;
+};
