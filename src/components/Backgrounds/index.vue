@@ -14,7 +14,7 @@
         <div class="pp-backgrounds-action-container">
           <TypeSelection
             :items="displayBackgroundTypes"
-            :selected-val="selectedBackgroundType"
+            :selected-val="selectedType"
             @change="onChangeBackgroundType"
           />
 
@@ -22,7 +22,7 @@
             v-if="!isPageTypeHidden"
             :items="displayBackgroundPageType"
             :disabled="isPageTypeDisabled"
-            :selected-val="selectedBackgroundPageType"
+            :selected-val="selectedPageType"
             @change="onChangeBackgroundPageType"
           />
         </div>

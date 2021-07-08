@@ -2,8 +2,9 @@
   <Backgrounds
     :background-types="backgroundTypes"
     :backgrounds="backgrounds"
-    :theme-id="currentThemeId"
-    :applied-background="alreadyAppliedBackground"
+    :selected-type="selectedType"
+    :selected-page-type="selectedPageType"
+    :applied-background="appliedBackground"
     :is-half-sheet="isHalfSheet"
     @typeChange="onChangeType"
     @pageTypeChange="onChangePageType"

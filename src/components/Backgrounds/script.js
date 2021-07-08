@@ -31,8 +31,12 @@ export default {
       type: Array,
       default: () => []
     },
-    themeId: {
-      type: Number | String,
+    selectedType: {
+      type: Object,
+      required: true
+    },
+    selectedPageType: {
+      type: Object,
       required: true
     },
     appliedBackground: {
@@ -73,100 +77,11 @@ export default {
     return {
       displayBackgroundTypes,
       displayBackgroundPageType,
-      chosenBackgroundType: {},
-      chosenBackgroundPageType: {},
       chosenBackground: {},
       noBackgroundLength: 4
     };
   },
   computed: {
-    selectedBackgroundType() {
-      if (!isEmpty(this.chosenBackgroundType)) {
-        this.$emit('typeChange', this.chosenBackgroundType);
-
-        return this.chosenBackgroundType;
-      }
-
-      if (isEmpty(this.appliedBackground)) {
-        const defaultType = {
-          ...BACKGROUND_TYPE.THEME,
-          value: BACKGROUND_TYPE.THEME.id,
-          sub: this.backgroundTypes.THEME.value.find(
-            ({ id }) => id === this.themeId
-          )
-        };
-
-        this.$emit('typeChange', defaultType);
-
-        return defaultType;
-      }
-
-      const backgroundType = Object.keys(BACKGROUND_TYPE).find(
-        k => BACKGROUND_TYPE[k].id === this.appliedBackground.backgroundType
-      );
-
-      if (isEmpty(backgroundType)) return { id: '' };
-
-      const type = {
-        ...BACKGROUND_TYPE[backgroundType],
-        value: BACKGROUND_TYPE[backgroundType].id,
-        sub: this.getSelectedBackgroundType(BACKGROUND_TYPE[backgroundType].id)
-      };
-
-      this.$emit('typeChange', type);
-
-      return type;
-    },
-    selectedBackgroundPageType() {
-      if (!isEmpty(this.chosenBackgroundPageType)) {
-        this.$emit('pageTypeChange', this.chosenBackgroundPageType);
-
-        return this.chosenBackgroundPageType;
-      }
-
-      if (isEmpty(this.appliedBackground)) {
-        const selectedBgPageType = this.isHalfSheet
-          ? BACKGROUND_PAGE_TYPE.SINGLE_PAGE
-          : BACKGROUND_PAGE_TYPE.FULL_PAGE;
-
-        const defaultPageType = {
-          ...selectedBgPageType,
-          value: selectedBgPageType.id
-        };
-
-        this.$emit('pageTypeChange', defaultPageType);
-
-        return defaultPageType;
-      }
-
-      const selectedBgPageType = Object.keys(BACKGROUND_PAGE_TYPE).find(k => {
-        return BACKGROUND_PAGE_TYPE[k].id === this.appliedBackground.pageType;
-      });
-
-      if (!isEmpty(selectedBgPageType)) {
-        const selected = {
-          ...BACKGROUND_PAGE_TYPE[selectedBgPageType],
-          value: BACKGROUND_PAGE_TYPE[selectedBgPageType].id
-        };
-
-        this.$emit('pageTypeChange', selected);
-
-        return selected;
-      }
-
-      const selectedPageType = this.isHalfSheet
-        ? BACKGROUND_PAGE_TYPE.SINGLE_PAGE
-        : BACKGROUND_PAGE_TYPE.FULL_PAGE;
-
-      const selected = {
-        ...selectedPageType,
-        value: selectedPageType.id
-      };
-
-      this.$emit('pageTypeChange', selected);
-
-      return selected;
-    },
     selectedBackground() {
       if (!isEmpty(this.chosenBackground)) {
         return this.chosenBackground;
@@ -193,8 +108,6 @@ export default {
      * Set up inital data to render in view
      */
     initData() {
-      this.chosenBackgroundType = {};
-      this.chosenBackgroundPageType = {};
       this.chosenBackground = {};
     },
     /**
@@ -218,10 +131,10 @@ export default {
      * @param {Object}  data  data of chosen background type
      */
     onChangeBackgroundType(data) {
-      this.chosenBackgroundType = {
-        ...data.item,
-        sub: data.sub
-      };
+      this.$emit('typeChange', {
+        value: data.parent,
+        sub: data.sub?.value
+      });
     },
     /**
      * Event fire when choose background page type
@@ -229,7 +142,7 @@ export default {
      * @param {Object}  data  data of chosen background page type
      */
     onChangeBackgroundPageType(data) {
-      this.chosenBackgroundPageType = data;
+      this.$emit('pageTypeChange', data);
     },
     /**
      * Event fire when choose background

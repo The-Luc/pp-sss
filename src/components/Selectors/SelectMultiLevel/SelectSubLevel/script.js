@@ -3,8 +3,12 @@ import { ICON_LOCAL } from '@/common/constants';
 export default {
   props: {
     items: {
-      type: Object, // parent value & sub items
+      type: Array,
       required: true
+    },
+    parentValue: {
+      type: String | Number,
+      default: ''
     },
     prependedIcon: {
       type: String,
@@ -19,20 +23,8 @@ export default {
       default: ICON_LOCAL.ACTIVE_MENU
     },
     selectedVal: {
-      type: Object,
-      default: () => this.getDefaultValue()
-    }
-  },
-  computed: {
-    displayItems() {
-      return this.items.items;
-    },
-    selectedValue() {
-      const selectedParentValue = this.selectedVal.parentValue.value;
-
-      return selectedParentValue === this.items.parentValue.value
-        ? this.selectedVal
-        : this.getDefaultValue();
+      type: Number | String,
+      default: ''
     }
   },
   methods: {
@@ -42,7 +34,7 @@ export default {
      * @param  {Object} option option selected
      */
     onSubClick(option) {
-      this.$emit('change', { parent: this.items.parentValue, sub: option });
+      this.$emit('change', { parent: this.parentValue, sub: option });
     },
     /**
      * Event fire when click on container, for stopping close selector
@@ -59,15 +51,7 @@ export default {
      * @returns {Boolean}       item is selected or not
      */
     isSelected(item) {
-      return item.value === this.selectedValue.value;
-    },
-    /**
-     * Get default value of item
-     *
-     * @returns {Object} default value
-     */
-    getDefaultValue() {
-      return { name: '', value: '', parentValue: { value: '' } };
+      return item.value === this.selectedVal;
     }
   }
 };

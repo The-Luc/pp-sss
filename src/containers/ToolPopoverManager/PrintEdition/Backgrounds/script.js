@@ -7,7 +7,6 @@ import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 
 import {
   MODAL_TYPES,
-  TOOL_NAME,
   BACKGROUND_TYPE,
   BACKGROUND_PAGE_TYPE
 } from '@/common/constants';
@@ -15,7 +14,12 @@ import {
 import { usePopoverCreationTool } from '@/hooks';
 
 import { cloneDeep } from 'lodash';
-import { isEmpty, isHalfSheet as isSheetHalfSheet } from '@/common/utils';
+import {
+  isEmpty,
+  isHalfSheet as isSheetHalfSheet,
+  getBackgroundType,
+  getBackgroundPageType
+} from '@/common/utils';
 
 import { themeOptions } from '@/mock/themes';
 import { BACKGROUNDS, BACKGROUND_CATEGORIES } from '@/mock/backgrounds';
@@ -28,11 +32,11 @@ export default {
     const backgroundTypes = {
       THEME: {
         id: BACKGROUND_TYPE.THEME.id,
-        value: cloneDeep(themeOptions)
+        value: themeOptions
       },
       CATEGORY: {
         id: BACKGROUND_TYPE.CATEGORY.id,
-        value: cloneDeep(BACKGROUND_CATEGORIES)
+        value: BACKGROUND_CATEGORIES
       },
       CUSTOM: {
         id: BACKGROUND_TYPE.CUSTOM.id,
@@ -47,8 +51,8 @@ export default {
     return {
       backgroundTypes,
       noBackgroundLength: 4,
-      selectedBackgroundType: { sub: {} },
-      selectedBackgroundPageType: {}
+      selectedType: { sub: {} },
+      selectedPageType: {}
     };
   },
   setup() {
@@ -68,7 +72,7 @@ export default {
     isHalfSheet() {
       return isSheetHalfSheet(this.currentSheet);
     },
-    alreadyAppliedBackground() {
+    appliedBackground() {
       return isEmpty(this.userSelectedBackground)
         ? {}
         : {
@@ -80,13 +84,25 @@ export default {
       return BACKGROUNDS.filter(b => {
         const { backgroundType, categoryId, pageType } = b;
 
-        if (backgroundType !== this.selectedBackgroundType.id) return false;
+        if (backgroundType !== this.selectedType.value) return false;
 
-        if (categoryId !== this.selectedBackgroundType.sub.id) return false;
+        if (categoryId !== this.selectedType.sub) return false;
 
-        return pageType === this.selectedBackgroundPageType.id;
+        return pageType === this.selectedPageType.id;
       });
     }
+  },
+  mounted() {
+    this.selectedType = getBackgroundType(
+      this.appliedBackground,
+      this.backgroundTypes,
+      this.currentThemeId
+    );
+
+    this.selectedPageType = getBackgroundPageType(
+      this.appliedBackground,
+      this.isHalfSheet
+    );
   },
   methods: {
     ...mapMutations({
@@ -98,7 +114,7 @@ export default {
      * @param {Object}  data  data of chosen background type
      */
     onChangeType(data) {
-      this.selectedBackgroundType = data;
+      this.selectedType = data;
     },
     /**
      * Event fire when choose background page type
@@ -106,7 +122,7 @@ export default {
      * @param {Object}  data  data of chosen background page type
      */
     onChangePageType(data) {
-      this.selectedBackgroundPageType = data;
+      this.selectedPageType = data;
     },
     /**
      * Trigger hooks to set tool name is empty and then close popover when click Cancel button

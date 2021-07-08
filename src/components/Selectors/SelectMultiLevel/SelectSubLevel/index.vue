@@ -1,8 +1,8 @@
 <template>
   <v-list class="pp-select-sub" @click.native="onSubContainerClick($event)">
     <v-list-item
-      v-for="item in displayItems"
-      :key="item.id"
+      v-for="item in items"
+      :key="item.value"
       class="pp-select-sub--item"
       :class="isSelected(item) && 'v-list-item--active'"
       @click.native="onSubClick(item)"
