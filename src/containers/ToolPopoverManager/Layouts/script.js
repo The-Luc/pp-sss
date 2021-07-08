@@ -8,7 +8,6 @@ import {
   GETTERS as APP_GETTERS,
   MUTATES as APP_MUTATES
 } from '@/store/modules/app/const';
-import { GETTERS as BOOK_GETTERS } from '@/store/modules/book/const';
 
 import { ACTIONS as PRINT_ACTIONS } from '@/store/modules/print/const';
 import { themeOptions } from '@/mock/themes';
@@ -98,8 +97,6 @@ export default {
   computed: {
     ...mapGetters({
       themes: THEME_GETTERS.GET_THEMES,
-      sheetTheme: BOOK_GETTERS.SHEET_THEME,
-      sectionId: BOOK_GETTERS.SECTION_ID,
       isPrompt: APP_GETTERS.IS_PROMPT
     }),
     isVisited() {
