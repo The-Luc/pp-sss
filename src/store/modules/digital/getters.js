@@ -94,5 +94,11 @@ export const getters = {
   },
   [DIGITAL._GETTERS.DEFAULT_THEME_ID]: ({ book }) => {
     return book.defaultThemeId;
+  },
+  [DIGITAL._GETTERS.GET_FRAMES_WIDTH_IDS]: ({ frames, frameIds }) => {
+    return frameIds.map(id => frames[id]);
+  },
+  [DIGITAL._GETTERS.CURRENT_FRAME_ID]: ({ currentFrameId }) => {
+    return currentFrameId;
   }
 };

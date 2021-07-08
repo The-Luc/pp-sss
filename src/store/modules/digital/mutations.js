@@ -34,6 +34,7 @@ export const mutations = {
   [DIGITAL._MUTATES.SET_OBJECTS](state, { objectList }) {
     if (objectList.length === 0) {
       state.objects = {};
+      state.objectIds = [];
       return;
     }
     state.objectIds = objectList.map(o => o.id);
@@ -149,6 +150,8 @@ export const mutations = {
   [DIGITAL._MUTATES.SET_FRAMES](state, { framesList }) {
     if (framesList.length === 0) {
       state.frames = {};
+      state.frameIds = [];
+      state.currentFrameId = 0;
       return;
     }
     state.frameIds = framesList.map(f => f.id);

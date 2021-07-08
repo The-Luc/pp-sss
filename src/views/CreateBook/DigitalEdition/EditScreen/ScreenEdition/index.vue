@@ -9,7 +9,12 @@
         ></canvas>
       </SizeWrapper>
     </div>
-    <Frames @addFrame="onAddFrame" />
+
+    <Frames
+      :frames="frameThumbnails"
+      :active-frame-id="currentFrameId"
+      @addFrame="onAddFrame"
+    />
     <AddBoxInstruction v-if="visible" :element="element" :x="x" :y="y" />
   </div>
 </template>

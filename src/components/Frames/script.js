@@ -1,8 +1,29 @@
+import { isEmpty } from '@/common/utils';
 import EmptyFrame from './EmptyFrame';
 
 export default {
   components: {
     EmptyFrame
+  },
+  props: {
+    frames: {
+      type: Array
+    },
+    activeFrameId: {
+      type: Number
+    }
+  },
+  computed: {
+    frameData() {
+      const defaultData = [
+        {
+          image: '',
+          type: null,
+          id: null
+        }
+      ];
+      return isEmpty(this.frames) ? defaultData : this.frames;
+    }
   },
   methods: {
     /**

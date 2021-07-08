@@ -8,7 +8,7 @@ export const state = {
   sections: [],
   sheets: {},
   currentSheetId: '',
-  currentFrameId: '',
+  currentFrameId: 0,
   objectIds: [],
   objects: {},
   frameIds: [],

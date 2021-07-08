@@ -305,20 +305,20 @@ export const packageLayouts = [
   {
     id: 8,
     name: 'Glitch',
-    type: LAYOUT_TYPES.GRADUATION.value,
+    type: LAYOUT_TYPES.COLLAGE.value,
     frames: [...frames],
     isFavorites: false,
     previewImageUrl: LAYOUT_THUMB_08,
-    themeId: 5
+    themeId: 1
   },
   {
     id: 9,
     name: '3D',
-    type: LAYOUT_TYPES.GRADUATION.value,
+    type: LAYOUT_TYPES.COLLAGE.value,
     frames: [...frames],
     isFavorites: false,
     previewImageUrl: LAYOUT_THUMB_09,
-    themeId: 2
+    themeId: 1
   },
   {
     id: 10,
@@ -341,11 +341,11 @@ export const packageLayouts = [
   {
     id: 12,
     name: 'Scribble',
-    type: LAYOUT_TYPES.GRADUATION.value,
+    type: LAYOUT_TYPES.SINGLE_PAGE.value,
     frames: [...frames],
     isFavorites: false,
     previewImageUrl: LAYOUT_THUMB_12,
-    themeId: 8
+    themeId: 1
   },
   {
     id: 13,

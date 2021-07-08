@@ -107,7 +107,9 @@ export default {
       object: DIGITAL_GETTERS.OBJECT_BY_ID,
       currentObjects: DIGITAL_GETTERS.GET_OBJECTS,
       totalBackground: DIGITAL_GETTERS.TOTAL_BACKGROUND,
-      listObjects: DIGITAL_GETTERS.GET_OBJECTS
+      listObjects: DIGITAL_GETTERS.GET_OBJECTS,
+      frames: DIGITAL_GETTERS.GET_FRAMES_WIDTH_IDS,
+      currentFrameId: DIGITAL_GETTERS.CURRENT_FRAME_ID
     }),
     isCover() {
       return this.pageSelected?.type === SHEET_TYPE.COVER;
@@ -118,6 +120,17 @@ export default {
     },
     currentSheetType() {
       return this.pageSelected?.type || -1;
+    },
+    frameThumbnails() {
+      if (isEmpty(this.frames)) return [];
+
+      return this.frames.map((f, idx) => {
+        return {
+          image: f.previewImageUrl, // use preview image for new, revise later
+          id: idx,
+          fromLayout: f.fromLayout
+        };
+      });
     }
   },
   methods: {
@@ -147,7 +160,8 @@ export default {
       toggleActiveObjects: MUTATES.TOGGLE_ACTIVE_OBJECTS,
       setPropertiesObjectType: MUTATES.SET_PROPERTIES_OBJECT_TYPE,
       setBackgroundProp: DIGITAL_MUTATES.SET_BACKGROUND_PROP,
-      deleteBackground: DIGITAL_MUTATES.DELETE_BACKGROUND
+      deleteBackground: DIGITAL_MUTATES.DELETE_BACKGROUND,
+      setFrames: DIGITAL_MUTATES.SET_FRAMES
     }),
     updateCanvasSize() {
       const canvasSize = {
@@ -1268,6 +1282,8 @@ export default {
           this.setCurrentObject(null);
           this.updateCanvasSize();
           resetObjects(this.digitalCanvas);
+          // reset frames, frameIDs, currentFrameId
+          this.setFrames({ framesList: [] });
           this.drawLayout(this.sheetLayout);
         }
       }

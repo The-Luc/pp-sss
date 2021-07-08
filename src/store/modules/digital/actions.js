@@ -87,7 +87,8 @@ export const actions = {
       themeId,
       previewImageUrl: layout.previewImageUrl
     });
-
+    // set the first frame is the active one
+    commit(DIGITAL._MUTATES.SET_CURRENT_FRAME_ID, { id: 0 });
     // set Frames, frameIds and activeFrame
     commit(DIGITAL._MUTATES.SET_FRAMES, { framesList: layout.frames });
   },
