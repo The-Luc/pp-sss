@@ -40,10 +40,12 @@ export default {
       setInfoBar
     };
   },
-  created() {
+  async created() {
     this.setBookId({ bookId: this.$route.params.bookId });
-
-    this.getDataPageEdit();
+    await this.getDataPageEdit();
+    if (isEmpty(this.printThemeSelected)) {
+      this.openSelectThemeModal();
+    }
   },
   computed: {
     ...mapGetters({
@@ -61,11 +63,6 @@ export default {
           this.setIsPromptLayout(newVal);
         }
       }
-    }
-  },
-  mounted() {
-    if (isEmpty(this.printThemeSelected)) {
-      this.openSelectThemeModal();
     }
   },
   destroyed() {
