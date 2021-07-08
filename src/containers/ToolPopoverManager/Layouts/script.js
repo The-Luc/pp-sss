@@ -9,7 +9,6 @@ import {
   MUTATES as APP_MUTATES
 } from '@/store/modules/app/const';
 
-import { ACTIONS as PRINT_ACTIONS } from '@/store/modules/print/const';
 import { themeOptions } from '@/mock/themes';
 import PpToolPopover from '@/components/ToolPopover';
 import PpSelect from '@/components/Selectors/Select';
@@ -49,10 +48,13 @@ export default {
       pageSelected,
       themeId
     } = useLayoutPrompt(edition);
-    const { drawLayout } = useDrawLayout();
-    const { sheetLayout, getLayoutsByType, listLayouts } = useGetLayouts(
-      edition
-    );
+    const { drawLayout } = useDrawLayout(edition);
+    const {
+      sheetLayout,
+      getLayoutsByType,
+      listLayouts,
+      updateSheetThemeLayout
+    } = useGetLayouts(edition);
     return {
       selectedToolName,
       setToolNameSelected,
@@ -63,7 +65,8 @@ export default {
       sheetLayout,
       getLayoutsByType,
       listLayouts,
-      themeId
+      themeId,
+      updateSheetThemeLayout
     };
   },
   components: {
@@ -91,7 +94,8 @@ export default {
       layoutEmptyLength: 4,
       layoutObjSelected: {},
       textDisplay: null,
-      isDigital: false
+      isDigital: false,
+      activeCanvas: null
     };
   },
   computed: {
@@ -141,9 +145,6 @@ export default {
       toggleModal: APP_MUTATES.TOGGLE_MODAL,
       setPrintLayouts: THEME_MUTATES.PRINT_LAYOUTS,
       setDigitalLayouts: THEME_MUTATES.DIGITAL_LAYOUTS
-    }),
-    ...mapActions({
-      updateSheetThemeLayout: PRINT_ACTIONS.UPDATE_SHEET_THEME_LAYOUT
     }),
     /**
      * Set up inital data to render in view
@@ -300,12 +301,15 @@ export default {
           });
           return;
         }
+        // save id and objects of the first frame to the store
         this.updateSheetThemeLayout({
           sheetId: this.pageSelected?.id,
           themeId: this.themeSelected?.id,
           layout: this.layoutObjSelected
         });
-        resetObjects(window.printCanvas);
+
+        resetObjects(this.activeCanvas);
+
         this.drawLayout(this.sheetLayout);
         this.onCancel();
       }
@@ -346,6 +350,10 @@ export default {
   },
   async created() {
     this.isDigital = this.edition === EDITION.DIGITAL;
+
+    this.activeCanvas = this.isDigital
+      ? window.digitalCanvas
+      : window.printCanvas;
 
     this.textDisplay = this.updateTextDisplay();
 

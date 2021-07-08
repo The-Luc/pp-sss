@@ -144,5 +144,44 @@ export const mutations = {
   },
   [DIGITAL._MUTATES.DELETE_BACKGROUND](state) {
     state.background.left = {};
+  },
+
+  [DIGITAL._MUTATES.SET_FRAMES](state, { framesList }) {
+    if (framesList.length === 0) {
+      state.frames = {};
+      return;
+    }
+    state.frameIds = framesList.map(f => f.id);
+
+    const frames = {};
+
+    framesList.forEach(f => {
+      frames[f.id] = f;
+    });
+
+    state.frames = frames;
+  },
+  [DIGITAL._MUTATES.REORDER_FRAME_IDS](state, { oldIndex, newIndex }) {
+    const [id] = state.frameIds.splice(oldIndex, 1);
+    state.frameIds.splice(newIndex, 0, id);
+  },
+  [DIGITAL._MUTATES.DELETE_FRAMES](state, { ids }) {
+    ids.forEach(id => {
+      const index = state.frameIds.indexOf(id);
+
+      if (index >= 0) {
+        state.frameIds.splice(index, 1);
+      }
+
+      delete state.frames[id];
+    });
+  },
+  [DIGITAL._MUTATES.SET_CURRENT_FRAME_ID](state, { id }) {
+    state.currentFrameId = id;
+  },
+  [DIGITAL._MUTATES.ADD_FRAME](state, { id, newFrame }) {
+    state.frameIds.push(id);
+
+    state.frames[id] = newFrame;
   }
 };

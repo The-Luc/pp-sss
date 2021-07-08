@@ -8,8 +8,11 @@ export const state = {
   sections: [],
   sheets: {},
   currentSheetId: '',
+  currentFrameId: '',
   objectIds: [],
   objects: {},
+  frameIds: [],
+  frames: {},
   currentObjectId: '',
   background: getNewBackground(),
   triggerChange: {

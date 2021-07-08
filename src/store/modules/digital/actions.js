@@ -70,15 +70,33 @@ export const actions = {
     );
   },
   [DIGITAL._ACTIONS.UPDATE_SHEET_THEME_LAYOUT](
+    { commit, dispatch },
+    { themeId, layout }
+  ) {
+    const objects = layout.frames[0];
+
+    const updateStorePayload = {
+      layout: objects,
+      themeId
+    };
+    dispatch(DIGITAL._ACTIONS.UPDATE_LAYOUT_OBJ_TO_STORE, updateStorePayload);
+
+    // Update sheet fields
+    commit(DIGITAL._MUTATES.SET_SHEET_DATA, {
+      layoutId: layout.id,
+      themeId,
+      previewImageUrl: layout.previewImageUrl
+    });
+
+    // set Frames, frameIds and activeFrame
+    commit(DIGITAL._MUTATES.SET_FRAMES, { framesList: layout.frames });
+  },
+  [DIGITAL._ACTIONS.UPDATE_LAYOUT_OBJ_TO_STORE](
     { state, commit },
-    { themeId, layout, pagePosition }
+    { layout, pagePosition }
   ) {
     const currentSheet = state.sheets[state.currentSheetId];
     let currentPosition = pagePosition; // Check whether user has add single page or not. Value: left or right with single page else undefine
-    // Get background object
-    const backgroundObjs = layout.objects.filter(
-      obj => obj.type === OBJECT_TYPE.BACKGROUND
-    );
 
     if (currentSheet.type === SHEET_TYPE.FRONT_COVER) {
       // Front cover always has the right page
@@ -90,17 +108,13 @@ export const actions = {
       currentPosition = 'left';
     }
 
-    if (backgroundObjs.length === 2) {
-      backgroundObjs.forEach(bg => {
-        commit(DIGITAL._MUTATES.SET_BACKGROUNDS, { background: bg });
-      });
-    }
+    // Get background object
+    const [backgroundObj] = layout.objects.filter(
+      obj => obj.type === OBJECT_TYPE.BACKGROUND
+    );
 
-    if (backgroundObjs.length === 1) {
-      backgroundObjs[0].isLeftPage = currentPosition === 'left';
-      commit(DIGITAL._MUTATES.SET_BACKGROUNDS, {
-        background: backgroundObjs[0]
-      });
+    if (!isEmpty(backgroundObj)) {
+      commit(DIGITAL._MUTATES.SET_BACKGROUNDS, { background: backgroundObj });
     }
 
     // Get object(s) rest
@@ -125,12 +139,5 @@ export const actions = {
     }
 
     commit(DIGITAL._MUTATES.SET_OBJECTS, { objectList });
-
-    // Update sheet fields
-    commit(DIGITAL._MUTATES.SET_SHEET_DATA, {
-      layoutId: layout.id,
-      themeId,
-      previewImageUrl: layout.previewImageUrl
-    });
   }
 };

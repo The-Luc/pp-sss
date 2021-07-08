@@ -1,4 +1,4 @@
-import { useMutations, useGetters } from 'vuex-composition-helpers';
+import { useMutations, useGetters, useActions } from 'vuex-composition-helpers';
 import { fabric } from 'fabric';
 
 import { GETTERS as THEME_GETTERS } from '@/store/modules/theme/const';
@@ -9,11 +9,13 @@ import {
 } from '@/store/modules/app/const';
 import {
   GETTERS as PRINT_GETTERS,
-  MUTATES as PRINT_MUTATES
+  MUTATES as PRINT_MUTATES,
+  ACTIONS as PRINT_ACTION
 } from '@/store/modules/print/const';
 import {
   GETTERS as DIGITAL_GETTERS,
-  MUTATES as DIGITAL_MUTATES
+  MUTATES as DIGITAL_MUTATES,
+  ACTIONS as DIGITAL_ACTION
 } from '@/store/modules/digital/const';
 
 import {
@@ -89,7 +91,11 @@ const getterDigitalLayout = () => {
     listLayouts: THEME_GETTERS.GET_DIGITAL_LAYOUTS_BY_THEME_ID
   });
 
-  return { sheetLayout, getLayoutsByType, listLayouts };
+  const { updateSheetThemeLayout } = useActions({
+    updateSheetThemeLayout: DIGITAL_ACTION.UPDATE_SHEET_THEME_LAYOUT
+  });
+
+  return { sheetLayout, getLayoutsByType, listLayouts, updateSheetThemeLayout };
 };
 
 /**
@@ -103,7 +109,11 @@ const getterPrintLayout = () => {
     listLayouts: THEME_GETTERS.GET_PRINT_LAYOUTS_BY_THEME_ID
   });
 
-  return { sheetLayout, getLayoutsByType, listLayouts };
+  const { updateSheetThemeLayout } = useActions({
+    updateSheetThemeLayout: PRINT_ACTION.UPDATE_SHEET_THEME_LAYOUT
+  });
+
+  return { sheetLayout, getLayoutsByType, listLayouts, updateSheetThemeLayout };
 };
 /**
  * Draw text by fabric after that add to target canvas
@@ -204,20 +214,22 @@ const handleDrawObjects = (objects, targetCanvas) => {
   });
 };
 
-export const useDrawLayout = () => {
+export const useDrawLayout = edition => {
   /**
    * Draw layout with layout data or reset canvas when layout not exist
    * @param {Object} sheetPrintData - Layout object data
    * @param {Ref} targetCanvas - Target canvas to draw objects
    */
-  const drawLayout = async (
-    sheetPrintData,
-    targetCanvas = window.printCanvas
-  ) => {
-    if (sheetPrintData.length === 0) {
+  const canvas =
+    edition === EDITION.DIGITAL ? window.digitalCanvas : window.printCanvas;
+
+  const drawLayout = async (sheetData, targetCanvas = canvas) => {
+    if (sheetData.length === 0) {
       targetCanvas?.clear().renderAll(); // Clear canvas when click on empty spread
     } else {
-      handleDrawObjects(sheetPrintData, targetCanvas);
+      if (!targetCanvas) return;
+
+      handleDrawObjects(sheetData, targetCanvas);
     }
   };
   return {
