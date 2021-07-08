@@ -37,7 +37,9 @@ export default {
      * @param {Number} id - id's image style
      */
     onSelect(id) {
-      this.$emit('onSelectImageStyle', id);
+      if (id !== this.styleSelected) {
+        this.$emit('onSelectImageStyle', id);
+      }
     }
   }
 };
