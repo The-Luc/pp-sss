@@ -26,17 +26,19 @@
   .layout-preview-img {
     display: flex;
     justify-content: center;
+    max-width: 211px;
+    max-height: 140px;
 
     img {
-      width: 103px;
-      height: 133px;
-      object-fit: cover;
+      object-fit: contain;
     }
   }
 
   .layout-preview-img-footer {
     display: flex;
     justify-content: space-between;
+    margin-top: 3px;
+    line-height: 1;
 
     .layout-name {
       font-size: 11px;
@@ -45,6 +47,21 @@
 
     .v-icon {
       font-size: 9px;
+    }
+  }
+  .layout-preview-img-footer .layout-opts {
+    display: flex;
+    align-items: center;
+    font-size: 9px;
+
+    &__preview {
+      margin-left: 2px;
+      padding-right: 7px;
+      margin-right: 6px;
+      border-right: 1px solid #919191;
+    }
+    &__heart-icon {
+      margin-right: 2px;
     }
   }
 }

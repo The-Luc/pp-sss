@@ -389,192 +389,12 @@ export const packageLayouts = [
     isFavorites: false,
     previewImageUrl: LAYOUT_21,
     themeId: 1
-  },
-  {
-    id: 2,
-    name: 'Confetti',
-    type: LAYOUT_TYPES.GRADUATION.value,
-    frames: [...frames],
-    isFavorites: false,
-    previewImageUrl: LAYOUT_02,
-    themeId: 1
-  },
-  {
-    id: 3,
-    name: 'Confetti',
-    type: LAYOUT_TYPES.COVER.value,
-    frames: [...frames],
-    isFavorites: false,
-    previewImageUrl: LAYOUT_03,
-    themeId: 1
-  },
-  {
-    id: 4,
-    name: 'Confetti',
-    type: LAYOUT_TYPES.GRADUATION.value,
-    frames: [...frames],
-    isFavorites: false,
-    previewImageUrl: LAYOUT_04,
-    themeId: 1
-  },
-  {
-    id: 5,
-    name: 'Confetti',
-    type: LAYOUT_TYPES.GRADUATION.value,
-    frames: [...frames],
-    isFavorites: false,
-    previewImageUrl: LAYOUT_05,
-    themeId: 1
-  },
-  {
-    id: 6,
-    name: 'Confetti',
-    type: LAYOUT_TYPES.ADMIN_STAFF.value,
-    frames: [...frames],
-    isFavorites: false,
-    previewImageUrl: LAYOUT_06,
-    themeId: 1
-  },
-  {
-    id: 7,
-    name: 'Scribble',
-    type: LAYOUT_TYPES.ADMIN_STAFF.value,
-    frames: [...frames],
-    isFavorites: false,
-    previewImageUrl: LAYOUT_07,
-    themeId: 8
-  },
-  {
-    id: 8,
-    name: 'Confetti',
-    type: LAYOUT_TYPES.GRADUATION.value,
-    frames: [...frames],
-    isFavorites: false,
-    previewImageUrl: LAYOUT_08,
-    themeId: 1
-  },
-  {
-    id: 9,
-    name: 'Confetti',
-    type: LAYOUT_TYPES.GRADUATION.value,
-    frames: [...frames],
-    isFavorites: false,
-    previewImageUrl: LAYOUT_09,
-    themeId: 1
-  },
-  {
-    id: 10,
-    name: '3D',
-    type: LAYOUT_TYPES.ADMIN_STAFF.value,
-    frames: [...frames],
-    isFavorites: false,
-    previewImageUrl: LAYOUT_10,
-    themeId: 2
-  },
-  {
-    id: 11,
-    name: 'Newsprint',
-    type: LAYOUT_TYPES.CLUBS_GROUPS_TEAMS.value,
-    frames: [...frames],
-    isFavorites: false,
-    previewImageUrl: LAYOUT_11,
-    themeId: 3
-  },
-  {
-    id: 12,
-    name: 'Tokyo',
-    type: LAYOUT_TYPES.GRADUATION.value,
-    frames: [...frames],
-    isFavorites: false,
-    previewImageUrl: LAYOUT_12,
-    themeId: 4
-  },
-  {
-    id: 13,
-    name: 'Glitch',
-    type: LAYOUT_TYPES.GRADUATION.value,
-    frames: [...frames],
-    isFavorites: false,
-    previewImageUrl: LAYOUT_01,
-    themeId: 5
-  },
-  {
-    id: 14,
-    name: 'Nature',
-    type: LAYOUT_TYPES.COVER.value,
-    frames: [...frames],
-    isFavorites: false,
-    previewImageUrl: LAYOUT_02,
-    themeId: 6
-  },
-  {
-    id: 15,
-    name: 'Pixel',
-    type: LAYOUT_TYPES.GRADUATION.value,
-    frames: [...frames],
-    isFavorites: false,
-    previewImageUrl: LAYOUT_03,
-    themeId: 7
-  },
-  {
-    id: 16,
-    name: 'Scribble',
-    type: LAYOUT_TYPES.ADMIN_STAFF.value,
-    frames: [...frames],
-    isFavorites: false,
-    previewImageUrl: LAYOUT_04,
-    themeId: 8
-  },
-  {
-    id: 17,
-    name: 'Nature',
-    type: LAYOUT_TYPES.GRADUATION.value,
-    frames: [...frames],
-    isFavorites: false,
-    previewImageUrl: LAYOUT_06,
-    themeId: 6
-  },
-  {
-    id: 14,
-    name: 'Nature',
-    type: LAYOUT_TYPES.ADMIN_STAFF.value,
-    frames: [...frames],
-    isFavorites: false,
-    previewImageUrl: LAYOUT_02,
-    themeId: 6
-  },
-  {
-    id: 15,
-    name: 'Pixel',
-    type: LAYOUT_TYPES.GRADUATION.value,
-    frames: [...frames],
-    isFavorites: false,
-    previewImageUrl: LAYOUT_03,
-    themeId: 7
-  },
-  {
-    id: 16,
-    name: 'Scribble',
-    type: LAYOUT_TYPES.GRADUATION.value,
-    frames: [...frames],
-    isFavorites: false,
-    previewImageUrl: LAYOUT_04,
-    themeId: 8
-  },
-  {
-    id: 17,
-    name: 'Scribble',
-    type: LAYOUT_TYPES.COVER.value,
-    frames: [...frames],
-    isFavorites: false,
-    previewImageUrl: LAYOUT_06,
-    themeId: 8
   }
 ];
 
 export const supplementalLayouts = [
   {
-    id: 21,
+    id: 31,
     name: 'Confetti',
     type: 'Supplemental',
     frames: [supplementalFrames[0]],
@@ -583,7 +403,7 @@ export const supplementalLayouts = [
     themeId: 1
   },
   {
-    id: 22,
+    id: 32,
     name: 'Confetti 2',
     type: 'Supplemental',
     frames: [supplementalFrames[1]],

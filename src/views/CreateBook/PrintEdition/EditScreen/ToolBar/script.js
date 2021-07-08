@@ -3,13 +3,18 @@ import ToolButton from '@/components/Buttons/ToolButton';
 import ItemTool from './ItemTool';
 import { GETTERS, MUTATES } from '@/store/modules/app/const';
 import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
-import { TOOL_NAME, OBJECT_TYPE, RIGHT_TOOLS } from '@/common/constants';
+import {
+  TOOL_NAME,
+  OBJECT_TYPE,
+  RIGHT_TOOLS,
+  EDITION
+} from '@/common/constants';
 import { useLayoutPrompt } from '@/hooks';
 import { isEmpty } from '@/common/utils';
 
 export default {
   setup() {
-    const { isPrompt } = useLayoutPrompt();
+    const { isPrompt } = useLayoutPrompt(EDITION.PRINT);
     return {
       isPrompt
     };
@@ -39,12 +44,12 @@ export default {
           {
             iconName: 'photo_filter',
             title: 'Themes',
-            name: TOOL_NAME.THEMES
+            name: TOOL_NAME.PRINT_THEMES
           },
           {
             iconName: 'import_contacts',
             title: 'Layouts',
-            name: TOOL_NAME.LAYOUTS
+            name: TOOL_NAME.PRINT_LAYOUTS
           },
           {
             iconName: 'texture',
@@ -204,7 +209,7 @@ export default {
           });
           break;
         default:
-          if (data.name === TOOL_NAME.LAYOUTS && this.isPrompt) {
+          if (data.name === TOOL_NAME.PRINT_LAYOUTS && this.isPrompt) {
             return;
           }
           this.setToolNameSelected({

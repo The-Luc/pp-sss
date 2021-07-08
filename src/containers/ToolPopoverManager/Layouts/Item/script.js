@@ -11,6 +11,10 @@ export default {
     isEmpty: {
       type: Boolean,
       default: false
+    },
+    isDigital: {
+      type: Boolean,
+      default: false
     }
   },
   methods: {

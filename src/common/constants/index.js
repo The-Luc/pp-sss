@@ -31,4 +31,6 @@ export * from './queryStatus';
 export * from './svgFillMode';
 export * from './pageNumber';
 export * from './zoom';
+export * from './config';
+export * from './system';
 export * from './fontFamily';

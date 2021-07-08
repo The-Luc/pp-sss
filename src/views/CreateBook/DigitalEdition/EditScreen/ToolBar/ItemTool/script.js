@@ -3,10 +3,11 @@ import { mapGetters } from 'vuex';
 import { GETTERS } from '@/store/modules/app/const';
 import ToolButton from '@/components/Buttons/ToolButton';
 import { useLayoutPrompt } from '@/hooks';
+import { EDITION } from '@/common/constants';
 
 export default {
   setup() {
-    const { isPrompt } = useLayoutPrompt();
+    const { isPrompt } = useLayoutPrompt(EDITION.DIGITAL);
     return { isPrompt };
   },
   components: {
