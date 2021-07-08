@@ -68,7 +68,7 @@ export default {
 
       useElement.click();
 
-      this.$emit('change', data);
+      this.$emit('change', { value: data.parent, sub: data.sub });
     },
     /**
      * Event fire when click on item, for stopping close the selector

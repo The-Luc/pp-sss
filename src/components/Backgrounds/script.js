@@ -132,7 +132,7 @@ export default {
      */
     onChangeBackgroundType(data) {
       this.$emit('typeChange', {
-        value: data.parent,
+        value: data.value,
         sub: data.sub?.value
       });
     },
