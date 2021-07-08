@@ -17,6 +17,7 @@ import FeedbackBar from '@/containers/HeaderEdition/FeedbackBar';
 import SidebarSection from './SidebarSection';
 import PageEdition from './PageEdition';
 import { useLayoutPrompt, usePopoverCreationTool, useInfoBar } from '@/hooks';
+import { EDITION } from '@/common/constants';
 import { isEmpty } from '@/common/utils';
 
 export default {
@@ -28,7 +29,7 @@ export default {
     SidebarSection
   },
   setup() {
-    const { pageSelected, updateVisited } = useLayoutPrompt();
+    const { pageSelected, updateVisited } = useLayoutPrompt(EDITION.PRINT);
     const { setToolNameSelected } = usePopoverCreationTool();
     const { setInfoBar } = useInfoBar();
 
@@ -97,7 +98,7 @@ export default {
      */
     setIsPromptLayout(pageSelected) {
       if (!pageSelected.isVisited) {
-        this.setToolNameSelected(TOOL_NAME.LAYOUTS);
+        this.setToolNameSelected(TOOL_NAME.PRINT_LAYOUTS);
         this.updateVisited({
           sheetId: pageSelected?.id
         });

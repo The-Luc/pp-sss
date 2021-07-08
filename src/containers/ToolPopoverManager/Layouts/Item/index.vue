@@ -11,9 +11,14 @@
     </div>
     <div class="layout-preview-img-footer">
       <span class="layout-name">{{ layout.name }}</span>
-      <v-icon>
-        favorite_border
-      </v-icon>
+      <div v-if="isDigital" class="layout-opts">
+        <v-icon class="layout-opts__play-icon">play_circle_outline</v-icon>
+        <span class="layout-opts__preview">Preview</span>
+        <v-icon class="layout-opts__heart-icon">
+          favorite_border
+        </v-icon>
+      </div>
+      <v-icon v-else> favorite_border </v-icon>
     </div>
   </div>
   <div v-else class="layout-item" />

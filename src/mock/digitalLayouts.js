@@ -393,8 +393,7 @@ export const packageLayouts = [
   {
     id: 2,
     name: 'Confetti',
-    type: LAYOUT_TYPES.GRADUATION.value,
-    frames: [...frames],
+    type: LAYOUT_TYPES.COLLAGE.value,
     isFavorites: false,
     previewImageUrl: LAYOUT_02,
     themeId: 1
@@ -411,7 +410,7 @@ export const packageLayouts = [
   {
     id: 4,
     name: 'Confetti',
-    type: LAYOUT_TYPES.GRADUATION.value,
+    type: LAYOUT_TYPES.COLLAGE.value,
     frames: [...frames],
     isFavorites: false,
     previewImageUrl: LAYOUT_04,
@@ -420,7 +419,7 @@ export const packageLayouts = [
   {
     id: 5,
     name: 'Confetti',
-    type: LAYOUT_TYPES.GRADUATION.value,
+    type: LAYOUT_TYPES.COLLAGE.value,
     frames: [...frames],
     isFavorites: false,
     previewImageUrl: LAYOUT_05,
@@ -465,11 +464,11 @@ export const packageLayouts = [
   {
     id: 10,
     name: '3D',
-    type: LAYOUT_TYPES.ADMIN_STAFF.value,
+    type: LAYOUT_TYPES.SINGLE_PAGE.value,
     frames: [...frames],
     isFavorites: false,
     previewImageUrl: LAYOUT_10,
-    themeId: 2
+    themeId: 1
   },
   {
     id: 11,
@@ -535,7 +534,7 @@ export const packageLayouts = [
     themeId: 6
   },
   {
-    id: 14,
+    id: 18,
     name: 'Nature',
     type: LAYOUT_TYPES.ADMIN_STAFF.value,
     frames: [...frames],
@@ -544,7 +543,7 @@ export const packageLayouts = [
     themeId: 6
   },
   {
-    id: 15,
+    id: 19,
     name: 'Pixel',
     type: LAYOUT_TYPES.GRADUATION.value,
     frames: [...frames],
@@ -553,7 +552,7 @@ export const packageLayouts = [
     themeId: 7
   },
   {
-    id: 16,
+    id: 20,
     name: 'Scribble',
     type: LAYOUT_TYPES.GRADUATION.value,
     frames: [...frames],
@@ -562,7 +561,7 @@ export const packageLayouts = [
     themeId: 8
   },
   {
-    id: 17,
+    id: 21,
     name: 'Scribble',
     type: LAYOUT_TYPES.COVER.value,
     frames: [...frames],
@@ -574,7 +573,7 @@ export const packageLayouts = [
 
 export const supplementalLayouts = [
   {
-    id: 21,
+    id: 31,
     name: 'Confetti',
     type: 'Supplemental',
     frames: [supplementalFrames[0]],
@@ -583,7 +582,7 @@ export const supplementalLayouts = [
     themeId: 1
   },
   {
-    id: 22,
+    id: 32,
     name: 'Confetti 2',
     type: 'Supplemental',
     frames: [supplementalFrames[1]],

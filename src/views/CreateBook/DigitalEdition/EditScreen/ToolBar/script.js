@@ -29,7 +29,7 @@ export default {
           {
             iconName: 'import_contacts',
             title: 'Layouts',
-            name: TOOL_NAME.LAYOUTS
+            name: TOOL_NAME.DIGITAL_LAYOUTS
           },
           {
             iconName: 'texture',

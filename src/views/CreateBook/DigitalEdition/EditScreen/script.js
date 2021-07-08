@@ -11,10 +11,22 @@ import {
   ACTIONS as DIGITAL_ACTIONS,
   MUTATES as DIGITAL_MUTATES
 } from '@/store/modules/digital/const';
+import { EDITION, MODAL_TYPES, TOOL_NAME } from '@/common/constants';
 import { GETTERS as DIGITAL_GETTERS } from '@/store/modules/digital/const';
-import { MODAL_TYPES } from '@/common/constants';
+import { useLayoutPrompt, usePopoverCreationTool } from '@/hooks';
+import { isEmpty } from '@/common/utils';
 
 export default {
+  setup() {
+    const { pageSelected, updateVisited } = useLayoutPrompt(EDITION.DIGITAL);
+    const { setToolNameSelected } = usePopoverCreationTool();
+
+    return {
+      pageSelected,
+      updateVisited,
+      setToolNameSelected
+    };
+  },
   components: {
     ToolBar,
     Header,
@@ -30,6 +42,16 @@ export default {
       defaultThemeId: DIGITAL_GETTERS.DEFAULT_THEME_ID
     })
   },
+  watch: {
+    pageSelected: {
+      deep: true,
+      handler(newVal, oldVal) {
+        if (newVal?.id !== oldVal?.id && !isEmpty(this.defaultThemeId)) {
+          this.setIsPromptLayout(newVal);
+        }
+      }
+    }
+  },
   methods: {
     ...mapActions({
       getDataPageEdit: DIGITAL_ACTIONS.GET_DATA_EDIT
@@ -38,6 +60,18 @@ export default {
       setBookId: DIGITAL_MUTATES.SET_BOOK_ID,
       toggleModal: MUTATES.TOGGLE_MODAL
     }),
+    /**
+     * Check current sheet is first time visited or no to open prompt
+     * @param  {Number} pageSelected - Curent page(sheet) selected id
+     */
+    setIsPromptLayout(pageSelected) {
+      if (!pageSelected.isVisited) {
+        this.setToolNameSelected(TOOL_NAME.DIGITAL_LAYOUTS);
+        this.updateVisited({
+          sheetId: pageSelected?.id
+        });
+      }
+    },
     /**
      * Save digital canvas and change view
      */
