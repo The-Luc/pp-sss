@@ -24,6 +24,9 @@
                 img {
                     width: 50px;
                     height: 50px;
+                    &.image-style-06 {
+                        border: 1px solid;
+                    }
                 }
                 &.active {
                     cursor: default;
@@ -73,6 +76,9 @@
                 img {
                     width: 50px;
                     height: 50px;
+                    &.image-style-06 {
+                        border: 3px double;
+                    }
                 }
                 &.active {
                     cursor: default;
