@@ -46,9 +46,6 @@ export default {
 
     return {
       backgroundTypes,
-      chosenBackgroundType: {},
-      chosenBackgroundPageType: {},
-      chosenBackground: {},
       noBackgroundLength: 4,
       selectedBackgroundType: { sub: {} },
       selectedBackgroundPageType: {}
@@ -91,34 +88,10 @@ export default {
       });
     }
   },
-  watch: {
-    selectedToolName(val) {
-      if (val === TOOL_NAME.BACKGROUNDS) this.initData();
-    },
-    currentSheet: {
-      deep: true,
-      handler(newVal, oldVal) {
-        if (newVal.id !== oldVal.id) {
-          this.initData();
-        }
-      }
-    }
-  },
-  mounted() {
-    this.initData();
-  },
   methods: {
     ...mapMutations({
       toggleModal: APP_MUTATES.TOGGLE_MODAL
     }),
-    /**
-     * Set up inital data to render in view
-     */
-    initData() {
-      this.chosenBackgroundType = {};
-      this.chosenBackgroundPageType = {};
-      this.chosenBackground = {};
-    },
     /**
      * Event fire when choose background type
      *
