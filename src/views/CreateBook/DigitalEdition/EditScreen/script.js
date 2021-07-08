@@ -9,10 +9,10 @@ import { GETTERS, MUTATES } from '@/store/modules/app/const';
 import { GETTERS as BOOK_GETTERS } from '@/store/modules/book/const';
 import {
   ACTIONS as DIGITAL_ACTIONS,
-  MUTATES as DIGITAL_MUTATES
+  MUTATES as DIGITAL_MUTATES,
+  GETTERS as DIGITAL_GETTERS
 } from '@/store/modules/digital/const';
 import { EDITION, MODAL_TYPES, TOOL_NAME } from '@/common/constants';
-import { GETTERS as DIGITAL_GETTERS } from '@/store/modules/digital/const';
 import { useLayoutPrompt, usePopoverCreationTool } from '@/hooks';
 import { isEmpty } from '@/common/utils';
 
@@ -91,7 +91,7 @@ export default {
     }
   },
   mounted() {
-    if (!this.defaultThemeId) {
+    if (isEmpty(this.defaultThemeId)) {
       this.openSelectThemeModal();
     }
   },

@@ -64,7 +64,7 @@ export default {
     }
   },
   mounted() {
-    if (!this.printThemeSelected) {
+    if (isEmpty(this.printThemeSelected)) {
       this.openSelectThemeModal();
     }
   },

@@ -1,5 +1,4 @@
 import { isEmpty } from '@/common/utils';
-import book from '@/mock/book';
 
 import DIGITAL from './const';
 
