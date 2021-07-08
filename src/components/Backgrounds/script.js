@@ -249,7 +249,7 @@ export default {
      * Trigger mutation to set Background
      */
     onApplyChosenBackground() {
-      this.$emit('applyBackground', this.chosenBackground);
+      this.$emit('applyBackground', this.selectedBackground);
 
       this.onClose();
     }
