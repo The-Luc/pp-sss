@@ -1,11 +1,10 @@
-import { mapActions, mapGetters, mapMutations } from 'vuex';
+import { mapGetters, mapMutations } from 'vuex';
 
 import { MUTATES } from '@/store/modules/app/const';
 import { MUTATES as DIGITAL_MUTATES } from '@/store/modules/digital/const';
 import {
   GETTERS as THEME_GETTERS,
-  MUTATES as THEME_MUTATES,
-  ACTIONS as THEME_ACTIONS
+  MUTATES as THEME_MUTATES
 } from '@/store/modules/theme/const';
 import Modal from '@/containers/Modal';
 import PpButton from '@/components/Buttons/Button';
@@ -13,8 +12,16 @@ import Themes from './Themes';
 import Preview from './Preview';
 import { loadDigitalThemes } from '@/api/themes';
 import { loadDigitalLayouts } from '@/api/layouts';
+import { useLayoutPrompt } from '@/hooks';
+import { EDITION } from '@/common/constants';
 
 export default {
+  setup() {
+    const { openPrompt } = useLayoutPrompt(EDITION.PRINT);
+    return {
+      openPrompt
+    };
+  },
   components: {
     Modal,
     PpButton,
@@ -68,6 +75,7 @@ export default {
     /**
      * Set preview theme's id empty and close preview
      */
+
     onClosePreview() {
       this.isPreviewing = false;
     },
@@ -79,6 +87,7 @@ export default {
         themeId: this.selectedThemeId
       });
       this.onCloseModal();
+      this.openPrompt();
     },
     /**
      * Close Modal

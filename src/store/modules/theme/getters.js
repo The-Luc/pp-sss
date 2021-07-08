@@ -17,6 +17,14 @@ export const getters = {
       layout => layout.themeId === themeId && layout.type === layoutType
     );
   },
+  [THEME._GETTERS.GET_DIGITAL_LAYOUT_BY_TYPE]: state => (
+    themeId,
+    layoutType
+  ) => {
+    return state.digitalLayouts.filter(
+      layout => layout.themeId === themeId && layout.type === layoutType
+    );
+  },
   [THEME._GETTERS.GET_DIGITAL_THEMES]: ({ digitalThemes }) => {
     return digitalThemes;
   },

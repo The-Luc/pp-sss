@@ -1,6 +1,8 @@
 import { useMutations, useGetters } from 'vuex-composition-helpers';
 import { fabric } from 'fabric';
 
+import { GETTERS as THEME_GETTERS } from '@/store/modules/theme/const';
+
 import {
   MUTATES as APP_MUTATES,
   GETTERS as APP_GETTERS
@@ -10,29 +12,48 @@ import {
   MUTATES as PRINT_MUTATES
 } from '@/store/modules/print/const';
 import {
+  GETTERS as DIGITAL_GETTERS,
+  MUTATES as DIGITAL_MUTATES
+} from '@/store/modules/digital/const';
+
+import {
   OBJECT_TYPE,
   TOOL_NAME,
   DEFAULT_FABRIC_BACKGROUND,
-  BACKGROUND_PAGE_TYPE
+  BACKGROUND_PAGE_TYPE,
+  EDITION
 } from '@/common/constants';
+
 import { inToPx } from '@/common/utils';
 import { createTextBox } from '@/common/fabricObjects';
 
-export const useLayoutPrompt = () => {
-  const { isPrompt, pageSelected } = useGetters({
+export const useLayoutPrompt = edition => {
+  const EDITION_GETTERS =
+    edition === EDITION.PRINT ? PRINT_GETTERS : DIGITAL_GETTERS;
+  const EDITION_MUTATES =
+    edition === EDITION.PRINT ? PRINT_MUTATES : DIGITAL_MUTATES;
+
+  const { isPrompt, pageSelected, themeId } = useGetters({
     isPrompt: APP_GETTERS.IS_PROMPT,
-    pageSelected: PRINT_GETTERS.CURRENT_SHEET
+    pageSelected: EDITION_GETTERS.CURRENT_SHEET,
+    themeId: EDITION_GETTERS.DEFAULT_THEME_ID
   });
 
   const { updateVisited, setIsPrompt, setToolNameSelected } = useMutations({
-    updateVisited: PRINT_MUTATES.UPDATE_SHEET_VISITED,
+    updateVisited: EDITION_MUTATES.UPDATE_SHEET_VISITED,
     setIsPrompt: APP_MUTATES.SET_IS_PROMPT,
     setToolNameSelected: APP_MUTATES.SET_TOOL_NAME_SELECTED
   });
 
-  const openPrompt = () => {
+  const openPrompt = promptEdtion => {
     setIsPrompt({ isPrompt: true });
-    setToolNameSelected({ name: TOOL_NAME.LAYOUTS });
+
+    const toolName =
+      promptEdtion === EDITION.PRINT
+        ? TOOL_NAME.PRINT_LAYOUTS
+        : TOOL_NAME.DIGITAL_LAYOUTS;
+
+    setToolNameSelected({ name: toolName });
   };
 
   return {
@@ -40,10 +61,50 @@ export const useLayoutPrompt = () => {
     isPrompt,
     setIsPrompt,
     pageSelected,
-    openPrompt
+    openPrompt,
+    themeId
   };
 };
+/**
+ * to return the getters of corresponding mode
+ * @param {String} edition indicate which mode is currently active (print / digital)
+ * @returns getters
+ */
+export const useGetLayouts = edition => {
+  if (edition === EDITION.PRINT) {
+    return getterPrintLayout();
+  } else {
+    return getterDigitalLayout();
+  }
+};
 
+/**
+ * to return the getters digital layout
+ * @returns getters
+ */
+const getterDigitalLayout = () => {
+  const { sheetLayout, getLayoutsByType, listLayouts } = useGetters({
+    sheetLayout: DIGITAL_GETTERS.SHEET_LAYOUT,
+    getLayoutsByType: THEME_GETTERS.GET_DIGITAL_LAYOUT_BY_TYPE,
+    listLayouts: THEME_GETTERS.GET_DIGITAL_LAYOUTS_BY_THEME_ID
+  });
+
+  return { sheetLayout, getLayoutsByType, listLayouts };
+};
+
+/**
+ * to return the getters print layout
+ * @returns getters
+ */
+const getterPrintLayout = () => {
+  const { sheetLayout, getLayoutsByType, listLayouts } = useGetters({
+    sheetLayout: PRINT_GETTERS.SHEET_LAYOUT,
+    getLayoutsByType: THEME_GETTERS.GET_PRINT_LAYOUT_BY_TYPE,
+    listLayouts: THEME_GETTERS.GET_PRINT_LAYOUTS_BY_THEME_ID
+  });
+
+  return { sheetLayout, getLayoutsByType, listLayouts };
+};
 /**
  * Draw text by fabric after that add to target canvas
  * @param {Object} textObject - Page objects data

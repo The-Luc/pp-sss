@@ -11,7 +11,8 @@ import {
   DEFAULT_IMAGE,
   DEFAULT_SHAPE,
   OBJECT_TYPE,
-  SHEET_TYPE
+  SHEET_TYPE,
+  TOOL_NAME
 } from '@/common/constants';
 import {
   addPrintClipArts,
@@ -204,6 +205,10 @@ export default {
     updateDigitalEventListeners(isOn = true) {
       const elementEvents = [
         {
+          name: EVENT_TYPE.SWITCHTOOL,
+          handler: this.onSwitchTool
+        },
+        {
           name: EVENT_TYPE.DIGITAL_ADD_ELEMENT,
           handler: this.onAddElement
         },
@@ -288,6 +293,28 @@ export default {
         [CANVAS_EVENT_TYPE.TEXT_CHANGED]: this.onTextChanged
       };
       this.digitalCanvas?.on(events);
+    },
+
+    onSwitchTool(toolName) {
+      const isDiscard =
+        toolName &&
+        toolName !== TOOL_NAME.DELETE &&
+        toolName !== TOOL_NAME.ACTIONS;
+
+      if (isDiscard) {
+        this.digitalCanvas?.discardActiveObject();
+        this.digitalCanvas?.renderAll();
+      }
+
+      if (this.propertiesObjectType === OBJECT_TYPE.BACKGROUND) {
+        this.setIsOpenProperties({ isOpen: false });
+
+        this.setPropertiesObjectType({ type: '' });
+      }
+
+      this.stopAddingInstruction();
+
+      this.awaitingAdd = '';
     },
 
     /**
@@ -450,6 +477,7 @@ export default {
     onMouseDown(event) {
       if (this.awaitingAdd) {
         this.stopAddingInstruction();
+        this.setToolNameSelected({ name: '' });
         this.digitalCanvas?.discardActiveObject();
         this.digitalCanvas?.renderAll();
 
@@ -566,6 +594,7 @@ export default {
       if (key === 27) {
         this.awaitingAdd = '';
         this.stopAddingInstruction();
+        this.setToolNameSelected({ name: '' });
       }
     },
 
@@ -589,7 +618,6 @@ export default {
       this.y = 0;
       document.body.removeEventListener('mousemove', this.handleBodyMouseMove);
       document.body.removeEventListener('keyup', this.handleKeyPress);
-      this.setToolNameSelected({ name: '' });
     },
 
     /**

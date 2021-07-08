@@ -24,12 +24,12 @@ export default {
           {
             iconName: 'photo_filter',
             title: 'Themes',
-            name: TOOL_NAME.THEMES
+            name: TOOL_NAME.DIGITAL_THEMES
           },
           {
             iconName: 'import_contacts',
             title: 'Layouts',
-            name: TOOL_NAME.LAYOUTS
+            name: TOOL_NAME.DIGITAL_LAYOUTS
           },
           {
             iconName: 'texture',
@@ -147,9 +147,6 @@ export default {
      * @param  {Object} item Receive item information
      */
     onClickRightTool(item) {
-      if (!this.printThemeSelectedId) {
-        return;
-      }
       switch (item.name) {
         case 'properties':
           if (!this.selectedObjectType) {
@@ -181,6 +178,8 @@ export default {
       ) {
         return;
       }
+
+      this.$root.$emit(EVENT_TYPE.SWITCHTOOL, data.name);
 
       this.setToolNameSelected({
         name: data.name
