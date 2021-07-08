@@ -1,7 +1,7 @@
 import { mapGetters } from 'vuex';
 
 import { GETTERS } from '@/store/modules/app/const';
-import { TOOL_NAME } from '@/common/constants';
+import { EDITION, TOOL_NAME } from '@/common/constants';
 
 import PrintThemes from './PrintThemes';
 import Layouts from './Layouts';
@@ -14,7 +14,8 @@ import DigitalThemes from './DigitalThemes';
 const {
   PRINT_THEMES,
   DIGITAL_THEMES,
-  LAYOUTS,
+  PRINT_LAYOUTS,
+  DIGITAL_LAYOUTS,
   BACKGROUNDS,
   CLIP_ART,
   SHAPES,
@@ -24,7 +25,8 @@ const {
 const ToolList = {
   [PRINT_THEMES]: PRINT_THEMES,
   [DIGITAL_THEMES]: DIGITAL_THEMES,
-  [LAYOUTS]: LAYOUTS,
+  [PRINT_LAYOUTS]: PRINT_LAYOUTS,
+  [DIGITAL_LAYOUTS]: DIGITAL_LAYOUTS,
   [BACKGROUNDS]: BACKGROUNDS,
   [CLIP_ART]: CLIP_ART,
   [SHAPES]: SHAPES,
@@ -35,13 +37,15 @@ export default {
   data() {
     return {
       toolComponent: '',
-      componentKey: true
+      componentKey: true,
+      edition: ''
     };
   },
   components: {
     [TOOL_NAME.PRINT_THEMES]: PrintThemes,
     [TOOL_NAME.DIGITAL_THEMES]: DigitalThemes,
-    [TOOL_NAME.LAYOUTS]: Layouts,
+    [TOOL_NAME.PRINT_LAYOUTS]: Layouts,
+    [TOOL_NAME.DIGITAL_LAYOUTS]: Layouts,
     [TOOL_NAME.BACKGROUNDS]: PrintBackgrounds,
     [TOOL_NAME.CLIP_ART]: ClipArt,
     [TOOL_NAME.SHAPES]: Shapes,
@@ -58,6 +62,10 @@ export default {
         this.toolComponent = null;
         return;
       }
+
+      if (toolName === TOOL_NAME.PRINT_LAYOUTS) this.edition = EDITION.PRINT;
+      else if (toolName === TOOL_NAME.DIGITAL_LAYOUTS)
+        this.edition = EDITION.DIGITAL;
 
       this.componentKey =
         toolName === TOOL_NAME.BACKGROUNDS ? !this.componentKey : '';

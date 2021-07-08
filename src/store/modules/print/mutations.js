@@ -198,5 +198,8 @@ export const mutations = {
   },
   [PRINT._MUTATES.SET_SHEET_LINK_STATUS](state, { statusLink, sheetId }) {
     state.sheets[sheetId].link = statusLink;
+  },
+  [PRINT._MUTATES.SET_PAGE_INFO](state, { pageInfo }) {
+    state.book.pageInfo = pageInfo;
   }
 };

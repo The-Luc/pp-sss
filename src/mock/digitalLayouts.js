@@ -394,7 +394,7 @@ export const packageLayouts = [
 
 export const supplementalLayouts = [
   {
-    id: 21,
+    id: 31,
     name: 'Confetti',
     type: 'Supplemental',
     frames: [supplementalFrames[0]],
@@ -403,7 +403,7 @@ export const supplementalLayouts = [
     themeId: 1
   },
   {
-    id: 22,
+    id: 32,
     name: 'Confetti 2',
     type: 'Supplemental',
     frames: [supplementalFrames[1]],

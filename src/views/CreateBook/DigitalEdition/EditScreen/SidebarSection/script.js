@@ -3,10 +3,31 @@ import { mapGetters, mapMutations } from 'vuex';
 import Thumbnail from '@/components/Thumbnail/ThumbnailDigital';
 import HeaderContainer from '@/components/Thumbnail/HeaderContainer';
 import { GETTERS, MUTATES } from '@/store/modules/book/const';
+import { GETTERS as APP_GETTERS } from '@/store/modules/app/const';
 import { scrollToElement } from '@/common/utils';
-import { GETTERS as DIGITAL_GETTERS } from '@/store/modules/digital/const';
+import {
+  GETTERS as DIGITAL_GETTERS,
+  MUTATES as DIGITAL_MUTATES
+} from '@/store/modules/digital/const';
+import {
+  useLayoutPrompt,
+  usePopoverCreationTool,
+  useObjectProperties
+} from '@/hooks';
+import { TOOL_NAME, EDITION } from '@/common/constants';
 
 export default {
+  setup() {
+    const { setToolNameSelected } = usePopoverCreationTool();
+    const { toggleMenuProperties } = useObjectProperties();
+    const { updateVisited, setIsPrompt } = useLayoutPrompt(EDITION.DIGITAL);
+    return {
+      toggleMenuProperties,
+      updateVisited,
+      setToolNameSelected,
+      setIsPrompt
+    };
+  },
   components: {
     Thumbnail,
     HeaderContainer
@@ -14,7 +35,8 @@ export default {
   computed: {
     ...mapGetters({
       pageSelected: DIGITAL_GETTERS.CURRENT_SHEET,
-      book: GETTERS.BOOK_DETAIL
+      book: GETTERS.BOOK_DETAIL,
+      isOpenMenuProperties: APP_GETTERS.IS_OPEN_MENU_PROPERTIES
     }),
     orderScreen() {
       return (sectionId, sheet) => {
@@ -44,7 +66,7 @@ export default {
   },
   methods: {
     ...mapMutations({
-      selectSheet: MUTATES.SELECT_SHEET
+      selectSheet: DIGITAL_MUTATES.SET_CURRENT_SHEET_ID
     }),
     /**
      * Get screen refs by sheet's id and handle auto scroll
@@ -59,6 +81,7 @@ export default {
      * @param  {String} sheetId Sheet's id selected
      */
     checkIsActive(sheetId) {
+      // return sheetId === this.pageSelected?.id;
       return sheetId === this.pageSelected.id;
     },
     /**
@@ -66,7 +89,24 @@ export default {
      * @param  {String} sheetId Sheet's id selected
      */
     onSelectSheet(sheet) {
-      this.selectSheet({ sheet });
+      const sheetId = sheet?.id;
+      this.selectSheet({ id: sheetId });
+
+      if (this.isOpenMenuProperites) {
+        this.toggleMenuProperties({
+          isOpenMenuProperites: false
+        });
+      }
+
+      if (!this.pageSelected.isVisited) {
+        this.setIsPrompt({
+          isPrompt: false
+        });
+        this.updateVisited({
+          sheetId
+        });
+        this.setToolNameSelected(TOOL_NAME.DIGITAL_LAYOUTS);
+      }
     }
   }
 };

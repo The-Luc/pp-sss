@@ -93,8 +93,13 @@ const printService = {
         .sections.map((section, sectionIndex) => {
           const sheets = section.sheets.map((sheet, sheetIndex) => {
             const { id, type, isVisited } = sheet;
-            const { thumbnailUrl, theme: themeId, layout } = sheet.printData;
-
+            const {
+              link,
+              thumbnailUrl,
+              theme: themeId,
+              layout,
+              spreadInfo
+            } = sheet.printData;
             const pageLeftName = getPageLeftName(
               sheet,
               sheetIndex,
@@ -108,13 +113,15 @@ const printService = {
 
             return {
               id,
+              link,
               type,
               thumbnailUrl,
               isVisited,
               themeId,
               layoutId: layout?.id || null,
               pageLeftName,
-              pageRightName
+              pageRightName,
+              spreadInfo
             };
           });
 
@@ -184,6 +191,23 @@ const printService = {
       `SHEET_ID_${sheetId}`,
       JSON.stringify(sheetLayout)
     );
+  },
+  /**
+   * Get print page info
+   *
+   * @param   {Number}  bookId  id of current book
+   * @returns {Object}          query result
+   */
+  getPageInfo: bookId => {
+    return new Promise(resolve => {
+      const data = bookService.getBook(bookId).printData.pageInfo;
+
+      const result = isEmpty(data)
+        ? getErrorWithMessages([])
+        : getSuccessWithData(data);
+
+      resolve(result);
+    });
   }
 };
 
