@@ -121,7 +121,12 @@ export const getBackgroundPageType = (background, isHalfSheet) => {
     : getPageType(background, isHalfSheet);
 };
 
-export const getBackgroundTypeOptions = () => {
+/**
+ * Get default background type options base on background type
+ *
+ * @returns {Array}  background type options
+ */
+export const getDefaultBackgroundTypeOptions = () => {
   const types = {};
 
   Object.keys(BACKGROUND_TYPE).forEach(k => {
@@ -129,4 +134,36 @@ export const getBackgroundTypeOptions = () => {
   });
 
   return types;
+};
+
+/**
+ * Get display background type base on background type option
+ *
+ * @param   {Array} backgroundTypeOptions background type options
+ * @returns {Array}                       display background type
+ */
+export const getDisplayBackgroundTypes = backgroundTypeOptions => {
+  const types = Object.keys(BACKGROUND_TYPE).map(k => {
+    return {
+      ...BACKGROUND_TYPE[k],
+      value: BACKGROUND_TYPE[k].id,
+      subItems: backgroundTypeOptions[k].value
+    };
+  });
+
+  return types.filter(b => b.subItems.length > 0);
+};
+
+/**
+ * Get display background page type
+ *
+ * @returns {Array} display background page type
+ */
+export const getDisplayBackgroundPageTypes = () => {
+  return Object.keys(BACKGROUND_PAGE_TYPE).map(k => {
+    return {
+      ...BACKGROUND_PAGE_TYPE[k],
+      value: BACKGROUND_PAGE_TYPE[k].id
+    };
+  });
 };

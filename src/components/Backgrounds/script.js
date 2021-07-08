@@ -3,9 +3,12 @@ import TypeSelection from './TypeSelection';
 import PageTypeSelection from './PageTypeSelection';
 import Item from './Item';
 
-import { BACKGROUND_TYPE, BACKGROUND_PAGE_TYPE } from '@/common/constants';
-
-import { isEmpty, getBackgroundTypeOptions } from '@/common/utils';
+import {
+  isEmpty,
+  getDefaultBackgroundTypeOptions,
+  getDisplayBackgroundTypes,
+  getDisplayBackgroundPageTypes
+} from '@/common/utils';
 
 export default {
   components: {
@@ -17,7 +20,7 @@ export default {
   props: {
     backgroundTypes: {
       type: Object,
-      default: () => getBackgroundTypeOptions()
+      default: () => getDefaultBackgroundTypeOptions()
     },
     backgrounds: {
       type: Array,
@@ -45,30 +48,9 @@ export default {
     }
   },
   data() {
-    const backgroundTypes = Object.keys(BACKGROUND_TYPE).map(k => {
-      return {
-        ...BACKGROUND_TYPE[k],
-        value: BACKGROUND_TYPE[k].id,
-        subItems: this.backgroundTypes[k].value
-      };
-    });
-
-    const displayBackgroundTypes = backgroundTypes.filter(
-      b => b.subItems.length > 0
-    );
-
-    const displayBackgroundPageType = Object.keys(BACKGROUND_PAGE_TYPE).map(
-      k => {
-        return {
-          ...BACKGROUND_PAGE_TYPE[k],
-          value: BACKGROUND_PAGE_TYPE[k].id
-        };
-      }
-    );
-
     return {
-      displayBackgroundTypes,
-      displayBackgroundPageType,
+      displayBackgroundTypes: getDisplayBackgroundTypes(),
+      displayBackgroundPageType: getDisplayBackgroundPageTypes(),
       chosenBackground: {},
       noBackgroundLength: 4
     };
@@ -101,21 +83,6 @@ export default {
      */
     initData() {
       this.chosenBackground = {};
-    },
-    /**
-     * Get selected background type data by type id
-     *
-     * @param   {String}  backgroundTypeId  background type id
-     * @returns {Object}                    the background data
-     */
-    getSelectedBackgroundType(backgroundTypeId) {
-      const selectType = Object.keys(this.backgroundTypes).find(k => {
-        return this.backgroundTypes[k].id === backgroundTypeId;
-      });
-
-      return this.backgroundTypes[selectType].value.find(
-        v => v.id === this.appliedBackground.categoryId
-      );
     },
     /**
      * Event fire when choose background type
