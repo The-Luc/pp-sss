@@ -1,8 +1,4 @@
-import PpToolPopover from '@/components/ToolPopover';
-import TypeSelection from '@/components/Backgrounds/TypeSelection';
-import Item from '@/components/Backgrounds/Item';
-
-import PageTypeSelection from './PageTypeSelection';
+import Backgrounds from '@/components/Backgrounds';
 
 import { mapGetters, mapMutations } from 'vuex';
 
@@ -26,55 +22,36 @@ import { BACKGROUNDS, BACKGROUND_CATEGORIES } from '@/mock/backgrounds';
 
 export default {
   components: {
-    PpToolPopover,
-    Item,
-    TypeSelection,
-    PageTypeSelection
+    Backgrounds
   },
   data() {
-    const backgroundTypes = Object.keys(BACKGROUND_TYPE).map(k => {
-      const bgType = {
-        ...BACKGROUND_TYPE[k],
-        value: BACKGROUND_TYPE[k].id,
-        subItems: []
-      };
-
-      if (BACKGROUND_TYPE[k].id === 0) {
-        bgType.subItems = themeOptions;
+    const backgroundTypes = {
+      THEME: {
+        id: BACKGROUND_TYPE.THEME.id,
+        value: cloneDeep(themeOptions)
+      },
+      CATEGORY: {
+        id: BACKGROUND_TYPE.CATEGORY.id,
+        value: cloneDeep(BACKGROUND_CATEGORIES)
+      },
+      CUSTOM: {
+        id: BACKGROUND_TYPE.CUSTOM.id,
+        value: []
+      },
+      FAVORITE: {
+        id: BACKGROUND_TYPE.FAVORITE.id,
+        value: []
       }
-
-      if (BACKGROUND_TYPE[k].id === 1) {
-        bgType.subItems = Object.keys(BACKGROUND_CATEGORIES).map(k => {
-          return {
-            ...BACKGROUND_CATEGORIES[k],
-            value: BACKGROUND_CATEGORIES[k].id
-          };
-        });
-      }
-
-      return bgType;
-    });
-
-    const displayBackgroundTypes = backgroundTypes.filter(
-      b => b.subItems.length > 0
-    );
-
-    const displayBackgroundPageType = Object.keys(BACKGROUND_PAGE_TYPE).map(
-      k => {
-        return {
-          ...BACKGROUND_PAGE_TYPE[k],
-          value: BACKGROUND_PAGE_TYPE[k].id
-        };
-      }
-    );
+    };
 
     return {
-      displayBackgroundTypes,
-      displayBackgroundPageType,
+      backgroundTypes,
       chosenBackgroundType: {},
       chosenBackgroundPageType: {},
       chosenBackground: {},
-      noBackgroundLength: 4
+      noBackgroundLength: 4,
+      selectedBackgroundType: { sub: {} },
+      selectedBackgroundPageType: {}
     };
   },
   setup() {
@@ -101,89 +78,6 @@ export default {
             ...this.userSelectedBackground[0],
             id: this.userSelectedBackground[0].backgroundId
           };
-    },
-    selectedBackgroundType() {
-      if (!isEmpty(this.chosenBackgroundType)) {
-        return this.chosenBackgroundType;
-      }
-
-      if (isEmpty(this.alreadyAppliedBackground)) {
-        const sub = themeOptions.find(t => t.id === this.currentThemeId);
-
-        return {
-          ...BACKGROUND_TYPE.THEME,
-          value: BACKGROUND_TYPE.THEME.id,
-          sub
-        };
-      }
-
-      const backgroundType = Object.keys(BACKGROUND_TYPE).find(
-        k =>
-          BACKGROUND_TYPE[k].id === this.alreadyAppliedBackground.backgroundType
-      );
-
-      if (isEmpty(backgroundType)) return { id: '' };
-
-      return {
-        ...BACKGROUND_TYPE[backgroundType],
-        value: BACKGROUND_TYPE[backgroundType].id,
-        sub: this.getSelectedBackgroundType(BACKGROUND_TYPE[backgroundType].id)
-      };
-    },
-    selectedBackgroundPageType() {
-      if (!isEmpty(this.chosenBackgroundPageType)) {
-        return this.chosenBackgroundPageType;
-      }
-
-      if (isEmpty(this.alreadyAppliedBackground)) {
-        const selectedBgPageType = this.isHalfSheet
-          ? BACKGROUND_PAGE_TYPE.SINGLE_PAGE
-          : BACKGROUND_PAGE_TYPE.FULL_PAGE;
-
-        return {
-          ...selectedBgPageType,
-          value: selectedBgPageType.id
-        };
-      }
-
-      const selectedBgPageType = Object.keys(BACKGROUND_PAGE_TYPE).find(k => {
-        return (
-          BACKGROUND_PAGE_TYPE[k].id === this.alreadyAppliedBackground.pageType
-        );
-      });
-
-      if (!isEmpty(selectedBgPageType)) {
-        return {
-          ...BACKGROUND_PAGE_TYPE[selectedBgPageType],
-          value: BACKGROUND_PAGE_TYPE[selectedBgPageType].id
-        };
-      }
-
-      const selectedPageType = this.isHalfSheet
-        ? BACKGROUND_PAGE_TYPE.SINGLE_PAGE
-        : BACKGROUND_PAGE_TYPE.FULL_PAGE;
-
-      return {
-        ...selectedPageType,
-        value: selectedPageType.id
-      };
-    },
-    selectedBackground() {
-      if (!isEmpty(this.chosenBackground)) {
-        return this.chosenBackground;
-      }
-
-      if (!isEmpty(this.alreadyAppliedBackground)) {
-        return this.alreadyAppliedBackground;
-      }
-
-      this.chosenBackground =
-        this.backgrounds.length > 0 ? this.backgrounds[0] : { id: '' };
-
-      return this.chosenBackground;
-    },
-    isDisablePageTypeSelection() {
-      return this.isHalfSheet;
     },
     backgrounds() {
       return BACKGROUNDS.filter(b => {
@@ -226,60 +120,20 @@ export default {
       this.chosenBackground = {};
     },
     /**
-     * Get selected background type data by type id
-     *
-     * @param   {String}  backgroundTypeId  background type id
-     * @returns {Object}                    the background data
-     */
-    getSelectedBackgroundType(backgroundTypeId) {
-      if (backgroundTypeId === BACKGROUND_TYPE.THEME.id) {
-        return themeOptions.find(
-          t => t.id === this.alreadyAppliedBackground.categoryId
-        );
-      }
-
-      if (backgroundTypeId === BACKGROUND_TYPE.CATEGORY.id) {
-        const category = Object.keys(BACKGROUND_CATEGORIES).find(
-          k =>
-            BACKGROUND_CATEGORIES[k].id ===
-            this.alreadyAppliedBackground.categoryId
-        );
-
-        return {
-          ...BACKGROUND_CATEGORIES[category],
-          value: BACKGROUND_CATEGORIES[category].id
-        };
-      }
-
-      // TODO: Custom & Favorite
-      return null;
-    },
-    /**
      * Event fire when choose background type
      *
      * @param {Object}  data  data of chosen background type
      */
-    onChangeBackgroundType(data) {
-      this.chosenBackgroundType = {
-        ...data.item,
-        sub: data.sub
-      };
+    onChangeType(data) {
+      this.selectedBackgroundType = data;
     },
     /**
      * Event fire when choose background page type
      *
      * @param {Object}  data  data of chosen background page type
      */
-    onChangeBackgroundPageType(data) {
-      this.chosenBackgroundPageType = data;
-    },
-    /**
-     * Event fire when choose background
-     *
-     * @param {Object}  data  data of chosen background
-     */
-    onSelectBackground(data) {
-      this.chosenBackground = data;
+    onChangePageType(data) {
+      this.selectedBackgroundPageType = data;
     },
     /**
      * Trigger hooks to set tool name is empty and then close popover when click Cancel button
@@ -289,9 +143,11 @@ export default {
     },
     /**
      * Trigger mutation to set Background
+     *
+     * @param {Object}  background  selected background
      */
-    applyChosenBackground() {
-      const { pageType: selectedPageType } = this.selectedBackground;
+    onApplyChosenBackground(background) {
+      const { pageType: selectedPageType } = background;
 
       const isSinglePageType =
         selectedPageType === BACKGROUND_PAGE_TYPE.SINGLE_PAGE.id;
@@ -305,7 +161,7 @@ export default {
               numberPageLeft: this.currentSheet.pageLeftName,
               numberPageRight: this.currentSheet.pageRightName,
               background: {
-                ...cloneDeep(this.selectedBackground),
+                ...cloneDeep(background),
                 opacity: 1
               }
             }
@@ -319,7 +175,7 @@ export default {
 
       this.$root.$emit('printAddBackground', {
         background: {
-          ...cloneDeep(this.selectedBackground),
+          ...cloneDeep(background),
           opacity: 1
         },
         isLeft: true
