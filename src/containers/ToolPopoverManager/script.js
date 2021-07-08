@@ -3,15 +3,17 @@ import { mapGetters } from 'vuex';
 import { GETTERS } from '@/store/modules/app/const';
 import { EDITION, TOOL_NAME } from '@/common/constants';
 
-import Themes from './Themes';
+import PrintThemes from './PrintThemes';
 import Layouts from './Layouts';
 import PrintBackgrounds from './PrintEdition/Backgrounds';
 import Shapes from './Shapes';
 import ClipArt from './ClipArt';
 import Actions from './Actions';
+import DigitalThemes from './DigitalThemes';
 
 const {
-  THEMES,
+  PRINT_THEMES,
+  DIGITAL_THEMES,
   PRINT_LAYOUTS,
   DIGITAL_LAYOUTS,
   BACKGROUNDS,
@@ -21,7 +23,8 @@ const {
 } = TOOL_NAME;
 
 const ToolList = {
-  [THEMES]: THEMES,
+  [PRINT_THEMES]: PRINT_THEMES,
+  [DIGITAL_THEMES]: DIGITAL_THEMES,
   [PRINT_LAYOUTS]: PRINT_LAYOUTS,
   [DIGITAL_LAYOUTS]: DIGITAL_LAYOUTS,
   [BACKGROUNDS]: BACKGROUNDS,
@@ -39,7 +42,8 @@ export default {
     };
   },
   components: {
-    [TOOL_NAME.THEMES]: Themes,
+    [TOOL_NAME.PRINT_THEMES]: PrintThemes,
+    [TOOL_NAME.DIGITAL_THEMES]: DigitalThemes,
     [TOOL_NAME.PRINT_LAYOUTS]: Layouts,
     [TOOL_NAME.DIGITAL_LAYOUTS]: Layouts,
     [TOOL_NAME.BACKGROUNDS]: PrintBackgrounds,

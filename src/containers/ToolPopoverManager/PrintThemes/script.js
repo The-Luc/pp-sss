@@ -1,7 +1,5 @@
 import { mapActions, mapGetters, mapMutations } from 'vuex';
 
-import PpToolPopover from '@/components/ToolPopover';
-import PpSelect from '@/components/Selectors/Select';
 import { themeOptions } from '@/mock/themes';
 import {
   GETTERS as THEME_GETTERS,
@@ -15,14 +13,12 @@ import {
   GETTERS as PRINT_GETTERS,
   MUTATES as PRINT_MUTATES
 } from '@/store/modules/print/const';
-import Item from './Item';
 import { TOOL_NAME } from '@/common/constants';
+import ThemesToolPopover from '@/components/ToolPopover/Theme';
 
 export default {
   components: {
-    PpToolPopover,
-    PpSelect,
-    Item
+    ThemesToolPopover
   },
   data() {
     return {
@@ -44,7 +40,7 @@ export default {
         this.selectedThemeId = null;
         this.optionThemeSelected = {};
       }
-      if (this.printThemeSelectedId && toolName === TOOL_NAME.THEMES) {
+      if (this.printThemeSelectedId && toolName === TOOL_NAME.PRINT_THEMES) {
         this.initData();
       }
     }
@@ -68,7 +64,6 @@ export default {
     initData() {
       this.selectedThemeId = this.printThemeSelectedId;
       this.setOptionThemeSelected(this.printThemeSelectedId);
-      this.getThemeElement(this.printThemeSelectedId);
     },
     /**
      * Set selected theme id after click on theme in list of themes
@@ -81,34 +76,14 @@ export default {
      * Set value for select base on theme selected
      */
     setOptionThemeSelected(themeId) {
-      const optionThemeSelected =
+      this.optionThemeSelected =
         this.items.find(item => item.id === themeId) || {};
-      this.optionThemeSelected = optionThemeSelected;
     },
     /**
      * Set selected theme id after change option from select and get theme ref
      */
     onChangeTheme(theme) {
       this.selectedThemeId = theme.id;
-      this.getThemeElement(theme.id);
-    },
-    /**
-     * Get theme element by theme id
-     */
-    getThemeElement(themeId) {
-      const el = this.$refs[`theme${themeId}`][0].$el;
-      if (el) {
-        this.scrollToElement(el);
-      }
-    },
-    /**
-     * Scroll to theme position which choose from select
-     */
-    scrollToElement(el) {
-      el.scrollIntoView({
-        behavior: 'smooth',
-        block: 'nearest'
-      });
     },
     /**
      * Trigger mutation set tool name selected is empty to close popover after click Cancel button
