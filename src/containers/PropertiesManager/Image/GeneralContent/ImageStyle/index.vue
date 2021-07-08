@@ -4,16 +4,16 @@
     <div class="select-box">
       <div class="select-box-items">
         <div
-          v-for="(imageStyleSelectBox, index) in imagesStyleSelectBox"
+          v-for="(imageStyleOption, index) in imageStyleOptions"
           :key="index"
           :class="[
             'item-style',
-            { active: imageStyleSelectBox.id === imageStyleSelected }
+            { active: imageStyleOption.id === styleSelected }
           ]"
         >
           <img
-            :src="imageStyleSelectBox.imageUrl"
-            @click="onSelectImageStyle(imageStyleSelectBox.id)"
+            :src="imageStyleOption.imageUrl"
+            @click="onSelect(imageStyleOption.id)"
           />
         </div>
       </div>
@@ -28,16 +28,12 @@
     >
       <div class="dropdown-box-items">
         <div
-          v-for="(imageStyle, index) in imagesStyle"
+          v-for="(option, index) in options"
           :key="index"
-          :class="[
-            'item-style',
-
-            { active: imageStyle.id === imageStyleSelected }
-          ]"
-          @click="onSelectImageStyle(imageStyle.id)"
+          :class="['item-style', { active: option.id === styleSelected }]"
+          @click="onSelect(option.id)"
         >
-          <img :class="imageStyle.className" :src="imageStyle.imageUrl" />
+          <img :class="option.className" :src="option.imageUrl" />
         </div>
       </div>
     </div>

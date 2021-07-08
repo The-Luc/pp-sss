@@ -1,8 +1,8 @@
 <template>
   <div>
     <ImageStyle
-      :image-style-selected="imageStyleSelected"
-      :images-style="imagesStyle"
+      :style-selected="styleSelected"
+      :options="imagesStyle"
       @onSelectImageStyle="onSelectImageStyle"
     />
     <Opacity :value="opacityValue" @change="onChangeOpacity" />

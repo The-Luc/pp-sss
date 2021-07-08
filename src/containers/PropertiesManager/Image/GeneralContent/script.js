@@ -30,7 +30,7 @@ export default {
         value: 'noBorder'
       },
       imagesStyle,
-      imageStyleSelected: null
+      styleSelected: null
     };
   },
   computed: {
@@ -90,10 +90,10 @@ export default {
      * @param {Number} id - id's image style
      */
     onSelectImageStyle(id) {
-      this.imageStyleSelected = id;
+      this.styleSelected = id;
     }
   },
   created() {
-    this.imageStyleSelected = this.imagesStyle[0].id;
+    this.styleSelected = this.imagesStyle[0].id;
   }
 };

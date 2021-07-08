@@ -5,18 +5,18 @@ export default {
     };
   },
   props: {
-    imagesStyle: {
+    options: {
       type: Array,
       require: true
     },
-    imageStyleSelected: {
+    styleSelected: {
       type: Number,
       default: null
     }
   },
   computed: {
-    imagesStyleSelectBox() {
-      return this.imagesStyle.slice(0, 4);
+    imageStyleOptions() {
+      return this.options.slice(0, 4);
     }
   },
   methods: {
@@ -36,7 +36,7 @@ export default {
      * Emit change image style to parent component
      * @param {Number} id - id's image style
      */
-    onSelectImageStyle(id) {
+    onSelect(id) {
       this.$emit('onSelectImageStyle', id);
     }
   }
