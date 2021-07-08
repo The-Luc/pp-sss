@@ -32,6 +32,10 @@ export const actions = {
 
     if (queryResults[1].status !== STATUS.OK) return;
 
+    commit(PRINT._MUTATES.SET_DEFAULT_THEME_ID, {
+      themeId: queryResults[0].data
+    });
+
     commit(PRINT._MUTATES.SET_SECTIONS_SHEETS, {
       sectionsSheets: queryResults[1].data
     });

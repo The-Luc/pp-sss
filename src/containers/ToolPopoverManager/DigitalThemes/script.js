@@ -67,7 +67,6 @@ export default {
     initData() {
       this.selectedThemeId = this.digitalThemeSelectedId;
       this.setOptionThemeSelected(this.digitalThemeSelectedId);
-      this.getThemeElement(this.digitalThemeSelectedId);
     },
     /**
      * Set selected theme id after click on theme in list of themes
@@ -88,25 +87,6 @@ export default {
      */
     onChangeTheme(theme) {
       this.selectedThemeId = theme.id;
-      this.getThemeElement(theme.id);
-    },
-    /**
-     * Get theme element by theme id
-     */
-    getThemeElement(themeId) {
-      const el = this.$refs.themesToolPopover.$refs[`theme${themeId}`][0].$el;
-      if (el) {
-        this.scrollToElement(el);
-      }
-    },
-    /**
-     * Scroll to theme position which choose from select
-     */
-    scrollToElement(el) {
-      el.scrollIntoView({
-        behavior: 'smooth',
-        block: 'nearest'
-      });
     },
     /**
      * Trigger mutation set tool name selected is empty to close popover after click Cancel button

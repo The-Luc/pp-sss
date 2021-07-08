@@ -1,7 +1,6 @@
 <template>
   <div>
     <ThemesToolPopover
-      ref="themesToolPopover"
       :items="items"
       :option-theme-selected="optionThemeSelected"
       :themes="themes"

@@ -26,6 +26,13 @@ export default {
       require: true
     }
   },
+  watch: {
+    selectedThemeId(id) {
+      if (id) {
+        this.getThemeElement(id);
+      }
+    }
+  },
   methods: {
     /**
      * Set selected theme id after click on theme in list of themes
@@ -50,6 +57,24 @@ export default {
      */
     onChangeThemeSelected() {
       this.$emit('onChangeThemeSelected');
+    },
+    /**
+     * Get theme element by theme id
+     */
+    getThemeElement(themeId) {
+      const el = this.$refs[`theme${themeId}`][0].$el;
+      if (el) {
+        this.scrollToElement(el);
+      }
+    },
+    /**
+     * Scroll to theme position which choose from select
+     */
+    scrollToElement(el) {
+      el.scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest'
+      });
     }
   }
 };

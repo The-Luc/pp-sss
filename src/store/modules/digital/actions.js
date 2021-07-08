@@ -20,11 +20,16 @@ export const actions = {
     });
   },
   async [DIGITAL._ACTIONS.GET_DATA_EDIT]({ state, dispatch, commit }) {
-    const [sectionsSheetsQuery] = await Promise.all([
+    const [themeQuery, sectionsSheetsQuery] = await Promise.all([
+      digitalService.getDefaultThemeId(state.book.id),
       digitalService.getDigitalEditSectionsSheets(state.book.id)
     ]);
 
     if (sectionsSheetsQuery.status !== STATUS.OK) return;
+
+    commit(DIGITAL._MUTATES.SET_DEFAULT_THEME_ID, {
+      themeId: themeQuery.data
+    });
 
     commit(DIGITAL._MUTATES.SET_SECTIONS_SHEETS, {
       sectionsSheets: sectionsSheetsQuery.data

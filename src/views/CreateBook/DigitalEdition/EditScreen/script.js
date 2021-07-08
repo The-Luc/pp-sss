@@ -13,6 +13,7 @@ import {
   GETTERS as DIGITAL_GETTERS
 } from '@/store/modules/digital/const';
 import { MODAL_TYPES } from '@/common/constants';
+import { isEmpty } from '@/common/utils';
 
 export default {
   components: {
@@ -57,7 +58,7 @@ export default {
     }
   },
   mounted() {
-    if (!this.defaultThemeId) {
+    if (isEmpty(this.defaultThemeId)) {
       this.openSelectThemeModal();
     }
   },

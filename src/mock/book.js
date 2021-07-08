@@ -64,7 +64,7 @@ const book = {
     }
   },
   digitalData: {
-    themeId: 1
+    themeId: null
   },
   sections: [
     {
