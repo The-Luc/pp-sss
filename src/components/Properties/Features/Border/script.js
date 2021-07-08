@@ -3,6 +3,7 @@ import BorderStyle from './Settings/Style';
 import BorderColor from './Settings/Color';
 import BorderThickness from './Settings/Thickness';
 import { getRectDashes } from '@/common/utils';
+import { EVENT_TYPE } from '@/common/constants/eventType';
 
 export default {
   components: {
@@ -57,7 +58,7 @@ export default {
     onChangeThickness(value) {
       this.strokeWidth = value;
       const strokeDashArray = this.computedDashArray();
-      this.$root.$emit('printChangeTextProperties', {
+      this.$root.$emit(EVENT_TYPE.CHANGE_TEXT_PROPERTIES, {
         border: {
           strokeDashArray,
           strokeWidth: value
@@ -71,7 +72,7 @@ export default {
     onChangeBorderStyle({ value }) {
       this.borderStyle = value;
       const strokeDashArray = this.computedDashArray();
-      this.$root.$emit('printChangeTextProperties', {
+      this.$root.$emit(EVENT_TYPE.CHANGE_TEXT_PROPERTIES, {
         border: {
           strokeDashArray,
           strokeLineCap: value

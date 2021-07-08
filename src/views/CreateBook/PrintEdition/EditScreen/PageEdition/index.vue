@@ -1,12 +1,20 @@
 <template>
   <div class="page-edition">
-    <PageWrapper>
+    <PageWrapper :ruler-size="rulerSize">
       <template #ruler-x>
-        <XRuler :canvas-size="canvasSize" :page-size="printSize" />
+        <XRuler
+          :canvas-size="canvasSize"
+          :page-size="printSize"
+          @change="onWidthChange"
+        />
       </template>
 
       <template #ruler-y>
-        <YRuler :canvas-size="canvasSize" :page-size="printSize" />
+        <YRuler
+          :canvas-size="canvasSize"
+          :page-size="printSize"
+          @change="onHeightChange"
+        />
       </template>
 
       <template #default>

@@ -1,3 +1,5 @@
+import { fabric } from 'fabric';
+
 import {
   PRINT_HARDCOVER_PAGE_SIZE,
   PRINT_SOFTCOVER_PAGE_SIZE,
@@ -194,4 +196,120 @@ export const resetObjects = targetCanvas => {
     .discardActiveObject()
     .remove(...targetCanvas.getObjects())
     .renderAll();
+};
+
+/**
+ * Get current coord of mouse when user move and check has within canvas or not
+ * @param {Number} clientX - Current coord x when user move mouse
+ * @param {Number} clientY - Current coord y when user move mouse
+ * @param {Number} top - Canvas's top position
+ * @param {Number} left - Canvas's left position
+ * @param {Number} width - Canvas' width
+ * @param {Number} height - Canvas' height
+ * @returns {Object} {x, y, visible}
+ * @property {Number} x Current x of mouse
+ * @property {Number} y Current y of mouse
+ * @property {Boolean} visible Is moving within canvas ?
+ */
+const getDataMouseMoveWithinCanvas = (
+  clientX,
+  clientY,
+  top,
+  left,
+  width,
+  height
+) => {
+  const x = clientX - left;
+  const y = clientY - top;
+
+  const visible = x > 0 && y > 0 && width - x > 0 && height - y > 0;
+
+  return {
+    x,
+    y,
+    visible
+  };
+};
+
+/**
+ * Get color code when user move cursor to object
+ * @param {Object} canvas - Target canvas want to get color
+ * @param {Event} e - Event mouse move
+ * @returns {String} Color code
+ */
+export const getCanvasColor = (canvas, e) => {
+  const ctx = canvas.contextContainer;
+  const pointer = canvas.getPointer(e);
+
+  const imageData = ctx.getImageData(
+    Math.round(
+      (pointer.x - 60 + canvas.viewportTransform[4]) *
+        fabric.devicePixelRatio *
+        canvas.getZoom()
+    ),
+    Math.round(
+      (pointer.y + canvas.viewportTransform[5]) *
+        fabric.devicePixelRatio *
+        canvas.getZoom()
+    ),
+    1,
+    1
+  );
+
+  let { data } = imageData;
+
+  // Made opaque canvas
+  for (let i = 0; i < data.length; i += 4) {
+    if (data[i + 3] < 255) {
+      data[i] = 255;
+      data[i + 1] = 255;
+      data[i + 2] = 255;
+      data[i + 3] = 255;
+    }
+  }
+
+  ctx.putImageData(imageData, 0, 0);
+
+  return 'rgb(' + data[0] + ', ' + data[1] + ', ' + data[2] + ')';
+};
+
+/**
+ * Handle action user move mouse
+ * @param {Object} event Event mouse move
+ * @param {Number} event.clientX Current mouse x position
+ * @param {Number} event.clienclientYtX Current mouse y position
+ * @returns {Object} {x, y, visible, canvas}
+ * @property {Number} x Current x of mouse
+ * @property {Number} y Current y of mouse
+ * @property {Boolean} visible Is moving within canvas ?
+ * @property {Object} canvas Canvas element
+ */
+export const handleBodyMouseMove = ({ clientX, clientY }) => {
+  const canvas = window.printCanvas || window.digitalCanvas;
+
+  if (canvas) {
+    const {
+      top,
+      left,
+      width,
+      height
+    } = canvas.lowerCanvasEl.getBoundingClientRect();
+
+    const { x, y, visible } = getDataMouseMoveWithinCanvas(
+      clientX,
+      clientY,
+      top,
+      left,
+      width,
+      height
+    );
+
+    return {
+      x,
+      y,
+      visible,
+      canvas,
+      width
+    };
+  }
 };

@@ -1,6 +1,7 @@
 .color-content {
   display: flex;
   position: relative;
+  align-items: center;
 
   .box-color {
     border: 1px solid #bcbec0;
@@ -22,8 +23,9 @@
 
   .v-icon {
     font-size: 16px;
-    color: #58595b;
+    color: $color-stoodio-toolbartext;
     cursor: pointer;
+    height: 16px;
   }
 
   .color-picker-content {

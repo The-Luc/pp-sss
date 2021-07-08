@@ -513,29 +513,18 @@ export const updateTextListeners = (
     visible: true
   };
 
-  const setNewTextProperties = () => {
-    const { text: newVal, width, height, top, left } = textObject;
-    text.set({ ...newProperties, text: newVal, width, height, top, left });
-  };
-
-  const setNewRectProperties = () => {
-    const { top, left, width, height } = rectObject;
-    rect.set({
-      ...newProperties,
-      strokeWidth: 0,
-      top,
-      left,
-      width,
-      height
-    });
-  };
-
   const onDoneEditText = () => {
-    const { text } = textObject;
-    callback(text);
+    const { text: value } = textObject;
+    callback(value);
 
-    setNewTextProperties();
-    setNewRectProperties();
+    text.set({ ...textObject, ...newProperties });
+
+    rect.set({
+      ...rectObject,
+      ...newProperties,
+      strokeWidth: 0
+    });
+
     group.addWithUpdate();
 
     textObject.visible = false;

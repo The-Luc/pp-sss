@@ -8,11 +8,8 @@ import {
   GETTERS as APP_GETTERS,
   MUTATES as APP_MUTATES
 } from '@/store/modules/app/const';
-import { GETTERS as BOOK_GETTERS } from '@/store/modules/book/const';
-import {
-  GETTERS as PRINT_GETTERS,
-  ACTIONS as PRINT_ACTIONS
-} from '@/store/modules/print/const';
+
+import { ACTIONS as PRINT_ACTIONS } from '@/store/modules/print/const';
 import { themeOptions } from '@/mock/themes';
 import PpToolPopover from '@/components/ToolPopover';
 import PpSelect from '@/components/Selectors/Select';
@@ -22,6 +19,7 @@ import GotIt from './GotIt';
 import Item from './Item';
 import { LAYOUT_TYPES_OPTIONs } from '@/mock/layoutTypes';
 import {
+  EDITION,
   LAYOUT_TYPES,
   MODAL_TYPES,
   SHEET_TYPE,
@@ -35,22 +33,37 @@ import {
 import {
   usePopoverCreationTool,
   useLayoutPrompt,
-  useDrawLayout
+  useDrawLayout,
+  useGetLayouts
 } from '@/hooks';
 
 import { loadLayouts } from '@/api/layouts';
+import { loadDigitalLayouts } from '@/api/layouts';
 
 export default {
-  setup() {
+  setup({ edition }) {
     const { setToolNameSelected, selectedToolName } = usePopoverCreationTool();
-    const { updateVisited, setIsPrompt } = useLayoutPrompt();
+    const {
+      updateVisited,
+      setIsPrompt,
+      pageSelected,
+      themeId
+    } = useLayoutPrompt(edition);
     const { drawLayout } = useDrawLayout();
+    const { sheetLayout, getLayoutsByType, listLayouts } = useGetLayouts(
+      edition
+    );
     return {
       selectedToolName,
       setToolNameSelected,
       updateVisited,
       setIsPrompt,
-      drawLayout
+      drawLayout,
+      pageSelected,
+      sheetLayout,
+      getLayoutsByType,
+      listLayouts,
+      themeId
     };
   },
   components: {
@@ -61,6 +74,12 @@ export default {
     SelectLayout,
     GotIt
   },
+  props: {
+    edition: {
+      type: String,
+      default: ''
+    }
+  },
   data() {
     return {
       themesOptions: themeOptions,
@@ -70,27 +89,22 @@ export default {
       themeSelected: {},
       tempLayoutIdSelected: null,
       layoutEmptyLength: 4,
-      layoutObjSelected: {}
+      layoutObjSelected: {},
+      textDisplay: null,
+      isDigital: false
     };
   },
   computed: {
     ...mapGetters({
       themes: THEME_GETTERS.GET_THEMES,
-      listLayouts: THEME_GETTERS.GET_PRINT_LAYOUTS_BY_THEME_ID,
-      book: BOOK_GETTERS.BOOK_DETAIL,
-      pageSelected: PRINT_GETTERS.CURRENT_SHEET,
-      sheetLayout: PRINT_GETTERS.SHEET_LAYOUT,
-      sheetTheme: BOOK_GETTERS.SHEET_THEME,
-      getLayoutByType: THEME_GETTERS.GET_PRINT_LAYOUT_BY_TYPE,
-      isPrompt: APP_GETTERS.IS_PROMPT,
-      sectionId: BOOK_GETTERS.SECTION_ID
+      isPrompt: APP_GETTERS.IS_PROMPT
     }),
     isVisited() {
       return this.pageSelected?.isVisited;
     },
     layouts() {
       if (this.themeSelected?.id && this.layoutSelected?.value) {
-        return this.getLayoutByType(
+        return this.getLayoutsByType(
           this.themeSelected?.id,
           this.layoutSelected?.value
         );
@@ -100,14 +114,17 @@ export default {
   },
   watch: {
     selectedToolName(val) {
-      if (val && val === TOOL_NAME.LAYOUTS) {
+      if (
+        val &&
+        (val === TOOL_NAME.PRINT_LAYOUTS || val === TOOL_NAME.DIGITAL_LAYOUTS)
+      ) {
         this.initData();
       }
     },
     pageSelected: {
       deep: true,
       handler(newVal, oldVal) {
-        if (newVal.id !== oldVal.id) {
+        if (newVal?.id !== oldVal?.id) {
           this.initData();
         }
       }
@@ -122,7 +139,8 @@ export default {
   methods: {
     ...mapMutations({
       toggleModal: APP_MUTATES.TOGGLE_MODAL,
-      setPrintLayouts: THEME_MUTATES.PRINT_LAYOUTS
+      setPrintLayouts: THEME_MUTATES.PRINT_LAYOUTS,
+      setDigitalLayouts: THEME_MUTATES.DIGITAL_LAYOUTS
     }),
     ...mapActions({
       updateSheetThemeLayout: PRINT_ACTIONS.UPDATE_SHEET_THEME_LAYOUT
@@ -133,7 +151,7 @@ export default {
     initData() {
       this.setLayoutSelected(this.pageSelected);
       this.setDisabledLayout(this.pageSelected);
-      this.setThemeSelected(this.pageSelected);
+      this.setThemeSelected(this.themeId);
       this.setLayoutActive();
     },
     /**
@@ -197,9 +215,7 @@ export default {
      * Set default selected for theme base on id of sheet. Use default theme when the sheet not have private theme
      * @param  {Number} pageSelected Id of sheet selected
      */
-    setThemeSelected(pageSelected) {
-      const currentSheetThemeId = pageSelected.themeId;
-      const defaultThemeId = this.book.printData.themeId;
+    setThemeSelected(currentSheetThemeId) {
       if (currentSheetThemeId) {
         const themeOpt = getThemeOptSelectedById(
           this.themesOptions,
@@ -208,7 +224,7 @@ export default {
         this.themeSelected = themeOpt;
       } else {
         const themeSelected = this.themesOptions.find(
-          t => t.id === defaultThemeId
+          t => t.id === this.defaultThemeId
         );
         this.themeSelected = themeSelected;
       }
@@ -304,14 +320,43 @@ export default {
       this.updateVisited({
         sheetId: this.pageSelected?.id
       });
+    },
+
+    /**
+     * to update the display text for print and digital mode
+     */
+    updateTextDisplay() {
+      const printText = {
+        promptMsg:
+          'The best way to get started is by selecting a layout. As a shortcut, the layouts from your selecting theme will be presented first.',
+        promptTitle: 'Select a Layout',
+        title: 'Layouts',
+        optionTitle: 'Layout Type:'
+      };
+      const digitalText = {
+        promptMsg:
+          'The best way to get started is by selecting a screen layout. As a shortcut, the screens from your selecting theme will be presented first.',
+        promptTitle: 'Select a Screen Layout',
+        title: 'Screen Layouts',
+        optionTitle: 'Screen Type:'
+      };
+
+      return this.isDigital ? digitalText : printText;
     }
   },
   async created() {
-    if (this.listLayouts().length === 0) {
-      const layouts = await loadLayouts();
-      this.setPrintLayouts({
-        layouts
-      });
+    this.isDigital = this.edition === EDITION.DIGITAL;
+
+    this.textDisplay = this.updateTextDisplay();
+
+    if (this.listLayouts().length !== 0) {
+      if (this.isDigital) {
+        const layouts = await loadDigitalLayouts();
+        this.setDigitalLayouts({ layouts });
+      } else {
+        const layouts = await loadLayouts();
+        this.setPrintLayouts({ layouts });
+      }
     }
   }
 };

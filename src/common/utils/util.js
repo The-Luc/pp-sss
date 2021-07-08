@@ -5,6 +5,8 @@ import { DATE_FORMAT, MOMENT_TYPE } from '@/common/constants';
 import { DEFAULT_RULE_DATA } from '@/common/fabricObjects/common';
 import { ptToPx, scaleSize } from './canvas';
 
+export let activeCanvas = null;
+
 /**
  * Get the next id of item list
  *
@@ -525,3 +527,9 @@ export const setCanvasUniformScaling = (canvas, isConstrain) => {
     uniformScaling: isConstrain
   });
 };
+
+/**
+ * Set current canvas is focused
+ */
+
+export const setActiveCanvas = canvas => (activeCanvas = canvas);

@@ -1,7 +1,7 @@
 import { mapActions, mapGetters, mapMutations } from 'vuex';
 
 import { MUTATES } from '@/store/modules/app/const';
-import { MUTATES as BOOK_MUTATES } from '@/store/modules/book/const';
+import { MUTATES as PRINT_MUTATES } from '@/store/modules/print/const';
 import {
   GETTERS as THEME_GETTERS,
   MUTATES as THEME_MUTATES,
@@ -13,10 +13,11 @@ import Themes from './Themes';
 import Preview from './Preview';
 import { useLayoutPrompt } from '@/hooks';
 import { loadLayouts } from '@/api/layouts';
+import { EDITION } from '@/common/constants';
 
 export default {
   setup() {
-    const { openPrompt } = useLayoutPrompt();
+    const { openPrompt } = useLayoutPrompt(EDITION.PRINT);
     return {
       openPrompt
     };
@@ -30,7 +31,7 @@ export default {
   data() {
     return {
       selectedThemeId: null,
-      themePreview: null
+      isPreviewing: false
     };
   },
   computed: {
@@ -39,12 +40,12 @@ export default {
       layouts: THEME_GETTERS.GET_PRINT_LAYOUTS_BY_THEME_ID
     }),
     layoutsOfThemePreview() {
-      return this.layouts(this.themePreview);
+      return this.layouts(this.selectedThemeId);
     },
     themeNamePreview() {
       let name = '';
-      if (this.themePreview) {
-        name = this.themes.find(item => item.id == this.themePreview).name;
+      if (this.isPreviewing) {
+        name = this.themes.find(item => item.id == this.selectedThemeId).name;
       }
       return name;
     }
@@ -55,7 +56,7 @@ export default {
     }),
     ...mapMutations({
       toggleModal: MUTATES.TOGGLE_MODAL,
-      selectTheme: BOOK_MUTATES.SELECT_THEME,
+      selectTheme: PRINT_MUTATES.SET_DEFAULT_THEME_ID,
       setPrintLayouts: THEME_MUTATES.PRINT_LAYOUTS
     }),
     /**
@@ -68,7 +69,6 @@ export default {
     },
     /**
      * Set selected theme's id
-     * @param  {Object} theme - Theme selected
      * @param  {Number} theme.themeId - Theme's id selected
      */
     onSelectTheme({ themeId }) {
@@ -82,22 +82,21 @@ export default {
         themeId: this.selectedThemeId
       });
       this.onCloseModal();
-      this.openPrompt();
+      this.openPrompt(EDITION.PRINT);
     },
     /**
      * Set preview theme's id
-     * @param  {Object} theme - Theme preview
      * @param  {Number} theme.themeId - Theme's id preview
      */
     onPreviewTheme({ themeId }) {
-      this.themePreview = themeId;
+      this.isPreviewing = true;
       this.selectedThemeId = themeId;
     },
     /**
      * Set preview theme's id empty and close preview
      */
     onClosePreview() {
-      this.themePreview = null;
+      this.isPreviewing = false;
     }
   },
   async created() {

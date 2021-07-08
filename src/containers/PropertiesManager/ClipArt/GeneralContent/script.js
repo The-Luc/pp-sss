@@ -5,6 +5,7 @@ import Shadow from '@/components/Properties/Features/Shadow';
 import { useClipArtProperties } from '@/hooks';
 
 import { DEFAULT_PROP } from '@/common/constants';
+import { EVENT_TYPE } from '@/common/constants/eventType';
 
 export default {
   components: {
@@ -13,16 +14,11 @@ export default {
     Opacity
   },
   setup() {
-    const {
-      getProperty,
-      triggerChange,
-      setColorPickerData
-    } = useClipArtProperties();
+    const { getProperty, triggerChange } = useClipArtProperties();
 
     return {
       getProperty,
-      triggerChange,
-      setColorPickerData
+      triggerChange
     };
   },
   computed: {
@@ -61,7 +57,7 @@ export default {
      * @param {Object} shadowCfg - the new shadow configs
      */
     emitChangeShadow(shadowCfg) {
-      this.$root.$emit('printChangeClipArtProperties', {
+      this.$root.$emit(EVENT_TYPE.CHANGE_CLIPART_PROPERTIES, {
         shadow: {
           ...this.currentShadow,
           ...shadowCfg
@@ -87,14 +83,14 @@ export default {
      * @param   {Number}  opacity Value user input
      */
     onChangeOpacity(opacity) {
-      this.$root.$emit('printChangeClipArtProperties', { opacity });
+      this.$root.$emit(EVENT_TYPE.CHANGE_CLIPART_PROPERTIES, { opacity });
     },
     /**
      * Receive value opacity from children
      * @param {String}  color value user input
      */
     onChangeColor(color) {
-      this.$root.$emit('printChangeClipArtProperties', {
+      this.$root.$emit(EVENT_TYPE.CHANGE_CLIPART_PROPERTIES, {
         color,
         stroke: color
       });

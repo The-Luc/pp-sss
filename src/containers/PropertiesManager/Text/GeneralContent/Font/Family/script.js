@@ -1,7 +1,8 @@
 import { mapGetters } from 'vuex';
 
 import PpSelect from '@/components/Selectors/Select';
-import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
+import { GETTERS as APP_GETTERS } from '@/store/modules/app/const';
+import { EVENT_TYPE } from '@/common/constants/eventType';
 
 export default {
   components: {
@@ -22,8 +23,8 @@ export default {
   },
   computed: {
     ...mapGetters({
-      selectedFontFamily: PRINT_GETTERS.SELECT_PROP_CURRENT_OBJECT,
-      triggerChange: PRINT_GETTERS.TRIGGER_TEXT_CHANGE
+      selectedFontFamily: APP_GETTERS.SELECT_PROP_CURRENT_OBJECT,
+      triggerChange: APP_GETTERS.TRIGGER_TEXT_CHANGE
     }),
     selectedFont() {
       if (this.triggerChange) {
@@ -45,7 +46,9 @@ export default {
      * @param {Object} data new font family of text box
      */
     onChange(data) {
-      this.$root.$emit('printChangeTextProperties', { fontFamily: data.value });
+      this.$root.$emit(EVENT_TYPE.CHANGE_TEXT_PROPERTIES, {
+        fontFamily: data.value
+      });
     }
   }
 };

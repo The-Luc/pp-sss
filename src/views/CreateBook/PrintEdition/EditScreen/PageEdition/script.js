@@ -4,7 +4,7 @@ import { cloneDeep, uniqueId, merge, debounce } from 'lodash';
 
 import { usePrintOverrides } from '@/plugins/fabric';
 
-import { useDrawLayout, useInfoBar } from '@/hooks';
+import { useDrawLayout, useInfoBar, useTextObject } from '@/hooks';
 import { startDrawBox, toggleStroke } from '@/common/fabricObjects/drawingBox';
 
 import {
@@ -24,7 +24,8 @@ import {
   computePastedObjectCoord,
   setBorderObject,
   setCanvasUniformScaling,
-  setBorderHighLight
+  setBorderHighLight,
+  setActiveCanvas
 } from '@/common/utils';
 
 import {
@@ -100,8 +101,9 @@ export default {
   setup() {
     const { drawLayout } = useDrawLayout();
     const { setInfoBar, zoom } = useInfoBar();
+    const { selectedObject } = useTextObject();
 
-    return { drawLayout, setInfoBar, zoom };
+    return { drawLayout, setInfoBar, zoom, selectedObject };
   },
   data() {
     return {
@@ -115,7 +117,8 @@ export default {
       rectObj: null,
       objectList: [],
       isProcessingPaste: false,
-      countPaste: 1
+      countPaste: 1,
+      rulerSize: { width: '0', height: '0' }
     };
   },
   computed: {
@@ -124,15 +127,13 @@ export default {
       pageSelected: PRINT_GETTERS.CURRENT_SHEET,
       sheetLayout: PRINT_GETTERS.SHEET_LAYOUT,
       isOpenMenuProperties: APP_GETTERS.IS_OPEN_MENU_PROPERTIES,
-      isOpenColorPicker: APP_GETTERS.IS_OPEN_COLOR_PICKER,
-      selectedObject: PRINT_GETTERS.CURRENT_OBJECT,
       toolNameSelected: APP_GETTERS.SELECTED_TOOL_NAME,
       currentBackgrounds: PRINT_GETTERS.BACKGROUNDS,
       propertiesObjectType: APP_GETTERS.PROPERTIES_OBJECT_TYPE,
       object: PRINT_GETTERS.OBJECT_BY_ID,
       currentObjects: PRINT_GETTERS.GET_OBJECTS,
       totalBackground: PRINT_GETTERS.TOTAL_BACKGROUND,
-      getProperty: PRINT_GETTERS.SELECT_PROP_CURRENT_OBJECT
+      getProperty: APP_GETTERS.SELECT_PROP_CURRENT_OBJECT
     }),
     isCover() {
       return this.pageSelected?.type === SHEET_TYPE.COVER;
@@ -179,6 +180,7 @@ export default {
           await this.getDataCanvas();
           this.countPaste = 1;
           this.setSelectedObjectId({ id: '' });
+          this.setCurrentObject(null);
           this.updateCanvasSize();
           resetObjects(window.printCanvas);
 
@@ -187,7 +189,7 @@ export default {
       }
     },
     zoom(newVal, oldVal) {
-      console.log(newVal);
+      if (newVal !== oldVal) this.updateCanvasSize();
     }
   },
   mounted() {
@@ -211,7 +213,7 @@ export default {
 
     this.eventHandling(false);
 
-    this.setInfoBar({ data: { x: 0, y: 0, w: 0, h: 0, zoom: 0 } });
+    this.setInfoBar({ x: 0, y: 0, w: 0, h: 0, zoom: 0 });
   },
   methods: {
     ...mapActions({
@@ -221,9 +223,9 @@ export default {
       setBookId: PRINT_MUTATES.SET_BOOK_ID,
       setIsOpenProperties: MUTATES.TOGGLE_MENU_PROPERTIES,
       setToolNameSelected: MUTATES.SET_TOOL_NAME_SELECTED,
-      toggleColorPicker: MUTATES.TOGGLE_COLOR_PICKER,
       setObjectTypeSelected: MUTATES.SET_OBJECT_TYPE_SELECTED,
       setSelectedObjectId: PRINT_MUTATES.SET_CURRENT_OBJECT_ID,
+      setCurrentObject: MUTATES.SET_CURRENT_OBJECT,
       setObjects: PRINT_MUTATES.SET_OBJECTS,
       addNewObject: PRINT_MUTATES.ADD_OBJECT,
       setObjectProp: PRINT_MUTATES.SET_PROP,
@@ -306,15 +308,26 @@ export default {
         textProperties
       );
 
+      const {
+        newObject: {
+          shadow,
+          coord: { rotation }
+        }
+      } = objectData;
+
       updateSpecificProp(object, {
         coord: {
-          rotation: objectData.newObject.coord.rotation
+          rotation
         }
       });
 
       this.handleAddTextEventListeners(object, objectData);
 
-      applyShadowToObject(object, objectData.newObject.shadow);
+      const objects = object.getObjects();
+
+      objects.forEach(obj => {
+        applyShadowToObject(obj, shadow);
+      });
 
       return object;
     },
@@ -564,8 +577,16 @@ export default {
         width: 0,
         height: 0
       };
-      const { ratio: printRatio, sheetWidth } = this.printSize.pixels;
-      if (this.containerSize.ratio > printRatio) {
+      const {
+        ratio: printRatio,
+        sheetWidth,
+        sheetHeight
+      } = this.printSize.pixels;
+
+      if (this.zoom > 0) {
+        canvasSize.height = sheetHeight * this.zoom;
+        canvasSize.width = sheetWidth * this.zoom;
+      } else if (this.containerSize.ratio > printRatio) {
         canvasSize.height = this.containerSize.height;
         canvasSize.width = canvasSize.height * printRatio;
       } else {
@@ -573,7 +594,8 @@ export default {
         canvasSize.height = canvasSize.width / printRatio;
       }
 
-      const currentZoom = canvasSize.width / sheetWidth;
+      const currentZoom =
+        this.zoom === 0 ? canvasSize.width / sheetWidth : this.zoom;
 
       this.canvasSize = { ...canvasSize, zoom: currentZoom };
 
@@ -609,12 +631,12 @@ export default {
         backgroundColor: '#fff',
         preserveObjectStacking: true
       });
-
+      setActiveCanvas(window.printCanvas);
       usePrintOverrides(fabric.Object.prototype);
       this.updateCanvasSize();
       window.printCanvas.on({
         'selection:updated': this.objectSelected,
-        'selection:cleared': this.closeProperties,
+        'selection:cleared': this.handleClearSelected,
         'selection:created': this.objectSelected,
         'object:modified': this.getThumbnailUrl,
         'object:added': this.getThumbnailUrl,
@@ -631,9 +653,8 @@ export default {
           this.setObjectProp({ prop });
           this.updateTriggerTextChange();
 
-          this.setInfoBar({
-            data: { w: prop.size.width, h: prop.size.height }
-          });
+          this.setInfoBar({ w: prop.size.width, h: prop.size.height });
+          this.setCurrentObject(this.currentObjects?.[target?.id]);
         },
         'mouse:down': e => {
           if (this.awaitingAdd) {
@@ -675,9 +696,7 @@ export default {
           this.setObjectPropById({ id: group.id, prop });
           this.updateTriggerTextChange();
 
-          this.setInfoBar({
-            data: { w: prop.size.width, h: prop.size.height }
-          });
+          this.setInfoBar({ w: prop.size.width, h: prop.size.height });
         },
         'object:moved': e => {
           if (!e.target?.objectType) {
@@ -724,10 +743,6 @@ export default {
      * Reset configs text properties when close object
      */
     resetConfigTextProperties() {
-      if (this.isOpenColorPicker) {
-        this.toggleColorPicker({ isOpen: false });
-      }
-
       if (this.propertiesObjectType !== OBJECT_TYPE.BACKGROUND) {
         this.setIsOpenProperties({ isOpen: false });
 
@@ -736,18 +751,16 @@ export default {
 
       this.setObjectTypeSelected({ type: '' });
 
-      this.toggleActiveObjects(false);
-
       this.setSelectedObjectId({ id: '' });
+
+      this.setCurrentObject(null);
     },
     /**
      * Close text properties modal
      */
     closeProperties() {
-      this.groupSelected = null;
+      this.toggleActiveObjects(false);
       this.resetConfigTextProperties();
-
-      this.setInfoBar({ data: { w: 0, h: 0 } });
     },
     /**
      * Event fired when an object of canvas is selected
@@ -764,7 +777,9 @@ export default {
       this.setSelectedObjectId({ id });
       setBorderHighLight(target, this.sheetLayout);
 
-      const objectData = this.selectedObject;
+      const objectData = this.currentObjects?.[id];
+
+      this.setCurrentObject(objectData);
 
       if (targetType === 'group' && target.objectType === OBJECT_TYPE.TEXT) {
         const rectObj = target.getObjects(OBJECT_TYPE.RECT)[0];
@@ -774,20 +789,20 @@ export default {
       const objectType = objectData?.type;
       const isSelectMultiObject = !objectType;
 
+      this.setInfoBar({
+        w: isSelectMultiObject ? 0 : this.getProperty('size')?.width,
+        h: isSelectMultiObject ? 0 : this.getProperty('size')?.height
+      });
+
       if (isSelectMultiObject) {
         setCanvasUniformScaling(window.printCanvas, true);
+
+        this.resetConfigTextProperties();
       } else {
         setCanvasUniformScaling(window.printCanvas, objectData.isConstrain);
       }
 
       if (isEmpty(objectType)) return;
-
-      this.setInfoBar({
-        data: {
-          w: this.getProperty('size')?.width,
-          h: this.getProperty('size')?.height
-        }
-      });
 
       this.setObjectTypeSelected({ type: objectType });
 
@@ -878,15 +893,15 @@ export default {
       this.updateTriggerTextChange();
 
       if (!isEmpty(prop.size)) {
-        this.setInfoBar({
-          data: { w: prop.size.width, h: prop.size.height }
-        });
+        this.setInfoBar({ w: prop.size.width, h: prop.size.height });
       }
 
       applyTextBoxProperties(activeObj, prop);
 
       // update thumbnail
       this.getThumbnailUrl();
+
+      this.setCurrentObject(this.currentObjects?.[activeObj?.id]);
     },
     /**
      * Function trigger mutate to add new object to store
@@ -1288,9 +1303,7 @@ export default {
       if (updateTriggerFn !== null) updateTriggerFn();
 
       if (!isEmpty(prop.size)) {
-        this.setInfoBar({
-          data: { w: prop.size.width, h: prop.size.height }
-        });
+        this.setInfoBar({ w: prop.size.width, h: prop.size.height });
       }
 
       if (!isEmpty(prop['shadow'])) {
@@ -1301,6 +1314,8 @@ export default {
 
       // update thumbnail
       this.getThumbnailUrl();
+
+      this.setCurrentObject(this.currentObjects?.[element?.id]);
     },
     /**
      * get fired when you click 'send' button
@@ -1422,7 +1437,7 @@ export default {
       };
 
       const textEvents = {
-        printChangeTextProperties: prop => {
+        changeTextProperties: prop => {
           this.getThumbnailUrl();
           this.changeTextProperties(prop);
         }
@@ -1435,13 +1450,13 @@ export default {
       };
 
       const shapeEvents = {
-        printAddShapes: this.addShapes,
-        printChangeShapeProperties: this.changeShapeProperties
+        addShapes: this.addShapes,
+        changeShapeProperties: this.changeShapeProperties
       };
 
       const clipArtEvents = {
-        printAddClipArt: this.addClipArt,
-        printChangeClipArtProperties: this.changeClipArtProperties
+        addClipArts: this.addClipArt,
+        changeClipArtProperties: this.changeClipArtProperties
       };
 
       const otherEvents = {
@@ -1468,8 +1483,10 @@ export default {
         enscapeInstruction: () => {
           this.awaitingAdd = '';
           this.$root.$emit('printInstructionEnd');
+
           this.setToolNameSelected({ name: '' });
         },
+
         printCopyObj: this.handleCopy,
         printPasteObj: this.handlePaste
       };
@@ -1627,6 +1644,30 @@ export default {
           this.updateTriggerTextChange();
         }
       });
+    },
+    /**
+     * Fire when height of ruler is change
+     *
+     * @param {String}  height  height of ruler with unit (px)
+     */
+    onHeightChange(height) {
+      this.rulerSize.height = height;
+    },
+    /**
+     * Fire when width of ruler is change
+     *
+     * @param {String}  width width of ruler with unit (px)
+     */
+    onWidthChange(width) {
+      this.rulerSize.width = width;
+    },
+    /**
+     * Fire when clear selected in canvas
+     */
+    handleClearSelected() {
+      this.setInfoBar({ w: 0, h: 0 });
+
+      this.closeProperties();
     }
   }
 };

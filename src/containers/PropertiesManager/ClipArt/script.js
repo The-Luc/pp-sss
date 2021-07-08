@@ -5,19 +5,15 @@ import GeneralContent from './GeneralContent';
 import { DEFAULT_CLIP_ART } from '@/common/constants';
 import { useClipArtProperties } from '@/hooks';
 import { computedObjectSize } from '@/common/utils';
+import { EVENT_TYPE } from '@/common/constants/eventType';
 
 export default {
   setup() {
-    const {
-      triggerChange,
-      getProperty,
-      setColorPickerData
-    } = useClipArtProperties();
+    const { triggerChange, getProperty } = useClipArtProperties();
 
     return {
       triggerChange,
-      getProperty,
-      setColorPickerData
+      getProperty
     };
   },
   components: {
@@ -98,14 +94,6 @@ export default {
   },
   methods: {
     /**
-     * Close color picker (if opening) when change tab
-     */
-    onChangeTabMenu(data) {
-      this.setColorPickerData({
-        tabActive: data
-      });
-    },
-    /**
      * Handle update flip for Clip Art
      * @param {String} actionName action name
      */
@@ -114,7 +102,7 @@ export default {
         ...this.getProperty('flip')
       };
 
-      this.$root.$emit('printChangeClipArtProperties', {
+      this.$root.$emit(EVENT_TYPE.CHANGE_CLIPART_PROPERTIES, {
         flip: { [actionName]: !currentFlip[actionName] }
       });
     },
@@ -134,14 +122,14 @@ export default {
         );
         object.size = size;
       }
-      this.$root.$emit('printChangeClipArtProperties', object);
+      this.$root.$emit(EVENT_TYPE.CHANGE_CLIPART_PROPERTIES, object);
     },
     /**
      * Handle constrain proportions for Clip Art
      * @param {Boolean} val
      */
     onChangeConstrain(val) {
-      this.$root.$emit('printChangeClipArtProperties', {
+      this.$root.$emit(EVENT_TYPE.CHANGE_CLIPART_PROPERTIES, {
         isConstrain: val
       });
     }

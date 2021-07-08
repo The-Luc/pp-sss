@@ -114,5 +114,11 @@ export const getters = {
         sheets: section.sheets.map(sheetId => sheets[sheetId])
       };
     });
+  },
+  [PRINT._GETTERS.GET_PAGE_INFO]: ({ book }) => {
+    return book.pageInfo;
+  },
+  [PRINT._GETTERS.DEFAULT_THEME_ID]: ({ book }) => {
+    return book.defaultThemeId;
   }
 };

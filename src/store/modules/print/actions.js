@@ -3,7 +3,12 @@ import { uniqueId } from 'lodash';
 import { isEmpty, isHalfSheet } from '@/common/utils';
 import printService from '@/api/print';
 
-import { STATUS, OBJECT_TYPE, SHEET_TYPE } from '@/common/constants';
+import {
+  STATUS,
+  OBJECT_TYPE,
+  SHEET_TYPE,
+  LINK_STATUS
+} from '@/common/constants';
 
 import PRINT from './const';
 
@@ -22,7 +27,8 @@ export const actions = {
   async [PRINT._ACTIONS.GET_DATA_EDIT]({ state, dispatch, commit }) {
     const queryResults = await Promise.all([
       printService.getDefaultThemeId(state.book.id),
-      printService.getPrintEditSectionsSheets(state.book.id)
+      printService.getPrintEditSectionsSheets(state.book.id),
+      printService.getPageInfo(state.book.id)
     ]);
 
     if (queryResults[1].status !== STATUS.OK) return;
@@ -33,6 +39,10 @@ export const actions = {
 
     commit(PRINT._MUTATES.SET_SECTIONS_SHEETS, {
       sectionsSheets: queryResults[1].data
+    });
+
+    commit(PRINT._MUTATES.SET_PAGE_INFO, {
+      pageInfo: queryResults[2].data
     });
 
     if (isEmpty(state.currentSheetId)) {
@@ -130,5 +140,11 @@ export const actions = {
       themeId,
       previewImageUrl: layout.previewImageUrl
     });
+  },
+  [PRINT._ACTIONS.UPDATE_SHEET_LINK_STATUS]({ commit }, { link, sheetId }) {
+    const statusLink =
+      link === LINK_STATUS.LINK ? LINK_STATUS.UNLINK : LINK_STATUS.LINK;
+
+    commit(PRINT._MUTATES.SET_SHEET_LINK_STATUS, { statusLink, sheetId });
   }
 };

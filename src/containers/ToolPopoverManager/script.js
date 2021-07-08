@@ -1,20 +1,29 @@
 import { mapGetters } from 'vuex';
 
 import { GETTERS } from '@/store/modules/app/const';
-import { TOOL_NAME } from '@/common/constants';
+import { EDITION, TOOL_NAME } from '@/common/constants';
 
 import Themes from './Themes';
 import Layouts from './Layouts';
-import Backgrounds from './Backgrounds';
+import PrintBackgrounds from './PrintEdition/Backgrounds';
 import Shapes from './Shapes';
 import ClipArt from './ClipArt';
 import Actions from './Actions';
 
-const { THEMES, LAYOUTS, BACKGROUNDS, CLIP_ART, SHAPES, ACTIONS } = TOOL_NAME;
+const {
+  THEMES,
+  PRINT_LAYOUTS,
+  DIGITAL_LAYOUTS,
+  BACKGROUNDS,
+  CLIP_ART,
+  SHAPES,
+  ACTIONS
+} = TOOL_NAME;
 
 const ToolList = {
   [THEMES]: THEMES,
-  [LAYOUTS]: LAYOUTS,
+  [PRINT_LAYOUTS]: PRINT_LAYOUTS,
+  [DIGITAL_LAYOUTS]: DIGITAL_LAYOUTS,
   [BACKGROUNDS]: BACKGROUNDS,
   [CLIP_ART]: CLIP_ART,
   [SHAPES]: SHAPES,
@@ -25,13 +34,15 @@ export default {
   data() {
     return {
       toolComponent: '',
-      componentKey: true
+      componentKey: true,
+      edition: ''
     };
   },
   components: {
     [TOOL_NAME.THEMES]: Themes,
-    [TOOL_NAME.LAYOUTS]: Layouts,
-    [TOOL_NAME.BACKGROUNDS]: Backgrounds,
+    [TOOL_NAME.PRINT_LAYOUTS]: Layouts,
+    [TOOL_NAME.DIGITAL_LAYOUTS]: Layouts,
+    [TOOL_NAME.BACKGROUNDS]: PrintBackgrounds,
     [TOOL_NAME.CLIP_ART]: ClipArt,
     [TOOL_NAME.SHAPES]: Shapes,
     [TOOL_NAME.ACTIONS]: Actions
@@ -47,6 +58,10 @@ export default {
         this.toolComponent = null;
         return;
       }
+
+      if (toolName === TOOL_NAME.PRINT_LAYOUTS) this.edition = EDITION.PRINT;
+      else if (toolName === TOOL_NAME.DIGITAL_LAYOUTS)
+        this.edition = EDITION.DIGITAL;
 
       this.componentKey =
         toolName === TOOL_NAME.BACKGROUNDS ? !this.componentKey : '';

@@ -1,6 +1,6 @@
 <template>
   <div class="pp-layouts-select-layout">
-    <span class="pp-layouts-select-layout-title">Layout Type:</span>
+    <span class="pp-layouts-select-layout-title">{{ title }}</span>
     <PpSelect
       :items="items"
       :disabled="disabled"

@@ -7,9 +7,14 @@
     }"
   >
     <div v-if="!isVisited && isPrompt" class="prompt"></div>
-    <GotIt v-if="!isVisited && isPrompt" @click="onClickGotIt" />
+    <GotIt
+      v-if="!isVisited && isPrompt"
+      :title="textDisplay.promptTitle"
+      :message="textDisplay.promptMsg"
+      @click="onClickGotIt"
+    />
     <PpToolPopover
-      title="Layouts"
+      :title="textDisplay.title"
       @cancel="onCancel"
       @change="setThemeLayoutForSheet"
     >
@@ -23,6 +28,7 @@
           <SelectLayout
             :items="layoutsOpts"
             :disabled="disabled"
+            :title="textDisplay.optionTitle"
             :layout-selected="layoutSelected"
             @change="onChangeLayout"
           />
@@ -45,6 +51,7 @@
             :key="layout.id"
             :layout="layout"
             :selected-layout-id="tempLayoutIdSelected"
+            :is-digital="isDigital"
             @click="onSelectLayout"
           />
         </div>

@@ -1,7 +1,8 @@
 import PickerPopup from './PickerPopup';
+import EyeDropper from './EyeDropper';
 
 export default {
-  components: { PickerPopup },
+  components: { PickerPopup, EyeDropper },
   props: {
     color: {
       type: String,
@@ -10,13 +11,18 @@ export default {
     label: {
       type: String,
       default: 'Color'
+    },
+    showEyeDropper: {
+      type: Boolean,
+      default: true
     }
   },
   data() {
     return {
       top: 0,
       left: 0,
-      isOpen: false
+      isOpen: false,
+      openEyeDropper: false
     };
   },
   methods: {
@@ -40,6 +46,25 @@ export default {
      */
     onChange(color) {
       this.$emit('change', color);
+    },
+    /**
+     * Mutate to start pick color
+     */
+    onOpenEyeDropper() {
+      this.openEyeDropper = true;
+    },
+    /**
+     * Callback function catch event user click on overlay to pick color and mutate to stop eye dropper event
+     */
+    onEyeDropperOverlayClick(color) {
+      this.onChange(color);
+      this.closeEyeDropper();
+    },
+    /**
+     * Close eye dropper actions
+     */
+    closeEyeDropper() {
+      this.openEyeDropper = false;
     }
   }
 };

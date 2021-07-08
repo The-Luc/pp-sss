@@ -1,9 +1,10 @@
-import { getNewPrintBackground } from '@/common/models';
+import { getNewBackground } from '@/common/models';
 
 export const state = {
   book: {
     id: null,
-    defaultThemeId: ''
+    defaultThemeId: '',
+    pageInfo: {}
   },
   sections: [],
   sheets: {},
@@ -11,7 +12,7 @@ export const state = {
   objectIds: [],
   objects: {},
   currentObjectId: '',
-  background: getNewPrintBackground(),
+  background: getNewBackground(),
   triggerChange: {
     text: true,
     background: true,

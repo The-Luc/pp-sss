@@ -1,7 +1,7 @@
 <template>
   <div class="clip-art-properties-container">
     <Properties title="Clip Art Properties">
-      <TabPropertiesMenu @change="onChangeTabMenu">
+      <TabPropertiesMenu>
         <v-tab href="#general">
           General
         </v-tab>

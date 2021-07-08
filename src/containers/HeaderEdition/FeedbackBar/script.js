@@ -43,12 +43,9 @@ export default {
   },
   computed: {
     size() {
-      const w = this.infoBar.w;
-      const h = this.infoBar.h;
-
       return {
-        width: isEmpty(w) || w === 0 ? '- - -' : splitNumberByDecimal(w),
-        height: isEmpty(h) || h === 0 ? '- - -' : splitNumberByDecimal(h)
+        width: this.getDisplaySize(this.infoBar.w),
+        height: this.getDisplaySize(this.infoBar.h)
       };
     },
     zoom() {
@@ -109,6 +106,17 @@ export default {
      */
     onEsc() {
       this.forceRenderComponent();
+    },
+    /**
+     * Get display of size
+     *
+     * @param   {Number}  size  chosen size
+     * @returns {String}        display of size
+     */
+    getDisplaySize(size) {
+      return isEmpty(size) || size === 0
+        ? '- - -'
+        : `${splitNumberByDecimal(size)}“`;
     }
   }
 };
