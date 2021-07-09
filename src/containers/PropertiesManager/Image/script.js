@@ -59,6 +59,7 @@ export default {
      */
     changeFlip(actionName) {
       console.log(('changeFlip ', actionName));
+      //TODO
     },
     /**
      * Handle update size, position or rotate for Image
@@ -66,6 +67,7 @@ export default {
      */
     onChange(object) {
       console.log('onChange ', object);
+      //TODO
     },
     /**
      * Handle constrain proportions for Image
@@ -73,24 +75,28 @@ export default {
      */
     onChangeConstrain(val) {
       console.log('onChangeConstrain ', val);
+      //TODO
     },
     /**
      * Handle click crop image for Image
      */
     onClickCropImage() {
       console.log('onClickCropImage');
+      //TODO
     },
     /**
      * Handle click remove image for Image
      */
     onClickRemoveImage() {
       console.log('onClickRemoveImage');
+      //TODO
     },
     /**
      * Handle click background image for Image
      */
     onClickBackgroundImage() {
       console.log('onClickBackgroundImage');
+      //TODO
     }
   }
 };

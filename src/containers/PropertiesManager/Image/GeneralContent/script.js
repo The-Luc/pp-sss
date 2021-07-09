@@ -50,7 +50,6 @@ export default {
      * @param {Object} shadowCfg - the new shadow configs
      */
     emitChangeShadow(shadowCfg) {
-      console.log(shadowCfg);
       // this.$root.$emit('printChangeImageProperties', {
       //   shadow: {
       //     ...this.currentShadow,
@@ -63,14 +62,17 @@ export default {
      * @param {Object} Object the value of the shadow will be change
      */
     onChangeDropShadow(object) {
-      this.emitChangeShadow(object);
+      // TODO
+      // this.emitChangeShadow(object);
     },
     /**
      * Handle update shadow config after user select shadow value
      * @param {Object} object the value of shadow will be change
      */
     onChangeShadow(object) {
-      this.emitChangeShadow(object);
+      console.log(object);
+      // TODO
+      // this.emitChangeShadow(object);
     },
     /**
      * Receive value opacity from children
