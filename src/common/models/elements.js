@@ -103,10 +103,10 @@ export const ImageElement = {
   styleId: 0,
   imageUrl: '',
   centerCrop: {
-    top: 0,
-    bottom: 0,
-    left: 0,
-    right: 0
+    cropTop: 0,
+    cropBottom: 0,
+    cropLeft: 0,
+    cropRight: 0
   }
 };
 

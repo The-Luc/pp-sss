@@ -1,5 +1,5 @@
 <template>
-  <div class="text-properties-container">
+  <div class="shape-properties-container">
     <Properties title="Shape Properties">
       <TabPropertiesMenu>
         <v-tab href="#general">

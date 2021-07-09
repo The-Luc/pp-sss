@@ -6,7 +6,10 @@
       :selected-val="selectedBorder"
       @change="onChangeSelectedBorder"
     />
-    <div v-if="isShowStyle" class="border-setting-container">
+    <div
+      v-if="selectedBorder.value === 'line'"
+      class="border-setting-container"
+    >
       <BorderStyle @change="onChangeBorderStyle" />
       <BorderColor />
       <BorderThickness @change="onChangeThickness" />

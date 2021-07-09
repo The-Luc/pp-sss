@@ -1,6 +1,6 @@
 import Opacity from '@/components/Properties/Features/Opacity';
 import Shadow from '@/components/Properties/Features/Shadow';
-import Border from './Border';
+import Border from '@/components/Properties/Features/Border';
 
 import { EVENT_TYPE } from '@/common/constants/eventType';
 import { mapGetters } from 'vuex';
