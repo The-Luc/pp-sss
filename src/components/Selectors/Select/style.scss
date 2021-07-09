@@ -76,4 +76,8 @@
       }
     }
   }
+
+  &.v-text-field.v-text-field--enclosed:not(.v-text-field--rounded) > .v-input__control > .v-input__slot {
+    padding-left: 7px;
+  }
 }

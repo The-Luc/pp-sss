@@ -195,7 +195,7 @@ const supplementalFrames = [
   {
     id: 12,
     fromLayout: false,
-    objects: [bg3, bg1, clipArt1, clipArt2],
+    objects: [bg3, bg1, clipArt1, clipArt2, shape1],
     previewImageUrl: LAYOUT_02
   }
 ];

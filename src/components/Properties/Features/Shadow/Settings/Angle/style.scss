@@ -12,4 +12,7 @@
   .pp-number {
     width: 50px;
   }
+  .pp-number.length-3 input {
+    max-width: 20px !important;
+  }
 }

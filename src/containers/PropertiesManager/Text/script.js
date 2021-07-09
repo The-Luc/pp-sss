@@ -120,7 +120,7 @@ export default {
         isBorder: data.value !== 'noBorder',
         stroke: DEFAULT_TEXT.BORDER.STROKE,
         strokeDashArray: DEFAULT_TEXT.BORDER.STROKE_DASH_ARRAY,
-        strokeLineCap: DEFAULT_TEXT.BORDER.STROKE_LINE_CAP,
+        strokeLineType: DEFAULT_TEXT.BORDER.STROKE_LINE_TYPE,
         strokeWidth:
           data.value === 'noBorder' ? DEFAULT_TEXT.BORDER.STROKE_WIDTH : 1
       };
