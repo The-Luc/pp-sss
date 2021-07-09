@@ -10,6 +10,7 @@ import {
   DEFAULT_CLIP_ART,
   DEFAULT_IMAGE,
   DEFAULT_SHAPE,
+  EDITION,
   OBJECT_TYPE,
   SHEET_TYPE,
   TOOL_NAME
@@ -33,7 +34,7 @@ import {
 } from '@/common/fabricObjects';
 import { createImage } from '@/common/fabricObjects/image';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
-import { useDrawLayout, useInfoBar, useLayoutPrompt } from '@/hooks';
+import { useDrawLayout, useInfoBar, useLayoutPrompt, usePopoverCreationTool } from '@/hooks';
 
 import { ImageElement, ClipArtElement, ShapeElement } from '@/common/models';
 
@@ -78,7 +79,7 @@ export default {
   setup() {
     const { drawLayout } = useDrawLayout();
     const { setInfoBar, zoom } = useInfoBar();
-    const { openPrompt } = useLayoutPrompt();
+    const { openPrompt } = useLayoutPrompt(EDITION.DIGITAL);
 
     return { drawLayout, setInfoBar, zoom, openPrompt };
   },
@@ -1253,8 +1254,7 @@ export default {
      * @param {Object} event mouse event parameter when click element
      */
     onAddFrame(event) {
-      console.log(event);
-      this.openPrompt();
+      this.setToolNameSelected({ name: TOOL_NAME.DIGITAL_LAYOUTS });
     }
   },
   watch: {
