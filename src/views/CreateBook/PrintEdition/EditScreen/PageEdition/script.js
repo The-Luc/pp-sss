@@ -919,6 +919,7 @@ export default {
         id,
         newObject: {
           ...ImageElement,
+          id,
           size: {
             width: pxToIn(width),
             height: pxToIn(height)
