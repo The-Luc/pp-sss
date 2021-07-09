@@ -17,10 +17,7 @@ export default {
   data() {
     return {
       borderOptions: BORDER_TYPE,
-      selectedBorder: {
-        name: 'No border',
-        value: 'noBorder'
-      },
+      selectedBorder: {},
       imagesStyle,
       styleSelected: null
     };
@@ -84,6 +81,7 @@ export default {
     }
   },
   created() {
+    this.selectedBorder = this.borderOptions[0];
     this.styleSelected = this.imagesStyle[0].id;
   }
 };

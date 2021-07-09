@@ -96,13 +96,11 @@ export default {
   data() {
     return {
       borderOptions: BORDER_TYPE,
-      selectedBorder: {
-        name: 'No border',
-        value: 'noBorder'
-      }
+      selectedBorder: {}
     };
   },
   mounted() {
+    this.selectedBorder = this.borderOptions[0];
     this.setSelectedBorder();
   },
   methods: {
