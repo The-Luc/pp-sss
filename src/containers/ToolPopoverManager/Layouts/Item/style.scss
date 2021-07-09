@@ -2,7 +2,7 @@
   padding: 10px 10px 5px;
   margin-right: 13px;
   position: relative;
-  border: 1px solid #afafaf;
+  border: 1px solid $color-gray14;
   cursor: pointer;
   margin-bottom: 20px;
   width: 228px;
@@ -19,7 +19,7 @@
   &-active {
     border: 1px solid transparent;
     .border-inside {
-      border: 3px solid #42738d;
+      border: 3px solid $color-stoodio-blue;
     }
   }
 
@@ -58,7 +58,7 @@
       margin-left: 2px;
       padding-right: 7px;
       margin-right: 6px;
-      border-right: 1px solid #919191;
+      border-right: 1px solid $color-gray13;
     }
     &__heart-icon {
       margin-right: 2px;
