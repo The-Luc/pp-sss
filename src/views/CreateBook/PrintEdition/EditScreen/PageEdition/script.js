@@ -689,7 +689,8 @@ export default {
               height: pxToIn(height)
             },
             minHeight: pxToIn(minHeight),
-            minWidth: pxToIn(minWidth)
+            minWidth: pxToIn(minWidth),
+            text: target.text
           };
 
           this.setObjectProp({ prop });

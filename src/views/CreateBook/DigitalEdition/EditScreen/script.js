@@ -90,14 +90,11 @@ export default {
       });
     }
   },
-  mounted() {
+  async created() {
+    this.setBookId({ bookId: this.$route.params.bookId });
+    await this.getDataPageEdit();
     if (isEmpty(this.defaultThemeId)) {
       this.openSelectThemeModal();
     }
-  },
-  created() {
-    this.setBookId({ bookId: this.$route.params.bookId });
-
-    this.getDataPageEdit();
   }
 };

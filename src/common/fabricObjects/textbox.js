@@ -20,7 +20,8 @@ import {
   DEFAULT_SPACING,
   DEFAULT_TEXT,
   TEXT_VERTICAL_ALIGN,
-  OBJECT_MIN_SIZE
+  OBJECT_MIN_SIZE,
+  FABRIC_OBJECT_TYPE
 } from '@/common/constants';
 import { getAdjustedObjectDimension } from './common';
 
@@ -286,12 +287,13 @@ const applyTextProperties = function(text, prop) {
   }
 
   const target = canvas.getActiveObject();
-  if (!isEmpty(prop['fontSize']) && target !== text) {
-    const textData = {
-      top: -text.height / 2,
-      left: -text.width / 2
-    };
-    text.set(textData);
+  if (!isEmpty(prop['fontSize'])) {
+    if (target.type !== FABRIC_OBJECT_TYPE.TEXT) {
+      updateTextBoxBaseOnNewTextSize(text);
+      updateObjectPosition(text, text.width, text.height);
+    } else {
+      target.fire('changed');
+    }
   }
 
   if (!isEmpty(prop['shadow'])) {
@@ -301,8 +303,6 @@ const applyTextProperties = function(text, prop) {
   if (!isEmpty(textProp['width']) || !isEmpty(textProp['height'])) {
     updateObjectPosition(text, textProp['width'], textProp['height']);
   }
-
-  updateTextBoxBaseOnNewTextSize(text);
 
   textVerticalAlignOnApplyProperty(text);
 
@@ -491,8 +491,7 @@ export const updateTextListeners = (
   textObject,
   rectObject,
   group,
-  cachedData,
-  callback
+  cachedData
 ) => {
   const canvas = group.canvas;
   const [rect, text] = group._objects;
@@ -506,24 +505,35 @@ export const updateTextListeners = (
     canvas.renderAll();
   };
 
-  const newProperties = {
-    angle: 0,
-    flipX: false,
-    flipY: false,
-    visible: true
+  const getNewData = obj => {
+    return Object.keys(obj).reduce((rs, key) => {
+      if (!key.startsWith('_') && typeof obj[key] !== 'function') {
+        rs[key] = obj[key];
+      }
+      return rs;
+    }, {});
   };
 
   const onDoneEditText = () => {
-    const { text: value } = textObject;
-    callback(value);
+    const newProperties = {
+      angle: 0,
+      flipX: false,
+      flipY: false,
+      visible: true
+    };
 
-    text.set({ ...textObject, ...newProperties });
+    textObject.group = null;
+    rectObject.group = null;
 
-    rect.set({
-      ...rectObject,
+    const newTextData = { ...getNewData(textObject), ...newProperties };
+    const newRectData = {
+      ...getNewData(rectObject),
       ...newProperties,
       strokeWidth: 0
-    });
+    };
+
+    text.set(newTextData);
+    rect.set(newRectData);
 
     group.addWithUpdate();
 
