@@ -110,6 +110,9 @@ export const mutations = {
   [DIGITAL._MUTATES.UPDATE_TRIGGER_SHAPE_CHANGE](state) {
     state.triggerChange.shape = !state.triggerChange.shape;
   },
+  [DIGITAL._MUTATES.UPDATE_TRIGGER_APPLY_LAYOUT](state) {
+    state.triggerChange.applyLayout = !state.triggerChange.applyLayout;
+  },
   [DIGITAL._MUTATES.UPDATE_SHEET_VISITED](state, { sheetId }) {
     const currentSheet = state.sheets[sheetId];
     currentSheet.isVisited = true;

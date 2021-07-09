@@ -19,6 +19,7 @@ export const state = {
     text: true,
     background: true,
     shape: true,
-    clipArt: true
+    clipArt: true,
+    applyLayout: true
   }
 };

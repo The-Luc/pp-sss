@@ -38,7 +38,7 @@ export const useFrame = () => {
 
     //open frame information panel
     if (!layout.isVisited) {
-      setPropertiesObjectType({ type: DIGI_RIGHT_TOOLS.FRAME_INFO });
+      setPropertiesObjectType({ type: DIGI_RIGHT_TOOLS.FRAME_INFO.value });
       setIsOpenProperties({ isOpen: true });
       setCurrentFrameVisited({ value: true });
     } else {

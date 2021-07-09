@@ -4,6 +4,9 @@ import {
   GETTERS as THEME_GETTERS,
   MUTATES as THEME_MUTATES
 } from '@/store/modules/theme/const';
+
+import { GETTERS as DIGITAL_GETTERS } from '@/store/modules/digital/const';
+
 import {
   GETTERS as APP_GETTERS,
   MUTATES as APP_MUTATES
@@ -101,7 +104,8 @@ export default {
   computed: {
     ...mapGetters({
       themes: THEME_GETTERS.GET_THEMES,
-      isPrompt: APP_GETTERS.IS_PROMPT
+      isPrompt: APP_GETTERS.IS_PROMPT,
+      triggerAppyLayout: DIGITAL_GETTERS.TRIGGER_APPLY_LAYOUT
     }),
     isVisited() {
       return this.pageSelected?.isVisited;
@@ -135,6 +139,9 @@ export default {
     },
     layouts() {
       this.setLayoutActive();
+    },
+    triggerAppyLayout() {
+      this.applyLayout();
     }
   },
   mounted() {
@@ -301,18 +308,37 @@ export default {
           });
           return;
         }
-        // save id and objects of the first frame to the store
-        this.updateSheetThemeLayout({
-          sheetId: this.pageSelected?.id,
-          themeId: this.themeSelected?.id,
-          layout: this.layoutObjSelected
-        });
 
-        resetObjects(this.activeCanvas);
+        // Prompt a modal to comfirm overriding layout
+        if (this.isDigital && this.pageSelected?.layoutId) {
+          this.toggleModal({
+            isOpenModal: true,
+            modalData: {
+              type: MODAL_TYPES.OVERRIDE_LAYOUT
+            }
+          });
+        } else {
+          this.applyLayout();
+        }
 
-        this.drawLayout(this.sheetLayout, this.edition);
         this.onCancel();
       }
+    },
+    /**
+     * Save objects to store and draw on canvas
+     */
+    applyLayout() {
+      // save id and objects of the first frame to the store
+      this.updateSheetThemeLayout({
+        sheetId: this.pageSelected?.id,
+        themeId: this.themeSelected?.id,
+        layout: this.layoutObjSelected
+      });
+
+      resetObjects(this.activeCanvas);
+
+      // draw layout on canvas
+      this.drawLayout(this.sheetLayout, this.edition);
     },
     /**
      * Trigger mutation set prompt false and update isVisited true for current sheet
