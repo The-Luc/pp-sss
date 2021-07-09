@@ -28,7 +28,8 @@ import {
 import {
   getThemeOptSelectedById,
   getLayoutOptSelectedById,
-  resetObjects
+  resetObjects,
+  activeCanvas
 } from '@/common/utils';
 import {
   usePopoverCreationTool,
@@ -37,7 +38,7 @@ import {
   useGetLayouts
 } from '@/hooks';
 
-import { loadLayouts } from '@/api/layouts';
+import { loadLayouts, loadSupplementalLayouts } from '@/api/layouts';
 import { loadDigitalLayouts } from '@/api/layouts';
 
 export default {
@@ -78,6 +79,9 @@ export default {
     edition: {
       type: String,
       default: ''
+    },
+    initialData: {
+      type: Object
     }
   },
   data() {
@@ -131,6 +135,14 @@ export default {
     },
     layouts() {
       this.setLayoutActive();
+    },
+    initialData: {
+      deep: true,
+      handler(newVal, oldVal) {
+        if (newVal?.disabled !== oldVal?.disabled) {
+          this.initData();
+        }
+      }
     }
   },
   mounted() {
@@ -159,6 +171,10 @@ export default {
      * @param  {Number} pageSelected Id of sheet selected
      */
     setLayoutSelected(pageSelected) {
+      if (this.initialData?.layoutSelected) {
+        this.layoutSelected = this.initialData.layoutSelected;
+        return;
+      }
       const sheetType = pageSelected.type;
       switch (sheetType) {
         case SHEET_TYPE.COVER:
@@ -204,12 +220,13 @@ export default {
      * @param  {Number} pageSelected Id of sheet selected
      */
     setDisabledLayout(pageSelected) {
-      const isDisabled = [
-        SHEET_TYPE.COVER,
-        SHEET_TYPE.FRONT_COVER,
-        SHEET_TYPE.BACK_COVER
-      ].includes(pageSelected.type);
-      this.disabled = isDisabled;
+      this.disabled =
+        this.initialData?.disabled ??
+        [
+          SHEET_TYPE.COVER,
+          SHEET_TYPE.FRONT_COVER,
+          SHEET_TYPE.BACK_COVER
+        ].includes(pageSelected.type);
     },
     /**
      * Set default selected for theme base on id of sheet. Use default theme when the sheet not have private theme
@@ -272,6 +289,7 @@ export default {
      */
     onCancel() {
       this.setToolNameSelected('');
+      this.$emit('close');
     },
     /**
      * Trigger mutation to set theme and layout for sheet after that close popover when click Select button
@@ -305,7 +323,7 @@ export default {
           themeId: this.themeSelected?.id,
           layout: this.layoutObjSelected
         });
-        resetObjects(window.printCanvas);
+        resetObjects(activeCanvas);
         this.drawLayout(this.sheetLayout);
         this.onCancel();
       }
@@ -349,14 +367,20 @@ export default {
 
     this.textDisplay = this.updateTextDisplay();
 
-    if (this.listLayouts().length !== 0) {
-      if (this.isDigital) {
-        const layouts = await loadDigitalLayouts();
-        this.setDigitalLayouts({ layouts });
-      } else {
-        const layouts = await loadLayouts();
-        this.setPrintLayouts({ layouts });
-      }
+    let layouts = [];
+
+    if (!this.isDigital) {
+      layouts = await loadLayouts();
+      this.setPrintLayouts({ layouts });
+      return;
     }
+
+    if (this.initialData?.isSupplemental) {
+      layouts = await loadSupplementalLayouts();
+    } else {
+      layouts = await loadDigitalLayouts();
+    }
+
+    this.setDigitalLayouts({ layouts });
   }
 };

@@ -1,9 +1,9 @@
 <template>
-  <div class="digital-frame">
+  <div class="frames-container">
     <div class="row">
-      <div class="container-digital-frame">
-        <div class="item-digital-frame active"></div>
-        <div class="name-frame">Frame 10</div>
+      <div class="frame-container">
+        <div class="frame-item active"></div>
+        <div class="frame-name">Frame 10</div>
       </div>
       <EmptyFrame @click="addFrame" />
     </div>

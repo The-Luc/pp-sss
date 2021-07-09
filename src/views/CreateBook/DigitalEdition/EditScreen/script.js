@@ -5,6 +5,7 @@ import Header from '@/containers/HeaderEdition/Header';
 import FeedbackBar from '@/containers/HeaderEdition/FeedbackBar';
 import ScreenEdition from './ScreenEdition';
 import SidebarSection from './SidebarSection';
+import ModalLayout from './ModalLayout';
 import { GETTERS, MUTATES } from '@/store/modules/app/const';
 import { GETTERS as BOOK_GETTERS } from '@/store/modules/book/const';
 import {
@@ -32,7 +33,8 @@ export default {
     Header,
     FeedbackBar,
     ScreenEdition,
-    SidebarSection
+    SidebarSection,
+    ModalLayout
   },
   computed: {
     ...mapGetters({

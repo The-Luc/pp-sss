@@ -7,5 +7,6 @@ export const MODAL_TYPES = {
   GANTT_CHART: 'GanttChart',
   SELECT_PAGE: 'SelectPage',
   BACKGROUND_SELECT_PAGE: 'BackgroundSelectPage',
-  SELECT_THEME_DIGITAL: 'SelectThemeDigital'
+  SELECT_THEME_DIGITAL: 'SelectThemeDigital',
+  ADD_DIGITAL_FRAME: 'AddDigitalFrame'
 };

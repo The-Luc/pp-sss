@@ -15,6 +15,7 @@ import SelectTheme from '@/views/CreateBook/PrintEdition/EditScreen/Modal';
 import ModalSelectPage from '@/views/CreateBook/PrintEdition/EditScreen/PageEdition/ModalSelectPage';
 import ModalBackgroundSelectPage from '@/containers/ToolPopoverManager/PrintEdition/Backgrounds/ModalSelectPage';
 import SelectThemeDigital from '@/views/CreateBook/DigitalEdition/EditScreen/ModalTheme';
+import AddDigitalFrame from '@/views/CreateBook/DigitalEdition/EditScreen/ModalLayout';
 
 const {
   HELP,
@@ -25,7 +26,8 @@ const {
   GANTT_CHART,
   SELECT_PAGE,
   BACKGROUND_SELECT_PAGE,
-  SELECT_THEME_DIGITAL
+  SELECT_THEME_DIGITAL,
+  ADD_DIGITAL_FRAME
 } = MODAL_TYPES;
 
 const ModalList = {
@@ -37,7 +39,8 @@ const ModalList = {
   [GANTT_CHART]: GANTT_CHART,
   [SELECT_PAGE]: SELECT_PAGE,
   [BACKGROUND_SELECT_PAGE]: BACKGROUND_SELECT_PAGE,
-  [SELECT_THEME_DIGITAL]: SELECT_THEME_DIGITAL
+  [SELECT_THEME_DIGITAL]: SELECT_THEME_DIGITAL,
+  [ADD_DIGITAL_FRAME]: ADD_DIGITAL_FRAME
 };
 
 export default {
@@ -55,7 +58,8 @@ export default {
     [MODAL_TYPES.GANTT_CHART]: GanttChartModal,
     [MODAL_TYPES.SELECT_PAGE]: ModalSelectPage,
     [MODAL_TYPES.BACKGROUND_SELECT_PAGE]: ModalBackgroundSelectPage,
-    [MODAL_TYPES.SELECT_THEME_DIGITAL]: SelectThemeDigital
+    [MODAL_TYPES.SELECT_THEME_DIGITAL]: SelectThemeDigital,
+    [MODAL_TYPES.ADD_DIGITAL_FRAME]: AddDigitalFrame
   },
   computed: {
     ...mapGetters({
@@ -69,6 +73,8 @@ export default {
       handler(value) {
         if (value) {
           this.setModal();
+        } else {
+          this.renderModal = '';
         }
       }
     }
