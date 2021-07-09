@@ -5,10 +5,11 @@
         v-for="(frame, index) in frameData"
         :key="frame.id"
         class="container-digital-frame"
+        @click="onFrameClick(frame.id)"
       >
         <div
           class="item-digital-frame"
-          :class="{ active: index === activeFrameId }"
+          :class="{ active: frame.id === activeFrameId }"
         >
           <img
             v-if="frame.image"

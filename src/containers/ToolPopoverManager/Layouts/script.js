@@ -48,7 +48,7 @@ export default {
       pageSelected,
       themeId
     } = useLayoutPrompt(edition);
-    const { drawLayout } = useDrawLayout(edition);
+    const { drawLayout } = useDrawLayout();
     const {
       sheetLayout,
       getLayoutsByType,
@@ -310,7 +310,7 @@ export default {
 
         resetObjects(this.activeCanvas);
 
-        this.drawLayout(this.sheetLayout);
+        this.drawLayout(this.sheetLayout, this.edition);
         this.onCancel();
       }
     },

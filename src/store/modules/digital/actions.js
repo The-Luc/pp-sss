@@ -73,11 +73,8 @@ export const actions = {
     { commit, dispatch },
     { themeId, layout }
   ) {
-    const objects = layout.frames[0];
-
     const updateStorePayload = {
-      layout: objects,
-      themeId
+      layout: layout.frames[0]
     };
     dispatch(DIGITAL._ACTIONS.UPDATE_LAYOUT_OBJ_TO_STORE, updateStorePayload);
 
@@ -88,7 +85,7 @@ export const actions = {
       previewImageUrl: layout.previewImageUrl
     });
     // set the first frame is the active one
-    commit(DIGITAL._MUTATES.SET_CURRENT_FRAME_ID, { id: 0 });
+    commit(DIGITAL._MUTATES.SET_CURRENT_FRAME_ID, { id: layout.frames[0].id });
     // set Frames, frameIds and activeFrame
     commit(DIGITAL._MUTATES.SET_FRAMES, { framesList: layout.frames });
   },

@@ -10,7 +10,7 @@ export default {
       type: Array
     },
     activeFrameId: {
-      type: Number
+      type: [String, Number]
     }
   },
   computed: {
@@ -19,9 +19,10 @@ export default {
         {
           image: '',
           type: null,
-          id: null
+          id: 0
         }
       ];
+
       return isEmpty(this.frames) ? defaultData : this.frames;
     }
   },
@@ -32,6 +33,14 @@ export default {
      */
     addFrame(event) {
       this.$emit('addFrame', event);
+    },
+
+    /**
+     * To emeit to parent component
+     * @param {Number} id Id of the clicked frame
+     */
+    onFrameClick(id) {
+      this.$emit('onFrameClick', id);
     }
   }
 };

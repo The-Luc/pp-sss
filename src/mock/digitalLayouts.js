@@ -193,13 +193,15 @@ const frames = [
     id: 1,
     fromLayout: true,
     objects: [bg1, text1, text2],
-    previewImageUrl: LAYOUT_THUMB_01
+    previewImageUrl: LAYOUT_THUMB_01,
+    isVisited: false
   },
   {
     id: 2,
     fromLayout: true,
     objects: [bg2, clipArt1, clipArt2],
-    previewImageUrl: LAYOUT_THUMB_02
+    previewImageUrl: LAYOUT_THUMB_02,
+    isVisited: false
   }
 ];
 
@@ -208,19 +210,22 @@ const frames2 = [
     id: 1,
     fromLayout: true,
     objects: [bg3, text1, text2],
-    previewImageUrl: LAYOUT_THUMB_03
+    previewImageUrl: LAYOUT_THUMB_03,
+    isVisited: false
   },
   {
     id: 2,
     fromLayout: true,
     objects: [bg2, clipArt1, clipArt2],
-    previewImageUrl: LAYOUT_THUMB_04
+    previewImageUrl: LAYOUT_THUMB_04,
+    isVisited: false
   },
   {
     id: 3,
     fromLayout: true,
     objects: [bg1, clipArt1, clipArt2],
-    previewImageUrl: LAYOUT_THUMB_05
+    previewImageUrl: LAYOUT_THUMB_05,
+    isVisited: false
   }
 ];
 const supplementalFrames = [
@@ -228,13 +233,15 @@ const supplementalFrames = [
     id: 11,
     fromLayout: false,
     objects: [bg1, text1, text2],
-    previewImageUrl: LAYOUT_THUMB_01
+    previewImageUrl: LAYOUT_THUMB_01,
+    isVisited: false
   },
   {
     id: 12,
     fromLayout: false,
     objects: [bg3, clipArt1, clipArt2],
-    previewImageUrl: LAYOUT_THUMB_02
+    previewImageUrl: LAYOUT_THUMB_02,
+    isVisited: false
   }
 ];
 
@@ -251,11 +258,11 @@ export const packageLayouts = [
   {
     id: 2,
     name: '3D',
-    type: LAYOUT_TYPES.GRADUATION.value,
+    type: LAYOUT_TYPES.COLLAGE.value,
     frames: [...frames2],
     isFavorites: false,
     previewImageUrl: LAYOUT_THUMB_02,
-    themeId: 2
+    themeId: 1
   },
   {
     id: 3,

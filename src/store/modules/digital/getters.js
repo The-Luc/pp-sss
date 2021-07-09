@@ -100,5 +100,8 @@ export const getters = {
   },
   [DIGITAL._GETTERS.CURRENT_FRAME_ID]: ({ currentFrameId }) => {
     return currentFrameId;
+  },
+  [DIGITAL._GETTERS.CURRENT_FRAME]: ({ frames, currentFrameId }) => {
+    return frames[currentFrameId];
   }
 };

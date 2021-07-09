@@ -14,6 +14,7 @@
       :frames="frameThumbnails"
       :active-frame-id="currentFrameId"
       @addFrame="onAddFrame"
+      @onFrameClick="onFrameClick"
     />
     <AddBoxInstruction v-if="visible" :element="element" :x="x" :y="y" />
   </div>

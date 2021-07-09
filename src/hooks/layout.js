@@ -214,16 +214,17 @@ const handleDrawObjects = (objects, targetCanvas) => {
   });
 };
 
-export const useDrawLayout = edition => {
+export const useDrawLayout = () => {
   /**
    * Draw layout with layout data or reset canvas when layout not exist
    * @param {Object} sheetPrintData - Layout object data
    * @param {Ref} targetCanvas - Target canvas to draw objects
    */
-  const canvas =
-    edition === EDITION.DIGITAL ? window.digitalCanvas : window.printCanvas;
 
-  const drawLayout = async (sheetData, targetCanvas = canvas) => {
+  const drawLayout = async (sheetData, edition) => {
+    const targetCanvas =
+      edition === EDITION.DIGITAL ? window.digitalCanvas : window.printCanvas;
+
     if (sheetData.length === 0) {
       targetCanvas?.clear().renderAll(); // Clear canvas when click on empty spread
     } else {

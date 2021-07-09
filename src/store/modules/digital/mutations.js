@@ -186,5 +186,11 @@ export const mutations = {
     state.frameIds.push(id);
 
     state.frames[id] = newFrame;
+  },
+  [DIGITAL._MUTATES.SET_CURRENT_FRAME_VISITED](
+    { frames, currentFrameId },
+    { value }
+  ) {
+    frames[currentFrameId].isVisited = value;
   }
 };
