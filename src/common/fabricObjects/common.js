@@ -219,7 +219,7 @@ export const updateSpecificProp = (element, prop) => {
 export const updateElement = (element, prop, canvas) => {
   if (isEmpty(element) || isEmpty(prop)) return;
 
-  updateSpecificProp(element, prop, canvas);
+  updateSpecificProp(element, prop);
 
   const fabricProp = getFabricProp(element, prop);
 

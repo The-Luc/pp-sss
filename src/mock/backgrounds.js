@@ -17,7 +17,7 @@ import COLOR_5 from '@/assets/image/backgrounds/color-5.png';
 import COLOR_6 from '@/assets/image/backgrounds/color-6.png';
 import COLOR_7 from '@/assets/image/backgrounds/color-7.png';
 
-export const BACKGROUND_CATEGORIES = [
+const CATEGORIES = [
   {
     id: 0,
     name: 'Abstract'
@@ -39,6 +39,11 @@ export const BACKGROUND_CATEGORIES = [
     name: 'USA'
   }
 ];
+
+export const BACKGROUND_CATEGORIES = CATEGORIES.map(c => ({
+  ...c,
+  value: c.id
+}));
 
 export const BACKGROUNDS = [
   {

@@ -1,7 +1,7 @@
 import { cloneDeep, merge, intersection } from 'lodash';
 import moment from 'moment';
 
-import { DATE_FORMAT, MOMENT_TYPE } from '@/common/constants';
+import { DATE_FORMAT, MOMENT_TYPE, STATUS } from '@/common/constants';
 import { DEFAULT_RULE_DATA } from '@/common/fabricObjects/common';
 import { ptToPx, scaleSize } from './canvas';
 
@@ -531,5 +531,25 @@ export const setCanvasUniformScaling = (canvas, isConstrain) => {
 /**
  * Set current canvas is focused
  */
-
 export const setActiveCanvas = canvas => (activeCanvas = canvas);
+
+/**
+ * Compare 2 item by id
+ *
+ * @param   {Oject} item1 first item to compare
+ * @param   {Oject} item2 second item to compare
+ * @returns {Number}      compare result (-1: smaller, 1: bigger)
+ */
+export const compareByValue = (item1, item2) => {
+  return item1.value < item2.value ? -1 : 1;
+};
+
+/**
+ * Check if status is ok
+ *
+ * @param   {Number}  status  status to check
+ * @returns {Boolean}         status is ok or not
+ */
+export const isOk = ({ status }) => {
+  return status === STATUS.OK;
+};
