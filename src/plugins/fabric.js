@@ -1,10 +1,77 @@
 import { fabric } from 'fabric';
-import { CORNER_SIZE } from '@/common/constants';
+import { CORNER_SIZE, BORDER_STYLES } from '@/common/constants';
 
 const BORDER_COLOR = {
   OUTER: '#ffffff',
   INNER: '#8C8C8C',
   NONE: 'transparent'
+};
+
+/**
+ * Rect Render function with override on clipPath to support double stroke
+ * @param {CanvasRenderingContext2D} ctx Context to render on
+ */
+const rectRender = function(ctx) {
+  if (this.strokeLineType === BORDER_STYLES.DOUBLE) {
+    const origins = {
+      originX: 'center',
+      originY: 'center'
+    };
+
+    const strokeOffset = this.strokeWidth * 0.15;
+
+    const hozSize = {
+      left: 0,
+      width: this.width - strokeOffset,
+      height: this.strokeWidth * 0.2,
+      ...origins
+    };
+
+    const verSize = {
+      top: 0,
+      width: this.strokeWidth * 0.2,
+      height: this.height - strokeOffset,
+      ...origins
+    };
+
+    const rectTop = new fabric.Rect({
+      top: this.height * -0.5 + strokeOffset,
+      ...hozSize
+    });
+
+    const rectBottom = new fabric.Rect({
+      top: this.height * 0.5 - strokeOffset,
+      ...hozSize
+    });
+
+    const rectLeft = new fabric.Rect({
+      left: this.width * -0.5 + strokeOffset,
+      ...verSize
+    });
+
+    const rectRight = new fabric.Rect({
+      left: this.width * 0.5 - strokeOffset,
+      ...verSize
+    });
+
+    this.clipPath = new fabric.Group(
+      [rectTop, rectBottom, rectLeft, rectRight],
+      {
+        inverted: true
+      }
+    );
+  } else {
+    this.clipPath = null;
+  }
+  fabric.Rect.prototype._render.call(this, ctx);
+};
+
+/**
+ * Allow fabric rect object to have double stroke
+ * @param {fabric.Object} rect - the object to enable double stroke
+ */
+export const useDoubleStroke = function(rect) {
+  rect._render = rectRender;
 };
 
 /**

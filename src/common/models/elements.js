@@ -28,7 +28,7 @@ export const BaseElement = {
     stroke: DEFAULT_BORDER.STROKE,
     strokeWidth: DEFAULT_BORDER.STROKE_WIDTH,
     strokeDashArray: DEFAULT_BORDER.STROKE_DASH_ARRAY,
-    strokeLineCap: DEFAULT_BORDER.STROKE_LINE_CAP
+    strokeLineType: DEFAULT_BORDER.STROKE_LINE_TYPE
   },
   shadow: {
     dropShadow: DEFAULT_SHADOW.DROP_SHADOW,
@@ -84,7 +84,7 @@ export const TextElement = {
     stroke: DEFAULT_TEXT.BORDER.STROKE,
     strokeWidth: DEFAULT_TEXT.BORDER.STROKE_WIDTH,
     strokeDashArray: DEFAULT_TEXT.BORDER.STROKE_DASH_ARRAY,
-    strokeLineCap: DEFAULT_TEXT.BORDER.STROKE_LINE_CAP
+    strokeLineType: DEFAULT_TEXT.BORDER.STROKE_LINE_TYPE
   },
   shadow: {
     dropShadow: DEFAULT_TEXT.SHADOW.DROP_SHADOW,

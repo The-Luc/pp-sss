@@ -1,7 +1,7 @@
 import { fabric } from 'fabric';
 
-import { inToPx, toFabricImageProp } from '../utils';
-import { getAdjustedObjectDimension } from './common';
+import { inToPx } from '../utils';
+import { getAdjustedObjectDimension, toFabricImageProp } from './common';
 import { DEFAULT_IMAGE } from '../constants';
 
 export const createImage = props => {
