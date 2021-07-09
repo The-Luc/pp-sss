@@ -1,4 +1,4 @@
-import { mapMutations, mapGetters, mapActions } from 'vuex';
+import { mapMutations, mapActions } from 'vuex';
 
 import Modal from '@/containers/Modal';
 import PpButton from '@/components/Buttons/Button';
