@@ -58,7 +58,7 @@ export default {
      * @param {String} actionName action name
      */
     changeFlip(actionName) {
-      console.log(('changeFlip ', actionName));
+      console.log('changeFlip ', actionName);
       //TODO
     },
     /**

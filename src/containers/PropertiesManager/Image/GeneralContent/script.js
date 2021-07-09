@@ -5,6 +5,7 @@ import ImageStyle from './ImageStyle';
 import imagesStyle from '@/mock/imageStyle';
 import { DEFAULT_PROP } from '@/common/constants';
 import { SHADOW_OPTIONS } from '@/common/constants/shadow';
+import { BORDER_TYPE } from '@/common/constants/borderType';
 
 export default {
   components: {
@@ -15,16 +16,7 @@ export default {
   },
   data() {
     return {
-      borderOptions: [
-        {
-          name: 'No border',
-          value: 'noBorder'
-        },
-        {
-          name: 'Line',
-          value: 'line'
-        }
-      ],
+      borderOptions: BORDER_TYPE,
       selectedBorder: {
         name: 'No border',
         value: 'noBorder'
@@ -50,12 +42,8 @@ export default {
      * @param {Object} shadowCfg - the new shadow configs
      */
     emitChangeShadow(shadowCfg) {
-      // this.$root.$emit('printChangeImageProperties', {
-      //   shadow: {
-      //     ...this.currentShadow,
-      //     ...shadowCfg
-      //   }
-      // });
+      console.log(shadowCfg);
+      // TODO
     },
     /**
      * Handle update shadow config base on enable/disable of dropShadow
@@ -64,7 +52,6 @@ export default {
     onChangeDropShadow(object) {
       console.log(object);
       // TODO
-      // this.emitChangeShadow(object);
     },
     /**
      * Handle update shadow config after user select shadow value
@@ -73,7 +60,6 @@ export default {
     onChangeShadow(object) {
       console.log(object);
       // TODO
-      // this.emitChangeShadow(object);
     },
     /**
      * Receive value opacity from children
