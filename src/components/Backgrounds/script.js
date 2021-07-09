@@ -5,7 +5,6 @@ import Item from './Item';
 
 import {
   isEmpty,
-  getDefaultBackgroundTypeOptions,
   getDisplayBackgroundTypes,
   getDisplayBackgroundPageTypes
 } from '@/common/utils';
