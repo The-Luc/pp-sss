@@ -62,6 +62,7 @@ export default {
      * @param {Object} Object the value of the shadow will be change
      */
     onChangeDropShadow(object) {
+      console.log(object);
       // TODO
       // this.emitChangeShadow(object);
     },
