@@ -2,7 +2,7 @@ import BACKGROUND_WHITE from '@/assets/image/white.png';
 import THEME from '@/assets/image/theme.jpg';
 import DASHED from '@/assets/image/border/dashed.svg';
 import DOTTED from '@/assets/image/border/dotted.png';
-import DOBULE from '@/assets/image/border/double.png';
+import DOUBLE from '@/assets/image/border/double.png';
 import ROUGH_MEDIUM from '@/assets/image/border/rough-medium.png';
 import ROUGH_THICK from '@/assets/image/border/rough-thick.png';
 import ROUGH_THIN from '@/assets/image/border/rough-thin.png';
@@ -14,7 +14,7 @@ export const IMAGE_LOCAL = {
   THEME,
   DASHED,
   DOTTED,
-  DOBULE,
+  DOUBLE,
   ROUGH_MEDIUM,
   ROUGH_THICK,
   ROUGH_THIN,

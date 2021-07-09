@@ -890,7 +890,7 @@ export default {
       const strokeDashArray = getRectDashes(
         target.width,
         target.height,
-        rect.strokeLineCap,
+        rect.strokeLineType,
         dataObject.newObject.border.strokeWidth
       );
 

@@ -75,7 +75,7 @@ export default {
       this.$root.$emit(EVENT_TYPE.CHANGE_TEXT_PROPERTIES, {
         border: {
           strokeDashArray,
-          strokeLineCap: value
+          strokeLineType: value
         }
       });
     }
