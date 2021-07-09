@@ -1,17 +1,24 @@
+export const BACKGROUND_TYPE_NAME = {
+  THEME: 'THEME',
+  CATEGORY: 'CATEGORY',
+  CUSTOM: 'CUSTOM',
+  FAVORITE: 'FAVORITE'
+};
+
 export const BACKGROUND_TYPE = {
-  THEME: {
+  [BACKGROUND_TYPE_NAME.THEME]: {
     id: 0,
     name: 'Theme'
   },
-  CATEGORY: {
+  [BACKGROUND_TYPE_NAME.CATEGORY]: {
     id: 1,
     name: 'Category'
   },
-  CUSTOM: {
+  [BACKGROUND_TYPE_NAME.CUSTOM]: {
     id: 2,
     name: 'Custom Backgrounds'
   },
-  FAVORITE: {
+  [BACKGROUND_TYPE_NAME.FAVORITE]: {
     id: 3,
     name: 'Saved Favorites'
   }

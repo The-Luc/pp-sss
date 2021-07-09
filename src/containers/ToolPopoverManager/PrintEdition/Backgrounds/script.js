@@ -8,8 +8,13 @@ import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 import {
   MODAL_TYPES,
   BACKGROUND_TYPE,
-  BACKGROUND_PAGE_TYPE
+  BACKGROUND_PAGE_TYPE,
+  BACKGROUND_TYPE_NAME,
+  STATUS
 } from '@/common/constants';
+
+import backgroundService from '@/api/background';
+import themeService from '@/api/themes';
 
 import { usePopoverCreationTool } from '@/hooks';
 
@@ -18,38 +23,18 @@ import {
   isEmpty,
   isHalfSheet as isSheetHalfSheet,
   getBackgroundType,
-  getBackgroundPageType
+  getBackgroundPageType,
+  isOk
 } from '@/common/utils';
-
-import { themeOptions } from '@/mock/themes';
-import { BACKGROUNDS, BACKGROUND_CATEGORIES } from '@/mock/backgrounds';
 
 export default {
   components: {
     Backgrounds
   },
   data() {
-    const backgroundTypes = {
-      THEME: {
-        id: BACKGROUND_TYPE.THEME.id,
-        value: themeOptions
-      },
-      CATEGORY: {
-        id: BACKGROUND_TYPE.CATEGORY.id,
-        value: BACKGROUND_CATEGORIES
-      },
-      CUSTOM: {
-        id: BACKGROUND_TYPE.CUSTOM.id,
-        value: []
-      },
-      FAVORITE: {
-        id: BACKGROUND_TYPE.FAVORITE.id,
-        value: []
-      }
-    };
-
     return {
-      backgroundTypes,
+      backgroundTypes: {},
+      backgrounds: [],
       noBackgroundLength: 4,
       selectedType: { sub: {} },
       selectedPageType: {}
@@ -79,35 +64,78 @@ export default {
             ...this.userSelectedBackground[0],
             id: this.userSelectedBackground[0].backgroundId
           };
-    },
-    backgrounds() {
-      return BACKGROUNDS.filter(b => {
-        const { backgroundType, categoryId, pageType } = b;
-
-        if (backgroundType !== this.selectedType.value) return false;
-
-        if (categoryId !== this.selectedType.sub) return false;
-
-        return pageType === this.selectedPageType.id;
-      });
     }
   },
   mounted() {
-    this.selectedType = getBackgroundType(
-      this.appliedBackground,
-      this.backgroundTypes,
-      this.currentThemeId
-    );
-
-    this.selectedPageType = getBackgroundPageType(
-      this.appliedBackground,
-      this.isHalfSheet
-    );
+    this.initData();
   },
   methods: {
     ...mapMutations({
       toggleModal: APP_MUTATES.TOGGLE_MODAL
     }),
+    /**
+     * Init data when loaded
+     */
+    async initData() {
+      await this.getBackgroundTypeData();
+
+      this.selectedType = getBackgroundType(
+        this.appliedBackground,
+        this.backgroundTypes,
+        this.currentThemeId
+      );
+
+      this.selectedPageType = getBackgroundPageType(
+        this.appliedBackground,
+        this.isHalfSheet
+      );
+
+      this.getBackgroundData();
+    },
+    /**
+     * Get background type data from API
+     */
+    async getBackgroundTypeData() {
+      const [categories, themes] = await Promise.all([
+        backgroundService.getCategories(),
+        themeService.getThemes()
+      ]);
+
+      if (categories.status !== STATUS.OK || themes.status !== STATUS.OK) {
+        return;
+      }
+
+      this.backgroundTypes = {
+        [BACKGROUND_TYPE_NAME.THEME]: {
+          id: BACKGROUND_TYPE.THEME.id,
+          value: themes.data
+        },
+        [BACKGROUND_TYPE_NAME.CATEGORY]: {
+          id: BACKGROUND_TYPE.CATEGORY.id,
+          value: categories.data
+        },
+        [BACKGROUND_TYPE_NAME.CUSTOM]: {
+          id: BACKGROUND_TYPE.CUSTOM.id,
+          value: []
+        },
+        [BACKGROUND_TYPE_NAME.FAVORITE]: {
+          id: BACKGROUND_TYPE.FAVORITE.id,
+          value: []
+        }
+      };
+    },
+    /**
+     * Get background data from API
+     */
+    async getBackgroundData() {
+      const backgrounds = await backgroundService.getBackgrounds(
+        this.selectedType.value,
+        this.selectedType.sub,
+        this.selectedPageType.value
+      );
+
+      this.backgrounds = isOk(backgrounds) ? backgrounds.data : [];
+    },
     /**
      * Event fire when choose background type
      *
@@ -115,6 +143,8 @@ export default {
      */
     onChangeType(data) {
       this.selectedType = data;
+
+      this.getBackgroundData();
     },
     /**
      * Event fire when choose background page type
@@ -123,6 +153,8 @@ export default {
      */
     onChangePageType(data) {
       this.selectedPageType = data;
+
+      this.getBackgroundData();
     },
     /**
      * Trigger hooks to set tool name is empty and then close popover when click Cancel button

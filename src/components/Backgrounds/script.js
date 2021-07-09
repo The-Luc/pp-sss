@@ -20,7 +20,7 @@ export default {
   props: {
     backgroundTypes: {
       type: Object,
-      default: () => getDefaultBackgroundTypeOptions()
+      default: () => ({})
     },
     backgrounds: {
       type: Array,
@@ -49,13 +49,15 @@ export default {
   },
   data() {
     return {
-      displayBackgroundTypes: getDisplayBackgroundTypes(),
       displayBackgroundPageType: getDisplayBackgroundPageTypes(),
       chosenBackground: {},
       noBackgroundLength: 4
     };
   },
   computed: {
+    displayBackgroundTypes() {
+      return getDisplayBackgroundTypes(this.backgroundTypes);
+    },
     selectedBackground() {
       if (!isEmpty(this.chosenBackground)) {
         return this.chosenBackground;

@@ -10,7 +10,7 @@ export const createImage = props => {
       size: { width, height }
     } = props;
     const { left, top, id, imageUrl } = fabricProp;
-    new fabric.Image.fromURL(
+    fabric.Image.fromURL(
       imageUrl,
       image => {
         const {

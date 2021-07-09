@@ -1,4 +1,4 @@
-import { isEmpty } from './util';
+import { isEmpty, compareByValue } from './util';
 
 import { BACKGROUND_PAGE_TYPE, BACKGROUND_TYPE } from '@/common/constants';
 
@@ -18,7 +18,7 @@ const getDefaultType = (themes, themeId) => {
 
   return {
     value: BACKGROUND_TYPE.THEME.id,
-    sub: sub.id
+    sub: sub?.id
   };
 };
 
@@ -143,15 +143,19 @@ export const getDefaultBackgroundTypeOptions = () => {
  * @returns {Array}                       display background type
  */
 export const getDisplayBackgroundTypes = backgroundTypeOptions => {
+  const typeOptions = isEmpty(backgroundTypeOptions)
+    ? getDefaultBackgroundTypeOptions()
+    : backgroundTypeOptions;
+
   const types = Object.keys(BACKGROUND_TYPE).map(k => {
     return {
       ...BACKGROUND_TYPE[k],
       value: BACKGROUND_TYPE[k].id,
-      subItems: backgroundTypeOptions[k].value
+      subItems: typeOptions[k].value
     };
   });
 
-  return types.filter(b => b.subItems.length > 0);
+  return types.filter(b => b.subItems.length > 0).sort(compareByValue);
 };
 
 /**
@@ -160,10 +164,12 @@ export const getDisplayBackgroundTypes = backgroundTypeOptions => {
  * @returns {Array} display background page type
  */
 export const getDisplayBackgroundPageTypes = () => {
-  return Object.keys(BACKGROUND_PAGE_TYPE).map(k => {
-    return {
-      ...BACKGROUND_PAGE_TYPE[k],
-      value: BACKGROUND_PAGE_TYPE[k].id
-    };
-  });
+  return Object.keys(BACKGROUND_PAGE_TYPE)
+    .map(k => {
+      return {
+        ...BACKGROUND_PAGE_TYPE[k],
+        value: BACKGROUND_PAGE_TYPE[k].id
+      };
+    })
+    .sort(compareByValue);
 };
