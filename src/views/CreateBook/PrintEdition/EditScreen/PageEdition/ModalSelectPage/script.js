@@ -7,6 +7,7 @@ import {
   GETTERS as PRINT_GETTERS,
   ACTIONS as PRINT_ACTIONS
 } from '@/store/modules/print/const';
+import { resetObjects } from '@/common/utils';
 
 export default {
   setup() {
@@ -78,6 +79,7 @@ export default {
      */
     onUpdateLayoutSheet(pagePosition) {
       this.updateSheet(pagePosition);
+      resetObjects(window.printCanvas);
       this.drawLayoutSinglePage();
       this.closeModal();
     },

@@ -1,8 +1,13 @@
 import { cloneDeep, merge, intersection } from 'lodash';
 import moment from 'moment';
 
-import { DATE_FORMAT, MOMENT_TYPE } from '@/common/constants';
-import { DEFAULT_RULE_DATA } from '@/common/fabricObjects/common';
+import {
+  BORDER_STYLES,
+  CANVAS_BORDER_TYPE,
+  DATE_FORMAT,
+  MOMENT_TYPE,
+  STATUS
+} from '@/common/constants';
 import { ptToPx, scaleSize } from './canvas';
 
 export let activeCanvas = null;
@@ -266,133 +271,6 @@ export const toCssStyle = style => {
 };
 
 /**
- * Convert stored text properties to fabric properties
- *
- * @param   {Object}  prop  stored text properties
- * @returns {Object}        fabric properties
- */
-export const toFabricTextProp = prop => {
-  const mapRules = {
-    data: {
-      x: DEFAULT_RULE_DATA.X,
-      y: DEFAULT_RULE_DATA.Y,
-      isBold: {
-        name: 'fontWeight',
-        parse: value => (value ? 'bold' : '')
-      },
-      isItalic: {
-        name: 'fontStyle',
-        parse: value => (value ? 'italic' : '')
-      },
-      isUnderline: {
-        name: 'underline'
-      },
-      color: {
-        name: 'fill'
-      },
-      fontSize: {
-        name: 'fontSize',
-        parse: value => scaleSize(value)
-      },
-      horizontal: {
-        name: 'textAlign'
-      },
-      vertical: {
-        name: 'verticalAlign'
-      },
-      letterSpacing: {
-        name: 'charSpacing'
-      },
-      width: DEFAULT_RULE_DATA.WIDTH,
-      height: DEFAULT_RULE_DATA.HEIGHT
-    },
-    restrict: [
-      'id',
-      'type',
-      'textCase',
-      'text',
-      'border',
-      'shadow',
-      'flip',
-      'rotation',
-      'isConstrain'
-    ]
-  };
-
-  return mapObject(prop, mapRules);
-};
-
-/**
- * Convert stored text border properties to fabric properties
- *
- * @param   {Object}  style stored text border properties
- * @returns {Object}        fabric properties
- */
-export const toFabricTextBorderProp = prop => {
-  const mapRules = {
-    data: {
-      x: DEFAULT_RULE_DATA.X,
-      y: DEFAULT_RULE_DATA.Y,
-      strokeWidth: {
-        name: 'strokeWidth',
-        parse: value => scaleSize(value)
-      },
-      width: DEFAULT_RULE_DATA.WIDTH,
-      height: DEFAULT_RULE_DATA.HEIGHT
-    },
-    restrict: ['id', 'shadow', 'flip', 'rotation', 'isConstrain']
-  };
-
-  return mapObject(prop, mapRules);
-};
-
-/**
- * Convert stored text group properties to fabric properties
- *
- * @param   {Object}  style stored text border properties
- * @returns {Object}        fabric properties
- */
-export const toFabricTextGroupProp = prop => {
-  const mapRules = {
-    data: {
-      x: DEFAULT_RULE_DATA.X,
-      y: DEFAULT_RULE_DATA.Y,
-      rotation: DEFAULT_RULE_DATA.ROTATION,
-      horizontal: DEFAULT_RULE_DATA.HORIZONTAL,
-      vertical: DEFAULT_RULE_DATA.VERTICAL,
-      width: DEFAULT_RULE_DATA.WIDTH,
-      height: DEFAULT_RULE_DATA.HEIGHT
-    },
-    restrict: ['id', 'shadow', 'alignment', 'fontSize', 'rotation']
-  };
-
-  return mapObject(prop, mapRules);
-};
-
-/**
- * Convert stored image properties to fabric properties
- *
- * @param   {Object}  prop  stored image properties
- * @returns {Object}        fabric properties
- */
-export const toFabricImageProp = prop => {
-  const mapRules = {
-    data: {
-      x: DEFAULT_RULE_DATA.X,
-      y: DEFAULT_RULE_DATA.Y,
-      color: {
-        name: 'fill'
-      },
-      opacity: {
-        name: 'opacity'
-      }
-    },
-    restrict: ['border', 'shadow', 'flip', 'size', 'rotation', 'centerCrop']
-  };
-  return mapObject(prop, mapRules);
-};
-
-/**
  * Handle scroll to element's position with configs
  *
  * @param   {Ref}  el  Element need to scroll
@@ -410,11 +288,11 @@ export const scrollToElement = (el, opts) => {
   });
 };
 
-export const getRectDashes = (width, height, value, strokeWidth) => {
+export const getRectDashes = (width, height, strokeType, strokeWidth) => {
   let dashArray = [];
-  if (value === 'round') {
+  if (strokeType === BORDER_STYLES.ROUND) {
     dashArray = getRoundDashes(width, height, strokeWidth);
-  } else if (value === 'square') {
+  } else if (strokeType === BORDER_STYLES.SQUARE) {
     const widthArray = getLineDashes(width, 0, 0, 0);
     const heightArray = getLineDashes(0, height, 0, 0);
     dashArray = [widthArray, 0, heightArray, 0, widthArray, 0, heightArray];
@@ -428,7 +306,7 @@ export const getRectDashes = (width, height, value, strokeWidth) => {
  * @param   {Number}  width  Width of element
  * @param   {Number}  height  Height of element
  */
-function getRoundDashes(width, height, strokeWidth) {
+const getRoundDashes = (width, height, strokeWidth) => {
   const clientStrokeWidth = ptToPx(strokeWidth || 1);
 
   const clientWidth = width - clientStrokeWidth; //real width include stroke
@@ -453,10 +331,10 @@ function getRoundDashes(width, height, strokeWidth) {
     }
     return calcDashArray(pointsOfWidth, widthDashTemplate);
   });
-}
+};
 
 // same as previous snippet except that it does return all the segment's dashes
-function getLineDashes(x1, y1, x2, y2) {
+export const getLineDashes = (x1, y1, x2, y2) => {
   const length = Math.hypot(x2 - x1, y2 - y1); // ()
   let dash_length = length / 8;
 
@@ -472,14 +350,21 @@ function getLineDashes(x1, y1, x2, y2) {
     dasharray.push(next);
   }
   return dasharray;
-}
+};
+
+export const getStrokeLineCap = strokeType => {
+  if ([BORDER_STYLES.ROUND, BORDER_STYLES.SQUARE].indexOf(strokeType) !== -1) {
+    return strokeType;
+  }
+  return CANVAS_BORDER_TYPE.BUTT;
+};
 
 /**
  * Get border data from store and set to Rect object
  */
 export const setBorderObject = (rectObj, objectData) => {
   const {
-    border: { strokeWidth, stroke, strokeLineCap }
+    border: { strokeWidth, stroke, strokeLineType }
   } = objectData;
 
   const group = rectObj?.group;
@@ -489,14 +374,17 @@ export const setBorderObject = (rectObj, objectData) => {
   const strokeDashArrayVal = getRectDashes(
     rectWidth,
     rectHeight,
-    strokeLineCap,
+    strokeLineType,
     strokeWidth
   );
+
+  const strokeLineCap = getStrokeLineCap(strokeLineType);
 
   rectObj.set({
     strokeWidth: scaleSize(strokeWidth),
     stroke,
     strokeLineCap,
+    strokeLineType,
     strokeDashArray: strokeDashArrayVal
   });
 
@@ -530,5 +418,25 @@ export const setCanvasUniformScaling = (canvas, isConstrain) => {
 /**
  * Set current canvas is focused
  */
-
 export const setActiveCanvas = canvas => (activeCanvas = canvas);
+
+/**
+ * Compare 2 item by id
+ *
+ * @param   {Oject} item1 first item to compare
+ * @param   {Oject} item2 second item to compare
+ * @returns {Number}      compare result (-1: smaller, 1: bigger)
+ */
+export const compareByValue = (item1, item2) => {
+  return item1.value < item2.value ? -1 : 1;
+};
+
+/**
+ * Check if status is ok
+ *
+ * @param   {Number}  status  status to check
+ * @returns {Boolean}         status is ok or not
+ */
+export const isOk = ({ status }) => {
+  return status === STATUS.OK;
+};

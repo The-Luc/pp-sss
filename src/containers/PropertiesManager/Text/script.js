@@ -10,6 +10,7 @@ import { GETTERS as APP_GETTERS } from '@/store/modules/app/const';
 import { DEFAULT_TEXT } from '@/common/constants';
 import { computedObjectSize, activeCanvas } from '@/common/utils';
 import { EVENT_TYPE } from '@/common/constants/eventType';
+import { BORDER_TYPE } from '@/common/constants/borderType';
 
 export default {
   components: {
@@ -94,23 +95,12 @@ export default {
   },
   data() {
     return {
-      borderOptions: [
-        {
-          name: 'No border',
-          value: 'noBorder'
-        },
-        {
-          name: 'Line',
-          value: 'line'
-        }
-      ],
-      selectedBorder: {
-        name: 'No border',
-        value: 'noBorder'
-      }
+      borderOptions: BORDER_TYPE,
+      selectedBorder: {}
     };
   },
   mounted() {
+    this.selectedBorder = this.borderOptions[0];
     this.setSelectedBorder();
   },
   methods: {
@@ -130,7 +120,7 @@ export default {
         isBorder: data.value !== 'noBorder',
         stroke: DEFAULT_TEXT.BORDER.STROKE,
         strokeDashArray: DEFAULT_TEXT.BORDER.STROKE_DASH_ARRAY,
-        strokeLineCap: DEFAULT_TEXT.BORDER.STROKE_LINE_CAP,
+        strokeLineType: DEFAULT_TEXT.BORDER.STROKE_LINE_TYPE,
         strokeWidth:
           data.value === 'noBorder' ? DEFAULT_TEXT.BORDER.STROKE_WIDTH : 1
       };

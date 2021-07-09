@@ -2,7 +2,12 @@ import { fabric } from 'fabric';
 import { cloneDeep } from 'lodash';
 import Color from 'color';
 
-import { DEFAULT_SVG, DEFAULT_SHAPE, OBJECT_TYPE } from '@/common/constants';
+import {
+  DEFAULT_SVG,
+  DEFAULT_SHAPE,
+  OBJECT_TYPE,
+  DEFAULT_TEXT
+} from '@/common/constants';
 
 import { inToPx, ptToPx, isEmpty, mapObject, scaleSize } from '@/common/utils';
 
@@ -49,6 +54,141 @@ const RESTRICT_PROP_CHILD = [
   'top',
   'left'
 ];
+
+/**
+ * Convert stored text properties to fabric properties
+ *
+ * @param   {Object}  prop  stored text properties
+ * @returns {Object}        fabric properties
+ */
+export const toFabricTextProp = prop => {
+  const mapRules = {
+    data: {
+      x: DEFAULT_RULE_DATA.X,
+      y: DEFAULT_RULE_DATA.Y,
+      isBold: {
+        name: 'fontWeight',
+        parse: value => (value ? 'bold' : '')
+      },
+      isItalic: {
+        name: 'fontStyle',
+        parse: value => (value ? 'italic' : '')
+      },
+      isUnderline: {
+        name: 'underline'
+      },
+      color: {
+        name: 'fill'
+      },
+      fontSize: {
+        name: 'fontSize',
+        parse: value => scaleSize(value)
+      },
+      horizontal: {
+        name: 'textAlign'
+      },
+      vertical: {
+        name: 'verticalAlign'
+      },
+      letterSpacing: {
+        name: 'charSpacing'
+      },
+      width: DEFAULT_RULE_DATA.WIDTH,
+      height: DEFAULT_RULE_DATA.HEIGHT,
+      strokeWidth: {
+        name: 'padding',
+        parse: value => scaleSize(value || 0) + inToPx(DEFAULT_TEXT.PADDING)
+      }
+    },
+    restrict: [
+      'id',
+      'type',
+      'textCase',
+      'text',
+      'fill',
+      'stroke',
+      'strokeDashArray',
+      'strokeLineType',
+      'shadow',
+      'flip',
+      'rotation',
+      'isConstrain'
+    ]
+  };
+
+  return mapObject(prop, mapRules);
+};
+
+/**
+ * Convert stored text border properties to fabric properties
+ *
+ * @param   {Object}  style stored text border properties
+ * @returns {Object}        fabric properties
+ */
+export const toFabricTextBorderProp = prop => {
+  const mapRules = {
+    data: {
+      x: DEFAULT_RULE_DATA.X,
+      y: DEFAULT_RULE_DATA.Y,
+      strokeWidth: {
+        name: 'strokeWidth',
+        parse: value => scaleSize(value)
+      },
+      width: DEFAULT_RULE_DATA.WIDTH,
+      height: DEFAULT_RULE_DATA.HEIGHT
+    },
+    restrict: ['id', 'shadow', 'flip', 'rotation', 'isConstrain']
+  };
+
+  return mapObject(prop, mapRules);
+};
+
+/**
+ * Convert stored text group properties to fabric properties
+ *
+ * @param   {Object}  style stored text border properties
+ * @returns {Object}        fabric properties
+ */
+export const toFabricTextGroupProp = prop => {
+  const mapRules = {
+    data: {
+      x: DEFAULT_RULE_DATA.X,
+      y: DEFAULT_RULE_DATA.Y,
+      rotation: DEFAULT_RULE_DATA.ROTATION,
+      horizontal: DEFAULT_RULE_DATA.HORIZONTAL,
+      vertical: DEFAULT_RULE_DATA.VERTICAL,
+      width: DEFAULT_RULE_DATA.WIDTH,
+      height: DEFAULT_RULE_DATA.HEIGHT
+    },
+    restrict: ['id', 'shadow', 'alignment', 'fontSize', 'rotation']
+  };
+
+  return mapObject(prop, mapRules);
+};
+
+/**
+ * Convert stored image properties to fabric properties
+ *
+ * @param   {Object}  prop  stored image properties
+ * @returns {Object}        fabric properties
+ */
+export const toFabricImageProp = prop => {
+  const mapRules = {
+    data: {
+      type: DEFAULT_RULE_DATA.TYPE,
+      x: DEFAULT_RULE_DATA.X,
+      y: DEFAULT_RULE_DATA.Y,
+      color: {
+        name: 'fill'
+      },
+      opacity: {
+        name: 'opacity'
+      }
+    },
+    restrict: ['border', 'shadow', 'flip', 'size', 'rotation', 'centerCrop']
+  };
+  return mapObject(prop, mapRules);
+};
 
 /**
  * Convert stored properties to fabric properties
@@ -219,7 +359,7 @@ export const updateSpecificProp = (element, prop) => {
 export const updateElement = (element, prop, canvas) => {
   if (isEmpty(element) || isEmpty(prop)) return;
 
-  updateSpecificProp(element, prop, canvas);
+  updateSpecificProp(element, prop);
 
   const fabricProp = getFabricProp(element, prop);
 

@@ -2,7 +2,7 @@ import { mapGetters, mapMutations } from 'vuex';
 
 import Thumbnail from '@/components/Thumbnail/ThumbnailDigital';
 import HeaderContainer from '@/components/Thumbnail/HeaderContainer';
-import { GETTERS, MUTATES } from '@/store/modules/book/const';
+import { GETTERS } from '@/store/modules/book/const';
 import { GETTERS as APP_GETTERS } from '@/store/modules/app/const';
 import { scrollToElement } from '@/common/utils';
 import {

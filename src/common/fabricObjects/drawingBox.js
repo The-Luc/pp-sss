@@ -70,7 +70,7 @@ export const toggleStroke = (rect, isShow = false) => {
   rect.set({
     strokeWidth: 1,
     stroke: DEFAULT_TEXT.BORDER.STROKE,
-    strokeLineCap: DEFAULT_TEXT.BORDER.STROKE_LINE_CAP,
+    strokeLineType: DEFAULT_TEXT.BORDER.STROKE_LINE_TYPE,
     strokeDashArray: []
   });
   setTimeout(() => {

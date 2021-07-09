@@ -9,7 +9,10 @@ import {
   MUTATES as APP_MUTATES
 } from '@/store/modules/app/const';
 
-import { ACTIONS as PRINT_ACTIONS } from '@/store/modules/print/const';
+import {
+  ACTIONS as PRINT_ACTIONS,
+  GETTERS as PRINT_GETTERS
+} from '@/store/modules/print/const';
 import { themeOptions } from '@/mock/themes';
 import PpToolPopover from '@/components/ToolPopover';
 import PpSelect from '@/components/Selectors/Select';
@@ -29,7 +32,8 @@ import {
   getThemeOptSelectedById,
   getLayoutOptSelectedById,
   resetObjects,
-  activeCanvas
+  activeCanvas,
+  isEmpty
 } from '@/common/utils';
 import {
   usePopoverCreationTool,
@@ -101,7 +105,9 @@ export default {
   computed: {
     ...mapGetters({
       themes: THEME_GETTERS.GET_THEMES,
-      isPrompt: APP_GETTERS.IS_PROMPT
+      isPrompt: APP_GETTERS.IS_PROMPT,
+      totalBackground: PRINT_GETTERS.TOTAL_BACKGROUND,
+      printObject: PRINT_GETTERS.GET_OBJECTS
     }),
     isVisited() {
       return this.pageSelected?.isVisited;
@@ -296,6 +302,27 @@ export default {
      */
     setThemeLayoutForSheet() {
       if (this.layouts.length > 0 && this.tempLayoutIdSelected) {
+        if (
+          !this.isDigital &&
+          (this.totalBackground || !isEmpty(this.printObject))
+        ) {
+          this.onCancel();
+          this.toggleModal({
+            isOpenModal: true,
+            modalData: {
+              type: MODAL_TYPES.RESET_LAYOUT,
+              props: {
+                pageSelected: this.pageSelected,
+                sheetId: this.pageSelected?.id,
+                themeId: this.themeSelected?.id,
+                layout: this.layoutObjSelected,
+                layoutObjSelected: this.layoutObjSelected
+              }
+            }
+          });
+          return;
+        }
+
         if (
           this.layoutObjSelected.type === LAYOUT_TYPES.SINGLE_PAGE.value &&
           ![SHEET_TYPE.FRONT_COVER, SHEET_TYPE.BACK_COVER].includes(

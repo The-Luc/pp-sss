@@ -1,61 +1,16 @@
 <template>
-  <div
-    class="backgrounds-container"
-    :class="{
-      'empty-background-container': backgrounds.length === 0
-    }"
-  >
-    <PpToolPopover
-      title="Backgrounds"
-      @cancel="onClose"
-      @change="applyChosenBackground"
-    >
-      <template #action>
-        <div class="pp-backgrounds-action-container">
-          <TypeSelection
-            :items="displayBackgroundTypes"
-            :selected-val="selectedBackgroundType"
-            @change="onChangeBackgroundType"
-          />
-
-          <PageTypeSelection
-            :items="displayBackgroundPageType"
-            :disabled="isDisablePageTypeSelection"
-            :selected-val="selectedBackgroundPageType"
-            @change="onChangeBackgroundPageType"
-          />
-        </div>
-      </template>
-
-      <template #content>
-        <div class="background-item-container">
-          <div
-            v-show="backgrounds.length === 0"
-            class="empty-background-content"
-          >
-            <div class="empty-background-text">
-              <span>No Background</span>
-            </div>
-
-            <Item
-              v-for="(background, index) in noBackgroundLength"
-              :key="index"
-              is-empty
-            />
-          </div>
-
-          <Item
-            v-for="background in backgrounds"
-            :ref="`background${background.id}`"
-            :key="background.id"
-            :item="background"
-            :selected-val="selectedBackground"
-            @click="onSelectBackground"
-          />
-        </div>
-      </template>
-    </PpToolPopover>
-  </div>
+  <Backgrounds
+    :background-types="backgroundTypes"
+    :backgrounds="backgrounds"
+    :selected-type="selectedType"
+    :selected-page-type="selectedPageType"
+    :applied-background="appliedBackground"
+    :is-page-type-disabled="isHalfSheet"
+    @typeChange="onChangeType"
+    @pageTypeChange="onChangePageType"
+    @applyBackground="onApplyBackground"
+    @close="onClose"
+  />
 </template>
 
 <script src="./script.js" />

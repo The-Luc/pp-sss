@@ -4,7 +4,7 @@ import { GETTERS } from '@/store/modules/app/const';
 import { EDITION, TOOL_NAME } from '@/common/constants';
 
 import PrintThemes from './PrintThemes';
-import Layouts from './Layouts';
+import Layouts from './PrintEdition/Layouts';
 import PrintBackgrounds from './PrintEdition/Backgrounds';
 import Shapes from './Shapes';
 import ClipArt from './ClipArt';

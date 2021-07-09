@@ -1,17 +1,15 @@
 import { fabric } from 'fabric';
-import { cloneDeep, uniqueId } from 'lodash';
+import { cloneDeep, merge, uniqueId } from 'lodash';
 
 import { TextElement } from '@/common/models';
 import { applyShadowToObject } from './common';
 
 import {
-  toFabricTextProp,
-  toFabricTextBorderProp,
-  toFabricTextGroupProp,
   isEmpty,
   ptToPx,
   inToPx,
-  pxToIn
+  pxToIn,
+  getStrokeLineCap
 } from '@/common/utils';
 
 import {
@@ -20,44 +18,47 @@ import {
   DEFAULT_SPACING,
   DEFAULT_TEXT,
   TEXT_VERTICAL_ALIGN,
-  OBJECT_MIN_SIZE
+  OBJECT_MIN_SIZE,
+  FABRIC_OBJECT_TYPE
 } from '@/common/constants';
-import { getAdjustedObjectDimension } from './common';
+import {
+  getAdjustedObjectDimension,
+  toFabricTextProp,
+  toFabricTextBorderProp,
+  toFabricTextGroupProp
+} from './common';
+import { useDoubleStroke } from '@/plugins/fabric';
 
 /**
  * Handle creating a TextBox into canvas
  */
 export const createTextBox = (x, y, width, height, textProperties) => {
-  const newText = cloneDeep(TextElement);
-  let isHasTextId = !!textProperties?.id;
-  const id = isHasTextId ? textProperties?.id : uniqueId();
+  let newText = cloneDeep(TextElement);
+  const id = textProperties?.id || uniqueId();
+  merge(newText, {
+    text: DEFAULT_TEXT.TEXT,
+    coord: { ...newText.coord, x: pxToIn(x), y: pxToIn(y) },
+    ...textProperties,
+    id
+  });
 
   const dataObject = {
-    id,
+    id: newText.id,
     type: OBJECT_TYPE.TEXT,
-    newObject: {
-      ...(isHasTextId ? { ...textProperties } : { ...newText }),
-      id,
-      coord: {
-        x: isHasTextId ? textProperties.coord.x : x,
-        y: isHasTextId ? textProperties.coord.y : y,
-        rotation: isHasTextId
-          ? textProperties?.coord?.rotation
-          : newText.coord.rotation
-      }
-    }
+    newObject: { ...newText }
   };
 
   const textProp = toFabricTextProp(dataObject);
-  const textVal = dataObject?.newObject?.text || DEFAULT_TEXT.TEXT;
-  const text = new fabric.Textbox(textVal, {
+
+  const padding = textProp.padding || inToPx(DEFAULT_TEXT.PADDING);
+
+  const text = new fabric.Textbox(newText.text, {
     ...textProp,
     id: dataObject.id,
     left: 0,
     top: 0,
     width,
-    originX: 'left',
-    originY: 'top'
+    padding
   });
 
   const {
@@ -68,6 +69,9 @@ export const createTextBox = (x, y, width, height, textProperties) => {
   textVerticalAlignOnAdjust(text, adjustedHeight);
 
   const borderProp = toFabricTextBorderProp(dataObject);
+
+  const strokeLineCap = getStrokeLineCap(borderProp.strokeLineType);
+
   const rect = new fabric.Rect({
     ...borderProp,
     type: OBJECT_TYPE.RECT,
@@ -76,10 +80,11 @@ export const createTextBox = (x, y, width, height, textProperties) => {
     height: adjustedHeight,
     left: 0,
     top: 0,
-    originX: 'left',
-    originY: 'top',
+    strokeLineCap,
     selectable: false
   });
+
+  useDoubleStroke(rect);
 
   // reference to each other for better keep track
   text._rect = rect;
@@ -97,12 +102,6 @@ export const createTextBox = (x, y, width, height, textProperties) => {
   dataObject.newObject.size = {
     width: pxToIn(group.width),
     height: pxToIn(group.height)
-  };
-
-  dataObject.newObject.coord = {
-    ...dataObject.newObject.coord,
-    x: pxToIn(group.left),
-    y: pxToIn(group.top)
   };
 
   dataObject.newObject.minHeight = pxToIn(text.height);
@@ -286,12 +285,13 @@ const applyTextProperties = function(text, prop) {
   }
 
   const target = canvas.getActiveObject();
-  if (!isEmpty(prop['fontSize']) && target !== text) {
-    const textData = {
-      top: -text.height / 2,
-      left: -text.width / 2
-    };
-    text.set(textData);
+  if (!isEmpty(prop['fontSize'])) {
+    if (target.type !== FABRIC_OBJECT_TYPE.TEXT) {
+      updateTextBoxBaseOnNewTextSize(text);
+      updateObjectPosition(text, text.width, text.height);
+    } else {
+      target.fire('changed');
+    }
   }
 
   if (!isEmpty(prop['shadow'])) {
@@ -301,8 +301,6 @@ const applyTextProperties = function(text, prop) {
   if (!isEmpty(textProp['width']) || !isEmpty(textProp['height'])) {
     updateObjectPosition(text, textProp['width'], textProp['height']);
   }
-
-  updateTextBoxBaseOnNewTextSize(text);
 
   textVerticalAlignOnApplyProperty(text);
 
@@ -370,7 +368,7 @@ const applyTextRectProperties = function(rect, prop) {
   const keyRect = Object.keys(rectProp);
   if (
     !isEmpty(rect.group) &&
-    (keyRect.includes('strokeWidth') || keyRect.includes('strokeLineCap'))
+    (keyRect.includes('strokeWidth') || keyRect.includes('strokeLineType'))
   ) {
     const { strokeWidth } = rectProp;
     const strokeWidthVal = strokeWidth || rect.strokeWidth;
@@ -491,8 +489,7 @@ export const updateTextListeners = (
   textObject,
   rectObject,
   group,
-  cachedData,
-  callback
+  cachedData
 ) => {
   const canvas = group.canvas;
   const [rect, text] = group._objects;
@@ -506,24 +503,35 @@ export const updateTextListeners = (
     canvas.renderAll();
   };
 
-  const newProperties = {
-    angle: 0,
-    flipX: false,
-    flipY: false,
-    visible: true
+  const getNewData = obj => {
+    return Object.keys(obj).reduce((rs, key) => {
+      if (!key.startsWith('_') && typeof obj[key] !== 'function') {
+        rs[key] = obj[key];
+      }
+      return rs;
+    }, {});
   };
 
   const onDoneEditText = () => {
-    const { text: value } = textObject;
-    callback(value);
+    const newProperties = {
+      angle: 0,
+      flipX: false,
+      flipY: false,
+      visible: true
+    };
 
-    text.set({ ...textObject, ...newProperties });
+    textObject.group = null;
+    rectObject.group = null;
 
-    rect.set({
-      ...rectObject,
+    const newTextData = { ...getNewData(textObject), ...newProperties };
+    const newRectData = {
+      ...getNewData(rectObject),
       ...newProperties,
       strokeWidth: 0
-    });
+    };
+
+    text.set(newTextData);
+    rect.set(newRectData);
 
     group.addWithUpdate();
 

@@ -16,6 +16,7 @@ import ModalSelectPage from '@/views/CreateBook/PrintEdition/EditScreen/PageEdit
 import ModalBackgroundSelectPage from '@/containers/ToolPopoverManager/PrintEdition/Backgrounds/ModalSelectPage';
 import SelectThemeDigital from '@/views/CreateBook/DigitalEdition/EditScreen/ModalTheme';
 import AddDigitalFrame from '@/views/CreateBook/DigitalEdition/EditScreen/ModalLayout';
+import ModalResetLayout from '@/views/CreateBook/PrintEdition/EditScreen/PageEdition/ModalResetLayout';
 
 const {
   HELP,
@@ -27,7 +28,8 @@ const {
   SELECT_PAGE,
   BACKGROUND_SELECT_PAGE,
   SELECT_THEME_DIGITAL,
-  ADD_DIGITAL_FRAME
+  ADD_DIGITAL_FRAME,
+  RESET_LAYOUT
 } = MODAL_TYPES;
 
 const ModalList = {
@@ -40,7 +42,8 @@ const ModalList = {
   [SELECT_PAGE]: SELECT_PAGE,
   [BACKGROUND_SELECT_PAGE]: BACKGROUND_SELECT_PAGE,
   [SELECT_THEME_DIGITAL]: SELECT_THEME_DIGITAL,
-  [ADD_DIGITAL_FRAME]: ADD_DIGITAL_FRAME
+  [ADD_DIGITAL_FRAME]: ADD_DIGITAL_FRAME,
+  [RESET_LAYOUT]: RESET_LAYOUT
 };
 
 export default {
@@ -59,7 +62,8 @@ export default {
     [MODAL_TYPES.SELECT_PAGE]: ModalSelectPage,
     [MODAL_TYPES.BACKGROUND_SELECT_PAGE]: ModalBackgroundSelectPage,
     [MODAL_TYPES.SELECT_THEME_DIGITAL]: SelectThemeDigital,
-    [MODAL_TYPES.ADD_DIGITAL_FRAME]: AddDigitalFrame
+    [MODAL_TYPES.ADD_DIGITAL_FRAME]: AddDigitalFrame,
+    [MODAL_TYPES.RESET_LAYOUT]: ModalResetLayout
   },
   computed: {
     ...mapGetters({

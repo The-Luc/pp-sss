@@ -1,0 +1,18 @@
+.image-background-container {
+    .button-property {
+        .pp-btn {
+            height: 34px;
+            border-radius: 3px;
+        }
+        img {
+            width: 13px;
+            height: 13px;
+            margin-right: 6px;
+        }
+        span {
+            font-family: $font-500;
+            size: 11px;
+            font-weight: 500;
+        }
+    }
+}

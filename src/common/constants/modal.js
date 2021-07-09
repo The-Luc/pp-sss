@@ -8,5 +8,6 @@ export const MODAL_TYPES = {
   SELECT_PAGE: 'SelectPage',
   BACKGROUND_SELECT_PAGE: 'BackgroundSelectPage',
   SELECT_THEME_DIGITAL: 'SelectThemeDigital',
-  ADD_DIGITAL_FRAME: 'AddDigitalFrame'
+  ADD_DIGITAL_FRAME: 'AddDigitalFrame',
+  RESET_LAYOUT: 'ResetLayout'
 };

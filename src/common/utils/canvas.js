@@ -181,7 +181,7 @@ export const selectLatestObject = canvas => {
  * @param {Any} canvas - the canvas to check
  */
 export const deleteSelectedObjects = canvas => {
-  const activeObj = canvas.getActiveObjects();
+  const activeObj = canvas?.getActiveObjects();
   if (isEmpty(activeObj)) return;
   activeObj.forEach(object => canvas.remove(object));
   canvas.discardActiveObject().renderAll();

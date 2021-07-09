@@ -7,7 +7,7 @@
     solo
     :disabled="disabled"
     append-icon=""
-    :value="selectedVal"
+    :value="selectedValue"
     persistent-hint
     :menu-props="{
       maxHeight: 'auto',
@@ -20,7 +20,7 @@
           <v-list-item-title>
             <v-row no-gutters align="center">
               <span>
-                {{ `${selectedVal.name}: ${selectedVal.sub.name}` }}
+                {{ `${selectedValue.name}: ${selectedValue.sub.name}` }}
               </span>
             </v-row>
           </v-list-item-title>
@@ -31,7 +31,7 @@
     <template #item="{ item, attrs, on }">
       <v-list-item
         v-slot="{ active }"
-        :data-id="getDataIdByItem(item)"
+        :data-id="getDataIdByValue(item)"
         class="pp-select-multi--item"
         v-bind="attrs"
         v-on="on"
@@ -51,8 +51,9 @@
 
             <SelectSubLevel
               v-if="item.subItems.length > 0"
-              :items="getSubs(item)"
-              :selected-val="selectedSub"
+              :items="item.subItems"
+              :parent-value="item.value"
+              :selected-val="getSelectedSub(item)"
               @change="onChange"
             />
           </v-list-item-title>

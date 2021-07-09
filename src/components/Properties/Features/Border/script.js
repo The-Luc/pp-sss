@@ -1,6 +1,6 @@
 import Select from '@/components/Selectors/Select';
-import BorderStyle from '@/containers/Properties/Style';
-import BorderColor from '@/containers/Properties/Color';
+import BorderStyle from './Settings/Style';
+import BorderColor from './Settings/Color';
 import BorderThickness from './Settings/Thickness';
 import { getRectDashes } from '@/common/utils';
 import { EVENT_TYPE } from '@/common/constants/eventType';
@@ -24,18 +24,9 @@ export default {
   },
   data() {
     return {
-      isShowStyle: false,
       strokeWidth: 0,
       borderStyle: 'solid'
     };
-  },
-  watch: {
-    selectedBorder: {
-      deep: true,
-      handler(border) {
-        this.isShowStyle = border.value === 'line';
-      }
-    }
   },
   methods: {
     /**
@@ -84,7 +75,7 @@ export default {
       this.$root.$emit(EVENT_TYPE.CHANGE_TEXT_PROPERTIES, {
         border: {
           strokeDashArray,
-          strokeLineCap: value
+          strokeLineType: value
         }
       });
     }
