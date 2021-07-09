@@ -167,7 +167,7 @@ export default {
      *
      * @param {Object}  background  selected background
      */
-    onApplyChosenBackground(background) {
+    onApplyBackground(background) {
       const { pageType: selectedPageType } = background;
 
       const isSinglePageType =

@@ -8,7 +8,7 @@
     :is-page-type-disabled="isHalfSheet"
     @typeChange="onChangeType"
     @pageTypeChange="onChangePageType"
-    @applyBackground="onApplyChosenBackground"
+    @applyBackground="onApplyBackground"
     @close="onClose"
   />
 </template>
