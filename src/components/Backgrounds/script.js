@@ -38,7 +38,7 @@ export default {
       type: Object,
       default: () => ({})
     },
-    isHalfSheet: {
+    isPageTypeDisabled: {
       type: Boolean,
       default: false
     },
@@ -71,9 +71,6 @@ export default {
         this.backgrounds.length > 0 ? this.backgrounds[0] : { id: '' };
 
       return this.chosenBackground;
-    },
-    isPageTypeDisabled() {
-      return this.isHalfSheet;
     }
   },
   mounted() {

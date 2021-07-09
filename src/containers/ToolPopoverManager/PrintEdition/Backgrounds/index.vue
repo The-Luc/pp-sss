@@ -5,7 +5,7 @@
     :selected-type="selectedType"
     :selected-page-type="selectedPageType"
     :applied-background="appliedBackground"
-    :is-half-sheet="isHalfSheet"
+    :is-page-type-disabled="isHalfSheet"
     @typeChange="onChangeType"
     @pageTypeChange="onChangePageType"
     @applyBackground="onApplyChosenBackground"
