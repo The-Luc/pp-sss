@@ -147,6 +147,9 @@ export default {
         return;
       }
 
+      const toolName = this.selectedToolName === item?.name ? '' : item?.name;
+      this.$root.$emit('printSwitchTool', toolName);
+
       if (item.name === RIGHT_TOOLS.PROPERTIES.value) {
         this.elementPropertiesClick();
 
