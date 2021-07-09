@@ -37,7 +37,7 @@ export const RIGHT_TOOLS = {
     iconName: 'wysiwyg'
   }
 };
-export const DIGI_RIGHT_TOOLS = {
+export const DIGITAL_RIGHT_TOOLS = {
   FRAME_INFO: {
     name: 'Frame Info',
     value: 'frameInfo',

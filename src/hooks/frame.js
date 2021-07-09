@@ -6,7 +6,7 @@ import {
   MUTATES as DIGITAL_MUTATES
 } from '@/store/modules/digital/const';
 import { MUTATES } from '@/store/modules/app/const';
-import { DIGI_RIGHT_TOOLS } from '@/common/constants';
+import { DIGITAL_RIGHT_TOOLS } from '@/common/constants';
 
 /**
  * Handle toggle Frame Information
@@ -38,7 +38,7 @@ export const useFrame = () => {
 
     //open frame information panel
     if (!layout.isVisited) {
-      setPropertiesObjectType({ type: DIGI_RIGHT_TOOLS.FRAME_INFO.value });
+      setPropertiesObjectType({ type: DIGITAL_RIGHT_TOOLS.FRAME_INFO.value });
       setIsOpenProperties({ isOpen: true });
       setCurrentFrameVisited({ value: true });
     } else {

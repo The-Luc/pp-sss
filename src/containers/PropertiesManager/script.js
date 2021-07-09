@@ -1,7 +1,11 @@
 import { mapGetters } from 'vuex';
 
 import { GETTERS } from '@/store/modules/app/const';
-import { DIGI_RIGHT_TOOLS, OBJECT_TYPE, RIGHT_TOOLS } from '@/common/constants';
+import {
+  DIGITAL_RIGHT_TOOLS,
+  OBJECT_TYPE,
+  RIGHT_TOOLS
+} from '@/common/constants';
 
 // Object component
 import TextProperties from '@/containers/PropertiesManager/Text';
@@ -14,7 +18,7 @@ import FrameInfo from '@/containers/PropertiesManager/FrameInfo';
 
 const { TEXT, IMAGE, CLIP_ART, BACKGROUND, SHAPE } = OBJECT_TYPE;
 const PAGE_INFO = RIGHT_TOOLS.PAGE_INFO.value;
-const FRAME_INFO = DIGI_RIGHT_TOOLS.FRAME_INFO.value;
+const FRAME_INFO = DIGITAL_RIGHT_TOOLS.FRAME_INFO.value;
 
 const MenuList = {
   [TEXT]: TEXT,

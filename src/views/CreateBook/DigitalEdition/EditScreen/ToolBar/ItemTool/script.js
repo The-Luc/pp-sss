@@ -3,7 +3,7 @@ import { mapGetters } from 'vuex';
 import { GETTERS } from '@/store/modules/app/const';
 import ToolButton from '@/components/Buttons/ToolButton';
 import { useLayoutPrompt } from '@/hooks';
-import { DIGI_RIGHT_TOOLS, EDITION } from '@/common/constants';
+import { DIGITAL_RIGHT_TOOLS, EDITION } from '@/common/constants';
 
 export default {
   setup() {
@@ -35,8 +35,9 @@ export default {
         }
 
         const isFrameInfoSelected =
-          this.propertiesObjectType === DIGI_RIGHT_TOOLS.FRAME_INFO.value;
-        const isFrameInfoMenu = DIGI_RIGHT_TOOLS.FRAME_INFO.value === iconName;
+          this.propertiesObjectType === DIGITAL_RIGHT_TOOLS.FRAME_INFO.value;
+        const isFrameInfoMenu =
+          DIGITAL_RIGHT_TOOLS.FRAME_INFO.value === iconName;
         const isFrameInfoActive = isFrameInfoSelected && isFrameInfoMenu;
 
         if (isFrameInfoActive) {

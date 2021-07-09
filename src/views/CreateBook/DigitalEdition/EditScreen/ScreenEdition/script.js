@@ -1260,8 +1260,7 @@ export default {
      * Fire when click add frame button
      * @param {Object} event mouse event parameter when click element
      */
-    onAddFrame(event) {
-      console.log(event);
+    onAddFrame() {
       this.openPrompt();
     },
 

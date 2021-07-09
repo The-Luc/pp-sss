@@ -27,7 +27,7 @@ export default {
     /**
      * Fire when delay is changed
      */
-    onChangeDelay(val) {
+    onChangeDelay() {
       // handle here
     }
   }

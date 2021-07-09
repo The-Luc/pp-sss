@@ -3,7 +3,11 @@ import ToolButton from '@/components/Buttons/ToolButton';
 import ItemTool from './ItemTool';
 import { GETTERS, MUTATES } from '@/store/modules/app/const';
 import { GETTERS as BOOK_GETTERS } from '@/store/modules/book/const';
-import { OBJECT_TYPE, DIGI_RIGHT_TOOLS, TOOL_NAME } from '@/common/constants';
+import {
+  OBJECT_TYPE,
+  DIGITAL_RIGHT_TOOLS,
+  TOOL_NAME
+} from '@/common/constants';
 import { EVENT_TYPE } from '@/common/constants/eventType';
 import { isEmpty } from '@/common/utils';
 
@@ -118,7 +122,7 @@ export default {
           {
             iconName: 'list_alt',
             title: 'Frame Info',
-            name: DIGI_RIGHT_TOOLS.FRAME_INFO.value
+            name: DIGITAL_RIGHT_TOOLS.FRAME_INFO.value
           },
           {
             iconName: 'wysiwyg',
@@ -169,8 +173,8 @@ export default {
         case 'text':
           console.log(1);
           break;
-        case DIGI_RIGHT_TOOLS.FRAME_INFO.value:
-          this.NoneElementPropertiesClick(DIGI_RIGHT_TOOLS.FRAME_INFO.value);
+        case DIGITAL_RIGHT_TOOLS.FRAME_INFO.value:
+          this.NoneElementPropertiesClick(DIGITAL_RIGHT_TOOLS.FRAME_INFO.value);
           break;
         default:
           break;
