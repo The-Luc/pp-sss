@@ -150,6 +150,10 @@ export default {
      * @param  {Object} item Receive item information
      */
     onClickRightTool(item) {
+      if (this.selectedToolName === item?.name) return;
+
+      this.$root.$emit(EVENT_TYPE.SWITCH_TOOL, item?.name);
+
       switch (item.name) {
         case 'properties':
           if (!this.selectedObjectType) {
@@ -185,7 +189,7 @@ export default {
         return;
       }
 
-      this.$root.$emit(EVENT_TYPE.SWITCHTOOL, data.name);
+      this.$root.$emit(EVENT_TYPE.SWITCH_TOOL, data.name);
 
       this.setToolNameSelected({
         name: data.name

@@ -280,6 +280,5 @@ export const mutations = {
   },
   [BOOK._MUTATES.SET_SECTION_ID](state, { sectionId }) {
     state.sectionId = sectionId;
-  },
-  [BOOK._MUTATES.SAVE_PRINT_CANVAS]() {}
+  }
 };

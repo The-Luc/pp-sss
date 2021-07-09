@@ -1,8 +1,7 @@
 import SelectSubLevel from './SelectSubLevel';
 
-import { cloneDeep } from 'lodash';
-
 import { ICON_LOCAL } from '@/common/constants';
+import { isEmpty } from '@/common/utils';
 
 export default {
   components: {
@@ -27,7 +26,7 @@ export default {
     },
     selectedVal: {
       type: Object,
-      default: () => ({ name: '', id: '' })
+      default: () => ({ value: '', sub: '' })
     },
     disabled: {
       type: Boolean,
@@ -39,14 +38,20 @@ export default {
     }
   },
   computed: {
-    selectedSub() {
-      const itemSendToSub = cloneDeep(this.selectedVal);
+    selectedValue() {
+      const item = this.items.find(
+        ({ value }) => value === this.selectedVal.value
+      );
 
-      delete itemSendToSub.sub;
+      if (isEmpty(item)) return { value: '', sub: '' };
+
+      const sub = item.subItems.find(
+        ({ value }) => value === this.selectedVal.sub
+      );
 
       return {
-        ...this.selectedVal.sub,
-        parentValue: itemSendToSub
+        ...item,
+        sub: isEmpty(sub) ? { name: '' } : sub
       };
     }
   },
@@ -57,29 +62,13 @@ export default {
      * @param  {Object} option option selected
      */
     onChange(data) {
-      const elementDataId = this.getDataIdByItem(data.parent);
+      const elementDataId = this.getDataIdByValue({ value: data.parent });
 
       const useElement = document.querySelector(`[data-id="${elementDataId}"]`);
 
       useElement.click();
 
-      this.$emit('change', { item: { ...data.parent }, sub: data.sub });
-    },
-    /**
-     * Get sub items for sub menu
-     *
-     * @param   {Object}  item  current item
-     * @returns {Object}        sub item
-     */
-    getSubs(item) {
-      const itemSendToSub = cloneDeep(item);
-
-      delete itemSendToSub.subItems;
-
-      return {
-        parentValue: itemSendToSub,
-        items: item.subItems
-      };
+      this.$emit('change', { value: data.parent, sub: data.sub });
     },
     /**
      * Event fire when click on item, for stopping close the selector
@@ -95,8 +84,11 @@ export default {
      * @param   {Object}  item  current item
      * @returns {String}        the data id
      */
-    getDataIdByItem(item) {
-      return `select-multi-${item.value}`;
+    getDataIdByValue({ value }) {
+      return `select-multi-${value}`;
+    },
+    getSelectedSub(item) {
+      return item.value === this.selectedVal.value ? this.selectedVal.sub : '';
     }
   }
 };

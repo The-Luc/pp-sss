@@ -690,7 +690,8 @@ export default {
               height: pxToIn(height)
             },
             minHeight: pxToIn(minHeight),
-            minWidth: pxToIn(minWidth)
+            minWidth: pxToIn(minWidth),
+            text: target.text
           };
 
           this.setObjectProp({ prop });
@@ -919,6 +920,7 @@ export default {
         id,
         newObject: {
           ...ImageElement,
+          id,
           size: {
             width: pxToIn(width),
             height: pxToIn(height)

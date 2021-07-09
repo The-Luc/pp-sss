@@ -21,16 +21,7 @@ export default {
       clipArtList: [],
       selectedClipArtId: [],
       displayClipArtTypes: [],
-      chosenClipArtType: {
-        id: 0,
-        name: 'Category',
-        value: 0,
-        sub: {
-          id: 0,
-          name: 'Aducation',
-          value: 0
-        }
-      }
+      chosenClipArtType: { value: '', sub: '' }
     };
   },
   computed: {
@@ -78,11 +69,13 @@ export default {
      * @param {Object} data - Clip art type and category selected
      */
     onChangeClipArtType(data) {
-      this.category = data.sub.id;
+      this.category = data.sub.value;
+
       this.chosenClipArtType = {
-        ...data.item,
-        sub: data.sub
+        value: data.value,
+        sub: data.sub.value
       };
+
       this.selectedClipArtId = [];
     },
     /**
@@ -112,5 +105,12 @@ export default {
     this.clipArtList = await loadClipArts();
     const clipArtTypes = await this.clipArtTypes();
     this.displayClipArtTypes = clipArtTypes.filter(b => b.subItems.length > 0);
+
+    if (this.displayClipArtTypes.length === 0) return;
+
+    this.chosenClipArtType = {
+      value: this.displayClipArtTypes[0].id,
+      sub: this.displayClipArtTypes[0].subItems[0].id
+    };
   }
 };

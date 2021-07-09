@@ -2,6 +2,7 @@ import { fabric } from 'fabric';
 
 import { inToPx, toFabricImageProp } from '../utils';
 import { getAdjustedObjectDimension } from './common';
+import { DEFAULT_IMAGE } from '../constants';
 
 export const createImage = props => {
   return new Promise(resolve => {
@@ -10,8 +11,8 @@ export const createImage = props => {
       size: { width, height }
     } = props;
     const { left, top, id, imageUrl } = fabricProp;
-    new fabric.Image.fromURL(
-      imageUrl,
+    fabric.Image.fromURL(
+      imageUrl || DEFAULT_IMAGE.IMAGE_URL,
       image => {
         const {
           width: adjustedWidth,

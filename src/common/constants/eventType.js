@@ -11,7 +11,7 @@ export const EVENT_TYPE = {
   ADD_CLIPARTS: 'addClipArts',
   CHANGE_CLIPART_PROPERTIES: 'changeClipArtProperties',
   CHANGE_OBJECT_IDS_ORDER: 'changeObjectIdsOrder',
-  SWITCHTOOL: 'switchTool'
+  SWITCH_TOOL: 'switchTool'
 };
 
 export const CANVAS_EVENT_TYPE = {

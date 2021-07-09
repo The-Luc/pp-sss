@@ -222,7 +222,7 @@ export default {
     updateDigitalEventListeners(isOn = true) {
       const elementEvents = [
         {
-          name: EVENT_TYPE.SWITCHTOOL,
+          name: EVENT_TYPE.SWITCH_TOOL,
           handler: this.onSwitchTool
         },
         {
@@ -572,7 +572,8 @@ export default {
           height: pxToIn(height)
         },
         minHeight: pxToIn(minHeight),
-        minWidth: pxToIn(minWidth)
+        minWidth: pxToIn(minWidth),
+        text: target.text
       };
 
       this.setObjectProp({ prop });
@@ -680,17 +681,7 @@ export default {
 
       group.addWithUpdate();
 
-      updateTextListeners(
-        textForEditing,
-        rectForEditing,
-        group,
-        cachedData,
-        text => {
-          this.changeTextProperties({
-            text
-          });
-        }
-      );
+      updateTextListeners(textForEditing, rectForEditing, group, cachedData);
 
       canvas.add(rectForEditing);
       canvas.add(textForEditing);

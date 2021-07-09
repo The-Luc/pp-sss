@@ -56,7 +56,8 @@ export default {
       // when enter some number (ex: 14), zoom * 100 will become 14.000000002
       return getSelectedOption(
         selectedOption || Math.floor(zoom * 100, 0),
-        '%'
+        '%',
+        ''
       );
     }
   },
