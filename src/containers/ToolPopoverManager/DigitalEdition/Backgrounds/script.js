@@ -3,12 +3,10 @@ import Backgrounds from '@/components/Backgrounds';
 import { mapGetters, mapMutations } from 'vuex';
 
 import { MUTATES as APP_MUTATES } from '@/store/modules/app/const';
-import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
+import { GETTERS as DIGITAL_GETTERS } from '@/store/modules/digital/const';
 
 import {
-  MODAL_TYPES,
   BACKGROUND_TYPE,
-  BACKGROUND_PAGE_TYPE,
   BACKGROUND_TYPE_NAME,
   STATUS
 } from '@/common/constants';
@@ -19,13 +17,7 @@ import themeService from '@/api/themes';
 import { usePopoverCreationTool } from '@/hooks';
 
 import { cloneDeep } from 'lodash';
-import {
-  isEmpty,
-  isHalfSheet as isSheetHalfSheet,
-  getBackgroundType,
-  getBackgroundPageType,
-  isOk
-} from '@/common/utils';
+import { isEmpty, getBackgroundType, isOk } from '@/common/utils';
 
 export default {
   components: {
@@ -36,8 +28,7 @@ export default {
       backgroundTypes: {},
       backgrounds: [],
       noBackgroundLength: 4,
-      selectedType: { sub: {} },
-      selectedPageType: {}
+      selectedType: { sub: {} }
     };
   },
   setup() {
@@ -47,19 +38,15 @@ export default {
   },
   computed: {
     ...mapGetters({
-      currentSheet: PRINT_GETTERS.CURRENT_SHEET,
-      currentThemeId: PRINT_GETTERS.DEFAULT_THEME_ID,
-      userSelectedBackground: PRINT_GETTERS.BACKGROUNDS_NO_LAYOUT
+      currentThemeId: DIGITAL_GETTERS.DEFAULT_THEME_ID,
+      userSelectedBackground: DIGITAL_GETTERS.BACKGROUNDS_NO_LAYOUT
     }),
-    isHalfSheet() {
-      return isSheetHalfSheet(this.currentSheet);
-    },
     appliedBackground() {
       return isEmpty(this.userSelectedBackground)
         ? {}
         : {
-            ...this.userSelectedBackground[0],
-            id: this.userSelectedBackground[0].backgroundId
+            ...this.userSelectedBackground,
+            id: this.userSelectedBackground.backgroundId
           };
     }
   },
@@ -82,11 +69,6 @@ export default {
         this.currentThemeId
       );
 
-      this.selectedPageType = getBackgroundPageType(
-        this.appliedBackground,
-        this.isHalfSheet
-      );
-
       this.getBackgroundData();
     },
     /**
@@ -94,8 +76,8 @@ export default {
      */
     async getBackgroundTypeData() {
       const [categories, themes] = await Promise.all([
-        backgroundService.getPrintCategories(),
-        themeService.getPrintThemes()
+        backgroundService.getDigitalCategories(),
+        themeService.getDigitalThemes()
       ]);
 
       if (categories.status !== STATUS.OK || themes.status !== STATUS.OK) {
@@ -125,10 +107,9 @@ export default {
      * Get background data from API
      */
     async getBackgroundData() {
-      const backgrounds = await backgroundService.getPrintBackgrounds(
+      const backgrounds = await backgroundService.getDigitalBackgrounds(
         this.selectedType.value,
-        this.selectedType.sub,
-        this.selectedPageType.value
+        this.selectedType.sub
       );
 
       this.backgrounds = isOk(backgrounds) ? backgrounds.data : [];
@@ -144,16 +125,6 @@ export default {
       this.getBackgroundData();
     },
     /**
-     * Event fire when choose background page type
-     *
-     * @param {Object}  data  data of chosen background page type
-     */
-    onChangePageType(data) {
-      this.selectedPageType = data;
-
-      this.getBackgroundData();
-    },
-    /**
      * Trigger hooks to set tool name is empty and then close popover when click Cancel button
      */
     onClose() {
@@ -165,33 +136,7 @@ export default {
      * @param {Object}  background  selected background
      */
     onApplyBackground(background) {
-      const { pageType: selectedPageType } = background;
-
-      const isSinglePageType =
-        selectedPageType === BACKGROUND_PAGE_TYPE.SINGLE_PAGE.id;
-
-      if (!this.isHalfSheet && isSinglePageType) {
-        this.toggleModal({
-          isOpenModal: true,
-          modalData: {
-            type: MODAL_TYPES.BACKGROUND_SELECT_PAGE,
-            props: {
-              numberPageLeft: this.currentSheet.pageLeftName,
-              numberPageRight: this.currentSheet.pageRightName,
-              background: {
-                ...cloneDeep(background),
-                opacity: 1
-              }
-            }
-          }
-        });
-
-        this.onClose();
-
-        return;
-      }
-
-      this.$root.$emit('printAddBackground', {
+      this.$root.$emit('digitalAddBackground', {
         background: {
           ...cloneDeep(background),
           opacity: 1

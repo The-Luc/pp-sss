@@ -7,7 +7,8 @@ export const TOOL_NAME = {
   CLIP_ART: 'ClipArt',
   IMAGE_BOX: 'ImageBox',
   TEXT: 'Text',
-  BACKGROUNDS: 'Backgrounds',
+  PRINT_BACKGROUNDS: 'PrintBackgrounds',
+  DIGITAL_BACKGROUNDS: 'DigitalBackgrounds',
   SHAPES: 'Shapes',
   ACTIONS: 'Actions'
 };

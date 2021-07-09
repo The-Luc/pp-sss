@@ -1,6 +1,6 @@
 import { DEFAULT_SHAPE } from '@/common/constants/defaultProperty';
 
-import { addPrintSvgs } from '../common';
+import { addPrintSvgs } from './common';
 
 /**
  * Adding shapes to canvas

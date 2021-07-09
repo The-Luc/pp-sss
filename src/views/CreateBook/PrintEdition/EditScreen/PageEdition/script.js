@@ -87,7 +87,7 @@ import {
   PASTE,
   THUMBNAIL_IMAGE_QUALITY
 } from '@/common/constants/config';
-import { createImage } from '@/common/fabricObjects/image';
+import { createImage } from '@/common/fabricObjects';
 import printService from '@/api/print';
 
 export default {

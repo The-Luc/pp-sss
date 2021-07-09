@@ -22,11 +22,27 @@ export const loadDigitalThemes = () =>
 
 const themeService = {
   /**
-   * Get background categories
+   * Get background themes for print edition
    *
-   * @returns {Array}  query result
+   * @returns {Object}  query result
    */
-  getThemes: () => {
+  getPrintThemes: () => {
+    return new Promise(resolve => {
+      const data = themeOptions;
+
+      const result = isEmpty(data)
+        ? getErrorWithMessages([])
+        : getSuccessWithData(data);
+
+      resolve(result);
+    });
+  },
+  /**
+   * Get background themes for digital edition
+   *
+   * @returns {Object}  query result
+   */
+  getDigitalThemes: () => {
     return new Promise(resolve => {
       const data = themeOptions;
 
