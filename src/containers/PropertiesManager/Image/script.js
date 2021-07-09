@@ -58,21 +58,21 @@ export default {
      * @param {String} actionName action name
      */
     changeFlip(actionName) {
-      console.log('changeFlip');
+      console.log(('changeFlip ', actionName));
     },
     /**
      * Handle update size, position or rotate for Image
      * @param {Object} object object containing the value of update size, position or rotate
      */
     onChange(object) {
-      console.log('onChange');
+      console.log('onChange ', object);
     },
     /**
      * Handle constrain proportions for Image
      * @param {Boolean} val
      */
     onChangeConstrain(val) {
-      console.log('onChangeConstrain');
+      console.log('onChangeConstrain ', val);
     },
     /**
      * Handle click crop image for Image

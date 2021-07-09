@@ -1,11 +1,10 @@
-import { mapActions, mapGetters, mapMutations } from 'vuex';
+import { mapGetters, mapMutations } from 'vuex';
 
 import { MUTATES } from '@/store/modules/app/const';
 import { MUTATES as DIGITAL_MUTATES } from '@/store/modules/digital/const';
 import {
   GETTERS as THEME_GETTERS,
-  MUTATES as THEME_MUTATES,
-  ACTIONS as THEME_ACTIONS
+  MUTATES as THEME_MUTATES
 } from '@/store/modules/theme/const';
 import Modal from '@/containers/Modal';
 import PpButton from '@/components/Buttons/Button';
