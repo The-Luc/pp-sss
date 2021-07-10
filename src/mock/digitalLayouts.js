@@ -1,4 +1,4 @@
-import { cloneDeep, uniqueId } from 'lodash';
+import { uniqueId } from 'lodash';
 
 import { LAYOUT_TYPES, BACKGROUND_PAGE_TYPE } from '@/common/constants';
 import {
@@ -242,7 +242,7 @@ export const packageLayouts = [
     id: 1,
     name: '3D',
     type: LAYOUT_TYPES.COVER.value,
-    frames: cloneDeep([...frames]),
+    frames: [...frames],
     isFavorites: false,
     previewImageUrl: LAYOUT_THUMB_01,
     themeId: 1
@@ -251,7 +251,7 @@ export const packageLayouts = [
     id: 2,
     name: 'Three Frames',
     type: LAYOUT_TYPES.COLLAGE.value,
-    frames: cloneDeep([...frames2]),
+    frames: [...frames2],
     isFavorites: false,
     previewImageUrl: LAYOUT_THUMB_02,
     themeId: 1
@@ -260,7 +260,7 @@ export const packageLayouts = [
     id: 3,
     name: 'Four Frames',
     type: LAYOUT_TYPES.COLLAGE.value,
-    frames: cloneDeep([...frames2, frames[0]]),
+    frames: [...frames2, frames[0]],
     isFavorites: false,
     previewImageUrl: LAYOUT_THUMB_03,
     themeId: 1
@@ -269,7 +269,7 @@ export const packageLayouts = [
     id: 4,
     name: 'Three Frames + A Supp',
     type: LAYOUT_TYPES.COLLAGE.value,
-    frames: cloneDeep([...frames2, supplementalFrames[0]]),
+    frames: [...frames2, supplementalFrames[0]],
     isFavorites: false,
     previewImageUrl: LAYOUT_THUMB_04,
     themeId: 1
@@ -278,7 +278,7 @@ export const packageLayouts = [
     id: 5,
     name: 'Two Frames + Two Supp',
     type: LAYOUT_TYPES.COLLAGE.value,
-    frames: cloneDeep([...frames, ...supplementalFrames]),
+    frames: [...frames, ...supplementalFrames],
     isFavorites: false,
     previewImageUrl: LAYOUT_THUMB_05,
     themeId: 1
@@ -287,7 +287,7 @@ export const packageLayouts = [
     id: 6,
     name: 'Confetti',
     type: LAYOUT_TYPES.ADMIN_STAFF.value,
-    frames: cloneDeep([...frames]),
+    frames: [...frames],
     isFavorites: false,
     previewImageUrl: LAYOUT_THUMB_06,
     themeId: 4
@@ -296,7 +296,7 @@ export const packageLayouts = [
     id: 7,
     name: 'Glitch',
     type: LAYOUT_TYPES.ADMIN_STAFF.value,
-    frames: cloneDeep([...frames]),
+    frames: [...frames],
     isFavorites: false,
     previewImageUrl: LAYOUT_THUMB_07,
     themeId: 5
@@ -305,7 +305,7 @@ export const packageLayouts = [
     id: 8,
     name: 'Glitch',
     type: LAYOUT_TYPES.COLLAGE.value,
-    frames: cloneDeep([...frames]),
+    frames: [...frames],
     isFavorites: false,
     previewImageUrl: LAYOUT_THUMB_08,
     themeId: 1
@@ -314,7 +314,7 @@ export const packageLayouts = [
     id: 9,
     name: '3D',
     type: LAYOUT_TYPES.COLLAGE.value,
-    frames: cloneDeep([...frames]),
+    frames: [...frames],
     isFavorites: false,
     previewImageUrl: LAYOUT_THUMB_09,
     themeId: 1
@@ -323,7 +323,7 @@ export const packageLayouts = [
     id: 10,
     name: 'Nature',
     type: LAYOUT_TYPES.ADMIN_STAFF.value,
-    frames: cloneDeep([...frames]),
+    frames: [...frames],
     isFavorites: false,
     previewImageUrl: LAYOUT_THUMB_10,
     themeId: 6
@@ -332,7 +332,7 @@ export const packageLayouts = [
     id: 11,
     name: 'Pixel',
     type: LAYOUT_TYPES.CLUBS_GROUPS_TEAMS.value,
-    frames: cloneDeep([...frames]),
+    frames: [...frames],
     isFavorites: false,
     previewImageUrl: LAYOUT_THUMB_11,
     themeId: 7
@@ -341,7 +341,7 @@ export const packageLayouts = [
     id: 12,
     name: 'Scribble',
     type: LAYOUT_TYPES.SINGLE_PAGE.value,
-    frames: cloneDeep([...frames]),
+    frames: [...frames],
     isFavorites: false,
     previewImageUrl: LAYOUT_THUMB_12,
     themeId: 1
@@ -350,7 +350,7 @@ export const packageLayouts = [
     id: 13,
     name: 'Confetti',
     type: LAYOUT_TYPES.GRADUATION.value,
-    frames: cloneDeep([...frames]),
+    frames: [...frames],
     isFavorites: false,
     previewImageUrl: LAYOUT_THUMB_13,
     themeId: 1
@@ -359,7 +359,7 @@ export const packageLayouts = [
     id: 14,
     name: 'Confetti',
     type: LAYOUT_TYPES.COVER.value,
-    frames: cloneDeep([...frames]),
+    frames: [...frames],
     isFavorites: false,
     previewImageUrl: LAYOUT_THUMB_14,
     themeId: 1
@@ -368,7 +368,7 @@ export const packageLayouts = [
     id: 15,
     name: 'Confetti',
     type: LAYOUT_TYPES.GRADUATION.value,
-    frames: cloneDeep([...frames]),
+    frames: [...frames],
     isFavorites: false,
     previewImageUrl: LAYOUT_THUMB_15,
     themeId: 1
@@ -377,7 +377,7 @@ export const packageLayouts = [
     id: 16,
     name: 'Confetti',
     type: LAYOUT_TYPES.ADMIN_STAFF.value,
-    frames: cloneDeep([...frames]),
+    frames: [...frames],
     isFavorites: false,
     previewImageUrl: LAYOUT_THUMB_16,
     themeId: 1
@@ -386,7 +386,7 @@ export const packageLayouts = [
     id: 17,
     name: 'Confetti',
     type: LAYOUT_TYPES.GRADUATION.value,
-    frames: cloneDeep([...frames]),
+    frames: [...frames],
     isFavorites: false,
     previewImageUrl: LAYOUT_THUMB_17,
     themeId: 1
@@ -395,7 +395,7 @@ export const packageLayouts = [
     id: 18,
     name: 'Confetti',
     type: LAYOUT_TYPES.ADMIN_STAFF.value,
-    frames: cloneDeep([...frames]),
+    frames: [...frames],
     isFavorites: false,
     previewImageUrl: LAYOUT_THUMB_18,
     themeId: 1
@@ -404,7 +404,7 @@ export const packageLayouts = [
     id: 19,
     name: 'Confetti',
     type: LAYOUT_TYPES.GRADUATION.value,
-    frames: cloneDeep([...frames]),
+    frames: [...frames],
     isFavorites: false,
     previewImageUrl: LAYOUT_THUMB_19,
     themeId: 1
@@ -413,7 +413,7 @@ export const packageLayouts = [
     id: 20,
     name: 'Confetti',
     type: LAYOUT_TYPES.GRADUATION.value,
-    frames: cloneDeep([...frames]),
+    frames: [...frames],
     isFavorites: false,
     previewImageUrl: LAYOUT_THUMB_20,
     themeId: 1
@@ -422,7 +422,7 @@ export const packageLayouts = [
     id: 21,
     name: 'Confetti',
     type: LAYOUT_TYPES.COVER.value,
-    frames: cloneDeep([...frames]),
+    frames: [...frames],
     isFavorites: false,
     previewImageUrl: LAYOUT_THUMB_21,
     themeId: 1
