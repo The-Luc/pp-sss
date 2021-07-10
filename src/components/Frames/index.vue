@@ -1,24 +1,21 @@
 <template>
-  <div class="digital-frame">
+  <div class="frames-container">
     <div class="row">
       <div
         v-for="({ id, frame }, index) in frameData"
         :key="id"
-        class="container-digital-frame"
+        class="frame-container"
         @click="onFrameClick(id)"
       >
-        <div
-          class="item-digital-frame"
-          :class="{ active: id === activeFrameId }"
-        >
+        <div class="frame-item" :class="{ active: id === activeFrameId }">
           <img
             v-if="frame.previewImageUrl"
             :src="frame.previewImageUrl"
             alt="frame thumbnail"
-            class="digital-frame-image"
+            class="frame-image"
           />
         </div>
-        <div class="name-frame">Frame {{ index + 1 }}</div>
+        <div class="frame-name">Frame {{ index + 1 }}</div>
       </div>
       <EmptyFrame @click="addFrame" />
     </div>

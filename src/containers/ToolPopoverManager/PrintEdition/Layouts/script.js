@@ -1,4 +1,4 @@
-import { mapGetters, mapMutations, mapActions } from 'vuex';
+import { mapGetters, mapMutations } from 'vuex';
 
 import {
   GETTERS as THEME_GETTERS,
@@ -12,10 +12,7 @@ import {
   MUTATES as APP_MUTATES
 } from '@/store/modules/app/const';
 
-import {
-  ACTIONS as PRINT_ACTIONS,
-  GETTERS as PRINT_GETTERS
-} from '@/store/modules/print/const';
+import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 import { themeOptions } from '@/mock/themes';
 import PpToolPopover from '@/components/ToolPopover';
 import PpSelect from '@/components/Selectors/Select';
@@ -35,6 +32,7 @@ import {
   getThemeOptSelectedById,
   getLayoutOptSelectedById,
   resetObjects,
+  activeCanvas,
   isEmpty
 } from '@/common/utils';
 import {
@@ -44,7 +42,7 @@ import {
   useGetLayouts
 } from '@/hooks';
 
-import { loadLayouts } from '@/api/layouts';
+import { loadLayouts, loadSupplementalLayouts } from '@/api/layouts';
 import { loadDigitalLayouts } from '@/api/layouts';
 import { cloneDeep } from 'lodash';
 
@@ -90,6 +88,9 @@ export default {
     edition: {
       type: String,
       default: ''
+    },
+    initialData: {
+      type: Object
     }
   },
   data() {
@@ -103,8 +104,7 @@ export default {
       layoutEmptyLength: 4,
       layoutObjSelected: {},
       textDisplay: null,
-      isDigital: false,
-      activeCanvas: null
+      isDigital: false
     };
   },
   computed: {
@@ -148,8 +148,16 @@ export default {
     layouts() {
       this.setLayoutActive();
     },
-    triggerAppyLayout() {
-      this.applyLayout();
+    initialData: {
+      deep: true,
+      handler(newVal, oldVal) {
+        if (newVal?.disabled !== oldVal?.disabled) {
+          this.initData();
+        }
+      },
+      triggerAppyLayout() {
+        this.applyLayout();
+      }
     }
   },
   mounted() {
@@ -175,6 +183,10 @@ export default {
      * @param  {Number} pageSelected Id of sheet selected
      */
     setLayoutSelected(pageSelected) {
+      if (this.initialData?.layoutSelected) {
+        this.layoutSelected = this.initialData.layoutSelected;
+        return;
+      }
       const sheetType = pageSelected.type;
       switch (sheetType) {
         case SHEET_TYPE.COVER:
@@ -220,12 +232,13 @@ export default {
      * @param  {Number} pageSelected Id of sheet selected
      */
     setDisabledLayout(pageSelected) {
-      const isDisabled = [
-        SHEET_TYPE.COVER,
-        SHEET_TYPE.FRONT_COVER,
-        SHEET_TYPE.BACK_COVER
-      ].includes(pageSelected.type);
-      this.disabled = isDisabled;
+      this.disabled =
+        this.initialData?.disabled ??
+        [
+          SHEET_TYPE.COVER,
+          SHEET_TYPE.FRONT_COVER,
+          SHEET_TYPE.BACK_COVER
+        ].includes(pageSelected.type);
     },
     /**
      * Set default selected for theme base on id of sheet. Use default theme when the sheet not have private theme
@@ -288,6 +301,7 @@ export default {
      */
     onCancel() {
       this.setToolNameSelected('');
+      this.$emit('close');
     },
     /**
      * Trigger mutation to set theme and layout for sheet after that close popover when click Select button
@@ -363,7 +377,7 @@ export default {
         layout: cloneDeep(this.layoutObjSelected)
       });
 
-      resetObjects(this.activeCanvas);
+      resetObjects(activeCanvas);
 
       // draw layout on canvas
       this.drawLayout(this.sheetLayout, this.edition);
@@ -405,20 +419,22 @@ export default {
   async created() {
     this.isDigital = this.edition === EDITION.DIGITAL;
 
-    this.activeCanvas = this.isDigital
-      ? window.digitalCanvas
-      : window.printCanvas;
-
     this.textDisplay = this.updateTextDisplay();
 
-    if (this.listLayouts().length !== 0) {
-      if (this.isDigital) {
-        const layouts = await loadDigitalLayouts();
-        this.setDigitalLayouts({ layouts });
-      } else {
-        const layouts = await loadLayouts();
-        this.setPrintLayouts({ layouts });
-      }
+    let layouts = [];
+
+    if (!this.isDigital) {
+      layouts = await loadLayouts();
+      this.setPrintLayouts({ layouts });
+      return;
     }
+
+    if (this.initialData?.isSupplemental) {
+      layouts = await loadSupplementalLayouts();
+    } else {
+      layouts = await loadDigitalLayouts();
+    }
+
+    this.setDigitalLayouts({ layouts });
   }
 };

@@ -3,13 +3,14 @@ import ToolButton from '@/components/Buttons/ToolButton';
 import ItemTool from './ItemTool';
 import { GETTERS, MUTATES } from '@/store/modules/app/const';
 import { GETTERS as BOOK_GETTERS } from '@/store/modules/book/const';
+import { GETTERS as DIGITAL_GETTERS } from '@/store/modules/digital/const';
 import {
   OBJECT_TYPE,
-  DIGITAL_RIGHT_TOOLS,
-  TOOL_NAME
+  TOOL_NAME,
+  EVENT_TYPE,
+  DIGITAL_RIGHT_TOOLS
 } from '@/common/constants';
-import { EVENT_TYPE } from '@/common/constants/eventType';
-import { isEmpty } from '@/common/utils';
+import { isEmpty, getRightToolItems } from '@/common/utils';
 
 export default {
   props: {
@@ -118,28 +119,18 @@ export default {
             name: 'animations'
           }
         ],
-        [
-          {
-            iconName: 'list_alt',
-            title: 'Frame Info',
-            name: DIGITAL_RIGHT_TOOLS.FRAME_INFO.value
-          },
-          {
-            iconName: 'wysiwyg',
-            title: 'Properties',
-            name: 'properties'
-          }
-        ]
+        getRightToolItems(DIGITAL_RIGHT_TOOLS)
       ]
     };
   },
   computed: {
     ...mapGetters({
       selectedObjectType: GETTERS.SELECTED_OBJECT_TYPE,
-      propertiesObjectType: GETTERS.PROPERTIES_OBJECT_TYPE,
       isOpenMenuProperties: GETTERS.IS_OPEN_MENU_PROPERTIES,
       selectedToolName: GETTERS.SELECTED_TOOL_NAME,
-      printThemeSelectedId: BOOK_GETTERS.PRINT_THEME_SELECTED_ID
+      printThemeSelectedId: BOOK_GETTERS.PRINT_THEME_SELECTED_ID,
+      currentBackgrounds: DIGITAL_GETTERS.BACKGROUNDS,
+      propertiesObjectType: GETTERS.PROPERTIES_OBJECT_TYPE
     })
   },
   methods: {
@@ -154,30 +145,32 @@ export default {
      * @param  {Object} item Receive item information
      */
     onClickRightTool(item) {
-      if (this.selectedToolName === item?.name) return;
+      if (item.name === DIGITAL_RIGHT_TOOLS.PROPERTIES.value) {
+        if (!this.selectedObjectType) {
+          return;
+        }
 
-      this.$root.$emit(EVENT_TYPE.SWITCH_TOOL, item?.name);
+        this.setIsOpenProperties({
+          isOpen: !this.isOpenMenuProperties
+        });
 
-      switch (item.name) {
-        case 'properties':
-          if (!this.selectedObjectType) {
-            return;
-          }
-          this.setIsOpenProperties({
-            isOpen: !this.isOpenMenuProperties
-          });
-          this.setObjectTypeSelected({
-            type: OBJECT_TYPE.TEXT
-          });
-          break;
-        case 'text':
-          console.log(1);
-          break;
-        case DIGITAL_RIGHT_TOOLS.FRAME_INFO.value:
-          this.NoneElementPropertiesClick(DIGITAL_RIGHT_TOOLS.FRAME_INFO.value);
-          break;
-        default:
-          break;
+        this.setObjectTypeSelected({
+          type: OBJECT_TYPE.TEXT
+        });
+
+        return;
+      }
+
+      if (item.name === DIGITAL_RIGHT_TOOLS.BACKGROUND.value) {
+        this.propertiesClick(OBJECT_TYPE.BACKGROUND);
+
+        return;
+      }
+
+      if (item.name === DIGITAL_RIGHT_TOOLS.FRAME_INFO.value) {
+        this.propertiesClick(DIGITAL_RIGHT_TOOLS.FRAME_INFO.value);
+
+        return;
       }
     },
     /**
@@ -204,11 +197,11 @@ export default {
       }
     },
     /**
-     * Fire when click on Page Info button or Background Properties button
+     * Fire when click on Menu Properties button
      */
-    NoneElementPropertiesClick(objectType) {
+    propertiesClick(objectType) {
       const isToggle =
-        isEmpty(this.selectedObjectType) ||
+        isEmpty(this.propertiesObjectType) ||
         this.propertiesObjectType === objectType;
 
       isToggle
@@ -227,7 +220,6 @@ export default {
         isOpen: !this.isOpenMenuProperties
       });
     },
-
     /**
      * Open object properties by using mutate
      */

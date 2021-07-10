@@ -1,5 +1,5 @@
 import layouts from '@/mock/layouts';
-import digitalLayouts from '@/mock/digitalLayouts';
+import { packageLayouts, supplementalLayouts } from '@/mock/digitalLayouts';
 
 export const loadLayouts = () =>
   new Promise(resolve => {
@@ -11,6 +11,9 @@ export const loadLayouts = () =>
 export const loadDigitalLayouts = () =>
   new Promise(resolve => {
     setTimeout(() => {
-      resolve(digitalLayouts);
+      resolve(packageLayouts);
     });
   });
+
+export const loadSupplementalLayouts = () =>
+  Promise.resolve(supplementalLayouts);

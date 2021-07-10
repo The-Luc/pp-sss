@@ -42,5 +42,9 @@ export const LAYOUT_TYPES = {
   SINGLE_PAGE: {
     name: 'Single Page',
     value: 'singlePage'
+  },
+  SUPLEMENTAL_LAYOUTS: {
+    name: 'Supplemental: Digital Only',
+    value: 'Supplemental'
   }
 };

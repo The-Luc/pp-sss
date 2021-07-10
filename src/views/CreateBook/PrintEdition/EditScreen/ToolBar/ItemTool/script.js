@@ -3,7 +3,7 @@ import { mapGetters } from 'vuex';
 import { GETTERS } from '@/store/modules/app/const';
 import ToolButton from '@/components/Buttons/ToolButton';
 import { useLayoutPrompt } from '@/hooks';
-import { RIGHT_TOOLS, OBJECT_TYPE, EDITION } from '@/common/constants';
+import { PRINT_RIGHT_TOOLS, OBJECT_TYPE, EDITION } from '@/common/constants';
 import { isEmpty } from '@/common/utils';
 
 export default {
@@ -37,13 +37,14 @@ export default {
         const isBackgroundSelected =
           this.propertiesObjectType === OBJECT_TYPE.BACKGROUND;
 
-        const isBackgroundMenu = RIGHT_TOOLS.BACKGROUND.value === iconName;
+        const isBackgroundMenu =
+          PRINT_RIGHT_TOOLS.BACKGROUND.value === iconName;
 
         const isBackgroundActive = isBackgroundSelected && isBackgroundMenu;
 
         const isPageInfoSelected =
-          this.propertiesObjectType === RIGHT_TOOLS.PAGE_INFO.value;
-        const isPageInfoMenu = RIGHT_TOOLS.PAGE_INFO.value === iconName;
+          this.propertiesObjectType === PRINT_RIGHT_TOOLS.PAGE_INFO.value;
+        const isPageInfoMenu = PRINT_RIGHT_TOOLS.PAGE_INFO.value === iconName;
         const isPageInfoActive = isPageInfoSelected && isPageInfoMenu;
 
         const isPropertiesSelected =
@@ -51,7 +52,8 @@ export default {
           !isBackgroundSelected &&
           !isPageInfoSelected;
 
-        const isPropertiesMenu = RIGHT_TOOLS.PROPERTIES.value === iconName;
+        const isPropertiesMenu =
+          PRINT_RIGHT_TOOLS.PROPERTIES.value === iconName;
 
         const isPropertiesActive = isPropertiesSelected && isPropertiesMenu;
 
