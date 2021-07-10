@@ -3,10 +3,11 @@
     ref="ppCombobox"
     v-click-outside="onClickOutCombobox"
     class="pp-combobox"
+    :disabled="disabled"
     :items="items"
     item-text="name"
     item-value="value"
-    :value="selectedVal"
+    :value="disabled ? '' : selectedVal"
     solo
     no-filter
     hide-no-data

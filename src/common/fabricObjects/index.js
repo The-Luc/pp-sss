@@ -5,3 +5,4 @@ export * from './shape';
 export * from './clipArt';
 export * from './image';
 export * from './drawingBox';
+export * from './pageNumber';

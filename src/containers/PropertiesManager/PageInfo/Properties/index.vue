@@ -1,16 +1,18 @@
 <template>
-  <div class="page-number-properties">
+  <div class="page-number-properties" :class="{ disabled }">
     <div class="properties-font-family">
       <span class="properties-title">Font Family:</span>
       <PpSelect
+        :disabled="disabled"
         :items="fontFamily"
-        :selected-val="selectedFontFamily"
+        :selected-val="disabled ? {} : selectedFontFamily"
         @change="onChangeFontFamily"
       />
     </div>
     <div class="font-size-container">
       <span class="properties-title">Font Size:</span>
       <PpCombobox
+        :disabled="disabled"
         :items="fontSize"
         :nudge-width="75"
         :selected-val="selectedFontSize"
@@ -20,7 +22,7 @@
       />
     </div>
     <ColorPicker
-      :color="pageInfo.color"
+      :color="color"
       :show-eye-dropper="false"
       @change="onChangeColor"
     />

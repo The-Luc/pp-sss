@@ -5,9 +5,11 @@
     font-family: $font-500;
     margin-bottom: 5px;
   }
+  .disabled {
+    filter: opacity(0.4);
+  }
   &-container {
     display: flex;
-
     .status-page-number {
       width: 90px;
       margin-right: 15px;
@@ -23,6 +25,9 @@
         .v-input__control > .v-input__slot {
           padding: 0 8px;
         }
+      }
+      &.disabled {
+        filter: opacity(0.4);
       }
     }
   }

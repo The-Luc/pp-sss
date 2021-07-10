@@ -2,6 +2,11 @@ import PpCombobox from '@/components/Selectors/Combobox';
 import PpSelect from '@/components/Selectors/Select';
 import ColorPicker from '@/containers/ColorPicker';
 import { ICON_LOCAL, FONT_SIZE, FONT_FAMILY } from '@/common/constants';
+import {
+  getValueInput,
+  validateInputOption,
+  getSelectedOption
+} from '@/common/utils';
 
 export default {
   components: {
@@ -13,6 +18,10 @@ export default {
     pageInfo: {
       type: Object,
       required: false
+    },
+    disabled: {
+      type: Boolean,
+      required: true
     }
   },
   data() {
@@ -36,30 +45,44 @@ export default {
         item => item.value === this.pageInfo.fontSize
       );
 
-      return { name: font.name, value: font.value };
+      return font
+        ? getSelectedOption(font)
+        : getSelectedOption(this.pageInfo.fontSize, 'pt');
+    },
+    color() {
+      return this.disabled ? '#FFFFF' : this.pageInfo.color;
     }
   },
   methods: {
     /**
      * Emit font family change to parent
-     * @param {Boolean} val - value font family selected
+     * @param {Object} fontFamily - value font family selected
      */
-    onChangeFontFamily(val) {
-      this.$emit('change', { fontFamily: val });
+    onChangeFontFamily(fontFamily) {
+      this.$emit('change', { fontFamily: fontFamily.value });
     },
     /**
      * Emit font size change to parent
-     * @param {Boolean} val - value font size selected
+     * @param {Object} fontSize - value font size selected
      */
-    onChangeFontSize(val) {
-      this.$emit('change', { fontSize: val });
+    onChangeFontSize(fontSize) {
+      const { isValid, value } = validateInputOption(
+        getValueInput(fontSize),
+        1,
+        500,
+        0,
+        this.items,
+        'pt'
+      );
+      const updateFontSize = isValid ? { fontSize: value } : {};
+      this.$emit('change', updateFontSize);
     },
     /**
      * Emit color change to parent
-     * @param {Boolean} val - value color selected
+     * @param {String} color - value color selected
      */
-    onChangeColor(val) {
-      this.$emit('change', { color: val });
+    onChangeColor(color) {
+      this.$emit('change', { color });
     }
   }
 };
