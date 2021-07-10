@@ -3,7 +3,7 @@
     <div class="project-title">{{ titleName }}</div>
     <input
       type="text"
-      :disabled="isDisabled"
+      :disabled="disabled"
       :value="titleValue"
       placeholder="Click to add title"
     />
