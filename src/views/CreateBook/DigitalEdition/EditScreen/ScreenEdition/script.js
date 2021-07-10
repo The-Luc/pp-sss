@@ -122,6 +122,17 @@ export default {
     },
     currentSheetType() {
       return this.pageSelected?.type || -1;
+    },
+    frameThumbnails() {
+      if (isEmpty(this.frames)) return [];
+
+      return this.frames.map(f => {
+        return {
+          image: f.previewImageUrl, // use preview image for now, revise later
+          id: f.id,
+          fromLayout: f.fromLayout
+        };
+      });
     }
   },
   methods: {

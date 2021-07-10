@@ -7,7 +7,7 @@
   font-family: $font-300;
   .text {
     font-size: 15px;
-    color: #4a4844;
+    color: $color-gray16;
   }
 
   .text--2 {
@@ -22,7 +22,7 @@
     width: 240px;
   }
   .btn {
-    color: #fff;
+    color: $color-white;
     border-radius: 6px;
     box-shadow: none;
     padding: 10px;
