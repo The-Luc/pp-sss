@@ -72,17 +72,3 @@ export const useClipArtProperties = () => {
     triggerChange
   };
 };
-
-export const useBackgroundProperties = (isDigital = false) => {
-  const GETTERS = isDigital ? DIGITAL_GETTERS : PRINT_GETTERS;
-
-  const { triggerChange, backgroundsProps } = useGetters({
-    triggerChange: GETTERS.TRIGGER_BACKGROUND_CHANGE,
-    backgroundsProps: GETTERS.BACKGROUNDS_PROPERTIES
-  });
-
-  return {
-    triggerChange,
-    backgroundsProps
-  };
-};
