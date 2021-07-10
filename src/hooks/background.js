@@ -11,6 +11,20 @@ import { MUTATES as APP_MUTATES } from '@/store/modules/app/const';
 
 import { BACKGROUND_TYPE, BACKGROUND_TYPE_NAME } from '@/common/constants';
 
+export const useBackgroundProperties = (isDigital = false) => {
+  const GETTERS = isDigital ? DIGITAL_GETTERS : PRINT_GETTERS;
+
+  const { triggerChange, backgroundsProps } = useGetters({
+    triggerChange: GETTERS.TRIGGER_BACKGROUND_CHANGE,
+    backgroundsProps: GETTERS.BACKGROUNDS_PROPERTIES
+  });
+
+  return {
+    triggerChange,
+    backgroundsProps
+  };
+};
+
 export const useBackgroundMenu = (isDigital = false) => {
   const GETTERS = isDigital ? DIGITAL_GETTERS : PRINT_GETTERS;
 
