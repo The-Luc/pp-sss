@@ -111,7 +111,7 @@ const backgroundData = [
   }
 ];
 
-const backgrounds = backgroundData.map((data, idx) => {
+const backgrounds = backgroundData.map(data => {
   return {
     ...BackgroundElement,
     id: uniqueId(),
@@ -119,8 +119,8 @@ const backgrounds = backgroundData.map((data, idx) => {
     backgroundType: '',
     category: 'Cover',
     name: 'watercolorbackground.jpg',
-    thumbnail: backgroundData[idx].thumbnail,
-    imageUrl: backgroundData[idx].imageUrl
+    thumbnail: data.thumbnail,
+    imageUrl: data.imageUrl
   };
 });
 
