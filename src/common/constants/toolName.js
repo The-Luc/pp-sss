@@ -40,9 +40,9 @@ export const PRINT_RIGHT_TOOLS = {
 };
 
 export const DIGITAL_RIGHT_TOOLS = {
-  PAGE_INFO: {
-    name: 'Page Info',
-    value: 'pageInfo',
+  FRAME_INFO: {
+    name: 'Frame Info',
+    value: 'frameInfo',
     iconName: 'list_alt'
   },
   BACKGROUND: {
@@ -54,12 +54,5 @@ export const DIGITAL_RIGHT_TOOLS = {
     name: 'Properties',
     value: 'properties',
     iconName: 'wysiwyg'
-  }
-};
-export const DIGITAL_RIGHT_TOOLS = {
-  FRAME_INFO: {
-    name: 'Frame Info',
-    value: 'frameInfo',
-    iconName: 'list_alt'
   }
 };
