@@ -1,23 +1,15 @@
 import Backgrounds from '@/components/Backgrounds';
 
-import { mapGetters, mapMutations } from 'vuex';
-
-import { MUTATES as APP_MUTATES } from '@/store/modules/app/const';
-import { GETTERS as DIGITAL_GETTERS } from '@/store/modules/digital/const';
-
 import {
   BACKGROUND_TYPE,
   BACKGROUND_TYPE_NAME,
   STATUS
 } from '@/common/constants';
 
-import backgroundService from '@/api/background';
-import themeService from '@/api/themes';
-
-import { usePopoverCreationTool } from '@/hooks';
+import { usePopoverCreationTool, useDigitalBackgroundMenu } from '@/hooks';
 
 import { cloneDeep } from 'lodash';
-import { isEmpty, getBackgroundType, isOk } from '@/common/utils';
+import { isEmpty, getBackgroundType } from '@/common/utils';
 
 export default {
   components: {
@@ -34,13 +26,24 @@ export default {
   setup() {
     const { setToolNameSelected } = usePopoverCreationTool();
 
-    return { setToolNameSelected };
+    const {
+      currentThemeId,
+      userSelectedBackground,
+      toggleModal,
+      getBackgroundTypeData,
+      getBackgroundData
+    } = useDigitalBackgroundMenu();
+
+    return {
+      setToolNameSelected,
+      currentThemeId,
+      userSelectedBackground,
+      toggleModal,
+      getBackgroundTypeData,
+      getBackgroundData
+    };
   },
   computed: {
-    ...mapGetters({
-      currentThemeId: DIGITAL_GETTERS.DEFAULT_THEME_ID,
-      userSelectedBackground: DIGITAL_GETTERS.BACKGROUNDS_NO_LAYOUT
-    }),
     appliedBackground() {
       return isEmpty(this.userSelectedBackground)
         ? {}
@@ -54,14 +57,11 @@ export default {
     this.initData();
   },
   methods: {
-    ...mapMutations({
-      toggleModal: APP_MUTATES.TOGGLE_MODAL
-    }),
     /**
      * Init data when loaded
      */
     async initData() {
-      await this.getBackgroundTypeData();
+      this.backgroundTypes = await this.getBackgroundTypeData();
 
       this.selectedType = getBackgroundType(
         this.appliedBackground,
@@ -69,50 +69,16 @@ export default {
         this.currentThemeId
       );
 
-      this.getBackgroundData();
-    },
-    /**
-     * Get background type data from API
-     */
-    async getBackgroundTypeData() {
-      const [categories, themes] = await Promise.all([
-        backgroundService.getDigitalCategories(),
-        themeService.getDigitalThemes()
-      ]);
-
-      if (categories.status !== STATUS.OK || themes.status !== STATUS.OK) {
-        return;
-      }
-
-      this.backgroundTypes = {
-        [BACKGROUND_TYPE_NAME.THEME]: {
-          id: BACKGROUND_TYPE.THEME.id,
-          value: themes.data
-        },
-        [BACKGROUND_TYPE_NAME.CATEGORY]: {
-          id: BACKGROUND_TYPE.CATEGORY.id,
-          value: categories.data
-        },
-        [BACKGROUND_TYPE_NAME.CUSTOM]: {
-          id: BACKGROUND_TYPE.CUSTOM.id,
-          value: []
-        },
-        [BACKGROUND_TYPE_NAME.FAVORITE]: {
-          id: BACKGROUND_TYPE.FAVORITE.id,
-          value: []
-        }
-      };
+      this.getBackgrounds();
     },
     /**
      * Get background data from API
      */
-    async getBackgroundData() {
-      const backgrounds = await backgroundService.getDigitalBackgrounds(
+    async getBackgrounds() {
+      this.backgrounds = await this.getBackgroundData(
         this.selectedType.value,
         this.selectedType.sub
       );
-
-      this.backgrounds = isOk(backgrounds) ? backgrounds.data : [];
     },
     /**
      * Event fire when choose background type
@@ -122,7 +88,7 @@ export default {
     onChangeType(data) {
       this.selectedType = data;
 
-      this.getBackgroundData();
+      this.getBackgrounds();
     },
     /**
      * Trigger hooks to set tool name is empty and then close popover when click Cancel button
