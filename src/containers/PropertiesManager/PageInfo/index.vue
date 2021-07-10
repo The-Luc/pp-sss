@@ -1,22 +1,30 @@
 <template>
   <div class="page-info-properties-container">
     <Properties v-if="isCover" title="Project Information">
-      <PageTitle :title-value-left="book.title" :is-disable="true" />
+      <PageTitle :title-value-left="book.title" :disabled="true" />
       <PageNumber
+        :disabled="disabled"
         :is-left-number-on="pageInfo.isNumberingOn"
         :position="pageInfo.position"
         @change="onChangePageNumber"
       />
-      <PpProperties :page-info="pageInfo" @change="onChangepageInfo" />
+      <PpProperties
+        :disabled="disabled"
+        :page-info="pageInfo"
+        @change="onChangePageInfo"
+      />
     </Properties>
 
-    <Properties v-if="isSinglePage" title="Page Information">
+    <Properties v-if="isFrontCover || isBackCover" title="Page Information">
       <PageTitle title-name="Page title:" title-value-left="aaa" />
       <PageNumber
+        :disabled="disabled"
         title-name="(for this page only)"
         :is-cover="isCover"
-        :is-single-page="isSinglePage"
+        :is-front-cover="isFrontCover"
+        :is-back-cover="isBackCover"
         :is-left-number-on="spreadInfo.isLeftNumberOn"
+        :is-right-number-on="spreadInfo.isRightNumberOn"
         @change="onChangePageNumber"
       />
     </Properties>
@@ -28,9 +36,11 @@
         :is-link="isLink"
       />
       <PageNumber
+        :disabled="disabled"
         title-name="(for this spread only)"
         :is-cover="isCover"
-        :is-single-page="isSinglePage"
+        :is-front-cover="isFrontCover"
+        :is-back-cover="isBackCover"
         :is-left-number-on="spreadInfo.isLeftNumberOn"
         :is-right-number-on="spreadInfo.isRightNumberOn"
         @change="onChangePageNumber"

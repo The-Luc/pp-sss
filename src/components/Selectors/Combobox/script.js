@@ -30,6 +30,10 @@ export default {
     marginMenu: {
       type: Number,
       default: 23
+    },
+    disabled: {
+      type: Boolean,
+      default: false
     }
   },
   data() {

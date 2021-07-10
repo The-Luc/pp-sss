@@ -17,7 +17,11 @@ export default {
       type: Boolean,
       default: true
     },
-    isSinglePage: {
+    isFrontCover: {
+      type: Boolean,
+      required: false
+    },
+    isBackCover: {
       type: Boolean,
       default: true
     },
@@ -32,6 +36,10 @@ export default {
     position: {
       type: String,
       required: false
+    },
+    disabled: {
+      type: Boolean,
+      required: true
     }
   },
   data() {
@@ -55,31 +63,41 @@ export default {
       return this.statusPageNumber.find(
         ({ value }) => value === this.isRightNumberOn
       );
+    },
+    isSinglePage() {
+      return this.isFrontCover || this.isBackCover;
+    },
+    isNumberingOff() {
+      return !this.disabled ? false : this.isCover ? false : true;
     }
   },
   methods: {
     /**
      * Emit Status left page number change to parent
-     * @param {Boolean} val - value status left page number selected
+     * @param {Boolean} status - value status left page number selected
      */
-    onChangeStatusLeft(val) {
-      this.isCover
-        ? this.$emit('change', { isNumberOn: val })
-        : this.$emit('change', { isLeftNumberOn: val });
+    onChangeStatusLeft(status) {
+      const value = this.isCover
+        ? { isNumberOn: status.value }
+        : this.isFrontCover
+        ? { isRightNumberOn: status.value }
+        : { isLeftNumberOn: status.value };
+
+      this.$emit('change', value);
     },
     /**
      * Emit Status right page number change to parent
      * @param {Boolean} val - value status right page number selected
      */
-    onChangeStatusRight(val) {
-      this.$emit('change', { isRightNumberOn: val });
+    onChangeStatusRight(status) {
+      this.$emit('change', { isRightNumberOn: status.value });
     },
     /**
      * Emit position change to parent
-     * @param {String} val - value position selected
+     * @param {String} position - value position selected
      */
-    onChangePosition(val) {
-      this.$emit('change', { position: val });
+    onChangePosition(position) {
+      this.$emit('change', { position: position.value });
     }
   }
 };
