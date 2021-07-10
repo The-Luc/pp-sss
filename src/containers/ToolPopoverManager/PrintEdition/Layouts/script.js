@@ -46,6 +46,7 @@ import {
 
 import { loadLayouts } from '@/api/layouts';
 import { loadDigitalLayouts } from '@/api/layouts';
+import { cloneDeep } from 'lodash';
 
 export default {
   setup({ edition }) {
@@ -359,7 +360,7 @@ export default {
       this.updateSheetThemeLayout({
         sheetId: this.pageSelected?.id,
         themeId: this.themeSelected?.id,
-        layout: this.layoutObjSelected
+        layout: cloneDeep(this.layoutObjSelected)
       });
 
       resetObjects(this.activeCanvas);

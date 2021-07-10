@@ -1283,6 +1283,7 @@ export default {
           this.countPaste = 1;
           this.setSelectedObjectId({ id: '' });
           this.setCurrentFrameId({ id: '' });
+          this.setIsOpenProperties({ isOpen: false });
           this.setCurrentObject(null);
           this.updateCanvasSize();
           resetObjects(this.digitalCanvas);
