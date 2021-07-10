@@ -48,7 +48,9 @@ import {
   handleScalingText,
   updateTextListeners,
   createBackgroundFabricObject,
-  updateSpecificProp
+  updateSpecificProp,
+  addPrintPageNumber,
+  updateBringToFrontPageNumber
 } from '@/common/fabricObjects';
 
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
@@ -74,7 +76,8 @@ import {
   COVER_TYPE,
   DEFAULT_CLIP_ART,
   FABRIC_OBJECT_TYPE,
-  DEFAULT_IMAGE
+  DEFAULT_IMAGE,
+  EDITION
 } from '@/common/constants';
 import SizeWrapper from '@/components/SizeWrapper';
 import PrintCanvasLines from './PrintCanvasLines';
@@ -87,7 +90,7 @@ import {
   PASTE,
   THUMBNAIL_IMAGE_QUALITY
 } from '@/common/constants/config';
-import { createImage } from '@/common/fabricObjects/image';
+import { createImage } from '@/common/fabricObjects';
 import printService from '@/api/print';
 
 export default {
@@ -133,7 +136,9 @@ export default {
       object: PRINT_GETTERS.OBJECT_BY_ID,
       currentObjects: PRINT_GETTERS.GET_OBJECTS,
       totalBackground: PRINT_GETTERS.TOTAL_BACKGROUND,
-      getProperty: APP_GETTERS.SELECT_PROP_CURRENT_OBJECT
+      totalObject: PRINT_GETTERS.TOTAL_OBJECT,
+      getProperty: APP_GETTERS.SELECT_PROP_CURRENT_OBJECT,
+      getPageInfo: PRINT_GETTERS.GET_PAGE_INFO
     }),
     isCover() {
       return this.pageSelected?.type === SHEET_TYPE.COVER;
@@ -184,12 +189,17 @@ export default {
           this.updateCanvasSize();
           resetObjects(window.printCanvas);
 
-          this.drawObjectsOnCanvas(this.sheetLayout);
+          await this.drawObjectsOnCanvas(this.sheetLayout);
+
+          this.addPageNumber();
         }
       }
     },
     zoom(newVal, oldVal) {
       if (newVal !== oldVal) this.updateCanvasSize();
+    },
+    totalObject(newVal, oldVal) {
+      if (newVal !== oldVal) updateBringToFrontPageNumber(window.printCanvas);
     }
   },
   mounted() {
@@ -602,7 +612,7 @@ export default {
       window.printCanvas.setWidth(canvasSize.width);
       window.printCanvas.setHeight(canvasSize.height);
 
-      this.drawLayout(this.sheetLayout);
+      this.drawLayout(this.sheetLayout, EDITION.PRINT);
 
       window.printCanvas.setZoom(currentZoom);
     },
@@ -638,7 +648,7 @@ export default {
         'selection:updated': this.objectSelected,
         'selection:cleared': this.handleClearSelected,
         'selection:created': this.objectSelected,
-        'object:modified': this.getThumbnailUrl,
+        'object:modified': this.handleBringToFrontPageNumber,
         'object:added': this.getThumbnailUrl,
         'object:removed': this.getThumbnailUrl,
 
@@ -708,6 +718,13 @@ export default {
 
       document.body.addEventListener('keyup', this.handleDeleteKey);
       this.eventHandling();
+    },
+    /**
+     * Event handle bring to front page number
+     */
+    handleBringToFrontPageNumber() {
+      this.getThumbnailUrl;
+      updateBringToFrontPageNumber(window.printCanvas);
     },
     /**
      * Event handle when container is resized by user action
@@ -1669,6 +1686,19 @@ export default {
       this.setInfoBar({ w: 0, h: 0 });
 
       this.closeProperties();
+    },
+    /**
+     * Add Page number in canvas
+     */
+    addPageNumber() {
+      const { pageLeftName, pageRightName } = this.pageSelected;
+
+      addPrintPageNumber({
+        spreadInfo: this.pageSelected.spreadInfo,
+        pageInfoProp: this.getPageInfo,
+        pageNumber: { pageLeftName, pageRightName },
+        canvas: window.printCanvas
+      });
     }
   }
 };

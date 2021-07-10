@@ -7,7 +7,8 @@ export const TOOL_NAME = {
   CLIP_ART: 'ClipArt',
   IMAGE_BOX: 'ImageBox',
   TEXT: 'Text',
-  BACKGROUNDS: 'Backgrounds',
+  PRINT_BACKGROUNDS: 'PrintBackgrounds',
+  DIGITAL_BACKGROUNDS: 'DigitalBackgrounds',
   SHAPES: 'Shapes',
   ACTIONS: 'Actions'
 };
@@ -35,5 +36,12 @@ export const RIGHT_TOOLS = {
     name: 'Properties',
     value: 'properties',
     iconName: 'wysiwyg'
+  }
+};
+export const DIGITAL_RIGHT_TOOLS = {
+  FRAME_INFO: {
+    name: 'Frame Info',
+    value: 'frameInfo',
+    iconName: 'list_alt'
   }
 };

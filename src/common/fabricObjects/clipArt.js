@@ -1,6 +1,6 @@
 import { DEFAULT_CLIP_ART } from '@/common/constants/defaultProperty';
 
-import { addPrintSvgs } from '../common';
+import { addPrintSvgs } from './common';
 
 /**
  * Adding clip art to canvas

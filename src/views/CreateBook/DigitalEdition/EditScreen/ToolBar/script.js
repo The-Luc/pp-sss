@@ -3,8 +3,13 @@ import ToolButton from '@/components/Buttons/ToolButton';
 import ItemTool from './ItemTool';
 import { GETTERS, MUTATES } from '@/store/modules/app/const';
 import { GETTERS as BOOK_GETTERS } from '@/store/modules/book/const';
-import { OBJECT_TYPE, TOOL_NAME } from '@/common/constants';
+import {
+  OBJECT_TYPE,
+  DIGITAL_RIGHT_TOOLS,
+  TOOL_NAME
+} from '@/common/constants';
 import { EVENT_TYPE } from '@/common/constants/eventType';
+import { isEmpty } from '@/common/utils';
 
 export default {
   props: {
@@ -34,7 +39,7 @@ export default {
           {
             iconName: 'texture',
             title: 'Backgrounds',
-            name: TOOL_NAME.BACKGROUNDS
+            name: TOOL_NAME.DIGITAL_BACKGROUNDS
           },
           {
             iconName: 'local_florist',
@@ -116,8 +121,8 @@ export default {
         [
           {
             iconName: 'list_alt',
-            title: 'Page Info',
-            name: 'pageInfo'
+            title: 'Frame Info',
+            name: DIGITAL_RIGHT_TOOLS.FRAME_INFO.value
           },
           {
             iconName: 'wysiwyg',
@@ -131,6 +136,7 @@ export default {
   computed: {
     ...mapGetters({
       selectedObjectType: GETTERS.SELECTED_OBJECT_TYPE,
+      propertiesObjectType: GETTERS.PROPERTIES_OBJECT_TYPE,
       isOpenMenuProperties: GETTERS.IS_OPEN_MENU_PROPERTIES,
       selectedToolName: GETTERS.SELECTED_TOOL_NAME,
       printThemeSelectedId: BOOK_GETTERS.PRINT_THEME_SELECTED_ID
@@ -140,7 +146,8 @@ export default {
     ...mapMutations({
       setObjectTypeSelected: MUTATES.SET_OBJECT_TYPE_SELECTED,
       setIsOpenProperties: MUTATES.TOGGLE_MENU_PROPERTIES,
-      setToolNameSelected: MUTATES.SET_TOOL_NAME_SELECTED
+      setToolNameSelected: MUTATES.SET_TOOL_NAME_SELECTED,
+      setPropertiesObjectType: MUTATES.SET_PROPERTIES_OBJECT_TYPE
     }),
     /**
      * Detect click on item on right creation tool
@@ -165,6 +172,9 @@ export default {
           break;
         case 'text':
           console.log(1);
+          break;
+        case DIGITAL_RIGHT_TOOLS.FRAME_INFO.value:
+          this.NoneElementPropertiesClick(DIGITAL_RIGHT_TOOLS.FRAME_INFO.value);
           break;
         default:
           break;
@@ -192,6 +202,43 @@ export default {
       if (data.name === TOOL_NAME.TEXT) {
         this.$root.$emit(EVENT_TYPE.DIGITAL_ADD_ELEMENT, OBJECT_TYPE.TEXT);
       }
+    },
+    /**
+     * Fire when click on Page Info button or Background Properties button
+     */
+    NoneElementPropertiesClick(objectType) {
+      const isToggle =
+        isEmpty(this.selectedObjectType) ||
+        this.propertiesObjectType === objectType;
+
+      isToggle
+        ? this.toggleObjectProperties(objectType)
+        : this.openObjectProperties(objectType);
+    },
+    /**
+     * Toggle object properties by using mutate
+     */
+    toggleObjectProperties(objectType) {
+      this.setPropertiesObjectType({
+        type: objectType
+      });
+
+      this.setIsOpenProperties({
+        isOpen: !this.isOpenMenuProperties
+      });
+    },
+
+    /**
+     * Open object properties by using mutate
+     */
+    openObjectProperties(objectType) {
+      this.setPropertiesObjectType({
+        type: objectType
+      });
+
+      this.setIsOpenProperties({
+        isOpen: true
+      });
     }
   }
 };

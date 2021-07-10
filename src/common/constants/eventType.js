@@ -11,6 +11,9 @@ export const EVENT_TYPE = {
   ADD_CLIPARTS: 'addClipArts',
   CHANGE_CLIPART_PROPERTIES: 'changeClipArtProperties',
   CHANGE_OBJECT_IDS_ORDER: 'changeObjectIdsOrder',
+  DIGITAL_BACKGROUND_ADD: 'digitalAddBackground',
+  DIGITAL_BACKGROUND_PROP_CHANGE: 'digitalChangeBackgroundProperties',
+  DIGITAL_BACKGROUND_REMOVE: 'digitalDeleteBackground',
   SWITCH_TOOL: 'switchTool'
 };
 

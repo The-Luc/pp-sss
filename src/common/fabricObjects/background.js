@@ -8,7 +8,7 @@ import {
   DEFAULT_FABRIC_BACKGROUND
 } from '@/common/constants';
 
-import { updateElement, toFabricBackgroundProp } from '../common';
+import { updateElement, toFabricBackgroundProp } from './common';
 
 import { isEmpty } from '@/common/utils';
 
@@ -64,6 +64,27 @@ export const addPrintBackground = ({
     }
   );
 };
+
+/**
+ * Adding background to canvas
+ *
+ * @param {Number}  id              id of background
+ * @param {Object}  backgroundProp  the property of adding background
+ * @param {Object}  canvas          the canvas contain new background
+ */
+export const addDigitalBackground = ({ id, backgroundProp, canvas }) => {
+  const currentBackgrounds = canvas
+    .getObjects()
+    .filter(o => o.objectType === OBJECT_TYPE.BACKGROUND);
+
+  currentBackgrounds.forEach(bg => canvas.remove(bg));
+
+  createBackgroundFabricObject(backgroundProp, canvas, id, true).then(img => {
+    canvas.add(img);
+    canvas.sendToBack(img);
+  });
+};
+
 /**
  * to create an background object
  * @param {Object} prop background group

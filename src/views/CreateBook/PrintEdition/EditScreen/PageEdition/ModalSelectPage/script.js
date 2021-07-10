@@ -7,6 +7,7 @@ import {
   GETTERS as PRINT_GETTERS,
   ACTIONS as PRINT_ACTIONS
 } from '@/store/modules/print/const';
+import { EDITION } from '@/common/constants';
 import { resetObjects } from '@/common/utils';
 
 export default {
@@ -71,7 +72,7 @@ export default {
      * Get sheet's layout and draw
      */
     drawLayoutSinglePage() {
-      this.drawLayout(this.sheetLayout);
+      this.drawLayout(this.sheetLayout, EDITION.PRINT);
     },
     /**
      * Update layout to sheet, draw layout and then close modal

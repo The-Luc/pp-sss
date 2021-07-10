@@ -15,6 +15,7 @@ import SelectTheme from '@/views/CreateBook/PrintEdition/EditScreen/Modal';
 import ModalSelectPage from '@/views/CreateBook/PrintEdition/EditScreen/PageEdition/ModalSelectPage';
 import ModalBackgroundSelectPage from '@/containers/ToolPopoverManager/PrintEdition/Backgrounds/ModalSelectPage';
 import SelectThemeDigital from '@/views/CreateBook/DigitalEdition/EditScreen/ModalTheme';
+import OverrideLayout from '@/views/CreateBook/DigitalEdition/EditScreen/OverrideLayoutModal';
 import ModalResetLayout from '@/views/CreateBook/PrintEdition/EditScreen/PageEdition/ModalResetLayout';
 
 const {
@@ -27,6 +28,7 @@ const {
   SELECT_PAGE,
   BACKGROUND_SELECT_PAGE,
   SELECT_THEME_DIGITAL,
+  OVERRIDE_LAYOUT,
   RESET_LAYOUT
 } = MODAL_TYPES;
 
@@ -40,6 +42,7 @@ const ModalList = {
   [SELECT_PAGE]: SELECT_PAGE,
   [BACKGROUND_SELECT_PAGE]: BACKGROUND_SELECT_PAGE,
   [SELECT_THEME_DIGITAL]: SELECT_THEME_DIGITAL,
+  [OVERRIDE_LAYOUT]: OVERRIDE_LAYOUT,
   [RESET_LAYOUT]: RESET_LAYOUT
 };
 
@@ -59,6 +62,7 @@ export default {
     [MODAL_TYPES.SELECT_PAGE]: ModalSelectPage,
     [MODAL_TYPES.BACKGROUND_SELECT_PAGE]: ModalBackgroundSelectPage,
     [MODAL_TYPES.SELECT_THEME_DIGITAL]: SelectThemeDigital,
+    [MODAL_TYPES.OVERRIDE_LAYOUT]: OverrideLayout,
     [MODAL_TYPES.RESET_LAYOUT]: ModalResetLayout
   },
   computed: {

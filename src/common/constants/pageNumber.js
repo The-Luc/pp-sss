@@ -15,3 +15,18 @@ export const STATUS_PAGE_NUMBER_OPTIONS = [
   { name: 'On', value: true },
   { name: 'Off', value: false }
 ];
+
+export const BOTTOM_CENTER_VALUE = {
+  TOP: 10.8,
+  LEFT: 4.3
+};
+
+export const BOTTOM_OUTSIDE_CORNERS_VALUE = {
+  TOP: 10.8,
+  LEFT: 0.4
+};
+
+export const TYPE_PAGE_NUMBER = {
+  LEFT_PAGE_NUMBER: 'leftPageNumber',
+  RIGHT_PAGE_NUMBER: 'RightPageNumber'
+};

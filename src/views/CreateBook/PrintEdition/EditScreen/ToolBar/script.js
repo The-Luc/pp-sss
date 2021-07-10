@@ -53,8 +53,8 @@ export default {
           },
           {
             iconName: 'texture',
-            title: TOOL_NAME.BACKGROUNDS,
-            name: TOOL_NAME.BACKGROUNDS
+            title: 'Backgrounds',
+            name: TOOL_NAME.PRINT_BACKGROUNDS
           },
           {
             iconName: 'local_florist',
@@ -196,9 +196,9 @@ export default {
             name: TOOL_NAME.IMAGE_BOX
           });
           break;
-        case TOOL_NAME.BACKGROUNDS:
+        case TOOL_NAME.PRINT_BACKGROUNDS:
           this.setToolNameSelected({
-            name: TOOL_NAME.BACKGROUNDS
+            name: TOOL_NAME.PRINT_BACKGROUNDS
           });
           break;
         case TOOL_NAME.SHAPES:

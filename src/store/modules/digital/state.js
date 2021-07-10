@@ -8,14 +8,18 @@ export const state = {
   sections: [],
   sheets: {},
   currentSheetId: '',
+  currentFrameId: '',
   objectIds: [],
   objects: {},
+  frameIds: [],
+  frames: {},
   currentObjectId: '',
   background: getNewBackground(),
   triggerChange: {
     text: true,
     background: true,
     shape: true,
-    clipArt: true
+    clipArt: true,
+    applyLayout: true
   }
 };

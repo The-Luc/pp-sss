@@ -24,8 +24,8 @@ export const DEFAULT_BORDER = {
 export const DEFAULT_PROP = {
   OPACITY: 1,
   COLOR: '#000000',
-  MIN_POSITION: -100,
-  MAX_POSITION: 100,
+  MIN_POSITION: -Infinity,
+  MAX_POSITION: Infinity,
   MIN_SIZE: 0.5,
   MAX_SIZE: 60,
   BORDER: { ...DEFAULT_BORDER },
