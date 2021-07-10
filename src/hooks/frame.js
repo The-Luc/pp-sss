@@ -30,6 +30,10 @@ export const useFrame = () => {
     updateLayoutObjToStore: DIGITAL_ACTIONS.UPDATE_LAYOUT_OBJ_TO_STORE
   });
 
+  /**
+   * Get data from frames and set it to store
+   * and handling the opening event of Frame Info tab
+   */
   const handleChangeFrame = () => {
     const layout = currentFrame.value;
 

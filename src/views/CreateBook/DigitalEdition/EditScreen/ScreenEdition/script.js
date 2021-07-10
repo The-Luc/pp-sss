@@ -128,7 +128,7 @@ export default {
 
       return this.frames.map(f => {
         return {
-          image: f.previewImageUrl, // use preview image for new, revise later
+          image: f.previewImageUrl, // use preview image for now, revise later
           id: f.id,
           fromLayout: f.fromLayout
         };
@@ -1299,7 +1299,7 @@ export default {
       this.setCurrentObject(null);
       resetObjects(this.digitalCanvas);
 
-      this.handleChangeFrame(val);
+      this.handleChangeFrame();
 
       this.drawLayout(this.sheetLayout, EDITION.DIGITAL);
     }

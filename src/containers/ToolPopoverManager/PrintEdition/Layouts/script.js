@@ -336,8 +336,7 @@ export default {
           });
           return;
         }
-
-        // Prompt a modal to comfirm overriding layout
+        // Prompt a modal to comfirm overriding layout if layoutId existed and in DIGITAL mode
         if (this.isDigital && this.pageSelected?.layoutId) {
           this.toggleModal({
             isOpenModal: true,
