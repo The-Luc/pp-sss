@@ -79,6 +79,8 @@ export default {
 
       if (toolName) {
         this.setToolComponent(toolName);
+      } else {
+        this.toolComponent = '';
       }
     }
   },

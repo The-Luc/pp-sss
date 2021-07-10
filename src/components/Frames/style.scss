@@ -1,6 +1,12 @@
 .frames-container {
   border-top: 1px solid $color-gray6;
 
+  .frame-row {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+  }
+
   .frame-container {
     margin: 18px 24px;
     position: relative;
