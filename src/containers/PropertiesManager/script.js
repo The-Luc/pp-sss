@@ -1,7 +1,7 @@
 import { mapGetters } from 'vuex';
 
 import { GETTERS } from '@/store/modules/app/const';
-import { OBJECT_TYPE, RIGHT_TOOLS } from '@/common/constants';
+import { OBJECT_TYPE, PRINT_RIGHT_TOOLS } from '@/common/constants';
 
 // Object component
 import TextProperties from '@/containers/PropertiesManager/Text';
@@ -12,7 +12,7 @@ import Shape from '@/containers/PropertiesManager/Shape';
 import PageInfo from '@/containers/PropertiesManager/PageInfo';
 
 const { TEXT, IMAGE, CLIP_ART, BACKGROUND, SHAPE } = OBJECT_TYPE;
-const PAGE_INFO = RIGHT_TOOLS.PAGE_INFO.value;
+const PAGE_INFO = PRINT_RIGHT_TOOLS.PAGE_INFO.value;
 
 const MenuList = {
   [TEXT]: TEXT,
@@ -24,6 +24,12 @@ const MenuList = {
 };
 
 export default {
+  props: {
+    isDigital: {
+      type: Boolean,
+      default: false
+    }
+  },
   data() {
     return {
       renderObject: '',

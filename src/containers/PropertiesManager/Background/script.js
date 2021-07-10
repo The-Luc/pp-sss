@@ -11,13 +11,21 @@ export default {
     TabMenu,
     PropertiesContent
   },
+  props: {
+    isDigital: {
+      type: Boolean,
+      default: false
+    }
+  },
   data() {
     return {
       activeTab: ''
     };
   },
-  setup() {
-    const { backgroundsProps, triggerChange } = useBackgroundProperties();
+  setup({ isDigital }) {
+    const { backgroundsProps, triggerChange } = useBackgroundProperties(
+      isDigital
+    );
 
     return {
       backgroundsProps,
@@ -29,6 +37,7 @@ export default {
       if (this.triggerChange) {
         // just for trigger the change
       }
+      console.log(this.backgroundsProps.isSingle)
 
       return this.backgroundsProps.isSingle;
     },

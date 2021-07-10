@@ -6,11 +6,11 @@ import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 import {
   TOOL_NAME,
   OBJECT_TYPE,
-  RIGHT_TOOLS,
+  PRINT_RIGHT_TOOLS,
   EDITION
 } from '@/common/constants';
 import { useLayoutPrompt } from '@/hooks';
-import { isEmpty } from '@/common/utils';
+import { isEmpty, getRightToolItems } from '@/common/utils';
 
 export default {
   setup() {
@@ -30,14 +30,6 @@ export default {
     ItemTool
   },
   data() {
-    const rightTools = Object.keys(RIGHT_TOOLS).map(k => {
-      return {
-        iconName: RIGHT_TOOLS[k].iconName,
-        title: RIGHT_TOOLS[k].name,
-        name: RIGHT_TOOLS[k].value
-      };
-    });
-
     return {
       itemsToolLeft: [
         [
@@ -118,7 +110,7 @@ export default {
           }
         ]
       ],
-      itemsToolRight: [rightTools]
+      itemsToolRight: [getRightToolItems(PRINT_RIGHT_TOOLS)]
     };
   },
   computed: {
@@ -150,20 +142,20 @@ export default {
       const toolName = this.selectedToolName === item?.name ? '' : item?.name;
       this.$root.$emit('printSwitchTool', toolName);
 
-      if (item.name === RIGHT_TOOLS.PROPERTIES.value) {
+      if (item.name === PRINT_RIGHT_TOOLS.PROPERTIES.value) {
         this.elementPropertiesClick();
 
         return;
       }
 
-      if (item.name === RIGHT_TOOLS.BACKGROUND.value) {
-        this.NoneElementPropertiesClick(OBJECT_TYPE.BACKGROUND);
+      if (item.name === PRINT_RIGHT_TOOLS.BACKGROUND.value) {
+        this.noneElementPropertiesClick(OBJECT_TYPE.BACKGROUND);
 
         return;
       }
 
-      if (item.name === RIGHT_TOOLS.PAGE_INFO.value) {
-        this.NoneElementPropertiesClick(RIGHT_TOOLS.PAGE_INFO.value);
+      if (item.name === PRINT_RIGHT_TOOLS.PAGE_INFO.value) {
+        this.noneElementPropertiesClick(PRINT_RIGHT_TOOLS.PAGE_INFO.value);
 
         return;
       }
@@ -250,7 +242,7 @@ export default {
     /**
      * Fire when click on Page Info button or Background Properties button
      */
-    NoneElementPropertiesClick(objectType) {
+    noneElementPropertiesClick(objectType) {
       const isToggle =
         isEmpty(this.selectedObjectType) ||
         this.propertiesObjectType === objectType;

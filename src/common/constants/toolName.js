@@ -21,7 +21,25 @@ export const ACTIONS = {
   GENERATE_PDF: 'generatePdf'
 };
 
-export const RIGHT_TOOLS = {
+export const PRINT_RIGHT_TOOLS = {
+  PAGE_INFO: {
+    name: 'Page Info',
+    value: 'pageInfo',
+    iconName: 'list_alt'
+  },
+  BACKGROUND: {
+    name: 'Background',
+    value: 'background',
+    iconName: 'aspect_ratio'
+  },
+  PROPERTIES: {
+    name: 'Properties',
+    value: 'properties',
+    iconName: 'wysiwyg'
+  }
+};
+
+export const DIGITAL_RIGHT_TOOLS = {
   PAGE_INFO: {
     name: 'Page Info',
     value: 'pageInfo',
