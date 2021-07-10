@@ -1,6 +1,6 @@
 import { mapGetters, mapMutations } from 'vuex';
 
-import { themeOptions } from '@/mock/themes';
+import { themeOptions } from '@/mock/digitalThemes';
 import {
   GETTERS as THEME_GETTERS,
   MUTATES as THEME_MUTATES
