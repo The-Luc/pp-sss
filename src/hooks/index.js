@@ -5,3 +5,4 @@ export * from './layout';
 export * from './object';
 export * from './modal';
 export * from './sheet';
+export * from './frame';

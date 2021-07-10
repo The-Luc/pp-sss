@@ -29,6 +29,12 @@
       border: 0.5px solid $color-gray6;
       position: relative;
 
+      .frame-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
       &.active {
         border: 2px solid $color-stoodio-blue;
       }

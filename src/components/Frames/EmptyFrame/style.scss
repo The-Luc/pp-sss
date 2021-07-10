@@ -17,7 +17,7 @@
     cursor: pointer;
     width: 160px;
     height: 95px;
-    background: white;
+    background: $color-white;
 
     border: 0.5px solid $color-gray6;
     position: relative;
@@ -28,13 +28,13 @@
       align-items: center;
       background: transparent;
       border: 1px dashed $color-gray6;
-  
+
       .add-frame-content {
         font-size: 11px;
         font-family: $font-500;
         cursor: pointer;
       }
-  
+      
       .v-icon {
         font-size: 12px;
         color: $color-stoodio-toolbartext;
@@ -53,8 +53,8 @@
     }
 
     .frame-item {
-      width: 140px !important;
-      height: 85px !important;
+      width: 140px;
+      height: 85px;
     }
   }
 }
@@ -69,8 +69,8 @@
     }
 
     .frame-item {
-      width: 120px !important;
-      height: 70px !important;
+      width: 120px;
+      height: 70px;
     }
   }
 }

@@ -1,9 +1,21 @@
 <template>
   <div class="frames-container">
     <div class="row">
-      <div class="frame-container">
-        <div class="frame-item active"></div>
-        <div class="frame-name">Frame 10</div>
+      <div
+        v-for="(frame, index) in frameData"
+        :key="frame.id"
+        class="frame-container"
+        @click="onFrameClick(frame.id)"
+      >
+        <div class="frame-item" :class="{ active: frame.id === activeFrameId }">
+          <img
+            v-if="frame.image"
+            :src="frame.image"
+            alt="frame thumbnail"
+            class="frame-image"
+          />
+        </div>
+        <div class="frame-name">Frame {{ index + 1 }}</div>
       </div>
       <EmptyFrame @click="addFrame" />
     </div>

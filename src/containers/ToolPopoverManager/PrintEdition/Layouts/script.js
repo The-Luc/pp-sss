@@ -1,18 +1,18 @@
-import { mapGetters, mapMutations, mapActions } from 'vuex';
+import { mapGetters, mapMutations } from 'vuex';
 
 import {
   GETTERS as THEME_GETTERS,
   MUTATES as THEME_MUTATES
 } from '@/store/modules/theme/const';
+
+import { GETTERS as DIGITAL_GETTERS } from '@/store/modules/digital/const';
+
 import {
   GETTERS as APP_GETTERS,
   MUTATES as APP_MUTATES
 } from '@/store/modules/app/const';
 
-import {
-  ACTIONS as PRINT_ACTIONS,
-  GETTERS as PRINT_GETTERS
-} from '@/store/modules/print/const';
+import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 import { themeOptions } from '@/mock/themes';
 import PpToolPopover from '@/components/ToolPopover';
 import PpSelect from '@/components/Selectors/Select';
@@ -55,9 +55,12 @@ export default {
       themeId
     } = useLayoutPrompt(edition);
     const { drawLayout } = useDrawLayout();
-    const { sheetLayout, getLayoutsByType, listLayouts } = useGetLayouts(
-      edition
-    );
+    const {
+      sheetLayout,
+      getLayoutsByType,
+      listLayouts,
+      updateSheetThemeLayout
+    } = useGetLayouts(edition);
     return {
       selectedToolName,
       setToolNameSelected,
@@ -68,7 +71,8 @@ export default {
       sheetLayout,
       getLayoutsByType,
       listLayouts,
-      themeId
+      themeId,
+      updateSheetThemeLayout
     };
   },
   components: {
@@ -106,6 +110,7 @@ export default {
     ...mapGetters({
       themes: THEME_GETTERS.GET_THEMES,
       isPrompt: APP_GETTERS.IS_PROMPT,
+      triggerAppyLayout: DIGITAL_GETTERS.TRIGGER_APPLY_LAYOUT,
       totalBackground: PRINT_GETTERS.TOTAL_BACKGROUND,
       printObject: PRINT_GETTERS.GET_OBJECTS
     }),
@@ -148,6 +153,9 @@ export default {
         if (newVal?.disabled !== oldVal?.disabled) {
           this.initData();
         }
+      },
+      triggerAppyLayout() {
+        this.applyLayout();
       }
     }
   },
@@ -159,9 +167,6 @@ export default {
       toggleModal: APP_MUTATES.TOGGLE_MODAL,
       setPrintLayouts: THEME_MUTATES.PRINT_LAYOUTS,
       setDigitalLayouts: THEME_MUTATES.DIGITAL_LAYOUTS
-    }),
-    ...mapActions({
-      updateSheetThemeLayout: PRINT_ACTIONS.UPDATE_SHEET_THEME_LAYOUT
     }),
     /**
      * Set up inital data to render in view
@@ -345,15 +350,36 @@ export default {
           });
           return;
         }
-        this.updateSheetThemeLayout({
-          sheetId: this.pageSelected?.id,
-          themeId: this.themeSelected?.id,
-          layout: this.layoutObjSelected
-        });
-        resetObjects(activeCanvas);
-        this.drawLayout(this.sheetLayout);
+        // Prompt a modal to comfirm overriding layout if layoutId existed and in DIGITAL mode
+        if (this.isDigital && this.pageSelected?.layoutId) {
+          this.toggleModal({
+            isOpenModal: true,
+            modalData: {
+              type: MODAL_TYPES.OVERRIDE_LAYOUT
+            }
+          });
+        } else {
+          this.applyLayout();
+        }
+
         this.onCancel();
       }
+    },
+    /**
+     * Save objects to store and draw on canvas
+     */
+    applyLayout() {
+      // save id and objects of the first frame to the store
+      this.updateSheetThemeLayout({
+        sheetId: this.pageSelected?.id,
+        themeId: this.themeSelected?.id,
+        layout: this.layoutObjSelected
+      });
+
+      resetObjects(activeCanvas);
+
+      // draw layout on canvas
+      this.drawLayout(this.sheetLayout, this.edition);
     },
     /**
      * Trigger mutation set prompt false and update isVisited true for current sheet
