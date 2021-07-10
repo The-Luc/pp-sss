@@ -1334,8 +1334,7 @@ export default {
      * @param {Object}  prop  new prop
      */
     changeBackgroundProperties({ backgroundId, prop }) {
-      // will use for next ticket
-      /*if (isEmpty(prop)) {
+      if (isEmpty(prop)) {
         this.updateTriggerBackgroundChange();
 
         return;
@@ -1347,11 +1346,11 @@ export default {
 
       if (isEmpty(background)) return;
 
-      this.setBackgroundProp({ isLeft: true, prop });
+      this.setBackgroundProp({ prop });
 
       this.updateTriggerBackgroundChange();
 
-      updatePrintBackground(background, prop, window.digitalCanvas);*/
+      updateElement(background, prop, window.digitalCanvas);
     },
     /**
      * This method is under development

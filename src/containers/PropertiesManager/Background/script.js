@@ -127,7 +127,11 @@ export default {
      * @param {Number}  opacity the opacity data
      */
     onChangeOpacity({ isLeft, opacity }) {
-      this.$root.$emit('printChangeBackgroundProperties', {
+      const methodName = this.isDigital
+        ? 'digitalChangeBackgroundProperties'
+        : 'printChangeBackgroundProperties';
+
+      this.$root.$emit(methodName, {
         backgroundId: this.getId(isLeft),
         isLeftBackground: isLeft,
         prop: { opacity }
@@ -139,7 +143,11 @@ export default {
      * @param {Boolean} isLeft  is left background change
      */
     onRemove(isLeft) {
-      this.$root.$emit('printDeleteBackground', {
+      const methodName = this.isDigital
+        ? 'digitalDeleteBackground'
+        : 'printDeleteBackground';
+
+      this.$root.$emit(methodName, {
         backgroundId: this.getId(isLeft),
         isLeftBackground: isLeft
       });

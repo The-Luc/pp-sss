@@ -32,7 +32,6 @@ import {
   createTextBox,
   applyTextBoxProperties,
   addPrintBackground,
-  updatePrintBackground,
   addPrintShapes,
   addPrintClipArts,
   updateElement,
@@ -1011,7 +1010,7 @@ export default {
 
       this.updateTriggerBackgroundChange();
 
-      updatePrintBackground(background, prop, window.printCanvas);
+      updateElement(background, prop, window.printCanvas);
     },
     removeBackground({ backgroundId, isLeftBackground }) {
       this.deleteBackground({ isLeft: isLeftBackground });

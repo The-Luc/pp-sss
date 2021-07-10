@@ -162,7 +162,7 @@ export default {
       }
 
       if (item.name === DIGITAL_RIGHT_TOOLS.BACKGROUND.value) {
-        this.propertiesClick(DIGITAL_RIGHT_TOOLS.BACKGROUND.value);
+        this.propertiesClick(OBJECT_TYPE.BACKGROUND);
 
         return;
       }
