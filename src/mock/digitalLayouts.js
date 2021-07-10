@@ -1,4 +1,4 @@
-import { uniqueId } from 'lodash';
+import { cloneDeep, uniqueId } from 'lodash';
 
 import { LAYOUT_TYPES, BACKGROUND_PAGE_TYPE } from '@/common/constants';
 import {
@@ -33,24 +33,24 @@ import LAYOUT_THUMB_21 from '@/assets/image/digital-layouts/thumb/layout-21.jpg'
 import LAYOUT_01 from '@/assets/image/digital-layouts/layout-1.jpg';
 import LAYOUT_02 from '@/assets/image/digital-layouts/layout-2.jpg';
 import LAYOUT_03 from '@/assets/image/digital-layouts/layout-3.jpg';
-import LAYOUT_04 from '@/assets/image/digital-layouts/layout-4.jpg';
-import LAYOUT_05 from '@/assets/image/digital-layouts/layout-5.jpg';
-import LAYOUT_06 from '@/assets/image/digital-layouts/layout-6.jpg';
-import LAYOUT_07 from '@/assets/image/digital-layouts/layout-7.jpg';
-import LAYOUT_08 from '@/assets/image/digital-layouts/layout-8.jpg';
-import LAYOUT_09 from '@/assets/image/digital-layouts/layout-9.jpg';
-import LAYOUT_10 from '@/assets/image/digital-layouts/layout-10.jpg';
-import LAYOUT_11 from '@/assets/image/digital-layouts/layout-11.jpg';
-import LAYOUT_12 from '@/assets/image/digital-layouts/layout-12.jpg';
-import LAYOUT_13 from '@/assets/image/digital-layouts/layout-13.jpg';
-import LAYOUT_14 from '@/assets/image/digital-layouts/layout-14.jpg';
-import LAYOUT_15 from '@/assets/image/digital-layouts/layout-15.jpg';
-import LAYOUT_16 from '@/assets/image/digital-layouts/layout-16.jpg';
-import LAYOUT_17 from '@/assets/image/digital-layouts/layout-17.jpg';
-import LAYOUT_18 from '@/assets/image/digital-layouts/layout-18.jpg';
-import LAYOUT_19 from '@/assets/image/digital-layouts/layout-19.jpg';
-import LAYOUT_20 from '@/assets/image/digital-layouts/layout-20.jpg';
-import LAYOUT_21 from '@/assets/image/digital-layouts/layout-21.jpg';
+// import LAYOUT_04 from '@/assets/image/digital-layouts/layout-4.jpg';
+// import LAYOUT_05 from '@/assets/image/digital-layouts/layout-5.jpg';
+// import LAYOUT_06 from '@/assets/image/digital-layouts/layout-6.jpg';
+// import LAYOUT_07 from '@/assets/image/digital-layouts/layout-7.jpg';
+// import LAYOUT_08 from '@/assets/image/digital-layouts/layout-8.jpg';
+// import LAYOUT_09 from '@/assets/image/digital-layouts/layout-9.jpg';
+// import LAYOUT_10 from '@/assets/image/digital-layouts/layout-10.jpg';
+// import LAYOUT_11 from '@/assets/image/digital-layouts/layout-11.jpg';
+// import LAYOUT_12 from '@/assets/image/digital-layouts/layout-12.jpg';
+// import LAYOUT_13 from '@/assets/image/digital-layouts/layout-13.jpg';
+// import LAYOUT_14 from '@/assets/image/digital-layouts/layout-14.jpg';
+// import LAYOUT_15 from '@/assets/image/digital-layouts/layout-15.jpg';
+// import LAYOUT_16 from '@/assets/image/digital-layouts/layout-16.jpg';
+// import LAYOUT_17 from '@/assets/image/digital-layouts/layout-17.jpg';
+// import LAYOUT_18 from '@/assets/image/digital-layouts/layout-18.jpg';
+// import LAYOUT_19 from '@/assets/image/digital-layouts/layout-19.jpg';
+// import LAYOUT_20 from '@/assets/image/digital-layouts/layout-20.jpg';
+// import LAYOUT_21 from '@/assets/image/digital-layouts/layout-21.jpg';
 
 import LPCA_04531 from '@/assets/image/layouts/background/LPCA_04531.png';
 import LPCA_04511 from '@/assets/image/layouts/background/LPCA_04511.png';
@@ -170,23 +170,23 @@ const clipArt2 = {
   vector: LPCA_04511
 };
 
-const shape1 = {
-  ...ShapeElement,
-  id: uniqueId(),
-  size: {
-    width: 3,
-    height: 3
-  },
-  coord: {
-    x: 5,
-    y: 5,
-    rotation: 0 // degree
-  },
-  category: '',
-  name: '',
-  thumbnail: '',
-  pathData: 'img.svg' // TODO: Need discuss with FM to get instruction on using shape
-};
+// const shape1 = {
+//   ...ShapeElement,
+//   id: uniqueId(),
+//   size: {
+//     width: 3,
+//     height: 3
+//   },
+//   coord: {
+//     x: 5,
+//     y: 5,
+//     rotation: 0 // degree
+//   },
+//   category: '',
+//   name: '',
+//   thumbnail: '',
+//   pathData: 'img.svg' // TODO: Need discuss with FM to get instruction on using shape
+// };
 
 const frames = [
   {
@@ -250,43 +250,43 @@ export const packageLayouts = [
     id: 1,
     name: '3D',
     type: LAYOUT_TYPES.COVER.value,
-    frames: [...frames],
+    frames: cloneDeep([...frames]),
     isFavorites: false,
     previewImageUrl: LAYOUT_THUMB_01,
-    themeId: 2
+    themeId: 1
   },
   {
     id: 2,
-    name: '3D',
+    name: 'Three Frames',
     type: LAYOUT_TYPES.COLLAGE.value,
-    frames: [...frames2],
+    frames: cloneDeep([...frames2]),
     isFavorites: false,
     previewImageUrl: LAYOUT_THUMB_02,
     themeId: 1
   },
   {
     id: 3,
-    name: 'Newsprint',
-    type: LAYOUT_TYPES.COVER.value,
-    frames: [...frames2],
+    name: 'Four Frames',
+    type: LAYOUT_TYPES.COLLAGE.value,
+    frames: cloneDeep([...frames2, { ...frames[0], id: 4 }]),
     isFavorites: false,
     previewImageUrl: LAYOUT_THUMB_03,
-    themeId: 3
+    themeId: 1
   },
   {
     id: 4,
-    name: 'Newsprint',
-    type: LAYOUT_TYPES.GRADUATION.value,
-    frames: [...frames],
+    name: 'Three Frame + A Supp',
+    type: LAYOUT_TYPES.COLLAGE.value,
+    frames: cloneDeep([...frames2, supplementalFrames[0]]),
     isFavorites: false,
     previewImageUrl: LAYOUT_THUMB_04,
-    themeId: 3
+    themeId: 1
   },
   {
     id: 5,
     name: 'Tokyo',
     type: LAYOUT_TYPES.GRADUATION.value,
-    frames: [...frames],
+    frames: cloneDeep([...frames]),
     isFavorites: false,
     previewImageUrl: LAYOUT_THUMB_05,
     themeId: 4
@@ -295,7 +295,7 @@ export const packageLayouts = [
     id: 6,
     name: 'Confetti',
     type: LAYOUT_TYPES.ADMIN_STAFF.value,
-    frames: [...frames],
+    frames: cloneDeep([...frames]),
     isFavorites: false,
     previewImageUrl: LAYOUT_THUMB_06,
     themeId: 4
@@ -304,7 +304,7 @@ export const packageLayouts = [
     id: 7,
     name: 'Glitch',
     type: LAYOUT_TYPES.ADMIN_STAFF.value,
-    frames: [...frames],
+    frames: cloneDeep([...frames]),
     isFavorites: false,
     previewImageUrl: LAYOUT_THUMB_07,
     themeId: 5
@@ -313,7 +313,7 @@ export const packageLayouts = [
     id: 8,
     name: 'Glitch',
     type: LAYOUT_TYPES.COLLAGE.value,
-    frames: [...frames],
+    frames: cloneDeep([...frames]),
     isFavorites: false,
     previewImageUrl: LAYOUT_THUMB_08,
     themeId: 1
@@ -322,7 +322,7 @@ export const packageLayouts = [
     id: 9,
     name: '3D',
     type: LAYOUT_TYPES.COLLAGE.value,
-    frames: [...frames],
+    frames: cloneDeep([...frames]),
     isFavorites: false,
     previewImageUrl: LAYOUT_THUMB_09,
     themeId: 1
@@ -331,7 +331,7 @@ export const packageLayouts = [
     id: 10,
     name: 'Nature',
     type: LAYOUT_TYPES.ADMIN_STAFF.value,
-    frames: [...frames],
+    frames: cloneDeep([...frames]),
     isFavorites: false,
     previewImageUrl: LAYOUT_THUMB_10,
     themeId: 6
@@ -340,7 +340,7 @@ export const packageLayouts = [
     id: 11,
     name: 'Pixel',
     type: LAYOUT_TYPES.CLUBS_GROUPS_TEAMS.value,
-    frames: [...frames],
+    frames: cloneDeep([...frames]),
     isFavorites: false,
     previewImageUrl: LAYOUT_THUMB_11,
     themeId: 7
@@ -349,7 +349,7 @@ export const packageLayouts = [
     id: 12,
     name: 'Scribble',
     type: LAYOUT_TYPES.SINGLE_PAGE.value,
-    frames: [...frames],
+    frames: cloneDeep([...frames]),
     isFavorites: false,
     previewImageUrl: LAYOUT_THUMB_12,
     themeId: 1
@@ -358,7 +358,7 @@ export const packageLayouts = [
     id: 13,
     name: 'Confetti',
     type: LAYOUT_TYPES.GRADUATION.value,
-    frames: [...frames],
+    frames: cloneDeep([...frames]),
     isFavorites: false,
     previewImageUrl: LAYOUT_THUMB_13,
     themeId: 1
@@ -367,7 +367,7 @@ export const packageLayouts = [
     id: 14,
     name: 'Confetti',
     type: LAYOUT_TYPES.COVER.value,
-    frames: [...frames],
+    frames: cloneDeep([...frames]),
     isFavorites: false,
     previewImageUrl: LAYOUT_THUMB_14,
     themeId: 1
@@ -376,7 +376,7 @@ export const packageLayouts = [
     id: 15,
     name: 'Confetti',
     type: LAYOUT_TYPES.GRADUATION.value,
-    frames: [...frames],
+    frames: cloneDeep([...frames]),
     isFavorites: false,
     previewImageUrl: LAYOUT_THUMB_15,
     themeId: 1
@@ -385,7 +385,7 @@ export const packageLayouts = [
     id: 16,
     name: 'Confetti',
     type: LAYOUT_TYPES.ADMIN_STAFF.value,
-    frames: [...frames],
+    frames: cloneDeep([...frames]),
     isFavorites: false,
     previewImageUrl: LAYOUT_THUMB_16,
     themeId: 1
@@ -394,7 +394,7 @@ export const packageLayouts = [
     id: 17,
     name: 'Confetti',
     type: LAYOUT_TYPES.GRADUATION.value,
-    frames: [...frames],
+    frames: cloneDeep([...frames]),
     isFavorites: false,
     previewImageUrl: LAYOUT_THUMB_17,
     themeId: 1
@@ -403,7 +403,7 @@ export const packageLayouts = [
     id: 18,
     name: 'Confetti',
     type: LAYOUT_TYPES.ADMIN_STAFF.value,
-    frames: [...frames],
+    frames: cloneDeep([...frames]),
     isFavorites: false,
     previewImageUrl: LAYOUT_THUMB_18,
     themeId: 1
@@ -412,7 +412,7 @@ export const packageLayouts = [
     id: 19,
     name: 'Confetti',
     type: LAYOUT_TYPES.GRADUATION.value,
-    frames: [...frames],
+    frames: cloneDeep([...frames]),
     isFavorites: false,
     previewImageUrl: LAYOUT_THUMB_19,
     themeId: 1
@@ -421,7 +421,7 @@ export const packageLayouts = [
     id: 20,
     name: 'Confetti',
     type: LAYOUT_TYPES.GRADUATION.value,
-    frames: [...frames],
+    frames: cloneDeep([...frames]),
     isFavorites: false,
     previewImageUrl: LAYOUT_THUMB_20,
     themeId: 1
@@ -430,7 +430,7 @@ export const packageLayouts = [
     id: 21,
     name: 'Confetti',
     type: LAYOUT_TYPES.COVER.value,
-    frames: [...frames],
+    frames: cloneDeep([...frames]),
     isFavorites: false,
     previewImageUrl: LAYOUT_THUMB_21,
     themeId: 1

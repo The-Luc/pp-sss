@@ -157,15 +157,26 @@ export const mutations = {
       state.currentFrameId = 0;
       return;
     }
-    state.frameIds = framesList.map(f => f.id);
-
-    const frames = {};
-
-    framesList.forEach(f => {
-      frames[f.id] = f;
+    // keep supplement frames
+    const supplementFrameIds = [];
+    const supplementFrames = {};
+    state.frameIds.forEach(id => {
+      if (!state.frames[id].fromLayout) {
+        supplementFrameIds.push(id);
+        supplementFrames[id] = state.frames[id];
+      }
     });
 
-    state.frames = frames;
+    const newFrameIds = framesList.map(f => f.id);
+
+    const newFrames = {};
+
+    framesList.forEach(f => {
+      newFrames[f.id] = f;
+    });
+
+    state.frameIds = [...newFrameIds, ...supplementFrameIds];
+    state.frames = { ...newFrames, ...supplementFrames };
   },
   [DIGITAL._MUTATES.REORDER_FRAME_IDS](state, { oldIndex, newIndex }) {
     const [id] = state.frameIds.splice(oldIndex, 1);
