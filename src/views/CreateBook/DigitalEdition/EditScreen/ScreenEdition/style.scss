@@ -15,9 +15,9 @@
       background-color: white;
     }
   }
-  .digital-frame {
+  .frames-container {
     border-top: 1px solid #808184;
-    .container-digital-frame {
+    .frame-container {
       margin: 18px 24px;
       position: relative;
       &:nth-child(n + 2)::before {
@@ -34,7 +34,7 @@
         border-bottom: 1px dashed #808184;
       }
 
-      .item-digital-frame {
+      .frame-item {
         cursor: pointer;
         width: 160px;
         height: 95px;
@@ -46,13 +46,13 @@
           border: 2px solid #42738d;
         }
       }
-      .item-digital-frame.add-frame {
+      .frame-item.add-frame {
         display: flex;
         justify-content: center;
         align-items: center;
         background: transparent;
         border: 1px dashed #808184;
-        .add-digital-frame {
+        .add-frame-content {
           font-size: 11px;
           font-family: $font-500;
           cursor: pointer;
@@ -62,7 +62,7 @@
           color: #58595b;
         }
       }
-      .name-frame {
+      .frame-name {
         font-family: $font-700;
         font-size: 10px;
         color: #565656;
@@ -76,15 +76,15 @@
     .digital-canvas-container {
       margin: 20px;
     }
-    .digital-frame {
-      .container-digital-frame {
+    .frames-container {
+      .frame-container {
         margin: 12px 20px;
         &:nth-child(n + 2)::before {
           left: -41px;
           width: 40px;
         }
       }
-      .item-digital-frame {
+      .frame-item {
         width: 140px !important;
         height: 85px !important;
       }
@@ -96,15 +96,15 @@
     .digital-canvas-container {
       margin: 15px;
     }
-    .digital-frame {
-      .container-digital-frame {
+    .frames-container {
+      .frame-container {
         margin: 10px 15px;
         &:nth-child(n + 2)::before {
           left: -31px;
           width: 30px;
         }
       }
-      .item-digital-frame {
+      .frame-item {
         width: 120px !important;
         height: 70px !important;
       }
