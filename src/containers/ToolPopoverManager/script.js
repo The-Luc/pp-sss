@@ -6,6 +6,7 @@ import { EDITION, TOOL_NAME } from '@/common/constants';
 import PrintThemes from './PrintThemes';
 import Layouts from './PrintEdition/Layouts';
 import PrintBackgrounds from './PrintEdition/Backgrounds';
+import DigitalBackgrounds from './DigitalEdition/Backgrounds';
 import Shapes from './Shapes';
 import ClipArt from './ClipArt';
 import Actions from './Actions';
@@ -16,7 +17,8 @@ const {
   DIGITAL_THEMES,
   PRINT_LAYOUTS,
   DIGITAL_LAYOUTS,
-  BACKGROUNDS,
+  PRINT_BACKGROUNDS,
+  DIGITAL_BACKGROUNDS,
   CLIP_ART,
   SHAPES,
   ACTIONS
@@ -27,7 +29,8 @@ const ToolList = {
   [DIGITAL_THEMES]: DIGITAL_THEMES,
   [PRINT_LAYOUTS]: PRINT_LAYOUTS,
   [DIGITAL_LAYOUTS]: DIGITAL_LAYOUTS,
-  [BACKGROUNDS]: BACKGROUNDS,
+  [PRINT_BACKGROUNDS]: PRINT_BACKGROUNDS,
+  [DIGITAL_BACKGROUNDS]: DIGITAL_BACKGROUNDS,
   [CLIP_ART]: CLIP_ART,
   [SHAPES]: SHAPES,
   [ACTIONS]: ACTIONS
@@ -46,7 +49,8 @@ export default {
     [TOOL_NAME.DIGITAL_THEMES]: DigitalThemes,
     [TOOL_NAME.PRINT_LAYOUTS]: Layouts,
     [TOOL_NAME.DIGITAL_LAYOUTS]: Layouts,
-    [TOOL_NAME.BACKGROUNDS]: PrintBackgrounds,
+    [TOOL_NAME.PRINT_BACKGROUNDS]: PrintBackgrounds,
+    [TOOL_NAME.DIGITAL_BACKGROUNDS]: DigitalBackgrounds,
     [TOOL_NAME.CLIP_ART]: ClipArt,
     [TOOL_NAME.SHAPES]: Shapes,
     [TOOL_NAME.ACTIONS]: Actions
@@ -67,8 +71,11 @@ export default {
       else if (toolName === TOOL_NAME.DIGITAL_LAYOUTS)
         this.edition = EDITION.DIGITAL;
 
-      this.componentKey =
-        toolName === TOOL_NAME.BACKGROUNDS ? !this.componentKey : '';
+      const isBackgroundMenu =
+        toolName === TOOL_NAME.PRINT_BACKGROUNDS ||
+        toolName === TOOL_NAME.DIGITAL_BACKGROUNDS;
+
+      this.componentKey = isBackgroundMenu ? !this.componentKey : '';
 
       if (toolName) {
         this.setToolComponent(toolName);

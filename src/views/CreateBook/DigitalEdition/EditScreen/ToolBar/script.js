@@ -39,7 +39,7 @@ export default {
           {
             iconName: 'texture',
             title: 'Backgrounds',
-            name: TOOL_NAME.BACKGROUNDS
+            name: TOOL_NAME.DIGITAL_BACKGROUNDS
           },
           {
             iconName: 'local_florist',
