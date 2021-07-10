@@ -233,18 +233,25 @@ export default {
         return;
       }
 
-      const isToggle = this.propertiesObjectType !== OBJECT_TYPE.BACKGROUND;
+      const notElementProperties = [
+        OBJECT_TYPE.BACKGROUND,
+        PRINT_RIGHT_TOOLS.PAGE_INFO.value
+      ];
+
+      const isToggle = !notElementProperties.includes(
+        this.propertiesObjectType
+      );
 
       isToggle
-        ? this.toggleObjectProperties(this.propertiesObjectType)
-        : this.openObjectProperties(this.propertiesObjectType);
+        ? this.toggleObjectProperties(this.selectedObjectType)
+        : this.openObjectProperties(this.selectedObjectType);
     },
     /**
      * Fire when click on Page Info button or Background Properties button
      */
     noneElementPropertiesClick(objectType) {
       const isToggle =
-        isEmpty(this.selectedObjectType) ||
+        isEmpty(this.propertiesObjectType) ||
         this.propertiesObjectType === objectType;
 
       isToggle

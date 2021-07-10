@@ -37,7 +37,6 @@ export default {
       if (this.triggerChange) {
         // just for trigger the change
       }
-      console.log(this.backgroundsProps.isSingle)
 
       return this.backgroundsProps.isSingle;
     },
