@@ -35,38 +35,42 @@ export default {
           return false;
         }
 
-        const isBackgroundSelected =
-          this.propertiesObjectType === OBJECT_TYPE.BACKGROUND;
-
-        const isBackgroundMenu =
-          DIGITAL_RIGHT_TOOLS.BACKGROUND.value === iconName;
-
-        const isBackgroundActive = isBackgroundSelected && isBackgroundMenu;
-
-        const isPageInfoSelected =
-          this.propertiesObjectType === DIGITAL_RIGHT_TOOLS.PAGE_INFO.value;
-        const isPageInfoMenu = DIGITAL_RIGHT_TOOLS.PAGE_INFO.value === iconName;
-        const isPageInfoActive = isPageInfoSelected && isPageInfoMenu;
-
-        const isPropertiesSelected =
-          !isEmpty(this.propertiesObjectType) &&
-          !isBackgroundSelected &&
-          !isPageInfoSelected;
-
-        const isPropertiesMenu =
-          DIGITAL_RIGHT_TOOLS.PROPERTIES.value === iconName;
-
-        const isPropertiesActive = isPropertiesSelected && isPropertiesMenu;
-
-        if (isBackgroundActive || isPropertiesActive || isPageInfoActive) {
-          return this.isOpenMenuProperties;
-        }
-
-        return iconName === this.selectedToolName;
+        return this.isActivatedMenuProperties(iconName)
+          ? this.isOpenMenuProperties
+          : iconName === this.selectedToolName;
       };
     }
   },
   methods: {
+    /**
+     * Check if background properties is activated
+     *
+     * @param   {String}  iconName  name of clicked icon
+     * @returns {Boolean}           background properties is activated or not
+     */
+    isBackgroundActive(iconName) {
+      const isBackgroundSelected =
+        this.propertiesObjectType === OBJECT_TYPE.BACKGROUND;
+
+      const isBackgroundMenu =
+        DIGITAL_RIGHT_TOOLS.BACKGROUND.value === iconName;
+
+      return isBackgroundSelected && isBackgroundMenu;
+    },
+    /**
+     * Check if menu properties is activated
+     *
+     * @param   {String}  iconName  name of clicked icon
+     * @returns {Boolean}           menu properties is activated or not
+     */
+    isActivatedMenuProperties(iconName) {
+      const isFrameInfoSelected =
+        this.propertiesObjectType === DIGITAL_RIGHT_TOOLS.FRAME_INFO.value;
+      const isFrameInfoMenu = DIGITAL_RIGHT_TOOLS.FRAME_INFO.value === iconName;
+      const isFrameInfoActive = isFrameInfoSelected && isFrameInfoMenu;
+
+      return isFrameInfoActive || this.isBackgroundActive(iconName);
+    },
     /**
      * Emit event click when click on icon
      * @param  {object} item Icon's object selected

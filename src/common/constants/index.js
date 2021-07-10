@@ -35,3 +35,4 @@ export * from './config';
 export * from './system';
 export * from './fontFamily';
 export * from './eventType';
+export * from './frameProperty';

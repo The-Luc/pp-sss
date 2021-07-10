@@ -74,7 +74,8 @@ import {
   COVER_TYPE,
   DEFAULT_CLIP_ART,
   FABRIC_OBJECT_TYPE,
-  DEFAULT_IMAGE
+  DEFAULT_IMAGE,
+  EDITION
 } from '@/common/constants';
 import SizeWrapper from '@/components/SizeWrapper';
 import PrintCanvasLines from './PrintCanvasLines';
@@ -602,7 +603,7 @@ export default {
       window.printCanvas.setWidth(canvasSize.width);
       window.printCanvas.setHeight(canvasSize.height);
 
-      this.drawLayout(this.sheetLayout);
+      this.drawLayout(this.sheetLayout, EDITION.PRINT);
 
       window.printCanvas.setZoom(currentZoom);
     },

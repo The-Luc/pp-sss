@@ -9,6 +9,7 @@ import {
   GETTERS as PRINT_GETTERS
 } from '@/store/modules/print/const';
 import { useDrawLayout } from '@/hooks';
+import { EDITION } from '@/common/constants';
 
 export default {
   components: {
@@ -57,7 +58,7 @@ export default {
       this.selectSheet({ id: sheet.id });
       this.setSectionId({ sectionId });
       setTimeout(() => {
-        this.drawLayout(this.sheetLayout);
+        this.drawLayout(this.sheetLayout, EDITION.PRINT);
       }, 50);
     },
     /**

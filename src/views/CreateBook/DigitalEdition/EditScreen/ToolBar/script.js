@@ -126,6 +126,7 @@ export default {
   computed: {
     ...mapGetters({
       selectedObjectType: GETTERS.SELECTED_OBJECT_TYPE,
+      propertiesObjectType: GETTERS.PROPERTIES_OBJECT_TYPE,
       isOpenMenuProperties: GETTERS.IS_OPEN_MENU_PROPERTIES,
       selectedToolName: GETTERS.SELECTED_TOOL_NAME,
       printThemeSelectedId: BOOK_GETTERS.PRINT_THEME_SELECTED_ID,
@@ -166,6 +167,12 @@ export default {
 
         return;
       }
+
+      if (item.name === DIGITAL_RIGHT_TOOLS.FRAME_INFO.value) {
+        this.noneElementPropertiesClick(DIGITAL_RIGHT_TOOLS.FRAME_INFO.value);
+
+        return;
+      }
     },
     /**
      * Detect click on item on left creattion tool
@@ -201,6 +208,15 @@ export default {
       isToggle
         ? this.toggleObjectProperties(OBJECT_TYPE.BACKGROUND)
         : this.openObjectProperties(OBJECT_TYPE.BACKGROUND);
+    },
+    noneElementPropertiesClick(objectType) {
+      const isToggle =
+        isEmpty(this.selectedObjectType) ||
+        this.propertiesObjectType === objectType;
+
+      isToggle
+        ? this.toggleObjectProperties(objectType)
+        : this.openObjectProperties(objectType);
     },
     /**
      * Toggle object properties by using mutate

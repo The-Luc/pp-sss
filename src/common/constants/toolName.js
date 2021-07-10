@@ -56,3 +56,10 @@ export const DIGITAL_RIGHT_TOOLS = {
     iconName: 'wysiwyg'
   }
 };
+export const DIGITAL_RIGHT_TOOLS = {
+  FRAME_INFO: {
+    name: 'Frame Info',
+    value: 'frameInfo',
+    iconName: 'list_alt'
+  }
+};

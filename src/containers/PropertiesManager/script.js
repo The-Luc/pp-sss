@@ -1,7 +1,11 @@
 import { mapGetters } from 'vuex';
 
 import { GETTERS } from '@/store/modules/app/const';
-import { OBJECT_TYPE, PRINT_RIGHT_TOOLS } from '@/common/constants';
+import {
+  OBJECT_TYPE,
+  PRINT_RIGHT_TOOLS,
+  DIGITAL_RIGHT_TOOLS
+} from '@/common/constants';
 
 // Object component
 import TextProperties from '@/containers/PropertiesManager/Text';
@@ -10,9 +14,12 @@ import ClipArt from '@/containers/PropertiesManager/ClipArt';
 import Background from '@/containers/PropertiesManager/Background';
 import Shape from '@/containers/PropertiesManager/Shape';
 import PageInfo from '@/containers/PropertiesManager/PageInfo';
+import FrameInfo from '@/containers/PropertiesManager/FrameInfo';
 
 const { TEXT, IMAGE, CLIP_ART, BACKGROUND, SHAPE } = OBJECT_TYPE;
+
 const PAGE_INFO = PRINT_RIGHT_TOOLS.PAGE_INFO.value;
+const FRAME_INFO = DIGITAL_RIGHT_TOOLS.FRAME_INFO.value;
 
 const MenuList = {
   [TEXT]: TEXT,
@@ -20,7 +27,8 @@ const MenuList = {
   [CLIP_ART]: CLIP_ART,
   [BACKGROUND]: BACKGROUND,
   [SHAPE]: SHAPE,
-  [PAGE_INFO]: PAGE_INFO
+  [PAGE_INFO]: PAGE_INFO,
+  [FRAME_INFO]: FRAME_INFO
 };
 
 export default {
@@ -43,7 +51,8 @@ export default {
     [OBJECT_TYPE.CLIP_ART]: ClipArt,
     [OBJECT_TYPE.BACKGROUND]: Background,
     [OBJECT_TYPE.SHAPE]: Shape,
-    [PAGE_INFO]: PageInfo
+    [PAGE_INFO]: PageInfo,
+    [FRAME_INFO]: FrameInfo
   },
   computed: {
     ...mapGetters({
