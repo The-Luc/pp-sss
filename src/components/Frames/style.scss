@@ -25,6 +25,7 @@
       width: 160px;
       height: 95px;
       padding: 2px;
+      opacity: 0.5;
       background: $color-white;
 
       border: 0.5px solid $color-gray6;
@@ -80,7 +81,7 @@
         width: 40px;
       }
 
-      .item-digital-frame {
+      .frame-item {
         width: 140px;
         height: 85px;
       }
@@ -98,7 +99,7 @@
         width: 30px;
       }
 
-      .item-digital-frame {
+      .frame-item {
         width: 120px;
         height: 70px;
       }
