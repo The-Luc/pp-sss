@@ -7,7 +7,7 @@ export default {
       required: true
     },
     parentValue: {
-      type: String | Number,
+      type: [String, Number],
       default: ''
     },
     prependedIcon: {
@@ -23,7 +23,7 @@ export default {
       default: ICON_LOCAL.ACTIVE_MENU
     },
     selectedVal: {
-      type: Number | String,
+      type: [String, Number],
       default: ''
     }
   },

@@ -77,7 +77,7 @@ export const getters = {
     return sheets;
   },
   [DIGITAL._GETTERS.BACKGROUNDS_NO_LAYOUT]: ({ background }) => {
-    return isEmpty(background.left.backgroundType) ? [background.left] : [];
+    return isEmpty(background.left.backgroundType) ? null : background.left;
   },
   [DIGITAL._GETTERS.BACKGROUNDS_PROPERTIES]: ({ background }) => {
     return {
