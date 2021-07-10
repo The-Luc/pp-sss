@@ -11,7 +11,7 @@
     </div>
 
     <Frames
-      :frames="frameThumbnails"
+      :frames="frameList"
       :active-frame-id="currentFrameId"
       @addFrame="onAddFrame"
       @onFrameClick="onFrameClick"

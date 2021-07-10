@@ -84,10 +84,14 @@ export const actions = {
       themeId,
       previewImageUrl: layout.previewImageUrl
     });
+
+    // adding Id to each frame
+    const frames = layout.frames.map(f => ({ id: uniqueId(), frame: f }));
+
     // set the first frame is the active one
-    commit(DIGITAL._MUTATES.SET_CURRENT_FRAME_ID, { id: layout.frames[0].id });
+    commit(DIGITAL._MUTATES.SET_CURRENT_FRAME_ID, { id: frames[0].id });
     // set Frames, frameIds and activeFrame
-    commit(DIGITAL._MUTATES.SET_FRAMES, { framesList: layout.frames });
+    commit(DIGITAL._MUTATES.SET_FRAMES, { framesList: frames });
   },
   [DIGITAL._ACTIONS.UPDATE_LAYOUT_OBJ_TO_STORE](
     { state, commit },

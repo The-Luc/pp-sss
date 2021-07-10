@@ -208,14 +208,14 @@ const frames2 = [
   {
     id: 2,
     fromLayout: true,
-    objects: [backgrounds[4], clipArt1, shape1],
+    objects: [backgrounds[4], text2, shape1],
     previewImageUrl: LAYOUT_THUMB_04,
     isVisited: false
   },
   {
     id: 3,
     fromLayout: true,
-    objects: [backgrounds[4], clipArt1, clipArt2],
+    objects: [backgrounds[5], clipArt1, clipArt2],
     previewImageUrl: LAYOUT_THUMB_05,
     isVisited: false
   }
@@ -260,7 +260,7 @@ export const packageLayouts = [
     id: 3,
     name: 'Four Frames',
     type: LAYOUT_TYPES.COLLAGE.value,
-    frames: cloneDeep([...frames2, { ...frames[0], id: 4 }]),
+    frames: cloneDeep([...frames2, frames[0]]),
     isFavorites: false,
     previewImageUrl: LAYOUT_THUMB_03,
     themeId: 1

@@ -172,7 +172,7 @@ export const mutations = {
     const newFrames = {};
 
     framesList.forEach(f => {
-      newFrames[f.id] = f;
+      newFrames[f.id] = f.frame;
     });
 
     state.frameIds = [...newFrameIds, ...supplementFrameIds];

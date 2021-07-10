@@ -17,9 +17,12 @@ export default {
     frameData() {
       const defaultData = [
         {
-          image: '',
-          type: null,
-          id: 0
+          id: 0,
+          frame: {
+            image: '',
+            type: null,
+            id: 0
+          }
         }
       ];
 
