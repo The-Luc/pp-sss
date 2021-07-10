@@ -19,6 +19,13 @@ export default {
     ToolPopoverManager,
     PpCombobox
   },
+  data() {
+    return {
+      componentKey: true,
+      appendedIcon: ICON_LOCAL.APPENDED_ICON_ZOOM,
+      zoomOptions: ZOOM_VALUE
+    };
+  },
   props: {
     isOpenMenuProperties: {
       type: Boolean,
@@ -27,18 +34,7 @@ export default {
     selectedToolName: {
       type: String,
       default: ''
-    },
-    isDigital: {
-      type: Boolean,
-      default: false
     }
-  },
-  data() {
-    return {
-      componentKey: true,
-      appendedIcon: ICON_LOCAL.APPENDED_ICON_ZOOM,
-      zoomOptions: ZOOM_VALUE
-    };
   },
   setup() {
     const { infoBar } = useInfoBar();

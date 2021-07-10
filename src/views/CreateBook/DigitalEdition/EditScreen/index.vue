@@ -8,7 +8,6 @@
     <FeedbackBar
       :is-open-menu-properties="isOpenMenuProperties"
       :selected-tool-name="selectedToolName"
-      :is-digital="true"
     />
     <SidebarSection />
     <ScreenEdition />

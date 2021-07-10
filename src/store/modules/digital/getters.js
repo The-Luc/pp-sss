@@ -80,9 +80,11 @@ export const getters = {
     return isEmpty(background.left.backgroundType) ? null : background.left;
   },
   [DIGITAL._GETTERS.BACKGROUNDS_PROPERTIES]: ({ background }) => {
-    return isEmpty(background.left)
-      ? { isSingle: true, isEmpty: true }
-      : { isSingle: true, background: background.left };
+    return {
+      isSingle: false,
+      left: background?.left,
+      right: {}
+    };
   },
   [DIGITAL._GETTERS.SECTIONS_SHEETS]: ({ sections, sheets }) => {
     return sections.map(section => {

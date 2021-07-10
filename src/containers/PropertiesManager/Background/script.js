@@ -11,21 +11,13 @@ export default {
     TabMenu,
     PropertiesContent
   },
-  props: {
-    isDigital: {
-      type: Boolean,
-      default: false
-    }
-  },
   data() {
     return {
       activeTab: ''
     };
   },
-  setup({ isDigital }) {
-    const { backgroundsProps, triggerChange } = useBackgroundProperties(
-      isDigital
-    );
+  setup() {
+    const { backgroundsProps, triggerChange } = useBackgroundProperties();
 
     return {
       backgroundsProps,
@@ -127,11 +119,7 @@ export default {
      * @param {Number}  opacity the opacity data
      */
     onChangeOpacity({ isLeft, opacity }) {
-      const methodName = this.isDigital
-        ? 'digitalChangeBackgroundProperties'
-        : 'printChangeBackgroundProperties';
-
-      this.$root.$emit(methodName, {
+      this.$root.$emit('printChangeBackgroundProperties', {
         backgroundId: this.getId(isLeft),
         isLeftBackground: isLeft,
         prop: { opacity }
@@ -143,11 +131,7 @@ export default {
      * @param {Boolean} isLeft  is left background change
      */
     onRemove(isLeft) {
-      const methodName = this.isDigital
-        ? 'digitalDeleteBackground'
-        : 'printDeleteBackground';
-
-      this.$root.$emit(methodName, {
+      this.$root.$emit('printDeleteBackground', {
         backgroundId: this.getId(isLeft),
         isLeftBackground: isLeft
       });

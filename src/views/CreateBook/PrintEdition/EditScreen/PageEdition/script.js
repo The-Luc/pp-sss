@@ -32,6 +32,7 @@ import {
   createTextBox,
   applyTextBoxProperties,
   addPrintBackground,
+  updatePrintBackground,
   addPrintShapes,
   addPrintClipArts,
   updateElement,
@@ -1010,14 +1011,8 @@ export default {
 
       this.updateTriggerBackgroundChange();
 
-      updateElement(background, prop, window.printCanvas);
+      updatePrintBackground(background, prop, window.printCanvas);
     },
-    /**
-     * Event fire when user click remove background
-     *
-     * @param {String|Number} backgroundId      id of background will be removed
-     * @param {Boolean}       isLeftBackground  if background place on left side
-     */
     removeBackground({ backgroundId, isLeftBackground }) {
       this.deleteBackground({ isLeft: isLeftBackground });
 

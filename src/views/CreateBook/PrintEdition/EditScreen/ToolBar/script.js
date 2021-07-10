@@ -6,11 +6,11 @@ import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 import {
   TOOL_NAME,
   OBJECT_TYPE,
-  PRINT_RIGHT_TOOLS,
+  RIGHT_TOOLS,
   EDITION
 } from '@/common/constants';
 import { useLayoutPrompt } from '@/hooks';
-import { isEmpty, getRightToolItems } from '@/common/utils';
+import { isEmpty } from '@/common/utils';
 
 export default {
   setup() {
@@ -30,6 +30,14 @@ export default {
     ItemTool
   },
   data() {
+    const rightTools = Object.keys(RIGHT_TOOLS).map(k => {
+      return {
+        iconName: RIGHT_TOOLS[k].iconName,
+        title: RIGHT_TOOLS[k].name,
+        name: RIGHT_TOOLS[k].value
+      };
+    });
+
     return {
       itemsToolLeft: [
         [
@@ -110,7 +118,7 @@ export default {
           }
         ]
       ],
-      itemsToolRight: [getRightToolItems(PRINT_RIGHT_TOOLS)]
+      itemsToolRight: [rightTools]
     };
   },
   computed: {
@@ -142,20 +150,20 @@ export default {
       const toolName = this.selectedToolName === item?.name ? '' : item?.name;
       this.$root.$emit('printSwitchTool', toolName);
 
-      if (item.name === PRINT_RIGHT_TOOLS.PROPERTIES.value) {
+      if (item.name === RIGHT_TOOLS.PROPERTIES.value) {
         this.elementPropertiesClick();
 
         return;
       }
 
-      if (item.name === PRINT_RIGHT_TOOLS.BACKGROUND.value) {
-        this.noneElementPropertiesClick(OBJECT_TYPE.BACKGROUND);
+      if (item.name === RIGHT_TOOLS.BACKGROUND.value) {
+        this.NoneElementPropertiesClick(OBJECT_TYPE.BACKGROUND);
 
         return;
       }
 
-      if (item.name === PRINT_RIGHT_TOOLS.PAGE_INFO.value) {
-        this.noneElementPropertiesClick(PRINT_RIGHT_TOOLS.PAGE_INFO.value);
+      if (item.name === RIGHT_TOOLS.PAGE_INFO.value) {
+        this.NoneElementPropertiesClick(RIGHT_TOOLS.PAGE_INFO.value);
 
         return;
       }
@@ -233,25 +241,18 @@ export default {
         return;
       }
 
-      const notElementProperties = [
-        OBJECT_TYPE.BACKGROUND,
-        PRINT_RIGHT_TOOLS.PAGE_INFO.value
-      ];
-
-      const isToggle = !notElementProperties.includes(
-        this.propertiesObjectType
-      );
+      const isToggle = this.propertiesObjectType !== OBJECT_TYPE.BACKGROUND;
 
       isToggle
-        ? this.toggleObjectProperties(this.selectedObjectType)
-        : this.openObjectProperties(this.selectedObjectType);
+        ? this.toggleObjectProperties(this.propertiesObjectType)
+        : this.openObjectProperties(this.propertiesObjectType);
     },
     /**
      * Fire when click on Page Info button or Background Properties button
      */
-    noneElementPropertiesClick(objectType) {
+    NoneElementPropertiesClick(objectType) {
       const isToggle =
-        isEmpty(this.propertiesObjectType) ||
+        isEmpty(this.selectedObjectType) ||
         this.propertiesObjectType === objectType;
 
       isToggle

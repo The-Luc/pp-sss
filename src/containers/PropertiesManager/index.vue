@@ -1,6 +1,6 @@
 <template>
   <div ref="propertiesContainer" class="properties-container">
-    <component :is="renderObject" :is-digital="isDigital" />
+    <component :is="renderObject" />
   </div>
 </template>
 
