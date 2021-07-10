@@ -44,6 +44,7 @@ import {
 
 import { loadLayouts, loadSupplementalLayouts } from '@/api/layouts';
 import { loadDigitalLayouts } from '@/api/layouts';
+import { cloneDeep } from 'lodash';
 
 export default {
   setup({ edition }) {
@@ -153,10 +154,10 @@ export default {
         if (newVal?.disabled !== oldVal?.disabled) {
           this.initData();
         }
-      },
-      triggerAppyLayout() {
-        this.applyLayout();
       }
+    },
+    triggerAppyLayout() {
+      this.applyLayout();
     }
   },
   mounted() {
@@ -373,7 +374,7 @@ export default {
       this.updateSheetThemeLayout({
         sheetId: this.pageSelected?.id,
         themeId: this.themeSelected?.id,
-        layout: this.layoutObjSelected
+        layout: cloneDeep(this.layoutObjSelected)
       });
 
       resetObjects(activeCanvas);

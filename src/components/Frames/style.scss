@@ -24,7 +24,9 @@
       cursor: pointer;
       width: 160px;
       height: 95px;
-      background: white;
+      padding: 2px;
+      opacity: 0.5;
+      background: $color-white;
 
       border: 0.5px solid $color-gray6;
       position: relative;
@@ -37,6 +39,7 @@
 
       &.active {
         border: 2px solid $color-stoodio-blue;
+        opacity: 1;
       }
     }
 
@@ -77,11 +80,11 @@
         left: -41px;
         width: 40px;
       }
-    }
 
-    .frame-item {
-      width: 140px !important;
-      height: 85px !important;
+      .frame-item {
+        width: 140px;
+        height: 85px;
+      }
     }
   }
 }
@@ -95,11 +98,11 @@
         left: -31px;
         width: 30px;
       }
-    }
 
-    .frame-item {
-      width: 120px !important;
-      height: 70px !important;
+      .frame-item {
+        width: 120px;
+        height: 70px;
+      }
     }
   }
 }

@@ -144,17 +144,6 @@ export default {
     },
     currentSheetType() {
       return this.pageSelected?.type || -1;
-    },
-    frameThumbnails() {
-      if (isEmpty(this.frames)) return [];
-
-      return this.frames.map(f => {
-        return {
-          image: f.previewImageUrl, // use preview image for now, revise later
-          id: f.id,
-          fromLayout: f.fromLayout
-        };
-      });
     }
   },
   methods: {
@@ -1398,6 +1387,7 @@ export default {
           this.countPaste = 1;
           this.setSelectedObjectId({ id: '' });
           this.setCurrentFrameId({ id: '' });
+          this.setIsOpenProperties({ isOpen: false });
           this.setCurrentObject(null);
           this.updateCanvasSize();
           resetObjects(this.digitalCanvas);

@@ -2,15 +2,15 @@
   <div class="frames-container">
     <div class="row">
       <div
-        v-for="(frame, index) in frameData"
-        :key="frame.id"
+        v-for="({ id, frame }, index) in frameData"
+        :key="id"
         class="frame-container"
-        @click="onFrameClick(frame.id)"
+        @click="onFrameClick(id)"
       >
-        <div class="frame-item" :class="{ active: frame.id === activeFrameId }">
+        <div class="frame-item" :class="{ active: id === activeFrameId }">
           <img
-            v-if="frame.image"
-            :src="frame.image"
+            v-if="frame.previewImageUrl"
+            :src="frame.previewImageUrl"
             alt="frame thumbnail"
             class="frame-image"
           />

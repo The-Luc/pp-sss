@@ -4,7 +4,6 @@ import { GETTERS } from '@/store/modules/app/const';
 import ToolButton from '@/components/Buttons/ToolButton';
 import { useLayoutPrompt } from '@/hooks';
 import { DIGITAL_RIGHT_TOOLS, OBJECT_TYPE, EDITION } from '@/common/constants';
-import { isEmpty } from '@/common/utils';
 
 export default {
   setup() {
