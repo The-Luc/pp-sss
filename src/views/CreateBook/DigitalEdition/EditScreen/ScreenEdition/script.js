@@ -11,6 +11,7 @@ import {
   DEFAULT_IMAGE,
   DEFAULT_SHAPE,
   EDITION,
+  MODAL_TYPES,
   OBJECT_TYPE,
   SHEET_TYPE,
   TOOL_NAME
@@ -35,7 +36,14 @@ import {
 } from '@/common/fabricObjects';
 import { createImage } from '@/common/fabricObjects';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
-import { useDrawLayout, useInfoBar, useLayoutPrompt, useFrame } from '@/hooks';
+
+import {
+  useDrawLayout,
+  useInfoBar,
+  useLayoutPrompt,
+  useFrame,
+  useModal
+} from '@/hooks';
 
 import {
   ImageElement,
@@ -85,10 +93,18 @@ export default {
   setup() {
     const { drawLayout } = useDrawLayout();
     const { setInfoBar, zoom } = useInfoBar();
+    const { toggleModal } = useModal();
     const { openPrompt } = useLayoutPrompt();
     const { handleChangeFrame } = useFrame();
 
-    return { drawLayout, setInfoBar, zoom, openPrompt, handleChangeFrame };
+    return {
+      drawLayout,
+      setInfoBar,
+      zoom,
+      openPrompt,
+      handleChangeFrame,
+      toggleModal
+    };
   },
   data() {
     return {
@@ -1282,10 +1298,20 @@ export default {
     },
     /**
      * Fire when click add frame button
-     * @param {Object} event mouse event parameter when click element
+     * @param {Element} target add frame button
      */
-    onAddFrame() {
-      this.openPrompt();
+    onAddFrame({ target }) {
+      const { left, width } = target.getBoundingClientRect();
+      const centerX = left + width / 2;
+      this.toggleModal({
+        isOpenModal: true,
+        modalData: {
+          type: MODAL_TYPES.ADD_DIGITAL_FRAME,
+          props: {
+            centerX
+          }
+        }
+      });
     },
 
     /**

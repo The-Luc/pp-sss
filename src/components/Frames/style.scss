@@ -1,7 +1,7 @@
-.digital-frame {
+.frames-container {
   border-top: 1px solid $color-gray6;
 
-  .container-digital-frame {
+  .frame-container {
     margin: 18px 24px;
     position: relative;
 
@@ -20,36 +20,34 @@
       border-bottom: 1px dashed $color-gray6;
     }
 
-    .item-digital-frame {
+    .frame-item {
       cursor: pointer;
       width: 160px;
       height: 95px;
-      padding: 2px;
-      background: $color-white;
+      background: white;
 
       border: 0.5px solid $color-gray6;
       position: relative;
-      opacity: 0.5;
 
-      .digital-frame-image {
+      .frame-image {
         width: 100%;
         height: 100%;
         object-fit: cover;
       }
+
       &.active {
         border: 2px solid $color-stoodio-blue;
-        opacity: 1;
       }
     }
 
-    .item-digital-frame.add-frame {
+    .frame-item.add-frame {
       display: flex;
       justify-content: center;
       align-items: center;
       background: transparent;
       border: 1px dashed $color-gray6;
 
-      .add-digital-frame {
+      .add-frame-content {
         font-size: 11px;
         font-family: $font-500;
         cursor: pointer;
@@ -61,7 +59,7 @@
       }
     }
 
-    .name-frame {
+    .frame-name {
       font-family: $font-700;
       font-size: 10px;
       color: $color-gray5;
@@ -71,37 +69,37 @@
 }
 
 @media only screen and (max-width: 1600px) {
-  .digital-frame {
-    .container-digital-frame {
+  .frames-container {
+    .frame-container {
       margin: 12px 20px;
 
       &:nth-child(n + 2)::before {
         left: -41px;
         width: 40px;
       }
+    }
 
-      .item-digital-frame {
-        width: 140px;
-        height: 85px;
-      }
+    .frame-item {
+      width: 140px !important;
+      height: 85px !important;
     }
   }
 }
 
 @media screen and (max-width: 1366px) {
-  .digital-frame {
-    .container-digital-frame {
+  .frames-container {
+    .frame-container {
       margin: 10px 15px;
 
       &:nth-child(n + 2)::before {
         left: -31px;
         width: 30px;
       }
+    }
 
-      .item-digital-frame {
-        width: 120px;
-        height: 70px;
-      }
+    .frame-item {
+      width: 120px !important;
+      height: 70px !important;
     }
   }
 }
