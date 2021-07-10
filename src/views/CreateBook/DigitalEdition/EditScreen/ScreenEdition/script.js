@@ -1281,6 +1281,23 @@ export default {
       }
     },
     /**
+     * Fire when click add frame button
+     * @param {Object} event mouse event parameter when click element
+     */
+    onAddFrame() {
+      this.openPrompt();
+    },
+
+    /**
+     * Fire when click on an frame
+     * @param {Number} id Id of the clicked frame
+     */
+    onFrameClick(id) {
+      if (id === this.currentFrameId) return;
+
+      this.setCurrentFrameId({ id });
+    },
+    /**
      * Adding background to canvas & store
      *
      * @param {Object}  background  the object of adding background
@@ -1353,23 +1370,7 @@ export default {
       this.setIsOpenProperties({ isOpen: false });
 
       this.setPropertiesObjectType({ type: '' });*/
-    },/**
-    * Fire when click add frame button
-    * @param {Object} event mouse event parameter when click element
-    */
-   onAddFrame() {
-     this.openPrompt();
-   },
-
-   /**
-    * Fire when click on an frame
-    * @param {Number} id Id of the clicked frame
-    */
-   onFrameClick(id) {
-     if (id === this.currentFrameId) return;
-
-     this.setCurrentFrameId({ id });
-   }
+    }
   },
   watch: {
     pageSelected: {
