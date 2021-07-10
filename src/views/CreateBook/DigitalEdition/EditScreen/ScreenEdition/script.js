@@ -116,7 +116,7 @@ export default {
       currentObjects: DIGITAL_GETTERS.GET_OBJECTS,
       totalBackground: DIGITAL_GETTERS.TOTAL_BACKGROUND,
       listObjects: DIGITAL_GETTERS.GET_OBJECTS,
-      frameList: DIGITAL_GETTERS.GET_FRAMES_WIDTH_IDS,
+      frames: DIGITAL_GETTERS.GET_FRAMES_WIDTH_IDS,
       currentFrameId: DIGITAL_GETTERS.CURRENT_FRAME_ID
     }),
     isCover() {
@@ -128,17 +128,6 @@ export default {
     },
     currentSheetType() {
       return this.pageSelected?.type || -1;
-    },
-    frameThumbnails() {
-      if (isEmpty(this.frames)) return [];
-
-      return this.frames.map(f => {
-        return {
-          image: f.previewImageUrl, // use preview image for now, revise later
-          id: f.id,
-          fromLayout: f.fromLayout
-        };
-      });
     }
   },
   methods: {

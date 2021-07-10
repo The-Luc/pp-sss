@@ -11,7 +11,7 @@
     </div>
 
     <Frames
-      :frames="frameList"
+      :frames="frames"
       :active-frame-id="currentFrameId"
       @addFrame="onAddFrame"
       @onFrameClick="onFrameClick"
