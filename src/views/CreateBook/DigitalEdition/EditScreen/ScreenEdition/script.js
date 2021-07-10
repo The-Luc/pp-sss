@@ -32,7 +32,8 @@ import {
   toggleStroke,
   updateElement,
   updateTextListeners,
-  addDigitalBackground
+  addDigitalBackground,
+  deleteObjectById
 } from '@/common/fabricObjects';
 import { createImage } from '@/common/fabricObjects';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
@@ -1366,8 +1367,7 @@ export default {
      * @param {String|Number} backgroundId  id of background will be removed
      */
     removeBackground({ backgroundId }) {
-      // will use for next ticket
-      /*this.deleteBackground({ isLeft: true });
+      this.deleteBackground({ isLeft: true });
 
       deleteObjectById([backgroundId], window.digitalCanvas);
 
@@ -1375,7 +1375,30 @@ export default {
 
       this.setIsOpenProperties({ isOpen: false });
 
-      this.setPropertiesObjectType({ type: '' });*/
+      this.setPropertiesObjectType({ type: '' });
+    },
+    /**
+     * Reset configs properties when close object
+     */
+    resetConfigTextProperties() {
+      if (this.propertiesObjectType !== OBJECT_TYPE.BACKGROUND) {
+        this.setIsOpenProperties({ isOpen: false });
+
+        this.setPropertiesObjectType({ type: '' });
+      }
+
+      this.setObjectTypeSelected({ type: '' });
+
+      this.setSelectedObjectId({ id: '' });
+
+      this.setCurrentObject(null);
+    },
+    /**
+     * Close properties modal
+     */
+    closeProperties() {
+      this.toggleActiveObjects(false);
+      this.resetConfigTextProperties();
     }
   },
   watch: {
