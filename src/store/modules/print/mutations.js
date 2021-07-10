@@ -7,7 +7,7 @@ import {
   isEmpty
 } from '@/common/utils';
 
-import { OBJECT_TYPE } from '@/common/constants';
+import { OBJECT_TYPE, SHEET_TYPE } from '@/common/constants';
 import PRINT from './const';
 
 export const mutations = {
@@ -201,5 +201,21 @@ export const mutations = {
   },
   [PRINT._MUTATES.SET_PAGE_INFO](state, { pageInfo }) {
     state.book.pageInfo = pageInfo;
+  },
+  [PRINT._MUTATES.SET_STATUS_PAGE_NUMBER](state, isNumberOn) {
+    state.book.pageInfo.isNumberingOn = isNumberOn;
+    Object.values(state.sheets).forEach(sheet => {
+      const { spreadInfo, type } = sheet;
+      if (type === SHEET_TYPE.FRONT_COVER) {
+        spreadInfo.isRightNumberOn = isNumberOn;
+      }
+      if (type === SHEET_TYPE.BACK_COVER) {
+        spreadInfo.isLeftNumberOn = isNumberOn;
+      }
+      if (type === SHEET_TYPE.NORMAL) {
+        spreadInfo.isLeftNumberOn = isNumberOn;
+        spreadInfo.isRightNumberOn = isNumberOn;
+      }
+    });
   }
 };

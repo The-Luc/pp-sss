@@ -16,7 +16,7 @@ export default {
       type: String,
       default: ''
     },
-    isDisabled: {
+    disabled: {
       type: Boolean,
       default: false
     },

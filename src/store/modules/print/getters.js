@@ -120,5 +120,8 @@ export const getters = {
   },
   [PRINT._GETTERS.DEFAULT_THEME_ID]: ({ book }) => {
     return book.defaultThemeId;
+  },
+  [PRINT._GETTERS.TOTAL_OBJECT]: ({ objectIds }) => {
+    return objectIds.length;
   }
 };
