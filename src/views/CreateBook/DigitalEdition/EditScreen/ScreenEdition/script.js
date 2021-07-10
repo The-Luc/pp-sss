@@ -3,12 +3,14 @@ import { fabric } from 'fabric';
 import { DIGITAL_CANVAS_SIZE } from '@/common/constants/canvas';
 import SizeWrapper from '@/components/SizeWrapper';
 import AddBoxInstruction from '@/components/AddBoxInstruction';
+import Frames from '@/components/Frames';
 import { useDigitalOverrides } from '@/plugins/fabric';
 import {
   ARRANGE_SEND,
   DEFAULT_CLIP_ART,
   DEFAULT_IMAGE,
   DEFAULT_SHAPE,
+  EDITION,
   OBJECT_TYPE,
   SHEET_TYPE,
   TOOL_NAME
@@ -32,7 +34,7 @@ import {
 } from '@/common/fabricObjects';
 import { createImage } from '@/common/fabricObjects/image';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
-import { useDrawLayout, useInfoBar } from '@/hooks';
+import { useDrawLayout, useInfoBar, useLayoutPrompt, useFrame } from '@/hooks';
 
 import { ImageElement, ClipArtElement, ShapeElement } from '@/common/models';
 
@@ -71,13 +73,16 @@ const ELEMENTS = {
 export default {
   components: {
     SizeWrapper,
-    AddBoxInstruction
+    AddBoxInstruction,
+    Frames
   },
   setup() {
     const { drawLayout } = useDrawLayout();
     const { setInfoBar, zoom } = useInfoBar();
+    const { openPrompt } = useLayoutPrompt();
+    const { handleChangeFrame } = useFrame();
 
-    return { drawLayout, setInfoBar, zoom };
+    return { drawLayout, setInfoBar, zoom, openPrompt, handleChangeFrame };
   },
   data() {
     return {
@@ -104,7 +109,9 @@ export default {
       object: DIGITAL_GETTERS.OBJECT_BY_ID,
       currentObjects: DIGITAL_GETTERS.GET_OBJECTS,
       totalBackground: DIGITAL_GETTERS.TOTAL_BACKGROUND,
-      listObjects: DIGITAL_GETTERS.GET_OBJECTS
+      listObjects: DIGITAL_GETTERS.GET_OBJECTS,
+      frames: DIGITAL_GETTERS.GET_FRAMES_WIDTH_IDS,
+      currentFrameId: DIGITAL_GETTERS.CURRENT_FRAME_ID
     }),
     isCover() {
       return this.pageSelected?.type === SHEET_TYPE.COVER;
@@ -115,6 +122,17 @@ export default {
     },
     currentSheetType() {
       return this.pageSelected?.type || -1;
+    },
+    frameThumbnails() {
+      if (isEmpty(this.frames)) return [];
+
+      return this.frames.map(f => {
+        return {
+          image: f.previewImageUrl, // use preview image for now, revise later
+          id: f.id,
+          fromLayout: f.fromLayout
+        };
+      });
     }
   },
   methods: {
@@ -144,7 +162,9 @@ export default {
       toggleActiveObjects: MUTATES.TOGGLE_ACTIVE_OBJECTS,
       setPropertiesObjectType: MUTATES.SET_PROPERTIES_OBJECT_TYPE,
       setBackgroundProp: DIGITAL_MUTATES.SET_BACKGROUND_PROP,
-      deleteBackground: DIGITAL_MUTATES.DELETE_BACKGROUND
+      deleteBackground: DIGITAL_MUTATES.DELETE_BACKGROUND,
+      setFrames: DIGITAL_MUTATES.SET_FRAMES,
+      setCurrentFrameId: DIGITAL_MUTATES.SET_CURRENT_FRAME_ID
     }),
     updateCanvasSize() {
       const canvasSize = {
@@ -1234,6 +1254,24 @@ export default {
       } else {
         this.closeProperties();
       }
+    },
+
+    /**
+     * Fire when click add frame button
+     * @param {Object} event mouse event parameter when click element
+     */
+    onAddFrame() {
+      this.openPrompt();
+    },
+
+    /**
+     * Fire when click on an frame
+     * @param {Number} id Id of the clicked frame
+     */
+    onFrameClick(id) {
+      if (id === this.currentFrameId) return;
+
+      this.setCurrentFrameId({ id });
     }
   },
   watch: {
@@ -1244,12 +1282,26 @@ export default {
           await this.getDataCanvas();
           this.countPaste = 1;
           this.setSelectedObjectId({ id: '' });
+          this.setCurrentFrameId({ id: '' });
           this.setCurrentObject(null);
           this.updateCanvasSize();
           resetObjects(this.digitalCanvas);
-          this.drawLayout(this.sheetLayout);
+          // reset frames, frameIDs, currentFrameId
+          this.setFrames({ framesList: [] });
+          this.drawLayout(this.sheetLayout, EDITION.DIGITAL);
         }
       }
+    },
+    currentFrameId(val) {
+      if (!val) return;
+
+      this.setSelectedObjectId({ id: '' });
+      this.setCurrentObject(null);
+      resetObjects(this.digitalCanvas);
+
+      this.handleChangeFrame();
+
+      this.drawLayout(this.sheetLayout, EDITION.DIGITAL);
     }
   },
   beforeDestroy() {
