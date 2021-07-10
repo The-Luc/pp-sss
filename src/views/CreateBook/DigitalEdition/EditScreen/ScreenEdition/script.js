@@ -1328,7 +1328,6 @@ export default {
       });
     },
     /**
-     * This method is under development
      * Event fire when user change any property of selected background
      *
      * @param {Object}  prop  new prop
@@ -1347,10 +1346,9 @@ export default {
       updateElement(background, prop, window.digitalCanvas);
     },
     /**
-     * This method is under development
-     * Event fire when user change any property of selected background
+     * Event fire when user click remove background
      *
-     * @param {Object}  prop  new prop
+     * @param {String|Number} backgroundId  id of background will be removed
      */
     removeBackground({ backgroundId }) {
       // will use for next ticket
