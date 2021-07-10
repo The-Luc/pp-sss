@@ -154,10 +154,10 @@ export default {
         if (newVal?.disabled !== oldVal?.disabled) {
           this.initData();
         }
-      },
-      triggerAppyLayout() {
-        this.applyLayout();
       }
+    },
+    triggerAppyLayout() {
+      this.applyLayout();
     }
   },
   mounted() {
