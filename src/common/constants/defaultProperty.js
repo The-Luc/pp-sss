@@ -49,7 +49,7 @@ export const DEFAULT_SHADOW = {
   OFFSET: 2,
   OPACITY: 0.5,
   ANGLE: 270,
-  COLOR: DEFAULT_PROP.COLOR
+  COLOR: '#00000080'
 };
 
 export const DEFAULT_TEXT = {

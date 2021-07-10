@@ -6,6 +6,7 @@ import Blur from './Settings/Blur';
 import Offset from './Settings/Offset';
 import ShadowColor from './Settings/Color';
 import Angle from './Settings/Angle';
+import { percentToHex, hexToPercent } from '@/common/utils';
 
 export default {
   components: {
@@ -72,6 +73,11 @@ export default {
      * @param {Object} object Value user selected
      */
     onChange(object) {
+      if (object?.shadowColor) {
+        const shadowOpacity = object.shadowColor.slice(-2);
+        object.shadowOpacity = hexToPercent(shadowOpacity) / 100;
+      }
+
       this.$emit('change', object);
     },
     /**
@@ -79,7 +85,16 @@ export default {
      * @param {Number} value Value user selected
      */
     onChangeOpacity(value) {
-      this.$emit('change', { shadowOpacity: value });
+      let shadowColor = this.currentShadow.shadowColor;
+      if (shadowColor.length === 9) {
+        shadowColor = shadowColor.slice(0, 7);
+      }
+      shadowColor += percentToHex(value * 100);
+
+      this.$emit('change', {
+        shadowColor,
+        shadowOpacity: value
+      });
     }
   }
 };
