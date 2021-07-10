@@ -78,7 +78,10 @@ import {
   MUTATES as DIGITAL_MUTATES
 } from '@/store/modules/digital/const';
 import { cloneDeep, debounce, merge, uniqueId } from 'lodash';
-import { THUMBNAIL_IMAGE_QUALITY } from '@/common/constants/config';
+import {
+  MAX_SUPPLEMENTAL_FRAMES,
+  THUMBNAIL_IMAGE_QUALITY
+} from '@/common/constants/config';
 
 const ELEMENTS = {
   [OBJECT_TYPE.TEXT]: 'a text box',
@@ -116,7 +119,8 @@ export default {
       y: 0,
       visible: false,
       awaitingAdd: '',
-      digitalCanvas: null
+      digitalCanvas: null,
+      showAddFrame: true
     };
   },
   computed: {
@@ -1399,6 +1403,13 @@ export default {
     closeProperties() {
       this.toggleActiveObjects(false);
       this.resetConfigTextProperties();
+    },
+    /**
+     * Handle show/hide add frame button
+     * @param {Array} frames supplemental frames
+     */
+    handleShowAddFrame(frames) {
+      this.showAddFrame = frames.length < MAX_SUPPLEMENTAL_FRAMES;
     }
   },
   watch: {
@@ -1430,6 +1441,15 @@ export default {
       this.handleChangeFrame();
 
       this.drawLayout(this.sheetLayout, EDITION.DIGITAL);
+    },
+    frames: {
+      deep: true,
+      handler(val, oldVal) {
+        if (val.length && val.length !== oldVal.length) {
+          const supplementalFrames = val.filter(item => !item.frame.fromLayout);
+          this.handleShowAddFrame(supplementalFrames);
+        }
+      }
     }
   },
   beforeDestroy() {

@@ -14,3 +14,5 @@ export const PASTE = {
 
 // live thumbnail on the left sidebar
 export const THUMBNAIL_IMAGE_QUALITY = 0.2;
+
+export const MAX_SUPPLEMENTAL_FRAMES = 10;

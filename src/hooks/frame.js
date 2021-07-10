@@ -19,11 +19,13 @@ export const useFrame = () => {
   const {
     setPropertiesObjectType,
     setIsOpenProperties,
-    setCurrentFrameVisited
+    setCurrentFrameVisited,
+    addSupplementalFrame
   } = useMutations({
     setPropertiesObjectType: MUTATES.SET_PROPERTIES_OBJECT_TYPE,
     setIsOpenProperties: MUTATES.TOGGLE_MENU_PROPERTIES,
-    setCurrentFrameVisited: DIGITAL_MUTATES.SET_CURRENT_FRAME_VISITED
+    setCurrentFrameVisited: DIGITAL_MUTATES.SET_CURRENT_FRAME_VISITED,
+    addSupplementalFrame: DIGITAL_MUTATES.ADD_SUPPLEMENTAL_FRAMES
   });
 
   const { updateLayoutObjToStore } = useActions({
@@ -50,5 +52,5 @@ export const useFrame = () => {
       setIsOpenProperties({ isOpen: false });
     }
   };
-  return { handleChangeFrame };
+  return { handleChangeFrame, addSupplementalFrame };
 };
