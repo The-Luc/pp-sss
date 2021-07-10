@@ -1,20 +1,15 @@
 import Backgrounds from '@/components/Backgrounds';
 
 import {
-  MODAL_TYPES,
-  BACKGROUND_PAGE_TYPE
+  BACKGROUND_TYPE,
+  BACKGROUND_TYPE_NAME,
+  STATUS
 } from '@/common/constants';
 
-import { usePopoverCreationTool, usePrintBackgroundMenu } from '@/hooks';
+import { usePopoverCreationTool, useDigitalBackgroundMenu } from '@/hooks';
 
 import { cloneDeep } from 'lodash';
-
-import {
-  isEmpty,
-  isHalfSheet as isSheetHalfSheet,
-  getBackgroundType,
-  getBackgroundPageType
-} from '@/common/utils';
+import { isEmpty, getBackgroundType } from '@/common/utils';
 
 export default {
   components: {
@@ -25,25 +20,22 @@ export default {
       backgroundTypes: {},
       backgrounds: [],
       noBackgroundLength: 4,
-      selectedType: { sub: {} },
-      selectedPageType: {}
+      selectedType: { sub: {} }
     };
   },
   setup() {
     const { setToolNameSelected } = usePopoverCreationTool();
 
     const {
-      currentSheet,
       currentThemeId,
       userSelectedBackground,
       toggleModal,
       getBackgroundTypeData,
       getBackgroundData
-    } = usePrintBackgroundMenu();
+    } = useDigitalBackgroundMenu();
 
     return {
       setToolNameSelected,
-      currentSheet,
       currentThemeId,
       userSelectedBackground,
       toggleModal,
@@ -52,15 +44,12 @@ export default {
     };
   },
   computed: {
-    isHalfSheet() {
-      return isSheetHalfSheet(this.currentSheet);
-    },
     appliedBackground() {
       return isEmpty(this.userSelectedBackground)
         ? {}
         : {
-            ...this.userSelectedBackground[0],
-            id: this.userSelectedBackground[0].backgroundId
+            ...this.userSelectedBackground,
+            id: this.userSelectedBackground.backgroundId
           };
     }
   },
@@ -80,21 +69,15 @@ export default {
         this.currentThemeId
       );
 
-      this.selectedPageType = getBackgroundPageType(
-        this.appliedBackground,
-        this.isHalfSheet
-      );
-
       this.getBackgrounds();
     },
     /**
-     * Get background from API
+     * Get background data from API
      */
     async getBackgrounds() {
       this.backgrounds = await this.getBackgroundData(
         this.selectedType.value,
-        this.selectedType.sub,
-        this.selectedPageType.value
+        this.selectedType.sub
       );
     },
     /**
@@ -104,16 +87,6 @@ export default {
      */
     onChangeType(data) {
       this.selectedType = data;
-
-      this.getBackgrounds();
-    },
-    /**
-     * Event fire when choose background page type
-     *
-     * @param {Object}  data  data of chosen background page type
-     */
-    onChangePageType(data) {
-      this.selectedPageType = data;
 
       this.getBackgrounds();
     },
@@ -129,33 +102,7 @@ export default {
      * @param {Object}  background  selected background
      */
     onApplyBackground(background) {
-      const { pageType: selectedPageType } = background;
-
-      const isSinglePageType =
-        selectedPageType === BACKGROUND_PAGE_TYPE.SINGLE_PAGE.id;
-
-      if (!this.isHalfSheet && isSinglePageType) {
-        this.toggleModal({
-          isOpenModal: true,
-          modalData: {
-            type: MODAL_TYPES.BACKGROUND_SELECT_PAGE,
-            props: {
-              numberPageLeft: this.currentSheet.pageLeftName,
-              numberPageRight: this.currentSheet.pageRightName,
-              background: {
-                ...cloneDeep(background),
-                opacity: 1
-              }
-            }
-          }
-        });
-
-        this.onClose();
-
-        return;
-      }
-
-      this.$root.$emit('printAddBackground', {
+      this.$root.$emit('digitalAddBackground', {
         background: {
           ...cloneDeep(background),
           opacity: 1

@@ -30,13 +30,19 @@ import {
   textVerticalAlignOnAdjust,
   toggleStroke,
   updateElement,
-  updateTextListeners
+  updateTextListeners,
+  addDigitalBackground
 } from '@/common/fabricObjects';
-import { createImage } from '@/common/fabricObjects/image';
+import { createImage } from '@/common/fabricObjects';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
 import { useDrawLayout, useInfoBar, useLayoutPrompt, useFrame } from '@/hooks';
 
-import { ImageElement, ClipArtElement, ShapeElement } from '@/common/models';
+import {
+  ImageElement,
+  ClipArtElement,
+  ShapeElement,
+  BackgroundElement
+} from '@/common/models';
 
 import {
   CANVAS_EVENT_TYPE,
@@ -234,6 +240,7 @@ export default {
           handler: this.changeObjectIdsOrder
         }
       ];
+
       const textEvents = [
         {
           name: EVENT_TYPE.CHANGE_TEXT_PROPERTIES,
@@ -241,6 +248,21 @@ export default {
             this.getThumbnailUrl();
             this.changeTextProperties(prop);
           }
+        }
+      ];
+
+      const backgroundEvents = [
+        {
+          name: EVENT_TYPE.DIGITAL_BACKGROUND_ADD,
+          handler: this.addBackground
+        },
+        {
+          name: EVENT_TYPE.DIGITAL_BACKGROUND_PROP_CHANGE,
+          handler: this.changeBackgroundProperties
+        },
+        {
+          name: EVENT_TYPE.DIGITAL_BACKGROUND_REMOVE,
+          handler: this.removeBackground
         }
       ];
 
@@ -268,12 +290,15 @@ export default {
 
       const events = [
         ...elementEvents,
+        ...backgroundEvents,
         ...textEvents,
         ...shapeEvents,
         ...clipArtEvents
       ];
+
       events.forEach(event => {
         this.$root.$off(event.name, event.handler);
+
         if (isOn) this.$root.$on(event.name, event.handler);
       });
     },
@@ -1255,7 +1280,6 @@ export default {
         this.closeProperties();
       }
     },
-
     /**
      * Fire when click add frame button
      * @param {Object} event mouse event parameter when click element
@@ -1272,6 +1296,80 @@ export default {
       if (id === this.currentFrameId) return;
 
       this.setCurrentFrameId({ id });
+    },
+    /**
+     * Adding background to canvas & store
+     *
+     * @param {Object}  background  the object of adding background
+     * @param {Boolean} isLeft      is add to the left page or right page
+     */
+    addBackground({ background }) {
+      const id = uniqueId();
+
+      const newBackground = cloneDeep(BackgroundElement);
+
+      merge(newBackground, {
+        ...background,
+        backgroundId: background.id
+      });
+
+      this.addNewBackground({
+        background: {
+          ...newBackground,
+          id,
+          isLeftPage: true
+        }
+      });
+
+      addDigitalBackground({
+        id,
+        backgroundProp: newBackground,
+        canvas: window.digitalCanvas
+      });
+    },
+    /**
+     * This method is under development
+     * Event fire when user change any property of selected background
+     *
+     * @param {Object}  prop  new prop
+     */
+    changeBackgroundProperties({ backgroundId, prop }) {
+      // will use for next ticket
+      /*if (isEmpty(prop)) {
+        this.updateTriggerBackgroundChange();
+
+        return;
+      }
+
+      const background = window.digitalCanvas
+        .getObjects()
+        .find(o => backgroundId === o.id);
+
+      if (isEmpty(background)) return;
+
+      this.setBackgroundProp({ isLeft: true, prop });
+
+      this.updateTriggerBackgroundChange();
+
+      updatePrintBackground(background, prop, window.digitalCanvas);*/
+    },
+    /**
+     * This method is under development
+     * Event fire when user change any property of selected background
+     *
+     * @param {Object}  prop  new prop
+     */
+    removeBackground({ backgroundId }) {
+      // will use for next ticket
+      /*this.deleteBackground({ isLeft: true });
+
+      deleteObjectById([backgroundId], window.digitalCanvas);
+
+      this.closeProperties();
+
+      this.setIsOpenProperties({ isOpen: false });
+
+      this.setPropertiesObjectType({ type: '' });*/
     }
   },
   watch: {
