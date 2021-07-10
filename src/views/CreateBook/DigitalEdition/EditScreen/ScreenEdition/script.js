@@ -1354,36 +1354,27 @@ export default {
       });
     },
     /**
-     * This method is under development
      * Event fire when user change any property of selected background
      *
      * @param {Object}  prop  new prop
      */
     changeBackgroundProperties({ backgroundId, prop }) {
-      // will use for next ticket
-      /*if (isEmpty(prop)) {
-        this.updateTriggerBackgroundChange();
-
-        return;
-      }
-
       const background = window.digitalCanvas
         .getObjects()
         .find(o => backgroundId === o.id);
 
       if (isEmpty(background)) return;
 
-      this.setBackgroundProp({ isLeft: true, prop });
+      this.setBackgroundProp({ prop });
 
       this.updateTriggerBackgroundChange();
 
-      updatePrintBackground(background, prop, window.digitalCanvas);*/
+      updateElement(background, prop, window.digitalCanvas);
     },
     /**
-     * This method is under development
-     * Event fire when user change any property of selected background
+     * Event fire when user click remove background
      *
-     * @param {Object}  prop  new prop
+     * @param {String|Number} backgroundId  id of background will be removed
      */
     removeBackground({ backgroundId }) {
       // will use for next ticket

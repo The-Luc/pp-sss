@@ -33,7 +33,10 @@
       />
     </div>
     <transition name="slide-fade">
-      <PropertiesManager v-show="isOpenMenuProperties" />
+      <PropertiesManager
+        v-show="isOpenMenuProperties"
+        :is-digital="isDigital"
+      />
     </transition>
     <ToolPopoverManager v-show="selectedToolName" />
   </div>

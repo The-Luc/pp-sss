@@ -122,14 +122,3 @@ export const createBackgroundFabricObject = (
     });
   });
 };
-
-/**
- * Change property of background
- *
- * @param {Object}  background  the background will be change property
- * @param {Object}  prop        new property
- * @param {Object}  canvas      the canvas contain background
- */
-export const updatePrintBackground = (background, prop, canvas) => {
-  updateElement(background, prop, canvas);
-};
