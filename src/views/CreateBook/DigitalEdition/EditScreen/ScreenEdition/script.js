@@ -1334,12 +1334,6 @@ export default {
      * @param {Object}  prop  new prop
      */
     changeBackgroundProperties({ backgroundId, prop }) {
-      if (isEmpty(prop)) {
-        this.updateTriggerBackgroundChange();
-
-        return;
-      }
-
       const background = window.digitalCanvas
         .getObjects()
         .find(o => backgroundId === o.id);
