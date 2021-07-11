@@ -2,32 +2,39 @@
   <Menu
     v-if="isOpenMenu"
     nudge-width="308"
+    :content-class="'pp-menu point-down-menu'"
     :menu-x="menuX"
     :menu-y="menuY"
     :is-open="isOpenMenu"
     @onClickOutSideMenu="onClickOutSideMenu"
   >
     <div class="btn-group">
-      <Button type="btn" class="btn btn-replace-layout" @click="onChangeLayout"
-        >Change Layout</Button
+      <v-btn type="btn" class="btn btn-replace-layout" @click="onReplaceLayout"
+        >Change Layout</v-btn
       >
-      <Button type="btn" class="btn btn-delete" @click="onDelete"
-        >Delete</Button
-      >
+      <v-btn type="btn" class="btn btn-delete" @click="onDelete">Delete</v-btn>
     </div>
   </Menu>
 </template>
 
 <script>
 import Menu from '@/components/Menu';
-import Button from '@/components/Buttons/Button';
 
 export default {
   components: {
-    Menu,
-    Button
+    Menu
   },
-  props: ['menuX', 'menuY', 'isOpen'],
+  props: {
+    menuX: {
+      type: Number,
+      default: 0
+    },
+    menuY: {
+      type: Number,
+      default: 0
+    },
+    isOpen: Boolean
+  },
   data() {
     return {
       isOpenMenu: false
@@ -36,15 +43,14 @@ export default {
   watch: {
     isOpen() {
       this.isOpenMenu = !this.isOpenMenu;
-      console.log('click option ');
     }
   },
   methods: {
     onClickOutSideMenu() {
       this.$emit('onClose');
     },
-    onChangeLayout() {
-      this.$emit('onChangeLayout');
+    onReplaceLayout() {
+      this.$emit('onReplaceLayout');
     },
     onDelete() {
       this.$emit('onDeleteFrame');

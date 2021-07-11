@@ -10,8 +10,8 @@ export default {
   },
   setup() {
     const { toggleModal, modalData } = useModal();
-    const { addSupplementalFrame } = useFrame();
-    return { toggleModal, modalData, addSupplementalFrame };
+    const { addSupplementalFrame, handleReplaceFrame } = useFrame();
+    return { toggleModal, modalData, addSupplementalFrame, handleReplaceFrame };
   },
   data() {
     return {
@@ -38,7 +38,16 @@ export default {
      */
     onAddFrame(layout) {
       const frames = layout?.frames || [];
-      this.addSupplementalFrame({ frames });
+
+      const frameId = this.modalData?.props?.layoutId;
+
+      // if layoutId existed: user is replacing layout
+      if (frameId) {
+        this.handleReplaceFrame({ frame: frames[0], frameId });
+      } else {
+        this.addSupplementalFrame({ frames });
+      }
+
       this.onClose();
     }
   },

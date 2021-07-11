@@ -5,7 +5,7 @@
       :menu-x="menuX"
       :menu-y="menuY"
       @onClose="onCloseMenu"
-      @onChangeLayout="onChangeLayout"
+      @onReplaceLayout="onReplaceLayout"
       @onDeleteFrame="onDeleteFrame"
     />
     <div class="row frame-row">

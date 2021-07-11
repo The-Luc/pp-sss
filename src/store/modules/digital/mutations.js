@@ -2,6 +2,7 @@ import { cloneDeep, merge, uniqueId } from 'lodash';
 
 import { OBJECT_TYPE } from '@/common/constants';
 import DIGITAL from './const';
+import { isEmpty } from '@/common/utils';
 
 export const mutations = {
   [DIGITAL._MUTATES.SET_BOOK_ID](state, { bookId }) {
@@ -180,12 +181,22 @@ export const mutations = {
   },
   [DIGITAL._MUTATES.ADD_SUPPLEMENTAL_FRAMES](state, { frames }) {
     if (!frames?.length) return;
-
     frames.forEach(frame => {
       const id = uniqueId();
       state.frameIds.push(id);
       state.frames[id] = frame;
     });
+  },
+  [DIGITAL._MUTATES.REPLACE_SUPPLEMENTAL_FRAME](
+    state,
+    { frame, frameId, newId }
+  ) {
+    if (isEmpty(frame) || !frameId) return;
+
+    const frameIdIndex = state.frameIds.indexOf(frameId);
+
+    state.frameIds.splice(frameIdIndex, 1, newId);
+    state.frames[newId] = frame;
   },
   [DIGITAL._MUTATES.REORDER_FRAME_IDS](state, { oldIndex, newIndex }) {
     const [id] = state.frameIds.splice(oldIndex, 1);

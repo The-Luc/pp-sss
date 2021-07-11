@@ -1,0 +1,43 @@
+.btn-group {
+  padding: 25px 35px;
+  display: flex;
+  flex-direction: column;
+  row-gap: 15px;
+
+  .btn {
+    color: $color-white;
+    width: 240px;
+    padding-block: 10px;
+    text-transform: capitalize;
+    font-size: 11px;
+    font-family: inherit;
+
+    &.btn-replace-layout {
+      background-color: $color-stoodio-blue;
+    }
+
+    &.btn-delete {
+      background-color: $color-red2;
+    }
+  }
+}
+
+.pp-menu {
+  margin-top: 35px;
+  contain: initial;
+  overflow: visible;
+  box-shadow: 0px 0px 8px #0000005f;
+
+  &::before {
+    position: absolute;
+    content: '';
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, -100%);
+    width: 4px;
+    height: 13px;
+    border-left: 7px solid transparent;
+    border-right: 7px solid transparent;
+    border-bottom: 13px solid #fff;
+  }
+}

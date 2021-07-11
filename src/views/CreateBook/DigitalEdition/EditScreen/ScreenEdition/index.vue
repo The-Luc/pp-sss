@@ -17,6 +17,7 @@
       @addFrame="onAddFrame"
       @onFrameClick="onFrameClick"
       @onDeleteFrame="onDeleteFrame"
+      @onReplaceLayout="onReplaceLayout"
     />
     <AddBoxInstruction v-if="visible" :element="element" :x="x" :y="y" />
   </div>

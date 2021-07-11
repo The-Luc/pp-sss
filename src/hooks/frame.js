@@ -7,6 +7,7 @@ import {
 } from '@/store/modules/digital/const';
 import { MUTATES } from '@/store/modules/app/const';
 import { DIGITAL_RIGHT_TOOLS } from '@/common/constants';
+import { uniqueId } from 'lodash';
 
 /**
  * Handle toggle Frame Information
@@ -22,6 +23,7 @@ export const useFrame = () => {
     setIsOpenProperties,
     setCurrentFrameVisited,
     addSupplementalFrame,
+    replaceFrame,
     deleteFrame,
     setCurrentFrameId
   } = useMutations({
@@ -29,6 +31,7 @@ export const useFrame = () => {
     setIsOpenProperties: MUTATES.TOGGLE_MENU_PROPERTIES,
     setCurrentFrameVisited: DIGITAL_MUTATES.SET_CURRENT_FRAME_VISITED,
     addSupplementalFrame: DIGITAL_MUTATES.ADD_SUPPLEMENTAL_FRAMES,
+    replaceFrame: DIGITAL_MUTATES.REPLACE_SUPPLEMENTAL_FRAME,
     deleteFrame: DIGITAL_MUTATES.DELETE_FRAME,
     setCurrentFrameId: DIGITAL_MUTATES.SET_CURRENT_FRAME_ID
   });
@@ -69,5 +72,22 @@ export const useFrame = () => {
     setCurrentFrameId({ id: newId });
   };
 
-  return { handleChangeFrame, addSupplementalFrame, handleDeleteFrame };
+  /**
+   * To handle replace frame event
+   * and set the active frame after replace
+   */
+  const handleReplaceFrame = ({ frame, frameId }) => {
+    const newId = uniqueId();
+
+    replaceFrame({ frame, frameId, newId });
+
+    setCurrentFrameId({ id: newId });
+  };
+
+  return {
+    handleChangeFrame,
+    addSupplementalFrame,
+    handleReplaceFrame,
+    handleDeleteFrame
+  };
 };

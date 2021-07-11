@@ -49,8 +49,6 @@ export default {
      * @param {Object} event mouse event parameter when click element
      */
     addFrame(event) {
-      console.log('add frame');
-      console.log(event);
       this.$emit('addFrame', event);
     },
 
@@ -65,24 +63,28 @@ export default {
     /**
      * To toggle the option menu of a frame
      */
-    onOptionClick(event, id) {
+    onOptionClick(event) {
       this.isOpenMenu = true;
 
       const element = event.target;
       const { x, y } = element.getBoundingClientRect();
-      this.menuX = x;
-      this.menuY = y - 100;
-      console.log(x, y);
+      this.menuX = x - 195;
+      this.menuY = y - 205;
     },
     onCloseMenu() {
       this.isOpenMenu = false;
     },
-    onChangeLayout() {
+    /**
+     * Fire when click on Replace Layout button
+     */
+    onReplaceLayout() {
       const target = this.$refs[`frame-${this.activeFrameId}`][0];
-      this.$emit('addFrame', { target });
+      this.$emit('onReplaceLayout', { target, layoutId: this.activeFrameId });
       this.onCloseMenu();
-      //
     },
+    /**
+     * Fire when click on Delete layout button
+     */
     onDeleteFrame() {
       this.$emit('onDeleteFrame', this.activeFrameId);
       this.onCloseMenu();

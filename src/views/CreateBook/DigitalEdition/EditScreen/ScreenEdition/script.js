@@ -1309,6 +1309,24 @@ export default {
       });
     },
     /**
+     * Fire when click add replace button
+     * @param {Element} target add frame button
+     */
+    onReplaceLayout({ target, layoutId }) {
+      const { left, width } = target.getBoundingClientRect();
+      const centerX = left + width / 2;
+      this.toggleModal({
+        isOpenModal: true,
+        modalData: {
+          type: MODAL_TYPES.ADD_DIGITAL_FRAME,
+          props: {
+            centerX,
+            layoutId
+          }
+        }
+      });
+    },
+    /**
      * Fire when click on delete option of a frame
      * @param {Number} id Id of the active frame which will be deleted
      */
