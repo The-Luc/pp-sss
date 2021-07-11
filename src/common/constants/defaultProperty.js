@@ -23,12 +23,12 @@ export const DEFAULT_BORDER = {
 
 export const DEFAULT_COLOR = {
   COLOR_ALPHA: '80',
-  COLOR_HEX: '#000000'
+  COLOR: '#000000'
 };
 
 export const DEFAULT_PROP = {
   OPACITY: 1,
-  COLOR: DEFAULT_COLOR.COLOR_HEX,
+  COLOR: DEFAULT_COLOR.COLOR,
   MIN_POSITION: -Infinity,
   MAX_POSITION: Infinity,
   MIN_SIZE: 0.5,
