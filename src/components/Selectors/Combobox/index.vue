@@ -8,6 +8,8 @@
     item-text="name"
     item-value="value"
     :value="disabled ? '' : selectedVal"
+    :attach="container"
+    :nudge-right="20"
     solo
     no-filter
     hide-no-data
@@ -19,7 +21,8 @@
       positionX: menuX + marginMenu, // width of .v-input__prepend-outer + margin
       positionY: menuY,
       absolute: true,
-      nudgeWidth
+      nudgeWidth,
+      ...nudgePosition
     }"
     @change="onChange"
     @keydown.enter="onEnter"
@@ -63,4 +66,4 @@
 
 <script src="./script.js" />
 
-<style lang="scss" src="./style.scss" />
+<style lang="scss" src="./style.scss" scoped />

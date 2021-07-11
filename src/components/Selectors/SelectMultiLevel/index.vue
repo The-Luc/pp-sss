@@ -5,14 +5,12 @@
     item-text="name"
     item-value="value"
     solo
+    :attach="container"
     :disabled="disabled"
     append-icon=""
     :value="selectedValue"
     persistent-hint
-    :menu-props="{
-      maxHeight: 'auto',
-      zIndex: 9999
-    }"
+    :menu-props="{ zIndex: 9999 }"
   >
     <template #selection>
       <v-list-item class="pp-select-multi--item item-selected">
@@ -71,4 +69,4 @@
 
 <script src="./script.js" />
 
-<style lang="scss" src="./style.scss" />
+<style lang="scss" src="./style.scss" scoped />

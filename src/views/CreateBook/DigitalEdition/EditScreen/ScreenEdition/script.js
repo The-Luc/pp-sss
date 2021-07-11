@@ -3,7 +3,7 @@ import { fabric } from 'fabric';
 import { DIGITAL_CANVAS_SIZE } from '@/common/constants/canvas';
 import SizeWrapper from '@/components/SizeWrapper';
 import AddBoxInstruction from '@/components/AddBoxInstruction';
-import Frames from '@/components/Frames';
+import Frames from './Frames';
 import { useDigitalOverrides } from '@/plugins/fabric';
 import {
   ARRANGE_SEND,

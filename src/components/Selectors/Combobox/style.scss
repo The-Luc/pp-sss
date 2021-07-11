@@ -1,16 +1,10 @@
 .pp-combobox {
-  .v-input__control {
+  ::v-deep .v-input__control {
     max-width: 73px;
-    min-height: auto !important;
     position: relative;
 
     .v-input__slot {
       padding-left: 0 !important;
-      min-height: auto;
-      height: 25px;
-      box-shadow: none !important;
-      border: 1px solid #bcbec0;
-      margin-bottom: 5px;
 
       .v-select__selection--comma {
         font-size: $md-size + 1;
@@ -22,6 +16,7 @@
             width: 25px;
           }
         }
+
         input {
           min-width: 43px;
           padding-left: 5px;
@@ -31,17 +26,5 @@
         }
       }
     }
-    .v-text-field__details {
-      display: none;
-    }
-  }
-
-  .prepend-icon {
-    width: 14px;
-  }
-
-  .v-input__prepend-outer {
-    margin-top: 1px !important;
-    height: 25px;
   }
 }

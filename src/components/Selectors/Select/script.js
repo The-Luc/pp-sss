@@ -31,6 +31,9 @@ export default {
     isImgOpts: {
       type: Boolean,
       default: false
+    },
+    container: {
+      type: String
     }
   },
   methods: {

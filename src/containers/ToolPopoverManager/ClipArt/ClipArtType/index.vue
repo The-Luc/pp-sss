@@ -1,6 +1,12 @@
 <template>
-  <div class="pp-clip-art-select-type">
-    <PpSelect :items="items" :selected-val="selectedVal" @change="onChange">
+  <div class="pp-selector-container">
+    <PpSelect
+      id="clip-art-type"
+      :items="items"
+      :selected-val="selectedVal"
+      container="#clip-art-type"
+      @change="onChange"
+    >
     </PpSelect>
   </div>
 </template>

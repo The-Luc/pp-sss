@@ -1,4 +1,4 @@
-@import './_extend';
+@import './extend';
 @import './variables';
 
 p,
@@ -81,3 +81,135 @@ body,
   height: 6px;
   border-radius: 50%;
 }
+
+/* SELECTOR - Start */
+.pp-combobox,
+.pp-select,
+.pp-select-multi,
+.pp-select-sub {
+  &--item {
+    min-height: 20px;
+    padding: 0 10px;
+
+    &:not(:last-child) {
+      margin-bottom: 5px;
+    }
+
+    &.item-selected {
+      padding: 0;
+      margin-bottom: 0;
+
+      .v-list-item__title {
+        span {
+          color: $color-stoodio-toolbartext;
+        }
+      }
+    }
+
+    &.v-list-item--active,
+    &:not(.item-selected):hover {
+      background-color: $color-stoodio-blue;
+
+      > .v-list-item__content {
+        color: $color-white;
+      }
+    }
+
+    .icon-ative {
+      width: 10px;
+      margin-bottom: 2px;
+      margin-right: 5px;
+    }
+
+    .v-list-item__action {
+      margin: 0 5px 0 0 !important;
+    }
+
+    .v-list-item__content {
+      padding: 0;
+
+      span {
+        font-size: $xsm-size;
+        font-family: $font-500;
+      }
+    }
+  }
+
+  .v-menu__content {
+    border-radius: 3px;
+
+    .v-list {
+      border-radius: 3px;
+    }
+  }
+}
+
+.pp-combobox,
+.pp-select,
+.pp-select-multi {
+  &.v-text-field.v-text-field--enclosed:not(.v-text-field--rounded)
+    > .v-input__control
+    > .v-input__slot {
+    padding-left: 8px;
+  }
+
+  .v-input__control {
+    min-height: auto !important;
+
+    .v-input__slot {
+      min-height: auto;
+      height: 26px;
+      box-shadow: none !important;
+      border: 1px solid $color-gray15;
+      margin-bottom: 0;
+    }
+
+    .v-text-field__details {
+      display: none;
+    }
+  }
+
+  .prepend-icon {
+    width: 14px;
+  }
+
+  .v-input__prepend-outer {
+    margin-top: 1px !important;
+    height: 25px;
+  }
+}
+
+.pp-select,
+.pp-select-multi {
+  .v-input__control {
+    .v-input__slot {
+      padding-right: 5px !important;
+
+      .v-select__selection--comma,
+      .v-select__selection--disabled {
+        font-size: $xs-size + 1;
+        font-family: $font-500;
+        color: $color-stoodio-toolbartext;
+      }
+    }
+  }
+
+  &.v-text-field.v-text-field--enclosed:not(.v-text-field--rounded)
+    > .v-input__control
+    > .v-input__slot {
+    padding-left: 8px;
+  }
+}
+
+.pp-selector-container {
+  display: flex;
+  align-items: center;
+
+  &-title {
+    margin-top: 1px;
+    margin-right: 10px;
+    font-family: $font-300;
+    font-size: 11px;
+  }
+}
+/* SELECTOR - End */

@@ -34,6 +34,13 @@ export default {
     disabled: {
       type: Boolean,
       default: false
+    },
+    container: {
+      type: String
+    },
+    nudgePosition: {
+      type: Object,
+      default: () => ({})
     }
   },
   data() {

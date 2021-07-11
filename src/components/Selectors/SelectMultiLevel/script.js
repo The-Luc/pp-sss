@@ -35,6 +35,9 @@ export default {
     isDisplayCustomSelected: {
       type: Boolean,
       default: false
+    },
+    container: {
+      type: String
     }
   },
   computed: {

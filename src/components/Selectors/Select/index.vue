@@ -5,15 +5,13 @@
     item-text="name"
     item-value="value"
     solo
+    :attach="container"
     :disabled="disabled"
     append-icon=""
     :value="selectedVal"
     return-object
     persistent-hint
-    :menu-props="{
-      maxHeight: 'auto',
-      zIndex: 9999
-    }"
+    :menu-props="{ zIndex: 9999 }"
     @change="onChange"
   >
     <template #selection="{ item }">
@@ -62,24 +60,6 @@
       </v-list-item>
     </template>
 
-    <!-- <template v-else #item="{ item, attrs, on }">
-      <v-list-item class="pp-select--item" v-bind="attrs" v-on="on">
-        <img
-          :style="{ visibility: active ? 'visible' : 'hidden' }"
-          class="icon-ative"
-          :src="activeMenuIcon"
-          alt="icon-active"
-        />
-        <v-list-item-content>
-          <v-list-item-title>
-            <v-row no-gutters align="center">
-              <img :src="item.previewImageUrl" style="max-width: 70px" />
-            </v-row>
-          </v-list-item-title>
-        </v-list-item-content>
-      </v-list-item>
-    </template> -->
-
     <template v-if="prependedIcon" #prepend>
       <img :src="prependedIcon" alt="prepend-icon" class="prepend-icon" />
     </template>
@@ -90,5 +70,3 @@
 </template>
 
 <script src="./script.js" />
-
-<style lang="scss" src="./style.scss" />

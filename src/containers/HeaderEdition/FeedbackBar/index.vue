@@ -23,11 +23,14 @@
     </div>
     <div class="feedback-select feedback-value">
       <PpCombobox
+        id="zoom"
         :key="componentKey"
         :items="zoomOptions"
+        container="#zoom"
         :selected-val="zoom"
         :nudge-width="145"
         :margin-menu="0"
+        :nudge-position="{ nudgeBottom: 2, nudgeLeft: 3 }"
         :appended-icon="appendedIcon"
         @change="changeZoom"
       />
