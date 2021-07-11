@@ -21,15 +21,21 @@ export const DEFAULT_BORDER = {
   STROKE_LINE_TYPE: 'solid'
 };
 
+export const DEFAULT_COLOR = {
+  COLOR_ALPHA: '80',
+  COLOR_HEX: '#000000'
+};
+
 export const DEFAULT_PROP = {
   OPACITY: 1,
-  COLOR: '#000000',
+  COLOR: DEFAULT_COLOR.COLOR_HEX,
   MIN_POSITION: -Infinity,
   MAX_POSITION: Infinity,
   MIN_SIZE: 0.5,
   MAX_SIZE: 60,
   BORDER: { ...DEFAULT_BORDER },
-  IS_CONSTRAIN: true
+  IS_CONSTRAIN: true,
+  COLOR_WITH_ALPHA: `${DEFAULT_COLOR.COLOR_HEX}${DEFAULT_COLOR.COLOR_ALPHA}`
 };
 
 export const DEFAULT_COORD = {
@@ -49,7 +55,7 @@ export const DEFAULT_SHADOW = {
   OFFSET: 2,
   OPACITY: 0.5,
   ANGLE: 270,
-  COLOR: '#00000080'
+  COLOR: DEFAULT_PROP.COLOR_WITH_ALPHA
 };
 
 export const DEFAULT_TEXT = {

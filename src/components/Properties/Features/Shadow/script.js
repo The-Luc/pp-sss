@@ -85,11 +85,13 @@ export default {
      * @param {Number} value Value user selected
      */
     onChangeOpacity(value) {
-      let shadowColor = this.currentShadow.shadowColor;
-      if (shadowColor.length === 9) {
-        shadowColor = shadowColor.slice(0, 7);
-      }
-      shadowColor += percentToHex(value * 100);
+      const currentShadowColor = this.currentShadow.shadowColor;
+
+      const sliceLength =
+        currentShadowColor.length === 9 ? 7 : currentShadowColor.length;
+
+      const shadowColor =
+        currentShadowColor.slice(0, sliceLength) + percentToHex(value * 100);
 
       this.$emit('change', {
         shadowColor,
