@@ -1,9 +1,11 @@
 import { isEmpty } from '@/common/utils';
 import EmptyFrame from './EmptyFrame';
+import FrameMenu from './FrameMenu';
 
 export default {
   components: {
-    EmptyFrame
+    EmptyFrame,
+    FrameMenu
   },
   props: {
     frames: {
@@ -12,6 +14,13 @@ export default {
     activeFrameId: {
       type: [String, Number]
     }
+  },
+  data() {
+    return {
+      isOpenMenu: false,
+      menuX: 0,
+      menuY: 0
+    };
   },
   computed: {
     frameData() {
@@ -35,6 +44,8 @@ export default {
      * @param {Object} event mouse event parameter when click element
      */
     addFrame(event) {
+      console.log('add frame');
+      console.log(event);
       this.$emit('addFrame', event);
     },
 
@@ -44,6 +55,33 @@ export default {
      */
     onFrameClick(id) {
       this.$emit('onFrameClick', id);
+    },
+
+    /**
+     * To toggle the option menu of a frame
+     */
+    onOptionClick(event, id) {
+      this.isOpenMenu = true;
+
+      const element = event.target;
+      const { x, y } = element.getBoundingClientRect();
+      this.menuX = x;
+      this.menuY = y - 100;
+      console.log(x, y);
+    },
+    onCloseMenu() {
+      this.isOpenMenu = false;
+    },
+    onChangeLayout() {
+      const target = this.$refs[`frame-${this.activeFrameId}`][0];
+      this.$emit('addFrame', { target });
+      this.onCloseMenu();
+      //
+    },
+    onDeleteFrame() {
+      this.$emit('deleteFrame');
+      this.onCloseMenu();
+      //
     }
   }
 };

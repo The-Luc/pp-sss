@@ -1,0 +1,20 @@
+.btn-group {
+  padding: 25px 35px;
+  display: flex;
+  flex-direction: column;
+  // row-gap: 15px;
+
+  .btn {
+    color: $color-white;
+    width: 284px;
+    padding-block: 10px;
+
+    .bnt-replace-layout {
+      background-color: $color-stoodio-blue;
+    }
+
+    .btn-delete {
+      background-color: $color-red2;
+    }
+  }
+}
