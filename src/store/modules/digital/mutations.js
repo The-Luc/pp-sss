@@ -191,24 +191,18 @@ export const mutations = {
     const [id] = state.frameIds.splice(oldIndex, 1);
     state.frameIds.splice(newIndex, 0, id);
   },
-  [DIGITAL._MUTATES.DELETE_FRAMES](state, { ids }) {
-    ids.forEach(id => {
-      const index = state.frameIds.indexOf(id);
+  [DIGITAL._MUTATES.DELETE_FRAME](state, { id }) {
+    if (!id) return;
 
-      if (index >= 0) {
-        state.frameIds.splice(index, 1);
-      }
+    const index = state.frameIds.indexOf(id);
+    if (index >= 0) {
+      state.frameIds.splice(index, 1);
+    }
 
-      delete state.frames[id];
-    });
+    delete state.frames[id];
   },
   [DIGITAL._MUTATES.SET_CURRENT_FRAME_ID](state, { id }) {
     state.currentFrameId = id;
-  },
-  [DIGITAL._MUTATES.ADD_FRAME](state, { id, newFrame }) {
-    state.frameIds.push(id);
-
-    state.frames[id] = newFrame;
   },
   [DIGITAL._MUTATES.SET_CURRENT_FRAME_VISITED](
     { frames, currentFrameId },

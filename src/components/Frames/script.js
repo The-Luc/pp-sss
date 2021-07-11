@@ -34,7 +34,8 @@ export default {
           frame: {
             image: '',
             type: null,
-            id: 0
+            id: 0,
+            fromLayout: true
           }
         }
       ];
@@ -83,7 +84,7 @@ export default {
       //
     },
     onDeleteFrame() {
-      this.$emit('deleteFrame');
+      this.$emit('onDeleteFrame', this.activeFrameId);
       this.onCloseMenu();
       //
     }

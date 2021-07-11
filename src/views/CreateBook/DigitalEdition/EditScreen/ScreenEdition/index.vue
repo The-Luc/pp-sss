@@ -16,6 +16,7 @@
       :show-add-frame="showAddFrame"
       @addFrame="onAddFrame"
       @onFrameClick="onFrameClick"
+      @onDeleteFrame="onDeleteFrame"
     />
     <AddBoxInstruction v-if="visible" :element="element" :x="x" :y="y" />
   </div>

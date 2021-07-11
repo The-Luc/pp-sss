@@ -99,7 +99,7 @@ export default {
     const { setInfoBar, zoom } = useInfoBar();
     const { toggleModal } = useModal();
     const { openPrompt } = useLayoutPrompt();
-    const { handleChangeFrame } = useFrame();
+    const { handleChangeFrame, handleDeleteFrame } = useFrame();
 
     return {
       drawLayout,
@@ -107,7 +107,8 @@ export default {
       zoom,
       openPrompt,
       handleChangeFrame,
-      toggleModal
+      toggleModal,
+      handleDeleteFrame
     };
   },
   data() {
@@ -1306,6 +1307,13 @@ export default {
           }
         }
       });
+    },
+    /**
+     * Fire when click on delete option of a frame
+     * @param {Number} id Id of the active frame which will be deleted
+     */
+    onDeleteFrame(id) {
+      this.handleDeleteFrame(id);
     },
 
     /**

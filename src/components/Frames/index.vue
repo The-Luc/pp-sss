@@ -18,7 +18,7 @@
       >
         <div class="frame-item" :class="{ active: id === activeFrameId }">
           <img
-            v-if="id === activeFrameId && !isOpenMenu"
+            v-if="id === activeFrameId && !isOpenMenu && !frame.fromLayout"
             class="frame-item-option"
             src="@/assets/icons/three-dots.svg"
             alt="option button"
