@@ -13,6 +13,10 @@ export default {
     },
     activeFrameId: {
       type: [String, Number]
+    },
+    showAddFrame: {
+      type: Boolean,
+      default: true
     }
   },
   data() {

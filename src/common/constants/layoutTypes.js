@@ -43,7 +43,7 @@ export const LAYOUT_TYPES = {
     name: 'Single Page',
     value: 'singlePage'
   },
-  SUPLEMENTAL_LAYOUTS: {
+  SUPPLEMENTAL_LAYOUTS: {
     name: 'Supplemental: Digital Only',
     value: 'Supplemental'
   }

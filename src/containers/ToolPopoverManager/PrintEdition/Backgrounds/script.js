@@ -1,9 +1,6 @@
 import Backgrounds from '@/components/Backgrounds';
 
-import {
-  MODAL_TYPES,
-  BACKGROUND_PAGE_TYPE
-} from '@/common/constants';
+import { MODAL_TYPES, BACKGROUND_PAGE_TYPE } from '@/common/constants';
 
 import { usePopoverCreationTool, usePrintBackgroundMenu } from '@/hooks';
 

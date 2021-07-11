@@ -13,6 +13,7 @@
     <Frames
       :frames="frames"
       :active-frame-id="currentFrameId"
+      :show-add-frame="showAddFrame"
       @addFrame="onAddFrame"
       @onFrameClick="onFrameClick"
     />

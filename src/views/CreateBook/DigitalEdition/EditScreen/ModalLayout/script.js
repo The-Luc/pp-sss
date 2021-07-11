@@ -2,7 +2,7 @@ import Layouts from '@/containers/ToolPopoverManager/PrintEdition/Layouts';
 import { mapMutations } from 'vuex';
 import { MUTATES } from '@/store/modules/theme/const';
 import { EDITION, LAYOUT_TYPES } from '@/common/constants';
-import { useModal } from '@/hooks';
+import { useFrame, useModal } from '@/hooks';
 
 export default {
   components: {
@@ -10,7 +10,8 @@ export default {
   },
   setup() {
     const { toggleModal, modalData } = useModal();
-    return { toggleModal, modalData };
+    const { addSupplementalFrame } = useFrame();
+    return { toggleModal, modalData, addSupplementalFrame };
   },
   data() {
     return {
@@ -29,11 +30,21 @@ export default {
      */
     onClose() {
       this.toggleModal({ isOpenModal: false });
+    },
+
+    /**
+     * Trigger when add new frame
+     * @param {Object} layout seleted supplemtal layout
+     */
+    onAddFrame(layout) {
+      const frames = layout?.frames || [];
+      this.addSupplementalFrame({ frames });
+      this.onClose();
     }
   },
   async created() {
     this.initialData = {
-      layoutSelected: LAYOUT_TYPES.SUPLEMENTAL_LAYOUTS,
+      layoutSelected: LAYOUT_TYPES.SUPPLEMENTAL_LAYOUTS,
       isSupplemental: true
     };
   },

@@ -8,7 +8,7 @@
       @onChangeLayout="onChangeLayout"
       @onDeleteFrame="onDeleteFrame"
     />
-    <div class="row">
+    <div class="row frame-row">
       <div
         v-for="({ id, frame }, index) in frameData"
         :key="id"
@@ -33,7 +33,7 @@
         </div>
         <div class="frame-name">Frame {{ index + 1 }}</div>
       </div>
-      <EmptyFrame @click="addFrame" />
+      <EmptyFrame v-if="showAddFrame" @click="addFrame" />
     </div>
   </div>
 </template>

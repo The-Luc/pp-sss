@@ -351,6 +351,15 @@ export default {
           });
           return;
         }
+
+        if (
+          this.layoutObjSelected?.type ===
+          LAYOUT_TYPES.SUPPLEMENTAL_LAYOUTS.value
+        ) {
+          this.$emit('addFrame', this.layoutObjSelected);
+          return;
+        }
+
         // Prompt a modal to comfirm overriding layout if layoutId existed and in DIGITAL mode
         if (this.isDigital && this.pageSelected?.layoutId) {
           this.toggleModal({

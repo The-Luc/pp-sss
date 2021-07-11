@@ -1,4 +1,4 @@
-import { cloneDeep, merge } from 'lodash';
+import { cloneDeep, merge, uniqueId } from 'lodash';
 
 import { OBJECT_TYPE } from '@/common/constants';
 import DIGITAL from './const';
@@ -177,6 +177,15 @@ export const mutations = {
 
     state.frameIds = [...newFrameIds, ...supplementFrameIds];
     state.frames = { ...newFrames, ...supplementFrames };
+  },
+  [DIGITAL._MUTATES.ADD_SUPPLEMENTAL_FRAMES](state, { frames }) {
+    if (!frames?.length) return;
+
+    frames.forEach(frame => {
+      const id = uniqueId();
+      state.frameIds.push(id);
+      state.frames[id] = frame;
+    });
   },
   [DIGITAL._MUTATES.REORDER_FRAME_IDS](state, { oldIndex, newIndex }) {
     const [id] = state.frameIds.splice(oldIndex, 1);
