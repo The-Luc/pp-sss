@@ -1,11 +1,5 @@
 import Backgrounds from '@/components/Backgrounds';
 
-import {
-  BACKGROUND_TYPE,
-  BACKGROUND_TYPE_NAME,
-  STATUS
-} from '@/common/constants';
-
 import { usePopoverCreationTool, useDigitalBackgroundMenu } from '@/hooks';
 
 import { cloneDeep } from 'lodash';

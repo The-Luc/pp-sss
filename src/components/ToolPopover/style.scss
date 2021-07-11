@@ -55,7 +55,7 @@
       height: 32px;
       box-shadow: none;
 
-      .v-btn__content {
+      ::v-deep .v-btn__content {
         color: white;
         font-size: 11.5px;
         font-family: $font-500;

@@ -8,7 +8,7 @@ import {
   DEFAULT_FABRIC_BACKGROUND
 } from '@/common/constants';
 
-import { updateElement, toFabricBackgroundProp } from './common';
+import { toFabricBackgroundProp } from './common';
 
 import { isEmpty } from '@/common/utils';
 

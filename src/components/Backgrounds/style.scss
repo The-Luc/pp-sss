@@ -32,7 +32,7 @@
     }
   }
 
-  .tool-popover-header {
+  ::v-deep .tool-popover-header {
     &::before {
       left: 124px;
     }

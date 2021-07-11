@@ -1,6 +1,6 @@
 <template>
-  <div class="pp-layouts-select-theme">
-    <span class="pp-layouts-select-theme-title">Theme:</span>
+  <div class="pp-selector-container">
+    <span class="pp-selector-container-title">Theme:</span>
     <PpSelect
       :items="items"
       :selected-val="themeSelected"
@@ -10,4 +10,3 @@
 </template>
 
 <script src="./script.js" />
-<style lang="scss" src="./style.scss" scoped />

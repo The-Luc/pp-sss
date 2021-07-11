@@ -1,6 +1,6 @@
 <template>
-  <div class="pp-layouts-select-layout">
-    <span class="pp-layouts-select-layout-title">{{ title }}</span>
+  <div class="pp-selector-container">
+    <span class="pp-selector-container-title">{{ title }}</span>
     <PpSelect
       :items="items"
       :disabled="disabled"
@@ -11,4 +11,3 @@
 </template>
 
 <script src="./script.js" />
-<style lang="scss" src="./style.scss" scoped />

@@ -1,14 +1,4 @@
-.pp-background-select-page-type {
-  display: flex;
-  align-items: center;
-
-  &-title {
-    margin-top: 2px;
-    margin-right: 10px;
-    font-family: $font-300;
-    font-size: 11px;
-  }
-
+.pp-selector-container {
   .pp-select {
     width: 172px !important;
 

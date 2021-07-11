@@ -21,25 +21,29 @@
   }
   .feedback-value {
     margin-left: 4px;
-    color: #ffffff;
+    color: white;
     justify-content: space-between;
   }
+
   .feedback-select {
     padding: 0px;
     width: 145px;
+
     .pp-combobox {
       .v-input__control {
         height: 24px;
         max-width: 145px;
+
         .v-input__slot {
           padding: 0;
           border: none;
           height: 24px;
           background: #4d4d4f;
+
           .v-select__slot {
             input {
               size: 11px;
-              color: #ffffff;
+              color: white;
             }
           }
         }
