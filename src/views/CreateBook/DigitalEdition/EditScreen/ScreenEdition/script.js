@@ -232,8 +232,9 @@ export default {
     },
 
     /**
-     * Update component's event listeners after component has been mouted
-     * * @param {Boolean} isOn if need to set event
+     * Handle adding & removing events
+     *
+     * @param {Boolean} isOn if need to set event
      */
     updateDigitalEventListeners(isOn = true) {
       const elementEvents = [
@@ -315,16 +316,21 @@ export default {
 
     /**
      * Update window event listeners
+     *
+     * @param {Boolean} isOn if need to set event
      */
-    updateWindowEventListeners() {
+    updateWindowEventListeners(isOn = true) {
       const events = [
         {
           name: WINDOW_EVENT_TYPE.KEY_UP,
           handler: this.onKeyUp
         }
       ];
+
       events.forEach(event => {
-        document.body.addEventListener(event.name, event.handler);
+        document.body.removeEventListener(event.name, event.handler);
+
+        if (isOn) document.body.addEventListener(event.name, event.handler);
       });
     },
 
@@ -1444,5 +1450,8 @@ export default {
   },
   beforeDestroy() {
     this.digitalCanvas = null;
+
+    this.updateDigitalEventListeners(false);
+    this.updateWindowEventListeners(false);
   }
 };

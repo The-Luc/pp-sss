@@ -20,18 +20,6 @@ export default {
     isActive: {
       type: Boolean,
       default: false
-    },
-    leftNumberPage: {
-      type: Boolean,
-      default: false
-    },
-    fontSize: {
-      type: String,
-      default: '10px'
-    },
-    mainScreen: {
-      type: Boolean,
-      default: false
     }
   },
   created() {

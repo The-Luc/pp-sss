@@ -26,7 +26,7 @@ export default {
       drag: false,
       selectedIndex: -1,
       moveToIndex: -1,
-      dragSelectedId: null
+      dragTargetId: null
     };
   },
   setup() {
@@ -83,7 +83,7 @@ export default {
      * @param {Object} event fired event
      */
     onMove(event) {
-      this.dragSelectedId = null;
+      this.dragTargetId = null;
 
       if (this.selectedIndex < 0) {
         return false;
@@ -103,9 +103,15 @@ export default {
 
       const relateFrame = event.relatedContext.element;
 
-      this.dragSelectedId = relateFrame?.id;
+      this.dragTargetId = relateFrame?.id;
 
       return false;
+    },
+    /**
+     * Fire when unchoose a frame
+     */
+    onUnchoose() {
+      this.dragTargetId = null;
     },
     /**
      * Fire when drop a frame
@@ -113,7 +119,7 @@ export default {
      * @param {Object} event fired event
      */
     onEnd() {
-      this.dragSelectedId = null;
+      this.dragTargetId = null;
 
       if (this.selectedIndex < 0 || this.moveToIndex < 0) {
         return;
@@ -124,13 +130,14 @@ export default {
         selectedIndex: this.selectedIndex
       });
 
-      this.$emit('moveFrame', {
-        moveToIndex: this.moveToIndex,
-        selectedIndex: this.selectedIndex
-      });
+      const selectedIndex = this.moveToIndex;
 
       this.selectedIndex = -1;
       this.moveToIndex = -1;
+
+      setTimeout(() => {
+        this.$emit('onFrameClick', this.frameList[selectedIndex]?.id);
+      }, 20);
     }
   }
 };
