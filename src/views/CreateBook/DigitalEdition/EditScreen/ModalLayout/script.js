@@ -62,7 +62,8 @@ export default {
   async created() {
     this.initialData = {
       layoutSelected: LAYOUT_TYPES.SUPPLEMENTAL_LAYOUTS,
-      isSupplemental: true
+      isSupplemental: true,
+      isAddNew: !!this.modalData?.props?.isAddNew
     };
   },
   mounted() {

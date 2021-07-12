@@ -112,7 +112,8 @@ export default {
         modalData: {
           type: MODAL_TYPES.ADD_DIGITAL_FRAME,
           props: {
-            centerX
+            centerX,
+            isAddNew: true
           }
         }
       });
