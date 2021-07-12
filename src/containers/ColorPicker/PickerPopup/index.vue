@@ -1,7 +1,11 @@
 <template>
-  <div ref="colorPicker" class="color-picker-container" :style="containerStyle">
+  <div
+    ref="colorPicker"
+    v-click-outside="onClosePicker"
+    class="color-picker-container"
+    :style="containerStyle"
+  >
     <ColorPicker
-      v-click-outside="onClosePicker"
       :value="currentColor"
       :preset-colors="presets"
       @input="updateColor"
