@@ -10,8 +10,18 @@ export default {
   },
   setup() {
     const { toggleModal, modalData } = useModal();
-    const { addSupplementalFrame, handleReplaceFrame } = useFrame();
-    return { toggleModal, modalData, addSupplementalFrame, handleReplaceFrame };
+    const {
+      handleAddFrame,
+      handleReplaceFrame,
+      setSupplementalLayoutId
+    } = useFrame();
+    return {
+      toggleModal,
+      modalData,
+      handleAddFrame,
+      handleReplaceFrame,
+      setSupplementalLayoutId
+    };
   },
   data() {
     return {
@@ -45,9 +55,10 @@ export default {
       if (frameId) {
         this.handleReplaceFrame({ frame: frames[0], frameId });
       } else {
-        this.addSupplementalFrame({ frames });
+        this.handleAddFrame(frames);
       }
 
+      this.setSupplementalLayoutId({ id: layout.id });
       this.onClose();
     }
   },

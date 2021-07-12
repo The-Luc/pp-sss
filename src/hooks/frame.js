@@ -13,9 +13,10 @@ import { uniqueId } from 'lodash';
  * Handle toggle Frame Information
  */
 export const useFrame = () => {
-  const { currentFrame, nextFrameIdAfterDelete } = useGetters({
+  const { currentFrame, nextFrameIdAfterDelete, framesInStore } = useGetters({
     currentFrame: DIGITAL_GETTERS.CURRENT_FRAME,
-    nextFrameIdAfterDelete: DIGITAL_GETTERS.NEXT_FRAME_ID_AFTER_DELETE
+    nextFrameIdAfterDelete: DIGITAL_GETTERS.NEXT_FRAME_ID_AFTER_DELETE,
+    framesInStore: DIGITAL_GETTERS.GET_FRAMES_WIDTH_IDS
   });
 
   const {
@@ -25,7 +26,8 @@ export const useFrame = () => {
     addSupplementalFrame,
     replaceFrame,
     deleteFrame,
-    setCurrentFrameId
+    setCurrentFrameId,
+    setSupplementalLayoutId
   } = useMutations({
     setPropertiesObjectType: MUTATES.SET_PROPERTIES_OBJECT_TYPE,
     setIsOpenProperties: MUTATES.TOGGLE_MENU_PROPERTIES,
@@ -33,7 +35,8 @@ export const useFrame = () => {
     addSupplementalFrame: DIGITAL_MUTATES.ADD_SUPPLEMENTAL_FRAMES,
     replaceFrame: DIGITAL_MUTATES.REPLACE_SUPPLEMENTAL_FRAME,
     deleteFrame: DIGITAL_MUTATES.DELETE_FRAME,
-    setCurrentFrameId: DIGITAL_MUTATES.SET_CURRENT_FRAME_ID
+    setCurrentFrameId: DIGITAL_MUTATES.SET_CURRENT_FRAME_ID,
+    setSupplementalLayoutId: DIGITAL_MUTATES.SET_SUPPLEMENTAL_LAYOUT_ID
   });
 
   const { updateLayoutObjToStore } = useActions({
@@ -84,10 +87,25 @@ export const useFrame = () => {
     setCurrentFrameId({ id: newId });
   };
 
+  /**
+   * To handle add frame
+   * and set the active frame after add
+   */
+  const handleAddFrame = frames => {
+    addSupplementalFrame({ frames });
+
+    // console.log('hihi');
+    // console.log(framesInStore);
+    // const lastAddedFrame = framesInStore[framesInStore.length - 1];
+    // setCurrentFrameId({ id: lastAddedFrame.id });
+  };
+
   return {
+    currentFrame,
     handleChangeFrame,
-    addSupplementalFrame,
+    handleAddFrame,
     handleReplaceFrame,
-    handleDeleteFrame
+    handleDeleteFrame,
+    setSupplementalLayoutId
   };
 };

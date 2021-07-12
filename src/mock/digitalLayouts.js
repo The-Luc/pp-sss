@@ -445,7 +445,7 @@ export const supplementalLayouts = [
     type: 'Supplemental',
     frames: [supplementalFrames[1]],
     isFavorites: false,
-    previewImageUrl: LAYOUT_THUMB_02,
+    previewImageUrl: LAYOUT_THUMB_10,
     themeId: 1
   }
 ];

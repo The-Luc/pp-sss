@@ -39,7 +39,8 @@ import {
   usePopoverCreationTool,
   useLayoutPrompt,
   useDrawLayout,
-  useGetLayouts
+  useGetLayouts,
+  useFrame
 } from '@/hooks';
 
 import { loadLayouts, loadSupplementalLayouts } from '@/api/layouts';
@@ -49,6 +50,7 @@ import { cloneDeep } from 'lodash';
 export default {
   setup({ edition }) {
     const { setToolNameSelected, selectedToolName } = usePopoverCreationTool();
+    const { currentFrame } = useFrame();
     const {
       updateVisited,
       setIsPrompt,
@@ -73,7 +75,8 @@ export default {
       getLayoutsByType,
       listLayouts,
       themeId,
-      updateSheetThemeLayout
+      updateSheetThemeLayout,
+      currentFrame
     };
   },
   components: {
@@ -279,7 +282,11 @@ export default {
       if (this.layouts.length > 0) {
         this.tempLayoutIdSelected = this.layouts[0].id;
         this.layoutObjSelected = this.layouts[0];
-        const layoutId = this.pageSelected?.layoutId;
+
+        const layoutId = this.initialData?.isSupplemental
+          ? this.currentFrame.supplementalLayoutId
+          : this.pageSelected?.layoutId;
+
         if (layoutId) {
           const sheetLayoutObj = this.layouts.find(
             layout => layout.id === layoutId
@@ -295,6 +302,7 @@ export default {
      */
     onSelectLayout(layout) {
       this.layoutObjSelected = layout;
+      console.log(layout.id);
       this.tempLayoutIdSelected = layout.id;
     },
     /**

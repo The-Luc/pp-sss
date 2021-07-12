@@ -133,6 +133,14 @@ export const mutations = {
     state.sheets[state.currentSheetId].themeId = themeId;
     state.sheets[state.currentSheetId].thumbnailUrl = previewImageUrl;
   },
+  [DIGITAL._MUTATES.SET_SUPPLEMENTAL_LAYOUT_ID](
+    { frames, currentFrameId },
+    { id }
+  ) {
+    if (isEmpty(frames)) return;
+
+    frames[currentFrameId].supplementalLayoutId = id;
+  },
   [DIGITAL._MUTATES.REMOVE_OBJECTS](state, { currentPosition }) {
     Object.values(state.objects).forEach(obj => {
       if (obj.position === currentPosition) {
