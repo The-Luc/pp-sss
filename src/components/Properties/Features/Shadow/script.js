@@ -1,3 +1,4 @@
+import color from 'color';
 import { SHADOW_TYPE, SHADOW_OPTIONS } from '@/common/constants/shadow';
 import { DEFAULT_SHADOW } from '@/common/constants/defaultProperty';
 import Select from '@/components/Selectors/Select';
@@ -6,7 +7,6 @@ import Blur from './Settings/Blur';
 import Offset from './Settings/Offset';
 import ShadowColor from './Settings/Color';
 import Angle from './Settings/Angle';
-import { percentToHex, hexToPercent } from '@/common/utils';
 
 export default {
   components: {
@@ -74,8 +74,7 @@ export default {
      */
     onChange(object) {
       if (object?.shadowColor) {
-        const shadowOpacity = object.shadowColor.slice(-2);
-        object.shadowOpacity = hexToPercent(shadowOpacity) / 100;
+        object.shadowOpacity = color(object.shadowColor).alpha();
       }
 
       this.$emit('change', object);
@@ -85,13 +84,9 @@ export default {
      * @param {Number} value Value user selected
      */
     onChangeOpacity(value) {
-      const currentShadowColor = this.currentShadow.shadowColor;
-
-      const sliceLength =
-        currentShadowColor.length === 9 ? 7 : currentShadowColor.length;
-
-      const shadowColor =
-        currentShadowColor.slice(0, sliceLength) + percentToHex(value * 100);
+      const shadowColor = color(this.currentShadow.shadowColor)
+        .alpha(value)
+        .toString();
 
       this.$emit('change', {
         shadowColor,

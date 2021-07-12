@@ -88,13 +88,3 @@ export const splitNumberByDecimal = (value, decimalCount = 2) => {
   }
   return parseFloat(`${trunc}.${decimal}`);
 };
-
-export const percentToHex = percent => {
-  const intValue = Math.round((percent / 100) * 255);
-  const hexValue = intValue.toString(16);
-  return hexValue.padStart(2, '0').toUpperCase();
-};
-
-export const hexToPercent = alphaHexString => {
-  return Math.round((parseInt(alphaHexString, 16) / 255) * 100);
-};
