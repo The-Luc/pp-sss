@@ -1,7 +1,7 @@
 <template>
   <div class="page-info-properties-container">
     <Properties v-if="isCover" title="Project Information">
-      <PageTitle :title-value-left="book.title" :disabled="true" />
+      <PageTitle :left-title-value="book.title" :disabled="true" />
       <PageNumber
         :disabled="disabled"
         :is-left-number-on="pageInfo.isNumberingOn"
@@ -16,7 +16,12 @@
     </Properties>
 
     <Properties v-if="isFrontCover || isBackCover" title="Page Information">
-      <PageTitle title-name="Page title:" title-value-left="aaa" />
+      <PageTitle
+        title-name="Page title:"
+        :left-title-value="spreadInfo.leftTitle"
+        :right-title-value="spreadInfo.rightTitle"
+        @change="changeTitle"
+      />
       <PageNumber
         :disabled="disabled"
         title-name="(for this page only)"
@@ -32,8 +37,10 @@
     <Properties v-if="isSpread" title="Spread Information">
       <PageTitle
         title-name="Spread title:"
-        title-value-left="aaa"
+        :left-title-value="spreadInfo.leftTitle"
+        :right-title-value="spreadInfo.rightTitle"
         :is-link="isLink"
+        @change="changeTitle"
       />
       <PageNumber
         :disabled="disabled"

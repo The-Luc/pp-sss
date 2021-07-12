@@ -1,14 +1,16 @@
 <template>
   <div class="title">
     <InputTitle
-      :title-name="isLink ? 'Left hand page title:' : titleName"
+      :title-name="!isLink ? 'Left hand page title:' : titleName"
       :disabled="disabled"
-      :title-value="titleValueLeft"
+      :title-value="leftTitleValue"
+      @change="onChangeLeftTitle"
     />
     <InputTitle
-      v-if="isLink"
+      v-if="!isLink"
       title-name="Right hand page title:"
-      :title-value="titleValueRight"
+      :title-value="rightTitleValue"
+      @change="onChangeRightTitle"
     />
   </div>
 </template>

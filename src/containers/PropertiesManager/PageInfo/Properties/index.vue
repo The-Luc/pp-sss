@@ -15,7 +15,7 @@
         :disabled="disabled"
         :items="fontSize"
         :nudge-width="75"
-        :selected-val="selectedFontSize"
+        :selected-val="disabled ? { name: '', value: '' } : selectedFontSize"
         :prepended-icon="prependedIcon"
         :appended-icon="appendedIcon"
         @change="onChangeFontSize"

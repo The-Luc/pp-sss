@@ -1,8 +1,14 @@
-import { isEmpty } from '@/common/utils';
+import Draggable from 'vuedraggable';
+
 import EmptyFrame from './EmptyFrame';
+
+import { useFrameOrdering } from '@/hooks';
+
+import { isEmpty } from '@/common/utils';
 
 export default {
   components: {
+    Draggable,
     EmptyFrame
   },
   props: {
@@ -17,8 +23,21 @@ export default {
       default: true
     }
   },
+  data() {
+    return {
+      drag: false,
+      selectedIndex: -1,
+      moveToIndex: -1,
+      dragSelectedId: null
+    };
+  },
+  setup() {
+    const { moveFrame } = useFrameOrdering();
+
+    return { moveFrame };
+  },
   computed: {
-    frameData() {
+    frameList() {
       const defaultData = [
         {
           id: 0,
@@ -41,13 +60,77 @@ export default {
     addFrame(event) {
       this.$emit('addFrame', event);
     },
-
     /**
      * To emeit to parent component
      * @param {Number} id Id of the clicked frame
      */
     onFrameClick(id) {
       this.$emit('onFrameClick', id);
+    },
+    /**
+     * Fire when choose a frame
+     *
+     * @param {Object} event fired event
+     */
+    onChoose(event) {
+      this.moveToIndex = -1;
+
+      this.selectedIndex = event.oldIndex;
+    },
+    /**
+     * Fire when drag a frame
+     *
+     * @param {Object} event fired event
+     */
+    onMove(event) {
+      this.dragSelectedId = null;
+
+      if (this.selectedIndex < 0) {
+        return false;
+      }
+
+      if (event.related === null) {
+        return false;
+      }
+
+      this.moveToIndex = event.draggedContext.futureIndex;
+
+      if (this.moveToIndex === this.selectedIndex) {
+        this.moveToIndex = -1;
+
+        return false;
+      }
+
+      const relateFrame = event.relatedContext.element;
+
+      this.dragSelectedId = relateFrame?.id;
+
+      return false;
+    },
+    /**
+     * Fire when drop a frame
+     *
+     * @param {Object} event fired event
+     */
+    onEnd() {
+      this.dragSelectedId = null;
+
+      if (this.selectedIndex < 0 || this.moveToIndex < 0) {
+        return;
+      }
+
+      this.moveFrame({
+        moveToIndex: this.moveToIndex,
+        selectedIndex: this.selectedIndex
+      });
+
+      this.$emit('moveFrame', {
+        moveToIndex: this.moveToIndex,
+        selectedIndex: this.selectedIndex
+      });
+
+      this.selectedIndex = -1;
+      this.moveToIndex = -1;
     }
   }
 };

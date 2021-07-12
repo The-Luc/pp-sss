@@ -217,5 +217,11 @@ export const mutations = {
         spreadInfo.isRightNumberOn = isNumberOn;
       }
     });
+  },
+  [PRINT._MUTATES.UPDATE_SPREAD_INFO](state, { spreadInfo }) {
+    state.sheets[state.currentSheetId].spreadInfo = {
+      ...state.sheets[state.currentSheetId].spreadInfo,
+      ...spreadInfo
+    };
   }
 };

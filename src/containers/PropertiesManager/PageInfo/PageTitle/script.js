@@ -8,11 +8,11 @@ export default {
       type: String,
       default: 'Project title:'
     },
-    titleValueLeft: {
+    leftTitleValue: {
       type: String,
       default: ''
     },
-    titleValueRight: {
+    rightTitleValue: {
       type: String,
       default: ''
     },
@@ -22,7 +22,15 @@ export default {
     },
     isLink: {
       type: Boolean,
-      default: false
+      default: true
+    }
+  },
+  methods: {
+    onChangeLeftTitle(val) {
+      this.$emit('change', { leftTitle: val });
+    },
+    onChangeRightTitle(val) {
+      this.$emit('change', { rightTitle: val });
     }
   }
 };

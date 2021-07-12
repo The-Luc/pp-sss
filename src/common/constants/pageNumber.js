@@ -26,7 +26,7 @@ export const BOTTOM_OUTSIDE_CORNERS_VALUE = {
   LEFT: 0.4
 };
 
-export const TYPE_PAGE_NUMBER = {
-  LEFT_PAGE_NUMBER: 'leftPageNumber',
+export const PAGE_NUMBER_TYPE = {
+  LEFT_PAGE_NUMBER: 'LeftPageNumber',
   RIGHT_PAGE_NUMBER: 'RightPageNumber'
 };

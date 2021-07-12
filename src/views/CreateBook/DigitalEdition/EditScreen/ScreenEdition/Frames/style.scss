@@ -47,6 +47,10 @@
         border: 2px solid $color-stoodio-blue;
         opacity: 1;
       }
+
+      &.drag-selected {
+        border: 2px solid black;
+      }
     }
 
     .frame-item.add-frame {

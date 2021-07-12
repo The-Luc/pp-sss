@@ -442,17 +442,24 @@ export const isOk = ({ status }) => {
 };
 
 /**
- * Get right tool item list
+ * Move item to new position
  *
- * @param   {Object}  rightTool right tool data
- * @returns {Array}             right tool items
+ * @param   {Any}     item          item to move, can be any type
+ * @param   {Number}  currentIndex  current index of item
+ * @param   {Number}  moveToIndex   index to move
+ * @param   {Array}   items         list of item contain item to be moved
+ * @returns {Array}                 list of item after item moved
  */
-export const getRightToolItems = rightTool => {
-  return Object.keys(rightTool).map(k => {
-    return {
-      iconName: rightTool[k].iconName,
-      title: rightTool[k].name,
-      name: rightTool[k].value
-    };
-  });
+export const moveItem = (item, currentIndex, moveToIndex, items) => {
+  const _items = [...items];
+
+  if (moveToIndex < currentIndex) {
+    _items.splice(currentIndex, 1);
+    _items.splice(moveToIndex, 0, item);
+  } else if (moveToIndex > currentIndex) {
+    _items.splice(moveToIndex + 1, 0, item);
+    _items.splice(currentIndex, 1);
+  }
+
+  return _items;
 };
