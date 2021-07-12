@@ -1,13 +1,5 @@
 .pp-selector-container {
   .pp-select {
-    width: 172px !important;
-
-    &::v-deep {
-      .v-input__control {
-        .v-input__slot {
-          margin-bottom: 0;
-        }
-      }
-    }
+    width: 172px;
   }
 }

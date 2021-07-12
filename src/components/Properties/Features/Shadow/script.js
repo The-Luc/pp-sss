@@ -1,3 +1,4 @@
+import color from 'color';
 import { SHADOW_TYPE, SHADOW_OPTIONS } from '@/common/constants/shadow';
 import { DEFAULT_SHADOW } from '@/common/constants/defaultProperty';
 import Select from '@/components/Selectors/Select';
@@ -72,6 +73,10 @@ export default {
      * @param {Object} object Value user selected
      */
     onChange(object) {
+      if (object?.shadowColor) {
+        object.shadowOpacity = color(object.shadowColor).alpha();
+      }
+
       this.$emit('change', object);
     },
     /**
@@ -79,7 +84,14 @@ export default {
      * @param {Number} value Value user selected
      */
     onChangeOpacity(value) {
-      this.$emit('change', { shadowOpacity: value });
+      const shadowColor = color(this.currentShadow.shadowColor)
+        .alpha(value)
+        .toString();
+
+      this.$emit('change', {
+        shadowColor,
+        shadowOpacity: value
+      });
     }
   }
 };

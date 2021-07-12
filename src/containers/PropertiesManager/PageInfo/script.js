@@ -5,7 +5,9 @@ import {
   MUTATES as PRINT_MUTATES
 } from '@/store/modules/print/const';
 
-import { SHEET_TYPE, LINK_STATUS } from '@/common/constants';
+import { pageNumberOff } from '@/common/fabricObjects';
+import { activeCanvas } from '@/common/utils';
+import { SHEET_TYPE, LINK_STATUS, PAGE_NUMBER_TYPE } from '@/common/constants';
 import Properties from '@/components/Properties/BoxProperties';
 import PageTitle from './PageTitle';
 import PageNumber from './PageNumber';
@@ -54,7 +56,8 @@ export default {
   methods: {
     ...mapMutations({
       setStatusPageNumber: PRINT_MUTATES.SET_STATUS_PAGE_NUMBER,
-      setPageInfo: PRINT_MUTATES.SET_PAGE_INFO
+      setPageInfo: PRINT_MUTATES.SET_PAGE_INFO,
+      updateSpreadInfo: PRINT_MUTATES.UPDATE_SPREAD_INFO
     }),
     /**
      * Receive status page number from children
@@ -68,10 +71,19 @@ export default {
           this.setStatusPageNumber(val.isNumberOn);
           break;
         case 'isLeftNumberOn':
-          console.log(val);
+          this.updateSpreadInfo({ spreadInfo: val });
+          this.drawPageNumberOnCanvas(
+            val.isLeftNumberOn,
+            PAGE_NUMBER_TYPE.LEFT_PAGE_NUMBER
+          );
+
           break;
         case 'isRightNumberOn':
-          console.log(val);
+          this.updateSpreadInfo({ spreadInfo: val });
+          this.drawPageNumberOnCanvas(
+            val.isRightNumberOn,
+            PAGE_NUMBER_TYPE.RIGHT_PAGE_NUMBER
+          );
           break;
         case 'position':
           this.setChangePageInfo(val);
@@ -97,6 +109,23 @@ export default {
         ...val
       };
       this.setPageInfo({ pageInfo: changePageInfo });
+    },
+    /**
+     * set value title change
+     * @param   {Object}  title Value user input
+     */
+    changeTitle(title) {
+      this.updateSpreadInfo({ spreadInfo: title });
+    },
+    /**
+     * Draw page number on canvas
+     * @param   {Boolean} isNumberOn Status On/Off of page number
+     * @param   {String}  pageNumberType type page number
+     */
+    drawPageNumberOnCanvas(isNumberOn, pageNumberType) {
+      isNumberOn
+        ? this.$root.$emit('pageNumber')
+        : pageNumberOff(pageNumberType, activeCanvas);
     }
   }
 };

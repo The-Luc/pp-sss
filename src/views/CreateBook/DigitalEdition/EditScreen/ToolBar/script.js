@@ -61,43 +61,52 @@ export default {
           },
           {
             iconName: 'photo_size_select_large',
-            title: TOOL_NAME.IMAGE_BOX
+            title: 'Image',
+            name: TOOL_NAME.IMAGE_BOX
           },
           {
             iconName: 'collections',
-            title: 'Photos'
+            title: 'Photos',
+            name: 'Photos'
           },
           {
             iconName: 'portrait',
-            title: 'Portraits'
+            title: 'Portraits',
+            name: 'Portraits'
           }
         ],
         [
           {
             iconName: 'grid_on',
-            title: 'Grid'
+            title: 'Grid',
+            name: 'Grid'
           },
           {
             iconName: 'undo',
-            title: 'Undo'
+            title: 'Undo',
+            name: 'Undo'
           },
           {
             iconName: 'redo',
-            title: 'Redo'
+            title: 'Redo',
+            name: 'Redo'
           },
           {
             iconName: 'delete',
-            title: 'Delete'
+            title: 'Delete',
+            name: 'Delete'
           }
         ],
         [
           {
             iconName: 'smart_button',
-            title: 'Actions'
+            title: 'Actions',
+            name: 'Actions'
           },
           {
             iconName: 'post_add',
-            title: 'Screen Notes'
+            title: 'Screen Notes',
+            name: 'ScreenNotes'
           }
         ]
       ],

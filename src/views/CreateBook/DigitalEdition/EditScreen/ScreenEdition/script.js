@@ -417,6 +417,7 @@ export default {
 
       if (isSelectMultiObject) {
         setCanvasUniformScaling(this.digitalCanvas, true);
+        this.resetConfigTextProperties();
       } else {
         setCanvasUniformScaling(this.digitalCanvas, objectData.isConstrain);
       }
@@ -434,19 +435,8 @@ export default {
      * Event fire when selection of fabric canvas has been cleared
      */
     onSelectionCleared() {
-      if (this.propertiesObjectType !== OBJECT_TYPE.BACKGROUND) {
-        this.setIsOpenProperties({ isOpen: false });
-
-        this.setPropertiesObjectType({ type: '' });
-      }
-
-      this.setObjectTypeSelected({ type: '' });
-
-      this.toggleActiveObjects(false);
-
-      this.setSelectedObjectId({ id: '' });
-
-      this.setCurrentObject(null);
+      this.setInfoBar({ w: 0, h: 0 });
+      this.closeProperties();
     },
 
     /**
@@ -1471,7 +1461,7 @@ export default {
     frames: {
       deep: true,
       handler(val, oldVal) {
-        if (val.length && val.length !== oldVal.length) {
+        if (val.length !== oldVal.length) {
           const supplementalFrames = val.filter(item => !item.frame.fromLayout);
           this.handleShowAddFrame(supplementalFrames);
         }

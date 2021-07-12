@@ -1,11 +1,13 @@
 <template>
-  <div class="title-content">
+  <div :key="componentKey" class="title-content">
     <div class="project-title">{{ titleName }}</div>
     <input
       type="text"
       :disabled="disabled"
       :value="titleValue"
       placeholder="Click to add title"
+      @keydown.esc="onEsc"
+      @change="onChange"
     />
   </div>
 </template>

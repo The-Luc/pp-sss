@@ -7,8 +7,9 @@ import {
   HARD_COVER_BLEED_X,
   SOFTCOVER_SPINE_SIZES,
   PRINT_DPI,
-  PRINT_PAGE_SIZE
-} from '@/common/constants/canvas';
+  PRINT_PAGE_SIZE,
+  PAGE_NUMBER_TYPE
+} from '@/common/constants';
 import { SizeSummary } from '@/common/models';
 import { isEmpty } from './util';
 
@@ -168,12 +169,20 @@ export const pxToIn = val => val / PRINT_DPI;
  * @param {Any} canvas - the canvas to check
  */
 export const selectLatestObject = canvas => {
-  const objectCount = canvas.getObjects().length;
-  if (objectCount) {
-    const index = canvas.getObjects().length - 1;
-    canvas.setActiveObject(canvas.item(index));
-    canvas.renderAll();
-  }
+  const lastestObject = [
+    ...canvas
+      .getObjects()
+      .filter(
+        obj =>
+          ![
+            PAGE_NUMBER_TYPE.LEFT_PAGE_NUMBER,
+            PAGE_NUMBER_TYPE.RIGHT_PAGE_NUMBER
+          ].includes(obj.objectType)
+      )
+  ].pop();
+
+  canvas.setActiveObject(lastestObject);
+  canvas.renderAll();
 };
 
 /**

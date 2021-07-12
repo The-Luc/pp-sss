@@ -47,7 +47,9 @@ export default {
      */
     onChange(data) {
       this.$root.$emit(EVENT_TYPE.CHANGE_TEXT_PROPERTIES, {
-        fontFamily: data.value
+        style: {
+          fontFamily: data.value
+        }
       });
     }
   }

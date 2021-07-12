@@ -1,6 +1,9 @@
 import { cloneDeep, merge, uniqueId } from 'lodash';
 
+import { moveItem } from '@/common/utils';
+
 import { OBJECT_TYPE } from '@/common/constants';
+
 import DIGITAL from './const';
 import { isEmpty } from '@/common/utils';
 
@@ -228,5 +231,13 @@ export const mutations = {
     { value }
   ) {
     frames[currentFrameId].isVisited = value;
+  },
+  [DIGITAL._MUTATES.MOVE_FRAME](state, { moveToIndex, selectedIndex }) {
+    state.frameIds = moveItem(
+      state.frameIds[selectedIndex],
+      selectedIndex,
+      moveToIndex,
+      state.frameIds
+    );
   }
 };

@@ -74,6 +74,7 @@ export const TextElement = {
     vertical: DEFAULT_TEXT.ALIGNMENT.VERTICAL // TOP, MIDDLE, BOTTOM
   },
   letterSpacing: DEFAULT_TEXT.LETTER_SPACING,
+  charSpacing: DEFAULT_TEXT.CHAR_SPACING,
   lineSpacing: DEFAULT_TEXT.LINE_SPACING, // 1.2 * em
   lineHeight: DEFAULT_TEXT.LINE_HEIGHT,
   column: DEFAULT_TEXT.COLUMN,

@@ -110,6 +110,10 @@ body,
     &:not(.item-selected):hover {
       background-color: $color-stoodio-blue;
 
+      &.primary--text {
+        color: $color-white !important; /* override lib */
+      }
+
       > .v-list-item__content {
         color: $color-white;
       }

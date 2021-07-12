@@ -4,7 +4,7 @@ import {
   BOTTOM_CENTER_VALUE,
   BOTTOM_OUTSIDE_CORNERS_VALUE,
   PAGE_NUMBER_POSITION,
-  TYPE_PAGE_NUMBER
+  PAGE_NUMBER_TYPE
 } from '@/common/constants';
 import { ptToPx, pxToIn, mapObject } from '@/common/utils';
 import { DEFAULT_RULE_DATA } from '@/common/fabricObjects/common';
@@ -37,22 +37,28 @@ export const addPrintPageNumber = ({
     zoom
   );
 
-  if (spreadInfo?.isLeftNumberOn) {
+  if (
+    spreadInfo?.isLeftNumberOn &&
+    !isPageNumberExisted(PAGE_NUMBER_TYPE.LEFT_PAGE_NUMBER, canvas)
+  ) {
     const pageNumberLeft = createFabricObject(
       properties,
       positionLeft,
       pageNumber.pageLeftName,
-      TYPE_PAGE_NUMBER.LEFT_PAGE_NUMBER
+      PAGE_NUMBER_TYPE.LEFT_PAGE_NUMBER
     );
     canvas.add(pageNumberLeft);
   }
 
-  if (spreadInfo?.isRightNumberOn) {
+  if (
+    spreadInfo?.isRightNumberOn &&
+    !isPageNumberExisted(PAGE_NUMBER_TYPE.RIGHT_PAGE_NUMBER, canvas)
+  ) {
     const pageNumberRight = createFabricObject(
       properties,
       positionRight,
       pageNumber.pageRightName,
-      TYPE_PAGE_NUMBER.RIGHT_PAGE_NUMBER
+      PAGE_NUMBER_TYPE.RIGHT_PAGE_NUMBER
     );
     canvas.add(pageNumberRight);
   }
@@ -64,16 +70,17 @@ export const addPrintPageNumber = ({
  * to create an page number object
  * @param {Object}  prop            page number group
  * @param {Object}  position        position of page number on page
- * @param {String} pageNumber      is page number of on page
- * @param {String}  typePageNumber  is type page number on page
+ * @param {String}  pageNumber      is page number of on page
+ * @param {String}  pageNumberType  is type page number on page
  * @returns fabric page number object
  */
-const createFabricObject = (prop, position, pageNumber, typePageNumber) => {
+const createFabricObject = (prop, position, pageNumber, pageNumberType) => {
   const fabricProp = toFabricPageNumber({ prop, ...position });
   return new fabric.Text(pageNumber, {
     ...fabricProp,
-    type: typePageNumber,
+    objectType: pageNumberType,
     selectable: false,
+    hoverCursor: 'default',
     originX: 'center',
     originY: 'center'
   });
@@ -135,13 +142,42 @@ const toFabricPageNumber = prop => {
  * @param   {Object}  canvas  the canvas
  */
 export const updateBringToFrontPageNumber = canvas => {
-  const objects = canvas.getObjects();
-  Object.values(objects).forEach(obj => {
+  canvas.getObjects().forEach(obj => {
     if (
-      obj.type === TYPE_PAGE_NUMBER.LEFT_PAGE_NUMBER ||
-      obj.type === TYPE_PAGE_NUMBER.RIGHT_PAGE_NUMBER
+      obj.objectType === PAGE_NUMBER_TYPE.LEFT_PAGE_NUMBER ||
+      obj.objectType === PAGE_NUMBER_TYPE.RIGHT_PAGE_NUMBER
     ) {
       canvas.bringToFront(obj).renderAll();
     }
   });
+};
+/**
+ * Remove page number when user change status off page number
+ * @param   {String}  pageNumberType  type of page number (left or right)
+ * @param   {Object}  canvas  the canvas
+ */
+export const pageNumberOff = (pageNumberType, canvas) => {
+  canvas.getObjects().forEach(obj => {
+    if (obj.objectType === pageNumberType) {
+      canvas.remove(obj).renderAll();
+    }
+  });
+};
+/**
+ * Check if it exists left page number or right page number
+ * @param   {String}  type    type page number (left, right)
+ * @param   {Object}  canvas  the canvas
+ * @returns {Boolean} is type page number
+ */
+const isPageNumberExisted = (pageNumberType, canvas) => {
+  const objects = canvas.getObjects();
+
+  const totalObject = objects.length;
+
+  if (totalObject === 0) return false;
+
+  return (
+    objects[totalObject - 1]?.objectType === pageNumberType ||
+    objects[totalObject - 2]?.objectType === pageNumberType
+  );
 };

@@ -137,7 +137,7 @@ export const toFabricTextBorderProp = prop => {
       width: DEFAULT_RULE_DATA.WIDTH,
       height: DEFAULT_RULE_DATA.HEIGHT
     },
-    restrict: ['id', 'shadow', 'flip', 'rotation', 'isConstrain']
+    restrict: ['id', 'shadow', 'flip', 'rotation', 'isConstrain', 'style']
   };
 
   return mapObject(prop, mapRules);
@@ -160,7 +160,7 @@ export const toFabricTextGroupProp = prop => {
       width: DEFAULT_RULE_DATA.WIDTH,
       height: DEFAULT_RULE_DATA.HEIGHT
     },
-    restrict: ['id', 'shadow', 'alignment', 'fontSize', 'rotation']
+    restrict: ['id', 'shadow', 'alignment', 'fontSize', 'rotation', 'style']
   };
 
   return mapObject(prop, mapRules);

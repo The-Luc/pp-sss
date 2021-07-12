@@ -1,3 +1,5 @@
+import color from 'color';
+
 import { TEXT_CASE } from './textCase';
 import { TEXT_HORIZONTAL_ALIGN, TEXT_VERTICAL_ALIGN } from './textAlign';
 import { BACKGROUND_TYPE, BACKGROUND_PAGE_TYPE } from './backgroundType';
@@ -21,15 +23,23 @@ export const DEFAULT_BORDER = {
   STROKE_LINE_TYPE: 'solid'
 };
 
+export const DEFAULT_COLOR = {
+  ALPHA: 0.5,
+  COLOR: '#000000'
+};
+
 export const DEFAULT_PROP = {
   OPACITY: 1,
-  COLOR: '#000000',
+  COLOR: DEFAULT_COLOR.COLOR,
   MIN_POSITION: -Infinity,
   MAX_POSITION: Infinity,
   MIN_SIZE: 0.5,
   MAX_SIZE: 60,
   BORDER: { ...DEFAULT_BORDER },
-  IS_CONSTRAIN: true
+  IS_CONSTRAIN: true,
+  COLOR_WITH_ALPHA: color(DEFAULT_COLOR.COLOR)
+    .alpha(DEFAULT_COLOR.ALPHA)
+    .toString()
 };
 
 export const DEFAULT_COORD = {
@@ -49,7 +59,7 @@ export const DEFAULT_SHADOW = {
   OFFSET: 2,
   OPACITY: 0.5,
   ANGLE: 270,
-  COLOR: DEFAULT_PROP.COLOR
+  COLOR: DEFAULT_PROP.COLOR_WITH_ALPHA
 };
 
 export const DEFAULT_TEXT = {
@@ -74,8 +84,9 @@ export const DEFAULT_TEXT = {
     VERTICAL: TEXT_VERTICAL_ALIGN.TOP
   },
   LETTER_SPACING: 0,
+  CHAR_SPACING: 0,
   LINE_SPACING: 0,
-  LINE_HEIGHT: 1,
+  LINE_HEIGHT: 1.2,
   COLUMN: 1,
   PADDING: 0.1,
   ORIGIN: {
