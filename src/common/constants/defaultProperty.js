@@ -1,3 +1,5 @@
+import color from 'color';
+
 import { TEXT_CASE } from './textCase';
 import { TEXT_HORIZONTAL_ALIGN, TEXT_VERTICAL_ALIGN } from './textAlign';
 import { BACKGROUND_TYPE, BACKGROUND_PAGE_TYPE } from './backgroundType';
@@ -22,7 +24,7 @@ export const DEFAULT_BORDER = {
 };
 
 export const DEFAULT_COLOR = {
-  COLOR_ALPHA: '80',
+  COLOR_ALPHA: 0.5,
   COLOR: '#000000'
 };
 
@@ -35,7 +37,9 @@ export const DEFAULT_PROP = {
   MAX_SIZE: 60,
   BORDER: { ...DEFAULT_BORDER },
   IS_CONSTRAIN: true,
-  COLOR_WITH_ALPHA: `${DEFAULT_COLOR.COLOR}${DEFAULT_COLOR.COLOR_ALPHA}`
+  COLOR_WITH_ALPHA: color(DEFAULT_COLOR.COLOR)
+    .alpha(DEFAULT_COLOR.COLOR_ALPHA)
+    .toString()
 };
 
 export const DEFAULT_COORD = {
