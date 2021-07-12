@@ -1,6 +1,6 @@
 <template>
   <div class="sidebar-section">
-    <div class="thumbnail-view-container">
+    <div class="digital-thumbnail-container">
       <HeaderContainer
         v-for="section in book.sections"
         :key="section.id"
@@ -12,8 +12,6 @@
           :ref="`screen${sheet.id}`"
           :sheet="sheet"
           :edit="false"
-          :left-number-page="true"
-          font-size="8px"
           :order-screen="orderScreen(section.id, sheet)"
           :is-active="checkIsActive(sheet.id)"
           @click.native="onSelectSheet(sheet)"

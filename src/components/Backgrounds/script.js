@@ -6,7 +6,8 @@ import Item from './Item';
 import {
   isEmpty,
   getDisplayBackgroundTypes,
-  getDisplayBackgroundPageTypes
+  getDisplayBackgroundPageTypes,
+  scrollToElement
 } from '@/common/utils';
 
 export default {
@@ -72,8 +73,19 @@ export default {
       return this.chosenBackground;
     }
   },
+  watch: {
+    backgrounds(val) {
+      if (isEmpty(val)) return;
+
+      this.autoScroll(this.appliedBackground?.id);
+    }
+  },
   mounted() {
     this.initData();
+
+    if (isEmpty(this.appliedBackground)) return;
+
+    this.autoScroll(this.appliedBackground?.id);
   },
   methods: {
     /**
@@ -122,6 +134,20 @@ export default {
       this.$emit('applyBackground', this.selectedBackground);
 
       this.onClose();
+    },
+    /**
+     * Get background refs by id and handle auto scroll
+     *
+     * @param {Number}  backgroundId  selected background id
+     */
+    autoScroll(backgroundId) {
+      setTimeout(() => {
+        const currentBackground = this.$refs[`background${backgroundId}`];
+
+        if (isEmpty(currentBackground)) return;
+
+        scrollToElement(currentBackground[0]?.$el, { block: 'center' });
+      }, 20);
     }
   }
 };
