@@ -284,7 +284,7 @@ export default {
         this.layoutObjSelected = this.layouts[0];
 
         const layoutId = this.initialData?.isSupplemental
-          ? this.currentFrame.supplementalLayoutId
+          ? this.currentFrame?.supplementalLayoutId
           : this.pageSelected?.layoutId;
 
         if (layoutId) {

@@ -94,10 +94,8 @@ export const useFrame = () => {
   const handleAddFrame = frames => {
     addSupplementalFrame({ frames });
 
-    // console.log('hihi');
-    // console.log(framesInStore);
-    // const lastAddedFrame = framesInStore[framesInStore.length - 1];
-    // setCurrentFrameId({ id: lastAddedFrame.id });
+    const lastAddedFrame = framesInStore.value[framesInStore.value.length - 1];
+    setCurrentFrameId({ id: lastAddedFrame.id });
   };
 
   return {

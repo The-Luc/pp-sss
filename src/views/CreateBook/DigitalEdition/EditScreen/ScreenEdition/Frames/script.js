@@ -39,8 +39,14 @@ export default {
           }
         }
       ];
+      // if there are no frame => render default one
+      if (isEmpty(this.frames)) return defaultData;
 
-      return isEmpty(this.frames) ? defaultData : this.frames;
+      // if there are only supplemental frames => render a blank frame at 1st position
+      const hasTrueFrame = this.frames.some(f => f.frame.fromLayout);
+      if (!hasTrueFrame) return [...defaultData, ...this.frames];
+
+      return this.frames;
     }
   },
   methods: {
