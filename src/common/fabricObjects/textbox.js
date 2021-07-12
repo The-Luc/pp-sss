@@ -4,18 +4,11 @@ import { cloneDeep, merge, uniqueId } from 'lodash';
 import { TextElement } from '@/common/models';
 import { applyShadowToObject } from './common';
 
-import {
-  isEmpty,
-  ptToPx,
-  inToPx,
-  pxToIn,
-  getStrokeLineCap
-} from '@/common/utils';
+import { isEmpty, inToPx, pxToIn, getStrokeLineCap } from '@/common/utils';
 
 import {
   TEXT_CASE,
   OBJECT_TYPE,
-  DEFAULT_SPACING,
   DEFAULT_TEXT,
   TEXT_VERTICAL_ALIGN,
   OBJECT_MIN_SIZE,
@@ -27,7 +20,7 @@ import {
   toFabricTextBorderProp,
   toFabricTextGroupProp
 } from './common';
-import { useDoubleStroke } from '@/plugins/fabric';
+import { useDoubleStroke, useTextRenderOverride } from '@/plugins/fabric';
 
 /**
  * Handle creating a TextBox into canvas
@@ -60,6 +53,8 @@ export const createTextBox = (x, y, width, height, textProperties) => {
     width,
     padding
   });
+
+  useTextRenderOverride(text);
 
   const {
     width: adjustedWidth,
@@ -227,37 +222,10 @@ const applyTextProperties = function(text, prop) {
   }
   const canvas = text.canvas;
 
-  let curFontSize = text.get('fontSize');
-  let curLineHeight = text.get('lineHeight'); // if = 1.2 => auto
-
   const textProp = toFabricTextProp(prop);
   Object.keys(textProp).forEach(k => {
     text.set(k, textProp[k]);
   });
-
-  const lineSpacingProp = !isEmpty(prop['lineSpacing'])
-    ? ptToPx(+prop['lineSpacing'] || 0)
-    : null;
-  const fontSizeProp = !isEmpty(prop['fontSize'])
-    ? ptToPx(+prop['fontSize'])
-    : null;
-
-  if (fontSizeProp) {
-    if (lineSpacingProp) {
-      // if null or 0: lineSpacing auto reset by fabric
-      const newLineSpacing = (fontSizeProp + lineSpacingProp) / fontSizeProp;
-      text.set('lineHeight', newLineSpacing);
-    } else if (curLineHeight !== DEFAULT_SPACING.VALUE) {
-      const lineSpacing = curLineHeight * curFontSize - curFontSize; // px value
-      const newLineSpacing = (fontSizeProp + lineSpacing) / fontSizeProp;
-      text.set('lineHeight', newLineSpacing);
-    }
-  }
-
-  if (!fontSizeProp && lineSpacingProp) {
-    const newLineSpacing = (curFontSize + lineSpacingProp) / curFontSize;
-    text.set('lineHeight', newLineSpacing);
-  }
 
   const textString = text.get('text');
   if (!isEmpty(prop['textCase']) && !isEmpty(textString)) {

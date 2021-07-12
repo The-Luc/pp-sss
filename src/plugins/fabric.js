@@ -1,5 +1,6 @@
 import { fabric } from 'fabric';
-import { CORNER_SIZE, BORDER_STYLES } from '@/common/constants';
+import { CORNER_SIZE, BORDER_STYLES, DEFAULT_TEXT } from '@/common/constants';
+import { ptToPx } from '@/common/utils';
 
 const BORDER_COLOR = {
   OUTER: '#ffffff',
@@ -68,10 +69,36 @@ const rectRender = function(ctx) {
 
 /**
  * Allow fabric rect object to have double stroke
- * @param {fabric.Object} rect - the object to enable double stroke
+ * @param {fabric.Rect} rect - the object to enable double stroke
  */
 export const useDoubleStroke = function(rect) {
   rect._render = rectRender;
+};
+
+/**
+ * Text Render function with override on lineSpacing to support auto lineHeight adjust
+ * @param {CanvasRenderingContext2D} ctx Context to render on
+ */
+const textRender = function(ctx) {
+  if (!this.lineSpacing && this.lineHeight !== DEFAULT_TEXT.LINE_HEIGHT) {
+    this.set({
+      lineSpacing: 0,
+      lineHeight: DEFAULT_TEXT.LINE_HEIGHT
+    });
+  }
+  const lineHeight = ptToPx(this.lineSpacing) / this.fontSize;
+  if (this.lineSpacing && this.lineHeight !== lineHeight) {
+    this.set({ lineHeight });
+  }
+  fabric.Textbox.prototype.render.call(this, ctx);
+};
+
+/**
+ * Allow fabric text object to have lineHeight override
+ * @param {fabric.Textbox} text - the object to enable lineHeight override
+ */
+export const useTextRenderOverride = function(text) {
+  text.render = textRender;
 };
 
 /**
