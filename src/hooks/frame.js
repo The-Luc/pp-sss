@@ -54,3 +54,11 @@ export const useFrame = () => {
   };
   return { handleChangeFrame, addSupplementalFrame };
 };
+
+export const useFrameOrdering = () => {
+  const { moveFrame } = useMutations({
+    moveFrame: DIGITAL_MUTATES.MOVE_FRAME
+  });
+
+  return { moveFrame };
+};

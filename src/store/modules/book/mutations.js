@@ -2,7 +2,7 @@ import randomcolor from 'randomcolor';
 import moment from 'moment';
 
 import { SHEET_TYPE, DATE_FORMAT } from '@/common/constants';
-import { nextId } from '@/common/utils';
+import { nextId, moveItem } from '@/common/utils';
 
 import BOOK from './const';
 import { POSITION_FIXED } from '@/common/constants';
@@ -49,20 +49,6 @@ const moveToSection = (
     moveToSheetIndex,
     sections
   );
-};
-
-const moveItem = (item, currentIndex, moveToIndex, items) => {
-  const _items = Object.assign([], items);
-
-  if (moveToIndex < currentIndex) {
-    _items.splice(currentIndex, 1);
-    _items.splice(moveToIndex, 0, item);
-  } else if (moveToIndex > currentIndex) {
-    _items.splice(moveToIndex + 1, 0, item);
-    _items.splice(currentIndex, 1);
-  }
-
-  return _items;
 };
 
 const makeNewSection = (sections, sectionIndex) => {
