@@ -1,9 +1,6 @@
 import { mapGetters, mapMutations } from 'vuex';
 
-import {
-  GETTERS as THEME_GETTERS,
-  MUTATES as THEME_MUTATES
-} from '@/store/modules/theme/const';
+import { MUTATES as THEME_MUTATES } from '@/store/modules/theme/const';
 
 import { GETTERS as DIGITAL_GETTERS } from '@/store/modules/digital/const';
 
@@ -13,7 +10,6 @@ import {
 } from '@/store/modules/app/const';
 
 import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
-import { themeOptions } from '@/mock/themes';
 import PpToolPopover from '@/components/ToolPopover';
 import PpSelect from '@/components/Selectors/Select';
 import SelectLayout from './SelectLayout';
@@ -42,8 +38,14 @@ import {
   useGetLayouts
 } from '@/hooks';
 
-import { loadLayouts, loadSupplementalLayouts } from '@/api/layouts';
-import { loadDigitalLayouts } from '@/api/layouts';
+import {
+  loadLayouts,
+  loadDigitalLayouts,
+  loadSupplementalLayouts
+} from '@/api/layouts';
+
+import { loadDigitalThemes, loadPrintThemes } from '@/api/themes';
+
 import { cloneDeep } from 'lodash';
 
 export default {
@@ -94,8 +96,10 @@ export default {
     }
   },
   data() {
+    const isDigital = this.edition === EDITION.DIGITAL;
+
     return {
-      themesOptions: themeOptions,
+      themesOptions: [],
       layoutsOpts: LAYOUT_TYPES_OPTIONs,
       disabled: false,
       layoutSelected: {},
@@ -103,13 +107,17 @@ export default {
       tempLayoutIdSelected: null,
       layoutEmptyLength: 4,
       layoutObjSelected: {},
-      textDisplay: null,
-      isDigital: false
+      textDisplay: {
+        promptMsg: '',
+        promptTitle: '',
+        title: '',
+        optionTitle: ''
+      },
+      isDigital
     };
   },
   computed: {
     ...mapGetters({
-      themes: THEME_GETTERS.GET_THEMES,
       isPrompt: APP_GETTERS.IS_PROMPT,
       triggerAppyLayout: DIGITAL_GETTERS.TRIGGER_APPLY_LAYOUT,
       totalBackground: PRINT_GETTERS.TOTAL_BACKGROUND,
@@ -160,7 +168,11 @@ export default {
       this.applyLayout();
     }
   },
-  mounted() {
+  async mounted() {
+    this.textDisplay = this.updateTextDisplay();
+
+    this.isDigital ? await this.initDigitalData() : await this.initPrintData();
+
     this.initData();
   },
   methods: {
@@ -177,6 +189,30 @@ export default {
       this.setDisabledLayout(this.pageSelected);
       this.setThemeSelected(this.themeId);
       this.setLayoutActive();
+    },
+    /**
+     * Set up inital data to render in view of print ediont
+     */
+    async initPrintData() {
+      this.themesOptions = await loadPrintThemes();
+
+      const layouts = await loadLayouts();
+
+      this.setPrintLayouts({ layouts });
+    },
+    /**
+     * Set up inital data to render in view of digital ediont
+     */
+    async initDigitalData() {
+      this.themesOptions = await loadDigitalThemes();
+
+      const isSupplemental = this.initialData?.isSupplemental;
+
+      const layouts = isSupplemental
+        ? await loadSupplementalLayouts()
+        : await loadDigitalLayouts();
+
+      this.setDigitalLayouts({ layouts });
     },
     /**
      * Set default selected for layout base on id of sheet: Cover, Single Page or Collage
@@ -424,26 +460,5 @@ export default {
 
       return this.isDigital ? digitalText : printText;
     }
-  },
-  async created() {
-    this.isDigital = this.edition === EDITION.DIGITAL;
-
-    this.textDisplay = this.updateTextDisplay();
-
-    let layouts = [];
-
-    if (!this.isDigital) {
-      layouts = await loadLayouts();
-      this.setPrintLayouts({ layouts });
-      return;
-    }
-
-    if (this.initialData?.isSupplemental) {
-      layouts = await loadSupplementalLayouts();
-    } else {
-      layouts = await loadDigitalLayouts();
-    }
-
-    this.setDigitalLayouts({ layouts });
   }
 };
