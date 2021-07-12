@@ -9,8 +9,6 @@
         <Thumbnail
           :to-link="`/book/${bookId}/edit/digital/edit-screen`"
           :sheet="sheet"
-          font-size="11px"
-          main-screen
           :order-screen="orderScreen(section.id, sheet)"
           @click.native="onSelectScreen(sheet)"
         />

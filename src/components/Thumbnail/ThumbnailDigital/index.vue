@@ -1,14 +1,7 @@
 <template>
   <div>
-    <div
-      :class="[
-        {
-          active: isActive,
-          'main-screen': mainScreen
-        },
-        'thumbnail-view-thumbnail'
-      ]"
-    >
+    <div :class="[{ active: isActive }, 'thumbnail-view-thumbnail']">
+      <div class="border-inside"></div>
       <img :src="image" alt="thumbnail" />
       <div v-if="edit" class="thumbnail-edit">
         <router-link tag="div" :to="toLink">
@@ -16,10 +9,7 @@
         </router-link>
       </div>
     </div>
-    <div
-      :class="['thumbnail-view-number-page', { 'number-page': leftNumberPage }]"
-      :style="{ fontSize: fontSize }"
-    >
+    <div class="thumbnail-view-number-page">
       {{ orderScreen }}
     </div>
   </div>
