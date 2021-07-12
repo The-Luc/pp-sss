@@ -96,5 +96,5 @@ export const percentToHex = percent => {
 };
 
 export const hexToPercent = alphaHexString => {
-  return Math.round(((parseInt(alphaHexString, 16) - 0) / (255 - 0)) * 100);
+  return Math.round((parseInt(alphaHexString, 16) / 255) * 100);
 };
