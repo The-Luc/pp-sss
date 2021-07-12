@@ -1407,7 +1407,6 @@ export default {
       deep: true,
       handler(val, oldVal) {
         if (val.length !== oldVal.length) {
-          console.log(this.frames);
           const supplementalFrames = val.filter(item => !item.frame.fromLayout);
           this.handleShowAddFrame(supplementalFrames);
         }

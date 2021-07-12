@@ -39,9 +39,8 @@ export const useFrame = () => {
  *
  */
 export const useFrameAction = () => {
-  const { currentFrame, nextFrameIdAfterDelete, framesInStore } = useGetters({
+  const { currentFrame, framesInStore } = useGetters({
     currentFrame: DIGITAL_GETTERS.CURRENT_FRAME,
-    nextFrameIdAfterDelete: DIGITAL_GETTERS.NEXT_FRAME_ID_AFTER_DELETE,
     framesInStore: DIGITAL_GETTERS.GET_FRAMES_WIDTH_IDS
   });
 
@@ -93,8 +92,13 @@ export const useFrameAction = () => {
    * and set active frame after delete
    */
   const handleDeleteFrame = id => {
-    const newId = nextFrameIdAfterDelete.value(id);
+    const oldIndex = framesInStore.value.findIndex(f => f.id === id);
+
     deleteFrame({ id });
+
+    const newId =
+      framesInStore.value[oldIndex]?.id ??
+      framesInStore.value[oldIndex - 1]?.id;
 
     setCurrentFrameId({ id: newId });
   };

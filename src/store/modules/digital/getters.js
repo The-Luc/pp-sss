@@ -101,16 +101,6 @@ export const getters = {
   [DIGITAL._GETTERS.CURRENT_FRAME_ID]: ({ currentFrameId }) => {
     return currentFrameId;
   },
-  [DIGITAL._GETTERS.NEXT_FRAME_ID_AFTER_DELETE]: ({ frameIds }) => id => {
-    if (isEmpty(frameIds)) return '';
-
-    const oldIndex = frameIds.indexOf(id);
-
-    // if the deleting frame is the last frame, decrease index by 1
-    const newIndex =
-      frameIds.length - 1 === oldIndex ? oldIndex - 1 : oldIndex + 1;
-    return frameIds[newIndex];
-  },
   [DIGITAL._GETTERS.CURRENT_FRAME]: ({ frames, currentFrameId }) => {
     return frames[currentFrameId];
   }
