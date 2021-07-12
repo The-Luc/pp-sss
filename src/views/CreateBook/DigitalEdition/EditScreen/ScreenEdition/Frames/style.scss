@@ -26,6 +26,34 @@
       border-bottom: 1px dashed $color-gray6;
     }
 
+    &.drag-item {
+      &::before {
+        display: none;
+      }
+
+      .frame-item {
+        padding: 0;
+        border: none;
+      }
+
+      .frame-name {
+        display: none;
+      }
+    }
+
+    &.ghost {
+      .frame-item,
+      .frame-item.active {
+        opacity: 0.6;
+        background-color: transparent;
+        border: 2px solid black;
+
+        img {
+          display: none;
+        }
+      }
+    }
+
     .frame-item {
       cursor: pointer;
       width: 160px;
@@ -48,8 +76,10 @@
         opacity: 1;
       }
 
-      &.drag-selected {
+      &.drag-target {
         border: 2px solid black;
+        opacity: 0.6;
+        box-shadow: 0 0 3px black;
       }
     }
 

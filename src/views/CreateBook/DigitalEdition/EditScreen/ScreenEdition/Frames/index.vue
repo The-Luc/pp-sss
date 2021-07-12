@@ -3,10 +3,13 @@
     <Draggable
       v-model="frameList"
       class="row frame-row"
+      ghost-class="ghost"
+      drag-class="drag-item"
       :move="onMove"
       @choose="onChoose"
       @start="drag = true"
       @end="onEnd"
+      @unchoose="onUnchoose"
     >
       <div
         v-for="({ id, frame }, index) in frameList"
@@ -15,11 +18,10 @@
         @click="onFrameClick(id)"
       >
         <div
-          :id="id"
           class="frame-item"
           :class="{
             active: id === activeFrameId,
-            'drag-selected': id === dragSelectedId
+            'drag-target': id === dragTargetId
           }"
         >
           <img
