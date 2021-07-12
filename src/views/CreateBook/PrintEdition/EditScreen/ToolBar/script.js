@@ -72,25 +72,30 @@ export default {
           },
           {
             iconName: 'collections',
-            title: 'Photos'
+            title: 'Photos',
+            name: 'Photos'
           },
           {
             iconName: 'portrait',
-            title: 'Portraits'
+            title: 'Portraits',
+            name: 'Portraits'
           }
         ],
         [
           {
             iconName: 'grid_on',
-            title: 'Grid'
+            title: 'Grid',
+            name: 'Grid'
           },
           {
             iconName: 'undo',
-            title: 'Undo'
+            title: 'Undo',
+            name: 'Undo'
           },
           {
             iconName: 'redo',
-            title: 'Redo'
+            title: 'Redo',
+            name: 'Redo'
           },
           {
             iconName: 'delete',
@@ -106,7 +111,8 @@ export default {
           },
           {
             iconName: 'note_add',
-            title: 'Page Notes'
+            title: 'Page Notes',
+            name: 'PageNotes'
           }
         ]
       ],

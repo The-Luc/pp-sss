@@ -285,7 +285,7 @@ const applyTextProperties = function(text, prop) {
   }
 
   const target = canvas.getActiveObject();
-  if (!isEmpty(prop['fontSize'])) {
+  if (!isEmpty(prop['fontSize']) || !isEmpty(prop['style'])) {
     if (target.type !== FABRIC_OBJECT_TYPE.TEXT) {
       updateTextBoxBaseOnNewTextSize(text);
       updateObjectPosition(text, text.width, text.height);
@@ -303,8 +303,6 @@ const applyTextProperties = function(text, prop) {
   }
 
   textVerticalAlignOnApplyProperty(text);
-
-  canvas.renderAll();
 };
 
 /**
@@ -362,7 +360,6 @@ const applyTextRectProperties = function(rect, prop) {
   if (isEmpty(rect) || !rect.canvas) {
     return;
   }
-  const canvas = rect.canvas;
 
   const rectProp = toFabricTextBorderProp(prop);
   const keyRect = Object.keys(rectProp);
@@ -395,8 +392,6 @@ const applyTextRectProperties = function(rect, prop) {
   if (!isEmpty(rectProp['width']) || !isEmpty(rectProp['height'])) {
     updateObjectPosition(rect, rectProp['width'], rectProp['height']);
   }
-
-  canvas.renderAll();
 };
 
 /**
@@ -423,7 +418,6 @@ const applyTextGroupProperties = function(textGroup, prop) {
 
   textGroup.set(textGroupProp);
   textGroup.setCoords();
-  canvas.renderAll();
 };
 
 /**
@@ -438,8 +432,10 @@ export const applyTextBoxProperties = function(textObject, prop) {
   if (isModifyPosition) {
     return;
   }
-  applyTextProperties(text, prop);
   applyTextRectProperties(rect, prop);
+  applyTextProperties(text, prop);
+
+  textObject?.canvas?.renderAll();
 };
 
 /**
