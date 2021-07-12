@@ -1,6 +1,6 @@
 .layouts-container {
   &-prompt {
-    .tool-popover-header {
+    ::v-deep .tool-popover-header {
       &::before {
         border-bottom-color: #b3c7d1;
       }
@@ -12,7 +12,7 @@
     width: 100%;
     text-align: center;
 
-    .tool-popover-content {
+    ::v-deep .tool-popover-content {
       overflow: hidden;
     }
 
@@ -46,9 +46,9 @@
     border-radius: 4px;
   }
 
-  .tool-popover-header {
+  ::v-deep .tool-popover-header {
     &::before {
-      left: 70px;
+      left: 71px;
     }
   }
 
@@ -59,7 +59,7 @@
     justify-content: space-between;
     border-bottom: 1px solid $color-gray15;
 
-    .pp-selector-container {
+    ::v-deep .pp-selector-container {
       .pp-select {
         width: 200px;
       }
