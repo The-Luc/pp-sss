@@ -12,7 +12,8 @@ import {
   DEFAULT_TEXT,
   TEXT_VERTICAL_ALIGN,
   OBJECT_MIN_SIZE,
-  FABRIC_OBJECT_TYPE
+  FABRIC_OBJECT_TYPE,
+  EFFECT_KEYS
 } from '@/common/constants';
 import {
   getAdjustedObjectDimension,
@@ -253,7 +254,11 @@ const applyTextProperties = function(text, prop) {
   }
 
   const target = canvas.getActiveObject();
-  if (!isEmpty(prop['fontSize']) || !isEmpty(prop['style'])) {
+  const propKeys = Object.keys(prop);
+  if (
+    new Set([...EFFECT_KEYS, ...propKeys]).size <
+    propKeys.length + EFFECT_KEYS.length
+  ) {
     if (target.type !== FABRIC_OBJECT_TYPE.TEXT) {
       updateTextBoxBaseOnNewTextSize(text);
       updateObjectPosition(text, text.width, text.height);
@@ -331,6 +336,7 @@ const applyTextRectProperties = function(rect, prop) {
 
   const rectProp = toFabricTextBorderProp(prop);
   const keyRect = Object.keys(rectProp);
+
   if (
     !isEmpty(rect.group) &&
     (keyRect.includes('strokeWidth') || keyRect.includes('strokeLineType'))
@@ -345,7 +351,7 @@ const applyTextRectProperties = function(rect, prop) {
   }
 
   Object.keys(rectProp).forEach(k => {
-    if (k.includes('fontSize')) {
+    if (EFFECT_KEYS.includes(k)) {
       const { top, left } = rect._text || {};
       rect.set({ top, left });
     } else {
@@ -401,8 +407,8 @@ export const applyTextBoxProperties = function(textObject, prop) {
     textObject?.canvas?.renderAll();
     return;
   }
-  applyTextRectProperties(rect, prop);
   applyTextProperties(text, prop);
+  applyTextRectProperties(rect, prop);
 
   textObject?.canvas?.renderAll();
 };
