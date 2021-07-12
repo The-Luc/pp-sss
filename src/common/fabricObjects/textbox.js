@@ -398,6 +398,7 @@ export const applyTextBoxProperties = function(textObject, prop) {
   const [rect, text] = getObjectsFromTextBox(textObject);
   applyTextGroupProperties(textObject, prop);
   if (isModifyPosition) {
+    textObject?.canvas?.renderAll();
     return;
   }
   applyTextRectProperties(rect, prop);
