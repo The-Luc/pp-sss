@@ -14,7 +14,7 @@ export const getSelectedOption = (data, unit, displayData = '') => {
 
   const name = isEmpty(displayData)
     ? unit
-      ? `${data}${unit}`
+      ? `${data} ${unit}`
       : data
     : displayData;
 
