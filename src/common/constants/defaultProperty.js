@@ -24,7 +24,7 @@ export const DEFAULT_BORDER = {
 };
 
 export const DEFAULT_COLOR = {
-  COLOR_ALPHA: 0.5,
+  ALPHA: 0.5,
   COLOR: '#000000'
 };
 
@@ -38,7 +38,7 @@ export const DEFAULT_PROP = {
   BORDER: { ...DEFAULT_BORDER },
   IS_CONSTRAIN: true,
   COLOR_WITH_ALPHA: color(DEFAULT_COLOR.COLOR)
-    .alpha(DEFAULT_COLOR.COLOR_ALPHA)
+    .alpha(DEFAULT_COLOR.ALPHA)
     .toString()
 };
 
