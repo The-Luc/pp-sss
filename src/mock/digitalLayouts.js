@@ -231,8 +231,8 @@ const supplementalFrames = [
   {
     id: 12,
     fromLayout: false,
-    objects: [backgrounds[5], clipArt1, clipArt2],
-    previewImageUrl: LAYOUT_THUMB_02,
+    objects: [backgrounds[2], clipArt1, clipArt2],
+    previewImageUrl: LAYOUT_THUMB_05,
     isVisited: false
   }
 ];
@@ -267,18 +267,18 @@ export const packageLayouts = [
   },
   {
     id: 4,
-    name: 'Three Frames + A Supp',
+    name: 'Nature',
     type: LAYOUT_TYPES.COLLAGE.value,
-    frames: [...frames2, supplementalFrames[0]],
+    frames: [...frames2],
     isFavorites: false,
     previewImageUrl: LAYOUT_THUMB_04,
     themeId: 1
   },
   {
     id: 5,
-    name: 'Two Frames + Two Supp',
+    name: 'School',
     type: LAYOUT_TYPES.COLLAGE.value,
-    frames: [...frames, ...supplementalFrames],
+    frames: [...frames],
     isFavorites: false,
     previewImageUrl: LAYOUT_THUMB_05,
     themeId: 1

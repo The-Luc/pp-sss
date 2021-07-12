@@ -10,9 +10,11 @@
   >
     <div class="btn-group">
       <v-btn type="btn" class="btn btn-replace-layout" @click="onReplaceLayout"
-        >Change Layout</v-btn
+        >Replace Layout</v-btn
       >
-      <v-btn type="btn" class="btn btn-delete" @click="onDelete">Delete</v-btn>
+      <v-btn type="btn" class="btn btn-delete" @click="onDelete"
+        >Delete Frame</v-btn
+      >
     </div>
   </Menu>
 </template>

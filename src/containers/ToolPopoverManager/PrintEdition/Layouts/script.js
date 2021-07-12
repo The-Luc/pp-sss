@@ -234,6 +234,7 @@ export default {
     setDisabledLayout(pageSelected) {
       this.disabled =
         this.initialData?.disabled ??
+        this.initialData?.isSupplemental ??
         [
           SHEET_TYPE.COVER,
           SHEET_TYPE.FRONT_COVER,
