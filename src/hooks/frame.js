@@ -34,43 +34,29 @@ export const useFrame = () => {
 };
 
 /**
- * Handle basic action of a frame
- * Add frame, replace frame, delete frame, switch frames
- *
+ * Get data from frames and set it to store
+ * and handling the opening event of Frame Info tab
  */
-export const useFrameAction = () => {
-  const { currentFrame, framesInStore } = useGetters({
-    currentFrame: DIGITAL_GETTERS.CURRENT_FRAME,
-    framesInStore: DIGITAL_GETTERS.GET_FRAMES_WIDTH_IDS
+export const useFrameSwitching = () => {
+  const { currentFrame } = useGetters({
+    currentFrame: DIGITAL_GETTERS.CURRENT_FRAME
   });
 
   const {
     setPropertiesObjectType,
     setIsOpenProperties,
-    setCurrentFrameVisited,
-    addSupplementalFrame,
-    replaceFrame,
-    deleteFrame,
-    setCurrentFrameId
+    setCurrentFrameVisited
   } = useMutations({
     setPropertiesObjectType: MUTATES.SET_PROPERTIES_OBJECT_TYPE,
     setIsOpenProperties: MUTATES.TOGGLE_MENU_PROPERTIES,
-    setCurrentFrameVisited: DIGITAL_MUTATES.SET_CURRENT_FRAME_VISITED,
-    addSupplementalFrame: DIGITAL_MUTATES.ADD_SUPPLEMENTAL_FRAMES,
-    replaceFrame: DIGITAL_MUTATES.REPLACE_SUPPLEMENTAL_FRAME,
-    deleteFrame: DIGITAL_MUTATES.DELETE_FRAME,
-    setCurrentFrameId: DIGITAL_MUTATES.SET_CURRENT_FRAME_ID
+    setCurrentFrameVisited: DIGITAL_MUTATES.SET_CURRENT_FRAME_VISITED
   });
 
   const { updateLayoutObjToStore } = useActions({
     updateLayoutObjToStore: DIGITAL_ACTIONS.UPDATE_LAYOUT_OBJ_TO_STORE
   });
 
-  /**
-   * Get data from frames and set it to store
-   * and handling the opening event of Frame Info tab
-   */
-  const handleChangeFrame = () => {
+  const handleSwitchFrame = () => {
     const layout = currentFrame.value;
 
     // update to store
@@ -87,10 +73,23 @@ export const useFrameAction = () => {
     }
   };
 
-  /**
-   * To handle delete frame event
-   * and set active frame after delete
-   */
+  return { handleSwitchFrame };
+};
+
+/**
+ * To handle delete frame event
+ * and set active frame after delete
+ */
+export const useFrameDelete = () => {
+  const { framesInStore } = useGetters({
+    framesInStore: DIGITAL_GETTERS.GET_FRAMES_WIDTH_IDS
+  });
+
+  const { deleteFrame, setCurrentFrameId } = useMutations({
+    deleteFrame: DIGITAL_MUTATES.DELETE_FRAME,
+    setCurrentFrameId: DIGITAL_MUTATES.SET_CURRENT_FRAME_ID
+  });
+
   const handleDeleteFrame = id => {
     const oldIndex = framesInStore.value.findIndex(f => f.id === id);
 
@@ -103,10 +102,19 @@ export const useFrameAction = () => {
     setCurrentFrameId({ id: newId });
   };
 
-  /**
-   * To handle replace frame event
-   * and set the active frame after replace
-   */
+  return { handleDeleteFrame };
+};
+
+/**
+ * To handle replace frame event
+ * and set the active frame after replace
+ */
+export const useFrameReplace = () => {
+  const { setCurrentFrameId, replaceFrame } = useMutations({
+    replaceFrame: DIGITAL_MUTATES.REPLACE_SUPPLEMENTAL_FRAME,
+    setCurrentFrameId: DIGITAL_MUTATES.SET_CURRENT_FRAME_ID
+  });
+
   const handleReplaceFrame = ({ frame, frameId }) => {
     const newId = uniqueId();
 
@@ -115,10 +123,23 @@ export const useFrameAction = () => {
     setCurrentFrameId({ id: newId });
   };
 
-  /**
-   * To handle add frame
-   * and set the active frame after add
-   */
+  return { handleReplaceFrame };
+};
+
+/**
+ * To handle add frame
+ * and set the active frame after add
+ */
+export const useFrameAdd = () => {
+  const { framesInStore } = useGetters({
+    framesInStore: DIGITAL_GETTERS.GET_FRAMES_WIDTH_IDS
+  });
+
+  const { addSupplementalFrame, setCurrentFrameId } = useMutations({
+    addSupplementalFrame: DIGITAL_MUTATES.ADD_SUPPLEMENTAL_FRAMES,
+    setCurrentFrameId: DIGITAL_MUTATES.SET_CURRENT_FRAME_ID
+  });
+
   const handleAddFrame = frames => {
     addSupplementalFrame({ frames });
 
@@ -126,12 +147,7 @@ export const useFrameAction = () => {
     setCurrentFrameId({ id: lastAddedFrame.id });
   };
 
-  return {
-    handleChangeFrame,
-    handleAddFrame,
-    handleReplaceFrame,
-    handleDeleteFrame
-  };
+  return { handleAddFrame };
 };
 
 export const useFrameOrdering = () => {

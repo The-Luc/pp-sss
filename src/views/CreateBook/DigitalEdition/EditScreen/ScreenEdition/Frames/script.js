@@ -3,7 +3,14 @@ import Draggable from 'vuedraggable';
 import EmptyFrame from './EmptyFrame';
 import FrameMenu from './FrameMenu';
 
-import { useFrameOrdering, useFrame, useFrameAction, useModal } from '@/hooks';
+import {
+  useFrameOrdering,
+  useFrame,
+  useFrameAdd,
+  useFrameDelete,
+  useFrameReplace,
+  useModal
+} from '@/hooks';
 
 import { isEmpty } from '@/common/utils';
 import { MODAL_TYPES } from '@/common/constants';
@@ -41,19 +48,15 @@ export default {
     const { toggleModal } = useModal();
     const { moveFrame } = useFrameOrdering();
     const { setCurrentFrameId } = useFrame();
-    const {
-      handleAddFrame,
-      handleDeleteFrame,
-      handleReplaceFrame,
-      handleChangeFrame
-    } = useFrameAction();
+    const { handleAddFrame } = useFrameAdd();
+    const { handleDeleteFrame } = useFrameDelete();
+    const { handleReplaceFrame } = useFrameReplace();
 
     return {
       toggleModal,
       moveFrame,
       handleAddFrame,
       handleDeleteFrame,
-      handleChangeFrame,
       handleReplaceFrame,
       setCurrentFrameId
     };

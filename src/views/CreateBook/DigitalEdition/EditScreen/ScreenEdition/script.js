@@ -42,7 +42,7 @@ import {
   useInfoBar,
   useLayoutPrompt,
   useFrame,
-  useFrameAction
+  useFrameSwitching
 } from '@/hooks';
 
 import {
@@ -97,7 +97,7 @@ export default {
     const { drawLayout } = useDrawLayout();
     const { setInfoBar, zoom } = useInfoBar();
     const { openPrompt } = useLayoutPrompt();
-    const { handleChangeFrame } = useFrameAction();
+    const { handleSwitchFrame } = useFrameSwitching();
     const { frames, currentFrameId } = useFrame();
 
     return {
@@ -107,7 +107,7 @@ export default {
       setInfoBar,
       zoom,
       openPrompt,
-      handleChangeFrame
+      handleSwitchFrame
     };
   },
   data() {
@@ -1405,7 +1405,7 @@ export default {
       this.setCurrentObject(null);
       resetObjects(this.digitalCanvas);
 
-      this.handleChangeFrame();
+      this.handleSwitchFrame();
 
       this.drawLayout(this.sheetLayout, EDITION.DIGITAL);
     },
