@@ -734,6 +734,10 @@ export default {
 
       if (isEmpty(activeObj)) return;
 
+      if (!isEmpty(prop.style)) {
+        prop = { ...prop, ...prop.style };
+      }
+
       this.setObjectProp({ prop });
 
       this.updateTriggerTextChange();
