@@ -1508,7 +1508,9 @@ export default {
         },
 
         printCopyObj: this.handleCopy,
-        printPasteObj: this.handlePaste
+        printPasteObj: this.handlePaste,
+
+        pageNumber: this.addPageNumber
       };
 
       const events = {

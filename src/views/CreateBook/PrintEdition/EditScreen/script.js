@@ -76,7 +76,8 @@ export default {
       setBookId: PRINT_MUTATES.SET_BOOK_ID,
       toggleModal: MUTATES.TOGGLE_MODAL,
       resetPrintConfigs: MUTATES.RESET_PRINT_CONFIG,
-      savePrintCanvas: BOOK_MUTATES.SAVE_PRINT_CANVAS
+      savePrintCanvas: BOOK_MUTATES.SAVE_PRINT_CANVAS,
+      setPropertiesObjectType: MUTATES.SET_PROPERTIES_OBJECT_TYPE
     }),
     /**
      * Trigger mutation to open theme modal
@@ -111,6 +112,7 @@ export default {
         data: objs
       });
       this.$router.push(`/book/${this.bookId}/edit/print`);
+      this.setPropertiesObjectType({ type: '' });
     },
     /**
      * Fire when zoom is changed

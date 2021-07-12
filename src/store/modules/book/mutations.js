@@ -66,7 +66,13 @@ const makeNewSection = (sections, sectionIndex) => {
     printData: {
       layout: null,
       thumbnailUrl: null,
-      link: 'link'
+      link: 'link',
+      spreadInfo: {
+        leftTitle: '',
+        rightTitle: '',
+        isLeftNumberOn: false,
+        isRightNumberOn: false
+      }
     },
     digitalData: {
       thumbnailUrl: null,

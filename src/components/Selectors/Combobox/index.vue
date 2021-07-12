@@ -7,7 +7,7 @@
     :items="items"
     item-text="name"
     item-value="value"
-    :value="disabled ? '' : selectedVal"
+    :value="selectedVal"
     :attach="container"
     :nudge-right="20"
     solo
