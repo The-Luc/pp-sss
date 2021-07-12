@@ -10,9 +10,35 @@ import { DIGITAL_RIGHT_TOOLS } from '@/common/constants';
 import { uniqueId } from 'lodash';
 
 /**
- * Handle toggle Frame Information
+ * Get and set common sate of frames
  */
 export const useFrame = () => {
+  const { currentFrame, frames, currentFrameId } = useGetters({
+    frames: DIGITAL_GETTERS.GET_FRAMES_WIDTH_IDS,
+    currentFrame: DIGITAL_GETTERS.CURRENT_FRAME,
+    currentFrameId: DIGITAL_GETTERS.CURRENT_FRAME_ID
+  });
+
+  const { setSupplementalLayoutId, setCurrentFrameId } = useMutations({
+    setSupplementalLayoutId: DIGITAL_MUTATES.SET_SUPPLEMENTAL_LAYOUT_ID,
+    setCurrentFrameId: DIGITAL_MUTATES.SET_CURRENT_FRAME_ID
+  });
+
+  return {
+    frames,
+    currentFrame,
+    currentFrameId,
+    setCurrentFrameId,
+    setSupplementalLayoutId
+  };
+};
+
+/**
+ * Handle basic action of a frame
+ * Add frame, replace frame, delete frame, switch frames
+ *
+ */
+export const useFrameAction = () => {
   const { currentFrame, nextFrameIdAfterDelete, framesInStore } = useGetters({
     currentFrame: DIGITAL_GETTERS.CURRENT_FRAME,
     nextFrameIdAfterDelete: DIGITAL_GETTERS.NEXT_FRAME_ID_AFTER_DELETE,
@@ -26,8 +52,7 @@ export const useFrame = () => {
     addSupplementalFrame,
     replaceFrame,
     deleteFrame,
-    setCurrentFrameId,
-    setSupplementalLayoutId
+    setCurrentFrameId
   } = useMutations({
     setPropertiesObjectType: MUTATES.SET_PROPERTIES_OBJECT_TYPE,
     setIsOpenProperties: MUTATES.TOGGLE_MENU_PROPERTIES,
@@ -35,8 +60,7 @@ export const useFrame = () => {
     addSupplementalFrame: DIGITAL_MUTATES.ADD_SUPPLEMENTAL_FRAMES,
     replaceFrame: DIGITAL_MUTATES.REPLACE_SUPPLEMENTAL_FRAME,
     deleteFrame: DIGITAL_MUTATES.DELETE_FRAME,
-    setCurrentFrameId: DIGITAL_MUTATES.SET_CURRENT_FRAME_ID,
-    setSupplementalLayoutId: DIGITAL_MUTATES.SET_SUPPLEMENTAL_LAYOUT_ID
+    setCurrentFrameId: DIGITAL_MUTATES.SET_CURRENT_FRAME_ID
   });
 
   const { updateLayoutObjToStore } = useActions({
@@ -99,12 +123,10 @@ export const useFrame = () => {
   };
 
   return {
-    currentFrame,
     handleChangeFrame,
     handleAddFrame,
     handleReplaceFrame,
-    handleDeleteFrame,
-    setSupplementalLayoutId
+    handleDeleteFrame
   };
 };
 

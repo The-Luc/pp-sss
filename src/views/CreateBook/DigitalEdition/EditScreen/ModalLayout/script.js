@@ -2,7 +2,7 @@ import Layouts from '@/containers/ToolPopoverManager/PrintEdition/Layouts';
 import { mapMutations } from 'vuex';
 import { MUTATES } from '@/store/modules/theme/const';
 import { EDITION, LAYOUT_TYPES } from '@/common/constants';
-import { useFrame, useModal } from '@/hooks';
+import { useFrame, useFrameAction, useModal } from '@/hooks';
 
 export default {
   components: {
@@ -10,11 +10,8 @@ export default {
   },
   setup() {
     const { toggleModal, modalData } = useModal();
-    const {
-      handleAddFrame,
-      handleReplaceFrame,
-      setSupplementalLayoutId
-    } = useFrame();
+    const { handleAddFrame, handleReplaceFrame } = useFrameAction();
+    const { setSupplementalLayoutId } = useFrame();
     return {
       toggleModal,
       modalData,

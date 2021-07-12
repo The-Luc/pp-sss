@@ -302,7 +302,6 @@ export default {
      */
     onSelectLayout(layout) {
       this.layoutObjSelected = layout;
-      console.log(layout.id);
       this.tempLayoutIdSelected = layout.id;
     },
     /**

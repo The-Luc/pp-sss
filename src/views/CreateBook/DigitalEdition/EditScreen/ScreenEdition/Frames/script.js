@@ -3,9 +3,10 @@ import Draggable from 'vuedraggable';
 import EmptyFrame from './EmptyFrame';
 import FrameMenu from './FrameMenu';
 
-import { useFrameOrdering } from '@/hooks';
+import { useFrameOrdering, useFrame, useFrameAction, useModal } from '@/hooks';
 
 import { isEmpty } from '@/common/utils';
+import { MODAL_TYPES } from '@/common/constants';
 
 export default {
   components: {
@@ -37,9 +38,25 @@ export default {
     };
   },
   setup() {
+    const { toggleModal } = useModal();
     const { moveFrame } = useFrameOrdering();
+    const { setCurrentFrameId } = useFrame();
+    const {
+      handleAddFrame,
+      handleDeleteFrame,
+      handleReplaceFrame,
+      handleChangeFrame
+    } = useFrameAction();
 
-    return { moveFrame };
+    return {
+      toggleModal,
+      moveFrame,
+      handleAddFrame,
+      handleDeleteFrame,
+      handleChangeFrame,
+      handleReplaceFrame,
+      setCurrentFrameId
+    };
   },
   computed: {
     frameList() {
@@ -66,18 +83,62 @@ export default {
   },
   methods: {
     /**
-     * Fire when click add frame button
-     * @param {Object} event mouse event parameter when click element
+     * Fire when click on delete option of a frame
+     * @param {Number} id Id of the active frame which will be deleted
      */
-    addFrame(event) {
-      this.$emit('addFrame', event);
+    onDeleteFrame() {
+      this.handleDeleteFrame(this.activeFrameId);
+      this.onCloseMenu();
     },
+
     /**
-     * To emeit to parent component
+     * Fire when click on an frame
      * @param {Number} id Id of the clicked frame
      */
     onFrameClick(id) {
-      this.$emit('onFrameClick', id);
+      if (id === this.currentFrameId) return;
+
+      this.setCurrentFrameId({ id });
+    },
+    /**
+     * Fire when click add frame button
+     * @param {Element} target add frame button
+     */
+    addFrame({ target }) {
+      const { left, width } = target.getBoundingClientRect();
+      const centerX = left + width / 2;
+      this.toggleModal({
+        isOpenModal: true,
+        modalData: {
+          type: MODAL_TYPES.ADD_DIGITAL_FRAME,
+          props: {
+            centerX
+          }
+        }
+      });
+    },
+    /**
+     * Fire when click add replace button
+     * @param {Element} target add frame button
+     */
+    onReplaceLayout() {
+      const target = this.$refs[`frame-${this.activeFrameId}`][0];
+
+      const { left, width } = target.getBoundingClientRect();
+      const centerX = left + width / 2;
+
+      this.toggleModal({
+        isOpenModal: true,
+        modalData: {
+          type: MODAL_TYPES.ADD_DIGITAL_FRAME,
+          props: {
+            centerX,
+            layoutId: this.activeFrameId
+          }
+        }
+      });
+
+      this.onCloseMenu();
     },
 
     /**
@@ -91,23 +152,12 @@ export default {
       this.menuX = x - 195;
       this.menuY = y - 205;
     },
+
+    /**
+     * Close Menu popup
+     */
     onCloseMenu() {
       this.isOpenMenu = false;
-    },
-    /**
-     * Fire when click on Replace Layout button
-     */
-    onReplaceLayout() {
-      const target = this.$refs[`frame-${this.activeFrameId}`][0];
-      this.$emit('onReplaceLayout', { target, layoutId: this.activeFrameId });
-      this.onCloseMenu();
-    },
-    /**
-     * Fire when click on Delete layout button
-     */
-    onDeleteFrame() {
-      this.$emit('onDeleteFrame', this.activeFrameId);
-      this.onCloseMenu();
     },
     /**
      * Fire when choose a frame

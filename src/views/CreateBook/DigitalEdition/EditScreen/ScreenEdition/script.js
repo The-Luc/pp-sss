@@ -11,7 +11,6 @@ import {
   DEFAULT_IMAGE,
   DEFAULT_SHAPE,
   EDITION,
-  MODAL_TYPES,
   OBJECT_TYPE,
   SHEET_TYPE,
   TOOL_NAME
@@ -43,7 +42,7 @@ import {
   useInfoBar,
   useLayoutPrompt,
   useFrame,
-  useModal
+  useFrameAction
 } from '@/hooks';
 
 import {
@@ -97,18 +96,18 @@ export default {
   setup() {
     const { drawLayout } = useDrawLayout();
     const { setInfoBar, zoom } = useInfoBar();
-    const { toggleModal } = useModal();
     const { openPrompt } = useLayoutPrompt();
-    const { handleChangeFrame, handleDeleteFrame } = useFrame();
+    const { handleChangeFrame } = useFrameAction();
+    const { frames, currentFrameId } = useFrame();
 
     return {
+      frames,
+      currentFrameId,
       drawLayout,
       setInfoBar,
       zoom,
       openPrompt,
-      handleChangeFrame,
-      toggleModal,
-      handleDeleteFrame
+      handleChangeFrame
     };
   },
   data() {
@@ -137,9 +136,7 @@ export default {
       object: DIGITAL_GETTERS.OBJECT_BY_ID,
       currentObjects: DIGITAL_GETTERS.GET_OBJECTS,
       totalBackground: DIGITAL_GETTERS.TOTAL_BACKGROUND,
-      listObjects: DIGITAL_GETTERS.GET_OBJECTS,
-      frames: DIGITAL_GETTERS.GET_FRAMES_WIDTH_IDS,
-      currentFrameId: DIGITAL_GETTERS.CURRENT_FRAME_ID
+      listObjects: DIGITAL_GETTERS.GET_OBJECTS
     }),
     isCover() {
       return this.pageSelected?.type === SHEET_TYPE.COVER;
@@ -1282,58 +1279,6 @@ export default {
       }
     },
     /**
-     * Fire when click add frame button
-     * @param {Element} target add frame button
-     */
-    onAddFrame({ target }) {
-      const { left, width } = target.getBoundingClientRect();
-      const centerX = left + width / 2;
-      this.toggleModal({
-        isOpenModal: true,
-        modalData: {
-          type: MODAL_TYPES.ADD_DIGITAL_FRAME,
-          props: {
-            centerX
-          }
-        }
-      });
-    },
-    /**
-     * Fire when click add replace button
-     * @param {Element} target add frame button
-     */
-    onReplaceLayout({ target, layoutId }) {
-      const { left, width } = target.getBoundingClientRect();
-      const centerX = left + width / 2;
-      this.toggleModal({
-        isOpenModal: true,
-        modalData: {
-          type: MODAL_TYPES.ADD_DIGITAL_FRAME,
-          props: {
-            centerX,
-            layoutId
-          }
-        }
-      });
-    },
-    /**
-     * Fire when click on delete option of a frame
-     * @param {Number} id Id of the active frame which will be deleted
-     */
-    onDeleteFrame(id) {
-      this.handleDeleteFrame(id);
-    },
-
-    /**
-     * Fire when click on an frame
-     * @param {Number} id Id of the clicked frame
-     */
-    onFrameClick(id) {
-      if (id === this.currentFrameId) return;
-
-      this.setCurrentFrameId({ id });
-    },
-    /**
      * Adding background to canvas & store
      *
      * @param {Object}  background  the object of adding background
@@ -1462,6 +1407,7 @@ export default {
       deep: true,
       handler(val, oldVal) {
         if (val.length !== oldVal.length) {
+          console.log(this.frames);
           const supplementalFrames = val.filter(item => !item.frame.fromLayout);
           this.handleShowAddFrame(supplementalFrames);
         }

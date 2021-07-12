@@ -192,6 +192,7 @@ export const mutations = {
   },
   [DIGITAL._MUTATES.ADD_SUPPLEMENTAL_FRAMES](state, { frames }) {
     if (!frames?.length) return;
+
     frames.forEach(frame => {
       const id = uniqueId();
       state.frameIds.push(id);

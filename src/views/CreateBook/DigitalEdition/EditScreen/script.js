@@ -55,6 +55,7 @@ export default {
       }
     },
     triggerApplyLayout() {
+      // will be use the next ticket (pp-147)
       console.log('apply layout ');
     }
   },
