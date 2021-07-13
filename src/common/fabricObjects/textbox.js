@@ -74,6 +74,7 @@ export const createTextBox = (x, y, width, height, textProperties) => {
     left: 0,
     top: 0,
     strokeWidth,
+    fill: false,
     selectable: false
   });
 
@@ -337,6 +338,7 @@ export const updateObjectDimensionsIfSmaller = function(obj, width, height) {
  */
 const getRectStroke = (rect, borderProp) => {
   const { width, height } = borderProp;
+  const stroke = borderProp.stroke || rect.stroke;
   const strokeLineType = borderProp.strokeLineType || rect.strokeLineType;
   const strokeLineCap = getStrokeLineCap(strokeLineType);
   let strokeWidth = rect.strokeWidth || 0;
@@ -352,6 +354,7 @@ const getRectStroke = (rect, borderProp) => {
     left: width * -0.5,
     height: rectHeight,
     width: rectWidth,
+    stroke,
     strokeLineType,
     strokeWidth,
     strokeLineCap
@@ -379,7 +382,7 @@ const applyTextRectProperties = function(rect, prop) {
     rect.set(rectStrokeData);
   }
 
-  if (!prop.shadow) {
+  if (!isEmpty(prop.shadow)) {
     applyShadowToObject(rect, prop.shadow);
   }
 };
@@ -429,7 +432,6 @@ export const applyTextBoxProperties = function(textObject, prop) {
   }
 
   applyTextProperties(text, prop);
-  applyTextRectProperties(rect, prop);
 
   if (!prop.border && !prop.size) {
     textObject?.canvas?.renderAll();
