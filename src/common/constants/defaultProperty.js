@@ -25,7 +25,8 @@ export const DEFAULT_BORDER = {
 
 export const DEFAULT_COLOR = {
   ALPHA: 0.5,
-  COLOR: '#000000'
+  COLOR: '#000000',
+  DISABLED_COLOR: '#ffffff'
 };
 
 export const DEFAULT_PROP = {
