@@ -571,7 +571,9 @@ export const updateTextListeners = (
   const [rect, text] = group._objects;
 
   const onTextChanged = () => {
-    const { minBoundingWidth, minBoundingHeight } = getTextSizeWithPadding(textObject);
+    const { minBoundingWidth, minBoundingHeight } = getTextSizeWithPadding(
+      textObject
+    );
 
     updateObjectDimensionsIfSmaller(
       rectObject,
