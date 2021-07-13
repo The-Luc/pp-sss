@@ -6,6 +6,7 @@
       :disabled="disabled"
       :value="titleValue"
       placeholder="Click to add title"
+      maxlength="50"
       @keydown.esc="onEsc"
       @change="onChange"
     />
@@ -14,4 +15,4 @@
 
 <script src="./script.js" />
 
-<style lang="scss" s src="./style.scss" />
+<style lang="scss" scoped src="./style.scss" />

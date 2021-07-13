@@ -1,30 +1,29 @@
-.title {
-  padding: 9px 10px 6px 10px;
-  border-bottom: 1px solid #bcbec0;
-  .title-content {
-    padding-bottom: 9px;
-  }
+.title-content {
+  padding-bottom: 9px;
   .project-title {
-    font-size: 11px;
-    color: $color-stoodio-toolbartext;
-    line-height: 13px;
-    font-family: $font-500;
+    margin-bottom: 5px;
   }
-  input {
-    padding: 0 7px;
-    font-family: $font-500;
-    font-size: 11px;
-    color: $color-stoodio-toolbartext;
-    border-radius: 3px;
-    height: 25px;
-    width: 100%;
-    border: 1px solid #bcbec0;
-  }
-  input:focus-visible {
-    outline: none;
-  }
-  input::placeholder {
-    color: #bcbec0;
-    font-family: $font-300;
-  }
+}
+.project-title {
+  font-size: 11px;
+  color: $color-stoodio-toolbartext;
+  line-height: 13px;
+  font-family: $font-500;
+}
+input {
+  padding: 0 7px;
+  font-family: $font-500;
+  font-size: 11px;
+  color: $color-stoodio-toolbartext;
+  border-radius: 3px;
+  height: 25px;
+  width: 100%;
+  border: 1px solid $color-gray15;
+}
+input:focus-visible {
+  outline: none;
+}
+input::placeholder {
+  color: $color-gray15;
+  font-family: $font-300;
 }

@@ -1,3 +1,4 @@
+import { DEFAULT_COLOR } from './defaultProperty';
 export const PAGE_NUMBER_POSITION = {
   BOTTOM_CENTER: 'BOTTOM_CENTER',
   BOTTOM_OUTSIDE_CORNERS: 'BOTTOM_OUTSIDE_CORNERS'
@@ -12,8 +13,8 @@ export const PAGE_NUMBER_POSITION_OPTIONS = [
 ];
 
 export const STATUS_PAGE_NUMBER_OPTIONS = [
-  { name: 'On', value: true },
-  { name: 'Off', value: false }
+  { name: 'Off', value: false },
+  { name: 'On', value: true }
 ];
 
 export const BOTTOM_CENTER_VALUE = {
@@ -29,4 +30,12 @@ export const BOTTOM_OUTSIDE_CORNERS_VALUE = {
 export const PAGE_NUMBER_TYPE = {
   LEFT_PAGE_NUMBER: 'LeftPageNumber',
   RIGHT_PAGE_NUMBER: 'RightPageNumber'
+};
+
+export const PAGE_INFO_DEFAULT = {
+  isNumberingOn: false,
+  position: PAGE_NUMBER_POSITION.BOTTOM_CENTER,
+  fontFamily: 'Arial',
+  fontSize: 8,
+  color: DEFAULT_COLOR.COLOR
 };
