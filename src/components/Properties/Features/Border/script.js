@@ -25,7 +25,7 @@ export default {
   },
   computed: {
     showBorder() {
-      return this.currentBorder.showBorder || false;
+      return this.currentBorder?.showBorder || false;
     },
     selectedBorder() {
       if (!this.showBorder) {
@@ -35,14 +35,14 @@ export default {
     },
     strokeLineType() {
       return (
-        this.currentBorder.strokeLineType || DEFAULT_BORDER.STROKE_LINE_TYPE
+        this.currentBorder?.strokeLineType || DEFAULT_BORDER.STROKE_LINE_TYPE
       );
     },
     strokeColor() {
-      return this.currentBorder.stroke || DEFAULT_BORDER.STROKE;
+      return this.currentBorder?.stroke || DEFAULT_BORDER.STROKE;
     },
     strokeWidth() {
-      return this.currentBorder.strokeWidth || DEFAULT_BORDER.STROKE_WIDTH;
+      return this.currentBorder?.strokeWidth || DEFAULT_BORDER.STROKE_WIDTH;
     }
   },
   methods: {

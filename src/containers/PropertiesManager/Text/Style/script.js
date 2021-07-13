@@ -13,8 +13,7 @@ export default {
     Shadow
   },
   setup() {
-    const isDigital = !!window.digitalCanvas; // TODO: find another approach
-    const { triggerChange, getProperty } = useTextProperties(isDigital);
+    const { triggerChange, getProperty } = useTextProperties();
 
     return { triggerChange, getProperty };
   },
