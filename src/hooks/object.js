@@ -1,33 +1,43 @@
 import { useGetters } from 'vuex-composition-helpers';
 import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 import { GETTERS as DIGITAL_GETTERS } from '@/store/modules/digital/const';
-import { GETTERS as APP_GETTERS } from '@/store/modules/app/const';
 
-/**
- * The hook to connect to store to getter object's properties
- *  @return {Object} {selectObjectProp: The function to connect to getter, triggerChange: state to trigger change}
- */
-export const useTextObject = (isDigital = false) => {
+export const useObjectProperties = (isDigital = false) => {
   const GETTERS = isDigital ? DIGITAL_GETTERS : PRINT_GETTERS;
-  const { selectedObject, onSelectedObject, triggerChange } = useGetters({
-    selectedObject: GETTERS.CURRENT_OBJECT,
-    onSelectedObject: APP_GETTERS.SELECT_PROP_CURRENT_OBJECT,
-    triggerChange: APP_GETTERS.TRIGGER_TEXT_CHANGE
+
+  const { currentObject, getPropOfCurrentObject } = useGetters({
+    currentObject: GETTERS.CURRENT_OBJECT,
+    getPropOfCurrentObject: GETTERS.SELECT_PROP_CURRENT_OBJECT
   });
 
   /**
-   * The fuction to connect to store to getter object's properties
+   * The fuction to connect to store to get object's properties
    * @param {String} prop The property name want to get
    *  @return {String} Property value
    */
-  const selectObjectProp = prop => {
-    const res = onSelectedObject.value(prop);
-    return res;
+  const getProperty = prop => {
+    return getPropOfCurrentObject.value(prop);
   };
 
   return {
-    selectedObject,
-    selectObjectProp,
+    currentObject,
+    getProperty
+  };
+};
+
+/**
+ * The hook to connect to store to get Text object's properties
+ *  @return {Object} { triggerChange, getProperty }
+ */
+export const useTextProperties = (isDigital = false) => {
+  const GETTERS = isDigital ? DIGITAL_GETTERS : PRINT_GETTERS;
+
+  const { triggerChange } = useGetters({
+    triggerChange: GETTERS.TRIGGER_TEXT_CHANGE
+  });
+
+  return {
+    ...useObjectProperties(isDigital),
     triggerChange
   };
 };

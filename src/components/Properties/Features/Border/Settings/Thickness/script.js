@@ -1,14 +1,17 @@
-import { mapGetters } from 'vuex';
-
 import { ICON_LOCAL, THINKNESS_OPTIONS } from '@/common/constants';
 import { getValueInput, validateInputOption } from '@/common/utils/input';
 import PpCombobox from '@/components/Selectors/Combobox';
-import { GETTERS as APP_GETTERS } from '@/store/modules/app/const';
 import { getSelectedOption } from '@/common/utils';
 
 export default {
   components: {
     PpCombobox
+  },
+  props: {
+    strokeWidth: {
+      type: Number,
+      required: true
+    }
   },
   data() {
     return {
@@ -18,19 +21,8 @@ export default {
     };
   },
   computed: {
-    ...mapGetters({
-      onSelectedThickNess: APP_GETTERS.SELECT_PROP_CURRENT_OBJECT,
-      triggerChange: APP_GETTERS.TRIGGER_TEXT_CHANGE
-    }),
     selectedThickness() {
-      if (this.triggerChange) {
-        // just for trigger the change
-      }
-      const selectedThickness = this.onSelectedThickNess('border');
-      const thicknessValue =
-        selectedThickness?.strokeWidth || selectedThickness === 0
-          ? selectedThickness?.strokeWidth
-          : 1;
+      const thicknessValue = this.strokeWidth || 1;
       const selected = this.items.find(item => item.value === thicknessValue);
 
       return getSelectedOption(selected || thicknessValue, 'pt');

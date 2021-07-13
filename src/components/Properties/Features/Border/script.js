@@ -2,7 +2,8 @@ import Select from '@/components/Selectors/Select';
 import BorderStyle from './Settings/Style';
 import BorderColor from './Settings/Color';
 import BorderThickness from './Settings/Thickness';
-import { EVENT_TYPE } from '@/common/constants/eventType';
+import { BORDER_TYPES, BORDER_TYPE } from '@/common/constants/borderType';
+import { DEFAULT_BORDER } from '@/common/constants';
 
 export default {
   components: {
@@ -12,50 +13,82 @@ export default {
     BorderThickness
   },
   props: {
-    selectedBorder: {
+    currentBorder: {
       type: Object,
-      required: true
-    },
-    options: {
-      type: Array,
-      required: true
+      default: {}
     }
   },
   data() {
     return {
-      strokeWidth: 0,
-      borderStyle: 'solid'
+      options: BORDER_TYPES
     };
+  },
+  computed: {
+    showBorder() {
+      return this.currentBorder.showBorder || false;
+    },
+    selectedBorder() {
+      if (!this.showBorder) {
+        return BORDER_TYPE.NO_BORDER;
+      }
+      return BORDER_TYPE.LINE;
+    },
+    strokeLineType() {
+      return (
+        this.currentBorder.strokeLineType || DEFAULT_BORDER.STROKE_LINE_TYPE
+      );
+    },
+    strokeColor() {
+      return this.currentBorder.stroke || DEFAULT_BORDER.STROKE;
+    },
+    strokeWidth() {
+      return this.currentBorder.strokeWidth || DEFAULT_BORDER.STROKE_WIDTH;
+    }
   },
   methods: {
     /**
      * Emit border value to parent
-     * @param   {Object}  value Value user selected
+     * @param   {Object}  border - Border data input by user
      */
-    onChangeSelectedBorder(value) {
-      this.$emit('change', value);
+    onChange(border) {
+      this.$emit('change', border);
     },
     /**
-     * Set data local and emit stroke width(thickness), stroke dash array value to text properties through root
+     * Emit border value to parent
+     * @param   {String}  value Value user selected
+     */
+    onChangeSelectedBorder({ value }) {
+      const showBorder = value === BORDER_TYPE.LINE.value;
+      const border = {
+        showBorder,
+        stroke: DEFAULT_BORDER.STROKE,
+        strokeDashArray: DEFAULT_BORDER.STROKE_DASH_ARRAY,
+        strokeLineType: DEFAULT_BORDER.STROKE_LINE_TYPE,
+        strokeWidth: !showBorder ? DEFAULT_BORDER.STROKE_WIDTH : 1
+      };
+
+      this.onChange(border);
+    },
+    /**
+     * Emit selected strokeWidth to parent component
      * @param   {Number}  strokeWidth Value user selected
      */
     onChangeThickness(strokeWidth) {
-      this.strokeWidth = strokeWidth;
-      this.$root.$emit(EVENT_TYPE.CHANGE_TEXT_PROPERTIES, {
-        border: { strokeWidth }
-      });
+      this.onChange({ strokeWidth });
     },
     /**
-     * Set data local and emit stroke line cap, stroke dash array value to text properties through root
-     * @param   {Number}  strokeLineType Value user selected
+     * Emit selected strokeLineType to parent component
+     * @param   {String}  strokeLineType Value user selected
      */
     onChangeBorderStyle({ value: strokeLineType }) {
-      this.borderStyle = strokeLineType;
-      this.$root.$emit(EVENT_TYPE.CHANGE_TEXT_PROPERTIES, {
-        border: {
-          strokeLineType
-        }
-      });
+      this.onChange({ strokeLineType });
+    },
+    /**
+     * Emit selected stroke's Color to parent component
+     * @param   {String}  color Value user selected
+     */
+    onChangeBorderColor(color) {
+      this.onChange({ stroke: color });
     }
   }
 };

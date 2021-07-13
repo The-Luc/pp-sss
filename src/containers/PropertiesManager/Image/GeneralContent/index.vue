@@ -6,11 +6,7 @@
       @onSelectImageStyle="onSelectImageStyle"
     />
     <Opacity :value="opacityValue" @change="onChangeOpacity" />
-    <Border
-      :selected-border="selectedBorder"
-      :options="borderOptions"
-      @change="changeBorderOption"
-    />
+    <Border :current-border="selectedBorder" @change="changeBorderOption" />
     <Shadow
       :current-shadow="currentShadow"
       @change="onChangeShadow"

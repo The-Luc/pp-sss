@@ -10,7 +10,6 @@ import { GETTERS as APP_GETTERS } from '@/store/modules/app/const';
 import { DEFAULT_TEXT } from '@/common/constants';
 import { computedObjectSize, activeCanvas } from '@/common/utils';
 import { EVENT_TYPE } from '@/common/constants/eventType';
-import { BORDER_TYPE } from '@/common/constants/borderType';
 
 export default {
   components: {
@@ -93,42 +92,7 @@ export default {
       return this.selectObjectProp('minHeight') || DEFAULT_TEXT.MIN_SIZE;
     }
   },
-  data() {
-    return {
-      borderOptions: BORDER_TYPE,
-      selectedBorder: {}
-    };
-  },
-  mounted() {
-    this.selectedBorder = this.borderOptions[0];
-    this.setSelectedBorder();
-  },
   methods: {
-    /**
-     * Set default selected border
-     */
-    setSelectedBorder() {
-      const border = this.selectObjectProp('border');
-      this.selectedBorder = this.borderOptions[border?.isBorder ? 1 : 0];
-    },
-    /**
-     * Get border option selected and emit to text properties
-     * @param {Object} data Border option selected
-     */
-    changeBorderOption(data) {
-      const border = {
-        isBorder: data.value !== 'noBorder',
-        stroke: DEFAULT_TEXT.BORDER.STROKE,
-        strokeDashArray: DEFAULT_TEXT.BORDER.STROKE_DASH_ARRAY,
-        strokeLineType: DEFAULT_TEXT.BORDER.STROKE_LINE_TYPE,
-        strokeWidth:
-          data.value === 'noBorder' ? DEFAULT_TEXT.BORDER.STROKE_WIDTH : 1
-      };
-      this.$root.$emit(EVENT_TYPE.CHANGE_TEXT_PROPERTIES, {
-        border
-      });
-      this.selectedBorder = data;
-    },
     /**
      * Handle update flip for Text object
      * @param {String} actionName action name
