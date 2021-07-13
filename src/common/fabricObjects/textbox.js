@@ -82,6 +82,8 @@ export const createTextBox = (x, y, width, height, textProperties) => {
   // reference to each other for better keep track
   text._rect = rect;
   rect._text = text;
+
+  const angle = textProperties?.coord?.rotation;
   const group = new fabric.Group([rect, text], {
     id: dataObject.id,
     objectType: OBJECT_TYPE.TEXT,
@@ -89,7 +91,8 @@ export const createTextBox = (x, y, width, height, textProperties) => {
     top: y,
     lockScalingY: false,
     lockScalingX: false,
-    isConstrain: text.isConstrain
+    isConstrain: text.isConstrain,
+    angle
   });
 
   const rectStrokeData = getRectStroke(rect, {
@@ -233,7 +236,9 @@ const applyTextProperties = function(text, prop) {
   if (
     !isEmpty(prop.fontSize) ||
     !isEmpty(prop.style) ||
-    !isEmpty(prop.lineSpacing)
+    !isEmpty(prop.lineSpacing) ||
+    !isEmpty(prop.fontFamily) ||
+    !isEmpty(prop.charSpacing)
   ) {
     if (target.type === FABRIC_OBJECT_TYPE.TEXT) {
       target.fire('changed');
@@ -571,7 +576,9 @@ export const updateTextListeners = (
   const [rect, text] = group._objects;
 
   const onTextChanged = () => {
-    const { minBoundingWidth, minBoundingHeight } = getTextSizeWithPadding(textObject);
+    const { minBoundingWidth, minBoundingHeight } = getTextSizeWithPadding(
+      textObject
+    );
 
     updateObjectDimensionsIfSmaller(
       rectObject,

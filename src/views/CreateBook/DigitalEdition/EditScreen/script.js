@@ -41,8 +41,7 @@ export default {
       isOpenMenuProperties: GETTERS.IS_OPEN_MENU_PROPERTIES,
       selectedToolName: GETTERS.SELECTED_TOOL_NAME,
       bookId: BOOK_GETTERS.BOOK_ID,
-      defaultThemeId: DIGITAL_GETTERS.DEFAULT_THEME_ID,
-      triggerApplyLayout: DIGITAL_GETTERS.TRIGGER_APPLY_LAYOUT
+      defaultThemeId: DIGITAL_GETTERS.DEFAULT_THEME_ID
     })
   },
   watch: {
@@ -53,10 +52,6 @@ export default {
           this.setIsPromptLayout(newVal);
         }
       }
-    },
-    triggerApplyLayout() {
-      // will be use the next ticket (pp-147)
-      console.log('apply layout ');
     }
   },
   methods: {
