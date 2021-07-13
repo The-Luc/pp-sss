@@ -7,7 +7,6 @@ import {
 } from '@/store/modules/digital/const';
 import { MUTATES } from '@/store/modules/app/const';
 import { DIGITAL_RIGHT_TOOLS } from '@/common/constants';
-import { uniqueId } from 'lodash';
 
 /**
  * Get and set common sate of frames
@@ -110,17 +109,21 @@ export const useFrameDelete = () => {
  * and set the active frame after replace
  */
 export const useFrameReplace = () => {
-  const { setCurrentFrameId, replaceFrame } = useMutations({
+  const { replaceFrame, triggerApplyLayout } = useMutations({
     replaceFrame: DIGITAL_MUTATES.REPLACE_SUPPLEMENTAL_FRAME,
-    setCurrentFrameId: DIGITAL_MUTATES.SET_CURRENT_FRAME_ID
+    triggerApplyLayout: DIGITAL_MUTATES.UPDATE_TRIGGER_APPLY_LAYOUT
+  });
+
+  const { updateLayoutObjToStore } = useActions({
+    updateLayoutObjToStore: DIGITAL_ACTIONS.UPDATE_LAYOUT_OBJ_TO_STORE
   });
 
   const handleReplaceFrame = ({ frame, frameId }) => {
-    const newId = uniqueId();
+    replaceFrame({ frame, frameId });
 
-    replaceFrame({ frame, frameId, newId });
+    updateLayoutObjToStore({ layout: frame });
 
-    setCurrentFrameId({ id: newId });
+    triggerApplyLayout();
   };
 
   return { handleReplaceFrame };

@@ -8,7 +8,6 @@ import {
   useFrame,
   useFrameAdd,
   useFrameDelete,
-  useFrameReplace,
   useModal
 } from '@/hooks';
 
@@ -50,14 +49,12 @@ export default {
     const { setCurrentFrameId } = useFrame();
     const { handleAddFrame } = useFrameAdd();
     const { handleDeleteFrame } = useFrameDelete();
-    const { handleReplaceFrame } = useFrameReplace();
 
     return {
       toggleModal,
       moveFrame,
       handleAddFrame,
       handleDeleteFrame,
-      handleReplaceFrame,
       setCurrentFrameId
     };
   },

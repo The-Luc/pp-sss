@@ -231,7 +231,7 @@ const supplementalFrames = [
   {
     id: 12,
     fromLayout: false,
-    objects: [backgrounds[2], clipArt1, clipArt2],
+    objects: [backgrounds[2], clipArt1],
     previewImageUrl: LAYOUT_THUMB_05,
     isVisited: false
   }

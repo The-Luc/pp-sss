@@ -52,7 +52,7 @@ import { cloneDeep } from 'lodash';
 export default {
   setup({ edition }) {
     const { setToolNameSelected, selectedToolName } = usePopoverCreationTool();
-    const { currentFrame } = useFrame();
+    const { frames, currentFrameId } = useFrame();
     const {
       updateVisited,
       setIsPrompt,
@@ -78,7 +78,8 @@ export default {
       listLayouts,
       themeId,
       updateSheetThemeLayout,
-      currentFrame
+      frames,
+      currentFrameId
     };
   },
   components: {
@@ -322,8 +323,12 @@ export default {
         // if adding new frame, use the default setting above
         if (this.initialData?.isAddNew) return;
 
+        const currentFrameObj = this.frames.find(
+          f => f.id === this.currentFrameId
+        );
+
         const layoutId = this.initialData?.isSupplemental
-          ? this.currentFrame?.supplementalLayoutId
+          ? currentFrameObj?.frame?.supplementalLayoutId
           : this.pageSelected?.layoutId;
 
         if (layoutId) {

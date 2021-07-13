@@ -199,16 +199,12 @@ export const mutations = {
       state.frames[id] = frame;
     });
   },
-  [DIGITAL._MUTATES.REPLACE_SUPPLEMENTAL_FRAME](
-    state,
-    { frame, frameId, newId }
-  ) {
+  [DIGITAL._MUTATES.REPLACE_SUPPLEMENTAL_FRAME](state, { frame, frameId }) {
     if (isEmpty(frame) || !frameId) return;
 
-    const frameIdIndex = state.frameIds.indexOf(frameId);
+    state.frameIds = [...state.frameIds];
 
-    state.frameIds.splice(frameIdIndex, 1, newId);
-    state.frames[newId] = frame;
+    state.frames[frameId] = frame;
   },
   [DIGITAL._MUTATES.REORDER_FRAME_IDS](state, { oldIndex, newIndex }) {
     const [id] = state.frameIds.splice(oldIndex, 1);

@@ -49,18 +49,7 @@ export const getters = {
   [DIGITAL._GETTERS.GET_OBJECTS]: ({ objects }) => {
     return objects;
   },
-  [DIGITAL._GETTERS.SHEET_LAYOUT]: ({
-    sheets,
-    objects,
-    currentSheetId,
-    background
-  }) => {
-    const sheet = sheets[currentSheetId];
-
-    if (!sheet?.layoutId) {
-      return [];
-    }
-
+  [DIGITAL._GETTERS.SHEET_LAYOUT]: ({ objects, background }) => {
     const allObjects = [];
 
     if (!isEmpty(background.left.id)) allObjects.push(background.left);

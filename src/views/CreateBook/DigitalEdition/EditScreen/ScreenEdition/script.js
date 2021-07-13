@@ -136,7 +136,8 @@ export default {
       object: DIGITAL_GETTERS.OBJECT_BY_ID,
       currentObjects: DIGITAL_GETTERS.GET_OBJECTS,
       totalBackground: DIGITAL_GETTERS.TOTAL_BACKGROUND,
-      listObjects: DIGITAL_GETTERS.GET_OBJECTS
+      listObjects: DIGITAL_GETTERS.GET_OBJECTS,
+      triggerApplyLayout: DIGITAL_GETTERS.TRIGGER_APPLY_LAYOUT
     }),
     isCover() {
       return this.pageSelected?.type === SHEET_TYPE.COVER;
@@ -1406,14 +1407,23 @@ export default {
       resetObjects(this.digitalCanvas);
 
       this.handleSwitchFrame();
+      this.drawLayout(this.sheetLayout, EDITION.DIGITAL);
+    },
+    triggerApplyLayout() {
+      this.setSelectedObjectId({ id: '' });
+      this.setCurrentObject(null);
+      resetObjects(this.digitalCanvas);
 
       this.drawLayout(this.sheetLayout, EDITION.DIGITAL);
     },
+
     frames: {
       deep: true,
       handler(val, oldVal) {
         if (val.length !== oldVal.length) {
-          const supplementalFrames = val.filter(item => !item.frame.fromLayout);
+          const supplementalFrames = val.filter(
+            item => !item.frame?.fromLayout
+          );
           this.handleShowAddFrame(supplementalFrames);
         }
       }
