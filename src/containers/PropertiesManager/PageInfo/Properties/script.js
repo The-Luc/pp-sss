@@ -48,9 +48,6 @@ export default {
       return font
         ? getSelectedOption(font)
         : getSelectedOption(this.pageInfo.fontSize, 'pt');
-    },
-    color() {
-      return this.disabled ? '#FFFFF' : this.pageInfo.color;
     }
   },
   methods: {

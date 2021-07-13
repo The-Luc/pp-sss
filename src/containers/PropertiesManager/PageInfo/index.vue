@@ -36,7 +36,7 @@
 
     <Properties v-if="isSpread" title="Spread Information">
       <PageTitle
-        title-name="Spread title:"
+        title-name="Spread Title:"
         :left-title-value="spreadInfo.leftTitle"
         :right-title-value="spreadInfo.rightTitle"
         :is-link="isLink"

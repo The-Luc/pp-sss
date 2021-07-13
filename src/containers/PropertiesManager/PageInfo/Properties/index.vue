@@ -22,7 +22,7 @@
       />
     </div>
     <ColorPicker
-      :color="color"
+      :color="disabled ? '#FFFFFF' : pageInfo.color"
       :show-eye-dropper="false"
       @change="onChangeColor"
     />

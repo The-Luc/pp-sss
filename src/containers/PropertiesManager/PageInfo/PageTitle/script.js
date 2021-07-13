@@ -6,7 +6,7 @@ export default {
   props: {
     titleName: {
       type: String,
-      default: 'Project title:'
+      default: 'Project Title:'
     },
     leftTitleValue: {
       type: String,
