@@ -12,8 +12,7 @@ import {
   DEFAULT_TEXT,
   TEXT_VERTICAL_ALIGN,
   OBJECT_MIN_SIZE,
-  FABRIC_OBJECT_TYPE,
-  EFFECT_KEYS
+  FABRIC_OBJECT_TYPE
 } from '@/common/constants';
 import {
   getAdjustedObjectDimension,
@@ -366,23 +365,11 @@ const applyTextRectProperties = function(rect, prop) {
 
   const rectProp = toFabricTextBorderProp(prop);
 
-  const keyRect = Object.keys(rectProp);
-
-  Object.keys(rectProp).forEach(k => {
-    if (EFFECT_KEYS.includes(k)) {
-      const { top, left } = rect._text || {};
-      rect.set({ top, left });
-    } else {
-      rect.set(k, rectProp[k]);
-    }
-  });
-
-
   if (!isEmpty(rect.group)) {
     const rectStrokeData = getRectStroke(rect, {
       ...rectProp,
       width: rect.group.width,
-      height: rect.group.height,
+      height: rect.group.height
     });
     rect.set(rectStrokeData);
   }
