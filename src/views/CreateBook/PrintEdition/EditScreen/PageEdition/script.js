@@ -236,7 +236,7 @@ export default {
       addNewObject: PRINT_MUTATES.ADD_OBJECT,
       setObjectProp: PRINT_MUTATES.SET_PROP,
       setObjectPropById: PRINT_MUTATES.SET_PROP_BY_ID,
-      updateTriggerTextChange: PRINT_MUTATES.UPDATE_TRIGGER_TEXT_CHANGE,
+      updateTriggerTextChange: MUTATES.UPDATE_TRIGGER_TEXT_CHANGE,
       addNewBackground: PRINT_MUTATES.SET_BACKGROUNDS,
       updateTriggerBackgroundChange:
         PRINT_MUTATES.UPDATE_TRIGGER_BACKGROUND_CHANGE,
