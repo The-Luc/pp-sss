@@ -29,7 +29,7 @@ const text1 = {
   coord: {
     x: 3,
     y: 5,
-    rotation: 20 // degree
+    rotation: 0 // degree
   },
   styleId: 'default',
   text: 'Sample Text',
@@ -163,7 +163,7 @@ const textSinglePage1 = {
   coord: {
     x: 3,
     y: 5,
-    rotation: 20 // degree
+    rotation: 0 // degree
   },
   styleId: 'default',
   text: 'Text Single 1',
@@ -186,7 +186,7 @@ const textSinglePage2 = {
   coord: {
     x: 5,
     y: 4,
-    rotation: 20 // degree
+    rotation: 0 // degree
   },
   styleId: 'default',
   text: 'Text Single 2',

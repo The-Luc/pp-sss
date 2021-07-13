@@ -82,6 +82,8 @@ export const createTextBox = (x, y, width, height, textProperties) => {
   // reference to each other for better keep track
   text._rect = rect;
   rect._text = text;
+
+  const angle = textProperties?.coord?.rotation;
   const group = new fabric.Group([rect, text], {
     id: dataObject.id,
     objectType: OBJECT_TYPE.TEXT,
@@ -89,7 +91,8 @@ export const createTextBox = (x, y, width, height, textProperties) => {
     top: y,
     lockScalingY: false,
     lockScalingX: false,
-    isConstrain: text.isConstrain
+    isConstrain: text.isConstrain,
+    angle
   });
 
   const rectStrokeData = getRectStroke(rect, {
