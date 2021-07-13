@@ -1,3 +1,4 @@
+import { DEFAULT_COLOR } from './defaultProperty';
 export const PAGE_NUMBER_POSITION = {
   BOTTOM_CENTER: 'BOTTOM_CENTER',
   BOTTOM_OUTSIDE_CORNERS: 'BOTTOM_OUTSIDE_CORNERS'
@@ -36,5 +37,5 @@ export const PAGE_INFO_DEFAULT = {
   position: PAGE_NUMBER_POSITION.BOTTOM_CENTER,
   fontFamily: 'Arial',
   fontSize: 8,
-  color: '#000000'
+  color: DEFAULT_COLOR.COLOR
 };
