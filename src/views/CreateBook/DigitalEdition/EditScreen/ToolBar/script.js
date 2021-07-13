@@ -61,7 +61,7 @@ export default {
           },
           {
             iconName: 'photo_size_select_large',
-            title: 'Image',
+            title: 'Image Box',
             name: TOOL_NAME.IMAGE_BOX
           },
           {

@@ -1,6 +1,6 @@
 import { fabric } from 'fabric';
 import { CORNER_SIZE, BORDER_STYLES, DEFAULT_TEXT } from '@/common/constants';
-import { ptToPx } from '@/common/utils';
+import { getRectDashes, ptToPx } from '@/common/utils';
 
 const BORDER_COLOR = {
   OUTER: '#ffffff',
@@ -9,61 +9,91 @@ const BORDER_COLOR = {
 };
 
 /**
+ * Create stroke clipPath to make double stroke
+ * @param {Number} width - rect's width
+ * @param {Number} height - rect's height
+ * @param {Number} strokeWidth - rect's strokeWidth
+ * @returns {fabric.Group} clipPath object
+ */
+const getDoubleStrokeClipPath = function(width, height, strokeWidth) {
+  const origins = {
+    originX: 'center',
+    originY: 'center'
+  };
+
+  const strokeOffset = strokeWidth * 0.15;
+
+  const hozSize = {
+    left: 0,
+    width: width - strokeOffset,
+    height: strokeWidth * 0.2,
+    ...origins
+  };
+
+  const verSize = {
+    top: 0,
+    width: strokeWidth * 0.2,
+    height: height - strokeOffset,
+    ...origins
+  };
+
+  const rectTop = new fabric.Rect({
+    top: height * -0.5 + strokeOffset,
+    ...hozSize
+  });
+
+  const rectBottom = new fabric.Rect({
+    top: height * 0.5 - strokeOffset,
+    ...hozSize
+  });
+
+  const rectLeft = new fabric.Rect({
+    left: width * -0.5 + strokeOffset,
+    ...verSize
+  });
+
+  const rectRight = new fabric.Rect({
+    left: width * 0.5 - strokeOffset,
+    ...verSize
+  });
+
+  return new fabric.Group([rectTop, rectBottom, rectLeft, rectRight], {
+    inverted: true
+  });
+};
+
+/**
  * Rect Render function with override on clipPath to support double stroke
  * @param {CanvasRenderingContext2D} ctx Context to render on
  */
 const rectRender = function(ctx) {
-  if (this.strokeLineType === BORDER_STYLES.DOUBLE) {
-    const origins = {
-      originX: 'center',
-      originY: 'center'
-    };
+  this.clipPath = null;
+  this.strokeDashArray = [];
 
-    const strokeOffset = this.strokeWidth * 0.15;
-
-    const hozSize = {
-      left: 0,
-      width: this.width - strokeOffset,
-      height: this.strokeWidth * 0.2,
-      ...origins
-    };
-
-    const verSize = {
-      top: 0,
-      width: this.strokeWidth * 0.2,
-      height: this.height - strokeOffset,
-      ...origins
-    };
-
-    const rectTop = new fabric.Rect({
-      top: this.height * -0.5 + strokeOffset,
-      ...hozSize
-    });
-
-    const rectBottom = new fabric.Rect({
-      top: this.height * 0.5 - strokeOffset,
-      ...hozSize
-    });
-
-    const rectLeft = new fabric.Rect({
-      left: this.width * -0.5 + strokeOffset,
-      ...verSize
-    });
-
-    const rectRight = new fabric.Rect({
-      left: this.width * 0.5 - strokeOffset,
-      ...verSize
-    });
-
-    this.clipPath = new fabric.Group(
-      [rectTop, rectBottom, rectLeft, rectRight],
-      {
-        inverted: true
-      }
-    );
-  } else {
-    this.clipPath = null;
+  if (!this.strokeWidth) {
+    fabric.Rect.prototype._render.call(this, ctx);
+    return;
   }
+
+  if (this.strokeLineType === BORDER_STYLES.DOUBLE) {
+    this.clipPath = getDoubleStrokeClipPath(
+      this.width,
+      this.height,
+      this.strokeWidth
+    );
+  }
+
+  if (
+    [BORDER_STYLES.ROUND, BORDER_STYLES.SQUARE].includes(this.strokeLineType)
+  ) {
+    this.strokeDashArray = getRectDashes(
+      this.width,
+      this.height,
+      this.strokeLineType,
+      this.strokeWidth
+    );
+  }
+
   fabric.Rect.prototype._render.call(this, ctx);
 };
 
@@ -97,7 +127,7 @@ const textRender = function(ctx) {
  * Allow fabric text object to have lineHeight override
  * @param {fabric.Textbox} text - the object to enable lineHeight override
  */
-export const useTextRenderOverride = function(text) {
+export const useTextOverride = function(text) {
   text.render = textRender;
 };
 
