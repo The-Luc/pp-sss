@@ -163,7 +163,7 @@ export default {
       addNewObject: DIGITAL_MUTATES.ADD_OBJECT,
       setObjectProp: DIGITAL_MUTATES.SET_PROP,
       setObjectPropById: DIGITAL_MUTATES.SET_PROP_BY_ID,
-      updateTriggerTextChange: DIGITAL_MUTATES.UPDATE_TRIGGER_TEXT_CHANGE,
+      updateTriggerTextChange: MUTATES.UPDATE_TRIGGER_TEXT_CHANGE,
       addNewBackground: DIGITAL_MUTATES.SET_BACKGROUNDS,
       updateTriggerBackgroundChange:
         DIGITAL_MUTATES.UPDATE_TRIGGER_BACKGROUND_CHANGE,
