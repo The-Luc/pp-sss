@@ -4,8 +4,6 @@ import EmptyFrame from './EmptyFrame';
 
 import { useFrameOrdering } from '@/hooks';
 
-import { isEmpty } from '@/common/utils';
-
 export default {
   components: {
     Draggable,
@@ -49,7 +47,9 @@ export default {
         }
       ];
 
-      return isEmpty(this.frames) ? defaultData : this.frames;
+      const hasPackageFrame = this.frames.some(item => item?.frame?.fromLayout);
+
+      return hasPackageFrame ? this.frames : [...defaultData, ...this.frames];
     }
   },
   methods: {
