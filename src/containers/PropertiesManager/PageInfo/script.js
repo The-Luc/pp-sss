@@ -7,7 +7,12 @@ import {
 
 import { pageNumberOff } from '@/common/fabricObjects';
 import { activeCanvas } from '@/common/utils';
-import { SHEET_TYPE, LINK_STATUS, PAGE_NUMBER_TYPE } from '@/common/constants';
+import {
+  SHEET_TYPE,
+  LINK_STATUS,
+  PAGE_NUMBER_TYPE,
+  PAGE_INFO_DEFAULT
+} from '@/common/constants';
 import Properties from '@/components/Properties/BoxProperties';
 import PageTitle from './PageTitle';
 import PageNumber from './PageNumber';
@@ -68,6 +73,8 @@ export default {
 
       switch (key) {
         case 'isNumberOn':
+          if (!val.isNumberOn)
+            this.setPageInfo({ pageInfo: PAGE_INFO_DEFAULT });
           this.setStatusPageNumber(val.isNumberOn);
           break;
         case 'isLeftNumberOn':
