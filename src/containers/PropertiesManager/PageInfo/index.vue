@@ -17,7 +17,7 @@
 
     <Properties v-if="isFrontCover || isBackCover" title="Page Information">
       <PageTitle
-        title-name="Page title:"
+        title-name="Page Title:"
         :left-title-value="spreadInfo.leftTitle"
         :right-title-value="spreadInfo.rightTitle"
         @change="changeTitle"

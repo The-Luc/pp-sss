@@ -1,5 +1,5 @@
 <template>
-  <div class="title">
+  <div class="page-title">
     <InputTitle
       :title-name="!isLink ? 'Left hand page title:' : titleName"
       :disabled="disabled"
@@ -16,3 +16,5 @@
 </template>
 
 <script src="./script.js" />
+
+<style lang="scss" scoped src="./style.scss" />
