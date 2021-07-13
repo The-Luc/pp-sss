@@ -90,7 +90,7 @@ export default {
      * @param {Object}  style attribute style of style
      */
     onChange({ value, style }) {
-      this.$root.$emit(EVENT_TYPE.CHANGE_TEXT_PROPERTIES, { style });
+      this.$root.$emit(EVENT_TYPE.CHANGE_TEXT_PROPERTIES, style);
 
       this.$root.$emit(EVENT_TYPE.CHANGE_TEXT_PROPERTIES, { styleId: value });
     }

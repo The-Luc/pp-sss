@@ -1,5 +1,4 @@
 import { useMutations, useGetters, useActions } from 'vuex-composition-helpers';
-// TODO: delete if dont use
 import {
   GETTERS as DIGITAL_GETTERS,
   ACTIONS as DIGITAL_ACTIONS,
@@ -9,9 +8,34 @@ import { MUTATES } from '@/store/modules/app/const';
 import { DIGITAL_RIGHT_TOOLS } from '@/common/constants';
 
 /**
- * Handle toggle Frame Information
+ * Get and set common sate of frames
  */
 export const useFrame = () => {
+  const { currentFrame, frames, currentFrameId } = useGetters({
+    frames: DIGITAL_GETTERS.GET_FRAMES_WIDTH_IDS,
+    currentFrame: DIGITAL_GETTERS.CURRENT_FRAME,
+    currentFrameId: DIGITAL_GETTERS.CURRENT_FRAME_ID
+  });
+
+  const { setSupplementalLayoutId, setCurrentFrameId } = useMutations({
+    setSupplementalLayoutId: DIGITAL_MUTATES.SET_SUPPLEMENTAL_LAYOUT_ID,
+    setCurrentFrameId: DIGITAL_MUTATES.SET_CURRENT_FRAME_ID
+  });
+
+  return {
+    frames,
+    currentFrame,
+    currentFrameId,
+    setCurrentFrameId,
+    setSupplementalLayoutId
+  };
+};
+
+/**
+ * Get data from frames and set it to store
+ * and handling the opening event of Frame Info tab
+ */
+export const useFrameSwitching = () => {
   const { currentFrame } = useGetters({
     currentFrame: DIGITAL_GETTERS.CURRENT_FRAME
   });
@@ -19,24 +43,18 @@ export const useFrame = () => {
   const {
     setPropertiesObjectType,
     setIsOpenProperties,
-    setCurrentFrameVisited,
-    addSupplementalFrame
+    setCurrentFrameVisited
   } = useMutations({
     setPropertiesObjectType: MUTATES.SET_PROPERTIES_OBJECT_TYPE,
     setIsOpenProperties: MUTATES.TOGGLE_MENU_PROPERTIES,
-    setCurrentFrameVisited: DIGITAL_MUTATES.SET_CURRENT_FRAME_VISITED,
-    addSupplementalFrame: DIGITAL_MUTATES.ADD_SUPPLEMENTAL_FRAMES
+    setCurrentFrameVisited: DIGITAL_MUTATES.SET_CURRENT_FRAME_VISITED
   });
 
   const { updateLayoutObjToStore } = useActions({
     updateLayoutObjToStore: DIGITAL_ACTIONS.UPDATE_LAYOUT_OBJ_TO_STORE
   });
 
-  /**
-   * Get data from frames and set it to store
-   * and handling the opening event of Frame Info tab
-   */
-  const handleChangeFrame = () => {
+  const handleSwitchFrame = () => {
     const layout = currentFrame.value;
 
     // update to store
@@ -52,7 +70,86 @@ export const useFrame = () => {
       setIsOpenProperties({ isOpen: false });
     }
   };
-  return { handleChangeFrame, addSupplementalFrame };
+
+  return { handleSwitchFrame };
+};
+
+/**
+ * To handle delete frame event
+ * and set active frame after delete
+ */
+export const useFrameDelete = () => {
+  const { framesInStore } = useGetters({
+    framesInStore: DIGITAL_GETTERS.GET_FRAMES_WIDTH_IDS
+  });
+
+  const { deleteFrame, setCurrentFrameId } = useMutations({
+    deleteFrame: DIGITAL_MUTATES.DELETE_FRAME,
+    setCurrentFrameId: DIGITAL_MUTATES.SET_CURRENT_FRAME_ID
+  });
+
+  const handleDeleteFrame = id => {
+    const oldIndex = framesInStore.value.findIndex(f => f.id === id);
+
+    deleteFrame({ id });
+
+    const newId =
+      framesInStore.value[oldIndex]?.id ??
+      framesInStore.value[oldIndex - 1]?.id;
+
+    setCurrentFrameId({ id: newId });
+  };
+
+  return { handleDeleteFrame };
+};
+
+/**
+ * To handle replace frame event
+ * and set the active frame after replace
+ */
+export const useFrameReplace = () => {
+  const { replaceFrame, triggerApplyLayout } = useMutations({
+    replaceFrame: DIGITAL_MUTATES.REPLACE_SUPPLEMENTAL_FRAME,
+    triggerApplyLayout: DIGITAL_MUTATES.UPDATE_TRIGGER_APPLY_LAYOUT
+  });
+
+  const { updateLayoutObjToStore } = useActions({
+    updateLayoutObjToStore: DIGITAL_ACTIONS.UPDATE_LAYOUT_OBJ_TO_STORE
+  });
+
+  const handleReplaceFrame = ({ frame, frameId }) => {
+    replaceFrame({ frame, frameId });
+
+    updateLayoutObjToStore({ layout: frame });
+
+    triggerApplyLayout();
+  };
+
+  return { handleReplaceFrame };
+};
+
+/**
+ * To handle add frame
+ * and set the active frame after add
+ */
+export const useFrameAdd = () => {
+  const { framesInStore } = useGetters({
+    framesInStore: DIGITAL_GETTERS.GET_FRAMES_WIDTH_IDS
+  });
+
+  const { addSupplementalFrame, setCurrentFrameId } = useMutations({
+    addSupplementalFrame: DIGITAL_MUTATES.ADD_SUPPLEMENTAL_FRAMES,
+    setCurrentFrameId: DIGITAL_MUTATES.SET_CURRENT_FRAME_ID
+  });
+
+  const handleAddFrame = frames => {
+    addSupplementalFrame({ frames });
+
+    const lastAddedFrame = framesInStore.value[framesInStore.value.length - 1];
+    setCurrentFrameId({ id: lastAddedFrame.id });
+  };
+
+  return { handleAddFrame };
 };
 
 export const useFrameOrdering = () => {

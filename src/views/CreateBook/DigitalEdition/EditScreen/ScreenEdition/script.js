@@ -11,7 +11,6 @@ import {
   DEFAULT_IMAGE,
   DEFAULT_SHAPE,
   EDITION,
-  MODAL_TYPES,
   OBJECT_TYPE,
   SHEET_TYPE,
   TOOL_NAME
@@ -42,7 +41,7 @@ import {
   useInfoBar,
   useLayoutPrompt,
   useFrame,
-  useModal
+  useFrameSwitching
 } from '@/hooks';
 
 import {
@@ -95,17 +94,18 @@ export default {
   setup() {
     const { drawLayout } = useDrawLayout();
     const { setInfoBar, zoom } = useInfoBar();
-    const { toggleModal } = useModal();
     const { openPrompt } = useLayoutPrompt();
-    const { handleChangeFrame } = useFrame();
+    const { handleSwitchFrame } = useFrameSwitching();
+    const { frames, currentFrameId } = useFrame();
 
     return {
+      frames,
+      currentFrameId,
       drawLayout,
       setInfoBar,
       zoom,
       openPrompt,
-      handleChangeFrame,
-      toggleModal
+      handleSwitchFrame
     };
   },
   data() {
@@ -135,8 +135,7 @@ export default {
       currentObjects: DIGITAL_GETTERS.GET_OBJECTS,
       totalBackground: DIGITAL_GETTERS.TOTAL_BACKGROUND,
       listObjects: DIGITAL_GETTERS.GET_OBJECTS,
-      frames: DIGITAL_GETTERS.GET_FRAMES_WIDTH_IDS,
-      currentFrameId: DIGITAL_GETTERS.CURRENT_FRAME_ID
+      triggerApplyLayout: DIGITAL_GETTERS.TRIGGER_APPLY_LAYOUT
     }),
     isCover() {
       return this.pageSelected?.type === SHEET_TYPE.COVER;
@@ -1233,33 +1232,6 @@ export default {
       }
     },
     /**
-     * Fire when click add frame button
-     * @param {Element} target add frame button
-     */
-    onAddFrame({ target }) {
-      const { left, width } = target.getBoundingClientRect();
-      const centerX = left + width / 2;
-      this.toggleModal({
-        isOpenModal: true,
-        modalData: {
-          type: MODAL_TYPES.ADD_DIGITAL_FRAME,
-          props: {
-            centerX
-          }
-        }
-      });
-    },
-
-    /**
-     * Fire when click on an frame
-     * @param {Number} id Id of the clicked frame
-     */
-    onFrameClick(id) {
-      if (id === this.currentFrameId) return;
-
-      this.setCurrentFrameId({ id });
-    },
-    /**
      * Adding background to canvas & store
      *
      * @param {Object}  background  the object of adding background
@@ -1380,15 +1352,24 @@ export default {
       this.setCurrentObject(null);
       resetObjects(this.digitalCanvas);
 
-      this.handleChangeFrame();
+      this.handleSwitchFrame();
+      this.drawLayout(this.sheetLayout, EDITION.DIGITAL);
+    },
+    triggerApplyLayout() {
+      this.setSelectedObjectId({ id: '' });
+      this.setCurrentObject(null);
+      resetObjects(this.digitalCanvas);
 
       this.drawLayout(this.sheetLayout, EDITION.DIGITAL);
     },
+
     frames: {
       deep: true,
       handler(val, oldVal) {
         if (val.length !== oldVal.length) {
-          const supplementalFrames = val.filter(item => !item.frame.fromLayout);
+          const supplementalFrames = val.filter(
+            item => !item.frame?.fromLayout
+          );
           this.handleShowAddFrame(supplementalFrames);
         }
       }

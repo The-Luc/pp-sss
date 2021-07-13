@@ -1,5 +1,13 @@
 <template>
   <div class="frames-container">
+    <FrameMenu
+      :is-open="isOpenMenu"
+      :menu-x="menuX"
+      :menu-y="menuY"
+      @onClose="onCloseMenu"
+      @onReplaceLayout="onReplaceLayout"
+      @onDeleteFrame="onDeleteFrame"
+    />
     <Draggable
       v-model="frameList"
       class="row frame-row"
@@ -14,6 +22,7 @@
       <div
         v-for="({ id, frame }, index) in frameList"
         :key="id"
+        :ref="`frame-${id}`"
         class="frame-container"
         @click="onFrameClick(id)"
       >
@@ -24,6 +33,13 @@
             'drag-target': id === dragTargetId
           }"
         >
+          <img
+            v-if="id === activeFrameId && !isOpenMenu && !frame.fromLayout"
+            class="frame-item-option"
+            src="@/assets/icons/three-dots.svg"
+            alt="option button"
+            @click="onOptionClick($event, id)"
+          />
           <img
             v-if="frame.previewImageUrl"
             :src="frame.previewImageUrl"
