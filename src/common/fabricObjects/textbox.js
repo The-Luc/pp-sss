@@ -236,7 +236,9 @@ const applyTextProperties = function(text, prop) {
   if (
     !isEmpty(prop.fontSize) ||
     !isEmpty(prop.style) ||
-    !isEmpty(prop.lineSpacing)
+    !isEmpty(prop.lineSpacing) ||
+    !isEmpty(prop.fontFamily) ||
+    !isEmpty(prop.charSpacing)
   ) {
     if (target.type === FABRIC_OBJECT_TYPE.TEXT) {
       target.fire('changed');
