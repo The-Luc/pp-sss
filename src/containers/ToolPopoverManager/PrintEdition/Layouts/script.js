@@ -101,11 +101,13 @@ export default {
       type: Object
     }
   },
-  data() {
+  data({ initialData }) {
     const isDigital = this.edition === EDITION.DIGITAL;
-    const layoutOption = LAYOUT_TYPES_OPTIONs.filter(
-      l => l.value !== LAYOUT_TYPES.SUPPLEMENTAL_LAYOUTS.value
-    );
+    const layoutOption = initialData?.isSupplemental
+      ? LAYOUT_TYPES_OPTIONs
+      : LAYOUT_TYPES_OPTIONs.filter(
+          l => l.value !== LAYOUT_TYPES.SUPPLEMENTAL_LAYOUTS.value
+        );
     return {
       themesOptions: [],
       layoutsOpts: layoutOption,
