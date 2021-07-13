@@ -1,5 +1,4 @@
 import { useMutations, useGetters, useActions } from 'vuex-composition-helpers';
-// TODO: delete if dont use
 import {
   GETTERS as DIGITAL_GETTERS,
   ACTIONS as DIGITAL_ACTIONS,

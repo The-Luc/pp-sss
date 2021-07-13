@@ -2,8 +2,6 @@ import { mapGetters, mapMutations } from 'vuex';
 
 import { MUTATES as THEME_MUTATES } from '@/store/modules/theme/const';
 
-import { GETTERS as DIGITAL_GETTERS } from '@/store/modules/digital/const';
-
 import {
   GETTERS as APP_GETTERS,
   MUTATES as APP_MUTATES
@@ -36,7 +34,8 @@ import {
   useLayoutPrompt,
   useDrawLayout,
   useGetLayouts,
-  useFrame
+  useFrame,
+  useModal
 } from '@/hooks';
 
 import {
@@ -52,7 +51,8 @@ import { cloneDeep } from 'lodash';
 export default {
   setup({ edition }) {
     const { setToolNameSelected, selectedToolName } = usePopoverCreationTool();
-    const { frames, currentFrameId } = useFrame();
+    const { frames } = useFrame();
+    const { modalData } = useModal();
     const {
       updateVisited,
       setIsPrompt,
@@ -66,6 +66,7 @@ export default {
       listLayouts,
       updateSheetThemeLayout
     } = useGetLayouts(edition);
+    const { currentFrame } = useFrame();
     return {
       selectedToolName,
       setToolNameSelected,
@@ -79,7 +80,8 @@ export default {
       themeId,
       updateSheetThemeLayout,
       frames,
-      currentFrameId
+      currentFrame,
+      modalData
     };
   },
   components: {
@@ -123,7 +125,6 @@ export default {
   computed: {
     ...mapGetters({
       isPrompt: APP_GETTERS.IS_PROMPT,
-      triggerAppyLayout: DIGITAL_GETTERS.TRIGGER_APPLY_LAYOUT,
       totalBackground: PRINT_GETTERS.TOTAL_BACKGROUND,
       printObject: PRINT_GETTERS.GET_OBJECTS
     }),
@@ -167,9 +168,6 @@ export default {
           this.initData();
         }
       }
-    },
-    triggerAppyLayout() {
-      this.applyLayout();
     }
   },
   async mounted() {
@@ -408,7 +406,23 @@ export default {
           this.layoutObjSelected?.type ===
           LAYOUT_TYPES.SUPPLEMENTAL_LAYOUTS.value
         ) {
-          this.$emit('addFrame', this.layoutObjSelected);
+          if (this.modalData?.props?.isAddNew) {
+            this.$emit('addFrame', this.layoutObjSelected);
+            return;
+          }
+          this.onCancel();
+          this.toggleModal({
+            isOpenModal: true,
+            modalData: {
+              type: MODAL_TYPES.OVERRIDE_LAYOUT,
+              props: {
+                sheetData: {
+                  layout: cloneDeep(this.layoutObjSelected),
+                  addNewFrame: true
+                }
+              }
+            }
+          });
           return;
         }
 
@@ -417,7 +431,14 @@ export default {
           this.toggleModal({
             isOpenModal: true,
             modalData: {
-              type: MODAL_TYPES.OVERRIDE_LAYOUT
+              type: MODAL_TYPES.OVERRIDE_LAYOUT,
+              props: {
+                sheetData: {
+                  sheetId: this.pageSelected?.id,
+                  themeId: this.themeSelected?.id,
+                  layout: cloneDeep(this.layoutObjSelected)
+                }
+              }
             }
           });
         } else {

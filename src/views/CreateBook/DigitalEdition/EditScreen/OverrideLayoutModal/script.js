@@ -1,12 +1,17 @@
-import { mapMutations } from 'vuex';
+import { mapActions, mapGetters, mapMutations } from 'vuex';
 
 import { MODAL_TYPES } from '@/common/constants';
 import Modal from '@/containers/Modal';
-import { MUTATES } from '@/store/modules/app/const';
-import { MUTATES as DIGITAL_MUTATES } from '@/store/modules/digital/const';
+import { GETTERS, MUTATES } from '@/store/modules/app/const';
+import { ACTIONS as DIGITAL_ACTIONS } from '@/store/modules/digital/const';
 import PpButton from '@/components/Buttons/Button';
-
+import { useFrame, useFrameReplace } from '@/hooks';
 export default {
+  setup() {
+    const { handleReplaceFrame } = useFrameReplace();
+    const { currentFrameId } = useFrame();
+    return { handleReplaceFrame, currentFrameId };
+  },
   components: {
     Modal,
     PpButton
@@ -16,14 +21,30 @@ export default {
       isOpen: false
     };
   },
+  computed: {
+    ...mapGetters({
+      modalData: GETTERS.MODAL_DATA
+    })
+  },
   methods: {
     ...mapMutations({
-      toggleModal: MUTATES.TOGGLE_MODAL,
-      triggerApplyLayout: DIGITAL_MUTATES.UPDATE_TRIGGER_APPLY_LAYOUT
+      toggleModal: MUTATES.TOGGLE_MODAL
+    }),
+    ...mapActions({
+      updateSheeThemeLayout: DIGITAL_ACTIONS.UPDATE_SHEET_THEME_LAYOUT
     }),
 
     onAction() {
-      this.triggerApplyLayout();
+      const { sheetData } = this.modalData?.props;
+
+      if (sheetData.addNewFrame) {
+        const frame = sheetData.layout?.frames[0] || [];
+
+        this.handleReplaceFrame({ frame, frameId: this.currentFrameId });
+        this.onCancel();
+        return;
+      }
+      sheetData && this.updateSheeThemeLayout(sheetData);
       this.onCancel();
     },
 
