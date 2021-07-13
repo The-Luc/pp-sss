@@ -2,7 +2,7 @@ import Layouts from '@/containers/ToolPopoverManager/PrintEdition/Layouts';
 import { mapMutations } from 'vuex';
 import { MUTATES } from '@/store/modules/theme/const';
 import { EDITION, LAYOUT_TYPES } from '@/common/constants';
-import { useFrame, useModal } from '@/hooks';
+import { useFrame, useFrameAdd, useFrameReplace, useModal } from '@/hooks';
 
 export default {
   components: {
@@ -10,8 +10,16 @@ export default {
   },
   setup() {
     const { toggleModal, modalData } = useModal();
-    const { addSupplementalFrame } = useFrame();
-    return { toggleModal, modalData, addSupplementalFrame };
+    const { handleAddFrame } = useFrameAdd();
+    const { handleReplaceFrame } = useFrameReplace();
+    const { setSupplementalLayoutId } = useFrame();
+    return {
+      toggleModal,
+      modalData,
+      handleAddFrame,
+      handleReplaceFrame,
+      setSupplementalLayoutId
+    };
   },
   data() {
     return {
@@ -38,14 +46,25 @@ export default {
      */
     onAddFrame(layout) {
       const frames = layout?.frames || [];
-      this.addSupplementalFrame({ frames });
+
+      const frameId = this.modalData?.props?.layoutId;
+
+      // if layoutId existed: user is replacing layout
+      if (frameId) {
+        this.handleReplaceFrame({ frame: frames[0], frameId });
+      } else {
+        this.handleAddFrame(frames);
+      }
+
+      this.setSupplementalLayoutId({ id: layout.id });
       this.onClose();
     }
   },
   async created() {
     this.initialData = {
       layoutSelected: LAYOUT_TYPES.SUPPLEMENTAL_LAYOUTS,
-      isSupplemental: true
+      isSupplemental: true,
+      isAddNew: !!this.modalData?.props?.isAddNew
     };
   },
   mounted() {
