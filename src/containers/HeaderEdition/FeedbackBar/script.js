@@ -8,7 +8,8 @@ import {
   splitNumberByDecimal,
   getSelectedOption,
   getValueInput,
-  validateInputOption
+  validateInputOption,
+  getValueWithoutUnit
 } from '@/common/utils';
 
 import { ICON_LOCAL, ZOOM_VALUE, ZOOM_CONFIG } from '@/common/constants';
@@ -59,9 +60,9 @@ export default {
 
       // when enter some number (ex: 14), zoom * 100 will become 14.000000002
       return getSelectedOption(
-        selectedOption || Math.floor(zoom * 100, 0),
-        '%',
-        ''
+        selectedOption || zoom,
+        '',
+        `${Math.floor(zoom * 100, 0)}%`
       );
     }
   },
@@ -74,9 +75,14 @@ export default {
     changeZoom(data) {
       if (isEmpty(data)) {
         this.onEsc();
+
+        return;
       }
 
-      const selectedValue = isNaN(data) ? data : data / 100;
+      const useData =
+        typeof data === 'object' ? data : getValueWithoutUnit(data, '%');
+
+      const selectedValue = isNaN(useData) ? useData : useData / 100;
 
       const { isValid, value, isForce } = validateInputOption(
         getValueInput(selectedValue),
@@ -84,7 +90,9 @@ export default {
         ZOOM_CONFIG.MAX,
         ZOOM_CONFIG.DECIMAL_PLACE,
         ZOOM_VALUE,
-        '%'
+        '%',
+        false,
+        false
       );
 
       if (!isValid) {

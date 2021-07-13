@@ -66,8 +66,8 @@ export default {
           },
           {
             iconName: 'collections',
-            title: 'Photos',
-            name: 'Photos'
+            title: 'Media',
+            name: 'Media'
           },
           {
             iconName: 'portrait',

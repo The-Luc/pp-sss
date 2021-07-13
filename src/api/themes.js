@@ -2,21 +2,20 @@ import { getSuccessWithData, getErrorWithMessages } from '@/common/models';
 
 import { isEmpty } from '@/common/utils';
 
-import themes from '@/mock/themes';
 import { themeOptions } from '@/mock/themes';
-import digitalThemes from '@/mock/digitalThemes';
+import { themeOptions as digitalThemeOptions } from '@/mock/digitalThemes';
 
 export const loadPrintThemes = () =>
   new Promise(resolve => {
     setTimeout(() => {
-      resolve(themes);
+      resolve(themeOptions);
     });
   });
 
 export const loadDigitalThemes = () =>
   new Promise(resolve => {
     setTimeout(() => {
-      resolve(digitalThemes);
+      resolve(digitalThemeOptions);
     });
   });
 
@@ -44,7 +43,7 @@ const themeService = {
    */
   getDigitalThemes: () => {
     return new Promise(resolve => {
-      const data = themeOptions;
+      const data = digitalThemeOptions;
 
       const result = isEmpty(data)
         ? getErrorWithMessages([])

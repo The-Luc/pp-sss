@@ -87,3 +87,16 @@ export const validateInputOption = (
 
   return { isValid: true, value, isForce };
 };
+
+/**
+ * Get the value of data without the unit
+ *
+ * @param   {String}  data  the input value
+ * @param   {String}  unit  the unit
+ * @returns {String}        value without unit
+ */
+export const getValueWithoutUnit = (data, unit) => {
+  if (data.indexOf(unit) !== data.length - unit.length) return data;
+
+  return data.substring(0, data.length - unit.length);
+};
