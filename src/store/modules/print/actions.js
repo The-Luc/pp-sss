@@ -108,7 +108,9 @@ export const actions = {
 
     if (backgroundObjs.length === 1) {
       backgroundObjs[0].isLeftPage = currentPosition === 'left';
+      const pageEmpty = currentPosition === 'left' ? 'right' : 'left';
       commit(PRINT._MUTATES.SET_BACKGROUNDS, { background: backgroundObjs[0] });
+      commit(PRINT._MUTATES.SET_PAGE_EMPTY, { pageEmpty });
     }
 
     // Get object(s) rest
@@ -124,12 +126,6 @@ export const actions = {
     // Remove objects when user override layout
     if (currentPosition && !isHalfSheet(currentSheet)) {
       commit(PRINT._MUTATES.REMOVE_OBJECTS, { currentPosition });
-
-      if (Object.values(state.objects).length > 0) {
-        Object.values(state.objects).forEach(obj => {
-          objectList.push(obj);
-        });
-      }
     }
 
     commit(PRINT._MUTATES.SET_OBJECTS, { objectList });

@@ -1,11 +1,7 @@
 <template>
   <div>
     <Opacity :value="opacityValue" @change="onChangeOpacity" />
-    <Border
-      :selected-border="selectedBorder"
-      :options="borderOptions"
-      @change="onChangeBorder"
-    />
+    <Border :current-border="currentBorder" @change="onChangeBorder" />
     <Shadow
       :current-shadow="currentShadow"
       @change="onChangeShadow"

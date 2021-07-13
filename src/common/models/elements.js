@@ -24,7 +24,7 @@ export const BaseElement = {
   color: DEFAULT_PROP.COLOR,
   opacity: DEFAULT_PROP.OPACITY,
   border: {
-    fill: DEFAULT_BORDER.FILL,
+    showBorder: DEFAULT_BORDER.SHOW_BORDER,
     stroke: DEFAULT_BORDER.STROKE,
     strokeWidth: DEFAULT_BORDER.STROKE_WIDTH,
     strokeDashArray: DEFAULT_BORDER.STROKE_DASH_ARRAY,
@@ -81,19 +81,10 @@ export const TextElement = {
   opacity: DEFAULT_TEXT.OPACITY,
   editingBorderColor: DEFAULT_TEXT.EDITING_BORDER_COLOR,
   border: {
-    fill: DEFAULT_TEXT.BORDER.FILL,
-    stroke: DEFAULT_TEXT.BORDER.STROKE,
-    strokeWidth: DEFAULT_TEXT.BORDER.STROKE_WIDTH,
-    strokeDashArray: DEFAULT_TEXT.BORDER.STROKE_DASH_ARRAY,
-    strokeLineType: DEFAULT_TEXT.BORDER.STROKE_LINE_TYPE
+    ...BaseElement.border
   },
   shadow: {
-    dropShadow: DEFAULT_TEXT.SHADOW.DROP_SHADOW,
-    shadowBlur: DEFAULT_TEXT.SHADOW.BLUR,
-    shadowOffset: DEFAULT_TEXT.SHADOW.OFFSET,
-    shadowOpacity: DEFAULT_TEXT.SHADOW.OPACITY,
-    shadowAngle: DEFAULT_TEXT.SHADOW.ANGLE,
-    shadowColor: DEFAULT_TEXT.SHADOW.COLOR
+    ...BaseElement.shadow
   },
   isConstrain: DEFAULT_TEXT.IS_CONSTRAIN
 };

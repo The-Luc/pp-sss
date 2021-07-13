@@ -127,10 +127,6 @@ const handleDrawTextLayout = (textObject, targetCanvas, index) => {
     size: { width, height }
   } = textObject;
   let left = inToPx(x);
-  if (textObject.position === 'right') {
-    const baseLeft = targetCanvas.width / targetCanvas.getZoom() / 2;
-    left += baseLeft;
-  }
   const { object } = createTextBox(
     left,
     inToPx(y),

@@ -63,5 +63,8 @@ export const mutations = {
       ...state.currentObject,
       ...currentObject
     };
+  },
+  [APP._MUTATES.UPDATE_TRIGGER_TEXT_CHANGE](state) {
+    state.triggerChange.text = !state.triggerChange.text;
   }
 };

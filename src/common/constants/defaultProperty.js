@@ -16,7 +16,7 @@ export const DEFAULT_SVG = {
 };
 
 export const DEFAULT_BORDER = {
-  FILL: false,
+  SHOW_BORDER: false,
   STROKE: '#000000',
   STROKE_WIDTH: 0,
   STROKE_DASH_ARRAY: [],
@@ -25,7 +25,8 @@ export const DEFAULT_BORDER = {
 
 export const DEFAULT_COLOR = {
   ALPHA: 0.5,
-  COLOR: '#000000'
+  COLOR: '#000000',
+  DISABLED_COLOR: '#ffffff'
 };
 
 export const DEFAULT_PROP = {

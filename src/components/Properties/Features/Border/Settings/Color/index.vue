@@ -1,6 +1,6 @@
 <template>
   <div class="border-color-picker-container">
-    <ColorPicker :color="borderColor" @change="onChange" />
+    <ColorPicker :color="selectedColor" @change="onChange" />
   </div>
 </template>
 

@@ -197,7 +197,15 @@ export const mutations = {
     state.background[position] = {};
   },
   [PRINT._MUTATES.SET_SHEET_LINK_STATUS](state, { statusLink, sheetId }) {
-    state.sheets[sheetId].link = statusLink;
+    state.sheets[sheetId] = {
+      ...state.sheets[sheetId],
+      link: statusLink,
+      spreadInfo: {
+        ...state.sheets[sheetId].spreadInfo,
+        leftTitle: '',
+        rightTitle: ''
+      }
+    };
   },
   [PRINT._MUTATES.SET_PAGE_INFO](state, { pageInfo }) {
     state.book.pageInfo = pageInfo;
@@ -223,5 +231,8 @@ export const mutations = {
       ...state.sheets[state.currentSheetId].spreadInfo,
       ...spreadInfo
     };
+  },
+  [PRINT._MUTATES.SET_PAGE_EMPTY](state, { pageEmpty }) {
+    state.background[pageEmpty] = {};
   }
 };

@@ -3,8 +3,8 @@ import Shadow from '@/components/Properties/Features/Shadow';
 import Border from '@/components/Properties/Features/Border';
 
 import { EVENT_TYPE } from '@/common/constants/eventType';
-import { mapGetters } from 'vuex';
-import { GETTERS as APP_GETTERS } from '@/store/modules/app/const';
+import { useTextProperties } from '@/hooks';
+import { BORDER_TYPE } from '@/common/constants/borderType';
 
 export default {
   components: {
@@ -12,27 +12,24 @@ export default {
     Border,
     Shadow
   },
-  props: {
-    borderOptions: {
-      type: Array,
-      required: true
-    },
-    selectedBorder: {
-      type: Object,
-      required: true
-    }
+  setup() {
+    const isDigital = !!window.digitalCanvas; // TODO: find another approach
+    const { triggerChange, getProperty } = useTextProperties(isDigital);
+
+    return { triggerChange, getProperty };
+  },
+  data() {
+    return {
+      borderOptions: BORDER_TYPE
+    };
   },
   computed: {
-    ...mapGetters({
-      selectObjectProp: APP_GETTERS.SELECT_PROP_CURRENT_OBJECT,
-      triggerChange: APP_GETTERS.TRIGGER_TEXT_CHANGE
-    }),
     opacityValue() {
       if (this.triggerChange) {
         // just for trigger the change
       }
 
-      const res = this.selectObjectProp('opacity');
+      const res = this.getProperty('opacity');
       return !res ? 0 : res;
     },
     currentShadow() {
@@ -40,7 +37,14 @@ export default {
         // just for trigger the change
       }
 
-      return this.selectObjectProp('shadow');
+      return this.getProperty('shadow');
+    },
+    currentBorder() {
+      if (this.triggerChange) {
+        // just for trigger the change
+      }
+
+      return this.getProperty('border');
     }
   },
   methods: {
@@ -52,11 +56,16 @@ export default {
       this.$root.$emit(EVENT_TYPE.CHANGE_TEXT_PROPERTIES, { opacity });
     },
     /**
-     * Receive value border from children
-     * @param   {Object}  data Value user selecte
+     * Get border option selected and emit to text properties
+     * @param {Object} borderCfg Border option selected
      */
-    onChangeBorder(data) {
-      this.$emit('changeBorderOption', data);
+    onChangeBorder(borderCfg) {
+      this.$root.$emit(EVENT_TYPE.CHANGE_TEXT_PROPERTIES, {
+        border: {
+          ...this.currentBorder,
+          ...borderCfg
+        }
+      });
     },
     /**
      * Emit Shadow Config change to root
