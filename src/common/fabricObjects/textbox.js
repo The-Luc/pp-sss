@@ -571,11 +571,14 @@ export const updateTextListeners = (
   const [rect, text] = group._objects;
 
   const onTextChanged = () => {
+    const { minBoundingWidth, minBoundingHeight } = getTextSizeWithPadding(textObject);
+
     updateObjectDimensionsIfSmaller(
       rectObject,
-      textObject.width,
-      textObject.height
+      minBoundingWidth,
+      minBoundingHeight
     );
+
     canvas.renderAll();
   };
 
