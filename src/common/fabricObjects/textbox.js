@@ -21,7 +21,6 @@ import {
   toFabricTextGroupProp
 } from './common';
 import { useDoubleStroke, useTextOverride } from '@/plugins/fabric';
-import { toggleStroke } from './drawingBox';
 
 /**
  * Handle creating a TextBox into canvas
@@ -600,7 +599,11 @@ export const updateTextListeners = (
 
   const getNewData = obj => {
     return Object.keys(obj).reduce((rs, key) => {
-      if (!key.startsWith('_') && typeof obj[key] !== 'function') {
+      if (
+        key !== 'id' &&
+        !key.startsWith('_') &&
+        typeof obj[key] !== 'function'
+      ) {
         rs[key] = obj[key];
       }
       return rs;
@@ -619,14 +622,11 @@ export const updateTextListeners = (
     rectObject.group = null;
 
     const newTextData = { ...getNewData(textObject), ...newProperties };
-    const newRectData = {
-      ...getNewData(rectObject),
-      ...newProperties,
-      strokeWidth: 0
-    };
+    const newRectData = { ...getNewData(rectObject), ...newProperties };
 
-    text.set(newTextData);
+    // TODO: update rect data
     rect.set(newRectData);
+    text.set(newTextData);
 
     group.addWithUpdate();
 
@@ -659,6 +659,8 @@ export const enableTextEditMode = (group, onCompleted) => {
   const [rect, text] = getObjectsFromTextBox(group);
 
   const textForEditing = cloneDeep(text);
+  textForEditing.id = null;
+
   const rectForEditing = cloneDeep(rect);
   const { flipX, flipY, angle, top, left } = cloneDeep(group);
   const cachedData = { flipX, flipY, angle, top, left };
@@ -681,7 +683,7 @@ export const enableTextEditMode = (group, onCompleted) => {
 
   canvas.setActiveObject(textForEditing);
 
-  toggleStroke(rectForEditing, true);
+  // toggleStroke(rectForEditing, true);
 
   textForEditing.enterEditing();
   textForEditing.selectAll();
