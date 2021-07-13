@@ -57,7 +57,7 @@ export default {
       updateVisited,
       setIsPrompt,
       pageSelected,
-      themeId
+      themeId: defaultThemeId
     } = useLayoutPrompt(edition);
     const { drawLayout } = useDrawLayout();
     const {
@@ -77,7 +77,7 @@ export default {
       sheetLayout,
       getLayoutsByType,
       listLayouts,
-      themeId,
+      defaultThemeId,
       updateSheetThemeLayout,
       frames,
       currentFrame,
@@ -143,6 +143,9 @@ export default {
         );
       }
       return [];
+    },
+    themeId() {
+      return this.pageSelected?.themeId || this.defaultThemeId;
     }
   },
   watch: {
@@ -320,7 +323,6 @@ export default {
     setLayoutActive() {
       if (this.layouts.length > 0) {
         this.tempLayoutIdSelected = this.layouts[0].id;
-        this.layoutObjSelected = this.layouts[0];
 
         // if adding new frame, use the default setting above
         if (this.initialData?.isAddNew) return;
@@ -341,6 +343,9 @@ export default {
             this.tempLayoutIdSelected = sheetLayoutObj.id;
           }
         }
+        this.layoutObjSelected = this.layouts.find(
+          l => l.id === this.tempLayoutIdSelected
+        );
       }
     },
     /**
