@@ -22,12 +22,11 @@ import {
   applyTextBoxProperties,
   calcScaleElement,
   createTextBox,
-  getAdjustedObjectDimension,
+  setTextDimensionAfterScaled,
   handleObjectBlur,
   handleScalingText,
   mappingElementProperties,
   startDrawBox,
-  textVerticalAlignOnAdjust,
   toggleStroke,
   updateElement,
   updateTextListeners,
@@ -59,7 +58,6 @@ import {
 } from '@/common/constants/eventType';
 import {
   deleteSelectedObjects,
-  getRectDashes,
   isEmpty,
   pxToIn,
   resetObjects,
@@ -893,64 +891,12 @@ export default {
     },
 
     /**
-     * The function set new dimenssion for text after scaled
-     * @param {Object} target Text target
-     * @param {Element} rect Rect object
-     * @param {Element} text Text object
-     * @param {Object} dataObject - Text data
-     */
-    setTextDimensionAfterScaled(target, rect, text, dataObject) {
-      const textData = {
-        top: target.height * -0.5, // TEXT_VERTICAL_ALIGN.TOP
-        left: target.width * -0.5,
-        width: target.width
-      };
-
-      text.set(textData);
-
-      const {
-        width: adjustedWidth,
-        height: adjustedHeight
-      } = getAdjustedObjectDimension(text, target.width, target.height);
-
-      textVerticalAlignOnAdjust(text, adjustedHeight);
-
-      const strokeWidth = rect.strokeWidth || 1;
-
-      const strokeDashArray = getRectDashes(
-        target.width,
-        target.height,
-        rect.strokeLineType,
-        dataObject.newObject.border.strokeWidth
-      );
-
-      rect.set({
-        top: -adjustedHeight / 2,
-        left: -adjustedWidth / 2,
-        width: adjustedWidth - strokeWidth,
-        height: adjustedHeight - strokeWidth,
-        strokeDashArray
-      });
-
-      text.set({
-        top: -adjustedHeight / 2,
-        left: -adjustedWidth / 2
-      });
-
-      target.set({
-        width: adjustedWidth,
-        height: adjustedHeight
-      });
-    },
-
-    /**
      * Callback function for handle scaled to update text's dimension
      * @param {Object} e - Text event data
      * @param {Element} rect - Rect object
      * @param {Element} text - Text object
-     * @param {Object} dataObject - Text data
      */
-    handleTextBoxScaled(e, rect, text, dataObject) {
+    handleTextBoxScaled(e, rect, text) {
       const target = e.transform?.target;
 
       if (isEmpty(target)) return;
@@ -966,7 +912,7 @@ export default {
       };
       this.changeTextProperties(prop);
 
-      this.setTextDimensionAfterScaled(target, rect, text, dataObject);
+      setTextDimensionAfterScaled(target, rect, text);
     },
 
     /**

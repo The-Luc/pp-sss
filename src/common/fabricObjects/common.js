@@ -64,8 +64,6 @@ const RESTRICT_PROP_CHILD = [
 export const toFabricTextProp = prop => {
   const mapRules = {
     data: {
-      x: DEFAULT_RULE_DATA.X,
-      y: DEFAULT_RULE_DATA.Y,
       isBold: {
         name: 'fontWeight',
         parse: value => (value ? 'bold' : '')
@@ -93,8 +91,6 @@ export const toFabricTextProp = prop => {
       letterSpacing: {
         name: 'charSpacing'
       },
-      width: DEFAULT_RULE_DATA.WIDTH,
-      height: DEFAULT_RULE_DATA.HEIGHT,
       strokeWidth: {
         name: 'padding',
         parse: value => scaleSize(value || 0) + inToPx(DEFAULT_TEXT.PADDING)
@@ -106,6 +102,7 @@ export const toFabricTextProp = prop => {
       'textCase',
       'text',
       'fill',
+      'size',
       'stroke',
       'strokeDashArray',
       'strokeLineType',
@@ -128,16 +125,20 @@ export const toFabricTextProp = prop => {
 export const toFabricTextBorderProp = prop => {
   const mapRules = {
     data: {
-      x: DEFAULT_RULE_DATA.X,
-      y: DEFAULT_RULE_DATA.Y,
       strokeWidth: {
         name: 'strokeWidth',
         parse: value => scaleSize(value)
-      },
-      width: DEFAULT_RULE_DATA.WIDTH,
-      height: DEFAULT_RULE_DATA.HEIGHT
+      }
     },
-    restrict: ['id', 'shadow', 'flip', 'rotation', 'isConstrain', 'style']
+    restrict: [
+      'id',
+      'shadow',
+      'size',
+      'flip',
+      'rotation',
+      'isConstrain',
+      'style'
+    ]
   };
 
   return mapObject(prop, mapRules);
@@ -629,8 +630,14 @@ export const getAdjustedObjectDimension = function(
   targetWidth,
   targetHeight
 ) {
-  const width = object.width > targetWidth ? object.width : targetWidth;
-  const height = object.height > targetHeight ? object.height : targetHeight;
+  const padding = object.padding || 0;
+
+  const objectWidth = object.width + padding * 2;
+  const objectHeight = object.height + padding * 2;
+
+  const width = Math.max(objectWidth, targetWidth);
+  const height = Math.max(objectHeight, targetHeight);
+
   return { width, height };
 };
 
