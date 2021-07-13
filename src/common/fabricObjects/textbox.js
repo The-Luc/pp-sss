@@ -377,7 +377,7 @@ const applyTextRectProperties = function(rect, prop) {
     rect.set(rectStrokeData);
   }
 
-  if (!prop.shadow) {
+  if (!isEmpty(prop.shadow)) {
     applyShadowToObject(rect, prop.shadow);
   }
 };
