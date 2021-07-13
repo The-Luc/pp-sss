@@ -153,7 +153,7 @@ const shape1 = {
   pathData: 'img.svg' // TODO: Need discuss with FM to get instruction on using shape
 };
 
-const textSinglePage1 = {
+const textSinglePage2 = {
   ...TextElement,
   id: uniqueId(),
   size: {
@@ -176,7 +176,7 @@ const textSinglePage1 = {
   opacity: 0.5
 };
 
-const textSinglePage2 = {
+const textSinglePage1 = {
   ...TextElement,
   id: uniqueId(),
   size: {
@@ -184,7 +184,7 @@ const textSinglePage2 = {
     height: 5
   },
   coord: {
-    x: 5,
+    x: 12,
     y: 4,
     rotation: 0 // degree
   },

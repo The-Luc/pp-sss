@@ -234,6 +234,20 @@ const supplementalFrames = [
     objects: [backgrounds[2], clipArt1],
     previewImageUrl: LAYOUT_THUMB_05,
     isVisited: false
+  },
+  {
+    id: 13,
+    fromLayout: false,
+    objects: [backgrounds[4], text1, text2],
+    previewImageUrl: LAYOUT_THUMB_04,
+    isVisited: false
+  },
+  {
+    id: 14,
+    fromLayout: false,
+    objects: [backgrounds[1], clipArt1, clipArt2],
+    previewImageUrl: LAYOUT_THUMB_02,
+    isVisited: false
   }
 ];
 
@@ -446,6 +460,60 @@ export const supplementalLayouts = [
     frames: [supplementalFrames[1]],
     isFavorites: false,
     previewImageUrl: LAYOUT_THUMB_10,
+    themeId: 1
+  },
+  {
+    id: 33,
+    name: 'Confetti 3',
+    type: 'Supplemental',
+    frames: [supplementalFrames[4]],
+    isFavorites: false,
+    previewImageUrl: LAYOUT_THUMB_02,
+    themeId: 1
+  },
+  {
+    id: 34,
+    name: 'Confetti 4',
+    type: 'Supplemental',
+    frames: [supplementalFrames[3]],
+    isFavorites: false,
+    previewImageUrl: LAYOUT_THUMB_10,
+    themeId: 1
+  },
+  {
+    id: 35,
+    name: 'Confetti 5',
+    type: 'Supplemental',
+    frames: [supplementalFrames[0]],
+    isFavorites: false,
+    previewImageUrl: LAYOUT_THUMB_02,
+    themeId: 1
+  },
+  {
+    id: 36,
+    name: 'Confetti 6',
+    type: 'Supplemental',
+    frames: [supplementalFrames[2]],
+    isFavorites: false,
+    previewImageUrl: LAYOUT_THUMB_10,
+    themeId: 1
+  },
+  {
+    id: 37,
+    name: 'Confetti 4',
+    type: 'Supplemental',
+    frames: [supplementalFrames[3]],
+    isFavorites: false,
+    previewImageUrl: LAYOUT_THUMB_10,
+    themeId: 1
+  },
+  {
+    id: 38,
+    name: 'Confetti 5',
+    type: 'Supplemental',
+    frames: [supplementalFrames[0]],
+    isFavorites: false,
+    previewImageUrl: LAYOUT_THUMB_02,
     themeId: 1
   }
 ];
