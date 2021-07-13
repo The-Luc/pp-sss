@@ -11,12 +11,9 @@ import {
   useModal
 } from '@/hooks';
 
-<<<<<<< HEAD
 import { isEmpty } from '@/common/utils';
 import { MODAL_TYPES } from '@/common/constants';
 
-=======
->>>>>>> 9649b395ffce17e4b54013bdb656ce49cad75185
 export default {
   components: {
     EmptyFrame,
