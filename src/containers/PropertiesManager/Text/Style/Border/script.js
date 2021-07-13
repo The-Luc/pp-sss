@@ -2,7 +2,6 @@ import Select from '@/components/Selectors/Select';
 import BorderStyle from './Settings/Style';
 import BorderColor from './Settings/Color';
 import BorderThickness from './Settings/Thickness';
-import { activeCanvas, getRectDashes } from '@/common/utils';
 import { EVENT_TYPE } from '@/common/constants/eventType';
 
 export default {
@@ -37,45 +36,26 @@ export default {
       this.$emit('change', value);
     },
     /**
-     * Computed dash array base on width and height of object
-     * @returns   {Array}  Array specifying dash pattern of an object's stroke
-     */
-    computedDashArray() {
-      const objectActive = activeCanvas?.getActiveObject();
-      const { width, height } = objectActive;
-      const strokeDashArray = getRectDashes(
-        width,
-        height,
-        this.borderStyle,
-        this.strokeWidth
-      );
-      return strokeDashArray;
-    },
-    /**
      * Set data local and emit stroke width(thickness), stroke dash array value to text properties through root
-     * @param   {Number}  value Value user selected
+     * @param   {Number}  strokeWidth Value user selected
      */
-    onChangeThickness(value) {
-      this.strokeWidth = value;
-      const strokeDashArray = this.computedDashArray();
+    onChangeThickness(strokeWidth) {
+      this.strokeWidth = strokeWidth;
       this.$root.$emit(EVENT_TYPE.CHANGE_TEXT_PROPERTIES, {
         border: {
-          strokeDashArray,
-          strokeWidth: value
+          strokeWidth
         }
       });
     },
     /**
      * Set data local and emit stroke line cap, stroke dash array value to text properties through root
-     * @param   {Number}  value Value user selected
+     * @param   {Number}  strokeLineType Value user selected
      */
-    onChangeBorderStyle({ value }) {
-      this.borderStyle = value;
-      const strokeDashArray = this.computedDashArray();
+    onChangeBorderStyle({ value: strokeLineType }) {
+      this.borderStyle = strokeLineType;
       this.$root.$emit(EVENT_TYPE.CHANGE_TEXT_PROPERTIES, {
         border: {
-          strokeDashArray,
-          strokeLineType: value
+          strokeLineType
         }
       });
     }

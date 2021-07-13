@@ -8,7 +8,7 @@ import {
   MOMENT_TYPE,
   STATUS
 } from '@/common/constants';
-import { ptToPx, scaleSize } from './canvas';
+import { scaleSize } from './canvas';
 
 export let activeCanvas = null;
 
@@ -289,6 +289,9 @@ export const scrollToElement = (el, opts) => {
 };
 
 export const getRectDashes = (width, height, strokeType, strokeWidth) => {
+  if (!strokeWidth) {
+    return [];
+  }
   let dashArray = [];
   if (strokeType === BORDER_STYLES.ROUND) {
     dashArray = getRoundDashes(width, height, strokeWidth);
@@ -307,7 +310,7 @@ export const getRectDashes = (width, height, strokeType, strokeWidth) => {
  * @param   {Number}  height  Height of element
  */
 const getRoundDashes = (width, height, strokeWidth) => {
-  const clientStrokeWidth = ptToPx(strokeWidth || 1);
+  const clientStrokeWidth = strokeWidth || 1;
 
   const clientWidth = width - clientStrokeWidth; //real width include stroke
   const clientHeight = height - clientStrokeWidth; //real height include stroke
@@ -367,25 +370,13 @@ export const setBorderObject = (rectObj, objectData) => {
     border: { strokeWidth, stroke, strokeLineType }
   } = objectData;
 
-  const group = rectObj?.group;
-  const rectWidth = group?.width || rectObj.width;
-  const rectHeight = group?.height || rectObj.height;
-
-  const strokeDashArrayVal = getRectDashes(
-    rectWidth,
-    rectHeight,
-    strokeLineType,
-    strokeWidth
-  );
-
   const strokeLineCap = getStrokeLineCap(strokeLineType);
 
   rectObj.set({
     strokeWidth: scaleSize(strokeWidth),
     stroke,
     strokeLineCap,
-    strokeLineType,
-    strokeDashArray: strokeDashArrayVal
+    strokeLineType
   });
 
   setTimeout(() => {
