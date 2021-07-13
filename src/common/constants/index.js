@@ -1,3 +1,4 @@
+export * from './activeEdition';
 export * from './api';
 export * from './arrange';
 export * from './book';

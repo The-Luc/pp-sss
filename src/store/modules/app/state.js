@@ -1,4 +1,7 @@
+import { ACTIVE_EDITION } from '@/common/constants';
+
 export const state = {
+  activeEdition: ACTIVE_EDITION.NONE,
   modal: {
     isOpen: false,
     data: {
