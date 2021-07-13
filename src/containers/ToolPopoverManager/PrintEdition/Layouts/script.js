@@ -35,7 +35,8 @@ import {
   usePopoverCreationTool,
   useLayoutPrompt,
   useDrawLayout,
-  useGetLayouts
+  useGetLayouts,
+  useFrame
 } from '@/hooks';
 
 import {
@@ -51,6 +52,7 @@ import { cloneDeep } from 'lodash';
 export default {
   setup({ edition }) {
     const { setToolNameSelected, selectedToolName } = usePopoverCreationTool();
+    const { frames, currentFrameId } = useFrame();
     const {
       updateVisited,
       setIsPrompt,
@@ -75,7 +77,9 @@ export default {
       getLayoutsByType,
       listLayouts,
       themeId,
-      updateSheetThemeLayout
+      updateSheetThemeLayout,
+      frames,
+      currentFrameId
     };
   },
   components: {
@@ -270,6 +274,7 @@ export default {
     setDisabledLayout(pageSelected) {
       this.disabled =
         this.initialData?.disabled ??
+        this.initialData?.isSupplemental ??
         [
           SHEET_TYPE.COVER,
           SHEET_TYPE.FRONT_COVER,
@@ -314,7 +319,18 @@ export default {
       if (this.layouts.length > 0) {
         this.tempLayoutIdSelected = this.layouts[0].id;
         this.layoutObjSelected = this.layouts[0];
-        const layoutId = this.pageSelected?.layoutId;
+
+        // if adding new frame, use the default setting above
+        if (this.initialData?.isAddNew) return;
+
+        const currentFrameObj = this.frames.find(
+          f => f.id === this.currentFrameId
+        );
+
+        const layoutId = this.initialData?.isSupplemental
+          ? currentFrameObj?.frame?.supplementalLayoutId
+          : this.pageSelected?.layoutId;
+
         if (layoutId) {
           const sheetLayoutObj = this.layouts.find(
             layout => layout.id === layoutId

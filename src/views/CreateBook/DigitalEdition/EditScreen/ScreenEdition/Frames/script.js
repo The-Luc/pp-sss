@@ -1,13 +1,24 @@
 import Draggable from 'vuedraggable';
 
 import EmptyFrame from './EmptyFrame';
+import FrameMenu from './FrameMenu';
 
-import { useFrameOrdering } from '@/hooks';
+import {
+  useFrameOrdering,
+  useFrame,
+  useFrameAdd,
+  useFrameDelete,
+  useModal
+} from '@/hooks';
+
+import { isEmpty } from '@/common/utils';
+import { MODAL_TYPES } from '@/common/constants';
 
 export default {
   components: {
-    Draggable,
-    EmptyFrame
+    EmptyFrame,
+    FrameMenu,
+    Draggable
   },
   props: {
     frames: {
@@ -23,6 +34,9 @@ export default {
   },
   data() {
     return {
+      isOpenMenu: false,
+      menuX: 0,
+      menuY: 0,
       drag: false,
       selectedIndex: -1,
       moveToIndex: -1,
@@ -30,9 +44,19 @@ export default {
     };
   },
   setup() {
+    const { toggleModal } = useModal();
     const { moveFrame } = useFrameOrdering();
+    const { setCurrentFrameId } = useFrame();
+    const { handleAddFrame } = useFrameAdd();
+    const { handleDeleteFrame } = useFrameDelete();
 
-    return { moveFrame };
+    return {
+      toggleModal,
+      moveFrame,
+      handleAddFrame,
+      handleDeleteFrame,
+      setCurrentFrameId
+    };
   },
   computed: {
     frameList() {
@@ -42,11 +66,15 @@ export default {
           frame: {
             image: '',
             type: null,
-            id: 0
+            id: 0,
+            fromLayout: true
           }
         }
       ];
+      // if there are no frame => render default one
+      if (isEmpty(this.frames)) return defaultData;
 
+      // if there are only supplemental frames => render a blank frame at 1st position
       const hasPackageFrame = this.frames.some(item => item?.frame?.fromLayout);
 
       return hasPackageFrame ? this.frames : [...defaultData, ...this.frames];
@@ -54,18 +82,82 @@ export default {
   },
   methods: {
     /**
-     * Fire when click add frame button
-     * @param {Object} event mouse event parameter when click element
+     * Fire when click on delete option of a frame
+     * @param {Number} id Id of the active frame which will be deleted
      */
-    addFrame(event) {
-      this.$emit('addFrame', event);
+    onDeleteFrame() {
+      this.handleDeleteFrame(this.activeFrameId);
+      this.onCloseMenu();
     },
+
     /**
-     * To emeit to parent component
+     * Fire when click on an frame
      * @param {Number} id Id of the clicked frame
      */
     onFrameClick(id) {
-      this.$emit('onFrameClick', id);
+      if (id === this.currentFrameId) return;
+
+      this.setCurrentFrameId({ id });
+    },
+    /**
+     * Fire when click add frame button
+     * @param {Element} target add frame button
+     */
+    addFrame({ target }) {
+      const { left, width } = target.getBoundingClientRect();
+      const centerX = left + width / 2;
+      this.toggleModal({
+        isOpenModal: true,
+        modalData: {
+          type: MODAL_TYPES.ADD_DIGITAL_FRAME,
+          props: {
+            centerX,
+            isAddNew: true
+          }
+        }
+      });
+    },
+    /**
+     * Fire when click add replace button
+     * @param {Element} target add frame button
+     */
+    onReplaceLayout() {
+      const target = this.$refs[`frame-${this.activeFrameId}`][0];
+
+      const { left, width } = target.getBoundingClientRect();
+      const centerX = left + width / 2;
+
+      this.toggleModal({
+        isOpenModal: true,
+        modalData: {
+          type: MODAL_TYPES.ADD_DIGITAL_FRAME,
+          props: {
+            centerX,
+            layoutId: this.activeFrameId
+          }
+        }
+      });
+
+      this.onCloseMenu();
+    },
+
+    /**
+     * To toggle the option menu of a frame
+     */
+    onOptionClick(event) {
+      this.isOpenMenu = true;
+
+      const element = event.target;
+      const { x, y } = element.getBoundingClientRect();
+      this.menuX = x - 195;
+      this.menuY = y - 205;
+    },
+
+    /**
+     * Close Menu popup
+     */
+    onCloseMenu() {
+      this.isOpenMenu = false;
     },
     /**
      * Fire when choose a frame

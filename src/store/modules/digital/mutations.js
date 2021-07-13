@@ -5,6 +5,7 @@ import { moveItem } from '@/common/utils';
 import { OBJECT_TYPE } from '@/common/constants';
 
 import DIGITAL from './const';
+import { isEmpty } from '@/common/utils';
 
 export const mutations = {
   [DIGITAL._MUTATES.SET_BOOK_ID](state, { bookId }) {
@@ -135,6 +136,14 @@ export const mutations = {
     state.sheets[state.currentSheetId].themeId = themeId;
     state.sheets[state.currentSheetId].thumbnailUrl = previewImageUrl;
   },
+  [DIGITAL._MUTATES.SET_SUPPLEMENTAL_LAYOUT_ID](
+    { frames, currentFrameId },
+    { id }
+  ) {
+    if (isEmpty(frames)) return;
+
+    frames[currentFrameId].supplementalLayoutId = id;
+  },
   [DIGITAL._MUTATES.REMOVE_OBJECTS](state, { currentPosition }) {
     Object.values(state.objects).forEach(obj => {
       if (obj.position === currentPosition) {
@@ -190,28 +199,29 @@ export const mutations = {
       state.frames[id] = frame;
     });
   },
+  [DIGITAL._MUTATES.REPLACE_SUPPLEMENTAL_FRAME](state, { frame, frameId }) {
+    if (isEmpty(frame) || !frameId) return;
+
+    state.frameIds = [...state.frameIds];
+
+    state.frames[frameId] = frame;
+  },
   [DIGITAL._MUTATES.REORDER_FRAME_IDS](state, { oldIndex, newIndex }) {
     const [id] = state.frameIds.splice(oldIndex, 1);
     state.frameIds.splice(newIndex, 0, id);
   },
-  [DIGITAL._MUTATES.DELETE_FRAMES](state, { ids }) {
-    ids.forEach(id => {
-      const index = state.frameIds.indexOf(id);
+  [DIGITAL._MUTATES.DELETE_FRAME](state, { id }) {
+    if (!id) return;
 
-      if (index >= 0) {
-        state.frameIds.splice(index, 1);
-      }
+    const index = state.frameIds.indexOf(id);
+    if (index >= 0) {
+      state.frameIds.splice(index, 1);
+    }
 
-      delete state.frames[id];
-    });
+    delete state.frames[id];
   },
   [DIGITAL._MUTATES.SET_CURRENT_FRAME_ID](state, { id }) {
     state.currentFrameId = id;
-  },
-  [DIGITAL._MUTATES.ADD_FRAME](state, { id, newFrame }) {
-    state.frameIds.push(id);
-
-    state.frames[id] = newFrame;
   },
   [DIGITAL._MUTATES.SET_CURRENT_FRAME_VISITED](
     { frames, currentFrameId },

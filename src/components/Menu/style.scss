@@ -17,6 +17,16 @@
     border-bottom: 13px solid #fff;
   }
 
+  &.point-down-menu::before {
+    top: initial;
+    bottom: -24px;
+    left: 67%;
+    border-bottom: initial;
+    border-top: 13px solid #fff;
+    border-left: 11px solid transparent;
+    border-right: 11px solid transparent;
+  }
+
   .v-list {
     border-radius: 4px;
     &-item {
