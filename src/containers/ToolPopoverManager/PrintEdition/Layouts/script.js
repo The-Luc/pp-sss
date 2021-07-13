@@ -103,10 +103,12 @@ export default {
   },
   data() {
     const isDigital = this.edition === EDITION.DIGITAL;
-
+    const layoutOption = LAYOUT_TYPES_OPTIONs.filter(
+      l => l.value !== LAYOUT_TYPES.SUPPLEMENTAL_LAYOUTS.value
+    );
     return {
       themesOptions: [],
-      layoutsOpts: LAYOUT_TYPES_OPTIONs,
+      layoutsOpts: layoutOption,
       disabled: false,
       layoutSelected: {},
       themeSelected: {},
@@ -379,12 +381,15 @@ export default {
           return;
         }
 
-        if (
-          this.layoutObjSelected.type === LAYOUT_TYPES.SINGLE_PAGE.value &&
-          ![SHEET_TYPE.FRONT_COVER, SHEET_TYPE.BACK_COVER].includes(
-            this.pageSelected?.type
-          )
-        ) {
+        const isSinglePage =
+          this.layoutObjSelected.type === LAYOUT_TYPES.SINGLE_PAGE.value;
+
+        const isFrontOrBackSheet = [
+          SHEET_TYPE.FRONT_COVER,
+          SHEET_TYPE.BACK_COVER
+        ].includes(this.pageSelected?.type);
+
+        if (!this.isDigital && !isFrontOrBackSheet && isSinglePage) {
           this.onCancel();
           this.toggleModal({
             isOpenModal: true,
