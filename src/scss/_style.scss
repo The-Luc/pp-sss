@@ -110,10 +110,6 @@ body,
     &:not(.item-selected):hover {
       background-color: $color-stoodio-blue;
 
-      &.primary--text {
-        color: $color-white !important; /* override lib */
-      }
-
       > .v-list-item__content {
         color: $color-white;
       }
@@ -145,6 +141,10 @@ body,
     .v-list {
       border-radius: 3px;
     }
+  }
+
+  .v-list-item--link:before {
+    display: none;
   }
 }
 

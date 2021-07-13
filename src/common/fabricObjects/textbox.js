@@ -21,7 +21,7 @@ import {
   toFabricTextBorderProp,
   toFabricTextGroupProp
 } from './common';
-import { useDoubleStroke, useTextRenderOverride } from '@/plugins/fabric';
+import { useDoubleStroke, useTextOverride } from '@/plugins/fabric';
 
 /**
  * Handle creating a TextBox into canvas
@@ -49,34 +49,32 @@ export const createTextBox = (x, y, width, height, textProperties) => {
   const text = new fabric.Textbox(newText.text, {
     ...textProp,
     id: dataObject.id,
-    left: 0,
-    top: 0,
-    width,
+    left: padding,
+    top: padding,
+    width: width - padding * 2,
     padding
   });
 
-  useTextRenderOverride(text);
+  useTextOverride(text);
 
   const {
     width: adjustedWidth,
     height: adjustedHeight
   } = getAdjustedObjectDimension(text, width, height);
 
-  textVerticalAlignOnAdjust(text, adjustedHeight);
-
   const borderProp = toFabricTextBorderProp(dataObject);
 
-  const strokeLineCap = getStrokeLineCap(borderProp.strokeLineType);
+  const strokeWidth = borderProp.strokeWidth || 0;
 
   const rect = new fabric.Rect({
     ...borderProp,
     type: OBJECT_TYPE.RECT,
     id: dataObject.id,
-    width: adjustedWidth,
-    height: adjustedHeight,
+    width: adjustedWidth - strokeWidth,
+    height: adjustedHeight - strokeWidth,
     left: 0,
     top: 0,
-    strokeLineCap,
+    strokeWidth,
     selectable: false
   });
 
@@ -95,57 +93,59 @@ export const createTextBox = (x, y, width, height, textProperties) => {
     isConstrain: text.isConstrain
   });
 
+  const rectStrokeData = getRectStroke(rect, {
+    ...borderProp,
+    width: adjustedWidth,
+    height: adjustedHeight
+  });
+  rect.set(rectStrokeData);
+
+  textAlignWithGroup(group);
+
   dataObject.newObject.size = {
     width: pxToIn(group.width),
     height: pxToIn(group.height)
   };
 
-  dataObject.newObject.minHeight = pxToIn(text.height);
-  dataObject.newObject.minWidth = pxToIn(text.getMinWidth());
+  const { minBoundingWidth, minBoundingHeight } = getTextSizeWithPadding(text);
+
+  dataObject.newObject.minWidth = pxToIn(minBoundingWidth);
+  dataObject.newObject.minHeight = pxToIn(minBoundingHeight);
 
   return { object: group, data: dataObject };
 };
 
 /**
- * To adjust Text Alignment in vertical dimension
- * @param {Object} text - the Fabric text object
- * @param {Number} rectHeight - the new rect height to align text
- */
-export const textVerticalAlignOnAdjust = function(text, rectHeight) {
-  if (text.height === rectHeight) return;
-
-  if (text.verticalAlign === TEXT_VERTICAL_ALIGN.MIDDLE) {
-    text.set({ top: text.top + (rectHeight - text.height) / 2 });
-  }
-
-  if (text.verticalAlign === TEXT_VERTICAL_ALIGN.BOTTOM) {
-    text.set({ top: text.top + (rectHeight - text.height) });
-  }
-};
-
-/**
- * To adjust Text Alignment in vertical dimension when user change Text Properties
+ * To adjust Text Alignment when user change Text Properties
  * @param {Object} text - the Fabric text object
  */
-const textVerticalAlignWithGroup = function(text) {
+const textAlignWithGroup = function(text) {
   if (!text.group) return;
+
+  const defaultTop = text.group.height * -0.5 + text.padding;
+  const defaultLeft = text.group.width * -0.5 + text.padding;
+
+  const { minBoundingHeight } = getTextSizeWithPadding(text);
 
   switch (text.verticalAlign) {
     case TEXT_VERTICAL_ALIGN.MIDDLE:
       text.set({
-        top: text.group.height * -0.5 + (text.group.height - text.height) / 2
+        left: defaultLeft,
+        top: defaultTop + (text.group.height - minBoundingHeight) / 2
       });
       break;
 
     case TEXT_VERTICAL_ALIGN.BOTTOM:
       text.set({
-        top: text.group.height * -0.5 + (text.group.height - text.height)
+        left: defaultLeft,
+        top: defaultTop + (text.group.height - minBoundingHeight)
       });
       break;
 
     default:
       text.set({
-        top: text.group.height * -0.5
+        left: defaultLeft,
+        top: defaultTop
       });
       break;
   }
@@ -187,7 +187,7 @@ const textVerticalAlignWithRect = function(text) {
  */
 export const textVerticalAlignOnApplyProperty = function(text) {
   if (text.group) {
-    textVerticalAlignWithGroup(text);
+    textAlignWithGroup(text);
   } else {
     textVerticalAlignWithRect(text);
   }
@@ -224,58 +224,73 @@ const applyTextProperties = function(text, prop) {
   const canvas = text.canvas;
 
   const textProp = toFabricTextProp(prop);
-  Object.keys(textProp).forEach(k => {
-    text.set(k, textProp[k]);
-  });
+  text.set(textProp);
 
-  const textString = text.get('text');
-  if (!isEmpty(prop['textCase']) && !isEmpty(textString)) {
-    if (prop['textCase'] === TEXT_CASE.NONE) {
-      text.set('text', textString);
+  updateTextSize(text, prop);
+
+  updateTextCase(text, prop);
+
+  const target = canvas.getActiveObject();
+  if (
+    !isEmpty(prop.fontSize) ||
+    !isEmpty(prop.style) ||
+    !isEmpty(prop.lineSpacing)
+  ) {
+    if (target.type === FABRIC_OBJECT_TYPE.TEXT) {
+      target.fire('changed');
+    } else {
+      updateTextBoxBaseOnNewTextSize(text);
+    }
+  }
+
+  if (prop.shadow) {
+    applyShadowToObject(text, prop.shadow);
+  }
+
+  textVerticalAlignOnApplyProperty(text);
+};
+
+const addPadding = (val, padding) => val + padding * 2;
+
+const updateTextSize = (text, prop) => {
+  if (!prop.size) return;
+
+  const newWidth = addPadding(prop.size.width, text.padding);
+  const newHeight = addPadding(prop.size.height, text.padding);
+  const { minBoundingWidth, minBoundingHeight } = getTextSizeWithPadding(text);
+
+  const sizeData = {};
+
+  sizeData.width = Math.max(newWidth, minBoundingWidth);
+  sizeData.height = Math.max(newHeight, minBoundingHeight);
+
+  text.set(sizeData);
+};
+
+const updateTextCase = (text, prop) => {
+  let textString = text.get('text');
+
+  if (!isEmpty(prop.textCase) && !isEmpty(textString)) {
+    if (prop.textCase === TEXT_CASE.UPPER) {
+      textString = textString.toUpperCase();
     }
 
-    if (prop['textCase'] === TEXT_CASE.UPPER) {
-      text.set('text', textString.toUpperCase());
+    if (prop.textCase === TEXT_CASE.LOWER) {
+      textString = textString.toLowerCase();
     }
 
-    if (prop['textCase'] === TEXT_CASE.LOWER) {
-      text.set('text', textString.toLowerCase());
-    }
-
-    if (prop['textCase'] === TEXT_CASE.CAPITALIZE) {
+    if (prop.textCase === TEXT_CASE.CAPITALIZE) {
       const changedText = textString.split('');
       for (let i = 0; i < changedText.length; i++) {
         changedText[i] = isEmpty(changedText[i - 1])
           ? changedText[i].toUpperCase()
           : changedText[i].toLowerCase();
       }
-      text.set('text', changedText.join(''));
+      textString = changedText.join('');
     }
-  }
 
-  const target = canvas.getActiveObject();
-  const propKeys = Object.keys(prop);
-  if (
-    new Set([...EFFECT_KEYS, ...propKeys]).size <
-    propKeys.length + EFFECT_KEYS.length
-  ) {
-    if (target.type !== FABRIC_OBJECT_TYPE.TEXT) {
-      updateTextBoxBaseOnNewTextSize(text);
-      updateObjectPosition(text, text.width, text.height);
-    } else {
-      target.fire('changed');
-    }
+    text.set({ text: textString });
   }
-
-  if (!isEmpty(prop['shadow'])) {
-    applyShadowToObject(text, prop['shadow']);
-  }
-
-  if (!isEmpty(textProp['width']) || !isEmpty(textProp['height'])) {
-    updateObjectPosition(text, textProp['width'], textProp['height']);
-  }
-
-  textVerticalAlignOnApplyProperty(text);
 };
 
 /**
@@ -284,8 +299,12 @@ const applyTextProperties = function(text, prop) {
  */
 const updateTextBoxBaseOnNewTextSize = function(textObject) {
   const [rect, text] = getObjectsFromTextBox(textObject);
-  updateObjectDimensionsIfSmaller(rect, text.width, text.height);
-  updateObjectDimensionsIfSmaller(text.group, text.width, text.height);
+  const {
+    minBoundingWidth: width,
+    minBoundingHeight: height
+  } = getTextSizeWithPadding(text);
+  updateObjectDimensionsIfSmaller(rect, width, height);
+  updateObjectDimensionsIfSmaller(text.group, width, height);
 };
 
 /**
@@ -307,21 +326,32 @@ export const updateObjectDimensionsIfSmaller = function(obj, width, height) {
 };
 
 /**
- * Update a Fabric Object position base on width, height
- * @param {Object} obj - the object to be update
- * @param {Number} width - the base width to calculate
- * @param {Number} height - the base height to calculate
+ * Get rect stroke data
+ * @param {fabric.Rect} rect - the rect to have stroke calculated
+ * @param {Object} borderProp - the prop to set for border
+ * @returns {Object} strokeData
  */
-const updateObjectPosition = function(obj, width, height) {
-  if (isEmpty(obj)) return;
-
-  if (width) {
-    obj.set({ left: -width / 2 });
+const getRectStroke = (rect, borderProp) => {
+  const { width, height } = borderProp;
+  const strokeLineType = borderProp.strokeLineType || rect.strokeLineType;
+  const strokeLineCap = getStrokeLineCap(strokeLineType);
+  let strokeWidth = rect.strokeWidth || 0;
+  if (!isEmpty(borderProp.strokeWidth)) {
+    strokeWidth = borderProp.strokeWidth;
   }
 
-  if (height) {
-    obj.set({ top: -height / 2 });
-  }
+  const rectWidth = width - strokeWidth;
+  const rectHeight = height - strokeWidth;
+
+  return {
+    top: height * -0.5,
+    left: width * -0.5,
+    height: rectHeight,
+    width: rectWidth,
+    strokeLineType,
+    strokeWidth,
+    strokeLineCap
+  };
 };
 
 /**
@@ -335,20 +365,8 @@ const applyTextRectProperties = function(rect, prop) {
   }
 
   const rectProp = toFabricTextBorderProp(prop);
-  const keyRect = Object.keys(rectProp);
 
-  if (
-    !isEmpty(rect.group) &&
-    (keyRect.includes('strokeWidth') || keyRect.includes('strokeLineType'))
-  ) {
-    const { strokeWidth } = rectProp;
-    const strokeWidthVal = strokeWidth || rect.strokeWidth;
-    rect.set({
-      ...rect,
-      width: rect.group.width - strokeWidthVal,
-      height: rect.group.height - strokeWidthVal
-    });
-  }
+  const keyRect = Object.keys(rectProp);
 
   Object.keys(rectProp).forEach(k => {
     if (EFFECT_KEYS.includes(k)) {
@@ -359,12 +377,18 @@ const applyTextRectProperties = function(rect, prop) {
     }
   });
 
-  if (!isEmpty(prop['shadow'])) {
-    applyShadowToObject(rect, prop['shadow']);
+
+  if (!isEmpty(rect.group)) {
+    const rectStrokeData = getRectStroke(rect, {
+      ...rectProp,
+      width: rect.group.width,
+      height: rect.group.height,
+    });
+    rect.set(rectStrokeData);
   }
 
-  if (!isEmpty(rectProp['width']) || !isEmpty(rectProp['height'])) {
-    updateObjectPosition(rect, rectProp['width'], rectProp['height']);
+  if (!prop.shadow) {
+    applyShadowToObject(rect, prop.shadow);
   }
 };
 
@@ -380,7 +404,7 @@ const applyTextGroupProperties = function(textGroup, prop) {
   const canvas = textGroup.canvas;
 
   // handle rotation case
-  if (prop?.coord?.rotation != undefined) {
+  if (!isEmpty(prop?.coord?.rotation)) {
     textGroup.rotate(prop.coord.rotation);
   }
 
@@ -407,10 +431,54 @@ export const applyTextBoxProperties = function(textObject, prop) {
     textObject?.canvas?.renderAll();
     return;
   }
+
+  if (!prop.border && !prop.size) {
+    applyTextRectProperties(rect, prop);
+  }
+
   applyTextProperties(text, prop);
   applyTextRectProperties(rect, prop);
 
-  textObject?.canvas?.renderAll();
+  if (!prop.border && !prop.size) {
+    textObject?.canvas?.renderAll();
+    return;
+  }
+
+  const { minBoundingWidth, minBoundingHeight } = getTextSizeWithPadding(text);
+
+  adjustGroupDimension(textObject, minBoundingWidth, minBoundingHeight);
+  applyTextRectProperties(rect, prop);
+
+  textVerticalAlignOnApplyProperty(text);
+
+  setTimeout(() => {
+    textObject?.canvas?.renderAll();
+  });
+};
+
+/**
+ * Update Group dimension base on width & height
+ * @param {fabric.Group} group - the fabric group to be updated
+ * @param {Number} width - the width value to update
+ * @param {Number} height - the height value to update
+ */
+const adjustGroupDimension = function(group, width, height) {
+  const groupWidth = Math.max(width, group.width);
+  const groupHeight = Math.max(height, group.height);
+
+  const size = {};
+
+  if (groupWidth !== group.width) {
+    size.width = pxToIn(groupWidth);
+  }
+
+  if (groupHeight !== group.height) {
+    size.height = pxToIn(groupHeight);
+  }
+
+  if (!isEmpty(size)) {
+    applyTextGroupProperties(group, { size });
+  }
 };
 
 /**
@@ -439,14 +507,64 @@ export const handleScalingText = (e, text) => {
     height: scaledHeight
   });
 
-  if (scaledWidth < text.getMinWidth()) {
-    text.set({ width: text.getMinWidth() });
-    target.set({ width: text.getMinWidth() });
+  const {
+    minWidth,
+    minBoundingWidth,
+    minBoundingHeight
+  } = getTextSizeWithPadding(text);
+
+  if (scaledWidth < minBoundingWidth) {
+    text.set({ width: minWidth });
+    target.set({ width: minBoundingWidth });
   }
 
-  if (scaledHeight < text.height) {
-    target.set({ height: text.height });
+  if (scaledHeight < minBoundingHeight) {
+    target.set({ height: minBoundingHeight });
   }
+};
+
+const getTextSizeWithPadding = text => {
+  const minWidth = text.getMinWidth();
+  const minBoundingWidth = minWidth + (text.padding || 0) * 2;
+
+  const minHeight = text.height;
+  const minBoundingHeight = minHeight + (text.padding || 0) * 2;
+
+  return { minWidth, minBoundingWidth, minHeight, minBoundingHeight };
+};
+
+/**
+ * Set new dimenssion for text after scaled
+ * @param {Object} target Text target
+ * @param {Element} rect Rect object
+ * @param {Element} text Text object
+ */
+export const setTextDimensionAfterScaled = (target, rect, text) => {
+  const padding = text.padding || DEFAULT_TEXT.PADDING;
+
+  text.set({
+    width: target.width - padding * 2
+  });
+
+  const {
+    width: adjustedWidth,
+    height: adjustedHeight
+  } = getAdjustedObjectDimension(text, target.width, target.height);
+
+  const rectStrokeData = getRectStroke(rect, {
+    width: adjustedWidth,
+    height: adjustedHeight
+  });
+  rect.set(rectStrokeData);
+
+  target.set({
+    width: adjustedWidth,
+    height: adjustedHeight
+  });
+
+  textAlignWithGroup(text);
+
+  target.canvas?.renderAll();
 };
 
 /**
