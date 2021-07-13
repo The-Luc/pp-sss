@@ -27,7 +27,8 @@ import {
   getLayoutOptSelectedById,
   resetObjects,
   activeCanvas,
-  isEmpty
+  isEmpty,
+  scrollToElement
 } from '@/common/utils';
 import {
   usePopoverCreationTool,
@@ -183,6 +184,8 @@ export default {
     this.isDigital ? await this.initDigitalData() : await this.initPrintData();
 
     this.initData();
+
+    this.autoScroll(this.pageSelected?.layoutId);
   },
   methods: {
     ...mapMutations({
@@ -508,6 +511,20 @@ export default {
       };
 
       return this.isDigital ? digitalText : printText;
+    },
+    /**
+     * Get layout refs by Id and handle auto scroll
+     *
+     * @param {Number} layoutId selected layout id
+     */
+    autoScroll(layoutId) {
+      setTimeout(() => {
+        const currentLayout = this.$refs[`layout${layoutId}`];
+
+        if (isEmpty(currentLayout)) return;
+
+        scrollToElement(currentLayout[0]?.$el, { block: 'center' });
+      }, 20);
     }
   }
 };
