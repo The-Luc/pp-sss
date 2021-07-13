@@ -83,7 +83,7 @@ export const createTextBox = (x, y, width, height, textProperties) => {
   text._rect = rect;
   rect._text = text;
 
-  const angle = textProperties?.coord?.rotation;
+  const angle = textProperties?.coord?.rotation || DEFAULT_TEXT.COORD.ROTATION;
   const group = new fabric.Group([rect, text], {
     id: dataObject.id,
     objectType: OBJECT_TYPE.TEXT,
