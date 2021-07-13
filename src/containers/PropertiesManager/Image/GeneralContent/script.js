@@ -5,7 +5,7 @@ import ImageStyle from './ImageStyle';
 import imagesStyle from '@/mock/imageStyle';
 import { DEFAULT_PROP } from '@/common/constants';
 import { SHADOW_OPTIONS } from '@/common/constants/shadow';
-import { BORDER_TYPE } from '@/common/constants/borderType';
+import { ImageElement } from '@/common/models';
 
 export default {
   components: {
@@ -16,7 +16,6 @@ export default {
   },
   data() {
     return {
-      borderOptions: BORDER_TYPE,
       selectedBorder: {},
       imagesStyle,
       styleSelected: null
@@ -81,7 +80,8 @@ export default {
     }
   },
   created() {
-    this.selectedBorder = this.borderOptions[0];
+    // TODO: update when implement logic
+    this.selectedBorder = { ...ImageElement.border };
     this.styleSelected = this.imagesStyle[0].id;
   }
 };

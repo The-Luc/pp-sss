@@ -6,13 +6,19 @@
       :selected-val="selectedBorder"
       @change="onChangeSelectedBorder"
     />
-    <div
-      v-if="selectedBorder.value === 'line'"
-      class="border-setting-container"
-    >
-      <BorderStyle @change="onChangeBorderStyle" />
-      <BorderColor />
-      <BorderThickness @change="onChangeThickness" />
+    <div v-if="showBorder" class="border-setting-container">
+      <BorderStyle
+        :selected-style="strokeLineType"
+        @change="onChangeBorderStyle"
+      />
+      <BorderColor
+        :selected-color="strokeColor"
+        @change="onChangeBorderColor"
+      />
+      <BorderThickness
+        :stroke-width="strokeWidth"
+        @change="onChangeThickness"
+      />
     </div>
   </div>
 </template>
