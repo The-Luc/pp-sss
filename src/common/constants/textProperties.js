@@ -74,3 +74,12 @@ export const BORDER_STYLE = [
     name: BORDER_STYLES.ROUGH_THIN
   }
 ];
+
+export const EFFECT_KEYS = [
+  'fontFamily',
+  'fontSize',
+  'isBold',
+  'textCase',
+  'isItalic',
+  'isUnderline'
+];

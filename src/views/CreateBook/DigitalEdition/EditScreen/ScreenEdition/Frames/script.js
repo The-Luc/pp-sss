@@ -11,9 +11,12 @@ import {
   useModal
 } from '@/hooks';
 
+<<<<<<< HEAD
 import { isEmpty } from '@/common/utils';
 import { MODAL_TYPES } from '@/common/constants';
 
+=======
+>>>>>>> 9649b395ffce17e4b54013bdb656ce49cad75185
 export default {
   components: {
     EmptyFrame,
@@ -75,10 +78,9 @@ export default {
       if (isEmpty(this.frames)) return defaultData;
 
       // if there are only supplemental frames => render a blank frame at 1st position
-      const hasTrueFrame = this.frames.some(f => f.frame.fromLayout);
-      if (!hasTrueFrame) return [...defaultData, ...this.frames];
+      const hasPackageFrame = this.frames.some(item => item?.frame?.fromLayout);
 
-      return this.frames;
+      return hasPackageFrame ? this.frames : [...defaultData, ...this.frames];
     }
   },
   methods: {
