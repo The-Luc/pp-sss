@@ -231,5 +231,8 @@ export const mutations = {
       ...state.sheets[state.currentSheetId].spreadInfo,
       ...spreadInfo
     };
+  },
+  [PRINT._MUTATES.SET_PAGE_EMPTY](state, { pageEmpty }) {
+    state.background[pageEmpty] = {};
   }
 };
