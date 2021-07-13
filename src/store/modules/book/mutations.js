@@ -51,9 +51,10 @@ const moveToSection = (
   );
 };
 
-const makeNewSection = (sections, sectionIndex) => {
+const makeNewSection = (printData, sections, sectionIndex) => {
   const newId = Math.max(...sections.map(s => nextId(s.sheets)), 1);
 
+  const { isNumberingOn } = printData.pageInfo;
   const totalSheets = sections[sectionIndex].sheets.length;
   const order =
     sectionIndex === sections.length - 1 ? totalSheets - 1 : totalSheets;
@@ -70,8 +71,8 @@ const makeNewSection = (sections, sectionIndex) => {
       spreadInfo: {
         leftTitle: '',
         rightTitle: '',
-        isLeftNumberOn: false,
-        isRightNumberOn: false
+        isLeftNumberOn: isNumberingOn,
+        isRightNumberOn: isNumberingOn
       }
     },
     digitalData: {
@@ -144,18 +145,23 @@ export const mutations = {
   },
   [BOOK._MUTATES.ADD_SHEET](state, payload) {
     const { sectionId } = payload;
-    const { totalPages, totalSheets, totalScreens, sections } = state.book;
-
+    const {
+      totalPages,
+      totalSheets,
+      totalScreens,
+      sections,
+      printData
+    } = state.book;
     let index = sections.findIndex(item => item.id === sectionId);
     if (index !== sections.length - 1) {
       sections[index].sheets = [
         ...sections[index].sheets,
-        makeNewSection(sections, index)
+        makeNewSection(printData, sections, index)
       ];
     } else {
       sections[index].sheets = [
         ...sections[index].sheets.slice(0, sections[index].sheets.length - 1),
-        makeNewSection(sections, index),
+        makeNewSection(printData, sections, index),
         ...sections[index].sheets.slice(sections[index].sheets.length - 1)
       ];
       sections[index].sheets[sections[index].sheets.length - 1].order += 1;

@@ -121,7 +121,7 @@ const printService = {
               layoutId: layout?.id || null,
               pageLeftName,
               pageRightName,
-              spreadInfo
+              spreadInfo: { ...spreadInfo }
             };
           });
 
@@ -201,10 +201,9 @@ const printService = {
   getPageInfo: bookId => {
     return new Promise(resolve => {
       const data = bookService.getBook(bookId).printData.pageInfo;
-
       const result = isEmpty(data)
         ? getErrorWithMessages([])
-        : getSuccessWithData(data);
+        : getSuccessWithData({ ...data });
 
       resolve(result);
     });

@@ -2,7 +2,7 @@ import book, { modifyBookData } from '@/mock/book';
 
 const bookService = {
   getBook: bookId => {
-    let res = book;
+    let res = { ...book };
     // Handle for QC test
     const [coverType, maxPage] = bookId.split('-');
     if (coverType && maxPage) {

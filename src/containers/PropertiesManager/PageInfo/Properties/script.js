@@ -1,7 +1,12 @@
 import PpCombobox from '@/components/Selectors/Combobox';
 import PpSelect from '@/components/Selectors/Select';
 import ColorPicker from '@/containers/ColorPicker';
-import { ICON_LOCAL, FONT_SIZE, FONT_FAMILY } from '@/common/constants';
+import {
+  ICON_LOCAL,
+  FONT_SIZE,
+  FONT_FAMILY,
+  DEFAULT_COLOR
+} from '@/common/constants';
 import {
   getValueInput,
   validateInputOption,
@@ -50,7 +55,7 @@ export default {
         : getSelectedOption(this.pageInfo.fontSize, 'pt');
     },
     color() {
-      return this.disabled ? '#FFFFF' : this.pageInfo.color;
+      return this.disabled ? DEFAULT_COLOR.DISABLED_COLOR : this.pageInfo.color;
     }
   },
   methods: {
