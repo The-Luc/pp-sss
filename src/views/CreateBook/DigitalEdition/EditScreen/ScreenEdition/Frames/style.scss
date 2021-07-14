@@ -5,6 +5,12 @@
     display: flex;
     flex-wrap: nowrap;
     overflow-x: auto;
+
+    &.actual {
+      flex-grow: 0;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
   }
 
   .frame-container {
