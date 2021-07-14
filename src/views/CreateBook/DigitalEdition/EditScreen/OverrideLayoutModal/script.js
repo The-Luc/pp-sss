@@ -9,8 +9,8 @@ import { useFrame, useFrameReplace } from '@/hooks';
 export default {
   setup() {
     const { handleReplaceFrame } = useFrameReplace();
-    const { currentFrameId } = useFrame();
-    return { handleReplaceFrame, currentFrameId };
+    const { currentFrameId, setSupplementalLayoutId } = useFrame();
+    return { handleReplaceFrame, currentFrameId, setSupplementalLayoutId };
   },
   components: {
     Modal,
@@ -41,6 +41,8 @@ export default {
         const frame = sheetData.layout?.frames[0] || [];
 
         this.handleReplaceFrame({ frame, frameId: this.currentFrameId });
+
+        this.setSupplementalLayoutId({ id: sheetData.layout.id });
         this.onCancel();
         return;
       }
