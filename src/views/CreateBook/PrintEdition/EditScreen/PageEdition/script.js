@@ -24,7 +24,8 @@ import {
   setBorderObject,
   setCanvasUniformScaling,
   setBorderHighLight,
-  setActiveCanvas
+  setActiveCanvas,
+  isNonElementPropSelected
 } from '@/common/utils';
 
 import {
@@ -1460,7 +1461,7 @@ export default {
             window.printCanvas.discardActiveObject().renderAll();
           }
 
-          if (this.propertiesObjectType === OBJECT_TYPE.BACKGROUND) {
+          if (isNonElementPropSelected(this.propertiesObjectType)) {
             this.setIsOpenProperties({ isOpen: false });
 
             this.setPropertiesObjectType({ type: '' });

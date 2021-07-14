@@ -1,16 +1,23 @@
-import { mapMutations, mapGetters } from 'vuex';
 import ToolButton from '@/components/Buttons/ToolButton';
 import ItemTool from './ItemTool';
-import { GETTERS, MUTATES } from '@/store/modules/app/const';
-import { GETTERS as BOOK_GETTERS } from '@/store/modules/book/const';
-import { GETTERS as DIGITAL_GETTERS } from '@/store/modules/digital/const';
+
+import { useLayoutPrompt, useToolBar } from '@/hooks';
+import {
+  isEmpty,
+  getRightToolItems,
+  isIntructionTool,
+  isElementTool,
+  isTogglePropertiesMenu,
+  getNonElementToolType
+} from '@/common/utils';
+
 import {
   OBJECT_TYPE,
   TOOL_NAME,
   EVENT_TYPE,
-  DIGITAL_RIGHT_TOOLS
+  DIGITAL_RIGHT_TOOLS,
+  EDITION
 } from '@/common/constants';
-import { isEmpty, getRightToolItems } from '@/common/utils';
 
 export default {
   props: {
@@ -132,55 +139,57 @@ export default {
       ]
     };
   },
-  computed: {
-    ...mapGetters({
-      selectedObjectType: GETTERS.SELECTED_OBJECT_TYPE,
-      isOpenMenuProperties: GETTERS.IS_OPEN_MENU_PROPERTIES,
-      selectedToolName: GETTERS.SELECTED_TOOL_NAME,
-      printThemeSelectedId: BOOK_GETTERS.PRINT_THEME_SELECTED_ID,
-      currentBackgrounds: DIGITAL_GETTERS.BACKGROUNDS,
-      propertiesObjectType: GETTERS.PROPERTIES_OBJECT_TYPE
-    })
+  setup() {
+    const { isPrompt } = useLayoutPrompt(EDITION.PRINT);
+    const {
+      themeId,
+      selectedObjectType,
+      propertiesType,
+      isMenuOpen,
+      selectedToolName,
+      setToolNameSelected,
+      togglePropertiesMenu
+    } = useToolBar(true);
+
+    return {
+      isPrompt,
+      themeId,
+      selectedObjectType,
+      propertiesType,
+      isMenuOpen,
+      selectedToolName,
+      setToolNameSelected,
+      togglePropertiesMenu
+    };
   },
   methods: {
-    ...mapMutations({
-      setObjectTypeSelected: MUTATES.SET_OBJECT_TYPE_SELECTED,
-      setIsOpenProperties: MUTATES.TOGGLE_MENU_PROPERTIES,
-      setToolNameSelected: MUTATES.SET_TOOL_NAME_SELECTED,
-      setPropertiesObjectType: MUTATES.SET_PROPERTIES_OBJECT_TYPE
-    }),
     /**
      * Detect click on item on right creation tool
      * @param  {Object} item Receive item information
      */
     onClickRightTool(item) {
-      if (item.name === DIGITAL_RIGHT_TOOLS.PROPERTIES.value) {
-        if (!this.selectedObjectType) {
-          return;
-        }
+      if (isEmpty(this.themeId)) return;
 
-        this.setIsOpenProperties({
-          isOpen: !this.isOpenMenuProperties
-        });
+      const isElementProp = isElementTool(item);
 
-        this.setObjectTypeSelected({
-          type: OBJECT_TYPE.TEXT
-        });
+      if (isElementProp && isEmpty(this.selectedObjectType)) return;
 
-        return;
+      if (isIntructionTool(this.selectedToolName)) {
+        this.$root.$emit(EVENT_TYPE.SWITCH_TOOL, '');
+        this.setToolNameSelected({ name: '' });
       }
 
-      if (item.name === DIGITAL_RIGHT_TOOLS.BACKGROUND.value) {
-        this.propertiesClick(OBJECT_TYPE.BACKGROUND);
+      const isToggle = isTogglePropertiesMenu(
+        item,
+        this.propertiesType,
+        isElementProp
+      );
 
-        return;
-      }
+      const propType = isElementProp
+        ? this.selectedObjectType
+        : getNonElementToolType(item?.name);
 
-      if (item.name === DIGITAL_RIGHT_TOOLS.FRAME_INFO.value) {
-        this.propertiesClick(DIGITAL_RIGHT_TOOLS.FRAME_INFO.value);
-
-        return;
-      }
+      this.togglePropertiesMenu(propType, isToggle ? !this.isMenuOpen : true);
     },
     /**
      * Detect click on item on left creattion tool
@@ -204,42 +213,6 @@ export default {
       if (data.name === TOOL_NAME.TEXT) {
         this.$root.$emit(EVENT_TYPE.DIGITAL_ADD_ELEMENT, OBJECT_TYPE.TEXT);
       }
-    },
-    /**
-     * Fire when click on Menu Properties button
-     */
-    propertiesClick(objectType) {
-      const isToggle =
-        isEmpty(this.propertiesObjectType) ||
-        this.propertiesObjectType === objectType;
-
-      isToggle
-        ? this.toggleObjectProperties(objectType)
-        : this.openObjectProperties(objectType);
-    },
-    /**
-     * Toggle object properties by using mutate
-     */
-    toggleObjectProperties(objectType) {
-      this.setPropertiesObjectType({
-        type: objectType
-      });
-
-      this.setIsOpenProperties({
-        isOpen: !this.isOpenMenuProperties
-      });
-    },
-    /**
-     * Open object properties by using mutate
-     */
-    openObjectProperties(objectType) {
-      this.setPropertiesObjectType({
-        type: objectType
-      });
-
-      this.setIsOpenProperties({
-        isOpen: true
-      });
     }
   }
 };

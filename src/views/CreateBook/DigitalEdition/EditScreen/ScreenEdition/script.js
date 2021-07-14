@@ -65,7 +65,8 @@ import {
   setActiveCanvas,
   setBorderHighLight,
   setBorderObject,
-  setCanvasUniformScaling
+  setCanvasUniformScaling,
+  isNonElementPropSelected
 } from '@/common/utils';
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
 import { GETTERS } from '@/store/modules/book/const';
@@ -364,7 +365,7 @@ export default {
         this.digitalCanvas?.renderAll();
       }
 
-      if (this.propertiesObjectType === OBJECT_TYPE.BACKGROUND) {
+      if (isNonElementPropSelected(this.propertiesObjectType)) {
         this.setIsOpenProperties({ isOpen: false });
 
         this.setPropertiesObjectType({ type: '' });

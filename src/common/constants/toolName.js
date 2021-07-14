@@ -1,3 +1,5 @@
+import { OBJECT_TYPE } from './objectType';
+
 export const TOOL_NAME = {
   PRINT_THEMES: 'PrintThemes',
   DIGITAL_THEMES: 'DigitalThemes',
@@ -21,38 +23,48 @@ export const ACTIONS = {
   GENERATE_PDF: 'generatePdf'
 };
 
-export const PRINT_RIGHT_TOOLS = {
-  PAGE_INFO: {
-    name: 'Page Info',
-    value: 'pageInfo',
-    iconName: 'list_alt'
-  },
+export const PROPERTIES_TOOLS = {
   BACKGROUND: {
+    id: 'background',
     name: 'Background',
-    value: 'background',
-    iconName: 'aspect_ratio'
+    iconName: 'aspect_ratio',
+    type: OBJECT_TYPE.BACKGROUND
   },
   PROPERTIES: {
+    id: 'properties',
     name: 'Properties',
-    value: 'properties',
     iconName: 'wysiwyg'
+  },
+  PAGE_INFO: {
+    id: 'pageInfo',
+    name: 'Page Info',
+    iconName: 'list_alt',
+    type: 'pageInfo'
+  },
+  FRAME_INFO: {
+    id: 'frameInfo',
+    name: 'Frame Info',
+    iconName: 'list_alt',
+    type: 'frameInfo'
   }
 };
 
-export const DIGITAL_RIGHT_TOOLS = {
-  FRAME_INFO: {
-    name: 'Frame Info',
-    value: 'frameInfo',
-    iconName: 'list_alt'
-  },
-  BACKGROUND: {
-    name: 'Background',
-    value: 'background',
-    iconName: 'aspect_ratio'
-  },
-  PROPERTIES: {
-    name: 'Properties',
-    value: 'properties',
-    iconName: 'wysiwyg'
-  }
-};
+export const PRINT_RIGHT_TOOLS = [
+  PROPERTIES_TOOLS.PAGE_INFO,
+  PROPERTIES_TOOLS.BACKGROUND,
+  PROPERTIES_TOOLS.PROPERTIES
+];
+
+export const DIGITAL_RIGHT_TOOLS = [
+  PROPERTIES_TOOLS.FRAME_INFO,
+  PROPERTIES_TOOLS.BACKGROUND,
+  PROPERTIES_TOOLS.PROPERTIES
+];
+
+export const INSTRUCTION_TOOLS = [TOOL_NAME.TEXT, TOOL_NAME.IMAGE_BOX];
+
+export const NON_ELEMENT_PROPERTIES_TOOLS = [
+  PROPERTIES_TOOLS.BACKGROUND,
+  PROPERTIES_TOOLS.PAGE_INFO,
+  PROPERTIES_TOOLS.FRAME_INFO
+];
