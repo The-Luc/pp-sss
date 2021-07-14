@@ -483,6 +483,7 @@ export default {
 
       // draw layout on canvas
       this.drawLayout(this.sheetLayout, this.edition);
+      this.$root.$emit('pageNumber');
     },
     /**
      * Trigger mutation set prompt false and update isVisited true for current sheet
