@@ -78,19 +78,12 @@ export const TextElement = {
   lineSpacing: DEFAULT_TEXT.LINE_SPACING, // 1.2 * em
   lineHeight: DEFAULT_TEXT.LINE_HEIGHT,
   column: DEFAULT_TEXT.COLUMN,
-  opacity: DEFAULT_TEXT.OPACITY,
   editingBorderColor: DEFAULT_TEXT.EDITING_BORDER_COLOR,
-  border: {
-    ...BaseElement.border
-  },
-  shadow: {
-    ...BaseElement.shadow
-  },
   isConstrain: DEFAULT_TEXT.IS_CONSTRAIN
 };
 
 export const ImageElement = {
-  ...BaseElement, // opacity, shadow, border, size
+  ...BaseElement, // opacity, shadow, border, size, flip
   type: OBJECT_TYPE.IMAGE,
   styleId: 0,
   imageUrl: '',
@@ -155,7 +148,7 @@ export const ShapeElement = {
   },
   name: '',
   thumbnail: '',
-  pathData: 'img.svg', // TODO: Need discuss with FM to get instruction on using shape
+  pathData: '', // TODO: Need discuss with FM to get instruction on using shape
   color: DEFAULT_PROP.COLOR,
   stroke: DEFAULT_PROP.COLOR,
   isConstrain: true
