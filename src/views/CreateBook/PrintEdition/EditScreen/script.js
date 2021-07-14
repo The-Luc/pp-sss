@@ -67,6 +67,7 @@ export default {
   },
   destroyed() {
     this.resetPrintConfigs();
+    this.setPropertiesObjectType({ type: '' });
   },
   methods: {
     ...mapActions({
@@ -112,7 +113,6 @@ export default {
         data: objs
       });
       this.$router.push(`/book/${this.bookId}/edit/print`);
-      this.setPropertiesObjectType({ type: '' });
     },
     /**
      * Fire when zoom is changed

@@ -201,9 +201,19 @@ export const deleteSelectedObjects = canvas => {
  * @param {Ref} targetCanvas - the canvas want to reset
  */
 export const resetObjects = targetCanvas => {
+  const objects = targetCanvas
+    .getObjects()
+    .filter(
+      obj =>
+        ![
+          PAGE_NUMBER_TYPE.LEFT_PAGE_NUMBER,
+          PAGE_NUMBER_TYPE.RIGHT_PAGE_NUMBER
+        ].includes(obj.objectType)
+    );
+
   targetCanvas
     .discardActiveObject()
-    .remove(...targetCanvas.getObjects())
+    .remove(...objects)
     .renderAll();
 };
 
