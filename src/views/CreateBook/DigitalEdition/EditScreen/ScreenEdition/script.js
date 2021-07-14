@@ -6,6 +6,7 @@ import AddBoxInstruction from '@/components/AddBoxInstruction';
 import Frames from './Frames';
 import { useDigitalOverrides } from '@/plugins/fabric';
 import {
+  ACTIVE_EDITION,
   ARRANGE_SEND,
   DEFAULT_CLIP_ART,
   DEFAULT_IMAGE,
@@ -27,11 +28,10 @@ import {
   handleScalingText,
   mappingElementProperties,
   startDrawBox,
-  toggleStroke,
   updateElement,
-  updateTextListeners,
   addDigitalBackground,
-  deleteObjectById
+  deleteObjectById,
+  enableTextEditMode
 } from '@/common/fabricObjects';
 import { createImage } from '@/common/fabricObjects';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
@@ -79,6 +79,7 @@ import {
   MAX_SUPPLEMENTAL_FRAMES,
   THUMBNAIL_IMAGE_QUALITY
 } from '@/common/constants/config';
+import { useAppCommon } from '@/hooks/common';
 
 const ELEMENTS = {
   [OBJECT_TYPE.TEXT]: 'a text box',
@@ -92,6 +93,7 @@ export default {
     Frames
   },
   setup() {
+    const { setActiveEdition } = useAppCommon();
     const { drawLayout } = useDrawLayout();
     const { setInfoBar, zoom } = useInfoBar();
     const { openPrompt } = useLayoutPrompt();
@@ -99,6 +101,7 @@ export default {
     const { frames, currentFrameId } = useFrame();
 
     return {
+      setActiveEdition,
       frames,
       currentFrameId,
       drawLayout,
@@ -564,7 +567,7 @@ export default {
         moved: this.handleMoved,
         scaling: e => handleScalingText(e, text),
         scaled: e => this.handleTextBoxScaled(e, rect, text, data),
-        mousedblclick: e => this.handleDbClickText(e, rect, text)
+        mousedblclick: ({ target }) => this.handleDbClickText(target)
       };
 
       object.on(events);
@@ -690,36 +693,12 @@ export default {
 
     /**
      * Event fire when user double click on Text area and allow user edit text as
-     * @param {Object} e Text event data
-     * @param {Element} rect Rect object
-     * @param {Element} text Text object
+     * @param {fabric.Object} group - Text Group element
      */
-    handleDbClickText(e, rect, text) {
-      const group = e.target;
-      const canvas = e.target.canvas;
-      if (isEmpty(canvas)) return;
-
-      const textForEditing = cloneDeep(text);
-      const rectForEditing = cloneDeep(rect);
-      const { flipX, flipY, angle, top, left } = cloneDeep(group);
-      const cachedData = { flipX, flipY, angle, top, left };
-
-      text.visible = false;
-      rect.visible = false;
-
-      group.addWithUpdate();
-
-      updateTextListeners(textForEditing, rectForEditing, group, cachedData);
-
-      canvas.add(rectForEditing);
-      canvas.add(textForEditing);
-
-      canvas.setActiveObject(textForEditing);
-
-      toggleStroke(rectForEditing, true);
-
-      textForEditing.enterEditing();
-      textForEditing.selectAll();
+    handleDbClickText(group) {
+      enableTextEditMode(group, prop => {
+        this.changeTextProperties(prop);
+      });
     },
 
     /**
@@ -1375,10 +1354,15 @@ export default {
       }
     }
   },
+  mounted() {
+    this.setActiveEdition(ACTIVE_EDITION.DIGITAL);
+  },
   beforeDestroy() {
     this.digitalCanvas = null;
 
     this.updateDigitalEventListeners(false);
     this.updateWindowEventListeners(false);
+
+    this.setActiveEdition(ACTIVE_EDITION.NONE);
   }
 };

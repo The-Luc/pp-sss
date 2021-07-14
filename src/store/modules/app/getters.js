@@ -1,7 +1,13 @@
+import { ACTIVE_EDITION } from '@/common/constants';
 import { isEmpty } from '@/common/utils';
 import APP from './const';
 
 export const getters = {
+  [APP._GETTERS.ACTIVE_EDITION]: ({ activeEdition }) => activeEdition,
+  [APP._GETTERS.IS_PRINT_ACTIVE]: ({ activeEdition }) =>
+    activeEdition === ACTIVE_EDITION.PRINT,
+  [APP._GETTERS.IS_DIGITAL_ACTIVE]: ({ activeEdition }) =>
+    activeEdition === ACTIVE_EDITION.DIGITAL,
   [APP._GETTERS.IS_OPEN_MODAL]: ({ modal: { isOpen } }) => isOpen,
   [APP._GETTERS.MODAL_DATA]: ({ modal: { data } }) => data,
   [APP._GETTERS.SECTION_SELECTED]: ({ sectionSelected }) => sectionSelected,

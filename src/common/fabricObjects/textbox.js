@@ -567,17 +567,23 @@ export const setTextDimensionAfterScaled = (target, rect, text) => {
  * @param {Object}  rectObject  Rect object data
  * @param {Object}  group  The group object contains text and rect object
  * @param {Object}  cachedData  Group's data is cached
+ * @param {Function} onCompleted - callback to execute when finish editting
  */
 export const updateTextListeners = (
   textObject,
   rectObject,
   group,
-  cachedData
+  cachedData,
+  onCompleted
 ) => {
   const canvas = group.canvas;
   const [rect, text] = group._objects;
 
+  let currentText = textObject.get('text');
+
   const onTextChanged = () => {
+    currentText = textObject.get('text');
+
     const { minBoundingWidth, minBoundingHeight } = getTextSizeWithPadding(
       textObject
     );
@@ -593,7 +599,11 @@ export const updateTextListeners = (
 
   const getNewData = obj => {
     return Object.keys(obj).reduce((rs, key) => {
-      if (!key.startsWith('_') && typeof obj[key] !== 'function') {
+      if (
+        key !== 'id' &&
+        !key.startsWith('_') &&
+        typeof obj[key] !== 'function'
+      ) {
         rs[key] = obj[key];
       }
       return rs;
@@ -612,14 +622,11 @@ export const updateTextListeners = (
     rectObject.group = null;
 
     const newTextData = { ...getNewData(textObject), ...newProperties };
-    const newRectData = {
-      ...getNewData(rectObject),
-      ...newProperties,
-      strokeWidth: 0
-    };
+    const newRectData = { ...getNewData(rectObject), ...newProperties };
 
-    text.set(newTextData);
+    // TODO: update rect data
     rect.set(newRectData);
+    text.set(newTextData);
 
     group.addWithUpdate();
 
@@ -630,9 +637,52 @@ export const updateTextListeners = (
     canvas.remove(rectObject);
 
     group.set(cachedData);
+
+    onCompleted && onCompleted({ text: currentText });
+
     canvas.renderAll();
   };
 
   textObject.on('changed', onTextChanged);
   textObject.on('editing:exited', onDoneEditText);
+};
+
+/**
+ * Event fire when user double click on Text area and allow user edit text as
+ * @param {fabric.Object} group - Text Group element
+ * @param {Function} onCompleted - callback to execute when finish editting
+ */
+export const enableTextEditMode = (group, onCompleted) => {
+  const canvas = group.canvas;
+  if (isEmpty(canvas)) return;
+
+  const [rect, text] = getObjectsFromTextBox(group);
+
+  const textForEditing = cloneDeep(text);
+  textForEditing.id = null;
+
+  const rectForEditing = cloneDeep(rect);
+  const { flipX, flipY, angle, top, left } = cloneDeep(group);
+  const cachedData = { flipX, flipY, angle, top, left };
+
+  text.visible = false;
+  rect.visible = false;
+
+  group.addWithUpdate();
+
+  updateTextListeners(
+    textForEditing,
+    rectForEditing,
+    group,
+    cachedData,
+    onCompleted
+  );
+
+  canvas.add(rectForEditing);
+  canvas.add(textForEditing);
+
+  canvas.setActiveObject(textForEditing);
+
+  textForEditing.enterEditing();
+  textForEditing.selectAll();
 };

@@ -1,8 +1,12 @@
 import { useGetters } from 'vuex-composition-helpers';
+import { GETTERS as APP_GETTERS } from '@/store/modules/app/const';
 import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 import { GETTERS as DIGITAL_GETTERS } from '@/store/modules/digital/const';
+import { useAppCommon } from './common';
 
-export const useObjectProperties = (isDigital = false) => {
+export const useObjectProperties = () => {
+  const { value: isDigital } = useAppCommon().isDigitalEdition;
+
   const GETTERS = isDigital ? DIGITAL_GETTERS : PRINT_GETTERS;
 
   const { currentObject, getPropOfCurrentObject } = useGetters({
@@ -29,15 +33,13 @@ export const useObjectProperties = (isDigital = false) => {
  * The hook to connect to store to get Text object's properties
  *  @return {Object} { triggerChange, getProperty }
  */
-export const useTextProperties = (isDigital = false) => {
-  const GETTERS = isDigital ? DIGITAL_GETTERS : PRINT_GETTERS;
-
+export const useTextProperties = () => {
   const { triggerChange } = useGetters({
-    triggerChange: GETTERS.TRIGGER_TEXT_CHANGE
+    triggerChange: APP_GETTERS.TRIGGER_TEXT_CHANGE
   });
 
   return {
-    ...useObjectProperties(isDigital),
+    ...useObjectProperties(),
     triggerChange
   };
 };

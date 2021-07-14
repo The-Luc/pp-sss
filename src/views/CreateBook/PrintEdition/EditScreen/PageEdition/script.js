@@ -5,7 +5,7 @@ import { cloneDeep, uniqueId, merge, debounce } from 'lodash';
 import { usePrintOverrides } from '@/plugins/fabric';
 
 import { useDrawLayout, useInfoBar } from '@/hooks';
-import { startDrawBox, toggleStroke } from '@/common/fabricObjects/drawingBox';
+import { startDrawBox } from '@/common/fabricObjects/drawingBox';
 
 import {
   isEmpty,
@@ -43,7 +43,7 @@ import {
   setTextDimensionAfterScaled,
   handleObjectBlur,
   handleScalingText,
-  updateTextListeners,
+  enableTextEditMode,
   createBackgroundFabricObject,
   updateSpecificProp,
   addPrintPageNumber,
@@ -73,7 +73,8 @@ import {
   COVER_TYPE,
   DEFAULT_CLIP_ART,
   FABRIC_OBJECT_TYPE,
-  DEFAULT_IMAGE
+  DEFAULT_IMAGE,
+  ACTIVE_EDITION
 } from '@/common/constants';
 import SizeWrapper from '@/components/SizeWrapper';
 import PrintCanvasLines from './PrintCanvasLines';
@@ -88,6 +89,7 @@ import {
 } from '@/common/constants/config';
 import { createImage } from '@/common/fabricObjects';
 import printService from '@/api/print';
+import { useAppCommon } from '@/hooks/common';
 
 export default {
   components: {
@@ -98,10 +100,11 @@ export default {
     YRuler
   },
   setup() {
+    const { setActiveEdition } = useAppCommon();
     const { drawLayout } = useDrawLayout();
     const { setInfoBar, zoom } = useInfoBar();
 
-    return { drawLayout, setInfoBar, zoom };
+    return { setActiveEdition, drawLayout, setInfoBar, zoom };
   },
   data() {
     return {
@@ -202,6 +205,8 @@ export default {
     window.addEventListener('paste', this.handlePaste);
 
     document.body.addEventListener('keyup', this.handleDeleteKey);
+
+    this.setActiveEdition(ACTIVE_EDITION.PRINT);
   },
   beforeDestroy() {
     window.removeEventListener('copy', this.handleCopy);
@@ -219,6 +224,8 @@ export default {
     this.eventHandling(false);
 
     this.setInfoBar({ x: 0, y: 0, w: 0, h: 0, zoom: 0 });
+
+    this.setActiveEdition(ACTIVE_EDITION.NONE);
   },
   methods: {
     ...mapActions({
@@ -277,7 +284,7 @@ export default {
         moved: this.handleMoved,
         scaling: e => handleScalingText(e, text),
         scaled: e => this.handleTextBoxScaled(e, rect, text, data),
-        mousedblclick: e => this.handleDbClickText(e, rect, text)
+        mousedblclick: ({ target }) => this.handleDbClickText(target)
       });
     },
 
@@ -823,46 +830,12 @@ export default {
     },
     /**
      * Event fire when user double click on Text area and allow user edit text as
-     * @param {Object} e Text event data
-     * @param {Element} rect Rect object
-     * @param {Element} text Text object
+     * @param {fabric.Object} group - Text Group element
      */
-    handleDbClickText(e, rect, text) {
-      const group = e.target;
-      const canvas = e.target.canvas;
-      if (isEmpty(canvas)) return;
-
-      const textForEditing = cloneDeep(text);
-      const rectForEditing = cloneDeep(rect);
-      const { flipX, flipY, angle, top, left } = cloneDeep(group);
-      const cachedData = { flipX, flipY, angle, top, left };
-
-      text.visible = false;
-      rect.visible = false;
-
-      group.addWithUpdate();
-
-      updateTextListeners(
-        textForEditing,
-        rectForEditing,
-        group,
-        cachedData,
-        text => {
-          this.changeTextProperties({
-            text
-          });
-        }
-      );
-
-      canvas.add(rectForEditing);
-      canvas.add(textForEditing);
-
-      canvas.setActiveObject(textForEditing);
-
-      toggleStroke(rectForEditing, true);
-
-      textForEditing.enterEditing();
-      textForEditing.selectAll();
+    handleDbClickText(group) {
+      enableTextEditMode(group, prop => {
+        this.changeTextProperties(prop);
+      });
     },
     /**
      * Event fire when user click on Text button on Toolbar to add new text on canvas
