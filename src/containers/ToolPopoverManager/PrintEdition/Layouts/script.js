@@ -188,7 +188,10 @@ export default {
 
     this.initData();
 
-    const currentFrameObj = this.frames.find(f => f.id === this.currentFrameId);
+    // if layout modal is used to add frame -> set currentFrameObjet = null
+    const currentFrameObj = this.modalData.props.isAddNew
+      ? null
+      : this.frames.find(f => f.id === this.currentFrameId);
 
     this.layoutId = this.initialData?.isSupplemental
       ? currentFrameObj?.frame?.supplementalLayoutId

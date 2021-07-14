@@ -202,21 +202,21 @@ const frames2 = [
     id: 1,
     fromLayout: true,
     objects: [backgrounds[3], text1, text2],
-    previewImageUrl: LAYOUT_THUMB_03,
+    previewImageUrl: LAYOUT_THUMB_04,
     isVisited: false
   },
   {
     id: 2,
     fromLayout: true,
     objects: [backgrounds[4], text2, shape1],
-    previewImageUrl: LAYOUT_THUMB_04,
+    previewImageUrl: LAYOUT_THUMB_05,
     isVisited: false
   },
   {
     id: 3,
     fromLayout: true,
     objects: [backgrounds[5], clipArt1, clipArt2],
-    previewImageUrl: LAYOUT_THUMB_05,
+    previewImageUrl: LAYOUT_THUMB_06,
     isVisited: false
   }
 ];
@@ -225,21 +225,21 @@ const supplementalFrames = [
     id: 11,
     fromLayout: false,
     objects: [backgrounds[5], text1, text2],
-    previewImageUrl: LAYOUT_THUMB_01,
+    previewImageUrl: LAYOUT_THUMB_06,
     isVisited: false
   },
   {
     id: 12,
     fromLayout: false,
     objects: [backgrounds[2], clipArt1],
-    previewImageUrl: LAYOUT_THUMB_05,
+    previewImageUrl: LAYOUT_THUMB_03,
     isVisited: false
   },
   {
     id: 13,
     fromLayout: false,
     objects: [backgrounds[4], text1, text2],
-    previewImageUrl: LAYOUT_THUMB_04,
+    previewImageUrl: LAYOUT_THUMB_05,
     isVisited: false
   },
   {
@@ -450,7 +450,7 @@ export const supplementalLayouts = [
     type: 'Supplemental',
     frames: [supplementalFrames[0]],
     isFavorites: false,
-    previewImageUrl: LAYOUT_THUMB_02,
+    previewImageUrl: LAYOUT_THUMB_06,
     themeId: 1
   },
   {
@@ -459,16 +459,16 @@ export const supplementalLayouts = [
     type: 'Supplemental',
     frames: [supplementalFrames[1]],
     isFavorites: false,
-    previewImageUrl: LAYOUT_THUMB_10,
+    previewImageUrl: LAYOUT_THUMB_03,
     themeId: 1
   },
   {
     id: 33,
     name: 'Confetti 3',
     type: 'Supplemental',
-    frames: [supplementalFrames[4]],
+    frames: [supplementalFrames[2]],
     isFavorites: false,
-    previewImageUrl: LAYOUT_THUMB_02,
+    previewImageUrl: LAYOUT_THUMB_05,
     themeId: 1
   },
   {
@@ -477,7 +477,7 @@ export const supplementalLayouts = [
     type: 'Supplemental',
     frames: [supplementalFrames[3]],
     isFavorites: false,
-    previewImageUrl: LAYOUT_THUMB_10,
+    previewImageUrl: LAYOUT_THUMB_02,
     themeId: 1
   },
   {
@@ -486,7 +486,7 @@ export const supplementalLayouts = [
     type: 'Supplemental',
     frames: [supplementalFrames[0]],
     isFavorites: false,
-    previewImageUrl: LAYOUT_THUMB_02,
+    previewImageUrl: LAYOUT_THUMB_06,
     themeId: 1
   },
   {
@@ -495,7 +495,7 @@ export const supplementalLayouts = [
     type: 'Supplemental',
     frames: [supplementalFrames[2]],
     isFavorites: false,
-    previewImageUrl: LAYOUT_THUMB_10,
+    previewImageUrl: LAYOUT_THUMB_05,
     themeId: 1
   },
   {
@@ -504,7 +504,7 @@ export const supplementalLayouts = [
     type: 'Supplemental',
     frames: [supplementalFrames[3]],
     isFavorites: false,
-    previewImageUrl: LAYOUT_THUMB_10,
+    previewImageUrl: LAYOUT_THUMB_02,
     themeId: 1
   },
   {
@@ -513,7 +513,7 @@ export const supplementalLayouts = [
     type: 'Supplemental',
     frames: [supplementalFrames[0]],
     isFavorites: false,
-    previewImageUrl: LAYOUT_THUMB_02,
+    previewImageUrl: LAYOUT_THUMB_06,
     themeId: 1
   }
 ];
