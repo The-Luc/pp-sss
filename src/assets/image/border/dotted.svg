@@ -1,0 +1,16 @@
+<svg width="200" height="10" xmlns="http://www.w3.org/2000/svg">
+  <g>
+    <line
+      stroke-dashoffset="8"
+      stroke-dasharray="0,16"
+      stroke-width="8"
+      stroke="#000"
+      stroke-linecap="round"
+      y1="5"
+      x1="0"
+      y2="5"
+      x2="200"
+      fill="none"
+    />
+  </g>
+</svg>

@@ -22,10 +22,9 @@ export default {
   },
   computed: {
     selectedThickness() {
-      const thicknessValue = this.strokeWidth || 1;
-      const selected = this.items.find(item => item.value === thicknessValue);
+      const selected = this.items.find(item => item.value === this.strokeWidth);
 
-      return getSelectedOption(selected || thicknessValue, 'pt');
+      return getSelectedOption(selected || this.strokeWidth, 'pt');
     }
   },
   methods: {
@@ -42,11 +41,10 @@ export default {
         this.items,
         'pt'
       );
-      if (!isValid) {
-        this.forceRenderComponent();
-      } else {
+      if (isValid) {
         this.$emit('change', value);
       }
+      this.forceRenderComponent();
     },
     /**
      * Trigger render component by increase component key
