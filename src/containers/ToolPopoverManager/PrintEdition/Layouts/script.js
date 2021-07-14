@@ -52,7 +52,7 @@ import { cloneDeep } from 'lodash';
 export default {
   setup({ edition }) {
     const { setToolNameSelected, selectedToolName } = usePopoverCreationTool();
-    const { frames } = useFrame();
+    const { frames, currentFrameId } = useFrame();
     const { modalData } = useModal();
     const {
       updateVisited,
@@ -82,7 +82,8 @@ export default {
       updateSheetThemeLayout,
       frames,
       currentFrame,
-      modalData
+      modalData,
+      currentFrameId
     };
   },
   components: {
@@ -109,6 +110,7 @@ export default {
       : LAYOUT_TYPES_OPTIONs.filter(
           l => l.value !== LAYOUT_TYPES.SUPPLEMENTAL_LAYOUTS.value
         );
+    const layoutId = null;
     return {
       themesOptions: [],
       layoutsOpts: layoutOption,
@@ -124,7 +126,8 @@ export default {
         title: '',
         optionTitle: ''
       },
-      isDigital
+      isDigital,
+      layoutId
     };
   },
   computed: {
@@ -185,7 +188,14 @@ export default {
 
     this.initData();
 
-    this.autoScroll(this.pageSelected?.layoutId);
+    // const layoutId = this.initialData.isSupplemental ?
+    const currentFrameObj = this.frames.find(f => f.id === this.currentFrameId);
+
+    this.layoutId = this.initialData?.isSupplemental
+      ? currentFrameObj?.frame?.supplementalLayoutId
+      : this.pageSelected?.layoutId;
+
+    this.autoScroll(this.layoutId);
   },
   methods: {
     ...mapMutations({
@@ -330,17 +340,9 @@ export default {
         // if adding new frame, use the default setting above
         if (this.initialData?.isAddNew) return;
 
-        const currentFrameObj = this.frames.find(
-          f => f.id === this.currentFrameId
-        );
-
-        const layoutId = this.initialData?.isSupplemental
-          ? currentFrameObj?.frame?.supplementalLayoutId
-          : this.pageSelected?.layoutId;
-
-        if (layoutId) {
+        if (this.layoutId) {
           const sheetLayoutObj = this.layouts.find(
-            layout => layout.id === layoutId
+            layout => layout.id === this.layoutId
           );
           if (sheetLayoutObj?.id) {
             this.tempLayoutIdSelected = sheetLayoutObj.id;
@@ -520,7 +522,9 @@ export default {
     autoScroll(layoutId) {
       setTimeout(() => {
         const currentLayout = this.$refs[`layout${layoutId}`];
-
+        console.log(this.$refs);
+        console.log('layout id');
+        console.log(layoutId);
         if (isEmpty(currentLayout)) return;
 
         scrollToElement(currentLayout[0]?.$el, { block: 'center' });
