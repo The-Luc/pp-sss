@@ -6,6 +6,10 @@
           v-for="(item, index) in itemsToolLeft"
           :key="index"
           :items="item"
+          :selected-tool-name="selectedToolName"
+          :is-menu-open="isMenuOpen"
+          :properties-type="propertiesType"
+          :is-prompt="isPrompt"
           @click="data => onClickLeftTool(data)"
         />
       </div>
@@ -14,6 +18,10 @@
           v-for="(item, index) in itemsToolRight"
           :key="index"
           :items="item"
+          :selected-tool-name="selectedToolName"
+          :is-menu-open="isMenuOpen"
+          :properties-type="propertiesType"
+          :is-prompt="isPrompt"
           @click="onClickRightTool"
         />
       </div>

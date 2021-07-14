@@ -5,7 +5,7 @@ import {
   MUTATES as DIGITAL_MUTATES
 } from '@/store/modules/digital/const';
 import { MUTATES } from '@/store/modules/app/const';
-import { DIGITAL_RIGHT_TOOLS } from '@/common/constants';
+import { PROPERTIES_TOOLS } from '@/common/constants';
 
 /**
  * Get and set common sate of frames
@@ -62,7 +62,7 @@ export const useFrameSwitching = () => {
 
     //open frame information panel
     if (!layout.isVisited) {
-      setPropertiesObjectType({ type: DIGITAL_RIGHT_TOOLS.FRAME_INFO.value });
+      setPropertiesObjectType({ type: PROPERTIES_TOOLS.FRAME_INFO.type });
       setIsOpenProperties({ isOpen: true });
       setCurrentFrameVisited({ value: true });
     } else {

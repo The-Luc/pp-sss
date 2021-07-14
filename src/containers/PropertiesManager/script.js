@@ -1,11 +1,7 @@
 import { mapGetters } from 'vuex';
 
 import { GETTERS } from '@/store/modules/app/const';
-import {
-  OBJECT_TYPE,
-  PRINT_RIGHT_TOOLS,
-  DIGITAL_RIGHT_TOOLS
-} from '@/common/constants';
+import { OBJECT_TYPE, PROPERTIES_TOOLS } from '@/common/constants';
 
 // Object component
 import TextProperties from '@/containers/PropertiesManager/Text';
@@ -18,8 +14,8 @@ import FrameInfo from '@/containers/PropertiesManager/FrameInfo';
 
 const { TEXT, IMAGE, CLIP_ART, BACKGROUND, SHAPE } = OBJECT_TYPE;
 
-const PAGE_INFO = PRINT_RIGHT_TOOLS.PAGE_INFO.value;
-const FRAME_INFO = DIGITAL_RIGHT_TOOLS.FRAME_INFO.value;
+const PAGE_INFO = PROPERTIES_TOOLS.PAGE_INFO.id;
+const FRAME_INFO = PROPERTIES_TOOLS.FRAME_INFO.id;
 
 const MenuList = {
   [TEXT]: TEXT,

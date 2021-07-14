@@ -1,24 +1,23 @@
-import { mapMutations, mapGetters } from 'vuex';
 import ToolButton from '@/components/Buttons/ToolButton';
 import ItemTool from './ItemTool';
-import { GETTERS, MUTATES } from '@/store/modules/app/const';
-import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
+
 import {
   TOOL_NAME,
   OBJECT_TYPE,
   PRINT_RIGHT_TOOLS,
   EDITION
 } from '@/common/constants';
-import { useLayoutPrompt } from '@/hooks';
-import { isEmpty, getRightToolItems } from '@/common/utils';
+import { useLayoutPrompt, useToolBar } from '@/hooks';
+import {
+  isEmpty,
+  getRightToolItems,
+  isIntructionTool,
+  isElementTool,
+  isTogglePropertiesMenu,
+  getNonElementToolType
+} from '@/common/utils';
 
 export default {
-  setup() {
-    const { isPrompt } = useLayoutPrompt(EDITION.PRINT);
-    return {
-      isPrompt
-    };
-  },
   props: {
     isDigitalEditor: {
       type: Boolean,
@@ -119,61 +118,64 @@ export default {
       itemsToolRight: [getRightToolItems(PRINT_RIGHT_TOOLS)]
     };
   },
-  computed: {
-    ...mapGetters({
-      selectedObjectType: GETTERS.SELECTED_OBJECT_TYPE,
-      isOpenMenuProperties: GETTERS.IS_OPEN_MENU_PROPERTIES,
-      selectedToolName: GETTERS.SELECTED_TOOL_NAME,
-      printThemeSelectedId: PRINT_GETTERS.DEFAULT_THEME_ID,
-      currentBackgrounds: PRINT_GETTERS.BACKGROUNDS,
-      propertiesObjectType: GETTERS.PROPERTIES_OBJECT_TYPE
-    })
+  setup() {
+    const { isPrompt } = useLayoutPrompt(EDITION.PRINT);
+    const {
+      themeId,
+      selectedObjectType,
+      propertiesType,
+      isMenuOpen,
+      selectedToolName,
+      setToolNameSelected,
+      togglePropertiesMenu
+    } = useToolBar();
+
+    return {
+      isPrompt,
+      themeId,
+      selectedObjectType,
+      propertiesType,
+      isMenuOpen,
+      selectedToolName,
+      setToolNameSelected,
+      togglePropertiesMenu
+    };
   },
   methods: {
-    ...mapMutations({
-      setObjectTypeSelected: MUTATES.SET_OBJECT_TYPE_SELECTED,
-      setIsOpenProperties: MUTATES.TOGGLE_MENU_PROPERTIES,
-      setToolNameSelected: MUTATES.SET_TOOL_NAME_SELECTED,
-      setPropertiesObjectType: MUTATES.SET_PROPERTIES_OBJECT_TYPE
-    }),
     /**
      * Detect click on item on right creation tool
      * @param  {Object} item Receive item information
      */
     onClickRightTool(item) {
-      if (!this.printThemeSelectedId) {
-        return;
+      if (isEmpty(this.themeId)) return;
+
+      const isElementProp = isElementTool(item);
+
+      if (isElementProp && isEmpty(this.selectedObjectType)) return;
+
+      if (isIntructionTool(this.selectedToolName)) {
+        this.$root.$emit('printSwitchTool', '');
+        this.setToolNameSelected({ name: '' });
       }
 
-      const toolName = this.selectedToolName === item?.name ? '' : item?.name;
-      this.$root.$emit('printSwitchTool', toolName);
+      const isToggle = isTogglePropertiesMenu(
+        item,
+        this.propertiesType,
+        isElementProp
+      );
 
-      if (item.name === PRINT_RIGHT_TOOLS.PROPERTIES.value) {
-        this.elementPropertiesClick();
+      const propType = isElementProp
+        ? this.selectedObjectType
+        : getNonElementToolType(item?.name);
 
-        return;
-      }
-
-      if (item.name === PRINT_RIGHT_TOOLS.BACKGROUND.value) {
-        this.noneElementPropertiesClick(OBJECT_TYPE.BACKGROUND);
-
-        return;
-      }
-
-      if (item.name === PRINT_RIGHT_TOOLS.PAGE_INFO.value) {
-        this.noneElementPropertiesClick(PRINT_RIGHT_TOOLS.PAGE_INFO.value);
-
-        return;
-      }
+      this.togglePropertiesMenu(propType, isToggle ? !this.isMenuOpen : true);
     },
     /**
      * Detect click on item on left creattion tool
      * @param  {Object} item Receive item information
      */
     onClickLeftTool(data) {
-      if (!this.printThemeSelectedId) {
-        return;
-      }
+      if (!this.themeId) return;
 
       const toolName = this.selectedToolName === data?.name ? '' : data?.name;
       this.$root.$emit('printSwitchTool', toolName);
@@ -230,63 +232,6 @@ export default {
      */
     deleteElements() {
       this.$root.$emit('printDeleteElements');
-    },
-    /**
-     * Fire when click on Properties button
-     */
-    elementPropertiesClick() {
-      if (!this.selectedObjectType) {
-        return;
-      }
-
-      const notElementProperties = [
-        OBJECT_TYPE.BACKGROUND,
-        PRINT_RIGHT_TOOLS.PAGE_INFO.value
-      ];
-
-      const isToggle = !notElementProperties.includes(
-        this.propertiesObjectType
-      );
-
-      isToggle
-        ? this.toggleObjectProperties(this.selectedObjectType)
-        : this.openObjectProperties(this.selectedObjectType);
-    },
-    /**
-     * Fire when click on Page Info button or Background Properties button
-     */
-    noneElementPropertiesClick(objectType) {
-      const isToggle =
-        isEmpty(this.propertiesObjectType) ||
-        this.propertiesObjectType === objectType;
-
-      isToggle
-        ? this.toggleObjectProperties(objectType)
-        : this.openObjectProperties(objectType);
-    },
-    /**
-     * Toggle object properties by using mutate
-     */
-    toggleObjectProperties(objectType) {
-      this.setPropertiesObjectType({
-        type: objectType
-      });
-
-      this.setIsOpenProperties({
-        isOpen: !this.isOpenMenuProperties
-      });
-    },
-    /**
-     * Open object properties by using mutate
-     */
-    openObjectProperties(objectType) {
-      this.setPropertiesObjectType({
-        type: objectType
-      });
-
-      this.setIsOpenProperties({
-        isOpen: true
-      });
     }
   }
 };
