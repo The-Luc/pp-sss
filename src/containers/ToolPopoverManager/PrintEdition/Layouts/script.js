@@ -336,6 +336,7 @@ export default {
     setLayoutActive() {
       if (this.layouts.length > 0) {
         this.tempLayoutIdSelected = this.layouts[0].id;
+        this.layoutObjSelected = this.layouts[0];
 
         // if adding new frame, use the default setting above
         if (this.initialData?.isAddNew) return;
