@@ -683,8 +683,6 @@ export const enableTextEditMode = (group, onCompleted) => {
 
   canvas.setActiveObject(textForEditing);
 
-  // toggleStroke(rectForEditing, true);
-
   textForEditing.enterEditing();
   textForEditing.selectAll();
 };
