@@ -75,6 +75,7 @@ export default {
       });
       resetObjects(window.printCanvas);
       this.drawLayout(this.sheetLayout);
+      this.$root.$emit('pageNumber');
       this.onCancel();
     },
     onCancel() {
