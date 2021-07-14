@@ -188,7 +188,6 @@ export default {
 
     this.initData();
 
-    // const layoutId = this.initialData.isSupplemental ?
     const currentFrameObj = this.frames.find(f => f.id === this.currentFrameId);
 
     this.layoutId = this.initialData?.isSupplemental
