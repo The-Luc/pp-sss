@@ -89,7 +89,8 @@ export const toFabricTextProp = prop => {
         name: 'verticalAlign'
       },
       letterSpacing: {
-        name: 'charSpacing'
+        name: 'charSpacing',
+        parse: value => scaleSize(value)
       },
       strokeWidth: {
         name: 'padding',
