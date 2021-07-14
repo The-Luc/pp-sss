@@ -522,9 +522,7 @@ export default {
     autoScroll(layoutId) {
       setTimeout(() => {
         const currentLayout = this.$refs[`layout${layoutId}`];
-        console.log(this.$refs);
-        console.log('layout id');
-        console.log(layoutId);
+
         if (isEmpty(currentLayout)) return;
 
         scrollToElement(currentLayout[0]?.$el, { block: 'center' });
