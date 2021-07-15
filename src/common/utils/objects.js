@@ -66,3 +66,18 @@ export const computedObjectSize = (
 
   return { ...oldSize, ...newSize, [dimensional]: dimensionalValue };
 };
+
+/**
+ * To create an object with new values as [prefix]/[value]
+ * @param {Object} obj - the object to be converted
+ * @param {String} prefix - the string to add before every obj's value
+ * @param {String} separator - Default: "/" - the separator to add between prefix and value
+ */
+export const prefixObjectValue = (obj, prefix, separator = '/') =>
+  Object.keys(obj).reduce(
+    (arr, key) => ({
+      ...arr,
+      [key]: [prefix, obj[key]].join(separator)
+    }),
+    {}
+  );

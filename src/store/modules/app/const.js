@@ -1,86 +1,80 @@
+import { BaseObject } from '@/common/models';
+import { prefixObjectValue } from '@/common/utils';
+
 export const MODULE_NAME = 'app';
 
-const _GETTERS = {
-  ACTIVE_EDITION: 'activeEdition',
-  IS_PRINT_ACTIVE: 'isPrintActive',
-  IS_DIGITAL_ACTIVE: 'isDigitalActive',
-  IS_OPEN_MODAL: 'isOpenModal',
-  MODAL_DATA: 'modalData',
-  SECTION_SELECTED: 'sectionSelected',
-  SELECTED_OBJECT_TYPE: 'selectedObjectType',
-  IS_OPEN_MENU_PROPERTIES: 'isOpenMenuProperties',
-  SELECTED_TOOL_NAME: 'selectedToolName',
-  COLOR_PICKER_PRESETS: 'colorPickerPresets',
-  IS_PROMPT: 'isPrompt',
-  HAS_ACTIVE_OBJECTS: 'hasActiveObjects',
-  PROPERTIES_OBJECT_TYPE: 'getPropertiesObjectType',
-  TAB_SELECTED_OBJECT_ID: 'getSelectedObjectIdForTab',
-  INFO_BAR: 'getInfoBar',
-  ZOOM: 'getZoom',
-  CURRENT_OBJECT: 'currentObject',
-  SELECT_PROP_CURRENT_OBJECT: 'getSpecificPropertyOfCurrentObject',
-  TRIGGER_TEXT_CHANGE: 'triggerTextChange'
-};
+class GetterClass extends BaseObject {
+  ACTIVE_EDITION = 'activeEdition';
+  IS_PRINT_ACTIVE = 'isPrintActive';
+  IS_DIGITAL_ACTIVE = 'isDigitalActive';
+  IS_OPEN_MODAL = 'isOpenModal';
+  MODAL_DATA = 'modalData';
+  SECTION_SELECTED = 'sectionSelected';
+  SELECTED_OBJECT_TYPE = 'selectedObjectType';
+  IS_OPEN_MENU_PROPERTIES = 'isOpenMenuProperties';
+  SELECTED_TOOL_NAME = 'selectedToolName';
+  COLOR_PICKER_PRESETS = 'colorPickerPresets';
+  IS_PROMPT = 'isPrompt';
+  HAS_ACTIVE_OBJECTS = 'hasActiveObjects';
+  PROPERTIES_OBJECT_TYPE = 'getPropertiesObjectType';
+  TAB_SELECTED_OBJECT_ID = 'getSelectedObjectIdForTab';
+  INFO_BAR = 'getInfoBar';
+  ZOOM = 'getZoom';
+  CURRENT_OBJECT = 'currentObject';
+  SELECT_PROP_CURRENT_OBJECT = 'getSpecificPropertyOfCurrentObject';
+  TRIGGER_TEXT_CHANGE = 'triggerTextChange';
 
-export const GETTERS = {
-  ACTIVE_EDITION: `${MODULE_NAME}/${_GETTERS.ACTIVE_EDITION}`,
-  IS_PRINT_ACTIVE: `${MODULE_NAME}/${_GETTERS.IS_PRINT_ACTIVE}`,
-  IS_DIGITAL_ACTIVE: `${MODULE_NAME}/${_GETTERS.IS_DIGITAL_ACTIVE}`,
-  IS_OPEN_MODAL: `${MODULE_NAME}/${_GETTERS.IS_OPEN_MODAL}`,
-  MODAL_DATA: `${MODULE_NAME}/${_GETTERS.MODAL_DATA}`,
-  SECTION_SELECTED: `${MODULE_NAME}/${_GETTERS.SECTION_SELECTED}`,
-  SELECTED_OBJECT_TYPE: `${MODULE_NAME}/${_GETTERS.SELECTED_OBJECT_TYPE}`,
-  IS_OPEN_MENU_PROPERTIES: `${MODULE_NAME}/${_GETTERS.IS_OPEN_MENU_PROPERTIES}`,
-  SELECTED_TOOL_NAME: `${MODULE_NAME}/${_GETTERS.SELECTED_TOOL_NAME}`,
-  COLOR_PICKER_PRESETS: `${MODULE_NAME}/${_GETTERS.COLOR_PICKER_PRESETS}`,
-  IS_PROMPT: `${MODULE_NAME}/${_GETTERS.IS_PROMPT}`,
-  HAS_ACTIVE_OBJECTS: `${MODULE_NAME}/${_GETTERS.HAS_ACTIVE_OBJECTS}`,
-  PROPERTIES_OBJECT_TYPE: `${MODULE_NAME}/${_GETTERS.PROPERTIES_OBJECT_TYPE}`,
-  TAB_SELECTED_OBJECT_ID: `${MODULE_NAME}/${_GETTERS.TAB_SELECTED_OBJECT_ID}`,
-  INFO_BAR: `${MODULE_NAME}/${_GETTERS.INFO_BAR}`,
-  ZOOM: `${MODULE_NAME}/${_GETTERS.ZOOM}`,
-  CURRENT_OBJECT: `${MODULE_NAME}/${_GETTERS.CURRENT_OBJECT}`,
-  SELECT_PROP_CURRENT_OBJECT: `${MODULE_NAME}/${_GETTERS.SELECT_PROP_CURRENT_OBJECT}`,
-  TRIGGER_TEXT_CHANGE: `${MODULE_NAME}/${_GETTERS.TRIGGER_TEXT_CHANGE}`
-};
+  constructor(props) {
+    super(props);
+    this._set(props);
+  }
+}
 
-const _ACTIONS = {};
+const _GETTERS = new GetterClass();
 
-export const ACTIONS = {};
+export const GETTERS = new GetterClass(
+  prefixObjectValue(_GETTERS, MODULE_NAME)
+);
 
-const _MUTATES = {
-  SET_ACTIVE_EDITION: 'setActiveEdition',
-  TOGGLE_MODAL: 'toggleModal',
-  SET_SELECTION_SELECTED: 'setSectionSelected',
-  SET_OBJECT_TYPE_SELECTED: 'setObjectTypeSelected',
-  TOGGLE_MENU_PROPERTIES: 'toggleMenuProperties',
-  RESET_PRINT_CONFIG: 'resetPrintConfig',
-  SET_TOOL_NAME_SELECTED: 'setToolNameSelected',
-  SET_COLOR_PICKER_PRESETS: 'setColorPickerPresets',
-  SET_IS_PROMPT: 'setIsPrompt',
-  TOGGLE_ACTIVE_OBJECTS: 'toggleActiveObjects',
-  SET_PROPERTIES_OBJECT_TYPE: 'setPropertiesObjectType',
-  SET_INFO_BAR: 'setInfoBarData',
-  SET_CURRENT_OBJECT: 'setCurrentObject',
-  UPDATE_TRIGGER_TEXT_CHANGE: 'triggerTextChange'
-};
+class ActionClass extends BaseObject {
+  constructor(props) {
+    super(props);
+    this._set(props);
+  }
+}
+const _ACTIONS = new ActionClass();
 
-export const MUTATES = {
-  SET_ACTIVE_EDITION: `${MODULE_NAME}/${_MUTATES.SET_ACTIVE_EDITION}`,
-  TOGGLE_MODAL: `${MODULE_NAME}/${_MUTATES.TOGGLE_MODAL}`,
-  SET_SELECTION_SELECTED: `${MODULE_NAME}/${_MUTATES.SET_SELECTION_SELECTED}`,
-  SET_OBJECT_TYPE_SELECTED: `${MODULE_NAME}/${_MUTATES.SET_OBJECT_TYPE_SELECTED}`,
-  TOGGLE_MENU_PROPERTIES: `${MODULE_NAME}/${_MUTATES.TOGGLE_MENU_PROPERTIES}`,
-  RESET_PRINT_CONFIG: `${MODULE_NAME}/${_MUTATES.RESET_PRINT_CONFIG}`,
-  SET_TOOL_NAME_SELECTED: `${MODULE_NAME}/${_MUTATES.SET_TOOL_NAME_SELECTED}`,
-  SET_COLOR_PICKER_PRESETS: `${MODULE_NAME}/${_MUTATES.SET_COLOR_PICKER_PRESETS}`,
-  SET_IS_PROMPT: `${MODULE_NAME}/${_MUTATES.SET_IS_PROMPT}`,
-  TOGGLE_ACTIVE_OBJECTS: `${MODULE_NAME}/${_MUTATES.TOGGLE_ACTIVE_OBJECTS}`,
-  SET_PROPERTIES_OBJECT_TYPE: `${MODULE_NAME}/${_MUTATES.SET_PROPERTIES_OBJECT_TYPE}`,
-  SET_INFO_BAR: `${MODULE_NAME}/${_MUTATES.SET_INFO_BAR}`,
-  SET_CURRENT_OBJECT: `${MODULE_NAME}/${_MUTATES.SET_CURRENT_OBJECT}`,
-  UPDATE_TRIGGER_TEXT_CHANGE: `${MODULE_NAME}/${_MUTATES.UPDATE_TRIGGER_TEXT_CHANGE}`
-};
+export const ACTIONS = new ActionClass(
+  prefixObjectValue(_ACTIONS, MODULE_NAME)
+);
+
+class MutationClass extends BaseObject {
+  SET_ACTIVE_EDITION = 'setActiveEdition';
+  TOGGLE_MODAL = 'toggleModal';
+  SET_SELECTION_SELECTED = 'setSectionSelected';
+  SET_OBJECT_TYPE_SELECTED = 'setObjectTypeSelected';
+  TOGGLE_MENU_PROPERTIES = 'toggleMenuProperties';
+  RESET_PRINT_CONFIG = 'resetPrintConfig';
+  SET_TOOL_NAME_SELECTED = 'setToolNameSelected';
+  SET_COLOR_PICKER_PRESETS = 'setColorPickerPresets';
+  SET_IS_PROMPT = 'setIsPrompt';
+  TOGGLE_ACTIVE_OBJECTS = 'toggleActiveObjects';
+  SET_PROPERTIES_OBJECT_TYPE = 'setPropertiesObjectType';
+  SET_INFO_BAR = 'setInfoBarData';
+  SET_CURRENT_OBJECT = 'setCurrentObject';
+  UPDATE_TRIGGER_TEXT_CHANGE = 'triggerTextChange';
+
+  constructor(props) {
+    super(props);
+    this._set(props);
+  }
+}
+
+const _MUTATES = new MutationClass();
+
+export const MUTATES = new MutationClass(
+  prefixObjectValue(_MUTATES, MODULE_NAME)
+);
 
 export default {
   _GETTERS,

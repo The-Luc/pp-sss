@@ -1,44 +1,59 @@
+import { BaseObject } from '@/common/models';
+import { prefixObjectValue } from '@/common/utils';
+
 export const MODULE_NAME = 'theme';
 
-const _GETTERS = {
-  GET_PRINT_THEMES: 'getPrintThemes',
-  GET_PRINT_LAYOUTS_BY_THEME_ID: 'getPrintLayouts',
-  GET_PRINT_LAYOUT_BY_TYPE: 'getPrintLayoutByType',
-  GET_DIGITAL_LAYOUT_BY_TYPE: 'getDigitalLayoutByType',
-  GET_DIGITAL_THEMES: 'getDigitalThemes',
-  GET_DIGITAL_LAYOUTS_BY_THEME_ID: 'getDigitalLayouts'
-};
+class GetterClass extends BaseObject {
+  GET_PRINT_THEMES = 'getPrintThemes';
+  GET_PRINT_LAYOUTS_BY_THEME_ID = 'getPrintLayouts';
+  GET_PRINT_LAYOUT_BY_TYPE = 'getPrintLayoutByType';
+  GET_DIGITAL_LAYOUT_BY_TYPE = 'getDigitalLayoutByType';
+  GET_DIGITAL_THEMES = 'getDigitalThemes';
+  GET_DIGITAL_LAYOUTS_BY_THEME_ID = 'getDigitalLayouts';
 
-export const GETTERS = {
-  GET_PRINT_THEMES: `${MODULE_NAME}/${_GETTERS.GET_PRINT_THEMES}`,
-  GET_PRINT_LAYOUTS_BY_THEME_ID: `${MODULE_NAME}/${_GETTERS.GET_PRINT_LAYOUTS_BY_THEME_ID}`,
-  GET_PRINT_LAYOUT_BY_TYPE: `${MODULE_NAME}/${_GETTERS.GET_PRINT_LAYOUT_BY_TYPE}`,
-  GET_DIGITAL_LAYOUT_BY_TYPE: `${MODULE_NAME}/${_GETTERS.GET_DIGITAL_LAYOUT_BY_TYPE}`,
-  GET_DIGITAL_THEMES: `${MODULE_NAME}/${_GETTERS.GET_DIGITAL_THEMES}`,
-  GET_DIGITAL_LAYOUTS_BY_THEME_ID: `${MODULE_NAME}/${_GETTERS.GET_DIGITAL_LAYOUTS_BY_THEME_ID}`
-};
+  constructor(props) {
+    super(props);
+    this._set(props);
+  }
+}
 
-const _ACTIONS = {
-  GET_PRINT_THEMES: 'getPrintThemes'
-};
+const _GETTERS = new GetterClass();
 
-export const ACTIONS = {
-  GET_PRINT_THEMES: `${MODULE_NAME}/${_ACTIONS.GET_PRINT_THEMES}`
-};
+export const GETTERS = new GetterClass(
+  prefixObjectValue(_GETTERS, MODULE_NAME)
+);
 
-const _MUTATES = {
-  PRINT_THEMES: 'printThemes',
-  PRINT_LAYOUTS: 'printLayouts',
-  DIGITAL_THEMES: 'digitalThemes',
-  DIGITAL_LAYOUTS: 'digitalLayouts'
-};
+class ActionClass extends BaseObject {
+  GET_PRINT_THEMES = 'getPrintThemes';
 
-export const MUTATES = {
-  PRINT_THEMES: `${MODULE_NAME}/${_MUTATES.PRINT_THEMES}`,
-  PRINT_LAYOUTS: `${MODULE_NAME}/${_MUTATES.PRINT_LAYOUTS}`,
-  DIGITAL_THEMES: `${MODULE_NAME}/${_MUTATES.DIGITAL_THEMES}`,
-  DIGITAL_LAYOUTS: `${MODULE_NAME}/${_MUTATES.DIGITAL_LAYOUTS}`
-};
+  constructor(props) {
+    super(props);
+    this._set(props);
+  }
+}
+const _ACTIONS = new ActionClass();
+
+export const ACTIONS = new ActionClass(
+  prefixObjectValue(_ACTIONS, MODULE_NAME)
+);
+
+class MutationClass extends BaseObject {
+  PRINT_THEMES = 'printThemes';
+  PRINT_LAYOUTS = 'printLayouts';
+  DIGITAL_THEMES = 'digitalThemes';
+  DIGITAL_LAYOUTS = 'digitalLayouts';
+
+  constructor(props) {
+    super(props);
+    this._set(props);
+  }
+}
+
+const _MUTATES = new MutationClass();
+
+export const MUTATES = new MutationClass(
+  prefixObjectValue(_MUTATES, MODULE_NAME)
+);
 
 export default {
   _GETTERS,

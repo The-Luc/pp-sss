@@ -1,21 +1,51 @@
+import { BaseObject } from '@/common/models';
+import { prefixObjectValue } from '@/common/utils';
+
 export const MODULE_NAME = 'auth';
 
-const _GETTERS = {};
+class GetterClass extends BaseObject {
+  constructor(props) {
+    super(props);
+    this._set(props);
+  }
+}
 
-const _ACTIONS = {
-  LOGIN: 'login',
-  LOGOUT: 'logout'
-};
+const _GETTERS = new GetterClass();
 
-export const ACTIONS = {
-  LOGIN: `${MODULE_NAME}/${_ACTIONS.LOGIN}`,
-  LOGOUT: `${MODULE_NAME}/${_ACTIONS.LOGOUT}`
-};
+export const GETTERS = new GetterClass(
+  prefixObjectValue(_GETTERS, MODULE_NAME)
+);
 
-const _MUTATES = {
-  LOGIN: 'login',
-  LOGOUT: 'logout'
-};
+class ActionClass extends BaseObject {
+  LOGIN = 'login';
+  LOGOUT = 'logout';
+
+  constructor(props) {
+    super(props);
+    this._set(props);
+  }
+}
+const _ACTIONS = new ActionClass();
+
+export const ACTIONS = new ActionClass(
+  prefixObjectValue(_ACTIONS, MODULE_NAME)
+);
+
+class MutationClass extends BaseObject {
+  LOGIN = 'login';
+  LOGOUT = 'logout';
+
+  constructor(props) {
+    super(props);
+    this._set(props);
+  }
+}
+
+const _MUTATES = new MutationClass();
+
+export const MUTATES = new MutationClass(
+  prefixObjectValue(_MUTATES, MODULE_NAME)
+);
 
 export default {
   _GETTERS,
