@@ -1304,6 +1304,9 @@ export default {
      */
     handleShowAddFrame(frames) {
       this.showAddFrame = frames.length < MAX_SUPPLEMENTAL_FRAMES;
+    },
+    addObjectToStore(newObject) {
+      this.addNewObject(newObject);
     }
   },
   watch: {
