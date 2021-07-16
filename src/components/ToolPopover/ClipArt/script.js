@@ -16,7 +16,7 @@ export default {
       required: true
     },
     chosenClipArtType: {
-      type: Number,
+      type: Object,
       required: true
     },
     clipArts: {
@@ -24,8 +24,8 @@ export default {
       required: true
     },
     selectedClipArtId: {
-      type: Number,
-      required: true
+      type: Array,
+      default: []
     }
   },
   methods: {
