@@ -1202,7 +1202,7 @@ export default {
             }
           }
         };
-        this.addObjectToStore(newClipArt);
+        this.addNewObject(newClipArt);
       });
 
       if (toBeAddedClipArts.length === 1) {
