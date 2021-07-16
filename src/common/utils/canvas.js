@@ -279,7 +279,7 @@ export const getCanvasColor = (canvas, e) => {
 
   ctx.putImageData(imageData, 0, 0);
 
-  return 'rgb(' + data[0] + ', ' + data[1] + ', ' + data[2] + ')';
+  return `rgba(${data[0]}, ${data[1]}, ${data[2]}, ${data[3] / 255})`;
 };
 
 /**
