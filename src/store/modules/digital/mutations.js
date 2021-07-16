@@ -217,10 +217,7 @@ export const mutations = {
   [DIGITAL._MUTATES.SET_CURRENT_FRAME_ID](state, { id }) {
     state.currentFrameId = id;
   },
-  [DIGITAL._MUTATES.SET_CURRENT_FRAME_VISITED](
-    { frames, currentFrameId },
-    { value }
-  ) {
+  [DIGITAL._MUTATES.SET_FRAME_VISITED]({ frames, currentFrameId }, { value }) {
     frames[currentFrameId].isVisited = value;
   },
   [DIGITAL._MUTATES.MOVE_FRAME](state, { moveToIndex, selectedIndex }) {

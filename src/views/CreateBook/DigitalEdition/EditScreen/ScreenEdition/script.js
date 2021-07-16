@@ -532,9 +532,9 @@ export default {
             if (this.awaitingAdd === OBJECT_TYPE.TEXT) {
               this.addText(left, top, width, height);
             }
-            // if (this.awaitingAdd === OBJECT_TYPE.IMAGE) {
-            //   this.addImageBox(left, top, width, height);
-            // }
+            if (this.awaitingAdd === OBJECT_TYPE.IMAGE) {
+              this.addImageBox(left, top, width, height);
+            }
             this.awaitingAdd = '';
           }
         );

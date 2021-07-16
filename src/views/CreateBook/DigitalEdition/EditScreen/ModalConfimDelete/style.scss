@@ -1,0 +1,35 @@
+.confirm-delete {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  font-family: $font-300;
+  .text {
+    font-size: 13px;
+    color: $color-gray16;
+    margin-bottom: 15px;
+    line-height: 1.5;
+  }
+
+  .btn-container {
+    display: flex;
+    column-gap: 10px;
+  }
+  .btn {
+    font-size: 11px;
+    color: $color-white;
+    background-color: $color-stoodio-blue;
+    border: 1px solid $color-stoodio-blue;
+    border-radius: 6px;
+    box-shadow: none;
+    padding-block: 5px;
+    width: 160px;
+
+    &-cancel {
+      color: $color-stoodio-blue;
+      border-color: $color-stoodio-blue;
+      background-color: $color-white;
+    }
+  }
+}

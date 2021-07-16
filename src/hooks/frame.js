@@ -6,6 +6,7 @@ import {
 } from '@/store/modules/digital/const';
 import { MUTATES } from '@/store/modules/app/const';
 import { PROPERTIES_TOOLS } from '@/common/constants';
+import { cloneDeep } from 'lodash';
 
 /**
  * Get and set common sate of frames
@@ -47,7 +48,7 @@ export const useFrameSwitching = () => {
   } = useMutations({
     setPropertiesObjectType: MUTATES.SET_PROPERTIES_OBJECT_TYPE,
     setIsOpenProperties: MUTATES.TOGGLE_MENU_PROPERTIES,
-    setCurrentFrameVisited: DIGITAL_MUTATES.SET_CURRENT_FRAME_VISITED
+    setCurrentFrameVisited: DIGITAL_MUTATES.SET_FRAME_VISITED
   });
 
   const { updateLayoutObjToStore } = useActions({
@@ -108,9 +109,16 @@ export const useFrameDelete = () => {
  * and set the active frame after replace
  */
 export const useFrameReplace = () => {
-  const { replaceFrame, triggerApplyLayout } = useMutations({
+  const {
+    replaceFrame,
+    triggerApplyLayout,
+    setPropertiesObjectType,
+    setIsOpenProperties
+  } = useMutations({
     replaceFrame: DIGITAL_MUTATES.REPLACE_SUPPLEMENTAL_FRAME,
-    triggerApplyLayout: DIGITAL_MUTATES.UPDATE_TRIGGER_APPLY_LAYOUT
+    triggerApplyLayout: DIGITAL_MUTATES.UPDATE_TRIGGER_APPLY_LAYOUT,
+    setPropertiesObjectType: MUTATES.SET_PROPERTIES_OBJECT_TYPE,
+    setIsOpenProperties: MUTATES.TOGGLE_MENU_PROPERTIES
   });
 
   const { updateLayoutObjToStore } = useActions({
@@ -118,10 +126,16 @@ export const useFrameReplace = () => {
   });
 
   const handleReplaceFrame = ({ frame, frameId }) => {
+    // set the current frame isVisted and open frame info panel
+    frame.isVisited = true;
+    setPropertiesObjectType({ type: PROPERTIES_TOOLS.FRAME_INFO.type });
+    setIsOpenProperties({ isOpen: true });
+
     replaceFrame({ frame, frameId });
 
     updateLayoutObjToStore({ layout: frame });
 
+    // to manually tell the canvas to update itselft because current frame id isn't changed
     triggerApplyLayout();
   };
 
@@ -143,7 +157,7 @@ export const useFrameAdd = () => {
   });
 
   const handleAddFrame = frames => {
-    addSupplementalFrame({ frames });
+    addSupplementalFrame({ frames: cloneDeep(frames) });
 
     const lastAddedFrame = framesInStore.value[framesInStore.value.length - 1];
     setCurrentFrameId({ id: lastAddedFrame.id });

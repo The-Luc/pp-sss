@@ -3,13 +3,7 @@ import Draggable from 'vuedraggable';
 import EmptyFrame from './EmptyFrame';
 import FrameMenu from './FrameMenu';
 
-import {
-  useFrameOrdering,
-  useFrame,
-  useFrameAdd,
-  useFrameDelete,
-  useModal
-} from '@/hooks';
+import { useFrameOrdering, useFrame, useFrameAdd, useModal } from '@/hooks';
 
 import { isEmpty } from '@/common/utils';
 import { MODAL_TYPES } from '@/common/constants';
@@ -48,13 +42,11 @@ export default {
     const { moveFrame } = useFrameOrdering();
     const { setCurrentFrameId } = useFrame();
     const { handleAddFrame } = useFrameAdd();
-    const { handleDeleteFrame } = useFrameDelete();
 
     return {
       toggleModal,
       moveFrame,
       handleAddFrame,
-      handleDeleteFrame,
       setCurrentFrameId
     };
   },
@@ -86,7 +78,15 @@ export default {
      * @param {Number} id Id of the active frame which will be deleted
      */
     onDeleteFrame() {
-      this.handleDeleteFrame(this.activeFrameId);
+      this.toggleModal({
+        isOpenModal: true,
+        modalData: {
+          type: MODAL_TYPES.DELETE_FRAME,
+          props: {
+            id: this.activeFrameId
+          }
+        }
+      });
       this.onCloseMenu();
     },
 

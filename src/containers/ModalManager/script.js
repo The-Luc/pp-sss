@@ -17,6 +17,7 @@ import ModalBackgroundSelectPage from '@/containers/ToolPopoverManager/PrintEdit
 import SelectThemeDigital from '@/views/CreateBook/DigitalEdition/EditScreen/ModalTheme';
 import AddDigitalFrame from '@/views/CreateBook/DigitalEdition/EditScreen/ModalLayout';
 import OverrideLayout from '@/views/CreateBook/DigitalEdition/EditScreen/OverrideLayoutModal';
+import DeleteFrame from '@/views/CreateBook/DigitalEdition/EditScreen/ModalConfimDelete';
 import ModalResetLayout from '@/views/CreateBook/PrintEdition/EditScreen/PageEdition/ModalResetLayout';
 
 const {
@@ -31,6 +32,7 @@ const {
   SELECT_THEME_DIGITAL,
   ADD_DIGITAL_FRAME,
   OVERRIDE_LAYOUT,
+  DELETE_FRAME,
   RESET_LAYOUT
 } = MODAL_TYPES;
 
@@ -46,6 +48,7 @@ const ModalList = {
   [SELECT_THEME_DIGITAL]: SELECT_THEME_DIGITAL,
   [ADD_DIGITAL_FRAME]: ADD_DIGITAL_FRAME,
   [OVERRIDE_LAYOUT]: OVERRIDE_LAYOUT,
+  [DELETE_FRAME]: DELETE_FRAME,
   [RESET_LAYOUT]: RESET_LAYOUT
 };
 
@@ -67,6 +70,7 @@ export default {
     [MODAL_TYPES.SELECT_THEME_DIGITAL]: SelectThemeDigital,
     [MODAL_TYPES.ADD_DIGITAL_FRAME]: AddDigitalFrame,
     [MODAL_TYPES.OVERRIDE_LAYOUT]: OverrideLayout,
+    [MODAL_TYPES.DELETE_FRAME]: DeleteFrame,
     [MODAL_TYPES.RESET_LAYOUT]: ModalResetLayout
   },
   computed: {
