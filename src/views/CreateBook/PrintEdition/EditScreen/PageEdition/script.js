@@ -248,9 +248,9 @@ export default {
       updateTriggerBackgroundChange:
         PRINT_MUTATES.UPDATE_TRIGGER_BACKGROUND_CHANGE,
       deleteObjects: PRINT_MUTATES.DELETE_OBJECTS,
-      updateTriggerShapeChange: PRINT_MUTATES.UPDATE_TRIGGER_SHAPE_CHANGE,
+      updateTriggerShapeChange: MUTATES.UPDATE_TRIGGER_SHAPE_CHANGE,
       setThumbnail: PRINT_MUTATES.UPDATE_SHEET_THUMBNAIL,
-      updateTriggerClipArtChange: PRINT_MUTATES.UPDATE_TRIGGER_CLIPART_CHANGE,
+      updateTriggerClipArtChange: MUTATES.UPDATE_TRIGGER_CLIPART_CHANGE,
       reorderObjectIds: PRINT_MUTATES.REORDER_OBJECT_IDS,
       toggleActiveObjects: MUTATES.TOGGLE_ACTIVE_OBJECTS,
       setPropertiesObjectType: MUTATES.SET_PROPERTIES_OBJECT_TYPE,

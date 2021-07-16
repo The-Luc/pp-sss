@@ -150,12 +150,6 @@ export const mutations = {
   [PRINT._MUTATES.UPDATE_TRIGGER_BACKGROUND_CHANGE](state) {
     state.triggerChange.background = !state.triggerChange.background;
   },
-  [PRINT._MUTATES.UPDATE_TRIGGER_CLIPART_CHANGE](state) {
-    state.triggerChange.clipArt = !state.triggerChange.clipArt;
-  },
-  [PRINT._MUTATES.UPDATE_TRIGGER_SHAPE_CHANGE](state) {
-    state.triggerChange.shape = !state.triggerChange.shape;
-  },
   [PRINT._MUTATES.UPDATE_SHEET_VISITED](state, { sheetId }) {
     const currentSheet = state.sheets[sheetId];
     currentSheet.isVisited = true;

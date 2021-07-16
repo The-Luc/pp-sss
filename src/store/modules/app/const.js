@@ -23,6 +23,8 @@ class GetterClass extends BaseObject {
   CURRENT_OBJECT = 'currentObject';
   SELECT_PROP_CURRENT_OBJECT = 'getSpecificPropertyOfCurrentObject';
   TRIGGER_TEXT_CHANGE = 'triggerTextChange';
+  TRIGGER_SHAPE_CHANGE = 'triggerShapeChange';
+  TRIGGER_CLIPART_CHANGE = 'triggerClipArtChange';
 
   constructor(props) {
     super(props);
@@ -63,6 +65,8 @@ class MutationClass extends BaseObject {
   SET_INFO_BAR = 'setInfoBarData';
   SET_CURRENT_OBJECT = 'setCurrentObject';
   UPDATE_TRIGGER_TEXT_CHANGE = 'triggerTextChange';
+  UPDATE_TRIGGER_SHAPE_CHANGE = 'triggerShapeChange';
+  UPDATE_TRIGGER_CLIPART_CHANGE = 'triggerClipArtChange';
 
   constructor(props) {
     super(props);

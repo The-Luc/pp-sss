@@ -40,10 +40,6 @@ export const getters = {
     triggerChange.text,
   [DIGITAL._GETTERS.TRIGGER_BACKGROUND_CHANGE]: ({ triggerChange }) =>
     triggerChange.background,
-  [DIGITAL._GETTERS.TRIGGER_CLIPART_CHANGE]: ({ triggerChange }) =>
-    triggerChange.clipArt,
-  [DIGITAL._GETTERS.TRIGGER_SHAPE_CHANGE]: ({ triggerChange }) =>
-    triggerChange.shape,
   [DIGITAL._GETTERS.TRIGGER_APPLY_LAYOUT]: ({ triggerChange }) =>
     triggerChange.applyLayout,
   [DIGITAL._GETTERS.GET_OBJECTS]: ({ objects }) => {

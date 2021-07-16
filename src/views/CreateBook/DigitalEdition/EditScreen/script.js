@@ -54,13 +54,17 @@ export default {
       }
     }
   },
+  destroyed() {
+    this.setPropertiesObjectType({ type: '' });
+  },
   methods: {
     ...mapActions({
       getDataPageEdit: DIGITAL_ACTIONS.GET_DATA_EDIT
     }),
     ...mapMutations({
       setBookId: DIGITAL_MUTATES.SET_BOOK_ID,
-      toggleModal: MUTATES.TOGGLE_MODAL
+      toggleModal: MUTATES.TOGGLE_MODAL,
+      setPropertiesObjectType: MUTATES.SET_PROPERTIES_OBJECT_TYPE
     }),
     /**
      * Check current sheet is first time visited or no to open prompt

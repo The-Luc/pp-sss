@@ -108,12 +108,6 @@ export const mutations = {
   [DIGITAL._MUTATES.UPDATE_TRIGGER_BACKGROUND_CHANGE](state) {
     state.triggerChange.background = !state.triggerChange.background;
   },
-  [DIGITAL._MUTATES.UPDATE_TRIGGER_CLIPART_CHANGE](state) {
-    state.triggerChange.clipArt = !state.triggerChange.clipArt;
-  },
-  [DIGITAL._MUTATES.UPDATE_TRIGGER_SHAPE_CHANGE](state) {
-    state.triggerChange.shape = !state.triggerChange.shape;
-  },
   [DIGITAL._MUTATES.UPDATE_TRIGGER_APPLY_LAYOUT](state) {
     state.triggerChange.applyLayout = !state.triggerChange.applyLayout;
   },

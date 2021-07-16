@@ -172,9 +172,9 @@ export default {
       updateTriggerBackgroundChange:
         DIGITAL_MUTATES.UPDATE_TRIGGER_BACKGROUND_CHANGE,
       deleteObjects: DIGITAL_MUTATES.DELETE_OBJECTS,
-      updateTriggerShapeChange: DIGITAL_MUTATES.UPDATE_TRIGGER_SHAPE_CHANGE,
+      updateTriggerShapeChange: MUTATES.UPDATE_TRIGGER_SHAPE_CHANGE,
       setThumbnail: DIGITAL_MUTATES.UPDATE_SHEET_THUMBNAIL,
-      updateTriggerClipArtChange: DIGITAL_MUTATES.UPDATE_TRIGGER_CLIPART_CHANGE,
+      updateTriggerClipArtChange: MUTATES.UPDATE_TRIGGER_CLIPART_CHANGE,
       reorderObjectIds: DIGITAL_MUTATES.REORDER_OBJECT_IDS,
       toggleActiveObjects: MUTATES.TOGGLE_ACTIVE_OBJECTS,
       setPropertiesObjectType: MUTATES.SET_PROPERTIES_OBJECT_TYPE,
@@ -480,12 +480,9 @@ export default {
       };
       this.setObjectProp({ prop });
       this.updateTriggerTextChange();
-      this.setCurrentObject(this.listObjects?.[target?.id]);
 
-      this.setInfoBar({
-        w: prop.size.width,
-        h: prop.size.height
-      });
+      this.setInfoBar({ w: prop.size.width, h: prop.size.height });
+      this.setCurrentObject(this.listObjects?.[target?.id]);
     },
 
     /**
@@ -1044,6 +1041,8 @@ export default {
 
       // update thumbnail
       this.getThumbnailUrl();
+
+      this.setCurrentObject(this.listObjects?.[element?.id]);
     },
     /**
      * get fired when you click 'send' button

@@ -72,8 +72,6 @@ class MutationClass extends BaseObject {
   DELETE_OBJECTS = 'deleteObjects';
   UPDATE_TRIGGER_TEXT_CHANGE = 'updateTriggerTextChange';
   UPDATE_TRIGGER_BACKGROUND_CHANGE = 'updateTriggerBackgroundChange';
-  UPDATE_TRIGGER_CLIPART_CHANGE = 'updateTriggerClipArtChange';
-  UPDATE_TRIGGER_SHAPE_CHANGE = 'updateTriggerShapeChange';
   UPDATE_TRIGGER_APPLY_LAYOUT = 'updateTriggerApplyLayout';
   UPDATE_SHEET_VISITED = 'updateSheetVisited';
   UPDATE_SHEET_THUMBNAIL = 'updateSheetThumbnail';

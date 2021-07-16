@@ -66,5 +66,11 @@ export const mutations = {
   },
   [APP._MUTATES.UPDATE_TRIGGER_TEXT_CHANGE](state) {
     state.triggerChange.text = !state.triggerChange.text;
+  },
+  [APP._MUTATES.UPDATE_TRIGGER_CLIPART_CHANGE](state) {
+    state.triggerChange.clipArt = !state.triggerChange.clipArt;
+  },
+  [APP._MUTATES.UPDATE_TRIGGER_SHAPE_CHANGE](state) {
+    state.triggerChange.shape = !state.triggerChange.shape;
   }
 };

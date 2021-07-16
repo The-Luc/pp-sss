@@ -46,7 +46,7 @@ export const useTextProperties = () => {
 
 export const useElementProperties = () => {
   const { getPropOfCurrentObject } = useGetters({
-    getPropOfCurrentObject: PRINT_GETTERS.SELECT_PROP_CURRENT_OBJECT
+    getPropOfCurrentObject: APP_GETTERS.SELECT_PROP_CURRENT_OBJECT
   });
   /**
    * The fuction to connect to store to getter object's properties
@@ -65,7 +65,7 @@ export const useElementProperties = () => {
 
 export const useShapeProperties = () => {
   const { triggerChange } = useGetters({
-    triggerChange: PRINT_GETTERS.TRIGGER_SHAPE_CHANGE
+    triggerChange: APP_GETTERS.TRIGGER_SHAPE_CHANGE
   });
 
   return {
@@ -76,7 +76,7 @@ export const useShapeProperties = () => {
 
 export const useClipArtProperties = () => {
   const { triggerChange } = useGetters({
-    triggerChange: PRINT_GETTERS.TRIGGER_CLIPART_CHANGE
+    triggerChange: APP_GETTERS.TRIGGER_CLIPART_CHANGE
   });
 
   return {

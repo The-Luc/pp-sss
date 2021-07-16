@@ -46,10 +46,6 @@ export const getters = {
     triggerChange.text,
   [PRINT._GETTERS.TRIGGER_BACKGROUND_CHANGE]: ({ triggerChange }) =>
     triggerChange.background,
-  [PRINT._GETTERS.TRIGGER_CLIPART_CHANGE]: ({ triggerChange }) =>
-    triggerChange.clipArt,
-  [PRINT._GETTERS.TRIGGER_SHAPE_CHANGE]: ({ triggerChange }) =>
-    triggerChange.shape,
   [PRINT._GETTERS.GET_OBJECTS]: ({ objects }) => {
     return objects;
   },
