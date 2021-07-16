@@ -50,10 +50,10 @@ export default {
     },
     /**
      * Emit change event to parent component
-     * @param {Number} data - the current clip art type to emit via event payload
+     * @param {Number} clipArtType - the current clip art type to emit via event payload
      */
-    onChangeClipArtType(data) {
-      this.$emit('onChangeClipArtType', data);
+    onChangeClipArtType(clipArtType) {
+      this.$emit('onChangeClipArtType', clipArtType);
     }
   }
 };

@@ -61,14 +61,14 @@ export default {
     },
     /**
      * Change clip art type when selected
-     * @param {Object} data - Clip art type and category selected
+     * @param {Object} clipArtType - Clip art type and category selected
      */
-    onChangeClipArtType(data) {
-      this.category = data.sub.value;
+    onChangeClipArtType(clipArtType) {
+      this.category = clipArtType.sub.value;
 
       this.chosenClipArtType = {
-        value: data.value,
-        sub: data.sub.value
+        value: clipArtType.value,
+        sub: clipArtType.sub.value
       };
 
       this.selectedClipArtId = [];
