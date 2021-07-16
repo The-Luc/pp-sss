@@ -1,19 +1,14 @@
 import { mapMutations } from 'vuex';
-import PpSelect from '@/components/Selectors/Select';
-import PpToolPopover from '@/components/ToolPopover';
+import ClipArtToolPopover from '@/components/ToolPopover/ClipArt';
 import { loadClipArts, loadClipArtCategories } from '@/api/clipArt';
-import Item from './Item';
-import ClipArtType from './ClipArtType';
 import { MUTATES as APP_MUTATES } from '@/store/modules/app/const';
 import { CLIP_ART_TYPE } from '@/common/constants';
 import { cloneDeep } from 'lodash';
 import { EVENT_TYPE } from '@/common/constants/eventType';
+
 export default {
   components: {
-    PpToolPopover,
-    PpSelect,
-    Item,
-    ClipArtType
+    ClipArtToolPopover
   },
   data() {
     return {
@@ -25,7 +20,7 @@ export default {
     };
   },
   computed: {
-    clipArt() {
+    clipArts() {
       return this.clipArtList.filter(item => item.category === this.category);
     }
   },

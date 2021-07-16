@@ -1202,7 +1202,7 @@ export default {
             }
           }
         };
-        this.addObjectToStore(newClipArt);
+        this.addNewObject(newClipArt);
       });
 
       if (toBeAddedClipArts.length === 1) {
@@ -1304,9 +1304,6 @@ export default {
      */
     handleShowAddFrame(frames) {
       this.showAddFrame = frames.length < MAX_SUPPLEMENTAL_FRAMES;
-    },
-    addObjectToStore(newObject) {
-      this.addNewObject(newObject);
     }
   },
   watch: {
