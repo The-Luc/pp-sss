@@ -1,14 +1,4 @@
-import PpToolPopover from '@/components/ToolPopover';
-
-import Item from './Item';
-
-import { mapGetters, mapMutations } from 'vuex';
-
-import { MUTATES as APP_MUTATES } from '@/store/modules/app/const';
-import { GETTERS as BOOK_GETTERS } from '@/store/modules/book/const';
-import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
-
-import { TOOL_NAME } from '@/common/constants';
+import ShapeToolPopover from '@/components/ToolPopover/Shape';
 
 import { usePopoverCreationTool } from '@/hooks';
 
@@ -16,12 +6,11 @@ import { cloneDeep } from 'lodash';
 import { isEmpty } from '@/common/utils';
 
 import { SHAPES } from '@/common/constants/shapes';
-import { EVENT_TYPE } from '@/common/constants/eventType';
+import { EVENT_TYPE } from '@/common/constants';
 
 export default {
   components: {
-    PpToolPopover,
-    Item
+    ShapeToolPopover
   },
   data() {
     return {
@@ -30,19 +19,12 @@ export default {
     };
   },
   setup() {
-    const { setToolNameSelected, selectedToolName } = usePopoverCreationTool();
-
+    const { setToolNameSelected } = usePopoverCreationTool();
     return {
-      selectedToolName,
       setToolNameSelected
     };
   },
   computed: {
-    ...mapGetters({
-      book: BOOK_GETTERS.BOOK_DETAIL,
-      sectionId: BOOK_GETTERS.SECTION_ID,
-      currentSheet: PRINT_GETTERS.CURRENT_SHEET
-    }),
     selectedShapes() {
       return this.chosenShapes;
     },
@@ -50,39 +32,23 @@ export default {
       return SHAPES;
     }
   },
-  watch: {
-    selectedToolName(val) {
-      if (val === TOOL_NAME.SHAPES) this.initData();
-    },
-    currentSheet: {
-      deep: true,
-      handler(newVal, oldVal) {
-        if (newVal.id !== oldVal.id) {
-          this.initData();
-        }
-      }
-    }
-  },
   mounted() {
     this.initData();
   },
   methods: {
-    ...mapMutations({
-      toggleModal: APP_MUTATES.TOGGLE_MODAL
-    }),
     /**
      * Set up inital data to render in view
      */
     initData() {
       this.chosenShapes = [];
     },
-    onSelectShape(data) {
-      const index = this.chosenShapes.findIndex(s => s.id === data.id);
+    onSelectShape(shape) {
+      const index = this.chosenShapes.findIndex(s => s.id === shape.id);
 
       if (index >= 0) {
         this.chosenShapes.splice(index, 1);
       } else {
-        this.chosenShapes.push(data);
+        this.chosenShapes.push(shape);
       }
     },
     /**

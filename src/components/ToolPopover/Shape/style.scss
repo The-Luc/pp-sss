@@ -1,4 +1,4 @@
-.shapes-container {
+.shapes-container::v-deep {
   &.empty-shape-container {
     font-size: 25px;
     width: 100%;
