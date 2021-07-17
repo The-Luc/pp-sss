@@ -1,6 +1,11 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 
+import { isEmpty } from '@/common/utils';
+
+import userService from '@/api/user';
+// import { getUsersApi } from '@/api/user';
+
 import store from '../store';
 import { MUTATES } from '@/store/modules/app/const';
 import { MODAL_TYPES, ROUTE_NAME } from '@/common/constants';
@@ -17,28 +22,55 @@ const DigitalMainScreen = () =>
 const DigitalEditScreen = () =>
   import('../views/CreateBook/DigitalEdition/EditScreen');
 const DigitalEdition = () => import('../views/CreateBook/DigitalEdition');
+const Login = () => import('@/views/TempLogin');
 
 Vue.use(VueRouter);
 
 const authGuard = {
-  beforeEnter: (to, _, next) => {
-    const redirect = () => {
-      next();
-      if (store.state.auth.token) {
-        if (to.path === '/login') {
-          next('/');
-        } else {
-          next();
-        }
-      } else {
-        next('/login');
+  beforeEnter: (to, from, next) => {
+    const redirect = async () => {
+      if (to.path === '/login') {
+        next('/');
+
+        return;
       }
+
+      if (!isEmpty(store.state.app.user.id)) {
+        next();
+
+        return;
+      }
+
+      const user = await userService.getCurrentUser();
+
+      const isUnauthenticated = isEmpty(user);
+      const isLoginPage = from?.name === 'login';
+
+      if (isUnauthenticated && isLoginPage) {
+        return;
+      }
+
+      if (isUnauthenticated) {
+        next('/login');
+
+        return;
+      }
+
+      store.commit(MUTATES.SET_USER, user);
+
+      next();
     };
+
     redirect();
   }
 };
 
 const routes = [
+  {
+    path: '/login',
+    name: 'login',
+    component: Login
+  },
   {
     path: '/',
     // TODO: remove once integrated with API
@@ -48,7 +80,8 @@ const routes = [
   {
     path: '/book/:bookId/edit/manager',
     name: ROUTE_NAME.MANAGER,
-    component: Manager
+    component: Manager,
+    ...authGuard
   },
   {
     path: '/book/:bookId/edit/print',
@@ -57,12 +90,14 @@ const routes = [
       {
         path: '/',
         name: ROUTE_NAME.PRINT,
-        component: PrintMainScreen
+        component: PrintMainScreen,
+        ...authGuard
       },
       {
         path: 'edit-screen',
         name: ROUTE_NAME.PRINT_EDIT,
-        component: PrintEditScreen
+        component: PrintEditScreen,
+        ...authGuard
       }
     ]
   },
@@ -73,12 +108,14 @@ const routes = [
       {
         path: '/',
         name: ROUTE_NAME.DIGITAL,
-        component: DigitalMainScreen
+        component: DigitalMainScreen,
+        ...authGuard
       },
       {
         path: 'edit-screen',
         name: ROUTE_NAME.DIGITAL_EDIT,
-        component: DigitalEditScreen
+        component: DigitalEditScreen,
+        ...authGuard
       }
     ]
   },

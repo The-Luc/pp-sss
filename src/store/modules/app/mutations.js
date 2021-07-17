@@ -67,6 +67,9 @@ export const mutations = {
   [APP._MUTATES.UPDATE_TRIGGER_TEXT_CHANGE](state) {
     state.triggerChange.text = !state.triggerChange.text;
   },
+  [APP._MUTATES.SET_USER](state, { id, role }) {
+    state.user = { id, role };
+  },
   [APP._MUTATES.UPDATE_TRIGGER_CLIPART_CHANGE](state) {
     state.triggerChange.clipArt = !state.triggerChange.clipArt;
   },

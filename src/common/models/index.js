@@ -8,3 +8,4 @@ export * from './canvasSize';
 export * from './dataResult';
 export * from './elements';
 export * from './background';
+export * from './user';

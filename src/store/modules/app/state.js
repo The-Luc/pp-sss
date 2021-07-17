@@ -44,5 +44,6 @@ export const state = {
     background: true,
     shape: true,
     clipArt: true
-  }
+  },
+  user: { id: null, role: null }
 };

@@ -33,6 +33,7 @@ export const getters = {
     return isEmpty(propValue) ? null : propValue;
   },
   [APP._GETTERS.TRIGGER_TEXT_CHANGE]: ({ triggerChange }) => triggerChange.text,
+  [APP._GETTERS.USER]: ({ user }) => user,
   [APP._GETTERS.TRIGGER_CLIPART_CHANGE]: ({ triggerChange }) =>
     triggerChange.clipArt,
   [APP._GETTERS.TRIGGER_SHAPE_CHANGE]: ({ triggerChange }) =>
