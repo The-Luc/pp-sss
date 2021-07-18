@@ -1,4 +1,4 @@
-import { BaseObject } from './base';
+import { BaseObject, BaseEntity } from './base';
 
 import { POSITION_FIXED, SHEET_TYPE } from '@/common/constants';
 
@@ -30,7 +30,19 @@ export class FrameInfo extends BaseObject {
   }
 }
 
-export class SheetEditionData extends BaseObject {
+export class SheetBase extends BaseEntity {
+  type = SHEET_TYPE.NORMAL;
+
+  /**
+   * @param {SheetBase} props
+   */
+  constructor(props) {
+    super(props);
+    this._set(props);
+  }
+}
+
+export class SheetEditionData extends SheetBase {
   themeId = null;
   layoutId = null;
   thumbnailUrl = null;
@@ -70,9 +82,7 @@ export class SheetDigitalData extends SheetEditionData {
   }
 }
 
-export class Sheet extends BaseObject {
-  id = null;
-  type = SHEET_TYPE.NORMAL;
+export class Sheet extends SheetBase {
   draggable = true;
   positionFixed = POSITION_FIXED.NONE;
 

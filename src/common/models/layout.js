@@ -1,7 +1,6 @@
 import { BaseObject } from './base';
 
 export class DefaultLayout extends BaseObject {
-  id = null;
   themeId = null;
   name = '';
   type = '';
