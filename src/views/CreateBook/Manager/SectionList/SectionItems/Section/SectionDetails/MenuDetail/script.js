@@ -12,7 +12,10 @@ export default {
   props: {
     sectionId: Number,
     sheetId: Number,
-    sections: Array
+    sections: {
+      type: Array,
+      default: () => []
+    }
   },
   methods: {
     onChangeMenuMove() {
