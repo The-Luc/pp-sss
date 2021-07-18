@@ -1,4 +1,20 @@
+import { isEmpty } from '@/common/utils';
+
+import books from '@/mock/books';
 import book, { modifyBookData } from '@/mock/book';
+
+/**
+ * Temporary code, will be removed when integrating with API
+ */
+export const storeBookInSessionStorage = () => {
+  const bookStorage = 'book-1719';
+
+  const book = window.sessionStorage.getItem(bookStorage);
+
+  if (isEmpty(book)) {
+    window.sessionStorage.setItem(bookStorage, JSON.stringify(books[1719]));
+  }
+};
 
 const bookService = {
   getBook: bookId => {

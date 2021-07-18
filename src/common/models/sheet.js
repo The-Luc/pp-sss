@@ -1,5 +1,4 @@
 import { BaseObject } from './base';
-import { DefaultLayout } from './layout';
 
 export class SpreadInfo extends BaseObject {
   leftTitle = '';
@@ -31,7 +30,7 @@ export class FrameInfo extends BaseObject {
 
 export class SheetEditionData extends BaseObject {
   themeId = null;
-  layout = new DefaultLayout();
+  layoutId = null;
   thumbnailUrl = null;
   link = '';
 

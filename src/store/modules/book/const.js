@@ -64,7 +64,10 @@ class MutationClass extends BaseObject {
   EDIT_SECTION_NAME = 'editSectionName';
   SELECT_THEME = 'selectTheme';
   SET_SECTION_ID = 'setSectionId';
-  SAVE_PRINT_CANVAS = 'savePrintCanvas';
+  SET_BOOK_ID = 'setBookId';
+  SET_BOOK = 'setBook';
+  SET_SECTIONS = 'setSections';
+  SET_SHEETS = 'setSheets';
 
   constructor(props) {
     super(props);

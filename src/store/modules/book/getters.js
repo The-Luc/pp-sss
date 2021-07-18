@@ -27,8 +27,8 @@ export const getters = {
   [BOOK._GETTERS.SECTIONS]: ({ book }) => {
     return book.sections;
   },
-  [BOOK._GETTERS.GET_TOTAL_SECTIONS]: ({ book }) => {
-    return book.sections.length;
+  [BOOK._GETTERS.GET_TOTAL_SECTIONS]: ({ sectionIds }) => {
+    return sectionIds.length;
   },
   [BOOK._GETTERS.GET_MAX_PAGE]: ({ book }) => {
     return book.numberMaxPages;

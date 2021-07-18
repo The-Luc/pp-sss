@@ -1,9 +1,19 @@
 import BOOK from './const';
-import bookService from '@/api/book';
+
+import managerService from '@/api/manager';
+
+import { isEmpty } from '@/common/utils';
 
 export const actions = {
-  [BOOK._ACTIONS.GET_BOOK]({ commit }, bookId) {
-    const res = bookService.getBook(bookId);
-    commit(BOOK._MUTATES.GET_BOOK_SUCCESS, res);
+  async [BOOK._ACTIONS.GET_BOOK]({ state, commit }) {
+    if (isEmpty(state.book.id)) return;
+
+    const { book, sectionIds, sections, sheets } = await managerService.getBook(
+      state.book.id
+    );
+
+    commit(BOOK._MUTATES.SET_BOOK, { book });
+    commit(BOOK._MUTATES.SET_SECTIONS, { sections, sectionIds });
+    commit(BOOK._MUTATES.SET_SHEETS, { sheets });
   }
 };

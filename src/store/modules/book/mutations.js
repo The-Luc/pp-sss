@@ -1,11 +1,18 @@
 import randomcolor from 'randomcolor';
 import moment from 'moment';
 
-import { SHEET_TYPE, DATE_FORMAT } from '@/common/constants';
+import {
+  setBookId,
+  setBook,
+  setSections,
+  setSheets
+} from '@/common/store/book';
+
 import { nextId, moveItem } from '@/common/utils';
 
 import BOOK from './const';
-import { POSITION_FIXED } from '@/common/constants';
+
+import { SHEET_TYPE, DATE_FORMAT, POSITION_FIXED } from '@/common/constants';
 
 const getIndexById = (items, id) => {
   return items.findIndex(s => s.id === id);
@@ -83,6 +90,10 @@ const makeNewSection = (printData, sections, sectionIndex) => {
 };
 
 export const mutations = {
+  [BOOK._MUTATES.SET_BOOK_ID]: setBookId,
+  [BOOK._MUTATES.SET_BOOK]: setBook,
+  [BOOK._MUTATES.SET_SECTIONS]: setSections,
+  [BOOK._MUTATES.SET_SHEETS]: setSheets,
   [BOOK._MUTATES.UPDATE_SECTIONS](state, payload) {
     const { sections } = payload;
 

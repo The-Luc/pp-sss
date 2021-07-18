@@ -454,3 +454,18 @@ export const moveItem = (item, currentIndex, moveToIndex, items) => {
 
   return _items;
 };
+
+/**
+ * Get display info
+ *
+ * @param   {String}  name        name of info
+ * @param   {String}  description description of info
+ * @returns {Object}              display info
+ */
+export const getDisplayInfo = (name, description, customClass) => {
+  return {
+    name: `${name}:`,
+    description: isEmpty(description) ? '' : description,
+    ...{ customClass }
+  };
+};

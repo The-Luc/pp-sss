@@ -10,6 +10,10 @@ import vuetify from './plugins/vuetity';
 import './plugins/fabric';
 import './scss/_index.scss';
 
+import { storeBookInSessionStorage } from '@/api/book';
+
+storeBookInSessionStorage();
+
 Vue.prototype.axios = axios;
 
 Vue.config.productionTip = false;

@@ -61,8 +61,6 @@ export class BookDetail extends BaseObject {
     min: 0,
     max: 0
   };
-  printData = new BookPrintData();
-  digitalData = new BookDigitalData();
 
   /**
    * @param {BookDetail} props
