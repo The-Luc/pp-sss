@@ -3,7 +3,7 @@ import { mapGetters } from 'vuex';
 import { SCREEN } from '@/common/constants/book';
 import PpButton from '@/components/Buttons/Button';
 import LineVertical from '../LineVertical';
-import { GETTERS } from '@/store/modules/book/const';
+import { GETTERS } from '@/store/modules/app/const';
 import { ROUTE_NAME } from '@/common/constants';
 
 export default {
@@ -25,13 +25,13 @@ export default {
   },
   computed: {
     ...mapGetters({
-      bookId: GETTERS.BOOK_ID
+      info: GETTERS.GENERAL_INFO
     })
   },
   methods: {
     onChangeView(newView, routeName) {
       if (this.$route.name !== routeName) {
-        this.$router.push(`/book/${this.bookId}${newView.toLowerCase()}`);
+        this.$router.push(`/book/${this.info.bookId}${newView.toLowerCase()}`);
       }
     }
   }

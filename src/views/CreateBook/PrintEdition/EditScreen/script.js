@@ -107,11 +107,11 @@ export default {
      * Save print canvas and change view
      */
     onClickSavePrintCanvas() {
-      const canvas = window.printCanvas;
+      /*const canvas = window.printCanvas;
       let objs = canvas.getObjects();
       this.savePrintCanvas({
         data: objs
-      });
+      });*/
       this.$router.push(`/book/${this.bookId}/edit/print`);
     },
     /**

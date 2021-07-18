@@ -9,16 +9,11 @@ export default {
     Summary
   },
   setup() {
-    const { setBookId, getBook } = useManager();
+    const { getBook } = useManager();
 
-    return {
-      setBookId,
-      getBook
-    };
+    return { getBook };
   },
   created() {
-    this.setBookId({ bookId: this.$route.params.bookId });
-
-    this.getBook();
+    this.getBook({ bookId: this.$route.params.bookId });
   }
 };

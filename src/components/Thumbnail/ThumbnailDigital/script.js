@@ -23,7 +23,6 @@ export default {
     }
   },
   created() {
-    this.image =
-      this.sheet.printData.thumbnailUrl || IMAGE_LOCAL.BACKGROUND_WHITE;
+    this.image = this.sheet.thumbnailUrl || IMAGE_LOCAL.BACKGROUND_WHITE;
   }
 };

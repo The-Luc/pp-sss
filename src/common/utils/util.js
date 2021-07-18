@@ -13,18 +13,6 @@ import { scaleSize } from './canvas';
 export let activeCanvas = null;
 
 /**
- * Get the next id of item list
- *
- * @param   {Array}   items list of item will get next id
- * @returns {Number}  the next id
- */
-export const nextId = items => {
-  const maxId = Math.max(...items.map(e => e.id), 0);
-
-  return maxId + 1;
-};
-
-/**
  * Get total different time (base on compare type) between 2 dates (included beginning)
  *
  * @param   {String}  beginDate (in format 'MM/DD/YY')

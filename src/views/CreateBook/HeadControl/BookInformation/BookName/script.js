@@ -1,25 +1,22 @@
 import { useGetters, useMutations } from 'vuex-composition-helpers';
 
-import { useBook, useUpdateTitle } from '@/hooks';
-import { GETTERS, MUTATES } from '@/store/modules/book/const';
+import {
+  GETTERS as APP_GETTERS,
+  MUTATES as APP_MUTATES
+} from '@/store/modules/app/const';
 
 export default {
   setup() {
-    const { getBook, book } = useBook();
-    const { updateTitle } = useUpdateTitle();
-    const { bookId } = useGetters({
-      bookId: GETTERS.BOOK_ID
+    const { info } = useGetters({
+      info: APP_GETTERS.GENERAL_INFO
     });
-    const { mutateBook } = useMutations({
-      mutateBook: MUTATES.GET_BOOK_SUCCESS
+    const { setInfo } = useMutations({
+      setInfo: APP_MUTATES.SET_GENERAL_INFO
     });
 
     return {
-      book,
-      bookId,
-      getBook,
-      mutateBook,
-      updateTitle
+      info,
+      setInfo
     };
   },
   data() {
@@ -30,17 +27,17 @@ export default {
     };
   },
   watch: {
-    book: {
+    info: {
       deep: true,
-      handler(book) {
-        this.rootTitle = book.title;
-        this.title = book.title;
+      handler(info) {
+        this.rootTitle = info.title;
+        this.title = info.title;
       }
     }
   },
   mounted() {
-    this.title = this.book.title;
-    this.rootTitle = this.book.title;
+    this.title = this.info.title;
+    this.rootTitle = this.info.title;
   },
   methods: {
     onCancel() {
@@ -59,14 +56,8 @@ export default {
         this.isCancel = false;
         return;
       }
-      const { data, isSuccess } = await this.updateTitle(
-        this.bookId,
-        this.title.trim()
-      );
-      if (isSuccess) {
-        this.title = data.trim();
-        this.book.title = data.trim();
-      }
+
+      this.setInfo({ ...this.info, title: this.title });
     }
   }
 };

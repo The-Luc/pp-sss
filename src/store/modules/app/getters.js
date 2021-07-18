@@ -37,5 +37,6 @@ export const getters = {
   [APP._GETTERS.TRIGGER_CLIPART_CHANGE]: ({ triggerChange }) =>
     triggerChange.clipArt,
   [APP._GETTERS.TRIGGER_SHAPE_CHANGE]: ({ triggerChange }) =>
-    triggerChange.shape
+    triggerChange.shape,
+  [APP._GETTERS.GENERAL_INFO]: ({ generalInfo }) => generalInfo
 };

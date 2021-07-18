@@ -2,7 +2,7 @@ import { mapGetters } from 'vuex';
 import { BOOK_NUMBER_TYPE, SCREEN } from '@/common/constants/book';
 import Number from './Number';
 import LineVertical from '../LineVertical';
-import { GETTERS as BOOK_GETTERS } from '@/store/modules/book/const';
+import { GETTERS as APP_GETTERS } from '@/store/modules/app/const';
 export default {
   components: {
     Number,
@@ -17,7 +17,7 @@ export default {
   },
   computed: {
     ...mapGetters({
-      getTotalInfo: BOOK_GETTERS.GET_TOTAL_INFO
+      info: APP_GETTERS.GENERAL_INFO
     })
   },
   watch: {

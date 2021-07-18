@@ -1,5 +1,7 @@
 import { BaseObject } from './base';
 
+import { POSITION_FIXED, SHEET_TYPE } from '@/common/constants';
+
 export class SpreadInfo extends BaseObject {
   leftTitle = '';
   rightTitle = '';
@@ -33,6 +35,7 @@ export class SheetEditionData extends BaseObject {
   layoutId = null;
   thumbnailUrl = null;
   link = '';
+  isVisited = false;
 
   /**
    * @param {SheetEditionData} props
@@ -69,12 +72,9 @@ export class SheetDigitalData extends SheetEditionData {
 
 export class Sheet extends BaseObject {
   id = null;
-  type = 0;
-  draggable = false;
-  isVisited = false;
-  positionFixed = '';
-  printData = new SheetPrintData();
-  digitalData = new SheetDigitalData();
+  type = SHEET_TYPE.NORMAL;
+  draggable = true;
+  positionFixed = POSITION_FIXED.NONE;
 
   /**
    * @param {Sheet} props

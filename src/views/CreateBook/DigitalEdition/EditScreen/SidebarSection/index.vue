@@ -2,17 +2,17 @@
   <div class="sidebar-section">
     <div class="digital-thumbnail-container">
       <HeaderContainer
-        v-for="section in book.sections"
+        v-for="(section, sectionIndex) in sections"
         :key="section.id"
         :section="section"
       >
         <Thumbnail
-          v-for="sheet in section.sheets"
+          v-for="(sheet, sheetIndex) in section.sheets"
           :key="sheet.id"
           :ref="`screen${sheet.id}`"
           :sheet="sheet"
           :edit="false"
-          :order-screen="orderScreen(section.id, sheet)"
+          :order-screen="orderScreen(sectionIndex, sheetIndex)"
           :is-active="checkIsActive(sheet.id)"
           @click.native="onSelectSheet(sheet)"
         />

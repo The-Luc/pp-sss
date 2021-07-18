@@ -2,8 +2,8 @@ import { mapGetters, mapMutations, mapActions } from 'vuex';
 
 import Frames from '@/components/Thumbnail/Frames';
 import Thumbnail from '@/components/Thumbnail/ThumbnailDigital';
-import { GETTERS } from '@/store/modules/book/const';
 import {
+  GETTERS as DIGITAL_GETTERS,
   MUTATES as DIGITAL_MUTATES,
   ACTIONS as DIGITAL_ACTIONS
 } from '@/store/modules/digital/const';
@@ -15,22 +15,18 @@ export default {
   },
   computed: {
     ...mapGetters({
-      bookId: GETTERS.BOOK_ID,
-      book: GETTERS.BOOK_DETAIL
+      sections: DIGITAL_GETTERS.SECTIONS_SHEETS
     }),
+    bookId() {
+      return this.$route.params.bookId;
+    },
     orderScreen() {
-      return (sectionId, sheet) => {
-        const sectionIndex = this.book.sections.findIndex(
-          item => item.id == sectionId
-        );
-        const indexSheet = this.book.sections[sectionIndex].sheets.findIndex(
-          item => item.id == sheet.id
-        );
+      return (sectionIndex, sheetIndex) => {
         let indexInSections = 0;
         for (let i = 0; i < sectionIndex; i++) {
-          indexInSections += this.book.sections[i].sheets.length;
+          indexInSections += this.sections[i].sheets.length;
         }
-        indexInSections += indexSheet + 1;
+        indexInSections += sheetIndex + 1;
         if (indexInSections < 10) {
           return '0' + indexInSections;
         } else {

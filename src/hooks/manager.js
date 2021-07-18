@@ -1,22 +1,30 @@
 import { useGetters, useMutations, useActions } from 'vuex-composition-helpers';
 
+import { MUTATES as APP_MUTATES } from '@/store/modules/app/const';
+
 import {
   GETTERS as BOOK_GETTERS,
-  MUTATES as BOOK_MUTATES,
   ACTIONS as BOOK_ACTIONS
 } from '@/store/modules/book/const';
 
 export const useManager = () => {
-  const { setBookId } = useMutations({
-    setBookId: BOOK_MUTATES.SET_BOOK_ID
+  const { setInfo } = useMutations({
+    setInfo: APP_MUTATES.SET_GENERAL_INFO
   });
 
-  const { getBook } = useActions({
-    getBook: BOOK_ACTIONS.GET_BOOK
+  const { getBookData } = useActions({
+    getBookData: BOOK_ACTIONS.GET_BOOK
   });
+
+  const getBook = async ({ bookId }) => {
+    const { title, totalSheet, totalPage, totalScreen } = await getBookData({
+      bookId
+    });
+
+    setInfo({ title, bookId, totalSheet, totalPage, totalScreen });
+  };
 
   return {
-    setBookId,
     getBook
   };
 };

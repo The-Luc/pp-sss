@@ -2,7 +2,7 @@ import { mapGetters, mapMutations, mapActions } from 'vuex';
 
 import Frames from '@/components/Thumbnail/Frames';
 import Thumbnail from '@/containers/ThumbnailPrint';
-import { GETTERS, MUTATES } from '@/store/modules/book/const';
+import { MUTATES } from '@/store/modules/book/const';
 import {
   ACTIONS as PRINT_ACTIONS,
   MUTATES as PRINT_MUTATES,
@@ -27,11 +27,12 @@ export default {
   },
   computed: {
     ...mapGetters({
-      bookId: GETTERS.BOOK_ID,
-      book: GETTERS.BOOK_DETAIL,
       sheetLayout: PRINT_GETTERS.SHEET_LAYOUT,
       sections: PRINT_GETTERS.SECTIONS_SHEETS
-    })
+    }),
+    bookId() {
+      return this.$route.params.bookId;
+    }
   },
   methods: {
     ...mapActions({

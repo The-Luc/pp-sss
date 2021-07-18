@@ -4,7 +4,6 @@ import VueRouter from 'vue-router';
 import { isEmpty } from '@/common/utils';
 
 import userService from '@/api/user';
-// import { getUsersApi } from '@/api/user';
 
 import store from '../store';
 import { MUTATES } from '@/store/modules/app/const';
@@ -74,7 +73,7 @@ const routes = [
   {
     path: '/',
     // TODO: remove once integrated with API
-    redirect: '/book/HardCover-140/edit/manager',
+    redirect: '/book/1719/edit/manager',
     ...authGuard
   },
   {
@@ -151,29 +150,37 @@ router.beforeEach((to, from, next) => {
       });
     }
   }
-  if (to.name !== ROUTE_NAME.MANAGER) {
-    const sections = store.state.book.book?.sections;
-    if (sections) {
-      const emptySections = sections?.filter(item => item.sheets?.length === 0);
-      if (emptySections?.length !== 0) {
-        if (from.name !== ROUTE_NAME.MANAGER) {
-          next();
-        }
-        store.commit(MUTATES.TOGGLE_MODAL, {
-          isOpenModal: true,
-          modalData: {
-            type: MODAL_TYPES.EMPTY_SECTION,
-            props: { sections: emptySections }
-          }
-        });
-      } else {
-        next();
-      }
-    } else {
-      next();
-    }
-  } else {
+
+  if (to.name === ROUTE_NAME.MANAGER) {
     next();
+
+    return;
   }
+
+  const sections = store.state.book?.sections;
+
+  if (isEmpty(sections)) {
+    next();
+
+    return;
+  }
+
+  const emptySections = Object.values(sections).filter(
+    ({ sheetIds }) => sheetIds.length === 0
+  );
+
+  if (from.name !== ROUTE_NAME.MANAGER || emptySections.length === 0) {
+    next();
+
+    return;
+  }
+
+  store.commit(MUTATES.TOGGLE_MODAL, {
+    isOpenModal: true,
+    modalData: {
+      type: MODAL_TYPES.EMPTY_SECTION,
+      props: { sections: emptySections }
+    }
+  });
 });
 export default router;

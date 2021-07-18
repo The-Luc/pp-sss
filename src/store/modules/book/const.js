@@ -45,6 +45,7 @@ class ActionClass extends BaseObject {
     this._set(props);
   }
 }
+
 const _ACTIONS = new ActionClass();
 
 export const ACTIONS = new ActionClass(
@@ -53,17 +54,16 @@ export const ACTIONS = new ActionClass(
 
 class MutationClass extends BaseObject {
   UPDATE_SECTIONS = 'updateSections';
-  UPDATE_SECTION_POSITION = 'updateSectionPosition';
+  MOVE_SECTION = 'moveSection';
   UPDATE_SHEETS = 'updateSheets';
-  UPDATE_SHEET_POSITION = 'updateSheetPosition';
+  MOVE_SHEET = 'moveSheet';
   GET_BOOK_SUCCESS = 'getBookSuccess';
   ADD_SHEET = 'addSheet';
   DELETE_SECTION = 'deleteSection';
   DELETE_SHEET = 'deleteSheet';
-  MOVE_SHEET = 'moveSheet';
+  MOVE_TO_OTHER_SECTION = 'moveSheetToOtherSection';
   ADD_SECTION = 'addSection';
   EDIT_SECTION_NAME = 'editSectionName';
-  SELECT_THEME = 'selectTheme';
   SET_SECTION_ID = 'setSectionId';
   SET_BOOK_ID = 'setBookId';
   SET_BOOK = 'setBook';

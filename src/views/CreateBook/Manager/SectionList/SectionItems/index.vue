@@ -12,7 +12,7 @@
         v-for="(section, index) in sections"
         :key="section.id"
         :start-sequence="getStartSeq(index)"
-        :section="getSection(index)"
+        :section="section"
       ></Section>
     </Draggable>
   </v-row>

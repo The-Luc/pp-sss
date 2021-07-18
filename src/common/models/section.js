@@ -7,8 +7,9 @@ export class Section extends BaseObject {
   color = '';
   dueDate = null;
   status = 0;
-  draggable = false;
+  draggable = true;
   sheetIds = [];
+  fixed = false;
 
   /**
    * @param {Section} props

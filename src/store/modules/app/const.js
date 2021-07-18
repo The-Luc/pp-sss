@@ -26,6 +26,7 @@ class GetterClass extends BaseObject {
   USER = 'getCurrentUser';
   TRIGGER_SHAPE_CHANGE = 'triggerShapeChange';
   TRIGGER_CLIPART_CHANGE = 'triggerClipArtChange';
+  GENERAL_INFO = 'getGeneralInfo';
 
   constructor(props) {
     super(props);
@@ -69,6 +70,7 @@ class MutationClass extends BaseObject {
   SET_USER = 'setCurrentUser';
   UPDATE_TRIGGER_SHAPE_CHANGE = 'triggerShapeChange';
   UPDATE_TRIGGER_CLIPART_CHANGE = 'triggerClipArtChange';
+  SET_GENERAL_INFO = 'setGeneralInfo';
 
   constructor(props) {
     super(props);
