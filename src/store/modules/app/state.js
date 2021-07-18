@@ -45,5 +45,12 @@ export const state = {
     shape: true,
     clipArt: true
   },
+  generalInfo: {
+    bookId: '',
+    title: '',
+    totalSheet: 0,
+    totalPage: 0,
+    totalScreen: 0
+  },
   user: { id: null, role: null }
 };

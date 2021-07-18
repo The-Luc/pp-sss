@@ -25,7 +25,7 @@ export default {
   },
   methods: {
     ...mapMutations({
-      updateSectionPosition: MUTATES.UPDATE_SECTION_POSITION
+      updateSectionPosition: MUTATES.MOVE_SECTION
     }),
     onChoose: function(evt) {
       moveToIndex = -1;
@@ -94,7 +94,7 @@ export default {
 
       const totalSheetEachSection = this.sections
         .filter((s, ind) => ind < index)
-        .map(s => s.sheets.length);
+        .map(s => s.sheetIds.length);
 
       return totalSheetEachSection.reduce((a, v) => {
         return a + v;
@@ -102,44 +102,6 @@ export default {
     },
     getStartSeq: function(index) {
       return this.getTotalSheetUntilLastSection(index) + 1;
-    },
-    getSheetsOfSection: function(sectionId) {
-      const section = this.sections.find(s => s.id === sectionId);
-
-      return section.sheets;
-    },
-    getSection: function(index) {
-      const {
-        id,
-        name,
-        color,
-        dueDate,
-        draggable,
-        status,
-        sheets
-      } = this.sections[index];
-
-      return {
-        id: id,
-        name: name,
-        color: color,
-        dueDate: dueDate,
-        draggable: draggable,
-        status: status,
-        sheets: this.getSheets(sheets)
-      };
-    },
-    getSheets: function(sheetList) {
-      return sheetList.map(s => {
-        const { id, type, draggable, positionFixed } = s;
-
-        return {
-          id: id,
-          type: type,
-          draggable: draggable,
-          positionFixed: positionFixed
-        };
-      });
     }
   }
 };

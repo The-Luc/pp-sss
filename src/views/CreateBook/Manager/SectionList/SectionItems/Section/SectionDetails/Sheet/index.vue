@@ -45,7 +45,9 @@
         </v-row>
 
         <v-row>
-          <v-col class="sheet-name"> {{ sequence }}{{ sheet.id }} </v-col>
+          <v-col class="sheet-name">
+            {{ sequence }}{{ ` (ID: ${sheet.id})` }}
+          </v-col>
         </v-row>
       </v-col>
 

@@ -17,6 +17,8 @@ import { EDITION, MODAL_TYPES, TOOL_NAME } from '@/common/constants';
 import { useLayoutPrompt, usePopoverCreationTool } from '@/hooks';
 import { isEmpty } from '@/common/utils';
 
+import digitalService from '@/api/digital';
+
 export default {
   setup() {
     const { pageSelected, updateVisited } = useLayoutPrompt(EDITION.DIGITAL);
@@ -64,7 +66,8 @@ export default {
     ...mapMutations({
       setBookId: DIGITAL_MUTATES.SET_BOOK_ID,
       toggleModal: MUTATES.TOGGLE_MODAL,
-      setPropertiesObjectType: MUTATES.SET_PROPERTIES_OBJECT_TYPE
+      setPropertiesObjectType: MUTATES.SET_PROPERTIES_OBJECT_TYPE,
+      setInfo: MUTATES.SET_GENERAL_INFO
     }),
     /**
      * Check current sheet is first time visited or no to open prompt
@@ -82,7 +85,7 @@ export default {
      * Save digital canvas and change view
      */
     onClickSaveDigitalCanvas() {
-      this.$router.push(`/book/${this.bookId}/edit/digital`);
+      this.$router.push(`/book/${this.$route.params.bookId}/edit/digital`);
     },
     /**
      * Trigger mutation to open theme modal
@@ -98,6 +101,12 @@ export default {
   },
   async created() {
     this.setBookId({ bookId: this.$route.params.bookId });
+
+    // temporary code, will remove soon
+    const info = digitalService.getGeneralInfo();
+
+    this.setInfo({ ...info, bookId: this.$route.params.bookId });
+
     await this.getDataPageEdit();
     if (isEmpty(this.defaultThemeId)) {
       this.openSelectThemeModal();

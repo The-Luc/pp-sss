@@ -75,5 +75,11 @@ export const mutations = {
   },
   [APP._MUTATES.UPDATE_TRIGGER_SHAPE_CHANGE](state) {
     state.triggerChange.shape = !state.triggerChange.shape;
+  },
+  [APP._MUTATES.SET_GENERAL_INFO](
+    state,
+    { bookId, title, totalSheet, totalPage, totalScreen }
+  ) {
+    state.generalInfo = { bookId, title, totalSheet, totalPage, totalScreen };
   }
 };

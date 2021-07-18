@@ -2,8 +2,6 @@ import { getSuccessWithData, getErrorWithMessages } from '@/common/models';
 
 import { isEmpty, getPageLeftName, getPageRightName } from '@/common/utils';
 
-import bookService from './book';
-
 const printService = {
   /**
    * Get default theme id book
@@ -13,7 +11,8 @@ const printService = {
    */
   getDefaultThemeId: bookId => {
     return new Promise(resolve => {
-      const data = bookService.getBook(bookId).printData.themeId;
+      const book = JSON.parse(window.sessionStorage.getItem(`book-${bookId}`));
+      const data = book.printData.themeId;
 
       const result = isEmpty(data)
         ? getErrorWithMessages([])
@@ -33,42 +32,38 @@ const printService = {
     return new Promise(resolve => {
       let totalSheets = 0;
 
-      const data = bookService
-        .getBook(bookId)
-        .sections.map((section, sectionIndex) => {
-          const sheets = section.sheets.map((sheet, sheetIndex) => {
-            const { id, type } = sheet;
-            const { thumbnailUrl, link } = sheet.printData;
+      const book = JSON.parse(window.sessionStorage.getItem(`book-${bookId}`));
 
-            const pageLeftName = getPageLeftName(
-              sheet,
-              sheetIndex,
-              totalSheets
-            );
-            const pageRightName = getPageRightName(
-              sheet,
-              sheetIndex,
-              totalSheets
-            );
+      const data = book.sections.map((section, sectionIndex) => {
+        const sheets = section.sheets.map((sheet, sheetIndex) => {
+          const { id, type } = sheet;
+          const { thumbnailUrl, link } = sheet.printData;
 
-            return {
-              id,
-              type,
-              thumbnailUrl,
-              link,
-              pageLeftName,
-              pageRightName
-            };
-          });
+          const pageLeftName = getPageLeftName(sheet, sheetIndex, totalSheets);
+          const pageRightName = getPageRightName(
+            sheet,
+            sheetIndex,
+            totalSheets
+          );
 
-          if (sectionIndex > 0) {
-            totalSheets += section.sheets.length;
-          }
-
-          const { name, color, id } = section;
-
-          return { id, name, color, sheets };
+          return {
+            id,
+            type,
+            thumbnailUrl,
+            link,
+            pageLeftName,
+            pageRightName
+          };
         });
+
+        if (sectionIndex > 0) {
+          totalSheets += section.sheets.length;
+        }
+
+        const { name, color, id } = section;
+
+        return { id, name, color, sheets };
+      });
 
       const result = isEmpty(data)
         ? getErrorWithMessages([])
@@ -88,51 +83,53 @@ const printService = {
     return new Promise(resolve => {
       let totalSheets = 0;
 
-      const data = bookService
-        .getBook(bookId)
-        .sections.map((section, sectionIndex) => {
-          const sheets = section.sheets.map((sheet, sheetIndex) => {
-            const { id, type, isVisited } = sheet;
-            const {
-              link,
-              thumbnailUrl,
-              theme: themeId,
-              layout,
-              spreadInfo
-            } = sheet.printData;
-            const pageLeftName = getPageLeftName(
-              sheet,
-              sheetIndex,
-              totalSheets
-            );
-            const pageRightName = getPageRightName(
-              sheet,
-              sheetIndex,
-              totalSheets
-            );
+      const book = JSON.parse(window.sessionStorage.getItem(`book-${bookId}`));
+      const coverType = window.sessionStorage.getItem('bookCoverType');
+      const maxPage = window.sessionStorage.getItem('bookMaxPage');
 
-            return {
-              id,
-              link,
-              type,
-              thumbnailUrl,
-              isVisited,
-              themeId,
-              layoutId: layout?.id || null,
-              pageLeftName,
-              pageRightName,
-              spreadInfo: { ...spreadInfo }
-            };
-          });
+      if (!isEmpty(coverType)) book.coverOption = coverType;
 
-          if (sectionIndex > 0) {
-            totalSheets += section.sheets.length;
-          }
+      if (!isEmpty(maxPage)) book.numberMaxPages = parseInt(maxPage, 10);
 
-          const { name, color } = section;
+      const data = book.sections.map((section, sectionIndex) => {
+        const sheets = section.sheets.map((sheet, sheetIndex) => {
+          const { id, type, isVisited } = sheet;
+          const {
+            link,
+            thumbnailUrl,
+            theme: themeId,
+            layout,
+            spreadInfo
+          } = sheet.printData;
+          const pageLeftName = getPageLeftName(sheet, sheetIndex, totalSheets);
+          const pageRightName = getPageRightName(
+            sheet,
+            sheetIndex,
+            totalSheets
+          );
 
-          return { id: section.id, name, color, sheets: sheets };
+          return {
+            id,
+            link,
+            type,
+            thumbnailUrl,
+            isVisited,
+            themeId,
+            layoutId: layout?.id || null,
+            pageLeftName,
+            pageRightName,
+            spreadInfo: { ...spreadInfo }
+          };
         });
+
+        if (sectionIndex > 0) {
+          totalSheets += section.sheets.length;
+        }
+
+        const { name, color } = section;
+
+        return { id: section.id, name, color, sheets: sheets };
+      });
 
       const result = isEmpty(data)
         ? getErrorWithMessages([])
@@ -160,9 +157,9 @@ const printService = {
         return;
       }
 
-      const section = bookService
-        .getBook(bookId)
-        .sections.find(s => sectionId === s.id);
+      const book = JSON.parse(window.sessionStorage.getItem(`book-${bookId}`));
+
+      const section = book.sections.find(s => sectionId === s.id);
 
       if (isEmpty(section)) return {};
 
@@ -200,13 +197,27 @@ const printService = {
    */
   getPageInfo: bookId => {
     return new Promise(resolve => {
-      const data = bookService.getBook(bookId).printData.pageInfo;
+      const book = JSON.parse(window.sessionStorage.getItem(`book-${bookId}`));
+      const data = book.printData.pageInfo;
       const result = isEmpty(data)
         ? getErrorWithMessages([])
         : getSuccessWithData({ ...data });
 
       resolve(result);
     });
+  },
+  // temporary code, will remove soon
+  getGeneralInfo: () => {
+    const { title, totalSheets, totalPages, totalScreens } = JSON.parse(
+      window.sessionStorage.getItem('book-1719')
+    );
+
+    return {
+      title,
+      totalSheet: totalSheets,
+      totalPage: totalPages,
+      totalScreen: totalScreens
+    };
   }
 };
 

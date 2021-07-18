@@ -1,6 +1,6 @@
-import { BaseObject } from './base';
+import { BaseEntity } from './base';
 
-export class User extends BaseObject {
+export class User extends BaseEntity {
   name = null;
   role = null;
 

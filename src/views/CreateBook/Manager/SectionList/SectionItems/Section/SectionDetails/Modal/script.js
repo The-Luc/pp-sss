@@ -31,8 +31,8 @@ export default {
         isOpenModal: false
       });
     },
-    onDeleteSheet(idSheet, idSection) {
-      this.deleteSheet({ idSheet, idSection });
+    onDeleteSheet(sheetId, sectionId) {
+      this.deleteSheet({ sheetId, sectionId });
       this.onCloseModal();
     }
   }

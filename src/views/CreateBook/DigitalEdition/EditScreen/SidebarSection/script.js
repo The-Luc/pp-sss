@@ -2,7 +2,6 @@ import { mapGetters, mapMutations } from 'vuex';
 
 import Thumbnail from '@/components/Thumbnail/ThumbnailDigital';
 import HeaderContainer from '@/components/Thumbnail/HeaderContainer';
-import { GETTERS } from '@/store/modules/book/const';
 import { GETTERS as APP_GETTERS } from '@/store/modules/app/const';
 import { scrollToElement } from '@/common/utils';
 import {
@@ -35,22 +34,16 @@ export default {
   computed: {
     ...mapGetters({
       pageSelected: DIGITAL_GETTERS.CURRENT_SHEET,
-      book: GETTERS.BOOK_DETAIL,
+      sections: DIGITAL_GETTERS.SECTIONS_SHEETS,
       isOpenMenuProperties: APP_GETTERS.IS_OPEN_MENU_PROPERTIES
     }),
     orderScreen() {
-      return (sectionId, sheet) => {
-        const sectionIndex = this.book.sections.findIndex(
-          item => item.id == sectionId
-        );
-        const indexSheet = this.book.sections[sectionIndex].sheets.findIndex(
-          item => item.id == sheet.id
-        );
+      return (sectionIndex, sheetIndex) => {
         let indexInSections = 0;
         for (let i = 0; i < sectionIndex; i++) {
-          indexInSections += this.book.sections[i].sheets.length;
+          indexInSections += this.sections[i].sheets.length;
         }
-        indexInSections += indexSheet + 1;
+        indexInSections += sheetIndex + 1;
         if (indexInSections < 10) {
           return '0' + indexInSections;
         } else {

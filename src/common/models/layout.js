@@ -1,6 +1,6 @@
-import { BaseObject } from './base';
+import { BaseEntity } from './base';
 
-export class DefaultLayout extends BaseObject {
+export class DefaultLayout extends BaseEntity {
   themeId = null;
   name = '';
   type = '';

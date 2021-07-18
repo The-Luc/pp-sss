@@ -21,15 +21,17 @@ export default {
       type: Array
     },
     sheetId: {
-      type: Number
+      type: [Number, String],
+      default: ''
     },
     sectionId: {
-      type: Number
+      type: [Number, String],
+      default: ''
     }
   },
   methods: {
     ...mapMutations({
-      moveSheet: BOOK_MUTATES.MOVE_SHEET
+      moveSheet: BOOK_MUTATES.MOVE_TO_OTHER_SECTION
     }),
     onChangeStatus() {
       this.$emit('onChangeStatus');
@@ -37,8 +39,8 @@ export default {
     onMoveSheet(id) {
       this.moveSheet({
         sheetId: this.sheetId,
-        sectionId: this.sectionId,
-        currentSectionId: id
+        currentSectionId: this.sectionId,
+        sectionId: id
       });
     }
   },

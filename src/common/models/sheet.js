@@ -1,4 +1,6 @@
-import { BaseObject } from './base';
+import { BaseObject, BaseEntity } from './base';
+
+import { POSITION_FIXED, SHEET_TYPE } from '@/common/constants';
 
 export class SpreadInfo extends BaseObject {
   leftTitle = '';
@@ -28,9 +30,8 @@ export class FrameInfo extends BaseObject {
   }
 }
 
-export class SheetBase extends BaseObject {
-  id = null;
-  type = 0;
+export class SheetBase extends BaseEntity {
+  type = SHEET_TYPE.NORMAL;
 
   /**
    * @param {SheetBase} props
@@ -82,8 +83,8 @@ export class SheetDigitalData extends SheetEditionData {
 }
 
 export class Sheet extends SheetBase {
-  draggable = false;
-  positionFixed = '';
+  draggable = true;
+  positionFixed = POSITION_FIXED.NONE;
 
   /**
    * @param {Sheet} props

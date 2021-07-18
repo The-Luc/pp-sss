@@ -20,6 +20,8 @@ import { useLayoutPrompt, usePopoverCreationTool, useInfoBar } from '@/hooks';
 import { EDITION } from '@/common/constants';
 import { isEmpty } from '@/common/utils';
 
+import printService from '@/api/print';
+
 export default {
   components: {
     ToolBar,
@@ -42,6 +44,12 @@ export default {
   },
   async created() {
     this.setBookId({ bookId: this.$route.params.bookId });
+
+    // temporary code, will remove soon
+    const info = printService.getGeneralInfo();
+
+    this.setInfo({ ...info, bookId: this.$route.params.bookId });
+
     await this.getDataPageEdit();
     if (isEmpty(this.printThemeSelected)) {
       this.openSelectThemeModal();
@@ -78,7 +86,8 @@ export default {
       toggleModal: MUTATES.TOGGLE_MODAL,
       resetPrintConfigs: MUTATES.RESET_PRINT_CONFIG,
       savePrintCanvas: BOOK_MUTATES.SAVE_PRINT_CANVAS,
-      setPropertiesObjectType: MUTATES.SET_PROPERTIES_OBJECT_TYPE
+      setPropertiesObjectType: MUTATES.SET_PROPERTIES_OBJECT_TYPE,
+      setInfo: MUTATES.SET_GENERAL_INFO
     }),
     /**
      * Trigger mutation to open theme modal
@@ -107,12 +116,12 @@ export default {
      * Save print canvas and change view
      */
     onClickSavePrintCanvas() {
-      const canvas = window.printCanvas;
+      /*const canvas = window.printCanvas;
       let objs = canvas.getObjects();
       this.savePrintCanvas({
         data: objs
-      });
-      this.$router.push(`/book/${this.bookId}/edit/print`);
+      });*/
+      this.$router.push(`/book/${this.$route.params.bookId}/edit/print`);
     },
     /**
      * Fire when zoom is changed

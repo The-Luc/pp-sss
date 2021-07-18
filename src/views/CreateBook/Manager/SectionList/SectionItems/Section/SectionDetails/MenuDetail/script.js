@@ -10,8 +10,14 @@ export default {
     };
   },
   props: {
-    sectionId: Number,
-    sheetId: Number,
+    sectionId: {
+      type: [Number, String],
+      default: ''
+    },
+    sheetId: {
+      type: [Number, String],
+      default: ''
+    },
     sections: {
       type: Array,
       default: () => []

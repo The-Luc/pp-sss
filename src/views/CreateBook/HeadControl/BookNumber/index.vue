@@ -3,19 +3,19 @@
     <Number
       :is-active="path.indexOf(screen.PRINT) > -1"
       :type="bookNumberType.PAGES"
-      :total="getTotalInfo.totalPages"
+      :total="info.totalPage"
     />
     <LineVertical height="16" />
     <Number
       :is-active="path.indexOf(screen.MANAGER) > -1"
       :type="bookNumberType.SHEETS"
-      :total="getTotalInfo.totalSheets"
+      :total="info.totalSheet"
     />
     <LineVertical height="16" />
     <Number
       :is-active="path.indexOf(screen.DIGITAL) > -1"
       :type="bookNumberType.SCREENS"
-      :total="getTotalInfo.totalScreens"
+      :total="info.totalScreen"
     />
   </div>
 </template>

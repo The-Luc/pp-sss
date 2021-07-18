@@ -33,7 +33,7 @@ export default {
   setup() {
     return {
       ...mapMutations({
-        updateSheetPosition: MUTATES.UPDATE_SHEET_POSITION
+        updateSheetPosition: MUTATES.MOVE_SHEET
       })
     };
   },

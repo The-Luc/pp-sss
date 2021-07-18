@@ -1,15 +1,15 @@
 <template>
   <div class="row thumbnail-view-row">
-    <template v-for="section in book.sections">
+    <template v-for="(section, sectionIndex) in sections">
       <Frames
-        v-for="sheet in section.sheets"
+        v-for="(sheet, sheetIndex) in section.sheets"
         :key="sheet.id"
         :section="section"
       >
         <Thumbnail
           :to-link="`/book/${bookId}/edit/digital/edit-screen`"
           :sheet="sheet"
-          :order-screen="orderScreen(section.id, sheet)"
+          :order-screen="orderScreen(sectionIndex, sheetIndex)"
           @click.native="onSelectScreen(sheet)"
         />
       </Frames>
