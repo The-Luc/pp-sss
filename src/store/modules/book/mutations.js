@@ -13,39 +13,8 @@ import { moveItem } from '@/common/utils';
 
 import BOOK from './const';
 
-import { SHEET_TYPE, DATE_FORMAT, POSITION_FIXED } from '@/common/constants';
+import { DATE_FORMAT } from '@/common/constants';
 import { Section, Sheet } from '@/common/models';
-
-const makeNewSection = (printData, sections, sectionIndex) => {
-  const newId = '';
-
-  const { isNumberingOn } = printData.pageInfo;
-  const totalSheets = sections[sectionIndex].sheets.length;
-  const order =
-    sectionIndex === sections.length - 1 ? totalSheets - 1 : totalSheets;
-  return {
-    id: newId,
-    type: SHEET_TYPE.NORMAL,
-    draggable: true,
-    positionFixed: POSITION_FIXED.NONE,
-    order: order,
-    printData: {
-      layout: null,
-      thumbnailUrl: null,
-      link: 'link',
-      spreadInfo: {
-        leftTitle: '',
-        rightTitle: '',
-        isLeftNumberOn: isNumberingOn,
-        isRightNumberOn: isNumberingOn
-      }
-    },
-    digitalData: {
-      thumbnailUrl: null,
-      link: 'link'
-    }
-  };
-};
 
 export const mutations = {
   [BOOK._MUTATES.SET_BOOK_ID]: setBookId,
