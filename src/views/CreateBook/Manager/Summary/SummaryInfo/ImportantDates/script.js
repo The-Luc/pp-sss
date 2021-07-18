@@ -2,11 +2,11 @@ import Section from '../SummarySection';
 import Detail from '../SummaryDetail';
 
 import moment from 'moment';
-import { mapGetters } from 'vuex';
+
+import { useSummaryInfo } from '@/hooks';
 
 import { getDisplayInfo, isEmpty } from '@/common/utils';
 
-import { GETTERS } from '@/store/modules/book/const';
 import { DATE_FORMAT } from '@/common/constants';
 
 export default {
@@ -15,12 +15,14 @@ export default {
     Detail
   },
   computed: {
-    ...mapGetters({
-      book: GETTERS.BOOK_DETAIL
-    }),
     details() {
       return [this.getDeliveryDate(), this.getDueDate(), this.getRemain()];
     }
+  },
+  setup() {
+    const { importantDatesInfo } = useSummaryInfo();
+
+    return { importantDatesInfo };
   },
   methods: {
     /**
@@ -29,7 +31,7 @@ export default {
      * @returns {Object}  display delivery date of book
      */
     getDeliveryDate() {
-      const theDate = this.book?.deliveryDate;
+      const theDate = this.importantDatesInfo?.deliveryDate;
 
       const description = isEmpty(theDate)
         ? ''
@@ -43,13 +45,13 @@ export default {
      * @returns {Object}  display due date of book
      */
     getDueDate() {
-      const releaseDate = this.book?.releaseDate;
+      const releaseDate = this.importantDatesInfo?.releaseDate;
 
       const description = isEmpty(releaseDate)
         ? ''
         : moment(new Date(releaseDate)).format(DATE_FORMAT.BASE);
 
-      return getDisplayInfo('Requested Delivery Date', description);
+      return getDisplayInfo('File Release Due Date', description);
     },
     /**
      * Get display remain
@@ -60,7 +62,7 @@ export default {
       const name = 'Countdown';
       const customClass = 'countdown';
 
-      const releaseDate = this.book?.releaseDate;
+      const releaseDate = this.importantDatesInfo?.releaseDate;
 
       if (isEmpty(releaseDate)) return getDisplayInfo(name, '0', customClass);
 

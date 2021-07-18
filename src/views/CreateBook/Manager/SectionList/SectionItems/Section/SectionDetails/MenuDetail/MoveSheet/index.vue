@@ -8,7 +8,7 @@
     <div v-if="isShow" class="menu-move-sheet">
       <div
         v-for="section in sections"
-        :key="section.order"
+        :key="section.id"
         class="menu-move-sheet-item"
         @click="onMoveSheet(section.id)"
       >

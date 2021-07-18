@@ -12,13 +12,9 @@ export default {
   props: {
     sectionId: Number,
     sheetId: Number,
-    getSections: Array
-  },
-  computed: {
-    sections() {
-      return this.getSections.filter((item, index) => {
-        return index !== 0 && item.id != this.sectionId;
-      });
+    sections: {
+      type: Array,
+      default: () => []
     }
   },
   methods: {

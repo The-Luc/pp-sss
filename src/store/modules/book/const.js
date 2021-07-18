@@ -8,9 +8,8 @@ class GetterClass extends BaseObject {
   BOOK_ID = 'bookId';
   SECTIONS = 'sections';
   SELECTED_OBJECT_TYPE = 'selectedObjectType';
-  PRINT_THEME_SELECTED_ID = 'isSelectedPrintTheme';
   BOOK_DATES = 'getBookDates';
-  GET_SECTIONS = 'getSections';
+  SECTIONS_NO_SHEET = 'getSectionsWithoutSheet';
   GET_TOTAL_INFO = 'getTotalInfo';
   GET_TOTAL_SECTIONS = 'getTotalSections';
   GET_MAX_PAGE = 'getMaxPage';
@@ -20,9 +19,11 @@ class GetterClass extends BaseObject {
   SALE_DATE_FROM_BEGINNING = 'saleDayFromBeginning';
   RELEASE_DATE_FROM_BEGINNING = 'releaseDayFromBeginning';
   DELIVERY_DATE_FROM_BEGINNING = 'deliveryDayFromBeginning';
-  SHEET_THEME = 'sheetTheme';
   SECTION_ID = 'sectionId';
   DUE_DATE_FROM_BEGINNING = 'dueDayFromBeginning';
+  IMPORTANT_DATES_INFO = 'getImportantDatesInfo';
+  SPECIFICATION_INFO = 'getSpecificationInfo';
+  SALE_INFO = 'getSaleInfo';
 
   constructor(props) {
     super(props);
