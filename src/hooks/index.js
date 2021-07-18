@@ -8,3 +8,4 @@ export * from './background';
 export * from './sheet';
 export * from './frame';
 export * from './user';
+export * from './manager';

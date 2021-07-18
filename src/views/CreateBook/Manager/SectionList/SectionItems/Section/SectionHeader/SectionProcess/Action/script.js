@@ -46,7 +46,7 @@ export default {
   computed: {
     ...mapGetters({
       sectionSelected: GETTERS.SECTION_SELECTED,
-      sections: BOOK_GETTERS.SECTIONS,
+      sections: BOOK_GETTERS.SECTIONS_NO_SHEET,
       maxPage: BOOK_GETTERS.GET_MAX_PAGE,
       totalInfo: BOOK_GETTERS.GET_TOTAL_INFO
     }),

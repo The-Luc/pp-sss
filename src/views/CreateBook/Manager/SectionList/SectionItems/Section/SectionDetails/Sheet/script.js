@@ -110,13 +110,8 @@ export default {
       return restrictSheetTypes.indexOf(this.sheet.type) < 0;
     },
     getSectionsForMove() {
-      return this.sections.map(s => {
-        return {
-          id: s.id,
-          name: s.name,
-          order: s.order,
-          color: s.color
-        };
+      return this.sections.filter((item, index) => {
+        return index !== 0 && item.id != this.sectionId;
       });
     }
   }

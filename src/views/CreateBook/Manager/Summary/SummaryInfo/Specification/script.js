@@ -1,21 +1,21 @@
 import Section from '../SummarySection';
 import Detail from '../SummaryDetail';
 
-import { mapGetters } from 'vuex';
+import { useSummaryInfo } from '@/hooks';
 
-import { getDisplayInfo, isEmpty } from '@/common/utils';
-
-import { GETTERS } from '@/store/modules/book/const';
+import { getDisplayInfo } from '@/common/utils';
 
 export default {
   components: {
     Section,
     Detail
   },
+  setup() {
+    const { specificationInfo } = useSummaryInfo();
+
+    return { specificationInfo };
+  },
   computed: {
-    ...mapGetters({
-      book: GETTERS.BOOK_DETAIL
-    }),
     details() {
       return [
         this.getCoverOption(),
@@ -32,7 +32,10 @@ export default {
      * @returns {Object}  display cover option of book
      */
     getCoverOption() {
-      return getDisplayInfo('Cover Option', this.book?.coverOption);
+      return getDisplayInfo(
+        'Cover Option',
+        this.specificationInfo?.coverOption
+      );
     },
     /**
      * Get display max page
@@ -42,7 +45,7 @@ export default {
     getMaxPage() {
       return getDisplayInfo(
         'Number of Pages (maximum)',
-        this.book?.numberMaxPages
+        this.specificationInfo?.numberMaxPages
       );
     },
     /**
@@ -51,13 +54,13 @@ export default {
      * @returns {Object}  display estimate quantity of book
      */
     getEstimatedQuantity() {
-      const quantity = this.book?.estimatedQuantity;
+      const minQuantity = this.specificationInfo?.minQuantity;
+      const maxQuantity = this.specificationInfo?.maxQuantity;
 
-      const description = isEmpty(quantity)
-        ? ''
-        : `${quantity.min} - ${quantity.max}`;
-
-      return getDisplayInfo('Estimated Quantity', description);
+      return getDisplayInfo(
+        'Estimated Quantity',
+        `${minQuantity} - ${maxQuantity}`
+      );
     },
     /**
      * Get display delivery option
@@ -65,7 +68,10 @@ export default {
      * @returns {Object}  display delivery option of book
      */
     getDeliveryOption() {
-      return getDisplayInfo('Delivery Option', this.book?.deliveryOption);
+      return getDisplayInfo(
+        'Delivery Option',
+        this.specificationInfo?.deliveryOption
+      );
     }
   }
 };

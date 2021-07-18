@@ -33,7 +33,7 @@
                 v-click-outside="onCloseMenu"
                 :section-id="sectionId"
                 :sheet-id="sheet.id"
-                :get-sections="getSectionsForMove()"
+                :sections="getSectionsForMove()"
               >
                 <ButtonDelete
                   title="Delete This Sheet"

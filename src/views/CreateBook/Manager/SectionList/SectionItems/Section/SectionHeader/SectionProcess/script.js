@@ -4,7 +4,6 @@ import ProcessBar from '@/components/BarProcesses/ProcessBar';
 import Action from './Action';
 
 import { GETTERS, MUTATES } from '@/store/modules/app/const';
-import { GETTERS as BOOK_GETTERS } from '@/store/modules/book/const';
 
 import { ICON_LOCAL, PROCESS_STATUS } from '@/common/constants';
 
@@ -46,10 +45,7 @@ export default {
   },
   computed: {
     ...mapGetters({
-      sectionSelected: GETTERS.SECTION_SELECTED,
-      sections: BOOK_GETTERS.GET_SECTIONS,
-      maxPage: BOOK_GETTERS.GET_MAX_PAGE,
-      totalInfo: BOOK_GETTERS.GET_TOTAL_INFO
+      sectionSelected: GETTERS.SECTION_SELECTED
     })
   },
   watch: {
