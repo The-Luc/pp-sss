@@ -1,7 +1,6 @@
 import { BaseObject } from './base';
 
 export class User extends BaseObject {
-  id = null;
   name = null;
   role = null;
 

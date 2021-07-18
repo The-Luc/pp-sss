@@ -14,3 +14,4 @@ export * from './string';
 export * from './pasteObject';
 export * from './rotation';
 export * from './creationTool';
+export * from './time';

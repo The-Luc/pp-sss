@@ -1,4 +1,6 @@
 export class BaseObject {
+  id = null;
+
   /**
    * @param {BaseObject} props - object props to construct new instance of this class
    */

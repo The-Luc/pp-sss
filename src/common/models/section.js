@@ -1,7 +1,6 @@
 import { BaseObject } from './base';
 
 export class Section extends BaseObject {
-  id = null;
   name = '';
   assigneeId = null;
   color = '';

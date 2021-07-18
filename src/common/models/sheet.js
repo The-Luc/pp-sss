@@ -28,11 +28,25 @@ export class FrameInfo extends BaseObject {
   }
 }
 
-export class SheetEditionData extends BaseObject {
+export class SheetBase extends BaseObject {
+  id = null;
+  type = 0;
+
+  /**
+   * @param {SheetBase} props
+   */
+  constructor(props) {
+    super(props);
+    this._set(props);
+  }
+}
+
+export class SheetEditionData extends SheetBase {
   themeId = null;
   layoutId = null;
   thumbnailUrl = null;
   link = '';
+  isVisited = false;
 
   /**
    * @param {SheetEditionData} props
@@ -67,14 +81,9 @@ export class SheetDigitalData extends SheetEditionData {
   }
 }
 
-export class Sheet extends BaseObject {
-  id = null;
-  type = 0;
+export class Sheet extends SheetBase {
   draggable = false;
-  isVisited = false;
   positionFixed = '';
-  printData = new SheetPrintData();
-  digitalData = new SheetDigitalData();
 
   /**
    * @param {Sheet} props
