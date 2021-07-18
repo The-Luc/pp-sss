@@ -8,8 +8,11 @@ import {
   MUTATES as PRINT_MUTATES,
   GETTERS as PRINT_GETTERS
 } from '@/store/modules/print/const';
+import { MUTATES as APP_MUTATES } from '@/store/modules/app/const';
 import { useDrawLayout } from '@/hooks';
 import { EDITION } from '@/common/constants';
+
+import printService from '@/api/print';
 
 export default {
   components: {
@@ -22,6 +25,11 @@ export default {
   },
   created() {
     this.setBookId({ bookId: this.$route.params.bookId });
+
+    // temporary code, will remove soon
+    const info = printService.getGeneralInfo();
+
+    this.setInfo({ ...info, bookId: this.$route.params.bookId });
 
     this.getDataPageEdit();
   },
@@ -42,7 +50,8 @@ export default {
     ...mapMutations({
       setBookId: PRINT_MUTATES.SET_BOOK_ID,
       selectSheet: PRINT_MUTATES.SET_CURRENT_SHEET_ID,
-      setSectionId: MUTATES.SET_SECTION_ID
+      setSectionId: MUTATES.SET_SECTION_ID,
+      setInfo: APP_MUTATES.SET_GENERAL_INFO
     }),
     numberPage(sheet) {
       return {

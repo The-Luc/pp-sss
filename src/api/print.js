@@ -205,6 +205,19 @@ const printService = {
 
       resolve(result);
     });
+  },
+  // temporary code, will remove soon
+  getGeneralInfo: () => {
+    const { title, totalSheets, totalPages, totalScreens } = JSON.parse(
+      window.sessionStorage.getItem('book-1719')
+    );
+
+    return {
+      title,
+      totalSheet: totalSheets,
+      totalPage: totalPages,
+      totalScreen: totalScreens
+    };
   }
 };
 

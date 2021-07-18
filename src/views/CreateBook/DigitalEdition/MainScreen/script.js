@@ -7,6 +7,9 @@ import {
   MUTATES as DIGITAL_MUTATES,
   ACTIONS as DIGITAL_ACTIONS
 } from '@/store/modules/digital/const';
+import { MUTATES as APP_MUTATES } from '@/store/modules/app/const';
+
+import digitalService from '@/api/digital';
 
 export default {
   components: {
@@ -42,7 +45,8 @@ export default {
     ...mapMutations({
       setBookId: DIGITAL_MUTATES.SET_BOOK_ID,
       selectSheet: DIGITAL_MUTATES.SET_CURRENT_SHEET_ID,
-      setSectionId: DIGITAL_MUTATES.SET_SECTION_ID
+      setSectionId: DIGITAL_MUTATES.SET_SECTION_ID,
+      setInfo: APP_MUTATES.SET_GENERAL_INFO
     }),
 
     /**
@@ -55,6 +59,11 @@ export default {
   },
   created() {
     this.setBookId({ bookId: this.$route.params.bookId });
+
+    // temporary code, will remove soon
+    const info = digitalService.getGeneralInfo();
+
+    this.setInfo({ ...info, bookId: this.$route.params.bookId });
 
     this.getDataPageEdit();
   }
