@@ -1,6 +1,6 @@
-import { BaseObject } from './base';
+import { BaseEntity } from './base';
 
-export class Section extends BaseObject {
+export class Section extends BaseEntity {
   name = '';
   assigneeId = null;
   color = '';

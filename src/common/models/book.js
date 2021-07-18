@@ -1,4 +1,4 @@
-import { BaseObject } from './base';
+import { BaseObject, BaseEntity } from './base';
 
 export class PageInfo extends BaseObject {
   isNumberingOn = false;
@@ -16,7 +16,7 @@ export class PageInfo extends BaseObject {
   }
 }
 
-export class BookBase extends BaseObject {
+export class BookBase extends BaseEntity {
   title = '';
   totalPages = 0;
   totalSheets = 0;

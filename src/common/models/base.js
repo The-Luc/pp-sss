@@ -1,6 +1,4 @@
 export class BaseObject {
-  id = null;
-
   /**
    * @param {BaseObject} props - object props to construct new instance of this class
    */
@@ -20,5 +18,17 @@ export class BaseObject {
         }
       });
     }
+  }
+}
+
+export class BaseEntity extends BaseObject {
+  id = null;
+
+  /**
+   * @param {DefaultLayout} props
+   */
+  constructor(props) {
+    super(props);
+    this._set(props);
   }
 }
