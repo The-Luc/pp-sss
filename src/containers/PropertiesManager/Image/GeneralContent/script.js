@@ -3,9 +3,10 @@ import Shadow from '@/components/Properties/Features/Shadow';
 import Border from '@/components/Properties/Features/Border';
 import ImageStyle from './ImageStyle';
 import imagesStyle from '@/mock/imageStyle';
-import { DEFAULT_PROP } from '@/common/constants';
+import { DEFAULT_PROP, EVENT_TYPE } from '@/common/constants';
 import { SHADOW_OPTIONS } from '@/common/constants/shadow';
 import { ImageElement } from '@/common/models';
+import imageStyle from '@/mock/imageStyle';
 
 export default {
   components: {
@@ -77,6 +78,8 @@ export default {
      */
     onSelectImageStyle(id) {
       this.styleSelected = id;
+      const { style } = imageStyle.find(s => s.id === id);
+      this.$root.$emit(EVENT_TYPE.CHANGE_IMAGE_PROPERTIES, style);
     }
   },
   created() {

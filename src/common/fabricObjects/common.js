@@ -193,6 +193,34 @@ export const toFabricImageProp = prop => {
 };
 
 /**
+ * Convert stored image border properties to fabric properties
+ *
+ * @param   {Object}  style stored image border properties
+ * @returns {Object}        fabric properties
+ */
+export const toFabricImageBorderProp = prop => {
+  const mapRules = {
+    data: {
+      strokeWidth: {
+        name: 'strokeWidth',
+        parse: value => scaleSize(value)
+      }
+    },
+    restrict: [
+      'id',
+      'shadow',
+      'size',
+      'flip',
+      'rotation',
+      'isConstrain',
+      'style'
+    ]
+  };
+
+  return mapObject(prop, mapRules);
+};
+
+/**
  * Convert stored properties to fabric properties
  *
  * @param   {Object}  prop  stored properties

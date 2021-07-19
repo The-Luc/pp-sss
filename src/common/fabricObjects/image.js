@@ -1,8 +1,13 @@
 import { fabric } from 'fabric';
 
 import { inToPx } from '../utils';
-import { getAdjustedObjectDimension, toFabricImageProp } from './common';
+import {
+  getAdjustedObjectDimension,
+  toFabricImageBorderProp,
+  toFabricImageProp
+} from './common';
 import { DEFAULT_IMAGE } from '../constants';
+import { IMAGE_BORDER_TYPE } from '../constants/imageStyle';
 
 export const createImage = props => {
   return new Promise(resolve => {
@@ -35,5 +40,19 @@ export const createImage = props => {
         crossOrigin: 'anonymous'
       }
     );
+  });
+};
+
+export const applyBorderToImageObject = (imageObject, borderConfig) => {
+  const imageProp = toFabricImageBorderProp(borderConfig);
+
+  const strokeWidth =
+    imageProp.strokeLineType === IMAGE_BORDER_TYPE.DOTTED
+      ? imageProp.strokeWidth
+      : imageProp.strokeWidth * 2;
+
+  imageObject.set({
+    ...imageProp,
+    strokeWidth
   });
 };

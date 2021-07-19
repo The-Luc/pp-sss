@@ -1,6 +1,7 @@
 import { fabric } from 'fabric';
 import { CORNER_SIZE, BORDER_STYLES, DEFAULT_TEXT } from '@/common/constants';
 import { getRectDashes, ptToPx } from '@/common/utils';
+import { IMAGE_BORDER_TYPE } from '@/common/constants/imageStyle';
 
 const BORDER_COLOR = {
   OUTER: '#ffffff',
@@ -63,10 +64,61 @@ const getDoubleStrokeClipPath = function(width, height, strokeWidth) {
 };
 
 /**
+ * Image Render function with override on clipPath to support double stroke
+ * @param {CanvasRenderingContext2D} ctx Context to render on
+ */
+const imageRender = function(ctx) {
+  console.log(this);
+  this.clipPath = null;
+  this.strokeDashArray = [];
+  this.strokeLineCap = 'butt';
+
+  if (!this.strokeWidth) {
+    fabric.Image.prototype._render.call(this, ctx);
+    return;
+  }
+
+  // TODO: revise later
+  const height = this.cacheHeight || this.height;
+  const width = this.cacheWidth || this.width;
+
+  if (this.strokeLineType === IMAGE_BORDER_TYPE.DOUBLE) {
+    console.log(width, height);
+    this.clipPath = getDoubleStrokeClipPath(width, height, this.strokeWidth);
+  }
+
+  // if (
+  //   [IMAGE_BORDER_TYPE.DOTTED, IMAGE_BORDER_TYPE.DASHED].includes(
+  //     this.strokeLineType
+  //   )
+  // ) {
+
+  if (IMAGE_BORDER_TYPE.DASHED === this.strokeLineType) {
+    this.strokeDashArray = [100];
+  }
+  if (IMAGE_BORDER_TYPE.DOTTED === this.strokeLineType) {
+    this.strokeDashArray = [0, 200];
+    this.strokeLineCap = 'round';
+    this.paintFirst = 'fill';
+
+    // this.strokeDashArray = getRectDashes(
+    //   width,
+    //   height,
+    //   this.strokeLineType,
+    //   this.strokeWidth
+    // );
+  }
+
+  fabric.Image.prototype._render.call(this, ctx);
+};
+
+/**
  * Rect Render function with override on clipPath to support double stroke
  * @param {CanvasRenderingContext2D} ctx Context to render on
  */
 const rectRender = function(ctx) {
+  console.log(this);
+
   this.clipPath = null;
   this.strokeDashArray = [];
 
@@ -103,6 +155,14 @@ const rectRender = function(ctx) {
  */
 export const useDoubleStroke = function(rect) {
   rect._render = rectRender;
+};
+
+/**
+ * Allow fabric image object to have double stroke
+ * @param {fabric.Image} image - the object to enable double stroke
+ */
+export const useDoubleStrokeImage = function(image) {
+  image._render = imageRender;
 };
 
 /**

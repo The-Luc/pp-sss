@@ -2,7 +2,7 @@ import { mapGetters, mapMutations, mapActions } from 'vuex';
 import { fabric } from 'fabric';
 import { cloneDeep, uniqueId, merge, debounce } from 'lodash';
 
-import { usePrintOverrides } from '@/plugins/fabric';
+import { useDoubleStrokeImage, usePrintOverrides } from '@/plugins/fabric';
 
 import { useDrawLayout, useInfoBar } from '@/hooks';
 import { startDrawBox } from '@/common/fabricObjects/drawingBox';
@@ -48,7 +48,8 @@ import {
   createBackgroundFabricObject,
   updateSpecificProp,
   addPrintPageNumber,
-  updateBringToFrontPageNumber
+  updateBringToFrontPageNumber,
+  applyBorderToImageObject
 } from '@/common/fabricObjects';
 
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
@@ -75,7 +76,8 @@ import {
   DEFAULT_CLIP_ART,
   FABRIC_OBJECT_TYPE,
   DEFAULT_IMAGE,
-  ACTIVE_EDITION
+  ACTIVE_EDITION,
+  EVENT_TYPE
 } from '@/common/constants';
 import SizeWrapper from '@/components/SizeWrapper';
 import PrintCanvasLines from './PrintCanvasLines';
@@ -888,6 +890,31 @@ export default {
 
       this.setCurrentObject(this.currentObjects?.[activeObj?.id]);
     },
+
+    /**
+     * Event fire when user change any property of selected text on the Text Properties
+     *
+     * @param {Object}  style  new style
+     */
+    changeImageProperties(prop) {
+      this.changeElementProperties(prop, OBJECT_TYPE.IMAGE);
+
+      const activeObject = window.printCanvas.getActiveObject();
+
+      // TODO: move it to a approriate place
+      activeObject.set({
+        strokeUniform: true,
+        paintFirst: 'stroke',
+        ownCaching: false,
+        noScaleCache: true
+      });
+
+      if (prop.border) {
+        applyBorderToImageObject(activeObject, prop.border);
+      }
+      window.printCanvas.renderAll();
+    },
+
     /**
      * Function trigger mutate to add new object to store
      */
@@ -920,6 +947,9 @@ export default {
       this.addObjectToStore(newImage);
 
       const image = await createImage(newImage.newObject);
+
+      useDoubleStrokeImage(image);
+
       window.printCanvas.add(image);
       selectLatestObject(window.printCanvas);
     },
@@ -1434,6 +1464,12 @@ export default {
         }
       };
 
+      const imageEvents = {
+        [EVENT_TYPE.CHANGE_IMAGE_PROPERTIES]: prop => {
+          this.changeImageProperties(prop);
+        }
+      };
+
       const backgroundEvents = {
         printAddBackground: this.addBackground,
         printChangeBackgroundProperties: this.changeBackgroundProperties,
@@ -1487,6 +1523,7 @@ export default {
       const events = {
         ...elementEvents,
         ...textEvents,
+        ...imageEvents,
         ...backgroundEvents,
         ...shapeEvents,
         ...clipArtEvents,
