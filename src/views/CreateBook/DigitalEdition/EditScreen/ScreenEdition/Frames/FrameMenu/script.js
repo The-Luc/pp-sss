@@ -26,7 +26,7 @@ export default {
     }
   },
   methods: {
-    onClickOutSideMenu() {
+    onClickOutsideMenu() {
       this.$emit('onClose');
     },
     onReplaceLayout() {

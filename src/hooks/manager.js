@@ -1,5 +1,7 @@
 import { useGetters, useMutations, useActions } from 'vuex-composition-helpers';
 
+import managerService from '@/api/manager';
+
 import { MUTATES as APP_MUTATES } from '@/store/modules/app/const';
 
 import {
@@ -50,4 +52,18 @@ export const useSectionActionMenu = () => {
   });
 
   return { updateSection };
+};
+
+export const useAssigneeMenu = () => {
+  const getUsers = managerService.getUsers;
+
+  return { getUsers };
+};
+
+export const dueDateMenu = () => {
+  const { specialDates } = useGetters({
+    specialDates: BOOK_GETTERS.BOOK_DATES
+  });
+
+  return { specialDates };
 };

@@ -138,7 +138,7 @@ export const mutations = {
   [BOOK._MUTATES.ADD_SECTION](state) {
     const { releaseDate } = state.book;
 
-    const newId = state.sectionIds[state.sectionIds.length - 1] + 1;
+    const newId = Math.max(...state.sectionIds) + 1;
 
     state.sections = {
       ...state.sections,

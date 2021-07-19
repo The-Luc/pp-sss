@@ -8,7 +8,7 @@
       :menu-y="menuY"
       :content-class="menuClass"
       :is-open="isOpenMenu"
-      @onClickOutSideMenu="onClickOutSideMenu"
+      @onClickOutsideMenu="onClickOutsideMenu"
       @onItemClick="onItemClick"
     >
       <ButtonAdd
@@ -27,22 +27,33 @@
       v-if="isOpenCalendar"
       :date="dueDate"
       :min-date="minDate"
-      :is-open-calendar="isOpenCalendar"
+      :is-open="isOpenCalendar"
       :calendar-width="calendarWidth"
       :calendar-x="subMenuPos.x"
       :calendar-y="subMenuPos.y"
-      @clickOutSide="onClickOutSideCalendar"
+      @clickOutside="onClickOutsideCalendar"
       @change="onChangeDueDate"
     />
     <SectionStatus
       v-if="isOpenStatus"
       :status="status"
-      :is-open-status="isOpenStatus"
+      :is-open="isOpenStatus"
       :status-width="statusWidth"
       :status-x="subMenuPos.x"
       :status-y="subMenuPos.y"
-      @clickOutSide="onClickOutSideStatus"
+      @clickOutside="onClickOutsideStatus"
       @change="onChangeStatus"
+    />
+    <Assignee
+      v-if="isOpenAssignee"
+      :key="componentKey"
+      :assignee-id="assigneeId"
+      :is-open="isOpenAssignee"
+      :assignee-width="assigneeWidth"
+      :assignee-x="subMenuPos.x"
+      :assignee-y="subMenuPos.y"
+      @clickOutside="onClickOutsideAssignee"
+      @change="onChangeAssignee"
     />
   </div>
 </template>

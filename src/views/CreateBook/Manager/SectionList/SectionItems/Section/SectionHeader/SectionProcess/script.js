@@ -39,7 +39,7 @@ export default {
           name: 'status'
         },
         { title: 'Due Date', value: this.section.dueDate, name: 'dueDate' },
-        { title: 'Assigned To', value: 'Unassigned', name: 'assigned' }
+        { title: 'Assigned To', value: 'Unassigned', name: 'assignee' }
       ]
     };
   },
@@ -117,7 +117,7 @@ export default {
       this.setIsOpenMenu();
     },
     /**
-     * Update menu itme value when status is changed
+     * Update menu item value when status is changed
      *
      * @param {Number}  status  selected status
      */
@@ -127,7 +127,7 @@ export default {
       this.menuItems[0].value = this.convertTextCap(statusName);
     },
     /**
-     * Update menu itme value when due date is changed
+     * Update menu item value when due date is changed
      *
      * @param {String}  dueDate selected due date
      */
@@ -135,7 +135,7 @@ export default {
       this.menuItems[1].value = dueDate;
     },
     /**
-     * Update menu itme value when assignee is changed
+     * Update menu item value when assignee is changed
      *
      * @param {String}  assignee  selected assignee
      */

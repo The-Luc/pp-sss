@@ -72,17 +72,6 @@ export default {
     },
     hideDragControl: function() {
       this.$root.$emit('hideDragControl');
-    },
-    getSection: function() {
-      const { id, name, color, dueDate, status } = this.section;
-
-      return {
-        id: id,
-        name: name,
-        color: color,
-        dueDate: dueDate,
-        status: status
-      };
     }
   }
 };

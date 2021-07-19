@@ -20,16 +20,17 @@ export default {
   },
   methods: {
     getSection: function() {
-      const { id, name, color, dueDate, draggable, status } = this.section;
+      const {
+        id,
+        name,
+        color,
+        dueDate,
+        draggable,
+        status,
+        assigneeId
+      } = this.section;
 
-      return {
-        id: id,
-        name: name,
-        color: color,
-        dueDate: dueDate,
-        draggable: draggable,
-        status: status
-      };
+      return { id, name, color, dueDate, draggable, status, assigneeId };
     }
   }
 };

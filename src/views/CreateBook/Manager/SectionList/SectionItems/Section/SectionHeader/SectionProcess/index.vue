@@ -6,14 +6,15 @@
     <img :src="moreIcon" alt="more icon" @click.stop="toggleMenu" />
 
     <Action
-      :due-date="section.dueDate"
+      :section-id="section.id"
       :section-name="section.name"
+      :assignee-id="section.assigneeId"
+      :due-date="section.dueDate"
+      :status="section.status"
+      :menu-class="menuClass"
       :items="menuItems"
       :menu-x="menuX"
-      :menu-class="menuClass"
       :menu-y="menuY"
-      :status="section.status"
-      :section-id="section.id"
       @statusUpdate="onStatusUpdate"
       @dueDateUpdate="onDueDateUpdate"
       @assigneeUpdate="onAssigneeUpdate"

@@ -16,7 +16,7 @@
           :section-name="section.name"
           :section-color="section.color"
         />
-        <SectionProcess :section="getSection()" />
+        <SectionProcess :section="section" />
       </v-row>
     </v-col>
   </v-row>

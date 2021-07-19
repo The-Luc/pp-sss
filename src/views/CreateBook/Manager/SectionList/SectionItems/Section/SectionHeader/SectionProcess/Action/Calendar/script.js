@@ -1,12 +1,7 @@
-import { mapGetters } from 'vuex';
 import moment from 'moment';
 
-import { DATE_FORMAT } from '@/common/constants';
-import { GETTERS } from '@/store/modules/app/const';
+import { dueDateMenu } from '@/hooks';
 
-import book from '@/mock/book';
-
-const dueDate = book.releaseDate;
 const daysOfWeek = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
 
 export default {
@@ -20,8 +15,9 @@ export default {
     calendarY: {
       type: Number
     },
-    isOpenCalendar: {
-      type: Boolean
+    isOpen: {
+      type: Boolean,
+      default: false
     },
     minDate: {
       type: String
@@ -29,6 +25,11 @@ export default {
     calendarWidth: {
       type: Number
     }
+  },
+  setup() {
+    const { specialDates } = dueDateMenu();
+
+    return { specialDates };
   },
   data() {
     return {
@@ -40,11 +41,6 @@ export default {
       monthSelected: '',
       yearSelected: ''
     };
-  },
-  computed: {
-    ...mapGetters({
-      sectionSelected: GETTERS.SECTION_SELECTED
-    })
   },
   watch: {
     dateSelected(val) {
@@ -70,7 +66,9 @@ export default {
     this.dayRelease = day;
     this.dateSelected = `${year}-${month}-${day}`;
     this.monthSelected = `${year}-${month}`;
-    this.dueDateData = moment(dueDate).format('YYYY-MM-DD');
+    this.dueDateData = moment(this.specialDates.releaseDate).format(
+      'YYYY-MM-DD'
+    );
   },
   methods: {
     /**
@@ -99,16 +97,20 @@ export default {
       this.monthSelected = `${year}`;
       this.dateSelected = `${year}-${month}`;
     },
-    onSelectedDate(value) {
-      const currentSection = book.sections.find(
-        section => section.id === this.sectionSelected
-      );
-      currentSection.releaseDate = moment(value).format(DATE_FORMAT.BASE);
-      this.$emit('change', value);
+    /**
+     * Fire when user click to select due date
+     *
+     * @param {String}  date  selected date
+     */
+    onSelectedDate(date) {
+      this.$emit('change', { date });
     },
-    onClickOutSide() {
-      if (this.isOpenCalendar) {
-        this.$emit('clickOutSide');
+    /**
+     * Fire when user click outside of calendar modal
+     */
+    onClickOutside() {
+      if (this.isOpen) {
+        this.$emit('clickOutside');
       }
     },
     getDay(date) {
