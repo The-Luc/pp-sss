@@ -88,7 +88,7 @@ export default {
     setMonthSelected(year) {
       this.monthSelected = `${year}-${this.monthRelease}`;
     },
-    onChangeMonth(value) {
+    onSelectedMonth(value) {
       const [year, month] = value.split('-');
       this.setDateSelect(year, month);
     },
@@ -104,11 +104,11 @@ export default {
         section => section.id === this.sectionSelected
       );
       currentSection.releaseDate = moment(value).format(DATE_FORMAT.BASE);
-      this.$emit('onSelectedDate', value);
+      this.$emit('change', value);
     },
-    onClickOutSideCalendar() {
+    onClickOutSide() {
       if (this.isOpenCalendar) {
-        this.$emit('onClickOutSideCalendar');
+        this.$emit('clickOutSide');
       }
     },
     getDay(date) {

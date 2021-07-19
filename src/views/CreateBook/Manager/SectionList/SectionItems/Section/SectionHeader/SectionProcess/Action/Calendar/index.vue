@@ -7,7 +7,7 @@
     :close-on-content-click="false"
     :max-width="calendarWidth"
   >
-    <v-row v-click-outside="onClickOutSideCalendar">
+    <v-row v-click-outside="onClickOutSide">
       <v-col cols="5">
         <v-date-picker
           :value="dateSelected"
@@ -37,7 +37,7 @@
           :max="dueDateData"
           no-title
           scrollable
-          @change="onChangeMonth"
+          @change="onSelectedMonth"
         />
         <v-btn class="go-today" text color="primary" @click="onGoCurrentDate">
           Go to today

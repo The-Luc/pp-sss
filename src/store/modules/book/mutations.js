@@ -9,7 +9,7 @@ import {
   setSheets
 } from '@/common/store/book';
 
-import { moveItem } from '@/common/utils';
+import { isEmpty, moveItem } from '@/common/utils';
 
 import BOOK from './const';
 
@@ -21,10 +21,12 @@ export const mutations = {
   [BOOK._MUTATES.SET_BOOK]: setBook,
   [BOOK._MUTATES.SET_SECTIONS]: setSections,
   [BOOK._MUTATES.SET_SHEETS]: setSheets,
-  [BOOK._MUTATES.UPDATE_SECTIONS](state, payload) {
-    const { sections } = payload;
+  [BOOK._MUTATES.UPDATE_SECTION](state, { id, status, dueDate, assigneeId }) {
+    if (!isEmpty(status)) state.sections[id].status = status;
 
-    state.book.sections = sections;
+    if (!isEmpty(dueDate)) state.sections[id].dueDate = dueDate;
+
+    if (!isEmpty(assigneeId)) state.sections[id].assigneeId = assigneeId;
   },
   [BOOK._MUTATES.UPDATE_SHEETS](state, payload) {
     const { sectionId, sheets } = payload;

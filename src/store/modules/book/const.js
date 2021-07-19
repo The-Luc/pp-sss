@@ -53,7 +53,7 @@ export const ACTIONS = new ActionClass(
 );
 
 class MutationClass extends BaseObject {
-  UPDATE_SECTIONS = 'updateSections';
+  UPDATE_SECTION = 'updateSection';
   MOVE_SECTION = 'moveSection';
   UPDATE_SHEETS = 'updateSheets';
   MOVE_SHEET = 'moveSheet';

@@ -13,18 +13,16 @@ import {
   GETTERS as BOOK_GETTERS,
   MUTATES as BOOK_MUTATES
 } from '@/store/modules/book/const';
-import { useBook, useMutationSection } from '@/hooks';
+
+import { useMutationSection, useSectionActionMenu } from '@/hooks';
 
 export default {
-  setup() {
-    const { updateSection } = useMutationSection();
-    const { book, getBook } = useBook();
-
-    return {
-      updateSection,
-      book,
-      getBook
-    };
+  components: {
+    Menu,
+    Calendar,
+    SectionStatus,
+    ButtonDelete,
+    ButtonAdd
   },
   props: [
     'menuX',
@@ -36,12 +34,26 @@ export default {
     'dueDate',
     'menuClass'
   ],
-  components: {
-    Menu,
-    Calendar,
-    SectionStatus,
-    ButtonDelete,
-    ButtonAdd
+  setup() {
+    const { updateSection: updateSectionDb } = useMutationSection();
+    const { updateSection } = useSectionActionMenu();
+
+    return {
+      updateSectionDb,
+      updateSection
+    };
+  },
+  data() {
+    return {
+      isOpenMenu: false,
+      isOpenCalendar: false,
+      isOpenStatus: false,
+      isOpenAssignee: false,
+      calendarWidth: 550,
+      statusWidth: 180,
+      subMenuPos: { x: 0, y: 0 },
+      minDate: new Date().toISOString().slice(0, 10)
+    };
   },
   computed: {
     ...mapGetters({
@@ -54,22 +66,15 @@ export default {
       let index = this.sections.findIndex(item => item.id === this.sectionId);
 
       return !(this.totalInfo.totalPages >= this.maxPage || !index);
+    },
+    isShowDelete() {
+      const index = this.sections.findIndex(item => item.id === this.sectionId);
+
+      const isCover = index === 0;
+      const isHalfSheet = index === 1 || index === this.sections.length - 1;
+
+      return !isCover && !isHalfSheet;
     }
-  },
-  data() {
-    return {
-      isOpenMenu: false,
-      isOpenCalendar: false,
-      isOpenStatus: false,
-      calendarX: 0,
-      calendarY: 0,
-      isShowDelete: false,
-      calendarWidth: 550,
-      statusX: 0,
-      statusY: 0,
-      statusWidth: 180,
-      minDate: new Date().toISOString().slice(0, 10)
-    };
   },
   watch: {
     dateSelected(val) {
@@ -86,7 +91,6 @@ export default {
   },
   mounted() {
     this.moreIcon = ICON_LOCAL.MORE_ICON;
-    this.setIsShowDelete();
   },
   methods: {
     ...mapMutations({
@@ -94,14 +98,6 @@ export default {
       addSheet: BOOK_MUTATES.ADD_SHEET,
       setSectionSelected: MUTATES.SET_SELECTION_SELECTED
     }),
-    setIsShowDelete() {
-      const index = this.sections.findIndex(item => item.id === this.sectionId);
-      if (index !== 0 && index !== 1 && index !== this.sections.length - 1) {
-        this.isShowDelete = true;
-      } else {
-        this.isShowDelete = false;
-      }
-    },
     onOpenModal(sectionId, sectionName) {
       this.toggleModal({
         isOpenModal: true,
@@ -125,17 +121,13 @@ export default {
     },
     openCalendar(event) {
       this.isOpenCalendar = true;
-      const parentElement = event.target.parentElement;
-      const { x, y } = parentElement.getBoundingClientRect();
-      this.calendarX = x - this.calendarWidth;
-      this.calendarY = y;
+
+      this.setSubMenuPosition(event.target, this.calendarWidth);
     },
     openSectionStatus(event) {
       this.isOpenStatus = true;
-      const parentElement = event.target.parentElement;
-      const { x, y } = parentElement.getBoundingClientRect();
-      this.statusX = x - this.statusWidth;
-      this.statusY = y;
+
+      this.setSubMenuPosition(event.target, this.statusWidth);
     },
     onItemClick({ event, item }) {
       switch (item.name) {
@@ -150,41 +142,45 @@ export default {
       }
     },
     setIsOpenMenu(sectionSelected) {
-      if (sectionSelected === this.sectionId) {
-        this.isOpenMenu = true;
-      } else {
-        this.isOpenMenu = false;
-      }
+      this.isOpenMenu = sectionSelected === this.sectionId;
     },
-    async onSelectedDate(date) {
+    async onChangeDueDate(date) {
       const dueDate = moment(date).format(DATE_FORMAT.BASE);
-      const { isSuccess } = await this.updateSection(
-        this.book.id,
-        this.sectionId,
-        {
-          dueDate
-        }
-      );
+
+      const { isSuccess } = await this.updateSectionDb(1719, this.sectionId, {
+        dueDate
+      });
+
       if (isSuccess) {
-        const section = this.book.sections.find(s => s.id === this.sectionId);
-        section.dueDate = dueDate;
+        this.updateSection({ id: this.sectionId, dueDate });
+
+        this.$emit('dueDateUpdate', { dueDate });
       }
+
       setTimeout(() => {
         this.isOpenCalendar = false;
       }, 0);
     },
-    async onSelectedStatus(status) {
-      const { isSuccess } = await this.updateSection(
-        this.book.id,
-        this.sectionId,
-        {
-          status: status.value
-        }
-      );
+    async onChangeStatus(status) {
+      const { isSuccess } = await this.updateSectionDb(1719, this.sectionId, {
+        status: status.value
+      });
+
       if (isSuccess) {
-        const section = this.book.sections.find(s => s.id === this.sectionId);
-        section.status = status.value;
+        this.updateSection({ id: this.sectionId, status: status.value });
+
+        this.$emit('statusUpdate', { status: status.value });
       }
+
+      setTimeout(() => {
+        this.isOpenStatus = false;
+      }, 0);
+    },
+    async onChangeAssignee({ id, name }) {
+      this.updateSection({ id: this.sectionId, assigneeId: id });
+
+      this.$emit('assigneeUpdate', { assignee: name });
+
       setTimeout(() => {
         this.isOpenStatus = false;
       }, 0);
@@ -201,6 +197,20 @@ export default {
         this.isOpenMenu = false;
         this.setSectionSelected('');
       }
+    },
+    /**
+     * Set sub menu position
+     *
+     * @param {Object}  element the target element when click
+     * @param {Number}  width   width of sub menu
+     */
+    setSubMenuPosition(element, width) {
+      const parentElement = element.parentElement;
+
+      const { x, y } = parentElement.getBoundingClientRect();
+
+      this.subMenuPos.x = x - width;
+      this.subMenuPos.y = y;
     }
   }
 };

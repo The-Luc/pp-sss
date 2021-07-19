@@ -4,6 +4,7 @@ import { MUTATES as APP_MUTATES } from '@/store/modules/app/const';
 
 import {
   GETTERS as BOOK_GETTERS,
+  MUTATES as BOOK_MUTATES,
   ACTIONS as BOOK_ACTIONS
 } from '@/store/modules/book/const';
 
@@ -41,4 +42,12 @@ export const useSummaryInfo = () => {
     specificationInfo,
     saleInfo
   };
+};
+
+export const useSectionActionMenu = () => {
+  const { updateSection } = useMutations({
+    updateSection: BOOK_MUTATES.UPDATE_SECTION
+  });
+
+  return { updateSection };
 };

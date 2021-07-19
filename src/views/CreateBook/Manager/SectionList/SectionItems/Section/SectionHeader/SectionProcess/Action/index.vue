@@ -26,23 +26,23 @@
     <Calendar
       v-if="isOpenCalendar"
       :date="dueDate"
+      :min-date="minDate"
       :is-open-calendar="isOpenCalendar"
       :calendar-width="calendarWidth"
-      :calendar-x="calendarX"
-      :min-date="minDate"
-      :calendar-y="calendarY"
-      @onClickOutSideCalendar="onClickOutSideCalendar"
-      @onSelectedDate="onSelectedDate"
+      :calendar-x="subMenuPos.x"
+      :calendar-y="subMenuPos.y"
+      @clickOutSide="onClickOutSideCalendar"
+      @change="onChangeDueDate"
     />
     <SectionStatus
       v-if="isOpenStatus"
       :status="status"
       :is-open-status="isOpenStatus"
       :status-width="statusWidth"
-      :status-x="statusX"
-      :status-y="statusY"
-      @onClickOutSideStatus="onClickOutSideStatus"
-      @onSelectedStatus="onSelectedStatus"
+      :status-x="subMenuPos.x"
+      :status-y="subMenuPos.y"
+      @clickOutSide="onClickOutSideStatus"
+      @change="onChangeStatus"
     />
   </div>
 </template>

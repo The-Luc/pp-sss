@@ -40,11 +40,11 @@ export default {
     };
   },
   methods: {
-    onSelectedStatus(status) {
-      this.$emit('onSelectedStatus', status);
+    onSelected(status) {
+      this.$emit('change', status);
     },
-    onClickOutSideStatus() {
-      this.$emit('onClickOutSideStatus');
+    onClickOutSide() {
+      this.$emit('clickOutSide');
     }
   }
 };

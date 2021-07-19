@@ -8,12 +8,15 @@
     <Action
       :due-date="section.dueDate"
       :section-name="section.name"
-      :items="items"
+      :items="menuItems"
       :menu-x="menuX"
       :menu-class="menuClass"
       :menu-y="menuY"
       :status="section.status"
       :section-id="section.id"
+      @statusUpdate="onStatusUpdate"
+      @dueDateUpdate="onDueDateUpdate"
+      @assigneeUpdate="onAssigneeUpdate"
     />
   </v-col>
 </template>

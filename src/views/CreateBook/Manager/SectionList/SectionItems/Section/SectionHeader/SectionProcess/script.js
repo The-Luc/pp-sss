@@ -32,7 +32,7 @@ export default {
       menuClass: 'pp-menu section-menu',
       processStatus,
       summaryEl: null,
-      items: [
+      menuItems: [
         {
           title: 'Status',
           value: this.getStatusName(this.section.status),
@@ -47,15 +47,6 @@ export default {
     ...mapGetters({
       sectionSelected: GETTERS.SECTION_SELECTED
     })
-  },
-  watch: {
-    'section.dueDate': function(val) {
-      this.items[1].value = val;
-    },
-    'section.status': function(val) {
-      const statusName = this.getStatusName(val);
-      this.items[0].value = this.convertTextCap(statusName);
-    }
   },
   created() {
     this.moreIcon = ICON_LOCAL.MORE_ICON;
@@ -77,29 +68,26 @@ export default {
       toggleModal: MUTATES.TOGGLE_MODAL
     }),
     getStatusName(status) {
-      let res = '';
-      Object.keys(PROCESS_STATUS).forEach(k => {
-        if (status === PROCESS_STATUS[k].value) {
-          res = PROCESS_STATUS[k].name;
-        }
-      });
-      return res;
+      const process = Object.values(PROCESS_STATUS).find(
+        ({ value }) => status === value
+      );
+
+      return process?.name;
     },
     convertTextCap(string) {
       return string.replace(/\b\w/g, l => l.toUpperCase());
     },
     setIsOpenMenu() {
       if (!this.sectionSelected || this.sectionSelected !== this.section.id) {
-        this.setSectionSelected({
-          sectionSelected: this.section.id
-        });
-      } else if (
-        this.sectionSelected &&
-        this.sectionSelected === this.section.id
-      ) {
-        this.setSectionSelected({
-          sectionSelected: ''
-        });
+        this.setSectionSelected({ sectionSelected: this.section.id });
+
+        return;
+      }
+
+      if (this.sectionSelected && this.sectionSelected === this.section.id) {
+        this.setSectionSelected({ sectionSelected: '' });
+
+        return;
       }
     },
     toggleMenu(event) {
@@ -127,6 +115,32 @@ export default {
         }
       }, 100);
       this.setIsOpenMenu();
+    },
+    /**
+     * Update menu itme value when status is changed
+     *
+     * @param {Number}  status  selected status
+     */
+    onStatusUpdate({ status }) {
+      const statusName = this.getStatusName(status);
+
+      this.menuItems[0].value = this.convertTextCap(statusName);
+    },
+    /**
+     * Update menu itme value when due date is changed
+     *
+     * @param {String}  dueDate selected due date
+     */
+    onDueDateUpdate({ dueDate }) {
+      this.menuItems[1].value = dueDate;
+    },
+    /**
+     * Update menu itme value when assignee is changed
+     *
+     * @param {String}  assignee  selected assignee
+     */
+    onAssigneeUpdate({ assignee }) {
+      this.menuItems[2].value = assignee;
     }
   }
 };
