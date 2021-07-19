@@ -1379,7 +1379,10 @@ export default {
       }
     },
     currentFrameId(val) {
-      if (!val) return;
+      if (!val) {
+        resetObjects(this.digitalCanvas);
+        return;
+      }
 
       this.setSelectedObjectId({ id: '' });
       this.setCurrentObject(null);
