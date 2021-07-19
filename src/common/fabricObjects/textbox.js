@@ -239,7 +239,8 @@ const applyTextProperties = function(text, prop) {
     !isEmpty(prop.style) ||
     !isEmpty(prop.lineSpacing) ||
     !isEmpty(prop.fontFamily) ||
-    !isEmpty(prop.charSpacing)
+    !isEmpty(prop.charSpacing) ||
+    !isEmpty(prop.textCase)
   ) {
     if (target.type === FABRIC_OBJECT_TYPE.TEXT) {
       target.fire('changed');
@@ -517,7 +518,7 @@ export const handleScalingText = (e, text) => {
   }
 };
 
-const getTextSizeWithPadding = text => {
+export const getTextSizeWithPadding = text => {
   const minWidth = text.getMinWidth();
   const minBoundingWidth = minWidth + (text.padding || 0) * 2;
 

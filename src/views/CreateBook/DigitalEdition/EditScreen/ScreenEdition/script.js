@@ -12,6 +12,7 @@ import {
   DEFAULT_IMAGE,
   DEFAULT_SHAPE,
   EDITION,
+  MODAL_TYPES,
   OBJECT_TYPE,
   SHEET_TYPE,
   TOOL_NAME
@@ -41,7 +42,8 @@ import {
   useInfoBar,
   useLayoutPrompt,
   useFrame,
-  useFrameSwitching
+  useFrameSwitching,
+  useModal
 } from '@/hooks';
 
 import {
@@ -100,6 +102,7 @@ export default {
     const { openPrompt } = useLayoutPrompt();
     const { handleSwitchFrame } = useFrameSwitching();
     const { frames, currentFrameId } = useFrame();
+    const { toggleModal, modalData } = useModal();
 
     return {
       setActiveEdition,
@@ -109,7 +112,9 @@ export default {
       setInfoBar,
       zoom,
       openPrompt,
-      handleSwitchFrame
+      handleSwitchFrame,
+      toggleModal,
+      modalData
     };
   },
   data() {
@@ -369,6 +374,10 @@ export default {
         this.setIsOpenProperties({ isOpen: false });
 
         this.setPropertiesObjectType({ type: '' });
+      }
+
+      if (this.modalData?.type === MODAL_TYPES.ADD_DIGITAL_FRAME) {
+        this.toggleModal({ isOpenModal: false });
       }
 
       this.stopAddingInstruction();

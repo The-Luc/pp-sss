@@ -25,7 +25,8 @@ export default {
     return {
       edition: EDITION.DIGITAL,
       initialData: {},
-      supplementalLayoutData: {}
+      supplementalLayoutData: {},
+      right: 0
     };
   },
   methods: {
@@ -69,13 +70,16 @@ export default {
   },
   mounted() {
     const styleRef = this.$el.style;
-    const { width, right } = this.$el.getBoundingClientRect();
+    const { width } = this.$el.getBoundingClientRect();
     const centerX = this.modalData?.props?.centerX;
     const left = centerX - width / 2;
+    const right = centerX + width / 2;
     if (right > window.innerWidth) {
       styleRef.right = 0;
+      this.right = `${window.innerWidth - centerX}px`;
     } else {
       styleRef.left = `${left}px`;
+      this.right = '50%';
     }
   }
 };

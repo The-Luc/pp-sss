@@ -6,6 +6,7 @@
       @close="onClose"
       @addFrame="onAddFrame"
     />
+    <div class="layout-modal-legend" :style="{ right }"></div>
   </div>
 </template>
 
