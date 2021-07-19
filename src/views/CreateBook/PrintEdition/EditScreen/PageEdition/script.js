@@ -18,14 +18,14 @@ import {
   pxToIn,
   resetObjects,
   inToPx,
-  clearClipboard,
   getMinPositionObject,
   computePastedObjectCoord,
   setBorderObject,
   setCanvasUniformScaling,
   setBorderHighLight,
   setActiveCanvas,
-  isNonElementPropSelected
+  isNonElementPropSelected,
+  copyPpObject
 } from '@/common/utils';
 
 import {
@@ -91,6 +91,7 @@ import {
 import { createImage } from '@/common/fabricObjects';
 import printService from '@/api/print';
 import { useAppCommon } from '@/hooks/common';
+import { EVENT_TYPE } from '@/common/constants/eventType';
 
 export default {
   components: {
@@ -542,42 +543,18 @@ export default {
     },
     /**
      * Function handle to set object(s) to clipboard when user press Ctrl + C (Windows), Command + C (macOS), or from action menu
+     * @param   {Object}  event event's clipboard
      */
     handleCopy(event) {
-      const activeObj = window.printCanvas.getActiveObject();
-
-      if (!activeObj) return;
-
-      if (event?.clipboardData) {
-        clearClipboard(event);
-      }
+      copyPpObject(
+        event,
+        this.currentObjects,
+        this.pageSelected,
+        window.printCanvas
+      );
 
       this.countPaste = 1;
       this.isProcessingPaste = false;
-      const activeObjClone = cloneDeep(activeObj);
-      let objects = [activeObjClone];
-
-      if (activeObjClone._objects) {
-        const specialObject = [OBJECT_TYPE.CLIP_ART, OBJECT_TYPE.TEXT].includes(
-          activeObjClone.objectType
-        );
-        objects = specialObject
-          ? [activeObjClone]
-          : [...activeObjClone._objects];
-        activeObjClone._restoreObjectsState();
-      }
-
-      const jsonData = objects.map(obj => ({
-        ...this.currentObjects[obj.id],
-        id: null
-      }));
-
-      const cacheData = {
-        sheetId: this.pageSelected.id,
-        fabric: activeObjClone,
-        [COPY_OBJECT_KEY]: jsonData
-      };
-      sessionStorage.setItem(COPY_OBJECT_KEY, JSON.stringify(cacheData));
     },
     /**
      * Auto resize canvas to fit the container size
@@ -1478,8 +1455,8 @@ export default {
           this.setToolNameSelected({ name: '' });
         },
 
-        printCopyObj: this.handleCopy,
-        printPasteObj: this.handlePaste,
+        [EVENT_TYPE.COPY_OBJ]: this.handleCopy,
+        [EVENT_TYPE.PASTE_OBJ]: this.handlePaste,
 
         pageNumber: this.addPageNumber
       };

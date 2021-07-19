@@ -5,6 +5,7 @@ import { ACTIONS } from '@/common/constants';
 import { GETTERS } from '@/store/modules/app/const';
 import { isEmpty, parsePasteObject } from '@/common/utils';
 import { COPY_OBJECT_KEY } from '@/common/constants/config';
+import { EVENT_TYPE } from '@/common/constants/eventType';
 
 export default {
   components: {
@@ -58,11 +59,11 @@ export default {
     onClick(actionValue) {
       if (actionValue === ACTIONS.COPY) {
         this.items[1].disabled = false;
-        this.$root.$emit('printCopyObj');
+        this.$root.$emit(EVENT_TYPE.COPY_OBJ);
       }
 
       if (actionValue === ACTIONS.PASTE) {
-        this.$root.$emit('printPasteObj');
+        this.$root.$emit(EVENT_TYPE.PASTE_OBJ);
       }
     },
     /**

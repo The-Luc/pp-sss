@@ -14,7 +14,9 @@ export const EVENT_TYPE = {
   DIGITAL_BACKGROUND_ADD: 'digitalAddBackground',
   DIGITAL_BACKGROUND_PROP_CHANGE: 'digitalChangeBackgroundProperties',
   DIGITAL_BACKGROUND_REMOVE: 'digitalDeleteBackground',
-  SWITCH_TOOL: 'switchTool'
+  SWITCH_TOOL: 'switchTool',
+  COPY_OBJ: 'copyObj',
+  PASTE_OBJ: 'pasteObj'
 };
 
 export const CANVAS_EVENT_TYPE = {
@@ -31,5 +33,7 @@ export const CANVAS_EVENT_TYPE = {
 };
 
 export const WINDOW_EVENT_TYPE = {
-  KEY_UP: 'keyup'
+  KEY_UP: 'keyup',
+  COPY: 'copy',
+  PASTE: 'paste'
 };

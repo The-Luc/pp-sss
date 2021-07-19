@@ -68,7 +68,8 @@ import {
   setBorderHighLight,
   setBorderObject,
   setCanvasUniformScaling,
-  isNonElementPropSelected
+  isNonElementPropSelected,
+  copyPpObject
 } from '@/common/utils';
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
 import { GETTERS } from '@/store/modules/book/const';
@@ -80,7 +81,8 @@ import {
 import { cloneDeep, debounce, merge, uniqueId } from 'lodash';
 import {
   MAX_SUPPLEMENTAL_FRAMES,
-  THUMBNAIL_IMAGE_QUALITY
+  THUMBNAIL_IMAGE_QUALITY,
+  COPY_OBJECT_KEY
 } from '@/common/constants/config';
 import { useAppCommon } from '@/hooks/common';
 
@@ -127,7 +129,9 @@ export default {
       visible: false,
       awaitingAdd: '',
       digitalCanvas: null,
-      showAddFrame: true
+      showAddFrame: true,
+      countPaste: 1,
+      isProcessingPaste: false
     };
   },
   computed: {
@@ -305,12 +309,24 @@ export default {
         }
       ];
 
+      const otherEvents = [
+        {
+          name: EVENT_TYPE.COPY_OBJ,
+          handler: this.handleCopy
+        },
+        {
+          name: EVENT_TYPE.PASTE_OBJ,
+          handler: this.handlePaste
+        }
+      ];
+
       const events = [
         ...elementEvents,
         ...backgroundEvents,
         ...textEvents,
         ...shapeEvents,
-        ...clipArtEvents
+        ...clipArtEvents,
+        ...otherEvents
       ];
 
       events.forEach(event => {
@@ -330,6 +346,14 @@ export default {
         {
           name: WINDOW_EVENT_TYPE.KEY_UP,
           handler: this.onKeyUp
+        },
+        {
+          name: WINDOW_EVENT_TYPE.COPY,
+          handler: this.handleCopy
+        },
+        {
+          name: WINDOW_EVENT_TYPE.PASTE,
+          handler: this.handlePaste
         }
       ];
 
@@ -1313,6 +1337,26 @@ export default {
      */
     handleShowAddFrame(frames) {
       this.showAddFrame = frames.length < MAX_SUPPLEMENTAL_FRAMES;
+    },
+    /**
+     * Function handle to set object(s) to clipboard when user press Ctrl + C (Windows), Command + C (macOS), or from action menu
+     * @param   {Object}  event event's clipboard
+     */
+    handleCopy(event) {
+      copyPpObject(
+        event,
+        this.currentObjects,
+        this.pageSelected,
+        window.digitalCanvas
+      );
+      this.countPaste = 1;
+      this.isProcessingPaste = false;
+    },
+    /**
+     * Function handle to get object(s) be copied from clipboard when user press Ctrl + V (Windows), Command + V (macOS), or from action menu
+     */
+    handlePaste(event) {
+      console.log('pasteObj');
     }
   },
   watch: {
