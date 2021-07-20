@@ -18,14 +18,13 @@ import {
   pxToIn,
   resetObjects,
   inToPx,
-  getMinPositionObject,
-  computePastedObjectCoord,
   setBorderObject,
   setCanvasUniformScaling,
   setBorderHighLight,
   setActiveCanvas,
   isNonElementPropSelected,
-  copyPpObject
+  copyPpObject,
+  pastePpObject
 } from '@/common/utils';
 
 import {
@@ -73,7 +72,6 @@ import {
   DEFAULT_SHAPE,
   COVER_TYPE,
   DEFAULT_CLIP_ART,
-  FABRIC_OBJECT_TYPE,
   DEFAULT_IMAGE,
   ACTIVE_EDITION
 } from '@/common/constants';
@@ -82,7 +80,6 @@ import PrintCanvasLines from './PrintCanvasLines';
 import PageWrapper from './PageWrapper';
 import XRuler from './Rulers/XRuler';
 import YRuler from './Rulers/YRuler';
-import { parsePasteObject } from '@/common/utils/string';
 import {
   COPY_OBJECT_KEY,
   PASTE,
@@ -434,93 +431,32 @@ export default {
       return svg;
     },
     /**
-     * Funtion recursive handle create object(s) and add to store through data be copied and return list object(s) processed
-     * @param {Array} objects - List object(s) copied
-     * @param {Number} sheetId - Current sheet id
-     * @param {Object} fabricObject Fabric's data
-     * @param {Number} minLeft Min left position of list objects
-     * @param {Number} minTop Min top position of list objects
-     * @returns {Arrray} List object(s) pasted
+     * Add element to the store and create fabric object
+     *
+     * @param {Object} newData PpData of the of a element {id, size, coord,...}
+     * @returns {Object} a fabric object
      */
-    async handlePasteItems(objects, sheetId, fabricObject, minLeft, minTop) {
-      return Promise.all(
-        objects.map(o => {
-          const obj = cloneDeep(o);
-
-          const coord = computePastedObjectCoord(
-            obj,
-            sheetId,
-            fabricObject,
-            minLeft,
-            minTop,
-            this.pageSelected,
-            this.countPaste
-          );
-
-          const newData = {
-            ...obj,
-            id: uniqueId(),
-            coord
-          };
-
-          // add to store
-          if (obj.type !== OBJECT_TYPE.BACKGROUND) {
-            this.addObjectToStore({
-              id: newData.id,
-              newObject: newData
-            });
-          }
-
-          // create fabric object
-          if (obj.type === OBJECT_TYPE.IMAGE) {
-            return this.createImageFromPpData(newData);
-          }
-
-          if (
-            obj.type === OBJECT_TYPE.CLIP_ART ||
-            obj.type === OBJECT_TYPE.SHAPE
-          ) {
-            return this.createSvgFromPpData(newData);
-          }
-
-          if (obj.type === OBJECT_TYPE.TEXT) {
-            return this.createTextFromPpData(newData);
-          }
-        })
-      );
-    },
-
-    /**
-     * Function handle active selection of object(s) pasted (single | multiplesingle)
-     * @param {Array} listPastedObjects - List object(s) pasted
-     * @param {Ref} canvas - Print canvas
-     */
-    setObjectPastetActiveSelection(listPastedObjects, canvas) {
-      if (listPastedObjects.length === 1) {
-        canvas.setActiveObject(listPastedObjects[0]);
-      } else if (listPastedObjects.length > 1) {
-        const sel = new fabric.ActiveSelection(listPastedObjects, {
-          canvas
+    createElementFromPpData(newData) {
+      if (newData.type !== OBJECT_TYPE.BACKGROUND) {
+        this.addObjectToStore({
+          id: newData.id,
+          newObject: newData
         });
-        canvas.setActiveObject(sel);
       }
-    },
-    /**
-     * Function clear object(s) copied when user paste data from outside while editing text
-     * @param {String} dataOutside Data copy from outside app
-     */
-    clearObjectCopied(dataOutside) {
-      if (!dataOutside) return;
 
-      const activeObj = window.printCanvas.getActiveObject();
-      const objectType = activeObj?.get('type');
+      if (newData.type === OBJECT_TYPE.IMAGE) {
+        return this.createImageFromPpData(newData);
+      }
 
       if (
-        dataOutside &&
-        objectType === FABRIC_OBJECT_TYPE.TEXT &&
-        activeObj?.isEditing
+        newData.type === OBJECT_TYPE.CLIP_ART ||
+        newData.type === OBJECT_TYPE.SHAPE
       ) {
-        sessionStorage.removeItem(COPY_OBJECT_KEY);
+        return this.createSvgFromPpData(newData);
+      }
+
+      if (newData.type === OBJECT_TYPE.TEXT) {
+        return this.createTextFromPpData(newData);
       }
     },
     /**
@@ -536,39 +472,15 @@ export default {
       if (this.isProcessingPaste) return;
       this.isProcessingPaste = true;
 
-      const objectCopy = sessionStorage.getItem(COPY_OBJECT_KEY);
-      const objects = parsePasteObject(objectCopy);
-
-      if (isEmpty(objects)) return;
-
-      let dataCopyOutside = (
-        event?.clipboardData || window?.clipboardData
-      )?.getData('text');
-
-      this.clearObjectCopied(dataCopyOutside);
-
-      if (dataCopyOutside) {
-        this.setProcessingPaste();
-        return;
-      }
-      const { sheetId, fabric } = JSON.parse(objectCopy);
-
-      const canvas = window.printCanvas;
-      canvas.discardActiveObject();
-
-      const { minLeft, minTop } = getMinPositionObject(fabric);
-
-      const listPastedObjects = await this.handlePasteItems(
-        objects,
-        sheetId,
-        fabric,
-        minLeft,
-        minTop
+      await pastePpObject(
+        event,
+        this.pageSelected,
+        this.countPaste,
+        this.createElementFromPpData,
+        this.setProcessingPaste,
+        window.printCanvas,
+        false
       );
-
-      canvas.add(...listPastedObjects);
-
-      this.setObjectPastetActiveSelection(listPastedObjects, canvas);
 
       this.countPaste += 1;
 

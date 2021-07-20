@@ -32,7 +32,10 @@ import {
   updateElement,
   addDigitalBackground,
   deleteObjectById,
-  enableTextEditMode
+  enableTextEditMode,
+  updateSpecificProp,
+  handleGetSvgData,
+  addEventListeners
 } from '@/common/fabricObjects';
 import { createImage } from '@/common/fabricObjects';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
@@ -69,7 +72,9 @@ import {
   setBorderObject,
   setCanvasUniformScaling,
   isNonElementPropSelected,
-  copyPpObject
+  copyPpObject,
+  inToPx,
+  pastePpObject
 } from '@/common/utils';
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
 import { GETTERS } from '@/store/modules/book/const';
@@ -82,7 +87,7 @@ import { cloneDeep, debounce, merge, uniqueId } from 'lodash';
 import {
   MAX_SUPPLEMENTAL_FRAMES,
   THUMBNAIL_IMAGE_QUALITY,
-  COPY_OBJECT_KEY
+  PASTE
 } from '@/common/constants/config';
 import { useAppCommon } from '@/hooks/common';
 
@@ -1355,8 +1360,171 @@ export default {
     /**
      * Function handle to get object(s) be copied from clipboard when user press Ctrl + V (Windows), Command + V (macOS), or from action menu
      */
-    handlePaste(event) {
-      console.log('pasteObj');
+    async handlePaste(event) {
+      if (this.isProcessingPaste) return;
+      this.isProcessingPaste = true;
+      await pastePpObject(
+        event,
+        this.pageSelected,
+        this.countPaste,
+        this.createElementFromPpData,
+        this.setProcessingPaste,
+        window.digitalCanvas,
+        true
+      );
+
+      this.countPaste += 1;
+
+      this.setProcessingPaste();
+    },
+    /**
+     * Set processing paste state when user pasted base on delay time
+     */
+    setProcessingPaste: debounce(function() {
+      this.isProcessingPaste = false;
+    }, PASTE.DELAY_TIME),
+    /**
+     * Add text to the store and create fabric object
+     *
+     * @param {Object} textProperties PpData of the of a text object {id, size, coord,...}
+     * @returns {Object} a fabric object
+     */
+    createTextFromPpData(textProperties) {
+      const {
+        coord,
+        size: { height, width }
+      } = textProperties;
+
+      const { object, data: objectData } = createTextBox(
+        inToPx(coord.x),
+        inToPx(coord.y),
+        inToPx(width),
+        inToPx(height),
+        textProperties
+      );
+
+      const {
+        newObject: {
+          shadow,
+          coord: { rotation }
+        }
+      } = objectData;
+
+      updateSpecificProp(object, {
+        coord: {
+          rotation
+        }
+      });
+
+      this.handleAddTextEventListeners(object, objectData);
+
+      const objects = object.getObjects();
+
+      objects.forEach(obj => {
+        applyShadowToObject(obj, shadow);
+      });
+
+      return object;
+    },
+
+    /**
+     * Add shape/ clipart to the store and create fabric object
+     *
+     * @param {Object} objectData PpData of the of a shape object {id, size, coord,...}
+     * @returns {Object} a fabric object
+     */
+    async createSvgFromPpData(objectData) {
+      const eventListeners = {
+        scaling: this.handleScaling,
+        scaled: this.handleScaled,
+        rotated: this.handleRotated,
+        moved: this.handleMoved
+      };
+
+      const svgObject = {
+        id: objectData.id,
+        object: objectData
+      };
+
+      const svg = await handleGetSvgData({
+        svg: svgObject,
+        svgUrlAttrName:
+          objectData.type === OBJECT_TYPE.CLIP_ART ? 'vector' : 'pathData',
+        expectedHeight: objectData.size.height,
+        expectedWidth: objectData.size.width
+      });
+
+      addEventListeners(svg, eventListeners);
+
+      const {
+        dropShadow,
+        shadowBlur,
+        shadowOffset,
+        shadowOpacity,
+        shadowAngle,
+        shadowColor
+      } = svg;
+
+      updateSpecificProp(svg, {
+        coord: {
+          rotation: objectData.coord.rotation
+        }
+      });
+
+      applyShadowToObject(svg, {
+        dropShadow,
+        shadowBlur,
+        shadowOffset,
+        shadowOpacity,
+        shadowAngle,
+        shadowColor
+      });
+      return svg;
+    },
+    /**
+     * Function handle add text event listeners
+     * @param {Element} group - Group object contains rect and text object
+     * @param {Object} data - Object's data
+     */
+    handleAddTextEventListeners(group, data) {
+      const [rect, text] = group._objects;
+
+      group.on({
+        rotated: this.handleRotated,
+        moved: this.handleMoved,
+        scaling: e => handleScalingText(e, text),
+        scaled: e => this.handleTextBoxScaled(e, rect, text, data),
+        mousedblclick: ({ target }) => this.handleDbClickText(target)
+      });
+    },
+    /**
+     * Add element to the store and create fabric object
+     *
+     * @param {Object} newData PpData of the of a element {id, size, coord,...}
+     * @returns {Object} a fabric object
+     */
+    createElementFromPpData(newData) {
+      if (newData.type !== OBJECT_TYPE.BACKGROUND) {
+        this.addNewObject({
+          id: newData.id,
+          newObject: newData
+        });
+      }
+
+      if (newData.type === OBJECT_TYPE.IMAGE) {
+        return createImage(newData);
+      }
+
+      if (
+        newData.type === OBJECT_TYPE.CLIP_ART ||
+        newData.type === OBJECT_TYPE.SHAPE
+      ) {
+        return this.createSvgFromPpData(newData);
+      }
+
+      if (newData.type === OBJECT_TYPE.TEXT) {
+        return this.createTextFromPpData(newData);
+      }
     }
   },
   watch: {
