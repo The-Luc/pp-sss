@@ -4,12 +4,18 @@
     &-group {
       padding: 0 10px;
     }
+
     &--active {
-      background-color: #eaf2f5;
+      background-color: $color-blue1;
+
+      &::before,
+      &::after {
+        display: none;
+      }
     }
 
     &__title {
-      color: #565656;
+      color: $color-gray5;
       text-transform: capitalize;
     }
   }

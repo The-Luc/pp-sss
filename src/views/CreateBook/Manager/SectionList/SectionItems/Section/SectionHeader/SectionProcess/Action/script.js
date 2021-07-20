@@ -279,9 +279,12 @@ export default {
      * @param {String}          name  selected community member name
      */
     async onChangeAssignee({ id, name }) {
-      this.updateSection({ id: this.sectionId, assigneeId: id });
+      const assigneeId = this.assigneeId === id ? -1 : id;
+      const assignee = this.assigneeId === id ? '' : name;
 
-      this.$emit('assigneeUpdate', { assignee: name });
+      this.updateSection({ id: this.sectionId, assigneeId });
+
+      this.$emit('assigneeUpdate', { assignee });
 
       setTimeout(() => {
         this.isOpenAssignee = false;

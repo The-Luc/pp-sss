@@ -6,6 +6,7 @@ import Action from './Action';
 import { GETTERS, MUTATES } from '@/store/modules/app/const';
 
 import { ICON_LOCAL, PROCESS_STATUS } from '@/common/constants';
+import { isEmpty } from '@/common/utils';
 
 export default {
   props: {
@@ -140,7 +141,9 @@ export default {
      * @param {String}  assignee  selected assignee
      */
     onAssigneeUpdate({ assignee }) {
-      this.menuItems[2].value = assignee;
+      const name = isEmpty(assignee) ? 'Unassigned' : assignee;
+
+      this.menuItems[2].value = name;
     }
   }
 };
