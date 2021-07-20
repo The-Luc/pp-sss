@@ -1,15 +1,10 @@
-import { mapMutations } from 'vuex';
 import DragDropControl from '@/components/DragDrops/DragDropControl';
-import { MUTATES as BOOK_MUTATES } from '@/store/modules/book/const';
+
+import { useSectionName } from '@/hooks';
 
 export default {
   components: {
     DragDropControl
-  },
-  data() {
-    return {
-      sectionNameCurrent: this.sectionName
-    };
   },
   props: {
     sectionId: {
@@ -23,21 +18,33 @@ export default {
     sectionColor: {
       type: String,
       require: true
+    },
+    isEnable: {
+      type: Boolean,
+      default: false
     }
   },
+  setup() {
+    const { changeName } = useSectionName();
+
+    return { changeName };
+  },
+  data() {
+    return {
+      sectionNameCurrent: this.sectionName,
+      isEditMode: false
+    };
+  },
   methods: {
-    ...mapMutations({
-      editSectionName: BOOK_MUTATES.EDIT_SECTION_NAME
-    }),
     saveTitle() {
       this.sectionNameCurrent = this.sectionNameCurrent.trim() || 'Untitled';
-      this.editSectionName({
+
+      this.changeName({
         sectionName: this.sectionNameCurrent,
         sectionId: this.sectionId
       });
-      const { text, input } = this.$refs;
-      text.style.display = 'block';
-      input.style.display = 'none';
+
+      this.isEditMode = false;
     },
     keyUpEnter(event) {
       event.target.blur();
@@ -47,14 +54,24 @@ export default {
       this.sectionNameCurrent = this.sectionName;
       this.saveTitle();
     },
+    /**
+     * Focus to name input control
+     *
+     * @param {Object}  event event fire when click on section name
+     */
     click(event) {
       event.stopPropagation();
+
+      if (!this.isEnable) return;
+
       const { text, input } = this.$refs;
-      const width = text.clientWidth;
-      text.style.display = 'none';
-      input.style.display = 'block';
-      input.style.width = width + 'px';
-      input.focus();
+
+      // 2 is border width (left + right)
+      input.style.width = text.clientWidth + 2 + 'px';
+
+      this.isEditMode = true;
+
+      setTimeout(() => input.focus(), 20);
     }
   }
 };

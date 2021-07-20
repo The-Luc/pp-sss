@@ -2,7 +2,10 @@ import { useGetters, useMutations, useActions } from 'vuex-composition-helpers';
 
 import managerService from '@/api/manager';
 
-import { MUTATES as APP_MUTATES } from '@/store/modules/app/const';
+import {
+  GETTERS as APP_GETTERS,
+  MUTATES as APP_MUTATES
+} from '@/store/modules/app/const';
 
 import {
   GETTERS as BOOK_GETTERS,
@@ -60,10 +63,50 @@ export const useAssigneeMenu = () => {
   return { getUsers };
 };
 
-export const dueDateMenu = () => {
+export const useDueDateMenu = () => {
   const { specialDates } = useGetters({
     specialDates: BOOK_GETTERS.BOOK_DATES
   });
 
   return { specialDates };
+};
+
+const useCurrentUser = () => {
+  const { currentUser } = useGetters({
+    currentUser: APP_GETTERS.USER
+  });
+
+  return { currentUser };
+};
+
+export const useSectionControl = () => {
+  const { totalSection } = useGetters({
+    totalSection: BOOK_GETTERS.TOTAL_SECTION
+  });
+
+  const { addSection } = useMutations({
+    addSection: BOOK_MUTATES.ADD_SECTION
+  });
+
+  return { ...useCurrentUser(), totalSection, addSection };
+};
+
+export const useSectionItems = () => {
+  const { sections } = useGetters({
+    sections: BOOK_GETTERS.SECTIONS
+  });
+
+  const { moveSection } = useMutations({
+    moveSection: BOOK_MUTATES.MOVE_SECTION
+  });
+
+  return { ...useCurrentUser(), sections, moveSection };
+};
+
+export const useSectionName = () => {
+  const { changeName } = useMutations({
+    changeName: BOOK_MUTATES.EDIT_SECTION_NAME
+  });
+
+  return { changeName };
 };

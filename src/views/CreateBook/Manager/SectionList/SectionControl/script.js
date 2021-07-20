@@ -1,25 +1,27 @@
-import { mapGetters, mapMutations } from 'vuex';
+import { useSectionControl } from '@/hooks';
 
-import {
-  MUTATES as BOOK_MUTATES,
-  GETTERS as BOOK_GETTERS
-} from '@/store/modules/book/const';
+import { ROLE, MAX_SECTION } from '@/common/constants';
 
 const COLLAPSE = 'collapse';
 const EXPAND = 'expand';
 
 export default {
+  setup() {
+    const { currentUser, totalSection, addSection } = useSectionControl();
+
+    return { currentUser, totalSection, addSection };
+  },
   data() {
     return {
       isCollapse: true
     };
   },
   computed: {
-    ...mapGetters({
-      getTotalSections: BOOK_GETTERS.GET_TOTAL_SECTIONS
-    }),
     isDisableAdd() {
-      return this.getTotalSections >= 50;
+      return this.totalSection >= MAX_SECTION;
+    },
+    isEnable() {
+      return this.currentUser?.role === ROLE.ADMIN;
     }
   },
   mounted: function() {
@@ -28,11 +30,13 @@ export default {
     });
   },
   methods: {
-    ...mapMutations({
-      addSection: BOOK_MUTATES.ADD_SECTION
-    }),
-    toggleDetail: function(ev) {
-      const button = ev.target.closest('#btn-ec-all');
+    /**
+     * Collapse / Expand all section
+     *
+     * @param {Object}  event event fire when click on Collapse / Expand All Section
+     */
+    toggleDetail(event) {
+      const button = event.target.closest('#btn-ec-all');
       const collapse = button.getAttribute('data-toggle');
 
       const sectionHeaders = document.getElementsByClassName('section-header');
@@ -43,7 +47,10 @@ export default {
 
       this.isCollapse = collapse !== COLLAPSE;
     },
-    toggleEcButton: function() {
+    /**
+     * Set text / data toggle for Collapse / Expand All Section button
+     */
+    toggleEcButton() {
       const sectionCollaps = document.querySelectorAll(
         '.section-header:not([data-toggle="' + EXPAND + '"])'
       );

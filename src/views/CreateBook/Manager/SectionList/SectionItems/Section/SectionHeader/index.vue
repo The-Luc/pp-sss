@@ -15,8 +15,9 @@
           :section-id="section.id"
           :section-name="section.name"
           :section-color="section.color"
+          :is-enable="isEnable"
         />
-        <SectionProcess :section="section" />
+        <SectionProcess :section="section" :is-enable="isEnable" />
       </v-row>
     </v-col>
   </v-row>

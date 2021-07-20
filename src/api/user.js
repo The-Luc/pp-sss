@@ -13,7 +13,7 @@ export const getCurrentUserApi = () => {
       return;
     }
 
-    resolve(new User({ id, role }));
+    resolve(new User({ id: parseInt(id, 10), role: parseInt(role, 10) }));
   });
 };
 

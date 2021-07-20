@@ -1,93 +1,126 @@
-import { mapGetters, mapMutations } from 'vuex';
 import Draggable from 'vuedraggable';
-
-import { GETTERS, MUTATES } from '@/store/modules/book/const';
-
 import Section from './Section';
 
-let selectedIndex = -1;
-let moveToIndex = -1;
+import { useSectionItems } from '@/hooks';
+
+import { ROLE } from '@/common/constants';
 
 export default {
   components: {
     Section,
     Draggable
   },
+  setup() {
+    const { currentUser, sections, moveSection } = useSectionItems();
+
+    return { currentUser, sections, moveSection };
+  },
   data() {
     return {
-      drag: false
+      drag: false,
+      selectedIndex: -1,
+      moveToIndex: -1,
+      dragTargetBeforeId: null,
+      dragTargetAfterId: null
     };
   },
   computed: {
-    ...mapGetters({
-      sections: GETTERS.SECTIONS
-    })
+    isEnable() {
+      return this.currentUser?.role === ROLE.ADMIN;
+    }
   },
   methods: {
-    ...mapMutations({
-      updateSectionPosition: MUTATES.MOVE_SECTION
-    }),
-    onChoose: function(evt) {
-      moveToIndex = -1;
+    /**
+     * Choose section event
+     *
+     * @param {Object}  event event fire when choose a section
+     */
+    onChoose(event) {
+      this.moveToIndex = -1;
 
-      selectedIndex = this.sections[evt.oldIndex].draggable ? evt.oldIndex : -1;
+      this.selectedIndex = this.sections[event.oldIndex].draggable
+        ? event.oldIndex
+        : -1;
     },
-    onMove: function(evt) {
-      this.hideAllIndicator();
+    /**
+     * Drag section event
+     *
+     * @param {Object}  event event fire when drag a section
+     */
+    onMove(event) {
+      this.clearDragTarget();
 
-      if (selectedIndex < 0) {
+      if (this.selectedIndex < 0) {
         return false;
       }
 
-      if (evt.related === null) {
+      if (event.related === null) {
         return false;
       }
 
-      moveToIndex = evt.draggedContext.futureIndex;
+      this.moveToIndex = event.draggedContext.futureIndex;
 
-      if (moveToIndex === selectedIndex) {
-        moveToIndex = -1;
+      if (this.moveToIndex === this.selectedIndex) {
+        this.moveToIndex = -1;
 
         return false;
       }
 
-      const relateSection = evt.relatedContext.element;
+      const relateSection = event.relatedContext.element;
 
       const isAllowMoveTo = !relateSection || relateSection.draggable;
 
       if (!isAllowMoveTo) {
-        moveToIndex = -1;
+        this.moveToIndex = -1;
 
         return false;
       }
 
-      if (moveToIndex < selectedIndex) {
-        this.$root.$emit('showIndicator', 'section-top-' + relateSection.id);
-      } else if (moveToIndex > selectedIndex) {
-        this.$root.$emit('showIndicator', 'section-bottom-' + relateSection.id);
+      if (this.moveToIndex < this.selectedIndex) {
+        this.dragTargetBeforeId = relateSection?.id;
+      } else if (this.moveToIndex > this.selectedIndex) {
+        this.dragTargetAfterId = relateSection?.id;
       }
 
       return false;
     },
-    onEnd: function() {
-      this.hideAllIndicator();
+    /**
+     * Unchoose section event
+     */
+    onUnchoose() {
+      this.clearDragTarget();
+    },
+    /**
+     * End drag (drop) section
+     */
+    onEnd() {
+      this.clearDragTarget();
 
-      if (selectedIndex < 0 || moveToIndex < 0) {
+      if (this.selectedIndex < 0 || this.moveToIndex < 0) {
         return;
       }
 
-      this.updateSectionPosition({
-        moveToIndex: moveToIndex,
-        selectedIndex: selectedIndex
+      this.moveSection({
+        moveToIndex: this.moveToIndex,
+        selectedIndex: this.selectedIndex
       });
 
-      selectedIndex = -1;
-      moveToIndex = -1;
+      this.selectedIndex = -1;
+      this.moveToIndex = -1;
     },
-    hideAllIndicator: function() {
-      this.$root.$emit('hideIndicator');
+    /**
+     * Clear drag target
+     */
+    clearDragTarget() {
+      this.dragTargetBeforeId = null;
+      this.dragTargetAfterId = null;
     },
-    getTotalSheetUntilLastSection: function(index) {
+    /**
+     * Get total sheet from first section to current section
+     *
+     * @returns {Number}  total sheet
+     */
+    getTotalSheetUntilLastSection(index) {
       if (index === 0 || this.sections.length == 0) {
         return 0;
       }
@@ -100,8 +133,24 @@ export default {
         return a + v;
       });
     },
-    getStartSeq: function(index) {
+    /**
+     * Get the first sequence of sheet in section, continue from previous section
+     *
+     * @returns {Number}  the sequence
+     */
+    getStartSeq(index) {
       return this.getTotalSheetUntilLastSection(index) + 1;
+    },
+    /**
+     * Get drag target type (before / after or nothing)
+     *
+     * @param   {Number | String} id  section id
+     * @returns {String}              drag target type
+     */
+    getDragTargetType({ id }) {
+      if (this.dragTargetBeforeId === id) return 'before';
+
+      return this.dragTargetAfterId === id ? 'after' : '';
     }
   }
 };

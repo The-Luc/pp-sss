@@ -3,9 +3,11 @@
     <Draggable
       v-model="sections"
       class="col"
+      :disabled="!isEnable"
       :move="onMove"
       @choose="onChoose"
       @start="drag = true"
+      @unchoose="onUnchoose"
       @end="onEnd"
     >
       <Section
@@ -13,6 +15,8 @@
         :key="section.id"
         :start-sequence="getStartSeq(index)"
         :section="section"
+        :is-enable="isEnable"
+        :drag-target-type="getDragTargetType(section)"
       ></Section>
     </Draggable>
   </v-row>

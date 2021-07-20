@@ -30,21 +30,16 @@ $width: 12px;
             padding-right: 4px;
             height: 100%;
             border: 1px dashed transparent;
-            &:hover {
-              border: 1px dashed $color-gray;
+            &:not(.disabled):hover {
+              border-color: $color-gray;
             }
           }
 
           input {
-            display: none;
             padding: 2px;
             padding-right: 4px;
             min-width: 25%;
             height: 100%;
-            border: 1px dashed transparent;
-            &:hover {
-              border: 1px dashed $color-gray;
-            }
 
             &:focus {
               outline: none;

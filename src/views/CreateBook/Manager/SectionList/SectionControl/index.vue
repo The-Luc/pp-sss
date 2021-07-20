@@ -1,5 +1,5 @@
 <template>
-  <v-row>
+  <v-row v-if="isEnable">
     <v-col class="section-control">
       <v-btn id="btn-ec-all" data-toggle="collapse" @click="toggleDetail"
         >{{ isCollapse ? 'Expand' : 'Collapse' }} All Sections</v-btn

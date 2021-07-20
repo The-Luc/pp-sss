@@ -10,7 +10,7 @@ import {
 } from '@/common/utils';
 
 export const getters = {
-  [BOOK._GETTERS.GET_TOTAL_INFO]: ({ book }) => {
+  [BOOK._GETTERS.TOTAL_INFO]: ({ book }) => {
     return {
       totalPages: book.totalPages,
       totalSheets: book.totalSheets,
@@ -36,7 +36,7 @@ export const getters = {
       color: sections[id].color
     }));
   },
-  [BOOK._GETTERS.GET_TOTAL_SECTIONS]: ({ sectionIds }) => {
+  [BOOK._GETTERS.TOTAL_SECTION]: ({ sectionIds }) => {
     return sectionIds.length;
   },
   [BOOK._GETTERS.GET_MAX_PAGE]: ({ book }) => {

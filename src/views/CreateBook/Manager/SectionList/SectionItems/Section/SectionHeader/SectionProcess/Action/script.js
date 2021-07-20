@@ -89,7 +89,7 @@ export default {
       sectionSelected: GETTERS.SECTION_SELECTED,
       sections: BOOK_GETTERS.SECTIONS_NO_SHEET,
       maxPage: BOOK_GETTERS.GET_MAX_PAGE,
-      totalInfo: BOOK_GETTERS.GET_TOTAL_INFO
+      totalInfo: BOOK_GETTERS.TOTAL_INFO
     }),
     isShowAdd() {
       let index = this.sections.findIndex(item => item.id === this.sectionId);

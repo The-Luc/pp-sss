@@ -1,6 +1,6 @@
 import moment from 'moment';
 
-import { dueDateMenu } from '@/hooks';
+import { useDueDateMenu } from '@/hooks';
 
 const daysOfWeek = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
 
@@ -27,7 +27,7 @@ export default {
     }
   },
   setup() {
-    const { specialDates } = dueDateMenu();
+    const { specialDates } = useDueDateMenu();
 
     return { specialDates };
   },

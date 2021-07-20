@@ -15,4 +15,4 @@
 
 <script src="./script.js"></script>
 
-<style lang="scss" scoped src="./style.scss" />
+<style lang="scss" src="./style.scss" scoped />

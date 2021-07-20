@@ -11,10 +11,18 @@
     />
 
     <div class="input-container" @click="click">
-      <div ref="text" class="text">
+      <div
+        v-show="!isEditMode"
+        ref="text"
+        class="text"
+        :class="!isEnable && 'disabled'"
+      >
         {{ sectionNameCurrent }}
       </div>
+
       <input
+        v-if="isEnable"
+        v-show="isEditMode"
         ref="input"
         v-model="sectionNameCurrent"
         type="text"

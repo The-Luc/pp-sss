@@ -16,6 +16,10 @@ export default {
     section: {
       type: Object,
       require: true
+    },
+    isEnable: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -41,8 +45,15 @@ export default {
         this.isOpenMenu = false;
       }
     },
-    toggleDetail: function(ev) {
-      const sectionHeader = ev.target.closest('.section-header');
+    /**
+     * Toggle section detail
+     *
+     * @param {Object}  event event fire when click on section header
+     */
+    toggleDetail(event) {
+      if (!this.isEnable) return;
+
+      const sectionHeader = event.target.closest('.section-header');
 
       const isCollapse = sectionHeader.getAttribute('data-toggle') !== COLLAPSE;
 

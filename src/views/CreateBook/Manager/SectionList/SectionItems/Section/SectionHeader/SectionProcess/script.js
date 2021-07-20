@@ -9,15 +9,19 @@ import { ICON_LOCAL, PROCESS_STATUS } from '@/common/constants';
 import { isEmpty } from '@/common/utils';
 
 export default {
+  components: {
+    ProcessBar,
+    Action
+  },
   props: {
     section: {
       type: Object,
       require: true
+    },
+    isEnable: {
+      type: Boolean,
+      default: false
     }
-  },
-  components: {
-    ProcessBar,
-    Action
   },
   data() {
     const processStatus = {};
@@ -78,7 +82,12 @@ export default {
     convertTextCap(string) {
       return string.replace(/\b\w/g, l => l.toUpperCase());
     },
+    /**
+     * Set open menu by mutate selected section id
+     */
     setIsOpenMenu() {
+      if (!this.isEnable) return;
+
       if (!this.sectionSelected || this.sectionSelected !== this.section.id) {
         this.setSectionSelected({ sectionSelected: this.section.id });
 
