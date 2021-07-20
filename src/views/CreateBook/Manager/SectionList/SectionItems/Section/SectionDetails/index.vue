@@ -14,6 +14,7 @@
         :move="onMove"
         @choose="onChoose"
         @start="drag = true"
+        @unchoose="onUnchoose"
         @end="onEnd"
       >
         <Sheet
@@ -22,7 +23,8 @@
           :sequence="startSequence + index"
           :section-id="sectionId"
           :sheet="sheet"
-        ></Sheet>
+          :drag-target-type="getDragTargetType(sheet)"
+        />
       </Draggable>
 
       <Draggable
@@ -40,7 +42,8 @@
           :sequence="-1"
           :section-id="sectionId"
           :sheet="getVirtualSheet()"
-        ></Sheet>
+          :drag-target-type="getDragTargetType({ id: -sectionId })"
+        />
       </Draggable>
     </v-col>
   </v-row>

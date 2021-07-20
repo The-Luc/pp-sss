@@ -6,17 +6,22 @@ import Action from './Action';
 import { GETTERS, MUTATES } from '@/store/modules/app/const';
 
 import { ICON_LOCAL, PROCESS_STATUS } from '@/common/constants';
+import { isEmpty } from '@/common/utils';
 
 export default {
+  components: {
+    ProcessBar,
+    Action
+  },
   props: {
     section: {
       type: Object,
       require: true
+    },
+    isEnable: {
+      type: Boolean,
+      default: false
     }
-  },
-  components: {
-    ProcessBar,
-    Action
   },
   data() {
     const processStatus = {};
@@ -39,7 +44,7 @@ export default {
           name: 'status'
         },
         { title: 'Due Date', value: this.section.dueDate, name: 'dueDate' },
-        { title: 'Assigned To', value: 'Unassigned', name: 'assigned' }
+        { title: 'Assigned To', value: 'Unassigned', name: 'assignee' }
       ]
     };
   },
@@ -77,7 +82,12 @@ export default {
     convertTextCap(string) {
       return string.replace(/\b\w/g, l => l.toUpperCase());
     },
+    /**
+     * Set open menu by mutate selected section id
+     */
     setIsOpenMenu() {
+      if (!this.isEnable) return;
+
       if (!this.sectionSelected || this.sectionSelected !== this.section.id) {
         this.setSectionSelected({ sectionSelected: this.section.id });
 
@@ -117,7 +127,7 @@ export default {
       this.setIsOpenMenu();
     },
     /**
-     * Update menu itme value when status is changed
+     * Update menu item value when status is changed
      *
      * @param {Number}  status  selected status
      */
@@ -127,7 +137,7 @@ export default {
       this.menuItems[0].value = this.convertTextCap(statusName);
     },
     /**
-     * Update menu itme value when due date is changed
+     * Update menu item value when due date is changed
      *
      * @param {String}  dueDate selected due date
      */
@@ -135,12 +145,14 @@ export default {
       this.menuItems[1].value = dueDate;
     },
     /**
-     * Update menu itme value when assignee is changed
+     * Update menu item value when assignee is changed
      *
      * @param {String}  assignee  selected assignee
      */
     onAssigneeUpdate({ assignee }) {
-      this.menuItems[2].value = assignee;
+      const name = isEmpty(assignee) ? 'Unassigned' : assignee;
+
+      this.menuItems[2].value = name;
     }
   }
 };

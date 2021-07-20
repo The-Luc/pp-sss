@@ -1,23 +1,12 @@
-import { useGetters, useMutations } from 'vuex-composition-helpers';
+import { useBookName } from '@/hooks/header';
 
-import {
-  GETTERS as APP_GETTERS,
-  MUTATES as APP_MUTATES
-} from '@/store/modules/app/const';
+import { ROLE } from '@/common/constants';
 
 export default {
   setup() {
-    const { info } = useGetters({
-      info: APP_GETTERS.GENERAL_INFO
-    });
-    const { setInfo } = useMutations({
-      setInfo: APP_MUTATES.SET_GENERAL_INFO
-    });
+    const { currentUser, generalInfo, setInfo } = useBookName();
 
-    return {
-      info,
-      setInfo
-    };
+    return { currentUser, generalInfo, setInfo };
   },
   data() {
     return {
@@ -26,8 +15,13 @@ export default {
       isCancel: false
     };
   },
+  computed: {
+    isEnable() {
+      return this.currentUser.role === ROLE.ADMIN;
+    }
+  },
   watch: {
-    info: {
+    generalInfo: {
       deep: true,
       handler(info) {
         this.rootTitle = info.title;
@@ -36,8 +30,8 @@ export default {
     }
   },
   mounted() {
-    this.title = this.info.title;
-    this.rootTitle = this.info.title;
+    this.title = this.generalInfo.title;
+    this.rootTitle = this.generalInfo.title;
   },
   methods: {
     onCancel() {
@@ -57,7 +51,7 @@ export default {
         return;
       }
 
-      this.setInfo({ ...this.info, title: this.title });
+      this.setInfo({ ...this.generalInfo, title: this.title });
     }
   }
 };

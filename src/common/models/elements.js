@@ -6,7 +6,8 @@ import {
   DEFAULT_SHAPE,
   DEFAULT_CLIP_ART,
   DEFAULT_SHADOW,
-  DEFAULT_BORDER
+  DEFAULT_BORDER,
+  DEFAULT_IMAGE
 } from '@/common/constants';
 
 export const BaseElement = {
@@ -92,7 +93,8 @@ export const ImageElement = {
     cropBottom: 0,
     cropLeft: 0,
     cropRight: 0
-  }
+  },
+  isConstrain: DEFAULT_IMAGE.IS_CONSTRAIN
 };
 
 export const BackgroundElement = {

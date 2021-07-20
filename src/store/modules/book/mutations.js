@@ -138,7 +138,7 @@ export const mutations = {
   [BOOK._MUTATES.ADD_SECTION](state) {
     const { releaseDate } = state.book;
 
-    const newId = state.sectionIds[state.sectionIds.length - 1] + 1;
+    const newId = Math.max(...state.sectionIds) + 1;
 
     state.sections = {
       ...state.sections,
@@ -151,13 +151,8 @@ export const mutations = {
 
     state.sectionIds.splice(state.sectionIds.length - 1, 0, newId);
   },
-  [BOOK._MUTATES.EDIT_SECTION_NAME](state, payload) {
-    const { sectionId } = payload;
-    let { sectionName } = payload;
-    sectionName = sectionName || 'Untitled';
-    const { sections } = state.book;
-    const indexSection = sections.findIndex(item => item.id == sectionId);
-    state.book.sections[indexSection].name = sectionName;
+  [BOOK._MUTATES.EDIT_SECTION_NAME](state, { sectionId, sectionName }) {
+    state.sections[sectionId].name = sectionName;
   },
   [BOOK._MUTATES.GET_BOOK_SUCCESS](state, payload) {
     state.book = payload;

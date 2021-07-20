@@ -16,11 +16,16 @@ export default {
     section: {
       type: Object,
       require: true
+    },
+    isEnable: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
     return {
-      isOpenMenu: false
+      isOpenMenu: false,
+      isDragControlDisplayed: false
     };
   },
   computed: {
@@ -41,8 +46,15 @@ export default {
         this.isOpenMenu = false;
       }
     },
-    toggleDetail: function(ev) {
-      const sectionHeader = ev.target.closest('.section-header');
+    /**
+     * Toggle section detail
+     *
+     * @param {Object}  event event fire when click on section header
+     */
+    toggleDetail(event) {
+      if (!this.isEnable) return;
+
+      const sectionHeader = event.target.closest('.section-header');
 
       const isCollapse = sectionHeader.getAttribute('data-toggle') !== COLLAPSE;
 
@@ -50,7 +62,7 @@ export default {
 
       const img = sectionHeader
         .querySelector('.section-name')
-        .querySelector('img');
+        .querySelector('.v-icon');
 
       img.setAttribute('data-toggle', isCollapse ? COLLAPSE : EXPAND);
 
@@ -61,28 +73,17 @@ export default {
 
       this.$root.$emit('toggleSection');
     },
-    showDragControl: function(evt) {
-      const sectionHeader = evt.target.closest('.section-header');
-
-      if (sectionHeader.getAttribute('data-draggable') !== 'true') {
-        return;
-      }
-
-      this.$root.$emit('showDragControl', 'section' + this.section.id);
+    /**
+     * Show the drag control when hover & enable & draggable
+     */
+    showDragControl() {
+      this.isDragControlDisplayed = this.isEnable && this.section.draggable;
     },
-    hideDragControl: function() {
-      this.$root.$emit('hideDragControl');
-    },
-    getSection: function() {
-      const { id, name, color, dueDate, status } = this.section;
-
-      return {
-        id: id,
-        name: name,
-        color: color,
-        dueDate: dueDate,
-        status: status
-      };
+    /**
+     * Hide the drag control when mouse out
+     */
+    hideDragControl() {
+      this.isDragControlDisplayed = false;
     }
   }
 };

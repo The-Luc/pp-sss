@@ -1,12 +1,18 @@
-import { mapGetters } from 'vuex';
-import { BOOK_NUMBER_TYPE, SCREEN } from '@/common/constants/book';
 import Number from './Number';
 import LineVertical from '../LineVertical';
-import { GETTERS as APP_GETTERS } from '@/store/modules/app/const';
+
+import { BOOK_NUMBER_TYPE, SCREEN } from '@/common/constants/book';
+
 export default {
   components: {
     Number,
     LineVertical
+  },
+  props: {
+    numberInfo: {
+      type: Object,
+      required: true
+    }
   },
   data() {
     return {
@@ -14,11 +20,6 @@ export default {
       bookNumberType: BOOK_NUMBER_TYPE,
       screen: SCREEN
     };
-  },
-  computed: {
-    ...mapGetters({
-      info: APP_GETTERS.GENERAL_INFO
-    })
   },
   watch: {
     $route(to) {

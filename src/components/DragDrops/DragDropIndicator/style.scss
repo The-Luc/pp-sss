@@ -1,4 +1,6 @@
 .indicator {
+  display: none;
+
   > div {
     height: 2px;
     background-color: $color-stoodio-blue;

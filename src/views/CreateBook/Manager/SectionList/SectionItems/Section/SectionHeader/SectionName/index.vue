@@ -1,20 +1,26 @@
 <template>
   <v-col class="col-9 section-name">
-    <DragDropControl :id="'section' + sectionId" />
+    <DragDropControl :class="!isDragControlDisplayed && 'invisible'" />
 
     <span class="dot" :style="'background-color: ' + sectionColor"></span>
 
-    <img
-      src="@/assets/icons/collapse.svg"
-      data-toggle="collapse"
-      alt="expand/collapse icon"
-    />
+    <v-icon :class="!isEnable && 'disabled'" data-toggle="collapse">
+      arrow_right
+    </v-icon>
 
     <div class="input-container" @click="click">
-      <div ref="text" class="text">
+      <div
+        v-show="!isEditMode"
+        ref="text"
+        class="text"
+        :class="!isEnable && 'disabled'"
+      >
         {{ sectionNameCurrent }}
       </div>
+
       <input
+        v-if="isEnable"
+        v-show="isEditMode"
         ref="input"
         v-model="sectionNameCurrent"
         type="text"

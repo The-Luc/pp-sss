@@ -10,8 +10,8 @@ class GetterClass extends BaseObject {
   SELECTED_OBJECT_TYPE = 'selectedObjectType';
   BOOK_DATES = 'getBookDates';
   SECTIONS_NO_SHEET = 'getSectionsWithoutSheet';
-  GET_TOTAL_INFO = 'getTotalInfo';
-  GET_TOTAL_SECTIONS = 'getTotalSections';
+  TOTAL_INFO = 'getTotalInfo';
+  TOTAL_SECTION = 'getTotalSections';
   GET_MAX_PAGE = 'getMaxPage';
   TOTAL_MONTH_SHOW_ON_CHART = 'totalMonthShowOnChart';
   TOTAL_DAYS_SHOW_ON_CHART = 'totalDayShowOnChart';

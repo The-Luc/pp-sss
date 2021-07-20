@@ -1,6 +1,9 @@
 import BookInformation from './BookInformation';
 import BookControl from './BookControl';
 import BookNumber from './BookNumber';
+
+import { useHeader } from '@/hooks/header';
+
 import { ROUTE_NAME } from '@/common/constants';
 
 export default {
@@ -9,10 +12,22 @@ export default {
     BookControl,
     BookNumber
   },
+  setup() {
+    const { generalInfo } = useHeader();
+
+    return { generalInfo };
+  },
   data() {
     return {
-      showHeader: true
+      isHeaderDisplayed: true
     };
+  },
+  computed: {
+    numberInfo() {
+      const { totalSheet, totalPage, totalScreen } = this.generalInfo;
+
+      return { totalSheet, totalPage, totalScreen };
+    }
   },
   watch: {
     ['$route.name'](name) {
@@ -20,12 +35,16 @@ export default {
     }
   },
   methods: {
+    /**
+     * Check if should be show the header in selected route
+     *
+     * @param {String}  name  route name
+     */
     checkShowHeader(name) {
-      if (name === ROUTE_NAME.PRINT_EDIT || name === ROUTE_NAME.DIGITAL_EDIT) {
-        this.showHeader = false;
-      } else {
-        this.showHeader = true;
-      }
+      const isPrintEdition = name === ROUTE_NAME.PRINT_EDIT;
+      const isDigitalEdition = name === ROUTE_NAME.DIGITAL_EDIT;
+
+      this.isHeaderDisplayed = !isPrintEdition && !isDigitalEdition;
     }
   },
   created() {

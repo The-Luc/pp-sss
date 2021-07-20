@@ -26,7 +26,7 @@ export default {
       window.sessionStorage.setItem('userRole', ROLE[data.role]);
     },
     onChangeCover(data) {
-      window.sessionStorage.setItem('bookCoverType', data);
+      window.sessionStorage.setItem('bookCoverType', data.name);
     },
     onCancel() {
       this.$refs.maxPageInput.blur();

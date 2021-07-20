@@ -3,6 +3,7 @@ import ButtonAdd from '@/components/Menu/ButtonAdd';
 import Menu from '@/components/Menu';
 import Calendar from './Calendar';
 import SectionStatus from './SectionStatus';
+import Assignee from './Assignee';
 
 import { mapGetters, mapMutations } from 'vuex';
 import moment from 'moment';
@@ -21,19 +22,45 @@ export default {
     Menu,
     Calendar,
     SectionStatus,
+    Assignee,
     ButtonDelete,
     ButtonAdd
   },
-  props: [
-    'menuX',
-    'menuY',
-    'items',
-    'sectionId',
-    'status',
-    'sectionName',
-    'dueDate',
-    'menuClass'
-  ],
+  props: {
+    menuX: {
+      type: Number,
+      default: 0
+    },
+    menuY: {
+      type: Number,
+      default: 0
+    },
+    items: {
+      type: Array,
+      default: () => []
+    },
+    sectionId: {
+      type: [String, Number],
+      default: ''
+    },
+    status: {
+      type: [String, Number],
+      default: 0
+    },
+    sectionName: {
+      type: String
+    },
+    dueDate: {
+      type: String
+    },
+    menuClass: {
+      type: String
+    },
+    assigneeId: {
+      type: [String, Number],
+      default: ''
+    }
+  },
   setup() {
     const { updateSection: updateSectionDb } = useMutationSection();
     const { updateSection } = useSectionActionMenu();
@@ -51,8 +78,10 @@ export default {
       isOpenAssignee: false,
       calendarWidth: 550,
       statusWidth: 180,
+      assigneeWidth: 267,
       subMenuPos: { x: 0, y: 0 },
-      minDate: new Date().toISOString().slice(0, 10)
+      minDate: new Date().toISOString().slice(0, 10),
+      componentKey: true
     };
   },
   computed: {
@@ -60,7 +89,7 @@ export default {
       sectionSelected: GETTERS.SECTION_SELECTED,
       sections: BOOK_GETTERS.SECTIONS_NO_SHEET,
       maxPage: BOOK_GETTERS.GET_MAX_PAGE,
-      totalInfo: BOOK_GETTERS.GET_TOTAL_INFO
+      totalInfo: BOOK_GETTERS.TOTAL_INFO
     }),
     isShowAdd() {
       let index = this.sections.findIndex(item => item.id === this.sectionId);
@@ -107,28 +136,82 @@ export default {
         }
       });
     },
-    onClickOutSideCalendar() {
+    /**
+     * Close sub menu calendar when click outside it
+     */
+    onClickOutsideCalendar() {
       this.isOpenCalendar = false;
     },
-    onClickOutSideStatus() {
+    /**
+     * Close sub menu status when click outside it
+     */
+    onClickOutsideStatus() {
       this.isOpenStatus = false;
     },
-    onClickOutSideMenu() {
-      if (this.isOpenMenu && !this.isOpenCalendar && !this.isOpenStatus) {
+    /**
+     * Close sub menu assignee when click outside it
+     */
+    onClickOutsideAssignee() {
+      this.isOpenAssignee = false;
+    },
+    /**
+     * Close sub menu when click outside it
+     */
+    onClickOutsideMenu() {
+      const isSubMenuOpen =
+        this.isOpenStatus || this.isOpenCalendar || this.isOpenAssignee;
+
+      if (this.isOpenMenu && !isSubMenuOpen) {
         this.isOpenMenu = false;
         this.setSectionSelected('');
       }
     },
+    /**
+     * Open calendar sub menu
+     *
+     * @param {Object}  event the event fire when click
+     */
     openCalendar(event) {
-      this.isOpenCalendar = true;
-
-      this.setSubMenuPosition(event.target, this.calendarWidth);
+      this.isOpenCalendar = this.toggleSubMenu(
+        event.target,
+        this.isOpenCalendar,
+        this.calendarWidth
+      );
     },
+    /**
+     * Open status sub menu
+     *
+     * @param {Object}  event the event fire when click
+     */
     openSectionStatus(event) {
-      this.isOpenStatus = true;
-
-      this.setSubMenuPosition(event.target, this.statusWidth);
+      this.isOpenStatus = this.toggleSubMenu(
+        event.target,
+        this.isOpenStatus,
+        this.statusWidth
+      );
     },
+    /**
+     * Open assignee sub menu
+     *
+     * @param {Object}  event the event fire when click
+     */
+    openAssignee(event) {
+      const isOpen = this.toggleSubMenu(
+        event.target,
+        this.isOpenAssignee,
+        this.assigneeWidth
+      );
+
+      if (isOpen) this.componentKey = !this.componentKey;
+
+      this.isOpenAssignee = isOpen;
+    },
+    /**
+     * Menu item click event
+     *
+     * @param {Object}  event the event fire when click
+     * @param {Object}  item  clicked item
+     */
     onItemClick({ event, item }) {
       switch (item.name) {
         case 'dueDate':
@@ -137,6 +220,9 @@ export default {
         case 'status':
           this.openSectionStatus(event);
           break;
+        case 'assignee':
+          this.openAssignee(event);
+          break;
         default:
           break;
       }
@@ -144,7 +230,12 @@ export default {
     setIsOpenMenu(sectionSelected) {
       this.isOpenMenu = sectionSelected === this.sectionId;
     },
-    async onChangeDueDate(date) {
+    /**
+     * Fire when user click to select due date
+     *
+     * @param {String}  date  selected date
+     */
+    async onChangeDueDate({ date }) {
       const dueDate = moment(date).format(DATE_FORMAT.BASE);
 
       const { isSuccess } = await this.updateSectionDb(1719, this.sectionId, {
@@ -161,7 +252,12 @@ export default {
         this.isOpenCalendar = false;
       }, 0);
     },
-    async onChangeStatus(status) {
+    /**
+     * Fire when user click to select a status
+     *
+     * @param {Number}  status selected status
+     */
+    async onChangeStatus({ status }) {
       const { isSuccess } = await this.updateSectionDb(1719, this.sectionId, {
         status: status.value
       });
@@ -176,13 +272,22 @@ export default {
         this.isOpenStatus = false;
       }, 0);
     },
+    /**
+     * Fire when user click to select a community member to assign
+     *
+     * @param {String | Number} id    selected community member id
+     * @param {String}          name  selected community member name
+     */
     async onChangeAssignee({ id, name }) {
-      this.updateSection({ id: this.sectionId, assigneeId: id });
+      const assigneeId = this.assigneeId === id ? -1 : id;
+      const assignee = this.assigneeId === id ? '' : name;
 
-      this.$emit('assigneeUpdate', { assignee: name });
+      this.updateSection({ id: this.sectionId, assigneeId });
+
+      this.$emit('assigneeUpdate', { assignee });
 
       setTimeout(() => {
-        this.isOpenStatus = false;
+        this.isOpenAssignee = false;
       }, 0);
     },
     onAddSheet(sectionId) {
@@ -197,6 +302,21 @@ export default {
         this.isOpenMenu = false;
         this.setSectionSelected('');
       }
+    },
+    /**
+     * Toggle sub menu
+     *
+     * @param   {Object}  element the target element when click
+     * @param   {Boolean} isOpen  is sub menu open or not
+     * @param   {Number}  width   width of sub menu
+     * @returns {Boolean}         sub menu should be open or not
+     */
+    toggleSubMenu(element, isOpen, width) {
+      if (isOpen) return false;
+
+      this.setSubMenuPosition(element, width);
+
+      return true;
     },
     /**
      * Set sub menu position

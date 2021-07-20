@@ -174,20 +174,34 @@ export const toFabricTextGroupProp = prop => {
  * @param   {Object}  prop  stored image properties
  * @returns {Object}        fabric properties
  */
-export const toFabricImageProp = prop => {
+export const toFabricImageProp = (prop, originalElement) => {
   const mapRules = {
     data: {
       type: DEFAULT_RULE_DATA.TYPE,
       x: DEFAULT_RULE_DATA.X,
       y: DEFAULT_RULE_DATA.Y,
-      color: {
-        name: 'fill'
+      horizontal: DEFAULT_RULE_DATA.HORIZONTAL,
+      vertical: DEFAULT_RULE_DATA.VERTICAL,
+      width: {
+        name: 'scaleX',
+        parse: value => {
+          if (originalElement) {
+            return inToPx(value) / originalElement.width;
+          }
+          return 1;
+        }
       },
-      opacity: {
-        name: 'opacity'
+      height: {
+        name: 'scaleY',
+        parse: value => {
+          if (originalElement) {
+            return inToPx(value) / originalElement.height;
+          }
+          return 1;
+        }
       }
     },
-    restrict: ['border', 'shadow', 'flip', 'size', 'rotation', 'centerCrop']
+    restrict: ['border', 'rotation', 'centerCrop']
   };
   return mapObject(prop, mapRules);
 };
@@ -322,6 +336,10 @@ const getFabricPropByType = (elementType, prop, element) => {
 
   if (elementType === OBJECT_TYPE.CLIP_ART) {
     return toFabricClipArtProp(prop, element);
+  }
+
+  if (elementType === OBJECT_TYPE.IMAGE) {
+    return toFabricImageProp(prop, element);
   }
 
   return {};

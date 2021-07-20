@@ -1,27 +1,23 @@
 <template>
-  <v-row class="section-item">
+  <v-row class="section-item" :class="dragTargetCssClass">
     <v-col>
-      <DragDropIndicator
-        :id="'section-top-' + section.id"
-        custom-class-name="indicator-top"
-      />
+      <DragDropIndicator custom-class-name="indicator-top" />
 
-      <Header :section="getSection()" />
+      <Header :section="getSection()" :is-enable="isEnable" />
 
       <Details
         :start-sequence="startSequence"
         :section-id="section.id"
         :sheets="section.sheets"
+        :drag-target="dragSheetTarget"
+        @dragSheetTargetChange="onDragSheetTargetChange"
       />
 
-      <DragDropIndicator
-        :id="'section-bottom-' + section.id"
-        custom-class-name="indicator-bottom"
-      />
+      <DragDropIndicator custom-class-name="indicator-bottom" />
     </v-col>
   </v-row>
 </template>
 
 <script src="./script.js"></script>
 
-<style lang="scss" src="./style.scss"></style>
+<style lang="scss" src="./style.scss" scoped />
