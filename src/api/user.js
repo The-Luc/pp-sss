@@ -2,6 +2,8 @@ import { User } from '@/common/models/user';
 
 import { isEmpty } from '@/common/utils';
 
+import { communityUsers } from '@/mock/users';
+
 export const getCurrentUserApi = () => {
   return new Promise(resolve => {
     const id = window.sessionStorage.getItem('userId');
@@ -17,6 +19,15 @@ export const getCurrentUserApi = () => {
   });
 };
 
+export const getUsersApi = () => {
+  return new Promise(resolve => {
+    setTimeout(() => {
+      resolve(communityUsers.map(u => new User(u)));
+    });
+  });
+};
+
 export default {
-  getCurrentUser: getCurrentUserApi
+  getCurrentUser: getCurrentUserApi,
+  getUsers: getUsersApi
 };

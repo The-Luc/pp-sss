@@ -63,11 +63,12 @@ export default {
   },
   setup() {
     const { updateSection: updateSectionDb } = useMutationSection();
-    const { updateSection } = useSectionActionMenu();
+    const { updateSection, updateAssignee } = useSectionActionMenu();
 
     return {
       updateSectionDb,
-      updateSection
+      updateSection,
+      updateAssignee
     };
   },
   data() {
@@ -282,7 +283,7 @@ export default {
       const assigneeId = this.assigneeId === id ? -1 : id;
       const assignee = this.assigneeId === id ? '' : name;
 
-      this.updateSection({ id: this.sectionId, assigneeId });
+      await this.updateAssignee({ id: this.sectionId, assigneeId });
 
       this.$emit('assigneeUpdate', { assignee });
 

@@ -39,6 +39,7 @@ export const GETTERS = new GetterClass(
 
 class ActionClass extends BaseObject {
   GET_BOOK = 'getBook';
+  UPDATE_ASSIGNEE = 'updateAssignee';
 
   constructor(props) {
     super(props);
