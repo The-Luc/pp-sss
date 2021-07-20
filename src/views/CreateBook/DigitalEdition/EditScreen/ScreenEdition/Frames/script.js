@@ -5,7 +5,6 @@ import FrameMenu from './FrameMenu';
 
 import { useFrameOrdering, useFrame, useFrameAdd, useModal } from '@/hooks';
 
-import { isEmpty } from '@/common/utils';
 import { MODAL_TYPES } from '@/common/constants';
 
 export default {
@@ -49,28 +48,6 @@ export default {
       handleAddFrame,
       setCurrentFrameId
     };
-  },
-  computed: {
-    frameList() {
-      const defaultData = [
-        {
-          id: 0,
-          frame: {
-            image: '',
-            type: null,
-            id: 0,
-            fromLayout: true
-          }
-        }
-      ];
-      // if there are no frame => render default one
-      if (isEmpty(this.frames)) return defaultData;
-
-      // if there are only supplemental frames => render a blank frame at 1st position
-      const hasPackageFrame = this.frames.some(item => item?.frame?.fromLayout);
-
-      return hasPackageFrame ? this.frames : [...defaultData, ...this.frames];
-    }
   },
   methods: {
     /**
@@ -228,7 +205,7 @@ export default {
       this.moveToIndex = -1;
 
       setTimeout(() => {
-        this.$emit('onFrameClick', this.frameList[selectedIndex]?.id);
+        this.$emit('onFrameClick', this.frames[selectedIndex]?.id);
       }, 20);
     }
   }
