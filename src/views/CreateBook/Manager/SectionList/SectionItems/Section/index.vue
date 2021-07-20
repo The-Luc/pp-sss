@@ -9,6 +9,8 @@
         :start-sequence="startSequence"
         :section-id="section.id"
         :sheets="section.sheets"
+        :drag-target="dragSheetTarget"
+        @dragSheetTargetChange="onDragSheetTargetChange"
       />
 
       <DragDropIndicator custom-class-name="indicator-bottom" />

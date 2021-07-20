@@ -17,7 +17,9 @@
         :section="section"
         :is-enable="isEnable"
         :drag-target-type="getDragTargetType(section)"
-      ></Section>
+        :drag-sheet-target="dragSheetTarget"
+        @dragSheetTargetChange="onDragSheetTargetChange"
+      />
     </Draggable>
   </v-row>
 </template>

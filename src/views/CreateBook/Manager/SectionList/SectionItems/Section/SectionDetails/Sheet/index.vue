@@ -1,5 +1,5 @@
 <template>
-  <v-col class="sheet-box">
+  <v-col class="sheet-box" :class="dragTargetCssClass">
     <v-row>
       <DragDropIndicator
         :id="'sheet-left-' + sheet.id"
@@ -14,7 +14,7 @@
             @mouseover="showDragControl"
             @mouseleave="hideDragControl"
           >
-            <DragDropControl :id="'sheet' + sheet.id" />
+            <DragDropControl :class="!isDragControlDisplayed && 'invisible'" />
 
             <div v-if="onCheckActions()" class="menu">
               <img

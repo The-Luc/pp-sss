@@ -25,6 +25,10 @@ export default {
     },
     dragTargetType: {
       type: String
+    },
+    dragSheetTarget: {
+      type: Object,
+      default: () => ({})
     }
   },
   computed: {
@@ -47,6 +51,15 @@ export default {
       } = this.section;
 
       return { id, name, color, dueDate, draggable, status, assigneeId };
+    },
+    /**
+     * Fire when dragging shet target change
+     *
+     * @param {String | Number} id        target sheet id
+     * @param {String}          position  target location (before or after)
+     */
+    onDragSheetTargetChange({ id, position }) {
+      this.$emit('dragSheetTargetChange', { id, position });
     }
   }
 };

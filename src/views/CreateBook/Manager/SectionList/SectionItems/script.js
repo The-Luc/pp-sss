@@ -21,7 +21,8 @@ export default {
       selectedIndex: -1,
       moveToIndex: -1,
       dragTargetBeforeId: null,
-      dragTargetAfterId: null
+      dragTargetAfterId: null,
+      dragSheetTarget: {}
     };
   },
   computed: {
@@ -151,6 +152,15 @@ export default {
       if (this.dragTargetBeforeId === id) return 'before';
 
       return this.dragTargetAfterId === id ? 'after' : '';
+    },
+    /**
+     * Fire when dragging shet target change
+     *
+     * @param {String | Number} id        target sheet id
+     * @param {String}          position  target location (before or after)
+     */
+    onDragSheetTargetChange({ id, position }) {
+      this.dragSheetTarget = { id, position };
     }
   }
 };

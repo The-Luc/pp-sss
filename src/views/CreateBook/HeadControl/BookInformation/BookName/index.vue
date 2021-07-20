@@ -3,6 +3,7 @@
     <v-text-field
       ref="nameInput"
       v-model="title"
+      :disabled="!isEnable"
       counter="10"
       maxlength="50"
       @blur="onSubmit"

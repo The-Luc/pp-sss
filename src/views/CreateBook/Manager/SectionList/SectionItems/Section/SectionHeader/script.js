@@ -24,7 +24,8 @@ export default {
   },
   data() {
     return {
-      isOpenMenu: false
+      isOpenMenu: false,
+      isDragControlDisplayed: false
     };
   },
   computed: {
@@ -61,7 +62,7 @@ export default {
 
       const img = sectionHeader
         .querySelector('.section-name')
-        .querySelector('img');
+        .querySelector('.v-icon');
 
       img.setAttribute('data-toggle', isCollapse ? COLLAPSE : EXPAND);
 
@@ -72,17 +73,17 @@ export default {
 
       this.$root.$emit('toggleSection');
     },
-    showDragControl: function(evt) {
-      const sectionHeader = evt.target.closest('.section-header');
-
-      if (sectionHeader.getAttribute('data-draggable') !== 'true') {
-        return;
-      }
-
-      this.$root.$emit('showDragControl', 'section' + this.section.id);
+    /**
+     * Show the drag control when hover & enable & draggable
+     */
+    showDragControl() {
+      this.isDragControlDisplayed = this.isEnable && this.section.draggable;
     },
-    hideDragControl: function() {
-      this.$root.$emit('hideDragControl');
+    /**
+     * Hide the drag control when mouse out
+     */
+    hideDragControl() {
+      this.isDragControlDisplayed = false;
     }
   }
 };

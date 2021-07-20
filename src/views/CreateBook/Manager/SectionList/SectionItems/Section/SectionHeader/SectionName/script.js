@@ -22,6 +22,10 @@ export default {
     isEnable: {
       type: Boolean,
       default: false
+    },
+    isDragControlDisplayed: {
+      type: Boolean,
+      default: false
     }
   },
   setup() {

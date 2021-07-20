@@ -22,6 +22,18 @@
           margin: $length-sheet-padding;
           margin-bottom: 0;
 
+          &.drag-target-before {
+            .indicator-left {
+              display: block;
+            }
+          }
+
+          &.drag-target-after {
+            .indicator-right {
+              display: block;
+            }
+          }
+
           .sheet {
             position: relative;
             height: 140px;

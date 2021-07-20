@@ -13,6 +13,8 @@ import {
   ACTIONS as BOOK_ACTIONS
 } from '@/store/modules/book/const';
 
+// TODO: refactoring later to make it common
+
 export const useManager = () => {
   const { setInfo } = useMutations({
     setInfo: APP_MUTATES.SET_GENERAL_INFO

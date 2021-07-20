@@ -1,5 +1,5 @@
 <template>
-  <div class="drag-control invisible">
+  <div class="drag-control">
     <div>
       <span></span>
       <span></span>
