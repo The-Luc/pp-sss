@@ -297,7 +297,40 @@ export default {
      * @returns {Object} a fabric object
      */
     async createImageFromPpData(imageProperties) {
+      const eventListeners = {
+        scaling: this.handleScaling,
+        scaled: this.handleScaled,
+        rotated: this.handleRotated,
+        moved: this.handleMoved
+      };
+
       const image = await createImage(imageProperties);
+
+      addEventListeners(image, eventListeners);
+
+      const {
+        dropShadow,
+        shadowBlur,
+        shadowOffset,
+        shadowOpacity,
+        shadowAngle,
+        shadowColor
+      } = image;
+
+      applyShadowToObject(image, {
+        dropShadow,
+        shadowBlur,
+        shadowOffset,
+        shadowOpacity,
+        shadowAngle,
+        shadowColor
+      });
+
+      updateSpecificProp(image, {
+        coord: {
+          rotation: imageProperties.coord.rotation
+        }
+      });
 
       return image;
     },
@@ -893,10 +926,18 @@ export default {
           imageUrl: DEFAULT_IMAGE.IMAGE_URL
         }
       });
+      const eventListeners = {
+        scaling: this.handleScaling,
+        scaled: this.handleScaled,
+        rotated: this.handleRotated,
+        moved: this.handleMoved
+      };
 
       this.addObjectToStore(newImage);
 
       const image = await createImage(newImage.newObject);
+      addEventListeners(image, eventListeners);
+
       window.printCanvas.add(image);
       selectLatestObject(window.printCanvas);
     },
@@ -1070,6 +1111,9 @@ export default {
         case OBJECT_TYPE.TEXT:
           this.changeTextProperties(prop);
           break;
+        case OBJECT_TYPE.IMAGE:
+          this.changeImageProperties(prop);
+          break;
         default:
           return;
       }
@@ -1101,6 +1145,14 @@ export default {
             currentWidthInch,
             currentHeightInch,
             DEFAULT_CLIP_ART.MIN_SIZE
+          );
+          break;
+        case OBJECT_TYPE.IMAGE:
+          scale = calcScaleElement(
+            width,
+            currentWidthInch,
+            currentHeightInch,
+            DEFAULT_IMAGE.MIN_SIZE
           );
           break;
         default:
@@ -1160,6 +1212,18 @@ export default {
             DEFAULT_CLIP_ART.MIN_SIZE
           );
           this.changeClipArtProperties(prop);
+          break;
+        }
+
+        case OBJECT_TYPE.IMAGE: {
+          const prop = mappingElementProperties(
+            currentWidthInch,
+            currentHeightInch,
+            currentXInch,
+            currentYInch,
+            DEFAULT_IMAGE.MIN_SIZE
+          );
+          this.changeImageProperties(prop);
           break;
         }
         default:
@@ -1247,6 +1311,14 @@ export default {
         OBJECT_TYPE.CLIP_ART,
         this.updateTriggerClipArtChange
       );
+    },
+    /**
+     * Event fire when user change any property of selected image box
+     *
+     * @param {Object}  prop  new prop
+     */
+    changeImageProperties(prop) {
+      this.changeElementProperties(prop, OBJECT_TYPE.IMAGE);
     },
     /**
      * Change properties of current element
@@ -1385,6 +1457,9 @@ export default {
         case OBJECT_TYPE.TEXT:
           this.changeTextProperties(prop);
           break;
+        case OBJECT_TYPE.IMAGE:
+          this.changeImageProperties(prop);
+          break;
         default:
           return;
       }
@@ -1427,6 +1502,10 @@ export default {
         changeClipArtProperties: this.changeClipArtProperties
       };
 
+      const imageBoxEvents = {
+        changeImageProperties: this.changeImageProperties
+      };
+
       const otherEvents = {
         printSwitchTool: toolName => {
           const isDiscard =
@@ -1467,6 +1546,7 @@ export default {
         ...backgroundEvents,
         ...shapeEvents,
         ...clipArtEvents,
+        ...imageBoxEvents,
         ...otherEvents
       };
 

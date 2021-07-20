@@ -1,8 +1,13 @@
 <template>
   <div>
-    <div :class="[{ active: isActive }, 'thumbnail-view-thumbnail']">
+    <div
+      :class="[{ active: isActive }, 'thumbnail-view-thumbnail']"
+      :style="{
+        backgroundImage: `url(${image})`,
+        backgroundSize: 'cover'
+      }"
+    >
       <div class="border-inside"></div>
-      <img :src="image" alt="thumbnail" />
       <div v-if="edit" class="thumbnail-edit">
         <router-link tag="div" :to="toLink">
           <v-icon class="icon-edit">edit</v-icon>
