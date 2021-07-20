@@ -6,7 +6,6 @@ import AddBoxInstruction from '@/components/AddBoxInstruction';
 import Frames from './Frames';
 import { useDigitalOverrides } from '@/plugins/fabric';
 import {
-  ACTIVE_EDITION,
   ARRANGE_SEND,
   DEFAULT_CLIP_ART,
   DEFAULT_IMAGE,
@@ -84,7 +83,6 @@ import {
   THUMBNAIL_IMAGE_QUALITY,
   COPY_OBJECT_KEY
 } from '@/common/constants/config';
-import { useAppCommon } from '@/hooks/common';
 
 const ELEMENTS = {
   [OBJECT_TYPE.TEXT]: 'a text box',
@@ -98,7 +96,6 @@ export default {
     Frames
   },
   setup() {
-    const { setActiveEdition } = useAppCommon();
     const { drawLayout } = useDrawLayout();
     const { setInfoBar, zoom } = useInfoBar();
     const { openPrompt } = useLayoutPrompt();
@@ -107,7 +104,6 @@ export default {
     const { toggleModal, modalData } = useModal();
 
     return {
-      setActiveEdition,
       frames,
       currentFrameId,
       drawLayout,
@@ -1408,15 +1404,10 @@ export default {
       }
     }
   },
-  mounted() {
-    this.setActiveEdition(ACTIVE_EDITION.DIGITAL);
-  },
   beforeDestroy() {
     this.digitalCanvas = null;
 
     this.updateDigitalEventListeners(false);
     this.updateWindowEventListeners(false);
-
-    this.setActiveEdition(ACTIVE_EDITION.NONE);
   }
 };

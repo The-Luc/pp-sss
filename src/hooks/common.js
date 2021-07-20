@@ -15,11 +15,11 @@ export const useAppCommon = () => {
     isDigitalEdition: APP_GETTERS.IS_DIGITAL_ACTIVE
   });
 
-  const { toggleEdition } = useMutations({
-    toggleEdition: APP_MUTATES.SET_ACTIVE_EDITION
+  const { setEdition } = useMutations({
+    setEdition: APP_MUTATES.SET_ACTIVE_EDITION
   });
 
-  const setActiveEdition = edition => toggleEdition({ edition });
+  const setActiveEdition = edition => setEdition({ edition });
 
   return {
     activeEdition,

@@ -1,12 +1,14 @@
 import PpSelect from '@/components/Selectors/Select';
+import PpButton from '@/components/Buttons/Button';
 
-import { ROLE, COVER_TYPE } from '@/common/constants';
+import { ROLE, COVER_TYPE, ROUTE_NAME } from '@/common/constants';
 
 import { users } from '@/mock/users';
 
 export default {
   components: {
-    PpSelect
+    PpSelect,
+    PpButton
   },
   data() {
     return {
@@ -33,9 +35,12 @@ export default {
       this.$refs.maxPageInput.blur();
     },
     onSubmit() {
-      if (!this.maxPage.trim()) return;
+      if (!String(this.maxPage).trim()) return;
 
       window.sessionStorage.setItem('bookMaxPage', this.maxPage);
+    },
+    goToManager() {
+      this.$router.push({ name: ROUTE_NAME.MANAGER, params: { bookId: 1719 } });
     }
   }
 };
