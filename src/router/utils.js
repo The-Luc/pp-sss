@@ -71,7 +71,7 @@ export const showEmptySectionPrompt = () => {
   return true;
 };
 
-export const setActiveEditionByRoute = (routeName) => {
+export const setActiveEditionByRoute = routeName => {
   const { activeEdition } = store.state.app;
   let nextEdition = EDITION.NONE;
 
