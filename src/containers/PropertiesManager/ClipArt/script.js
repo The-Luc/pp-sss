@@ -1,8 +1,8 @@
 import Properties from '@/components/Properties/BoxProperties';
 import TabPropertiesMenu from '@/containers/TabPropertiesMenu';
 import ArrangeContent from '@/components/Arrange';
-import GeneralContent from './GeneralContent';
-import { DEFAULT_CLIP_ART } from '@/common/constants';
+import GeneralContent from '@/components/General';
+import { DEFAULT_CLIP_ART, DEFAULT_PROP } from '@/common/constants';
 import { useClipArtProperties } from '@/hooks';
 import { computedObjectSize } from '@/common/utils';
 import { EVENT_TYPE } from '@/common/constants/eventType';
@@ -90,6 +90,22 @@ export default {
     },
     maxPosition() {
       return DEFAULT_CLIP_ART.MAX_POSITION;
+    },
+    opacityValue() {
+      const res = this.getProperty('opacity');
+
+      return !res ? 0 : res;
+    },
+    colorValue() {
+      const color = this.getProperty('color') || DEFAULT_PROP.COLOR;
+
+      return color;
+    },
+    currentShadow() {
+      return this.getProperty('shadow');
+    },
+    isAllowFillColor() {
+      return !this.getProperty('isColorful');
     }
   },
   methods: {
@@ -131,6 +147,18 @@ export default {
     onChangeConstrain(val) {
       this.$root.$emit(EVENT_TYPE.CHANGE_CLIPART_PROPERTIES, {
         isConstrain: val
+      });
+    },
+    /**
+     * Handle update Shadow Config for Clip Art
+     * @param {Object} shadowCfg - the new shadow configs
+     */
+    onChangeShadow(shadowCfg) {
+      this.$root.$emit(EVENT_TYPE.CHANGE_CLIPART_PROPERTIES, {
+        shadow: {
+          ...this.currentShadow,
+          ...shadowCfg
+        }
       });
     }
   }

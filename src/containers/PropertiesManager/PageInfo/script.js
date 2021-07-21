@@ -1,5 +1,5 @@
 import { mapGetters, mapMutations } from 'vuex';
-import { useBook } from '@/hooks';
+import { useBookName } from '@/hooks';
 import {
   GETTERS as PRINT_GETTERS,
   MUTATES as PRINT_MUTATES
@@ -20,9 +20,9 @@ import PpProperties from './Properties';
 
 export default {
   setup() {
-    const { book } = useBook();
+    const { generalInfo } = useBookName();
     return {
-      book
+      generalInfo
     };
   },
   components: {
