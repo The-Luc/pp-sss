@@ -10,7 +10,7 @@
     />
     <div class="row frame-row">
       <Draggable
-        v-model="frameList"
+        v-model="frames"
         class="row frame-row actual"
         ghost-class="ghost"
         drag-class="drag-item"
@@ -21,7 +21,7 @@
         @unchoose="onUnchoose"
       >
         <div
-          v-for="({ id, frame }, index) in frameList"
+          v-for="({ id, frame }, index) in frames"
           :key="id"
           :ref="`frame-${id}`"
           class="frame-container"

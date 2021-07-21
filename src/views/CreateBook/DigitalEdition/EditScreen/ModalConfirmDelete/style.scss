@@ -4,10 +4,10 @@
   flex-direction: column;
   align-items: center;
 
-  font-family: $font-300;
   .text {
     font-size: 13px;
-    color: $color-gray16;
+    font-family: $font-300;
+    color: $color-gray5;
     margin-bottom: 15px;
     line-height: 1.5;
   }
@@ -18,6 +18,7 @@
   }
   .btn {
     font-size: 11.5px;
+    font-family: $font-500;
     color: $color-white;
     background-color: $color-stoodio-blue;
     border: 1px solid $color-stoodio-blue;

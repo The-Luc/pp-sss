@@ -17,7 +17,7 @@ import ModalBackgroundSelectPage from '@/containers/ToolPopoverManager/PrintEdit
 import SelectThemeDigital from '@/views/CreateBook/DigitalEdition/EditScreen/ModalTheme';
 import AddDigitalFrame from '@/views/CreateBook/DigitalEdition/EditScreen/ModalLayout';
 import OverrideLayout from '@/views/CreateBook/DigitalEdition/EditScreen/OverrideLayoutModal';
-import DeleteFrame from '@/views/CreateBook/DigitalEdition/EditScreen/ModalConfimDelete';
+import DeleteFrame from '@/views/CreateBook/DigitalEdition/EditScreen/ModalConfirmDelete';
 import ModalResetLayout from '@/views/CreateBook/PrintEdition/EditScreen/PageEdition/ModalResetLayout';
 
 const {
