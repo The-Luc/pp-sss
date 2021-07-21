@@ -4,4 +4,13 @@
   .v-input__slot {
     min-height: 45px !important;
   }
+
+  .v-list-item__title {
+    span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 275px;
+    }
+  }
 }

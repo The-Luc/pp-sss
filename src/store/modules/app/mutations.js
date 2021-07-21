@@ -59,10 +59,7 @@ export const mutations = {
     };
   },
   [APP._MUTATES.SET_CURRENT_OBJECT](state, currentObject) {
-    state.currentObject = {
-      ...state.currentObject,
-      ...currentObject
-    };
+    state.currentObject = currentObject;
   },
   [APP._MUTATES.UPDATE_TRIGGER_TEXT_CHANGE](state) {
     state.triggerChange.text = !state.triggerChange.text;
@@ -81,5 +78,8 @@ export const mutations = {
     { bookId, title, totalSheet, totalPage, totalScreen }
   ) {
     state.generalInfo = { bookId, title, totalSheet, totalPage, totalScreen };
+  },
+  [APP._MUTATES.SET_SAVED_TEXT_STYLE](state, { savedTextStyles }) {
+    state.savedTextStyles = savedTextStyles;
   }
 };

@@ -15,6 +15,7 @@ export const EVENT_TYPE = {
   DIGITAL_BACKGROUND_PROP_CHANGE: 'digitalChangeBackgroundProperties',
   DIGITAL_BACKGROUND_REMOVE: 'digitalDeleteBackground',
   SWITCH_TOOL: 'switchTool',
+  SAVE_STYLE: 'saveStyle',
   CHANGE_IMAGE_PROPERTIES: 'changeImageProperties',
   COPY_OBJ: 'copyObj',
   PASTE_OBJ: 'pasteObj'

@@ -14,7 +14,6 @@ const pageSelected = book.sections[0].sheets[0];
 export const state = {
   book: {},
   pageSelected,
-  sectionId: 1,
   sectionIds: [],
   sections: {},
   sheets: {}

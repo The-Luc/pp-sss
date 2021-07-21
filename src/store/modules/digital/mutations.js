@@ -158,8 +158,16 @@ export const mutations = {
 
   [DIGITAL._MUTATES.SET_FRAMES](state, { framesList }) {
     if (framesList.length === 0) {
-      state.frames = {};
-      state.frameIds = [];
+      const blankFrame = {
+        id: 0,
+        frame: {
+          previewImageUrl: '',
+          id: 0,
+          fromLayout: true
+        }
+      };
+      state.frames = { [blankFrame.id]: blankFrame.frame };
+      state.frameIds = [blankFrame.id];
       state.currentFrameId = 0;
       return;
     }

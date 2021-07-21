@@ -59,8 +59,7 @@ export default {
     ...mapGetters({
       printThemeSelected: PRINT_GETTERS.DEFAULT_THEME_ID,
       isOpenMenuProperties: APP_GETTERS.IS_OPEN_MENU_PROPERTIES,
-      selectedToolName: APP_GETTERS.SELECTED_TOOL_NAME,
-      bookId: BOOK_GETTERS.BOOK_ID
+      selectedToolName: APP_GETTERS.SELECTED_TOOL_NAME
     })
   },
   watch: {

@@ -2,7 +2,6 @@ import { mapGetters, mapMutations } from 'vuex';
 
 import Thumbnail from '@/containers/ThumbnailPrint';
 import HeaderContainer from '@/components/Thumbnail/HeaderContainer';
-import { MUTATES } from '@/store/modules/book/const';
 import { GETTERS as APP_GETTERS } from '@/store/modules/app/const';
 import {
   GETTERS as PRINT_GETTERS,
@@ -18,6 +17,10 @@ import { TOOL_NAME, EDITION } from '@/common/constants';
 import { scrollToElement } from '@/common/utils';
 
 export default {
+  components: {
+    Thumbnail,
+    HeaderContainer
+  },
   setup() {
     const { resetPrintConfig } = useResetPrintConfig();
     const { setToolNameSelected } = usePopoverCreationTool();
@@ -30,10 +33,6 @@ export default {
       resetPrintConfig,
       setIsPrompt
     };
-  },
-  components: {
-    Thumbnail,
-    HeaderContainer
   },
   computed: {
     ...mapGetters({
@@ -49,8 +48,7 @@ export default {
   },
   methods: {
     ...mapMutations({
-      selectSheet: PRINT_MUTATES.SET_CURRENT_SHEET_ID,
-      setSectionId: MUTATES.SET_SECTION_ID
+      selectSheet: PRINT_MUTATES.SET_CURRENT_SHEET_ID
     }),
     /**
      * Get spread refs by sheet's id and handle auto scroll
@@ -74,29 +72,26 @@ export default {
       return sheetId === this.pageSelected?.id;
     },
     /**
-     * Set selected sheet's id and section'sid and then show prompt when sheet the first time access
-     * @param  {String} sheet Sheet selected
-     * @param  {String} sectionId Section id contains sheet
+     * Set selected sheet's id & show notice if not visited
+     *
+     * @param {String | Number} id  id of selected sheet
      */
-    onSelectSheet(sheet, sectionId) {
-      const sheetId = sheet?.id;
-      this.selectSheet({ id: sheet.id });
-      this.setSectionId({ sectionId });
+    onSelectSheet({ id }) {
+      this.selectSheet({ id });
+
       if (this.isOpenMenuProperties) {
-        this.toggleMenuProperties({
-          isOpenMenuProperties: false
-        });
+        this.toggleMenuProperties({ isOpenMenuProperties: false });
       }
 
-      if (!this.pageSelected.isVisited) {
-        this.setIsPrompt({
-          isPrompt: false
-        });
-        this.updateVisited({
-          sheetId
-        });
-        this.setToolNameSelected(TOOL_NAME.PRINT_LAYOUTS);
-      }
+      this.$router.push(`${id}`);
+
+      if (this.pageSelected.isVisited) return;
+
+      this.setIsPrompt({ isPrompt: false });
+
+      this.updateVisited({ sheetId: id });
+
+      this.setToolNameSelected(TOOL_NAME.PRINT_LAYOUTS);
     }
   }
 };

@@ -1,15 +1,18 @@
 import { mapGetters } from 'vuex';
 
 import PpSelect from '@/components/Selectors/Select';
+import SavedStylePopover from '@/components/SavedStylePopover';
 
-import { toCssStyle } from '@/common/utils';
+import { isEmpty, toCssStyle } from '@/common/utils';
 
 import { GETTERS as APP_GETTERS } from '@/store/modules/app/const';
 import { EVENT_TYPE } from '@/common/constants/eventType';
+import { useTextStyle } from '@/hooks/style';
 
 export default {
   components: {
-    PpSelect
+    PpSelect,
+    SavedStylePopover
   },
   data() {
     const items = [
@@ -64,22 +67,24 @@ export default {
 
     return {
       items,
-      selectBoxItems
+      selectBoxItems,
+      showSavedStylePopup: false,
+      componentKey: true
     };
+  },
+  setup() {
+    const { savedTextStyles, getSavedTextStyles } = useTextStyle();
+    return { savedTextStyles, getSavedTextStyles };
   },
   computed: {
     ...mapGetters({
       selectedStyleId: APP_GETTERS.SELECT_PROP_CURRENT_OBJECT,
-      triggerChange: APP_GETTERS.TRIGGER_TEXT_CHANGE
+      triggerChange: APP_GETTERS.TRIGGER_TEXT_CHANGE,
+      isOpenMenuProperties: APP_GETTERS.IS_OPEN_MENU_PROPERTIES
     }),
     selectedItem() {
-      if (this.triggerChange) {
-        // just for trigger the change
-      }
-
       const selectedId = this.selectedStyleId('styleId') || 'default';
-
-      return this.items.find(item => item.value === selectedId);
+      return this.selectBoxItems.find(item => item.value === selectedId);
     }
   },
   methods: {
@@ -90,9 +95,43 @@ export default {
      * @param {Object}  style attribute style of style
      */
     onChange({ value, style }) {
+      this.onClose();
+
+      if (isEmpty(value) || isEmpty(style)) return;
+
       this.$root.$emit(EVENT_TYPE.CHANGE_TEXT_PROPERTIES, style);
 
       this.$root.$emit(EVENT_TYPE.CHANGE_TEXT_PROPERTIES, { styleId: value });
+    },
+
+    /**
+     * Fire when click selectbox
+     * @param {Element} event Element for click
+     */
+    onClick() {
+      if (!this.savedTextStyles?.length) return;
+      this.componentKey = !this.componentKey;
+      this.showSavedStylePopup = true;
+    },
+
+    onClose() {
+      this.showSavedStylePopup = false;
     }
+  },
+  watch: {
+    savedTextStyles(val) {
+      this.selectBoxItems = [...this.items, ...val].map(item => ({
+        ...item,
+        cssStyle: toCssStyle(item.style)
+      }));
+    },
+    isOpenMenuProperties(val) {
+      if (!val) {
+        this.onClose();
+      }
+    }
+  },
+  created() {
+    this.getSavedTextStyles();
   }
 };

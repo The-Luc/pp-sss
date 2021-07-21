@@ -1,16 +1,24 @@
 import { mapGetters, mapMutations } from 'vuex';
 
 import Item from './Item';
-import { ACTIONS } from '@/common/constants';
 import { GETTERS, MUTATES } from '@/store/modules/app/const';
 import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 import { isEmpty, parsePasteObject } from '@/common/utils';
-import { COPY_OBJECT_KEY } from '@/common/constants/config';
-import { EVENT_TYPE } from '@/common/constants/eventType';
 import { MODAL_TYPES } from '@/common/constants';
+import { ACTIONS, EVENT_TYPE, OBJECT_TYPE } from '@/common/constants';
+import {
+  COPY_OBJECT_KEY,
+  MAX_SAVED_TEXT_STYLES
+} from '@/common/constants/config';
+import { useTextStyle } from '@/hooks/style';
+
 export default {
   components: {
     Item
+  },
+  setup() {
+    const { savedTextStyles } = useTextStyle();
+    return { savedTextStyles };
   },
   data() {
     return {
@@ -28,7 +36,8 @@ export default {
       toolNameSelected: GETTERS.SELECTED_TOOL_NAME,
       hasActiveObjects: GETTERS.HAS_ACTIVE_OBJECTS,
       totalBackground: PRINT_GETTERS.TOTAL_BACKGROUND,
-      totalObject: PRINT_GETTERS.TOTAL_OBJECT
+      totalObject: PRINT_GETTERS.TOTAL_OBJECT,
+      currentObject: GETTERS.CURRENT_OBJECT
     }),
     activeOjectsValue() {
       return this.hasActiveObjects;
@@ -55,12 +64,19 @@ export default {
       handler() {
         this.setEnableSaveLayout();
       }
+    },
+    currentObject() {
+      this.setEnableSaveStyle();
+    },
+    savedTextStyles() {
+      this.setEnableSaveStyle();
     }
   },
   mounted() {
     this.setEnableCopy();
     this.setEnablePaste();
     this.setEnableSaveLayout();
+    this.setEnableSaveStyle();
   },
   methods: {
     ...mapMutations({
@@ -99,6 +115,9 @@ export default {
           }
         });
       }
+      if (actionValue === ACTIONS.SAVE_STYLE) {
+        this.$root.$emit(EVENT_TYPE.SAVE_STYLE);
+      }
     },
     /**
      * Function to get object(s) copied and validate data to enabled paste label
@@ -111,6 +130,22 @@ export default {
       }
       const objects = parsePasteObject(items);
       this.items[1].disabled = isEmpty(objects);
+    },
+
+    /**
+     * Check whether save text/image style enabled base on user has select object or not
+     */
+    setEnableSaveStyle() {
+      if (
+        [OBJECT_TYPE.TEXT, OBJECT_TYPE.IMAGE].includes(
+          this.currentObject?.type
+        ) &&
+        this.savedTextStyles?.length < MAX_SAVED_TEXT_STYLES
+      ) {
+        this.items[3].disabled = false;
+        return;
+      }
+      this.items[3].disabled = true;
     }
   }
 };

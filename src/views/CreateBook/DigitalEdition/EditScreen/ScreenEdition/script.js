@@ -6,7 +6,6 @@ import AddBoxInstruction from '@/components/AddBoxInstruction';
 import Frames from './Frames';
 import { useDigitalOverrides } from '@/plugins/fabric';
 import {
-  ACTIVE_EDITION,
   ARRANGE_SEND,
   DEFAULT_CLIP_ART,
   DEFAULT_IMAGE,
@@ -90,6 +89,7 @@ import {
   PASTE
 } from '@/common/constants/config';
 import { useAppCommon } from '@/hooks/common';
+import { useTextStyle } from '@/hooks/style';
 
 const ELEMENTS = {
   [OBJECT_TYPE.TEXT]: 'a text box',
@@ -103,16 +103,15 @@ export default {
     Frames
   },
   setup() {
-    const { setActiveEdition } = useAppCommon();
     const { drawLayout } = useDrawLayout();
     const { setInfoBar, zoom } = useInfoBar();
     const { openPrompt } = useLayoutPrompt();
     const { handleSwitchFrame } = useFrameSwitching();
     const { frames, currentFrameId } = useFrame();
     const { toggleModal, modalData } = useModal();
+    const { onSaveTextStyle } = useTextStyle();
 
     return {
-      setActiveEdition,
       frames,
       currentFrameId,
       drawLayout,
@@ -121,7 +120,8 @@ export default {
       openPrompt,
       handleSwitchFrame,
       toggleModal,
-      modalData
+      modalData,
+      onSaveTextStyle
     };
   },
   data() {
@@ -151,6 +151,7 @@ export default {
       propertiesObjectType: APP_GETTERS.PROPERTIES_OBJECT_TYPE,
       object: DIGITAL_GETTERS.OBJECT_BY_ID,
       currentObjects: DIGITAL_GETTERS.GET_OBJECTS,
+      currentObject: APP_GETTERS.CURRENT_OBJECT,
       totalBackground: DIGITAL_GETTERS.TOTAL_BACKGROUND,
       listObjects: DIGITAL_GETTERS.GET_OBJECTS,
       triggerApplyLayout: DIGITAL_GETTERS.TRIGGER_APPLY_LAYOUT
@@ -264,6 +265,10 @@ export default {
         {
           name: EVENT_TYPE.CHANGE_OBJECT_IDS_ORDER,
           handler: this.changeObjectIdsOrder
+        },
+        {
+          name: EVENT_TYPE.SAVE_STYLE,
+          handler: this.onSaveTextStyle
         }
       ];
 
@@ -1579,15 +1584,10 @@ export default {
       }
     }
   },
-  mounted() {
-    this.setActiveEdition(ACTIVE_EDITION.DIGITAL);
-  },
   beforeDestroy() {
     this.digitalCanvas = null;
 
     this.updateDigitalEventListeners(false);
     this.updateWindowEventListeners(false);
-
-    this.setActiveEdition(ACTIVE_EDITION.NONE);
   }
 };
