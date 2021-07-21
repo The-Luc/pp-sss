@@ -1,6 +1,6 @@
 import { useGetters, useMutations, useActions } from 'vuex-composition-helpers';
 
-import managerService from '@/api/manager';
+import userService from '@/api/user';
 
 import {
   GETTERS as APP_GETTERS,
@@ -56,11 +56,15 @@ export const useSectionActionMenu = () => {
     updateSection: BOOK_MUTATES.UPDATE_SECTION
   });
 
-  return { updateSection };
+  const { updateAssignee } = useActions({
+    updateAssignee: BOOK_ACTIONS.UPDATE_ASSIGNEE
+  });
+
+  return { updateSection, updateAssignee };
 };
 
 export const useAssigneeMenu = () => {
-  const getUsers = managerService.getUsers;
+  const getUsers = userService.getUsers;
 
   return { getUsers };
 };
