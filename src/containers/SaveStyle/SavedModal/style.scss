@@ -1,5 +1,9 @@
-.saved-message {
-  text-align: center;
-  padding: 50px;
-  color: $color-stoodio-blue;
+.modal-saved-style.v-dialog {
+  background-color: white;
+  border-radius: 17px;
+  .saved-message {
+    text-align: center;
+    padding: 50px;
+    color: $color-stoodio-blue;
+  }
 }

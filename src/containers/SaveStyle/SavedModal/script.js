@@ -4,8 +4,8 @@ import { useModal } from '@/hooks';
 
 export default {
   setup() {
-    const { modalData } = useModal();
-    return { modalData };
+    const { modalData, isOpenModal } = useModal();
+    return { modalData, isOpenModal };
   },
   components: {
     Modal
