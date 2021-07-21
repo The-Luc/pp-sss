@@ -27,6 +27,7 @@ class GetterClass extends BaseObject {
   TRIGGER_SHAPE_CHANGE = 'triggerShapeChange';
   TRIGGER_CLIPART_CHANGE = 'triggerClipArtChange';
   GENERAL_INFO = 'getGeneralInfo';
+  SAVED_TEXT_STYLES = 'savedTextStyles';
 
   constructor(props) {
     super(props);
@@ -41,6 +42,9 @@ export const GETTERS = new GetterClass(
 );
 
 class ActionClass extends BaseObject {
+  SAVE_TEXT_STYLE = 'saveTextStyle';
+  GET_SAVED_TEXT_STYLES = 'getSavedTextStyles';
+
   constructor(props) {
     super(props);
     this._set(props);
@@ -71,6 +75,7 @@ class MutationClass extends BaseObject {
   UPDATE_TRIGGER_SHAPE_CHANGE = 'triggerShapeChange';
   UPDATE_TRIGGER_CLIPART_CHANGE = 'triggerClipArtChange';
   SET_GENERAL_INFO = 'setGeneralInfo';
+  SET_SAVED_TEXT_STYLE = 'setSavedTextStyle';
 
   constructor(props) {
     super(props);

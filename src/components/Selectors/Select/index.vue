@@ -13,6 +13,7 @@
     persistent-hint
     :menu-props="{ zIndex: 9999 }"
     @change="onChange"
+    @click="onClick"
   >
     <template #selection="{ item }">
       <v-list-item class="pp-select--item item-selected">

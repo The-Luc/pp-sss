@@ -11,5 +11,7 @@ export const MODAL_TYPES = {
   ADD_DIGITAL_FRAME: 'AddDigitalFrame',
   OVERRIDE_LAYOUT: 'OverrideLayout',
   DELETE_FRAME: 'DeleteFrame',
-  RESET_LAYOUT: 'ResetLayout'
+  RESET_LAYOUT: 'ResetLayout',
+  SAVE_STYLE: 'SaveStyle',
+  SAVE_STYLE_SUCCESS: 'SaveStyleSuccess'
 };

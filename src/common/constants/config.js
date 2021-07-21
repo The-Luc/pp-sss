@@ -16,3 +16,5 @@ export const PASTE = {
 export const THUMBNAIL_IMAGE_QUALITY = 0.2;
 
 export const MAX_SUPPLEMENTAL_FRAMES = 10;
+
+export const MAX_SAVED_TEXT_STYLES = 9;

@@ -88,6 +88,7 @@ import { createImage } from '@/common/fabricObjects';
 import printService from '@/api/print';
 import { useAppCommon } from '@/hooks/common';
 import { EVENT_TYPE } from '@/common/constants/eventType';
+import { useTextStyle } from '@/hooks/style';
 
 export default {
   components: {
@@ -101,8 +102,9 @@ export default {
     const { setActiveEdition } = useAppCommon();
     const { drawLayout } = useDrawLayout();
     const { setInfoBar, zoom } = useInfoBar();
+    const { onSaveTextStyle } = useTextStyle();
 
-    return { setActiveEdition, drawLayout, setInfoBar, zoom };
+    return { setActiveEdition, drawLayout, setInfoBar, zoom, onSaveTextStyle };
   },
   data() {
     return {
@@ -1383,7 +1385,8 @@ export default {
           this.$root.$emit('printInstructionStart', { element });
         },
         printDeleteElements: this.removeObject,
-        changeObjectIdsOrder: this.changeObjectIdsOrder
+        changeObjectIdsOrder: this.changeObjectIdsOrder,
+        [EVENT_TYPE.SAVE_STYLE]: this.onSaveTextStyle
       };
 
       const textEvents = {

@@ -52,5 +52,6 @@ export const state = {
     totalPage: 0,
     totalScreen: 0
   },
-  user: { id: null, role: null }
+  user: { id: null, role: null },
+  savedTextStyles: []
 };
