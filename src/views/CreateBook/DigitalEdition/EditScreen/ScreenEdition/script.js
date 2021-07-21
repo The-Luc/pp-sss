@@ -89,7 +89,7 @@ import {
   PASTE
 } from '@/common/constants/config';
 import { useAppCommon } from '@/hooks/common';
-import { useTextStyle } from '@/hooks/style';
+import { useStyle } from '@/hooks/style';
 
 const ELEMENTS = {
   [OBJECT_TYPE.TEXT]: 'a text box',
@@ -109,7 +109,7 @@ export default {
     const { handleSwitchFrame } = useFrameSwitching();
     const { frames, currentFrameId } = useFrame();
     const { toggleModal, modalData } = useModal();
-    const { onSaveTextStyle } = useTextStyle();
+    const { onSaveStyle } = useStyle();
 
     return {
       frames,
@@ -121,7 +121,7 @@ export default {
       handleSwitchFrame,
       toggleModal,
       modalData,
-      onSaveTextStyle
+      onSaveStyle
     };
   },
   data() {
@@ -268,7 +268,7 @@ export default {
         },
         {
           name: EVENT_TYPE.SAVE_STYLE,
-          handler: this.onSaveTextStyle
+          handler: this.onSaveStyle
         }
       ];
 

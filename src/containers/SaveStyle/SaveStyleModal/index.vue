@@ -2,7 +2,7 @@
   <Modal class="modal-save-style" title="Save Style" :is-close-out-side="false">
     <div class="modal-save-style-body">
       <div class="style-name">
-        <label>Add a name for this text style:</label>
+        <label>{{ title }}</label>
         <input v-model="styleName" maxlength="50" type="text" />
       </div>
     </div>

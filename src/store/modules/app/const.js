@@ -44,7 +44,7 @@ export const GETTERS = new GetterClass(
 
 class ActionClass extends BaseObject {
   SAVE_TEXT_STYLE = 'saveTextStyle';
-  GET_SAVED_TEXT_STYLES = 'getSavedImageStyles';
+  GET_SAVED_TEXT_STYLES = 'getSavedTextStyles';
   SAVE_IMAGE_STYLE = 'saveImageStyle';
   GET_SAVED_IMAGE_STYLES = 'getSavedImageStyles';
 

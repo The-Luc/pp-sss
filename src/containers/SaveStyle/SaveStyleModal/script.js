@@ -1,8 +1,18 @@
 import Modal from '@/containers/Modal';
 import PpButton from '@/components/Buttons/Button';
-import { EVENT_TYPE } from '@/common/constants';
+import { EVENT_TYPE, OBJECT_TYPE } from '@/common/constants';
+import { useModal } from '@/hooks';
+
+const TITLE = {
+  [OBJECT_TYPE.TEXT]: 'Add a name for this text style:',
+  [OBJECT_TYPE.IMAGE]: 'Add a name for this image style:'
+};
 
 export default {
+  setup() {
+    const { modalData } = useModal();
+    return  { modalData };
+  },
   components: {
     Modal,
     PpButton
@@ -11,6 +21,12 @@ export default {
     return {
       styleName: ''
     };
+  },
+  computed: {
+    title() {
+      const objectType = this.modalData?.props?.type;
+      return TITLE[objectType] || '';
+    }
   },
   methods: {
     /**

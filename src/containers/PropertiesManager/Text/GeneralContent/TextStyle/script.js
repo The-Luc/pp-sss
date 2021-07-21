@@ -7,7 +7,7 @@ import { isEmpty, toCssStyle } from '@/common/utils';
 
 import { GETTERS as APP_GETTERS } from '@/store/modules/app/const';
 import { EVENT_TYPE } from '@/common/constants/eventType';
-import { useTextStyle } from '@/hooks/style';
+import { useStyle, useTextStyle } from '@/hooks/style';
 
 export default {
   components: {
