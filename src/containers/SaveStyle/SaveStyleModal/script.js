@@ -11,7 +11,7 @@ const TITLE = {
 export default {
   setup() {
     const { modalData } = useModal();
-    return  { modalData };
+    return { modalData };
   },
   components: {
     Modal,
