@@ -156,8 +156,5 @@ export const mutations = {
   },
   [BOOK._MUTATES.GET_BOOK_SUCCESS](state, payload) {
     state.book = payload;
-  },
-  [BOOK._MUTATES.SET_SECTION_ID](state, { sectionId }) {
-    state.sectionId = sectionId;
   }
 };

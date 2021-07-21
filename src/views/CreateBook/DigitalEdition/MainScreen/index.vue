@@ -7,7 +7,7 @@
         :section="section"
       >
         <Thumbnail
-          :to-link="`/book/${bookId}/edit/digital/edit-screen`"
+          :to-link="`/book/${bookId}/edit/digital/edit-screen/${sheet.id}`"
           :sheet="sheet"
           :order-screen="orderScreen(sectionIndex, sheetIndex)"
           @click.native="onSelectScreen(sheet)"
@@ -16,5 +16,7 @@
     </template>
   </div>
 </template>
+
 <script src="./script.js" />
-<style lang="scss" scoped src="./style.scss" />
+
+<style lang="scss" src="./style.scss" scoped />

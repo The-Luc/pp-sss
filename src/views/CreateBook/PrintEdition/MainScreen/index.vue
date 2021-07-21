@@ -7,15 +7,17 @@
         :section="section"
       >
         <Thumbnail
-          :to-link="`/book/${bookId}/edit/print/edit-screen`"
+          :to-link="`/book/${bookId}/edit/print/edit-screen/${sheet.id}`"
           :number-page="numberPage(sheet)"
           :sheet="sheet"
-          @click.native="onSelectSheet(sheet, section.id)"
+          @click.native="onSelectSheet(sheet)"
           @change="changeLinkStatus(sheet.id, sheet.link)"
         />
       </Frames>
     </template>
   </div>
 </template>
+
 <script src="./script.js" />
-<style lang="scss" scoped src="./style.scss" />
+
+<style lang="scss" src="./style.scss" scoped />

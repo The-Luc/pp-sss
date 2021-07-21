@@ -44,17 +44,15 @@ export default {
     }),
     ...mapMutations({
       setBookId: DIGITAL_MUTATES.SET_BOOK_ID,
-      selectSheet: DIGITAL_MUTATES.SET_CURRENT_SHEET_ID,
-      setSectionId: DIGITAL_MUTATES.SET_SECTION_ID,
       setInfo: APP_MUTATES.SET_GENERAL_INFO
     }),
-
     /**
      * Set selected sheet's id
-     * @param  {String} sheet Sheet selected
+     *
+     * @param {String | Number} id  id of selected sheet
      */
-    onSelectScreen(sheet) {
-      this.selectSheet({ id: sheet.id });
+    onSelectScreen({ id }) {
+      this.selectSheet({ id });
     }
   },
   created() {

@@ -55,7 +55,7 @@ const routes = [
         ...beforeEnterGuard(authGuard)
       },
       {
-        path: 'edit-screen',
+        path: 'edit-screen/:sheetId',
         name: ROUTE_NAME.PRINT_EDIT,
         component: PrintEditScreen,
         ...beforeEnterGuard(authGuard)
@@ -73,7 +73,7 @@ const routes = [
         ...beforeEnterGuard(authGuard)
       },
       {
-        path: 'edit-screen',
+        path: 'edit-screen/:sheetId',
         name: ROUTE_NAME.DIGITAL_EDIT,
         component: DigitalEditScreen,
         ...beforeEnterGuard(authGuard)

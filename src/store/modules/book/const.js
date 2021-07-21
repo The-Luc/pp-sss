@@ -19,7 +19,6 @@ class GetterClass extends BaseObject {
   SALE_DATE_FROM_BEGINNING = 'saleDayFromBeginning';
   RELEASE_DATE_FROM_BEGINNING = 'releaseDayFromBeginning';
   DELIVERY_DATE_FROM_BEGINNING = 'deliveryDayFromBeginning';
-  SECTION_ID = 'sectionId';
   DUE_DATE_FROM_BEGINNING = 'dueDayFromBeginning';
   IMPORTANT_DATES_INFO = 'getImportantDatesInfo';
   SPECIFICATION_INFO = 'getSpecificationInfo';
@@ -65,7 +64,6 @@ class MutationClass extends BaseObject {
   MOVE_TO_OTHER_SECTION = 'moveSheetToOtherSection';
   ADD_SECTION = 'addSection';
   EDIT_SECTION_NAME = 'editSectionName';
-  SET_SECTION_ID = 'setSectionId';
   SET_BOOK_ID = 'setBookId';
   SET_BOOK = 'setBook';
   SET_SECTIONS = 'setSections';

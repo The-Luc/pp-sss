@@ -2,7 +2,6 @@ import { mapGetters, mapMutations, mapActions } from 'vuex';
 
 import Frames from '@/components/Thumbnail/Frames';
 import Thumbnail from '@/containers/ThumbnailPrint';
-import { MUTATES } from '@/store/modules/book/const';
 import {
   ACTIONS as PRINT_ACTIONS,
   MUTATES as PRINT_MUTATES,
@@ -50,7 +49,6 @@ export default {
     ...mapMutations({
       setBookId: PRINT_MUTATES.SET_BOOK_ID,
       selectSheet: PRINT_MUTATES.SET_CURRENT_SHEET_ID,
-      setSectionId: MUTATES.SET_SECTION_ID,
       setInfo: APP_MUTATES.SET_GENERAL_INFO
     }),
     numberPage(sheet) {
@@ -60,16 +58,12 @@ export default {
       };
     },
     /**
-     * Set selected sheet's id and section's id and then draw layout in print cavnas
-     * @param  {String} sheet Sheet selected
-     * @param  {String} sectionId Section id contains sheet
+     * Set selected sheet's id
+     *
+     * @param {String | Number} id  id of selected sheet
      */
-    onSelectSheet(sheet, sectionId) {
-      this.selectSheet({ id: sheet.id });
-      this.setSectionId({ sectionId });
-      setTimeout(() => {
-        this.drawLayout(this.sheetLayout, EDITION.PRINT);
-      }, 50);
+    onSelectSheet({ id }) {
+      this.selectSheet({ id });
     },
     /**
      * Set change link status for sheet

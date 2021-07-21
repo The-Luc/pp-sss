@@ -7,7 +7,6 @@ import ScreenEdition from './ScreenEdition';
 import SidebarSection from './SidebarSection';
 import ModalLayout from './ModalLayout';
 import { GETTERS, MUTATES } from '@/store/modules/app/const';
-import { GETTERS as BOOK_GETTERS } from '@/store/modules/book/const';
 import {
   ACTIONS as DIGITAL_ACTIONS,
   MUTATES as DIGITAL_MUTATES,
@@ -42,7 +41,6 @@ export default {
     ...mapGetters({
       isOpenMenuProperties: GETTERS.IS_OPEN_MENU_PROPERTIES,
       selectedToolName: GETTERS.SELECTED_TOOL_NAME,
-      bookId: BOOK_GETTERS.BOOK_ID,
       defaultThemeId: DIGITAL_GETTERS.DEFAULT_THEME_ID
     })
   },

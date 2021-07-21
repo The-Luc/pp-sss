@@ -117,9 +117,6 @@ export const getters = {
 
     return getDiffDaysFOM(createdDate, deliveryDate);
   },
-  [BOOK._GETTERS.SECTION_ID]: ({ sectionId }) => {
-    return sectionId;
-  },
   [BOOK._GETTERS.DUE_DATE_FROM_BEGINNING]: ({ book }) => dueDate => {
     const { createdDate } = book;
 

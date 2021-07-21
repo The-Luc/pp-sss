@@ -16,6 +16,10 @@ import {
 import { TOOL_NAME, EDITION } from '@/common/constants';
 
 export default {
+  components: {
+    Thumbnail,
+    HeaderContainer
+  },
   setup() {
     const { setToolNameSelected } = usePopoverCreationTool();
     const { toggleMenuProperties } = useObjectProperties();
@@ -26,10 +30,6 @@ export default {
       setToolNameSelected,
       setIsPrompt
     };
-  },
-  components: {
-    Thumbnail,
-    HeaderContainer
   },
   computed: {
     ...mapGetters({
@@ -74,32 +74,29 @@ export default {
      * @param  {String} sheetId Sheet's id selected
      */
     checkIsActive(sheetId) {
-      // return sheetId === this.pageSelected?.id;
       return sheetId === this.pageSelected.id;
     },
     /**
-     * Set selected sheet's id
-     * @param  {String} sheetId Sheet's id selected
+     * Set selected sheet's id & show notice if not visited
+     *
+     * @param {String | Number} id  id of selected sheet
      */
-    onSelectSheet(sheet) {
-      const sheetId = sheet?.id;
-      this.selectSheet({ id: sheetId });
+    onSelectSheet({ id }) {
+      this.selectSheet({ id });
 
       if (this.isOpenMenuProperites) {
-        this.toggleMenuProperties({
-          isOpenMenuProperites: false
-        });
+        this.toggleMenuProperties({ isOpenMenuProperites: false });
       }
 
-      if (!this.pageSelected.isVisited) {
-        this.setIsPrompt({
-          isPrompt: false
-        });
-        this.updateVisited({
-          sheetId
-        });
-        this.setToolNameSelected(TOOL_NAME.DIGITAL_LAYOUTS);
-      }
+      this.$router.push(`${id}`);
+
+      if (this.pageSelected.isVisited) return;
+
+      this.setIsPrompt({ isPrompt: false });
+
+      this.updateVisited({ sheetId: id });
+
+      this.setToolNameSelected(TOOL_NAME.DIGITAL_LAYOUTS);
     }
   }
 };
