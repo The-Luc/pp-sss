@@ -28,6 +28,7 @@ class GetterClass extends BaseObject {
   TRIGGER_CLIPART_CHANGE = 'triggerClipArtChange';
   GENERAL_INFO = 'getGeneralInfo';
   SAVED_TEXT_STYLES = 'savedTextStyles';
+  SAVED_IMAGE_STYLES = 'savedImageStyles';
 
   constructor(props) {
     super(props);
@@ -43,7 +44,9 @@ export const GETTERS = new GetterClass(
 
 class ActionClass extends BaseObject {
   SAVE_TEXT_STYLE = 'saveTextStyle';
-  GET_SAVED_TEXT_STYLES = 'getSavedTextStyles';
+  GET_SAVED_TEXT_STYLES = 'getSavedImageStyles';
+  SAVE_IMAGE_STYLE = 'saveImageStyle';
+  GET_SAVED_IMAGE_STYLES = 'getSavedImageStyles';
 
   constructor(props) {
     super(props);
@@ -76,6 +79,7 @@ class MutationClass extends BaseObject {
   UPDATE_TRIGGER_CLIPART_CHANGE = 'triggerClipArtChange';
   SET_GENERAL_INFO = 'setGeneralInfo';
   SET_SAVED_TEXT_STYLE = 'setSavedTextStyle';
+  SET_SAVED_IMAGE_STYLE = 'setSavedImageStyle';
 
   constructor(props) {
     super(props);

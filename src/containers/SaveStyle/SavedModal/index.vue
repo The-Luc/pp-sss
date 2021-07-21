@@ -1,14 +1,16 @@
 <template>
-  <v-dialog
-    :value="isOpenModal"
-    :persistent="true"
-    content-class="modal-saved-style"
-    :width="350"
+  <Modal
+    id="saved-modal"
+    class="modal-saved-style"
+    :is-show-header="false"
+    :is-close-out-side="false"
+    container="#saved-modal"
+    width="350"
   >
     <div class="saved-message">Your style has been saved</div>
-  </v-dialog>
+  </Modal>
 </template>
 
 <script src="./script.js" />
 
-<style lang="scss" src="./style.scss" />
+<style lang="scss" src="./style.scss" scoped />
