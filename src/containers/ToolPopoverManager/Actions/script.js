@@ -4,19 +4,11 @@ import Item from './Item';
 import { ACTIONS, EVENT_TYPE, OBJECT_TYPE } from '@/common/constants';
 import { GETTERS } from '@/store/modules/app/const';
 import { isEmpty, parsePasteObject } from '@/common/utils';
-import {
-  COPY_OBJECT_KEY,
-  MAX_SAVED_TEXT_STYLES
-} from '@/common/constants/config';
-import { useTextStyle } from '@/hooks/style';
+import { COPY_OBJECT_KEY } from '@/common/constants/config';
 
 export default {
   components: {
     Item
-  },
-  setup() {
-    const { savedTextStyles } = useTextStyle();
-    return { savedTextStyles };
   },
   data() {
     return {
@@ -50,9 +42,6 @@ export default {
       this.setEnableCopy();
     },
     currentObject() {
-      this.setEnableSaveStyle();
-    },
-    savedTextStyles() {
       this.setEnableSaveStyle();
     }
   },
@@ -103,10 +92,7 @@ export default {
      */
     setEnableSaveStyle() {
       if (
-        [OBJECT_TYPE.TEXT, OBJECT_TYPE.IMAGE].includes(
-          this.currentObject?.type
-        ) &&
-        this.savedTextStyles?.length < MAX_SAVED_TEXT_STYLES
+        [OBJECT_TYPE.TEXT, OBJECT_TYPE.IMAGE].includes(this.currentObject?.type)
       ) {
         this.items[3].disabled = false;
         return;

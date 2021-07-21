@@ -109,7 +109,10 @@ export default {
     window.document.addEventListener(WINDOW_EVENT_TYPE.KEY_UP, this.onKeypress);
   },
   beforeDestroy() {
-    window.document.removeEventListener(WINDOW_EVENT_TYPE.KEY_UP, this.onKeypress);
+    window.document.removeEventListener(
+      WINDOW_EVENT_TYPE.KEY_UP,
+      this.onKeypress
+    );
   },
   watch: {
     items() {
