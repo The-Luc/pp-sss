@@ -72,8 +72,7 @@ import {
   DEFAULT_SHAPE,
   COVER_TYPE,
   DEFAULT_CLIP_ART,
-  DEFAULT_IMAGE,
-  ACTIVE_EDITION
+  DEFAULT_IMAGE
 } from '@/common/constants';
 import SizeWrapper from '@/components/SizeWrapper';
 import PrintCanvasLines from './PrintCanvasLines';
@@ -204,8 +203,6 @@ export default {
     window.addEventListener('paste', this.handlePaste);
 
     document.body.addEventListener('keyup', this.handleDeleteKey);
-
-    this.setActiveEdition(ACTIVE_EDITION.PRINT);
   },
   beforeDestroy() {
     window.removeEventListener('copy', this.handleCopy);
@@ -223,8 +220,6 @@ export default {
     this.eventHandling(false);
 
     this.setInfoBar({ x: 0, y: 0, w: 0, h: 0, zoom: 0 });
-
-    this.setActiveEdition(ACTIVE_EDITION.NONE);
   },
   methods: {
     ...mapActions({

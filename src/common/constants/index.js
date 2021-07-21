@@ -1,4 +1,3 @@
-export * from './activeEdition';
 export * from './api';
 export * from './arrange';
 export * from './book';
@@ -33,7 +32,7 @@ export * from './svgFillMode';
 export * from './pageNumber';
 export * from './zoom';
 export * from './config';
-export * from './system';
+export * from './edition';
 export * from './fontFamily';
 export * from './eventType';
 export * from './frameProperty';
