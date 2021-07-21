@@ -9,8 +9,6 @@ import {
 } from '@/store/modules/print/const';
 import { MUTATES as APP_MUTATES } from '@/store/modules/app/const';
 import { useDrawLayout } from '@/hooks';
-import { EDITION } from '@/common/constants';
-
 import printService from '@/api/print';
 
 export default {

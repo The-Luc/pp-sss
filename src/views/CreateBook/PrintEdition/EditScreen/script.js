@@ -1,10 +1,7 @@
 import { mapMutations, mapGetters, mapActions } from 'vuex';
 
 import { MUTATES, GETTERS as APP_GETTERS } from '@/store/modules/app/const';
-import {
-  GETTERS as BOOK_GETTERS,
-  MUTATES as BOOK_MUTATES
-} from '@/store/modules/book/const';
+import { MUTATES as BOOK_MUTATES } from '@/store/modules/book/const';
 import {
   ACTIONS as PRINT_ACTIONS,
   MUTATES as PRINT_MUTATES,

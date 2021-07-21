@@ -1,20 +1,18 @@
-import { mapMutations, mapActions } from 'vuex';
-
 import Modal from '@/containers/Modal';
 import PpButton from '@/components/Buttons/Button';
-import { MUTATES as APP_MUTATES } from '@/store/modules/app/const';
+import { useModal } from '@/hooks';
 
 export default {
   components: {
     Modal,
     PpButton
   },
-  setup() {},
+  setup() {
+    const { toggleModal } = useModal();
+    return { toggleModal };
+  },
   computed: {},
   methods: {
-    ...mapMutations({
-      toggleModal: APP_MUTATES.TOGGLE_MODAL
-    }),
     /**
      * Trigger mutation to close modal
      */

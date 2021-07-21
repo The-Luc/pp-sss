@@ -88,7 +88,6 @@ import {
   THUMBNAIL_IMAGE_QUALITY,
   PASTE
 } from '@/common/constants/config';
-import { useAppCommon } from '@/hooks/common';
 import { useTextStyle } from '@/hooks/style';
 
 const ELEMENTS = {

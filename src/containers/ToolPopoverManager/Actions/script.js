@@ -1,8 +1,7 @@
-import { mapGetters, mapMutations } from 'vuex';
+import { mapGetters } from 'vuex';
 
 import Item from './Item';
-import { GETTERS, MUTATES } from '@/store/modules/app/const';
-import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
+import { GETTERS } from '@/store/modules/app/const';
 import { isEmpty, parsePasteObject } from '@/common/utils';
 import { MODAL_TYPES } from '@/common/constants';
 import { ACTIONS, EVENT_TYPE, OBJECT_TYPE } from '@/common/constants';
@@ -11,14 +10,23 @@ import {
   MAX_SAVED_TEXT_STYLES
 } from '@/common/constants/config';
 import { useTextStyle } from '@/hooks/style';
+import { useTotalObjects, useModal } from '@/hooks';
 
 export default {
   components: {
     Item
   },
-  setup() {
+  props: {
+    isDigital: {
+      type: Boolean,
+      default: false
+    }
+  },
+  setup({ isDigital }) {
     const { savedTextStyles } = useTextStyle();
-    return { savedTextStyles };
+    const { totalBackground, totalObject } = useTotalObjects(isDigital);
+    const { toggleModal } = useModal();
+    return { savedTextStyles, totalBackground, totalObject, toggleModal };
   },
   data() {
     return {
@@ -35,8 +43,6 @@ export default {
     ...mapGetters({
       toolNameSelected: GETTERS.SELECTED_TOOL_NAME,
       hasActiveObjects: GETTERS.HAS_ACTIVE_OBJECTS,
-      totalBackground: PRINT_GETTERS.TOTAL_BACKGROUND,
-      totalObject: PRINT_GETTERS.TOTAL_OBJECT,
       currentObject: GETTERS.CURRENT_OBJECT
     }),
     activeOjectsValue() {
@@ -79,9 +85,6 @@ export default {
     this.setEnableSaveStyle();
   },
   methods: {
-    ...mapMutations({
-      toggleModal: MUTATES.TOGGLE_MODAL
-    }),
     /**
      * Check whether copy text enabled base on user has select object(s) or not
      */
