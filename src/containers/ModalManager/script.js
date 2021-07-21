@@ -19,6 +19,8 @@ import AddDigitalFrame from '@/views/CreateBook/DigitalEdition/EditScreen/ModalL
 import OverrideLayout from '@/views/CreateBook/DigitalEdition/EditScreen/OverrideLayoutModal';
 import DeleteFrame from '@/views/CreateBook/DigitalEdition/EditScreen/ModalConfimDelete';
 import ModalResetLayout from '@/views/CreateBook/PrintEdition/EditScreen/PageEdition/ModalResetLayout';
+import ModalSaveLayout from '@/views/CreateBook/PrintEdition/EditScreen/PageEdition/ModalSaveLayout/ModalSaveLayout';
+import ModalSelectPageOfLayout from '@/views/CreateBook/PrintEdition/EditScreen/PageEdition/ModalSaveLayout/ModalSelectPageOfLayout';
 
 const {
   HELP,
@@ -33,7 +35,9 @@ const {
   ADD_DIGITAL_FRAME,
   OVERRIDE_LAYOUT,
   DELETE_FRAME,
-  RESET_LAYOUT
+  RESET_LAYOUT,
+  SAVE_LAYOUT,
+  SELECT_PAGE_OF_LAYOUT
 } = MODAL_TYPES;
 
 const ModalList = {
@@ -49,7 +53,9 @@ const ModalList = {
   [ADD_DIGITAL_FRAME]: ADD_DIGITAL_FRAME,
   [OVERRIDE_LAYOUT]: OVERRIDE_LAYOUT,
   [DELETE_FRAME]: DELETE_FRAME,
-  [RESET_LAYOUT]: RESET_LAYOUT
+  [RESET_LAYOUT]: RESET_LAYOUT,
+  [SAVE_LAYOUT]: SAVE_LAYOUT,
+  [SELECT_PAGE_OF_LAYOUT]: SELECT_PAGE_OF_LAYOUT
 };
 
 export default {
@@ -71,7 +77,9 @@ export default {
     [MODAL_TYPES.ADD_DIGITAL_FRAME]: AddDigitalFrame,
     [MODAL_TYPES.OVERRIDE_LAYOUT]: OverrideLayout,
     [MODAL_TYPES.DELETE_FRAME]: DeleteFrame,
-    [MODAL_TYPES.RESET_LAYOUT]: ModalResetLayout
+    [MODAL_TYPES.RESET_LAYOUT]: ModalResetLayout,
+    [MODAL_TYPES.SAVE_LAYOUT]: ModalSaveLayout,
+    [MODAL_TYPES.SELECT_PAGE_OF_LAYOUT]: ModalSelectPageOfLayout
   },
   computed: {
     ...mapGetters({

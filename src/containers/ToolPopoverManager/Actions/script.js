@@ -1,12 +1,13 @@
-import { mapGetters } from 'vuex';
+import { mapGetters, mapMutations } from 'vuex';
 
 import Item from './Item';
 import { ACTIONS } from '@/common/constants';
-import { GETTERS } from '@/store/modules/app/const';
+import { GETTERS, MUTATES } from '@/store/modules/app/const';
+import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 import { isEmpty, parsePasteObject } from '@/common/utils';
 import { COPY_OBJECT_KEY } from '@/common/constants/config';
 import { EVENT_TYPE } from '@/common/constants/eventType';
-
+import { MODAL_TYPES } from '@/common/constants';
 export default {
   components: {
     Item
@@ -25,7 +26,9 @@ export default {
   computed: {
     ...mapGetters({
       toolNameSelected: GETTERS.SELECTED_TOOL_NAME,
-      hasActiveObjects: GETTERS.HAS_ACTIVE_OBJECTS
+      hasActiveObjects: GETTERS.HAS_ACTIVE_OBJECTS,
+      totalBackground: PRINT_GETTERS.TOTAL_BACKGROUND,
+      totalObject: PRINT_GETTERS.TOTAL_OBJECT
     }),
     activeOjectsValue() {
       return this.hasActiveObjects;
@@ -40,18 +43,40 @@ export default {
     },
     activeOjectsValue() {
       this.setEnableCopy();
+    },
+    totalBackground: {
+      deep: true,
+      handler() {
+        this.setEnableSaveLayout();
+      }
+    },
+    totalObject: {
+      deep: true,
+      handler() {
+        this.setEnableSaveLayout();
+      }
     }
   },
   mounted() {
     this.setEnableCopy();
     this.setEnablePaste();
+    this.setEnableSaveLayout();
   },
   methods: {
+    ...mapMutations({
+      toggleModal: MUTATES.TOGGLE_MODAL
+    }),
     /**
      * Check whether copy text enabled base on user has select object(s) or not
      */
     setEnableCopy() {
       this.items[0].disabled = !this.hasActiveObjects;
+    },
+    /**
+     * Check whether save layout enabled base on user has object(s) or not
+     */
+    setEnableSaveLayout() {
+      this.items[2].disabled = !this.totalObject && !this.totalBackground;
     },
     /**
      * Callback function to get action value when user click on and emit to parent
@@ -64,6 +89,15 @@ export default {
 
       if (actionValue === ACTIONS.PASTE) {
         this.$root.$emit(EVENT_TYPE.PASTE_OBJ);
+      }
+
+      if (actionValue === ACTIONS.SAVE_LAYOUT) {
+        this.toggleModal({
+          isOpenModal: true,
+          modalData: {
+            type: MODAL_TYPES.SELECT_PAGE_OF_LAYOUT
+          }
+        });
       }
     },
     /**

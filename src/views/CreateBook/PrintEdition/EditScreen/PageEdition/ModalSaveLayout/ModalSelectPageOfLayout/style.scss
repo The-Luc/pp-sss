@@ -1,0 +1,18 @@
+.modal-select-page-of-layout ::v-deep {
+  .pp-btn {
+    width: 238px;
+    height: 36px;
+    margin: 15px auto 0;
+  }
+  .btn-first {
+    .pp-btn {
+      margin-top: 5px;
+    }
+  }
+  .btn-cancel {
+    .pp-btn {
+      background-color: $color-gray13;
+      border-color: $color-gray13;
+    }
+  }
+}
