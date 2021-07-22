@@ -75,7 +75,9 @@ export default {
         height: pxToIn(height)
       };
 
-      this.$root.$emit(EVENT_TYPE.CHANGE_TEXT_PROPERTIES, { size: updatedSize });
+      this.$root.$emit(EVENT_TYPE.CHANGE_TEXT_PROPERTIES, {
+        size: updatedSize
+      });
     }
   }
 };
