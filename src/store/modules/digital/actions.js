@@ -19,7 +19,7 @@ export const actions = {
       sectionsSheets: queryResult.data
     });
   },
-  async [DIGITAL._ACTIONS.GET_DATA_EDIT]({ state, dispatch, commit }) {
+  async [DIGITAL._ACTIONS.GET_DATA_EDIT]({ state, commit }) {
     const [themeQuery, sectionsSheetsQuery] = await Promise.all([
       digitalService.getDefaultThemeId(state.book.id),
       digitalService.getDigitalEditSectionsSheets(state.book.id)
@@ -34,16 +34,6 @@ export const actions = {
     commit(DIGITAL._MUTATES.SET_SECTIONS_SHEETS, {
       sectionsSheets: sectionsSheetsQuery.data
     });
-
-    if (isEmpty(state.currentSheetId)) {
-      const defaultSheetId = state.sections[0].sheets[0];
-
-      commit(DIGITAL._MUTATES.SET_CURRENT_SHEET_ID, {
-        id: state.sheets[defaultSheetId].id
-      });
-    }
-
-    dispatch(DIGITAL._ACTIONS.GET_DATA_CANVAS);
   },
   async [DIGITAL._ACTIONS.GET_DATA_CANVAS]({ state, commit }) {
     const queryObjectResult = await digitalService.getSheetObjects(
@@ -51,6 +41,7 @@ export const actions = {
       state.sheets[state.currentSheetId].sectionId,
       state.currentSheetId
     );
+
     if (isEmpty(queryObjectResult.data)) {
       commit(DIGITAL._MUTATES.SET_OBJECTS, { objectList: [] });
       commit(DIGITAL._MUTATES.SET_BACKGROUNDS, { background: {} });

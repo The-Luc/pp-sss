@@ -3,7 +3,7 @@ import { mapGetters, mapMutations } from 'vuex';
 import Thumbnail from '@/components/Thumbnail/ThumbnailDigital';
 import HeaderContainer from '@/components/Thumbnail/HeaderContainer';
 import { GETTERS as APP_GETTERS } from '@/store/modules/app/const';
-import { scrollToElement } from '@/common/utils';
+import { isEmpty, scrollToElement } from '@/common/utils';
 import {
   GETTERS as DIGITAL_GETTERS,
   MUTATES as DIGITAL_MUTATES
@@ -24,6 +24,7 @@ export default {
     const { setToolNameSelected } = usePopoverCreationTool();
     const { toggleMenuProperties } = useObjectProperties();
     const { updateVisited, setIsPrompt } = useLayoutPrompt(EDITION.DIGITAL);
+
     return {
       toggleMenuProperties,
       updateVisited,
@@ -41,7 +42,7 @@ export default {
       return (sectionIndex, sheetIndex) => {
         let indexInSections = 0;
         for (let i = 0; i < sectionIndex; i++) {
-          indexInSections += this.sections[i].sheets.length;
+          indexInSections += this.sections[i].sheetIds.length;
         }
         indexInSections += sheetIndex + 1;
         if (indexInSections < 10) {
@@ -52,21 +53,43 @@ export default {
       };
     }
   },
-  mounted() {
-    setTimeout(() => {
-      this.autoScrollToScreen(this.pageSelected.id);
-    }, 500);
+  created() {
+    this.handleWatchForAutoScroll();
   },
   methods: {
     ...mapMutations({
       selectSheet: DIGITAL_MUTATES.SET_CURRENT_SHEET_ID
     }),
     /**
+     * Handle watch when pageSelected change to make autoscroll then destroy watch
+     */
+    handleWatchForAutoScroll() {
+      const watchHandler = this.$watch(
+        'pageSelected',
+        value => {
+          if (isEmpty(value)) return;
+
+          setTimeout(() => {
+            this.autoScrollToScreen(value.id);
+          }, 20);
+
+          watchHandler();
+        },
+        {
+          deep: true
+        }
+      );
+    },
+    /**
      * Get screen refs by sheet's id and handle auto scroll
+     *
      * @param  {Number} pageSelected Sheet's id selected
      */
     autoScrollToScreen(pageSelected) {
       const currentScreendActive = this.$refs[`screen${pageSelected}`];
+
+      if (isEmpty(currentScreendActive)) return;
+
       scrollToElement(currentScreendActive[0].$el);
     },
     /**

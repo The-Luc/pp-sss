@@ -13,7 +13,6 @@ import {
   EDITION,
   MODAL_TYPES,
   OBJECT_TYPE,
-  SHEET_TYPE,
   TOOL_NAME
 } from '@/common/constants';
 import {
@@ -154,17 +153,7 @@ export default {
       totalBackground: DIGITAL_GETTERS.TOTAL_BACKGROUND,
       listObjects: DIGITAL_GETTERS.GET_OBJECTS,
       triggerApplyLayout: DIGITAL_GETTERS.TRIGGER_APPLY_LAYOUT
-    }),
-    isCover() {
-      return this.pageSelected?.type === SHEET_TYPE.COVER;
-    },
-    isIntro() {
-      const { sections } = this.book;
-      return this.pageSelected?.id === sections[1].sheets[0].id;
-    },
-    currentSheetType() {
-      return this.pageSelected?.type || -1;
-    }
+    })
   },
   methods: {
     ...mapActions({

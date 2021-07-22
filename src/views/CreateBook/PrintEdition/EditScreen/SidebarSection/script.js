@@ -14,7 +14,7 @@ import {
   useObjectProperties
 } from '@/hooks';
 import { TOOL_NAME, EDITION } from '@/common/constants';
-import { scrollToElement } from '@/common/utils';
+import { isEmpty, scrollToElement } from '@/common/utils';
 
 export default {
   components: {
@@ -26,6 +26,7 @@ export default {
     const { setToolNameSelected } = usePopoverCreationTool();
     const { toggleMenuProperties } = useObjectProperties();
     const { updateVisited, setIsPrompt } = useLayoutPrompt(EDITION.PRINT);
+
     return {
       toggleMenuProperties,
       updateVisited,
@@ -41,21 +42,43 @@ export default {
       isOpenMenuProperties: APP_GETTERS.IS_OPEN_MENU_PROPERTIES
     })
   },
-  mounted() {
-    setTimeout(() => {
-      this.autoScrollToSpread(this.pageSelected.id);
-    }, 500);
+  created() {
+    this.handleWatchForAutoScroll();
   },
   methods: {
     ...mapMutations({
       selectSheet: PRINT_MUTATES.SET_CURRENT_SHEET_ID
     }),
     /**
+     * Handle watch when pageSelected change to make autoscroll then destroy watch
+     */
+    handleWatchForAutoScroll() {
+      const watchHandler = this.$watch(
+        'pageSelected',
+        value => {
+          if (isEmpty(value)) return;
+
+          setTimeout(() => {
+            this.autoScrollToSpread(value.id);
+          }, 20);
+
+          watchHandler();
+        },
+        {
+          deep: true
+        }
+      );
+    },
+    /**
      * Get spread refs by sheet's id and handle auto scroll
+     *
      * @param  {Number} pageSelected Sheet's id selected
      */
     autoScrollToSpread(pageSelected) {
       const currentSpreadActive = this.$refs[`spread${pageSelected}`];
+
+      if (isEmpty(currentSpreadActive)) return;
+
       scrollToElement(currentSpreadActive[0]?.$el);
     },
     numberPage(sheet) {
@@ -77,13 +100,11 @@ export default {
      * @param {String | Number} id  id of selected sheet
      */
     onSelectSheet({ id }) {
-      this.selectSheet({ id });
+      if (this.pageSelected.id !== id) this.$router.push(`${id}`);
 
       if (this.isOpenMenuProperties) {
         this.toggleMenuProperties({ isOpenMenuProperties: false });
       }
-
-      this.$router.push(`${id}`);
 
       if (this.pageSelected.isVisited) return;
 

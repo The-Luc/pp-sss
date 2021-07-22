@@ -9,6 +9,7 @@ import {
 } from '@/store/modules/print/const';
 import { MUTATES as APP_MUTATES } from '@/store/modules/app/const';
 import { useDrawLayout } from '@/hooks';
+
 import printService from '@/api/print';
 
 export default {
@@ -54,14 +55,6 @@ export default {
         numberLeft: sheet.pageLeftName,
         numberRight: sheet.pageRightName
       };
-    },
-    /**
-     * Set selected sheet's id
-     *
-     * @param {String | Number} id  id of selected sheet
-     */
-    onSelectSheet({ id }) {
-      this.selectSheet({ id });
     },
     /**
      * Set change link status for sheet

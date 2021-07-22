@@ -155,18 +155,6 @@ export default {
         this.pageSelected?.type === SHEET_TYPE.COVER
       );
     },
-    isIntro() {
-      const { sections } = this.book;
-      return this.pageSelected?.id === sections[1].sheets[0].id;
-    },
-    isSignature() {
-      const { sections } = this.book;
-      const lastSection = sections[sections.length - 1];
-      return (
-        this.pageSelected?.id ===
-        lastSection.sheets[lastSection.sheets.length - 1].id
-      );
-    },
     currentSheetType() {
       return this.pageSelected?.type || -1;
     }

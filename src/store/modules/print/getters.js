@@ -107,7 +107,7 @@ export const getters = {
     return sections.map(section => {
       return {
         ...section,
-        sheets: section.sheets.map(sheetId => sheets[sheetId])
+        sheets: section.sheetIds.map(sheetId => sheets[sheetId])
       };
     });
   },
