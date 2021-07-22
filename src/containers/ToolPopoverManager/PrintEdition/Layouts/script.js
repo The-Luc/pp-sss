@@ -481,8 +481,6 @@ export default {
 
       resetObjects(activeCanvas);
 
-      // draw layout on canvas
-      this.drawLayout(this.sheetLayout, this.edition);
       this.$root.$emit('pageNumber');
     },
     /**
