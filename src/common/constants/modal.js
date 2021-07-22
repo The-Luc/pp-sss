@@ -12,6 +12,8 @@ export const MODAL_TYPES = {
   OVERRIDE_LAYOUT: 'OverrideLayout',
   DELETE_FRAME: 'DeleteFrame',
   RESET_LAYOUT: 'ResetLayout',
+  SAVE_LAYOUT: 'SaveLayout',
+  SELECT_PAGE_OF_LAYOUT: 'SelectPageOfLayout',
   SAVE_STYLE: 'SaveStyle',
   SAVE_STYLE_SUCCESS: 'SaveStyleSuccess'
 };
