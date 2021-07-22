@@ -33,14 +33,9 @@ export default {
       triggerChange: APP_GETTERS.TRIGGER_TEXT_CHANGE
     }),
     selectedLetterSpacing() {
-      if (this.triggerChange) {
-        // just for trigger the change
-      }
-      const selectedCharSpacing = this.selectedSpacing('charSpacing') || 0;
-      const selected = this.items.find(
-        item => item.value === selectedCharSpacing
-      );
-      return getSelectedOption(selected || selectedCharSpacing, '');
+      const selectedSpacing = this.selectedSpacing('letterSpacing') || 0;
+      const selected = this.items.find(item => item.value === selectedSpacing);
+      return getSelectedOption(selected || selectedSpacing, '');
     }
   },
   methods: {
@@ -49,14 +44,14 @@ export default {
      * @param   {Any} val value letter spacing of text (string or object)
      */
     onChange(data) {
-      const { isValid, value: charSpacing } = validateInputOption(
+      const { isValid, value: letterSpacing } = validateInputOption(
         getValueInput(data),
         -100,
         1500,
         0,
         this.items
       );
-      const updateData = isValid ? { charSpacing } : {};
+      const updateData = isValid ? { letterSpacing } : {};
       this.$root.$emit(EVENT_TYPE.CHANGE_TEXT_PROPERTIES, updateData);
     }
   }
