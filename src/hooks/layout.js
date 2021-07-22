@@ -216,7 +216,6 @@ export const useDrawLayout = () => {
    * @param {Object} sheetPrintData - Layout object data
    * @param {Ref} targetCanvas - Target canvas to draw objects
    */
-
   const drawLayout = async (sheetData, edition) => {
     const targetCanvas =
       edition === EDITION.DIGITAL ? window.digitalCanvas : window.printCanvas;
