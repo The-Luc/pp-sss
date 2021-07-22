@@ -53,9 +53,13 @@ export const useStyle = () => {
       }
 
       if (objectType === OBJECT_TYPE.IMAGE) {
+        const { border, color } = currentObject?.value || {};
+
         const imageStyle = {
           name,
-          value
+          value,
+          border,
+          color
         };
 
         saveImageStyle({ imageStyle });

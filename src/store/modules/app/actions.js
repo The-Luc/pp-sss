@@ -1,6 +1,6 @@
 import APP from './const';
 import styleService from '@/api/style';
-import { MODAL_TYPES } from '@/common/constants';
+import { MODAL_TYPES, OBJECT_TYPE } from '@/common/constants';
 
 export const actions = {
   async [APP._ACTIONS.SAVE_TEXT_STYLE]({ commit }, { textStyle }) {
@@ -9,7 +9,10 @@ export const actions = {
       isOpenModal: true,
       modalData: {
         type: MODAL_TYPES.SAVE_STYLE_SUCCESS,
-        props: textStyle
+        props: {
+          styleId: textStyle?.value,
+          objectType: OBJECT_TYPE.TEXT
+        }
       }
     });
     commit(APP._MUTATES.SET_SAVED_TEXT_STYLE, { savedTextStyles });
@@ -26,7 +29,10 @@ export const actions = {
       isOpenModal: true,
       modalData: {
         type: MODAL_TYPES.SAVE_STYLE_SUCCESS,
-        props: imageStyle
+        props: {
+          styleId: imageStyle?.value,
+          objectType: OBJECT_TYPE.IMAGE
+        }
       }
     });
     commit(APP._MUTATES.SET_SAVED_IMAGE_STYLE, { savedImageStyles });
