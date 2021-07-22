@@ -15,7 +15,7 @@ import {
 import { EDITION, MODAL_TYPES, TOOL_NAME } from '@/common/constants';
 import { useLayoutPrompt, usePopoverCreationTool } from '@/hooks';
 import { isEmpty } from '@/common/utils';
-
+import { COPY_OBJECT_KEY } from '@/common/constants/config';
 import digitalService from '@/api/digital';
 
 export default {
@@ -56,6 +56,8 @@ export default {
   },
   destroyed() {
     this.setPropertiesObjectType({ type: '' });
+    this.toggleActiveObjects(false);
+    sessionStorage.removeItem(COPY_OBJECT_KEY);
   },
   methods: {
     ...mapActions({
@@ -65,7 +67,8 @@ export default {
       setBookId: DIGITAL_MUTATES.SET_BOOK_ID,
       toggleModal: MUTATES.TOGGLE_MODAL,
       setPropertiesObjectType: MUTATES.SET_PROPERTIES_OBJECT_TYPE,
-      setInfo: MUTATES.SET_GENERAL_INFO
+      setInfo: MUTATES.SET_GENERAL_INFO,
+      toggleActiveObjects: MUTATES.TOGGLE_ACTIVE_OBJECTS
     }),
     /**
      * Check current sheet is first time visited or no to open prompt
