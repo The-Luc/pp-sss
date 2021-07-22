@@ -32,6 +32,9 @@ export default {
     isShowHeader: {
       type: Boolean,
       default: true
+    },
+    container: {
+      type: String
     }
   },
   computed: {

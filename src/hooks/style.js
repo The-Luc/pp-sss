@@ -26,26 +26,25 @@ export const useTextStyle = () => {
       )
     ) {
       toggleModal({ isOpenModal: false });
-      if (prop?.styleName) {
-        const name = prop.styleName;
-        const value = Date.now();
-        const { fontFamily, fontSize, isBold, isItalic, isUnderline, color } =
-          currentObject?.value || {};
-        const textStyle = {
-          name,
-          value,
-          style: {
-            fontFamily,
-            fontSize,
-            isBold,
-            isItalic,
-            isUnderline,
-            color
-          },
-          isCustom: true
-        };
-        saveTextStyle({ textStyle });
-      }
+      if (!prop) return;
+      const name = prop.styleName || 'Untitled';
+      const value = Date.now();
+      const { fontFamily, fontSize, isBold, isItalic, isUnderline, color } =
+        currentObject?.value || {};
+      const textStyle = {
+        name,
+        value,
+        style: {
+          fontFamily,
+          fontSize,
+          isBold,
+          isItalic,
+          isUnderline,
+          color
+        },
+        isCustom: true
+      };
+      saveTextStyle({ textStyle });
     } else {
       toggleModal({
         isOpenModal: true,

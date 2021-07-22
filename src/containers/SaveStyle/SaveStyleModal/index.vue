@@ -3,7 +3,7 @@
     <div class="modal-save-style-body">
       <div class="style-name">
         <label>Add a name for this text style:</label>
-        <input v-model="styleName" type="text" />
+        <input v-model="styleName" maxlength="50" type="text" />
       </div>
     </div>
     <div class="modal-save-style-footer">

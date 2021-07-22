@@ -8,7 +8,8 @@ export const actions = {
     commit(APP._MUTATES.TOGGLE_MODAL, {
       isOpenModal: true,
       modalData: {
-        type: MODAL_TYPES.SAVE_STYLE_SUCCESS
+        type: MODAL_TYPES.SAVE_STYLE_SUCCESS,
+        props: textStyle
       }
     });
     commit(APP._MUTATES.SET_SAVED_TEXT_STYLE, { savedTextStyles });

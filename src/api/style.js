@@ -1,3 +1,5 @@
+import { MAX_SAVED_TEXT_STYLES } from '@/common/constants';
+
 const styleService = {
   /**
    * Save text style
@@ -8,12 +10,15 @@ const styleService = {
   saveTextStyle: async style => {
     try {
       const savedStyleJson = await styleService.getSavedTextStyles();
-      savedStyleJson.push(style);
+      const newSavedStyleJson = [
+        ...savedStyleJson.slice(1 - MAX_SAVED_TEXT_STYLES),
+        style
+      ];
       window.sessionStorage.setItem(
         'textStyle',
-        JSON.stringify(savedStyleJson)
+        JSON.stringify(newSavedStyleJson)
       );
-      return Promise.resolve(savedStyleJson);
+      return Promise.resolve(newSavedStyleJson);
     } catch (error) {
       return Promise.reject(error);
     }
