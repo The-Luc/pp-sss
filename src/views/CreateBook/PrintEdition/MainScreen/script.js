@@ -1,25 +1,28 @@
 import { mapGetters, mapMutations, mapActions } from 'vuex';
 
-import Frames from '@/components/Thumbnail/Frames';
-import Thumbnail from '@/containers/ThumbnailPrint';
+import ListThumbContainer from '@/components/Thumbnail/ListThumbContainer';
+import Thumbnail from '@/components/Thumbnail/ThumbnailPrint';
 import {
   ACTIONS as PRINT_ACTIONS,
   MUTATES as PRINT_MUTATES,
   GETTERS as PRINT_GETTERS
 } from '@/store/modules/print/const';
 import { MUTATES as APP_MUTATES } from '@/store/modules/app/const';
-import { useDrawLayout } from '@/hooks';
+import { useDrawLayout, useUser } from '@/hooks';
 
 import printService from '@/api/print';
+import { ROLE } from '@/common/constants';
 
 export default {
   components: {
-    Frames,
+    ListThumbContainer,
     Thumbnail
   },
   setup() {
     const { drawLayout } = useDrawLayout();
-    return { drawLayout };
+    const { currentUser } = useUser();
+
+    return { drawLayout, currentUser };
   },
   created() {
     this.setBookId({ bookId: this.$route.params.bookId });
@@ -63,6 +66,12 @@ export default {
      */
     changeLinkStatus(sheetId, link) {
       this.updateSectionLinkStatus({ link, sheetId });
+    },
+    checkIsEnable({ assigneeId }) {
+      return (
+        this.currentUser.role === ROLE.ADMIN ||
+        assigneeId === this.currentUser.id
+      );
     }
   }
 };

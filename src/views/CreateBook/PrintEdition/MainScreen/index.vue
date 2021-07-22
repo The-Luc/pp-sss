@@ -1,7 +1,7 @@
 <template>
   <div class="row thumbnail-view-row">
     <template v-for="section in sections">
-      <Frames
+      <ListThumbContainer
         v-for="sheet in section.sheets"
         :key="sheet.id"
         :section="section"
@@ -9,10 +9,13 @@
         <Thumbnail
           :to-link="`/book/${bookId}/edit/print/edit-screen/${sheet.id}`"
           :number-page="numberPage(sheet)"
-          :sheet="sheet"
+          :sheet-type="sheet.type"
+          :link-type="sheet.link"
+          :thumbnail-url="sheet.thumbnailUrl"
+          :is-enable="checkIsEnable(sheet)"
           @change="changeLinkStatus(sheet.id, sheet.link)"
         />
-      </Frames>
+      </ListThumbContainer>
     </template>
   </div>
 </template>

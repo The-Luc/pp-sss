@@ -1,7 +1,7 @@
 import { mapGetters, mapMutations } from 'vuex';
 
-import Thumbnail from '@/containers/ThumbnailPrint';
-import HeaderContainer from '@/components/Thumbnail/HeaderContainer';
+import Thumbnail from '@/components/Thumbnail/ThumbnailPrint';
+import SidebarThumbContainer from '@/components/Thumbnail/SidebarThumbContainer';
 import { GETTERS as APP_GETTERS } from '@/store/modules/app/const';
 import {
   GETTERS as PRINT_GETTERS,
@@ -19,7 +19,7 @@ import { isEmpty, scrollToElement } from '@/common/utils';
 export default {
   components: {
     Thumbnail,
-    HeaderContainer
+    SidebarThumbContainer
   },
   setup() {
     const { resetPrintConfig } = useResetPrintConfig();

@@ -1,7 +1,7 @@
 <template>
   <div class="row thumbnail-view-row">
     <template v-for="(section, sectionIndex) in sections">
-      <Frames
+      <ListThumbContainer
         v-for="(sheet, sheetIndex) in section.sheets"
         :key="sheet.id"
         :section="section"
@@ -11,7 +11,7 @@
           :sheet="sheet"
           :order-screen="orderScreen(sectionIndex, sheetIndex)"
         />
-      </Frames>
+      </ListThumbContainer>
     </template>
   </div>
 </template>

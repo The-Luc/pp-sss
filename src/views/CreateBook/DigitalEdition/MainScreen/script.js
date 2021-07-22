@@ -1,6 +1,6 @@
 import { mapGetters, mapMutations, mapActions } from 'vuex';
 
-import Frames from '@/components/Thumbnail/Frames';
+import ListThumbContainer from '@/components/Thumbnail/ListThumbContainer';
 import Thumbnail from '@/components/Thumbnail/ThumbnailDigital';
 import {
   GETTERS as DIGITAL_GETTERS,
@@ -13,7 +13,7 @@ import digitalService from '@/api/digital';
 
 export default {
   components: {
-    Frames,
+    ListThumbContainer,
     Thumbnail
   },
   computed: {
