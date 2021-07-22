@@ -1,14 +1,27 @@
 import { mapGetters } from 'vuex';
 
 import Item from './Item';
-import { ACTIONS, EVENT_TYPE, OBJECT_TYPE } from '@/common/constants';
 import { GETTERS } from '@/store/modules/app/const';
 import { isEmpty, parsePasteObject } from '@/common/utils';
+import { MODAL_TYPES } from '@/common/constants';
+import { ACTIONS, EVENT_TYPE, OBJECT_TYPE } from '@/common/constants';
 import { COPY_OBJECT_KEY } from '@/common/constants/config';
+import { useTotalObjects, useModal } from '@/hooks';
 
 export default {
   components: {
     Item
+  },
+  props: {
+    isDigital: {
+      type: Boolean,
+      default: false
+    }
+  },
+  setup({ isDigital }) {
+    const { totalBackground, totalObject } = useTotalObjects(isDigital);
+    const { toggleModal } = useModal();
+    return { totalBackground, totalObject, toggleModal };
   },
   data() {
     return {
@@ -41,6 +54,18 @@ export default {
     activeOjectsValue() {
       this.setEnableCopy();
     },
+    totalBackground: {
+      deep: true,
+      handler() {
+        this.setEnableSaveLayout();
+      }
+    },
+    totalObject: {
+      deep: true,
+      handler() {
+        this.setEnableSaveLayout();
+      }
+    },
     currentObject() {
       this.setEnableSaveStyle();
     }
@@ -48,6 +73,7 @@ export default {
   mounted() {
     this.setEnableCopy();
     this.setEnablePaste();
+    this.setEnableSaveLayout();
     this.setEnableSaveStyle();
   },
   methods: {
@@ -56,6 +82,12 @@ export default {
      */
     setEnableCopy() {
       this.items[0].disabled = !this.hasActiveObjects;
+    },
+    /**
+     * Check whether save layout enabled base on user has object(s) or not
+     */
+    setEnableSaveLayout() {
+      this.items[2].disabled = !this.totalObject && !this.totalBackground;
     },
     /**
      * Callback function to get action value when user click on and emit to parent
@@ -70,6 +102,14 @@ export default {
         this.$root.$emit(EVENT_TYPE.PASTE_OBJ);
       }
 
+      if (actionValue === ACTIONS.SAVE_LAYOUT) {
+        this.toggleModal({
+          isOpenModal: true,
+          modalData: {
+            type: MODAL_TYPES.SELECT_PAGE_OF_LAYOUT
+          }
+        });
+      }
       if (actionValue === ACTIONS.SAVE_STYLE) {
         this.$root.$emit(EVENT_TYPE.SAVE_STYLE);
       }

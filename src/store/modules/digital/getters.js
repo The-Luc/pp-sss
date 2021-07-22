@@ -88,5 +88,8 @@ export const getters = {
   },
   [DIGITAL._GETTERS.CURRENT_FRAME]: ({ frames, currentFrameId }) => {
     return frames[currentFrameId];
+  },
+  [DIGITAL._GETTERS.TOTAL_OBJECT]: ({ objectIds }) => {
+    return objectIds.length;
   }
 };

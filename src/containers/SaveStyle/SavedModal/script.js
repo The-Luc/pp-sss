@@ -16,7 +16,7 @@ export default {
         styleId: this.modalData?.props?.styleId
       });
     }
-    
+
     if (this.modalData?.props?.objectType === OBJECT_TYPE.IMAGE) {
       this.$root.$emit(EVENT_TYPE.CHANGE_IMAGE_PROPERTIES, {
         styleId: this.modalData?.props?.styleId

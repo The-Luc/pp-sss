@@ -9,10 +9,10 @@
         <div>Do you wish to proceed?</div>
       </div>
       <div class="container-btn">
-        <PpButton is-active @click.native="onApplyLayout">
+        <PpButton is-active @click="onApplyLayout">
           Yes, apply layout
         </PpButton>
-        <PpButton is-active class="btn-cancel" @click.native="onCancel">
+        <PpButton is-active class="btn-cancel" @click="onCancel">
           Cancel
         </PpButton>
       </div>
