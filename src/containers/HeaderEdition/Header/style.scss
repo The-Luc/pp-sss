@@ -23,3 +23,26 @@
     }
   }
 }
+
+.auto-save {
+  &__container {
+    position: absolute;
+    left: 150px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  &__text {
+    font-family: $font-300;
+    color: $color-stoodio-toolbartext;
+    font-size: 9px;
+  }
+
+  &__bar {
+    background-color: $color-stoodio-blue;
+    width: 50px;
+    height: 2px;
+    margin-top: 4.5px;
+  }
+}
