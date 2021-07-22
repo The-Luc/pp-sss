@@ -1,4 +1,4 @@
-import { WINDOW_EVENT_TYPE } from '@/common/constants';
+import { KEY_CODE, WINDOW_EVENT_TYPE } from '@/common/constants';
 import { isEmpty, mapObject } from '@/common/utils';
 
 export default {
@@ -97,9 +97,13 @@ export default {
     },
     /**
      * Event fire when pressed keyboard
+     * @param {Event} event Event key up
      */
-    onKeypress() {
-      this.onChange();
+    onKeypress(event) {
+      const key = event.keyCode || event.charCode;
+      if (key === KEY_CODE.ESCAPE) {
+        this.onChange();
+      }
     }
   },
   beforeMount() {

@@ -1,16 +1,10 @@
 import { useActions, useGetters, useMutations } from 'vuex-composition-helpers';
 
 import { ACTIONS, GETTERS, MUTATES } from '@/store/modules/app/const';
-import { MODAL_TYPES } from '@/common/constants';
+import { MODAL_TYPES, OBJECT_TYPE } from '@/common/constants';
 
-export const useTextStyle = () => {
-  const { saveTextStyle, getSavedTextStyles } = useActions({
-    saveTextStyle: ACTIONS.SAVE_TEXT_STYLE,
-    getSavedTextStyles: ACTIONS.GET_SAVED_TEXT_STYLES
-  });
-
-  const { savedTextStyles, modalData, currentObject } = useGetters({
-    savedTextStyles: GETTERS.SAVED_TEXT_STYLES,
+export const useStyle = () => {
+  const { modalData, currentObject } = useGetters({
     modalData: GETTERS.MODAL_DATA,
     currentObject: GETTERS.CURRENT_OBJECT
   });
@@ -19,7 +13,12 @@ export const useTextStyle = () => {
     toggleModal: MUTATES.TOGGLE_MODAL
   });
 
-  const onSaveTextStyle = prop => {
+  const { saveTextStyle, saveImageStyle } = useActions({
+    saveTextStyle: ACTIONS.SAVE_TEXT_STYLE,
+    saveImageStyle: ACTIONS.SAVE_IMAGE_STYLE
+  });
+
+  const onSaveStyle = prop => {
     if (
       [MODAL_TYPES.SAVE_STYLE, MODAL_TYPES.SAVE_STYLE_SUCCESS].includes(
         modalData?.value?.type
@@ -29,36 +28,88 @@ export const useTextStyle = () => {
       if (!prop) return;
       const name = prop.styleName || 'Untitled';
       const value = Date.now();
-      const { fontFamily, fontSize, isBold, isItalic, isUnderline, color } =
-        currentObject?.value || {};
-      const textStyle = {
-        name,
-        value,
-        style: {
-          fontFamily,
-          fontSize,
-          isBold,
-          isItalic,
-          isUnderline,
+
+      const objectType = currentObject?.value?.type;
+
+      if (objectType === OBJECT_TYPE.TEXT) {
+        const { fontFamily, fontSize, isBold, isItalic, isUnderline, color } =
+          currentObject?.value || {};
+
+        const textStyle = {
+          name,
+          value,
+          style: {
+            fontFamily,
+            fontSize,
+            isBold,
+            isItalic,
+            isUnderline,
+            color
+          },
+          isCustom: true
+        };
+
+        saveTextStyle({ textStyle });
+      }
+
+      if (objectType === OBJECT_TYPE.IMAGE) {
+        const { border, color } = currentObject?.value || {};
+
+        const imageStyle = {
+          name,
+          value,
+          border,
           color
-        },
-        isCustom: true
-      };
-      saveTextStyle({ textStyle });
+        };
+
+        saveImageStyle({ imageStyle });
+      }
     } else {
       toggleModal({
         isOpenModal: true,
         modalData: {
-          type: MODAL_TYPES.SAVE_STYLE
+          type: MODAL_TYPES.SAVE_STYLE,
+          props: {
+            type: currentObject?.value?.type
+          }
         }
       });
     }
   };
 
   return {
-    saveTextStyle,
-    getSavedTextStyles,
+    onSaveStyle
+  };
+};
+
+export const useTextStyle = () => {
+  const { savedTextStyles } = useGetters({
+    savedTextStyles: GETTERS.SAVED_TEXT_STYLES
+  });
+
+  const { getSavedTextStyles } = useActions({
+    getSavedTextStyles: ACTIONS.GET_SAVED_TEXT_STYLES
+  });
+
+  return {
+    ...useStyle,
     savedTextStyles,
-    onSaveTextStyle
+    getSavedTextStyles
+  };
+};
+
+export const useImageStyle = () => {
+  const { savedImageStyles } = useGetters({
+    savedImageStyles: GETTERS.SAVED_IMAGE_STYLES
+  });
+
+  const { getSavedImageStyles } = useActions({
+    getSavedImageStyles: ACTIONS.GET_SAVED_IMAGE_STYLES
+  });
+
+  return {
+    ...useStyle,
+    savedImageStyles,
+    getSavedImageStyles
   };
 };

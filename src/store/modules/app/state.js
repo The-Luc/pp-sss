@@ -53,5 +53,6 @@ export const state = {
     totalScreen: 0
   },
   user: { id: null, role: null },
-  savedTextStyles: []
+  savedTextStyles: [],
+  savedImageStyles: []
 };
