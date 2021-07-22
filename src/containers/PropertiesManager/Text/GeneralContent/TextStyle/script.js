@@ -106,7 +106,6 @@ export default {
 
     /**
      * Fire when click selectbox
-     * @param {Element} event Element for click
      */
     onClick() {
       if (!this.savedTextStyles?.length) return;
@@ -114,8 +113,19 @@ export default {
       this.showSavedStylePopup = true;
     },
 
+    /**
+     * Handle Close saved style popup
+     */
     onClose() {
       this.showSavedStylePopup = false;
+    },
+
+    /**
+     * Event fired when user click outside component
+     */
+    onClickOutside() {
+      if (!this.showSavedStylePopup) return;
+      this.onClose();
     }
   },
   watch: {

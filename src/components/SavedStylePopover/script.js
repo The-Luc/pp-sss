@@ -1,3 +1,4 @@
+import { WINDOW_EVENT_TYPE } from '@/common/constants';
 import { isEmpty, mapObject } from '@/common/utils';
 
 export default {
@@ -93,18 +94,29 @@ export default {
 
       this.tabs[0].items = items;
       this.tabs[1].items = customItems;
+    },
+    /**
+     * Event fire when pressed keyboard
+     */
+    onKeypress() {
+      this.onChange();
     }
   },
-  mounted() {
+  beforeMount() {
     this.setListItems();
+    const tabActive = this.selectedVal?.isCustom ? 1 : 0;
+    this.onTabChange(tabActive);
+    window.document.addEventListener(WINDOW_EVENT_TYPE.KEY_UP, this.onKeypress);
+  },
+  beforeDestroy() {
+    window.document.removeEventListener(
+      WINDOW_EVENT_TYPE.KEY_UP,
+      this.onKeypress
+    );
   },
   watch: {
     items() {
       this.setListItems();
-    },
-    selectedVal(val) {
-      const tabActive = val?.isCustom ? 1 : 0;
-      this.onTabChange(tabActive);
     }
   }
 };

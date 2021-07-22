@@ -4,6 +4,7 @@
     :value="isOpenModal"
     content-class="pp-modal"
     :width="width"
+    :attach="container"
     @click:outside="onCloseModal"
     @keydown="onKeyDown"
   >

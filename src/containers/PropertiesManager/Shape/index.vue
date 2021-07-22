@@ -6,7 +6,13 @@
           General
         </v-tab>
         <v-tab-item value="general">
-          <GeneralContent />
+          <GeneralContent
+            :color-value="colorValue"
+            :opacity-value="opacityValue"
+            :current-shadow="currentShadow"
+            @change="onChange"
+            @changeShadow="onChangeShadow"
+          />
         </v-tab-item>
 
         <v-tab href="#arrange">

@@ -1,7 +1,7 @@
 <template>
   <div class="page-info-properties-container">
     <Properties v-if="isCover" title="Project Information">
-      <PageTitle :left-title-value="book.title" :disabled="true" />
+      <PageTitle :left-title-value="generalInfo.title" :disabled="true" />
       <PageNumber
         :disabled="disabled"
         :is-left-number-on="pageInfo.isNumberingOn"
