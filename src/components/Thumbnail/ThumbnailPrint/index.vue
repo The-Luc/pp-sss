@@ -2,14 +2,18 @@
   <div>
     <div
       class="thumbnail-view-thumbnail"
-      :class="thumnailCssClass"
+      :class="[thumnailCssClass, disabledCssClass]"
       :style="{ backgroundImage: thumbnailUrl && `url(${thumbnailUrl})` }"
     >
       <div class="border-inside"></div>
 
-      <div v-if="isEditIconDisplayed" class="thumbnail-edit">
+      <div
+        v-if="isEditIconDisplayed"
+        class="thumbnail-edit"
+        :class="disabledCssClass"
+      >
         <router-link tag="div" class="icon-wrapper" :to="toLink">
-          <v-icon class="icon-edit" :class="!isEnable && 'disabled'">
+          <v-icon class="icon-edit">
             edit
           </v-icon>
         </router-link>
@@ -21,6 +25,7 @@
       <div
         v-if="isLinkDisplayed"
         class="number-page-link"
+        :class="disabledCssClass"
         @click="changeLinkStatus"
       >
         <v-icon class="icon-link" :class="linkData.cssClass">

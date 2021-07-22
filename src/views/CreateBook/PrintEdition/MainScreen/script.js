@@ -61,12 +61,19 @@ export default {
     },
     /**
      * Set change link status for sheet
+     *
      * @param  {Number} sheetId sheet's id selected
      * @param  {String} link link status of sheet
      */
     changeLinkStatus(sheetId, link) {
       this.updateSectionLinkStatus({ link, sheetId });
     },
+    /**
+     * Check sheet is enable for current user
+     *
+     * @param   {Number}  assigneeId  assignee id of current section
+     * @returns {Boolean}             is enable or not
+     */
     checkIsEnable({ assigneeId }) {
       return (
         this.currentUser.role === ROLE.ADMIN ||

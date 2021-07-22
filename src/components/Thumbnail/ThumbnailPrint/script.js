@@ -54,6 +54,9 @@ export default {
     },
     linkData() {
       return this.getLinkData();
+    },
+    disabledCssClass() {
+      return this.isEnable ? '' : 'disabled';
     }
   },
   methods: {
@@ -61,6 +64,8 @@ export default {
      * Emit event change link status
      */
     changeLinkStatus() {
+      if (!this.isEnable) return;
+
       this.$emit('change');
     },
     /**

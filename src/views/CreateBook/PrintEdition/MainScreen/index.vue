@@ -4,7 +4,9 @@
       <ListThumbContainer
         v-for="sheet in section.sheets"
         :key="sheet.id"
-        :section="section"
+        :name="section.name"
+        :color="section.color"
+        :is-enable="checkIsEnable(section)"
       >
         <Thumbnail
           :to-link="`/book/${bookId}/edit/print/edit-screen/${sheet.id}`"
@@ -12,7 +14,7 @@
           :sheet-type="sheet.type"
           :link-type="sheet.link"
           :thumbnail-url="sheet.thumbnailUrl"
-          :is-enable="checkIsEnable(sheet)"
+          :is-enable="checkIsEnable(section)"
           @change="changeLinkStatus(sheet.id, sheet.link)"
         />
       </ListThumbContainer>

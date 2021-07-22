@@ -8,6 +8,10 @@
   background-color: $color-white;
   background-size: cover;
 
+  &.disabled {
+    opacity: 0.7;
+  }
+
   .border-inside {
     position: absolute;
     width: 100%;
@@ -52,20 +56,28 @@
   align-items: center;
   width: 34px;
   height: 34px;
-  border-radius: 50%;
-  border: 1px solid $color-white;
+  z-index: 2;
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: $color-stoodio-blue;
   text-align: center;
   line-height: 34px;
-  cursor: pointer;
-  z-index: 2;
+  border-radius: 50%;
+  border: 1px solid $color-white;
+  background-color: $color-stoodio-blue;
 
-  &:hover {
-    border: 1px solid $color-stoodio-blue;
+  &:not(.disabled) {
+    cursor: pointer;
+
+    &:hover {
+      border: 1px solid $color-stoodio-blue;
+    }
+  }
+
+  &.disabled {
+    opacity: 0.3;
+    pointer-events: none;
   }
 
   .icon-wrapper {
@@ -96,16 +108,20 @@
 }
 
 .number-page-link {
-  cursor: pointer;
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
 
+  &:not(.disabled) {
+    cursor: pointer;
+  }
+
   .icon-link {
     font-size: 20px;
     font-weight: 600;
-    color: #afafaf;
+    color: $color-gray14;
+
     &.unlink {
       color: $color-stoodio-toolbartext;
     }
