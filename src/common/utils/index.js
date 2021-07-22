@@ -16,3 +16,4 @@ export * from './rotation';
 export * from './creationTool';
 export * from './time';
 export * from './actions';
+export * from './border';
