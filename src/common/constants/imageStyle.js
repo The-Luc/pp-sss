@@ -4,6 +4,7 @@ export const IMAGE_BORDER_TYPE = {
   DOTTED: 'round',
   DASHED: 'square'
 };
+
 import IMAGE_STYLE_01 from '@/assets/image/image-style/image-style-01.svg';
 import IMAGE_STYLE_02 from '@/assets/image/image-style/image-style-02.svg';
 import IMAGE_STYLE_03 from '@/assets/image/image-style/image-style-03.svg';
@@ -41,8 +42,6 @@ export const IMAGE_STYLE = [
     id: 1,
     className: 'image-style-01',
     imageUrl: IMAGE_STYLE_01,
-    name: 'None',
-    value: 'none',
     style: {
       border: cloneDeep(defaultBorder),
       shadow: cloneDeep(defaultShadow)
@@ -52,8 +51,6 @@ export const IMAGE_STYLE = [
     id: 2,
     className: 'image-style-02',
     imageUrl: IMAGE_STYLE_02,
-    name: 'Single Line',
-    value: 'singeLine',
     style: {
       border: {
         ...cloneDeep(defaultBorder),
@@ -66,10 +63,8 @@ export const IMAGE_STYLE = [
   },
   {
     id: 3,
-    className: 'image-style-03',
+    classname: 'Single Line',
     imageUrl: IMAGE_STYLE_03,
-    name: 'Single Line',
-    value: 'singeLine',
     style: {
       border: {
         ...cloneDeep(defaultBorder),
@@ -87,8 +82,6 @@ export const IMAGE_STYLE = [
     id: 4,
     className: 'image-style-04',
     imageUrl: IMAGE_STYLE_04,
-    name: 'Single Line',
-    value: 'singeLine',
     style: {
       border: {
         ...cloneDeep(defaultBorder),
@@ -103,8 +96,6 @@ export const IMAGE_STYLE = [
     id: 5,
     className: 'image-style-05',
     imageUrl: IMAGE_STYLE_05,
-    name: 'Single Line',
-    value: 'singeLine',
     style: {
       border: {
         ...cloneDeep(defaultBorder),
@@ -122,8 +113,6 @@ export const IMAGE_STYLE = [
     id: 6,
     className: 'image-style-06',
     imageUrl: IMAGE_STYLE_06,
-    name: 'Double Line',
-    value: 'doubleLine',
     style: {
       border: {
         ...cloneDeep(defaultBorder),
@@ -139,8 +128,6 @@ export const IMAGE_STYLE = [
     id: 7,
     className: 'image-style-07',
     imageUrl: IMAGE_STYLE_07,
-    name: 'Dashed Line',
-    value: 'dashed Line',
     style: {
       border: {
         ...cloneDeep(defaultBorder),
@@ -157,8 +144,6 @@ export const IMAGE_STYLE = [
     className: 'image-style-08',
     imageUrl: IMAGE_STYLE_08,
 
-    name: 'Dotted Line',
-    value: 'dottedLine',
     style: {
       border: {
         ...cloneDeep(defaultBorder),
@@ -174,8 +159,6 @@ export const IMAGE_STYLE = [
     id: 9,
     className: 'image-style-09',
     imageUrl: IMAGE_STYLE_09,
-    name: 'Single Line',
-    value: 'singeLine',
     style: {
       border: {
         ...cloneDeep(defaultBorder),
@@ -190,8 +173,6 @@ export const IMAGE_STYLE = [
     id: 10,
     className: 'image-style-10',
     imageUrl: IMAGE_STYLE_10,
-    name: 'Single Line',
-    value: 'singeLine',
     style: {
       border: {
         ...cloneDeep(defaultBorder),
@@ -206,8 +187,6 @@ export const IMAGE_STYLE = [
     id: 11,
     className: 'image-style-11',
     imageUrl: IMAGE_STYLE_11,
-    name: 'Single Line',
-    value: 'singeLine',
     style: {
       border: {
         ...cloneDeep(defaultBorder),
@@ -222,8 +201,6 @@ export const IMAGE_STYLE = [
     id: 12,
     className: 'image-style-12',
     imageUrl: IMAGE_STYLE_12,
-    name: 'Single Line',
-    value: 'singeLine',
     style: {
       border: {
         ...cloneDeep(defaultBorder),

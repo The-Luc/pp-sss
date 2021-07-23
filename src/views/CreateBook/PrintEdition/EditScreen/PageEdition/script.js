@@ -1221,7 +1221,9 @@ export default {
      * @param {Object}  prop  new prop
      */
     changeImageProperties(prop) {
-      this.changeElementProperties(prop, OBJECT_TYPE.IMAGE);
+      const { border, ...otherProps } = prop;
+      console.log(border);
+      console.log(otherProps);
 
       const activeObject = window.printCanvas.getActiveObject();
 
@@ -1233,10 +1235,11 @@ export default {
         noScaleCache: true
       });
 
-      if (prop.border) {
-        applyBorderToImageObject(activeObject, prop.border);
+      if (border) {
+        // applyBorderToImageObject(activeObject, prop.border);
       }
-      window.printCanvas.renderAll();
+
+      this.changeElementProperties(otherProps, OBJECT_TYPE.IMAGE);
     },
     /**
      * Change properties of current element

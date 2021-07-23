@@ -161,6 +161,9 @@ export default {
      */
     onSelectImageStyle(id) {
       this.styleSelected = id;
+      const styleData = this.imageStyle.find(style => style.id === id);
+
+      this.$root.$emit(EVENT_TYPE.CHANGE_IMAGE_PROPERTIES, styleData.style);
     },
     /**
      * Handle click crop image for Image
