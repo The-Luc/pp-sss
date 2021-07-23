@@ -167,7 +167,8 @@ export const mutations = {
         frame: {
           previewImageUrl: '',
           id: 0,
-          fromLayout: true
+          fromLayout: true,
+          titleFrame: ''
         }
       };
       state.frames = { [blankFrame.id]: blankFrame.frame };

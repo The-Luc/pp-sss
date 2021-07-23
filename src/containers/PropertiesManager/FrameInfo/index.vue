@@ -3,7 +3,7 @@
     <div class="frame-info-container">
       <InputTitle
         title-name="Frame Title:"
-        title-value=""
+        :title-value="titleFrame"
         @change="onChangeTitle"
       />
       <div class="opts-container">
