@@ -13,7 +13,16 @@
           Style
         </v-tab>
         <v-tab-item value="style">
-          <StyleContent />
+          <StyleContent
+            :is-allow-fill-color="false"
+            :is-show-border="true"
+            :opacity-value="opacityValue"
+            :current-shadow="currentShadow"
+            :current-border="currentBorder"
+            @change="onChange"
+            @changeShadow="onChangeShadow"
+            @changeBorder="onChangeBorder"
+          />
         </v-tab-item>
 
         <v-tab href="#arrange">

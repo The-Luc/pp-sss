@@ -37,3 +37,4 @@ export * from './fontFamily';
 export * from './eventType';
 export * from './frameProperty';
 export * from './role';
+export * from './imageStyle';

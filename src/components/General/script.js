@@ -1,17 +1,19 @@
 import FillColor from '@/containers/Properties/Features/FillColor';
 import Opacity from '@/components/Properties/Features/Opacity';
 import Shadow from '@/components/Properties/Features/Shadow';
+import Border from '@/components/Properties/Features/Border';
 
 export default {
   components: {
     FillColor,
     Opacity,
-    Shadow
+    Shadow,
+    Border
   },
   props: {
     colorValue: {
       type: String,
-      required: true
+      default: ''
     },
     opacityValue: {
       type: Number,
@@ -19,11 +21,19 @@ export default {
     },
     currentShadow: {
       type: Object,
-      required: true
+      default: () => ({})
     },
     isAllowFillColor: {
       type: Boolean,
       default: true
+    },
+    isShowBorder: {
+      type: Boolean,
+      default: false
+    },
+    currentBorder: {
+      type: Object,
+      default: () => ({})
     }
   },
   methods: {
@@ -54,6 +64,13 @@ export default {
      */
     onChangeColor(color) {
       this.$emit('change', { color, stroke: color });
+    },
+    /**
+     * Emit border option selected
+     * @param {Object} borderCfg Border option selected
+     */
+    onChangeBorder(object) {
+      this.$emit('changeBorder', object);
     }
   }
 };

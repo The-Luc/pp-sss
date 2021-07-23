@@ -11,7 +11,7 @@ import IMAGE_STYLE_10 from '@/assets/image/image-style/image-style-10.svg';
 import IMAGE_STYLE_11 from '@/assets/image/image-style/image-style-11.svg';
 import IMAGE_STYLE_12 from '@/assets/image/image-style/image-style-12.svg';
 
-const imageStyle = [
+export const IMAGE_STYLE = [
   {
     id: 1,
     className: 'image-style-01',
@@ -73,5 +73,3 @@ const imageStyle = [
     imageUrl: IMAGE_STYLE_12
   }
 ];
-
-export default imageStyle;

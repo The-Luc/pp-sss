@@ -8,6 +8,12 @@
 
     <Opacity :value="opacityValue" @change="onChangeOpacity" />
 
+    <Border
+      v-if="isShowBorder"
+      :current-border="currentBorder"
+      @change="onChangeBorder"
+    />
+
     <Shadow
       :current-shadow="currentShadow"
       @change="onChangeShadow"
