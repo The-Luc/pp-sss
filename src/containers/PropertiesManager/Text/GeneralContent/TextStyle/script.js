@@ -1,7 +1,7 @@
 import { mapGetters } from 'vuex';
 
 import PpSelect from '@/components/Selectors/Select';
-import SavedStylePopover from '@/components/SavedStylePopover';
+import SavedTextStylePopover from './SavedTextStylePopover';
 
 import { isEmpty, toCssStyle } from '@/common/utils';
 
@@ -9,52 +9,15 @@ import { GETTERS as APP_GETTERS } from '@/store/modules/app/const';
 import { EVENT_TYPE } from '@/common/constants/eventType';
 import { useTextStyle } from '@/hooks/style';
 
+import textStyles from '@/mock/style';
+
 export default {
   components: {
     PpSelect,
-    SavedStylePopover
+    SavedTextStylePopover
   },
   data() {
-    const items = [
-      {
-        name: 'Default',
-        value: 'default',
-        style: {
-          fontFamily: 'Arial',
-          fontSize: 60,
-          isBold: false,
-          isItalic: false,
-          isUnderline: false,
-          color: '#000000'
-        }
-      },
-      {
-        name: 'Cover Headline',
-        value: 'coverHeadline',
-        style: {
-          fontFamily: 'Time News Roman',
-          fontSize: 90,
-          isBold: true,
-          isItalic: true,
-          isUnderline: false,
-          color: '#00FF00'
-        }
-      },
-      {
-        name: 'Page Headline',
-        value: 'pageHeadline',
-        style: {
-          fontFamily: 'Arial',
-          fontSize: 35,
-          isBold: false,
-          isItalic: false,
-          isUnderline: true,
-          color: '#FF0000'
-        }
-      }
-    ];
-
-    const selectBoxItems = items.map(item => {
+    const selectBoxItems = textStyles.map(item => {
       const { name, value, style } = item;
 
       return {
@@ -66,7 +29,7 @@ export default {
     });
 
     return {
-      items,
+      items: textStyles,
       selectBoxItems,
       showSavedStylePopup: false,
       componentKey: true

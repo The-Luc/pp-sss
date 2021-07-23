@@ -15,12 +15,12 @@ export const actions = {
         }
       }
     });
-    commit(APP._MUTATES.SET_SAVED_TEXT_STYLE, { savedTextStyles });
+    commit(APP._MUTATES.SET_SAVED_TEXT_STYLES, { savedTextStyles });
   },
 
   async [APP._ACTIONS.GET_SAVED_TEXT_STYLES]({ commit }) {
     const savedTextStyles = await styleService.getSavedTextStyles();
-    commit(APP._MUTATES.SET_SAVED_TEXT_STYLE, { savedTextStyles });
+    commit(APP._MUTATES.SET_SAVED_TEXT_STYLES, { savedTextStyles });
   },
 
   async [APP._ACTIONS.SAVE_IMAGE_STYLE]({ commit }, { imageStyle }) {
@@ -35,11 +35,11 @@ export const actions = {
         }
       }
     });
-    commit(APP._MUTATES.SET_SAVED_IMAGE_STYLE, { savedImageStyles });
+    commit(APP._MUTATES.SET_SAVED_IMAGE_STYLES, { savedImageStyles });
   },
 
   async [APP._ACTIONS.GET_SAVED_IMAGE_STYLES]({ commit }) {
     const savedImageStyles = await styleService.getSavedImageStyles();
-    commit(APP._MUTATES.SET_SAVED_IMAGE_STYLE, { savedImageStyles });
+    commit(APP._MUTATES.SET_SAVED_IMAGE_STYLES, { savedImageStyles });
   }
 };

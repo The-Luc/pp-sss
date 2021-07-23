@@ -8,7 +8,7 @@
       @change="onChange"
       @click="onClick"
     />
-    <SavedStylePopover
+    <SavedTextStylePopover
       v-if="showSavedStylePopup"
       v-click-outside="onClickOutside"
       :items="selectBoxItems"

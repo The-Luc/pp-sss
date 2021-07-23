@@ -32,9 +32,21 @@ export const useStyle = () => {
       const objectType = currentObject?.value?.type;
 
       if (objectType === OBJECT_TYPE.TEXT) {
-        const { fontFamily, fontSize, isBold, isItalic, isUnderline, color } =
-          currentObject?.value || {};
-
+        const {
+          fontFamily,
+          fontSize,
+          isBold,
+          isItalic,
+          isUnderline,
+          color,
+          alignment,
+          textCase,
+          letterSpacing,
+          lineSpacing,
+          flip,
+          border,
+          shadow
+        } = currentObject?.value || {};
         const textStyle = {
           name,
           value,
@@ -44,7 +56,14 @@ export const useStyle = () => {
             isBold,
             isItalic,
             isUnderline,
-            color
+            color,
+            alignment,
+            textCase,
+            letterSpacing,
+            lineSpacing,
+            flip,
+            border,
+            shadow
           },
           isCustom: true
         };
