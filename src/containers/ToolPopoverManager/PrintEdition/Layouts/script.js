@@ -220,7 +220,10 @@ export default {
     async initPrintData() {
       this.themesOptions = await loadPrintThemes();
 
-      const layouts = await loadLayouts();
+      let layouts = await loadLayouts();
+      const ppLayouts =
+        JSON.parse(window.sessionStorage.getItem('ppLayouts')) || [];
+      layouts = [...layouts, ...ppLayouts];
 
       this.setPrintLayouts({ layouts });
     },
@@ -482,7 +485,12 @@ export default {
       resetObjects(activeCanvas);
 
       // draw layout on canvas
-      this.drawLayout(this.sheetLayout, this.edition);
+      if (this.isDigital) {
+        this.drawLayout(this.sheetLayout, this.edition);
+      } else {
+        this.$root.$emit('drawLayout');
+      }
+
       this.$root.$emit('pageNumber');
     },
     /**

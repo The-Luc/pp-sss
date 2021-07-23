@@ -72,7 +72,7 @@ export default {
      * Get sheet's layout and draw
      */
     drawLayoutSinglePage() {
-      this.drawLayout(this.sheetLayout, EDITION.PRINT);
+      this.$root.$emit('drawLayout');
     },
     /**
      * Update layout to sheet, draw layout and then close modal

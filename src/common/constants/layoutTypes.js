@@ -46,5 +46,9 @@ export const LAYOUT_TYPES = {
   SUPPLEMENTAL_LAYOUTS: {
     name: 'Supplemental: Digital Only',
     value: 'Supplemental'
+  },
+  SAVED_LAYOUTS_AND_FAVORITES: {
+    name: 'Saved Layouts/Favorites',
+    value: 'SavedLayoutsAndFavorites'
   }
 };

@@ -25,7 +25,7 @@ export default {
     /**
      * Select page of layout to save layout and open modal set name layout
      */
-    onSelectPageOfLayout() {
+    onSelectPageOfLayout(pageSelected) {
       this.onCancel();
       this.toggleModal({
         isOpenModal: true,

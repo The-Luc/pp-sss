@@ -119,5 +119,8 @@ export const getters = {
   },
   [PRINT._GETTERS.TOTAL_OBJECT]: ({ objectIds }) => {
     return objectIds.length;
+  },
+  [PRINT._GETTERS.BACKGROUNDS]: ({ background }) => {
+    return background;
   }
 };

@@ -1446,8 +1446,10 @@ export default {
 
         [EVENT_TYPE.COPY_OBJ]: this.handleCopy,
         [EVENT_TYPE.PASTE_OBJ]: this.handlePaste,
+        [EVENT_TYPE.SAVE_LAYOUT]: this.handleSaveLayout,
 
-        pageNumber: this.addPageNumber
+        pageNumber: this.addPageNumber,
+        drawLayout: this.drawLayout
       };
 
       const events = {
@@ -1589,6 +1591,29 @@ export default {
         pageNumber: { pageLeftName, pageRightName },
         canvas: window.printCanvas
       });
+    },
+    handleSaveLayout({ pageSelected, layoutName }) {
+      const objects = this.sheetLayout;
+      const layout = {
+        id: parseInt(uniqueId()) + 100,
+        type: 'SavedLayoutsAndFavorites',
+        name: layoutName,
+        isFavorites: false,
+        previewImageUrl: window.printCanvas.toDataURL({
+          quality: THUMBNAIL_IMAGE_QUALITY,
+          width: window.printCanvas.width / 2,
+          left: window.printCanvas.width / 2
+        }),
+        themeId: 1,
+        objects
+      };
+      const ppLayouts =
+        JSON.parse(window.sessionStorage.getItem('ppLayouts')) || [];
+      const layouts = [...ppLayouts, { ...layout }];
+      window.sessionStorage.setItem('ppLayouts', JSON.stringify(layouts));
+    },
+    async drawLayout() {
+      await this.drawObjectsOnCanvas(this.sheetLayout);
     }
   }
 };

@@ -24,7 +24,7 @@ class GetterClass extends BaseObject {
   GET_PAGE_INFO = 'getPageInfo';
   DEFAULT_THEME_ID = 'getDefaultThemeId';
   TOTAL_OBJECT = 'getTotalObject';
-
+  BACKGROUNDS = 'getBackgrounds';
   constructor(props) {
     super(props);
     this._set(props);
