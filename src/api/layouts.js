@@ -1,12 +1,13 @@
-import layouts from '@/mock/layouts';
+import mockLayouts from '@/mock/layouts';
 import { packageLayouts, supplementalLayouts } from '@/mock/digitalLayouts';
 
 export const loadLayouts = () => {
-  let ppLayouts = JSON.parse(window.sessionStorage.getItem('ppLayouts')) || [];
-  ppLayouts = [...layouts, ...ppLayouts];
+  const storageLayouts =
+    JSON.parse(window.sessionStorage.getItem('ppLayouts')) || [];
+  const layouts = [...mockLayouts, ...storageLayouts];
   return new Promise(resolve => {
     setTimeout(() => {
-      resolve(ppLayouts);
+      resolve(layouts);
     });
   });
 };
@@ -22,10 +23,11 @@ export const loadSupplementalLayouts = () =>
   Promise.resolve(supplementalLayouts);
 
 export const loadPrintPpLayouts = () => {
-  let ppLayouts = JSON.parse(window.sessionStorage.getItem('ppLayouts')) || [];
+  const storageLayouts =
+    JSON.parse(window.sessionStorage.getItem('ppLayouts')) || [];
   return new Promise(resolve => {
     setTimeout(() => {
-      resolve(ppLayouts);
+      resolve(storageLayouts);
     });
   });
 };
