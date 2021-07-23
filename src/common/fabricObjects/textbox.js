@@ -261,8 +261,8 @@ const addPadding = (val, padding) => val + padding * 2;
 const updateTextSize = (text, prop) => {
   if (!prop.size) return;
 
-  const newWidth = addPadding(prop.size.width, text.padding);
-  const newHeight = addPadding(prop.size.height, text.padding);
+  const newWidth = addPadding(inToPx(prop.size.width), text.padding);
+  const newHeight = addPadding(inToPx(prop.size.height), text.padding);
   const { minBoundingWidth, minBoundingHeight } = getTextSizeWithPadding(text);
 
   const sizeData = {};
