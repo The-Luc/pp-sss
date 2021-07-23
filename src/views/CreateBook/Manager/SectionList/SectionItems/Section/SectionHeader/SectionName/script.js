@@ -66,8 +66,6 @@ export default {
     click(event) {
       event.stopPropagation();
 
-      if (!this.isEnable) return;
-
       const { text, input } = this.$refs;
 
       // 2 is border width (left + right)

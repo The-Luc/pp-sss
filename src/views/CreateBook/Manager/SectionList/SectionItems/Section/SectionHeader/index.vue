@@ -18,7 +18,7 @@
           :is-enable="isEnable"
           :is-drag-control-displayed="isDragControlDisplayed"
         />
-        <SectionProcess :section="section" :is-enable="isEnable" />
+        <SectionProcess :section="section" />
       </v-row>
     </v-col>
   </v-row>

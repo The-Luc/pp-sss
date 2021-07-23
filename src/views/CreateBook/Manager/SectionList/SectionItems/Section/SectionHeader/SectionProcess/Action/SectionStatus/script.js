@@ -1,3 +1,5 @@
+import { PROCESS_STATUS } from '@/common/constants';
+
 export default {
   props: {
     isOpen: {
@@ -18,26 +20,9 @@ export default {
     }
   },
   data() {
-    return {
-      statusList: [
-        {
-          value: 0,
-          name: 'Not Started'
-        },
-        {
-          value: 1,
-          name: 'In Process'
-        },
-        {
-          value: 2,
-          name: 'Completed'
-        },
-        {
-          value: 3,
-          name: 'Approved'
-        }
-      ]
-    };
+    const statusList = Object.values(PROCESS_STATUS).map(v => v);
+
+    return { statusList };
   },
   methods: {
     /**
