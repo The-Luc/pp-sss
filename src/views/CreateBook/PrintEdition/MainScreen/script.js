@@ -11,7 +11,8 @@ import { MUTATES as APP_MUTATES } from '@/store/modules/app/const';
 import { useDrawLayout, useUser } from '@/hooks';
 
 import printService from '@/api/print';
-import { ROLE } from '@/common/constants';
+
+import { getSectionsWithAccessible } from '@/common/utils';
 
 export default {
   components: {
@@ -36,11 +37,13 @@ export default {
   },
   computed: {
     ...mapGetters({
-      sheetLayout: PRINT_GETTERS.SHEET_LAYOUT,
-      sections: PRINT_GETTERS.SECTIONS_SHEETS
+      sectionList: PRINT_GETTERS.SECTIONS_SHEETS
     }),
     bookId() {
       return this.$route.params.bookId;
+    },
+    sections() {
+      return getSectionsWithAccessible(this.sectionList, this.currentUser);
     }
   },
   methods: {
@@ -67,18 +70,6 @@ export default {
      */
     changeLinkStatus(sheetId, link) {
       this.updateSectionLinkStatus({ link, sheetId });
-    },
-    /**
-     * Check sheet is enable for current user
-     *
-     * @param   {Number}  assigneeId  assignee id of current section
-     * @returns {Boolean}             is enable or not
-     */
-    checkIsEnable({ assigneeId }) {
-      return (
-        this.currentUser.role === ROLE.ADMIN ||
-        assigneeId === this.currentUser.id
-      );
     }
   }
 };

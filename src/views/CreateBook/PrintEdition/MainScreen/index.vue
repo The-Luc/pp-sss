@@ -6,7 +6,7 @@
         :key="sheet.id"
         :name="section.name"
         :color="section.color"
-        :is-enable="checkIsEnable(section)"
+        :is-enable="section.isAccessible"
       >
         <Thumbnail
           :to-link="`/book/${bookId}/edit/print/edit-screen/${sheet.id}`"
@@ -14,7 +14,7 @@
           :sheet-type="sheet.type"
           :link-type="sheet.link"
           :thumbnail-url="sheet.thumbnailUrl"
-          :is-enable="checkIsEnable(section)"
+          :is-enable="section.isAccessible"
           @change="changeLinkStatus(sheet.id, sheet.link)"
         />
       </ListThumbContainer>

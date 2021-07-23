@@ -17,7 +17,8 @@ import {
   useLayoutPrompt,
   usePopoverCreationTool,
   useInfoBar,
-  useMutatesSheet
+  useMutationPrintSheet,
+  useUser
 } from '@/hooks';
 import { EDITION } from '@/common/constants';
 import { isEmpty } from '@/common/utils';
@@ -36,14 +37,16 @@ export default {
     const { pageSelected, updateVisited } = useLayoutPrompt(EDITION.PRINT);
     const { setToolNameSelected } = usePopoverCreationTool();
     const { setInfoBar } = useInfoBar();
-    const { setCurrentSheetId } = useMutatesSheet();
+    const { setCurrentSheetId } = useMutationPrintSheet();
+    const { currentUser } = useUser();
 
     return {
       pageSelected,
       setToolNameSelected,
       updateVisited,
       setInfoBar,
-      setCurrentSheetId
+      setCurrentSheetId,
+      currentUser
     };
   },
   computed: {

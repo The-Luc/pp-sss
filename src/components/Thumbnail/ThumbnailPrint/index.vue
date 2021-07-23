@@ -13,9 +13,7 @@
         :class="disabledCssClass"
       >
         <router-link tag="div" class="icon-wrapper" :to="toLink">
-          <v-icon class="icon-edit">
-            edit
-          </v-icon>
+          <v-icon class="icon-edit">edit</v-icon>
         </router-link>
       </div>
     </div>

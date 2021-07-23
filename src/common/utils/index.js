@@ -17,3 +17,4 @@ export * from './creationTool';
 export * from './time';
 export * from './actions';
 export * from './border';
+export * from './section';

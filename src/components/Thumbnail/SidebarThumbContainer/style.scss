@@ -1,4 +1,16 @@
 .thumbnail-view-header {
+  &.disabled {
+    & > div {
+      pointer-events: none;
+    }
+  }
+
+  &:not(.disabled) {
+    & > div {
+      cursor: pointer;
+    }
+  }
+
   .header-container {
     margin-left: -8px;
     display: flex;
@@ -10,11 +22,10 @@
   }
   & > div {
     align-items: center;
-    cursor: pointer;
+
     .header-color {
       width: 8px;
       height: 8px;
-      background-color: brown;
       border-radius: 100%;
     }
     .header-name {
@@ -23,14 +34,14 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      color: #565656;
+      color: $color-gray5;
     }
     span {
       font-family: $font-300;
       margin-left: 5px;
     }
     .v-icon {
-      color: #58595b;
+      color: $color-stoodio-toolbartext;
     }
   }
 }
