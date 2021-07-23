@@ -1,9 +1,13 @@
+import { mapMutations } from 'vuex';
+import { MUTATES as DIGITAL_MUTATES } from '@/store/modules/digital/const';
+
 import PpSelect from '@/components/Selectors/Select';
 import Properties from '@/components/Properties/BoxProperties';
 import InputTitle from '@/components/inputTitle';
 
 import { DEPLAY_OPTION } from '@/common/constants';
 import { useFrame } from '@/hooks';
+
 export default {
   components: {
     PpSelect,
@@ -28,6 +32,9 @@ export default {
     }
   },
   methods: {
+    ...mapMutations({
+      setTitleFrame: DIGITAL_MUTATES.SET_TITLE_FRAME
+    }),
     /**
      * Fire when delay is changed
      */
@@ -36,10 +43,10 @@ export default {
     },
     /**
      * set value title change
-     * @param   {String}  title Value user input
+     * @param   {String}  value Value user input
      */
-    onChangeTitle(val) {
-      console.log(val);
+    onChangeTitle(value) {
+      this.setTitleFrame({ value });
     }
   }
 };

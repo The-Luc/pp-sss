@@ -240,5 +240,8 @@ export const mutations = {
       moveToIndex,
       state.frameIds
     );
+  },
+  [DIGITAL._MUTATES.SET_TITLE_FRAME]({ frames, currentFrameId }, { value }) {
+    frames[currentFrameId].titleFrame = value;
   }
 };
