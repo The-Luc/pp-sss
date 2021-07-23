@@ -24,7 +24,8 @@ class GetterClass extends BaseObject {
   GET_PAGE_INFO = 'getPageInfo';
   DEFAULT_THEME_ID = 'getDefaultThemeId';
   TOTAL_OBJECT = 'getTotalObject';
-  CURRENT_SECTION = 'getCurrentSectionByCurrentSheetId'
+  BACKGROUNDS = 'getBackgrounds';
+  CURRENT_SECTION = 'getCurrentSectionByCurrentSheetId';
 
   constructor(props) {
     super(props);
@@ -82,7 +83,7 @@ class MutationClass extends BaseObject {
   SET_PAGE_INFO = 'setPageInfo';
   SET_STATUS_PAGE_NUMBER = 'setStatusPageNumber';
   UPDATE_SPREAD_INFO = 'updateSpreadInfo';
-  SET_PAGE_EMPTY = 'setPageEmpty';
+  CLEAR_BACKGROUNDS = 'clearBackgrounds';
 
   constructor(props) {
     super(props);

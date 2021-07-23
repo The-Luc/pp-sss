@@ -481,6 +481,11 @@ export default {
 
       resetObjects(activeCanvas);
 
+      // draw layout on canvas
+      if (!this.isDigital) {
+        this.$root.$emit('drawLayout');
+      }
+
       this.$root.$emit('pageNumber');
     },
     /**

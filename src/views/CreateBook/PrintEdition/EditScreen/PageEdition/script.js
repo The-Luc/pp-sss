@@ -4,7 +4,7 @@ import { cloneDeep, uniqueId, merge, debounce } from 'lodash';
 
 import { usePrintOverrides } from '@/plugins/fabric';
 
-import { useDrawLayout, useInfoBar } from '@/hooks';
+import { useInfoBar } from '@/hooks';
 import { startDrawBox } from '@/common/fabricObjects/drawingBox';
 
 import {
@@ -89,6 +89,7 @@ import printService from '@/api/print';
 import { useAppCommon } from '@/hooks/common';
 import { EVENT_TYPE } from '@/common/constants/eventType';
 import { useStyle } from '@/hooks/style';
+import { loadPrintPpLayouts, setPrintPpLayouts } from '@/api/layouts';
 
 export default {
   components: {
@@ -100,11 +101,10 @@ export default {
   },
   setup() {
     const { setActiveEdition } = useAppCommon();
-    const { drawLayout } = useDrawLayout();
     const { setInfoBar, zoom } = useInfoBar();
     const { onSaveStyle } = useStyle();
 
-    return { setActiveEdition, drawLayout, setInfoBar, zoom, onSaveStyle };
+    return { setActiveEdition, setInfoBar, zoom, onSaveStyle };
   },
   data() {
     return {
@@ -1434,8 +1434,10 @@ export default {
 
         [EVENT_TYPE.COPY_OBJ]: this.handleCopy,
         [EVENT_TYPE.PASTE_OBJ]: this.handlePaste,
+        [EVENT_TYPE.SAVE_LAYOUT]: this.handleSaveLayout,
 
-        pageNumber: this.addPageNumber
+        pageNumber: this.addPageNumber,
+        drawLayout: this.drawLayout
       };
 
       const events = {
@@ -1577,6 +1579,27 @@ export default {
         pageNumber: { pageLeftName, pageRightName },
         canvas: window.printCanvas
       });
+    },
+    async handleSaveLayout({ pageSelected, layoutName }) {
+      const objects = this.sheetLayout;
+      const layout = {
+        id: parseInt(uniqueId()) + 100,
+        type: 'SavedLayoutsAndFavorites',
+        name: layoutName,
+        isFavorites: false,
+        previewImageUrl: window.printCanvas.toDataURL({
+          quality: THUMBNAIL_IMAGE_QUALITY
+        }),
+        themeId: 1,
+        objects
+      };
+
+      const ppLayouts = await loadPrintPpLayouts();
+      const layouts = [...ppLayouts, { ...layout }];
+      await setPrintPpLayouts(layouts);
+    },
+    async drawLayout() {
+      await this.drawObjectsOnCanvas(this.sheetLayout);
     }
   }
 };

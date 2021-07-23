@@ -4,11 +4,11 @@
       <div class="container-input">
         <div class="input-title">Add a name for your layout:</div>
         <div class="input">
-          <input type="text" />
+          <input v-model="layoutName" type="text" />
         </div>
       </div>
       <div class="container-btn">
-        <PpButton is-active class="btn-first">
+        <PpButton is-active class="btn-first" @click="saveLayout">
           Save Layout
         </PpButton>
         <PpButton is-active class="btn-cancel" @click="onCancel">
