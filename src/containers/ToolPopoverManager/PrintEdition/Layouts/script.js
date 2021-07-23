@@ -221,9 +221,6 @@ export default {
       this.themesOptions = await loadPrintThemes();
 
       let layouts = await loadLayouts();
-      const ppLayouts =
-        JSON.parse(window.sessionStorage.getItem('ppLayouts')) || [];
-      layouts = [...layouts, ...ppLayouts];
 
       this.setPrintLayouts({ layouts });
     },

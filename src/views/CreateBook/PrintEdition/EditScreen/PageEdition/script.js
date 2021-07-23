@@ -89,6 +89,7 @@ import printService from '@/api/print';
 import { useAppCommon } from '@/hooks/common';
 import { EVENT_TYPE } from '@/common/constants/eventType';
 import { useStyle } from '@/hooks/style';
+import { loadPrintPpLayouts, setPrintPpLayouts } from '@/api/layouts';
 
 export default {
   components: {
@@ -1579,7 +1580,7 @@ export default {
         canvas: window.printCanvas
       });
     },
-    handleSaveLayout({ pageSelected, layoutName }) {
+    async handleSaveLayout({ pageSelected, layoutName }) {
       const objects = this.sheetLayout;
       const layout = {
         id: parseInt(uniqueId()) + 100,
@@ -1592,10 +1593,10 @@ export default {
         themeId: 1,
         objects
       };
-      const ppLayouts =
-        JSON.parse(window.sessionStorage.getItem('ppLayouts')) || [];
+
+      const ppLayouts = await loadPrintPpLayouts();
       const layouts = [...ppLayouts, { ...layout }];
-      window.sessionStorage.setItem('ppLayouts', JSON.stringify(layouts));
+      await setPrintPpLayouts(layouts);
     },
     async drawLayout() {
       await this.drawObjectsOnCanvas(this.sheetLayout);
