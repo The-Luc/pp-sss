@@ -84,7 +84,7 @@ export default {
      * @param {Number} value Value user selected
      */
     onChangeOpacity(value) {
-      const shadowColor = color(this.currentShadow.shadowColor)
+      const shadowColor = color(this.currentShadow?.shadowColor)
         .alpha(value)
         .toString();
 

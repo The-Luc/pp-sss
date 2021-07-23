@@ -1,11 +1,13 @@
 import Properties from '@/components/Properties/BoxProperties';
 import TabPropertiesMenu from '@/containers/TabPropertiesMenu';
 import ArrangeContent from '@/components/Arrange';
-import GeneralContent from './GeneralContent';
+import General from '@/components/General';
+import ImageStyle from './ImageStyle';
 import Reset from './Reset';
 
+import { ImageElement } from '@/common/models';
 import { useElementProperties } from '@/hooks';
-import { DEFAULT_IMAGE, EVENT_TYPE } from '@/common/constants';
+import { DEFAULT_IMAGE, EVENT_TYPE, IMAGE_STYLE } from '@/common/constants';
 import { computedObjectSize } from '@/common/utils';
 
 export default {
@@ -13,7 +15,8 @@ export default {
     Properties,
     TabPropertiesMenu,
     ArrangeContent,
-    GeneralContent,
+    General,
+    ImageStyle,
     Reset
   },
   setup() {
@@ -21,6 +24,13 @@ export default {
 
     return {
       getProperty
+    };
+  },
+  data() {
+    return {
+      selectedBorder: {},
+      imageStyle: IMAGE_STYLE,
+      styleSelected: null
     };
   },
   computed: {
@@ -62,17 +72,25 @@ export default {
     },
     maxPosition() {
       return DEFAULT_IMAGE.MAX_POSITION;
+    },
+    opacityValue() {
+      const res = this.getProperty('opacity');
+
+      return !res ? 0 : res;
+    },
+    currentBorder() {
+      return this.getProperty('border');
+    },
+    currentShadow() {
+      return this.getProperty('shadow');
     }
   },
+  created() {
+    // TODO: update when implement logic
+    this.selectedBorder = { ...ImageElement.border };
+    this.styleSelected = this.imageStyle[0].id;
+  },
   methods: {
-    /**
-     * Close color picker (if opening) when change tab
-     */
-    onChangeTabMenu(data) {
-      this.setColorPickerData({
-        tabActive: data
-      });
-    },
     /**
      * Handle update flip for Image
      * @param {String} actionName action name
@@ -112,6 +130,37 @@ export default {
       this.$root.$emit(EVENT_TYPE.CHANGE_IMAGE_PROPERTIES, {
         isConstrain: val
       });
+    },
+    /**
+     * Handle update Shadow Config for image
+     * @param {Object} shadowCfg - the new shadow configs
+     */
+    onChangeShadow(shadowCfg) {
+      this.$root.$emit(EVENT_TYPE.CHANGE_IMAGE_PROPERTIES, {
+        shadow: {
+          ...this.currentShadow,
+          ...shadowCfg
+        }
+      });
+    },
+    /**
+     * Get border option selected and emit to image properties
+     * @param {Object} borderCfg Border option selected
+     */
+    onChangeBorder(borderCfg) {
+      this.$root.$emit(EVENT_TYPE.CHANGE_IMAGE_PROPERTIES, {
+        border: {
+          ...this.currentBorder,
+          ...borderCfg
+        }
+      });
+    },
+    /**
+     * Set id's image style to image properties
+     * @param {Number} id - id's image style
+     */
+    onSelectImageStyle(id) {
+      this.styleSelected = id;
     },
     /**
      * Handle click crop image for Image

@@ -25,6 +25,7 @@ class GetterClass extends BaseObject {
   DEFAULT_THEME_ID = 'getDefaultThemeId';
   TOTAL_OBJECT = 'getTotalObject';
   BACKGROUNDS = 'getBackgrounds';
+  CURRENT_SECTION = 'getCurrentSectionByCurrentSheetId';
 
   constructor(props) {
     super(props);

@@ -3,7 +3,7 @@
     :key="componentKey"
     :disabled="disabled"
     class="pp-number"
-    :class="`length-${valueLength > 3 ? 3 : valueLength}`"
+    :class="`length-${valueLength}`"
     hide-details
     single-line
     :value="roundVal"

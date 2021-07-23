@@ -3,6 +3,11 @@
     width: 60%;
     margin: 25px auto;
     text-align: center;
+    label {
+      font-family: $font-500;
+      font-size: $md-size;
+      color: $color-gray16;
+    }
     input {
       width: 100%;
       height: 32px;
@@ -19,5 +24,9 @@
     width: 50%;
     height: 36px;
     margin: 15px auto;
+    &:not(.active) {
+      background-color: $color-gray19; 
+      color: white;
+    }
   }
 }
