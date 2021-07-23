@@ -1,92 +1,32 @@
 import randomcolor from 'randomcolor';
 import moment from 'moment';
+import { uniqueId } from 'lodash';
 
-import { SHEET_TYPE, DATE_FORMAT } from '@/common/constants';
-import { nextId, moveItem } from '@/common/utils';
+import {
+  setBookId,
+  setBook,
+  setSections,
+  setSheets
+} from '@/common/store/book';
+
+import { isEmpty, moveItem } from '@/common/utils';
 
 import BOOK from './const';
-import { POSITION_FIXED } from '@/common/constants';
 
-const getIndexById = (items, id) => {
-  return items.findIndex(s => s.id === id);
-};
-
-const getIndexByItem = (items, item) => {
-  return getIndexById(items, item.id);
-};
-
-const moveToOtherSection = (
-  sheet,
-  currentSectionIndex,
-  moveToSectionIndex,
-  moveToSheetIndex,
-  sections
-) => {
-  const sheetIndex = getIndexByItem(
-    sections[currentSectionIndex].sheets,
-    sheet
-  );
-
-  sections[currentSectionIndex].sheets.splice(sheetIndex, 1);
-
-  sections[moveToSectionIndex].sheets.splice(moveToSheetIndex, 0, sheet);
-};
-
-const moveToSection = (
-  currentSectionId,
-  currentSheetIndex,
-  moveToSectionId,
-  moveToSheetIndex,
-  sections
-) => {
-  const currentSectionIndex = getIndexById(sections, currentSectionId);
-  const moveToSectionIndex = getIndexById(sections, moveToSectionId);
-
-  moveToOtherSection(
-    sections[currentSectionIndex].sheets[currentSheetIndex],
-    currentSectionIndex,
-    moveToSectionIndex,
-    moveToSheetIndex,
-    sections
-  );
-};
-
-const makeNewSection = (printData, sections, sectionIndex) => {
-  const newId = Math.max(...sections.map(s => nextId(s.sheets)), 1);
-
-  const { isNumberingOn } = printData.pageInfo;
-  const totalSheets = sections[sectionIndex].sheets.length;
-  const order =
-    sectionIndex === sections.length - 1 ? totalSheets - 1 : totalSheets;
-  return {
-    id: newId,
-    type: SHEET_TYPE.NORMAL,
-    draggable: true,
-    positionFixed: POSITION_FIXED.NONE,
-    order: order,
-    printData: {
-      layout: null,
-      thumbnailUrl: null,
-      link: 'link',
-      spreadInfo: {
-        leftTitle: '',
-        rightTitle: '',
-        isLeftNumberOn: isNumberingOn,
-        isRightNumberOn: isNumberingOn
-      }
-    },
-    digitalData: {
-      thumbnailUrl: null,
-      link: 'link'
-    }
-  };
-};
+import { DATE_FORMAT } from '@/common/constants';
+import { Section, Sheet } from '@/common/models';
 
 export const mutations = {
-  [BOOK._MUTATES.UPDATE_SECTIONS](state, payload) {
-    const { sections } = payload;
+  [BOOK._MUTATES.SET_BOOK_ID]: setBookId,
+  [BOOK._MUTATES.SET_BOOK]: setBook,
+  [BOOK._MUTATES.SET_SECTIONS]: setSections,
+  [BOOK._MUTATES.SET_SHEETS]: setSheets,
+  [BOOK._MUTATES.UPDATE_SECTION](state, { id, status, dueDate, assigneeId }) {
+    if (!isEmpty(status)) state.sections[id].status = status;
 
-    state.book.sections = sections;
+    if (!isEmpty(dueDate)) state.sections[id].dueDate = dueDate;
+
+    if (!isEmpty(assigneeId)) state.sections[id].assigneeId = assigneeId;
   },
   [BOOK._MUTATES.UPDATE_SHEETS](state, payload) {
     const { sectionId, sheets } = payload;
@@ -97,186 +37,124 @@ export const mutations = {
       state.book.sections[index].sheets = sheets;
     }
   },
-  [BOOK._MUTATES.UPDATE_SHEET_POSITION](state, payload) {
-    const {
-      moveToSectionId,
-      moveToIndex,
-      selectedSectionId,
-      selectedIndex
-    } = payload;
+  [BOOK._MUTATES.MOVE_SHEET](
+    state,
+    { moveToSectionId, moveToIndex, selectedSectionId, selectedIndex }
+  ) {
+    const selectedSection = state.sections[selectedSectionId];
 
-    const { sections } = state.book;
-
-    if (moveToSectionId !== selectedSectionId) {
-      moveToSection(
-        selectedSectionId,
+    if (moveToSectionId === selectedSectionId) {
+      state.sections[selectedSectionId].sheetIds = moveItem(
+        selectedSection.sheetIds[selectedIndex],
         selectedIndex,
-        moveToSectionId,
         moveToIndex,
-        sections
+        selectedSection.sheetIds
       );
 
       return;
     }
 
-    const selectedSectionIndex = getIndexById(sections, selectedSectionId);
-    const moveToSectionIndex = getIndexById(sections, moveToSectionId);
+    const sheetId = selectedSection.sheetIds[selectedIndex];
 
-    sections[selectedSectionIndex].sheets = moveItem(
-      sections[selectedSectionIndex].sheets[selectedIndex],
+    state.sections[selectedSectionId].sheetIds.splice(selectedIndex, 1);
+
+    state.sections[moveToSectionId].sheetIds.splice(moveToIndex, 0, sheetId);
+  },
+  [BOOK._MUTATES.MOVE_SECTION](state, { moveToIndex, selectedIndex }) {
+    state.sectionIds = moveItem(
+      state.sectionIds[selectedIndex],
       selectedIndex,
       moveToIndex,
-      sections[moveToSectionIndex].sheets
+      state.sectionIds
     );
   },
-  [BOOK._MUTATES.UPDATE_SECTION_POSITION](state, payload) {
-    const { moveToIndex, selectedIndex } = payload;
+  [BOOK._MUTATES.ADD_SHEET](state, { sectionId }) {
+    const newId = uniqueId(sectionId);
 
-    let { sections } = state.book;
+    const sectionIndex = state.sectionIds.findIndex(id => id === sectionId);
 
-    const selectedSection = sections[selectedIndex];
+    const totalSheet = state.sections[sectionId].sheetIds.length;
 
-    state.book.sections = moveItem(
-      selectedSection,
-      selectedIndex,
-      moveToIndex,
-      sections
-    );
+    const newIndex =
+      sectionIndex === state.sectionIds.length - 1
+        ? totalSheet - 1
+        : totalSheet;
+
+    state.sheets = { ...state.sheets, [newId]: new Sheet({ id: newId }) };
+
+    state.sections[sectionId].sheetIds.splice(newIndex, 0, newId);
+
+    state.book.totalPages += 2;
+    state.book.totalSheets += 1;
+    state.book.totalScreens += 1;
   },
-  [BOOK._MUTATES.ADD_SHEET](state, payload) {
-    const { sectionId } = payload;
-    const {
-      totalPages,
-      totalSheets,
-      totalScreens,
-      sections,
-      printData
-    } = state.book;
-    let index = sections.findIndex(item => item.id === sectionId);
-    if (index !== sections.length - 1) {
-      sections[index].sheets = [
-        ...sections[index].sheets,
-        makeNewSection(printData, sections, index)
-      ];
-    } else {
-      sections[index].sheets = [
-        ...sections[index].sheets.slice(0, sections[index].sheets.length - 1),
-        makeNewSection(printData, sections, index),
-        ...sections[index].sheets.slice(sections[index].sheets.length - 1)
-      ];
-      sections[index].sheets[sections[index].sheets.length - 1].order += 1;
-    }
-    state.book.totalPages = totalPages + 2;
-    state.book.totalSheets = totalSheets + 1;
-    state.book.totalScreens = totalScreens + 1;
+  [BOOK._MUTATES.DELETE_SECTION](state, { sectionId }) {
+    state.sectionIds = state.sectionIds.filter(id => id !== sectionId);
+
+    const totalSheet = state.sections[sectionId].sheetIds.length;
+
+    delete state.sections[sectionId];
+
+    state.book.totalPages -= totalSheet * 2;
+    state.book.totalSheets -= totalSheet;
+    state.book.totalScreens -= totalSheet;
   },
-  [BOOK._MUTATES.DELETE_SECTION](state, payload) {
-    const { sectionId } = payload;
-    const { sections } = state.book;
-    const index = sections.findIndex(item => item.id == sectionId);
-    state.book.sections = sections.filter(item => item.id !== sectionId);
-    state.book.totalPages -= sections[index].sheets.length * 2;
-    state.book.totalSheets -= sections[index].sheets.length;
-    state.book.totalScreens -= sections[index].sheets.length;
-  },
-  [BOOK._MUTATES.DELETE_SHEET](state, payload) {
-    const { idSheet, idSection } = payload;
-    const { totalPages, totalSheets, totalScreens, sections } = state.book;
-    const sectionIndex = sections.findIndex(item => {
-      return item.id === idSection;
-    });
-    state.book.sections[sectionIndex].sheets = sections[
-      sectionIndex
-    ].sheets.filter(item => item.id !== idSheet);
+  [BOOK._MUTATES.DELETE_SHEET](state, { sheetId, sectionId }) {
+    const { totalPages, totalSheets, totalScreens } = state.book;
+
+    const sheetIds = state.sections[sectionId].sheetIds;
+
+    state.sections[sectionId].sheetIds = sheetIds.filter(id => id !== sheetId);
+
+    delete state.sheets[sheetId];
+
     state.book.totalPages = totalPages - 2;
     state.book.totalSheets = totalSheets - 1;
     state.book.totalScreens = totalScreens - 1;
   },
-  [BOOK._MUTATES.MOVE_SHEET](state, payload) {
-    const { sheetId, sectionId, currentSectionId } = payload;
+  [BOOK._MUTATES.MOVE_TO_OTHER_SECTION](
+    state,
+    { sheetId, sectionId, currentSectionId }
+  ) {
+    const sheetIds = state.sections[currentSectionId].sheetIds;
 
-    const { sections } = state.book;
-
-    const currentSectionIndex = getIndexById(sections, sectionId);
-    const moveToSectionIndex = getIndexById(sections, currentSectionId);
-
-    const currentSheetIndex = getIndexById(
-      sections[currentSectionIndex].sheets,
-      sheetId
+    state.sections[currentSectionId].sheetIds = sheetIds.filter(
+      id => id !== sheetId
     );
 
-    const totalSheetInMoveToSection =
-      sections[moveToSectionIndex].sheets.length;
+    const moveToSectionIndex = state.sectionIds.findIndex(
+      id => id === sectionId
+    );
+
+    const totalSheet = state.sections[sectionId].sheetIds.length;
 
     const moveToIndex =
-      moveToSectionIndex === sections.length - 1
-        ? totalSheetInMoveToSection - 1
-        : totalSheetInMoveToSection;
+      moveToSectionIndex === state.sectionIds.length - 1
+        ? totalSheet - 1
+        : totalSheet;
 
-    moveToOtherSection(
-      sections[currentSectionIndex].sheets[currentSheetIndex],
-      currentSectionIndex,
-      moveToSectionIndex,
-      moveToIndex,
-      sections
-    );
+    state.sections[sectionId].sheetIds.splice(moveToIndex, 0, sheetId);
   },
   [BOOK._MUTATES.ADD_SECTION](state) {
-    const { sections, releaseDate } = state.book;
-    const newSectionId = nextId(sections);
+    const { releaseDate } = state.book;
 
-    state.book.sections = [
-      ...sections.slice(0, sections.length - 1),
-      {
+    const newId = Math.max(...state.sectionIds) + 1;
+
+    state.sections = {
+      ...state.sections,
+      [newId]: new Section({
+        id: newId,
         color: randomcolor(),
-        fixed: false,
-        id: newSectionId,
-        name: '',
-        status: 0,
-        draggable: true,
-        dueDate: moment(releaseDate).format(DATE_FORMAT.BASE),
-        sheets: []
-      },
-      ...sections.slice(sections.length - 1)
-    ];
-    setTimeout(() => {
-      const collapse = document
-        .querySelector('#btn-ec-all')
-        .getAttribute('data-toggle');
-      let el = document.querySelector(`#section-${newSectionId}`);
-      if (collapse !== 'collapse') {
-        el.click();
-      }
-      let input = el.querySelector('input');
-      let text = el.querySelector('.text');
-      text.style.display = 'none';
-      input.style.display = 'block';
-      input.style.width = '100%';
-      input.focus();
-    }, 0);
+        dueDate: moment(releaseDate).format(DATE_FORMAT.BASE)
+      })
+    };
+
+    state.sectionIds.splice(state.sectionIds.length - 1, 0, newId);
   },
-  [BOOK._MUTATES.EDIT_SECTION_NAME](state, payload) {
-    const { sectionId } = payload;
-    let { sectionName } = payload;
-    sectionName = sectionName || 'Untitled';
-    const { sections } = state.book;
-    const indexSection = sections.findIndex(item => item.id == sectionId);
-    state.book.sections[indexSection].name = sectionName;
+  [BOOK._MUTATES.EDIT_SECTION_NAME](state, { sectionId, sectionName }) {
+    state.sections[sectionId].name = sectionName;
   },
   [BOOK._MUTATES.GET_BOOK_SUCCESS](state, payload) {
     state.book = payload;
-  },
-  [BOOK._MUTATES.SELECT_THEME](state, payload) {
-    const { themeId } = payload;
-    state.book.printData.themeId = themeId;
-  },
-  [BOOK._MUTATES.SET_OBJECT_TYPE_SELECTED](state, { type }) {
-    state.selectedObjectType = type;
-  },
-  [BOOK._MUTATES.TOGGLE_MENU_PROPERTIES](state, { isOpen }) {
-    state.isOpenProperties = isOpen;
-  },
-  [BOOK._MUTATES.SET_SECTION_ID](state, { sectionId }) {
-    state.sectionId = sectionId;
   }
 };

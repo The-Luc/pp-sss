@@ -69,6 +69,14 @@ export default {
       };
 
       return mapObject(cssStyle, mapRules);
+    },
+
+    /**
+     * Fire when click event
+     * @param {Element} event element has clicked
+     */
+    onClick(event) {
+      this.$emit('click', event);
     }
   }
 };

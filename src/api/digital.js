@@ -2,8 +2,6 @@ import { getSuccessWithData, getErrorWithMessages } from '@/common/models';
 
 import { isEmpty } from '@/common/utils';
 
-import bookService from './book';
-
 const digitalService = {
   /**
    * Get default theme id book
@@ -13,7 +11,8 @@ const digitalService = {
    */
   getDefaultThemeId: bookId => {
     return new Promise(resolve => {
-      const data = bookService.getBook(bookId).digitalData.themeId;
+      const book = JSON.parse(window.sessionStorage.getItem(`book-${bookId}`));
+      const data = book.digitalData.themeId;
 
       const result = isEmpty(data)
         ? getErrorWithMessages([])
@@ -31,7 +30,9 @@ const digitalService = {
    */
   getDigitalSectionsSheets: bookId => {
     return new Promise(resolve => {
-      const data = bookService.getBook(bookId).sections.map(section => {
+      const book = JSON.parse(window.sessionStorage.getItem(`book-${bookId}`));
+
+      const data = book.sections.map(section => {
         const sheets = section.sheets.map(sheet => {
           const {
             id,
@@ -68,7 +69,15 @@ const digitalService = {
    */
   getDigitalEditSectionsSheets: bookId => {
     return new Promise(resolve => {
-      const data = bookService.getBook(bookId).sections.map(section => {
+      const book = JSON.parse(window.sessionStorage.getItem(`book-${bookId}`));
+      const coverType = window.sessionStorage.getItem('bookCoverType');
+      const maxPage = window.sessionStorage.getItem('bookMaxPage');
+
+      if (!isEmpty(coverType)) book.coverOption = coverType;
+
+      if (!isEmpty(maxPage)) book.numberMaxPages = parseInt(maxPage, 10);
+
+      const data = book.sections.map(section => {
         const sheets = section.sheets.map(sheet => {
           const { id, type, isVisited } = sheet;
           const { thumbnailUrl, theme: themeId, layout } = sheet.digitalData;
@@ -105,9 +114,9 @@ const digitalService = {
    */
   getSheetObjects: (bookId, sectionId, sheetId) => {
     return new Promise(resolve => {
-      const section = bookService
-        .getBook(bookId)
-        .sections.find(s => sectionId === s.id);
+      const book = JSON.parse(window.sessionStorage.getItem(`book-${bookId}`));
+
+      const section = book.sections.find(s => sectionId === s.id);
 
       if (isEmpty(section)) return {};
 
@@ -121,6 +130,19 @@ const digitalService = {
 
       resolve(result);
     });
+  },
+  // temporary code, will remove soon
+  getGeneralInfo: () => {
+    const { title, totalSheets, totalPages, totalScreens } = JSON.parse(
+      window.sessionStorage.getItem('book-1719')
+    );
+
+    return {
+      title,
+      totalSheet: totalSheets,
+      totalPage: totalPages,
+      totalScreen: totalScreens
+    };
   }
 };
 

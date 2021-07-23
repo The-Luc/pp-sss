@@ -173,12 +173,13 @@ export const computePastedObjectCoord = (
   minLeft,
   minTop,
   pageSelected,
-  countPaste
+  countPaste,
+  isDigital = false
 ) => {
   const isSameSpread = sheetId === pageSelected.id;
   const object = cloneDeep(data);
 
-  if (isSameSpread) {
+  if (isSameSpread || isDigital) {
     return pasteSameSpread(object, countPaste);
   }
 

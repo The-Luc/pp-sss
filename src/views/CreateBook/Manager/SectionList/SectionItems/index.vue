@@ -3,17 +3,23 @@
     <Draggable
       v-model="sections"
       class="col"
+      :disabled="!isEnable"
       :move="onMove"
       @choose="onChoose"
       @start="drag = true"
+      @unchoose="onUnchoose"
       @end="onEnd"
     >
       <Section
         v-for="(section, index) in sections"
         :key="section.id"
         :start-sequence="getStartSeq(index)"
-        :section="getSection(index)"
-      ></Section>
+        :section="section"
+        :is-enable="isEnable"
+        :drag-target-type="getDragTargetType(section)"
+        :drag-sheet-target="dragSheetTarget"
+        @dragSheetTargetChange="onDragSheetTargetChange"
+      />
     </Draggable>
   </v-row>
 </template>

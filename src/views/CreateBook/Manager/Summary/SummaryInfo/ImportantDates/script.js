@@ -1,11 +1,13 @@
 import Section from '../SummarySection';
 import Detail from '../SummaryDetail';
 
-import { mapGetters } from 'vuex';
 import moment from 'moment';
 
+import { useSummaryInfo } from '@/hooks';
+
+import { getDisplayInfo, isEmpty } from '@/common/utils';
+
 import { DATE_FORMAT } from '@/common/constants';
-import { GETTERS } from '@/store/modules/book/const';
 
 export default {
   components: {
@@ -13,33 +15,64 @@ export default {
     Detail
   },
   computed: {
-    ...mapGetters({
-      book: GETTERS.BOOK_DETAIL
-    }),
     details() {
-      const deliveryDate = {
-        name: 'Requested Delivery Date:',
-        description: moment(new Date(this.book.deliveryDate)).format(
-          DATE_FORMAT.BASE
-        )
-      };
+      return [this.getDeliveryDate(), this.getDueDate(), this.getRemain()];
+    }
+  },
+  setup() {
+    const { importantDatesInfo } = useSummaryInfo();
 
-      const releaseDate = moment(new Date(this.book.releaseDate));
+    return { importantDatesInfo };
+  },
+  methods: {
+    /**
+     * Get display delivery date
+     *
+     * @returns {Object}  display delivery date of book
+     */
+    getDeliveryDate() {
+      const theDate = this.importantDatesInfo?.deliveryDate;
 
-      const dueDate = {
-        name: 'File Release Due Date:',
-        description: releaseDate.format(DATE_FORMAT.BASE)
-      };
+      const description = isEmpty(theDate)
+        ? ''
+        : moment(new Date(theDate)).format(DATE_FORMAT.BASE);
 
-      const remain = releaseDate.diff(moment(new Date()), 'days');
+      return getDisplayInfo('Requested Delivery Date', description);
+    },
+    /**
+     * Get display due date
+     *
+     * @returns {Object}  display due date of book
+     */
+    getDueDate() {
+      const releaseDate = this.importantDatesInfo?.releaseDate;
 
-      const countdown = {
-        name: 'Countdown:',
-        description: `${remain < 0 ? 0 : remain} days remaining`,
-        customClass: 'countdown'
-      };
+      const description = isEmpty(releaseDate)
+        ? ''
+        : moment(new Date(releaseDate)).format(DATE_FORMAT.BASE);
 
-      return [deliveryDate, dueDate, countdown];
+      return getDisplayInfo('File Release Due Date', description);
+    },
+    /**
+     * Get display remain
+     *
+     * @returns {Object}  display remain of book
+     */
+    getRemain() {
+      const name = 'Countdown';
+      const customClass = 'countdown';
+
+      const releaseDate = this.importantDatesInfo?.releaseDate;
+
+      if (isEmpty(releaseDate)) return getDisplayInfo(name, '0', customClass);
+
+      const momentReleaseDate = moment(new Date(releaseDate));
+
+      const remain = momentReleaseDate.diff(moment(new Date()), 'days');
+
+      const description = `${remain < 0 ? 0 : remain} days remaining`;
+
+      return getDisplayInfo(name, description, customClass);
     }
   }
 };

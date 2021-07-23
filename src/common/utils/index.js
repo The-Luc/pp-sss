@@ -14,3 +14,7 @@ export * from './string';
 export * from './pasteObject';
 export * from './rotation';
 export * from './creationTool';
+export * from './time';
+export * from './actions';
+export * from './border';
+export * from './section';

@@ -3,7 +3,7 @@ import { mapGetters } from 'vuex';
 import Properties from '@/components/Properties/BoxProperties';
 import TabPropertiesMenu from '@/containers/TabPropertiesMenu';
 import GeneralContent from './GeneralContent';
-import StyleContent from './Style';
+import StyleContent from '@/components/General';
 import ArrangeContent from '@/components/Arrange';
 
 import { GETTERS as APP_GETTERS } from '@/store/modules/app/const';
@@ -90,6 +90,16 @@ export default {
     },
     minHeight() {
       return this.selectObjectProp('minHeight') || DEFAULT_TEXT.MIN_SIZE;
+    },
+    opacityValue() {
+      const res = this.selectObjectProp('opacity');
+      return !res ? 0 : res;
+    },
+    currentShadow() {
+      return this.selectObjectProp('shadow');
+    },
+    currentBorder() {
+      return this.selectObjectProp('border');
     }
   },
   methods: {
@@ -131,6 +141,30 @@ export default {
     onChangeConstrain(isConstrain) {
       this.$root.$emit(EVENT_TYPE.CHANGE_TEXT_PROPERTIES, {
         isConstrain
+      });
+    },
+    /**
+     * Handle update Shadow Config for text
+     * @param {Object} shadowCfg - the new shadow configs
+     */
+    onChangeShadow(shadowCfg) {
+      this.$root.$emit(EVENT_TYPE.CHANGE_TEXT_PROPERTIES, {
+        shadow: {
+          ...this.currentShadow,
+          ...shadowCfg
+        }
+      });
+    },
+    /**
+     * Get border option selected and emit to text properties
+     * @param {Object} borderCfg Border option selected
+     */
+    onChangeBorder(borderCfg) {
+      this.$root.$emit(EVENT_TYPE.CHANGE_TEXT_PROPERTIES, {
+        border: {
+          ...this.currentBorder,
+          ...borderCfg
+        }
       });
     }
   }

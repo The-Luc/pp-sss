@@ -3,19 +3,14 @@ import moment from 'moment';
 import { DATE_FORMAT, MOMENT_TYPE } from '@/common/constants';
 import BOOK from './const';
 import {
-  getAllSheets,
   getDiffDaysFOM,
   getDiffMonths,
-  getDiffDaysFOMToEOM
+  getDiffDaysFOMToEOM,
+  isEmpty
 } from '@/common/utils';
 
 export const getters = {
-  [BOOK._GETTERS.GET_SECTIONS]: ({ book }) => {
-    return book.sections.sort((firstEl, secondEl) => {
-      return firstEl.order - secondEl.order;
-    });
-  },
-  [BOOK._GETTERS.GET_TOTAL_INFO]: ({ book }) => {
+  [BOOK._GETTERS.TOTAL_INFO]: ({ book }) => {
     return {
       totalPages: book.totalPages,
       totalSheets: book.totalSheets,
@@ -24,14 +19,58 @@ export const getters = {
   },
   [BOOK._GETTERS.BOOK_DETAIL]: ({ book }) => book,
   [BOOK._GETTERS.BOOK_ID]: ({ book }) => book.id,
-  [BOOK._GETTERS.SECTIONS]: ({ book }) => {
-    return book.sections;
+  [BOOK._GETTERS.SECTIONS]: ({ sectionIds, sections, sheets }) => {
+    return sectionIds.map(id => {
+      const sheetItems = sections[id].sheetIds.map(sheetId => sheets[sheetId]);
+
+      return {
+        ...sections[id],
+        sheets: sheetItems
+      };
+    });
   },
-  [BOOK._GETTERS.GET_TOTAL_SECTIONS]: ({ book }) => {
-    return book.sections.length;
+  [BOOK._GETTERS.SECTIONS_NO_SHEET]: ({ sectionIds, sections }) => {
+    return sectionIds.map(id => ({
+      id,
+      name: sections[id].name,
+      color: sections[id].color
+    }));
+  },
+  [BOOK._GETTERS.TOTAL_SECTION]: ({ sectionIds }) => {
+    return sectionIds.length;
   },
   [BOOK._GETTERS.GET_MAX_PAGE]: ({ book }) => {
     return book.numberMaxPages;
+  },
+  [BOOK._GETTERS.IMPORTANT_DATES_INFO]: ({ book }) => {
+    const { releaseDate, deliveryDate } = book;
+
+    return { releaseDate, deliveryDate };
+  },
+  [BOOK._GETTERS.SPECIFICATION_INFO]: ({ book }) => {
+    const {
+      coverOption,
+      numberMaxPages,
+      estimatedQuantity,
+      deliveryOption
+    } = book;
+
+    const { min: minQuantity, max: maxQuantity } = isEmpty(estimatedQuantity)
+      ? {}
+      : estimatedQuantity;
+
+    return {
+      coverOption,
+      numberMaxPages,
+      minQuantity,
+      maxQuantity,
+      deliveryOption
+    };
+  },
+  [BOOK._GETTERS.SALE_INFO]: ({ book }) => {
+    const { booksSold, fundraisingEarned } = book;
+
+    return { booksSold, fundraisingEarned };
   },
   [BOOK._GETTERS.BOOK_DATES]: ({ book }) => {
     const { createdDate, saleDate, releaseDate, deliveryDate } = book;
@@ -42,9 +81,6 @@ export const getters = {
       releaseDate,
       deliveryDate
     };
-  },
-  [BOOK._GETTERS.PRINT_THEME_SELECTED_ID]: ({ book }) => {
-    return book.printData.themeId;
   },
   [BOOK._GETTERS.TOTAL_MONTH_SHOW_ON_CHART]: ({ book }) => {
     const { createdDate, deliveryDate } = book;
@@ -80,14 +116,6 @@ export const getters = {
     const { createdDate, deliveryDate } = book;
 
     return getDiffDaysFOM(createdDate, deliveryDate);
-  },
-  [BOOK._GETTERS.SHEET_THEME]: ({ book }) => sheetId => {
-    const sheets = getAllSheets(book.sections);
-    const sheet = sheets.find(s => s.id === sheetId);
-    return sheet?.printData?.theme;
-  },
-  [BOOK._GETTERS.SECTION_ID]: ({ sectionId }) => {
-    return sectionId;
   },
   [BOOK._GETTERS.DUE_DATE_FROM_BEGINNING]: ({ book }) => dueDate => {
     const { createdDate } = book;

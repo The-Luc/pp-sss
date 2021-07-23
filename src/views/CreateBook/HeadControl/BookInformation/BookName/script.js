@@ -1,26 +1,12 @@
-import { useGetters, useMutations } from 'vuex-composition-helpers';
+import { useBookName } from '@/hooks/header';
 
-import { useBook, useUpdateTitle } from '@/hooks';
-import { GETTERS, MUTATES } from '@/store/modules/book/const';
+import { ROLE } from '@/common/constants';
 
 export default {
   setup() {
-    const { getBook, book } = useBook();
-    const { updateTitle } = useUpdateTitle();
-    const { bookId } = useGetters({
-      bookId: GETTERS.BOOK_ID
-    });
-    const { mutateBook } = useMutations({
-      mutateBook: MUTATES.GET_BOOK_SUCCESS
-    });
+    const { currentUser, generalInfo, setInfo } = useBookName();
 
-    return {
-      book,
-      bookId,
-      getBook,
-      mutateBook,
-      updateTitle
-    };
+    return { currentUser, generalInfo, setInfo };
   },
   data() {
     return {
@@ -29,18 +15,23 @@ export default {
       isCancel: false
     };
   },
+  computed: {
+    isEnable() {
+      return this.currentUser.role === ROLE.ADMIN;
+    }
+  },
   watch: {
-    book: {
+    generalInfo: {
       deep: true,
-      handler(book) {
-        this.rootTitle = book.title;
-        this.title = book.title;
+      handler(info) {
+        this.rootTitle = info.title;
+        this.title = info.title;
       }
     }
   },
   mounted() {
-    this.title = this.book.title;
-    this.rootTitle = this.book.title;
+    this.title = this.generalInfo.title;
+    this.rootTitle = this.generalInfo.title;
   },
   methods: {
     onCancel() {
@@ -59,14 +50,8 @@ export default {
         this.isCancel = false;
         return;
       }
-      const { data, isSuccess } = await this.updateTitle(
-        this.bookId,
-        this.title.trim()
-      );
-      if (isSuccess) {
-        this.title = data.trim();
-        this.book.title = data.trim();
-      }
+
+      this.setInfo({ ...this.generalInfo, title: this.title });
     }
   }
 };

@@ -41,7 +41,7 @@
         :is-digital="isDigital"
       />
     </transition>
-    <ToolPopoverManager v-show="selectedToolName" />
+    <ToolPopoverManager v-show="selectedToolName" :is-digital="isDigital" />
   </div>
 </template>
 

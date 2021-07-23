@@ -1,24 +1,30 @@
 import { mapMutations, mapGetters, mapActions } from 'vuex';
 
 import { MUTATES, GETTERS as APP_GETTERS } from '@/store/modules/app/const';
-import {
-  GETTERS as BOOK_GETTERS,
-  MUTATES as BOOK_MUTATES
-} from '@/store/modules/book/const';
+import { MUTATES as BOOK_MUTATES } from '@/store/modules/book/const';
 import {
   ACTIONS as PRINT_ACTIONS,
   MUTATES as PRINT_MUTATES,
   GETTERS as PRINT_GETTERS
 } from '@/store/modules/print/const';
-import { MODAL_TYPES, TOOL_NAME } from '@/common/constants';
+import { MODAL_TYPES, ROLE, TOOL_NAME } from '@/common/constants';
 import ToolBar from './ToolBar';
 import Header from '@/containers/HeaderEdition/Header';
 import FeedbackBar from '@/containers/HeaderEdition/FeedbackBar';
 import SidebarSection from './SidebarSection';
 import PageEdition from './PageEdition';
-import { useLayoutPrompt, usePopoverCreationTool, useInfoBar } from '@/hooks';
+import {
+  useLayoutPrompt,
+  usePopoverCreationTool,
+  useInfoBar,
+  useMutationPrintSheet,
+  useUser,
+  useGetterPrintSheet
+} from '@/hooks';
 import { EDITION } from '@/common/constants';
-import { isEmpty } from '@/common/utils';
+import { isEmpty, isPositiveInteger } from '@/common/utils';
+
+import printService from '@/api/print';
 
 export default {
   components: {
@@ -32,27 +38,25 @@ export default {
     const { pageSelected, updateVisited } = useLayoutPrompt(EDITION.PRINT);
     const { setToolNameSelected } = usePopoverCreationTool();
     const { setInfoBar } = useInfoBar();
+    const { setCurrentSheetId } = useMutationPrintSheet();
+    const { currentUser } = useUser();
+    const { currentSection } = useGetterPrintSheet();
 
     return {
       pageSelected,
       setToolNameSelected,
       updateVisited,
-      setInfoBar
+      setInfoBar,
+      setCurrentSheetId,
+      currentUser,
+      currentSection
     };
-  },
-  async created() {
-    this.setBookId({ bookId: this.$route.params.bookId });
-    await this.getDataPageEdit();
-    if (isEmpty(this.printThemeSelected)) {
-      this.openSelectThemeModal();
-    }
   },
   computed: {
     ...mapGetters({
       printThemeSelected: PRINT_GETTERS.DEFAULT_THEME_ID,
       isOpenMenuProperties: APP_GETTERS.IS_OPEN_MENU_PROPERTIES,
-      selectedToolName: APP_GETTERS.SELECTED_TOOL_NAME,
-      bookId: BOOK_GETTERS.BOOK_ID
+      selectedToolName: APP_GETTERS.SELECTED_TOOL_NAME
     })
   },
   watch: {
@@ -65,9 +69,59 @@ export default {
       }
     }
   },
+  beforeRouteEnter(to, _, next) {
+    next(async me => {
+      const bookId = to.params.bookId;
+
+      const editionMainUrl = `/book/${bookId}/edit/print/`;
+
+      if (!isPositiveInteger(to.params?.sheetId)) {
+        me.$router.replace(editionMainUrl);
+
+        return;
+      }
+
+      me.setBookId({ bookId });
+
+      // temporary code, will remove soon
+      const info = printService.getGeneralInfo();
+
+      me.setInfo({ ...info, bookId });
+
+      await me.getDataPageEdit();
+
+      me.setCurrentSheetId({ id: parseInt(to.params.sheetId) });
+
+      if (isEmpty(me.currentSection)) {
+        me.$router.replace(editionMainUrl);
+
+        return;
+      }
+
+      const isAdmin = me.currentUser.role === ROLE.ADMIN;
+      const isAssigned = me.currentUser.id === me.currentSection.assigneeId;
+
+      if (!isAdmin && !isAssigned) {
+        me.$router.replace(editionMainUrl);
+
+        return;
+      }
+
+      if (isEmpty(me.printThemeSelected)) {
+        me.openSelectThemeModal();
+      }
+    });
+  },
+  beforeRouteUpdate(to, _, next) {
+    this.setCurrentSheetId({ id: to.params?.sheetId });
+
+    next();
+  },
   destroyed() {
     this.resetPrintConfigs();
     this.setPropertiesObjectType({ type: '' });
+
+    this.setCurrentSheetId({ id: '' });
   },
   methods: {
     ...mapActions({
@@ -78,7 +132,8 @@ export default {
       toggleModal: MUTATES.TOGGLE_MODAL,
       resetPrintConfigs: MUTATES.RESET_PRINT_CONFIG,
       savePrintCanvas: BOOK_MUTATES.SAVE_PRINT_CANVAS,
-      setPropertiesObjectType: MUTATES.SET_PROPERTIES_OBJECT_TYPE
+      setPropertiesObjectType: MUTATES.SET_PROPERTIES_OBJECT_TYPE,
+      setInfo: MUTATES.SET_GENERAL_INFO
     }),
     /**
      * Trigger mutation to open theme modal
@@ -107,12 +162,12 @@ export default {
      * Save print canvas and change view
      */
     onClickSavePrintCanvas() {
-      const canvas = window.printCanvas;
+      /*const canvas = window.printCanvas;
       let objs = canvas.getObjects();
       this.savePrintCanvas({
         data: objs
-      });
-      this.$router.push(`/book/${this.bookId}/edit/print`);
+      });*/
+      this.$router.push(`/book/${this.$route.params.bookId}/edit/print`);
     },
     /**
      * Fire when zoom is changed

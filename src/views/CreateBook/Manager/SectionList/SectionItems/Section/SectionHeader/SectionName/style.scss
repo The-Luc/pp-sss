@@ -25,26 +25,25 @@ $width: 12px;
           min-width: 25%;
 
           div {
-            cursor: text;
             padding: 2px;
             padding-right: 4px;
             height: 100%;
             border: 1px dashed transparent;
-            &:hover {
-              border: 1px dashed $color-gray;
+
+            &:not(.disabled) {
+              cursor: text;
+            }
+
+            &:not(.disabled):hover {
+              border-color: $color-gray;
             }
           }
 
           input {
-            display: none;
             padding: 2px;
             padding-right: 4px;
             min-width: 25%;
             height: 100%;
-            border: 1px dashed transparent;
-            &:hover {
-              border: 1px dashed $color-gray;
-            }
 
             &:focus {
               outline: none;
@@ -53,12 +52,19 @@ $width: 12px;
           }
         }
 
-        img {
-          width: 5px;
-          height: 10px;
-          margin-right: 4px;
+        .v-icon {
+          height: 21px;
+          margin-left: -10px;
+          margin-right: -5px;
+          color: $color-gray5;
+
+          &.disabled {
+            opacity: 0.3;
+          }
 
           &[data-toggle='expand'] {
+            margin-right: -6px;
+            font-size: 25px;
             transform: rotate(90deg);
           }
         }

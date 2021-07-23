@@ -1,36 +1,35 @@
 import { mapGetters, mapMutations, mapActions } from 'vuex';
 
-import Frames from '@/components/Thumbnail/Frames';
+import ListThumbContainer from '@/components/Thumbnail/ListThumbContainer';
 import Thumbnail from '@/components/Thumbnail/ThumbnailDigital';
-import { GETTERS } from '@/store/modules/book/const';
 import {
+  GETTERS as DIGITAL_GETTERS,
   MUTATES as DIGITAL_MUTATES,
   ACTIONS as DIGITAL_ACTIONS
 } from '@/store/modules/digital/const';
+import { MUTATES as APP_MUTATES } from '@/store/modules/app/const';
+
+import digitalService from '@/api/digital';
 
 export default {
   components: {
-    Frames,
+    ListThumbContainer,
     Thumbnail
   },
   computed: {
     ...mapGetters({
-      bookId: GETTERS.BOOK_ID,
-      book: GETTERS.BOOK_DETAIL
+      sections: DIGITAL_GETTERS.SECTIONS_SHEETS
     }),
+    bookId() {
+      return this.$route.params.bookId;
+    },
     orderScreen() {
-      return (sectionId, sheet) => {
-        const sectionIndex = this.book.sections.findIndex(
-          item => item.id == sectionId
-        );
-        const indexSheet = this.book.sections[sectionIndex].sheets.findIndex(
-          item => item.id == sheet.id
-        );
+      return (sectionIndex, sheetIndex) => {
         let indexInSections = 0;
         for (let i = 0; i < sectionIndex; i++) {
-          indexInSections += this.book.sections[i].sheets.length;
+          indexInSections += this.sections[i].sheetIds.length;
         }
-        indexInSections += indexSheet + 1;
+        indexInSections += sheetIndex + 1;
         if (indexInSections < 10) {
           return '0' + indexInSections;
         } else {
@@ -39,27 +38,23 @@ export default {
       };
     }
   },
+  created() {
+    this.setBookId({ bookId: this.$route.params.bookId });
+
+    // temporary code, will remove soon
+    const info = digitalService.getGeneralInfo();
+
+    this.setInfo({ ...info, bookId: this.$route.params.bookId });
+
+    this.getDataPageEdit();
+  },
   methods: {
     ...mapActions({
       getDataPageEdit: DIGITAL_ACTIONS.GET_DATA_MAIN
     }),
     ...mapMutations({
       setBookId: DIGITAL_MUTATES.SET_BOOK_ID,
-      selectSheet: DIGITAL_MUTATES.SET_CURRENT_SHEET_ID,
-      setSectionId: DIGITAL_MUTATES.SET_SECTION_ID
-    }),
-
-    /**
-     * Set selected sheet's id
-     * @param  {String} sheet Sheet selected
-     */
-    onSelectScreen(sheet) {
-      this.selectSheet({ id: sheet.id });
-    }
-  },
-  created() {
-    this.setBookId({ bookId: this.$route.params.bookId });
-
-    this.getDataPageEdit();
+      setInfo: APP_MUTATES.SET_GENERAL_INFO
+    })
   }
 };

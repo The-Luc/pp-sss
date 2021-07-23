@@ -4,20 +4,24 @@ import ProcessBar from '@/components/BarProcesses/ProcessBar';
 import Action from './Action';
 
 import { GETTERS, MUTATES } from '@/store/modules/app/const';
-import { GETTERS as BOOK_GETTERS } from '@/store/modules/book/const';
 
 import { ICON_LOCAL, PROCESS_STATUS } from '@/common/constants';
+import { isEmpty } from '@/common/utils';
 
 export default {
+  components: {
+    ProcessBar,
+    Action
+  },
   props: {
     section: {
       type: Object,
       require: true
+    },
+    isEnable: {
+      type: Boolean,
+      default: false
     }
-  },
-  components: {
-    ProcessBar,
-    Action
   },
   data() {
     const processStatus = {};
@@ -33,33 +37,21 @@ export default {
       menuClass: 'pp-menu section-menu',
       processStatus,
       summaryEl: null,
-      items: [
+      menuItems: [
         {
           title: 'Status',
           value: this.getStatusName(this.section.status),
           name: 'status'
         },
         { title: 'Due Date', value: this.section.dueDate, name: 'dueDate' },
-        { title: 'Assigned To', value: 'Unassigned', name: 'assigned' }
+        { title: 'Assigned To', value: 'Unassigned', name: 'assignee' }
       ]
     };
   },
   computed: {
     ...mapGetters({
-      sectionSelected: GETTERS.SECTION_SELECTED,
-      sections: BOOK_GETTERS.GET_SECTIONS,
-      maxPage: BOOK_GETTERS.GET_MAX_PAGE,
-      totalInfo: BOOK_GETTERS.GET_TOTAL_INFO
+      sectionSelected: GETTERS.SECTION_SELECTED
     })
-  },
-  watch: {
-    'section.dueDate': function(val) {
-      this.items[1].value = val;
-    },
-    'section.status': function(val) {
-      const statusName = this.getStatusName(val);
-      this.items[0].value = this.convertTextCap(statusName);
-    }
   },
   created() {
     this.moreIcon = ICON_LOCAL.MORE_ICON;
@@ -81,29 +73,31 @@ export default {
       toggleModal: MUTATES.TOGGLE_MODAL
     }),
     getStatusName(status) {
-      let res = '';
-      Object.keys(PROCESS_STATUS).forEach(k => {
-        if (status === PROCESS_STATUS[k].value) {
-          res = PROCESS_STATUS[k].name;
-        }
-      });
-      return res;
+      const process = Object.values(PROCESS_STATUS).find(
+        ({ value }) => status === value
+      );
+
+      return process?.name;
     },
     convertTextCap(string) {
       return string.replace(/\b\w/g, l => l.toUpperCase());
     },
+    /**
+     * Set open menu by mutate selected section id
+     */
     setIsOpenMenu() {
+      if (!this.isEnable) return;
+
       if (!this.sectionSelected || this.sectionSelected !== this.section.id) {
-        this.setSectionSelected({
-          sectionSelected: this.section.id
-        });
-      } else if (
-        this.sectionSelected &&
-        this.sectionSelected === this.section.id
-      ) {
-        this.setSectionSelected({
-          sectionSelected: ''
-        });
+        this.setSectionSelected({ sectionSelected: this.section.id });
+
+        return;
+      }
+
+      if (this.sectionSelected && this.sectionSelected === this.section.id) {
+        this.setSectionSelected({ sectionSelected: '' });
+
+        return;
       }
     },
     toggleMenu(event) {
@@ -131,6 +125,34 @@ export default {
         }
       }, 100);
       this.setIsOpenMenu();
+    },
+    /**
+     * Update menu item value when status is changed
+     *
+     * @param {Number}  status  selected status
+     */
+    onStatusUpdate({ status }) {
+      const statusName = this.getStatusName(status);
+
+      this.menuItems[0].value = this.convertTextCap(statusName);
+    },
+    /**
+     * Update menu item value when due date is changed
+     *
+     * @param {String}  dueDate selected due date
+     */
+    onDueDateUpdate({ dueDate }) {
+      this.menuItems[1].value = dueDate;
+    },
+    /**
+     * Update menu item value when assignee is changed
+     *
+     * @param {String}  assignee  selected assignee
+     */
+    onAssigneeUpdate({ assignee }) {
+      const name = isEmpty(assignee) ? 'Unassigned' : assignee;
+
+      this.menuItems[2].value = name;
     }
   }
 };

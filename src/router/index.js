@@ -1,54 +1,54 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 
-import store from '../store';
-import { MUTATES } from '@/store/modules/app/const';
-import { MODAL_TYPES, ROUTE_NAME } from '@/common/constants';
-
-const PageNotFound = () => import('../views/PageNotFound');
-const Manager = () => import('../views/CreateBook/Manager');
-const PrintEdition = () => import('../views/CreateBook/PrintEdition');
+const PageNotFound = () => import('@/views/PageNotFound');
+const Manager = () => import('@/views/CreateBook/Manager');
+const PrintEdition = () => import('@/views/CreateBook/PrintEdition');
 const PrintMainScreen = () =>
-  import('../views/CreateBook/PrintEdition/MainScreen');
+  import('@/views/CreateBook/PrintEdition/MainScreen');
 const PrintEditScreen = () =>
-  import('../views/CreateBook/PrintEdition/EditScreen');
+  import('@/views/CreateBook/PrintEdition/EditScreen');
 const DigitalMainScreen = () =>
-  import('../views/CreateBook/DigitalEdition/MainScreen');
+  import('@/views/CreateBook/DigitalEdition/MainScreen');
 const DigitalEditScreen = () =>
-  import('../views/CreateBook/DigitalEdition/EditScreen');
-const DigitalEdition = () => import('../views/CreateBook/DigitalEdition');
+  import('@/views/CreateBook/DigitalEdition/EditScreen');
+const DigitalEdition = () => import('@/views/CreateBook/DigitalEdition');
+const Login = () => import('@/views/TempLogin');
+
+import authGuard from './guards/authGuard';
+import {
+  printNoSheetSelectionGuard,
+  digitalNoSheetSelectionGuard
+} from './guards/editorGuard';
+
+import {
+  beforeEnterGuard,
+  closeModalsOnPopState,
+  setActiveEditionByRoute,
+  showEmptySectionPrompt
+} from './utils';
+
+import { ROUTE_NAME } from '@/common/constants';
 
 Vue.use(VueRouter);
 
-const authGuard = {
-  beforeEnter: (to, _, next) => {
-    const redirect = () => {
-      next();
-      if (store.state.auth.token) {
-        if (to.path === '/login') {
-          next('/');
-        } else {
-          next();
-        }
-      } else {
-        next('/login');
-      }
-    };
-    redirect();
-  }
-};
-
 const routes = [
+  {
+    path: '/login',
+    name: 'login',
+    component: Login
+  },
   {
     path: '/',
     // TODO: remove once integrated with API
-    redirect: '/book/HardCover-140/edit/manager',
-    ...authGuard
+    redirect: '/book/1719/edit/manager',
+    ...beforeEnterGuard(authGuard)
   },
   {
     path: '/book/:bookId/edit/manager',
     name: ROUTE_NAME.MANAGER,
-    component: Manager
+    component: Manager,
+    ...beforeEnterGuard(authGuard)
   },
   {
     path: '/book/:bookId/edit/print',
@@ -57,12 +57,20 @@ const routes = [
       {
         path: '/',
         name: ROUTE_NAME.PRINT,
-        component: PrintMainScreen
+        component: PrintMainScreen,
+        ...beforeEnterGuard(authGuard)
       },
       {
-        path: 'edit-screen',
+        path: 'edit-screen/',
         name: ROUTE_NAME.PRINT_EDIT,
-        component: PrintEditScreen
+        component: PrintEditScreen,
+        ...beforeEnterGuard([authGuard, printNoSheetSelectionGuard])
+      },
+      {
+        path: 'edit-screen/:sheetId',
+        name: ROUTE_NAME.PRINT_EDIT,
+        component: PrintEditScreen,
+        ...beforeEnterGuard(authGuard)
       }
     ]
   },
@@ -73,12 +81,20 @@ const routes = [
       {
         path: '/',
         name: ROUTE_NAME.DIGITAL,
-        component: DigitalMainScreen
+        component: DigitalMainScreen,
+        ...beforeEnterGuard(authGuard)
       },
       {
-        path: 'edit-screen',
+        path: 'edit-screen/',
         name: ROUTE_NAME.DIGITAL_EDIT,
-        component: DigitalEditScreen
+        component: DigitalEditScreen,
+        ...beforeEnterGuard([authGuard, digitalNoSheetSelectionGuard])
+      },
+      {
+        path: 'edit-screen/:sheetId',
+        name: ROUTE_NAME.DIGITAL_EDIT,
+        component: DigitalEditScreen,
+        ...beforeEnterGuard(authGuard)
       }
     ]
   },
@@ -99,44 +115,22 @@ window.addEventListener('popstate', () => {
   window.popStateDetected = true;
 });
 
-router.beforeEach((to, from, next) => {
-  const isBackFromBrowser = window.popStateDetected;
-  if (isBackFromBrowser) {
-    if (store.state.app.modal.isOpen) {
-      store.commit(MUTATES.TOGGLE_MODAL, {
-        isOpenModal: false
-      });
-    }
+router.beforeEach((to, _, next) => {
+  window.popStateDetected && closeModalsOnPopState();
 
-    if (store.state.app.isPrompt) {
-      store.commit(MUTATES.SET_IS_PROMPT, {
-        isPrompt: false
-      });
-    }
-  }
-  if (to.name !== ROUTE_NAME.MANAGER) {
-    const sections = store.state.book.book?.sections;
-    if (sections) {
-      const emptySections = sections?.filter(item => item.sheets?.length === 0);
-      if (emptySections?.length !== 0) {
-        if (from.name !== ROUTE_NAME.MANAGER) {
-          next();
-        }
-        store.commit(MUTATES.TOGGLE_MODAL, {
-          isOpenModal: true,
-          modalData: {
-            type: MODAL_TYPES.EMPTY_SECTION,
-            props: { sections: emptySections }
-          }
-        });
-      } else {
-        next();
-      }
-    } else {
-      next();
-    }
-  } else {
+  setActiveEditionByRoute(to.name);
+
+  if (to.name === ROUTE_NAME.MANAGER) {
     next();
+
+    return;
   }
+
+  if (showEmptySectionPrompt()) {
+    return;
+  }
+
+  next();
 });
+
 export default router;

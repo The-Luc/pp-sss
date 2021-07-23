@@ -1,15 +1,18 @@
-import { mapGetters } from 'vuex';
-
-import { SCREEN } from '@/common/constants/book';
 import PpButton from '@/components/Buttons/Button';
 import LineVertical from '../LineVertical';
-import { GETTERS } from '@/store/modules/book/const';
-import { ROUTE_NAME } from '@/common/constants';
+
+import { ROUTE_NAME, SCREEN } from '@/common/constants';
 
 export default {
   components: {
     PpButton,
     LineVertical
+  },
+  props: {
+    bookId: {
+      type: [String, Number],
+      required: true
+    }
   },
   data() {
     return {
@@ -23,12 +26,13 @@ export default {
       this.path = to.path;
     }
   },
-  computed: {
-    ...mapGetters({
-      bookId: GETTERS.BOOK_ID
-    })
-  },
   methods: {
+    /**
+     * Event fire when view is changes
+     *
+     * @param {String}  newView   new view name
+     * @param {String}  routeName route name
+     */
     onChangeView(newView, routeName) {
       if (this.$route.name !== routeName) {
         this.$router.push(`/book/${this.bookId}${newView.toLowerCase()}`);

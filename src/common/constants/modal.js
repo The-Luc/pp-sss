@@ -10,5 +10,10 @@ export const MODAL_TYPES = {
   SELECT_THEME_DIGITAL: 'SelectThemeDigital',
   ADD_DIGITAL_FRAME: 'AddDigitalFrame',
   OVERRIDE_LAYOUT: 'OverrideLayout',
-  RESET_LAYOUT: 'ResetLayout'
+  DELETE_FRAME: 'DeleteFrame',
+  RESET_LAYOUT: 'ResetLayout',
+  SAVE_LAYOUT: 'SaveLayout',
+  SELECT_PAGE_OF_LAYOUT: 'SelectPageOfLayout',
+  SAVE_STYLE: 'SaveStyle',
+  SAVE_STYLE_SUCCESS: 'SaveStyleSuccess'
 };

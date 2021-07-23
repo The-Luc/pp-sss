@@ -1,31 +1,45 @@
-import { mapGetters } from 'vuex';
-
-import { GETTERS } from '@/store/modules/book/const';
-
 import Section from '../SummarySection';
 import Detail from '../SummaryDetail';
+
+import { useSummaryInfo } from '@/hooks';
+
+import { getDisplayInfo, isEmpty } from '@/common/utils';
 
 export default {
   components: {
     Section,
     Detail
   },
+  setup() {
+    const { saleInfo } = useSummaryInfo();
+
+    return { saleInfo };
+  },
   computed: {
-    ...mapGetters({
-      book: GETTERS.BOOK_DETAIL
-    }),
     details() {
-      const bookSold = {
-        name: 'Books Sold:',
-        description: this.book.booksSold
-      };
+      return [this.getBooksSold(), this.getFundraisingEarned()];
+    }
+  },
+  methods: {
+    /**
+     * Get display books sold
+     *
+     * @returns {Object}  display books sold of book
+     */
+    getBooksSold() {
+      return getDisplayInfo('Books Sold', this.saleInfo?.booksSold);
+    },
+    /**
+     * Get display fundraising $ earn
+     *
+     * @returns {Object}  display fundraising $ earn of book
+     */
+    getFundraisingEarned() {
+      const earn = this.saleInfo?.fundraisingEarned;
 
-      const fundraisingEarned = {
-        name: 'Fundraising $ Earned:',
-        description: `$${this.book.fundraisingEarned.toFixed(2)}`
-      };
+      const description = isEmpty(earn) ? '' : earn.toFixed(2);
 
-      return [bookSold, fundraisingEarned];
+      return getDisplayInfo('Fundraising $ Earned', `$${description}`);
     }
   }
 };

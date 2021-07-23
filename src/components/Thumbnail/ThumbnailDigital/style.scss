@@ -5,9 +5,10 @@
   background-color: $color-white;
   flex-wrap: nowrap;
   border-radius: 40px 2px 40px 2px;
-  overflow: auto;
-  position: relative;
+  box-sizing: border-box;
+  padding-top: 65%;
   .border-inside {
+    top: 0;
     position: absolute;
     width: 100%;
     height: 100%;

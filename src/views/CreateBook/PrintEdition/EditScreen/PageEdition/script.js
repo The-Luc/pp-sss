@@ -4,7 +4,7 @@ import { cloneDeep, uniqueId, merge, debounce } from 'lodash';
 
 import { useDoubleStrokeImage, usePrintOverrides } from '@/plugins/fabric';
 
-import { useDrawLayout, useInfoBar } from '@/hooks';
+import { useInfoBar } from '@/hooks';
 import { startDrawBox } from '@/common/fabricObjects/drawingBox';
 
 import {
@@ -18,14 +18,13 @@ import {
   pxToIn,
   resetObjects,
   inToPx,
-  clearClipboard,
-  getMinPositionObject,
-  computePastedObjectCoord,
   setBorderObject,
   setCanvasUniformScaling,
   setBorderHighLight,
   setActiveCanvas,
-  isNonElementPropSelected
+  isNonElementPropSelected,
+  copyPpObject,
+  pastePpObject
 } from '@/common/utils';
 
 import {
@@ -74,17 +73,13 @@ import {
   DEFAULT_SHAPE,
   COVER_TYPE,
   DEFAULT_CLIP_ART,
-  FABRIC_OBJECT_TYPE,
-  DEFAULT_IMAGE,
-  ACTIVE_EDITION,
-  EVENT_TYPE
+  DEFAULT_IMAGE
 } from '@/common/constants';
 import SizeWrapper from '@/components/SizeWrapper';
 import PrintCanvasLines from './PrintCanvasLines';
 import PageWrapper from './PageWrapper';
 import XRuler from './Rulers/XRuler';
 import YRuler from './Rulers/YRuler';
-import { parsePasteObject } from '@/common/utils/string';
 import {
   COPY_OBJECT_KEY,
   PASTE,
@@ -93,6 +88,9 @@ import {
 import { createImage } from '@/common/fabricObjects';
 import printService from '@/api/print';
 import { useAppCommon } from '@/hooks/common';
+import { EVENT_TYPE } from '@/common/constants/eventType';
+import { useStyle } from '@/hooks/style';
+import { loadPrintPpLayouts, setPrintPpLayouts } from '@/api/layouts';
 
 export default {
   components: {
@@ -104,10 +102,10 @@ export default {
   },
   setup() {
     const { setActiveEdition } = useAppCommon();
-    const { drawLayout } = useDrawLayout();
     const { setInfoBar, zoom } = useInfoBar();
+    const { onSaveStyle } = useStyle();
 
-    return { setActiveEdition, drawLayout, setInfoBar, zoom };
+    return { setActiveEdition, setInfoBar, zoom, onSaveStyle };
   },
   data() {
     return {
@@ -158,18 +156,6 @@ export default {
         this.pageSelected?.type === SHEET_TYPE.COVER
       );
     },
-    isIntro() {
-      const { sections } = this.book;
-      return this.pageSelected?.id === sections[1].sheets[0].id;
-    },
-    isSignature() {
-      const { sections } = this.book;
-      const lastSection = sections[sections.length - 1];
-      return (
-        this.pageSelected?.id ===
-        lastSection.sheets[lastSection.sheets.length - 1].id
-      );
-    },
     currentSheetType() {
       return this.pageSelected?.type || -1;
     }
@@ -208,8 +194,6 @@ export default {
     window.addEventListener('paste', this.handlePaste);
 
     document.body.addEventListener('keyup', this.handleDeleteKey);
-
-    this.setActiveEdition(ACTIVE_EDITION.PRINT);
   },
   beforeDestroy() {
     window.removeEventListener('copy', this.handleCopy);
@@ -227,8 +211,6 @@ export default {
     this.eventHandling(false);
 
     this.setInfoBar({ x: 0, y: 0, w: 0, h: 0, zoom: 0 });
-
-    this.setActiveEdition(ACTIVE_EDITION.NONE);
   },
   methods: {
     ...mapActions({
@@ -298,7 +280,41 @@ export default {
      * @returns {Object} a fabric object
      */
     async createImageFromPpData(imageProperties) {
-      const image = await createImage(imageProperties);
+      const eventListeners = {
+        scaling: this.handleScaling,
+        scaled: this.handleScaled,
+        rotated: this.handleRotated,
+        moved: this.handleMoved
+      };
+
+      const imageObject = await createImage(imageProperties);
+      const image = imageObject?.object;
+
+      addEventListeners(image, eventListeners);
+
+      const {
+        dropShadow,
+        shadowBlur,
+        shadowOffset,
+        shadowOpacity,
+        shadowAngle,
+        shadowColor
+      } = image;
+
+      applyShadowToObject(image, {
+        dropShadow,
+        shadowBlur,
+        shadowOffset,
+        shadowOpacity,
+        shadowAngle,
+        shadowColor
+      });
+
+      updateSpecificProp(image, {
+        coord: {
+          rotation: imageProperties.coord.rotation
+        }
+      });
 
       return image;
     },
@@ -402,93 +418,32 @@ export default {
       return svg;
     },
     /**
-     * Funtion recursive handle create object(s) and add to store through data be copied and return list object(s) processed
-     * @param {Array} objects - List object(s) copied
-     * @param {Number} sheetId - Current sheet id
-     * @param {Object} fabricObject Fabric's data
-     * @param {Number} minLeft Min left position of list objects
-     * @param {Number} minTop Min top position of list objects
-     * @returns {Arrray} List object(s) pasted
+     * Add element to the store and create fabric object
+     *
+     * @param {Object} newData PpData of the of a element {id, size, coord,...}
+     * @returns {Object} a fabric object
      */
-    async handlePasteItems(objects, sheetId, fabricObject, minLeft, minTop) {
-      return Promise.all(
-        objects.map(o => {
-          const obj = cloneDeep(o);
-
-          const coord = computePastedObjectCoord(
-            obj,
-            sheetId,
-            fabricObject,
-            minLeft,
-            minTop,
-            this.pageSelected,
-            this.countPaste
-          );
-
-          const newData = {
-            ...obj,
-            id: uniqueId(),
-            coord
-          };
-
-          // add to store
-          if (obj.type !== OBJECT_TYPE.BACKGROUND) {
-            this.addObjectToStore({
-              id: newData.id,
-              newObject: newData
-            });
-          }
-
-          // create fabric object
-          if (obj.type === OBJECT_TYPE.IMAGE) {
-            return this.createImageFromPpData(newData);
-          }
-
-          if (
-            obj.type === OBJECT_TYPE.CLIP_ART ||
-            obj.type === OBJECT_TYPE.SHAPE
-          ) {
-            return this.createSvgFromPpData(newData);
-          }
-
-          if (obj.type === OBJECT_TYPE.TEXT) {
-            return this.createTextFromPpData(newData);
-          }
-        })
-      );
-    },
-
-    /**
-     * Function handle active selection of object(s) pasted (single | multiplesingle)
-     * @param {Array} listPastedObjects - List object(s) pasted
-     * @param {Ref} canvas - Print canvas
-     */
-    setObjectPastetActiveSelection(listPastedObjects, canvas) {
-      if (listPastedObjects.length === 1) {
-        canvas.setActiveObject(listPastedObjects[0]);
-      } else if (listPastedObjects.length > 1) {
-        const sel = new fabric.ActiveSelection(listPastedObjects, {
-          canvas
+    createElementFromPpData(newData) {
+      if (newData.type !== OBJECT_TYPE.BACKGROUND) {
+        this.addObjectToStore({
+          id: newData.id,
+          newObject: newData
         });
-        canvas.setActiveObject(sel);
       }
-    },
-    /**
-     * Function clear object(s) copied when user paste data from outside while editing text
-     * @param {String} dataOutside Data copy from outside app
-     */
-    clearObjectCopied(dataOutside) {
-      if (!dataOutside) return;
 
-      const activeObj = window.printCanvas.getActiveObject();
-      const objectType = activeObj?.get('type');
+      if (newData.type === OBJECT_TYPE.IMAGE) {
+        return this.createImageFromPpData(newData);
+      }
 
       if (
-        dataOutside &&
-        objectType === FABRIC_OBJECT_TYPE.TEXT &&
-        activeObj?.isEditing
+        newData.type === OBJECT_TYPE.CLIP_ART ||
+        newData.type === OBJECT_TYPE.SHAPE
       ) {
-        sessionStorage.removeItem(COPY_OBJECT_KEY);
+        return this.createSvgFromPpData(newData);
+      }
+
+      if (newData.type === OBJECT_TYPE.TEXT) {
+        return this.createTextFromPpData(newData);
       }
     },
     /**
@@ -504,39 +459,15 @@ export default {
       if (this.isProcessingPaste) return;
       this.isProcessingPaste = true;
 
-      const objectCopy = sessionStorage.getItem(COPY_OBJECT_KEY);
-      const objects = parsePasteObject(objectCopy);
-
-      if (isEmpty(objects)) return;
-
-      let dataCopyOutside = (
-        event?.clipboardData || window?.clipboardData
-      )?.getData('text');
-
-      this.clearObjectCopied(dataCopyOutside);
-
-      if (dataCopyOutside) {
-        this.setProcessingPaste();
-        return;
-      }
-      const { sheetId, fabric } = JSON.parse(objectCopy);
-
-      const canvas = window.printCanvas;
-      canvas.discardActiveObject();
-
-      const { minLeft, minTop } = getMinPositionObject(fabric);
-
-      const listPastedObjects = await this.handlePasteItems(
-        objects,
-        sheetId,
-        fabric,
-        minLeft,
-        minTop
+      await pastePpObject(
+        event,
+        this.pageSelected,
+        this.countPaste,
+        this.createElementFromPpData,
+        this.setProcessingPaste,
+        window.printCanvas,
+        false
       );
-
-      canvas.add(...listPastedObjects);
-
-      this.setObjectPastetActiveSelection(listPastedObjects, canvas);
 
       this.countPaste += 1;
 
@@ -544,42 +475,18 @@ export default {
     },
     /**
      * Function handle to set object(s) to clipboard when user press Ctrl + C (Windows), Command + C (macOS), or from action menu
+     * @param   {Object}  event event's clipboard
      */
     handleCopy(event) {
-      const activeObj = window.printCanvas.getActiveObject();
-
-      if (!activeObj) return;
-
-      if (event?.clipboardData) {
-        clearClipboard(event);
-      }
+      copyPpObject(
+        event,
+        this.currentObjects,
+        this.pageSelected,
+        window.printCanvas
+      );
 
       this.countPaste = 1;
       this.isProcessingPaste = false;
-      const activeObjClone = cloneDeep(activeObj);
-      let objects = [activeObjClone];
-
-      if (activeObjClone._objects) {
-        const specialObject = [OBJECT_TYPE.CLIP_ART, OBJECT_TYPE.TEXT].includes(
-          activeObjClone.objectType
-        );
-        objects = specialObject
-          ? [activeObjClone]
-          : [...activeObjClone._objects];
-        activeObjClone._restoreObjectsState();
-      }
-
-      const jsonData = objects.map(obj => ({
-        ...this.currentObjects[obj.id],
-        id: null
-      }));
-
-      const cacheData = {
-        sheetId: this.pageSelected.id,
-        fabric: activeObjClone,
-        [COPY_OBJECT_KEY]: jsonData
-      };
-      sessionStorage.setItem(COPY_OBJECT_KEY, JSON.stringify(cacheData));
     },
     /**
      * Auto resize canvas to fit the container size
@@ -943,14 +850,22 @@ export default {
           imageUrl: DEFAULT_IMAGE.IMAGE_URL
         }
       });
+      const eventListeners = {
+        scaling: this.handleScaling,
+        scaled: this.handleScaled,
+        rotated: this.handleRotated,
+        moved: this.handleMoved
+      };
+
+      const image = await createImage(newImage.newObject);
+      merge(newImage.newObject, { size: image?.size });
 
       this.addObjectToStore(newImage);
 
-      const image = await createImage(newImage.newObject);
-
       useDoubleStrokeImage(image);
 
-      window.printCanvas.add(image);
+      addEventListeners(image?.object, eventListeners);
+      window.printCanvas.add(image?.object);
       selectLatestObject(window.printCanvas);
     },
     /**
@@ -1123,6 +1038,9 @@ export default {
         case OBJECT_TYPE.TEXT:
           this.changeTextProperties(prop);
           break;
+        case OBJECT_TYPE.IMAGE:
+          this.changeImageProperties(prop);
+          break;
         default:
           return;
       }
@@ -1154,6 +1072,14 @@ export default {
             currentWidthInch,
             currentHeightInch,
             DEFAULT_CLIP_ART.MIN_SIZE
+          );
+          break;
+        case OBJECT_TYPE.IMAGE:
+          scale = calcScaleElement(
+            width,
+            currentWidthInch,
+            currentHeightInch,
+            DEFAULT_IMAGE.MIN_SIZE
           );
           break;
         default:
@@ -1213,6 +1139,18 @@ export default {
             DEFAULT_CLIP_ART.MIN_SIZE
           );
           this.changeClipArtProperties(prop);
+          break;
+        }
+
+        case OBJECT_TYPE.IMAGE: {
+          const prop = mappingElementProperties(
+            currentWidthInch,
+            currentHeightInch,
+            currentXInch,
+            currentYInch,
+            DEFAULT_IMAGE.MIN_SIZE
+          );
+          this.changeImageProperties(prop);
           break;
         }
         default:
@@ -1300,6 +1238,14 @@ export default {
         OBJECT_TYPE.CLIP_ART,
         this.updateTriggerClipArtChange
       );
+    },
+    /**
+     * Event fire when user change any property of selected image box
+     *
+     * @param {Object}  prop  new prop
+     */
+    changeImageProperties(prop) {
+      this.changeElementProperties(prop, OBJECT_TYPE.IMAGE);
     },
     /**
      * Change properties of current element
@@ -1438,6 +1384,9 @@ export default {
         case OBJECT_TYPE.TEXT:
           this.changeTextProperties(prop);
           break;
+        case OBJECT_TYPE.IMAGE:
+          this.changeImageProperties(prop);
+          break;
         default:
           return;
       }
@@ -1454,7 +1403,8 @@ export default {
           this.$root.$emit('printInstructionStart', { element });
         },
         printDeleteElements: this.removeObject,
-        changeObjectIdsOrder: this.changeObjectIdsOrder
+        changeObjectIdsOrder: this.changeObjectIdsOrder,
+        [EVENT_TYPE.SAVE_STYLE]: this.onSaveStyle
       };
 
       const textEvents = {
@@ -1486,6 +1436,10 @@ export default {
         changeClipArtProperties: this.changeClipArtProperties
       };
 
+      const imageBoxEvents = {
+        changeImageProperties: this.changeImageProperties
+      };
+
       const otherEvents = {
         printSwitchTool: toolName => {
           const isDiscard =
@@ -1514,10 +1468,12 @@ export default {
           this.setToolNameSelected({ name: '' });
         },
 
-        printCopyObj: this.handleCopy,
-        printPasteObj: this.handlePaste,
+        [EVENT_TYPE.COPY_OBJ]: this.handleCopy,
+        [EVENT_TYPE.PASTE_OBJ]: this.handlePaste,
+        [EVENT_TYPE.SAVE_LAYOUT]: this.handleSaveLayout,
 
-        pageNumber: this.addPageNumber
+        pageNumber: this.addPageNumber,
+        drawLayout: this.drawLayout
       };
 
       const events = {
@@ -1527,6 +1483,7 @@ export default {
         ...backgroundEvents,
         ...shapeEvents,
         ...clipArtEvents,
+        ...imageBoxEvents,
         ...otherEvents
       };
 
@@ -1659,6 +1616,27 @@ export default {
         pageNumber: { pageLeftName, pageRightName },
         canvas: window.printCanvas
       });
+    },
+    async handleSaveLayout({ pageSelected, layoutName }) {
+      const objects = this.sheetLayout;
+      const layout = {
+        id: parseInt(uniqueId()) + 100,
+        type: 'SavedLayoutsAndFavorites',
+        name: layoutName,
+        isFavorites: false,
+        previewImageUrl: window.printCanvas.toDataURL({
+          quality: THUMBNAIL_IMAGE_QUALITY
+        }),
+        themeId: 1,
+        objects
+      };
+
+      const ppLayouts = await loadPrintPpLayouts();
+      const layouts = [...ppLayouts, { ...layout }];
+      await setPrintPpLayouts(layouts);
+    },
+    async drawLayout() {
+      await this.drawObjectsOnCanvas(this.sheetLayout);
     }
   }
 };

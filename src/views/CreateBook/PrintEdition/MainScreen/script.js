@@ -1,37 +1,50 @@
 import { mapGetters, mapMutations, mapActions } from 'vuex';
 
-import Frames from '@/components/Thumbnail/Frames';
-import Thumbnail from '@/containers/ThumbnailPrint';
-import { GETTERS, MUTATES } from '@/store/modules/book/const';
+import ListThumbContainer from '@/components/Thumbnail/ListThumbContainer';
+import Thumbnail from '@/components/Thumbnail/ThumbnailPrint';
 import {
   ACTIONS as PRINT_ACTIONS,
   MUTATES as PRINT_MUTATES,
   GETTERS as PRINT_GETTERS
 } from '@/store/modules/print/const';
-import { useDrawLayout } from '@/hooks';
-import { EDITION } from '@/common/constants';
+import { MUTATES as APP_MUTATES } from '@/store/modules/app/const';
+import { useDrawLayout, useUser } from '@/hooks';
+
+import printService from '@/api/print';
+
+import { getSectionsWithAccessible } from '@/common/utils';
 
 export default {
   components: {
-    Frames,
+    ListThumbContainer,
     Thumbnail
   },
   setup() {
     const { drawLayout } = useDrawLayout();
-    return { drawLayout };
+    const { currentUser } = useUser();
+
+    return { drawLayout, currentUser };
   },
   created() {
     this.setBookId({ bookId: this.$route.params.bookId });
+
+    // temporary code, will remove soon
+    const info = printService.getGeneralInfo();
+
+    this.setInfo({ ...info, bookId: this.$route.params.bookId });
 
     this.getDataPageEdit();
   },
   computed: {
     ...mapGetters({
-      bookId: GETTERS.BOOK_ID,
-      book: GETTERS.BOOK_DETAIL,
-      sheetLayout: PRINT_GETTERS.SHEET_LAYOUT,
-      sections: PRINT_GETTERS.SECTIONS_SHEETS
-    })
+      sectionList: PRINT_GETTERS.SECTIONS_SHEETS
+    }),
+    bookId() {
+      return this.$route.params.bookId;
+    },
+    sections() {
+      return getSectionsWithAccessible(this.sectionList, this.currentUser);
+    }
   },
   methods: {
     ...mapActions({
@@ -41,7 +54,7 @@ export default {
     ...mapMutations({
       setBookId: PRINT_MUTATES.SET_BOOK_ID,
       selectSheet: PRINT_MUTATES.SET_CURRENT_SHEET_ID,
-      setSectionId: MUTATES.SET_SECTION_ID
+      setInfo: APP_MUTATES.SET_GENERAL_INFO
     }),
     numberPage(sheet) {
       return {
@@ -50,19 +63,8 @@ export default {
       };
     },
     /**
-     * Set selected sheet's id and section's id and then draw layout in print cavnas
-     * @param  {String} sheet Sheet selected
-     * @param  {String} sectionId Section id contains sheet
-     */
-    onSelectSheet(sheet, sectionId) {
-      this.selectSheet({ id: sheet.id });
-      this.setSectionId({ sectionId });
-      setTimeout(() => {
-        this.drawLayout(this.sheetLayout, EDITION.PRINT);
-      }, 50);
-    },
-    /**
      * Set change link status for sheet
+     *
      * @param  {Number} sheetId sheet's id selected
      * @param  {String} link link status of sheet
      */

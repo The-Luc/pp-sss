@@ -40,8 +40,8 @@ export default {
         item
       });
     },
-    onClickOutSideMenu() {
-      this.$emit('onClickOutSideMenu');
+    onClickOutsideMenu() {
+      this.$emit('onClickOutsideMenu');
     }
   },
   mounted() {

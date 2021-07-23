@@ -40,7 +40,7 @@ export default {
   data() {
     return {
       toolComponent: '',
-      componentKey: true,
+      componentKey: 0,
       edition: ''
     };
   },
@@ -54,6 +54,12 @@ export default {
     [TOOL_NAME.CLIP_ART]: ClipArt,
     [TOOL_NAME.SHAPES]: Shapes,
     [TOOL_NAME.ACTIONS]: Actions
+  },
+  props: {
+    isDigital: {
+      type: Boolean,
+      default: false
+    }
   },
   computed: {
     ...mapGetters({
@@ -74,8 +80,13 @@ export default {
       const isBackgroundMenu =
         toolName === TOOL_NAME.PRINT_BACKGROUNDS ||
         toolName === TOOL_NAME.DIGITAL_BACKGROUNDS;
+      const isCLipArtMenu = toolName === TOOL_NAME.CLIP_ART;
+      const isShapeMenu = toolName === TOOL_NAME.SHAPES;
 
-      this.componentKey = isBackgroundMenu ? !this.componentKey : '';
+      this.componentKey =
+        isBackgroundMenu || isCLipArtMenu || isShapeMenu
+          ? this.componentKey++
+          : '';
 
       if (toolName) {
         this.setToolComponent(toolName);

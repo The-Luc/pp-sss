@@ -22,6 +22,18 @@
           margin: $length-sheet-padding;
           margin-bottom: 0;
 
+          &.drag-target-before {
+            .indicator-left {
+              display: block;
+            }
+          }
+
+          &.drag-target-after {
+            .indicator-right {
+              display: block;
+            }
+          }
+
           .sheet {
             position: relative;
             height: 140px;
@@ -71,7 +83,7 @@
                 .menu-item {
                   cursor: pointer;
                   width: 100%;
-                  border-bottom: 0.5px solid #8c8c8c;
+                  border-bottom: 0.5px solid $color-gray2;
                   position: relative;
 
                   .title {

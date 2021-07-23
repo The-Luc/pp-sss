@@ -9,6 +9,8 @@ import { ICON_LOCAL, MODAL_TYPES, SHEET_TYPE } from '@/common/constants';
 import { MUTATES } from '@/store/modules/app/const';
 import { GETTERS } from '@/store/modules/book/const';
 
+import { isEmpty } from '@/common/utils';
+
 export default {
   components: {
     DragDropControl,
@@ -28,6 +30,9 @@ export default {
     sheet: {
       type: Object,
       require: true
+    },
+    dragTargetType: {
+      type: String
     }
   },
   data() {
@@ -39,13 +44,19 @@ export default {
       currentSheetHover: '',
       moreIcon: ICON_LOCAL.MORE_ICON,
       arrowDown: ICON_LOCAL.ARROW_DOWN,
-      isOpenMenu: false
+      isOpenMenu: false,
+      isDragControlDisplayed: false
     };
   },
   computed: {
     ...mapGetters({
       sections: GETTERS.SECTIONS
-    })
+    }),
+    dragTargetCssClass() {
+      return isEmpty(this.dragTargetType)
+        ? ''
+        : `drag-target-${this.dragTargetType}`;
+    }
   },
   methods: {
     ...mapMutations({
@@ -57,15 +68,17 @@ export default {
         this.sheet.type === SHEET_TYPE.BACK_COVER
       );
     },
-    showDragControl: function(evt) {
-      if (evt.target.getAttribute('data-draggable') !== 'true') {
-        return;
-      }
-
-      this.$root.$emit('showDragControl', 'sheet' + this.sheet.id);
+    /**
+     * Show the drag control when hover & draggable
+     */
+    showDragControl() {
+      this.isDragControlDisplayed = this.sheet.draggable;
     },
-    hideDragControl: function() {
-      this.$root.$emit('hideDragControl');
+    /**
+     * Hide the drag control when mouse out
+     */
+    hideDragControl() {
+      this.isDragControlDisplayed = false;
     },
     openModal(indexSheet, idSheet, idSection) {
       this.toggleModal({
@@ -110,13 +123,8 @@ export default {
       return restrictSheetTypes.indexOf(this.sheet.type) < 0;
     },
     getSectionsForMove() {
-      return this.sections.map(s => {
-        return {
-          id: s.id,
-          name: s.name,
-          order: s.order,
-          color: s.color
-        };
+      return this.sections.filter((item, index) => {
+        return index !== 0 && item.id != this.sectionId;
       });
     }
   }

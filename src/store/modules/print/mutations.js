@@ -18,11 +18,15 @@ export const mutations = {
     state.book.defaultThemeId = themeId;
   },
   [PRINT._MUTATES.SET_SECTIONS_SHEETS](state, { sectionsSheets }) {
-    state.sections = sectionsSheets.map(section => {
-      return {
-        ...section,
-        sheets: section.sheets.map(sheet => sheet.id)
+    state.sections = sectionsSheets.map(s => {
+      const section = {
+        ...s,
+        sheetIds: s.sheets.map(sheet => sheet.id)
       };
+
+      delete section.sheets;
+
+      return section;
     });
 
     const sheets = {};
@@ -226,7 +230,12 @@ export const mutations = {
       ...spreadInfo
     };
   },
-  [PRINT._MUTATES.SET_PAGE_EMPTY](state, { pageEmpty }) {
-    state.background[pageEmpty] = {};
+  [PRINT._MUTATES.CLEAR_BACKGROUNDS](state, pageEmpty) {
+    if (pageEmpty) {
+      state.background[pageEmpty] = {};
+      return;
+    }
+    state.background.left = {};
+    state.background.right = {};
   }
 };

@@ -10,15 +10,17 @@ export default {
     };
   },
   props: {
-    sectionId: Number,
-    sheetId: Number,
-    getSections: Array
-  },
-  computed: {
-    sections() {
-      return this.getSections.filter((item, index) => {
-        return index !== 0 && item.id != this.sectionId;
-      });
+    sectionId: {
+      type: [Number, String],
+      default: ''
+    },
+    sheetId: {
+      type: [Number, String],
+      default: ''
+    },
+    sections: {
+      type: Array,
+      default: () => []
     }
   },
   methods: {

@@ -35,7 +35,7 @@ export default {
   },
   watch: {
     $route(to) {
-      if (to.name) {
+      if (to.name && to.name !== 'login') {
         this.getBook(to.params.bookId);
       }
     }

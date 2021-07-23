@@ -59,18 +59,30 @@ export const mutations = {
     };
   },
   [APP._MUTATES.SET_CURRENT_OBJECT](state, currentObject) {
-    state.currentObject = {
-      ...state.currentObject,
-      ...currentObject
-    };
+    state.currentObject = currentObject;
   },
   [APP._MUTATES.UPDATE_TRIGGER_TEXT_CHANGE](state) {
     state.triggerChange.text = !state.triggerChange.text;
+  },
+  [APP._MUTATES.SET_USER](state, { id, role }) {
+    state.user = { id, role };
   },
   [APP._MUTATES.UPDATE_TRIGGER_CLIPART_CHANGE](state) {
     state.triggerChange.clipArt = !state.triggerChange.clipArt;
   },
   [APP._MUTATES.UPDATE_TRIGGER_SHAPE_CHANGE](state) {
     state.triggerChange.shape = !state.triggerChange.shape;
+  },
+  [APP._MUTATES.SET_GENERAL_INFO](
+    state,
+    { bookId, title, totalSheet, totalPage, totalScreen }
+  ) {
+    state.generalInfo = { bookId, title, totalSheet, totalPage, totalScreen };
+  },
+  [APP._MUTATES.SET_SAVED_TEXT_STYLES](state, { savedTextStyles }) {
+    state.savedTextStyles = savedTextStyles;
+  },
+  [APP._MUTATES.SET_SAVED_IMAGE_STYLES](state, { savedImageStyles }) {
+    state.savedImageStyles = savedImageStyles;
   }
 };

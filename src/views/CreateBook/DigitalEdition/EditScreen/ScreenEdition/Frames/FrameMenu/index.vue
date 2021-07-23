@@ -6,7 +6,7 @@
     :menu-x="menuX"
     :menu-y="menuY"
     :is-open="isOpenMenu"
-    @onClickOutSideMenu="onClickOutSideMenu"
+    @onClickOutsideMenu="onClickOutsideMenu"
   >
     <div class="btn-group">
       <v-btn type="btn" class="btn btn-replace-layout" @click="onReplaceLayout"

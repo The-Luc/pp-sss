@@ -1,12 +1,7 @@
-import { mapGetters } from 'vuex';
 import moment from 'moment';
 
-import { DATE_FORMAT } from '@/common/constants';
-import { GETTERS } from '@/store/modules/app/const';
+import { useDueDateMenu } from '@/hooks';
 
-import book from '@/mock/book';
-
-const dueDate = book.releaseDate;
 const daysOfWeek = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
 
 export default {
@@ -20,8 +15,9 @@ export default {
     calendarY: {
       type: Number
     },
-    isOpenCalendar: {
-      type: Boolean
+    isOpen: {
+      type: Boolean,
+      default: false
     },
     minDate: {
       type: String
@@ -29,6 +25,11 @@ export default {
     calendarWidth: {
       type: Number
     }
+  },
+  setup() {
+    const { specialDates } = useDueDateMenu();
+
+    return { specialDates };
   },
   data() {
     return {
@@ -40,11 +41,6 @@ export default {
       monthSelected: '',
       yearSelected: ''
     };
-  },
-  computed: {
-    ...mapGetters({
-      sectionSelected: GETTERS.SECTION_SELECTED
-    })
   },
   watch: {
     dateSelected(val) {
@@ -70,7 +66,9 @@ export default {
     this.dayRelease = day;
     this.dateSelected = `${year}-${month}-${day}`;
     this.monthSelected = `${year}-${month}`;
-    this.dueDateData = moment(dueDate).format('YYYY-MM-DD');
+    this.dueDateData = moment(this.specialDates.releaseDate).format(
+      'YYYY-MM-DD'
+    );
   },
   methods: {
     /**
@@ -88,7 +86,7 @@ export default {
     setMonthSelected(year) {
       this.monthSelected = `${year}-${this.monthRelease}`;
     },
-    onChangeMonth(value) {
+    onSelectedMonth(value) {
       const [year, month] = value.split('-');
       this.setDateSelect(year, month);
     },
@@ -99,16 +97,20 @@ export default {
       this.monthSelected = `${year}`;
       this.dateSelected = `${year}-${month}`;
     },
-    onSelectedDate(value) {
-      const currentSection = book.sections.find(
-        section => section.id === this.sectionSelected
-      );
-      currentSection.releaseDate = moment(value).format(DATE_FORMAT.BASE);
-      this.$emit('onSelectedDate', value);
+    /**
+     * Fire when user click to select due date
+     *
+     * @param {String}  date  selected date
+     */
+    onSelectedDate(date) {
+      this.$emit('change', { date });
     },
-    onClickOutSideCalendar() {
-      if (this.isOpenCalendar) {
-        this.$emit('onClickOutSideCalendar');
+    /**
+     * Fire when user click outside of calendar modal
+     */
+    onClickOutside() {
+      if (this.isOpen) {
+        this.$emit('clickOutside');
       }
     },
     getDay(date) {

@@ -1,12 +1,26 @@
 <template>
   <div class="image-properties-container">
     <Properties title="Image Properties">
-      <TabPropertiesMenu @change="onChangeTabMenu">
+      <TabPropertiesMenu>
         <v-tab href="#general">
           General
         </v-tab>
         <v-tab-item value="general">
-          <GeneralContent />
+          <ImageStyle
+            :style-selected="styleSelected"
+            :options="imageStyle"
+            @onSelectImageStyle="onSelectImageStyle"
+          />
+          <General
+            :is-allow-fill-color="false"
+            :is-show-border="true"
+            :opacity-value="opacityValue"
+            :current-shadow="currentShadow"
+            :current-border="currentBorder"
+            @change="onChange"
+            @changeShadow="onChangeShadow"
+            @changeBorder="onChangeBorder"
+          />
         </v-tab-item>
         <v-tab href="#arrange">
           Arrange
@@ -16,8 +30,8 @@
             :position="position"
             :min-position="minPosition"
             :max-position="maxPosition"
-            :size-width="size.width"
-            :size-height="size.height"
+            :size-width="sizeWidth"
+            :size-height="sizeHeight"
             :min-size="minSize"
             :max-size="maxSize"
             :is-constrain="isConstrain"
@@ -44,4 +58,4 @@
 
 <script src="./script.js" />
 
-<style lang="scss" src="./style.scss" />
+<style lang="scss" src="./style.scss" scoped />

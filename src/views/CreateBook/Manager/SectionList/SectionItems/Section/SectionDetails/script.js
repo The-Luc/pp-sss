@@ -1,15 +1,10 @@
 import Draggable from 'vuedraggable';
+import Sheet from './Sheet';
 
 import { mapMutations } from 'vuex';
 
 import { POSITION_FIXED } from '@/common/constants';
 import { MUTATES } from '@/store/modules/book/const';
-
-import Sheet from './Sheet';
-
-let selectedIndex = -1;
-let moveToIndex = -1;
-let moveToSectionId = null;
 
 export default {
   components: {
@@ -28,53 +23,75 @@ export default {
     sheets: {
       type: Array,
       require: true
+    },
+    dragTarget: {
+      type: Object,
+      default: () => ({})
     }
   },
   setup() {
     return {
       ...mapMutations({
-        updateSheetPosition: MUTATES.UPDATE_SHEET_POSITION
+        updateSheetPosition: MUTATES.MOVE_SHEET
       })
     };
   },
   data() {
     return {
-      drag: false
+      drag: false,
+      selectedIndex: -1,
+      moveToIndex: -1,
+      moveToSectionId: null
     };
   },
   methods: {
-    onChoose: function(evt) {
-      moveToIndex = -1;
-      moveToSectionId = null;
+    /**
+     * Choose sheet event
+     *
+     * @param {Object}  event event fire when choose a sheet
+     */
+    onChoose(event) {
+      this.moveToIndex = -1;
+      this.moveToSectionId = null;
 
-      selectedIndex = this.sheets[evt.oldIndex].draggable ? evt.oldIndex : -1;
+      this.selectedIndex = this.sheets[event.oldIndex].draggable
+        ? event.oldIndex
+        : -1;
     },
-    onMove: function(evt) {
-      this.hideAllIndicator();
+    /**
+     * Drag sheet event
+     *
+     * @param {Object}  event event fire when drag a sheet
+     */
+    onMove(event) {
+      this.clearDragTarget();
 
-      if (selectedIndex < 0) {
+      if (this.selectedIndex < 0) {
         return false;
       }
 
-      if (evt.related === null) {
+      if (event.related === null) {
         this.cancelMove();
 
         return false;
       }
 
       const relateSheet =
-        typeof evt.relatedContext.element === 'undefined'
+        typeof event.relatedContext.element === 'undefined'
           ? null
-          : evt.relatedContext.element;
+          : event.relatedContext.element;
 
-      const relateSectionId = evt.relatedContext.component.$el.getAttribute(
+      const relateSectionId = event.relatedContext.component.$el.getAttribute(
         'data-section'
       );
 
       if (relateSheet === null) {
-        this.getMoveToIndex(evt, relateSectionId);
+        this.getMoveToIndex(event, relateSectionId);
 
-        this.$root.$emit('showIndicator', 'sheet-left-' + -relateSectionId);
+        this.$emit('dragSheetTargetChange', {
+          position: 'before',
+          id: -relateSectionId
+        });
 
         return false;
       }
@@ -89,7 +106,7 @@ export default {
         return false;
       }
 
-      this.getMoveToIndex(evt, relateSectionId);
+      this.getMoveToIndex(event, relateSectionId);
 
       if (this.isSameElement()) {
         this.cancelMove();
@@ -97,7 +114,7 @@ export default {
         return false;
       }
 
-      const isInsertAfter = this.isInsertAfter(evt.willInsertAfter);
+      const isInsertAfter = this.isInsertAfter(event.willInsertAfter);
 
       const isAllowInsertBefore =
         !isInsertAfter && relateSheet.positionFixed !== POSITION_FIXED.FIRST;
@@ -110,72 +127,91 @@ export default {
         return false;
       }
 
-      if (isAllowInsertBefore) {
-        this.$root.$emit('showIndicator', 'sheet-left-' + relateSheet.id);
-
-        return false;
-      }
-
-      if (isAllowInsertAfter) {
-        this.$root.$emit('showIndicator', 'sheet-right-' + relateSheet.id);
-
-        return false;
+      if (isAllowInsertBefore || isAllowInsertAfter) {
+        this.$emit('dragSheetTargetChange', {
+          position: isAllowInsertBefore ? 'before' : 'after',
+          id: relateSheet?.id
+        });
       }
 
       return false;
     },
-    onEnd: function() {
-      this.hideAllIndicator();
+    /**
+     * Unchoose sheet event
+     */
+    onUnchoose() {
+      this.clearDragTarget();
+    },
+    /**
+     * End drag (drop) sheet
+     */
+    onEnd() {
+      this.clearDragTarget();
 
-      if (selectedIndex < 0 || moveToIndex < 0) {
+      if (this.selectedIndex < 0 || this.moveToIndex < 0) {
         this.drag = false;
 
         return;
       }
 
       this.updateSheetPosition({
-        moveToSectionId: moveToSectionId,
-        moveToIndex: moveToIndex,
+        moveToSectionId: this.moveToSectionId,
+        moveToIndex: this.moveToIndex,
         selectedSectionId: this.sectionId,
-        selectedIndex: selectedIndex
+        selectedIndex: this.selectedIndex
       });
 
-      selectedIndex = -1;
-      moveToIndex = -1;
+      this.selectedIndex = -1;
+      this.moveToIndex = -1;
 
-      moveToSectionId = null;
+      this.moveToSectionId = null;
 
       this.drag = false;
     },
-    getMoveToIndex: function(evt, relateSectionId) {
-      moveToIndex = evt.draggedContext.futureIndex;
+    getMoveToIndex(event, relateSectionId) {
+      this.moveToIndex = event.draggedContext.futureIndex;
 
-      moveToSectionId = parseInt(relateSectionId, 10);
+      this.moveToSectionId = parseInt(relateSectionId, 10);
     },
-    isSameElement: function() {
+    isSameElement() {
       return (
-        moveToSectionId === this.sectionId && moveToIndex === selectedIndex
+        this.moveToSectionId === this.sectionId &&
+        this.moveToIndex === this.selectedIndex
       );
     },
-    isInsertAfter: function(willInsertAfter) {
-      if (moveToSectionId === this.sectionId) {
-        return moveToIndex > selectedIndex;
+    isInsertAfter(willInsertAfter) {
+      if (this.moveToSectionId === this.sectionId) {
+        return this.moveToIndex > this.selectedIndex;
       }
 
       return willInsertAfter;
     },
-    hideAllIndicator: function() {
-      this.$root.$emit('hideIndicator');
+    /**
+     * Clear drag target
+     */
+    clearDragTarget() {
+      this.$emit('dragSheetTargetChange', {});
     },
-    getVirtualSheet: function() {
+    getVirtualSheet() {
       return {
         id: -this.sectionId,
         type: 3,
         draggable: false
       };
     },
-    cancelMove: function() {
-      moveToIndex = -1;
+    cancelMove() {
+      this.moveToIndex = -1;
+    },
+    /**
+     * Get drag target type (before / after or nothing)
+     *
+     * @param   {Number | String} id  sheet id
+     * @returns {String}              drag target type
+     */
+    getDragTargetType({ id }) {
+      if (id !== this.dragTarget?.id) return '';
+
+      return this.dragTarget?.position;
     }
   }
 };

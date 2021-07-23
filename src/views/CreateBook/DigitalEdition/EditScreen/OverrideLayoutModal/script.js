@@ -1,35 +1,27 @@
-import { mapActions, mapGetters, mapMutations } from 'vuex';
-
-import { MODAL_TYPES } from '@/common/constants';
+import { mapActions } from 'vuex';
 import Modal from '@/containers/Modal';
-import { GETTERS, MUTATES } from '@/store/modules/app/const';
 import { ACTIONS as DIGITAL_ACTIONS } from '@/store/modules/digital/const';
 import PpButton from '@/components/Buttons/Button';
-import { useFrame, useFrameReplace } from '@/hooks';
+import { useFrame, useFrameReplace, useModal } from '@/hooks';
+
 export default {
   setup() {
     const { handleReplaceFrame } = useFrameReplace();
     const { currentFrameId, setSupplementalLayoutId } = useFrame();
-    return { handleReplaceFrame, currentFrameId, setSupplementalLayoutId };
+    const { toggleModal, modalData } = useModal();
+    return {
+      handleReplaceFrame,
+      currentFrameId,
+      setSupplementalLayoutId,
+      modalData,
+      toggleModal
+    };
   },
   components: {
     Modal,
     PpButton
   },
-  data() {
-    return {
-      isOpen: false
-    };
-  },
-  computed: {
-    ...mapGetters({
-      modalData: GETTERS.MODAL_DATA
-    })
-  },
   methods: {
-    ...mapMutations({
-      toggleModal: MUTATES.TOGGLE_MODAL
-    }),
     ...mapActions({
       updateSheeThemeLayout: DIGITAL_ACTIONS.UPDATE_SHEET_THEME_LAYOUT
     }),
@@ -55,10 +47,7 @@ export default {
      */
     onCancel() {
       this.toggleModal({
-        isOpenModal: false,
-        modalData: {
-          type: MODAL_TYPES.OVERRIDE_LAYOUT
-        }
+        isOpenModal: false
       });
     }
   }

@@ -26,6 +26,7 @@ class GetterClass extends BaseObject {
   GET_FRAMES_WIDTH_IDS = 'getFramesWithIds';
   CURRENT_FRAME_ID = 'currentFrameId';
   CURRENT_FRAME = 'getCurrentFrame';
+  TOTAL_OBJECT = 'getTotalObject';
 
   constructor(props) {
     super(props);

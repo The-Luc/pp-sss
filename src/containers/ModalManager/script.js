@@ -17,7 +17,12 @@ import ModalBackgroundSelectPage from '@/containers/ToolPopoverManager/PrintEdit
 import SelectThemeDigital from '@/views/CreateBook/DigitalEdition/EditScreen/ModalTheme';
 import AddDigitalFrame from '@/views/CreateBook/DigitalEdition/EditScreen/ModalLayout';
 import OverrideLayout from '@/views/CreateBook/DigitalEdition/EditScreen/OverrideLayoutModal';
+import DeleteFrame from '@/views/CreateBook/DigitalEdition/EditScreen/ModalConfirmDelete';
 import ModalResetLayout from '@/views/CreateBook/PrintEdition/EditScreen/PageEdition/ModalResetLayout';
+import ModalSaveLayout from '@/views/CreateBook/PrintEdition/EditScreen/PageEdition/ModalSaveLayout/ModalSaveLayout';
+import ModalSelectPageOfLayout from '@/views/CreateBook/PrintEdition/EditScreen/PageEdition/ModalSaveLayout/ModalSelectPageOfLayout';
+import ModalSaveStyle from '@/containers/SaveStyle/SaveStyleModal';
+import ModalStyleSaved from '@/containers/SaveStyle/SavedModal';
 
 const {
   HELP,
@@ -31,7 +36,12 @@ const {
   SELECT_THEME_DIGITAL,
   ADD_DIGITAL_FRAME,
   OVERRIDE_LAYOUT,
-  RESET_LAYOUT
+  DELETE_FRAME,
+  RESET_LAYOUT,
+  SAVE_LAYOUT,
+  SELECT_PAGE_OF_LAYOUT,
+  SAVE_STYLE,
+  SAVE_STYLE_SUCCESS
 } = MODAL_TYPES;
 
 const ModalList = {
@@ -46,7 +56,12 @@ const ModalList = {
   [SELECT_THEME_DIGITAL]: SELECT_THEME_DIGITAL,
   [ADD_DIGITAL_FRAME]: ADD_DIGITAL_FRAME,
   [OVERRIDE_LAYOUT]: OVERRIDE_LAYOUT,
-  [RESET_LAYOUT]: RESET_LAYOUT
+  [DELETE_FRAME]: DELETE_FRAME,
+  [RESET_LAYOUT]: RESET_LAYOUT,
+  [SAVE_LAYOUT]: SAVE_LAYOUT,
+  [SELECT_PAGE_OF_LAYOUT]: SELECT_PAGE_OF_LAYOUT,
+  [SAVE_STYLE]: SAVE_STYLE,
+  [SAVE_STYLE_SUCCESS]: SAVE_STYLE_SUCCESS
 };
 
 export default {
@@ -67,7 +82,12 @@ export default {
     [MODAL_TYPES.SELECT_THEME_DIGITAL]: SelectThemeDigital,
     [MODAL_TYPES.ADD_DIGITAL_FRAME]: AddDigitalFrame,
     [MODAL_TYPES.OVERRIDE_LAYOUT]: OverrideLayout,
-    [MODAL_TYPES.RESET_LAYOUT]: ModalResetLayout
+    [MODAL_TYPES.DELETE_FRAME]: DeleteFrame,
+    [MODAL_TYPES.RESET_LAYOUT]: ModalResetLayout,
+    [MODAL_TYPES.SAVE_LAYOUT]: ModalSaveLayout,
+    [MODAL_TYPES.SELECT_PAGE_OF_LAYOUT]: ModalSelectPageOfLayout,
+    [MODAL_TYPES.SAVE_STYLE]: ModalSaveStyle,
+    [MODAL_TYPES.SAVE_STYLE_SUCCESS]: ModalStyleSaved
   },
   computed: {
     ...mapGetters({

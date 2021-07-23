@@ -1,4 +1,4 @@
-import { BaseObject } from './base';
+import { BaseObject, BaseEntity } from './base';
 
 export class PageInfo extends BaseObject {
   isNumberingOn = false;
@@ -16,7 +16,22 @@ export class PageInfo extends BaseObject {
   }
 }
 
-export class BookPrintData extends BaseObject {
+export class BookBase extends BaseEntity {
+  title = '';
+  totalPages = 0;
+  totalSheets = 0;
+  totalScreens = 0;
+
+  /**
+   * @param {BookBase} props
+   */
+  constructor(props) {
+    super(props);
+    this._set(props);
+  }
+}
+
+export class BookPrintData extends BookBase {
   themeId = null;
   pageInfo = new PageInfo();
 
@@ -29,7 +44,7 @@ export class BookPrintData extends BaseObject {
   }
 }
 
-export class BookDigitalData extends BaseObject {
+export class BookDigitalData extends BookBase {
   themeId = null;
 
   /**
@@ -41,13 +56,8 @@ export class BookDigitalData extends BaseObject {
   }
 }
 
-export class BookDetail extends BaseObject {
-  id = null;
+export class BookDetail extends BookBase {
   communityId = null;
-  title = '';
-  totalPages = 0;
-  totalSheets = 0;
-  totalScreens = 0;
   createdDate = null;
   deliveryDate = null;
   releaseDate = null;
@@ -61,8 +71,6 @@ export class BookDetail extends BaseObject {
     min: 0,
     max: 0
   };
-  printData = new BookPrintData();
-  digitalData = new BookDigitalData();
 
   /**
    * @param {BookDetail} props

@@ -1,5 +1,14 @@
 .image-properties-container {
-    .v-tabs {
-        text-transform: capitalize;
-    }
+  .v-tabs {
+    text-transform: capitalize;
+  }
+}
+.image-style-container {
+  text-transform: initial;
+  padding: 5.5px 12px 10px;
+  border-bottom: 1px solid $color-gray15;
+  .properties-title {
+    font-family: $font-500;
+    height: 13px;
+  }
 }

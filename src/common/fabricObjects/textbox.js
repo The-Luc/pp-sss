@@ -239,7 +239,8 @@ const applyTextProperties = function(text, prop) {
     !isEmpty(prop.style) ||
     !isEmpty(prop.lineSpacing) ||
     !isEmpty(prop.fontFamily) ||
-    !isEmpty(prop.charSpacing)
+    !isEmpty(prop.letterSpacing) ||
+    !isEmpty(prop.textCase)
   ) {
     if (target.type === FABRIC_OBJECT_TYPE.TEXT) {
       target.fire('changed');
@@ -260,8 +261,8 @@ const addPadding = (val, padding) => val + padding * 2;
 const updateTextSize = (text, prop) => {
   if (!prop.size) return;
 
-  const newWidth = addPadding(prop.size.width, text.padding);
-  const newHeight = addPadding(prop.size.height, text.padding);
+  const newWidth = addPadding(inToPx(prop.size.width), text.padding);
+  const newHeight = addPadding(inToPx(prop.size.height), text.padding);
   const { minBoundingWidth, minBoundingHeight } = getTextSizeWithPadding(text);
 
   const sizeData = {};
@@ -517,7 +518,7 @@ export const handleScalingText = (e, text) => {
   }
 };
 
-const getTextSizeWithPadding = text => {
+export const getTextSizeWithPadding = text => {
   const minWidth = text.getMinWidth();
   const minBoundingWidth = minWidth + (text.padding || 0) * 2;
 

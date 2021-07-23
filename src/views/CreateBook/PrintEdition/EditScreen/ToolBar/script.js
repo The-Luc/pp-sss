@@ -56,7 +56,7 @@ export default {
         [
           {
             iconName: 'star',
-            title: TOOL_NAME.SHAPES,
+            title: 'Shapes',
             name: TOOL_NAME.SHAPES
           },
           {

@@ -1,7 +1,7 @@
-import { ACTIVE_EDITION } from '@/common/constants';
+import { EDITION } from '@/common/constants';
 
 export const state = {
-  activeEdition: ACTIVE_EDITION.NONE,
+  activeEdition: EDITION.NONE,
   modal: {
     isOpen: false,
     data: {
@@ -44,5 +44,15 @@ export const state = {
     background: true,
     shape: true,
     clipArt: true
-  }
+  },
+  generalInfo: {
+    bookId: '',
+    title: '',
+    totalSheet: 0,
+    totalPage: 0,
+    totalScreen: 0
+  },
+  user: { id: null, role: null },
+  savedTextStyles: [],
+  savedImageStyles: []
 };

@@ -1,10 +1,9 @@
 import { mapGetters, mapMutations } from 'vuex';
 
 import Thumbnail from '@/components/Thumbnail/ThumbnailDigital';
-import HeaderContainer from '@/components/Thumbnail/HeaderContainer';
-import { GETTERS } from '@/store/modules/book/const';
+import SidebarThumbContainer from '@/components/Thumbnail/SidebarThumbContainer';
 import { GETTERS as APP_GETTERS } from '@/store/modules/app/const';
-import { scrollToElement } from '@/common/utils';
+import { isEmpty, scrollToElement } from '@/common/utils';
 import {
   GETTERS as DIGITAL_GETTERS,
   MUTATES as DIGITAL_MUTATES
@@ -17,10 +16,15 @@ import {
 import { TOOL_NAME, EDITION } from '@/common/constants';
 
 export default {
+  components: {
+    Thumbnail,
+    SidebarThumbContainer
+  },
   setup() {
     const { setToolNameSelected } = usePopoverCreationTool();
     const { toggleMenuProperties } = useObjectProperties();
     const { updateVisited, setIsPrompt } = useLayoutPrompt(EDITION.DIGITAL);
+
     return {
       toggleMenuProperties,
       updateVisited,
@@ -28,29 +32,19 @@ export default {
       setIsPrompt
     };
   },
-  components: {
-    Thumbnail,
-    HeaderContainer
-  },
   computed: {
     ...mapGetters({
       pageSelected: DIGITAL_GETTERS.CURRENT_SHEET,
-      book: GETTERS.BOOK_DETAIL,
+      sections: DIGITAL_GETTERS.SECTIONS_SHEETS,
       isOpenMenuProperties: APP_GETTERS.IS_OPEN_MENU_PROPERTIES
     }),
     orderScreen() {
-      return (sectionId, sheet) => {
-        const sectionIndex = this.book.sections.findIndex(
-          item => item.id == sectionId
-        );
-        const indexSheet = this.book.sections[sectionIndex].sheets.findIndex(
-          item => item.id == sheet.id
-        );
+      return (sectionIndex, sheetIndex) => {
         let indexInSections = 0;
         for (let i = 0; i < sectionIndex; i++) {
-          indexInSections += this.book.sections[i].sheets.length;
+          indexInSections += this.sections[i].sheetIds.length;
         }
-        indexInSections += indexSheet + 1;
+        indexInSections += sheetIndex + 1;
         if (indexInSections < 10) {
           return '0' + indexInSections;
         } else {
@@ -59,21 +53,43 @@ export default {
       };
     }
   },
-  mounted() {
-    setTimeout(() => {
-      this.autoScrollToScreen(this.pageSelected.id);
-    }, 500);
+  created() {
+    this.handleWatchForAutoScroll();
   },
   methods: {
     ...mapMutations({
       selectSheet: DIGITAL_MUTATES.SET_CURRENT_SHEET_ID
     }),
     /**
+     * Handle watch when pageSelected change to make autoscroll then destroy watch
+     */
+    handleWatchForAutoScroll() {
+      const watchHandler = this.$watch(
+        'pageSelected',
+        value => {
+          if (isEmpty(value)) return;
+
+          setTimeout(() => {
+            this.autoScrollToScreen(value.id);
+          }, 20);
+
+          watchHandler();
+        },
+        {
+          deep: true
+        }
+      );
+    },
+    /**
      * Get screen refs by sheet's id and handle auto scroll
+     *
      * @param  {Number} pageSelected Sheet's id selected
      */
     autoScrollToScreen(pageSelected) {
       const currentScreendActive = this.$refs[`screen${pageSelected}`];
+
+      if (isEmpty(currentScreendActive)) return;
+
       scrollToElement(currentScreendActive[0].$el);
     },
     /**
@@ -81,32 +97,29 @@ export default {
      * @param  {String} sheetId Sheet's id selected
      */
     checkIsActive(sheetId) {
-      // return sheetId === this.pageSelected?.id;
       return sheetId === this.pageSelected.id;
     },
     /**
-     * Set selected sheet's id
-     * @param  {String} sheetId Sheet's id selected
+     * Set selected sheet's id & show notice if not visited
+     *
+     * @param {String | Number} id  id of selected sheet
      */
-    onSelectSheet(sheet) {
-      const sheetId = sheet?.id;
-      this.selectSheet({ id: sheetId });
+    onSelectSheet({ id }) {
+      this.selectSheet({ id });
 
       if (this.isOpenMenuProperites) {
-        this.toggleMenuProperties({
-          isOpenMenuProperites: false
-        });
+        this.toggleMenuProperties({ isOpenMenuProperites: false });
       }
 
-      if (!this.pageSelected.isVisited) {
-        this.setIsPrompt({
-          isPrompt: false
-        });
-        this.updateVisited({
-          sheetId
-        });
-        this.setToolNameSelected(TOOL_NAME.DIGITAL_LAYOUTS);
-      }
+      this.$router.push(`${id}`);
+
+      if (this.pageSelected.isVisited) return;
+
+      this.setIsPrompt({ isPrompt: false });
+
+      this.updateVisited({ sheetId: id });
+
+      this.setToolNameSelected(TOOL_NAME.DIGITAL_LAYOUTS);
     }
   }
 };

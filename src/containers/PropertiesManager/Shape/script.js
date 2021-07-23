@@ -1,12 +1,12 @@
 import Properties from '@/components/Properties/BoxProperties';
 import TabPropertiesMenu from '@/containers/TabPropertiesMenu';
 import ArrangeContent from '@/components/Arrange';
-import GeneralContent from './GeneralContent';
+import GeneralContent from '@/components/General';
 
 import { useShapeProperties } from '@/hooks';
 import { computedObjectSize } from '@/common/utils';
 
-import { DEFAULT_SHAPE } from '@/common/constants';
+import { DEFAULT_SHAPE, DEFAULT_PROP } from '@/common/constants';
 import { EVENT_TYPE } from '@/common/constants/eventType';
 
 export default {
@@ -82,6 +82,19 @@ export default {
         x: coord?.x || 0,
         y: coord?.y || 0
       };
+    },
+    opacityValue() {
+      const res = this.getProperty('opacity');
+
+      return !res ? 0 : res;
+    },
+    colorValue() {
+      const color = this.getProperty('color') || DEFAULT_PROP.COLOR;
+
+      return color;
+    },
+    currentShadow() {
+      return this.getProperty('shadow');
     }
   },
   methods: {
@@ -99,7 +112,7 @@ export default {
       });
     },
     /**
-     * Handle update size, position or rotate for Shape
+     * Handle update properties for Shape
      * @param {Object} object object containing the value of update size, position or rotate
      */
     onChange(object) {
@@ -116,9 +129,25 @@ export default {
       }
       this.$root.$emit(EVENT_TYPE.CHANGE_SHAPE_PROPERTIES, object);
     },
+    /**
+     * Handle constrain proportions for shape
+     * @param {Boolean} val
+     */
     onChangeConstrain(val) {
       this.$root.$emit(EVENT_TYPE.CHANGE_SHAPE_PROPERTIES, {
         isConstrain: val
+      });
+    },
+    /**
+     * Handle update Shadow Config for shape
+     * @param {Object} shadowCfg - the new shadow configs
+     */
+    onChangeShadow(shadowCfg) {
+      this.$root.$emit(EVENT_TYPE.CHANGE_SHAPE_PROPERTIES, {
+        shadow: {
+          ...this.currentShadow,
+          ...shadowCfg
+        }
       });
     }
   }

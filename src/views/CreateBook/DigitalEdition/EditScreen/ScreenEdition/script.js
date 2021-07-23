@@ -6,14 +6,13 @@ import AddBoxInstruction from '@/components/AddBoxInstruction';
 import Frames from './Frames';
 import { useDigitalOverrides } from '@/plugins/fabric';
 import {
-  ACTIVE_EDITION,
   ARRANGE_SEND,
   DEFAULT_CLIP_ART,
   DEFAULT_IMAGE,
   DEFAULT_SHAPE,
   EDITION,
+  MODAL_TYPES,
   OBJECT_TYPE,
-  SHEET_TYPE,
   TOOL_NAME
 } from '@/common/constants';
 import {
@@ -31,7 +30,10 @@ import {
   updateElement,
   addDigitalBackground,
   deleteObjectById,
-  enableTextEditMode
+  enableTextEditMode,
+  updateSpecificProp,
+  handleGetSvgData,
+  addEventListeners
 } from '@/common/fabricObjects';
 import { createImage } from '@/common/fabricObjects';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
@@ -41,7 +43,8 @@ import {
   useInfoBar,
   useLayoutPrompt,
   useFrame,
-  useFrameSwitching
+  useFrameSwitching,
+  useModal
 } from '@/hooks';
 
 import {
@@ -66,7 +69,10 @@ import {
   setBorderHighLight,
   setBorderObject,
   setCanvasUniformScaling,
-  isNonElementPropSelected
+  isNonElementPropSelected,
+  copyPpObject,
+  inToPx,
+  pastePpObject
 } from '@/common/utils';
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
 import { GETTERS } from '@/store/modules/book/const';
@@ -78,9 +84,10 @@ import {
 import { cloneDeep, debounce, merge, uniqueId } from 'lodash';
 import {
   MAX_SUPPLEMENTAL_FRAMES,
-  THUMBNAIL_IMAGE_QUALITY
+  THUMBNAIL_IMAGE_QUALITY,
+  PASTE
 } from '@/common/constants/config';
-import { useAppCommon } from '@/hooks/common';
+import { useStyle } from '@/hooks/style';
 
 const ELEMENTS = {
   [OBJECT_TYPE.TEXT]: 'a text box',
@@ -94,22 +101,25 @@ export default {
     Frames
   },
   setup() {
-    const { setActiveEdition } = useAppCommon();
     const { drawLayout } = useDrawLayout();
     const { setInfoBar, zoom } = useInfoBar();
     const { openPrompt } = useLayoutPrompt();
     const { handleSwitchFrame } = useFrameSwitching();
     const { frames, currentFrameId } = useFrame();
+    const { toggleModal, modalData } = useModal();
+    const { onSaveStyle } = useStyle();
 
     return {
-      setActiveEdition,
       frames,
       currentFrameId,
       drawLayout,
       setInfoBar,
       zoom,
       openPrompt,
-      handleSwitchFrame
+      handleSwitchFrame,
+      toggleModal,
+      modalData,
+      onSaveStyle
     };
   },
   data() {
@@ -122,7 +132,9 @@ export default {
       visible: false,
       awaitingAdd: '',
       digitalCanvas: null,
-      showAddFrame: true
+      showAddFrame: true,
+      countPaste: 1,
+      isProcessingPaste: false
     };
   },
   computed: {
@@ -137,20 +149,11 @@ export default {
       propertiesObjectType: APP_GETTERS.PROPERTIES_OBJECT_TYPE,
       object: DIGITAL_GETTERS.OBJECT_BY_ID,
       currentObjects: DIGITAL_GETTERS.GET_OBJECTS,
+      currentObject: APP_GETTERS.CURRENT_OBJECT,
       totalBackground: DIGITAL_GETTERS.TOTAL_BACKGROUND,
       listObjects: DIGITAL_GETTERS.GET_OBJECTS,
       triggerApplyLayout: DIGITAL_GETTERS.TRIGGER_APPLY_LAYOUT
-    }),
-    isCover() {
-      return this.pageSelected?.type === SHEET_TYPE.COVER;
-    },
-    isIntro() {
-      const { sections } = this.book;
-      return this.pageSelected?.id === sections[1].sheets[0].id;
-    },
-    currentSheetType() {
-      return this.pageSelected?.type || -1;
-    }
+    })
   },
   methods: {
     ...mapActions({
@@ -250,6 +253,10 @@ export default {
         {
           name: EVENT_TYPE.CHANGE_OBJECT_IDS_ORDER,
           handler: this.changeObjectIdsOrder
+        },
+        {
+          name: EVENT_TYPE.SAVE_STYLE,
+          handler: this.onSaveStyle
         }
       ];
 
@@ -300,12 +307,24 @@ export default {
         }
       ];
 
+      const otherEvents = [
+        {
+          name: EVENT_TYPE.COPY_OBJ,
+          handler: this.handleCopy
+        },
+        {
+          name: EVENT_TYPE.PASTE_OBJ,
+          handler: this.handlePaste
+        }
+      ];
+
       const events = [
         ...elementEvents,
         ...backgroundEvents,
         ...textEvents,
         ...shapeEvents,
-        ...clipArtEvents
+        ...clipArtEvents,
+        ...otherEvents
       ];
 
       events.forEach(event => {
@@ -325,6 +344,14 @@ export default {
         {
           name: WINDOW_EVENT_TYPE.KEY_UP,
           handler: this.onKeyUp
+        },
+        {
+          name: WINDOW_EVENT_TYPE.COPY,
+          handler: this.handleCopy
+        },
+        {
+          name: WINDOW_EVENT_TYPE.PASTE,
+          handler: this.handlePaste
         }
       ];
 
@@ -369,6 +396,10 @@ export default {
         this.setIsOpenProperties({ isOpen: false });
 
         this.setPropertiesObjectType({ type: '' });
+      }
+
+      if (this.modalData?.type === MODAL_TYPES.ADD_DIGITAL_FRAME) {
+        this.toggleModal({ isOpenModal: false });
       }
 
       this.stopAddingInstruction();
@@ -532,9 +563,9 @@ export default {
             if (this.awaitingAdd === OBJECT_TYPE.TEXT) {
               this.addText(left, top, width, height);
             }
-            // if (this.awaitingAdd === OBJECT_TYPE.IMAGE) {
-            //   this.addImageBox(left, top, width, height);
-            // }
+            if (this.awaitingAdd === OBJECT_TYPE.IMAGE) {
+              this.addImageBox(left, top, width, height);
+            }
             this.awaitingAdd = '';
           }
         );
@@ -1125,6 +1156,7 @@ export default {
         id,
         newObject: {
           ...ImageElement,
+          id,
           size: {
             width: pxToIn(width),
             height: pxToIn(height)
@@ -1141,7 +1173,7 @@ export default {
       this.addNewObject(newImage);
 
       const image = await createImage(newImage.newObject);
-      this.digitalCanvas.add(image);
+      this.digitalCanvas.add(image?.object);
       selectLatestObject(this.digitalCanvas);
     },
 
@@ -1303,6 +1335,189 @@ export default {
      */
     handleShowAddFrame(frames) {
       this.showAddFrame = frames.length < MAX_SUPPLEMENTAL_FRAMES;
+    },
+    /**
+     * Function handle to set object(s) to clipboard when user press Ctrl + C (Windows), Command + C (macOS), or from action menu
+     * @param   {Object}  event event's clipboard
+     */
+    handleCopy(event) {
+      copyPpObject(
+        event,
+        this.currentObjects,
+        this.pageSelected,
+        window.digitalCanvas
+      );
+      this.countPaste = 1;
+      this.isProcessingPaste = false;
+    },
+    /**
+     * Function handle to get object(s) be copied from clipboard when user press Ctrl + V (Windows), Command + V (macOS), or from action menu
+     */
+    async handlePaste(event) {
+      if (this.isProcessingPaste) return;
+      this.isProcessingPaste = true;
+      await pastePpObject(
+        event,
+        this.pageSelected,
+        this.countPaste,
+        this.createElementFromPpData,
+        this.setProcessingPaste,
+        window.digitalCanvas,
+        true
+      );
+
+      this.countPaste += 1;
+
+      this.setProcessingPaste();
+    },
+    /**
+     * Set processing paste state when user pasted base on delay time
+     */
+    setProcessingPaste: debounce(function() {
+      this.isProcessingPaste = false;
+    }, PASTE.DELAY_TIME),
+    /**
+     * Add text to the store and create fabric object
+     *
+     * @param {Object} textProperties PpData of the of a text object {id, size, coord,...}
+     * @returns {Object} a fabric object
+     */
+    createTextFromPpData(textProperties) {
+      const {
+        coord,
+        size: { height, width }
+      } = textProperties;
+
+      const { object, data: objectData } = createTextBox(
+        inToPx(coord.x),
+        inToPx(coord.y),
+        inToPx(width),
+        inToPx(height),
+        textProperties
+      );
+
+      const {
+        newObject: {
+          shadow,
+          coord: { rotation }
+        }
+      } = objectData;
+
+      updateSpecificProp(object, {
+        coord: {
+          rotation
+        }
+      });
+
+      this.handleAddTextEventListeners(object, objectData);
+
+      const objects = object.getObjects();
+
+      objects.forEach(obj => {
+        applyShadowToObject(obj, shadow);
+      });
+
+      return object;
+    },
+
+    /**
+     * Add shape/ clipart to the store and create fabric object
+     *
+     * @param {Object} objectData PpData of the of a shape object {id, size, coord,...}
+     * @returns {Object} a fabric object
+     */
+    async createSvgFromPpData(objectData) {
+      const eventListeners = {
+        scaling: this.handleScaling,
+        scaled: this.handleScaled,
+        rotated: this.handleRotated,
+        moved: this.handleMoved
+      };
+
+      const svgObject = {
+        id: objectData.id,
+        object: objectData
+      };
+
+      const svg = await handleGetSvgData({
+        svg: svgObject,
+        svgUrlAttrName:
+          objectData.type === OBJECT_TYPE.CLIP_ART ? 'vector' : 'pathData',
+        expectedHeight: objectData.size.height,
+        expectedWidth: objectData.size.width
+      });
+
+      addEventListeners(svg, eventListeners);
+
+      const {
+        dropShadow,
+        shadowBlur,
+        shadowOffset,
+        shadowOpacity,
+        shadowAngle,
+        shadowColor
+      } = svg;
+
+      updateSpecificProp(svg, {
+        coord: {
+          rotation: objectData.coord.rotation
+        }
+      });
+
+      applyShadowToObject(svg, {
+        dropShadow,
+        shadowBlur,
+        shadowOffset,
+        shadowOpacity,
+        shadowAngle,
+        shadowColor
+      });
+      return svg;
+    },
+    /**
+     * Function handle add text event listeners
+     * @param {Element} group - Group object contains rect and text object
+     * @param {Object} data - Object's data
+     */
+    handleAddTextEventListeners(group, data) {
+      const [rect, text] = group._objects;
+
+      group.on({
+        rotated: this.handleRotated,
+        moved: this.handleMoved,
+        scaling: e => handleScalingText(e, text),
+        scaled: e => this.handleTextBoxScaled(e, rect, text, data),
+        mousedblclick: ({ target }) => this.handleDbClickText(target)
+      });
+    },
+    /**
+     * Add element to the store and create fabric object
+     *
+     * @param {Object} newData PpData of the of a element {id, size, coord,...}
+     * @returns {Object} a fabric object
+     */
+    createElementFromPpData(newData) {
+      if (newData.type !== OBJECT_TYPE.BACKGROUND) {
+        this.addNewObject({
+          id: newData.id,
+          newObject: newData
+        });
+      }
+
+      if (newData.type === OBJECT_TYPE.IMAGE) {
+        return createImage(newData);
+      }
+
+      if (
+        newData.type === OBJECT_TYPE.CLIP_ART ||
+        newData.type === OBJECT_TYPE.SHAPE
+      ) {
+        return this.createSvgFromPpData(newData);
+      }
+
+      if (newData.type === OBJECT_TYPE.TEXT) {
+        return this.createTextFromPpData(newData);
+      }
     }
   },
   watch: {
@@ -1325,7 +1540,10 @@ export default {
       }
     },
     currentFrameId(val) {
-      if (!val) return;
+      if (!val) {
+        resetObjects(this.digitalCanvas);
+        return;
+      }
 
       this.setSelectedObjectId({ id: '' });
       this.setCurrentObject(null);
@@ -1354,15 +1572,10 @@ export default {
       }
     }
   },
-  mounted() {
-    this.setActiveEdition(ACTIVE_EDITION.DIGITAL);
-  },
   beforeDestroy() {
     this.digitalCanvas = null;
 
     this.updateDigitalEventListeners(false);
     this.updateWindowEventListeners(false);
-
-    this.setActiveEdition(ACTIVE_EDITION.NONE);
   }
 };

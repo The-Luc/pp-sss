@@ -1,20 +1,23 @@
 <template>
   <div class="row thumbnail-view-row">
-    <template v-for="section in book.sections">
-      <Frames
-        v-for="sheet in section.sheets"
+    <template v-for="(section, sectionIndex) in sections">
+      <ListThumbContainer
+        v-for="(sheet, sheetIndex) in section.sheets"
         :key="sheet.id"
-        :section="section"
+        :name="section.name"
+        :color="section.color"
+        :is-enable="true"
       >
         <Thumbnail
-          :to-link="`/book/${bookId}/edit/digital/edit-screen`"
+          :to-link="`/book/${bookId}/edit/digital/edit-screen/${sheet.id}`"
           :sheet="sheet"
-          :order-screen="orderScreen(section.id, sheet)"
-          @click.native="onSelectScreen(sheet)"
+          :order-screen="orderScreen(sectionIndex, sheetIndex)"
         />
-      </Frames>
+      </ListThumbContainer>
     </template>
   </div>
 </template>
+
 <script src="./script.js" />
-<style lang="scss" scoped src="./style.scss" />
+
+<style lang="scss" src="./style.scss" scoped />

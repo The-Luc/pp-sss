@@ -73,7 +73,7 @@ export const getters = {
     return sections.map(section => {
       return {
         ...section,
-        sheets: section.sheets.map(sheetId => sheets[sheetId])
+        sheets: section.sheetIds.map(sheetId => sheets[sheetId])
       };
     });
   },
@@ -88,5 +88,8 @@ export const getters = {
   },
   [DIGITAL._GETTERS.CURRENT_FRAME]: ({ frames, currentFrameId }) => {
     return frames[currentFrameId];
+  },
+  [DIGITAL._GETTERS.TOTAL_OBJECT]: ({ objectIds }) => {
+    return objectIds.length;
   }
 };

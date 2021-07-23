@@ -1,13 +1,13 @@
 <template>
   <v-menu
-    :value="isOpenCalendar"
+    :value="isOpen"
     content-class="pp-calendar"
     :position-x="calendarX"
     :position-y="calendarY"
     :close-on-content-click="false"
     :max-width="calendarWidth"
   >
-    <v-row v-click-outside="onClickOutSideCalendar">
+    <v-row v-click-outside="onClickOutside">
       <v-col cols="5">
         <v-date-picker
           :value="dateSelected"
@@ -37,7 +37,7 @@
           :max="dueDateData"
           no-title
           scrollable
-          @change="onChangeMonth"
+          @change="onSelectedMonth"
         />
         <v-btn class="go-today" text color="primary" @click="onGoCurrentDate">
           Go to today

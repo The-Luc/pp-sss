@@ -13,13 +13,8 @@ const pageSelected = book.sections[0].sheets[0];
 
 export const state = {
   book: {},
-  objects: {}, // { objectId: { ...objectData } }
-  selectedObjectId: null,
   pageSelected,
-  sectionId: 1,
-  objectSelectedId: '',
-  triggerTextChange: false,
-  triggerBackgroundChange: false,
-  triggerShapeChange: false,
-  triggerClipArtChange: false
+  sectionIds: [],
+  sections: {},
+  sheets: {}
 };

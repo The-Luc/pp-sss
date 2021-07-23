@@ -1,6 +1,6 @@
 export default {
   props: {
-    isOpenStatus: {
+    isOpen: {
       type: Boolean,
       default: false
     },
@@ -40,11 +40,19 @@ export default {
     };
   },
   methods: {
-    onSelectedStatus(status) {
-      this.$emit('onSelectedStatus', status);
+    /**
+     * Fire when user click to select a status
+     *
+     * @param {Number}  status  selected status
+     */
+    onSelected(status) {
+      this.$emit('change', { status });
     },
-    onClickOutSideStatus() {
-      this.$emit('onClickOutSideStatus');
+    /**
+     * Fire when user click outside of status modal
+     */
+    onClickOutside() {
+      this.$emit('clickOutside');
     }
   }
 };

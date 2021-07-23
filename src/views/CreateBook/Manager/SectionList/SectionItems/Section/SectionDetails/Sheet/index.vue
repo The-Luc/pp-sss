@@ -1,5 +1,5 @@
 <template>
-  <v-col class="sheet-box">
+  <v-col class="sheet-box" :class="dragTargetCssClass">
     <v-row>
       <DragDropIndicator
         :id="'sheet-left-' + sheet.id"
@@ -14,7 +14,7 @@
             @mouseover="showDragControl"
             @mouseleave="hideDragControl"
           >
-            <DragDropControl :id="'sheet' + sheet.id" />
+            <DragDropControl :class="!isDragControlDisplayed && 'invisible'" />
 
             <div v-if="onCheckActions()" class="menu">
               <img
@@ -33,7 +33,7 @@
                 v-click-outside="onCloseMenu"
                 :section-id="sectionId"
                 :sheet-id="sheet.id"
-                :get-sections="getSectionsForMove()"
+                :sections="getSectionsForMove()"
               >
                 <ButtonDelete
                   title="Delete This Sheet"
@@ -45,7 +45,9 @@
         </v-row>
 
         <v-row>
-          <v-col class="sheet-name"> {{ sequence }}{{ sheet.id }} </v-col>
+          <v-col class="sheet-name">
+            {{ sequence }}{{ ` (ID: ${sheet.id})` }}
+          </v-col>
         </v-row>
       </v-col>
 

@@ -6,12 +6,14 @@ import {
   activeCanvas,
   getSelectedOption,
   getValueInput,
+  isEmpty,
   pxToIn,
   validateInputOption
 } from '@/common/utils';
 
 import { GETTERS as APP_GETTERS } from '@/store/modules/app/const';
 import { EVENT_TYPE } from '@/common/constants/eventType';
+import { getTextSizeWithPadding } from '@/common/fabricObjects';
 
 export default {
   components: {
@@ -68,13 +70,27 @@ export default {
 
       this.$root.$emit(EVENT_TYPE.CHANGE_TEXT_PROPERTIES, updateData);
 
+      const newDimentionData = {};
+
+      const textObject = activeObj?._objects?.[1];
+
       if (x && y) {
-        this.$root.$emit(EVENT_TYPE.CHANGE_TEXT_PROPERTIES, {
-          coord: {
-            x: pxToIn(x),
-            y: pxToIn(y)
-          }
-        });
+        newDimentionData.coord = {
+          x: pxToIn(x),
+          y: pxToIn(y)
+        };
+      }
+
+      if (textObject) {
+        const { minBoundingWidth, minBoundingHeight } = getTextSizeWithPadding(
+          textObject
+        );
+        newDimentionData.minWidth = pxToIn(minBoundingWidth);
+        newDimentionData.minHeight = pxToIn(minBoundingHeight);
+      }
+
+      if (!isEmpty(newDimentionData)) {
+        this.$root.$emit(EVENT_TYPE.CHANGE_TEXT_PROPERTIES, newDimentionData);
       }
     }
   }

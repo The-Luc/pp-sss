@@ -15,11 +15,15 @@ export const mutations = {
     state.book.defaultThemeId = themeId;
   },
   [DIGITAL._MUTATES.SET_SECTIONS_SHEETS](state, { sectionsSheets }) {
-    state.sections = sectionsSheets.map(section => {
-      return {
-        ...section,
-        sheets: section.sheets.map(sheet => sheet.id)
+    state.sections = sectionsSheets.map(s => {
+      const section = {
+        ...s,
+        sheetIds: s.sheets.map(sheet => sheet.id)
       };
+
+      delete section.sheets;
+
+      return section;
     });
 
     const sheets = {};
@@ -158,8 +162,16 @@ export const mutations = {
 
   [DIGITAL._MUTATES.SET_FRAMES](state, { framesList }) {
     if (framesList.length === 0) {
-      state.frames = {};
-      state.frameIds = [];
+      const blankFrame = {
+        id: 0,
+        frame: {
+          previewImageUrl: '',
+          id: 0,
+          fromLayout: true
+        }
+      };
+      state.frames = { [blankFrame.id]: blankFrame.frame };
+      state.frameIds = [blankFrame.id];
       state.currentFrameId = 0;
       return;
     }
@@ -217,10 +229,7 @@ export const mutations = {
   [DIGITAL._MUTATES.SET_CURRENT_FRAME_ID](state, { id }) {
     state.currentFrameId = id;
   },
-  [DIGITAL._MUTATES.SET_CURRENT_FRAME_VISITED](
-    { frames, currentFrameId },
-    { value }
-  ) {
+  [DIGITAL._MUTATES.SET_FRAME_VISITED]({ frames, currentFrameId }, { value }) {
     frames[currentFrameId].isVisited = value;
   },
   [DIGITAL._MUTATES.MOVE_FRAME](state, { moveToIndex, selectedIndex }) {

@@ -5,7 +5,12 @@
       actions: toolComponent === 'Actions'
     }"
   >
-    <component :is="toolComponent" :key="componentKey" :edition="edition" />
+    <component
+      :is="toolComponent"
+      :key="componentKey"
+      :edition="edition"
+      :is-digital="isDigital"
+    />
   </div>
 </template>
 

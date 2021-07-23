@@ -1,0 +1,33 @@
+.modal-save-style-body {
+  .style-name {
+    width: 60%;
+    margin: 25px auto;
+    text-align: center;
+    label {
+      font-family: $font-500;
+      font-size: $md-size;
+      color: $color-gray16;
+    }
+    input {
+      width: 100%;
+      height: 32px;
+      margin-top: 10px;
+      padding: 0 8px;
+      border: 1px solid $color-gray14;
+      border-radius: 6px;
+    }
+  }
+}
+
+.modal-save-style-footer {
+  &::v-deep .pp-btn {
+    width: 50%;
+    height: 36px;
+    margin: 15px auto;
+    &:not(.active) {
+      background-color: $color-gray19; 
+      border-color: $color-gray19;
+      color: white;
+    }
+  }
+}

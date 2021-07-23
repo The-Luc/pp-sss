@@ -1,0 +1,11 @@
+::v-deep.fill-color-container,
+.opacity-container,
+.shadow-container {
+  text-transform: initial;
+  padding: 10px 12px 12px;
+  border-bottom: 1px solid $color-gray15;
+}
+
+.shadow-container {
+  border: none;
+}

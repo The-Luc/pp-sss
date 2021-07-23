@@ -7,9 +7,12 @@ $width-process-container: 251px;
         padding: 9px 10px;
         background-color: $color-white;
         font-family: $font-700;
-        cursor: pointer;
 
-        &:hover {
+        &:not(.disabled) {
+          cursor: pointer;
+        }
+
+        &:not(.disabled):hover {
           background-color: $color-white3;
         }
 

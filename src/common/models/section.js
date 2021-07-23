@@ -1,15 +1,14 @@
-import { BaseObject } from './base';
+import { BaseEntity } from './base';
 
-export class Section extends BaseObject {
-  id = null;
+export class Section extends BaseEntity {
   name = '';
-  bookId = null;
   assigneeId = null;
   color = '';
   dueDate = null;
   status = 0;
-  order = 0;
-  draggable = false;
+  draggable = true;
+  sheetIds = [];
+  fixed = false;
 
   /**
    * @param {Section} props
