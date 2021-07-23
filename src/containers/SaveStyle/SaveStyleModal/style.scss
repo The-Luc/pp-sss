@@ -26,6 +26,7 @@
     margin: 15px auto;
     &:not(.active) {
       background-color: $color-gray19; 
+      border-color: $color-gray19;
       color: white;
     }
   }
