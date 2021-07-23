@@ -7,7 +7,7 @@ import {
   MUTATES as PRINT_MUTATES,
   GETTERS as PRINT_GETTERS
 } from '@/store/modules/print/const';
-import { MODAL_TYPES, TOOL_NAME } from '@/common/constants';
+import { MODAL_TYPES, ROLE, TOOL_NAME } from '@/common/constants';
 import ToolBar from './ToolBar';
 import Header from '@/containers/HeaderEdition/Header';
 import FeedbackBar from '@/containers/HeaderEdition/FeedbackBar';
@@ -18,10 +18,11 @@ import {
   usePopoverCreationTool,
   useInfoBar,
   useMutationPrintSheet,
-  useUser
+  useUser,
+  useGetterPrintSheet
 } from '@/hooks';
 import { EDITION } from '@/common/constants';
-import { isEmpty } from '@/common/utils';
+import { isEmpty, isPositiveInteger } from '@/common/utils';
 
 import printService from '@/api/print';
 
@@ -39,6 +40,7 @@ export default {
     const { setInfoBar } = useInfoBar();
     const { setCurrentSheetId } = useMutationPrintSheet();
     const { currentUser } = useUser();
+    const { currentSection } = useGetterPrintSheet();
 
     return {
       pageSelected,
@@ -46,7 +48,8 @@ export default {
       updateVisited,
       setInfoBar,
       setCurrentSheetId,
-      currentUser
+      currentUser,
+      currentSection
     };
   },
   computed: {
@@ -68,16 +71,41 @@ export default {
   },
   beforeRouteEnter(to, _, next) {
     next(async me => {
-      me.setBookId({ bookId: to.params.bookId });
+      const bookId = to.params.bookId;
+
+      const editionMainUrl = `/book/${bookId}/edit/print/`;
+
+      if (!isPositiveInteger(to.params?.sheetId)) {
+        me.$router.replace(editionMainUrl);
+
+        return;
+      }
+
+      me.setBookId({ bookId });
 
       // temporary code, will remove soon
       const info = printService.getGeneralInfo();
 
-      me.setInfo({ ...info, bookId: to.params.bookId });
+      me.setInfo({ ...info, bookId });
 
       await me.getDataPageEdit();
 
-      me.setCurrentSheetId({ id: to.params?.sheetId });
+      me.setCurrentSheetId({ id: parseInt(to.params.sheetId) });
+
+      if (isEmpty(me.currentSection)) {
+        me.$router.replace(editionMainUrl);
+
+        return;
+      }
+
+      const isAdmin = me.currentUser.role === ROLE.ADMIN;
+      const isAssigned = me.currentUser.id === me.currentSection.assigneeId;
+
+      if (!isAdmin && !isAssigned) {
+        me.$router.replace(editionMainUrl);
+
+        return;
+      }
 
       if (isEmpty(me.printThemeSelected)) {
         me.openSelectThemeModal();

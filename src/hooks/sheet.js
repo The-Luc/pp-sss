@@ -21,7 +21,7 @@ export const useSheet = (isDigital = false) => {
   };
 };
 
-export const useMutationEditionSheet = (isDigital = false) => {
+const useMutationEditionSheet = (isDigital = false) => {
   const MUTATES = isDigital ? DIGITAL_MUTATES : PRINT_MUTATES;
 
   const { setCurrentSheetId } = useMutations({
