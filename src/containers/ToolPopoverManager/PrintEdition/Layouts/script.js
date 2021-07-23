@@ -220,7 +220,7 @@ export default {
     async initPrintData() {
       this.themesOptions = await loadPrintThemes();
 
-      let layouts = await loadLayouts();
+      const layouts = await loadLayouts();
 
       this.setPrintLayouts({ layouts });
     },
