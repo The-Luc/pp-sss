@@ -16,7 +16,7 @@ import { EDITION, MODAL_TYPES, TOOL_NAME } from '@/common/constants';
 import {
   useLayoutPrompt,
   usePopoverCreationTool,
-  useMutatesSheet
+  useMutationDigitalSheet
 } from '@/hooks';
 import { isEmpty } from '@/common/utils';
 import { COPY_OBJECT_KEY } from '@/common/constants/config';
@@ -26,7 +26,7 @@ export default {
   setup() {
     const { pageSelected, updateVisited } = useLayoutPrompt(EDITION.DIGITAL);
     const { setToolNameSelected } = usePopoverCreationTool();
-    const { setCurrentSheetId } = useMutatesSheet(true);
+    const { setCurrentSheetId } = useMutationDigitalSheet();
 
     return {
       pageSelected,

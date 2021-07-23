@@ -1,7 +1,7 @@
 import { mapGetters, mapMutations } from 'vuex';
 
 import Thumbnail from '@/components/Thumbnail/ThumbnailDigital';
-import HeaderContainer from '@/components/Thumbnail/HeaderContainer';
+import SidebarThumbContainer from '@/components/Thumbnail/SidebarThumbContainer';
 import { GETTERS as APP_GETTERS } from '@/store/modules/app/const';
 import { isEmpty, scrollToElement } from '@/common/utils';
 import {
@@ -18,7 +18,7 @@ import { TOOL_NAME, EDITION } from '@/common/constants';
 export default {
   components: {
     Thumbnail,
-    HeaderContainer
+    SidebarThumbContainer
   },
   setup() {
     const { setToolNameSelected } = usePopoverCreationTool();
