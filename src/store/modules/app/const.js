@@ -78,8 +78,8 @@ class MutationClass extends BaseObject {
   UPDATE_TRIGGER_SHAPE_CHANGE = 'triggerShapeChange';
   UPDATE_TRIGGER_CLIPART_CHANGE = 'triggerClipArtChange';
   SET_GENERAL_INFO = 'setGeneralInfo';
-  SET_SAVED_TEXT_STYLE = 'setSavedTextStyle';
-  SET_SAVED_IMAGE_STYLE = 'setSavedImageStyle';
+  SET_SAVED_TEXT_STYLES = 'setSavedTextStyle';
+  SET_SAVED_IMAGE_STYLES = 'setSavedImageStyle';
 
   constructor(props) {
     super(props);

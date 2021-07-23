@@ -7,10 +7,10 @@
       </div>
     </div>
     <div class="modal-save-style-footer">
-      <PpButton is-active @click.native="onSaveStyle">
+      <PpButton class="pp-btn-save" is-active @click.native="onSaveStyle">
         Save Style
       </PpButton>
-      <PpButton @click.native="onCancel">
+      <PpButton class="pp-btn-cancel" @click.native="onCancel">
         Cancel
       </PpButton>
     </div>

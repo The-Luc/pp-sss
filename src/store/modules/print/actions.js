@@ -98,9 +98,10 @@ export const actions = {
 
     if (backgroundObjs.length === 1) {
       backgroundObjs[0].isLeftPage = currentPosition === 'left';
-      const pageEmpty = currentPosition === 'left' ? 'right' : 'left';
+      const emptyBackgroundPosition =
+        currentPosition === 'left' ? 'right' : 'left';
+      commit(PRINT._MUTATES.CLEAR_BACKGROUNDS, emptyBackgroundPosition);
       commit(PRINT._MUTATES.SET_BACKGROUNDS, { background: backgroundObjs[0] });
-      commit(PRINT._MUTATES.SET_PAGE_EMPTY, { pageEmpty });
     }
 
     // Get object(s) rest

@@ -4,7 +4,10 @@
       <SidebarThumbContainer
         v-for="(section, sectionIndex) in sections"
         :key="section.id"
-        :section="section"
+        :name="section.name"
+        :color="section.color"
+        :total-sheet="section.sheets.length"
+        :is-enable="true"
       >
         <Thumbnail
           v-for="(sheet, sheetIndex) in section.sheets"
@@ -22,4 +25,5 @@
 </template>
 
 <script src="./script.js"></script>
-<style lang="scss" scoped src="./style.scss" />
+
+<style lang="scss" src="./style.scss" scoped />

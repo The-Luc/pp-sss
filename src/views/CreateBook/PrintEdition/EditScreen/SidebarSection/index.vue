@@ -4,7 +4,10 @@
       <SidebarThumbContainer
         v-for="section in sections"
         :key="section.id"
-        :section="section"
+        :name="section.name"
+        :color="section.color"
+        :total-sheet="section.sheets.length"
+        :is-enable="section.isAccessible"
       >
         <Thumbnail
           v-for="sheet in section.sheets"
@@ -18,7 +21,8 @@
           :link-type="sheet.link"
           :thumbnail-url="sheet.thumbnailUrl"
           :is-active="checkIsActive(sheet.id)"
-          @click.native="onSelectSheet(sheet, section.id)"
+          :is-enable="section.isAccessible"
+          @click.native="onSelectSheet(sheet)"
         />
       </SidebarThumbContainer>
     </div>
@@ -26,4 +30,5 @@
 </template>
 
 <script src="./script.js"></script>
-<style lang="scss" scoped src="./style.scss" />
+
+<style lang="scss" src="./style.scss" scoped />

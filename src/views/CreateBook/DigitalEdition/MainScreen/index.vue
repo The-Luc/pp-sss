@@ -4,7 +4,9 @@
       <ListThumbContainer
         v-for="(sheet, sheetIndex) in section.sheets"
         :key="sheet.id"
-        :section="section"
+        :name="section.name"
+        :color="section.color"
+        :is-enable="true"
       >
         <Thumbnail
           :to-link="`/book/${bookId}/edit/digital/edit-screen/${sheet.id}`"

@@ -11,10 +11,15 @@ import {
   useLayoutPrompt,
   useResetPrintConfig,
   usePopoverCreationTool,
-  useObjectProperties
+  useObjectProperties,
+  useUser
 } from '@/hooks';
 import { TOOL_NAME, EDITION } from '@/common/constants';
-import { isEmpty, scrollToElement } from '@/common/utils';
+import {
+  isEmpty,
+  scrollToElement,
+  getSectionsWithAccessible
+} from '@/common/utils';
 
 export default {
   components: {
@@ -26,21 +31,26 @@ export default {
     const { setToolNameSelected } = usePopoverCreationTool();
     const { toggleMenuProperties } = useObjectProperties();
     const { updateVisited, setIsPrompt } = useLayoutPrompt(EDITION.PRINT);
+    const { currentUser } = useUser();
 
     return {
       toggleMenuProperties,
       updateVisited,
       setToolNameSelected,
       resetPrintConfig,
-      setIsPrompt
+      setIsPrompt,
+      currentUser
     };
   },
   computed: {
     ...mapGetters({
       pageSelected: PRINT_GETTERS.CURRENT_SHEET,
-      sections: PRINT_GETTERS.SECTIONS_SHEETS,
+      sectionList: PRINT_GETTERS.SECTIONS_SHEETS,
       isOpenMenuProperties: APP_GETTERS.IS_OPEN_MENU_PROPERTIES
-    })
+    }),
+    sections() {
+      return getSectionsWithAccessible(this.sectionList, this.currentUser);
+    }
   },
   created() {
     this.handleWatchForAutoScroll();

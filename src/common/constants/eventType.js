@@ -18,7 +18,8 @@ export const EVENT_TYPE = {
   SAVE_STYLE: 'saveStyle',
   CHANGE_IMAGE_PROPERTIES: 'changeImageProperties',
   COPY_OBJ: 'copyObj',
-  PASTE_OBJ: 'pasteObj'
+  PASTE_OBJ: 'pasteObj',
+  SAVE_LAYOUT: 'saveLayout'
 };
 
 export const CANVAS_EVENT_TYPE = {

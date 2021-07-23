@@ -21,7 +21,7 @@ export const useSheet = (isDigital = false) => {
   };
 };
 
-export const useMutatesSheet = (isDigital = false) => {
+const useMutationEditionSheet = (isDigital = false) => {
   const MUTATES = isDigital ? DIGITAL_MUTATES : PRINT_MUTATES;
 
   const { setCurrentSheetId } = useMutations({
@@ -31,4 +31,16 @@ export const useMutatesSheet = (isDigital = false) => {
   return {
     setCurrentSheetId
   };
+};
+
+export const useMutationPrintSheet = () => {
+  // adding mutation for print edition only here
+
+  return { ...useMutationEditionSheet() };
+};
+
+export const useMutationDigitalSheet = () => {
+  // adding mutation for digital edition only here
+
+  return { ...useMutationEditionSheet(true) };
 };

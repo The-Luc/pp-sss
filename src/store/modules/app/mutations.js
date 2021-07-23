@@ -79,10 +79,10 @@ export const mutations = {
   ) {
     state.generalInfo = { bookId, title, totalSheet, totalPage, totalScreen };
   },
-  [APP._MUTATES.SET_SAVED_TEXT_STYLE](state, { savedTextStyles }) {
+  [APP._MUTATES.SET_SAVED_TEXT_STYLES](state, { savedTextStyles }) {
     state.savedTextStyles = savedTextStyles;
   },
-  [APP._MUTATES.SET_SAVED_IMAGE_STYLE](state, { savedImageStyles }) {
+  [APP._MUTATES.SET_SAVED_IMAGE_STYLES](state, { savedImageStyles }) {
     state.savedImageStyles = savedImageStyles;
   }
 };

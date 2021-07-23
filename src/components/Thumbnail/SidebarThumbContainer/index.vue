@@ -1,16 +1,12 @@
 <template>
-  <div class="thumbnail-view-header">
-    <div class="header-container" @click="isOpen = !isOpen">
-      <div
-        class="header-color"
-        :style="{ 'background-color': section.color }"
-      ></div>
-      <v-icon v-if="isOpen">arrow_drop_down</v-icon>
-      <v-icon v-else>arrow_right</v-icon>
-      <div class="header-name">
-        {{ section.name }}
-      </div>
-      <span>({{ section.sheets.length }})</span>
+  <div class="thumbnail-view-header" :class="disabledCssClass">
+    <div class="header-container" @click="toggleSheetsArena">
+      <div class="header-color" :style="{ 'background-color': color }"></div>
+
+      <v-icon>{{ arrowIcon }}</v-icon>
+
+      <div class="header-name">{{ name }}</div>
+      <span>({{ totalSheet }})</span>
     </div>
 
     <div v-show="isOpen" class="sheet-container">
@@ -20,4 +16,5 @@
 </template>
 
 <script src="./script.js"></script>
-<style lang="scss" scoped src="./style.scss" />
+
+<style lang="scss" src="./style.scss" scoped />

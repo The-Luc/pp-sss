@@ -74,7 +74,7 @@ export default {
         layout: this.layoutObjSelected
       });
       resetObjects(window.printCanvas);
-      this.drawLayout(this.sheetLayout);
+      this.$root.$emit('drawLayout');
       this.$root.$emit('pageNumber');
       this.onCancel();
     },

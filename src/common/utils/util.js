@@ -1,7 +1,5 @@
 import { cloneDeep, merge, intersection } from 'lodash';
-
-import { BORDER_STYLES, CANVAS_BORDER_TYPE, STATUS } from '@/common/constants';
-import { scaleSize } from './canvas';
+import { STATUS } from '@/common/constants';
 
 export let activeCanvas = null;
 
@@ -176,113 +174,6 @@ export const scrollToElement = (el, opts) => {
   el.scrollIntoView({
     ...baseOpts,
     ...opts
-  });
-};
-
-export const getRectDashes = (width, height, strokeType, strokeWidth) => {
-  if (!strokeWidth) {
-    return [];
-  }
-  let dashArray = [];
-  if (strokeType === BORDER_STYLES.ROUND) {
-    dashArray = getRoundDashes(width, height, strokeWidth);
-  } else if (strokeType === BORDER_STYLES.SQUARE) {
-    const widthArray = getLineDashes(width, 0, 0, 0);
-    const heightArray = getLineDashes(0, height, 0, 0);
-    dashArray = [widthArray, 0, heightArray, 0, widthArray, 0, heightArray];
-  }
-  return [].concat(...dashArray);
-};
-
-/**
- * Calculate points of rounded border
- *
- * @param   {Number}  width  Width of element
- * @param   {Number}  height  Height of element
- */
-const getRoundDashes = (width, height, strokeWidth) => {
-  const clientStrokeWidth = strokeWidth || 1;
-
-  const clientWidth = width - clientStrokeWidth; //real width include stroke
-  const clientHeight = height - clientStrokeWidth; //real height include stroke
-
-  const pointsOfWidth = Math.round(clientWidth / (clientStrokeWidth * 2)); //Width points
-  const pointsOfHeight = Math.round(clientHeight / (clientStrokeWidth * 2)); //Height points
-
-  const widthDashTemplate = [0, clientWidth / pointsOfWidth];
-  const heightDashTemplate = [0, clientHeight / pointsOfHeight];
-
-  const calcDashArray = (points, dashTemplate) => {
-    return Array.from({ length: points - 1 }).reduce(arr => {
-      arr.push(...dashTemplate);
-      return arr;
-    }, []);
-  };
-
-  return Array.from({ length: 4 }, (_, index) => {
-    if (index % 2) {
-      return calcDashArray(pointsOfHeight, heightDashTemplate);
-    }
-    return calcDashArray(pointsOfWidth, widthDashTemplate);
-  });
-};
-
-// same as previous snippet except that it does return all the segment's dashes
-export const getLineDashes = (x1, y1, x2, y2) => {
-  const length = Math.hypot(x2 - x1, y2 - y1); // ()
-  let dash_length = length / 8;
-
-  const dash_gap = dash_length * 0.66666;
-  dash_length -= dash_gap * 0.3333;
-
-  let total_length = 0;
-  const dasharray = [];
-  let next;
-  while (total_length < length) {
-    next = dasharray.length % 2 ? dash_gap : dash_length;
-    total_length += next;
-    dasharray.push(next);
-  }
-  return dasharray;
-};
-
-export const getStrokeLineCap = strokeType => {
-  if ([BORDER_STYLES.ROUND, BORDER_STYLES.SQUARE].indexOf(strokeType) !== -1) {
-    return strokeType;
-  }
-  return CANVAS_BORDER_TYPE.BUTT;
-};
-
-/**
- * Get border data from store and set to Rect object
- */
-export const setBorderObject = (rectObj, objectData) => {
-  const {
-    border: { strokeWidth, stroke, strokeLineType }
-  } = objectData;
-
-  const strokeLineCap = getStrokeLineCap(strokeLineType);
-
-  rectObj.set({
-    strokeWidth: scaleSize(strokeWidth),
-    stroke,
-    strokeLineCap,
-    strokeLineType
-  });
-
-  setTimeout(() => {
-    rectObj.canvas.renderAll();
-  });
-};
-
-/**
- * Set border color when selected group object
- * @param {Element}  group  Group object
- * @param {Object}  sheetLayout  current layout of canvas
- */
-export const setBorderHighLight = (group, sheetLayout) => {
-  group.set({
-    borderColor: sheetLayout?.id ? 'white' : '#bcbec0'
   });
 };
 

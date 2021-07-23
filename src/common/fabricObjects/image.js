@@ -1,6 +1,6 @@
 import { fabric } from 'fabric';
 
-import { inToPx } from '../utils';
+import { inToPx, pxToIn } from '../utils';
 import { getAdjustedObjectDimension, toFabricImageProp } from './common';
 import { DEFAULT_IMAGE } from '../constants';
 
@@ -26,7 +26,10 @@ export const createImage = props => {
 
         image.scaleX = adjustedWidth / image.width;
         image.scaleY = adjustedHeight / image.height;
-        resolve(image);
+        resolve({
+          object: image,
+          size: { width: pxToIn(adjustedWidth), height: pxToIn(adjustedHeight) }
+        });
       },
       {
         ...fabricProp,
