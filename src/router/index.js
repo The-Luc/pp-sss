@@ -15,14 +15,20 @@ const DigitalEditScreen = () =>
 const DigitalEdition = () => import('@/views/CreateBook/DigitalEdition');
 const Login = () => import('@/views/TempLogin');
 
-import { ROUTE_NAME } from '@/common/constants';
 import authGuard from './guards/authGuard';
+import {
+  printNoSheetSelectionGuard,
+  digitalNoSheetSelectionGuard
+} from './guards/editorGuard';
+
 import {
   beforeEnterGuard,
   closeModalsOnPopState,
   setActiveEditionByRoute,
   showEmptySectionPrompt
 } from './utils';
+
+import { ROUTE_NAME } from '@/common/constants';
 
 Vue.use(VueRouter);
 
@@ -55,6 +61,12 @@ const routes = [
         ...beforeEnterGuard(authGuard)
       },
       {
+        path: 'edit-screen/',
+        name: ROUTE_NAME.PRINT_EDIT,
+        component: PrintEditScreen,
+        ...beforeEnterGuard([authGuard, printNoSheetSelectionGuard])
+      },
+      {
         path: 'edit-screen/:sheetId',
         name: ROUTE_NAME.PRINT_EDIT,
         component: PrintEditScreen,
@@ -71,6 +83,12 @@ const routes = [
         name: ROUTE_NAME.DIGITAL,
         component: DigitalMainScreen,
         ...beforeEnterGuard(authGuard)
+      },
+      {
+        path: 'edit-screen/',
+        name: ROUTE_NAME.DIGITAL_EDIT,
+        component: DigitalEditScreen,
+        ...beforeEnterGuard([authGuard, digitalNoSheetSelectionGuard])
       },
       {
         path: 'edit-screen/:sheetId',
@@ -97,7 +115,7 @@ window.addEventListener('popstate', () => {
   window.popStateDetected = true;
 });
 
-router.beforeEach((to, from, next) => {
+router.beforeEach((to, _, next) => {
   window.popStateDetected && closeModalsOnPopState();
 
   setActiveEditionByRoute(to.name);

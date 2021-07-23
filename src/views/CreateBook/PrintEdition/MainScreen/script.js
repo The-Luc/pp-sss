@@ -1,24 +1,29 @@
 import { mapGetters, mapMutations, mapActions } from 'vuex';
 
-import Frames from '@/components/Thumbnail/Frames';
-import Thumbnail from '@/containers/ThumbnailPrint';
+import ListThumbContainer from '@/components/Thumbnail/ListThumbContainer';
+import Thumbnail from '@/components/Thumbnail/ThumbnailPrint';
 import {
   ACTIONS as PRINT_ACTIONS,
   MUTATES as PRINT_MUTATES,
   GETTERS as PRINT_GETTERS
 } from '@/store/modules/print/const';
 import { MUTATES as APP_MUTATES } from '@/store/modules/app/const';
-import { useDrawLayout } from '@/hooks';
+import { useDrawLayout, useUser } from '@/hooks';
+
 import printService from '@/api/print';
+
+import { getSectionsWithAccessible } from '@/common/utils';
 
 export default {
   components: {
-    Frames,
+    ListThumbContainer,
     Thumbnail
   },
   setup() {
     const { drawLayout } = useDrawLayout();
-    return { drawLayout };
+    const { currentUser } = useUser();
+
+    return { drawLayout, currentUser };
   },
   created() {
     this.setBookId({ bookId: this.$route.params.bookId });
@@ -32,11 +37,13 @@ export default {
   },
   computed: {
     ...mapGetters({
-      sheetLayout: PRINT_GETTERS.SHEET_LAYOUT,
-      sections: PRINT_GETTERS.SECTIONS_SHEETS
+      sectionList: PRINT_GETTERS.SECTIONS_SHEETS
     }),
     bookId() {
       return this.$route.params.bookId;
+    },
+    sections() {
+      return getSectionsWithAccessible(this.sectionList, this.currentUser);
     }
   },
   methods: {
@@ -56,15 +63,8 @@ export default {
       };
     },
     /**
-     * Set selected sheet's id
-     *
-     * @param {String | Number} id  id of selected sheet
-     */
-    onSelectSheet({ id }) {
-      this.selectSheet({ id });
-    },
-    /**
      * Set change link status for sheet
+     *
      * @param  {Number} sheetId sheet's id selected
      * @param  {String} link link status of sheet
      */

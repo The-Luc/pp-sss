@@ -13,7 +13,13 @@ import Header from '@/containers/HeaderEdition/Header';
 import FeedbackBar from '@/containers/HeaderEdition/FeedbackBar';
 import SidebarSection from './SidebarSection';
 import PageEdition from './PageEdition';
-import { useLayoutPrompt, usePopoverCreationTool, useInfoBar } from '@/hooks';
+import {
+  useLayoutPrompt,
+  usePopoverCreationTool,
+  useInfoBar,
+  useMutationPrintSheet,
+  useUser
+} from '@/hooks';
 import { EDITION } from '@/common/constants';
 import { isEmpty } from '@/common/utils';
 
@@ -31,26 +37,17 @@ export default {
     const { pageSelected, updateVisited } = useLayoutPrompt(EDITION.PRINT);
     const { setToolNameSelected } = usePopoverCreationTool();
     const { setInfoBar } = useInfoBar();
+    const { setCurrentSheetId } = useMutationPrintSheet();
+    const { currentUser } = useUser();
 
     return {
       pageSelected,
       setToolNameSelected,
       updateVisited,
-      setInfoBar
+      setInfoBar,
+      setCurrentSheetId,
+      currentUser
     };
-  },
-  async created() {
-    this.setBookId({ bookId: this.$route.params.bookId });
-
-    // temporary code, will remove soon
-    const info = printService.getGeneralInfo();
-
-    this.setInfo({ ...info, bookId: this.$route.params.bookId });
-
-    await this.getDataPageEdit();
-    if (isEmpty(this.printThemeSelected)) {
-      this.openSelectThemeModal();
-    }
   },
   computed: {
     ...mapGetters({
@@ -69,9 +66,34 @@ export default {
       }
     }
   },
+  beforeRouteEnter(to, _, next) {
+    next(async me => {
+      me.setBookId({ bookId: to.params.bookId });
+
+      // temporary code, will remove soon
+      const info = printService.getGeneralInfo();
+
+      me.setInfo({ ...info, bookId: to.params.bookId });
+
+      await me.getDataPageEdit();
+
+      me.setCurrentSheetId({ id: to.params?.sheetId });
+
+      if (isEmpty(me.printThemeSelected)) {
+        me.openSelectThemeModal();
+      }
+    });
+  },
+  beforeRouteUpdate(to, _, next) {
+    this.setCurrentSheetId({ id: to.params?.sheetId });
+
+    next();
+  },
   destroyed() {
     this.resetPrintConfigs();
     this.setPropertiesObjectType({ type: '' });
+
+    this.setCurrentSheetId({ id: '' });
   },
   methods: {
     ...mapActions({

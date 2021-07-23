@@ -239,7 +239,7 @@ const applyTextProperties = function(text, prop) {
     !isEmpty(prop.style) ||
     !isEmpty(prop.lineSpacing) ||
     !isEmpty(prop.fontFamily) ||
-    !isEmpty(prop.charSpacing) ||
+    !isEmpty(prop.letterSpacing) ||
     !isEmpty(prop.textCase)
   ) {
     if (target.type === FABRIC_OBJECT_TYPE.TEXT) {

@@ -60,9 +60,9 @@ const printService = {
           totalSheets += section.sheets.length;
         }
 
-        const { name, color, id } = section;
+        const { name, color, id, assigneeId } = section;
 
-        return { id, name, color, sheets };
+        return { id, name, color, assigneeId, sheets };
       });
 
       const result = isEmpty(data)
@@ -126,9 +126,9 @@ const printService = {
           totalSheets += section.sheets.length;
         }
 
-        const { name, color } = section;
+        const { name, color, assigneeId } = section;
 
-        return { id: section.id, name, color, sheets: sheets };
+        return { id: section.id, name, color, assigneeId, sheets };
       });
 
       const result = isEmpty(data)

@@ -4,7 +4,7 @@ import { cloneDeep, uniqueId, merge, debounce } from 'lodash';
 
 import { usePrintOverrides } from '@/plugins/fabric';
 
-import { useDrawLayout, useInfoBar } from '@/hooks';
+import { useInfoBar } from '@/hooks';
 import { startDrawBox } from '@/common/fabricObjects/drawingBox';
 
 import {
@@ -88,7 +88,7 @@ import { createImage } from '@/common/fabricObjects';
 import printService from '@/api/print';
 import { useAppCommon } from '@/hooks/common';
 import { EVENT_TYPE } from '@/common/constants/eventType';
-import { useTextStyle } from '@/hooks/style';
+import { useStyle } from '@/hooks/style';
 
 export default {
   components: {
@@ -100,11 +100,10 @@ export default {
   },
   setup() {
     const { setActiveEdition } = useAppCommon();
-    const { drawLayout } = useDrawLayout();
     const { setInfoBar, zoom } = useInfoBar();
-    const { onSaveTextStyle } = useTextStyle();
+    const { onSaveStyle } = useStyle();
 
-    return { setActiveEdition, drawLayout, setInfoBar, zoom, onSaveTextStyle };
+    return { setActiveEdition, setInfoBar, zoom, onSaveStyle };
   },
   data() {
     return {
@@ -153,18 +152,6 @@ export default {
       return (
         coverOption === COVER_TYPE.SOFT_COVER &&
         this.pageSelected?.type === SHEET_TYPE.COVER
-      );
-    },
-    isIntro() {
-      const { sections } = this.book;
-      return this.pageSelected?.id === sections[1].sheets[0].id;
-    },
-    isSignature() {
-      const { sections } = this.book;
-      const lastSection = sections[sections.length - 1];
-      return (
-        this.pageSelected?.id ===
-        lastSection.sheets[lastSection.sheets.length - 1].id
       );
     },
     currentSheetType() {
@@ -1386,7 +1373,7 @@ export default {
         },
         printDeleteElements: this.removeObject,
         changeObjectIdsOrder: this.changeObjectIdsOrder,
-        [EVENT_TYPE.SAVE_STYLE]: this.onSaveTextStyle
+        [EVENT_TYPE.SAVE_STYLE]: this.onSaveStyle
       };
 
       const textEvents = {
@@ -1600,9 +1587,7 @@ export default {
         name: layoutName,
         isFavorites: false,
         previewImageUrl: window.printCanvas.toDataURL({
-          quality: THUMBNAIL_IMAGE_QUALITY,
-          width: window.printCanvas.width / 2,
-          left: window.printCanvas.width / 2
+          quality: THUMBNAIL_IMAGE_QUALITY
         }),
         themeId: 1,
         objects

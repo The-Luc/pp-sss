@@ -1,10 +1,13 @@
 <template>
   <div class="sidebar-section">
     <div class="digital-thumbnail-container">
-      <HeaderContainer
+      <SidebarThumbContainer
         v-for="(section, sectionIndex) in sections"
         :key="section.id"
-        :section="section"
+        :name="section.name"
+        :color="section.color"
+        :total-sheet="section.sheets.length"
+        :is-enable="true"
       >
         <Thumbnail
           v-for="(sheet, sheetIndex) in section.sheets"
@@ -16,7 +19,7 @@
           :is-active="checkIsActive(sheet.id)"
           @click.native="onSelectSheet(sheet)"
         />
-      </HeaderContainer>
+      </SidebarThumbContainer>
     </div>
   </div>
 </template>

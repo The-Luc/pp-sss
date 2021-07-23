@@ -39,5 +39,6 @@ export const getters = {
   [APP._GETTERS.TRIGGER_SHAPE_CHANGE]: ({ triggerChange }) =>
     triggerChange.shape,
   [APP._GETTERS.GENERAL_INFO]: ({ generalInfo }) => generalInfo,
-  [APP._GETTERS.SAVED_TEXT_STYLES]: ({ savedTextStyles }) => savedTextStyles
+  [APP._GETTERS.SAVED_TEXT_STYLES]: ({ savedTextStyles }) => savedTextStyles,
+  [APP._GETTERS.SAVED_IMAGE_STYLES]: ({ savedImageStyles }) => savedImageStyles
 };

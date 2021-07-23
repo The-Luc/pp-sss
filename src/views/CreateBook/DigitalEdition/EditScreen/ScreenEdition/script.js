@@ -13,7 +13,6 @@ import {
   EDITION,
   MODAL_TYPES,
   OBJECT_TYPE,
-  SHEET_TYPE,
   TOOL_NAME
 } from '@/common/constants';
 import {
@@ -88,7 +87,7 @@ import {
   THUMBNAIL_IMAGE_QUALITY,
   PASTE
 } from '@/common/constants/config';
-import { useTextStyle } from '@/hooks/style';
+import { useStyle } from '@/hooks/style';
 
 const ELEMENTS = {
   [OBJECT_TYPE.TEXT]: 'a text box',
@@ -108,7 +107,7 @@ export default {
     const { handleSwitchFrame } = useFrameSwitching();
     const { frames, currentFrameId } = useFrame();
     const { toggleModal, modalData } = useModal();
-    const { onSaveTextStyle } = useTextStyle();
+    const { onSaveStyle } = useStyle();
 
     return {
       frames,
@@ -120,7 +119,7 @@ export default {
       handleSwitchFrame,
       toggleModal,
       modalData,
-      onSaveTextStyle
+      onSaveStyle
     };
   },
   data() {
@@ -154,17 +153,7 @@ export default {
       totalBackground: DIGITAL_GETTERS.TOTAL_BACKGROUND,
       listObjects: DIGITAL_GETTERS.GET_OBJECTS,
       triggerApplyLayout: DIGITAL_GETTERS.TRIGGER_APPLY_LAYOUT
-    }),
-    isCover() {
-      return this.pageSelected?.type === SHEET_TYPE.COVER;
-    },
-    isIntro() {
-      const { sections } = this.book;
-      return this.pageSelected?.id === sections[1].sheets[0].id;
-    },
-    currentSheetType() {
-      return this.pageSelected?.type || -1;
-    }
+    })
   },
   methods: {
     ...mapActions({
@@ -267,7 +256,7 @@ export default {
         },
         {
           name: EVENT_TYPE.SAVE_STYLE,
-          handler: this.onSaveTextStyle
+          handler: this.onSaveStyle
         }
       ];
 

@@ -81,5 +81,8 @@ export const mutations = {
   },
   [APP._MUTATES.SET_SAVED_TEXT_STYLE](state, { savedTextStyles }) {
     state.savedTextStyles = savedTextStyles;
+  },
+  [APP._MUTATES.SET_SAVED_IMAGE_STYLE](state, { savedImageStyles }) {
+    state.savedImageStyles = savedImageStyles;
   }
 };

@@ -15,11 +15,15 @@ export const mutations = {
     state.book.defaultThemeId = themeId;
   },
   [DIGITAL._MUTATES.SET_SECTIONS_SHEETS](state, { sectionsSheets }) {
-    state.sections = sectionsSheets.map(section => {
-      return {
-        ...section,
-        sheets: section.sheets.map(sheet => sheet.id)
+    state.sections = sectionsSheets.map(s => {
+      const section = {
+        ...s,
+        sheetIds: s.sheets.map(sheet => sheet.id)
       };
+
+      delete section.sheets;
+
+      return section;
     });
 
     const sheets = {};
