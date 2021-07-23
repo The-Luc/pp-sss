@@ -286,7 +286,8 @@ export default {
         moved: this.handleMoved
       };
 
-      const image = await createImage(imageProperties);
+      const imageObject = await createImage(imageProperties);
+      const image = imageObject?.object;
 
       addEventListeners(image, eventListeners);
 
@@ -830,12 +831,13 @@ export default {
         moved: this.handleMoved
       };
 
+      const image = await createImage(newImage.newObject);
+      merge(newImage.newObject, { size: image?.size });
+
       this.addObjectToStore(newImage);
 
-      const image = await createImage(newImage.newObject);
-      addEventListeners(image, eventListeners);
-
-      window.printCanvas.add(image);
+      addEventListeners(image?.object, eventListeners);
+      window.printCanvas.add(image?.object);
       selectLatestObject(window.printCanvas);
     },
     /**
