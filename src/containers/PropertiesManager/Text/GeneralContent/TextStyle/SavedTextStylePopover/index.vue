@@ -8,7 +8,7 @@
         <v-tab-item :key="tab.value">
           <v-list flat>
             <v-list-item-group v-model="selectedItem" @change="onChange">
-              <v-list-item v-for="(item, index) in tab.items" :key="item.value">
+              <v-list-item v-for="(item, index) in tab.items" :key="item.id">
                 <v-list-item-avatar size="10">
                   <v-icon v-show="selectedItem === index" small>check</v-icon>
                 </v-list-item-avatar>

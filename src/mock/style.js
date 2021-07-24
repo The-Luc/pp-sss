@@ -1,7 +1,7 @@
 const textStyles = [
   {
     name: 'Default',
-    value: 'default',
+    id: 'default',
     style: {
       fontFamily: 'Arial',
       fontSize: 60,
@@ -40,7 +40,7 @@ const textStyles = [
   },
   {
     name: 'Cover Headline',
-    value: 'coverHeadline',
+    id: 'coverHeadline',
     style: {
       fontFamily: 'Time News Roman',
       fontSize: 90,
@@ -79,7 +79,7 @@ const textStyles = [
   },
   {
     name: 'Page Headline',
-    value: 'pageHeadline',
+    id: 'pageHeadline',
     style: {
       fontFamily: 'Arial',
       fontSize: 35,

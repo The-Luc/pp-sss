@@ -1,4 +1,8 @@
-import { KEY_CODE, WINDOW_EVENT_TYPE } from '@/common/constants';
+import {
+  HTML_BORDER_STYLE,
+  KEY_CODE,
+  WINDOW_EVENT_TYPE
+} from '@/common/constants';
 import { isEmpty, mapObject } from '@/common/utils';
 
 export default {
@@ -7,15 +11,15 @@ export default {
       type: Array,
       default: []
     },
-    selectedVal: {
-      type: Object,
-      default: () => ({ name: '', id: '' })
+    selectedItem: {
+      type: Number,
+      default: null
     }
   },
   data() {
     const tabs = [
       {
-        label: 'Text Styles',
+        label: 'Theme Styles',
         value: 'textStyles',
         items: []
       },
@@ -28,8 +32,7 @@ export default {
 
     return {
       tabs,
-      tabActive: 0,
-      selectedItem: null
+      tabActive: 0
     };
   },
   methods: {
@@ -38,12 +41,9 @@ export default {
      *
      * @param {String}  index index of selected style
      */
-    onChange(index) {
-      if (!index) this.onTabChange(this.tabActive);
-      const tab = this.tabs[this.tabActive];
-      const items = tab.items;
-      const selectedStyle = items[index];
-      this.$emit('change', selectedStyle || {});
+    onChange(item) {
+      if (isEmpty(item)) return;
+      this.$emit('change', item);
     },
 
     /**
@@ -57,32 +57,22 @@ export default {
 
       const mapRules = {
         data: {
-          fontSize: {
-            name: 'fontSize',
-            parse: value => {
-              const fontSize = parseInt(value, 10) / 3;
-
-              return `${fontSize > 50 ? 50 : fontSize}px`;
-            }
+          stroke: {
+            name: 'border-color'
+          },
+          strokeWidth: {
+            name: 'border-width',
+            parse: value => (value > 10 ? '10px' : value + 'px')
+          },
+          strokeLineType: {
+            name: 'border-style',
+            parse: value => HTML_BORDER_STYLE[value] || value
           }
         },
         restrict: []
       };
 
       return mapObject(cssStyle, mapRules);
-    },
-
-    /**
-     * Event fired when user choose an item on list
-     *
-     * @param {String}  index index of selected style
-     */
-    onTabChange(index) {
-      this.tabActive = index;
-      const items = this.tabs[this.tabActive].items;
-      this.selectedItem = items.findIndex(
-        item => item.id === this.selectedVal?.id
-      );
     },
 
     /**
@@ -108,8 +98,8 @@ export default {
   },
   beforeMount() {
     this.setListItems();
-    const tabActive = this.selectedVal?.isCustom ? 1 : 0;
-    this.onTabChange(tabActive);
+    const selected = this.items.find(item => item.id === this.selectedItem);
+    this.tabActive = selected?.isCustom ? 1 : 0;
     window.document.addEventListener(WINDOW_EVENT_TYPE.KEY_UP, this.onKeypress);
   },
   beforeDestroy() {

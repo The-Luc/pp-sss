@@ -13,7 +13,7 @@
         >
           <img
             :src="imageStyleOption.imageUrl"
-            @click="onSelect(imageStyleOption.id)"
+            @click="onSelect(imageStyleOption)"
           />
         </div>
       </div>
@@ -31,12 +31,20 @@
           v-for="(option, index) in options"
           :key="index"
           :class="['item-style', { active: option.id === styleSelected }]"
-          @click="onSelect(option.id)"
+          @click="onSelect(option)"
         >
           <img :class="option.className" :src="option.imageUrl" />
         </div>
       </div>
     </div>
+
+    <SavedImageStylePopover
+      v-if="showSavedStylePopup"
+      v-click-outside="onCloseDropdown"
+      :items="customOptions"
+      :selected-item="styleSelected"
+      @change="onSelect"
+    />
   </div>
 </template>
 

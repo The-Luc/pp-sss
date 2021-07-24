@@ -18,11 +18,11 @@ export default {
   },
   data() {
     const selectBoxItems = textStyles.map(item => {
-      const { name, value, style } = item;
+      const { name, id, style } = item;
 
       return {
         name,
-        value,
+        id,
         style,
         cssStyle: toCssStyle(style)
       };
@@ -47,24 +47,24 @@ export default {
     }),
     selectedItem() {
       const selectedId = this.selectedStyleId('styleId') || 'default';
-      return this.selectBoxItems.find(item => item.value === selectedId);
+      return this.selectBoxItems.find(item => item.id === selectedId);
     }
   },
   methods: {
     /**
      * Event fired when user choose an item on list
      *
-     * @param {String}  value id of style
+     * @param {String}  id id of style
      * @param {Object}  style attribute style of style
      */
-    onChange({ value, style }) {
+    onChange({ id, style }) {
       this.onClose();
 
-      if (isEmpty(value) || isEmpty(style)) return;
+      if (isEmpty(id) || isEmpty(style)) return;
 
       this.$root.$emit(EVENT_TYPE.CHANGE_TEXT_PROPERTIES, style);
 
-      this.$root.$emit(EVENT_TYPE.CHANGE_TEXT_PROPERTIES, { styleId: value });
+      this.$root.$emit(EVENT_TYPE.CHANGE_TEXT_PROPERTIES, { styleId: id });
     },
 
     /**

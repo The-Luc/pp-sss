@@ -89,7 +89,7 @@ import { createImage } from '@/common/fabricObjects';
 import printService from '@/api/print';
 import { useAppCommon } from '@/hooks/common';
 import { EVENT_TYPE } from '@/common/constants/eventType';
-import { useTextStyle } from '@/hooks/style';
+import { useStyle } from '@/hooks/style';
 import { loadPrintPpLayouts, setPrintPpLayouts } from '@/api/layouts';
 
 export default {
@@ -104,13 +104,13 @@ export default {
     const { setActiveEdition } = useAppCommon();
     const { setInfoBar, zoom } = useInfoBar();
     const { setThumbnail } = useSaveSheetThumbnail();
-    const { onSaveTextStyle } = useTextStyle();
+    const { onSaveStyle } = useStyle();
 
     return {
       setActiveEdition,
       setInfoBar,
       zoom,
-      onSaveTextStyle,
+      onSaveStyle,
       setThumbnail
     };
   },
