@@ -66,18 +66,14 @@
   border-radius: 50%;
   border: 1px solid $color-white;
   background-color: $color-stoodio-blue;
+  cursor: pointer;
 
-  &:not(.disabled) {
-    cursor: pointer;
-
-    &:hover {
-      border: 1px solid $color-stoodio-blue;
-    }
+  &:hover {
+    border: 1px solid $color-stoodio-blue;
   }
 
   &.disabled {
-    opacity: 0.3;
-    pointer-events: none;
+    opacity: 0.65;
   }
 
   .icon-wrapper {
@@ -92,13 +88,13 @@
 }
 
 .thumbnail-view-number-page {
-  color: $color-gray2;
-  width: 100%;
   display: flex;
+  width: 100%;
+  position: relative;
+  margin-top: 6px;
   justify-content: space-between;
   align-items: center;
-  margin-top: 6px;
-  position: relative;
+  color: $color-gray2;
   font-family: $font-300;
   font-size: $xs-size;
 
@@ -112,10 +108,7 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-
-  &:not(.disabled) {
-    cursor: pointer;
-  }
+  cursor: pointer;
 
   .icon-link {
     font-size: 20px;

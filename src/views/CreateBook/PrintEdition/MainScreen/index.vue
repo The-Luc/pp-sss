@@ -1,23 +1,19 @@
 <template>
   <div class="row thumbnail-view-row">
     <template v-for="section in sections">
-      <ListThumbContainer
+      <ThumbnailContainer
         v-for="sheet in section.sheets"
         :key="sheet.id"
         :name="section.name"
         :color="section.color"
         :is-enable="section.isAccessible"
-      >
-        <Thumbnail
-          :to-link="`/book/${bookId}/edit/print/edit-screen/${sheet.id}`"
-          :number-page="numberPage(sheet)"
-          :sheet-type="sheet.type"
-          :link-type="sheet.link"
-          :thumbnail-url="sheet.thumbnailUrl"
-          :is-enable="section.isAccessible"
-          @change="changeLinkStatus(sheet.id, sheet.link)"
-        />
-      </ListThumbContainer>
+        :to-link="`/book/${bookId}/edit/print/edit-screen/${sheet.id}`"
+        :ordered-number="numberPage(sheet)"
+        :sheet-type="sheet.type"
+        :link-type="sheet.link"
+        :thumbnail-url="sheet.thumbnailUrl"
+        @updateLink="changeLinkStatus(sheet.id, sheet.link)"
+      />
     </template>
   </div>
 </template>

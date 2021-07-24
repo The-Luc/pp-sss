@@ -24,7 +24,7 @@ class GetterClass extends BaseObject {
   GET_PAGE_INFO = 'getPageInfo';
   DEFAULT_THEME_ID = 'getDefaultThemeId';
   TOTAL_OBJECT = 'getTotalObject';
-  CURRENT_SECTION = 'getCurrentSectionByCurrentSheetId'
+  CURRENT_SECTION = 'getCurrentSectionByCurrentSheetId';
 
   constructor(props) {
     super(props);

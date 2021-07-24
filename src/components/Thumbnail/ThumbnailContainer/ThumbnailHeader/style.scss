@@ -1,0 +1,79 @@
+.thumbnail-view-header {
+  display: flex;
+  width: 100%;
+  margin-bottom: 10px;
+  align-items: center;
+  font-size: $sm-size;
+
+  &.disabled {
+    pointer-events: none;
+  }
+
+  .header-container {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+
+    &.editor {
+      font-size: 10px;
+      cursor: pointer;
+
+      .header-color {
+        width: 8px;
+        height: 8px;
+      }
+    }
+
+    .header-content {
+      display: flex;
+      width: calc(100% - 25px);
+      justify-content: flex-start;
+      align-items: center;
+
+      .header-color {
+        width: 12px;
+        height: 12px;
+        border-radius: 100%;
+      }
+
+      .header-toggle {
+        color: $color-stoodio-toolbartext;
+      }
+
+      .header-name {
+        margin-left: 8px;
+        color: $color-gray5;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-family: $font-300;
+        overflow: hidden;
+
+        .total-item {
+          font-family: $font-300;
+          margin-left: 5px;
+        }
+      }
+    }
+
+    .header-more {
+      display: flex;
+      width: 18px;
+      height: 18px;
+      justify-content: center;
+      align-items: center;
+      border-radius: 50%;
+      border: 1px solid $color-gray2;
+      cursor: pointer;
+
+      &:hover {
+        border: 1px solid $color-black;
+      }
+
+      .icon-more {
+        color: $color-gray2;
+        font-size: 14px;
+      }
+    }
+  }
+}

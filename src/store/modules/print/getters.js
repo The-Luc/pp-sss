@@ -120,10 +120,7 @@ export const getters = {
   [PRINT._GETTERS.TOTAL_OBJECT]: ({ objectIds }) => {
     return objectIds.length;
   },
-  [PRINT._GETTERS.CURRENT_SECTION]: ({
-    sections,
-    currentSheetId
-  }) => {
+  [PRINT._GETTERS.CURRENT_SECTION]: ({ sections, currentSheetId }) => {
     if (isEmpty(currentSheetId)) return '';
 
     return sections.find(s => s.sheetIds.includes(currentSheetId));
