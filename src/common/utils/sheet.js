@@ -63,3 +63,14 @@ export const getPageRightName = (
 
   return formatPageNumber((totalSheetUntilPrevious + sheetIndex) * 2 + 1);
 };
+
+/**
+ * Get name of page
+ *
+ * @param   {Number}  sheetIndex              current sheet index in section
+ * @param   {Number}  totalSheetUntilPrevious total sheet until previous section
+ * @returns {String}                          name of page
+ */
+export const getPageName = (sheetIndex, totalSheetUntilPrevious) => {
+  return formatPageNumber(totalSheetUntilPrevious + sheetIndex + 1);
+};

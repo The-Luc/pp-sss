@@ -1,4 +1,4 @@
-<template lang="">
+<template>
   <div class="row print-main">
     <Header
       name-editor="digital editor"
@@ -15,5 +15,6 @@
   </div>
 </template>
 
-<script src="./script.js"></script>
-<style lang="scss" scoped src="./style.scss" />
+<script src="./script.js" />
+
+<style lang="scss" src="./style.scss" scoped />

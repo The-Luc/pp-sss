@@ -1,19 +1,17 @@
 <template>
   <div class="row thumbnail-view-row">
-    <template v-for="(section, sectionIndex) in sections">
-      <ListThumbContainer
-        v-for="(sheet, sheetIndex) in section.sheets"
+    <template v-for="section in sections">
+      <ThumbnailItem
+        v-for="sheet in section.sheets"
         :key="sheet.id"
         :name="section.name"
         :color="section.color"
-        :is-enable="true"
-      >
-        <Thumbnail
-          :to-link="`/book/${bookId}/edit/digital/edit-screen/${sheet.id}`"
-          :sheet="sheet"
-          :order-screen="orderScreen(sectionIndex, sheetIndex)"
-        />
-      </ListThumbContainer>
+        :thumbnail-url="sheet.thumbnailUrl"
+        :page-names="getPageName(sheet)"
+        :to-link="`/book/${bookId}/edit/digital/edit-screen/${sheet.id}`"
+        :is-enable="section.isAccessible"
+        :is-digital="true"
+      />
     </template>
   </div>
 </template>

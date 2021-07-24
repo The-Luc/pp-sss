@@ -12,13 +12,15 @@ import {
   MUTATES as DIGITAL_MUTATES,
   GETTERS as DIGITAL_GETTERS
 } from '@/store/modules/digital/const';
-import { EDITION, MODAL_TYPES, TOOL_NAME } from '@/common/constants';
+import { EDITION, MODAL_TYPES, TOOL_NAME, ROLE } from '@/common/constants';
 import {
   useLayoutPrompt,
   usePopoverCreationTool,
-  useMutationDigitalSheet
+  useMutationDigitalSheet,
+  useUser,
+  useGetterDigitalSheet
 } from '@/hooks';
-import { isEmpty } from '@/common/utils';
+import { isEmpty, isPositiveInteger, getEditionListPath } from '@/common/utils';
 import { COPY_OBJECT_KEY } from '@/common/constants/config';
 import digitalService from '@/api/digital';
 
@@ -27,12 +29,16 @@ export default {
     const { pageSelected, updateVisited } = useLayoutPrompt(EDITION.DIGITAL);
     const { setToolNameSelected } = usePopoverCreationTool();
     const { setCurrentSheetId } = useMutationDigitalSheet();
+    const { currentUser } = useUser();
+    const { currentSection } = useGetterDigitalSheet();
 
     return {
       pageSelected,
       updateVisited,
       setToolNameSelected,
-      setCurrentSheetId
+      setCurrentSheetId,
+      currentUser,
+      currentSection
     };
   },
   components: {
@@ -60,21 +66,46 @@ export default {
       }
     }
   },
-  beforeRouteEnter(to, _, next) {
-    next(async me => {
-      me.setBookId({ bookId: to.params.bookId });
+  async beforeRouteEnter(to, _, next) {
+    next(async vm => {
+      const bookId = to.params.bookId;
+
+      const editionMainUrl = getEditionListPath(bookId, EDITION.DIGITAL);
+
+      if (!isPositiveInteger(to.params?.sheetId)) {
+        vm.$router.replace(editionMainUrl);
+
+        return;
+      }
+
+      vm.setBookId({ bookId });
 
       // temporary code, will remove soon
-      const info = digitalService.getGeneralInfo();
+      const info = await digitalService.getGeneralInfo();
 
-      me.setInfo({ ...info, bookId: to.params.bookId });
+      vm.setInfo({ ...info, bookId });
 
-      await me.getDataPageEdit();
+      await vm.getDataPageEdit();
 
-      me.setCurrentSheetId({ id: to.params?.sheetId });
+      vm.setCurrentSheetId({ id: parseInt(to.params.sheetId) });
 
-      if (isEmpty(me.defaultThemeId)) {
-        me.openSelectThemeModal();
+      if (isEmpty(vm.currentSection)) {
+        vm.$router.replace(editionMainUrl);
+
+        return;
+      }
+
+      const isAdmin = vm.currentUser.role === ROLE.ADMIN;
+      const isAssigned = vm.currentUser.id === vm.currentSection.assigneeId;
+
+      if (!isAdmin && !isAssigned) {
+        vm.$router.replace(editionMainUrl);
+
+        return;
+      }
+
+      if (isEmpty(vm.defaultThemeId)) {
+        vm.openSelectThemeModal();
       }
     });
   },
@@ -119,7 +150,9 @@ export default {
      * Save digital canvas and change view
      */
     onClickSaveDigitalCanvas() {
-      this.$router.push(`/book/${this.$route.params.bookId}/edit/digital`);
+      this.$router.push(
+        getEditionListPath(this.$route.params.bookId, EDITION.DIGITAL)
+      );
     },
     /**
      * Trigger mutation to open theme modal

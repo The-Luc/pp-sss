@@ -1,6 +1,6 @@
 import { getSuccessWithData, getErrorWithMessages } from '@/common/models';
 
-import { isEmpty } from '@/common/utils';
+import { isEmpty, getPageName } from '@/common/utils';
 
 const digitalService = {
   /**
@@ -29,28 +29,35 @@ const digitalService = {
    * @returns {Object}          query result
    */
   getDigitalSectionsSheets: bookId => {
+    let totalSheets = 0;
+
     return new Promise(resolve => {
       const book = JSON.parse(window.sessionStorage.getItem(`book-${bookId}`));
 
       const data = book.sections.map(section => {
-        const sheets = section.sheets.map(sheet => {
+        const sheets = section.sheets.map((sheet, sheetIndex) => {
           const {
             id,
             type,
             digitalData: { thumbnailUrl, link }
           } = sheet;
 
+          const pageName = getPageName(sheetIndex, totalSheets);
+
           return {
             id,
             type,
             thumbnailUrl,
-            link
+            link,
+            pageName
           };
         });
 
-        const { name, color } = section;
+        totalSheets += section.sheets.length;
 
-        return { name, color, sheets };
+        const { name, color, assigneeId } = section;
+
+        return { name, color, assigneeId, sheets };
       });
 
       const result = isEmpty(data)
@@ -68,6 +75,8 @@ const digitalService = {
    * @returns {Object}          query result
    */
   getDigitalEditSectionsSheets: bookId => {
+    let totalSheets = 0;
+
     return new Promise(resolve => {
       const book = JSON.parse(window.sessionStorage.getItem(`book-${bookId}`));
       const coverType = window.sessionStorage.getItem('bookCoverType');
@@ -78,9 +87,11 @@ const digitalService = {
       if (!isEmpty(maxPage)) book.numberMaxPages = parseInt(maxPage, 10);
 
       const data = book.sections.map(section => {
-        const sheets = section.sheets.map(sheet => {
+        const sheets = section.sheets.map((sheet, sheetIndex) => {
           const { id, type, isVisited } = sheet;
           const { thumbnailUrl, theme: themeId, layout } = sheet.digitalData;
+
+          const pageName = getPageName(sheetIndex, totalSheets);
 
           return {
             id,
@@ -88,13 +99,16 @@ const digitalService = {
             thumbnailUrl,
             isVisited,
             themeId,
-            layoutId: layout?.id || null
+            layoutId: layout?.id || null,
+            pageName
           };
         });
 
-        const { name, color } = section;
+        totalSheets += section.sheets.length;
 
-        return { id: section.id, name, color, sheets };
+        const { name, color, assigneeId } = section;
+
+        return { id: section.id, name, color, assigneeId, sheets };
       });
 
       const result = isEmpty(data)

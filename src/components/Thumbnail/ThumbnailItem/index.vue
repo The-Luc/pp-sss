@@ -20,11 +20,12 @@
         :custom-css-class="customCssClass"
         :is-active="isActive"
         :is-edit-icon-displayed="!isEditor"
+        @select="onSelect"
       />
 
       <Footer
         :link-type="linkType"
-        :ordered-number="orderedNumber"
+        :page-names="pageNames"
         :custom-css-class="customCssClass"
         :is-link-icon-displayed="!isEditor"
         @updateLink="onUpdateLink"

@@ -3,6 +3,7 @@
     class="thumbnail-view-content"
     :class="contentCssClass"
     :style="{ backgroundImage: thumbnailUrl && `url(${thumbnailUrl})` }"
+    @click="onSelect"
   >
     <div class="border-inside"></div>
 

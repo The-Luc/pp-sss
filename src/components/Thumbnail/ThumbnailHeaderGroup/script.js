@@ -23,6 +23,10 @@ export default {
       type: Boolean,
       default: false
     },
+    isEnable: {
+      type: Boolean,
+      default: false
+    },
     isExpanded: {
       type: Boolean,
       default: true

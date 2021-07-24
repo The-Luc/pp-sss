@@ -26,7 +26,7 @@ class GetterClass extends BaseObject {
   TOTAL_OBJECT = 'getTotalObject';
   GET_OBJECTS_AND_BACKGROUNDS = 'getObjectsAndBackground';
   BACKGROUNDS = 'getBackgrounds';
-  CURRENT_SECTION = 'getCurrentSectionByCurrentSheetId';
+  CURRENT_SECTION = 'getCurrentSection';
 
   constructor(props) {
     super(props);
