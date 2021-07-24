@@ -1,0 +1,43 @@
+.thumbnail-view-footer {
+  display: flex;
+  width: 100%;
+  position: relative;
+  margin-top: 6px;
+  justify-content: space-between;
+  align-items: center;
+  color: $color-gray2;
+  font-family: $font-300;
+  font-size: $xs-size;
+
+  &.disabled {
+    pointer-events: none;
+  }
+
+  .digital {
+    justify-content: space-around;
+  }
+
+  &.editor {
+    margin-bottom: 13px;
+
+    .number-page {
+      font-size: 8px;
+    }
+  }
+
+  .number-page-link {
+    margin-top: -2.5px;
+    margin-bottom: -2.5px;
+    cursor: pointer;
+
+    .icon-link {
+      font-size: 20px;
+      font-weight: 600;
+      color: $color-gray14;
+
+      &.unlink {
+        color: $color-stoodio-toolbartext;
+      }
+    }
+  }
+}
