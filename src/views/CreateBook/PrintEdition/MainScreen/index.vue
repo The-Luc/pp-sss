@@ -6,12 +6,12 @@
         :key="sheet.id"
         :name="section.name"
         :color="section.color"
-        :is-enable="section.isAccessible"
-        :to-link="`/book/${bookId}/edit/print/edit-screen/${sheet.id}`"
-        :ordered-number="numberPage(sheet)"
         :sheet-type="sheet.type"
         :link-type="sheet.link"
         :thumbnail-url="sheet.thumbnailUrl"
+        :ordered-number="pageNumber(sheet)"
+        :to-link="`/book/${bookId}/edit/print/edit-screen/${sheet.id}`"
+        :is-enable="section.isAccessible"
         @updateLink="changeLinkStatus(sheet.id, sheet.link)"
       />
     </template>

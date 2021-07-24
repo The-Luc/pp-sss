@@ -51,10 +51,6 @@ export default {
       type: Number,
       default: 0
     },
-    isToggleContentAvailable: {
-      type: Boolean,
-      default: false
-    },
     isEditor: {
       type: Boolean,
       default: false
@@ -66,9 +62,9 @@ export default {
   },
   data() {
     return {
-      isContentDisplayed: true,
       displayCssClass: '',
-      customCssClass: []
+      customCssClass: [],
+      isContentDisplayed: true
     };
   },
   mounted() {

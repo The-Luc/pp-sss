@@ -9,7 +9,7 @@
         </v-icon>
 
         <div class="header-name">
-          {{ name }}
+          <span class="name">{{ name }}</span>
 
           <span v-if="isTotalDisplayed" class="total-item">
             ({{ totalItem }})

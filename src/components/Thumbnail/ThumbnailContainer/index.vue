@@ -1,12 +1,15 @@
 <template>
-  <div class="thumbnail-view-item" :class="displayCssClass">
+  <div
+    class="thumbnail-view-item"
+    :class="[displayCssClass, ...customCssClass]"
+  >
     <div class="thumbnail-view-container">
       <Header
         :name="name"
         :color="color"
         :custom-css-class="customCssClass"
         :total-item="totalItem"
-        :is-toggle-content-available="isToggleContentAvailable"
+        :is-toggle-content-available="isEditor"
         @toggleContent="onToggleContent"
       />
 

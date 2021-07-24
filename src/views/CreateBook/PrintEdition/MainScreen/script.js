@@ -1,6 +1,6 @@
-import { mapGetters, mapMutations, mapActions } from 'vuex';
-
 import ThumbnailContainer from '@/components/Thumbnail/ThumbnailContainer';
+
+import { mapGetters, mapMutations, mapActions } from 'vuex';
 
 import {
   ACTIONS as PRINT_ACTIONS,
@@ -55,10 +55,17 @@ export default {
       selectSheet: PRINT_MUTATES.SET_CURRENT_SHEET_ID,
       setInfo: APP_MUTATES.SET_GENERAL_INFO
     }),
-    numberPage(sheet) {
+    /**
+     * Get number of page of selected sheet
+     *
+     * @param   {String}  pageLeftName  name of page left of selected sheet
+     * @param   {String}  pageRightName name of page right of selected sheet
+     * @returns {Object}                number of page
+     */
+     pageNumber({ pageLeftName, pageRightName }) {
       return {
-        numberLeft: sheet.pageLeftName,
-        numberRight: sheet.pageRightName
+        numberLeft: pageLeftName,
+        numberRight: pageRightName
       };
     },
     /**

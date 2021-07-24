@@ -1,6 +1,6 @@
 <template>
   <div class="thumbnail-view-footer" :class="customCssClass">
-    <div class="number-page-left">{{ orderedNumber.numberLeft }}</div>
+    <div class="number-page">{{ orderedNumber.numberLeft }}</div>
 
     <div
       v-if="isLinkDisplayed"
@@ -12,11 +12,11 @@
       </v-icon>
     </div>
 
-    <div v-if="isNumberMiddleDisplayed" class="number-page-middle">
+    <div v-if="isNumberMiddleDisplayed" class="number-page">
       {{ orderedNumber.numberMiddle }}
     </div>
 
-    <div class="number-page-right">{{ orderedNumber.numberRight }}</div>
+    <div class="number-page">{{ orderedNumber.numberRight }}</div>
   </div>
 </template>
 

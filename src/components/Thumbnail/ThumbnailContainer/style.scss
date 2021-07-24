@@ -1,6 +1,12 @@
 .thumbnail-view-item {
   align-content: flex-start;
 
+  &.editor {
+    .thumbnail-view-container {
+      border: none;
+    }
+  }
+
   .thumbnail-view-container {
     border-right: 0.5px solid $color-gray18;
     border-bottom: 0.5px solid $color-gray18;
@@ -28,7 +34,7 @@
 }
 
 @media screen and (min-width: 1601px) {
-  .thumbnail-view-item {
+  .thumbnail-view-item:not(.editor) {
     .thumbnail-view-container {
       padding: 22px 37px;
     }
@@ -49,7 +55,7 @@
 }
 
 @media only screen and (min-width: 1367px) and (max-width: 1600px) {
-  .thumbnail-view-item {
+  .thumbnail-view-item:not(.editor) {
     &:nth-child(4n + 1) {
       .thumbnail-view-container {
         margin-left: 30px;
@@ -69,11 +75,7 @@
 }
 
 @media screen and (max-width: 1366px) {
-  .thumbnail-view-container {
-    padding: 15px 20px;
-  }
-
-  .thumbnail-view-item {
+  .thumbnail-view-item:not(.editor) {
     &:nth-child(4n + 1) {
       .thumbnail-view-container {
         margin-left: 20px;
@@ -84,6 +86,10 @@
       .thumbnail-view-container {
         margin-right: 20px;
       }
+    }
+
+    .thumbnail-view-container {
+      padding: 15px 20px;
     }
   }
 }

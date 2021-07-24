@@ -17,6 +17,12 @@
     justify-content: space-around;
   }
 
+  &.editor {
+    .number-page {
+      font-size: 8px;
+    }
+  }
+
   .number-page-link {
     margin-top: -2.5px;
     margin-bottom: -2.5px;
