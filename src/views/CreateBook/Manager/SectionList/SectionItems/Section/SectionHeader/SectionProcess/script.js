@@ -5,8 +5,7 @@ import Action from './Action';
 
 import { GETTERS, MUTATES } from '@/store/modules/app/const';
 
-import { ICON_LOCAL, PROCESS_STATUS } from '@/common/constants';
-import { isEmpty } from '@/common/utils';
+import { ICON_LOCAL } from '@/common/constants';
 
 export default {
   components: {
@@ -17,41 +16,28 @@ export default {
     section: {
       type: Object,
       require: true
-    },
-    isEnable: {
-      type: Boolean,
-      default: false
     }
   },
   data() {
-    const processStatus = {};
-
-    Object.keys(PROCESS_STATUS).forEach(k => {
-      processStatus[k] = PROCESS_STATUS[k].value;
-    });
-
     return {
       menuX: 0,
       menuY: 0,
       currentMenuHeight: 0,
       menuClass: 'pp-menu section-menu',
-      processStatus,
       summaryEl: null,
-      menuItems: [
-        {
-          title: 'Status',
-          value: this.getStatusName(this.section.status),
-          name: 'status'
-        },
-        { title: 'Due Date', value: this.section.dueDate, name: 'dueDate' },
-        { title: 'Assigned To', value: 'Unassigned', name: 'assignee' }
-      ]
+      componentKey: true,
+      isOpenMenu: false
     };
   },
   computed: {
     ...mapGetters({
       sectionSelected: GETTERS.SECTION_SELECTED
     })
+  },
+  watch: {
+    sectionSelected(id) {
+      this.isOpenMenu = id === this.section.id;
+    }
   },
   created() {
     this.moreIcon = ICON_LOCAL.MORE_ICON;
@@ -69,35 +55,22 @@ export default {
   },
   methods: {
     ...mapMutations({
-      setSectionSelected: MUTATES.SET_SELECTION_SELECTED,
-      toggleModal: MUTATES.TOGGLE_MODAL
+      setSectionSelected: MUTATES.SET_SELECTION_SELECTED
     }),
-    getStatusName(status) {
-      const process = Object.values(PROCESS_STATUS).find(
-        ({ value }) => status === value
-      );
-
-      return process?.name;
-    },
-    convertTextCap(string) {
-      return string.replace(/\b\w/g, l => l.toUpperCase());
-    },
     /**
      * Set open menu by mutate selected section id
      */
     setIsOpenMenu() {
-      if (!this.isEnable) return;
-
       if (!this.sectionSelected || this.sectionSelected !== this.section.id) {
         this.setSectionSelected({ sectionSelected: this.section.id });
+
+        this.componentKey = !this.componentKey;
 
         return;
       }
 
       if (this.sectionSelected && this.sectionSelected === this.section.id) {
         this.setSectionSelected({ sectionSelected: '' });
-
-        return;
       }
     },
     toggleMenu(event) {
@@ -125,34 +98,6 @@ export default {
         }
       }, 100);
       this.setIsOpenMenu();
-    },
-    /**
-     * Update menu item value when status is changed
-     *
-     * @param {Number}  status  selected status
-     */
-    onStatusUpdate({ status }) {
-      const statusName = this.getStatusName(status);
-
-      this.menuItems[0].value = this.convertTextCap(statusName);
-    },
-    /**
-     * Update menu item value when due date is changed
-     *
-     * @param {String}  dueDate selected due date
-     */
-    onDueDateUpdate({ dueDate }) {
-      this.menuItems[1].value = dueDate;
-    },
-    /**
-     * Update menu item value when assignee is changed
-     *
-     * @param {String}  assignee  selected assignee
-     */
-    onAssigneeUpdate({ assignee }) {
-      const name = isEmpty(assignee) ? 'Unassigned' : assignee;
-
-      this.menuItems[2].value = name;
     }
   }
 };

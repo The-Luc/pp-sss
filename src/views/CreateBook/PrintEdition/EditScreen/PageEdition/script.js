@@ -2,7 +2,7 @@ import { mapGetters, mapMutations, mapActions } from 'vuex';
 import { fabric } from 'fabric';
 import { cloneDeep, uniqueId, merge, debounce } from 'lodash';
 
-import { usePrintOverrides } from '@/plugins/fabric';
+import { imageBorderModifier, usePrintOverrides } from '@/plugins/fabric';
 
 import { useInfoBar } from '@/hooks';
 import { startDrawBox } from '@/common/fabricObjects/drawingBox';
@@ -47,7 +47,8 @@ import {
   createBackgroundFabricObject,
   updateSpecificProp,
   addPrintPageNumber,
-  updateBringToFrontPageNumber
+  updateBringToFrontPageNumber,
+  applyBorderToImageObject
 } from '@/common/fabricObjects';
 
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
@@ -289,7 +290,8 @@ export default {
         moved: this.handleMoved
       };
 
-      const image = await createImage(imageProperties);
+      const imageObject = await createImage(imageProperties);
+      const image = imageObject?.object;
 
       addEventListeners(image, eventListeners);
 
@@ -798,6 +800,7 @@ export default {
 
       this.setCurrentObject(this.currentObjects?.[activeObj?.id]);
     },
+
     /**
      * Function trigger mutate to add new object to store
      */
@@ -833,12 +836,15 @@ export default {
         moved: this.handleMoved
       };
 
+      const image = await createImage(newImage.newObject);
+      merge(newImage.newObject, { size: image?.size });
+
       this.addObjectToStore(newImage);
 
-      const image = await createImage(newImage.newObject);
-      addEventListeners(image, eventListeners);
+      imageBorderModifier(image.object);
 
-      window.printCanvas.add(image);
+      addEventListeners(image?.object, eventListeners);
+      window.printCanvas.add(image?.object);
       selectLatestObject(window.printCanvas);
     },
     /**
@@ -1218,6 +1224,22 @@ export default {
      * @param {Object}  prop  new prop
      */
     changeImageProperties(prop) {
+      const { border } = prop;
+
+      const activeObject = window.printCanvas.getActiveObject();
+
+      // TODO: move it to a approriate place
+      activeObject.set({
+        strokeUniform: true
+        // paintFirst: 'stroke',
+        // ownCaching: false,
+        // noScaleCache: true
+      });
+
+      if (border) {
+        applyBorderToImageObject(activeObject, border);
+      }
+
       this.changeElementProperties(prop, OBJECT_TYPE.IMAGE);
     },
     /**

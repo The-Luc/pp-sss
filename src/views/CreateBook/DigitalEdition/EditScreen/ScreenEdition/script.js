@@ -1173,7 +1173,7 @@ export default {
       this.addNewObject(newImage);
 
       const image = await createImage(newImage.newObject);
-      this.digitalCanvas.add(image);
+      this.digitalCanvas.add(image?.object);
       selectLatestObject(this.digitalCanvas);
     },
 

@@ -9,12 +9,7 @@
     </v-icon>
 
     <div class="input-container" @click="click">
-      <div
-        v-show="!isEditMode"
-        ref="text"
-        class="text"
-        :class="!isEnable && 'disabled'"
-      >
+      <div v-show="!isEditMode" ref="text" class="text">
         {{ sectionNameCurrent }}
       </div>
 

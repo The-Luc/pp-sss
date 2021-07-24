@@ -29,12 +29,9 @@ $width: 12px;
             padding-right: 4px;
             height: 100%;
             border: 1px dashed transparent;
+            cursor: text;
 
-            &:not(.disabled) {
-              cursor: text;
-            }
-
-            &:not(.disabled):hover {
+            &:hover {
               border-color: $color-gray;
             }
           }

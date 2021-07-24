@@ -1,21 +1,22 @@
 <template>
   <Properties title="Frame Information">
     <div class="frame-info-container">
-      <div class="frame-title-container">
-        <div class="frame-headline">Frame Title:</div>
-        <input
-          class="frame-text-input"
-          type="text"
-          placeholder="Click to add title"
-        />
-      </div>
-
+      <InputTitle
+        title-name="Frame Title:"
+        :title-value="titleFrame"
+        @change="onChangeTitle"
+      />
       <div class="opts-container">
         <div class="frame-headline">Timing:</div>
         <div class="timing-opts">
           <div class="timning-play-in">
             <span class="opt-title">Play In:</span>
-            <input class="frame-text-input" type="text" value="0.8 s" />
+            <input
+              class="frame-text-input"
+              type="text"
+              value="0.8 s"
+              disabled
+            />
           </div>
 
           <div class="timning-delay">
@@ -29,7 +30,7 @@
 
           <div class="timning-play-out">
             <span class="opt-title">Play Out:</span>
-            <input class="frame-text-input" type="text" value="0 s" />
+            <input class="frame-text-input" type="text" value="0 s" disabled />
           </div>
         </div>
       </div>
@@ -39,4 +40,4 @@
 
 <script src="./script.js" />
 
-<style lang="scss" src="./style.scss" />
+<style lang="scss" src="./style.scss" scoped />
