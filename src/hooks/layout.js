@@ -9,13 +9,11 @@ import {
 } from '@/store/modules/app/const';
 import {
   GETTERS as PRINT_GETTERS,
-  MUTATES as PRINT_MUTATES,
-  ACTIONS as PRINT_ACTION
+  ACTIONS as PRINT_ACTIONS
 } from '@/store/modules/print/const';
 import {
   GETTERS as DIGITAL_GETTERS,
-  MUTATES as DIGITAL_MUTATES,
-  ACTIONS as DIGITAL_ACTION
+  ACTIONS as DIGITAL_ACTIONS
 } from '@/store/modules/digital/const';
 
 import {
@@ -32,8 +30,8 @@ import { createTextBox } from '@/common/fabricObjects';
 export const useLayoutPrompt = edition => {
   const EDITION_GETTERS =
     edition === EDITION.PRINT ? PRINT_GETTERS : DIGITAL_GETTERS;
-  const EDITION_MUTATES =
-    edition === EDITION.PRINT ? PRINT_MUTATES : DIGITAL_MUTATES;
+  const EDITION_ACTIONS =
+    edition === EDITION.PRINT ? PRINT_ACTIONS : DIGITAL_ACTIONS;
 
   const { isPrompt, pageSelected, themeId } = useGetters({
     isPrompt: APP_GETTERS.IS_PROMPT,
@@ -41,10 +39,13 @@ export const useLayoutPrompt = edition => {
     themeId: EDITION_GETTERS.DEFAULT_THEME_ID
   });
 
-  const { updateVisited, setIsPrompt, setToolNameSelected } = useMutations({
-    updateVisited: EDITION_MUTATES.UPDATE_SHEET_VISITED,
+  const { setIsPrompt, setToolNameSelected } = useMutations({
     setIsPrompt: APP_MUTATES.SET_IS_PROMPT,
     setToolNameSelected: APP_MUTATES.SET_TOOL_NAME_SELECTED
+  });
+
+  const { updateVisited } = useActions({
+    updateVisited: EDITION_ACTIONS.UPDATE_SHEET_VISITED
   });
 
   const openPrompt = promptEdtion => {
@@ -92,7 +93,7 @@ const getterDigitalLayout = () => {
   });
 
   const { updateSheetThemeLayout } = useActions({
-    updateSheetThemeLayout: DIGITAL_ACTION.UPDATE_SHEET_THEME_LAYOUT
+    updateSheetThemeLayout: DIGITAL_ACTIONS.UPDATE_SHEET_THEME_LAYOUT
   });
 
   return { sheetLayout, getLayoutsByType, listLayouts, updateSheetThemeLayout };
@@ -110,7 +111,7 @@ const getterPrintLayout = () => {
   });
 
   const { updateSheetThemeLayout } = useActions({
-    updateSheetThemeLayout: PRINT_ACTION.UPDATE_SHEET_THEME_LAYOUT
+    updateSheetThemeLayout: PRINT_ACTIONS.SAVE_SHEET_THEME_LAYOUT
   });
 
   return { sheetLayout, getLayoutsByType, listLayouts, updateSheetThemeLayout };

@@ -166,7 +166,6 @@ export default {
       setObjectTypeSelected: MUTATES.SET_OBJECT_TYPE_SELECTED,
       setSelectedObjectId: DIGITAL_MUTATES.SET_CURRENT_OBJECT_ID,
       setCurrentObject: MUTATES.SET_CURRENT_OBJECT,
-      setObjects: DIGITAL_MUTATES.SET_OBJECTS,
       addNewObject: DIGITAL_MUTATES.ADD_OBJECT,
       setObjectProp: DIGITAL_MUTATES.SET_PROP,
       setObjectPropById: DIGITAL_MUTATES.SET_PROP_BY_ID,

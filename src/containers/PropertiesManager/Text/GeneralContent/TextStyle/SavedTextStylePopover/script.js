@@ -9,7 +9,7 @@ export default {
     },
     selectedVal: {
       type: Object,
-      default: () => ({ name: '', value: '' })
+      default: () => ({ name: '', id: '' })
     }
   },
   data() {
@@ -81,7 +81,7 @@ export default {
       this.tabActive = index;
       const items = this.tabs[this.tabActive].items;
       this.selectedItem = items.findIndex(
-        item => item.value === this.selectedVal?.value
+        item => item.id === this.selectedVal?.id
       );
     },
 

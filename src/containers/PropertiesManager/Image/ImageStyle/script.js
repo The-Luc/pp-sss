@@ -1,7 +1,18 @@
+import { useImageStyle } from '@/hooks/style';
+import SavedImageStylePopover from './SavedImageStylePopover';
+
 export default {
+  components: {
+    SavedImageStylePopover
+  },
+  setup() {
+    const { savedImageStyles, getSavedImageStyles } = useImageStyle();
+    return { savedImageStyles, getSavedImageStyles };
+  },
   data() {
     return {
-      isShowDropdown: false
+      isShowDropdown: false,
+      showSavedStylePopup: false
     };
   },
   props: {
@@ -17,6 +28,9 @@ export default {
   computed: {
     imageStyleOptions() {
       return this.options.slice(0, 4);
+    },
+    customOptions() {
+      return [...this.options, ...this.savedImageStyles];
     }
   },
   methods: {
@@ -24,23 +38,31 @@ export default {
      * Open dropdown image style
      */
     onOpenDropdown() {
+      if (this.savedImageStyles?.length) {
+        this.showSavedStylePopup = true;
+        return;
+      }
       this.isShowDropdown = true;
     },
     /**
      * Close dropdown image style
      */
     onCloseDropdown() {
+      this.showSavedStylePopup = false;
       this.isShowDropdown = false;
     },
     /**
      * Emit change image style to parent component
-     * @param {Number} id - id's image style
+     * @param {Number} item - image style
      */
-    onSelect(id) {
-      if (id !== this.styleSelected) {
-        this.$emit('onSelectImageStyle', id);
+    onSelect(item) {
+      if (item?.id !== this.styleSelected) {
+        this.$emit('onSelectImageStyle', item);
       }
       this.onCloseDropdown();
     }
+  },
+  created() {
+    this.getSavedImageStyles();
   }
 };

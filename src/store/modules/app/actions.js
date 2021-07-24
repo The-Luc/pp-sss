@@ -10,7 +10,7 @@ export const actions = {
       modalData: {
         type: MODAL_TYPES.SAVE_STYLE_SUCCESS,
         props: {
-          styleId: textStyle?.value,
+          styleId: textStyle?.id,
           objectType: OBJECT_TYPE.TEXT
         }
       }
@@ -30,7 +30,7 @@ export const actions = {
       modalData: {
         type: MODAL_TYPES.SAVE_STYLE_SUCCESS,
         props: {
-          styleId: imageStyle?.value,
+          styleId: imageStyle?.id,
           objectType: OBJECT_TYPE.IMAGE
         }
       }
