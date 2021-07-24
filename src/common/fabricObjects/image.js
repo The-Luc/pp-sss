@@ -53,13 +53,5 @@ export const createImage = props => {
 export const applyBorderToImageObject = (imageObject, borderConfig) => {
   const imageProp = toFabricImageBorderProp(borderConfig);
 
-  const strokeWidth =
-    imageProp.strokeLineType === BORDER_STYLES.ROUND
-      ? imageProp.strokeWidth
-      : imageProp.strokeWidth * 2;
-
-  imageObject.set({
-    ...imageProp,
-    strokeWidth
-  });
+  imageObject.set(imageProp);
 };

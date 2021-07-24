@@ -2,7 +2,7 @@ import { mapGetters, mapMutations, mapActions } from 'vuex';
 import { fabric } from 'fabric';
 import { cloneDeep, uniqueId, merge, debounce } from 'lodash';
 
-import { useDoubleStrokeImage, usePrintOverrides } from '@/plugins/fabric';
+import { imageBorderModifier, usePrintOverrides } from '@/plugins/fabric';
 
 import { useInfoBar } from '@/hooks';
 import { startDrawBox } from '@/common/fabricObjects/drawingBox';
@@ -838,7 +838,7 @@ export default {
 
       this.addObjectToStore(newImage);
 
-      useDoubleStrokeImage(image);
+      imageBorderModifier(image.object);
 
       addEventListeners(image?.object, eventListeners);
       window.printCanvas.add(image?.object);
@@ -1227,10 +1227,10 @@ export default {
 
       // TODO: move it to a approriate place
       activeObject.set({
-        strokeUniform: true,
-        paintFirst: 'stroke',
-        ownCaching: false,
-        noScaleCache: true
+        strokeUniform: true
+        // paintFirst: 'stroke',
+        // ownCaching: false,
+        // noScaleCache: true
       });
 
       if (border) {

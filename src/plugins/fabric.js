@@ -67,7 +67,8 @@ const getDoubleStrokeClipPath = function(width, height, strokeWidth) {
  * @param {CanvasRenderingContext2D} ctx Context to render on
  */
 const imageRender = function(ctx) {
-  console.log(this);
+  // TODO: implement to render double, dashed and dotted stroke for image
+  // not yet done implemented, please skip this function while reviewing
   this.clipPath = null;
   this.strokeDashArray = [];
   this.strokeLineCap = 'butt';
@@ -77,12 +78,16 @@ const imageRender = function(ctx) {
     return;
   }
 
-  // TODO: revise later
-  const height = this.cacheHeight || this.height;
-  const width = this.cacheWidth || this.width;
+  function distanceCal(a, b) {
+    return Math.sqrt((a.x - b.x) ** 2 + (a.y - b.y) ** 2);
+  }
+  const { bl, br, tl } = this.aCoords;
+  const height = distanceCal(bl, tl);
+  const width = distanceCal(bl, br);
+
+  console.log(height, width);
 
   if (this.strokeLineType === BORDER_STYLES.DOUBLE) {
-    console.log(width, height);
     this.clipPath = getDoubleStrokeClipPath(width, height, this.strokeWidth);
   }
 
@@ -116,8 +121,6 @@ const imageRender = function(ctx) {
  * @param {CanvasRenderingContext2D} ctx Context to render on
  */
 const rectRender = function(ctx) {
-  console.log(this);
-
   this.clipPath = null;
   this.strokeDashArray = [];
 
@@ -160,7 +163,7 @@ export const useDoubleStroke = function(rect) {
  * Allow fabric image object to have double stroke
  * @param {fabric.Image} image - the object to enable double stroke
  */
-export const useDoubleStrokeImage = function(image) {
+export const imageBorderModifier = function(image) {
   image._render = imageRender;
 };
 
