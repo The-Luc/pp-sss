@@ -1221,9 +1221,7 @@ export default {
      * @param {Object}  prop  new prop
      */
     changeImageProperties(prop) {
-      const { border, ...otherProps } = prop;
-      console.log(border);
-      console.log(otherProps);
+      const { border } = prop;
 
       const activeObject = window.printCanvas.getActiveObject();
 
@@ -1236,10 +1234,10 @@ export default {
       });
 
       if (border) {
-        // applyBorderToImageObject(activeObject, prop.border);
+        applyBorderToImageObject(activeObject, border);
       }
 
-      this.changeElementProperties(otherProps, OBJECT_TYPE.IMAGE);
+      this.changeElementProperties(prop, OBJECT_TYPE.IMAGE);
     },
     /**
      * Change properties of current element

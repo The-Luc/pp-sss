@@ -1,10 +1,3 @@
-export const IMAGE_BORDER_TYPE = {
-  SINGLE: 'single',
-  DOUBLE: 'double',
-  DOTTED: 'round',
-  DASHED: 'square'
-};
-
 import IMAGE_STYLE_01 from '@/assets/image/image-style/image-style-01.svg';
 import IMAGE_STYLE_02 from '@/assets/image/image-style/image-style-02.svg';
 import IMAGE_STYLE_03 from '@/assets/image/image-style/image-style-03.svg';
@@ -19,13 +12,14 @@ import IMAGE_STYLE_11 from '@/assets/image/image-style/image-style-11.svg';
 import IMAGE_STYLE_12 from '@/assets/image/image-style/image-style-12.svg';
 import { DEFAULT_BORDER, DEFAULT_SHADOW } from '@/common/constants';
 import { cloneDeep } from 'lodash';
+import { BORDER_STYLES } from './borderStyle';
 
 const defaultBorder = {
   showBorder: DEFAULT_BORDER.SHOW_BORDER,
   stroke: DEFAULT_BORDER.STROKE,
   strokeWidth: DEFAULT_BORDER.STROKE_WIDTH,
   strokeDashArray: DEFAULT_BORDER.STROKE_DASH_ARRAY,
-  strokeLineType: IMAGE_BORDER_TYPE.SINGLE
+  strokeLineType: BORDER_STYLES.SOLID
 };
 
 const defaultShadow = {
@@ -87,7 +81,7 @@ export const IMAGE_STYLE = [
         ...cloneDeep(defaultBorder),
         showBorder: true,
         stroke: '#000000',
-        strokeWidth: 20
+        strokeWidth: 2
       },
       shadow: cloneDeep(defaultShadow)
     }
@@ -118,8 +112,8 @@ export const IMAGE_STYLE = [
         ...cloneDeep(defaultBorder),
         showBorder: true,
         stroke: '#000000',
-        strokeWidth: 10,
-        strokeLineType: IMAGE_BORDER_TYPE.DOUBLE
+        strokeWidth: 1,
+        strokeLineType: BORDER_STYLES.DOUBLE
       },
       shadow: cloneDeep(defaultShadow)
     }
@@ -133,8 +127,8 @@ export const IMAGE_STYLE = [
         ...cloneDeep(defaultBorder),
         showBorder: true,
         stroke: '#000000',
-        strokeWidth: 10,
-        strokeLineType: IMAGE_BORDER_TYPE.DASHED
+        strokeWidth: 1,
+        strokeLineType: BORDER_STYLES.SQUARE
       },
       shadow: cloneDeep(defaultShadow)
     }
@@ -149,8 +143,8 @@ export const IMAGE_STYLE = [
         ...cloneDeep(defaultBorder),
         showBorder: true,
         stroke: '#000000',
-        strokeWidth: 10,
-        strokeLineType: IMAGE_BORDER_TYPE.DOTTED
+        strokeWidth: 1,
+        strokeLineType: BORDER_STYLES.ROUND
       },
       shadow: cloneDeep(defaultShadow)
     }
@@ -178,7 +172,7 @@ export const IMAGE_STYLE = [
         ...cloneDeep(defaultBorder),
         showBorder: true,
         stroke: '#0A4698',
-        strokeWidth: 40
+        strokeWidth: 4
       },
       shadow: cloneDeep(defaultShadow)
     }
@@ -192,7 +186,7 @@ export const IMAGE_STYLE = [
         ...cloneDeep(defaultBorder),
         showBorder: true,
         stroke: '#841B1B',
-        strokeWidth: 40
+        strokeWidth: 4
       },
       shadow: cloneDeep(defaultShadow)
     }
@@ -206,7 +200,7 @@ export const IMAGE_STYLE = [
         ...cloneDeep(defaultBorder),
         showBorder: true,
         stroke: '#D3CFA5',
-        strokeWidth: 40
+        strokeWidth: 4
       },
       shadow: cloneDeep(defaultShadow)
     }

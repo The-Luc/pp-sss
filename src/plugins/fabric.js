@@ -1,7 +1,6 @@
 import { fabric } from 'fabric';
 import { CORNER_SIZE, BORDER_STYLES, DEFAULT_TEXT } from '@/common/constants';
 import { getRectDashes, ptToPx } from '@/common/utils';
-import { IMAGE_BORDER_TYPE } from '@/common/constants/imageStyle';
 
 const BORDER_COLOR = {
   OUTER: '#ffffff',
@@ -82,21 +81,21 @@ const imageRender = function(ctx) {
   const height = this.cacheHeight || this.height;
   const width = this.cacheWidth || this.width;
 
-  if (this.strokeLineType === IMAGE_BORDER_TYPE.DOUBLE) {
+  if (this.strokeLineType === BORDER_STYLES.DOUBLE) {
     console.log(width, height);
     this.clipPath = getDoubleStrokeClipPath(width, height, this.strokeWidth);
   }
 
   // if (
-  //   [IMAGE_BORDER_TYPE.DOTTED, IMAGE_BORDER_TYPE.DASHED].includes(
+  //   [BORDER_STYLES.DOTTED, BORDER_STYLES.DASHED].includes(
   //     this.strokeLineType
   //   )
   // ) {
 
-  if (IMAGE_BORDER_TYPE.DASHED === this.strokeLineType) {
+  if (BORDER_STYLES.SQUARE === this.strokeLineType) {
     this.strokeDashArray = [100];
   }
-  if (IMAGE_BORDER_TYPE.DOTTED === this.strokeLineType) {
+  if (BORDER_STYLES.ROUND === this.strokeLineType) {
     this.strokeDashArray = [0, 200];
     this.strokeLineCap = 'round';
     this.paintFirst = 'fill';

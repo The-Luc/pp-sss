@@ -6,8 +6,7 @@ import {
   toFabricImageProp,
   toFabricImageBorderProp
 } from './common';
-import { DEFAULT_IMAGE } from '../constants';
-import { IMAGE_BORDER_TYPE } from '../constants/imageStyle';
+import { DEFAULT_IMAGE, BORDER_STYLES } from '../constants';
 
 export const createImage = props => {
   return new Promise(resolve => {
@@ -46,11 +45,16 @@ export const createImage = props => {
   });
 };
 
+/**
+ * Apply layout on an image
+ * @param {Object} imageObject a fabric object
+ * @param {Object} borderConfig border seting
+ */
 export const applyBorderToImageObject = (imageObject, borderConfig) => {
   const imageProp = toFabricImageBorderProp(borderConfig);
 
   const strokeWidth =
-    imageProp.strokeLineType === IMAGE_BORDER_TYPE.DOTTED
+    imageProp.strokeLineType === BORDER_STYLES.ROUND
       ? imageProp.strokeWidth
       : imageProp.strokeWidth * 2;
 
