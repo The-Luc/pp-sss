@@ -1608,7 +1608,6 @@ export default {
     async handleSaveLayout({ pageSelected, layoutName }) {
       layoutName = layoutName || 'Untitle';
       const layoutTypes = await getPrintLayoutTypes();
-      console.log(layoutTypes);
       const zoom = window.printCanvas.getZoom();
       const width = window.printCanvas.width;
 
