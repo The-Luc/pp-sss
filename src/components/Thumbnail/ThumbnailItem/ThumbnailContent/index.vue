@@ -1,7 +1,7 @@
 <template>
   <div
     class="thumbnail-view-content"
-    :class="[thumnailCssClass, ...customCssClass]"
+    :class="contentCssClass"
     :style="{ backgroundImage: thumbnailUrl && `url(${thumbnailUrl})` }"
   >
     <div class="border-inside"></div>

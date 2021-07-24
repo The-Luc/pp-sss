@@ -27,8 +27,12 @@ export default {
     }
   },
   computed: {
-    thumnailCssClass() {
-      return [this.getHalfSheetCssClass(), this.isActive && 'active'];
+    contentCssClass() {
+      return [
+        this.getHalfSheetCssClass(),
+        this.isActive && 'active',
+        ...this.customCssClass
+      ];
     }
   },
   methods: {
