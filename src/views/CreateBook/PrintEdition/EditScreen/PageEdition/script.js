@@ -1408,12 +1408,6 @@ export default {
         }
       };
 
-      const imageEvents = {
-        [EVENT_TYPE.CHANGE_IMAGE_PROPERTIES]: prop => {
-          this.changeImageProperties(prop);
-        }
-      };
-
       const backgroundEvents = {
         printAddBackground: this.addBackground,
         printChangeBackgroundProperties: this.changeBackgroundProperties,
@@ -1473,7 +1467,6 @@ export default {
       const events = {
         ...elementEvents,
         ...textEvents,
-        ...imageEvents,
         ...backgroundEvents,
         ...shapeEvents,
         ...clipArtEvents,
