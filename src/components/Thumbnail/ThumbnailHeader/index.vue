@@ -1,6 +1,6 @@
 <template>
   <div class="thumbnail-view-header" :class="customCssClass">
-    <div class="header-container" @click="toggleContent">
+    <div class="header-container">
       <div class="header-content">
         <div class="header-color" :style="{ 'background-color': color }"></div>
 

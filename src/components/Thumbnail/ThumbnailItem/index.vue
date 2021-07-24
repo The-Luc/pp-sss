@@ -11,11 +11,9 @@
         :custom-css-class="customCssClass"
         :total-item="totalItem"
         :is-toggle-content-available="isEditor"
-        @toggleContent="onToggleContent"
       />
 
       <Content
-        v-show="isContentDisplayed"
         :to-link="toLink"
         :sheet-type="sheetType"
         :thumbnail-url="thumbnailUrl"

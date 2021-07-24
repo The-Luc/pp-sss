@@ -1,32 +1,24 @@
-.thumbnail-view-item {
-  align-content: flex-start;
-
-  &.editor {
-    .thumbnail-view-container {
-      border: none;
-    }
-  }
-
+.thumbnail-view-item:not(.editor) {
   .thumbnail-view-container {
     border-right: 0.5px solid $color-gray18;
     border-bottom: 0.5px solid $color-gray18;
   }
 
-  &:not(.editor):nth-child(4n + 1) {
+  &:nth-child(4n + 1) {
     .thumbnail-view-container {
       padding-left: 0px;
     }
   }
 
-  &:not(.editor):nth-child(4n) {
+  &:nth-child(4n) {
     .thumbnail-view-container {
       padding-right: 0px;
       border-right: 0.5px solid transparent;
     }
   }
 
-  &:not(.editor):nth-last-child(-n + 4):nth-child(4n + 1),
-  &:not(.editor):nth-last-child(-n + 4):nth-child(4n + 1) ~ & {
+  &:nth-last-child(-n + 4):nth-child(4n + 1),
+  &:nth-last-child(-n + 4):nth-child(4n + 1) ~ & {
     .thumbnail-view-container {
       border-bottom: 0.5px solid transparent;
     }

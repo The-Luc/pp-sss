@@ -63,8 +63,7 @@ export default {
   data() {
     return {
       displayCssClass: '',
-      customCssClass: [],
-      isContentDisplayed: true
+      customCssClass: []
     };
   },
   mounted() {
@@ -81,14 +80,6 @@ export default {
     ].filter(c => !isEmpty(c));
   },
   methods: {
-    /**
-     * Toggle display content
-     */
-    onToggleContent() {
-      if (!this.isToggleContentAvailable) return;
-
-      this.isContentDisplayed = !this.isContentDisplayed;
-    },
     /**
      * Emit event change link status
      */
