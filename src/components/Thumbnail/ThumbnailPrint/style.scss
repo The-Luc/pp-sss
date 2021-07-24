@@ -66,14 +66,18 @@
   border-radius: 50%;
   border: 1px solid $color-white;
   background-color: $color-stoodio-blue;
-  cursor: pointer;
 
-  &:hover {
-    border: 1px solid $color-stoodio-blue;
+  &:not(.disabled) {
+    cursor: pointer;
+
+    &:hover {
+      border: 1px solid $color-stoodio-blue;
+    }
   }
 
   &.disabled {
-    opacity: 0.65;
+    opacity: 0.3;
+    pointer-events: none;
   }
 
   .icon-wrapper {
@@ -88,13 +92,13 @@
 }
 
 .thumbnail-view-number-page {
-  display: flex;
+  color: $color-gray2;
   width: 100%;
-  position: relative;
-  margin-top: 6px;
+  display: flex;
   justify-content: space-between;
   align-items: center;
-  color: $color-gray2;
+  margin-top: 6px;
+  position: relative;
   font-family: $font-300;
   font-size: $xs-size;
 
@@ -108,7 +112,10 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  cursor: pointer;
+
+  &:not(.disabled) {
+    cursor: pointer;
+  }
 
   .icon-link {
     font-size: 20px;

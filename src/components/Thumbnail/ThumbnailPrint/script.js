@@ -64,6 +64,8 @@ export default {
      * Emit event change link status
      */
     changeLinkStatus() {
+      if (!this.isEnable) return;
+
       this.$emit('change');
     },
     /**
