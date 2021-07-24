@@ -52,8 +52,6 @@ export default {
      * @param {Object}  event event fire when click on section header
      */
     toggleDetail(event) {
-      if (!this.isEnable) return;
-
       const sectionHeader = event.target.closest('.section-header');
 
       const isCollapse = sectionHeader.getAttribute('data-toggle') !== COLLAPSE;
@@ -77,7 +75,7 @@ export default {
      * Show the drag control when hover & enable & draggable
      */
     showDragControl() {
-      this.isDragControlDisplayed = this.isEnable && this.section.draggable;
+      this.isDragControlDisplayed = this.section.draggable;
     },
     /**
      * Hide the drag control when mouse out

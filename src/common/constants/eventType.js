@@ -10,15 +10,16 @@ export const EVENT_TYPE = {
   CHANGE_SHAPE_PROPERTIES: 'changeShapeProperties',
   ADD_CLIPARTS: 'addClipArts',
   CHANGE_CLIPART_PROPERTIES: 'changeClipArtProperties',
+  CHANGE_IMAGE_PROPERTIES: 'changeImageProperties',
   CHANGE_OBJECT_IDS_ORDER: 'changeObjectIdsOrder',
   DIGITAL_BACKGROUND_ADD: 'digitalAddBackground',
   DIGITAL_BACKGROUND_PROP_CHANGE: 'digitalChangeBackgroundProperties',
   DIGITAL_BACKGROUND_REMOVE: 'digitalDeleteBackground',
   SWITCH_TOOL: 'switchTool',
   SAVE_STYLE: 'saveStyle',
-  CHANGE_IMAGE_PROPERTIES: 'changeImageProperties',
   COPY_OBJ: 'copyObj',
-  PASTE_OBJ: 'pasteObj'
+  PASTE_OBJ: 'pasteObj',
+  SAVE_LAYOUT: 'saveLayout'
 };
 
 export const CANVAS_EVENT_TYPE = {

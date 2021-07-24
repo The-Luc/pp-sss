@@ -1,4 +1,57 @@
-import { LAYOUT_TYPES } from '@/common/constants/layoutTypes';
+export const LAYOUT_TYPES = {
+  COVER: {
+    name: 'Cover',
+    value: 'cover'
+  },
+  COLLAGE: {
+    name: 'Collage',
+    value: 'collage'
+  },
+  ADMIN_STAFF: {
+    name: 'Admin & Staff',
+    value: 'adminStaff'
+  },
+  CLUBS_GROUPS_TEAMS: {
+    name: 'Clubs, Groups and Teams',
+    value: 'clubGroupsTeams'
+  },
+  SIGNATURES: {
+    name: 'Signatures',
+    value: 'signatures'
+  },
+  AWARDS_SUPERLATIVE: {
+    name: 'Awards/Superlatives',
+    value: 'awardsSuperlatives'
+  },
+  GRADUATION: {
+    name: 'Graduation',
+    value: 'graduation'
+  },
+  INTRO_OPENING_PAGE: {
+    name: 'Intro/Opening Page',
+    value: 'introOpeningPage'
+  },
+  YEAR_IN_REVIEW: {
+    name: 'Year in Review',
+    value: 'yearInReview'
+  },
+  SIMPLE: {
+    name: 'Simple',
+    value: 'simple'
+  },
+  SINGLE_PAGE: {
+    name: 'Single Page',
+    value: 'singlePage'
+  },
+  SUPPLEMENTAL_LAYOUTS: {
+    name: 'Supplemental: Digital Only',
+    value: 'Supplemental'
+  },
+  SAVED_LAYOUTS_AND_FAVORITES: {
+    name: 'Saved Layouts/Favorites',
+    value: 'SavedLayoutsAndFavorites'
+  }
+};
 
 const getLayoutTypesOptions = () => {
   return Object.keys(LAYOUT_TYPES).map(key => ({

@@ -26,7 +26,7 @@ export default {
       window.sessionStorage.setItem('userRole', ROLE[data.role]);
     },
     onChangeCover(data) {
-      window.sessionStorage.setItem('bookCoverType', data.name);
+      window.data.book.coverOption = data.name;
     },
     onCancel() {
       this.$refs.maxPageInput.blur();
@@ -37,7 +37,7 @@ export default {
     onSubmit() {
       if (!String(this.maxPage).trim()) return;
 
-      window.sessionStorage.setItem('bookMaxPage', this.maxPage);
+      window.data.book.numberMaxPages = parseInt(this.maxPage);
     },
     goToManager() {
       this.$router.push({ name: ROUTE_NAME.MANAGER, params: { bookId: 1719 } });

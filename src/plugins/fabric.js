@@ -63,6 +63,45 @@ const getDoubleStrokeClipPath = function(width, height, strokeWidth) {
 };
 
 /**
+ * Image Render function with override on clipPath to support double stroke
+ * @param {CanvasRenderingContext2D} ctx Context to render on
+ */
+const imageRender = function(ctx) {
+  // TODO: implement to render double, dashed and dotted stroke for image
+  // not yet done implemented, please skip this function while reviewing
+  this.clipPath = null;
+  this.strokeDashArray = [];
+  this.strokeLineCap = 'butt';
+
+  if (!this.strokeWidth) {
+    fabric.Image.prototype._render.call(this, ctx);
+    return;
+  }
+
+  function distanceCal(a, b) {
+    return Math.sqrt((a.x - b.x) ** 2 + (a.y - b.y) ** 2);
+  }
+  const { bl, br, tl } = this.aCoords;
+  const height = distanceCal(bl, tl);
+  const width = distanceCal(bl, br);
+
+  if (this.strokeLineType === BORDER_STYLES.DOUBLE) {
+    this.clipPath = getDoubleStrokeClipPath(width, height, this.strokeWidth);
+  }
+
+  if (BORDER_STYLES.SQUARE === this.strokeLineType) {
+    this.strokeDashArray = [100];
+  }
+  if (BORDER_STYLES.ROUND === this.strokeLineType) {
+    this.strokeDashArray = [0, 200];
+    this.strokeLineCap = 'round';
+    this.paintFirst = 'fill';
+  }
+
+  fabric.Image.prototype._render.call(this, ctx);
+};
+
+/**
  * Rect Render function with override on clipPath to support double stroke
  * @param {CanvasRenderingContext2D} ctx Context to render on
  */
@@ -103,6 +142,14 @@ const rectRender = function(ctx) {
  */
 export const useDoubleStroke = function(rect) {
   rect._render = rectRender;
+};
+
+/**
+ * Allow fabric image object to have double stroke
+ * @param {fabric.Image} image - the object to enable double stroke
+ */
+export const imageBorderModifier = function(image) {
+  image._render = imageRender;
 };
 
 /**

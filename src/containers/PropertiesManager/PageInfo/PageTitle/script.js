@@ -1,4 +1,4 @@
-import InputTitle from './inputTitle';
+import InputTitle from '@/components/inputTitle';
 export default {
   components: {
     InputTitle

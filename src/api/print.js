@@ -1,6 +1,8 @@
 import { getSuccessWithData, getErrorWithMessages } from '@/common/models';
+import { parseItem } from '@/common/storage/session.helper';
 
 import { isEmpty, getPageLeftName, getPageRightName } from '@/common/utils';
+import bookService from './book';
 
 const printService = {
   /**
@@ -9,17 +11,12 @@ const printService = {
    * @param   {Number}  bookId  id of current book
    * @returns {Object}          query result
    */
-  getDefaultThemeId: bookId => {
-    return new Promise(resolve => {
-      const book = JSON.parse(window.sessionStorage.getItem(`book-${bookId}`));
-      const data = book.printData.themeId;
+  getDefaultThemeId: async bookId => {
+    const { book } = await bookService.getBookPrint(bookId);
 
-      const result = isEmpty(data)
-        ? getErrorWithMessages([])
-        : getSuccessWithData(data);
+    const data = book.themeId;
 
-      resolve(result);
-    });
+    return isEmpty(data) ? getErrorWithMessages([]) : getSuccessWithData(data);
   },
   /**
    * Get list of section & sheets inside each section
@@ -28,49 +25,42 @@ const printService = {
    * @param   {Number}  bookId  id of current book
    * @returns {Object}          query result
    */
-  getPrintSectionsSheets: bookId => {
-    return new Promise(resolve => {
-      let totalSheets = 0;
+  getPrintSectionsSheets: async bookId => {
+    let totalSheets = 0;
 
-      const book = JSON.parse(window.sessionStorage.getItem(`book-${bookId}`));
+    const {
+      sectionsAsArray,
+      sheets: sheetData
+    } = await bookService.getBookPrint(bookId);
 
-      const data = book.sections.map((section, sectionIndex) => {
-        const sheets = section.sheets.map((sheet, sheetIndex) => {
-          const { id, type } = sheet;
-          const { thumbnailUrl, link } = sheet.printData;
+    const data = sectionsAsArray.map((section, sectionIndex) => {
+      const sheets = section.sheetIds.map((sheetId, sheetIndex) => {
+        const sheet = sheetData[sheetId];
+        const { id, type, thumbnailUrl, link } = sheet;
 
-          const pageLeftName = getPageLeftName(sheet, sheetIndex, totalSheets);
-          const pageRightName = getPageRightName(
-            sheet,
-            sheetIndex,
-            totalSheets
-          );
+        const pageLeftName = getPageLeftName(sheet, sheetIndex, totalSheets);
+        const pageRightName = getPageRightName(sheet, sheetIndex, totalSheets);
 
-          return {
-            id,
-            type,
-            thumbnailUrl,
-            link,
-            pageLeftName,
-            pageRightName
-          };
-        });
-
-        if (sectionIndex > 0) {
-          totalSheets += section.sheets.length;
-        }
-
-        const { name, color, id, assigneeId } = section;
-
-        return { id, name, color, assigneeId, sheets };
+        return {
+          id,
+          type,
+          thumbnailUrl,
+          link,
+          pageLeftName,
+          pageRightName
+        };
       });
 
-      const result = isEmpty(data)
-        ? getErrorWithMessages([])
-        : getSuccessWithData(data);
+      if (sectionIndex > 0) {
+        totalSheets += section.sheetIds.length;
+      }
 
-      resolve(result);
+      const { name, color, id } = section;
+
+      return { id, name, color, sheets };
     });
+
+    return isEmpty(data) ? getErrorWithMessages([]) : getSuccessWithData(data);
   },
   /**
    * Get list of section & sheets inside each section
@@ -79,64 +69,61 @@ const printService = {
    * @param   {Number}  bookId  id of current book
    * @returns {Object}          query result
    */
-  getPrintEditSectionsSheets: bookId => {
-    return new Promise(resolve => {
-      let totalSheets = 0;
+  getPrintEditSectionsSheets: async bookId => {
+    let totalSheets = 0;
 
-      const book = JSON.parse(window.sessionStorage.getItem(`book-${bookId}`));
-      const coverType = window.sessionStorage.getItem('bookCoverType');
-      const maxPage = window.sessionStorage.getItem('bookMaxPage');
+    const coverType = parseItem('bookCoverType');
+    const maxPage = parseItem('bookMaxPage');
 
-      if (!isEmpty(coverType)) book.coverOption = coverType;
+    const {
+      book,
+      sectionsAsArray,
+      sheets: sheetData
+    } = await bookService.getBookPrint(bookId);
 
-      if (!isEmpty(maxPage)) book.numberMaxPages = parseInt(maxPage, 10);
+    if (!isEmpty(coverType)) book.coverOption = coverType;
 
-      const data = book.sections.map((section, sectionIndex) => {
-        const sheets = section.sheets.map((sheet, sheetIndex) => {
-          const { id, type, isVisited } = sheet;
-          const {
-            link,
-            thumbnailUrl,
-            theme: themeId,
-            layout,
-            spreadInfo
-          } = sheet.printData;
-          const pageLeftName = getPageLeftName(sheet, sheetIndex, totalSheets);
-          const pageRightName = getPageRightName(
-            sheet,
-            sheetIndex,
-            totalSheets
-          );
+    if (!isEmpty(maxPage)) book.numberMaxPages = parseInt(maxPage, 10);
 
-          return {
-            id,
-            link,
-            type,
-            thumbnailUrl,
-            isVisited,
-            themeId,
-            layoutId: layout?.id || null,
-            pageLeftName,
-            pageRightName,
-            spreadInfo: { ...spreadInfo }
-          };
-        });
+    const data = sectionsAsArray.map((section, sectionIndex) => {
+      const sheets = section.sheetIds.map((sheetId, sheetIndex) => {
+        const sheet = sheetData[sheetId];
 
-        if (sectionIndex > 0) {
-          totalSheets += section.sheets.length;
-        }
+        const { id, type, isVisited } = sheet;
+        const {
+          link,
+          thumbnailUrl,
+          theme: themeId,
+          layout,
+          spreadInfo
+        } = sheet;
+        const pageLeftName = getPageLeftName(sheet, sheetIndex, totalSheets);
+        const pageRightName = getPageRightName(sheet, sheetIndex, totalSheets);
 
-        const { name, color, assigneeId } = section;
-
-        return { id: section.id, name, color, assigneeId, sheets };
+        return {
+          id,
+          link,
+          type,
+          thumbnailUrl,
+          isVisited,
+          themeId,
+          layoutId: layout?.id || null,
+          pageLeftName,
+          pageRightName,
+          spreadInfo: { ...spreadInfo }
+        };
       });
 
-      const result = isEmpty(data)
-        ? getErrorWithMessages([])
-        : getSuccessWithData(data);
+      if (sectionIndex > 0) {
+        totalSheets += section.sheetIds.length;
+      }
 
-      resolve(result);
+      const { name, color } = section;
+
+      return { id: section.id, name, color, sheets };
     });
+
+    return isEmpty(data) ? getErrorWithMessages([]) : getSuccessWithData(data);
   },
   /**
    * Get list of objects use in canvas
@@ -148,46 +135,22 @@ const printService = {
    */
   getSheetObjects: (bookId, sectionId, sheetId) => {
     return new Promise(resolve => {
-      // load the canvas from sessionStorage if exist
-      const storageData = window.sessionStorage.getItem(`SHEET_ID_${sheetId}`);
+      // TODO -Luc: Will be implemente very soon
 
-      if (!isEmpty(storageData)) {
-        resolve(getSuccessWithData(JSON.parse(storageData)));
+      // const sheets = window.data.sheets;
 
-        return;
-      }
+      // const objects = sheets[sheetId].objects.map(o => ({
+      //   ...o.object,
+      //   id: o.id
+      // }));
 
-      const book = JSON.parse(window.sessionStorage.getItem(`book-${bookId}`));
+      // const data = objects || [];
+      // const result = isEmpty(data)
+      //   ? getErrorWithMessages([])
+      //   : getSuccessWithData(data);
 
-      const section = book.sections.find(s => sectionId === s.id);
-
-      if (isEmpty(section)) return {};
-
-      const sheet = section.sheets.find(s => sheetId === s.id);
-
-      const data = sheet?.printData?.objects || [];
-
-      const result = isEmpty(data)
-        ? getErrorWithMessages([])
-        : getSuccessWithData(data);
-
-      resolve(result);
+      resolve([]);
     });
-  },
-
-  /**
-   * to save state of the canvas to sessionStorage
-   * @param {Number} Id of the active sheet
-   * @param {Object} sheetLayout objects on canvas that will be save on the storage
-   */
-  saveCanvasState: (sheetId, sheetLayout) => {
-    // sheetId is undefined when load the page the first time
-    if (!sheetId) return;
-
-    window.sessionStorage.setItem(
-      `SHEET_ID_${sheetId}`,
-      JSON.stringify(sheetLayout)
-    );
   },
   /**
    * Get print page info
@@ -195,22 +158,20 @@ const printService = {
    * @param   {Number}  bookId  id of current book
    * @returns {Object}          query result
    */
-  getPageInfo: bookId => {
-    return new Promise(resolve => {
-      const book = JSON.parse(window.sessionStorage.getItem(`book-${bookId}`));
-      const data = book.printData.pageInfo;
-      const result = isEmpty(data)
-        ? getErrorWithMessages([])
-        : getSuccessWithData({ ...data });
+  getPageInfo: async bookId => {
+    const { book } = await bookService.getBookPrint(bookId);
 
-      resolve(result);
-    });
+    const data = book.pageInfo;
+
+    return isEmpty(data)
+      ? getErrorWithMessages([])
+      : getSuccessWithData({ ...data });
   },
   // temporary code, will remove soon
-  getGeneralInfo: () => {
-    const { title, totalSheets, totalPages, totalScreens } = JSON.parse(
-      window.sessionStorage.getItem('book-1719')
-    );
+  getGeneralInfo: async bookId => {
+    const { book } = await bookService.getBookPrint(bookId);
+
+    const { title, totalSheets, totalPages, totalScreens } = book;
 
     return {
       title,
@@ -218,6 +179,92 @@ const printService = {
       totalPage: totalPages,
       totalScreen: totalScreens
     };
+  },
+  updateSheet(sheetId, props) {
+    return new Promise(resolve => {
+      if (!sheetId) return;
+
+      const sheet = window.data.sheets.find(s => s.id === sheetId);
+      sheet._set(props);
+
+      resolve(sheet);
+    });
+  },
+
+  /**
+   * save theme id in global book variable
+   * @param {Number} themeId id of theme that will be saved
+   */
+  saveDefaultThemeId: themeId => {
+    return new Promise(resolve => {
+      window.data.book.printData.themeId = themeId;
+
+      resolve();
+    });
+  },
+
+  /**
+   * save layout and theme id of a sheet in global book variable
+   * @param {Number} sheetId id of sheet
+   * @param {Object} layout a layout object
+   * @param {Number} themeId id of theme
+   */
+  saveSheetData: (sheetId, layoutId, themeId) => {
+    return printService.updateSheet(sheetId, { layoutId, themeId });
+  },
+
+  /**
+   * to mark that the sheet is visisted
+   * @param {Number} sheetId id of sheet
+   */
+  saveSheetVisited: sheetId => {
+    return printService.updateSheet(sheetId, { isVisited: true });
+  },
+
+  /**
+   * save page info of a book in global book variable
+   * @param {Object} pageInfo a object contains info such as font, color of the page
+   */
+  savePageInfo: pageInfo => {
+    return new Promise(resolve => {
+      window.data.book.printData.pageInfo = pageInfo;
+      resolve();
+    });
+  },
+
+  /**
+   * save spread info in global book variable
+   * @param {Object} spreadInfo information of the spread such as title, page number
+   * @param {Number} sheetId id of a sheet
+   */
+  saveSpreadInfo: (sheetId, spreadInfo) => {
+    return new Promise(resolve => {
+      const sheet = window.data.sheets[sheetId];
+
+      sheet.spreadInfo = { ...sheet.spreadInfo, ...spreadInfo };
+      resolve();
+    });
+  },
+
+  /**
+   * to save sheet link status
+   */
+  saveSheetLinkStatus: (sheetId, link) => {
+    return printService.updateSheet(sheetId, { link });
+  },
+
+  /**
+   * to save sheet link status
+   */
+  saveObjectsAndBackground: (sheetId, data) => {
+    return printService.updateSheet(sheetId, { objects: data });
+  },
+
+  /**
+   * save sheet's thumbnail
+   */
+  saveSheetThumbnail: (sheetId, thumbnailUrl) => {
+    return printService.updateSheet(sheetId, { thumbnailUrl });
   }
 };
 

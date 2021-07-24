@@ -23,7 +23,3 @@ input {
 input:focus-visible {
   outline: none;
 }
-input::placeholder {
-  color: $color-gray15;
-  font-family: $font-300;
-}

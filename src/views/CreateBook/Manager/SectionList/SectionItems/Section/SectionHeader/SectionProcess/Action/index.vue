@@ -3,7 +3,7 @@
     <Menu
       v-if="isOpenMenu"
       nudge-width="180"
-      :items="items"
+      :items="menuItems"
       :menu-x="menuX"
       :menu-y="menuY"
       :content-class="menuClass"
@@ -14,13 +14,13 @@
       <ButtonAdd
         v-if="isShowAdd"
         title="Add a Sheet"
-        @click.native="onAddSheet(sectionId)"
+        @click.native="onAddSheet"
       />
       <ButtonDelete
         v-if="isShowDelete"
         class="btn-delete"
         title="Delete This Section"
-        @click.native="onOpenModal(sectionId, sectionName)"
+        @click.native="onOpenModal"
       />
     </Menu>
     <Calendar
@@ -46,7 +46,7 @@
     />
     <Assignee
       v-if="isOpenAssignee"
-      :key="componentKey"
+      :users="users"
       :assignee-id="assigneeId"
       :is-open="isOpenAssignee"
       :assignee-width="assigneeWidth"

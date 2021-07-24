@@ -46,6 +46,7 @@ class ActionClass extends BaseObject {
   GET_DATA_CANVAS = 'getDataForCanvas';
   UPDATE_SHEET_THEME_LAYOUT = 'updateSheetThemeLayout';
   UPDATE_LAYOUT_OBJ_TO_STORE = 'updateLayoutObjectToStore';
+  UPDATE_SHEET_VISITED = 'updateSheetVisited';
 
   constructor(props) {
     super(props);
@@ -90,6 +91,7 @@ class MutationClass extends BaseObject {
   ADD_SUPPLEMENTAL_FRAMES = 'addSupplementalFrames';
   REPLACE_SUPPLEMENTAL_FRAME = 'replaceSupplementalFrame';
   MOVE_FRAME = 'moveFrame';
+  SET_TITLE_FRAME = 'setTitleFrame';
 
   constructor(props) {
     super(props);

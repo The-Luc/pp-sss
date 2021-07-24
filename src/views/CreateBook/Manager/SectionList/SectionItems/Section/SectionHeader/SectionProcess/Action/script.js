@@ -8,14 +8,24 @@ import Assignee from './Assignee';
 import { mapGetters, mapMutations } from 'vuex';
 import moment from 'moment';
 
-import { MODAL_TYPES, ICON_LOCAL, DATE_FORMAT } from '@/common/constants';
+import {
+  MODAL_TYPES,
+  ICON_LOCAL,
+  DATE_FORMAT,
+  PROCESS_STATUS
+} from '@/common/constants';
 import { GETTERS, MUTATES } from '@/store/modules/app/const';
 import {
   GETTERS as BOOK_GETTERS,
   MUTATES as BOOK_MUTATES
 } from '@/store/modules/book/const';
 
-import { useMutationSection, useSectionActionMenu } from '@/hooks';
+import {
+  useMutationSection,
+  useSectionActionMenu,
+  useAssigneeMenu
+} from '@/hooks';
+import { isEmpty } from '@/common/utils';
 
 export default {
   components: {
@@ -34,10 +44,6 @@ export default {
     menuY: {
       type: Number,
       default: 0
-    },
-    items: {
-      type: Array,
-      default: () => []
     },
     sectionId: {
       type: [String, Number],
@@ -59,21 +65,26 @@ export default {
     assigneeId: {
       type: [String, Number],
       default: ''
+    },
+    isOpenMenu: {
+      type: Boolean,
+      default: false
     }
   },
   setup() {
     const { updateSection: updateSectionDb } = useMutationSection();
     const { updateSection, updateAssignee } = useSectionActionMenu();
+    const { getUsers } = useAssigneeMenu();
 
     return {
       updateSectionDb,
       updateSection,
-      updateAssignee
+      updateAssignee,
+      getUsers
     };
   },
   data() {
     return {
-      isOpenMenu: false,
       isOpenCalendar: false,
       isOpenStatus: false,
       isOpenAssignee: false,
@@ -82,7 +93,12 @@ export default {
       assigneeWidth: 267,
       subMenuPos: { x: 0, y: 0 },
       minDate: new Date().toISOString().slice(0, 10),
-      componentKey: true
+      users: [],
+      menuItems: [
+        { title: 'Status', value: this.getStatusName(), name: 'status' },
+        { title: 'Due Date', value: this.dueDate, name: 'dueDate' },
+        { title: 'Assigned To', value: 'Unassigned', name: 'assignee' }
+      ]
     };
   },
   computed: {
@@ -114,13 +130,14 @@ export default {
           .split('-');
         this.setDateSelect(year, month);
       }
-    },
-    sectionSelected(value) {
-      this.setIsOpenMenu(value);
     }
   },
-  mounted() {
+  async mounted() {
     this.moreIcon = ICON_LOCAL.MORE_ICON;
+
+    this.users = await this.getUsers();
+
+    this.setAssigneeName();
   },
   methods: {
     ...mapMutations({
@@ -128,12 +145,12 @@ export default {
       addSheet: BOOK_MUTATES.ADD_SHEET,
       setSectionSelected: MUTATES.SET_SELECTION_SELECTED
     }),
-    onOpenModal(sectionId, sectionName) {
+    onOpenModal() {
       this.toggleModal({
         isOpenModal: true,
         modalData: {
           type: MODAL_TYPES.DELETE_SECTION,
-          props: { sectionId, sectionName }
+          props: { sectionId: this.sectionId, sectionName: this.sectionName }
         }
       });
     },
@@ -162,10 +179,7 @@ export default {
       const isSubMenuOpen =
         this.isOpenStatus || this.isOpenCalendar || this.isOpenAssignee;
 
-      if (this.isOpenMenu && !isSubMenuOpen) {
-        this.isOpenMenu = false;
-        this.setSectionSelected('');
-      }
+      if (this.isOpenMenu && !isSubMenuOpen) this.setSectionSelected('');
     },
     /**
      * Open calendar sub menu
@@ -197,15 +211,11 @@ export default {
      * @param {Object}  event the event fire when click
      */
     openAssignee(event) {
-      const isOpen = this.toggleSubMenu(
+      this.isOpenAssignee = this.toggleSubMenu(
         event.target,
         this.isOpenAssignee,
         this.assigneeWidth
       );
-
-      if (isOpen) this.componentKey = !this.componentKey;
-
-      this.isOpenAssignee = isOpen;
     },
     /**
      * Menu item click event
@@ -243,11 +253,11 @@ export default {
         dueDate
       });
 
-      if (isSuccess) {
-        this.updateSection({ id: this.sectionId, dueDate });
+      if (!isSuccess) return;
 
-        this.$emit('dueDateUpdate', { dueDate });
-      }
+      this.updateSection({ id: this.sectionId, dueDate });
+
+      this.menuItems[1].value = dueDate;
 
       setTimeout(() => {
         this.isOpenCalendar = false;
@@ -263,11 +273,11 @@ export default {
         status: status.value
       });
 
-      if (isSuccess) {
-        this.updateSection({ id: this.sectionId, status: status.value });
+      if (!isSuccess) return;
 
-        this.$emit('statusUpdate', { status: status.value });
-      }
+      this.updateSection({ id: this.sectionId, status: status.value });
+
+      this.menuItems[0].value = status.name;
 
       setTimeout(() => {
         this.isOpenStatus = false;
@@ -281,28 +291,23 @@ export default {
      */
     async onChangeAssignee({ id, name }) {
       const assigneeId = this.assigneeId === id ? -1 : id;
-      const assignee = this.assigneeId === id ? '' : name;
+      const assignee = this.assigneeId === id ? 'Unassigned' : name;
 
       await this.updateAssignee({ id: this.sectionId, assigneeId });
 
-      this.$emit('assigneeUpdate', { assignee });
+      this.menuItems[2].value = assignee;
 
       setTimeout(() => {
         this.isOpenAssignee = false;
       }, 0);
     },
-    onAddSheet(sectionId) {
-      this.isOpenMenu = false;
+    onAddSheet() {
       this.setSectionSelected('');
-      this.addSheet({
-        sectionId
-      });
+
+      this.addSheet({ sectionId: this.sectionId });
     },
     onScroll() {
-      if (this.isOpenMenu) {
-        this.isOpenMenu = false;
-        this.setSectionSelected('');
-      }
+      if (this.isOpenMenu) this.setSectionSelected('');
     },
     /**
      * Toggle sub menu
@@ -332,6 +337,28 @@ export default {
 
       this.subMenuPos.x = x - width;
       this.subMenuPos.y = y;
+    },
+    /**
+     * Get status name from current status value
+     *
+     * @returns {String}  status name
+     */
+    getStatusName() {
+      const process = Object.values(PROCESS_STATUS).find(
+        ({ value }) => this.status === value
+      );
+
+      return isEmpty(process) ? PROCESS_STATUS.NOT_STARTED.name : process.name;
+    },
+    /**
+     * Set assignee name to menu item
+     */
+    setAssigneeName() {
+      const user = this.users.find(({ id }) => id === this.assigneeId);
+
+      if (isEmpty(user)) return;
+
+      this.menuItems[2].value = user.name;
     }
   }
 };

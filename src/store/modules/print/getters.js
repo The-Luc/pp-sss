@@ -120,6 +120,20 @@ export const getters = {
   [PRINT._GETTERS.TOTAL_OBJECT]: ({ objectIds }) => {
     return objectIds.length;
   },
+  [PRINT._GETTERS.GET_OBJECTS_AND_BACKGROUNDS]: ({
+    objects,
+    background,
+    objectIds
+  }) => {
+    const backgrounds = Object.values(background).filter(bg => !isEmpty(bg));
+    return [
+      ...backgrounds.map(bg => ({ id: bg.id, object: bg })),
+      ...objectIds.map(id => ({ id, object: { ...objects[id], id } }))
+    ];
+  },
+  [PRINT._GETTERS.BACKGROUNDS]: ({ background }) => {
+    return background;
+  },
   [PRINT._GETTERS.CURRENT_SECTION]: ({ sections, currentSheetId }) => {
     if (isEmpty(currentSheetId)) return '';
 

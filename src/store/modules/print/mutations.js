@@ -230,7 +230,12 @@ export const mutations = {
       ...spreadInfo
     };
   },
-  [PRINT._MUTATES.SET_PAGE_EMPTY](state, { pageEmpty }) {
-    state.background[pageEmpty] = {};
+  [PRINT._MUTATES.CLEAR_BACKGROUNDS](state, pageEmpty) {
+    if (pageEmpty) {
+      state.background[pageEmpty] = {};
+      return;
+    }
+    state.background.left = {};
+    state.background.right = {};
   }
 };

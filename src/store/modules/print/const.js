@@ -24,6 +24,8 @@ class GetterClass extends BaseObject {
   GET_PAGE_INFO = 'getPageInfo';
   DEFAULT_THEME_ID = 'getDefaultThemeId';
   TOTAL_OBJECT = 'getTotalObject';
+  GET_OBJECTS_AND_BACKGROUNDS = 'getObjectsAndBackground';
+  BACKGROUNDS = 'getBackgrounds';
   CURRENT_SECTION = 'getCurrentSectionByCurrentSheetId';
 
   constructor(props) {
@@ -44,6 +46,13 @@ class ActionClass extends BaseObject {
   GET_DATA_CANVAS = 'getDataForCanvas';
   UPDATE_SHEET_THEME_LAYOUT = 'updateSheetThemeLayout';
   UPDATE_SHEET_LINK_STATUS = 'updateSheetLinkStatus';
+  SAVE_DEFAULT_THEME_ID = 'saveDefaultThemeId';
+  SAVE_SHEET_THEME_LAYOUT = 'saveSheetThemeLayout';
+  UPDATE_SHEET_VISITED = 'updateSheetVisted';
+  SAVE_PAGE_INFO = 'savePageInfo';
+  SAVE_SPREAD_INFO = 'saveSpreadInfo';
+  SAVE_SHEET_LINK_STATUS = 'saveSheetLinkStatus';
+  SAVE_SHEET_THUMBNAIL = 'saveSheetThumbnail';
 
   constructor(props) {
     super(props);
@@ -82,7 +91,7 @@ class MutationClass extends BaseObject {
   SET_PAGE_INFO = 'setPageInfo';
   SET_STATUS_PAGE_NUMBER = 'setStatusPageNumber';
   UPDATE_SPREAD_INFO = 'updateSpreadInfo';
-  SET_PAGE_EMPTY = 'setPageEmpty';
+  CLEAR_BACKGROUNDS = 'clearBackgrounds';
 
   constructor(props) {
     super(props);
