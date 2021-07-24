@@ -5,7 +5,7 @@ import PpButton from '@/components/Buttons/Button';
 import { useDrawLayout, useSheet } from '@/hooks';
 import { MUTATES as APP_MUTATES } from '@/store/modules/app/const';
 import { ACTIONS as PRINT_ACTIONS } from '@/store/modules/print/const';
-import { LAYOUT_TYPES, MODAL_TYPES, SHEET_TYPE } from '@/common/constants';
+import { MODAL_TYPES, SHEET_TYPE, LAYOUT_PAGE_TYPE } from '@/common/constants';
 import { resetObjects } from '@/common/utils';
 
 export default {
@@ -47,7 +47,7 @@ export default {
     }),
     onApplyLayout() {
       if (
-        this.layoutObjSelected.type === LAYOUT_TYPES.SINGLE_PAGE.value &&
+        this.layoutObjSelected.pageType === LAYOUT_PAGE_TYPE.SINGLE_PAGE.id &&
         ![SHEET_TYPE.FRONT_COVER, SHEET_TYPE.BACK_COVER].includes(
           this.pageSelected?.type
         )

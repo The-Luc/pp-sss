@@ -15,5 +15,6 @@ export const MODAL_TYPES = {
   SAVE_LAYOUT: 'SaveLayout',
   SELECT_PAGE_OF_LAYOUT: 'SelectPageOfLayout',
   SAVE_STYLE: 'SaveStyle',
-  SAVE_STYLE_SUCCESS: 'SaveStyleSuccess'
+  SAVE_STYLE_SUCCESS: 'SaveStyleSuccess',
+  SAVE_LAYOUT_SUCCESS: 'SaveLayoutSuccess'
 };

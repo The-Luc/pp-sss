@@ -20,7 +20,8 @@ import {
   LAYOUT_TYPES,
   MODAL_TYPES,
   SHEET_TYPE,
-  TOOL_NAME
+  TOOL_NAME,
+  LAYOUT_PAGE_TYPE
 } from '@/common/constants';
 import {
   getThemeOptSelectedById,
@@ -397,7 +398,7 @@ export default {
         }
 
         const isSinglePage =
-          this.layoutObjSelected.type === LAYOUT_TYPES.SINGLE_PAGE.value;
+          this.layoutObjSelected.pageType === LAYOUT_PAGE_TYPE.SINGLE_PAGE.id;
 
         const isFrontOrBackSheet = [
           SHEET_TYPE.FRONT_COVER,

@@ -4,7 +4,7 @@
       <div class="container-input">
         <div class="input-title">Add a name for your layout:</div>
         <div class="input">
-          <input v-model="layoutName" type="text" />
+          <input v-model="layoutName" type="text" maxlength="50" />
         </div>
       </div>
       <div class="container-btn">

@@ -72,7 +72,8 @@ import {
   DEFAULT_SHAPE,
   COVER_TYPE,
   DEFAULT_CLIP_ART,
-  DEFAULT_IMAGE
+  DEFAULT_IMAGE,
+  LAYOUT_PAGE_TYPE
 } from '@/common/constants';
 import SizeWrapper from '@/components/SizeWrapper';
 import PrintCanvasLines from './PrintCanvasLines';
@@ -89,7 +90,7 @@ import printService from '@/api/print';
 import { useAppCommon } from '@/hooks/common';
 import { EVENT_TYPE } from '@/common/constants/eventType';
 import { useStyle } from '@/hooks/style';
-import { loadPrintPpLayouts, setPrintPpLayouts } from '@/api/layouts';
+import { loadPrintPpLayouts, getPrintLayoutTypes } from '@/api/layouts';
 
 export default {
   components: {
@@ -136,7 +137,8 @@ export default {
       totalBackground: PRINT_GETTERS.TOTAL_BACKGROUND,
       totalObject: PRINT_GETTERS.TOTAL_OBJECT,
       getProperty: APP_GETTERS.SELECT_PROP_CURRENT_OBJECT,
-      getPageInfo: PRINT_GETTERS.GET_PAGE_INFO
+      getPageInfo: PRINT_GETTERS.GET_PAGE_INFO,
+      defaultThemeId: PRINT_GETTERS.DEFAULT_THEME_ID
     }),
     isCover() {
       return this.pageSelected?.type === SHEET_TYPE.COVER;
@@ -213,7 +215,8 @@ export default {
   },
   methods: {
     ...mapActions({
-      getDataCanvas: PRINT_ACTIONS.GET_DATA_CANVAS
+      getDataCanvas: PRINT_ACTIONS.GET_DATA_CANVAS,
+      saveLayout: PRINT_ACTIONS.SAVE_LAYOUT
     }),
     ...mapMutations({
       setBookId: PRINT_MUTATES.SET_BOOK_ID,
@@ -1581,22 +1584,79 @@ export default {
       });
     },
     async handleSaveLayout({ pageSelected, layoutName }) {
-      const objects = this.sheetLayout;
-      const layout = {
+      layoutName = layoutName || 'Untitle';
+      const layoutTypes = await getPrintLayoutTypes();
+      console.log(layoutTypes);
+      const zoom = window.printCanvas.getZoom();
+      const width = window.printCanvas.width;
+
+      const positionCenterX = pxToIn(width / zoom / 2);
+
+      const objects = Object.values(this.currentObjects);
+      const backgrounds = { ...this.currentBackgrounds };
+
+      let ppObjects = [...objects];
+      let layout = {
         id: parseInt(uniqueId()) + 100,
-        type: 'SavedLayoutsAndFavorites',
+        type: layoutTypes.SAVED_LAYOUTS_AND_FAVORITES.value,
         name: layoutName,
         isFavorites: false,
         previewImageUrl: window.printCanvas.toDataURL({
           quality: THUMBNAIL_IMAGE_QUALITY
         }),
-        themeId: 1,
-        objects
+        themeId: this.defaultThemeId,
+        pageType: LAYOUT_PAGE_TYPE.FULL_PAGE.id
       };
 
-      const ppLayouts = await loadPrintPpLayouts();
-      const layouts = [...ppLayouts, { ...layout }];
-      await setPrintPpLayouts(layouts);
+      if (pageSelected === 'left') {
+        ppObjects = objects.filter(item => {
+          return item.coord.x < positionCenterX;
+        });
+
+        delete backgrounds.right;
+
+        layout = {
+          ...layout,
+          previewImageUrl: window.printCanvas.toDataURL({
+            quality: THUMBNAIL_IMAGE_QUALITY,
+            width: width / 2
+          }),
+          pageType: LAYOUT_PAGE_TYPE.SINGLE_PAGE.id
+        };
+      }
+
+      if (pageSelected === 'right') {
+        ppObjects = objects.filter(item => {
+          return item.coord.x >= positionCenterX;
+        });
+        for (const item of ppObjects) {
+          item.coord.x -= positionCenterX;
+        }
+
+        delete backgrounds.left;
+
+        // ppBackgrounds = backgrounds
+        layout = {
+          ...layout,
+          previewImageUrl: window.printCanvas.toDataURL({
+            quality: THUMBNAIL_IMAGE_QUALITY,
+            left: width / 2,
+            width: width / 2
+          }),
+          pageType: LAYOUT_PAGE_TYPE.SINGLE_PAGE.id
+        };
+      }
+
+      const ppBackgrounds = Object.values(backgrounds).filter(item => {
+        return !isEmpty(item);
+      });
+
+      layout.objects = [...ppBackgrounds, ...ppObjects];
+
+      const storageLayouts = await loadPrintPpLayouts();
+      const layouts = [...storageLayouts, { ...layout }];
+
+      await this.saveLayout({ layouts });
     },
     async drawLayout() {
       await this.drawObjectsOnCanvas(this.sheetLayout);

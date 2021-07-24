@@ -48,3 +48,14 @@ export const LAYOUT_TYPES = {
     value: 'Supplemental'
   }
 };
+
+export const LAYOUT_PAGE_TYPE = {
+  FULL_PAGE: {
+    id: 0,
+    name: 'Spread Layouts'
+  },
+  SINGLE_PAGE: {
+    id: 1,
+    name: 'Single Page Layouts'
+  }
+};
