@@ -5,6 +5,7 @@
   >
     <div class="thumbnail-view-container">
       <Header
+        v-if="!isEditor"
         :name="name"
         :color="color"
         :custom-css-class="customCssClass"

@@ -12,21 +12,21 @@
     border-bottom: 0.5px solid $color-gray18;
   }
 
-  &:nth-child(4n + 1) {
+  &:not(.editor):nth-child(4n + 1) {
     .thumbnail-view-container {
       padding-left: 0px;
     }
   }
 
-  &:nth-child(4n) {
+  &:not(.editor):nth-child(4n) {
     .thumbnail-view-container {
       padding-right: 0px;
       border-right: 0.5px solid transparent;
     }
   }
 
-  &:nth-last-child(-n + 4):nth-child(4n + 1),
-  &:nth-last-child(-n + 4):nth-child(4n + 1) ~ & {
+  &:not(.editor):nth-last-child(-n + 4):nth-child(4n + 1),
+  &:not(.editor):nth-last-child(-n + 4):nth-child(4n + 1) ~ & {
     .thumbnail-view-container {
       border-bottom: 0.5px solid transparent;
     }

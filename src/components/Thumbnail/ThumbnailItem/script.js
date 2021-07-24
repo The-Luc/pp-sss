@@ -1,4 +1,4 @@
-import Header from './ThumbnailHeader';
+import Header from '../ThumbnailHeader';
 import Content from './ThumbnailContent';
 import Footer from './ThumbnailFooter';
 

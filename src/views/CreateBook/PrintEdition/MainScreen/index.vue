@@ -1,7 +1,7 @@
 <template>
   <div class="row thumbnail-view-row">
     <template v-for="section in sections">
-      <ThumbnailContainer
+      <ThumbnailItem
         v-for="sheet in section.sheets"
         :key="sheet.id"
         :name="section.name"

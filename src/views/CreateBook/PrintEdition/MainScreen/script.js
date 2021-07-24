@@ -1,4 +1,4 @@
-import ThumbnailContainer from '@/components/Thumbnail/ThumbnailContainer';
+import ThumbnailItem from '@/components/Thumbnail/ThumbnailItem';
 
 import { mapGetters, mapMutations, mapActions } from 'vuex';
 
@@ -16,7 +16,7 @@ import { getSectionsWithAccessible } from '@/common/utils';
 
 export default {
   components: {
-    ThumbnailContainer
+    ThumbnailItem
   },
   setup() {
     const { drawLayout } = useDrawLayout();
@@ -62,7 +62,7 @@ export default {
      * @param   {String}  pageRightName name of page right of selected sheet
      * @returns {Object}                number of page
      */
-     pageNumber({ pageLeftName, pageRightName }) {
+    pageNumber({ pageLeftName, pageRightName }) {
       return {
         numberLeft: pageLeftName,
         numberRight: pageRightName
