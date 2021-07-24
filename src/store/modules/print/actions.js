@@ -2,15 +2,18 @@ import { uniqueId } from 'lodash';
 
 import { isEmpty, isHalfSheet } from '@/common/utils';
 import printService from '@/api/print';
+import { setPrintPpLayouts } from '@/api/layouts';
 
 import {
   STATUS,
   OBJECT_TYPE,
   SHEET_TYPE,
-  LINK_STATUS
+  LINK_STATUS,
+  MODAL_TYPES
 } from '@/common/constants';
 
 import PRINT from './const';
+import { MUTATES as APP_MUTATES } from '../app/const';
 
 export const actions = {
   async [PRINT._ACTIONS.GET_DATA_MAIN]({ state, commit }) {
@@ -172,6 +175,19 @@ export const actions = {
   [PRINT._ACTIONS.SAVE_SHEET_LINK_STATUS]({ commit }, { statusLink, sheetId }) {
     printService.saveSheetLinkStatus(sheetId, statusLink);
     commit(PRINT._MUTATES.SET_SHEET_LINK_STATUS, { statusLink, sheetId });
+  },
+  async [PRINT._ACTIONS.SAVE_LAYOUT]({ commit }, { layouts }) {
+    await setPrintPpLayouts(layouts);
+    commit(
+      APP_MUTATES.TOGGLE_MODAL,
+      {
+        isOpenModal: true,
+        modalData: {
+          type: MODAL_TYPES.SAVE_LAYOUT_SUCCESS
+        }
+      },
+      { root: true }
+    );
   },
   [PRINT._ACTIONS.SAVE_SHEET_THUMBNAIL]({ commit }, { thumbnailUrl, sheetId }) {
     printService.saveSheetThumbnail(sheetId, thumbnailUrl);

@@ -46,6 +46,7 @@ class ActionClass extends BaseObject {
   GET_DATA_CANVAS = 'getDataForCanvas';
   UPDATE_SHEET_THEME_LAYOUT = 'updateSheetThemeLayout';
   UPDATE_SHEET_LINK_STATUS = 'updateSheetLinkStatus';
+  SAVE_LAYOUT = 'saveLayout';
   SAVE_DEFAULT_THEME_ID = 'saveDefaultThemeId';
   SAVE_SHEET_THEME_LAYOUT = 'saveSheetThemeLayout';
   UPDATE_SHEET_VISITED = 'updateSheetVisted';

@@ -14,12 +14,14 @@ import {
 export const useSheet = (isDigital = false) => {
   const GETTERS = isDigital ? DIGITAL_GETTERS : PRINT_GETTERS;
 
-  const { sheetLayout } = useGetters({
-    sheetLayout: GETTERS.SHEET_LAYOUT
+  const { sheetLayout, currentSheet } = useGetters({
+    sheetLayout: GETTERS.SHEET_LAYOUT,
+    currentSheet: GETTERS.CURRENT_SHEET
   });
 
   return {
-    sheetLayout
+    sheetLayout,
+    currentSheet
   };
 };
 

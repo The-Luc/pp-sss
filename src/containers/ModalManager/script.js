@@ -23,6 +23,7 @@ import ModalSaveLayout from '@/views/CreateBook/PrintEdition/EditScreen/PageEdit
 import ModalSelectPageOfLayout from '@/views/CreateBook/PrintEdition/EditScreen/PageEdition/ModalSaveLayout/ModalSelectPageOfLayout';
 import ModalSaveStyle from '@/containers/SaveStyle/SaveStyleModal';
 import ModalStyleSaved from '@/containers/SaveStyle/SavedModal';
+import ModalSaveLayoutSuccess from '@/views/CreateBook/PrintEdition/EditScreen/PageEdition/ModalSaveLayout/ModalSaveLayoutSuccess';
 
 const {
   HELP,
@@ -41,7 +42,8 @@ const {
   SAVE_LAYOUT,
   SELECT_PAGE_OF_LAYOUT,
   SAVE_STYLE,
-  SAVE_STYLE_SUCCESS
+  SAVE_STYLE_SUCCESS,
+  SAVE_LAYOUT_SUCCESS
 } = MODAL_TYPES;
 
 const ModalList = {
@@ -61,7 +63,8 @@ const ModalList = {
   [SAVE_LAYOUT]: SAVE_LAYOUT,
   [SELECT_PAGE_OF_LAYOUT]: SELECT_PAGE_OF_LAYOUT,
   [SAVE_STYLE]: SAVE_STYLE,
-  [SAVE_STYLE_SUCCESS]: SAVE_STYLE_SUCCESS
+  [SAVE_STYLE_SUCCESS]: SAVE_STYLE_SUCCESS,
+  [SAVE_LAYOUT_SUCCESS]: SAVE_LAYOUT_SUCCESS
 };
 
 export default {
@@ -87,7 +90,8 @@ export default {
     [MODAL_TYPES.SAVE_LAYOUT]: ModalSaveLayout,
     [MODAL_TYPES.SELECT_PAGE_OF_LAYOUT]: ModalSelectPageOfLayout,
     [MODAL_TYPES.SAVE_STYLE]: ModalSaveStyle,
-    [MODAL_TYPES.SAVE_STYLE_SUCCESS]: ModalStyleSaved
+    [MODAL_TYPES.SAVE_STYLE_SUCCESS]: ModalStyleSaved,
+    [MODAL_TYPES.SAVE_LAYOUT_SUCCESS]: ModalSaveLayoutSuccess
   },
   computed: {
     ...mapGetters({
