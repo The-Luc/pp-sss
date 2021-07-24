@@ -85,17 +85,9 @@ const imageRender = function(ctx) {
   const height = distanceCal(bl, tl);
   const width = distanceCal(bl, br);
 
-  console.log(height, width);
-
   if (this.strokeLineType === BORDER_STYLES.DOUBLE) {
     this.clipPath = getDoubleStrokeClipPath(width, height, this.strokeWidth);
   }
-
-  // if (
-  //   [BORDER_STYLES.DOTTED, BORDER_STYLES.DASHED].includes(
-  //     this.strokeLineType
-  //   )
-  // ) {
 
   if (BORDER_STYLES.SQUARE === this.strokeLineType) {
     this.strokeDashArray = [100];
@@ -104,13 +96,6 @@ const imageRender = function(ctx) {
     this.strokeDashArray = [0, 200];
     this.strokeLineCap = 'round';
     this.paintFirst = 'fill';
-
-    // this.strokeDashArray = getRectDashes(
-    //   width,
-    //   height,
-    //   this.strokeLineType,
-    //   this.strokeWidth
-    // );
   }
 
   fabric.Image.prototype._render.call(this, ctx);

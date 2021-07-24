@@ -10,6 +10,7 @@ import {
 } from '@/common/constants';
 
 import { inToPx, ptToPx, isEmpty, mapObject, scaleSize } from '@/common/utils';
+import { toFabricImageProp } from './image';
 
 export const DEFAULT_RULE_DATA = {
   TYPE: {
@@ -163,72 +164,6 @@ export const toFabricTextGroupProp = prop => {
       height: DEFAULT_RULE_DATA.HEIGHT
     },
     restrict: ['id', 'shadow', 'alignment', 'fontSize', 'rotation', 'style']
-  };
-
-  return mapObject(prop, mapRules);
-};
-
-/**
- * Convert stored image properties to fabric properties
- *
- * @param   {Object}  prop  stored image properties
- * @returns {Object}        fabric properties
- */
-export const toFabricImageProp = (prop, originalElement) => {
-  const mapRules = {
-    data: {
-      type: DEFAULT_RULE_DATA.TYPE,
-      x: DEFAULT_RULE_DATA.X,
-      y: DEFAULT_RULE_DATA.Y,
-      horizontal: DEFAULT_RULE_DATA.HORIZONTAL,
-      vertical: DEFAULT_RULE_DATA.VERTICAL,
-      width: {
-        name: 'scaleX',
-        parse: value => {
-          if (originalElement) {
-            return inToPx(value) / originalElement.width;
-          }
-          return 1;
-        }
-      },
-      height: {
-        name: 'scaleY',
-        parse: value => {
-          if (originalElement) {
-            return inToPx(value) / originalElement.height;
-          }
-          return 1;
-        }
-      }
-    },
-    restrict: ['border', 'rotation', 'centerCrop']
-  };
-  return mapObject(prop, mapRules);
-};
-
-/**
- * Convert stored image border properties to fabric properties
- *
- * @param   {Object}  style stored image border properties
- * @returns {Object}        fabric properties
- */
-export const toFabricImageBorderProp = prop => {
-  const mapRules = {
-    data: {
-      strokeWidth: {
-        name: 'strokeWidth',
-        parse: value => scaleSize(value)
-      }
-    },
-    restrict: [
-      'id',
-      'shadow',
-      'size',
-      'flip',
-      'rotation',
-      'isConstrain',
-      'style'
-    ]
   };
 
   return mapObject(prop, mapRules);

@@ -40,6 +40,7 @@ export default {
       if (id !== this.styleSelected) {
         this.$emit('onSelectImageStyle', id);
       }
+      this.onCloseDropdown();
     }
   }
 };
