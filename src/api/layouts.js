@@ -40,7 +40,6 @@ export const setPrintPpLayouts = layouts => {
 };
 
 export const getPrintLayoutTypes = () => {
-  console.log(1, mockPrintLayoutTypes);
   return new Promise(resolve => {
     setTimeout(() => {
       resolve(mockPrintLayoutTypes);
