@@ -71,9 +71,56 @@ export class BookDetail extends BookBase {
     min: 0,
     max: 0
   };
+  printData = new BookPrintData();
+  digitalData = new BookDigitalData();
 
   /**
    * @param {BookDetail} props
+   */
+  constructor(props) {
+    super(props);
+    this._set(props);
+  }
+}
+
+export class BookManagerDetail extends BookBase {
+  communityId = null;
+  createdDate = null;
+  deliveryDate = null;
+  releaseDate = null;
+  saleDate = null;
+  coverOption = '';
+  deliveryOption = '';
+  numberMaxPages = 0;
+  booksSold = 0;
+  fundraisingEarned = 0;
+  estimatedQuantity = {
+    min: 0,
+    max: 0
+  };
+
+  /**
+   * @param {BookDetailDetail} props
+   */
+  constructor(props) {
+    super(props);
+    this._set(props);
+  }
+}
+
+export class BookPrintDetail extends BookPrintData {
+  /**
+   * @param {BookPrintDetail} props
+   */
+  constructor(props) {
+    super(props);
+    this._set(props);
+  }
+}
+
+export class BookDigitalDetail extends BookDigitalData {
+  /**
+   * @param {BookDigitalDetail} props
    */
   constructor(props) {
     super(props);

@@ -1,173 +1,186 @@
-import { BookDetail, Section, Sheet } from '@/common/models';
+import {
+  BookDetail,
+  Section,
+  BookManagerDetail,
+  BookPrintDetail,
+  BookDigitalDetail,
+  SheetPrintData,
+  SheetDigitalData
+} from '@/common/models';
 
-import { isEmpty } from '@/common/utils';
+import { cloneDeep } from 'lodash';
 
-import books from '@/mock/books';
-import book, { modifyBookData } from '@/mock/book';
+export const getBookDetail = bookId => {
+  // TODO: remove when integrate API
+  bookId;
 
-/**
- * Temporary code, will be removed when integrating with API
- */
-export const storeBookInSessionStorage = () => {
-  const bookStorage = 'book-1719';
-  const sectionStorage = 'section-1719';
-  const sheetStorage = 'sheet-1719';
+  return new Promise(resolve => {
+    const { book, sheets, sections } = window.data;
+    const sectionData = cloneDeep(sections);
+    const sheetData = cloneDeep(sheets);
 
-  const book = window.sessionStorage.getItem(bookStorage);
+    const sectionIds = [];
+    const sectionsAsObject = {};
+    const sheetsAsObject = {};
 
-  if (!isEmpty(book)) return;
-
-  window.sessionStorage.setItem(bookStorage, JSON.stringify(books[1719]));
-
-  // tempory code, will remove when Luc finish his task
-  const sections = [];
-  const sheets = {};
-
-  books[1719].sections.forEach(section => {
-    const sheetIds = [];
-
-    section.sheets.forEach(sheet => {
-      const { id } = sheet;
-
-      sheets[id] = { ...sheet };
-
-      sheetIds.push(id);
+    sectionData.forEach(section => {
+      const { id } = section;
+      sectionsAsObject[id] = new Section(section);
+      sectionIds.push(id);
     });
 
-    section.sheetIds = sheetIds;
+    // TODO: define a general Sheet class
+    sheetData.forEach(sheet => {
+      sheetsAsObject[sheet.id] = sheet;
+    });
 
-    delete section.sheets;
-
-    sections.push(section);
+    resolve({
+      book: new BookDetail(book),
+      sectionIds,
+      sections: sectionData,
+      sheets: sheetData,
+      sectionsAsObject,
+      sheetsAsObject
+    });
   });
-
-  window.sessionStorage.setItem(sectionStorage, JSON.stringify(sections));
-  window.sessionStorage.setItem(sheetStorage, JSON.stringify(sheets));
-  // end temporary code
 };
 
 /**
  * Temporary code, will be replaced when integrating with API
  */
-export const getBookManagerApi = bookId => {
-  return new Promise(resolve => {
-    const bookData = JSON.parse(
-      window.sessionStorage.getItem(`book-${bookId}`)
-    );
-    const sectionData = JSON.parse(
-      window.sessionStorage.getItem(`section-${bookId}`)
-    );
-    const sheetData = JSON.parse(
-      window.sessionStorage.getItem(`sheet-${bookId}`)
-    );
-    const coverType = window.sessionStorage.getItem('bookCoverType');
-    const maxPage = window.sessionStorage.getItem('bookMaxPage');
+export const getBookManager = async bookId => {
+  const {
+    book,
+    sectionIds,
+    sectionsAsObject,
+    sheetsAsObject
+  } = await bookService.getBook(bookId);
 
-    delete bookData.printData;
-    delete bookData.digitalData;
+  const bookData = new BookManagerDetail(book);
 
-    if (!isEmpty(coverType)) bookData.coverOption = coverType;
+  return {
+    book: bookData,
+    sectionIds,
+    sections: sectionsAsObject,
+    sheets: sheetsAsObject
+  };
+};
 
-    if (!isEmpty(maxPage)) bookData.numberMaxPages = parseInt(maxPage, 10);
-
-    const sectionIds = [];
-    const sections = {};
-    const sheets = {};
-
-    // tempory code, will change when Luc finish his task
-    sectionData.forEach(section => {
-      const { id } = section;
-
-      sections[id] = new Section(section);
-
-      sectionIds.push(id);
-    });
-
-    Object.values(sheetData).forEach(sheet => {
-      delete sheet.printData;
-      delete sheet.digitalData;
-
-      sheets[sheet.id] = new Sheet(sheet);
-    });
-
-    const book = new BookDetail(bookData);
-
-    if (isEmpty(window.data)) window.data = {};
-
-    window.data.book = book;
-    window.data.sectionIds = sectionIds;
-    window.data.sections = sections;
-    window.data.sheets = sheets;
-    // end temporary code
-
-    resolve({
-      book: new BookDetail(bookData),
-      sectionIds,
-      sections,
-      sheets
-    });
+export const getBookPrint = async bookId => {
+  const {
+    book,
+    sectionIds,
+    sectionsAsObject,
+    sheets,
+    sections
+  } = await bookService.getBook(bookId);
+  const bookPrint = new BookPrintDetail({
+    ...book,
+    pageInfo: book.printData.pageInfo,
+    themeId: book.printData.themeId
   });
+
+  const sheetsPrint = sheets.map(s => new SheetPrintData(s));
+  const sheetsAsObject = {};
+  sheetsPrint.forEach(sheet => (sheetsAsObject[sheet.id] = sheet));
+
+  return {
+    book: bookPrint,
+    sectionIds,
+    sections: sectionsAsObject,
+    sheets: sheetsAsObject,
+    sectionsAsArray: sections
+  };
+};
+
+export const getBookDigital = async bookId => {
+  const {
+    book,
+    sectionIds,
+    sectionsAsObject,
+    sheets,
+    sections
+  } = await bookService.getBook(bookId);
+  const bookDigital = new BookDigitalDetail(book);
+
+  const sheetsDigital = sheets.map(s => new SheetDigitalData(s));
+  const sheetsAsObject = {};
+  sheetsDigital.forEach(sheet => (sheetsAsObject[sheet.id] = sheet));
+
+  return {
+    book: bookDigital,
+    sectionIds,
+    sections: sectionsAsObject,
+    sheets: sheetsAsObject,
+    sectionsAsArray: sections
+  };
 };
 
 const bookService = {
-  getBook: bookId => {
-    let res = { ...book };
-    // Handle for QC test
-    const [coverType, maxPage] = bookId.split('-');
-    if (coverType && maxPage) {
-      res = modifyBookData({
-        coverType,
-        maxPage
+  getBook: getBookDetail,
+  getBookPrint,
+  getBookDigital,
+  updateBook: (bookId, props) => {
+    // TODO: remove when integrate API
+    bookId;
+
+    return new Promise(resolve => {
+      window.data.book._set(props);
+      resolve({
+        data: window.data.book,
+        isSuccess: true
       });
-    }
-    res.id = bookId;
-    // End handle for QC test
-    return res;
+    });
   },
-  updateTitle: (bookId, title) => ({
-    data: title,
-    isSuccess: true
-  }),
-  updateSection: (bookId, sectionId, data) => {
+  updateTitle: async (bookId, title) => {
+    const response = await bookService.updateBook(bookId, { title });
     return {
+      data: response.data,
+      isSuccess: true
+    };
+  },
+  updateSection: (bookId, sectionId, data) => {
+    // TODO: remove when integrate API
+    bookId;
+
+    window.data.sections.forEach(section => {
+      if (section.id === sectionId) {
+        section._set(data);
+      }
+    });
+    return Promise.resolve({
       isSuccess: true,
       data: {
         bookId,
         sectionId,
         data
       }
-    };
+    });
   },
-  getSections: function() {
-    return book.sections;
-  },
-  getSection: function(sectionId) {
-    const index = book.sections.findIndex(s => s.id === sectionId);
+  getSections: async bookId => {
+    const { sections } = await bookService.getBook(bookId);
 
-    return index < 0 ? null : book.sections[index];
+    return sections;
   },
-  getSheets: function(sectionId) {
-    const section = this.getSection(sectionId);
+  getSection: async sectionId => {
+    const { sectionsAsObject } = await bookService.getBook();
 
-    return section === null ? [] : section.sheets;
+    return sectionsAsObject[sectionId] || null;
   },
-  getSheet: function(sectionId, sheetId) {
-    const sheets = this.getSheets(sectionId);
+  getSheets: async sectionId => {
+    const { sheets } = await bookService.getBook();
 
-    const index = sheets.findIndex(s => s.id === sheetId);
-
-    return index < 0 ? null : sheets[index];
+    return sheets.filter(sheet => sheet.sectionId === sectionId);
   },
-  updateBook: () => {
-    // api.put(`${ENDPOINT.GET_BOOK}/${data.albumId}`, data);
-    return {
-      status: 200,
-      data: 'ok'
-    };
+  getSheet: async (sectionId, sheetId) => {
+    const { sheetsAsObject } = await bookService.getBook();
+    const sheetObject = sheetsAsObject[sheetId] || {};
+
+    return sheetObject.sectionId === sectionId ? sheetObject : null;
   }
 };
 
 export default {
   ...bookService,
-  getBookManager: getBookManagerApi
+  getBookManager
 };

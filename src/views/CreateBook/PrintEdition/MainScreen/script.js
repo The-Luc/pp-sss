@@ -25,11 +25,11 @@ export default {
 
     return { drawLayout, currentUser };
   },
-  created() {
+  async created() {
     this.setBookId({ bookId: this.$route.params.bookId });
 
     // temporary code, will remove soon
-    const info = printService.getGeneralInfo();
+    const info = await printService.getGeneralInfo();
 
     this.setInfo({ ...info, bookId: this.$route.params.bookId });
 

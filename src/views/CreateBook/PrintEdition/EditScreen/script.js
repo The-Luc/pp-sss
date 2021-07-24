@@ -1,7 +1,10 @@
 import { mapMutations, mapGetters, mapActions } from 'vuex';
 
 import { MUTATES, GETTERS as APP_GETTERS } from '@/store/modules/app/const';
-import { MUTATES as BOOK_MUTATES } from '@/store/modules/book/const';
+import {
+  MUTATES as BOOK_MUTATES,
+  GETTERS as BOOK_GETTERS
+} from '@/store/modules/book/const';
 import {
   ACTIONS as PRINT_ACTIONS,
   MUTATES as PRINT_MUTATES,
@@ -56,7 +59,8 @@ export default {
     ...mapGetters({
       printThemeSelected: PRINT_GETTERS.DEFAULT_THEME_ID,
       isOpenMenuProperties: APP_GETTERS.IS_OPEN_MENU_PROPERTIES,
-      selectedToolName: APP_GETTERS.SELECTED_TOOL_NAME
+      selectedToolName: APP_GETTERS.SELECTED_TOOL_NAME,
+      getObjectsAndBackground: PRINT_GETTERS.GET_OBJECTS_AND_BACKGROUNDS
     })
   },
   watch: {
@@ -84,7 +88,7 @@ export default {
       me.setBookId({ bookId });
 
       // temporary code, will remove soon
-      const info = printService.getGeneralInfo();
+      const info = await printService.getGeneralInfo();
 
       me.setInfo({ ...info, bookId });
 
@@ -162,6 +166,10 @@ export default {
      * Save print canvas and change view
      */
     onClickSavePrintCanvas() {
+      printService.saveObjectsAndBackground(
+        this.pageSelected.id,
+        this.getObjectsAndBackground
+      );
       /*const canvas = window.printCanvas;
       let objs = canvas.getObjects();
       this.savePrintCanvas({

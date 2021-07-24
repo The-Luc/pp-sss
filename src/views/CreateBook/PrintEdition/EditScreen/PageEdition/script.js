@@ -4,7 +4,7 @@ import { cloneDeep, uniqueId, merge, debounce } from 'lodash';
 
 import { imageBorderModifier, usePrintOverrides } from '@/plugins/fabric';
 
-import { useInfoBar } from '@/hooks';
+import { useInfoBar, useSaveSheetThumbnail } from '@/hooks';
 import { startDrawBox } from '@/common/fabricObjects/drawingBox';
 
 import {
@@ -89,7 +89,7 @@ import { createImage } from '@/common/fabricObjects';
 import printService from '@/api/print';
 import { useAppCommon } from '@/hooks/common';
 import { EVENT_TYPE } from '@/common/constants/eventType';
-import { useStyle } from '@/hooks/style';
+import { useTextStyle } from '@/hooks/style';
 import { loadPrintPpLayouts, setPrintPpLayouts } from '@/api/layouts';
 
 export default {
@@ -103,9 +103,16 @@ export default {
   setup() {
     const { setActiveEdition } = useAppCommon();
     const { setInfoBar, zoom } = useInfoBar();
-    const { onSaveStyle } = useStyle();
+    const { setThumbnail } = useSaveSheetThumbnail();
+    const { onSaveTextStyle } = useTextStyle();
 
-    return { setActiveEdition, setInfoBar, zoom, onSaveStyle };
+    return {
+      setActiveEdition,
+      setInfoBar,
+      zoom,
+      onSaveTextStyle,
+      setThumbnail
+    };
   },
   data() {
     return {
@@ -137,7 +144,8 @@ export default {
       totalBackground: PRINT_GETTERS.TOTAL_BACKGROUND,
       totalObject: PRINT_GETTERS.TOTAL_OBJECT,
       getProperty: APP_GETTERS.SELECT_PROP_CURRENT_OBJECT,
-      getPageInfo: PRINT_GETTERS.GET_PAGE_INFO
+      getPageInfo: PRINT_GETTERS.GET_PAGE_INFO,
+      getObjectsAndBackground: PRINT_GETTERS.GET_OBJECTS_AND_BACKGROUNDS
     }),
     isCover() {
       return this.pageSelected?.type === SHEET_TYPE.COVER;
@@ -165,8 +173,10 @@ export default {
       deep: true,
       async handler(val, oldVal) {
         if (val?.id !== oldVal?.id) {
-          // save the previous canvas on sessionStorage
-          printService.saveCanvasState(oldVal.id, this.sheetLayout);
+          printService.saveObjectsAndBackground(
+            oldVal.id,
+            this.getObjectsAndBackground
+          );
 
           // get data either from API or sessionStorage
           await this.getDataCanvas();
@@ -199,9 +209,6 @@ export default {
     window.removeEventListener('copy', this.handleCopy);
     window.removeEventListener('paste', this.handlePaste);
 
-    // save the current sheet to sessionStorage
-    printService.saveCanvasState(this.pageSelected.id, this.sheetLayout);
-
     window.printCanvas = null;
 
     sessionStorage.removeItem(COPY_OBJECT_KEY);
@@ -223,7 +230,6 @@ export default {
       setObjectTypeSelected: MUTATES.SET_OBJECT_TYPE_SELECTED,
       setSelectedObjectId: PRINT_MUTATES.SET_CURRENT_OBJECT_ID,
       setCurrentObject: MUTATES.SET_CURRENT_OBJECT,
-      setObjects: PRINT_MUTATES.SET_OBJECTS,
       addNewObject: PRINT_MUTATES.ADD_OBJECT,
       setObjectProp: PRINT_MUTATES.SET_PROP,
       setObjectPropById: PRINT_MUTATES.SET_PROP_BY_ID,
@@ -233,7 +239,6 @@ export default {
         PRINT_MUTATES.UPDATE_TRIGGER_BACKGROUND_CHANGE,
       deleteObjects: PRINT_MUTATES.DELETE_OBJECTS,
       updateTriggerShapeChange: MUTATES.UPDATE_TRIGGER_SHAPE_CHANGE,
-      setThumbnail: PRINT_MUTATES.UPDATE_SHEET_THUMBNAIL,
       updateTriggerClipArtChange: MUTATES.UPDATE_TRIGGER_CLIPART_CHANGE,
       reorderObjectIds: PRINT_MUTATES.REORDER_OBJECT_IDS,
       toggleActiveObjects: MUTATES.TOGGLE_ACTIVE_OBJECTS,

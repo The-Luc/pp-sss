@@ -32,6 +32,7 @@ export class FrameInfo extends BaseObject {
 
 export class SheetBase extends BaseEntity {
   type = SHEET_TYPE.NORMAL;
+  sectionId = null;
 
   /**
    * @param {SheetBase} props
