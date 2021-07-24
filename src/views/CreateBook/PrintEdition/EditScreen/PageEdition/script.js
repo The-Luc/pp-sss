@@ -1657,7 +1657,6 @@ export default {
 
         delete backgrounds.left;
 
-        // ppBackgrounds = backgrounds
         layout = {
           ...layout,
           previewImageUrl: window.printCanvas.toDataURL({
