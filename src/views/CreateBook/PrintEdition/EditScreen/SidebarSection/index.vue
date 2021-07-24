@@ -11,8 +11,8 @@
         @toggleContent="onToggleSheets(section.id)"
       />
       <ThumbnailItem
-        v-show="checkIsExpand(section.id)"
         v-for="sheet in section.sheets"
+        v-show="checkIsExpand(section.id)"
         :key="`${section.id}-${sheet.id}`"
         :ref="`spread${sheet.id}`"
         :name="section.name"
