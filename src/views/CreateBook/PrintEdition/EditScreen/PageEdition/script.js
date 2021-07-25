@@ -4,7 +4,7 @@ import { cloneDeep, uniqueId, merge, debounce } from 'lodash';
 
 import { imageBorderModifier, usePrintOverrides } from '@/plugins/fabric';
 
-import { useInfoBar, useSaveData, useSaveSheetThumbnail } from '@/hooks';
+import { useInfoBar, useSaveData } from '@/hooks';
 import { startDrawBox } from '@/common/fabricObjects/drawingBox';
 
 import {
@@ -103,7 +103,6 @@ export default {
   setup() {
     const { setActiveEdition } = useAppCommon();
     const { setInfoBar, zoom } = useInfoBar();
-    const { setThumbnail } = useSaveSheetThumbnail();
     const { onSaveStyle } = useStyle();
     const { savePrintEditScreen } = useSaveData();
 
@@ -112,7 +111,6 @@ export default {
       setInfoBar,
       zoom,
       onSaveStyle,
-      setThumbnail,
       savePrintEditScreen
     };
   },
@@ -245,7 +243,8 @@ export default {
       toggleActiveObjects: MUTATES.TOGGLE_ACTIVE_OBJECTS,
       setPropertiesObjectType: MUTATES.SET_PROPERTIES_OBJECT_TYPE,
       setBackgroundProp: PRINT_MUTATES.SET_BACKGROUND_PROP,
-      deleteBackground: PRINT_MUTATES.DELETE_BACKGROUND
+      deleteBackground: PRINT_MUTATES.DELETE_BACKGROUND,
+      setThumbnail: PRINT_MUTATES.UPDATE_SHEET_THUMBNAIL
     }),
 
     /**

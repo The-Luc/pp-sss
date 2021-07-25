@@ -37,25 +37,6 @@ const useMutationEditionSheet = (isDigital = false) => {
   };
 };
 
-// TODO -Luc: Revised it soon
-export const useSaveSpreadInfo = (isDigital = false) => {
-  const ACTIONS = isDigital ? DIGITAL_ACTIONS : PRINT_ACTIONS;
-
-  const { setSpreadInfo } = useActions({
-    setSpreadInfo: ACTIONS.SAVE_SPREAD_INFO
-  });
-
-  return { setSpreadInfo };
-};
-export const useSaveSheetThumbnail = (isDigital = false) => {
-  const ACTIONS = isDigital ? DIGITAL_ACTIONS : PRINT_ACTIONS;
-
-  const { setThumbnail } = useActions({
-    setThumbnail: ACTIONS.SAVE_SHEET_THUMBNAIL
-  });
-
-  return { setThumbnail };
-};
 export const useMutationPrintSheet = () => {
   // adding mutation for print edition only here
 
