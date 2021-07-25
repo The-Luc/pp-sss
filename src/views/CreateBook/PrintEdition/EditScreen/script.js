@@ -168,9 +168,11 @@ export default {
         this.getObjectsAndBackground
       );
 
-      this.$router.push(
-        getEditionListPath(this.$route.params.bookId, EDITION.PRINT)
-      );
+      setTimeout(() => {
+        this.$router.push(
+          getEditionListPath(this.$route.params.bookId, EDITION.PRINT)
+        );
+      }, 2000);
     },
     /**
      * Fire when zoom is changed

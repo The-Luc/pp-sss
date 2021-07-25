@@ -12,12 +12,19 @@ export default {
       required: true
     }
   },
+  data() {
+    return {
+      message: '',
+      componentKey: false
+    };
+  },
   computed: mapGetters({
     triggerAutosave: GETTERS.TRIGGER_AUTOSAVE
   }),
   watch: {
     triggerAutosave() {
-      console.log(this.triggerAutoSave);
+      this.message = 'Autosaving...';
+      this.forceRenderComponent();
     }
   },
   methods: {
@@ -25,7 +32,16 @@ export default {
      * Click save and emit save button
      */
     onClickSave() {
+      this.message = 'Saving....';
+      this.forceRenderComponent();
       this.$emit('onClickSave');
+    },
+
+    /**
+     * Trigger to re-render the component
+     */
+    forceRenderComponent() {
+      this.componentKey = !this.componentKey;
     }
   }
 };

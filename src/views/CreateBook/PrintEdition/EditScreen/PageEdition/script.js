@@ -204,7 +204,7 @@ export default {
   mounted() {
     setInterval(() => {
       this.updateTriggerAutosave();
-    }, 5000);
+    }, 60 * 1000);
 
     window.addEventListener('copy', this.handleCopy);
     window.addEventListener('paste', this.handlePaste);
