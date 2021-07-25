@@ -1,15 +1,9 @@
-import mockPrintLayouts from '@/mock/layouts';
-import { LAYOUT_TYPES as mockPrintLayoutTypes } from '@/mock/layoutTypes';
 import { packageLayouts, supplementalLayouts } from '@/mock/digitalLayouts';
 
 export const loadLayouts = () => {
-  const storageLayouts =
-    JSON.parse(window.sessionStorage.getItem('ppLayouts')) || [];
-  const layouts = [...mockPrintLayouts, ...storageLayouts];
-
   return new Promise(resolve => {
     setTimeout(() => {
-      resolve(layouts);
+      resolve(window.data.layouts);
     });
   });
 };
@@ -25,12 +19,9 @@ export const loadSupplementalLayouts = () =>
   Promise.resolve(supplementalLayouts);
 
 export const loadPrintPpLayouts = () => {
-  const storageLayouts =
-    JSON.parse(window.sessionStorage.getItem('ppLayouts')) || [];
-
   return new Promise(resolve => {
     setTimeout(() => {
-      resolve(storageLayouts);
+      resolve(window.data.layouts);
     });
   });
 };
@@ -44,7 +35,7 @@ export const setPrintPpLayouts = layouts => {
 export const getPrintLayoutTypes = () => {
   return new Promise(resolve => {
     setTimeout(() => {
-      resolve(mockPrintLayoutTypes);
+      resolve(window.data.layoutTypes);
     });
   });
 };
