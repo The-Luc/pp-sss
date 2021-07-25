@@ -1,5 +1,5 @@
 import { cloneDeep, merge, intersection } from 'lodash';
-import { STATUS } from '@/common/constants';
+import { STATUS, MODIFICATION } from '@/common/constants';
 
 export let activeCanvas = null;
 
@@ -250,4 +250,37 @@ export const getDisplayInfo = (name, description, customClass) => {
     description: isEmpty(description) ? '' : description,
     ...{ customClass }
   };
+};
+
+/**
+ * Modify item list
+ *
+ * @param   {Array}   items         list of item need to be modified
+ * @param   {Any}     item          item in the list needs to be changed
+ * @param   {Number}  index         index of item in the list
+ * @param   {Number}  modifyType    modify type (0: add, 1: update, 2: delete)
+ * @returns {Array}                 list of item after modified
+ */
+export const modifyItems = (items, item, index, modifyType) => {
+  const _items = [...items];
+
+  if (modifyType === MODIFICATION.DELETE) {
+    _items.splice(index, 1);
+
+    return _items;
+  }
+
+  if (modifyType === MODIFICATION.ADD) {
+    const addIndex = isEmpty(index) ? items.length : index;
+
+    _items.splice(addIndex, 0, item);
+
+    return _items;
+  }
+
+  _items.splice(index, 1);
+
+  _items.splice(index, 0, item);
+
+  return _items;
 };

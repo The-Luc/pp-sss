@@ -59,3 +59,9 @@ export const LAYOUT_PAGE_TYPE = {
     name: 'Single Page Layouts'
   }
 };
+
+export const SAVED_AND_FAVORITES = {
+  name: 'Saved Layouts/Favorites',
+  id: -999,
+  value: -999
+};

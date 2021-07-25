@@ -127,9 +127,9 @@ export default {
     onSelectSheet({ id }) {
       if (this.pageSelected.id !== id) this.$router.push(`${id}`);
 
-      if (this.isOpenMenuProperties) {
-        this.toggleMenuProperties({ isOpenMenuProperties: false });
-      }
+      this.toggleMenuProperties({ isOpenMenuProperties: false });
+
+      this.setToolNameSelected('');
 
       if (this.pageSelected.isVisited) return;
 
