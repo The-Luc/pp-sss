@@ -67,38 +67,61 @@ const getDoubleStrokeClipPath = function(width, height, strokeWidth) {
  * @param {CanvasRenderingContext2D} ctx Context to render on
  */
 const imageRender = function(ctx) {
-  // TODO: implement to render double, dashed and dotted stroke for image
-  // not yet done implemented, please skip this function while reviewing
   this.clipPath = null;
   this.strokeDashArray = [];
-  this.strokeLineCap = 'butt';
 
   if (!this.strokeWidth) {
     fabric.Image.prototype._render.call(this, ctx);
     return;
   }
 
-  function distanceCal(a, b) {
-    return Math.sqrt((a.x - b.x) ** 2 + (a.y - b.y) ** 2);
-  }
-  const { bl, br, tl } = this.aCoords;
-  const height = distanceCal(bl, tl);
-  const width = distanceCal(bl, br);
+  const heightForDash =
+    this.height * this.scaleY + this.strokeWidth / this.scaleY;
+  const widthForDash =
+    this.width * this.scaleX + this.strokeWidth / this.scaleX;
+
+  const height = this.height + this.strokeWidth / this.scaleY;
+  const width = this.width + this.strokeWidth / this.scaleX;
 
   if (this.strokeLineType === BORDER_STYLES.DOUBLE) {
-    this.clipPath = getDoubleStrokeClipPath(width, height, this.strokeWidth);
+    this.clipPath = getDoubleStrokeClipPath(
+      width,
+      height,
+      this.strokeWidth / this.scaleX
+    );
   }
 
-  if (BORDER_STYLES.SQUARE === this.strokeLineType) {
-    this.strokeDashArray = [100];
-  }
-  if (BORDER_STYLES.ROUND === this.strokeLineType) {
-    this.strokeDashArray = [0, 200];
-    this.strokeLineCap = 'round';
-    this.paintFirst = 'fill';
+  if (
+    [BORDER_STYLES.ROUND, BORDER_STYLES.SQUARE].includes(this.strokeLineType)
+  ) {
+    this.strokeDashArray = getRectDashes(
+      widthForDash,
+      heightForDash,
+      this.strokeLineType,
+      this.strokeWidth
+    );
   }
 
   fabric.Image.prototype._render.call(this, ctx);
+};
+
+const imageStrokeRender = function(ctx) {
+  if (!this.stroke || this.strokeWidth === 0) {
+    return;
+  }
+  const offsetX = this.strokeWidth / 2 / this.scaleX;
+  const offsetY = this.strokeWidth / 2 / this.scaleY;
+
+  var w = this.width / 2 + offsetX,
+    h = this.height / 2 + offsetY;
+
+  ctx.beginPath();
+  ctx.moveTo(-w, -h);
+  ctx.lineTo(w, -h);
+  ctx.lineTo(w, h);
+  ctx.lineTo(-w, h);
+  ctx.lineTo(-w, -h);
+  ctx.closePath();
 };
 
 /**
@@ -150,6 +173,7 @@ export const useDoubleStroke = function(rect) {
  */
 export const imageBorderModifier = function(image) {
   image._render = imageRender;
+  image._stroke = imageStrokeRender;
 };
 
 /**
