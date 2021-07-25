@@ -62,7 +62,10 @@ export default {
           },
           strokeWidth: {
             name: 'border-width',
-            parse: value => (value > 10 ? '10px' : value + 'px')
+            parse: value => {
+              const borderWidth = parseInt(value, 10) / 3;
+              return `${borderWidth > 10 ? 10 : borderWidth}px`;
+            }
           },
           strokeLineType: {
             name: 'border-style',
@@ -72,7 +75,20 @@ export default {
         restrict: []
       };
 
-      return mapObject(cssStyle, mapRules);
+      const styles = mapObject(cssStyle, mapRules);
+
+      const { dropShadow, shadowAngle, shadowBlur, shadowColor, shadowOffset } =
+        cssStyle?.shadow || {};
+      const offsetX = parseInt(Math.cos(shadowAngle) * shadowOffset, 10) / 3;
+      const offsetY = parseInt(Math.sin(shadowAngle) * shadowOffset, 10) / 3;
+      const blur = parseInt(shadowBlur, 10) / 3;
+      const shadowStyle = dropShadow
+        ? {
+            'box-shadow': `${offsetX}px ${offsetY}px ${blur}px ${shadowColor}`
+          }
+        : 'none';
+
+      return { ...styles, ...shadowStyle };
     },
 
     /**
