@@ -1,7 +1,7 @@
 import Modal from '@/containers/Modal';
 import PpButton from '@/components/Buttons/Button';
-import { MODAL_TYPES } from '@/common/constants';
-import { useModal } from '@/hooks';
+import { MODAL_TYPES, SHEET_TYPE } from '@/common/constants';
+import { useModal, useSheet } from '@/hooks';
 
 export default {
   components: {
@@ -10,9 +10,16 @@ export default {
   },
   setup() {
     const { toggleModal } = useModal();
-    return { toggleModal };
+    const { currentSheet } = useSheet();
+    return { toggleModal, currentSheet };
   },
-  computed: {},
+  computed: {
+    isHaflSheet() {
+      return [SHEET_TYPE.FRONT_COVER, SHEET_TYPE.BACK_COVER].includes(
+        this.currentSheet.type
+      );
+    }
+  },
   methods: {
     /**
      * Trigger mutation to close modal
@@ -24,15 +31,32 @@ export default {
     },
     /**
      * Select page of layout to save layout and open modal set name layout
+     * @param  {String} pageSelected page left, right, full
      */
-    onSelectPageOfLayout() {
+    onSelectPageOfLayout(pageSelected) {
       this.onCancel();
       this.toggleModal({
         isOpenModal: true,
         modalData: {
-          type: MODAL_TYPES.SAVE_LAYOUT
+          type: MODAL_TYPES.SAVE_LAYOUT,
+          props: {
+            pageSelected
+          }
         }
       });
+    },
+    /**
+     * Open modal set name layout of half sheet
+     */
+    onSaveLayoutOfHalfSheet() {
+      if (SHEET_TYPE.FRONT_COVER === this.currentSheet.type) {
+        this.onSelectPageOfLayout('right');
+        return;
+      }
+      if (SHEET_TYPE.BACK_COVER === this.currentSheet.type) {
+        this.onSelectPageOfLayout('left');
+        return;
+      }
     }
   }
 };

@@ -91,5 +91,10 @@ export const getters = {
   },
   [DIGITAL._GETTERS.TOTAL_OBJECT]: ({ objectIds }) => {
     return objectIds.length;
+  },
+  [DIGITAL._GETTERS.CURRENT_SECTION]: ({ sections, currentSheetId }) => {
+    if (isEmpty(currentSheetId)) return '';
+
+    return sections.find(s => s.sheetIds.includes(currentSheetId));
   }
 };

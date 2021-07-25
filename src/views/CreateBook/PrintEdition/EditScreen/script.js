@@ -7,7 +7,7 @@ import {
   MUTATES as PRINT_MUTATES,
   GETTERS as PRINT_GETTERS
 } from '@/store/modules/print/const';
-import { MODAL_TYPES, TOOL_NAME } from '@/common/constants';
+import { MODAL_TYPES, ROLE, TOOL_NAME } from '@/common/constants';
 import ToolBar from './ToolBar';
 import Header from '@/containers/HeaderEdition/Header';
 import FeedbackBar from '@/containers/HeaderEdition/FeedbackBar';
@@ -18,10 +18,11 @@ import {
   usePopoverCreationTool,
   useInfoBar,
   useMutationPrintSheet,
-  useUser
+  useUser,
+  useGetterPrintSheet
 } from '@/hooks';
 import { EDITION } from '@/common/constants';
-import { isEmpty } from '@/common/utils';
+import { isEmpty, isPositiveInteger, getEditionListPath } from '@/common/utils';
 
 import printService from '@/api/print';
 
@@ -39,6 +40,7 @@ export default {
     const { setInfoBar } = useInfoBar();
     const { setCurrentSheetId } = useMutationPrintSheet();
     const { currentUser } = useUser();
+    const { currentSection } = useGetterPrintSheet();
 
     return {
       pageSelected,
@@ -46,14 +48,16 @@ export default {
       updateVisited,
       setInfoBar,
       setCurrentSheetId,
-      currentUser
+      currentUser,
+      currentSection
     };
   },
   computed: {
     ...mapGetters({
       printThemeSelected: PRINT_GETTERS.DEFAULT_THEME_ID,
       isOpenMenuProperties: APP_GETTERS.IS_OPEN_MENU_PROPERTIES,
-      selectedToolName: APP_GETTERS.SELECTED_TOOL_NAME
+      selectedToolName: APP_GETTERS.SELECTED_TOOL_NAME,
+      getObjectsAndBackground: PRINT_GETTERS.GET_OBJECTS_AND_BACKGROUNDS
     })
   },
   watch: {
@@ -67,20 +71,45 @@ export default {
     }
   },
   beforeRouteEnter(to, _, next) {
-    next(async me => {
-      me.setBookId({ bookId: to.params.bookId });
+    next(async vm => {
+      const bookId = to.params.bookId;
+
+      const editionMainUrl = getEditionListPath(bookId, EDITION.PRINT);
+
+      if (!isPositiveInteger(to.params?.sheetId)) {
+        vm.$router.replace(editionMainUrl);
+
+        return;
+      }
+
+      vm.setBookId({ bookId });
 
       // temporary code, will remove soon
-      const info = printService.getGeneralInfo();
+      const info = await printService.getGeneralInfo();
 
-      me.setInfo({ ...info, bookId: to.params.bookId });
+      vm.setInfo({ ...info, bookId });
 
-      await me.getDataPageEdit();
+      await vm.getDataPageEdit();
 
-      me.setCurrentSheetId({ id: to.params?.sheetId });
+      vm.setCurrentSheetId({ id: parseInt(to.params.sheetId) });
 
-      if (isEmpty(me.printThemeSelected)) {
-        me.openSelectThemeModal();
+      if (isEmpty(vm.currentSection)) {
+        vm.$router.replace(editionMainUrl);
+
+        return;
+      }
+
+      const isAdmin = vm.currentUser.role === ROLE.ADMIN;
+      const isAssigned = vm.currentUser.id === vm.currentSection.assigneeId;
+
+      if (!isAdmin && !isAssigned) {
+        vm.$router.replace(editionMainUrl);
+
+        return;
+      }
+
+      if (isEmpty(vm.printThemeSelected)) {
+        vm.openSelectThemeModal();
       }
     });
   },
@@ -134,12 +163,14 @@ export default {
      * Save print canvas and change view
      */
     onClickSavePrintCanvas() {
-      /*const canvas = window.printCanvas;
-      let objs = canvas.getObjects();
-      this.savePrintCanvas({
-        data: objs
-      });*/
-      this.$router.push(`/book/${this.$route.params.bookId}/edit/print`);
+      printService.saveObjectsAndBackground(
+        this.pageSelected.id,
+        this.getObjectsAndBackground
+      );
+
+      this.$router.push(
+        getEditionListPath(this.$route.params.bookId, EDITION.PRINT)
+      );
     },
     /**
      * Fire when zoom is changed

@@ -63,6 +63,68 @@ const getDoubleStrokeClipPath = function(width, height, strokeWidth) {
 };
 
 /**
+ * Image Render function with override on clipPath to support double stroke
+ * @param {CanvasRenderingContext2D} ctx Context to render on
+ */
+const imageRender = function(ctx) {
+  this.clipPath = null;
+  this.strokeDashArray = [];
+
+  if (!this.strokeWidth) {
+    fabric.Image.prototype._render.call(this, ctx);
+    return;
+  }
+
+  const heightForDash =
+    this.height * this.scaleY + this.strokeWidth / this.scaleY;
+  const widthForDash =
+    this.width * this.scaleX + this.strokeWidth / this.scaleX;
+
+  const height = this.height + this.strokeWidth / this.scaleY;
+  const width = this.width + this.strokeWidth / this.scaleX;
+
+  if (this.strokeLineType === BORDER_STYLES.DOUBLE) {
+    this.clipPath = getDoubleStrokeClipPath(
+      width,
+      height,
+      this.strokeWidth / this.scaleX
+    );
+  }
+
+  if (
+    [BORDER_STYLES.ROUND, BORDER_STYLES.SQUARE].includes(this.strokeLineType)
+  ) {
+    this.strokeDashArray = getRectDashes(
+      widthForDash,
+      heightForDash,
+      this.strokeLineType,
+      this.strokeWidth
+    );
+  }
+
+  fabric.Image.prototype._render.call(this, ctx);
+};
+
+const imageStrokeRender = function(ctx) {
+  if (!this.stroke || this.strokeWidth === 0) {
+    return;
+  }
+  const offsetX = this.strokeWidth / 2 / this.scaleX;
+  const offsetY = this.strokeWidth / 2 / this.scaleY;
+
+  var w = this.width / 2 + offsetX,
+    h = this.height / 2 + offsetY;
+
+  ctx.beginPath();
+  ctx.moveTo(-w, -h);
+  ctx.lineTo(w, -h);
+  ctx.lineTo(w, h);
+  ctx.lineTo(-w, h);
+  ctx.lineTo(-w, -h);
+  ctx.closePath();
+};
+
+/**
  * Rect Render function with override on clipPath to support double stroke
  * @param {CanvasRenderingContext2D} ctx Context to render on
  */
@@ -103,6 +165,15 @@ const rectRender = function(ctx) {
  */
 export const useDoubleStroke = function(rect) {
   rect._render = rectRender;
+};
+
+/**
+ * Allow fabric image object to have double stroke
+ * @param {fabric.Image} image - the object to enable double stroke
+ */
+export const imageBorderModifier = function(image) {
+  image._render = imageRender;
+  image._stroke = imageStrokeRender;
 };
 
 /**

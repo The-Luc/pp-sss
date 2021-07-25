@@ -1,12 +1,12 @@
-import layouts from '@/mock/layouts';
 import { packageLayouts, supplementalLayouts } from '@/mock/digitalLayouts';
 
-export const loadLayouts = () =>
-  new Promise(resolve => {
+export const loadLayouts = () => {
+  return new Promise(resolve => {
     setTimeout(() => {
-      resolve(layouts);
+      resolve(window.data.layouts);
     });
   });
+};
 
 export const loadDigitalLayouts = () =>
   new Promise(resolve => {
@@ -17,3 +17,47 @@ export const loadDigitalLayouts = () =>
 
 export const loadSupplementalLayouts = () =>
   Promise.resolve(supplementalLayouts);
+
+export const loadPrintPpLayouts = () => {
+  return new Promise(resolve => {
+    setTimeout(() => {
+      resolve(window.data.layouts);
+    });
+  });
+};
+
+export const setPrintPpLayouts = layouts => {
+  setTimeout(() => {
+    window.sessionStorage.setItem('ppLayouts', JSON.stringify(layouts));
+  });
+};
+
+export const getPrintLayoutTypes = () => {
+  return new Promise(resolve => {
+    setTimeout(() => {
+      resolve(window.data.layoutTypes);
+    });
+  });
+};
+
+export const saveToFavorites = (layoutId, isFavorites) => {
+  return new Promise(resolve => {
+    if (!layoutId) {
+      resolve();
+
+      return;
+    }
+
+    const index = window.data.layouts.findIndex(({ id }) => id === layoutId);
+
+    if (index < 0) {
+      resolve();
+
+      return;
+    }
+
+    window.data.layouts[index] = { ...window.data.layouts[index], isFavorites };
+
+    resolve();
+  });
+};

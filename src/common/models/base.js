@@ -25,7 +25,7 @@ export class BaseEntity extends BaseObject {
   id = null;
 
   /**
-   * @param {DefaultLayout} props
+   * @param {BaseEntity} props
    */
   constructor(props) {
     super(props);

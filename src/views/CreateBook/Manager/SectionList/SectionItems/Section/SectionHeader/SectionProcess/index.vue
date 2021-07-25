@@ -6,18 +6,16 @@
     <img :src="moreIcon" alt="more icon" @click.stop="toggleMenu" />
 
     <Action
+      :key="componentKey"
+      :is-open-menu="isOpenMenu"
       :section-id="section.id"
       :section-name="section.name"
       :assignee-id="section.assigneeId"
       :due-date="section.dueDate"
       :status="section.status"
       :menu-class="menuClass"
-      :items="menuItems"
       :menu-x="menuX"
       :menu-y="menuY"
-      @statusUpdate="onStatusUpdate"
-      @dueDateUpdate="onDueDateUpdate"
-      @assigneeUpdate="onAssigneeUpdate"
     />
   </v-col>
 </template>

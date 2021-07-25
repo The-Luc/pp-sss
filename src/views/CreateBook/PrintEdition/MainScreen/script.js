@@ -1,35 +1,34 @@
+import ThumbnailItem from '@/components/Thumbnail/ThumbnailItem';
+
 import { mapGetters, mapMutations, mapActions } from 'vuex';
 
-import ListThumbContainer from '@/components/Thumbnail/ListThumbContainer';
-import Thumbnail from '@/components/Thumbnail/ThumbnailPrint';
+import { useUser } from '@/hooks';
+
+import { getSectionsWithAccessible } from '@/common/utils';
+
 import {
   ACTIONS as PRINT_ACTIONS,
   MUTATES as PRINT_MUTATES,
   GETTERS as PRINT_GETTERS
 } from '@/store/modules/print/const';
 import { MUTATES as APP_MUTATES } from '@/store/modules/app/const';
-import { useDrawLayout, useUser } from '@/hooks';
 
 import printService from '@/api/print';
 
-import { getSectionsWithAccessible } from '@/common/utils';
-
 export default {
   components: {
-    ListThumbContainer,
-    Thumbnail
+    ThumbnailItem
   },
   setup() {
-    const { drawLayout } = useDrawLayout();
     const { currentUser } = useUser();
 
-    return { drawLayout, currentUser };
+    return { currentUser };
   },
-  created() {
+  async created() {
     this.setBookId({ bookId: this.$route.params.bookId });
 
     // temporary code, will remove soon
-    const info = printService.getGeneralInfo();
+    const info = await printService.getGeneralInfo();
 
     this.setInfo({ ...info, bookId: this.$route.params.bookId });
 
@@ -53,13 +52,19 @@ export default {
     }),
     ...mapMutations({
       setBookId: PRINT_MUTATES.SET_BOOK_ID,
-      selectSheet: PRINT_MUTATES.SET_CURRENT_SHEET_ID,
       setInfo: APP_MUTATES.SET_GENERAL_INFO
     }),
-    numberPage(sheet) {
+    /**
+     * Get names of page of selected sheet
+     *
+     * @param   {String}  pageLeftName  name of page left of selected sheet
+     * @param   {String}  pageRightName name of page right of selected sheet
+     * @returns {Object}                names of page
+     */
+    getPageNames({ pageLeftName, pageRightName }) {
       return {
-        numberLeft: sheet.pageLeftName,
-        numberRight: sheet.pageRightName
+        left: pageLeftName,
+        right: pageRightName
       };
     },
     /**

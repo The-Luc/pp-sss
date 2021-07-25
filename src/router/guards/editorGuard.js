@@ -1,9 +1,11 @@
+import { getEditionListPath } from '@/common/utils';
+
 import { EDITION } from '@/common/constants';
 
 const noSheetSelectionGuard = (to, _, next, edition) => {
   const bookId = to.params?.bookId;
 
-  next(`/book/${bookId}/edit/${edition}`);
+  next(getEditionListPath(bookId, edition));
 };
 
 export const printNoSheetSelectionGuard = (to, from, next) => {

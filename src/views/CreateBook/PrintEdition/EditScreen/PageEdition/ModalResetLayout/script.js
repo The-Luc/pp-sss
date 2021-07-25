@@ -1,11 +1,15 @@
-import { mapMutations, mapActions } from 'vuex';
+import { mapMutations } from 'vuex';
 
 import Modal from '@/containers/Modal';
 import PpButton from '@/components/Buttons/Button';
-import { useDrawLayout, useSheet } from '@/hooks';
+import { useDrawLayout, useGetLayouts, useSheet } from '@/hooks';
 import { MUTATES as APP_MUTATES } from '@/store/modules/app/const';
-import { ACTIONS as PRINT_ACTIONS } from '@/store/modules/print/const';
-import { LAYOUT_TYPES, MODAL_TYPES, SHEET_TYPE } from '@/common/constants';
+import {
+  EDITION,
+  MODAL_TYPES,
+  SHEET_TYPE,
+  LAYOUT_PAGE_TYPE
+} from '@/common/constants';
 import { resetObjects } from '@/common/utils';
 
 export default {
@@ -16,9 +20,11 @@ export default {
   setup() {
     const { drawLayout } = useDrawLayout();
     const { sheetLayout } = useSheet();
+    const { updateSheetThemeLayout } = useGetLayouts(EDITION.PRINT);
     return {
       drawLayout,
-      sheetLayout
+      sheetLayout,
+      updateSheetThemeLayout
     };
   },
   computed: {
@@ -42,12 +48,9 @@ export default {
     ...mapMutations({
       toggleModal: APP_MUTATES.TOGGLE_MODAL
     }),
-    ...mapActions({
-      updateSheetThemeLayout: PRINT_ACTIONS.UPDATE_SHEET_THEME_LAYOUT
-    }),
     onApplyLayout() {
       if (
-        this.layoutObjSelected.type === LAYOUT_TYPES.SINGLE_PAGE.value &&
+        this.layoutObjSelected.pageType === LAYOUT_PAGE_TYPE.SINGLE_PAGE.id &&
         ![SHEET_TYPE.FRONT_COVER, SHEET_TYPE.BACK_COVER].includes(
           this.pageSelected?.type
         )
@@ -74,7 +77,7 @@ export default {
         layout: this.layoutObjSelected
       });
       resetObjects(window.printCanvas);
-      this.drawLayout(this.sheetLayout);
+      this.$root.$emit('drawLayout');
       this.$root.$emit('pageNumber');
       this.onCancel();
     },

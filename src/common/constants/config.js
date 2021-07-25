@@ -19,4 +19,4 @@ export const MAX_SUPPLEMENTAL_FRAMES = 10;
 
 export const MAX_SAVED_TEXT_STYLES = 9;
 
-export const MAX_SAVED_IMAGE_STYLES = 9;
+export const MAX_SAVED_IMAGE_STYLES = 12;

@@ -15,6 +15,18 @@ export default {
     isDigital: {
       type: Boolean,
       default: false
+    },
+    isFavorites: {
+      type: Boolean,
+      default: false
+    }
+  },
+  computed: {
+    favoriteData() {
+      return {
+        iconName: this.isFavorites ? 'favorite' : 'favorite_border',
+        cssClass: this.isFavorites ? 'favorites' : ''
+      };
     }
   },
   methods: {
@@ -23,6 +35,17 @@ export default {
      */
     onClick() {
       this.$emit('click', this.layout);
+    },
+    /**
+     * Emit layout favorite to parent
+     */
+    onSaveToFavorites(event) {
+      event.stopPropagation();
+
+      this.$emit('saveToFavorites', {
+        id: this.layout.id,
+        isFavorites: !this.isFavorites
+      });
     }
   }
 };

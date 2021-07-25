@@ -1,7 +1,8 @@
+import ThumbnailHeaderGroup from '@/components/Thumbnail/ThumbnailHeaderGroup';
+import ThumbnailItem from '@/components/Thumbnail/ThumbnailItem';
+
 import { mapGetters, mapMutations } from 'vuex';
 
-import Thumbnail from '@/components/Thumbnail/ThumbnailPrint';
-import SidebarThumbContainer from '@/components/Thumbnail/SidebarThumbContainer';
 import { GETTERS as APP_GETTERS } from '@/store/modules/app/const';
 import {
   GETTERS as PRINT_GETTERS,
@@ -23,8 +24,8 @@ import {
 
 export default {
   components: {
-    Thumbnail,
-    SidebarThumbContainer
+    ThumbnailHeaderGroup,
+    ThumbnailItem
   },
   setup() {
     const { resetPrintConfig } = useResetPrintConfig();
@@ -40,6 +41,11 @@ export default {
       resetPrintConfig,
       setIsPrompt,
       currentUser
+    };
+  },
+  data() {
+    return {
+      collapseSectionId: null
     };
   },
   computed: {
@@ -91,18 +97,27 @@ export default {
 
       scrollToElement(currentSpreadActive[0]?.$el);
     },
-    numberPage(sheet) {
+    /**
+     * Get names of page of selected sheet
+     *
+     * @param   {String}  pageLeftName  name of page left of selected sheet
+     * @param   {String}  pageRightName name of page right of selected sheet
+     * @returns {Object}                names of page
+     */
+    getPageNames({ pageLeftName, pageRightName }) {
       return {
-        numberLeft: sheet.pageLeftName,
-        numberRight: sheet.pageRightName
+        left: pageLeftName,
+        right: pageRightName
       };
     },
     /**
-     * Check if that sheet is selected
-     * @param  {String} sheetId Sheet's id selected
+     * Check if that sheet is activated
+     *
+     * @param   {String}  id  id of selected sheet
+     * @returns {Boolean}     sheet is activated
      */
-    checkIsActive(sheetId) {
-      return sheetId === this.pageSelected?.id;
+    checkIsActive({ id }) {
+      return id === this.pageSelected?.id;
     },
     /**
      * Set selected sheet's id & show notice if not visited
@@ -123,6 +138,20 @@ export default {
       this.updateVisited({ sheetId: id });
 
       this.setToolNameSelected(TOOL_NAME.PRINT_LAYOUTS);
+    },
+    /**
+     * Toggle display sheets of section by changing collapse section id
+     */
+    onToggleSheets(sectionId) {
+      const selectedId = this.collapseSectionId === sectionId ? '' : sectionId;
+
+      this.collapseSectionId = selectedId;
+    },
+    /**
+     * Check if section should be collapsed
+     */
+    checkIsExpand(sectionId) {
+      return this.collapseSectionId !== sectionId;
     }
   }
 };

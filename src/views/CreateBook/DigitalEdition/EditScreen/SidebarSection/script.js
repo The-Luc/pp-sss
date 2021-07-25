@@ -1,9 +1,9 @@
+import ThumbnailHeaderGroup from '@/components/Thumbnail/ThumbnailHeaderGroup';
+import ThumbnailItem from '@/components/Thumbnail/ThumbnailItem';
+
 import { mapGetters, mapMutations } from 'vuex';
 
-import Thumbnail from '@/components/Thumbnail/ThumbnailDigital';
-import SidebarThumbContainer from '@/components/Thumbnail/SidebarThumbContainer';
 import { GETTERS as APP_GETTERS } from '@/store/modules/app/const';
-import { isEmpty, scrollToElement } from '@/common/utils';
 import {
   GETTERS as DIGITAL_GETTERS,
   MUTATES as DIGITAL_MUTATES
@@ -11,46 +11,48 @@ import {
 import {
   useLayoutPrompt,
   usePopoverCreationTool,
-  useObjectProperties
+  useObjectProperties,
+  useUser
 } from '@/hooks';
 import { TOOL_NAME, EDITION } from '@/common/constants';
+import {
+  isEmpty,
+  scrollToElement,
+  getSectionsWithAccessible
+} from '@/common/utils';
 
 export default {
   components: {
-    Thumbnail,
-    SidebarThumbContainer
+    ThumbnailHeaderGroup,
+    ThumbnailItem
   },
   setup() {
     const { setToolNameSelected } = usePopoverCreationTool();
     const { toggleMenuProperties } = useObjectProperties();
     const { updateVisited, setIsPrompt } = useLayoutPrompt(EDITION.DIGITAL);
+    const { currentUser } = useUser();
 
     return {
       toggleMenuProperties,
       updateVisited,
       setToolNameSelected,
-      setIsPrompt
+      setIsPrompt,
+      currentUser
+    };
+  },
+  data() {
+    return {
+      collapseSectionId: null
     };
   },
   computed: {
     ...mapGetters({
       pageSelected: DIGITAL_GETTERS.CURRENT_SHEET,
-      sections: DIGITAL_GETTERS.SECTIONS_SHEETS,
+      sectionList: DIGITAL_GETTERS.SECTIONS_SHEETS,
       isOpenMenuProperties: APP_GETTERS.IS_OPEN_MENU_PROPERTIES
     }),
-    orderScreen() {
-      return (sectionIndex, sheetIndex) => {
-        let indexInSections = 0;
-        for (let i = 0; i < sectionIndex; i++) {
-          indexInSections += this.sections[i].sheetIds.length;
-        }
-        indexInSections += sheetIndex + 1;
-        if (indexInSections < 10) {
-          return '0' + indexInSections;
-        } else {
-          return '' + indexInSections;
-        }
-      };
+    sections() {
+      return getSectionsWithAccessible(this.sectionList, this.currentUser);
     }
   },
   created() {
@@ -93,11 +95,22 @@ export default {
       scrollToElement(currentScreendActive[0].$el);
     },
     /**
-     * Check if that sheet is selected
-     * @param  {String} sheetId Sheet's id selected
+     * Get name of page of selected sheet
+     *
+     * @param   {String}  pageName  name of page of selected sheet
+     * @returns {Object}            name of page
      */
-    checkIsActive(sheetId) {
-      return sheetId === this.pageSelected.id;
+    getPageName({ pageName }) {
+      return { middle: pageName };
+    },
+    /**
+     * Check if that sheet is activated
+     *
+     * @param   {String}  id  id of selected sheet
+     * @returns {Boolean}     sheet is activated
+     */
+    checkIsActive({ id }) {
+      return id === this.pageSelected?.id;
     },
     /**
      * Set selected sheet's id & show notice if not visited
@@ -105,13 +118,11 @@ export default {
      * @param {String | Number} id  id of selected sheet
      */
     onSelectSheet({ id }) {
-      this.selectSheet({ id });
+      if (this.pageSelected.id !== id) this.$router.push(`${id}`);
 
-      if (this.isOpenMenuProperites) {
-        this.toggleMenuProperties({ isOpenMenuProperites: false });
+      if (this.isOpenMenuProperties) {
+        this.toggleMenuProperties({ isOpenMenuProperties: false });
       }
-
-      this.$router.push(`${id}`);
 
       if (this.pageSelected.isVisited) return;
 
@@ -119,7 +130,21 @@ export default {
 
       this.updateVisited({ sheetId: id });
 
-      this.setToolNameSelected(TOOL_NAME.DIGITAL_LAYOUTS);
+      this.setToolNameSelected(TOOL_NAME.PRINT_LAYOUTS);
+    },
+    /**
+     * Toggle display sheets of section by changing collapse section id
+     */
+    onToggleSheets(sectionId) {
+      const selectedId = this.collapseSectionId === sectionId ? '' : sectionId;
+
+      this.collapseSectionId = selectedId;
+    },
+    /**
+     * Check if section should be collapsed
+     */
+    checkIsExpand(sectionId) {
+      return this.collapseSectionId !== sectionId;
     }
   }
 };

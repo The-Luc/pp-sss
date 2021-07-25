@@ -1,5 +1,3 @@
-import { useAssigneeMenu } from '@/hooks';
-
 import { isEmpty, scrollToElement } from '@/common/utils';
 
 export default {
@@ -23,17 +21,11 @@ export default {
     assigneeId: {
       type: [Number, String],
       default: ''
+    },
+    users: {
+      type: Array,
+      required: true
     }
-  },
-  setup() {
-    const { getUsers } = useAssigneeMenu();
-
-    return { getUsers };
-  },
-  data() {
-    return {
-      users: []
-    };
   },
   computed: {
     assigneeIndex() {
@@ -41,8 +33,6 @@ export default {
     }
   },
   async mounted() {
-    this.users = await this.getUsers();
-
     this.autoScroll(this.assigneeId);
   },
   methods: {

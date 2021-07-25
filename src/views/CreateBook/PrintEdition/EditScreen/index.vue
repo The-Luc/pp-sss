@@ -1,4 +1,4 @@
-<template lang="">
+<template>
   <div class="row print-main">
     <Header name-editor="print editor" @onClickSave="onClickSavePrintCanvas" />
     <ToolBar />
@@ -14,4 +14,4 @@
 
 <script src="./script.js"></script>
 
-<style lang="scss" scoped src="./style.scss" />
+<style lang="scss" src="./style.scss" scoped />

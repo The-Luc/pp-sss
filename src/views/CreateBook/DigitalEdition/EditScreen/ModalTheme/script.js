@@ -17,7 +17,7 @@ import { EDITION } from '@/common/constants';
 
 export default {
   setup() {
-    const { openPrompt } = useLayoutPrompt(EDITION.PRINT);
+    const { openPrompt } = useLayoutPrompt(EDITION.DIGITAL);
     return {
       openPrompt
     };

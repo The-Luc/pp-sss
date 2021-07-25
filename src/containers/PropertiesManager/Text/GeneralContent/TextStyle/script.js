@@ -1,7 +1,7 @@
 import { mapGetters } from 'vuex';
 
 import PpSelect from '@/components/Selectors/Select';
-import SavedStylePopover from '@/components/SavedStylePopover';
+import SavedTextStylePopover from './SavedTextStylePopover';
 
 import { isEmpty, toCssStyle } from '@/common/utils';
 
@@ -9,64 +9,27 @@ import { GETTERS as APP_GETTERS } from '@/store/modules/app/const';
 import { EVENT_TYPE } from '@/common/constants/eventType';
 import { useTextStyle } from '@/hooks/style';
 
+import textStyles from '@/mock/style';
+
 export default {
   components: {
     PpSelect,
-    SavedStylePopover
+    SavedTextStylePopover
   },
   data() {
-    const items = [
-      {
-        name: 'Default',
-        value: 'default',
-        style: {
-          fontFamily: 'Arial',
-          fontSize: 60,
-          isBold: false,
-          isItalic: false,
-          isUnderline: false,
-          color: '#000000'
-        }
-      },
-      {
-        name: 'Cover Headline',
-        value: 'coverHeadline',
-        style: {
-          fontFamily: 'Time News Roman',
-          fontSize: 90,
-          isBold: true,
-          isItalic: true,
-          isUnderline: false,
-          color: '#00FF00'
-        }
-      },
-      {
-        name: 'Page Headline',
-        value: 'pageHeadline',
-        style: {
-          fontFamily: 'Arial',
-          fontSize: 35,
-          isBold: false,
-          isItalic: false,
-          isUnderline: true,
-          color: '#FF0000'
-        }
-      }
-    ];
-
-    const selectBoxItems = items.map(item => {
-      const { name, value, style } = item;
+    const selectBoxItems = textStyles.map(item => {
+      const { name, id, style } = item;
 
       return {
         name,
-        value,
+        id,
         style,
         cssStyle: toCssStyle(style)
       };
     });
 
     return {
-      items,
+      items: textStyles,
       selectBoxItems,
       showSavedStylePopup: false,
       componentKey: true
@@ -84,24 +47,24 @@ export default {
     }),
     selectedItem() {
       const selectedId = this.selectedStyleId('styleId') || 'default';
-      return this.selectBoxItems.find(item => item.value === selectedId);
+      return this.selectBoxItems.find(item => item.id === selectedId);
     }
   },
   methods: {
     /**
      * Event fired when user choose an item on list
      *
-     * @param {String}  value id of style
+     * @param {String}  id id of style
      * @param {Object}  style attribute style of style
      */
-    onChange({ value, style }) {
+    onChange({ id, style }) {
       this.onClose();
 
-      if (isEmpty(value) || isEmpty(style)) return;
+      if (isEmpty(id) || isEmpty(style)) return;
 
       this.$root.$emit(EVENT_TYPE.CHANGE_TEXT_PROPERTIES, style);
 
-      this.$root.$emit(EVENT_TYPE.CHANGE_TEXT_PROPERTIES, { styleId: value });
+      this.$root.$emit(EVENT_TYPE.CHANGE_TEXT_PROPERTIES, { styleId: id });
     },
 
     /**

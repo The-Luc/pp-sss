@@ -93,7 +93,9 @@ export const ImageElement = {
     cropLeft: 0,
     cropRight: 0
   },
-  isConstrain: DEFAULT_IMAGE.IS_CONSTRAIN
+  isConstrain: DEFAULT_IMAGE.IS_CONSTRAIN,
+  strokeUniform: DEFAULT_IMAGE.STROKE_UNIFORM,
+  paintFirst: DEFAULT_IMAGE.PAINT_FIRST
 };
 
 export const BackgroundElement = {

@@ -2,9 +2,9 @@ import { mapGetters, mapMutations, mapActions } from 'vuex';
 import { fabric } from 'fabric';
 import { cloneDeep, uniqueId, merge, debounce } from 'lodash';
 
-import { usePrintOverrides } from '@/plugins/fabric';
+import { imageBorderModifier, usePrintOverrides } from '@/plugins/fabric';
 
-import { useDrawLayout, useInfoBar } from '@/hooks';
+import { useInfoBar, useSaveSheetThumbnail } from '@/hooks';
 import { startDrawBox } from '@/common/fabricObjects/drawingBox';
 
 import {
@@ -47,7 +47,8 @@ import {
   createBackgroundFabricObject,
   updateSpecificProp,
   addPrintPageNumber,
-  updateBringToFrontPageNumber
+  updateBringToFrontPageNumber,
+  applyBorderToImageObject
 } from '@/common/fabricObjects';
 
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
@@ -72,7 +73,8 @@ import {
   DEFAULT_SHAPE,
   COVER_TYPE,
   DEFAULT_CLIP_ART,
-  DEFAULT_IMAGE
+  DEFAULT_IMAGE,
+  LAYOUT_PAGE_TYPE
 } from '@/common/constants';
 import SizeWrapper from '@/components/SizeWrapper';
 import PrintCanvasLines from './PrintCanvasLines';
@@ -89,6 +91,7 @@ import printService from '@/api/print';
 import { useAppCommon } from '@/hooks/common';
 import { EVENT_TYPE } from '@/common/constants/eventType';
 import { useStyle } from '@/hooks/style';
+import { loadPrintPpLayouts, getPrintLayoutTypes } from '@/api/layouts';
 
 export default {
   components: {
@@ -100,11 +103,17 @@ export default {
   },
   setup() {
     const { setActiveEdition } = useAppCommon();
-    const { drawLayout } = useDrawLayout();
     const { setInfoBar, zoom } = useInfoBar();
+    const { setThumbnail } = useSaveSheetThumbnail();
     const { onSaveStyle } = useStyle();
 
-    return { setActiveEdition, drawLayout, setInfoBar, zoom, onSaveStyle };
+    return {
+      setActiveEdition,
+      setInfoBar,
+      zoom,
+      onSaveStyle,
+      setThumbnail
+    };
   },
   data() {
     return {
@@ -136,7 +145,9 @@ export default {
       totalBackground: PRINT_GETTERS.TOTAL_BACKGROUND,
       totalObject: PRINT_GETTERS.TOTAL_OBJECT,
       getProperty: APP_GETTERS.SELECT_PROP_CURRENT_OBJECT,
-      getPageInfo: PRINT_GETTERS.GET_PAGE_INFO
+      getPageInfo: PRINT_GETTERS.GET_PAGE_INFO,
+      defaultThemeId: PRINT_GETTERS.DEFAULT_THEME_ID,
+      getObjectsAndBackground: PRINT_GETTERS.GET_OBJECTS_AND_BACKGROUNDS
     }),
     isCover() {
       return this.pageSelected?.type === SHEET_TYPE.COVER;
@@ -164,8 +175,10 @@ export default {
       deep: true,
       async handler(val, oldVal) {
         if (val?.id !== oldVal?.id) {
-          // save the previous canvas on sessionStorage
-          printService.saveCanvasState(oldVal.id, this.sheetLayout);
+          printService.saveObjectsAndBackground(
+            oldVal.id,
+            this.getObjectsAndBackground
+          );
 
           // get data either from API or sessionStorage
           await this.getDataCanvas();
@@ -198,9 +211,6 @@ export default {
     window.removeEventListener('copy', this.handleCopy);
     window.removeEventListener('paste', this.handlePaste);
 
-    // save the current sheet to sessionStorage
-    printService.saveCanvasState(this.pageSelected.id, this.sheetLayout);
-
     window.printCanvas = null;
 
     sessionStorage.removeItem(COPY_OBJECT_KEY);
@@ -213,7 +223,8 @@ export default {
   },
   methods: {
     ...mapActions({
-      getDataCanvas: PRINT_ACTIONS.GET_DATA_CANVAS
+      getDataCanvas: PRINT_ACTIONS.GET_DATA_CANVAS,
+      saveLayout: PRINT_ACTIONS.SAVE_LAYOUT
     }),
     ...mapMutations({
       setBookId: PRINT_MUTATES.SET_BOOK_ID,
@@ -222,7 +233,6 @@ export default {
       setObjectTypeSelected: MUTATES.SET_OBJECT_TYPE_SELECTED,
       setSelectedObjectId: PRINT_MUTATES.SET_CURRENT_OBJECT_ID,
       setCurrentObject: MUTATES.SET_CURRENT_OBJECT,
-      setObjects: PRINT_MUTATES.SET_OBJECTS,
       addNewObject: PRINT_MUTATES.ADD_OBJECT,
       setObjectProp: PRINT_MUTATES.SET_PROP,
       setObjectPropById: PRINT_MUTATES.SET_PROP_BY_ID,
@@ -232,7 +242,6 @@ export default {
         PRINT_MUTATES.UPDATE_TRIGGER_BACKGROUND_CHANGE,
       deleteObjects: PRINT_MUTATES.DELETE_OBJECTS,
       updateTriggerShapeChange: MUTATES.UPDATE_TRIGGER_SHAPE_CHANGE,
-      setThumbnail: PRINT_MUTATES.UPDATE_SHEET_THUMBNAIL,
       updateTriggerClipArtChange: MUTATES.UPDATE_TRIGGER_CLIPART_CHANGE,
       reorderObjectIds: PRINT_MUTATES.REORDER_OBJECT_IDS,
       toggleActiveObjects: MUTATES.TOGGLE_ACTIVE_OBJECTS,
@@ -286,7 +295,8 @@ export default {
         moved: this.handleMoved
       };
 
-      const image = await createImage(imageProperties);
+      const imageObject = await createImage(imageProperties);
+      const image = imageObject?.object;
 
       addEventListeners(image, eventListeners);
 
@@ -795,6 +805,7 @@ export default {
 
       this.setCurrentObject(this.currentObjects?.[activeObj?.id]);
     },
+
     /**
      * Function trigger mutate to add new object to store
      */
@@ -830,12 +841,15 @@ export default {
         moved: this.handleMoved
       };
 
+      const image = await createImage(newImage.newObject);
+      merge(newImage.newObject, { size: image?.size });
+
       this.addObjectToStore(newImage);
 
-      const image = await createImage(newImage.newObject);
-      addEventListeners(image, eventListeners);
+      imageBorderModifier(image.object);
 
-      window.printCanvas.add(image);
+      addEventListeners(image?.object, eventListeners);
+      window.printCanvas.add(image?.object);
       selectLatestObject(window.printCanvas);
     },
     /**
@@ -1215,6 +1229,14 @@ export default {
      * @param {Object}  prop  new prop
      */
     changeImageProperties(prop) {
+      const { border } = prop;
+
+      const activeObject = window.printCanvas.getActiveObject();
+
+      if (border) {
+        applyBorderToImageObject(activeObject, border);
+      }
+
       this.changeElementProperties(prop, OBJECT_TYPE.IMAGE);
     },
     /**
@@ -1434,8 +1456,10 @@ export default {
 
         [EVENT_TYPE.COPY_OBJ]: this.handleCopy,
         [EVENT_TYPE.PASTE_OBJ]: this.handlePaste,
+        [EVENT_TYPE.SAVE_LAYOUT]: this.handleSaveLayout,
 
-        pageNumber: this.addPageNumber
+        pageNumber: this.addPageNumber,
+        drawLayout: this.drawLayout
       };
 
       const events = {
@@ -1577,6 +1601,78 @@ export default {
         pageNumber: { pageLeftName, pageRightName },
         canvas: window.printCanvas
       });
+    },
+    async handleSaveLayout({ pageSelected, layoutName }) {
+      layoutName = layoutName || 'Untitle';
+      const layoutTypes = await getPrintLayoutTypes();
+      const zoom = window.printCanvas.getZoom();
+      const width = window.printCanvas.width;
+
+      const positionCenterX = pxToIn(width / zoom / 2);
+
+      const objects = Object.values(this.currentObjects);
+      const backgrounds = { ...this.currentBackgrounds };
+
+      let ppObjects = [...objects];
+      let layout = {
+        id: parseInt(uniqueId()) + 100,
+        type: layoutTypes.SAVED_LAYOUTS_AND_FAVORITES.value,
+        name: layoutName,
+        isFavorites: false,
+        previewImageUrl: window.printCanvas.toDataURL({
+          quality: THUMBNAIL_IMAGE_QUALITY
+        }),
+        themeId: this.defaultThemeId,
+        pageType: LAYOUT_PAGE_TYPE.FULL_PAGE.id
+      };
+
+      if (pageSelected === 'left') {
+        ppObjects = objects.filter(item => item.coord.x < positionCenterX);
+
+        delete backgrounds.right;
+
+        layout = {
+          ...layout,
+          previewImageUrl: window.printCanvas.toDataURL({
+            quality: THUMBNAIL_IMAGE_QUALITY,
+            width: width / 2
+          }),
+          pageType: LAYOUT_PAGE_TYPE.SINGLE_PAGE.id
+        };
+      }
+
+      if (pageSelected === 'right') {
+        ppObjects = objects.filter(item => item.coord.x >= positionCenterX);
+        for (const item of ppObjects) {
+          item.coord.x -= positionCenterX;
+        }
+
+        delete backgrounds.left;
+
+        layout = {
+          ...layout,
+          previewImageUrl: window.printCanvas.toDataURL({
+            quality: THUMBNAIL_IMAGE_QUALITY,
+            left: width / 2,
+            width: width / 2
+          }),
+          pageType: LAYOUT_PAGE_TYPE.SINGLE_PAGE.id
+        };
+      }
+
+      const ppBackgrounds = Object.values(backgrounds).filter(
+        item => !isEmpty(item)
+      );
+
+      layout.objects = [...ppBackgrounds, ...ppObjects];
+
+      const storageLayouts = await loadPrintPpLayouts();
+      const layouts = [...storageLayouts, { ...layout }];
+
+      await this.saveLayout({ layouts });
+    },
+    async drawLayout() {
+      await this.drawObjectsOnCanvas(this.sheetLayout);
     }
   }
 };

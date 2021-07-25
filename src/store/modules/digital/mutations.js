@@ -167,7 +167,8 @@ export const mutations = {
         frame: {
           previewImageUrl: '',
           id: 0,
-          fromLayout: true
+          fromLayout: true,
+          titleFrame: ''
         }
       };
       state.frames = { [blankFrame.id]: blankFrame.frame };
@@ -239,5 +240,8 @@ export const mutations = {
       moveToIndex,
       state.frameIds
     );
+  },
+  [DIGITAL._MUTATES.SET_TITLE_FRAME]({ frames, currentFrameId }, { value }) {
+    frames[currentFrameId].titleFrame = value;
   }
 };

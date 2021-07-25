@@ -2,15 +2,18 @@ import { uniqueId } from 'lodash';
 
 import { isEmpty, isHalfSheet } from '@/common/utils';
 import printService from '@/api/print';
+import { setPrintPpLayouts } from '@/api/layouts';
 
 import {
   STATUS,
   OBJECT_TYPE,
   SHEET_TYPE,
-  LINK_STATUS
+  LINK_STATUS,
+  MODAL_TYPES
 } from '@/common/constants';
 
 import PRINT from './const';
+import { MUTATES as APP_MUTATES } from '../app/const';
 
 export const actions = {
   async [PRINT._ACTIONS.GET_DATA_MAIN]({ state, commit }) {
@@ -98,9 +101,10 @@ export const actions = {
 
     if (backgroundObjs.length === 1) {
       backgroundObjs[0].isLeftPage = currentPosition === 'left';
-      const pageEmpty = currentPosition === 'left' ? 'right' : 'left';
+      const emptyBackgroundPosition =
+        currentPosition === 'left' ? 'right' : 'left';
+      commit(PRINT._MUTATES.CLEAR_BACKGROUNDS, emptyBackgroundPosition);
       commit(PRINT._MUTATES.SET_BACKGROUNDS, { background: backgroundObjs[0] });
-      commit(PRINT._MUTATES.SET_PAGE_EMPTY, { pageEmpty });
     }
 
     // Get object(s) rest
@@ -130,7 +134,63 @@ export const actions = {
   [PRINT._ACTIONS.UPDATE_SHEET_LINK_STATUS]({ commit }, { link, sheetId }) {
     const statusLink =
       link === LINK_STATUS.LINK ? LINK_STATUS.UNLINK : LINK_STATUS.LINK;
-
+    printService.saveSheetLinkStatus(sheetId, statusLink);
     commit(PRINT._MUTATES.SET_SHEET_LINK_STATUS, { statusLink, sheetId });
+  },
+
+  [PRINT._ACTIONS.SAVE_DEFAULT_THEME_ID]({ commit }, { themeId }) {
+    printService.saveDefaultThemeId(themeId);
+    commit(PRINT._MUTATES.SET_DEFAULT_THEME_ID, { themeId });
+  },
+
+  [PRINT._ACTIONS.SAVE_SHEET_THEME_LAYOUT](
+    { dispatch, getters },
+    { themeId, layout, pagePosition }
+  ) {
+    const currentSheet = getters.getCurrentSheet;
+    const sheetId = currentSheet.id;
+
+    printService.saveSheetData(sheetId, layout.id, themeId);
+
+    dispatch(PRINT._ACTIONS.UPDATE_SHEET_THEME_LAYOUT, {
+      themeId,
+      layout,
+      pagePosition
+    });
+  },
+  [PRINT._ACTIONS.UPDATE_SHEET_VISITED]({ commit }, { sheetId }) {
+    printService.saveSheetVisited(sheetId);
+    commit(PRINT._MUTATES.UPDATE_SHEET_VISITED, { sheetId });
+  },
+  [PRINT._ACTIONS.SAVE_PAGE_INFO]({ commit }, { pageInfo }) {
+    printService.savePageInfo(pageInfo);
+    commit(PRINT._MUTATES.SET_PAGE_INFO, { pageInfo });
+  },
+  [PRINT._ACTIONS.SAVE_SPREAD_INFO]({ getters, commit }, { spreadInfo }) {
+    const currentSheet = getters.getCurrentSheet;
+    const sheetId = currentSheet.id;
+    printService.saveSpreadInfo(sheetId, spreadInfo);
+    commit(PRINT._MUTATES.UPDATE_SPREAD_INFO, { spreadInfo });
+  },
+  [PRINT._ACTIONS.SAVE_SHEET_LINK_STATUS]({ commit }, { statusLink, sheetId }) {
+    printService.saveSheetLinkStatus(sheetId, statusLink);
+    commit(PRINT._MUTATES.SET_SHEET_LINK_STATUS, { statusLink, sheetId });
+  },
+  async [PRINT._ACTIONS.SAVE_LAYOUT]({ commit }, { layouts }) {
+    await setPrintPpLayouts(layouts);
+    commit(
+      APP_MUTATES.TOGGLE_MODAL,
+      {
+        isOpenModal: true,
+        modalData: {
+          type: MODAL_TYPES.SAVE_LAYOUT_SUCCESS
+        }
+      },
+      { root: true }
+    );
+  },
+  [PRINT._ACTIONS.SAVE_SHEET_THUMBNAIL]({ commit }, { thumbnailUrl, sheetId }) {
+    printService.saveSheetThumbnail(sheetId, thumbnailUrl);
+    commit(PRINT._MUTATES.UPDATE_SHEET_THUMBNAIL, { thumbnailUrl, sheetId });
   }
 };

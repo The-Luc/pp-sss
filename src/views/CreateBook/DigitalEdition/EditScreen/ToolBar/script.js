@@ -140,7 +140,7 @@ export default {
     };
   },
   setup() {
-    const { isPrompt } = useLayoutPrompt(EDITION.PRINT);
+    const { isPrompt } = useLayoutPrompt(EDITION.DIGITAL);
     const {
       themeId,
       selectedObjectType,

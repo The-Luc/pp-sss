@@ -54,7 +54,9 @@ export const validateInputOption = (
   if (isEmpty(data)) {
     return { isValid: false, value: '' };
   }
-  const stringVal = String(data).trim();
+  const stringVal = String(data)
+    .replace(/\s+/g, ' ')
+    .trim();
   const [stringValueWithUnit, stringUnit] = stringVal.split(' ');
 
   const foundOption = getMatchedValueFromOptions(stringVal, items);

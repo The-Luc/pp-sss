@@ -1,6 +1,7 @@
 import { useActions, useGetters } from 'vuex-composition-helpers';
 
 import { ACTIONS, GETTERS } from '@/store/modules/book/const';
+import { ACTIONS as PRINT_ACTIONS } from '@/store/modules/print/const';
 import bookService from '@/api/book';
 
 /**
@@ -37,4 +38,20 @@ export const useUpdateTitle = () => {
   return {
     updateTitle
   };
+};
+
+export const useSaveDefaultThemeId = () => {
+  const { saveDefaultThemeId } = useActions({
+    saveDefaultThemeId: PRINT_ACTIONS.SAVE_DEFAULT_THEME_ID
+  });
+
+  return { saveDefaultThemeId };
+};
+
+export const useSavePageInfo = () => {
+  const { setPageInfo } = useActions({
+    setPageInfo: PRINT_ACTIONS.SAVE_PAGE_INFO
+  });
+
+  return { setPageInfo };
 };

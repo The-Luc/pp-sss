@@ -1,6 +1,10 @@
 import { uniqueId } from 'lodash';
 
-import { LAYOUT_TYPES, BACKGROUND_PAGE_TYPE } from '@/common/constants';
+import {
+  LAYOUT_TYPES,
+  BACKGROUND_PAGE_TYPE,
+  LAYOUT_PAGE_TYPE
+} from '@/common/constants';
 import {
   TextElement,
   BackgroundElement,
@@ -249,7 +253,8 @@ const layouts = [
     isFavorites: false,
     previewImageUrl: LAYOUT_01,
     themeId: 1,
-    objects: [bg1, bg2, text1, text2, clipArt1, clipArt2, shape1]
+    objects: [bg1, bg2, text1, text2, clipArt1, clipArt2, shape1],
+    pageType: LAYOUT_PAGE_TYPE.FULL_PAGE.id
   },
   {
     id: 2,
@@ -258,7 +263,8 @@ const layouts = [
     previewImageUrl: LAYOUT_02,
     themeId: 1,
     isFavorites: false,
-    objects: [bg3, text1, text2]
+    objects: [bg3, text1, text2],
+    pageType: LAYOUT_PAGE_TYPE.FULL_PAGE.id
   },
   {
     id: 3,
@@ -267,7 +273,8 @@ const layouts = [
     isFavorites: false,
     previewImageUrl: LAYOUT_01,
     themeId: 1,
-    objects: [bg1, bg2, text1, text2]
+    objects: [bg1, bg2, text1, text2],
+    pageType: LAYOUT_PAGE_TYPE.FULL_PAGE.id
   },
   {
     id: 4,
@@ -276,7 +283,8 @@ const layouts = [
     isFavorites: false,
     previewImageUrl: LAYOUT_02,
     themeId: 1,
-    objects: [bg3, text2]
+    objects: [bg3, text2],
+    pageType: LAYOUT_PAGE_TYPE.FULL_PAGE.id
   },
   {
     id: 5,
@@ -285,7 +293,8 @@ const layouts = [
     isFavorites: false,
     previewImageUrl: LAYOUT_01,
     themeId: 1,
-    objects: [bg1, bg2, text1]
+    objects: [bg1, bg2, text1],
+    pageType: LAYOUT_PAGE_TYPE.FULL_PAGE.id
   },
   {
     id: 6,
@@ -294,7 +303,8 @@ const layouts = [
     name: 'Signature',
     isFavorites: false,
     previewImageUrl: LAYOUT_02,
-    themeId: 1
+    themeId: 1,
+    pageType: LAYOUT_PAGE_TYPE.FULL_PAGE.id
   },
   {
     id: 7,
@@ -303,7 +313,8 @@ const layouts = [
     name: 'Awards Superlative',
     isFavorites: false,
     previewImageUrl: LAYOUT_01,
-    themeId: 1
+    themeId: 1,
+    pageType: LAYOUT_PAGE_TYPE.FULL_PAGE.id
   },
   {
     id: 8,
@@ -312,7 +323,8 @@ const layouts = [
     name: 'Admin Staff 1',
     isFavorites: false,
     previewImageUrl: LAYOUT_02,
-    themeId: 1
+    themeId: 1,
+    pageType: LAYOUT_PAGE_TYPE.FULL_PAGE.id
   },
   {
     id: 9,
@@ -321,7 +333,8 @@ const layouts = [
     name: 'Graduation 1',
     isFavorites: false,
     previewImageUrl: LAYOUT_01,
-    themeId: 1
+    themeId: 1,
+    pageType: LAYOUT_PAGE_TYPE.FULL_PAGE.id
   },
   {
     id: 10,
@@ -330,7 +343,8 @@ const layouts = [
     name: 'Intro page 1',
     isFavorites: false,
     previewImageUrl: LAYOUT_02,
-    themeId: 1
+    themeId: 1,
+    pageType: LAYOUT_PAGE_TYPE.FULL_PAGE.id
   },
   {
     id: 11,
@@ -339,7 +353,8 @@ const layouts = [
     name: 'Club 7',
     isFavorites: false,
     previewImageUrl: LAYOUT_01,
-    themeId: 7
+    themeId: 7,
+    pageType: LAYOUT_PAGE_TYPE.FULL_PAGE.id
   },
   {
     id: 12,
@@ -348,7 +363,8 @@ const layouts = [
     name: 'Simple  3',
     isFavorites: false,
     previewImageUrl: LAYOUT_02,
-    themeId: 3
+    themeId: 3,
+    pageType: LAYOUT_PAGE_TYPE.FULL_PAGE.id
   },
   {
     id: 13,
@@ -357,7 +373,8 @@ const layouts = [
     name: 'Award  2',
     isFavorites: false,
     previewImageUrl: LAYOUT_01,
-    themeId: 2
+    themeId: 2,
+    pageType: LAYOUT_PAGE_TYPE.FULL_PAGE.id
   },
   {
     id: 14,
@@ -366,7 +383,8 @@ const layouts = [
     name: 'Award  4',
     isFavorites: false,
     previewImageUrl: LAYOUT_01,
-    themeId: 4
+    themeId: 4,
+    pageType: LAYOUT_PAGE_TYPE.FULL_PAGE.id
   },
   {
     id: 15,
@@ -375,7 +393,8 @@ const layouts = [
     name: 'Award 5',
     isFavorites: false,
     previewImageUrl: LAYOUT_01,
-    themeId: 3
+    themeId: 3,
+    pageType: LAYOUT_PAGE_TYPE.FULL_PAGE.id
   },
   {
     id: 16,
@@ -384,7 +403,8 @@ const layouts = [
     name: 'Graduation 12',
     isFavorites: false,
     previewImageUrl: LAYOUT_01,
-    themeId: 2
+    themeId: 2,
+    pageType: LAYOUT_PAGE_TYPE.FULL_PAGE.id
   },
   {
     id: 17,
@@ -393,7 +413,8 @@ const layouts = [
     name: 'Graduation 4',
     isFavorites: false,
     previewImageUrl: LAYOUT_01,
-    themeId: 4
+    themeId: 4,
+    pageType: LAYOUT_PAGE_TYPE.FULL_PAGE.id
   },
   {
     id: 18,
@@ -402,7 +423,8 @@ const layouts = [
     name: 'Collage 8',
     isFavorites: false,
     previewImageUrl: LAYOUT_01,
-    themeId: 8
+    themeId: 8,
+    pageType: LAYOUT_PAGE_TYPE.FULL_PAGE.id
   },
   {
     id: 19,
@@ -411,7 +433,8 @@ const layouts = [
     name: 'Collage 9',
     isFavorites: false,
     previewImageUrl: LAYOUT_01,
-    themeId: 8
+    themeId: 8,
+    pageType: LAYOUT_PAGE_TYPE.FULL_PAGE.id
   },
   {
     id: 20,
@@ -420,7 +443,8 @@ const layouts = [
     name: 'Intro 2',
     isFavorites: false,
     previewImageUrl: LAYOUT_01,
-    themeId: 2
+    themeId: 2,
+    pageType: LAYOUT_PAGE_TYPE.FULL_PAGE.id
   },
   {
     id: 21,
@@ -429,7 +453,8 @@ const layouts = [
     name: 'Year 4',
     isFavorites: false,
     previewImageUrl: LAYOUT_01,
-    themeId: 4
+    themeId: 4,
+    pageType: LAYOUT_PAGE_TYPE.FULL_PAGE.id
   },
   {
     id: 22,
@@ -438,7 +463,8 @@ const layouts = [
     name: 'Year 5',
     isFavorites: false,
     previewImageUrl: LAYOUT_01,
-    themeId: 5
+    themeId: 5,
+    pageType: LAYOUT_PAGE_TYPE.FULL_PAGE.id
   },
   {
     id: 23,
@@ -447,7 +473,8 @@ const layouts = [
     name: 'Year 6',
     isFavorites: false,
     previewImageUrl: LAYOUT_01,
-    themeId: 6
+    themeId: 6,
+    pageType: LAYOUT_PAGE_TYPE.FULL_PAGE.id
   },
   {
     id: 24,
@@ -456,7 +483,8 @@ const layouts = [
     name: 'Signature 6',
     isFavorites: false,
     previewImageUrl: LAYOUT_01,
-    themeId: 6
+    themeId: 6,
+    pageType: LAYOUT_PAGE_TYPE.FULL_PAGE.id
   },
   {
     id: 25,
@@ -465,7 +493,8 @@ const layouts = [
     name: 'Year 9',
     isFavorites: false,
     previewImageUrl: LAYOUT_01,
-    themeId: 9
+    themeId: 9,
+    pageType: LAYOUT_PAGE_TYPE.FULL_PAGE.id
   },
   {
     id: 26,
@@ -474,7 +503,8 @@ const layouts = [
     name: 'Simple 10',
     isFavorites: false,
     previewImageUrl: LAYOUT_01,
-    themeId: 10
+    themeId: 10,
+    pageType: LAYOUT_PAGE_TYPE.FULL_PAGE.id
   },
   {
     id: 27,
@@ -483,7 +513,8 @@ const layouts = [
     name: 'Simple 11',
     isFavorites: false,
     previewImageUrl: LAYOUT_01,
-    themeId: 11
+    themeId: 11,
+    pageType: LAYOUT_PAGE_TYPE.FULL_PAGE.id
   },
   {
     id: 28,
@@ -492,7 +523,8 @@ const layouts = [
     name: 'Awards 10',
     isFavorites: false,
     previewImageUrl: LAYOUT_01,
-    themeId: 10
+    themeId: 10,
+    pageType: LAYOUT_PAGE_TYPE.FULL_PAGE.id
   },
   {
     id: 29,
@@ -501,7 +533,8 @@ const layouts = [
     name: 'Year 9',
     isFavorites: false,
     previewImageUrl: LAYOUT_01,
-    themeId: 9
+    themeId: 9,
+    pageType: LAYOUT_PAGE_TYPE.FULL_PAGE.id
   },
   {
     id: 30,
@@ -510,7 +543,8 @@ const layouts = [
     name: 'Year 9',
     isFavorites: false,
     previewImageUrl: LAYOUT_01,
-    themeId: 6
+    themeId: 6,
+    pageType: LAYOUT_PAGE_TYPE.FULL_PAGE.id
   },
   {
     id: 31,
@@ -519,7 +553,8 @@ const layouts = [
     name: 'Simple 9',
     isFavorites: false,
     previewImageUrl: LAYOUT_01,
-    themeId: 9
+    themeId: 9,
+    pageType: LAYOUT_PAGE_TYPE.FULL_PAGE.id
   },
   {
     id: 32,
@@ -528,7 +563,8 @@ const layouts = [
     name: 'Graduation 6',
     isFavorites: false,
     previewImageUrl: LAYOUT_01,
-    themeId: 6
+    themeId: 6,
+    pageType: LAYOUT_PAGE_TYPE.FULL_PAGE.id
   },
   {
     id: 33,
@@ -537,7 +573,8 @@ const layouts = [
     name: 'Single 6',
     isFavorites: false,
     previewImageUrl: LAYOUT_01,
-    themeId: 6
+    themeId: 6,
+    pageType: LAYOUT_PAGE_TYPE.SINGLE_PAGE.id
   },
   {
     id: 34,
@@ -546,7 +583,8 @@ const layouts = [
     name: 'Single 7',
     isFavorites: false,
     previewImageUrl: LAYOUT_02,
-    themeId: 6
+    themeId: 6,
+    pageType: LAYOUT_PAGE_TYPE.SINGLE_PAGE.id
   },
   {
     id: 35,
@@ -555,7 +593,8 @@ const layouts = [
     name: 'Collage 8',
     isFavorites: false,
     previewImageUrl: LAYOUT_01,
-    themeId: 1
+    themeId: 1,
+    pageType: LAYOUT_PAGE_TYPE.FULL_PAGE.id
   },
 
   {
@@ -565,7 +604,8 @@ const layouts = [
     name: 'Collage 36',
     isFavorites: false,
     previewImageUrl: LAYOUT_01,
-    themeId: 1
+    themeId: 1,
+    pageType: LAYOUT_PAGE_TYPE.FULL_PAGE.id
   },
   {
     id: 37,
@@ -574,7 +614,8 @@ const layouts = [
     name: 'Single 1',
     isFavorites: false,
     previewImageUrl: LAYOUT_01,
-    themeId: 1
+    themeId: 1,
+    pageType: LAYOUT_PAGE_TYPE.SINGLE_PAGE.id
   },
 
   {
@@ -584,7 +625,8 @@ const layouts = [
     name: 'Single 2',
     isFavorites: false,
     previewImageUrl: LAYOUT_02,
-    themeId: 1
+    themeId: 1,
+    pageType: LAYOUT_PAGE_TYPE.SINGLE_PAGE.id
   }
 ];
 

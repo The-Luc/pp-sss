@@ -19,6 +19,8 @@ export const useStyle = () => {
   });
 
   const onSaveStyle = prop => {
+    const objectType = currentObject?.value?.type;
+
     if (
       [MODAL_TYPES.SAVE_STYLE, MODAL_TYPES.SAVE_STYLE_SUCCESS].includes(
         modalData?.value?.type
@@ -26,54 +28,71 @@ export const useStyle = () => {
     ) {
       toggleModal({ isOpenModal: false });
       if (!prop) return;
-      const name = prop.styleName || 'Untitled';
-      const value = Date.now();
-
-      const objectType = currentObject?.value?.type;
 
       if (objectType === OBJECT_TYPE.TEXT) {
-        const { fontFamily, fontSize, isBold, isItalic, isUnderline, color } =
-          currentObject?.value || {};
-
+        const {
+          fontFamily,
+          fontSize,
+          isBold,
+          isItalic,
+          isUnderline,
+          color,
+          alignment,
+          textCase,
+          letterSpacing,
+          lineSpacing,
+          flip,
+          border,
+          shadow
+        } = currentObject?.value || {};
         const textStyle = {
-          name,
-          value,
+          name: prop.styleName || 'Untitled',
+          id: Date.now(),
           style: {
             fontFamily,
             fontSize,
             isBold,
             isItalic,
             isUnderline,
-            color
+            color,
+            alignment,
+            textCase,
+            letterSpacing,
+            lineSpacing,
+            flip,
+            border,
+            shadow
           },
           isCustom: true
         };
 
         saveTextStyle({ textStyle });
       }
-
+    } else {
       if (objectType === OBJECT_TYPE.IMAGE) {
-        const { border, color } = currentObject?.value || {};
+        const { border, shadow } = currentObject?.value || {};
 
         const imageStyle = {
-          name,
-          value,
-          border,
-          color
+          id: Date.now(),
+          style: {
+            border,
+            shadow
+          },
+          isCustom: true
         };
 
         saveImageStyle({ imageStyle });
-      }
-    } else {
-      toggleModal({
-        isOpenModal: true,
-        modalData: {
-          type: MODAL_TYPES.SAVE_STYLE,
-          props: {
-            type: currentObject?.value?.type
+      } else {
+        toggleModal({
+          isOpenModal: true,
+          modalData: {
+            type: MODAL_TYPES.SAVE_STYLE,
+            props: {
+              type: currentObject?.value?.type
+            }
           }
-        }
-      });
+        });
+      }
     }
   };
 
