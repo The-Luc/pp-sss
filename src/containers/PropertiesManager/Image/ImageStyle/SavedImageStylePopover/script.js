@@ -79,8 +79,10 @@ export default {
 
       const { dropShadow, shadowAngle, shadowBlur, shadowColor, shadowOffset } =
         cssStyle?.shadow || {};
-      const offsetX = parseInt(Math.cos(shadowAngle) * shadowOffset, 10) / 3;
-      const offsetY = parseInt(Math.sin(shadowAngle) * shadowOffset, 10) / 3;
+      const offsetX =
+        parseInt(Math.sin(360 - shadowAngle) * shadowOffset, 10) / 3;
+      const offsetY =
+        parseInt(Math.cos(360 - shadowAngle) * shadowOffset, 10) / 3;
       const blur = parseInt(shadowBlur, 10) / 3;
       const shadowStyle = dropShadow
         ? {
