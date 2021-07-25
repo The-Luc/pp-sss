@@ -69,6 +69,7 @@ const appService = {
     window.data.book = new BookDetail(bookDetail);
     window.data.sections = sectionsData;
     window.data.sheets = sheetsData;
+    window.data.layouts = [];
   },
   /**
    * listen for beforeunload event to save data in window.book to sessionStorage

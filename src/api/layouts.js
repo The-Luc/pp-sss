@@ -6,6 +6,7 @@ export const loadLayouts = () => {
   const storageLayouts =
     JSON.parse(window.sessionStorage.getItem('ppLayouts')) || [];
   const layouts = [...mockPrintLayouts, ...storageLayouts];
+
   return new Promise(resolve => {
     setTimeout(() => {
       resolve(layouts);
@@ -26,6 +27,7 @@ export const loadSupplementalLayouts = () =>
 export const loadPrintPpLayouts = () => {
   const storageLayouts =
     JSON.parse(window.sessionStorage.getItem('ppLayouts')) || [];
+
   return new Promise(resolve => {
     setTimeout(() => {
       resolve(storageLayouts);
@@ -44,5 +46,27 @@ export const getPrintLayoutTypes = () => {
     setTimeout(() => {
       resolve(mockPrintLayoutTypes);
     });
+  });
+};
+
+export const saveToFavorites = (layoutId, isFavorites) => {
+  return new Promise(resolve => {
+    if (!layoutId) {
+      resolve();
+
+      return;
+    }
+
+    const index = window.data.layouts.findIndex(({ id }) => id === layoutId);
+
+    if (index < 0) {
+      resolve();
+
+      return;
+    }
+
+    window.data.layouts[index] = { ...window.data.layouts[index], isFavorites };
+
+    resolve();
   });
 };

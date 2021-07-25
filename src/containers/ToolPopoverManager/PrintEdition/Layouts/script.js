@@ -37,7 +37,8 @@ import {
   useDrawLayout,
   useGetLayouts,
   useFrame,
-  useModal
+  useModal,
+  useActionLayout
 } from '@/hooks';
 
 import {
@@ -51,6 +52,23 @@ import { loadDigitalThemes, loadPrintThemes } from '@/api/themes';
 import { cloneDeep } from 'lodash';
 
 export default {
+  components: {
+    PpToolPopover,
+    PpSelect,
+    Item,
+    SelectTheme,
+    SelectLayout,
+    GotIt
+  },
+  props: {
+    edition: {
+      type: String,
+      default: ''
+    },
+    initialData: {
+      type: Object
+    }
+  },
   setup({ edition }) {
     const { setToolNameSelected, selectedToolName } = usePopoverCreationTool();
     const { frames, currentFrameId } = useFrame();
@@ -69,6 +87,9 @@ export default {
       updateSheetThemeLayout
     } = useGetLayouts(edition);
     const { currentFrame } = useFrame();
+
+    const { saveToFavorites } = useActionLayout();
+
     return {
       selectedToolName,
       setToolNameSelected,
@@ -84,25 +105,9 @@ export default {
       frames,
       currentFrame,
       modalData,
-      currentFrameId
+      currentFrameId,
+      saveToFavorites
     };
-  },
-  components: {
-    PpToolPopover,
-    PpSelect,
-    Item,
-    SelectTheme,
-    SelectLayout,
-    GotIt
-  },
-  props: {
-    edition: {
-      type: String,
-      default: ''
-    },
-    initialData: {
-      type: Object
-    }
   },
   data({ initialData }) {
     const isDigital = this.edition === EDITION.DIGITAL;
@@ -128,7 +133,8 @@ export default {
         optionTitle: ''
       },
       isDigital,
-      layoutId
+      layoutId,
+      displayLayouts: []
     };
   },
   computed: {
@@ -170,8 +176,10 @@ export default {
         }
       }
     },
-    layouts() {
+    layouts(val) {
       this.setLayoutActive();
+
+      this.displayLayouts = val;
     },
     initialData: {
       deep: true,
@@ -535,6 +543,28 @@ export default {
 
         scrollToElement(currentLayout[0]?.$el, { block: 'center' });
       }, 20);
+    },
+    /**
+     * Save / unsave the selected layout to favorites
+     *
+     * @param {String | Number} id          id of selected layout
+     * @param {Boolean}         isFavorites is favorites
+     */
+    async onSaveToFavorites({ id, isFavorites }) {
+      await this.saveToFavorites(id, isFavorites);
+
+      const index = this.displayLayouts.findIndex(l => id === l.id);
+
+      if (index < 0) return;
+
+      const layout = { ...this.displayLayouts[index], isFavorites };
+
+      const _items = [...this.displayLayouts];
+
+      _items.splice(index, 1);
+      _items.splice(index, 0, layout);
+
+      this.displayLayouts = _items;
     }
   }
 };
