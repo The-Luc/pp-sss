@@ -1,6 +1,8 @@
 import { useMutations, useGetters, useActions } from 'vuex-composition-helpers';
 import { fabric } from 'fabric';
 
+import { saveToFavorites } from '@/api/layouts';
+
 import { GETTERS as THEME_GETTERS } from '@/store/modules/theme/const';
 
 import {
@@ -231,4 +233,8 @@ export const useDrawLayout = () => {
   return {
     drawLayout
   };
+};
+
+export const useActionLayout = () => {
+  return { saveToFavorites };
 };

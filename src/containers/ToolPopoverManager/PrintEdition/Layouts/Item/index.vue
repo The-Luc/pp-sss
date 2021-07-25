@@ -14,11 +14,17 @@
       <div v-if="isDigital" class="layout-opts">
         <v-icon class="layout-opts__play-icon">play_circle_outline</v-icon>
         <span class="layout-opts__preview">Preview</span>
-        <v-icon class="layout-opts__heart-icon">
-          favorite_border
+        <v-icon
+          class="layout-opts__heart-icon"
+          :class="favoriteData.cssClass"
+          @click="onSaveToFavorites"
+        >
+          {{ favoriteData.iconName }}
         </v-icon>
       </div>
-      <v-icon v-else> favorite_border </v-icon>
+      <v-icon v-else :class="favoriteData.cssClass" @click="onSaveToFavorites">
+        {{ favoriteData.iconName }}
+      </v-icon>
     </div>
   </div>
   <div v-else class="layout-item" />

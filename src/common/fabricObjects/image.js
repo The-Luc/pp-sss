@@ -1,6 +1,12 @@
 import { fabric } from 'fabric';
 
-import { inToPx, mapObject, pxToIn, scaleSize } from '../utils';
+import {
+  getStrokeLineCap,
+  inToPx,
+  mapObject,
+  pxToIn,
+  scaleSize
+} from '../utils';
 import { DEFAULT_RULE_DATA, getAdjustedObjectDimension } from './common';
 import { DEFAULT_IMAGE } from '../constants';
 
@@ -114,5 +120,10 @@ export const toFabricImageBorderProp = prop => {
 export const applyBorderToImageObject = (imageObject, borderConfig) => {
   const imageProp = toFabricImageBorderProp(borderConfig);
 
-  imageObject.set(imageProp);
+  const strokeLineCap = getStrokeLineCap(borderConfig.strokeLineType);
+
+  imageObject.set({
+    ...imageProp,
+    strokeLineCap
+  });
 };
