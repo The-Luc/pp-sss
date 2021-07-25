@@ -1,4 +1,7 @@
 import PpButton from '@/components/Buttons/Button';
+import { GETTERS } from '@/store/modules/app/const';
+import { mapGetters } from 'vuex';
+
 export default {
   components: {
     PpButton
@@ -7,6 +10,14 @@ export default {
     nameEditor: {
       type: String,
       required: true
+    }
+  },
+  computed: mapGetters({
+    triggerAutosave: GETTERS.TRIGGER_AUTOSAVE
+  }),
+  watch: {
+    triggerAutosave() {
+      console.log(this.triggerAutoSave);
     }
   },
   methods: {

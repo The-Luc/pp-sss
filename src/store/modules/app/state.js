@@ -43,7 +43,8 @@ export const state = {
     text: true,
     background: true,
     shape: true,
-    clipArt: true
+    clipArt: true,
+    autosave: true
   },
   generalInfo: {
     bookId: '',

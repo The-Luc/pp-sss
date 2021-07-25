@@ -202,6 +202,10 @@ export default {
     }
   },
   mounted() {
+    setInterval(() => {
+      this.updateTriggerAutosave();
+    }, 5000);
+
     window.addEventListener('copy', this.handleCopy);
     window.addEventListener('paste', this.handlePaste);
 
@@ -247,7 +251,8 @@ export default {
       toggleActiveObjects: MUTATES.TOGGLE_ACTIVE_OBJECTS,
       setPropertiesObjectType: MUTATES.SET_PROPERTIES_OBJECT_TYPE,
       setBackgroundProp: PRINT_MUTATES.SET_BACKGROUND_PROP,
-      deleteBackground: PRINT_MUTATES.DELETE_BACKGROUND
+      deleteBackground: PRINT_MUTATES.DELETE_BACKGROUND,
+      updateTriggerAutosave: MUTATES.UPDATE_TRIGGER_AUTOSAVE
     }),
 
     /**
