@@ -13,7 +13,7 @@ import './scss/_index.scss';
 import appService from './api/app';
 
 // check and set mock data to sesstion storage if empty
-appService.getBookData();
+appService.initData();
 
 // beforeunload event listener to save data to sessionStorage
 appService.saveOnUnloadEvent();
