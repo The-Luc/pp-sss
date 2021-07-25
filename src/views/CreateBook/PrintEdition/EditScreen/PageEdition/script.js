@@ -202,9 +202,7 @@ export default {
     }
   },
   mounted() {
-    setInterval(() => {
-      this.updateTriggerAutosave();
-    }, 60 * 1000);
+    setInterval(this.handleAutosave, 60 * 1000);
 
     window.addEventListener('copy', this.handleCopy);
     window.addEventListener('paste', this.handlePaste);
@@ -216,6 +214,8 @@ export default {
     window.removeEventListener('paste', this.handlePaste);
 
     window.printCanvas = null;
+
+    clearInterval(this.handleAutosave);
 
     sessionStorage.removeItem(COPY_OBJECT_KEY);
 
@@ -254,6 +254,12 @@ export default {
       deleteBackground: PRINT_MUTATES.DELETE_BACKGROUND,
       updateTriggerAutosave: MUTATES.UPDATE_TRIGGER_AUTOSAVE
     }),
+
+    handleAutosave() {
+      // TODO:-Luc Calll a function to save data
+
+      this.updateTriggerAutosave();
+    },
 
     /**
      * create fabric object

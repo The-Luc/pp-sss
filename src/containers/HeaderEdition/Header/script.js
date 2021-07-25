@@ -15,7 +15,8 @@ export default {
   data() {
     return {
       message: '',
-      componentKey: false
+      componentKey: false,
+      overlay: false
     };
   },
   computed: mapGetters({
@@ -25,6 +26,12 @@ export default {
     triggerAutosave() {
       this.message = 'Autosaving...';
       this.forceRenderComponent();
+    },
+    overlay(val) {
+      val &&
+        setTimeout(() => {
+          this.overlay = false;
+        }, 2000);
     }
   },
   methods: {
@@ -34,6 +41,7 @@ export default {
     onClickSave() {
       this.message = 'Saving....';
       this.forceRenderComponent();
+      this.overlay = true;
       this.$emit('onClickSave');
     },
 
