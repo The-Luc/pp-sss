@@ -133,24 +133,15 @@ const printService = {
    * @param   {Number}  sheetId   id of current sheet
    * @returns {Object}            query result
    */
-  getSheetObjects: (bookId, sectionId, sheetId) => {
-    return new Promise(resolve => {
-      // TODO -Luc: Will be implemente very soon
+  getSheetObjects: async (bookId, sectionId, sheetId) => {
+    // TODO: Remove when integrate API
+    bookId;
 
-      // const sheets = window.data.sheets;
+    const objects = await bookService.getObjectBySheet(sectionId, sheetId);
 
-      // const objects = sheets[sheetId].objects.map(o => ({
-      //   ...o.object,
-      //   id: o.id
-      // }));
+    const data = objects || [];
 
-      // const data = objects || [];
-      // const result = isEmpty(data)
-      //   ? getErrorWithMessages([])
-      //   : getSuccessWithData(data);
-
-      resolve([]);
-    });
+    return isEmpty(data) ? getErrorWithMessages([]) : getSuccessWithData(data);
   },
   /**
    * Get print page info
@@ -254,10 +245,19 @@ const printService = {
   },
 
   /**
-   * to save sheet link status
+   * to saves object and backgrounds
    */
   saveObjectsAndBackground: (sheetId, data) => {
-    return printService.updateSheet(sheetId, { objects: data });
+    return new Promise(resolve => {
+      if (!sheetId) {
+        resolve();
+        return;
+      }
+
+      window.data.objects[sheetId] = data;
+
+      resolve(data);
+    });
   },
 
   /**
@@ -265,6 +265,47 @@ const printService = {
    */
   saveSheetThumbnail: (sheetId, thumbnailUrl) => {
     return printService.updateSheet(sheetId, { thumbnailUrl });
+  },
+
+  /**
+   * save data of Print Edit Screen to database
+   */
+  saveEditScreen: async (sheetId, payload) => {
+    const { objects, defaultThemeId, pageInfo, sheetProps } = payload;
+
+    const saveQueue = [];
+
+    // save objects and backgrounds
+    saveQueue.push(printService.saveObjectsAndBackground(sheetId, objects));
+
+    // save default themeId
+    saveQueue.push(printService.saveDefaultThemeId(defaultThemeId));
+
+    // save pageInfo
+    saveQueue.push(printService.savePageInfo(pageInfo));
+
+    // save other data:
+    //   + sheet's layout and sheet's themeId
+    //   + sheet visite state
+    //   + sheet's thumbnail
+    //   + spreadInfo
+    saveQueue.push(printService.updateSheet(sheetId, sheetProps));
+
+    const response = await Promise.all(saveQueue);
+
+    return {
+      data: response,
+      isSuccess: true
+    };
+  },
+  saveMainScreen: async data => {
+    const sheets = window.data.sheets;
+
+    sheets.forEach(sheet => {
+      sheet._set(data[sheet.id]);
+    });
+
+    return;
   }
 };
 

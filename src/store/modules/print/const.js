@@ -5,6 +5,7 @@ export const MODULE_NAME = 'print';
 
 class GetterClass extends BaseObject {
   CURRENT_SHEET = 'getCurrentSheet';
+  SHEET_BY_ID = 'sheetById';
   TOTAL_BACKGROUND = 'getTotalBackground';
   CURRENT_OBJECT = 'getCurrentObject';
   CURRENT_OBJECT_ID = 'getCurrentObjectId';

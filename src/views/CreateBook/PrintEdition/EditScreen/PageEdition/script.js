@@ -4,7 +4,7 @@ import { cloneDeep, uniqueId, merge, debounce } from 'lodash';
 
 import { imageBorderModifier, usePrintOverrides } from '@/plugins/fabric';
 
-import { useInfoBar, useSaveSheetThumbnail } from '@/hooks';
+import { useInfoBar, useSaveData, useSaveSheetThumbnail } from '@/hooks';
 import { startDrawBox } from '@/common/fabricObjects/drawingBox';
 
 import {
@@ -87,7 +87,6 @@ import {
   THUMBNAIL_IMAGE_QUALITY
 } from '@/common/constants/config';
 import { createImage } from '@/common/fabricObjects';
-import printService from '@/api/print';
 import { useAppCommon } from '@/hooks/common';
 import { EVENT_TYPE } from '@/common/constants/eventType';
 import { useStyle } from '@/hooks/style';
@@ -106,13 +105,15 @@ export default {
     const { setInfoBar, zoom } = useInfoBar();
     const { setThumbnail } = useSaveSheetThumbnail();
     const { onSaveStyle } = useStyle();
+    const { savePrintEditScreen } = useSaveData();
 
     return {
       setActiveEdition,
       setInfoBar,
       zoom,
       onSaveStyle,
-      setThumbnail
+      setThumbnail,
+      savePrintEditScreen
     };
   },
   data() {
@@ -175,10 +176,7 @@ export default {
       deep: true,
       async handler(val, oldVal) {
         if (val?.id !== oldVal?.id) {
-          printService.saveObjectsAndBackground(
-            oldVal.id,
-            this.getObjectsAndBackground
-          );
+          await this.savePrintEditScreen(oldVal.id);
 
           // get data either from API or sessionStorage
           await this.getDataCanvas();

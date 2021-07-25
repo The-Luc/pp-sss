@@ -9,6 +9,7 @@ const keyBookData = `${STORAGE_KEY.bookStorage}-${bookId}`;
 const keyBook = `${STORAGE_KEY.book}-${bookId}`;
 const keySection = `${STORAGE_KEY.section}-${bookId}`;
 const keySheet = `${STORAGE_KEY.printSheet}-${bookId}`;
+const keyObject = `${STORAGE_KEY.object}-${bookId}`;
 
 const appService = {
   // TODO: remove when integrate with API
@@ -57,9 +58,10 @@ const appService = {
     // check and set mock data to sesstion storage if empty
     appService.setMockBookDataToStorage();
 
-    let bookDetail = parseItem(keyBook) || {};
-    let sections = parseItem(keySection) || [];
-    let sheets = parseItem(keySheet) || [];
+    const bookDetail = parseItem(keyBook) || {};
+    const sections = parseItem(keySection) || [];
+    const sheets = parseItem(keySheet) || [];
+    const objects = parseItem(keyObject) || {};
 
     const sheetsData = sheets.map(sheet => new SheetPrintData(sheet));
     const sectionsData = sections.map(s => new Section(s));
@@ -69,6 +71,7 @@ const appService = {
     window.data.book = new BookDetail(bookDetail);
     window.data.sections = sectionsData;
     window.data.sheets = sheetsData;
+    window.data.objects = objects;
   },
   /**
    * listen for beforeunload event to save data in window.book to sessionStorage
@@ -78,6 +81,7 @@ const appService = {
       setItem(keyBook, JSON.stringify(window.data.book));
       setItem(keySection, JSON.stringify(window.data.sections));
       setItem(keySheet, JSON.stringify(window.data.sheets));
+      setItem(keyObject, JSON.stringify(window.data.objects));
     });
   }
 };
