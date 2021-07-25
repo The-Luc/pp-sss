@@ -107,7 +107,6 @@ const getLayoutData = () => {
 
   const layouts = parseItem(keyLayout) || {};
   const layoutTypes = parseItem(keyLayoutType) || [];
-  console.log(layoutTypes);
 
   // Save to window.data variable
   window.data.layouts = layouts;
