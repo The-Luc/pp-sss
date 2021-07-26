@@ -9,19 +9,14 @@ import {
   GETTERS as APP_GETTERS,
   MUTATES as APP_MUTATES
 } from '@/store/modules/app/const';
-import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
+import {
+  GETTERS as PRINT_GETTERS,
+  MUTATES as PRINT_MUTATES
+} from '@/store/modules/print/const';
 import { TOOL_NAME } from '@/common/constants';
 import ThemesToolPopover from '@/components/ToolPopover/Theme';
-import { useSaveDefaultThemeId } from '@/hooks';
 
 export default {
-  setup() {
-    const {
-      saveDefaultThemeId: triggerThemeIdSelected
-    } = useSaveDefaultThemeId();
-
-    return { triggerThemeIdSelected };
-  },
   components: {
     ThemesToolPopover
   },
@@ -60,7 +55,8 @@ export default {
       setPrintThemes: THEME_ACTIONS.GET_PRINT_THEMES
     }),
     ...mapMutations({
-      setToolNameSelected: APP_MUTATES.SET_TOOL_NAME_SELECTED
+      setToolNameSelected: APP_MUTATES.SET_TOOL_NAME_SELECTED,
+      triggerThemeIdSelected: PRINT_MUTATES.SET_DEFAULT_THEME_ID
     }),
     /**
      * Set up needly data to render to view: selectedThemeId, optionThemeSelected

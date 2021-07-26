@@ -12,6 +12,7 @@ const keyBookData = `${STORAGE_KEY.bookStorage}-${bookId}`;
 const keyBook = `${STORAGE_KEY.book}-${bookId}`;
 const keySection = `${STORAGE_KEY.section}-${bookId}`;
 const keySheet = `${STORAGE_KEY.printSheet}-${bookId}`;
+const keyObject = `${STORAGE_KEY.object}-${bookId}`;
 const keyLayout = `${STORAGE_KEY.layout}`;
 const keyLayoutType = `${STORAGE_KEY.layoutType}`;
 
@@ -62,9 +63,10 @@ const getBookData = () => {
   // check and set mock data to sesstion storage if empty
   setMockBookDataToStorage();
 
-  let bookDetail = parseItem(keyBook) || {};
-  let sections = parseItem(keySection) || [];
-  let sheets = parseItem(keySheet) || [];
+  const bookDetail = parseItem(keyBook) || {};
+  const sections = parseItem(keySection) || [];
+  const sheets = parseItem(keySheet) || [];
+  const objects = parseItem(keyObject) || {};
 
   const sheetsData = sheets.map(sheet => new SheetPrintData(sheet));
   const sectionsData = sections.map(s => new Section(s));
@@ -74,6 +76,7 @@ const getBookData = () => {
   window.data.book = new BookDetail(bookDetail);
   window.data.sections = sectionsData;
   window.data.sheets = sheetsData;
+  window.data.objects = objects;
 };
 
 /**
@@ -84,6 +87,8 @@ const saveOnUnloadEvent = () => {
     setItem(keyBook, JSON.stringify(window.data.book));
     setItem(keySection, JSON.stringify(window.data.sections));
     setItem(keySheet, JSON.stringify(window.data.sheets));
+    setItem(keyObject, JSON.stringify(window.data.objects));
+
     setItem(keyLayout, JSON.stringify(window.data.layouts));
   });
 };
