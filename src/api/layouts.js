@@ -28,7 +28,7 @@ export const loadPrintPpLayouts = () => {
 
 export const setPrintPpLayouts = layout => {
   setTimeout(() => {
-    window.data.layouts = [...window.data.layouts, layout];
+    window.data.layouts.push(layout);
   });
 };
 
