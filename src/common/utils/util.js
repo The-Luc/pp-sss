@@ -271,7 +271,7 @@ export const modifyItems = (items, item, index, modifyType) => {
   }
 
   if (modifyType === MODIFICATION.ADD) {
-    const addIndex = isEmpty(index) ? items.length : index;
+    const addIndex = isEmpty(index) || index < 0 ? items.length : index;
 
     _items.splice(addIndex, 0, item);
 

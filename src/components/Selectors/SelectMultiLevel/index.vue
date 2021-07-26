@@ -18,7 +18,7 @@
           <v-list-item-title>
             <v-row no-gutters align="center">
               <span>
-                {{ `${selectedValue.name}: ${selectedValue.sub.name}` }}
+                {{ displaySelected }}
               </span>
             </v-row>
           </v-list-item-title>
@@ -29,7 +29,7 @@
     <template #item="{ item, attrs, on }">
       <v-list-item
         v-slot="{ active }"
-        :data-id="getDataIdByValue(item)"
+        :ref="getDataIdByValue(item)"
         class="pp-select-multi--item"
         v-bind="attrs"
         v-on="on"
@@ -43,7 +43,11 @@
 
         <v-list-item-content>
           <v-list-item-title>
-            <v-row no-gutters align="center" @click="onItemClick($event)">
+            <v-row
+              no-gutters
+              align="center"
+              @click="onItemClick($event, item.subItems.length, item.value)"
+            >
               <span>{{ item.name }}</span>
             </v-row>
 

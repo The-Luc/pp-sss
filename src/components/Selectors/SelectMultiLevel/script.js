@@ -38,6 +38,10 @@ export default {
     },
     container: {
       type: String
+    },
+    isUseSubShortName: {
+      type: Boolean,
+      default: false
     }
   },
   computed: {
@@ -56,6 +60,15 @@ export default {
         ...item,
         sub: isEmpty(sub) ? { name: '' } : sub
       };
+    },
+    displaySelected() {
+      const subName = this.isUseSubShortName
+        ? this.selectedValue.sub?.shortName
+        : this.selectedValue.sub?.name;
+
+      const displaySubName = isEmpty(subName) ? '' : `: ${subName}`;
+
+      return `${this.selectedValue.name}${displaySubName}`;
     }
   },
   methods: {
@@ -67,19 +80,23 @@ export default {
     onChange(data) {
       const elementDataId = this.getDataIdByValue({ value: data.parent });
 
-      const useElement = document.querySelector(`[data-id="${elementDataId}"]`);
-
-      useElement.click();
+      this.$refs[`${elementDataId}`].$el.click();
 
       this.$emit('change', { value: data.parent, sub: data.sub });
     },
     /**
      * Event fire when click on item, for stopping close the selector
      *
-     * @param {Object}  ev  the event
+     * @param {Object}  event  the event
      */
-    onItemClick(ev) {
-      ev.stopPropagation();
+    onItemClick(event, totalSubItem, itemValue) {
+      if (totalSubItem > 0) {
+        event.stopPropagation();
+
+        return;
+      }
+
+      this.$emit('change', { value: itemValue, sub: '' });
     },
     /**
      * Get data id of the item

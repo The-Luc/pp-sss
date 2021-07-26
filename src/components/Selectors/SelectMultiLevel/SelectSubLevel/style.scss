@@ -5,4 +5,16 @@
   z-index: 99999;
   min-width: 200px;
   box-shadow: 0 0 6px #00000080 !important;
+  cursor: default;
+
+  .pp-select-sub--item {
+    cursor: pointer;
+
+    &.disabled {
+      pointer-events: none;
+
+      span {
+        color: $color-gray21;}
+    }
+  }
 }

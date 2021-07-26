@@ -4,7 +4,7 @@
       v-for="item in items"
       :key="item.value"
       class="pp-select-sub--item"
-      :class="isSelected(item) && 'v-list-item--active'"
+      :class="getCustomCssClass(item)"
       @click.native="onSubClick(item)"
     >
       <img

@@ -50,18 +50,25 @@ export const LAYOUT_TYPES = {
 };
 
 export const LAYOUT_PAGE_TYPE = {
-  FULL_PAGE: {
-    id: 0,
-    name: 'Spread Layouts'
-  },
   SINGLE_PAGE: {
+    id: 0,
+    name: 'Single Page Layouts',
+    shortName: 'Single'
+  },
+  FULL_PAGE: {
     id: 1,
-    name: 'Single Page Layouts'
+    name: 'Spread Layouts',
+    shortName: 'Spread'
   }
 };
 
 export const SAVED_AND_FAVORITES = {
   name: 'Saved Layouts/Favorites',
   id: -999,
-  value: -999
+  value: -999,
+  subItems: Object.values(LAYOUT_PAGE_TYPE).map(lgt => ({
+    ...lgt,
+    value: lgt.id,
+    isDisabled: false
+  }))
 };

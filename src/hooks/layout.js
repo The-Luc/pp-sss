@@ -4,7 +4,10 @@ import { fabric } from 'fabric';
 import {
   saveToFavorites,
   getFavorites,
-  getPrintLayoutTypes
+  getPrintLayoutTypes,
+  getCustom,
+  getLayoutsByThemeAndType,
+  getCustomAndFavoriteLayouts
 } from '@/api/layouts';
 
 import { GETTERS as THEME_GETTERS } from '@/store/modules/theme/const';
@@ -241,5 +244,12 @@ export const useDrawLayout = () => {
 };
 
 export const useActionLayout = () => {
-  return { saveToFavorites, getFavorites, getPrintLayoutTypes };
+  return {
+    saveToFavorites,
+    getFavorites,
+    getPrintLayoutTypes,
+    getCustom,
+    getLayoutsByThemeAndType,
+    getCustomAndFavoriteLayouts
+  };
 };

@@ -60,7 +60,8 @@
     border-bottom: 1px solid $color-gray15;
 
     ::v-deep .pp-selector-container {
-      .pp-select {
+      .pp-select,
+      .pp-select-multi {
         width: 200px;
       }
     }

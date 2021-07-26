@@ -22,7 +22,7 @@ export default {
       backgroundTypes: {},
       backgrounds: [],
       noBackgroundLength: 4,
-      selectedType: { sub: {} },
+      selectedType: { sub: '' },
       selectedPageType: {}
     };
   },

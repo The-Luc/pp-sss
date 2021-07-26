@@ -120,9 +120,9 @@ export default {
     onSelectSheet({ id }) {
       if (this.pageSelected.id !== id) this.$router.push(`${id}`);
 
-      if (this.isOpenMenuProperties) {
-        this.toggleMenuProperties({ isOpenMenuProperties: false });
-      }
+      this.toggleMenuProperties({ isOpenMenuProperties: false });
+
+      this.setToolNameSelected('');
 
       if (this.pageSelected.isVisited) return;
 
@@ -130,7 +130,7 @@ export default {
 
       this.updateVisited({ sheetId: id });
 
-      this.setToolNameSelected(TOOL_NAME.PRINT_LAYOUTS);
+      this.setToolNameSelected(TOOL_NAME.DIGITAL_LAYOUTS);
     },
     /**
      * Toggle display sheets of section by changing collapse section id
