@@ -91,7 +91,6 @@ import printService from '@/api/print';
 import { useAppCommon } from '@/hooks/common';
 import { EVENT_TYPE } from '@/common/constants/eventType';
 import { useStyle } from '@/hooks/style';
-import { getPrintLayoutTypes } from '@/api/layouts';
 
 export default {
   components: {
@@ -1603,7 +1602,6 @@ export default {
     },
     async handleSaveLayout({ pageSelected, layoutName }) {
       layoutName = layoutName || 'Untitle';
-      const layoutTypes = await getPrintLayoutTypes();
       const zoom = window.printCanvas.getZoom();
       const width = window.printCanvas.width;
 
