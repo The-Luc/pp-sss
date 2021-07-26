@@ -102,7 +102,9 @@ const setMockLayoutDataToStorage = () => {
   }
 
   if (isEmpty(layoutTypes)) {
-    setItem(keyLayoutType, JSON.stringify(LAYOUT_TYPES));
+    const layoutTypes = Object.values(LAYOUT_TYPES).map(lt => lt);
+
+    setItem(keyLayoutType, JSON.stringify(layoutTypes));
   }
 };
 

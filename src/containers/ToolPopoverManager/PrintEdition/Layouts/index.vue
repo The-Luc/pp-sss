@@ -26,7 +26,7 @@
             @change="onChangeTheme"
           />
           <SelectLayout
-            :items="layoutsOpts"
+            :items="layoutTypes"
             :disabled="disabled"
             :title="textDisplay.optionTitle"
             :layout-selected="layoutSelected"
