@@ -243,7 +243,7 @@ export default {
      */
     async initDigitalData() {
       this.themesOptions = await loadDigitalThemes();
-      console.log(`defaultThemeId: ${this.defaultThemeId}`)
+      console.log(`defaultThemeId: ${this.defaultThemeId}`);
 
       const isSupplemental = this.initialData?.isSupplemental;
 
@@ -730,7 +730,7 @@ export default {
           this.themeSelected.id,
           this.layoutTypeSelected.value
         );
-        
+
         return;
       }
 
