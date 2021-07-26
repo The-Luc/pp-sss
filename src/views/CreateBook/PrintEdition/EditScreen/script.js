@@ -7,7 +7,12 @@ import {
   MUTATES as PRINT_MUTATES,
   GETTERS as PRINT_GETTERS
 } from '@/store/modules/print/const';
-import { MODAL_TYPES, ROLE, TOOL_NAME } from '@/common/constants';
+import {
+  MODAL_TYPES,
+  ROLE,
+  SAVING_DURATION,
+  TOOL_NAME
+} from '@/common/constants';
 import ToolBar from './ToolBar';
 import Header from '@/containers/HeaderEdition/Header';
 import FeedbackBar from '@/containers/HeaderEdition/FeedbackBar';
@@ -172,7 +177,7 @@ export default {
         this.$router.push(
           getEditionListPath(this.$route.params.bookId, EDITION.PRINT)
         );
-      }, 2000);
+      }, SAVING_DURATION);
     },
     /**
      * Fire when zoom is changed

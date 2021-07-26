@@ -17,6 +17,8 @@ export const THUMBNAIL_IMAGE_QUALITY = 0.2;
 
 export const AUTOSAVE_INTERVAL = 60000; // ~ 60 seconds
 
+export const SAVING_DURATION = 2000; // ~ 2 seconds
+
 export const MAX_SUPPLEMENTAL_FRAMES = 10;
 
 export const MAX_SAVED_TEXT_STYLES = 9;

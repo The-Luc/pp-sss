@@ -1,8 +1,13 @@
+import { SAVING_DURATION } from '@/common/constants';
 import PpButton from '@/components/Buttons/Button';
-import { GETTERS } from '@/store/modules/app/const';
-import { mapGetters } from 'vuex';
+import { useGetTriggerAutoSave } from '@/hooks/common';
 
 export default {
+  setup() {
+    const { triggerAutosave } = useGetTriggerAutoSave();
+
+    return { triggerAutosave };
+  },
   components: {
     PpButton
   },
@@ -19,9 +24,6 @@ export default {
       overlay: false
     };
   },
-  computed: mapGetters({
-    triggerAutosave: GETTERS.TRIGGER_AUTOSAVE
-  }),
   watch: {
     triggerAutosave() {
       this.message = 'Autosaving...';
@@ -31,7 +33,7 @@ export default {
       val &&
         setTimeout(() => {
           this.overlay = false;
-        }, 2000);
+        }, SAVING_DURATION);
     }
   },
   methods: {
