@@ -26,9 +26,9 @@ export const loadPrintPpLayouts = () => {
   });
 };
 
-export const setPrintPpLayouts = layouts => {
+export const setPrintPpLayouts = layout => {
   setTimeout(() => {
-    window.sessionStorage.setItem('ppLayouts', JSON.stringify(layouts));
+    window.data.layouts.push(layout);
   });
 };
 
@@ -59,5 +59,15 @@ export const saveToFavorites = (layoutId, isFavorites) => {
     window.data.layouts[index] = { ...window.data.layouts[index], isFavorites };
 
     resolve();
+  });
+};
+
+export const getFavorites = () => {
+  return new Promise(resolve => {
+    const favorites = window.data.layouts.filter(
+      ({ isFavorites }) => isFavorites
+    );
+
+    resolve(favorites);
   });
 };
