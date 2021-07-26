@@ -3,7 +3,7 @@
     class="layouts-container"
     :class="{
       'layouts-container-prompt': !isVisited,
-      'empty-layout-container': displayLayouts.length === 0
+      'empty-layout-container': layouts.length === 0
     }"
   >
     <div v-if="!isVisited && isPrompt" class="prompt"></div>
@@ -29,18 +29,16 @@
             :items="layoutTypes"
             :disabled="disabled"
             :title="textDisplay.optionTitle"
-            :layout-selected="layoutSelected"
-            @change="onChangeLayout"
+            :layout-selected="layoutTypeSelected"
+            :is-digital="isDigital"
+            @change="onChangeLayoutType"
           />
         </div>
       </template>
 
       <template #content>
         <div class="layout-item-container">
-          <div
-            v-show="displayLayouts.length === 0"
-            class="empty-layout-content"
-          >
+          <div v-show="layouts.length === 0" class="empty-layout-content">
             <p class="empty-layout-text">No Layout Matches</p>
             <Item
               v-for="(layout, index) in layoutEmptyLength"
@@ -49,12 +47,13 @@
             />
           </div>
           <Item
-            v-for="layout in displayLayouts"
+            v-for="layout in layouts"
             :ref="`layout${layout.id}`"
             :key="layout.id"
             :layout="layout"
             :selected-layout-id="tempLayoutIdSelected"
-            :is-favorites="layout.isFavorites"
+            :is-favorites="isInFavorites(layout)"
+            :is-favorites-disabled="layout.isFavoritesDisabled"
             :is-digital="isDigital"
             @click="onSelectLayout"
             @saveToFavorites="onSaveToFavorites"

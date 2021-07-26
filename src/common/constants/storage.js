@@ -14,5 +14,7 @@ export const STORAGE_KEY = {
   background: 'background',
   backgroundType: 'backgroundType',
   theme: 'theme',
-  clipArt: 'clipArt'
+  clipArt: 'clipArt',
+  savedlayout: 'savedlayout',
+  favoritesLayout: 'favoritesLayout'
 };

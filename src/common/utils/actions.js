@@ -1,7 +1,7 @@
 import { fabric } from 'fabric';
 import { cloneDeep, uniqueId } from 'lodash';
 import { clearClipboard, isEmpty, getMinPositionObject } from '@/common/utils';
-import { OBJECT_TYPE, FABRIC_OBJECT_TYPE } from '@/common/constants';
+import { OBJECT_TYPE } from '@/common/constants';
 import { COPY_OBJECT_KEY } from '@/common/constants/config';
 import { computePastedObjectCoord } from './pasteObject';
 import { parsePasteObject } from '@/common/utils/string';

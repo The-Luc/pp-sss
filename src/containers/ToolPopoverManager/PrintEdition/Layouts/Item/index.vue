@@ -22,7 +22,11 @@
           {{ favoriteData.iconName }}
         </v-icon>
       </div>
-      <v-icon v-else :class="favoriteData.cssClass" @click="onSaveToFavorites">
+      <v-icon
+        v-else-if="!isFavoritesDisabled"
+        :class="favoriteData.cssClass"
+        @click="onSaveToFavorites"
+      >
         {{ favoriteData.iconName }}
       </v-icon>
     </div>

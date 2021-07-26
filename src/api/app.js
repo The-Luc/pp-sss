@@ -15,6 +15,8 @@ const keySheet = `${STORAGE_KEY.printSheet}-${bookId}`;
 const keyObject = `${STORAGE_KEY.object}-${bookId}`;
 const keyLayout = `${STORAGE_KEY.layout}`;
 const keyLayoutType = `${STORAGE_KEY.layoutType}`;
+const keySavedLayout = `${STORAGE_KEY.savedlayout}`;
+const keyFavoritesLayout = `${STORAGE_KEY.favoritesLayout}`;
 
 // TODO: remove when integrate with API
 const setMockBookDataToStorage = () => {
@@ -90,6 +92,8 @@ const saveOnUnloadEvent = () => {
     setItem(keyObject, JSON.stringify(window.data.objects));
 
     setItem(keyLayout, JSON.stringify(window.data.layouts));
+    setItem(keySavedLayout, JSON.stringify(window.data.savedLayouts));
+    setItem(keyFavoritesLayout, JSON.stringify(window.data.favoritesLayouts));
   });
 };
 
@@ -102,9 +106,9 @@ const setMockLayoutDataToStorage = () => {
   }
 
   if (isEmpty(layoutTypes)) {
-    const layoutTypes = Object.values(LAYOUT_TYPES).map(lt => lt);
+    const types = Object.values(LAYOUT_TYPES).map(lt => lt);
 
-    setItem(keyLayoutType, JSON.stringify(layoutTypes));
+    setItem(keyLayoutType, JSON.stringify(types));
   }
 };
 
@@ -114,10 +118,14 @@ const getLayoutData = () => {
 
   const layouts = parseItem(keyLayout) || {};
   const layoutTypes = parseItem(keyLayoutType) || [];
+  const savedLayouts = parseItem(keySavedLayout) || [];
+  const favoritesLayouts = parseItem(keyFavoritesLayout) || [];
 
   // Save to window.data variable
   window.data.layouts = layouts;
   window.data.layoutTypes = layoutTypes;
+  window.data.savedLayouts = savedLayouts;
+  window.data.favoritesLayouts = favoritesLayouts;
 };
 
 const initData = () => {

@@ -31,7 +31,8 @@ import {
   activeCanvas,
   isEmpty,
   scrollToElement,
-  modifyItems
+  modifyItems,
+  isHalfSheet
 } from '@/common/utils';
 import {
   usePopoverCreationTool,
@@ -94,7 +95,10 @@ export default {
     const {
       saveToFavorites,
       getFavorites,
-      getPrintLayoutTypes
+      getPrintLayoutTypes,
+      getCustom,
+      getLayoutsByThemeAndType,
+      getCustomAndFavoriteLayouts
     } = useActionLayout();
 
     return {
@@ -115,7 +119,10 @@ export default {
       currentFrameId,
       saveToFavorites,
       getFavorites,
-      getPrintLayoutTypes
+      getPrintLayoutTypes,
+      getCustom,
+      getLayoutsByThemeAndType,
+      getCustomAndFavoriteLayouts
     };
   },
   data() {
@@ -126,7 +133,7 @@ export default {
       layoutTypesOrigin: [],
       layoutTypes: [],
       disabled: false,
-      layoutSelected: {},
+      layoutTypeSelected: isDigital ? {} : { sub: '' },
       themeSelected: {},
       tempLayoutIdSelected: null,
       layoutEmptyLength: 4,
@@ -139,8 +146,9 @@ export default {
       },
       isDigital,
       layoutId: null,
-      displayLayouts: [],
-      favoriteLayouts: []
+      favoriteLayouts: [],
+      customLayouts: [],
+      layouts: []
     };
   },
   computed: {
@@ -151,15 +159,6 @@ export default {
     }),
     isVisited() {
       return this.pageSelected?.isVisited;
-    },
-    layouts() {
-      if (this.themeSelected?.id && this.layoutSelected?.value) {
-        return this.getLayoutsByType(
-          this.themeSelected?.id,
-          this.layoutSelected?.value
-        );
-      }
-      return [];
     },
     themeId() {
       return this.pageSelected?.themeId || this.defaultThemeId;
@@ -174,10 +173,8 @@ export default {
         }
       }
     },
-    layouts(val) {
+    layouts() {
       this.setLayoutActive();
-
-      this.displayLayouts = val;
     },
     initialData: {
       deep: true,
@@ -193,22 +190,14 @@ export default {
 
     await Promise.all([
       this.initEditionData(),
+      this.getLayoutTypes(),
       this.getFavoritesData(),
-      this.getLayoutTypes()
+      this.getCustomData()
     ]);
 
     this.filterLayoutType();
 
-    this.initData();
-
-    // if layout modal is used to add frame -> set currentFrameObjet = null
-    const currentFrameObj = this.modalData.props.isAddNew
-      ? null
-      : this.frames.find(f => f.id === this.currentFrameId);
-
-    this.layoutId = this.initialData?.isSupplemental
-      ? currentFrameObj?.frame?.supplementalLayoutId
-      : this.pageSelected?.layoutId;
+    await this.initData();
 
     this.autoScroll(this.layoutId);
   },
@@ -221,11 +210,13 @@ export default {
     /**
      * Set up inital data to render in view
      */
-    initData() {
+    async initData() {
       this.setLayoutSelected(this.pageSelected);
       this.setDisabledLayout(this.pageSelected);
       this.setThemeSelected(this.themeId);
       this.setLayoutActive();
+
+      await this.getLayouts();
     },
     /**
      * Set up inital data to render in view
@@ -244,12 +235,15 @@ export default {
       const layouts = await loadLayouts();
 
       this.setPrintLayouts({ layouts });
+
+      this.layoutId = this.pageSelected?.layoutId;
     },
     /**
      * Set up inital data to render in view of digital ediont
      */
     async initDigitalData() {
       this.themesOptions = await loadDigitalThemes();
+      console.log(`defaultThemeId: ${this.defaultThemeId}`);
 
       const isSupplemental = this.initialData?.isSupplemental;
 
@@ -258,6 +252,15 @@ export default {
         : await loadDigitalLayouts();
 
       this.setDigitalLayouts({ layouts });
+
+      // if layout modal is used to add frame -> set currentFrameObjet = null
+      const currentFrameObj = this.modalData.props.isAddNew
+        ? null
+        : this.frames.find(f => f.id === this.currentFrameId);
+
+      this.layoutId = this.initialData?.isSupplemental
+        ? currentFrameObj?.frame?.supplementalLayoutId
+        : this.pageSelected?.layoutId;
     },
     /**
      * Set default selected for layout base on id of sheet: Cover, Single Page or Collage
@@ -265,7 +268,10 @@ export default {
      */
     setLayoutSelected(pageSelected) {
       if (this.initialData?.layoutSelected) {
-        this.layoutSelected = this.initialData.layoutSelected;
+        this.layoutTypeSelected = this.getSelectedType(
+          this.initialData.layoutSelected
+        );
+
         return;
       }
       const sheetType = pageSelected.type;
@@ -275,7 +281,7 @@ export default {
             const coverOption = this.layoutTypes.find(
               l => l.sheetType === SHEET_TYPE.COVER
             );
-            this.layoutSelected = coverOption;
+            this.layoutTypeSelected = this.getSelectedType(coverOption);
           }
           break;
         case SHEET_TYPE.FRONT_COVER:
@@ -284,7 +290,7 @@ export default {
             const singlePageOption = this.layoutTypes.find(
               l => l.sheetType === SHEET_TYPE.FRONT_COVER
             );
-            this.layoutSelected = singlePageOption;
+            this.layoutTypeSelected = this.getSelectedType(singlePageOption);
           }
           break;
         default:
@@ -297,11 +303,13 @@ export default {
                 this.layoutTypes,
                 layoutId
               );
-              this.layoutSelected = layoutOpt;
+              this.layoutTypeSelected = this.getSelectedType(layoutOpt);
             } else {
               const index = this.layoutTypes.length > 1 ? 1 : 0;
 
-              this.layoutSelected = this.layoutTypes[index];
+              this.layoutTypeSelected = this.getSelectedType(
+                this.layoutTypes[index]
+              );
             }
           }
           break;
@@ -312,7 +320,10 @@ export default {
      * @param  {Number} pageSelected Id of sheet selected
      */
     setDisabledLayout(pageSelected) {
-      if (!isEmpty(this.favoriteLayouts) && !this.isDigital) {
+      const isFavoritesExisted = !isEmpty(this.favoriteLayouts);
+      const isCustomExisted = !isEmpty(this.customLayouts);
+
+      if ((isFavoritesExisted || isCustomExisted) && !this.isDigital) {
         this.disabled = false;
 
         return;
@@ -348,39 +359,43 @@ export default {
     /**
      * Set object theme selected from dropdown
      */
-    onChangeTheme(theme) {
+    async onChangeTheme(theme) {
       this.themeSelected = theme;
+
+      await this.getLayouts();
     },
     /**
      * Set object layout selected from dropdown
      */
-    onChangeLayout(layout) {
-      this.layoutSelected = layout;
+    async onChangeLayoutType(layout) {
+      this.layoutTypeSelected = this.getSelectedType(layout);
+
+      await this.getLayouts();
     },
     /**
      * When open layout from creation tool, check sheet has exist layout before or not
      * if not, first layout is selected, else is sheet's layout
      */
     setLayoutActive() {
-      if (this.layouts.length > 0) {
-        this.tempLayoutIdSelected = this.layouts[0].id;
-        this.layoutObjSelected = this.layouts[0];
+      if (this.layouts.length === 0) return;
 
-        // if adding new frame, use the default setting above
-        if (this.initialData?.isAddNew) return;
+      this.tempLayoutIdSelected = this.layouts[0].id;
+      this.layoutObjSelected = this.layouts[0];
 
-        if (this.layoutId) {
-          const sheetLayoutObj = this.layouts.find(
-            layout => layout.id === this.layoutId
-          );
-          if (sheetLayoutObj?.id) {
-            this.tempLayoutIdSelected = sheetLayoutObj.id;
-          }
-        }
-        this.layoutObjSelected = this.layouts.find(
-          l => l.id === this.tempLayoutIdSelected
+      // if adding new frame, use the default setting above
+      if (this.initialData?.isAddNew) return;
+
+      if (this.layoutId) {
+        const sheetLayoutObj = this.layouts.find(
+          layout => layout.id === this.layoutId
         );
+        if (sheetLayoutObj?.id) {
+          this.tempLayoutIdSelected = sheetLayoutObj.id;
+        }
       }
+      this.layoutObjSelected = this.layouts.find(
+        l => l.id === this.tempLayoutIdSelected
+      );
     },
     /**
      * Set current layout active when user click layout which they want change
@@ -564,65 +579,54 @@ export default {
     /**
      * Save / unsave the selected layout to favorites
      *
-     * @param {String | Number} id          id of selected layout
-     * @param {Boolean}         isFavorites is favorites
+     * @param {String | Number} id id of selected layout
      */
-    async onSaveToFavorites({ id, isFavorites }) {
-      await this.saveLayoutToFavorites({ id, isFavorites });
+    async onSaveToFavorites({ id }) {
+      await this.saveToFavorites(id);
 
-      this.modifyFavorites({ id, isFavorites });
+      this.modifyFavorites(id);
 
       this.setDisabledLayout(this.pageSelected);
 
       this.filterLayoutType();
     },
     /**
-     * Save / unsave the selected layout to favorites
-     *
-     * @param {String | Number} id          id of selected layout
-     * @param {Boolean}         isFavorites is favorites
-     */
-    async saveLayoutToFavorites({ id, isFavorites }) {
-      await this.saveToFavorites(id, isFavorites);
-
-      const index = this.displayLayouts.findIndex(l => id === l.id);
-
-      if (index < 0) return;
-
-      const layout = { ...this.displayLayouts[index], isFavorites };
-
-      this.displayLayouts = modifyItems(
-        this.displayLayouts,
-        layout,
-        index,
-        MODIFICATION.UPDATE
-      );
-    },
-    /**
      * Modify favorite items list
      *
-     * @param {String | Number} id          id of selected layout
-     * @param {Boolean}         isFavorites is favorites
+     * @param {String | Number} id  id of selected layout
      */
-    modifyFavorites({ id, isFavorites }) {
-      const index = this.displayLayouts.findIndex(l => id === l.id);
+    modifyFavorites(id) {
+      const index = this.favoriteLayouts.findIndex(f => id === f);
 
-      if (index < 0) return;
-
-      const modifyType = isFavorites ? MODIFICATION.ADD : MODIFICATION.DELETE;
+      const modification = index < 0 ? MODIFICATION.ADD : MODIFICATION.DELETE;
 
       this.favoriteLayouts = modifyItems(
         this.favoriteLayouts,
-        this.displayLayouts[index],
+        id,
         index,
-        modifyType
+        modification
       );
+    },
+    /**
+     * Check if selected layout is in favorite list
+     *
+     * @param   {String | Number} id  id of selected layout
+     * @returns {Boolean}             is selected layout in favorite list
+     */
+    isInFavorites({ id }) {
+      return this.favoriteLayouts.includes(id);
     },
     /**
      * Get favorites from API
      */
     async getFavoritesData() {
       this.favoriteLayouts = await this.getFavorites();
+    },
+    /**
+     * Get custom layouts from API
+     */
+    async getCustomData() {
+      this.customLayouts = await this.getCustom();
     },
     /**
      * Filter layout types
@@ -634,7 +638,7 @@ export default {
         return;
       }
 
-      if (isEmpty(this.favoriteLayouts)) {
+      if (isEmpty(this.favoriteLayouts) && isEmpty(this.customLayouts)) {
         this.layoutTypes = this.layoutTypesOrigin;
 
         return;
@@ -643,7 +647,7 @@ export default {
       if (this.pageSelected.type === SHEET_TYPE.NORMAL) {
         const opts = [...this.layoutTypesOrigin];
 
-        opts.push(SAVED_AND_FAVORITES);
+        opts.push(cloneDeep(SAVED_AND_FAVORITES));
 
         this.layoutTypes = opts;
 
@@ -659,7 +663,15 @@ export default {
         return lo.sheetType === sheetType;
       });
 
-      opts.push(SAVED_AND_FAVORITES);
+      const extraMenu = cloneDeep(SAVED_AND_FAVORITES);
+
+      if (isHalfSheet(this.pageSelected)) {
+        extraMenu.subItems.forEach(si => {
+          if (si.id !== LAYOUT_PAGE_TYPE.SINGLE_PAGE.id) si.isDisabled = true;
+        });
+      }
+
+      opts.push(extraMenu);
 
       this.layoutTypes = opts;
     },
@@ -670,7 +682,10 @@ export default {
       const layoutTypes = await this.getPrintLayoutTypes();
 
       if (!this.isDigital) {
-        this.layoutTypesOrigin = layoutTypes;
+        this.layoutTypesOrigin = layoutTypes.map(lt => ({
+          ...lt,
+          subItems: []
+        }));
         this.layoutTypes = this.layoutTypesOrigin;
 
         return;
@@ -683,6 +698,56 @@ export default {
           );
 
       this.layoutTypes = this.layoutTypesOrigin;
+    },
+    /**
+     * Get page type selected value
+     *
+     * @param   {Object}  selectedData  selected page type data
+     * @returns {Object}                page type value
+     */
+    getSelectedType(selectedData) {
+      if (this.isDigital) return selectedData;
+
+      if (isEmpty(selectedData)) return { sub: '' };
+
+      return { value: selectedData.value, sub: selectedData.sub?.value };
+    },
+    /**
+     * Get layout from API
+     */
+    async getLayouts() {
+      if (
+        isEmpty(this.themeSelected?.id) ||
+        isEmpty(this.layoutTypeSelected?.value)
+      ) {
+        this.layouts = [];
+
+        return;
+      }
+
+      if (this.isDigital) {
+        this.layouts = await this.getLayoutsByType(
+          this.themeSelected.id,
+          this.layoutTypeSelected.value
+        );
+
+        return;
+      }
+
+      if (isEmpty(this.layoutTypeSelected.sub)) {
+        this.layouts = await this.getLayoutsByThemeAndType(
+          this.themeSelected.id,
+          this.layoutTypeSelected.value
+        );
+
+        return;
+      }
+
+      const layouts = await this.getCustomAndFavoriteLayouts(
+        this.layoutTypeSelected.sub
+      );
+
+      this.layouts = layouts.map(l => ({ ...l, isFavoritesDisabled: true }));
     }
   }
 };

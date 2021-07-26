@@ -1,3 +1,5 @@
+import { MODIFICATION } from '@/common/constants';
+import { modifyItems } from '@/common/utils';
 import { packageLayouts, supplementalLayouts } from '@/mock/digitalLayouts';
 
 export const loadLayouts = () => {
@@ -28,7 +30,7 @@ export const loadPrintPpLayouts = () => {
 
 export const setPrintPpLayouts = layout => {
   setTimeout(() => {
-    window.data.layouts.push(layout);
+    window.data.savedLayouts.push(layout);
   });
 };
 
@@ -40,7 +42,7 @@ export const getPrintLayoutTypes = () => {
   });
 };
 
-export const saveToFavorites = (layoutId, isFavorites) => {
+export const saveToFavorites = layoutId => {
   return new Promise(resolve => {
     if (!layoutId) {
       resolve();
@@ -48,15 +50,16 @@ export const saveToFavorites = (layoutId, isFavorites) => {
       return;
     }
 
-    const index = window.data.layouts.findIndex(({ id }) => id === layoutId);
+    const index = window.data.favoritesLayouts.findIndex(f => f === layoutId);
 
-    if (index < 0) {
-      resolve();
+    const modification = index < 0 ? MODIFICATION.ADD : MODIFICATION.DELETE;
 
-      return;
-    }
-
-    window.data.layouts[index] = { ...window.data.layouts[index], isFavorites };
+    window.data.favoritesLayouts = modifyItems(
+      window.data.favoritesLayouts,
+      layoutId,
+      index,
+      modification
+    );
 
     resolve();
   });
@@ -64,10 +67,36 @@ export const saveToFavorites = (layoutId, isFavorites) => {
 
 export const getFavorites = () => {
   return new Promise(resolve => {
-    const favorites = window.data.layouts.filter(
-      ({ isFavorites }) => isFavorites
+    resolve(window.data.favoritesLayouts);
+  });
+};
+
+export const getCustom = () => {
+  return new Promise(resolve => {
+    resolve(window.data.savedLayouts);
+  });
+};
+
+export const getLayoutsByThemeAndType = (themeId, layoutTypeId) => {
+  return new Promise(resolve => {
+    const layouts = window.data.layouts.filter(
+      l => l.themeId === themeId && l.type === layoutTypeId
     );
 
-    resolve(favorites);
+    resolve(layouts);
+  });
+};
+
+export const getCustomAndFavoriteLayouts = pageType => {
+  return new Promise(resolve => {
+    const favorites = window.data.layouts.filter(l =>
+      window.data.favoritesLayouts.includes(l.id)
+    );
+
+    const layouts = [...window.data.savedLayouts, ...favorites].filter(
+      l => l.pageType === pageType
+    );
+
+    resolve(layouts);
   });
 };

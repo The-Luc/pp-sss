@@ -52,6 +52,18 @@ export default {
      */
     isSelected(item) {
       return item.value === this.selectedVal;
+    },
+    /**
+     * Get disabled css class name
+     *
+     * @param   {Boolean} isDisabled  disable status of item
+     * @param   {Object}  value       value of item
+     * @returns {String}              custom css class name
+     */
+    getCustomCssClass({ isDisabled, value }) {
+      if (isDisabled) return 'disabled';
+
+      return value === this.selectedVal ? 'v-list-item--active' : '';
     }
   }
 };

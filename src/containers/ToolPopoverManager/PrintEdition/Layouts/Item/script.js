@@ -19,6 +19,10 @@ export default {
     isFavorites: {
       type: Boolean,
       default: false
+    },
+    isFavoritesDisabled: {
+      type: Boolean,
+      default: false
     }
   },
   computed: {
@@ -42,10 +46,7 @@ export default {
     onSaveToFavorites(event) {
       event.stopPropagation();
 
-      this.$emit('saveToFavorites', {
-        id: this.layout.id,
-        isFavorites: !this.isFavorites
-      });
+      this.$emit('saveToFavorites', { id: this.layout.id });
     }
   }
 };
