@@ -82,6 +82,7 @@ import PageWrapper from './PageWrapper';
 import XRuler from './Rulers/XRuler';
 import YRuler from './Rulers/YRuler';
 import {
+  AUTOSAVE_INTERVAL,
   COPY_OBJECT_KEY,
   PASTE,
   THUMBNAIL_IMAGE_QUALITY
@@ -202,7 +203,7 @@ export default {
     }
   },
   mounted() {
-    setInterval(this.handleAutosave, 60 * 1000);
+    setInterval(this.handleAutosave, AUTOSAVE_INTERVAL);
 
     window.addEventListener('copy', this.handleCopy);
     window.addEventListener('paste', this.handlePaste);
