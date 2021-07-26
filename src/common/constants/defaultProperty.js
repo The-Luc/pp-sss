@@ -131,7 +131,7 @@ export const DEFAULT_CLIP_ART = {
 
 export const DEFAULT_IMAGE = {
   CATEGORY: 'Cover',
-  STYLE_ID: 'default',
+  STYLE_ID: 1,
   NAME: '',
   THUMBNAIL: IMAGE_LOCAL.PLACE_HOLDER,
   MIN_SIZE: DEFAULT_PROP.MIN_SIZE,

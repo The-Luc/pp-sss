@@ -32,6 +32,7 @@
 
     .items-container {
       display: flex;
+      align-content: flex-start;
       padding: 0 16px 16px;
       min-height: 215px;
       flex-wrap: wrap;

@@ -85,7 +85,7 @@ export const TextElement = {
 export const ImageElement = {
   ...BaseElement, // opacity, shadow, border, size, flip
   type: OBJECT_TYPE.IMAGE,
-  styleId: 0,
+  styleId: DEFAULT_IMAGE.STYLE_ID,
   imageUrl: '',
   centerCrop: {
     cropTop: 0,

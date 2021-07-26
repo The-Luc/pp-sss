@@ -5,7 +5,6 @@ import General from '@/components/General';
 import ImageStyle from './ImageStyle';
 import Reset from './Reset';
 
-import { ImageElement } from '@/common/models';
 import { useElementProperties } from '@/hooks';
 import { DEFAULT_IMAGE, EVENT_TYPE, IMAGE_STYLE } from '@/common/constants';
 import { computedObjectSize } from '@/common/utils';
@@ -28,9 +27,7 @@ export default {
   },
   data() {
     return {
-      selectedBorder: {},
-      imageStyle: IMAGE_STYLE,
-      styleSelected: null
+      imageStyle: IMAGE_STYLE
     };
   },
   computed: {
@@ -83,12 +80,10 @@ export default {
     },
     currentShadow() {
       return this.getProperty('shadow');
+    },
+    styleSelected() {
+      return this.getProperty('styleId');
     }
-  },
-  created() {
-    // TODO: update when implement logic
-    this.selectedBorder = { ...ImageElement.border };
-    this.styleSelected = this.imageStyle[0].id;
   },
   methods: {
     /**
@@ -136,8 +131,6 @@ export default {
      * @param {Object} shadowCfg - the new shadow configs
      */
     onChangeShadow(shadowCfg) {
-      this.deselectStyle();
-
       this.$root.$emit(EVENT_TYPE.CHANGE_IMAGE_PROPERTIES, {
         shadow: {
           ...this.currentShadow,
@@ -150,8 +143,6 @@ export default {
      * @param {Object} borderCfg Border option selected
      */
     onChangeBorder(borderCfg) {
-      this.deselectStyle();
-
       this.$root.$emit(EVENT_TYPE.CHANGE_IMAGE_PROPERTIES, {
         border: {
           ...this.currentBorder,
@@ -161,18 +152,15 @@ export default {
     },
     /**
      * Set id's image style to image properties
-     * @param {Number} id - id's image style
+     * @param {Number} item - selected image style
      */
     onSelectImageStyle(item) {
-      this.styleSelected = item?.id;
-      this.$root.$emit(EVENT_TYPE.CHANGE_IMAGE_PROPERTIES, item?.style);
+      this.$root.$emit(EVENT_TYPE.CHANGE_IMAGE_PROPERTIES, {
+        ...item?.style,
+        styleId: item.id
+      });
     },
-    /**
-     * Deselect a image style
-     */
-    deselectStyle() {
-      this.styleSelected = null;
-    },
+
     /**
      * Handle click crop image for Image
      */

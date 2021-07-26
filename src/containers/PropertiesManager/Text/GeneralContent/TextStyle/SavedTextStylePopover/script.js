@@ -1,5 +1,5 @@
 import { KEY_CODE, WINDOW_EVENT_TYPE } from '@/common/constants';
-import { isEmpty, mapObject } from '@/common/utils';
+import { isEmpty, mapObject, scrollToElement } from '@/common/utils';
 
 export default {
   props: {
@@ -111,6 +111,12 @@ export default {
     const tabActive = this.selectedVal?.isCustom ? 1 : 0;
     this.onTabChange(tabActive);
     window.document.addEventListener(WINDOW_EVENT_TYPE.KEY_UP, this.onKeypress);
+  },
+  mounted() {
+    const el = this.$refs[`style${this.selectedVal?.id}`]?.[0]?.$el;
+    if (el) {
+      scrollToElement(el);
+    }
   },
   beforeDestroy() {
     window.document.removeEventListener(
