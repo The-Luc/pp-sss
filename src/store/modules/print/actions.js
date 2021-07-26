@@ -136,9 +136,8 @@ export const actions = {
       link === LINK_STATUS.LINK ? LINK_STATUS.UNLINK : LINK_STATUS.LINK;
     commit(PRINT._MUTATES.SET_SHEET_LINK_STATUS, { statusLink, sheetId });
   },
-
-  async [PRINT._ACTIONS.SAVE_LAYOUT]({ commit }, { layouts }) {
-    await setPrintPpLayouts(layouts);
+  async [PRINT._ACTIONS.SAVE_LAYOUT]({ commit }, { layout }) {
+    await setPrintPpLayouts(layout);
     commit(
       APP_MUTATES.TOGGLE_MODAL,
       {

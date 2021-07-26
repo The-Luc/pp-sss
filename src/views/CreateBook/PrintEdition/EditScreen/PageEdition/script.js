@@ -90,7 +90,6 @@ import { createImage } from '@/common/fabricObjects';
 import { useAppCommon } from '@/hooks/common';
 import { EVENT_TYPE } from '@/common/constants/eventType';
 import { useStyle } from '@/hooks/style';
-import { loadPrintPpLayouts, getPrintLayoutTypes } from '@/api/layouts';
 
 export default {
   components: {
@@ -145,7 +144,6 @@ export default {
       totalObject: PRINT_GETTERS.TOTAL_OBJECT,
       getProperty: APP_GETTERS.SELECT_PROP_CURRENT_OBJECT,
       getPageInfo: PRINT_GETTERS.GET_PAGE_INFO,
-      defaultThemeId: PRINT_GETTERS.DEFAULT_THEME_ID,
       getObjectsAndBackground: PRINT_GETTERS.GET_OBJECTS_AND_BACKGROUNDS
     }),
     isCover() {
@@ -656,7 +654,7 @@ export default {
     handleDeleteKey(event) {
       const key = event.keyCode || event.charCode;
 
-      if (event.target === document.body && (key == 8 || key == 46)) {
+      if (event.target === document.body && key == 46) {
         this.removeObject();
       }
     },
@@ -1601,7 +1599,6 @@ export default {
     },
     async handleSaveLayout({ pageSelected, layoutName }) {
       layoutName = layoutName || 'Untitle';
-      const layoutTypes = await getPrintLayoutTypes();
       const zoom = window.printCanvas.getZoom();
       const width = window.printCanvas.width;
 
@@ -1613,13 +1610,11 @@ export default {
       let ppObjects = [...objects];
       let layout = {
         id: parseInt(uniqueId()) + 100,
-        type: layoutTypes.SAVED_LAYOUTS_AND_FAVORITES.value,
         name: layoutName,
         isFavorites: false,
         previewImageUrl: window.printCanvas.toDataURL({
           quality: THUMBNAIL_IMAGE_QUALITY
         }),
-        themeId: this.defaultThemeId,
         pageType: LAYOUT_PAGE_TYPE.FULL_PAGE.id
       };
 
@@ -1663,10 +1658,7 @@ export default {
 
       layout.objects = [...ppBackgrounds, ...ppObjects];
 
-      const storageLayouts = await loadPrintPpLayouts();
-      const layouts = [...storageLayouts, { ...layout }];
-
-      await this.saveLayout({ layouts });
+      await this.saveLayout({ layout });
     },
     async drawLayout() {
       await this.drawObjectsOnCanvas(this.sheetLayout);
