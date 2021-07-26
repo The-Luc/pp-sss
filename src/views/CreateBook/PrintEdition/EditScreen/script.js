@@ -19,7 +19,8 @@ import {
   useInfoBar,
   useMutationPrintSheet,
   useUser,
-  useGetterPrintSheet
+  useGetterPrintSheet,
+  useSaveData
 } from '@/hooks';
 import { EDITION } from '@/common/constants';
 import { isEmpty, isPositiveInteger, getEditionListPath } from '@/common/utils';
@@ -41,6 +42,7 @@ export default {
     const { setCurrentSheetId } = useMutationPrintSheet();
     const { currentUser } = useUser();
     const { currentSection } = useGetterPrintSheet();
+    const { savePrintEditScreen } = useSaveData();
 
     return {
       pageSelected,
@@ -49,7 +51,8 @@ export default {
       setInfoBar,
       setCurrentSheetId,
       currentUser,
-      currentSection
+      currentSection,
+      savePrintEditScreen
     };
   },
   computed: {
@@ -162,11 +165,8 @@ export default {
     /**
      * Save print canvas and change view
      */
-    onClickSavePrintCanvas() {
-      printService.saveObjectsAndBackground(
-        this.pageSelected.id,
-        this.getObjectsAndBackground
-      );
+    async onClickSavePrintCanvas() {
+      await this.savePrintEditScreen(this.pageSelected.id);
 
       this.$router.push(
         getEditionListPath(this.$route.params.bookId, EDITION.PRINT)

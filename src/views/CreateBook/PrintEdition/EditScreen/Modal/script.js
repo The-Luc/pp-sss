@@ -1,6 +1,7 @@
 import { mapActions, mapGetters, mapMutations } from 'vuex';
 
 import { MUTATES } from '@/store/modules/app/const';
+import { MUTATES as PRINT_MUTATES } from '@/store/modules/print/const';
 import {
   GETTERS as THEME_GETTERS,
   MUTATES as THEME_MUTATES,
@@ -13,15 +14,12 @@ import Preview from './Preview';
 import { useLayoutPrompt } from '@/hooks';
 import { loadLayouts } from '@/api/layouts';
 import { EDITION } from '@/common/constants';
-import { useSaveDefaultThemeId } from '@/hooks';
 
 export default {
   setup() {
     const { openPrompt } = useLayoutPrompt(EDITION.PRINT);
-    const { saveDefaultThemeId: selectTheme } = useSaveDefaultThemeId();
     return {
-      openPrompt,
-      selectTheme
+      openPrompt
     };
   },
   components: {
@@ -58,8 +56,10 @@ export default {
     }),
     ...mapMutations({
       toggleModal: MUTATES.TOGGLE_MODAL,
-      setPrintLayouts: THEME_MUTATES.PRINT_LAYOUTS
+      setPrintLayouts: THEME_MUTATES.PRINT_LAYOUTS,
+      selectTheme: PRINT_MUTATES.SET_DEFAULT_THEME_ID
     }),
+
     /**
      * Close Modal
      */
