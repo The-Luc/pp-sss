@@ -14,14 +14,15 @@ import SelectLayout from './SelectLayout';
 import SelectTheme from './SelectTheme';
 import GotIt from './GotIt';
 import Item from './Item';
-import { LAYOUT_TYPES_OPTIONs } from '@/mock/layoutTypes';
+
 import {
   EDITION,
   LAYOUT_TYPES,
   MODAL_TYPES,
   SHEET_TYPE,
-  TOOL_NAME,
-  LAYOUT_PAGE_TYPE
+  LAYOUT_PAGE_TYPE,
+  MODIFICATION,
+  SAVED_AND_FAVORITES
 } from '@/common/constants';
 import {
   getThemeOptSelectedById,
@@ -29,7 +30,8 @@ import {
   resetObjects,
   activeCanvas,
   isEmpty,
-  scrollToElement
+  scrollToElement,
+  modifyItems
 } from '@/common/utils';
 import {
   usePopoverCreationTool,
@@ -66,7 +68,8 @@ export default {
       default: ''
     },
     initialData: {
-      type: Object
+      type: Object,
+      default: () => ({})
     }
   },
   setup({ edition }) {
@@ -88,7 +91,11 @@ export default {
     } = useGetLayouts(edition);
     const { currentFrame } = useFrame();
 
-    const { saveToFavorites } = useActionLayout();
+    const {
+      saveToFavorites,
+      getFavorites,
+      getPrintLayoutTypes
+    } = useActionLayout();
 
     return {
       selectedToolName,
@@ -106,20 +113,18 @@ export default {
       currentFrame,
       modalData,
       currentFrameId,
-      saveToFavorites
+      saveToFavorites,
+      getFavorites,
+      getPrintLayoutTypes
     };
   },
-  data({ initialData }) {
+  data() {
     const isDigital = this.edition === EDITION.DIGITAL;
-    const layoutOption = initialData?.isSupplemental
-      ? LAYOUT_TYPES_OPTIONs
-      : LAYOUT_TYPES_OPTIONs.filter(
-          l => l.value !== LAYOUT_TYPES.SUPPLEMENTAL_LAYOUTS.value
-        );
-    const layoutId = null;
+
     return {
       themesOptions: [],
-      layoutsOpts: layoutOption,
+      layoutTypesOrigin: [],
+      layoutTypes: [],
       disabled: false,
       layoutSelected: {},
       themeSelected: {},
@@ -133,8 +138,9 @@ export default {
         optionTitle: ''
       },
       isDigital,
-      layoutId,
-      displayLayouts: []
+      layoutId: null,
+      displayLayouts: [],
+      favoriteLayouts: []
     };
   },
   computed: {
@@ -160,14 +166,6 @@ export default {
     }
   },
   watch: {
-    selectedToolName(val) {
-      if (
-        val &&
-        (val === TOOL_NAME.PRINT_LAYOUTS || val === TOOL_NAME.DIGITAL_LAYOUTS)
-      ) {
-        this.initData();
-      }
-    },
     pageSelected: {
       deep: true,
       handler(newVal, oldVal) {
@@ -193,7 +191,13 @@ export default {
   async mounted() {
     this.textDisplay = this.updateTextDisplay();
 
-    this.isDigital ? await this.initDigitalData() : await this.initPrintData();
+    await Promise.all([
+      this.initEditionData(),
+      this.getFavoritesData(),
+      this.getLayoutTypes()
+    ]);
+
+    this.filterLayoutType();
 
     this.initData();
 
@@ -222,6 +226,14 @@ export default {
       this.setDisabledLayout(this.pageSelected);
       this.setThemeSelected(this.themeId);
       this.setLayoutActive();
+    },
+    /**
+     * Set up inital data to render in view
+     */
+    async initEditionData() {
+      this.isDigital
+        ? await this.initDigitalData()
+        : await this.initPrintData();
     },
     /**
      * Set up inital data to render in view of print ediont
@@ -260,8 +272,8 @@ export default {
       switch (sheetType) {
         case SHEET_TYPE.COVER:
           {
-            const coverOption = this.layoutsOpts.find(
-              l => l.value === LAYOUT_TYPES.COVER.value
+            const coverOption = this.layoutTypes.find(
+              l => l.sheetType === SHEET_TYPE.COVER
             );
             this.layoutSelected = coverOption;
           }
@@ -269,8 +281,8 @@ export default {
         case SHEET_TYPE.FRONT_COVER:
         case SHEET_TYPE.BACK_COVER:
           {
-            const singlePageOption = this.layoutsOpts.find(
-              l => l.value === LAYOUT_TYPES.SINGLE_PAGE.value
+            const singlePageOption = this.layoutTypes.find(
+              l => l.sheetType === SHEET_TYPE.FRONT_COVER
             );
             this.layoutSelected = singlePageOption;
           }
@@ -282,15 +294,14 @@ export default {
             if (layoutId) {
               const layoutOpt = getLayoutOptSelectedById(
                 this.listLayouts(),
-                this.layoutsOpts,
+                this.layoutTypes,
                 layoutId
               );
               this.layoutSelected = layoutOpt;
             } else {
-              const collageOption = this.layoutsOpts.find(
-                l => l.value === LAYOUT_TYPES.COLLAGE.value
-              );
-              this.layoutSelected = collageOption;
+              const index = this.layoutTypes.length > 1 ? 1 : 0;
+
+              this.layoutSelected = this.layoutTypes[index];
             }
           }
           break;
@@ -301,6 +312,12 @@ export default {
      * @param  {Number} pageSelected Id of sheet selected
      */
     setDisabledLayout(pageSelected) {
+      if (!isEmpty(this.favoriteLayouts) && !this.isDigital) {
+        this.disabled = false;
+
+        return;
+      }
+
       this.disabled =
         this.initialData?.disabled ??
         this.initialData?.isSupplemental ??
@@ -551,6 +568,21 @@ export default {
      * @param {Boolean}         isFavorites is favorites
      */
     async onSaveToFavorites({ id, isFavorites }) {
+      await this.saveLayoutToFavorites({ id, isFavorites });
+
+      this.modifyFavorites({ id, isFavorites });
+
+      this.setDisabledLayout(this.pageSelected);
+
+      this.filterLayoutType();
+    },
+    /**
+     * Save / unsave the selected layout to favorites
+     *
+     * @param {String | Number} id          id of selected layout
+     * @param {Boolean}         isFavorites is favorites
+     */
+    async saveLayoutToFavorites({ id, isFavorites }) {
       await this.saveToFavorites(id, isFavorites);
 
       const index = this.displayLayouts.findIndex(l => id === l.id);
@@ -559,12 +591,98 @@ export default {
 
       const layout = { ...this.displayLayouts[index], isFavorites };
 
-      const _items = [...this.displayLayouts];
+      this.displayLayouts = modifyItems(
+        this.displayLayouts,
+        layout,
+        index,
+        MODIFICATION.UPDATE
+      );
+    },
+    /**
+     * Modify favorite items list
+     *
+     * @param {String | Number} id          id of selected layout
+     * @param {Boolean}         isFavorites is favorites
+     */
+    modifyFavorites({ id, isFavorites }) {
+      const index = this.displayLayouts.findIndex(l => id === l.id);
 
-      _items.splice(index, 1);
-      _items.splice(index, 0, layout);
+      if (index < 0) return;
 
-      this.displayLayouts = _items;
+      const modifyType = isFavorites ? MODIFICATION.ADD : MODIFICATION.DELETE;
+
+      this.favoriteLayouts = modifyItems(
+        this.favoriteLayouts,
+        this.displayLayouts[index],
+        index,
+        modifyType
+      );
+    },
+    /**
+     * Get favorites from API
+     */
+    async getFavoritesData() {
+      this.favoriteLayouts = await this.getFavorites();
+    },
+    /**
+     * Filter layout types
+     */
+    filterLayoutType() {
+      if (this.isDigital) {
+        this.layoutTypes = this.layoutTypesOrigin;
+
+        return;
+      }
+
+      if (isEmpty(this.favoriteLayouts)) {
+        this.layoutTypes = this.layoutTypesOrigin;
+
+        return;
+      }
+
+      if (this.pageSelected.type === SHEET_TYPE.NORMAL) {
+        const opts = [...this.layoutTypesOrigin];
+
+        opts.push(SAVED_AND_FAVORITES);
+
+        this.layoutTypes = opts;
+
+        return;
+      }
+
+      const sheetType =
+        this.pageSelected.type === SHEET_TYPE.BACK_COVER
+          ? SHEET_TYPE.FRONT_COVER
+          : this.pageSelected.type;
+
+      const opts = this.layoutTypesOrigin.filter(lo => {
+        return lo.sheetType === sheetType;
+      });
+
+      opts.push(SAVED_AND_FAVORITES);
+
+      this.layoutTypes = opts;
+    },
+    /**
+     * Get layout types from API
+     */
+    async getLayoutTypes() {
+      const layoutTypes = await this.getPrintLayoutTypes();
+
+      if (!this.isDigital) {
+        this.layoutTypesOrigin = layoutTypes;
+        this.layoutTypes = this.layoutTypesOrigin;
+
+        return;
+      }
+
+      this.layoutTypesOrigin = this.initialData?.isSupplemental
+        ? layoutTypes
+        : layoutTypes.filter(
+            l => l.value !== LAYOUT_TYPES.SUPPLEMENTAL_LAYOUTS.value
+          );
+
+      this.layoutTypes = this.layoutTypesOrigin;
     }
   }
 };
