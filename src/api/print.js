@@ -295,7 +295,7 @@ const printService = {
 
     return {
       data: response,
-      isSuccess: true
+      status: 'OK'
     };
   },
   saveMainScreen: async data => {
