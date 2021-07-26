@@ -307,7 +307,9 @@ export default {
 
       const imageObject = await createImage(imageProperties);
       const image = imageObject?.object;
+      const { border } = imageProperties;
 
+      imageBorderModifier(image);
       addEventListeners(image, eventListeners);
 
       const {
@@ -327,6 +329,8 @@ export default {
         shadowAngle,
         shadowColor
       });
+
+      applyBorderToImageObject(image, border);
 
       updateSpecificProp(image, {
         coord: {
