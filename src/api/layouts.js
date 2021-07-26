@@ -61,3 +61,13 @@ export const saveToFavorites = (layoutId, isFavorites) => {
     resolve();
   });
 };
+
+export const getFavorites = () => {
+  return new Promise(resolve => {
+    const favorites = window.data.layouts.filter(
+      ({ isFavorites }) => isFavorites
+    );
+
+    resolve(favorites);
+  });
+};
