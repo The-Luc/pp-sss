@@ -1613,13 +1613,11 @@ export default {
       let ppObjects = [...objects];
       let layout = {
         id: parseInt(uniqueId()) + 100,
-        type: '',
         name: layoutName,
         isFavorites: false,
         previewImageUrl: window.printCanvas.toDataURL({
           quality: THUMBNAIL_IMAGE_QUALITY
         }),
-        themeId: '',
         pageType: LAYOUT_PAGE_TYPE.FULL_PAGE.id
       };
 
