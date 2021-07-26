@@ -127,7 +127,8 @@ export default {
       objectList: [],
       isProcessingPaste: false,
       countPaste: 1,
-      rulerSize: { width: '0', height: '0' }
+      rulerSize: { width: '0', height: '0' },
+      isCanvasChanged: false
     };
   },
   computed: {
@@ -252,9 +253,11 @@ export default {
     }),
 
     handleAutosave() {
-      // TODO:-Luc Calll a function to save data
+      if (!this.isCanvasChanged) return;
+      this.savePrintEditScreen(this.pageSelected.id);
 
       this.updateTriggerAutosave();
+      this.isCanvasChanged = false;
     },
 
     /**
@@ -546,6 +549,9 @@ export default {
      * call this function to update the active thumbnail
      */
     getThumbnailUrl: debounce(function() {
+      // TODO: -Luc Revise it layter
+      this.isCanvasChanged = true;
+
       const thumbnailUrl = window.printCanvas.toDataURL({
         quality: THUMBNAIL_IMAGE_QUALITY
       });
