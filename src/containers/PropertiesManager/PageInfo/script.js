@@ -1,5 +1,5 @@
 import { mapGetters, mapMutations } from 'vuex';
-import { useBookName, useSavePageInfo, useSaveSpreadInfo } from '@/hooks';
+import { useBookName } from '@/hooks';
 import {
   GETTERS as PRINT_GETTERS,
   MUTATES as PRINT_MUTATES
@@ -20,12 +20,8 @@ import PpProperties from './Properties';
 
 export default {
   setup() {
-    const { setPageInfo } = useSavePageInfo();
-    const { setSpreadInfo } = useSaveSpreadInfo();
     const { generalInfo } = useBookName();
     return {
-      setPageInfo,
-      setSpreadInfo,
       generalInfo
     };
   },
@@ -64,7 +60,9 @@ export default {
   },
   methods: {
     ...mapMutations({
-      setStatusPageNumber: PRINT_MUTATES.SET_STATUS_PAGE_NUMBER
+      setStatusPageNumber: PRINT_MUTATES.SET_STATUS_PAGE_NUMBER,
+      setPageInfo: PRINT_MUTATES.SET_PAGE_INFO,
+      updateSpreadInfo: PRINT_MUTATES.UPDATE_SPREAD_INFO
     }),
     /**
      * Receive status page number from children
@@ -80,7 +78,7 @@ export default {
           this.setStatusPageNumber(val.isNumberOn);
           break;
         case 'isLeftNumberOn':
-          this.setSpreadInfo({ spreadInfo: val });
+          this.updateSpreadInfo({ spreadInfo: val });
           this.drawPageNumberOnCanvas(
             val.isLeftNumberOn,
             PAGE_NUMBER_TYPE.LEFT_PAGE_NUMBER
@@ -88,7 +86,7 @@ export default {
 
           break;
         case 'isRightNumberOn':
-          this.setSpreadInfo({ spreadInfo: val });
+          this.updateSpreadInfo({ spreadInfo: val });
           this.drawPageNumberOnCanvas(
             val.isRightNumberOn,
             PAGE_NUMBER_TYPE.RIGHT_PAGE_NUMBER
@@ -124,7 +122,7 @@ export default {
      * @param   {Object}  title Value user input
      */
     changeTitle(title) {
-      this.setSpreadInfo({ spreadInfo: title });
+      this.updateSpreadInfo({ spreadInfo: title });
     },
     /**
      * Draw page number on canvas

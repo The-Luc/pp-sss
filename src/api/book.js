@@ -15,7 +15,7 @@ export const getBookDetail = bookId => {
   bookId;
 
   return new Promise(resolve => {
-    const { book, sheets, sections } = window.data;
+    const { book, sheets, sections, objects } = window.data;
     const sectionData = cloneDeep(sections);
     const sheetData = cloneDeep(sheets);
 
@@ -40,7 +40,8 @@ export const getBookDetail = bookId => {
       sections: sectionData,
       sheets: sheetData,
       sectionsAsObject,
-      sheetsAsObject
+      sheetsAsObject,
+      objects
     });
   });
 };
@@ -160,23 +161,33 @@ const bookService = {
   getSections: async bookId => {
     const { sections } = await bookService.getBook(bookId);
 
-    return sections;
+    return { sections };
   },
   getSection: async sectionId => {
     const { sectionsAsObject } = await bookService.getBook();
 
-    return sectionsAsObject[sectionId] || null;
+    const section = sectionsAsObject[sectionId] || null;
+    return { section };
   },
   getSheets: async sectionId => {
     const { sheets } = await bookService.getBook();
 
-    return sheets.filter(sheet => sheet.sectionId === sectionId);
+    const sheetsBySection = sheets.filter(
+      sheet => sheet.sectionId === sectionId
+    );
+    return { sheets: sheetsBySection };
   },
   getSheet: async (sectionId, sheetId) => {
     const { sheetsAsObject } = await bookService.getBook();
     const sheetObject = sheetsAsObject[sheetId] || {};
 
-    return sheetObject.sectionId === sectionId ? sheetObject : null;
+    const sheet = sheetObject.sectionId === sectionId ? sheetObject : null;
+    return { sheet };
+  },
+  getObjectBySheet: async (sectionId, sheetId) => {
+    const { objects } = await bookService.getBook();
+
+    return objects[sheetId];
   }
 };
 

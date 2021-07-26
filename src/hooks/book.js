@@ -1,8 +1,10 @@
 import { useActions, useGetters } from 'vuex-composition-helpers';
 
 import { ACTIONS, GETTERS } from '@/store/modules/book/const';
-import { ACTIONS as PRINT_ACTIONS } from '@/store/modules/print/const';
+import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 import bookService from '@/api/book';
+import printService from '@/api/print';
+import { isEmpty } from '@/common/utils';
 
 /**
  * The hook trigger action to get book and get book information from store
@@ -38,20 +40,4 @@ export const useUpdateTitle = () => {
   return {
     updateTitle
   };
-};
-
-export const useSaveDefaultThemeId = () => {
-  const { saveDefaultThemeId } = useActions({
-    saveDefaultThemeId: PRINT_ACTIONS.SAVE_DEFAULT_THEME_ID
-  });
-
-  return { saveDefaultThemeId };
-};
-
-export const useSavePageInfo = () => {
-  const { setPageInfo } = useActions({
-    setPageInfo: PRINT_ACTIONS.SAVE_PAGE_INFO
-  });
-
-  return { setPageInfo };
 };
