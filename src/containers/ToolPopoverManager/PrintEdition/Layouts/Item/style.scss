@@ -47,6 +47,16 @@
 
     .v-icon {
       font-size: 9px;
+
+      &:focus {
+        &::after {
+          display: none;
+        }
+      }
+
+      &.favorites {
+        color: $color-stoodio-blue;
+      }
     }
   }
   .layout-preview-img-footer .layout-opts {

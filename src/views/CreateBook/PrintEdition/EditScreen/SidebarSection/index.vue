@@ -19,11 +19,12 @@
         :color="section.color"
         :sheet-type="sheet.type"
         :thumbnail-url="sheet.thumbnailUrl"
-        :ordered-number="pageNumber(sheet)"
+        :page-names="getPageNames(sheet)"
         :total-item="section.sheets.length"
         :is-active="checkIsActive(sheet)"
         :is-enable="section.isAccessible"
         :is-editor="true"
+        @select="onSelectSheet(sheet)"
       />
     </template>
   </div>

@@ -136,6 +136,8 @@ export default {
      * @param {Object} shadowCfg - the new shadow configs
      */
     onChangeShadow(shadowCfg) {
+      this.deselectStyle();
+
       this.$root.$emit(EVENT_TYPE.CHANGE_IMAGE_PROPERTIES, {
         shadow: {
           ...this.currentShadow,
@@ -148,6 +150,8 @@ export default {
      * @param {Object} borderCfg Border option selected
      */
     onChangeBorder(borderCfg) {
+      this.deselectStyle();
+
       this.$root.$emit(EVENT_TYPE.CHANGE_IMAGE_PROPERTIES, {
         border: {
           ...this.currentBorder,
@@ -162,6 +166,12 @@ export default {
     onSelectImageStyle(item) {
       this.styleSelected = item?.id;
       this.$root.$emit(EVENT_TYPE.CHANGE_IMAGE_PROPERTIES, item?.style);
+    },
+    /**
+     * Deselect a image style
+     */
+    deselectStyle() {
+      this.styleSelected = null;
     },
     /**
      * Handle click crop image for Image

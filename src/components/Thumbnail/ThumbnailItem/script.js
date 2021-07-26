@@ -35,7 +35,7 @@ export default {
       type: String,
       default: ''
     },
-    orderedNumber: {
+    pageNames: {
       type: Object,
       default: () => ({})
     },
@@ -43,13 +43,13 @@ export default {
       type: Boolean,
       default: false
     },
-    isEnable: {
-      type: Boolean,
-      default: false
-    },
     totalItem: {
       type: Number,
       default: 0
+    },
+    isEnable: {
+      type: Boolean,
+      default: false
     },
     isEditor: {
       type: Boolean,
@@ -85,6 +85,12 @@ export default {
      */
     onUpdateLink() {
       this.$emit('updateLink');
+    },
+    /**
+     * Select this sheet by emit to parent
+     */
+    onSelect() {
+      this.$emit('select');
     }
   }
 };

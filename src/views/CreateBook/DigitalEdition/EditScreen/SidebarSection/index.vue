@@ -1,26 +1,32 @@
 <template>
   <div class="sidebar-section">
-    <div class="digital-thumbnail-container">
-      <SidebarThumbContainer
-        v-for="(section, sectionIndex) in sections"
+    <template v-for="section in sections">
+      <ThumbnailHeaderGroup
         :key="section.id"
         :name="section.name"
         :color="section.color"
-        :total-sheet="section.sheets.length"
-        :is-enable="true"
-      >
-        <Thumbnail
-          v-for="(sheet, sheetIndex) in section.sheets"
-          :key="sheet.id"
-          :ref="`screen${sheet.id}`"
-          :sheet="sheet"
-          :edit="false"
-          :order-screen="orderScreen(sectionIndex, sheetIndex)"
-          :is-active="checkIsActive(sheet.id)"
-          @click.native="onSelectSheet(sheet)"
-        />
-      </SidebarThumbContainer>
-    </div>
+        :total-item="section.sheets.length"
+        :is-enable="section.isAccessible"
+        :is-expanded="checkIsExpand(section.id)"
+        @toggleContent="onToggleSheets(section.id)"
+      />
+      <ThumbnailItem
+        v-for="sheet in section.sheets"
+        v-show="checkIsExpand(section.id)"
+        :key="`${section.id}-${sheet.id}`"
+        :ref="`screen${sheet.id}`"
+        :name="section.name"
+        :color="section.color"
+        :thumbnail-url="sheet.thumbnailUrl"
+        :page-names="getPageName(sheet)"
+        :total-item="section.sheets.length"
+        :is-active="checkIsActive(sheet)"
+        :is-enable="section.isAccessible"
+        :is-editor="true"
+        :is-digital="true"
+        @select="onSelectSheet(sheet)"
+      />
+    </template>
   </div>
 </template>
 

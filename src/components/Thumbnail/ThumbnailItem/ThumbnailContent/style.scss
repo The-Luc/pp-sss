@@ -7,9 +7,30 @@
   background-size: cover;
   background-color: $color-white;
   border: 1px solid $color-gray2;
+  cursor: pointer;
 
-  &.editor {
-    opacity: 1;
+  &.digital {
+    border-radius: 40px 2px;
+
+    &::before {
+      display: none;
+    }
+
+    &.editor {
+      border-radius: 29px 4px;
+
+      &.active {
+        border-color: transparent;
+
+        .border-inside {
+          border-width: 2px;
+        }
+      }
+    }
+
+    .border-inside {
+      border-radius: 29px 4px;
+    }
   }
 
   &.disabled {
@@ -22,7 +43,7 @@
   }
 
   &.active {
-    border: 1px solid $color-stoodio-blue;
+    border-color: $color-stoodio-blue;
 
     .border-inside {
       border: 1px solid $color-stoodio-blue;

@@ -8,5 +8,11 @@ export const STORAGE_KEY = {
   book: 'bookData',
   section: 'sectionData',
   object: 'objectData',
-  printSheet: 'sheetData'
+  printSheet: 'sheetData',
+  layout: 'layout',
+  layoutType: 'layoutType',
+  background: 'background',
+  backgroundType: 'backgroundType',
+  theme: 'theme',
+  clipArt: 'clipArt'
 };

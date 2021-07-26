@@ -1,6 +1,6 @@
 import { BaseEntity } from './base';
 
-export class DefaultLayout extends BaseEntity {
+export class Layout extends BaseEntity {
   themeId = null;
   name = '';
   type = '';
@@ -8,7 +8,7 @@ export class DefaultLayout extends BaseEntity {
   previewImageUrl = '';
 
   /**
-   * @param {DefaultLayout} props
+   * @param {Layout} props
    */
   constructor(props) {
     super(props);

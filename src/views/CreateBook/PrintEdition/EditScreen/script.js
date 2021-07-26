@@ -22,7 +22,7 @@ import {
   useGetterPrintSheet
 } from '@/hooks';
 import { EDITION } from '@/common/constants';
-import { isEmpty, isPositiveInteger } from '@/common/utils';
+import { isEmpty, isPositiveInteger, getEditionListPath } from '@/common/utils';
 
 import printService from '@/api/print';
 
@@ -71,45 +71,45 @@ export default {
     }
   },
   beforeRouteEnter(to, _, next) {
-    next(async me => {
+    next(async vm => {
       const bookId = to.params.bookId;
 
-      const editionMainUrl = `/book/${bookId}/edit/print/`;
+      const editionMainUrl = getEditionListPath(bookId, EDITION.PRINT);
 
       if (!isPositiveInteger(to.params?.sheetId)) {
-        me.$router.replace(editionMainUrl);
+        vm.$router.replace(editionMainUrl);
 
         return;
       }
 
-      me.setBookId({ bookId });
+      vm.setBookId({ bookId });
 
       // temporary code, will remove soon
       const info = await printService.getGeneralInfo();
 
-      me.setInfo({ ...info, bookId });
+      vm.setInfo({ ...info, bookId });
 
-      await me.getDataPageEdit();
+      await vm.getDataPageEdit();
 
-      me.setCurrentSheetId({ id: parseInt(to.params.sheetId) });
+      vm.setCurrentSheetId({ id: parseInt(to.params.sheetId) });
 
-      if (isEmpty(me.currentSection)) {
-        me.$router.replace(editionMainUrl);
+      if (isEmpty(vm.currentSection)) {
+        vm.$router.replace(editionMainUrl);
 
         return;
       }
 
-      const isAdmin = me.currentUser.role === ROLE.ADMIN;
-      const isAssigned = me.currentUser.id === me.currentSection.assigneeId;
+      const isAdmin = vm.currentUser.role === ROLE.ADMIN;
+      const isAssigned = vm.currentUser.id === vm.currentSection.assigneeId;
 
       if (!isAdmin && !isAssigned) {
-        me.$router.replace(editionMainUrl);
+        vm.$router.replace(editionMainUrl);
 
         return;
       }
 
-      if (isEmpty(me.printThemeSelected)) {
-        me.openSelectThemeModal();
+      if (isEmpty(vm.printThemeSelected)) {
+        vm.openSelectThemeModal();
       }
     });
   },
@@ -167,12 +167,10 @@ export default {
         this.pageSelected.id,
         this.getObjectsAndBackground
       );
-      /*const canvas = window.printCanvas;
-      let objs = canvas.getObjects();
-      this.savePrintCanvas({
-        data: objs
-      });*/
-      this.$router.push(`/book/${this.$route.params.bookId}/edit/print`);
+
+      this.$router.push(
+        getEditionListPath(this.$route.params.bookId, EDITION.PRINT)
+      );
     },
     /**
      * Fire when zoom is changed

@@ -1233,14 +1233,6 @@ export default {
 
       const activeObject = window.printCanvas.getActiveObject();
 
-      // TODO: move it to a approriate place
-      activeObject.set({
-        strokeUniform: true
-        // paintFirst: 'stroke',
-        // ownCaching: false,
-        // noScaleCache: true
-      });
-
       if (border) {
         applyBorderToImageObject(activeObject, border);
       }

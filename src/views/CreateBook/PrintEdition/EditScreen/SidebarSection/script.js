@@ -98,16 +98,16 @@ export default {
       scrollToElement(currentSpreadActive[0]?.$el);
     },
     /**
-     * Get number of page of selected sheet
+     * Get names of page of selected sheet
      *
      * @param   {String}  pageLeftName  name of page left of selected sheet
      * @param   {String}  pageRightName name of page right of selected sheet
-     * @returns {Object}                number of page
+     * @returns {Object}                names of page
      */
-    pageNumber({ pageLeftName, pageRightName }) {
+    getPageNames({ pageLeftName, pageRightName }) {
       return {
-        numberLeft: pageLeftName,
-        numberRight: pageRightName
+        left: pageLeftName,
+        right: pageRightName
       };
     },
     /**

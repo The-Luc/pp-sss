@@ -45,6 +45,12 @@ export default {
       if (this.sheetType === SHEET_TYPE.BACK_COVER) return 'half-left';
 
       return '';
+    },
+    /**
+     * Select this sheet by click on thumbnail and emit to parent
+     */
+    onSelect() {
+      this.$emit('select');
     }
   }
 };

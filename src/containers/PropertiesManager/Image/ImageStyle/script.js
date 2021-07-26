@@ -62,6 +62,13 @@ export default {
       this.onCloseDropdown();
     }
   },
+  mounted() {
+    window.addEventListener('keydown', e => {
+      if (e.key === 'Escape') {
+        this.onCloseDropdown();
+      }
+    });
+  },
   created() {
     this.getSavedImageStyles();
   }

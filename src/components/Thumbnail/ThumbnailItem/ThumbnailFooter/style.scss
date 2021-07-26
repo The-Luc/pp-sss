@@ -13,19 +13,23 @@
     pointer-events: none;
   }
 
-  .digital {
+  &.digital {
     justify-content: space-around;
+
+    .editor {
+      justify-content: flex-start;
+    }
   }
 
   &.editor {
     margin-bottom: 13px;
 
-    .number-page {
+    .name-page {
       font-size: 8px;
     }
   }
 
-  .number-page-link {
+  .link-status {
     margin-top: -2.5px;
     margin-bottom: -2.5px;
     cursor: pointer;

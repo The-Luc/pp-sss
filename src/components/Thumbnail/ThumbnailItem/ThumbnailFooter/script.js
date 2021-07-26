@@ -3,7 +3,7 @@ import { isEmpty } from '@/common/utils';
 
 export default {
   props: {
-    orderedNumber: {
+    pageNames: {
       type: Object,
       default: () => ({})
     },
@@ -23,7 +23,7 @@ export default {
   data() {
     return {
       isLinkDisplayed: false,
-      isNumberMiddleDisplayed: false
+      isMiddleNameDisplayed: false
     };
   },
   computed: {
@@ -32,14 +32,14 @@ export default {
     }
   },
   mounted() {
-    const isDigital = !isEmpty(this.orderedNumber.numberMiddle);
+    const isDigital = !isEmpty(this.pageNames.middle);
 
     this.isLinkDisplayed =
       !isDigital &&
       this.isLinkIconDisplayed &&
       this.linkType !== LINK_STATUS.NONE;
 
-    this.isNumberMiddleDisplayed = isDigital;
+    this.isMiddleNameDisplayed = isDigital;
   },
   methods: {
     /**

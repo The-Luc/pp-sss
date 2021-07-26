@@ -2,27 +2,27 @@ import ThumbnailItem from '@/components/Thumbnail/ThumbnailItem';
 
 import { mapGetters, mapMutations, mapActions } from 'vuex';
 
+import { useUser } from '@/hooks';
+
+import { getSectionsWithAccessible } from '@/common/utils';
+
 import {
   ACTIONS as PRINT_ACTIONS,
   MUTATES as PRINT_MUTATES,
   GETTERS as PRINT_GETTERS
 } from '@/store/modules/print/const';
 import { MUTATES as APP_MUTATES } from '@/store/modules/app/const';
-import { useDrawLayout, useUser } from '@/hooks';
 
 import printService from '@/api/print';
-
-import { getSectionsWithAccessible } from '@/common/utils';
 
 export default {
   components: {
     ThumbnailItem
   },
   setup() {
-    const { drawLayout } = useDrawLayout();
     const { currentUser } = useUser();
 
-    return { drawLayout, currentUser };
+    return { currentUser };
   },
   async created() {
     this.setBookId({ bookId: this.$route.params.bookId });
@@ -52,20 +52,19 @@ export default {
     }),
     ...mapMutations({
       setBookId: PRINT_MUTATES.SET_BOOK_ID,
-      selectSheet: PRINT_MUTATES.SET_CURRENT_SHEET_ID,
       setInfo: APP_MUTATES.SET_GENERAL_INFO
     }),
     /**
-     * Get number of page of selected sheet
+     * Get names of page of selected sheet
      *
      * @param   {String}  pageLeftName  name of page left of selected sheet
      * @param   {String}  pageRightName name of page right of selected sheet
-     * @returns {Object}                number of page
+     * @returns {Object}                names of page
      */
-    pageNumber({ pageLeftName, pageRightName }) {
+    getPageNames({ pageLeftName, pageRightName }) {
       return {
-        numberLeft: pageLeftName,
-        numberRight: pageRightName
+        left: pageLeftName,
+        right: pageRightName
       };
     },
     /**

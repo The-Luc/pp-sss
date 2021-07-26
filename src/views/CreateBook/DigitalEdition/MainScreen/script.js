@@ -1,7 +1,11 @@
+import ThumbnailItem from '@/components/Thumbnail/ThumbnailItem';
+
 import { mapGetters, mapMutations, mapActions } from 'vuex';
 
-import ListThumbContainer from '@/components/Thumbnail/ListThumbContainer';
-import Thumbnail from '@/components/Thumbnail/ThumbnailDigital';
+import { useUser } from '@/hooks';
+
+import { getSectionsWithAccessible } from '@/common/utils';
+
 import {
   GETTERS as DIGITAL_GETTERS,
   MUTATES as DIGITAL_MUTATES,
@@ -13,29 +17,22 @@ import digitalService from '@/api/digital';
 
 export default {
   components: {
-    ListThumbContainer,
-    Thumbnail
+    ThumbnailItem
+  },
+  setup() {
+    const { currentUser } = useUser();
+
+    return { currentUser };
   },
   computed: {
     ...mapGetters({
-      sections: DIGITAL_GETTERS.SECTIONS_SHEETS
+      sectionList: DIGITAL_GETTERS.SECTIONS_SHEETS
     }),
     bookId() {
       return this.$route.params.bookId;
     },
-    orderScreen() {
-      return (sectionIndex, sheetIndex) => {
-        let indexInSections = 0;
-        for (let i = 0; i < sectionIndex; i++) {
-          indexInSections += this.sections[i].sheetIds.length;
-        }
-        indexInSections += sheetIndex + 1;
-        if (indexInSections < 10) {
-          return '0' + indexInSections;
-        } else {
-          return '' + indexInSections;
-        }
-      };
+    sections() {
+      return getSectionsWithAccessible(this.sectionList, this.currentUser);
     }
   },
   created() {
@@ -55,6 +52,15 @@ export default {
     ...mapMutations({
       setBookId: DIGITAL_MUTATES.SET_BOOK_ID,
       setInfo: APP_MUTATES.SET_GENERAL_INFO
-    })
+    }),
+    /**
+     * Get name of page of selected sheet
+     *
+     * @param   {String}  pageName  name of page of selected sheet
+     * @returns {Object}            name of page
+     */
+    getPageName({ pageName }) {
+      return { middle: pageName };
+    }
   }
 };
