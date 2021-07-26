@@ -87,12 +87,12 @@ export default {
             'box-shadow': `${offsetX}px ${offsetY}px ${shadowBlur}px ${shadowColor}`
           }
         : 'none';
+
+      const { strokeLineType, strokeWidth } = cssStyle?.border || {};
+
       const customBorder = {
-        '--display':
-          cssStyle?.border?.strokeLineType === BORDER_STYLES.DOUBLE
-            ? 'block'
-            : 'none',
-        '--width': `${Math.floor(cssStyle?.border?.strokeWidth / 12)}px`
+        '--display': strokeLineType === BORDER_STYLES.DOUBLE ? 'block' : 'none',
+        '--width': `${Math.floor(strokeWidth / 12)}px`
       };
       return { ...styles, ...shadowStyle, ...customBorder };
     },
