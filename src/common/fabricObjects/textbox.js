@@ -256,7 +256,7 @@ const applyTextProperties = function(text, prop) {
   textVerticalAlignOnApplyProperty(text);
 };
 
-const addPadding = (val, padding) => val + padding * 2;
+const addPadding = (val, padding) => val - padding * 2;
 
 const updateTextSize = (text, prop) => {
   if (!prop.size) return;
@@ -448,6 +448,7 @@ export const applyTextBoxProperties = function(textObject, prop) {
 
   setTimeout(() => {
     textObject?.canvas?.renderAll();
+    textObject.fire('scaled', { transform: { target: textObject } });
   });
 };
 
