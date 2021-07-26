@@ -1,4 +1,5 @@
 import {
+  BORDER_STYLES,
   HTML_BORDER_STYLE,
   KEY_CODE,
   WINDOW_EVENT_TYPE
@@ -62,10 +63,7 @@ export default {
           },
           strokeWidth: {
             name: 'border-width',
-            parse: value => {
-              const borderWidth = parseInt(value, 10) / 3;
-              return `${borderWidth > 10 ? 10 : borderWidth}px`;
-            }
+            parse: value => `${Math.ceil(value / 3)}px`
           },
           strokeLineType: {
             name: 'border-style',
@@ -79,18 +77,24 @@ export default {
 
       const { dropShadow, shadowAngle, shadowBlur, shadowColor, shadowOffset } =
         cssStyle?.shadow || {};
-      const offsetX =
-        parseInt(Math.sin(360 - shadowAngle) * shadowOffset, 10) / 3;
-      const offsetY =
-        parseInt(Math.cos(360 - shadowAngle) * shadowOffset, 10) / 3;
-      const blur = parseInt(shadowBlur, 10) / 3;
+
+      const rad = (-Math.PI * (shadowAngle % 360)) / 180;
+
+      const offsetX = parseInt(shadowOffset * Math.sin(rad), 10) / 3;
+      const offsetY = parseInt(shadowOffset * Math.cos(rad), 10) / 3;
       const shadowStyle = dropShadow
         ? {
-            'box-shadow': `${offsetX}px ${offsetY}px ${blur}px ${shadowColor}`
+            'box-shadow': `${offsetX}px ${offsetY}px ${shadowBlur}px ${shadowColor}`
           }
         : 'none';
-
-      return { ...styles, ...shadowStyle };
+      const customBorder = {
+        '--display':
+          cssStyle?.border?.strokeLineType === BORDER_STYLES.DOUBLE
+            ? 'block'
+            : 'none',
+        '--width': `${Math.floor(cssStyle?.border?.strokeWidth / 12)}px`
+      };
+      return { ...styles, ...shadowStyle, ...customBorder };
     },
 
     /**

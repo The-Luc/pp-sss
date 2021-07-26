@@ -59,9 +59,22 @@
           height: 50px;
 
           .saved-style {
+            position: relative;
             width: 100%;
             height: 100%;
-            background-color: #e2e2e2;
+            background-color: $color-gray21;
+
+            &:before {
+              display: var(--display);
+              position: absolute;
+              content: '';
+              top: calc(0.2 * (100% - 50px));
+              right: calc(0.2 * (100% - 50px));
+              bottom: calc(0.2 * (100% - 50px));
+              left: calc(0.2 * (100% - 50px));
+              border: solid white;
+              border-width: var(--width);
+            }
           }
         }
       }
