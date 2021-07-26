@@ -146,7 +146,6 @@ export default {
       totalObject: PRINT_GETTERS.TOTAL_OBJECT,
       getProperty: APP_GETTERS.SELECT_PROP_CURRENT_OBJECT,
       getPageInfo: PRINT_GETTERS.GET_PAGE_INFO,
-      defaultThemeId: PRINT_GETTERS.DEFAULT_THEME_ID,
       getObjectsAndBackground: PRINT_GETTERS.GET_OBJECTS_AND_BACKGROUNDS
     }),
     isCover() {
@@ -1616,13 +1615,13 @@ export default {
       let ppObjects = [...objects];
       let layout = {
         id: parseInt(uniqueId()) + 100,
-        type: layoutTypes.SAVED_LAYOUTS_AND_FAVORITES.value,
+        type: layoutTypes.SAVED_LAYOUTS.value,
         name: layoutName,
         isFavorites: false,
         previewImageUrl: window.printCanvas.toDataURL({
           quality: THUMBNAIL_IMAGE_QUALITY
         }),
-        themeId: this.defaultThemeId,
+        themeId: '',
         pageType: LAYOUT_PAGE_TYPE.FULL_PAGE.id
       };
 
