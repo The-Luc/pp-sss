@@ -48,25 +48,6 @@ export const copyPpObject = (event, currentObjects, pageSelected, canvas) => {
   sessionStorage.setItem(COPY_OBJECT_KEY, JSON.stringify(cacheData));
 };
 /**
- * Function clear object(s) copied when user paste data from outside while editing text
- * @param {String} dataOutside Data copy from outside app
- * @param {Ref} canvas print canvas or digital canvas
- */
-export const clearObjectCopied = (dataOutside, canvas) => {
-  if (!dataOutside) return;
-
-  const activeObj = canvas.getActiveObject();
-  const objectType = activeObj?.get('type');
-
-  if (
-    dataOutside &&
-    objectType === FABRIC_OBJECT_TYPE.TEXT &&
-    activeObj?.isEditing
-  ) {
-    sessionStorage.removeItem(COPY_OBJECT_KEY);
-  }
-};
-/**
  * Function handle active selection of object(s) pasted (single | multiplesingle)
  * @param {Array} listPastedObjects - List object(s) pasted
  * @param {Ref} canvas print canvas or digital canvas
@@ -157,8 +138,6 @@ export const pastePpObject = async (
   let dataCopyOutside = (
     event?.clipboardData || window?.clipboardData
   )?.getData('text');
-
-  clearObjectCopied(dataCopyOutside, canvas);
 
   if (dataCopyOutside) {
     setProcessingPaste();
