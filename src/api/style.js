@@ -13,7 +13,10 @@ const styleService = {
   saveTextStyle: async style => {
     try {
       const savedStyleJson = await styleService.getSavedTextStyles();
-      const newSavedStyleJson = [...savedStyleJson.slice(1 - MAX_SAVED_TEXT_STYLES), style]
+      const newSavedStyleJson = [
+        ...savedStyleJson.slice(1 - MAX_SAVED_TEXT_STYLES),
+        style
+      ];
       window.sessionStorage.setItem(
         'textStyle',
         JSON.stringify(newSavedStyleJson)
@@ -48,7 +51,10 @@ const styleService = {
   saveImageStyle: async style => {
     try {
       const savedStyleJson = await styleService.getSavedImageStyles();
-      const newSavedStyleJson = [...savedStyleJson.slice(1 - MAX_SAVED_IMAGE_STYLES), style];
+      const newSavedStyleJson = [
+        ...savedStyleJson.slice(1 - MAX_SAVED_IMAGE_STYLES),
+        style
+      ];
       window.sessionStorage.setItem(
         'imageStyle',
         JSON.stringify(newSavedStyleJson)

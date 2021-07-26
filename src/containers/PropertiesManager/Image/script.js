@@ -5,7 +5,6 @@ import General from '@/components/General';
 import ImageStyle from './ImageStyle';
 import Reset from './Reset';
 
-import { ImageElement } from '@/common/models';
 import { useElementProperties } from '@/hooks';
 import { DEFAULT_IMAGE, EVENT_TYPE, IMAGE_STYLE } from '@/common/constants';
 import { computedObjectSize } from '@/common/utils';
@@ -156,7 +155,10 @@ export default {
      * @param {Number} item - selected image style
      */
     onSelectImageStyle(item) {
-      this.$root.$emit(EVENT_TYPE.CHANGE_IMAGE_PROPERTIES, { ...item?.style, styleId: item.id });
+      this.$root.$emit(EVENT_TYPE.CHANGE_IMAGE_PROPERTIES, {
+        ...item?.style,
+        styleId: item.id
+      });
     },
 
     /**
