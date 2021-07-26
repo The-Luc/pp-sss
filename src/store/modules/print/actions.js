@@ -176,8 +176,8 @@ export const actions = {
     printService.saveSheetLinkStatus(sheetId, statusLink);
     commit(PRINT._MUTATES.SET_SHEET_LINK_STATUS, { statusLink, sheetId });
   },
-  async [PRINT._ACTIONS.SAVE_LAYOUT]({ commit }, { layouts }) {
-    await setPrintPpLayouts(layouts);
+  async [PRINT._ACTIONS.SAVE_LAYOUT]({ commit }, { layout }) {
+    await setPrintPpLayouts(layout);
     commit(
       APP_MUTATES.TOGGLE_MODAL,
       {
