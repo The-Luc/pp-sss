@@ -82,6 +82,7 @@ import PageWrapper from './PageWrapper';
 import XRuler from './Rulers/XRuler';
 import YRuler from './Rulers/YRuler';
 import {
+  AUTOSAVE_INTERVAL,
   COPY_OBJECT_KEY,
   PASTE,
   THUMBNAIL_IMAGE_QUALITY
@@ -126,7 +127,8 @@ export default {
       objectList: [],
       isProcessingPaste: false,
       countPaste: 1,
-      rulerSize: { width: '0', height: '0' }
+      rulerSize: { width: '0', height: '0' },
+      isCanvasChanged: false
     };
   },
   computed: {
@@ -196,6 +198,8 @@ export default {
     }
   },
   mounted() {
+    setInterval(this.handleAutosave, AUTOSAVE_INTERVAL);
+
     window.addEventListener('copy', this.handleCopy);
     window.addEventListener('paste', this.handlePaste);
 
@@ -206,6 +210,8 @@ export default {
     window.removeEventListener('paste', this.handlePaste);
 
     window.printCanvas = null;
+
+    clearInterval(this.handleAutosave);
 
     sessionStorage.removeItem(COPY_OBJECT_KEY);
 
@@ -242,8 +248,17 @@ export default {
       setPropertiesObjectType: MUTATES.SET_PROPERTIES_OBJECT_TYPE,
       setBackgroundProp: PRINT_MUTATES.SET_BACKGROUND_PROP,
       deleteBackground: PRINT_MUTATES.DELETE_BACKGROUND,
+      updateTriggerAutosave: MUTATES.UPDATE_TRIGGER_AUTOSAVE,
       setThumbnail: PRINT_MUTATES.UPDATE_SHEET_THUMBNAIL
     }),
+
+    handleAutosave() {
+      if (!this.isCanvasChanged) return;
+      this.savePrintEditScreen(this.pageSelected.id);
+
+      this.updateTriggerAutosave();
+      this.isCanvasChanged = false;
+    },
 
     /**
      * create fabric object
@@ -534,6 +549,9 @@ export default {
      * call this function to update the active thumbnail
      */
     getThumbnailUrl: debounce(function() {
+      // TODO: -Luc Temporary setting, revise it later
+      this.isCanvasChanged = true;
+
       const thumbnailUrl = window.printCanvas.toDataURL({
         quality: THUMBNAIL_IMAGE_QUALITY
       });
