@@ -91,7 +91,7 @@ import printService from '@/api/print';
 import { useAppCommon } from '@/hooks/common';
 import { EVENT_TYPE } from '@/common/constants/eventType';
 import { useStyle } from '@/hooks/style';
-import { loadPrintPpLayouts, getPrintLayoutTypes } from '@/api/layouts';
+import { getPrintLayoutTypes } from '@/api/layouts';
 
 export default {
   components: {
@@ -1666,10 +1666,7 @@ export default {
 
       layout.objects = [...ppBackgrounds, ...ppObjects];
 
-      const storageLayouts = await loadPrintPpLayouts();
-      const layouts = [...storageLayouts, { ...layout }];
-
-      await this.saveLayout({ layouts });
+      await this.saveLayout({ layout });
     },
     async drawLayout() {
       await this.drawObjectsOnCanvas(this.sheetLayout);
