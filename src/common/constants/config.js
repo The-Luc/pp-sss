@@ -22,3 +22,9 @@ export const MAX_SUPPLEMENTAL_FRAMES = 10;
 export const MAX_SAVED_TEXT_STYLES = 9;
 
 export const MAX_SAVED_IMAGE_STYLES = 12;
+
+export const MODIFICATION = {
+  ADD: 0,
+  UPDATE: 1,
+  DELETE: 2
+};
