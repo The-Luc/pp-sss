@@ -549,7 +549,7 @@ export default {
      * call this function to update the active thumbnail
      */
     getThumbnailUrl: debounce(function() {
-      // TODO: -Luc Revise it layter
+      // TODO: -Luc Temporary setting, revise it later
       this.isCanvasChanged = true;
 
       const thumbnailUrl = window.printCanvas.toDataURL({
