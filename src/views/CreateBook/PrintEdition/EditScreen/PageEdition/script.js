@@ -657,7 +657,7 @@ export default {
     handleDeleteKey(event) {
       const key = event.keyCode || event.charCode;
 
-      if (event.target === document.body && (key == 8 || key == 46)) {
+      if (event.target === document.body && key == 46) {
         this.removeObject();
       }
     },
