@@ -1615,7 +1615,7 @@ export default {
       let ppObjects = [...objects];
       let layout = {
         id: parseInt(uniqueId()) + 100,
-        type: layoutTypes.SAVED_LAYOUTS.value,
+        type: '',
         name: layoutName,
         isFavorites: false,
         previewImageUrl: window.printCanvas.toDataURL({
