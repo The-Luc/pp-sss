@@ -5,6 +5,7 @@ export const MODULE_NAME = 'print';
 
 class GetterClass extends BaseObject {
   CURRENT_SHEET = 'getCurrentSheet';
+  SHEET_BY_ID = 'sheetById';
   TOTAL_BACKGROUND = 'getTotalBackground';
   CURRENT_OBJECT = 'getCurrentObject';
   CURRENT_OBJECT_ID = 'getCurrentObjectId';
@@ -47,13 +48,6 @@ class ActionClass extends BaseObject {
   UPDATE_SHEET_THEME_LAYOUT = 'updateSheetThemeLayout';
   UPDATE_SHEET_LINK_STATUS = 'updateSheetLinkStatus';
   SAVE_LAYOUT = 'saveLayout';
-  SAVE_DEFAULT_THEME_ID = 'saveDefaultThemeId';
-  SAVE_SHEET_THEME_LAYOUT = 'saveSheetThemeLayout';
-  UPDATE_SHEET_VISITED = 'updateSheetVisted';
-  SAVE_PAGE_INFO = 'savePageInfo';
-  SAVE_SPREAD_INFO = 'saveSpreadInfo';
-  SAVE_SHEET_LINK_STATUS = 'saveSheetLinkStatus';
-  SAVE_SHEET_THUMBNAIL = 'saveSheetThumbnail';
 
   constructor(props) {
     super(props);

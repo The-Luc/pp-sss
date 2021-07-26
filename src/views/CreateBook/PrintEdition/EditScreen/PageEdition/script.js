@@ -4,7 +4,7 @@ import { cloneDeep, uniqueId, merge, debounce } from 'lodash';
 
 import { imageBorderModifier, usePrintOverrides } from '@/plugins/fabric';
 
-import { useInfoBar, useSaveSheetThumbnail } from '@/hooks';
+import { useInfoBar, useSaveData } from '@/hooks';
 import { startDrawBox } from '@/common/fabricObjects/drawingBox';
 
 import {
@@ -82,12 +82,12 @@ import PageWrapper from './PageWrapper';
 import XRuler from './Rulers/XRuler';
 import YRuler from './Rulers/YRuler';
 import {
+  AUTOSAVE_INTERVAL,
   COPY_OBJECT_KEY,
   PASTE,
   THUMBNAIL_IMAGE_QUALITY
 } from '@/common/constants/config';
 import { createImage } from '@/common/fabricObjects';
-import printService from '@/api/print';
 import { useAppCommon } from '@/hooks/common';
 import { EVENT_TYPE } from '@/common/constants/eventType';
 import { useStyle } from '@/hooks/style';
@@ -103,15 +103,15 @@ export default {
   setup() {
     const { setActiveEdition } = useAppCommon();
     const { setInfoBar, zoom } = useInfoBar();
-    const { setThumbnail } = useSaveSheetThumbnail();
     const { onSaveStyle } = useStyle();
+    const { savePrintEditScreen } = useSaveData();
 
     return {
       setActiveEdition,
       setInfoBar,
       zoom,
       onSaveStyle,
-      setThumbnail
+      savePrintEditScreen
     };
   },
   data() {
@@ -127,7 +127,8 @@ export default {
       objectList: [],
       isProcessingPaste: false,
       countPaste: 1,
-      rulerSize: { width: '0', height: '0' }
+      rulerSize: { width: '0', height: '0' },
+      isCanvasChanged: false
     };
   },
   computed: {
@@ -173,10 +174,7 @@ export default {
       deep: true,
       async handler(val, oldVal) {
         if (val?.id !== oldVal?.id) {
-          printService.saveObjectsAndBackground(
-            oldVal.id,
-            this.getObjectsAndBackground
-          );
+          await this.savePrintEditScreen(oldVal.id);
 
           // get data either from API or sessionStorage
           await this.getDataCanvas();
@@ -200,6 +198,8 @@ export default {
     }
   },
   mounted() {
+    setInterval(this.handleAutosave, AUTOSAVE_INTERVAL);
+
     window.addEventListener('copy', this.handleCopy);
     window.addEventListener('paste', this.handlePaste);
 
@@ -210,6 +210,8 @@ export default {
     window.removeEventListener('paste', this.handlePaste);
 
     window.printCanvas = null;
+
+    clearInterval(this.handleAutosave);
 
     sessionStorage.removeItem(COPY_OBJECT_KEY);
 
@@ -245,8 +247,18 @@ export default {
       toggleActiveObjects: MUTATES.TOGGLE_ACTIVE_OBJECTS,
       setPropertiesObjectType: MUTATES.SET_PROPERTIES_OBJECT_TYPE,
       setBackgroundProp: PRINT_MUTATES.SET_BACKGROUND_PROP,
-      deleteBackground: PRINT_MUTATES.DELETE_BACKGROUND
+      deleteBackground: PRINT_MUTATES.DELETE_BACKGROUND,
+      updateTriggerAutosave: MUTATES.UPDATE_TRIGGER_AUTOSAVE,
+      setThumbnail: PRINT_MUTATES.UPDATE_SHEET_THUMBNAIL
     }),
+
+    handleAutosave() {
+      if (!this.isCanvasChanged) return;
+      this.savePrintEditScreen(this.pageSelected.id);
+
+      this.updateTriggerAutosave();
+      this.isCanvasChanged = false;
+    },
 
     /**
      * create fabric object
@@ -295,7 +307,9 @@ export default {
 
       const imageObject = await createImage(imageProperties);
       const image = imageObject?.object;
+      const { border } = imageProperties;
 
+      imageBorderModifier(image);
       addEventListeners(image, eventListeners);
 
       const {
@@ -315,6 +329,8 @@ export default {
         shadowAngle,
         shadowColor
       });
+
+      applyBorderToImageObject(image, border);
 
       updateSpecificProp(image, {
         coord: {
@@ -537,6 +553,9 @@ export default {
      * call this function to update the active thumbnail
      */
     getThumbnailUrl: debounce(function() {
+      // TODO: -Luc Temporary setting, revise it later
+      this.isCanvasChanged = true;
+
       const thumbnailUrl = window.printCanvas.toDataURL({
         quality: THUMBNAIL_IMAGE_QUALITY
       });

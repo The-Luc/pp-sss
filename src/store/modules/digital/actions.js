@@ -132,10 +132,5 @@ export const actions = {
     }
 
     commit(DIGITAL._MUTATES.SET_OBJECTS, { objectList });
-  },
-
-  [DIGITAL._ACTIONS.UPDATE_SHEET_VISITED]({ commit }, { sheetId }) {
-    // TODO: add code to handle save the visited state to sessionStorage
-    commit(DIGITAL._MUTATES.UPDATE_SHEET_VISITED, { sheetId });
   }
 };

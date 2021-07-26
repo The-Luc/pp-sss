@@ -84,5 +84,8 @@ export const mutations = {
   },
   [APP._MUTATES.SET_SAVED_IMAGE_STYLES](state, { savedImageStyles }) {
     state.savedImageStyles = savedImageStyles;
+  },
+  [APP._MUTATES.UPDATE_TRIGGER_AUTOSAVE](state) {
+    state.triggerChange.autosave = !state.triggerChange.autosave;
   }
 };

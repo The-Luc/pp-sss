@@ -10,6 +10,7 @@ export const getters = {
 
     return isEmpty(currentSheet) ? {} : currentSheet;
   },
+  [PRINT._GETTERS.SHEET_BY_ID]: ({ sheets }) => sheetId => sheets[sheetId],
   [PRINT._GETTERS.TOTAL_BACKGROUND]: ({ background }) => {
     const backgrounds = [background.left, background.right].filter(bg => {
       return !isEmpty(bg);
