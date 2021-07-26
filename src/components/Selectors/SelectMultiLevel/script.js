@@ -85,9 +85,12 @@ export default {
       this.$emit('change', { value: data.parent, sub: data.sub });
     },
     /**
-     * Event fire when click on item, for stopping close the selector
+     * Event fire when click on item, stop default click if contain subitem
+     * or emit change event to parent
      *
-     * @param {Object}  event  the event
+     * @param {Object}          event         the event
+     * @param {Number}          totalSubItem  total sub item of selected item
+     * @param {String | Number} itemValue     value of selected item
      */
     onItemClick(event, totalSubItem, itemValue) {
       if (totalSubItem > 0) {
@@ -107,6 +110,12 @@ export default {
     getDataIdByValue({ value }) {
       return `select-multi-${value}`;
     },
+    /**
+     * Get sub value of selected item
+     *
+     * @param   {Object}  item  current item
+     * @returns {String}        sub value
+     */
     getSelectedSub(item) {
       return item.value === this.selectedVal.value ? this.selectedVal.sub : '';
     }

@@ -4,7 +4,7 @@
   left: calc(100% - 2px);
   z-index: 99999;
   min-width: 200px;
-  box-shadow: 0 0 6px #00000080 !important;
+  box-shadow: 0 0 6px $color-black !important;
   cursor: default;
 
   .pp-select-sub--item {
