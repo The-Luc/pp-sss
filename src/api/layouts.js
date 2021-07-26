@@ -26,9 +26,9 @@ export const loadPrintPpLayouts = () => {
   });
 };
 
-export const setPrintPpLayouts = layouts => {
+export const setPrintPpLayouts = layout => {
   setTimeout(() => {
-    window.sessionStorage.setItem('ppLayouts', JSON.stringify(layouts));
+    window.data.layouts.push(layout);
   });
 };
 
