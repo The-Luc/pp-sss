@@ -25,6 +25,6 @@ export default {
 
     setTimeout(() => {
       this.$root.$emit(EVENT_TYPE.SAVE_STYLE);
-    }, 3000);
+    }, 2000);
   }
 };
