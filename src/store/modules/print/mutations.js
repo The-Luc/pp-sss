@@ -105,11 +105,15 @@ export const mutations = {
     state.currentObjectId = id;
   },
   [PRINT._MUTATES.ADD_OBJECT](state, { id, newObject }) {
+    if (!id) return;
+
     state.objectIds.push(id);
 
     state.objects[id] = newObject;
   },
   [PRINT._MUTATES.SET_PROP](state, { prop }) {
+    if (!state.currentObjectId) return;
+
     const currentProps = cloneDeep(state.objects[state.currentObjectId]);
 
     merge(currentProps, prop);
@@ -117,6 +121,8 @@ export const mutations = {
     state.objects[state.currentObjectId] = currentProps;
   },
   [PRINT._MUTATES.SET_PROP_BY_ID](state, { id, prop }) {
+    if (!id) return;
+
     const currentProps = cloneDeep(state.objects[id]);
 
     merge(currentProps, prop);
