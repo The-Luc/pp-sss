@@ -46,7 +46,7 @@ export const useStyle = () => {
           shadow
         } = currentObject?.value || {};
         const textStyle = {
-          name: prop.styleName || 'Untitled',
+          name: prop?.styleName?.trim() || 'Untitled',
           id: Date.now(),
           style: {
             fontFamily,

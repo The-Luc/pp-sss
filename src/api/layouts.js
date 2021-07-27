@@ -52,7 +52,9 @@ export const saveToFavorites = layoutId => {
       return;
     }
 
-    const index = window.data.printFavoritesLayouts.findIndex(f => f === layoutId);
+    const index = window.data.printFavoritesLayouts.findIndex(
+      f => f === layoutId
+    );
 
     const modification = index < 0 ? MODIFICATION.ADD : MODIFICATION.DELETE;
 

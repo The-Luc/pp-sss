@@ -63,7 +63,7 @@ export default {
           },
           strokeWidth: {
             name: 'border-width',
-            parse: value => `${Math.ceil(value / 3)}px`
+            parse: value => `${Math.min(Math.ceil(value / 2), 20)}px`
           },
           strokeLineType: {
             name: 'border-style',
@@ -92,7 +92,7 @@ export default {
 
       const customBorder = {
         '--display': strokeLineType === BORDER_STYLES.DOUBLE ? 'block' : 'none',
-        '--width': `${Math.floor(strokeWidth / 12)}px`
+        '--width': `${Math.max(Math.floor(strokeWidth / 8), 1)}px`
       };
       return { ...styles, ...shadowStyle, ...customBorder };
     },
