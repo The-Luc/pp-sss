@@ -1,5 +1,5 @@
 import { cloneDeep } from 'lodash';
-import { isHalfSheet, modifyItems } from '@/common/utils';
+import { isHalfSheet, isSheetCover, modifyItems } from '@/common/utils';
 import { LAYOUT_PAGE_TYPE, MODIFICATION } from '@/common/constants';
 import { packageLayouts, supplementalLayouts } from '@/mock/digitalLayouts';
 import { SAVED_AND_FAVORITES } from '@/mock/layoutTypes';
@@ -52,7 +52,9 @@ export const saveToFavorites = layoutId => {
       return;
     }
 
-    const index = window.data.printFavoritesLayouts.findIndex(f => f === layoutId);
+    const index = window.data.printFavoritesLayouts.findIndex(
+      f => f === layoutId
+    );
 
     const modification = index < 0 ? MODIFICATION.ADD : MODIFICATION.DELETE;
 
@@ -114,6 +116,11 @@ export const getFavoriteLayoutTypeMenu = sheetType => {
     const isFullExisted = layouts.some(
       l => l.pageType === LAYOUT_PAGE_TYPE.FULL_PAGE.id
     );
+
+    const isSingleExisted = layouts.some(
+      l => l.pageType === LAYOUT_PAGE_TYPE.SINGLE_PAGE.id
+    );
+
     const isFullEnable = !isHalfSheet({ type: sheetType }) && isFullExisted;
 
     const menu = cloneDeep(SAVED_AND_FAVORITES);
@@ -121,6 +128,9 @@ export const getFavoriteLayoutTypeMenu = sheetType => {
     menu.subItems.forEach(item => {
       if (item.id === LAYOUT_PAGE_TYPE.FULL_PAGE.id) {
         item.isDisabled = !isFullEnable;
+      }
+      if (item.id === LAYOUT_PAGE_TYPE.SINGLE_PAGE.id) {
+        item.isDisabled = !isSingleExisted;
       }
     });
 

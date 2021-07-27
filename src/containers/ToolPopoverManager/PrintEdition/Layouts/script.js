@@ -21,8 +21,7 @@ import {
   MODAL_TYPES,
   SHEET_TYPE,
   LAYOUT_PAGE_TYPE,
-  MODIFICATION,
-  SAVED_AND_FAVORITES
+  MODIFICATION
 } from '@/common/constants';
 import {
   getThemeOptSelectedById,
@@ -31,9 +30,7 @@ import {
   activeCanvas,
   isEmpty,
   scrollToElement,
-  modifyItems,
-  isHalfSheet,
-  isSheetCover
+  modifyItems
 } from '@/common/utils';
 import {
   usePopoverCreationTool,
@@ -684,12 +681,6 @@ export default {
       const extraMenu = await this.getFavoriteLayoutTypeMenu(
         this.pageSelected.type
       );
-
-      if (isSheetCover(this.pageSelected)) {
-        extraMenu.subItems.forEach(si => {
-          if (si.id !== LAYOUT_PAGE_TYPE.FULL_PAGE.id) si.isDisabled = true;
-        });
-      }
 
       opts.push(extraMenu);
 
