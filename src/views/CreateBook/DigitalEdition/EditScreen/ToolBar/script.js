@@ -201,6 +201,9 @@ export default {
         !data?.name ||
         this.selectedToolName === data?.name
       ) {
+        this.setToolNameSelected({
+          name: ''
+        });
         return;
       }
 
