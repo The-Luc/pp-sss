@@ -99,7 +99,8 @@ export default {
       getPrintLayoutTypes,
       getCustom,
       getLayoutsByThemeAndType,
-      getCustomAndFavoriteLayouts
+      getCustomAndFavoriteLayouts,
+      getFavoriteLayoutTypeMenu
     } = useActionLayout();
 
     return {
@@ -123,7 +124,8 @@ export default {
       getPrintLayoutTypes,
       getCustom,
       getLayoutsByThemeAndType,
-      getCustomAndFavoriteLayouts
+      getCustomAndFavoriteLayouts,
+      getFavoriteLayoutTypeMenu
     };
   },
   data() {
@@ -643,7 +645,7 @@ export default {
     /**
      * Filter layout types
      */
-    filterLayoutType() {
+    async filterLayoutType() {
       if (this.isDigital) {
         this.layoutTypes = this.layoutTypesOrigin;
 
@@ -659,7 +661,11 @@ export default {
       if (this.pageSelected.type === SHEET_TYPE.NORMAL) {
         const opts = [...this.layoutTypesOrigin];
 
-        opts.push(cloneDeep(SAVED_AND_FAVORITES));
+        const extraMenu = await this.getFavoriteLayoutTypeMenu(
+          SHEET_TYPE.NORMAL
+        );
+
+        opts.push(extraMenu);
 
         this.layoutTypes = opts;
 
@@ -675,13 +681,9 @@ export default {
         return lo.sheetType === sheetType;
       });
 
-      const extraMenu = cloneDeep(SAVED_AND_FAVORITES);
-
-      if (isHalfSheet(this.pageSelected)) {
-        extraMenu.subItems.forEach(si => {
-          if (si.id !== LAYOUT_PAGE_TYPE.SINGLE_PAGE.id) si.isDisabled = true;
-        });
-      }
+      const extraMenu = await this.getFavoriteLayoutTypeMenu(
+        this.pageSelected.type
+      );
 
       if (isSheetCover(this.pageSelected)) {
         extraMenu.subItems.forEach(si => {

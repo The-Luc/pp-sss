@@ -63,6 +63,10 @@
       .pp-select,
       .pp-select-multi {
         width: 200px;
+
+        .v-menu__content {
+          max-height: 380px !important; /* override lib setting */
+        }
       }
     }
   }

@@ -1,4 +1,4 @@
-import { SHEET_TYPE } from '@/common/constants';
+import { LAYOUT_PAGE_TYPE, SHEET_TYPE } from '@/common/constants';
 
 export const LAYOUT_TYPES = {
   COVER: {
@@ -70,3 +70,14 @@ const getLayoutTypesOptions = () => {
 };
 
 export const LAYOUT_TYPES_OPTIONs = getLayoutTypesOptions();
+
+export const SAVED_AND_FAVORITES = {
+  name: 'Saved Layouts/Favorites',
+  id: -999,
+  value: -999,
+  subItems: Object.values(LAYOUT_PAGE_TYPE).map(lgt => ({
+    ...lgt,
+    value: lgt.id,
+    isDisabled: false
+  }))
+};
