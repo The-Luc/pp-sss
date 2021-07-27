@@ -98,6 +98,10 @@ export const createTextBox = (x, y, width, height, textProperties) => {
     angle
   });
 
+  const groupProp = toFabricTextGroupProp(dataObject);
+  const { flipX, flipY } = groupProp;
+  group.set({ flipX, flipY });
+
   const rectStrokeData = getRectStroke(rect, {
     ...borderProp,
     width: adjustedWidth,
