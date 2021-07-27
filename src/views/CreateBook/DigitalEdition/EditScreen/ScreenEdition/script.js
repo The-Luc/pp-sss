@@ -4,7 +4,7 @@ import { DIGITAL_CANVAS_SIZE } from '@/common/constants/canvas';
 import SizeWrapper from '@/components/SizeWrapper';
 import AddBoxInstruction from '@/components/AddBoxInstruction';
 import Frames from './Frames';
-import { useDigitalOverrides } from '@/plugins/fabric';
+import { imageBorderModifier, useDigitalOverrides } from '@/plugins/fabric';
 import {
   ARRANGE_SEND,
   DEFAULT_CLIP_ART,
@@ -33,7 +33,8 @@ import {
   enableTextEditMode,
   updateSpecificProp,
   handleGetSvgData,
-  addEventListeners
+  addEventListeners,
+  applyBorderToImageObject
 } from '@/common/fabricObjects';
 import { createImage } from '@/common/fabricObjects';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
@@ -1504,7 +1505,7 @@ export default {
       }
 
       if (newData.type === OBJECT_TYPE.IMAGE) {
-        return createImage(newData);
+        return this.createImageFromPpData(newData);
       }
 
       if (
@@ -1517,6 +1518,49 @@ export default {
       if (newData.type === OBJECT_TYPE.TEXT) {
         return this.createTextFromPpData(newData);
       }
+    },
+    async createImageFromPpData(imageProperties) {
+      const eventListeners = {
+        scaling: this.handleScaling,
+        scaled: this.handleScaled,
+        rotated: this.handleRotated,
+        moved: this.handleMoved
+      };
+
+      const imageObject = await createImage(imageProperties);
+      const image = imageObject?.object;
+      const { border } = imageProperties;
+
+      imageBorderModifier(image);
+      addEventListeners(image, eventListeners);
+
+      const {
+        dropShadow,
+        shadowBlur,
+        shadowOffset,
+        shadowOpacity,
+        shadowAngle,
+        shadowColor
+      } = image;
+
+      applyShadowToObject(image, {
+        dropShadow,
+        shadowBlur,
+        shadowOffset,
+        shadowOpacity,
+        shadowAngle,
+        shadowColor
+      });
+
+      applyBorderToImageObject(image, border);
+
+      updateSpecificProp(image, {
+        coord: {
+          rotation: imageProperties.coord.rotation
+        }
+      });
+
+      return image;
     }
   },
   watch: {
