@@ -15,51 +15,107 @@ const BORDER_COLOR = {
  * @param {Number} strokeWidth - rect's strokeWidth
  * @returns {fabric.Group} clipPath object
  */
-const getDoubleStrokeClipPath = function(width, height, strokeWidth) {
+const getDoubleStrokeClipPath = function(
+  width,
+  height,
+  strokeWidth,
+  scaleX = 1,
+  scaleY = 1
+) {
   const origins = {
     originX: 'center',
     originY: 'center'
   };
 
-  const strokeOffset = strokeWidth * 0.15;
+  const strokeOffsetX = (strokeWidth * 0.15) / scaleX;
+  const strokeOffsetY = (strokeWidth * 0.15) / scaleX;
 
   const hozSize = {
     left: 0,
-    width: width - strokeOffset,
-    height: strokeWidth * 0.2,
+    width: width - strokeOffsetY,
+    height: (strokeWidth * 0.2) / scaleY,
     ...origins
   };
 
   const verSize = {
     top: 0,
-    width: strokeWidth * 0.2,
-    height: height - strokeOffset,
+    width: (strokeWidth * 0.2) / scaleX,
+    height: height - strokeOffsetX,
     ...origins
   };
 
   const rectTop = new fabric.Rect({
-    top: height * -0.5 + strokeOffset,
+    top: height * -0.5 + strokeOffsetY,
     ...hozSize
   });
 
   const rectBottom = new fabric.Rect({
-    top: height * 0.5 - strokeOffset,
+    top: height * 0.5 - strokeOffsetY,
     ...hozSize
   });
 
   const rectLeft = new fabric.Rect({
-    left: width * -0.5 + strokeOffset,
+    left: width * -0.5 + strokeOffsetX,
     ...verSize
   });
 
   const rectRight = new fabric.Rect({
-    left: width * 0.5 - strokeOffset,
+    left: width * 0.5 - strokeOffsetX,
     ...verSize
   });
 
   return new fabric.Group([rectTop, rectBottom, rectLeft, rectRight], {
     inverted: true
   });
+};
+
+/**
+ *  Allow adding padding between image and stroke
+ * @param {2D context Object} ctx the object enable to modify context canvas
+ */
+const renderFill = function(ctx) {
+  const elementToDraw = this._element;
+  if (!elementToDraw) {
+    return;
+  }
+  const scaleX = this._filterScalingX,
+    scaleY = this._filterScalingY,
+    w = this.width,
+    h = this.height,
+    min = Math.min,
+    max = Math.max,
+    // crop values cannot be lesser than 0.
+    cropX = max(this.cropX, 0),
+    cropY = max(this.cropY, 0),
+    elWidth = elementToDraw.naturalWidth || elementToDraw.width,
+    elHeight = elementToDraw.naturalHeight || elementToDraw.height,
+    sX = cropX * scaleX,
+    sY = cropY * scaleY,
+    // the width height cannot exceed element width/height, starting from the crop offset.
+    sW = min(w * scaleX, elWidth - sX),
+    sH = min(h * scaleY, elHeight - sY),
+    maxDestW = min(w, elWidth / scaleX - cropX),
+    maxDestH = min(h, elHeight / scaleY - cropY);
+
+  const offsetX = this.strokeWidth / this.scaleX;
+
+  const offsetY = this.strokeWidth / this.scaleY;
+
+  const x = -w / 2 + offsetX / 2;
+  const y = -h / 2 + offsetX / 2;
+
+  elementToDraw &&
+    ctx.drawImage(
+      elementToDraw,
+      sX,
+      sY,
+      sW,
+      sH,
+      x,
+      y,
+      maxDestW - offsetX,
+      maxDestH - offsetY
+    );
 };
 
 /**
@@ -75,53 +131,31 @@ const imageRender = function(ctx) {
     return;
   }
 
-  const heightForDash =
-    this.height * this.scaleY + this.strokeWidth / this.scaleY;
-  const widthForDash =
-    this.width * this.scaleX + this.strokeWidth / this.scaleX;
-
-  const height = this.height + this.strokeWidth / this.scaleY;
-  const width = this.width + this.strokeWidth / this.scaleX;
-
   if (this.strokeLineType === BORDER_STYLES.DOUBLE) {
     this.clipPath = getDoubleStrokeClipPath(
-      width,
-      height,
-      this.strokeWidth / this.scaleX
+      this.width,
+      this.height,
+      this.strokeWidth,
+      this.scaleX,
+      this.scaleY
     );
   }
 
   if (
     [BORDER_STYLES.ROUND, BORDER_STYLES.SQUARE].includes(this.strokeLineType)
   ) {
+    const height = this.height * this.scaleY;
+    const width = this.width * this.scaleX;
+
     this.strokeDashArray = getRectDashes(
-      widthForDash,
-      heightForDash,
+      width,
+      height,
       this.strokeLineType,
       this.strokeWidth
     );
   }
 
   fabric.Image.prototype._render.call(this, ctx);
-};
-
-const imageStrokeRender = function(ctx) {
-  if (!this.stroke || this.strokeWidth === 0) {
-    return;
-  }
-  const offsetX = this.strokeWidth / 2 / this.scaleX;
-  const offsetY = this.strokeWidth / 2 / this.scaleY;
-
-  var w = this.width / 2 + offsetX,
-    h = this.height / 2 + offsetY;
-
-  ctx.beginPath();
-  ctx.moveTo(-w, -h);
-  ctx.lineTo(w, -h);
-  ctx.lineTo(w, h);
-  ctx.lineTo(-w, h);
-  ctx.lineTo(-w, -h);
-  ctx.closePath();
 };
 
 /**
@@ -173,7 +207,7 @@ export const useDoubleStroke = function(rect) {
  */
 export const imageBorderModifier = function(image) {
   image._render = imageRender;
-  image._stroke = imageStrokeRender;
+  image._renderFill = renderFill;
 };
 
 /**
@@ -213,7 +247,7 @@ export const useTextOverride = function(text) {
  */
 const drawBorders = function(ctx, styleOverride) {
   styleOverride = styleOverride || {};
-  var wh = this._calculateCurrentDimensions(),
+  const wh = this._calculateCurrentDimensions(),
     strokeWidth = this.borderScaleFactor,
     width = wh.x + strokeWidth,
     height = wh.y + strokeWidth,

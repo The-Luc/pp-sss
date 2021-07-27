@@ -5,7 +5,7 @@ import { isEmpty } from '@/common/utils';
 
 import books from '@/mock/books';
 import layoutData from '@/mock/layouts';
-import { LAYOUT_TYPES } from '@/mock/layoutTypes';
+import { PRINT_LAYOUT_TYPES } from '@/mock/layoutTypes';
 
 const bookId = 1719;
 const keyBookData = `${STORAGE_KEY.bookStorage}-${bookId}`;
@@ -109,7 +109,7 @@ const setMockLayoutDataToStorage = () => {
   }
 
   if (isEmpty(layoutTypes)) {
-    const types = Object.values(LAYOUT_TYPES).map(lt => lt);
+    const types = Object.values(PRINT_LAYOUT_TYPES).map(lt => lt);
 
     setItem(keyLayoutTypePrint, JSON.stringify(types));
   }

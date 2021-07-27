@@ -1,8 +1,11 @@
 import Layouts from '@/containers/ToolPopoverManager/PrintEdition/Layouts';
 import { mapMutations } from 'vuex';
 import { MUTATES } from '@/store/modules/theme/const';
-import { EDITION, LAYOUT_TYPES } from '@/common/constants';
+import { EDITION } from '@/common/constants';
 import { useFrame, useFrameAdd, useFrameReplace, useModal } from '@/hooks';
+
+// for digital. After implement saving feature, this code can be remove
+import { DIGITAL_LAYOUT_TYPES as LAYOUT_TYPES } from '@/mock/layoutTypes';
 
 export default {
   components: {

@@ -89,12 +89,14 @@ const printService = {
       const sheets = section.sheetIds.map((sheetId, sheetIndex) => {
         const sheet = sheetData[sheetId];
 
-        const { id, type, isVisited } = sheet;
         const {
+          id,
+          type,
+          isVisited,
           link,
           thumbnailUrl,
-          theme: themeId,
-          layout,
+          themeId,
+          layoutId,
           spreadInfo
         } = sheet;
         const pageLeftName = getPageLeftName(sheet, sheetIndex, totalSheets);
@@ -107,7 +109,7 @@ const printService = {
           thumbnailUrl,
           isVisited,
           themeId,
-          layoutId: layout?.id || null,
+          layoutId,
           pageLeftName,
           pageRightName,
           spreadInfo: { ...spreadInfo }
