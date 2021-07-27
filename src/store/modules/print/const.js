@@ -28,6 +28,7 @@ class GetterClass extends BaseObject {
   GET_OBJECTS_AND_BACKGROUNDS = 'getObjectsAndBackground';
   BACKGROUNDS = 'getBackgrounds';
   CURRENT_SECTION = 'getCurrentSection';
+  GET_DATA_EDIT_SCREEN = 'getDataEditiScreen';
 
   constructor(props) {
     super(props);

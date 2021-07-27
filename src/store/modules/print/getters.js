@@ -139,5 +139,26 @@ export const getters = {
     if (isEmpty(currentSheetId)) return '';
 
     return sections.find(s => s.sheetIds.includes(currentSheetId));
+  },
+  [PRINT._GETTERS.GET_DATA_EDIT_SCREEN]: ({
+    background,
+    objectIds,
+    book,
+    sheets,
+    objects
+  }) => sheetId => {
+    const backgrounds = Object.values(background).filter(bg => !isEmpty(bg));
+    const objectsData = [
+      ...backgrounds.map(bg => bg),
+      ...objectIds.map(id => ({ ...objects[id], id }))
+    ];
+
+    const data = {
+      objects: objectsData,
+      pageInfo: book.pageInfo,
+      defaultThemeId: book.defaultThemeId,
+      sheetProps: sheets[sheetId]
+    };
+    return data;
   }
 };
