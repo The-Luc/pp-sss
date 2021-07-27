@@ -1,6 +1,6 @@
 import { LAYOUT_PAGE_TYPE, SHEET_TYPE } from '@/common/constants';
 
-export const LAYOUT_TYPES = {
+const LAYOUT_TYPES = {
   COVER: {
     name: 'Cover',
     value: 'cover',
@@ -55,21 +55,18 @@ export const LAYOUT_TYPES = {
     name: 'Single Page',
     value: 'singlePage',
     sheetType: SHEET_TYPE.FRONT_COVER
-  },
+  }
+};
+
+export const PRINT_LAYOUT_TYPES = { ...LAYOUT_TYPES };
+
+export const DIGITAL_LAYOUT_TYPES = {
+  ...LAYOUT_TYPES,
   SUPPLEMENTAL_LAYOUTS: {
     name: 'Supplemental: Digital Only',
     value: 'Supplemental'
   }
 };
-
-const getLayoutTypesOptions = () => {
-  return Object.keys(LAYOUT_TYPES).map(key => ({
-    name: LAYOUT_TYPES[key].name,
-    value: LAYOUT_TYPES[key].value
-  }));
-};
-
-export const LAYOUT_TYPES_OPTIONs = getLayoutTypesOptions();
 
 export const SAVED_AND_FAVORITES = {
   name: 'Saved Layouts/Favorites',

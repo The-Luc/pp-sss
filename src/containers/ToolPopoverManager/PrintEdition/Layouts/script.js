@@ -17,7 +17,6 @@ import Item from './Item';
 
 import {
   EDITION,
-  LAYOUT_TYPES,
   MODAL_TYPES,
   SHEET_TYPE,
   LAYOUT_PAGE_TYPE,
@@ -52,6 +51,9 @@ import {
 } from '@/api/layouts';
 
 import { loadDigitalThemes, loadPrintThemes } from '@/api/themes';
+
+// for digital. After implement saving feature, this code can be remove
+import { DIGITAL_LAYOUT_TYPES as LAYOUT_TYPES } from '@/mock/layoutTypes';
 
 import { cloneDeep } from 'lodash';
 
@@ -257,7 +259,6 @@ export default {
      */
     async initDigitalData() {
       this.themesOptions = await loadDigitalThemes();
-      console.log(`defaultThemeId: ${this.defaultThemeId}`);
 
       const isSupplemental = this.initialData?.isSupplemental;
 
