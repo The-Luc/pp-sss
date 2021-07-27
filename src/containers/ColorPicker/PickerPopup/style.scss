@@ -33,7 +33,7 @@ $transform: $pointer / 2;
     width: 20px;
     position: absolute;
     right: 0px;
-    top: 50%;
+    top: calc(50% + var(--h));
     transform: translate(50%, -50%) rotate(45deg);
     box-shadow: 9px 0 10px #0e02028c;
   }
@@ -47,8 +47,8 @@ $transform: $pointer / 2;
     width: 15px;
     position: absolute;
     right: 0px;
-    top: 50%;
-    transform: translateY(-50%)
+    top: calc(50% + var(--h));
+    transform: translateY(-50%);
   }
 
   .vc-mix {

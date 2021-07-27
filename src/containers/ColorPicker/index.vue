@@ -14,6 +14,7 @@
         v-if="isOpen"
         :top="top"
         :left="left"
+        :height="height"
         :color="color"
         @change="onChange"
         @close="onClose"

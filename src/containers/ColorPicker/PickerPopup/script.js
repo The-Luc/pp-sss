@@ -18,6 +18,10 @@ export default {
     color: {
       type: String,
       default: ''
+    },
+    height: {
+      type: Number,
+      default: 0
     }
   },
   data() {
