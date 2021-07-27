@@ -189,7 +189,7 @@ const frames = [
     objects: [backgrounds[0], text1, text2],
     previewImageUrl: LAYOUT_THUMB_01,
     isVisited: false,
-    titleFrame: ''
+    frameTitle: ''
   },
   {
     id: 2,
@@ -197,7 +197,7 @@ const frames = [
     objects: [backgrounds[1], clipArt1, clipArt2],
     previewImageUrl: LAYOUT_THUMB_02,
     isVisited: false,
-    titleFrame: ''
+    frameTitle: ''
   }
 ];
 
@@ -208,7 +208,7 @@ const frames2 = [
     objects: [backgrounds[3], text1, text2],
     previewImageUrl: LAYOUT_THUMB_04,
     isVisited: false,
-    titleFrame: ''
+    frameTitle: ''
   },
   {
     id: 2,
@@ -216,7 +216,7 @@ const frames2 = [
     objects: [backgrounds[4], text2, shape1],
     previewImageUrl: LAYOUT_THUMB_05,
     isVisited: false,
-    titleFrame: ''
+    frameTitle: ''
   },
   {
     id: 3,
@@ -224,7 +224,7 @@ const frames2 = [
     objects: [backgrounds[5], clipArt1, clipArt2],
     previewImageUrl: LAYOUT_THUMB_06,
     isVisited: false,
-    titleFrame: ''
+    frameTitle: ''
   }
 ];
 const supplementalFrames = [
@@ -234,7 +234,7 @@ const supplementalFrames = [
     objects: [backgrounds[5], text1, text2],
     previewImageUrl: LAYOUT_THUMB_06,
     isVisited: false,
-    titleFrame: ''
+    frameTitle: ''
   },
   {
     id: 12,
@@ -242,7 +242,7 @@ const supplementalFrames = [
     objects: [backgrounds[2], clipArt1],
     previewImageUrl: LAYOUT_THUMB_03,
     isVisited: false,
-    titleFrame: ''
+    frameTitle: ''
   },
   {
     id: 13,
@@ -250,7 +250,7 @@ const supplementalFrames = [
     objects: [backgrounds[4], text1, text2],
     previewImageUrl: LAYOUT_THUMB_05,
     isVisited: false,
-    titleFrame: ''
+    frameTitle: ''
   },
   {
     id: 14,
@@ -258,7 +258,7 @@ const supplementalFrames = [
     objects: [backgrounds[1], clipArt1, clipArt2],
     previewImageUrl: LAYOUT_THUMB_02,
     isVisited: false,
-    titleFrame: ''
+    frameTitle: ''
   }
 ];
 

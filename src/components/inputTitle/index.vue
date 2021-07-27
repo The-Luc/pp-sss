@@ -1,5 +1,9 @@
 <template>
-  <div :key="componentKey" class="title-content">
+  <div
+    :key="componentKey"
+    class="title-content"
+    :class="{ disabled: disabled }"
+  >
     <div class="project-title">{{ titleName }}</div>
     <input
       type="text"
