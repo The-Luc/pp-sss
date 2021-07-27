@@ -45,6 +45,7 @@ import {
 
 import {
   getCustom as getCustomLayouts,
+  getFavorites as getFavoriteLayouts,
   loadLayouts,
   loadDigitalLayouts,
   loadSupplementalLayouts
@@ -224,7 +225,7 @@ export default {
      * Set up inital data to render in view
      */
     async initData() {
-      this.setLayoutSelected(this.pageSelected);
+      await this.setLayoutSelected(this.pageSelected);
       this.setDisabledLayout(this.pageSelected);
       this.setThemeSelected(this.themeId);
       this.setLayoutActive();
@@ -279,7 +280,7 @@ export default {
      * Set default selected for layout base on id of sheet: Cover, Single Page or Collage
      * @param  {Number} pageSelected Id of sheet selected
      */
-    setLayoutSelected(pageSelected) {
+    async setLayoutSelected(pageSelected) {
       if (this.initialData?.layoutSelected) {
         this.layoutTypeSelected = this.getSelectedType(
           this.initialData.layoutSelected
@@ -310,9 +311,17 @@ export default {
           {
             // Use default layout if the sheet no have private layout
             const layoutId = this.pageSelected?.layoutId;
+            const defaultLayouts = await loadLayouts();
+            const customLayouts = await getCustomLayouts();
+            const favoriteLayouts = await getFavoriteLayouts();
+            const listLayouts = [
+              ...defaultLayouts,
+              ...customLayouts,
+              ...favoriteLayouts
+            ];
             if (layoutId) {
               const layoutOpt = getLayoutOptSelectedById(
-                this.listLayouts(),
+                listLayouts,
                 this.layoutTypes,
                 layoutId
               );

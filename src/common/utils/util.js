@@ -1,5 +1,10 @@
 import { cloneDeep, merge, intersection } from 'lodash';
-import { STATUS, MODIFICATION } from '@/common/constants';
+import {
+  STATUS,
+  MODIFICATION,
+  CUSTOM_LAYOUT_TYPE,
+  LAYOUT_PAGE_TYPE
+} from '@/common/constants';
 
 export let activeCanvas = null;
 
@@ -16,8 +21,18 @@ export const getLayoutOptSelectedById = (
   listLayoutType,
   layoutId
 ) => {
-  const layoutType = listLayouts.find(layout => layout.id === layoutId).type;
-  const layoutOpt = listLayoutType.find(layout => layout.value === layoutType);
+  const layout = listLayouts.find(layout => layout.id === layoutId);
+  const layoutType = layout.type || CUSTOM_LAYOUT_TYPE;
+  let layoutOpt = listLayoutType.find(layout => layout.value === layoutType);
+  if (layoutType === CUSTOM_LAYOUT_TYPE) {
+    const indexSubItem =
+      layout.pageType === LAYOUT_PAGE_TYPE.SINGLE_PAGE.id ? 0 : 1;
+    layoutOpt = {
+      value: layoutOpt.value,
+      sub: layoutOpt.subItems[indexSubItem]
+    };
+  }
+
   return layoutOpt;
 };
 
