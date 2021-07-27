@@ -1641,7 +1641,7 @@ export default {
       };
 
       if (pageSelected === 'left') {
-        ppObjects = objects.filter(item => item.coord.x < positionCenterX);
+        ppObjects = objects.filter(item => item?.coord?.x < positionCenterX);
 
         delete backgrounds.right;
 
@@ -1656,7 +1656,7 @@ export default {
       }
 
       if (pageSelected === 'right') {
-        ppObjects = objects.filter(item => item.coord.x >= positionCenterX);
+        ppObjects = objects.filter(item => item?.coord?.x >= positionCenterX);
         for (const item of ppObjects) {
           item.coord.x -= positionCenterX;
         }
