@@ -342,7 +342,7 @@ export default {
     },
 
     /**
-     * add text to the store and create fabric object
+     * create fabric object
      *
      * @param {Object} textProperties PpData of the of a text object {id, size, coord,...}
      * @returns {Object} a fabric object
@@ -1503,7 +1503,7 @@ export default {
     async drawObjectsOnCanvas(objects) {
       if (isEmpty(objects)) return;
 
-      const allObjectPrommises = objects.map(objectData => {
+      const allObjectPromises = objects.map(objectData => {
         if (
           objectData.type === OBJECT_TYPE.SHAPE ||
           objectData.type === OBJECT_TYPE.CLIP_ART
@@ -1524,7 +1524,7 @@ export default {
         }
       });
 
-      const listFabricObjects = await Promise.all(allObjectPrommises);
+      const listFabricObjects = await Promise.all(allObjectPromises);
       window.printCanvas.add(...listFabricObjects);
       window.printCanvas.requestRenderAll();
     },
