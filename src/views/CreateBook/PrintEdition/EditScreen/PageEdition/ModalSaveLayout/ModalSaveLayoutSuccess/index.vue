@@ -5,7 +5,7 @@
     :is-show-header="false"
     :is-close-out-side="false"
     container="#saved-layout-modal"
-    width="350"
+    width="365"
   >
     <div class="saved-message">Your layout has been saved</div>
   </Modal>
