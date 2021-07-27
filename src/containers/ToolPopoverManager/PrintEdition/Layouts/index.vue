@@ -23,6 +23,7 @@
           <SelectTheme
             :items="themesOptions"
             :theme-selected="themeSelected"
+            :disabled="disabledTheme"
             @change="onChangeTheme"
           />
           <SelectLayout

@@ -116,6 +116,11 @@ export const getFavoriteLayoutTypeMenu = sheetType => {
     const isFullExisted = layouts.some(
       l => l.pageType === LAYOUT_PAGE_TYPE.FULL_PAGE.id
     );
+
+    const isSingleExisted = layouts.some(
+      l => l.pageType === LAYOUT_PAGE_TYPE.SINGLE_PAGE.id
+    );
+
     const isFullEnable = !isHalfSheet({ type: sheetType }) && isFullExisted;
 
     const menu = cloneDeep(SAVED_AND_FAVORITES);
@@ -123,6 +128,9 @@ export const getFavoriteLayoutTypeMenu = sheetType => {
     menu.subItems.forEach(item => {
       if (item.id === LAYOUT_PAGE_TYPE.FULL_PAGE.id) {
         item.isDisabled = !isFullEnable;
+      }
+      if (item.id === LAYOUT_PAGE_TYPE.SINGLE_PAGE.id) {
+        item.isDisabled = !isSingleExisted;
       }
     });
 
