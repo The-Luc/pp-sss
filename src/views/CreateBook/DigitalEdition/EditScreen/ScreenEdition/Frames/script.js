@@ -3,7 +3,13 @@ import Draggable from 'vuedraggable';
 import EmptyFrame from './EmptyFrame';
 import FrameMenu from './FrameMenu';
 
-import { useFrameOrdering, useFrame, useFrameAdd, useModal } from '@/hooks';
+import {
+  useFrameOrdering,
+  useFrame,
+  useFrameAdd,
+  useModal,
+  useObjectProperties
+} from '@/hooks';
 
 import { MODAL_TYPES } from '@/common/constants';
 
@@ -41,12 +47,14 @@ export default {
     const { moveFrame } = useFrameOrdering();
     const { setCurrentFrameId } = useFrame();
     const { handleAddFrame } = useFrameAdd();
+    const { toggleMenuProperties } = useObjectProperties();
 
     return {
       toggleModal,
       moveFrame,
       handleAddFrame,
-      setCurrentFrameId
+      setCurrentFrameId,
+      toggleMenuProperties
     };
   },
   methods: {
@@ -81,6 +89,7 @@ export default {
      * @param {Element} target add frame button
      */
     addFrame({ target }) {
+      this.toggleMenuProperties({ isOpenMenuProperties: false });
       const { left, width } = target.getBoundingClientRect();
       const centerX = left + width / 2;
       this.toggleModal({

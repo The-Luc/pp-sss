@@ -93,7 +93,10 @@ const saveOnUnloadEvent = () => {
 
     setItem(keyLayoutPrint, JSON.stringify(window.data.printLayouts));
     setItem(keySavedLayoutPrint, JSON.stringify(window.data.printSavedLayouts));
-    setItem(keyFavoritesLayoutPrint, JSON.stringify(window.data.printFavoritesLayouts));
+    setItem(
+      keyFavoritesLayoutPrint,
+      JSON.stringify(window.data.printFavoritesLayouts)
+    );
   });
 };
 

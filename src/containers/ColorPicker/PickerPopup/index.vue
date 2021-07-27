@@ -3,7 +3,7 @@
     ref="colorPicker"
     v-click-outside="onClosePicker"
     class="color-picker-container"
-    :style="containerStyle"
+    :style="[containerStyle, { '--h': `${height}px` }]"
   >
     <ColorPicker
       :value="currentColor"

@@ -22,7 +22,8 @@ export default {
       top: 0,
       left: 0,
       isOpen: false,
-      openEyeDropper: false
+      openEyeDropper: false,
+      height: 0
     };
   },
   methods: {
@@ -31,7 +32,16 @@ export default {
      */
     onOpen() {
       const { top, left, height } = this.$refs.boxColor.getBoundingClientRect();
-      this.top = top + height / 2;
+      const windowHeight = window.innerHeight;
+      const popupHeight = top + 195;
+      if (popupHeight > windowHeight) {
+        this.height = popupHeight - windowHeight;
+        this.top = top + height / 2 - this.height;
+      } else {
+        this.height = 0;
+        this.top = top + height / 2;
+      }
+
       this.left = left;
       this.isOpen = true;
     },
