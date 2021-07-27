@@ -13,10 +13,10 @@ const keyBook = `${STORAGE_KEY.book}-${bookId}`;
 const keySection = `${STORAGE_KEY.section}-${bookId}`;
 const keySheet = `${STORAGE_KEY.printSheet}-${bookId}`;
 const keyObject = `${STORAGE_KEY.object}-${bookId}`;
-const keyLayout = `${STORAGE_KEY.layout}`;
-const keyLayoutType = `${STORAGE_KEY.layoutType}`;
-const keySavedLayout = `${STORAGE_KEY.savedlayout}`;
-const keyFavoritesLayout = `${STORAGE_KEY.favoritesLayout}`;
+const keyLayoutPrint = `${STORAGE_KEY.printLayout}`;
+const keyLayoutTypePrint = `${STORAGE_KEY.printLayoutType}`;
+const keySavedLayoutPrint = `${STORAGE_KEY.printSavedlayout}`;
+const keyFavoritesLayoutPrint = `${STORAGE_KEY.printFavoritesLayout}`;
 
 // TODO: remove when integrate with API
 const setMockBookDataToStorage = () => {
@@ -91,24 +91,24 @@ const saveOnUnloadEvent = () => {
     setItem(keySheet, JSON.stringify(window.data.sheets));
     setItem(keyObject, JSON.stringify(window.data.objects));
 
-    setItem(keyLayout, JSON.stringify(window.data.layouts));
-    setItem(keySavedLayout, JSON.stringify(window.data.savedLayouts));
-    setItem(keyFavoritesLayout, JSON.stringify(window.data.favoritesLayouts));
+    setItem(keyLayoutPrint, JSON.stringify(window.data.printLayouts));
+    setItem(keySavedLayoutPrint, JSON.stringify(window.data.printSavedLayouts));
+    setItem(keyFavoritesLayoutPrint, JSON.stringify(window.data.printFavoritesLayouts));
   });
 };
 
 const setMockLayoutDataToStorage = () => {
-  const layouts = window.sessionStorage.getItem(keyLayout);
-  const layoutTypes = window.sessionStorage.getItem(keyLayoutType);
+  const layouts = window.sessionStorage.getItem(keyLayoutPrint);
+  const layoutTypes = window.sessionStorage.getItem(keyLayoutTypePrint);
 
   if (isEmpty(layouts)) {
-    setItem(keyLayout, JSON.stringify(layoutData));
+    setItem(keyLayoutPrint, JSON.stringify(layoutData));
   }
 
   if (isEmpty(layoutTypes)) {
     const types = Object.values(LAYOUT_TYPES).map(lt => lt);
 
-    setItem(keyLayoutType, JSON.stringify(types));
+    setItem(keyLayoutTypePrint, JSON.stringify(types));
   }
 };
 
@@ -116,16 +116,16 @@ const getLayoutData = () => {
   // check and set mock data to sesstion storage if empty
   setMockLayoutDataToStorage();
 
-  const layouts = parseItem(keyLayout) || {};
-  const layoutTypes = parseItem(keyLayoutType) || [];
-  const savedLayouts = parseItem(keySavedLayout) || [];
-  const favoritesLayouts = parseItem(keyFavoritesLayout) || [];
+  const printLayouts = parseItem(keyLayoutPrint) || {};
+  const printLayoutTypes = parseItem(keyLayoutTypePrint) || [];
+  const printSavedLayouts = parseItem(keySavedLayoutPrint) || [];
+  const printFavoritesLayouts = parseItem(keyFavoritesLayoutPrint) || [];
 
   // Save to window.data variable
-  window.data.layouts = layouts;
-  window.data.layoutTypes = layoutTypes;
-  window.data.savedLayouts = savedLayouts;
-  window.data.favoritesLayouts = favoritesLayouts;
+  window.data.printLayouts = printLayouts;
+  window.data.printLayoutTypes = printLayoutTypes;
+  window.data.printSavedLayouts = printSavedLayouts;
+  window.data.printFavoritesLayouts = printFavoritesLayouts;
 };
 
 const initData = () => {

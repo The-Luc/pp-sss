@@ -9,12 +9,8 @@ export const STORAGE_KEY = {
   section: 'sectionData',
   object: 'objectData',
   printSheet: 'sheetData',
-  layout: 'layout',
-  layoutType: 'layoutType',
-  background: 'background',
-  backgroundType: 'backgroundType',
-  theme: 'theme',
-  clipArt: 'clipArt',
-  savedlayout: 'savedlayout',
-  favoritesLayout: 'favoritesLayout'
+  printLayout: 'printLayout',
+  printLayoutType: 'printLayoutType',
+  printSavedlayout: 'printSavedlayout',
+  printFavoritesLayout: 'printFavoritesLayout'
 };

@@ -61,14 +61,3 @@ export const LAYOUT_PAGE_TYPE = {
     shortName: 'Spread'
   }
 };
-
-export const SAVED_AND_FAVORITES = {
-  name: 'Saved Layouts/Favorites',
-  id: -999,
-  value: -999,
-  subItems: Object.values(LAYOUT_PAGE_TYPE).map(lgt => ({
-    ...lgt,
-    value: lgt.id,
-    isDisabled: false
-  }))
-};

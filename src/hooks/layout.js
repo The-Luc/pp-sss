@@ -7,7 +7,8 @@ import {
   getPrintLayoutTypes,
   getCustom,
   getLayoutsByThemeAndType,
-  getCustomAndFavoriteLayouts
+  getCustomAndFavoriteLayouts,
+  getFavoriteLayoutTypeMenu
 } from '@/api/layouts';
 
 import { GETTERS as THEME_GETTERS } from '@/store/modules/theme/const';
@@ -249,6 +250,7 @@ export const useActionLayout = () => {
     getPrintLayoutTypes,
     getCustom,
     getLayoutsByThemeAndType,
-    getCustomAndFavoriteLayouts
+    getCustomAndFavoriteLayouts,
+    getFavoriteLayoutTypeMenu
   };
 };
