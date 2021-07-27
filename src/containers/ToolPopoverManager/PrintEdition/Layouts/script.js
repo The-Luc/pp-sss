@@ -32,7 +32,8 @@ import {
   isEmpty,
   scrollToElement,
   modifyItems,
-  isHalfSheet
+  isHalfSheet,
+  isSheetCover
 } from '@/common/utils';
 import {
   usePopoverCreationTool,
@@ -679,6 +680,12 @@ export default {
       if (isHalfSheet(this.pageSelected)) {
         extraMenu.subItems.forEach(si => {
           if (si.id !== LAYOUT_PAGE_TYPE.SINGLE_PAGE.id) si.isDisabled = true;
+        });
+      }
+
+      if (isSheetCover(this.pageSelected)) {
+        extraMenu.subItems.forEach(si => {
+          if (si.id !== LAYOUT_PAGE_TYPE.FULL_PAGE.id) si.isDisabled = true;
         });
       }
 
