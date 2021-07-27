@@ -7,7 +7,7 @@
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
     height: 38px;
-    background-color: #42738d;
+    background-color: $color-stoodio-blue;
     display: flex;
     align-items: center;
 
@@ -21,7 +21,7 @@
       height: 10px;
       border-left: 7px solid transparent;
       border-right: 7px solid transparent;
-      border-bottom: 10px solid #42738d;
+      border-bottom: 10px solid $color-stoodio-blue;
     }
 
     p {
@@ -47,16 +47,16 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    border-top: 1px solid #bcbec0;
+    border-top: 1px solid $color-gray15;
 
-    .footer-btn {
-      border-radius: 6px;
-      width: 110px;
+    .footer-btn::v-deep.v-btn {
+      width: 100px;
       height: 32px;
+      border-radius: 6px;
       box-shadow: none;
       letter-spacing: initial;
 
-      ::v-deep .v-btn__content {
+      .v-btn__content {
         color: white;
         font-size: 11.5px;
         font-family: $font-500;
@@ -65,10 +65,10 @@
 
       &.cancel {
         margin-right: 10px;
-        background-color: #cbcbcb;
+        background-color: $color-gray24;
       }
       &.action {
-        background-color: #42738d;
+        background-color: $color-stoodio-blue;
       }
     }
   }
