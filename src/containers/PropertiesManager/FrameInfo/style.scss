@@ -49,3 +49,7 @@
     color: $color-gray13;
   }
 }
+.timning-play-in,
+.timning-play-out {
+  filter: opacity(0.4);
+}
