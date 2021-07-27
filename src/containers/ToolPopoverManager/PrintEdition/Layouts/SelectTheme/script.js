@@ -12,6 +12,10 @@ export default {
     themeSelected: {
       type: Object,
       default: () => ({})
+    },
+    disabled: {
+      type: Boolean,
+      default: false
     }
   },
   methods: {

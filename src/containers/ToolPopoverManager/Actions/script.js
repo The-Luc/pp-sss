@@ -6,7 +6,7 @@ import { isEmpty, parsePasteObject } from '@/common/utils';
 import { MODAL_TYPES } from '@/common/constants';
 import { ACTIONS, EVENT_TYPE, OBJECT_TYPE } from '@/common/constants';
 import { COPY_OBJECT_KEY } from '@/common/constants/config';
-import { useTotalObjects, useModal } from '@/hooks';
+import { useTotalObjects, useModal, useToolBar } from '@/hooks';
 
 export default {
   components: {
@@ -21,7 +21,8 @@ export default {
   setup({ isDigital }) {
     const { totalBackground, totalObject } = useTotalObjects(isDigital);
     const { toggleModal } = useModal();
-    return { totalBackground, totalObject, toggleModal };
+    const { setToolNameSelected } = useToolBar();
+    return { totalBackground, totalObject, toggleModal, setToolNameSelected };
   },
   data() {
     return {
@@ -113,6 +114,10 @@ export default {
       if (actionValue === ACTIONS.SAVE_STYLE) {
         this.$root.$emit(EVENT_TYPE.SAVE_STYLE);
       }
+
+      this.setToolNameSelected({
+        name: ''
+      });
     },
     /**
      * Function to get object(s) copied and validate data to enabled paste label

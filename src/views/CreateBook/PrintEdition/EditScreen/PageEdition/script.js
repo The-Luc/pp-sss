@@ -342,7 +342,7 @@ export default {
     },
 
     /**
-     * add text to the store and create fabric object
+     * create fabric object
      *
      * @param {Object} textProperties PpData of the of a text object {id, size, coord,...}
      * @returns {Object} a fabric object
@@ -1503,7 +1503,7 @@ export default {
     async drawObjectsOnCanvas(objects) {
       if (isEmpty(objects)) return;
 
-      const allObjectPrommises = objects.map(objectData => {
+      const allObjectPromises = objects.map(objectData => {
         if (
           objectData.type === OBJECT_TYPE.SHAPE ||
           objectData.type === OBJECT_TYPE.CLIP_ART
@@ -1524,7 +1524,7 @@ export default {
         }
       });
 
-      const listFabricObjects = await Promise.all(allObjectPrommises);
+      const listFabricObjects = await Promise.all(allObjectPromises);
       window.printCanvas.add(...listFabricObjects);
       window.printCanvas.requestRenderAll();
     },
@@ -1620,7 +1620,7 @@ export default {
       });
     },
     async handleSaveLayout({ pageSelected, layoutName }) {
-      layoutName = layoutName || 'Untitle';
+      layoutName = layoutName.trim() || 'Untitled';
       const zoom = window.printCanvas.getZoom();
       const width = window.printCanvas.width;
 
@@ -1641,7 +1641,7 @@ export default {
       };
 
       if (pageSelected === 'left') {
-        ppObjects = objects.filter(item => item.coord.x < positionCenterX);
+        ppObjects = objects.filter(item => item?.coord?.x < positionCenterX);
 
         delete backgrounds.right;
 
@@ -1656,7 +1656,7 @@ export default {
       }
 
       if (pageSelected === 'right') {
-        ppObjects = objects.filter(item => item.coord.x >= positionCenterX);
+        ppObjects = objects.filter(item => item?.coord?.x >= positionCenterX);
         for (const item of ppObjects) {
           item.coord.x -= positionCenterX;
         }

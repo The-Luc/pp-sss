@@ -1,12 +1,9 @@
-import { mapMutations } from 'vuex';
-import { MUTATES as DIGITAL_MUTATES } from '@/store/modules/digital/const';
-
 import PpSelect from '@/components/Selectors/Select';
 import Properties from '@/components/Properties/BoxProperties';
-import InputTitle from '@/components/inputTitle';
+import InputTitle from '@/components/InputTitle';
 
 import { DEPLAY_OPTION } from '@/common/constants';
-import { useFrame } from '@/hooks';
+import { useFrame, useFrameTitle } from '@/hooks';
 
 export default {
   components: {
@@ -16,25 +13,29 @@ export default {
   },
   setup() {
     const { currentFrame } = useFrame();
+    const { setFrameTitle } = useFrameTitle();
 
     return {
-      currentFrame
+      currentFrame,
+      setFrameTitle
     };
   },
   data() {
     return {
-      delayOpts: DEPLAY_OPTION
+      delayOpts: DEPLAY_OPTION,
+      componentKey: true,
+      frameTitle: ''
     };
   },
-  computed: {
-    titleFrame() {
-      return this.currentFrame?.titleFrame;
+  watch: {
+    currentFrame(val, oldVal) {
+      if (val.frameTitle !== oldVal.frameTitle) {
+        this.frameTitle = val.frameTitle;
+        this.componentKey = !this.componentKey;
+      }
     }
   },
   methods: {
-    ...mapMutations({
-      setTitleFrame: DIGITAL_MUTATES.SET_TITLE_FRAME
-    }),
     /**
      * Fire when delay is changed
      */
@@ -46,7 +47,7 @@ export default {
      * @param   {String}  value Value user input
      */
     onChangeTitle(value) {
-      this.setTitleFrame({ value });
+      this.setFrameTitle({ value });
     }
   }
 };

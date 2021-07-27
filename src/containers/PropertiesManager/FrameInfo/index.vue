@@ -2,8 +2,9 @@
   <Properties title="Frame Information">
     <div class="frame-info-container">
       <InputTitle
+        :key="componentKey"
         title-name="Frame Title:"
-        :title-value="titleFrame"
+        :title-value="frameTitle"
         @change="onChangeTitle"
       />
       <div class="opts-container">

@@ -1,16 +1,14 @@
 import { uniqueId } from 'lodash';
 
-import {
-  LAYOUT_TYPES,
-  BACKGROUND_PAGE_TYPE,
-  LAYOUT_PAGE_TYPE
-} from '@/common/constants';
+import { BACKGROUND_PAGE_TYPE, LAYOUT_PAGE_TYPE } from '@/common/constants';
 import {
   TextElement,
   BackgroundElement,
   ClipArtElement,
   ShapeElement
 } from '@/common/models';
+
+import { PRINT_LAYOUT_TYPES as LAYOUT_TYPES } from '@/mock/layoutTypes';
 
 import LAYOUT_01 from '@/assets/image/layouts/thumb/layout-01.png';
 import LAYOUT_02 from '@/assets/image/layouts/thumb/layout-02.png';

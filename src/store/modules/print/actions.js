@@ -76,6 +76,9 @@ export const actions = {
     { state, commit },
     { themeId, layout, pagePosition }
   ) {
+    // Clear background
+    commit(PRINT._MUTATES.CLEAR_BACKGROUNDS);
+
     const currentSheet = state.sheets[state.currentSheetId];
     let currentPosition = pagePosition; // Check whether user has add single page or not. Value: left or right with single page else undefine
     // Get background object
@@ -101,9 +104,6 @@ export const actions = {
 
     if (backgroundObjs.length === 1) {
       backgroundObjs[0].isLeftPage = currentPosition === 'left';
-      const emptyBackgroundPosition =
-        currentPosition === 'left' ? 'right' : 'left';
-      commit(PRINT._MUTATES.CLEAR_BACKGROUNDS, emptyBackgroundPosition);
       commit(PRINT._MUTATES.SET_BACKGROUNDS, { background: backgroundObjs[0] });
     }
 

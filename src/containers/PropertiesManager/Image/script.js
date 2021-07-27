@@ -135,7 +135,8 @@ export default {
         shadow: {
           ...this.currentShadow,
           ...shadowCfg
-        }
+        },
+        styleId: ''
       });
     },
     /**
@@ -147,7 +148,8 @@ export default {
         border: {
           ...this.currentBorder,
           ...borderCfg
-        }
+        },
+        styleId: ''
       });
     },
     /**

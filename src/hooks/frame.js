@@ -173,3 +173,11 @@ export const useFrameOrdering = () => {
 
   return { moveFrame };
 };
+
+export const useFrameTitle = () => {
+  const { setFrameTitle } = useMutations({
+    setFrameTitle: DIGITAL_MUTATES.SET_TITLE_FRAME
+  });
+
+  return { setFrameTitle };
+};
