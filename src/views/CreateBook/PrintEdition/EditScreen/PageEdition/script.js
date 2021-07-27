@@ -1620,7 +1620,7 @@ export default {
       });
     },
     async handleSaveLayout({ pageSelected, layoutName }) {
-      layoutName = layoutName || 'Untitle';
+      layoutName = layoutName.trim() || 'Untitled';
       const zoom = window.printCanvas.getZoom();
       const width = window.printCanvas.width;
 
