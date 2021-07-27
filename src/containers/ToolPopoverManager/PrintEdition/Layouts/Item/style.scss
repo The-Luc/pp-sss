@@ -41,12 +41,12 @@
     line-height: 1;
 
     .layout-name {
-      font-size: 11px;
+      font-size: $xsm-size;
       font-family: $font-300;
     }
 
     .v-icon {
-      font-size: 9px;
+      font-size: $xsm-size;
 
       &:focus {
         &::after {
