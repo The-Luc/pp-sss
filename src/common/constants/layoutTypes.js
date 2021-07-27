@@ -61,3 +61,5 @@ export const LAYOUT_PAGE_TYPE = {
     shortName: 'Spread'
   }
 };
+
+export const CUSTOM_LAYOUT_TYPE = -999;

@@ -44,6 +44,7 @@ import {
 } from '@/hooks';
 
 import {
+  getCustom as getCustomLayouts,
   loadLayouts,
   loadDigitalLayouts,
   loadSupplementalLayouts
@@ -761,9 +762,5 @@ export default {
 
       this.layouts = layouts.map(l => ({ ...l, isFavoritesDisabled: true }));
     }
-  },
-  created() {
-    console.log(1, this.defaultThemeId);
-    console.log(2, this.pageSelected?.themeId);
   }
 };

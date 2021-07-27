@@ -1,5 +1,5 @@
 import { cloneDeep } from 'lodash';
-import { isHalfSheet, isSheetCover, modifyItems } from '@/common/utils';
+import { isHalfSheet, modifyItems } from '@/common/utils';
 import { LAYOUT_PAGE_TYPE, MODIFICATION } from '@/common/constants';
 import { packageLayouts, supplementalLayouts } from '@/mock/digitalLayouts';
 import { SAVED_AND_FAVORITES } from '@/mock/layoutTypes';
