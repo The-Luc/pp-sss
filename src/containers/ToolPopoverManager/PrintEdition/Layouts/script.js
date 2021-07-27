@@ -21,7 +21,8 @@ import {
   MODAL_TYPES,
   SHEET_TYPE,
   LAYOUT_PAGE_TYPE,
-  MODIFICATION
+  MODIFICATION,
+  CUSTOM_LAYOUT_TYPE
 } from '@/common/constants';
 import {
   getThemeOptSelectedById,
@@ -188,7 +189,7 @@ export default {
     layoutTypeSelected: {
       deep: true,
       handler(newVal) {
-        if (newVal.value === -999) {
+        if (newVal.value === CUSTOM_LAYOUT_TYPE) {
           this.disabledTheme = true;
           return;
         }
@@ -760,5 +761,9 @@ export default {
 
       this.layouts = layouts.map(l => ({ ...l, isFavoritesDisabled: true }));
     }
+  },
+  created() {
+    console.log(1, this.defaultThemeId);
+    console.log(2, this.pageSelected?.themeId);
   }
 };
