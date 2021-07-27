@@ -133,6 +133,7 @@ export default {
       layoutTypesOrigin: [],
       layoutTypes: [],
       disabled: false,
+      disabledTheme: false,
       layoutTypeSelected: isDigital ? {} : { sub: '' },
       themeSelected: {},
       tempLayoutIdSelected: null,
@@ -182,6 +183,16 @@ export default {
         if (newVal?.disabled !== oldVal?.disabled) {
           this.initData();
         }
+      }
+    },
+    layoutTypeSelected: {
+      deep: true,
+      handler(newVal) {
+        if (newVal.value === -999) {
+          this.disabledTheme = true;
+          return;
+        }
+        this.disabledTheme = false;
       }
     }
   },

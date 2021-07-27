@@ -4,6 +4,7 @@
     <PpSelect
       :items="items"
       :selected-val="themeSelected"
+      :disabled="disabled"
       @change="onChangeTheme"
     />
   </div>
