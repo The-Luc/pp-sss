@@ -9,34 +9,6 @@ import {
 export let activeCanvas = null;
 
 /**
- * Get layout option from list layouts option by id
- *
- * @param   {Array} listLayouts - List layouts. It include themeId, layout type
- * @param   {Array} listLayoutType - List layout option of select
- * @param   {Number} layoutId - Layout id of sheet
- * @returns {Object} Object layout option
- */
-export const getLayoutOptSelectedById = (
-  listLayouts,
-  listLayoutType,
-  layoutId
-) => {
-  const layout = listLayouts.find(layout => layout.id === layoutId);
-  const layoutType = layout.type || CUSTOM_LAYOUT_TYPE;
-  let layoutOpt = listLayoutType.find(layout => layout.value === layoutType);
-  if (layoutType === CUSTOM_LAYOUT_TYPE) {
-    const indexSubItem =
-      layout.pageType === LAYOUT_PAGE_TYPE.SINGLE_PAGE.id ? 0 : 1;
-    layoutOpt = {
-      value: layoutOpt.value,
-      sub: layoutOpt.subItems[indexSubItem]
-    };
-  }
-
-  return layoutOpt;
-};
-
-/**
  * Get theme option from list themes option by id
  *
  * @param   {Array} listThemeOpts - List theme options.

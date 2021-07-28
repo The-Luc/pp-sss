@@ -139,7 +139,6 @@ export const actions = {
         })
       : [];
 
-    console.log(2, pagePosition);
     const storeObjects = [...leftObjects, ...rightObjects];
 
     const objectList = [...newObjects, ...storeObjects];
