@@ -95,11 +95,12 @@ export const actions = {
     }
 
     if (backgroundObjs.length === 0) {
-      if (layout.pageType === LAYOUT_PAGE_TYPE.FULL_PAGE.id) {
-        commit(PRINT._MUTATES.CLEAR_BACKGROUNDS);
-      } else {
-        commit(PRINT._MUTATES.CLEAR_BACKGROUNDS, currentPosition);
-      }
+      const selectedPosition =
+        layout.pageType === LAYOUT_PAGE_TYPE.FULL_PAGE.id
+          ? ''
+          : currentPosition;
+
+      commit(PRINT._MUTATES.CLEAR_BACKGROUNDS, selectedPosition);
     }
 
     if (backgroundObjs.length === 2) {
@@ -117,29 +118,24 @@ export const actions = {
     const restObjs = layout.objects.filter(
       obj => obj.type !== OBJECT_TYPE.BACKGROUND
     );
-    let objectList = restObjs.map(obj => ({
+    const newObjects = restObjs.map(obj => ({
       ...obj,
       position: currentPosition,
       id: uniqueId(`${obj.id}`)
     }));
 
-    if (pagePosition) {
-      let storeObjects = Object.values(state.objects).filter(
-        item => !isEmpty(item)
+    let storeObjects = [];
+    if (pagePosition === 'right') {
+      storeObjects = Object.values(state.objects).filter(
+        item => !isEmpty(item) && item.coord.x < positionCenterX
       );
-
-      if (pagePosition === 'right') {
-        storeObjects = Object.values(state.objects).filter(
-          item => !isEmpty(item) && item.coord.x < positionCenterX
-        );
-      }
-      if (pagePosition === 'left') {
-        storeObjects = Object.values(state.objects).filter(
-          item => !isEmpty(item) && item.coord.x >= positionCenterX
-        );
-      }
-      objectList = [...objectList, ...storeObjects];
     }
+    if (pagePosition === 'left') {
+      storeObjects = Object.values(state.objects).filter(
+        item => !isEmpty(item) && item.coord.x >= positionCenterX
+      );
+    }
+    const objectList = [...newObjects, ...storeObjects];
 
     commit(PRINT._MUTATES.SET_OBJECTS, { objectList });
 
