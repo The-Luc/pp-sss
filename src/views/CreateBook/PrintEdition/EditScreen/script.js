@@ -24,13 +24,13 @@ import {
   useInfoBar,
   useMutationPrintSheet,
   useUser,
-  useGetterPrintSheet,
-  useSaveData
+  useGetterPrintSheet
 } from '@/hooks';
 import { EDITION } from '@/common/constants';
 import { isEmpty, isPositiveInteger, getEditionListPath } from '@/common/utils';
 
 import printService from '@/api/print';
+import { useSaveData } from './PageEdition/composables';
 
 export default {
   components: {
@@ -47,7 +47,7 @@ export default {
     const { setCurrentSheetId } = useMutationPrintSheet();
     const { currentUser } = useUser();
     const { currentSection } = useGetterPrintSheet();
-    const { savePrintEditScreen } = useSaveData();
+    const { savePrintEditScreen, getDataEditScreen } = useSaveData();
 
     return {
       pageSelected,
@@ -57,7 +57,8 @@ export default {
       setCurrentSheetId,
       currentUser,
       currentSection,
-      savePrintEditScreen
+      savePrintEditScreen,
+      getDataEditScreen
     };
   },
   computed: {
@@ -171,7 +172,8 @@ export default {
      * Save print canvas and change view
      */
     async onClickSavePrintCanvas() {
-      await this.savePrintEditScreen(this.pageSelected.id);
+      const data = this.getDataEditScreen(this.pageSelected.id);
+      await this.savePrintEditScreen(data);
 
       setTimeout(() => {
         this.$router.push(

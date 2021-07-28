@@ -2,7 +2,7 @@ import ThumbnailItem from '@/components/Thumbnail/ThumbnailItem';
 
 import { mapGetters, mapMutations, mapActions } from 'vuex';
 
-import { useSaveData, useUser } from '@/hooks';
+import { useUser } from '@/hooks';
 
 import { getSectionsWithAccessible } from '@/common/utils';
 
@@ -14,6 +14,7 @@ import {
 import { MUTATES as APP_MUTATES } from '@/store/modules/app/const';
 
 import printService from '@/api/print';
+import { useSaveData } from './composables';
 
 export default {
   components: {
@@ -21,9 +22,9 @@ export default {
   },
   setup() {
     const { currentUser } = useUser();
-    const { savePrintMainScreen } = useSaveData();
+    const { savePrintMainScreen, sheets } = useSaveData();
 
-    return { currentUser, savePrintMainScreen };
+    return { currentUser, savePrintMainScreen, sheets };
   },
   async created() {
     this.setBookId({ bookId: this.$route.params.bookId });
@@ -36,7 +37,7 @@ export default {
     this.getDataPageEdit();
   },
   async beforeDestroy() {
-    await this.savePrintMainScreen();
+    await this.savePrintMainScreen(this.sheets);
   },
   computed: {
     ...mapGetters({
