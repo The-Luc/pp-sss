@@ -1,6 +1,6 @@
 import { uniqueId } from 'lodash';
 
-import { isEmpty, isHalfSheet } from '@/common/utils';
+import { isEmpty } from '@/common/utils';
 import printService from '@/api/print';
 import { setPrintPpLayouts } from '@/api/layouts';
 
@@ -8,11 +8,13 @@ import {
   STATUS,
   OBJECT_TYPE,
   SHEET_TYPE,
-  MODAL_TYPES
+  MODAL_TYPES,
+  LAYOUT_PAGE_TYPE
 } from '@/common/constants';
 
 import PRINT from './const';
 import { MUTATES as APP_MUTATES } from '../app/const';
+import { cloneDeep } from 'lodash';
 
 export const actions = {
   async [PRINT._ACTIONS.GET_DATA_MAIN]({ state, commit }) {
@@ -73,11 +75,8 @@ export const actions = {
   },
   [PRINT._ACTIONS.UPDATE_SHEET_THEME_LAYOUT](
     { state, commit },
-    { themeId, layout, pagePosition }
+    { themeId, layout, pagePosition, positionCenterX }
   ) {
-    // Clear background
-    commit(PRINT._MUTATES.CLEAR_BACKGROUNDS);
-
     const currentSheet = state.sheets[state.currentSheetId];
     let currentPosition = pagePosition; // Check whether user has add single page or not. Value: left or right with single page else undefine
     // Get background object
@@ -95,6 +94,15 @@ export const actions = {
       currentPosition = 'left';
     }
 
+    if (backgroundObjs.length === 0) {
+      const selectedPosition =
+        layout.pageType === LAYOUT_PAGE_TYPE.FULL_PAGE.id
+          ? ''
+          : currentPosition;
+
+      commit(PRINT._MUTATES.CLEAR_BACKGROUNDS, selectedPosition);
+    }
+
     if (backgroundObjs.length === 2) {
       backgroundObjs.forEach(bg => {
         commit(PRINT._MUTATES.SET_BACKGROUNDS, { background: bg });
@@ -110,16 +118,30 @@ export const actions = {
     const restObjs = layout.objects.filter(
       obj => obj.type !== OBJECT_TYPE.BACKGROUND
     );
-    const objectList = restObjs.map(obj => ({
+    const newObjects = restObjs.map(obj => ({
       ...obj,
       position: currentPosition,
       id: uniqueId(`${obj.id}`)
     }));
 
-    // Remove objects when user override layout
-    if (currentPosition && !isHalfSheet(currentSheet)) {
-      commit(PRINT._MUTATES.REMOVE_OBJECTS, { currentPosition });
-    }
+    const isLeftPage = pagePosition === 'left';
+    const isRightPage = pagePosition === 'right';
+
+    const rightObjects = isRightPage
+      ? []
+      : Object.values(cloneDeep(state.objects)).filter(obj => {
+          return !isEmpty(obj) && obj.coord.x >= positionCenterX;
+        });
+
+    const leftObjects = isLeftPage
+      ? []
+      : Object.values(cloneDeep(state.objects)).filter(obj => {
+          return !isEmpty(obj) && obj?.coord?.x < positionCenterX;
+        });
+
+    const storeObjects = [...leftObjects, ...rightObjects];
+
+    const objectList = [...newObjects, ...storeObjects];
 
     commit(PRINT._MUTATES.SET_OBJECTS, { objectList });
 

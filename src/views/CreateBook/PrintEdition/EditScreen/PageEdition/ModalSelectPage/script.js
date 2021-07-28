@@ -62,11 +62,15 @@ export default {
         pagePosition
       );
 
+      const zoom = window.printCanvas.getZoom();
+      const width = window.printCanvas.width;
+      const positionCenterX = pxToIn(width / zoom / 2);
       this.updateSheetThemeLayout({
         sheetId: this.sheetId,
         themeId: this.themeId,
         layout: this.layout,
-        pagePosition
+        pagePosition,
+        positionCenterX
       });
     },
 
