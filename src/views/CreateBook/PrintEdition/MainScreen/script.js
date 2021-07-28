@@ -13,6 +13,7 @@ import {
 } from '@/store/modules/print/const';
 import { MUTATES as APP_MUTATES } from '@/store/modules/app/const';
 
+import { LINK_STATUS } from '@/common/constants';
 import printService from '@/api/print';
 import { useSaveData } from './composables';
 
@@ -79,7 +80,9 @@ export default {
      * @param  {String} link link status of sheet
      */
     changeLinkStatus(sheetId, link) {
-      this.updateSectionLinkStatus({ link, sheetId });
+      const statusLink =
+        link === LINK_STATUS.LINK ? LINK_STATUS.UNLINK : LINK_STATUS.LINK;
+      this.updateSectionLinkStatus({ link: statusLink, sheetId });
     }
   }
 };

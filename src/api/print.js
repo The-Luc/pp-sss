@@ -232,7 +232,7 @@ const printService = {
    */
   saveSpreadInfo: (sheetId, spreadInfo) => {
     return new Promise(resolve => {
-      const sheet = window.data.sheets[sheetId];
+      const sheet = window.data.sheets.find(s => s.id === sheetId);
 
       sheet.spreadInfo = { ...sheet.spreadInfo, ...spreadInfo };
       resolve();

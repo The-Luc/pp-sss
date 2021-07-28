@@ -8,7 +8,6 @@ import {
   STATUS,
   OBJECT_TYPE,
   SHEET_TYPE,
-  LINK_STATUS,
   MODAL_TYPES
 } from '@/common/constants';
 
@@ -131,10 +130,16 @@ export const actions = {
       previewImageUrl: layout.previewImageUrl
     });
   },
-  [PRINT._ACTIONS.UPDATE_SHEET_LINK_STATUS]({ commit }, { link, sheetId }) {
-    const statusLink =
-      link === LINK_STATUS.LINK ? LINK_STATUS.UNLINK : LINK_STATUS.LINK;
-    commit(PRINT._MUTATES.SET_SHEET_LINK_STATUS, { statusLink, sheetId });
+  async [PRINT._ACTIONS.UPDATE_SHEET_LINK_STATUS](
+    { commit },
+    { link, sheetId }
+  ) {
+    await printService.saveSheetLinkStatus(sheetId, link);
+    await printService.saveSpreadInfo(sheetId, {
+      leftTitle: '',
+      rightTitle: ''
+    });
+    commit(PRINT._MUTATES.SET_SHEET_LINK_STATUS, { link, sheetId });
   },
   async [PRINT._ACTIONS.SAVE_LAYOUT]({ commit }, { layout }) {
     await setPrintPpLayouts(layout);
