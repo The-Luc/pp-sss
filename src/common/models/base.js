@@ -13,10 +13,28 @@ export class BaseObject {
   _set(props) {
     if (typeof props === 'object') {
       Object.keys(props).forEach(key => {
-        if (Object.prototype.hasOwnProperty.call(this, key)) {
-          this[key] = props[key];
-        }
+        this._setAttribute(key, props[key]);
       });
+    }
+  }
+
+  /**
+   * Set a single attribute of object
+   * @param {String} att - a single attribute to be update
+   * @param {Any} data - data to set to object's attribute
+   */
+  _setAttribute(att, data) {
+    if (!Object.prototype.hasOwnProperty.call(this, att)) return;
+
+    if (
+      this[att] !== null &&
+      typeof this[att] === 'object' &&
+      typeof data === 'object' &&
+      typeof this[att]._set === 'function'
+    ) {
+      this[att]._set(data);
+    } else {
+      this[att] = data;
     }
   }
 }
