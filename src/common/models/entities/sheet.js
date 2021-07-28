@@ -17,24 +17,12 @@ export class SpreadInfo extends BaseObject {
   }
 }
 
-export class SheetBase extends BaseEntity {
-  type = SHEET_TYPE.NORMAL;
-  sectionId = null;
-
-  /**
-   * @param {SheetBase} props
-   */
-  constructor(props) {
-    super(props);
-    this._set(props);
-  }
-}
-
 export class SheetEditionData extends BaseObject {
   layoutId = null;
   thumbnailUrl = null;
   link = '';
   isVisited = false;
+  media = []; // media are store separately for print & digital. Mapping is handled by API.
 
   /**
    * @param {SheetEditionData} props
@@ -47,7 +35,7 @@ export class SheetEditionData extends BaseObject {
 
 export class SheetPrintData extends SheetEditionData {
   spreadInfo = new SpreadInfo();
-  objects = [];
+  objects = []; // on Print, objects is stored in sheet.printData.objects
 
   /**
    * @param {SheetPrintData} props
@@ -59,7 +47,7 @@ export class SheetPrintData extends SheetEditionData {
 }
 
 export class SheetDigitalData extends SheetEditionData {
-  frames = [];
+  frames = [];// on Digital, objects is stored in sheet.digitalData.frames[n].objects
   /**
    * @param {SheetDigitalData} props
    */
@@ -70,6 +58,7 @@ export class SheetDigitalData extends SheetEditionData {
 }
 
 export class SheetEntity extends BaseElementEntity {
+  type = SHEET_TYPE.NORMAL;
   sectionId = '';
   layoutId = '';
   title = '';
