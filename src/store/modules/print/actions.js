@@ -1,6 +1,6 @@
 import { uniqueId } from 'lodash';
 
-import { isEmpty, isHalfSheet } from '@/common/utils';
+import { isEmpty } from '@/common/utils';
 import printService from '@/api/print';
 import { setPrintPpLayouts } from '@/api/layouts';
 
@@ -8,13 +8,13 @@ import {
   STATUS,
   OBJECT_TYPE,
   SHEET_TYPE,
-  LINK_STATUS,
   MODAL_TYPES,
   LAYOUT_PAGE_TYPE
 } from '@/common/constants';
 
 import PRINT from './const';
 import { MUTATES as APP_MUTATES } from '../app/const';
+import { cloneDeep } from 'lodash';
 
 export const actions = {
   async [PRINT._ACTIONS.GET_DATA_MAIN]({ state, commit }) {
@@ -129,13 +129,13 @@ export const actions = {
 
     const rightObjects = isRightPage
       ? []
-      : Object.values(state.objects).filter(obj => {
+      : Object.values(cloneDeep(state.objects)).filter(obj => {
           return !isEmpty(obj) && obj.coord.x >= positionCenterX;
         });
 
     const leftObjects = isLeftPage
       ? []
-      : Object.values(state.objects).filter(obj => {
+      : Object.values(cloneDeep(state.objects)).filter(obj => {
           return !isEmpty(obj) && obj?.coord?.x < positionCenterX;
         });
 
