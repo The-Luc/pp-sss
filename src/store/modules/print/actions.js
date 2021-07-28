@@ -9,7 +9,8 @@ import {
   OBJECT_TYPE,
   SHEET_TYPE,
   LINK_STATUS,
-  MODAL_TYPES
+  MODAL_TYPES,
+  LAYOUT_PAGE_TYPE
 } from '@/common/constants';
 
 import PRINT from './const';
@@ -74,11 +75,8 @@ export const actions = {
   },
   [PRINT._ACTIONS.UPDATE_SHEET_THEME_LAYOUT](
     { state, commit },
-    { themeId, layout, pagePosition }
+    { themeId, layout, pagePosition, positionCenterX }
   ) {
-    // Clear background
-    commit(PRINT._MUTATES.CLEAR_BACKGROUNDS);
-
     const currentSheet = state.sheets[state.currentSheetId];
     let currentPosition = pagePosition; // Check whether user has add single page or not. Value: left or right with single page else undefine
     // Get background object
@@ -96,6 +94,14 @@ export const actions = {
       currentPosition = 'left';
     }
 
+    if (backgroundObjs.length === 0) {
+      if (layout.pageType === LAYOUT_PAGE_TYPE.FULL_PAGE.id) {
+        commit(PRINT._MUTATES.CLEAR_BACKGROUNDS);
+      } else {
+        commit(PRINT._MUTATES.CLEAR_BACKGROUNDS, currentPosition);
+      }
+    }
+
     if (backgroundObjs.length === 2) {
       backgroundObjs.forEach(bg => {
         commit(PRINT._MUTATES.SET_BACKGROUNDS, { background: bg });
@@ -111,15 +117,28 @@ export const actions = {
     const restObjs = layout.objects.filter(
       obj => obj.type !== OBJECT_TYPE.BACKGROUND
     );
-    const objectList = restObjs.map(obj => ({
+    let objectList = restObjs.map(obj => ({
       ...obj,
       position: currentPosition,
       id: uniqueId(`${obj.id}`)
     }));
 
-    // Remove objects when user override layout
-    if (currentPosition && !isHalfSheet(currentSheet)) {
-      commit(PRINT._MUTATES.REMOVE_OBJECTS, { currentPosition });
+    if (pagePosition) {
+      let storeObjects = Object.values(state.objects).filter(
+        item => !isEmpty(item)
+      );
+
+      if (pagePosition === 'right') {
+        storeObjects = Object.values(state.objects).filter(
+          item => !isEmpty(item) && item.coord.x < positionCenterX
+        );
+      }
+      if (pagePosition === 'left') {
+        storeObjects = Object.values(state.objects).filter(
+          item => !isEmpty(item) && item.coord.x >= positionCenterX
+        );
+      }
+      objectList = [...objectList, ...storeObjects];
     }
 
     commit(PRINT._MUTATES.SET_OBJECTS, { objectList });

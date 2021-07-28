@@ -10,7 +10,7 @@ import {
   SHEET_TYPE,
   LAYOUT_PAGE_TYPE
 } from '@/common/constants';
-import { resetObjects } from '@/common/utils';
+import { pxToIn, resetObjects } from '@/common/utils';
 
 export default {
   components: {
@@ -71,10 +71,14 @@ export default {
         });
         return;
       }
+      const zoom = window.printCanvas.getZoom();
+      const width = window.printCanvas.width;
+      const positionCenterX = pxToIn(width / zoom / 2);
       this.updateSheetThemeLayout({
         sheetId: this.pageSelected?.id,
         themeId: this.themeSelected?.id,
-        layout: this.layoutObjSelected
+        layout: this.layoutObjSelected,
+        positionCenterX
       });
       resetObjects(window.printCanvas);
       this.$root.$emit('drawLayout');
