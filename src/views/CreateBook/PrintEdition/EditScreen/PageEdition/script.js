@@ -1630,8 +1630,8 @@ export default {
 
       const positionCenterX = pxToIn(width / zoom / 2);
 
-      const objects = Object.values(this.currentObjects);
-      const backgrounds = { ...this.currentBackgrounds };
+      const objects = cloneDeep(Object.values(this.currentObjects));
+      const backgrounds = cloneDeep(this.currentBackgrounds);
 
       let ppObjects = [...objects];
       let layout = {
