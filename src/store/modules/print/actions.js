@@ -127,19 +127,16 @@ export const actions = {
     const isLeftPage = pagePosition === 'left';
     const isRightPage = pagePosition === 'right';
 
-    const rightObjects = isRightPage
-      ? Object.values(cloneDeep(state.objects)).filter(obj => {
-          return !isEmpty(obj) && obj.coord.x >= positionCenterX;
-        })
-      : [];
+    const storeObjects = Object.values(cloneDeep(state.objects)).filter(obj => {
+      if (isEmpty(obj)) return false;
 
-    const leftObjects = isLeftPage
-      ? Object.values(cloneDeep(state.objects)).filter(obj => {
-          return !isEmpty(obj) && obj?.coord?.x < positionCenterX;
-        })
-      : [];
+      const x = obj.coord.x;
 
-    const storeObjects = [...leftObjects, ...rightObjects];
+      const isKeepLeft = isRightPage && x < positionCenterX;
+      const isKeepRight = isLeftPage && x >= positionCenterX;
+
+      return isKeepLeft || isKeepRight;
+    });
 
     const objectList = [...newObjects, ...storeObjects];
 
