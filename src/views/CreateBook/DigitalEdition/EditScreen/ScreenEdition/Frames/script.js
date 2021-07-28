@@ -89,7 +89,7 @@ export default {
      * @param {Element} target add frame button
      */
     addFrame({ target }) {
-      this.toggleMenuProperties({ isOpenMenuProperties: false });
+      this.toggleMenuProperties({ isOpen: false });
       const { left, width } = target.getBoundingClientRect();
       const centerX = left + width / 2;
       this.toggleModal({
