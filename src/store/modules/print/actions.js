@@ -124,16 +124,20 @@ export const actions = {
       id: uniqueId(`${obj.id}`)
     }));
 
-    let storeObjects = [];
+    const storeObjects = [];
     if (pagePosition === 'right') {
-      storeObjects = Object.values(state.objects).filter(
-        item => !isEmpty(item) && item.coord.x < positionCenterX
-      );
+      Object.values(state.objects)
+        .filter(item => !isEmpty(item) && item.coord.x < positionCenterX)
+        .forEach(item => {
+          storeObjects.push(item);
+        });
     }
     if (pagePosition === 'left') {
-      storeObjects = Object.values(state.objects).filter(
-        item => !isEmpty(item) && item.coord.x >= positionCenterX
-      );
+      Object.values(state.objects)
+        .filter(item => !isEmpty(item) && item.coord.x >= positionCenterX)
+        .forEach(item => {
+          storeObjects.push(item);
+        });
     }
     const objectList = [...newObjects, ...storeObjects];
 
