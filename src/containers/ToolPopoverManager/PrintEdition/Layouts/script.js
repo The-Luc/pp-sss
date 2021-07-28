@@ -211,7 +211,7 @@ export default {
       this.getCustomData()
     ]);
 
-    this.filterLayoutType();
+    await this.filterLayoutType();
 
     await this.initData();
 
@@ -290,6 +290,13 @@ export default {
         return;
       }
       const sheetType = pageSelected.type;
+
+      if (!this.isDigital) {
+        await this.setPrintLayoutSelected(this.pageSelected?.layoutId);
+
+        return;
+      }
+
       switch (sheetType) {
         case SHEET_TYPE.COVER:
           {
@@ -313,16 +320,10 @@ export default {
             // Use default layout if the sheet no have private layout
             const layoutId = this.pageSelected?.layoutId;
             const defaultLayouts = await loadLayouts();
-            const customLayouts = await getCustomLayouts();
-            const favoriteLayouts = await getFavoriteLayouts();
-            const listLayouts = [
-              ...defaultLayouts,
-              ...customLayouts,
-              ...favoriteLayouts
-            ];
+
             if (layoutId) {
               const layoutOpt = getLayoutOptSelectedById(
-                listLayouts,
+                defaultLayouts,
                 this.layoutTypes,
                 layoutId
               );
@@ -337,6 +338,33 @@ export default {
           }
           break;
       }
+    },
+    /**
+     * Set default selected for layout base on selected sheet
+     */
+    async setPrintLayoutSelected() {
+      const layoutId = this.pageSelected?.layoutId;
+
+      if (isEmpty(layoutId)) {
+        const sheetType = this.pageSelected?.type;
+
+        const index = sheetType === SHEET_TYPE.NORMAL ? 1 : 0;
+
+        this.layoutTypeSelected = this.getSelectedType(this.layoutTypes[index]);
+
+        return;
+      }
+
+      const defaultLayouts = await loadLayouts();
+      const customLayouts = await getCustomLayouts();
+
+      const layoutOpt = getLayoutOptSelectedById(
+        [...defaultLayouts, ...customLayouts],
+        this.layoutTypes,
+        layoutId
+      );
+
+      this.layoutTypeSelected = this.getSelectedType(layoutOpt);
     },
     /**
      * Set disabled select layout base on id of sheet are cover or half-sheet
@@ -661,20 +689,16 @@ export default {
         return;
       }
 
-      if (isEmpty(this.favoriteLayouts) && isEmpty(this.customLayouts)) {
-        this.layoutTypes = this.layoutTypesOrigin;
-
-        return;
-      }
-
       if (this.pageSelected.type === SHEET_TYPE.NORMAL) {
         const opts = [...this.layoutTypesOrigin];
 
-        const extraMenu = await this.getFavoriteLayoutTypeMenu(
-          SHEET_TYPE.NORMAL
-        );
+        if (!isEmpty(this.favoriteLayouts) || !isEmpty(this.customLayouts)) {
+          const extraMenu = await this.getFavoriteLayoutTypeMenu(
+            SHEET_TYPE.NORMAL
+          );
 
-        opts.push(extraMenu);
+          opts.push(extraMenu);
+        }
 
         this.layoutTypes = opts;
 
@@ -690,11 +714,13 @@ export default {
         return lo.sheetType === sheetType;
       });
 
-      const extraMenu = await this.getFavoriteLayoutTypeMenu(
-        this.pageSelected.type
-      );
+      if (!isEmpty(this.favoriteLayouts) || !isEmpty(this.customLayouts)) {
+        const extraMenu = await this.getFavoriteLayoutTypeMenu(
+          this.pageSelected.type
+        );
 
-      opts.push(extraMenu);
+        opts.push(extraMenu);
+      }
 
       this.layoutTypes = opts;
     },
