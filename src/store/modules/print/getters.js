@@ -149,7 +149,7 @@ export const getters = {
   }) => sheetId => {
     const backgrounds = Object.values(background).filter(bg => !isEmpty(bg));
     const objectsData = [
-      ...backgrounds.map(bg => bg),
+      ...backgrounds,
       ...objectIds.map(id => ({ ...objects[id], id }))
     ];
 
