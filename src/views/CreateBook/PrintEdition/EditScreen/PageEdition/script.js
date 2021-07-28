@@ -4,7 +4,7 @@ import { cloneDeep, uniqueId, merge, debounce } from 'lodash';
 
 import { imageBorderModifier, usePrintOverrides } from '@/plugins/fabric';
 
-import { useInfoBar, useSaveData } from '@/hooks';
+import { useInfoBar } from '@/hooks';
 import { startDrawBox } from '@/common/fabricObjects/drawingBox';
 
 import {
@@ -91,6 +91,7 @@ import { createImage } from '@/common/fabricObjects';
 import { useAppCommon } from '@/hooks/common';
 import { EVENT_TYPE } from '@/common/constants/eventType';
 import { useStyle } from '@/hooks/style';
+import { useSaveData } from './composables';
 
 export default {
   components: {
@@ -104,14 +105,15 @@ export default {
     const { setActiveEdition } = useAppCommon();
     const { setInfoBar, zoom } = useInfoBar();
     const { onSaveStyle } = useStyle();
-    const { savePrintEditScreen } = useSaveData();
+    const { savePrintEditScreen, getDataEditScreen } = useSaveData();
 
     return {
       setActiveEdition,
       setInfoBar,
       zoom,
       onSaveStyle,
-      savePrintEditScreen
+      savePrintEditScreen,
+      getDataEditScreen
     };
   },
   data() {
@@ -174,7 +176,8 @@ export default {
       deep: true,
       async handler(val, oldVal) {
         if (val?.id !== oldVal?.id) {
-          await this.savePrintEditScreen(oldVal.id);
+          const data = this.getDataEditScreen(oldVal.id);
+          await this.savePrintEditScreen(data);
 
           // get data either from API or sessionStorage
           await this.getDataCanvas();
@@ -254,7 +257,8 @@ export default {
 
     handleAutosave() {
       if (!this.isCanvasChanged) return;
-      this.savePrintEditScreen(this.pageSelected.id);
+      const data = this.getDataEditScreen(this.pageSelected.id);
+      this.savePrintEditScreen(data);
 
       this.updateTriggerAutosave();
       this.isCanvasChanged = false;
@@ -1626,8 +1630,8 @@ export default {
 
       const positionCenterX = pxToIn(width / zoom / 2);
 
-      const objects = Object.values(this.currentObjects);
-      const backgrounds = { ...this.currentBackgrounds };
+      const objects = cloneDeep(Object.values(this.currentObjects));
+      const backgrounds = cloneDeep(this.currentBackgrounds);
 
       let ppObjects = [...objects];
       let layout = {
