@@ -124,21 +124,23 @@ export const actions = {
       id: uniqueId(`${obj.id}`)
     }));
 
-    const storeObjects = [];
-    if (pagePosition === 'right') {
-      Object.values(state.objects)
-        .filter(item => !isEmpty(item) && item.coord.x < positionCenterX)
-        .forEach(item => {
-          storeObjects.push(item);
+    const isLeftPage = pagePosition === 'left';
+    const isRightPage = pagePosition === 'right';
+
+    const rightObjects = isRightPage
+      ? []
+      : Object.values(state.objects).filter(obj => {
+          return !isEmpty(obj) && obj.coord.x >= positionCenterX;
         });
-    }
-    if (pagePosition === 'left') {
-      Object.values(state.objects)
-        .filter(item => !isEmpty(item) && item.coord.x >= positionCenterX)
-        .forEach(item => {
-          storeObjects.push(item);
+
+    const leftObjects = isLeftPage
+      ? []
+      : Object.values(state.objects).filter(obj => {
+          return !isEmpty(obj) && obj?.coord?.x < positionCenterX;
         });
-    }
+
+    const storeObjects = [...leftObjects, ...rightObjects];
+
     const objectList = [...newObjects, ...storeObjects];
 
     commit(PRINT._MUTATES.SET_OBJECTS, { objectList });
