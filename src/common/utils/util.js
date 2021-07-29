@@ -70,7 +70,7 @@ export const mapObject = (sourceObject, rules) => {
   Object.keys(sourceObject).forEach(k => {
     if (rules.restrict.indexOf(k) >= 0) return;
 
-    if (Array.isArray(sourceObject[k])) {
+    if (Array.isArray(sourceObject[k]) || sourceObject[k] === null) {
       resultObject[k] = sourceObject[k];
 
       return;
