@@ -6,6 +6,7 @@ import { MUTATES as APP_MUTATES } from '@/store/modules/app/const';
 import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 import { EDITION, OBJECT_TYPE } from '@/common/constants';
 import { pxToIn, resetObjects } from '@/common/utils';
+import { cloneDeep } from 'lodash';
 
 export default {
   setup() {
@@ -81,11 +82,12 @@ export default {
      * @returns an object have coords changed
      */
     changeObjectsCoords(objects, position) {
+      const newObjects = cloneDeep(objects);
       const { width } = window.printCanvas;
       const zoom = window.printCanvas.getZoom();
       const midCanvas = pxToIn(width / zoom / 2);
 
-      objects.forEach(object => {
+      newObjects.forEach(object => {
         if (object.type === OBJECT_TYPE.BACKGROUND) return;
 
         const left = object.coord.x;
@@ -103,7 +105,7 @@ export default {
         object.coord.x = left + extraValue;
       });
 
-      return objects;
+      return newObjects;
     },
     /**
      * Get sheet's layout and draw
