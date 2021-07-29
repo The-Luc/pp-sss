@@ -27,12 +27,14 @@ const getDoubleStrokeClipPath = function(
     originY: 'center'
   };
 
+  const XYRatio = scaleX / scaleY;
+
   const strokeOffsetX = (strokeWidth * 0.15) / scaleX;
-  const strokeOffsetY = (strokeWidth * 0.15) / scaleX;
+  const strokeOffsetY = (strokeWidth * 0.15) / scaleY;
 
   const hozSize = {
     left: 0,
-    width: width - strokeOffsetY,
+    width: width - strokeOffsetY * (1 / XYRatio),
     height: (strokeWidth * 0.2) / scaleY,
     ...origins
   };
@@ -40,7 +42,7 @@ const getDoubleStrokeClipPath = function(
   const verSize = {
     top: 0,
     width: (strokeWidth * 0.2) / scaleX,
-    height: height - strokeOffsetX,
+    height: height - strokeOffsetX * XYRatio,
     ...origins
   };
 
@@ -101,8 +103,11 @@ const renderFill = function(ctx) {
 
   const offsetY = this.strokeWidth / this.scaleY;
 
+  // if scaleX >> scaleY -> y should increase, and vice versa
+  const XYRatio = this.scaleX / this.scaleY;
+
   const x = -w / 2 + offsetX / 2;
-  const y = -h / 2 + offsetX / 2;
+  const y = -h / 2 + (offsetX / 2) * XYRatio;
 
   elementToDraw &&
     ctx.drawImage(
@@ -157,6 +162,61 @@ const imageRender = function(ctx) {
 
   fabric.Image.prototype._render.call(this, ctx);
 };
+/**
+ * this function render a temporary canvas with the clipPath.
+ * if not, won't do anything
+ */
+const renderClipPathCache = function() {
+  const canvas = fabric.util.createCanvasElement();
+
+  canvas.width = this._cacheCanvas.width;
+  canvas.height = this._cacheCanvas.height;
+
+  const ctx = canvas.getContext('2d');
+  ctx.translate(this.cacheTranslationX, this.cacheTranslationY);
+  ctx.scale(this.zoomX, this.zoomY);
+  this.clipPath.transform(ctx);
+  this.clipPath.drawObject(ctx, true);
+
+  return canvas;
+};
+
+/**
+ * Execute the drawing operation for an object clipPath
+ * @param {CanvasRenderingContext2D} ctx Context to render on
+ */
+const drawClipPathOnCache = function(ctx, canvas) {
+  const path = this.clipPath;
+  ctx.save();
+
+  if (path.inverted) {
+    ctx.globalCompositeOperation = 'destination-out';
+  } else {
+    ctx.globalCompositeOperation = 'destination-in';
+  }
+
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  if (path.absolutePositioned) {
+    const m = fabric.util.invertTransform(this.calcTransformMatrix());
+    ctx.transform(m[0], m[1], m[2], m[3], m[4], m[5]);
+  }
+
+  ctx.drawImage(canvas, 0, 0);
+  ctx.restore();
+};
+
+const drawClipPath = function(ctx) {
+  const path = this.clipPath;
+  if (!path) {
+    return;
+  }
+
+  path.canvas = this.canvas;
+  path.shouldCache();
+  path._transformDone = true;
+  const canvas = this.renderClipPathCache();
+  this.drawClipPathOnCache(ctx, canvas);
+};
 
 /**
  * Rect Render function with override on clipPath to support double stroke
@@ -208,6 +268,9 @@ export const useDoubleStroke = function(rect) {
 export const imageBorderModifier = function(image) {
   image._render = imageRender;
   image._renderFill = renderFill;
+  image._drawClipPath = drawClipPath;
+  image.renderClipPathCache = renderClipPathCache;
+  image.drawClipPathOnCache = drawClipPathOnCache;
 };
 
 /**
