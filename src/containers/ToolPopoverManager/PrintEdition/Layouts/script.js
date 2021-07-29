@@ -56,6 +56,7 @@ import { loadDigitalThemes, loadPrintThemes } from '@/api/themes';
 import { DIGITAL_LAYOUT_TYPES as LAYOUT_TYPES } from '@/mock/layoutTypes';
 
 import { cloneDeep } from 'lodash';
+import { changeObjectsCoords } from '@/common/utils/layout';
 
 export default {
   components: {
@@ -168,6 +169,11 @@ export default {
     },
     themeId() {
       return this.pageSelected?.themeId || this.defaultThemeId;
+    },
+    isFrontOrBackSheet() {
+      return [SHEET_TYPE.FRONT_COVER, SHEET_TYPE.BACK_COVER].includes(
+        this.pageSelected?.type
+      );
     }
   },
   watch: {
@@ -467,6 +473,14 @@ export default {
      */
     setThemeLayoutForSheet() {
       if (this.layouts.length > 0 && this.tempLayoutIdSelected) {
+        // change objects coords if user at FRONT_COVER or BACK_COVER
+        if (this.isFrontOrBackSheet) {
+          this.layoutObjSelected.objects = changeObjectsCoords(
+            this.layoutObjSelected.objects,
+            this.pageSelected.type
+          );
+        }
+
         if (
           !this.isDigital &&
           (this.totalBackground || !isEmpty(this.printObject))
@@ -491,12 +505,7 @@ export default {
         const isSinglePage =
           this.layoutObjSelected.pageType === LAYOUT_PAGE_TYPE.SINGLE_PAGE.id;
 
-        const isFrontOrBackSheet = [
-          SHEET_TYPE.FRONT_COVER,
-          SHEET_TYPE.BACK_COVER
-        ].includes(this.pageSelected?.type);
-
-        if (!this.isDigital && !isFrontOrBackSheet && isSinglePage) {
+        if (!this.isDigital && !this.isFrontOrBackSheet && isSinglePage) {
           this.onCancel();
           this.toggleModal({
             isOpenModal: true,
@@ -564,7 +573,6 @@ export default {
      * Save objects to store and draw on canvas
      */
     applyLayout() {
-      // save id and objects of the first frame to the store
       this.updateSheetThemeLayout({
         sheetId: this.pageSelected?.id,
         themeId: this.themeSelected?.id,
