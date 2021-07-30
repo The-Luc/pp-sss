@@ -85,7 +85,7 @@ import {
   AUTOSAVE_INTERVAL,
   COPY_OBJECT_KEY,
   PASTE,
-  THUMBNAIL_IMAGE_QUALITY
+  THUMBNAIL_IMAGE_CONFIG
 } from '@/common/constants/config';
 import { createImage } from '@/common/fabricObjects';
 import { useAppCommon } from '@/hooks/common';
@@ -561,7 +561,9 @@ export default {
       this.isCanvasChanged = true;
 
       const thumbnailUrl = window.printCanvas.toDataURL({
-        quality: THUMBNAIL_IMAGE_QUALITY
+        quality: THUMBNAIL_IMAGE_CONFIG.QUALITY,
+        format: THUMBNAIL_IMAGE_CONFIG.FORMAT,
+        multiplier: THUMBNAIL_IMAGE_CONFIG.MULTIPLIER
       });
 
       this.setThumbnail({
@@ -1639,7 +1641,7 @@ export default {
         name: layoutName,
         isFavorites: false,
         previewImageUrl: window.printCanvas.toDataURL({
-          quality: THUMBNAIL_IMAGE_QUALITY
+          quality: THUMBNAIL_IMAGE_CONFIG.QUALITY
         }),
         pageType: LAYOUT_PAGE_TYPE.FULL_PAGE.id
       };
@@ -1652,7 +1654,7 @@ export default {
         layout = {
           ...layout,
           previewImageUrl: window.printCanvas.toDataURL({
-            quality: THUMBNAIL_IMAGE_QUALITY,
+            quality: THUMBNAIL_IMAGE_CONFIG.QUALITY,
             width: width / 2
           }),
           pageType: LAYOUT_PAGE_TYPE.SINGLE_PAGE.id
@@ -1670,7 +1672,7 @@ export default {
         layout = {
           ...layout,
           previewImageUrl: window.printCanvas.toDataURL({
-            quality: THUMBNAIL_IMAGE_QUALITY,
+            quality: THUMBNAIL_IMAGE_CONFIG.QUALITY,
             left: width / 2,
             width: width / 2
           }),

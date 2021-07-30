@@ -85,8 +85,8 @@ import {
 import { cloneDeep, debounce, merge, uniqueId } from 'lodash';
 import {
   MAX_SUPPLEMENTAL_FRAMES,
-  THUMBNAIL_IMAGE_QUALITY,
-  PASTE
+  PASTE,
+  THUMBNAIL_IMAGE_CONFIG
 } from '@/common/constants/config';
 import { useStyle } from '@/hooks/style';
 
@@ -769,7 +769,9 @@ export default {
      */
     getThumbnailUrl: debounce(function() {
       const thumbnailUrl = this.digitalCanvas?.toDataURL({
-        quality: THUMBNAIL_IMAGE_QUALITY
+        quality: THUMBNAIL_IMAGE_CONFIG.QUALITY,
+        format: THUMBNAIL_IMAGE_CONFIG.FORMAT,
+        multiplier: THUMBNAIL_IMAGE_CONFIG.MULTIPLIER
       });
 
       this.setThumbnail({
