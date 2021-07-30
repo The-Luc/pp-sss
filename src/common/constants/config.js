@@ -19,7 +19,7 @@ export const THUMBNAIL_IMAGE_CONFIG = {
   FORMAT: 'jpeg'
 };
 
-export const AUTOSAVE_INTERVAL = 10000; // ~ 60 seconds
+export const AUTOSAVE_INTERVAL = 60000; // ~ 60 seconds
 
 export const MAX_SUPPLEMENTAL_FRAMES = 10;
 

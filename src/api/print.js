@@ -300,7 +300,7 @@ const printService = {
     await new Promise(r =>
       setTimeout(() => {
         r();
-      }, 3000)
+      }, 1500)
     );
 
     return {

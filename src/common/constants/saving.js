@@ -4,4 +4,4 @@ export const SAVE_STATUS = {
   END: 'endSaving'
 };
 
-export const SAVING_DURATION = 1500; // 1.5s, duration the the static phase of saving animation takes to end
+export const SAVING_DURATION = 1000; // 1s, duration the the static phase of saving animation takes to end
