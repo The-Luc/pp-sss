@@ -134,7 +134,8 @@ export default {
       isProcessingPaste: false,
       countPaste: 1,
       rulerSize: { width: '0', height: '0' },
-      isCanvasChanged: false
+      isCanvasChanged: false,
+      autoSaveTimer: null
     };
   },
   computed: {
@@ -205,7 +206,7 @@ export default {
     }
   },
   mounted() {
-    setInterval(this.handleAutosave, AUTOSAVE_INTERVAL);
+    this.autoSaveTimer = setInterval(this.handleAutosave, AUTOSAVE_INTERVAL);
 
     window.addEventListener('copy', this.handleCopy);
     window.addEventListener('paste', this.handlePaste);
@@ -218,7 +219,7 @@ export default {
 
     window.printCanvas = null;
 
-    clearInterval(this.handleAutosave);
+    clearInterval(this.autoSaveTimer);
 
     sessionStorage.removeItem(COPY_OBJECT_KEY);
 

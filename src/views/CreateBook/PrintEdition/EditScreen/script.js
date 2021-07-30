@@ -10,6 +10,7 @@ import {
 import {
   MODAL_TYPES,
   ROLE,
+  SAVE_STATUS,
   SAVING_DURATION,
   TOOL_NAME
 } from '@/common/constants';
@@ -31,6 +32,7 @@ import { isEmpty, isPositiveInteger, getEditionListPath } from '@/common/utils';
 
 import printService from '@/api/print';
 import { useSaveData } from './PageEdition/composables';
+import { useSavingStatus } from '@/hooks/common';
 
 export default {
   components: {
@@ -48,6 +50,7 @@ export default {
     const { currentUser } = useUser();
     const { currentSection } = useGetterPrintSheet();
     const { savePrintEditScreen, getDataEditScreen } = useSaveData();
+    const { updateSavingStatus } = useSavingStatus();
 
     return {
       pageSelected,
@@ -58,7 +61,8 @@ export default {
       currentUser,
       currentSection,
       savePrintEditScreen,
-      getDataEditScreen
+      getDataEditScreen,
+      updateSavingStatus
     };
   },
   computed: {
@@ -172,8 +176,11 @@ export default {
      * Save print canvas and change view
      */
     async onClickSavePrintCanvas() {
+      this.updateSavingStatus({ status: SAVE_STATUS.START });
       const data = this.getDataEditScreen(this.pageSelected.id);
       await this.savePrintEditScreen(data);
+
+      this.updateSavingStatus({ status: SAVE_STATUS.END });
 
       setTimeout(() => {
         this.$router.push(

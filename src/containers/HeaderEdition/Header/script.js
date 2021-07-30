@@ -21,14 +21,11 @@ export default {
   },
   data() {
     return {
-      message: '',
+      message: 'Autosaving...',
       overlay: false
     };
   },
   watch: {
-    savingStatus() {
-      this.message = 'Autosaving...';
-    },
     overlay(val) {
       val &&
         setTimeout(() => {

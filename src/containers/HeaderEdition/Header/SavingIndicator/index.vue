@@ -1,10 +1,12 @@
 <template lang="">
-  <div class="auto-save__container">
-    <div class="auto-save__content">
-      <div class="auto-save__text autosave-text">{{ message }}</div>
-      <div class="auto-save__bar"></div>
+  <div class="auto-save" :class="statusClass">
+    <div class="content">
+      <div class="text autosave-text">{{ message }}</div>
+      <div class="bar"></div>
     </div>
-    <div class="auto-save__text saved-text autosave__content">Saved</div>
+    <div class="content text saved-text">
+      Saved
+    </div>
   </div>
 </template>
 
