@@ -46,12 +46,12 @@ export const getLayoutOptSelectedById = (
  * @param {Number | String} position left or right || FRONT_COVER or BACK_COVER
  * @returns an object have coords changed
  */
-export const changeObjectsCoords = (objects, position) => {
+export const changeObjectsCoords = (objects, position, targetCanvas) => {
   const isLeftPage = position === 'left' || position === SHEET_TYPE.BACK_COVER;
 
   const newObjects = cloneDeep(objects);
-  const { width } = window.printCanvas;
-  const zoom = window.printCanvas.getZoom();
+  const { width } = targetCanvas;
+  const zoom = targetCanvas.getZoom();
   const midCanvas = pxToIn(width / zoom / 2);
 
   newObjects.forEach(object => {

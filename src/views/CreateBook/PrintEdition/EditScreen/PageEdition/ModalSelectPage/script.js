@@ -60,7 +60,8 @@ export default {
     updateSheet(pagePosition) {
       this.layout.objects = changeObjectsCoords(
         this.layout.objects,
-        pagePosition
+        pagePosition,
+        window.printCanvas
       );
 
       const zoom = window.printCanvas.getZoom();

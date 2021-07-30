@@ -170,7 +170,7 @@ export default {
     themeId() {
       return this.pageSelected?.themeId || this.defaultThemeId;
     },
-    isFrontOrBackSheet() {
+    isHalfSheet() {
       return [SHEET_TYPE.FRONT_COVER, SHEET_TYPE.BACK_COVER].includes(
         this.pageSelected?.type
       );
@@ -474,10 +474,11 @@ export default {
     setThemeLayoutForSheet() {
       if (this.layouts.length > 0 && this.tempLayoutIdSelected) {
         // change objects coords if user at FRONT_COVER or BACK_COVER
-        if (this.isFrontOrBackSheet) {
+        if (this.isHalfSheet) {
           this.layoutObjSelected.objects = changeObjectsCoords(
             this.layoutObjSelected.objects,
-            this.pageSelected.type
+            this.pageSelected.type,
+            window.printCanvas
           );
         }
 
@@ -505,7 +506,7 @@ export default {
         const isSinglePage =
           this.layoutObjSelected.pageType === LAYOUT_PAGE_TYPE.SINGLE_PAGE.id;
 
-        if (!this.isDigital && !this.isFrontOrBackSheet && isSinglePage) {
+        if (!this.isDigital && !this.isHalfSheet && isSinglePage) {
           this.onCancel();
           this.toggleModal({
             isOpenModal: true,
