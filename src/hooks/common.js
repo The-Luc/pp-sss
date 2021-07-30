@@ -29,10 +29,14 @@ export const useAppCommon = () => {
   };
 };
 
-export const useGetTriggerAutoSave = () => {
-  const { triggerAutosave } = useGetters({
-    triggerAutosave: APP_GETTERS.TRIGGER_AUTOSAVE
+export const useSavingStatus = () => {
+  const { savingStatus } = useGetters({
+    savingStatus: APP_GETTERS.SAVING_STATUS
   });
 
-  return { triggerAutosave };
+  const { updateSavingStatus } = useMutations({
+    updateSavingStatus: APP_MUTATES.UPDATE_SAVING_STATUS
+  });
+
+  return { savingStatus, updateSavingStatus };
 };

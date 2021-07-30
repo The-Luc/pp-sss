@@ -38,8 +38,7 @@ export const getters = {
     triggerChange.clipArt,
   [APP._GETTERS.TRIGGER_SHAPE_CHANGE]: ({ triggerChange }) =>
     triggerChange.shape,
-  [APP._GETTERS.TRIGGER_AUTOSAVE]: ({ triggerChange }) =>
-    triggerChange.autosave,
+  [APP._GETTERS.SAVING_STATUS]: ({ savingStatus }) => savingStatus,
   [APP._GETTERS.GENERAL_INFO]: ({ generalInfo }) => generalInfo,
   [APP._GETTERS.SAVED_TEXT_STYLES]: ({ savedTextStyles }) => savedTextStyles,
   [APP._GETTERS.SAVED_IMAGE_STYLES]: ({ savedImageStyles }) => savedImageStyles

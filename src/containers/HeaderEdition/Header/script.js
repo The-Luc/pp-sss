@@ -1,15 +1,17 @@
 import { SAVING_DURATION } from '@/common/constants';
 import PpButton from '@/components/Buttons/Button';
-import { useGetTriggerAutoSave } from '@/hooks/common';
+import SavingIndicator from './SavingIndicator';
+import { useSavingStatus } from '@/hooks/common';
 
 export default {
   setup() {
-    const { triggerAutosave } = useGetTriggerAutoSave();
+    const { savingStatus } = useSavingStatus();
 
-    return { triggerAutosave };
+    return { savingStatus };
   },
   components: {
-    PpButton
+    PpButton,
+    SavingIndicator
   },
   props: {
     nameEditor: {
@@ -20,14 +22,12 @@ export default {
   data() {
     return {
       message: '',
-      componentKey: false,
       overlay: false
     };
   },
   watch: {
-    triggerAutosave() {
+    savingStatus() {
       this.message = 'Autosaving...';
-      this.forceRenderComponent();
     },
     overlay(val) {
       val &&
@@ -42,16 +42,8 @@ export default {
      */
     onClickSave() {
       this.message = 'Saving....';
-      this.forceRenderComponent();
       this.overlay = true;
       this.$emit('onClickSave');
-    },
-
-    /**
-     * Trigger to re-render the component
-     */
-    forceRenderComponent() {
-      this.componentKey = !this.componentKey;
     }
   }
 };

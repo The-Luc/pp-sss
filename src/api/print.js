@@ -295,6 +295,13 @@ const printService = {
 
     const response = await Promise.all(saveQueue);
 
+    // TODO: remove when integrate API
+    await new Promise(r =>
+      setTimeout(() => {
+        r();
+      }, 3000)
+    );
+
     return {
       data: response,
       status: 'OK'

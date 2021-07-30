@@ -1,4 +1,4 @@
-import { EDITION } from '@/common/constants';
+import { EDITION, SAVE_STATUS } from '@/common/constants';
 
 export const state = {
   activeEdition: EDITION.NONE,
@@ -55,5 +55,6 @@ export const state = {
   },
   user: { id: null, role: null },
   savedTextStyles: [],
-  savedImageStyles: []
+  savedImageStyles: [],
+  savingStatus: SAVE_STATUS.WAIT
 };

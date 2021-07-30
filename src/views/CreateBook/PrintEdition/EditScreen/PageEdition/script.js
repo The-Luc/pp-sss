@@ -74,7 +74,8 @@ import {
   COVER_TYPE,
   DEFAULT_CLIP_ART,
   DEFAULT_IMAGE,
-  LAYOUT_PAGE_TYPE
+  LAYOUT_PAGE_TYPE,
+  SAVE_STATUS
 } from '@/common/constants';
 import SizeWrapper from '@/components/SizeWrapper';
 import PrintCanvasLines from './PrintCanvasLines';
@@ -88,7 +89,7 @@ import {
   THUMBNAIL_IMAGE_CONFIG
 } from '@/common/constants/config';
 import { createImage } from '@/common/fabricObjects';
-import { useAppCommon } from '@/hooks/common';
+import { useAppCommon, useSavingStatus } from '@/hooks/common';
 import { EVENT_TYPE } from '@/common/constants/eventType';
 import { useStyle } from '@/hooks/style';
 import { useSaveData } from './composables';
@@ -106,6 +107,7 @@ export default {
     const { setInfoBar, zoom } = useInfoBar();
     const { onSaveStyle } = useStyle();
     const { savePrintEditScreen, getDataEditScreen } = useSaveData();
+    const { updateSavingStatus, savingStatus } = useSavingStatus();
 
     return {
       setActiveEdition,
@@ -113,7 +115,9 @@ export default {
       zoom,
       onSaveStyle,
       savePrintEditScreen,
-      getDataEditScreen
+      getDataEditScreen,
+      updateSavingStatus,
+      savingStatus
     };
   },
   data() {
@@ -251,16 +255,19 @@ export default {
       setPropertiesObjectType: MUTATES.SET_PROPERTIES_OBJECT_TYPE,
       setBackgroundProp: PRINT_MUTATES.SET_BACKGROUND_PROP,
       deleteBackground: PRINT_MUTATES.DELETE_BACKGROUND,
-      updateTriggerAutosave: MUTATES.UPDATE_TRIGGER_AUTOSAVE,
       setThumbnail: PRINT_MUTATES.UPDATE_SHEET_THUMBNAIL
     }),
 
-    handleAutosave() {
+    async handleAutosave() {
       if (!this.isCanvasChanged) return;
-      const data = this.getDataEditScreen(this.pageSelected.id);
-      this.savePrintEditScreen(data);
 
-      this.updateTriggerAutosave();
+      this.updateSavingStatus({ status: SAVE_STATUS.START });
+
+      const data = this.getDataEditScreen(this.pageSelected.id);
+      await this.savePrintEditScreen(data);
+
+      this.updateSavingStatus({ status: SAVE_STATUS.END });
+
       this.isCanvasChanged = false;
     },
 
