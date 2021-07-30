@@ -30,7 +30,8 @@ import {
   activeCanvas,
   isEmpty,
   scrollToElement,
-  modifyItems
+  modifyItems,
+  isHalfSheet
 } from '@/common/utils';
 import {
   usePopoverCreationTool,
@@ -171,9 +172,7 @@ export default {
       return this.pageSelected?.themeId || this.defaultThemeId;
     },
     isHalfSheet() {
-      return [SHEET_TYPE.FRONT_COVER, SHEET_TYPE.BACK_COVER].includes(
-        this.pageSelected?.type
-      );
+      return isHalfSheet({ type: this.pageSelected?.type });
     }
   },
   watch: {
