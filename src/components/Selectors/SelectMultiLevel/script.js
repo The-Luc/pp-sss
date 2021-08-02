@@ -52,9 +52,12 @@ export default {
 
       if (isEmpty(item)) return { value: '', sub: '' };
 
-      const sub = item.subItems.find(
-        ({ value }) => value === this.selectedVal.sub
-      );
+      const selectedValue =
+        typeof this.selectedVal.sub === 'object'
+          ? this.selectedVal.sub.value
+          : this.selectedVal.sub;
+
+      const sub = item.subItems.find(({ value }) => value === selectedValue);
 
       return {
         ...item,
@@ -78,11 +81,11 @@ export default {
      * @param  {Object} option option selected
      */
     onChange(data) {
-      const elementDataId = this.getDataIdByValue({ value: data.parent });
+      const elementDataId = this.getDataIdByValue({ value: data.value });
 
       this.$refs[`${elementDataId}`].$el.click();
 
-      this.$emit('change', { value: data.parent, sub: data.sub });
+      this.$emit('change', { value: data.value, sub: data.sub });
     },
     /**
      * Event fire when click on item, stop default click if contain subitem
