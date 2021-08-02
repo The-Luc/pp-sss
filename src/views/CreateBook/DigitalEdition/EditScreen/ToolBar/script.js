@@ -5,7 +5,7 @@ import { useLayoutPrompt, useToolBar } from '@/hooks';
 import {
   isEmpty,
   getRightToolItems,
-  isIntructionTool,
+  isInstructionTool,
   isElementTool,
   isTogglePropertiesMenu,
   getNonElementToolType
@@ -174,7 +174,7 @@ export default {
 
       if (isElementProp && isEmpty(this.selectedObjectType)) return;
 
-      if (isIntructionTool(this.selectedToolName)) {
+      if (isInstructionTool(this.selectedToolName)) {
         this.$root.$emit(EVENT_TYPE.SWITCH_TOOL, '');
         this.setToolNameSelected({ name: '' });
       }
