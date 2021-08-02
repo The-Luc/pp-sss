@@ -13,17 +13,17 @@ export default {
   },
   data() {
     return {
-      statusClass: ''
+      statusCssClass: ''
     };
   },
   watch: {
     status(val) {
-      if (val === SAVE_STATUS.START) this.statusClass = 'start-saving';
+      if (val === SAVE_STATUS.START) this.statusCssClass = 'start-saving';
       if (val === SAVE_STATUS.END) {
-        this.statusClass = 'end-saving';
+        this.statusCssClass = 'end-saving';
 
         setTimeout(() => {
-          this.statusClass = '';
+          this.statusCssClass = '';
         }, 1500);
       }
     }

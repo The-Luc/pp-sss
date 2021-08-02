@@ -1,5 +1,5 @@
 <template lang="">
-  <div class="auto-save" :class="statusClass">
+  <div class="auto-save" :class="statusCssClass">
     <div class="content">
       <div class="text autosave-text">{{ message }}</div>
       <div class="bar"></div>
