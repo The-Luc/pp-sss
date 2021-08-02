@@ -472,10 +472,12 @@ export default {
      */
     setThemeLayoutForSheet() {
       if (this.layouts.length > 0 && this.tempLayoutIdSelected) {
+        const layout = cloneDeep(this.layoutObjSelected);
+
         // change objects coords if user at FRONT_COVER or BACK_COVER
         if (this.isHalfSheet) {
-          this.layoutObjSelected.objects = changeObjectsCoords(
-            this.layoutObjSelected.objects,
+          layout.objects = changeObjectsCoords(
+            layout.objects,
             this.pageSelected.type,
             window.printCanvas
           );
@@ -494,8 +496,8 @@ export default {
                 pageSelected: this.pageSelected,
                 sheetId: this.pageSelected?.id,
                 themeId: this.themeSelected?.id,
-                layout: this.layoutObjSelected,
-                layoutObjSelected: this.layoutObjSelected
+                layout,
+                layoutObjSelected: layout
               }
             }
           });
@@ -516,7 +518,7 @@ export default {
                 numberPageRight: this.pageSelected?.pageRightName,
                 sheetId: this.pageSelected?.id,
                 themeId: this.themeSelected?.id,
-                layout: this.layoutObjSelected
+                layout
               }
             }
           });
@@ -538,7 +540,7 @@ export default {
               type: MODAL_TYPES.OVERRIDE_LAYOUT,
               props: {
                 sheetData: {
-                  layout: cloneDeep(this.layoutObjSelected),
+                  layout,
                   addNewFrame: true
                 }
               }
@@ -557,13 +559,13 @@ export default {
                 sheetData: {
                   sheetId: this.pageSelected?.id,
                   themeId: this.themeSelected?.id,
-                  layout: cloneDeep(this.layoutObjSelected)
+                  layout
                 }
               }
             }
           });
         } else {
-          this.applyLayout();
+          this.applyLayout(layout);
         }
 
         this.onCancel();
@@ -572,11 +574,11 @@ export default {
     /**
      * Save objects to store and draw on canvas
      */
-    applyLayout() {
+    applyLayout(layout) {
       this.updateSheetThemeLayout({
         sheetId: this.pageSelected?.id,
         themeId: this.themeSelected?.id,
-        layout: cloneDeep(this.layoutObjSelected)
+        layout
       });
 
       resetObjects(activeCanvas);

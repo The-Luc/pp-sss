@@ -50,6 +50,9 @@ export const changeObjectsCoords = (objects, position, targetCanvas) => {
   const isLeftPage = position === 'left' || position === SHEET_TYPE.BACK_COVER;
 
   const newObjects = cloneDeep(objects);
+
+  if (isLeftPage) return newObjects;
+
   const { width } = targetCanvas;
   const zoom = targetCanvas.getZoom();
   const midCanvas = pxToIn(width / zoom / 2);
@@ -57,19 +60,7 @@ export const changeObjectsCoords = (objects, position, targetCanvas) => {
   newObjects.forEach(object => {
     if (object.type === OBJECT_TYPE.BACKGROUND) return;
 
-    const left = object.coord.x;
-
-    const isAddToLeft = !isLeftPage && left < midCanvas;
-
-    const isRemoveFromLeft = isLeftPage && left > midCanvas;
-
-    const extraValue = isAddToLeft
-      ? midCanvas
-      : isRemoveFromLeft
-      ? -midCanvas
-      : 0;
-
-    object.coord.x = left + extraValue;
+    object.coord.x += midCanvas;
   });
 
   return newObjects;
