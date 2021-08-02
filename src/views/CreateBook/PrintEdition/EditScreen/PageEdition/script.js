@@ -89,10 +89,11 @@ import {
   THUMBNAIL_IMAGE_CONFIG
 } from '@/common/constants/config';
 import { createImage } from '@/common/fabricObjects';
-import { useAppCommon, useSavingStatus } from '@/hooks/common';
+import { useAppCommon } from '@/hooks/common';
 import { EVENT_TYPE } from '@/common/constants/eventType';
 import { useStyle } from '@/hooks/style';
 import { useSaveData } from './composables';
+import { useSavingStatus } from '@/views/CreateBook/composables';
 
 export default {
   components: {

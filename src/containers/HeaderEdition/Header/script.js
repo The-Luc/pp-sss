@@ -1,7 +1,7 @@
 import { SAVING_DURATION } from '@/common/constants';
 import PpButton from '@/components/Buttons/Button';
+import { useSavingStatus } from '@/views/CreateBook/composables';
 import SavingIndicator from './SavingIndicator';
-import { useSavingStatus } from '@/hooks/common';
 
 export default {
   setup() {

@@ -32,7 +32,7 @@ import { isEmpty, isPositiveInteger, getEditionListPath } from '@/common/utils';
 
 import printService from '@/api/print';
 import { useSaveData } from './PageEdition/composables';
-import { useSavingStatus } from '@/hooks/common';
+import { useSavingStatus } from '../../composables';
 
 export default {
   components: {
