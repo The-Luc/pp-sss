@@ -176,7 +176,7 @@ export default {
         DIGITAL_MUTATES.UPDATE_TRIGGER_BACKGROUND_CHANGE,
       deleteObjects: DIGITAL_MUTATES.DELETE_OBJECTS,
       updateTriggerShapeChange: MUTATES.UPDATE_TRIGGER_SHAPE_CHANGE,
-      setThumbnail: DIGITAL_MUTATES.UPDATE_SHEET_THUMBNAIL,
+      setThumbnail: DIGITAL_MUTATES.UPDATE_FRAME_THUMBNAIL,
       updateTriggerClipArtChange: MUTATES.UPDATE_TRIGGER_CLIPART_CHANGE,
       reorderObjectIds: DIGITAL_MUTATES.REORDER_OBJECT_IDS,
       toggleActiveObjects: MUTATES.TOGGLE_ACTIVE_OBJECTS,
@@ -481,6 +481,7 @@ export default {
      */
     onObjectAdded() {
       console.log('object:added');
+      this.getThumbnailUrl();
     },
 
     /**
@@ -488,6 +489,7 @@ export default {
      */
     onObjectModified() {
       console.log('object:modified');
+      this.getThumbnailUrl();
     },
 
     /**
@@ -495,6 +497,7 @@ export default {
      */
     onObjectRemoved() {
       this.setCurrentObject(null);
+      this.getThumbnailUrl();
     },
 
     /**
@@ -774,8 +777,10 @@ export default {
         multiplier: THUMBNAIL_IMAGE_CONFIG.MULTIPLIER
       });
 
+      console.log('set frame');
+      console.log(this.currentFrameId);
       this.setThumbnail({
-        sheetId: this.pageSelected?.id,
+        frameId: this.currentFrameId,
         thumbnailUrl
       });
     }, 250),

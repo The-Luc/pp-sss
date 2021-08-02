@@ -125,8 +125,8 @@ export const mutations = {
     const currentSheet = state.sheets[sheetId];
     currentSheet.isVisited = true;
   },
-  [DIGITAL._MUTATES.UPDATE_SHEET_THUMBNAIL](state, { thumbnailUrl, sheetId }) {
-    state.sheets[sheetId].thumbnailUrl = thumbnailUrl;
+  [DIGITAL._MUTATES.UPDATE_FRAME_THUMBNAIL](state, { thumbnailUrl, frameId }) {
+    state.frames[frameId].previewImageUrl = thumbnailUrl;
   },
   [DIGITAL._MUTATES.REORDER_OBJECT_IDS](state, { oldIndex, newIndex }) {
     const [id] = state.objectIds.splice(oldIndex, 1);
