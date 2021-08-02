@@ -30,7 +30,8 @@ import {
   activeCanvas,
   isEmpty,
   scrollToElement,
-  modifyItems
+  modifyItems,
+  isHalfSheet
 } from '@/common/utils';
 import {
   usePopoverCreationTool,
@@ -56,6 +57,7 @@ import { loadDigitalThemes, loadPrintThemes } from '@/api/themes';
 import { DIGITAL_LAYOUT_TYPES as LAYOUT_TYPES } from '@/mock/layoutTypes';
 
 import { cloneDeep } from 'lodash';
+import { changeObjectsCoords } from '@/common/utils/layout';
 
 export default {
   components: {
@@ -168,6 +170,9 @@ export default {
     },
     themeId() {
       return this.pageSelected?.themeId || this.defaultThemeId;
+    },
+    isHalfSheet() {
+      return isHalfSheet({ type: this.pageSelected?.type });
     }
   },
   watch: {
@@ -467,6 +472,17 @@ export default {
      */
     setThemeLayoutForSheet() {
       if (this.layouts.length > 0 && this.tempLayoutIdSelected) {
+        const layout = cloneDeep(this.layoutObjSelected);
+
+        // change objects coords if user at FRONT_COVER or BACK_COVER
+        if (this.isHalfSheet) {
+          layout.objects = changeObjectsCoords(
+            layout.objects,
+            this.pageSelected.type,
+            window.printCanvas
+          );
+        }
+
         if (
           !this.isDigital &&
           (this.totalBackground || !isEmpty(this.printObject))
@@ -480,8 +496,8 @@ export default {
                 pageSelected: this.pageSelected,
                 sheetId: this.pageSelected?.id,
                 themeId: this.themeSelected?.id,
-                layout: this.layoutObjSelected,
-                layoutObjSelected: this.layoutObjSelected
+                layout,
+                layoutObjSelected: layout
               }
             }
           });
@@ -491,12 +507,7 @@ export default {
         const isSinglePage =
           this.layoutObjSelected.pageType === LAYOUT_PAGE_TYPE.SINGLE_PAGE.id;
 
-        const isFrontOrBackSheet = [
-          SHEET_TYPE.FRONT_COVER,
-          SHEET_TYPE.BACK_COVER
-        ].includes(this.pageSelected?.type);
-
-        if (!this.isDigital && !isFrontOrBackSheet && isSinglePage) {
+        if (!this.isDigital && !this.isHalfSheet && isSinglePage) {
           this.onCancel();
           this.toggleModal({
             isOpenModal: true,
@@ -507,7 +518,7 @@ export default {
                 numberPageRight: this.pageSelected?.pageRightName,
                 sheetId: this.pageSelected?.id,
                 themeId: this.themeSelected?.id,
-                layout: this.layoutObjSelected
+                layout
               }
             }
           });
@@ -529,7 +540,7 @@ export default {
               type: MODAL_TYPES.OVERRIDE_LAYOUT,
               props: {
                 sheetData: {
-                  layout: cloneDeep(this.layoutObjSelected),
+                  layout,
                   addNewFrame: true
                 }
               }
@@ -548,13 +559,13 @@ export default {
                 sheetData: {
                   sheetId: this.pageSelected?.id,
                   themeId: this.themeSelected?.id,
-                  layout: cloneDeep(this.layoutObjSelected)
+                  layout
                 }
               }
             }
           });
         } else {
-          this.applyLayout();
+          this.applyLayout(layout);
         }
 
         this.onCancel();
@@ -563,12 +574,11 @@ export default {
     /**
      * Save objects to store and draw on canvas
      */
-    applyLayout() {
-      // save id and objects of the first frame to the store
+    applyLayout(layout) {
       this.updateSheetThemeLayout({
         sheetId: this.pageSelected?.id,
         themeId: this.themeSelected?.id,
-        layout: cloneDeep(this.layoutObjSelected)
+        layout
       });
 
       resetObjects(activeCanvas);

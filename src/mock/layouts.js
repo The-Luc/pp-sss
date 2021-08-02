@@ -186,8 +186,8 @@ const textSinglePage1 = {
     height: 5
   },
   coord: {
-    x: 12,
-    y: 4,
+    x: 2.5,
+    y: 2,
     rotation: 0 // degree
   },
   styleId: 'default',
