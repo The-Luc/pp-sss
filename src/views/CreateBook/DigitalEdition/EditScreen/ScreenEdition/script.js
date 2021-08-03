@@ -257,6 +257,10 @@ export default {
         {
           name: EVENT_TYPE.SAVE_STYLE,
           handler: this.onSaveStyle
+        },
+        {
+          name: EVENT_TYPE.DELETE_OBJECTS,
+          handler: this.deleteObject
         }
       ];
 
@@ -587,7 +591,7 @@ export default {
       const key = event.keyCode || event.charCode;
 
       if (event.target === document.body && key == 46) {
-        deleteSelectedObjects(this.digitalCanvas);
+        this.deleteObject();
       }
     },
 
@@ -1623,6 +1627,15 @@ export default {
       });
 
       return image;
+    },
+    /**
+     * Delete objects on canvas
+     */
+    deleteObject() {
+      const ids = this.digitalCanvas.getActiveObjects().map(o => o.id);
+      this.deleteObjects({ ids });
+
+      deleteSelectedObjects(this.digitalCanvas);
     }
   },
   watch: {
