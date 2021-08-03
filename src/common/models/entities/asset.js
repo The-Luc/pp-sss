@@ -1,5 +1,5 @@
 import { BaseElementEntity } from './elements';
-import { OBJECT_TYPE } from '@/common/constants/objectType';
+import { ASSET_TYPE } from '@/common/constants/assetType';
 export class AssetEntity extends BaseElementEntity {
   type = '';
   mediaFileName = '';
@@ -14,7 +14,7 @@ export class AssetEntity extends BaseElementEntity {
 }
 
 export class PictureAssetEntity extends AssetEntity {
-  type = OBJECT_TYPE.PICTURE;
+  type = ASSET_TYPE.PICTURE;
   originalHeight = 0;
   originalWidth = 0;
   thumbUrl = '';

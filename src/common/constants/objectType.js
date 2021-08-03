@@ -4,8 +4,7 @@ export const OBJECT_TYPE = {
   BACKGROUND: 'BackgroundObject',
   CLIP_ART: 'ClipArtObject',
   SHAPE: 'ShapeObject',
-  RECT: 'RectObject',
-  PICTURE: 'Picture'
+  RECT: 'RectObject'
 };
 
 export const FABRIC_OBJECT_TYPE = {
