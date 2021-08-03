@@ -3,7 +3,8 @@ import { isEmpty } from '@/common/utils';
 import {
   INSTRUCTION_TOOLS,
   NON_ELEMENT_PROPERTIES_TOOLS,
-  PROPERTIES_TOOLS
+  PROPERTIES_TOOLS,
+  ONE_CLICK_TOOLS
 } from '@/common/constants';
 
 /**
@@ -19,13 +20,13 @@ export const getRightToolItems = rightTool => {
 };
 
 /**
- * Check currently an intruction tool is selected
+ * Check tool is an instruction tool
  *
- * @param   {String}  currentToolName current name of tool
- * @returns {Boolean}                 is current tool an intruction tool
+ * @param   {String}  toolName  name of tool
+ * @returns {Boolean}           is tool an instruction tool
  */
-export const isIntructionTool = currentToolName => {
-  return INSTRUCTION_TOOLS.includes(currentToolName);
+export const isInstructionTool = toolName => {
+  return INSTRUCTION_TOOLS.includes(toolName);
 };
 
 /**
@@ -124,4 +125,14 @@ export const isToolActivated = (
   const isPropertiesActive = isPropertiesSelected && isPropertiesMenu;
 
   return isPropertiesActive ? isMenuOpen : toolName === selectedToolName;
+};
+
+/**
+ * Check tool is an one click tool (click but not selected)
+ *
+ * @param   {String}  toolName  name of tool
+ * @returns {Boolean}           is tool an one click tool
+ */
+export const isOneClickTool = toolName => {
+  return ONE_CLICK_TOOLS.includes(toolName);
 };

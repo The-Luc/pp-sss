@@ -1,6 +1,8 @@
 import { ICON_LOCAL } from '@/common/constants';
+import { isEmpty } from '@/common/utils';
 
 export default {
+  name: 'SubLevel',
   props: {
     items: {
       type: Array,
@@ -23,7 +25,7 @@ export default {
       default: ICON_LOCAL.ACTIVE_MENU
     },
     selectedVal: {
-      type: [String, Number],
+      type: [String, Number, Object],
       default: ''
     }
   },
@@ -34,7 +36,10 @@ export default {
      * @param  {Object} option option selected
      */
     onSubClick(option) {
-      this.$emit('change', { parent: this.parentValue, sub: option });
+      if (!isEmpty(option.subItems)) {
+        return;
+      }
+      this.$emit('change', { value: this.parentValue, sub: option });
     },
     /**
      * Event fire when click on container, for stopping close selector
@@ -51,7 +56,9 @@ export default {
      * @returns {Boolean}       item is selected or not
      */
     isSelected(item) {
-      return item.value === this.selectedVal;
+      return typeof this.selectedVal === 'object'
+        ? item.value === this.selectedVal.value
+        : item.value === this.selectedVal;
     },
     /**
      * Get disabled css class name
@@ -62,8 +69,20 @@ export default {
      */
     getCustomCssClass({ isDisabled, value }) {
       if (isDisabled) return 'disabled';
-
-      return value === this.selectedVal ? 'v-list-item--active' : '';
+      const subValue =
+        typeof this.selectedVal === 'object'
+          ? this.selectedVal.value
+          : this.selectedVal;
+      return value === subValue ? 'v-list-item--active' : '';
+    },
+    /**
+     * Get sub level 2 value of selected item
+     *
+     * @param   {Object}  item  current item
+     * @returns {String}        sub value
+     */
+    getSelectedSub(item) {
+      return item.value === this.selectedVal.value ? this.selectedVal.sub : '';
     }
   }
 };

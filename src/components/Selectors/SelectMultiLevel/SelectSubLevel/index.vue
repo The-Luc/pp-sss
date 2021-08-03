@@ -23,6 +23,13 @@
           </v-row>
         </v-list-item-title>
       </v-list-item-content>
+      <SubLevel
+        v-if="item.subItems && item.subItems.length !== 0"
+        :items="item.subItems"
+        :parent-value="item.value"
+        :selected-val="getSelectedSub(item)"
+        @change="onSubClick"
+      />
     </v-list-item>
   </v-list>
 </template>

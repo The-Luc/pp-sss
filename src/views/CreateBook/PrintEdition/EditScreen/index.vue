@@ -8,6 +8,7 @@
       @zoom="onZoom"
     />
     <SidebarSection />
+    <PhotoSidebar />
     <PageEdition />
   </div>
 </template>
