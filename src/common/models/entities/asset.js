@@ -1,5 +1,5 @@
 import { BaseElementEntity } from './elements';
-import { ASSET_TYPE } from '@/common/constants/assetType';
+import { ASSET_TYPE } from '@/common/constants';
 export class AssetEntity extends BaseElementEntity {
   type = '';
   mediaFileName = '';
