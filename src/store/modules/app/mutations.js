@@ -85,8 +85,8 @@ export const mutations = {
   [APP._MUTATES.SET_SAVED_IMAGE_STYLES](state, { savedImageStyles }) {
     state.savedImageStyles = savedImageStyles;
   },
-  [APP._MUTATES.UPDATE_TRIGGER_AUTOSAVE](state) {
-    state.triggerChange.autosave = !state.triggerChange.autosave;
+  [APP._MUTATES.UPDATE_SAVING_STATUS](state, { status }) {
+    state.savingStatus = status;
   },
   [APP._MUTATES.TOGGLE_PHOTO_SIDEBAR](state) {
     state.isOpenPhotoSidebar = !state.isOpenPhotoSidebar;

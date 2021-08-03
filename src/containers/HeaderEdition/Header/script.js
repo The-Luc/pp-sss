@@ -1,15 +1,17 @@
 import { SAVING_DURATION } from '@/common/constants';
 import PpButton from '@/components/Buttons/Button';
-import { useGetTriggerAutoSave } from '@/hooks/common';
+import { useSavingStatus } from '@/views/CreateBook/composables';
+import SavingIndicator from './SavingIndicator';
 
 export default {
   setup() {
-    const { triggerAutosave } = useGetTriggerAutoSave();
+    const { savingStatus } = useSavingStatus();
 
-    return { triggerAutosave };
+    return { savingStatus };
   },
   components: {
-    PpButton
+    PpButton,
+    SavingIndicator
   },
   props: {
     nameEditor: {
@@ -19,16 +21,11 @@ export default {
   },
   data() {
     return {
-      message: '',
-      componentKey: false,
+      message: 'Autosaving...',
       overlay: false
     };
   },
   watch: {
-    triggerAutosave() {
-      this.message = 'Autosaving...';
-      this.forceRenderComponent();
-    },
     overlay(val) {
       val &&
         setTimeout(() => {
@@ -42,16 +39,8 @@ export default {
      */
     onClickSave() {
       this.message = 'Saving....';
-      this.forceRenderComponent();
       this.overlay = true;
       this.$emit('onClickSave');
-    },
-
-    /**
-     * Trigger to re-render the component
-     */
-    forceRenderComponent() {
-      this.componentKey = !this.componentKey;
     }
   }
 };

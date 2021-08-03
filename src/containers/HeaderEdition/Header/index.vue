@@ -5,17 +5,7 @@
       <PpButton type="btn" class="btn-save" @click="onClickSave">
         SAVE & EXIT
       </PpButton>
-      <div
-        v-if="Boolean(message)"
-        :key="componentKey"
-        class="auto-save__container"
-      >
-        <div class="auto-save__content">
-          <div class="auto-save__text autosave-text">{{ message }}</div>
-          <div class="auto-save__bar"></div>
-        </div>
-        <div class="auto-save__text saved-text autosave__content">Saved</div>
-      </div>
+      <SavingIndicator :status="savingStatus" :message="message" />
       <span>{{ nameEditor }}</span>
     </div>
   </div>
