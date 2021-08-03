@@ -18,6 +18,7 @@ import Header from '@/containers/HeaderEdition/Header';
 import FeedbackBar from '@/containers/HeaderEdition/FeedbackBar';
 import SidebarSection from './SidebarSection';
 import PageEdition from './PageEdition';
+import PhotoSidebar from '@/components/PhotoSidebar';
 import {
   useLayoutPrompt,
   usePopoverCreationTool,
@@ -38,7 +39,8 @@ export default {
     Header,
     FeedbackBar,
     PageEdition,
-    SidebarSection
+    SidebarSection,
+    PhotoSidebar
   },
   setup() {
     const { pageSelected, updateVisited } = useLayoutPrompt(EDITION.PRINT);
