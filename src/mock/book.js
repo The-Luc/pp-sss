@@ -4,6 +4,11 @@ import {
   PAGE_NUMBER_POSITION,
   POSITION_FIXED
 } from '@/common/constants';
+import {
+  BookDetailEntity,
+  SectionEntity,
+  SheetEntity
+} from '@/common/models/entities';
 
 const spreadInfo = {
   leftTitle: '', // spread title use left for link
@@ -30,7 +35,7 @@ const defaultDigitalLayout = {
   themeId: ''
 };
 
-const book = {
+const book = new BookDetailEntity({
   id: 1719,
   communityId: 28,
   title: 'Year Book 2021',
@@ -67,7 +72,7 @@ const book = {
     themeId: null
   },
   sections: [
-    {
+    new SectionEntity({
       id: 1,
       name: 'Cover',
       draggable: false,
@@ -77,7 +82,7 @@ const book = {
       order: 0,
       assigneeId: 1,
       sheets: [
-        {
+        new SheetEntity({
           id: 1,
           type: 0, // enum
           draggable: false,
@@ -96,10 +101,10 @@ const book = {
             themeId: null,
             layout: defaultDigitalLayout
           }
-        }
+        })
       ]
-    },
-    {
+    }),
+    new SectionEntity({
       id: 2,
       name: 'Letter',
       draggable: false,
@@ -109,7 +114,7 @@ const book = {
       order: 1,
       assigneeId: 1,
       sheets: [
-        {
+        new SheetEntity({
           id: 2,
           type: 1,
           draggable: false,
@@ -129,8 +134,8 @@ const book = {
             themeId: null,
             layout: defaultDigitalLayout
           }
-        },
-        {
+        }),
+        new SheetEntity({
           id: 3,
           type: 3,
           draggable: true,
@@ -150,8 +155,8 @@ const book = {
             themeId: null,
             layout: defaultDigitalLayout
           }
-        },
-        {
+        }),
+        new SheetEntity({
           id: 4,
           type: 3,
           draggable: true,
@@ -171,8 +176,8 @@ const book = {
             themeId: null,
             layout: defaultDigitalLayout
           }
-        },
-        {
+        }),
+        new SheetEntity({
           id: 5,
           type: 3,
           draggable: true,
@@ -192,8 +197,8 @@ const book = {
             themeId: null,
             layout: defaultDigitalLayout
           }
-        },
-        {
+        }),
+        new SheetEntity({
           id: 20,
           type: 3,
           draggable: true,
@@ -213,10 +218,10 @@ const book = {
             themeId: null,
             layout: defaultDigitalLayout
           }
-        }
+        })
       ]
-    },
-    {
+    }),
+    new SectionEntity({
       id: 3,
       name: 'Admin & Staff',
       draggable: true,
@@ -226,7 +231,7 @@ const book = {
       order: 2,
       assigneeId: 1,
       sheets: [
-        {
+        new SheetEntity({
           id: 6,
           type: 3,
           draggable: true,
@@ -246,8 +251,8 @@ const book = {
             themeId: null,
             layout: defaultDigitalLayout
           }
-        },
-        {
+        }),
+        new SheetEntity({
           id: 7,
           type: 3,
           draggable: true,
@@ -267,8 +272,8 @@ const book = {
             themeId: null,
             layout: defaultDigitalLayout
           }
-        },
-        {
+        }),
+        new SheetEntity({
           id: 8,
           type: 3,
           draggable: true,
@@ -288,10 +293,10 @@ const book = {
             themeId: null,
             layout: defaultDigitalLayout
           }
-        }
+        })
       ]
-    },
-    {
+    }),
+    new SectionEntity({
       id: 4,
       draggable: true,
       name: 'Student of the best class of Year 2019',
@@ -301,7 +306,7 @@ const book = {
       order: 3,
       assigneeId: 893,
       sheets: [
-        {
+        new SheetEntity({
           id: 9,
           type: 3,
           draggable: true,
@@ -321,11 +326,11 @@ const book = {
             themeId: null,
             layout: defaultDigitalLayout
           }
-        }
+        })
       ]
-    },
-    {
-      id: 55,
+    }),
+    new SectionEntity({
+      id: 5,
       draggable: false,
       name: 'Signatures',
       color: '#0b49f5',
@@ -334,7 +339,7 @@ const book = {
       order: 4,
       assigneeId: 893,
       sheets: [
-        {
+        new SheetEntity({
           id: 11,
           type: 2,
           draggable: false,
@@ -354,11 +359,11 @@ const book = {
             themeId: null,
             layout: defaultDigitalLayout
           }
-        }
+        })
       ]
-    }
+    })
   ]
-};
+});
 
 export const modifyBookData = ({ coverType, maxPage }) => {
   book.coverOption =

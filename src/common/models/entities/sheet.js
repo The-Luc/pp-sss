@@ -1,5 +1,4 @@
-import { BaseObject } from '../base';
-import { BaseElementEntity } from './elements';
+import { BaseEntity, BaseObject } from '../base';
 import { SHEET_TYPE } from '@/common/constants';
 
 export class SpreadInfo extends BaseObject {
@@ -20,7 +19,6 @@ export class SpreadInfo extends BaseObject {
 export class SheetEditionData extends BaseObject {
   layoutId = null;
   thumbnailUrl = null;
-  link = '';
   isVisited = false;
   media = []; // media are store separately for print & digital. Mapping is handled by API.
 
@@ -34,6 +32,7 @@ export class SheetEditionData extends BaseObject {
 }
 
 export class SheetPrintData extends SheetEditionData {
+  link = '';
   spreadInfo = new SpreadInfo();
   objects = []; // on Print, objects is stored in sheet.printData.objects
 
@@ -47,7 +46,7 @@ export class SheetPrintData extends SheetEditionData {
 }
 
 export class SheetDigitalData extends SheetEditionData {
-  frames = [];// on Digital, objects is stored in sheet.digitalData.frames[n].objects
+  frames = []; // on Digital, objects is stored in sheet.digitalData.frames[n].objects
   /**
    * @param {SheetDigitalData} props
    */
@@ -57,7 +56,7 @@ export class SheetDigitalData extends SheetEditionData {
   }
 }
 
-export class SheetEntity extends BaseElementEntity {
+export class SheetEntity extends BaseEntity {
   type = SHEET_TYPE.NORMAL;
   sectionId = '';
   layoutId = '';
