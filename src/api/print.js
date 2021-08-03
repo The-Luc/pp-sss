@@ -139,9 +139,9 @@ const printService = {
     // TODO: Remove when integrate API
     bookId;
 
-    const objects = await bookService.getObjectBySheet(sectionId, sheetId);
+    const { objects } = await bookService.getBookPrint(bookId);
 
-    const data = objects || [];
+    const data = objects[sheetId] || [];
 
     return isEmpty(data) ? getErrorWithMessages([]) : getSuccessWithData(data);
   },
@@ -177,8 +177,10 @@ const printService = {
     return new Promise(resolve => {
       if (!sheetId) return;
 
-      const sheet = window.data.sheets.find(s => s.id === sheetId);
-      sheet._set(props);
+      const sheets = getSheetsFromStorage();
+
+      const sheet = sheets[sheetId];
+      sheet.printData._set(props);
 
       resolve(sheet);
     });
@@ -232,9 +234,11 @@ const printService = {
    */
   saveSpreadInfo: (sheetId, spreadInfo) => {
     return new Promise(resolve => {
-      const sheet = window.data.sheets.find(s => s.id === sheetId);
+      const sheets = getSheetsFromStorage();
 
-      sheet.spreadInfo = { ...sheet.spreadInfo, ...spreadInfo };
+      const sheet = sheets[sheetId];
+
+      sheet.printData.spreadInfo = { ...sheet.spreadInfo, ...spreadInfo };
       resolve();
     });
   },
@@ -255,8 +259,11 @@ const printService = {
         resolve();
         return;
       }
+      const sheets = getSheetsFromStorage();
 
-      window.data.objects[sheetId] = data;
+      const sheet = sheets[sheetId];
+
+      sheet.printData.objects = data;
 
       resolve(data);
     });
@@ -309,14 +316,23 @@ const printService = {
     };
   },
   saveMainScreen: async data => {
-    const sheets = window.data.sheets;
+    const sheets = getSheetsFromStorage();
 
-    sheets.forEach(sheet => {
-      sheet._set(data[sheet.id]);
-    });
+    Object.values(sheets).forEach(s => s._set(data[s.id]));
 
     return;
   }
 };
 
 export default printService;
+
+// TODO: Remove when integrate API
+// Temporary helper function
+function getSheetsFromStorage() {
+  const sheets = {};
+  window.data.book.sections.forEach(section => {
+    section.sheets.forEach(sheet => (sheets[sheet.id] = sheet));
+  });
+
+  return sheets;
+}
