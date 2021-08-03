@@ -7,7 +7,7 @@
     max-width="1162"
   >
     <div class="modal-body">
-      <v-tabs fixed-tabs dark>
+      <v-tabs fixed-tabs dark @change="onChangeTab">
         <v-tabs-slider color="transparent"></v-tabs-slider>
         <v-tab href="#smart-box">
           <i class="light"></i>
@@ -22,7 +22,7 @@
           <div>Photos</div>
         </v-tab>
         <v-tab-item value="photos">
-          Photos
+          <Photos :images-selected="imagesSelected" @change="onSelectedImage" />
         </v-tab-item>
 
         <v-tab href="#search">
@@ -42,7 +42,11 @@
         </v-tab-item>
       </v-tabs>
     </div>
-    <Footer @select="onSelect" @cancel="onCancel" />
+    <Footer
+      :is-disabled="imagesSelected.length === 0"
+      @select="onSelect"
+      @cancel="onCancel"
+    />
   </v-dialog>
 </template>
 
