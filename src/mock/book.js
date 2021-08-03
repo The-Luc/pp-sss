@@ -9,6 +9,7 @@ import {
   SectionEntity,
   SheetEntity
 } from '@/common/models/entities';
+import { uniqueId } from 'lodash';
 
 const spreadInfo = {
   leftTitle: '', // spread title use left for link
@@ -73,7 +74,7 @@ const book = new BookDetailEntity({
   },
   sections: [
     new SectionEntity({
-      id: 1,
+      id: +uniqueId(),
       name: 'Cover',
       draggable: false,
       color: '#fcd726',
@@ -83,7 +84,7 @@ const book = new BookDetailEntity({
       assigneeId: 1,
       sheets: [
         new SheetEntity({
-          id: 1,
+          id: +uniqueId(),
           type: 0, // enum
           draggable: false,
           isVisited: false,
@@ -105,7 +106,7 @@ const book = new BookDetailEntity({
       ]
     }),
     new SectionEntity({
-      id: 2,
+      id: +uniqueId(),
       name: 'Letter',
       draggable: false,
       color: '#a4ca52',
@@ -115,7 +116,7 @@ const book = new BookDetailEntity({
       assigneeId: 1,
       sheets: [
         new SheetEntity({
-          id: 2,
+          id: +uniqueId(),
           type: 1,
           draggable: false,
           isVisited: false,
@@ -136,7 +137,7 @@ const book = new BookDetailEntity({
           }
         }),
         new SheetEntity({
-          id: 3,
+          id: +uniqueId(),
           type: 3,
           draggable: true,
           isVisited: false,
@@ -157,7 +158,7 @@ const book = new BookDetailEntity({
           }
         }),
         new SheetEntity({
-          id: 4,
+          id: +uniqueId(),
           type: 3,
           draggable: true,
           isVisited: false,
@@ -178,7 +179,7 @@ const book = new BookDetailEntity({
           }
         }),
         new SheetEntity({
-          id: 5,
+          id: +uniqueId(),
           type: 3,
           draggable: true,
           isVisited: false,
@@ -199,7 +200,7 @@ const book = new BookDetailEntity({
           }
         }),
         new SheetEntity({
-          id: 20,
+          id: +uniqueId(),
           type: 3,
           draggable: true,
           isVisited: false,
@@ -222,7 +223,7 @@ const book = new BookDetailEntity({
       ]
     }),
     new SectionEntity({
-      id: 3,
+      id: +uniqueId(),
       name: 'Admin & Staff',
       draggable: true,
       color: '#bc72c2',
@@ -232,7 +233,7 @@ const book = new BookDetailEntity({
       assigneeId: 1,
       sheets: [
         new SheetEntity({
-          id: 6,
+          id: +uniqueId(),
           type: 3,
           draggable: true,
           isVisited: false,
@@ -253,7 +254,7 @@ const book = new BookDetailEntity({
           }
         }),
         new SheetEntity({
-          id: 7,
+          id: +uniqueId(),
           type: 3,
           draggable: true,
           isVisited: false,
@@ -274,7 +275,7 @@ const book = new BookDetailEntity({
           }
         }),
         new SheetEntity({
-          id: 8,
+          id: +uniqueId(),
           type: 3,
           draggable: true,
           isVisited: false,
@@ -297,7 +298,7 @@ const book = new BookDetailEntity({
       ]
     }),
     new SectionEntity({
-      id: 4,
+      id: +uniqueId(),
       draggable: true,
       name: 'Student of the best class of Year 2019',
       color: 'orange',
@@ -307,7 +308,7 @@ const book = new BookDetailEntity({
       assigneeId: 893,
       sheets: [
         new SheetEntity({
-          id: 9,
+          id: +uniqueId(),
           type: 3,
           draggable: true,
           isVisited: false,
@@ -330,7 +331,7 @@ const book = new BookDetailEntity({
       ]
     }),
     new SectionEntity({
-      id: 5,
+      id: +uniqueId(),
       draggable: false,
       name: 'Signatures',
       color: '#0b49f5',
@@ -340,7 +341,7 @@ const book = new BookDetailEntity({
       assigneeId: 893,
       sheets: [
         new SheetEntity({
-          id: 11,
+          id: +uniqueId(),
           type: 2,
           draggable: false,
           isVisited: false,
