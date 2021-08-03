@@ -4,9 +4,9 @@ import Modal from '@/containers/Modal';
 import { useDrawLayout, useGetLayouts } from '@/hooks';
 import { MUTATES as APP_MUTATES } from '@/store/modules/app/const';
 import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
-import { EDITION, OBJECT_TYPE } from '@/common/constants';
+import { EDITION } from '@/common/constants';
 import { pxToIn, resetObjects } from '@/common/utils';
-import { cloneDeep } from 'lodash';
+import { changeObjectsCoords } from '@/common/utils/layout';
 
 export default {
   setup() {
@@ -58,9 +58,10 @@ export default {
      * @param  {String} pagePosition Left or right layout
      */
     updateSheet(pagePosition) {
-      this.layout.objects = this.changeObjectsCoords(
+      this.layout.objects = changeObjectsCoords(
         this.layout.objects,
-        pagePosition
+        pagePosition,
+        window.printCanvas
       );
 
       const zoom = window.printCanvas.getZoom();
@@ -75,38 +76,6 @@ export default {
       });
     },
 
-    /**
-     *  to change objects coords to fit the side that use what to render them
-     * @param {Object} objects that will be change their coord to place in the right side (left/right)
-     * @param {*} position left or right
-     * @returns an object have coords changed
-     */
-    changeObjectsCoords(objects, position) {
-      const newObjects = cloneDeep(objects);
-      const { width } = window.printCanvas;
-      const zoom = window.printCanvas.getZoom();
-      const midCanvas = pxToIn(width / zoom / 2);
-
-      newObjects.forEach(object => {
-        if (object.type === OBJECT_TYPE.BACKGROUND) return;
-
-        const left = object.coord.x;
-
-        const isAddToLeft = position === 'right' && left < midCanvas;
-
-        const isRemoveFromLeft = position === 'left' && left > midCanvas;
-
-        const extraValue = isAddToLeft
-          ? midCanvas
-          : isRemoveFromLeft
-          ? -midCanvas
-          : 0;
-
-        object.coord.x = left + extraValue;
-      });
-
-      return newObjects;
-    },
     /**
      * Get sheet's layout and draw
      */

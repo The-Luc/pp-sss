@@ -85,8 +85,8 @@ import {
 import { cloneDeep, debounce, merge, uniqueId } from 'lodash';
 import {
   MAX_SUPPLEMENTAL_FRAMES,
-  THUMBNAIL_IMAGE_QUALITY,
-  PASTE
+  PASTE,
+  THUMBNAIL_IMAGE_CONFIG
 } from '@/common/constants/config';
 import { useStyle } from '@/hooks/style';
 
@@ -307,6 +307,13 @@ export default {
         }
       ];
 
+      const imageEvents = [
+        {
+          name: EVENT_TYPE.CHANGE_IMAGE_PROPERTIES,
+          handler: this.changeImageProperties
+        }
+      ];
+
       const otherEvents = [
         {
           name: EVENT_TYPE.COPY_OBJ,
@@ -324,6 +331,7 @@ export default {
         ...textEvents,
         ...shapeEvents,
         ...clipArtEvents,
+        ...imageEvents,
         ...otherEvents
       ];
 
@@ -769,7 +777,9 @@ export default {
      */
     getThumbnailUrl: debounce(function() {
       const thumbnailUrl = this.digitalCanvas?.toDataURL({
-        quality: THUMBNAIL_IMAGE_QUALITY
+        quality: THUMBNAIL_IMAGE_CONFIG.QUALITY,
+        format: THUMBNAIL_IMAGE_CONFIG.FORMAT,
+        multiplier: THUMBNAIL_IMAGE_CONFIG.MULTIPLIER
       });
 
       this.setThumbnail({
@@ -800,6 +810,9 @@ export default {
           break;
         case OBJECT_TYPE.TEXT:
           this.changeTextProperties(prop);
+          break;
+        case OBJECT_TYPE.IMAGE:
+          this.changeImageProperties(prop);
           break;
         default:
           return;
@@ -832,6 +845,14 @@ export default {
             currentWidthInch,
             currentHeightInch,
             DEFAULT_CLIP_ART.MIN_SIZE
+          );
+          break;
+        case OBJECT_TYPE.IMAGE:
+          scale = calcScaleElement(
+            width,
+            currentWidthInch,
+            currentHeightInch,
+            DEFAULT_IMAGE.MIN_SIZE
           );
           break;
         default:
@@ -893,6 +914,18 @@ export default {
           this.changeClipArtProperties(prop);
           break;
         }
+
+        case OBJECT_TYPE.IMAGE: {
+          const prop = mappingElementProperties(
+            currentWidthInch,
+            currentHeightInch,
+            currentXInch,
+            currentYInch,
+            DEFAULT_IMAGE.MIN_SIZE
+          );
+          this.changeImageProperties(prop);
+          break;
+        }
         default:
           return;
       }
@@ -951,6 +984,9 @@ export default {
           break;
         case OBJECT_TYPE.TEXT:
           this.changeTextProperties(prop);
+          break;
+        case OBJECT_TYPE.IMAGE:
+          this.changeImageProperties(prop);
           break;
         default:
           return;
@@ -1169,14 +1205,40 @@ export default {
           imageUrl: DEFAULT_IMAGE.IMAGE_URL
         }
       });
+      const eventListeners = {
+        scaling: this.handleScaling,
+        scaled: this.handleScaled,
+        rotated: this.handleRotated,
+        moved: this.handleMoved
+      };
+
+      const image = await createImage(newImage.newObject);
+      merge(newImage.newObject, { size: image?.size });
 
       this.addNewObject(newImage);
 
-      const image = await createImage(newImage.newObject);
+      imageBorderModifier(image.object);
+
+      addEventListeners(image?.object, eventListeners);
       this.digitalCanvas.add(image?.object);
       selectLatestObject(this.digitalCanvas);
     },
+    /**
+     * Event fire when user change any property of selected image box
+     *
+     * @param {Object}  prop  new prop
+     */
+    changeImageProperties(prop) {
+      const { border } = prop;
 
+      const activeObject = this.digitalCanvas.getActiveObject();
+
+      if (border) {
+        applyBorderToImageObject(activeObject, border);
+      }
+
+      this.changeElementProperties(prop, OBJECT_TYPE.IMAGE);
+    },
     /**
      * Event fire when user click on Clip art button on Toolbar to add new clip art on canvas
      * @param {Array} clipArts - list clip art add on Canvas
