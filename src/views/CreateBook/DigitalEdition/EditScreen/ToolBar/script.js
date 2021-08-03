@@ -8,7 +8,8 @@ import {
   isInstructionTool,
   isElementTool,
   isTogglePropertiesMenu,
-  getNonElementToolType
+  getNonElementToolType,
+  isOneClickTool
 } from '@/common/utils';
 
 import {
@@ -101,7 +102,7 @@ export default {
           {
             iconName: 'delete',
             title: 'Delete',
-            name: 'Delete'
+            name: TOOL_NAME.DELETE
           }
         ],
         [
@@ -196,30 +197,53 @@ export default {
      * @param  {Object} item Receive item information
      */
     onClickLeftTool(data) {
-      if (
-        // !this.printThemeSelectedId || //not yet implemented
-        !data?.name ||
-        this.selectedToolName === data?.name
-      ) {
-        this.setToolNameSelected({
-          name: ''
-        });
+      if (!this.themeId || this.isPrompt) return;
+
+      const name = data?.name;
+
+      const toolName = this.selectedToolName === name ? '' : name;
+
+      this.$root.$emit(EVENT_TYPE.SWITCH_TOOL, toolName);
+
+      if (isInstructionTool(name)) {
+        const objectType =
+          name === TOOL_NAME.IMAGE_BOX ? OBJECT_TYPE.IMAGE : OBJECT_TYPE.TEXT;
+
+        this.$root.$emit(EVENT_TYPE.DIGITAL_ADD_ELEMENT, objectType);
+
+        this.setToolNameSelected({ name });
+
         return;
       }
 
-      this.$root.$emit(EVENT_TYPE.SWITCH_TOOL, data.name);
+      if (!isOneClickTool(name)) {
+        this.setToolNameSelected({ name: toolName });
 
-      this.setToolNameSelected({
-        name: data.name
-      });
-
-      if (data.name === TOOL_NAME.TEXT) {
-        this.$root.$emit(EVENT_TYPE.DIGITAL_ADD_ELEMENT, OBJECT_TYPE.TEXT);
+        return;
       }
 
-      if (data.name === TOOL_NAME.IMAGE_BOX) {
-        this.$root.$emit(EVENT_TYPE.DIGITAL_ADD_ELEMENT, OBJECT_TYPE.IMAGE);
-      }
+      this.setToolNameSelected({ name: '' });
+
+      if (name === TOOL_NAME.DELETE)
+        this.$root.$emit(EVENT_TYPE.DELETE_OBJECTS);
+
+      if (name === TOOL_NAME.UNDO) this.undo();
+
+      if (name === TOOL_NAME.REDO) this.redo();
+    },
+    /**
+     * Undo user action
+     */
+    undo() {
+      // will be release in this sprint
+      console.log('UNDO feature will roll out soon');
+    },
+    /**
+     * Redo user action
+     */
+    redo() {
+      // will be release in this sprint
+      console.log('REDO feature will roll out soon');
     }
   }
 };
