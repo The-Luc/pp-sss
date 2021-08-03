@@ -72,11 +72,12 @@ export class BookDetailEntity extends BaseEntity {
   estimatedQuantity = new BookQuantity();
   printData = new BookPrintData();
   digitalData = new BookDigitalData();
+  sections = [];
 
   /**
    * @param {BookDetailEntity} props - object props to construct new instance of this class
    */
-   constructor(props) {
+  constructor(props) {
     super(props);
     this._set(props);
   }

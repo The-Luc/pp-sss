@@ -74,7 +74,8 @@ import {
   COVER_TYPE,
   DEFAULT_CLIP_ART,
   DEFAULT_IMAGE,
-  LAYOUT_PAGE_TYPE
+  LAYOUT_PAGE_TYPE,
+  SAVE_STATUS
 } from '@/common/constants';
 import SizeWrapper from '@/components/SizeWrapper';
 import PrintCanvasLines from './PrintCanvasLines';
@@ -92,6 +93,7 @@ import { useAppCommon } from '@/hooks/common';
 import { EVENT_TYPE } from '@/common/constants/eventType';
 import { useStyle } from '@/hooks/style';
 import { useSaveData } from './composables';
+import { useSavingStatus } from '@/views/CreateBook/composables';
 
 export default {
   components: {
@@ -106,6 +108,7 @@ export default {
     const { setInfoBar, zoom } = useInfoBar();
     const { onSaveStyle } = useStyle();
     const { savePrintEditScreen, getDataEditScreen } = useSaveData();
+    const { updateSavingStatus, savingStatus } = useSavingStatus();
 
     return {
       setActiveEdition,
@@ -113,7 +116,9 @@ export default {
       zoom,
       onSaveStyle,
       savePrintEditScreen,
-      getDataEditScreen
+      getDataEditScreen,
+      updateSavingStatus,
+      savingStatus
     };
   },
   data() {
@@ -130,7 +135,8 @@ export default {
       isProcessingPaste: false,
       countPaste: 1,
       rulerSize: { width: '0', height: '0' },
-      isCanvasChanged: false
+      isCanvasChanged: false,
+      autoSaveTimer: null
     };
   },
   computed: {
@@ -201,7 +207,7 @@ export default {
     }
   },
   mounted() {
-    setInterval(this.handleAutosave, AUTOSAVE_INTERVAL);
+    this.autoSaveTimer = setInterval(this.handleAutosave, AUTOSAVE_INTERVAL);
 
     window.addEventListener('copy', this.handleCopy);
     window.addEventListener('paste', this.handlePaste);
@@ -214,7 +220,7 @@ export default {
 
     window.printCanvas = null;
 
-    clearInterval(this.handleAutosave);
+    clearInterval(this.autoSaveTimer);
 
     sessionStorage.removeItem(COPY_OBJECT_KEY);
 
@@ -251,16 +257,19 @@ export default {
       setPropertiesObjectType: MUTATES.SET_PROPERTIES_OBJECT_TYPE,
       setBackgroundProp: PRINT_MUTATES.SET_BACKGROUND_PROP,
       deleteBackground: PRINT_MUTATES.DELETE_BACKGROUND,
-      updateTriggerAutosave: MUTATES.UPDATE_TRIGGER_AUTOSAVE,
       setThumbnail: PRINT_MUTATES.UPDATE_SHEET_THUMBNAIL
     }),
 
-    handleAutosave() {
+    async handleAutosave() {
       if (!this.isCanvasChanged) return;
-      const data = this.getDataEditScreen(this.pageSelected.id);
-      this.savePrintEditScreen(data);
 
-      this.updateTriggerAutosave();
+      this.updateSavingStatus({ status: SAVE_STATUS.START });
+
+      const data = this.getDataEditScreen(this.pageSelected.id);
+      await this.savePrintEditScreen(data);
+
+      this.updateSavingStatus({ status: SAVE_STATUS.END });
+
       this.isCanvasChanged = false;
     },
 

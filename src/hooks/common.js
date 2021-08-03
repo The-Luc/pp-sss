@@ -28,11 +28,3 @@ export const useAppCommon = () => {
     setActiveEdition
   };
 };
-
-export const useGetTriggerAutoSave = () => {
-  const { triggerAutosave } = useGetters({
-    triggerAutosave: APP_GETTERS.TRIGGER_AUTOSAVE
-  });
-
-  return { triggerAutosave };
-};
