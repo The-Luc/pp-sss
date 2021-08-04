@@ -218,7 +218,7 @@ const bookService = {
 
     const sheet = sheetObject.sectionId === sectionId ? sheetObject : null;
     return { sheet };
-  },
+  }
 };
 
 export default {

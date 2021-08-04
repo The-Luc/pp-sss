@@ -50,7 +50,7 @@ export default {
      * Add photos to canvas by autoflow
      */
     autoflowPhotos() {
-      console.log('autoflow');
+      this.$emit('autoflow');
     }
   }
 };

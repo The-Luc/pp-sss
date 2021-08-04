@@ -3,7 +3,7 @@
     <transition name="slide-x-transition">
       <PhotoContent
         v-show="isOpenPhotoSidebar"
-        :show-autoflow="false"
+        :show-autoflow="true"
         @click="closePhotoContent"
         @addPhoto="openModalAddPhoto"
         @autoflow="autoflowPhotos"
