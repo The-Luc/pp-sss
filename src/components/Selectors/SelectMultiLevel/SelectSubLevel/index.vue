@@ -23,8 +23,21 @@
           </v-row>
         </v-list-item-title>
       </v-list-item-content>
+
+      <img
+        :style="{
+          visibility:
+            isArrowMulti && item.subItems && item.subItems.length !== 0
+              ? 'visible'
+              : 'hidden'
+        }"
+        class="icon-arrow"
+        :src="arrowMenuIcon"
+        alt="icon-arrow"
+      />
       <SubLevel
         v-if="item.subItems && item.subItems.length !== 0"
+        :is-arrow-multi="isArrowMulti"
         :items="item.subItems"
         :parent-value="item.value"
         :selected-val="getSelectedSub(item)"

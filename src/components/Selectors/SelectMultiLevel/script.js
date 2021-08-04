@@ -42,6 +42,14 @@ export default {
     isUseSubShortName: {
       type: Boolean,
       default: false
+    },
+    arrowMenuIcon: {
+      type: String,
+      default: ICON_LOCAL.ARROW_RIGHT
+    },
+    isArrowMulti: {
+      type: Boolean,
+      default: false
     }
   },
   computed: {
