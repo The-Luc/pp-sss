@@ -87,6 +87,7 @@ import YRuler from './Rulers/YRuler';
 import {
   AUTOSAVE_INTERVAL,
   COPY_OBJECT_KEY,
+  MIN_IMAGE_SIZE,
   PASTE,
   THUMBNAIL_IMAGE_CONFIG
 } from '@/common/constants/config';
@@ -635,7 +636,12 @@ export default {
                   this.addText(left, top, width, height);
                 }
                 if (this.awaitingAdd === OBJECT_TYPE.IMAGE) {
-                  this.addImageBox(left, top, width, height);
+                  this.addImageBox(
+                    left,
+                    top,
+                    Math.max(width, MIN_IMAGE_SIZE),
+                    Math.max(height, MIN_IMAGE_SIZE)
+                  );
                 }
                 this.awaitingAdd = '';
               }
