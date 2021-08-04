@@ -27,6 +27,10 @@ export default {
     selectedVal: {
       type: [String, Number, Object],
       default: ''
+    },
+    isSubmenuIconDisplayed: {
+      type: Boolean,
+      default: false
     }
   },
   methods: {
@@ -83,6 +87,18 @@ export default {
      */
     getSelectedSub(item) {
       return item.value === this.selectedVal.value ? this.selectedVal.sub : '';
+    },
+    /**
+     * Check submenu Icon is visibled
+     *
+     * @returns {Boolean} visibled or hidden
+     */
+    isSubmenuIconVisibled(item) {
+      return (
+        this.isSubmenuIconDisplayed &&
+        item.subItems &&
+        item.subItems.length !== 0
+      );
     }
   }
 };
