@@ -154,6 +154,10 @@ export const setImageSrc = (imageObject, imageSrc, cb) => {
     };
 
     img.set(newProp);
+    if (hasImage) {
+      centercrop(imageObject, img.set.bind(img));
+      newProp.zoomLevel = img.zoomLevel;
+    }
     imageObject.canvas.renderAll();
     cb && cb(newProp);
   });

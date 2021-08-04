@@ -1719,6 +1719,7 @@ export default {
       const activeObject = window.printCanvas.getActiveObject();
       setImageSrc(activeObject, null, prop => {
         this.setObjectPropById({ id: activeObject.id, prop });
+        this.setCurrentObject(this.currentObjects[activeObject.id]);
       });
     },
 
