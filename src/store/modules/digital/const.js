@@ -19,6 +19,7 @@ class GetterClass extends BaseObject {
   GET_OBJECTS = 'getObjectsBySheetId';
   SHEET_LAYOUT = 'sheetLayout';
   GET_SHEETS = 'getSheets';
+  GET_DATA_EDIT_SCREEN = 'getDataEditScreen';
   BACKGROUNDS_NO_LAYOUT = 'getUserSelectedBackground';
   BACKGROUNDS_PROPERTIES = 'getPropertiesOfAllBackgrounds';
   SECTIONS_SHEETS = 'getSectionsAndSheets';

@@ -89,6 +89,7 @@ import {
   THUMBNAIL_IMAGE_CONFIG
 } from '@/common/constants/config';
 import { useStyle } from '@/hooks/style';
+import { useSaveData } from '../composables';
 
 const ELEMENTS = {
   [OBJECT_TYPE.TEXT]: 'a text box',
@@ -109,6 +110,7 @@ export default {
     const { frames, currentFrameId } = useFrame();
     const { toggleModal, modalData } = useModal();
     const { onSaveStyle } = useStyle();
+    const { getDataEditScreen, saveEditScreen } = useSaveData();
 
     return {
       frames,
@@ -120,7 +122,9 @@ export default {
       handleSwitchFrame,
       toggleModal,
       modalData,
-      onSaveStyle
+      onSaveStyle,
+      getDataEditScreen,
+      saveEditScreen
     };
   },
   data() {
@@ -1643,16 +1647,20 @@ export default {
       deep: true,
       async handler(val, oldVal) {
         if (val?.id !== oldVal?.id) {
-          await this.getDataCanvas();
-          this.countPaste = 1;
+          const data = this.getDataEditScreen(oldVal.id, this.currentFrameId);
+          await this.saveEditScreen(data);
+
+          // reset frames, frameIDs, currentFrameId
+          this.setFrames({ framesList: [] });
           this.setSelectedObjectId({ id: '' });
-          this.setCurrentFrameId({ id: '' });
           this.setIsOpenProperties({ isOpen: false });
           this.setCurrentObject(null);
           this.updateCanvasSize();
           resetObjects(this.digitalCanvas);
-          // reset frames, frameIDs, currentFrameId
-          this.setFrames({ framesList: [] });
+
+          await this.getDataCanvas();
+          this.setCurrentFrameId({ id: this.frames[0].id });
+          this.countPaste = 1;
           this.drawLayout(this.sheetLayout, EDITION.DIGITAL);
         }
       }

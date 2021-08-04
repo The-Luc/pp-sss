@@ -96,5 +96,34 @@ export const getters = {
     if (isEmpty(currentSheetId)) return '';
 
     return sections.find(s => s.sheetIds.includes(currentSheetId));
+  },
+  // Get data for saving to Storage
+  [DIGITAL._GETTERS.GET_DATA_EDIT_SCREEN]: ({
+    book,
+    sheets,
+    background,
+    objects,
+    objectIds,
+    frames,
+    frameIds
+  }) => (sheetId, frameId) => {
+    const backgrounds = Object.values(background).filter(bg => !isEmpty(bg));
+    const objectsData = [
+      ...backgrounds,
+      ...objectIds.map(id => ({ ...objects[id], id }))
+    ];
+
+    if (frameId) {
+      frames[frameId].objects = objectsData;
+    }
+
+    const framesArray = frameIds.map(id => ({ id, frame: frames[id] }));
+
+    const data = {
+      defaultThemeId: book.defaultThemeId,
+      sheet: sheets[sheetId],
+      frames: framesArray
+    };
+    return data;
   }
 };

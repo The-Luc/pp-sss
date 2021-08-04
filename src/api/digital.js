@@ -2,6 +2,7 @@ import { getSuccessWithData, getErrorWithMessages } from '@/common/models';
 import { parseItem } from '@/common/storage/session.helper';
 
 import { isEmpty, getPageName } from '@/common/utils';
+import { cloneDeep } from 'lodash';
 
 import bookService from './book';
 
@@ -129,9 +130,28 @@ const digitalService = {
 
     if (isEmpty(frames)) return {};
 
-    const data = frames[frameId].objects || [];
+    // const frameObj = frames.find(f => f.id === frameId);
+    const frameObj = frames[0];
+
+    const data = frameObj.frame.objects || [];
 
     return isEmpty(data) ? getErrorWithMessages([]) : getSuccessWithData(data);
+  },
+  /**
+   * Get frames of a specific sheet
+   * @param {Number} bookId Id of book
+   * @param {Number} sectionId Id of section
+   * @param {Number} sheetId Id of sheet
+   * @returns {Array} a list of frames [{id, frame:{}},...]
+   */
+  getFrames: async (bookId, sectionId, sheetId) => {
+    const { sheets } = await bookService.getBookDigital(bookId);
+
+    const frames = sheets[sheetId].frames;
+
+    const data = frames || [];
+
+    return !data ? getErrorWithMessages([]) : getSuccessWithData(data);
   },
   // temporary code, will remove soon
   getGeneralInfo: async bookId => {
@@ -230,27 +250,28 @@ const digitalService = {
   /**
    * save data of Digital EditScreen to database
    */
-  saveEditScreen: async (sheetId, frameId, payload) => {
-    const { objects, defaultThemeId, pageInfo, sheetProps } = payload;
+  saveEditScreen: async (sheetId, payload) => {
+    const { defaultThemeId, sheet, frames } = cloneDeep(payload);
+
+    sheet.frames = frames;
 
     const saveQueue = [];
 
     // save objects and backgrounds
-    saveQueue.push(digitalService.saveObjectsAndBackground(sheetId, objects));
+    // saveQueue.push(digitalService.saveObjectsAndBackground(sheetId, objects));
 
     // save default themeId
     saveQueue.push(digitalService.saveDefaultThemeId(defaultThemeId));
 
     // save pageInfo
-    saveQueue.push(digitalService.savePageInfo(pageInfo));
+    // saveQueue.push(digitalService.savePageInfo(pageInfo));
 
     // save other data:
     //   + sheet's layout and sheet's themeId
     //   + sheet visite state
     //   + sheet's thumbnail
     //   + spreadInfo
-    saveQueue.push(digitalService.updateSheet(sheetId, sheetProps));
-
+    saveQueue.push(digitalService.updateSheet(sheetId, sheet));
     const response = await Promise.all(saveQueue);
 
     return {

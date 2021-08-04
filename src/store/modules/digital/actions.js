@@ -36,29 +36,21 @@ export const actions = {
     });
   },
   async [DIGITAL._ACTIONS.GET_DATA_CANVAS]({ state, commit }) {
-    const queryObjectResult = await digitalService.getSheetObjects(
+    // rest the store
+    commit(DIGITAL._MUTATES.SET_OBJECTS, { objectList: [] });
+    commit(DIGITAL._MUTATES.SET_BACKGROUNDS, { background: {} });
+
+    // update frames and frameIds
+    // TODO:-Luc check await function
+    const queryFramesResult = await digitalService.getFrames(
       state.book.id,
       state.sheets[state.currentSheetId].sectionId,
       state.currentSheetId
     );
 
-    if (isEmpty(queryObjectResult.data)) {
-      commit(DIGITAL._MUTATES.SET_OBJECTS, { objectList: [] });
-      commit(DIGITAL._MUTATES.SET_BACKGROUNDS, { background: {} });
-      return;
-    }
+    const data = queryFramesResult.data;
 
-    commit(DIGITAL._MUTATES.SET_OBJECTS, {
-      objectList: queryObjectResult.data
-    });
-
-    const backgrounds = queryObjectResult.data.filter(
-      o => o.type === OBJECT_TYPE.BACKGROUND
-    );
-
-    backgrounds.forEach(bg =>
-      commit(DIGITAL._MUTATES.SET_BACKGROUNDS, { background: bg })
-    );
+    commit(DIGITAL._MUTATES.SET_FRAMES, { framesList: data });
   },
   [DIGITAL._ACTIONS.UPDATE_SHEET_THEME_LAYOUT](
     { commit, dispatch },

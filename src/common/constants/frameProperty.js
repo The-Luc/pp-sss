@@ -1,4 +1,4 @@
-export const DEPLAY_OPTION = [
+export const DELAY_OPTION = [
   { name: '0 s', value: 0 },
   { name: '1 s', value: 1 },
   { name: '2 s', value: 2 },

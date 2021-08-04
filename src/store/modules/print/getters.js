@@ -140,6 +140,7 @@ export const getters = {
 
     return sections.find(s => s.sheetIds.includes(currentSheetId));
   },
+  // Get data for saving to Storage
   [PRINT._GETTERS.GET_DATA_EDIT_SCREEN]: ({
     background,
     objectIds,
