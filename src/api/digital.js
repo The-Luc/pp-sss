@@ -116,28 +116,6 @@ const digitalService = {
     return isEmpty(data) ? getErrorWithMessages([]) : getSuccessWithData(data);
   },
   /**
-   * Get list of objects use in canvas
-   *
-   * @param   {Number}  bookId    id of current book
-   * @param   {Number}  sectionId id of current section
-   * @param   {Number}  sheetId   id of current sheet
-   * @returns {Object}            query result
-   */
-  getSheetObjects: async (bookId, sectionId, sheetId, frameId) => {
-    const { sheets } = await bookService.getBookDigital(bookId);
-
-    const frames = sheets[sheetId].frames;
-
-    if (isEmpty(frames)) return {};
-
-    // const frameObj = frames.find(f => f.id === frameId);
-    const frameObj = frames[0];
-
-    const data = frameObj.frame.objects || [];
-
-    return isEmpty(data) ? getErrorWithMessages([]) : getSuccessWithData(data);
-  },
-  /**
    * Get frames of a specific sheet
    * @param {Number} bookId Id of book
    * @param {Number} sectionId Id of section
@@ -189,62 +167,6 @@ const digitalService = {
 
       resolve();
     });
-  },
-
-  /**
-   * save layout and theme id of a sheet in global book variable
-   * @param {Number} sheetId id of sheet
-   * @param {Object} layout a layout object
-   * @param {Number} themeId id of theme
-   */
-  saveSheetData: (sheetId, layoutId, themeId) => {
-    return digitalService.updateSheet(sheetId, { layoutId, themeId });
-  },
-
-  /**
-   * to mark that the sheet is visisted
-   * @param {Number} sheetId id of sheet
-   */
-  saveSheetVisited: sheetId => {
-    return digitalService.updateSheet(sheetId, { isVisited: true });
-  },
-
-  /**
-   * save page info of a book in global book variable
-   * @param {Object} pageInfo a object contains info such as font, color of the page
-   */
-  savePageInfo: pageInfo => {
-    return new Promise(resolve => {
-      window.data.book.digitalData.pageInfo = pageInfo;
-      resolve();
-    });
-  },
-
-  /**
-   * to saves object and backgrounds
-   */
-  saveObjectsAndBackground: (sheetId, frameId, data) => {
-    return new Promise(resolve => {
-      if (!sheetId) {
-        resolve();
-        return;
-      }
-      const sheets = getSheetsFromStorage();
-
-      const sheet = sheets[sheetId];
-      const frame = sheet.digitalData.frames[frameId];
-
-      frame.objects = data;
-
-      resolve(data);
-    });
-  },
-
-  /**
-   * save sheet's thumbnail
-   */
-  saveSheetThumbnail: (sheetId, thumbnailUrl) => {
-    return digitalService.updateSheet(sheetId, { thumbnailUrl });
   },
 
   /**
