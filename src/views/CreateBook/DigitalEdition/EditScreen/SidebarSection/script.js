@@ -11,8 +11,8 @@ import {
 import {
   useLayoutPrompt,
   usePopoverCreationTool,
-  useObjectProperties,
-  useUser
+  useUser,
+  useMenuProperties
 } from '@/hooks';
 import { TOOL_NAME, EDITION } from '@/common/constants';
 import {
@@ -28,7 +28,7 @@ export default {
   },
   setup() {
     const { setToolNameSelected } = usePopoverCreationTool();
-    const { toggleMenuProperties } = useObjectProperties();
+    const { toggleMenuProperties } = useMenuProperties();
     const { updateVisited, setIsPrompt } = useLayoutPrompt(EDITION.DIGITAL);
     const { currentUser } = useUser();
 

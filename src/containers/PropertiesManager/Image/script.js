@@ -167,15 +167,13 @@ export default {
      * Handle click crop image for Image
      */
     onClickCropImage() {
-      console.log('onClickCropImage');
-      //TODO
+      this.$root.$emit('centercrop');
     },
     /**
      * Handle click remove image for Image
      */
     onClickRemoveImage() {
-      console.log('onClickRemoveImage');
-      //TODO
+      this.$root.$emit('removeImage');
     },
     /**
      * Handle click background image for Image

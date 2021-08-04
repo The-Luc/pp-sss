@@ -4,7 +4,7 @@ import { cloneDeep, uniqueId, merge, debounce } from 'lodash';
 
 import { imageBorderModifier, usePrintOverrides } from '@/plugins/fabric';
 
-import { useInfoBar } from '@/hooks';
+import { useInfoBar, useMenuProperties, useProperties } from '@/hooks';
 import { startDrawBox } from '@/common/fabricObjects/drawingBox';
 
 import {
@@ -48,7 +48,9 @@ import {
   updateSpecificProp,
   addPrintPageNumber,
   updateBringToFrontPageNumber,
-  applyBorderToImageObject
+  applyBorderToImageObject,
+  setImageSrc,
+  centercrop
 } from '@/common/fabricObjects';
 
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
@@ -108,6 +110,12 @@ export default {
     const { setInfoBar, zoom } = useInfoBar();
     const { onSaveStyle } = useStyle();
     const { savePrintEditScreen, getDataEditScreen } = useSaveData();
+    const { isOpenMenuProperties } = useMenuProperties();
+    const {
+      setPropertyById: setObjectPropById,
+      getProperty,
+      setProperty: setObjectProp
+    } = useProperties();
     const { updateSavingStatus, savingStatus } = useSavingStatus();
 
     return {
@@ -117,6 +125,10 @@ export default {
       onSaveStyle,
       savePrintEditScreen,
       getDataEditScreen,
+      setObjectPropById,
+      getProperty,
+      setObjectProp,
+      isOpenMenuProperties,
       updateSavingStatus,
       savingStatus
     };
@@ -144,7 +156,6 @@ export default {
       book: GETTERS.BOOK_DETAIL,
       pageSelected: PRINT_GETTERS.CURRENT_SHEET,
       sheetLayout: PRINT_GETTERS.SHEET_LAYOUT,
-      isOpenMenuProperties: APP_GETTERS.IS_OPEN_MENU_PROPERTIES,
       toolNameSelected: APP_GETTERS.SELECTED_TOOL_NAME,
       currentBackgrounds: PRINT_GETTERS.BACKGROUNDS,
       propertiesObjectType: APP_GETTERS.PROPERTIES_OBJECT_TYPE,
@@ -152,7 +163,6 @@ export default {
       currentObjects: PRINT_GETTERS.GET_OBJECTS,
       totalBackground: PRINT_GETTERS.TOTAL_BACKGROUND,
       totalObject: PRINT_GETTERS.TOTAL_OBJECT,
-      getProperty: APP_GETTERS.SELECT_PROP_CURRENT_OBJECT,
       getPageInfo: PRINT_GETTERS.GET_PAGE_INFO,
       getObjectsAndBackground: PRINT_GETTERS.GET_OBJECTS_AND_BACKGROUNDS
     }),
@@ -243,8 +253,6 @@ export default {
       setSelectedObjectId: PRINT_MUTATES.SET_CURRENT_OBJECT_ID,
       setCurrentObject: MUTATES.SET_CURRENT_OBJECT,
       addNewObject: PRINT_MUTATES.ADD_OBJECT,
-      setObjectProp: PRINT_MUTATES.SET_PROP,
-      setObjectPropById: PRINT_MUTATES.SET_PROP_BY_ID,
       updateTriggerTextChange: MUTATES.UPDATE_TRIGGER_TEXT_CHANGE,
       addNewBackground: PRINT_MUTATES.SET_BACKGROUNDS,
       updateTriggerBackgroundChange:
@@ -1455,7 +1463,10 @@ export default {
       };
 
       const imageBoxEvents = {
-        changeImageProperties: this.changeImageProperties
+        changeImageProperties: this.changeImageProperties,
+        removeImage: this.handleRemoveImage,
+        centercrop: this.handleCentercrop,
+        autoflow: this.handleAutoflow
       };
 
       const otherEvents = {
@@ -1699,6 +1710,26 @@ export default {
     },
     async drawLayout() {
       await this.drawObjectsOnCanvas(this.sheetLayout);
+    },
+
+    /**
+     * Handle reset image
+     */
+    handleRemoveImage() {
+      const activeObject = window.printCanvas.getActiveObject();
+      setImageSrc(activeObject, null, prop => {
+        this.setObjectPropById({ id: activeObject.id, prop });
+      });
+    },
+
+    /**
+     * Handle centercrop
+     */
+    handleCentercrop() {
+      const activeObject = window.printCanvas.getActiveObject();
+      centercrop(activeObject, prop => {
+        this.setObjectPropById({ id: activeObject.id, prop });
+      });
     }
   }
 };
