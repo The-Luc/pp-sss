@@ -9,21 +9,18 @@
         />
       </div>
     </div>
-    <div class="body">
+    <div class="content">
       <AlbumItem
         v-for="album in albumsSelected"
         :key="album.id"
         :name="album.name"
         :display-date="album.displayDate"
         :assets="album.assets"
-        :images-selected="imagesSelected"
+        :selected-images="selectedImages"
         @change="onSelectedImage"
       />
     </div>
-    <PopupSelected
-      v-if="imagesSelected.length !== 0"
-      :amount="imagesSelected.length"
-    />
+    <PopupSelected v-if="isShowPopupSelected" :amount="selectedImages.length" />
   </div>
 </template>
 

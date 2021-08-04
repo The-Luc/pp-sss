@@ -12,24 +12,24 @@ export default {
       type: Array,
       required: true
     },
-    imagesSelected: {
+    selectedImages: {
       type: Array,
       default: () => []
     }
   },
   computed: {
-    idSelected() {
-      return this.imagesSelected.map(item => item.id);
+    selectedImageIds() {
+      return this.selectedImages.map(item => item.id);
     }
   },
   methods: {
     /**
      * Active image selected
-     * @param   {Number}  id  id of image selected
+     * @param   {Number}  id  id of selected image
      * @returns {Boolean} Image is actived
      */
     isActive(id) {
-      return this.idSelected.includes(id);
+      return this.selectedImageIds.includes(id);
     },
     /**
      * Selected a image and emit parent component

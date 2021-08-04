@@ -2,7 +2,7 @@
   <div class="pp-selector-container">
     <PpSelect
       id="photo-type"
-      :is-arrow-multi="true"
+      :is-submenu-icon-displayed="true"
       :items="items"
       :selected-val="selectedVal"
       container="#photo-type"

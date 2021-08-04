@@ -28,11 +28,7 @@ export default {
       type: [String, Number, Object],
       default: ''
     },
-    arrowMenuIcon: {
-      type: String,
-      default: ICON_LOCAL.ARROW_RIGHT
-    },
-    isArrowMulti: {
+    isSubmenuIconDisplayed: {
       type: Boolean,
       default: false
     }

@@ -16,8 +16,14 @@
     }
 
     .icon-arrow {
-      width: 12px;
-      height: 12px;
+      color: $color-stoodio-toolbartext;
+    }
+
+    &:hover,
+    &.v-list-item--active {
+      .icon-arrow {
+        color: $color-white;
+      }
     }
   }
 }

@@ -20,7 +20,7 @@ export default {
     PopupSelected
   },
   props: {
-    imagesSelected: {
+    selectedImages: {
       type: Array,
       default: () => []
     }
@@ -36,50 +36,20 @@ export default {
     };
   },
   computed: {
+    albumsSelected() {
+      const idAlbums = this.getSelectedImageIds();
+
+      if (idAlbums !== ID_PHOTO_All) {
+        return albums.filter(item => item.id === idAlbums);
+      }
+      return this.getAllSelectedAlbums();
+    },
     dropdownOptions() {
-      const options = Object.values(PHOTO_DROPDOWNS);
-
-      options.forEach(item => {
-        item.subItems = photoDropdowns[item.value].map(el => {
-          const result = {
-            value: el.id,
-            name: el.name,
-            subItems: []
-          };
-          if (el.albums) {
-            result.subItems = el.albums.map(album => ({
-              value: album.id,
-              name: album.name,
-              subItems: []
-            }));
-          }
-
-          return result;
-        });
-      });
-      return options;
+      return this.getDropdownOptions();
     },
 
-    albumsSelected() {
-      const idAlbums = this.selectedType.sub.sub || this.selectedType.sub.value;
-
-      if (idAlbums === ID_PHOTO_All) {
-        const typeSelected = this.dropdownOptions.find(
-          item => item.value === this.selectedType.value
-        );
-
-        const arrayAlbumSelected = this.selectedType.sub.sub
-          ? typeSelected.subItems.find(item => {
-              return item.value === this.selectedType.sub.value;
-            }).subItems
-          : typeSelected.subItems;
-
-        const arrayIdSelected = arrayAlbumSelected.map(item => item.value);
-
-        return albums.filter(item => arrayIdSelected.includes(item.id));
-      }
-
-      return albums.filter(item => item.id === idAlbums);
+    isShowPopupSelected() {
+      return this.selectedImages.length !== 0;
     }
   },
   methods: {
@@ -102,6 +72,62 @@ export default {
      */
     onSelectedImage(image) {
       this.$emit('change', image);
+    },
+    /**
+     * Get id of selected album
+     *
+     * @returns {Array} id of selected album
+     */
+    getSelectedImageIds() {
+      return this.selectedType.sub.sub || this.selectedType.sub.value;
+    },
+    /**
+     * Get id of all selected album when user select all
+     *
+     * @returns {Array} array id of selected albums
+     */
+    getAllSelectedAlbums() {
+      const typeSelected = this.dropdownOptions.find(
+        item => item.value === this.selectedType.value
+      );
+
+      const arrayAlbumSelected = this.selectedType.sub.sub
+        ? typeSelected.subItems.find(item => {
+            return item.value === this.selectedType.sub.value;
+          }).subItems
+        : typeSelected.subItems;
+
+      const arrayIdSelected = arrayAlbumSelected.map(item => item.value);
+
+      return albums.filter(item => arrayIdSelected.includes(item.id));
+    },
+    /**
+     * Get array of dropdown from value api
+     *
+     * @returns {Array} array of dropdowns
+     */
+    getDropdownOptions() {
+      const options = Object.values(PHOTO_DROPDOWNS);
+
+      options.forEach(item => {
+        item.subItems = photoDropdowns[item.value].map(el => {
+          const result = {
+            value: el.id,
+            name: el.name,
+            subItems: []
+          };
+          if (isEmpty(el?.albums)) return result;
+
+          result.subItems = el.albums.map(album => ({
+            value: album.id,
+            name: album.name,
+            subItems: []
+          }));
+
+          return result;
+        });
+      });
+      return options;
     }
   },
   async created() {

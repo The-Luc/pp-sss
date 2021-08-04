@@ -53,7 +53,7 @@
 
             <SelectSubLevel
               v-if="item.subItems.length > 0"
-              :is-arrow-multi="isArrowMulti"
+              :is-submenu-icon-displayed="isSubmenuIconDisplayed"
               :items="item.subItems"
               :parent-value="item.value"
               :selected-val="getSelectedSub(item)"
@@ -61,16 +61,17 @@
             />
           </v-list-item-title>
         </v-list-item-content>
-
-        <img
+        <v-icon
           :style="{
             visibility:
-              isArrowMulti && item.subItems.length > 0 ? 'visible' : 'hidden'
+              isSubmenuIconDisplayed && item.subItems.length > 0
+                ? 'visible'
+                : 'hidden'
           }"
           class="icon-arrow"
-          :src="arrowMenuIcon"
-          alt="icon-arrow"
-        />
+        >
+          arrow_right
+        </v-icon>
       </v-list-item>
     </template>
     <template v-if="prependedIcon" #prepend>

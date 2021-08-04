@@ -22,7 +22,7 @@
           <div>Photos</div>
         </v-tab>
         <v-tab-item value="photos">
-          <Photos :images-selected="imagesSelected" @change="onSelectedImage" />
+          <Photos :selected-images="selectedImages" @change="onSelectedImage" />
         </v-tab-item>
 
         <v-tab href="#search">
@@ -43,7 +43,7 @@
       </v-tabs>
     </div>
     <Footer
-      :is-disabled="imagesSelected.length === 0"
+      :is-disabled="selectedImages.length === 0"
       @select="onSelect"
       @cancel="onCancel"
     />
