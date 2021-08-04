@@ -257,20 +257,9 @@ const digitalService = {
 
     const saveQueue = [];
 
-    // save objects and backgrounds
-    // saveQueue.push(digitalService.saveObjectsAndBackground(sheetId, objects));
-
     // save default themeId
     saveQueue.push(digitalService.saveDefaultThemeId(defaultThemeId));
 
-    // save pageInfo
-    // saveQueue.push(digitalService.savePageInfo(pageInfo));
-
-    // save other data:
-    //   + sheet's layout and sheet's themeId
-    //   + sheet visite state
-    //   + sheet's thumbnail
-    //   + spreadInfo
     saveQueue.push(digitalService.updateSheet(sheetId, sheet));
     const response = await Promise.all(saveQueue);
 

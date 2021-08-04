@@ -18,9 +18,14 @@ export const useFrame = () => {
     currentFrameId: DIGITAL_GETTERS.CURRENT_FRAME_ID
   });
 
-  const { setSupplementalLayoutId, setCurrentFrameId } = useMutations({
+  const {
+    setSupplementalLayoutId,
+    updateFrameObjects,
+    setCurrentFrameId
+  } = useMutations({
     setSupplementalLayoutId: DIGITAL_MUTATES.SET_SUPPLEMENTAL_LAYOUT_ID,
-    setCurrentFrameId: DIGITAL_MUTATES.SET_CURRENT_FRAME_ID
+    setCurrentFrameId: DIGITAL_MUTATES.SET_CURRENT_FRAME_ID,
+    updateFrameObjects: DIGITAL_MUTATES.UPDATE_OBJECTS_TO_FRAME
   });
 
   return {
@@ -28,7 +33,8 @@ export const useFrame = () => {
     currentFrame,
     currentFrameId,
     setCurrentFrameId,
-    setSupplementalLayoutId
+    setSupplementalLayoutId,
+    updateFrameObjects
   };
 };
 
@@ -37,7 +43,7 @@ export const useFrame = () => {
  * and handling the opening event of Frame Info tab
  */
 export const useFrameSwitching = () => {
-  const { currentFrame, isMenuOpen } = useGetters({
+  const { isMenuOpen } = useGetters({
     currentFrame: DIGITAL_GETTERS.CURRENT_FRAME,
     isMenuOpen: GETTERS.IS_OPEN_MENU_PROPERTIES
   });
@@ -56,9 +62,7 @@ export const useFrameSwitching = () => {
     updateLayoutObjToStore: DIGITAL_ACTIONS.UPDATE_LAYOUT_OBJ_TO_STORE
   });
 
-  const handleSwitchFrame = () => {
-    const layout = currentFrame.value;
-
+  const handleSwitchFrame = layout => {
     // update to store
     updateLayoutObjToStore({ layout });
 

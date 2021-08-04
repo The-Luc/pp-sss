@@ -10,7 +10,6 @@ import {
   DEFAULT_CLIP_ART,
   DEFAULT_IMAGE,
   DEFAULT_SHAPE,
-  EDITION,
   MODAL_TYPES,
   OBJECT_TYPE,
   TOOL_NAME
@@ -34,7 +33,8 @@ import {
   updateSpecificProp,
   handleGetSvgData,
   addEventListeners,
-  applyBorderToImageObject
+  applyBorderToImageObject,
+  createBackgroundFabricObject
 } from '@/common/fabricObjects';
 import { createImage } from '@/common/fabricObjects';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
@@ -107,13 +107,19 @@ export default {
     const { setInfoBar, zoom } = useInfoBar();
     const { openPrompt } = useLayoutPrompt();
     const { handleSwitchFrame } = useFrameSwitching();
-    const { frames, currentFrameId } = useFrame();
+    const {
+      frames,
+      currentFrame,
+      currentFrameId,
+      updateFrameObjects
+    } = useFrame();
     const { toggleModal, modalData } = useModal();
     const { onSaveStyle } = useStyle();
     const { getDataEditScreen, saveEditScreen } = useSaveData();
 
     return {
       frames,
+      currentFrame,
       currentFrameId,
       drawLayout,
       setInfoBar,
@@ -124,7 +130,8 @@ export default {
       modalData,
       onSaveStyle,
       getDataEditScreen,
-      saveEditScreen
+      saveEditScreen,
+      updateFrameObjects
     };
   },
   data() {
@@ -1640,6 +1647,53 @@ export default {
       this.deleteObjects({ ids });
 
       deleteSelectedObjects(this.digitalCanvas);
+    },
+
+    /**
+     * create and render objects on the canvas
+     * @param {Object} objects ppObjects that will be rendered
+     */
+    async drawObjectsOnCanvas(objects) {
+      if (isEmpty(objects)) return;
+
+      const allObjectPromises = objects.map(objectData => {
+        if (
+          objectData.type === OBJECT_TYPE.SHAPE ||
+          objectData.type === OBJECT_TYPE.CLIP_ART
+        ) {
+          return this.createSvgFromPpData(objectData);
+        }
+
+        if (objectData.type === OBJECT_TYPE.TEXT) {
+          return this.createTextFromPpData(objectData);
+        }
+
+        if (objectData.type === OBJECT_TYPE.IMAGE) {
+          return this.createImageFromPpData(objectData);
+        }
+
+        if (objectData.type === OBJECT_TYPE.BACKGROUND) {
+          return this.createBackgroundFromPpData(objectData);
+        }
+      });
+
+      const listFabricObjects = await Promise.all(allObjectPromises);
+      this.digitalCanvas.add(...listFabricObjects);
+      this.digitalCanvas.requestRenderAll();
+    },
+
+    /**
+     * create fabric object
+     *
+     * @param {Object} objectData PpData of the of a background object {id, size, coord,...}
+     * @returns {Object} a fabric objec
+     */
+    async createBackgroundFromPpData(backgroundProp) {
+      const image = await createBackgroundFabricObject(
+        backgroundProp,
+        this.digitalCanvas
+      );
+      return image;
     }
   },
   watch: {
@@ -1647,6 +1701,7 @@ export default {
       deep: true,
       async handler(val, oldVal) {
         if (val?.id !== oldVal?.id) {
+          this.updateFrameObjects(this.currentFrameId);
           const data = this.getDataEditScreen(oldVal.id, this.currentFrameId);
           await this.saveEditScreen(data);
 
@@ -1661,29 +1716,35 @@ export default {
           await this.getDataCanvas();
           this.setCurrentFrameId({ id: this.frames[0].id });
           this.countPaste = 1;
-          this.drawLayout(this.sheetLayout, EDITION.DIGITAL);
+
+          await this.drawObjectsOnCanvas(this.sheetLayout);
         }
       }
     },
-    currentFrameId(val) {
+    async currentFrameId(val, oldVal) {
       if (!val) {
         resetObjects(this.digitalCanvas);
         return;
       }
+      this.updateFrameObjects({ frameId: oldVal });
+      const data = this.getDataEditScreen(this.pageSelected.id, oldVal);
+
+      await this.saveEditScreen(data);
 
       this.setSelectedObjectId({ id: '' });
       this.setCurrentObject(null);
       resetObjects(this.digitalCanvas);
 
-      this.handleSwitchFrame();
-      this.drawLayout(this.sheetLayout, EDITION.DIGITAL);
+      this.handleSwitchFrame(this.currentFrame);
+      await this.drawObjectsOnCanvas(this.sheetLayout);
     },
-    triggerApplyLayout() {
+    async triggerApplyLayout() {
+      // to render new layout when user replace frame
       this.setSelectedObjectId({ id: '' });
       this.setCurrentObject(null);
       resetObjects(this.digitalCanvas);
 
-      this.drawLayout(this.sheetLayout, EDITION.DIGITAL);
+      await this.drawObjectsOnCanvas(this.sheetLayout);
     },
 
     frames: {
