@@ -32,3 +32,5 @@ export const MODIFICATION = {
   UPDATE: 1,
   DELETE: 2
 };
+
+export const MIN_IMAGE_SIZE = 500; //px
