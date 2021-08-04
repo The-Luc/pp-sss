@@ -63,10 +63,7 @@
         </v-list-item-content>
         <v-icon
           :style="{
-            visibility:
-              isSubmenuIconDisplayed && item.subItems.length > 0
-                ? 'visible'
-                : 'hidden'
+            visibility: isSubmenuIconVisibled(item) ? 'visible' : 'hidden'
           }"
           class="icon-arrow"
         >

@@ -125,6 +125,14 @@ export default {
      */
     getSelectedSub(item) {
       return item.value === this.selectedVal.value ? this.selectedVal.sub : '';
+    },
+    /**
+     * Check submenu Icon is visibled
+     *
+     * @returns {Boolean} visibled or hidden
+     */
+    isSubmenuIconVisibled(item) {
+      return this.isSubmenuIconDisplayed && item.subItems.length > 0;
     }
   }
 };

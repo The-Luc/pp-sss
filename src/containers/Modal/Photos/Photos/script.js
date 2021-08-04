@@ -36,11 +36,11 @@ export default {
     };
   },
   computed: {
-    albumsSelected() {
-      const idAlbums = this.getSelectedImageIds();
+    selectedAlbums() {
+      const albumIds = this.getSelectedImageIds();
 
-      if (idAlbums !== ID_PHOTO_All) {
-        return albums.filter(item => item.id === idAlbums);
+      if (albumIds !== ID_PHOTO_All) {
+        return albums.filter(item => item.id === albumIds);
       }
       return this.getAllSelectedAlbums();
     },

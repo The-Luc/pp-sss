@@ -11,7 +11,7 @@
     </div>
     <div class="content">
       <AlbumItem
-        v-for="album in albumsSelected"
+        v-for="album in selectedAlbums"
         :key="album.id"
         :name="album.name"
         :display-date="album.displayDate"
