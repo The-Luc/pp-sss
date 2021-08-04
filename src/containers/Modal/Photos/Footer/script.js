@@ -4,6 +4,12 @@ export default {
   components: {
     PpButton
   },
+  props: {
+    isDisabled: {
+      type: Boolean,
+      default: false
+    }
+  },
   methods: {
     /**
      * Select photo by emit to parent
