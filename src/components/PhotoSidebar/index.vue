@@ -1,5 +1,5 @@
 <template>
-  <div class="sidebar-photo">
+  <div v-show="isOpenPhotoSidebar" class="sidebar-photo">
     <transition name="slide-x-transition">
       <PhotoContent
         v-show="isOpenPhotoSidebar"
