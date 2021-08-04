@@ -12,14 +12,9 @@
             :class="['item-style', { active: item.id === selectedItem }]"
             @click="onChange(item)"
           >
-            <template v-if="item.isCustom">
-              <div :style="getStyle(item.style)" class="saved-style-stroke">
-                <div class="saved-style"></div>
-              </div>
-            </template>
-            <template v-else>
-              <img :class="item.className" :src="item.imageUrl" />
-            </template>
+            <div :style="getStyle(item.style)" class="saved-style-stroke">
+              <div class="saved-style"></div>
+            </div>
           </div>
         </v-tab-item>
       </template>
