@@ -11,10 +11,13 @@
             { active: imageStyleOption.id === styleSelected }
           ]"
         >
-          <img
-            :src="imageStyleOption.imageUrl"
+          <div
+            :style="getStyle(imageStyleOption.style)"
+            class="saved-style-stroke"
             @click="onSelect(imageStyleOption)"
-          />
+          >
+            <div class="saved-style"></div>
+          </div>
         </div>
       </div>
       <div class="select-icon-dropdown" @click="onOpenDropdown">
@@ -33,7 +36,9 @@
           :class="['item-style', { active: option.id === styleSelected }]"
           @click="onSelect(option)"
         >
-          <img :class="option.className" :src="option.imageUrl" />
+          <div :style="getStyle(option.style)" class="saved-style-stroke">
+            <div class="saved-style"></div>
+          </div>
         </div>
       </div>
     </div>
