@@ -12,7 +12,6 @@ import layoutData from '@/mock/layouts';
 import { PRINT_LAYOUT_TYPES } from '@/mock/layoutTypes';
 
 const bookId = 1719;
-const keyBookData = `${STORAGE_KEY.bookStorage}-${bookId}`;
 const keyBook = `${STORAGE_KEY.book}-${bookId}`;
 const keyLayoutPrint = `${STORAGE_KEY.printLayout}`;
 const keyLayoutTypePrint = `${STORAGE_KEY.printLayoutType}`;
@@ -21,9 +20,6 @@ const keyFavoritesLayoutPrint = `${STORAGE_KEY.printFavoritesLayout}`;
 
 // TODO: remove when integrate with API
 const setMockBookDataToStorage = () => {
-  // TODO: delete when implemente save data in Digital
-  setItem(keyBookData, JSON.stringify(books[1719]));
-
   const book = window.sessionStorage.getItem(keyBook);
 
   if (!isEmpty(book)) return;
