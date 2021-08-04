@@ -1,3 +1,4 @@
+import { cloneDeep } from 'lodash';
 import { getSuccessWithData, getErrorWithMessages } from '@/common/models';
 import { parseItem } from '@/common/storage/session.helper';
 
@@ -36,7 +37,7 @@ const printService = {
     const data = sectionsAsArray.map((section, sectionIndex) => {
       const sheets = section.sheetIds.map((sheetId, sheetIndex) => {
         const sheet = sheetData[sheetId];
-        const { id, type, thumbnailUrl, link } = sheet;
+        const { id, type, thumbnailUrl, link, media } = sheet;
 
         const pageLeftName = getPageLeftName(sheet, sheetIndex, totalSheets);
         const pageRightName = getPageRightName(sheet, sheetIndex, totalSheets);
@@ -47,7 +48,8 @@ const printService = {
           thumbnailUrl,
           link,
           pageLeftName,
-          pageRightName
+          pageRightName,
+          media
         };
       });
 
@@ -97,7 +99,8 @@ const printService = {
           thumbnailUrl,
           themeId,
           layoutId,
-          spreadInfo
+          spreadInfo,
+          media
         } = sheet;
         const pageLeftName = getPageLeftName(sheet, sheetIndex, totalSheets);
         const pageRightName = getPageRightName(sheet, sheetIndex, totalSheets);
@@ -112,7 +115,8 @@ const printService = {
           layoutId,
           pageLeftName,
           pageRightName,
-          spreadInfo: { ...spreadInfo }
+          spreadInfo: { ...spreadInfo },
+          media
         };
       });
 
@@ -248,6 +252,22 @@ const printService = {
    */
   saveSheetLinkStatus: (sheetId, link) => {
     return printService.updateSheet(sheetId, { link });
+  },
+
+  /**
+   * to save sheet media
+   */
+  saveSheetMedia: (sheetId, media) => {
+    return printService.updateSheet(sheetId, { media });
+  },
+
+  /**
+   * get media of sheet
+   */
+  getSheetMedia: sheetId => {
+    const sheets = cloneDeep(getSheetsFromStorage());
+    const { media } = sheets[sheetId].printData;
+    return media;
   },
 
   /**

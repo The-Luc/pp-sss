@@ -160,5 +160,9 @@ export const getters = {
       sheetProps: sheets[sheetId]
     };
     return data;
+  },
+  [PRINT._GETTERS.GET_SHEET_MEDIA]: ({ sheets, currentSheetId }) => {
+    const media = sheets[currentSheetId]?.media;
+    return isEmpty(media) ? [] : media;
   }
 };
