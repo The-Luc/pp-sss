@@ -8,7 +8,13 @@
       @zoom="onZoom"
     />
     <SidebarSection />
-    <PhotoSidebar @autoflow="handleAutoflow" />
+    <PhotoSidebar
+      :is-show-autoflow="isShowAutoflow"
+      @autoflow="handleAutoflow"
+      @selectedImages="handleSelectedImages"
+    >
+      <SheetMedia v-if="isShowAutoflow" :media="sheetMedia" />
+    </PhotoSidebar>
     <PageEdition />
   </div>
 </template>

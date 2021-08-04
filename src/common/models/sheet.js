@@ -49,6 +49,7 @@ export class SheetEditionData extends SheetBase {
   thumbnailUrl = null;
   link = '';
   isVisited = false;
+  media = [];
 
   /**
    * @param {SheetEditionData} props

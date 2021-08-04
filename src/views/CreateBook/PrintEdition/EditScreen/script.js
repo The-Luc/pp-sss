@@ -20,6 +20,8 @@ import FeedbackBar from '@/containers/HeaderEdition/FeedbackBar';
 import SidebarSection from './SidebarSection';
 import PageEdition from './PageEdition';
 import PhotoSidebar from '@/components/PhotoSidebar';
+import SheetMedia from '@/components/SheetMedia';
+
 import {
   useLayoutPrompt,
   usePopoverCreationTool,
@@ -28,7 +30,9 @@ import {
   useUser,
   useGetterPrintSheet,
   useMenuProperties,
-  useProperties
+  useProperties,
+  useSheet,
+  useActionsEditionSheet
 } from '@/hooks';
 import { EDITION } from '@/common/constants';
 import {
@@ -51,7 +55,8 @@ export default {
     FeedbackBar,
     PageEdition,
     SidebarSection,
-    PhotoSidebar
+    PhotoSidebar,
+    SheetMedia
   },
   setup() {
     const { pageSelected, updateVisited } = useLayoutPrompt(EDITION.PRINT);
@@ -64,6 +69,8 @@ export default {
     const { isOpenMenuProperties } = useMenuProperties();
     const { setPropertyById } = useProperties();
     const { updateSavingStatus } = useSavingStatus();
+    const { sheetMedia } = useSheet();
+    const { updateSheetMedia } = useActionsEditionSheet();
 
     return {
       pageSelected,
@@ -77,7 +84,9 @@ export default {
       getDataEditScreen,
       isOpenMenuProperties,
       setPropertyById,
-      updateSavingStatus
+      updateSavingStatus,
+      sheetMedia,
+      updateSheetMedia
     };
   },
   computed: {
@@ -85,7 +94,10 @@ export default {
       printThemeSelected: PRINT_GETTERS.DEFAULT_THEME_ID,
       selectedToolName: APP_GETTERS.SELECTED_TOOL_NAME,
       getObjectsAndBackground: PRINT_GETTERS.GET_OBJECTS_AND_BACKGROUNDS
-    })
+    }),
+    isShowAutoflow() {
+      return !isEmpty(this.sheetMedia);
+    }
   },
   watch: {
     pageSelected: {
@@ -231,6 +243,14 @@ export default {
           this.setPropertyById({ id: object.id, prop });
         });
       });
+    },
+    /**
+     * Selected images and save in sheet
+     * @param   {Array}  images  selected images
+     */
+    async handleSelectedImages(images) {
+      const reversedImages = images.reverse();
+      await this.updateSheetMedia({ images: reversedImages });
     }
   }
 };

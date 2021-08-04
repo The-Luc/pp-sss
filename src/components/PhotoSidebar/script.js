@@ -21,6 +21,12 @@ export default {
       isOpenModal: false
     };
   },
+  props: {
+    isShowAutoflow: {
+      type: Boolean,
+      default: false
+    }
+  },
   methods: {
     /**
      * Close photo content in sidebar
@@ -37,8 +43,8 @@ export default {
     /**
      * Add photos on selected
      */
-    onSelect() {
-      console.log('selected');
+    onSelect(images) {
+      this.$emit('selectedImages', images);
     },
     /**
      * Close modal when cancel button
