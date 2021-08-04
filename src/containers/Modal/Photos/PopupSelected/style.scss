@@ -1,0 +1,16 @@
+.popup {
+  width: 100%;
+  height: 70px;
+  background-color: $color-white;
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  .amount-selected {
+    font-size: 16px;
+    font-family: $font-500;
+    color: $color-stoodio-blue;
+  }
+}

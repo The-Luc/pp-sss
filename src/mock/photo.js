@@ -126,3 +126,5 @@ export const albums = [
   albumBase7,
   albumBase8
 ];
+
+export const dumpPhotos = [photo1, photo2, photo3];

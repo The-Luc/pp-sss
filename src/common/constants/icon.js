@@ -13,6 +13,7 @@ import TEXT_LOWERCASE from '@/assets/icons/text-lowercase.svg';
 import TEXT_CAPITALIZE from '@/assets/icons/text-capitalize.svg';
 import ACTIVE_MENU from '@/assets/icons/active-menu.svg';
 import EYE_DROPPER from '@/assets/icons/eye-dropper.svg';
+import ARROW_RIGHT from '@/assets/icons/collapse.svg';
 
 export const ICON_LOCAL = {
   ARROW_LEFT,
@@ -29,5 +30,6 @@ export const ICON_LOCAL = {
   TEXT_LOWERCASE,
   TEXT_CAPITALIZE,
   ACTIVE_MENU,
-  EYE_DROPPER
+  EYE_DROPPER,
+  ARROW_RIGHT
 };

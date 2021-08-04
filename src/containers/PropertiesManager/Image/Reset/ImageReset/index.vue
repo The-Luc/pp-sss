@@ -4,6 +4,7 @@
       <label class="properties-title">Image Reset:</label>
       <div class="d-flex justify-space-between">
         <PpButton
+          :is-disabled="disabled"
           class="w-100 btn-detail button-property"
           @click.native="onClickCropImage"
         >
@@ -13,6 +14,7 @@
           </span>
         </PpButton>
         <PpButton
+          :is-disabled="disabled"
           class="w-100 btn-detail button-property"
           @click.native="onClickRemoveImage"
         >

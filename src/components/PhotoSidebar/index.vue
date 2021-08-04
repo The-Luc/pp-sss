@@ -1,22 +1,22 @@
 <template>
-  <div class="sidebar-photo">
-    <transition name="slide-x-transition">
+  <transition name="slide-x-transition">
+    <div v-show="isOpenPhotoSidebar" class="sidebar-photo">
       <PhotoContent
-        v-show="isOpenPhotoSidebar"
-        :show-autoflow="false"
+        :show-autoflow="true"
         @click="closePhotoContent"
         @addPhoto="openModalAddPhoto"
         @autoflow="autoflowPhotos"
       >
+        <slot />
       </PhotoContent>
-    </transition>
 
-    <ModalAddPhotos
-      :is-open-modal.sync="isOpenModal"
-      @select="onSelect"
-      @cancel="onCancel"
-    />
-  </div>
+      <ModalAddPhotos
+        :is-open-modal.sync="isOpenModal"
+        @select="onSelect"
+        @cancel="onCancel"
+      />
+    </div>
+  </transition>
 </template>
 
 <script src="./script.js"></script>
