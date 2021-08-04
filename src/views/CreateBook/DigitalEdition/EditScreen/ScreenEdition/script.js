@@ -1701,7 +1701,7 @@ export default {
       deep: true,
       async handler(val, oldVal) {
         if (val?.id !== oldVal?.id) {
-          this.updateFrameObjects(this.currentFrameId);
+          this.updateFrameObjects({ frameId: this.currentFrameId });
           const data = this.getDataEditScreen(oldVal.id, this.currentFrameId);
           await this.saveEditScreen(data);
 
