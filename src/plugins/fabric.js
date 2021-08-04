@@ -80,47 +80,50 @@ const renderFill = function(ctx) {
   if (!elementToDraw) {
     return;
   }
-  const scaleX = this._filterScalingX,
-    scaleY = this._filterScalingY,
-    w = this.width,
-    h = this.height,
-    min = Math.min,
-    max = Math.max,
-    // crop values cannot be lesser than 0.
-    cropX = max(this.cropX, 0),
-    cropY = max(this.cropY, 0),
-    elWidth = elementToDraw.naturalWidth || elementToDraw.width,
-    elHeight = elementToDraw.naturalHeight || elementToDraw.height,
-    sX = cropX * scaleX,
-    sY = cropY * scaleY,
-    // the width height cannot exceed element width/height, starting from the crop offset.
-    sW = min(w * scaleX, elWidth - sX),
-    sH = min(h * scaleY, elHeight - sY),
-    maxDestW = min(w, elWidth / scaleX - cropX),
-    maxDestH = min(h, elHeight / scaleY - cropY);
+
+  if (!this.zoomLevel) this.zoomLevel = 0;
+  const zoomLevel = 1 + this.zoomLevel;
+
+  const min = Math.min;
+  const max = Math.max;
+
+  const w = this.width;
+  const h = this.height;
+
+  // crop values cannot be lesser than 0.
+  const cropX = max(this.cropX, 0);
+  const cropY = max(this.cropY, 0);
+
+  const scaleX = this._filterScalingX;
+  const scaleY = this._filterScalingY;
+
+  const elWidth = elementToDraw.naturalWidth || elementToDraw.width;
+  const elHeight = elementToDraw.naturalHeight || elementToDraw.height;
 
   const offsetX = this.strokeWidth / this.scaleX;
-
   const offsetY = this.strokeWidth / this.scaleY;
+  const XYRatio = this.scaleX / this.scaleY; // if scaleX >> scaleY -> y should increase, and vice versa
 
-  // if scaleX >> scaleY -> y should increase, and vice versa
-  const XYRatio = this.scaleX / this.scaleY;
+  const fWidth = (w * this.scaleX) / zoomLevel;
+  const fHeight = (h * this.scaleY) / zoomLevel;
+  const diffWidth = (elWidth - fWidth) / 2;
+  const diffHeight = (elHeight - fHeight) / 2;
 
-  const x = -w / 2 + offsetX / 2;
-  const y = -h / 2 + (offsetX / 2) * XYRatio;
+  const sX = this.hasImage ? diffWidth : cropX * scaleX;
+  const sY = this.hasImage ? diffHeight : cropY * scaleY;
+  const sW = this.hasImage
+    ? (w * this.scaleX) / zoomLevel
+    : min(w * scaleX, elWidth - sX); // the width height cannot exceed element width/height, starting from the crop offset.
+  const sH = this.hasImage
+    ? (h * this.scaleY) / zoomLevel
+    : min(h * scaleY, elHeight - sY);
 
-  elementToDraw &&
-    ctx.drawImage(
-      elementToDraw,
-      sX,
-      sY,
-      sW,
-      sH,
-      x,
-      y,
-      maxDestW - offsetX,
-      maxDestH - offsetY
-    );
+  const dX = -w / 2 + offsetX / 2;
+  const dY = -h / 2 + (offsetX / 2) * XYRatio;
+  const dW = min(w, elWidth / scaleX - cropX) - offsetX;
+  const dH = min(h, elHeight / scaleY - cropY) - offsetY;
+
+  ctx.drawImage(elementToDraw, sX, sY, sW, sH, dX, dY, dW, dH);
 };
 
 /**

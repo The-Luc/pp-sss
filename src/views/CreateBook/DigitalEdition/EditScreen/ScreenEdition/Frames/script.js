@@ -8,7 +8,7 @@ import {
   useFrame,
   useFrameAdd,
   useModal,
-  useObjectProperties
+  useMenuProperties
 } from '@/hooks';
 
 import { MODAL_TYPES } from '@/common/constants';
@@ -47,7 +47,7 @@ export default {
     const { moveFrame } = useFrameOrdering();
     const { setCurrentFrameId } = useFrame();
     const { handleAddFrame } = useFrameAdd();
-    const { toggleMenuProperties } = useObjectProperties();
+    const { toggleMenuProperties } = useMenuProperties();
 
     return {
       toggleModal,

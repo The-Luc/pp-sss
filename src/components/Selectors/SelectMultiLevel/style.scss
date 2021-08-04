@@ -14,5 +14,16 @@
         display: block;
       }
     }
+
+    .icon-arrow {
+      color: $color-stoodio-toolbartext;
+    }
+
+    &:hover,
+    &.v-list-item--active {
+      .icon-arrow {
+        color: $color-white;
+      }
+    }
   }
 }

@@ -43,8 +43,7 @@ export const state = {
     text: true,
     background: true,
     shape: true,
-    clipArt: true,
-    autosave: true
+    clipArt: true
   },
   generalInfo: {
     bookId: '',
@@ -55,5 +54,7 @@ export const state = {
   },
   user: { id: null, role: null },
   savedTextStyles: [],
-  savedImageStyles: []
+  savedImageStyles: [],
+  savingStatus: '',
+  isOpenPhotoSidebar: false
 };

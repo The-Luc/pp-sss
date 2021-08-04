@@ -10,6 +10,7 @@ import {
 import {
   MODAL_TYPES,
   ROLE,
+  SAVE_STATUS,
   SAVING_DURATION,
   TOOL_NAME
 } from '@/common/constants';
@@ -18,19 +19,30 @@ import Header from '@/containers/HeaderEdition/Header';
 import FeedbackBar from '@/containers/HeaderEdition/FeedbackBar';
 import SidebarSection from './SidebarSection';
 import PageEdition from './PageEdition';
+import PhotoSidebar from '@/components/PhotoSidebar';
 import {
   useLayoutPrompt,
   usePopoverCreationTool,
   useInfoBar,
   useMutationPrintSheet,
   useUser,
-  useGetterPrintSheet
+  useGetterPrintSheet,
+  useMenuProperties,
+  useProperties
 } from '@/hooks';
 import { EDITION } from '@/common/constants';
-import { isEmpty, isPositiveInteger, getEditionListPath } from '@/common/utils';
+import {
+  isEmpty,
+  isPositiveInteger,
+  getEditionListPath,
+  activeCanvas
+} from '@/common/utils';
 
 import printService from '@/api/print';
 import { useSaveData } from './PageEdition/composables';
+import { getActivateImages, setImageSrc } from '@/common/fabricObjects';
+import { useSavingStatus } from '../../composables';
+import { dumpPhotos } from '@/mock/photo';
 
 export default {
   components: {
@@ -38,7 +50,8 @@ export default {
     Header,
     FeedbackBar,
     PageEdition,
-    SidebarSection
+    SidebarSection,
+    PhotoSidebar
   },
   setup() {
     const { pageSelected, updateVisited } = useLayoutPrompt(EDITION.PRINT);
@@ -48,6 +61,9 @@ export default {
     const { currentUser } = useUser();
     const { currentSection } = useGetterPrintSheet();
     const { savePrintEditScreen, getDataEditScreen } = useSaveData();
+    const { isOpenMenuProperties } = useMenuProperties();
+    const { setPropertyById } = useProperties();
+    const { updateSavingStatus } = useSavingStatus();
 
     return {
       pageSelected,
@@ -58,13 +74,15 @@ export default {
       currentUser,
       currentSection,
       savePrintEditScreen,
-      getDataEditScreen
+      getDataEditScreen,
+      isOpenMenuProperties,
+      setPropertyById,
+      updateSavingStatus
     };
   },
   computed: {
     ...mapGetters({
       printThemeSelected: PRINT_GETTERS.DEFAULT_THEME_ID,
-      isOpenMenuProperties: APP_GETTERS.IS_OPEN_MENU_PROPERTIES,
       selectedToolName: APP_GETTERS.SELECTED_TOOL_NAME,
       getObjectsAndBackground: PRINT_GETTERS.GET_OBJECTS_AND_BACKGROUNDS
     })
@@ -172,8 +190,11 @@ export default {
      * Save print canvas and change view
      */
     async onClickSavePrintCanvas() {
+      this.updateSavingStatus({ status: SAVE_STATUS.START });
       const data = this.getDataEditScreen(this.pageSelected.id);
       await this.savePrintEditScreen(data);
+
+      this.updateSavingStatus({ status: SAVE_STATUS.END });
 
       setTimeout(() => {
         this.$router.push(
@@ -188,6 +209,28 @@ export default {
      */
     onZoom({ zoom }) {
       this.setInfoBar({ zoom });
+    },
+
+    /**
+     * Handle autoflow
+     */
+    handleAutoflow() {
+      activeCanvas.discardActiveObject();
+      const objects = getActivateImages();
+      const images = dumpPhotos;
+      if (objects.length > images.length) {
+        images.forEach((image, index) => {
+          setImageSrc(objects[index], image.imageUrl, prop => {
+            this.setPropertyById({ id: objects[index].id, prop });
+          });
+        });
+        return;
+      }
+      objects.forEach((object, index) => {
+        setImageSrc(object, images[index].imageUrl, prop => {
+          this.setPropertyById({ id: object.id, prop });
+        });
+      });
     }
   }
 };

@@ -13,6 +13,7 @@ export const TOOL_NAME = {
   DIGITAL_BACKGROUNDS: 'DigitalBackgrounds',
   SHAPES: 'Shapes',
   ACTIONS: 'Actions',
+  PHOTOS: 'Photos',
   UNDO: 'Undo',
   REDO: 'Redo'
 };
@@ -74,5 +75,6 @@ export const NON_ELEMENT_PROPERTIES_TOOLS = [
 export const ONE_CLICK_TOOLS = [
   TOOL_NAME.DELETE,
   TOOL_NAME.UNDO,
-  TOOL_NAME.REDO
+  TOOL_NAME.REDO,
+  TOOL_NAME.PHOTOS
 ];

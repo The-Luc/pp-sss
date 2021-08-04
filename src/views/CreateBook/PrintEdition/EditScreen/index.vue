@@ -8,6 +8,7 @@
       @zoom="onZoom"
     />
     <SidebarSection />
+    <PhotoSidebar @autoflow="handleAutoflow" />
     <PageEdition />
   </div>
 </template>
