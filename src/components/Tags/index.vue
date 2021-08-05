@@ -5,11 +5,11 @@
       close
       label
       close-icon="mdi-close"
-      @click:close="active = false"
+      @click:close="onclick(keyWord)"
     >
       {{ keyWord }}
     </v-chip>
-    <v-chip v-else class="inactive" @click.native="active = true">
+    <v-chip v-else class="inactive" @click.native="onclick(keyWord)">
       {{ keyWord }}
     </v-chip>
   </div>

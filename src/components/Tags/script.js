@@ -11,5 +11,10 @@ export default {
       active: true
     };
   },
-  methods: {}
+  methods: {
+    onclick(keyWord) {
+      this.active = !this.active;
+      this.$emit('click', { keyWord, active: this.active });
+    }
+  }
 };

@@ -4,6 +4,7 @@ import Photos from './Photos';
 import Smartbox from './Smartbox';
 import { modifyItems } from '@/common/utils';
 import { MODIFICATION } from '@/common/constants';
+import { usePhoto } from '@/views/CreateBook/composables';
 
 export default {
   components: {
@@ -11,6 +12,13 @@ export default {
     Footer,
     Photos,
     Smartbox
+  },
+  setup() {
+    const { isPhotoVisited } = usePhoto();
+
+    return {
+      isPhotoVisited
+    };
   },
   data() {
     return {
