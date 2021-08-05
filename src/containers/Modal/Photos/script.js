@@ -1,6 +1,7 @@
 import Modal from '@/containers/Modal';
 import Footer from './Footer';
 import Photos from './Photos';
+import Add from './Add';
 
 import { insertItemsToArray, removeItemsFormArray } from '@/common/utils';
 
@@ -8,17 +9,24 @@ export default {
   components: {
     Modal,
     Footer,
-    Photos
+    Photos,
+    Add
   },
   data() {
     return {
-      selectedImages: []
+      selectedImages: [],
+      currentTab: ''
     };
   },
   props: {
     isOpenModal: {
       type: Boolean,
       default: false
+    }
+  },
+  computed: {
+    isShowFooter() {
+      return this.currentTab !== 'add';
     }
   },
   methods: {
@@ -55,8 +63,10 @@ export default {
     },
     /**
      * Event change tab of modal photo
+     * @param   {String}  tag  current tag
      */
-    onChangeTab() {
+    onChangeTab(tab) {
+      this.currentTab = tab;
       this.selectedImages = [];
     }
   }
