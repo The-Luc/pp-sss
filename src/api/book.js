@@ -5,7 +5,7 @@ import {
   BookPrintDetail,
   BookDigitalDetail,
   SheetPrintData,
-  SheetDigitalData
+  SheetDigitalDetail
 } from '@/common/models';
 import { SheetEntity } from '@/common/models/entities';
 
@@ -126,16 +126,19 @@ export const getBookPrint = async bookId => {
 export const getBookDigital = async bookId => {
   const {
     book,
-    sectionIds,
     sectionsAsObject,
     sheets,
     sections
   } = await bookService.getBook(bookId);
-  const bookDigital = new BookDigitalDetail(book);
+
+  const bookDigital = new BookDigitalDetail({
+    ...book,
+    themeId: book.digitalData.themeId
+  });
 
   const sheetsDigital = sheets.map(
     s =>
-      new SheetDigitalData({
+      new SheetDigitalDetail({
         ...s,
         ...s.digitalData
       })
@@ -145,7 +148,6 @@ export const getBookDigital = async bookId => {
 
   return {
     book: bookDigital,
-    sectionIds,
     sections: sectionsAsObject,
     sheets: sheetsAsObject,
     sectionsAsArray: sections

@@ -17,19 +17,6 @@ export const useSavingStatus = () => {
   return { savingStatus, updateSavingStatus };
 };
 
-export const usePhotoSidebar = () => {
-  const { isOpenPhotoSidebar } = useGetters({
-    isOpenPhotoSidebar: APP_GETTERS.IS_OPEN_PHOTO_SIDEBAR
-  });
-  const { togglePhotos } = useMutations({
-    togglePhotos: APP_MUTATES.TOGGLE_PHOTO_SIDEBAR
-  });
-  return {
-    isOpenPhotoSidebar,
-    togglePhotos
-  };
-};
-
 export const usePhoto = () => {
   const { isPhotoVisited } = useGetters({
     isPhotoVisited: APP_GETTERS.IS_PHOTO_VISITED

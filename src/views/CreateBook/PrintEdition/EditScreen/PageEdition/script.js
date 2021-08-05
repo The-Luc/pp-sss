@@ -87,6 +87,7 @@ import YRuler from './Rulers/YRuler';
 import {
   AUTOSAVE_INTERVAL,
   COPY_OBJECT_KEY,
+  MIN_IMAGE_SIZE,
   PASTE,
   THUMBNAIL_IMAGE_CONFIG
 } from '@/common/constants/config';
@@ -191,22 +192,21 @@ export default {
     pageSelected: {
       deep: true,
       async handler(val, oldVal) {
-        if (val?.id !== oldVal?.id) {
-          const data = this.getDataEditScreen(oldVal.id);
-          await this.savePrintEditScreen(data);
+        if (val?.id === oldVal?.id) return;
 
-          // get data either from API or sessionStorage
-          await this.getDataCanvas();
-          this.countPaste = 1;
-          this.setSelectedObjectId({ id: '' });
-          this.setCurrentObject(null);
-          this.updateCanvasSize();
-          resetObjects(window.printCanvas);
+        this.saveData(oldVal.id);
 
-          await this.drawObjectsOnCanvas(this.sheetLayout);
+        // get data either from API or sessionStorage
+        await this.getDataCanvas();
+        this.countPaste = 1;
+        this.setSelectedObjectId({ id: '' });
+        this.setCurrentObject(null);
+        this.updateCanvasSize();
+        resetObjects(window.printCanvas);
 
-          this.addPageNumber();
-        }
+        await this.drawObjectsOnCanvas(this.sheetLayout);
+
+        this.addPageNumber();
       }
     },
     zoom(newVal, oldVal) {
@@ -273,12 +273,20 @@ export default {
 
       this.updateSavingStatus({ status: SAVE_STATUS.START });
 
-      const data = this.getDataEditScreen(this.pageSelected.id);
-      await this.savePrintEditScreen(data);
+      await this.saveData(this.pageSelected.id);
 
       this.updateSavingStatus({ status: SAVE_STATUS.END });
 
       this.isCanvasChanged = false;
+    },
+    /**
+     *
+     * @param {String | Number} sheetId id of sheet need to save data
+     */
+    async saveData(sheetId) {
+      const data = this.getDataEditScreen(sheetId);
+
+      await this.savePrintEditScreen(data);
     },
 
     /**
@@ -571,12 +579,20 @@ export default {
     },
 
     /**
+     * Fired when objects on canvas are modified, added, or removed
+     */
+    handleCanvasChanged() {
+      // update thumbnail
+      this.getThumbnailUrl();
+
+      // set state change for autosave
+      this.isCanvasChanged = true;
+    },
+
+    /**
      * call this function to update the active thumbnail
      */
     getThumbnailUrl: debounce(function() {
-      // TODO: -Luc Temporary setting, revise it later
-      this.isCanvasChanged = true;
-
       const thumbnailUrl = window.printCanvas.toDataURL({
         quality: THUMBNAIL_IMAGE_CONFIG.QUALITY,
         format: THUMBNAIL_IMAGE_CONFIG.FORMAT,
@@ -607,8 +623,8 @@ export default {
         'selection:cleared': this.handleClearSelected,
         'selection:created': this.objectSelected,
         'object:modified': this.handleBringToFrontPageNumber,
-        'object:added': this.getThumbnailUrl,
-        'object:removed': this.getThumbnailUrl,
+        'object:added': this.handleCanvasChanged,
+        'object:removed': this.handleCanvasChanged,
 
         'object:scaled': ({ target }) => {
           const { width, height } = target;
@@ -635,7 +651,12 @@ export default {
                   this.addText(left, top, width, height);
                 }
                 if (this.awaitingAdd === OBJECT_TYPE.IMAGE) {
-                  this.addImageBox(left, top, width, height);
+                  this.addImageBox(
+                    left,
+                    top,
+                    Math.max(width, MIN_IMAGE_SIZE),
+                    Math.max(height, MIN_IMAGE_SIZE)
+                  );
                 }
                 this.awaitingAdd = '';
               }
@@ -681,7 +702,6 @@ export default {
      * Event handle bring to front page number
      */
     handleBringToFrontPageNumber() {
-      this.getThumbnailUrl;
       updateBringToFrontPageNumber(window.printCanvas);
     },
     /**
@@ -840,8 +860,7 @@ export default {
 
       applyTextBoxProperties(activeObj, prop);
 
-      // update thumbnail
-      this.getThumbnailUrl();
+      this.handleCanvasChanged();
 
       this.setCurrentObject(this.currentObjects?.[activeObj?.id]);
     },
@@ -1311,8 +1330,7 @@ export default {
 
       updateElement(element, prop, window.printCanvas);
 
-      // update thumbnail
-      this.getThumbnailUrl();
+      this.handleCanvasChanged();
 
       this.setCurrentObject(this.currentObjects?.[element?.id]);
     },
@@ -1353,8 +1371,8 @@ export default {
         fabricObjects[oldIndex + numBackground].moveTo(
           newIndex + numBackground
         );
-        //update thumbnail
-        this.getThumbnailUrl();
+
+        this.handleCanvasChanged();
       };
 
       if (actionName === ARRANGE_SEND.BACK && currentObjectIndex === 0) return;
@@ -1441,7 +1459,6 @@ export default {
 
       const textEvents = {
         changeTextProperties: prop => {
-          this.getThumbnailUrl();
           this.changeTextProperties(prop);
         }
       };
@@ -1523,7 +1540,8 @@ export default {
     },
 
     /**
-     * create and render objects on the canvas
+     * Create and render objects on the canvas
+     *
      * @param {Object} objects ppObjects that will be rendered
      */
     async drawObjectsOnCanvas(objects) {

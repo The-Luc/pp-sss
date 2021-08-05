@@ -53,14 +53,21 @@
     }
   }
   &.end-saving {
-    .content:last-child {
+    .content:first-child {
       visibility: visible;
-      opacity: 1;
+      opacity: 0;
+      transition: opacity 0.3s ease-out 0.7s;
     }
 
     .bar::before {
       width: 100%;
-      transition: width 0.2s ease-out;
+      transition: width 0.3s ease-in;
+    }
+
+    .content:last-child {
+      visibility: visible;
+      opacity: 1;
+      transition: opacity 0.3s ease-in-out 0.7s;
     }
   }
 }

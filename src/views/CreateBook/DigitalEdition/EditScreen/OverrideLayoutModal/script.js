@@ -3,18 +3,22 @@ import Modal from '@/containers/Modal';
 import { ACTIONS as DIGITAL_ACTIONS } from '@/store/modules/digital/const';
 import PpButton from '@/components/Buttons/Button';
 import { useFrame, useFrameReplace, useModal } from '@/hooks';
+import { useObject } from '../composables';
 
 export default {
   setup() {
     const { handleReplaceFrame } = useFrameReplace();
     const { currentFrameId, setSupplementalLayoutId } = useFrame();
     const { toggleModal, modalData } = useModal();
+    const { updateObjectsToStore } = useObject();
+
     return {
       handleReplaceFrame,
       currentFrameId,
       setSupplementalLayoutId,
       modalData,
-      toggleModal
+      toggleModal,
+      updateObjectsToStore
     };
   },
   components: {
@@ -32,6 +36,7 @@ export default {
       if (sheetData.addNewFrame) {
         const frame = sheetData.layout?.frames[0] || [];
 
+        this.updateObjectsToStore({ objects: frame.objects });
         this.handleReplaceFrame({ frame, frameId: this.currentFrameId });
 
         this.setSupplementalLayoutId({ id: sheetData.layout.id });

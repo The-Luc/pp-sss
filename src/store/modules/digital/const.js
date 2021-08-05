@@ -19,6 +19,7 @@ class GetterClass extends BaseObject {
   GET_OBJECTS = 'getObjectsBySheetId';
   SHEET_LAYOUT = 'sheetLayout';
   GET_SHEETS = 'getSheets';
+  GET_DATA_EDIT_SCREEN = 'getDataEditScreen';
   BACKGROUNDS_NO_LAYOUT = 'getUserSelectedBackground';
   BACKGROUNDS_PROPERTIES = 'getPropertiesOfAllBackgrounds';
   SECTIONS_SHEETS = 'getSectionsAndSheets';
@@ -46,7 +47,7 @@ class ActionClass extends BaseObject {
   GET_DATA_EDIT = 'getDataForEditPage';
   GET_DATA_CANVAS = 'getDataForCanvas';
   UPDATE_SHEET_THEME_LAYOUT = 'updateSheetThemeLayout';
-  UPDATE_LAYOUT_OBJ_TO_STORE = 'updateLayoutObjectToStore';
+  UPDATE_OBJECTS_TO_STORE = 'updateObjectsToStore';
 
   constructor(props) {
     super(props);
@@ -92,6 +93,7 @@ class MutationClass extends BaseObject {
   REPLACE_SUPPLEMENTAL_FRAME = 'replaceSupplementalFrame';
   MOVE_FRAME = 'moveFrame';
   SET_TITLE_FRAME = 'setTitleFrame';
+  UPDATE_OBJECTS_TO_FRAME = 'updateObjectsToFrame';
 
   constructor(props) {
     super(props);

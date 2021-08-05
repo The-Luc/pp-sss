@@ -128,6 +128,4 @@ export const albums = [
   albumBase8
 ];
 
-export const dumpPhotos = [photo1, photo2, photo3];
-
 export const photoList = photos;

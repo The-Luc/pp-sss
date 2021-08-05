@@ -18,11 +18,13 @@ import {
   usePopoverCreationTool,
   useMutationDigitalSheet,
   useUser,
-  useGetterDigitalSheet
+  useGetterDigitalSheet,
+  useFrame
 } from '@/hooks';
 import { isEmpty, isPositiveInteger, getEditionListPath } from '@/common/utils';
 import { COPY_OBJECT_KEY } from '@/common/constants/config';
 import digitalService from '@/api/digital';
+import { useSaveData } from './composables';
 
 export default {
   setup() {
@@ -31,6 +33,8 @@ export default {
     const { setCurrentSheetId } = useMutationDigitalSheet();
     const { currentUser } = useUser();
     const { currentSection } = useGetterDigitalSheet();
+    const { currentFrameId, updateFrameObjects } = useFrame();
+    const { saveEditScreen, getDataEditScreen } = useSaveData();
 
     return {
       pageSelected,
@@ -38,7 +42,11 @@ export default {
       setToolNameSelected,
       setCurrentSheetId,
       currentUser,
-      currentSection
+      currentSection,
+      currentFrameId,
+      updateFrameObjects,
+      saveEditScreen,
+      getDataEditScreen
     };
   },
   components: {
@@ -149,7 +157,11 @@ export default {
     /**
      * Save digital canvas and change view
      */
-    onClickSaveDigitalCanvas() {
+    async onClickSaveDigitalCanvas() {
+      this.updateFrameObjects({ frameId: this.currentFrameId });
+      const data = this.getDataEditScreen(this.pageSelected.id);
+      await this.saveEditScreen(data);
+
       this.$router.push(
         getEditionListPath(this.$route.params.bookId, EDITION.DIGITAL)
       );

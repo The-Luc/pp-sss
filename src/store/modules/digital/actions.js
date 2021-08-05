@@ -36,38 +36,32 @@ export const actions = {
     });
   },
   async [DIGITAL._ACTIONS.GET_DATA_CANVAS]({ state, commit }) {
-    const queryObjectResult = await digitalService.getSheetObjects(
+    // rest the store
+    commit(DIGITAL._MUTATES.SET_OBJECTS, { objectList: [] });
+    commit(DIGITAL._MUTATES.SET_BACKGROUNDS, { background: {} });
+
+    // update frames and frameIds
+    // TODO:-Luc check await function
+    const queryFramesResult = await digitalService.getFrames(
       state.book.id,
       state.sheets[state.currentSheetId].sectionId,
       state.currentSheetId
     );
 
-    if (isEmpty(queryObjectResult.data)) {
-      commit(DIGITAL._MUTATES.SET_OBJECTS, { objectList: [] });
-      commit(DIGITAL._MUTATES.SET_BACKGROUNDS, { background: {} });
-      return;
-    }
+    const data = queryFramesResult.data;
 
-    commit(DIGITAL._MUTATES.SET_OBJECTS, {
-      objectList: queryObjectResult.data
-    });
-
-    const backgrounds = queryObjectResult.data.filter(
-      o => o.type === OBJECT_TYPE.BACKGROUND
-    );
-
-    backgrounds.forEach(bg =>
-      commit(DIGITAL._MUTATES.SET_BACKGROUNDS, { background: bg })
-    );
+    commit(DIGITAL._MUTATES.SET_FRAMES, { framesList: data });
   },
   [DIGITAL._ACTIONS.UPDATE_SHEET_THEME_LAYOUT](
     { commit, dispatch },
     { themeId, layout }
   ) {
-    const updateStorePayload = {
-      layout: layout.frames[0]
-    };
-    dispatch(DIGITAL._ACTIONS.UPDATE_LAYOUT_OBJ_TO_STORE, updateStorePayload);
+    const objects = layout.frames[0].objects.map(o => ({
+      ...o,
+      id: uniqueId()
+    }));
+
+    dispatch(DIGITAL._ACTIONS.UPDATE_OBJECTS_TO_STORE, { objects });
 
     // Update sheet fields
     commit(DIGITAL._MUTATES.SET_SHEET_DATA, {
@@ -84,52 +78,18 @@ export const actions = {
     // set Frames, frameIds and activeFrame
     commit(DIGITAL._MUTATES.SET_FRAMES, { framesList: frames });
   },
-  [DIGITAL._ACTIONS.UPDATE_LAYOUT_OBJ_TO_STORE](
-    { state, commit },
-    { layout, pagePosition }
-  ) {
-    const currentSheet = state.sheets[state.currentSheetId];
-    let currentPosition = pagePosition; // Check whether user has add single page or not. Value: left or right with single page else undefine
-
-    if (currentSheet.type === SHEET_TYPE.FRONT_COVER) {
-      // Front cover always has the right page
-      currentPosition = 'right';
-    }
-
-    if (currentSheet.type === SHEET_TYPE.BACK_COVER) {
-      // Back cover always has the left page
-      currentPosition = 'left';
-    }
-
+  [DIGITAL._ACTIONS.UPDATE_OBJECTS_TO_STORE]({ commit }, { objects }) {
     // Get background object
-    const [backgroundObj] = layout.objects.filter(
+    const [backgroundObj] = objects.filter(
       obj => obj.type === OBJECT_TYPE.BACKGROUND
     );
 
-    if (!isEmpty(backgroundObj)) {
-      commit(DIGITAL._MUTATES.SET_BACKGROUNDS, { background: backgroundObj });
-    }
+    commit(DIGITAL._MUTATES.SET_BACKGROUNDS, { background: backgroundObj });
 
     // Get object(s) rest
-    const restObjs = layout.objects.filter(
+    const objectList = objects.filter(
       obj => obj.type !== OBJECT_TYPE.BACKGROUND
     );
-    const objectList = restObjs.map(obj => ({
-      ...obj,
-      position: currentPosition,
-      id: uniqueId(`${obj.id}`)
-    }));
-
-    // Remove objects when user override layout
-    if (currentPosition && !isHalfSheet(currentSheet)) {
-      commit(DIGITAL._MUTATES.REMOVE_OBJECTS, { currentPosition });
-
-      if (Object.values(state.objects).length > 0) {
-        Object.values(state.objects).forEach(obj => {
-          objectList.push(obj);
-        });
-      }
-    }
 
     commit(DIGITAL._MUTATES.SET_OBJECTS, { objectList });
   }

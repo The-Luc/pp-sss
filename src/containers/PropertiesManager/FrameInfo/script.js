@@ -2,7 +2,7 @@ import PpSelect from '@/components/Selectors/Select';
 import Properties from '@/components/Properties/BoxProperties';
 import InputTitle from '@/components/InputTitle';
 
-import { DEPLAY_OPTION } from '@/common/constants';
+import { DELAY_OPTION } from '@/common/constants';
 import { useFrame, useFrameTitle } from '@/hooks';
 
 export default {
@@ -22,17 +22,13 @@ export default {
   },
   data() {
     return {
-      delayOpts: DEPLAY_OPTION,
-      componentKey: true,
-      frameTitle: ''
+      delayOpts: DELAY_OPTION,
+      componentKey: true
     };
   },
-  watch: {
-    currentFrame(val, oldVal) {
-      if (val.frameTitle !== oldVal.frameTitle) {
-        this.frameTitle = val.frameTitle;
-        this.componentKey = !this.componentKey;
-      }
+  computed: {
+    frameTitle() {
+      return this.currentFrame?.frameTitle || '';
     }
   },
   methods: {

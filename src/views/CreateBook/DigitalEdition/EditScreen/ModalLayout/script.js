@@ -6,6 +6,7 @@ import { useFrame, useFrameAdd, useFrameReplace, useModal } from '@/hooks';
 
 // for digital. After implement saving feature, this code can be remove
 import { DIGITAL_LAYOUT_TYPES as LAYOUT_TYPES } from '@/mock/layoutTypes';
+import { useObject } from '../composables';
 
 export default {
   components: {
@@ -16,12 +17,14 @@ export default {
     const { handleAddFrame } = useFrameAdd();
     const { handleReplaceFrame } = useFrameReplace();
     const { setSupplementalLayoutId } = useFrame();
+    const { updateObjectsToStore } = useObject();
     return {
       toggleModal,
       modalData,
       handleAddFrame,
       handleReplaceFrame,
-      setSupplementalLayoutId
+      setSupplementalLayoutId,
+      updateObjectsToStore
     };
   },
   data() {
@@ -55,6 +58,7 @@ export default {
 
       // if layoutId existed: user is replacing layout
       if (frameId) {
+        this.updateObjectsToStore({ objects: frames[0].objects });
         this.handleReplaceFrame({ frame: frames[0], frameId });
       } else {
         this.handleAddFrame(frames);

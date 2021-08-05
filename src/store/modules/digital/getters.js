@@ -96,5 +96,19 @@ export const getters = {
     if (isEmpty(currentSheetId)) return '';
 
     return sections.find(s => s.sheetIds.includes(currentSheetId));
+  },
+  [DIGITAL._GETTERS.GET_DATA_EDIT_SCREEN]: ({
+    book,
+    sheets,
+    frames,
+    frameIds
+  }) => sheetId => {
+    const framesArray = frameIds.map(id => ({ id, frame: frames[id] }));
+    const data = {
+      defaultThemeId: book.defaultThemeId,
+      sheet: sheets[sheetId],
+      frames: framesArray
+    };
+    return data;
   }
 };

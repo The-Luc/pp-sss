@@ -20,6 +20,8 @@ import FeedbackBar from '@/containers/HeaderEdition/FeedbackBar';
 import SidebarSection from './SidebarSection';
 import PageEdition from './PageEdition';
 import PhotoSidebar from '@/components/PhotoSidebar';
+import SheetMedia from '@/components/SheetMedia';
+
 import {
   useLayoutPrompt,
   usePopoverCreationTool,
@@ -28,7 +30,9 @@ import {
   useUser,
   useGetterPrintSheet,
   useMenuProperties,
-  useProperties
+  useProperties,
+  useSheet,
+  useActionsEditionSheet
 } from '@/hooks';
 import { EDITION } from '@/common/constants';
 import {
@@ -42,7 +46,6 @@ import printService from '@/api/print';
 import { useSaveData } from './PageEdition/composables';
 import { getActivateImages, setImageSrc } from '@/common/fabricObjects';
 import { useSavingStatus } from '../../composables';
-import { dumpPhotos } from '@/mock/photo';
 
 export default {
   components: {
@@ -51,7 +54,8 @@ export default {
     FeedbackBar,
     PageEdition,
     SidebarSection,
-    PhotoSidebar
+    PhotoSidebar,
+    SheetMedia
   },
   setup() {
     const { pageSelected, updateVisited } = useLayoutPrompt(EDITION.PRINT);
@@ -64,6 +68,8 @@ export default {
     const { isOpenMenuProperties } = useMenuProperties();
     const { setPropertyById } = useProperties();
     const { updateSavingStatus } = useSavingStatus();
+    const { sheetMedia } = useSheet();
+    const { updateSheetMedia } = useActionsEditionSheet();
 
     return {
       pageSelected,
@@ -77,7 +83,9 @@ export default {
       getDataEditScreen,
       isOpenMenuProperties,
       setPropertyById,
-      updateSavingStatus
+      updateSavingStatus,
+      sheetMedia,
+      updateSheetMedia
     };
   },
   computed: {
@@ -85,7 +93,13 @@ export default {
       printThemeSelected: PRINT_GETTERS.DEFAULT_THEME_ID,
       selectedToolName: APP_GETTERS.SELECTED_TOOL_NAME,
       getObjectsAndBackground: PRINT_GETTERS.GET_OBJECTS_AND_BACKGROUNDS
-    })
+    }),
+    isShowAutoflow() {
+      return !isEmpty(this.sheetMedia);
+    },
+    isOpenPhotoSidebar() {
+      return this.selectedToolName === TOOL_NAME.PHOTOS;
+    }
   },
   watch: {
     pageSelected: {
@@ -202,6 +216,7 @@ export default {
         );
       }, SAVING_DURATION);
     },
+
     /**
      * Fire when zoom is changed
      *
@@ -217,10 +232,11 @@ export default {
     handleAutoflow() {
       activeCanvas.discardActiveObject();
       const objects = getActivateImages();
-      const images = dumpPhotos;
+      const images = this.sheetMedia || [];
       if (objects.length > images.length) {
         images.forEach((image, index) => {
           setImageSrc(objects[index], image.imageUrl, prop => {
+            prop.imageId = image.id;
             this.setPropertyById({ id: objects[index].id, prop });
           });
         });
@@ -228,9 +244,24 @@ export default {
       }
       objects.forEach((object, index) => {
         setImageSrc(object, images[index].imageUrl, prop => {
+          prop.imageId = images[index].id;
           this.setPropertyById({ id: object.id, prop });
         });
       });
+    },
+    /**
+     * Selected images and save in sheet
+     * @param   {Array}  images  selected images
+     */
+    async handleSelectedImages(images) {
+      const reversedImages = images.reverse();
+      await this.updateSheetMedia({ images: reversedImages });
+    },
+    /**
+     * Close list photo in sidebar
+     */
+    closePhotoSidebar() {
+      this.setToolNameSelected('');
     }
   }
 };
