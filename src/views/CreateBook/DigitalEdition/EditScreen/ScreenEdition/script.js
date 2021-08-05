@@ -90,7 +90,7 @@ import {
   THUMBNAIL_IMAGE_CONFIG
 } from '@/common/constants/config';
 import { useStyle } from '@/hooks/style';
-import { useSaveData } from '../composables';
+import { useObject, useSaveData } from '../composables';
 
 const ELEMENTS = {
   [OBJECT_TYPE.TEXT]: 'a text box',
@@ -117,6 +117,7 @@ export default {
     const { toggleModal, modalData } = useModal();
     const { onSaveStyle } = useStyle();
     const { getDataEditScreen, saveEditScreen } = useSaveData();
+    const { updateObjectsToStore } = useObject();
 
     return {
       frames,
@@ -132,7 +133,8 @@ export default {
       onSaveStyle,
       getDataEditScreen,
       saveEditScreen,
-      updateFrameObjects
+      updateFrameObjects,
+      updateObjectsToStore
     };
   },
   data() {
@@ -1746,6 +1748,7 @@ export default {
       this.setCurrentObject(null);
       resetObjects(this.digitalCanvas);
 
+      this.updateObjectsToStore({ objects: this.currentFrame.objects });
       this.handleSwitchFrame(this.currentFrame);
       await this.drawObjectsOnCanvas(this.sheetLayout);
     },

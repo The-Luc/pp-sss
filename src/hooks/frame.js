@@ -1,7 +1,6 @@
-import { useMutations, useGetters, useActions } from 'vuex-composition-helpers';
+import { useMutations, useGetters } from 'vuex-composition-helpers';
 import {
   GETTERS as DIGITAL_GETTERS,
-  ACTIONS as DIGITAL_ACTIONS,
   MUTATES as DIGITAL_MUTATES
 } from '@/store/modules/digital/const';
 import { MUTATES, GETTERS } from '@/store/modules/app/const';
@@ -58,14 +57,7 @@ export const useFrameSwitching = () => {
     setCurrentFrameVisited: DIGITAL_MUTATES.SET_FRAME_VISITED
   });
 
-  const { updateObjectsToStore } = useActions({
-    updateObjectsToStore: DIGITAL_ACTIONS.UPDATE_OBJECTS_TO_STORE
-  });
-
   const handleSwitchFrame = frame => {
-    // update to store
-    updateObjectsToStore({ objects: frame.objects });
-
     //open frame information panel
     if (!frame.isVisited) {
       setPropertiesObjectType({ type: PROPERTIES_TOOLS.FRAME_INFO.type });
@@ -126,10 +118,6 @@ export const useFrameReplace = () => {
     setIsOpenProperties: MUTATES.TOGGLE_MENU_PROPERTIES
   });
 
-  const { updateObjectsToStore } = useActions({
-    updateObjectsToStore: DIGITAL_ACTIONS.UPDATE_OBJECTS_TO_STORE
-  });
-
   const handleReplaceFrame = ({ frame, frameId }) => {
     // set the current frame isVisted and open frame info panel
     frame.isVisited = true;
@@ -137,8 +125,6 @@ export const useFrameReplace = () => {
     setIsOpenProperties({ isOpen: true });
 
     replaceFrame({ frame, frameId });
-
-    updateObjectsToStore({ objects: frame.objects });
 
     // to manually tell the canvas to update itselft because current frame id isn't changed
     triggerApplyLayout();

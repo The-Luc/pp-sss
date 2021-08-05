@@ -1,7 +1,7 @@
-import { useGetters } from 'vuex-composition-helpers';
+import { useGetters, useActions } from 'vuex-composition-helpers';
 
 import { isEmpty } from '@/common/utils';
-import { GETTERS } from '@/store/modules/digital/const';
+import { GETTERS, ACTIONS } from '@/store/modules/digital/const';
 import digitalService from '@/api/digital';
 
 export const useSaveData = () => {
@@ -26,4 +26,12 @@ export const useSaveData = () => {
   };
 
   return { saveEditScreen, getDataEditScreen };
+};
+
+export const useObject = () => {
+  const { updateObjectsToStore } = useActions({
+    updateObjectsToStore: ACTIONS.UPDATE_OBJECTS_TO_STORE
+  });
+
+  return { updateObjectsToStore };
 };
