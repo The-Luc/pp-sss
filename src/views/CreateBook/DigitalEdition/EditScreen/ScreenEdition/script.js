@@ -1734,7 +1734,6 @@ export default {
       }
       this.updateFrameObjects({ frameId: oldVal });
       const data = this.getDataEditScreen(this.pageSelected.id, oldVal);
-
       await this.saveEditScreen(data);
 
       this.setSelectedObjectId({ id: '' });

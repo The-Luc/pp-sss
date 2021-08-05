@@ -109,7 +109,7 @@ export const actions = {
     const objectList = restObjs.map(obj => ({
       ...obj,
       position: currentPosition,
-      id: uniqueId(`${obj.id}`)
+      id: uniqueId()
     }));
 
     // Remove objects when user override layout

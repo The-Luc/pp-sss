@@ -254,7 +254,7 @@ export const mutations = {
     { frames, background, objects, objectIds },
     { frameId }
   ) {
-    if (!frameId) return;
+    if (!frameId || !frames[frameId]) return;
 
     const backgrounds = Object.values(background).filter(bg => !isEmpty(bg));
     const objectsData = [

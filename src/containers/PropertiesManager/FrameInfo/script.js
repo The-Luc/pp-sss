@@ -23,16 +23,12 @@ export default {
   data() {
     return {
       delayOpts: DELAY_OPTION,
-      componentKey: true,
-      frameTitle: ''
+      componentKey: true
     };
   },
-  watch: {
-    currentFrame(val, oldVal) {
-      if (this.val && val.frameTitle !== oldVal.frameTitle) {
-        this.frameTitle = val.frameTitle;
-        this.componentKey = !this.componentKey;
-      }
+  computed: {
+    frameTitle() {
+      return this.currentFrame?.frameTitle || '';
     }
   },
   methods: {
