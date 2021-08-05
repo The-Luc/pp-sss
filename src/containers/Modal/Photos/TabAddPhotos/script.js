@@ -1,15 +1,11 @@
+import { ACCEPT_INPUT } from '@/common/constants';
+
 export default {
   data() {
     return {
       uploadedFiles: [],
-      acceptInput: [
-        'image/png',
-        'image/jpg',
-        'image/jpeg',
-        'image/heic',
-        'image/gif'
-      ],
-      notifyContent: ''
+      acceptInput: ACCEPT_INPUT,
+      isShowNotify: false
     };
   },
   methods: {
@@ -20,16 +16,14 @@ export default {
       this.$refs.dropzone.classList.remove('is-dragover');
       const inputValue =
         e.target.files || e.dataTransfer.files || this.$refs.uploadPhoto.files;
-      const files = [];
-      for (const item of inputValue) {
-        if (!this.acceptInput.includes(item.type)) {
-          this.notifyContent =
-            'Invalid files. Only files with the following extensions are allowed: PNG, JPG/JPEG, HEIC and GIF.';
-          return;
-        }
-        files.push(item);
-      }
-      this.notifyContent = '';
+      const files = Object.values(inputValue);
+
+      this.isShowNotify = files.some(
+        item => !this.acceptInput.includes(item.type)
+      );
+
+      if (this.isShowNotify) return;
+
       this.uploadedFiles = files.reverse();
     },
     /**

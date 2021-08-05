@@ -2,7 +2,10 @@
   <div class="upload-new-photos-container">
     <div class="content">
       <div class="notify">
-        {{ notifyContent }}
+        <template v-if="isShowNotify">
+          Invalid files. Only files with the following extensions are allowed:
+          PNG, JPG/JPEG, HEIC and GIF.
+        </template>
       </div>
       <div
         ref="dropzone"
