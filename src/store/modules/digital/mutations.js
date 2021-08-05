@@ -234,5 +234,19 @@ export const mutations = {
   },
   [DIGITAL._MUTATES.SET_TITLE_FRAME]({ frames, currentFrameId }, { value }) {
     frames[currentFrameId].frameTitle = value;
+  },
+  [DIGITAL._MUTATES.UPDATE_OBJECTS_TO_FRAME](
+    { frames, background, objects, objectIds },
+    { frameId }
+  ) {
+    if (!frameId || !frames[frameId]) return;
+
+    const backgrounds = Object.values(background).filter(bg => !isEmpty(bg));
+    const objectsData = [
+      ...backgrounds,
+      ...objectIds.map(id => ({ ...objects[id], id }))
+    ];
+
+    frames[frameId].objects = objectsData;
   }
 };

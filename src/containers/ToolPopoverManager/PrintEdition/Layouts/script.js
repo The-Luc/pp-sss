@@ -474,7 +474,7 @@ export default {
         const layout = cloneDeep(this.layoutObjSelected);
 
         // change objects coords if user at FRONT_COVER or BACK_COVER
-        if (this.isHalfSheet) {
+        if (this.isHalfSheet && !this.isDigital) {
           layout.objects = changeObjectsCoords(
             layout.objects,
             this.pageSelected.type,

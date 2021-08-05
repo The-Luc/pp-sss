@@ -84,6 +84,18 @@ export class SheetDigitalData extends SheetEditionData {
   }
 }
 
+export class SheetDigitalDetail extends SheetEditionData {
+  frames = [];
+
+  /**
+   * @param {SheetDigitalDetail} props
+   */
+  constructor(props) {
+    super(props);
+    this._set(props);
+  }
+}
+
 export class Sheet extends SheetBase {
   draggable = true;
   positionFixed = POSITION_FIXED.NONE;
