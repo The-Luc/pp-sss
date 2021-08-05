@@ -1,10 +1,10 @@
-import { IMAGE_TYPE } from '@/common/constants';
+import { IMAGE_TYPES } from '@/common/constants';
 
 export default {
   data() {
     return {
       uploadedFiles: [],
-      imageType: IMAGE_TYPE,
+      imageTypes: IMAGE_TYPES,
       isShowNotify: false
     };
   },
@@ -19,7 +19,7 @@ export default {
       const files = Object.values(inputValue);
 
       this.isShowNotify = files.some(
-        item => !this.imageType.includes(item.type)
+        item => !this.imageTypes.includes(item.type)
       );
 
       if (this.isShowNotify) return;
