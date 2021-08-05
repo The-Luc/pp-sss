@@ -120,7 +120,7 @@ const digitalService = {
    * @param {Number} bookId Id of book
    * @param {Number} sectionId Id of section
    * @param {Number} sheetId Id of sheet
-   * @returns {Array} a list of frames [{id, frame:{}},...]
+   * @returns {Promise<array>} a list of frames [{id, frame:{}},...]
    */
   getFrames: async (bookId, sectionId, sheetId) => {
     const { sheets } = await bookService.getBookDigital(bookId);

@@ -41,7 +41,6 @@ export const actions = {
     commit(DIGITAL._MUTATES.SET_BACKGROUNDS, { background: {} });
 
     // update frames and frameIds
-    // TODO:-Luc check await function
     const queryFramesResult = await digitalService.getFrames(
       state.book.id,
       state.sheets[state.currentSheetId].sectionId,
