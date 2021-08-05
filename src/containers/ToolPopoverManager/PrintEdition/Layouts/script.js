@@ -20,7 +20,6 @@ import {
   MODAL_TYPES,
   SHEET_TYPE,
   LAYOUT_PAGE_TYPE,
-  MODIFICATION,
   CUSTOM_LAYOUT_TYPE
 } from '@/common/constants';
 import {
@@ -30,8 +29,9 @@ import {
   activeCanvas,
   isEmpty,
   scrollToElement,
-  modifyItems,
-  isHalfSheet
+  isHalfSheet,
+  insertItemsToArray,
+  removeItemsFormArray
 } from '@/common/utils';
 import {
   usePopoverCreationTool,
@@ -45,7 +45,6 @@ import {
 
 import {
   getCustom as getCustomLayouts,
-  getFavorites as getFavoriteLayouts,
   loadLayouts,
   loadDigitalLayouts,
   loadSupplementalLayouts
@@ -659,14 +658,15 @@ export default {
     modifyFavorites(id) {
       const index = this.favoriteLayouts.findIndex(f => id === f);
 
-      const modification = index < 0 ? MODIFICATION.ADD : MODIFICATION.DELETE;
-
-      this.favoriteLayouts = modifyItems(
-        this.favoriteLayouts,
-        id,
-        index,
-        modification
-      );
+      if (index < 0) {
+        this.favoriteLayouts = insertItemsToArray(this.favoriteLayouts, [
+          { value: id }
+        ]);
+      } else {
+        this.favoriteLayouts = removeItemsFormArray(this.favoriteLayouts, [
+          { value: id, index }
+        ]);
+      }
     },
     /**
      * Check if selected layout is in favorite list

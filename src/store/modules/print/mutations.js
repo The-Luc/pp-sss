@@ -1,5 +1,7 @@
 import { cloneDeep, merge } from 'lodash';
 
+import { addObject, deleteObjects } from '@/common/store';
+
 import {
   isHalfSheet,
   isHalfLeft,
@@ -104,13 +106,7 @@ export const mutations = {
   [PRINT._MUTATES.SET_CURRENT_OBJECT_ID](state, { id }) {
     state.currentObjectId = id;
   },
-  [PRINT._MUTATES.ADD_OBJECT](state, { id, newObject }) {
-    if (!id) return;
-
-    state.objectIds.push(id);
-
-    state.objects[id] = newObject;
-  },
+  [PRINT._MUTATES.ADD_OBJECT]: addObject,
   [PRINT._MUTATES.SET_PROP](state, { prop }) {
     if (!state.currentObjectId) return;
 
@@ -143,17 +139,7 @@ export const mutations = {
     });
   },
 
-  [PRINT._MUTATES.DELETE_OBJECTS](state, { ids }) {
-    ids.forEach(id => {
-      const index = state.objectIds.indexOf(id);
-
-      if (index >= 0) {
-        state.objectIds.splice(index, 1);
-      }
-
-      delete state.objects[id];
-    });
-  },
+  [PRINT._MUTATES.DELETE_OBJECTS]: deleteObjects,
   [PRINT._MUTATES.UPDATE_TRIGGER_TEXT_CHANGE](state) {
     state.triggerChange.text = !state.triggerChange.text;
   },

@@ -46,7 +46,6 @@ import printService from '@/api/print';
 import { useSaveData } from './PageEdition/composables';
 import { getActivateImages, setImageSrc } from '@/common/fabricObjects';
 import { useSavingStatus } from '../../composables';
-import { dumpPhotos } from '@/mock/photo';
 
 export default {
   components: {
@@ -229,10 +228,11 @@ export default {
     handleAutoflow() {
       activeCanvas.discardActiveObject();
       const objects = getActivateImages();
-      const images = dumpPhotos;
+      const images = this.sheetMedia || [];
       if (objects.length > images.length) {
         images.forEach((image, index) => {
           setImageSrc(objects[index], image.imageUrl, prop => {
+            prop.imageId = image.id;
             this.setPropertyById({ id: objects[index].id, prop });
           });
         });
@@ -240,6 +240,7 @@ export default {
       }
       objects.forEach((object, index) => {
         setImageSrc(object, images[index].imageUrl, prop => {
+          prop.imageId = images[index].id;
           this.setPropertyById({ id: object.id, prop });
         });
       });
