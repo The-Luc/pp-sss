@@ -90,5 +90,9 @@ export const mutations = {
   },
   [APP._MUTATES.TOGGLE_PHOTO_SIDEBAR](state) {
     state.isOpenPhotoSidebar = !state.isOpenPhotoSidebar;
+  },
+  [APP._MUTATES.SET_PHOTO_VISITED](state, { isPhotoVisited }) {
+    console.log(isPhotoVisited);
+    state.isPhotoVisited = isPhotoVisited;
   }
 };

@@ -43,5 +43,6 @@ export const getters = {
   [APP._GETTERS.SAVED_TEXT_STYLES]: ({ savedTextStyles }) => savedTextStyles,
   [APP._GETTERS.SAVED_IMAGE_STYLES]: ({ savedImageStyles }) => savedImageStyles,
   [APP._GETTERS.IS_OPEN_PHOTO_SIDEBAR]: ({ isOpenPhotoSidebar }) =>
-    isOpenPhotoSidebar
+    isOpenPhotoSidebar,
+  [APP._GETTERS.IS_PHOTO_VISITED]: ({ isPhotoVisited }) => isPhotoVisited
 };

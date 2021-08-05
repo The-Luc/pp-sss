@@ -12,7 +12,7 @@ import PpToolPopover from '@/components/ToolPopover';
 import PpSelect from '@/components/Selectors/Select';
 import SelectLayout from './SelectLayout';
 import SelectTheme from './SelectTheme';
-import GotIt from './GotIt';
+import GotIt from '@/components/GotIt';
 import Item from './Item';
 
 import {

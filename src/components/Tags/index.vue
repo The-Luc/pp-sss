@@ -9,7 +9,9 @@
     >
       {{ keyWord }}
     </v-chip>
-    <div v-else class="btn-key-word" @click="active = true">{{ keyWord }}</div>
+    <v-chip v-else class="inactive" @click.native="active = true">
+      {{ keyWord }}
+    </v-chip>
   </div>
 </template>
 

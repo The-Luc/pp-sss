@@ -14,7 +14,7 @@
           <div>Smartbox</div>
         </v-tab>
         <v-tab-item value="smart-box">
-          Smartbox
+          <Smartbox />
         </v-tab-item>
 
         <v-tab href="#photos">

@@ -1,6 +1,7 @@
 import Modal from '@/containers/Modal';
 import Footer from './Footer';
 import Photos from './Photos';
+import Smartbox from './Smartbox';
 import { modifyItems } from '@/common/utils';
 import { MODIFICATION } from '@/common/constants';
 
@@ -8,7 +9,8 @@ export default {
   components: {
     Modal,
     Footer,
-    Photos
+    Photos,
+    Smartbox
   },
   data() {
     return {
