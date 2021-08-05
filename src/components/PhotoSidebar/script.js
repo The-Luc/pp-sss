@@ -1,20 +1,10 @@
-import PhotoContent from '@/components/PhotoContent';
+import PhotoContent from './PhotoContent';
 import ModalAddPhotos from '@/containers/Modal/Photos';
-
-import { usePhotoSidebar } from '@/views/CreateBook/composables';
 
 export default {
   components: {
     PhotoContent,
     ModalAddPhotos
-  },
-  setup() {
-    const { isOpenPhotoSidebar, togglePhotos } = usePhotoSidebar();
-
-    return {
-      isOpenPhotoSidebar,
-      togglePhotos
-    };
   },
   data() {
     return {
@@ -32,7 +22,7 @@ export default {
      * Close photo content in sidebar
      */
     closePhotoContent() {
-      this.togglePhotos();
+      this.$emit('closePhotoSidebar');
     },
     /**
      * Use to open modal add photos
