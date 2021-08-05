@@ -1,4 +1,4 @@
-export const ACCEPT_INPUT = [
+export const IMAGE_TYPE = [
   'image/png',
   'image/jpg',
   'image/jpeg',

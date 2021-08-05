@@ -41,4 +41,4 @@ export * from './imageStyle';
 export * from './borderStyle';
 export * from './assetType';
 export * from './saving';
-export * from './acceptInput';
+export * from './imageType';
