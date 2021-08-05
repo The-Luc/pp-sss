@@ -1,4 +1,4 @@
-export const IMAGE_TYPE = [
+export const IMAGE_TYPES = [
   'image/png',
   'image/jpg',
   'image/jpeg',
