@@ -15,6 +15,8 @@
         @select="onSelect"
         @cancel="onCancel"
       />
+
+      <ModalAddMedia :is-open-modal="isOpenModalAddMedia" />
     </div>
   </transition>
 </template>

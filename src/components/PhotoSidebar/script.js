@@ -1,12 +1,14 @@
 import PhotoContent from '@/components/PhotoContent';
 import ModalAddPhotos from '@/containers/Modal/Photos';
+import ModalAddMedia from '@/containers/Modal/AddMedia';
 
 import { usePhotoSidebar } from '@/views/CreateBook/composables';
 
 export default {
   components: {
     PhotoContent,
-    ModalAddPhotos
+    ModalAddPhotos,
+    ModalAddMedia
   },
   setup() {
     const { isOpenPhotoSidebar, togglePhotos } = usePhotoSidebar();
@@ -18,7 +20,8 @@ export default {
   },
   data() {
     return {
-      isOpenModal: false
+      isOpenModal: false,
+      isOpenModalAddMedia: false
     };
   },
   props: {

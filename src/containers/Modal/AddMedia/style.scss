@@ -1,0 +1,40 @@
+::v-deep .modal-add-media.v-dialog {
+  border-radius: 0;
+  background-color: $color-white;
+  border-top: 9px solid $color-stoodio-blue;
+  height: 285px;
+  display: flex;
+  flex-direction: column;
+  .header {
+    height: 55px;
+    font-family: $font-500;
+    font-size: 21px;
+    color: $color-stoodio-blue;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-bottom: 1px solid $color-stoodio-toolbartext;
+  }
+  .content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    .btn-container {
+      .button {
+        .pp-btn {
+          width: 160px;
+          height: 32px;
+        }
+      }
+      .button-cancel {
+        margin-top: 8px;
+        .pp-btn {
+          color: $color-stoodio-toolbartext;
+        }
+      }
+    }
+  }
+}
