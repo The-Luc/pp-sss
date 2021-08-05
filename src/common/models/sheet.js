@@ -49,6 +49,7 @@ export class SheetEditionData extends SheetBase {
   thumbnailUrl = null;
   link = '';
   isVisited = false;
+  media = [];
 
   /**
    * @param {SheetEditionData} props
@@ -76,6 +77,18 @@ export class SheetDigitalData extends SheetEditionData {
 
   /**
    * @param {SheetDigitalData} props
+   */
+  constructor(props) {
+    super(props);
+    this._set(props);
+  }
+}
+
+export class SheetDigitalDetail extends SheetEditionData {
+  frames = [];
+
+  /**
+   * @param {SheetDigitalDetail} props
    */
   constructor(props) {
     super(props);

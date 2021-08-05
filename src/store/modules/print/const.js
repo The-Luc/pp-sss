@@ -29,6 +29,7 @@ class GetterClass extends BaseObject {
   BACKGROUNDS = 'getBackgrounds';
   CURRENT_SECTION = 'getCurrentSection';
   GET_DATA_EDIT_SCREEN = 'getDataEditScreen';
+  GET_SHEET_MEDIA = 'getSheetMedia';
 
   constructor(props) {
     super(props);
@@ -49,6 +50,7 @@ class ActionClass extends BaseObject {
   UPDATE_SHEET_THEME_LAYOUT = 'updateSheetThemeLayout';
   UPDATE_SHEET_LINK_STATUS = 'updateSheetLinkStatus';
   SAVE_LAYOUT = 'saveLayout';
+  UPDATE_SHEET_MEDIA = 'updateSheetMedia';
 
   constructor(props) {
     super(props);
@@ -88,6 +90,7 @@ class MutationClass extends BaseObject {
   SET_STATUS_PAGE_NUMBER = 'setStatusPageNumber';
   UPDATE_SPREAD_INFO = 'updateSpreadInfo';
   CLEAR_BACKGROUNDS = 'clearBackgrounds';
+  SET_SHEET_MEDIA = 'SetSheetMedia';
 
   constructor(props) {
     super(props);

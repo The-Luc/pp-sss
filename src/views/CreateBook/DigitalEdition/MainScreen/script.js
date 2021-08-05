@@ -35,11 +35,11 @@ export default {
       return getSectionsWithAccessible(this.sectionList, this.currentUser);
     }
   },
-  created() {
+  async created() {
     this.setBookId({ bookId: this.$route.params.bookId });
 
     // temporary code, will remove soon
-    const info = digitalService.getGeneralInfo();
+    const info = await digitalService.getGeneralInfo();
 
     this.setInfo({ ...info, bookId: this.$route.params.bookId });
 

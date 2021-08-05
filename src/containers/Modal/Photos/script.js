@@ -1,8 +1,8 @@
 import Modal from '@/containers/Modal';
 import Footer from './Footer';
 import Photos from './Photos';
-import { modifyItems } from '@/common/utils';
-import { MODIFICATION } from '@/common/constants';
+
+import { insertItemsToArray, removeItemsFormArray } from '@/common/utils';
 
 export default {
   components: {
@@ -43,14 +43,15 @@ export default {
     onSelectedImage(image) {
       const index = this.selectedImages.findIndex(item => item.id === image.id);
 
-      const modification = index < 0 ? MODIFICATION.ADD : MODIFICATION.DELETE;
-
-      this.selectedImages = modifyItems(
-        this.selectedImages,
-        image,
-        index,
-        modification
-      );
+      if (index < 0) {
+        this.selectedImages = insertItemsToArray(this.selectedImages, [
+          { value: image }
+        ]);
+      } else {
+        this.selectedImages = removeItemsFormArray(this.selectedImages, [
+          { value: image, index }
+        ]);
+      }
     },
     /**
      * Event change tab of modal photo

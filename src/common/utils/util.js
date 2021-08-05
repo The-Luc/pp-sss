@@ -1,10 +1,6 @@
 import { cloneDeep, merge, intersection } from 'lodash';
-import {
-  STATUS,
-  MODIFICATION,
-  CUSTOM_LAYOUT_TYPE,
-  LAYOUT_PAGE_TYPE
-} from '@/common/constants';
+
+import { STATUS } from '@/common/constants';
 
 export let activeCanvas = null;
 
@@ -240,34 +236,132 @@ export const getDisplayInfo = (name, description, customClass) => {
 };
 
 /**
- * Modify item list
+ * Remove items form array
  *
- * @param   {Array}   items         list of item need to be modified
- * @param   {Any}     item          item in the list needs to be changed
- * @param   {Number}  index         index of item in the list
- * @param   {Number}  modifyType    modify type (0: add, 1: update, 2: delete)
- * @returns {Array}                 list of item after modified
+ * @param   {Array}   originalItems list of item need to be change
+ * @param   {Array}   items         items needs to be removed {index, value}
+ * @returns {Array}                 list of item after changed
  */
-export const modifyItems = (items, item, index, modifyType) => {
-  const _items = [...items];
+export const removeItemsFormArray = (originalItems, items) => {
+  const _items = cloneDeep(originalItems);
 
-  if (modifyType === MODIFICATION.DELETE) {
-    _items.splice(index, 1);
+  return _items.filter((item, index) => {
+    const removeItem = items.find(rItem => {
+      if (!isEmpty(rItem.index)) return index === rItem.index;
 
-    return _items;
-  }
+      return JSON.stringify(item) === JSON.stringify(rItem.value);
+    });
 
-  if (modifyType === MODIFICATION.ADD) {
-    const addIndex = isEmpty(index) || index < 0 ? items.length : index;
+    return isEmpty(removeItem);
+  });
+};
 
-    _items.splice(addIndex, 0, item);
+/**
+ * Insert items to array
+ *
+ * @param   {Array}   originalItems list of item need to be change
+ * @param   {Array}   items         items needs to be add {index, value}
+ * @returns {Array}                 list of item after changed
+ */
+export const insertItemsToArray = (originalItems, items) => {
+  const _items = cloneDeep(originalItems);
 
-    return _items;
-  }
+  _items.sort((i1, i2) => (i1?.index > i2?.index ? -1 : 1));
 
-  _items.splice(index, 1);
+  items.forEach(item => {
+    const isAddToLast = isEmpty(item.index) || item.index < 0;
 
-  _items.splice(index, 0, item);
+    const addIndex = isAddToLast ? _items.length : item.index;
+
+    _items.splice(addIndex, 0, item.value);
+  });
 
   return _items;
+};
+
+/**
+ * Modify items in array
+ *
+ * @param   {Array}   originalItems list of item need to be change
+ * @param   {Array}   items         items needs to be changed {index, value}
+ * @returns {Array}                 list of item after changed
+ */
+export const modifyItemsInArray = (originalItems, items) => {
+  const _items = cloneDeep(originalItems);
+
+  items.forEach(item => (_items[item.index] = item.value));
+
+  return _items;
+};
+
+/**
+ * Remove items form object
+ *
+ * @param   {Object}  originalItems list of item need to be change
+ * @param   {Array}   items         items needs to be removed {key, value}
+ * @returns {Object}                list of item after changed
+ */
+export const removeItemsFormObject = (originalItems, items) => {
+  const _items = cloneDeep(originalItems);
+
+  items.forEach(item => {
+    if (!isEmpty(item.key)) {
+      delete _items[item.key];
+
+      return;
+    }
+
+    const key = Object.keys(_items).find(k => {
+      return JSON.stringify(_items[k]) === JSON.stringify(item.value);
+    });
+
+    if (!isEmpty(key)) delete _items[key];
+  });
+
+  return _items;
+};
+
+/**
+ * Insert items to object
+ *
+ * @param   {Object}  originalItems list of item need to be change
+ * @param   {Array}   items         items needs to be add {key, value}
+ * @returns {Object}                list of item after changed
+ */
+export const insertItemsToObject = (originalItems, items) => {
+  const _items = cloneDeep(originalItems);
+
+  items.forEach(item => {
+    if (!hasOwnProperty(_items, item.key)) _items[item.key] = item.value;
+  });
+
+  return _items;
+};
+
+/**
+ * Modify items in object
+ *
+ * @param   {Object}  originalItems list of item need to be change
+ * @param   {Array}   items         items needs to be changed {index, value}
+ * @returns {Object}                list of item after changed
+ */
+export const modifyItemsInObject = (originalItems, items) => {
+  const _items = cloneDeep(originalItems);
+
+  items.forEach(item => {
+    if (hasOwnProperty(_items, item.key)) _items[item.key] = item.value;
+  });
+
+  return _items;
+};
+
+/**
+ * Check if object has selected prop
+ *
+ * @param   {Object}  object  object need to check
+ * @param   {String}  prop    property name
+ * @returns {Boolean}         return object has selected prop or not
+ */
+export const hasOwnProperty = (object, prop) => {
+  return Object.prototype.hasOwnProperty.call(object, prop);
 };

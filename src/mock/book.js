@@ -94,7 +94,8 @@ const book = new BookDetailEntity({
             thumbnailUrl: null,
             themeId: null,
             layout: defaultLayout,
-            link: LINK_STATUS.NONE
+            link: LINK_STATUS.NONE,
+            media: []
           },
           digitalData: {
             thumbnailUrl: null,
@@ -127,7 +128,8 @@ const book = new BookDetailEntity({
             layout: defaultLayout,
             thumbnailUrl: null,
             link: LINK_STATUS.NONE,
-            spreadInfo: { ...spreadInfo }
+            spreadInfo: { ...spreadInfo },
+            media: []
           },
           digitalData: {
             thumbnailUrl: null,
@@ -148,7 +150,8 @@ const book = new BookDetailEntity({
             thumbnailUrl: null,
             theme: null,
             layout: defaultLayout,
-            link: LINK_STATUS.LINK
+            link: LINK_STATUS.LINK,
+            media: []
           },
           digitalData: {
             thumbnailUrl: null,
@@ -169,7 +172,8 @@ const book = new BookDetailEntity({
             thumbnailUrl: null,
             theme: null,
             layout: defaultLayout,
-            link: LINK_STATUS.UNLINK
+            link: LINK_STATUS.UNLINK,
+            media: []
           },
           digitalData: {
             thumbnailUrl: null,
@@ -190,7 +194,8 @@ const book = new BookDetailEntity({
             thumbnailUrl: null,
             theme: null,
             layout: defaultLayout,
-            link: LINK_STATUS.LINK
+            link: LINK_STATUS.LINK,
+            media: []
           },
           digitalData: {
             thumbnailUrl: null,
@@ -211,7 +216,8 @@ const book = new BookDetailEntity({
             thumbnailUrl: null,
             theme: null,
             layout: defaultLayout,
-            link: LINK_STATUS.LINK
+            link: LINK_STATUS.LINK,
+            media: []
           },
           digitalData: {
             thumbnailUrl: null,
@@ -244,7 +250,8 @@ const book = new BookDetailEntity({
             thumbnailUrl: null,
             theme: null,
             layout: defaultLayout,
-            link: LINK_STATUS.UNLINK
+            link: LINK_STATUS.UNLINK,
+            media: []
           },
           digitalData: {
             thumbnailUrl: null,
@@ -265,7 +272,8 @@ const book = new BookDetailEntity({
             thumbnailUrl: null,
             theme: null,
             layout: defaultLayout,
-            link: LINK_STATUS.LINK
+            link: LINK_STATUS.LINK,
+            media: []
           },
           digitalData: {
             thumbnailUrl: null,
@@ -286,7 +294,8 @@ const book = new BookDetailEntity({
             thumbnailUrl: null,
             theme: null,
             layout: defaultLayout,
-            link: LINK_STATUS.LINK
+            link: LINK_STATUS.LINK,
+            media: []
           },
           digitalData: {
             thumbnailUrl: null,
@@ -319,7 +328,8 @@ const book = new BookDetailEntity({
             thumbnailUrl: null,
             theme: null,
             layout: defaultLayout,
-            link: LINK_STATUS.LINK
+            link: LINK_STATUS.LINK,
+            media: []
           },
           digitalData: {
             thumbnailUrl: null,
@@ -352,7 +362,8 @@ const book = new BookDetailEntity({
             thumbnailUrl: null,
             theme: null,
             layout: defaultLayout,
-            link: LINK_STATUS.NONE
+            link: LINK_STATUS.NONE,
+            media: []
           },
           digitalData: {
             thumbnailUrl: null,

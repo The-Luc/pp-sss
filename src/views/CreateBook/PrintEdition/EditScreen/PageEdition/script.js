@@ -192,22 +192,21 @@ export default {
     pageSelected: {
       deep: true,
       async handler(val, oldVal) {
-        if (val?.id !== oldVal?.id) {
-          const data = this.getDataEditScreen(oldVal.id);
-          await this.savePrintEditScreen(data);
+        if (val?.id === oldVal?.id) return;
 
-          // get data either from API or sessionStorage
-          await this.getDataCanvas();
-          this.countPaste = 1;
-          this.setSelectedObjectId({ id: '' });
-          this.setCurrentObject(null);
-          this.updateCanvasSize();
-          resetObjects(window.printCanvas);
+        this.saveData(oldVal.id);
 
-          await this.drawObjectsOnCanvas(this.sheetLayout);
+        // get data either from API or sessionStorage
+        await this.getDataCanvas();
+        this.countPaste = 1;
+        this.setSelectedObjectId({ id: '' });
+        this.setCurrentObject(null);
+        this.updateCanvasSize();
+        resetObjects(window.printCanvas);
 
-          this.addPageNumber();
-        }
+        await this.drawObjectsOnCanvas(this.sheetLayout);
+
+        this.addPageNumber();
       }
     },
     zoom(newVal, oldVal) {
@@ -274,12 +273,20 @@ export default {
 
       this.updateSavingStatus({ status: SAVE_STATUS.START });
 
-      const data = this.getDataEditScreen(this.pageSelected.id);
-      await this.savePrintEditScreen(data);
+      await this.saveData(this.pageSelected.id);
 
       this.updateSavingStatus({ status: SAVE_STATUS.END });
 
       this.isCanvasChanged = false;
+    },
+    /**
+     *
+     * @param {String | Number} sheetId id of sheet need to save data
+     */
+    async saveData(sheetId) {
+      const data = this.getDataEditScreen(sheetId);
+
+      await this.savePrintEditScreen(data);
     },
 
     /**
@@ -1529,7 +1536,8 @@ export default {
     },
 
     /**
-     * create and render objects on the canvas
+     * Create and render objects on the canvas
+     *
      * @param {Object} objects ppObjects that will be rendered
      */
     async drawObjectsOnCanvas(objects) {
