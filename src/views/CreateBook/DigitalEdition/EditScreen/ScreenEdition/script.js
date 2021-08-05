@@ -1700,6 +1700,16 @@ export default {
         this.digitalCanvas
       );
       return image;
+    },
+    /**
+     * Save sheet and sheet's frame data to storage
+     * @param {String | Number} sheetId id of sheet
+     * @param {String | Number} frameId id of frame
+     */
+    async saveData(sheetId, frameId) {
+      this.updateFrameObjects({ frameId });
+      const data = this.getDataEditScreen(sheetId);
+      await this.saveEditScreen(data);
     }
   },
   watch: {
@@ -1707,9 +1717,7 @@ export default {
       deep: true,
       async handler(val, oldVal) {
         if (val?.id !== oldVal?.id) {
-          this.updateFrameObjects({ frameId: this.currentFrameId });
-          const data = this.getDataEditScreen(oldVal.id, this.currentFrameId);
-          await this.saveEditScreen(data);
+          this.saveData(oldVal.id, this.currentFrameId);
 
           // reset frames, frameIDs, currentFrameId
           this.setFrames({ framesList: [] });
@@ -1732,9 +1740,7 @@ export default {
         resetObjects(this.digitalCanvas);
         return;
       }
-      this.updateFrameObjects({ frameId: oldVal });
-      const data = this.getDataEditScreen(this.pageSelected.id, oldVal);
-      await this.saveEditScreen(data);
+      this.saveData(this.pageSelected.id, oldVal);
 
       this.setSelectedObjectId({ id: '' });
       this.setCurrentObject(null);

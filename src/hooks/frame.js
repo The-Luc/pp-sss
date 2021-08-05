@@ -58,16 +58,16 @@ export const useFrameSwitching = () => {
     setCurrentFrameVisited: DIGITAL_MUTATES.SET_FRAME_VISITED
   });
 
-  const { updateLayoutObjToStore } = useActions({
-    updateLayoutObjToStore: DIGITAL_ACTIONS.UPDATE_LAYOUT_OBJ_TO_STORE
+  const { updateObjectsToStore } = useActions({
+    updateObjectsToStore: DIGITAL_ACTIONS.UPDATE_OBJECTS_TO_STORE
   });
 
-  const handleSwitchFrame = layout => {
+  const handleSwitchFrame = frame => {
     // update to store
-    updateLayoutObjToStore({ layout });
+    updateObjectsToStore({ objects: frame.objects });
 
     //open frame information panel
-    if (!layout.isVisited) {
+    if (!frame.isVisited) {
       setPropertiesObjectType({ type: PROPERTIES_TOOLS.FRAME_INFO.type });
       setIsOpenProperties({ isOpen: !isMenuOpen.value });
       setCurrentFrameVisited({ value: true });
@@ -126,8 +126,8 @@ export const useFrameReplace = () => {
     setIsOpenProperties: MUTATES.TOGGLE_MENU_PROPERTIES
   });
 
-  const { updateLayoutObjToStore } = useActions({
-    updateLayoutObjToStore: DIGITAL_ACTIONS.UPDATE_LAYOUT_OBJ_TO_STORE
+  const { updateObjectsToStore } = useActions({
+    updateObjectsToStore: DIGITAL_ACTIONS.UPDATE_OBJECTS_TO_STORE
   });
 
   const handleReplaceFrame = ({ frame, frameId }) => {
@@ -138,7 +138,7 @@ export const useFrameReplace = () => {
 
     replaceFrame({ frame, frameId });
 
-    updateLayoutObjToStore({ layout: frame });
+    updateObjectsToStore({ objects: frame.objects });
 
     // to manually tell the canvas to update itselft because current frame id isn't changed
     triggerApplyLayout();

@@ -213,6 +213,7 @@ export default {
         );
       }, SAVING_DURATION);
     },
+
     /**
      * Fire when zoom is changed
      *
