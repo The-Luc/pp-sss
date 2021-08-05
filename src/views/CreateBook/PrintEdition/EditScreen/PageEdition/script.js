@@ -579,12 +579,20 @@ export default {
     },
 
     /**
+     * Fired when objects on canvas are modified, added, or removed
+     */
+    handleCanvasChanged() {
+      // update thumbnail
+      this.getThumbnailUrl();
+
+      // set state change for autosave
+      this.isCanvasChanged = true;
+    },
+
+    /**
      * call this function to update the active thumbnail
      */
     getThumbnailUrl: debounce(function() {
-      // TODO: -Luc Temporary setting, revise it later
-      this.isCanvasChanged = true;
-
       const thumbnailUrl = window.printCanvas.toDataURL({
         quality: THUMBNAIL_IMAGE_CONFIG.QUALITY,
         format: THUMBNAIL_IMAGE_CONFIG.FORMAT,
@@ -615,8 +623,8 @@ export default {
         'selection:cleared': this.handleClearSelected,
         'selection:created': this.objectSelected,
         'object:modified': this.handleBringToFrontPageNumber,
-        'object:added': this.getThumbnailUrl,
-        'object:removed': this.getThumbnailUrl,
+        'object:added': this.handleCanvasChanged,
+        'object:removed': this.handleCanvasChanged,
 
         'object:scaled': ({ target }) => {
           const { width, height } = target;
@@ -694,7 +702,6 @@ export default {
      * Event handle bring to front page number
      */
     handleBringToFrontPageNumber() {
-      this.getThumbnailUrl;
       updateBringToFrontPageNumber(window.printCanvas);
     },
     /**
@@ -853,8 +860,7 @@ export default {
 
       applyTextBoxProperties(activeObj, prop);
 
-      // update thumbnail
-      this.getThumbnailUrl();
+      this.handleCanvasChanged();
 
       this.setCurrentObject(this.currentObjects?.[activeObj?.id]);
     },
@@ -1324,8 +1330,7 @@ export default {
 
       updateElement(element, prop, window.printCanvas);
 
-      // update thumbnail
-      this.getThumbnailUrl();
+      this.handleCanvasChanged();
 
       this.setCurrentObject(this.currentObjects?.[element?.id]);
     },
@@ -1366,8 +1371,8 @@ export default {
         fabricObjects[oldIndex + numBackground].moveTo(
           newIndex + numBackground
         );
-        //update thumbnail
-        this.getThumbnailUrl();
+
+        this.handleCanvasChanged();
       };
 
       if (actionName === ARRANGE_SEND.BACK && currentObjectIndex === 0) return;
@@ -1454,7 +1459,6 @@ export default {
 
       const textEvents = {
         changeTextProperties: prop => {
-          this.getThumbnailUrl();
           this.changeTextProperties(prop);
         }
       };

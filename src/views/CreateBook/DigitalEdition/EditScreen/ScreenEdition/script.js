@@ -12,6 +12,7 @@ import {
   DEFAULT_SHAPE,
   MODAL_TYPES,
   OBJECT_TYPE,
+  SAVE_STATUS,
   TOOL_NAME
 } from '@/common/constants';
 import {
@@ -84,6 +85,7 @@ import {
 } from '@/store/modules/digital/const';
 import { cloneDeep, debounce, merge, uniqueId } from 'lodash';
 import {
+  AUTOSAVE_INTERVAL,
   MAX_SUPPLEMENTAL_FRAMES,
   MIN_IMAGE_SIZE,
   PASTE,
@@ -91,6 +93,7 @@ import {
 } from '@/common/constants/config';
 import { useStyle } from '@/hooks/style';
 import { useSaveData } from '../composables';
+import { useSavingStatus } from '@/views/CreateBook/composables';
 
 const ELEMENTS = {
   [OBJECT_TYPE.TEXT]: 'a text box',
@@ -117,6 +120,7 @@ export default {
     const { toggleModal, modalData } = useModal();
     const { onSaveStyle } = useStyle();
     const { getDataEditScreen, saveEditScreen } = useSaveData();
+    const { updateSavingStatus, savingStatus } = useSavingStatus();
 
     return {
       frames,
@@ -132,7 +136,9 @@ export default {
       onSaveStyle,
       getDataEditScreen,
       saveEditScreen,
-      updateFrameObjects
+      updateFrameObjects,
+      updateSavingStatus,
+      savingStatus
     };
   },
   data() {
@@ -147,7 +153,9 @@ export default {
       digitalCanvas: null,
       showAddFrame: true,
       countPaste: 1,
-      isProcessingPaste: false
+      isProcessingPaste: false,
+      isCanvasChanged: false,
+      autoSaveTimer: null
     };
   },
   computed: {
@@ -236,6 +244,8 @@ export default {
       this.updateCanvasEventListeners();
       this.updateDigitalEventListeners();
       this.updateWindowEventListeners();
+
+      this.autoSaveTimer = setInterval(this.handleAutosave, AUTOSAVE_INTERVAL);
     },
 
     /**
@@ -280,7 +290,6 @@ export default {
         {
           name: EVENT_TYPE.CHANGE_TEXT_PROPERTIES,
           handler: prop => {
-            this.getThumbnailUrl();
             this.changeTextProperties(prop);
           }
         }
@@ -387,7 +396,7 @@ export default {
     },
 
     /**
-     * Update fabric canvas's event listeners after component has been mouted
+     * Update fabric canvas's event listeners after component has been mounted
      */
     updateCanvasEventListeners() {
       const events = {
@@ -504,7 +513,7 @@ export default {
      * Event fire when fabric object has been added
      */
     onObjectAdded() {
-      console.log('object:added');
+      this.handleCanvasChanged();
     },
 
     /**
@@ -519,6 +528,7 @@ export default {
      */
     onObjectRemoved() {
       this.setCurrentObject(null);
+      this.handleCanvasChanged();
     },
 
     /**
@@ -787,10 +797,20 @@ export default {
 
       applyTextBoxProperties(activeObj, prop);
 
+      this.handleCanvasChanged();
+
+      this.setCurrentObject(this.listObjects?.[activeObj?.id]);
+    },
+
+    /**
+     * Fired when objects on canvas are modified, added, or removed
+     */
+    handleCanvasChanged() {
       // update thumbnail
       this.getThumbnailUrl();
 
-      this.setCurrentObject(this.listObjects?.[activeObj?.id]);
+      // set state change for autosave
+      this.isCanvasChanged = true;
     },
 
     /**
@@ -1127,8 +1147,7 @@ export default {
 
       updateElement(element, prop, this.digitalCanvas);
 
-      // update thumbnail
-      this.getThumbnailUrl();
+      this.handleCanvasChanged();
 
       this.setCurrentObject(this.listObjects?.[element?.id]);
     },
@@ -1169,8 +1188,8 @@ export default {
         fabricObjects[oldIndex + numBackground].moveTo(
           newIndex + numBackground
         );
-        //update thumbnail
-        this.getThumbnailUrl();
+
+        this.handleCanvasChanged();
       };
 
       if (actionName === ARRANGE_SEND.BACK && currentObjectIndex === 0) return;
@@ -1700,6 +1719,24 @@ export default {
         this.digitalCanvas
       );
       return image;
+    },
+
+    /**
+     *  fire every 60s by default to save working progress
+     */
+    async handleAutosave() {
+      if (!this.isCanvasChanged) return;
+
+      this.updateSavingStatus({ status: SAVE_STATUS.START });
+
+      // TODO: uncommented later -LUC
+      // await this.saveData(this.pageSelected.id);
+      // Delete late - jusr for testing
+      await new Promise(r => setTimeout(() => r(), 1000));
+
+      this.updateSavingStatus({ status: SAVE_STATUS.END });
+
+      this.isCanvasChanged = false;
     }
   },
   watch: {
@@ -1766,6 +1803,8 @@ export default {
   },
   beforeDestroy() {
     this.digitalCanvas = null;
+
+    clearInterval(this.autoSaveTimer);
 
     this.updateDigitalEventListeners(false);
     this.updateWindowEventListeners(false);

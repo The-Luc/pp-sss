@@ -185,6 +185,10 @@ const digitalService = {
     saveQueue.push(digitalService.updateSheet(sheetId, sheet));
     const response = await Promise.all(saveQueue);
 
+    // TODO: remove when integrate API
+    // Simulate a delay when saving data to API
+    await new Promise(r => setTimeout(() => r(), 300));
+
     return {
       data: response,
       status: 'OK'
