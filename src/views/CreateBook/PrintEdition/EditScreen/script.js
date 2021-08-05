@@ -96,6 +96,9 @@ export default {
     }),
     isShowAutoflow() {
       return !isEmpty(this.sheetMedia);
+    },
+    isOpenPhotoSidebar() {
+      return this.selectedToolName === TOOL_NAME.PHOTOS;
     }
   },
   watch: {
@@ -213,6 +216,7 @@ export default {
         );
       }, SAVING_DURATION);
     },
+
     /**
      * Fire when zoom is changed
      *
@@ -252,6 +256,12 @@ export default {
     async handleSelectedImages(images) {
       const reversedImages = images.reverse();
       await this.updateSheetMedia({ images: reversedImages });
+    },
+    /**
+     * Close list photo in sidebar
+     */
+    closePhotoSidebar() {
+      this.setToolNameSelected('');
     }
   }
 };

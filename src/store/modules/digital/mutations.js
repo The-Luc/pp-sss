@@ -154,12 +154,14 @@ export const mutations = {
   [DIGITAL._MUTATES.SET_FRAMES](state, { framesList }) {
     if (framesList.length === 0) {
       const blankFrame = {
-        id: 0,
+        id: uniqueId(),
         frame: {
           previewImageUrl: '',
           id: 0,
           fromLayout: true,
-          frameTitle: ''
+          frameTitle: '',
+          objects: [],
+          isVisited: true
         }
       };
       state.frames = { [blankFrame.id]: blankFrame.frame };

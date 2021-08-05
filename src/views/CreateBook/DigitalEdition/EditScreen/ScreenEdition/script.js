@@ -92,7 +92,7 @@ import {
   THUMBNAIL_IMAGE_CONFIG
 } from '@/common/constants/config';
 import { useStyle } from '@/hooks/style';
-import { useSaveData } from '../composables';
+import { useSaveData, useObject } from '../composables';
 import { useSavingStatus } from '@/views/CreateBook/composables';
 
 const ELEMENTS = {
@@ -121,6 +121,7 @@ export default {
     const { onSaveStyle } = useStyle();
     const { getDataEditScreen, saveEditScreen } = useSaveData();
     const { updateSavingStatus, savingStatus } = useSavingStatus();
+    const { updateObjectsToStore } = useObject();
 
     return {
       frames,
@@ -138,7 +139,8 @@ export default {
       saveEditScreen,
       updateFrameObjects,
       updateSavingStatus,
-      savingStatus
+      savingStatus,
+      updateObjectsToStore
     };
   },
   data() {
@@ -1737,6 +1739,17 @@ export default {
       this.updateSavingStatus({ status: SAVE_STATUS.END });
 
       this.isCanvasChanged = false;
+    },
+
+    /**
+     * Save sheet and sheet's frame data to storage
+     * @param {String | Number} sheetId id of sheet
+     * @param {String | Number} frameId id of frame
+     */
+    async saveData(sheetId, frameId) {
+      this.updateFrameObjects({ frameId });
+      const data = this.getDataEditScreen(sheetId);
+      await this.saveEditScreen(data);
     }
   },
   watch: {
@@ -1744,9 +1757,7 @@ export default {
       deep: true,
       async handler(val, oldVal) {
         if (val?.id !== oldVal?.id) {
-          this.updateFrameObjects({ frameId: this.currentFrameId });
-          const data = this.getDataEditScreen(oldVal.id, this.currentFrameId);
-          await this.saveEditScreen(data);
+          this.saveData(oldVal.id, this.currentFrameId);
 
           // reset frames, frameIDs, currentFrameId
           this.setFrames({ framesList: [] });
@@ -1769,14 +1780,13 @@ export default {
         resetObjects(this.digitalCanvas);
         return;
       }
-      this.updateFrameObjects({ frameId: oldVal });
-      const data = this.getDataEditScreen(this.pageSelected.id, oldVal);
-      await this.saveEditScreen(data);
+      this.saveData(this.pageSelected.id, oldVal);
 
       this.setSelectedObjectId({ id: '' });
       this.setCurrentObject(null);
       resetObjects(this.digitalCanvas);
 
+      this.updateObjectsToStore({ objects: this.currentFrame.objects });
       this.handleSwitchFrame(this.currentFrame);
       await this.drawObjectsOnCanvas(this.sheetLayout);
     },
