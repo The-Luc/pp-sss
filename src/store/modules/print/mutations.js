@@ -235,5 +235,8 @@ export const mutations = {
     }
     state.background.left = {};
     state.background.right = {};
+  },
+  [PRINT._MUTATES.SET_SHEET_MEDIA](state, { media }) {
+    state.sheets[state.currentSheetId].media = media;
   }
 };

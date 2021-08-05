@@ -1,25 +1,29 @@
-import { useGetters, useMutations } from 'vuex-composition-helpers';
+import { useGetters, useMutations, useActions } from 'vuex-composition-helpers';
 
 import {
   GETTERS as PRINT_GETTERS,
-  MUTATES as PRINT_MUTATES
+  MUTATES as PRINT_MUTATES,
+  ACTIONS as PRINT_ACTIONS
 } from '@/store/modules/print/const';
 import {
   GETTERS as DIGITAL_GETTERS,
-  MUTATES as DIGITAL_MUTATES
+  MUTATES as DIGITAL_MUTATES,
+  ACTIONS as DIGITAL_ACTIONS
 } from '@/store/modules/digital/const';
 
 export const useSheet = (isDigital = false) => {
   const GETTERS = isDigital ? DIGITAL_GETTERS : PRINT_GETTERS;
 
-  const { sheetLayout, currentSheet } = useGetters({
+  const { sheetLayout, currentSheet, sheetMedia } = useGetters({
     sheetLayout: GETTERS.SHEET_LAYOUT,
-    currentSheet: GETTERS.CURRENT_SHEET
+    currentSheet: GETTERS.CURRENT_SHEET,
+    sheetMedia: GETTERS.GET_SHEET_MEDIA
   });
 
   return {
     sheetLayout,
-    currentSheet
+    currentSheet,
+    sheetMedia
   };
 };
 
@@ -32,6 +36,18 @@ const useMutationEditionSheet = (isDigital = false) => {
 
   return {
     setCurrentSheetId
+  };
+};
+
+export const useActionsEditionSheet = (isDigital = false) => {
+  const ACTIONS = isDigital ? DIGITAL_ACTIONS : PRINT_ACTIONS;
+
+  const { updateSheetMedia } = useActions({
+    updateSheetMedia: ACTIONS.UPDATE_SHEET_MEDIA
+  });
+
+  return {
+    updateSheetMedia
   };
 };
 
