@@ -1,7 +1,6 @@
-import { useMutations, useGetters, useActions } from 'vuex-composition-helpers';
+import { useMutations, useGetters } from 'vuex-composition-helpers';
 import {
   GETTERS as DIGITAL_GETTERS,
-  ACTIONS as DIGITAL_ACTIONS,
   MUTATES as DIGITAL_MUTATES
 } from '@/store/modules/digital/const';
 import { MUTATES, GETTERS } from '@/store/modules/app/const';
@@ -58,16 +57,9 @@ export const useFrameSwitching = () => {
     setCurrentFrameVisited: DIGITAL_MUTATES.SET_FRAME_VISITED
   });
 
-  const { updateLayoutObjToStore } = useActions({
-    updateLayoutObjToStore: DIGITAL_ACTIONS.UPDATE_LAYOUT_OBJ_TO_STORE
-  });
-
-  const handleSwitchFrame = layout => {
-    // update to store
-    updateLayoutObjToStore({ layout });
-
+  const handleSwitchFrame = frame => {
     //open frame information panel
-    if (!layout.isVisited) {
+    if (!frame.isVisited) {
       setPropertiesObjectType({ type: PROPERTIES_TOOLS.FRAME_INFO.type });
       setIsOpenProperties({ isOpen: !isMenuOpen.value });
       setCurrentFrameVisited({ value: true });
@@ -126,10 +118,6 @@ export const useFrameReplace = () => {
     setIsOpenProperties: MUTATES.TOGGLE_MENU_PROPERTIES
   });
 
-  const { updateLayoutObjToStore } = useActions({
-    updateLayoutObjToStore: DIGITAL_ACTIONS.UPDATE_LAYOUT_OBJ_TO_STORE
-  });
-
   const handleReplaceFrame = ({ frame, frameId }) => {
     // set the current frame isVisted and open frame info panel
     frame.isVisited = true;
@@ -137,8 +125,6 @@ export const useFrameReplace = () => {
     setIsOpenProperties({ isOpen: true });
 
     replaceFrame({ frame, frameId });
-
-    updateLayoutObjToStore({ layout: frame });
 
     // to manually tell the canvas to update itselft because current frame id isn't changed
     triggerApplyLayout();

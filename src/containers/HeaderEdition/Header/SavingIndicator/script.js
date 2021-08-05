@@ -24,7 +24,7 @@ export default {
 
         setTimeout(() => {
           this.statusCssClass = '';
-        }, 1500);
+        }, 2000);
       }
     }
   }

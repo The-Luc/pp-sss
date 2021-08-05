@@ -15,7 +15,8 @@ export default {
   data() {
     return {
       selectedImages: [],
-      currentTab: ''
+      currentTab: '',
+      defaultTab: 'smart-box'
     };
   },
   props: {
@@ -43,6 +44,7 @@ export default {
     onCancel() {
       this.$emit('cancel');
       this.selectedImages = [];
+      this.defaultTab = null;
     },
     /**
      * Selected a image and push or remove in array image selected

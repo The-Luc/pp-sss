@@ -7,7 +7,7 @@
     max-width="1162"
   >
     <div class="modal-body">
-      <v-tabs fixed-tabs dark @change="onChangeTab">
+      <v-tabs v-model="defaultTab" fixed-tabs dark @change="onChangeTab">
         <v-tabs-slider color="transparent"></v-tabs-slider>
         <v-tab href="#smart-box">
           <i class="light"></i>
