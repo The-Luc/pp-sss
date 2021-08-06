@@ -1,7 +1,7 @@
 import Modal from '@/containers/Modal';
 import Footer from './Footer';
 import Photos from './Photos';
-import Add from './Add';
+import TabAddPhotos from './TabAddPhotos';
 
 import { insertItemsToArray, removeItemsFormArray } from '@/common/utils';
 
@@ -10,7 +10,7 @@ export default {
     Modal,
     Footer,
     Photos,
-    Add
+    TabAddPhotos
   },
   data() {
     return {
