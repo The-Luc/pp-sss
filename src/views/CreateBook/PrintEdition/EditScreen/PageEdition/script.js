@@ -1307,24 +1307,24 @@ export default {
 
       if (isEmpty(element) || element.objectType !== objectType) return;
 
-      this.updateElementProp(element, prop, objectType);
+      const newProp = this.updateElementProp(element, prop, objectType);
 
       if (objectType === OBJECT_TYPE.TEXT) {
-        this.debounceSetCurrentObject(element.id, prop);
+        this.debounceSetCurrentObject(element.id, newProp);
       } else {
-        this.updateCurrentObject(element.id, prop);
+        this.updateCurrentObject(element.id, newProp);
       }
 
-      this.updateInfoBar(prop);
+      this.updateInfoBar(newProp);
 
       if (
-        !isEmpty(prop['shadow']) ||
-        !isEmpty(prop['color']) ||
-        !isEmpty(prop['opacity'])
+        !isEmpty(newProp['shadow']) ||
+        !isEmpty(newProp['color']) ||
+        !isEmpty(newProp['opacity'])
       ) {
-        this.debounceSetObjectProp(prop, updateTriggerFn);
+        this.debounceSetObjectProp(newProp, updateTriggerFn);
       } else {
-        this.setObjectProperties(prop, updateTriggerFn);
+        this.setObjectProperties(newProp, updateTriggerFn);
       }
     },
     /**
@@ -1335,23 +1335,27 @@ export default {
      * @param {String}  objectType  object type of selected element
      */
     updateElementProp(element, prop, objectType) {
-      return new Promise(resole => {
-        if (objectType === OBJECT_TYPE.TEXT) {
-          applyTextBoxProperties(element, prop);
+      if (objectType === OBJECT_TYPE.TEXT) {
+        applyTextBoxProperties(element, prop);
 
-          resole();
+        // After fixing "one change only triggers one mutation"
+        // this will return new prop get from fabric element
+        return prop;
+      }
 
-          return;
+      if (objectType === OBJECT_TYPE.IMAGE) {
+        const { border } = prop;
+
+        if (!isEmpty(border)) {
+          applyBorderToImageObject(element, border);
         }
+      }
 
-        if (!isEmpty(prop['shadow'])) {
-          applyShadowToObject(element, prop['shadow']);
-        }
+      updateElement(element, prop, window.printCanvas);
 
-        updateElement(element, prop, window.printCanvas);
-
-        resole();
-      });
+      // After fixing "one change only triggers one mutation"
+      // this will return new prop get from fabric element
+      return prop;
     },
     /**
      * Update current object by mutate the store

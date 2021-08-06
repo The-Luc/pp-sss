@@ -329,7 +329,7 @@ export const updateSpecificProp = (element, prop) => {
   // update angle of element
   if (!isEmpty(prop?.coord?.rotation)) element.rotate(prop.coord.rotation);
 
-  // code for others specific props
+  if (!isEmpty(prop?.shadow)) applyShadowToObject(element, prop.shadow);
 };
 
 /**
@@ -340,29 +340,21 @@ export const updateSpecificProp = (element, prop) => {
  * @param {Object}  canvas  the canvas contain element
  */
 export const updateElement = (element, prop, canvas) => {
-  return new Promise(resolve => {
-    if (isEmpty(element) || isEmpty(prop)) {
-      resolve();
+  if (isEmpty(element) || isEmpty(prop)) return;
 
-      return;
-    }
+  updateSpecificProp(element, prop);
 
-    updateSpecificProp(element, prop);
+  const fabricProp = getFabricProp(element, prop);
 
-    const fabricProp = getFabricProp(element, prop);
+  setElementProp(element, fabricProp);
 
-    setElementProp(element, fabricProp);
+  if (Object.keys(prop).includes('isConstrain')) {
+    canvas.set({ uniformScaling: prop.isConstrain });
+  }
 
-    if (Object.keys(prop).includes('isConstrain')) {
-      canvas.set({ uniformScaling: prop.isConstrain });
-    }
+  element.setCoords();
 
-    element.setCoords();
-
-    canvas.renderAll();
-
-    resolve();
-  });
+  canvas.renderAll();
 };
 
 /**
