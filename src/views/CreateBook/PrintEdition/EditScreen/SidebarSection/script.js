@@ -12,8 +12,8 @@ import {
   useLayoutPrompt,
   useResetPrintConfig,
   usePopoverCreationTool,
-  useObjectProperties,
-  useUser
+  useUser,
+  useMenuProperties
 } from '@/hooks';
 import { TOOL_NAME, EDITION } from '@/common/constants';
 import {
@@ -30,7 +30,7 @@ export default {
   setup() {
     const { resetPrintConfig } = useResetPrintConfig();
     const { setToolNameSelected } = usePopoverCreationTool();
-    const { toggleMenuProperties } = useObjectProperties();
+    const { toggleMenuProperties } = useMenuProperties();
     const { updateVisited, setIsPrompt } = useLayoutPrompt(EDITION.PRINT);
     const { currentUser } = useUser();
 

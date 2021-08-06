@@ -1,0 +1,34 @@
+.modal-add-photo.v-dialog {
+  .modal-body {
+    &::v-deep {
+      .v-dialog .v-sheet.v-card .v-card__text {
+        padding: 0px;
+      }
+      .v-tabs-bar {
+        height: 66px;
+        background-color: $color-gray25 !important;
+        .v-tab {
+          text-transform: none;
+          font-family: $font-500;
+          font-size: $md-size;
+          flex-direction: column;
+          &:before {
+            background-color: transparent;
+          }
+          &.v-tab--active {
+            background: $color-stoodio-blue;
+            .light {
+              background-image: url('~@/assets/icons/lightbulb-2.svg');
+            }
+          }
+          .light {
+            width: 24px;
+            height: 24px;
+            background-size: cover;
+            background-image: url('~@/assets/icons/lightbulb.svg');
+          }
+        }
+      }
+    }
+  }
+}

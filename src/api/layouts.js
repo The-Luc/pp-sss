@@ -1,6 +1,10 @@
 import { cloneDeep } from 'lodash';
-import { isHalfSheet, modifyItems } from '@/common/utils';
-import { LAYOUT_PAGE_TYPE, MODIFICATION } from '@/common/constants';
+import {
+  insertItemsToArray,
+  isHalfSheet,
+  removeItemsFormArray
+} from '@/common/utils';
+import { LAYOUT_PAGE_TYPE } from '@/common/constants';
 import { packageLayouts, supplementalLayouts } from '@/mock/digitalLayouts';
 import { SAVED_AND_FAVORITES } from '@/mock/layoutTypes';
 
@@ -56,14 +60,17 @@ export const saveToFavorites = layoutId => {
       f => f === layoutId
     );
 
-    const modification = index < 0 ? MODIFICATION.ADD : MODIFICATION.DELETE;
-
-    window.data.printFavoritesLayouts = modifyItems(
-      window.data.printFavoritesLayouts,
-      layoutId,
-      index,
-      modification
-    );
+    if (index < 0) {
+      window.data.printFavoritesLayouts = insertItemsToArray(
+        window.data.printFavoritesLayouts,
+        [{ value: layoutId }]
+      );
+    } else {
+      window.data.printFavoritesLayouts = removeItemsFormArray(
+        window.data.printFavoritesLayouts,
+        [{ value: layoutId, index }]
+      );
+    }
 
     resolve();
   });

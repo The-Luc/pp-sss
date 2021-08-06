@@ -12,7 +12,10 @@ export const TOOL_NAME = {
   PRINT_BACKGROUNDS: 'PrintBackgrounds',
   DIGITAL_BACKGROUNDS: 'DigitalBackgrounds',
   SHAPES: 'Shapes',
-  ACTIONS: 'Actions'
+  ACTIONS: 'Actions',
+  PHOTOS: 'Photos',
+  UNDO: 'Undo',
+  REDO: 'Redo'
 };
 
 export const ACTIONS = {
@@ -67,4 +70,10 @@ export const NON_ELEMENT_PROPERTIES_TOOLS = [
   PROPERTIES_TOOLS.BACKGROUND,
   PROPERTIES_TOOLS.PAGE_INFO,
   PROPERTIES_TOOLS.FRAME_INFO
+];
+
+export const ONE_CLICK_TOOLS = [
+  TOOL_NAME.DELETE,
+  TOOL_NAME.UNDO,
+  TOOL_NAME.REDO
 ];

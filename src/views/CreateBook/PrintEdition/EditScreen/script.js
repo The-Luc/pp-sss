@@ -10,6 +10,7 @@ import {
 import {
   MODAL_TYPES,
   ROLE,
+  SAVE_STATUS,
   SAVING_DURATION,
   TOOL_NAME
 } from '@/common/constants';
@@ -18,19 +19,33 @@ import Header from '@/containers/HeaderEdition/Header';
 import FeedbackBar from '@/containers/HeaderEdition/FeedbackBar';
 import SidebarSection from './SidebarSection';
 import PageEdition from './PageEdition';
+import PhotoSidebar from '@/components/PhotoSidebar';
+import SheetMedia from '@/components/SheetMedia';
+
 import {
   useLayoutPrompt,
   usePopoverCreationTool,
   useInfoBar,
   useMutationPrintSheet,
   useUser,
-  useGetterPrintSheet
+  useGetterPrintSheet,
+  useMenuProperties,
+  useProperties,
+  useSheet,
+  useActionsEditionSheet
 } from '@/hooks';
 import { EDITION } from '@/common/constants';
-import { isEmpty, isPositiveInteger, getEditionListPath } from '@/common/utils';
+import {
+  isEmpty,
+  isPositiveInteger,
+  getEditionListPath,
+  activeCanvas
+} from '@/common/utils';
 
 import printService from '@/api/print';
 import { useSaveData } from './PageEdition/composables';
+import { getActivateImages, setImageSrc } from '@/common/fabricObjects';
+import { useSavingStatus } from '../../composables';
 
 export default {
   components: {
@@ -38,7 +53,9 @@ export default {
     Header,
     FeedbackBar,
     PageEdition,
-    SidebarSection
+    SidebarSection,
+    PhotoSidebar,
+    SheetMedia
   },
   setup() {
     const { pageSelected, updateVisited } = useLayoutPrompt(EDITION.PRINT);
@@ -48,6 +65,11 @@ export default {
     const { currentUser } = useUser();
     const { currentSection } = useGetterPrintSheet();
     const { savePrintEditScreen, getDataEditScreen } = useSaveData();
+    const { isOpenMenuProperties } = useMenuProperties();
+    const { setPropertyById } = useProperties();
+    const { updateSavingStatus } = useSavingStatus();
+    const { sheetMedia } = useSheet();
+    const { updateSheetMedia } = useActionsEditionSheet();
 
     return {
       pageSelected,
@@ -58,16 +80,26 @@ export default {
       currentUser,
       currentSection,
       savePrintEditScreen,
-      getDataEditScreen
+      getDataEditScreen,
+      isOpenMenuProperties,
+      setPropertyById,
+      updateSavingStatus,
+      sheetMedia,
+      updateSheetMedia
     };
   },
   computed: {
     ...mapGetters({
       printThemeSelected: PRINT_GETTERS.DEFAULT_THEME_ID,
-      isOpenMenuProperties: APP_GETTERS.IS_OPEN_MENU_PROPERTIES,
       selectedToolName: APP_GETTERS.SELECTED_TOOL_NAME,
       getObjectsAndBackground: PRINT_GETTERS.GET_OBJECTS_AND_BACKGROUNDS
-    })
+    }),
+    isShowAutoflow() {
+      return !isEmpty(this.sheetMedia);
+    },
+    isOpenPhotoSidebar() {
+      return this.selectedToolName === TOOL_NAME.PHOTOS;
+    }
   },
   watch: {
     pageSelected: {
@@ -172,8 +204,11 @@ export default {
      * Save print canvas and change view
      */
     async onClickSavePrintCanvas() {
+      this.updateSavingStatus({ status: SAVE_STATUS.START });
       const data = this.getDataEditScreen(this.pageSelected.id);
       await this.savePrintEditScreen(data);
+
+      this.updateSavingStatus({ status: SAVE_STATUS.END });
 
       setTimeout(() => {
         this.$router.push(
@@ -181,6 +216,7 @@ export default {
         );
       }, SAVING_DURATION);
     },
+
     /**
      * Fire when zoom is changed
      *
@@ -188,6 +224,44 @@ export default {
      */
     onZoom({ zoom }) {
       this.setInfoBar({ zoom });
+    },
+
+    /**
+     * Handle autoflow
+     */
+    handleAutoflow() {
+      activeCanvas.discardActiveObject();
+      const objects = getActivateImages();
+      const images = this.sheetMedia || [];
+      if (objects.length > images.length) {
+        images.forEach((image, index) => {
+          setImageSrc(objects[index], image.imageUrl, prop => {
+            prop.imageId = image.id;
+            this.setPropertyById({ id: objects[index].id, prop });
+          });
+        });
+        return;
+      }
+      objects.forEach((object, index) => {
+        setImageSrc(object, images[index].imageUrl, prop => {
+          prop.imageId = images[index].id;
+          this.setPropertyById({ id: object.id, prop });
+        });
+      });
+    },
+    /**
+     * Selected images and save in sheet
+     * @param   {Array}  images  selected images
+     */
+    async handleSelectedImages(images) {
+      const reversedImages = images.reverse();
+      await this.updateSheetMedia({ images: reversedImages });
+    },
+    /**
+     * Close list photo in sidebar
+     */
+    closePhotoSidebar() {
+      this.setToolNameSelected('');
     }
   }
 };

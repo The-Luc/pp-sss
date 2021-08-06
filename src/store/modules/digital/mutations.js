@@ -6,6 +6,7 @@ import { OBJECT_TYPE } from '@/common/constants';
 
 import DIGITAL from './const';
 import { isEmpty } from '@/common/utils';
+import { addObject, deleteObjects } from '@/common/store';
 
 export const mutations = {
   [DIGITAL._MUTATES.SET_BOOK_ID](state, { bookId }) {
@@ -66,13 +67,7 @@ export const mutations = {
   [DIGITAL._MUTATES.SET_CURRENT_OBJECT_ID](state, { id }) {
     state.currentObjectId = id;
   },
-  [DIGITAL._MUTATES.ADD_OBJECT](state, { id, newObject }) {
-    if (!id) return;
-
-    state.objectIds.push(id);
-
-    state.objects[id] = newObject;
-  },
+  [DIGITAL._MUTATES.ADD_OBJECT]: addObject,
   [DIGITAL._MUTATES.SET_PROP](state, { prop }) {
     if (!state.currentObjectId) return;
 
@@ -101,17 +96,7 @@ export const mutations = {
     });
   },
 
-  [DIGITAL._MUTATES.DELETE_OBJECTS](state, { ids }) {
-    ids.forEach(id => {
-      const index = state.objectIds.indexOf(id);
-
-      if (index >= 0) {
-        state.objectIds.splice(index, 1);
-      }
-
-      delete state.objects[id];
-    });
-  },
+  [DIGITAL._MUTATES.DELETE_OBJECTS]: deleteObjects,
   [DIGITAL._MUTATES.UPDATE_TRIGGER_TEXT_CHANGE](state) {
     state.triggerChange.text = !state.triggerChange.text;
   },
@@ -169,12 +154,14 @@ export const mutations = {
   [DIGITAL._MUTATES.SET_FRAMES](state, { framesList }) {
     if (framesList.length === 0) {
       const blankFrame = {
-        id: 0,
+        id: uniqueId(),
         frame: {
           previewImageUrl: '',
           id: 0,
           fromLayout: true,
-          frameTitle: ''
+          frameTitle: '',
+          objects: [],
+          isVisited: true
         }
       };
       state.frames = { [blankFrame.id]: blankFrame.frame };
@@ -249,5 +236,19 @@ export const mutations = {
   },
   [DIGITAL._MUTATES.SET_TITLE_FRAME]({ frames, currentFrameId }, { value }) {
     frames[currentFrameId].frameTitle = value;
+  },
+  [DIGITAL._MUTATES.UPDATE_OBJECTS_TO_FRAME](
+    { frames, background, objects, objectIds },
+    { frameId }
+  ) {
+    if (!frameId || !frames[frameId]) return;
+
+    const backgrounds = Object.values(background).filter(bg => !isEmpty(bg));
+    const objectsData = [
+      ...backgrounds,
+      ...objectIds.map(id => ({ ...objects[id], id }))
+    ];
+
+    frames[frameId].objects = objectsData;
   }
 };

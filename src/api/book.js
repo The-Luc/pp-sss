@@ -5,8 +5,9 @@ import {
   BookPrintDetail,
   BookDigitalDetail,
   SheetPrintData,
-  SheetDigitalData
+  SheetDigitalDetail
 } from '@/common/models';
+import { SheetEntity } from '@/common/models/entities';
 
 import { cloneDeep } from 'lodash';
 
@@ -15,9 +16,9 @@ export const getBookDetail = bookId => {
   bookId;
 
   return new Promise(resolve => {
-    const { book, sheets, sections, objects } = window.data;
-    const sectionData = cloneDeep(sections);
-    const sheetData = cloneDeep(sheets);
+    const { book } = cloneDeep(window.data);
+    const sectionData = book.sections;
+    const sheetData = [];
 
     const sectionIds = [];
     const sectionsAsObject = {};
@@ -25,11 +26,20 @@ export const getBookDetail = bookId => {
 
     sectionData.forEach(section => {
       const { id } = section;
-      sectionsAsObject[id] = new Section(section);
+      const sheetIds = [];
       sectionIds.push(id);
+
+      section.sheets.forEach(sheet => {
+        sheetIds.push(sheet.id);
+
+        sheetData.push(new SheetEntity(sheet));
+      });
+
+      // adding sheetIds to section
+      section.sheetIds = sheetIds;
+      sectionsAsObject[id] = new Section(section);
     });
 
-    // TODO: define a general Sheet class
     sheetData.forEach(sheet => {
       sheetsAsObject[sheet.id] = sheet;
     });
@@ -40,8 +50,7 @@ export const getBookDetail = bookId => {
       sections: sectionData,
       sheets: sheetData,
       sectionsAsObject,
-      sheetsAsObject,
-      objects
+      sheetsAsObject
     });
   });
 };
@@ -53,64 +62,92 @@ export const getBookManager = async bookId => {
   const {
     book,
     sectionIds,
-    sectionsAsObject,
-    sheetsAsObject
+    sheets,
+    sectionsAsObject
   } = await bookService.getBook(bookId);
 
   const bookData = new BookManagerDetail(book);
+
+  // TODO: define sheet class for manager
+  const printSheets = {};
+  sheets.forEach(sheet => {
+    const newSheet = new SheetPrintData({
+      ...sheet,
+      ...sheet.printData
+    });
+
+    printSheets[newSheet.id] = newSheet;
+  });
 
   return {
     book: bookData,
     sectionIds,
     sections: sectionsAsObject,
-    sheets: sheetsAsObject
+    sheets: printSheets
   };
 };
 
 export const getBookPrint = async bookId => {
   const {
     book,
-    sectionIds,
     sectionsAsObject,
     sheets,
     sections
   } = await bookService.getBook(bookId);
+
   const bookPrint = new BookPrintDetail({
     ...book,
     pageInfo: book.printData.pageInfo,
     themeId: book.printData.themeId
   });
 
-  const sheetsPrint = sheets.map(s => new SheetPrintData(s));
+  const sheetsPrint = sheets.map(
+    s =>
+      new SheetPrintData({
+        ...s,
+        ...s.printData
+      })
+  );
   const sheetsAsObject = {};
   sheetsPrint.forEach(sheet => (sheetsAsObject[sheet.id] = sheet));
 
+  const objects = {};
+  sheets.forEach(s => (objects[s.id] = s.printData.objects));
+
   return {
     book: bookPrint,
-    sectionIds,
     sections: sectionsAsObject,
     sheets: sheetsAsObject,
-    sectionsAsArray: sections
+    sectionsAsArray: sections,
+    objects
   };
 };
 
 export const getBookDigital = async bookId => {
   const {
     book,
-    sectionIds,
     sectionsAsObject,
     sheets,
     sections
   } = await bookService.getBook(bookId);
-  const bookDigital = new BookDigitalDetail(book);
 
-  const sheetsDigital = sheets.map(s => new SheetDigitalData(s));
+  const bookDigital = new BookDigitalDetail({
+    ...book,
+    themeId: book.digitalData.themeId
+  });
+
+  const sheetsDigital = sheets.map(
+    s =>
+      new SheetDigitalDetail({
+        ...s,
+        ...s.digitalData
+      })
+  );
   const sheetsAsObject = {};
   sheetsDigital.forEach(sheet => (sheetsAsObject[sheet.id] = sheet));
 
   return {
     book: bookDigital,
-    sectionIds,
     sections: sectionsAsObject,
     sheets: sheetsAsObject,
     sectionsAsArray: sections
@@ -144,7 +181,7 @@ const bookService = {
     // TODO: remove when integrate API
     bookId;
 
-    window.data.sections.forEach(section => {
+    window.data.book.sections.forEach(section => {
       if (section.id === sectionId) {
         section._set(data);
       }
@@ -183,11 +220,6 @@ const bookService = {
 
     const sheet = sheetObject.sectionId === sectionId ? sheetObject : null;
     return { sheet };
-  },
-  getObjectBySheet: async (sectionId, sheetId) => {
-    const { objects } = await bookService.getBook();
-
-    return objects[sheetId];
   }
 };
 

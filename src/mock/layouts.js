@@ -16,10 +16,13 @@ import LAYOUT_02 from '@/assets/image/layouts/thumb/layout-02.png';
 import BG_1 from '@/assets/image/layouts/background/background-01.jpg';
 import BG_2 from '@/assets/image/layouts/background/background-02.jpg';
 import BG_3 from '@/assets/image/layouts/background/background-03.jpg';
-import LPCA_04531 from '@/assets/image/layouts/background/LPCA_04531.png';
-import LPCA_04511 from '@/assets/image/layouts/background/LPCA_04511.png';
 import BG_SINGLE_PAGE_1 from '@/assets/image/layouts/background/bg-single-page-01.jpg';
 import BG_SINGLE_PAGE_2 from '@/assets/image/layouts/background/bg-single-page-02.jpg';
+
+import SHAPE_1 from '@/assets/image/shapes/star.svg';
+
+import CLIP_ART_1 from '@/assets/image/clip-art/clip-art-13.svg';
+import CLIP_ART_2 from '@/assets/image/clip-art/clip-art-11.svg';
 
 const text1 = {
   ...TextElement,
@@ -112,11 +115,10 @@ const clipArt1 = {
     rotation: 0 // degree
   },
   category: 'MSPHOTO',
-  name: 'LPCA_04531',
-  thumbnail: LPCA_04531,
-  vector: LPCA_04531,
-  fillcolor: '',
-  opacity: 0
+  name: 'CLIP_ART_1',
+  thumbnail: CLIP_ART_1,
+  vector: CLIP_ART_1,
+  opacity: 0.35
 };
 
 const clipArt2 = {
@@ -127,14 +129,15 @@ const clipArt2 = {
     height: 3
   },
   coord: {
-    x: 5,
-    y: 5,
+    x: 0,
+    y: 0,
     rotation: 0 // degree
   },
   category: 'MSPHOTO',
-  name: 'LPCA_04511',
-  thumbnail: LPCA_04511,
-  vector: LPCA_04511
+  name: 'CLIP_ART_2',
+  thumbnail: CLIP_ART_2,
+  vector: CLIP_ART_2,
+  color: '#42738d'
 };
 
 const shape1 = {
@@ -145,14 +148,15 @@ const shape1 = {
     height: 3
   },
   coord: {
-    x: 5,
-    y: 5,
+    x: 2,
+    y: 3,
     rotation: 0 // degree
   },
   category: '',
   name: '',
-  thumbnail: '',
-  pathData: 'img.svg' // TODO: Need discuss with FM to get instruction on using shape
+  thumbnail: SHAPE_1,
+  pathData: SHAPE_1,
+  color: '#c3d2d9'
 };
 
 const textSinglePage2 = {
@@ -186,8 +190,8 @@ const textSinglePage1 = {
     height: 5
   },
   coord: {
-    x: 12,
-    y: 4,
+    x: 2.5,
+    y: 2,
     rotation: 0 // degree
   },
   styleId: 'default',

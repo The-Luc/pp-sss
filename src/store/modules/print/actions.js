@@ -172,5 +172,11 @@ export const actions = {
       },
       { root: true }
     );
+  },
+  async [PRINT._ACTIONS.UPDATE_SHEET_MEDIA]({ commit, state }, { images }) {
+    const media = await printService.getSheetMedia(state.currentSheetId);
+    const newMedia = [...images, ...media];
+    await printService.saveSheetMedia(state.currentSheetId, newMedia);
+    commit(PRINT._MUTATES.SET_SHEET_MEDIA, { media: newMedia });
   }
 };

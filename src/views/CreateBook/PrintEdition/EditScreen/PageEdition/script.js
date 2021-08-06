@@ -4,7 +4,7 @@ import { cloneDeep, uniqueId, merge, debounce } from 'lodash';
 
 import { imageBorderModifier, usePrintOverrides } from '@/plugins/fabric';
 
-import { useInfoBar } from '@/hooks';
+import { useInfoBar, useMenuProperties, useProperties } from '@/hooks';
 import { startDrawBox } from '@/common/fabricObjects/drawingBox';
 
 import {
@@ -48,7 +48,9 @@ import {
   updateSpecificProp,
   addPrintPageNumber,
   updateBringToFrontPageNumber,
-  applyBorderToImageObject
+  applyBorderToImageObject,
+  setImageSrc,
+  centercrop
 } from '@/common/fabricObjects';
 
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
@@ -74,7 +76,8 @@ import {
   COVER_TYPE,
   DEFAULT_CLIP_ART,
   DEFAULT_IMAGE,
-  LAYOUT_PAGE_TYPE
+  LAYOUT_PAGE_TYPE,
+  SAVE_STATUS
 } from '@/common/constants';
 import SizeWrapper from '@/components/SizeWrapper';
 import PrintCanvasLines from './PrintCanvasLines';
@@ -84,6 +87,7 @@ import YRuler from './Rulers/YRuler';
 import {
   AUTOSAVE_INTERVAL,
   COPY_OBJECT_KEY,
+  MIN_IMAGE_SIZE,
   PASTE,
   THUMBNAIL_IMAGE_CONFIG
 } from '@/common/constants/config';
@@ -92,6 +96,7 @@ import { useAppCommon } from '@/hooks/common';
 import { EVENT_TYPE } from '@/common/constants/eventType';
 import { useStyle } from '@/hooks/style';
 import { useSaveData } from './composables';
+import { useSavingStatus } from '@/views/CreateBook/composables';
 
 export default {
   components: {
@@ -106,6 +111,13 @@ export default {
     const { setInfoBar, zoom } = useInfoBar();
     const { onSaveStyle } = useStyle();
     const { savePrintEditScreen, getDataEditScreen } = useSaveData();
+    const { isOpenMenuProperties } = useMenuProperties();
+    const {
+      setPropertyById: setObjectPropById,
+      getProperty,
+      setProperty: setObjectProp
+    } = useProperties();
+    const { updateSavingStatus, savingStatus } = useSavingStatus();
 
     return {
       setActiveEdition,
@@ -113,7 +125,13 @@ export default {
       zoom,
       onSaveStyle,
       savePrintEditScreen,
-      getDataEditScreen
+      getDataEditScreen,
+      setObjectPropById,
+      getProperty,
+      setObjectProp,
+      isOpenMenuProperties,
+      updateSavingStatus,
+      savingStatus
     };
   },
   data() {
@@ -130,7 +148,8 @@ export default {
       isProcessingPaste: false,
       countPaste: 1,
       rulerSize: { width: '0', height: '0' },
-      isCanvasChanged: false
+      isCanvasChanged: false,
+      autoSaveTimer: null
     };
   },
   computed: {
@@ -138,7 +157,6 @@ export default {
       book: GETTERS.BOOK_DETAIL,
       pageSelected: PRINT_GETTERS.CURRENT_SHEET,
       sheetLayout: PRINT_GETTERS.SHEET_LAYOUT,
-      isOpenMenuProperties: APP_GETTERS.IS_OPEN_MENU_PROPERTIES,
       toolNameSelected: APP_GETTERS.SELECTED_TOOL_NAME,
       currentBackgrounds: PRINT_GETTERS.BACKGROUNDS,
       propertiesObjectType: APP_GETTERS.PROPERTIES_OBJECT_TYPE,
@@ -146,7 +164,6 @@ export default {
       currentObjects: PRINT_GETTERS.GET_OBJECTS,
       totalBackground: PRINT_GETTERS.TOTAL_BACKGROUND,
       totalObject: PRINT_GETTERS.TOTAL_OBJECT,
-      getProperty: APP_GETTERS.SELECT_PROP_CURRENT_OBJECT,
       getPageInfo: PRINT_GETTERS.GET_PAGE_INFO,
       getObjectsAndBackground: PRINT_GETTERS.GET_OBJECTS_AND_BACKGROUNDS
     }),
@@ -175,22 +192,21 @@ export default {
     pageSelected: {
       deep: true,
       async handler(val, oldVal) {
-        if (val?.id !== oldVal?.id) {
-          const data = this.getDataEditScreen(oldVal.id);
-          await this.savePrintEditScreen(data);
+        if (val?.id === oldVal?.id) return;
 
-          // get data either from API or sessionStorage
-          await this.getDataCanvas();
-          this.countPaste = 1;
-          this.setSelectedObjectId({ id: '' });
-          this.setCurrentObject(null);
-          this.updateCanvasSize();
-          resetObjects(window.printCanvas);
+        this.saveData(oldVal.id);
 
-          await this.drawObjectsOnCanvas(this.sheetLayout);
+        // get data either from API or sessionStorage
+        await this.getDataCanvas();
+        this.countPaste = 1;
+        this.setSelectedObjectId({ id: '' });
+        this.setCurrentObject(null);
+        this.updateCanvasSize();
+        resetObjects(window.printCanvas);
 
-          this.addPageNumber();
-        }
+        await this.drawObjectsOnCanvas(this.sheetLayout);
+
+        this.addPageNumber();
       }
     },
     zoom(newVal, oldVal) {
@@ -201,7 +217,7 @@ export default {
     }
   },
   mounted() {
-    setInterval(this.handleAutosave, AUTOSAVE_INTERVAL);
+    this.autoSaveTimer = setInterval(this.handleAutosave, AUTOSAVE_INTERVAL);
 
     window.addEventListener('copy', this.handleCopy);
     window.addEventListener('paste', this.handlePaste);
@@ -214,7 +230,7 @@ export default {
 
     window.printCanvas = null;
 
-    clearInterval(this.handleAutosave);
+    clearInterval(this.autoSaveTimer);
 
     sessionStorage.removeItem(COPY_OBJECT_KEY);
 
@@ -237,8 +253,6 @@ export default {
       setSelectedObjectId: PRINT_MUTATES.SET_CURRENT_OBJECT_ID,
       setCurrentObject: MUTATES.SET_CURRENT_OBJECT,
       addNewObject: PRINT_MUTATES.ADD_OBJECT,
-      setObjectProp: PRINT_MUTATES.SET_PROP,
-      setObjectPropById: PRINT_MUTATES.SET_PROP_BY_ID,
       updateTriggerTextChange: MUTATES.UPDATE_TRIGGER_TEXT_CHANGE,
       addNewBackground: PRINT_MUTATES.SET_BACKGROUNDS,
       updateTriggerBackgroundChange:
@@ -251,17 +265,28 @@ export default {
       setPropertiesObjectType: MUTATES.SET_PROPERTIES_OBJECT_TYPE,
       setBackgroundProp: PRINT_MUTATES.SET_BACKGROUND_PROP,
       deleteBackground: PRINT_MUTATES.DELETE_BACKGROUND,
-      updateTriggerAutosave: MUTATES.UPDATE_TRIGGER_AUTOSAVE,
       setThumbnail: PRINT_MUTATES.UPDATE_SHEET_THUMBNAIL
     }),
 
-    handleAutosave() {
+    async handleAutosave() {
       if (!this.isCanvasChanged) return;
-      const data = this.getDataEditScreen(this.pageSelected.id);
-      this.savePrintEditScreen(data);
 
-      this.updateTriggerAutosave();
+      this.updateSavingStatus({ status: SAVE_STATUS.START });
+
+      await this.saveData(this.pageSelected.id);
+
+      this.updateSavingStatus({ status: SAVE_STATUS.END });
+
       this.isCanvasChanged = false;
+    },
+    /**
+     *
+     * @param {String | Number} sheetId id of sheet need to save data
+     */
+    async saveData(sheetId) {
+      const data = this.getDataEditScreen(sheetId);
+
+      await this.savePrintEditScreen(data);
     },
 
     /**
@@ -554,12 +579,20 @@ export default {
     },
 
     /**
+     * Fired when objects on canvas are modified, added, or removed
+     */
+    handleCanvasChanged() {
+      // update thumbnail
+      this.getThumbnailUrl();
+
+      // set state change for autosave
+      this.isCanvasChanged = true;
+    },
+
+    /**
      * call this function to update the active thumbnail
      */
     getThumbnailUrl: debounce(function() {
-      // TODO: -Luc Temporary setting, revise it later
-      this.isCanvasChanged = true;
-
       const thumbnailUrl = window.printCanvas.toDataURL({
         quality: THUMBNAIL_IMAGE_CONFIG.QUALITY,
         format: THUMBNAIL_IMAGE_CONFIG.FORMAT,
@@ -590,8 +623,8 @@ export default {
         'selection:cleared': this.handleClearSelected,
         'selection:created': this.objectSelected,
         'object:modified': this.handleBringToFrontPageNumber,
-        'object:added': this.getThumbnailUrl,
-        'object:removed': this.getThumbnailUrl,
+        'object:added': this.handleCanvasChanged,
+        'object:removed': this.handleCanvasChanged,
 
         'object:scaled': ({ target }) => {
           const { width, height } = target;
@@ -618,7 +651,12 @@ export default {
                   this.addText(left, top, width, height);
                 }
                 if (this.awaitingAdd === OBJECT_TYPE.IMAGE) {
-                  this.addImageBox(left, top, width, height);
+                  this.addImageBox(
+                    left,
+                    top,
+                    Math.max(width, MIN_IMAGE_SIZE),
+                    Math.max(height, MIN_IMAGE_SIZE)
+                  );
                 }
                 this.awaitingAdd = '';
               }
@@ -664,7 +702,6 @@ export default {
      * Event handle bring to front page number
      */
     handleBringToFrontPageNumber() {
-      this.getThumbnailUrl;
       updateBringToFrontPageNumber(window.printCanvas);
     },
     /**
@@ -823,8 +860,7 @@ export default {
 
       applyTextBoxProperties(activeObj, prop);
 
-      // update thumbnail
-      this.getThumbnailUrl();
+      this.handleCanvasChanged();
 
       this.setCurrentObject(this.currentObjects?.[activeObj?.id]);
     },
@@ -1294,8 +1330,7 @@ export default {
 
       updateElement(element, prop, window.printCanvas);
 
-      // update thumbnail
-      this.getThumbnailUrl();
+      this.handleCanvasChanged();
 
       this.setCurrentObject(this.currentObjects?.[element?.id]);
     },
@@ -1336,8 +1371,8 @@ export default {
         fabricObjects[oldIndex + numBackground].moveTo(
           newIndex + numBackground
         );
-        //update thumbnail
-        this.getThumbnailUrl();
+
+        this.handleCanvasChanged();
       };
 
       if (actionName === ARRANGE_SEND.BACK && currentObjectIndex === 0) return;
@@ -1424,7 +1459,6 @@ export default {
 
       const textEvents = {
         changeTextProperties: prop => {
-          this.getThumbnailUrl();
           this.changeTextProperties(prop);
         }
       };
@@ -1446,7 +1480,10 @@ export default {
       };
 
       const imageBoxEvents = {
-        changeImageProperties: this.changeImageProperties
+        changeImageProperties: this.changeImageProperties,
+        removeImage: this.handleRemoveImage,
+        centercrop: this.handleCentercrop,
+        autoflow: this.handleAutoflow
       };
 
       const otherEvents = {
@@ -1503,7 +1540,8 @@ export default {
     },
 
     /**
-     * create and render objects on the canvas
+     * Create and render objects on the canvas
+     *
      * @param {Object} objects ppObjects that will be rendered
      */
     async drawObjectsOnCanvas(objects) {
@@ -1690,6 +1728,27 @@ export default {
     },
     async drawLayout() {
       await this.drawObjectsOnCanvas(this.sheetLayout);
+    },
+
+    /**
+     * Handle reset image
+     */
+    handleRemoveImage() {
+      const activeObject = window.printCanvas.getActiveObject();
+      setImageSrc(activeObject, null, prop => {
+        this.setObjectPropById({ id: activeObject.id, prop });
+        this.setCurrentObject(this.currentObjects[activeObject.id]);
+      });
+    },
+
+    /**
+     * Handle centercrop
+     */
+    handleCentercrop() {
+      const activeObject = window.printCanvas.getActiveObject();
+      centercrop(activeObject, prop => {
+        this.setObjectPropById({ id: activeObject.id, prop });
+      });
     }
   }
 };

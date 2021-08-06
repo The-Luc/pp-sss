@@ -29,7 +29,7 @@ class GetterClass extends BaseObject {
   GENERAL_INFO = 'getGeneralInfo';
   SAVED_TEXT_STYLES = 'savedTextStyles';
   SAVED_IMAGE_STYLES = 'savedImageStyles';
-  TRIGGER_AUTOSAVE = 'triggerAutosave';
+  SAVING_STATUS = 'savingStatus';
 
   constructor(props) {
     super(props);
@@ -83,7 +83,7 @@ class MutationClass extends BaseObject {
   SET_SAVED_IMAGE_STYLES = 'setSavedImageStyle';
   SET_SAVED_TEXT_STYLE = 'setSavedTextStyle';
   SET_SAVED_IMAGE_STYLE = 'setSavedImageStyle';
-  UPDATE_TRIGGER_AUTOSAVE = 'updateTriggerAutosave';
+  UPDATE_SAVING_STATUS = 'updateSavingStatus';
 
   constructor(props) {
     super(props);

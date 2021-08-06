@@ -11,10 +11,11 @@ import { useLayoutPrompt, useToolBar } from '@/hooks';
 import {
   isEmpty,
   getRightToolItems,
-  isIntructionTool,
+  isInstructionTool,
   isElementTool,
   isTogglePropertiesMenu,
-  getNonElementToolType
+  getNonElementToolType,
+  isOneClickTool
 } from '@/common/utils';
 
 export default {
@@ -72,7 +73,7 @@ export default {
           {
             iconName: 'collections',
             title: 'Photos',
-            name: 'Photos'
+            name: TOOL_NAME.PHOTOS
           },
           {
             iconName: 'portrait',
@@ -89,12 +90,12 @@ export default {
           {
             iconName: 'undo',
             title: 'Undo',
-            name: 'Undo'
+            name: TOOL_NAME.UNDO
           },
           {
             iconName: 'redo',
             title: 'Redo',
-            name: 'Redo'
+            name: TOOL_NAME.REDO
           },
           {
             iconName: 'delete',
@@ -153,7 +154,7 @@ export default {
 
       if (isElementProp && isEmpty(this.selectedObjectType)) return;
 
-      if (isIntructionTool(this.selectedToolName)) {
+      if (isInstructionTool(this.selectedToolName)) {
         this.$root.$emit('printSwitchTool', '');
         this.setToolNameSelected({ name: '' });
       }
@@ -175,51 +176,38 @@ export default {
      * @param  {Object} item Receive item information
      */
     onClickLeftTool(data) {
-      if (!this.themeId) return;
+      if (!this.themeId || this.isPrompt) return;
 
-      const toolName = this.selectedToolName === data?.name ? '' : data?.name;
+      const name = data?.name;
+
+      const toolName = this.selectedToolName === name ? '' : name;
+
       this.$root.$emit('printSwitchTool', toolName);
 
-      switch (data.name) {
-        case TOOL_NAME.TEXT:
-          this.addElement(OBJECT_TYPE.TEXT);
-          this.setToolNameSelected({
-            name: TOOL_NAME.TEXT
-          });
-          break;
-        case TOOL_NAME.DELETE:
-          this.deleteElements();
-          break;
-        case TOOL_NAME.IMAGE_BOX:
-          this.addElement(OBJECT_TYPE.IMAGE);
-          this.setToolNameSelected({
-            name: TOOL_NAME.IMAGE_BOX
-          });
-          break;
-        case TOOL_NAME.PRINT_BACKGROUNDS:
-          this.setToolNameSelected({
-            name: TOOL_NAME.PRINT_BACKGROUNDS
-          });
-          break;
-        case TOOL_NAME.SHAPES:
-          this.setToolNameSelected({
-            name: TOOL_NAME.SHAPES
-          });
-          break;
-        case TOOL_NAME.ACTIONS:
-          this.setToolNameSelected({
-            name: toolName
-          });
-          break;
-        default:
-          if (data.name === TOOL_NAME.PRINT_LAYOUTS && this.isPrompt) {
-            return;
-          }
-          this.setToolNameSelected({
-            name: toolName
-          });
-          break;
+      if (isInstructionTool(name)) {
+        const objectType =
+          name === TOOL_NAME.IMAGE_BOX ? OBJECT_TYPE.IMAGE : OBJECT_TYPE.TEXT;
+
+        this.addElement(objectType);
+
+        this.setToolNameSelected({ name });
+
+        return;
       }
+
+      if (!isOneClickTool(name)) {
+        this.setToolNameSelected({ name: toolName });
+
+        return;
+      }
+
+      this.setToolNameSelected({ name: '' });
+
+      if (name === TOOL_NAME.DELETE) this.deleteElements();
+
+      if (name === TOOL_NAME.UNDO) this.undo();
+
+      if (name === TOOL_NAME.REDO) this.redo();
     },
     /**
      * Add element in print canvas
@@ -232,6 +220,20 @@ export default {
      */
     deleteElements() {
       this.$root.$emit('printDeleteElements');
+    },
+    /**
+     * Undo user action
+     */
+    undo() {
+      // will be release in this sprint
+      console.log('UNDO feature will roll out soon');
+    },
+    /**
+     * Redo user action
+     */
+    redo() {
+      // will be release in this sprint
+      console.log('REDO feature will roll out soon');
     }
   }
 };

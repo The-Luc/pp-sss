@@ -2,12 +2,7 @@ import randomcolor from 'randomcolor';
 import moment from 'moment';
 import { uniqueId } from 'lodash';
 
-import {
-  setBookId,
-  setBook,
-  setSections,
-  setSheets
-} from '@/common/store/book';
+import { setBookId, setBook, setSheets } from '@/common/store';
 
 import { isEmpty, moveItem } from '@/common/utils';
 
@@ -19,7 +14,10 @@ import { Section, Sheet } from '@/common/models';
 export const mutations = {
   [BOOK._MUTATES.SET_BOOK_ID]: setBookId,
   [BOOK._MUTATES.SET_BOOK]: setBook,
-  [BOOK._MUTATES.SET_SECTIONS]: setSections,
+  [BOOK._MUTATES.SET_SECTIONS]: (state, { sections, sectionIds }) => {
+    state.sections = sections;
+    state.sectionIds = sectionIds;
+  },
   [BOOK._MUTATES.SET_SHEETS]: setSheets,
   [BOOK._MUTATES.UPDATE_SECTION](state, { id, status, dueDate, assigneeId }) {
     if (!isEmpty(status)) state.sections[id].status = status;

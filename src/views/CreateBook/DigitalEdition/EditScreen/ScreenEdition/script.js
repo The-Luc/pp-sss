@@ -10,9 +10,9 @@ import {
   DEFAULT_CLIP_ART,
   DEFAULT_IMAGE,
   DEFAULT_SHAPE,
-  EDITION,
   MODAL_TYPES,
   OBJECT_TYPE,
+  SAVE_STATUS,
   TOOL_NAME
 } from '@/common/constants';
 import {
@@ -34,7 +34,8 @@ import {
   updateSpecificProp,
   handleGetSvgData,
   addEventListeners,
-  applyBorderToImageObject
+  applyBorderToImageObject,
+  createBackgroundFabricObject
 } from '@/common/fabricObjects';
 import { createImage } from '@/common/fabricObjects';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
@@ -84,11 +85,15 @@ import {
 } from '@/store/modules/digital/const';
 import { cloneDeep, debounce, merge, uniqueId } from 'lodash';
 import {
+  AUTOSAVE_INTERVAL,
   MAX_SUPPLEMENTAL_FRAMES,
+  MIN_IMAGE_SIZE,
   PASTE,
   THUMBNAIL_IMAGE_CONFIG
 } from '@/common/constants/config';
 import { useStyle } from '@/hooks/style';
+import { useSaveData, useObject } from '../composables';
+import { useSavingStatus } from '@/views/CreateBook/composables';
 
 const ELEMENTS = {
   [OBJECT_TYPE.TEXT]: 'a text box',
@@ -106,12 +111,21 @@ export default {
     const { setInfoBar, zoom } = useInfoBar();
     const { openPrompt } = useLayoutPrompt();
     const { handleSwitchFrame } = useFrameSwitching();
-    const { frames, currentFrameId } = useFrame();
+    const {
+      frames,
+      currentFrame,
+      currentFrameId,
+      updateFrameObjects
+    } = useFrame();
     const { toggleModal, modalData } = useModal();
     const { onSaveStyle } = useStyle();
+    const { getDataEditScreen, saveEditScreen } = useSaveData();
+    const { updateSavingStatus, savingStatus } = useSavingStatus();
+    const { updateObjectsToStore } = useObject();
 
     return {
       frames,
+      currentFrame,
       currentFrameId,
       drawLayout,
       setInfoBar,
@@ -120,7 +134,13 @@ export default {
       handleSwitchFrame,
       toggleModal,
       modalData,
-      onSaveStyle
+      onSaveStyle,
+      getDataEditScreen,
+      saveEditScreen,
+      updateFrameObjects,
+      updateSavingStatus,
+      savingStatus,
+      updateObjectsToStore
     };
   },
   data() {
@@ -135,7 +155,9 @@ export default {
       digitalCanvas: null,
       showAddFrame: true,
       countPaste: 1,
-      isProcessingPaste: false
+      isProcessingPaste: false,
+      isCanvasChanged: false,
+      autoSaveTimer: null
     };
   },
   computed: {
@@ -224,6 +246,8 @@ export default {
       this.updateCanvasEventListeners();
       this.updateDigitalEventListeners();
       this.updateWindowEventListeners();
+
+      this.autoSaveTimer = setInterval(this.handleAutosave, AUTOSAVE_INTERVAL);
     },
 
     /**
@@ -257,6 +281,10 @@ export default {
         {
           name: EVENT_TYPE.SAVE_STYLE,
           handler: this.onSaveStyle
+        },
+        {
+          name: EVENT_TYPE.DELETE_OBJECTS,
+          handler: this.deleteObject
         }
       ];
 
@@ -264,7 +292,6 @@ export default {
         {
           name: EVENT_TYPE.CHANGE_TEXT_PROPERTIES,
           handler: prop => {
-            this.getThumbnailUrl();
             this.changeTextProperties(prop);
           }
         }
@@ -307,6 +334,13 @@ export default {
         }
       ];
 
+      const imageEvents = [
+        {
+          name: EVENT_TYPE.CHANGE_IMAGE_PROPERTIES,
+          handler: this.changeImageProperties
+        }
+      ];
+
       const otherEvents = [
         {
           name: EVENT_TYPE.COPY_OBJ,
@@ -324,6 +358,7 @@ export default {
         ...textEvents,
         ...shapeEvents,
         ...clipArtEvents,
+        ...imageEvents,
         ...otherEvents
       ];
 
@@ -363,7 +398,7 @@ export default {
     },
 
     /**
-     * Update fabric canvas's event listeners after component has been mouted
+     * Update fabric canvas's event listeners after component has been mounted
      */
     updateCanvasEventListeners() {
       const events = {
@@ -480,8 +515,7 @@ export default {
      * Event fire when fabric object has been added
      */
     onObjectAdded() {
-      console.log('object:added');
-      this.getThumbnailUrl();
+      this.handleCanvasChanged();
     },
 
     /**
@@ -489,7 +523,6 @@ export default {
      */
     onObjectModified() {
       console.log('object:modified');
-      this.getThumbnailUrl();
     },
 
     /**
@@ -497,7 +530,7 @@ export default {
      */
     onObjectRemoved() {
       this.setCurrentObject(null);
-      this.getThumbnailUrl();
+      this.handleCanvasChanged();
     },
 
     /**
@@ -567,7 +600,12 @@ export default {
               this.addText(left, top, width, height);
             }
             if (this.awaitingAdd === OBJECT_TYPE.IMAGE) {
-              this.addImageBox(left, top, width, height);
+              this.addImageBox(
+                left,
+                top,
+                Math.max(width, MIN_IMAGE_SIZE),
+                Math.max(height, MIN_IMAGE_SIZE)
+              );
             }
             this.awaitingAdd = '';
           }
@@ -582,7 +620,7 @@ export default {
       const key = event.keyCode || event.charCode;
 
       if (event.target === document.body && key == 46) {
-        deleteSelectedObjects(this.digitalCanvas);
+        this.deleteObject();
       }
     },
 
@@ -761,10 +799,20 @@ export default {
 
       applyTextBoxProperties(activeObj, prop);
 
+      this.handleCanvasChanged();
+
+      this.setCurrentObject(this.listObjects?.[activeObj?.id]);
+    },
+
+    /**
+     * Fired when objects on canvas are modified, added, or removed
+     */
+    handleCanvasChanged() {
       // update thumbnail
       this.getThumbnailUrl();
 
-      this.setCurrentObject(this.listObjects?.[activeObj?.id]);
+      // set state change for autosave
+      this.isCanvasChanged = true;
     },
 
     /**
@@ -808,6 +856,9 @@ export default {
         case OBJECT_TYPE.TEXT:
           this.changeTextProperties(prop);
           break;
+        case OBJECT_TYPE.IMAGE:
+          this.changeImageProperties(prop);
+          break;
         default:
           return;
       }
@@ -839,6 +890,14 @@ export default {
             currentWidthInch,
             currentHeightInch,
             DEFAULT_CLIP_ART.MIN_SIZE
+          );
+          break;
+        case OBJECT_TYPE.IMAGE:
+          scale = calcScaleElement(
+            width,
+            currentWidthInch,
+            currentHeightInch,
+            DEFAULT_IMAGE.MIN_SIZE
           );
           break;
         default:
@@ -900,6 +959,18 @@ export default {
           this.changeClipArtProperties(prop);
           break;
         }
+
+        case OBJECT_TYPE.IMAGE: {
+          const prop = mappingElementProperties(
+            currentWidthInch,
+            currentHeightInch,
+            currentXInch,
+            currentYInch,
+            DEFAULT_IMAGE.MIN_SIZE
+          );
+          this.changeImageProperties(prop);
+          break;
+        }
         default:
           return;
       }
@@ -958,6 +1029,9 @@ export default {
           break;
         case OBJECT_TYPE.TEXT:
           this.changeTextProperties(prop);
+          break;
+        case OBJECT_TYPE.IMAGE:
+          this.changeImageProperties(prop);
           break;
         default:
           return;
@@ -1077,8 +1151,7 @@ export default {
 
       updateElement(element, prop, this.digitalCanvas);
 
-      // update thumbnail
-      this.getThumbnailUrl();
+      this.handleCanvasChanged();
 
       this.setCurrentObject(this.listObjects?.[element?.id]);
     },
@@ -1119,8 +1192,8 @@ export default {
         fabricObjects[oldIndex + numBackground].moveTo(
           newIndex + numBackground
         );
-        //update thumbnail
-        this.getThumbnailUrl();
+
+        this.handleCanvasChanged();
       };
 
       if (actionName === ARRANGE_SEND.BACK && currentObjectIndex === 0) return;
@@ -1176,14 +1249,40 @@ export default {
           imageUrl: DEFAULT_IMAGE.IMAGE_URL
         }
       });
+      const eventListeners = {
+        scaling: this.handleScaling,
+        scaled: this.handleScaled,
+        rotated: this.handleRotated,
+        moved: this.handleMoved
+      };
+
+      const image = await createImage(newImage.newObject);
+      merge(newImage.newObject, { size: image?.size });
 
       this.addNewObject(newImage);
 
-      const image = await createImage(newImage.newObject);
+      imageBorderModifier(image.object);
+
+      addEventListeners(image?.object, eventListeners);
       this.digitalCanvas.add(image?.object);
       selectLatestObject(this.digitalCanvas);
     },
+    /**
+     * Event fire when user change any property of selected image box
+     *
+     * @param {Object}  prop  new prop
+     */
+    changeImageProperties(prop) {
+      const { border } = prop;
 
+      const activeObject = this.digitalCanvas.getActiveObject();
+
+      if (border) {
+        applyBorderToImageObject(activeObject, border);
+      }
+
+      this.changeElementProperties(prop, OBJECT_TYPE.IMAGE);
+    },
     /**
      * Event fire when user click on Clip art button on Toolbar to add new clip art on canvas
      * @param {Array} clipArts - list clip art add on Canvas
@@ -1568,6 +1667,91 @@ export default {
       });
 
       return image;
+    },
+    /**
+     * Delete objects on canvas
+     */
+    deleteObject() {
+      const ids = this.digitalCanvas.getActiveObjects().map(o => o.id);
+      this.deleteObjects({ ids });
+
+      deleteSelectedObjects(this.digitalCanvas);
+    },
+
+    /**
+     * create and render objects on the canvas
+     * @param {Object} objects ppObjects that will be rendered
+     */
+    async drawObjectsOnCanvas(objects) {
+      if (isEmpty(objects)) return;
+
+      const allObjectPromises = objects.map(objectData => {
+        if (
+          objectData.type === OBJECT_TYPE.SHAPE ||
+          objectData.type === OBJECT_TYPE.CLIP_ART
+        ) {
+          return this.createSvgFromPpData(objectData);
+        }
+
+        if (objectData.type === OBJECT_TYPE.TEXT) {
+          return this.createTextFromPpData(objectData);
+        }
+
+        if (objectData.type === OBJECT_TYPE.IMAGE) {
+          return this.createImageFromPpData(objectData);
+        }
+
+        if (objectData.type === OBJECT_TYPE.BACKGROUND) {
+          return this.createBackgroundFromPpData(objectData);
+        }
+      });
+
+      const listFabricObjects = await Promise.all(allObjectPromises);
+      this.digitalCanvas.add(...listFabricObjects);
+      this.digitalCanvas.requestRenderAll();
+    },
+
+    /**
+     * create fabric object
+     *
+     * @param {Object} objectData PpData of the of a background object {id, size, coord,...}
+     * @returns {Object} a fabric objec
+     */
+    async createBackgroundFromPpData(backgroundProp) {
+      const image = await createBackgroundFabricObject(
+        backgroundProp,
+        this.digitalCanvas
+      );
+      return image;
+    },
+
+    /**
+     *  fire every 60s by default to save working progress
+     */
+    async handleAutosave() {
+      if (!this.isCanvasChanged) return;
+
+      this.updateSavingStatus({ status: SAVE_STATUS.START });
+
+      // TODO: uncommented later -LUC
+      // await this.saveData(this.pageSelected.id);
+      // Delete late - jusr for testing
+      await new Promise(r => setTimeout(() => r(), 1000));
+
+      this.updateSavingStatus({ status: SAVE_STATUS.END });
+
+      this.isCanvasChanged = false;
+    },
+
+    /**
+     * Save sheet and sheet's frame data to storage
+     * @param {String | Number} sheetId id of sheet
+     * @param {String | Number} frameId id of frame
+     */
+    async saveData(sheetId, frameId) {
+      this.updateFrameObjects({ frameId });
+      const data = this.getDataEditScreen(sheetId);
+      await this.saveEditScreen(data);
     }
   },
   watch: {
@@ -1575,39 +1759,46 @@ export default {
       deep: true,
       async handler(val, oldVal) {
         if (val?.id !== oldVal?.id) {
-          await this.getDataCanvas();
-          this.countPaste = 1;
+          this.saveData(oldVal.id, this.currentFrameId);
+
+          // reset frames, frameIDs, currentFrameId
+          this.setFrames({ framesList: [] });
           this.setSelectedObjectId({ id: '' });
-          this.setCurrentFrameId({ id: '' });
           this.setIsOpenProperties({ isOpen: false });
           this.setCurrentObject(null);
           this.updateCanvasSize();
           resetObjects(this.digitalCanvas);
-          // reset frames, frameIDs, currentFrameId
-          this.setFrames({ framesList: [] });
-          this.drawLayout(this.sheetLayout, EDITION.DIGITAL);
+
+          await this.getDataCanvas();
+          this.setCurrentFrameId({ id: this.frames[0].id });
+          this.countPaste = 1;
+
+          await this.drawObjectsOnCanvas(this.sheetLayout);
         }
       }
     },
-    currentFrameId(val) {
+    async currentFrameId(val, oldVal) {
       if (!val) {
         resetObjects(this.digitalCanvas);
         return;
       }
+      this.saveData(this.pageSelected.id, oldVal);
 
       this.setSelectedObjectId({ id: '' });
       this.setCurrentObject(null);
       resetObjects(this.digitalCanvas);
 
-      this.handleSwitchFrame();
-      this.drawLayout(this.sheetLayout, EDITION.DIGITAL);
+      this.updateObjectsToStore({ objects: this.currentFrame.objects });
+      this.handleSwitchFrame(this.currentFrame);
+      await this.drawObjectsOnCanvas(this.sheetLayout);
     },
-    triggerApplyLayout() {
+    async triggerApplyLayout() {
+      // to render new layout when user replace frame
       this.setSelectedObjectId({ id: '' });
       this.setCurrentObject(null);
       resetObjects(this.digitalCanvas);
 
-      this.drawLayout(this.sheetLayout, EDITION.DIGITAL);
+      await this.drawObjectsOnCanvas(this.sheetLayout);
     },
 
     frames: {
@@ -1624,6 +1815,8 @@ export default {
   },
   beforeDestroy() {
     this.digitalCanvas = null;
+
+    clearInterval(this.autoSaveTimer);
 
     this.updateDigitalEventListeners(false);
     this.updateWindowEventListeners(false);

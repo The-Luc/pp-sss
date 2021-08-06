@@ -9,12 +9,28 @@
 
   .pp-select-sub--item {
     cursor: pointer;
+    position: relative;
 
     &.disabled {
       pointer-events: none;
 
       span {
         color: $color-gray22;
+      }
+    }
+
+    &:hover::v-deep .pp-select-sub {
+      display: block;
+    }
+
+    .icon-arrow {
+      color: $color-stoodio-toolbartext;
+    }
+
+    &:hover,
+    &.v-list-item--active {
+      .icon-arrow {
+        color: $color-white;
       }
     }
   }
