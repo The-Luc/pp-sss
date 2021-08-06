@@ -825,8 +825,6 @@ export default {
         multiplier: THUMBNAIL_IMAGE_CONFIG.MULTIPLIER
       });
 
-      console.log('set frame');
-      console.log(this.currentFrameId);
       this.setThumbnail({
         frameId: this.currentFrameId,
         thumbnailUrl

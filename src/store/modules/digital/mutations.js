@@ -112,6 +112,8 @@ export const mutations = {
   },
   [DIGITAL._MUTATES.UPDATE_FRAME_THUMBNAIL](state, { thumbnailUrl, frameId }) {
     state.frames[frameId].previewImageUrl = thumbnailUrl;
+    if (frameId !== state.frameIds[0]) return;
+    state.sheets[state.currentSheetId].thumbnailUrl = thumbnailUrl;
   },
   [DIGITAL._MUTATES.REORDER_OBJECT_IDS](state, { oldIndex, newIndex }) {
     const [id] = state.objectIds.splice(oldIndex, 1);
