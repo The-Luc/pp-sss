@@ -14,6 +14,7 @@
     :menu-props="{ zIndex: 9999 }"
     @change="onChange"
     @click="onClick"
+    @focus="onFocus"
   >
     <template #selection="{ item }">
       <v-list-item class="pp-select--item item-selected">
