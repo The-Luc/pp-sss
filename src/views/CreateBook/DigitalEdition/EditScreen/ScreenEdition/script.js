@@ -620,9 +620,9 @@ export default {
       const key = event.keyCode || event.charCode;
 
       const isMacOS = window.navigator.platform.includes('Mac');
-      const keyUp = isMacOS ? key === 46 || key === 8 : key === 46;
+      const isDeleteKey = isMacOS ? key === 46 || key === 8 : key === 46;
 
-      if (event.target === document.body && keyUp) {
+      if (event.target === document.body && isDeleteKey) {
         this.deleteObject();
       }
     },
