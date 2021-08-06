@@ -45,7 +45,8 @@ export default {
   async created() {
     if (isEmpty(this.photos)) {
       this.getListKeywords();
-      this.photos = await getPhotos(this.keywords);
+      const keywords = this.keywords.map(keyword => keyword.value);
+      this.photos = await getPhotos(keywords);
     }
   },
   computed: {
@@ -65,7 +66,12 @@ export default {
      */
     async onClickKeyword(val) {
       val.active = !val.active;
-      const activeKeywords = this.keywords.filter(keyword => keyword.active);
+      const activeKeywords = this.keywords.reduce((arr, keyword) => {
+        if (keyword.active) {
+          arr.push(keyword.value);
+        }
+        return arr;
+      }, []);
       this.photos = await getPhotos(activeKeywords);
     },
     /**
@@ -91,8 +97,10 @@ export default {
     }
   },
   watch: {
-    currentSheet() {
+    async currentSheet() {
       this.getListKeywords();
+      const keywords = this.keywords.map(keyword => keyword.value);
+      this.photos = await getPhotos(keywords);
     }
   }
 };

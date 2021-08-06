@@ -20,8 +20,8 @@ export const getPhotoDropdowns = () => {
 
 export const getPhotos = async (keywords = []) => {
   const listKeywordValues = keywords.reduce((arr, keyword) => {
-    if (!keyword?.value?.toLowerCase().startsWith('no')) {
-      arr.push(keyword.value);
+    if (keyword.toLowerCase() !== 'no') {
+      arr.push(keyword);
     }
     return arr;
   }, []);
