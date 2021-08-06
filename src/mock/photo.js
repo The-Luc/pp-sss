@@ -41,7 +41,8 @@ const photos = [];
 
 for (let i = 0; i < 20; i++) {
   const photo = {
-    ...photosBase[getRandomInt(3)]
+    ...photosBase[getRandomInt(3)],
+    id: uniqueId()
   };
   photos.push(photo);
 }
@@ -126,3 +127,5 @@ export const albums = [
   albumBase7,
   albumBase8
 ];
+
+export const photoList = photos;

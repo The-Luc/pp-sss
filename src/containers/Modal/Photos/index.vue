@@ -6,7 +6,8 @@
     persistent
     max-width="1162"
   >
-    <div class="modal-body">
+    <div v-if="!isPhotoVisited" class="prompt"></div>
+    <div v-if="isOpenModal" class="modal-body">
       <v-tabs v-model="defaultTab" fixed-tabs dark @change="onChangeTab">
         <v-tabs-slider color="transparent"></v-tabs-slider>
         <v-tab href="#smart-box">
@@ -14,7 +15,10 @@
           <div>Smartbox</div>
         </v-tab>
         <v-tab-item value="smart-box">
-          Smartbox
+          <Smartbox
+            :selected-images="selectedImages"
+            @change="onSelectedImage"
+          />
         </v-tab-item>
 
         <v-tab href="#photos">

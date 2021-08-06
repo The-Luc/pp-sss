@@ -16,3 +16,16 @@ export const useSavingStatus = () => {
 
   return { savingStatus, updateSavingStatus };
 };
+
+export const usePhotos = () => {
+  const { isPhotoVisited } = useGetters({
+    isPhotoVisited: APP_GETTERS.IS_PHOTO_VISITED
+  });
+  const { setPhotoVisited } = useMutations({
+    setPhotoVisited: APP_MUTATES.SET_PHOTO_VISITED
+  });
+  return {
+    isPhotoVisited,
+    setPhotoVisited
+  };
+};

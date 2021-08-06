@@ -55,5 +55,6 @@ export const state = {
   user: { id: null, role: null },
   savedTextStyles: [],
   savedImageStyles: [],
-  savingStatus: ''
+  savingStatus: '',
+  isPhotoVisited: false
 };
