@@ -198,7 +198,7 @@ export default {
         DIGITAL_MUTATES.UPDATE_TRIGGER_BACKGROUND_CHANGE,
       deleteObjects: DIGITAL_MUTATES.DELETE_OBJECTS,
       updateTriggerShapeChange: MUTATES.UPDATE_TRIGGER_SHAPE_CHANGE,
-      setThumbnail: DIGITAL_MUTATES.UPDATE_SHEET_THUMBNAIL,
+      setThumbnail: DIGITAL_MUTATES.UPDATE_FRAME_THUMBNAIL,
       updateTriggerClipArtChange: MUTATES.UPDATE_TRIGGER_CLIPART_CHANGE,
       reorderObjectIds: DIGITAL_MUTATES.REORDER_OBJECT_IDS,
       toggleActiveObjects: MUTATES.TOGGLE_ACTIVE_OBJECTS,
@@ -826,7 +826,7 @@ export default {
       });
 
       this.setThumbnail({
-        sheetId: this.pageSelected?.id,
+        frameId: this.currentFrameId,
         thumbnailUrl
       });
     }, 250),
