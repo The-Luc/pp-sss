@@ -1393,6 +1393,8 @@ export default {
 
       this.updateTriggerBackgroundChange();
 
+      this.handleCanvasChanged();
+
       updateElement(background, prop, window.digitalCanvas);
     },
     /**
