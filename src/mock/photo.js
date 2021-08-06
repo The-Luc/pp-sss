@@ -37,15 +37,15 @@ const photo3 = new PictureAssetEntity({
 
 const photosBase = [photo1, photo2, photo3];
 
-const photos = [];
-
-for (let i = 0; i < 20; i++) {
+const photos = Array.from({ length: 20 }, () => {
+  const inProject = Math.random() * 5 < 2;
   const photo = {
     ...photosBase[getRandomInt(3)],
+    inProject,
     id: uniqueId()
   };
-  photos.push(photo);
-}
+  return photo;
+});
 
 function getRandomInt(max) {
   return Math.floor(Math.random() * max);

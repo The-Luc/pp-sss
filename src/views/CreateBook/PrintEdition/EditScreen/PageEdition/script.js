@@ -693,7 +693,9 @@ export default {
           if (!e.target?.objectType) {
             this.handleMultiMoved(e);
           }
-        }
+        },
+        drop: ({ target }) =>
+          this.$emit('drop', { target, canvas: window.printCanvas })
       });
 
       document.body.addEventListener('keyup', this.handleDeleteKey);

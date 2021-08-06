@@ -21,6 +21,11 @@
       cursor: pointer;
     }
   }
+  
+  .photo-btn:hover {
+    background-color: $color-gray26;
+  }
+
   .add-photo,
   .autoflow {
     display: flex;

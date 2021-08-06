@@ -69,7 +69,7 @@ export default {
     const { setPropertyById } = useProperties();
     const { updateSavingStatus } = useSavingStatus();
     const { sheetMedia } = useSheet();
-    const { updateSheetMedia } = useActionsEditionSheet();
+    const { updateSheetMedia, deleteSheetMedia } = useActionsEditionSheet();
 
     return {
       pageSelected,
@@ -85,7 +85,13 @@ export default {
       setPropertyById,
       updateSavingStatus,
       sheetMedia,
-      updateSheetMedia
+      updateSheetMedia,
+      deleteSheetMedia
+    };
+  },
+  data() {
+    return {
+      dragItem: () => null
     };
   },
   computed: {
@@ -262,6 +268,41 @@ export default {
      */
     closePhotoSidebar() {
       this.setToolNameSelected('');
+    },
+
+    /**
+     * Handle remove photo from sheet
+     * @param {Object} photo photo will be removed
+     */
+    onRemovePhoto(photo) {
+      this.deleteSheetMedia({ id: photo.id });
+    },
+
+    /**
+     * Handle drag photo from photo sidebar
+     * @param {Object} item drag item
+     */
+    onDrag(item) {
+      this.dragItem = item;
+    },
+
+    /**
+     * Handle drop photo to canvas
+     * @param {Object} target fabric object focused
+     */
+    onDrop({ target }) {
+      if (!this.dragItem) return;
+
+      const { imageUrl, id: imageId } = this.dragItem;
+
+      if (target) {
+        setImageSrc(target, imageUrl, prop => {
+          prop.imageId = imageId;
+          this.setPropertyById({ id: target.id, prop });
+        });
+      }
+
+      this.dragItem = null;
     }
   }
 };

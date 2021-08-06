@@ -40,12 +40,24 @@
         width: 100%;
         height: 100%;
       }
-      &.image-item-active {
+      &.active {
         border: 3px solid $color-stoodio-blue;
         padding: 1px;
         .icon-check {
           display: block;
         }
+      }
+
+      .indicator {
+        width: 100%;
+        height: 16px;
+        position: absolute;
+        bottom: 0;
+        padding: 2px 4px;
+        color: white;
+        background-color: rgba($color-stoodio-blue, 0.7);
+        font-size: 9px;
+        font-family: $font-300;
       }
     }
   }

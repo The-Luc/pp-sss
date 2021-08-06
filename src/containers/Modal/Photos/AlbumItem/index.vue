@@ -8,11 +8,12 @@
       <div
         v-for="asset in assets"
         :key="asset.id"
-        :class="['image-item', { 'image-item-active': isActive(asset.id) }]"
+        :class="['image-item', { active: isActive(asset.id) }]"
         @click="onSelected(asset)"
       >
         <v-icon class="icon-check">done</v-icon>
         <img :src="asset.thumbUrl" alt="" />
+        <div v-show="asset.inProject" class="indicator">In Project</div>
       </div>
     </div>
   </div>

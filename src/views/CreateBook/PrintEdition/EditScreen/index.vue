@@ -17,11 +17,16 @@
         @autoflow="handleAutoflow"
         @selectedImages="handleSelectedImages"
       >
-        <SheetMedia v-if="isShowAutoflow" :media="sheetMedia" />
+        <SheetMedia
+          v-if="isShowAutoflow"
+          :media="sheetMedia"
+          @remove="onRemovePhoto"
+          @drag="onDrag"
+        />
       </PhotoSidebar>
     </transition>
 
-    <PageEdition />
+    <PageEdition @drop="onDrop" />
   </div>
 </template>
 
