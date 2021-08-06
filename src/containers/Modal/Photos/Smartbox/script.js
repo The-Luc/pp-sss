@@ -5,7 +5,6 @@ import AlbumItem from '../AlbumItem';
 import { usePhotos } from '@/views/CreateBook/composables';
 import { useGetterPrintSheet, useSheet } from '@/hooks';
 import { getPhotos } from '@/api/photo';
-import { isEmpty } from '@/common/utils';
 
 export default {
   components: {
@@ -43,11 +42,9 @@ export default {
     };
   },
   async created() {
-    if (isEmpty(this.photos)) {
-      this.getListKeywords();
-      const keywords = this.keywords.map(keyword => keyword.value);
-      this.photos = await getPhotos(keywords);
-    }
+    this.getListKeywords();
+    const keywords = this.keywords.map(keyword => keyword.value);
+    this.photos = await getPhotos(keywords);
   },
   computed: {
     numberResult() {
@@ -94,13 +91,6 @@ export default {
           value: keyword,
           active: true
         }));
-    }
-  },
-  watch: {
-    async currentSheet() {
-      this.getListKeywords();
-      const keywords = this.keywords.map(keyword => keyword.value);
-      this.photos = await getPhotos(keywords);
     }
   }
 };

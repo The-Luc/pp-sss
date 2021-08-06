@@ -7,7 +7,7 @@
     max-width="1162"
   >
     <div v-if="!isPhotoVisited" class="prompt"></div>
-    <div class="modal-body">
+    <div v-if="isOpenModal" class="modal-body">
       <v-tabs v-model="defaultTab" fixed-tabs dark @change="onChangeTab">
         <v-tabs-slider color="transparent"></v-tabs-slider>
         <v-tab href="#smart-box">

@@ -19,13 +19,7 @@ export const getPhotoDropdowns = () => {
 };
 
 export const getPhotos = async (keywords = []) => {
-  const listKeywordValues = keywords.reduce((arr, keyword) => {
-    if (keyword.toLowerCase() !== 'no') {
-      arr.push(keyword);
-    }
-    return arr;
-  }, []);
-  const response = isEmpty(listKeywordValues) ? [] : photoList;
+  const hasNo = keywords.find(keyword => keyword.toLowerCase() === 'no');
 
-  return Promise.resolve(response);
+  return Promise.resolve(hasNo || isEmpty(keywords) ? [] : photoList);
 };
