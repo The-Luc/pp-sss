@@ -51,6 +51,7 @@ class ActionClass extends BaseObject {
   UPDATE_SHEET_LINK_STATUS = 'updateSheetLinkStatus';
   SAVE_LAYOUT = 'saveLayout';
   UPDATE_SHEET_MEDIA = 'updateSheetMedia';
+  DELETE_SHEET_MEDIA = 'deleteSheetMedia';
 
   constructor(props) {
     super(props);

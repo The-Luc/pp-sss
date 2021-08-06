@@ -77,6 +77,12 @@ export default {
      */
     onClick(event) {
       this.$emit('click', event);
+    },
+    /**
+     * To unfocus an input
+     */
+    onFocus(event) {
+      event.target.blur();
     }
   }
 };

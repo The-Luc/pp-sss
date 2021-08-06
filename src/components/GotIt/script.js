@@ -7,6 +7,10 @@ export default {
     message: {
       type: String,
       required: true
+    },
+    message2: {
+      type: String,
+      default: null
     }
   },
   methods: {
