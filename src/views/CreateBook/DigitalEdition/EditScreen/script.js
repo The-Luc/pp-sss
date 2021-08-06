@@ -12,7 +12,14 @@ import {
   MUTATES as DIGITAL_MUTATES,
   GETTERS as DIGITAL_GETTERS
 } from '@/store/modules/digital/const';
-import { EDITION, MODAL_TYPES, TOOL_NAME, ROLE } from '@/common/constants';
+import {
+  EDITION,
+  MODAL_TYPES,
+  TOOL_NAME,
+  ROLE,
+  SAVE_STATUS,
+  SAVING_DURATION
+} from '@/common/constants';
 import {
   useLayoutPrompt,
   usePopoverCreationTool,
@@ -25,6 +32,7 @@ import { isEmpty, isPositiveInteger, getEditionListPath } from '@/common/utils';
 import { COPY_OBJECT_KEY } from '@/common/constants/config';
 import digitalService from '@/api/digital';
 import { useSaveData } from './composables';
+import { useSavingStatus } from '../../composables';
 
 export default {
   setup() {
@@ -35,6 +43,7 @@ export default {
     const { currentSection } = useGetterDigitalSheet();
     const { currentFrameId, updateFrameObjects } = useFrame();
     const { saveEditScreen, getDataEditScreen } = useSaveData();
+    const { updateSavingStatus } = useSavingStatus();
 
     return {
       pageSelected,
@@ -46,7 +55,8 @@ export default {
       currentFrameId,
       updateFrameObjects,
       saveEditScreen,
-      getDataEditScreen
+      getDataEditScreen,
+      updateSavingStatus
     };
   },
   components: {
@@ -158,13 +168,19 @@ export default {
      * Save digital canvas and change view
      */
     async onClickSaveDigitalCanvas() {
+      this.updateSavingStatus({ status: SAVE_STATUS.START });
+
       this.updateFrameObjects({ frameId: this.currentFrameId });
       const data = this.getDataEditScreen(this.pageSelected.id);
       await this.saveEditScreen(data);
 
-      this.$router.push(
-        getEditionListPath(this.$route.params.bookId, EDITION.DIGITAL)
-      );
+      this.updateSavingStatus({ status: SAVE_STATUS.END });
+
+      setTimeout(() => {
+        this.$router.push(
+          getEditionListPath(this.$route.params.bookId, EDITION.DIGITAL)
+        );
+      }, SAVING_DURATION);
     },
     /**
      * Trigger mutation to open theme modal

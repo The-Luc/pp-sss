@@ -1,4 +1,4 @@
-import { SAVING_DURATION } from '@/common/constants';
+import { SAVE_STATUS, SAVING_DURATION } from '@/common/constants';
 import PpButton from '@/components/Buttons/Button';
 import { useSavingStatus } from '@/views/CreateBook/composables';
 import SavingIndicator from './SavingIndicator';
@@ -27,7 +27,7 @@ export default {
   },
   watch: {
     overlay(val) {
-      val &&
+      if (val && this.savingStatus === SAVE_STATUS.END)
         setTimeout(() => {
           this.overlay = false;
         }, SAVING_DURATION);

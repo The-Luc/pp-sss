@@ -1731,10 +1731,7 @@ export default {
 
       this.updateSavingStatus({ status: SAVE_STATUS.START });
 
-      // TODO: uncommented later -LUC
-      // await this.saveData(this.pageSelected.id);
-      // Delete late - jusr for testing
-      await new Promise(r => setTimeout(() => r(), 1000));
+      await this.saveData(this.pageSelected.id, this.currentFrameId);
 
       this.updateSavingStatus({ status: SAVE_STATUS.END });
 
