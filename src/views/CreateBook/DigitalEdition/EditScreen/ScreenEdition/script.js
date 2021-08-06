@@ -1777,7 +1777,13 @@ export default {
         resetObjects(this.digitalCanvas);
         return;
       }
-      this.saveData(this.pageSelected.id, oldVal);
+
+      const isSwitchFrame = this.frames.find(
+        f => String(f.id) === String(oldVal)
+      );
+      if (isSwitchFrame) {
+        this.saveData(this.pageSelected.id, oldVal);
+      }
 
       this.setSelectedObjectId({ id: '' });
       this.setCurrentObject(null);
