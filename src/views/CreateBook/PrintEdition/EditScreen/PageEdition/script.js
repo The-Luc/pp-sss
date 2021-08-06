@@ -944,6 +944,7 @@ export default {
         return;
       }
 
+      // TODO: Background properties will use data on APP STORE
       const background = window.printCanvas
         .getObjects()
         .find(o => backgroundId === o.id);
