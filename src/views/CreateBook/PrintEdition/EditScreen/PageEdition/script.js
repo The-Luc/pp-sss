@@ -87,6 +87,7 @@ import YRuler from './Rulers/YRuler';
 import {
   AUTOSAVE_INTERVAL,
   COPY_OBJECT_KEY,
+  DEBOUNCE_MUTATION,
   MIN_IMAGE_SIZE,
   PASTE,
   THUMBNAIL_IMAGE_CONFIG
@@ -582,11 +583,15 @@ export default {
      * Fired when objects on canvas are modified, added, or removed
      */
     handleCanvasChanged() {
-      // update thumbnail
-      this.getThumbnailUrl();
+      return new Promise(resolve => {
+        // update thumbnail
+        this.getThumbnailUrl();
 
-      // set state change for autosave
-      this.isCanvasChanged = true;
+        // set state change for autosave
+        this.isCanvasChanged = true;
+
+        resolve();
+      });
     },
 
     /**
@@ -841,28 +846,11 @@ export default {
      * @param {Object}  style  new style
      */
     changeTextProperties(prop) {
-      if (isEmpty(prop)) {
-        this.updateTriggerTextChange();
-
-        return;
-      }
-      const activeObj = window.printCanvas.getActiveObject();
-
-      if (isEmpty(activeObj)) return;
-
-      this.setObjectProp({ prop });
-
-      this.updateTriggerTextChange();
-
-      if (!isEmpty(prop.size)) {
-        this.setInfoBar({ w: prop.size.width, h: prop.size.height });
-      }
-
-      applyTextBoxProperties(activeObj, prop);
-
-      this.handleCanvasChanged();
-
-      this.setCurrentObject(this.currentObjects?.[activeObj?.id]);
+      this.changeElementProperties(
+        prop,
+        OBJECT_TYPE.TEXT,
+        this.updateTriggerTextChange
+      );
     },
 
     /**
@@ -927,20 +915,20 @@ export default {
         backgroundId: background.id
       });
 
-      this.addNewBackground({
-        background: {
-          ...newBackground,
-          id,
-          isLeftPage: isLeft
-        }
-      });
-
       addPrintBackground({
         id,
         backgroundProp: newBackground,
         isLeftBackground: isLeft,
         sheetType: this.pageSelected.type,
         canvas: window.printCanvas
+      });
+
+      this.addNewBackground({
+        background: {
+          ...newBackground,
+          id,
+          isLeftPage: isLeft
+        }
       });
     },
     /**
@@ -962,11 +950,9 @@ export default {
 
       if (isEmpty(background)) return;
 
-      this.setBackgroundProp({ isLeft: isLeftBackground, prop });
-
-      this.updateTriggerBackgroundChange();
-
       updateElement(background, prop, window.printCanvas);
+
+      this.debounceSetBackgroundProp(isLeftBackground, prop);
     },
     /**
      * Event fire when user click remove background
@@ -979,16 +965,17 @@ export default {
 
       deleteObjectById([backgroundId], window.printCanvas);
 
-      if (this.totalBackground === 0) {
-        this.closeProperties();
+      if (this.totalBackground > 0) return;
 
-        this.setIsOpenProperties({ isOpen: false });
+      this.closeProperties();
 
-        this.setPropertiesObjectType({ type: '' });
-      }
+      this.setIsOpenProperties({ isOpen: false });
+
+      this.setPropertiesObjectType({ type: '' });
     },
     removeObject() {
       const ids = window.printCanvas.getActiveObjects().map(o => o.id);
+
       this.deleteObjects({ ids });
 
       deleteSelectedObjects(window.printCanvas);
@@ -1316,24 +1303,118 @@ export default {
 
       if (isEmpty(element) || element.objectType !== objectType) return;
 
+      this.updateElementProp(element, prop, objectType);
+
+      if (objectType === OBJECT_TYPE.TEXT) {
+        this.debounceSetCurrentObject(element.id, prop);
+      } else {
+        this.updateCurrentObject(element.id, prop);
+      }
+
+      this.updateInfoBar(prop);
+
+      if (
+        !isEmpty(prop['shadow']) ||
+        !isEmpty(prop['color']) ||
+        !isEmpty(prop['opacity'])
+      ) {
+        this.debounceSetObjectProp(prop, updateTriggerFn);
+      } else {
+        this.setObjectProperties(prop, updateTriggerFn);
+      }
+    },
+    /**
+     * Change fabric properties of current element
+     *
+     * @param {Object}  element     selected element
+     * @param {Object}  prop        new prop
+     * @param {String}  objectType  object type of selected element
+     */
+    updateElementProp(element, prop, objectType) {
+      return new Promise(resole => {
+        if (objectType === OBJECT_TYPE.TEXT) {
+          applyTextBoxProperties(element, prop);
+
+          resole();
+
+          return;
+        }
+
+        if (!isEmpty(prop['shadow'])) {
+          applyShadowToObject(element, prop['shadow']);
+        }
+
+        updateElement(element, prop, window.printCanvas);
+
+        resole();
+      });
+    },
+    /**
+     * Update current object by mutate the store
+     *
+     * @param {String | Number} id  id of selected object
+     * @param {Object}  prop        new prop
+     */
+    updateCurrentObject(id, prop) {
+      return new Promise(resole => {
+        this.setCurrentObject({
+          ...this.currentObjects?.[id],
+          ...prop
+        });
+
+        resole();
+      });
+    },
+    /**
+     * Update width & height info on info bar
+     *
+     * @param {Object}  prop  new prop
+     */
+    updateInfoBar(prop) {
+      return new Promise(resole => {
+        if (!isEmpty(prop.size)) {
+          this.setInfoBar({ w: prop.size.width, h: prop.size.height });
+        }
+
+        resole();
+      });
+    },
+    // Will be removed after fixing "one change only triggers one mutation"
+    setObjectProperties(prop, updateTriggerFn) {
       this.setObjectProp({ prop });
-
-      if (updateTriggerFn !== null) updateTriggerFn();
-
-      if (!isEmpty(prop.size)) {
-        this.setInfoBar({ w: prop.size.width, h: prop.size.height });
-      }
-
-      if (!isEmpty(prop['shadow'])) {
-        applyShadowToObject(element, prop['shadow']);
-      }
-
-      updateElement(element, prop, window.printCanvas);
 
       this.handleCanvasChanged();
 
-      this.setCurrentObject(this.currentObjects?.[element?.id]);
+      if (updateTriggerFn !== null) updateTriggerFn();
     },
+    // Will be removed after fixing "one change only triggers one mutation"
+    debounceSetCurrentObject: debounce(function(id, prop) {
+      this.updateCurrentObject(id, prop);
+    }, DEBOUNCE_MUTATION),
+    /**
+     * Set properties of selected object then trigger the change
+     * Use with debounce
+     *
+     * @param {Object}  prop            new prop
+     * @param {Object}  updateTriggerFn mutate update trigger function
+     */
+    debounceSetObjectProp: debounce(function(prop, updateTriggerFn) {
+      this.setObjectProperties(prop, updateTriggerFn);
+    }, DEBOUNCE_MUTATION),
+    /**
+     * Set properties of selected background then trigger the change
+     * Use with debounce
+     *
+     * @param {Boolean} isLeft  is selected background left background
+     * @param {Object}  prop    new prop
+     */
+    debounceSetBackgroundProp: debounce(function(isLeft, prop) {
+      this.setBackgroundProp({ isLeft, prop });
+
+      this.handleCanvasChanged();
+
+      this.updateTriggerBackgroundChange();
+    }, DEBOUNCE_MUTATION),
     /**
      * get fired when you click 'send' button
      * change the objectIds order and update z-index of object on canvas

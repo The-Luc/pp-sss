@@ -340,21 +340,29 @@ export const updateSpecificProp = (element, prop) => {
  * @param {Object}  canvas  the canvas contain element
  */
 export const updateElement = (element, prop, canvas) => {
-  if (isEmpty(element) || isEmpty(prop)) return;
+  return new Promise(resolve => {
+    if (isEmpty(element) || isEmpty(prop)) {
+      resolve();
 
-  updateSpecificProp(element, prop);
+      return;
+    }
 
-  const fabricProp = getFabricProp(element, prop);
+    updateSpecificProp(element, prop);
 
-  setElementProp(element, fabricProp);
+    const fabricProp = getFabricProp(element, prop);
 
-  if (Object.keys(prop).includes('isConstrain')) {
-    canvas.set({ uniformScaling: prop.isConstrain });
-  }
+    setElementProp(element, fabricProp);
 
-  element.setCoords();
+    if (Object.keys(prop).includes('isConstrain')) {
+      canvas.set({ uniformScaling: prop.isConstrain });
+    }
 
-  canvas.renderAll();
+    element.setCoords();
+
+    canvas.renderAll();
+
+    resolve();
+  });
 };
 
 /**
