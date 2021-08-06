@@ -74,7 +74,8 @@ import {
   isNonElementPropSelected,
   copyPpObject,
   inToPx,
-  pastePpObject
+  pastePpObject,
+  isMacOS
 } from '@/common/utils';
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
 import { GETTERS } from '@/store/modules/book/const';
@@ -619,7 +620,6 @@ export default {
     onKeyUp(event) {
       const key = event.keyCode || event.charCode;
 
-      const isMacOS = window.navigator.platform.includes('Mac');
       const isDeleteKey = isMacOS ? key === 46 || key === 8 : key === 46;
 
       if (event.target === document.body && isDeleteKey) {

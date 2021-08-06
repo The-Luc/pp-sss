@@ -24,7 +24,8 @@ import {
   setActiveCanvas,
   isNonElementPropSelected,
   copyPpObject,
-  pastePpObject
+  pastePpObject,
+  isMacOS
 } from '@/common/utils';
 
 import {
@@ -719,7 +720,6 @@ export default {
     handleDeleteKey(event) {
       const key = event.keyCode || event.charCode;
 
-      const isMacOS = window.navigator.platform.includes('Mac');
       const isDeleteKey = isMacOS ? key === 46 || key === 8 : key === 46;
 
       if (event.target === document.body && isDeleteKey) {
