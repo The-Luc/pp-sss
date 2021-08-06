@@ -24,7 +24,8 @@ import {
   setActiveCanvas,
   isNonElementPropSelected,
   copyPpObject,
-  pastePpObject
+  pastePpObject,
+  isDeleteKey
 } from '@/common/utils';
 
 import {
@@ -719,7 +720,7 @@ export default {
     handleDeleteKey(event) {
       const key = event.keyCode || event.charCode;
 
-      if (event.target === document.body && key == 46) {
+      if (event.target === document.body && isDeleteKey(key)) {
         this.removeObject();
       }
     },
@@ -965,6 +966,8 @@ export default {
       this.setBackgroundProp({ isLeft: isLeftBackground, prop });
 
       this.updateTriggerBackgroundChange();
+
+      this.handleCanvasChanged();
 
       updateElement(background, prop, window.printCanvas);
     },

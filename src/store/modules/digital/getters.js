@@ -45,18 +45,11 @@ export const getters = {
   [DIGITAL._GETTERS.GET_OBJECTS]: ({ objects }) => {
     return objects;
   },
-  [DIGITAL._GETTERS.SHEET_LAYOUT]: ({ objects, background }) => {
-    const allObjects = [];
-
-    if (!isEmpty(background.left.id)) allObjects.push(background.left);
-
-    Object.values(objects).forEach(obj => {
-      if (obj.id) {
-        allObjects.push(obj);
-      }
-    });
-
-    return allObjects;
+  [DIGITAL._GETTERS.SHEET_LAYOUT]: ({ objects, objectIds, background }) => {
+    return [
+      ...Object.values(background).filter(bg => !isEmpty(bg)),
+      ...objectIds.map(id => objects[id])
+    ];
   },
   [DIGITAL._GETTERS.GET_SHEETS]: ({ sheets }) => {
     return sheets;
