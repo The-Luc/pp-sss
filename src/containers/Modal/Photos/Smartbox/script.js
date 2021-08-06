@@ -2,7 +2,7 @@ import Tags from '@/components/Tags';
 import GotIt from '@/components/GotIt';
 import AlbumItem from '../AlbumItem';
 
-import { usePhoto } from '@/views/CreateBook/composables';
+import { usePhotos } from '@/views/CreateBook/composables';
 import { useGetterPrintSheet, useSheet } from '@/hooks';
 import { getPhotos } from '@/api/photo';
 import { isEmpty } from '@/common/utils';
@@ -22,7 +22,7 @@ export default {
   setup() {
     const { currentSection } = useGetterPrintSheet();
     const { currentSheet } = useSheet();
-    const { isPhotoVisited, setPhotoVisited } = usePhoto();
+    const { isPhotoVisited, setPhotoVisited } = usePhotos();
 
     return {
       isPhotoVisited,
@@ -44,7 +44,7 @@ export default {
   },
   async created() {
     if (isEmpty(this.photos)) {
-      this.getListkeywords();
+      this.getListKeywords();
       this.photos = await getPhotos(this.keywords);
     }
   },
@@ -78,7 +78,7 @@ export default {
     /**
      * Get list keyword from section name, left, right, spread title
      */
-    getListkeywords() {
+    getListKeywords() {
       const { leftTitle, rightTitle } = this.currentSheet.spreadInfo;
       this.keywords = [leftTitle, rightTitle, this.currentSection.name]
         .join(' ')
@@ -92,7 +92,7 @@ export default {
   },
   watch: {
     currentSheet() {
-      this.getListkeywords();
+      this.getListKeywords();
     }
   }
 };

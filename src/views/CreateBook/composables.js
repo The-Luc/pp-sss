@@ -17,7 +17,7 @@ export const useSavingStatus = () => {
   return { savingStatus, updateSavingStatus };
 };
 
-export const usePhoto = () => {
+export const usePhotos = () => {
   const { isPhotoVisited } = useGetters({
     isPhotoVisited: APP_GETTERS.IS_PHOTO_VISITED
   });

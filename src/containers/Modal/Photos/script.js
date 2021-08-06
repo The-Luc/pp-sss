@@ -2,7 +2,7 @@ import Modal from '@/containers/Modal';
 import Footer from './Footer';
 import Photos from './Photos';
 import Smartbox from './Smartbox';
-import { usePhoto } from '@/views/CreateBook/composables';
+import { usePhotos } from '@/views/CreateBook/composables';
 
 import { insertItemsToArray, removeItemsFormArray } from '@/common/utils';
 
@@ -14,7 +14,7 @@ export default {
     Smartbox
   },
   setup() {
-    const { isPhotoVisited } = usePhoto();
+    const { isPhotoVisited } = usePhotos();
 
     return {
       isPhotoVisited
