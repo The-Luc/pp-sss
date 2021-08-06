@@ -1778,7 +1778,9 @@ export default {
         return;
       }
 
-      const isSwitchFrame = this.frames.find(f => f.id === oldVal.toString());
+      const isSwitchFrame = this.frames.find(
+        f => String(f.id) === String(oldVal)
+      );
       if (isSwitchFrame) {
         this.saveData(this.pageSelected.id, oldVal);
       }
