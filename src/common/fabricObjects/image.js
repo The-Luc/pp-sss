@@ -9,7 +9,7 @@ import {
   scaleSize
 } from '../utils';
 import { DEFAULT_RULE_DATA } from './common';
-import { DEFAULT_IMAGE, FABRIC_OBJECT_TYPE, IMAGE_LOCAL } from '../constants';
+import { DEFAULT_IMAGE, OBJECT_TYPE, IMAGE_LOCAL } from '../constants';
 
 /**
  * Create new fabric image width initial properties
@@ -171,7 +171,7 @@ export const getActivateImages = () => {
   return activeCanvas
     .getObjects()
     .filter(
-      object => object.type === FABRIC_OBJECT_TYPE.IMAGE && !object.hasImage
+      object => object.objectType === OBJECT_TYPE.IMAGE && !object.hasImage
     );
 };
 

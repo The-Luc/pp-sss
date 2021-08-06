@@ -2,6 +2,7 @@ import Modal from '@/containers/Modal';
 import Footer from './Footer';
 import Photos from './Photos';
 import Smartbox from './Smartbox';
+import TabAddPhotos from './TabAddPhotos';
 import { usePhotos } from '@/views/CreateBook/composables';
 
 import { insertItemsToArray, removeItemsFormArray } from '@/common/utils';
@@ -11,7 +12,8 @@ export default {
     Modal,
     Footer,
     Photos,
-    Smartbox
+    Smartbox,
+    TabAddPhotos
   },
   setup() {
     const { isPhotoVisited } = usePhotos();
@@ -23,6 +25,7 @@ export default {
   data() {
     return {
       selectedImages: [],
+      currentTab: '',
       defaultTab: 'smart-box'
     };
   },
@@ -30,6 +33,11 @@ export default {
     isOpenModal: {
       type: Boolean,
       default: false
+    }
+  },
+  computed: {
+    isShowFooter() {
+      return this.currentTab !== 'add';
     }
   },
   methods: {
@@ -67,8 +75,10 @@ export default {
     },
     /**
      * Event change tab of modal photo
+     * @param   {String}  tag  current tag
      */
-    onChangeTab() {
+    onChangeTab(tab) {
+      this.currentTab = tab;
       this.selectedImages = [];
     }
   }
