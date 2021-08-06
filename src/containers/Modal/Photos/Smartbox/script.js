@@ -1,6 +1,7 @@
 import Tags from '@/components/Tags';
 import GotIt from '@/components/GotIt';
 import AlbumItem from '../AlbumItem';
+import PopupSelected from '../PopupSelected';
 
 import { usePhotos } from '@/views/CreateBook/composables';
 import { useGetterPrintSheet, useSheet } from '@/hooks';
@@ -10,7 +11,8 @@ export default {
   components: {
     Tags,
     GotIt,
-    AlbumItem
+    AlbumItem,
+    PopupSelected
   },
   props: {
     selectedImages: {
@@ -49,6 +51,9 @@ export default {
   computed: {
     numberResult() {
       return this.photos.length + ' results';
+    },
+    isShowPopupSelected() {
+      return this.selectedImages.length !== 0;
     }
   },
   methods: {
