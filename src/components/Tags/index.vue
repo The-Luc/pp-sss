@@ -1,16 +1,14 @@
 <template>
   <div class="key-word">
     <v-chip
-      v-if="active"
-      close
+      :class="{ inactive: !keyword.active }"
+      :close="keyword.active"
       label
       close-icon="mdi-close"
-      @click:close="onclick(keyWord)"
+      @click:close="onclick(keyword)"
+      @click.native="onclick(keyword, true)"
     >
-      {{ keyWord }}
-    </v-chip>
-    <v-chip v-else class="inactive" @click.native="onclick(keyWord)">
-      {{ keyWord }}
+      {{ keyword.value }}
     </v-chip>
   </div>
 </template>

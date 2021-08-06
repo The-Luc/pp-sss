@@ -1,20 +1,15 @@
 export default {
   components: {},
   props: {
-    keyWord: {
-      type: String,
-      default: ''
+    keyword: {
+      type: Object,
+      default: () => ({})
     }
   },
-  data() {
-    return {
-      active: true
-    };
-  },
   methods: {
-    onclick(keyWord) {
-      this.active = !this.active;
-      this.$emit('click', { keyWord, active: this.active });
+    onclick(keyword, isNative) {
+      if (isNative && keyword.active) return;
+      this.$emit('click', keyword);
     }
   }
 };

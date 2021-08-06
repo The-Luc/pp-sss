@@ -14,12 +14,28 @@
   .content {
     height: 500px;
     overflow: auto;
+    ::v-deep .album-date {
+      font-family: $font-500;
+      font-size: 15px;
+    }
   }
   .got-it-container {
     width: 519px;
     top: 16px;
     left: 100px;
     transform: none;
+    padding: 12px 18px 8px;
+    &::v-deep {
+      .got-it-title {
+        margin-bottom: 10px !important;
+      }
+      .got-it-content {
+        padding-bottom: 5px;
+        &:nth-last-child(2) {
+          padding-bottom: 20px;
+        }
+      }
+    }
     &::before {
       position: absolute;
       content: '';

@@ -4,6 +4,7 @@
       v-if="!isPhotoVisited"
       :title="promptTitle"
       :message="promptMsg"
+      :message2="promptMsg2"
       @click="onClickGotIt"
     />
     <div class="header">
@@ -12,7 +13,7 @@
         <Tags
           v-for="(keyword, index) in keywords"
           :key="index"
-          :key-word="keyword"
+          :keyword="keyword"
           @click="onClickKeyword"
         />
       </div>
