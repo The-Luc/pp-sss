@@ -12,6 +12,7 @@ import {
   DEFAULT_SHAPE,
   MODAL_TYPES,
   OBJECT_TYPE,
+  SAVE_STATUS,
   TOOL_NAME
 } from '@/common/constants';
 import {
@@ -84,13 +85,15 @@ import {
 } from '@/store/modules/digital/const';
 import { cloneDeep, debounce, merge, uniqueId } from 'lodash';
 import {
+  AUTOSAVE_INTERVAL,
   MAX_SUPPLEMENTAL_FRAMES,
   MIN_IMAGE_SIZE,
   PASTE,
   THUMBNAIL_IMAGE_CONFIG
 } from '@/common/constants/config';
 import { useStyle } from '@/hooks/style';
-import { useSaveData } from '../composables';
+import { useSaveData, useObject } from '../composables';
+import { useSavingStatus } from '@/views/CreateBook/composables';
 
 const ELEMENTS = {
   [OBJECT_TYPE.TEXT]: 'a text box',
@@ -117,6 +120,8 @@ export default {
     const { toggleModal, modalData } = useModal();
     const { onSaveStyle } = useStyle();
     const { getDataEditScreen, saveEditScreen } = useSaveData();
+    const { updateSavingStatus, savingStatus } = useSavingStatus();
+    const { updateObjectsToStore } = useObject();
 
     return {
       frames,
@@ -132,7 +137,10 @@ export default {
       onSaveStyle,
       getDataEditScreen,
       saveEditScreen,
-      updateFrameObjects
+      updateFrameObjects,
+      updateSavingStatus,
+      savingStatus,
+      updateObjectsToStore
     };
   },
   data() {
@@ -147,7 +155,9 @@ export default {
       digitalCanvas: null,
       showAddFrame: true,
       countPaste: 1,
-      isProcessingPaste: false
+      isProcessingPaste: false,
+      isCanvasChanged: false,
+      autoSaveTimer: null
     };
   },
   computed: {
@@ -236,6 +246,8 @@ export default {
       this.updateCanvasEventListeners();
       this.updateDigitalEventListeners();
       this.updateWindowEventListeners();
+
+      this.autoSaveTimer = setInterval(this.handleAutosave, AUTOSAVE_INTERVAL);
     },
 
     /**
@@ -280,7 +292,6 @@ export default {
         {
           name: EVENT_TYPE.CHANGE_TEXT_PROPERTIES,
           handler: prop => {
-            this.getThumbnailUrl();
             this.changeTextProperties(prop);
           }
         }
@@ -387,7 +398,7 @@ export default {
     },
 
     /**
-     * Update fabric canvas's event listeners after component has been mouted
+     * Update fabric canvas's event listeners after component has been mounted
      */
     updateCanvasEventListeners() {
       const events = {
@@ -504,7 +515,7 @@ export default {
      * Event fire when fabric object has been added
      */
     onObjectAdded() {
-      console.log('object:added');
+      this.handleCanvasChanged();
     },
 
     /**
@@ -519,6 +530,7 @@ export default {
      */
     onObjectRemoved() {
       this.setCurrentObject(null);
+      this.handleCanvasChanged();
     },
 
     /**
@@ -787,10 +799,20 @@ export default {
 
       applyTextBoxProperties(activeObj, prop);
 
+      this.handleCanvasChanged();
+
+      this.setCurrentObject(this.listObjects?.[activeObj?.id]);
+    },
+
+    /**
+     * Fired when objects on canvas are modified, added, or removed
+     */
+    handleCanvasChanged() {
       // update thumbnail
       this.getThumbnailUrl();
 
-      this.setCurrentObject(this.listObjects?.[activeObj?.id]);
+      // set state change for autosave
+      this.isCanvasChanged = true;
     },
 
     /**
@@ -1127,8 +1149,7 @@ export default {
 
       updateElement(element, prop, this.digitalCanvas);
 
-      // update thumbnail
-      this.getThumbnailUrl();
+      this.handleCanvasChanged();
 
       this.setCurrentObject(this.listObjects?.[element?.id]);
     },
@@ -1169,8 +1190,8 @@ export default {
         fabricObjects[oldIndex + numBackground].moveTo(
           newIndex + numBackground
         );
-        //update thumbnail
-        this.getThumbnailUrl();
+
+        this.handleCanvasChanged();
       };
 
       if (actionName === ARRANGE_SEND.BACK && currentObjectIndex === 0) return;
@@ -1700,6 +1721,32 @@ export default {
         this.digitalCanvas
       );
       return image;
+    },
+
+    /**
+     *  fire every 60s by default to save working progress
+     */
+    async handleAutosave() {
+      if (!this.isCanvasChanged) return;
+
+      this.updateSavingStatus({ status: SAVE_STATUS.START });
+
+      await this.saveData(this.pageSelected.id, this.currentFrameId);
+
+      this.updateSavingStatus({ status: SAVE_STATUS.END });
+
+      this.isCanvasChanged = false;
+    },
+
+    /**
+     * Save sheet and sheet's frame data to storage
+     * @param {String | Number} sheetId id of sheet
+     * @param {String | Number} frameId id of frame
+     */
+    async saveData(sheetId, frameId) {
+      this.updateFrameObjects({ frameId });
+      const data = this.getDataEditScreen(sheetId);
+      await this.saveEditScreen(data);
     }
   },
   watch: {
@@ -1707,9 +1754,7 @@ export default {
       deep: true,
       async handler(val, oldVal) {
         if (val?.id !== oldVal?.id) {
-          this.updateFrameObjects({ frameId: this.currentFrameId });
-          const data = this.getDataEditScreen(oldVal.id, this.currentFrameId);
-          await this.saveEditScreen(data);
+          this.saveData(oldVal.id, this.currentFrameId);
 
           // reset frames, frameIDs, currentFrameId
           this.setFrames({ framesList: [] });
@@ -1732,14 +1777,13 @@ export default {
         resetObjects(this.digitalCanvas);
         return;
       }
-      this.updateFrameObjects({ frameId: oldVal });
-      const data = this.getDataEditScreen(this.pageSelected.id, oldVal);
-      await this.saveEditScreen(data);
+      this.saveData(this.pageSelected.id, oldVal);
 
       this.setSelectedObjectId({ id: '' });
       this.setCurrentObject(null);
       resetObjects(this.digitalCanvas);
 
+      this.updateObjectsToStore({ objects: this.currentFrame.objects });
       this.handleSwitchFrame(this.currentFrame);
       await this.drawObjectsOnCanvas(this.sheetLayout);
     },
@@ -1766,6 +1810,8 @@ export default {
   },
   beforeDestroy() {
     this.digitalCanvas = null;
+
+    clearInterval(this.autoSaveTimer);
 
     this.updateDigitalEventListeners(false);
     this.updateWindowEventListeners(false);

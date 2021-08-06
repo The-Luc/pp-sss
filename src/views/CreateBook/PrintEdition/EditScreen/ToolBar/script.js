@@ -8,7 +8,6 @@ import {
   EDITION
 } from '@/common/constants';
 import { useLayoutPrompt, useToolBar } from '@/hooks';
-import { usePhotoSidebar } from '@/views/CreateBook/composables';
 import {
   isEmpty,
   getRightToolItems,
@@ -131,7 +130,6 @@ export default {
       setToolNameSelected,
       togglePropertiesMenu
     } = useToolBar();
-    const { isOpenPhotoSidebar, togglePhotos } = usePhotoSidebar();
 
     return {
       isPrompt,
@@ -141,9 +139,7 @@ export default {
       isMenuOpen,
       selectedToolName,
       setToolNameSelected,
-      togglePropertiesMenu,
-      isOpenPhotoSidebar,
-      togglePhotos
+      togglePropertiesMenu
     };
   },
   methods: {
@@ -212,8 +208,6 @@ export default {
       if (name === TOOL_NAME.UNDO) this.undo();
 
       if (name === TOOL_NAME.REDO) this.redo();
-
-      if (name === TOOL_NAME.PHOTOS) this.togglePhotos();
     },
     /**
      * Add element in print canvas

@@ -1,6 +1,7 @@
 import Modal from '@/containers/Modal';
 import Footer from './Footer';
 import Photos from './Photos';
+import TabAddPhotos from './TabAddPhotos';
 
 import { insertItemsToArray, removeItemsFormArray } from '@/common/utils';
 
@@ -8,17 +9,25 @@ export default {
   components: {
     Modal,
     Footer,
-    Photos
+    Photos,
+    TabAddPhotos
   },
   data() {
     return {
-      selectedImages: []
+      selectedImages: [],
+      currentTab: '',
+      defaultTab: 'smart-box'
     };
   },
   props: {
     isOpenModal: {
       type: Boolean,
       default: false
+    }
+  },
+  computed: {
+    isShowFooter() {
+      return this.currentTab !== 'add';
     }
   },
   methods: {
@@ -35,6 +44,7 @@ export default {
     onCancel() {
       this.$emit('cancel');
       this.selectedImages = [];
+      this.defaultTab = null;
     },
     /**
      * Selected a image and push or remove in array image selected
@@ -55,8 +65,10 @@ export default {
     },
     /**
      * Event change tab of modal photo
+     * @param   {String}  tag  current tag
      */
-    onChangeTab() {
+    onChangeTab(tab) {
+      this.currentTab = tab;
       this.selectedImages = [];
     }
   }

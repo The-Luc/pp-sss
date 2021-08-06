@@ -45,7 +45,7 @@ export default {
     },
     isSubmenuIconDisplayed: {
       type: Boolean,
-      default: false
+      default: true
     }
   },
   computed: {
