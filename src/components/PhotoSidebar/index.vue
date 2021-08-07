@@ -8,12 +8,6 @@
     >
       <slot />
     </PhotoContent>
-
-    <ModalAddPhotos
-      :is-open-modal.sync="isOpenModal"
-      @select="onSelect"
-      @cancel="onCancel"
-    />
   </div>
 </template>
 

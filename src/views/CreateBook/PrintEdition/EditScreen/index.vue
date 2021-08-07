@@ -15,7 +15,7 @@
         :is-show-autoflow="isShowAutoflow"
         @closePhotoSidebar="closePhotoSidebar"
         @autoflow="handleAutoflow"
-        @selectedImages="handleSelectedImages"
+        @click="openModalAddPhoto"
       >
         <SheetMedia
           v-if="isShowAutoflow"
@@ -27,6 +27,12 @@
     </transition>
 
     <PageEdition @drop="onDrop" />
+
+    <ModalAddPhotos
+      :is-open-modal="isOpenModal"
+      @select="handleSelectedImages"
+      @cancel="onCancel"
+    />
   </div>
 </template>
 

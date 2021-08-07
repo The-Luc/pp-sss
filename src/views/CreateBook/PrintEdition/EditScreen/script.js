@@ -21,6 +21,7 @@ import SidebarSection from './SidebarSection';
 import PageEdition from './PageEdition';
 import PhotoSidebar from '@/components/PhotoSidebar';
 import SheetMedia from '@/components/SheetMedia';
+import ModalAddPhotos from '@/containers/Modal/Photos';
 
 import {
   useLayoutPrompt,
@@ -55,7 +56,8 @@ export default {
     PageEdition,
     SidebarSection,
     PhotoSidebar,
-    SheetMedia
+    SheetMedia,
+    ModalAddPhotos
   },
   setup() {
     const { pageSelected, updateVisited } = useLayoutPrompt(EDITION.PRINT);
@@ -91,7 +93,8 @@ export default {
   },
   data() {
     return {
-      dragItem: () => null
+      dragItem: () => null,
+      isOpenModal: false
     };
   },
   computed: {
@@ -303,6 +306,18 @@ export default {
       }
 
       this.dragItem = null;
+    },
+    /**
+     * Use to open modal photos
+     */
+    openModalAddPhoto() {
+      this.isOpenModal = true;
+    },
+    /**
+     * Close modal photos when click cancel button
+     */
+    onCancel() {
+      this.isOpenModal = false;
     }
   }
 };
