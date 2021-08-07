@@ -15,7 +15,8 @@ export const TOOL_NAME = {
   ACTIONS: 'Actions',
   PHOTOS: 'Photos',
   UNDO: 'Undo',
-  REDO: 'Redo'
+  REDO: 'Redo',
+  MEDIA: 'Media'
 };
 
 export const ACTIONS = {

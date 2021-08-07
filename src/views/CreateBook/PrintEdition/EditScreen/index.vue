@@ -15,7 +15,7 @@
         :is-show-autoflow="isShowAutoflow"
         @closePhotoSidebar="closePhotoSidebar"
         @autoflow="handleAutoflow"
-        @click="openModalAddPhoto"
+        @click="openModalPhotos"
       >
         <SheetMedia
           v-if="isShowAutoflow"

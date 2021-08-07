@@ -310,7 +310,7 @@ export default {
     /**
      * Use to open modal photos
      */
-    openModalAddPhoto() {
+    openModalPhotos() {
       this.isOpenModal = true;
     },
     /**

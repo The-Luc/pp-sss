@@ -75,7 +75,7 @@ export default {
           {
             iconName: 'collections',
             title: 'Media',
-            name: 'Media'
+            name: TOOL_NAME.MEDIA
           },
           {
             iconName: 'portrait',

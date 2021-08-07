@@ -11,6 +11,17 @@
       :is-digital="true"
     />
     <SidebarSection />
+
+    <transition name="slide-x-transition">
+      <PhotoSidebar
+        v-show="isOpenMediaSidebar"
+        :is-show-autoflow="isShowAutoflow"
+        @closePhotoSidebar="closeMediaSidebar"
+        @autoflow="handleAutoflow"
+      >
+      </PhotoSidebar>
+    </transition>
+
     <ScreenEdition />
   </div>
 </template>

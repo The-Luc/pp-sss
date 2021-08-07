@@ -5,7 +5,8 @@ import Header from '@/containers/HeaderEdition/Header';
 import FeedbackBar from '@/containers/HeaderEdition/FeedbackBar';
 import ScreenEdition from './ScreenEdition';
 import SidebarSection from './SidebarSection';
-import ModalLayout from './ModalLayout';
+import PhotoSidebar from '@/components/PhotoSidebar';
+
 import { GETTERS, MUTATES } from '@/store/modules/app/const';
 import {
   ACTIONS as DIGITAL_ACTIONS,
@@ -65,14 +66,20 @@ export default {
     FeedbackBar,
     ScreenEdition,
     SidebarSection,
-    ModalLayout
+    PhotoSidebar
   },
   computed: {
     ...mapGetters({
       isOpenMenuProperties: GETTERS.IS_OPEN_MENU_PROPERTIES,
       selectedToolName: GETTERS.SELECTED_TOOL_NAME,
       defaultThemeId: DIGITAL_GETTERS.DEFAULT_THEME_ID
-    })
+    }),
+    isShowAutoflow() {
+      return false;
+    },
+    isOpenMediaSidebar() {
+      return this.selectedToolName === TOOL_NAME.MEDIA;
+    }
   },
   watch: {
     pageSelected: {
@@ -192,6 +199,18 @@ export default {
           type: MODAL_TYPES.SELECT_THEME_DIGITAL
         }
       });
+    },
+    /**
+     * Close list photo in sidebar
+     */
+    closeMediaSidebar() {
+      this.setToolNameSelected('');
+    },
+    /**
+     * Handle autoflow
+     */
+    handleAutoflow() {
+      console.log('handleAutoflow');
     }
   }
 };
