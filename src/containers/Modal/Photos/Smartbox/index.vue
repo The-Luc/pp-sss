@@ -26,6 +26,7 @@
         @change="onSelectedImage"
       />
     </div>
+    <PopupSelected v-if="isShowPopupSelected" :amount="selectedImages.length" />
   </div>
 </template>
 
