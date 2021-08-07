@@ -27,10 +27,6 @@ export const MAX_SAVED_TEXT_STYLES = 9;
 
 export const MAX_SAVED_IMAGE_STYLES = 12;
 
-export const MODIFICATION = {
-  ADD: 0,
-  UPDATE: 1,
-  DELETE: 2
-};
-
 export const MIN_IMAGE_SIZE = 500; //px
+
+export const DEBOUNCE_MUTATION = 350;
