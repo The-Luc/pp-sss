@@ -68,6 +68,13 @@ export default {
     onChangeTab(tab) {
       this.currentTab = tab;
       this.selectedImages = [];
+    },
+    /**
+     * Emit files user upload and emit to parent
+     * @param   {Array}  files  files user upload
+     */
+    onUploadImages(files) {
+      this.$emit('uploadImages', files);
     }
   }
 };

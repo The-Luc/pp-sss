@@ -21,7 +21,8 @@ export default {
   data() {
     return {
       isOpenModal: false,
-      isOpenModalAddMedia: false
+      isOpenModalAddMedia: false,
+      files: []
     };
   },
   props: {
@@ -60,6 +61,21 @@ export default {
      */
     autoflowPhotos() {
       this.$emit('autoflow');
+    },
+    /**
+     * Close modal photos and open modal add media
+     * @param   {Array}  files  files user upload
+     */
+    onUploadImages(files) {
+      this.onCancel();
+      this.files = files;
+      this.isOpenModalAddMedia = true;
+    },
+    /**
+     * Close modal add media
+     */
+    onCancelAddMedia() {
+      this.isOpenModalAddMedia = false;
     }
   }
 };

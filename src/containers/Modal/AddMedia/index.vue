@@ -10,12 +10,17 @@
       Add Media
     </div>
     <div class="content">
-      <div class="select-container"></div>
+      <div class="title-container">
+        Select from your existing albums or start tying to create a new one
+      </div>
+      <div class="select-container">
+        <AlbumAutocomplete :albums="albums" />
+      </div>
       <div class="btn-container">
         <PpButton class="button" is-active>
           Add Media
         </PpButton>
-        <PpButton class="button button-cancel">
+        <PpButton class="button button-cancel" @click.native="onCancel">
           Cancel
         </PpButton>
       </div>

@@ -42,7 +42,7 @@
           <div>Add</div>
         </v-tab>
         <v-tab-item value="add">
-          <TabAddPhotos :key="currentTab" />
+          <TabAddPhotos :key="currentTab" @change="onUploadImages" />
         </v-tab-item>
       </v-tabs>
     </div>
