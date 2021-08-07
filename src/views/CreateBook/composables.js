@@ -17,15 +17,15 @@ export const useSavingStatus = () => {
   return { savingStatus, updateSavingStatus };
 };
 
-export const usePhotoSidebar = () => {
-  const { isOpenPhotoSidebar } = useGetters({
-    isOpenPhotoSidebar: APP_GETTERS.IS_OPEN_PHOTO_SIDEBAR
+export const usePhotos = () => {
+  const { isPhotoVisited } = useGetters({
+    isPhotoVisited: APP_GETTERS.IS_PHOTO_VISITED
   });
-  const { togglePhotos } = useMutations({
-    togglePhotos: APP_MUTATES.TOGGLE_PHOTO_SIDEBAR
+  const { setPhotoVisited } = useMutations({
+    setPhotoVisited: APP_MUTATES.SET_PHOTO_VISITED
   });
   return {
-    isOpenPhotoSidebar,
-    togglePhotos
+    isPhotoVisited,
+    setPhotoVisited
   };
 };

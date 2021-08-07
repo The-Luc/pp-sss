@@ -329,7 +329,7 @@ export const updateSpecificProp = (element, prop) => {
   // update angle of element
   if (!isEmpty(prop?.coord?.rotation)) element.rotate(prop.coord.rotation);
 
-  // code for others specific props
+  if (!isEmpty(prop?.shadow)) applyShadowToObject(element, prop.shadow);
 };
 
 /**

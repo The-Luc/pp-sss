@@ -47,7 +47,7 @@ class ActionClass extends BaseObject {
   GET_DATA_EDIT = 'getDataForEditPage';
   GET_DATA_CANVAS = 'getDataForCanvas';
   UPDATE_SHEET_THEME_LAYOUT = 'updateSheetThemeLayout';
-  UPDATE_LAYOUT_OBJ_TO_STORE = 'updateLayoutObjectToStore';
+  UPDATE_OBJECTS_TO_STORE = 'updateObjectsToStore';
 
   constructor(props) {
     super(props);
@@ -77,7 +77,7 @@ class MutationClass extends BaseObject {
   UPDATE_TRIGGER_BACKGROUND_CHANGE = 'updateTriggerBackgroundChange';
   UPDATE_TRIGGER_APPLY_LAYOUT = 'updateTriggerApplyLayout';
   UPDATE_SHEET_VISITED = 'updateSheetVisited';
-  UPDATE_SHEET_THUMBNAIL = 'updateSheetThumbnail';
+  UPDATE_FRAME_THUMBNAIL = 'updateFrameThumbnail';
   REORDER_OBJECT_IDS = 'reorderObjectIds';
   SET_SHEET_DATA = 'setSheetData';
   SET_SUPPLEMENTAL_LAYOUT_ID = 'setSupplementalLayoutIdOnFrame';

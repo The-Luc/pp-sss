@@ -68,7 +68,11 @@ export default {
   },
   watch: {
     selectedToolName(toolName) {
-      if ([TOOL_NAME.IMAGE_BOX, TOOL_NAME.TEXT].includes(toolName)) {
+      if (
+        [TOOL_NAME.IMAGE_BOX, TOOL_NAME.TEXT, TOOL_NAME.PHOTOS].includes(
+          toolName
+        )
+      ) {
         this.toolComponent = null;
         return;
       }

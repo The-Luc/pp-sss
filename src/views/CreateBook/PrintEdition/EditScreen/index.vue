@@ -8,14 +8,25 @@
       @zoom="onZoom"
     />
     <SidebarSection />
-    <PhotoSidebar
-      :is-show-autoflow="isShowAutoflow"
-      @autoflow="handleAutoflow"
-      @selectedImages="handleSelectedImages"
-    >
-      <SheetMedia v-if="isShowAutoflow" :media="sheetMedia" />
-    </PhotoSidebar>
-    <PageEdition />
+
+    <transition name="slide-x-transition">
+      <PhotoSidebar
+        v-show="isOpenPhotoSidebar"
+        :is-show-autoflow="isShowAutoflow"
+        @closePhotoSidebar="closePhotoSidebar"
+        @autoflow="handleAutoflow"
+        @selectedImages="handleSelectedImages"
+      >
+        <SheetMedia
+          v-if="isShowAutoflow"
+          :media="sheetMedia"
+          @remove="onRemovePhoto"
+          @drag="onDrag"
+        />
+      </PhotoSidebar>
+    </transition>
+
+    <PageEdition @drop="onDrop" />
   </div>
 </template>
 

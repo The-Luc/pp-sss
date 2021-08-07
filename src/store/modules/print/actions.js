@@ -178,5 +178,14 @@ export const actions = {
     const newMedia = [...images, ...media];
     await printService.saveSheetMedia(state.currentSheetId, newMedia);
     commit(PRINT._MUTATES.SET_SHEET_MEDIA, { media: newMedia });
+  },
+
+  async [PRINT._ACTIONS.DELETE_SHEET_MEDIA]({ commit, state }, { id }) {
+    if (!id) return;
+    const media = await printService.deleteSheetMediaById(
+      state.currentSheetId,
+      id
+    );
+    commit(PRINT._MUTATES.SET_SHEET_MEDIA, { media });
   }
 };

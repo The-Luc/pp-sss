@@ -1,5 +1,6 @@
-import { albums } from '@/mock/photo';
 import { photoDropdowns, albums as myAlbums } from '@/mock/photoDropdowns';
+import { albums, photoList } from '@/mock/photo';
+import { isEmpty } from '@/common/utils';
 
 export const getAlbums = () => {
   return new Promise(resolve => {
@@ -23,4 +24,10 @@ export const getMyAlbums = () => {
       resolve(myAlbums);
     });
   });
+};
+
+export const getPhotos = async (keywords = []) => {
+  const hasNo = keywords.find(keyword => keyword.toLowerCase() === 'no');
+
+  return Promise.resolve(hasNo || isEmpty(keywords) ? [] : photoList);
 };

@@ -120,7 +120,7 @@ const digitalService = {
    * @param {Number} bookId Id of book
    * @param {Number} sectionId Id of section
    * @param {Number} sheetId Id of sheet
-   * @returns {Array} a list of frames [{id, frame:{}},...]
+   * @returns {Promise<array>} a list of frames [{id, frame:{}},...]
    */
   getFrames: async (bookId, sectionId, sheetId) => {
     const { sheets } = await bookService.getBookDigital(bookId);
@@ -184,6 +184,10 @@ const digitalService = {
 
     saveQueue.push(digitalService.updateSheet(sheetId, sheet));
     const response = await Promise.all(saveQueue);
+
+    // TODO: remove when integrate API
+    // Simulate a delay when saving data to API
+    await new Promise(r => setTimeout(() => r(), 300));
 
     return {
       data: response,

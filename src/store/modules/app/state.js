@@ -56,5 +56,5 @@ export const state = {
   savedTextStyles: [],
   savedImageStyles: [],
   savingStatus: '',
-  isOpenPhotoSidebar: false
+  isPhotoVisited: false
 };
