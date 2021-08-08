@@ -23,3 +23,9 @@ export const getPhotos = async (keywords = []) => {
 
   return Promise.resolve(hasNo || isEmpty(keywords) ? [] : photoList);
 };
+
+export const searchPhotos = async input => {
+  const hasNo = input.toLowerCase() === 'no';
+
+  return Promise.resolve(hasNo || isEmpty(input) ? [] : photoList);
+};

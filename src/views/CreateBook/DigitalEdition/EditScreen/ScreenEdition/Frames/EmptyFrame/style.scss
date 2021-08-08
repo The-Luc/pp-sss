@@ -1,44 +1,27 @@
-.frame-container {
-  margin: 18px 24px;
-  position: relative;
+.frame-item {
+  cursor: pointer;
+  width: 160px;
+  height: 95px;
+  background: $color-white;
 
-  &::before {
-    position: absolute;
-    top: 0;
-    left: -48px;
-    content: '';
-    display: block;
-    width: 48px;
-    height: calc(50% - 9px);
-    border-bottom: 1px dashed $color-gray6;
-  }
+  border: 0.5px solid $color-gray6;
 
-  .frame-item {
-    cursor: pointer;
-    width: 160px;
-    height: 95px;
-    background: $color-white;
+  &.add-frame {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: transparent;
+    border: 1px dashed $color-gray6;
 
-    border: 0.5px solid $color-gray6;
-    position: relative;
+    .add-frame-content {
+      font-size: 11px;
+      font-family: $font-500;
+      cursor: pointer;
+    }
 
-    &.add-frame {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background: transparent;
-      border: 1px dashed $color-gray6;
-
-      .add-frame-content {
-        font-size: 11px;
-        font-family: $font-500;
-        cursor: pointer;
-      }
-
-      .v-icon {
-        font-size: 12px;
-        color: $color-stoodio-toolbartext;
-      }
+    .v-icon {
+      font-size: 12px;
+      color: $color-stoodio-toolbartext;
     }
   }
 }

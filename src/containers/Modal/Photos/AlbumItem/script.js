@@ -15,6 +15,10 @@ export default {
     selectedImages: {
       type: Array,
       default: () => []
+    },
+    searchInput: {
+      type: String,
+      default: ''
     }
   },
   computed: {
