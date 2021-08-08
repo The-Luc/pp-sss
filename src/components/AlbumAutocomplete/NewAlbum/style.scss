@@ -1,0 +1,17 @@
+.add-new-album {
+  font-family: $font-500;
+  font-size: 12px;
+  min-height: 42px;
+  background-color: $color-gray30;
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  color: $color-stoodio-toolbartext;
+  margin-bottom: 10px;
+  cursor: pointer;
+  div {
+    span {
+      font-weight: 700;
+    }
+  }
+}

@@ -1,5 +1,5 @@
+import { photoDropdowns, albums as myAlbums } from '@/mock/photoDropdowns';
 import { albums, photoList } from '@/mock/photo';
-import { photoDropdowns } from '@/mock/photoDropdowns';
 import { isEmpty } from '@/common/utils';
 
 export const getAlbums = () => {
@@ -14,6 +14,14 @@ export const getPhotoDropdowns = () => {
   return new Promise(resolve => {
     setTimeout(() => {
       resolve(photoDropdowns);
+    });
+  });
+};
+
+export const getMyAlbums = () => {
+  return new Promise(resolve => {
+    setTimeout(() => {
+      resolve(myAlbums);
     });
   });
 };
