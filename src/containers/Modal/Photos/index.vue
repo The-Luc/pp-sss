@@ -38,7 +38,11 @@
           <div>Search</div>
         </v-tab>
         <v-tab-item value="search">
-          search
+          <TabSearchPhotos
+            :key="currentTab"
+            :selected-images="selectedImages"
+            @change="onSelectedImage"
+          />
         </v-tab-item>
 
         <v-tab href="#add">

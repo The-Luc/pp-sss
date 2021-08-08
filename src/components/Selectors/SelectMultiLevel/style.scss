@@ -2,28 +2,5 @@
   ::v-deep .v-menu__content {
     overflow: visible;
     contain: none;
-
-    .pp-select-sub {
-      display: none;
-    }
-  }
-
-  &--item {
-    &:not(.item-selected):hover {
-      .pp-select-sub {
-        display: block;
-      }
-    }
-
-    .icon-arrow {
-      color: $color-stoodio-toolbartext;
-    }
-
-    &:hover,
-    &.v-list-item--active {
-      .icon-arrow {
-        color: $color-white;
-      }
-    }
   }
 }

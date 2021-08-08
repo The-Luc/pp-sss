@@ -8,6 +8,15 @@
     font-family: $font-300;
     color: $color-stoodio-toolbartext;
     font-size: 14px;
+    .album-name {
+      width: calc(100% - 150px);
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+      span {
+        font-family: $font-700;
+      }
+    }
   }
   .image-container {
     display: flex;

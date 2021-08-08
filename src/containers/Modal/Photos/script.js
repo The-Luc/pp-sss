@@ -1,19 +1,19 @@
-import Modal from '@/containers/Modal';
 import Footer from './Footer';
 import Photos from './Photos';
 import Smartbox from './Smartbox';
 import TabAddPhotos from './TabAddPhotos';
+import TabSearchPhotos from './TabSearchPhotos';
 import { usePhotos } from '@/views/CreateBook/composables';
 
 import { insertItemsToArray, removeItemsFormArray } from '@/common/utils';
 
 export default {
   components: {
-    Modal,
     Footer,
     Photos,
     Smartbox,
-    TabAddPhotos
+    TabAddPhotos,
+    TabSearchPhotos
   },
   setup() {
     const { isPhotoVisited } = usePhotos();

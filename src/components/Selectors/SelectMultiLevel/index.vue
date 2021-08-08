@@ -34,41 +34,43 @@
         v-bind="attrs"
         v-on="on"
       >
-        <img
-          :style="{ visibility: active ? 'visible' : 'hidden' }"
-          class="icon-ative"
-          :src="activeMenuIcon"
-          alt="icon-active"
-        />
-
-        <v-list-item-content>
-          <v-list-item-title>
-            <v-row
-              no-gutters
-              align="center"
-              @click="onItemClick($event, item.subItems.length, item.value)"
-            >
-              <span>{{ item.name }}</span>
-            </v-row>
-
-            <SelectSubLevel
-              v-if="item.subItems.length > 0"
-              :is-submenu-icon-displayed="isSubmenuIconDisplayed"
-              :items="item.subItems"
-              :parent-value="item.value"
-              :selected-val="getSelectedSub(item)"
-              @change="onChange"
-            />
-          </v-list-item-title>
-        </v-list-item-content>
-        <v-icon
-          :style="{
-            visibility: isSubmenuIconVisibled(item) ? 'visible' : 'hidden'
-          }"
-          class="icon-arrow"
+        <div
+          class="option-wrapper"
+          @click="onItemClick($event, item.subItems.length, item.value)"
         >
-          arrow_right
-        </v-icon>
+          <img
+            :style="{ visibility: active ? 'visible' : 'hidden' }"
+            class="icon-ative"
+            :src="activeMenuIcon"
+            alt="icon-active"
+          />
+
+          <v-list-item-content>
+            <v-list-item-title>
+              <v-row no-gutters align="center">
+                <span>{{ item.name }}</span>
+              </v-row>
+            </v-list-item-title>
+          </v-list-item-content>
+
+          <v-icon
+            :style="{
+              visibility: isSubmenuIconVisibled(item) ? 'visible' : 'hidden'
+            }"
+            class="icon-arrow"
+          >
+            arrow_right
+          </v-icon>
+        </div>
+
+        <SelectSubLevel
+          v-if="item.subItems.length > 0"
+          :is-submenu-icon-displayed="isSubmenuIconDisplayed"
+          :items="item.subItems"
+          :parent-value="item.value"
+          :selected-val="getSelectedSub(item)"
+          @change="onChange"
+        />
       </v-list-item>
     </template>
     <template v-if="prependedIcon" #prepend>
