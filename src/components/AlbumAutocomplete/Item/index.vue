@@ -2,7 +2,7 @@
   <div class="item-dropdown">
     <div class="img-container">
       <div
-        v-for="i in amountThumbnails"
+        v-for="i in totalThumbnailDisplay"
         :key="i"
         :style="{ backgroundImage: `url('${album.assets[i - 1].thumbUrl}')` }"
       ></div>

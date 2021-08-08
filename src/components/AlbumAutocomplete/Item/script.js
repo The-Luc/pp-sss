@@ -10,7 +10,7 @@ export default {
     }
   },
   computed: {
-    amountThumbnails() {
+    totalThumbnailDisplay() {
       return this.album.assets.length < 4 ? this.album.assets.length : 4;
     }
   }
