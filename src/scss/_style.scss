@@ -139,7 +139,8 @@ body,
 }
 
 .pp-combobox,
-.pp-select {
+.pp-select,
+.pp-select-sub {
   &--item {
     padding: 0 10px;
 
@@ -153,27 +154,9 @@ body,
 .pp-select-multi,
 .pp-select-sub {
   &--item {
-    padding: 0;
-
-    &.v-list-item--active,
-    &:not(.item-selected):hover {
-      > .option-wrapper {
-        @extend %selector-active-item;
-      }
-    }
-
     &:hover {
       > .pp-select-sub {
         display: block;
-      }
-    }
-
-    &:hover,
-    &.v-list-item--active {
-      > .option-wrapper {
-        .icon-arrow {
-          color: $color-white;
-        }
       }
     }
 
@@ -184,14 +167,6 @@ body,
     > .pp-select-sub {
       display: none;
     }
-  }
-
-  .option-wrapper {
-    display: flex;
-    width: 100%;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 10px;
   }
 }
 

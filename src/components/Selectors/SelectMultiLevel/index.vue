@@ -36,7 +36,7 @@
       >
         <div
           class="option-wrapper"
-          @click="onItemClick($event, item.subItems.length, item.value)"
+          @click="onItemClick($event, item.subItems, item.value)"
         >
           <img
             :style="{ visibility: active ? 'visible' : 'hidden' }"
@@ -55,7 +55,7 @@
 
           <v-icon
             :style="{
-              visibility: isSubmenuIconVisibled(item) ? 'visible' : 'hidden'
+              visibility: isSubmenuExisted(item) ? 'visible' : 'hidden'
             }"
             class="icon-arrow"
           >
@@ -64,8 +64,7 @@
         </div>
 
         <SelectSubLevel
-          v-if="item.subItems.length > 0"
-          :is-submenu-icon-displayed="isSubmenuIconDisplayed"
+          v-if="isSubmenuExisted(item)"
           :items="item.subItems"
           :parent-value="item.value"
           :selected-val="getSelectedSub(item)"
