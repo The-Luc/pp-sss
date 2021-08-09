@@ -1,7 +1,1 @@
-export const IMAGE_TYPES = [
-  'image/png',
-  'image/jpg',
-  'image/jpeg',
-  'image/heic',
-  'image/gif'
-];
+export const IMAGE_TYPES = ['.png', '.jpg', '.jpeg', '.heic', '.gif'];

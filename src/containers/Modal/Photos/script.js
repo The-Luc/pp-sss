@@ -87,6 +87,7 @@ export default {
      */
     onUploadImages(files) {
       this.$emit('uploadImages', files);
+      this.onCancel();
     }
   }
 };
