@@ -28,8 +28,10 @@ export default {
   data() {
     return {
       selectedType: {
-        value: 'groupPhotos',
-        sub: 'dramaClub'
+        value: PHOTO_DROPDOWNS.COMMUNITIES.value,
+        sub: {
+          value: ID_PHOTO_All
+        }
       },
       albums: [],
       photoDropdowns: []
@@ -40,7 +42,9 @@ export default {
       const albumIds = this.getSelectedImageIds();
 
       if (albumIds !== ID_PHOTO_All) {
-        return albums.filter(item => item.id === albumIds);
+        return albums.filter(item => {
+          return !isEmpty(item.assets) && item.id === albumIds;
+        });
       }
       return this.getAllSelectedAlbums();
     },
@@ -50,6 +54,16 @@ export default {
 
     isShowPopupSelected() {
       return this.selectedImages.length !== 0;
+    },
+
+    isEmptyCategory() {
+      return isEmpty(this.selectedAlbums);
+    },
+
+    currentCategory() {
+      return Object.values(PHOTO_DROPDOWNS).find(
+        item => item.value === this.selectedType.value
+      ).name;
     }
   },
   methods: {
@@ -99,7 +113,9 @@ export default {
 
       const arrayIdSelected = arrayAlbumSelected.map(item => item.value);
 
-      return albums.filter(item => arrayIdSelected.includes(item.id));
+      return albums.filter(item => {
+        return !isEmpty(item.assets) && arrayIdSelected.includes(item.id);
+      });
     },
     /**
      * Get array of dropdown from value api
@@ -137,11 +153,5 @@ export default {
     if (isEmpty(this.photoDropdowns)) {
       this.photoDropdowns = await getPhotoDropdowns();
     }
-    this.selectedType = {
-      value: this.dropdownOptions[0]?.value,
-      sub: {
-        value: this.dropdownOptions[0]?.subItems[0]?.value
-      }
-    };
   }
 };

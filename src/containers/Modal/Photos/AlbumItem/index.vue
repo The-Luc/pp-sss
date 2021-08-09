@@ -1,11 +1,14 @@
 <template>
   <div class="album-container">
-    <div class="album-title">
+    <div v-if="!emptyCategory" class="album-title">
       <div class="album-name">
         {{ name }}
         <span> {{ searchInput }}</span>
       </div>
       <div class="album-date">{{ displayDate }}</div>
+    </div>
+    <div v-if="emptyCategory" class="empty-category">
+      There are no {{ emptyCategory }}
     </div>
     <div class="image-container">
       <div
