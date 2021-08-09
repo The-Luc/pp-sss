@@ -25,6 +25,8 @@ export default {
       if (this.isShowNotify) return;
 
       this.uploadedFiles = files.reverse();
+
+      this.$emit('change', this.uploadedFiles);
     },
     /**
      * Handle event drag enter to div

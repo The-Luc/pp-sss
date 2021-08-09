@@ -1,7 +1,10 @@
 <template>
   <div class="album-container">
     <div class="album-title">
-      <div class="album-name">{{ name }}</div>
+      <div class="album-name">
+        {{ name }}
+        <span> {{ searchInput }}</span>
+      </div>
       <div class="album-date">{{ displayDate }}</div>
     </div>
     <div class="image-container">

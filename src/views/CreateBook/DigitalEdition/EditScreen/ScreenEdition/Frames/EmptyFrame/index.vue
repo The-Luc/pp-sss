@@ -1,5 +1,5 @@
 <template>
-  <div class="frame-container" @click="onClickAddFrame">
+  <div class="frame-container empty" @click="onClickAddFrame">
     <div class="frame-item add-frame">
       <div class="add-frame-content">
         <v-icon>add_circle_outline</v-icon>

@@ -32,6 +32,13 @@
       :is-open-modal="isOpenModal"
       @select="handleSelectedImages"
       @cancel="onCancel"
+      @uploadImages="onUploadImages"
+    />
+    <ModalAddMedia
+      v-if="isOpenModalAddMedia"
+      :files="files"
+      :is-open-modal="isOpenModalAddMedia"
+      @cancel="onCancelAddMedia"
     />
   </div>
 </template>

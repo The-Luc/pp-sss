@@ -28,7 +28,7 @@
       border-bottom: 1px solid $color-gray6;
     }
 
-    &:nth-last-child(1)::before {
+    &.empty::before {
       border-bottom: 1px dashed $color-gray6;
     }
 
@@ -148,14 +148,13 @@
     }
   }
 }
-
 @media screen and (max-width: 1366px) {
   .frames-container {
     .frame-container {
       margin: 10px 15px;
 
       &:nth-child(n + 2)::before {
-        left: -31px;
+        left: -30px;
         width: 30px;
       }
 
