@@ -7,8 +7,10 @@
   align-items: center;
   padding: 0 12px;
   color: $color-stoodio-toolbartext;
-  margin-bottom: 10px;
   cursor: pointer;
+  position: absolute;
+  top: 0;
+  width: 100%;
   div {
     span {
       font-weight: 700;
