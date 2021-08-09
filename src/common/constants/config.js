@@ -29,4 +29,9 @@ export const MAX_SAVED_IMAGE_STYLES = 12;
 
 export const MIN_IMAGE_SIZE = 500; //px
 
+export const IMAGE_INDICATOR = {
+  STROKE: '#42738d',
+  STROKE_WIDTH: 10
+};
+
 export const DEBOUNCE_MUTATION = 350;

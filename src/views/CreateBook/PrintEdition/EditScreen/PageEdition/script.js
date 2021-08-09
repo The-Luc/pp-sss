@@ -51,7 +51,9 @@ import {
   updateBringToFrontPageNumber,
   applyBorderToImageObject,
   setImageSrc,
-  centercrop
+  centercrop,
+  handleDragEnter,
+  handleDragLeave
 } from '@/common/fabricObjects';
 
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
@@ -888,7 +890,10 @@ export default {
         scaling: this.handleScaling,
         scaled: this.handleScaled,
         rotated: this.handleRotated,
-        moved: this.handleMoved
+        moved: this.handleMoved,
+        dragenter: handleDragEnter,
+        dragleave: handleDragLeave,
+        drop: handleDragLeave
       };
 
       const image = await createImage(newImage.newObject);
