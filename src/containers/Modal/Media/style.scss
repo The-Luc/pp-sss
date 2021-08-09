@@ -1,0 +1,46 @@
+.prompt {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: $color-white5;
+  z-index: 99;
+  border-radius: 4px;
+}
+.modal-body {
+  &::v-deep {
+    .v-tabs-bar {
+      height: 66px;
+      background-color: $color-gray25 !important;
+      .v-tab {
+        text-transform: none;
+        font-family: $font-500;
+        font-size: $md-size;
+        flex-direction: column;
+        &:before {
+          background-color: transparent;
+        }
+        &.v-tab--active {
+          background: $color-stoodio-blue;
+          .light {
+            background-image: url('~@/assets/icons/lightbulb-2.svg');
+          }
+        }
+        .light {
+          width: 24px;
+          height: 24px;
+          background-size: cover;
+          background-image: url('~@/assets/icons/lightbulb.svg');
+        }
+      }
+    }
+    .v-tabs-items {
+      height: 587px;
+    }
+  }
+}
+
+.v-dialog__content {
+  ::v-deep.v-dialog.modal-add-photo {
+    position: relative;
+  }
+}

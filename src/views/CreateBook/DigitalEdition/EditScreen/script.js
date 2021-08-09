@@ -6,6 +6,7 @@ import FeedbackBar from '@/containers/HeaderEdition/FeedbackBar';
 import ScreenEdition from './ScreenEdition';
 import SidebarSection from './SidebarSection';
 import PhotoSidebar from '@/components/PhotoSidebar';
+import ModalAddMedia from '@/containers/Modal/Media';
 
 import { GETTERS, MUTATES } from '@/store/modules/app/const';
 import {
@@ -60,13 +61,19 @@ export default {
       updateSavingStatus
     };
   },
+  data() {
+    return {
+      isOpenModal: false
+    };
+  },
   components: {
     ToolBar,
     Header,
     FeedbackBar,
     ScreenEdition,
     SidebarSection,
-    PhotoSidebar
+    PhotoSidebar,
+    ModalAddMedia
   },
   computed: {
     ...mapGetters({
@@ -211,6 +218,18 @@ export default {
      */
     handleAutoflow() {
       console.log('handleAutoflow');
+    },
+    /**
+     * Use to open modal media
+     */
+    openModalMedia() {
+      this.isOpenModal = true;
+    },
+    /**
+     * Close modal media when click cancel button
+     */
+    onCancel() {
+      this.isOpenModal = false;
     }
   }
 };

@@ -18,11 +18,14 @@
         :is-show-autoflow="isShowAutoflow"
         @closePhotoSidebar="closeMediaSidebar"
         @autoflow="handleAutoflow"
+        @click="openModalMedia"
       >
       </PhotoSidebar>
     </transition>
 
     <ScreenEdition />
+
+    <ModalAddMedia :is-open-modal="isOpenModal" @cancel="onCancel" />
   </div>
 </template>
 
