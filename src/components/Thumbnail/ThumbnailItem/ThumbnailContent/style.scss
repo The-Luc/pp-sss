@@ -30,6 +30,10 @@
     }
 
     .border-inside {
+      width: calc(100% + 2px);
+      height: calc(100% + 2px);
+      top: -1px;
+      left: -1px;
       border-radius: 29px 4px;
     }
   }
