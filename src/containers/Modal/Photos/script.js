@@ -1,16 +1,26 @@
-import Modal from '@/containers/Modal';
 import Footer from './Footer';
 import Photos from './Photos';
+import Smartbox from './Smartbox';
 import TabAddPhotos from './TabAddPhotos';
+import TabSearchPhotos from './TabSearchPhotos';
+import { usePhotos } from '@/views/CreateBook/composables';
 
 import { insertItemsToArray, removeItemsFormArray } from '@/common/utils';
 
 export default {
   components: {
-    Modal,
     Footer,
     Photos,
-    TabAddPhotos
+    Smartbox,
+    TabAddPhotos,
+    TabSearchPhotos
+  },
+  setup() {
+    const { isPhotoVisited } = usePhotos();
+
+    return {
+      isPhotoVisited
+    };
   },
   data() {
     return {
@@ -70,6 +80,13 @@ export default {
     onChangeTab(tab) {
       this.currentTab = tab;
       this.selectedImages = [];
+    },
+    /**
+     * Emit files user upload and emit to parent
+     * @param   {Array}  files  files user upload
+     */
+    onUploadImages(files) {
+      this.$emit('uploadImages', files);
     }
   }
 };

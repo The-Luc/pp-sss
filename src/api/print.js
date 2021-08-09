@@ -271,6 +271,25 @@ const printService = {
   },
 
   /**
+   * Delete media from sheet by id
+   * @param {String} sheetId sheet's id to delete media
+   * @param {String} mediaId media's id will be deleted
+   * @returns {Array} list media after delete
+   */
+  deleteSheetMediaById: async (sheetId, mediaId) => {
+    try {
+      if (!sheetId || !mediaId) throw false;
+      const sheets = cloneDeep(getSheetsFromStorage());
+      const { media } = sheets[sheetId].printData;
+      const newMedia = media.filter(item => item.id !== mediaId);
+      await printService.updateSheet(sheetId, { media: newMedia });
+      return Promise.resolve(newMedia);
+    } catch (err) {
+      return Promise.reject(err);
+    }
+  },
+
+  /**
    * to saves object and backgrounds
    */
   saveObjectsAndBackground: (sheetId, data) => {

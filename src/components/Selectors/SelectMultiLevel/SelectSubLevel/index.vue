@@ -7,31 +7,37 @@
       :class="getCustomCssClass(item)"
       @click.native="onSubClick(item)"
     >
-      <img
-        :style="{
-          visibility: isSelected(item) ? 'visible' : 'hidden'
-        }"
-        class="icon-ative"
-        :src="activeMenuIcon"
-        alt="icon-active"
-      />
-
-      <v-list-item-content>
-        <v-list-item-title>
-          <v-row no-gutters align="center">
-            <span>{{ item.name }}</span>
-          </v-row>
-        </v-list-item-title>
-      </v-list-item-content>
-
-      <v-icon
-        :style="{
-          visibility: isSubmenuIconVisibled(item) ? 'visible' : 'hidden'
-        }"
-        class="icon-arrow"
+      <div
+        class="option-wrapper"
+        @click="onItemClick($event, item.subItems.length, item.value)"
       >
-        arrow_right
-      </v-icon>
+        <img
+          :style="{
+            visibility: isSelected(item) ? 'visible' : 'hidden'
+          }"
+          class="icon-ative"
+          :src="activeMenuIcon"
+          alt="icon-active"
+        />
+
+        <v-list-item-content>
+          <v-list-item-title>
+            <v-row no-gutters align="center">
+              <span>{{ item.name }}</span>
+            </v-row>
+          </v-list-item-title>
+        </v-list-item-content>
+
+        <v-icon
+          :style="{
+            visibility: isSubmenuIconVisibled(item) ? 'visible' : 'hidden'
+          }"
+          class="icon-arrow"
+        >
+          arrow_right
+        </v-icon>
+      </div>
+
       <SubLevel
         v-if="item.subItems && item.subItems.length !== 0"
         :is-submenu-icon-displayed="isSubmenuIconDisplayed"

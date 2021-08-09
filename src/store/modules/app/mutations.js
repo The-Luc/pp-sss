@@ -87,5 +87,8 @@ export const mutations = {
   },
   [APP._MUTATES.UPDATE_SAVING_STATUS](state, { status }) {
     state.savingStatus = status;
+  },
+  [APP._MUTATES.SET_PHOTO_VISITED](state, { isPhotoVisited }) {
+    state.isPhotoVisited = isPhotoVisited;
   }
 };

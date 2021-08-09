@@ -16,6 +16,20 @@ export const addObject = (state, { id, newObject }) => {
   ]);
 };
 
+export const addObjects = (state, { objects }) => {
+  if (isEmpty(objects)) return;
+
+  state.objectIds = insertItemsToArray(
+    state.objectIds,
+    objects.map(({ id }) => ({ value: id }))
+  );
+
+  state.objects = insertItemsToObject(
+    state.objects,
+    objects.map(({ id, newObject }) => ({ key: id, value: newObject }))
+  );
+};
+
 export const deleteObjects = (state, { ids }) => {
   state.objectIds = removeItemsFormArray(
     state.objectIds,

@@ -38,18 +38,8 @@
       }
     }
   }
-
-  .btn-key-word {
-    opacity: 0.4;
+  .inactive.v-chip {
     cursor: pointer;
-    height: 32px;
-    padding: 7px 12px;
-    border-radius: 6px !important;
-    background-color: $color-stoodio-toolbartext;
-    font-family: $font-300;
-    color: $color-white;
-    font-size: 15px;
-    display: inline-flex;
-    align-items: center;
+    opacity: 0.4;
   }
 }

@@ -1,18 +1,22 @@
 <template>
   <div class="album-container">
     <div class="album-title">
-      <div class="album-name">{{ name }}</div>
+      <div class="album-name">
+        {{ name }}
+        <span> {{ searchInput }}</span>
+      </div>
       <div class="album-date">{{ displayDate }}</div>
     </div>
     <div class="image-container">
       <div
         v-for="asset in assets"
         :key="asset.id"
-        :class="['image-item', { 'image-item-active': isActive(asset.id) }]"
+        :class="['image-item', { active: isActive(asset.id) }]"
         @click="onSelected(asset)"
       >
         <v-icon class="icon-check">done</v-icon>
         <img :src="asset.thumbUrl" alt="" />
+        <div v-show="asset.inProject" class="indicator">In Project</div>
       </div>
     </div>
   </div>

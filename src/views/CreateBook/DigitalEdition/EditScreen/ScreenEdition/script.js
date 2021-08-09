@@ -74,7 +74,8 @@ import {
   isNonElementPropSelected,
   copyPpObject,
   inToPx,
-  pastePpObject
+  pastePpObject,
+  isDeleteKey
 } from '@/common/utils';
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
 import { GETTERS } from '@/store/modules/book/const';
@@ -198,7 +199,7 @@ export default {
         DIGITAL_MUTATES.UPDATE_TRIGGER_BACKGROUND_CHANGE,
       deleteObjects: DIGITAL_MUTATES.DELETE_OBJECTS,
       updateTriggerShapeChange: MUTATES.UPDATE_TRIGGER_SHAPE_CHANGE,
-      setThumbnail: DIGITAL_MUTATES.UPDATE_SHEET_THUMBNAIL,
+      setThumbnail: DIGITAL_MUTATES.UPDATE_FRAME_THUMBNAIL,
       updateTriggerClipArtChange: MUTATES.UPDATE_TRIGGER_CLIPART_CHANGE,
       reorderObjectIds: DIGITAL_MUTATES.REORDER_OBJECT_IDS,
       toggleActiveObjects: MUTATES.TOGGLE_ACTIVE_OBJECTS,
@@ -619,7 +620,7 @@ export default {
     onKeyUp(event) {
       const key = event.keyCode || event.charCode;
 
-      if (event.target === document.body && key == 46) {
+      if (event.target === document.body && isDeleteKey(key)) {
         this.deleteObject();
       }
     },
@@ -826,7 +827,7 @@ export default {
       });
 
       this.setThumbnail({
-        sheetId: this.pageSelected?.id,
+        frameId: this.currentFrameId,
         thumbnailUrl
       });
     }, 250),
@@ -1392,6 +1393,8 @@ export default {
 
       this.updateTriggerBackgroundChange();
 
+      this.handleCanvasChanged();
+
       updateElement(background, prop, window.digitalCanvas);
     },
     /**
@@ -1777,7 +1780,13 @@ export default {
         resetObjects(this.digitalCanvas);
         return;
       }
-      this.saveData(this.pageSelected.id, oldVal);
+
+      const isSwitchFrame = this.frames.find(
+        f => String(f.id) === String(oldVal)
+      );
+      if (isSwitchFrame) {
+        this.saveData(this.pageSelected.id, oldVal);
+      }
 
       this.setSelectedObjectId({ id: '' });
       this.setCurrentObject(null);

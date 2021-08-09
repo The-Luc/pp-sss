@@ -42,12 +42,14 @@ const useMutationEditionSheet = (isDigital = false) => {
 export const useActionsEditionSheet = (isDigital = false) => {
   const ACTIONS = isDigital ? DIGITAL_ACTIONS : PRINT_ACTIONS;
 
-  const { updateSheetMedia } = useActions({
-    updateSheetMedia: ACTIONS.UPDATE_SHEET_MEDIA
+  const { updateSheetMedia, deleteSheetMedia } = useActions({
+    updateSheetMedia: ACTIONS.UPDATE_SHEET_MEDIA,
+    deleteSheetMedia: ACTIONS.DELETE_SHEET_MEDIA
   });
 
   return {
-    updateSheetMedia
+    updateSheetMedia,
+    deleteSheetMedia
   };
 };
 
