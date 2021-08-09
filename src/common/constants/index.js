@@ -42,3 +42,4 @@ export * from './borderStyle';
 export * from './assetType';
 export * from './saving';
 export * from './imageTypes';
+export * from './uploadingProcessStatus';

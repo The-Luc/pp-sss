@@ -91,7 +91,6 @@ export default {
     const {
       sheetLayout,
       getLayoutsByType,
-      listLayouts,
       updateSheetThemeLayout
     } = useGetLayouts(edition);
     const { currentFrame } = useFrame();
@@ -115,7 +114,6 @@ export default {
       pageSelected,
       sheetLayout,
       getLayoutsByType,
-      listLayouts,
       defaultThemeId,
       updateSheetThemeLayout,
       frames,
@@ -224,7 +222,6 @@ export default {
   methods: {
     ...mapMutations({
       toggleModal: APP_MUTATES.TOGGLE_MODAL,
-      setPrintLayouts: THEME_MUTATES.PRINT_LAYOUTS,
       setDigitalLayouts: THEME_MUTATES.DIGITAL_LAYOUTS
     }),
     /**
@@ -251,10 +248,6 @@ export default {
      */
     async initPrintData() {
       this.themesOptions = await loadPrintThemes();
-
-      const layouts = await loadLayouts();
-
-      this.setPrintLayouts({ layouts });
 
       this.layoutId = this.pageSelected?.layoutId;
     },
@@ -323,7 +316,7 @@ export default {
           {
             // Use default layout if the sheet no have private layout
             const layoutId = this.pageSelected?.layoutId;
-            const defaultLayouts = await loadLayouts();
+            const defaultLayouts = await loadDigitalLayouts();
 
             if (layoutId) {
               const layoutOpt = getLayoutOptSelectedById(

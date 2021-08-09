@@ -1,0 +1,12 @@
+.title-container {
+  text-align: center;
+  color: $color-gray33;
+  .name {
+    font-size: 15px;
+    font-family: $font-500;
+  }
+  .content {
+    font-size: 15px;
+    font-family: $font-300;
+  }
+}

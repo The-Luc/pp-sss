@@ -1,6 +1,31 @@
+@import '@/scss/extend';
+
 .pp-select-multi {
   ::v-deep .v-menu__content {
     overflow: visible;
     contain: none;
+  }
+
+  &--item {
+    padding: 0;
+
+    &.v-list-item--active,
+    &:not(.item-selected):hover {
+      > .option-wrapper {
+        @extend %selector-active-item;
+
+        .icon-arrow {
+          color: $color-white;
+        }
+      }
+    }
+  }
+
+  .option-wrapper {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 10px;
   }
 }

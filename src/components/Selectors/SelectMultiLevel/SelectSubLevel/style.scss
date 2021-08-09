@@ -7,7 +7,7 @@
   box-shadow: 0 0 6px $color-black !important;
   cursor: default;
 
-  .pp-select-sub--item {
+  &--item {
     cursor: pointer;
     position: relative;
 
@@ -16,6 +16,13 @@
 
       span {
         color: $color-gray22;
+      }
+    }
+
+    &.v-list-item--active,
+    &:not(.item-selected):hover {
+      .icon-arrow {
+        color: $color-white;
       }
     }
   }

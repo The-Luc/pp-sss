@@ -27,10 +27,6 @@ export default {
     selectedVal: {
       type: [String, Number, Object],
       default: ''
-    },
-    isSubmenuIconDisplayed: {
-      type: Boolean,
-      default: false
     }
   },
   methods: {
@@ -89,16 +85,12 @@ export default {
       return item.value === this.selectedVal.value ? this.selectedVal.sub : '';
     },
     /**
-     * Check submenu Icon is visibled
+     * Check submenu is existed
      *
-     * @returns {Boolean} visibled or hidden
+     * @returns {Boolean} is existed
      */
-    isSubmenuIconVisibled(item) {
-      return (
-        this.isSubmenuIconDisplayed &&
-        item.subItems &&
-        item.subItems.length !== 0
-      );
+    isSubmenuExisted(item) {
+      return !isEmpty(item.subItems);
     }
   }
 };

@@ -16,5 +16,24 @@ export default {
       type: String,
       default: ICON_LOCAL.ARROW_SELECT
     }
+  },
+  data() {
+    return {
+      search: ''
+    };
+  },
+  methods: {
+    /**
+     * Create a album and emit to back value to parent
+     */
+    onCreateNewAlbum() {
+      this.$emit('createNewAlbum', this.search);
+    },
+    /**
+     * Select album and emit to back value to parent
+     */
+    onChange(val) {
+      this.$emit('changeSelect', val);
+    }
   }
 };
