@@ -19,6 +19,10 @@ export const albums = [
   {
     id: 8,
     name: 'Cross Country'
+  },
+  {
+    id: 9,
+    name: 'AfterParty'
   }
 ];
 
@@ -42,6 +46,10 @@ export const communities = [
   {
     id: 7,
     name: 'Homecoming'
+  },
+  {
+    id: 10,
+    name: 'Drama Fun'
   }
 ];
 

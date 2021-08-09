@@ -28,8 +28,10 @@ export default {
   data() {
     return {
       selectedType: {
-        value: 'groupPhotos',
-        sub: 'dramaClub'
+        value: PHOTO_DROPDOWNS.COMMUNITIES.value,
+        sub: {
+          value: ID_PHOTO_All
+        }
       },
       albums: [],
       photoDropdowns: []
@@ -37,12 +39,13 @@ export default {
   },
   computed: {
     selectedAlbums() {
-      const albumIds = this.getSelectedImageIds();
+      const albumId = this.getSelectedImageId();
 
-      if (albumIds !== ID_PHOTO_All) {
-        return albums.filter(item => item.id === albumIds);
-      }
-      return this.getAllSelectedAlbums();
+      if (albumId === ID_PHOTO_All) return this.getAllSelectedAlbums();
+
+      return albums.filter(item => {
+        return !isEmpty(item.assets) && item.id === albumId;
+      });
     },
     dropdownOptions() {
       return this.getDropdownOptions();
@@ -50,6 +53,18 @@ export default {
 
     isShowPopupSelected() {
       return this.selectedImages.length !== 0;
+    },
+
+    isEmptyCategory() {
+      return isEmpty(this.selectedAlbums);
+    },
+
+    currentCategory() {
+      return (
+        Object.values(PHOTO_DROPDOWNS).find(
+          item => item.value === this.selectedType.value
+        )?.name || ''
+      );
     }
   },
   methods: {
@@ -78,7 +93,7 @@ export default {
      *
      * @returns {Array} id of selected album
      */
-    getSelectedImageIds() {
+    getSelectedImageId() {
       return this.selectedType.sub.sub || this.selectedType.sub.value;
     },
     /**
@@ -97,9 +112,11 @@ export default {
           }).subItems
         : typeSelected.subItems;
 
-      const arrayIdSelected = arrayAlbumSelected.map(item => item.value);
+      const selectedAlbumIds = arrayAlbumSelected.map(item => item.value);
 
-      return albums.filter(item => arrayIdSelected.includes(item.id));
+      return albums.filter(item => {
+        return !isEmpty(item.assets) && selectedAlbumIds.includes(item.id);
+      });
     },
     /**
      * Get array of dropdown from value api
@@ -137,11 +154,5 @@ export default {
     if (isEmpty(this.photoDropdowns)) {
       this.photoDropdowns = await getPhotoDropdowns();
     }
-    this.selectedType = {
-      value: this.dropdownOptions[0]?.value,
-      sub: {
-        value: this.dropdownOptions[0]?.subItems[0]?.value
-      }
-    };
   }
 };
