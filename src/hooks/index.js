@@ -11,3 +11,4 @@ export * from './user';
 export * from './manager';
 export * from './header';
 export * from './property';
+export * from './photo';

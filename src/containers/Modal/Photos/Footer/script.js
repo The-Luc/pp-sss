@@ -8,6 +8,10 @@ export default {
     isDisabled: {
       type: Boolean,
       default: false
+    },
+    isMediaAdditionalDisplayed: {
+      type: Boolean,
+      default: false
     }
   },
   methods: {

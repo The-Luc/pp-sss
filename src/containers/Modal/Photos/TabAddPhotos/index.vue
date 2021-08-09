@@ -33,9 +33,6 @@
         />
       </div>
     </div>
-    <div class="note">
-      Note: Photos added here will also be added to your Private Stream
-    </div>
   </div>
 </template>
 

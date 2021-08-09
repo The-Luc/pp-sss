@@ -55,7 +55,7 @@
       </v-tabs>
     </div>
     <Footer
-      v-if="isShowFooter"
+      :is-media-additional-displayed="isMediaAdditionalDisplayed"
       :is-disabled="selectedImages.length === 0"
       @select="onSelect"
       @cancel="onCancel"
