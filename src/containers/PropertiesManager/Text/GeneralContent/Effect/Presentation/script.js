@@ -1,9 +1,18 @@
 import PpButtonGroup from '@/components/Buttons/ButtonGroup';
-import { mapGetters } from 'vuex';
-import { GETTERS as APP_GETTERS } from '@/store/modules/app/const';
+import { useElementProperties } from '@/hooks';
 import { EVENT_TYPE } from '@/common/constants/eventType';
 
 export default {
+  components: {
+    PpButtonGroup
+  },
+  setup() {
+    const { getProperty } = useElementProperties();
+
+    return {
+      getProperty
+    };
+  },
   data() {
     return {
       BOLD: 'bold',
@@ -11,24 +20,13 @@ export default {
       UNDERLINE: 'underline'
     };
   },
-  components: {
-    PpButtonGroup
-  },
   computed: {
-    ...mapGetters({
-      selectedStyle: APP_GETTERS.SELECT_PROP_CURRENT_OBJECT,
-      triggerChange: APP_GETTERS.TRIGGER_TEXT_CHANGE
-    }),
     selectedStyles() {
-      if (this.triggerChange) {
-        // just for trigger the change
-      }
+      const isBold = this.getProperty('isBold') || false;
 
-      const isBold = this.selectedStyle('isBold') || false;
+      const isItalic = this.getProperty('isItalic') || false;
 
-      const isItalic = this.selectedStyle('isItalic') || false;
-
-      const isUnderline = this.selectedStyle('isUnderline') || false;
+      const isUnderline = this.getProperty('isUnderline') || false;
 
       const selected = [
         isBold ? this.BOLD : '',

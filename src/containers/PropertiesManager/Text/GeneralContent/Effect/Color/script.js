@@ -1,6 +1,5 @@
-import { mapGetters } from 'vuex';
-import { GETTERS as APP_GETTERS } from '@/store/modules/app/const';
 import ColorPicker from '@/containers/ColorPicker';
+import { useElementProperties } from '@/hooks';
 import { DEFAULT_TEXT } from '@/common/constants';
 import { EVENT_TYPE } from '@/common/constants/eventType';
 
@@ -8,16 +7,16 @@ export default {
   components: {
     ColorPicker
   },
+  setup() {
+    const { getProperty } = useElementProperties();
+
+    return {
+      getProperty
+    };
+  },
   computed: {
-    ...mapGetters({
-      selectedObjectProp: APP_GETTERS.SELECT_PROP_CURRENT_OBJECT,
-      triggerChange: APP_GETTERS.TRIGGER_TEXT_CHANGE
-    }),
     color() {
-      if (this.triggerChange) {
-        // just for trigger the change
-      }
-      return this.selectedObjectProp('color') || DEFAULT_TEXT.COLOR;
+      return this.getProperty('color') || DEFAULT_TEXT.COLOR;
     }
   },
   methods: {

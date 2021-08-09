@@ -11,21 +11,6 @@ export const useObjectProperties = () => {
   };
 };
 
-/**
- * The hook to connect to store to get Text object's properties
- *  @return {Object} { triggerChange, getProperty }
- */
-export const useTextProperties = () => {
-  const { triggerChange } = useGetters({
-    triggerChange: APP_GETTERS.TRIGGER_TEXT_CHANGE
-  });
-
-  return {
-    ...useObjectProperties(),
-    triggerChange
-  };
-};
-
 export const useElementProperties = () => {
   const { getPropOfCurrentObject } = useGetters({
     getPropOfCurrentObject: APP_GETTERS.SELECT_PROP_CURRENT_OBJECT
@@ -42,27 +27,5 @@ export const useElementProperties = () => {
 
   return {
     getProperty
-  };
-};
-
-export const useShapeProperties = () => {
-  const { triggerChange } = useGetters({
-    triggerChange: APP_GETTERS.TRIGGER_SHAPE_CHANGE
-  });
-
-  return {
-    ...useElementProperties(),
-    triggerChange
-  };
-};
-
-export const useClipArtProperties = () => {
-  const { triggerChange } = useGetters({
-    triggerChange: APP_GETTERS.TRIGGER_CLIPART_CHANGE
-  });
-
-  return {
-    ...useElementProperties(),
-    triggerChange
   };
 };

@@ -173,7 +173,6 @@ export default {
       propertiesObjectType: APP_GETTERS.PROPERTIES_OBJECT_TYPE,
       object: DIGITAL_GETTERS.OBJECT_BY_ID,
       currentObjects: DIGITAL_GETTERS.GET_OBJECTS,
-      currentObject: APP_GETTERS.CURRENT_OBJECT,
       totalBackground: DIGITAL_GETTERS.TOTAL_BACKGROUND,
       listObjects: DIGITAL_GETTERS.GET_OBJECTS,
       triggerApplyLayout: DIGITAL_GETTERS.TRIGGER_APPLY_LAYOUT
@@ -193,14 +192,11 @@ export default {
       addNewObject: DIGITAL_MUTATES.ADD_OBJECT,
       setObjectProp: DIGITAL_MUTATES.SET_PROP,
       setObjectPropById: DIGITAL_MUTATES.SET_PROP_BY_ID,
-      updateTriggerTextChange: MUTATES.UPDATE_TRIGGER_TEXT_CHANGE,
       addNewBackground: DIGITAL_MUTATES.SET_BACKGROUNDS,
       updateTriggerBackgroundChange:
         DIGITAL_MUTATES.UPDATE_TRIGGER_BACKGROUND_CHANGE,
       deleteObjects: DIGITAL_MUTATES.DELETE_OBJECTS,
-      updateTriggerShapeChange: MUTATES.UPDATE_TRIGGER_SHAPE_CHANGE,
       setThumbnail: DIGITAL_MUTATES.UPDATE_FRAME_THUMBNAIL,
-      updateTriggerClipArtChange: MUTATES.UPDATE_TRIGGER_CLIPART_CHANGE,
       reorderObjectIds: DIGITAL_MUTATES.REORDER_OBJECT_IDS,
       toggleActiveObjects: MUTATES.TOGGLE_ACTIVE_OBJECTS,
       setPropertiesObjectType: MUTATES.SET_PROPERTIES_OBJECT_TYPE,
@@ -547,7 +543,6 @@ export default {
         }
       };
       this.setObjectProp({ prop });
-      this.updateTriggerTextChange();
 
       this.setInfoBar({ w: prop.size.width, h: prop.size.height });
       this.setCurrentObject(this.listObjects?.[target?.id]);
@@ -562,7 +557,7 @@ export default {
       const { target } = e;
 
       target?.getObjects()?.forEach(item => {
-        const { id, left, top, objectType } = item;
+        const { id, left, top } = item;
         const currentXInch = pxToIn(left + target.left + target.width / 2);
         const currentYInch = pxToIn(top + target.top + target.height / 2);
 
@@ -574,14 +569,6 @@ export default {
         };
 
         this.setObjectPropById({ id, prop });
-
-        if (objectType === OBJECT_TYPE.SHAPE) {
-          this.updateTriggerShapeChange();
-        } else if (objectType === OBJECT_TYPE.CLIP_ART) {
-          this.updateTriggerClipArtChange();
-        } else if (objectType === OBJECT_TYPE.TEXT) {
-          this.updateTriggerTextChange();
-        }
       });
     },
 
@@ -680,7 +667,6 @@ export default {
 
       this.setObjectProp({ prop });
       this.setObjectPropById({ id: group.id, prop });
-      this.updateTriggerTextChange();
 
       this.setInfoBar({ w: prop.size.width, h: prop.size.height });
     },
@@ -747,9 +733,6 @@ export default {
      */
     openProperties(objectType, id) {
       this.setIsOpenProperties({ isOpen: true, objectId: id });
-      if (objectType === OBJECT_TYPE.TEXT) {
-        this.updateTriggerTextChange();
-      }
     },
 
     /**
@@ -778,18 +761,13 @@ export default {
      * @param {Object}  style  new style
      */
     changeTextProperties(prop) {
-      if (isEmpty(prop)) {
-        this.updateTriggerTextChange();
+      if (isEmpty(prop)) return;
 
-        return;
-      }
       const activeObj = this.digitalCanvas?.getActiveObject();
 
       if (isEmpty(activeObj)) return;
 
       this.setObjectProp({ prop });
-
-      this.updateTriggerTextChange();
 
       if (!isEmpty(prop.size)) {
         this.setInfoBar({
@@ -1100,11 +1078,7 @@ export default {
      * @param {Object}  prop  new prop
      */
     changeShapeProperties(prop) {
-      this.changeElementProperties(
-        prop,
-        OBJECT_TYPE.SHAPE,
-        this.updateTriggerShapeChange
-      );
+      this.changeElementProperties(prop, OBJECT_TYPE.SHAPE);
     },
     /**
      * Event fire when user change any property of selected clipart
@@ -1112,33 +1086,22 @@ export default {
      * @param {Object}  prop  new prop
      */
     changeClipArtProperties(prop) {
-      this.changeElementProperties(
-        prop,
-        OBJECT_TYPE.CLIP_ART,
-        this.updateTriggerClipArtChange
-      );
+      this.changeElementProperties(prop, OBJECT_TYPE.CLIP_ART);
     },
     /**
      * Change properties of current element
      *
      * @param {Object}  prop            new prop
      * @param {String}  objectType      object type want to check
-     * @param {Object}  updateTriggerFn mutate update trigger function
      */
-    changeElementProperties(prop, objectType, updateTriggerFn = null) {
-      if (isEmpty(prop)) {
-        if (updateTriggerFn !== null) updateTriggerFn();
-
-        return;
-      }
+    changeElementProperties(prop, objectType) {
+      if (isEmpty(prop)) return;
 
       const element = this.digitalCanvas.getActiveObject();
 
       if (isEmpty(element) || element.objectType !== objectType) return;
 
       this.setObjectProp({ prop });
-
-      if (updateTriggerFn !== null) updateTriggerFn();
 
       if (!isEmpty(prop.size)) {
         this.setInfoBar({ w: prop.size.width, h: prop.size.height });

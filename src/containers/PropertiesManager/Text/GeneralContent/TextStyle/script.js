@@ -1,13 +1,11 @@
-import { mapGetters } from 'vuex';
-
 import PpSelect from '@/components/Selectors/Select';
 import SavedTextStylePopover from './SavedTextStylePopover';
 
 import { isEmpty, toCssStyle } from '@/common/utils';
 
-import { GETTERS as APP_GETTERS } from '@/store/modules/app/const';
 import { EVENT_TYPE } from '@/common/constants/eventType';
 import { useTextStyle } from '@/hooks/style';
+import { useElementProperties, useMenuProperties } from '@/hooks';
 
 import textStyles from '@/mock/style';
 
@@ -37,16 +35,19 @@ export default {
   },
   setup() {
     const { savedTextStyles, getSavedTextStyles } = useTextStyle();
-    return { savedTextStyles, getSavedTextStyles };
+    const { getProperty } = useElementProperties();
+    const { isOpenMenuProperties } = useMenuProperties();
+
+    return {
+      savedTextStyles,
+      getSavedTextStyles,
+      getProperty,
+      isOpenMenuProperties
+    };
   },
   computed: {
-    ...mapGetters({
-      selectedStyleId: APP_GETTERS.SELECT_PROP_CURRENT_OBJECT,
-      triggerChange: APP_GETTERS.TRIGGER_TEXT_CHANGE,
-      isOpenMenuProperties: APP_GETTERS.IS_OPEN_MENU_PROPERTIES
-    }),
     selectedItem() {
-      const selectedId = this.selectedStyleId('styleId') || 'default';
+      const selectedId = this.getProperty('styleId') || 'default';
       return this.selectBoxItems.find(item => item.id === selectedId);
     }
   },

@@ -97,9 +97,6 @@ export const mutations = {
   },
 
   [DIGITAL._MUTATES.DELETE_OBJECTS]: deleteObjects,
-  [DIGITAL._MUTATES.UPDATE_TRIGGER_TEXT_CHANGE](state) {
-    state.triggerChange.text = !state.triggerChange.text;
-  },
   [DIGITAL._MUTATES.UPDATE_TRIGGER_BACKGROUND_CHANGE](state) {
     state.triggerChange.background = !state.triggerChange.background;
   },
