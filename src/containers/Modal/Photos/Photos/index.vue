@@ -22,7 +22,7 @@
         />
       </template>
 
-      <template v-if="isEmptyCategory">
+      <template v-else>
         <AlbumItem :empty-category="currentCategory" />
       </template>
     </div>

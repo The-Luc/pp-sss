@@ -7,9 +7,7 @@
       </div>
       <div class="album-date">{{ displayDate }}</div>
     </div>
-    <div v-if="emptyCategory" class="empty-category">
-      There are no {{ emptyCategory }}
-    </div>
+    <div v-else class="empty-category">There are no {{ emptyCategory }}</div>
     <div class="image-container">
       <div
         v-for="asset in assets"

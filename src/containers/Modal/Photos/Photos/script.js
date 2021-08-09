@@ -39,14 +39,13 @@ export default {
   },
   computed: {
     selectedAlbums() {
-      const albumIds = this.getSelectedImageIds();
+      const albumId = this.getSelectedImageId();
 
-      if (albumIds !== ID_PHOTO_All) {
-        return albums.filter(item => {
-          return !isEmpty(item.assets) && item.id === albumIds;
-        });
-      }
-      return this.getAllSelectedAlbums();
+      if (albumId === ID_PHOTO_All) return this.getAllSelectedAlbums();
+
+      return albums.filter(item => {
+        return !isEmpty(item.assets) && item.id === albumId;
+      });
     },
     dropdownOptions() {
       return this.getDropdownOptions();
@@ -61,9 +60,11 @@ export default {
     },
 
     currentCategory() {
-      return Object.values(PHOTO_DROPDOWNS).find(
-        item => item.value === this.selectedType.value
-      ).name;
+      return (
+        Object.values(PHOTO_DROPDOWNS).find(
+          item => item.value === this.selectedType.value
+        )?.name || ''
+      );
     }
   },
   methods: {
@@ -92,7 +93,7 @@ export default {
      *
      * @returns {Array} id of selected album
      */
-    getSelectedImageIds() {
+    getSelectedImageId() {
       return this.selectedType.sub.sub || this.selectedType.sub.value;
     },
     /**
@@ -111,10 +112,10 @@ export default {
           }).subItems
         : typeSelected.subItems;
 
-      const arrayIdSelected = arrayAlbumSelected.map(item => item.value);
+      const selectedAlbumIds = arrayAlbumSelected.map(item => item.value);
 
       return albums.filter(item => {
-        return !isEmpty(item.assets) && arrayIdSelected.includes(item.id);
+        return !isEmpty(item.assets) && selectedAlbumIds.includes(item.id);
       });
     },
     /**
