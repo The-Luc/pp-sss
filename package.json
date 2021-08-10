@@ -8,7 +8,7 @@
     "build-qa": "vue-cli-service build --mode qa",
     "build-testing": "vue-cli-service build --mode testing",
     "test:unit": "vue-cli-service test:unit",
-    "lint": "vue-cli-service lint",
+    "lint": "vue-cli-service lint --max-warnings 0",
     "test": "jest"
   },
   "dependencies": {
