@@ -12,6 +12,7 @@ import {
   ROLE,
   SAVE_STATUS,
   SAVING_DURATION,
+  THUMBNAIL_IMAGE_CONFIG,
   TOOL_NAME
 } from '@/common/constants';
 import ToolBar from './ToolBar';
@@ -46,6 +47,7 @@ import printService from '@/api/print';
 import { useSaveData } from './PageEdition/composables';
 import { getActivateImages, setImageSrc } from '@/common/fabricObjects';
 import { useSavingStatus } from '../../composables';
+import { debounce } from 'lodash';
 
 export default {
   components: {
@@ -181,7 +183,8 @@ export default {
       resetPrintConfigs: MUTATES.RESET_PRINT_CONFIG,
       savePrintCanvas: BOOK_MUTATES.SAVE_PRINT_CANVAS,
       setPropertiesObjectType: MUTATES.SET_PROPERTIES_OBJECT_TYPE,
-      setInfo: MUTATES.SET_GENERAL_INFO
+      setInfo: MUTATES.SET_GENERAL_INFO,
+      setThumbnail: PRINT_MUTATES.UPDATE_SHEET_THUMBNAIL
     }),
     /**
      * Trigger mutation to open theme modal
@@ -233,6 +236,22 @@ export default {
     },
 
     /**
+     * call this function to update the active thumbnail
+     */
+    getThumbnailUrl: debounce(function() {
+      const thumbnailUrl = window.printCanvas.toDataURL({
+        quality: THUMBNAIL_IMAGE_CONFIG.QUALITY,
+        format: THUMBNAIL_IMAGE_CONFIG.FORMAT,
+        multiplier: THUMBNAIL_IMAGE_CONFIG.MULTIPLIER
+      });
+
+      this.setThumbnail({
+        sheetId: this.pageSelected?.id,
+        thumbnailUrl
+      });
+    }, 250),
+
+    /**
      * Handle autoflow
      */
     handleAutoflow() {
@@ -244,6 +263,7 @@ export default {
           setImageSrc(objects[index], image.imageUrl, prop => {
             prop.imageId = image.id;
             this.setPropertyById({ id: objects[index].id, prop });
+            this.getThumbnailUrl();
           });
         });
         return;
@@ -252,6 +272,7 @@ export default {
         setImageSrc(object, images[index].imageUrl, prop => {
           prop.imageId = images[index].id;
           this.setPropertyById({ id: object.id, prop });
+          this.getThumbnailUrl();
         });
       });
     },

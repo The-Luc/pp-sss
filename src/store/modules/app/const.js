@@ -22,10 +22,7 @@ class GetterClass extends BaseObject {
   ZOOM = 'getZoom';
   CURRENT_OBJECT = 'currentObject';
   SELECT_PROP_CURRENT_OBJECT = 'getSpecificPropertyOfCurrentObject';
-  TRIGGER_TEXT_CHANGE = 'triggerTextChange';
   USER = 'getCurrentUser';
-  TRIGGER_SHAPE_CHANGE = 'triggerShapeChange';
-  TRIGGER_CLIPART_CHANGE = 'triggerClipArtChange';
   GENERAL_INFO = 'getGeneralInfo';
   SAVED_TEXT_STYLES = 'savedTextStyles';
   SAVED_IMAGE_STYLES = 'savedImageStyles';
@@ -75,10 +72,7 @@ class MutationClass extends BaseObject {
   SET_PROPERTIES_OBJECT_TYPE = 'setPropertiesObjectType';
   SET_INFO_BAR = 'setInfoBarData';
   SET_CURRENT_OBJECT = 'setCurrentObject';
-  UPDATE_TRIGGER_TEXT_CHANGE = 'triggerTextChange';
   SET_USER = 'setCurrentUser';
-  UPDATE_TRIGGER_SHAPE_CHANGE = 'triggerShapeChange';
-  UPDATE_TRIGGER_CLIPART_CHANGE = 'triggerClipArtChange';
   SET_GENERAL_INFO = 'setGeneralInfo';
   SET_SAVED_TEXT_STYLES = 'setSavedTextStyle';
   SET_SAVED_IMAGE_STYLES = 'setSavedImageStyle';

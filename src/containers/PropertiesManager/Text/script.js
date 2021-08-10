@@ -1,12 +1,10 @@
-import { mapGetters } from 'vuex';
-
 import Properties from '@/components/Properties/BoxProperties';
 import TabPropertiesMenu from '@/containers/TabPropertiesMenu';
 import GeneralContent from './GeneralContent';
 import StyleContent from '@/components/General';
 import ArrangeContent from '@/components/Arrange';
 
-import { GETTERS as APP_GETTERS } from '@/store/modules/app/const';
+import { useElementProperties } from '@/hooks';
 import { DEFAULT_TEXT } from '@/common/constants';
 import { computedObjectSize, activeCanvas, pxToIn } from '@/common/utils';
 import { EVENT_TYPE } from '@/common/constants/eventType';
@@ -19,34 +17,25 @@ export default {
     ArrangeContent,
     TabPropertiesMenu
   },
+  setup() {
+    const { getProperty } = useElementProperties();
+
+    return {
+      getProperty
+    };
+  },
   computed: {
-    ...mapGetters({
-      currentObject: APP_GETTERS.CURRENT_OBJECT,
-      selectObjectProp: APP_GETTERS.SELECT_PROP_CURRENT_OBJECT,
-      triggerChange: APP_GETTERS.TRIGGER_TEXT_CHANGE
-    }),
     rotateValue() {
-      if (this.triggerChange) {
-        // just for trigger the change
-      }
-      const coord = this.selectObjectProp('coord');
+      const coord = this.getProperty('coord');
       return coord?.rotation || 0;
     },
     disabled() {
-      if (this.triggerChange) {
-        // just for trigger the change
-      }
-
       const activeObj = activeCanvas?.getActiveObject();
 
       return !!activeObj?.isEditing;
     },
     position() {
-      if (this.triggerChange) {
-        // just for trigger the change
-      }
-
-      const coord = this.selectObjectProp('coord');
+      const coord = this.getProperty('coord');
 
       return {
         x: coord?.x || 0,
@@ -60,46 +49,36 @@ export default {
       return DEFAULT_TEXT.MAX_POSITION;
     },
     sizeWidth() {
-      if (this.triggerChange) {
-        // just for trigger the change
-      }
-      const size = this.selectObjectProp('size');
+      const size = this.getProperty('size');
 
       return size?.width || 0;
     },
     sizeHeight() {
-      if (this.triggerChange) {
-        // just for trigger the change
-      }
-      const size = this.selectObjectProp('size');
+      const size = this.getProperty('size');
 
       return size?.height || 0;
     },
     isConstrain() {
-      if (this.triggerChange) {
-        // just for trigger the change
-      }
-
-      return this.selectObjectProp('isConstrain');
+      return this.getProperty('isConstrain');
     },
     maxSize() {
       return DEFAULT_TEXT.MAX_SIZE;
     },
     minWidth() {
-      return this.selectObjectProp('minWidth') || DEFAULT_TEXT.MIN_SIZE;
+      return this.getProperty('minWidth') || DEFAULT_TEXT.MIN_SIZE;
     },
     minHeight() {
-      return this.selectObjectProp('minHeight') || DEFAULT_TEXT.MIN_SIZE;
+      return this.getProperty('minHeight') || DEFAULT_TEXT.MIN_SIZE;
     },
     opacityValue() {
-      const res = this.selectObjectProp('opacity');
+      const res = this.getProperty('opacity');
       return !res ? 0 : res;
     },
     currentShadow() {
-      return this.selectObjectProp('shadow');
+      return this.getProperty('shadow');
     },
     currentBorder() {
-      return this.selectObjectProp('border');
+      return this.getProperty('border');
     }
   },
   methods: {
@@ -108,7 +87,7 @@ export default {
      * @param {String} actionName action name
      */
     changeFlip(actionName) {
-      const flip = this.selectObjectProp('flip');
+      const flip = this.getProperty('flip');
       this.$root.$emit(EVENT_TYPE.CHANGE_TEXT_PROPERTIES, {
         flip: {
           [actionName]: !flip[actionName]

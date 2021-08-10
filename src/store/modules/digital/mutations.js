@@ -97,9 +97,6 @@ export const mutations = {
   },
 
   [DIGITAL._MUTATES.DELETE_OBJECTS]: deleteObjects,
-  [DIGITAL._MUTATES.UPDATE_TRIGGER_TEXT_CHANGE](state) {
-    state.triggerChange.text = !state.triggerChange.text;
-  },
   [DIGITAL._MUTATES.UPDATE_TRIGGER_BACKGROUND_CHANGE](state) {
     state.triggerChange.background = !state.triggerChange.background;
   },
@@ -196,9 +193,11 @@ export const mutations = {
     if (!frames?.length) return;
 
     frames.forEach(frame => {
-      const id = uniqueId();
-      state.frameIds.push(id);
-      state.frames[id] = frame;
+      let id = uniqueId();
+      while (state.frameIds.includes(id)) id = uniqueId();
+
+      state.frameIds = [...state.frameIds, id];
+      state.frames = { ...state.frames, [id]: frame };
     });
   },
   [DIGITAL._MUTATES.REPLACE_SUPPLEMENTAL_FRAME](state, { frame, frameId }) {

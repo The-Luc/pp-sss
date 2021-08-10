@@ -10,13 +10,17 @@ export default {
     },
     assets: {
       type: Array,
-      required: true
+      default: () => []
     },
     selectedImages: {
       type: Array,
       default: () => []
     },
     searchInput: {
+      type: String,
+      default: ''
+    },
+    emptyCategory: {
       type: String,
       default: ''
     }

@@ -39,12 +39,6 @@ export const state = {
   isPrompt: false,
   hasActiveObjects: false,
   currentObject: null,
-  triggerChange: {
-    text: true,
-    background: true,
-    shape: true,
-    clipArt: true
-  },
   generalInfo: {
     bookId: '',
     title: '',

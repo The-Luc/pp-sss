@@ -1,12 +1,17 @@
-import { mapGetters } from 'vuex';
-
-import { BORDER_STYLE, BORDER_STYLES } from '@/common/constants';
 import Select from '@/components/Selectors/Select';
-import { GETTERS as APP_GETTERS } from '@/store/modules/app/const';
+import { useElementProperties } from '@/hooks';
+import { BORDER_STYLE, BORDER_STYLES } from '@/common/constants';
 
 export default {
   components: {
     Select
+  },
+  setup() {
+    const { getProperty } = useElementProperties();
+
+    return {
+      getProperty
+    };
   },
   data() {
     return {
@@ -14,15 +19,8 @@ export default {
     };
   },
   computed: {
-    ...mapGetters({
-      onSelectedBorderStyle: APP_GETTERS.SELECT_PROP_CURRENT_OBJECT,
-      triggerChange: APP_GETTERS.TRIGGER_TEXT_CHANGE
-    }),
     selectedBorderStyle() {
-      if (this.triggerChange) {
-        // just for trigger the change
-      }
-      const selectedBorderStyle = this.onSelectedBorderStyle('border');
+      const selectedBorderStyle = this.getProperty('border');
       const borderStyleValue =
         selectedBorderStyle?.strokeLineType || BORDER_STYLES.SOLID;
       const selected = this.options.find(

@@ -117,6 +117,20 @@ const albumBase8 = new AlbumEntity({
   assets: randomAssets()
 });
 
+const albumBase9 = new AlbumEntity({
+  id: 9,
+  name: 'AfterParty',
+  displayDate: 'June 7th, 2021',
+  assets: []
+});
+
+const albumBase10 = new AlbumEntity({
+  id: 10,
+  name: 'Drama Fun',
+  displayDate: 'June 8th, 2021',
+  assets: []
+});
+
 export const albums = [
   albumBase1,
   albumBase2,
@@ -125,7 +139,9 @@ export const albums = [
   albumBase5,
   albumBase6,
   albumBase7,
-  albumBase8
+  albumBase8,
+  albumBase9,
+  albumBase10
 ];
 
 export const photoList = photos;

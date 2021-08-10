@@ -3,16 +3,15 @@ import TabPropertiesMenu from '@/containers/TabPropertiesMenu';
 import ArrangeContent from '@/components/Arrange';
 import GeneralContent from '@/components/General';
 import { DEFAULT_CLIP_ART, DEFAULT_PROP } from '@/common/constants';
-import { useClipArtProperties } from '@/hooks';
+import { useElementProperties } from '@/hooks';
 import { computedObjectSize } from '@/common/utils';
 import { EVENT_TYPE } from '@/common/constants/eventType';
 
 export default {
   setup() {
-    const { triggerChange, getProperty } = useClipArtProperties();
+    const { getProperty } = useElementProperties();
 
     return {
-      triggerChange,
       getProperty
     };
   },
@@ -24,44 +23,24 @@ export default {
   },
   computed: {
     rotateValue() {
-      if (this.triggerChange) {
-        // just for trigger the change
-      }
-
       const coord = this.getProperty('coord');
 
       return coord?.rotation || 0;
     },
     sizeWidth() {
-      if (this.triggerChange) {
-        // just for trigger the change
-      }
-
       const size = this.getProperty('size');
 
       return size?.width || 0;
     },
     sizeHeight() {
-      if (this.triggerChange) {
-        // just for trigger the change
-      }
-
       const size = this.getProperty('size');
 
       return size?.height || 0;
     },
     isConstrain() {
-      if (this.triggerChange) {
-        // just for trigger the change
-      }
-
       return this.getProperty('isConstrain');
     },
     position() {
-      if (this.triggerChange) {
-        // just for trigger the change
-      }
-
       const coord = this.getProperty('coord');
 
       return {
@@ -70,9 +49,6 @@ export default {
       };
     },
     size() {
-      if (this.triggerChange) {
-        // just for trigger the change
-      }
       const size = this.getProperty('size');
       return {
         width: size?.width || 0,

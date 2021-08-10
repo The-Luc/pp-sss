@@ -1,6 +1,6 @@
-import { mapGetters } from 'vuex';
-
 import PpCombobox from '@/components/Selectors/Combobox';
+
+import { useElementProperties } from '@/hooks';
 import { ICON_LOCAL } from '@/common/constants';
 import {
   activeCanvas,
@@ -10,7 +10,6 @@ import {
   validateInputOption
 } from '@/common/utils';
 
-import { GETTERS as APP_GETTERS } from '@/store/modules/app/const';
 import { EVENT_TYPE } from '@/common/constants/eventType';
 
 export default {
@@ -23,6 +22,13 @@ export default {
       required: true
     }
   },
+  setup() {
+    const { getProperty } = useElementProperties();
+
+    return {
+      getProperty
+    };
+  },
   data() {
     return {
       prependedIcon: ICON_LOCAL.PREPENDED_LETTER,
@@ -30,12 +36,8 @@ export default {
     };
   },
   computed: {
-    ...mapGetters({
-      selectedSpacing: APP_GETTERS.SELECT_PROP_CURRENT_OBJECT,
-      triggerChange: APP_GETTERS.TRIGGER_TEXT_CHANGE
-    }),
     selectedLetterSpacing() {
-      const selectedSpacing = this.selectedSpacing('letterSpacing') || 0;
+      const selectedSpacing = this.getProperty('letterSpacing') || 0;
       const selected = this.items.find(item => item.value === selectedSpacing);
       return getSelectedOption(selected || selectedSpacing, '');
     }

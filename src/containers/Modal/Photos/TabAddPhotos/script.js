@@ -18,9 +18,11 @@ export default {
         e.target.files || e.dataTransfer.files || this.$refs.uploadPhoto.files;
       const files = Object.values(inputValue);
 
-      this.isShowNotify = files.some(
-        item => !this.imageTypes.includes(item.type)
-      );
+      this.isShowNotify = files.some(item => {
+        const splitName = item.name.split('.');
+        const type = '.' + splitName[splitName.length - 1];
+        return !this.imageTypes.includes(type);
+      });
 
       if (this.isShowNotify) return;
 

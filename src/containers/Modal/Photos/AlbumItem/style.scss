@@ -70,4 +70,14 @@
       }
     }
   }
+
+  .empty-category {
+    text-align: center;
+    border-bottom: 0.5px solid $color-gray27;
+    margin-bottom: 10px;
+    margin-right: 23px;
+    font-size: 14px;
+    font-family: $font-300;
+    color: $color-stoodio-toolbartext;
+  }
 }
