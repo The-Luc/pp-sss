@@ -1,8 +1,8 @@
 pipeline {
     agent {label 'PARALLELPUBLISHING'}
-	
+
     when { branch 'develop' }
-    
+
     parameters{
         string(name: 'branch', defaultValue: 'develop', description: '')
         booleanParam(defaultValue: false, description: 'Node Install', name: 'NodeInstall')
