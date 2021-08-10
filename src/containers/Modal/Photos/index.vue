@@ -16,6 +16,7 @@
         </v-tab>
         <v-tab-item value="smart-box">
           <Smartbox
+            :key="currentTab"
             :selected-images="selectedImages"
             @change="onSelectedImage"
           />

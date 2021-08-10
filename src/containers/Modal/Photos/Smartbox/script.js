@@ -4,7 +4,7 @@ import AlbumItem from '../AlbumItem';
 import PopupSelected from '../PopupSelected';
 
 import { usePhotos } from '@/views/CreateBook/composables';
-import { useGetterPrintSheet, useSheet } from '@/hooks';
+import { useGetterPrintSheet, useSheet, useBookName } from '@/hooks';
 import { getPhotos } from '@/api/photo';
 
 export default {
@@ -24,12 +24,14 @@ export default {
     const { currentSection } = useGetterPrintSheet();
     const { currentSheet } = useSheet();
     const { isPhotoVisited, setPhotoVisited } = usePhotos();
+    const { generalInfo } = useBookName();
 
     return {
       isPhotoVisited,
       setPhotoVisited,
       currentSection,
-      currentSheet
+      currentSheet,
+      generalInfo
     };
   },
   data() {
@@ -88,7 +90,15 @@ export default {
      */
     getListKeywords() {
       const { leftTitle, rightTitle } = this.currentSheet.spreadInfo;
-      this.keywords = [leftTitle, rightTitle, this.currentSection.name]
+      const projectTitle =
+        this.currentSection.name === 'Cover' ? this.generalInfo.title : '';
+
+      this.keywords = [
+        leftTitle,
+        rightTitle,
+        this.currentSection.name,
+        projectTitle
+      ]
         .join(' ')
         .split(' ')
         .filter(Boolean)
