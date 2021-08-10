@@ -1,6 +1,6 @@
 <template>
   <div class="sheet-media-container">
-    <Draggable @choose="onChoose" @unchoose="onUnchoose">
+    <Draggable :sort="false" @choose="onChoose" @unchoose="onUnchoose">
       <div v-for="(item, i) in media" :key="i" class="media-item">
         <v-icon class="media-icon" @click="onShowRemoveModal(item)">
           delete_forever

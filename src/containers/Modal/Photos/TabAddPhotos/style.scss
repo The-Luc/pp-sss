@@ -24,8 +24,9 @@
       border: 1px dashed $color-stoodio-toolbartext;
       line-height: 125px;
       text-align: center;
-      font-family: $font-500;
-      font-size: 11.5px;
+      font-family: $font-300;
+      font-size: 13px;
+      color: $color-gray5;
       &.is-dragover {
         border: 2px solid $color-stoodio-blue;
       }
@@ -48,10 +49,5 @@
         display: none;
       }
     }
-  }
-  .note {
-    font-family: $font-300;
-    font-size: 13px;
-    text-align: center;
   }
 }

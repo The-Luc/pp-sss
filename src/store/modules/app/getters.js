@@ -32,12 +32,7 @@ export const getters = {
 
     return isEmpty(propValue) ? null : propValue;
   },
-  [APP._GETTERS.TRIGGER_TEXT_CHANGE]: ({ triggerChange }) => triggerChange.text,
   [APP._GETTERS.USER]: ({ user }) => user,
-  [APP._GETTERS.TRIGGER_CLIPART_CHANGE]: ({ triggerChange }) =>
-    triggerChange.clipArt,
-  [APP._GETTERS.TRIGGER_SHAPE_CHANGE]: ({ triggerChange }) =>
-    triggerChange.shape,
   [APP._GETTERS.SAVING_STATUS]: ({ savingStatus }) => savingStatus,
   [APP._GETTERS.GENERAL_INFO]: ({ generalInfo }) => generalInfo,
   [APP._GETTERS.SAVED_TEXT_STYLES]: ({ savedTextStyles }) => savedTextStyles,

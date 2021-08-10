@@ -14,6 +14,7 @@ import TEXT_CAPITALIZE from '@/assets/icons/text-capitalize.svg';
 import ACTIVE_MENU from '@/assets/icons/active-menu.svg';
 import EYE_DROPPER from '@/assets/icons/eye-dropper.svg';
 import ARROW_RIGHT from '@/assets/icons/collapse.svg';
+import SUCCESS from '@/assets/icons/success.svg';
 
 export const ICON_LOCAL = {
   ARROW_LEFT,
@@ -31,5 +32,6 @@ export const ICON_LOCAL = {
   TEXT_CAPITALIZE,
   ACTIVE_MENU,
   EYE_DROPPER,
-  ARROW_RIGHT
+  ARROW_RIGHT,
+  SUCCESS
 };

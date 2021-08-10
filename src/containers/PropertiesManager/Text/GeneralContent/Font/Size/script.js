@@ -1,6 +1,6 @@
-import { mapGetters } from 'vuex';
-
 import PpCombobox from '@/components/Selectors/Combobox';
+
+import { useElementProperties } from '@/hooks';
 import { ICON_LOCAL } from '@/common/constants';
 import {
   activeCanvas,
@@ -11,7 +11,6 @@ import {
   validateInputOption
 } from '@/common/utils';
 
-import { GETTERS as APP_GETTERS } from '@/store/modules/app/const';
 import { EVENT_TYPE } from '@/common/constants/eventType';
 import { getTextSizeWithPadding } from '@/common/fabricObjects';
 
@@ -25,6 +24,13 @@ export default {
       required: true
     }
   },
+  setup() {
+    const { getProperty } = useElementProperties();
+
+    return {
+      getProperty
+    };
+  },
   data() {
     return {
       appendedIcon: ICON_LOCAL.APPENDED_ICON,
@@ -32,16 +38,8 @@ export default {
     };
   },
   computed: {
-    ...mapGetters({
-      selectedFontSize: APP_GETTERS.SELECT_PROP_CURRENT_OBJECT,
-      triggerChange: APP_GETTERS.TRIGGER_TEXT_CHANGE
-    }),
     selectedSize() {
-      if (this.triggerChange) {
-        // just for trigger the change
-      }
-
-      const selectedSize = this.selectedFontSize('fontSize') || 60;
+      const selectedSize = this.getProperty('fontSize') || 60;
 
       const selected = this.items.find(item => item.value === selectedSize);
 

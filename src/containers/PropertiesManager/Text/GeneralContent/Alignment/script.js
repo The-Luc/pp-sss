@@ -1,6 +1,5 @@
-import { mapGetters } from 'vuex';
 import PpButtonGroup from '@/components/Buttons/ButtonGroup';
-import { GETTERS as APP_GETTERS } from '@/store/modules/app/const';
+import { useElementProperties } from '@/hooks';
 import { TEXT_HORIZONTAL_ALIGN } from '@/common/constants';
 
 import { isEmpty } from '@/common/utils';
@@ -9,6 +8,13 @@ import { EVENT_TYPE } from '@/common/constants/eventType';
 export default {
   components: {
     PpButtonGroup
+  },
+  setup() {
+    const { getProperty } = useElementProperties();
+
+    return {
+      getProperty
+    };
   },
   data() {
     return {
@@ -19,16 +25,8 @@ export default {
     };
   },
   computed: {
-    ...mapGetters({
-      selectedAlign: APP_GETTERS.SELECT_PROP_CURRENT_OBJECT,
-      triggerChange: APP_GETTERS.TRIGGER_TEXT_CHANGE
-    }),
     selectedAlignment() {
-      if (this.triggerChange) {
-        // just for trigger the change
-      }
-
-      return this.selectedAlign('alignment')?.horizontal || this.LEFT;
+      return this.getProperty('alignment')?.horizontal || this.LEFT;
     }
   },
   methods: {

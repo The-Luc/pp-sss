@@ -51,7 +51,9 @@ import {
   updateBringToFrontPageNumber,
   applyBorderToImageObject,
   setImageSrc,
-  centercrop
+  centercrop,
+  handleDragEnter,
+  handleDragLeave
 } from '@/common/fabricObjects';
 
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
@@ -255,13 +257,10 @@ export default {
       setSelectedObjectId: PRINT_MUTATES.SET_CURRENT_OBJECT_ID,
       setCurrentObject: MUTATES.SET_CURRENT_OBJECT,
       addNewObject: PRINT_MUTATES.ADD_OBJECT,
-      updateTriggerTextChange: MUTATES.UPDATE_TRIGGER_TEXT_CHANGE,
       addNewBackground: PRINT_MUTATES.SET_BACKGROUNDS,
       updateTriggerBackgroundChange:
         PRINT_MUTATES.UPDATE_TRIGGER_BACKGROUND_CHANGE,
       deleteObjects: PRINT_MUTATES.DELETE_OBJECTS,
-      updateTriggerShapeChange: MUTATES.UPDATE_TRIGGER_SHAPE_CHANGE,
-      updateTriggerClipArtChange: MUTATES.UPDATE_TRIGGER_CLIPART_CHANGE,
       reorderObjectIds: PRINT_MUTATES.REORDER_OBJECT_IDS,
       toggleActiveObjects: MUTATES.TOGGLE_ACTIVE_OBJECTS,
       setPropertiesObjectType: MUTATES.SET_PROPERTIES_OBJECT_TYPE,
@@ -641,7 +640,6 @@ export default {
             }
           };
           this.setObjectProp({ prop });
-          this.updateTriggerTextChange();
 
           this.setInfoBar({ w: prop.size.width, h: prop.size.height });
           this.setCurrentObject(this.currentObjects?.[target?.id]);
@@ -690,7 +688,6 @@ export default {
 
           this.setObjectProp({ prop });
           this.setObjectPropById({ id: group.id, prop });
-          this.updateTriggerTextChange();
 
           this.setInfoBar({ w: prop.size.width, h: prop.size.height });
         },
@@ -738,10 +735,6 @@ export default {
      */
     openProperties(objectType, id) {
       this.setIsOpenProperties({ isOpen: true, objectId: id });
-
-      if (objectType === OBJECT_TYPE.TEXT) {
-        this.updateTriggerTextChange();
-      }
     },
     /**
      * Reset configs text properties when close object
@@ -849,11 +842,7 @@ export default {
      * @param {Object}  style  new style
      */
     changeTextProperties(prop) {
-      this.changeElementProperties(
-        prop,
-        OBJECT_TYPE.TEXT,
-        this.updateTriggerTextChange
-      );
+      this.changeElementProperties(prop, OBJECT_TYPE.TEXT);
     },
 
     /**
@@ -888,7 +877,10 @@ export default {
         scaling: this.handleScaling,
         scaled: this.handleScaled,
         rotated: this.handleRotated,
-        moved: this.handleMoved
+        moved: this.handleMoved,
+        dragenter: handleDragEnter,
+        dragleave: handleDragLeave,
+        drop: handleDragLeave
       };
 
       const image = await createImage(newImage.newObject);
@@ -1255,11 +1247,7 @@ export default {
      * @param {Object}  prop  new prop
      */
     changeShapeProperties(prop) {
-      this.changeElementProperties(
-        prop,
-        OBJECT_TYPE.SHAPE,
-        this.updateTriggerShapeChange
-      );
+      this.changeElementProperties(prop, OBJECT_TYPE.SHAPE);
     },
     /**
      * Event fire when user change any property of selected clipart
@@ -1267,11 +1255,7 @@ export default {
      * @param {Object}  prop  new prop
      */
     changeClipArtProperties(prop) {
-      this.changeElementProperties(
-        prop,
-        OBJECT_TYPE.CLIP_ART,
-        this.updateTriggerClipArtChange
-      );
+      this.changeElementProperties(prop, OBJECT_TYPE.CLIP_ART);
     },
     /**
      * Event fire when user change any property of selected image box
@@ -1294,14 +1278,9 @@ export default {
      *
      * @param {Object}  prop            new prop
      * @param {String}  objectType      object type want to check
-     * @param {Object}  updateTriggerFn mutate update trigger function
      */
-    changeElementProperties(prop, objectType, updateTriggerFn = null) {
-      if (isEmpty(prop)) {
-        if (updateTriggerFn !== null) updateTriggerFn();
-
-        return;
-      }
+    changeElementProperties(prop, objectType) {
+      if (isEmpty(prop)) return;
 
       const element = window.printCanvas.getActiveObject();
 
@@ -1322,9 +1301,9 @@ export default {
         !isEmpty(newProp['color']) ||
         !isEmpty(newProp['opacity'])
       ) {
-        this.debounceSetObjectProp(newProp, updateTriggerFn);
+        this.debounceSetObjectProp(newProp);
       } else {
-        this.setObjectProperties(newProp, updateTriggerFn);
+        this.setObjectProperties(newProp);
       }
     },
     /**
@@ -1388,12 +1367,10 @@ export default {
       });
     },
     // Will be removed after fixing "one change only triggers one mutation"
-    setObjectProperties(prop, updateTriggerFn) {
+    setObjectProperties(prop) {
       this.setObjectProp({ prop });
 
       this.handleCanvasChanged();
-
-      if (updateTriggerFn !== null) updateTriggerFn();
     },
     // Will be removed after fixing "one change only triggers one mutation"
     debounceSetCurrentObject: debounce(function(id, prop) {
@@ -1404,10 +1381,9 @@ export default {
      * Use with debounce
      *
      * @param {Object}  prop            new prop
-     * @param {Object}  updateTriggerFn mutate update trigger function
      */
-    debounceSetObjectProp: debounce(function(prop, updateTriggerFn) {
-      this.setObjectProperties(prop, updateTriggerFn);
+    debounceSetObjectProp: debounce(function(prop) {
+      this.setObjectProperties(prop);
     }, DEBOUNCE_MUTATION),
     /**
      * Set properties of selected background then trigger the change
@@ -1693,7 +1669,7 @@ export default {
       const { target } = e;
 
       target.getObjects().forEach(item => {
-        const { id, left, top, objectType } = item;
+        const { id, left, top } = item;
         const currentXInch = pxToIn(left + target.left + target.width / 2);
         const currentYInch = pxToIn(top + target.top + target.height / 2);
 
@@ -1705,14 +1681,6 @@ export default {
         };
 
         this.setObjectPropById({ id, prop });
-
-        if (objectType === OBJECT_TYPE.SHAPE) {
-          this.updateTriggerShapeChange();
-        } else if (objectType === OBJECT_TYPE.CLIP_ART) {
-          this.updateTriggerClipArtChange();
-        } else if (objectType === OBJECT_TYPE.TEXT) {
-          this.updateTriggerTextChange();
-        }
       });
     },
     /**
@@ -1827,6 +1795,7 @@ export default {
       setImageSrc(activeObject, null, prop => {
         this.setObjectPropById({ id: activeObject.id, prop });
         this.setCurrentObject(this.currentObjects[activeObject.id]);
+        this.getThumbnailUrl();
       });
     },
 

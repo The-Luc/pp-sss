@@ -36,8 +36,8 @@ export default {
     }
   },
   computed: {
-    isShowFooter() {
-      return this.currentTab !== 'add';
+    isMediaAdditionalDisplayed() {
+      return this.currentTab === 'add';
     }
   },
   methods: {
@@ -87,6 +87,7 @@ export default {
      */
     onUploadImages(files) {
       this.$emit('uploadImages', files);
+      this.onCancel();
     }
   }
 };

@@ -73,7 +73,6 @@ class MutationClass extends BaseObject {
   SET_PROP_BY_ID = 'setObjectPropertyById';
   SET_PROP_OF_MULIPLE_OBJECTS = 'setPropOfMultipleObjects';
   DELETE_OBJECTS = 'deleteObjects';
-  UPDATE_TRIGGER_TEXT_CHANGE = 'updateTriggerTextChange';
   UPDATE_TRIGGER_BACKGROUND_CHANGE = 'updateTriggerBackgroundChange';
   UPDATE_TRIGGER_APPLY_LAYOUT = 'updateTriggerApplyLayout';
   UPDATE_SHEET_VISITED = 'updateSheetVisited';

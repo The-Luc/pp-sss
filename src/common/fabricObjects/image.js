@@ -4,12 +4,18 @@ import {
   activeCanvas,
   getStrokeLineCap,
   inToPx,
+  isEmpty,
   mapObject,
   pxToIn,
   scaleSize
 } from '../utils';
 import { DEFAULT_RULE_DATA } from './common';
-import { DEFAULT_IMAGE, OBJECT_TYPE, IMAGE_LOCAL } from '../constants';
+import {
+  DEFAULT_IMAGE,
+  OBJECT_TYPE,
+  IMAGE_LOCAL,
+  IMAGE_INDICATOR
+} from '../constants';
 
 /**
  * Create new fabric image width initial properties
@@ -195,4 +201,39 @@ export const centercrop = (imageObject, cb) => {
   imageObject.canvas.renderAll();
 
   cb && cb({ zoomLevel });
+};
+
+/**
+ * Handle when dragging over image box
+ * @param {*} target - Image object has applied drag trigger
+ */
+export const handleDragEnter = ({ target }) => {
+  const cachedStrokeData = {
+    stroke: target.stroke,
+    strokeWidth: target.strokeWidth
+  };
+
+  target.set({
+    cachedStrokeData,
+    stroke: IMAGE_INDICATOR.STROKE,
+    strokeWidth: IMAGE_INDICATOR.STROKE_WIDTH
+  });
+
+  activeCanvas.renderAll();
+};
+
+/**
+ * Handle when dragging leave image box
+ * @param {*} target - Image object has applied drag trigger
+ */
+export const handleDragLeave = ({ target }) => {
+  if (isEmpty(target.cachedStrokeData)) return;
+
+  const { stroke, strokeWidth } = target.cachedStrokeData;
+  target.set({
+    stroke,
+    strokeWidth
+  });
+
+  activeCanvas.renderAll();
 };

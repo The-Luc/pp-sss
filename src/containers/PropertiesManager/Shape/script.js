@@ -3,7 +3,7 @@ import TabPropertiesMenu from '@/containers/TabPropertiesMenu';
 import ArrangeContent from '@/components/Arrange';
 import GeneralContent from '@/components/General';
 
-import { useShapeProperties } from '@/hooks';
+import { useElementProperties } from '@/hooks';
 import { computedObjectSize } from '@/common/utils';
 
 import { DEFAULT_SHAPE, DEFAULT_PROP } from '@/common/constants';
@@ -17,46 +17,29 @@ export default {
     ArrangeContent
   },
   setup() {
-    const { triggerChange, getProperty } = useShapeProperties();
+    const { getProperty } = useElementProperties();
 
     return {
-      triggerChange,
       getProperty
     };
   },
   computed: {
     rotateValue() {
-      if (this.triggerChange) {
-        // just for trigger the change
-      }
-
       const coord = this.getProperty('coord');
 
       return coord?.rotation || 0;
     },
     sizeWidth() {
-      if (this.triggerChange) {
-        // just for trigger the change
-      }
-
       const size = this.getProperty('size');
 
       return size?.width || 0;
     },
     sizeHeight() {
-      if (this.triggerChange) {
-        // just for trigger the change
-      }
-
       const size = this.getProperty('size');
 
       return size?.height || 0;
     },
     isConstrain() {
-      if (this.triggerChange) {
-        // just for trigger the change
-      }
-
       return this.getProperty('isConstrain');
     },
     minSize() {
@@ -72,10 +55,6 @@ export default {
       return DEFAULT_SHAPE.MAX_POSITION;
     },
     position() {
-      if (this.triggerChange) {
-        // just for trigger the change
-      }
-
       const coord = this.getProperty('coord');
 
       return {

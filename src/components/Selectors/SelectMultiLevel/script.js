@@ -42,10 +42,6 @@ export default {
     isUseSubShortName: {
       type: Boolean,
       default: false
-    },
-    isSubmenuIconDisplayed: {
-      type: Boolean,
-      default: true
     }
   },
   computed: {
@@ -96,11 +92,11 @@ export default {
      * or emit change event to parent
      *
      * @param {Object}          event         the event
-     * @param {Number}          totalSubItem  total sub item of selected item
+     * @param {Array}           subItems      sub items of selected item
      * @param {String | Number} itemValue     value of selected item
      */
-    onItemClick(event, totalSubItem, itemValue) {
-      if (totalSubItem > 0) {
+    onItemClick(event, subItems, itemValue) {
+      if (!isEmpty(subItems)) {
         event.stopPropagation();
 
         return;
@@ -127,12 +123,12 @@ export default {
       return item.value === this.selectedVal.value ? this.selectedVal.sub : '';
     },
     /**
-     * Check submenu Icon is visibled
+     * Check submenu is existed
      *
-     * @returns {Boolean} visibled or hidden
+     * @returns {Boolean} is existed
      */
-    isSubmenuIconVisibled(item) {
-      return this.isSubmenuIconDisplayed && item.subItems.length > 0;
+    isSubmenuExisted(item) {
+      return !isEmpty(item.subItems);
     }
   }
 };
