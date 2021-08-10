@@ -6,7 +6,7 @@ import ArrangeContent from '@/components/Arrange';
 
 import { useElementProperties } from '@/hooks';
 import { DEFAULT_TEXT } from '@/common/constants';
-import { computedObjectSize, activeCanvas, pxToIn } from '@/common/utils';
+import { computedObjectSize, activeCanvas } from '@/common/utils';
 import { EVENT_TYPE } from '@/common/constants/eventType';
 
 export default {
@@ -111,19 +111,6 @@ export default {
         object.size = size;
       }
       this.$root.$emit(EVENT_TYPE.CHANGE_TEXT_PROPERTIES, object);
-
-      const activeObj = activeCanvas?.getActiveObject();
-
-      const { width, height } = activeObj || {};
-
-      const updatedSize = {
-        width: pxToIn(width),
-        height: pxToIn(height)
-      };
-
-      this.$root.$emit(EVENT_TYPE.CHANGE_TEXT_PROPERTIES, {
-        size: updatedSize
-      });
     },
 
     /**

@@ -9,7 +9,14 @@ import {
   DEFAULT_TEXT
 } from '@/common/constants';
 
-import { inToPx, ptToPx, isEmpty, mapObject, scaleSize } from '@/common/utils';
+import {
+  inToPx,
+  ptToPx,
+  isEmpty,
+  mapObject,
+  scaleSize,
+  pxToIn
+} from '@/common/utils';
 import { toFabricImageProp } from './image';
 
 export const DEFAULT_RULE_DATA = {
@@ -111,7 +118,8 @@ export const toFabricTextProp = prop => {
       'shadow',
       'flip',
       'rotation',
-      'isConstrain'
+      'isConstrain',
+      'coord'
     ]
   };
 
@@ -139,7 +147,8 @@ export const toFabricTextBorderProp = prop => {
       'flip',
       'rotation',
       'isConstrain',
-      'style'
+      'style',
+      'coord'
     ]
   };
 
@@ -761,4 +770,26 @@ export const handleObjectBlur = (blurValue, oldScale, newScale) => {
     (blurValue * (oldScale.scaleX + oldScale.scaleY)) /
     (newScale.scaleX + newScale.scaleY);
   return blur;
+};
+
+/**
+ * Convert fabric object to parallel object for save to store
+ *
+ * @param   {Object}  fabricObject  Fabric object selected
+ * @returns {Object}                properties will be saved to store
+ */
+export const fabricToPpObject = fabricObject => {
+  const { top, left, width, height, scaleX, scaleY, angle } = fabricObject;
+
+  return {
+    coord: {
+      x: pxToIn(left),
+      y: pxToIn(top),
+      rotation: angle
+    },
+    size: {
+      width: pxToIn(width * scaleX),
+      height: pxToIn(height * scaleY)
+    }
+  };
 };

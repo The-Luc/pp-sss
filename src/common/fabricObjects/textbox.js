@@ -432,7 +432,6 @@ export const applyTextBoxProperties = function(textObject, prop) {
   applyTextGroupProperties(textObject, prop);
   if (isModifyPosition) {
     textObject?.canvas?.renderAll();
-    return;
   }
 
   if (!prop.border && !prop.size) {
@@ -455,7 +454,6 @@ export const applyTextBoxProperties = function(textObject, prop) {
 
   setTimeout(() => {
     textObject?.canvas?.renderAll();
-    textObject.fire('scaled', { transform: { target: textObject } });
   });
 };
 

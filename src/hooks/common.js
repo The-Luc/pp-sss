@@ -1,7 +1,8 @@
-import { useGetters, useMutations } from 'vuex-composition-helpers';
+import { useGetters, useMutations, useActions } from 'vuex-composition-helpers';
 import {
   GETTERS as APP_GETTERS,
-  MUTATES as APP_MUTATES
+  MUTATES as APP_MUTATES,
+  ACTIONS as APP_ACTIONS
 } from '@/store/modules/app/const';
 
 /**
@@ -19,12 +20,17 @@ export const useAppCommon = () => {
     setEdition: APP_MUTATES.SET_ACTIVE_EDITION
   });
 
+  const { getAppDetail } = useActions({
+    getAppDetail: APP_ACTIONS.GET_APP_DETAIL
+  });
+
   const setActiveEdition = edition => setEdition({ edition });
 
   return {
     activeEdition,
     isPrintEdition,
     isDigitalEdition,
-    setActiveEdition
+    setActiveEdition,
+    getAppDetail
   };
 };

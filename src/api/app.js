@@ -10,6 +10,7 @@ import { isEmpty } from '@/common/utils';
 import books from '@/mock/books';
 import layoutData from '@/mock/layouts';
 import { PRINT_LAYOUT_TYPES } from '@/mock/layoutTypes';
+import { cloneDeep } from 'lodash';
 
 const bookId = 1719;
 const keyBook = `${STORAGE_KEY.book}-${bookId}`;
@@ -17,6 +18,7 @@ const keyLayoutPrint = `${STORAGE_KEY.printLayout}`;
 const keyLayoutTypePrint = `${STORAGE_KEY.printLayoutType}`;
 const keySavedLayoutPrint = `${STORAGE_KEY.printSavedlayout}`;
 const keyFavoritesLayoutPrint = `${STORAGE_KEY.printFavoritesLayout}`;
+const keyApp = `${STORAGE_KEY.app}`;
 
 // TODO: remove when integrate with API
 const setMockBookDataToStorage = () => {
@@ -84,6 +86,7 @@ const saveOnUnloadEvent = () => {
       keyFavoritesLayoutPrint,
       JSON.stringify(window.data.printFavoritesLayouts)
     );
+    setItem(keyApp, JSON.stringify(window.data.app));
   });
 };
 
@@ -118,13 +121,53 @@ const getLayoutData = () => {
   window.data.printFavoritesLayouts = printFavoritesLayouts;
 };
 
+const setMockAppDataToStorage = () => {
+  const app = window.sessionStorage.getItem(keyApp);
+
+  if (!isEmpty(app)) return;
+
+  const appDetail = {
+    isPhotoVisited: false
+  };
+
+  setItem(keyApp, JSON.stringify(appDetail));
+};
+
+const getAppData = () => {
+  setMockAppDataToStorage();
+
+  const appDetail = parseItem(keyApp) || {};
+
+  window.data.app = appDetail;
+};
+
+export const getAppDetail = () => {
+  return new Promise(resolve => {
+    const { app } = cloneDeep(window.data);
+    const isPhotoVisited = app.isPhotoVisited;
+
+    resolve({
+      isPhotoVisited
+    });
+  });
+};
+
+export const setIsPhotoVisited = isPhotoVisited => {
+  setTimeout(() => {
+    window.data.app.isPhotoVisited = isPhotoVisited;
+  });
+};
+
 const initData = () => {
   getBookData();
   getLayoutData();
+  getAppData();
 };
 
 export default {
   setMockBookDataToStorage,
   initData,
-  saveOnUnloadEvent
+  saveOnUnloadEvent,
+  getAppDetail,
+  setIsPhotoVisited
 };

@@ -28,7 +28,7 @@ export default {
      * Create a album and emit to back value to parent
      */
     onCreateNewAlbum() {
-      this.label = this.search.trim() || 'Untitled';
+      this.label = this.search?.trim() || 'Untitled';
       this.$emit('createNewAlbum', this.label);
     },
     /**
