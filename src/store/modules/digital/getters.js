@@ -90,6 +90,10 @@ export const getters = {
 
     return sections.find(s => s.sheetIds.includes(currentSheetId));
   },
+  [DIGITAL._GETTERS.GET_FIRST_FRAME_THUMBNAIL]: state => {
+    if (isEmpty(state.frameIds)) return;
+    return state.frames[state.frameIds[0]].previewImageUrl;
+  },
   [DIGITAL._GETTERS.GET_DATA_EDIT_SCREEN]: ({
     book,
     sheets,

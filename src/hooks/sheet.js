@@ -30,12 +30,14 @@ export const useSheet = (isDigital = false) => {
 const useMutationEditionSheet = (isDigital = false) => {
   const MUTATES = isDigital ? DIGITAL_MUTATES : PRINT_MUTATES;
 
-  const { setCurrentSheetId } = useMutations({
-    setCurrentSheetId: MUTATES.SET_CURRENT_SHEET_ID
+  const { setCurrentSheetId, updateSheetThumbnail } = useMutations({
+    setCurrentSheetId: MUTATES.SET_CURRENT_SHEET_ID,
+    updateSheetThumbnail: MUTATES.UPDATE_SHEET_THUMBNAIL
   });
 
   return {
-    setCurrentSheetId
+    setCurrentSheetId,
+    updateSheetThumbnail
   };
 };
 

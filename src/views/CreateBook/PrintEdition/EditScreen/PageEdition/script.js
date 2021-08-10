@@ -4,7 +4,12 @@ import { cloneDeep, uniqueId, merge, debounce } from 'lodash';
 
 import { imageBorderModifier, usePrintOverrides } from '@/plugins/fabric';
 
-import { useInfoBar, useMenuProperties, useProperties } from '@/hooks';
+import {
+  useInfoBar,
+  useMenuProperties,
+  useMutationPrintSheet,
+  useProperties
+} from '@/hooks';
 import { startDrawBox } from '@/common/fabricObjects/drawingBox';
 
 import {
@@ -122,6 +127,7 @@ export default {
       setProperty: setObjectProp
     } = useProperties();
     const { updateSavingStatus, savingStatus } = useSavingStatus();
+    const { updateSheetThumbnail } = useMutationPrintSheet();
 
     return {
       setActiveEdition,
@@ -135,7 +141,8 @@ export default {
       setObjectProp,
       isOpenMenuProperties,
       updateSavingStatus,
-      savingStatus
+      savingStatus,
+      updateSheetThumbnail
     };
   },
   data() {
@@ -265,8 +272,7 @@ export default {
       toggleActiveObjects: MUTATES.TOGGLE_ACTIVE_OBJECTS,
       setPropertiesObjectType: MUTATES.SET_PROPERTIES_OBJECT_TYPE,
       setBackgroundProp: PRINT_MUTATES.SET_BACKGROUND_PROP,
-      deleteBackground: PRINT_MUTATES.DELETE_BACKGROUND,
-      setThumbnail: PRINT_MUTATES.UPDATE_SHEET_THUMBNAIL
+      deleteBackground: PRINT_MUTATES.DELETE_BACKGROUND
     }),
 
     async handleAutosave() {
@@ -604,7 +610,7 @@ export default {
         multiplier: THUMBNAIL_IMAGE_CONFIG.MULTIPLIER
       });
 
-      this.setThumbnail({
+      this.updateSheetThumbnail({
         sheetId: this.pageSelected?.id,
         thumbnailUrl
       });
