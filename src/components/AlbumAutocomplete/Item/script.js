@@ -11,7 +11,8 @@ export default {
   },
   computed: {
     totalThumbnailDisplay() {
-      return this.album.assets.length < 4 ? this.album.assets.length : 4;
+      const totalAseets = this.album.assets.length;
+      return totalAseets < 4 ? (totalAseets < 1 ? 0 : 1) : 4;
     }
   }
 };

@@ -19,7 +19,8 @@ export default {
   },
   data() {
     return {
-      search: ''
+      search: '',
+      label: 'Select Album'
     };
   },
   methods: {
@@ -27,7 +28,8 @@ export default {
      * Create a album and emit to back value to parent
      */
     onCreateNewAlbum() {
-      this.$emit('createNewAlbum', this.search);
+      this.label = this.search.trim() || 'Untitled';
+      this.$emit('createNewAlbum', this.label);
     },
     /**
      * Select album and emit to back value to parent
