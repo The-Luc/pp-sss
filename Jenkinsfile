@@ -40,16 +40,17 @@ pipeline {
         }
 
         stage('Lint') {
+            when {
+                anyOf {
+                    expression { !(env.CHANGE_TARGET) == false }
+                    branch 'develop'
+                    branch 'qa'
+                }
+            }
             steps {
                 script {
                     nodejs(nodeJSInstallationName: 'node14170') {
-                        echo "Current Branch: ${env.CHANGE_BRANCH}"
-                        echo "Target Branch: ${env.CHANGE_TARGET}"
-                        if (env.CHANGE_TARGET) {
-                            sh "npm run lint"
-                        } else {
-                            echo "No lint check"
-                        }
+                        sh "npm run lint"
                     }
                 }
             }

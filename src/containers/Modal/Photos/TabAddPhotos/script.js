@@ -20,7 +20,7 @@ export default {
 
       this.isShowNotify = files.some(item => {
         const splitName = item.name.split('.');
-        const type = '.' + splitName[splitName.length - 1];
+        const type = '.' + splitName[splitName.length - 1].toLowerCase();
         return !this.imageTypes.includes(type);
       });
 
