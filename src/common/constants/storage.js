@@ -12,5 +12,6 @@ export const STORAGE_KEY = {
   printLayout: 'printLayout',
   printLayoutType: 'printLayoutType',
   printSavedlayout: 'printSavedlayout',
-  printFavoritesLayout: 'printFavoritesLayout'
+  printFavoritesLayout: 'printFavoritesLayout',
+  app: 'app'
 };
