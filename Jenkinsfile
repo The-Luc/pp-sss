@@ -7,22 +7,6 @@ pipeline {
     }
 
     stages {
-        stage('Checkout') {
-            when { branch 'qa' }
-
-            steps {
-                script {
-                    checkout([
-                        $class: 'GitSCM',
-                        branches: [[name: "${BRANCH_NAME}"]],
-                        extensions: [[$class: 'WipeWorkspace']],
-                        userRemoteConfigs: [[credentialsId: 'sonarsuccesssoftware', url: "https://github.com/fmitech/parallel-publishing-tools.git"]]]
-                    )
-                    
-                }
-            }
-        }
-
         stage('Install Dependencies') {
             steps {
                 script {
