@@ -72,7 +72,7 @@ export default {
      * @param {KeyboardEvent} e - keypress event object
      */
     onEnter(e) {
-      this.onChange(e.target.value);
+      e.target.blur();
     },
     /**
      * Revert to previous data and Un focus input element

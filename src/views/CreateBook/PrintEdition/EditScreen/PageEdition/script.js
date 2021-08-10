@@ -58,7 +58,9 @@ import {
   setImageSrc,
   centercrop,
   handleDragEnter,
-  handleDragLeave
+  handleDragLeave,
+  fabricToPpObject,
+  getTextSizeWithPadding
 } from '@/common/fabricObjects';
 
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
@@ -1322,10 +1324,19 @@ export default {
     updateElementProp(element, prop, objectType) {
       if (objectType === OBJECT_TYPE.TEXT) {
         applyTextBoxProperties(element, prop);
+        const newProp = fabricToPpObject(element);
 
-        // After fixing "one change only triggers one mutation"
-        // this will return new prop get from fabric element
-        return prop;
+        const text = element?._objects?.[1];
+        if (text) {
+          const {
+            minBoundingWidth,
+            minBoundingHeight
+          } = getTextSizeWithPadding(text);
+          newProp.minWidth = pxToIn(minBoundingWidth);
+          newProp.minHeight = pxToIn(minBoundingHeight);
+        }
+
+        return { ...prop, ...newProp };
       }
 
       if (objectType === OBJECT_TYPE.IMAGE) {
