@@ -27,7 +27,7 @@
     "vue-color": "github:lnvu1983/vue-color",
     "vue-router": "^3.5.1",
     "vuedraggable": "github:lnvu1983/Vue.Draggable",
-    "vuetify": "github:Koo-SSS/vuetify",
+    "vuetify": "github:truonggiangdao/vuetify",
     "vuex": "^3.6.2",
     "vuex-composition-helpers": "^1.0.23"
   },
