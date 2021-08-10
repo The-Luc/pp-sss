@@ -28,9 +28,9 @@ pipeline {
                 script {
                     nodejs(nodeJSInstallationName: 'node14170') {
                         sh "node -v"
-                        sh "cp -Rf ./node_modules /jenkins/workspace/"
-                        sh "npm install"
                         sh "cp -Rf /jenkins/workspace/node_modules ."
+                        sh "npm install"
+                        sh "cp -Rf ./node_modules /jenkins/workspace/"
                     }
                 }
             }
