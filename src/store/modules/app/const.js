@@ -46,6 +46,8 @@ class ActionClass extends BaseObject {
   GET_SAVED_TEXT_STYLES = 'getSavedTextStyles';
   SAVE_IMAGE_STYLE = 'saveImageStyle';
   GET_SAVED_IMAGE_STYLES = 'getSavedImageStyles';
+  GET_APP_DETAIL = 'getAppDetail';
+  UPDATE_PHOTO_VISITED = 'updatePhotoVisited';
 
   constructor(props) {
     super(props);
