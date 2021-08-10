@@ -384,7 +384,8 @@ const applyTextRectProperties = function(rect, prop) {
     const rectStrokeData = getRectStroke(rect, {
       ...rectProp,
       width: rect.group.width,
-      height: rect.group.height
+      height: rect.group.height,
+      dirty: true
     });
     rect.set(rectStrokeData);
   }

@@ -1,9 +1,8 @@
 import { uniqueId } from 'lodash';
 
-import { isEmpty, isHalfSheet } from '@/common/utils';
 import digitalService from '@/api/digital';
 
-import { STATUS, OBJECT_TYPE, SHEET_TYPE } from '@/common/constants';
+import { STATUS, OBJECT_TYPE } from '@/common/constants';
 
 import DIGITAL from './const';
 
