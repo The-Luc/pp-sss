@@ -1,5 +1,7 @@
 pipeline {
     agent {label 'PARALLELPUBLISHING'}
+
+    when { branch 'qa' }
     
     parameters{
         string(name: 'branch', defaultValue: 'qa', description: '')
