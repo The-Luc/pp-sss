@@ -43,8 +43,8 @@ pipeline {
             steps {
                 script {
                     nodejs(nodeJSInstallationName: 'node14170') {
-                        echo "${env.CHANGE_BRANCH}"
-                        echo "${env.CHANGE_TARGET}"
+                        echo "Current Branch: ${env.CHANGE_BRANCH}"
+                        echo "Target Branch: ${env.CHANGE_TARGET}"
                         if (env.CHANGE_TARGET) {
                             sh "npm run lint"
                         } else {
