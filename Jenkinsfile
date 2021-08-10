@@ -18,7 +18,10 @@ pipeline {
         }
         stage('Install Dependencies') {
             when {
-                anyOf { branch 'qa'; branch 'develop' }
+                anyOf {
+                    changeset "package-lock.json"
+                    changeset "package.json"
+                }
             }
             steps {
                 script {
