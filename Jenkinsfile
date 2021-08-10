@@ -1,8 +1,6 @@
 pipeline {
     agent {label 'PARALLELPUBLISHING'}
 
-    when { branch 'develop' }
-
     parameters{
         string(name: 'branch', defaultValue: 'develop', description: '')
         booleanParam(defaultValue: false, description: 'Node Install', name: 'NodeInstall')
@@ -15,6 +13,8 @@ pipeline {
 
     stages {
         stage('Checkout') {
+            when { branch 'develop' }
+
             steps {
                 script {
                     checkout([
@@ -29,6 +29,7 @@ pipeline {
         }
 		
         stage('Deploy') {
+            when { branch 'develop' }
             steps {
                 script {
                     nodejs(nodeJSInstallationName: 'node14170') {
