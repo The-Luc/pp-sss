@@ -1795,6 +1795,7 @@ export default {
       setImageSrc(activeObject, null, prop => {
         this.setObjectPropById({ id: activeObject.id, prop });
         this.setCurrentObject(this.currentObjects[activeObject.id]);
+        this.getThumbnailUrl();
       });
     },
 
