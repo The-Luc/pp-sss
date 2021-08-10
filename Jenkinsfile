@@ -7,12 +7,22 @@ pipeline {
     }
 
     stages {
-        stage('Install Dependencies') {
+        stage('Copy Dependencies') {
             steps {
                 script {
                     nodejs(nodeJSInstallationName: 'node14170') {
-                        sh "node -v"
                         sh "cp -Rf /jenkins/workspace/node_modules ."
+                    }
+                }
+            }
+        }
+        stage('Install Dependencies') {
+            when {
+                anyOf { branch 'qa'; branch 'develop' }
+            }
+            steps {
+                script {
+                    nodejs(nodeJSInstallationName: 'node14170') {
                         sh "npm install"
                         sh "cp -Rf ./node_modules /jenkins/workspace/"
                     }
