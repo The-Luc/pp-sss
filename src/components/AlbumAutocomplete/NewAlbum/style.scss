@@ -11,9 +11,15 @@
   position: absolute;
   top: 0;
   width: 100%;
-  div {
-    span {
+  .name-container {
+    width: 100%;
+    display: flex;
+    .name {
       font-weight: 700;
+      max-width: 53%;
+      overflow: hidden;
+      margin: 0 4px;
+      white-space: nowrap;
     }
   }
 }

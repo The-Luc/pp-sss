@@ -1,7 +1,15 @@
 <template>
   <div class="add-new-album">
-    <div>
-      Create new album: <span>{{ name || 'Untitled' }}</span> …
+    <div class="name-container">
+      <div>
+        Create new album:
+      </div>
+      <div class="name">
+        {{ name || 'Untitled' }}
+      </div>
+      <div>
+        …
+      </div>
     </div>
   </div>
 </template>
