@@ -20,8 +20,8 @@
           will not remove it from the layout.
         </div>
         <div>
-          To remove the photo from the layout, go to the Reset tab in
-          ImageProperties.
+          To remove the photo from the layout, go to the Reset tab in Image
+          Properties.
         </div>
       </v-card-text>
       <v-card-actions class="pp-modal-action">
