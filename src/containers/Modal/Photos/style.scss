@@ -49,11 +49,27 @@
   }
 }
 
+@media only screen and (max-width: 1600px) {
+  .modal-body {
+    &::v-deep {
+      .v-tabs-items {
+        height: calc(100vh - 220px);
+        .content {
+          height: 480px;
+        }
+      }
+    }
+  }
+}
+
 @media (max-width: 1366px) {
   .modal-body {
     &::v-deep {
       .v-tabs-items {
         height: calc(100vh - 210px);
+        .content {
+          height: 360px;
+        }
       }
     }
   }

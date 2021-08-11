@@ -1,6 +1,7 @@
 <template>
   <div id="pp-autocomplete" class="pp-autocomplete">
     <v-autocomplete
+      v-model="select"
       :items="albums"
       flat
       :label="label"

@@ -20,7 +20,8 @@ export default {
   data() {
     return {
       search: '',
-      label: 'Select Album'
+      label: 'Select Album',
+      select: null
     };
   },
   methods: {
@@ -29,6 +30,7 @@ export default {
      */
     onCreateNewAlbum() {
       this.label = this.search?.trim() || 'Untitled';
+      this.select = null;
       this.$emit('createNewAlbum', this.label);
     },
     /**
