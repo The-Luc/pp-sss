@@ -67,7 +67,7 @@ class MutationClass extends BaseObject {
   SET_DEFAULT_THEME_ID = 'setDefaultThemeId';
   SET_SECTIONS_SHEETS = 'setSectionsSheets';
   SET_OBJECTS = 'setObjects';
-  SET_BACKGROUNDS = 'setBackgrounds';
+  SET_BACKGROUND = 'setBackground';
   SET_CURRENT_OBJECT_ID = 'setCurrentObjectId';
   ADD_OBJECT = 'addObject';
   SET_PROP = 'setObjectProperty';
@@ -95,6 +95,7 @@ class MutationClass extends BaseObject {
   MOVE_FRAME = 'moveFrame';
   SET_TITLE_FRAME = 'setTitleFrame';
   UPDATE_OBJECTS_TO_FRAME = 'updateObjectsToFrame';
+  SET_BACKGROUNDS = 'setBackgrounds';
 
   constructor(props) {
     super(props);

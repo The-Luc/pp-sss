@@ -11,6 +11,7 @@ import {
   useProperties
 } from '@/hooks';
 import { startDrawBox } from '@/common/fabricObjects/drawingBox';
+import StoreTracker from '@/plugins/storeTracker';
 
 import {
   isEmpty,
@@ -87,7 +88,8 @@ import {
   DEFAULT_CLIP_ART,
   DEFAULT_IMAGE,
   LAYOUT_PAGE_TYPE,
-  SAVE_STATUS
+  SAVE_STATUS,
+  EDITION
 } from '@/common/constants';
 import SizeWrapper from '@/components/SizeWrapper';
 import PrintCanvasLines from './PrintCanvasLines';
@@ -131,6 +133,11 @@ export default {
     const { updateSavingStatus, savingStatus } = useSavingStatus();
     const { updateSheetThumbnail } = useMutationPrintSheet();
 
+    const storeTracker = new StoreTracker({
+      edition: EDITION.PRINT,
+      maxStep: 5
+    });
+
     return {
       setActiveEdition,
       setInfoBar,
@@ -144,7 +151,8 @@ export default {
       isOpenMenuProperties,
       updateSavingStatus,
       savingStatus,
-      updateSheetThumbnail
+      updateSheetThumbnail,
+      storeTracker
     };
   },
   data() {
@@ -211,6 +219,9 @@ export default {
 
         // get data either from API or sessionStorage
         await this.getDataCanvas();
+
+        this.storeTracker.restartTracking();
+
         this.countPaste = 1;
         this.setSelectedObjectId({ id: '' });
         this.setCurrentObject(null);
@@ -266,7 +277,7 @@ export default {
       setSelectedObjectId: PRINT_MUTATES.SET_CURRENT_OBJECT_ID,
       setCurrentObject: MUTATES.SET_CURRENT_OBJECT,
       addNewObject: PRINT_MUTATES.ADD_OBJECT,
-      addNewBackground: PRINT_MUTATES.SET_BACKGROUNDS,
+      addNewBackground: PRINT_MUTATES.SET_BACKGROUND,
       updateTriggerBackgroundChange:
         PRINT_MUTATES.UPDATE_TRIGGER_BACKGROUND_CHANGE,
       deleteObjects: PRINT_MUTATES.DELETE_OBJECTS,
@@ -1824,6 +1835,30 @@ export default {
       centercrop(activeObject, prop => {
         this.setObjectPropById({ id: activeObject.id, prop });
       });
+    },
+    /**
+     * Undo user action
+     */
+    async undo() {
+      const isAllowToUndo = await this.storeTracker.backToPrevious();
+
+      if (!isAllowToUndo) return;
+
+      resetObjects(window.printCanvas);
+
+      this.drawObjectsOnCanvas(this.sheetLayout);
+    },
+    /**
+     * Redo user action
+     */
+    async redo() {
+      const isAllowToRedo = await this.storeTracker.moveToNext();
+
+      if (!isAllowToRedo) return;
+
+      resetObjects(window.printCanvas);
+
+      this.drawObjectsOnCanvas(this.sheetLayout);
     }
   }
 };
