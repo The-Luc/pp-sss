@@ -197,7 +197,7 @@ export default {
       addNewObject: DIGITAL_MUTATES.ADD_OBJECT,
       setObjectProp: DIGITAL_MUTATES.SET_PROP,
       setObjectPropById: DIGITAL_MUTATES.SET_PROP_BY_ID,
-      addNewBackground: DIGITAL_MUTATES.SET_BACKGROUNDS,
+      addNewBackground: DIGITAL_MUTATES.SET_BACKGROUND,
       updateTriggerBackgroundChange:
         DIGITAL_MUTATES.UPDATE_TRIGGER_BACKGROUND_CHANGE,
       deleteObjects: DIGITAL_MUTATES.DELETE_OBJECTS,

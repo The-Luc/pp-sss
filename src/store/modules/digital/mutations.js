@@ -6,7 +6,7 @@ import { OBJECT_TYPE } from '@/common/constants';
 
 import DIGITAL from './const';
 import { isEmpty } from '@/common/utils';
-import { addObject, deleteObjects } from '@/common/store';
+import { addObject, deleteObjects, setBackgrounds } from '@/common/store';
 
 export const mutations = {
   [DIGITAL._MUTATES.SET_BOOK_ID](state, { bookId }) {
@@ -61,7 +61,7 @@ export const mutations = {
   [DIGITAL._MUTATES.SET_CURRENT_SHEET_ID](state, { id }) {
     state.currentSheetId = id;
   },
-  [DIGITAL._MUTATES.SET_BACKGROUNDS](state, { background = {} }) {
+  [DIGITAL._MUTATES.SET_BACKGROUND](state, { background = {} }) {
     state.background.left = background;
   },
   [DIGITAL._MUTATES.SET_CURRENT_OBJECT_ID](state, { id }) {
@@ -253,5 +253,6 @@ export const mutations = {
     ];
 
     frames[frameId].objects = objectsData;
-  }
+  },
+  [DIGITAL._MUTATES.SET_BACKGROUNDS]: setBackgrounds
 };

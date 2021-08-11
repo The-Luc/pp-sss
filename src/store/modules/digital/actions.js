@@ -37,7 +37,7 @@ export const actions = {
   async [DIGITAL._ACTIONS.GET_DATA_CANVAS]({ state, commit }) {
     // rest the store
     commit(DIGITAL._MUTATES.SET_OBJECTS, { objectList: [] });
-    commit(DIGITAL._MUTATES.SET_BACKGROUNDS, { background: {} });
+    commit(DIGITAL._MUTATES.SET_BACKGROUND, { backgrounds: {} });
 
     // update frames and frameIds
     const queryFramesResult = await digitalService.getFrames(
@@ -82,7 +82,7 @@ export const actions = {
       obj => obj.type === OBJECT_TYPE.BACKGROUND
     );
 
-    commit(DIGITAL._MUTATES.SET_BACKGROUNDS, { background: backgroundObj });
+    commit(DIGITAL._MUTATES.SET_BACKGROUND, { background: backgroundObj });
 
     // Get object(s) rest
     const objectList = objects.filter(
