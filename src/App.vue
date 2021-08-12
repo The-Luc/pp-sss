@@ -44,7 +44,7 @@ export default {
     $route(to) {
       if (to.name && to.name !== 'login') {
         this.getBook(to.params.bookId);
-        this.getAppDetail();
+        this.getAppDetail(to.params.bookId);
       }
     }
   },

@@ -1,7 +1,8 @@
 import APP from './const';
 import styleService from '@/api/style';
-import appService from '@/api/app';
+import bookService from '@/api/book';
 import { MODAL_TYPES, OBJECT_TYPE } from '@/common/constants';
+import { isEmpty } from '@/common/utils';
 
 export const actions = {
   async [APP._ACTIONS.SAVE_TEXT_STYLE]({ commit }, { textStyle }) {
@@ -44,13 +45,14 @@ export const actions = {
     commit(APP._MUTATES.SET_SAVED_IMAGE_STYLES, { savedImageStyles });
   },
 
-  async [APP._ACTIONS.GET_APP_DETAIL]({ commit }) {
-    const { isPhotoVisited } = await appService.getAppDetail();
+  async [APP._ACTIONS.GET_APP_DETAIL]({ commit }, bookId) {
+    if (isEmpty(bookId)) return {};
+    const { isPhotoVisited } = await bookService.getBookManager(bookId);
     commit(APP._MUTATES.SET_PHOTO_VISITED, { isPhotoVisited });
   },
 
   async [APP._ACTIONS.UPDATE_PHOTO_VISITED]({ commit }, { isPhotoVisited }) {
-    await appService.setIsPhotoVisited(isPhotoVisited);
+    await bookService.setIsPhotoVisited(isPhotoVisited);
     commit(APP._MUTATES.SET_PHOTO_VISITED, { isPhotoVisited });
   }
 };

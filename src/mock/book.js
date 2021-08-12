@@ -55,6 +55,7 @@ const book = new BookDetailEntity({
   coverId: 1,
   insideFrontCoverId: 2,
   insideBackCoverId: 11,
+  isPhotoVisited: false,
   estimatedQuantity: {
     min: 50,
     max: 100
