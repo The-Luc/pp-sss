@@ -9,7 +9,7 @@ import { isEmpty, moveItem } from '@/common/utils';
 import BOOK from './const';
 
 import { DATE_FORMAT } from '@/common/constants';
-import { Section, Sheet } from '@/common/models';
+import { SectionInfo, SheetInfo } from '@/common/models';
 
 export const mutations = {
   [BOOK._MUTATES.SET_BOOK_ID]: setBookId,
@@ -78,7 +78,7 @@ export const mutations = {
         ? totalSheet - 1
         : totalSheet;
 
-    state.sheets = { ...state.sheets, [newId]: new Sheet({ id: newId }) };
+    state.sheets = { ...state.sheets, [newId]: new SheetInfo({ id: newId }) };
 
     state.sections[sectionId].sheetIds.splice(newIndex, 0, newId);
 
@@ -140,7 +140,7 @@ export const mutations = {
 
     state.sections = {
       ...state.sections,
-      [newId]: new Section({
+      [newId]: new SectionInfo({
         id: newId,
         color: randomcolor(),
         dueDate: moment(releaseDate).format(DATE_FORMAT.BASE)

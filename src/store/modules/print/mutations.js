@@ -1,6 +1,11 @@
 import { cloneDeep, merge } from 'lodash';
 
-import { addObject, deleteObjects, setBackgrounds } from '@/common/store';
+import {
+  addObject,
+  deleteObjects,
+  setBackgrounds,
+  setBookInfo
+} from '@/common/store';
 
 import {
   isHalfSheet,
@@ -222,5 +227,6 @@ export const mutations = {
   [PRINT._MUTATES.SET_SHEET_MEDIA](state, { media }) {
     state.sheets[state.currentSheetId].media = media;
   },
-  [PRINT._MUTATES.SET_BACKGROUNDS]: setBackgrounds
+  [PRINT._MUTATES.SET_BACKGROUNDS]: setBackgrounds,
+  [PRINT._MUTATES.SET_BOOK_INFO]: setBookInfo
 };

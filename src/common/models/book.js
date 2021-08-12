@@ -31,6 +31,7 @@ export class BookBase extends BaseEntity {
   }
 }
 
+// TODO: remove later
 export class BookPrintData extends BookBase {
   themeId = null;
   pageInfo = new PageInfo();
@@ -44,6 +45,7 @@ export class BookPrintData extends BookBase {
   }
 }
 
+// TODO: remove later
 export class BookDigitalData extends BookBase {
   themeId = null;
 
@@ -56,6 +58,7 @@ export class BookDigitalData extends BookBase {
   }
 }
 
+// TODO: remove later
 export class BookDetail extends BookBase {
   communityId = null;
   createdDate = null;
@@ -100,7 +103,7 @@ export class BookManagerDetail extends BookBase {
   };
 
   /**
-   * @param {BookDetailDetail} props
+   * @param {BookManagerDetail} props
    */
   constructor(props) {
     super(props);
@@ -108,9 +111,12 @@ export class BookManagerDetail extends BookBase {
   }
 }
 
-export class BookPrintDetail extends BookPrintData {
+export class BookEditionInfo extends BookBase {
+  themeId = null;
+  isPhotoVisited = false;
+
   /**
-   * @param {BookPrintDetail} props
+   * @param {BookPrintInfo} props
    */
   constructor(props) {
     super(props);
@@ -118,9 +124,21 @@ export class BookPrintDetail extends BookPrintData {
   }
 }
 
-export class BookDigitalDetail extends BookDigitalData {
+export class BookPrintInfo extends BookEditionInfo {
+  pageInfo = new PageInfo();
+
   /**
-   * @param {BookDigitalDetail} props
+   * @param {BookPrintInfo} props
+   */
+  constructor(props) {
+    super(props);
+    this._set(props);
+  }
+}
+
+export class BookDigitalInfo extends BookEditionInfo {
+  /**
+   * @param {BookDigitalInfo} props
    */
   constructor(props) {
     super(props);

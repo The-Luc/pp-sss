@@ -1,6 +1,8 @@
 export const updateAssigneeApi = (sectionId, userId) => {
   return new Promise(resolve => {
-    const index = window.data.sections.findIndex(({ id }) => id === sectionId);
+    const index = window.data.book.sections.findIndex(
+      ({ id }) => id === sectionId
+    );
 
     if (index < 0) {
       resolve();
@@ -8,7 +10,7 @@ export const updateAssigneeApi = (sectionId, userId) => {
       return;
     }
 
-    window.data.sections[index].assigneeId = userId;
+    window.data.book.sections[index].assigneeId = userId;
 
     resolve();
   });

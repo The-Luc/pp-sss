@@ -1,7 +1,7 @@
 import Draggable from 'vuedraggable';
 import Section from './Section';
 
-import { useSectionItems } from '@/hooks';
+import { useSectionItems } from '@/views/CreateBook/Manager/composables';
 
 import { ROLE } from '@/common/constants';
 

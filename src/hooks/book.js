@@ -1,6 +1,9 @@
-import { useActions, useGetters } from 'vuex-composition-helpers';
+import { useActions, useGetters, useMutations } from 'vuex-composition-helpers';
 
 import { ACTIONS, GETTERS } from '@/store/modules/book/const';
+import { MUTATES as PRINT_MUTATES } from '@/store/modules/print/const';
+import { MUTATES as DIGITAL_MUTATES } from '@/store/modules/digital/const';
+
 import bookService from '@/api/book';
 
 /**
@@ -37,4 +40,23 @@ export const useUpdateTitle = () => {
   return {
     updateTitle
   };
+};
+
+export const useMutationBook = (isDigital = false) => {
+  const MUTATES = isDigital ? DIGITAL_MUTATES : PRINT_MUTATES;
+
+  const { setBookInfo, setSectionsSheets } = useMutations({
+    setBookInfo: MUTATES.SET_BOOK_INFO,
+    setSectionsSheets: MUTATES.SET_SECTIONS_SHEETS
+  });
+
+  return { setBookInfo, setSectionsSheets };
+};
+
+export const useActionBook = (isDigital = false) => {
+  const getBookInfo = isDigital
+    ? bookService.getBookDigitalInfo
+    : bookService.getBookPrintInfo;
+
+  return { getBookInfo };
 };

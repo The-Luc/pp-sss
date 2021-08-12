@@ -2,7 +2,7 @@ import BookInformation from './BookInformation';
 import BookControl from './BookControl';
 import BookNumber from './BookNumber';
 
-import { useHeader } from '@/hooks/header';
+import { useAppCommon } from '@/hooks';
 
 import { ROUTE_NAME } from '@/common/constants';
 
@@ -13,7 +13,7 @@ export default {
     BookNumber
   },
   setup() {
-    const { generalInfo } = useHeader();
+    const { generalInfo } = useAppCommon();
 
     return { generalInfo };
   },

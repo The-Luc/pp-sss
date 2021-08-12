@@ -30,9 +30,10 @@ import {
 } from '@/hooks';
 import { isEmpty, isPositiveInteger, getEditionListPath } from '@/common/utils';
 import { COPY_OBJECT_KEY } from '@/common/constants/config';
-import digitalService from '@/api/digital';
+
 import { useSaveData } from './composables';
 import { useSavingStatus } from '../../composables';
+import { useBookDigitalInfo } from './composables';
 
 export default {
   setup() {
@@ -44,6 +45,7 @@ export default {
     const { currentFrameId, updateFrameObjects } = useFrame();
     const { saveEditScreen, getDataEditScreen } = useSaveData();
     const { updateSavingStatus } = useSavingStatus();
+    const { getBookDigitalInfo } = useBookDigitalInfo();
 
     return {
       pageSelected,
@@ -56,7 +58,8 @@ export default {
       updateFrameObjects,
       saveEditScreen,
       getDataEditScreen,
-      updateSavingStatus
+      updateSavingStatus,
+      getBookDigitalInfo
     };
   },
   components: {
@@ -96,14 +99,7 @@ export default {
         return;
       }
 
-      vm.setBookId({ bookId });
-
-      // temporary code, will remove soon
-      const info = await digitalService.getGeneralInfo();
-
-      vm.setInfo({ ...info, bookId });
-
-      await vm.getDataPageEdit();
+      await vm.getBookDigitalInfo(bookId);
 
       vm.setCurrentSheetId({ id: parseInt(to.params.sheetId) });
 
