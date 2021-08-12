@@ -16,6 +16,7 @@
       <PhotoSidebar
         v-show="isOpenMediaSidebar"
         :is-show-autoflow="isShowAutoflow"
+        type-name="Media"
         @closePhotoSidebar="closeMediaSidebar"
         @autoflow="handleAutoflow"
         @click="openModalMedia"

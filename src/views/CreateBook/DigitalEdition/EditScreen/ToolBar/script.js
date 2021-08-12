@@ -1,4 +1,3 @@
-import ToolButton from '@/components/Buttons/ToolButton';
 import ItemTool from './ItemTool';
 
 import { useLayoutPrompt, useToolBar } from '@/hooks';
@@ -28,7 +27,6 @@ export default {
     }
   },
   components: {
-    ToolButton,
     ItemTool
   },
   data() {

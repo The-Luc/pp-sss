@@ -3,6 +3,10 @@ export default {
     showAutoflow: {
       type: Boolean,
       default: true
+    },
+    typeName: {
+      type: String,
+      default: 'Photos'
     }
   },
   methods: {

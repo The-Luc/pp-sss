@@ -8,6 +8,10 @@ export default {
     isShowAutoflow: {
       type: Boolean,
       default: false
+    },
+    typeName: {
+      type: String,
+      default: 'Photos'
     }
   },
   methods: {

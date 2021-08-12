@@ -16,6 +16,10 @@
         font-family: $font-500;
         font-size: $md-size;
         flex-direction: column;
+        border-left: 1px solid $color-gray4;
+        .v-icon {
+          font-size: 20px;
+        }
         &:before {
           background-color: transparent;
         }
@@ -26,8 +30,8 @@
           }
         }
         .light {
-          width: 24px;
-          height: 24px;
+          width: 20px;
+          height: 20px;
           background-size: cover;
           background-image: url('~@/assets/icons/lightbulb.svg');
         }
