@@ -38,7 +38,11 @@ class StoreTracker {
   }
 
   _setDataToTrackList(dataToKeep) {
-    if (this._currentIndex >= this._maxStep) this._trackList.splice(0, 1);
+    if (this._currentIndex >= this._maxStep) {
+      this._trackList.splice(0, 1);
+
+      this._currentIndex--;
+    }
 
     const data = [
       cloneDeep(dataToKeep.background.left),
