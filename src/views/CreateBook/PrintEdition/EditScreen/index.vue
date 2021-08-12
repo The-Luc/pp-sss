@@ -1,7 +1,7 @@
 <template>
   <div class="row print-main">
     <Header name-editor="print editor" @onClickSave="onClickSavePrintCanvas" />
-    <ToolBar />
+    <ToolBar @undo="onUndo" @redo="onRedo" />
     <FeedbackBar
       :is-open-menu-properties="isOpenMenuProperties"
       :selected-tool-name="selectedToolName"
@@ -25,8 +25,7 @@
         />
       </PhotoSidebar>
     </transition>
-
-    <PageEdition @drop="onDrop" />
+    <PageEdition ref="canvasEditor" @drop="onDrop" />
 
     <ModalAddPhotos
       :is-open-modal="isOpenModal"

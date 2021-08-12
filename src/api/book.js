@@ -18,6 +18,7 @@ export const getBookDetail = bookId => {
   return new Promise(resolve => {
     const { book } = cloneDeep(window.data);
     const sectionData = book.sections;
+    const isPhotoVisited = book.isPhotoVisited;
     const sheetData = [];
 
     const sectionIds = [];
@@ -50,7 +51,8 @@ export const getBookDetail = bookId => {
       sections: sectionData,
       sheets: sheetData,
       sectionsAsObject,
-      sheetsAsObject
+      sheetsAsObject,
+      isPhotoVisited
     });
   });
 };
@@ -63,7 +65,8 @@ export const getBookManager = async bookId => {
     book,
     sectionIds,
     sheets,
-    sectionsAsObject
+    sectionsAsObject,
+    isPhotoVisited
   } = await bookService.getBook(bookId);
 
   const bookData = new BookManagerDetail(book);
@@ -83,7 +86,8 @@ export const getBookManager = async bookId => {
     book: bookData,
     sectionIds,
     sections: sectionsAsObject,
-    sheets: printSheets
+    sheets: printSheets,
+    isPhotoVisited
   };
 };
 
@@ -223,7 +227,14 @@ const bookService = {
   }
 };
 
+export const setIsPhotoVisited = isPhotoVisited => {
+  setTimeout(() => {
+    window.data.book.isPhotoVisited = isPhotoVisited;
+  });
+};
+
 export default {
   ...bookService,
-  getBookManager
+  getBookManager,
+  setIsPhotoVisited
 };

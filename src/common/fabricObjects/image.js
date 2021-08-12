@@ -131,7 +131,8 @@ export const applyBorderToImageObject = (imageObject, borderConfig) => {
 
   imageObject.set({
     ...imageProp,
-    strokeLineCap
+    strokeLineCap,
+    dirty: true
   });
 };
 

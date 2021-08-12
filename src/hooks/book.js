@@ -1,10 +1,7 @@
 import { useActions, useGetters } from 'vuex-composition-helpers';
 
 import { ACTIONS, GETTERS } from '@/store/modules/book/const';
-import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 import bookService from '@/api/book';
-import printService from '@/api/print';
-import { isEmpty } from '@/common/utils';
 
 /**
  * The hook trigger action to get book and get book information from store

@@ -64,70 +64,70 @@ function randomAssets() {
 const albumBase7 = new AlbumEntity({
   id: 7,
   name: 'Homecoming',
-  displayDate: 'May 25th, 2021',
+  displayDate: 'May 25, 2021',
   assets: randomAssets()
 });
 
 const albumBase1 = new AlbumEntity({
   id: 1,
   name: 'Track',
-  displayDate: 'June 5th, 2021',
+  displayDate: 'June 5, 2021',
   assets: randomAssets()
 });
 
 const albumBase2 = new AlbumEntity({
   id: 2,
   name: 'Chess Club',
-  displayDate: 'June 5th, 2021',
+  displayDate: 'June 5, 2021',
   assets: randomAssets()
 });
 
 const albumBase3 = new AlbumEntity({
   id: 3,
   name: 'Afterparty',
-  displayDate: 'May 5th, 2021',
+  displayDate: 'May 5, 2021',
   assets: randomAssets()
 });
 
 const albumBase4 = new AlbumEntity({
   id: 4,
   name: 'Science Fair',
-  displayDate: 'June 5th, 2021',
+  displayDate: 'June 5, 2021',
   assets: randomAssets()
 });
 
 const albumBase5 = new AlbumEntity({
   id: 5,
   name: 'France',
-  displayDate: 'June 5th, 2021',
+  displayDate: 'June 5, 2021',
   assets: randomAssets()
 });
 
 const albumBase6 = new AlbumEntity({
   id: 6,
   name: 'Middle School Life',
-  displayDate: 'June 5th, 2021',
+  displayDate: 'June 5, 2021',
   assets: randomAssets()
 });
 
 const albumBase8 = new AlbumEntity({
   id: 8,
   name: 'Cross Country',
-  displayDate: 'June 5th, 2021',
+  displayDate: 'June 5, 2021',
   assets: randomAssets()
 });
 
 const albumBase9 = new AlbumEntity({
   id: 9,
   name: 'AfterParty',
-  displayDate: 'June 7th, 2021',
+  displayDate: 'June 7, 2021',
   assets: []
 });
 
 const albumBase10 = new AlbumEntity({
   id: 10,
   name: 'Drama Fun',
-  displayDate: 'June 8th, 2021',
+  displayDate: 'June 8, 2021',
   assets: []
 });
 

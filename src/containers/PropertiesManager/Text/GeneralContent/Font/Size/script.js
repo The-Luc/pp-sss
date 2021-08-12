@@ -6,13 +6,11 @@ import {
   activeCanvas,
   getSelectedOption,
   getValueInput,
-  isEmpty,
   pxToIn,
   validateInputOption
 } from '@/common/utils';
 
 import { EVENT_TYPE } from '@/common/constants/eventType';
-import { getTextSizeWithPadding } from '@/common/fabricObjects';
 
 export default {
   components: {
@@ -64,32 +62,17 @@ export default {
       const activeObj = activeCanvas?.getActiveObject();
 
       const { x, y } = activeObj?.aCoords?.tl || {};
-      const updateData = isValid ? { fontSize: value } : {};
+      const updateData = isValid
+        ? {
+            fontSize: value,
+            coord: {
+              x: pxToIn(x),
+              y: pxToIn(y)
+            }
+          }
+        : {};
 
       this.$root.$emit(EVENT_TYPE.CHANGE_TEXT_PROPERTIES, updateData);
-
-      const newDimentionData = {};
-
-      const textObject = activeObj?._objects?.[1];
-
-      if (x && y) {
-        newDimentionData.coord = {
-          x: pxToIn(x),
-          y: pxToIn(y)
-        };
-      }
-
-      if (textObject) {
-        const { minBoundingWidth, minBoundingHeight } = getTextSizeWithPadding(
-          textObject
-        );
-        newDimentionData.minWidth = pxToIn(minBoundingWidth);
-        newDimentionData.minHeight = pxToIn(minBoundingHeight);
-      }
-
-      if (!isEmpty(newDimentionData)) {
-        this.$root.$emit(EVENT_TYPE.CHANGE_TEXT_PROPERTIES, newDimentionData);
-      }
     }
   }
 };

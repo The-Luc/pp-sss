@@ -333,6 +333,18 @@ export default {
       this.dragItem = null;
     },
     /**
+     * Undo user action
+     */
+    onUndo() {
+      this.$refs.canvasEditor.undo();
+    },
+    /**
+     * Redo user action
+     */
+    onRedo() {
+      this.$refs.canvasEditor.redo();
+    },
+    /**
      * Use to open modal photos
      */
     openModalPhotos() {

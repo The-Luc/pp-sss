@@ -29,6 +29,7 @@ class GetterClass extends BaseObject {
   CURRENT_FRAME = 'getCurrentFrame';
   TOTAL_OBJECT = 'getTotalObject';
   CURRENT_SECTION = 'getCurrentSection';
+  GET_FIRST_FRAME_THUMBNAIL = 'getFirstFrameThumbnail';
 
   constructor(props) {
     super(props);
@@ -66,7 +67,7 @@ class MutationClass extends BaseObject {
   SET_DEFAULT_THEME_ID = 'setDefaultThemeId';
   SET_SECTIONS_SHEETS = 'setSectionsSheets';
   SET_OBJECTS = 'setObjects';
-  SET_BACKGROUNDS = 'setBackgrounds';
+  SET_BACKGROUND = 'setBackground';
   SET_CURRENT_OBJECT_ID = 'setCurrentObjectId';
   ADD_OBJECT = 'addObject';
   SET_PROP = 'setObjectProperty';
@@ -76,6 +77,7 @@ class MutationClass extends BaseObject {
   UPDATE_TRIGGER_BACKGROUND_CHANGE = 'updateTriggerBackgroundChange';
   UPDATE_TRIGGER_APPLY_LAYOUT = 'updateTriggerApplyLayout';
   UPDATE_SHEET_VISITED = 'updateSheetVisited';
+  UPDATE_SHEET_THUMBNAIL = 'updateSheetThumbnail';
   UPDATE_FRAME_THUMBNAIL = 'updateFrameThumbnail';
   REORDER_OBJECT_IDS = 'reorderObjectIds';
   SET_SHEET_DATA = 'setSheetData';
@@ -93,6 +95,7 @@ class MutationClass extends BaseObject {
   MOVE_FRAME = 'moveFrame';
   SET_TITLE_FRAME = 'setTitleFrame';
   UPDATE_OBJECTS_TO_FRAME = 'updateObjectsToFrame';
+  SET_BACKGROUNDS = 'setBackgrounds';
 
   constructor(props) {
     super(props);

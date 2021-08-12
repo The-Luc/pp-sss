@@ -1,6 +1,6 @@
 {
   "name": "fluidmedia-parallel-publishing-frontend",
-  "version": "0.1.0",
+  "version": "0.0.1",
   "private": true,
   "scripts": {
     "start": "vue-cli-service serve",
@@ -8,7 +8,7 @@
     "build-qa": "vue-cli-service build --mode qa",
     "build-testing": "vue-cli-service build --mode testing",
     "test:unit": "vue-cli-service test:unit",
-    "lint": "vue-cli-service lint",
+    "lint": "vue-cli-service lint --max-warnings 0",
     "test": "jest"
   },
   "dependencies": {
@@ -27,7 +27,7 @@
     "vue-color": "github:lnvu1983/vue-color",
     "vue-router": "^3.5.1",
     "vuedraggable": "github:lnvu1983/Vue.Draggable",
-    "vuetify": "github:Koo-SSS/vuetify",
+    "vuetify": "github:truonggiangdao/vuetify",
     "vuex": "^3.6.2",
     "vuex-composition-helpers": "^1.0.23"
   },

@@ -384,7 +384,8 @@ const applyTextRectProperties = function(rect, prop) {
     const rectStrokeData = getRectStroke(rect, {
       ...rectProp,
       width: rect.group.width,
-      height: rect.group.height
+      height: rect.group.height,
+      dirty: true
     });
     rect.set(rectStrokeData);
   }
@@ -431,7 +432,6 @@ export const applyTextBoxProperties = function(textObject, prop) {
   applyTextGroupProperties(textObject, prop);
   if (isModifyPosition) {
     textObject?.canvas?.renderAll();
-    return;
   }
 
   if (!prop.border && !prop.size) {
@@ -454,7 +454,6 @@ export const applyTextBoxProperties = function(textObject, prop) {
 
   setTimeout(() => {
     textObject?.canvas?.renderAll();
-    textObject.fire('scaled', { transform: { target: textObject } });
   });
 };
 

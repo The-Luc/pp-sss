@@ -46,7 +46,8 @@ import {
   useLayoutPrompt,
   useFrame,
   useFrameSwitching,
-  useModal
+  useModal,
+  useMutationDigitalSheet
 } from '@/hooks';
 
 import {
@@ -116,13 +117,15 @@ export default {
       frames,
       currentFrame,
       currentFrameId,
-      updateFrameObjects
+      updateFrameObjects,
+      firstFrameThumbnail
     } = useFrame();
     const { toggleModal, modalData } = useModal();
     const { onSaveStyle } = useStyle();
     const { getDataEditScreen, saveEditScreen } = useSaveData();
     const { updateSavingStatus, savingStatus } = useSavingStatus();
     const { updateObjectsToStore } = useObject();
+    const { updateSheetThumbnail } = useMutationDigitalSheet();
 
     return {
       frames,
@@ -141,7 +144,9 @@ export default {
       updateFrameObjects,
       updateSavingStatus,
       savingStatus,
-      updateObjectsToStore
+      updateObjectsToStore,
+      updateSheetThumbnail,
+      firstFrameThumbnail
     };
   },
   data() {
@@ -192,7 +197,7 @@ export default {
       addNewObject: DIGITAL_MUTATES.ADD_OBJECT,
       setObjectProp: DIGITAL_MUTATES.SET_PROP,
       setObjectPropById: DIGITAL_MUTATES.SET_PROP_BY_ID,
-      addNewBackground: DIGITAL_MUTATES.SET_BACKGROUNDS,
+      addNewBackground: DIGITAL_MUTATES.SET_BACKGROUND,
       updateTriggerBackgroundChange:
         DIGITAL_MUTATES.UPDATE_TRIGGER_BACKGROUND_CHANGE,
       deleteObjects: DIGITAL_MUTATES.DELETE_OBJECTS,
@@ -1778,6 +1783,12 @@ export default {
           this.handleShowAddFrame(supplementalFrames);
         }
       }
+    },
+    firstFrameThumbnail(val) {
+      this.updateSheetThumbnail({
+        sheetId: this.pageSelected.id,
+        thumbnailUrl: val
+      });
     }
   },
   beforeDestroy() {

@@ -4,7 +4,7 @@ import AlbumItem from '../AlbumItem';
 import PopupSelected from '../PopupSelected';
 
 import { usePhotos } from '@/views/CreateBook/composables';
-import { useGetterPrintSheet, useSheet } from '@/hooks';
+import { useGetterPrintSheet, useSheet, useBookName } from '@/hooks';
 import { getPhotos } from '@/api/photo';
 
 export default {
@@ -23,13 +23,15 @@ export default {
   setup() {
     const { currentSection } = useGetterPrintSheet();
     const { currentSheet } = useSheet();
-    const { isPhotoVisited, setPhotoVisited } = usePhotos();
+    const { isPhotoVisited, updatePhotoVisited } = usePhotos();
+    const { generalInfo } = useBookName();
 
     return {
       isPhotoVisited,
-      setPhotoVisited,
+      updatePhotoVisited,
       currentSection,
-      currentSheet
+      currentSheet,
+      generalInfo
     };
   },
   data() {
@@ -61,7 +63,7 @@ export default {
      * Trigger mutation set photo visited true for current book
      */
     onClickGotIt() {
-      this.setPhotoVisited({ isPhotoVisited: true });
+      this.updatePhotoVisited({ isPhotoVisited: true });
     },
     /**
      * Set status active of keyword when click
@@ -88,7 +90,15 @@ export default {
      */
     getListKeywords() {
       const { leftTitle, rightTitle } = this.currentSheet.spreadInfo;
-      this.keywords = [leftTitle, rightTitle, this.currentSection.name]
+      const projectTitle =
+        this.currentSection.name === 'Cover' ? this.generalInfo.title : '';
+
+      this.keywords = [
+        leftTitle,
+        rightTitle,
+        this.currentSection.name,
+        projectTitle
+      ]
         .join(' ')
         .split(' ')
         .filter(Boolean)

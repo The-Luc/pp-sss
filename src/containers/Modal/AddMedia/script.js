@@ -47,7 +47,8 @@ export default {
       albums: [],
       numberOfFilesUploaded: 0,
       iconSuccess: ICON_LOCAL.SUCCESS,
-      uploadingStatus: UPLOADING_PROCESS_STATUS.SELECT_ALBUM
+      uploadingStatus: UPLOADING_PROCESS_STATUS.SELECT_ALBUM,
+      newAlbumName: 'Untitled'
     };
   },
   computed: {
@@ -83,14 +84,18 @@ export default {
      * @param   {String}  albumName  name of new album
      */
     async onCreateNewAlbum(albumName) {
-      const newAlbum = await this.createNewAlbum(albumName);
-      this.selectedIdOfAlbum = newAlbum.id;
-      this.onAddMedia();
+      this.newAlbumName = albumName;
+      this.selectedIdOfAlbum = null;
     },
     /**
      * Flow add media add media to selected album
      */
     async onAddMedia() {
+      if (!this.selectedIdOfAlbum) {
+        const newAlbum = await this.createNewAlbum(this.newAlbumName);
+        this.selectedIdOfAlbum = newAlbum.id;
+      }
+
       this.uploadingStatus = UPLOADING_PROCESS_STATUS.STARTING_UPLOAD;
 
       await this.prepareUpload();

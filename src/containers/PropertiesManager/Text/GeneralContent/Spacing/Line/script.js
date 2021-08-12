@@ -3,10 +3,8 @@ import PpCombobox from '@/components/Selectors/Combobox';
 import { useElementProperties } from '@/hooks';
 import { ICON_LOCAL } from '@/common/constants';
 import {
-  activeCanvas,
   getSelectedOption,
   getValueInput,
-  pxToIn,
   validateInputOption
 } from '@/common/utils';
 
@@ -65,19 +63,6 @@ export default {
       );
       const updateData = isValid ? { lineSpacing: isAuto ? 0 : value } : {};
       this.$root.$emit(EVENT_TYPE.CHANGE_TEXT_PROPERTIES, updateData);
-
-      const activeObj = activeCanvas?.getActiveObject();
-
-      const { width, height } = activeObj || {};
-
-      const updatedSize = {
-        width: pxToIn(width),
-        height: pxToIn(height)
-      };
-
-      this.$root.$emit(EVENT_TYPE.CHANGE_TEXT_PROPERTIES, {
-        size: updatedSize
-      });
     }
   }
 };

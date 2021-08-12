@@ -29,8 +29,10 @@ export const getMyAlbums = () => {
 
 export const getPhotos = async (keywords = []) => {
   const hasNo = keywords.find(keyword => keyword.toLowerCase() === 'no');
+  const photos =
+    hasNo || isEmpty(keywords) ? [] : photoList.sort(() => 0.5 - Math.random());
 
-  return Promise.resolve(hasNo || isEmpty(keywords) ? [] : photoList);
+  return Promise.resolve(photos);
 };
 
 export const prepareUpload = async () => {
@@ -68,6 +70,8 @@ export const createNewAlbum = name => {
 
 export const searchPhotos = async input => {
   const hasNo = input.toLowerCase() === 'no';
+  const photos =
+    hasNo || isEmpty(input) ? [] : photoList.sort(() => 0.5 - Math.random());
 
-  return Promise.resolve(hasNo || isEmpty(input) ? [] : photoList);
+  return Promise.resolve(photos);
 };

@@ -6,7 +6,7 @@ import { OBJECT_TYPE } from '@/common/constants';
 
 import DIGITAL from './const';
 import { isEmpty } from '@/common/utils';
-import { addObject, deleteObjects } from '@/common/store';
+import { addObject, deleteObjects, setBackgrounds } from '@/common/store';
 
 export const mutations = {
   [DIGITAL._MUTATES.SET_BOOK_ID](state, { bookId }) {
@@ -61,7 +61,7 @@ export const mutations = {
   [DIGITAL._MUTATES.SET_CURRENT_SHEET_ID](state, { id }) {
     state.currentSheetId = id;
   },
-  [DIGITAL._MUTATES.SET_BACKGROUNDS](state, { background = {} }) {
+  [DIGITAL._MUTATES.SET_BACKGROUND](state, { background = {} }) {
     state.background.left = background;
   },
   [DIGITAL._MUTATES.SET_CURRENT_OBJECT_ID](state, { id }) {
@@ -110,7 +110,9 @@ export const mutations = {
   [DIGITAL._MUTATES.UPDATE_FRAME_THUMBNAIL](state, { thumbnailUrl, frameId }) {
     state.frames[frameId].previewImageUrl = thumbnailUrl;
     if (frameId !== state.frameIds[0]) return;
-    state.sheets[state.currentSheetId].thumbnailUrl = thumbnailUrl;
+  },
+  [DIGITAL._MUTATES.UPDATE_SHEET_THUMBNAIL](state, { thumbnailUrl, sheetId }) {
+    state.sheets[sheetId].thumbnailUrl = thumbnailUrl;
   },
   [DIGITAL._MUTATES.REORDER_OBJECT_IDS](state, { oldIndex, newIndex }) {
     const [id] = state.objectIds.splice(oldIndex, 1);
@@ -251,5 +253,6 @@ export const mutations = {
     ];
 
     frames[frameId].objects = objectsData;
-  }
+  },
+  [DIGITAL._MUTATES.SET_BACKGROUNDS]: setBackgrounds
 };

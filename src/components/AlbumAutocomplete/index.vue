@@ -1,15 +1,17 @@
 <template>
   <div id="pp-autocomplete" class="pp-autocomplete">
     <v-autocomplete
+      v-model="select"
       :items="albums"
       flat
-      label="Select Album"
+      :label="label"
       solo-inverted
       item-text="name"
       item-value="id"
-      :menu-props="{ contentClass: 'dropdown' }"
+      :menu-props="{ contentClass: 'dropdown', closeOnContentClick: true }"
       attach="#pp-autocomplete"
       :search-input.sync="search"
+      maxlength="50"
       @change="onChange"
     >
       <template #item="{ item, parent }">
@@ -17,7 +19,7 @@
       </template>
 
       <template #prepend-item>
-        <NewAlbum :name="search" @click.native="onCreateNewAlbum" />
+        <NewAlbum :search="search" @click.native="onCreateNewAlbum" />
       </template>
 
       <template #append>

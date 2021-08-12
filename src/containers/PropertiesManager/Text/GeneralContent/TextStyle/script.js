@@ -63,9 +63,10 @@ export default {
 
       if (isEmpty(id) || isEmpty(style)) return;
 
-      this.$root.$emit(EVENT_TYPE.CHANGE_TEXT_PROPERTIES, style);
-
-      this.$root.$emit(EVENT_TYPE.CHANGE_TEXT_PROPERTIES, { styleId: id });
+      this.$root.$emit(EVENT_TYPE.CHANGE_TEXT_PROPERTIES, {
+        ...style,
+        styleId: id
+      });
     },
 
     /**
