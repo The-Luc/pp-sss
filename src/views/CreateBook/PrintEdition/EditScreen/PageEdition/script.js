@@ -25,7 +25,7 @@ import {
   inToPx,
   setBorderObject,
   setCanvasUniformScaling,
-  setBorderHighLight,
+  setBorderHighlight,
   setActiveCanvas,
   isNonElementPropSelected,
   copyPpObject,
@@ -789,42 +789,68 @@ export default {
      * @param {Object}  target  the selected object
      */
     objectSelected({ target }) {
-      if (this.awaitingAdd) {
+      if (this.awaitingAdd || isEmpty(target)) {
         return;
       }
-      this.toggleActiveObjects(true);
 
+      target.get('type') === 'activeSelection'
+        ? this.multiObjectSelected(target)
+        : this.singleObjectSelected(target);
+    },
+    /**
+     * Event fired when multi object of canvas is selected
+     *
+     * @param {Object}  target  the selected objects
+     */
+    multiObjectSelected(target) {
+      target.set({
+        lockScalingX: true,
+        lockScalingY: true,
+        lockRotation: true
+      });
+
+      this.setSelectedObjectId({ id: '' });
+
+      this.setCurrentObject({});
+
+      this.setInfoBar({ w: 0, h: 0 });
+
+      setCanvasUniformScaling(window.printCanvas, true);
+
+      this.resetConfigTextProperties();
+    },
+    /**
+     * Event fired when an object of canvas is selected
+     *
+     * @param {Object}  target  the selected object
+     */
+    singleObjectSelected(target) {
       const { id } = target;
+
       const targetType = target.get('type');
+
       this.setSelectedObjectId({ id });
-      setBorderHighLight(target, this.sheetLayout);
+
+      setBorderHighlight(target, this.sheetLayout);
 
       const objectData = this.currentObjects?.[id];
 
+      const objectType = objectData?.type;
+
       this.setCurrentObject(objectData);
 
-      if (targetType === 'group' && target.objectType === OBJECT_TYPE.TEXT) {
+      if (targetType === 'group' && objectType === OBJECT_TYPE.TEXT) {
         const rectObj = target.getObjects(OBJECT_TYPE.RECT)[0];
+
         setBorderObject(rectObj, objectData);
       }
 
-      const objectType = objectData?.type;
-      const isSelectMultiObject = !objectType;
-
       this.setInfoBar({
-        w: isSelectMultiObject ? 0 : this.getProperty('size')?.width,
-        h: isSelectMultiObject ? 0 : this.getProperty('size')?.height
+        w: this.getProperty('size')?.width,
+        h: this.getProperty('size')?.height
       });
 
-      if (isSelectMultiObject) {
-        setCanvasUniformScaling(window.printCanvas, true);
-
-        this.resetConfigTextProperties();
-      } else {
-        setCanvasUniformScaling(window.printCanvas, objectData.isConstrain);
-      }
-
-      if (isEmpty(objectType)) return;
+      setCanvasUniformScaling(window.printCanvas, objectData.isConstrain);
 
       this.setObjectTypeSelected({ type: objectType });
 
