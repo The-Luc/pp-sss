@@ -1,7 +1,7 @@
 import Section from '../SummarySection';
 import Detail from '../SummaryDetail';
 
-import { useSummaryInfo } from '@/hooks';
+import { useSummaryInfo } from '@/views/CreateBook/Manager/composables';
 
 import { getDisplayInfo } from '@/common/utils';
 

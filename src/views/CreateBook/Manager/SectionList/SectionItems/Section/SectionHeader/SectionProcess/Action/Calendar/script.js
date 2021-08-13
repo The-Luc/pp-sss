@@ -1,6 +1,6 @@
 import moment from 'moment';
 
-import { useDueDateMenu } from '@/hooks';
+import { useDueDateMenu } from '@/views/CreateBook/Manager/composables';
 
 const daysOfWeek = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
 

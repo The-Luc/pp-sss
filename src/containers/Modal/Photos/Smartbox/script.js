@@ -4,7 +4,7 @@ import AlbumItem from '../AlbumItem';
 import PopupSelected from '../PopupSelected';
 
 import { usePhotos } from '@/views/CreateBook/composables';
-import { useGetterPrintSheet, useSheet, useBookName } from '@/hooks';
+import { useGetterPrintSheet, useSheet, useAppCommon } from '@/hooks';
 import { getPhotos } from '@/api/photo';
 
 export default {
@@ -24,7 +24,7 @@ export default {
     const { currentSection } = useGetterPrintSheet();
     const { currentSheet } = useSheet();
     const { isPhotoVisited, updatePhotoVisited } = usePhotos();
-    const { generalInfo } = useBookName();
+    const { generalInfo } = useAppCommon();
 
     return {
       isPhotoVisited,

@@ -1,19 +1,14 @@
 import ThumbnailItem from '@/components/Thumbnail/ThumbnailItem';
 
-import { mapGetters, mapMutations, mapActions } from 'vuex';
+import { mapGetters } from 'vuex';
 
 import { useUser } from '@/hooks';
 
 import { getSectionsWithAccessible } from '@/common/utils';
 
-import {
-  GETTERS as DIGITAL_GETTERS,
-  MUTATES as DIGITAL_MUTATES,
-  ACTIONS as DIGITAL_ACTIONS
-} from '@/store/modules/digital/const';
-import { MUTATES as APP_MUTATES } from '@/store/modules/app/const';
+import { GETTERS as DIGITAL_GETTERS } from '@/store/modules/digital/const';
 
-import digitalService from '@/api/digital';
+import { useBookDigitalInfo } from './composables';
 
 export default {
   components: {
@@ -21,8 +16,9 @@ export default {
   },
   setup() {
     const { currentUser } = useUser();
+    const { getBookDigitalInfo } = useBookDigitalInfo();
 
-    return { currentUser };
+    return { currentUser, getBookDigitalInfo };
   },
   computed: {
     ...mapGetters({
@@ -36,23 +32,9 @@ export default {
     }
   },
   async created() {
-    this.setBookId({ bookId: this.$route.params.bookId });
-
-    // temporary code, will remove soon
-    const info = await digitalService.getGeneralInfo();
-
-    this.setInfo({ ...info, bookId: this.$route.params.bookId });
-
-    this.getDataPageEdit();
+    await this.getBookDigitalInfo(this.$route.params.bookId);
   },
   methods: {
-    ...mapActions({
-      getDataPageEdit: DIGITAL_ACTIONS.GET_DATA_MAIN
-    }),
-    ...mapMutations({
-      setBookId: DIGITAL_MUTATES.SET_BOOK_ID,
-      setInfo: APP_MUTATES.SET_GENERAL_INFO
-    }),
     /**
      * Get name of page of selected sheet
      *

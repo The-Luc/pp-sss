@@ -1,5 +1,6 @@
 import APP from './const';
 
+import { cloneDeep } from 'lodash';
 import { isEmpty } from '@/common/utils';
 
 export const mutations = {
@@ -65,11 +66,8 @@ export const mutations = {
   [APP._MUTATES.SET_USER](state, { id, role }) {
     state.user = { id, role };
   },
-  [APP._MUTATES.SET_GENERAL_INFO](
-    state,
-    { bookId, title, totalSheet, totalPage, totalScreen }
-  ) {
-    state.generalInfo = { bookId, title, totalSheet, totalPage, totalScreen };
+  [APP._MUTATES.SET_GENERAL_INFO](state, { info }) {
+    state.generalInfo = { ...cloneDeep(state.generalInfo), ...info };
   },
   [APP._MUTATES.SET_SAVED_TEXT_STYLES](state, { savedTextStyles }) {
     state.savedTextStyles = savedTextStyles;
@@ -79,8 +77,5 @@ export const mutations = {
   },
   [APP._MUTATES.UPDATE_SAVING_STATUS](state, { status }) {
     state.savingStatus = status;
-  },
-  [APP._MUTATES.SET_PHOTO_VISITED](state, { isPhotoVisited }) {
-    state.isPhotoVisited = isPhotoVisited;
   }
 };

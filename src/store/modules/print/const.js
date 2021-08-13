@@ -92,6 +92,7 @@ class MutationClass extends BaseObject {
   CLEAR_BACKGROUNDS = 'clearBackgrounds';
   SET_SHEET_MEDIA = 'setSheetMedia';
   SET_BACKGROUNDS = 'setBackgrounds';
+  SET_BOOK_INFO = 'setBookInfo';
 
   constructor(props) {
     super(props);

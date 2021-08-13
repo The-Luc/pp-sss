@@ -43,11 +43,11 @@ import {
   activeCanvas
 } from '@/common/utils';
 
-import printService from '@/api/print';
 import { useSaveData } from './PageEdition/composables';
 import { getActivateImages, setImageSrc } from '@/common/fabricObjects';
 import { useSavingStatus } from '../../composables';
 import { debounce } from 'lodash';
+import { useBookPrintInfo } from './composables';
 
 export default {
   components: {
@@ -72,6 +72,7 @@ export default {
     const { updateSavingStatus } = useSavingStatus();
     const { sheetMedia } = useSheet();
     const { updateSheetMedia, deleteSheetMedia } = useActionsEditionSheet();
+    const { getBookPrintInfo } = useBookPrintInfo();
 
     return {
       pageSelected,
@@ -88,7 +89,8 @@ export default {
       updateSavingStatus,
       sheetMedia,
       updateSheetMedia,
-      deleteSheetMedia
+      deleteSheetMedia,
+      getBookPrintInfo
     };
   },
   data() {
@@ -131,14 +133,7 @@ export default {
         return;
       }
 
-      vm.setBookId({ bookId });
-
-      // temporary code, will remove soon
-      const info = await printService.getGeneralInfo();
-
-      vm.setInfo({ ...info, bookId });
-
-      await vm.getDataPageEdit();
+      await vm.getBookPrintInfo(bookId);
 
       vm.setCurrentSheetId({ id: parseInt(to.params.sheetId) });
 
@@ -178,12 +173,10 @@ export default {
       getDataPageEdit: PRINT_ACTIONS.GET_DATA_EDIT
     }),
     ...mapMutations({
-      setBookId: PRINT_MUTATES.SET_BOOK_ID,
       toggleModal: MUTATES.TOGGLE_MODAL,
       resetPrintConfigs: MUTATES.RESET_PRINT_CONFIG,
       savePrintCanvas: BOOK_MUTATES.SAVE_PRINT_CANVAS,
       setPropertiesObjectType: MUTATES.SET_PROPERTIES_OBJECT_TYPE,
-      setInfo: MUTATES.SET_GENERAL_INFO,
       setThumbnail: PRINT_MUTATES.UPDATE_SHEET_THUMBNAIL
     }),
     /**

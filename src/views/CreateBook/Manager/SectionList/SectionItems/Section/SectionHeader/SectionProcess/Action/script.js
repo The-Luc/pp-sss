@@ -20,11 +20,13 @@ import {
   MUTATES as BOOK_MUTATES
 } from '@/store/modules/book/const';
 
+import { useMutationSection } from '@/hooks';
+
 import {
-  useMutationSection,
   useSectionActionMenu,
   useAssigneeMenu
-} from '@/hooks';
+} from '@/views/CreateBook/Manager/composables';
+
 import { isEmpty } from '@/common/utils';
 
 export default {

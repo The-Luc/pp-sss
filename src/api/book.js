@@ -1,15 +1,25 @@
 import {
   BookDetail,
-  Section,
+  SectionInfo,
   BookManagerDetail,
-  BookPrintDetail,
-  BookDigitalDetail,
-  SheetPrintData,
-  SheetDigitalDetail
+  BookPrintInfo,
+  BookDigitalInfo,
+  SheetPrintInfo,
+  SheetDigitalInfo,
+  SectionEditionInfo
 } from '@/common/models';
 import { SheetEntity } from '@/common/models/entities';
 
 import { cloneDeep } from 'lodash';
+
+import { parseItem } from '@/common/storage/session.helper';
+
+import {
+  isEmpty,
+  getPageLeftName,
+  getPageRightName,
+  getPageName
+} from '@/common/utils';
 
 export const getBookDetail = bookId => {
   // TODO: remove when integrate API
@@ -38,7 +48,7 @@ export const getBookDetail = bookId => {
 
       // adding sheetIds to section
       section.sheetIds = sheetIds;
-      sectionsAsObject[id] = new Section(section);
+      sectionsAsObject[id] = new SectionInfo(section);
     });
 
     sheetData.forEach(sheet => {
@@ -65,8 +75,7 @@ export const getBookManager = async bookId => {
     book,
     sectionIds,
     sheets,
-    sectionsAsObject,
-    isPhotoVisited
+    sectionsAsObject
   } = await bookService.getBook(bookId);
 
   const bookData = new BookManagerDetail(book);
@@ -74,7 +83,7 @@ export const getBookManager = async bookId => {
   // TODO: define sheet class for manager
   const printSheets = {};
   sheets.forEach(sheet => {
-    const newSheet = new SheetPrintData({
+    const newSheet = new SheetPrintInfo({
       ...sheet,
       ...sheet.printData
     });
@@ -86,8 +95,7 @@ export const getBookManager = async bookId => {
     book: bookData,
     sectionIds,
     sections: sectionsAsObject,
-    sheets: printSheets,
-    isPhotoVisited
+    sheets: printSheets
   };
 };
 
@@ -99,7 +107,7 @@ export const getBookPrint = async bookId => {
     sections
   } = await bookService.getBook(bookId);
 
-  const bookPrint = new BookPrintDetail({
+  const bookPrint = new BookPrintInfo({
     ...book,
     pageInfo: book.printData.pageInfo,
     themeId: book.printData.themeId
@@ -107,7 +115,7 @@ export const getBookPrint = async bookId => {
 
   const sheetsPrint = sheets.map(
     s =>
-      new SheetPrintData({
+      new SheetPrintInfo({
         ...s,
         ...s.printData
       })
@@ -135,14 +143,14 @@ export const getBookDigital = async bookId => {
     sections
   } = await bookService.getBook(bookId);
 
-  const bookDigital = new BookDigitalDetail({
+  const bookDigital = new BookDigitalInfo({
     ...book,
     themeId: book.digitalData.themeId
   });
 
   const sheetsDigital = sheets.map(
     s =>
-      new SheetDigitalDetail({
+      new SheetDigitalInfo({
         ...s,
         ...s.digitalData
       })
@@ -158,10 +166,125 @@ export const getBookDigital = async bookId => {
   };
 };
 
+export const getBookPrintInfo = async bookId => {
+  // TODO: remove when integrate API
+  bookId;
+
+  let totalSheet = 0;
+
+  const coverType = parseItem('bookCoverType');
+  const maxPage = parseItem('bookMaxPage');
+
+  const { book } = cloneDeep(window.data);
+
+  if (!isEmpty(coverType)) book.coverOption = coverType;
+
+  if (!isEmpty(maxPage)) book.numberMaxPages = parseInt(maxPage, 10);
+
+  const sections = book.sections.map((section, sectionIndex) => {
+    const sheets = section.sheets.map((sheet, sheetIndex) => {
+      const {
+        themeId,
+        layoutId,
+        thumbnailUrl,
+        link,
+        isVisited,
+        media,
+        spreadInfo
+      } = sheet.printData;
+
+      const pageLeftName = getPageLeftName(sheet, sheetIndex, totalSheet);
+      const pageRightName = getPageRightName(sheet, sheetIndex, totalSheet);
+
+      return new SheetPrintInfo({
+        ...sheet,
+        sectionId: section.id,
+        themeId,
+        layoutId,
+        thumbnailUrl,
+        link,
+        isVisited,
+        media,
+        pageLeftName,
+        pageRightName,
+        spreadInfo
+      });
+    });
+
+    if (sectionIndex > 0) {
+      totalSheet += section.sheets.length;
+    }
+
+    return new SectionEditionInfo({
+      ...section,
+      sheets
+    });
+  });
+
+  const { pageInfo, themeId } = book.printData;
+
+  return Promise.resolve({
+    ...new BookPrintInfo({ ...book, pageInfo, themeId }),
+    sectionsSheets: sections
+  });
+};
+
+export const getBookDigitalInfo = async bookId => {
+  // TODO: remove when integrate API
+  bookId;
+
+  let totalSheet = 0;
+
+  const { book } = cloneDeep(window.data);
+
+  const sections = book.sections.map((section, sectionIndex) => {
+    const sheets = section.sheets.map((sheet, sheetIndex) => {
+      const {
+        themeId,
+        layoutId,
+        thumbnailUrl,
+        isVisited,
+        media
+      } = sheet.digitalData;
+
+      const pageName = getPageName(sheetIndex, totalSheet);
+
+      return new SheetDigitalInfo({
+        ...sheet,
+        sectionId: section.id,
+        themeId,
+        layoutId,
+        thumbnailUrl,
+        isVisited,
+        media,
+        pageName
+      });
+    });
+
+    if (sectionIndex > 0) {
+      totalSheet += section.sheets.length;
+    }
+
+    return new SectionEditionInfo({
+      ...section,
+      sheets
+    });
+  });
+
+  const { pageInfo, themeId } = book.printData;
+
+  return Promise.resolve({
+    ...new BookDigitalInfo({ ...book, pageInfo, themeId }),
+    sectionsSheets: sections
+  });
+};
+
 const bookService = {
   getBook: getBookDetail,
   getBookPrint,
   getBookDigital,
+  getBookPrintInfo,
+  getBookDigitalInfo,
   updateBook: (bookId, props) => {
     // TODO: remove when integrate API
     bookId;
