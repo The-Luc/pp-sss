@@ -1,7 +1,7 @@
 import SectionList from './SectionList';
 import Summary from './Summary';
 
-import { useManager } from '@/hooks/manager';
+import { useManager } from '@/views/CreateBook/Manager/composables';
 
 export default {
   components: {

@@ -96,6 +96,7 @@ class MutationClass extends BaseObject {
   SET_TITLE_FRAME = 'setTitleFrame';
   UPDATE_OBJECTS_TO_FRAME = 'updateObjectsToFrame';
   SET_BACKGROUNDS = 'setBackgrounds';
+  SET_BOOK_INFO = 'setBookInfo';
 
   constructor(props) {
     super(props);

@@ -1,4 +1,4 @@
-import { useSectionControl } from '@/hooks';
+import { useSectionControl } from '@/views/CreateBook/Manager/composables';
 
 import { ROLE, MAX_SECTION } from '@/common/constants';
 

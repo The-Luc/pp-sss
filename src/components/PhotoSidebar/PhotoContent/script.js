@@ -3,6 +3,10 @@ export default {
     showAutoflow: {
       type: Boolean,
       default: true
+    },
+    mediaType: {
+      type: String,
+      required: true
     }
   },
   methods: {

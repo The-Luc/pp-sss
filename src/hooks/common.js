@@ -1,36 +1,42 @@
-import { useGetters, useMutations, useActions } from 'vuex-composition-helpers';
+import { useGetters, useMutations } from 'vuex-composition-helpers';
 import {
   GETTERS as APP_GETTERS,
-  MUTATES as APP_MUTATES,
-  ACTIONS as APP_ACTIONS
+  MUTATES as APP_MUTATES
 } from '@/store/modules/app/const';
+
+import { useUser } from '.';
 
 /**
  * use common app store's getters and mutates
  * @returns {Object} mapped values from app store
  */
 export const useAppCommon = () => {
-  const { activeEdition, isPrintEdition, isDigitalEdition } = useGetters({
+  const {
+    activeEdition,
+    isPrintEdition,
+    isDigitalEdition,
+    generalInfo
+  } = useGetters({
     activeEdition: APP_GETTERS.ACTIVE_EDITION,
     isPrintEdition: APP_GETTERS.IS_PRINT_ACTIVE,
-    isDigitalEdition: APP_GETTERS.IS_DIGITAL_ACTIVE
+    isDigitalEdition: APP_GETTERS.IS_DIGITAL_ACTIVE,
+    generalInfo: APP_GETTERS.GENERAL_INFO
   });
 
-  const { setEdition } = useMutations({
-    setEdition: APP_MUTATES.SET_ACTIVE_EDITION
-  });
-
-  const { getAppDetail } = useActions({
-    getAppDetail: APP_ACTIONS.GET_APP_DETAIL
+  const { setEdition, setGeneralInfo } = useMutations({
+    setEdition: APP_MUTATES.SET_ACTIVE_EDITION,
+    setGeneralInfo: APP_MUTATES.SET_GENERAL_INFO
   });
 
   const setActiveEdition = edition => setEdition({ edition });
 
   return {
+    ...useUser(),
     activeEdition,
     isPrintEdition,
     isDigitalEdition,
     setActiveEdition,
-    getAppDetail
+    setGeneralInfo,
+    generalInfo
   };
 };

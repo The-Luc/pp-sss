@@ -1,6 +1,6 @@
 import DragDropControl from '@/components/DragDrops/DragDropControl';
 
-import { useSectionName } from '@/hooks';
+import { useSectionName } from '@/views/CreateBook/Manager/composables';
 
 export default {
   components: {

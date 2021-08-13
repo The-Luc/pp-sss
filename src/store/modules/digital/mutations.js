@@ -6,7 +6,12 @@ import { OBJECT_TYPE } from '@/common/constants';
 
 import DIGITAL from './const';
 import { isEmpty } from '@/common/utils';
-import { addObject, deleteObjects, setBackgrounds } from '@/common/store';
+import {
+  addObject,
+  deleteObjects,
+  setBackgrounds,
+  setBookInfo
+} from '@/common/store';
 
 export const mutations = {
   [DIGITAL._MUTATES.SET_BOOK_ID](state, { bookId }) {
@@ -254,5 +259,6 @@ export const mutations = {
 
     frames[frameId].objects = objectsData;
   },
-  [DIGITAL._MUTATES.SET_BACKGROUNDS]: setBackgrounds
+  [DIGITAL._MUTATES.SET_BACKGROUNDS]: setBackgrounds,
+  [DIGITAL._MUTATES.SET_BOOK_INFO]: setBookInfo
 };

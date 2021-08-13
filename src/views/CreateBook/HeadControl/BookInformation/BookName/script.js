@@ -1,12 +1,12 @@
-import { useBookName } from '@/hooks/header';
+import { useAppCommon } from '@/hooks';
 
 import { ROLE } from '@/common/constants';
 
 export default {
   setup() {
-    const { currentUser, generalInfo, setInfo } = useBookName();
+    const { currentUser, generalInfo, setGeneralInfo } = useAppCommon();
 
-    return { currentUser, generalInfo, setInfo };
+    return { currentUser, generalInfo, setGeneralInfo };
   },
   data() {
     return {
@@ -51,7 +51,7 @@ export default {
         return;
       }
 
-      this.setInfo({ ...this.generalInfo, title: this.title });
+      this.setGeneralInfo({ info: { title: this.title } });
     }
   }
 };

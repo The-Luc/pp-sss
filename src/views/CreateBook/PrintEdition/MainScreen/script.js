@@ -1,6 +1,6 @@
 import ThumbnailItem from '@/components/Thumbnail/ThumbnailItem';
 
-import { mapGetters, mapMutations, mapActions } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
 
 import { useUser } from '@/hooks';
 
@@ -8,14 +8,11 @@ import { getSectionsWithAccessible } from '@/common/utils';
 
 import {
   ACTIONS as PRINT_ACTIONS,
-  MUTATES as PRINT_MUTATES,
   GETTERS as PRINT_GETTERS
 } from '@/store/modules/print/const';
-import { MUTATES as APP_MUTATES } from '@/store/modules/app/const';
 
 import { LINK_STATUS } from '@/common/constants';
-import printService from '@/api/print';
-import { useSaveData } from './composables';
+import { useSaveData, useBookPrintInfo } from './composables';
 
 export default {
   components: {
@@ -24,18 +21,12 @@ export default {
   setup() {
     const { currentUser } = useUser();
     const { savePrintMainScreen, sheets } = useSaveData();
+    const { getBookPrintInfo } = useBookPrintInfo();
 
-    return { currentUser, savePrintMainScreen, sheets };
+    return { currentUser, savePrintMainScreen, sheets, getBookPrintInfo };
   },
   async created() {
-    this.setBookId({ bookId: this.$route.params.bookId });
-
-    // temporary code, will remove soon
-    const info = await printService.getGeneralInfo();
-
-    this.setInfo({ ...info, bookId: this.$route.params.bookId });
-
-    this.getDataPageEdit();
+    await this.getBookPrintInfo(this.$route.params.bookId);
   },
   async beforeDestroy() {
     await this.savePrintMainScreen(this.sheets);
@@ -53,12 +44,7 @@ export default {
   },
   methods: {
     ...mapActions({
-      getDataPageEdit: PRINT_ACTIONS.GET_DATA_MAIN,
       updateSectionLinkStatus: PRINT_ACTIONS.UPDATE_SHEET_LINK_STATUS
-    }),
-    ...mapMutations({
-      setBookId: PRINT_MUTATES.SET_BOOK_ID,
-      setInfo: APP_MUTATES.SET_GENERAL_INFO
     }),
     /**
      * Get names of page of selected sheet

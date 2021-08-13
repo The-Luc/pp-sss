@@ -8,7 +8,6 @@ export * from './background';
 export * from './sheet';
 export * from './frame';
 export * from './user';
-export * from './manager';
-export * from './header';
 export * from './property';
 export * from './photo';
+export * from './common';

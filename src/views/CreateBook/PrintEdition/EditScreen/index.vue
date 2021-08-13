@@ -12,10 +12,11 @@
     <transition name="slide-x-transition">
       <PhotoSidebar
         v-show="isOpenPhotoSidebar"
+        media-type="Photos"
         :is-show-autoflow="isShowAutoflow"
         @closePhotoSidebar="closePhotoSidebar"
         @autoflow="handleAutoflow"
-        @selectedImages="handleSelectedImages"
+        @click="openModalPhotos"
       >
         <SheetMedia
           v-if="isShowAutoflow"
@@ -25,8 +26,20 @@
         />
       </PhotoSidebar>
     </transition>
-
     <PageEdition ref="canvasEditor" @drop="onDrop" />
+
+    <ModalAddPhotos
+      :is-open-modal="isOpenModal"
+      @select="handleSelectedImages"
+      @cancel="onCancel"
+      @uploadImages="onUploadImages"
+    />
+    <ModalAddMedia
+      v-if="isOpenModalAddMedia"
+      :files="files"
+      :is-open-modal="isOpenModalAddMedia"
+      @cancel="onCancelAddMedia"
+    />
   </div>
 </template>
 
