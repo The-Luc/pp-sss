@@ -5,7 +5,9 @@ import Header from '@/containers/HeaderEdition/Header';
 import FeedbackBar from '@/containers/HeaderEdition/FeedbackBar';
 import ScreenEdition from './ScreenEdition';
 import SidebarSection from './SidebarSection';
-import ModalLayout from './ModalLayout';
+import PhotoSidebar from '@/components/PhotoSidebar';
+import ModalAddMedia from '@/containers/Modal/Media';
+
 import { GETTERS, MUTATES } from '@/store/modules/app/const';
 import {
   ACTIONS as DIGITAL_ACTIONS,
@@ -62,20 +64,32 @@ export default {
       getBookDigitalInfo
     };
   },
+  data() {
+    return {
+      isOpenModal: false
+    };
+  },
   components: {
     ToolBar,
     Header,
     FeedbackBar,
     ScreenEdition,
     SidebarSection,
-    ModalLayout
+    PhotoSidebar,
+    ModalAddMedia
   },
   computed: {
     ...mapGetters({
       isOpenMenuProperties: GETTERS.IS_OPEN_MENU_PROPERTIES,
       selectedToolName: GETTERS.SELECTED_TOOL_NAME,
       defaultThemeId: DIGITAL_GETTERS.DEFAULT_THEME_ID
-    })
+    }),
+    isShowAutoflow() {
+      return false;
+    },
+    isOpenMediaSidebar() {
+      return this.selectedToolName === TOOL_NAME.MEDIA;
+    }
   },
   watch: {
     pageSelected: {
@@ -188,6 +202,30 @@ export default {
           type: MODAL_TYPES.SELECT_THEME_DIGITAL
         }
       });
+    },
+    /**
+     * Close list photo in sidebar
+     */
+    closeMediaSidebar() {
+      this.setToolNameSelected('');
+    },
+    /**
+     * Handle autoflow
+     */
+    handleAutoflow() {
+      console.log('handleAutoflow');
+    },
+    /**
+     * Use to open modal media
+     */
+    openModalMedia() {
+      this.isOpenModal = true;
+    },
+    /**
+     * Close modal media when click cancel button
+     */
+    onCancel() {
+      this.isOpenModal = false;
     }
   }
 };

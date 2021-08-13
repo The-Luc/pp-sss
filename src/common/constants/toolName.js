@@ -15,7 +15,8 @@ export const TOOL_NAME = {
   ACTIONS: 'Actions',
   PHOTOS: 'Photos',
   UNDO: 'Undo',
-  REDO: 'Redo'
+  REDO: 'Redo',
+  MEDIA: 'Media'
 };
 
 export const ACTIONS = {
@@ -76,4 +77,11 @@ export const ONE_CLICK_TOOLS = [
   TOOL_NAME.DELETE,
   TOOL_NAME.UNDO,
   TOOL_NAME.REDO
+];
+
+export const NO_SUBMENU_TOOLS = [
+  TOOL_NAME.IMAGE_BOX,
+  TOOL_NAME.TEXT,
+  TOOL_NAME.PHOTOS,
+  TOOL_NAME.MEDIA
 ];

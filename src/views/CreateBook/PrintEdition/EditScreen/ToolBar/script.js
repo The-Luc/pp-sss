@@ -1,4 +1,3 @@
-import ToolButton from '@/components/Buttons/ToolButton';
 import ItemTool from './ItemTool';
 
 import {
@@ -26,7 +25,6 @@ export default {
     }
   },
   components: {
-    ToolButton,
     ItemTool
   },
   data() {
