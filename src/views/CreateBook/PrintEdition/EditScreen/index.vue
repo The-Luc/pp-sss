@@ -12,6 +12,7 @@
     <transition name="slide-x-transition">
       <PhotoSidebar
         v-show="isOpenPhotoSidebar"
+        media-type="Photos"
         :is-show-autoflow="isShowAutoflow"
         @closePhotoSidebar="closePhotoSidebar"
         @autoflow="handleAutoflow"

@@ -15,8 +15,8 @@
     <transition name="slide-x-transition">
       <PhotoSidebar
         v-show="isOpenMediaSidebar"
+        media-type="Media"
         :is-show-autoflow="isShowAutoflow"
-        type-name="Media"
         @closePhotoSidebar="closeMediaSidebar"
         @autoflow="handleAutoflow"
         @click="openModalMedia"

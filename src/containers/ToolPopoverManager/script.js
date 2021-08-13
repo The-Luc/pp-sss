@@ -1,7 +1,7 @@
 import { mapGetters } from 'vuex';
 
 import { GETTERS } from '@/store/modules/app/const';
-import { EDITION, TOOL_NAME } from '@/common/constants';
+import { EDITION, TOOL_NAME, NO_SUBMENU_TOOLS } from '@/common/constants';
 
 import PrintThemes from './PrintThemes';
 import Layouts from './PrintEdition/Layouts';
@@ -68,14 +68,7 @@ export default {
   },
   watch: {
     selectedToolName(toolName) {
-      if (
-        [
-          TOOL_NAME.IMAGE_BOX,
-          TOOL_NAME.TEXT,
-          TOOL_NAME.PHOTOS,
-          TOOL_NAME.MEDIA
-        ].includes(toolName)
-      ) {
+      if (NO_SUBMENU_TOOLS.includes(toolName)) {
         this.toolComponent = null;
         return;
       }

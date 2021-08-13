@@ -2,7 +2,7 @@
   <div class="sidebar-photo">
     <PhotoContent
       :show-autoflow="isShowAutoflow"
-      :type-name="typeName"
+      :media-type="mediaType"
       @click="closePhotoContent"
       @addPhoto="openModalAddPhoto"
       @autoflow="autoflowPhotos"

@@ -4,9 +4,9 @@ export default {
       type: Boolean,
       default: true
     },
-    typeName: {
+    mediaType: {
       type: String,
-      default: 'Photos'
+      required: true
     }
   },
   methods: {

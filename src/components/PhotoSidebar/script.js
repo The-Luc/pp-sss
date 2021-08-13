@@ -9,9 +9,9 @@ export default {
       type: Boolean,
       default: false
     },
-    typeName: {
+    mediaType: {
       type: String,
-      default: 'Photos'
+      required: true
     }
   },
   methods: {
