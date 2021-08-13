@@ -1,4 +1,4 @@
-import { cloneDeep } from 'lodash';
+import { cloneDeep, differenceWith } from 'lodash';
 
 import store from '@/store';
 
@@ -88,15 +88,29 @@ class StoreTracker {
 
     this._isSwitching = true;
 
+    const oldIndex = this._currentIndex;
+
     this._currentIndex += nextIndex;
 
     await this._setDataToStore();
 
     const objects = store.getters[GETTERS.SHEET_LAYOUT];
 
+    const oldData = cloneDeep(this._trackList[oldIndex]);
+    const currentData = cloneDeep(this._trackList[this._currentIndex]);
+
+    oldData.splice(0, 2);
+    currentData.splice(0, 2);
+
+    const changedIds = differenceWith(
+      oldData.length >= currentData.length ? oldData : currentData,
+      oldData.length <= currentData.length ? oldData : currentData,
+      (obj1, obj2) => obj1.id === obj2.id
+    ).map(({ id }) => id);
+
     this._isSwitching = false;
 
-    return { status: STATUS.OK, objects };
+    return { status: STATUS.OK, objects, changedIds };
   };
 
   startTracking = () => {

@@ -268,7 +268,6 @@ export default {
 
     this.setInfoBar({ x: 0, y: 0, w: 0, h: 0, zoom: 0 });
 
-    //this.storeTracker.stopTracking();
     this.undoRedoCanvas.dispose();
   },
   methods: {
@@ -733,7 +732,6 @@ export default {
       this.undoRedoCanvas = new UndoRedoCanvas({
         edition: EDITION.PRINT,
         canvas: window.printCanvas,
-        resetCanvasFn: resetObjects,
         renderCanvasFn: this.drawObjectsOnCanvas
       });
     },

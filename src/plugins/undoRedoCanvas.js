@@ -1,6 +1,12 @@
-import { cloneDeep } from 'lodash';
+import { fabric } from 'fabric';
 
-import { isEmpty, hasOwnProperty, isOk, isCtrlKey } from '@/common/utils';
+import {
+  isEmpty,
+  hasOwnProperty,
+  isOk,
+  isCtrlKey,
+  resetObjects
+} from '@/common/utils';
 
 import { KEY_CODE, MAX_STEP_UNDO_REDO } from '@/common/constants';
 
@@ -11,7 +17,6 @@ class UndoRedoCanvas {
 
   _canvas = null;
 
-  _resetCanvasFn = null;
   _renderCanvasFn = null;
 
   /**
@@ -20,17 +25,12 @@ class UndoRedoCanvas {
   constructor(options) {
     if (!hasOwnProperty(options, 'canvas')) throw 'Canvas must be set';
 
-    if (!hasOwnProperty(options, 'resetCanvasFn')) {
-      throw 'Reset canvas method must be set';
-    }
-
     if (!hasOwnProperty(options, 'renderCanvasFn')) {
       throw 'Render canvas method must be set';
     }
 
     this._canvas = options.canvas;
 
-    this._resetCanvasFn = options.resetCanvasFn;
     this._renderCanvasFn = options.renderCanvasFn;
 
     this._storeTracker = new StoreTracker({
@@ -41,7 +41,7 @@ class UndoRedoCanvas {
     document.body.addEventListener('keyup', this._handleKeyPress);
   }
 
-  _handleKeyPress = (event) => {
+  _handleKeyPress = event => {
     const key = event.keyCode || event.charCode;
 
     const isCtrlPressed = isCtrlKey(event);
@@ -52,23 +52,45 @@ class UndoRedoCanvas {
     if (isUndo) this.undo();
 
     if (isRedo) this.redo();
-  }
+  };
 
   _undoRedo = async (isUndo = true) => {
     const storeChangeResult = isUndo
       ? await this._storeTracker.backToPrevious()
       : await this._storeTracker.moveToNext();
 
+    const selectedObjectIds = isEmpty(storeChangeResult.changedIds)
+      ? this._canvas.getActiveObjects().map(o => o.id)
+      : storeChangeResult.changedIds;
+
     if (!isOk(storeChangeResult)) return;
 
-    this._resetCanvasFn(this._canvas);
+    resetObjects(this._canvas);
 
-    this._renderCanvasFn(storeChangeResult.objects);
-  }
+    await this._renderCanvasFn(storeChangeResult.objects);
+
+    const selectedObjects = this._canvas
+      .getObjects()
+      .filter(({ id }) => selectedObjectIds.includes(id));
+
+    if (selectedObjects.length === 0) return;
+
+    if (selectedObjectIds.length === 1) {
+      this._canvas.setActiveObject(selectedObjects[0]).renderAll();
+
+      return;
+    }
+
+    const selections = new fabric.ActiveSelection(selectedObjects, {
+      canvas: this._canvas
+    });
+
+    this._canvas.setActiveObject(selections).renderAll();
+  };
 
   reset = () => {
     this._storeTracker.restartTracking();
-  }
+  };
 
   dispose = () => {
     this._storeTracker.stopTracking();
@@ -76,15 +98,15 @@ class UndoRedoCanvas {
     this._storeTracker = null;
 
     document.body.removeEventListener('keyup', this._handleKeyPress);
-  }
+  };
 
   undo = () => {
     this._undoRedo();
-  }
+  };
 
   redo = () => {
     this._undoRedo(false);
-  }
+  };
 }
 
 export default UndoRedoCanvas;
