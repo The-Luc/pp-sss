@@ -11,7 +11,6 @@ import {
   useProperties
 } from '@/hooks';
 import { startDrawBox } from '@/common/fabricObjects/drawingBox';
-import StoreTracker from '@/plugins/storeTracker';
 
 import {
   isEmpty,
@@ -134,11 +133,6 @@ export default {
     const { updateSavingStatus, savingStatus } = useSavingStatus();
     const { updateSheetThumbnail } = useMutationPrintSheet();
 
-    const storeTracker = new StoreTracker({
-      edition: EDITION.PRINT,
-      maxStep: 5
-    });
-
     return {
       setActiveEdition,
       setInfoBar,
@@ -152,8 +146,7 @@ export default {
       isOpenMenuProperties,
       updateSavingStatus,
       savingStatus,
-      updateSheetThumbnail,
-      storeTracker
+      updateSheetThumbnail
     };
   },
   data() {
@@ -1854,26 +1847,12 @@ export default {
      */
     async undo() {
       this.undoRedoCanvas.undo();
-      /*const isAllowToUndo = await this.storeTracker.backToPrevious();
-
-      if (!isAllowToUndo) return;
-
-      resetObjects(window.printCanvas);
-
-      this.drawObjectsOnCanvas(this.sheetLayout);*/
     },
     /**
      * Redo user action
      */
     async redo() {
       this.undoRedoCanvas.redo();
-      /*const isAllowToRedo = await this.storeTracker.moveToNext();
-
-      if (!isAllowToRedo) return;
-
-      resetObjects(window.printCanvas);
-
-      this.drawObjectsOnCanvas(this.sheetLayout);*/
     }
   }
 };
