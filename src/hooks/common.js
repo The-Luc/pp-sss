@@ -1,10 +1,11 @@
 import { useGetters, useMutations } from 'vuex-composition-helpers';
+
+import { useUser } from './user';
+
 import {
   GETTERS as APP_GETTERS,
   MUTATES as APP_MUTATES
 } from '@/store/modules/app/const';
-
-import { useUser } from '.';
 
 /**
  * use common app store's getters and mutates

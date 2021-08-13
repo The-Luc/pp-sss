@@ -110,6 +110,7 @@ import { EVENT_TYPE } from '@/common/constants/eventType';
 import { useStyle } from '@/hooks/style';
 import { useSaveData } from './composables';
 import { useSavingStatus } from '@/views/CreateBook/composables';
+import UndoRedoCanvas from '@/plugins/undoRedoCanvas';
 
 export default {
   components: {
@@ -170,7 +171,8 @@ export default {
       countPaste: 1,
       rulerSize: { width: '0', height: '0' },
       isCanvasChanged: false,
-      autoSaveTimer: null
+      autoSaveTimer: null,
+      undoRedoCanvas: null
     };
   },
   computed: {
@@ -220,12 +222,14 @@ export default {
         // get data either from API or sessionStorage
         await this.getDataCanvas();
 
-        this.storeTracker.restartTracking();
+        this.undoRedoCanvas.reset();
 
         this.countPaste = 1;
+
         this.setSelectedObjectId({ id: '' });
         this.setCurrentObject(null);
         this.updateCanvasSize();
+
         resetObjects(window.printCanvas);
 
         await this.drawObjectsOnCanvas(this.sheetLayout);
@@ -263,6 +267,9 @@ export default {
     this.eventHandling(false);
 
     this.setInfoBar({ x: 0, y: 0, w: 0, h: 0, zoom: 0 });
+
+    //this.storeTracker.stopTracking();
+    this.undoRedoCanvas.dispose();
   },
   methods: {
     ...mapActions({
@@ -720,7 +727,15 @@ export default {
       });
 
       document.body.addEventListener('keyup', this.handleDeleteKey);
+
       this.eventHandling();
+
+      this.undoRedoCanvas = new UndoRedoCanvas({
+        edition: EDITION.PRINT,
+        canvas: window.printCanvas,
+        resetCanvasFn: resetObjects,
+        renderCanvasFn: this.drawObjectsOnCanvas
+      });
     },
     /**
      * Event handle bring to front page number
@@ -1335,6 +1350,7 @@ export default {
     updateElementProp(element, prop, objectType) {
       if (objectType === OBJECT_TYPE.TEXT) {
         applyTextBoxProperties(element, prop);
+
         const newProp = fabricToPpObject(element);
 
         const text = element?._objects?.[1];
@@ -1343,6 +1359,7 @@ export default {
             minBoundingWidth,
             minBoundingHeight
           } = getTextSizeWithPadding(text);
+
           newProp.minWidth = pxToIn(minBoundingWidth);
           newProp.minHeight = pxToIn(minBoundingHeight);
         }
@@ -1360,8 +1377,6 @@ export default {
 
       updateElement(element, prop, window.printCanvas);
 
-      // After fixing "one change only triggers one mutation"
-      // this will return new prop get from fabric element
       return prop;
     },
     /**
@@ -1840,25 +1855,27 @@ export default {
      * Undo user action
      */
     async undo() {
-      const isAllowToUndo = await this.storeTracker.backToPrevious();
+      this.undoRedoCanvas.undo();
+      /*const isAllowToUndo = await this.storeTracker.backToPrevious();
 
       if (!isAllowToUndo) return;
 
       resetObjects(window.printCanvas);
 
-      this.drawObjectsOnCanvas(this.sheetLayout);
+      this.drawObjectsOnCanvas(this.sheetLayout);*/
     },
     /**
      * Redo user action
      */
     async redo() {
-      const isAllowToRedo = await this.storeTracker.moveToNext();
+      this.undoRedoCanvas.redo();
+      /*const isAllowToRedo = await this.storeTracker.moveToNext();
 
       if (!isAllowToRedo) return;
 
       resetObjects(window.printCanvas);
 
-      this.drawObjectsOnCanvas(this.sheetLayout);
+      this.drawObjectsOnCanvas(this.sheetLayout);*/
     }
   }
 };
