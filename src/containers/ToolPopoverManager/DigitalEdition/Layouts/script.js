@@ -26,12 +26,7 @@ import {
   useActionLayout
 } from '@/hooks';
 
-import {
-  getCustom as getCustomLayouts,
-  loadLayouts,
-  loadDigitalLayouts,
-  loadSupplementalLayouts
-} from '@/api/layouts';
+import { loadDigitalLayouts, loadSupplementalLayouts } from '@/api/layouts';
 
 import { loadDigitalThemes } from '@/api/themes';
 

@@ -16,7 +16,7 @@ import appService from './api/app';
 appService.initData();
 
 // beforeunload event listener to save data to sessionStorage
-// appService.saveOnUnloadEvent();
+appService.saveOnUnloadEvent();
 
 Vue.prototype.axios = axios;
 

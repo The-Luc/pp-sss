@@ -52,12 +52,7 @@ export default {
       pageSelected,
       themeId: defaultThemeId
     } = useLayoutPrompt(edition);
-    const { drawLayout } = useDrawLayout();
-    const {
-      sheetLayout,
-      getLayoutsByType,
-      updateSheetThemeLayout
-    } = useGetLayouts(edition);
+    const { getLayoutsByType, updateSheetThemeLayout } = useGetLayouts(edition);
 
     const {
       saveToFavorites,
@@ -75,9 +70,7 @@ export default {
       setToolNameSelected,
       updateVisited,
       setIsPrompt,
-      drawLayout,
       pageSelected,
-      sheetLayout,
       getLayoutsByType,
       defaultThemeId,
       updateSheetThemeLayout,
@@ -421,7 +414,6 @@ export default {
         return;
       }
 
-      // TODO: -Luc: Check the logic here, it's strange
       const sheetType =
         this.pageSelected.type === SHEET_TYPE.BACK_COVER
           ? SHEET_TYPE.FRONT_COVER

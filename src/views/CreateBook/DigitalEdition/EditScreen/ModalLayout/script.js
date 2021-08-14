@@ -64,8 +64,7 @@ export default {
     this.initialData = {
       layoutSelected: LAYOUT_TYPES.SUPPLEMENTAL_LAYOUTS,
       isSupplemental: true,
-      // TODO: -Luc: check logic here
-      isAddFrame: !!this.modalData?.props?.isAddFrame
+      isAddFrame: true
     };
   },
   mounted() {
