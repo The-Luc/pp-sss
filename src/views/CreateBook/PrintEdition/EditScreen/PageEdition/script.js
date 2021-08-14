@@ -11,7 +11,6 @@ import {
   useProperties
 } from '@/hooks';
 import { startDrawBox } from '@/common/fabricObjects/drawingBox';
-import StoreTracker from '@/plugins/storeTracker';
 
 import {
   isEmpty,
@@ -26,7 +25,7 @@ import {
   inToPx,
   setBorderObject,
   setCanvasUniformScaling,
-  setBorderHighLight,
+  setBorderHighlight,
   setActiveCanvas,
   isNonElementPropSelected,
   copyPpObject,
@@ -110,6 +109,7 @@ import { EVENT_TYPE } from '@/common/constants/eventType';
 import { useStyle } from '@/hooks/style';
 import { useSaveData } from './composables';
 import { useSavingStatus } from '@/views/CreateBook/composables';
+import UndoRedoCanvas from '@/plugins/undoRedoCanvas';
 
 export default {
   components: {
@@ -133,11 +133,6 @@ export default {
     const { updateSavingStatus, savingStatus } = useSavingStatus();
     const { updateSheetThumbnail } = useMutationPrintSheet();
 
-    const storeTracker = new StoreTracker({
-      edition: EDITION.PRINT,
-      maxStep: 5
-    });
-
     return {
       setActiveEdition,
       setInfoBar,
@@ -151,8 +146,7 @@ export default {
       isOpenMenuProperties,
       updateSavingStatus,
       savingStatus,
-      updateSheetThumbnail,
-      storeTracker
+      updateSheetThumbnail
     };
   },
   data() {
@@ -170,7 +164,8 @@ export default {
       countPaste: 1,
       rulerSize: { width: '0', height: '0' },
       isCanvasChanged: false,
-      autoSaveTimer: null
+      autoSaveTimer: null,
+      undoRedoCanvas: null
     };
   },
   computed: {
@@ -220,12 +215,14 @@ export default {
         // get data either from API or sessionStorage
         await this.getDataCanvas();
 
-        this.storeTracker.restartTracking();
+        this.undoRedoCanvas.reset();
 
         this.countPaste = 1;
+
         this.setSelectedObjectId({ id: '' });
         this.setCurrentObject(null);
         this.updateCanvasSize();
+
         resetObjects(window.printCanvas);
 
         await this.drawObjectsOnCanvas(this.sheetLayout);
@@ -263,6 +260,8 @@ export default {
     this.eventHandling(false);
 
     this.setInfoBar({ x: 0, y: 0, w: 0, h: 0, zoom: 0 });
+
+    this.undoRedoCanvas.dispose();
   },
   methods: {
     ...mapActions({
@@ -720,7 +719,14 @@ export default {
       });
 
       document.body.addEventListener('keyup', this.handleDeleteKey);
+
       this.eventHandling();
+
+      this.undoRedoCanvas = new UndoRedoCanvas({
+        edition: EDITION.PRINT,
+        canvas: window.printCanvas,
+        renderCanvasFn: this.drawObjectsOnCanvas
+      });
     },
     /**
      * Event handle bring to front page number
@@ -783,42 +789,68 @@ export default {
      * @param {Object}  target  the selected object
      */
     objectSelected({ target }) {
-      if (this.awaitingAdd) {
+      if (this.awaitingAdd || isEmpty(target)) {
         return;
       }
-      this.toggleActiveObjects(true);
 
+      target.get('type') === 'activeSelection'
+        ? this.multiObjectSelected(target)
+        : this.singleObjectSelected(target);
+    },
+    /**
+     * Event fired when multi object of canvas is selected
+     *
+     * @param {Object}  target  the selected objects
+     */
+    multiObjectSelected(target) {
+      target.set({
+        lockScalingX: true,
+        lockScalingY: true,
+        lockRotation: true
+      });
+
+      this.setSelectedObjectId({ id: '' });
+
+      this.setCurrentObject({});
+
+      this.setInfoBar({ w: 0, h: 0 });
+
+      setCanvasUniformScaling(window.printCanvas, true);
+
+      this.resetConfigTextProperties();
+    },
+    /**
+     * Event fired when an object of canvas is selected
+     *
+     * @param {Object}  target  the selected object
+     */
+    singleObjectSelected(target) {
       const { id } = target;
+
       const targetType = target.get('type');
+
       this.setSelectedObjectId({ id });
-      setBorderHighLight(target, this.sheetLayout);
+
+      setBorderHighlight(target, this.sheetLayout);
 
       const objectData = this.currentObjects?.[id];
 
+      const objectType = objectData?.type;
+
       this.setCurrentObject(objectData);
 
-      if (targetType === 'group' && target.objectType === OBJECT_TYPE.TEXT) {
+      if (targetType === 'group' && objectType === OBJECT_TYPE.TEXT) {
         const rectObj = target.getObjects(OBJECT_TYPE.RECT)[0];
+
         setBorderObject(rectObj, objectData);
       }
 
-      const objectType = objectData?.type;
-      const isSelectMultiObject = !objectType;
-
       this.setInfoBar({
-        w: isSelectMultiObject ? 0 : this.getProperty('size')?.width,
-        h: isSelectMultiObject ? 0 : this.getProperty('size')?.height
+        w: this.getProperty('size')?.width,
+        h: this.getProperty('size')?.height
       });
 
-      if (isSelectMultiObject) {
-        setCanvasUniformScaling(window.printCanvas, true);
-
-        this.resetConfigTextProperties();
-      } else {
-        setCanvasUniformScaling(window.printCanvas, objectData.isConstrain);
-      }
-
-      if (isEmpty(objectType)) return;
+      setCanvasUniformScaling(window.printCanvas, objectData.isConstrain);
 
       this.setObjectTypeSelected({ type: objectType });
 
@@ -1335,6 +1367,7 @@ export default {
     updateElementProp(element, prop, objectType) {
       if (objectType === OBJECT_TYPE.TEXT) {
         applyTextBoxProperties(element, prop);
+
         const newProp = fabricToPpObject(element);
 
         const text = element?._objects?.[1];
@@ -1343,6 +1376,7 @@ export default {
             minBoundingWidth,
             minBoundingHeight
           } = getTextSizeWithPadding(text);
+
           newProp.minWidth = pxToIn(minBoundingWidth);
           newProp.minHeight = pxToIn(minBoundingHeight);
         }
@@ -1360,8 +1394,6 @@ export default {
 
       updateElement(element, prop, window.printCanvas);
 
-      // After fixing "one change only triggers one mutation"
-      // this will return new prop get from fabric element
       return prop;
     },
     /**
@@ -1840,25 +1872,13 @@ export default {
      * Undo user action
      */
     async undo() {
-      const isAllowToUndo = await this.storeTracker.backToPrevious();
-
-      if (!isAllowToUndo) return;
-
-      resetObjects(window.printCanvas);
-
-      this.drawObjectsOnCanvas(this.sheetLayout);
+      this.undoRedoCanvas.undo();
     },
     /**
      * Redo user action
      */
     async redo() {
-      const isAllowToRedo = await this.storeTracker.moveToNext();
-
-      if (!isAllowToRedo) return;
-
-      resetObjects(window.printCanvas);
-
-      this.drawObjectsOnCanvas(this.sheetLayout);
+      this.undoRedoCanvas.redo();
     }
   }
 };

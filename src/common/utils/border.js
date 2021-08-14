@@ -133,7 +133,7 @@ export const setBorderObject = (rectObj, objectData) => {
  * @param {Element}  group  Group object
  * @param {Object}  sheetLayout  current layout of canvas
  */
-export const setBorderHighLight = (group, sheetLayout) => {
+export const setBorderHighlight = (group, sheetLayout) => {
   group.set({
     borderColor: sheetLayout?.id ? 'white' : '#bcbec0'
   });
