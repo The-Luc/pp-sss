@@ -175,7 +175,6 @@ export default {
     },
     /**
      * Set default selected for layout base on id of sheet: Cover, Single Page or Collage
-     * @param  {Number} pageSelected Id of sheet selected
      */
     async setLayoutSelected() {
       if (isEmpty(this.layoutId)) {
@@ -202,7 +201,7 @@ export default {
 
     /**
      * Set disabled select layout base on id of sheet are cover or half-sheet
-     * @param  {Number} pageSelected Id of sheet selected
+     * @param  {Object} pageSelected current selected sheet
      */
     setDisabledLayout(pageSelected) {
       const isFavoritesExisted = !isEmpty(this.favoriteLayouts);
@@ -222,7 +221,7 @@ export default {
     },
     /**
      * Set default selected for theme base on id of sheet. Use default theme when the sheet not have private theme
-     * @param  {Number} pageSelected Id of sheet selected
+     * @param  {Number} currentSheetThemeId Theme id of the current sheet
      */
     setThemeSelected(currentSheetThemeId) {
       if (currentSheetThemeId) {
@@ -240,6 +239,7 @@ export default {
     },
     /**
      * Set object theme selected from dropdown
+     * @param {Object} theme theme that is selecting in the theme select box
      */
     async onChangeTheme(theme) {
       this.themeSelected = theme;
@@ -248,6 +248,7 @@ export default {
     },
     /**
      * Set object layout selected from dropdown
+     * @param {Object} layout layout type that is selecting in the layout type box
      */
     async onChangeLayoutType(layout) {
       this.layoutTypeSelected = this.getSelectedType(layout);
@@ -263,6 +264,7 @@ export default {
     },
     /**
      * Trigger mutation to set theme and layout for sheet after that close popover when click Select button
+     * @param {Object} layoutData layout that is selected
      */
     setThemeLayoutForSheet(layoutData) {
       if (this.layouts.length === 0) return;
@@ -322,6 +324,7 @@ export default {
     },
     /**
      * Save objects to store and draw on canvas
+     * @param {Object} layout layout will be stored & applied on canvas
      */
     applyLayout(layout) {
       this.updateSheetThemeLayout({

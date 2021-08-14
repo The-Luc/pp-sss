@@ -49,7 +49,7 @@ export default {
     const edition = EDITION.DIGITAL;
 
     const { setToolNameSelected, selectedToolName } = usePopoverCreationTool();
-    const { frames, currentFrameId } = useFrame();
+    const { frames, currentFrame, currentFrameId } = useFrame();
     const { toggleModal, modalData } = useModal();
     const {
       isPrompt,
@@ -59,7 +59,6 @@ export default {
       themeId: defaultThemeId
     } = useLayoutPrompt(edition);
     const { getLayoutsByType, updateSheetThemeLayout } = useGetLayouts(edition);
-    const { currentFrame } = useFrame();
 
     const {
       getDigitalLayoutTypes,
@@ -206,7 +205,7 @@ export default {
     },
     /**
      * Set default selected for layout base on id of sheet: Cover, Single Page or Collage
-     * @param  {Number} pageSelected Id of sheet selected
+     * @param  {Object} pageSelected current selected sheet
      */
     async setLayoutSelected(pageSelected) {
       if (this.initialData?.layoutSelected) {
@@ -262,7 +261,7 @@ export default {
     },
     /**
      * Set disabled select layout base on id of sheet are cover or half-sheet
-     * @param  {Number} pageSelected Id of sheet selected
+     * @param  {Object} pageSelected current selected sheet
      */
     setDisabledLayout(pageSelected) {
       this.disabled =
@@ -276,7 +275,7 @@ export default {
     },
     /**
      * Set default selected for theme base on id of sheet. Use default theme when the sheet not have private theme
-     * @param  {Number} pageSelected Id of sheet selected
+     * @param  {Number} currentSheetThemeId Theme id of the current sheet
      */
     setThemeSelected(currentSheetThemeId) {
       if (currentSheetThemeId) {
@@ -294,6 +293,7 @@ export default {
     },
     /**
      * Set object theme selected from dropdown
+     * @param {Object} theme theme that is selecting in the theme select box
      */
     async onChangeTheme(theme) {
       this.themeSelected = theme;
@@ -302,6 +302,7 @@ export default {
     },
     /**
      * Set object layout selected from dropdown
+     * @param {Object} layout layout type that is selecting in the layout type box
      */
     async onChangeLayoutType(layout) {
       this.layoutTypeSelected = this.getSelectedType(layout);
@@ -317,6 +318,7 @@ export default {
     },
     /**
      * Trigger mutation to set theme and layout for sheet after that close popover when click Select button
+     * @param {Object} layoutData layout that is selected
      */
     setThemeLayoutForSheet(layoutData) {
       if (isEmpty(this.layouts)) return;
@@ -373,6 +375,7 @@ export default {
     },
     /**
      * Save objects to store and draw on canvas
+     * @param {Object} layout layout will be stored & applied on canvas
      */
     applyLayout(layout) {
       this.updateSheetThemeLayout({
