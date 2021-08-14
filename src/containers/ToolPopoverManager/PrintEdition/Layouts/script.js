@@ -1,26 +1,14 @@
-import { mapGetters, mapMutations } from 'vuex';
-
-import { MUTATES as THEME_MUTATES } from '@/store/modules/theme/const';
-
-import {
-  GETTERS as APP_GETTERS,
-  MUTATES as APP_MUTATES
-} from '@/store/modules/app/const';
+import { mapGetters } from 'vuex';
 
 import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
-import PpToolPopover from '@/components/ToolPopover';
-import PpSelect from '@/components/Selectors/Select';
-import SelectLayout from './SelectLayout';
-import SelectTheme from './SelectTheme';
-import GotIt from '@/components/GotIt';
-import Item from './Item';
+import Layouts from '@/components/Layouts';
 
 import {
-  EDITION,
   MODAL_TYPES,
   SHEET_TYPE,
   LAYOUT_PAGE_TYPE,
-  CUSTOM_LAYOUT_TYPE
+  CUSTOM_LAYOUT_TYPE,
+  EDITION
 } from '@/common/constants';
 import {
   getThemeOptSelectedById,
@@ -28,60 +16,37 @@ import {
   resetObjects,
   activeCanvas,
   isEmpty,
-  scrollToElement,
-  isHalfSheet,
   insertItemsToArray,
-  removeItemsFormArray
+  removeItemsFormArray,
+  isHalfSheet
 } from '@/common/utils';
 import {
   usePopoverCreationTool,
   useLayoutPrompt,
   useDrawLayout,
   useGetLayouts,
-  useFrame,
   useModal,
   useActionLayout
 } from '@/hooks';
 
-import {
-  getCustom as getCustomLayouts,
-  loadLayouts,
-  loadDigitalLayouts,
-  loadSupplementalLayouts
-} from '@/api/layouts';
+import { getCustom as getCustomLayouts, loadLayouts } from '@/api/layouts';
 
-import { loadDigitalThemes, loadPrintThemes } from '@/api/themes';
-
-// for digital. After implement saving feature, this code can be remove
-import { DIGITAL_LAYOUT_TYPES as LAYOUT_TYPES } from '@/mock/layoutTypes';
+import { loadPrintThemes } from '@/api/themes';
 
 import { cloneDeep } from 'lodash';
 import { changeObjectsCoords } from '@/common/utils/layout';
 
 export default {
   components: {
-    PpToolPopover,
-    PpSelect,
-    Item,
-    SelectTheme,
-    SelectLayout,
-    GotIt
+    Layouts
   },
-  props: {
-    edition: {
-      type: String,
-      default: ''
-    },
-    initialData: {
-      type: Object,
-      default: () => ({})
-    }
-  },
-  setup({ edition }) {
+  setup() {
+    const edition = EDITION.PRINT;
+
     const { setToolNameSelected, selectedToolName } = usePopoverCreationTool();
-    const { frames, currentFrameId } = useFrame();
-    const { modalData } = useModal();
+    const { modalData, toggleModal } = useModal();
     const {
+      isPrompt,
       updateVisited,
       setIsPrompt,
       pageSelected,
@@ -93,7 +58,6 @@ export default {
       getLayoutsByType,
       updateSheetThemeLayout
     } = useGetLayouts(edition);
-    const { currentFrame } = useFrame();
 
     const {
       saveToFavorites,
@@ -106,6 +70,7 @@ export default {
     } = useActionLayout();
 
     return {
+      isPrompt,
       selectedToolName,
       setToolNameSelected,
       updateVisited,
@@ -116,10 +81,8 @@ export default {
       getLayoutsByType,
       defaultThemeId,
       updateSheetThemeLayout,
-      frames,
-      currentFrame,
       modalData,
-      currentFrameId,
+      toggleModal,
       saveToFavorites,
       getFavorites,
       getPrintLayoutTypes,
@@ -130,26 +93,22 @@ export default {
     };
   },
   data() {
-    const isDigital = this.edition === EDITION.DIGITAL;
-
+    const textDisplay = {
+      promptMsg:
+        'The best way to get started is by selecting a layout. As a shortcut, the layouts from your selecting theme will be presented first.',
+      promptTitle: 'Select a Layout',
+      title: 'Layouts',
+      optionTitle: 'Layout Type:'
+    };
     return {
       themesOptions: [],
       layoutTypesOrigin: [],
       layoutTypes: [],
       disabled: false,
       disabledTheme: false,
-      layoutTypeSelected: isDigital ? {} : { sub: '' },
+      layoutTypeSelected: { sub: '' },
       themeSelected: {},
-      tempLayoutIdSelected: null,
-      layoutEmptyLength: 4,
-      layoutObjSelected: {},
-      textDisplay: {
-        promptMsg: '',
-        promptTitle: '',
-        title: '',
-        optionTitle: ''
-      },
-      isDigital,
+      textDisplay,
       layoutId: null,
       favoriteLayouts: [],
       customLayouts: [],
@@ -158,7 +117,6 @@ export default {
   },
   computed: {
     ...mapGetters({
-      isPrompt: APP_GETTERS.IS_PROMPT,
       totalBackground: PRINT_GETTERS.TOTAL_BACKGROUND,
       printObject: PRINT_GETTERS.GET_OBJECTS
     }),
@@ -181,17 +139,6 @@ export default {
         }
       }
     },
-    layouts() {
-      this.setLayoutActive();
-    },
-    initialData: {
-      deep: true,
-      handler(newVal, oldVal) {
-        if (newVal?.disabled !== oldVal?.disabled) {
-          this.initData();
-        }
-      }
-    },
     layoutTypeSelected: {
       deep: true,
       handler(newVal) {
@@ -204,10 +151,8 @@ export default {
     }
   },
   async mounted() {
-    this.textDisplay = this.updateTextDisplay();
-
     await Promise.all([
-      this.initEditionData(),
+      this.initPrintData(),
       this.getLayoutTypes(),
       this.getFavoritesData(),
       this.getCustomData()
@@ -216,35 +161,20 @@ export default {
     await this.filterLayoutType();
 
     await this.initData();
-
-    this.autoScroll(this.layoutId);
   },
   methods: {
-    ...mapMutations({
-      toggleModal: APP_MUTATES.TOGGLE_MODAL,
-      setDigitalLayouts: THEME_MUTATES.DIGITAL_LAYOUTS
-    }),
     /**
      * Set up inital data to render in view
      */
     async initData() {
-      await this.setLayoutSelected(this.pageSelected);
+      await this.setLayoutSelected();
       this.setDisabledLayout(this.pageSelected);
       this.setThemeSelected(this.themeId);
-      this.setLayoutActive();
 
       await this.getLayouts();
     },
     /**
      * Set up inital data to render in view
-     */
-    async initEditionData() {
-      this.isDigital
-        ? await this.initDigitalData()
-        : await this.initPrintData();
-    },
-    /**
-     * Set up inital data to render in view of print ediont
      */
     async initPrintData() {
       this.themesOptions = await loadPrintThemes();
@@ -252,97 +182,11 @@ export default {
       this.layoutId = this.pageSelected?.layoutId;
     },
     /**
-     * Set up inital data to render in view of digital ediont
-     */
-    async initDigitalData() {
-      this.themesOptions = await loadDigitalThemes();
-
-      const isSupplemental = this.initialData?.isSupplemental;
-
-      const layouts = isSupplemental
-        ? await loadSupplementalLayouts()
-        : await loadDigitalLayouts();
-
-      this.setDigitalLayouts({ layouts });
-
-      // if layout modal is used to add frame -> set currentFrameObjet = null
-      const currentFrameObj = this.modalData.props.isAddNew
-        ? null
-        : this.frames.find(f => f.id === this.currentFrameId);
-
-      this.layoutId = this.initialData?.isSupplemental
-        ? currentFrameObj?.frame?.supplementalLayoutId
-        : this.pageSelected?.layoutId;
-    },
-    /**
      * Set default selected for layout base on id of sheet: Cover, Single Page or Collage
      * @param  {Number} pageSelected Id of sheet selected
      */
-    async setLayoutSelected(pageSelected) {
-      if (this.initialData?.layoutSelected) {
-        this.layoutTypeSelected = this.getSelectedType(
-          this.initialData.layoutSelected
-        );
-
-        return;
-      }
-      const sheetType = pageSelected.type;
-
-      if (!this.isDigital) {
-        await this.setPrintLayoutSelected(this.pageSelected?.layoutId);
-
-        return;
-      }
-
-      switch (sheetType) {
-        case SHEET_TYPE.COVER:
-          {
-            const coverOption = this.layoutTypes.find(
-              l => l.sheetType === SHEET_TYPE.COVER
-            );
-            this.layoutTypeSelected = this.getSelectedType(coverOption);
-          }
-          break;
-        case SHEET_TYPE.FRONT_COVER:
-        case SHEET_TYPE.BACK_COVER:
-          {
-            const singlePageOption = this.layoutTypes.find(
-              l => l.sheetType === SHEET_TYPE.FRONT_COVER
-            );
-            this.layoutTypeSelected = this.getSelectedType(singlePageOption);
-          }
-          break;
-        default:
-          {
-            // Use default layout if the sheet no have private layout
-            const layoutId = this.pageSelected?.layoutId;
-            const defaultLayouts = await loadDigitalLayouts();
-
-            if (layoutId) {
-              const layoutOpt = getLayoutOptSelectedById(
-                defaultLayouts,
-                this.layoutTypes,
-                layoutId
-              );
-              this.layoutTypeSelected = this.getSelectedType(layoutOpt);
-            } else {
-              const index = this.layoutTypes.length > 1 ? 1 : 0;
-
-              this.layoutTypeSelected = this.getSelectedType(
-                this.layoutTypes[index]
-              );
-            }
-          }
-          break;
-      }
-    },
-    /**
-     * Set default selected for layout base on selected sheet
-     */
-    async setPrintLayoutSelected() {
-      const layoutId = this.pageSelected?.layoutId;
-
-      if (isEmpty(layoutId)) {
+    async setLayoutSelected() {
+      if (isEmpty(this.layoutId)) {
         const sheetType = this.pageSelected?.type;
 
         const index = sheetType === SHEET_TYPE.NORMAL ? 1 : 0;
@@ -358,11 +202,12 @@ export default {
       const layoutOpt = getLayoutOptSelectedById(
         [...defaultLayouts, ...customLayouts],
         this.layoutTypes,
-        layoutId
+        this.layoutId
       );
 
       this.layoutTypeSelected = this.getSelectedType(layoutOpt);
     },
+
     /**
      * Set disabled select layout base on id of sheet are cover or half-sheet
      * @param  {Number} pageSelected Id of sheet selected
@@ -371,20 +216,17 @@ export default {
       const isFavoritesExisted = !isEmpty(this.favoriteLayouts);
       const isCustomExisted = !isEmpty(this.customLayouts);
 
-      if ((isFavoritesExisted || isCustomExisted) && !this.isDigital) {
+      if (isFavoritesExisted || isCustomExisted) {
         this.disabled = false;
 
         return;
       }
 
-      this.disabled =
-        this.initialData?.disabled ??
-        this.initialData?.isSupplemental ??
-        [
-          SHEET_TYPE.COVER,
-          SHEET_TYPE.FRONT_COVER,
-          SHEET_TYPE.BACK_COVER
-        ].includes(pageSelected.type);
+      this.disabled = [
+        SHEET_TYPE.COVER,
+        SHEET_TYPE.FRONT_COVER,
+        SHEET_TYPE.BACK_COVER
+      ].includes(pageSelected.type);
     },
     /**
      * Set default selected for theme base on id of sheet. Use default theme when the sheet not have private theme
@@ -421,38 +263,6 @@ export default {
       await this.getLayouts();
     },
     /**
-     * When open layout from creation tool, check sheet has exist layout before or not
-     * if not, first layout is selected, else is sheet's layout
-     */
-    setLayoutActive() {
-      if (this.layouts.length === 0) return;
-
-      this.tempLayoutIdSelected = this.layouts[0].id;
-      this.layoutObjSelected = this.layouts[0];
-
-      // if adding new frame, use the default setting above
-      if (this.initialData?.isAddNew) return;
-
-      if (this.layoutId) {
-        const sheetLayoutObj = this.layouts.find(
-          layout => layout.id === this.layoutId
-        );
-        if (sheetLayoutObj?.id) {
-          this.tempLayoutIdSelected = sheetLayoutObj.id;
-        }
-      }
-      this.layoutObjSelected = this.layouts.find(
-        l => l.id === this.tempLayoutIdSelected
-      );
-    },
-    /**
-     * Set current layout active when user click layout which they want change
-     */
-    onSelectLayout(layout) {
-      this.layoutObjSelected = layout;
-      this.tempLayoutIdSelected = layout.id;
-    },
-    /**
      * Trigger hooks to set tool name is empty and then close popover when click Cancel button
      */
     onCancel() {
@@ -462,106 +272,61 @@ export default {
     /**
      * Trigger mutation to set theme and layout for sheet after that close popover when click Select button
      */
-    setThemeLayoutForSheet() {
-      if (this.layouts.length > 0 && this.tempLayoutIdSelected) {
-        const layout = cloneDeep(this.layoutObjSelected);
+    setThemeLayoutForSheet(layoutData) {
+      if (this.layouts.length === 0) return;
 
-        // change objects coords if user at FRONT_COVER or BACK_COVER
-        if (this.isHalfSheet && !this.isDigital) {
-          layout.objects = changeObjectsCoords(
-            layout.objects,
-            this.pageSelected.type,
-            window.printCanvas
-          );
-        }
+      const layout = cloneDeep(layoutData);
 
-        if (
-          !this.isDigital &&
-          (this.totalBackground || !isEmpty(this.printObject))
-        ) {
-          this.onCancel();
-          this.toggleModal({
-            isOpenModal: true,
-            modalData: {
-              type: MODAL_TYPES.RESET_LAYOUT,
-              props: {
-                pageSelected: this.pageSelected,
-                sheetId: this.pageSelected?.id,
-                themeId: this.themeSelected?.id,
-                layout,
-                layoutObjSelected: layout
-              }
-            }
-          });
-          return;
-        }
-
-        const isSinglePage =
-          this.layoutObjSelected.pageType === LAYOUT_PAGE_TYPE.SINGLE_PAGE.id;
-
-        if (!this.isDigital && !this.isHalfSheet && isSinglePage) {
-          this.onCancel();
-          this.toggleModal({
-            isOpenModal: true,
-            modalData: {
-              type: MODAL_TYPES.SELECT_PAGE,
-              props: {
-                numberPageLeft: this.pageSelected?.pageLeftName,
-                numberPageRight: this.pageSelected?.pageRightName,
-                sheetId: this.pageSelected?.id,
-                themeId: this.themeSelected?.id,
-                layout
-              }
-            }
-          });
-          return;
-        }
-
-        if (
-          this.layoutObjSelected?.type ===
-          LAYOUT_TYPES.SUPPLEMENTAL_LAYOUTS.value
-        ) {
-          if (this.modalData?.props?.isAddNew) {
-            this.$emit('addFrame', this.layoutObjSelected);
-            return;
-          }
-          this.onCancel();
-          this.toggleModal({
-            isOpenModal: true,
-            modalData: {
-              type: MODAL_TYPES.OVERRIDE_LAYOUT,
-              props: {
-                sheetData: {
-                  layout,
-                  addNewFrame: true
-                }
-              }
-            }
-          });
-          return;
-        }
-
-        // Prompt a modal to comfirm overriding layout if layoutId existed and in DIGITAL mode
-        if (this.isDigital && this.pageSelected?.layoutId) {
-          this.toggleModal({
-            isOpenModal: true,
-            modalData: {
-              type: MODAL_TYPES.OVERRIDE_LAYOUT,
-              props: {
-                sheetData: {
-                  sheetId: this.pageSelected?.id,
-                  themeId: this.themeSelected?.id,
-                  layout
-                }
-              }
-            }
-          });
-        } else {
-          this.applyLayout(layout);
-        }
-
-        this.onCancel();
+      // change objects coords if user at FRONT_COVER or BACK_COVER
+      if (this.isHalfSheet) {
+        layout.objects = changeObjectsCoords(
+          layout.objects,
+          this.pageSelected.type,
+          window.printCanvas
+        );
       }
+
+      // confirm reset layout if there are any backgrounds or objects on canvas
+      if (this.totalBackground || !isEmpty(this.printObject)) {
+        this.onCancel();
+        this.toggleModal({
+          isOpenModal: true,
+          modalData: {
+            type: MODAL_TYPES.RESET_LAYOUT,
+            props: {
+              pageSelected: this.pageSelected,
+              sheetId: this.pageSelected?.id,
+              themeId: this.themeSelected?.id,
+              layout
+            }
+          }
+        });
+        return;
+      }
+
+      const isSinglePage = layout.pageType === LAYOUT_PAGE_TYPE.SINGLE_PAGE.id;
+
+      if (!this.isHalfSheet && isSinglePage) {
+        this.onCancel();
+        this.toggleModal({
+          isOpenModal: true,
+          modalData: {
+            type: MODAL_TYPES.SELECT_PAGE,
+            props: {
+              numberPageLeft: this.pageSelected?.pageLeftName,
+              numberPageRight: this.pageSelected?.pageRightName,
+              sheetId: this.pageSelected?.id,
+              themeId: this.themeSelected?.id,
+              layout
+            }
+          }
+        });
+        return;
+      }
+
+      this.applyLayout(layout);
+
+      this.onCancel();
     },
     /**
      * Save objects to store and draw on canvas
@@ -576,9 +341,7 @@ export default {
       resetObjects(activeCanvas);
 
       // draw layout on canvas
-      if (!this.isDigital) {
-        this.$root.$emit('drawLayout');
-      }
+      this.$root.$emit('drawLayout');
 
       this.$root.$emit('pageNumber');
     },
@@ -595,46 +358,11 @@ export default {
     },
 
     /**
-     * to update the display text for print and digital mode
-     */
-    updateTextDisplay() {
-      const printText = {
-        promptMsg:
-          'The best way to get started is by selecting a layout. As a shortcut, the layouts from your selecting theme will be presented first.',
-        promptTitle: 'Select a Layout',
-        title: 'Layouts',
-        optionTitle: 'Layout Type:'
-      };
-      const digitalText = {
-        promptMsg:
-          'The best way to get started is by selecting a screen layout. As a shortcut, the screens from your selecting theme will be presented first.',
-        promptTitle: 'Select a Screen Layout',
-        title: 'Screen Layouts',
-        optionTitle: 'Screen Type:'
-      };
-
-      return this.isDigital ? digitalText : printText;
-    },
-    /**
-     * Get layout refs by Id and handle auto scroll
-     *
-     * @param {Number} layoutId selected layout id
-     */
-    autoScroll(layoutId) {
-      setTimeout(() => {
-        const currentLayout = this.$refs[`layout${layoutId}`];
-
-        if (isEmpty(currentLayout)) return;
-
-        scrollToElement(currentLayout[0]?.$el, { block: 'center' });
-      }, 20);
-    },
-    /**
      * Save / unsave the selected layout to favorites
      *
      * @param {String | Number} id id of selected layout
      */
-    async onSaveToFavorites({ id }) {
+    async onSaveToFavorites(id) {
       await this.saveToFavorites(id);
 
       this.modifyFavorites(id);
@@ -662,15 +390,6 @@ export default {
       }
     },
     /**
-     * Check if selected layout is in favorite list
-     *
-     * @param   {String | Number} id  id of selected layout
-     * @returns {Boolean}             is selected layout in favorite list
-     */
-    isInFavorites({ id }) {
-      return this.favoriteLayouts.includes(id);
-    },
-    /**
      * Get favorites from API
      */
     async getFavoritesData() {
@@ -686,12 +405,6 @@ export default {
      * Filter layout types
      */
     async filterLayoutType() {
-      if (this.isDigital) {
-        this.layoutTypes = this.layoutTypesOrigin;
-
-        return;
-      }
-
       if (this.pageSelected.type === SHEET_TYPE.NORMAL) {
         const opts = [...this.layoutTypesOrigin];
 
@@ -708,6 +421,7 @@ export default {
         return;
       }
 
+      // TODO: -Luc: Check the logic here, it's strange
       const sheetType =
         this.pageSelected.type === SHEET_TYPE.BACK_COVER
           ? SHEET_TYPE.FRONT_COVER
@@ -733,22 +447,10 @@ export default {
     async getLayoutTypes() {
       const layoutTypes = await this.getPrintLayoutTypes();
 
-      if (!this.isDigital) {
-        this.layoutTypesOrigin = layoutTypes.map(lt => ({
-          ...lt,
-          subItems: []
-        }));
-        this.layoutTypes = this.layoutTypesOrigin;
-
-        return;
-      }
-
-      this.layoutTypesOrigin = this.initialData?.isSupplemental
-        ? layoutTypes
-        : layoutTypes.filter(
-            l => l.value !== LAYOUT_TYPES.SUPPLEMENTAL_LAYOUTS.value
-          );
-
+      this.layoutTypesOrigin = layoutTypes.map(lt => ({
+        ...lt,
+        subItems: []
+      }));
       this.layoutTypes = this.layoutTypesOrigin;
     },
     /**
@@ -758,8 +460,6 @@ export default {
      * @returns {Object}                page type value
      */
     getSelectedType(selectedData) {
-      if (this.isDigital) return selectedData;
-
       if (isEmpty(selectedData)) return { sub: '' };
 
       return { value: selectedData.value, sub: selectedData.sub?.value };
@@ -773,15 +473,6 @@ export default {
         isEmpty(this.layoutTypeSelected?.value)
       ) {
         this.layouts = [];
-
-        return;
-      }
-
-      if (this.isDigital) {
-        this.layouts = await this.getLayoutsByType(
-          this.themeSelected.id,
-          this.layoutTypeSelected.value
-        );
 
         return;
       }

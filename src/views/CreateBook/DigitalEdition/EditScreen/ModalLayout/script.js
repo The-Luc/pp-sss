@@ -1,4 +1,4 @@
-import Layouts from '@/containers/ToolPopoverManager/PrintEdition/Layouts';
+import Layouts from '@/containers/ToolPopoverManager/DigitalEdition/Layouts';
 import { mapMutations } from 'vuex';
 import { MUTATES } from '@/store/modules/theme/const';
 import { EDITION } from '@/common/constants';
@@ -54,15 +54,7 @@ export default {
     onAddFrame(layout) {
       const frames = layout?.frames || [];
 
-      const frameId = this.modalData?.props?.layoutId;
-
-      // if layoutId existed: user is replacing layout
-      if (frameId) {
-        this.updateObjectsToStore({ objects: frames[0].objects });
-        this.handleReplaceFrame({ frame: frames[0], frameId });
-      } else {
-        this.handleAddFrame(frames);
-      }
+      this.handleAddFrame(frames);
 
       this.setSupplementalLayoutId({ id: layout.id });
       this.onClose();
@@ -72,7 +64,8 @@ export default {
     this.initialData = {
       layoutSelected: LAYOUT_TYPES.SUPPLEMENTAL_LAYOUTS,
       isSupplemental: true,
-      isAddNew: !!this.modalData?.props?.isAddNew
+      // TODO: -Luc: check logic here
+      isAddFrame: !!this.modalData?.props?.isAddFrame
     };
   },
   mounted() {

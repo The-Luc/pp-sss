@@ -4,7 +4,8 @@ import { GETTERS } from '@/store/modules/app/const';
 import { EDITION, TOOL_NAME } from '@/common/constants';
 
 import PrintThemes from './PrintThemes';
-import Layouts from './PrintEdition/Layouts';
+import PrintLayouts from './PrintEdition/Layouts';
+import DigitalLayouts from './DigitalEdition/Layouts';
 import PrintBackgrounds from './PrintEdition/Backgrounds';
 import DigitalBackgrounds from './DigitalEdition/Backgrounds';
 import Shapes from './Shapes';
@@ -47,8 +48,8 @@ export default {
   components: {
     [TOOL_NAME.PRINT_THEMES]: PrintThemes,
     [TOOL_NAME.DIGITAL_THEMES]: DigitalThemes,
-    [TOOL_NAME.PRINT_LAYOUTS]: Layouts,
-    [TOOL_NAME.DIGITAL_LAYOUTS]: Layouts,
+    [TOOL_NAME.PRINT_LAYOUTS]: PrintLayouts,
+    [TOOL_NAME.DIGITAL_LAYOUTS]: DigitalLayouts,
     [TOOL_NAME.PRINT_BACKGROUNDS]: PrintBackgrounds,
     [TOOL_NAME.DIGITAL_BACKGROUNDS]: DigitalBackgrounds,
     [TOOL_NAME.CLIP_ART]: ClipArt,

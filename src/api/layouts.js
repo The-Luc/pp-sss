@@ -19,7 +19,7 @@ export const loadLayouts = () => {
 export const loadDigitalLayouts = () =>
   new Promise(resolve => {
     setTimeout(() => {
-      resolve(packageLayouts);
+      resolve(window.data.digitalLayouts);
     });
   });
 
@@ -44,6 +44,14 @@ export const getPrintLayoutTypes = () => {
   return new Promise(resolve => {
     setTimeout(() => {
       resolve(window.data.printLayoutTypes);
+    });
+  });
+};
+
+export const getDigitalLayoutTypes = () => {
+  return new Promise(resolve => {
+    setTimeout(() => {
+      resolve(window.data.digitalLayoutTypes);
     });
   });
 };

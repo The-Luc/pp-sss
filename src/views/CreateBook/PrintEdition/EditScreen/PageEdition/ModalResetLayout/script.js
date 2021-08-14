@@ -39,9 +39,6 @@ export default {
     },
     layout() {
       return this.$attrs.props.layout;
-    },
-    layoutObjSelected() {
-      return this.$attrs.props.layoutObjSelected;
     }
   },
   methods: {
@@ -50,7 +47,7 @@ export default {
     }),
     onApplyLayout() {
       if (
-        this.layoutObjSelected.pageType === LAYOUT_PAGE_TYPE.SINGLE_PAGE.id &&
+        this.layout.pageType === LAYOUT_PAGE_TYPE.SINGLE_PAGE.id &&
         ![SHEET_TYPE.FRONT_COVER, SHEET_TYPE.BACK_COVER].includes(
           this.pageSelected?.type
         )
@@ -63,9 +60,9 @@ export default {
             props: {
               numberPageLeft: this.pageSelected?.pageLeftName,
               numberPageRight: this.pageSelected?.pageRightName,
-              sheetId: this.pageSelected?.id,
-              themeId: this.themeSelected?.id,
-              layout: this.layoutObjSelected
+              sheetId: this.sheetId,
+              themeId: this.themeId,
+              layout: this.layout
             }
           }
         });
@@ -75,9 +72,9 @@ export default {
       const width = window.printCanvas.width;
       const positionCenterX = pxToIn(width / zoom / 2);
       this.updateSheetThemeLayout({
-        sheetId: this.pageSelected?.id,
-        themeId: this.themeSelected?.id,
-        layout: this.layoutObjSelected,
+        sheetId: this.sheetId,
+        themeId: this.themeId,
+        layout: this.layout,
         positionCenterX
       });
       resetObjects(window.printCanvas);
