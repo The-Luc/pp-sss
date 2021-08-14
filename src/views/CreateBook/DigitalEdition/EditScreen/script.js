@@ -5,7 +5,9 @@ import Header from '@/containers/HeaderEdition/Header';
 import FeedbackBar from '@/containers/HeaderEdition/FeedbackBar';
 import ScreenEdition from './ScreenEdition';
 import SidebarSection from './SidebarSection';
-import ModalLayout from './ModalLayout';
+import PhotoSidebar from '@/components/PhotoSidebar';
+import ModalAddMedia from '@/containers/Modal/Media';
+
 import { GETTERS, MUTATES } from '@/store/modules/app/const';
 import {
   ACTIONS as DIGITAL_ACTIONS,
@@ -30,9 +32,10 @@ import {
 } from '@/hooks';
 import { isEmpty, isPositiveInteger, getEditionListPath } from '@/common/utils';
 import { COPY_OBJECT_KEY } from '@/common/constants/config';
-import digitalService from '@/api/digital';
+
 import { useSaveData } from './composables';
 import { useSavingStatus } from '../../composables';
+import { useBookDigitalInfo } from './composables';
 
 export default {
   setup() {
@@ -44,6 +47,7 @@ export default {
     const { currentFrameId, updateFrameObjects } = useFrame();
     const { saveEditScreen, getDataEditScreen } = useSaveData();
     const { updateSavingStatus } = useSavingStatus();
+    const { getBookDigitalInfo } = useBookDigitalInfo();
 
     return {
       pageSelected,
@@ -56,7 +60,13 @@ export default {
       updateFrameObjects,
       saveEditScreen,
       getDataEditScreen,
-      updateSavingStatus
+      updateSavingStatus,
+      getBookDigitalInfo
+    };
+  },
+  data() {
+    return {
+      isOpenModal: false
     };
   },
   components: {
@@ -65,14 +75,21 @@ export default {
     FeedbackBar,
     ScreenEdition,
     SidebarSection,
-    ModalLayout
+    PhotoSidebar,
+    ModalAddMedia
   },
   computed: {
     ...mapGetters({
       isOpenMenuProperties: GETTERS.IS_OPEN_MENU_PROPERTIES,
       selectedToolName: GETTERS.SELECTED_TOOL_NAME,
       defaultThemeId: DIGITAL_GETTERS.DEFAULT_THEME_ID
-    })
+    }),
+    isShowAutoflow() {
+      return false;
+    },
+    isOpenMediaSidebar() {
+      return this.selectedToolName === TOOL_NAME.MEDIA;
+    }
   },
   watch: {
     pageSelected: {
@@ -96,14 +113,7 @@ export default {
         return;
       }
 
-      vm.setBookId({ bookId });
-
-      // temporary code, will remove soon
-      const info = await digitalService.getGeneralInfo();
-
-      vm.setInfo({ ...info, bookId });
-
-      await vm.getDataPageEdit();
+      await vm.getBookDigitalInfo(bookId);
 
       vm.setCurrentSheetId({ id: parseInt(to.params.sheetId) });
 
@@ -192,6 +202,30 @@ export default {
           type: MODAL_TYPES.SELECT_THEME_DIGITAL
         }
       });
+    },
+    /**
+     * Close list photo in sidebar
+     */
+    closeMediaSidebar() {
+      this.setToolNameSelected('');
+    },
+    /**
+     * Handle autoflow
+     */
+    handleAutoflow() {
+      console.log('handleAutoflow');
+    },
+    /**
+     * Use to open modal media
+     */
+    openModalMedia() {
+      this.isOpenModal = true;
+    },
+    /**
+     * Close modal media when click cancel button
+     */
+    onCancel() {
+      this.isOpenModal = false;
     }
   }
 };

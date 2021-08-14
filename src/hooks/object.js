@@ -1,5 +1,7 @@
 import { useGetters } from 'vuex-composition-helpers';
 import { GETTERS as APP_GETTERS } from '@/store/modules/app/const';
+import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
+import { GETTERS as DIGITAL_GETTERS } from '@/store/modules/digital/const';
 
 export const useObjectProperties = () => {
   const { currentObject } = useGetters({
@@ -27,5 +29,17 @@ export const useElementProperties = () => {
 
   return {
     getProperty
+  };
+};
+
+export const useTotalObjects = (isDigital = false) => {
+  const GETTETS = isDigital ? DIGITAL_GETTERS : PRINT_GETTERS;
+  const { totalBackground, totalObject } = useGetters({
+    totalBackground: GETTETS.TOTAL_BACKGROUND,
+    totalObject: GETTETS.TOTAL_OBJECT
+  });
+  return {
+    totalBackground,
+    totalObject
   };
 };

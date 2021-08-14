@@ -12,6 +12,7 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex';
+import { useAppCommon } from '@/hooks/common';
 
 import ModalManager from '@/containers/ModalManager';
 import HeaderControl from '@/views/CreateBook/HeadControl';
@@ -23,6 +24,12 @@ export default {
   components: {
     ModalManager,
     HeaderControl
+  },
+  setup() {
+    const { getAppDetail } = useAppCommon();
+    return {
+      getAppDetail
+    };
   },
   computed: {
     ...mapGetters({

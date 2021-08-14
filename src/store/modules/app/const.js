@@ -46,6 +46,7 @@ class ActionClass extends BaseObject {
   GET_SAVED_TEXT_STYLES = 'getSavedTextStyles';
   SAVE_IMAGE_STYLE = 'saveImageStyle';
   GET_SAVED_IMAGE_STYLES = 'getSavedImageStyles';
+  UPDATE_PHOTO_VISITED = 'updatePhotoVisited';
 
   constructor(props) {
     super(props);
@@ -79,7 +80,6 @@ class MutationClass extends BaseObject {
   SET_SAVED_TEXT_STYLE = 'setSavedTextStyle';
   SET_SAVED_IMAGE_STYLE = 'setSavedImageStyle';
   UPDATE_SAVING_STATUS = 'updateSavingStatus';
-  SET_PHOTO_VISITED = 'setPhotoVisited';
 
   constructor(props) {
     super(props);

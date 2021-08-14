@@ -15,6 +15,7 @@ import {
 import PRINT from './const';
 import { MUTATES as APP_MUTATES } from '../app/const';
 import { cloneDeep } from 'lodash';
+import { getNewBackground } from '@/common/models';
 
 export const actions = {
   async [PRINT._ACTIONS.GET_DATA_MAIN]({ state, commit }) {
@@ -52,7 +53,7 @@ export const actions = {
   async [PRINT._ACTIONS.GET_DATA_CANVAS]({ state, commit }) {
     // reset the store
     commit(PRINT._MUTATES.SET_OBJECTS, { objectList: [] });
-    commit(PRINT._MUTATES.SET_BACKGROUNDS, { background: {} });
+    commit(PRINT._MUTATES.SET_BACKGROUNDS, { backgrounds: getNewBackground() });
 
     const queryObjectResult = await printService.getSheetObjects(
       state.book.id,
@@ -69,9 +70,12 @@ export const actions = {
 
     commit(PRINT._MUTATES.SET_OBJECTS, { objectList: objects });
 
-    backgrounds.forEach(bg =>
-      commit(PRINT._MUTATES.SET_BACKGROUNDS, { background: bg })
-    );
+    commit(PRINT._MUTATES.SET_BACKGROUNDS, {
+      backgrounds: {
+        left: backgrounds.length > 0 ? backgrounds[0] : {},
+        right: backgrounds.length == 2 ? backgrounds[1] : {}
+      }
+    });
   },
   [PRINT._ACTIONS.UPDATE_SHEET_THEME_LAYOUT](
     { state, commit },
@@ -105,13 +109,13 @@ export const actions = {
 
     if (backgroundObjs.length === 2) {
       backgroundObjs.forEach(bg => {
-        commit(PRINT._MUTATES.SET_BACKGROUNDS, { background: bg });
+        commit(PRINT._MUTATES.SET_BACKGROUND, { background: bg });
       });
     }
 
     if (backgroundObjs.length === 1) {
       backgroundObjs[0].isLeftPage = currentPosition === 'left';
-      commit(PRINT._MUTATES.SET_BACKGROUNDS, { background: backgroundObjs[0] });
+      commit(PRINT._MUTATES.SET_BACKGROUND, { background: backgroundObjs[0] });
     }
 
     // Get object(s) rest

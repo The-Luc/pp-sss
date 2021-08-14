@@ -4,7 +4,7 @@ import AlbumItem from '../AlbumItem';
 import PopupSelected from '../PopupSelected';
 
 import { usePhotos } from '@/views/CreateBook/composables';
-import { useGetterPrintSheet, useSheet, useBookName } from '@/hooks';
+import { useGetterPrintSheet, useSheet, useAppCommon } from '@/hooks';
 import { getPhotos } from '@/api/photo';
 
 export default {
@@ -23,12 +23,12 @@ export default {
   setup() {
     const { currentSection } = useGetterPrintSheet();
     const { currentSheet } = useSheet();
-    const { isPhotoVisited, setPhotoVisited } = usePhotos();
-    const { generalInfo } = useBookName();
+    const { isPhotoVisited, updatePhotoVisited } = usePhotos();
+    const { generalInfo } = useAppCommon();
 
     return {
       isPhotoVisited,
-      setPhotoVisited,
+      updatePhotoVisited,
       currentSection,
       currentSheet,
       generalInfo
@@ -63,7 +63,7 @@ export default {
      * Trigger mutation set photo visited true for current book
      */
     onClickGotIt() {
-      this.setPhotoVisited({ isPhotoVisited: true });
+      this.updatePhotoVisited({ isPhotoVisited: true });
     },
     /**
      * Set status active of keyword when click

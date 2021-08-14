@@ -130,14 +130,14 @@ export const useDigitalBackgroundMenu = () => {
   };
 };
 
-export const useTotalObjects = (isDigital = false) => {
-  const GETTETS = isDigital ? DIGITAL_GETTERS : PRINT_GETTERS;
-  const { totalBackground, totalObject } = useGetters({
-    totalBackground: GETTETS.TOTAL_BACKGROUND,
-    totalObject: GETTETS.TOTAL_OBJECT
+export const useBackgroundGetter = (isDigital = false) => {
+  const GETTERS = isDigital ? DIGITAL_GETTERS : PRINT_GETTERS;
+
+  const { backgrounds } = useGetters({
+    backgrounds: GETTERS.BACKGROUNDS
   });
+
   return {
-    totalBackground,
-    totalObject
+    backgrounds
   };
 };

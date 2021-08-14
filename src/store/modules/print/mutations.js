@@ -1,6 +1,11 @@
 import { cloneDeep, merge } from 'lodash';
 
-import { addObject, deleteObjects } from '@/common/store';
+import {
+  addObject,
+  deleteObjects,
+  setBackgrounds,
+  setBookInfo
+} from '@/common/store';
 
 import {
   isHalfSheet,
@@ -67,7 +72,7 @@ export const mutations = {
   [PRINT._MUTATES.SET_CURRENT_SHEET_ID](state, { id }) {
     state.currentSheetId = id;
   },
-  [PRINT._MUTATES.SET_BACKGROUNDS](state, { background }) {
+  [PRINT._MUTATES.SET_BACKGROUND](state, { background }) {
     if (isEmpty(background)) {
       state.background.left = {};
       state.background.right = {};
@@ -221,5 +226,7 @@ export const mutations = {
   },
   [PRINT._MUTATES.SET_SHEET_MEDIA](state, { media }) {
     state.sheets[state.currentSheetId].media = media;
-  }
+  },
+  [PRINT._MUTATES.SET_BACKGROUNDS]: setBackgrounds,
+  [PRINT._MUTATES.SET_BOOK_INFO]: setBookInfo
 };

@@ -44,11 +44,11 @@ export const state = {
     title: '',
     totalSheet: 0,
     totalPage: 0,
-    totalScreen: 0
+    totalScreen: 0,
+    isPhotoVisited: false
   },
   user: { id: null, role: null },
   savedTextStyles: [],
   savedImageStyles: [],
-  savingStatus: '',
-  isPhotoVisited: false
+  savingStatus: ''
 };

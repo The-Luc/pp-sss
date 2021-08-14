@@ -3,7 +3,7 @@ import Detail from '../SummaryDetail';
 
 import moment from 'moment';
 
-import { useSummaryInfo } from '@/hooks';
+import { useSummaryInfo } from '@/views/CreateBook/Manager/composables';
 
 import { getDisplayInfo, isEmpty } from '@/common/utils';
 

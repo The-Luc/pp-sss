@@ -10,13 +10,6 @@ export default {
     title: {
       type: String
     },
-    textName: {
-      type: String
-    },
-    width: {
-      type: Number,
-      default: 38
-    },
     isActive: {
       type: Boolean,
       default: false

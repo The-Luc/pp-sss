@@ -36,4 +36,6 @@ export const IMAGE_INDICATOR = {
 
 export const DEBOUNCE_MUTATION = 350;
 
-export const UPLOAD_STATUS_DISPLAY_TIME = 1000; // 1000 ms
+export const UPLOAD_STATUS_DISPLAY_TIME = 1000;
+
+export const DELAY_AFTER_CHANGE_UNDO_REDO = 20;

@@ -1,5 +1,6 @@
 import APP from './const';
 import styleService from '@/api/style';
+import bookService from '@/api/book';
 import { MODAL_TYPES, OBJECT_TYPE } from '@/common/constants';
 
 export const actions = {
@@ -41,5 +42,10 @@ export const actions = {
   async [APP._ACTIONS.GET_SAVED_IMAGE_STYLES]({ commit }) {
     const savedImageStyles = await styleService.getSavedImageStyles();
     commit(APP._MUTATES.SET_SAVED_IMAGE_STYLES, { savedImageStyles });
+  },
+
+  async [APP._ACTIONS.UPDATE_PHOTO_VISITED]({ commit }, { isPhotoVisited }) {
+    await bookService.setIsPhotoVisited(isPhotoVisited);
+    commit(APP._MUTATES.SET_GENERAL_INFO, { info: { isPhotoVisited } });
   }
 };

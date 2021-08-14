@@ -37,5 +37,6 @@ export const getters = {
   [APP._GETTERS.GENERAL_INFO]: ({ generalInfo }) => generalInfo,
   [APP._GETTERS.SAVED_TEXT_STYLES]: ({ savedTextStyles }) => savedTextStyles,
   [APP._GETTERS.SAVED_IMAGE_STYLES]: ({ savedImageStyles }) => savedImageStyles,
-  [APP._GETTERS.IS_PHOTO_VISITED]: ({ isPhotoVisited }) => isPhotoVisited
+  [APP._GETTERS.IS_PHOTO_VISITED]: ({ generalInfo }) =>
+    generalInfo.isPhotoVisited
 };

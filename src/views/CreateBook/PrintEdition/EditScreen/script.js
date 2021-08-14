@@ -22,6 +22,8 @@ import SidebarSection from './SidebarSection';
 import PageEdition from './PageEdition';
 import PhotoSidebar from '@/components/PhotoSidebar';
 import SheetMedia from '@/components/SheetMedia';
+import ModalAddPhotos from '@/containers/Modal/Photos';
+import ModalAddMedia from '@/containers/Modal/AddMedia';
 
 import {
   useLayoutPrompt,
@@ -43,11 +45,11 @@ import {
   activeCanvas
 } from '@/common/utils';
 
-import printService from '@/api/print';
 import { useSaveData } from './PageEdition/composables';
 import { getActivateImages, setImageSrc } from '@/common/fabricObjects';
 import { useSavingStatus } from '../../composables';
 import { debounce } from 'lodash';
+import { useBookPrintInfo } from './composables';
 
 export default {
   components: {
@@ -57,7 +59,9 @@ export default {
     PageEdition,
     SidebarSection,
     PhotoSidebar,
-    SheetMedia
+    SheetMedia,
+    ModalAddPhotos,
+    ModalAddMedia
   },
   setup() {
     const { pageSelected, updateVisited } = useLayoutPrompt(EDITION.PRINT);
@@ -72,6 +76,7 @@ export default {
     const { updateSavingStatus } = useSavingStatus();
     const { sheetMedia } = useSheet();
     const { updateSheetMedia, deleteSheetMedia } = useActionsEditionSheet();
+    const { getBookPrintInfo } = useBookPrintInfo();
 
     return {
       pageSelected,
@@ -88,12 +93,16 @@ export default {
       updateSavingStatus,
       sheetMedia,
       updateSheetMedia,
-      deleteSheetMedia
+      deleteSheetMedia,
+      getBookPrintInfo
     };
   },
   data() {
     return {
-      dragItem: () => null
+      dragItem: () => null,
+      isOpenModal: false,
+      isOpenModalAddMedia: false,
+      files: []
     };
   },
   computed: {
@@ -131,14 +140,7 @@ export default {
         return;
       }
 
-      vm.setBookId({ bookId });
-
-      // temporary code, will remove soon
-      const info = await printService.getGeneralInfo();
-
-      vm.setInfo({ ...info, bookId });
-
-      await vm.getDataPageEdit();
+      await vm.getBookPrintInfo(bookId);
 
       vm.setCurrentSheetId({ id: parseInt(to.params.sheetId) });
 
@@ -178,12 +180,10 @@ export default {
       getDataPageEdit: PRINT_ACTIONS.GET_DATA_EDIT
     }),
     ...mapMutations({
-      setBookId: PRINT_MUTATES.SET_BOOK_ID,
       toggleModal: MUTATES.TOGGLE_MODAL,
       resetPrintConfigs: MUTATES.RESET_PRINT_CONFIG,
       savePrintCanvas: BOOK_MUTATES.SAVE_PRINT_CANVAS,
       setPropertiesObjectType: MUTATES.SET_PROPERTIES_OBJECT_TYPE,
-      setInfo: MUTATES.SET_GENERAL_INFO,
       setThumbnail: PRINT_MUTATES.UPDATE_SHEET_THUMBNAIL
     }),
     /**
@@ -324,6 +324,45 @@ export default {
       }
 
       this.dragItem = null;
+    },
+    /**
+     * Undo user action
+     */
+    onUndo() {
+      this.$refs.canvasEditor.undo();
+    },
+    /**
+     * Redo user action
+     */
+    onRedo() {
+      this.$refs.canvasEditor.redo();
+    },
+    /**
+     * Use to open modal photos
+     */
+    openModalPhotos() {
+      this.isOpenModal = true;
+    },
+    /**
+     * Close modal photos when click cancel button
+     */
+    onCancel() {
+      this.isOpenModal = false;
+    },
+    /**
+     * Close modal photos and open modal add media
+     * @param   {Array}  files  files user upload
+     */
+    onUploadImages(files) {
+      this.onCancel();
+      this.files = files;
+      this.isOpenModalAddMedia = true;
+    },
+    /**
+     * Close modal add media
+     */
+    onCancelAddMedia() {
+      this.isOpenModalAddMedia = false;
     }
   }
 };

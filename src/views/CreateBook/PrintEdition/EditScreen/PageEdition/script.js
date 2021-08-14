@@ -11,6 +11,7 @@ import {
   useProperties
 } from '@/hooks';
 import { startDrawBox } from '@/common/fabricObjects/drawingBox';
+import StoreTracker from '@/plugins/storeTracker';
 
 import {
   isEmpty,
@@ -58,7 +59,9 @@ import {
   setImageSrc,
   centercrop,
   handleDragEnter,
-  handleDragLeave
+  handleDragLeave,
+  fabricToPpObject,
+  getTextSizeWithPadding
 } from '@/common/fabricObjects';
 
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
@@ -85,7 +88,8 @@ import {
   DEFAULT_CLIP_ART,
   DEFAULT_IMAGE,
   LAYOUT_PAGE_TYPE,
-  SAVE_STATUS
+  SAVE_STATUS,
+  EDITION
 } from '@/common/constants';
 import SizeWrapper from '@/components/SizeWrapper';
 import PrintCanvasLines from './PrintCanvasLines';
@@ -129,6 +133,11 @@ export default {
     const { updateSavingStatus, savingStatus } = useSavingStatus();
     const { updateSheetThumbnail } = useMutationPrintSheet();
 
+    const storeTracker = new StoreTracker({
+      edition: EDITION.PRINT,
+      maxStep: 5
+    });
+
     return {
       setActiveEdition,
       setInfoBar,
@@ -142,7 +151,8 @@ export default {
       isOpenMenuProperties,
       updateSavingStatus,
       savingStatus,
-      updateSheetThumbnail
+      updateSheetThumbnail,
+      storeTracker
     };
   },
   data() {
@@ -209,6 +219,9 @@ export default {
 
         // get data either from API or sessionStorage
         await this.getDataCanvas();
+
+        this.storeTracker.restartTracking();
+
         this.countPaste = 1;
         this.setSelectedObjectId({ id: '' });
         this.setCurrentObject(null);
@@ -264,7 +277,7 @@ export default {
       setSelectedObjectId: PRINT_MUTATES.SET_CURRENT_OBJECT_ID,
       setCurrentObject: MUTATES.SET_CURRENT_OBJECT,
       addNewObject: PRINT_MUTATES.ADD_OBJECT,
-      addNewBackground: PRINT_MUTATES.SET_BACKGROUNDS,
+      addNewBackground: PRINT_MUTATES.SET_BACKGROUND,
       updateTriggerBackgroundChange:
         PRINT_MUTATES.UPDATE_TRIGGER_BACKGROUND_CHANGE,
       deleteObjects: PRINT_MUTATES.DELETE_OBJECTS,
@@ -1322,10 +1335,19 @@ export default {
     updateElementProp(element, prop, objectType) {
       if (objectType === OBJECT_TYPE.TEXT) {
         applyTextBoxProperties(element, prop);
+        const newProp = fabricToPpObject(element);
 
-        // After fixing "one change only triggers one mutation"
-        // this will return new prop get from fabric element
-        return prop;
+        const text = element?._objects?.[1];
+        if (text) {
+          const {
+            minBoundingWidth,
+            minBoundingHeight
+          } = getTextSizeWithPadding(text);
+          newProp.minWidth = pxToIn(minBoundingWidth);
+          newProp.minHeight = pxToIn(minBoundingHeight);
+        }
+
+        return { ...prop, ...newProp };
       }
 
       if (objectType === OBJECT_TYPE.IMAGE) {
@@ -1813,6 +1835,30 @@ export default {
       centercrop(activeObject, prop => {
         this.setObjectPropById({ id: activeObject.id, prop });
       });
+    },
+    /**
+     * Undo user action
+     */
+    async undo() {
+      const isAllowToUndo = await this.storeTracker.backToPrevious();
+
+      if (!isAllowToUndo) return;
+
+      resetObjects(window.printCanvas);
+
+      this.drawObjectsOnCanvas(this.sheetLayout);
+    },
+    /**
+     * Redo user action
+     */
+    async redo() {
+      const isAllowToRedo = await this.storeTracker.moveToNext();
+
+      if (!isAllowToRedo) return;
+
+      resetObjects(window.printCanvas);
+
+      this.drawObjectsOnCanvas(this.sheetLayout);
     }
   }
 };

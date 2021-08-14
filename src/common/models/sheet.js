@@ -43,7 +43,7 @@ export class SheetBase extends BaseEntity {
   }
 }
 
-export class SheetEditionData extends SheetBase {
+export class SheetEditionInfo extends SheetBase {
   themeId = null;
   layoutId = null;
   thumbnailUrl = null;
@@ -52,7 +52,7 @@ export class SheetEditionData extends SheetBase {
   media = [];
 
   /**
-   * @param {SheetEditionData} props
+   * @param {SheetEditionInfo} props
    */
   constructor(props) {
     super(props);
@@ -60,11 +60,13 @@ export class SheetEditionData extends SheetBase {
   }
 }
 
-export class SheetPrintData extends SheetEditionData {
+export class SheetPrintInfo extends SheetEditionInfo {
+  pageLeftName = null;
+  pageRightName = null;
   spreadInfo = new SpreadInfo();
 
   /**
-   * @param {SheetPrintData} props
+   * @param {SheetPrintInfo} props
    */
   constructor(props) {
     super(props);
@@ -72,23 +74,12 @@ export class SheetPrintData extends SheetEditionData {
   }
 }
 
-export class SheetDigitalData extends SheetEditionData {
-  frameInfo = new FrameInfo();
-
-  /**
-   * @param {SheetDigitalData} props
-   */
-  constructor(props) {
-    super(props);
-    this._set(props);
-  }
-}
-
-export class SheetDigitalDetail extends SheetEditionData {
+export class SheetDigitalInfo extends SheetEditionInfo {
+  pageName = null;
   frames = [];
 
   /**
-   * @param {SheetDigitalDetail} props
+   * @param {SheetDigitalInfo} props
    */
   constructor(props) {
     super(props);
@@ -96,12 +87,12 @@ export class SheetDigitalDetail extends SheetEditionData {
   }
 }
 
-export class Sheet extends SheetBase {
+export class SheetInfo extends SheetBase {
   draggable = true;
   positionFixed = POSITION_FIXED.NONE;
 
   /**
-   * @param {Sheet} props
+   * @param {SheetInfo} props
    */
   constructor(props) {
     super(props);

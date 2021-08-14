@@ -2,16 +2,14 @@
   <div
     class="item"
     :class="{ 'item--active': isActive, 'item--prompt': isActive && isPrompt }"
-    :style="{ width: `${width}px` }"
     @click="onClick"
   >
     <div class="item-icon">
-      <v-icon v-if="iconName">{{ iconName }}</v-icon>
-      <span v-else>{{ textName }}</span>
+      <v-icon>{{ iconName }}</v-icon>
     </div>
-    <p v-if="title">{{ title }}</p>
+    <p>{{ title }}</p>
   </div>
 </template>
 
 <script src="./script.js" />
-<style lang="scss" scoped src="./style.scss" />
+<style lang="scss" src="./style.scss" scoped />

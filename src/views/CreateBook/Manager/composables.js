@@ -3,22 +3,15 @@ import { useGetters, useMutations, useActions } from 'vuex-composition-helpers';
 import userService from '@/api/user';
 
 import {
-  GETTERS as APP_GETTERS,
-  MUTATES as APP_MUTATES
-} from '@/store/modules/app/const';
-
-import {
   GETTERS as BOOK_GETTERS,
   MUTATES as BOOK_MUTATES,
   ACTIONS as BOOK_ACTIONS
 } from '@/store/modules/book/const';
 
-// TODO: refactoring later to make it common
+import { useAppCommon } from '@/hooks';
 
 export const useManager = () => {
-  const { setInfo } = useMutations({
-    setInfo: APP_MUTATES.SET_GENERAL_INFO
-  });
+  const { setGeneralInfo } = useAppCommon();
 
   const { getBookData } = useActions({
     getBookData: BOOK_ACTIONS.GET_BOOK
@@ -29,7 +22,9 @@ export const useManager = () => {
       bookId
     });
 
-    setInfo({ title, bookId, totalSheet, totalPage, totalScreen });
+    setGeneralInfo({
+      info: { title, bookId, totalSheet, totalPage, totalScreen }
+    });
   };
 
   return {
@@ -77,15 +72,9 @@ export const useDueDateMenu = () => {
   return { specialDates };
 };
 
-const useCurrentUser = () => {
-  const { currentUser } = useGetters({
-    currentUser: APP_GETTERS.USER
-  });
-
-  return { currentUser };
-};
-
 export const useSectionControl = () => {
+  const { currentUser } = useAppCommon();
+
   const { totalSection } = useGetters({
     totalSection: BOOK_GETTERS.TOTAL_SECTION
   });
@@ -94,10 +83,12 @@ export const useSectionControl = () => {
     addSection: BOOK_MUTATES.ADD_SECTION
   });
 
-  return { ...useCurrentUser(), totalSection, addSection };
+  return { currentUser, totalSection, addSection };
 };
 
 export const useSectionItems = () => {
+  const { currentUser } = useAppCommon();
+
   const { sections } = useGetters({
     sections: BOOK_GETTERS.SECTIONS
   });
@@ -106,7 +97,7 @@ export const useSectionItems = () => {
     moveSection: BOOK_MUTATES.MOVE_SECTION
   });
 
-  return { ...useCurrentUser(), sections, moveSection };
+  return { currentUser, sections, moveSection };
 };
 
 export const useSectionName = () => {

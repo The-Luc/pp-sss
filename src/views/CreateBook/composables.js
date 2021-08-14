@@ -1,8 +1,9 @@
-import { useMutations, useGetters } from 'vuex-composition-helpers';
+import { useMutations, useGetters, useActions } from 'vuex-composition-helpers';
 
 import {
   MUTATES as APP_MUTATES,
-  GETTERS as APP_GETTERS
+  GETTERS as APP_GETTERS,
+  ACTIONS as APP_ACTIONS
 } from '@/store/modules/app/const';
 
 export const useSavingStatus = () => {
@@ -21,11 +22,12 @@ export const usePhotos = () => {
   const { isPhotoVisited } = useGetters({
     isPhotoVisited: APP_GETTERS.IS_PHOTO_VISITED
   });
-  const { setPhotoVisited } = useMutations({
-    setPhotoVisited: APP_MUTATES.SET_PHOTO_VISITED
+
+  const { updatePhotoVisited } = useActions({
+    updatePhotoVisited: APP_ACTIONS.UPDATE_PHOTO_VISITED
   });
   return {
     isPhotoVisited,
-    setPhotoVisited
+    updatePhotoVisited
   };
 };
