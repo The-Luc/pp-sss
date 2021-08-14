@@ -1,4 +1,4 @@
-export const PHOTO_CATEGORIES = {
+export const PHOTO_DROPDOWNS = {
   COMMUNITIES: {
     name: 'Community Photos',
     value: 'communities'
@@ -13,4 +13,4 @@ export const PHOTO_CATEGORIES = {
   }
 };
 
-export const ALL_PHOTO_SUBCATEGORY_ID = -999;
+export const ID_PHOTO_All = -999;

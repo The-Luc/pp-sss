@@ -1339,7 +1339,11 @@ export default {
 
       const newProp = this.updateElementProp(element, prop, objectType);
 
-      this.updateCurrentObject(element.id, newProp);
+      if (objectType === OBJECT_TYPE.TEXT) {
+        this.debounceSetCurrentObject(element.id, newProp);
+      } else {
+        this.updateCurrentObject(element.id, newProp);
+      }
 
       this.updateInfoBar(newProp);
 
@@ -1422,21 +1426,21 @@ export default {
         resole();
       });
     },
-    /**
-     * Set properties of selected object
-     *
-     * @param {Object}  prop  new prop
-     */
+    // Will be removed after fixing "one change only triggers one mutation"
     setObjectProperties(prop) {
       this.setObjectProp({ prop });
 
       this.handleCanvasChanged();
     },
+    // Will be removed after fixing "one change only triggers one mutation"
+    debounceSetCurrentObject: debounce(function(id, prop) {
+      this.updateCurrentObject(id, prop);
+    }, DEBOUNCE_MUTATION),
     /**
-     * Set properties of selected object
+     * Set properties of selected object then trigger the change
      * Use with debounce
      *
-     * @param {Object}  prop  new prop
+     * @param {Object}  prop            new prop
      */
     debounceSetObjectProp: debounce(function(prop) {
       this.setObjectProperties(prop);

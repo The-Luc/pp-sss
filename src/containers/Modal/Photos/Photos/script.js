@@ -2,13 +2,14 @@ import Modal from '@/containers/Modal';
 import SelectPhotoType from './SelectPhotoType';
 import AlbumItem from '../AlbumItem';
 import PopupSelected from '../PopupSelected';
-
+import { photoDropdowns } from '@/mock/photoDropdowns';
+import { albums } from '@/mock/photo';
 import { getAlbums, getPhotoDropdowns } from '@/api/photo';
 
 import {
-  PHOTO_CATEGORIES,
-  ALL_PHOTO_SUBCATEGORY_ID
-} from '@/common/constants/photo';
+  PHOTO_DROPDOWNS,
+  ID_PHOTO_All
+} from '@/common/constants/photoDropdowns';
 import { isEmpty } from '@/common/utils';
 
 export default {
@@ -27,8 +28,10 @@ export default {
   data() {
     return {
       selectedType: {
-        value: PHOTO_CATEGORIES.COMMUNITIES.value,
-        sub: { value: ALL_PHOTO_SUBCATEGORY_ID }
+        value: PHOTO_DROPDOWNS.COMMUNITIES.value,
+        sub: {
+          value: ID_PHOTO_All
+        }
       },
       albums: [],
       photoDropdowns: []
@@ -38,10 +41,9 @@ export default {
     selectedAlbums() {
       const albumId = this.getSelectedImageId();
 
-      if (albumId === ALL_PHOTO_SUBCATEGORY_ID)
-        return this.getAllSelectedAlbums();
+      if (albumId === ID_PHOTO_All) return this.getAllSelectedAlbums();
 
-      return this.albums.filter(item => {
+      return albums.filter(item => {
         return !isEmpty(item.assets) && item.id === albumId;
       });
     },
@@ -59,7 +61,7 @@ export default {
 
     currentCategory() {
       return (
-        Object.values(PHOTO_CATEGORIES).find(
+        Object.values(PHOTO_DROPDOWNS).find(
           item => item.value === this.selectedType.value
         )?.name || ''
       );
@@ -112,50 +114,37 @@ export default {
 
       const selectedAlbumIds = arrayAlbumSelected.map(item => item.value);
 
-      return this.albums.filter(item => {
+      return albums.filter(item => {
         return !isEmpty(item.assets) && selectedAlbumIds.includes(item.id);
       });
     },
     /**
-     * Get category menu
+     * Get array of dropdown from value api
      *
-     * @returns {Array} category menu
+     * @returns {Array} array of dropdowns
      */
     getDropdownOptions() {
-      const options = Object.values(PHOTO_CATEGORIES);
+      const options = Object.values(PHOTO_DROPDOWNS);
 
-      if (isEmpty(this.photoDropdowns)) {
-        return options.map(o => ({ ...o, subItems: [] }));
-      }
+      options.forEach(item => {
+        item.subItems = photoDropdowns[item.value].map(el => {
+          const result = {
+            value: el.id,
+            name: el.name,
+            subItems: []
+          };
+          if (isEmpty(el?.albums)) return result;
 
-      return options.map(opt => {
-        const category = this.photoDropdowns[opt.value];
+          result.subItems = el.albums.map(album => ({
+            value: album.id,
+            name: album.name,
+            subItems: []
+          }));
 
-        return {
-          ...opt,
-          subItems: isEmpty(category) ? [] : this.getOptionSubs(category)
-        };
+          return result;
+        });
       });
-    },
-    /**
-     * Get sub category menu
-     *
-     * @returns {Array} sub category menu
-     */
-    getOptionSubs(subCategories) {
-      return subCategories.map(({ id, name, albums }) => {
-        const cat = { value: id, name: name, subItems: [] };
-
-        if (isEmpty(albums)) return cat;
-
-        const subItems = albums.map(album => ({
-          value: album.id,
-          name: album.name,
-          subItems: []
-        }));
-
-        return { ...cat, subItems };
-      });
+      return options;
     }
   },
   async created() {
