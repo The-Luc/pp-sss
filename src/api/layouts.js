@@ -5,7 +5,7 @@ import {
   removeItemsFormArray
 } from '@/common/utils';
 import { LAYOUT_PAGE_TYPE } from '@/common/constants';
-import { packageLayouts, supplementalLayouts } from '@/mock/digitalLayouts';
+import { supplementalLayouts } from '@/mock/digitalLayouts';
 import { SAVED_AND_FAVORITES } from '@/mock/layoutTypes';
 
 export const loadLayouts = () => {
