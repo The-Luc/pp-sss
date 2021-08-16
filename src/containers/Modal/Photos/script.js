@@ -2,10 +2,11 @@ import Footer from '@/components/ModalMediaSelection/Footer';
 import Photos from './Photos';
 import Smartbox from '@/components/ModalMediaSelection/Smartbox';
 import TabAddPhotos from './TabAddPhotos';
-import TabSearchPhotos from './TabSearchPhotos';
+import TabSearchPhotos from '@/components/ModalMediaSelection/TabSearch';
+
 import { useGetterPrintSheet, useSheet, useAppCommon } from '@/hooks';
 import { usePhotos } from '@/views/CreateBook/composables';
-import { getPhotos } from '@/api/photo';
+import { getPhotos, searchPhotos } from '@/api/photo';
 
 import {
   insertItemsToArray,
@@ -147,6 +148,13 @@ export default {
      */
     onClickGotIt() {
       this.updatePhotoVisited({ isPhotoVisited: true });
+    },
+    /**
+     * To search base on value input
+     * @param {String}  input value to search
+     */
+    async onSearch(input) {
+      this.photos = await searchPhotos(input);
     }
   }
 };

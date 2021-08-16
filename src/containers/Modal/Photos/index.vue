@@ -47,6 +47,8 @@
           <TabSearchPhotos
             :key="currentTab"
             :selected-images="selectedImages"
+            :photos="photos"
+            @search="onSearch"
             @change="onSelectedImage"
           />
         </v-tab-item>
