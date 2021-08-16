@@ -40,7 +40,7 @@ export default {
     return {
       selectedImages: [],
       currentTab: '',
-      defaultTab: 'smart-box',
+      defaultTab: 'smartbox',
       keywords: [],
       photos: []
     };
@@ -102,9 +102,17 @@ export default {
      * Event change tab of modal photo
      * @param   {String}  tag  current tag
      */
-    onChangeTab(tab) {
+    async onChangeTab(tab) {
+      if (this.currentTab === tab) return;
       this.currentTab = tab;
+
       this.selectedImages = [];
+      this.photos = [];
+
+      if (this.currentTab === 'smartbox') {
+        const keywords = this.keywords.map(keyword => keyword.value);
+        this.photos = await getPhotos(keywords);
+      }
     },
     /**
      * Emit files user upload and emit to parent
