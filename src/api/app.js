@@ -4,17 +4,21 @@ import {
   SectionEntity,
   SheetEntity
 } from '@/common/models/entities';
-import { parseItem, setItem } from '@/common/storage/session.helper';
+import { getItem, parseItem, setItem } from '@/common/storage/session.helper';
 import { isEmpty } from '@/common/utils';
 
 import books from '@/mock/books';
 import layoutData from '@/mock/layouts';
-import { PRINT_LAYOUT_TYPES } from '@/mock/layoutTypes';
+import digitalLayoutData from '@/mock/digitalLayouts';
+import { PRINT_LAYOUT_TYPES, DIGITAL_LAYOUT_TYPES } from '@/mock/layoutTypes';
 
 const bookId = 1719;
 const keyBook = `${STORAGE_KEY.book}-${bookId}`;
+
 const keyLayoutPrint = `${STORAGE_KEY.printLayout}`;
 const keyLayoutTypePrint = `${STORAGE_KEY.printLayoutType}`;
+const keyLayoutDigital = `${STORAGE_KEY.digitalLayout}`;
+const keyLayoutTypeDigital = `${STORAGE_KEY.digitalLayoutType}`;
 const keySavedLayoutPrint = `${STORAGE_KEY.printSavedlayout}`;
 const keyFavoritesLayoutPrint = `${STORAGE_KEY.printFavoritesLayout}`;
 
@@ -80,6 +84,9 @@ const saveOnUnloadEvent = () => {
 
     setItem(keyLayoutPrint, JSON.stringify(window.data.printLayouts));
     setItem(keySavedLayoutPrint, JSON.stringify(window.data.printSavedLayouts));
+
+    setItem(keyLayoutDigital, JSON.stringify(window.data.digitalLayouts));
+
     setItem(
       keyFavoritesLayoutPrint,
       JSON.stringify(window.data.printFavoritesLayouts)
@@ -88,8 +95,11 @@ const saveOnUnloadEvent = () => {
 };
 
 const setMockLayoutDataToStorage = () => {
-  const layouts = window.sessionStorage.getItem(keyLayoutPrint);
-  const layoutTypes = window.sessionStorage.getItem(keyLayoutTypePrint);
+  const layouts = getItem(keyLayoutPrint);
+  const layoutTypes = getItem(keyLayoutTypePrint);
+
+  const digitalLayouts = getItem(keyLayoutDigital);
+  const digitalLayoutTypes = getItem(keyLayoutTypeDigital);
 
   if (isEmpty(layouts)) {
     setItem(keyLayoutPrint, JSON.stringify(layoutData));
@@ -99,6 +109,16 @@ const setMockLayoutDataToStorage = () => {
     const types = Object.values(PRINT_LAYOUT_TYPES).map(lt => lt);
 
     setItem(keyLayoutTypePrint, JSON.stringify(types));
+  }
+
+  if (isEmpty(digitalLayouts)) {
+    setItem(keyLayoutDigital, JSON.stringify(digitalLayoutData));
+  }
+
+  if (isEmpty(digitalLayoutTypes)) {
+    const types = Object.values(DIGITAL_LAYOUT_TYPES).map(lt => lt);
+
+    setItem(keyLayoutTypeDigital, JSON.stringify(types));
   }
 };
 
@@ -111,11 +131,17 @@ const getLayoutData = () => {
   const printSavedLayouts = parseItem(keySavedLayoutPrint) || [];
   const printFavoritesLayouts = parseItem(keyFavoritesLayoutPrint) || [];
 
+  const digitalLayouts = parseItem(keyLayoutDigital) || {};
+  const digitalLayoutTypes = parseItem(keyLayoutTypeDigital) || [];
+
   // Save to window.data variable
   window.data.printLayouts = printLayouts;
   window.data.printLayoutTypes = printLayoutTypes;
   window.data.printSavedLayouts = printSavedLayouts;
   window.data.printFavoritesLayouts = printFavoritesLayouts;
+
+  window.data.digitalLayouts = digitalLayouts;
+  window.data.digitalLayoutTypes = digitalLayoutTypes;
 };
 
 const initData = () => {

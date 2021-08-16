@@ -12,6 +12,7 @@
     :disabled-layout-opts="disabled"
     :layout-type-selected="layoutTypeSelected"
     :favorite-layouts="favoriteLayouts"
+    :is-digital="true"
     @setThemeLayoutForSheet="setThemeLayoutForSheet"
     @onChangeTheme="onChangeTheme"
     @onChangeLayoutType="onChangeLayoutType"
