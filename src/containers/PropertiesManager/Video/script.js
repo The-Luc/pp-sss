@@ -5,8 +5,7 @@ import StyleContent from '@/components/General';
 import ArrangeContent from '@/components/Arrange';
 
 import { useElementProperties } from '@/hooks';
-import { DEFAULT_TEXT } from '@/common/constants';
-import { activeCanvas } from '@/common/utils';
+import { DEFAULT_IMAGE } from '@/common/constants';
 
 export default {
   components: {
@@ -37,10 +36,10 @@ export default {
       };
     },
     minPosition() {
-      return DEFAULT_TEXT.MIN_POSITION;
+      return DEFAULT_IMAGE.MIN_POSITION;
     },
     maxPosition() {
-      return DEFAULT_TEXT.MAX_POSITION;
+      return DEFAULT_IMAGE.MAX_POSITION;
     },
     sizeWidth() {
       const size = this.getProperty('size');
@@ -56,13 +55,13 @@ export default {
       return this.getProperty('isConstrain');
     },
     maxSize() {
-      return DEFAULT_TEXT.MAX_SIZE;
+      return DEFAULT_IMAGE.MAX_SIZE;
     },
     minWidth() {
-      return this.getProperty('minWidth') || DEFAULT_TEXT.MIN_SIZE;
+      return this.getProperty('minWidth') || DEFAULT_IMAGE.MIN_SIZE;
     },
     minHeight() {
-      return this.getProperty('minHeight') || DEFAULT_TEXT.MIN_SIZE;
+      return this.getProperty('minHeight') || DEFAULT_IMAGE.MIN_SIZE;
     },
     opacityValue() {
       const res = this.getProperty('opacity');
