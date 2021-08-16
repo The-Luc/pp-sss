@@ -2,14 +2,13 @@ import Modal from '@/containers/Modal';
 import SelectPhotoType from './SelectPhotoType';
 import AlbumItem from '@/components/ModalMediaSelection/AlbumItem';
 import PopupSelected from '@/components/ModalMediaSelection/PopupSelected';
-import { photoDropdowns } from '@/mock/photoDropdowns';
-import { albums } from '@/mock/photo';
+
 import { getAlbums, getPhotoDropdowns } from '@/api/photo';
 
 import {
-  PHOTO_DROPDOWNS,
-  ID_PHOTO_All
-} from '@/common/constants/photoDropdowns';
+  PHOTO_CATEGORIES,
+  ALL_PHOTO_SUBCATEGORY_ID
+} from '@/common/constants/photo';
 import { isEmpty } from '@/common/utils';
 
 export default {
@@ -28,10 +27,8 @@ export default {
   data() {
     return {
       selectedType: {
-        value: PHOTO_DROPDOWNS.COMMUNITIES.value,
-        sub: {
-          value: ID_PHOTO_All
-        }
+        value: PHOTO_CATEGORIES.COMMUNITIES.value,
+        sub: { value: ALL_PHOTO_SUBCATEGORY_ID }
       },
       albums: [],
       photoDropdowns: []
@@ -41,9 +38,10 @@ export default {
     selectedAlbums() {
       const albumId = this.getSelectedImageId();
 
-      if (albumId === ID_PHOTO_All) return this.getAllSelectedAlbums();
+      if (albumId === ALL_PHOTO_SUBCATEGORY_ID)
+        return this.getAllSelectedAlbums();
 
-      return albums.filter(item => {
+      return this.albums.filter(item => {
         return !isEmpty(item.assets) && item.id === albumId;
       });
     },
@@ -61,7 +59,7 @@ export default {
 
     currentCategory() {
       return (
-        Object.values(PHOTO_DROPDOWNS).find(
+        Object.values(PHOTO_CATEGORIES).find(
           item => item.value === this.selectedType.value
         )?.name || ''
       );
@@ -114,37 +112,50 @@ export default {
 
       const selectedAlbumIds = arrayAlbumSelected.map(item => item.value);
 
-      return albums.filter(item => {
+      return this.albums.filter(item => {
         return !isEmpty(item.assets) && selectedAlbumIds.includes(item.id);
       });
     },
     /**
-     * Get array of dropdown from value api
+     * Get category menu
      *
-     * @returns {Array} array of dropdowns
+     * @returns {Array} category menu
      */
     getDropdownOptions() {
-      const options = Object.values(PHOTO_DROPDOWNS);
+      const options = Object.values(PHOTO_CATEGORIES);
 
-      options.forEach(item => {
-        item.subItems = photoDropdowns[item.value].map(el => {
-          const result = {
-            value: el.id,
-            name: el.name,
-            subItems: []
-          };
-          if (isEmpty(el?.albums)) return result;
+      if (isEmpty(this.photoDropdowns)) {
+        return options.map(o => ({ ...o, subItems: [] }));
+      }
 
-          result.subItems = el.albums.map(album => ({
-            value: album.id,
-            name: album.name,
-            subItems: []
-          }));
+      return options.map(opt => {
+        const category = this.photoDropdowns[opt.value];
 
-          return result;
-        });
+        return {
+          ...opt,
+          subItems: isEmpty(category) ? [] : this.getOptionSubs(category)
+        };
       });
-      return options;
+    },
+    /**
+     * Get sub category menu
+     *
+     * @returns {Array} sub category menu
+     */
+    getOptionSubs(subCategories) {
+      return subCategories.map(({ id, name, albums }) => {
+        const cat = { value: id, name: name, subItems: [] };
+
+        if (isEmpty(albums)) return cat;
+
+        const subItems = albums.map(album => ({
+          value: album.id,
+          name: album.name,
+          subItems: []
+        }));
+
+        return { ...cat, subItems };
+      });
     }
   },
   async created() {

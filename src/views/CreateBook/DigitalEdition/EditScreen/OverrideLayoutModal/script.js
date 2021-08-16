@@ -33,7 +33,7 @@ export default {
     onAction() {
       const { sheetData } = this.modalData?.props;
 
-      if (sheetData.addNewFrame) {
+      if (sheetData.isReplaceFrame) {
         const frame = sheetData.layout?.frames[0] || [];
 
         this.updateObjectsToStore({ objects: frame.objects });
@@ -43,6 +43,7 @@ export default {
         this.onCancel();
         return;
       }
+
       sheetData && this.updateSheeThemeLayout(sheetData);
       this.onCancel();
     },

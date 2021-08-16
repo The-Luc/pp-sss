@@ -8,8 +8,5 @@ export const OBJECT_TYPE = {
 };
 
 export const FABRIC_OBJECT_TYPE = {
-  TEXT: 'textbox',
-  IMAGE: 'image',
-  GROUP: 'group',
-  CLIP_ART: 'ClipArtObject'
+  TEXT: 'textbox'
 };

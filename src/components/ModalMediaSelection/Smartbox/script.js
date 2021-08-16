@@ -47,13 +47,14 @@ export default {
   },
   methods: {
     /**
-     * Trigger mutation set photo visited true for current book
+     * Trigger emit event when click got it
      */
     onClickGotIt() {
       this.$emit('clickGotIt');
     },
     /**
-     * Set status active of keyword when click
+     * Trigger emit event when click keyword
+     * @param   {Object}  val  value of keyword
      */
     onClickKeyword(val) {
       this.$emit('clickKeyword', val);
