@@ -60,7 +60,8 @@ import {
   handleDragEnter,
   handleDragLeave,
   fabricToPpObject,
-  getTextSizeWithPadding
+  getTextSizeWithPadding,
+  handleClickVideo
 } from '@/common/fabricObjects';
 
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
@@ -683,7 +684,11 @@ export default {
                 this.awaitingAdd = '';
               }
             );
+
+            return;
           }
+
+          handleClickVideo(e.target);
         },
         'text:changed': ({ target }) => {
           const group = target?.group;
