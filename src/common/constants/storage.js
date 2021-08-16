@@ -11,6 +11,8 @@ export const STORAGE_KEY = {
   printSheet: 'sheetData',
   printLayout: 'printLayout',
   printLayoutType: 'printLayoutType',
+  digitalLayout: 'digitalLayout',
+  digitalLayoutType: 'digitalLayoutType',
   printSavedlayout: 'printSavedlayout',
   printFavoritesLayout: 'printFavoritesLayout'
 };

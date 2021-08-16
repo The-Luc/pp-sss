@@ -112,7 +112,7 @@ export const IMAGE_STYLE = [
         ...cloneDeep(defaultBorder),
         showBorder: true,
         stroke: '#000000',
-        strokeWidth: 1,
+        strokeWidth: 7,
         strokeLineType: BORDER_STYLES.DOUBLE
       },
       shadow: cloneDeep(defaultShadow)

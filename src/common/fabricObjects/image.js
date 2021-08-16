@@ -157,15 +157,22 @@ export const setImageSrc = (imageObject, imageSrc, cb) => {
       scaleX: newScaleX,
       scaleY: newScaleY,
       with: img.width,
-      height: img.height
+      height: img.height,
+      thumbnail: null,
+      playIcon: null,
+      showThumbnail: false,
+      objectType: OBJECT_TYPE.IMAGE
     };
 
     img.set(newProp);
+
     if (hasImage) {
       centercrop(imageObject, img.set.bind(img));
       newProp.zoomLevel = img.zoomLevel;
     }
+
     imageObject.canvas.renderAll();
+
     cb && cb(newProp);
   });
 };
@@ -237,4 +244,126 @@ export const handleDragLeave = ({ target }) => {
   });
 
   activeCanvas.renderAll();
+};
+
+/**
+ * Create element for video object
+ * @param {String} src video url
+ * @return video element
+ */
+export const createVideoElement = src =>
+  new Promise(resolve => {
+    const ele = document.createElement('video');
+    ele.addEventListener(
+      'loadedmetadata',
+      () => {
+        ele.width = ele.videoWidth;
+        ele.height = ele.videoHeight;
+        resolve(ele);
+      },
+      false
+    );
+    ele.src = src;
+  });
+
+/**
+ * Create element for video thumbnail
+ * @param {String} src video's thumbnail url
+ * @param {String} options video's thumbnail options
+ * @return image element
+ */
+export const createVideoOverlay = (src, options) => {
+  const ele = document.createElement('img');
+  ele.src = src;
+
+  if (options?.width) {
+    ele.width = options.width;
+  }
+
+  if (options?.height) {
+    ele.height = options.height;
+  }
+
+  return ele;
+};
+
+/**
+ * Render video by video frames
+ */
+export const requestAnimFrame = () => {
+  fabric.util.requestAnimFrame(function render() {
+    activeCanvas.renderAll();
+    const objects = activeCanvas.getObjects();
+    const isPlaying = objects.some(obj => obj.isPlaying);
+    if (isPlaying) {
+      fabric.util.requestAnimFrame(render);
+    }
+  });
+};
+
+/**
+ * Set video element for fabric image object
+ * @param {Element} imageObject selected object to set video element
+ * @param {String} videoSrc video url will be set to object
+ * @param {String} thumbnailSrc video's thumbnail url will be set to object
+ * @param {Function} cb callback function after apply change canvas
+ */
+export const setVideoSrc = async (imageObject, videoSrc, thumbnailSrc) => {
+  const { width, height, scaleX, scaleY } = imageObject;
+
+  const element = await createVideoElement(videoSrc);
+
+  element.addEventListener('play', () => {
+    imageObject.set({ isPlaying: true, showThumbnail: false });
+    requestAnimFrame();
+  });
+
+  element.addEventListener('pause', () => {
+    imageObject.set({ isPlaying: false });
+    if (element.currentTime === element.duration) {
+      imageObject.set({ showThumbnail: true });
+    }
+    requestAnimFrame();
+  });
+
+  imageObject.setElement(element);
+
+  const thumbnail = createVideoOverlay(thumbnailSrc);
+  const playIcon = createVideoOverlay(IMAGE_LOCAL.PLAY_ICON, {
+    width: 300,
+    height: 300
+  });
+
+  const newScaleX = (width * scaleX) / element.width;
+  const newScaleY = (height * scaleY) / element.height;
+
+  const newProp = {
+    scaleX: newScaleX,
+    scaleY: newScaleY,
+    with: element.width,
+    height: element.height,
+    hasImage: true,
+    thumbnail,
+    playIcon,
+    showThumbnail: true,
+    objectType: OBJECT_TYPE.VIDEO
+  };
+
+  imageObject.set(newProp);
+
+  centercrop(imageObject, imageObject.set.bind(imageObject));
+  imageObject.canvas.renderAll();
+};
+
+/**
+ * Handle click to play/pause video
+ * @param {Object} target fabric object is focused
+ */
+export const handleClickVideo = target => {
+  if (target?.objectType !== OBJECT_TYPE.VIDEO) return;
+  if (target.isPlaying) {
+    target.pause();
+    return;
+  }
+  target.play();
 };

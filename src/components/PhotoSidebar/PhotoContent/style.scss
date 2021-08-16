@@ -22,8 +22,18 @@
     }
   }
   
-  .photo-btn:hover {
+  .photo-btn:hover:not(.disabled) {
     background-color: $color-gray26;
+  }
+
+  .photo-btn.disabled {
+    color: lightgray;
+    cursor: not-allowed;
+    &::v-deep {
+      .v-icon {
+        color: lightgray;
+      }
+    }
   }
 
   .add-photo,

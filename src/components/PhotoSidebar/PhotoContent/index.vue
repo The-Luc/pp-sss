@@ -11,7 +11,11 @@
       <v-icon>add_circle_outline</v-icon>
       <div class="add-photo-title">Add New {{ mediaType }}</div>
     </div>
-    <div v-if="showAutoflow" class="photo-btn autoflow" @click="autoflow">
+    <div
+      v-if="showAutoflow"
+      :class="['photo-btn autoflow', { disabled: disabledAutoflow }]"
+      @click="autoflow"
+    >
       <v-icon>auto_fix_high</v-icon>
       <div class="autoflow-title">Autoflow {{ mediaType }}</div>
     </div>
