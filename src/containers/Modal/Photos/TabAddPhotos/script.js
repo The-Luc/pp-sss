@@ -4,80 +4,79 @@ export default {
   data() {
     return {
       imageTypes: IMAGE_TYPES,
-      showNotification: false
+      isShowNotify: false,
+      isDragover: false
     };
   },
   methods: {
     /**
-     * Get file from entries
+     * Get file from directories
      * @param   {Object}  item  id of current book
      * @returns {Object}  File object
      */
-    getFile(item) {
+    getFileSyncFromEntry(item) {
       return new Promise(resolve => item.file(resolve));
     },
     /**
-     * Get entries form data transfer
-     * @param   {Object}  dirReader  id of current book
-     * @returns {Object}  Entries object
+     * Get directories from data transfer
+     * @param   {Object}  reader  id of current book
+     * @returns {Object}  Directories object
      */
-    getEntries(dirReader) {
-      return new Promise(resolve => dirReader.readEntries(resolve));
+    getEntriesSyncFromDir(reader) {
+      return new Promise(resolve => reader.readEntries(resolve));
     },
     /**
      * Traverse file tree
      * @param   {Object}  item  data transfer item
      * @returns {Array} list files data transfer
      */
-    async traverseFileTree(item) {
-      if (item?.isFile) {
-        const file = await this.getFile(item);
-        return [file];
+    async getFilesFromDroppedItem(item) {
+      const webkitAsEntry = item.webkitGetAsEntry();
+
+      if (webkitAsEntry?.isFile) {
+        const file = await this.getFileSyncFromEntry(webkitAsEntry);
+        return this.checkValidFile(file) ? [file] : [];
       }
 
-      const dirReader = item.createReader();
-      const entries = await this.getEntries(dirReader);
-      const files = await Promise.all(
-        entries.map(async el => {
-          if (el?.isFile) {
-            const file = await this.getFile(el);
-            if (this.checkFileType(file)) {
-              return file;
-            }
-            return null;
-          }
-        })
+      const entryReader = webkitAsEntry.createReader();
+
+      const entries = await this.getEntriesSyncFromDir(entryReader);
+
+      const validEntries = entries.filter(entry => this.checkValidFile(entry));
+
+      const promises = validEntries.map(entry =>
+        this.getFileSyncFromEntry(entry)
       );
 
-      return files.filter(item => {
-        return item;
-      });
+      return await Promise.all(promises);
     },
     /**
      * Handle event drop files and folder to div
      */
     async onDrop(e) {
-      this.$refs.dropzone.classList.remove('is-dragover');
-      const dataTransfer = Object.values(e.dataTransfer.items);
-      const readFiles = await Promise.all(
-        dataTransfer.map(
-          async el => await this.traverseFileTree(el.webkitGetAsEntry())
-        )
-      );
-      const files = readFiles.flat(1);
-      this.showNotification = files.some(el => {
-        return !this.checkFileType(el);
-      });
-      if (this.showNotification) return;
+      this.isDragover = false;
 
-      this.handleUploadFiles(files);
+      const droppedItems = Object.values(e.dataTransfer.items);
+
+      const promises = droppedItems.map(this.getFilesFromDroppedItem);
+
+      const files = await Promise.all(promises);
+
+      const flattenFiles = [].concat(...files);
+
+      if (!flattenFiles?.length) {
+        this.isShowNotify = true;
+        return;
+      }
+
+      this.handleUploadFiles(flattenFiles);
     },
     /**
      * Check file type for correct format
      * @param   {Object}  file  file droped
      * @returns {Boolean} file in correct format
      */
-    checkFileType(file) {
+    checkValidFile(file) {
       const splitName = file.name.split('.');
       const type = `.${splitName[splitName.length - 1].toLowerCase()}`;
       return this.imageTypes.includes(type);
@@ -101,13 +100,13 @@ export default {
      * Handle event drag enter to div
      */
     onDragEnter() {
-      this.$refs.dropzone.classList.add('is-dragover');
+      this.isDragover = true;
     },
     /**
      * Handle event drag leave to div
      */
     onDragLeave() {
-      this.$refs.dropzone.classList.remove('is-dragover');
+      this.isDragover = false;
     }
   }
 };

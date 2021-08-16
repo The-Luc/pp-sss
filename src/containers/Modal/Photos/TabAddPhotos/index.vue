@@ -2,14 +2,14 @@
   <div class="upload-new-photos-container">
     <div class="content">
       <div class="notify">
-        <template v-if="showNotification">
+        <template v-if="isShowNotify">
           Invalid file type detected. Only files with the following extensions
           are allowed: PNG, JPG/JPEG, HEIC, and GIF
         </template>
       </div>
       <div
         ref="dropzone"
-        class="dropzone"
+        :class="['dropzone', { 'is-dragover': isDragover }]"
         @dragover.prevent
         @drop.prevent="onDrop"
         @dragenter.prevent="onDragEnter"
