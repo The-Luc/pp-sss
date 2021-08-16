@@ -8,6 +8,7 @@ import ROUGH_THICK from '@/assets/image/border/rough-thick.png';
 import ROUGH_THIN from '@/assets/image/border/rough-thin.png';
 import SOLID from '@/assets/image/border/solid.svg';
 import PLACE_HOLDER from '@/assets/image/content-placeholder.jpg';
+import PLAY_ICON from '@/assets/icons/play.svg';
 
 export const IMAGE_LOCAL = {
   BACKGROUND_WHITE,
@@ -19,5 +20,6 @@ export const IMAGE_LOCAL = {
   ROUGH_THICK,
   ROUGH_THIN,
   SOLID,
-  PLACE_HOLDER
+  PLACE_HOLDER,
+  PLAY_ICON
 };

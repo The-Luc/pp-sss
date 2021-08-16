@@ -7,6 +7,10 @@ export default {
     mediaType: {
       type: String,
       required: true
+    },
+    disabledAutoflow: {
+      type: Boolean,
+      default: false
     }
   },
   methods: {

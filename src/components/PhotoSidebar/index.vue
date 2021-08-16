@@ -3,6 +3,7 @@
     <PhotoContent
       :show-autoflow="isShowAutoflow"
       :media-type="mediaType"
+      :disabled-autoflow="disabledAutoflow"
       @click="closePhotoContent"
       @addPhoto="openModalAddPhoto"
       @autoflow="autoflowPhotos"

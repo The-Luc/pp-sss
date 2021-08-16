@@ -4,6 +4,8 @@ import RIPKEN_LOGO_SD from '@/assets/image/albums/ripken-logo-sd.png';
 import RIPKEN_LOGO_HD from '@/assets/image/albums/ripken-logo-hd.png';
 import RIPKEN_LOGO_2_SD from '@/assets/image/albums/ripken-logo-2-sd.png';
 import RIPKEN_LOGO_2_HD from '@/assets/image/albums/ripken-logo-2-hd.png';
+import SAMPLE_VIDEO from '@/assets/video/sample.mp4';
+import SAMPLE_THUMBNAIL from '@/assets/image/content-placeholder.jpg';
 import { AlbumEntity } from '@/common/models/entities/album';
 import { uniqueId } from 'lodash';
 import { PictureAssetEntity } from '@/common/models/entities/asset';
@@ -35,12 +37,22 @@ const photo3 = new PictureAssetEntity({
   originalWidth: 1600
 });
 
-const photosBase = [photo1, photo2, photo3];
+const video = {
+  id: uniqueId(),
+  mediaFileName: 'sample.mp4',
+  thumbUrl: SAMPLE_THUMBNAIL,
+  imageUrl: SAMPLE_VIDEO,
+  originalHeight: 1080,
+  originalWidth: 1920,
+  isMedia: true
+};
+
+const photosBase = [photo1, photo2, photo3, video];
 
 const photos = Array.from({ length: 20 }, () => {
   const inProject = Math.random() * 5 < 2;
   const photo = {
-    ...photosBase[getRandomInt(3)],
+    ...photosBase[getRandomInt(4)],
     inProject,
     id: uniqueId()
   };
