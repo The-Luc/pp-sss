@@ -21,6 +21,10 @@ export default {
     disabled: {
       type: Boolean,
       default: false
+    },
+    isShowInput: {
+      type: Boolean,
+      default: true
     }
   },
   components: {

@@ -1,0 +1,42 @@
+.animation-container {
+  .properties-title {
+    line-height: 1;
+    color: $color-gray13;
+  }
+
+  .animation-style {
+    display: flex;
+    column-gap: 10px;
+
+    .v-btn {
+      border-color: $color-gray15;
+      border-radius: 3px;
+      width: 86px;
+      height: 25px;
+      text-transform: capitalize;
+      font-size: 11px;
+      font-family: $font-500;
+      color: $color-stoodio-toolbartext;
+      background-color: $color-white;
+      letter-spacing: 0;
+
+      .v-btn__content .v-icon {
+        margin-left: 0;
+      }
+    }
+  }
+
+  .animation-option {
+    margin-top: 8px;
+    display: grid;
+    grid-auto-flow: column;
+    grid-template-columns: 73px 56px 56px;
+    grid-template-rows: min-content 25px;
+    column-gap: 10px;
+
+    .v-input {
+      background-color: $color-white;
+      max-width: 56px;
+    }
+  }
+}
