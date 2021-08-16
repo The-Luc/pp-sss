@@ -42,11 +42,9 @@ export default {
 
       const entries = await this.getEntriesSyncFromDir(entryReader);
 
-      const validEntries = entries.filter(entry => this.checkValidFile(entry));
+      const validEntries = entries.filter(this.checkValidFile);
 
-      const promises = validEntries.map(entry =>
-        this.getFileSyncFromEntry(entry)
-      );
+      const promises = validEntries.map(this.getFileSyncFromEntry);
 
       return await Promise.all(promises);
     },
