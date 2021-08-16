@@ -18,6 +18,11 @@
           <Smartbox
             :key="currentTab"
             :selected-images="selectedImages"
+            :keywords="keywords"
+            :photos="photos"
+            :is-photo-visited="isPhotoVisited"
+            @clickGotIt="onClickGotIt"
+            @clickKeyword="onClickKeyword"
             @change="onSelectedImage"
           />
         </v-tab-item>
