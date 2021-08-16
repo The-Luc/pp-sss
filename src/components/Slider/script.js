@@ -22,7 +22,7 @@ export default {
       type: Boolean,
       default: false
     },
-    isShowInput: {
+    isInputDisplayed: {
       type: Boolean,
       default: true
     }
