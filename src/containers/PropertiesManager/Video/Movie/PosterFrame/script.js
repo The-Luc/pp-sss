@@ -18,7 +18,7 @@ export default {
      * Fire when user click on Select Image button
      */
     onClickSelectImage() {
-      //
+      console.log('on click Select image');
     }
   }
 };

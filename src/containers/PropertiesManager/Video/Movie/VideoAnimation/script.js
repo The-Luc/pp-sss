@@ -12,10 +12,6 @@ import {
 export default {
   components: { Select, PpCombobox, PpInput },
   props: {
-    isssss: {
-      type: Boolean,
-      default: false
-    },
     title: {
       type: String,
       default: ''

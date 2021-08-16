@@ -21,13 +21,19 @@ export default {
     }
   },
   methods: {
+    /**
+     * Fire when user change playback select box
+     * @param {Object} val Playback options
+     */
     onChangePlayback(val) {
       console.log('play back ' + val);
-      //
     },
+    /**
+     * Fire when user change repeat select box
+     * @param {Object} val A repeat options
+     */
     onChangeRepeat(val) {
       console.log('repeat ' + val);
-      //
     }
   }
 };
