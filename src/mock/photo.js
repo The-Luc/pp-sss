@@ -5,7 +5,9 @@ import RIPKEN_LOGO_HD from '@/assets/image/albums/ripken-logo-hd.png';
 import RIPKEN_LOGO_2_SD from '@/assets/image/albums/ripken-logo-2-sd.png';
 import RIPKEN_LOGO_2_HD from '@/assets/image/albums/ripken-logo-2-hd.png';
 import SAMPLE_VIDEO from '@/assets/video/sample.mp4';
-import SAMPLE_THUMBNAIL from '@/assets/image/content-placeholder.jpg';
+import VERTICAL_VIDEO from '@/assets/video/vertical.mp4';
+import SAMPLE_THUMBNAIL from '@/assets/image/horizontal-photo.jpg';
+import VERTICAL_THUMBNAIL from '@/assets/image/vertical-photo.jpg';
 import { AlbumEntity } from '@/common/models/entities/album';
 import { uniqueId } from 'lodash';
 import {
@@ -62,11 +64,11 @@ const video1 = new VideoAssetEntity({
 
 const video2 = new VideoAssetEntity({
   id: uniqueId(),
-  mediaFileName: 'sample.mp4',
-  thumbUrl: SAMPLE_THUMBNAIL,
-  mediaUrl: SAMPLE_VIDEO,
-  originalHeight: 1080,
-  originalWidth: 1920,
+  mediaFileName: 'vertical.mp4',
+  thumbUrl: VERTICAL_THUMBNAIL,
+  mediaUrl: VERTICAL_VIDEO,
+  originalHeight: 1920,
+  originalWidth: 1080,
   duration: '2:20'
 });
 
