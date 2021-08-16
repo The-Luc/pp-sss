@@ -1,4 +1,7 @@
 import { useGetters, useMutations } from 'vuex-composition-helpers';
+
+import { useUser } from './user';
+
 import {
   GETTERS as APP_GETTERS,
   MUTATES as APP_MUTATES

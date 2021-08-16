@@ -69,7 +69,7 @@ import {
   resetObjects,
   selectLatestObject,
   setActiveCanvas,
-  setBorderHighLight,
+  setBorderHighlight,
   setBorderObject,
   setCanvasUniformScaling,
   isNonElementPropSelected,
@@ -475,7 +475,7 @@ export default {
       const targetType = target.get('type');
       this.setSelectedObjectId({ id });
 
-      setBorderHighLight(target, this.sheetLayout);
+      setBorderHighlight(target, this.sheetLayout);
 
       const objectData = this.listObjects?.[id] || this.selectedObject;
 
@@ -744,7 +744,7 @@ export default {
      * Set border color when selected group object
      * @param {Element}  group  Group object
      */
-    setBorderHighLight(group) {
+    setBorderHighlight(group) {
       group.set({
         borderColor: this.sheetLayout?.id ? 'white' : '#bcbec0'
       });

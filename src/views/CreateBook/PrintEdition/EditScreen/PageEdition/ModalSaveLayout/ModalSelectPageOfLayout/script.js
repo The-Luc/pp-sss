@@ -1,7 +1,8 @@
 import Modal from '@/containers/Modal';
 import PpButton from '@/components/Buttons/Button';
 import { MODAL_TYPES, SHEET_TYPE } from '@/common/constants';
-import { useModal, useSheet } from '@/hooks';
+import { useModal, useSheet, useBackgroundGetter } from '@/hooks';
+import { isFullBackground, isHalfSheet } from '@/common/utils';
 
 export default {
   components: {
@@ -11,13 +12,15 @@ export default {
   setup() {
     const { toggleModal } = useModal();
     const { currentSheet } = useSheet();
-    return { toggleModal, currentSheet };
+    const { backgrounds } = useBackgroundGetter();
+    return { toggleModal, currentSheet, backgrounds };
   },
   computed: {
-    isHaflSheet() {
-      return [SHEET_TYPE.FRONT_COVER, SHEET_TYPE.BACK_COVER].includes(
-        this.currentSheet.type
-      );
+    isHalfSheet() {
+      return isHalfSheet(this.currentSheet);
+    },
+    isContainFullBackground() {
+      return isFullBackground(this.backgrounds.left);
     }
   },
   methods: {

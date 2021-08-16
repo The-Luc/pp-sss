@@ -1,7 +1,7 @@
-import { ID_PHOTO_All } from '@/common/constants/photoDropdowns';
+import { ALL_PHOTO_SUBCATEGORY_ID } from '@/common/constants/photo';
 export const albums = [
   {
-    id: ID_PHOTO_All,
+    id: ALL_PHOTO_SUBCATEGORY_ID,
     name: 'All'
   },
   {
@@ -28,7 +28,7 @@ export const albums = [
 
 export const communities = [
   {
-    id: ID_PHOTO_All,
+    id: ALL_PHOTO_SUBCATEGORY_ID,
     name: 'All'
   },
   {

@@ -2,7 +2,7 @@
   <Modal title="Save Layout" width="560" :is-close-out-side="false">
     <div class="modal-select-page-of-layout">
       <PpButton
-        v-if="!isHaflSheet"
+        v-if="!isHalfSheet"
         is-active
         class="btn-first"
         @click="onSelectPageOfLayout('full')"
@@ -10,7 +10,7 @@
         Save Spread Layout
       </PpButton>
       <PpButton
-        v-if="isHaflSheet"
+        v-if="isHalfSheet"
         is-active
         class="btn-first"
         @click="onSaveLayoutOfHalfSheet"
@@ -18,14 +18,14 @@
         Save Layout
       </PpButton>
       <PpButton
-        v-if="!isHaflSheet"
+        v-if="!isHalfSheet && !isContainFullBackground"
         is-active
         @click="onSelectPageOfLayout('left')"
       >
         Save Left Hand Page Layout
       </PpButton>
       <PpButton
-        v-if="!isHaflSheet"
+        v-if="!isHalfSheet && !isContainFullBackground"
         is-active
         @click="onSelectPageOfLayout('right')"
       >
