@@ -9,6 +9,7 @@ import {
 } from '@/store/modules/print/const';
 import {
   MODAL_TYPES,
+  OBJECT_TYPE,
   ROLE,
   SAVE_STATUS,
   SAVING_DURATION,
@@ -35,7 +36,8 @@ import {
   useMenuProperties,
   useProperties,
   useSheet,
-  useActionsEditionSheet
+  useActionsEditionSheet,
+  useObjectProperties
 } from '@/hooks';
 import { EDITION } from '@/common/constants';
 import {
@@ -46,7 +48,11 @@ import {
 } from '@/common/utils';
 
 import { useSaveData } from './PageEdition/composables';
-import { getActivateImages, setImageSrc } from '@/common/fabricObjects';
+import {
+  getActivateImages,
+  setImageSrc,
+  setVideoSrc
+} from '@/common/fabricObjects';
 import { useSavingStatus } from '../../composables';
 import { debounce } from 'lodash';
 import { useBookPrintInfo } from './composables';
@@ -77,6 +83,7 @@ export default {
     const { sheetMedia } = useSheet();
     const { updateSheetMedia, deleteSheetMedia } = useActionsEditionSheet();
     const { getBookPrintInfo } = useBookPrintInfo();
+    const { listObjects } = useObjectProperties();
 
     return {
       pageSelected,
@@ -94,7 +101,8 @@ export default {
       sheetMedia,
       updateSheetMedia,
       deleteSheetMedia,
-      getBookPrintInfo
+      getBookPrintInfo,
+      listObjects
     };
   },
   data() {
@@ -116,6 +124,13 @@ export default {
     },
     isOpenPhotoSidebar() {
       return this.selectedToolName === TOOL_NAME.PHOTOS;
+    },
+    disabledAutoflow() {
+      const hasEmptyImage = Object.values(this.listObjects).some(
+        obj => obj.type === OBJECT_TYPE.IMAGE && !obj.hasImage
+      );
+
+      return !hasEmptyImage;
     }
   },
   watch: {
@@ -314,16 +329,27 @@ export default {
     onDrop({ target }) {
       if (!this.dragItem) return;
 
-      const { imageUrl, id: imageId } = this.dragItem;
-
-      if (target) {
-        setImageSrc(target, imageUrl, prop => {
-          prop.imageId = imageId;
-          this.setPropertyById({ id: target.id, prop });
-        });
-      }
+      const { imageUrl, id: imageId, isMedia, thumbUrl } = this.dragItem;
 
       this.dragItem = null;
+
+      if (!target) return;
+
+      if (isMedia) {
+        setVideoSrc(target, imageUrl, thumbUrl, prop => {
+          prop.imageUrl = imageUrl;
+          prop.imageId = imageId;
+          prop.thumbUrl = thumbUrl;
+          this.setPropertyById({ id: target.id, prop });
+        });
+
+        return;
+      }
+
+      setImageSrc(target, imageUrl, prop => {
+        prop.imageId = imageId;
+        this.setPropertyById({ id: target.id, prop });
+      });
     },
     /**
      * Undo user action

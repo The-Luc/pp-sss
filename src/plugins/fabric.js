@@ -1,5 +1,10 @@
 import { fabric } from 'fabric';
-import { CORNER_SIZE, BORDER_STYLES, DEFAULT_TEXT } from '@/common/constants';
+import {
+  CORNER_SIZE,
+  BORDER_STYLES,
+  DEFAULT_TEXT,
+  OBJECT_TYPE
+} from '@/common/constants';
 import { getRectDashes, ptToPx } from '@/common/utils';
 
 const BORDER_COLOR = {
@@ -75,12 +80,8 @@ const getDoubleStrokeClipPath = function(
  *  Allow adding padding between image and stroke
  * @param {2D context Object} ctx the object enable to modify context canvas
  */
-const renderFill = function(ctx) {
+const renderFillImage = function(ctx) {
   const elementToDraw = this._element;
-  if (!elementToDraw) {
-    return;
-  }
-
   if (!this.zoomLevel) this.zoomLevel = 0;
   const zoomLevel = 1 + this.zoomLevel;
 
@@ -124,6 +125,114 @@ const renderFill = function(ctx) {
   const dH = min(h, elHeight / scaleY - cropY) - offsetY;
 
   ctx.drawImage(elementToDraw, sX, sY, sW, sH, dX, dY, dW, dH);
+};
+
+/**
+ * Handle render thumbnail for video object
+ * @param {2D context Object} ctx the object enable to modify context canvas
+ */
+const renderVideoThumbnail = function(ctx) {
+  const offsetX = this.strokeWidth / this.scaleX;
+  const offsetY = this.strokeWidth / this.scaleY;
+  const XYRatio = this.scaleX / this.scaleY;
+
+  const sX = 0;
+  const sY = 0;
+
+  const sW = this.thumbnail.width;
+  const sH = this.thumbnail.height;
+
+  const dW = this.width - offsetX;
+  const dH = this.height - offsetY;
+
+  const dX = -this.width / 2 + offsetX / 2;
+  const dY = -this.height / 2 + (offsetX / 2) * XYRatio;
+
+  ctx.drawImage(this.thumbnail, sX, sY, sW, sH, dX, dY, dW, dH);
+};
+
+/**
+ * Handle render play icon for video object
+ * @param {2D context Object} ctx the object enable to modify context canvas
+ */
+const renderVideoPlayIcon = function(ctx) {
+  const { width, height } = this.playIcon;
+  ctx.drawImage(
+    this.playIcon,
+    0,
+    0,
+    width,
+    height,
+    -this.width / 2,
+    -this.height / 2,
+    this.width,
+    this.height
+  );
+};
+
+/**
+ *  Allow adding padding between video and stroke
+ * @param {2D context Object} ctx the object enable to modify context canvas
+ */
+const renderFillVideo = function(ctx) {
+  const elementToDraw = this._element;
+  if (!this.zoomLevel) this.zoomLevel = 0;
+  const zoomLevel = 1 + this.zoomLevel;
+
+  const min = Math.min;
+  const max = Math.max;
+
+  const w = this.width;
+  const h = this.height;
+
+  // crop values cannot be lesser than 0.
+  const cropX = max(this.cropX, 0);
+  const cropY = max(this.cropY, 0);
+
+  const scaleX = this._filterScalingX;
+  const scaleY = this._filterScalingY;
+
+  const elWidth = elementToDraw.naturalWidth || elementToDraw.width;
+  const elHeight = elementToDraw.naturalHeight || elementToDraw.height;
+
+  const offsetX = this.strokeWidth / this.scaleX;
+  const offsetY = this.strokeWidth / this.scaleY;
+  const XYRatio = this.scaleX / this.scaleY;
+
+  const fWidth = (w * this.scaleX) / zoomLevel;
+  const fHeight = (h * this.scaleY) / zoomLevel;
+  const sX = (elWidth - fWidth) / 2;
+  const sY = (elHeight - fHeight) / 2;
+
+  const sW = (w * this.scaleX) / zoomLevel;
+  const sH = (h * this.scaleY) / zoomLevel;
+
+  const dX = -w / 2 + offsetX / 2;
+  const dY = -h / 2 + (offsetX / 2) * XYRatio;
+  const dW = min(w, elWidth / scaleX - cropX) - offsetX;
+  const dH = min(h, elHeight / scaleY - cropY) - offsetY;
+
+  ctx.drawImage(elementToDraw, sX, sY, sW, sH, dX, dY, dW, dH);
+
+  if (this.showThumbnail) {
+    renderVideoThumbnail.call(this, ctx);
+    renderVideoPlayIcon.call(this, ctx);
+  }
+};
+
+/**
+ *  Allow adding padding between image/video and stroke
+ * @param {2D context Object} ctx the object enable to modify context canvas
+ */
+const renderFill = function(ctx) {
+  const elementToDraw = this._element;
+  if (!elementToDraw) return;
+
+  if (this.objectType === OBJECT_TYPE.IMAGE) {
+    renderFillImage.call(this, ctx);
+    return;
+  }
+  renderFillVideo.call(this, ctx);
 };
 
 /**
@@ -265,6 +374,24 @@ export const useDoubleStroke = function(rect) {
 };
 
 /**
+ * Handle play video
+ */
+const play = function() {
+  const element = this.getElement();
+  if (!element || !element.play) return;
+  element.play.call(element);
+};
+
+/**
+ * Handle pause vide
+ */
+const pause = function() {
+  const element = this.getElement();
+  if (!element || !element.pause) return;
+  element.pause.call(element);
+};
+
+/**
  * Allow fabric image object to have double stroke
  * @param {fabric.Image} image - the object to enable double stroke
  */
@@ -274,6 +401,8 @@ export const imageBorderModifier = function(image) {
   image._drawClipPath = drawClipPath;
   image.renderClipPathCache = renderClipPathCache;
   image.drawClipPathOnCache = drawClipPathOnCache;
+  image.play = play;
+  image.pause = pause;
 };
 
 /**

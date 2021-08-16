@@ -5,7 +5,7 @@
         <v-icon class="media-icon" @click="onShowRemoveModal(item)">
           delete_forever
         </v-icon>
-        <img :src="item.imageUrl" alt="" />
+        <img :src="item.thumbUrl" alt="" />
         <div v-show="item.inProject" class="indicator">In Project</div>
       </div>
     </Draggable>

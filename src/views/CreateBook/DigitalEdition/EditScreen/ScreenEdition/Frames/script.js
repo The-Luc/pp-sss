@@ -98,7 +98,7 @@ export default {
           type: MODAL_TYPES.ADD_DIGITAL_FRAME,
           props: {
             centerX,
-            isAddNew: true
+            isAddFrame: true
           }
         }
       });

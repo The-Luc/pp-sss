@@ -60,7 +60,8 @@ import {
   handleDragEnter,
   handleDragLeave,
   fabricToPpObject,
-  getTextSizeWithPadding
+  getTextSizeWithPadding,
+  handleClickVideo
 } from '@/common/fabricObjects';
 
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
@@ -683,7 +684,11 @@ export default {
                 this.awaitingAdd = '';
               }
             );
+
+            return;
           }
+
+          handleClickVideo(e.target);
         },
         'text:changed': ({ target }) => {
           const group = target?.group;
@@ -1339,11 +1344,7 @@ export default {
 
       const newProp = this.updateElementProp(element, prop, objectType);
 
-      if (objectType === OBJECT_TYPE.TEXT) {
-        this.debounceSetCurrentObject(element.id, newProp);
-      } else {
-        this.updateCurrentObject(element.id, newProp);
-      }
+      this.updateCurrentObject(element.id, newProp);
 
       this.updateInfoBar(newProp);
 
@@ -1426,18 +1427,18 @@ export default {
         resole();
       });
     },
-    // Will be removed after fixing "one change only triggers one mutation"
+    /**
+     * Set properties of selected object
+     *
+     * @param {Object}  prop  new prop
+     */
     setObjectProperties(prop) {
       this.setObjectProp({ prop });
 
       this.handleCanvasChanged();
     },
-    // Will be removed after fixing "one change only triggers one mutation"
-    debounceSetCurrentObject: debounce(function(id, prop) {
-      this.updateCurrentObject(id, prop);
-    }, DEBOUNCE_MUTATION),
     /**
-     * Set properties of selected object then trigger the change
+     * Set properties of selected object
      * Use with debounce
      *
      * @param {Object}  prop            new prop
