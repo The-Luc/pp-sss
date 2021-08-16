@@ -7,8 +7,6 @@ import {
   MUTATES as APP_MUTATES
 } from '@/store/modules/app/const';
 
-import { useUser } from '.';
-
 /**
  * use common app store's getters and mutates
  * @returns {Object} mapped values from app store
