@@ -59,7 +59,6 @@ export default {
      */
     onChangeScale(val) {
       console.log('scale ' + val);
-      //
     },
     /**
      * Fire when user change the duration input
@@ -67,7 +66,6 @@ export default {
      */
     onChangeDuration(val) {
       console.log('duration ' + val);
-      //
     }
   }
 };
