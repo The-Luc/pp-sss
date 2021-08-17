@@ -5,6 +5,7 @@ import { useMutationBook, useActionBook, useAppCommon } from '@/hooks';
 import { isEmpty } from '@/common/utils';
 import { GETTERS, ACTIONS } from '@/store/modules/digital/const';
 import digitalService from '@/api/digital';
+import { getMedia, searchMedia } from '@/api/photo';
 
 export const useSaveData = () => {
   const { getDataEditScreen } = useGetters({
@@ -68,5 +69,22 @@ export const useBookDigitalInfo = () => {
 
   return {
     getBookDigitalInfo
+  };
+};
+
+export const useGetMedia = () => {
+  const getSmartboxMedia = async keywords => {
+    const listPhotos = await getMedia(keywords);
+    return listPhotos;
+  };
+
+  const getSearchMedia = async input => {
+    const listPhotos = await searchMedia(input);
+    return listPhotos;
+  };
+
+  return {
+    getSmartboxMedia,
+    getSearchMedia
   };
 };

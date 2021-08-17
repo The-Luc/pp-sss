@@ -1,0 +1,26 @@
+.poster-frame-container {
+  margin-top: 8px;
+  .control-group {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    font-size: 10px;
+  }
+
+  .pp-range-slider-container {
+    width: 100%;
+    margin: 5px 0 13px;
+  }
+
+  .v-btn {
+    border-color: $color-gray15;
+    border-radius: 3px;
+    width: 86px;
+    height: 25px;
+    text-transform: capitalize;
+    font-size: 11px;
+    font-family: $font-500;
+    color: $color-stoodio-toolbartext;
+    letter-spacing: 0;
+  }
+}

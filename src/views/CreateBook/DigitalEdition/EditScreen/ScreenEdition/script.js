@@ -270,6 +270,9 @@ export default {
         sheetId: this.pageSelected.id,
         thumbnailUrl: val
       });
+    },
+    zoom(newVal, oldVal) {
+      if (newVal !== oldVal) this.updateCanvasSize();
     }
   },
   beforeDestroy() {
@@ -280,7 +283,7 @@ export default {
     this.updateDigitalEventListeners(false);
     this.updateWindowEventListeners(false);
 
-    this.setInfoBar({ x: 0, y: 0, w: 0, h: 0, zoom: 0 });
+    this.setInfoBar({ x: 0, y: 0, zoom: 0 });
 
     this.undoRedoCanvas.dispose();
   },
@@ -316,18 +319,28 @@ export default {
         width: 0,
         height: 0
       };
-      if (this.containerSize.ratio > DIGITAL_CANVAS_SIZE.RATIO) {
+
+      if (this.zoom > 0) {
+        canvasSize.height = DIGITAL_CANVAS_SIZE.HEIGHT * this.zoom;
+        canvasSize.width = DIGITAL_CANVAS_SIZE.WIDTH * this.zoom;
+      } else if (this.containerSize.ratio > DIGITAL_CANVAS_SIZE.RATIO) {
         canvasSize.height = this.containerSize.height;
         canvasSize.width = canvasSize.height * DIGITAL_CANVAS_SIZE.RATIO;
       } else {
         canvasSize.width = this.containerSize.width;
         canvasSize.height = canvasSize.width / DIGITAL_CANVAS_SIZE.RATIO;
       }
-      const zoom = canvasSize.width / DIGITAL_CANVAS_SIZE.WIDTH;
+
+      const zoom =
+        this.zoom === 0
+          ? canvasSize.width / DIGITAL_CANVAS_SIZE.WIDTH
+          : this.zoom;
+
       this.canvasSize = { ...canvasSize, zoom };
 
       window.digitalCanvas.setWidth(canvasSize.width);
       window.digitalCanvas.setHeight(canvasSize.height);
+
       window.digitalCanvas.setZoom(zoom);
     },
 
@@ -375,10 +388,6 @@ export default {
      */
     updateDigitalEventListeners(isOn = true) {
       const elementEvents = [
-        {
-          name: EVENT_TYPE.SWITCH_TOOL,
-          handler: this.onSwitchTool
-        },
         {
           name: EVENT_TYPE.DIGITAL_ADD_ELEMENT,
           handler: this.onAddElement
@@ -546,9 +555,7 @@ export default {
         this.toggleModal({ isOpenModal: false });
       }
 
-      this.stopAddingInstruction();
-
-      this.awaitingAdd = '';
+      this.endInstruction();
     },
 
     /**
@@ -597,8 +604,6 @@ export default {
 
       this.setCurrentObject({});
 
-      this.setInfoBar({ w: 0, h: 0 });
-
       setCanvasUniformScaling(window.digitalCanvas, true);
 
       this.resetConfigTextProperties();
@@ -629,11 +634,6 @@ export default {
         setBorderObject(rectObj, objectData);
       }
 
-      this.setInfoBar({
-        w: this.getProperty('size')?.width,
-        h: this.getProperty('size')?.height
-      });
-
       setCanvasUniformScaling(window.digitalCanvas, objectData.isConstrain);
 
       this.setObjectTypeSelected({ type: objectData.type });
@@ -647,7 +647,6 @@ export default {
      * Event fire when selection of fabric canvas has been cleared
      */
     onSelectionCleared() {
-      this.setInfoBar({ w: 0, h: 0 });
       this.closeProperties();
     },
 
@@ -687,7 +686,6 @@ export default {
       };
       this.setObjectProp({ prop });
 
-      this.setInfoBar({ w: prop.size.width, h: prop.size.height });
       this.setCurrentObject(this.listObjects?.[target?.id]);
     },
 
@@ -810,8 +808,6 @@ export default {
 
       this.setObjectProp({ prop });
       this.setObjectPropById({ id: group.id, prop });
-
-      this.setInfoBar({ w: prop.size.width, h: prop.size.height });
     },
 
     /**
@@ -1232,8 +1228,6 @@ export default {
       const newProp = this.updateElementProp(element, prop, objectType);
 
       this.updateCurrentObject(element.id, newProp);
-
-      this.updateInfoBar(newProp);
 
       if (
         !isEmpty(newProp['shadow']) ||
@@ -1919,20 +1913,6 @@ export default {
       });
     },
     /**
-     * Update width & height info on info bar
-     *
-     * @param {Object}  prop  new prop
-     */
-    updateInfoBar(prop) {
-      return new Promise(resole => {
-        if (!isEmpty(prop.size)) {
-          this.setInfoBar({ w: prop.size.width, h: prop.size.height });
-        }
-
-        resole();
-      });
-    },
-    /**
      * Set properties of selected object
      *
      * @param {Object}  prop  new prop
@@ -1975,6 +1955,14 @@ export default {
      */
     async redo() {
       this.undoRedoCanvas.redo();
+    },
+    /**
+     * End instruction
+     */
+    endInstruction() {
+      this.stopAddingInstruction();
+
+      this.awaitingAdd = '';
     }
   }
 };

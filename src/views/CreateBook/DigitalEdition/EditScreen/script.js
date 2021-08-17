@@ -28,7 +28,8 @@ import {
   useMutationDigitalSheet,
   useUser,
   useGetterDigitalSheet,
-  useFrame
+  useFrame,
+  useInfoBar
 } from '@/hooks';
 import { isEmpty, isPositiveInteger, getEditionListPath } from '@/common/utils';
 import { COPY_OBJECT_KEY } from '@/common/constants/config';
@@ -48,6 +49,7 @@ export default {
     const { saveEditScreen, getDataEditScreen } = useSaveData();
     const { updateSavingStatus } = useSavingStatus();
     const { getBookDigitalInfo } = useBookDigitalInfo();
+    const { setInfoBar } = useInfoBar();
 
     return {
       pageSelected,
@@ -61,7 +63,8 @@ export default {
       saveEditScreen,
       getDataEditScreen,
       updateSavingStatus,
-      getBookDigitalInfo
+      getBookDigitalInfo,
+      setInfoBar
     };
   },
   data() {
@@ -238,6 +241,35 @@ export default {
      */
     onRedo() {
       this.$refs.canvasEditor.redo();
+    },
+    /**
+     * Selected media and save in sheet
+     * @param   {Array}  media  selected media
+     */
+    handleSelectedMedia(media) {
+      console.log(media);
+    },
+    /**
+     * Switching tool on Creation Tool by emit
+     *
+     * @param {String}  toolName  name of tool
+     */
+    onToolSwitch(toolName) {
+      this.$refs.canvasEditor.onSwitchTool(toolName);
+    },
+    /**
+     * Stop instruction by emit
+     */
+    onInstructionEnd() {
+      this.$refs.canvasEditor.endInstruction();
+    },
+    /**
+     * Fire when zoom is changed
+     *
+     * @param {Number} zoom  selected zoom value
+     */
+    onZoom({ zoom }) {
+      this.setInfoBar({ zoom });
     }
   }
 };

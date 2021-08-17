@@ -39,6 +39,12 @@
     }
     .v-tabs-items {
       height: 587px;
+      .v-window-item {
+        height: 100%;
+        .got-it-container {
+          left: 50px;
+        }
+      }
     }
   }
 }
@@ -46,5 +52,25 @@
 .v-dialog__content {
   ::v-deep.v-dialog.modal-add-photo {
     position: relative;
+  }
+}
+
+@media only screen and (max-width: 1600px) {
+  .modal-body {
+    &::v-deep {
+      .v-tabs-items {
+        height: calc(100vh - 220px);
+      }
+    }
+  }
+}
+
+@media (max-width: 1366px) {
+  .modal-body {
+    &::v-deep {
+      .v-tabs-items {
+        height: calc(100vh - 210px);
+      }
+    }
   }
 }

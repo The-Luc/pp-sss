@@ -21,6 +21,10 @@ export default {
     disabled: {
       type: Boolean,
       default: false
+    },
+    isInputHidden: {
+      type: Boolean,
+      default: false
     }
   },
   components: {

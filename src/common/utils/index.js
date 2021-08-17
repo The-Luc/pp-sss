@@ -21,3 +21,4 @@ export * from './section';
 export * from './route';
 export * from './layout';
 export * from './device';
+export * from './keyword';

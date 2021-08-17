@@ -1,0 +1,11 @@
+.playback-container {
+  display: grid;
+  grid-template: min-content 1fr / 1fr 1fr;
+  column-gap: 9px;
+  grid-auto-flow: column;
+  background-color: $color-stoodio-lightgray;
+
+  .properties-title {
+    line-height: 1;
+  }
+}
