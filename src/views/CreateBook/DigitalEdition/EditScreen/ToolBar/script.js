@@ -233,15 +233,13 @@ export default {
      * Undo user action
      */
     undo() {
-      // will be release in this sprint
-      console.log('UNDO feature will roll out soon');
+      this.$emit('undo');
     },
     /**
      * Redo user action
      */
     redo() {
-      // will be release in this sprint
-      console.log('REDO feature will roll out soon');
+      this.$emit('redo');
     }
   }
 };

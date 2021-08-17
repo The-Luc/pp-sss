@@ -82,6 +82,8 @@ export default {
      * To unfocus an input
      */
     onFocus(event) {
+      if (isEmpty(event?.target)) return;
+
       event.target.blur();
     }
   }
