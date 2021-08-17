@@ -240,6 +240,13 @@ export default {
       this.$refs.canvasEditor.redo();
     },
     /**
+     * Selected media and save in sheet
+     * @param   {Array}  media  selected media
+     */
+    handleSelectedMedia(media) {
+      console.log(media);
+    },
+    /**
      * Switching tool on Creation Tool by emit
      *
      * @param {String}  toolName  name of tool

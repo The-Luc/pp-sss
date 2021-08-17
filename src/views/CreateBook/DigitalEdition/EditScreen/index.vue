@@ -35,7 +35,11 @@
 
     <ScreenEdition ref="canvasEditor" />
 
-    <ModalAddMedia :is-open-modal="isOpenModal" @cancel="onCancel" />
+    <ModalAddMedia
+      :is-open-modal="isOpenModal"
+      @select="handleSelectedMedia"
+      @cancel="onCancel"
+    />
   </div>
 </template>
 
