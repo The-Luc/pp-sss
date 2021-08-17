@@ -17,7 +17,7 @@
         <v-tab-item value="smartbox">
           <Smartbox
             :key="currentTab"
-            :selected-images="selectedImages"
+            :selected-media="selectedImages"
             :keywords="keywords"
             :photos="photos"
             :is-photo-visited="isPhotoVisited"
@@ -46,7 +46,7 @@
         <v-tab-item value="search">
           <TabSearchPhotos
             :key="currentTab"
-            :selected-images="selectedImages"
+            :selected-media="selectedImages"
             :photos="photos"
             @search="onSearch"
             @change="onSelectedImage"

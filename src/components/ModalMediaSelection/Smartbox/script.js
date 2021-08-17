@@ -11,7 +11,7 @@ export default {
     PopupSelected
   },
   props: {
-    selectedImages: {
+    selectedMedia: {
       type: Array,
       default: () => []
     },
@@ -42,7 +42,7 @@ export default {
       return this.photos.length + ' results';
     },
     isShowPopupSelected() {
-      return this.selectedImages.length !== 0;
+      return this.selectedMedia.length !== 0;
     }
   },
   methods: {
@@ -63,7 +63,7 @@ export default {
      * Selected a image and emit parent component
      * @param   {Object}  image  id of current book
      */
-    onSelectedImage(image) {
+    onSelectedMedia(image) {
       this.$emit('change', image);
     }
   }

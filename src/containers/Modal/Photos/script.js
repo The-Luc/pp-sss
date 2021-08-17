@@ -6,12 +6,12 @@ import TabSearchPhotos from '@/components/ModalMediaSelection/TabSearch';
 
 import { useGetterPrintSheet, useSheet, useAppCommon } from '@/hooks';
 import { usePhotos } from '@/views/CreateBook/composables';
-import { getPhotos, searchPhotos } from '@/api/photo';
+import { useGetPhotos } from '@/views/CreateBook/PrintEdition/EditScreen/composables';
 
 import {
   insertItemsToArray,
   removeItemsFormArray,
-  listKeywords
+  getUniqueKeywords
 } from '@/common/utils';
 
 export default {
@@ -26,6 +26,7 @@ export default {
     const { currentSection } = useGetterPrintSheet();
     const { currentSheet } = useSheet();
     const { isPhotoVisited, updatePhotoVisited } = usePhotos();
+    const { getSmartboxPhotos, getSearchPhotos } = useGetPhotos();
     const { generalInfo } = useAppCommon();
 
     return {
@@ -33,7 +34,9 @@ export default {
       updatePhotoVisited,
       currentSection,
       currentSheet,
-      generalInfo
+      generalInfo,
+      getSmartboxPhotos,
+      getSearchPhotos
     };
   },
   data() {
@@ -57,7 +60,7 @@ export default {
 
       this.getListKeywords();
       const keywords = this.keywords.map(keyword => keyword.value);
-      this.photos = await getPhotos(keywords);
+      this.photos = await this.getSmartboxPhotos(keywords);
     }
   },
   computed: {
@@ -111,7 +114,7 @@ export default {
 
       if (this.currentTab === 'smartbox') {
         const keywords = this.keywords.map(keyword => keyword.value);
-        this.photos = await getPhotos(keywords);
+        this.photos = await this.getSmartboxPhotos(keywords);
       }
     },
     /**
@@ -131,7 +134,7 @@ export default {
       const projectTitle =
         this.currentSection.name === 'Cover' ? this.generalInfo.title : '';
 
-      this.keywords = listKeywords([
+      this.keywords = getUniqueKeywords([
         leftTitle,
         rightTitle,
         this.currentSection.name,
@@ -149,7 +152,7 @@ export default {
         }
         return arr;
       }, []);
-      this.photos = await getPhotos(activeKeywords);
+      this.photos = await this.getSmartboxPhotos(activeKeywords);
     },
     /**
      * Trigger mutation set photo visited true for current book
@@ -162,7 +165,7 @@ export default {
      * @param {String}  input value to search
      */
     async onSearch(input) {
-      this.photos = await searchPhotos(input);
+      this.photos = await this.getSearchPhotos(input);
     }
   }
 };

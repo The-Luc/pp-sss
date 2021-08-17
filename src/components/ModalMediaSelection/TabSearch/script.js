@@ -7,7 +7,7 @@ export default {
     PopupSelected
   },
   props: {
-    selectedImages: {
+    selectedMedia: {
       type: Array,
       default: () => []
     },
@@ -24,7 +24,7 @@ export default {
   },
   computed: {
     isShowPopupSelected() {
-      return this.selectedImages.length !== 0;
+      return this.selectedMedia.length !== 0;
     },
     numberResult() {
       return this.photos.length + ' matches';
@@ -47,7 +47,7 @@ export default {
      * Selected a image and emit parent component
      * @param   {Object}  image image seleted
      */
-    onSelectedImage(image) {
+    onSelectedMedia(image) {
       this.$emit('change', image);
     },
     /**

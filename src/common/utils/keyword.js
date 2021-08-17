@@ -1,6 +1,6 @@
 import { uniq } from 'lodash';
 
-export const listKeywords = array => {
+export const getUniqueKeywords = array => {
   const listKeyword = array
     .join(' ')
     .split(' ')
