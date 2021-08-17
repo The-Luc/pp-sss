@@ -15,7 +15,7 @@
         :class="[
           'image-item',
           { active: isActive(asset.id) },
-          { 'video-item': asset.type === 'Video' }
+          { 'video-item': isVideo(asset.type) }
         ]"
         @click="onSelected(asset)"
       >

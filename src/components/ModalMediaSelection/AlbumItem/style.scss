@@ -63,7 +63,7 @@
         position: absolute;
         bottom: 0;
         padding: 2px 4px;
-        color: white;
+        color: $color-white;
         background-color: rgba($color-stoodio-blue, 0.7);
         font-size: 9px;
         font-family: $font-300;
@@ -75,7 +75,7 @@
         position: absolute;
         bottom: 0;
         padding-right: 8px;
-        color: white;
+        color: $color-white;
         text-align: right;
         text-shadow: 1px 1px 1px rgba($color-black, 0.7);
         font-size: 18px;
