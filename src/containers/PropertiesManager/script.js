@@ -9,10 +9,11 @@ import ImageProperties from '@/containers/PropertiesManager/Image';
 import ClipArt from '@/containers/PropertiesManager/ClipArt';
 import Background from '@/containers/PropertiesManager/Background';
 import Shape from '@/containers/PropertiesManager/Shape';
+import Video from '@/containers/PropertiesManager/Video';
 import PageInfo from '@/containers/PropertiesManager/PageInfo';
 import FrameInfo from '@/containers/PropertiesManager/FrameInfo';
 
-const { TEXT, IMAGE, CLIP_ART, BACKGROUND, SHAPE } = OBJECT_TYPE;
+const { TEXT, IMAGE, CLIP_ART, BACKGROUND, SHAPE, VIDEO } = OBJECT_TYPE;
 
 const PAGE_INFO = PROPERTIES_TOOLS.PAGE_INFO.id;
 const FRAME_INFO = PROPERTIES_TOOLS.FRAME_INFO.id;
@@ -23,6 +24,7 @@ const MenuList = {
   [CLIP_ART]: CLIP_ART,
   [BACKGROUND]: BACKGROUND,
   [SHAPE]: SHAPE,
+  [VIDEO]: VIDEO,
   [PAGE_INFO]: PAGE_INFO,
   [FRAME_INFO]: FRAME_INFO
 };
@@ -47,6 +49,7 @@ export default {
     [OBJECT_TYPE.CLIP_ART]: ClipArt,
     [OBJECT_TYPE.BACKGROUND]: Background,
     [OBJECT_TYPE.SHAPE]: Shape,
+    [OBJECT_TYPE.VIDEO]: Video,
     [PAGE_INFO]: PageInfo,
     [FRAME_INFO]: FrameInfo
   },

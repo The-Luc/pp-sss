@@ -26,9 +26,7 @@
   .control-input {
     display: flex;
     align-items: center;
-    .pp-slider {
-      margin-right: 17px;
-    }
+    column-gap: 17px;
 
     .v-input__slot {
       .v-slider--horizontal {
