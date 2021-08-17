@@ -10,6 +10,7 @@ import {
   DEFAULT_CLIP_ART,
   DEFAULT_IMAGE,
   DEFAULT_SHAPE,
+  EDITION,
   MODAL_TYPES,
   OBJECT_TYPE,
   SAVE_STATUS,
@@ -35,7 +36,9 @@ import {
   handleGetSvgData,
   addEventListeners,
   applyBorderToImageObject,
-  createBackgroundFabricObject
+  createBackgroundFabricObject,
+  fabricToPpObject,
+  getTextSizeWithPadding
 } from '@/common/fabricObjects';
 import { createImage } from '@/common/fabricObjects';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
@@ -88,6 +91,7 @@ import {
 import { cloneDeep, debounce, merge, uniqueId } from 'lodash';
 import {
   AUTOSAVE_INTERVAL,
+  DEBOUNCE_MUTATION,
   MAX_SUPPLEMENTAL_FRAMES,
   MIN_IMAGE_SIZE,
   PASTE,
@@ -96,6 +100,7 @@ import {
 import { useStyle } from '@/hooks/style';
 import { useSaveData, useObject } from '../composables';
 import { useSavingStatus } from '@/views/CreateBook/composables';
+import UndoRedoCanvas from '@/plugins/undoRedoCanvas';
 
 const ELEMENTS = {
   [OBJECT_TYPE.TEXT]: 'a text box',
@@ -163,7 +168,8 @@ export default {
       countPaste: 1,
       isProcessingPaste: false,
       isCanvasChanged: false,
-      autoSaveTimer: null
+      autoSaveTimer: null,
+      undoRedoCanvas: null
     };
   },
   computed: {
@@ -182,6 +188,101 @@ export default {
       listObjects: DIGITAL_GETTERS.GET_OBJECTS,
       triggerApplyLayout: DIGITAL_GETTERS.TRIGGER_APPLY_LAYOUT
     })
+  },
+  watch: {
+    pageSelected: {
+      deep: true,
+      async handler(val, oldVal) {
+        if (val?.id === oldVal?.id) return;
+
+        this.saveData(oldVal.id, this.currentFrameId);
+
+        // reset frames, frameIDs, currentFrameId
+        this.setFrames({ framesList: [] });
+        this.setSelectedObjectId({ id: '' });
+        this.setIsOpenProperties({ isOpen: false });
+        this.setCurrentObject(null);
+        this.updateCanvasSize();
+
+        resetObjects(this.digitalCanvas);
+
+        await this.getDataCanvas();
+
+        this.setCurrentFrameId({ id: this.frames[0].id });
+
+        this.countPaste = 1;
+
+        await this.drawObjectsOnCanvas(this.sheetLayout);
+      }
+    },
+    async currentFrameId(val, oldVal) {
+      if (!val) {
+        resetObjects(this.digitalCanvas);
+
+        return;
+      }
+
+      const isSwitchFrame = this.frames.find(
+        f => String(f.id) === String(oldVal)
+      );
+
+      if (isSwitchFrame) {
+        this.saveData(this.pageSelected.id, oldVal);
+      }
+
+      this.setSelectedObjectId({ id: '' });
+      this.setCurrentObject(null);
+
+      resetObjects(this.digitalCanvas);
+
+      this.updateObjectsToStore({ objects: this.currentFrame.objects });
+      this.handleSwitchFrame(this.currentFrame);
+
+      this.undoRedoCanvas.reset();
+
+      await this.drawObjectsOnCanvas(this.sheetLayout);
+    },
+    async triggerApplyLayout() {
+      // to render new layout when user replace frame
+      this.setSelectedObjectId({ id: '' });
+      this.setCurrentObject(null);
+
+      resetObjects(this.digitalCanvas);
+
+      await this.drawObjectsOnCanvas(this.sheetLayout);
+    },
+
+    frames: {
+      deep: true,
+      handler(val, oldVal) {
+        if (val.length === oldVal.length) return;
+
+        const supplementalFrames = val.filter(item => !item.frame?.fromLayout);
+
+        this.handleShowAddFrame(supplementalFrames);
+      }
+    },
+    firstFrameThumbnail(val) {
+      this.updateSheetThumbnail({
+        sheetId: this.pageSelected.id,
+        thumbnailUrl: val
+      });
+    },
+    zoom(newVal, oldVal) {
+      if (newVal !== oldVal) this.updateCanvasSize();
+    }
+  },
+  beforeDestroy() {
+    this.digitalCanvas = null;
+
+    clearInterval(this.autoSaveTimer);
+
+    this.updateDigitalEventListeners(false);
+    this.updateWindowEventListeners(false);
+
+    this.setInfoBar({ x: 0, y: 0, zoom: 0 });
+
+    this.undoRedoCanvas.dispose();
   },
   methods: {
     ...mapActions({
@@ -215,18 +316,28 @@ export default {
         width: 0,
         height: 0
       };
-      if (this.containerSize.ratio > DIGITAL_CANVAS_SIZE.RATIO) {
+
+      if (this.zoom > 0) {
+        canvasSize.height = DIGITAL_CANVAS_SIZE.HEIGHT * this.zoom;
+        canvasSize.width = DIGITAL_CANVAS_SIZE.WIDTH * this.zoom;
+      } else if (this.containerSize.ratio > DIGITAL_CANVAS_SIZE.RATIO) {
         canvasSize.height = this.containerSize.height;
         canvasSize.width = canvasSize.height * DIGITAL_CANVAS_SIZE.RATIO;
       } else {
         canvasSize.width = this.containerSize.width;
         canvasSize.height = canvasSize.width / DIGITAL_CANVAS_SIZE.RATIO;
       }
-      const zoom = canvasSize.width / DIGITAL_CANVAS_SIZE.WIDTH;
+
+      const zoom =
+        this.zoom === 0
+          ? canvasSize.width / DIGITAL_CANVAS_SIZE.WIDTH
+          : this.zoom;
+
       this.canvasSize = { ...canvasSize, zoom };
 
       window.digitalCanvas.setWidth(canvasSize.width);
       window.digitalCanvas.setHeight(canvasSize.height);
+
       window.digitalCanvas.setZoom(zoom);
     },
 
@@ -250,6 +361,12 @@ export default {
       this.updateWindowEventListeners();
 
       this.autoSaveTimer = setInterval(this.handleAutosave, AUTOSAVE_INTERVAL);
+
+      this.undoRedoCanvas = new UndoRedoCanvas({
+        edition: EDITION.DIGITAL,
+        canvas: this.digitalCanvas,
+        renderCanvasFn: this.drawObjectsOnCanvas
+      });
     },
 
     /**
@@ -268,10 +385,6 @@ export default {
      */
     updateDigitalEventListeners(isOn = true) {
       const elementEvents = [
-        {
-          name: EVENT_TYPE.SWITCH_TOOL,
-          handler: this.onSwitchTool
-        },
         {
           name: EVENT_TYPE.DIGITAL_ADD_ELEMENT,
           handler: this.onAddElement
@@ -439,9 +552,7 @@ export default {
         this.toggleModal({ isOpenModal: false });
       }
 
-      this.stopAddingInstruction();
-
-      this.awaitingAdd = '';
+      this.endInstruction();
     },
 
     /**
@@ -469,47 +580,70 @@ export default {
       if (this.awaitingAdd) {
         return;
       }
-      this.toggleActiveObjects(true);
 
+      target.get('type') === 'activeSelection'
+        ? this.multiObjectSelected(target)
+        : this.singleObjectSelected(target);
+    },
+    /**
+     * Event fired when multi object of canvas is selected
+     *
+     * @param {Object}  target  the selected objects
+     */
+    multiObjectSelected(target) {
+      target.set({
+        lockScalingX: true,
+        lockScalingY: true,
+        lockRotation: true
+      });
+
+      this.setSelectedObjectId({ id: '' });
+
+      this.setCurrentObject({});
+
+      setCanvasUniformScaling(window.digitalCanvas, true);
+
+      this.resetConfigTextProperties();
+    },
+    /**
+     * Event fired when an object of canvas is selected
+     *
+     * @param {Object}  target  the selected object
+     */
+    singleObjectSelected(target) {
       const { id } = target;
+
       const targetType = target.get('type');
+
       this.setSelectedObjectId({ id });
 
       setBorderHighlight(target, this.sheetLayout);
 
-      const objectData = this.listObjects?.[id] || this.selectedObject;
+      const objectData = this.currentObjects?.[id];
+
+      if (isEmpty(objectData)) return;
 
       this.setCurrentObject(objectData);
 
-      if (targetType === 'group' && target.objectType === OBJECT_TYPE.TEXT) {
+      if (targetType === 'group' && objectData.type === OBJECT_TYPE.TEXT) {
         const rectObj = target.getObjects(OBJECT_TYPE.RECT)[0];
+
         setBorderObject(rectObj, objectData);
       }
 
-      const objectType = objectData?.type;
-      const isSelectMultiObject = !objectType;
+      setCanvasUniformScaling(window.digitalCanvas, objectData.isConstrain);
 
-      if (isSelectMultiObject) {
-        setCanvasUniformScaling(this.digitalCanvas, true);
-        this.resetConfigTextProperties();
-      } else {
-        setCanvasUniformScaling(this.digitalCanvas, objectData.isConstrain);
-      }
+      this.setObjectTypeSelected({ type: objectData.type });
 
-      if (isEmpty(objectType)) return;
+      this.setPropertiesObjectType({ type: objectData.type });
 
-      this.setObjectTypeSelected({ type: objectType });
-
-      this.setPropertiesObjectType({ type: objectType });
-
-      this.openProperties(objectType, id);
+      this.openProperties(objectData.type, id);
     },
 
     /**
      * Event fire when selection of fabric canvas has been cleared
      */
     onSelectionCleared() {
-      this.setInfoBar({ w: 0, h: 0 });
       this.closeProperties();
     },
 
@@ -549,7 +683,6 @@ export default {
       };
       this.setObjectProp({ prop });
 
-      this.setInfoBar({ w: prop.size.width, h: prop.size.height });
       this.setCurrentObject(this.listObjects?.[target?.id]);
     },
 
@@ -672,8 +805,6 @@ export default {
 
       this.setObjectProp({ prop });
       this.setObjectPropById({ id: group.id, prop });
-
-      this.setInfoBar({ w: prop.size.width, h: prop.size.height });
     },
 
     /**
@@ -766,37 +897,22 @@ export default {
      * @param {Object}  style  new style
      */
     changeTextProperties(prop) {
-      if (isEmpty(prop)) return;
-
-      const activeObj = this.digitalCanvas?.getActiveObject();
-
-      if (isEmpty(activeObj)) return;
-
-      this.setObjectProp({ prop });
-
-      if (!isEmpty(prop.size)) {
-        this.setInfoBar({
-          w: prop.size.width,
-          h: prop.size.height
-        });
-      }
-
-      applyTextBoxProperties(activeObj, prop);
-
-      this.handleCanvasChanged();
-
-      this.setCurrentObject(this.listObjects?.[activeObj?.id]);
+      this.changeElementProperties(prop, OBJECT_TYPE.TEXT);
     },
 
     /**
      * Fired when objects on canvas are modified, added, or removed
      */
     handleCanvasChanged() {
-      // update thumbnail
-      this.getThumbnailUrl();
+      return new Promise(resolve => {
+        // update thumbnail
+        this.getThumbnailUrl();
 
-      // set state change for autosave
-      this.isCanvasChanged = true;
+        // set state change for autosave
+        this.isCanvasChanged = true;
+
+        resolve();
+      });
     },
 
     /**
@@ -1102,25 +1218,23 @@ export default {
     changeElementProperties(prop, objectType) {
       if (isEmpty(prop)) return;
 
-      const element = this.digitalCanvas.getActiveObject();
+      const element = window.digitalCanvas.getActiveObject();
 
       if (isEmpty(element) || element.objectType !== objectType) return;
 
-      this.setObjectProp({ prop });
+      const newProp = this.updateElementProp(element, prop, objectType);
 
-      if (!isEmpty(prop.size)) {
-        this.setInfoBar({ w: prop.size.width, h: prop.size.height });
+      this.updateCurrentObject(element.id, newProp);
+
+      if (
+        !isEmpty(newProp['shadow']) ||
+        !isEmpty(newProp['color']) ||
+        !isEmpty(newProp['opacity'])
+      ) {
+        this.debounceSetObjectProp(newProp);
+      } else {
+        this.setObjectProperties(newProp);
       }
-
-      if (!isEmpty(prop['shadow'])) {
-        applyShadowToObject(element, prop['shadow']);
-      }
-
-      updateElement(element, prop, this.digitalCanvas);
-
-      this.handleCanvasChanged();
-
-      this.setCurrentObject(this.listObjects?.[element?.id]);
     },
     /**
      * get fired when you click 'send' button
@@ -1240,14 +1354,6 @@ export default {
      * @param {Object}  prop  new prop
      */
     changeImageProperties(prop) {
-      const { border } = prop;
-
-      const activeObject = this.digitalCanvas.getActiveObject();
-
-      if (border) {
-        applyBorderToImageObject(activeObject, border);
-      }
-
       this.changeElementProperties(prop, OBJECT_TYPE.IMAGE);
     },
     /**
@@ -1331,18 +1437,18 @@ export default {
         backgroundId: background.id
       });
 
+      addDigitalBackground({
+        id,
+        backgroundProp: newBackground,
+        canvas: window.digitalCanvas
+      });
+
       this.addNewBackground({
         background: {
           ...newBackground,
           id,
           isLeftPage: true
         }
-      });
-
-      addDigitalBackground({
-        id,
-        backgroundProp: newBackground,
-        canvas: window.digitalCanvas
       });
     },
     /**
@@ -1351,19 +1457,16 @@ export default {
      * @param {Object}  prop  new prop
      */
     changeBackgroundProperties({ backgroundId, prop }) {
+      // TODO: Background properties will use data on APP STORE
       const background = window.digitalCanvas
         .getObjects()
         .find(o => backgroundId === o.id);
 
       if (isEmpty(background)) return;
 
-      this.setBackgroundProp({ prop });
-
-      this.updateTriggerBackgroundChange();
-
-      this.handleCanvasChanged();
-
       updateElement(background, prop, window.digitalCanvas);
+
+      this.debounceSetBackgroundProp(prop);
     },
     /**
      * Event fire when user click remove background
@@ -1371,9 +1474,9 @@ export default {
      * @param {String|Number} backgroundId  id of background will be removed
      */
     removeBackground({ backgroundId }) {
-      this.deleteBackground({ isLeft: true });
-
       deleteObjectById([backgroundId], window.digitalCanvas);
+
+      this.deleteBackground({ isLeft: true });
 
       this.closeProperties();
 
@@ -1642,6 +1745,7 @@ export default {
      */
     deleteObject() {
       const ids = this.digitalCanvas.getActiveObjects().map(o => o.id);
+
       this.deleteObjects({ ids });
 
       deleteSelectedObjects(this.digitalCanvas);
@@ -1718,85 +1822,144 @@ export default {
       this.updateFrameObjects({ frameId });
       const data = this.getDataEditScreen(sheetId);
       await this.saveEditScreen(data);
-    }
-  },
-  watch: {
-    pageSelected: {
-      deep: true,
-      async handler(val, oldVal) {
-        if (val?.id !== oldVal?.id) {
-          this.saveData(oldVal.id, this.currentFrameId);
-
-          // reset frames, frameIDs, currentFrameId
-          this.setFrames({ framesList: [] });
-          this.setSelectedObjectId({ id: '' });
-          this.setIsOpenProperties({ isOpen: false });
-          this.setCurrentObject(null);
-          this.updateCanvasSize();
-          resetObjects(this.digitalCanvas);
-
-          await this.getDataCanvas();
-          this.setCurrentFrameId({ id: this.frames[0].id });
-          this.countPaste = 1;
-
-          await this.drawObjectsOnCanvas(this.sheetLayout);
-        }
-      }
     },
-    async currentFrameId(val, oldVal) {
-      if (!val) {
-        resetObjects(this.digitalCanvas);
-        return;
+    /**
+     * Change fabric properties of current element
+     *
+     * @param   {Object}  element     selected element
+     * @param   {Object}  prop        new prop
+     * @param   {String}  objectType  object type of selected element
+     *
+     * @returns {Object}              property of element after changed
+     */
+    updateElementProp(element, prop, objectType) {
+      if (objectType === OBJECT_TYPE.TEXT) {
+        return this.updateTextElementProp(element, prop);
       }
 
-      const isSwitchFrame = this.frames.find(
-        f => String(f.id) === String(oldVal)
-      );
-      if (isSwitchFrame) {
-        this.saveData(this.pageSelected.id, oldVal);
+      if (objectType === OBJECT_TYPE.IMAGE) {
+        return this.updateImageElementProp(element, prop);
       }
 
-      this.setSelectedObjectId({ id: '' });
-      this.setCurrentObject(null);
-      resetObjects(this.digitalCanvas);
+      updateElement(element, prop, window.digitalCanvas);
 
-      this.updateObjectsToStore({ objects: this.currentFrame.objects });
-      this.handleSwitchFrame(this.currentFrame);
-      await this.drawObjectsOnCanvas(this.sheetLayout);
+      return prop;
     },
-    async triggerApplyLayout() {
-      // to render new layout when user replace frame
-      this.setSelectedObjectId({ id: '' });
-      this.setCurrentObject(null);
-      resetObjects(this.digitalCanvas);
+    /**
+     * Change fabric properties of current text element
+     *
+     * @param   {Object}  element selected element
+     * @param   {Object}  prop    new prop
+     *
+     * @returns {Object}          property of element after changed
+     */
+    updateTextElementProp(element, prop) {
+      applyTextBoxProperties(element, prop);
 
-      await this.drawObjectsOnCanvas(this.sheetLayout);
-    },
+      const newProp = fabricToPpObject(element);
 
-    frames: {
-      deep: true,
-      handler(val, oldVal) {
-        if (val.length !== oldVal.length) {
-          const supplementalFrames = val.filter(
-            item => !item.frame?.fromLayout
-          );
-          this.handleShowAddFrame(supplementalFrames);
-        }
+      const text = element?._objects?.[1];
+
+      if (text) {
+        const { minBoundingWidth, minBoundingHeight } = getTextSizeWithPadding(
+          text
+        );
+
+        newProp.minWidth = pxToIn(minBoundingWidth);
+        newProp.minHeight = pxToIn(minBoundingHeight);
       }
+
+      merge(prop, newProp);
+
+      return prop;
     },
-    firstFrameThumbnail(val) {
-      this.updateSheetThumbnail({
-        sheetId: this.pageSelected.id,
-        thumbnailUrl: val
+    /**
+     * Change fabric properties of current image element
+     *
+     * @param   {Object}  element selected element
+     * @param   {Object}  prop    new prop
+     *
+     * @returns {Object}          property of element after changed
+     */
+    updateImageElementProp(element, prop) {
+      const { border } = prop;
+
+      if (!isEmpty(border)) {
+        applyBorderToImageObject(element, border);
+      }
+
+      updateElement(element, prop, window.digitalCanvas);
+
+      return prop;
+    },
+    /**
+     * Update current object by mutate the store
+     *
+     * @param {String | Number} id  id of selected object
+     * @param {Object}  newProp     new prop
+     */
+    updateCurrentObject(id, newProp) {
+      return new Promise(resole => {
+        const prop = cloneDeep(this.currentObjects?.[id]);
+
+        merge(prop, newProp);
+
+        this.setCurrentObject(prop);
+
+        resole();
       });
+    },
+    /**
+     * Set properties of selected object
+     *
+     * @param {Object}  prop  new prop
+     */
+    setObjectProperties(prop) {
+      this.setObjectProp({ prop });
+
+      this.handleCanvasChanged();
+    },
+    /**
+     * Set properties of selected object
+     * Use with debounce
+     *
+     * @param {Object}  prop  new prop
+     */
+    debounceSetObjectProp: debounce(function(prop) {
+      this.setObjectProperties(prop);
+    }, DEBOUNCE_MUTATION),
+    /**
+     * Set properties of selected background then trigger the change
+     * Use with debounce
+     *
+     * @param {Object}  prop    new prop
+     */
+    debounceSetBackgroundProp: debounce(function(prop) {
+      this.setBackgroundProp({ prop });
+
+      this.handleCanvasChanged();
+
+      this.updateTriggerBackgroundChange();
+    }, DEBOUNCE_MUTATION),
+    /**
+     * Undo user action
+     */
+    async undo() {
+      this.undoRedoCanvas.undo();
+    },
+    /**
+     * Redo user action
+     */
+    async redo() {
+      this.undoRedoCanvas.redo();
+    },
+    /**
+     * End instruction
+     */
+    endInstruction() {
+      this.stopAddingInstruction();
+
+      this.awaitingAdd = '';
     }
-  },
-  beforeDestroy() {
-    this.digitalCanvas = null;
-
-    clearInterval(this.autoSaveTimer);
-
-    this.updateDigitalEventListeners(false);
-    this.updateWindowEventListeners(false);
   }
 };

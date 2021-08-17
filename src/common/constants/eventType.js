@@ -1,10 +1,6 @@
 export const EVENT_TYPE = {
   PRINT_ADD_ELEMENT: 'printAddElement',
   DIGITAL_ADD_ELEMENT: 'digitalAddElement',
-  PRINT_INSTRUCTION_START: 'printInstructionStart',
-  PRINT_INSTRUCTION_END: 'printInstructionEnd',
-  DIGITAL_INSTRUCTION_START: 'digitalInstructionStart',
-  DIGITAL_INSTRUCTION_END: 'digitalInstructionEnd',
   CHANGE_TEXT_PROPERTIES: 'changeTextProperties',
   ADD_SHAPES: 'addShapes',
   CHANGE_SHAPE_PROPERTIES: 'changeShapeProperties',
@@ -15,7 +11,6 @@ export const EVENT_TYPE = {
   DIGITAL_BACKGROUND_ADD: 'digitalAddBackground',
   DIGITAL_BACKGROUND_PROP_CHANGE: 'digitalChangeBackgroundProperties',
   DIGITAL_BACKGROUND_REMOVE: 'digitalDeleteBackground',
-  SWITCH_TOOL: 'switchTool',
   SAVE_STYLE: 'saveStyle',
   COPY_OBJ: 'copyObj',
   PASTE_OBJ: 'pasteObj',

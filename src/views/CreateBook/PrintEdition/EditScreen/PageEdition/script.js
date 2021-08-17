@@ -129,7 +129,6 @@ export default {
     const { isOpenMenuProperties } = useMenuProperties();
     const {
       setPropertyById: setObjectPropById,
-      getProperty,
       setProperty: setObjectProp
     } = useProperties();
     const { updateSavingStatus, savingStatus } = useSavingStatus();
@@ -143,7 +142,6 @@ export default {
       savePrintEditScreen,
       getDataEditScreen,
       setObjectPropById,
-      getProperty,
       setObjectProp,
       isOpenMenuProperties,
       updateSavingStatus,
@@ -261,7 +259,7 @@ export default {
 
     this.eventHandling(false);
 
-    this.setInfoBar({ x: 0, y: 0, w: 0, h: 0, zoom: 0 });
+    this.setInfoBar({ x: 0, y: 0, zoom: 0 });
 
     this.undoRedoCanvas.dispose();
   },
@@ -670,12 +668,11 @@ export default {
           };
           this.setObjectProp({ prop });
 
-          this.setInfoBar({ w: prop.size.width, h: prop.size.height });
           this.setCurrentObject(this.currentObjects?.[target?.id]);
         },
         'mouse:down': e => {
           if (this.awaitingAdd) {
-            this.$root.$emit('printInstructionEnd');
+            this.$refs.pageWrapper.instructionEnd();
             window.printCanvas.discardActiveObject().renderAll();
             this.setToolNameSelected({ name: '' });
             startDrawBox(window.printCanvas, e).then(
@@ -721,8 +718,6 @@ export default {
 
           this.setObjectProp({ prop });
           this.setObjectPropById({ id: group.id, prop });
-
-          this.setInfoBar({ w: prop.size.width, h: prop.size.height });
         },
         'object:moved': e => {
           if (!e.target?.objectType) {
@@ -830,8 +825,6 @@ export default {
 
       this.setCurrentObject({});
 
-      this.setInfoBar({ w: 0, h: 0 });
-
       setCanvasUniformScaling(window.printCanvas, true);
 
       this.resetConfigTextProperties();
@@ -852,28 +845,23 @@ export default {
 
       const objectData = this.currentObjects?.[id];
 
-      const objectType = objectData?.type;
+      if (isEmpty(objectData)) return;
 
       this.setCurrentObject(objectData);
 
-      if (targetType === 'group' && objectType === OBJECT_TYPE.TEXT) {
+      if (targetType === 'group' && objectData.type === OBJECT_TYPE.TEXT) {
         const rectObj = target.getObjects(OBJECT_TYPE.RECT)[0];
 
         setBorderObject(rectObj, objectData);
       }
 
-      this.setInfoBar({
-        w: this.getProperty('size')?.width,
-        h: this.getProperty('size')?.height
-      });
-
       setCanvasUniformScaling(window.printCanvas, objectData.isConstrain);
 
-      this.setObjectTypeSelected({ type: objectType });
+      this.setObjectTypeSelected({ type: objectData.type });
 
-      this.setPropertiesObjectType({ type: objectType });
+      this.setPropertiesObjectType({ type: objectData.type });
 
-      this.openProperties(objectType, id);
+      this.openProperties(objectData.type, id);
     },
     /**
      * Event fire when user double click on Text area and allow user edit text as
@@ -1035,9 +1023,9 @@ export default {
      * @param {Boolean}       isLeftBackground  if background place on left side
      */
     removeBackground({ backgroundId, isLeftBackground }) {
-      this.deleteBackground({ isLeft: isLeftBackground });
-
       deleteObjectById([backgroundId], window.printCanvas);
+
+      this.deleteBackground({ isLeft: isLeftBackground });
 
       if (this.totalBackground > 0) return;
 
@@ -1341,21 +1329,13 @@ export default {
      * @param {Object}  prop  new prop
      */
     changeImageProperties(prop) {
-      const { border } = prop;
-
-      const activeObject = window.printCanvas.getActiveObject();
-
-      if (border) {
-        applyBorderToImageObject(activeObject, border);
-      }
-
       this.changeElementProperties(prop, OBJECT_TYPE.IMAGE);
     },
     /**
      * Change properties of current element
      *
-     * @param {Object}  prop            new prop
-     * @param {String}  objectType      object type want to check
+     * @param {Object}  prop        new prop
+     * @param {String}  objectType  object type want to check
      */
     changeElementProperties(prop, objectType) {
       if (isEmpty(prop)) return;
@@ -1367,8 +1347,6 @@ export default {
       const newProp = this.updateElementProp(element, prop, objectType);
 
       this.updateCurrentObject(element.id, newProp);
-
-      this.updateInfoBar(newProp);
 
       if (
         !isEmpty(newProp['shadow']) ||
@@ -1383,36 +1361,66 @@ export default {
     /**
      * Change fabric properties of current element
      *
-     * @param {Object}  element     selected element
-     * @param {Object}  prop        new prop
-     * @param {String}  objectType  object type of selected element
+     * @param   {Object}  element     selected element
+     * @param   {Object}  prop        new prop
+     * @param   {String}  objectType  object type of selected element
+     *
+     * @returns {Object}              property of element after changed
      */
     updateElementProp(element, prop, objectType) {
       if (objectType === OBJECT_TYPE.TEXT) {
-        applyTextBoxProperties(element, prop);
-
-        const newProp = fabricToPpObject(element);
-
-        const text = element?._objects?.[1];
-        if (text) {
-          const {
-            minBoundingWidth,
-            minBoundingHeight
-          } = getTextSizeWithPadding(text);
-
-          newProp.minWidth = pxToIn(minBoundingWidth);
-          newProp.minHeight = pxToIn(minBoundingHeight);
-        }
-
-        return { ...prop, ...newProp };
+        return this.updateTextElementProp(element, prop);
       }
 
       if (objectType === OBJECT_TYPE.IMAGE) {
-        const { border } = prop;
+        return this.updateImageElementProp(element, prop);
+      }
 
-        if (!isEmpty(border)) {
-          applyBorderToImageObject(element, border);
-        }
+      updateElement(element, prop, window.printCanvas);
+
+      return prop;
+    },
+    /**
+     * Change fabric properties of current text element
+     *
+     * @param   {Object}  element selected element
+     * @param   {Object}  prop    new prop
+     *
+     * @returns {Object}          property of element after changed
+     */
+    updateTextElementProp(element, prop) {
+      applyTextBoxProperties(element, prop);
+
+      const newProp = fabricToPpObject(element);
+
+      const text = element?._objects?.[1];
+
+      if (text) {
+        const { minBoundingWidth, minBoundingHeight } = getTextSizeWithPadding(
+          text
+        );
+
+        newProp.minWidth = pxToIn(minBoundingWidth);
+        newProp.minHeight = pxToIn(minBoundingHeight);
+      }
+
+      merge(prop, newProp);
+
+      return prop;
+    },
+    /**
+     * Change fabric properties of current image element
+     *
+     * @param   {Object}  element selected element
+     * @param   {Object}  prop    new prop
+     *
+     * @returns {Object}          property of element after changed
+     */
+    updateImageElementProp(element, prop) {
+      const { border } = prop;
+
+      if (!isEmpty(border)) {
+        applyBorderToImageObject(element, border);
       }
 
       updateElement(element, prop, window.printCanvas);
@@ -1423,28 +1431,15 @@ export default {
      * Update current object by mutate the store
      *
      * @param {String | Number} id  id of selected object
-     * @param {Object}  prop        new prop
+     * @param {Object}  newProp     new prop
      */
-    updateCurrentObject(id, prop) {
+    updateCurrentObject(id, newProp) {
       return new Promise(resole => {
-        this.setCurrentObject({
-          ...this.currentObjects?.[id],
-          ...prop
-        });
+        const prop = cloneDeep(this.currentObjects?.[id]);
 
-        resole();
-      });
-    },
-    /**
-     * Update width & height info on info bar
-     *
-     * @param {Object}  prop  new prop
-     */
-    updateInfoBar(prop) {
-      return new Promise(resole => {
-        if (!isEmpty(prop.size)) {
-          this.setInfoBar({ w: prop.size.width, h: prop.size.height });
-        }
+        merge(prop, newProp);
+
+        this.setCurrentObject(prop);
 
         resole();
       });
@@ -1463,7 +1458,7 @@ export default {
      * Set properties of selected object
      * Use with debounce
      *
-     * @param {Object}  prop            new prop
+     * @param {Object}  prop  new prop
      */
     debounceSetObjectProp: debounce(function(prop) {
       this.setObjectProperties(prop);
@@ -1596,9 +1591,11 @@ export default {
     eventHandling(isOn = true) {
       const elementEvents = {
         printAddElement: element => {
-          this.$root.$emit('printInstructionEnd');
+          this.$refs.pageWrapper.instructionEnd();
+
           this.awaitingAdd = element;
-          this.$root.$emit('printInstructionStart', { element });
+
+          this.$refs.pageWrapper.instructionStart({ element });
         },
         printDeleteElements: this.removeObject,
         changeObjectIdsOrder: this.changeObjectIdsOrder,
@@ -1635,29 +1632,9 @@ export default {
       };
 
       const otherEvents = {
-        printSwitchTool: toolName => {
-          const isDiscard =
-            toolName &&
-            toolName !== TOOL_NAME.DELETE &&
-            toolName !== TOOL_NAME.ACTIONS;
-
-          if (isDiscard) {
-            window.printCanvas.discardActiveObject().renderAll();
-          }
-
-          if (isNonElementPropSelected(this.propertiesObjectType)) {
-            this.setIsOpenProperties({ isOpen: false });
-
-            this.setPropertiesObjectType({ type: '' });
-          }
-
-          this.$root.$emit('printInstructionEnd');
-
-          this.awaitingAdd = '';
-        },
         enscapeInstruction: () => {
           this.awaitingAdd = '';
-          this.$root.$emit('printInstructionEnd');
+          this.$refs.pageWrapper.instructionEnd();
 
           this.setToolNameSelected({ name: '' });
         },
@@ -1786,8 +1763,6 @@ export default {
      * Fire when clear selected in canvas
      */
     handleClearSelected() {
-      this.setInfoBar({ w: 0, h: 0 });
-
       this.closeProperties();
     },
     /**
@@ -1901,6 +1876,37 @@ export default {
      */
     async redo() {
       this.undoRedoCanvas.redo();
+    },
+    /**
+     * Switching tool on Creation Tool
+     *
+     * @param {String}  toolName  name of tool
+     */
+    switchTool(toolName) {
+      const isDiscard =
+        toolName &&
+        toolName !== TOOL_NAME.DELETE &&
+        toolName !== TOOL_NAME.ACTIONS;
+
+      if (isDiscard) {
+        window.printCanvas.discardActiveObject().renderAll();
+      }
+
+      if (isNonElementPropSelected(this.propertiesObjectType)) {
+        this.setIsOpenProperties({ isOpen: false });
+
+        this.setPropertiesObjectType({ type: '' });
+      }
+
+      this.endInstruction();
+    },
+    /**
+     * End instruction
+     */
+    endInstruction() {
+      this.$refs.pageWrapper.instructionEnd();
+
+      this.awaitingAdd = '';
     }
   }
 };

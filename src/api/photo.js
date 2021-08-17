@@ -1,5 +1,5 @@
 import { photoDropdowns, albums as myAlbums } from '@/mock/photoDropdowns';
-import { albums, photoList } from '@/mock/photo';
+import { albums, photoList, mediaList } from '@/mock/photo';
 import { isEmpty } from '@/common/utils';
 import { uniqueId } from 'lodash';
 
@@ -72,6 +72,22 @@ export const searchPhotos = async input => {
   const hasNo = input.toLowerCase() === 'no';
   const photos =
     hasNo || isEmpty(input) ? [] : photoList.sort(() => 0.5 - Math.random());
+
+  return Promise.resolve(photos);
+};
+
+export const getMedia = async (keywords = []) => {
+  const hasNo = keywords.find(keyword => keyword.toLowerCase() === 'no');
+  const photos =
+    hasNo || isEmpty(keywords) ? [] : mediaList.sort(() => 0.5 - Math.random());
+
+  return Promise.resolve(photos);
+};
+
+export const searchMedia = async input => {
+  const hasNo = input.toLowerCase() === 'no';
+  const photos =
+    hasNo || isEmpty(input) ? [] : mediaList.sort(() => 0.5 - Math.random());
 
   return Promise.resolve(photos);
 };

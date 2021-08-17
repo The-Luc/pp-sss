@@ -391,6 +391,20 @@ export default {
      */
     onCancelAddMedia() {
       this.isOpenModalAddMedia = false;
+    },
+    /**
+     * Switching tool on Creation Tool by emit
+     *
+     * @param {String}  toolName  name of tool
+     */
+    onToolSwitch(toolName) {
+      this.$refs.canvasEditor.switchTool(toolName);
+    },
+    /**
+     * Stop instruction by emit
+     */
+    onInstructionEnd() {
+      this.$refs.canvasEditor.endInstruction();
     }
   }
 };
