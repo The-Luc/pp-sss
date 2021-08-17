@@ -22,9 +22,9 @@ export default {
       type: Boolean,
       default: false
     },
-    isInputDisplayed: {
+    isInputHidden: {
       type: Boolean,
-      default: true
+      default: false
     }
   },
   components: {

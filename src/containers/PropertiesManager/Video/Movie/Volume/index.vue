@@ -3,7 +3,7 @@
     <span class="properties-title">Volume:</span>
     <div class="control-group">
       <v-icon>mdi-volume-low</v-icon>
-      <Slider :value="volume" :is-input-displayed="false" @change="onChange" />
+      <Slider :value="volume" :is-input-hidden="true" @change="onChange" />
       <v-icon>mdi-volume-high</v-icon>
     </div>
   </div>

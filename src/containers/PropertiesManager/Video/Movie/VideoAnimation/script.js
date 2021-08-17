@@ -7,7 +7,7 @@ import {
   NONE_OPTION,
   PLAY_IN_OUT_OPTIONS,
   VIDEO_ORDER
-} from '@/common/constants/videoAnimation';
+} from '@/common/constants/animationProperty';
 
 export default {
   components: { Select, PpCombobox, PpInput },

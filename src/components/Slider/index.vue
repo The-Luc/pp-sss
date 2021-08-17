@@ -18,7 +18,7 @@
       >
       </v-slider>
       <PpInput
-        v-if="isInputDisplayed"
+        v-if="!isInputHidden"
         :suffix="suffix"
         :value="value"
         :max="max"

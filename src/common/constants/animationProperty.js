@@ -5,17 +5,12 @@ export const PLAYBACK_OPTIONS = [
   }
 ];
 
-export const REPEAT_OPTIONS = [
-  {
-    name: 'None',
-    value: 'none'
-  }
-];
-
 export const NONE_OPTION = {
   name: 'None',
   value: 'none'
 };
+
+export const REPEAT_OPTIONS = [NONE_OPTION];
 
 export const PLAY_IN_OUT_OPTIONS = [
   NONE_OPTION,
