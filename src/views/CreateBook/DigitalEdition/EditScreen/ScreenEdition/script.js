@@ -267,6 +267,9 @@ export default {
         sheetId: this.pageSelected.id,
         thumbnailUrl: val
       });
+    },
+    zoom(newVal, oldVal) {
+      if (newVal !== oldVal) this.updateCanvasSize();
     }
   },
   beforeDestroy() {
@@ -313,18 +316,28 @@ export default {
         width: 0,
         height: 0
       };
-      if (this.containerSize.ratio > DIGITAL_CANVAS_SIZE.RATIO) {
+
+      if (this.zoom > 0) {
+        canvasSize.height = DIGITAL_CANVAS_SIZE.HEIGHT * this.zoom;
+        canvasSize.width = DIGITAL_CANVAS_SIZE.WIDTH * this.zoom;
+      } else if (this.containerSize.ratio > DIGITAL_CANVAS_SIZE.RATIO) {
         canvasSize.height = this.containerSize.height;
         canvasSize.width = canvasSize.height * DIGITAL_CANVAS_SIZE.RATIO;
       } else {
         canvasSize.width = this.containerSize.width;
         canvasSize.height = canvasSize.width / DIGITAL_CANVAS_SIZE.RATIO;
       }
-      const zoom = canvasSize.width / DIGITAL_CANVAS_SIZE.WIDTH;
+
+      const zoom =
+        this.zoom === 0
+          ? canvasSize.width / DIGITAL_CANVAS_SIZE.WIDTH
+          : this.zoom;
+
       this.canvasSize = { ...canvasSize, zoom };
 
       window.digitalCanvas.setWidth(canvasSize.width);
       window.digitalCanvas.setHeight(canvasSize.height);
+
       window.digitalCanvas.setZoom(zoom);
     },
 

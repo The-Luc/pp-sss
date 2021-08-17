@@ -17,6 +17,7 @@
       :is-open-menu-properties="isOpenMenuProperties"
       :selected-tool-name="selectedToolName"
       :is-digital="true"
+      @zoom="onZoom"
     />
 
     <SidebarSection />
