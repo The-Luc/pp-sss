@@ -5,7 +5,8 @@
   }
 
   .animation-style {
-    display: flex;
+    display: grid;
+    grid-template-columns: 189px 1fr;
     column-gap: 10px;
 
     .v-btn {

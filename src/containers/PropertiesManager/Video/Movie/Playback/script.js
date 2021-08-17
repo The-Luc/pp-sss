@@ -1,7 +1,7 @@
 import {
   PLAYBACK_OPTIONS,
   REPEAT_OPTIONS
-} from '@/common/constants/videoProperty';
+} from '@/common/constants/videoAnimation';
 import Select from '@/components/Selectors/Select';
 
 export default {

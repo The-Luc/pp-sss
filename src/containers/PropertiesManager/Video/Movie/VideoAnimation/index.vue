@@ -8,7 +8,7 @@
         @change="onChangeStyle"
       />
 
-      <v-btn outlined
+      <v-btn v-if="isShowOptions" outlined
         >Preview
         <v-icon right>
           mdi-play
