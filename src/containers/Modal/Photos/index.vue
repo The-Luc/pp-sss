@@ -10,14 +10,19 @@
     <div v-if="isOpenModal" class="modal-body">
       <v-tabs v-model="defaultTab" fixed-tabs dark @change="onChangeTab">
         <v-tabs-slider color="transparent"></v-tabs-slider>
-        <v-tab href="#smart-box">
+        <v-tab href="#smartbox">
           <i class="light"></i>
           <div>Smartbox</div>
         </v-tab>
-        <v-tab-item value="smart-box">
+        <v-tab-item value="smartbox">
           <Smartbox
             :key="currentTab"
-            :selected-images="selectedImages"
+            :selected-media="selectedImages"
+            :keywords="keywords"
+            :photos="photos"
+            :is-photo-visited="isPhotoVisited"
+            @clickGotIt="onClickGotIt"
+            @clickKeyword="onClickKeyword"
             @change="onSelectedImage"
           />
         </v-tab-item>
@@ -41,7 +46,9 @@
         <v-tab-item value="search">
           <TabSearchPhotos
             :key="currentTab"
-            :selected-images="selectedImages"
+            :selected-media="selectedImages"
+            :photos="photos"
+            @search="onSearch"
             @change="onSelectedImage"
           />
         </v-tab-item>

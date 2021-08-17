@@ -1,7 +1,7 @@
 import Modal from '@/containers/Modal';
 import SelectPhotoType from './SelectPhotoType';
-import AlbumItem from '../AlbumItem';
-import PopupSelected from '../PopupSelected';
+import AlbumItem from '@/components/ModalMediaSelection/AlbumItem';
+import PopupSelected from '@/components/ModalMediaSelection/PopupSelected';
 
 import { getAlbums, getPhotoDropdowns } from '@/api/photo';
 

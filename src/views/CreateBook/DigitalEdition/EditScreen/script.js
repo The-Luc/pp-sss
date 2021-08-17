@@ -226,6 +226,18 @@ export default {
      */
     onCancel() {
       this.isOpenModal = false;
+    },
+    /**
+     * Undo user action
+     */
+    onUndo() {
+      this.$refs.canvasEditor.undo();
+    },
+    /**
+     * Redo user action
+     */
+    onRedo() {
+      this.$refs.canvasEditor.redo();
     }
   }
 };

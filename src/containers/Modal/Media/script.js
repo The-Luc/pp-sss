@@ -1,4 +1,4 @@
-import Footer from '../Photos/Footer';
+import Footer from '@/components/ModalMediaSelection/Footer';
 
 import { usePhotos } from '@/views/CreateBook/composables';
 

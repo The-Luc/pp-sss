@@ -840,11 +840,11 @@ export default {
 
       const objectData = this.currentObjects?.[id];
 
-      const objectType = objectData?.type;
+      if (isEmpty(objectData)) return;
 
       this.setCurrentObject(objectData);
 
-      if (targetType === 'group' && objectType === OBJECT_TYPE.TEXT) {
+      if (targetType === 'group' && objectData.type === OBJECT_TYPE.TEXT) {
         const rectObj = target.getObjects(OBJECT_TYPE.RECT)[0];
 
         setBorderObject(rectObj, objectData);
@@ -857,11 +857,11 @@ export default {
 
       setCanvasUniformScaling(window.printCanvas, objectData.isConstrain);
 
-      this.setObjectTypeSelected({ type: objectType });
+      this.setObjectTypeSelected({ type: objectData.type });
 
-      this.setPropertiesObjectType({ type: objectType });
+      this.setPropertiesObjectType({ type: objectData.type });
 
-      this.openProperties(objectType, id);
+      this.openProperties(objectData.type, id);
     },
     /**
      * Event fire when user double click on Text area and allow user edit text as
@@ -1013,9 +1013,9 @@ export default {
      * @param {Boolean}       isLeftBackground  if background place on left side
      */
     removeBackground({ backgroundId, isLeftBackground }) {
-      this.deleteBackground({ isLeft: isLeftBackground });
-
       deleteObjectById([backgroundId], window.printCanvas);
+
+      this.deleteBackground({ isLeft: isLeftBackground });
 
       if (this.totalBackground > 0) return;
 
@@ -1319,21 +1319,13 @@ export default {
      * @param {Object}  prop  new prop
      */
     changeImageProperties(prop) {
-      const { border } = prop;
-
-      const activeObject = window.printCanvas.getActiveObject();
-
-      if (border) {
-        applyBorderToImageObject(activeObject, border);
-      }
-
       this.changeElementProperties(prop, OBJECT_TYPE.IMAGE);
     },
     /**
      * Change properties of current element
      *
-     * @param {Object}  prop            new prop
-     * @param {String}  objectType      object type want to check
+     * @param {Object}  prop        new prop
+     * @param {String}  objectType  object type want to check
      */
     changeElementProperties(prop, objectType) {
       if (isEmpty(prop)) return;
@@ -1361,36 +1353,66 @@ export default {
     /**
      * Change fabric properties of current element
      *
-     * @param {Object}  element     selected element
-     * @param {Object}  prop        new prop
-     * @param {String}  objectType  object type of selected element
+     * @param   {Object}  element     selected element
+     * @param   {Object}  prop        new prop
+     * @param   {String}  objectType  object type of selected element
+     *
+     * @returns {Object}              property of element after changed
      */
     updateElementProp(element, prop, objectType) {
       if (objectType === OBJECT_TYPE.TEXT) {
-        applyTextBoxProperties(element, prop);
-
-        const newProp = fabricToPpObject(element);
-
-        const text = element?._objects?.[1];
-        if (text) {
-          const {
-            minBoundingWidth,
-            minBoundingHeight
-          } = getTextSizeWithPadding(text);
-
-          newProp.minWidth = pxToIn(minBoundingWidth);
-          newProp.minHeight = pxToIn(minBoundingHeight);
-        }
-
-        return { ...prop, ...newProp };
+        return this.updateTextElementProp(element, prop);
       }
 
       if (objectType === OBJECT_TYPE.IMAGE) {
-        const { border } = prop;
+        return this.updateImageElementProp(element, prop);
+      }
 
-        if (!isEmpty(border)) {
-          applyBorderToImageObject(element, border);
-        }
+      updateElement(element, prop, window.printCanvas);
+
+      return prop;
+    },
+    /**
+     * Change fabric properties of current text element
+     *
+     * @param   {Object}  element selected element
+     * @param   {Object}  prop    new prop
+     *
+     * @returns {Object}          property of element after changed
+     */
+    updateTextElementProp(element, prop) {
+      applyTextBoxProperties(element, prop);
+
+      const newProp = fabricToPpObject(element);
+
+      const text = element?._objects?.[1];
+
+      if (text) {
+        const { minBoundingWidth, minBoundingHeight } = getTextSizeWithPadding(
+          text
+        );
+
+        newProp.minWidth = pxToIn(minBoundingWidth);
+        newProp.minHeight = pxToIn(minBoundingHeight);
+      }
+
+      merge(prop, newProp);
+
+      return prop;
+    },
+    /**
+     * Change fabric properties of current image element
+     *
+     * @param   {Object}  element selected element
+     * @param   {Object}  prop    new prop
+     *
+     * @returns {Object}          property of element after changed
+     */
+    updateImageElementProp(element, prop) {
+      const { border } = prop;
+
+      if (!isEmpty(border)) {
+        applyBorderToImageObject(element, border);
       }
 
       updateElement(element, prop, window.printCanvas);
@@ -1401,14 +1423,15 @@ export default {
      * Update current object by mutate the store
      *
      * @param {String | Number} id  id of selected object
-     * @param {Object}  prop        new prop
+     * @param {Object}  newProp     new prop
      */
-    updateCurrentObject(id, prop) {
+    updateCurrentObject(id, newProp) {
       return new Promise(resole => {
-        this.setCurrentObject({
-          ...this.currentObjects?.[id],
-          ...prop
-        });
+        const prop = cloneDeep(this.currentObjects?.[id]);
+
+        merge(prop, newProp);
+
+        this.setCurrentObject(prop);
 
         resole();
       });
@@ -1441,7 +1464,7 @@ export default {
      * Set properties of selected object
      * Use with debounce
      *
-     * @param {Object}  prop            new prop
+     * @param {Object}  prop  new prop
      */
     debounceSetObjectProp: debounce(function(prop) {
       this.setObjectProperties(prop);

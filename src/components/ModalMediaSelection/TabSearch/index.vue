@@ -10,11 +10,11 @@
         :search-input="input"
         :display-date="numberResult"
         :assets="photos"
-        :selected-images="selectedImages"
-        @change="onSelectedImage"
+        :selected-images="selectedMedia"
+        @change="onSelectedMedia"
       />
     </div>
-    <PopupSelected v-if="isShowPopupSelected" :amount="selectedImages.length" />
+    <PopupSelected v-if="isShowPopupSelected" :amount="selectedMedia.length" />
   </div>
 </template>
 

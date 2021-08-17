@@ -9,9 +9,9 @@
       </div>
       <div
         ref="dropzone"
-        class="dropzone"
+        :class="['dropzone', { 'is-dragover': isDragover }]"
         @dragover.prevent
-        @drop.prevent="onChangeFile"
+        @drop.prevent="onDrop"
         @dragenter.prevent="onDragEnter"
         @dragleave.prevent="onDragLeave"
       >
