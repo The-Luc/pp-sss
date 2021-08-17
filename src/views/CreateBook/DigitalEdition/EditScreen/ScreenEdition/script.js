@@ -50,8 +50,7 @@ import {
   useFrame,
   useFrameSwitching,
   useModal,
-  useMutationDigitalSheet,
-  useProperties
+  useMutationDigitalSheet
 } from '@/hooks';
 
 import {
@@ -132,7 +131,6 @@ export default {
     const { updateSavingStatus, savingStatus } = useSavingStatus();
     const { updateObjectsToStore } = useObject();
     const { updateSheetThumbnail } = useMutationDigitalSheet();
-    const { getProperty } = useProperties();
 
     return {
       frames,
@@ -153,8 +151,7 @@ export default {
       savingStatus,
       updateObjectsToStore,
       updateSheetThumbnail,
-      firstFrameThumbnail,
-      getProperty
+      firstFrameThumbnail
     };
   },
   data() {
@@ -280,7 +277,7 @@ export default {
     this.updateDigitalEventListeners(false);
     this.updateWindowEventListeners(false);
 
-    this.setInfoBar({ x: 0, y: 0, w: 0, h: 0, zoom: 0 });
+    this.setInfoBar({ x: 0, y: 0, zoom: 0 });
 
     this.undoRedoCanvas.dispose();
   },
@@ -375,10 +372,6 @@ export default {
      */
     updateDigitalEventListeners(isOn = true) {
       const elementEvents = [
-        {
-          name: EVENT_TYPE.SWITCH_TOOL,
-          handler: this.onSwitchTool
-        },
         {
           name: EVENT_TYPE.DIGITAL_ADD_ELEMENT,
           handler: this.onAddElement
@@ -546,9 +539,7 @@ export default {
         this.toggleModal({ isOpenModal: false });
       }
 
-      this.stopAddingInstruction();
-
-      this.awaitingAdd = '';
+      this.endInstruction();
     },
 
     /**
@@ -597,8 +588,6 @@ export default {
 
       this.setCurrentObject({});
 
-      this.setInfoBar({ w: 0, h: 0 });
-
       setCanvasUniformScaling(window.digitalCanvas, true);
 
       this.resetConfigTextProperties();
@@ -629,11 +618,6 @@ export default {
         setBorderObject(rectObj, objectData);
       }
 
-      this.setInfoBar({
-        w: this.getProperty('size')?.width,
-        h: this.getProperty('size')?.height
-      });
-
       setCanvasUniformScaling(window.digitalCanvas, objectData.isConstrain);
 
       this.setObjectTypeSelected({ type: objectData.type });
@@ -647,7 +631,6 @@ export default {
      * Event fire when selection of fabric canvas has been cleared
      */
     onSelectionCleared() {
-      this.setInfoBar({ w: 0, h: 0 });
       this.closeProperties();
     },
 
@@ -687,7 +670,6 @@ export default {
       };
       this.setObjectProp({ prop });
 
-      this.setInfoBar({ w: prop.size.width, h: prop.size.height });
       this.setCurrentObject(this.listObjects?.[target?.id]);
     },
 
@@ -810,8 +792,6 @@ export default {
 
       this.setObjectProp({ prop });
       this.setObjectPropById({ id: group.id, prop });
-
-      this.setInfoBar({ w: prop.size.width, h: prop.size.height });
     },
 
     /**
@@ -1232,8 +1212,6 @@ export default {
       const newProp = this.updateElementProp(element, prop, objectType);
 
       this.updateCurrentObject(element.id, newProp);
-
-      this.updateInfoBar(newProp);
 
       if (
         !isEmpty(newProp['shadow']) ||
@@ -1919,20 +1897,6 @@ export default {
       });
     },
     /**
-     * Update width & height info on info bar
-     *
-     * @param {Object}  prop  new prop
-     */
-    updateInfoBar(prop) {
-      return new Promise(resole => {
-        if (!isEmpty(prop.size)) {
-          this.setInfoBar({ w: prop.size.width, h: prop.size.height });
-        }
-
-        resole();
-      });
-    },
-    /**
      * Set properties of selected object
      *
      * @param {Object}  prop  new prop
@@ -1975,6 +1939,14 @@ export default {
      */
     async redo() {
       this.undoRedoCanvas.redo();
+    },
+    /**
+     * End instruction
+     */
+    endInstruction() {
+      this.stopAddingInstruction();
+
+      this.awaitingAdd = '';
     }
   }
 };

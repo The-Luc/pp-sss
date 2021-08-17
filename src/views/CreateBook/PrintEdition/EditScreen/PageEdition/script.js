@@ -128,7 +128,6 @@ export default {
     const { isOpenMenuProperties } = useMenuProperties();
     const {
       setPropertyById: setObjectPropById,
-      getProperty,
       setProperty: setObjectProp
     } = useProperties();
     const { updateSavingStatus, savingStatus } = useSavingStatus();
@@ -142,7 +141,6 @@ export default {
       savePrintEditScreen,
       getDataEditScreen,
       setObjectPropById,
-      getProperty,
       setObjectProp,
       isOpenMenuProperties,
       updateSavingStatus,
@@ -260,7 +258,7 @@ export default {
 
     this.eventHandling(false);
 
-    this.setInfoBar({ x: 0, y: 0, w: 0, h: 0, zoom: 0 });
+    this.setInfoBar({ x: 0, y: 0, zoom: 0 });
 
     this.undoRedoCanvas.dispose();
   },
@@ -660,12 +658,11 @@ export default {
           };
           this.setObjectProp({ prop });
 
-          this.setInfoBar({ w: prop.size.width, h: prop.size.height });
           this.setCurrentObject(this.currentObjects?.[target?.id]);
         },
         'mouse:down': e => {
           if (this.awaitingAdd) {
-            this.$root.$emit('printInstructionEnd');
+            this.$refs.pageWrapper.instructionEnd();
             window.printCanvas.discardActiveObject().renderAll();
             this.setToolNameSelected({ name: '' });
             startDrawBox(window.printCanvas, e).then(
@@ -711,8 +708,6 @@ export default {
 
           this.setObjectProp({ prop });
           this.setObjectPropById({ id: group.id, prop });
-
-          this.setInfoBar({ w: prop.size.width, h: prop.size.height });
         },
         'object:moved': e => {
           if (!e.target?.objectType) {
@@ -818,8 +813,6 @@ export default {
 
       this.setCurrentObject({});
 
-      this.setInfoBar({ w: 0, h: 0 });
-
       setCanvasUniformScaling(window.printCanvas, true);
 
       this.resetConfigTextProperties();
@@ -849,11 +842,6 @@ export default {
 
         setBorderObject(rectObj, objectData);
       }
-
-      this.setInfoBar({
-        w: this.getProperty('size')?.width,
-        h: this.getProperty('size')?.height
-      });
 
       setCanvasUniformScaling(window.printCanvas, objectData.isConstrain);
 
@@ -1338,8 +1326,6 @@ export default {
 
       this.updateCurrentObject(element.id, newProp);
 
-      this.updateInfoBar(newProp);
-
       if (
         !isEmpty(newProp['shadow']) ||
         !isEmpty(newProp['color']) ||
@@ -1432,20 +1418,6 @@ export default {
         merge(prop, newProp);
 
         this.setCurrentObject(prop);
-
-        resole();
-      });
-    },
-    /**
-     * Update width & height info on info bar
-     *
-     * @param {Object}  prop  new prop
-     */
-    updateInfoBar(prop) {
-      return new Promise(resole => {
-        if (!isEmpty(prop.size)) {
-          this.setInfoBar({ w: prop.size.width, h: prop.size.height });
-        }
 
         resole();
       });
@@ -1597,9 +1569,11 @@ export default {
     eventHandling(isOn = true) {
       const elementEvents = {
         printAddElement: element => {
-          this.$root.$emit('printInstructionEnd');
+          this.$refs.pageWrapper.instructionEnd();
+
           this.awaitingAdd = element;
-          this.$root.$emit('printInstructionStart', { element });
+
+          this.$refs.pageWrapper.instructionStart({ element });
         },
         printDeleteElements: this.removeObject,
         changeObjectIdsOrder: this.changeObjectIdsOrder,
@@ -1636,29 +1610,9 @@ export default {
       };
 
       const otherEvents = {
-        printSwitchTool: toolName => {
-          const isDiscard =
-            toolName &&
-            toolName !== TOOL_NAME.DELETE &&
-            toolName !== TOOL_NAME.ACTIONS;
-
-          if (isDiscard) {
-            window.printCanvas.discardActiveObject().renderAll();
-          }
-
-          if (isNonElementPropSelected(this.propertiesObjectType)) {
-            this.setIsOpenProperties({ isOpen: false });
-
-            this.setPropertiesObjectType({ type: '' });
-          }
-
-          this.$root.$emit('printInstructionEnd');
-
-          this.awaitingAdd = '';
-        },
         enscapeInstruction: () => {
           this.awaitingAdd = '';
-          this.$root.$emit('printInstructionEnd');
+          this.$refs.pageWrapper.instructionEnd();
 
           this.setToolNameSelected({ name: '' });
         },
@@ -1787,8 +1741,6 @@ export default {
      * Fire when clear selected in canvas
      */
     handleClearSelected() {
-      this.setInfoBar({ w: 0, h: 0 });
-
       this.closeProperties();
     },
     /**
@@ -1903,6 +1855,37 @@ export default {
      */
     async redo() {
       this.undoRedoCanvas.redo();
+    },
+    /**
+     * Switching tool on Creation Tool
+     *
+     * @param {String}  toolName  name of tool
+     */
+    switchTool(toolName) {
+      const isDiscard =
+        toolName &&
+        toolName !== TOOL_NAME.DELETE &&
+        toolName !== TOOL_NAME.ACTIONS;
+
+      if (isDiscard) {
+        window.printCanvas.discardActiveObject().renderAll();
+      }
+
+      if (isNonElementPropSelected(this.propertiesObjectType)) {
+        this.setIsOpenProperties({ isOpen: false });
+
+        this.setPropertiesObjectType({ type: '' });
+      }
+
+      this.endInstruction();
+    },
+    /**
+     * End instruction
+     */
+    endInstruction() {
+      this.$refs.pageWrapper.instructionEnd();
+
+      this.awaitingAdd = '';
     }
   }
 };

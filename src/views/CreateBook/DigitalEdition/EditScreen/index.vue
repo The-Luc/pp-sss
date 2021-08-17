@@ -4,7 +4,14 @@
       name-editor="digital editor"
       @onClickSave="onClickSaveDigitalCanvas"
     />
-    <ToolBar :is-digital-editor="true" @undo="onUndo" @redo="onRedo" />
+
+    <ToolBar
+      :is-digital-editor="true"
+      @undo="onUndo"
+      @redo="onRedo"
+      @switchTool="onToolSwitch"
+      @endInstruction="onInstructionEnd"
+    />
 
     <FeedbackBar
       :is-open-menu-properties="isOpenMenuProperties"

@@ -245,6 +245,20 @@ export default {
      */
     handleSelectedMedia(media) {
       console.log(media);
+    },
+    /**
+     * Switching tool on Creation Tool by emit
+     *
+     * @param {String}  toolName  name of tool
+     */
+    onToolSwitch(toolName) {
+      this.$refs.canvasEditor.onSwitchTool(toolName);
+    },
+    /**
+     * Stop instruction by emit
+     */
+    onInstructionEnd() {
+      this.$refs.canvasEditor.endInstruction();
     }
   }
 };
