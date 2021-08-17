@@ -1,5 +1,5 @@
 .pp-range-slider-container {
-  .v-slider__track-container {
+  ::v-deep .v-slider__track-container {
     height: 3px;
 
     .v-slider {
@@ -12,7 +12,7 @@
     }
   }
 
-  .v-slider__thumb-container {
+  ::v-deep .v-slider__thumb-container {
     .v-slider__thumb {
       box-shadow: 0px 0px 2px $color-black3;
       width: 9px;
