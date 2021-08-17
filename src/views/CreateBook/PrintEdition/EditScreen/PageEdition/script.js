@@ -665,7 +665,7 @@ export default {
         },
         'mouse:down': e => {
           if (this.awaitingAdd) {
-            this.$root.$emit('printInstructionEnd');
+            this.$refs.pageWrapper.instructionEnd();
             window.printCanvas.discardActiveObject().renderAll();
             this.setToolNameSelected({ name: '' });
             startDrawBox(window.printCanvas, e).then(
@@ -1597,9 +1597,11 @@ export default {
     eventHandling(isOn = true) {
       const elementEvents = {
         printAddElement: element => {
-          this.$root.$emit('printInstructionEnd');
+          this.$refs.pageWrapper.instructionEnd();
+
           this.awaitingAdd = element;
-          this.$root.$emit('printInstructionStart', { element });
+
+          this.$refs.pageWrapper.instructionStart({ element });
         },
         printDeleteElements: this.removeObject,
         changeObjectIdsOrder: this.changeObjectIdsOrder,
@@ -1636,29 +1638,9 @@ export default {
       };
 
       const otherEvents = {
-        printSwitchTool: toolName => {
-          const isDiscard =
-            toolName &&
-            toolName !== TOOL_NAME.DELETE &&
-            toolName !== TOOL_NAME.ACTIONS;
-
-          if (isDiscard) {
-            window.printCanvas.discardActiveObject().renderAll();
-          }
-
-          if (isNonElementPropSelected(this.propertiesObjectType)) {
-            this.setIsOpenProperties({ isOpen: false });
-
-            this.setPropertiesObjectType({ type: '' });
-          }
-
-          this.$root.$emit('printInstructionEnd');
-
-          this.awaitingAdd = '';
-        },
         enscapeInstruction: () => {
           this.awaitingAdd = '';
-          this.$root.$emit('printInstructionEnd');
+          this.$refs.pageWrapper.instructionEnd();
 
           this.setToolNameSelected({ name: '' });
         },
@@ -1903,6 +1885,37 @@ export default {
      */
     async redo() {
       this.undoRedoCanvas.redo();
+    },
+    /**
+     * Switching tool on Creation Tool
+     *
+     * @param {String}  toolName  name of tool
+     */
+    switchTool(toolName) {
+      const isDiscard =
+        toolName &&
+        toolName !== TOOL_NAME.DELETE &&
+        toolName !== TOOL_NAME.ACTIONS;
+
+      if (isDiscard) {
+        window.printCanvas.discardActiveObject().renderAll();
+      }
+
+      if (isNonElementPropSelected(this.propertiesObjectType)) {
+        this.setIsOpenProperties({ isOpen: false });
+
+        this.setPropertiesObjectType({ type: '' });
+      }
+
+      this.endInstruction();
+    },
+    /**
+     * End instruction
+     */
+    endInstruction() {
+      this.$refs.pageWrapper.instructionEnd();
+
+      this.awaitingAdd = '';
     }
   }
 };

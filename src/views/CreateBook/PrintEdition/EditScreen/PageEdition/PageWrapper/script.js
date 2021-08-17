@@ -26,17 +26,13 @@ export default {
       visible: false
     };
   },
-  mounted() {
-    this.$root.$on('printInstructionStart', this.handlePrintInstructionStart);
-    this.$root.$on('printInstructionEnd', this.handlePrintInstructionEnd);
-  },
   methods: {
     /**
      * Callback function handle when user click text and image icon on Creation Tool to start draw text/image with instruction
      * @param {Object} event Event data
      * @param {String} event.element Current object user want draw (text | image)
      */
-    handlePrintInstructionStart({ element }) {
+    instructionStart({ element }) {
       if (ELEMENTS[element] !== this.element) {
         this.element = ELEMENTS[element] || 'box';
       }
@@ -47,7 +43,7 @@ export default {
     /**
      * Callback function handle after user drawed text/image with instruction
      */
-    handlePrintInstructionEnd() {
+    instructionEnd() {
       this.element = '';
       this.visible = false;
       this.setCoord(0, 0);

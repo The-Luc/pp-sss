@@ -376,10 +376,6 @@ export default {
     updateDigitalEventListeners(isOn = true) {
       const elementEvents = [
         {
-          name: EVENT_TYPE.SWITCH_TOOL,
-          handler: this.onSwitchTool
-        },
-        {
           name: EVENT_TYPE.DIGITAL_ADD_ELEMENT,
           handler: this.onAddElement
         },
@@ -546,9 +542,7 @@ export default {
         this.toggleModal({ isOpenModal: false });
       }
 
-      this.stopAddingInstruction();
-
-      this.awaitingAdd = '';
+      this.endInstruction();
     },
 
     /**
@@ -1975,6 +1969,14 @@ export default {
      */
     async redo() {
       this.undoRedoCanvas.redo();
+    },
+    /**
+     * End instruction
+     */
+    endInstruction() {
+      this.stopAddingInstruction();
+
+      this.awaitingAdd = '';
     }
   }
 };

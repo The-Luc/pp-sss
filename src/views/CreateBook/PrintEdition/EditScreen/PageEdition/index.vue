@@ -1,6 +1,6 @@
 <template>
   <div class="page-edition">
-    <PageWrapper :ruler-size="rulerSize">
+    <PageWrapper ref="pageWrapper" :ruler-size="rulerSize">
       <template #ruler-x>
         <XRuler
           :canvas-size="canvasSize"
