@@ -1,12 +1,15 @@
-import { IMAGE_TYPES } from '@/common/constants';
-
 export default {
   data() {
     return {
-      imageTypes: IMAGE_TYPES,
       isShowNotify: false,
       isDragover: false
     };
+  },
+  props: {
+    mediaTypes: {
+      type: Array,
+      required: true
+    }
   },
   methods: {
     /**
