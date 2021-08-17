@@ -32,9 +32,13 @@
           <div>Photos</div>
         </v-tab>
         <v-tab-item value="photos">
-          <Photos
+          <TabPhotos
             :key="currentTab"
             :selected-images="selectedImages"
+            :selected-type="selectedType"
+            :albums="albums"
+            :photo-dropdowns="photoDropdowns"
+            @changeType="onChangeType"
             @change="onSelectedImage"
           />
         </v-tab-item>
@@ -58,7 +62,11 @@
           <div>Add</div>
         </v-tab>
         <v-tab-item value="add">
-          <TabAddPhotos :key="currentTab" @change="onUploadImages" />
+          <TabAddPhotos
+            :key="currentTab"
+            :media-types="mediaTypes"
+            @change="onUploadImages"
+          />
         </v-tab-item>
       </v-tabs>
     </div>

@@ -1,9 +1,6 @@
-import Modal from '@/containers/Modal';
-import SelectPhotoType from './SelectPhotoType';
+import SelectMediaType from './SelectMediaType';
 import AlbumItem from '@/components/ModalMediaSelection/AlbumItem';
 import PopupSelected from '@/components/ModalMediaSelection/PopupSelected';
-
-import { getAlbums, getPhotoDropdowns } from '@/api/photo';
 
 import {
   PHOTO_CATEGORIES,
@@ -13,8 +10,7 @@ import { isEmpty } from '@/common/utils';
 
 export default {
   components: {
-    Modal,
-    SelectPhotoType,
+    SelectMediaType,
     AlbumItem,
     PopupSelected
   },
@@ -22,17 +18,19 @@ export default {
     selectedImages: {
       type: Array,
       default: () => []
+    },
+    selectedType: {
+      type: Object,
+      required: true
+    },
+    albums: {
+      type: Array,
+      default: () => []
+    },
+    photoDropdowns: {
+      type: Object,
+      default: {}
     }
-  },
-  data() {
-    return {
-      selectedType: {
-        value: PHOTO_CATEGORIES.COMMUNITIES.value,
-        sub: { value: ALL_PHOTO_SUBCATEGORY_ID }
-      },
-      albums: [],
-      photoDropdowns: []
-    };
   },
   computed: {
     selectedAlbums() {
@@ -71,13 +69,7 @@ export default {
      * @param   {Object}  data  type and album selected
      */
     onChangeType(data) {
-      this.selectedType = {
-        value: data.value,
-        sub: {
-          value: data.sub.value,
-          sub: data.sub.sub?.value
-        }
-      };
+      this.$emit('changeType', data);
     },
     /**
      * Selected a image and emit parent component
@@ -156,14 +148,6 @@ export default {
 
         return { ...cat, subItems };
       });
-    }
-  },
-  async created() {
-    if (isEmpty(this.albums)) {
-      this.albums = await getAlbums();
-    }
-    if (isEmpty(this.photoDropdowns)) {
-      this.photoDropdowns = await getPhotoDropdowns();
     }
   }
 };

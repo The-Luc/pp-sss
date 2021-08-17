@@ -2,7 +2,7 @@
   <div class="add-new-photos-container">
     <div class="header">
       <div class="dropdown">
-        <SelectPhotoType
+        <SelectMediaType
           :items="dropdownOptions"
           :selected-val="selectedType"
           @change="onChangeType"

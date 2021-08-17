@@ -1,10 +1,10 @@
 import Footer from '@/components/ModalMediaSelection/Footer';
-import Photos from './Photos';
+import TabAddPhotos from '@/components/ModalMediaSelection/TabAddPhotos';
 import Smartbox from '@/components/ModalMediaSelection/Smartbox';
-import TabAddPhotos from './TabAddPhotos';
+import TabPhotos from '@/components/ModalMediaSelection/TabPhotos';
 import TabSearchPhotos from '@/components/ModalMediaSelection/TabSearch';
 
-import { useGetterPrintSheet, useSheet, useAppCommon } from '@/hooks';
+import { useGetterPrintSheet, useSheet, useAppCommon, usePhoto } from '@/hooks';
 import { usePhotos } from '@/views/CreateBook/composables';
 import { useGetPhotos } from '@/views/CreateBook/PrintEdition/EditScreen/composables';
 
@@ -13,11 +13,16 @@ import {
   removeItemsFormArray,
   getUniqueKeywords
 } from '@/common/utils';
+import {
+  PHOTO_CATEGORIES,
+  ALL_PHOTO_SUBCATEGORY_ID,
+  IMAGE_TYPES
+} from '@/common/constants';
 
 export default {
   components: {
     Footer,
-    Photos,
+    TabPhotos,
     Smartbox,
     TabAddPhotos,
     TabSearchPhotos
@@ -28,6 +33,7 @@ export default {
     const { isPhotoVisited, updatePhotoVisited } = usePhotos();
     const { getSmartboxPhotos, getSearchPhotos } = useGetPhotos();
     const { generalInfo } = useAppCommon();
+    const { getAlbums, getPhotoDropdowns } = usePhoto();
 
     return {
       isPhotoVisited,
@@ -36,7 +42,9 @@ export default {
       currentSheet,
       generalInfo,
       getSmartboxPhotos,
-      getSearchPhotos
+      getSearchPhotos,
+      getAlbums,
+      getPhotoDropdowns
     };
   },
   data() {
@@ -45,7 +53,14 @@ export default {
       currentTab: '',
       defaultTab: 'smartbox',
       keywords: [],
-      photos: []
+      photos: [],
+      selectedType: {
+        value: PHOTO_CATEGORIES.COMMUNITIES.value,
+        sub: { value: ALL_PHOTO_SUBCATEGORY_ID }
+      },
+      albums: [],
+      photoDropdowns: {},
+      mediaTypes: IMAGE_TYPES
     };
   },
   props: {
@@ -116,6 +131,15 @@ export default {
         const keywords = this.keywords.map(keyword => keyword.value);
         this.photos = await this.getSmartboxPhotos(keywords);
       }
+
+      if (this.currentTab === 'photos') {
+        this.albums = await this.getAlbums();
+        this.photoDropdowns = await this.getPhotoDropdowns();
+        this.selectedType = {
+          value: PHOTO_CATEGORIES.COMMUNITIES.value,
+          sub: { value: ALL_PHOTO_SUBCATEGORY_ID }
+        };
+      }
     },
     /**
      * Emit files user upload and emit to parent
@@ -166,6 +190,19 @@ export default {
      */
     async onSearch(input) {
       this.photos = await this.getSearchPhotos(input);
+    },
+    /**
+     * Change dropdown type to select a album
+     * @param   {Object}  data  type and album selected
+     */
+    onChangeType(data) {
+      this.selectedType = {
+        value: data.value,
+        sub: {
+          value: data.sub.value,
+          sub: data.sub.sub?.value
+        }
+      };
     }
   }
 };
