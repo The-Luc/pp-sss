@@ -39,6 +39,9 @@
     }
     .v-tabs-items {
       height: 587px;
+      .v-window-item {
+        height: 100%;
+      }
     }
   }
 }
@@ -54,9 +57,6 @@
     &::v-deep {
       .v-tabs-items {
         height: calc(100vh - 220px);
-        .content {
-          height: 480px;
-        }
       }
     }
   }
@@ -67,9 +67,6 @@
     &::v-deep {
       .v-tabs-items {
         height: calc(100vh - 210px);
-        .content {
-          height: 360px;
-        }
       }
     }
   }

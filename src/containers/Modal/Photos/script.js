@@ -1,11 +1,18 @@
-import Footer from './Footer';
+import Footer from '@/components/ModalMediaSelection/Footer';
 import Photos from './Photos';
-import Smartbox from './Smartbox';
+import Smartbox from '@/components/ModalMediaSelection/Smartbox';
 import TabAddPhotos from './TabAddPhotos';
-import TabSearchPhotos from './TabSearchPhotos';
-import { usePhotos } from '@/views/CreateBook/composables';
+import TabSearchPhotos from '@/components/ModalMediaSelection/TabSearch';
 
-import { insertItemsToArray, removeItemsFormArray } from '@/common/utils';
+import { useGetterPrintSheet, useSheet, useAppCommon } from '@/hooks';
+import { usePhotos } from '@/views/CreateBook/composables';
+import { useGetPhotos } from '@/views/CreateBook/PrintEdition/EditScreen/composables';
+
+import {
+  insertItemsToArray,
+  removeItemsFormArray,
+  getUniqueKeywords
+} from '@/common/utils';
 
 export default {
   components: {
@@ -16,23 +23,44 @@ export default {
     TabSearchPhotos
   },
   setup() {
-    const { isPhotoVisited } = usePhotos();
+    const { currentSection } = useGetterPrintSheet();
+    const { currentSheet } = useSheet();
+    const { isPhotoVisited, updatePhotoVisited } = usePhotos();
+    const { getSmartboxPhotos, getSearchPhotos } = useGetPhotos();
+    const { generalInfo } = useAppCommon();
 
     return {
-      isPhotoVisited
+      isPhotoVisited,
+      updatePhotoVisited,
+      currentSection,
+      currentSheet,
+      generalInfo,
+      getSmartboxPhotos,
+      getSearchPhotos
     };
   },
   data() {
     return {
       selectedImages: [],
       currentTab: '',
-      defaultTab: 'smart-box'
+      defaultTab: 'smartbox',
+      keywords: [],
+      photos: []
     };
   },
   props: {
     isOpenModal: {
       type: Boolean,
       default: false
+    }
+  },
+  watch: {
+    async isOpenModal(val) {
+      if (!val) return;
+
+      this.getListKeywords();
+      const keywords = this.keywords.map(keyword => keyword.value);
+      this.photos = await this.getSmartboxPhotos(keywords);
     }
   },
   computed: {
@@ -77,9 +105,17 @@ export default {
      * Event change tab of modal photo
      * @param   {String}  tag  current tag
      */
-    onChangeTab(tab) {
+    async onChangeTab(tab) {
+      if (this.currentTab === tab) return;
       this.currentTab = tab;
+
       this.selectedImages = [];
+      this.photos = [];
+
+      if (this.currentTab === 'smartbox') {
+        const keywords = this.keywords.map(keyword => keyword.value);
+        this.photos = await this.getSmartboxPhotos(keywords);
+      }
     },
     /**
      * Emit files user upload and emit to parent
@@ -88,6 +124,48 @@ export default {
     onUploadImages(files) {
       this.$emit('uploadImages', files);
       this.onCancel();
+    },
+
+    /**
+     * Get list keyword from section name, left, right, spread title
+     */
+    getListKeywords() {
+      const { leftTitle, rightTitle } = this.currentSheet.spreadInfo;
+      const projectTitle =
+        this.currentSection.name === 'Cover' ? this.generalInfo.title : '';
+
+      this.keywords = getUniqueKeywords([
+        leftTitle,
+        rightTitle,
+        this.currentSection.name,
+        projectTitle
+      ]);
+    },
+    /**
+     * Set status active of keyword when click
+     */
+    async onClickKeyword(val) {
+      val.active = !val.active;
+      const activeKeywords = this.keywords.reduce((arr, keyword) => {
+        if (keyword.active) {
+          arr.push(keyword.value);
+        }
+        return arr;
+      }, []);
+      this.photos = await this.getSmartboxPhotos(activeKeywords);
+    },
+    /**
+     * Trigger mutation set photo visited true for current book
+     */
+    onClickGotIt() {
+      this.updatePhotoVisited({ isPhotoVisited: true });
+    },
+    /**
+     * To search base on value input
+     * @param {String}  input value to search
+     */
+    async onSearch(input) {
+      this.photos = await this.getSearchPhotos(input);
     }
   }
 };

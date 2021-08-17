@@ -1,6 +1,5 @@
-import AlbumItem from '../AlbumItem';
-import PopupSelected from '../PopupSelected';
-import { searchPhotos } from '@/api/photo';
+import AlbumItem from '@/components/ModalMediaSelection/AlbumItem';
+import PopupSelected from '@/components/ModalMediaSelection/PopupSelected';
 
 export default {
   components: {
@@ -8,7 +7,11 @@ export default {
     PopupSelected
   },
   props: {
-    selectedImages: {
+    selectedMedia: {
+      type: Array,
+      default: () => []
+    },
+    photos: {
       type: Array,
       default: () => []
     }
@@ -16,13 +19,12 @@ export default {
   data() {
     return {
       input: '',
-      photos: [],
       firstTime: true
     };
   },
   computed: {
     isShowPopupSelected() {
-      return this.selectedImages.length !== 0;
+      return this.selectedMedia.length !== 0;
     },
     numberResult() {
       return this.photos.length + ' matches';
@@ -30,14 +32,14 @@ export default {
   },
   methods: {
     /**
-     * To search image base on value input
+     * Trigger emit event when input value to search image
      * @param {Object}  event event fire when press enter button
      */
-    async onSearch(event) {
+    onSearch(event) {
       this.firstTime = false;
 
       this.input = event.target.value;
-      this.photos = await searchPhotos(this.input);
+      this.$emit('search', this.input);
 
       this.onBlur(event);
     },
@@ -45,7 +47,7 @@ export default {
      * Selected a image and emit parent component
      * @param   {Object}  image image seleted
      */
-    onSelectedImage(image) {
+    onSelectedMedia(image) {
       this.$emit('change', image);
     },
     /**

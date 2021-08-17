@@ -1,9 +1,10 @@
 .search-container {
-  padding: 18px 24px;
+  height: 100%;
+  padding: 10px 24px;
   .header {
     display: flex;
     justify-content: center;
-    margin-bottom: 20px;
+    margin: 8px 0 20px 0;
     input {
       padding: 0 10px;
       font-family: $font-500;
@@ -22,7 +23,7 @@
     }
   }
   .content {
-    height: 500px;
+    height: calc(100% - 60px);
     overflow: auto;
     ::v-deep .album-name {
       font-family: $font-500;
