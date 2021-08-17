@@ -226,6 +226,13 @@ export default {
      */
     onCancel() {
       this.isOpenModal = false;
+    },
+    /**
+     * Selected media and save in sheet
+     * @param   {Array}  media  selected media
+     */
+    handleSelectedMedia(media) {
+      console.log(media);
     }
   }
 };
