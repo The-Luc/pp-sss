@@ -75,7 +75,7 @@
       </v-tabs>
     </div>
     <Footer
-      :is-disabled="selectedMedia.length === 0"
+      :is-disabled="isNoSelectMedia"
       @select="onSelect"
       @cancel="onCancel"
     />

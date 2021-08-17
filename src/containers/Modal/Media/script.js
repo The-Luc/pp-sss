@@ -60,6 +60,9 @@ export default {
   computed: {
     isShowFooter() {
       return this.currentTab !== 'add';
+    },
+    isNoSelectMedia() {
+      return this.selectedMedia.length === 0;
     }
   },
   methods: {
