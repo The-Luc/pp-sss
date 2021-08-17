@@ -4,12 +4,14 @@
       name-editor="digital editor"
       @onClickSave="onClickSaveDigitalCanvas"
     />
-    <ToolBar :is-digital-editor="true" />
+    <ToolBar :is-digital-editor="true" @undo="onUndo" @redo="onRedo" />
+
     <FeedbackBar
       :is-open-menu-properties="isOpenMenuProperties"
       :selected-tool-name="selectedToolName"
       :is-digital="true"
     />
+
     <SidebarSection />
 
     <transition name="slide-x-transition">
@@ -24,7 +26,7 @@
       </PhotoSidebar>
     </transition>
 
-    <ScreenEdition />
+    <ScreenEdition ref="canvasEditor" />
 
     <ModalAddMedia
       :is-open-modal="isOpenModal"
