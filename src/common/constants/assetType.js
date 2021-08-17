@@ -1,3 +1,4 @@
 export const ASSET_TYPE = {
-  PICTURE: 'Picture'
+  PICTURE: 'Picture',
+  VIDEO: 'Video'
 };

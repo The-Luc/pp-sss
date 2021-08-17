@@ -58,16 +58,32 @@
       }
 
       .indicator {
-        width: 100%;
+        width: calc(100% - 2px);
         height: 16px;
         position: absolute;
         bottom: 0;
         padding: 2px 4px;
-        color: white;
+        color: $color-white;
         background-color: rgba($color-stoodio-blue, 0.7);
         font-size: 9px;
         font-family: $font-300;
+        z-index: 2;
       }
+
+      .duration {
+        width: calc(100% - 2px);
+        position: absolute;
+        bottom: 0;
+        padding-right: 8px;
+        color: $color-white;
+        text-align: right;
+        text-shadow: 1px 1px 1px rgba($color-black, 0.7);
+        font-size: 18px;
+        font-family: $font-500;
+      }
+    }
+    .image-item.video-item {
+      width: auto;
     }
   }
 

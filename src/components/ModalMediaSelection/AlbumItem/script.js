@@ -1,3 +1,5 @@
+import { ASSET_TYPE } from '@/common/constants';
+
 export default {
   props: {
     name: {
@@ -45,6 +47,14 @@ export default {
      */
     onSelected(image) {
       this.$emit('change', image);
+    },
+    /**
+     * Check if the type is video or not
+     * @param   {String}  type  type of asset
+     * @returns {Boolean} type is video
+     */
+    isVideo(type) {
+      return type === ASSET_TYPE.VIDEO;
     }
   }
 };
