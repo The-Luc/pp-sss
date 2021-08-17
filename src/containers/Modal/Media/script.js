@@ -4,7 +4,7 @@ import TabSearch from '@/components/ModalMediaSelection/TabSearch';
 
 import { useGetterDigitalSheet, useFrame } from '@/hooks';
 import { usePhotos } from '@/views/CreateBook/composables';
-import { useGetPhotos } from '@/views/CreateBook/DigitalEdition/EditScreen/composables';
+import { useGetMedia } from '@/views/CreateBook/DigitalEdition/EditScreen/composables';
 
 import {
   insertItemsToArray,
@@ -22,15 +22,15 @@ export default {
     const { currentSection } = useGetterDigitalSheet();
     const { currentFrame } = useFrame();
     const { isPhotoVisited, updatePhotoVisited } = usePhotos();
-    const { getSmartboxPhotos, getSearchPhotos } = useGetPhotos();
+    const { getSmartboxMedia, getSearchMedia } = useGetMedia();
 
     return {
       isPhotoVisited,
       updatePhotoVisited,
       currentSection,
       currentFrame,
-      getSmartboxPhotos,
-      getSearchPhotos
+      getSmartboxMedia,
+      getSearchMedia
     };
   },
   data() {
@@ -54,7 +54,7 @@ export default {
 
       this.getListKeywords();
       const keywords = this.keywords.map(keyword => keyword.value);
-      this.photos = await this.getSmartboxPhotos(keywords);
+      this.photos = await this.getSmartboxMedia(keywords);
     }
   },
   computed: {
@@ -91,7 +91,7 @@ export default {
 
       if (this.currentTab === 'smartbox') {
         const keywords = this.keywords.map(keyword => keyword.value);
-        this.photos = await this.getSmartboxPhotos(keywords);
+        this.photos = await this.getSmartboxMedia(keywords);
       }
     },
     /**
@@ -132,7 +132,7 @@ export default {
         return arr;
       }, []);
 
-      this.photos = await this.getSmartboxPhotos(activeKeywords);
+      this.photos = await this.getSmartboxMedia(activeKeywords);
     },
     /**
      * Trigger mutation set photo visited true for current book
@@ -145,7 +145,7 @@ export default {
      * @param {String}  input value to search
      */
     async onSearch(input) {
-      this.photos = await this.getSearchPhotos(input);
+      this.photos = await this.getSearchMedia(input);
     }
   }
 };
