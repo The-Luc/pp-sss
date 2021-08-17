@@ -5,10 +5,15 @@ import RIPKEN_LOGO_HD from '@/assets/image/albums/ripken-logo-hd.png';
 import RIPKEN_LOGO_2_SD from '@/assets/image/albums/ripken-logo-2-sd.png';
 import RIPKEN_LOGO_2_HD from '@/assets/image/albums/ripken-logo-2-hd.png';
 import SAMPLE_VIDEO from '@/assets/video/sample.mp4';
-import SAMPLE_THUMBNAIL from '@/assets/image/content-placeholder.jpg';
+import VERTICAL_VIDEO from '@/assets/video/vertical.mp4';
+import SAMPLE_THUMBNAIL from '@/assets/image/horizontal-photo.jpg';
+import VERTICAL_THUMBNAIL from '@/assets/image/vertical-photo.jpg';
 import { AlbumEntity } from '@/common/models/entities/album';
 import { uniqueId } from 'lodash';
-import { PictureAssetEntity } from '@/common/models/entities/asset';
+import {
+  PictureAssetEntity,
+  VideoAssetEntity
+} from '@/common/models/entities/asset';
 
 const photo1 = new PictureAssetEntity({
   id: uniqueId(),
@@ -46,6 +51,38 @@ const video = {
   originalWidth: 1920,
   isMedia: true
 };
+
+const video1 = new VideoAssetEntity({
+  id: uniqueId(),
+  mediaFileName: 'sample.mp4',
+  thumbUrl: SAMPLE_THUMBNAIL,
+  mediaUrl: SAMPLE_VIDEO,
+  originalHeight: 1080,
+  originalWidth: 1920,
+  duration: '1:20'
+});
+
+const video2 = new VideoAssetEntity({
+  id: uniqueId(),
+  mediaFileName: 'vertical.mp4',
+  thumbUrl: VERTICAL_THUMBNAIL,
+  mediaUrl: VERTICAL_VIDEO,
+  originalHeight: 1920,
+  originalWidth: 1080,
+  duration: '2:20'
+});
+
+const mediaBase = [photo1, photo2, photo3, video1, video2];
+
+const media = Array.from({ length: 20 }, () => {
+  const inProject = Math.random() * 5 < 2;
+  const media = {
+    ...mediaBase[getRandomInt(5)],
+    inProject,
+    id: uniqueId()
+  };
+  return media;
+});
 
 const photosBase = [photo1, photo2, photo3, video];
 
@@ -157,3 +194,5 @@ export const albums = [
 ];
 
 export const photoList = photos;
+
+export const mediaList = media;
