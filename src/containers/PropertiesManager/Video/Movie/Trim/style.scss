@@ -1,0 +1,13 @@
+.trim-container {
+  .control-group {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    font-size: 10px;
+  }
+
+  .pp-range-slider-container {
+    width: 100%;
+    margin: 5px 0 13px;
+  }
+}
