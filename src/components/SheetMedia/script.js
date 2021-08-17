@@ -49,8 +49,13 @@ export default {
      * @param {Object} event Event trigger when start drag item
      */
     onChoose(event) {
+      const { offsetX, offsetY } = event.originalEvent;
+
       this.selectedItem = this.media[event.oldIndex];
-      this.$emit('drag', this.selectedItem);
+
+      (this.selectedItem.offsetX = offsetX),
+        (this.selectedItem.offsetY = offsetY),
+        this.$emit('drag', this.selectedItem);
     },
 
     /**

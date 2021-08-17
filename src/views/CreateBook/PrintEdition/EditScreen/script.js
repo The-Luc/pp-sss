@@ -48,11 +48,7 @@ import {
 } from '@/common/utils';
 
 import { useSaveData } from './PageEdition/composables';
-import {
-  getActivateImages,
-  setImageSrc,
-  setVideoSrc
-} from '@/common/fabricObjects';
+import { getActivateImages, setImageSrc } from '@/common/fabricObjects';
 import { useSavingStatus } from '../../composables';
 import { debounce } from 'lodash';
 import { useBookPrintInfo } from './composables';
@@ -274,21 +270,19 @@ export default {
       const objects = getActivateImages();
       const images = this.sheetMedia || [];
       if (objects.length > images.length) {
-        images.forEach((image, index) => {
-          setImageSrc(objects[index], image.imageUrl, prop => {
-            prop.imageId = image.id;
-            this.setPropertyById({ id: objects[index].id, prop });
-            this.getThumbnailUrl();
-          });
+        images.forEach(async (image, index) => {
+          const prop = await setImageSrc(objects[index], image.imageUrl);
+          prop.imageId = image.id;
+          this.setPropertyById({ id: objects[index].id, prop });
+          this.getThumbnailUrl();
         });
         return;
       }
-      objects.forEach((object, index) => {
-        setImageSrc(object, images[index].imageUrl, prop => {
-          prop.imageId = images[index].id;
-          this.setPropertyById({ id: object.id, prop });
-          this.getThumbnailUrl();
-        });
+      objects.forEach(async (object, index) => {
+        const prop = await setImageSrc(object, images[index].imageUrl);
+        prop.imageId = images[index].id;
+        this.setPropertyById({ id: object.id, prop });
+        this.getThumbnailUrl();
       });
     },
     /**
@@ -326,30 +320,38 @@ export default {
      * Handle drop photo to canvas
      * @param {Object} target fabric object focused
      */
-    onDrop({ target }) {
+    async onDrop({ event, canvas, addImageBox }) {
       if (!this.dragItem) return;
 
-      const { imageUrl, id: imageId, isMedia, thumbUrl } = this.dragItem;
+      const {
+        imageUrl,
+        id: imageId,
+        originalWidth,
+        originalHeight,
+        offsetX,
+        offsetY
+      } = this.dragItem;
+
+      const target = event.target;
+      const pointer = canvas.getPointer(event.e);
 
       this.dragItem = null;
 
-      if (!target) return;
+      if (!target) {
+        const x = pointer.x - offsetX * 3;
+        const y = pointer.y - offsetY * 3;
 
-      if (isMedia) {
-        setVideoSrc(target, imageUrl, thumbUrl, prop => {
-          prop.imageUrl = imageUrl;
-          prop.imageId = imageId;
-          prop.thumbUrl = thumbUrl;
-          this.setPropertyById({ id: target.id, prop });
+        addImageBox(x, y, originalWidth, originalHeight, {
+          src: imageUrl
         });
 
         return;
       }
 
-      setImageSrc(target, imageUrl, prop => {
-        prop.imageId = imageId;
-        this.setPropertyById({ id: target.id, prop });
-      });
+      const prop = await setImageSrc(target, imageUrl);
+      prop.imageId = imageId;
+      this.setPropertyById({ id: target.id, prop });
+      this.getThumbnailUrl();
     },
     /**
      * Undo user action
