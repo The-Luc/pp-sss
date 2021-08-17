@@ -132,14 +132,14 @@ export default {
         this.photos = await this.getSmartboxPhotos(keywords);
       }
 
-      if (this.currentTab === 'photos') {
-        this.albums = await this.getAlbums();
-        this.photoDropdowns = await this.getPhotoDropdowns();
-        this.selectedType = {
-          value: PHOTO_CATEGORIES.COMMUNITIES.value,
-          sub: { value: ALL_PHOTO_SUBCATEGORY_ID }
-        };
-      }
+      if (this.currentTab !== 'photos') return;
+
+      this.albums = await this.getAlbums();
+      this.photoDropdowns = await this.getPhotoDropdowns();
+      this.selectedType = {
+        value: PHOTO_CATEGORIES.COMMUNITIES.value,
+        sub: { value: ALL_PHOTO_SUBCATEGORY_ID }
+      };
     },
     /**
      * Emit files user upload and emit to parent
