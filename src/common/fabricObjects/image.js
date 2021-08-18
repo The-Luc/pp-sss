@@ -24,8 +24,7 @@ import {
  */
 export const createImage = props => {
   return new Promise(resolve => {
-    const fabricProp = toFabricImageProp(props);
-
+    const fabricProp = toFabricMediaProp(props);
     const {
       size: { width, height },
       type
@@ -67,7 +66,7 @@ export const createImage = props => {
  * @param   {Object}  prop  stored image properties
  * @returns {Object}        fabric properties
  */
-export const toFabricImageProp = (prop, originalElement) => {
+export const toFabricMediaProp = (prop, originalElement) => {
   const mapRules = {
     data: {
       type: DEFAULT_RULE_DATA.TYPE,

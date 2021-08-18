@@ -7,6 +7,7 @@ export const EVENT_TYPE = {
   ADD_CLIPARTS: 'addClipArts',
   CHANGE_CLIPART_PROPERTIES: 'changeClipArtProperties',
   CHANGE_IMAGE_PROPERTIES: 'changeImageProperties',
+  CHANGE_VIDEO_PROPERTIES: 'changeVideoProperties',
   CHANGE_OBJECT_IDS_ORDER: 'changeObjectIdsOrder',
   DIGITAL_BACKGROUND_ADD: 'digitalAddBackground',
   DIGITAL_BACKGROUND_PROP_CHANGE: 'digitalChangeBackgroundProperties',
