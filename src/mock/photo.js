@@ -5,6 +5,8 @@ import RIPKEN_LOGO_HD from '@/assets/image/albums/ripken-logo-hd.png';
 import RIPKEN_LOGO_2_SD from '@/assets/image/albums/ripken-logo-2-sd.png';
 import RIPKEN_LOGO_2_HD from '@/assets/image/albums/ripken-logo-2-hd.png';
 import SAMPLE_VIDEO from '@/assets/video/sample.mp4';
+import SAMPLE_BUNNY_VIDEO from '@/assets/video/bunny.mp4';
+import SAMPLE_TOY_VIDEO from '@/assets/video/toy.mp4';
 import VERTICAL_VIDEO from '@/assets/video/vertical.mp4';
 import SAMPLE_THUMBNAIL from '@/assets/image/horizontal-photo.jpg';
 import VERTICAL_THUMBNAIL from '@/assets/image/vertical-photo.jpg';
@@ -47,19 +49,21 @@ const video = {
   mediaFileName: 'sample.mp4',
   thumbUrl: SAMPLE_THUMBNAIL,
   imageUrl: SAMPLE_VIDEO,
-  originalHeight: 1080,
-  originalWidth: 1920,
+  originalHeight: 360,
+  originalWidth: 640,
+  duration: '0:31',
   isMedia: true
 };
 
 const video1 = new VideoAssetEntity({
   id: uniqueId(),
-  mediaFileName: 'sample.mp4',
+  mediaFileName: 'toy.mp4',
   thumbUrl: SAMPLE_THUMBNAIL,
-  mediaUrl: SAMPLE_VIDEO,
-  originalHeight: 1080,
-  originalWidth: 1920,
-  duration: '1:20'
+  mediaUrl: SAMPLE_TOY_VIDEO,
+  originalHeight: 320,
+  originalWidth: 560,
+  duration: '0:06',
+  isMedia: true
 });
 
 const video2 = new VideoAssetEntity({
@@ -67,12 +71,24 @@ const video2 = new VideoAssetEntity({
   mediaFileName: 'vertical.mp4',
   thumbUrl: VERTICAL_THUMBNAIL,
   mediaUrl: VERTICAL_VIDEO,
-  originalHeight: 1920,
-  originalWidth: 1080,
-  duration: '2:20'
+  originalHeight: 1366,
+  originalWidth: 720,
+  duration: '0:05',
+  isMedia: true
 });
 
-const mediaBase = [photo1, photo2, photo3, video1, video2];
+const video3 = new VideoAssetEntity({
+  id: uniqueId(),
+  mediaFileName: 'bunny.mp4',
+  thumbUrl: SAMPLE_THUMBNAIL,
+  mediaUrl: SAMPLE_BUNNY_VIDEO,
+  originalHeight: 368,
+  originalWidth: 640,
+  duration: '0:15',
+  isMedia: true
+});
+
+const mediaBase = [photo1, photo2, photo3, video1, video2, video3];
 
 const media = Array.from({ length: 20 }, () => {
   const inProject = Math.random() * 5 < 2;
