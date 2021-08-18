@@ -38,7 +38,9 @@ import {
   applyBorderToImageObject,
   createBackgroundFabricObject,
   fabricToPpObject,
-  getTextSizeWithPadding
+  getTextSizeWithPadding,
+  centercrop,
+  setImageSrc
 } from '@/common/fabricObjects';
 import { createImage } from '@/common/fabricObjects';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
@@ -457,6 +459,14 @@ export default {
         {
           name: EVENT_TYPE.CHANGE_IMAGE_PROPERTIES,
           handler: this.changeImageProperties
+        },
+        {
+          name: EVENT_TYPE.REMOVE_IMAGE,
+          handler: this.handleRemoveImage
+        },
+        {
+          name: EVENT_TYPE.CENTERCROP,
+          handler: this.handleCentercrop
         }
       ];
 
@@ -2042,6 +2052,32 @@ export default {
         canvas,
         addImageBox: this.addImageBox
       });
+    },
+    /**
+     * Handle reset image
+     */
+    async handleRemoveImage() {
+      const activeObject = this.digitalCanvas.getActiveObject();
+
+      const prop = await setImageSrc(activeObject, null);
+      activeObject.canvas.renderAll();
+
+      this.setObjectPropById({ id: activeObject.id, prop });
+
+      this.setCurrentObject(this.currentObjects[activeObject.id]);
+
+      this.getThumbnailUrl();
+    },
+    /**
+     * Handle centercrop
+     */
+    handleCentercrop() {
+      const activeObject = this.digitalCanvas.getActiveObject();
+
+      const prop = centercrop(activeObject);
+      activeObject.canvas.renderAll();
+
+      this.setObjectPropById({ id: activeObject.id, prop });
     }
   }
 };
