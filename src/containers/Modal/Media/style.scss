@@ -41,14 +41,18 @@
       height: 587px;
       .v-window-item {
         height: 100%;
-        .got-it-container {
-          left: 50px;
-        }
       }
     }
   }
 }
 
+.modal-body.media {
+  &::v-deep {
+    .got-it-container {
+      left: 50px;
+    }
+  }
+}
 .v-dialog__content {
   ::v-deep.v-dialog.modal-add-photo {
     position: relative;
