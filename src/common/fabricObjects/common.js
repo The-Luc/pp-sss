@@ -310,7 +310,7 @@ const getFabricPropByType = (elementType, prop, element) => {
     return toFabricClipArtProp(prop, element);
   }
 
-  if (elementType === OBJECT_TYPE.IMAGE) {
+  if (elementType === OBJECT_TYPE.IMAGE || elementType === OBJECT_TYPE.VIDEO) {
     return toFabricImageProp(prop, element);
   }
 

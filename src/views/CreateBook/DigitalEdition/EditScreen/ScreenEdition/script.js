@@ -450,6 +450,13 @@ export default {
         }
       ];
 
+      const videoEvents = [
+        {
+          name: EVENT_TYPE.CHANGE_VIDEO_PROPERTIES,
+          handler: this.changeVideoProperties
+        }
+      ];
+
       const otherEvents = [
         {
           name: EVENT_TYPE.COPY_OBJ,
@@ -468,6 +475,7 @@ export default {
         ...shapeEvents,
         ...clipArtEvents,
         ...imageEvents,
+        ...videoEvents,
         ...otherEvents
       ];
 
@@ -962,6 +970,9 @@ export default {
           this.changeTextProperties(prop);
           break;
         case OBJECT_TYPE.IMAGE:
+          this.changeVideoProperties(prop);
+          break;
+        case OBJECT_TYPE.VIDEO:
           this.changeImageProperties(prop);
           break;
         default:
@@ -998,6 +1009,7 @@ export default {
           );
           break;
         case OBJECT_TYPE.IMAGE:
+        case OBJECT_TYPE.VIDEO:
           scale = calcScaleElement(
             width,
             currentWidthInch,
@@ -1076,6 +1088,18 @@ export default {
           this.changeImageProperties(prop);
           break;
         }
+
+        case OBJECT_TYPE.VIDEO: {
+          const prop = mappingElementProperties(
+            currentWidthInch,
+            currentHeightInch,
+            currentXInch,
+            currentYInch,
+            DEFAULT_IMAGE.MIN_SIZE
+          );
+          this.changeVideoProperties(prop);
+          break;
+        }
         default:
           return;
       }
@@ -1137,6 +1161,9 @@ export default {
           break;
         case OBJECT_TYPE.IMAGE:
           this.changeImageProperties(prop);
+          break;
+        case OBJECT_TYPE.VIDEO:
+          this.changeVideoProperties(prop);
           break;
         default:
           return;
@@ -1364,6 +1391,14 @@ export default {
      */
     changeImageProperties(prop) {
       this.changeElementProperties(prop, OBJECT_TYPE.IMAGE);
+    },
+    /**
+     * Event fire when user change any property of selected video
+     *
+     * @param {Object}  prop  new prop
+     */
+    changeVideoProperties(prop) {
+      this.changeElementProperties(prop, OBJECT_TYPE.VIDEO);
     },
     /**
      * Event fire when user click on Clip art button on Toolbar to add new clip art on canvas
@@ -1846,7 +1881,10 @@ export default {
         return this.updateTextElementProp(element, prop);
       }
 
-      if (objectType === OBJECT_TYPE.IMAGE) {
+      if (
+        objectType === OBJECT_TYPE.IMAGE ||
+        objectType === OBJECT_TYPE.VIDEO
+      ) {
         return this.updateImageElementProp(element, prop);
       }
 
