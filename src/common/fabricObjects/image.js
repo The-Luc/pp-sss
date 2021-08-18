@@ -24,13 +24,20 @@ import {
  */
 export const createImage = props => {
   return new Promise(resolve => {
-    const fabricProp = toFabricImageProp(props);
+    const fabricProp = toFabricMediaProp(props);
     const {
-      size: { width, height }
+      size: { width, height },
+      type
     } = props;
     const { left, top, id, imageUrl } = fabricProp;
+
+    const src =
+      type === OBJECT_TYPE.IMAGE && imageUrl
+        ? imageUrl
+        : DEFAULT_IMAGE.IMAGE_URL;
+
     fabric.Image.fromURL(
-      imageUrl || DEFAULT_IMAGE.IMAGE_URL,
+      src,
       image => {
         const adjustedWidth = inToPx(width) || image.width;
         const adjustedHeight = inToPx(height) || image.height;
@@ -59,7 +66,7 @@ export const createImage = props => {
  * @param   {Object}  prop  stored image properties
  * @returns {Object}        fabric properties
  */
-export const toFabricImageProp = (prop, originalElement) => {
+export const toFabricMediaProp = (prop, originalElement) => {
   const mapRules = {
     data: {
       type: DEFAULT_RULE_DATA.TYPE,
@@ -140,40 +147,39 @@ export const applyBorderToImageObject = (imageObject, borderConfig) => {
  * Handle replace source url of Image box
  * @param {Element} imageObject object to replace source
  * @param {String} imageSrc Source image for replace
- * @param {Function} cb callback after replace image source
  */
-export const setImageSrc = (imageObject, imageSrc, cb) => {
-  const { width, height, scaleX, scaleY } = imageObject;
-  const src = imageSrc || IMAGE_LOCAL.PLACE_HOLDER;
-  const hasImage = !!imageSrc;
+export const setImageSrc = async (imageObject, imageSrc) => {
+  return new Promise(resolve => {
+    const { width, height, scaleX, scaleY } = imageObject;
+    const src = imageSrc || IMAGE_LOCAL.PLACE_HOLDER;
+    const hasImage = !!imageSrc;
 
-  imageObject.setSrc(src, img => {
-    const newScaleX = (width * scaleX) / img.width;
-    const newScaleY = (height * scaleY) / img.height;
+    imageObject.setSrc(src, img => {
+      const newScaleX = (width * scaleX) / img.width;
+      const newScaleY = (height * scaleY) / img.height;
 
-    const newProp = {
-      imageUrl: src,
-      hasImage,
-      scaleX: newScaleX,
-      scaleY: newScaleY,
-      with: img.width,
-      height: img.height,
-      thumbnail: null,
-      playIcon: null,
-      showThumbnail: false,
-      objectType: OBJECT_TYPE.IMAGE
-    };
+      const newProp = {
+        imageUrl: src,
+        hasImage,
+        scaleX: newScaleX,
+        scaleY: newScaleY,
+        with: img.width,
+        height: img.height,
+        thumbnail: null,
+        playIcon: null,
+        showThumbnail: false,
+        type: OBJECT_TYPE.IMAGE
+      };
 
-    img.set(newProp);
+      img.set(newProp);
 
-    if (hasImage) {
-      centercrop(imageObject, img.set.bind(img));
-      newProp.zoomLevel = img.zoomLevel;
-    }
+      if (hasImage) {
+        centercrop(imageObject, img.set.bind(img));
+        newProp.zoomLevel = img.zoomLevel;
+      }
 
-    imageObject.canvas.renderAll();
-
-    cb && cb(newProp);
+      resolve(newProp);
+    });
   });
 };
 
@@ -181,7 +187,7 @@ export const setImageSrc = (imageObject, imageSrc, cb) => {
  * Handle to get list activate Image box
  * @returns {Array} List activate Image box
  */
-export const getActivateImages = () => {
+export const getAvailableImages = () => {
   return activeCanvas
     .getObjects()
     .filter(
@@ -192,9 +198,8 @@ export const getActivateImages = () => {
 /**
  *
  * @param {Element} imageObject Source image for crop
- * @param {Function} cb callback after crop image
  */
-export const centercrop = (imageObject, cb) => {
+export const centercrop = imageObject => {
   const ele = imageObject._element;
   if (!ele) return;
 
@@ -206,9 +211,8 @@ export const centercrop = (imageObject, cb) => {
   const zoomLevel = Math.max(xZoom, yZoom);
 
   imageObject.set({ zoomLevel });
-  imageObject.canvas.renderAll();
 
-  cb && cb({ zoomLevel });
+  return { zoomLevel };
 };
 
 /**
@@ -240,7 +244,8 @@ export const handleDragLeave = ({ target }) => {
   const { stroke, strokeWidth } = target.cachedStrokeData;
   target.set({
     stroke,
-    strokeWidth
+    strokeWidth,
+    cachedStrokeData: null
   });
 
   activeCanvas.renderAll();
@@ -306,7 +311,6 @@ export const requestAnimFrame = () => {
  * @param {Element} imageObject selected object to set video element
  * @param {String} videoSrc video url will be set to object
  * @param {String} thumbnailSrc video's thumbnail url will be set to object
- * @param {Function} cb callback function after apply change canvas
  */
 export const setVideoSrc = async (imageObject, videoSrc, thumbnailSrc) => {
   const { width, height, scaleX, scaleY } = imageObject;
@@ -351,8 +355,17 @@ export const setVideoSrc = async (imageObject, videoSrc, thumbnailSrc) => {
 
   imageObject.set(newProp);
 
-  centercrop(imageObject, imageObject.set.bind(imageObject));
-  imageObject.canvas.renderAll();
+  const { zoomLevel } = centercrop(
+    imageObject,
+    imageObject.set.bind(imageObject)
+  );
+
+  return {
+    type: OBJECT_TYPE.VIDEO,
+    imageUrl: videoSrc,
+    thumbnailUrl: thumbnailSrc,
+    zoomLevel
+  };
 };
 
 /**

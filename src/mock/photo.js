@@ -20,8 +20,8 @@ const photo1 = new PictureAssetEntity({
   mediaFileName: 'baseball.jpeg',
   thumbUrl: BASEBALL_SD,
   imageUrl: BASEBALL_HD,
-  originalHeight: 3647,
-  originalWidth: 4757
+  originalHeight: 1600,
+  originalWidth: 1600
 });
 
 const photo2 = new PictureAssetEntity({
@@ -42,7 +42,7 @@ const photo3 = new PictureAssetEntity({
   originalWidth: 1600
 });
 
-const video = {
+export const video = {
   id: uniqueId(),
   mediaFileName: 'sample.mp4',
   thumbUrl: SAMPLE_THUMBNAIL,
