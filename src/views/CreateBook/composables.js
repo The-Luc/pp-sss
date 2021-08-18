@@ -28,15 +28,15 @@ export const usePhotos = () => {
     updatePhotoVisited: APP_ACTIONS.UPDATE_PHOTO_VISITED
   });
 
-  const getSmartbox = async (keywords, isModalMedia) => {
-    const listPhotos = isModalMedia
+  const getSmartbox = async (keywords, isGetMedia) => {
+    const listPhotos = isGetMedia
       ? await getMedia(keywords)
       : await getPhotos(keywords);
     return listPhotos;
   };
 
-  const getSearch = async (input, isModalMedia) => {
-    const listPhotos = isModalMedia
+  const getSearch = async (input, isGetMedia) => {
+    const listPhotos = isGetMedia
       ? await searchMedia(input)
       : await searchPhotos(input);
 
