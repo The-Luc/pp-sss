@@ -46,7 +46,6 @@ import { setImageSrc, setVideoSrc } from '@/common/fabricObjects';
 
 export default {
   setup() {
-    const isDigital = true;
     const { pageSelected, updateVisited } = useLayoutPrompt(EDITION.DIGITAL);
     const { setToolNameSelected } = usePopoverCreationTool();
     const { setCurrentSheetId } = useMutationDigitalSheet();
@@ -57,8 +56,8 @@ export default {
     const { updateSavingStatus } = useSavingStatus();
     const { getBookDigitalInfo } = useBookDigitalInfo();
     const { setInfoBar } = useInfoBar();
-    const { updateSheetMedia } = useActionsEditionSheet(isDigital);
-    const { sheetMedia } = useSheet(isDigital);
+    const { updateSheetMedia } = useActionsEditionSheet();
+    const { sheetMedia } = useSheet();
     const { setPropertyById } = useProperties();
 
     return {
