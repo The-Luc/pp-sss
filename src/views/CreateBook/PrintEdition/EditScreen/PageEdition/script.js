@@ -1851,6 +1851,7 @@ export default {
     async handleRemoveImage() {
       const activeObject = window.printCanvas.getActiveObject();
       const prop = await setImageSrc(activeObject, null);
+      activeObject.canvas.renderAll();
       this.setObjectPropById({ id: activeObject.id, prop });
       this.setCurrentObject(this.currentObjects[activeObject.id]);
       this.getThumbnailUrl();
@@ -1861,9 +1862,11 @@ export default {
      */
     handleCentercrop() {
       const activeObject = window.printCanvas.getActiveObject();
-      centercrop(activeObject, prop => {
-        this.setObjectPropById({ id: activeObject.id, prop });
-      });
+
+      const prop = centercrop(activeObject);
+      activeObject.canvas.renderAll();
+
+      this.setObjectPropById({ id: activeObject.id, prop });
     },
     /**
      * Undo user action

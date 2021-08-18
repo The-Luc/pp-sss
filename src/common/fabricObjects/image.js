@@ -179,8 +179,6 @@ export const setImageSrc = async (imageObject, imageSrc) => {
         newProp.zoomLevel = img.zoomLevel;
       }
 
-      imageObject?.canvas?.renderAll();
-
       resolve(newProp);
     });
   });
@@ -190,7 +188,7 @@ export const setImageSrc = async (imageObject, imageSrc) => {
  * Handle to get list activate Image box
  * @returns {Array} List activate Image box
  */
-export const getActivateImages = () => {
+export const getAvailableImages = () => {
   return activeCanvas
     .getObjects()
     .filter(
@@ -214,7 +212,6 @@ export const centercrop = imageObject => {
   const zoomLevel = Math.max(xZoom, yZoom);
 
   imageObject.set({ zoomLevel });
-  imageObject?.canvas?.renderAll();
 
   return { zoomLevel };
 };
@@ -363,7 +360,6 @@ export const setVideoSrc = async (imageObject, videoSrc, thumbnailSrc) => {
     imageObject,
     imageObject.set.bind(imageObject)
   );
-  imageObject?.canvas?.renderAll();
 
   return {
     type: OBJECT_TYPE.VIDEO,

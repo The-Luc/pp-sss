@@ -53,9 +53,10 @@ export default {
 
       this.selectedItem = this.media[event.oldIndex];
 
-      (this.selectedItem.offsetX = offsetX),
-        (this.selectedItem.offsetY = offsetY),
-        this.$emit('drag', this.selectedItem);
+      this.selectedItem.offsetX = offsetX;
+      this.selectedItem.offsetY = offsetY;
+
+      this.$emit('drag', this.selectedItem);
     },
 
     /**
