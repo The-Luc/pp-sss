@@ -46,6 +46,7 @@ const useMutationEditionSheet = (isDigital = false) => {
 export const useActionsEditionSheet = () => {
   const { value: isDigital } = useAppCommon().isDigitalEdition;
   const ACTIONS = isDigital ? DIGITAL_ACTIONS : PRINT_ACTIONS;
+
   const { updateSheetMedia, deleteSheetMedia } = useActions({
     updateSheetMedia: ACTIONS.UPDATE_SHEET_MEDIA,
     deleteSheetMedia: ACTIONS.DELETE_SHEET_MEDIA
