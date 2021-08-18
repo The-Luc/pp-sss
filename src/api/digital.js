@@ -200,6 +200,21 @@ const digitalService = {
     Object.values(sheets).forEach(s => s._set(data[s.id]));
 
     return;
+  },
+  /**
+   * to save sheet media
+   */
+  saveSheetMedia: (sheetId, media) => {
+    return digitalService.updateSheet(sheetId, { media });
+  },
+
+  /**
+   * get media of sheet
+   */
+  getSheetMedia: sheetId => {
+    const sheets = cloneDeep(getSheetsFromStorage());
+    const { media } = sheets[sheetId].digitalData;
+    return media;
   }
 };
 

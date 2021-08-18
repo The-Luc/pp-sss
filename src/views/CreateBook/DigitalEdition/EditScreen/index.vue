@@ -32,6 +32,7 @@
         @click="openModalMedia"
       >
         <SheetMedia
+          v-if="isShowAutoflow"
           :media="sheetMedia"
           @remove="onRemovePhoto"
           @drag="onDrag"

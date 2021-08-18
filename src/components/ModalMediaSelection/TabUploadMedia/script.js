@@ -80,7 +80,7 @@ export default {
     checkValidFile(file) {
       const splitName = file.name.split('.');
       const type = `.${splitName[splitName.length - 1].toLowerCase()}`;
-      return this.imageTypes.includes(type);
+      return this.mediaTypes.includes(type);
     },
     /**
      * Handle event selected files

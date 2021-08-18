@@ -86,7 +86,7 @@
           <div>Add</div>
         </v-tab>
         <v-tab-item value="add">
-          <TabAddPhotos
+          <TabUploadMedia
             :key="currentTab"
             :media-types="mediaTypes"
             @change="onUploadMedia"
