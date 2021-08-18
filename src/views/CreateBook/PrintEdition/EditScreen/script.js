@@ -23,7 +23,7 @@ import SidebarSection from './SidebarSection';
 import PageEdition from './PageEdition';
 import PhotoSidebar from '@/components/PhotoSidebar';
 import SheetMedia from '@/components/SheetMedia';
-import ModalAddPhotos from '@/containers/Modal/Photos';
+import ModalAddPhotos from '@/containers/Modal/Media';
 import ModalAddMedia from '@/containers/Modal/AddMedia';
 
 import {

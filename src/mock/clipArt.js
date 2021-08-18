@@ -1,4 +1,4 @@
-import { ClipArtElement } from '@/common/models/elements';
+import { ClipArtElementEntity as ClipArtElement } from '@/common/models/entities/elements';
 import { SVG_FILL_MODE } from '@/common/constants';
 
 import CLIP_ART_01 from '@/assets/image/clip-art/clip-art-1.svg';

@@ -28,7 +28,7 @@
           type="file"
           name="photo"
           multiple
-          :accept="imageTypes"
+          :accept="mediaTypes"
           @change="onChangeFile"
         />
       </div>

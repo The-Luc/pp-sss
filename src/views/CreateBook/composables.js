@@ -1,4 +1,5 @@
 import { useMutations, useGetters, useActions } from 'vuex-composition-helpers';
+import { getPhotos, searchPhotos, getMedia, searchMedia } from '@/api/photo';
 
 import {
   MUTATES as APP_MUTATES,
@@ -26,8 +27,26 @@ export const usePhotos = () => {
   const { updatePhotoVisited } = useActions({
     updatePhotoVisited: APP_ACTIONS.UPDATE_PHOTO_VISITED
   });
+
+  const getSmartbox = async (keywords, isGetMedia) => {
+    const listPhotos = isGetMedia
+      ? await getMedia(keywords)
+      : await getPhotos(keywords);
+    return listPhotos;
+  };
+
+  const getSearch = async (input, isGetMedia) => {
+    const listPhotos = isGetMedia
+      ? await searchMedia(input)
+      : await searchPhotos(input);
+
+    return listPhotos;
+  };
+
   return {
     isPhotoVisited,
-    updatePhotoVisited
+    updatePhotoVisited,
+    getSmartbox,
+    getSearch
   };
 };

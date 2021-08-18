@@ -1,4 +1,4 @@
-import { BackgroundElement } from '@/common/models';
+import { BackgroundElementEntity as BackgroundElement } from '@/common/models/entities/elements';
 import { BACKGROUND_TYPE, BACKGROUND_PAGE_TYPE } from '@/common/constants';
 
 import THEME_1 from '@/assets/image/backgrounds/theme-1.png';

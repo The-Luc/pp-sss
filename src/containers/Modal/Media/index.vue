@@ -7,7 +7,15 @@
     max-width="1162"
   >
     <div v-if="!isPhotoVisited" class="prompt"></div>
-    <div v-if="isOpenModal" class="modal-body">
+    <div
+      v-if="isOpenModal"
+      :class="[
+        'modal-body',
+        {
+          media: isModalMedia
+        }
+      ]"
+    >
       <v-tabs v-model="defaultTab" fixed-tabs dark @change="onChangeTab">
         <v-tabs-slider color="transparent"></v-tabs-slider>
         <v-tab href="#smartbox">
@@ -32,10 +40,18 @@
           <div>Photos</div>
         </v-tab>
         <v-tab-item value="photos">
-          photos
+          <TabPhotos
+            :key="currentTab"
+            :selected-images="selectedMedia"
+            :selected-type="selectedType"
+            :albums="albums"
+            :photo-dropdowns="photoDropdowns"
+            @changeType="onChangeType"
+            @change="onSelectedMedia"
+          />
         </v-tab-item>
 
-        <v-tab href="#videos">
+        <v-tab v-show="isModalMedia" href="#videos">
           <v-icon>videocam</v-icon>
           <div>Videos</div>
         </v-tab>
@@ -43,7 +59,7 @@
           videos
         </v-tab-item>
 
-        <v-tab href="#compositions">
+        <v-tab v-show="isModalMedia" href="#compositions">
           <v-icon>collections_bookmark</v-icon>
           <div>Compositions</div>
         </v-tab>
@@ -56,7 +72,7 @@
           <div>Search</div>
         </v-tab>
         <v-tab-item value="search">
-          <TabSearch
+          <TabSearchPhotos
             :key="currentTab"
             :selected-media="selectedMedia"
             :photos="photos"
@@ -70,11 +86,16 @@
           <div>Add</div>
         </v-tab>
         <v-tab-item value="add">
-          add
+          <TabUploadMedia
+            :key="currentTab"
+            :media-types="mediaTypes"
+            @change="onUploadMedia"
+          />
         </v-tab-item>
       </v-tabs>
     </div>
     <Footer
+      :is-media-additional-displayed="isMediaAdditionalDisplayed"
       :is-disabled="isNoSelectMedia"
       @select="onSelect"
       @cancel="onCancel"

@@ -74,12 +74,6 @@ import {
 } from '@/store/modules/print/const';
 
 import {
-  ImageElement,
-  BackgroundElement,
-  ClipArtElement,
-  ShapeElement
-} from '@/common/models';
-import {
   TOOL_NAME,
   SHEET_TYPE,
   OBJECT_TYPE,
@@ -112,6 +106,14 @@ import { useStyle } from '@/hooks/style';
 import { useSaveData } from './composables';
 import { useSavingStatus } from '@/views/CreateBook/composables';
 import UndoRedoCanvas from '@/plugins/undoRedoCanvas';
+import {
+  BackgroundElementObject,
+  BasePosition,
+  BaseSize,
+  ClipArtElementObject,
+  ImageElementObject,
+  ShapeElementObject
+} from '@/common/models/element';
 
 export default {
   components: {
@@ -912,24 +914,28 @@ export default {
      */
     async addImageBox(x, y, width, height, options) {
       const id = uniqueId();
-      const newImage = cloneDeep({
+
+      const size = new BaseSize({
+        width: pxToIn(width),
+        height: pxToIn(height)
+      });
+
+      const coord = new BasePosition({
+        x: pxToIn(x),
+        y: pxToIn(y)
+      });
+
+      const newImage = {
         id,
-        newObject: {
-          ...ImageElement,
+        newObject: new ImageElementObject({
           id,
-          size: {
-            width: pxToIn(width),
-            height: pxToIn(height)
-          },
-          coord: {
-            ...ImageElement.coord,
-            x: pxToIn(x),
-            y: pxToIn(y)
-          },
+          size,
+          coord,
           imageUrl: DEFAULT_IMAGE.IMAGE_URL,
           hasImage: !!options?.src
-        }
-      });
+        })
+      };
+
       const eventListeners = {
         scaling: this.handleScaling,
         scaled: this.handleScaled,
@@ -941,7 +947,16 @@ export default {
       };
 
       const image = await createImage(newImage.newObject);
-      merge(newImage.newObject, { size: image?.size });
+
+      if (!isEmpty(image.size)) {
+        newImage.newObject.update({ size: image.size });
+      }
+
+      if (options?.src) {
+        const newProp = await setImageSrc(image.object, options.src);
+
+        newImage.newObject.update(newProp);
+      }
 
       if (options?.src) {
         const newProp = await setImageSrc(image.object, options.src);
@@ -969,11 +984,11 @@ export default {
     addBackground({ background, isLeft = true }) {
       const id = uniqueId();
 
-      const newBackground = cloneDeep(BackgroundElement);
-
-      merge(newBackground, {
+      const newBackground = new BackgroundElementObject({
         ...background,
-        backgroundId: background.id
+        id,
+        backgroundId: background.id,
+        isLeftPage: isLeft
       });
 
       addPrintBackground({
@@ -984,13 +999,7 @@ export default {
         canvas: window.printCanvas
       });
 
-      this.addNewBackground({
-        background: {
-          ...newBackground,
-          id,
-          isLeftPage: isLeft
-        }
-      });
+      this.addNewBackground({ background: newBackground });
     },
     /**
      * Event fire when user change any property of selected background
@@ -1048,17 +1057,19 @@ export default {
      */
     async addClipArt(clipArts) {
       const toBeAddedClipArts = clipArts.map(c => {
-        const newClipArt = cloneDeep(ClipArtElement);
         const id = uniqueId();
 
-        merge(newClipArt, c);
+        const vector = c.vector;
+
+        const newClipArt = new ClipArtElementObject({
+          id,
+          ...c,
+          vector: require(`../../../../../assets/image/clip-art/${vector}`)
+        });
 
         return {
           id,
-          object: {
-            ...newClipArt,
-            vector: require(`../../../../../assets/image/clip-art/${newClipArt.vector}`)
-          }
+          object: newClipArt
         };
       });
 
@@ -1084,21 +1095,22 @@ export default {
 
         const { height, width, scaleX, scaleY, top, left } = fabricObject;
 
-        const newClipArt = {
+        const size = new BaseSize({
+          width: pxToIn(width * scaleX),
+          height: pxToIn(height * scaleY)
+        });
+
+        const coord = new BasePosition({
+          x: pxToIn(left),
+          y: pxToIn(top)
+        });
+
+        s.object.update({ coord, size });
+
+        this.addObjectToStore({
           id: s.id,
-          newObject: {
-            ...s.object,
-            coord: {
-              x: pxToIn(left),
-              y: pxToIn(top)
-            },
-            size: {
-              width: pxToIn(width * scaleX),
-              height: pxToIn(height * scaleY)
-            }
-          }
-        };
-        this.addObjectToStore(newClipArt);
+          newObject: s.object
+        });
       });
 
       if (toBeAddedClipArts.length === 1) {
@@ -1256,12 +1268,13 @@ export default {
      */
     async addShapes(shapes) {
       const toBeAddedShapes = shapes.map(s => {
-        const newShape = cloneDeep(ShapeElement);
-
-        merge(newShape, s);
+        const newShape = new ShapeElementObject({
+          id: uniqueId(),
+          ...s
+        });
 
         return {
-          id: uniqueId(),
+          id: newShape.id,
           object: newShape
         };
       });
@@ -1288,17 +1301,17 @@ export default {
 
         const { top, left } = fabricObject;
 
-        const newShape = {
+        const coord = new BasePosition({
+          x: pxToIn(left),
+          y: pxToIn(top)
+        });
+
+        s.object.update({ coord });
+
+        this.addObjectToStore({
           id: s.id,
-          newObject: {
-            ...s.object,
-            coord: {
-              x: pxToIn(left),
-              y: pxToIn(top)
-            }
-          }
-        };
-        this.addObjectToStore(newShape);
+          newObject: s.object
+        });
       });
 
       if (toBeAddedShapes.length === 1) {

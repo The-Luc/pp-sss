@@ -7,6 +7,7 @@ import ScreenEdition from './ScreenEdition';
 import SidebarSection from './SidebarSection';
 import PhotoSidebar from '@/components/PhotoSidebar';
 import ModalAddMedia from '@/containers/Modal/Media';
+import SheetMedia from '@/components/SheetMedia';
 
 import { GETTERS, MUTATES } from '@/store/modules/app/const';
 import {
@@ -30,6 +31,8 @@ import {
   useGetterDigitalSheet,
   useFrame,
   useInfoBar,
+  useActionsEditionSheet,
+  useSheet,
   useProperties
 } from '@/hooks';
 import { isEmpty, isPositiveInteger, getEditionListPath } from '@/common/utils';
@@ -39,8 +42,6 @@ import { useSaveData } from './composables';
 import { useSavingStatus } from '../../composables';
 import { useBookDigitalInfo } from './composables';
 
-import SheetMedia from '@/components/SheetMedia';
-import { video } from '@/mock/photo';
 import { setImageSrc, setVideoSrc } from '@/common/fabricObjects';
 
 export default {
@@ -55,6 +56,8 @@ export default {
     const { updateSavingStatus } = useSavingStatus();
     const { getBookDigitalInfo } = useBookDigitalInfo();
     const { setInfoBar } = useInfoBar();
+    const { updateSheetMedia } = useActionsEditionSheet();
+    const { sheetMedia } = useSheet();
     const { setPropertyById } = useProperties();
 
     return {
@@ -71,14 +74,15 @@ export default {
       updateSavingStatus,
       getBookDigitalInfo,
       setInfoBar,
+      updateSheetMedia,
+      sheetMedia,
       setPropertyById
     };
   },
   data() {
     return {
       isOpenModal: false,
-      dragItem: null,
-      sheetMedia: [video]
+      dragItem: null
     };
   },
   components: {
@@ -98,7 +102,7 @@ export default {
       defaultThemeId: DIGITAL_GETTERS.DEFAULT_THEME_ID
     }),
     isShowAutoflow() {
-      return false;
+      return !isEmpty(this.sheetMedia);
     },
     isOpenMediaSidebar() {
       return this.selectedToolName === TOOL_NAME.MEDIA;
@@ -256,8 +260,9 @@ export default {
      * Selected media and save in sheet
      * @param   {Array}  media  selected media
      */
-    handleSelectedMedia(media) {
-      console.log(media);
+    async handleSelectedMedia(media) {
+      const reversedMedia = media.reverse();
+      await this.updateSheetMedia({ media: reversedMedia });
     },
     /**
      * Switching tool on Creation Tool by emit

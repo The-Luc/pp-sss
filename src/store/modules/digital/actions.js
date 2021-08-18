@@ -90,5 +90,13 @@ export const actions = {
     );
 
     commit(DIGITAL._MUTATES.SET_OBJECTS, { objectList });
+  },
+  async [DIGITAL._ACTIONS.UPDATE_SHEET_MEDIA]({ commit, state }, { media }) {
+    const currentMedia = await digitalService.getSheetMedia(
+      state.currentSheetId
+    );
+    const newMedia = [...media, ...currentMedia];
+    await digitalService.saveSheetMedia(state.currentSheetId, newMedia);
+    commit(DIGITAL._MUTATES.SET_SHEET_MEDIA, { media: newMedia });
   }
 };

@@ -1,7 +1,7 @@
 import { fabric } from 'fabric';
-import { cloneDeep, merge, uniqueId } from 'lodash';
+import { cloneDeep, uniqueId } from 'lodash';
 
-import { TextElement } from '@/common/models';
+import { BasePosition, TextElementObject } from '../models/element';
 import { applyShadowToObject } from './common';
 
 import { isEmpty, inToPx, pxToIn, getStrokeLineCap } from '@/common/utils';
@@ -26,13 +26,13 @@ import { useDoubleStroke, useTextOverride } from '@/plugins/fabric';
  * Handle creating a TextBox into canvas
  */
 export const createTextBox = (x, y, width, height, textProperties) => {
-  let newText = cloneDeep(TextElement);
   const id = textProperties?.id || uniqueId();
-  merge(newText, {
+
+  const newText = new TextElementObject({
+    id,
     text: DEFAULT_TEXT.TEXT,
-    coord: { ...newText.coord, x: pxToIn(x), y: pxToIn(y) },
-    ...textProperties,
-    id
+    coord: new BasePosition({ x: pxToIn(x), y: pxToIn(y) }),
+    ...textProperties
   });
 
   const dataObject = {

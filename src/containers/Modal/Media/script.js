@@ -1,36 +1,61 @@
 import Footer from '@/components/ModalMediaSelection/Footer';
+import TabUploadMedia from '@/components/ModalMediaSelection/TabUploadMedia';
 import Smartbox from '@/components/ModalMediaSelection/Smartbox';
-import TabSearch from '@/components/ModalMediaSelection/TabSearch';
+import TabPhotos from '@/components/ModalMediaSelection/TabPhotos';
+import TabSearchPhotos from '@/components/ModalMediaSelection/TabSearch';
 
-import { useGetterDigitalSheet, useFrame } from '@/hooks';
+import {
+  useGetterEditionSection,
+  useFrame,
+  useSheet,
+  useAppCommon,
+  usePhoto
+} from '@/hooks';
 import { usePhotos } from '@/views/CreateBook/composables';
-import { useGetMedia } from '@/views/CreateBook/DigitalEdition/EditScreen/composables';
 
 import {
   insertItemsToArray,
   removeItemsFormArray,
   getUniqueKeywords
 } from '@/common/utils';
+import {
+  PHOTO_CATEGORIES,
+  ALL_PHOTO_SUBCATEGORY_ID,
+  IMAGE_TYPES
+} from '@/common/constants';
 
 export default {
   components: {
     Footer,
+    TabPhotos,
     Smartbox,
-    TabSearch
+    TabUploadMedia,
+    TabSearchPhotos
   },
   setup() {
-    const { currentSection } = useGetterDigitalSheet();
+    const { generalInfo } = useAppCommon();
+    const { currentSection } = useGetterEditionSection();
     const { currentFrame } = useFrame();
-    const { isPhotoVisited, updatePhotoVisited } = usePhotos();
-    const { getSmartboxMedia, getSearchMedia } = useGetMedia();
+    const { currentSheet } = useSheet();
+    const {
+      isPhotoVisited,
+      updatePhotoVisited,
+      getSmartbox,
+      getSearch
+    } = usePhotos();
+    const { getAlbums, getPhotoDropdowns } = usePhoto();
 
     return {
       isPhotoVisited,
       updatePhotoVisited,
       currentSection,
       currentFrame,
-      getSmartboxMedia,
-      getSearchMedia
+      currentSheet,
+      generalInfo,
+      getSmartbox,
+      getSearch,
+      getAlbums,
+      getPhotoDropdowns
     };
   },
   data() {
@@ -39,13 +64,35 @@ export default {
       currentTab: '',
       defaultTab: 'smartbox',
       keywords: [],
-      photos: []
+      photos: [],
+      selectedType: {
+        value: PHOTO_CATEGORIES.COMMUNITIES.value,
+        sub: { value: ALL_PHOTO_SUBCATEGORY_ID }
+      },
+      albums: [],
+      photoDropdowns: {},
+      mediaTypes: IMAGE_TYPES
     };
   },
   props: {
     isOpenModal: {
       type: Boolean,
       default: false
+    },
+    type: {
+      type: String,
+      required: true
+    }
+  },
+  computed: {
+    isMediaAdditionalDisplayed() {
+      return this.currentTab === 'add';
+    },
+    isNoSelectMedia() {
+      return this.selectedMedia.length === 0;
+    },
+    isModalMedia() {
+      return this.type === 'media';
     }
   },
   watch: {
@@ -54,15 +101,8 @@ export default {
 
       this.getListKeywords();
       const keywords = this.keywords.map(keyword => keyword.value);
-      this.photos = await this.getSmartboxMedia(keywords);
-    }
-  },
-  computed: {
-    isShowFooter() {
-      return this.currentTab !== 'add';
-    },
-    isNoSelectMedia() {
-      return this.selectedMedia.length === 0;
+
+      this.photos = await this.getSmartbox(keywords, this.isModalMedia);
     }
   },
   methods: {
@@ -82,8 +122,25 @@ export default {
       this.defaultTab = null;
     },
     /**
+     * Selected media and push or remove in array media selected
+     * @param   {Object}  media  id of current book
+     */
+    onSelectedMedia(media) {
+      const index = this.selectedMedia.findIndex(item => item.id === media.id);
+
+      if (index < 0) {
+        this.selectedMedia = insertItemsToArray(this.selectedMedia, [
+          { value: media }
+        ]);
+      } else {
+        this.selectedMedia = removeItemsFormArray(this.selectedMedia, [
+          { value: media, index }
+        ]);
+      }
+    },
+    /**
      * Event change tab of modal photo
-     * @param   {String}  tab  current tab
+     * @param   {String}  tag  current tag
      */
     async onChangeTab(tab) {
       if (this.currentTab === tab) return;
@@ -93,34 +150,49 @@ export default {
       this.photos = [];
 
       if (this.currentTab === 'smartbox') {
+        this.getListKeywords();
         const keywords = this.keywords.map(keyword => keyword.value);
-        this.photos = await this.getSmartboxMedia(keywords);
+        this.photos = await this.getSmartbox(keywords, this.isModalMedia);
       }
-    },
-    /**
-     * Selected a image and push or remove in array image selected
-     * @param   {Object}  image  id of current book
-     */
-    onSelectedMedia(image) {
-      const index = this.selectedMedia.findIndex(item => item.id === image.id);
 
-      if (index < 0) {
-        this.selectedMedia = insertItemsToArray(this.selectedMedia, [
-          { value: image }
-        ]);
-      } else {
-        this.selectedMedia = removeItemsFormArray(this.selectedMedia, [
-          { value: image, index }
-        ]);
-      }
+      if (this.currentTab !== 'photos') return;
+
+      this.albums = await this.getAlbums();
+      this.photoDropdowns = await this.getPhotoDropdowns();
+      this.selectedType = {
+        value: PHOTO_CATEGORIES.COMMUNITIES.value,
+        sub: { value: ALL_PHOTO_SUBCATEGORY_ID }
+      };
     },
     /**
-     * Get list keyword from section name and frame title
+     * Emit files user upload and emit to parent
+     * @param   {Array}  files  files user upload
+     */
+    onUploadMedia(files) {
+      this.$emit('uploadImages', files);
+      this.onCancel();
+    },
+
+    /**
+     * Get list keyword from section name, left, right, spread title
      */
     getListKeywords() {
+      if (this.isModalMedia) {
+        this.keywords = getUniqueKeywords([
+          this.currentFrame.frameTitle,
+          this.currentSection.name
+        ]);
+        return;
+      }
+
+      const { leftTitle, rightTitle } = this.currentSheet?.spreadInfo;
+      const projectTitle =
+        this.currentSection?.name === 'Cover' ? this.generalInfo.title : '';
       this.keywords = getUniqueKeywords([
-        this.currentFrame.frameTitle,
-        this.currentSection.name
+        leftTitle,
+        rightTitle,
+        this.currentSection?.name,
+        projectTitle
       ]);
     },
     /**
@@ -135,7 +207,7 @@ export default {
         return arr;
       }, []);
 
-      this.photos = await this.getSmartboxMedia(activeKeywords);
+      this.photos = await this.getSmartbox(activeKeywords, this.isModalMedia);
     },
     /**
      * Trigger mutation set photo visited true for current book
@@ -148,7 +220,20 @@ export default {
      * @param {String}  input value to search
      */
     async onSearch(input) {
-      this.photos = await this.getSearchMedia(input);
+      this.photos = await this.getSearch(input, this.isModalMedia);
+    },
+    /**
+     * Change dropdown type to select a album
+     * @param   {Object}  data  type and album selected
+     */
+    onChangeType(data) {
+      this.selectedType = {
+        value: data.value,
+        sub: {
+          value: data.sub.value,
+          sub: data.sub.sub?.value
+        }
+      };
     }
   }
 };
