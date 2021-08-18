@@ -2,11 +2,11 @@ import { uniqueId } from 'lodash';
 
 import { BACKGROUND_PAGE_TYPE } from '@/common/constants';
 import {
-  TextElement,
-  BackgroundElement,
-  ClipArtElement,
-  ShapeElement
-} from '@/common/models';
+  TextElementEntity as TextElement,
+  BackgroundElementEntity as BackgroundElement,
+  ClipArtElementEntity as ClipArtElement,
+  ShapeElementEntity as ShapeElement
+} from '@/common/models/entities/elements';
 
 import { DIGITAL_LAYOUT_TYPES as LAYOUT_TYPES } from '@/mock/layoutTypes';
 

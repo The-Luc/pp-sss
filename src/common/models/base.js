@@ -7,6 +7,14 @@ export class BaseObject {
   }
 
   /**
+   * Update all object instance's attribute that match key of props
+   * @param {BaseObject} props - object props
+   */
+  update(props) {
+    this._set(props);
+  }
+
+  /**
    * Set all object instance's attribute that match key of props
    * @param {BaseObject} props - object props
    */
