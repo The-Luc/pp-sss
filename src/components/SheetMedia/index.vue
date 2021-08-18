@@ -5,6 +5,12 @@
         <v-icon class="media-icon" @click="onShowRemoveModal(item)">
           delete_forever
         </v-icon>
+        <v-icon v-if="isVideo(item.type)" class="type-icon">
+          videocam
+        </v-icon>
+        <v-icon v-if="isComposition(item.type)" class="type-icon">
+          collections_bookmark
+        </v-icon>
         <img :src="item.thumbUrl" alt="" />
         <div v-show="item.inProject" class="indicator">In Project</div>
       </div>

@@ -31,6 +31,7 @@
         @autoflow="handleAutoflow"
         @click="openModalMedia"
       >
+        <SheetMedia v-if="isShowAutoflow" :media="sheetMedia" />
       </PhotoSidebar>
     </transition>
 

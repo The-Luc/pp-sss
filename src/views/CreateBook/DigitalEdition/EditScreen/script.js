@@ -7,6 +7,7 @@ import ScreenEdition from './ScreenEdition';
 import SidebarSection from './SidebarSection';
 import PhotoSidebar from '@/components/PhotoSidebar';
 import ModalAddMedia from '@/containers/Modal/Media';
+import SheetMedia from '@/components/SheetMedia';
 
 import { GETTERS, MUTATES } from '@/store/modules/app/const';
 import {
@@ -29,7 +30,9 @@ import {
   useUser,
   useGetterDigitalSheet,
   useFrame,
-  useInfoBar
+  useInfoBar,
+  useActionsEditionSheet,
+  useSheet
 } from '@/hooks';
 import { isEmpty, isPositiveInteger, getEditionListPath } from '@/common/utils';
 import { COPY_OBJECT_KEY } from '@/common/constants/config';
@@ -40,6 +43,7 @@ import { useBookDigitalInfo } from './composables';
 
 export default {
   setup() {
+    const isDigital = true;
     const { pageSelected, updateVisited } = useLayoutPrompt(EDITION.DIGITAL);
     const { setToolNameSelected } = usePopoverCreationTool();
     const { setCurrentSheetId } = useMutationDigitalSheet();
@@ -50,7 +54,8 @@ export default {
     const { updateSavingStatus } = useSavingStatus();
     const { getBookDigitalInfo } = useBookDigitalInfo();
     const { setInfoBar } = useInfoBar();
-
+    const { updateSheetMedia } = useActionsEditionSheet(isDigital);
+    const { sheetMedia } = useSheet(isDigital);
     return {
       pageSelected,
       updateVisited,
@@ -64,7 +69,9 @@ export default {
       getDataEditScreen,
       updateSavingStatus,
       getBookDigitalInfo,
-      setInfoBar
+      setInfoBar,
+      updateSheetMedia,
+      sheetMedia
     };
   },
   data() {
@@ -79,7 +86,8 @@ export default {
     ScreenEdition,
     SidebarSection,
     PhotoSidebar,
-    ModalAddMedia
+    ModalAddMedia,
+    SheetMedia
   },
   computed: {
     ...mapGetters({
@@ -88,7 +96,7 @@ export default {
       defaultThemeId: DIGITAL_GETTERS.DEFAULT_THEME_ID
     }),
     isShowAutoflow() {
-      return false;
+      return !isEmpty(this.sheetMedia);
     },
     isOpenMediaSidebar() {
       return this.selectedToolName === TOOL_NAME.MEDIA;
@@ -246,8 +254,9 @@ export default {
      * Selected media and save in sheet
      * @param   {Array}  media  selected media
      */
-    handleSelectedMedia(media) {
-      console.log(media);
+    async handleSelectedMedia(media) {
+      const reversedMedia = media.reverse();
+      await this.updateSheetMedia({ media: reversedMedia });
     },
     /**
      * Switching tool on Creation Tool by emit
