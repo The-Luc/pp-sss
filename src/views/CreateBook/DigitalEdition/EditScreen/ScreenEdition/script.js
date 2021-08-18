@@ -962,10 +962,10 @@ export default {
         case OBJECT_TYPE.TEXT:
           this.changeTextProperties(prop);
           break;
-        case OBJECT_TYPE.IMAGE:
+        case OBJECT_TYPE.VIDEO:
           this.changeVideoProperties(prop);
           break;
-        case OBJECT_TYPE.VIDEO:
+        case OBJECT_TYPE.IMAGE:
           this.changeImageProperties(prop);
           break;
         default:
