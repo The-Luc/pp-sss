@@ -93,6 +93,7 @@ export default {
       this.photos = [];
 
       if (this.currentTab === 'smartbox') {
+        this.getListKeywords();
         const keywords = this.keywords.map(keyword => keyword.value);
         this.photos = await this.getSmartboxMedia(keywords);
       }
