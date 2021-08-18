@@ -88,7 +88,7 @@ export const getters = {
   [DIGITAL._GETTERS.CURRENT_SECTION]: ({ sections, currentSheetId }) => {
     if (isEmpty(currentSheetId)) return '';
 
-    return sections.find(s => s.sheetIds.includes(currentSheetId));
+    return sections.find(s => s.sheetIds.includes(+currentSheetId));
   },
   [DIGITAL._GETTERS.GET_FIRST_FRAME_THUMBNAIL]: state => {
     if (isEmpty(state.frameIds)) return;

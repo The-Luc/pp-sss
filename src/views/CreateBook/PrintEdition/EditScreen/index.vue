@@ -38,6 +38,7 @@
     <PageEdition ref="canvasEditor" @drop="onDrop" />
 
     <ModalAddPhotos
+      type="photos"
       :is-open-modal="isOpenModal"
       @select="handleSelectedImages"
       @cancel="onCancel"
