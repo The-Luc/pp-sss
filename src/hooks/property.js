@@ -31,9 +31,14 @@ export const useProperties = () => {
     getPropOfCurrentObject: APP_GETTERS.SELECT_PROP_CURRENT_OBJECT
   });
 
-  const { setPropertyById, setProperty } = useMutations({
+  const {
+    setPropertyById,
+    setProperty,
+    setPropOfMultipleObjects
+  } = useMutations({
     setPropertyById: MUTATES.SET_PROP_BY_ID,
-    setProperty: MUTATES.SET_PROP
+    setProperty: MUTATES.SET_PROP,
+    setPropOfMultipleObjects: MUTATES.SET_PROP_OF_MULIPLE_OBJECTS
   });
 
   const getProperty = prop => {
@@ -43,6 +48,7 @@ export const useProperties = () => {
   return {
     getProperty,
     setProperty,
-    setPropertyById
+    setPropertyById,
+    setPropOfMultipleObjects
   };
 };
