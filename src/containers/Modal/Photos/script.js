@@ -1,5 +1,5 @@
 import Footer from '@/components/ModalMediaSelection/Footer';
-import TabAddPhotos from '@/components/ModalMediaSelection/TabAddPhotos';
+import TabUploadMedia from '@/components/ModalMediaSelection/TabUploadMedia';
 import Smartbox from '@/components/ModalMediaSelection/Smartbox';
 import TabPhotos from '@/components/ModalMediaSelection/TabPhotos';
 import TabSearchPhotos from '@/components/ModalMediaSelection/TabSearch';
@@ -24,7 +24,7 @@ export default {
     Footer,
     TabPhotos,
     Smartbox,
-    TabAddPhotos,
+    TabUploadMedia,
     TabSearchPhotos
   },
   setup() {

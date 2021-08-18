@@ -1,5 +1,6 @@
 import Draggable from 'vuedraggable';
 import ModalRemovePhoto from './ModalRemovePhoto';
+import { ASSET_TYPE } from '@/common/constants';
 
 export default {
   components: {
@@ -64,6 +65,18 @@ export default {
      */
     onUnchoose() {
       this.selectedItem = null;
+    },
+    /**
+     * Check asset is video
+     */
+    isVideo(type) {
+      return type === ASSET_TYPE.VIDEO;
+    },
+    /**
+     * Check asset is compositon
+     */
+    isComposition(type) {
+      return type === ASSET_TYPE.COMPOSITION;
     }
   }
 };

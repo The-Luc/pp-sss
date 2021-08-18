@@ -107,5 +107,9 @@ export const getters = {
       frames: framesArray
     };
     return data;
+  },
+  [DIGITAL._GETTERS.GET_SHEET_MEDIA]: ({ sheets, currentSheetId }) => {
+    const media = sheets[currentSheetId]?.media;
+    return isEmpty(media) ? [] : media;
   }
 };

@@ -1,4 +1,5 @@
 import { useGetters, useMutations, useActions } from 'vuex-composition-helpers';
+import { useAppCommon } from './common';
 
 import {
   GETTERS as PRINT_GETTERS,
@@ -11,7 +12,9 @@ import {
   ACTIONS as DIGITAL_ACTIONS
 } from '@/store/modules/digital/const';
 
-export const useSheet = (isDigital = false) => {
+export const useSheet = () => {
+  const { value: isDigital } = useAppCommon().isDigitalEdition;
+
   const GETTERS = isDigital ? DIGITAL_GETTERS : PRINT_GETTERS;
 
   const { sheetLayout, currentSheet, sheetMedia } = useGetters({
@@ -41,7 +44,9 @@ const useMutationEditionSheet = (isDigital = false) => {
   };
 };
 
-export const useActionsEditionSheet = (isDigital = false) => {
+export const useActionsEditionSheet = () => {
+  const { value: isDigital } = useAppCommon().isDigitalEdition;
+
   const ACTIONS = isDigital ? DIGITAL_ACTIONS : PRINT_ACTIONS;
 
   const { updateSheetMedia, deleteSheetMedia } = useActions({

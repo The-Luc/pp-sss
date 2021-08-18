@@ -102,7 +102,8 @@ const book = new BookDetailEntity({
             thumbnailUrl: null,
             link: LINK_STATUS.NONE,
             themeId: null,
-            layout: defaultDigitalLayout
+            layout: defaultDigitalLayout,
+            media: []
           }
         })
       ]
@@ -136,7 +137,8 @@ const book = new BookDetailEntity({
             thumbnailUrl: null,
             link: LINK_STATUS.NONE,
             themeId: null,
-            layout: defaultDigitalLayout
+            layout: defaultDigitalLayout,
+            media: []
           }
         }),
         new SheetEntity({
@@ -158,7 +160,8 @@ const book = new BookDetailEntity({
             thumbnailUrl: null,
             link: LINK_STATUS.LINK,
             themeId: null,
-            layout: defaultDigitalLayout
+            layout: defaultDigitalLayout,
+            media: []
           }
         }),
         new SheetEntity({
@@ -180,7 +183,8 @@ const book = new BookDetailEntity({
             thumbnailUrl: null,
             link: LINK_STATUS.UNLINK,
             themeId: null,
-            layout: defaultDigitalLayout
+            layout: defaultDigitalLayout,
+            media: []
           }
         }),
         new SheetEntity({
@@ -202,7 +206,8 @@ const book = new BookDetailEntity({
             thumbnailUrl: null,
             link: LINK_STATUS.LINK,
             themeId: null,
-            layout: defaultDigitalLayout
+            layout: defaultDigitalLayout,
+            media: []
           }
         }),
         new SheetEntity({
@@ -224,7 +229,8 @@ const book = new BookDetailEntity({
             thumbnailUrl: null,
             link: LINK_STATUS.LINK,
             themeId: null,
-            layout: defaultDigitalLayout
+            layout: defaultDigitalLayout,
+            media: []
           }
         })
       ]
@@ -258,7 +264,8 @@ const book = new BookDetailEntity({
             thumbnailUrl: null,
             link: LINK_STATUS.UNLINK,
             themeId: null,
-            layout: defaultDigitalLayout
+            layout: defaultDigitalLayout,
+            media: []
           }
         }),
         new SheetEntity({
@@ -280,7 +287,8 @@ const book = new BookDetailEntity({
             thumbnailUrl: null,
             link: LINK_STATUS.LINK,
             themeId: null,
-            layout: defaultDigitalLayout
+            layout: defaultDigitalLayout,
+            media: []
           }
         }),
         new SheetEntity({
@@ -302,7 +310,8 @@ const book = new BookDetailEntity({
             thumbnailUrl: null,
             link: LINK_STATUS.LINK,
             themeId: null,
-            layout: defaultDigitalLayout
+            layout: defaultDigitalLayout,
+            media: []
           }
         })
       ]
@@ -336,7 +345,8 @@ const book = new BookDetailEntity({
             thumbnailUrl: null,
             link: LINK_STATUS.LINK,
             themeId: null,
-            layout: defaultDigitalLayout
+            layout: defaultDigitalLayout,
+            media: []
           }
         })
       ]
@@ -370,7 +380,8 @@ const book = new BookDetailEntity({
             thumbnailUrl: null,
             link: LINK_STATUS.NONE,
             themeId: null,
-            layout: defaultDigitalLayout
+            layout: defaultDigitalLayout,
+            media: []
           }
         })
       ]
