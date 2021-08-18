@@ -4,12 +4,20 @@
       name-editor="digital editor"
       @onClickSave="onClickSaveDigitalCanvas"
     />
-    <ToolBar :is-digital-editor="true" @undo="onUndo" @redo="onRedo" />
+
+    <ToolBar
+      :is-digital-editor="true"
+      @undo="onUndo"
+      @redo="onRedo"
+      @switchTool="onToolSwitch"
+      @endInstruction="onInstructionEnd"
+    />
 
     <FeedbackBar
       :is-open-menu-properties="isOpenMenuProperties"
       :selected-tool-name="selectedToolName"
       :is-digital="true"
+      @zoom="onZoom"
     />
 
     <SidebarSection />
@@ -28,7 +36,11 @@
 
     <ScreenEdition ref="canvasEditor" />
 
-    <ModalAddMedia :is-open-modal="isOpenModal" @cancel="onCancel" />
+    <ModalAddMedia
+      :is-open-modal="isOpenModal"
+      @select="handleSelectedMedia"
+      @cancel="onCancel"
+    />
   </div>
 </template>
 

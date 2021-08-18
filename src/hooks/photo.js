@@ -3,7 +3,8 @@ import {
   addMediaToAlbum,
   createNewAlbum,
   getAlbums,
-  getMyAlbums
+  getMyAlbums,
+  getPhotoDropdowns
 } from '@/api/photo';
 
 export const usePhoto = () => {
@@ -12,6 +13,7 @@ export const usePhoto = () => {
     addMediaToAlbum,
     createNewAlbum,
     getAlbums,
-    getMyAlbums
+    getMyAlbums,
+    getPhotoDropdowns
   };
 };

@@ -2,7 +2,7 @@ import PropertiesManager from '@/containers/PropertiesManager';
 import ToolPopoverManager from '@/containers/ToolPopoverManager';
 import PpCombobox from '@/components/Selectors/Combobox';
 
-import { useInfoBar } from '@/hooks';
+import { useInfoBar, useObjectProperties } from '@/hooks';
 import {
   isEmpty,
   splitNumberByDecimal,
@@ -43,14 +43,15 @@ export default {
   },
   setup() {
     const { infoBar } = useInfoBar();
+    const { currentObject } = useObjectProperties();
 
-    return { infoBar };
+    return { infoBar, currentObject };
   },
   computed: {
     size() {
       return {
-        width: this.getDisplaySize(this.infoBar.w),
-        height: this.getDisplaySize(this.infoBar.h)
+        width: this.getDisplaySize(this.currentObject?.size?.width),
+        height: this.getDisplaySize(this.currentObject?.size?.height)
       };
     },
     zoom() {

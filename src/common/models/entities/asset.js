@@ -28,3 +28,20 @@ export class PictureAssetEntity extends AssetEntity {
     this._set(props);
   }
 }
+
+export class VideoAssetEntity extends AssetEntity {
+  type = ASSET_TYPE.VIDEO;
+  originalHeight = 0;
+  originalWidth = 0;
+  thumbUrl = '';
+  mediaUrl = '';
+  duration = 0;
+
+  /**
+   * @param {VideoAssetEntity} props
+   */
+  constructor(props) {
+    super(props);
+    this._set(props);
+  }
+}

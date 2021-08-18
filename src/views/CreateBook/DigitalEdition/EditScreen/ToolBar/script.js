@@ -174,7 +174,8 @@ export default {
       if (isElementProp && isEmpty(this.selectedObjectType)) return;
 
       if (isInstructionTool(this.selectedToolName)) {
-        this.$root.$emit(EVENT_TYPE.SWITCH_TOOL, '');
+        this.$emit('switchTool', '');
+
         this.setToolNameSelected({ name: '' });
       }
 
@@ -201,7 +202,7 @@ export default {
 
       const toolName = this.selectedToolName === name ? '' : name;
 
-      this.$root.$emit(EVENT_TYPE.SWITCH_TOOL, toolName);
+      if (!isOneClickTool(name)) this.$emit('switchTool', toolName);
 
       if (isInstructionTool(name)) {
         const objectType =
@@ -221,6 +222,8 @@ export default {
       }
 
       this.setToolNameSelected({ name: '' });
+
+      this.$emit('endInstruction');
 
       if (name === TOOL_NAME.DELETE)
         this.$root.$emit(EVENT_TYPE.DELETE_OBJECTS);
