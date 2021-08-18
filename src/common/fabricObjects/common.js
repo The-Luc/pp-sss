@@ -17,7 +17,7 @@ import {
   scaleSize,
   pxToIn
 } from '@/common/utils';
-import { toFabricImageProp } from './image';
+import { toFabricMediaProp } from './image';
 
 export const DEFAULT_RULE_DATA = {
   TYPE: {
@@ -311,7 +311,7 @@ const getFabricPropByType = (elementType, prop, element) => {
   }
 
   if (elementType === OBJECT_TYPE.IMAGE || elementType === OBJECT_TYPE.VIDEO) {
-    return toFabricImageProp(prop, element);
+    return toFabricMediaProp(prop, element);
   }
 
   return {};
