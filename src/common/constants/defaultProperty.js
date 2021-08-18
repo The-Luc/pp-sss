@@ -129,7 +129,7 @@ export const DEFAULT_CLIP_ART = {
   }
 };
 
-export const DEFAULT_IMAGE = {
+const BASE_MEDIA = {
   CATEGORY: 'Cover',
   STYLE_ID: 1,
   NAME: '',
@@ -142,6 +142,14 @@ export const DEFAULT_IMAGE = {
   IMAGE_URL: IMAGE_LOCAL.PLACE_HOLDER,
   STROKE_UNIFORM: true,
   PAINT_FIRST: 'stroke'
+};
+
+export const DEFAULT_IMAGE = {
+  ...BASE_MEDIA
+};
+
+export const DEFAULT_VIDEO = {
+  ...BASE_MEDIA
 };
 
 export const DEFAULT_BACKGROUND = {

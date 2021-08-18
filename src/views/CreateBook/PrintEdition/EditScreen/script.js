@@ -48,11 +48,7 @@ import {
 } from '@/common/utils';
 
 import { useSaveData } from './PageEdition/composables';
-import {
-  getActivateImages,
-  setImageSrc,
-  setVideoSrc
-} from '@/common/fabricObjects';
+import { getAvailableImages, setImageSrc } from '@/common/fabricObjects';
 import { useSavingStatus } from '../../composables';
 import { debounce } from 'lodash';
 import { useBookPrintInfo } from './composables';
@@ -78,7 +74,7 @@ export default {
     const { currentSection } = useGetterPrintSheet();
     const { savePrintEditScreen, getDataEditScreen } = useSaveData();
     const { isOpenMenuProperties } = useMenuProperties();
-    const { setPropertyById } = useProperties();
+    const { setPropertyById, setPropOfMultipleObjects } = useProperties();
     const { updateSavingStatus } = useSavingStatus();
     const { sheetMedia } = useSheet();
     const { updateSheetMedia, deleteSheetMedia } = useActionsEditionSheet();
@@ -102,7 +98,8 @@ export default {
       updateSheetMedia,
       deleteSheetMedia,
       getBookPrintInfo,
-      listObjects
+      listObjects,
+      setPropOfMultipleObjects
     };
   },
   data() {
@@ -269,28 +266,40 @@ export default {
     /**
      * Handle autoflow
      */
-    handleAutoflow() {
+    async handleAutoflow() {
       activeCanvas.discardActiveObject();
-      const objects = getActivateImages();
+
+      const objects = getAvailableImages();
       const images = this.sheetMedia || [];
-      if (objects.length > images.length) {
-        images.forEach((image, index) => {
-          setImageSrc(objects[index], image.imageUrl, prop => {
-            prop.imageId = image.id;
-            this.setPropertyById({ id: objects[index].id, prop });
-            this.getThumbnailUrl();
-          });
-        });
-        return;
-      }
-      objects.forEach((object, index) => {
-        setImageSrc(object, images[index].imageUrl, prop => {
-          prop.imageId = images[index].id;
-          this.setPropertyById({ id: object.id, prop });
-          this.getThumbnailUrl();
-        });
-      });
+
+      const promises = Array.from(
+        { length: Math.min(images.length, objects.length) },
+        (_, index) => this.handleChangeImageSrc(objects[index], images[index])
+      );
+
+      const props = await Promise.all(promises);
+
+      activeCanvas.renderAll();
+      this.getThumbnailUrl();
+
+      this.setPropOfMultipleObjects({ data: props });
     },
+
+    /**
+     *
+     * @param {Element} target current image box will apply new src
+     * @param {*} options new prop for image box
+     * @returns new properties of image box after change src
+     */
+    async handleChangeImageSrc(target, options) {
+      if (!target) return;
+
+      const prop = await setImageSrc(target, options.imageUrl);
+      prop.imageId = options.id;
+
+      return { id: target.id, prop };
+    },
+
     /**
      * Selected images and save in sheet
      * @param   {Array}  images  selected images
@@ -326,30 +335,39 @@ export default {
      * Handle drop photo to canvas
      * @param {Object} target fabric object focused
      */
-    onDrop({ target }) {
+    async onDrop({ event, canvas, addImageBox }) {
       if (!this.dragItem) return;
 
-      const { imageUrl, id: imageId, isMedia, thumbUrl } = this.dragItem;
+      const {
+        imageUrl,
+        id: imageId,
+        originalWidth,
+        originalHeight,
+        offsetX,
+        offsetY
+      } = this.dragItem;
+
+      const target = event.target;
+      const pointer = canvas.getPointer(event.e);
 
       this.dragItem = null;
 
-      if (!target) return;
+      if (!target) {
+        const x = pointer.x - offsetX * 3;
+        const y = pointer.y - offsetY * 3;
 
-      if (isMedia) {
-        setVideoSrc(target, imageUrl, thumbUrl, prop => {
-          prop.imageUrl = imageUrl;
-          prop.imageId = imageId;
-          prop.thumbUrl = thumbUrl;
-          this.setPropertyById({ id: target.id, prop });
+        addImageBox(x, y, originalWidth, originalHeight, {
+          src: imageUrl
         });
 
         return;
       }
 
-      setImageSrc(target, imageUrl, prop => {
-        prop.imageId = imageId;
-        this.setPropertyById({ id: target.id, prop });
-      });
+      const prop = await setImageSrc(target, imageUrl);
+      prop.imageId = imageId;
+      this.setPropertyById({ id: target.id, prop });
+      this.getThumbnailUrl();
+      canvas.renderAll();
     },
     /**
      * Undo user action

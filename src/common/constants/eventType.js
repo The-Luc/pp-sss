@@ -7,6 +7,7 @@ export const EVENT_TYPE = {
   ADD_CLIPARTS: 'addClipArts',
   CHANGE_CLIPART_PROPERTIES: 'changeClipArtProperties',
   CHANGE_IMAGE_PROPERTIES: 'changeImageProperties',
+  CHANGE_VIDEO_PROPERTIES: 'changeVideoProperties',
   CHANGE_OBJECT_IDS_ORDER: 'changeObjectIdsOrder',
   DIGITAL_BACKGROUND_ADD: 'digitalAddBackground',
   DIGITAL_BACKGROUND_PROP_CHANGE: 'digitalChangeBackgroundProperties',
@@ -28,7 +29,8 @@ export const CANVAS_EVENT_TYPE = {
   OBJECT_SCALED: 'object:scaled',
   OBJECT_MOVED: 'object:moved',
   TEXT_CHANGED: 'text:changed',
-  MOUSE_DOWN: 'mouse:down'
+  MOUSE_DOWN: 'mouse:down',
+  DROP: 'drop'
 };
 
 export const WINDOW_EVENT_TYPE = {

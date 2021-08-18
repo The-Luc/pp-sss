@@ -31,11 +31,16 @@
         @autoflow="handleAutoflow"
         @click="openModalMedia"
       >
-        <SheetMedia v-if="isShowAutoflow" :media="sheetMedia" />
+        <SheetMedia
+          v-if="isShowAutoflow"
+          :media="sheetMedia"
+          @remove="onRemovePhoto"
+          @drag="onDrag"
+        />
       </PhotoSidebar>
     </transition>
 
-    <ScreenEdition ref="canvasEditor" />
+    <ScreenEdition ref="canvasEditor" @drop="onDrop" />
 
     <ModalAddMedia
       :is-open-modal="isOpenModal"
