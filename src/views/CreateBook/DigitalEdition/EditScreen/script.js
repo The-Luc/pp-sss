@@ -29,7 +29,8 @@ import {
   useUser,
   useGetterDigitalSheet,
   useFrame,
-  useInfoBar
+  useInfoBar,
+  useProperties
 } from '@/hooks';
 import { isEmpty, isPositiveInteger, getEditionListPath } from '@/common/utils';
 import { COPY_OBJECT_KEY } from '@/common/constants/config';
@@ -37,6 +38,10 @@ import { COPY_OBJECT_KEY } from '@/common/constants/config';
 import { useSaveData } from './composables';
 import { useSavingStatus } from '../../composables';
 import { useBookDigitalInfo } from './composables';
+
+import SheetMedia from '@/components/SheetMedia';
+import { video } from '@/mock/photo';
+import { setImageSrc, setVideoSrc } from '@/common/fabricObjects';
 
 export default {
   setup() {
@@ -50,6 +55,7 @@ export default {
     const { updateSavingStatus } = useSavingStatus();
     const { getBookDigitalInfo } = useBookDigitalInfo();
     const { setInfoBar } = useInfoBar();
+    const { setPropertyById } = useProperties();
 
     return {
       pageSelected,
@@ -64,12 +70,15 @@ export default {
       getDataEditScreen,
       updateSavingStatus,
       getBookDigitalInfo,
-      setInfoBar
+      setInfoBar,
+      setPropertyById
     };
   },
   data() {
     return {
-      isOpenModal: false
+      isOpenModal: false,
+      dragItem: null,
+      sheetMedia: [video]
     };
   },
   components: {
@@ -79,7 +88,8 @@ export default {
     ScreenEdition,
     SidebarSection,
     PhotoSidebar,
-    ModalAddMedia
+    ModalAddMedia,
+    SheetMedia
   },
   computed: {
     ...mapGetters({
@@ -270,6 +280,65 @@ export default {
      */
     onZoom({ zoom }) {
       this.setInfoBar({ zoom });
+    },
+
+    /**
+     * Handle remove photo from sheet
+     * @param {Object} photo photo will be removed
+     */
+    onRemovePhoto(photo) {
+      console.log('remove photo', photo);
+    },
+
+    /**
+     * Handle drag photo from photo sidebar
+     * @param {Object} item drag item
+     */
+    onDrag(item) {
+      this.dragItem = item;
+    },
+
+    /**
+     * Handle drop photo to canvas
+     * @param {Object} target fabric object focused
+     */
+    async onDrop({ event, canvas, addImageBox }) {
+      if (!this.dragItem) return;
+
+      const {
+        imageUrl,
+        id: imageId,
+        originalWidth,
+        originalHeight,
+        offsetX,
+        offsetY,
+        isMedia,
+        thumbUrl
+      } = this.dragItem;
+
+      const target = event.target;
+      const pointer = canvas.getPointer(event.e);
+
+      this.dragItem = null;
+
+      if (!target) {
+        const x = pointer.x - offsetX * 3;
+        const y = pointer.y - offsetY * 3;
+
+        addImageBox(x, y, originalWidth, originalHeight, {
+          src: imageUrl
+        });
+
+        return;
+      }
+
+      const prop = isMedia
+        ? await setVideoSrc(target, imageUrl, thumbUrl)
+        : await setImageSrc(target, imageUrl);
+      prop.imageId = imageId;
+      this.setPropertyById({ id: target.id, prop });
+      this.$refs.canvasEditor.getThumbnailUrl();
+      canvas.renderAll();
     }
   }
 };

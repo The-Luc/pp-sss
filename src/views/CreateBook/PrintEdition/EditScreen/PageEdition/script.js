@@ -61,7 +61,8 @@ import {
   handleDragLeave,
   fabricToPpObject,
   getTextSizeWithPadding,
-  handleClickVideo
+  handleClickVideo,
+  setVideoSrc
 } from '@/common/fabricObjects';
 
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
@@ -349,7 +350,10 @@ export default {
         scaling: this.handleScaling,
         scaled: this.handleScaled,
         rotated: this.handleRotated,
-        moved: this.handleMoved
+        moved: this.handleMoved,
+        dragenter: handleDragEnter,
+        dragleave: handleDragLeave,
+        drop: handleDragLeave
       };
 
       const imageObject = await createImage(imageProperties);
@@ -502,6 +506,12 @@ export default {
 
       if (newData.type === OBJECT_TYPE.IMAGE) {
         return this.createImageFromPpData(newData);
+      }
+
+      if (newData.type === OBJECT_TYPE.VIDEO) {
+        const video = this.createImageFromPpData(newData);
+        setVideoSrc(video, newData.imageUrl, newData.thumbnailUrl);
+        return video;
       }
 
       if (
@@ -714,8 +724,10 @@ export default {
             this.handleMultiMoved(e);
           }
         },
-        drop: ({ target }) =>
-          this.$emit('drop', { target, canvas: window.printCanvas })
+        drop: event => {
+          const canvas = window.printCanvas;
+          this.$emit('drop', { event, canvas, addImageBox: this.addImageBox });
+        }
       });
 
       document.body.addEventListener('keyup', this.handleDeleteKey);
@@ -898,7 +910,7 @@ export default {
     /**
      * Event fire when user click on Image button on Toolbar to add new image on canvas
      */
-    async addImageBox(x, y, width, height) {
+    async addImageBox(x, y, width, height, options) {
       const id = uniqueId();
       const newImage = cloneDeep({
         id,
@@ -914,7 +926,8 @@ export default {
             x: pxToIn(x),
             y: pxToIn(y)
           },
-          imageUrl: DEFAULT_IMAGE.IMAGE_URL
+          imageUrl: DEFAULT_IMAGE.IMAGE_URL,
+          hasImage: !!options?.src
         }
       });
       const eventListeners = {
@@ -929,6 +942,15 @@ export default {
 
       const image = await createImage(newImage.newObject);
       merge(newImage.newObject, { size: image?.size });
+
+      if (options?.src) {
+        const newProp = await setImageSrc(image.object, options.src);
+
+        newImage.newObject = {
+          ...newImage.newObject,
+          ...newProp
+        };
+      }
 
       this.addObjectToStore(newImage);
 
@@ -1826,13 +1848,13 @@ export default {
     /**
      * Handle reset image
      */
-    handleRemoveImage() {
+    async handleRemoveImage() {
       const activeObject = window.printCanvas.getActiveObject();
-      setImageSrc(activeObject, null, prop => {
-        this.setObjectPropById({ id: activeObject.id, prop });
-        this.setCurrentObject(this.currentObjects[activeObject.id]);
-        this.getThumbnailUrl();
-      });
+      const prop = await setImageSrc(activeObject, null);
+      activeObject.canvas.renderAll();
+      this.setObjectPropById({ id: activeObject.id, prop });
+      this.setCurrentObject(this.currentObjects[activeObject.id]);
+      this.getThumbnailUrl();
     },
 
     /**
@@ -1840,9 +1862,11 @@ export default {
      */
     handleCentercrop() {
       const activeObject = window.printCanvas.getActiveObject();
-      centercrop(activeObject, prop => {
-        this.setObjectPropById({ id: activeObject.id, prop });
-      });
+
+      const prop = centercrop(activeObject);
+      activeObject.canvas.renderAll();
+
+      this.setObjectPropById({ id: activeObject.id, prop });
     },
     /**
      * Undo user action

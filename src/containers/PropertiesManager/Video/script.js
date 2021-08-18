@@ -5,7 +5,8 @@ import StyleContent from '@/components/General';
 import ArrangeContent from '@/components/Arrange';
 
 import { useElementProperties } from '@/hooks';
-import { DEFAULT_IMAGE } from '@/common/constants';
+import { DEFAULT_VIDEO, EVENT_TYPE } from '@/common/constants';
+import { computedObjectSize } from '@/common/utils';
 
 export default {
   components: {
@@ -36,10 +37,10 @@ export default {
       };
     },
     minPosition() {
-      return DEFAULT_IMAGE.MIN_POSITION;
+      return DEFAULT_VIDEO.MIN_POSITION;
     },
     maxPosition() {
-      return DEFAULT_IMAGE.MAX_POSITION;
+      return DEFAULT_VIDEO.MAX_POSITION;
     },
     sizeWidth() {
       const size = this.getProperty('size');
@@ -54,14 +55,11 @@ export default {
     isConstrain() {
       return this.getProperty('isConstrain');
     },
+    minSize() {
+      return DEFAULT_VIDEO.MIN_SIZE;
+    },
     maxSize() {
-      return DEFAULT_IMAGE.MAX_SIZE;
-    },
-    minWidth() {
-      return this.getProperty('minWidth') || DEFAULT_IMAGE.MIN_SIZE;
-    },
-    minHeight() {
-      return this.getProperty('minHeight') || DEFAULT_IMAGE.MIN_SIZE;
+      return DEFAULT_VIDEO.MAX_SIZE;
     },
     opacityValue() {
       const res = this.getProperty('opacity');
@@ -80,42 +78,67 @@ export default {
      * @param {String} actionName action name
      */
     changeFlip(actionName) {
-      // handle flip
-      console.log('flip video');
-      console.log(actionName);
+      const currentFlip = {
+        ...this.getProperty('flip')
+      };
+
+      this.$root.$emit(EVENT_TYPE.CHANGE_VIDEO_PROPERTIES, {
+        flip: { [actionName]: !currentFlip[actionName] }
+      });
     },
     /**
      * Handle update size, position or rotate for Video object
      * @param {Object} object object containing the value of update size, position or rotate
      */
     onChange(object) {
-      console.log('on change props');
-      console.log(object);
+      const key = Object.keys(object);
+      if (key.includes('size')) {
+        const size = computedObjectSize(
+          object.size,
+          { width: this.sizeWidth, height: this.sizeHeight },
+          DEFAULT_VIDEO.MIN_SIZE,
+          DEFAULT_VIDEO.MAX_SIZE,
+          this.isConstrain
+        );
+        object.size = size;
+      }
+      this.$root.$emit(EVENT_TYPE.CHANGE_VIDEO_PROPERTIES, object);
     },
 
     /**
      * Handle update constrain property
      * @param {Boolean} isConstrain value for isConstrain property
      */
-    onChangeConstrain(isConstrain) {
-      console.log('on change constrain');
-      console.log(isConstrain);
+    onChangeConstrain(val) {
+      this.$root.$emit(EVENT_TYPE.CHANGE_VIDEO_PROPERTIES, {
+        isConstrain: val
+      });
     },
     /**
      * Handle update Shadow Config
      * @param {Object} shadowCfg - the new shadow configs
      */
     onChangeShadow(shadowCfg) {
-      console.log('on update shadow');
-      console.log(shadowCfg);
+      this.$root.$emit(EVENT_TYPE.CHANGE_VIDEO_PROPERTIES, {
+        shadow: {
+          ...this.currentShadow,
+          ...shadowCfg
+        },
+        styleId: ''
+      });
     },
     /**
      * Handle update border
      * @param {Object} borderCfg Border option selected
      */
     onChangeBorder(borderCfg) {
-      console.log('on update border');
-      console.log(borderCfg);
+      this.$root.$emit(EVENT_TYPE.CHANGE_VIDEO_PROPERTIES, {
+        border: {
+          ...this.currentBorder,
+          ...borderCfg
+        },
+        styleId: ''
+      });
     }
   }
 };

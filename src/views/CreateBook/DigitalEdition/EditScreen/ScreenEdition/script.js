@@ -459,6 +459,13 @@ export default {
         }
       ];
 
+      const videoEvents = [
+        {
+          name: EVENT_TYPE.CHANGE_VIDEO_PROPERTIES,
+          handler: this.changeVideoProperties
+        }
+      ];
+
       const otherEvents = [
         {
           name: EVENT_TYPE.COPY_OBJ,
@@ -477,6 +484,7 @@ export default {
         ...shapeEvents,
         ...clipArtEvents,
         ...imageEvents,
+        ...videoEvents,
         ...otherEvents
       ];
 
@@ -529,7 +537,8 @@ export default {
         [CANVAS_EVENT_TYPE.OBJECT_SCALED]: this.onObjectScaled,
         [CANVAS_EVENT_TYPE.OBJECT_MOVED]: this.onObjectMoved,
         [CANVAS_EVENT_TYPE.MOUSE_DOWN]: this.onMouseDown,
-        [CANVAS_EVENT_TYPE.TEXT_CHANGED]: this.onTextChanged
+        [CANVAS_EVENT_TYPE.TEXT_CHANGED]: this.onTextChanged,
+        [CANVAS_EVENT_TYPE.DROP]: this.handleDrop
       };
       this.digitalCanvas?.on(events);
     },
@@ -957,6 +966,9 @@ export default {
         case OBJECT_TYPE.TEXT:
           this.changeTextProperties(prop);
           break;
+        case OBJECT_TYPE.VIDEO:
+          this.changeVideoProperties(prop);
+          break;
         case OBJECT_TYPE.IMAGE:
           this.changeImageProperties(prop);
           break;
@@ -994,6 +1006,7 @@ export default {
           );
           break;
         case OBJECT_TYPE.IMAGE:
+        case OBJECT_TYPE.VIDEO:
           scale = calcScaleElement(
             width,
             currentWidthInch,
@@ -1072,6 +1085,18 @@ export default {
           this.changeImageProperties(prop);
           break;
         }
+
+        case OBJECT_TYPE.VIDEO: {
+          const prop = mappingElementProperties(
+            currentWidthInch,
+            currentHeightInch,
+            currentXInch,
+            currentYInch,
+            DEFAULT_IMAGE.MIN_SIZE
+          );
+          this.changeVideoProperties(prop);
+          break;
+        }
         default:
           return;
       }
@@ -1133,6 +1158,9 @@ export default {
           break;
         case OBJECT_TYPE.IMAGE:
           this.changeImageProperties(prop);
+          break;
+        case OBJECT_TYPE.VIDEO:
+          this.changeVideoProperties(prop);
           break;
         default:
           return;
@@ -1358,6 +1386,14 @@ export default {
      */
     changeImageProperties(prop) {
       this.changeElementProperties(prop, OBJECT_TYPE.IMAGE);
+    },
+    /**
+     * Event fire when user change any property of selected video
+     *
+     * @param {Object}  prop  new prop
+     */
+    changeVideoProperties(prop) {
+      this.changeElementProperties(prop, OBJECT_TYPE.VIDEO);
     },
     /**
      * Event fire when user click on Clip art button on Toolbar to add new clip art on canvas
@@ -1844,6 +1880,10 @@ export default {
         return this.updateImageElementProp(element, prop);
       }
 
+      if (objectType === OBJECT_TYPE.VIDEO) {
+        return this.updateVideoElementProp(element, prop);
+      }
+
       updateElement(element, prop, window.digitalCanvas);
 
       return prop;
@@ -1885,6 +1925,26 @@ export default {
      * @returns {Object}          property of element after changed
      */
     updateImageElementProp(element, prop) {
+      const { border } = prop;
+
+      if (!isEmpty(border)) {
+        applyBorderToImageObject(element, border);
+      }
+
+      updateElement(element, prop, window.digitalCanvas);
+
+      return prop;
+    },
+
+    /**
+     * Change fabric properties of current video element
+     *
+     * @param   {Object}  element selected element
+     * @param   {Object}  prop    new prop
+     *
+     * @returns {Object}          property of element after changed
+     */
+    updateVideoElementProp(element, prop) {
       const { border } = prop;
 
       if (!isEmpty(border)) {
@@ -1963,6 +2023,19 @@ export default {
       this.stopAddingInstruction();
 
       this.awaitingAdd = '';
+    },
+
+    /**
+     * Handle drop to canvas
+     * @param {*} event - Event drop
+     */
+    handleDrop(event) {
+      const canvas = this.digitalCanvas;
+      this.$emit('drop', {
+        event,
+        canvas,
+        addImageBox: this.addImageBox
+      });
     }
   }
 };
