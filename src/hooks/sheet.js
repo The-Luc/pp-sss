@@ -14,6 +14,7 @@ import {
 
 export const useSheet = () => {
   const { value: isDigital } = useAppCommon().isDigitalEdition;
+
   const GETTERS = isDigital ? DIGITAL_GETTERS : PRINT_GETTERS;
 
   const { sheetLayout, currentSheet, sheetMedia } = useGetters({
@@ -45,6 +46,7 @@ const useMutationEditionSheet = (isDigital = false) => {
 
 export const useActionsEditionSheet = () => {
   const { value: isDigital } = useAppCommon().isDigitalEdition;
+
   const ACTIONS = isDigital ? DIGITAL_ACTIONS : PRINT_ACTIONS;
 
   const { updateSheetMedia, deleteSheetMedia } = useActions({
