@@ -5,7 +5,7 @@ import StyleContent from '@/components/General';
 import ArrangeContent from '@/components/Arrange';
 
 import { useElementProperties } from '@/hooks';
-import { DEFAULT_IMAGE, EVENT_TYPE } from '@/common/constants';
+import { DEFAULT_VIDEO, EVENT_TYPE } from '@/common/constants';
 import { computedObjectSize } from '@/common/utils';
 
 export default {
@@ -37,10 +37,10 @@ export default {
       };
     },
     minPosition() {
-      return DEFAULT_IMAGE.MIN_POSITION;
+      return DEFAULT_VIDEO.MIN_POSITION;
     },
     maxPosition() {
-      return DEFAULT_IMAGE.MAX_POSITION;
+      return DEFAULT_VIDEO.MAX_POSITION;
     },
     sizeWidth() {
       const size = this.getProperty('size');
@@ -56,10 +56,10 @@ export default {
       return this.getProperty('isConstrain');
     },
     minSize() {
-      return DEFAULT_IMAGE.MIN_SIZE;
+      return DEFAULT_VIDEO.MIN_SIZE;
     },
     maxSize() {
-      return DEFAULT_IMAGE.MAX_SIZE;
+      return DEFAULT_VIDEO.MAX_SIZE;
     },
     opacityValue() {
       const res = this.getProperty('opacity');
@@ -96,8 +96,8 @@ export default {
         const size = computedObjectSize(
           object.size,
           { width: this.sizeWidth, height: this.sizeHeight },
-          DEFAULT_IMAGE.MIN_SIZE,
-          DEFAULT_IMAGE.MAX_SIZE,
+          DEFAULT_VIDEO.MIN_SIZE,
+          DEFAULT_VIDEO.MAX_SIZE,
           this.isConstrain
         );
         object.size = size;

@@ -1881,11 +1881,12 @@ export default {
         return this.updateTextElementProp(element, prop);
       }
 
-      if (
-        objectType === OBJECT_TYPE.IMAGE ||
-        objectType === OBJECT_TYPE.VIDEO
-      ) {
+      if (objectType === OBJECT_TYPE.IMAGE) {
         return this.updateImageElementProp(element, prop);
+      }
+
+      if (objectType === OBJECT_TYPE.VIDEO) {
+        return this.updateVideoElementProp(element, prop);
       }
 
       updateElement(element, prop, window.digitalCanvas);
@@ -1929,6 +1930,26 @@ export default {
      * @returns {Object}          property of element after changed
      */
     updateImageElementProp(element, prop) {
+      const { border } = prop;
+
+      if (!isEmpty(border)) {
+        applyBorderToImageObject(element, border);
+      }
+
+      updateElement(element, prop, window.digitalCanvas);
+
+      return prop;
+    },
+
+    /**
+     * Change fabric properties of current video element
+     *
+     * @param   {Object}  element selected element
+     * @param   {Object}  prop    new prop
+     *
+     * @returns {Object}          property of element after changed
+     */
+    updateVideoElementProp(element, prop) {
       const { border } = prop;
 
       if (!isEmpty(border)) {
