@@ -534,7 +534,8 @@ export default {
         [CANVAS_EVENT_TYPE.OBJECT_SCALED]: this.onObjectScaled,
         [CANVAS_EVENT_TYPE.OBJECT_MOVED]: this.onObjectMoved,
         [CANVAS_EVENT_TYPE.MOUSE_DOWN]: this.onMouseDown,
-        [CANVAS_EVENT_TYPE.TEXT_CHANGED]: this.onTextChanged
+        [CANVAS_EVENT_TYPE.TEXT_CHANGED]: this.onTextChanged,
+        [CANVAS_EVENT_TYPE.DROP]: this.handleDrop
       };
       this.digitalCanvas?.on(events);
     },
@@ -2019,6 +2020,19 @@ export default {
       this.stopAddingInstruction();
 
       this.awaitingAdd = '';
+    },
+
+    /**
+     * Handle drop to canvas
+     * @param {*} event - Event drop
+     */
+    handleDrop(event) {
+      const canvas = this.digitalCanvas;
+      this.$emit('drop', {
+        event,
+        canvas,
+        addImageBox: this.addImageBox
+      });
     }
   }
 };

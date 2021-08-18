@@ -42,7 +42,7 @@ const photo3 = new PictureAssetEntity({
   originalWidth: 1600
 });
 
-const video = {
+export const video = {
   id: uniqueId(),
   mediaFileName: 'sample.mp4',
   thumbUrl: SAMPLE_THUMBNAIL,

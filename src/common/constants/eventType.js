@@ -29,7 +29,8 @@ export const CANVAS_EVENT_TYPE = {
   OBJECT_SCALED: 'object:scaled',
   OBJECT_MOVED: 'object:moved',
   TEXT_CHANGED: 'text:changed',
-  MOUSE_DOWN: 'mouse:down'
+  MOUSE_DOWN: 'mouse:down',
+  DROP: 'drop'
 };
 
 export const WINDOW_EVENT_TYPE = {
