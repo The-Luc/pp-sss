@@ -606,6 +606,9 @@ export default {
       window.printCanvas.setHeight(canvasSize.height);
 
       window.printCanvas.setZoom(currentZoom);
+
+      // update thumbnail
+      this.getThumbnailUrl();
     },
 
     /**

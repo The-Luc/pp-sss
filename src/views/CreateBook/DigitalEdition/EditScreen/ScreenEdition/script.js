@@ -346,6 +346,9 @@ export default {
       window.digitalCanvas.setHeight(canvasSize.height);
 
       window.digitalCanvas.setZoom(zoom);
+
+      // update frame thumbnail
+      this.getThumbnailUrl();
     },
 
     /**
