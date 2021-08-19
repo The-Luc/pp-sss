@@ -272,7 +272,7 @@ export default {
 
       const layout = cloneDeep(layoutData);
 
-      layout.objects = entitiesToObjects(layout.objects)
+      layout.objects = entitiesToObjects(layout.objects);
 
       // change objects coords if user at FRONT_COVER or BACK_COVER
       if (this.isHalfSheet) {
