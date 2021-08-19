@@ -437,9 +437,6 @@ const mockClipArts = [
   }
 ];
 
-const mappedClipArts = mockClipArts.map(c => ({
-  ...ClipArtElement,
-  ...c
-}));
+const mappedClipArts = mockClipArts.map(c => new ClipArtElement(c));
 
 export default mappedClipArts;

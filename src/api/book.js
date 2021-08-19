@@ -271,7 +271,7 @@ export const getBookDigitalInfo = async bookId => {
     });
   });
 
-  const { pageInfo, themeId } = book.printData;
+  const { pageInfo, themeId } = book.digitalData;
 
   return Promise.resolve({
     ...new BookDigitalInfo({ ...book, pageInfo, themeId }),

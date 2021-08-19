@@ -132,21 +132,34 @@ const renderFillImage = function(ctx) {
  * @param {2D context Object} ctx the object enable to modify context canvas
  */
 const renderVideoThumbnail = function(ctx) {
+  const elementToDraw = this.thumbnail;
+
+  const cropX = Math.max(this.cropX, 0);
+  const cropY = Math.max(this.cropY, 0);
+
+  const scaleX = this._filterScalingX;
+  const scaleY = this._filterScalingY;
+
+  const elWidth = elementToDraw.naturalWidth || elementToDraw.width;
+  const elHeight = elementToDraw.naturalHeight || elementToDraw.height;
+
+  const xZoom = (elWidth * this.scaleX - elWidth) / elWidth;
+  const yZoom = (elWidth * this.scaleY - elHeight) / elHeight;
+  const zoomLevel = Math.max(xZoom, yZoom) + 1;
+
   const offsetX = this.strokeWidth / this.scaleX;
   const offsetY = this.strokeWidth / this.scaleY;
   const XYRatio = this.scaleX / this.scaleY;
 
-  const sX = 0;
-  const sY = 0;
-
-  const sW = this.thumbnail.width;
-  const sH = this.thumbnail.height;
-
-  const dW = this.width - offsetX;
-  const dH = this.height - offsetY;
+  const sW = (this.width * this.scaleX) / zoomLevel;
+  const sH = (this.height * this.scaleY) / zoomLevel;
+  const sX = (elWidth - sW) / 2;
+  const sY = (elHeight - sH) / 2;
 
   const dX = -this.width / 2 + offsetX / 2;
   const dY = -this.height / 2 + (offsetX / 2) * XYRatio;
+  const dW = Math.min(this.width, elWidth / scaleX - cropX) - offsetX;
+  const dH = Math.min(this.height, elHeight / scaleY - cropY) - offsetY;
 
   ctx.drawImage(this.thumbnail, sX, sY, sW, sH, dX, dY, dW, dH);
 };
@@ -157,17 +170,17 @@ const renderVideoThumbnail = function(ctx) {
  */
 const renderVideoPlayIcon = function(ctx) {
   const { width, height } = this.playIcon;
-  ctx.drawImage(
-    this.playIcon,
-    0,
-    0,
-    width,
-    height,
-    -this.width / 2,
-    -this.height / 2,
-    this.width,
-    this.height
-  );
+
+  const sW = (this.width * this.scaleX) / 3;
+  const sH = (this.height * this.scaleY) / 3;
+
+  const sX = (width / 4 - sW) / 2;
+  const sY = (height / 4 - sH) / 2;
+
+  const dX = -this.width / 2;
+  const dY = -this.height / 2;
+
+  ctx.drawImage(this.playIcon, sX, sY, sW, sH, dX, dY, this.width, this.height);
 };
 
 /**
@@ -213,11 +226,6 @@ const renderFillVideo = function(ctx) {
   const dH = min(h, elHeight / scaleY - cropY) - offsetY;
 
   ctx.drawImage(elementToDraw, sX, sY, sW, sH, dX, dY, dW, dH);
-
-  if (this.showThumbnail) {
-    renderVideoThumbnail.call(this, ctx);
-    renderVideoPlayIcon.call(this, ctx);
-  }
 };
 
 /**
@@ -233,6 +241,14 @@ const renderFill = function(ctx) {
     return;
   }
   renderFillVideo.call(this, ctx);
+
+  if (this.showThumbnail) {
+    renderVideoThumbnail.call(this, ctx);
+  }
+
+  if (this.showPlayIcon) {
+    renderVideoPlayIcon.call(this, ctx);
+  }
 };
 
 /**

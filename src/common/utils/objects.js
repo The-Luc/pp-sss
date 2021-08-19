@@ -1,3 +1,14 @@
+import {
+  BackgroundElementObject,
+  ClipArtElementObject,
+  ImageElementObject,
+  ShapeElementObject,
+  TextElementObject,
+  VideoElementObject
+} from '@/common/models/element';
+
+import { OBJECT_TYPE } from '@/common/constants';
+
 /**
  * Computed ratio and return coordinate and dimension of object
  * @param {Object} objCoord - Coordinate of object include x and y
@@ -73,11 +84,56 @@ export const computedObjectSize = (
  * @param {String} prefix - the string to add before every obj's value
  * @param {String} separator - Default: "/" - the separator to add between prefix and value
  */
-export const prefixObjectValue = (obj, prefix, separator = '/') =>
-  Object.keys(obj).reduce(
+export const prefixObjectValue = (obj, prefix, separator = '/') => {
+  return Object.keys(obj).reduce(
     (arr, key) => ({
       ...arr,
       [key]: [prefix, obj[key]].join(separator)
     }),
     {}
   );
+};
+
+/**
+ * Convert entity to object
+ *
+ * @param   {Object}  entity  entity to convert
+ * @returns {Object}          object convert from entity
+ */
+export const entityToObject = entity => {
+  if (entity.type === OBJECT_TYPE.BACKGROUND) {
+    return new BackgroundElementObject(entity);
+  }
+
+  if (entity.type === OBJECT_TYPE.TEXT) {
+    return new TextElementObject(entity);
+  }
+
+  if (entity.type === OBJECT_TYPE.CLIP_ART) {
+    return new ClipArtElementObject(entity);
+  }
+
+  if (entity.type === OBJECT_TYPE.SHAPE) {
+    return new ShapeElementObject(entity);
+  }
+
+  if (entity.type === OBJECT_TYPE.IMAGE) {
+    return new ImageElementObject(entity);
+  }
+
+  if (entity.type === OBJECT_TYPE.VIDEO) {
+    return new VideoElementObject(entity);
+  }
+
+  return null;
+};
+
+/**
+ * Convert list of entity to list of object
+ *
+ * @param   {Array} entity  entities to convert
+ * @returns {Array}         objects convert from entities
+ */
+export const entitiesToObjects = entities => {
+  return entities.map(entity => entityToObject(entity)).filter(Boolean);
+};
