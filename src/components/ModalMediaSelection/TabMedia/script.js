@@ -106,11 +106,11 @@ export default {
       this.$emit('changeType', data);
     },
     /**
-     * Selected a image and emit parent component
-     * @param   {Object}  image  id of current book
+     * Selected a media and emit parent component
+     * @param   {Object}  media  id of asset
      */
-    onSelectedMedia(image) {
-      this.$emit('change', image);
+    onSelectedMedia(media) {
+      this.$emit('change', media);
     },
     /**
      * Get id of selected album

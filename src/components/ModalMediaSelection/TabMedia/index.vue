@@ -8,8 +8,7 @@
           :items="dropdownOptions"
           :selected-val="selectedType"
           @change="onChangeType"
-        >
-        </PpSelect>
+        />
       </div>
     </div>
     <div class="content">
