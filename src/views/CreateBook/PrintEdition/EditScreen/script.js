@@ -47,7 +47,11 @@ import {
 } from '@/common/utils';
 
 import { useSaveData } from './PageEdition/composables';
-import { getAvailableImages, setImageSrc } from '@/common/fabricObjects';
+import {
+  handleChangeMediaSrc,
+  getAvailableImages,
+  setImageSrc
+} from '@/common/fabricObjects';
 import { useSavingStatus } from '../../composables';
 import { useBookPrintInfo } from './composables';
 
@@ -256,7 +260,7 @@ export default {
 
       const promises = Array.from(
         { length: Math.min(images.length, objects.length) },
-        (_, index) => this.handleChangeImageSrc(objects[index], images[index])
+        (_, index) => handleChangeMediaSrc(objects[index], images[index])
       );
 
       const props = await Promise.all(promises);
@@ -266,22 +270,6 @@ export default {
 
       this.setPropOfMultipleObjects({ data: props });
     },
-
-    /**
-     *
-     * @param {Element} target current image box will apply new src
-     * @param {*} options new prop for image box
-     * @returns new properties of image box after change src
-     */
-    async handleChangeImageSrc(target, options) {
-      if (!target) return;
-
-      const prop = await setImageSrc(target, options.imageUrl);
-      prop.imageId = options.id;
-
-      return { id: target.id, prop };
-    },
-
     /**
      * Selected images and save in sheet
      * @param   {Array}  images  selected images

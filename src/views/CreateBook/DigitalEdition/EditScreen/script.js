@@ -48,7 +48,12 @@ import { useSaveData } from './composables';
 import { useSavingStatus } from '../../composables';
 import { useBookDigitalInfo } from './composables';
 
-import { setImageSrc, setVideoSrc } from '@/common/fabricObjects';
+import {
+  handleChangeMediaSrc,
+  getAvailableImages,
+  setImageSrc,
+  setVideoSrc
+} from '@/common/fabricObjects';
 
 export default {
   setup() {
@@ -64,7 +69,7 @@ export default {
     const { setInfoBar } = useInfoBar();
     const { updateSheetMedia } = useActionsEditionSheet();
     const { sheetMedia } = useSheet();
-    const { setPropertyById } = useProperties();
+    const { setPropertyById, setPropOfMultipleObjects } = useProperties();
 
     return {
       pageSelected,
@@ -82,7 +87,8 @@ export default {
       setInfoBar,
       updateSheetMedia,
       sheetMedia,
-      setPropertyById
+      setPropertyById,
+      setPropOfMultipleObjects
     };
   },
   data() {
@@ -235,8 +241,23 @@ export default {
     /**
      * Handle autoflow
      */
-    handleAutoflow() {
-      console.log('handleAutoflow');
+    async handleAutoflow() {
+      activeCanvas.discardActiveObject();
+
+      const objects = getAvailableImages();
+      const media = this.sheetMedia || [];
+
+      const promises = Array.from(
+        { length: Math.min(media.length, objects.length) },
+        (_, index) => handleChangeMediaSrc(objects[index], media[index])
+      );
+
+      const props = await Promise.all(promises);
+
+      activeCanvas.renderAll();
+      this.$refs.canvasEditor.getThumbnailUrl();
+
+      this.setPropOfMultipleObjects({ data: props });
     },
     /**
      * Use to open modal media
