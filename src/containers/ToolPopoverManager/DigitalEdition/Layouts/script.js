@@ -15,7 +15,8 @@ import {
   getLayoutOptSelectedById,
   resetObjects,
   activeCanvas,
-  isEmpty
+  isEmpty,
+  entitiesToObjects
 } from '@/common/utils';
 import {
   usePopoverCreationTool,
@@ -324,6 +325,8 @@ export default {
       if (isEmpty(this.layouts)) return;
 
       const layout = cloneDeep(layoutData);
+
+      layout.frames.forEach(f => (f.objects = entitiesToObjects(f.objects)));
 
       if (layout.type === LAYOUT_TYPES.SUPPLEMENTAL_LAYOUTS.value) {
         // handle case: user add new suppblemental frame

@@ -46,8 +46,7 @@ export const BACKGROUND_CATEGORIES = CATEGORIES.map(c => ({
 }));
 
 export const BACKGROUNDS = [
-  {
-    ...BackgroundElement,
+  new BackgroundElement({
     id: 0,
     categoryId: 1,
     backgroundType: BACKGROUND_TYPE.THEME.id,
@@ -55,9 +54,8 @@ export const BACKGROUNDS = [
     name: 'Comic Too 1',
     thumbnail: THEME_1,
     imageUrl: THEME_1
-  },
-  {
-    ...BackgroundElement,
+  }),
+  new BackgroundElement({
     id: 1,
     categoryId: 1,
     backgroundType: BACKGROUND_TYPE.THEME.id,
@@ -65,9 +63,8 @@ export const BACKGROUNDS = [
     name: 'Comic Too 2',
     thumbnail: THEME_2,
     imageUrl: THEME_2
-  },
-  {
-    ...BackgroundElement,
+  }),
+  new BackgroundElement({
     id: 2,
     categoryId: 1,
     backgroundType: BACKGROUND_TYPE.THEME.id,
@@ -75,9 +72,8 @@ export const BACKGROUNDS = [
     name: 'Comic Too 3',
     thumbnail: THEME_3,
     imageUrl: THEME_3
-  },
-  {
-    ...BackgroundElement,
+  }),
+  new BackgroundElement({
     id: 3,
     categoryId: 1,
     backgroundType: BACKGROUND_TYPE.THEME.id,
@@ -85,9 +81,8 @@ export const BACKGROUNDS = [
     name: 'Comic Too 4',
     thumbnail: THEME_4,
     imageUrl: THEME_4
-  },
-  {
-    ...BackgroundElement,
+  }),
+  new BackgroundElement({
     id: 4,
     categoryId: 1,
     backgroundType: BACKGROUND_TYPE.THEME.id,
@@ -95,9 +90,8 @@ export const BACKGROUNDS = [
     name: 'Comic Too 5',
     thumbnail: THEME_5,
     imageUrl: THEME_5
-  },
-  {
-    ...BackgroundElement,
+  }),
+  new BackgroundElement({
     id: 5,
     categoryId: 2,
     backgroundType: BACKGROUND_TYPE.CATEGORY.id,
@@ -105,9 +99,8 @@ export const BACKGROUNDS = [
     name: 'Color 1',
     thumbnail: COLOR_1,
     imageUrl: COLOR_1
-  },
-  {
-    ...BackgroundElement,
+  }),
+  new BackgroundElement({
     id: 6,
     categoryId: 2,
     backgroundType: BACKGROUND_TYPE.CATEGORY.id,
@@ -115,9 +108,8 @@ export const BACKGROUNDS = [
     name: 'Color 2',
     thumbnail: COLOR_2,
     imageUrl: COLOR_2
-  },
-  {
-    ...BackgroundElement,
+  }),
+  new BackgroundElement({
     id: 7,
     categoryId: 2,
     backgroundType: BACKGROUND_TYPE.CATEGORY.id,
@@ -125,9 +117,8 @@ export const BACKGROUNDS = [
     name: 'Color 3',
     thumbnail: COLOR_3,
     imageUrl: COLOR_3
-  },
-  {
-    ...BackgroundElement,
+  }),
+  new BackgroundElement({
     id: 8,
     categoryId: 2,
     backgroundType: BACKGROUND_TYPE.CATEGORY.id,
@@ -135,9 +126,8 @@ export const BACKGROUNDS = [
     name: 'Color 4',
     thumbnail: COLOR_4,
     imageUrl: COLOR_4
-  },
-  {
-    ...BackgroundElement,
+  }),
+  new BackgroundElement({
     id: 9,
     categoryId: 2,
     backgroundType: BACKGROUND_TYPE.CATEGORY.id,
@@ -145,9 +135,8 @@ export const BACKGROUNDS = [
     name: 'Color 5',
     thumbnail: COLOR_5,
     imageUrl: COLOR_5
-  },
-  {
-    ...BackgroundElement,
+  }),
+  new BackgroundElement({
     id: 10,
     categoryId: 2,
     backgroundType: BACKGROUND_TYPE.CATEGORY.id,
@@ -155,9 +144,8 @@ export const BACKGROUNDS = [
     name: 'Color 6',
     thumbnail: COLOR_6,
     imageUrl: COLOR_6
-  },
-  {
-    ...BackgroundElement,
+  }),
+  new BackgroundElement({
     id: 11,
     categoryId: 2,
     backgroundType: BACKGROUND_TYPE.CATEGORY.id,
@@ -165,9 +153,8 @@ export const BACKGROUNDS = [
     name: 'Color 7',
     thumbnail: COLOR_7,
     imageUrl: COLOR_7
-  },
-  {
-    ...BackgroundElement,
+  }),
+  new BackgroundElement({
     id: 12,
     categoryId: 1,
     backgroundType: BACKGROUND_TYPE.THEME.id,
@@ -175,9 +162,8 @@ export const BACKGROUNDS = [
     name: 'Category - 6',
     thumbnail: THEME_6,
     imageUrl: THEME_6
-  },
-  {
-    ...BackgroundElement,
+  }),
+  new BackgroundElement({
     id: 13,
     categoryId: 1,
     backgroundType: BACKGROUND_TYPE.THEME.id,
@@ -185,5 +171,5 @@ export const BACKGROUNDS = [
     name: 'Category - 7',
     thumbnail: THEME_7,
     imageUrl: THEME_7
-  }
+  })
 ];

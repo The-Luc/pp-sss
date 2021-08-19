@@ -1,3 +1,6 @@
+import { OBJECT_TYPE } from '@/common/constants';
+import { activeCanvas } from '@/common/utils';
+
 export default {
   components: {},
   data() {
@@ -17,7 +20,13 @@ export default {
      * Fire when play button is clicked
      */
     onClickPlay() {
-      // handle event
+      const target = activeCanvas.getActiveObject();
+
+      if (!target || target.objectType !== OBJECT_TYPE.VIDEO) return;
+
+      if (target.isPlaying) target.pause();
+      else target.play();
+
       this.isPlaying = !this.isPlaying;
       console.log('play / pause');
     },

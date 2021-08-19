@@ -21,7 +21,8 @@ import {
   TOOL_NAME,
   ROLE,
   SAVE_STATUS,
-  SAVING_DURATION
+  SAVING_DURATION,
+  OBJECT_TYPE
 } from '@/common/constants';
 import {
   useLayoutPrompt,
@@ -35,7 +36,12 @@ import {
   useSheet,
   useProperties
 } from '@/hooks';
-import { isEmpty, isPositiveInteger, getEditionListPath } from '@/common/utils';
+import {
+  isEmpty,
+  isPositiveInteger,
+  getEditionListPath,
+  activeCanvas
+} from '@/common/utils';
 import { COPY_OBJECT_KEY } from '@/common/constants/config';
 
 import { useSaveData } from './composables';
@@ -301,13 +307,14 @@ export default {
      */
     onDrag(item) {
       this.dragItem = item;
+      activeCanvas.discardActiveObject();
     },
 
     /**
      * Handle drop photo to canvas
-     * @param {Object} target fabric object focused
+     * @param {Object} event - Event drop to canvas
      */
-    async onDrop({ event, canvas, addImageBox }) {
+    async onDrop(event) {
       if (!this.dragItem) return;
 
       const {
@@ -317,33 +324,49 @@ export default {
         originalHeight,
         offsetX,
         offsetY,
-        isMedia,
-        thumbUrl
+        mediaUrl,
+        thumbUrl,
+        type
       } = this.dragItem;
 
       const target = event.target;
-      const pointer = canvas.getPointer(event.e);
+      const pointer = activeCanvas.getPointer(event.e);
 
       this.dragItem = null;
 
-      if (!target) {
+      const isImage = target?.objectType === OBJECT_TYPE.IMAGE;
+      const isVideo = target?.objectType === OBJECT_TYPE.VIDEO;
+
+      if (!target || (!isImage && !isVideo)) {
         const x = pointer.x - offsetX * 3;
         const y = pointer.y - offsetY * 3;
 
-        addImageBox(x, y, originalWidth, originalHeight, {
-          src: imageUrl
-        });
+        this.$refs.canvasEditor.addImageBox(
+          x,
+          y,
+          originalWidth,
+          originalHeight,
+          {
+            src: mediaUrl || imageUrl,
+            type,
+            thumbUrl
+          }
+        );
 
         return;
       }
 
-      const prop = isMedia
-        ? await setVideoSrc(target, imageUrl, thumbUrl)
+      const prop = mediaUrl
+        ? await setVideoSrc(target, mediaUrl, thumbUrl)
         : await setImageSrc(target, imageUrl);
       prop.imageId = imageId;
+
       this.setPropertyById({ id: target.id, prop });
       this.$refs.canvasEditor.getThumbnailUrl();
-      canvas.renderAll();
+
+      activeCanvas.setActiveObject(target);
+
+      activeCanvas.renderAll();
     }
   }
 };

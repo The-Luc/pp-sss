@@ -168,7 +168,7 @@ export const setImageSrc = async (imageObject, imageSrc) => {
         thumbnail: null,
         playIcon: null,
         showThumbnail: false,
-        type: OBJECT_TYPE.IMAGE
+        objectType: OBJECT_TYPE.IMAGE
       };
 
       img.set(newProp);
@@ -178,7 +178,12 @@ export const setImageSrc = async (imageObject, imageSrc) => {
         newProp.zoomLevel = img.zoomLevel;
       }
 
-      resolve(newProp);
+      resolve({
+        type: OBJECT_TYPE.IMAGE,
+        hasImage,
+        imageUrl: src,
+        zoomLevel: newProp.zoomLevel
+      });
     });
   });
 };
@@ -220,6 +225,8 @@ export const centercrop = imageObject => {
  * @param {*} target - Image object has applied drag trigger
  */
 export const handleDragEnter = ({ target }) => {
+  if (target.cachedStrokeData) return;
+
   const cachedStrokeData = {
     stroke: target.stroke,
     strokeWidth: target.strokeWidth
@@ -318,12 +325,17 @@ export const setVideoSrc = async (imageObject, videoSrc, thumbnailSrc) => {
   const element = await createVideoElement(videoSrc);
 
   element.addEventListener('play', () => {
-    imageObject.set({ isPlaying: true, showThumbnail: false });
+    imageObject.set({
+      isPlaying: true,
+      showThumbnail: false,
+      showPlayIcon: false,
+      dirty: true
+    });
     requestAnimFrame();
   });
 
   element.addEventListener('pause', () => {
-    imageObject.set({ isPlaying: false });
+    imageObject.set({ isPlaying: false, showPlayIcon: true, dirty: true });
     if (element.currentTime === element.duration) {
       imageObject.set({ showThumbnail: true });
     }
@@ -350,6 +362,7 @@ export const setVideoSrc = async (imageObject, videoSrc, thumbnailSrc) => {
     thumbnail,
     playIcon,
     showThumbnail: true,
+    showPlayIcon: true,
     objectType: OBJECT_TYPE.VIDEO
   };
 

@@ -18,7 +18,8 @@ import {
   isEmpty,
   insertItemsToArray,
   removeItemsFormArray,
-  isHalfSheet
+  isHalfSheet,
+  entitiesToObjects
 } from '@/common/utils';
 import {
   usePopoverCreationTool,
@@ -270,6 +271,8 @@ export default {
       if (this.layouts.length === 0) return;
 
       const layout = cloneDeep(layoutData);
+
+      layout.objects = entitiesToObjects(layout.objects)
 
       // change objects coords if user at FRONT_COVER or BACK_COVER
       if (this.isHalfSheet) {

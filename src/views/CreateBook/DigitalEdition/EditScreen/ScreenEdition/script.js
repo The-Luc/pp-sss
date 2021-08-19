@@ -7,6 +7,7 @@ import Frames from './Frames';
 import { imageBorderModifier, useDigitalOverrides } from '@/plugins/fabric';
 import {
   ARRANGE_SEND,
+  ASSET_TYPE,
   DEFAULT_CLIP_ART,
   DEFAULT_IMAGE,
   DEFAULT_SHAPE,
@@ -39,8 +40,11 @@ import {
   createBackgroundFabricObject,
   fabricToPpObject,
   getTextSizeWithPadding,
-  centercrop,
-  setImageSrc
+  setImageSrc,
+  setVideoSrc,
+  handleDragEnter,
+  handleDragLeave,
+  centercrop
 } from '@/common/fabricObjects';
 import { createImage } from '@/common/fabricObjects';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
@@ -549,7 +553,7 @@ export default {
         [CANVAS_EVENT_TYPE.OBJECT_MOVED]: this.onObjectMoved,
         [CANVAS_EVENT_TYPE.MOUSE_DOWN]: this.onMouseDown,
         [CANVAS_EVENT_TYPE.TEXT_CHANGED]: this.onTextChanged,
-        [CANVAS_EVENT_TYPE.DROP]: this.handleDrop
+        [CANVAS_EVENT_TYPE.DROP]: this.$emit.bind(this, 'drop')
       };
       this.digitalCanvas?.on(events);
     },
@@ -1354,7 +1358,7 @@ export default {
     /**
      * Event fire when user click on Image button on Toolbar to add new image on canvas
      */
-    async addImageBox(x, y, width, height) {
+    async addImageBox(x, y, width, height, options) {
       const id = uniqueId();
 
       const size = new BaseSize({
@@ -1373,7 +1377,8 @@ export default {
           id,
           size,
           coord,
-          imageUrl: DEFAULT_IMAGE.IMAGE_URL
+          imageUrl: DEFAULT_IMAGE.IMAGE_URL,
+          hasImage: !!options?.src
         })
       };
 
@@ -1381,13 +1386,25 @@ export default {
         scaling: this.handleScaling,
         scaled: this.handleScaled,
         rotated: this.handleRotated,
-        moved: this.handleMoved
+        moved: this.handleMoved,
+        dragenter: handleDragEnter,
+        dragleave: handleDragLeave,
+        drop: handleDragLeave
       };
 
       const image = await createImage(newImage.newObject);
 
       if (!isEmpty(image.size)) {
         newImage.newObject.update({ size: image.size });
+      }
+
+      if (options?.src) {
+        const newProp =
+          options.type === ASSET_TYPE.VIDEO
+            ? await setVideoSrc(image.object, options.src, options.thumbUrl)
+            : await setImageSrc(image.object, options.src);
+
+        newImage.newObject.update(newProp);
       }
 
       this.addNewObject(newImage);
@@ -1470,7 +1487,7 @@ export default {
 
         s.object.update({ coord, size });
 
-        this.addObjectToStore({
+        this.addNewObject({
           id: s.id,
           newObject: s.object
         });
@@ -1729,7 +1746,7 @@ export default {
      * @param {Object} newData PpData of the of a element {id, size, coord,...}
      * @returns {Object} a fabric object
      */
-    createElementFromPpData(newData) {
+    async createElementFromPpData(newData) {
       if (newData.type !== OBJECT_TYPE.BACKGROUND) {
         this.addNewObject({
           id: newData.id,
@@ -1739,6 +1756,10 @@ export default {
 
       if (newData.type === OBJECT_TYPE.IMAGE) {
         return this.createImageFromPpData(newData);
+      }
+
+      if (newData.type === OBJECT_TYPE.VIDEO) {
+        return this.createVideoFromPpData(newData);
       }
 
       if (
@@ -1757,7 +1778,10 @@ export default {
         scaling: this.handleScaling,
         scaled: this.handleScaled,
         rotated: this.handleRotated,
-        moved: this.handleMoved
+        moved: this.handleMoved,
+        dragenter: handleDragEnter,
+        dragleave: handleDragLeave,
+        drop: handleDragLeave
       };
 
       const imageObject = await createImage(imageProperties);
@@ -1829,6 +1853,10 @@ export default {
           return this.createImageFromPpData(objectData);
         }
 
+        if (objectData.type === OBJECT_TYPE.VIDEO) {
+          return this.createVideoFromPpData(objectData);
+        }
+
         if (objectData.type === OBJECT_TYPE.BACKGROUND) {
           return this.createBackgroundFromPpData(objectData);
         }
@@ -1837,6 +1865,18 @@ export default {
       const listFabricObjects = await Promise.all(allObjectPromises);
       this.digitalCanvas.add(...listFabricObjects);
       this.digitalCanvas.requestRenderAll();
+    },
+
+    /**
+     * Handle create video object from pp data;
+     * @param {Object} objectData - Video prop to create
+     * @returns
+     */
+    async createVideoFromPpData(objectData) {
+      const { imageUrl, thumbnailUrl } = objectData;
+      const video = await this.createImageFromPpData(objectData);
+      await setVideoSrc(video, imageUrl, thumbnailUrl);
+      return video;
     },
 
     /**
