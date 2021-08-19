@@ -60,9 +60,7 @@ import {
   handleDragEnter,
   handleDragLeave,
   fabricToPpObject,
-  getTextSizeWithPadding,
-  handleClickVideo,
-  setVideoSrc
+  getTextSizeWithPadding
 } from '@/common/fabricObjects';
 
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
@@ -510,12 +508,6 @@ export default {
         return this.createImageFromPpData(newData);
       }
 
-      if (newData.type === OBJECT_TYPE.VIDEO) {
-        const video = this.createImageFromPpData(newData);
-        setVideoSrc(video, newData.imageUrl, newData.thumbnailUrl);
-        return video;
-      }
-
       if (
         newData.type === OBJECT_TYPE.CLIP_ART ||
         newData.type === OBJECT_TYPE.SHAPE
@@ -696,8 +688,6 @@ export default {
 
             return;
           }
-
-          handleClickVideo(e.target);
         },
         'text:changed': ({ target }) => {
           const group = target?.group;

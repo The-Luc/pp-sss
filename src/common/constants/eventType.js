@@ -18,7 +18,14 @@ export const EVENT_TYPE = {
   SAVE_LAYOUT: 'saveLayout',
   DELETE_OBJECTS: 'deleteObjects',
   REMOVE_IMAGE: 'removeImage',
-  CENTERCROP: 'centercrop'
+  CENTERCROP: 'centercrop',
+  VIDEO_TOGGLE_PLAY: 'videoTogglePlay',
+  VIDEO_REWIND: 'videoRewind',
+  VIDEO_KEEP_REWIND: 'videoKeepRewind',
+  VIDEO_STOP_KEEP_REWIND: 'videoStopKeepRewind',
+  VIDEO_FORWARD: 'videoForward',
+  VIDEO_KEEP_FORWARD: 'videoKeepForward',
+  VIDEO_STOP_KEEP_FORWARD: 'videoStopKeepForward'
 };
 
 export const CANVAS_EVENT_TYPE = {

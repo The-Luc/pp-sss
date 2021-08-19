@@ -56,7 +56,8 @@ import {
   useFrame,
   useFrameSwitching,
   useModal,
-  useMutationDigitalSheet
+  useMutationDigitalSheet,
+  useElementProperties
 } from '@/hooks';
 
 import {
@@ -81,7 +82,7 @@ import {
   isDeleteKey
 } from '@/common/utils';
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
-import { GETTERS } from '@/store/modules/book/const';
+
 import {
   ACTIONS as DIGITAL_ACTIONS,
   GETTERS as DIGITAL_GETTERS,
@@ -139,6 +140,7 @@ export default {
     const { updateSavingStatus, savingStatus } = useSavingStatus();
     const { updateObjectsToStore } = useObject();
     const { updateSheetThumbnail } = useMutationDigitalSheet();
+    const { getProperty } = useElementProperties();
 
     return {
       frames,
@@ -159,7 +161,8 @@ export default {
       savingStatus,
       updateObjectsToStore,
       updateSheetThumbnail,
-      firstFrameThumbnail
+      firstFrameThumbnail,
+      getProperty
     };
   },
   data() {
@@ -182,7 +185,6 @@ export default {
   },
   computed: {
     ...mapGetters({
-      book: GETTERS.BOOK_DETAIL,
       pageSelected: DIGITAL_GETTERS.CURRENT_SHEET,
       sheetLayout: DIGITAL_GETTERS.SHEET_LAYOUT,
       isOpenMenuProperties: APP_GETTERS.IS_OPEN_MENU_PROPERTIES,
@@ -476,6 +478,10 @@ export default {
         {
           name: EVENT_TYPE.CHANGE_VIDEO_PROPERTIES,
           handler: this.changeVideoProperties
+        },
+        {
+          name: EVENT_TYPE.VIDEO_TOGGLE_PLAY,
+          handler: this.videoTogglePlay
         }
       ];
 
@@ -1405,7 +1411,12 @@ export default {
       if (options?.src) {
         const newProp =
           options.type === ASSET_TYPE.VIDEO
-            ? await setVideoSrc(image.object, options.src, options.thumbUrl)
+            ? await setVideoSrc(
+                image.object,
+                options.src,
+                options.thumbUrl,
+                this.videoStop
+              )
             : await setImageSrc(image.object, options.src);
 
         newMedia.newObject.update(newProp);
@@ -1882,7 +1893,7 @@ export default {
     async createVideoFromPpData(objectData) {
       const { imageUrl, thumbnailUrl } = objectData;
       const video = await this.createImageFromPpData(objectData);
-      await setVideoSrc(video, imageUrl, thumbnailUrl);
+      await setVideoSrc(video, imageUrl, thumbnailUrl, this.videoStop);
       return video;
     },
 
@@ -2125,6 +2136,34 @@ export default {
       activeObject.canvas.renderAll();
 
       this.setObjectPropById({ id: activeObject.id, prop });
+    },
+    videoTogglePlay() {
+      const video = this.digitalCanvas.getActiveObject();
+
+      if (isEmpty(video)) return;
+
+      const isPlayingProp = video.get('isPlaying');
+
+      const isPlaying = isEmpty(isPlayingProp) ? false : isPlayingProp;
+
+      isPlaying ? video.pause() : video.play();
+
+      const prop = cloneDeep(this.currentObjects?.[video.id]);
+
+      prop.isPlaying = !isPlaying;
+
+      this.setCurrentObject(prop);
+    },
+    videoStop(id) {
+      const currentObjectId = this.getProperty('id');
+
+      if (currentObjectId !== id) return;
+
+      const prop = cloneDeep(this.currentObjects?.[id]);
+
+      prop.isPlaying = false;
+
+      this.setCurrentObject(prop);
     }
   }
 };

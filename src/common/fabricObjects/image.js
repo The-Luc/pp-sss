@@ -315,8 +315,14 @@ export const requestAnimFrame = () => {
  * @param {Element} imageObject selected object to set video element
  * @param {String} videoSrc video url will be set to object
  * @param {String} thumbnailSrc video's thumbnail url will be set to object
+ * @param {Function} videoStopCallback method call when video stop
  */
-export const setVideoSrc = async (imageObject, videoSrc, thumbnailSrc) => {
+export const setVideoSrc = async (
+  imageObject,
+  videoSrc,
+  thumbnailSrc,
+  videoStopCallback
+) => {
   const { width, height, scaleX, scaleY } = imageObject;
 
   const element = await createVideoElement(videoSrc);
@@ -333,9 +339,13 @@ export const setVideoSrc = async (imageObject, videoSrc, thumbnailSrc) => {
 
   element.addEventListener('pause', () => {
     imageObject.set({ isPlaying: false, showPlayIcon: true, dirty: true });
+
     if (element.currentTime === element.duration) {
+      videoStopCallback(imageObject.id);
+
       imageObject.set({ showThumbnail: true });
     }
+
     requestAnimFrame();
   });
 
@@ -379,30 +389,23 @@ export const setVideoSrc = async (imageObject, videoSrc, thumbnailSrc) => {
 };
 
 /**
- * Handle click to play/pause video
- * @param {Object} target fabric object is focused
- */
-export const handleClickVideo = target => {
-  if (target?.objectType !== OBJECT_TYPE.VIDEO) return;
-  if (target.isPlaying) {
-    target.pause();
-    return;
-  }
-  target.play();
-};
-/**
  * Handle change media src in image box
  * @param {Element} target current image box will apply new src
- * @param {*} options new prop for image box
+ * @param {Object} options new prop for image box
+ * @param {Function} videoStopCallback method call when video stop
  * @returns new properties of image box after change src
  */
-export const handleChangeMediaSrc = async (target, options) => {
+export const handleChangeMediaSrc = async (
+  target,
+  options,
+  videoStopCallback = null
+) => {
   if (!target) return;
 
   const { imageUrl, id, mediaUrl, thumbUrl } = options;
 
   const prop = mediaUrl
-    ? await setVideoSrc(target, mediaUrl, thumbUrl)
+    ? await setVideoSrc(target, mediaUrl, thumbUrl, videoStopCallback)
     : await setImageSrc(target, imageUrl);
 
   prop.imageId = id;
