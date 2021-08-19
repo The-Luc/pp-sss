@@ -726,10 +726,7 @@ export default {
             this.handleMultiMoved(e);
           }
         },
-        drop: event => {
-          const canvas = window.printCanvas;
-          this.$emit('drop', { event, canvas, addImageBox: this.addImageBox });
-        }
+        drop: this.$emit.bind(this, 'drop')
       });
 
       document.body.addEventListener('keyup', this.handleDeleteKey);

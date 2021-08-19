@@ -13,7 +13,6 @@ import {
   ROLE,
   SAVE_STATUS,
   SAVING_DURATION,
-  THUMBNAIL_IMAGE_CONFIG,
   TOOL_NAME
 } from '@/common/constants';
 import ToolBar from './ToolBar';
@@ -50,7 +49,6 @@ import {
 import { useSaveData } from './PageEdition/composables';
 import { getAvailableImages, setImageSrc } from '@/common/fabricObjects';
 import { useSavingStatus } from '../../composables';
-import { debounce } from 'lodash';
 import { useBookPrintInfo } from './composables';
 
 export default {
@@ -248,22 +246,6 @@ export default {
     },
 
     /**
-     * call this function to update the active thumbnail
-     */
-    getThumbnailUrl: debounce(function() {
-      const thumbnailUrl = window.printCanvas.toDataURL({
-        quality: THUMBNAIL_IMAGE_CONFIG.QUALITY,
-        format: THUMBNAIL_IMAGE_CONFIG.FORMAT,
-        multiplier: THUMBNAIL_IMAGE_CONFIG.MULTIPLIER
-      });
-
-      this.setThumbnail({
-        sheetId: this.pageSelected?.id,
-        thumbnailUrl
-      });
-    }, 250),
-
-    /**
      * Handle autoflow
      */
     async handleAutoflow() {
@@ -280,7 +262,7 @@ export default {
       const props = await Promise.all(promises);
 
       activeCanvas.renderAll();
-      this.getThumbnailUrl();
+      this.$refs.canvasEditor.getThumbnailUrl();
 
       this.setPropOfMultipleObjects({ data: props });
     },
@@ -329,13 +311,14 @@ export default {
      */
     onDrag(item) {
       this.dragItem = item;
+      activeCanvas.discardActiveObject();
     },
 
     /**
      * Handle drop photo to canvas
-     * @param {Object} target fabric object focused
+     * @param {Object} event fabric object focused
      */
-    async onDrop({ event, canvas, addImageBox }) {
+    async onDrop(event) {
       if (!this.dragItem) return;
 
       const {
@@ -348,7 +331,7 @@ export default {
       } = this.dragItem;
 
       const target = event.target;
-      const pointer = canvas.getPointer(event.e);
+      const pointer = activeCanvas.getPointer(event.e);
 
       this.dragItem = null;
 
@@ -359,9 +342,15 @@ export default {
         const x = pointer.x - offsetX * 3;
         const y = pointer.y - offsetY * 3;
 
-        addImageBox(x, y, originalWidth, originalHeight, {
-          src: imageUrl
-        });
+        this.$refs.canvasEditor.addImageBox(
+          x,
+          y,
+          originalWidth,
+          originalHeight,
+          {
+            src: imageUrl
+          }
+        );
 
         return;
       }
@@ -369,8 +358,10 @@ export default {
       const prop = await setImageSrc(target, imageUrl);
       prop.imageId = imageId;
       this.setPropertyById({ id: target.id, prop });
-      this.getThumbnailUrl();
-      canvas.renderAll();
+      this.$refs.canvasEditor.getThumbnailUrl();
+
+      activeCanvas.setActiveObject(target);
+      activeCanvas.renderAll();
     },
     /**
      * Undo user action
