@@ -1,0 +1,8 @@
+.box-property-container {
+  max-height: 62vh;
+  overflow-y: scroll;
+
+  @media screen and (min-width: 1500px) {
+    max-height: 70vh;
+  }
+}
