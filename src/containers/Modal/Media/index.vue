@@ -40,12 +40,12 @@
           <div>Photos</div>
         </v-tab>
         <v-tab-item value="photos">
-          <TabPhotos
+          <TabMedia
             :key="currentTab"
-            :selected-images="selectedMedia"
+            :selected-media="selectedMedia"
             :selected-type="selectedType"
             :albums="albums"
-            :photo-dropdowns="photoDropdowns"
+            :media-dropdowns="mediaDropdowns"
             @changeType="onChangeType"
             @change="onSelectedMedia"
           />
@@ -56,7 +56,16 @@
           <div>Videos</div>
         </v-tab>
         <v-tab-item value="videos">
-          videos
+          <TabMedia
+            :key="currentTab"
+            :selected-media="selectedMedia"
+            :selected-type="selectedType"
+            :albums="albums"
+            :media-dropdowns="mediaDropdowns"
+            :is-video="true"
+            @changeType="onChangeType"
+            @change="onSelectedMedia"
+          />
         </v-tab-item>
 
         <v-tab v-show="isModalMedia" href="#compositions">
