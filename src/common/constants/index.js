@@ -43,4 +43,4 @@ export * from './assetType';
 export * from './saving';
 export * from './mediaTypes';
 export * from './uploadingProcessStatus';
-export * from './photo';
+export * from './media';

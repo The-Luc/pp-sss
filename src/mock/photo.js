@@ -120,8 +120,8 @@ function randomAssets() {
   const assets = [];
   const quantity = getRandomInt(5) + 4;
   for (let i = 0; i < quantity; i++) {
-    const photo = { ...photos[getRandomInt(20)], id: uniqueId() };
-    assets.push(photo);
+    const asset = { ...media[getRandomInt(20)], id: uniqueId() };
+    assets.push(asset);
   }
   return assets;
 }

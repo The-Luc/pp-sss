@@ -2,11 +2,14 @@
   <div class="add-new-photos-container">
     <div class="header">
       <div class="dropdown">
-        <SelectMediaType
+        <PpSelect
+          :id="idOfComponentSelect"
+          :container="`#${idOfComponentSelect}`"
           :items="dropdownOptions"
           :selected-val="selectedType"
           @change="onChangeType"
-        />
+        >
+        </PpSelect>
       </div>
     </div>
     <div class="content">
@@ -17,8 +20,8 @@
           :name="album.name"
           :display-date="album.displayDate"
           :assets="album.assets"
-          :selected-images="selectedImages"
-          @change="onSelectedImage"
+          :selected-images="selectedMedia"
+          @change="onSelectedMedia"
         />
       </template>
 
@@ -26,7 +29,7 @@
         <AlbumItem :empty-category="currentCategory" />
       </template>
     </div>
-    <PopupSelected v-if="isShowPopupSelected" :amount="selectedImages.length" />
+    <PopupSelected v-if="isShowPopupSelected" :amount="selectedMedia.length" />
   </div>
 </template>
 

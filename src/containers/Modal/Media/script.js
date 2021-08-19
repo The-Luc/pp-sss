@@ -1,7 +1,7 @@
 import Footer from '@/components/ModalMediaSelection/Footer';
 import TabUploadMedia from '@/components/ModalMediaSelection/TabUploadMedia';
 import Smartbox from '@/components/ModalMediaSelection/Smartbox';
-import TabPhotos from '@/components/ModalMediaSelection/TabPhotos';
+import TabMedia from '@/components/ModalMediaSelection/TabMedia';
 import TabSearchPhotos from '@/components/ModalMediaSelection/TabSearch';
 
 import {
@@ -19,15 +19,16 @@ import {
   getUniqueKeywords
 } from '@/common/utils';
 import {
+  VIDEO_CATEGORIES,
   PHOTO_CATEGORIES,
-  ALL_PHOTO_SUBCATEGORY_ID,
+  ALL_MEDIA_SUBCATEGORY_ID,
   IMAGE_TYPES
 } from '@/common/constants';
 
 export default {
   components: {
     Footer,
-    TabPhotos,
+    TabMedia,
     Smartbox,
     TabUploadMedia,
     TabSearchPhotos
@@ -43,7 +44,7 @@ export default {
       getSmartbox,
       getSearch
     } = usePhotos();
-    const { getAlbums, getPhotoDropdowns } = usePhoto();
+    const { getAlbums, getMediaDropdowns } = usePhoto();
 
     return {
       isPhotoVisited,
@@ -55,7 +56,7 @@ export default {
       getSmartbox,
       getSearch,
       getAlbums,
-      getPhotoDropdowns
+      getMediaDropdowns
     };
   },
   data() {
@@ -67,10 +68,10 @@ export default {
       photos: [],
       selectedType: {
         value: PHOTO_CATEGORIES.COMMUNITIES.value,
-        sub: { value: ALL_PHOTO_SUBCATEGORY_ID }
+        sub: { value: ALL_MEDIA_SUBCATEGORY_ID }
       },
       albums: [],
-      photoDropdowns: {},
+      mediaDropdowns: {},
       mediaTypes: IMAGE_TYPES
     };
   },
@@ -155,13 +156,16 @@ export default {
         this.photos = await this.getSmartbox(keywords, this.isModalMedia);
       }
 
-      if (this.currentTab !== 'photos') return;
+      if (this.currentTab !== 'photos' && this.currentTab !== 'videos') return;
 
       this.albums = await this.getAlbums();
-      this.photoDropdowns = await this.getPhotoDropdowns();
+      this.mediaDropdowns = await this.getMediaDropdowns();
       this.selectedType = {
-        value: PHOTO_CATEGORIES.COMMUNITIES.value,
-        sub: { value: ALL_PHOTO_SUBCATEGORY_ID }
+        value:
+          this.currentTab === 'photos'
+            ? PHOTO_CATEGORIES.COMMUNITIES.value
+            : VIDEO_CATEGORIES.COMMUNITIES.value,
+        sub: { value: ALL_MEDIA_SUBCATEGORY_ID }
       };
     },
     /**

@@ -4,7 +4,7 @@ import {
   createNewAlbum,
   getAlbums,
   getMyAlbums,
-  getPhotoDropdowns
+  getMediaDropdowns
 } from '@/api/photo';
 
 export const usePhoto = () => {
@@ -14,6 +14,6 @@ export const usePhoto = () => {
     createNewAlbum,
     getAlbums,
     getMyAlbums,
-    getPhotoDropdowns
+    getMediaDropdowns
   };
 };
