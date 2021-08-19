@@ -352,7 +352,10 @@ export default {
 
       this.dragItem = null;
 
-      if (!target) {
+      const isImage = target?.objectType === OBJECT_TYPE.IMAGE;
+      const isVideo = target?.objectType === OBJECT_TYPE.VIDEO;
+
+      if (!target || (!isImage && !isVideo)) {
         const x = pointer.x - offsetX * 3;
         const y = pointer.y - offsetY * 3;
 

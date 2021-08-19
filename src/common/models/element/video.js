@@ -1,23 +1,8 @@
 import { DEFAULT_IMAGE, OBJECT_TYPE } from '@/common/constants';
-import { BaseObject } from '../base';
 import { BaseMoveableElementObject } from './base';
+import { ImageCrop } from './image';
 
-export class ImageCrop extends BaseObject {
-  cropTop = 0;
-  cropBottom = 0;
-  cropLeft = 0;
-  cropRight = 0;
-
-  /**
-   * @param {ImageCrop} props
-   */
-  constructor(props) {
-    super(props);
-    this._set(props);
-  }
-}
-
-export class ImageElementObject extends BaseMoveableElementObject {
+export class VideoElementObject extends BaseMoveableElementObject {
   type = OBJECT_TYPE.VIDEO;
   styleId = DEFAULT_IMAGE.STYLE_ID;
   imageId = null;
@@ -28,7 +13,7 @@ export class ImageElementObject extends BaseMoveableElementObject {
   isConstrain = true;
 
   /**
-   * @param {ImageElementObject} props
+   * @param {VideoElementObject} props
    */
   constructor(props) {
     super(props);

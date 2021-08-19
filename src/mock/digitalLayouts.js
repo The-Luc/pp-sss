@@ -44,8 +44,7 @@ import SHAPE_1 from '@/assets/image/shapes/star.svg';
 import CLIP_ART_1 from '@/assets/image/clip-art/clip-art-13.svg';
 import CLIP_ART_2 from '@/assets/image/clip-art/clip-art-11.svg';
 
-const text1 = {
-  ...TextElement,
+const text1 = new TextElement({
   id: uniqueId(),
   size: {
     width: 3,
@@ -64,10 +63,9 @@ const text1 = {
   isItalic: true,
   isUnderline: false,
   color: '#FF0000'
-};
+});
 
-const text2 = {
-  ...TextElement,
+const text2 = new TextElement({
   id: uniqueId(),
   size: {
     width: 3,
@@ -86,7 +84,7 @@ const text2 = {
   isItalic: true,
   isUnderline: false,
   color: '#FF0000'
-};
+});
 
 const backgroundData = [
   {
@@ -116,8 +114,7 @@ const backgroundData = [
 ];
 
 const backgrounds = backgroundData.map(data => {
-  return {
-    ...BackgroundElement,
+  return new BackgroundElement({
     id: uniqueId(),
     pageType: BACKGROUND_PAGE_TYPE.FULL_PAGE.id,
     backgroundType: '',
@@ -125,11 +122,10 @@ const backgrounds = backgroundData.map(data => {
     name: 'watercolorbackground.jpg',
     thumbnail: data.thumbnail,
     imageUrl: data.imageUrl
-  };
+  });
 });
 
-const clipArt1 = {
-  ...ClipArtElement,
+const clipArt1 = new ClipArtElement({
   id: uniqueId(),
   size: {
     width: 3,
@@ -144,10 +140,9 @@ const clipArt1 = {
   name: 'CLIP_ART_1',
   thumbnail: CLIP_ART_1,
   vector: CLIP_ART_1
-};
+});
 
-const clipArt2 = {
-  ...ClipArtElement,
+const clipArt2 = new ClipArtElement({
   id: uniqueId(),
   size: {
     width: 3,
@@ -163,10 +158,9 @@ const clipArt2 = {
   thumbnail: CLIP_ART_2,
   vector: CLIP_ART_2,
   color: '#D00000'
-};
+});
 
-const shape1 = {
-  ...ShapeElement,
+const shape1 = new ShapeElement({
   id: uniqueId(),
   size: {
     width: 3,
@@ -182,7 +176,7 @@ const shape1 = {
   thumbnail: SHAPE_1,
   pathData: SHAPE_1,
   color: '#D00000'
-};
+});
 
 const frames = [
   {

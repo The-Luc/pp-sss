@@ -4,3 +4,4 @@ export * from './clipArt';
 export * from './image';
 export * from './shape';
 export * from './text';
+export * from './video';

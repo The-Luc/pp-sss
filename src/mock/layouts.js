@@ -24,8 +24,7 @@ import SHAPE_1 from '@/assets/image/shapes/star.svg';
 import CLIP_ART_1 from '@/assets/image/clip-art/clip-art-13.svg';
 import CLIP_ART_2 from '@/assets/image/clip-art/clip-art-11.svg';
 
-const text1 = {
-  ...TextElement,
+const text1 = new TextElement({
   id: uniqueId(),
   size: {
     width: 3,
@@ -44,10 +43,9 @@ const text1 = {
   isItalic: true,
   isUnderline: false,
   color: '#FF0000'
-};
+});
 
-const text2 = {
-  ...TextElement,
+const text2 = new TextElement({
   id: uniqueId(),
   size: {
     width: 3,
@@ -66,10 +64,9 @@ const text2 = {
   isItalic: true,
   isUnderline: false,
   color: '#FF0000'
-};
+});
 
-const bg1 = {
-  ...BackgroundElement,
+const bg1 = new BackgroundElement({
   id: uniqueId(),
   pageType: BACKGROUND_PAGE_TYPE.SINGLE_PAGE.id,
   backgroundType: '',
@@ -77,10 +74,9 @@ const bg1 = {
   name: 'watercolorbackground.jpg',
   thumbnail: BG_1,
   imageUrl: BG_1
-};
+});
 
-const bg2 = {
-  ...BackgroundElement,
+const bg2 = new BackgroundElement({
   id: uniqueId(),
   pageType: BACKGROUND_PAGE_TYPE.SINGLE_PAGE.id,
   backgroundType: '',
@@ -89,10 +85,9 @@ const bg2 = {
   name: 'watercolorbackground.jpg',
   thumbnail: BG_2,
   imageUrl: BG_2
-};
+});
 
-const bg3 = {
-  ...BackgroundElement,
+const bg3 = new BackgroundElement({
   id: uniqueId(),
   pageType: BACKGROUND_PAGE_TYPE.FULL_PAGE.id,
   backgroundType: '',
@@ -100,10 +95,9 @@ const bg3 = {
   name: 'fullbackground.jpg',
   thumbnail: BG_3,
   imageUrl: BG_3
-};
+});
 
-const clipArt1 = {
-  ...ClipArtElement,
+const clipArt1 = new ClipArtElement({
   id: uniqueId(),
   size: {
     width: 3,
@@ -119,10 +113,9 @@ const clipArt1 = {
   thumbnail: CLIP_ART_1,
   vector: CLIP_ART_1,
   opacity: 0.35
-};
+});
 
-const clipArt2 = {
-  ...ClipArtElement,
+const clipArt2 = new ClipArtElement({
   id: uniqueId(),
   size: {
     width: 3,
@@ -138,10 +131,9 @@ const clipArt2 = {
   thumbnail: CLIP_ART_2,
   vector: CLIP_ART_2,
   color: '#42738d'
-};
+});
 
-const shape1 = {
-  ...ShapeElement,
+const shape1 = new ShapeElement({
   id: uniqueId(),
   size: {
     width: 3,
@@ -157,10 +149,9 @@ const shape1 = {
   thumbnail: SHAPE_1,
   pathData: SHAPE_1,
   color: '#c3d2d9'
-};
+});
 
-const textSinglePage2 = {
-  ...TextElement,
+const textSinglePage2 = new TextElement({
   id: uniqueId(),
   size: {
     width: 4,
@@ -180,10 +171,9 @@ const textSinglePage2 = {
   isUnderline: false,
   color: '#FF0000',
   opacity: 0.5
-};
+});
 
-const textSinglePage1 = {
-  ...TextElement,
+const textSinglePage1 = new TextElement({
   id: uniqueId(),
   size: {
     width: 5,
@@ -203,10 +193,9 @@ const textSinglePage1 = {
   isUnderline: false,
   color: '#FF0000',
   opacity: 0.7
-};
+});
 
-const bgSinglePage1 = {
-  ...BackgroundElement,
+const bgSinglePage1 = new BackgroundElement({
   id: uniqueId(),
   pageType: 1,
   backgroundType: '',
@@ -224,10 +213,9 @@ const bgSinglePage1 = {
   name: 'watercolorbackground.jpg',
   thumbnail: BG_SINGLE_PAGE_1,
   imageUrl: BG_SINGLE_PAGE_1
-};
+});
 
-const bgSinglePage2 = {
-  ...BackgroundElement,
+const bgSinglePage2 = new BackgroundElement({
   id: uniqueId(),
   pageType: 1,
   backgroundType: '',
@@ -245,7 +233,7 @@ const bgSinglePage2 = {
   name: 'watercolorbackground.jpg',
   thumbnail: BG_SINGLE_PAGE_2,
   imageUrl: BG_SINGLE_PAGE_2
-};
+});
 
 const layouts = [
   {

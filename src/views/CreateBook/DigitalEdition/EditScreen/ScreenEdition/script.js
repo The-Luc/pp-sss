@@ -1467,7 +1467,7 @@ export default {
 
         s.object.update({ coord, size });
 
-        this.addObjectToStore({
+        this.addNewObject({
           id: s.id,
           newObject: s.object
         });
