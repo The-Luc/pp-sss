@@ -73,28 +73,14 @@ export default {
       return this.isVideo ? VIDEO_CATEGORIES : PHOTO_CATEGORIES;
     },
 
-    idOfComponentSelect() {
+    dropdownId() {
       return this.isVideo ? 'video-type' : 'photo-type';
     },
 
     currentAlbums() {
-      if (this.isVideo) {
-        return this.albums.map(item => {
-          const assets = item.assets.filter(el => el.type === ASSET_TYPE.VIDEO);
-          return {
-            ...item,
-            assets
-          };
-        });
-      }
-
-      return this.albums.map(item => {
-        const assets = item.assets.filter(el => el.type === ASSET_TYPE.PICTURE);
-        return {
-          ...item,
-          assets
-        };
-      });
+      return this.isVideo
+        ? this.getCurrentVideoAlbums()
+        : this.getCurrentPhotoAlbums();
     }
   },
   methods: {
@@ -181,6 +167,30 @@ export default {
         }));
 
         return { ...cat, subItems };
+      });
+    },
+    /**
+     * Get current video albums
+     */
+    getCurrentVideoAlbums() {
+      return this.albums.map(item => {
+        const assets = item.assets.filter(el => el.type === ASSET_TYPE.VIDEO);
+        return {
+          ...item,
+          assets
+        };
+      });
+    },
+    /**
+     * Get current photo albums
+     */
+    getCurrentPhotoAlbums() {
+      return this.albums.map(item => {
+        const assets = item.assets.filter(el => el.type === ASSET_TYPE.PICTURE);
+        return {
+          ...item,
+          assets
+        };
       });
     }
   }

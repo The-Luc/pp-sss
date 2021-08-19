@@ -44,7 +44,7 @@ export default {
       getSmartbox,
       getSearch
     } = usePhotos();
-    const { getAlbums, getMediaDropdowns } = usePhoto();
+    const { getAlbums, getMediaCategories } = usePhoto();
 
     return {
       isPhotoVisited,
@@ -56,7 +56,7 @@ export default {
       getSmartbox,
       getSearch,
       getAlbums,
-      getMediaDropdowns
+      getMediaCategories
     };
   },
   data() {
@@ -159,7 +159,7 @@ export default {
       if (this.currentTab !== 'photos' && this.currentTab !== 'videos') return;
 
       this.albums = await this.getAlbums();
-      this.mediaDropdowns = await this.getMediaDropdowns();
+      this.mediaDropdowns = await this.getMediaCategories();
       this.selectedType = {
         value:
           this.currentTab === 'photos'

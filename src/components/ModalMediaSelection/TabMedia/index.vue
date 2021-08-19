@@ -3,8 +3,8 @@
     <div class="header">
       <div class="dropdown">
         <PpSelect
-          :id="idOfComponentSelect"
-          :container="`#${idOfComponentSelect}`"
+          :id="dropdownId"
+          :container="`#${dropdownId}`"
           :items="dropdownOptions"
           :selected-val="selectedType"
           @change="onChangeType"
