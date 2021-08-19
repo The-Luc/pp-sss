@@ -393,3 +393,22 @@ export const handleClickVideo = target => {
   }
   target.play();
 };
+/**
+ * Handle change media src in image box
+ * @param {Element} target current image box will apply new src
+ * @param {*} options new prop for image box
+ * @returns new properties of image box after change src
+ */
+export const handleChangeMediaSrc = async (target, options) => {
+  if (!target) return;
+
+  const { imageUrl, id, mediaUrl, thumbUrl } = options;
+
+  const prop = mediaUrl
+    ? await setVideoSrc(target, mediaUrl, thumbUrl)
+    : await setImageSrc(target, imageUrl);
+
+  prop.imageId = id;
+
+  return { id: target.id, prop };
+};
