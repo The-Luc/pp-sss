@@ -106,7 +106,8 @@ import {
   BaseSize,
   ClipArtElementObject,
   ImageElementObject,
-  ShapeElementObject
+  ShapeElementObject,
+  VideoElementObject
 } from '@/common/models/element';
 
 const ELEMENTS = {
@@ -1368,15 +1369,21 @@ export default {
         y: pxToIn(y)
       });
 
-      const newImage = {
+      const isVideo = options?.type === ASSET_TYPE.VIDEO;
+
+      const mediaProp = {
         id,
-        newObject: new ImageElementObject({
-          id,
-          size,
-          coord,
-          imageUrl: DEFAULT_IMAGE.IMAGE_URL,
-          hasImage: !!options?.src
-        })
+        size,
+        coord,
+        imageUrl: DEFAULT_IMAGE.IMAGE_URL,
+        hasImage: !!options?.src
+      };
+
+      const newMedia = {
+        id,
+        newObject: isVideo
+          ? new VideoElementObject(mediaProp)
+          : new ImageElementObject(mediaProp)
       };
 
       const eventListeners = {
@@ -1389,10 +1396,10 @@ export default {
         drop: handleDragLeave
       };
 
-      const image = await createImage(newImage.newObject);
+      const image = await createImage(newMedia.newObject);
 
       if (!isEmpty(image.size)) {
-        newImage.newObject.update({ size: image.size });
+        newMedia.newObject.update({ size: image.size });
       }
 
       if (options?.src) {
@@ -1401,15 +1408,17 @@ export default {
             ? await setVideoSrc(image.object, options.src, options.thumbUrl)
             : await setImageSrc(image.object, options.src);
 
-        newImage.newObject.update(newProp);
+        newMedia.newObject.update(newProp);
       }
 
-      this.addNewObject(newImage);
+      this.addNewObject(newMedia);
 
       imageBorderModifier(image.object);
 
       addEventListeners(image?.object, eventListeners);
+
       this.digitalCanvas.add(image?.object);
+
       selectLatestObject(this.digitalCanvas);
     },
     /**
@@ -1860,6 +1869,7 @@ export default {
       });
 
       const listFabricObjects = await Promise.all(allObjectPromises);
+
       this.digitalCanvas.add(...listFabricObjects);
       this.digitalCanvas.requestRenderAll();
     },

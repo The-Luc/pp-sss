@@ -377,7 +377,7 @@ export default {
         return;
       }
 
-      const prop = mediaUrl
+      const prop = isVideo
         ? await setVideoSrc(target, mediaUrl, thumbUrl)
         : await setImageSrc(target, imageUrl);
       prop.imageId = imageId;

@@ -163,11 +163,8 @@ export const setImageSrc = async (imageObject, imageSrc) => {
         hasImage,
         scaleX: newScaleX,
         scaleY: newScaleY,
-        with: img.width,
+        width: img.width,
         height: img.height,
-        thumbnail: null,
-        playIcon: null,
-        showThumbnail: false,
         objectType: OBJECT_TYPE.IMAGE
       };
 
@@ -356,7 +353,7 @@ export const setVideoSrc = async (imageObject, videoSrc, thumbnailSrc) => {
   const newProp = {
     scaleX: newScaleX,
     scaleY: newScaleY,
-    with: element.width,
+    width: element.width,
     height: element.height,
     hasImage: true,
     thumbnail,
