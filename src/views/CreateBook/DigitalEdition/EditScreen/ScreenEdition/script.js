@@ -2137,6 +2137,9 @@ export default {
 
       this.setObjectPropById({ id: activeObject.id, prop });
     },
+    /**
+     * Play / pause current video
+     */
     videoTogglePlay() {
       const video = this.digitalCanvas.getActiveObject();
 
@@ -2154,6 +2157,11 @@ export default {
 
       this.setCurrentObject(prop);
     },
+    /**
+     * Fire when video is finish playing
+     *
+     * @param {String | Number} id  id of finishing play video
+     */
     videoStop(id) {
       const currentObjectId = this.getProperty('id');
 
