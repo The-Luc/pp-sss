@@ -339,6 +339,7 @@ export const setVideoSrc = async (
 
   element.addEventListener('pause', () => {
     imageObject.set({ isPlaying: false, showPlayIcon: true, dirty: true });
+
     if (element.currentTime === element.duration) {
       videoStopCallback(imageObject.id);
 
