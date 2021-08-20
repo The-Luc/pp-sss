@@ -36,12 +36,7 @@ import {
   useSheet,
   useProperties
 } from '@/hooks';
-import {
-  isEmpty,
-  isPositiveInteger,
-  getEditionListPath,
-  activeCanvas
-} from '@/common/utils';
+import { isEmpty, isPositiveInteger, getEditionListPath } from '@/common/utils';
 import { COPY_OBJECT_KEY } from '@/common/constants/config';
 
 import { useSaveData } from './composables';

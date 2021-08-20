@@ -950,15 +950,6 @@ export default {
         newImage.newObject.update(newProp);
       }
 
-      if (options?.src) {
-        const newProp = await setImageSrc(image.object, options.src);
-
-        newImage.newObject = {
-          ...newImage.newObject,
-          ...newProp
-        };
-      }
-
       this.addObjectToStore(newImage);
 
       imageBorderModifier(image.object);
