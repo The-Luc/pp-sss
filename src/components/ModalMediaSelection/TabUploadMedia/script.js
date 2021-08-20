@@ -1,3 +1,11 @@
+import {
+  IMAGE_TYPES,
+  MEDIA_TYPES,
+  IMAGE_NOTIFICATION,
+  MEDIA_NOTIFICATION
+} from '@/common/constants';
+import { getFileExtension } from '@/common/utils';
+
 export default {
   data() {
     return {
@@ -6,9 +14,17 @@ export default {
     };
   },
   props: {
-    mediaTypes: {
-      type: Array,
-      required: true
+    isModalMedia: {
+      type: Boolean,
+      required: false
+    }
+  },
+  computed: {
+    mediaTypes() {
+      return this.isModalMedia ? MEDIA_TYPES : IMAGE_TYPES;
+    },
+    notification() {
+      return this.isModalMedia ? MEDIA_NOTIFICATION : IMAGE_NOTIFICATION;
     }
   },
   methods: {
@@ -78,8 +94,7 @@ export default {
      * @returns {Boolean} file in correct format
      */
     checkValidFile(file) {
-      const splitName = file.name.split('.');
-      const type = `.${splitName[splitName.length - 1].toLowerCase()}`;
+      const type = getFileExtension(file.name);
       return this.mediaTypes.includes(type);
     },
     /**

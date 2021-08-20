@@ -3,8 +3,7 @@
     <div class="content">
       <div class="notify">
         <template v-if="isShowNotify">
-          Invalid file type detected. Only files with the following extensions
-          are allowed: PNG, JPG/JPEG, HEIC, and GIF
+          {{ notification }}
         </template>
       </div>
       <div
