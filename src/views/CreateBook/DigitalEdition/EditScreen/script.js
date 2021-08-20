@@ -249,12 +249,18 @@ export default {
 
       const promises = Array.from(
         { length: Math.min(media.length, objects.length) },
-        (_, index) => handleChangeMediaSrc(objects[index], media[index])
+        (_, index) =>
+          handleChangeMediaSrc(
+            objects[index],
+            media[index],
+            this.$refs.canvasEditor.videoStop
+          )
       );
 
       const props = await Promise.all(promises);
 
       activeCanvas.renderAll();
+
       this.$refs.canvasEditor.getThumbnailUrl();
 
       this.setPropOfMultipleObjects({ data: props });
@@ -378,7 +384,12 @@ export default {
       }
 
       const prop = mediaUrl
-        ? await setVideoSrc(target, mediaUrl, thumbUrl)
+        ? await setVideoSrc(
+            target,
+            mediaUrl,
+            thumbUrl,
+            this.$refs.canvasEditor.videoStop
+          )
         : await setImageSrc(target, imageUrl);
       prop.imageId = imageId;
 
