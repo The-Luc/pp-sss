@@ -3,8 +3,12 @@
     <span class="properties-title">Trim:</span>
     <div class="control-group">
       <RangeSlider @change="onSliderChange" />
-      <div class="label-start">Start Time: 00:00.000</div>
-      <div class="label-end">Start End: 00:18.833</div>
+      <div class="label-text">
+        Start Time: <span class="label-time">00:00.000</span>
+      </div>
+      <div class="label-text">
+        Start End: <span class="label-time">00:18.833</span>
+      </div>
     </div>
   </div>
 </template>
