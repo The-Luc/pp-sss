@@ -22,8 +22,7 @@ import SidebarSection from './SidebarSection';
 import PageEdition from './PageEdition';
 import PhotoSidebar from '@/components/PhotoSidebar';
 import SheetMedia from '@/components/SheetMedia';
-import ModalAddPhotos from '@/containers/Modal/Media';
-import ModalAddMedia from '@/containers/Modal/AddMedia';
+import MediaModal from '@/containers/Modal/Media';
 
 import {
   useLayoutPrompt,
@@ -47,7 +46,11 @@ import {
 } from '@/common/utils';
 
 import { useSaveData } from './PageEdition/composables';
-import { getAvailableImages, setImageSrc } from '@/common/fabricObjects';
+import {
+  handleChangeMediaSrc,
+  getAvailableImages,
+  setImageSrc
+} from '@/common/fabricObjects';
 import { useSavingStatus } from '../../composables';
 import { useBookPrintInfo } from './composables';
 
@@ -60,8 +63,7 @@ export default {
     SidebarSection,
     PhotoSidebar,
     SheetMedia,
-    ModalAddPhotos,
-    ModalAddMedia
+    MediaModal
   },
   setup() {
     const { pageSelected, updateVisited } = useLayoutPrompt(EDITION.PRINT);
@@ -103,9 +105,7 @@ export default {
   data() {
     return {
       dragItem: () => null,
-      isOpenModal: false,
-      isOpenModalAddMedia: false,
-      files: []
+      isOpenMediaModal: false
     };
   },
   computed: {
@@ -256,7 +256,7 @@ export default {
 
       const promises = Array.from(
         { length: Math.min(images.length, objects.length) },
-        (_, index) => this.handleChangeImageSrc(objects[index], images[index])
+        (_, index) => handleChangeMediaSrc(objects[index], images[index])
       );
 
       const props = await Promise.all(promises);
@@ -266,22 +266,6 @@ export default {
 
       this.setPropOfMultipleObjects({ data: props });
     },
-
-    /**
-     *
-     * @param {Element} target current image box will apply new src
-     * @param {*} options new prop for image box
-     * @returns new properties of image box after change src
-     */
-    async handleChangeImageSrc(target, options) {
-      if (!target) return;
-
-      const prop = await setImageSrc(target, options.imageUrl);
-      prop.imageId = options.id;
-
-      return { id: target.id, prop };
-    },
-
     /**
      * Selected images and save in sheet
      * @param   {Array}  images  selected images
@@ -379,28 +363,13 @@ export default {
      * Use to open modal photos
      */
     openModalPhotos() {
-      this.isOpenModal = true;
+      this.isOpenMediaModal = true;
     },
     /**
      * Close modal photos when click cancel button
      */
-    onCancel() {
-      this.isOpenModal = false;
-    },
-    /**
-     * Close modal photos and open modal add media
-     * @param   {Array}  files  files user upload
-     */
-    onUploadImages(files) {
-      this.onCancel();
-      this.files = files;
-      this.isOpenModalAddMedia = true;
-    },
-    /**
-     * Close modal add media
-     */
-    onCancelAddMedia() {
-      this.isOpenModalAddMedia = false;
+    onCancelMediaModal() {
+      this.isOpenMediaModal = false;
     },
     /**
      * Switching tool on Creation Tool by emit

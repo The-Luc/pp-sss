@@ -37,18 +37,11 @@
 
     <PageEdition ref="canvasEditor" @drop="onDrop" />
 
-    <ModalAddPhotos
+    <MediaModal
       type="photos"
-      :is-open-modal="isOpenModal"
+      :is-open-modal="isOpenMediaModal"
       @select="handleSelectedImages"
-      @cancel="onCancel"
-      @uploadImages="onUploadImages"
-    />
-    <ModalAddMedia
-      v-if="isOpenModalAddMedia"
-      :files="files"
-      :is-open-modal="isOpenModalAddMedia"
-      @cancel="onCancelAddMedia"
+      @cancel="onCancelMediaModal"
     />
   </div>
 </template>

@@ -1,239 +1,94 @@
-import Footer from '@/components/ModalMediaSelection/Footer';
-import TabUploadMedia from '@/components/ModalMediaSelection/TabUploadMedia';
-import Smartbox from '@/components/ModalMediaSelection/Smartbox';
-import TabPhotos from '@/components/ModalMediaSelection/TabPhotos';
-import TabSearchPhotos from '@/components/ModalMediaSelection/TabSearch';
-
-import {
-  useGetterEditionSection,
-  useFrame,
-  useSheet,
-  useAppCommon,
-  usePhoto
-} from '@/hooks';
-import { usePhotos } from '@/views/CreateBook/composables';
-
-import {
-  insertItemsToArray,
-  removeItemsFormArray,
-  getUniqueKeywords
-} from '@/common/utils';
-import {
-  PHOTO_CATEGORIES,
-  ALL_PHOTO_SUBCATEGORY_ID,
-  IMAGE_TYPES
-} from '@/common/constants';
+import MediaViewer from './MediaViewer';
+import MediaUploader from './MediaUploader';
 
 export default {
   components: {
-    Footer,
-    TabPhotos,
-    Smartbox,
-    TabUploadMedia,
-    TabSearchPhotos
-  },
-  setup() {
-    const { generalInfo } = useAppCommon();
-    const { currentSection } = useGetterEditionSection();
-    const { currentFrame } = useFrame();
-    const { currentSheet } = useSheet();
-    const {
-      isPhotoVisited,
-      updatePhotoVisited,
-      getSmartbox,
-      getSearch
-    } = usePhotos();
-    const { getAlbums, getPhotoDropdowns } = usePhoto();
-
-    return {
-      isPhotoVisited,
-      updatePhotoVisited,
-      currentSection,
-      currentFrame,
-      currentSheet,
-      generalInfo,
-      getSmartbox,
-      getSearch,
-      getAlbums,
-      getPhotoDropdowns
-    };
-  },
-  data() {
-    return {
-      selectedMedia: [],
-      currentTab: '',
-      defaultTab: 'smartbox',
-      keywords: [],
-      photos: [],
-      selectedType: {
-        value: PHOTO_CATEGORIES.COMMUNITIES.value,
-        sub: { value: ALL_PHOTO_SUBCATEGORY_ID }
-      },
-      albums: [],
-      photoDropdowns: {},
-      mediaTypes: IMAGE_TYPES
-    };
+    MediaViewer,
+    MediaUploader
   },
   props: {
-    isOpenModal: {
-      type: Boolean,
-      default: false
-    },
     type: {
       type: String,
       required: true
+    },
+    isOpenModal: {
+      type: Boolean,
+      default: false
     }
   },
-  computed: {
-    isMediaAdditionalDisplayed() {
-      return this.currentTab === 'add';
-    },
-    isNoSelectMedia() {
-      return this.selectedMedia.length === 0;
-    },
-    isModalMedia() {
-      return this.type === 'media';
-    }
+  data() {
+    return {
+      isOpenUploadModal: false,
+      isOpenMediaModal: false,
+      files: [],
+      selectedAlbumId: null
+    };
   },
   watch: {
-    async isOpenModal(val) {
+    isOpenModal(val) {
       if (!val) return;
 
-      this.getListKeywords();
-      const keywords = this.keywords.map(keyword => keyword.value);
-
-      this.photos = await this.getSmartbox(keywords, this.isModalMedia);
+      this.selectedAlbumId = null;
+      this.showMediaModal();
     }
   },
   methods: {
     /**
-     * Emit select event to parent
+     * Fire when select button on media modal is clicked
+     * @param {Array} files list of files selected in media modal
      */
-    onSelect() {
-      this.$emit('select', this.selectedMedia);
-      this.onCancel();
+    handleSelectedImages(files) {
+      this.$emit('select', files);
     },
     /**
-     * Emit cancel event to parent
+     * Emit an event to close the modal
      */
     onCancel() {
       this.$emit('cancel');
-      this.selectedMedia = [];
-      this.defaultTab = null;
     },
     /**
-     * Selected media and push or remove in array media selected
-     * @param   {Object}  media  id of current book
+     * To open uploading modal
+     * Fire when user drag or choose a file to upload
      */
-    onSelectedMedia(media) {
-      const index = this.selectedMedia.findIndex(item => item.id === media.id);
-
-      if (index < 0) {
-        this.selectedMedia = insertItemsToArray(this.selectedMedia, [
-          { value: media }
-        ]);
-      } else {
-        this.selectedMedia = removeItemsFormArray(this.selectedMedia, [
-          { value: media, index }
-        ]);
-      }
+    handleUploadingMedia(files) {
+      this.files = files;
+      this.showUploadModal();
     },
     /**
-     * Event change tab of modal photo
-     * @param   {String}  tag  current tag
+     *  To set current selected album
+     * @param {Number | String} id id of the current selected Album
      */
-    async onChangeTab(tab) {
-      if (this.currentTab === tab) return;
-      this.currentTab = tab;
-
-      this.selectedMedia = [];
-      this.photos = [];
-
-      if (this.currentTab === 'smartbox') {
-        this.getListKeywords();
-        const keywords = this.keywords.map(keyword => keyword.value);
-        this.photos = await this.getSmartbox(keywords, this.isModalMedia);
-      }
-
-      if (this.currentTab !== 'photos') return;
-
-      this.albums = await this.getAlbums();
-      this.photoDropdowns = await this.getPhotoDropdowns();
-      this.selectedType = {
-        value: PHOTO_CATEGORIES.COMMUNITIES.value,
-        sub: { value: ALL_PHOTO_SUBCATEGORY_ID }
-      };
+    setSelectedAlbumId(id) {
+      this.selectedAlbumId = id;
     },
     /**
-     * Emit files user upload and emit to parent
-     * @param   {Array}  files  files user upload
+     * To close the modal
+     * Fire when cancel button on uploading modal is clicked
      */
-    onUploadMedia(files) {
-      this.$emit('uploadImages', files);
+    onCancelUploadModal() {
       this.onCancel();
     },
-
     /**
-     * Get list keyword from section name, left, right, spread title
+     * Fire when files are uploaded
+     * @param {Number} selectedAlbumId id of the album which just has added media
      */
-    getListKeywords() {
-      if (this.isModalMedia) {
-        this.keywords = getUniqueKeywords([
-          this.currentFrame.frameTitle,
-          this.currentSection.name
-        ]);
-        return;
-      }
-
-      const { leftTitle, rightTitle } = this.currentSheet?.spreadInfo;
-      const projectTitle =
-        this.currentSection?.name === 'Cover' ? this.generalInfo.title : '';
-      this.keywords = getUniqueKeywords([
-        leftTitle,
-        rightTitle,
-        this.currentSection?.name,
-        projectTitle
-      ]);
+    onDoneUpload(selectedAlbumId) {
+      this.setSelectedAlbumId(selectedAlbumId);
+      this.showMediaModal();
     },
     /**
-     * Set status active of keyword when click
+     * To open uploading modal and hide media modal
      */
-    async onClickKeyword(val) {
-      val.active = !val.active;
-      const activeKeywords = this.keywords.reduce((arr, keyword) => {
-        if (keyword.active) {
-          arr.push(keyword.value);
-        }
-        return arr;
-      }, []);
-
-      this.photos = await this.getSmartbox(activeKeywords, this.isModalMedia);
+    showUploadModal() {
+      this.isOpenMediaModal = false;
+      this.isOpenUploadModal = true;
     },
     /**
-     * Trigger mutation set photo visited true for current book
+     * To open Media modal and hide uploading modal
      */
-    onClickGotIt() {
-      this.updatePhotoVisited({ isPhotoVisited: true });
-    },
-    /**
-     * To search base on value input
-     * @param {String}  input value to search
-     */
-    async onSearch(input) {
-      this.photos = await this.getSearch(input, this.isModalMedia);
-    },
-    /**
-     * Change dropdown type to select a album
-     * @param   {Object}  data  type and album selected
-     */
-    onChangeType(data) {
-      this.selectedType = {
-        value: data.value,
-        sub: {
-          value: data.sub.value,
-          sub: data.sub.sub?.value
-        }
-      };
+    showMediaModal() {
+      this.isOpenUploadModal = false;
+      this.isOpenMediaModal = true;
     }
   }
 };

@@ -76,7 +76,7 @@ const video3 = new VideoAssetEntity({
   isMedia: true
 });
 
-const mediaBase = [photo1, photo2, photo3, video1, video2, video3];
+const mediaBase = [photo1, photo2, photo3, video3, video2, video1];
 
 const media = Array.from({ length: 20 }, () => {
   const inProject = Math.random() * 5 < 2;
@@ -108,8 +108,8 @@ function randomAssets() {
   const assets = [];
   const quantity = getRandomInt(5) + 4;
   for (let i = 0; i < quantity; i++) {
-    const photo = { ...photos[getRandomInt(20)], id: uniqueId() };
-    assets.push(photo);
+    const asset = { ...media[getRandomInt(20)], id: uniqueId() };
+    assets.push(asset);
   }
   return assets;
 }

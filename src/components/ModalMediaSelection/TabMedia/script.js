@@ -1,21 +1,23 @@
-import SelectMediaType from './SelectMediaType';
+import PpSelect from '@/components/Selectors/SelectMultiLevel';
 import AlbumItem from '@/components/ModalMediaSelection/AlbumItem';
 import PopupSelected from '@/components/ModalMediaSelection/PopupSelected';
 
 import {
   PHOTO_CATEGORIES,
-  ALL_PHOTO_SUBCATEGORY_ID
-} from '@/common/constants/photo';
+  VIDEO_CATEGORIES,
+  ALL_MEDIA_SUBCATEGORY_ID,
+  ASSET_TYPE
+} from '@/common/constants';
 import { isEmpty } from '@/common/utils';
 
 export default {
   components: {
-    SelectMediaType,
+    PpSelect,
     AlbumItem,
     PopupSelected
   },
   props: {
-    selectedImages: {
+    selectedMedia: {
       type: Array,
       default: () => []
     },
@@ -27,19 +29,23 @@ export default {
       type: Array,
       default: () => []
     },
-    photoDropdowns: {
+    mediaDropdowns: {
       type: Object,
       default: {}
+    },
+    isVideo: {
+      type: Boolean,
+      default: false
     }
   },
   computed: {
     selectedAlbums() {
       const albumId = this.getSelectedImageId();
 
-      if (albumId === ALL_PHOTO_SUBCATEGORY_ID)
+      if (albumId === ALL_MEDIA_SUBCATEGORY_ID)
         return this.getAllSelectedAlbums();
 
-      return this.albums.filter(item => {
+      return this.currentAlbums.filter(item => {
         return !isEmpty(item.assets) && item.id === albumId;
       });
     },
@@ -48,7 +54,7 @@ export default {
     },
 
     isShowPopupSelected() {
-      return this.selectedImages.length !== 0;
+      return this.selectedMedia.length !== 0;
     },
 
     isEmptyCategory() {
@@ -57,10 +63,24 @@ export default {
 
     currentCategory() {
       return (
-        Object.values(PHOTO_CATEGORIES).find(
+        Object.values(this.mediaCategories).find(
           item => item.value === this.selectedType.value
         )?.name || ''
       );
+    },
+
+    mediaCategories() {
+      return this.isVideo ? VIDEO_CATEGORIES : PHOTO_CATEGORIES;
+    },
+
+    dropdownId() {
+      return this.isVideo ? 'video-type' : 'photo-type';
+    },
+
+    currentAlbums() {
+      return this.isVideo
+        ? this.getCurrentVideoAlbums()
+        : this.getCurrentPhotoAlbums();
     }
   },
   methods: {
@@ -72,11 +92,11 @@ export default {
       this.$emit('changeType', data);
     },
     /**
-     * Selected a image and emit parent component
-     * @param   {Object}  image  id of current book
+     * Selected a media and emit parent component
+     * @param   {Object}  media  id of asset
      */
-    onSelectedImage(image) {
-      this.$emit('change', image);
+    onSelectedMedia(media) {
+      this.$emit('change', media);
     },
     /**
      * Get id of selected album
@@ -104,7 +124,7 @@ export default {
 
       const selectedAlbumIds = arrayAlbumSelected.map(item => item.value);
 
-      return this.albums.filter(item => {
+      return this.currentAlbums.filter(item => {
         return !isEmpty(item.assets) && selectedAlbumIds.includes(item.id);
       });
     },
@@ -114,14 +134,14 @@ export default {
      * @returns {Array} category menu
      */
     getDropdownOptions() {
-      const options = Object.values(PHOTO_CATEGORIES);
+      const options = Object.values(this.mediaCategories);
 
-      if (isEmpty(this.photoDropdowns)) {
+      if (isEmpty(this.mediaDropdowns)) {
         return options.map(o => ({ ...o, subItems: [] }));
       }
 
       return options.map(opt => {
-        const category = this.photoDropdowns[opt.value];
+        const category = this.mediaDropdowns[opt.value];
 
         return {
           ...opt,
@@ -147,6 +167,30 @@ export default {
         }));
 
         return { ...cat, subItems };
+      });
+    },
+    /**
+     * Get current video albums
+     */
+    getCurrentVideoAlbums() {
+      return this.albums.map(item => {
+        const assets = item.assets.filter(el => el.type === ASSET_TYPE.VIDEO);
+        return {
+          ...item,
+          assets
+        };
+      });
+    },
+    /**
+     * Get current photo albums
+     */
+    getCurrentPhotoAlbums() {
+      return this.albums.map(item => {
+        const assets = item.assets.filter(el => el.type === ASSET_TYPE.PICTURE);
+        return {
+          ...item,
+          assets
+        };
       });
     }
   }

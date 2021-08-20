@@ -1,4 +1,4 @@
-import { photoDropdowns, albums as myAlbums } from '@/mock/photoDropdowns';
+import { mediaDropdowns, albums as myAlbums } from '@/mock/media';
 import { albums, photoList, mediaList } from '@/mock/photo';
 import { isEmpty } from '@/common/utils';
 import { uniqueId } from 'lodash';
@@ -11,10 +11,10 @@ export const getAlbums = () => {
   });
 };
 
-export const getPhotoDropdowns = () => {
+export const getMediaCategories = () => {
   return new Promise(resolve => {
     setTimeout(() => {
-      resolve(photoDropdowns);
+      resolve(mediaDropdowns);
     });
   });
 };

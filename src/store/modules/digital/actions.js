@@ -51,16 +51,10 @@ export const actions = {
     commit(DIGITAL._MUTATES.SET_FRAMES, { framesList: data });
   },
   [DIGITAL._ACTIONS.UPDATE_SHEET_THEME_LAYOUT](
-    { commit, dispatch },
+    { commit },
     { themeId, layout }
   ) {
-    const objects = layout.frames[0].objects.map(o => ({
-      ...o,
-      id: uniqueId()
-    }));
-
-    dispatch(DIGITAL._ACTIONS.UPDATE_OBJECTS_TO_STORE, { objects });
-
+    //
     // Update sheet fields
     commit(DIGITAL._MUTATES.SET_SHEET_DATA, {
       layoutId: layout.id,

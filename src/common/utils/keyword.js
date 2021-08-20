@@ -1,4 +1,4 @@
-import { uniq } from 'lodash';
+import { toLower, uniqBy } from 'lodash';
 
 export const getUniqueKeywords = array => {
   const listKeyword = array
@@ -6,7 +6,7 @@ export const getUniqueKeywords = array => {
     .split(' ')
     .filter(Boolean);
 
-  const uniqListKeyword = uniq(listKeyword).map(keyword => ({
+  const uniqListKeyword = uniqBy(listKeyword, toLower).map(keyword => ({
     value: keyword,
     active: true
   }));

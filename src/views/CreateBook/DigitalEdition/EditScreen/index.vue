@@ -42,7 +42,7 @@
 
     <ScreenEdition ref="canvasEditor" @drop="onDrop" />
 
-    <ModalAddMedia
+    <MediaModal
       type="media"
       :is-open-modal="isOpenModal"
       @select="handleSelectedMedia"

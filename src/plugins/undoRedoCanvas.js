@@ -5,7 +5,8 @@ import {
   hasOwnProperty,
   isOk,
   isCtrlKey,
-  resetObjects
+  resetObjects,
+  isMacOs
 } from '@/common/utils';
 
 import { KEY_CODE, MAX_STEP_UNDO_REDO } from '@/common/constants';
@@ -38,16 +39,21 @@ class UndoRedoCanvas {
       maxStep: MAX_STEP_UNDO_REDO
     });
 
-    document.body.addEventListener('keyup', this._handleKeyPress);
+    document.body.addEventListener('keydown', this._handleKeyPress);
   }
 
   _handleKeyPress = event => {
     const key = event.keyCode || event.charCode;
 
     const isCtrlPressed = isCtrlKey(event);
+    const isShiftPressed = event.shiftKey;
 
-    const isUndo = isCtrlPressed && key == KEY_CODE.Z;
-    const isRedo = isCtrlPressed && key == KEY_CODE.Y;
+    const isRedoKeyPressed = isMacOs()
+      ? isShiftPressed && key === KEY_CODE.Z
+      : key === KEY_CODE.Y;
+
+    const isUndo = isCtrlPressed && !isShiftPressed && key === KEY_CODE.Z;
+    const isRedo = isCtrlPressed && isRedoKeyPressed;
 
     if (isUndo) this.undo();
 

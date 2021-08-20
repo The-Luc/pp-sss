@@ -65,6 +65,13 @@ export default {
       return this.uploadingStatus === UPLOADING_PROCESS_STATUS.UPLOADED_SUCCESS;
     }
   },
+  watch: {
+    isOpenModal(val) {
+      if (!val) return;
+
+      this.initData();
+    }
+  },
   methods: {
     /**
      * Close modal add media
@@ -129,17 +136,27 @@ export default {
     hideUploadMediaModal() {
       return new Promise(resolve =>
         setTimeout(() => {
-          this.onCancel();
+          this.$emit('onDoneUpload', this.selectedIdOfAlbum);
 
           resolve();
         }, UPLOAD_STATUS_DISPLAY_TIME)
       );
+    },
+    async initData() {
+      this.selectedIdOfAlbum = null;
+      this.albums = [];
+      this.numberOfFilesUploaded = 0;
+      this.iconSuccess = ICON_LOCAL.SUCCESS;
+      this.uploadingStatus = UPLOADING_PROCESS_STATUS.SELECT_ALBUM;
+      this.newAlbumName = 'Untitled';
+
+      const getAlbums = this.getAlbums();
+      const getMyAlbums = this.getMyAlbums();
+
+      const [albums, myAlbums] = await Promise.all([getAlbums, getMyAlbums]);
+
+      const myAlbumIds = myAlbums.map(item => item.id);
+      this.albums = albums.filter(item => myAlbumIds.includes(item.id));
     }
-  },
-  async created() {
-    const albums = await this.getAlbums();
-    const myAlbums = await this.getMyAlbums();
-    const myAlbumIds = myAlbums.map(item => item.id);
-    this.albums = albums.filter(item => myAlbumIds.includes(item.id));
   }
 };

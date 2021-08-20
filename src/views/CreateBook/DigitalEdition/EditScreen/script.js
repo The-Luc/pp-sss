@@ -6,7 +6,7 @@ import FeedbackBar from '@/containers/HeaderEdition/FeedbackBar';
 import ScreenEdition from './ScreenEdition';
 import SidebarSection from './SidebarSection';
 import PhotoSidebar from '@/components/PhotoSidebar';
-import ModalAddMedia from '@/containers/Modal/Media';
+import MediaModal from '@/containers/Modal/Media';
 import SheetMedia from '@/components/SheetMedia';
 
 import { GETTERS, MUTATES } from '@/store/modules/app/const';
@@ -48,7 +48,12 @@ import { useSaveData } from './composables';
 import { useSavingStatus } from '../../composables';
 import { useBookDigitalInfo } from './composables';
 
-import { setImageSrc, setVideoSrc } from '@/common/fabricObjects';
+import {
+  handleChangeMediaSrc,
+  getAvailableImages,
+  setImageSrc,
+  setVideoSrc
+} from '@/common/fabricObjects';
 
 export default {
   setup() {
@@ -64,7 +69,7 @@ export default {
     const { setInfoBar } = useInfoBar();
     const { updateSheetMedia } = useActionsEditionSheet();
     const { sheetMedia } = useSheet();
-    const { setPropertyById } = useProperties();
+    const { setPropertyById, setPropOfMultipleObjects } = useProperties();
 
     return {
       pageSelected,
@@ -82,7 +87,8 @@ export default {
       setInfoBar,
       updateSheetMedia,
       sheetMedia,
-      setPropertyById
+      setPropertyById,
+      setPropOfMultipleObjects
     };
   },
   data() {
@@ -98,7 +104,7 @@ export default {
     ScreenEdition,
     SidebarSection,
     PhotoSidebar,
-    ModalAddMedia,
+    MediaModal,
     SheetMedia
   },
   computed: {
@@ -235,8 +241,29 @@ export default {
     /**
      * Handle autoflow
      */
-    handleAutoflow() {
-      console.log('handleAutoflow');
+    async handleAutoflow() {
+      activeCanvas.discardActiveObject();
+
+      const objects = getAvailableImages();
+      const media = this.sheetMedia || [];
+
+      const promises = Array.from(
+        { length: Math.min(media.length, objects.length) },
+        (_, index) =>
+          handleChangeMediaSrc(
+            objects[index],
+            media[index],
+            this.$refs.canvasEditor.videoStop
+          )
+      );
+
+      const props = await Promise.all(promises);
+
+      activeCanvas.renderAll();
+
+      this.$refs.canvasEditor.getThumbnailUrl();
+
+      this.setPropOfMultipleObjects({ data: props });
     },
     /**
      * Use to open modal media
@@ -357,7 +384,12 @@ export default {
       }
 
       const prop = mediaUrl
-        ? await setVideoSrc(target, mediaUrl, thumbUrl)
+        ? await setVideoSrc(
+            target,
+            mediaUrl,
+            thumbUrl,
+            this.$refs.canvasEditor.videoStop
+          )
         : await setImageSrc(target, imageUrl);
       prop.imageId = imageId;
 
