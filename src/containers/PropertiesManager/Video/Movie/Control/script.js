@@ -1,12 +1,13 @@
+import SpeedControl from './SpeedControl';
+
 import { useElementProperties } from '@/hooks';
 
 import { EVENT_TYPE } from '@/common/constants';
 import { isEmpty } from '@/common/utils';
 
 export default {
-  components: {},
-  data() {
-    return {};
+  components: {
+    SpeedControl
   },
   setup() {
     const { getProperty } = useElementProperties();
@@ -25,16 +26,19 @@ export default {
      * Fire when rewind button is clicked
      */
     onRewind() {
-      // handle event
-      console.log('rewind');
+      this.$root.$emit(EVENT_TYPE.VIDEO_REWIND);
     },
+    /**
+     * Fire when rewind button is hold
+     */
     onKeepRewind() {
-      // handle event
-      console.log('keep rewind');
+      this.$root.$emit(EVENT_TYPE.VIDEO_KEEP_REWIND);
     },
+    /**
+     * Fire when rewind button is cancel hold
+     */
     onStopKeepRewind() {
-      // handle event
-      console.log('stop keep rewind');
+      this.$root.$emit(EVENT_TYPE.VIDEO_STOP_KEEP_REWIND);
     },
     /**
      * Fire when play button is clicked
@@ -43,19 +47,22 @@ export default {
       this.$root.$emit(EVENT_TYPE.VIDEO_TOGGLE_PLAY);
     },
     /**
-     * Fire when fast-forward button is clicked
+     * Fire when forward button is clicked
      */
     onFastForward() {
-      // handle event
-      console.log('fast-forward');
+      this.$root.$emit(EVENT_TYPE.VIDEO_FORWARD);
     },
+    /**
+     * Fire when forward button is hold
+     */
     onKeepForward() {
-      // handle event
-      console.log('keep forward');
+      this.$root.$emit(EVENT_TYPE.VIDEO_KEEP_FORWARD);
     },
+    /**
+     * Fire when forward button is cancel hold
+     */
     onStopKeepForward() {
-      // handle event
-      console.log('stop keep forward');
+      this.$root.$emit(EVENT_TYPE.VIDEO_STOP_KEEP_FORWARD);
     }
   }
 };

@@ -14,7 +14,8 @@ import {
   DEFAULT_IMAGE,
   OBJECT_TYPE,
   IMAGE_LOCAL,
-  IMAGE_INDICATOR
+  IMAGE_INDICATOR,
+  VIDEO_EVENT_TYPE
 } from '../constants';
 
 /**
@@ -263,6 +264,9 @@ export const handleDragLeave = ({ target }) => {
 export const createVideoElement = src =>
   new Promise(resolve => {
     const ele = document.createElement('video');
+
+    ele.setAttribute('preload', 'metadata');
+
     ele.addEventListener(
       'loadedmetadata',
       () => {
@@ -272,7 +276,8 @@ export const createVideoElement = src =>
       },
       false
     );
-    ele.src = src;
+
+    ele.src = `${src}#t=0.01`;
   });
 
 /**
@@ -299,14 +304,27 @@ export const createVideoOverlay = (src, options) => {
 /**
  * Render video by video frames
  */
-export const requestAnimFrame = () => {
+export const requestAnimFrame = (isSeek = false) => {
   fabric.util.requestAnimFrame(function render() {
-    activeCanvas.renderAll();
-    const objects = activeCanvas.getObjects();
-    const isPlaying = objects.some(obj => obj.isPlaying);
-    if (isPlaying) {
-      fabric.util.requestAnimFrame(render);
+    if (!isSeek) {
+      activeCanvas.renderAll();
+      const objects = activeCanvas.getObjects();
+      const isPlaying = objects.some(obj => obj.isPlaying);
+      if (isPlaying) {
+        fabric.util.requestAnimFrame(render);
+      }
+
+      return;
     }
+
+    setTimeout(() => {
+      activeCanvas.renderAll();
+      const objects = activeCanvas.getObjects();
+      const isPlaying = objects.some(obj => obj.isPlaying);
+      if (isPlaying) {
+        fabric.util.requestAnimFrame(render);
+      }
+    }, 350);
   });
 };
 
@@ -327,7 +345,9 @@ export const setVideoSrc = async (
 
   const element = await createVideoElement(videoSrc);
 
-  element.addEventListener('play', () => {
+  element.currentTime = 0;
+
+  element.addEventListener(VIDEO_EVENT_TYPE.PLAY, () => {
     imageObject.set({
       isPlaying: true,
       showThumbnail: false,
@@ -337,7 +357,7 @@ export const setVideoSrc = async (
     requestAnimFrame();
   });
 
-  element.addEventListener('pause', () => {
+  element.addEventListener(VIDEO_EVENT_TYPE.PAUSE, () => {
     imageObject.set({ isPlaying: false, showPlayIcon: true, dirty: true });
 
     if (element.currentTime === element.duration) {
@@ -348,6 +368,22 @@ export const setVideoSrc = async (
 
     requestAnimFrame();
   });
+
+  element.addEventListener(
+    VIDEO_EVENT_TYPE.SEEK,
+    () => {
+      if (!imageObject.isPlaying) {
+        imageObject.set({
+          showThumbnail: false,
+          showPlayIcon: true,
+          dirty: true
+        });
+      }
+
+      requestAnimFrame(true);
+    },
+    false
+  );
 
   imageObject.setElement(element);
 

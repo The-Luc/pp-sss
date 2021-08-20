@@ -79,7 +79,8 @@ import {
   copyPpObject,
   inToPx,
   pastePpObject,
-  isDeleteKey
+  isDeleteKey,
+  isVideoPlaying
 } from '@/common/utils';
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
 
@@ -95,7 +96,8 @@ import {
   MAX_SUPPLEMENTAL_FRAMES,
   MIN_IMAGE_SIZE,
   PASTE,
-  THUMBNAIL_IMAGE_CONFIG
+  THUMBNAIL_IMAGE_CONFIG,
+  VIDEO_SPEED_UP_TIME
 } from '@/common/constants/config';
 import { useStyle } from '@/hooks/style';
 import { useSaveData, useObject } from '../composables';
@@ -485,6 +487,30 @@ export default {
         {
           name: EVENT_TYPE.VIDEO_TOGGLE_PLAY,
           handler: this.videoTogglePlay
+        },
+        {
+          name: EVENT_TYPE.VIDEO_REWIND,
+          handler: this.videoRewind
+        },
+        {
+          name: EVENT_TYPE.VIDEO_KEEP_REWIND,
+          handler: this.videoKeepRewind
+        },
+        {
+          name: EVENT_TYPE.VIDEO_STOP_KEEP_REWIND,
+          handler: this.videoCancelRewind
+        },
+        {
+          name: EVENT_TYPE.VIDEO_FORWARD,
+          handler: this.videoForward
+        },
+        {
+          name: EVENT_TYPE.VIDEO_KEEP_FORWARD,
+          handler: this.videoKeepForward
+        },
+        {
+          name: EVENT_TYPE.VIDEO_STOP_KEEP_FORWARD,
+          handler: this.videoCancelForward
         }
       ];
 
@@ -647,19 +673,20 @@ export default {
     singleObjectSelected(target) {
       const { id } = target;
 
-      const targetType = target.get('type');
+      const objectData = this.currentObjects?.[id];
+
+      if (isEmpty(objectData)) return;
 
       this.setSelectedObjectId({ id });
 
       setBorderHighlight(target, this.sheetLayout);
 
-      const objectData = this.currentObjects?.[id];
+      this.setCurrentObject(this.getObjectProperties(objectData, target));
 
-      if (isEmpty(objectData)) return;
-
-      this.setCurrentObject(objectData);
-
-      if (targetType === 'group' && objectData.type === OBJECT_TYPE.TEXT) {
+      if (
+        target.get('type') === 'group' &&
+        objectData.type === OBJECT_TYPE.TEXT
+      ) {
         const rectObj = target.getObjects(OBJECT_TYPE.RECT)[0];
 
         setBorderObject(rectObj, objectData);
@@ -1278,7 +1305,7 @@ export default {
 
       const newProp = this.updateElementProp(element, prop, objectType);
 
-      this.updateCurrentObject(element.id, newProp);
+      this.updateCurrentObject(element, newProp);
 
       if (
         !isEmpty(newProp['shadow']) ||
@@ -2035,16 +2062,22 @@ export default {
     /**
      * Update current object by mutate the store
      *
-     * @param {String | Number} id  id of selected object
-     * @param {Object}  newProp     new prop
+     * @param {Object}  element selected object
+     * @param {Object}  newProp new prop
      */
-    updateCurrentObject(id, newProp) {
+    updateCurrentObject(element, newProp) {
       return new Promise(resole => {
-        const prop = cloneDeep(this.currentObjects?.[id]);
+        if (isEmpty(this.currentObjects)) {
+          resole();
+
+          return;
+        }
+
+        const prop = cloneDeep(this.currentObjects[element.id]);
 
         merge(prop, newProp);
 
-        this.setCurrentObject(prop);
+        this.setCurrentObject(this.getObjectProperties(prop, element));
 
         resole();
       });
@@ -2146,19 +2179,16 @@ export default {
     videoTogglePlay() {
       const video = this.digitalCanvas.getActiveObject();
 
-      if (isEmpty(video)) return;
+      if (isEmpty(video) || isEmpty(this.currentObjects)) return;
 
-      const isPlayingProp = video.get('isPlaying');
-
-      const isPlaying = isEmpty(isPlayingProp) ? false : isPlayingProp;
+      const isPlaying = isVideoPlaying(video);
 
       isPlaying ? video.pause() : video.play();
 
-      const prop = cloneDeep(this.currentObjects?.[video.id]);
-
-      prop.isPlaying = !isPlaying;
-
-      this.setCurrentObject(prop);
+      this.setCurrentObject({
+        ...this.currentObjects[video.id],
+        isPlaying: !isPlaying
+      });
     },
     /**
      * Fire when video is finish playing
@@ -2175,6 +2205,72 @@ export default {
       prop.isPlaying = false;
 
       this.setCurrentObject(prop);
+    },
+    /**
+     * Rewind current video
+     */
+    videoRewind() {
+      const video = this.digitalCanvas.getActiveObject();
+
+      if (isEmpty(video)) return;
+
+      video.seek(-VIDEO_SPEED_UP_TIME);
+    },
+    /**
+     * Keep rewind current video
+     */
+    videoKeepRewind() {
+      const video = this.digitalCanvas.getActiveObject();
+
+      if (isEmpty(video)) return;
+    },
+    /**
+     * Cancel keep rewind current video
+     */
+    videoCancelRewind() {
+      const video = this.digitalCanvas.getActiveObject();
+
+      if (isEmpty(video)) return;
+    },
+    /**
+     * Froward current video
+     */
+    videoForward() {
+      const video = this.digitalCanvas.getActiveObject();
+
+      if (isEmpty(video)) return;
+
+      video.seek(VIDEO_SPEED_UP_TIME);
+    },
+    /**
+     * Keep forward current video
+     */
+    videoKeepForward() {
+      const video = this.digitalCanvas.getActiveObject();
+
+      if (isEmpty(video)) return;
+    },
+    /**
+     * Cancel keep forward current video
+     */
+    videoCancelForward() {
+      const video = this.digitalCanvas.getActiveObject();
+
+      if (isEmpty(video)) return;
+    },
+    /**
+     * Get properties with video specific value
+     *
+     * @param   {Object}  prop  current object properties
+     * @param   {Object}  video video element
+     * @returns                 new properties
+     */
+    getObjectProperties(prop, video) {
+      if (prop.type !== OBJECT_TYPE.VIDEO) return prop;
+
+      const isPlaying = isVideoPlaying(video);
+
+      return { ...prop, isPlaying };
     }
   }
 };

@@ -1,29 +1,25 @@
 <template>
   <div class="control-container">
     <span class="properties-title">Control:</span>
+
     <div class="control-group">
-      <v-btn
-        text
+      <SpeedControl
+        :is-forward="false"
         @click="onRewind"
-        @mousedown="onKeepRewind"
-        @mouseup="onStopKeepForward"
-      >
-        <v-icon>fast_rewind</v-icon>
-      </v-btn>
+        @mouseDown="onKeepRewind"
+        @mouseUp="onStopKeepForward"
+      />
 
       <v-btn text @click="onTogglePlay">
         <v-icon v-if="!isPlaying">mdi-play</v-icon>
         <v-icon v-else>mdi-pause</v-icon>
       </v-btn>
 
-      <v-btn
-        text
+      <SpeedControl
         @click="onFastForward"
-        @mousedown="onKeepForward"
-        @mouseup="onStopKeepRewind"
-      >
-        <v-icon>fast_forward</v-icon>
-      </v-btn>
+        @mouseDown="onKeepForward"
+        @mouseUp="onStopKeepRewind"
+      />
     </div>
   </div>
 </template>

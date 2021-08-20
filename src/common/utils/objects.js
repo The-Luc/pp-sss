@@ -8,6 +8,7 @@ import {
 } from '@/common/models/element';
 
 import { OBJECT_TYPE } from '@/common/constants';
+import { isEmpty } from './util';
 
 /**
  * Computed ratio and return coordinate and dimension of object
@@ -136,4 +137,16 @@ export const entityToObject = entity => {
  */
 export const entitiesToObjects = entities => {
   return entities.map(entity => entityToObject(entity)).filter(Boolean);
+};
+
+/**
+ * Check if video is playing
+ *
+ * @param   {Object}  video video to check
+ * @returns {Boolean}       is video playing
+ */
+export const isVideoPlaying = video => {
+  const isPlaying = video.get('isPlaying');
+
+  return isEmpty(isPlaying) ? false : isPlaying;
 };
