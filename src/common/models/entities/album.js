@@ -1,6 +1,6 @@
-import { BaseElementEntity } from './elements';
+import { BaseEntity } from '../base';
 
-export class AlbumEntity extends BaseElementEntity {
+export class AlbumEntity extends BaseEntity {
   type = 'Album';
   name = '';
   displayDate = '';

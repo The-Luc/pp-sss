@@ -6,7 +6,7 @@ import FeedbackBar from '@/containers/HeaderEdition/FeedbackBar';
 import ScreenEdition from './ScreenEdition';
 import SidebarSection from './SidebarSection';
 import PhotoSidebar from '@/components/PhotoSidebar';
-import ModalAddMedia from '@/containers/Modal/Media';
+import MediaModal from '@/containers/Modal/Media';
 import SheetMedia from '@/components/SheetMedia';
 
 import { GETTERS, MUTATES } from '@/store/modules/app/const';
@@ -104,7 +104,7 @@ export default {
     ScreenEdition,
     SidebarSection,
     PhotoSidebar,
-    ModalAddMedia,
+    MediaModal,
     SheetMedia
   },
   computed: {
