@@ -3,6 +3,7 @@ import TabUploadMedia from '@/components/ModalMediaSelection/TabUploadMedia';
 import Smartbox from '@/components/ModalMediaSelection/Smartbox';
 import TabMedia from '@/components/ModalMediaSelection/TabMedia';
 import TabSearchPhotos from '@/components/ModalMediaSelection/TabSearch';
+import { getFileExtension } from '@/common/utils';
 
 import {
   useGetterEditionSection,
@@ -72,7 +73,7 @@ export default {
       },
       albums: [],
       mediaDropdowns: {},
-      onlyVideoUploaded: false
+      isOnlyVideoUploaded: false
     };
   },
   props: {
@@ -104,7 +105,7 @@ export default {
     isOpenModal(val) {
       if (!val || !this.selectedAlbumId) return;
 
-      this.defaultTab = this.onlyVideoUploaded ? 'videos' : 'photos';
+      this.defaultTab = this.isOnlyVideoUploaded ? 'videos' : 'photos';
       this.onChangeTab(this.defaultTab);
     }
   },
@@ -210,9 +211,8 @@ export default {
      * @param   {Array}  files  files user upload
      */
     onUploadMedia(files) {
-      this.onlyVideoUploaded = !files.some(el => {
-        const splitName = el.name.split('.');
-        const type = `.${splitName[splitName.length - 1].toLowerCase()}`;
+      this.isOnlyVideoUploaded = !files.some(el => {
+        const type = getFileExtension(el.name);
         return !VIDEO_TYPES.includes(type);
       });
       this.$emit('uploadMedia', files);

@@ -4,6 +4,7 @@ import {
   IMAGE_NOTIFICATION,
   MEDIA_NOTIFICATION
 } from '@/common/constants';
+import { getFileExtension } from '@/common/utils';
 
 export default {
   data() {
@@ -93,8 +94,7 @@ export default {
      * @returns {Boolean} file in correct format
      */
     checkValidFile(file) {
-      const splitName = file.name.split('.');
-      const type = `.${splitName[splitName.length - 1].toLowerCase()}`;
+      const type = getFileExtension(file.name);
       return this.mediaTypes.includes(type);
     },
     /**
