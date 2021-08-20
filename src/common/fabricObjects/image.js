@@ -370,6 +370,7 @@ export const setVideoSrc = async (
     playIcon,
     showThumbnail: true,
     showPlayIcon: true,
+    thumbnailUrl: thumbnailSrc,
     objectType: OBJECT_TYPE.VIDEO
   };
 

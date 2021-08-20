@@ -165,7 +165,8 @@ export default {
       rulerSize: { width: '0', height: '0' },
       isCanvasChanged: false,
       autoSaveTimer: null,
-      undoRedoCanvas: null
+      undoRedoCanvas: null,
+      printCanvas: null
     };
   },
   computed: {
@@ -640,10 +641,11 @@ export default {
     onContainerReady(containerSize) {
       this.containerSize = containerSize;
       let el = this.$refs.canvas;
-      window.printCanvas = new fabric.Canvas(el, {
+      this.printCanvas = new fabric.Canvas(el, {
         backgroundColor: '#fff',
         preserveObjectStacking: true
       });
+      window.printCanvas = this.printCanvas;
       setActiveCanvas(window.printCanvas);
       usePrintOverrides(fabric.Object.prototype);
       this.updateCanvasSize();

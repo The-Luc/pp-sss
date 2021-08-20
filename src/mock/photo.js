@@ -76,7 +76,7 @@ const video3 = new VideoAssetEntity({
   isMedia: true
 });
 
-const mediaBase = [photo1, photo2, photo3, video3, video2, video1];
+const mediaBase = [photo1, photo2, photo3, video1, video2, video3];
 
 const media = Array.from({ length: 20 }, () => {
   const inProject = Math.random() * 5 < 2;

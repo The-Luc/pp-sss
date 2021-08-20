@@ -36,12 +36,7 @@ import {
   useSheet,
   useProperties
 } from '@/hooks';
-import {
-  isEmpty,
-  isPositiveInteger,
-  getEditionListPath,
-  activeCanvas
-} from '@/common/utils';
+import { isEmpty, isPositiveInteger, getEditionListPath } from '@/common/utils';
 import { COPY_OBJECT_KEY } from '@/common/constants/config';
 
 import { useSaveData } from './composables';
@@ -242,7 +237,8 @@ export default {
      * Handle autoflow
      */
     async handleAutoflow() {
-      activeCanvas.discardActiveObject();
+      const canvas = this.$refs.canvasEditor.digitalCanvas;
+      canvas.discardActiveObject();
 
       const objects = getAvailableImages();
       const media = this.sheetMedia || [];
@@ -259,7 +255,7 @@ export default {
 
       const props = await Promise.all(promises);
 
-      activeCanvas.renderAll();
+      canvas.renderAll();
 
       this.$refs.canvasEditor.getThumbnailUrl();
 
@@ -334,7 +330,7 @@ export default {
      */
     onDrag(item) {
       this.dragItem = item;
-      activeCanvas.discardActiveObject();
+      this.$refs.canvasEditor.digitalCanvas.discardActiveObject();
     },
 
     /**
@@ -357,7 +353,7 @@ export default {
       } = this.dragItem;
 
       const target = event.target;
-      const pointer = activeCanvas.getPointer(event.e);
+      const pointer = this.$refs.canvasEditor.digitalCanvas.getPointer(event.e);
 
       this.dragItem = null;
 
@@ -396,9 +392,11 @@ export default {
       this.setPropertyById({ id: target.id, prop });
       this.$refs.canvasEditor.getThumbnailUrl();
 
-      activeCanvas.setActiveObject(target);
+      this.$refs.canvasEditor.digitalCanvas.setActiveObject(target);
 
-      activeCanvas.renderAll();
+      setTimeout(() => {
+        this.$refs.canvasEditor.digitalCanvas.renderAll();
+      }, 250);
     }
   }
 };

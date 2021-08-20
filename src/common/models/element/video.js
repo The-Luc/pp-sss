@@ -7,10 +7,12 @@ export class VideoElementObject extends BaseMoveableElementObject {
   styleId = DEFAULT_IMAGE.STYLE_ID;
   imageId = null;
   imageUrl = '';
+  hasImage = false;
   centerCrop = new ImageCrop();
   strokeUniform = DEFAULT_IMAGE.STROKE_UNIFORM;
   paintFirst = DEFAULT_IMAGE.PAINT_FIRST;
   isConstrain = true;
+  thumbnailUrl = '';
 
   /**
    * @param {VideoElementObject} props

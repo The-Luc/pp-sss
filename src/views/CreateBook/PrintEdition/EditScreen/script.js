@@ -38,12 +38,7 @@ import {
   useObjectProperties
 } from '@/hooks';
 import { EDITION } from '@/common/constants';
-import {
-  isEmpty,
-  isPositiveInteger,
-  getEditionListPath,
-  activeCanvas
-} from '@/common/utils';
+import { isEmpty, isPositiveInteger, getEditionListPath } from '@/common/utils';
 
 import { useSaveData } from './PageEdition/composables';
 import {
@@ -249,7 +244,8 @@ export default {
      * Handle autoflow
      */
     async handleAutoflow() {
-      activeCanvas.discardActiveObject();
+      const canvas = this.$refs.canvasEditor.printCanvas;
+      canvas.discardActiveObject();
 
       const objects = getAvailableImages();
       const images = this.sheetMedia || [];
@@ -261,7 +257,7 @@ export default {
 
       const props = await Promise.all(promises);
 
-      activeCanvas.renderAll();
+      canvas.renderAll();
       this.$refs.canvasEditor.getThumbnailUrl();
 
       this.setPropOfMultipleObjects({ data: props });
@@ -295,7 +291,7 @@ export default {
      */
     onDrag(item) {
       this.dragItem = item;
-      activeCanvas.discardActiveObject();
+      this.$refs.canvasEditor.printCanvas.discardActiveObject();
     },
 
     /**
@@ -315,7 +311,7 @@ export default {
       } = this.dragItem;
 
       const target = event.target;
-      const pointer = activeCanvas.getPointer(event.e);
+      const pointer = this.$refs.canvasEditor.printCanvas.getPointer(event.e);
 
       this.dragItem = null;
 
@@ -344,8 +340,10 @@ export default {
       this.setPropertyById({ id: target.id, prop });
       this.$refs.canvasEditor.getThumbnailUrl();
 
-      activeCanvas.setActiveObject(target);
-      activeCanvas.renderAll();
+      this.$refs.canvasEditor.printCanvas.setActiveObject(target);
+      setTimeout(() => {
+        this.$refs.canvasEditor.printCanvas.renderAll();
+      }, 250);
     },
     /**
      * Undo user action
