@@ -304,27 +304,30 @@ export const createVideoOverlay = (src, options) => {
 /**
  * Render video by video frames
  */
+const reqAnimFrame = renderFn => {
+  activeCanvas.renderAll();
+
+  const objects = activeCanvas.getObjects();
+
+  const isPlaying = objects.some(obj => obj.isPlaying);
+
+  if (isPlaying) {
+    fabric.util.requestAnimFrame(renderFn);
+  }
+};
+
+/**
+ * Render video by video frames
+ */
 export const requestAnimFrame = (isSeek = false) => {
   fabric.util.requestAnimFrame(function render() {
     if (!isSeek) {
-      activeCanvas.renderAll();
-      const objects = activeCanvas.getObjects();
-      const isPlaying = objects.some(obj => obj.isPlaying);
-      if (isPlaying) {
-        fabric.util.requestAnimFrame(render);
-      }
+      reqAnimFrame(render);
 
       return;
     }
 
-    setTimeout(() => {
-      activeCanvas.renderAll();
-      const objects = activeCanvas.getObjects();
-      const isPlaying = objects.some(obj => obj.isPlaying);
-      if (isPlaying) {
-        fabric.util.requestAnimFrame(render);
-      }
-    }, 350);
+    setTimeout(() => reqAnimFrame(render), 350);
   });
 };
 
