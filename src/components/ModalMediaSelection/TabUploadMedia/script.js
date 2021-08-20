@@ -1,3 +1,10 @@
+import {
+  IMAGE_TYPES,
+  MEDIA_TYPES,
+  IMAGE_NOTIFICATION,
+  MEDIA_NOTIFICATION
+} from '@/common/constants';
+
 export default {
   data() {
     return {
@@ -6,9 +13,17 @@ export default {
     };
   },
   props: {
-    mediaTypes: {
-      type: Array,
-      required: true
+    isModalMedia: {
+      type: Boolean,
+      required: false
+    }
+  },
+  computed: {
+    mediaTypes() {
+      return this.isModalMedia ? MEDIA_TYPES : IMAGE_TYPES;
+    },
+    notification() {
+      return this.isModalMedia ? MEDIA_NOTIFICATION : IMAGE_NOTIFICATION;
     }
   },
   methods: {

@@ -22,7 +22,7 @@ import {
   VIDEO_CATEGORIES,
   PHOTO_CATEGORIES,
   ALL_MEDIA_SUBCATEGORY_ID,
-  IMAGE_TYPES
+  VIDEO_TYPES
 } from '@/common/constants';
 
 export default {
@@ -72,7 +72,7 @@ export default {
       },
       albums: [],
       mediaDropdowns: {},
-      mediaTypes: IMAGE_TYPES
+      onlyVideoUploaded: false
     };
   },
   props: {
@@ -104,8 +104,8 @@ export default {
     isOpenModal(val) {
       if (!val || !this.selectedAlbumId) return;
 
-      this.defaultTab = 'photos';
-      this.onChangeTab('photos');
+      this.defaultTab = this.onlyVideoUploaded ? 'videos' : 'photos';
+      this.onChangeTab(this.defaultTab);
     }
   },
   async mounted() {
@@ -210,6 +210,11 @@ export default {
      * @param   {Array}  files  files user upload
      */
     onUploadMedia(files) {
+      this.onlyVideoUploaded = !files.some(el => {
+        const splitName = el.name.split('.');
+        const type = `.${splitName[splitName.length - 1].toLowerCase()}`;
+        return !VIDEO_TYPES.includes(type);
+      });
       this.$emit('uploadMedia', files);
     },
 
