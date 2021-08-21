@@ -104,7 +104,9 @@ export default {
      * @returns {Array} id of selected album
      */
     getSelectedImageId() {
-      return this.selectedType.sub?.sub?.value || this.selectedType.sub?.value;
+      if (isEmpty(this.selectedType.sub)) return null;
+
+      return this.selectedType.sub.sub?.value || this.selectedType.sub.value;
     },
     /**
      * Get id of all selected album when user select all
