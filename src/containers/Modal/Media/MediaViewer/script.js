@@ -276,7 +276,9 @@ export default {
         value: data.value,
         sub: {
           value: data.sub.value,
-          sub: data.sub.sub?.value
+          sub: {
+            value: data.sub.sub?.value
+          }
         }
       };
     }

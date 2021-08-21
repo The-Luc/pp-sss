@@ -52,29 +52,67 @@ export default {
 
       if (isEmpty(item)) return { value: '', sub: '' };
 
-      const selectedValue =
-        typeof this.selectedVal.sub === 'object'
-          ? this.selectedVal.sub.value
-          : this.selectedVal.sub;
-
-      const sub = item.subItems.find(({ value }) => value === selectedValue);
-
+      const sub = this.getSubRecursion(this.selectedVal, item.subItems);
       return {
         ...item,
         sub: isEmpty(sub) ? { name: '' } : sub
       };
     },
     displaySelected() {
-      const subName = this.isUseSubShortName
-        ? this.selectedValue.sub?.shortName
-        : this.selectedValue.sub?.name;
+      const displaySubName = this.getDisplaySubName(this.selectedValue);
 
-      const displaySubName = isEmpty(subName) ? '' : `: ${subName}`;
-
-      return `${this.selectedValue.name}${displaySubName}`;
+      return `${this.selectedValue.name}: ${displaySubName}`;
+    }
+  },
+  watch: {
+    displaySelected: {
+      deep: true,
+      handler(val) {
+        this.$emit('changeDisplaySelected', val);
+      }
     }
   },
   methods: {
+    /**
+     * Get display sub name
+     * @param   {Object}  selectedValue  current value
+     * @returns {String}  display sub name
+     */
+    getDisplaySubName(selectedValue) {
+      const subName = this.isUseSubShortName
+        ? selectedValue.sub?.shortName
+        : selectedValue.sub?.name;
+
+      if (!selectedValue.sub?.sub) {
+        return isEmpty(subName) ? '' : `${subName}`;
+      }
+
+      return isEmpty(subName)
+        ? ''
+        : `${subName}: ${this.getDisplaySubName(selectedValue.sub)}`;
+    },
+    /**
+     * Get sub value of selected item
+     *
+     * @param   {Object}  selectedVal  current item
+     * @param   {Array}  items  sub items
+     * @returns {Object} sub value
+     */
+    getSubRecursion(selectedVal, items) {
+      const selectedValue =
+        typeof selectedVal.sub === 'object'
+          ? selectedVal.sub.value
+          : selectedVal.sub;
+
+      const sub = items.find(({ value }) => value === selectedValue);
+
+      if (isEmpty(sub?.subItems)) return sub;
+
+      return {
+        ...sub,
+        sub: this.getSubRecursion(selectedVal.sub, sub.subItems)
+      };
+    },
     /**
      * Get option select after change and emit
      *

@@ -95,5 +95,8 @@
     font-size: 14px;
     font-family: $font-300;
     color: $color-stoodio-toolbartext;
+    span {
+      font-family: $font-500;
+    }
   }
 }

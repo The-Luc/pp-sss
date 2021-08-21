@@ -1,13 +1,16 @@
 <template>
   <div class="album-container">
-    <div v-if="!emptyCategory" class="album-title">
+    <div v-if="!emptyCategory.name" class="album-title">
       <div class="album-name">
         {{ name }}
         <span> {{ searchInput }}</span>
       </div>
       <div class="album-date">{{ displayDate }}</div>
     </div>
-    <div v-else class="empty-category">There are no {{ emptyCategory }}</div>
+    <div v-else class="empty-category">
+      There are no {{ emptyCategory.type }} in
+      <span>{{ emptyCategory.name }}</span>
+    </div>
     <div class="image-container">
       <div
         v-for="asset in assets"

@@ -7,6 +7,7 @@
           :container="`#${dropdownId}`"
           :items="dropdownOptions"
           :selected-val="selectedType"
+          @changeDisplaySelected="changeDisplaySelected"
           @change="onChangeType"
         />
       </div>
@@ -25,7 +26,7 @@
       </template>
 
       <template v-else>
-        <AlbumItem :empty-category="currentCategory" />
+        <AlbumItem :empty-category="emptyCategory" />
       </template>
     </div>
     <PopupSelected v-if="isShowPopupSelected" :amount="selectedMedia.length" />
