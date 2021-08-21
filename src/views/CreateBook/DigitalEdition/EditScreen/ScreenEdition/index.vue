@@ -1,6 +1,6 @@
 <template>
   <div class="screen-edition">
-    <div class="row digital-canvas-container">
+    <div class="digital-canvas-container">
       <SizeWrapper @mounted="onContainerReady" @updated="onContainerResized">
         <canvas
           id="digitalCanvas"

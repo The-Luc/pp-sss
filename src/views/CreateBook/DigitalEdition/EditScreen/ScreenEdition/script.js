@@ -234,6 +234,8 @@ export default {
         return;
       }
 
+      this.setToolNameSelected({ name: '' });
+
       const isSwitchFrame = this.frames.find(
         f => String(f.id) === String(oldVal)
       );

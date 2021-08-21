@@ -1,5 +1,4 @@
 .frames-container {
-  height: 107px;
   border-top: 1px solid $color-gray6;
 
   .frame-row {
@@ -15,7 +14,7 @@
   }
 
   .frame-container {
-    margin: 18px 24px;
+    margin: 18px 24px 5px;
     position: relative;
 
     &:nth-child(n + 2)::before {
@@ -135,7 +134,7 @@
 @media only screen and (max-width: 1600px) {
   .frames-container {
     .frame-container {
-      margin: 12px 20px;
+      margin: 12px 20px 0px;
 
       &:nth-child(n + 2)::before {
         left: -41px;
@@ -152,7 +151,7 @@
 @media screen and (max-width: 1366px) {
   .frames-container {
     .frame-container {
-      margin: 10px 15px;
+      margin: 10px 15px 0px;
 
       &:nth-child(n + 2)::before {
         left: -30px;

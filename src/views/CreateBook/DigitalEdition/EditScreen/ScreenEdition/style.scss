@@ -1,8 +1,9 @@
 .screen-edition {
   width: calc(100% - 167px);
+  height: calc(100vh - 161px);
   padding: 0;
-  border-left: 1px solid #808184;
-  background: #f4f4f4;
+  border-left: 1px solid $color-gray6;
+  background: $color-white4;
   display: flex;
   flex-direction: column;
 
@@ -10,65 +11,10 @@
     margin: 24px;
     position: relative;
     overflow: auto;
-
+    height: calc(100% - 190px);
     .digital-canvas {
-      box-shadow: 1px 1px 3px 1px rgba(0, 0, 0, 0.25);
-      background-color: white;
-    }
-  }
-  .frames-container {
-    border-top: 1px solid #808184;
-    .frame-container {
-      margin: 18px 24px;
-      position: relative;
-      &:nth-child(n + 2)::before {
-        position: absolute;
-        top: 0;
-        left: -48px;
-        content: '';
-        display: block;
-        width: 48px;
-        height: calc(50% - 9px);
-        border-bottom: 1px solid #808184;
-      }
-      &:nth-last-child(1)::before {
-        border-bottom: 1px dashed #808184;
-      }
-
-      .frame-item {
-        cursor: pointer;
-        width: 160px;
-        height: 95px;
-        background: white;
-
-        border: 0.5px solid #808184;
-        position: relative;
-        &.active {
-          border: 2px solid #42738d;
-        }
-      }
-      .frame-item.add-frame {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        background: transparent;
-        border: 1px dashed #808184;
-        .add-frame-content {
-          font-size: 11px;
-          font-family: $font-500;
-          cursor: pointer;
-        }
-        .v-icon {
-          font-size: 12px;
-          color: #58595b;
-        }
-      }
-      .frame-name {
-        font-family: $font-700;
-        font-size: 10px;
-        color: #565656;
-        padding-top: 2px;
-      }
+      box-shadow: 1px 1px 3px 1px rgba($color-black, 0.25);
+      background-color: $color-white;
     }
   }
 }
@@ -76,19 +22,7 @@
   .screen-edition {
     .digital-canvas-container {
       margin: 20px;
-    }
-    .frames-container {
-      .frame-container {
-        margin: 12px 20px;
-        &:nth-child(n + 2)::before {
-          left: -41px;
-          width: 40px;
-        }
-      }
-      .frame-item {
-        width: 140px !important;
-        height: 85px !important;
-      }
+      height: calc(100% - 160px);
     }
   }
 }
@@ -96,19 +30,7 @@
   .screen-edition {
     .digital-canvas-container {
       margin: 15px;
-    }
-    .frames-container {
-      .frame-container {
-        margin: 10px 15px;
-        &:nth-child(n + 2)::before {
-          left: -31px;
-          width: 30px;
-        }
-      }
-      .frame-item {
-        width: 120px !important;
-        height: 70px !important;
-      }
+      height: calc(100% - 133px);
     }
   }
 }

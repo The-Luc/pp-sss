@@ -34,7 +34,8 @@ import {
   useInfoBar,
   useActionsEditionSheet,
   useSheet,
-  useProperties
+  useProperties,
+  useObjectProperties
 } from '@/hooks';
 import { isEmpty, isPositiveInteger, getEditionListPath } from '@/common/utils';
 import { COPY_OBJECT_KEY } from '@/common/constants/config';
@@ -65,6 +66,7 @@ export default {
     const { updateSheetMedia } = useActionsEditionSheet();
     const { sheetMedia } = useSheet();
     const { setPropertyById, setPropOfMultipleObjects } = useProperties();
+    const { listObjects } = useObjectProperties();
 
     return {
       pageSelected,
@@ -83,7 +85,8 @@ export default {
       updateSheetMedia,
       sheetMedia,
       setPropertyById,
-      setPropOfMultipleObjects
+      setPropOfMultipleObjects,
+      listObjects
     };
   },
   data() {
@@ -113,6 +116,13 @@ export default {
     },
     isOpenMediaSidebar() {
       return this.selectedToolName === TOOL_NAME.MEDIA;
+    },
+    disabledAutoflow() {
+      const hasEmptyImage = Object.values(this.listObjects).some(
+        obj => obj.type === OBJECT_TYPE.IMAGE && !obj.hasImage
+      );
+
+      return !hasEmptyImage;
     }
   },
   watch: {
