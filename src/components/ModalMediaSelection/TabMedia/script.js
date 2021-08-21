@@ -38,6 +38,14 @@ export default {
       default: false
     }
   },
+  data() {
+    return {
+      emptyCategory: {
+        name: '',
+        type: ''
+      }
+    };
+  },
   computed: {
     selectedAlbums() {
       const albumId = this.getSelectedImageId();
@@ -59,14 +67,6 @@ export default {
 
     isEmptyCategory() {
       return isEmpty(this.selectedAlbums);
-    },
-
-    currentCategory() {
-      return (
-        Object.values(this.mediaCategories).find(
-          item => item.value === this.selectedType.value
-        )?.name || ''
-      );
     },
 
     mediaCategories() {
@@ -104,7 +104,7 @@ export default {
      * @returns {Array} id of selected album
      */
     getSelectedImageId() {
-      return this.selectedType.sub.sub || this.selectedType.sub.value;
+      return this.selectedType.sub?.sub?.value || this.selectedType.sub?.value;
     },
     /**
      * Get id of all selected album when user select all
@@ -116,9 +116,9 @@ export default {
         item => item.value === this.selectedType.value
       );
 
-      const arrayAlbumSelected = this.selectedType.sub.sub
+      const arrayAlbumSelected = this.selectedType.sub?.sub?.value
         ? typeSelected.subItems.find(item => {
-            return item.value === this.selectedType.sub.value;
+            return item.value === this.selectedType.sub?.value;
           }).subItems
         : typeSelected.subItems;
 
@@ -192,6 +192,15 @@ export default {
           assets
         };
       });
+    },
+    /**
+     * Event change display selected and get empty category
+     */
+    changeDisplaySelected(val) {
+      this.emptyCategory = {
+        name: val,
+        type: this.isVideo ? 'videos' : 'photos'
+      };
     }
   }
 };
