@@ -44,6 +44,14 @@ export const CANVAS_EVENT_TYPE = {
 
 export const WINDOW_EVENT_TYPE = {
   KEY_UP: 'keyup',
+  KEY_DOWN: 'keydown',
   COPY: 'copy',
   PASTE: 'paste'
+};
+
+export const VIDEO_EVENT_TYPE = {
+  PLAY: 'play',
+  PAUSE: 'pause',
+  STOP: 'stop',
+  SEEK: 'seek'
 };

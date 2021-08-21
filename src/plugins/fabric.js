@@ -5,7 +5,8 @@ import {
   DEFAULT_TEXT,
   OBJECT_TYPE
 } from '@/common/constants';
-import { getRectDashes, ptToPx } from '@/common/utils';
+import { getRectDashes, isEmpty, ptToPx } from '@/common/utils';
+import { videoSeekEvent } from '@/common/utils';
 
 const BORDER_COLOR = {
   OUTER: '#ffffff',
@@ -389,22 +390,60 @@ export const useDoubleStroke = function(rect) {
   rect._render = rectRender;
 };
 
+const getTimeToSet = (checkTime, duration) => {
+  if (checkTime < 0) return 0;
+
+  if (checkTime > duration) return duration;
+
+  return checkTime;
+};
+
 /**
  * Handle play video
  */
 const play = function() {
   const element = this.getElement();
+
   if (!element || !element.play) return;
-  element.play.call(element);
+
+  const playPromise = element.play.call(element);
+
+  if (isEmpty(playPromise)) {
+    playPromise.catch(() => {}); // prevent play & pause error
+  }
 };
 
 /**
- * Handle pause vide
+ * Handle pause video
  */
 const pause = function() {
   const element = this.getElement();
+
   if (!element || !element.pause) return;
+
   element.pause.call(element);
+};
+
+/**
+ * Handle seek to time of video
+ */
+const seek = function(seekTime) {
+  const element = this.getElement();
+
+  if (!element) return;
+
+  const isStart = element.currentTime === 0;
+  const isEnd = element.currentTime === element.duration;
+
+  if (seekTime < 0 && isStart) return;
+
+  if (seekTime > 0 && isEnd) return;
+
+  const nextTime = element.currentTime + seekTime;
+
+  element.currentTime = getTimeToSet(nextTime, element.duration);
+
+  element.dispatchEvent(videoSeekEvent);
 };
 
 /**
@@ -419,6 +458,7 @@ export const imageBorderModifier = function(image) {
   image.drawClipPathOnCache = drawClipPathOnCache;
   image.play = play;
   image.pause = pause;
+  image.seek = seek;
 };
 
 /**

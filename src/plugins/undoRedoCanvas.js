@@ -9,7 +9,11 @@ import {
   isMacOs
 } from '@/common/utils';
 
-import { KEY_CODE, MAX_STEP_UNDO_REDO } from '@/common/constants';
+import {
+  KEY_CODE,
+  MAX_STEP_UNDO_REDO,
+  WINDOW_EVENT_TYPE
+} from '@/common/constants';
 
 import StoreTracker from './storeTracker';
 
@@ -39,7 +43,10 @@ class UndoRedoCanvas {
       maxStep: MAX_STEP_UNDO_REDO
     });
 
-    document.body.addEventListener('keydown', this._handleKeyPress);
+    document.body.addEventListener(
+      WINDOW_EVENT_TYPE.KEY_DOWN,
+      this._handleKeyPress
+    );
   }
 
   _handleKeyPress = event => {
@@ -103,7 +110,10 @@ class UndoRedoCanvas {
 
     this._storeTracker = null;
 
-    document.body.removeEventListener('keyup', this._handleKeyPress);
+    document.body.removeEventListener(
+      WINDOW_EVENT_TYPE.KEY_DOWN,
+      this._handleKeyPress
+    );
   };
 
   undo = () => {
