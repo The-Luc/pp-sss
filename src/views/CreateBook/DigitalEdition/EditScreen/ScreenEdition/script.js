@@ -1,6 +1,5 @@
 import { fabric } from 'fabric';
 
-import { DIGITAL_CANVAS_SIZE } from '@/common/constants/canvas';
 import SizeWrapper from '@/components/SizeWrapper';
 import AddBoxInstruction from '@/components/AddBoxInstruction';
 import Frames from './Frames';
@@ -15,7 +14,18 @@ import {
   MODAL_TYPES,
   OBJECT_TYPE,
   SAVE_STATUS,
-  TOOL_NAME
+  TOOL_NAME,
+  DIGITAL_CANVAS_SIZE,
+  AUTOSAVE_INTERVAL,
+  DEBOUNCE_MUTATION,
+  MAX_SUPPLEMENTAL_FRAMES,
+  MIN_IMAGE_SIZE,
+  PASTE,
+  THUMBNAIL_IMAGE_CONFIG,
+  VIDEO_SPEED_UP_TIME,
+  CANVAS_EVENT_TYPE,
+  EVENT_TYPE,
+  WINDOW_EVENT_TYPE
 } from '@/common/constants';
 import {
   addPrintClipArts,
@@ -61,11 +71,6 @@ import {
 } from '@/hooks';
 
 import {
-  CANVAS_EVENT_TYPE,
-  EVENT_TYPE,
-  WINDOW_EVENT_TYPE
-} from '@/common/constants/eventType';
-import {
   deleteSelectedObjects,
   isEmpty,
   pxToIn,
@@ -89,16 +94,8 @@ import {
   GETTERS as DIGITAL_GETTERS,
   MUTATES as DIGITAL_MUTATES
 } from '@/store/modules/digital/const';
+
 import { cloneDeep, debounce, merge, uniqueId } from 'lodash';
-import {
-  AUTOSAVE_INTERVAL,
-  DEBOUNCE_MUTATION,
-  MAX_SUPPLEMENTAL_FRAMES,
-  MIN_IMAGE_SIZE,
-  PASTE,
-  THUMBNAIL_IMAGE_CONFIG,
-  VIDEO_SPEED_UP_TIME
-} from '@/common/constants/config';
 import { useStyle } from '@/hooks/style';
 import { useSaveData, useObject } from '../composables';
 import { useSavingStatus } from '@/views/CreateBook/composables';
@@ -2225,6 +2222,8 @@ export default {
       const video = this.digitalCanvas.getActiveObject();
 
       if (isEmpty(video)) return;
+
+      video.rewind();
     },
     /**
      * Cancel keep rewind current video
@@ -2233,6 +2232,8 @@ export default {
       const video = this.digitalCanvas.getActiveObject();
 
       if (isEmpty(video)) return;
+
+      video.rewind(false);
     },
     /**
      * Froward current video
@@ -2251,6 +2252,8 @@ export default {
       const video = this.digitalCanvas.getActiveObject();
 
       if (isEmpty(video)) return;
+
+      video.forward();
     },
     /**
      * Cancel keep forward current video
@@ -2259,6 +2262,8 @@ export default {
       const video = this.digitalCanvas.getActiveObject();
 
       if (isEmpty(video)) return;
+
+      video.forward(false);
     },
     /**
      * Get properties with video specific value

@@ -44,3 +44,4 @@ export * from './saving';
 export * from './mediaTypes';
 export * from './uploadingProcessStatus';
 export * from './media';
+export * from './video';

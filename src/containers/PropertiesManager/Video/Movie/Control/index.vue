@@ -7,7 +7,7 @@
         :is-forward="false"
         @click="onRewind"
         @mouseDown="onKeepRewind"
-        @mouseUp="onStopKeepForward"
+        @mouseUp="onStopKeepRewind"
       />
 
       <v-btn text @click="onTogglePlay">
@@ -18,7 +18,7 @@
       <SpeedControl
         @click="onFastForward"
         @mouseDown="onKeepForward"
-        @mouseUp="onStopKeepRewind"
+        @mouseUp="onStopKeepForward"
       />
     </div>
   </div>

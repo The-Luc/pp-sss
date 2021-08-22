@@ -272,6 +272,7 @@ export const createVideoElement = src =>
       () => {
         ele.width = ele.videoWidth;
         ele.height = ele.videoHeight;
+
         resolve(ele);
       },
       false
@@ -288,6 +289,7 @@ export const createVideoElement = src =>
  */
 export const createVideoOverlay = (src, options) => {
   const ele = document.createElement('img');
+
   ele.src = src;
 
   if (options?.width) {
@@ -346,64 +348,95 @@ export const setVideoSrc = async (
 ) => {
   const { width, height, scaleX, scaleY } = imageObject;
 
-  const element = await createVideoElement(videoSrc);
+  const video = await createVideoElement(videoSrc);
 
-  element.currentTime = 0;
+  video.currentTime = 0;
 
-  element.addEventListener(VIDEO_EVENT_TYPE.PLAY, () => {
+  const unPlayProperties = {
+    isPlaying: false,
+    showPlayIcon: true,
+    dirty: true
+  };
+
+  video.addEventListener(VIDEO_EVENT_TYPE.PLAY, () => {
     imageObject.set({
       isPlaying: true,
       showThumbnail: false,
       showPlayIcon: false,
       dirty: true
     });
+
     requestAnimFrame();
   });
 
-  element.addEventListener(VIDEO_EVENT_TYPE.PAUSE, () => {
-    imageObject.set({ isPlaying: false, showPlayIcon: true, dirty: true });
+  video.addEventListener(VIDEO_EVENT_TYPE.PAUSE, () => {
+    if (video.isKeepRewind) return;
 
-    if (element.currentTime === element.duration) {
-      videoStopCallback(imageObject.id);
+    imageObject.set(unPlayProperties);
 
-      imageObject.set({ showThumbnail: true });
+    requestAnimFrame();
+  });
+
+  video.addEventListener(VIDEO_EVENT_TYPE.ENDED, () => {
+    if (video.isKeepRewind) return;
+
+    imageObject.set({
+      ...unPlayProperties,
+      showThumbnail: true
+    });
+
+    video.isTempPlaying = false;
+
+    requestAnimFrame();
+
+    videoStopCallback(imageObject.id);
+  });
+
+  video.addEventListener(VIDEO_EVENT_TYPE.SEEK, () => {
+    if (!imageObject.isPlaying) {
+      imageObject.set({
+        showThumbnail: false,
+        showPlayIcon: true,
+        dirty: true
+      });
     }
 
+    requestAnimFrame(true);
+  });
+
+  video.addEventListener(VIDEO_EVENT_TYPE.REWIND, () => {
+    imageObject.set({
+      showThumbnail: false,
+      showPlayIcon: false,
+      dirty: true
+    });
+
     requestAnimFrame();
   });
 
-  element.addEventListener(
-    VIDEO_EVENT_TYPE.SEEK,
-    () => {
-      if (!imageObject.isPlaying) {
-        imageObject.set({
-          showThumbnail: false,
-          showPlayIcon: true,
-          dirty: true
-        });
-      }
+  video.addEventListener(VIDEO_EVENT_TYPE.END_REWIND, () => {
+    imageObject.set(unPlayProperties);
 
-      requestAnimFrame(true);
-    },
-    false
-  );
+    requestAnimFrame();
+  });
 
-  imageObject.setElement(element);
+  imageObject.setElement(video);
 
   const thumbnail = createVideoOverlay(thumbnailSrc);
+
   const playIcon = createVideoOverlay(IMAGE_LOCAL.PLAY_ICON, {
     width: 300,
     height: 300
   });
 
-  const newScaleX = (width * scaleX) / element.width;
-  const newScaleY = (height * scaleY) / element.height;
+  const newScaleX = (width * scaleX) / video.width;
+  const newScaleY = (height * scaleY) / video.height;
 
   const newProp = {
     scaleX: newScaleX,
     scaleY: newScaleY,
-    width: element.width,
-    height: element.height,
+    width: video.width,
+    height: video.height,
     hasImage: true,
     thumbnail,
     playIcon,

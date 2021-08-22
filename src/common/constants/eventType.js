@@ -52,6 +52,8 @@ export const WINDOW_EVENT_TYPE = {
 export const VIDEO_EVENT_TYPE = {
   PLAY: 'play',
   PAUSE: 'pause',
-  STOP: 'stop',
-  SEEK: 'seek'
+  ENDED: 'ended',
+  SEEK: 'seek',
+  REWIND: 'fastRewind',
+  END_REWIND: 'endRewind'
 };
