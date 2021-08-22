@@ -1445,7 +1445,7 @@ export default {
                 image.object,
                 options.src,
                 options.thumbUrl,
-                this.videoStop
+                this.videoToggleStatus
               )
             : await setImageSrc(image.object, options.src);
 
@@ -1926,7 +1926,7 @@ export default {
 
       const url = customThumbnailUrl || thumbnailUrl;
 
-      await setVideoSrc(video, imageUrl, url, this.videoStop);
+      await setVideoSrc(video, imageUrl, url, this.videoToggleStatus);
       return video;
     },
 
@@ -2201,20 +2201,19 @@ export default {
       });
     },
     /**
-     * Fire when video is finish playing
+     * Update status of video on properties menu
      *
-     * @param {String | Number} id  id of finishing play video
+     * @param {String | Number} id        id of finishing play video
+     * @param {Boolean}         isPlaying is video playing
      */
-    videoStop(id) {
+    videoToggleStatus(id, isPlaying = false) {
       const currentObjectId = this.getProperty('id');
 
       if (currentObjectId !== id) return;
 
       const prop = cloneDeep(this.currentObjects?.[id]);
 
-      prop.isPlaying = false;
-
-      this.setCurrentObject(prop);
+      this.setCurrentObject({ ...prop, isPlaying });
     },
     /**
      * Rewind current video
