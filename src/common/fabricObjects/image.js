@@ -340,13 +340,13 @@ export const requestAnimFrame = (isSeek = false) => {
  * @param {Element} imageObject selected object to set video element
  * @param {String} videoSrc video url will be set to object
  * @param {String} thumbnailSrc video's thumbnail url will be set to object
- * @param {Function} videoStopCallback method call when video stop
+ * @param {Function} videoToggleStatusCallback method call when video stop
  */
 export const setVideoSrc = async (
   imageObject,
   videoSrc,
   thumbnailSrc,
-  videoStopCallback
+  videoToggleStatusCallback
 ) => {
   const { width, height, scaleX, scaleY } = imageObject;
 
@@ -392,7 +392,7 @@ export const setVideoSrc = async (
 
     requestAnimFrame();
 
-    videoStopCallback(imageObject.id);
+    videoToggleStatusCallback(imageObject.id);
   });
 
   video.addEventListener(VIDEO_EVENT_TYPE.SEEK, () => {
@@ -421,6 +421,12 @@ export const setVideoSrc = async (
     imageObject.set(unPlayProperties);
 
     requestAnimFrame();
+
+    videoToggleStatusCallback(imageObject.id);
+  });
+
+  video.addEventListener(VIDEO_EVENT_TYPE.TOGGLE_STATUS, () => {
+    videoToggleStatusCallback(imageObject.id, imageObject.get('isPlaying'));
   });
 
   imageObject.setElement(video);
@@ -471,20 +477,20 @@ export const setVideoSrc = async (
  * Handle change media src in image box
  * @param {Element} target current image box will apply new src
  * @param {Object} options new prop for image box
- * @param {Function} videoStopCallback method call when video stop
+ * @param {Function} videoToggleStatusCallback method call when video stop
  * @returns new properties of image box after change src
  */
 export const handleChangeMediaSrc = async (
   target,
   options,
-  videoStopCallback = null
+  videoToggleStatusCallback = null
 ) => {
   if (!target) return;
 
   const { imageUrl, id, mediaUrl, thumbUrl } = options;
 
   const prop = mediaUrl
-    ? await setVideoSrc(target, mediaUrl, thumbUrl, videoStopCallback)
+    ? await setVideoSrc(target, mediaUrl, thumbUrl, videoToggleStatusCallback)
     : await setImageSrc(target, imageUrl);
 
   prop.imageId = id;

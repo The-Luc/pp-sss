@@ -55,5 +55,6 @@ export const VIDEO_EVENT_TYPE = {
   ENDED: 'ended',
   SEEK: 'seek',
   REWIND: 'fastRewind',
-  END_REWIND: 'endRewind'
+  END_REWIND: 'endRewind',
+  TOGGLE_STATUS: 'toggleStatus'
 };

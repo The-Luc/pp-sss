@@ -13,7 +13,8 @@ import {
   ptToPx,
   videoEndRewindEvent,
   videoRewindEvent,
-  videoSeekEvent
+  videoSeekEvent,
+  videoToggleStatusEvent
 } from '@/common/utils';
 
 const BORDER_COLOR = {
@@ -500,6 +501,8 @@ const stopReverse = (videoObject, video) => {
 
   videoObject.pause();
 
+  if (!video.isTempPlaying) video.isKeepRewind = true;
+
   video.dispatchEvent(videoEndRewindEvent);
 };
 
@@ -567,7 +570,14 @@ const cancelRewind = (videoObject, video) => {
   video.playbackRate = 1;
   video.isKeepRewind = false;
 
-  video.isTempPlaying ? videoObject.pause() : videoObject.play();
+  if (video.isTempPlaying) videoObject.pause();
+  else {
+    videoObject.play();
+
+    videoObject.isPlaying = true;
+
+    video.dispatchEvent(videoToggleStatusEvent);
+  }
 
   video.isTempPlaying = false;
 };

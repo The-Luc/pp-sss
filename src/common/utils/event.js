@@ -12,3 +12,8 @@ export const videoEndRewindEvent = new CustomEvent(
   VIDEO_EVENT_TYPE.END_REWIND,
   { detail: {} }
 );
+
+export const videoToggleStatusEvent = new CustomEvent(
+  VIDEO_EVENT_TYPE.TOGGLE_STATUS,
+  { detail: {} }
+);
