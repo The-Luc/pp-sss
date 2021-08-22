@@ -99,6 +99,9 @@ export default {
     },
     isModalMedia() {
       return this.type === 'media';
+    },
+    isPosterFrame() {
+      return this.type === 'posterFrame';
     }
   },
   watch: {
@@ -137,6 +140,11 @@ export default {
      * @param   {Object}  media  id of current book
      */
     onSelectedMedia(media) {
+      if (this.isPosterFrame) {
+        this.selectedMedia = [media];
+        return;
+      }
+
       const index = this.selectedMedia.findIndex(item => item.id === media.id);
 
       if (index < 0) {
@@ -222,7 +230,7 @@ export default {
      * Get list keyword from section name, left, right, spread title
      */
     getListKeywords() {
-      if (this.isModalMedia) {
+      if (this.isModalMedia || this.isPosterFrame) {
         this.keywords = getUniqueKeywords([
           this.currentFrame.frameTitle,
           this.currentSection.name

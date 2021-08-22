@@ -13,6 +13,7 @@ export class VideoElementObject extends BaseMoveableElementObject {
   paintFirst = DEFAULT_IMAGE.PAINT_FIRST;
   isConstrain = true;
   thumbnailUrl = '';
+  customThumbnailUrl = '';
 
   /**
    * @param {VideoElementObject} props

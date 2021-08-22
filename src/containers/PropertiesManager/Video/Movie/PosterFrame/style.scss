@@ -8,6 +8,36 @@
     font-family: $font-500;
   }
 
+  .thumbnail {
+    width: initial;
+    max-width: 250px;
+    height: 47px;
+    position: relative;
+
+    img {
+      width: 100%;
+      height: 100%;
+    }
+
+    .remove-icon {
+      height: 13px;
+      width: 13px;
+      border-radius: 50%;
+      background-color: $color-gray26;
+      color: $color-black;
+      position: absolute;
+      top: 0;
+      right: 0;
+      transform: translate(50%, -50%);
+      line-height: 0;
+      font-weight: bold;
+
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+    }
+  }
+
   .pp-range-slider-container {
     width: 100%;
     margin: 5px 0 13px;
@@ -23,5 +53,6 @@
     font-family: $font-500;
     color: $color-stoodio-toolbartext;
     letter-spacing: 0;
+    align-self: flex-end;
   }
 }

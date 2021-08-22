@@ -54,7 +54,8 @@ import {
   setVideoSrc,
   handleDragEnter,
   handleDragLeave,
-  centercrop
+  centercrop,
+  createVideoOverlay
 } from '@/common/fabricObjects';
 import { createImage } from '@/common/fabricObjects';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
@@ -1295,14 +1296,14 @@ export default {
      * @param {Object}  prop            new prop
      * @param {String}  objectType      object type want to check
      */
-    changeElementProperties(prop, objectType) {
+    async changeElementProperties(prop, objectType) {
       if (isEmpty(prop)) return;
 
       const element = window.digitalCanvas.getActiveObject();
 
       if (isEmpty(element) || element.objectType !== objectType) return;
 
-      const newProp = this.updateElementProp(element, prop, objectType);
+      const newProp = await this.updateElementProp(element, prop, objectType);
 
       this.updateCurrentObject(element, newProp);
 
@@ -1920,9 +1921,12 @@ export default {
      * @returns
      */
     async createVideoFromPpData(objectData) {
-      const { imageUrl, thumbnailUrl } = objectData;
+      const { imageUrl, thumbnailUrl, customThumbnailUrl } = objectData;
       const video = await this.createImageFromPpData(objectData);
-      await setVideoSrc(video, imageUrl, thumbnailUrl, this.videoStop);
+
+      const url = customThumbnailUrl || thumbnailUrl;
+
+      await setVideoSrc(video, imageUrl, url, this.videoStop);
       return video;
     },
 
@@ -1974,7 +1978,7 @@ export default {
      *
      * @returns {Object}              property of element after changed
      */
-    updateElementProp(element, prop, objectType) {
+    async updateElementProp(element, prop, objectType) {
       if (objectType === OBJECT_TYPE.TEXT) {
         return this.updateTextElementProp(element, prop);
       }
@@ -1984,7 +1988,7 @@ export default {
       }
 
       if (objectType === OBJECT_TYPE.VIDEO) {
-        return this.updateVideoElementProp(element, prop);
+        return await this.updateVideoElementProp(element, prop);
       }
 
       updateElement(element, prop, window.digitalCanvas);
@@ -2047,11 +2051,18 @@ export default {
      *
      * @returns {Object}          property of element after changed
      */
-    updateVideoElementProp(element, prop) {
-      const { border } = prop;
+    async updateVideoElementProp(element, prop) {
+      const { border, customThumbnailUrl, thumbnailUrl } = prop;
 
       if (!isEmpty(border)) {
         applyBorderToImageObject(element, border);
+      }
+
+      const url = customThumbnailUrl || thumbnailUrl;
+      if (!isEmpty(url)) {
+        const thumbnail = await createVideoOverlay(url);
+
+        element.set({ thumbnail, dirty: true });
       }
 
       updateElement(element, prop, window.digitalCanvas);

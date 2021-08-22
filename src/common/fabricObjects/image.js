@@ -288,19 +288,21 @@ export const createVideoElement = src =>
  * @return image element
  */
 export const createVideoOverlay = (src, options) => {
-  const ele = document.createElement('img');
+  return new Promise(resolve => {
+    const ele = document.createElement('img');
 
-  ele.src = src;
+    if (options?.width) {
+      ele.width = options.width;
+    }
 
-  if (options?.width) {
-    ele.width = options.width;
-  }
+    if (options?.height) {
+      ele.height = options.height;
+    }
 
-  if (options?.height) {
-    ele.height = options.height;
-  }
+    ele.onload = () => resolve(ele);
 
-  return ele;
+    ele.src = src;
+  });
 };
 
 /**
@@ -422,14 +424,17 @@ export const setVideoSrc = async (
 
   imageObject.setElement(video);
 
-  const thumbnail = createVideoOverlay(thumbnailSrc);
+  const getThumbnail = createVideoOverlay(thumbnailSrc);
 
-  const playIcon = createVideoOverlay(IMAGE_LOCAL.PLAY_ICON, {
+  const getPlayIcon = createVideoOverlay(IMAGE_LOCAL.PLAY_ICON, {
     width: 300,
     height: 300
   });
 
+  const [thumbnail, playIcon] = await Promise.all([getThumbnail, getPlayIcon]);
+
   const newScaleX = (width * scaleX) / video.width;
+
   const newScaleY = (height * scaleY) / video.height;
 
   const newProp = {
