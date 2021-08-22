@@ -583,6 +583,14 @@ const rewind = function(isRewind = true) {
   isRewind ? keepRewind(this, video) : cancelRewind(this, video);
 };
 
+const changeVolume = function(volume) {
+  const video = this.getElement();
+
+  if (!video) return;
+
+  video.volume = volume;
+};
+
 /**
  * Allow fabric image object to have double stroke
  * @param {fabric.Image} image - the object to enable double stroke
@@ -598,6 +606,7 @@ export const imageBorderModifier = function(image) {
   image.seek = seek;
   image.forward = forward;
   image.rewind = rewind;
+  image.changeVolume = changeVolume;
 };
 
 /**

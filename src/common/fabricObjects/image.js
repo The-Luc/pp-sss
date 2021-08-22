@@ -353,6 +353,7 @@ export const setVideoSrc = async (
   const video = await createVideoElement(videoSrc);
 
   video.currentTime = 0;
+  video.volume = imageObject.get('volume') / 100;
 
   const unPlayProperties = {
     isPlaying: false,

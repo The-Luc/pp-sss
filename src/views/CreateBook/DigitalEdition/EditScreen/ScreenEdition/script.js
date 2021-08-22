@@ -1476,6 +1476,8 @@ export default {
      * @param {Object}  prop  new prop
      */
     changeVideoProperties(prop) {
+      if (!isEmpty(prop.volume)) this.changeVideoVolume(prop.volume);
+
       this.changeElementProperties(prop, OBJECT_TYPE.VIDEO);
     },
     /**
@@ -2289,6 +2291,18 @@ export default {
       const isPlaying = isVideoPlaying(video);
 
       return { ...prop, isPlaying };
+    },
+    /**
+     * Get properties with video specific value
+     *
+     * @param {Number}  volume  new volumne
+     */
+    changeVideoVolume(volume) {
+      const video = this.digitalCanvas.getActiveObject();
+
+      if (isEmpty(video)) return;
+
+      video.changeVolume(volume / 100);
     }
   }
 };
