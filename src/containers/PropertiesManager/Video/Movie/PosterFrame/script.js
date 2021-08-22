@@ -49,10 +49,6 @@ export default {
      * Fire when user click on Select Image button
      */
     onClickSelectImage() {
-      const isPlaying = this.getProperty('isPlaying');
-
-      if (isPlaying) this.$root.$emit(EVENT_TYPE.VIDEO_TOGGLE_PLAY);
-
       this.isOpenModal = true;
     },
     /**
