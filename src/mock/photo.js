@@ -5,6 +5,7 @@ import RIPKEN_LOGO_HD from '@/assets/image/albums/ripken-logo-hd.png';
 import RIPKEN_LOGO_2_SD from '@/assets/image/albums/ripken-logo-2-sd.png';
 import RIPKEN_LOGO_2_HD from '@/assets/image/albums/ripken-logo-2-hd.png';
 import SAMPLE_BUNNY_VIDEO from '@/assets/video/bunny.mp4';
+import SAMPLE_BUNNY_2_VIDEO from '@/assets/video/bunny_2m.mp4';
 import SAMPLE_TOY_VIDEO from '@/assets/video/toy.mp4';
 import VERTICAL_VIDEO from '@/assets/video/vertical.mp4';
 import SAMPLE_THUMBNAIL from '@/assets/image/horizontal-photo.jpg';
@@ -76,12 +77,23 @@ const video3 = new VideoAssetEntity({
   isMedia: true
 });
 
-const mediaBase = [photo1, photo2, photo3, video1, video2, video3];
+const video4 = new VideoAssetEntity({
+  id: uniqueId(),
+  mediaFileName: 'bunny_2m.mp4',
+  thumbUrl: SAMPLE_THUMBNAIL,
+  mediaUrl: SAMPLE_BUNNY_2_VIDEO,
+  originalHeight: 240,
+  originalWidth: 320,
+  duration: '2:06',
+  isMedia: true
+});
+
+const mediaBase = [photo1, photo2, photo3, video1, video2, video3, video4];
 
 const media = Array.from({ length: 20 }, () => {
   const inProject = Math.random() * 5 < 2;
   const media = {
-    ...mediaBase[getRandomInt(5)],
+    ...mediaBase[getRandomInt(7)],
     inProject,
     id: uniqueId()
   };
