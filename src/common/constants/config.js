@@ -53,3 +53,5 @@ export const UPLOAD_STATUS_DISPLAY_TIME = 1000;
 export const MAX_STEP_UNDO_REDO = 5;
 
 export const MOUSE_HOLD_DETECT_TIME = 500;
+
+export const DEBOUNCE_PROPERTIES = ['color', 'opacity', 'shadow', 'volume'];

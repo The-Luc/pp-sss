@@ -93,7 +93,8 @@ import {
   pastePpObject,
   isDeleteKey,
   isVideoPlaying,
-  isValidTargetToCopyPast
+  isValidTargetToCopyPast,
+  isContainDebounceProp
 } from '@/common/utils';
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
 
@@ -1318,11 +1319,7 @@ export default {
 
       this.updateCurrentObject(element, newProp);
 
-      if (
-        !isEmpty(newProp['shadow']) ||
-        !isEmpty(newProp['color']) ||
-        !isEmpty(newProp['opacity'])
-      ) {
+      if (isContainDebounceProp(newProp)) {
         this.debounceSetObjectProp(newProp);
       } else {
         this.setObjectProperties(newProp);
