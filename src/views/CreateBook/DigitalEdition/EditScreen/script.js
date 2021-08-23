@@ -8,6 +8,7 @@ import SidebarSection from './SidebarSection';
 import PhotoSidebar from '@/components/PhotoSidebar';
 import MediaModal from '@/containers/Modal/Media';
 import SheetMedia from '@/components/SheetMedia';
+import CropControl from '@/components/CropControl';
 
 import { GETTERS, MUTATES } from '@/store/modules/app/const';
 import {
@@ -92,7 +93,9 @@ export default {
   data() {
     return {
       isOpenModal: false,
-      dragItem: null
+      isOpenCropControl: false,
+      dragItem: null,
+      selectedImage: null
     };
   },
   components: {
@@ -103,7 +106,8 @@ export default {
     SidebarSection,
     PhotoSidebar,
     MediaModal,
-    SheetMedia
+    SheetMedia,
+    CropControl
   },
   computed: {
     ...mapGetters({
@@ -282,6 +286,15 @@ export default {
      */
     onCancel() {
       this.isOpenModal = false;
+
+      if (this.isOpenCropControl) {
+        this.isOpenCropControl = false;
+        this.selectedImage.set({
+          showControl: false
+        });
+
+        this.selectedImage.canvas.renderAll();
+      }
     },
     /**
      * Undo user action
@@ -398,6 +411,7 @@ export default {
           )
         : await setImageSrc(target, imageUrl);
       prop.imageId = imageId;
+      prop.originalUrl = imageUrl;
 
       this.setPropertyById({ id: target.id, prop });
       this.$refs.canvasEditor.getThumbnailUrl();
@@ -407,6 +421,26 @@ export default {
       setTimeout(() => {
         this.$refs.canvasEditor.digitalCanvas.renderAll();
       }, 250);
+    },
+
+    /**
+     * Handle after crop image
+     * @param {String} value Result image url after croppeed
+     */
+    async onCrop(value) {
+      const prop = await setImageSrc(this.selectedImage, value);
+      this.setPropertyById({ id: this.selectedImage.id, prop });
+      this.onCancel();
+    },
+
+    /**
+     * Open modal crop control
+     */
+    openCropControl() {
+      const canvas = this.$refs.canvasEditor.digitalCanvas;
+      const activeObject = canvas.getActiveObject();
+      this.selectedImage = activeObject;
+      this.isOpenCropControl = true;
     }
   }
 };

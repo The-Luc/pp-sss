@@ -175,6 +175,26 @@ const renderVideoThumbnail = function(ctx) {
 };
 
 /**
+ * Handle render thumbnail for video object
+ * @param {2D context Object} ctx the object enable to modify context canvas
+ */
+const renderImageCropControl = function(ctx) {
+  const ele = this.control;
+  const { width, height } = ele;
+
+  const sW = (this.width * this.scaleX) / 3;
+  const sH = (this.height * this.scaleY) / 3;
+
+  const sX = -sW / 2 + width / 5;
+  const sY = -sH + height / 2;
+
+  const dX = -this.width / 2;
+  const dY = -this.height / 2;
+
+  ctx.drawImage(ele, sX, sY, sW, sH, dX, dY, this.width, this.height);
+};
+
+/**
  * Handle render play icon for video object
  * @param {2D context Object} ctx the object enable to modify context canvas
  */
@@ -248,6 +268,11 @@ const renderFill = function(ctx) {
 
   if (this.objectType === OBJECT_TYPE.IMAGE) {
     renderFillImage.call(this, ctx);
+
+    if (this.showControl) {
+      renderImageCropControl.call(this, ctx);
+    }
+
     return;
   }
   renderFillVideo.call(this, ctx);

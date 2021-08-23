@@ -41,12 +41,23 @@
       </PhotoSidebar>
     </transition>
 
-    <ScreenEdition ref="canvasEditor" @drop="onDrop" />
+    <ScreenEdition
+      ref="canvasEditor"
+      @drop="onDrop"
+      @openCropControl="openCropControl"
+    />
 
     <MediaModal
       type="media"
       :is-open-modal="isOpenModal"
       @select="handleSelectedMedia"
+      @cancel="onCancel"
+    />
+
+    <CropControl
+      :open="isOpenCropControl"
+      :selected-image="selectedImage"
+      @crop="onCrop"
       @cancel="onCancel"
     />
   </div>

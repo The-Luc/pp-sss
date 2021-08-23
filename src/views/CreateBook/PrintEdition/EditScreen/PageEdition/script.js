@@ -60,7 +60,11 @@ import {
   handleDragEnter,
   handleDragLeave,
   fabricToPpObject,
-  getTextSizeWithPadding
+  getTextSizeWithPadding,
+  createMediaOverlay,
+  handleMouseMove,
+  handleMouseOver,
+  handleMouseOut
 } from '@/common/fabricObjects';
 
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
@@ -82,7 +86,8 @@ import {
   DEFAULT_IMAGE,
   LAYOUT_PAGE_TYPE,
   SAVE_STATUS,
-  EDITION
+  EDITION,
+  IMAGE_LOCAL
 } from '@/common/constants';
 import SizeWrapper from '@/components/SizeWrapper';
 import PrintCanvasLines from './PrintCanvasLines';
@@ -92,6 +97,7 @@ import YRuler from './Rulers/YRuler';
 import {
   AUTOSAVE_INTERVAL,
   COPY_OBJECT_KEY,
+  CROP_CONTROL,
   DEBOUNCE_MUTATION,
   MIN_IMAGE_SIZE,
   PASTE,
@@ -354,7 +360,11 @@ export default {
         moved: this.handleMoved,
         dragenter: handleDragEnter,
         dragleave: handleDragLeave,
-        drop: handleDragLeave
+        drop: handleDragLeave,
+        mousemove: handleMouseMove,
+        mousedown: this.handleMouseDown,
+        mouseover: handleMouseOver,
+        mouseout: handleMouseOut
       };
 
       const imageObject = await createImage(imageProperties);
@@ -389,6 +399,15 @@ export default {
           rotation: imageProperties.coord.rotation
         }
       });
+
+      if (imageProperties.hasImage && !imageProperties.control) {
+        const control = await createMediaOverlay(IMAGE_LOCAL.CONTROL_ICON, {
+          width: CROP_CONTROL.WIDTH,
+          height: CROP_CONTROL.HEIGHT
+        });
+
+        image.set({ control });
+      }
 
       return image;
     },
@@ -926,7 +945,8 @@ export default {
           size,
           coord,
           imageUrl: DEFAULT_IMAGE.IMAGE_URL,
-          hasImage: !!options?.src
+          hasImage: !!options?.src,
+          originalUrl: options?.src
         })
       };
 
@@ -937,7 +957,11 @@ export default {
         moved: this.handleMoved,
         dragenter: handleDragEnter,
         dragleave: handleDragLeave,
-        drop: handleDragLeave
+        drop: handleDragLeave,
+        mousemove: handleMouseMove,
+        mousedown: this.handleMouseDown,
+        mouseover: handleMouseOver,
+        mouseout: handleMouseOut
       };
 
       const image = await createImage(newImage.newObject);
@@ -1908,6 +1932,17 @@ export default {
       this.$refs.pageWrapper.instructionEnd();
 
       this.awaitingAdd = '';
+    },
+
+    /**
+     * Handle click on fabric object
+     * @param {Object} event - Event when click object
+     */
+    handleMouseDown(event) {
+      const target = event.target;
+      if (!target.isHoverControl) return;
+
+      this.$emit('openCropControl');
     }
   }
 };

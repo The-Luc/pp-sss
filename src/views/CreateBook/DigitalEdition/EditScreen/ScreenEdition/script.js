@@ -25,7 +25,9 @@ import {
   VIDEO_SPEED_UP_TIME,
   CANVAS_EVENT_TYPE,
   EVENT_TYPE,
-  WINDOW_EVENT_TYPE
+  WINDOW_EVENT_TYPE,
+  CROP_CONTROL,
+  IMAGE_LOCAL
 } from '@/common/constants';
 import {
   addPrintClipArts,
@@ -55,7 +57,10 @@ import {
   handleDragEnter,
   handleDragLeave,
   centercrop,
-  createVideoOverlay
+  createMediaOverlay,
+  handleMouseMove,
+  handleMouseOver,
+  handleMouseOut
 } from '@/common/fabricObjects';
 import { createImage } from '@/common/fabricObjects';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
@@ -1414,7 +1419,8 @@ export default {
         size,
         coord,
         imageUrl: DEFAULT_IMAGE.IMAGE_URL,
-        hasImage: !!options?.src
+        hasImage: !!options?.src,
+        originalUrl: options?.src
       };
 
       const newMedia = {
@@ -1431,7 +1437,11 @@ export default {
         moved: this.handleMoved,
         dragenter: handleDragEnter,
         dragleave: handleDragLeave,
-        drop: handleDragLeave
+        drop: handleDragLeave,
+        mousemove: handleMouseMove,
+        mousedown: this.handleMouseDown,
+        mouseover: handleMouseOver,
+        mouseout: handleMouseOut
       };
 
       const image = await createImage(newMedia.newObject);
@@ -1830,12 +1840,16 @@ export default {
         moved: this.handleMoved,
         dragenter: handleDragEnter,
         dragleave: handleDragLeave,
-        drop: handleDragLeave
+        drop: handleDragLeave,
+        mousemove: handleMouseMove,
+        mousedown: this.handleMouseDown,
+        mouseover: handleMouseOver,
+        mouseout: handleMouseOut
       };
 
       const imageObject = await createImage(imageProperties);
       const image = imageObject?.object;
-      const { border } = imageProperties;
+      const { border, hasImage, control, type } = imageProperties;
 
       imageBorderModifier(image);
       addEventListeners(image, eventListeners);
@@ -1865,6 +1879,15 @@ export default {
           rotation: imageProperties.coord.rotation
         }
       });
+
+      if (type === OBJECT_TYPE.IMAGE && hasImage && !control) {
+        const control = await createMediaOverlay(IMAGE_LOCAL.CONTROL_ICON, {
+          width: CROP_CONTROL.WIDTH,
+          height: CROP_CONTROL.HEIGHT
+        });
+
+        image.set({ control });
+      }
 
       return image;
     },
@@ -2062,7 +2085,7 @@ export default {
 
       const url = customThumbnailUrl || thumbnailUrl;
       if (!isEmpty(url)) {
-        const thumbnail = await createVideoOverlay(url);
+        const thumbnail = await createMediaOverlay(url);
 
         element.set({ thumbnail, dirty: true });
       }
@@ -2147,18 +2170,6 @@ export default {
       this.awaitingAdd = '';
     },
 
-    /**
-     * Handle drop to canvas
-     * @param {*} event - Event drop
-     */
-    handleDrop(event) {
-      const canvas = this.digitalCanvas;
-      this.$emit('drop', {
-        event,
-        canvas,
-        addImageBox: this.addImageBox
-      });
-    },
     /**
      * Handle reset image
      */
@@ -2290,6 +2301,17 @@ export default {
       const isPlaying = isVideoPlaying(video);
 
       return { ...prop, isPlaying };
+    },
+
+    /**
+     * Handle click on fabric object
+     * @param {Object} event - Event when click object
+     */
+    handleMouseDown(event) {
+      const target = event.target;
+      if (!target.isHoverControl) return;
+
+      this.$emit('openCropControl');
     }
   }
 };
