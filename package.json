@@ -23,10 +23,13 @@
     "material-design-icons-iconfont": "^6.1.0",
     "moment": "^2.29.1",
     "randomcolor": "^0.6.2",
+    "rxjs": "^7.3.0",
     "vue": "^2.6.12",
     "vue-color": "github:lnvu1983/vue-color",
     "vue-router": "^3.5.1",
+    "vue-rx": "^6.2.0",
     "vuedraggable": "github:lnvu1983/Vue.Draggable",
+    "vuejs-clipper": "^3.1.2",
     "vuetify": "github:truonggiangdao/vuetify",
     "vuex": "^3.6.2",
     "vuex-composition-helpers": "^1.0.23"

@@ -8,7 +8,9 @@ import {
   useInfoBar,
   useMenuProperties,
   useMutationPrintSheet,
-  useProperties
+  useProperties,
+  useAppCommon,
+  useStyle
 } from '@/hooks';
 import { startDrawBox } from '@/common/fabricObjects/drawingBox';
 
@@ -30,7 +32,8 @@ import {
   isNonElementPropSelected,
   copyPpObject,
   pastePpObject,
-  isDeleteKey
+  isDeleteKey,
+  isValidTargetToCopyPast
 } from '@/common/utils';
 
 import {
@@ -60,7 +63,11 @@ import {
   handleDragEnter,
   handleDragLeave,
   fabricToPpObject,
-  getTextSizeWithPadding
+  getTextSizeWithPadding,
+  createMediaOverlay,
+  handleMouseMove,
+  handleMouseOver,
+  handleMouseOut
 } from '@/common/fabricObjects';
 
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
@@ -82,7 +89,8 @@ import {
   DEFAULT_IMAGE,
   LAYOUT_PAGE_TYPE,
   SAVE_STATUS,
-  EDITION
+  EDITION,
+  IMAGE_LOCAL
 } from '@/common/constants';
 import SizeWrapper from '@/components/SizeWrapper';
 import PrintCanvasLines from './PrintCanvasLines';
@@ -92,15 +100,14 @@ import YRuler from './Rulers/YRuler';
 import {
   AUTOSAVE_INTERVAL,
   COPY_OBJECT_KEY,
+  CROP_CONTROL,
   DEBOUNCE_MUTATION,
   MIN_IMAGE_SIZE,
   PASTE,
   THUMBNAIL_IMAGE_CONFIG
 } from '@/common/constants/config';
 import { createImage } from '@/common/fabricObjects';
-import { useAppCommon } from '@/hooks/common';
 import { EVENT_TYPE } from '@/common/constants/eventType';
-import { useStyle } from '@/hooks/style';
 import { useSaveData } from './composables';
 import { useSavingStatus } from '@/views/CreateBook/composables';
 import UndoRedoCanvas from '@/plugins/undoRedoCanvas';
@@ -354,7 +361,11 @@ export default {
         moved: this.handleMoved,
         dragenter: handleDragEnter,
         dragleave: handleDragLeave,
-        drop: handleDragLeave
+        drop: handleDragLeave,
+        mousemove: handleMouseMove,
+        mousedown: this.handleMouseDown,
+        mouseover: handleMouseOver,
+        mouseout: handleMouseOut
       };
 
       const imageObject = await createImage(imageProperties);
@@ -389,6 +400,15 @@ export default {
           rotation: imageProperties.coord.rotation
         }
       });
+
+      if (imageProperties.hasImage && !imageProperties.control) {
+        const control = await createMediaOverlay(IMAGE_LOCAL.CONTROL_ICON, {
+          width: CROP_CONTROL.WIDTH,
+          height: CROP_CONTROL.HEIGHT
+        });
+
+        image.set({ control });
+      }
 
       return image;
     },
@@ -530,7 +550,7 @@ export default {
      * Function handle to get object(s) be copied from clipboard when user press Ctrl + V (Windows), Command + V (macOS), or from action menu
      */
     async handlePaste(event) {
-      if (this.isProcessingPaste) return;
+      if (this.isProcessingPaste || !isValidTargetToCopyPast(event)) return;
       this.isProcessingPaste = true;
 
       await pastePpObject(
@@ -552,6 +572,7 @@ export default {
      * @param   {Object}  event event's clipboard
      */
     handleCopy(event) {
+      if (!isValidTargetToCopyPast(event)) return;
       copyPpObject(
         event,
         this.currentObjects,
@@ -799,6 +820,8 @@ export default {
         return;
       }
 
+      this.toggleActiveObjects(true);
+
       target.get('type') === 'activeSelection'
         ? this.multiObjectSelected(target)
         : this.singleObjectSelected(target);
@@ -924,7 +947,8 @@ export default {
           size,
           coord,
           imageUrl: DEFAULT_IMAGE.IMAGE_URL,
-          hasImage: !!options?.src
+          hasImage: !!options?.src,
+          originalUrl: options?.src
         })
       };
 
@@ -935,7 +959,11 @@ export default {
         moved: this.handleMoved,
         dragenter: handleDragEnter,
         dragleave: handleDragLeave,
-        drop: handleDragLeave
+        drop: handleDragLeave,
+        mousemove: handleMouseMove,
+        mousedown: this.handleMouseDown,
+        mouseover: handleMouseOver,
+        mouseout: handleMouseOut
       };
 
       const image = await createImage(newImage.newObject);
@@ -1906,6 +1934,17 @@ export default {
       this.$refs.pageWrapper.instructionEnd();
 
       this.awaitingAdd = '';
+    },
+
+    /**
+     * Handle click on fabric object
+     * @param {Object} event - Event when click object
+     */
+    handleMouseDown(event) {
+      const target = event.target;
+      if (!target.isHoverControl) return;
+
+      this.$emit('openCropControl');
     }
   }
 };

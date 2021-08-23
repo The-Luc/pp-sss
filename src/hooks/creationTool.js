@@ -6,6 +6,7 @@ import {
 } from '@/store/modules/app/const';
 import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 import { GETTERS as DIGITAL_GETTERS } from '@/store/modules/digital/const';
+import { useAppCommon } from './common';
 
 /**
  * Trigger mutation to close popover, menu properties from icon creation tool
@@ -62,7 +63,9 @@ export const useInfoBar = () => {
   };
 };
 
-export const useToolBar = (isDigital = false) => {
+export const useToolBar = () => {
+  const { value: isDigital } = useAppCommon().isDigitalEdition;
+
   const GETTERS = isDigital ? DIGITAL_GETTERS : PRINT_GETTERS;
 
   const {
@@ -70,19 +73,27 @@ export const useToolBar = (isDigital = false) => {
     selectedObjectType,
     propertiesType,
     isMenuOpen,
-    selectedToolName
+    selectedToolName,
+    isMediaSidebarOpen
   } = useGetters({
     themeId: GETTERS.DEFAULT_THEME_ID,
     selectedObjectType: APP_GETTERS.SELECTED_OBJECT_TYPE,
     propertiesType: APP_GETTERS.PROPERTIES_OBJECT_TYPE,
     isMenuOpen: APP_GETTERS.IS_OPEN_MENU_PROPERTIES,
-    selectedToolName: APP_GETTERS.SELECTED_TOOL_NAME
+    selectedToolName: APP_GETTERS.SELECTED_TOOL_NAME,
+    isMediaSidebarOpen: APP_GETTERS.IS_MEDIA_SIDEBAR_OPEN
   });
 
-  const { setPropertiesType, toggleMenu, setToolNameSelected } = useMutations({
+  const {
+    setPropertiesType,
+    toggleMenu,
+    setToolNameSelected,
+    setMediaSidebarOpen
+  } = useMutations({
     setPropertiesType: APP_MUTATES.SET_PROPERTIES_OBJECT_TYPE,
     toggleMenu: APP_MUTATES.TOGGLE_MENU_PROPERTIES,
-    setToolNameSelected: APP_MUTATES.SET_TOOL_NAME_SELECTED
+    setToolNameSelected: APP_MUTATES.SET_TOOL_NAME_SELECTED,
+    setMediaSidebarOpen: APP_MUTATES.SET_MEDIA_SIDEBAR_OPEN
   });
 
   /**
@@ -104,6 +115,8 @@ export const useToolBar = (isDigital = false) => {
     isMenuOpen,
     selectedToolName,
     setToolNameSelected,
-    togglePropertiesMenu
+    togglePropertiesMenu,
+    isMediaSidebarOpen,
+    setMediaSidebarOpen
   };
 };
