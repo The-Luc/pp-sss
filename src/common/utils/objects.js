@@ -7,7 +7,7 @@ import {
   VideoElementObject
 } from '@/common/models/element';
 
-import { OBJECT_TYPE } from '@/common/constants';
+import { DEBOUNCE_PROPERTIES, OBJECT_TYPE } from '@/common/constants';
 import { isEmpty } from './util';
 
 /**
@@ -149,4 +149,14 @@ export const isVideoPlaying = video => {
   const isPlaying = video.get('isPlaying');
 
   return isEmpty(isPlaying) ? false : isPlaying;
+};
+
+/**
+ * Check if prop contain debounce data
+ *
+ * @param   {Object}  prop  prop to check
+ * @returns {Boolean}       is contain
+ */
+export const isContainDebounceProp = prop => {
+  return DEBOUNCE_PROPERTIES.some(p => !isEmpty(prop[p]));
 };

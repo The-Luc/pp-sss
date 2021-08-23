@@ -93,7 +93,8 @@ import {
   pastePpObject,
   isDeleteKey,
   isVideoPlaying,
-  isValidTargetToCopyPast
+  isValidTargetToCopyPast,
+  isContainDebounceProp
 } from '@/common/utils';
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
 
@@ -1318,11 +1319,7 @@ export default {
 
       this.updateCurrentObject(element, newProp);
 
-      if (
-        !isEmpty(newProp['shadow']) ||
-        !isEmpty(newProp['color']) ||
-        !isEmpty(newProp['opacity'])
-      ) {
+      if (isContainDebounceProp(newProp)) {
         this.debounceSetObjectProp(newProp);
       } else {
         this.setObjectProperties(newProp);
@@ -1492,6 +1489,8 @@ export default {
      * @param {Object}  prop  new prop
      */
     changeVideoProperties(prop) {
+      if (!isEmpty(prop.volume)) this.changeVideoVolume(prop.volume);
+
       this.changeElementProperties(prop, OBJECT_TYPE.VIDEO);
     },
     /**
@@ -2307,7 +2306,18 @@ export default {
 
       return { ...prop, isPlaying };
     },
+    /**
+     * Get properties with video specific value
+     *
+     * @param {Number}  volume  new volumne
+     */
+    changeVideoVolume(volume) {
+      const video = this.digitalCanvas.getActiveObject();
 
+      if (isEmpty(video)) return;
+
+      video.changeVolume(volume / 100);
+    },
     /**
      * Handle click on fabric object
      * @param {Object} event - Event when click object

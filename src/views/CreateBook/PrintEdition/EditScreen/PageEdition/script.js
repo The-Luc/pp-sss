@@ -34,7 +34,8 @@ import {
   copyPpObject,
   pastePpObject,
   isDeleteKey,
-  isValidTargetToCopyPast
+  isValidTargetToCopyPast,
+  isContainDebounceProp
 } from '@/common/utils';
 
 import {
@@ -1377,11 +1378,7 @@ export default {
 
       this.updateCurrentObject(element.id, newProp);
 
-      if (
-        !isEmpty(newProp['shadow']) ||
-        !isEmpty(newProp['color']) ||
-        !isEmpty(newProp['opacity'])
-      ) {
+      if (isContainDebounceProp(newProp)) {
         this.debounceSetObjectProp(newProp);
       } else {
         this.setObjectProperties(newProp);
