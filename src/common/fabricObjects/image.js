@@ -15,7 +15,9 @@ import {
   OBJECT_TYPE,
   IMAGE_LOCAL,
   IMAGE_INDICATOR,
-  VIDEO_EVENT_TYPE
+  VIDEO_EVENT_TYPE,
+  VIDEO_PLAY_ICON,
+  CROP_CONTROL
 } from '../constants';
 
 /**
@@ -150,6 +152,11 @@ export const applyBorderToImageObject = (imageObject, borderConfig) => {
  * @param {String} imageSrc Source image for replace
  */
 export const setImageSrc = async (imageObject, imageSrc) => {
+  const control = await createMediaOverlay(IMAGE_LOCAL.CONTROL_ICON, {
+    width: CROP_CONTROL.WIDTH,
+    height: CROP_CONTROL.HEIGHT
+  });
+
   return new Promise(resolve => {
     const { width, height, scaleX, scaleY } = imageObject;
     const src = imageSrc || IMAGE_LOCAL.PLACE_HOLDER;
@@ -166,7 +173,9 @@ export const setImageSrc = async (imageObject, imageSrc) => {
         scaleY: newScaleY,
         width: img.width,
         height: img.height,
-        objectType: OBJECT_TYPE.IMAGE
+        objectType: OBJECT_TYPE.IMAGE,
+        control,
+        showControl: false
       };
 
       img.set(newProp);
@@ -257,6 +266,116 @@ export const handleDragLeave = ({ target }) => {
 };
 
 /**
+ * Handle hover on fabric object
+ * @param {Object} event - Event when hover object
+ */
+export const handleMouseMove = event => {
+  const target = event.target;
+
+  if (target?.objectType === OBJECT_TYPE.IMAGE) {
+    handleHoverImage(target);
+  }
+
+  if (target?.objectType === OBJECT_TYPE.VIDEO) {
+    handleHoverVideo(target);
+  }
+};
+
+/**
+ * Handle when hover on control icon
+ * @param {Object} target Fabric object selected
+ */
+const handleHoverImage = target => {
+  if (!target.hasImage) return;
+
+  const { width, height, scaleX, scaleY } = target;
+  const { x, y } = target.getLocalPointer(event.e);
+
+  const controlStartX = (width * scaleX - CROP_CONTROL.WIDTH) / 2;
+  const controlEndX = controlStartX + CROP_CONTROL.WIDTH / 2;
+  const controlStartY =
+    height * scaleY - CROP_CONTROL.HEIGHT - CROP_CONTROL.OFFSET;
+  const controlEndY = controlStartY + CROP_CONTROL.HEIGHT;
+
+  const containPointerX = x >= controlStartX && x <= controlEndX;
+  const containPointerY = y >= controlStartY && y <= controlEndY;
+
+  const prop =
+    containPointerX && containPointerY
+      ? {
+          hoverCursor: 'pointer',
+          isHoverControl: true
+        }
+      : {
+          hoverCursor: null,
+          isHoverControl: false
+        };
+
+  target.set(prop);
+};
+
+/**
+ * Handle when hover on play icon
+ * @param {Object} target Fabric object selected
+ */
+const handleHoverVideo = target => {
+  if (target.isPlaying || !target.showPlayIcon) return;
+
+  const { x, y } = target.getLocalPointer();
+  const { width, height, scaleX, scaleY } = target;
+
+  const startX = (width * scaleX - VIDEO_PLAY_ICON.WIDTH) / 2;
+  const endX = startX + VIDEO_PLAY_ICON.WIDTH;
+
+  const startY = (height * scaleY - VIDEO_PLAY_ICON.HEIGHT) / 2;
+  const endY = startY + VIDEO_PLAY_ICON.HEIGHT;
+
+  const containPointerX = x >= startX && x <= endX;
+  const containPointerY = y >= startY && y <= endY;
+
+  const prop =
+    containPointerX && containPointerY
+      ? {
+          hoverCursor: 'pointer',
+          isHoverPlayIcon: true
+        }
+      : {
+          hoverCursor: null,
+          isHoverPlayIcon: false
+        };
+
+  target.set(prop);
+};
+
+/**
+ * Handle when hover image
+ * @param {*} target - fabric object
+ */
+export const handleMouseOver = ({ target }) => {
+  if (target?.objectType !== OBJECT_TYPE.IMAGE || !target.hasImage) return;
+
+  target.set({
+    showControl: true
+  });
+
+  target.canvas.renderAll();
+};
+
+/**
+ * Handle when leave image
+ * @param {*} target - fabric object
+ */
+export const handleMouseOut = ({ target }) => {
+  if (target?.objectType !== OBJECT_TYPE.IMAGE || !target.hasImage) return;
+
+  target.set({
+    showControl: false
+  });
+
+  target.canvas.renderAll();
+};
+
+/**
  * Create element for video object
  * @param {String} src video url
  * @return video element
@@ -287,7 +406,7 @@ export const createVideoElement = src =>
  * @param {String} options video's thumbnail options
  * @return image element
  */
-export const createVideoOverlay = (src, options) => {
+export const createMediaOverlay = (src, options) => {
   return new Promise(resolve => {
     const ele = document.createElement('img');
 
@@ -431,11 +550,11 @@ export const setVideoSrc = async (
 
   imageObject.setElement(video);
 
-  const getThumbnail = createVideoOverlay(thumbnailSrc);
+  const getThumbnail = createMediaOverlay(thumbnailSrc);
 
-  const getPlayIcon = createVideoOverlay(IMAGE_LOCAL.PLAY_ICON, {
-    width: 300,
-    height: 300
+  const getPlayIcon = createMediaOverlay(IMAGE_LOCAL.PLAY_ICON, {
+    width: VIDEO_PLAY_ICON.WIDTH,
+    height: VIDEO_PLAY_ICON.HEIGHT
   });
 
   const [thumbnail, playIcon] = await Promise.all([getThumbnail, getPlayIcon]);

@@ -25,7 +25,9 @@ import {
   VIDEO_SPEED_UP_TIME,
   CANVAS_EVENT_TYPE,
   EVENT_TYPE,
-  WINDOW_EVENT_TYPE
+  WINDOW_EVENT_TYPE,
+  CROP_CONTROL,
+  IMAGE_LOCAL
 } from '@/common/constants';
 import {
   addPrintClipArts,
@@ -55,7 +57,10 @@ import {
   handleDragEnter,
   handleDragLeave,
   centercrop,
-  createVideoOverlay
+  createMediaOverlay,
+  handleMouseMove,
+  handleMouseOver,
+  handleMouseOut
 } from '@/common/fabricObjects';
 import { createImage } from '@/common/fabricObjects';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
@@ -68,7 +73,9 @@ import {
   useFrameSwitching,
   useModal,
   useMutationDigitalSheet,
-  useElementProperties
+  useElementProperties,
+  useStyle,
+  useToolBar
 } from '@/hooks';
 
 import {
@@ -86,7 +93,8 @@ import {
   inToPx,
   pastePpObject,
   isDeleteKey,
-  isVideoPlaying
+  isVideoPlaying,
+  isValidTargetToCopyPast
 } from '@/common/utils';
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
 
@@ -97,7 +105,6 @@ import {
 } from '@/store/modules/digital/const';
 
 import { cloneDeep, debounce, merge, uniqueId } from 'lodash';
-import { useStyle } from '@/hooks/style';
 import { useSaveData, useObject } from '../composables';
 import { useSavingStatus } from '@/views/CreateBook/composables';
 import UndoRedoCanvas from '@/plugins/undoRedoCanvas';
@@ -141,6 +148,7 @@ export default {
     const { updateObjectsToStore } = useObject();
     const { updateSheetThumbnail } = useMutationDigitalSheet();
     const { getProperty } = useElementProperties();
+    const { setMediaSidebarOpen } = useToolBar();
 
     return {
       frames,
@@ -162,7 +170,8 @@ export default {
       updateObjectsToStore,
       updateSheetThumbnail,
       firstFrameThumbnail,
-      getProperty
+      getProperty,
+      setMediaSidebarOpen
     };
   },
   data() {
@@ -232,7 +241,7 @@ export default {
         return;
       }
 
-      this.setToolNameSelected({ name: '' });
+      this.setMediaSidebarOpen({ isOpen: false });
 
       const isSwitchFrame = this.frames.find(
         f => String(f.id) === String(oldVal)
@@ -640,6 +649,8 @@ export default {
       if (this.awaitingAdd) {
         return;
       }
+
+      this.toggleActiveObjects(true);
 
       target.get('type') === 'activeSelection'
         ? this.multiObjectSelected(target)
@@ -1412,7 +1423,8 @@ export default {
         size,
         coord,
         imageUrl: DEFAULT_IMAGE.IMAGE_URL,
-        hasImage: !!options?.src
+        hasImage: !!options?.src,
+        originalUrl: options?.src
       };
 
       const newMedia = {
@@ -1429,7 +1441,11 @@ export default {
         moved: this.handleMoved,
         dragenter: handleDragEnter,
         dragleave: handleDragLeave,
-        drop: handleDragLeave
+        drop: handleDragLeave,
+        mousemove: handleMouseMove,
+        mousedown: this.handleMouseDown,
+        mouseover: handleMouseOver,
+        mouseout: handleMouseOut
       };
 
       const image = await createImage(newMedia.newObject);
@@ -1640,6 +1656,7 @@ export default {
      * @param   {Object}  event event's clipboard
      */
     handleCopy(event) {
+      if (!isValidTargetToCopyPast(event)) return;
       copyPpObject(
         event,
         this.currentObjects,
@@ -1653,7 +1670,7 @@ export default {
      * Function handle to get object(s) be copied from clipboard when user press Ctrl + V (Windows), Command + V (macOS), or from action menu
      */
     async handlePaste(event) {
-      if (this.isProcessingPaste) return;
+      if (this.isProcessingPaste || !isValidTargetToCopyPast(event)) return;
       this.isProcessingPaste = true;
       await pastePpObject(
         event,
@@ -1830,12 +1847,16 @@ export default {
         moved: this.handleMoved,
         dragenter: handleDragEnter,
         dragleave: handleDragLeave,
-        drop: handleDragLeave
+        drop: handleDragLeave,
+        mousemove: handleMouseMove,
+        mousedown: this.handleMouseDown,
+        mouseover: handleMouseOver,
+        mouseout: handleMouseOut
       };
 
       const imageObject = await createImage(imageProperties);
       const image = imageObject?.object;
-      const { border } = imageProperties;
+      const { border, hasImage, control, type } = imageProperties;
 
       imageBorderModifier(image);
       addEventListeners(image, eventListeners);
@@ -1865,6 +1886,15 @@ export default {
           rotation: imageProperties.coord.rotation
         }
       });
+
+      if (type === OBJECT_TYPE.IMAGE && hasImage && !control) {
+        const control = await createMediaOverlay(IMAGE_LOCAL.CONTROL_ICON, {
+          width: CROP_CONTROL.WIDTH,
+          height: CROP_CONTROL.HEIGHT
+        });
+
+        image.set({ control });
+      }
 
       return image;
     },
@@ -2062,7 +2092,7 @@ export default {
 
       const url = customThumbnailUrl || thumbnailUrl;
       if (!isEmpty(url)) {
-        const thumbnail = await createVideoOverlay(url);
+        const thumbnail = await createMediaOverlay(url);
 
         element.set({ thumbnail, dirty: true });
       }
@@ -2147,18 +2177,6 @@ export default {
       this.awaitingAdd = '';
     },
 
-    /**
-     * Handle drop to canvas
-     * @param {*} event - Event drop
-     */
-    handleDrop(event) {
-      const canvas = this.digitalCanvas;
-      this.$emit('drop', {
-        event,
-        canvas,
-        addImageBox: this.addImageBox
-      });
-    },
     /**
      * Handle reset image
      */
@@ -2302,6 +2320,24 @@ export default {
       if (isEmpty(video)) return;
 
       video.changeVolume(volume / 100);
+    },
+    /**
+     * Handle click on fabric object
+     * @param {Object} event - Event when click object
+     */
+    handleMouseDown(event) {
+      const target = event.target;
+      if (target.object === OBJECT_TYPE.IMAGE) {
+        if (!target.isHoverControl) return;
+
+        this.$emit('openCropControl');
+      }
+
+      if (target.objectType === OBJECT_TYPE.VIDEO) {
+        if (!target.isHoverPlayIcon) return;
+
+        this.videoTogglePlay();
+      }
     }
   }
 };

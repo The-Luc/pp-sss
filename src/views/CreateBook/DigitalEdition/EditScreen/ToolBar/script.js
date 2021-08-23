@@ -29,6 +29,31 @@ export default {
   components: {
     ItemTool
   },
+  setup() {
+    const { isPrompt } = useLayoutPrompt(EDITION.DIGITAL);
+    const {
+      themeId,
+      selectedObjectType,
+      propertiesType,
+      isMenuOpen,
+      selectedToolName,
+      setToolNameSelected,
+      togglePropertiesMenu,
+      setMediaSidebarOpen
+    } = useToolBar();
+
+    return {
+      isPrompt,
+      themeId,
+      selectedObjectType,
+      propertiesType,
+      isMenuOpen,
+      selectedToolName,
+      setToolNameSelected,
+      togglePropertiesMenu,
+      setMediaSidebarOpen
+    };
+  },
   data() {
     return {
       itemsToolLeft: [
@@ -138,29 +163,6 @@ export default {
       ]
     };
   },
-  setup() {
-    const { isPrompt } = useLayoutPrompt(EDITION.DIGITAL);
-    const {
-      themeId,
-      selectedObjectType,
-      propertiesType,
-      isMenuOpen,
-      selectedToolName,
-      setToolNameSelected,
-      togglePropertiesMenu
-    } = useToolBar(true);
-
-    return {
-      isPrompt,
-      themeId,
-      selectedObjectType,
-      propertiesType,
-      isMenuOpen,
-      selectedToolName,
-      setToolNameSelected,
-      togglePropertiesMenu
-    };
-  },
   methods: {
     /**
      * Detect click on item on right creation tool
@@ -225,24 +227,15 @@ export default {
 
       this.$emit('endInstruction');
 
-      if (name === TOOL_NAME.DELETE)
+      if (name === TOOL_NAME.DELETE) {
         this.$root.$emit(EVENT_TYPE.DELETE_OBJECTS);
+      }
 
-      if (name === TOOL_NAME.UNDO) this.undo();
+      if (name === TOOL_NAME.UNDO) this.$emit('undo');
 
-      if (name === TOOL_NAME.REDO) this.redo();
-    },
-    /**
-     * Undo user action
-     */
-    undo() {
-      this.$emit('undo');
-    },
-    /**
-     * Redo user action
-     */
-    redo() {
-      this.$emit('redo');
+      if (name === TOOL_NAME.REDO) this.$emit('redo');
+
+      if (name === TOOL_NAME.MEDIA) this.setMediaSidebarOpen({ isOpen: true });
     }
   }
 };

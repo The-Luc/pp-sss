@@ -88,6 +88,7 @@ export default {
      * Check whether save layout enabled base on user has object(s) or not
      */
     setEnableSaveLayout() {
+      if (this.isDigital) return;
       this.items[2].disabled = !this.totalObject && !this.totalBackground;
     },
     /**

@@ -23,7 +23,7 @@ import PageEdition from './PageEdition';
 import PhotoSidebar from '@/components/PhotoSidebar';
 import SheetMedia from '@/components/SheetMedia';
 import MediaModal from '@/containers/Modal/Media';
-
+import CropControl from '@/components/CropControl';
 import {
   useLayoutPrompt,
   usePopoverCreationTool,
@@ -35,7 +35,8 @@ import {
   useProperties,
   useSheet,
   useActionsEditionSheet,
-  useObjectProperties
+  useObjectProperties,
+  useToolBar
 } from '@/hooks';
 import { EDITION } from '@/common/constants';
 import { isEmpty, isPositiveInteger, getEditionListPath } from '@/common/utils';
@@ -58,7 +59,8 @@ export default {
     SidebarSection,
     PhotoSidebar,
     SheetMedia,
-    MediaModal
+    MediaModal,
+    CropControl
   },
   setup() {
     const { pageSelected, updateVisited } = useLayoutPrompt(EDITION.PRINT);
@@ -74,7 +76,8 @@ export default {
     const { sheetMedia } = useSheet();
     const { updateSheetMedia, deleteSheetMedia } = useActionsEditionSheet();
     const { getBookPrintInfo } = useBookPrintInfo();
-    const { listObjects } = useObjectProperties();
+    const { isMediaSidebarOpen, setMediaSidebarOpen } = useToolBar();
+    const { currentObject, listObjects } = useObjectProperties();
 
     return {
       pageSelected,
@@ -94,13 +97,18 @@ export default {
       deleteSheetMedia,
       getBookPrintInfo,
       listObjects,
-      setPropOfMultipleObjects
+      setPropOfMultipleObjects,
+      isMediaSidebarOpen,
+      setMediaSidebarOpen,
+      currentObject
     };
   },
   data() {
     return {
-      dragItem: () => null,
-      isOpenMediaModal: false
+      dragItem: null,
+      isOpenMediaModal: false,
+      isOpenCropControl: false,
+      selectedImage: null
     };
   },
   computed: {
@@ -111,9 +119,6 @@ export default {
     }),
     isShowAutoflow() {
       return !isEmpty(this.sheetMedia);
-    },
-    isOpenPhotoSidebar() {
-      return this.selectedToolName === TOOL_NAME.PHOTOS;
     },
     disabledAutoflow() {
       const hasEmptyImage = Object.values(this.listObjects).some(
@@ -274,7 +279,7 @@ export default {
      * Close list photo in sidebar
      */
     closePhotoSidebar() {
-      this.setToolNameSelected('');
+      this.setMediaSidebarOpen({ isOpen: false });
     },
 
     /**
@@ -337,6 +342,7 @@ export default {
 
       const prop = await setImageSrc(target, imageUrl);
       prop.imageId = imageId;
+      prop.originalUrl = imageUrl;
       this.setPropertyById({ id: target.id, prop });
       this.$refs.canvasEditor.getThumbnailUrl();
 
@@ -366,8 +372,17 @@ export default {
     /**
      * Close modal photos when click cancel button
      */
-    onCancelMediaModal() {
+    onCancel() {
       this.isOpenMediaModal = false;
+
+      if (!this.isOpenCropControl) return;
+
+      this.isOpenCropControl = false;
+      this.selectedImage.set({
+        showControl: false
+      });
+
+      this.selectedImage.canvas.renderAll();
     },
     /**
      * Switching tool on Creation Tool by emit
@@ -382,6 +397,26 @@ export default {
      */
     onInstructionEnd() {
       this.$refs.canvasEditor.endInstruction();
+    },
+
+    /**
+     * Handle after crop image
+     * @param {String} value Result image url after croppeed
+     */
+    async onCrop(value) {
+      const prop = await setImageSrc(this.selectedImage, value);
+      this.setPropertyById({ id: this.selectedImage.id, prop });
+      this.onCancel();
+    },
+
+    /**
+     * Open modal crop control
+     */
+    openCropControl() {
+      const canvas = this.$refs.canvasEditor.printCanvas;
+      const activeObject = canvas.getActiveObject();
+      this.selectedImage = activeObject;
+      this.isOpenCropControl = true;
     }
   }
 };

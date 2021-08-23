@@ -9,6 +9,7 @@ import ROUGH_THIN from '@/assets/image/border/rough-thin.png';
 import SOLID from '@/assets/image/border/solid.svg';
 import PLACE_HOLDER from '@/assets/image/content-placeholder.jpg';
 import PLAY_ICON from '@/assets/icons/play.svg';
+import CONTROL_ICON from '@/assets/image/control.png';
 
 export const IMAGE_LOCAL = {
   BACKGROUND_WHITE,
@@ -21,5 +22,6 @@ export const IMAGE_LOCAL = {
   ROUGH_THIN,
   SOLID,
   PLACE_HOLDER,
-  PLAY_ICON
+  PLAY_ICON,
+  CONTROL_ICON
 };

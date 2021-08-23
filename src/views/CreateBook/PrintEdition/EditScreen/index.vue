@@ -18,7 +18,7 @@
 
     <transition name="slide-x-transition">
       <PhotoSidebar
-        v-show="isOpenPhotoSidebar"
+        v-show="isMediaSidebarOpen"
         media-type="Photos"
         :is-show-autoflow="isShowAutoflow"
         :disabled-autoflow="disabledAutoflow"
@@ -35,13 +35,24 @@
       </PhotoSidebar>
     </transition>
 
-    <PageEdition ref="canvasEditor" @drop="onDrop" />
+    <PageEdition
+      ref="canvasEditor"
+      @drop="onDrop"
+      @openCropControl="openCropControl"
+    />
 
     <MediaModal
       type="photos"
       :is-open-modal="isOpenMediaModal"
       @select="handleSelectedImages"
-      @cancel="onCancelMediaModal"
+      @cancel="onCancel"
+    />
+
+    <CropControl
+      :open="isOpenCropControl"
+      :selected-image="selectedImage"
+      @crop="onCrop"
+      @cancel="onCancel"
     />
   </div>
 </template>
