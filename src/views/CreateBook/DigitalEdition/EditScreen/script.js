@@ -36,7 +36,8 @@ import {
   useActionsEditionSheet,
   useSheet,
   useProperties,
-  useObjectProperties
+  useObjectProperties,
+  useToolBar
 } from '@/hooks';
 import { isEmpty, isPositiveInteger, getEditionListPath } from '@/common/utils';
 import { COPY_OBJECT_KEY } from '@/common/constants/config';
@@ -68,6 +69,7 @@ export default {
     const { sheetMedia } = useSheet();
     const { setPropertyById, setPropOfMultipleObjects } = useProperties();
     const { listObjects } = useObjectProperties();
+    const { isMediaSidebarOpen, setMediaSidebarOpen } = useToolBar();
 
     return {
       pageSelected,
@@ -87,7 +89,9 @@ export default {
       sheetMedia,
       setPropertyById,
       setPropOfMultipleObjects,
-      listObjects
+      listObjects,
+      isMediaSidebarOpen,
+      setMediaSidebarOpen
     };
   },
   data() {
@@ -117,9 +121,6 @@ export default {
     }),
     isShowAutoflow() {
       return !isEmpty(this.sheetMedia);
-    },
-    isOpenMediaSidebar() {
-      return this.selectedToolName === TOOL_NAME.MEDIA;
     },
     disabledAutoflow() {
       const hasEmptyImage = Object.values(this.listObjects).some(
@@ -245,7 +246,7 @@ export default {
      * Close list photo in sidebar
      */
     closeMediaSidebar() {
-      this.setToolNameSelected('');
+      this.setMediaSidebarOpen({ isOpen: false });
     },
     /**
      * Handle autoflow

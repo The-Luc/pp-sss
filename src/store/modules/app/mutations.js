@@ -77,5 +77,8 @@ export const mutations = {
   },
   [APP._MUTATES.UPDATE_SAVING_STATUS](state, { status }) {
     state.savingStatus = status;
+  },
+  [APP._MUTATES.SET_MEDIA_SIDEBAR_OPEN](state, { isOpen }) {
+    state.isMediaSidebarOpen = isOpen;
   }
 };

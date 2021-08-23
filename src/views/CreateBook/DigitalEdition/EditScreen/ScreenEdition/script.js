@@ -73,7 +73,8 @@ import {
   useFrameSwitching,
   useModal,
   useMutationDigitalSheet,
-  useElementProperties
+  useElementProperties,
+  useStyle
 } from '@/hooks';
 
 import {
@@ -103,7 +104,6 @@ import {
 } from '@/store/modules/digital/const';
 
 import { cloneDeep, debounce, merge, uniqueId } from 'lodash';
-import { useStyle } from '@/hooks/style';
 import { useSaveData, useObject } from '../composables';
 import { useSavingStatus } from '@/views/CreateBook/composables';
 import UndoRedoCanvas from '@/plugins/undoRedoCanvas';

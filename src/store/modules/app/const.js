@@ -28,6 +28,7 @@ class GetterClass extends BaseObject {
   SAVED_IMAGE_STYLES = 'savedImageStyles';
   SAVING_STATUS = 'savingStatus';
   IS_PHOTO_VISITED = 'isPhotoVisited';
+  IS_MEDIA_SIDEBAR_OPEN = 'isMediaSidebarOpen';
 
   constructor(props) {
     super(props);
@@ -80,6 +81,7 @@ class MutationClass extends BaseObject {
   SET_SAVED_TEXT_STYLE = 'setSavedTextStyle';
   SET_SAVED_IMAGE_STYLE = 'setSavedImageStyle';
   UPDATE_SAVING_STATUS = 'updateSavingStatus';
+  SET_MEDIA_SIDEBAR_OPEN = 'setMediaSidebarOpen';
 
   constructor(props) {
     super(props);
