@@ -91,7 +91,8 @@ import {
   inToPx,
   pastePpObject,
   isDeleteKey,
-  isVideoPlaying
+  isVideoPlaying,
+  isValidTargetToCopyPast
 } from '@/common/utils';
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
 
@@ -1650,6 +1651,7 @@ export default {
      * @param   {Object}  event event's clipboard
      */
     handleCopy(event) {
+      if (!isValidTargetToCopyPast(event)) return;
       copyPpObject(
         event,
         this.currentObjects,
@@ -1663,7 +1665,7 @@ export default {
      * Function handle to get object(s) be copied from clipboard when user press Ctrl + V (Windows), Command + V (macOS), or from action menu
      */
     async handlePaste(event) {
-      if (this.isProcessingPaste) return;
+      if (this.isProcessingPaste || !isValidTargetToCopyPast(event)) return;
       this.isProcessingPaste = true;
       await pastePpObject(
         event,
