@@ -28,7 +28,6 @@ export class ImageElementObject extends BaseMoveableElementObject {
   strokeUniform = DEFAULT_IMAGE.STROKE_UNIFORM;
   paintFirst = DEFAULT_IMAGE.PAINT_FIRST;
   isConstrain = true;
-  hasImage = false;
   zoomLevel = 0;
   showControl = false;
 

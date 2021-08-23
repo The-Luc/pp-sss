@@ -74,7 +74,8 @@ import {
   useModal,
   useMutationDigitalSheet,
   useElementProperties,
-  useStyle
+  useStyle,
+  useToolBar
 } from '@/hooks';
 
 import {
@@ -147,6 +148,7 @@ export default {
     const { updateObjectsToStore } = useObject();
     const { updateSheetThumbnail } = useMutationDigitalSheet();
     const { getProperty } = useElementProperties();
+    const { setMediaSidebarOpen } = useToolBar();
 
     return {
       frames,
@@ -168,7 +170,8 @@ export default {
       updateObjectsToStore,
       updateSheetThumbnail,
       firstFrameThumbnail,
-      getProperty
+      getProperty,
+      setMediaSidebarOpen
     };
   },
   data() {
@@ -238,7 +241,7 @@ export default {
         return;
       }
 
-      this.setToolNameSelected({ name: '' });
+      this.setMediaSidebarOpen({ isOpen: false });
 
       const isSwitchFrame = this.frames.find(
         f => String(f.id) === String(oldVal)
@@ -2311,9 +2314,17 @@ export default {
      */
     handleMouseDown(event) {
       const target = event.target;
-      if (!target.isHoverControl) return;
+      if (target.object === OBJECT_TYPE.IMAGE) {
+        if (!target.isHoverControl) return;
 
-      this.$emit('openCropControl');
+        this.$emit('openCropControl');
+      }
+
+      if (target.objectType === OBJECT_TYPE.VIDEO) {
+        if (!target.isHoverPlayIcon) return;
+
+        this.videoTogglePlay();
+      }
     }
   }
 };

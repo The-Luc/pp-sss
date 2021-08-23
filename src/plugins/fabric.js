@@ -210,6 +210,7 @@ const renderVideoPlayIcon = function(ctx) {
   const dX = -this.width / 2;
   const dY = -this.height / 2;
 
+  ctx.shadowColor = 'transparent';
   ctx.drawImage(this.playIcon, sX, sY, sW, sH, dX, dY, this.width, this.height);
 };
 
@@ -228,7 +229,6 @@ const renderFillVideo = function(ctx) {
   const w = this.width;
   const h = this.height;
 
-  // crop values cannot be lesser than 0.
   const cropX = max(this.cropX, 0);
   const cropY = max(this.cropY, 0);
 
@@ -275,10 +275,11 @@ const renderFill = function(ctx) {
 
     return;
   }
-  renderFillVideo.call(this, ctx);
 
   if (this.showThumbnail) {
     renderVideoThumbnail.call(this, ctx);
+  } else {
+    renderFillVideo.call(this, ctx);
   }
 
   if (this.showPlayIcon) {
