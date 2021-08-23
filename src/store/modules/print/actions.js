@@ -70,10 +70,17 @@ export const actions = {
 
     commit(PRINT._MUTATES.SET_OBJECTS, { objectList: objects });
 
+    const firstBg = backgrounds[0];
+    const secondBg = backgrounds[1];
+
+    const leftBackground = firstBg?.isLeftPage ? firstBg : {};
+    const rightBackground =
+      firstBg && !firstBg.isLeftPage ? firstBg : secondBg ? secondBg : {};
+
     commit(PRINT._MUTATES.SET_BACKGROUNDS, {
       backgrounds: {
-        left: backgrounds.length > 0 ? backgrounds[0] : {},
-        right: backgrounds.length == 2 ? backgrounds[1] : {}
+        left: leftBackground,
+        right: rightBackground
       }
     });
   },
