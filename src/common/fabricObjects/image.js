@@ -17,7 +17,8 @@ import {
   IMAGE_INDICATOR,
   VIDEO_EVENT_TYPE,
   VIDEO_PLAY_ICON,
-  CROP_CONTROL
+  CROP_CONTROL,
+  DEFAULT_VIDEO
 } from '../constants';
 import { videoInitEvent } from '@/plugins/fabric';
 
@@ -475,7 +476,10 @@ export const setVideoSrc = async (
   const video = await createVideoElement(videoSrc);
 
   video.currentTime = 0;
-  video.volume = imageObject.get('volume') / 100;
+
+  const volume = imageObject.get('volume');
+
+  video.volume = (isEmpty(volume) ? DEFAULT_VIDEO.VOLUME : volume) / 100;
 
   const unPlayProperties = {
     isPlaying: false,
