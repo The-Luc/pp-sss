@@ -799,6 +799,8 @@ export default {
         return;
       }
 
+      this.toggleActiveObjects(true);
+
       target.get('type') === 'activeSelection'
         ? this.multiObjectSelected(target)
         : this.singleObjectSelected(target);
