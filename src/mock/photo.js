@@ -93,7 +93,7 @@ const mediaBase = [photo1, photo2, photo3, video1, video2, video3, video4];
 const media = Array.from({ length: 20 }, () => {
   const inProject = Math.random() * 5 < 2;
   const media = {
-    ...mediaBase[getRandomInt(5)],
+    ...mediaBase[getRandomInt(7)],
     inProject,
     id: uniqueId()
   };
