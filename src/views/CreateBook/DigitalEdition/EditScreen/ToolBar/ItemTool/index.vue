@@ -7,6 +7,7 @@
       :icon-name="item.iconName"
       :title="item.title"
       :is-prompt="isPrompt"
+      :disabled="isDisabledItem(item)"
       @click="onClick(item)"
     />
   </div>

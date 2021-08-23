@@ -10,7 +10,6 @@ import {
   DEFAULT_CLIP_ART,
   DEFAULT_IMAGE,
   DEFAULT_SHAPE,
-  EDITION,
   MODAL_TYPES,
   OBJECT_TYPE,
   SAVE_STATUS,
@@ -148,7 +147,7 @@ export default {
     const { updateObjectsToStore } = useObject();
     const { updateSheetThumbnail } = useMutationDigitalSheet();
     const { getProperty } = useElementProperties();
-    const { setMediaSidebarOpen } = useToolBar();
+    const { updateMediaSidebarOpen } = useToolBar();
 
     return {
       frames,
@@ -171,7 +170,7 @@ export default {
       updateSheetThumbnail,
       firstFrameThumbnail,
       getProperty,
-      setMediaSidebarOpen
+      updateMediaSidebarOpen
     };
   },
   data() {
@@ -241,8 +240,6 @@ export default {
         return;
       }
 
-      this.setMediaSidebarOpen({ isOpen: false });
-
       const isSwitchFrame = this.frames.find(
         f => String(f.id) === String(oldVal)
       );
@@ -260,6 +257,8 @@ export default {
       this.handleSwitchFrame(this.currentFrame);
 
       this.undoRedoCanvas.reset();
+
+      this.updateMediaSidebarOpen({ isOpen: false });
 
       await this.drawObjectsOnCanvas(this.sheetLayout);
     },
@@ -304,6 +303,8 @@ export default {
     this.setInfoBar({ x: 0, y: 0, zoom: 0 });
 
     this.undoRedoCanvas.dispose();
+
+    this.updateMediaSidebarOpen({ isOpen: false });
   },
   methods: {
     ...mapActions({
@@ -387,7 +388,6 @@ export default {
       this.autoSaveTimer = setInterval(this.handleAutosave, AUTOSAVE_INTERVAL);
 
       this.undoRedoCanvas = new UndoRedoCanvas({
-        edition: EDITION.DIGITAL,
         canvas: this.digitalCanvas,
         renderCanvasFn: this.drawObjectsOnCanvas
       });
@@ -2159,13 +2159,13 @@ export default {
     /**
      * Undo user action
      */
-    async undo() {
+    undo() {
       this.undoRedoCanvas.undo();
     },
     /**
      * Redo user action
      */
-    async redo() {
+    redo() {
       this.undoRedoCanvas.redo();
     },
     /**
@@ -2300,7 +2300,7 @@ export default {
      *
      * @param   {Object}  prop  current object properties
      * @param   {Object}  video video element
-     * @returns                 new properties
+     * @returns {Object}        new properties
      */
     getObjectProperties(prop, video) {
       if (prop.type !== OBJECT_TYPE.VIDEO) return prop;

@@ -18,12 +18,6 @@ import {
 } from '@/common/utils';
 
 export default {
-  props: {
-    isDigitalEditor: {
-      type: Boolean,
-      default: false
-    }
-  },
   components: {
     ItemTool
   },
@@ -37,7 +31,7 @@ export default {
       selectedToolName,
       setToolNameSelected,
       togglePropertiesMenu,
-      setMediaSidebarOpen
+      updateMediaSidebarOpen
     } = useToolBar();
 
     return {
@@ -49,7 +43,7 @@ export default {
       selectedToolName,
       setToolNameSelected,
       togglePropertiesMenu,
-      setMediaSidebarOpen
+      updateMediaSidebarOpen
     };
   },
   data() {
@@ -212,7 +206,9 @@ export default {
 
       if (name === TOOL_NAME.REDO) this.$emit('redo');
 
-      if (name === TOOL_NAME.PHOTOS) this.setMediaSidebarOpen({ isOpen: true });
+      if (name === TOOL_NAME.PHOTOS) {
+        this.updateMediaSidebarOpen({ isOpen: true });
+      }
     }
   }
 };

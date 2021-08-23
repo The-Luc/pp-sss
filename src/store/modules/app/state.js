@@ -1,3 +1,5 @@
+import { getDefaultDisabledItems } from '@/common/utils';
+
 import { EDITION } from '@/common/constants';
 
 export const state = {
@@ -49,5 +51,6 @@ export const state = {
   savedTextStyles: [],
   savedImageStyles: [],
   savingStatus: '',
-  isMediaSidebarOpen: false
+  isMediaSidebarOpen: false,
+  disabledToolbarItems: getDefaultDisabledItems()
 };

@@ -40,5 +40,7 @@ export const getters = {
   [APP._GETTERS.IS_PHOTO_VISITED]: ({ generalInfo }) =>
     generalInfo.isPhotoVisited,
   [APP._GETTERS.IS_MEDIA_SIDEBAR_OPEN]: ({ isMediaSidebarOpen }) =>
-    isMediaSidebarOpen
+    isMediaSidebarOpen,
+  [APP._GETTERS.DISABLED_TOOLBAR_ITEMS]: ({ disabledToolbarItems }) =>
+    disabledToolbarItems
 };

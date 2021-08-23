@@ -10,7 +10,8 @@ import {
   useMutationPrintSheet,
   useProperties,
   useAppCommon,
-  useStyle
+  useStyle,
+  useToolBar
 } from '@/hooks';
 import { startDrawBox } from '@/common/fabricObjects/drawingBox';
 
@@ -89,7 +90,6 @@ import {
   DEFAULT_IMAGE,
   LAYOUT_PAGE_TYPE,
   SAVE_STATUS,
-  EDITION,
   IMAGE_LOCAL
 } from '@/common/constants';
 import SizeWrapper from '@/components/SizeWrapper';
@@ -140,6 +140,7 @@ export default {
     } = useProperties();
     const { updateSavingStatus, savingStatus } = useSavingStatus();
     const { updateSheetThumbnail } = useMutationPrintSheet();
+    const { updateMediaSidebarOpen } = useToolBar();
 
     return {
       setActiveEdition,
@@ -153,7 +154,8 @@ export default {
       isOpenMenuProperties,
       updateSavingStatus,
       savingStatus,
-      updateSheetThumbnail
+      updateSheetThumbnail,
+      updateMediaSidebarOpen
     };
   },
   data() {
@@ -225,6 +227,8 @@ export default {
 
         this.undoRedoCanvas.reset();
 
+        this.updateMediaSidebarOpen({ isOpen: false });
+
         this.countPaste = 1;
 
         this.setSelectedObjectId({ id: '' });
@@ -270,6 +274,8 @@ export default {
     this.setInfoBar({ x: 0, y: 0, zoom: 0 });
 
     this.undoRedoCanvas.dispose();
+
+    this.updateMediaSidebarOpen({ isOpen: false });
   },
   methods: {
     ...mapActions({
@@ -750,7 +756,6 @@ export default {
       this.eventHandling();
 
       this.undoRedoCanvas = new UndoRedoCanvas({
-        edition: EDITION.PRINT,
         canvas: window.printCanvas,
         renderCanvasFn: this.drawObjectsOnCanvas
       });
@@ -1895,13 +1900,13 @@ export default {
     /**
      * Undo user action
      */
-    async undo() {
+    undo() {
       this.undoRedoCanvas.undo();
     },
     /**
      * Redo user action
      */
-    async redo() {
+    redo() {
       this.undoRedoCanvas.redo();
     },
     /**
