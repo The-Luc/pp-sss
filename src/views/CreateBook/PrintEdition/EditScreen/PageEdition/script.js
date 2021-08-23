@@ -30,7 +30,8 @@ import {
   isNonElementPropSelected,
   copyPpObject,
   pastePpObject,
-  isDeleteKey
+  isDeleteKey,
+  isValidTargetToCopyPast
 } from '@/common/utils';
 
 import {
@@ -530,8 +531,7 @@ export default {
      * Function handle to get object(s) be copied from clipboard when user press Ctrl + V (Windows), Command + V (macOS), or from action menu
      */
     async handlePaste(event) {
-      const { tagName } = event.target;
-      if (this.isProcessingPaste || tagName === 'INPUT') return;
+      if (this.isProcessingPaste || !isValidTargetToCopyPast(event)) return;
       this.isProcessingPaste = true;
 
       await pastePpObject(
@@ -553,8 +553,7 @@ export default {
      * @param   {Object}  event event's clipboard
      */
     handleCopy(event) {
-      const { tagName } = event.target;
-      if (tagName === 'INPUT') return;
+      if (!isValidTargetToCopyPast(event)) return;
       copyPpObject(
         event,
         this.currentObjects,
