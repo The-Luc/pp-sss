@@ -14,7 +14,8 @@ import {
   DEFAULT_IMAGE,
   OBJECT_TYPE,
   IMAGE_LOCAL,
-  IMAGE_INDICATOR
+  IMAGE_INDICATOR,
+  VIDEO_EVENT_TYPE
 } from '../constants';
 
 /**
@@ -263,16 +264,21 @@ export const handleDragLeave = ({ target }) => {
 export const createVideoElement = src =>
   new Promise(resolve => {
     const ele = document.createElement('video');
+
+    ele.setAttribute('preload', 'metadata');
+
     ele.addEventListener(
       'loadedmetadata',
       () => {
         ele.width = ele.videoWidth;
         ele.height = ele.videoHeight;
+
         resolve(ele);
       },
       false
     );
-    ele.src = src;
+
+    ele.src = `${src}#t=0.01`;
   });
 
 /**
@@ -282,31 +288,50 @@ export const createVideoElement = src =>
  * @return image element
  */
 export const createVideoOverlay = (src, options) => {
-  const ele = document.createElement('img');
-  ele.src = src;
+  return new Promise(resolve => {
+    const ele = document.createElement('img');
 
-  if (options?.width) {
-    ele.width = options.width;
-  }
+    if (options?.width) {
+      ele.width = options.width;
+    }
 
-  if (options?.height) {
-    ele.height = options.height;
-  }
+    if (options?.height) {
+      ele.height = options.height;
+    }
 
-  return ele;
+    ele.onload = () => resolve(ele);
+
+    ele.src = src;
+  });
 };
 
 /**
  * Render video by video frames
  */
-export const requestAnimFrame = () => {
+const reqAnimFrame = renderFn => {
+  activeCanvas.renderAll();
+
+  const objects = activeCanvas.getObjects();
+
+  const isPlaying = objects.some(obj => obj.isPlaying);
+
+  if (isPlaying) {
+    fabric.util.requestAnimFrame(renderFn);
+  }
+};
+
+/**
+ * Render video by video frames
+ */
+export const requestAnimFrame = (isSeek = false) => {
   fabric.util.requestAnimFrame(function render() {
-    activeCanvas.renderAll();
-    const objects = activeCanvas.getObjects();
-    const isPlaying = objects.some(obj => obj.isPlaying);
-    if (isPlaying) {
-      fabric.util.requestAnimFrame(render);
+    if (!isSeek) {
+      reqAnimFrame(render);
+
+      return;
     }
+
+    setTimeout(() => reqAnimFrame(render), 350);
   });
 };
 
@@ -315,56 +340,114 @@ export const requestAnimFrame = () => {
  * @param {Element} imageObject selected object to set video element
  * @param {String} videoSrc video url will be set to object
  * @param {String} thumbnailSrc video's thumbnail url will be set to object
- * @param {Function} videoStopCallback method call when video stop
+ * @param {Function} videoToggleStatusCallback method call when video stop
  */
 export const setVideoSrc = async (
   imageObject,
   videoSrc,
   thumbnailSrc,
-  videoStopCallback
+  videoToggleStatusCallback
 ) => {
   const { width, height, scaleX, scaleY } = imageObject;
 
-  const element = await createVideoElement(videoSrc);
+  const video = await createVideoElement(videoSrc);
 
-  element.addEventListener('play', () => {
+  video.currentTime = 0;
+
+  const unPlayProperties = {
+    isPlaying: false,
+    showPlayIcon: true,
+    dirty: true
+  };
+
+  video.addEventListener(VIDEO_EVENT_TYPE.PLAY, () => {
     imageObject.set({
       isPlaying: true,
       showThumbnail: false,
       showPlayIcon: false,
       dirty: true
     });
+
     requestAnimFrame();
   });
 
-  element.addEventListener('pause', () => {
-    imageObject.set({ isPlaying: false, showPlayIcon: true, dirty: true });
+  video.addEventListener(VIDEO_EVENT_TYPE.PAUSE, () => {
+    if (video.isKeepRewind) return;
 
-    if (element.currentTime === element.duration) {
-      videoStopCallback(imageObject.id);
+    imageObject.set(unPlayProperties);
 
-      imageObject.set({ showThumbnail: true });
+    requestAnimFrame();
+  });
+
+  video.addEventListener(VIDEO_EVENT_TYPE.ENDED, () => {
+    if (video.isKeepRewind) return;
+
+    imageObject.set({
+      ...unPlayProperties,
+      showThumbnail: true
+    });
+
+    video.isTempPlaying = false;
+
+    requestAnimFrame();
+
+    videoToggleStatusCallback(imageObject.id);
+  });
+
+  video.addEventListener(VIDEO_EVENT_TYPE.SEEK, () => {
+    if (!imageObject.isPlaying) {
+      imageObject.set({
+        showThumbnail: false,
+        showPlayIcon: true,
+        dirty: true
+      });
     }
 
+    requestAnimFrame(true);
+  });
+
+  video.addEventListener(VIDEO_EVENT_TYPE.REWIND, () => {
+    imageObject.set({
+      showThumbnail: false,
+      showPlayIcon: false,
+      dirty: true
+    });
+
     requestAnimFrame();
   });
 
-  imageObject.setElement(element);
+  video.addEventListener(VIDEO_EVENT_TYPE.END_REWIND, () => {
+    imageObject.set(unPlayProperties);
 
-  const thumbnail = createVideoOverlay(thumbnailSrc);
-  const playIcon = createVideoOverlay(IMAGE_LOCAL.PLAY_ICON, {
+    requestAnimFrame();
+
+    videoToggleStatusCallback(imageObject.id);
+  });
+
+  video.addEventListener(VIDEO_EVENT_TYPE.TOGGLE_STATUS, () => {
+    videoToggleStatusCallback(imageObject.id, imageObject.get('isPlaying'));
+  });
+
+  imageObject.setElement(video);
+
+  const getThumbnail = createVideoOverlay(thumbnailSrc);
+
+  const getPlayIcon = createVideoOverlay(IMAGE_LOCAL.PLAY_ICON, {
     width: 300,
     height: 300
   });
 
-  const newScaleX = (width * scaleX) / element.width;
-  const newScaleY = (height * scaleY) / element.height;
+  const [thumbnail, playIcon] = await Promise.all([getThumbnail, getPlayIcon]);
+
+  const newScaleX = (width * scaleX) / video.width;
+
+  const newScaleY = (height * scaleY) / video.height;
 
   const newProp = {
     scaleX: newScaleX,
     scaleY: newScaleY,
-    width: element.width,
-    height: element.height,
+    width: video.width,
+    height: video.height,
     hasImage: true,
     thumbnail,
     playIcon,
@@ -393,20 +476,20 @@ export const setVideoSrc = async (
  * Handle change media src in image box
  * @param {Element} target current image box will apply new src
  * @param {Object} options new prop for image box
- * @param {Function} videoStopCallback method call when video stop
+ * @param {Function} videoToggleStatusCallback method call when video stop
  * @returns new properties of image box after change src
  */
 export const handleChangeMediaSrc = async (
   target,
   options,
-  videoStopCallback = null
+  videoToggleStatusCallback = null
 ) => {
   if (!target) return;
 
   const { imageUrl, id, mediaUrl, thumbUrl } = options;
 
   const prop = mediaUrl
-    ? await setVideoSrc(target, mediaUrl, thumbUrl, videoStopCallback)
+    ? await setVideoSrc(target, mediaUrl, thumbUrl, videoToggleStatusCallback)
     : await setImageSrc(target, imageUrl);
 
   prop.imageId = id;

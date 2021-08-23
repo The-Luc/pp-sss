@@ -3,6 +3,7 @@ import TabUploadMedia from '@/components/ModalMediaSelection/TabUploadMedia';
 import Smartbox from '@/components/ModalMediaSelection/Smartbox';
 import TabMedia from '@/components/ModalMediaSelection/TabMedia';
 import TabSearchPhotos from '@/components/ModalMediaSelection/TabSearch';
+import { getFileExtension } from '@/common/utils';
 
 import {
   useGetterEditionSection,
@@ -22,7 +23,7 @@ import {
   VIDEO_CATEGORIES,
   PHOTO_CATEGORIES,
   ALL_MEDIA_SUBCATEGORY_ID,
-  IMAGE_TYPES
+  VIDEO_TYPES
 } from '@/common/constants';
 
 export default {
@@ -72,7 +73,7 @@ export default {
       },
       albums: [],
       mediaDropdowns: {},
-      mediaTypes: IMAGE_TYPES
+      isOnlyVideoUploaded: false
     };
   },
   props: {
@@ -98,14 +99,17 @@ export default {
     },
     isModalMedia() {
       return this.type === 'media';
+    },
+    isPosterFrame() {
+      return this.type === 'posterFrame';
     }
   },
   watch: {
     isOpenModal(val) {
       if (!val || !this.selectedAlbumId) return;
 
-      this.defaultTab = 'photos';
-      this.onChangeTab('photos');
+      this.defaultTab = this.isOnlyVideoUploaded ? 'videos' : 'photos';
+      this.onChangeTab(this.defaultTab);
     }
   },
   async mounted() {
@@ -136,6 +140,11 @@ export default {
      * @param   {Object}  media  id of current book
      */
     onSelectedMedia(media) {
+      if (this.isPosterFrame) {
+        this.selectedMedia = [media];
+        return;
+      }
+
       const index = this.selectedMedia.findIndex(item => item.id === media.id);
 
       if (index < 0) {
@@ -210,6 +219,10 @@ export default {
      * @param   {Array}  files  files user upload
      */
     onUploadMedia(files) {
+      this.isOnlyVideoUploaded = !files.some(el => {
+        const type = getFileExtension(el.name);
+        return !VIDEO_TYPES.includes(type);
+      });
       this.$emit('uploadMedia', files);
     },
 
@@ -217,7 +230,7 @@ export default {
      * Get list keyword from section name, left, right, spread title
      */
     getListKeywords() {
-      if (this.isModalMedia) {
+      if (this.isModalMedia || this.isPosterFrame) {
         this.keywords = getUniqueKeywords([
           this.currentFrame.frameTitle,
           this.currentSection.name
@@ -271,7 +284,9 @@ export default {
         value: data.value,
         sub: {
           value: data.sub.value,
-          sub: data.sub.sub?.value
+          sub: {
+            value: data.sub.sub?.value
+          }
         }
       };
     }

@@ -365,3 +365,14 @@ export const modifyItemsInObject = (originalItems, items) => {
 export const hasOwnProperty = (object, prop) => {
   return Object.prototype.hasOwnProperty.call(object, prop);
 };
+/**
+ * Get file extension
+ *
+ * @param   {String}  fileName file name
+ * @returns {String}  file type
+ */
+export const getFileExtension = fileName => {
+  const result = /[.]/.exec(fileName) ? /[^.]+$/.exec(fileName) : [''];
+
+  return result[0].toLowerCase();
+};

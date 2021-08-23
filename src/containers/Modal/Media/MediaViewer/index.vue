@@ -97,7 +97,7 @@
         <v-tab-item value="add">
           <TabUploadMedia
             :key="currentTab"
-            :media-types="mediaTypes"
+            :is-modal-media="isModalMedia"
             @change="onUploadMedia"
           />
         </v-tab-item>

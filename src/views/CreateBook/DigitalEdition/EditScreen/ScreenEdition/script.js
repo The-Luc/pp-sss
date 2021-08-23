@@ -1,6 +1,5 @@
 import { fabric } from 'fabric';
 
-import { DIGITAL_CANVAS_SIZE } from '@/common/constants/canvas';
 import SizeWrapper from '@/components/SizeWrapper';
 import AddBoxInstruction from '@/components/AddBoxInstruction';
 import Frames from './Frames';
@@ -15,7 +14,18 @@ import {
   MODAL_TYPES,
   OBJECT_TYPE,
   SAVE_STATUS,
-  TOOL_NAME
+  TOOL_NAME,
+  DIGITAL_CANVAS_SIZE,
+  AUTOSAVE_INTERVAL,
+  DEBOUNCE_MUTATION,
+  MAX_SUPPLEMENTAL_FRAMES,
+  MIN_IMAGE_SIZE,
+  PASTE,
+  THUMBNAIL_IMAGE_CONFIG,
+  VIDEO_SPEED_UP_TIME,
+  CANVAS_EVENT_TYPE,
+  EVENT_TYPE,
+  WINDOW_EVENT_TYPE
 } from '@/common/constants';
 import {
   addPrintClipArts,
@@ -44,7 +54,8 @@ import {
   setVideoSrc,
   handleDragEnter,
   handleDragLeave,
-  centercrop
+  centercrop,
+  createVideoOverlay
 } from '@/common/fabricObjects';
 import { createImage } from '@/common/fabricObjects';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
@@ -61,11 +72,6 @@ import {
 } from '@/hooks';
 
 import {
-  CANVAS_EVENT_TYPE,
-  EVENT_TYPE,
-  WINDOW_EVENT_TYPE
-} from '@/common/constants/eventType';
-import {
   deleteSelectedObjects,
   isEmpty,
   pxToIn,
@@ -79,7 +85,8 @@ import {
   copyPpObject,
   inToPx,
   pastePpObject,
-  isDeleteKey
+  isDeleteKey,
+  isVideoPlaying
 } from '@/common/utils';
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
 
@@ -88,15 +95,8 @@ import {
   GETTERS as DIGITAL_GETTERS,
   MUTATES as DIGITAL_MUTATES
 } from '@/store/modules/digital/const';
+
 import { cloneDeep, debounce, merge, uniqueId } from 'lodash';
-import {
-  AUTOSAVE_INTERVAL,
-  DEBOUNCE_MUTATION,
-  MAX_SUPPLEMENTAL_FRAMES,
-  MIN_IMAGE_SIZE,
-  PASTE,
-  THUMBNAIL_IMAGE_CONFIG
-} from '@/common/constants/config';
 import { useStyle } from '@/hooks/style';
 import { useSaveData, useObject } from '../composables';
 import { useSavingStatus } from '@/views/CreateBook/composables';
@@ -231,6 +231,8 @@ export default {
 
         return;
       }
+
+      this.setToolNameSelected({ name: '' });
 
       const isSwitchFrame = this.frames.find(
         f => String(f.id) === String(oldVal)
@@ -485,6 +487,30 @@ export default {
         {
           name: EVENT_TYPE.VIDEO_TOGGLE_PLAY,
           handler: this.videoTogglePlay
+        },
+        {
+          name: EVENT_TYPE.VIDEO_REWIND,
+          handler: this.videoRewind
+        },
+        {
+          name: EVENT_TYPE.VIDEO_KEEP_REWIND,
+          handler: this.videoKeepRewind
+        },
+        {
+          name: EVENT_TYPE.VIDEO_STOP_KEEP_REWIND,
+          handler: this.videoCancelRewind
+        },
+        {
+          name: EVENT_TYPE.VIDEO_FORWARD,
+          handler: this.videoForward
+        },
+        {
+          name: EVENT_TYPE.VIDEO_KEEP_FORWARD,
+          handler: this.videoKeepForward
+        },
+        {
+          name: EVENT_TYPE.VIDEO_STOP_KEEP_FORWARD,
+          handler: this.videoCancelForward
         }
       ];
 
@@ -647,19 +673,20 @@ export default {
     singleObjectSelected(target) {
       const { id } = target;
 
-      const targetType = target.get('type');
+      const objectData = this.currentObjects?.[id];
+
+      if (isEmpty(objectData)) return;
 
       this.setSelectedObjectId({ id });
 
       setBorderHighlight(target, this.sheetLayout);
 
-      const objectData = this.currentObjects?.[id];
+      this.setCurrentObject(this.getObjectProperties(objectData, target));
 
-      if (isEmpty(objectData)) return;
-
-      this.setCurrentObject(objectData);
-
-      if (targetType === 'group' && objectData.type === OBJECT_TYPE.TEXT) {
+      if (
+        target.get('type') === 'group' &&
+        objectData.type === OBJECT_TYPE.TEXT
+      ) {
         const rectObj = target.getObjects(OBJECT_TYPE.RECT)[0];
 
         setBorderObject(rectObj, objectData);
@@ -1269,16 +1296,16 @@ export default {
      * @param {Object}  prop            new prop
      * @param {String}  objectType      object type want to check
      */
-    changeElementProperties(prop, objectType) {
+    async changeElementProperties(prop, objectType) {
       if (isEmpty(prop)) return;
 
       const element = window.digitalCanvas.getActiveObject();
 
       if (isEmpty(element) || element.objectType !== objectType) return;
 
-      const newProp = this.updateElementProp(element, prop, objectType);
+      const newProp = await this.updateElementProp(element, prop, objectType);
 
-      this.updateCurrentObject(element.id, newProp);
+      this.updateCurrentObject(element, newProp);
 
       if (
         !isEmpty(newProp['shadow']) ||
@@ -1418,7 +1445,7 @@ export default {
                 image.object,
                 options.src,
                 options.thumbUrl,
-                this.videoStop
+                this.videoToggleStatus
               )
             : await setImageSrc(image.object, options.src);
 
@@ -1894,9 +1921,12 @@ export default {
      * @returns
      */
     async createVideoFromPpData(objectData) {
-      const { imageUrl, thumbnailUrl } = objectData;
+      const { imageUrl, thumbnailUrl, customThumbnailUrl } = objectData;
       const video = await this.createImageFromPpData(objectData);
-      await setVideoSrc(video, imageUrl, thumbnailUrl, this.videoStop);
+
+      const url = customThumbnailUrl || thumbnailUrl;
+
+      await setVideoSrc(video, imageUrl, url, this.videoToggleStatus);
       return video;
     },
 
@@ -1948,7 +1978,7 @@ export default {
      *
      * @returns {Object}              property of element after changed
      */
-    updateElementProp(element, prop, objectType) {
+    async updateElementProp(element, prop, objectType) {
       if (objectType === OBJECT_TYPE.TEXT) {
         return this.updateTextElementProp(element, prop);
       }
@@ -1958,7 +1988,7 @@ export default {
       }
 
       if (objectType === OBJECT_TYPE.VIDEO) {
-        return this.updateVideoElementProp(element, prop);
+        return await this.updateVideoElementProp(element, prop);
       }
 
       updateElement(element, prop, window.digitalCanvas);
@@ -2021,11 +2051,18 @@ export default {
      *
      * @returns {Object}          property of element after changed
      */
-    updateVideoElementProp(element, prop) {
-      const { border } = prop;
+    async updateVideoElementProp(element, prop) {
+      const { border, customThumbnailUrl, thumbnailUrl } = prop;
 
       if (!isEmpty(border)) {
         applyBorderToImageObject(element, border);
+      }
+
+      const url = customThumbnailUrl || thumbnailUrl;
+      if (!isEmpty(url)) {
+        const thumbnail = await createVideoOverlay(url);
+
+        element.set({ thumbnail, dirty: true });
       }
 
       updateElement(element, prop, window.digitalCanvas);
@@ -2035,16 +2072,22 @@ export default {
     /**
      * Update current object by mutate the store
      *
-     * @param {String | Number} id  id of selected object
-     * @param {Object}  newProp     new prop
+     * @param {Object}  element selected object
+     * @param {Object}  newProp new prop
      */
-    updateCurrentObject(id, newProp) {
+    updateCurrentObject(element, newProp) {
       return new Promise(resole => {
-        const prop = cloneDeep(this.currentObjects?.[id]);
+        if (isEmpty(this.currentObjects)) {
+          resole();
+
+          return;
+        }
+
+        const prop = cloneDeep(this.currentObjects[element.id]);
 
         merge(prop, newProp);
 
-        this.setCurrentObject(prop);
+        this.setCurrentObject(this.getObjectProperties(prop, element));
 
         resole();
       });
@@ -2146,35 +2189,105 @@ export default {
     videoTogglePlay() {
       const video = this.digitalCanvas.getActiveObject();
 
-      if (isEmpty(video)) return;
+      if (isEmpty(video) || isEmpty(this.currentObjects)) return;
 
-      const isPlayingProp = video.get('isPlaying');
-
-      const isPlaying = isEmpty(isPlayingProp) ? false : isPlayingProp;
+      const isPlaying = isVideoPlaying(video);
 
       isPlaying ? video.pause() : video.play();
 
-      const prop = cloneDeep(this.currentObjects?.[video.id]);
-
-      prop.isPlaying = !isPlaying;
-
-      this.setCurrentObject(prop);
+      this.setCurrentObject({
+        ...this.currentObjects[video.id],
+        isPlaying: !isPlaying
+      });
     },
     /**
-     * Fire when video is finish playing
+     * Update status of video on properties menu
      *
-     * @param {String | Number} id  id of finishing play video
+     * @param {String | Number} id        id of finishing play video
+     * @param {Boolean}         isPlaying is video playing
      */
-    videoStop(id) {
+    videoToggleStatus(id, isPlaying = false) {
       const currentObjectId = this.getProperty('id');
 
       if (currentObjectId !== id) return;
 
       const prop = cloneDeep(this.currentObjects?.[id]);
 
-      prop.isPlaying = false;
+      this.setCurrentObject({ ...prop, isPlaying });
+    },
+    /**
+     * Rewind current video
+     */
+    videoRewind() {
+      const video = this.digitalCanvas.getActiveObject();
 
-      this.setCurrentObject(prop);
+      if (isEmpty(video)) return;
+
+      video.seek(-VIDEO_SPEED_UP_TIME);
+    },
+    /**
+     * Keep rewind current video
+     */
+    videoKeepRewind() {
+      const video = this.digitalCanvas.getActiveObject();
+
+      if (isEmpty(video)) return;
+
+      video.rewind();
+    },
+    /**
+     * Cancel keep rewind current video
+     */
+    videoCancelRewind() {
+      const video = this.digitalCanvas.getActiveObject();
+
+      if (isEmpty(video)) return;
+
+      video.rewind(false);
+    },
+    /**
+     * Froward current video
+     */
+    videoForward() {
+      const video = this.digitalCanvas.getActiveObject();
+
+      if (isEmpty(video)) return;
+
+      video.seek(VIDEO_SPEED_UP_TIME);
+    },
+    /**
+     * Keep forward current video
+     */
+    videoKeepForward() {
+      const video = this.digitalCanvas.getActiveObject();
+
+      if (isEmpty(video)) return;
+
+      video.forward();
+    },
+    /**
+     * Cancel keep forward current video
+     */
+    videoCancelForward() {
+      const video = this.digitalCanvas.getActiveObject();
+
+      if (isEmpty(video)) return;
+
+      video.forward(false);
+    },
+    /**
+     * Get properties with video specific value
+     *
+     * @param   {Object}  prop  current object properties
+     * @param   {Object}  video video element
+     * @returns                 new properties
+     */
+    getObjectProperties(prop, video) {
+      if (prop.type !== OBJECT_TYPE.VIDEO) return prop;
+
+      const isPlaying = isVideoPlaying(video);
+
+      return { ...prop, isPlaying };
     }
   }
 };

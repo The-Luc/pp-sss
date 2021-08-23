@@ -3,13 +3,25 @@
     <span class="properties-title">Poster Frame:</span>
     <div class="control-group">
       <RangeSlider
+        v-if="isSliderDisplayed"
         start-line-color="#58595b"
         is-hide-end-thumb
         @change="onSliderChange"
       />
-      <div>00:00.000</div>
+      <div v-if="isSliderDisplayed">00:00.000</div>
+      <div v-else class="thumbnail">
+        <span class="remove-icon" @click="onRemoveThumbnail">&times;</span>
+        <img :src="thumbnailUrl" alt="Poster frame thumbnail" />
+      </div>
       <v-btn outlined @click="onClickSelectImage">Select Image</v-btn>
     </div>
+
+    <MediaModal
+      type="posterFrame"
+      :is-open-modal="isOpenModal"
+      @select="handleSelectedImage"
+      @cancel="onCloseModal"
+    />
   </div>
 </template>
 

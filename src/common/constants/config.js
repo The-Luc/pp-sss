@@ -39,3 +39,5 @@ export const DEBOUNCE_MUTATION = 350;
 export const UPLOAD_STATUS_DISPLAY_TIME = 1000;
 
 export const MAX_STEP_UNDO_REDO = 5;
+
+export const MOUSE_HOLD_DETECT_TIME = 500;

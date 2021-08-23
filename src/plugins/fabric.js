@@ -3,9 +3,19 @@ import {
   CORNER_SIZE,
   BORDER_STYLES,
   DEFAULT_TEXT,
-  OBJECT_TYPE
+  OBJECT_TYPE,
+  VIDEO_MSPF
 } from '@/common/constants';
-import { getRectDashes, ptToPx } from '@/common/utils';
+
+import {
+  getRectDashes,
+  isEmpty,
+  ptToPx,
+  videoEndRewindEvent,
+  videoRewindEvent,
+  videoSeekEvent,
+  videoToggleStatusEvent
+} from '@/common/utils';
 
 const BORDER_COLOR = {
   OUTER: '#ffffff',
@@ -389,22 +399,198 @@ export const useDoubleStroke = function(rect) {
   rect._render = rectRender;
 };
 
+const getTimeToSet = (checkTime, duration) => {
+  if (checkTime < 0) return 0;
+
+  if (checkTime > duration) return duration;
+
+  return checkTime;
+};
+
 /**
  * Handle play video
  */
 const play = function() {
-  const element = this.getElement();
-  if (!element || !element.play) return;
-  element.play.call(element);
+  const video = this.getElement();
+
+  if (!video || !video.play) return;
+
+  video.playbackRate = 1;
+
+  const playPromise = video.play.call(video);
+
+  if (isEmpty(playPromise)) {
+    playPromise.catch(() => {}); // prevent play & pause error
+  }
 };
 
 /**
- * Handle pause vide
+ * Handle pause video
  */
 const pause = function() {
-  const element = this.getElement();
-  if (!element || !element.pause) return;
-  element.pause.call(element);
+  const video = this.getElement();
+
+  if (!video || !video.pause) return;
+
+  video.pause.call(video);
+};
+
+/**
+ * Handle seek to time of video
+ */
+const seek = function(seekTime) {
+  const video = this.getElement();
+
+  if (!video) return;
+
+  const isStart = video.currentTime === 0;
+  const isEnd = video.currentTime === video.duration;
+
+  if (seekTime < 0 && isStart) return;
+
+  if (seekTime > 0 && isEnd) return;
+
+  const nextTime = video.currentTime + seekTime;
+
+  video.currentTime = getTimeToSet(nextTime, video.duration);
+
+  video.dispatchEvent(videoSeekEvent);
+};
+
+/**
+ * Turn on fast forward video
+ */
+const keepForward = (videoObject, video) => {
+  if (video.currentTime >= video.duration) return;
+
+  video.isTempPlaying = !videoObject.isPlaying;
+
+  videoObject.play();
+
+  video.playbackRate = 2;
+};
+
+/**
+ * Turn off fast forward video
+ */
+const cancelForward = (videoObject, video) => {
+  video.playbackRate = 1;
+
+  if (video.isTempPlaying) {
+    videoObject.pause();
+  }
+
+  video.isTempPlaying = false;
+};
+
+/**
+ * Handle fast forward video
+ */
+const forward = function(isForward = true) {
+  const video = this.getElement();
+
+  if (!video) return;
+
+  isForward ? keepForward(this, video) : cancelForward(this, video);
+};
+
+const stopReverse = (videoObject, video) => {
+  if (!video.isKeepRewind) return;
+
+  video.isKeepRewind = false;
+
+  videoObject.pause();
+
+  if (!video.isTempPlaying) video.isKeepRewind = true;
+
+  video.dispatchEvent(videoEndRewindEvent);
+};
+
+const animateReverse = (videoObject, video) => {
+  const interval = setInterval(() => {
+    // stop playing in reverse
+    if (!video.isKeepRewind || video.currentTime <= 0) {
+      clearInterval(interval);
+
+      stopReverse(videoObject, video);
+
+      return;
+    }
+
+    // calculate elapsed time since last loop
+    const now = Date.now();
+    const elapsed = now - video.then;
+
+    if (elapsed <= VIDEO_MSPF) return;
+
+    // if enough time has elapsed, draw the next frame
+    video.then = now - (elapsed % VIDEO_MSPF);
+
+    if (video.currentTime > 0) {
+      video.currentTime -= VIDEO_MSPF / 1000;
+
+      return;
+    }
+
+    clearInterval(interval);
+
+    // if we reach the beginning, stop playing in reverse.
+    stopReverse(videoObject, video);
+  }, VIDEO_MSPF);
+};
+
+/**
+ * Turn on fast rewind video
+ */
+const keepRewind = (videoObject, video) => {
+  if (video.currentTime <= 0) return;
+
+  video.isKeepRewind = true;
+  video.isTempPlaying = !videoObject.isPlaying;
+
+  video.then = Date.now();
+
+  animateReverse(videoObject, video);
+
+  video.currentTime -= 0.01;
+
+  videoObject.play();
+
+  video.playbackRate = 0;
+
+  video.dispatchEvent(videoRewindEvent);
+};
+
+/**
+ * Turn off fast rewind video
+ */
+const cancelRewind = (videoObject, video) => {
+  if (!video.isKeepRewind) return;
+
+  video.playbackRate = 1;
+  video.isKeepRewind = false;
+
+  if (video.isTempPlaying) videoObject.pause();
+  else {
+    videoObject.play();
+
+    videoObject.isPlaying = true;
+
+    video.dispatchEvent(videoToggleStatusEvent);
+  }
+
+  video.isTempPlaying = false;
+};
+
+/**
+ * Handle fast rewind video
+ */
+const rewind = function(isRewind = true) {
+  const video = this.getElement();
+
+  if (!video) return;
+
+  isRewind ? keepRewind(this, video) : cancelRewind(this, video);
 };
 
 /**
@@ -419,6 +605,9 @@ export const imageBorderModifier = function(image) {
   image.drawClipPathOnCache = drawClipPathOnCache;
   image.play = play;
   image.pause = pause;
+  image.seek = seek;
+  image.forward = forward;
+  image.rewind = rewind;
 };
 
 /**

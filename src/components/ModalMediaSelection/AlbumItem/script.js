@@ -23,8 +23,8 @@ export default {
       default: ''
     },
     emptyCategory: {
-      type: String,
-      default: ''
+      type: Object,
+      default: () => ({})
     }
   },
   computed: {

@@ -1,8 +1,31 @@
+import { EVENT_TYPE } from '@/common/constants';
+import { isEmpty } from '@/common/utils';
 import RangeSlider from '@/components/RangeSlider';
+import MediaModal from '@/containers/Modal/Media';
+
+import { useElementProperties } from '@/hooks';
 
 export default {
   components: {
-    RangeSlider
+    RangeSlider,
+    MediaModal
+  },
+  setup() {
+    const { getProperty } = useElementProperties();
+
+    return {
+      getProperty,
+      isOpenModal: false
+    };
+  },
+
+  computed: {
+    thumbnailUrl() {
+      return this.getProperty('customThumbnailUrl');
+    },
+    isSliderDisplayed() {
+      return isEmpty(this.thumbnailUrl);
+    }
   },
 
   methods: {
@@ -13,12 +36,41 @@ export default {
     onSliderChange(value) {
       console.log('slider change ' + value);
     },
-
+    /**
+     * To set thumbnail for the current video
+     * @param {String} img Img url
+     */
+    handleSelectedImage([{ imageUrl }]) {
+      this.$root.$emit(EVENT_TYPE.CHANGE_VIDEO_PROPERTIES, {
+        customThumbnailUrl: imageUrl
+      });
+    },
     /**
      * Fire when user click on Select Image button
      */
     onClickSelectImage() {
-      console.log('on click Select image');
+      const isPlaying = this.getProperty('isPlaying');
+
+      if (isPlaying) this.$root.$emit(EVENT_TYPE.VIDEO_TOGGLE_PLAY);
+
+      this.isOpenModal = true;
+    },
+    /**
+     * Remove thumbnail of the current video
+     */
+    onRemoveThumbnail() {
+      const thumbnailUrl = this.getProperty('thumbnailUrl');
+
+      this.$root.$emit(EVENT_TYPE.CHANGE_VIDEO_PROPERTIES, {
+        customThumbnailUrl: '',
+        thumbnailUrl
+      });
+    },
+    /**
+     * Fire when user close the media modal
+     */
+    onCloseModal() {
+      this.isOpenModal = false;
     }
   }
 };
