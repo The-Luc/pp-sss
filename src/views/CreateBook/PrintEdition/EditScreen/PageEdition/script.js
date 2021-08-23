@@ -1,6 +1,6 @@
 import { mapGetters, mapMutations, mapActions } from 'vuex';
 import { fabric } from 'fabric';
-import { cloneDeep, uniqueId, merge, debounce } from 'lodash';
+import { cloneDeep, merge, debounce } from 'lodash';
 
 import { imageBorderModifier, usePrintOverrides } from '@/plugins/fabric';
 
@@ -35,6 +35,7 @@ import {
   pastePpObject,
   isDeleteKey,
   isValidTargetToCopyPast,
+  getUniqueId,
   isContainDebounceProp
 } from '@/common/utils';
 
@@ -934,7 +935,7 @@ export default {
      * Event fire when user click on Image button on Toolbar to add new image on canvas
      */
     async addImageBox(x, y, width, height, options) {
-      const id = uniqueId();
+      const id = getUniqueId();
 
       const size = new BaseSize({
         width: pxToIn(width),
@@ -999,7 +1000,7 @@ export default {
      * @param {Boolean} isLeft      is add to the left page or right page
      */
     addBackground({ background, isLeft = true }) {
-      const id = uniqueId();
+      const id = getUniqueId();
 
       const newBackground = new BackgroundElementObject({
         ...background,
@@ -1074,13 +1075,13 @@ export default {
      */
     async addClipArt(clipArts) {
       const toBeAddedClipArts = clipArts.map(c => {
-        const id = uniqueId();
+        const id = getUniqueId();
 
         const vector = c.vector;
 
         const newClipArt = new ClipArtElementObject({
-          id,
           ...c,
+          id,
           vector: require(`../../../../../assets/image/clip-art/${vector}`)
         });
 
@@ -1286,8 +1287,8 @@ export default {
     async addShapes(shapes) {
       const toBeAddedShapes = shapes.map(s => {
         const newShape = new ShapeElementObject({
-          id: uniqueId(),
-          ...s
+          ...s,
+          id: getUniqueId()
         });
 
         return {
@@ -1816,7 +1817,7 @@ export default {
 
       let ppObjects = [...objects];
       let layout = {
-        id: parseInt(uniqueId()) + 100,
+        id: parseInt(getUniqueId()) + 100,
         name: layoutName,
         isFavorites: false,
         previewImageUrl: window.printCanvas.toDataURL({

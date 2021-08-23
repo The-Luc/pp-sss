@@ -1,6 +1,4 @@
-import { uniqueId } from 'lodash';
-
-import { isEmpty } from '@/common/utils';
+import { getUniqueId, isEmpty } from '@/common/utils';
 import printService from '@/api/print';
 import { setPrintPpLayouts } from '@/api/layouts';
 
@@ -132,7 +130,7 @@ export const actions = {
     const newObjects = restObjs.map(obj => ({
       ...obj,
       position: currentPosition,
-      id: uniqueId(`${obj.id}`)
+      id: getUniqueId()
     }));
 
     const isLeftPage = pagePosition === 'left';

@@ -94,6 +94,7 @@ import {
   isDeleteKey,
   isVideoPlaying,
   isValidTargetToCopyPast,
+  getUniqueId,
   isContainDebounceProp
 } from '@/common/utils';
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
@@ -104,7 +105,7 @@ import {
   MUTATES as DIGITAL_MUTATES
 } from '@/store/modules/digital/const';
 
-import { cloneDeep, debounce, merge, uniqueId } from 'lodash';
+import { cloneDeep, debounce, merge } from 'lodash';
 import { useSaveData, useObject } from '../composables';
 import { useSavingStatus } from '@/views/CreateBook/composables';
 import UndoRedoCanvas from '@/plugins/undoRedoCanvas';
@@ -1235,8 +1236,8 @@ export default {
     async addShapes(shapes) {
       const toBeAddedShapes = shapes.map(s => {
         const newShape = new ShapeElementObject({
-          id: uniqueId(),
-          ...s
+          ...s,
+          id: getUniqueId()
         });
 
         return {
@@ -1305,8 +1306,8 @@ export default {
     /**
      * Change properties of current element
      *
-     * @param {Object}  prop            new prop
-     * @param {String}  objectType      object type want to check
+     * @param {Object}  prop        new prop
+     * @param {String}  objectType  object type want to check
      */
     async changeElementProperties(prop, objectType) {
       if (isEmpty(prop)) return;
@@ -1401,7 +1402,7 @@ export default {
      * Event fire when user click on Image button on Toolbar to add new image on canvas
      */
     async addImageBox(x, y, width, height, options) {
-      const id = uniqueId();
+      const id = getUniqueId();
 
       const size = new BaseSize({
         width: pxToIn(width),
@@ -1499,13 +1500,13 @@ export default {
      */
     async addClipArt(clipArts) {
       const toBeAddedClipArts = clipArts.map(c => {
-        const id = uniqueId();
+        const id = getUniqueId();
 
         const vector = c.vector;
 
         const newClipArt = new ClipArtElementObject({
-          id,
           ...c,
+          id,
           vector: require(`../../../../../assets/image/clip-art/${vector}`)
         });
 
@@ -1568,7 +1569,7 @@ export default {
      * @param {Boolean} isLeft      is add to the left page or right page
      */
     addBackground({ background }) {
-      const id = uniqueId();
+      const id = getUniqueId();
 
       const newBackground = new BackgroundElementObject({
         ...background,
@@ -2144,7 +2145,7 @@ export default {
      * Set properties of selected background then trigger the change
      * Use with debounce
      *
-     * @param {Object}  prop    new prop
+     * @param {Object}  prop  new prop
      */
     debounceSetBackgroundProp: debounce(function(prop) {
       this.setBackgroundProp({ prop });
