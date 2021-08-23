@@ -1,10 +1,16 @@
 import { fabric } from 'fabric';
-import { cloneDeep, uniqueId } from 'lodash';
+import { cloneDeep } from 'lodash';
 
 import { BasePosition, TextElementObject } from '../models/element';
 import { applyShadowToObject } from './common';
 
-import { isEmpty, inToPx, pxToIn, getStrokeLineCap } from '@/common/utils';
+import {
+  isEmpty,
+  inToPx,
+  pxToIn,
+  getStrokeLineCap,
+  getUniqueId
+} from '@/common/utils';
 
 import {
   TEXT_CASE,
@@ -26,7 +32,7 @@ import { useDoubleStroke, useTextOverride } from '@/plugins/fabric';
  * Handle creating a TextBox into canvas
  */
 export const createTextBox = (x, y, width, height, textProperties) => {
-  const id = textProperties?.id || uniqueId();
+  const id = textProperties?.id || getUniqueId();
 
   const newText = new TextElementObject({
     id,

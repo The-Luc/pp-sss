@@ -1,6 +1,6 @@
-import { cloneDeep, merge, uniqueId } from 'lodash';
+import { cloneDeep, merge } from 'lodash';
 
-import { moveItem } from '@/common/utils';
+import { getUniqueId, moveItem } from '@/common/utils';
 
 import { OBJECT_TYPE } from '@/common/constants';
 
@@ -160,7 +160,7 @@ export const mutations = {
   [DIGITAL._MUTATES.SET_FRAMES](state, { framesList }) {
     if (framesList.length === 0) {
       const blankFrame = {
-        id: uniqueId(),
+        id: getUniqueId(),
         frame: {
           previewImageUrl: '',
           id: 0,
@@ -200,8 +200,8 @@ export const mutations = {
     if (!frames?.length) return;
 
     frames.forEach(frame => {
-      let id = uniqueId();
-      while (state.frameIds.includes(id)) id = uniqueId();
+      let id = getUniqueId();
+      while (state.frameIds.includes(id)) id = getUniqueId();
 
       state.frameIds = [...state.frameIds, id];
       state.frames = { ...state.frames, [id]: frame };

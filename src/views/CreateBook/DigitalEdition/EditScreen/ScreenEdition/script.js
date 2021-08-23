@@ -10,7 +10,6 @@ import {
   DEFAULT_CLIP_ART,
   DEFAULT_IMAGE,
   DEFAULT_SHAPE,
-  EDITION,
   MODAL_TYPES,
   OBJECT_TYPE,
   SAVE_STATUS,
@@ -74,7 +73,8 @@ import {
   useModal,
   useMutationDigitalSheet,
   useElementProperties,
-  useStyle
+  useStyle,
+  useToolBar
 } from '@/hooks';
 
 import {
@@ -93,7 +93,9 @@ import {
   pastePpObject,
   isDeleteKey,
   isVideoPlaying,
-  isValidTargetToCopyPast
+  isValidTargetToCopyPast,
+  getUniqueId,
+  isContainDebounceProp
 } from '@/common/utils';
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
 
@@ -103,7 +105,7 @@ import {
   MUTATES as DIGITAL_MUTATES
 } from '@/store/modules/digital/const';
 
-import { cloneDeep, debounce, merge, uniqueId } from 'lodash';
+import { cloneDeep, debounce, merge } from 'lodash';
 import { useSaveData, useObject } from '../composables';
 import { useSavingStatus } from '@/views/CreateBook/composables';
 import UndoRedoCanvas from '@/plugins/undoRedoCanvas';
@@ -147,6 +149,7 @@ export default {
     const { updateObjectsToStore } = useObject();
     const { updateSheetThumbnail } = useMutationDigitalSheet();
     const { getProperty } = useElementProperties();
+    const { updateMediaSidebarOpen } = useToolBar();
 
     return {
       frames,
@@ -168,7 +171,8 @@ export default {
       updateObjectsToStore,
       updateSheetThumbnail,
       firstFrameThumbnail,
-      getProperty
+      getProperty,
+      updateMediaSidebarOpen
     };
   },
   data() {
@@ -238,8 +242,6 @@ export default {
         return;
       }
 
-      this.setToolNameSelected({ name: '' });
-
       const isSwitchFrame = this.frames.find(
         f => String(f.id) === String(oldVal)
       );
@@ -257,6 +259,8 @@ export default {
       this.handleSwitchFrame(this.currentFrame);
 
       this.undoRedoCanvas.reset();
+
+      this.updateMediaSidebarOpen({ isOpen: false });
 
       await this.drawObjectsOnCanvas(this.sheetLayout);
     },
@@ -301,6 +305,8 @@ export default {
     this.setInfoBar({ x: 0, y: 0, zoom: 0 });
 
     this.undoRedoCanvas.dispose();
+
+    this.updateMediaSidebarOpen({ isOpen: false });
   },
   methods: {
     ...mapActions({
@@ -384,7 +390,6 @@ export default {
       this.autoSaveTimer = setInterval(this.handleAutosave, AUTOSAVE_INTERVAL);
 
       this.undoRedoCanvas = new UndoRedoCanvas({
-        edition: EDITION.DIGITAL,
         canvas: this.digitalCanvas,
         renderCanvasFn: this.drawObjectsOnCanvas
       });
@@ -1231,8 +1236,8 @@ export default {
     async addShapes(shapes) {
       const toBeAddedShapes = shapes.map(s => {
         const newShape = new ShapeElementObject({
-          id: uniqueId(),
-          ...s
+          ...s,
+          id: getUniqueId()
         });
 
         return {
@@ -1301,8 +1306,8 @@ export default {
     /**
      * Change properties of current element
      *
-     * @param {Object}  prop            new prop
-     * @param {String}  objectType      object type want to check
+     * @param {Object}  prop        new prop
+     * @param {String}  objectType  object type want to check
      */
     async changeElementProperties(prop, objectType) {
       if (isEmpty(prop)) return;
@@ -1315,11 +1320,7 @@ export default {
 
       this.updateCurrentObject(element, newProp);
 
-      if (
-        !isEmpty(newProp['shadow']) ||
-        !isEmpty(newProp['color']) ||
-        !isEmpty(newProp['opacity'])
-      ) {
+      if (isContainDebounceProp(newProp)) {
         this.debounceSetObjectProp(newProp);
       } else {
         this.setObjectProperties(newProp);
@@ -1401,7 +1402,7 @@ export default {
      * Event fire when user click on Image button on Toolbar to add new image on canvas
      */
     async addImageBox(x, y, width, height, options) {
-      const id = uniqueId();
+      const id = getUniqueId();
 
       const size = new BaseSize({
         width: pxToIn(width),
@@ -1489,6 +1490,8 @@ export default {
      * @param {Object}  prop  new prop
      */
     changeVideoProperties(prop) {
+      if (!isEmpty(prop.volume)) this.changeVideoVolume(prop.volume);
+
       this.changeElementProperties(prop, OBJECT_TYPE.VIDEO);
     },
     /**
@@ -1497,13 +1500,13 @@ export default {
      */
     async addClipArt(clipArts) {
       const toBeAddedClipArts = clipArts.map(c => {
-        const id = uniqueId();
+        const id = getUniqueId();
 
         const vector = c.vector;
 
         const newClipArt = new ClipArtElementObject({
-          id,
           ...c,
+          id,
           vector: require(`../../../../../assets/image/clip-art/${vector}`)
         });
 
@@ -1566,7 +1569,7 @@ export default {
      * @param {Boolean} isLeft      is add to the left page or right page
      */
     addBackground({ background }) {
-      const id = uniqueId();
+      const id = getUniqueId();
 
       const newBackground = new BackgroundElementObject({
         ...background,
@@ -2142,7 +2145,7 @@ export default {
      * Set properties of selected background then trigger the change
      * Use with debounce
      *
-     * @param {Object}  prop    new prop
+     * @param {Object}  prop  new prop
      */
     debounceSetBackgroundProp: debounce(function(prop) {
       this.setBackgroundProp({ prop });
@@ -2154,13 +2157,13 @@ export default {
     /**
      * Undo user action
      */
-    async undo() {
+    undo() {
       this.undoRedoCanvas.undo();
     },
     /**
      * Redo user action
      */
-    async redo() {
+    redo() {
       this.undoRedoCanvas.redo();
     },
     /**
@@ -2295,7 +2298,7 @@ export default {
      *
      * @param   {Object}  prop  current object properties
      * @param   {Object}  video video element
-     * @returns                 new properties
+     * @returns {Object}        new properties
      */
     getObjectProperties(prop, video) {
       if (prop.type !== OBJECT_TYPE.VIDEO) return prop;
@@ -2304,16 +2307,35 @@ export default {
 
       return { ...prop, isPlaying };
     },
+    /**
+     * Get properties with video specific value
+     *
+     * @param {Number}  volume  new volumne
+     */
+    changeVideoVolume(volume) {
+      const video = this.digitalCanvas.getActiveObject();
 
+      if (isEmpty(video)) return;
+
+      video.changeVolume(volume / 100);
+    },
     /**
      * Handle click on fabric object
      * @param {Object} event - Event when click object
      */
     handleMouseDown(event) {
       const target = event.target;
-      if (!target.isHoverControl) return;
+      if (target.object === OBJECT_TYPE.IMAGE) {
+        if (!target.isHoverControl) return;
 
-      this.$emit('openCropControl');
+        this.$emit('openCropControl');
+      }
+
+      if (target.objectType === OBJECT_TYPE.VIDEO) {
+        if (!target.isHoverPlayIcon) return;
+
+        this.videoTogglePlay();
+      }
     }
   }
 };

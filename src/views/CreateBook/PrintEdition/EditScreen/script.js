@@ -76,8 +76,8 @@ export default {
     const { sheetMedia } = useSheet();
     const { updateSheetMedia, deleteSheetMedia } = useActionsEditionSheet();
     const { getBookPrintInfo } = useBookPrintInfo();
-    const { isMediaSidebarOpen, setMediaSidebarOpen } = useToolBar();
-    const { currentObject, listObjects } = useObjectProperties();
+    const { listObjects } = useObjectProperties();
+    const { isMediaSidebarOpen, updateMediaSidebarOpen } = useToolBar();
 
     return {
       pageSelected,
@@ -99,8 +99,7 @@ export default {
       listObjects,
       setPropOfMultipleObjects,
       isMediaSidebarOpen,
-      setMediaSidebarOpen,
-      currentObject
+      updateMediaSidebarOpen
     };
   },
   data() {
@@ -279,7 +278,7 @@ export default {
      * Close list photo in sidebar
      */
     closePhotoSidebar() {
-      this.setMediaSidebarOpen({ isOpen: false });
+      this.updateMediaSidebarOpen({ isOpen: false });
     },
 
     /**

@@ -210,6 +210,7 @@ const renderVideoPlayIcon = function(ctx) {
   const dX = -this.width / 2;
   const dY = -this.height / 2;
 
+  ctx.shadowColor = 'transparent';
   ctx.drawImage(this.playIcon, sX, sY, sW, sH, dX, dY, this.width, this.height);
 };
 
@@ -228,7 +229,6 @@ const renderFillVideo = function(ctx) {
   const w = this.width;
   const h = this.height;
 
-  // crop values cannot be lesser than 0.
   const cropX = max(this.cropX, 0);
   const cropY = max(this.cropY, 0);
 
@@ -275,10 +275,11 @@ const renderFill = function(ctx) {
 
     return;
   }
-  renderFillVideo.call(this, ctx);
 
   if (this.showThumbnail) {
     renderVideoThumbnail.call(this, ctx);
+  } else {
+    renderFillVideo.call(this, ctx);
   }
 
   if (this.showPlayIcon) {
@@ -479,7 +480,8 @@ const seek = function(seekTime) {
 
   video.currentTime = getTimeToSet(nextTime, video.duration);
 
-  video.dispatchEvent(videoSeekEvent);
+  if (video.currentTime === video.duration) video.play();
+  else video.dispatchEvent(videoSeekEvent);
 };
 
 /**
@@ -619,6 +621,31 @@ const rewind = function(isRewind = true) {
 };
 
 /**
+ * Handle change volume of video
+ */
+const changeVolume = function(volume) {
+  const video = this.getElement();
+
+  if (!video) return;
+
+  video.volume = volume;
+};
+
+/**
+ * Handle dispose video
+ */
+const dispose = function() {
+  const video = this.getElement();
+
+  if (!video) return;
+
+  video.pause();
+
+  video.src = '';
+  video.removeAttribute('src');
+};
+
+/**
  * Allow fabric image object to have double stroke
  * @param {fabric.Image} image - the object to enable double stroke
  */
@@ -628,11 +655,21 @@ export const imageBorderModifier = function(image) {
   image._drawClipPath = drawClipPath;
   image.renderClipPathCache = renderClipPathCache;
   image.drawClipPathOnCache = drawClipPathOnCache;
-  image.play = play;
-  image.pause = pause;
-  image.seek = seek;
-  image.forward = forward;
-  image.rewind = rewind;
+};
+
+/**
+ * Init event for video (fabric image)
+ *
+ * @param {fabric.Image} video  the object to enable event
+ */
+export const videoInitEvent = function(video) {
+  video.play = play;
+  video.pause = pause;
+  video.seek = seek;
+  video.forward = forward;
+  video.rewind = rewind;
+  video.changeVolume = changeVolume;
+  video.dispose = dispose;
 };
 
 /**

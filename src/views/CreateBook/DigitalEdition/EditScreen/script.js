@@ -69,7 +69,7 @@ export default {
     const { sheetMedia } = useSheet();
     const { setPropertyById, setPropOfMultipleObjects } = useProperties();
     const { listObjects } = useObjectProperties();
-    const { isMediaSidebarOpen, setMediaSidebarOpen } = useToolBar();
+    const { isMediaSidebarOpen, updateMediaSidebarOpen } = useToolBar();
 
     return {
       pageSelected,
@@ -91,7 +91,7 @@ export default {
       setPropOfMultipleObjects,
       listObjects,
       isMediaSidebarOpen,
-      setMediaSidebarOpen
+      updateMediaSidebarOpen
     };
   },
   data() {
@@ -246,7 +246,7 @@ export default {
      * Close list photo in sidebar
      */
     closeMediaSidebar() {
-      this.setMediaSidebarOpen({ isOpen: false });
+      this.updateMediaSidebarOpen({ isOpen: false });
     },
     /**
      * Handle autoflow
@@ -408,7 +408,7 @@ export default {
             target,
             mediaUrl,
             thumbUrl,
-            this.$refs.canvasEditor.videoStop
+            this.$refs.canvasEditor.videoToggleStatus
           )
         : await setImageSrc(target, imageUrl);
       prop.imageId = imageId;

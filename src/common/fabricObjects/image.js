@@ -17,8 +17,10 @@ import {
   IMAGE_INDICATOR,
   VIDEO_EVENT_TYPE,
   VIDEO_PLAY_ICON,
-  CROP_CONTROL
+  CROP_CONTROL,
+  DEFAULT_VIDEO
 } from '../constants';
+import { videoInitEvent } from '@/plugins/fabric';
 
 /**
  * Create new fabric image width initial properties
@@ -271,7 +273,22 @@ export const handleDragLeave = ({ target }) => {
  */
 export const handleMouseMove = event => {
   const target = event.target;
-  if (target?.objectType !== OBJECT_TYPE.IMAGE || !target?.hasImage) return;
+
+  if (target?.objectType === OBJECT_TYPE.IMAGE) {
+    handleHoverImage(target);
+  }
+
+  if (target?.objectType === OBJECT_TYPE.VIDEO) {
+    handleHoverVideo(target);
+  }
+};
+
+/**
+ * Handle when hover on control icon
+ * @param {Object} target Fabric object selected
+ */
+const handleHoverImage = target => {
+  if (!target.hasImage) return;
 
   const { width, height, scaleX, scaleY } = target;
   const { x, y } = target.getLocalPointer(event.e);
@@ -294,6 +311,39 @@ export const handleMouseMove = event => {
       : {
           hoverCursor: null,
           isHoverControl: false
+        };
+
+  target.set(prop);
+};
+
+/**
+ * Handle when hover on play icon
+ * @param {Object} target Fabric object selected
+ */
+const handleHoverVideo = target => {
+  if (target.isPlaying || !target.showPlayIcon) return;
+
+  const { x, y } = target.getLocalPointer();
+  const { width, height, scaleX, scaleY } = target;
+
+  const startX = (width * scaleX - VIDEO_PLAY_ICON.WIDTH) / 2;
+  const endX = startX + VIDEO_PLAY_ICON.WIDTH;
+
+  const startY = (height * scaleY - VIDEO_PLAY_ICON.HEIGHT) / 2;
+  const endY = startY + VIDEO_PLAY_ICON.HEIGHT;
+
+  const containPointerX = x >= startX && x <= endX;
+  const containPointerY = y >= startY && y <= endY;
+
+  const prop =
+    containPointerX && containPointerY
+      ? {
+          hoverCursor: 'pointer',
+          isHoverPlayIcon: true
+        }
+      : {
+          hoverCursor: null,
+          isHoverPlayIcon: false
         };
 
   target.set(prop);
@@ -421,9 +471,15 @@ export const setVideoSrc = async (
 ) => {
   const { width, height, scaleX, scaleY } = imageObject;
 
+  videoInitEvent(imageObject);
+
   const video = await createVideoElement(videoSrc);
 
   video.currentTime = 0;
+
+  const volume = imageObject.get('volume');
+
+  video.volume = (isEmpty(volume) ? DEFAULT_VIDEO.VOLUME : volume) / 100;
 
   const unPlayProperties = {
     isPlaying: false,
@@ -459,6 +515,8 @@ export const setVideoSrc = async (
     });
 
     video.isTempPlaying = false;
+
+    video.currentTime = 0;
 
     requestAnimFrame();
 

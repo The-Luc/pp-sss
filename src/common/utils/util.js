@@ -1,4 +1,4 @@
-import { cloneDeep, merge, intersection } from 'lodash';
+import { cloneDeep, merge, intersection, uniqueId } from 'lodash';
 
 import { STATUS } from '@/common/constants';
 
@@ -365,6 +365,7 @@ export const modifyItemsInObject = (originalItems, items) => {
 export const hasOwnProperty = (object, prop) => {
   return Object.prototype.hasOwnProperty.call(object, prop);
 };
+
 /**
  * Get file extension
  *
@@ -375,4 +376,13 @@ export const getFileExtension = fileName => {
   const result = /[.]/.exec(fileName) ? /[^.]+$/.exec(fileName) : [''];
 
   return `.${result[0].toLowerCase()}`;
+};
+
+/**
+ * Get unique id
+ *
+ * @returns {Number}  new id
+ */
+export const getUniqueId = () => {
+  return uniqueId();
 };

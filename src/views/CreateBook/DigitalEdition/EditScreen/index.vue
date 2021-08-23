@@ -6,7 +6,6 @@
     />
 
     <ToolBar
-      :is-digital-editor="true"
       @undo="onUndo"
       @redo="onRedo"
       @switchTool="onToolSwitch"

@@ -74,26 +74,30 @@ export const useToolBar = () => {
     propertiesType,
     isMenuOpen,
     selectedToolName,
-    isMediaSidebarOpen
+    isMediaSidebarOpen,
+    disabledToolbarItems
   } = useGetters({
     themeId: GETTERS.DEFAULT_THEME_ID,
     selectedObjectType: APP_GETTERS.SELECTED_OBJECT_TYPE,
     propertiesType: APP_GETTERS.PROPERTIES_OBJECT_TYPE,
     isMenuOpen: APP_GETTERS.IS_OPEN_MENU_PROPERTIES,
     selectedToolName: APP_GETTERS.SELECTED_TOOL_NAME,
-    isMediaSidebarOpen: APP_GETTERS.IS_MEDIA_SIDEBAR_OPEN
+    isMediaSidebarOpen: APP_GETTERS.IS_MEDIA_SIDEBAR_OPEN,
+    disabledToolbarItems: APP_GETTERS.DISABLED_TOOLBAR_ITEMS
   });
 
   const {
     setPropertiesType,
     toggleMenu,
     setToolNameSelected,
-    setMediaSidebarOpen
+    updateMediaSidebarOpen,
+    updateDisabledToolbarItems
   } = useMutations({
     setPropertiesType: APP_MUTATES.SET_PROPERTIES_OBJECT_TYPE,
     toggleMenu: APP_MUTATES.TOGGLE_MENU_PROPERTIES,
     setToolNameSelected: APP_MUTATES.SET_TOOL_NAME_SELECTED,
-    setMediaSidebarOpen: APP_MUTATES.SET_MEDIA_SIDEBAR_OPEN
+    updateMediaSidebarOpen: APP_MUTATES.UPDATE_MEDIA_SIDEBAR_OPEN,
+    updateDisabledToolbarItems: APP_MUTATES.UPDATE_DISABLED_TOOLBAR_ITEMS
   });
 
   /**
@@ -117,6 +121,8 @@ export const useToolBar = () => {
     setToolNameSelected,
     togglePropertiesMenu,
     isMediaSidebarOpen,
-    setMediaSidebarOpen
+    updateMediaSidebarOpen,
+    disabledToolbarItems,
+    updateDisabledToolbarItems
   };
 };

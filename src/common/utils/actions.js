@@ -1,10 +1,11 @@
 import { fabric } from 'fabric';
-import { cloneDeep, uniqueId } from 'lodash';
+import { cloneDeep } from 'lodash';
 import { clearClipboard, isEmpty, getMinPositionObject } from '@/common/utils';
 import { OBJECT_TYPE } from '@/common/constants';
 import { COPY_OBJECT_KEY } from '@/common/constants/config';
 import { computePastedObjectCoord } from './pasteObject';
 import { parsePasteObject } from '@/common/utils/string';
+import { getUniqueId } from './util';
 /**
  * Handle copy object and save session storage
  *
@@ -104,7 +105,7 @@ export const handlePasteItems = async (
 
       const newData = {
         ...obj,
-        id: uniqueId(),
+        id: getUniqueId(),
         coord
       };
       return createElementFromPpData(newData);

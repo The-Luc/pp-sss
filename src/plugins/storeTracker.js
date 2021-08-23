@@ -4,10 +4,13 @@ import store from '@/store';
 
 import { isEmpty, hasOwnProperty } from '@/common/utils';
 
+import { GETTERS as APP_GETTERS } from '@/store/modules/app/const';
+
 import {
   GETTERS as PRINT_GETTERS,
   MUTATES as PRINT_MUTATES
 } from '@/store/modules/print/const';
+
 import {
   GETTERS as DIGITAL_GETTERS,
   MUTATES as DIGITAL_MUTATES
@@ -25,15 +28,19 @@ class StoreTracker {
 
   _isSwitching = false;
 
+  _updateDataCallback = null;
+
   /**
    * @param {Object} options  option of store tracker
    */
   constructor(options) {
-    if (!hasOwnProperty(options, 'edition')) throw 'Edition must be set';
-
-    this._edition = options.edition;
+    this._edition = store.getters[APP_GETTERS.ACTIVE_EDITION];
 
     if (hasOwnProperty(options, 'maxStep')) this._maxStep = options.maxStep;
+
+    if (hasOwnProperty(options, 'updateDataCallback')) {
+      this._updateDataCallback = options.updateDataCallback;
+    }
   }
 
   _getStoreData = state => {
@@ -62,6 +69,8 @@ class StoreTracker {
       this._trackList.length - this._currentIndex,
       data
     );
+
+    if (this._updateDataCallback) this._updateDataCallback();
   };
 
   _setDataToStore = async () => {
@@ -155,6 +164,14 @@ class StoreTracker {
       this._currentIndex < this._trackList.length - 1,
       1
     );
+  };
+
+  isBackAvailable = () => {
+    return this._currentIndex > 0;
+  };
+
+  isNextAvailable = () => {
+    return this._currentIndex < this._trackList.length - 1;
   };
 }
 
