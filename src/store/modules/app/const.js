@@ -29,6 +29,7 @@ class GetterClass extends BaseObject {
   SAVING_STATUS = 'savingStatus';
   IS_PHOTO_VISITED = 'isPhotoVisited';
   IS_MEDIA_SIDEBAR_OPEN = 'isMediaSidebarOpen';
+  DISABLED_TOOLBAR_ITEMS = 'getDisabledToolbarItems';
 
   constructor(props) {
     super(props);
@@ -54,6 +55,7 @@ class ActionClass extends BaseObject {
     this._set(props);
   }
 }
+
 const _ACTIONS = new ActionClass();
 
 export const ACTIONS = new ActionClass(
@@ -81,7 +83,8 @@ class MutationClass extends BaseObject {
   SET_SAVED_TEXT_STYLE = 'setSavedTextStyle';
   SET_SAVED_IMAGE_STYLE = 'setSavedImageStyle';
   UPDATE_SAVING_STATUS = 'updateSavingStatus';
-  SET_MEDIA_SIDEBAR_OPEN = 'setMediaSidebarOpen';
+  UPDATE_MEDIA_SIDEBAR_OPEN = 'updateMediaSidebarOpen';
+  UPDATE_DISABLED_TOOLBAR_ITEMS = 'updateDisabledToolbarItems';
 
   constructor(props) {
     super(props);

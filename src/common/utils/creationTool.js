@@ -4,7 +4,8 @@ import {
   INSTRUCTION_TOOLS,
   NON_ELEMENT_PROPERTIES_TOOLS,
   PROPERTIES_TOOLS,
-  ONE_CLICK_TOOLS
+  ONE_CLICK_TOOLS,
+  TOOL_NAME
 } from '@/common/constants';
 
 /**
@@ -135,4 +136,13 @@ export const isToolActivated = (
  */
 export const isOneClickTool = toolName => {
   return ONE_CLICK_TOOLS.includes(toolName);
+};
+
+/**
+ * Get default disabled items
+ *
+ * @returns {Array} list of disabled items
+ */
+export const getDefaultDisabledItems = () => {
+  return [TOOL_NAME.UNDO, TOOL_NAME.REDO];
 };
