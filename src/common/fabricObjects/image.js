@@ -509,6 +509,8 @@ export const setVideoSrc = async (
 
     video.isTempPlaying = false;
 
+    video.currentTime = 0;
+
     requestAnimFrame();
 
     videoToggleStatusCallback(imageObject.id);

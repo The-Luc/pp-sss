@@ -480,7 +480,8 @@ const seek = function(seekTime) {
 
   video.currentTime = getTimeToSet(nextTime, video.duration);
 
-  video.dispatchEvent(videoSeekEvent);
+  if (video.currentTime === video.duration) video.play();
+  else video.dispatchEvent(videoSeekEvent);
 };
 
 /**
