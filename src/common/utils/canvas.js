@@ -191,8 +191,15 @@ export const selectLatestObject = canvas => {
  */
 export const deleteSelectedObjects = canvas => {
   const activeObj = canvas?.getActiveObjects();
+
   if (isEmpty(activeObj)) return;
-  activeObj.forEach(object => canvas.remove(object));
+
+  activeObj.forEach(object => {
+    if (object.dispose) object.dispose();
+
+    canvas.remove(object);
+  });
+
   canvas.discardActiveObject().renderAll();
 };
 

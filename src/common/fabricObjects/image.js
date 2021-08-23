@@ -19,6 +19,7 @@ import {
   VIDEO_PLAY_ICON,
   CROP_CONTROL
 } from '../constants';
+import { videoInitEvent } from '@/plugins/fabric';
 
 /**
  * Create new fabric image width initial properties
@@ -468,6 +469,8 @@ export const setVideoSrc = async (
   videoToggleStatusCallback
 ) => {
   const { width, height, scaleX, scaleY } = imageObject;
+
+  videoInitEvent(imageObject);
 
   const video = await createVideoElement(videoSrc);
 

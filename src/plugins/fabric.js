@@ -620,12 +620,29 @@ const rewind = function(isRewind = true) {
   isRewind ? keepRewind(this, video) : cancelRewind(this, video);
 };
 
+/**
+ * Handle change volume of video
+ */
 const changeVolume = function(volume) {
   const video = this.getElement();
 
   if (!video) return;
 
   video.volume = volume;
+};
+
+/**
+ * Handle dispose video
+ */
+const dispose = function() {
+  const video = this.getElement();
+
+  if (!video) return;
+
+  video.pause();
+
+  video.src = '';
+  video.removeAttribute('src');
 };
 
 /**
@@ -638,12 +655,21 @@ export const imageBorderModifier = function(image) {
   image._drawClipPath = drawClipPath;
   image.renderClipPathCache = renderClipPathCache;
   image.drawClipPathOnCache = drawClipPathOnCache;
-  image.play = play;
-  image.pause = pause;
-  image.seek = seek;
-  image.forward = forward;
-  image.rewind = rewind;
-  image.changeVolume = changeVolume;
+};
+
+/**
+ * Init event for video (fabric image)
+ *
+ * @param {fabric.Image} video  the object to enable event
+ */
+export const videoInitEvent = function(video) {
+  video.play = play;
+  video.pause = pause;
+  video.seek = seek;
+  video.forward = forward;
+  video.rewind = rewind;
+  video.changeVolume = changeVolume;
+  video.dispose = dispose;
 };
 
 /**
