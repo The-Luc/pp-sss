@@ -103,7 +103,15 @@ export default {
     onChangeFile(e) {
       const inputValue = e.target.files || this.$refs.uploadPhoto.files;
       const files = Object.values(inputValue);
-      this.handleUploadFiles(files);
+      const flattenFiles = files.filter(item => {
+        return this.checkValidFile(item);
+      });
+
+      if (!flattenFiles?.length) {
+        this.isShowNotify = true;
+        return;
+      }
+      this.handleUploadFiles(flattenFiles);
     },
     /**
      * Emit constrain value to parent
