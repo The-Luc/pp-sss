@@ -638,6 +638,8 @@ const dispose = function() {
 
   video.src = '';
   video.removeAttribute('src');
+
+  this.setElement(null);
 };
 
 /**
