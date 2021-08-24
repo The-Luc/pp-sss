@@ -2325,7 +2325,7 @@ export default {
      */
     handleMouseDown(event) {
       const target = event.target;
-      if (target.object === OBJECT_TYPE.IMAGE) {
+      if (target.objectType === OBJECT_TYPE.IMAGE) {
         if (!target.isHoverControl) return;
 
         this.$emit('openCropControl');
