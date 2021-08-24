@@ -152,24 +152,6 @@ export const isVideoPlaying = video => {
 };
 
 /**
- * To update top left position of objects when angle exist
- * @param {Array} listObject array of fabric objects
- */
-export const updatePositionWhenAngleExist = listObject => {
-  listObject.forEach(object => {
-    const angle = object.angle;
-    if (angle === 0 || angle === 360 || object.objectType === OBJECT_TYPE.TEXT)
-      return;
-
-    object.rotate(0);
-    const { top, left } = object;
-
-    object.rotate(angle);
-    object.set({ top, left });
-  });
-};
-
-/**
  * Check if prop contain debounce data
  *
  * @param   {Object}  prop  prop to check

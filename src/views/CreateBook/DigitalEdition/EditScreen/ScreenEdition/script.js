@@ -93,7 +93,6 @@ import {
   pastePpObject,
   isDeleteKey,
   isVideoPlaying,
-  updatePositionWhenAngleExist,
   isValidTargetToCopyPast,
   getUniqueId,
   isContainDebounceProp
@@ -1967,8 +1966,6 @@ export default {
 
       const listFabricObjects = await Promise.all(allObjectPromises);
 
-      updatePositionWhenAngleExist(listFabricObjects);
-
       this.digitalCanvas.add(...listFabricObjects);
       this.digitalCanvas.requestRenderAll();
     },
@@ -2035,6 +2032,9 @@ export default {
 
       updateElement(element, prop, window.digitalCanvas);
 
+      const newProp = fabricToPpObject(element);
+      merge(prop, newProp);
+
       return prop;
     },
     /**
@@ -2082,6 +2082,9 @@ export default {
 
       updateElement(element, prop, window.digitalCanvas);
 
+      const newProp = fabricToPpObject(element);
+      merge(prop, newProp);
+
       return prop;
     },
 
@@ -2108,6 +2111,9 @@ export default {
       }
 
       updateElement(element, prop, window.digitalCanvas);
+
+      const newProp = fabricToPpObject(element);
+      merge(prop, newProp);
 
       return prop;
     },

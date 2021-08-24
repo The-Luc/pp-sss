@@ -34,7 +34,6 @@ import {
   copyPpObject,
   pastePpObject,
   isDeleteKey,
-  updatePositionWhenAngleExist,
   isValidTargetToCopyPast,
   getUniqueId,
   isContainDebounceProp
@@ -404,12 +403,6 @@ export default {
 
       applyBorderToImageObject(image, border);
 
-      updateSpecificProp(image, {
-        coord: {
-          rotation: imageProperties.coord.rotation
-        }
-      });
-
       if (imageProperties.hasImage && !imageProperties.control) {
         const control = await createMediaOverlay(IMAGE_LOCAL.CONTROL_ICON, {
           width: CROP_CONTROL.WIDTH,
@@ -503,12 +496,6 @@ export default {
         shadowAngle,
         shadowColor
       } = svg;
-
-      updateSpecificProp(svg, {
-        coord: {
-          rotation: objectData.coord.rotation
-        }
-      });
 
       applyShadowToObject(svg, {
         dropShadow,
@@ -1378,14 +1365,6 @@ export default {
 
       const newProp = this.updateElementProp(element, prop, objectType);
 
-      if (newProp?.coord?.rotation && objectType !== OBJECT_TYPE.TEXT) {
-        // update position of the element
-        const { top, left } = element;
-
-        newProp.coord.x = pxToIn(left);
-        newProp.coord.y = pxToIn(top);
-      }
-
       this.updateCurrentObject(element.id, newProp);
 
       if (isContainDebounceProp(newProp)) {
@@ -1413,6 +1392,9 @@ export default {
       }
 
       updateElement(element, prop, window.printCanvas);
+
+      const newProp = fabricToPpObject(element);
+      merge(prop, newProp);
 
       return prop;
     },
@@ -1460,6 +1442,9 @@ export default {
       }
 
       updateElement(element, prop, window.printCanvas);
+
+      const newProp = fabricToPpObject(element);
+      merge(prop, newProp);
 
       return prop;
     },
@@ -1730,8 +1715,6 @@ export default {
       });
 
       const listFabricObjects = await Promise.all(allObjectPromises);
-
-      updatePositionWhenAngleExist(listFabricObjects);
 
       window.printCanvas.add(...listFabricObjects);
       window.printCanvas.requestRenderAll();
