@@ -11,22 +11,26 @@ export default {
     PpButton
   },
   data() {
+    const covers = Object.keys(COVER_TYPE).map((k, index) => ({
+      name: COVER_TYPE[k],
+      value: index
+    }));
+
     return {
       users,
-      covers: Object.keys(COVER_TYPE).map((k, index) => ({
-        name: COVER_TYPE[k],
-        value: index
-      })),
-      maxPage: 140
+      covers,
+      maxPage: 140,
+      selectedUser: users[1],
+      selectedCover: covers[0]
     };
   },
   methods: {
-    onChangeUser(data) {
-      window.sessionStorage.setItem('userId', data.value);
-      window.sessionStorage.setItem('userRole', ROLE[data.role]);
+    saveUser() {
+      window.sessionStorage.setItem('userId', this.selectedUser.value);
+      window.sessionStorage.setItem('userRole', ROLE[this.selectedUser.role]);
     },
-    onChangeCover(data) {
-      window.data.book.coverOption = data.name;
+    saveCover() {
+      window.data.book.coverOption = this.selectedCover.name;
     },
     onCancel() {
       this.$refs.maxPageInput.blur();
@@ -40,6 +44,9 @@ export default {
       window.data.book.numberMaxPages = parseInt(this.maxPage);
     },
     goToManager() {
+      this.saveUser();
+      this.saveCover();
+
       this.$router.push({ name: ROUTE_NAME.MANAGER, params: { bookId: 1719 } });
     }
   }

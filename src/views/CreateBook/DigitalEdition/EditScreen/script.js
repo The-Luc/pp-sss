@@ -23,7 +23,8 @@ import {
   ROLE,
   SAVE_STATUS,
   SAVING_DURATION,
-  OBJECT_TYPE
+  OBJECT_TYPE,
+  DEFAULT_VIDEO
 } from '@/common/constants';
 import {
   useLayoutPrompt,
@@ -411,10 +412,14 @@ export default {
             this.$refs.canvasEditor.videoToggleStatus
           )
         : await setImageSrc(target, imageUrl);
+
       prop.imageId = imageId;
       prop.originalUrl = imageUrl;
 
+      if (mediaUrl) prop.volume = DEFAULT_VIDEO.VOLUME;
+
       this.setPropertyById({ id: target.id, prop });
+
       this.$refs.canvasEditor.getThumbnailUrl();
 
       this.$refs.canvasEditor.digitalCanvas.setActiveObject(target);

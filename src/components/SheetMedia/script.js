@@ -11,6 +11,10 @@ export default {
     media: {
       type: Array,
       default: () => []
+    },
+    isMediaSidebarOpen: {
+      type: Boolean,
+      required: true
     }
   },
   data() {
@@ -18,6 +22,13 @@ export default {
       showRemoveModal: false,
       selectedItem: null
     };
+  },
+  watch: {
+    isMediaSidebarOpen(val) {
+      if (val) return;
+
+      this.$refs.mediaContainer.scrollTop = 0;
+    }
   },
   methods: {
     /**

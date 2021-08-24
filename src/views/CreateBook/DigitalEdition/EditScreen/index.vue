@@ -34,6 +34,7 @@
         <SheetMedia
           v-if="isShowAutoflow"
           :media="sheetMedia"
+          :is-media-sidebar-open="isMediaSidebarOpen"
           @remove="onRemovePhoto"
           @drag="onDrag"
         />
