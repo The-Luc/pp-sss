@@ -144,22 +144,15 @@ const renderFillImage = function(ctx) {
 const renderVideoThumbnail = function(ctx) {
   const elementToDraw = this.thumbnail;
 
-  const cropX = Math.max(this.cropX, 0);
-  const cropY = Math.max(this.cropY, 0);
-
-  const scaleX = this._filterScalingX;
-  const scaleY = this._filterScalingY;
-
   const elWidth = elementToDraw.naturalWidth || elementToDraw.width;
   const elHeight = elementToDraw.naturalHeight || elementToDraw.height;
 
-  const xZoom = (elWidth * this.scaleX - elWidth) / elWidth;
-  const yZoom = (elWidth * this.scaleY - elHeight) / elHeight;
+  const xZoom = (this.width * this.scaleX - elWidth) / elWidth;
+  const yZoom = (this.height * this.scaleY - elHeight) / elHeight;
   const zoomLevel = Math.max(xZoom, yZoom) + 1;
 
   const offsetX = this.strokeWidth / this.scaleX;
   const offsetY = this.strokeWidth / this.scaleY;
-  const XYRatio = this.scaleX / this.scaleY;
 
   const sW = (this.width * this.scaleX) / zoomLevel;
   const sH = (this.height * this.scaleY) / zoomLevel;
@@ -167,9 +160,9 @@ const renderVideoThumbnail = function(ctx) {
   const sY = (elHeight - sH) / 2;
 
   const dX = -this.width / 2 + offsetX / 2;
-  const dY = -this.height / 2 + (offsetX / 2) * XYRatio;
-  const dW = Math.min(this.width, elWidth / scaleX - cropX) - offsetX;
-  const dH = Math.min(this.height, elHeight / scaleY - cropY) - offsetY;
+  const dY = -this.height / 2 + offsetY / 2;
+  const dW = this.width - offsetX;
+  const dH = this.height - offsetY;
 
   ctx.drawImage(this.thumbnail, sX, sY, sW, sH, dX, dY, dW, dH);
 };
@@ -220,8 +213,6 @@ const renderVideoPlayIcon = function(ctx) {
  */
 const renderFillVideo = function(ctx) {
   const elementToDraw = this._element;
-  if (!this.zoomLevel) this.zoomLevel = 0;
-  const zoomLevel = 1 + this.zoomLevel;
 
   const min = Math.min;
   const max = Math.max;
@@ -237,6 +228,10 @@ const renderFillVideo = function(ctx) {
 
   const elWidth = elementToDraw.naturalWidth || elementToDraw.width;
   const elHeight = elementToDraw.naturalHeight || elementToDraw.height;
+
+  const xZoom = (this.width * this.scaleX - elWidth) / elWidth;
+  const yZoom = (this.height * this.scaleY - elHeight) / elHeight;
+  const zoomLevel = Math.max(xZoom, yZoom) + 1;
 
   const offsetX = this.strokeWidth / this.scaleX;
   const offsetY = this.strokeWidth / this.scaleY;
