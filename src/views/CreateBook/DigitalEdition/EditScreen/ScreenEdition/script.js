@@ -1654,7 +1654,7 @@ export default {
      * @param   {Object}  event event's clipboard
      */
     handleCopy(event) {
-      if (!isValidTargetToCopyPast(event)) return;
+      if (!isValidTargetToCopyPast()) return;
       copyPpObject(
         event,
         this.currentObjects,
@@ -1668,7 +1668,7 @@ export default {
      * Function handle to get object(s) be copied from clipboard when user press Ctrl + V (Windows), Command + V (macOS), or from action menu
      */
     async handlePaste(event) {
-      if (this.isProcessingPaste || !isValidTargetToCopyPast(event)) return;
+      if (this.isProcessingPaste || !isValidTargetToCopyPast()) return;
       this.isProcessingPaste = true;
       await pastePpObject(
         event,
