@@ -8,13 +8,15 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 40px;
+  height: 50px;
   color: $color-stoodio-blue;
   border-bottom: 1px solid $color-gray17;
+  font-size: 18px;
+  font-family: $font-500;
 }
 
 .body {
-  height: calc(100% - 100px);
+  height: calc(100% - 108px);
   overflow: hidden;
   position: relative;
 
@@ -37,28 +39,14 @@
 }
 
 .footer {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 60px;
-  background-color: $color-white4;
-
-  .pp-btn {
-    margin: 0 5px;
-  }
-
-  &::v-deep {
-    .pp-btn {
-      width: 100px;
-      height: 32px;
-    }
-
-    .cancel-btn {
-      .pp-btn {
-        background-color: $color-gray19;
-        border-color: $color-gray19;
-        color: white;
-      }
+  ::v-deep .modal-footer {
+    background-color: $color-white4;
+    border-top: none;
+    padding: 13px;
+    .footer-btn.v-btn.cancel {
+      color: $color-white;
+      background: $color-gray24;
+      margin-right: 12px;
     }
   }
 }
