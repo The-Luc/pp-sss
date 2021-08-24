@@ -29,7 +29,7 @@
     "vue-router": "^3.5.1",
     "vue-rx": "^6.2.0",
     "vuedraggable": "github:lnvu1983/Vue.Draggable",
-    "vuejs-clipper": "^3.1.2",
+    "vuejs-clipper": "3.1.0",
     "vuetify": "github:truonggiangdao/vuetify",
     "vuex": "^3.6.2",
     "vuex-composition-helpers": "^1.0.23"
