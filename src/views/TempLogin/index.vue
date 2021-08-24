@@ -4,6 +4,7 @@
       <span class="pp-selector-container-title">Users:</span>
 
       <v-select
+        v-model="selectedUser"
         class="pp-select"
         :items="users"
         item-text="name"
@@ -12,7 +13,6 @@
         return-object
         persistent-hint
         :menu-props="{ zIndex: 9999 }"
-        @change="onChangeUser"
       >
         <template #selection="{ item }">
           <v-list-item class="pp-select--item item-selected">
@@ -46,6 +46,7 @@
       </span>
 
       <v-select
+        v-model="selectedCover"
         class="pp-select"
         :items="covers"
         item-text="name"
@@ -54,7 +55,6 @@
         return-object
         persistent-hint
         :menu-props="{ zIndex: 9999 }"
-        @change="onChangeCover"
       >
         <template #selection="{ item }">
           <v-list-item class="pp-select--item item-selected">
