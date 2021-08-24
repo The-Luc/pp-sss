@@ -1818,12 +1818,11 @@ export default {
         });
       }
 
-      if (newData.type === OBJECT_TYPE.IMAGE) {
-        return this.createImageFromPpData(newData);
-      }
-
-      if (newData.type === OBJECT_TYPE.VIDEO) {
-        return this.createVideoFromPpData(newData);
+      if (
+        newData.type === OBJECT_TYPE.IMAGE ||
+        newData.type === OBJECT_TYPE.VIDEO
+      ) {
+        return this.createMediaFromPpData(newData);
       }
 
       if (
@@ -1837,7 +1836,12 @@ export default {
         return this.createTextFromPpData(newData);
       }
     },
-    async createImageFromPpData(imageProperties) {
+    /**
+     * Handle create video/image object from pp data;
+     * @param {Object} mediaProperties - video/image prop to create
+     * @returns
+     */
+    async createMediaFromPpData(mediaProperties) {
       const eventListeners = {
         scaling: this.handleScaling,
         scaled: this.handleScaled,
@@ -1852,12 +1856,26 @@ export default {
         mouseout: handleMouseOut
       };
 
-      const imageObject = await createImage(imageProperties);
-      const image = imageObject?.object;
-      const { border, hasImage, control, type } = imageProperties;
+      const mediaObject = await createImage(mediaProperties);
+      const media = mediaObject?.object;
+      const {
+        border,
+        hasImage,
+        control,
+        type,
+        imageUrl,
+        thumbnailUrl,
+        customThumbnailUrl
+      } = mediaProperties;
 
-      imageBorderModifier(image);
-      addEventListeners(image, eventListeners);
+      if (type === OBJECT_TYPE.VIDEO) {
+        const url = customThumbnailUrl || thumbnailUrl;
+
+        await setVideoSrc(media, imageUrl, url, this.videoToggleStatus);
+      }
+
+      imageBorderModifier(media);
+      addEventListeners(media, eventListeners);
 
       const {
         dropShadow,
@@ -1866,9 +1884,9 @@ export default {
         shadowOpacity,
         shadowAngle,
         shadowColor
-      } = image;
+      } = media;
 
-      applyShadowToObject(image, {
+      applyShadowToObject(media, {
         dropShadow,
         shadowBlur,
         shadowOffset,
@@ -1877,11 +1895,11 @@ export default {
         shadowColor
       });
 
-      applyBorderToImageObject(image, border);
+      applyBorderToImageObject(media, border);
 
-      updateSpecificProp(image, {
+      updateSpecificProp(media, {
         coord: {
-          rotation: imageProperties.coord.rotation
+          rotation: mediaProperties.coord.rotation
         }
       });
 
@@ -1891,10 +1909,10 @@ export default {
           height: CROP_CONTROL.HEIGHT
         });
 
-        image.set({ control });
+        media.set({ control });
       }
 
-      return image;
+      return media;
     },
     /**
      * Delete objects on canvas
@@ -1926,12 +1944,11 @@ export default {
           return this.createTextFromPpData(objectData);
         }
 
-        if (objectData.type === OBJECT_TYPE.IMAGE) {
-          return this.createImageFromPpData(objectData);
-        }
-
-        if (objectData.type === OBJECT_TYPE.VIDEO) {
-          return this.createVideoFromPpData(objectData);
+        if (
+          objectData.type === OBJECT_TYPE.IMAGE ||
+          objectData.type === OBJECT_TYPE.VIDEO
+        ) {
+          return this.createMediaFromPpData(objectData);
         }
 
         if (objectData.type === OBJECT_TYPE.BACKGROUND) {
@@ -1944,22 +1961,6 @@ export default {
       this.digitalCanvas.add(...listFabricObjects);
       this.digitalCanvas.requestRenderAll();
     },
-
-    /**
-     * Handle create video object from pp data;
-     * @param {Object} objectData - Video prop to create
-     * @returns
-     */
-    async createVideoFromPpData(objectData) {
-      const { imageUrl, thumbnailUrl, customThumbnailUrl } = objectData;
-      const video = await this.createImageFromPpData(objectData);
-
-      const url = customThumbnailUrl || thumbnailUrl;
-
-      await setVideoSrc(video, imageUrl, url, this.videoToggleStatus);
-      return video;
-    },
-
     /**
      * create fabric object
      *

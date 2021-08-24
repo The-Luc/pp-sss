@@ -31,7 +31,8 @@ export default {
       selectedToolName,
       setToolNameSelected,
       togglePropertiesMenu,
-      updateMediaSidebarOpen
+      updateMediaSidebarOpen,
+      isMediaSidebarOpen
     } = useToolBar();
 
     return {
@@ -43,7 +44,8 @@ export default {
       selectedToolName,
       setToolNameSelected,
       togglePropertiesMenu,
-      updateMediaSidebarOpen
+      updateMediaSidebarOpen,
+      isMediaSidebarOpen
     };
   },
   data() {
@@ -207,7 +209,7 @@ export default {
       if (name === TOOL_NAME.REDO) this.$emit('redo');
 
       if (name === TOOL_NAME.PHOTOS) {
-        this.updateMediaSidebarOpen({ isOpen: true });
+        this.updateMediaSidebarOpen({ isOpen: !this.isMediaSidebarOpen });
       }
     }
   }
