@@ -144,22 +144,15 @@ const renderFillImage = function(ctx) {
 const renderVideoThumbnail = function(ctx) {
   const elementToDraw = this.thumbnail;
 
-  const cropX = Math.max(this.cropX, 0);
-  const cropY = Math.max(this.cropY, 0);
-
-  const scaleX = this._filterScalingX;
-  const scaleY = this._filterScalingY;
-
   const elWidth = elementToDraw.naturalWidth || elementToDraw.width;
   const elHeight = elementToDraw.naturalHeight || elementToDraw.height;
 
-  const xZoom = (elWidth * this.scaleX - elWidth) / elWidth;
-  const yZoom = (elWidth * this.scaleY - elHeight) / elHeight;
+  const xZoom = (this.width * this.scaleX - elWidth) / elWidth;
+  const yZoom = (this.height * this.scaleY - elHeight) / elHeight;
   const zoomLevel = Math.max(xZoom, yZoom) + 1;
 
   const offsetX = this.strokeWidth / this.scaleX;
   const offsetY = this.strokeWidth / this.scaleY;
-  const XYRatio = this.scaleX / this.scaleY;
 
   const sW = (this.width * this.scaleX) / zoomLevel;
   const sH = (this.height * this.scaleY) / zoomLevel;
@@ -167,11 +160,31 @@ const renderVideoThumbnail = function(ctx) {
   const sY = (elHeight - sH) / 2;
 
   const dX = -this.width / 2 + offsetX / 2;
-  const dY = -this.height / 2 + (offsetX / 2) * XYRatio;
-  const dW = Math.min(this.width, elWidth / scaleX - cropX) - offsetX;
-  const dH = Math.min(this.height, elHeight / scaleY - cropY) - offsetY;
+  const dY = -this.height / 2 + offsetY / 2;
+  const dW = this.width - offsetX;
+  const dH = this.height - offsetY;
 
   ctx.drawImage(this.thumbnail, sX, sY, sW, sH, dX, dY, dW, dH);
+};
+
+/**
+ * Handle render thumbnail for video object
+ * @param {2D context Object} ctx the object enable to modify context canvas
+ */
+const renderImageCropControl = function(ctx) {
+  const ele = this.control;
+  const { width, height } = ele;
+
+  const sW = (this.width * this.scaleX) / 3;
+  const sH = (this.height * this.scaleY) / 3;
+
+  const sX = -sW / 2 + width / 5;
+  const sY = -sH + height / 2;
+
+  const dX = -this.width / 2;
+  const dY = -this.height / 2;
+
+  ctx.drawImage(ele, sX, sY, sW, sH, dX, dY, this.width, this.height);
 };
 
 /**
@@ -190,6 +203,7 @@ const renderVideoPlayIcon = function(ctx) {
   const dX = -this.width / 2;
   const dY = -this.height / 2;
 
+  ctx.shadowColor = 'transparent';
   ctx.drawImage(this.playIcon, sX, sY, sW, sH, dX, dY, this.width, this.height);
 };
 
@@ -199,8 +213,6 @@ const renderVideoPlayIcon = function(ctx) {
  */
 const renderFillVideo = function(ctx) {
   const elementToDraw = this._element;
-  if (!this.zoomLevel) this.zoomLevel = 0;
-  const zoomLevel = 1 + this.zoomLevel;
 
   const min = Math.min;
   const max = Math.max;
@@ -208,7 +220,6 @@ const renderFillVideo = function(ctx) {
   const w = this.width;
   const h = this.height;
 
-  // crop values cannot be lesser than 0.
   const cropX = max(this.cropX, 0);
   const cropY = max(this.cropY, 0);
 
@@ -217,6 +228,10 @@ const renderFillVideo = function(ctx) {
 
   const elWidth = elementToDraw.naturalWidth || elementToDraw.width;
   const elHeight = elementToDraw.naturalHeight || elementToDraw.height;
+
+  const xZoom = (this.width * this.scaleX - elWidth) / elWidth;
+  const yZoom = (this.height * this.scaleY - elHeight) / elHeight;
+  const zoomLevel = Math.max(xZoom, yZoom) + 1;
 
   const offsetX = this.strokeWidth / this.scaleX;
   const offsetY = this.strokeWidth / this.scaleY;
@@ -248,12 +263,18 @@ const renderFill = function(ctx) {
 
   if (this.objectType === OBJECT_TYPE.IMAGE) {
     renderFillImage.call(this, ctx);
+
+    if (this.showControl) {
+      renderImageCropControl.call(this, ctx);
+    }
+
     return;
   }
-  renderFillVideo.call(this, ctx);
 
   if (this.showThumbnail) {
     renderVideoThumbnail.call(this, ctx);
+  } else {
+    renderFillVideo.call(this, ctx);
   }
 
   if (this.showPlayIcon) {
@@ -454,7 +475,8 @@ const seek = function(seekTime) {
 
   video.currentTime = getTimeToSet(nextTime, video.duration);
 
-  video.dispatchEvent(videoSeekEvent);
+  if (video.currentTime === video.duration) video.play();
+  else video.dispatchEvent(videoSeekEvent);
 };
 
 /**
@@ -594,6 +616,33 @@ const rewind = function(isRewind = true) {
 };
 
 /**
+ * Handle change volume of video
+ */
+const changeVolume = function(volume) {
+  const video = this.getElement();
+
+  if (!video) return;
+
+  video.volume = volume;
+};
+
+/**
+ * Handle dispose video
+ */
+const dispose = function() {
+  const video = this.getElement();
+
+  if (!video) return;
+
+  video.pause();
+
+  video.src = '';
+  video.removeAttribute('src');
+
+  this.setElement(null);
+};
+
+/**
  * Allow fabric image object to have double stroke
  * @param {fabric.Image} image - the object to enable double stroke
  */
@@ -603,11 +652,21 @@ export const imageBorderModifier = function(image) {
   image._drawClipPath = drawClipPath;
   image.renderClipPathCache = renderClipPathCache;
   image.drawClipPathOnCache = drawClipPathOnCache;
-  image.play = play;
-  image.pause = pause;
-  image.seek = seek;
-  image.forward = forward;
-  image.rewind = rewind;
+};
+
+/**
+ * Init event for video (fabric image)
+ *
+ * @param {fabric.Image} video  the object to enable event
+ */
+export const videoInitEvent = function(video) {
+  video.play = play;
+  video.pause = pause;
+  video.seek = seek;
+  video.forward = forward;
+  video.rewind = rewind;
+  video.changeVolume = changeVolume;
+  video.dispose = dispose;
 };
 
 /**

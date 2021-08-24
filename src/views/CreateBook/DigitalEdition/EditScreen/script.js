@@ -8,6 +8,7 @@ import SidebarSection from './SidebarSection';
 import PhotoSidebar from '@/components/PhotoSidebar';
 import MediaModal from '@/containers/Modal/Media';
 import SheetMedia from '@/components/SheetMedia';
+import CropControl from '@/components/CropControl';
 
 import { GETTERS, MUTATES } from '@/store/modules/app/const';
 import {
@@ -22,7 +23,8 @@ import {
   ROLE,
   SAVE_STATUS,
   SAVING_DURATION,
-  OBJECT_TYPE
+  OBJECT_TYPE,
+  DEFAULT_VIDEO
 } from '@/common/constants';
 import {
   useLayoutPrompt,
@@ -35,7 +37,8 @@ import {
   useActionsEditionSheet,
   useSheet,
   useProperties,
-  useObjectProperties
+  useObjectProperties,
+  useToolBar
 } from '@/hooks';
 import { isEmpty, isPositiveInteger, getEditionListPath } from '@/common/utils';
 import { COPY_OBJECT_KEY } from '@/common/constants/config';
@@ -67,6 +70,7 @@ export default {
     const { sheetMedia } = useSheet();
     const { setPropertyById, setPropOfMultipleObjects } = useProperties();
     const { listObjects } = useObjectProperties();
+    const { isMediaSidebarOpen, updateMediaSidebarOpen } = useToolBar();
 
     return {
       pageSelected,
@@ -86,13 +90,17 @@ export default {
       sheetMedia,
       setPropertyById,
       setPropOfMultipleObjects,
-      listObjects
+      listObjects,
+      isMediaSidebarOpen,
+      updateMediaSidebarOpen
     };
   },
   data() {
     return {
       isOpenModal: false,
-      dragItem: null
+      isOpenCropControl: false,
+      dragItem: null,
+      selectedImage: null
     };
   },
   components: {
@@ -103,7 +111,8 @@ export default {
     SidebarSection,
     PhotoSidebar,
     MediaModal,
-    SheetMedia
+    SheetMedia,
+    CropControl
   },
   computed: {
     ...mapGetters({
@@ -113,9 +122,6 @@ export default {
     }),
     isShowAutoflow() {
       return !isEmpty(this.sheetMedia);
-    },
-    isOpenMediaSidebar() {
-      return this.selectedToolName === TOOL_NAME.MEDIA;
     },
     disabledAutoflow() {
       const hasEmptyImage = Object.values(this.listObjects).some(
@@ -241,7 +247,7 @@ export default {
      * Close list photo in sidebar
      */
     closeMediaSidebar() {
-      this.setToolNameSelected('');
+      this.updateMediaSidebarOpen({ isOpen: false });
     },
     /**
      * Handle autoflow
@@ -282,6 +288,15 @@ export default {
      */
     onCancel() {
       this.isOpenModal = false;
+
+      if (this.isOpenCropControl) {
+        this.isOpenCropControl = false;
+        this.selectedImage.set({
+          showControl: false
+        });
+
+        this.selectedImage.canvas.renderAll();
+      }
     },
     /**
      * Undo user action
@@ -394,12 +409,17 @@ export default {
             target,
             mediaUrl,
             thumbUrl,
-            this.$refs.canvasEditor.videoStop
+            this.$refs.canvasEditor.videoToggleStatus
           )
         : await setImageSrc(target, imageUrl);
+
       prop.imageId = imageId;
+      prop.originalUrl = imageUrl;
+
+      if (mediaUrl) prop.volume = DEFAULT_VIDEO.VOLUME;
 
       this.setPropertyById({ id: target.id, prop });
+
       this.$refs.canvasEditor.getThumbnailUrl();
 
       this.$refs.canvasEditor.digitalCanvas.setActiveObject(target);
@@ -407,6 +427,26 @@ export default {
       setTimeout(() => {
         this.$refs.canvasEditor.digitalCanvas.renderAll();
       }, 250);
+    },
+
+    /**
+     * Handle after crop image
+     * @param {String} value Result image url after croppeed
+     */
+    async onCrop(value) {
+      const prop = await setImageSrc(this.selectedImage, value);
+      this.setPropertyById({ id: this.selectedImage.id, prop });
+      this.onCancel();
+    },
+
+    /**
+     * Open modal crop control
+     */
+    openCropControl() {
+      const canvas = this.$refs.canvasEditor.digitalCanvas;
+      const activeObject = canvas.getActiveObject();
+      this.selectedImage = activeObject;
+      this.isOpenCropControl = true;
     }
   }
 };

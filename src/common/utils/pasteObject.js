@@ -185,3 +185,13 @@ export const computePastedObjectCoord = (
 
   return pasteToNewSpread(object, fabricObject, minLeft, minTop, pageSelected);
 };
+/**
+ * Check valid target to copy past
+ * @param {Object} event copy or past event
+ * @returns {Boolean} is valid target
+ */
+export const isValidTargetToCopyPast = event => {
+  if (!event) return true;
+  const { tagName } = event.target;
+  return tagName !== 'INPUT';
+};

@@ -10,7 +10,6 @@ import {
   DEFAULT_CLIP_ART,
   DEFAULT_IMAGE,
   DEFAULT_SHAPE,
-  EDITION,
   MODAL_TYPES,
   OBJECT_TYPE,
   SAVE_STATUS,
@@ -25,7 +24,9 @@ import {
   VIDEO_SPEED_UP_TIME,
   CANVAS_EVENT_TYPE,
   EVENT_TYPE,
-  WINDOW_EVENT_TYPE
+  WINDOW_EVENT_TYPE,
+  CROP_CONTROL,
+  IMAGE_LOCAL
 } from '@/common/constants';
 import {
   addPrintClipArts,
@@ -55,7 +56,10 @@ import {
   handleDragEnter,
   handleDragLeave,
   centercrop,
-  createVideoOverlay
+  createMediaOverlay,
+  handleMouseMove,
+  handleMouseOver,
+  handleMouseOut
 } from '@/common/fabricObjects';
 import { createImage } from '@/common/fabricObjects';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
@@ -68,7 +72,9 @@ import {
   useFrameSwitching,
   useModal,
   useMutationDigitalSheet,
-  useElementProperties
+  useElementProperties,
+  useStyle,
+  useToolBar
 } from '@/hooks';
 
 import {
@@ -87,7 +93,10 @@ import {
   pastePpObject,
   isDeleteKey,
   isVideoPlaying,
-  updatePositionWhenAngleExist
+  updatePositionWhenAngleExist,
+  isValidTargetToCopyPast,
+  getUniqueId,
+  isContainDebounceProp
 } from '@/common/utils';
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
 
@@ -97,8 +106,7 @@ import {
   MUTATES as DIGITAL_MUTATES
 } from '@/store/modules/digital/const';
 
-import { cloneDeep, debounce, merge, uniqueId } from 'lodash';
-import { useStyle } from '@/hooks/style';
+import { cloneDeep, debounce, merge } from 'lodash';
 import { useSaveData, useObject } from '../composables';
 import { useSavingStatus } from '@/views/CreateBook/composables';
 import UndoRedoCanvas from '@/plugins/undoRedoCanvas';
@@ -142,6 +150,7 @@ export default {
     const { updateObjectsToStore } = useObject();
     const { updateSheetThumbnail } = useMutationDigitalSheet();
     const { getProperty } = useElementProperties();
+    const { updateMediaSidebarOpen } = useToolBar();
 
     return {
       frames,
@@ -163,7 +172,8 @@ export default {
       updateObjectsToStore,
       updateSheetThumbnail,
       firstFrameThumbnail,
-      getProperty
+      getProperty,
+      updateMediaSidebarOpen
     };
   },
   data() {
@@ -233,8 +243,6 @@ export default {
         return;
       }
 
-      this.setToolNameSelected({ name: '' });
-
       const isSwitchFrame = this.frames.find(
         f => String(f.id) === String(oldVal)
       );
@@ -252,6 +260,8 @@ export default {
       this.handleSwitchFrame(this.currentFrame);
 
       this.undoRedoCanvas.reset();
+
+      this.updateMediaSidebarOpen({ isOpen: false });
 
       await this.drawObjectsOnCanvas(this.sheetLayout);
     },
@@ -296,6 +306,8 @@ export default {
     this.setInfoBar({ x: 0, y: 0, zoom: 0 });
 
     this.undoRedoCanvas.dispose();
+
+    this.updateMediaSidebarOpen({ isOpen: false });
   },
   methods: {
     ...mapActions({
@@ -379,7 +391,6 @@ export default {
       this.autoSaveTimer = setInterval(this.handleAutosave, AUTOSAVE_INTERVAL);
 
       this.undoRedoCanvas = new UndoRedoCanvas({
-        edition: EDITION.DIGITAL,
         canvas: this.digitalCanvas,
         renderCanvasFn: this.drawObjectsOnCanvas
       });
@@ -1226,8 +1237,8 @@ export default {
     async addShapes(shapes) {
       const toBeAddedShapes = shapes.map(s => {
         const newShape = new ShapeElementObject({
-          id: uniqueId(),
-          ...s
+          ...s,
+          id: getUniqueId()
         });
 
         return {
@@ -1296,8 +1307,8 @@ export default {
     /**
      * Change properties of current element
      *
-     * @param {Object}  prop            new prop
-     * @param {String}  objectType      object type want to check
+     * @param {Object}  prop        new prop
+     * @param {String}  objectType  object type want to check
      */
     async changeElementProperties(prop, objectType) {
       if (isEmpty(prop)) return;
@@ -1318,11 +1329,7 @@ export default {
 
       this.updateCurrentObject(element, newProp);
 
-      if (
-        !isEmpty(newProp['shadow']) ||
-        !isEmpty(newProp['color']) ||
-        !isEmpty(newProp['opacity'])
-      ) {
+      if (isContainDebounceProp(newProp)) {
         this.debounceSetObjectProp(newProp);
       } else {
         this.setObjectProperties(newProp);
@@ -1404,7 +1411,7 @@ export default {
      * Event fire when user click on Image button on Toolbar to add new image on canvas
      */
     async addImageBox(x, y, width, height, options) {
-      const id = uniqueId();
+      const id = getUniqueId();
 
       const size = new BaseSize({
         width: pxToIn(width),
@@ -1423,7 +1430,8 @@ export default {
         size,
         coord,
         imageUrl: DEFAULT_IMAGE.IMAGE_URL,
-        hasImage: !!options?.src
+        hasImage: !!options?.src,
+        originalUrl: options?.src
       };
 
       const newMedia = {
@@ -1440,7 +1448,11 @@ export default {
         moved: this.handleMoved,
         dragenter: handleDragEnter,
         dragleave: handleDragLeave,
-        drop: handleDragLeave
+        drop: handleDragLeave,
+        mousemove: handleMouseMove,
+        mousedown: this.handleMouseDown,
+        mouseover: handleMouseOver,
+        mouseout: handleMouseOut
       };
 
       const image = await createImage(newMedia.newObject);
@@ -1487,6 +1499,8 @@ export default {
      * @param {Object}  prop  new prop
      */
     changeVideoProperties(prop) {
+      if (!isEmpty(prop.volume)) this.changeVideoVolume(prop.volume);
+
       this.changeElementProperties(prop, OBJECT_TYPE.VIDEO);
     },
     /**
@@ -1495,13 +1509,13 @@ export default {
      */
     async addClipArt(clipArts) {
       const toBeAddedClipArts = clipArts.map(c => {
-        const id = uniqueId();
+        const id = getUniqueId();
 
         const vector = c.vector;
 
         const newClipArt = new ClipArtElementObject({
-          id,
           ...c,
+          id,
           vector: require(`../../../../../assets/image/clip-art/${vector}`)
         });
 
@@ -1564,7 +1578,7 @@ export default {
      * @param {Boolean} isLeft      is add to the left page or right page
      */
     addBackground({ background }) {
-      const id = uniqueId();
+      const id = getUniqueId();
 
       const newBackground = new BackgroundElementObject({
         ...background,
@@ -1649,6 +1663,7 @@ export default {
      * @param   {Object}  event event's clipboard
      */
     handleCopy(event) {
+      if (!isValidTargetToCopyPast(event)) return;
       copyPpObject(
         event,
         this.currentObjects,
@@ -1662,7 +1677,7 @@ export default {
      * Function handle to get object(s) be copied from clipboard when user press Ctrl + V (Windows), Command + V (macOS), or from action menu
      */
     async handlePaste(event) {
-      if (this.isProcessingPaste) return;
+      if (this.isProcessingPaste || !isValidTargetToCopyPast(event)) return;
       this.isProcessingPaste = true;
       await pastePpObject(
         event,
@@ -1812,12 +1827,11 @@ export default {
         });
       }
 
-      if (newData.type === OBJECT_TYPE.IMAGE) {
-        return this.createImageFromPpData(newData);
-      }
-
-      if (newData.type === OBJECT_TYPE.VIDEO) {
-        return this.createVideoFromPpData(newData);
+      if (
+        newData.type === OBJECT_TYPE.IMAGE ||
+        newData.type === OBJECT_TYPE.VIDEO
+      ) {
+        return this.createMediaFromPpData(newData);
       }
 
       if (
@@ -1831,7 +1845,12 @@ export default {
         return this.createTextFromPpData(newData);
       }
     },
-    async createImageFromPpData(imageProperties) {
+    /**
+     * Handle create video/image object from pp data;
+     * @param {Object} mediaProperties - video/image prop to create
+     * @returns
+     */
+    async createMediaFromPpData(mediaProperties) {
       const eventListeners = {
         scaling: this.handleScaling,
         scaled: this.handleScaled,
@@ -1839,15 +1858,33 @@ export default {
         moved: this.handleMoved,
         dragenter: handleDragEnter,
         dragleave: handleDragLeave,
-        drop: handleDragLeave
+        drop: handleDragLeave,
+        mousemove: handleMouseMove,
+        mousedown: this.handleMouseDown,
+        mouseover: handleMouseOver,
+        mouseout: handleMouseOut
       };
 
-      const imageObject = await createImage(imageProperties);
-      const image = imageObject?.object;
-      const { border } = imageProperties;
+      const mediaObject = await createImage(mediaProperties);
+      const media = mediaObject?.object;
+      const {
+        border,
+        hasImage,
+        control,
+        type,
+        imageUrl,
+        thumbnailUrl,
+        customThumbnailUrl
+      } = mediaProperties;
 
-      imageBorderModifier(image);
-      addEventListeners(image, eventListeners);
+      if (type === OBJECT_TYPE.VIDEO) {
+        const url = customThumbnailUrl || thumbnailUrl;
+
+        await setVideoSrc(media, imageUrl, url, this.videoToggleStatus);
+      }
+
+      imageBorderModifier(media);
+      addEventListeners(media, eventListeners);
 
       const {
         dropShadow,
@@ -1856,9 +1893,9 @@ export default {
         shadowOpacity,
         shadowAngle,
         shadowColor
-      } = image;
+      } = media;
 
-      applyShadowToObject(image, {
+      applyShadowToObject(media, {
         dropShadow,
         shadowBlur,
         shadowOffset,
@@ -1867,15 +1904,24 @@ export default {
         shadowColor
       });
 
-      applyBorderToImageObject(image, border);
+      applyBorderToImageObject(media, border);
 
-      updateSpecificProp(image, {
+      updateSpecificProp(media, {
         coord: {
-          rotation: imageProperties.coord.rotation
+          rotation: mediaProperties.coord.rotation
         }
       });
 
-      return image;
+      if (type === OBJECT_TYPE.IMAGE && hasImage && !control) {
+        const control = await createMediaOverlay(IMAGE_LOCAL.CONTROL_ICON, {
+          width: CROP_CONTROL.WIDTH,
+          height: CROP_CONTROL.HEIGHT
+        });
+
+        media.set({ control });
+      }
+
+      return media;
     },
     /**
      * Delete objects on canvas
@@ -1907,12 +1953,11 @@ export default {
           return this.createTextFromPpData(objectData);
         }
 
-        if (objectData.type === OBJECT_TYPE.IMAGE) {
-          return this.createImageFromPpData(objectData);
-        }
-
-        if (objectData.type === OBJECT_TYPE.VIDEO) {
-          return this.createVideoFromPpData(objectData);
+        if (
+          objectData.type === OBJECT_TYPE.IMAGE ||
+          objectData.type === OBJECT_TYPE.VIDEO
+        ) {
+          return this.createMediaFromPpData(objectData);
         }
 
         if (objectData.type === OBJECT_TYPE.BACKGROUND) {
@@ -1927,22 +1972,6 @@ export default {
       this.digitalCanvas.add(...listFabricObjects);
       this.digitalCanvas.requestRenderAll();
     },
-
-    /**
-     * Handle create video object from pp data;
-     * @param {Object} objectData - Video prop to create
-     * @returns
-     */
-    async createVideoFromPpData(objectData) {
-      const { imageUrl, thumbnailUrl, customThumbnailUrl } = objectData;
-      const video = await this.createImageFromPpData(objectData);
-
-      const url = customThumbnailUrl || thumbnailUrl;
-
-      await setVideoSrc(video, imageUrl, url, this.videoToggleStatus);
-      return video;
-    },
-
     /**
      * create fabric object
      *
@@ -2073,7 +2102,7 @@ export default {
 
       const url = customThumbnailUrl || thumbnailUrl;
       if (!isEmpty(url)) {
-        const thumbnail = await createVideoOverlay(url);
+        const thumbnail = await createMediaOverlay(url);
 
         element.set({ thumbnail, dirty: true });
       }
@@ -2128,7 +2157,7 @@ export default {
      * Set properties of selected background then trigger the change
      * Use with debounce
      *
-     * @param {Object}  prop    new prop
+     * @param {Object}  prop  new prop
      */
     debounceSetBackgroundProp: debounce(function(prop) {
       this.setBackgroundProp({ prop });
@@ -2140,13 +2169,13 @@ export default {
     /**
      * Undo user action
      */
-    async undo() {
+    undo() {
       this.undoRedoCanvas.undo();
     },
     /**
      * Redo user action
      */
-    async redo() {
+    redo() {
       this.undoRedoCanvas.redo();
     },
     /**
@@ -2158,18 +2187,6 @@ export default {
       this.awaitingAdd = '';
     },
 
-    /**
-     * Handle drop to canvas
-     * @param {*} event - Event drop
-     */
-    handleDrop(event) {
-      const canvas = this.digitalCanvas;
-      this.$emit('drop', {
-        event,
-        canvas,
-        addImageBox: this.addImageBox
-      });
-    },
     /**
      * Handle reset image
      */
@@ -2293,7 +2310,7 @@ export default {
      *
      * @param   {Object}  prop  current object properties
      * @param   {Object}  video video element
-     * @returns                 new properties
+     * @returns {Object}        new properties
      */
     getObjectProperties(prop, video) {
       if (prop.type !== OBJECT_TYPE.VIDEO) return prop;
@@ -2301,6 +2318,36 @@ export default {
       const isPlaying = isVideoPlaying(video);
 
       return { ...prop, isPlaying };
+    },
+    /**
+     * Get properties with video specific value
+     *
+     * @param {Number}  volume  new volumne
+     */
+    changeVideoVolume(volume) {
+      const video = this.digitalCanvas.getActiveObject();
+
+      if (isEmpty(video)) return;
+
+      video.changeVolume(volume / 100);
+    },
+    /**
+     * Handle click on fabric object
+     * @param {Object} event - Event when click object
+     */
+    handleMouseDown(event) {
+      const target = event.target;
+      if (target.objectType === OBJECT_TYPE.IMAGE) {
+        if (!target.isHoverControl) return;
+
+        this.$emit('openCropControl');
+      }
+
+      if (target.objectType === OBJECT_TYPE.VIDEO) {
+        if (!target.isHoverPlayIcon) return;
+
+        this.videoTogglePlay();
+      }
     }
   }
 };

@@ -34,6 +34,18 @@ export const IMAGE_INDICATOR = {
   STROKE_WIDTH: 10
 };
 
+export const CROP_CONTROL = {
+  WIDTH: 600,
+  HEIGHT: 300,
+  OFFSET: 150
+};
+
+export const DEFAULE_SLIDER = {
+  COLOR: '#D3D3D3',
+  FILL_COLOR: '#42738D',
+  THUMB_COLOR: '#FFFFFF'
+};
+
 export const DEBOUNCE_MUTATION = 350;
 
 export const UPLOAD_STATUS_DISPLAY_TIME = 1000;
@@ -41,3 +53,5 @@ export const UPLOAD_STATUS_DISPLAY_TIME = 1000;
 export const MAX_STEP_UNDO_REDO = 5;
 
 export const MOUSE_HOLD_DETECT_TIME = 500;
+
+export const DEBOUNCE_PROPERTIES = ['color', 'opacity', 'shadow', 'volume'];

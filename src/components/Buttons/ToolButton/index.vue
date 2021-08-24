@@ -1,9 +1,5 @@
 <template>
-  <div
-    class="item"
-    :class="{ 'item--active': isActive, 'item--prompt': isActive && isPrompt }"
-    @click="onClick"
-  >
+  <div class="item" :class="customCssClass" @click="onClick">
     <div class="item-icon">
       <v-icon>{{ iconName }}</v-icon>
     </div>

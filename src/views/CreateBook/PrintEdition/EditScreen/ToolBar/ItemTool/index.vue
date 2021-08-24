@@ -7,6 +7,7 @@
       :is-active="isActive(item.name)"
       :icon-name="item.iconName"
       :title="item.title"
+      :disabled="isDisabledItem(item)"
       @click="onClick(item)"
     />
   </div>

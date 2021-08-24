@@ -77,5 +77,11 @@ export const mutations = {
   },
   [APP._MUTATES.UPDATE_SAVING_STATUS](state, { status }) {
     state.savingStatus = status;
+  },
+  [APP._MUTATES.UPDATE_MEDIA_SIDEBAR_OPEN](state, { isOpen }) {
+    state.isMediaSidebarOpen = isOpen;
+  },
+  [APP._MUTATES.UPDATE_DISABLED_TOOLBAR_ITEMS](state, { items }) {
+    state.disabledToolbarItems = items;
   }
 };

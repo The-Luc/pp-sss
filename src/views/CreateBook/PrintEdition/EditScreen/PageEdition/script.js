@@ -1,6 +1,6 @@
 import { mapGetters, mapMutations, mapActions } from 'vuex';
 import { fabric } from 'fabric';
-import { cloneDeep, uniqueId, merge, debounce } from 'lodash';
+import { cloneDeep, merge, debounce } from 'lodash';
 
 import { imageBorderModifier, usePrintOverrides } from '@/plugins/fabric';
 
@@ -8,7 +8,10 @@ import {
   useInfoBar,
   useMenuProperties,
   useMutationPrintSheet,
-  useProperties
+  useProperties,
+  useAppCommon,
+  useStyle,
+  useToolBar
 } from '@/hooks';
 import { startDrawBox } from '@/common/fabricObjects/drawingBox';
 
@@ -31,7 +34,10 @@ import {
   copyPpObject,
   pastePpObject,
   isDeleteKey,
-  updatePositionWhenAngleExist
+  updatePositionWhenAngleExist,
+  isValidTargetToCopyPast,
+  getUniqueId,
+  isContainDebounceProp
 } from '@/common/utils';
 
 import {
@@ -61,7 +67,11 @@ import {
   handleDragEnter,
   handleDragLeave,
   fabricToPpObject,
-  getTextSizeWithPadding
+  getTextSizeWithPadding,
+  createMediaOverlay,
+  handleMouseMove,
+  handleMouseOver,
+  handleMouseOut
 } from '@/common/fabricObjects';
 
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
@@ -83,7 +93,7 @@ import {
   DEFAULT_IMAGE,
   LAYOUT_PAGE_TYPE,
   SAVE_STATUS,
-  EDITION
+  IMAGE_LOCAL
 } from '@/common/constants';
 import SizeWrapper from '@/components/SizeWrapper';
 import PrintCanvasLines from './PrintCanvasLines';
@@ -93,15 +103,14 @@ import YRuler from './Rulers/YRuler';
 import {
   AUTOSAVE_INTERVAL,
   COPY_OBJECT_KEY,
+  CROP_CONTROL,
   DEBOUNCE_MUTATION,
   MIN_IMAGE_SIZE,
   PASTE,
   THUMBNAIL_IMAGE_CONFIG
 } from '@/common/constants/config';
 import { createImage } from '@/common/fabricObjects';
-import { useAppCommon } from '@/hooks/common';
 import { EVENT_TYPE } from '@/common/constants/eventType';
-import { useStyle } from '@/hooks/style';
 import { useSaveData } from './composables';
 import { useSavingStatus } from '@/views/CreateBook/composables';
 import UndoRedoCanvas from '@/plugins/undoRedoCanvas';
@@ -134,6 +143,7 @@ export default {
     } = useProperties();
     const { updateSavingStatus, savingStatus } = useSavingStatus();
     const { updateSheetThumbnail } = useMutationPrintSheet();
+    const { updateMediaSidebarOpen } = useToolBar();
 
     return {
       setActiveEdition,
@@ -147,7 +157,8 @@ export default {
       isOpenMenuProperties,
       updateSavingStatus,
       savingStatus,
-      updateSheetThumbnail
+      updateSheetThumbnail,
+      updateMediaSidebarOpen
     };
   },
   data() {
@@ -219,6 +230,8 @@ export default {
 
         this.undoRedoCanvas.reset();
 
+        this.updateMediaSidebarOpen({ isOpen: false });
+
         this.countPaste = 1;
 
         this.setSelectedObjectId({ id: '' });
@@ -264,6 +277,8 @@ export default {
     this.setInfoBar({ x: 0, y: 0, zoom: 0 });
 
     this.undoRedoCanvas.dispose();
+
+    this.updateMediaSidebarOpen({ isOpen: false });
   },
   methods: {
     ...mapActions({
@@ -355,7 +370,11 @@ export default {
         moved: this.handleMoved,
         dragenter: handleDragEnter,
         dragleave: handleDragLeave,
-        drop: handleDragLeave
+        drop: handleDragLeave,
+        mousemove: handleMouseMove,
+        mousedown: this.handleMouseDown,
+        mouseover: handleMouseOver,
+        mouseout: handleMouseOut
       };
 
       const imageObject = await createImage(imageProperties);
@@ -390,6 +409,15 @@ export default {
           rotation: imageProperties.coord.rotation
         }
       });
+
+      if (imageProperties.hasImage && !imageProperties.control) {
+        const control = await createMediaOverlay(IMAGE_LOCAL.CONTROL_ICON, {
+          width: CROP_CONTROL.WIDTH,
+          height: CROP_CONTROL.HEIGHT
+        });
+
+        image.set({ control });
+      }
 
       return image;
     },
@@ -531,7 +559,7 @@ export default {
      * Function handle to get object(s) be copied from clipboard when user press Ctrl + V (Windows), Command + V (macOS), or from action menu
      */
     async handlePaste(event) {
-      if (this.isProcessingPaste) return;
+      if (this.isProcessingPaste || !isValidTargetToCopyPast(event)) return;
       this.isProcessingPaste = true;
 
       await pastePpObject(
@@ -553,6 +581,7 @@ export default {
      * @param   {Object}  event event's clipboard
      */
     handleCopy(event) {
+      if (!isValidTargetToCopyPast(event)) return;
       copyPpObject(
         event,
         this.currentObjects,
@@ -730,7 +759,6 @@ export default {
       this.eventHandling();
 
       this.undoRedoCanvas = new UndoRedoCanvas({
-        edition: EDITION.PRINT,
         canvas: window.printCanvas,
         renderCanvasFn: this.drawObjectsOnCanvas
       });
@@ -908,7 +936,7 @@ export default {
      * Event fire when user click on Image button on Toolbar to add new image on canvas
      */
     async addImageBox(x, y, width, height, options) {
-      const id = uniqueId();
+      const id = getUniqueId();
 
       const size = new BaseSize({
         width: pxToIn(width),
@@ -927,7 +955,8 @@ export default {
           size,
           coord,
           imageUrl: DEFAULT_IMAGE.IMAGE_URL,
-          hasImage: !!options?.src
+          hasImage: !!options?.src,
+          originalUrl: options?.src
         })
       };
 
@@ -938,7 +967,11 @@ export default {
         moved: this.handleMoved,
         dragenter: handleDragEnter,
         dragleave: handleDragLeave,
-        drop: handleDragLeave
+        drop: handleDragLeave,
+        mousemove: handleMouseMove,
+        mousedown: this.handleMouseDown,
+        mouseover: handleMouseOver,
+        mouseout: handleMouseOut
       };
 
       const image = await createImage(newImage.newObject);
@@ -968,7 +1001,7 @@ export default {
      * @param {Boolean} isLeft      is add to the left page or right page
      */
     addBackground({ background, isLeft = true }) {
-      const id = uniqueId();
+      const id = getUniqueId();
 
       const newBackground = new BackgroundElementObject({
         ...background,
@@ -1043,13 +1076,13 @@ export default {
      */
     async addClipArt(clipArts) {
       const toBeAddedClipArts = clipArts.map(c => {
-        const id = uniqueId();
+        const id = getUniqueId();
 
         const vector = c.vector;
 
         const newClipArt = new ClipArtElementObject({
-          id,
           ...c,
+          id,
           vector: require(`../../../../../assets/image/clip-art/${vector}`)
         });
 
@@ -1255,8 +1288,8 @@ export default {
     async addShapes(shapes) {
       const toBeAddedShapes = shapes.map(s => {
         const newShape = new ShapeElementObject({
-          id: uniqueId(),
-          ...s
+          ...s,
+          id: getUniqueId()
         });
 
         return {
@@ -1355,11 +1388,7 @@ export default {
 
       this.updateCurrentObject(element.id, newProp);
 
-      if (
-        !isEmpty(newProp['shadow']) ||
-        !isEmpty(newProp['color']) ||
-        !isEmpty(newProp['opacity'])
-      ) {
+      if (isContainDebounceProp(newProp)) {
         this.debounceSetObjectProp(newProp);
       } else {
         this.setObjectProperties(newProp);
@@ -1800,7 +1829,7 @@ export default {
 
       let ppObjects = [...objects];
       let layout = {
-        id: parseInt(uniqueId()) + 100,
+        id: parseInt(getUniqueId()) + 100,
         name: layoutName,
         isFavorites: false,
         previewImageUrl: window.printCanvas.toDataURL({
@@ -1881,13 +1910,13 @@ export default {
     /**
      * Undo user action
      */
-    async undo() {
+    undo() {
       this.undoRedoCanvas.undo();
     },
     /**
      * Redo user action
      */
-    async redo() {
+    redo() {
       this.undoRedoCanvas.redo();
     },
     /**
@@ -1920,6 +1949,17 @@ export default {
       this.$refs.pageWrapper.instructionEnd();
 
       this.awaitingAdd = '';
+    },
+
+    /**
+     * Handle click on fabric object
+     * @param {Object} event - Event when click object
+     */
+    handleMouseDown(event) {
+      const target = event.target;
+      if (!target.isHoverControl) return;
+
+      this.$emit('openCropControl');
     }
   }
 };
