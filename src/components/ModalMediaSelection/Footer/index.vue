@@ -3,7 +3,7 @@
     <div v-if="!isMediaAdditionalDisplayed" class="modal-footer">
       <v-btn class="footer-btn cancel" @click="onCancel">Cancel</v-btn>
       <v-btn class="footer-btn action" :disabled="isDisabled" @click="onSelect">
-        Select
+        {{ btnAction }}
       </v-btn>
     </div>
 

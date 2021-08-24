@@ -1,4 +1,4 @@
-import PpButton from '@/components/Buttons/Button';
+import Footer from '../ModalMediaSelection/Footer';
 import { clipperFixed } from 'vuejs-clipper';
 import Control from './Control';
 
@@ -20,9 +20,9 @@ export default {
     };
   },
   components: {
-    PpButton,
     clipperFixed,
-    Control
+    Control,
+    Footer
   },
   computed: {
     src() {

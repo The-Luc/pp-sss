@@ -40,12 +40,7 @@
       </div>
     </div>
     <div class="footer">
-      <PpButton is-active class="pp-btn cancel-btn" @click="onCancel">
-        Cancel
-      </PpButton>
-      <PpButton is-active class="pp-btn" @click="onCrop">
-        Done
-      </PpButton>
+      <Footer btn-action="Done" @select="onCrop" @cancel="onCancel" />
     </div>
   </v-dialog>
 </template>

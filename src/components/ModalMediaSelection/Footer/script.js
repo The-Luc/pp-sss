@@ -1,9 +1,4 @@
-import PpButton from '@/components/Buttons/Button';
-
 export default {
-  components: {
-    PpButton
-  },
   props: {
     isDisabled: {
       type: Boolean,
@@ -12,6 +7,10 @@ export default {
     isMediaAdditionalDisplayed: {
       type: Boolean,
       default: false
+    },
+    btnAction: {
+      type: String,
+      default: 'Select'
     }
   },
   methods: {
