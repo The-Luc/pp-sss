@@ -149,7 +149,8 @@ export const DEFAULT_IMAGE = {
 };
 
 export const DEFAULT_VIDEO = {
-  ...BASE_MEDIA
+  ...BASE_MEDIA,
+  VOLUME: 50
 };
 
 export const DEFAULT_BACKGROUND = {

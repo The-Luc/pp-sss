@@ -18,14 +18,35 @@ import {
 } from '@/common/utils';
 
 export default {
-  props: {
-    isDigitalEditor: {
-      type: Boolean,
-      default: false
-    }
-  },
   components: {
     ItemTool
+  },
+  setup() {
+    const { isPrompt } = useLayoutPrompt(EDITION.PRINT);
+    const {
+      themeId,
+      selectedObjectType,
+      propertiesType,
+      isMenuOpen,
+      selectedToolName,
+      setToolNameSelected,
+      togglePropertiesMenu,
+      updateMediaSidebarOpen,
+      isMediaSidebarOpen
+    } = useToolBar();
+
+    return {
+      isPrompt,
+      themeId,
+      selectedObjectType,
+      propertiesType,
+      isMenuOpen,
+      selectedToolName,
+      setToolNameSelected,
+      togglePropertiesMenu,
+      updateMediaSidebarOpen,
+      isMediaSidebarOpen
+    };
   },
   data() {
     return {
@@ -117,29 +138,6 @@ export default {
       itemsToolRight: [getRightToolItems(PRINT_RIGHT_TOOLS)]
     };
   },
-  setup() {
-    const { isPrompt } = useLayoutPrompt(EDITION.PRINT);
-    const {
-      themeId,
-      selectedObjectType,
-      propertiesType,
-      isMenuOpen,
-      selectedToolName,
-      setToolNameSelected,
-      togglePropertiesMenu
-    } = useToolBar();
-
-    return {
-      isPrompt,
-      themeId,
-      selectedObjectType,
-      propertiesType,
-      isMenuOpen,
-      selectedToolName,
-      setToolNameSelected,
-      togglePropertiesMenu
-    };
-  },
   methods: {
     /**
      * Detect click on item on right creation tool
@@ -187,7 +185,7 @@ export default {
         const objectType =
           name === TOOL_NAME.IMAGE_BOX ? OBJECT_TYPE.IMAGE : OBJECT_TYPE.TEXT;
 
-        this.addElement(objectType);
+        this.$root.$emit('printAddElement', objectType);
 
         this.setToolNameSelected({ name });
 
@@ -204,35 +202,15 @@ export default {
 
       this.$emit('endInstruction');
 
-      if (name === TOOL_NAME.DELETE) this.deleteElements();
+      if (name === TOOL_NAME.DELETE) this.$root.$emit('printDeleteElements');
 
-      if (name === TOOL_NAME.UNDO) this.undo();
+      if (name === TOOL_NAME.UNDO) this.$emit('undo');
 
-      if (name === TOOL_NAME.REDO) this.redo();
-    },
-    /**
-     * Add element in print canvas
-     */
-    addElement(objectType) {
-      this.$root.$emit('printAddElement', objectType);
-    },
-    /**
-     * Delete selected elements in print canvas
-     */
-    deleteElements() {
-      this.$root.$emit('printDeleteElements');
-    },
-    /**
-     * Undo user action
-     */
-    undo() {
-      this.$emit('undo');
-    },
-    /**
-     * Redo user action
-     */
-    redo() {
-      this.$emit('redo');
+      if (name === TOOL_NAME.REDO) this.$emit('redo');
+
+      if (name === TOOL_NAME.PHOTOS) {
+        this.updateMediaSidebarOpen({ isOpen: !this.isMediaSidebarOpen });
+      }
     }
   }
 };

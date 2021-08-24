@@ -1,8 +1,7 @@
-import { uniqueId } from 'lodash';
-
 import digitalService from '@/api/digital';
 
 import { STATUS, OBJECT_TYPE } from '@/common/constants';
+import { getUniqueId } from '@/common/utils';
 
 import DIGITAL from './const';
 
@@ -63,7 +62,7 @@ export const actions = {
     });
 
     // adding Id to each frame
-    const frames = layout.frames.map(f => ({ id: uniqueId(), frame: f }));
+    const frames = layout.frames.map(f => ({ id: getUniqueId(), frame: f }));
 
     // set the first frame is the active one
     commit(DIGITAL._MUTATES.SET_CURRENT_FRAME_ID, { id: frames[0].id });

@@ -1,6 +1,4 @@
-import { uniqueId } from 'lodash';
-
-import { isEmpty } from '@/common/utils';
+import { getUniqueId, isEmpty } from '@/common/utils';
 import printService from '@/api/print';
 import { setPrintPpLayouts } from '@/api/layouts';
 
@@ -70,10 +68,17 @@ export const actions = {
 
     commit(PRINT._MUTATES.SET_OBJECTS, { objectList: objects });
 
+    const firstBg = backgrounds[0];
+    const secondBg = backgrounds[1];
+
+    const leftBackground = firstBg?.isLeftPage ? firstBg : {};
+    const rightBackground =
+      firstBg && !firstBg.isLeftPage ? firstBg : secondBg ? secondBg : {};
+
     commit(PRINT._MUTATES.SET_BACKGROUNDS, {
       backgrounds: {
-        left: backgrounds.length > 0 ? backgrounds[0] : {},
-        right: backgrounds.length == 2 ? backgrounds[1] : {}
+        left: leftBackground,
+        right: rightBackground
       }
     });
   },
@@ -125,7 +130,7 @@ export const actions = {
     const newObjects = restObjs.map(obj => ({
       ...obj,
       position: currentPosition,
-      id: uniqueId(`${obj.id}`)
+      id: getUniqueId()
     }));
 
     const isLeftPage = pagePosition === 'left';

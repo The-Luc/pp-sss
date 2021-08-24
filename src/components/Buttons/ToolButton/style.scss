@@ -4,6 +4,12 @@
   display: flex;
   margin-right: 15px;
   width: 38px;
+
+  &.disabled {
+    pointer-events: none;
+    opacity: 0.4;
+  }
+
   .item-icon {
     display: flex;
     justify-content: center;

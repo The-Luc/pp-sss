@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import VueRx from 'vue-rx';
 import axios from 'axios';
 import VueCompositionAPI from '@vue/composition-api';
 
@@ -22,6 +23,7 @@ Vue.prototype.axios = axios;
 
 Vue.config.productionTip = false;
 Vue.use(VueCompositionAPI);
+Vue.use(VueRx);
 
 new Vue({
   router,

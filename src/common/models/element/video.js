@@ -1,6 +1,7 @@
-import { DEFAULT_IMAGE, OBJECT_TYPE } from '@/common/constants';
 import { BaseMoveableElementObject } from './base';
 import { ImageCrop } from './image';
+
+import { DEFAULT_IMAGE, DEFAULT_VIDEO, OBJECT_TYPE } from '@/common/constants';
 
 export class VideoElementObject extends BaseMoveableElementObject {
   type = OBJECT_TYPE.VIDEO;
@@ -14,6 +15,7 @@ export class VideoElementObject extends BaseMoveableElementObject {
   isConstrain = true;
   thumbnailUrl = '';
   customThumbnailUrl = '';
+  volume = DEFAULT_VIDEO.VOLUME;
 
   /**
    * @param {VideoElementObject} props

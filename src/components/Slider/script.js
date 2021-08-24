@@ -1,3 +1,4 @@
+import { DEFAULE_SLIDER } from '@/common/constants';
 import PpInput from '@/components/InputProperty';
 
 export default {
@@ -25,17 +26,22 @@ export default {
     isInputHidden: {
       type: Boolean,
       default: false
+    },
+    trackColor: {
+      type: String,
+      default: DEFAULE_SLIDER.COLOR
+    },
+    trackFillColor: {
+      type: String,
+      default: DEFAULE_SLIDER.FILL_COLOR
+    },
+    thumbColor: {
+      type: String,
+      default: DEFAULE_SLIDER.THUMB_COLOR
     }
   },
   components: {
     PpInput
-  },
-  data() {
-    return {
-      trackColor: '#D3D3D3',
-      trackFillColor: '#42738D',
-      thumbColor: '#FFFFFF'
-    };
   },
   methods: {
     /**

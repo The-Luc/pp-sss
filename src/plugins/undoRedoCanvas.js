@@ -1,17 +1,23 @@
 import { fabric } from 'fabric';
 
+import store from '@/store';
+
 import {
   isEmpty,
   hasOwnProperty,
   isOk,
   isCtrlKey,
   resetObjects,
-  isMacOs
+  isMacOs,
+  getDefaultDisabledItems
 } from '@/common/utils';
+
+import { MUTATES as APP_MUTATES } from '@/store/modules/app/const';
 
 import {
   KEY_CODE,
   MAX_STEP_UNDO_REDO,
+  TOOL_NAME,
   WINDOW_EVENT_TYPE
 } from '@/common/constants';
 
@@ -40,7 +46,12 @@ class UndoRedoCanvas {
 
     this._storeTracker = new StoreTracker({
       edition: options.edition,
-      maxStep: MAX_STEP_UNDO_REDO
+      maxStep: MAX_STEP_UNDO_REDO,
+      updateDataCallback: () => {
+        store.commit(APP_MUTATES.UPDATE_DISABLED_TOOLBAR_ITEMS, {
+          items: this._getDisabledUndoRedo()
+        });
+      }
     });
 
     document.body.addEventListener(
@@ -67,6 +78,18 @@ class UndoRedoCanvas {
     if (isRedo) this.redo();
   };
 
+  _getDisabledUndoRedo = () => {
+    const disabledUndoItem = this._storeTracker.isBackAvailable()
+      ? ''
+      : TOOL_NAME.UNDO;
+
+    const disabledRedoItem = this._storeTracker.isNextAvailable()
+      ? ''
+      : TOOL_NAME.REDO;
+
+    return [disabledUndoItem, disabledRedoItem].filter(Boolean);
+  };
+
   _undoRedo = async (isUndo = true) => {
     const storeChangeResult = isUndo
       ? await this._storeTracker.backToPrevious()
@@ -77,6 +100,10 @@ class UndoRedoCanvas {
       : storeChangeResult.changedIds;
 
     if (!isOk(storeChangeResult)) return;
+
+    store.commit(APP_MUTATES.UPDATE_DISABLED_TOOLBAR_ITEMS, {
+      items: this._getDisabledUndoRedo()
+    });
 
     resetObjects(this._canvas);
 
@@ -102,10 +129,18 @@ class UndoRedoCanvas {
   };
 
   reset = () => {
+    store.commit(APP_MUTATES.UPDATE_DISABLED_TOOLBAR_ITEMS, {
+      items: getDefaultDisabledItems()
+    });
+
     this._storeTracker.restartTracking();
   };
 
   dispose = () => {
+    store.commit(APP_MUTATES.UPDATE_DISABLED_TOOLBAR_ITEMS, {
+      items: getDefaultDisabledItems()
+    });
+
     this._storeTracker.stopTracking();
 
     this._storeTracker = null;

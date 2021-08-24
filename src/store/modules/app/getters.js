@@ -38,5 +38,9 @@ export const getters = {
   [APP._GETTERS.SAVED_TEXT_STYLES]: ({ savedTextStyles }) => savedTextStyles,
   [APP._GETTERS.SAVED_IMAGE_STYLES]: ({ savedImageStyles }) => savedImageStyles,
   [APP._GETTERS.IS_PHOTO_VISITED]: ({ generalInfo }) =>
-    generalInfo.isPhotoVisited
+    generalInfo.isPhotoVisited,
+  [APP._GETTERS.IS_MEDIA_SIDEBAR_OPEN]: ({ isMediaSidebarOpen }) =>
+    isMediaSidebarOpen,
+  [APP._GETTERS.DISABLED_TOOLBAR_ITEMS]: ({ disabledToolbarItems }) =>
+    disabledToolbarItems
 };
