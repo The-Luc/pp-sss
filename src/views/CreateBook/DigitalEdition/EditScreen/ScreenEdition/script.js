@@ -86,7 +86,8 @@ import {
   inToPx,
   pastePpObject,
   isDeleteKey,
-  isVideoPlaying
+  isVideoPlaying,
+  updatePositionWhenAngleExist
 } from '@/common/utils';
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
 
@@ -1307,6 +1308,14 @@ export default {
 
       const newProp = await this.updateElementProp(element, prop, objectType);
 
+      if (newProp?.coord?.rotation) {
+        // update position of the element
+        const { top, left } = element;
+
+        newProp.coord.x = pxToIn(left);
+        newProp.coord.y = pxToIn(top);
+      }
+
       this.updateCurrentObject(element, newProp);
 
       if (
@@ -1912,6 +1921,8 @@ export default {
       });
 
       const listFabricObjects = await Promise.all(allObjectPromises);
+
+      updatePositionWhenAngleExist(listFabricObjects);
 
       this.digitalCanvas.add(...listFabricObjects);
       this.digitalCanvas.requestRenderAll();

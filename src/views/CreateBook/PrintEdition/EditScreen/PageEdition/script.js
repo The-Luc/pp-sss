@@ -30,7 +30,8 @@ import {
   isNonElementPropSelected,
   copyPpObject,
   pastePpObject,
-  isDeleteKey
+  isDeleteKey,
+  updatePositionWhenAngleExist
 } from '@/common/utils';
 
 import {
@@ -1344,6 +1345,14 @@ export default {
 
       const newProp = this.updateElementProp(element, prop, objectType);
 
+      if (newProp?.coord?.rotation && objectType !== OBJECT_TYPE.TEXT) {
+        // update position of the element
+        const { top, left } = element;
+
+        newProp.coord.x = pxToIn(left);
+        newProp.coord.y = pxToIn(top);
+      }
+
       this.updateCurrentObject(element.id, newProp);
 
       if (
@@ -1432,14 +1441,14 @@ export default {
      * @param {Object}  newProp     new prop
      */
     updateCurrentObject(id, newProp) {
-      return new Promise(resole => {
+      return new Promise(resolve => {
         const prop = cloneDeep(this.currentObjects?.[id]);
 
         merge(prop, newProp);
 
         this.setCurrentObject(prop);
 
-        resole();
+        resolve();
       });
     },
     /**
@@ -1692,6 +1701,9 @@ export default {
       });
 
       const listFabricObjects = await Promise.all(allObjectPromises);
+
+      updatePositionWhenAngleExist(listFabricObjects);
+
       window.printCanvas.add(...listFabricObjects);
       window.printCanvas.requestRenderAll();
     },
