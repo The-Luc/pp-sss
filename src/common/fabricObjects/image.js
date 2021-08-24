@@ -471,6 +471,12 @@ export const setVideoSrc = async (
 ) => {
   const { width, height, scaleX, scaleY } = imageObject;
 
+  if (imageObject.objectType === OBJECT_TYPE.VIDEO) {
+    imageObject.dispose();
+
+    imageObject.set({ volume: DEFAULT_VIDEO.VOLUME, isPlaying: false });
+  }
+
   videoInitEvent(imageObject);
 
   const video = await createVideoElement(videoSrc);
