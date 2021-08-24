@@ -2024,6 +2024,9 @@ export default {
 
       updateElement(element, prop, window.digitalCanvas);
 
+      const newProp = fabricToPpObject(element);
+      merge(prop, newProp);
+
       return prop;
     },
     /**
@@ -2071,6 +2074,9 @@ export default {
 
       updateElement(element, prop, window.digitalCanvas);
 
+      const newProp = fabricToPpObject(element);
+      merge(prop, newProp);
+
       return prop;
     },
 
@@ -2097,6 +2103,9 @@ export default {
       }
 
       updateElement(element, prop, window.digitalCanvas);
+
+      const newProp = fabricToPpObject(element);
+      merge(prop, newProp);
 
       return prop;
     },

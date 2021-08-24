@@ -403,12 +403,6 @@ export default {
 
       applyBorderToImageObject(image, border);
 
-      updateSpecificProp(image, {
-        coord: {
-          rotation: imageProperties.coord.rotation
-        }
-      });
-
       if (imageProperties.hasImage && !imageProperties.control) {
         const control = await createMediaOverlay(IMAGE_LOCAL.CONTROL_ICON, {
           width: CROP_CONTROL.WIDTH,
@@ -502,12 +496,6 @@ export default {
         shadowAngle,
         shadowColor
       } = svg;
-
-      updateSpecificProp(svg, {
-        coord: {
-          rotation: objectData.coord.rotation
-        }
-      });
 
       applyShadowToObject(svg, {
         dropShadow,
@@ -1405,6 +1393,9 @@ export default {
 
       updateElement(element, prop, window.printCanvas);
 
+      const newProp = fabricToPpObject(element);
+      merge(prop, newProp);
+
       return prop;
     },
     /**
@@ -1452,6 +1443,9 @@ export default {
 
       updateElement(element, prop, window.printCanvas);
 
+      const newProp = fabricToPpObject(element);
+      merge(prop, newProp);
+
       return prop;
     },
     /**
@@ -1461,14 +1455,14 @@ export default {
      * @param {Object}  newProp     new prop
      */
     updateCurrentObject(id, newProp) {
-      return new Promise(resole => {
+      return new Promise(resolve => {
         const prop = cloneDeep(this.currentObjects?.[id]);
 
         merge(prop, newProp);
 
         this.setCurrentObject(prop);
 
-        resole();
+        resolve();
       });
     },
     /**
@@ -1721,6 +1715,7 @@ export default {
       });
 
       const listFabricObjects = await Promise.all(allObjectPromises);
+
       window.printCanvas.add(...listFabricObjects);
       window.printCanvas.requestRenderAll();
     },
