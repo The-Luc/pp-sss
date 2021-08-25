@@ -13,7 +13,9 @@ export const useBookPrintInfo = () => {
       pageInfo,
       isPhotoVisited,
       title,
-      sectionsSheets
+      sectionsSheets,
+      coverOption,
+      numberMaxPages
     } = await getBookInfo(bookId);
 
     setBookInfo({ info: { defaultThemeId: themeId, pageInfo } });
@@ -24,7 +26,9 @@ export const useBookPrintInfo = () => {
       info: {
         bookId,
         title,
-        isPhotoVisited
+        isPhotoVisited,
+        coverOption,
+        numberMaxPages
       }
     });
   };

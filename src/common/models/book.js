@@ -126,6 +126,8 @@ export class BookEditionInfo extends BookBase {
 
 export class BookPrintInfo extends BookEditionInfo {
   pageInfo = new PageInfo();
+  coverOption = '';
+  numberMaxPages = 0;
 
   /**
    * @param {BookPrintInfo} props
