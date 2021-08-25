@@ -1,8 +1,13 @@
-import { cloneDeep, differenceWith } from 'lodash';
+import { cloneDeep } from 'lodash';
 
 import store from '@/store';
 
-import { isEmpty, hasOwnProperty } from '@/common/utils';
+import {
+  isEmpty,
+  hasOwnProperty,
+  getDiffBetweenArray,
+  mergeArray
+} from '@/common/utils';
 
 import { GETTERS as APP_GETTERS } from '@/store/modules/app/const';
 
@@ -89,6 +94,20 @@ class StoreTracker {
     ]);
   };
 
+  _compareObject = (obj1, obj2) => obj1.id === obj2.id;
+
+  _getPreCurrentData = (currentData, isPrevious) => {
+    if (this._currentIndex <= 0 || !isPrevious) return [];
+
+    const data = cloneDeep(this._trackList[this._currentIndex - 1]);
+
+    data.splice(0, 2);
+
+    return getDiffBetweenArray(currentData, data, this._compareObject).map(
+      ({ id }) => id
+    );
+  };
+
   _switchData = async (isValid, nextIndex) => {
     if (!isValid) return { status: STATUS.NG };
 
@@ -111,11 +130,15 @@ class StoreTracker {
     oldData.splice(0, 2);
     currentData.splice(0, 2);
 
-    const changedIds = differenceWith(
-      oldData.length >= currentData.length ? oldData : currentData,
-      oldData.length <= currentData.length ? oldData : currentData,
-      (obj1, obj2) => obj1.id === obj2.id
+    const currentChangeIds = getDiffBetweenArray(
+      oldData,
+      currentData,
+      this._compareObject
     ).map(({ id }) => id);
+
+    const preChangeIds = this._getPreCurrentData(currentData, nextIndex < 0);
+
+    const changedIds = mergeArray(currentChangeIds, preChangeIds);
 
     this._isSwitching = false;
 
