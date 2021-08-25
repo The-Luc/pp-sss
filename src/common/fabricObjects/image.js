@@ -9,7 +9,7 @@ import {
   pxToIn,
   scaleSize
 } from '../utils';
-import { DEFAULT_RULE_DATA } from './common';
+import { DEFAULT_RULE_DATA, applyShadowToObject } from './common';
 import {
   DEFAULT_IMAGE,
   OBJECT_TYPE,
@@ -79,6 +79,7 @@ export const toFabricMediaProp = (prop, originalElement) => {
       y: DEFAULT_RULE_DATA.Y,
       horizontal: DEFAULT_RULE_DATA.HORIZONTAL,
       vertical: DEFAULT_RULE_DATA.VERTICAL,
+      rotation: DEFAULT_RULE_DATA.ROTATION,
       width: {
         name: 'scaleX',
         parse: value => {
@@ -98,7 +99,7 @@ export const toFabricMediaProp = (prop, originalElement) => {
         }
       }
     },
-    restrict: ['border', 'rotation', 'centerCrop']
+    restrict: ['border', 'cropInfo']
   };
   return mapObject(prop, mapRules);
 };
@@ -181,6 +182,8 @@ export const setImageSrc = async (imageObject, imageSrc) => {
       };
 
       img.set(newProp);
+
+      applyShadowToObject(img, imageObject);
 
       if (hasImage) {
         centercrop(imageObject, img.set.bind(img));
@@ -593,6 +596,8 @@ export const setVideoSrc = async (
   };
 
   imageObject.set(newProp);
+
+  applyShadowToObject(imageObject, imageObject);
 
   const { zoomLevel } = centercrop(
     imageObject,

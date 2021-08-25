@@ -378,7 +378,7 @@ export default {
 
       const imageObject = await createImage(imageProperties);
       const image = imageObject?.object;
-      const { border } = imageProperties;
+      const { border, cropInfo } = imageProperties;
 
       imageBorderModifier(image);
       addEventListeners(image, eventListeners);
@@ -403,11 +403,9 @@ export default {
 
       applyBorderToImageObject(image, border);
 
-      updateSpecificProp(image, {
-        coord: {
-          rotation: imageProperties.coord.rotation
-        }
-      });
+      if (!isEmpty(cropInfo)) {
+        image.set({ cropInfo });
+      }
 
       if (imageProperties.hasImage && !imageProperties.control) {
         const control = await createMediaOverlay(IMAGE_LOCAL.CONTROL_ICON, {
@@ -503,12 +501,6 @@ export default {
         shadowColor
       } = svg;
 
-      updateSpecificProp(svg, {
-        coord: {
-          rotation: objectData.coord.rotation
-        }
-      });
-
       applyShadowToObject(svg, {
         dropShadow,
         shadowBlur,
@@ -558,7 +550,7 @@ export default {
      * Function handle to get object(s) be copied from clipboard when user press Ctrl + V (Windows), Command + V (macOS), or from action menu
      */
     async handlePaste(event) {
-      if (this.isProcessingPaste || !isValidTargetToCopyPast(event)) return;
+      if (this.isProcessingPaste || !isValidTargetToCopyPast()) return;
       this.isProcessingPaste = true;
 
       await pastePpObject(
@@ -580,7 +572,7 @@ export default {
      * @param   {Object}  event event's clipboard
      */
     handleCopy(event) {
-      if (!isValidTargetToCopyPast(event)) return;
+      if (!isValidTargetToCopyPast()) return;
       copyPpObject(
         event,
         this.currentObjects,
@@ -685,19 +677,6 @@ export default {
         'object:modified': this.handleBringToFrontPageNumber,
         'object:added': this.handleCanvasChanged,
         'object:removed': this.handleCanvasChanged,
-
-        'object:scaled': ({ target }) => {
-          const { width, height } = target;
-          const prop = {
-            size: {
-              width: pxToIn(width),
-              height: pxToIn(height)
-            }
-          };
-          this.setObjectProp({ prop });
-
-          this.setCurrentObject(this.currentObjects?.[target?.id]);
-        },
         'mouse:down': e => {
           if (this.awaitingAdd) {
             this.$refs.pageWrapper.instructionEnd();
@@ -1405,6 +1384,9 @@ export default {
 
       updateElement(element, prop, window.printCanvas);
 
+      const newProp = fabricToPpObject(element);
+      merge(prop, newProp);
+
       return prop;
     },
     /**
@@ -1452,6 +1434,9 @@ export default {
 
       updateElement(element, prop, window.printCanvas);
 
+      const newProp = fabricToPpObject(element);
+      merge(prop, newProp);
+
       return prop;
     },
     /**
@@ -1461,14 +1446,14 @@ export default {
      * @param {Object}  newProp     new prop
      */
     updateCurrentObject(id, newProp) {
-      return new Promise(resole => {
+      return new Promise(resolve => {
         const prop = cloneDeep(this.currentObjects?.[id]);
 
         merge(prop, newProp);
 
         this.setCurrentObject(prop);
 
-        resole();
+        resolve();
       });
     },
     /**
@@ -1721,6 +1706,7 @@ export default {
       });
 
       const listFabricObjects = await Promise.all(allObjectPromises);
+
       window.printCanvas.add(...listFabricObjects);
       window.printCanvas.requestRenderAll();
     },

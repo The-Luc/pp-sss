@@ -593,7 +593,6 @@ export default {
         [CANVAS_EVENT_TYPE.OBJECT_MODIFIED]: this.onObjectModified,
         [CANVAS_EVENT_TYPE.OBJECT_ADDED]: this.onObjectAdded,
         [CANVAS_EVENT_TYPE.OBJECT_REMOVED]: this.onObjectRemoved,
-        [CANVAS_EVENT_TYPE.OBJECT_SCALED]: this.onObjectScaled,
         [CANVAS_EVENT_TYPE.OBJECT_MOVED]: this.onObjectMoved,
         [CANVAS_EVENT_TYPE.MOUSE_DOWN]: this.onMouseDown,
         [CANVAS_EVENT_TYPE.TEXT_CHANGED]: this.onTextChanged,
@@ -741,23 +740,6 @@ export default {
     onObjectRemoved() {
       this.setCurrentObject(null);
       this.handleCanvasChanged();
-    },
-
-    /**
-     * Event fire when fabric object has been scaled
-     * @param target fabric object selected
-     */
-    onObjectScaled({ target }) {
-      const { width, height } = target;
-      const prop = {
-        size: {
-          width: pxToIn(width),
-          height: pxToIn(height)
-        }
-      };
-      this.setObjectProp({ prop });
-
-      this.setCurrentObject(this.listObjects?.[target?.id]);
     },
 
     /**
@@ -1654,7 +1636,7 @@ export default {
      * @param   {Object}  event event's clipboard
      */
     handleCopy(event) {
-      if (!isValidTargetToCopyPast(event)) return;
+      if (!isValidTargetToCopyPast()) return;
       copyPpObject(
         event,
         this.currentObjects,
@@ -1668,7 +1650,7 @@ export default {
      * Function handle to get object(s) be copied from clipboard when user press Ctrl + V (Windows), Command + V (macOS), or from action menu
      */
     async handlePaste(event) {
-      if (this.isProcessingPaste || !isValidTargetToCopyPast(event)) return;
+      if (this.isProcessingPaste || !isValidTargetToCopyPast()) return;
       this.isProcessingPaste = true;
       await pastePpObject(
         event,
@@ -1900,7 +1882,8 @@ export default {
       updateSpecificProp(media, {
         coord: {
           rotation: mediaProperties.coord.rotation
-        }
+        },
+        cropInfo: mediaProperties.cropInfo
       });
 
       if (type === OBJECT_TYPE.IMAGE && hasImage && !control) {
@@ -2024,6 +2007,9 @@ export default {
 
       updateElement(element, prop, window.digitalCanvas);
 
+      const newProp = fabricToPpObject(element);
+      merge(prop, newProp);
+
       return prop;
     },
     /**
@@ -2071,6 +2057,9 @@ export default {
 
       updateElement(element, prop, window.digitalCanvas);
 
+      const newProp = fabricToPpObject(element);
+      merge(prop, newProp);
+
       return prop;
     },
 
@@ -2097,6 +2086,9 @@ export default {
       }
 
       updateElement(element, prop, window.digitalCanvas);
+
+      const newProp = fabricToPpObject(element);
+      merge(prop, newProp);
 
       return prop;
     },

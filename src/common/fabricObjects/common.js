@@ -243,7 +243,7 @@ export const toFabricShapeProp = (prop, originalElement) => {
         }
       }
     },
-    restrict: ['id', 'name', 'thumbnail', 'pathData', 'border', 'rotation']
+    restrict: ['id', 'name', 'thumbnail', 'pathData', 'border']
   };
 
   return mapObject(prop, mapRules);
@@ -284,7 +284,7 @@ export const toFabricClipArtProp = (prop, originalElement) => {
       horizontal: DEFAULT_RULE_DATA.HORIZONTAL,
       vertical: DEFAULT_RULE_DATA.VERTICAL
     },
-    restrict: ['id', 'name', 'thumbnail', 'border', 'rotation']
+    restrict: ['id', 'name', 'thumbnail', 'border']
   };
 
   return mapObject(prop, mapRules);
@@ -339,6 +339,8 @@ export const updateSpecificProp = (element, prop) => {
   if (!isEmpty(prop?.coord?.rotation)) element.rotate(prop.coord.rotation);
 
   if (!isEmpty(prop?.shadow)) applyShadowToObject(element, prop.shadow);
+
+  if (!isEmpty(prop?.cropInfo)) element.set({ cropInfo: prop.cropInfo });
 };
 
 /**

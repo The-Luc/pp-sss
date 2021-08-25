@@ -190,8 +190,7 @@ export const computePastedObjectCoord = (
  * @param {Object} event copy or past event
  * @returns {Boolean} is valid target
  */
-export const isValidTargetToCopyPast = event => {
-  if (!event) return true;
-  const { tagName } = event.target;
+export const isValidTargetToCopyPast = () => {
+  const { tagName } = document.activeElement;
   return tagName !== 'INPUT';
 };
