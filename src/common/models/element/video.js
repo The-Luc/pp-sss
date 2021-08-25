@@ -1,5 +1,4 @@
 import { BaseMoveableElementObject } from './base';
-import { ImageCrop } from './image';
 
 import { DEFAULT_IMAGE, DEFAULT_VIDEO, OBJECT_TYPE } from '@/common/constants';
 
