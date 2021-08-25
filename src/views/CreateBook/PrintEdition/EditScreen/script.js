@@ -402,9 +402,12 @@ export default {
      * Handle after crop image
      * @param {String} value Result image url after croppeed
      */
-    async onCrop(value) {
+    async onCrop(value, cropInfo) {
       const prop = await setImageSrc(this.selectedImage, value);
+      prop.cropInfo = cropInfo;
+      this.selectedImage.set({ cropInfo });
       this.setPropertyById({ id: this.selectedImage.id, prop });
+      this.$refs.canvasEditor.getThumbnailUrl();
       this.onCancel();
     },
 

@@ -339,6 +339,8 @@ export const updateSpecificProp = (element, prop) => {
   if (!isEmpty(prop?.coord?.rotation)) element.rotate(prop.coord.rotation);
 
   if (!isEmpty(prop?.shadow)) applyShadowToObject(element, prop.shadow);
+
+  if (!isEmpty(prop?.cropInfo)) element.set({ cropInfo: prop.cropInfo });
 };
 
 /**

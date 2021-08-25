@@ -184,6 +184,7 @@ const renderImageCropControl = function(ctx) {
   const dX = -this.width / 2;
   const dY = -this.height / 2;
 
+  ctx.shadowColor = 'transparent';
   ctx.drawImage(ele, sX, sY, sW, sH, dX, dY, this.width, this.height);
 };
 
@@ -202,6 +203,14 @@ const renderVideoPlayIcon = function(ctx) {
 
   const dX = -this.width / 2;
   const dY = -this.height / 2;
+
+  if (this.flipX) {
+    ctx.scale(-1, 1);
+  }
+
+  if (this.flipY) {
+    ctx.scale(1, -1);
+  }
 
   ctx.shadowColor = 'transparent';
   ctx.drawImage(this.playIcon, sX, sY, sW, sH, dX, dY, this.width, this.height);

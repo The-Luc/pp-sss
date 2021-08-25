@@ -15,7 +15,7 @@ export default {
   },
   data() {
     return {
-      scale: 1,
+      scale: 2,
       rotate: 0
     };
   },
@@ -78,7 +78,11 @@ export default {
     onCrop() {
       const canvas = this.$refs.clipper.clip();
       const url = canvas.toDataURL();
-      this.$emit('crop', url);
+      const cropInfo = {
+        rotate: this.rotate,
+        scale: this.scale
+      };
+      this.$emit('crop', url, cropInfo);
     },
 
     /**
@@ -86,6 +90,12 @@ export default {
      */
     onCancel() {
       this.$emit('cancel');
+    }
+  },
+  watch: {
+    selectedImage(val) {
+      this.rotate = val?.cropInfo?.rotate || 0;
+      this.scale = val?.cropInfo?.scale || 2;
     }
   }
 };

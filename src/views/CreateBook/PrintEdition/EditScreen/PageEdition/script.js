@@ -378,7 +378,7 @@ export default {
 
       const imageObject = await createImage(imageProperties);
       const image = imageObject?.object;
-      const { border } = imageProperties;
+      const { border, cropInfo } = imageProperties;
 
       imageBorderModifier(image);
       addEventListeners(image, eventListeners);
@@ -402,6 +402,10 @@ export default {
       });
 
       applyBorderToImageObject(image, border);
+
+      if (!isEmpty(cropInfo)) {
+        image.set({ cropInfo });
+      }
 
       if (imageProperties.hasImage && !imageProperties.control) {
         const control = await createMediaOverlay(IMAGE_LOCAL.CONTROL_ICON, {
@@ -673,19 +677,6 @@ export default {
         'object:modified': this.handleBringToFrontPageNumber,
         'object:added': this.handleCanvasChanged,
         'object:removed': this.handleCanvasChanged,
-
-        'object:scaled': ({ target }) => {
-          const { width, height } = target;
-          const prop = {
-            size: {
-              width: pxToIn(width),
-              height: pxToIn(height)
-            }
-          };
-          this.setObjectProp({ prop });
-
-          this.setCurrentObject(this.currentObjects?.[target?.id]);
-        },
         'mouse:down': e => {
           if (this.awaitingAdd) {
             this.$refs.pageWrapper.instructionEnd();

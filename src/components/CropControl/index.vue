@@ -27,6 +27,7 @@
         <Control
           title="Zoom"
           :value="scale * 100"
+          :min="1"
           :max="400"
           @change="onZoom"
         />
