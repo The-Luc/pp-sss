@@ -340,12 +340,16 @@ export default {
       }
 
       const prop = await setImageSrc(target, imageUrl);
+
       prop.imageId = imageId;
       prop.originalUrl = imageUrl;
+
+      target.set({ originalUrl: imageUrl, cropInfo: null });
+
       this.setPropertyById({ id: target.id, prop });
       this.$refs.canvasEditor.getThumbnailUrl();
-
       this.$refs.canvasEditor.printCanvas.setActiveObject(target);
+
       setTimeout(() => {
         this.$refs.canvasEditor.printCanvas.renderAll();
       }, 250);
