@@ -1,5 +1,4 @@
 import { BaseMoveableElementObject } from './base';
-import { ImageCrop } from './image';
 
 import { DEFAULT_IMAGE, DEFAULT_VIDEO, OBJECT_TYPE } from '@/common/constants';
 
@@ -9,7 +8,6 @@ export class VideoElementObject extends BaseMoveableElementObject {
   imageId = null;
   imageUrl = '';
   hasImage = false;
-  centerCrop = new ImageCrop();
   strokeUniform = DEFAULT_IMAGE.STROKE_UNIFORM;
   paintFirst = DEFAULT_IMAGE.PAINT_FIRST;
   isConstrain = true;
