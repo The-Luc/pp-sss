@@ -115,7 +115,7 @@ class UndoRedoCanvas {
 
     if (selectedObjects.length === 0) return;
 
-    if (selectedObjectIds.length === 1) {
+    if (selectedObjects.length === 1) {
       this._canvas.setActiveObject(selectedObjects[0]).renderAll();
 
       return;

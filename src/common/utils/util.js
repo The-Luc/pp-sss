@@ -1,4 +1,10 @@
-import { cloneDeep, merge, intersection, uniqueId } from 'lodash';
+import {
+  cloneDeep,
+  merge,
+  intersection,
+  uniqueId,
+  differenceWith
+} from 'lodash';
 
 import { STATUS } from '@/common/constants';
 
@@ -385,4 +391,12 @@ export const getFileExtension = fileName => {
  */
 export const getUniqueId = () => {
   return uniqueId();
+};
+
+export const getDiffBetweenArray = (arr1, arr2, compareFn) => {
+  return differenceWith(
+    arr1.length >= arr2.length ? arr1 : arr2,
+    arr1.length <= arr2.length ? arr1 : arr2,
+    compareFn
+  );
 };
