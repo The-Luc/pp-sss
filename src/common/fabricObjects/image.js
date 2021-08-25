@@ -99,7 +99,7 @@ export const toFabricMediaProp = (prop, originalElement) => {
         }
       }
     },
-    restrict: ['border', 'centerCrop']
+    restrict: ['border', 'cropInfo']
   };
   return mapObject(prop, mapRules);
 };

@@ -1882,7 +1882,8 @@ export default {
       updateSpecificProp(media, {
         coord: {
           rotation: mediaProperties.coord.rotation
-        }
+        },
+        cropInfo: mediaProperties.cropInfo
       });
 
       if (type === OBJECT_TYPE.IMAGE && hasImage && !control) {

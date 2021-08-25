@@ -7,6 +7,8 @@ export class ImageCrop extends BaseObject {
   cropBottom = 0;
   cropLeft = 0;
   cropRight = 0;
+  scale = 1;
+  rotate = 0;
 
   /**
    * @param {ImageCrop} props
@@ -24,7 +26,7 @@ export class ImageElementObject extends BaseMoveableElementObject {
   imageUrl = '';
   originalUrl = '';
   hasImage = false;
-  centerCrop = new ImageCrop();
+  cropInfo = new ImageCrop();
   strokeUniform = DEFAULT_IMAGE.STROKE_UNIFORM;
   paintFirst = DEFAULT_IMAGE.PAINT_FIRST;
   isConstrain = true;

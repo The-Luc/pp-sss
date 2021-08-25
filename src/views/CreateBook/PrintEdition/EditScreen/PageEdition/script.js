@@ -378,7 +378,7 @@ export default {
 
       const imageObject = await createImage(imageProperties);
       const image = imageObject?.object;
-      const { border } = imageProperties;
+      const { border, cropInfo } = imageProperties;
 
       imageBorderModifier(image);
       addEventListeners(image, eventListeners);
@@ -402,6 +402,10 @@ export default {
       });
 
       applyBorderToImageObject(image, border);
+
+      if (!isEmpty(cropInfo)) {
+        image.set({ cropInfo });
+      }
 
       if (imageProperties.hasImage && !imageProperties.control) {
         const control = await createMediaOverlay(IMAGE_LOCAL.CONTROL_ICON, {
