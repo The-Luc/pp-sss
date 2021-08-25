@@ -9,7 +9,6 @@ export class VideoElementObject extends BaseMoveableElementObject {
   imageId = null;
   imageUrl = '';
   hasImage = false;
-  centerCrop = new ImageCrop();
   strokeUniform = DEFAULT_IMAGE.STROKE_UNIFORM;
   paintFirst = DEFAULT_IMAGE.PAINT_FIRST;
   isConstrain = true;
