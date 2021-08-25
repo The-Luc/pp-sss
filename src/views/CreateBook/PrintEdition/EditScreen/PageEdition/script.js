@@ -673,19 +673,6 @@ export default {
         'object:modified': this.handleBringToFrontPageNumber,
         'object:added': this.handleCanvasChanged,
         'object:removed': this.handleCanvasChanged,
-
-        'object:scaled': ({ target }) => {
-          const { width, height } = target;
-          const prop = {
-            size: {
-              width: pxToIn(width),
-              height: pxToIn(height)
-            }
-          };
-          this.setObjectProp({ prop });
-
-          this.setCurrentObject(this.currentObjects?.[target?.id]);
-        },
         'mouse:down': e => {
           if (this.awaitingAdd) {
             this.$refs.pageWrapper.instructionEnd();
