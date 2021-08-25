@@ -93,9 +93,12 @@ export default {
     }
   },
   watch: {
-    selectedImage(val) {
-      this.rotate = val?.cropInfo?.rotate || 0;
-      this.scale = val?.cropInfo?.scale || 2;
+    selectedImage: {
+      deep: true,
+      handler(val) {
+        this.rotate = val?.cropInfo?.rotate || 0;
+        this.scale = val?.cropInfo?.scale || 2;
+      }
     }
   }
 };
