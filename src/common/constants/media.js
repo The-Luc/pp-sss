@@ -15,15 +15,15 @@ export const PHOTO_CATEGORIES = {
 
 export const VIDEO_CATEGORIES = {
   COMMUNITIES: {
-    name: 'Community Video',
+    name: 'Community Videos',
     value: 'communities'
   },
   GROUPS: {
-    name: 'Group Video',
+    name: 'Group Videos',
     value: 'groups'
   },
   PERSONAL_ALBUMS: {
-    name: 'My Video',
+    name: 'My Videos',
     value: 'personalAlbums'
   }
 };
