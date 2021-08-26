@@ -641,7 +641,7 @@ const changeVolume = function(volume) {
 const dispose = function() {
   const video = this.getElement();
 
-  if (!video) return;
+  if (!video || !video.pause) return;
 
   video.pause();
 

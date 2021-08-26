@@ -74,7 +74,6 @@ import {
 } from '@/common/fabricObjects';
 
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
-import { GETTERS } from '@/store/modules/book/const';
 import {
   ACTIONS as PRINT_ACTIONS,
   GETTERS as PRINT_GETTERS,
@@ -131,7 +130,7 @@ export default {
     YRuler
   },
   setup() {
-    const { setActiveEdition } = useAppCommon();
+    const { generalInfo } = useAppCommon();
     const { setInfoBar, zoom } = useInfoBar();
     const { onSaveStyle } = useStyle();
     const { savePrintEditScreen, getDataEditScreen } = useSaveData();
@@ -145,7 +144,7 @@ export default {
     const { updateMediaSidebarOpen } = useToolBar();
 
     return {
-      setActiveEdition,
+      generalInfo,
       setInfoBar,
       zoom,
       onSaveStyle,
@@ -182,7 +181,6 @@ export default {
   },
   computed: {
     ...mapGetters({
-      book: GETTERS.BOOK_DETAIL,
       pageSelected: PRINT_GETTERS.CURRENT_SHEET,
       sheetLayout: PRINT_GETTERS.SHEET_LAYOUT,
       toolNameSelected: APP_GETTERS.SELECTED_TOOL_NAME,
@@ -199,14 +197,14 @@ export default {
       return this.pageSelected?.type === SHEET_TYPE.COVER;
     },
     isHardCover() {
-      const { coverOption } = this.book;
+      const { coverOption } = this.generalInfo;
       return (
         coverOption === COVER_TYPE.HARD_OVER &&
         this.pageSelected?.type === SHEET_TYPE.COVER
       );
     },
     isSoftCover() {
-      const { coverOption } = this.book;
+      const { coverOption } = this.generalInfo;
       return (
         coverOption === COVER_TYPE.SOFT_COVER &&
         this.pageSelected?.type === SHEET_TYPE.COVER
@@ -588,7 +586,10 @@ export default {
      */
     updateCanvasSize() {
       this.printSize = this.isCover
-        ? getCoverPagePrintSize(this.isHardCover, this.book.numberMaxPages)
+        ? getCoverPagePrintSize(
+            this.isHardCover,
+            this.generalInfo.numberMaxPages
+          )
         : getPagePrintSize();
       const canvasSize = {
         width: 0,

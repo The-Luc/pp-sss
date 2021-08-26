@@ -416,6 +416,8 @@ export default {
       prop.imageId = imageId;
       prop.originalUrl = imageUrl;
 
+      target.set({ originalUrl: imageUrl, cropInfo: null });
+
       if (mediaUrl) prop.volume = DEFAULT_VIDEO.VOLUME;
 
       this.setPropertyById({ id: target.id, prop });
