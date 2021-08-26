@@ -93,12 +93,12 @@ export default {
     }
   },
   watch: {
-    selectedImage: {
-      deep: true,
-      handler(val) {
-        this.rotate = val?.cropInfo?.rotate || 0;
-        this.scale = val?.cropInfo?.scale || 2;
-      }
+    open(val) {
+      if (!val) return;
+
+      const { rotate = 0, scale = 2 } = this.selectedImage?.cropInfo || {};
+      this.rotate = rotate;
+      this.scale = scale;
     }
   }
 };
