@@ -324,7 +324,12 @@ const handleHoverImage = target => {
  * @param {Object} target Fabric object selected
  */
 const handleHoverVideo = target => {
-  if (target.isPlaying || !target.showPlayIcon) return;
+  if (!target.showPlayIcon) {
+    return target.set({
+      hoverCursor: null,
+      isHoverPlayIcon: false
+    });
+  }
 
   const { x, y } = target.getLocalPointer();
   const { width, height, scaleX, scaleY } = target;
@@ -360,7 +365,8 @@ export const handleMouseOver = ({ target }) => {
   if (target?.objectType !== OBJECT_TYPE.IMAGE || !target.hasImage) return;
 
   target.set({
-    showControl: true
+    showControl: true,
+    dirty: true
   });
 
   target.canvas.renderAll();
@@ -374,7 +380,8 @@ export const handleMouseOut = ({ target }) => {
   if (target?.objectType !== OBJECT_TYPE.IMAGE || !target.hasImage) return;
 
   target.set({
-    showControl: false
+    showControl: false,
+    dirty: true
   });
 
   target.canvas.renderAll();
@@ -447,8 +454,10 @@ const reqAnimFrame = renderFn => {
 /**
  * Render video by video frames
  */
-export const requestAnimFrame = (isSeek = false) => {
+export const requestAnimFrame = (isSeek = false, obj) => {
   fabric.util.requestAnimFrame(function render() {
+    if (obj) obj.set({ dirty: true });
+
     if (!isSeek) {
       reqAnimFrame(render);
 
@@ -504,7 +513,7 @@ export const setVideoSrc = async (
       dirty: true
     });
 
-    requestAnimFrame();
+    requestAnimFrame(false, imageObject);
   });
 
   video.addEventListener(VIDEO_EVENT_TYPE.PAUSE, () => {
