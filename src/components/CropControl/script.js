@@ -1,8 +1,14 @@
-import Footer from '../ModalMediaSelection/Footer';
 import { clipperFixed } from 'vuejs-clipper';
+
+import Footer from '@/components/Modals/MediaSelection/Footer';
 import Control from './Control';
 
 export default {
+  components: {
+    clipperFixed,
+    Control,
+    Footer
+  },
   props: {
     open: {
       type: Boolean,
@@ -18,11 +24,6 @@ export default {
       scale: 2,
       rotate: 0
     };
-  },
-  components: {
-    clipperFixed,
-    Control,
-    Footer
   },
   computed: {
     src() {

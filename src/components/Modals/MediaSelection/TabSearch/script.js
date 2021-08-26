@@ -1,5 +1,5 @@
-import AlbumItem from '@/components/ModalMediaSelection/AlbumItem';
-import PopupSelected from '@/components/ModalMediaSelection/PopupSelected';
+import AlbumItem from '../AlbumItem';
+import PopupSelected from '../PopupSelected';
 
 export default {
   components: {
