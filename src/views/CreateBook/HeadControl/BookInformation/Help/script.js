@@ -1,7 +1,7 @@
 import { mapMutations } from 'vuex';
 
 import { ICON_LOCAL, MODAL_TYPES } from '@/common/constants';
-import Modal from '@/containers/Modal';
+import Modal from '@/containers/Modals/Modal';
 import { MUTATES } from '@/store/modules/app/const';
 
 export default {

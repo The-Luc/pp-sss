@@ -1,9 +1,10 @@
+import Modal from '@/containers/Modals/Modal';
+import PpButton from '@/components/Buttons/Button';
+
 import { mapMutations } from 'vuex';
+
 import { MUTATES } from '@/store/modules/app/const';
 import { MUTATES as BOOK_MUTATES } from '@/store/modules/book/const';
-
-import Modal from '@/containers/Modal';
-import PpButton from '@/components/Buttons/Button';
 
 export default {
   components: {

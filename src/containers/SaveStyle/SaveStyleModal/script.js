@@ -1,4 +1,4 @@
-import Modal from '@/containers/Modal';
+import Modal from '@/containers/Modals/Modal';
 import PpButton from '@/components/Buttons/Button';
 import { EVENT_TYPE, OBJECT_TYPE } from '@/common/constants';
 import { useModal } from '@/hooks';
