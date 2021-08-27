@@ -1,16 +1,13 @@
 export default {
   props: {
     title: {
-      type: String,
-      default: ''
+      type: String
     },
     isCloseIconDisplayed: {
-      type: Boolean,
-      default: true
+      type: Boolean
     },
     isThemeUsed: {
-      type: Boolean,
-      default: false
+      type: Boolean
     }
   },
   methods: {
