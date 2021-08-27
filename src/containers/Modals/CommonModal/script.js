@@ -1,12 +1,9 @@
 import Header from './Header';
 import Footer from './Footer';
 
-import { mapMutations } from 'vuex';
-
-import { MUTATES } from '@/store/modules/app/const';
+import { isEmpty } from '@/common/utils';
 
 import { KEY_CODE } from '@/common/constants';
-import { isEmpty } from '@/common/utils';
 
 export default {
   components: {
@@ -58,9 +55,6 @@ export default {
       default: 'Ok'
     }
   },
-  computed: {
-    //
-  },
   data() {
     return {
       isDefaulHeaderDisplayed: this.isShowHeader && isEmpty(this.$slots.header),
@@ -69,12 +63,9 @@ export default {
     };
   },
   mounted() {
-    //
+    console.log('mounted'); // TODO: remove after finish
   },
   methods: {
-    ...mapMutations({
-      toggleModal: MUTATES.TOGGLE_MODAL
-    }),
     /**
      * Fire when user click outside modal
      */
