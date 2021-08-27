@@ -2,9 +2,9 @@
   <div class="pp-modal-footer">
     <v-btn class="btn cancel" @click="onCancel">{{ cancelText }}</v-btn>
 
-    <v-btn class="btn accept" disabled @click="onAccept">{{
-      acceptText
-    }}</v-btn>
+    <v-btn class="btn accept" disabled @click="onAccept">
+      {{ acceptText }}
+    </v-btn>
   </div>
 </template>
 
