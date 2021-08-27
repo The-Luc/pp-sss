@@ -1,3 +1,15 @@
+import PhotoSidebar from '@/components/Modals/PhotoSidebar';
+import SheetMedia from '@/components/Modals/PhotoSidebar/SheetMedia';
+import CropControl from '@/components/CropControl';
+
+import Header from '@/containers/HeaderEdition/Header';
+import FeedbackBar from '@/containers/HeaderEdition/FeedbackBar';
+import MediaModal from '@/containers/Modal/Media';
+
+import ToolBar from './ToolBar';
+import SidebarSection from './SidebarSection';
+import PageEdition from './PageEdition';
+
 import { mapMutations, mapGetters, mapActions } from 'vuex';
 
 import { MUTATES, GETTERS as APP_GETTERS } from '@/store/modules/app/const';
@@ -15,15 +27,6 @@ import {
   SAVING_DURATION,
   TOOL_NAME
 } from '@/common/constants';
-import ToolBar from './ToolBar';
-import Header from '@/containers/HeaderEdition/Header';
-import FeedbackBar from '@/containers/HeaderEdition/FeedbackBar';
-import SidebarSection from './SidebarSection';
-import PageEdition from './PageEdition';
-import PhotoSidebar from '@/components/PhotoSidebar';
-import SheetMedia from '@/components/SheetMedia';
-import MediaModal from '@/containers/Modal/Media';
-import CropControl from '@/components/CropControl';
 import {
   useLayoutPrompt,
   usePopoverCreationTool,

@@ -68,7 +68,7 @@
           />
         </v-tab-item>
 
-        <v-tab v-show="isModalMedia" href="#compositions">
+        <v-tab v-show="isModalMedia" href="#compositions" class="disabled">
           <v-icon>collections_bookmark</v-icon>
           <div>Compositions</div>
         </v-tab>

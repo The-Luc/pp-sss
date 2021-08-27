@@ -1,8 +1,9 @@
-import Footer from '@/components/ModalMediaSelection/Footer';
-import TabUploadMedia from '@/components/ModalMediaSelection/TabUploadMedia';
-import Smartbox from '@/components/ModalMediaSelection/Smartbox';
-import TabMedia from '@/components/ModalMediaSelection/TabMedia';
-import TabSearchPhotos from '@/components/ModalMediaSelection/TabSearch';
+import Footer from '@/components/Modals/MediaSelection/Footer';
+import TabUploadMedia from '@/components/Modals/MediaSelection/TabUploadMedia';
+import Smartbox from '@/components/Modals/MediaSelection/Smartbox';
+import TabMedia from '@/components/Modals/MediaSelection/TabMedia';
+import TabSearchPhotos from '@/components/Modals/MediaSelection/TabSearch';
+
 import { getFileExtension } from '@/common/utils';
 
 import {

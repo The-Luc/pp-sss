@@ -1,14 +1,16 @@
-import { mapGetters, mapMutations, mapActions } from 'vuex';
+import PhotoSidebar from '@/components/Modals/PhotoSidebar';
+import SheetMedia from '@/components/Modals/PhotoSidebar/SheetMedia';
+import CropControl from '@/components/CropControl';
 
-import ToolBar from './ToolBar';
 import Header from '@/containers/HeaderEdition/Header';
 import FeedbackBar from '@/containers/HeaderEdition/FeedbackBar';
+import MediaModal from '@/containers/Modal/Media';
+
+import ToolBar from './ToolBar';
 import ScreenEdition from './ScreenEdition';
 import SidebarSection from './SidebarSection';
-import PhotoSidebar from '@/components/PhotoSidebar';
-import MediaModal from '@/containers/Modal/Media';
-import SheetMedia from '@/components/SheetMedia';
-import CropControl from '@/components/CropControl';
+
+import { mapGetters, mapMutations, mapActions } from 'vuex';
 
 import { GETTERS, MUTATES } from '@/store/modules/app/const';
 import {
