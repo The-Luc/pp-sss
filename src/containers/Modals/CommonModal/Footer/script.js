@@ -1,12 +1,10 @@
 export default {
   props: {
     cancelText: {
-      type: String,
-      default: 'Cancel'
+      type: String
     },
     acceptText: {
-      type: String,
-      default: 'Ok'
+      type: String
     }
   },
   methods: {

@@ -7,11 +7,11 @@
 
   .btn {
     &::v-deep.v-btn {
-      width: 100px;
+      width: 101px;
       height: 32px;
+      letter-spacing: initial;
       border-radius: 6px;
       box-shadow: none;
-      letter-spacing: initial;
 
       .v-btn__content {
         color: $color-white;

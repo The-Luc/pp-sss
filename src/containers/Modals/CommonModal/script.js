@@ -48,6 +48,14 @@ export default {
     },
     container: {
       type: String
+    },
+    cancelText: {
+      type: String,
+      default: 'Cancel'
+    },
+    acceptText: {
+      type: String,
+      default: 'Ok'
     }
   },
   computed: {

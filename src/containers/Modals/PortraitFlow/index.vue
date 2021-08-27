@@ -2,6 +2,7 @@
   <div id="portrait-folow">
     <CommonModal
       title="Portrait Flow"
+      accept-text="Apply Portraits to Pages"
       container="#portrait-folow"
       width="1162"
       :is-open-modal="isOpen"
