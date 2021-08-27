@@ -7,7 +7,7 @@ import {
   MUTATES as THEME_MUTATES,
   ACTIONS as THEME_ACTIONS
 } from '@/store/modules/theme/const';
-import Modal from '@/containers/Modal';
+import Modal from '@/containers/Modals/Modal';
 import PpButton from '@/components/Buttons/Button';
 import Themes from './Themes';
 import Preview from './Preview';

@@ -4,7 +4,7 @@ import CropControl from '@/components/CropControl';
 
 import Header from '@/containers/HeaderEdition/Header';
 import FeedbackBar from '@/containers/HeaderEdition/FeedbackBar';
-import MediaModal from '@/containers/Modal/Media';
+import MediaModal from '@/containers/Modals/Media';
 
 import ToolBar from './ToolBar';
 import SidebarSection from './SidebarSection';

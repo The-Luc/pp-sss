@@ -1,4 +1,4 @@
-import Modal from '@/containers/Modal';
+import Modal from '@/containers/Modals/Modal';
 import PpButton from '@/components/Buttons/Button';
 import { MODAL_TYPES, SHEET_TYPE } from '@/common/constants';
 import { useModal, useSheet, useBackgroundGetter } from '@/hooks';

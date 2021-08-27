@@ -1,6 +1,6 @@
 import { mapMutations } from 'vuex';
 
-import Modal from '@/containers/Modal';
+import Modal from '@/containers/Modals/Modal';
 import PpButton from '@/components/Buttons/Button';
 import { useDrawLayout, useGetLayouts, useSheet } from '@/hooks';
 import { MUTATES as APP_MUTATES } from '@/store/modules/app/const';

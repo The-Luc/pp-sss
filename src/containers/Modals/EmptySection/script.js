@@ -1,5 +1,5 @@
 import { mapMutations, mapGetters } from 'vuex';
-import Modal from '@/containers/Modal';
+import Modal from '@/containers/Modals/Modal';
 import PpButton from '@/components/Buttons/Button';
 import { MUTATES } from '@/store/modules/app/const';
 import { GETTERS } from '@/store/modules/book/const';

@@ -1,6 +1,7 @@
+import Modal from '@/containers/Modals/Modal';
+
 import { mapMutations } from 'vuex';
 
-import Modal from '@/containers/Modal';
 import { MUTATES as APP_MUTATES } from '@/store/modules/app/const';
 
 export default {
