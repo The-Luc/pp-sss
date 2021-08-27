@@ -57,6 +57,17 @@ import {
 } from '@/common/fabricObjects';
 
 export default {
+  components: {
+    ToolBar,
+    Header,
+    FeedbackBar,
+    ScreenEdition,
+    SidebarSection,
+    PhotoSidebar,
+    MediaModal,
+    SheetMedia,
+    CropControl
+  },
   setup() {
     const { pageSelected, updateVisited } = useLayoutPrompt(EDITION.DIGITAL);
     const { setToolNameSelected } = usePopoverCreationTool();
@@ -104,17 +115,6 @@ export default {
       dragItem: null,
       selectedImage: null
     };
-  },
-  components: {
-    ToolBar,
-    Header,
-    FeedbackBar,
-    ScreenEdition,
-    SidebarSection,
-    PhotoSidebar,
-    MediaModal,
-    SheetMedia,
-    CropControl
   },
   computed: {
     ...mapGetters({

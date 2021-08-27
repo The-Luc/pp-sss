@@ -1,0 +1,39 @@
+#portrait-folow {
+  height: 744px;
+
+  ::v-deep {
+    .v-dialog__content {
+      .pp-modal {
+        height: 100%;
+
+        .pp-modal-title {
+          margin-left: 29px;
+          margin-right: 29px;
+        }
+        
+        .v-card__text {
+          display: flex;
+          padding: 0;
+
+          .preview {
+            width: 363px;
+          }
+
+          .settings {
+            width: 261px;
+            border-left: 1px solid $color-gray38;
+            border-right: 1px solid $color-gray38;
+          }
+
+          .setting-content {
+            width: calc(100% - 626px);
+          }
+        }
+
+        .pp-modal-footer {
+          justify-content: space-between;
+        }
+      }
+    }
+  }
+}

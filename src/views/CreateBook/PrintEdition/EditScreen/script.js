@@ -5,6 +5,7 @@ import CropControl from '@/components/CropControl';
 import Header from '@/containers/HeaderEdition/Header';
 import FeedbackBar from '@/containers/HeaderEdition/FeedbackBar';
 import MediaModal from '@/containers/Modals/Media';
+import PortraiFlow from '@/containers/Modals/PortraitFlow';
 
 import ToolBar from './ToolBar';
 import SidebarSection from './SidebarSection';
@@ -63,7 +64,8 @@ export default {
     PhotoSidebar,
     SheetMedia,
     MediaModal,
-    CropControl
+    CropControl,
+    PortraiFlow
   },
   setup() {
     const { pageSelected, updateVisited } = useLayoutPrompt(EDITION.PRINT);
@@ -110,7 +112,11 @@ export default {
       dragItem: null,
       isOpenMediaModal: false,
       isOpenCropControl: false,
-      selectedImage: null
+      selectedImage: null,
+      modalDisplay: {
+        [TOOL_NAME.PORTRAIT]: false
+      },
+      toolNames: TOOL_NAME
     };
   },
   computed: {
@@ -426,6 +432,29 @@ export default {
       const activeObject = canvas.getActiveObject();
       this.selectedImage = activeObject;
       this.isOpenCropControl = true;
+    },
+    onToggleModal({ name, isToggle }) {
+      if (isEmpty(name)) {
+        Object.values(this.modalDisplay).forEach(m => {
+          this.modalDisplay[m] = false;
+        });
+
+        return;
+      }
+
+      this.modalDisplay[name] = isToggle ? !this.modalDisplay[name] : true;
+    },
+    /**
+     * Close portrait modal
+     */
+    onClosePortrait() {
+      this.modalDisplay[TOOL_NAME.PORTRAIT] = false;
+    },
+    /**
+     * Apply portrait to page
+     */
+    onApplyPortrait() {
+      console.log('onApplyPortrait');
     }
   }
 };
