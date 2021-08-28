@@ -1,9 +1,7 @@
-$content-padding-bottom: 22px;
-$line: 1px solid $color-gray17;
 $modal-height: 744px;
 $modal-width: 1162px;
 
-#portrait-folow {
+#portrait-flow {
   ::v-deep {
     .v-dialog__content {
       .pp-modal {
@@ -19,59 +17,6 @@ $modal-width: 1162px;
         .v-card__text {
           display: flex;
           padding: 0;
-
-          .preview-container {
-            width: 363px;
-            padding-bottom: $content-padding-bottom;
-            border-right: $line;
-          }
-
-          .v-tabs {
-            width: 261px;
-            max-width: 261px;
-            padding-top: 14px;
-            padding-bottom: $content-padding-bottom;
-
-            .v-slide-group__wrapper {
-              overflow: visible;
-              contain: none;
-
-              .v-tabs-bar__content {
-                justify-content: space-between;
-
-                .save-settings {
-                  display: flex;
-                  width: 100%;
-                  justify-content: center;
-
-                  .save {
-                    background-color: $color-white;
-                    border: 1px solid $color-stoodio-blue;
-                    border-radius: 6px;
-                    box-shadow: none;
-
-                    &:hover {
-                      background-color: $color-white;
-                    }
-
-                    &::before,
-                    &::after {
-                      display: none;
-                    }
-                  }
-                }
-              }
-            }
-          }
-
-          .v-tabs-items {
-            width: 100%;
-            max-width: calc(100% - 626px);
-            height: 100%;
-            padding: 14px;
-            padding-bottom: $content-padding-bottom;
-            border-left: $line;
-          }
         }
 
         .pp-modal-footer {
