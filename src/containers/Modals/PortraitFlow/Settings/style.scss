@@ -1,0 +1,39 @@
+.v-tabs {
+  width: 261px;
+  max-width: 261px;
+  padding-top: 14px;
+  padding-bottom: $portrait-flow-padding-bottom;
+
+  ::v-deep {
+    .v-slide-group__wrapper {
+      overflow: visible;
+      contain: none;
+
+      .v-tabs-bar__content {
+        justify-content: space-between;
+
+        .save-settings {
+          display: flex;
+          width: 100%;
+          justify-content: center;
+
+          .save {
+            background-color: $color-white;
+            border: 1px solid $color-stoodio-blue;
+            border-radius: 6px;
+            box-shadow: none;
+
+            &:hover {
+              background-color: $color-white;
+            }
+
+            &::before,
+            &::after {
+              display: none;
+            }
+          }
+        }
+      }
+    }
+  }
+}
