@@ -18,6 +18,12 @@
           justify-content: center;
 
           .save {
+            width: 201px;
+            text-transform: capitalize;
+            color: $color-stoodio-blue;
+            letter-spacing: 0.1px;
+            font-family: $font-500;
+            font-size: 15px;
             background-color: $color-white;
             border: 1px solid $color-stoodio-blue;
             border-radius: 6px;
