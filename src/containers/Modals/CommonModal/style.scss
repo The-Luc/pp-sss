@@ -1,0 +1,21 @@
+.v-dialog__content {
+  overflow: hidden;
+
+  .v-dialog.pp-modal {
+    border-radius: 4px;
+
+    .v-sheet.v-card {
+      height: 100%;
+      border-radius: 0;
+
+      .v-card__text {
+        height: calc(100% - 104px);
+        padding: 12px 0;
+
+        &.card-text-theme-modal {
+          padding: 0;
+        }
+      }
+    }
+  }
+}

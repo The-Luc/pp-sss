@@ -1,6 +1,6 @@
 <template lang="">
-  <div class="col-12 print-editor">
-    <div class="row print-editor-header">
+  <div class="col-12 editor">
+    <div class="row editor-header">
       <v-overlay :value="overlay" color="transparent"></v-overlay>
       <PpButton type="btn" class="btn-save" @click="onClickSave">
         SAVE & EXIT

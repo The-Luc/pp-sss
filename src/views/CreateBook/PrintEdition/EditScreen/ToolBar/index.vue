@@ -10,7 +10,7 @@
           :is-menu-open="isMenuOpen"
           :properties-type="propertiesType"
           :is-prompt="isPrompt"
-          @click="data => onClickLeftTool(data)"
+          @click="onClickLeftTool"
         />
       </div>
       <div class="tool-right">
