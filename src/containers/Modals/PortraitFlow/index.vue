@@ -1,9 +1,9 @@
 <template>
-  <div id="portrait-folow">
+  <div id="portrait-flow">
     <CommonModal
       title="Portrait Flow"
       accept-text="Apply Portraits to Pages"
-      container="#portrait-folow"
+      container="#portrait-flow"
       width="1162"
       :is-open-modal="isOpen"
       :is-disable-accept="false"
