@@ -5,6 +5,9 @@ export default {
     },
     acceptText: {
       type: String
+    },
+    isDisableAccept: {
+      type: Boolean
     }
   },
   methods: {

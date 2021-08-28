@@ -13,12 +13,12 @@
       border-radius: 6px;
       height: 32px;
       width: 212px;
-      border: 1px solid $color-gray29;
+      border: 1px solid $color-gray17;
       &:focus-visible {
         outline: none;
       }
       &::placeholder {
-        color: $color-gray29;
+        color: $color-gray17;
       }
     }
   }

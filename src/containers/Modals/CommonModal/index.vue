@@ -27,6 +27,7 @@
         v-if="isDefaulFooterDisplayed"
         :cancel-text="cancelText"
         :accept-text="acceptText"
+        :is-disable-accept="isDisableAccept"
         @cancel="onCancel"
         @accept="onAccept"
       />

@@ -53,6 +53,10 @@ export default {
     acceptText: {
       type: String,
       default: 'Ok'
+    },
+    isDisableAccept: {
+      type: Boolean,
+      default: true
     }
   },
   data() {

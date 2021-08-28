@@ -1,17 +1,28 @@
 import CommonModal from '../CommonModal';
+import TabHeader from './TabHeader';
 
 export default {
   components: {
-    CommonModal
+    CommonModal,
+    TabHeader
   },
   props: {
     isOpen: {
       type: Boolean,
       default: false
     },
+    selectedFolders: {
+      type: Array,
+      default: () => []
+    },
     container: {
       type: String
     }
+  },
+  data() {
+    return {
+      currentTab: null
+    };
   },
   methods: {
     /**
@@ -25,6 +36,12 @@ export default {
      */
     onAccept() {
       this.$emit('accept');
+    },
+    /**
+     * Emit accept event to parent
+     */
+    onSaveSettings() {
+      this.$emit('saveSetting');
     }
   }
 };
