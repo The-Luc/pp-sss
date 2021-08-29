@@ -3,6 +3,7 @@ import { OBJECT_TYPE } from '../constants';
 import { applyTextBoxProperties } from '../fabricObjects';
 
 // TODO: -Luc: Will be deleted later when integrate with An's code
+// START TEMPORARY CODE ==================
 const ANIMATION_DIR = {
   LEFT_RIGHT: 'leftToRight',
   RIGHT_LEFT: 'rightToLeft',
@@ -10,7 +11,7 @@ const ANIMATION_DIR = {
   BOTTOM_TOP: 'bottomToTop'
 };
 const DELAY_DURATION = 500;
-// ========================
+// END TEMPORARY CODE =====================
 
 /**
  * Handle fade animation
@@ -147,28 +148,17 @@ const fadeSlide = (element, options, canvas) => {
  * @param {Object} options animation option
  * @param {Object} canvas fabric canvas
  */
-const blur = (element, options, canvas) => {
+const blur = async (element, options, canvas) => {
   const { duration } = options;
   if (!duration) return;
 
   const blurValue = 1;
   const offsetBlur = 300; // pixel
 
-  const bounds = getObjectBounds(element);
+  const { img, cropTop, cropLeft } = await createImage(element, offsetBlur);
 
-  let img;
-
-  const cropTop = bounds.top - element.top - offsetBlur;
-  const cropLeft = bounds.left - element.left - offsetBlur;
-  const cropWidth = bounds.width + 2 * offsetBlur;
-  const cropHeight = bounds.height + 2 * offsetBlur;
-
-  element.cloneAsImage(image => (img = image), {
-    top: cropTop,
-    left: cropLeft,
-    width: cropWidth,
-    height: cropHeight
-  });
+  /*eslint no-debugger: 'off'*/
+  // debugger;
 
   const filter = new fabric.Image.filters.Blur({
     blur: blurValue
@@ -368,3 +358,27 @@ const getObjectBounds = obj => {
  */
 const getOriginalOpacity = element =>
   element.opacity ?? element?.getObjects()[0]?.opacity ?? 1;
+
+/**
+ * Create a image from fabric object
+ * @param {Object} element fabric element
+ * @param {Number} offsetBlur offsect to bouding box, this value ensure copping image capture blur effect
+ * @returns {Object} a cropping image and its top left position
+ */
+const createImage = (element, offsetBlur) => {
+  const bounds = getObjectBounds(element);
+
+  const cropTop = bounds.top - element.top - offsetBlur;
+  const cropLeft = bounds.left - element.left - offsetBlur;
+  const cropWidth = bounds.width + 2 * offsetBlur;
+  const cropHeight = bounds.height + 2 * offsetBlur;
+
+  return new Promise(resolve => {
+    element.cloneAsImage(img => resolve({ img, cropTop, cropLeft }), {
+      top: cropTop,
+      left: cropLeft,
+      width: cropWidth,
+      height: cropHeight
+    });
+  });
+};
