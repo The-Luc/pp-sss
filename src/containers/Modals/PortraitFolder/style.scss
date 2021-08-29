@@ -1,0 +1,58 @@
+// ::v-deep .portrait-folder.v-dialog {
+//   border-radius: 0;
+//   background-color: $color-white;
+//   height: 542px;
+//   position: relative;
+//   display: flex;
+//   flex-direction: column;
+//   .content-portrait-folder {
+
+//     flex: 1;
+//   }
+//   .modal-footer {
+//     position: absolute;
+//     width: 100%;
+//     align-items: center;
+//     height: 56px;
+//     bottom: 0;
+//     background-color: $color-gray41;
+//     border-top: 1px solid $color-gray14;
+//     .footer-btn.cancel {
+//       color: $color-white;
+//     }
+//   }
+// }
+
+#portrait-folder {
+  ::v-deep {
+    .v-dialog__content {
+      .pp-modal {
+        height: 542px;
+
+        .pp-modal-title {
+          margin-left: 29px;
+          margin-right: 29px;
+        }
+
+        .v-card__text {
+          display: flex;
+          padding: 0;
+
+          .preview {
+            width: 363px;
+          }
+
+          .settings {
+            width: 261px;
+            border-left: 1px solid $color-gray38;
+            border-right: 1px solid $color-gray38;
+          }
+
+          .setting-content {
+            width: calc(100% - 626px);
+          }
+        }
+      }
+    }
+  }
+}
