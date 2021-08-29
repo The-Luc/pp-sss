@@ -13,7 +13,6 @@
       <Preview :selected-folders="selectedFolders" />
 
       <Settings
-        :current-tab="currentTab"
         @settingTabChange="onSettingTabChange"
         @saveSetting="onSaveSettings"
       />
