@@ -1,4 +1,5 @@
 import CommonModal from '../CommonModal';
+import { usePortrait } from '@/hooks';
 
 export default {
   components: { CommonModal },
@@ -7,6 +8,19 @@ export default {
       type: Boolean,
       default: false
     }
+  },
+  setup() {
+    const { getPortraitFolders } = usePortrait();
+
+    return {
+      getPortraitFolders
+    };
+  },
+
+  data() {
+    return {
+      portraitFoldes: []
+    };
   },
   methods: {
     /**
@@ -19,7 +33,10 @@ export default {
      * Select portrait folders
      */
     onSelect() {
-      this.$emit('onSelectPortrait', [1, 2]);
+      this.$emit('select', [this.portraitFoldes[0]]);
     }
+  },
+  async created() {
+    this.portraitFoldes = await this.getPortraitFolders();
   }
 };

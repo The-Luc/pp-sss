@@ -61,11 +61,19 @@
     />
 
     <PortraiFlow
-      v-if="modalDisplay[toolNames.PORTRAIT]"
+      v-if="false"
       container="#editor"
-      :is-open="modalDisplay[toolNames.PORTRAIT]"
+      :is-open="false"
+      :selected-folders="selectedFolders"
       @cancel="onClosePortrait"
       @accept="onApplyPortrait"
+    />
+
+    <PortraitFolder
+      v-if="modalDisplay[toolNames.PORTRAIT]"
+      :is-open-modal="modalDisplay[toolNames.PORTRAIT]"
+      @cancel="onClosePortrait"
+      @select="onSelectPortraitFolders"
     />
   </div>
 </template>

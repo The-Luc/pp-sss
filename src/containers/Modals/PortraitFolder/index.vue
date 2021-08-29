@@ -1,20 +1,4 @@
 <template>
-  <!-- <v-dialog
-    id="portrait-folder"
-    v-model="isOpenModal"
-    content-class="portrait-folder"
-    persistent
-    max-width="796"
-  >
-    <Header title="Select Portait Folders" @onCloseModal="onCancel" />
-    <div class="content-portrait-folder">portrait folder</div>
-    <Footer
-      class="footer-portrait-folder"
-      @select="onSelect"
-      @cancel="onCancel"
-    />
-  </v-dialog> -->
-
   <div id="portrait-folder">
     <CommonModal
       title="Select Portait Folders"
@@ -22,6 +6,7 @@
       container="#portrait-folder"
       width="796"
       :is-open-modal="isOpenModal"
+      :is-disable-accept="false"
       @cancel="onCancel"
       @accept="onSelect"
     >

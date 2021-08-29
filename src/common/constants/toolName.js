@@ -180,7 +180,7 @@ export const CREATION_TOOLS = {
     title: 'Portraits',
     name: TOOL_NAME.PORTRAIT,
     isUseCustomAction: true,
-    isNotHighlight: true
+    isNotHighlight: false
   },
   GRID: {
     iconName: 'grid_on',

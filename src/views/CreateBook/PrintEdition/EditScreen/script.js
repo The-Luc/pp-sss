@@ -6,6 +6,7 @@ import Header from '@/containers/HeaderEdition/Header';
 import FeedbackBar from '@/containers/HeaderEdition/FeedbackBar';
 import MediaModal from '@/containers/Modals/Media';
 import PortraiFlow from '@/containers/Modals/PortraitFlow';
+import PortraitFolder from '@/containers/Modals/PortraitFolder';
 
 import ToolBar from './ToolBar';
 import SidebarSection from './SidebarSection';
@@ -65,7 +66,8 @@ export default {
     SheetMedia,
     MediaModal,
     CropControl,
-    PortraiFlow
+    PortraiFlow,
+    PortraitFolder
   },
   setup() {
     const { pageSelected, updateVisited } = useLayoutPrompt(EDITION.PRINT);
@@ -116,7 +118,8 @@ export default {
       modalDisplay: {
         [TOOL_NAME.PORTRAIT]: false
       },
-      toolNames: TOOL_NAME
+      toolNames: TOOL_NAME,
+      selectedFolders: []
     };
   },
   computed: {
@@ -449,12 +452,21 @@ export default {
      */
     onClosePortrait() {
       this.modalDisplay[TOOL_NAME.PORTRAIT] = false;
+      this.setToolNameSelected('');
     },
     /**
      * Apply portrait to page
      */
     onApplyPortrait() {
       console.log('onApplyPortrait');
+    },
+    /**
+     * Selected portrait folders
+     * @param {Array}  folders  portrait folders
+     */
+    onSelectPortraitFolders(folders) {
+      this.selectedFolders = folders;
+      console.log(this.selectedFolders);
     }
   }
 };
