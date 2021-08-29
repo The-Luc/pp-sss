@@ -1,5 +1,5 @@
 <template>
-  <v-tabs v-model="selectedTab" vertical hide-slider @change="onTabChange">
+  <v-tabs vertical hide-slider @change="onTabChange">
     <div class="settings">
       <TabHeader title="Portrait Settings" />
       <TabHeader title="Text Settings" />

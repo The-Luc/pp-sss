@@ -4,17 +4,6 @@ export default {
   components: {
     TabHeader
   },
-  props: {
-    currentTab: {
-      type: Number,
-      default: 0
-    }
-  },
-  data() {
-    return {
-      selectedTab: this.currentTab
-    };
-  },
   methods: {
     /**
      * Emit accept event to parent
