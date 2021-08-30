@@ -1,5 +1,7 @@
 import { useGetters, useMutations, useActions } from 'vuex-composition-helpers';
 import { useAppCommon } from './common';
+import digitalService from '@/api/digital';
+import printService from '@/api/print';
 
 import {
   GETTERS as PRINT_GETTERS,
@@ -47,12 +49,35 @@ const useMutationEditionSheet = (isDigital = false) => {
 export const useActionsEditionSheet = () => {
   const { value: isDigital } = useAppCommon().isDigitalEdition;
 
+  const MUTATES = isDigital ? DIGITAL_MUTATES : PRINT_MUTATES;
+  const GETTERS = isDigital ? DIGITAL_GETTERS : PRINT_GETTERS;
   const ACTIONS = isDigital ? DIGITAL_ACTIONS : PRINT_ACTIONS;
 
-  const { updateSheetMedia, deleteSheetMedia } = useActions({
-    updateSheetMedia: ACTIONS.UPDATE_SHEET_MEDIA,
-    deleteSheetMedia: ACTIONS.DELETE_SHEET_MEDIA
+  const { currentSheet } = useGetters({
+    currentSheet: GETTERS.CURRENT_SHEET
   });
+
+  const { setSheetMedia } = useMutations({
+    setSheetMedia: MUTATES.SET_SHEET_MEDIA
+  });
+
+  const { updateSheetMedia } = useActions({
+    updateSheetMedia: ACTIONS.UPDATE_SHEET_MEDIA
+  });
+
+  const deleteSheetMedia = async ({ id }) => {
+    if (!id) return;
+
+    isDigital
+      ? await digitalService.deleteSheetMediaById(currentSheet.value.id, id)
+      : await printService.deleteSheetMediaById(currentSheet.value.id, id);
+
+    const media = isDigital
+      ? await digitalService.getSheetMedia(currentSheet.value.id)
+      : await printService.getSheetMedia(currentSheet.value.id);
+
+    await setSheetMedia({ media });
+  };
 
   return {
     updateSheetMedia,

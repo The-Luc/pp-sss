@@ -215,6 +215,28 @@ const digitalService = {
     const sheets = cloneDeep(getSheetsFromStorage());
     const { media } = sheets[sheetId].digitalData;
     return media;
+  },
+  /**
+   * Delete media from sheet by id
+   * @param {String} sheetId sheet's id to delete media
+   * @param {String} mediaId media's id will be deleted
+   */
+  deleteSheetMediaById: async (sheetId, mediaId) => {
+    try {
+      if (!sheetId || !mediaId) throw false;
+      const sheets = cloneDeep(getSheetsFromStorage());
+      const { media } = sheets[sheetId].digitalData;
+      const newMedia = media.filter(item => item.id !== mediaId);
+      await digitalService.updateSheet(sheetId, { media: newMedia });
+      return Promise.resolve({
+        success: true
+      });
+    } catch (err) {
+      return Promise.reject({
+        success: false,
+        error: err
+      });
+    }
   }
 };
 
