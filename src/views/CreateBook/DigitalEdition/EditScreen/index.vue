@@ -28,18 +28,14 @@
           media-type="Media"
           :is-show-autoflow="isShowAutoflow"
           :disabled-autoflow="disabledAutoflow"
+          :is-media-sidebar-open="isMediaSidebarOpen"
+          :media="sheetMedia"
+          @remove="onRemovePhoto"
+          @drag="onDrag"
           @closePhotoSidebar="closeMediaSidebar"
           @autoflow="handleAutoflow"
           @click="openModalMedia"
-        >
-          <SheetMedia
-            v-if="isShowAutoflow"
-            :media="sheetMedia"
-            :is-media-sidebar-open="isMediaSidebarOpen"
-            @remove="onRemovePhoto"
-            @drag="onDrag"
-          />
-        </PhotoSidebar>
+        />
       </transition>
     </div>
 

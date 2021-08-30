@@ -1,5 +1,4 @@
 import PhotoSidebar from '@/components/Modals/PhotoSidebar';
-import SheetMedia from '@/components/Modals/PhotoSidebar/SheetMedia';
 import CropControl from '@/components/CropControl';
 
 import Header from '@/containers/HeaderEdition/Header';
@@ -65,7 +64,6 @@ export default {
     SidebarSection,
     PhotoSidebar,
     MediaModal,
-    SheetMedia,
     CropControl
   },
   setup() {
@@ -79,7 +77,7 @@ export default {
     const { updateSavingStatus } = useSavingStatus();
     const { getBookDigitalInfo } = useBookDigitalInfo();
     const { setInfoBar } = useInfoBar();
-    const { updateSheetMedia } = useActionsEditionSheet();
+    const { updateSheetMedia, deleteSheetMedia } = useActionsEditionSheet();
     const { sheetMedia } = useSheet();
     const { setPropertyById, setPropOfMultipleObjects } = useProperties();
     const { listObjects } = useObjectProperties();
@@ -100,6 +98,7 @@ export default {
       getBookDigitalInfo,
       setInfoBar,
       updateSheetMedia,
+      deleteSheetMedia,
       sheetMedia,
       setPropertyById,
       setPropOfMultipleObjects,
@@ -347,8 +346,8 @@ export default {
      * Handle remove photo from sheet
      * @param {Object} photo photo will be removed
      */
-    onRemovePhoto(photo) {
-      console.log('remove photo', photo);
+    onRemovePhoto(media) {
+      this.deleteSheetMedia({ id: media.id });
     },
 
     /**

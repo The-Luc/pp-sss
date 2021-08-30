@@ -4,6 +4,7 @@
   font-family: $font-500;
   border-bottom: 1px solid $color-gray28;
   padding-top: 26px !important;
+  text-transform: capitalize;
 
   .top-bg {
     display: inline-block;
@@ -41,6 +42,10 @@
 
   .pp-btn {
     margin-top: unset;
+  }
+
+  .remove-btn {
+    text-transform: capitalize;
   }
 
   .cancel-btn {

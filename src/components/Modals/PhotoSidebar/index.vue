@@ -8,8 +8,35 @@
       @addPhoto="openModalAddPhoto"
       @autoflow="autoflowPhotos"
     >
-      <slot />
+      <div
+        v-show="isShowAutoflow"
+        ref="mediaContainer"
+        class="sheet-media-container"
+      >
+        <Draggable :sort="false" @choose="onChoose" @unchoose="onUnchoose">
+          <div v-for="(item, i) in media" :key="i" class="media-item">
+            <v-icon class="media-icon" @click="onShowRemoveModal(item)">
+              delete_forever
+            </v-icon>
+            <v-icon v-if="isVideo(item.type)" class="type-icon">
+              videocam
+            </v-icon>
+            <v-icon v-if="isComposition(item.type)" class="type-icon">
+              collections_bookmark
+            </v-icon>
+            <img :src="item.thumbUrl" alt="" />
+            <div v-show="item.inProject" class="indicator">In Project</div>
+          </div>
+        </Draggable>
+      </div>
     </PhotoContent>
+
+    <ModalRemovePhoto
+      :type="mediaType"
+      :open="showRemoveModal"
+      @remove="onRemove"
+      @cancel="onCancel"
+    />
   </div>
 </template>
 

@@ -1,5 +1,4 @@
 import PhotoSidebar from '@/components/Modals/PhotoSidebar';
-import SheetMedia from '@/components/Modals/PhotoSidebar/SheetMedia';
 import CropControl from '@/components/CropControl';
 
 import Header from '@/containers/HeaderEdition/Header';
@@ -62,7 +61,6 @@ export default {
     PageEdition,
     SidebarSection,
     PhotoSidebar,
-    SheetMedia,
     MediaModal,
     CropControl,
     PortraiFlow
