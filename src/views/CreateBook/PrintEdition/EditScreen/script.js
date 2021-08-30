@@ -466,7 +466,6 @@ export default {
      */
     onSelectPortraitFolders(folders) {
       this.selectedFolders = folders;
-      console.log(this.selectedFolders);
     }
   }
 };
