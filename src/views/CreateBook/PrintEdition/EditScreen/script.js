@@ -116,7 +116,8 @@ export default {
       isOpenCropControl: false,
       selectedImage: null,
       modalDisplay: {
-        [TOOL_NAME.PORTRAIT]: false
+        [TOOL_NAME.PORTRAIT]: false,
+        portaitFlow: false
       },
       toolNames: TOOL_NAME,
       selectedFolders: []
@@ -452,6 +453,7 @@ export default {
      */
     onClosePortrait() {
       this.modalDisplay[TOOL_NAME.PORTRAIT] = false;
+      this.modalDisplay.portaitFlow = false;
       this.setToolNameSelected('');
     },
     /**
@@ -466,6 +468,8 @@ export default {
      */
     onSelectPortraitFolders(folders) {
       this.selectedFolders = folders;
+      this.modalDisplay[TOOL_NAME.PORTRAIT] = false;
+      this.modalDisplay.portaitFlow = true;
     }
   }
 };
