@@ -106,7 +106,7 @@ const photos = Array.from({ length: 20 }, () => {
   return photo;
 });
 
-function getRandomInt(max) {
+export function getRandomInt(max) {
   return Math.floor(Math.random() * max);
 }
 

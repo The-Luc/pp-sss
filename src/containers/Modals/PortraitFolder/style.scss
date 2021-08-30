@@ -1,0 +1,30 @@
+#portrait-folder {
+  ::v-deep {
+    .v-dialog__content {
+      .pp-modal {
+        height: 542px;
+        .v-card {
+          display: flex;
+          flex-direction: column;
+
+          .pp-modal-title {
+            margin-left: 29px;
+            margin-right: 29px;
+          }
+
+          .v-card__text {
+            flex: 1;
+          }
+
+          .pp-modal-footer {
+            position: absolute;
+            width: 100%;
+            bottom: 0;
+            background-color: $color-gray39;
+            border-top: 1px solid $color-gray14;
+          }
+        }
+      }
+    }
+  }
+}

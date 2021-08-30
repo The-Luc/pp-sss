@@ -45,3 +45,4 @@ export * from './mediaTypes';
 export * from './uploadingProcessStatus';
 export * from './media';
 export * from './video';
+export * from './classRole';
