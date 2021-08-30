@@ -5,9 +5,10 @@ import {
   OBJECT_TYPE,
   PRINT_RIGHT_TOOLS,
   EDITION,
-  PRINT_CREATION_TOOLS
+  PRINT_CREATION_TOOLS,
+  SHEET_TYPE
 } from '@/common/constants';
-import { useLayoutPrompt, useToolBar } from '@/hooks';
+import { useLayoutPrompt, useToolBar, useSheet } from '@/hooks';
 import {
   isEmpty,
   getRightToolItems,
@@ -32,9 +33,10 @@ export default {
       setToolNameSelected,
       togglePropertiesMenu,
       updateMediaSidebarOpen,
-      isMediaSidebarOpen
+      isMediaSidebarOpen,
+      disabledToolbarItems
     } = useToolBar();
-
+    const { currentSheet } = useSheet();
     return {
       isPrompt,
       themeId,
@@ -45,7 +47,9 @@ export default {
       setToolNameSelected,
       togglePropertiesMenu,
       updateMediaSidebarOpen,
-      isMediaSidebarOpen
+      isMediaSidebarOpen,
+      disabledToolbarItems,
+      currentSheet
     };
   },
   data() {
@@ -53,6 +57,14 @@ export default {
       itemsToolLeft: PRINT_CREATION_TOOLS,
       itemsToolRight: [getRightToolItems(PRINT_RIGHT_TOOLS)]
     };
+  },
+  computed: {
+    disabledItems() {
+      if (this.currentSheet.type !== SHEET_TYPE.COVER) {
+        return this.disabledToolbarItems;
+      }
+      return [...this.disabledToolbarItems, TOOL_NAME.PORTRAIT];
+    }
   },
   methods: {
     /**
