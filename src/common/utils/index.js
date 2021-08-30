@@ -22,4 +22,5 @@ export * from './route';
 export * from './layout';
 export * from './device';
 export * from './keyword';
+export * from './animation';
 export * from './event';
