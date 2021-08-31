@@ -23,7 +23,7 @@
           :is-menu-open="isMenuOpen"
           :properties-type="propertiesType"
           :is-prompt="isPrompt"
-          :disabled-toolbar-items="disabledToolbarItems"
+          :disabled-toolbar-items="disabledItems"
           @click="onClickRightTool"
         />
       </div>
