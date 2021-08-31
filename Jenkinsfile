@@ -20,6 +20,7 @@ pipeline {
             when {
                 allOf {
                     anyOf {
+                        expression { params.NodeInstall == true }
                         changeset "package-lock.json"
                         changeset "package.json"
                     }
