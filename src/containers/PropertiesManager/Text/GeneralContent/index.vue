@@ -8,6 +8,7 @@
       <Vertical />
     </div>
     <Spacing />
+    <Animation v-if="isDigitalEdition" title="Text animation" />
   </div>
 </template>
 

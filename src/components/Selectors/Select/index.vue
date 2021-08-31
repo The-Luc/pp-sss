@@ -21,6 +21,7 @@
         <v-list-item-content>
           <v-list-item-title>
             <v-row no-gutters align="center">
+              <v-icon v-if="item.icon">{{ item.icon }}</v-icon>
               <template v-if="isImgOpts">
                 <img :src="item.previewImageUrl" style="max-width: 70px" />
               </template>
@@ -50,6 +51,7 @@
         <v-list-item-content>
           <v-list-item-title>
             <v-row no-gutters align="center">
+              <v-icon v-if="item.icon">{{ item.icon }}</v-icon>
               <template v-if="isImgOpts">
                 <img :src="item.previewImageUrl" style="max-width: 70px" />
               </template>
@@ -72,3 +74,5 @@
 </template>
 
 <script src="./script.js" />
+
+<style lang="scss" src="./style.scss" scoped />

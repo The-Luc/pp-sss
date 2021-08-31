@@ -1,0 +1,58 @@
+.control-container {
+  .properties-title {
+    line-height: 1;
+    color: $color-gray13;
+
+    &::after {
+      content: "\003A";
+    }
+  }
+
+  .control-style {
+    display: flex;
+    align-items: center;
+
+    >div {
+      margin-right: 10px;
+    }
+
+    .v-btn {
+      border-color: $color-gray15;
+      border-radius: 3px;
+      height: 25px;
+      text-transform: capitalize;
+      font-size: 11px;
+      font-family: $font-500;
+      color: $color-stoodio-toolbartext;
+      background-color: $color-white;
+      letter-spacing: 0;
+
+      .v-btn__content .v-icon {
+        margin-left: 0;
+      }
+    }
+  }
+
+  .control-options {
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+
+    .v-input {
+      background-color: $color-white;
+    }
+
+    .control-item {
+      min-width: 56px;
+      margin-right: 10px;
+
+      .v-input {
+        height: 25px;
+      }
+
+      .pp-select {
+        max-width: 135px;
+      }
+    }
+  }
+}

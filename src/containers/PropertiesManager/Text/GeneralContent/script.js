@@ -4,6 +4,8 @@ import Effect from './Effect';
 import Alignment from './Alignment';
 import Vertical from './Vertical';
 import Spacing from './Spacing';
+import Animation from '@/components/Animation';
+import { useAppCommon } from '@/hooks';
 
 export default {
   components: {
@@ -12,6 +14,14 @@ export default {
     Effect,
     Alignment,
     Vertical,
-    Spacing
+    Spacing,
+    Animation
+  },
+  setup() {
+    const { isDigitalEdition } = useAppCommon();
+
+    return {
+      isDigitalEdition
+    };
   }
 };
