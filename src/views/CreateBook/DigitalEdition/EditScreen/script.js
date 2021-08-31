@@ -1,14 +1,15 @@
-import { mapGetters, mapMutations, mapActions } from 'vuex';
+import PhotoSidebar from '@/components/Modals/PhotoSidebar';
+import CropControl from '@/components/CropControl';
 
-import ToolBar from './ToolBar';
 import Header from '@/containers/HeaderEdition/Header';
 import FeedbackBar from '@/containers/HeaderEdition/FeedbackBar';
+import MediaModal from '@/containers/Modals/Media';
+
+import ToolBar from './ToolBar';
 import ScreenEdition from './ScreenEdition';
 import SidebarSection from './SidebarSection';
-import PhotoSidebar from '@/components/PhotoSidebar';
-import MediaModal from '@/containers/Modal/Media';
-import SheetMedia from '@/components/SheetMedia';
-import CropControl from '@/components/CropControl';
+
+import { mapGetters, mapMutations, mapActions } from 'vuex';
 
 import { GETTERS, MUTATES } from '@/store/modules/app/const';
 import {
@@ -55,6 +56,16 @@ import {
 } from '@/common/fabricObjects';
 
 export default {
+  components: {
+    ToolBar,
+    Header,
+    FeedbackBar,
+    ScreenEdition,
+    SidebarSection,
+    PhotoSidebar,
+    MediaModal,
+    CropControl
+  },
   setup() {
     const { pageSelected, updateVisited } = useLayoutPrompt(EDITION.DIGITAL);
     const { setToolNameSelected } = usePopoverCreationTool();
@@ -66,7 +77,7 @@ export default {
     const { updateSavingStatus } = useSavingStatus();
     const { getBookDigitalInfo } = useBookDigitalInfo();
     const { setInfoBar } = useInfoBar();
-    const { updateSheetMedia } = useActionsEditionSheet();
+    const { updateSheetMedia, deleteSheetMedia } = useActionsEditionSheet();
     const { sheetMedia } = useSheet();
     const { setPropertyById, setPropOfMultipleObjects } = useProperties();
     const { listObjects } = useObjectProperties();
@@ -87,6 +98,7 @@ export default {
       getBookDigitalInfo,
       setInfoBar,
       updateSheetMedia,
+      deleteSheetMedia,
       sheetMedia,
       setPropertyById,
       setPropOfMultipleObjects,
@@ -102,17 +114,6 @@ export default {
       dragItem: null,
       selectedImage: null
     };
-  },
-  components: {
-    ToolBar,
-    Header,
-    FeedbackBar,
-    ScreenEdition,
-    SidebarSection,
-    PhotoSidebar,
-    MediaModal,
-    SheetMedia,
-    CropControl
   },
   computed: {
     ...mapGetters({
@@ -345,8 +346,8 @@ export default {
      * Handle remove photo from sheet
      * @param {Object} photo photo will be removed
      */
-    onRemovePhoto(photo) {
-      console.log('remove photo', photo);
+    onRemovePhoto(media) {
+      this.deleteSheetMedia({ id: media.id });
     },
 
     /**

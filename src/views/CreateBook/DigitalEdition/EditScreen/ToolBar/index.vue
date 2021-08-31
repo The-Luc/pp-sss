@@ -1,6 +1,6 @@
 <template lang="">
-  <div class="col-12 print-editor">
-    <div class="row print-editor-tool">
+  <div class="col-12 digital-editor">
+    <div class="row digital-editor-tool">
       <div class="tool-left">
         <ItemTool
           v-for="(item, index) in itemsToolLeft"

@@ -1,4 +1,4 @@
-import Modal from '@/containers/Modal';
+import Modal from '@/containers/Modals/Modal';
 import PpButton from '@/components/Buttons/Button';
 import { useFrame, useFrameDelete, useModal } from '@/hooks';
 

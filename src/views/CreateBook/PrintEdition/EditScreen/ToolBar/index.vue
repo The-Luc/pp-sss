@@ -10,7 +10,8 @@
           :is-menu-open="isMenuOpen"
           :properties-type="propertiesType"
           :is-prompt="isPrompt"
-          @click="data => onClickLeftTool(data)"
+          :disabled-toolbar-items="disabledItems"
+          @click="onClickLeftTool"
         />
       </div>
       <div class="tool-right">
@@ -22,6 +23,7 @@
           :is-menu-open="isMenuOpen"
           :properties-type="propertiesType"
           :is-prompt="isPrompt"
+          :disabled-toolbar-items="disabledItems"
           @click="onClickRightTool"
         />
       </div>

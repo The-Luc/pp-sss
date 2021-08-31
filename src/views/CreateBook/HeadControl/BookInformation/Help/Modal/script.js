@@ -1,4 +1,4 @@
-import Modal from '@/containers/Modal';
+import Modal from '@/containers/Modals/Modal';
 import Item from './Item';
 
 export default {

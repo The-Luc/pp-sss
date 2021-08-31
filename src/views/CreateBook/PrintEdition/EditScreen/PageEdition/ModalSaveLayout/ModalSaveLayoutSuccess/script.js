@@ -1,4 +1,4 @@
-import Modal from '@/containers/Modal';
+import Modal from '@/containers/Modals/Modal';
 import { useModal } from '@/hooks';
 
 export default {

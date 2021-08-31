@@ -4,17 +4,18 @@ import {
   TOOL_NAME,
   OBJECT_TYPE,
   PRINT_RIGHT_TOOLS,
-  EDITION
+  EDITION,
+  PRINT_CREATION_TOOLS,
+  SHEET_TYPE
 } from '@/common/constants';
-import { useLayoutPrompt, useToolBar } from '@/hooks';
+import { useLayoutPrompt, useToolBar, useSheet } from '@/hooks';
 import {
   isEmpty,
   getRightToolItems,
   isInstructionTool,
   isElementTool,
   isTogglePropertiesMenu,
-  getNonElementToolType,
-  isOneClickTool
+  getNonElementToolType
 } from '@/common/utils';
 
 export default {
@@ -32,9 +33,10 @@ export default {
       setToolNameSelected,
       togglePropertiesMenu,
       updateMediaSidebarOpen,
-      isMediaSidebarOpen
+      isMediaSidebarOpen,
+      disabledToolbarItems
     } = useToolBar();
-
+    const { currentSheet } = useSheet();
     return {
       isPrompt,
       themeId,
@@ -45,98 +47,23 @@ export default {
       setToolNameSelected,
       togglePropertiesMenu,
       updateMediaSidebarOpen,
-      isMediaSidebarOpen
+      isMediaSidebarOpen,
+      disabledToolbarItems,
+      currentSheet
     };
   },
   data() {
     return {
-      itemsToolLeft: [
-        [
-          {
-            iconName: 'photo_filter',
-            title: 'Themes',
-            name: TOOL_NAME.PRINT_THEMES
-          },
-          {
-            iconName: 'import_contacts',
-            title: 'Layouts',
-            name: TOOL_NAME.PRINT_LAYOUTS
-          },
-          {
-            iconName: 'texture',
-            title: 'Backgrounds',
-            name: TOOL_NAME.PRINT_BACKGROUNDS
-          },
-          {
-            iconName: 'local_florist',
-            title: 'Clip Art',
-            name: TOOL_NAME.CLIP_ART
-          }
-        ],
-        [
-          {
-            iconName: 'star',
-            title: 'Shapes',
-            name: TOOL_NAME.SHAPES
-          },
-          {
-            iconName: 'text_format',
-            title: 'Text',
-            name: TOOL_NAME.TEXT
-          },
-          {
-            iconName: 'photo_size_select_large',
-            title: 'Image Box',
-            name: TOOL_NAME.IMAGE_BOX
-          },
-          {
-            iconName: 'collections',
-            title: 'Photos',
-            name: TOOL_NAME.PHOTOS
-          },
-          {
-            iconName: 'portrait',
-            title: 'Portraits',
-            name: 'Portraits'
-          }
-        ],
-        [
-          {
-            iconName: 'grid_on',
-            title: 'Grid',
-            name: 'Grid'
-          },
-          {
-            iconName: 'undo',
-            title: 'Undo',
-            name: TOOL_NAME.UNDO
-          },
-          {
-            iconName: 'redo',
-            title: 'Redo',
-            name: TOOL_NAME.REDO
-          },
-          {
-            iconName: 'delete',
-            title: 'Delete',
-            name: TOOL_NAME.DELETE
-          }
-        ],
-        [
-          {
-            iconName: 'smart_button',
-            title: 'Actions',
-            name: TOOL_NAME.ACTIONS
-          },
-          {
-            iconName: 'note_add',
-            title: 'Page Notes',
-            name: 'PageNotes'
-          }
-        ]
-      ],
+      itemsToolLeft: PRINT_CREATION_TOOLS,
       itemsToolRight: [getRightToolItems(PRINT_RIGHT_TOOLS)]
     };
+  },
+  computed: {
+    disabledItems() {
+      return this.currentSheet.type !== SHEET_TYPE.COVER
+        ? this.disabledToolbarItems
+        : [...this.disabledToolbarItems, TOOL_NAME.PORTRAIT];
+    }
   },
   methods: {
     /**
@@ -172,16 +99,16 @@ export default {
      * Detect click on item on left creattion tool
      * @param  {Object} item Receive item information
      */
-    onClickLeftTool(data) {
+    onClickLeftTool(item) {
       if (!this.themeId || this.isPrompt) return;
 
-      const name = data?.name;
+      const name = item?.name;
 
       const toolName = this.selectedToolName === name ? '' : name;
 
-      if (!isOneClickTool(name)) this.$emit('switchTool', toolName);
+      if (!item?.isNotDiscard) this.$emit('switchTool', toolName);
 
-      if (isInstructionTool(name)) {
+      if (item?.isInstruction) {
         const objectType =
           name === TOOL_NAME.IMAGE_BOX ? OBJECT_TYPE.IMAGE : OBJECT_TYPE.TEXT;
 
@@ -192,15 +119,13 @@ export default {
         return;
       }
 
-      if (!isOneClickTool(name)) {
-        this.setToolNameSelected({ name: toolName });
+      const highlightName = item?.isNotHighlight ? '' : toolName;
 
-        return;
-      }
+      this.setToolNameSelected({ name: highlightName });
 
-      this.setToolNameSelected({ name: '' });
+      if (item?.isNotDiscard) this.$emit('endInstruction');
 
-      this.$emit('endInstruction');
+      if (!item?.isUseCustomAction) return;
 
       if (name === TOOL_NAME.DELETE) this.$root.$emit('printDeleteElements');
 
@@ -210,6 +135,10 @@ export default {
 
       if (name === TOOL_NAME.PHOTOS) {
         this.updateMediaSidebarOpen({ isOpen: !this.isMediaSidebarOpen });
+      }
+
+      if (name === TOOL_NAME.PORTRAIT) {
+        this.$emit('toggleModal', { name, isToggle: false });
       }
     }
   }

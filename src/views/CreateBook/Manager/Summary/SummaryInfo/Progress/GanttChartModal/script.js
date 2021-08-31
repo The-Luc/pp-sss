@@ -1,11 +1,11 @@
-import { mapGetters, mapMutations } from 'vuex';
+import Modal from '@/containers/Modals/Modal';
 
 import Timeline from './Timeline';
 import Content from './Content';
 
-import { GETTERS, MUTATES } from '@/store/modules/app/const';
+import { mapGetters, mapMutations } from 'vuex';
 
-import Modal from '@/containers/Modal';
+import { GETTERS, MUTATES } from '@/store/modules/app/const';
 
 export default {
   components: {

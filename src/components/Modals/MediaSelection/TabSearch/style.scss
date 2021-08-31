@@ -1,0 +1,32 @@
+.search-container {
+  height: 100%;
+  padding: 10px 24px;
+  .header {
+    display: flex;
+    justify-content: center;
+    margin: 8px 0 20px 0;
+    input {
+      padding: 0 10px;
+      font-family: $font-500;
+      font-size: $sm-size;
+      color: $color-stoodio-toolbartext;
+      border-radius: 6px;
+      height: 32px;
+      width: 212px;
+      border: 1px solid $color-gray17;
+      &:focus-visible {
+        outline: none;
+      }
+      &::placeholder {
+        color: $color-gray17;
+      }
+    }
+  }
+  .content {
+    height: calc(100% - 60px);
+    overflow: auto;
+    ::v-deep .album-name {
+      font-family: $font-500;
+    }
+  }
+}

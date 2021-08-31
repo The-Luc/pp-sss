@@ -1,5 +1,5 @@
 <template>
-  <div class="row print-main">
+  <div class="row digital-main">
     <Header
       name-editor="digital editor"
       @onClickSave="onClickSaveDigitalCanvas"
@@ -19,27 +19,25 @@
       @zoom="onZoom"
     />
 
-    <SidebarSection />
+    <div class="left-panel">
+      <SidebarSection />
 
-    <transition name="slide-x-transition">
-      <PhotoSidebar
-        v-show="isMediaSidebarOpen"
-        media-type="Media"
-        :is-show-autoflow="isShowAutoflow"
-        :disabled-autoflow="disabledAutoflow"
-        @closePhotoSidebar="closeMediaSidebar"
-        @autoflow="handleAutoflow"
-        @click="openModalMedia"
-      >
-        <SheetMedia
-          v-if="isShowAutoflow"
-          :media="sheetMedia"
+      <transition name="slide-x-transition">
+        <PhotoSidebar
+          v-show="isMediaSidebarOpen"
+          media-type="Media"
+          :is-show-autoflow="isShowAutoflow"
+          :disabled-autoflow="disabledAutoflow"
           :is-media-sidebar-open="isMediaSidebarOpen"
+          :media="sheetMedia"
           @remove="onRemovePhoto"
           @drag="onDrag"
+          @closePhotoSidebar="closeMediaSidebar"
+          @autoflow="handleAutoflow"
+          @click="openModalMedia"
         />
-      </PhotoSidebar>
-    </transition>
+      </transition>
+    </div>
 
     <ScreenEdition
       ref="canvasEditor"

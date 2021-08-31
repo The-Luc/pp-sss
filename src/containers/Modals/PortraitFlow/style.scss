@@ -1,0 +1,32 @@
+$modal-height: 744px;
+$modal-width: 1162px;
+
+#portrait-flow {
+  ::v-deep {
+    .v-dialog__content {
+      .pp-modal {
+        min-width: $modal-width;
+        height: $modal-height;
+        min-height: $modal-height;
+
+        .pp-modal-title {
+          margin-left: 29px;
+          margin-right: 29px;
+        }
+
+        .v-card__text {
+          display: flex;
+          padding: 0;
+        }
+
+        .pp-modal-footer {
+          justify-content: space-between;
+
+          .accept {
+            width: 239px;
+          }
+        }
+      }
+    }
+  }
+}

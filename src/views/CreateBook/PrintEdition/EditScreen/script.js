@@ -1,3 +1,16 @@
+import PhotoSidebar from '@/components/Modals/PhotoSidebar';
+import CropControl from '@/components/CropControl';
+
+import Header from '@/containers/HeaderEdition/Header';
+import FeedbackBar from '@/containers/HeaderEdition/FeedbackBar';
+import MediaModal from '@/containers/Modals/Media';
+import PortraiFlow from '@/containers/Modals/PortraitFlow';
+import PortraitFolder from '@/containers/Modals/PortraitFolder';
+
+import ToolBar from './ToolBar';
+import SidebarSection from './SidebarSection';
+import PageEdition from './PageEdition';
+
 import { mapMutations, mapGetters, mapActions } from 'vuex';
 
 import { MUTATES, GETTERS as APP_GETTERS } from '@/store/modules/app/const';
@@ -15,15 +28,6 @@ import {
   SAVING_DURATION,
   TOOL_NAME
 } from '@/common/constants';
-import ToolBar from './ToolBar';
-import Header from '@/containers/HeaderEdition/Header';
-import FeedbackBar from '@/containers/HeaderEdition/FeedbackBar';
-import SidebarSection from './SidebarSection';
-import PageEdition from './PageEdition';
-import PhotoSidebar from '@/components/PhotoSidebar';
-import SheetMedia from '@/components/SheetMedia';
-import MediaModal from '@/containers/Modal/Media';
-import CropControl from '@/components/CropControl';
 import {
   useLayoutPrompt,
   usePopoverCreationTool,
@@ -58,9 +62,10 @@ export default {
     PageEdition,
     SidebarSection,
     PhotoSidebar,
-    SheetMedia,
     MediaModal,
-    CropControl
+    CropControl,
+    PortraiFlow,
+    PortraitFolder
   },
   setup() {
     const { pageSelected, updateVisited } = useLayoutPrompt(EDITION.PRINT);
@@ -107,7 +112,13 @@ export default {
       dragItem: null,
       isOpenMediaModal: false,
       isOpenCropControl: false,
-      selectedImage: null
+      selectedImage: null,
+      modalDisplay: {
+        [TOOL_NAME.PORTRAIT]: false,
+        portaitFlow: false
+      },
+      toolNames: TOOL_NAME,
+      selectedFolders: []
     };
   },
   computed: {
@@ -423,6 +434,40 @@ export default {
       const activeObject = canvas.getActiveObject();
       this.selectedImage = activeObject;
       this.isOpenCropControl = true;
+    },
+    onToggleModal({ name, isToggle }) {
+      if (isEmpty(name)) {
+        Object.values(this.modalDisplay).forEach(m => {
+          this.modalDisplay[m] = false;
+        });
+
+        return;
+      }
+
+      this.modalDisplay[name] = isToggle ? !this.modalDisplay[name] : true;
+    },
+    /**
+     * Close portrait modal
+     */
+    onClosePortrait() {
+      this.modalDisplay[TOOL_NAME.PORTRAIT] = false;
+      this.modalDisplay.portaitFlow = false;
+      this.setToolNameSelected('');
+    },
+    /**
+     * Apply portrait to page
+     */
+    onApplyPortrait() {
+      console.log('onApplyPortrait');
+    },
+    /**
+     * Selected portrait folders
+     * @param {Array}  folders  portrait folders
+     */
+    onSelectPortraitFolders(folders) {
+      this.selectedFolders = folders;
+      this.modalDisplay[TOOL_NAME.PORTRAIT] = false;
+      this.modalDisplay.portaitFlow = true;
     }
   }
 };

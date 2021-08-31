@@ -1,5 +1,5 @@
 <template>
-  <div class="row print-main">
+  <div id="editor" class="row print-main">
     <Header name-editor="print editor" @onClickSave="onClickSavePrintCanvas" />
 
     <ToolBar
@@ -7,6 +7,7 @@
       @redo="onRedo"
       @switchTool="onToolSwitch"
       @endInstruction="onInstructionEnd"
+      @toggleModal="onToggleModal"
     />
 
     <FeedbackBar
@@ -14,27 +15,26 @@
       :selected-tool-name="selectedToolName"
       @zoom="onZoom"
     />
-    <SidebarSection />
 
-    <transition name="slide-x-transition">
-      <PhotoSidebar
-        v-show="isMediaSidebarOpen"
-        media-type="Photos"
-        :is-show-autoflow="isShowAutoflow"
-        :disabled-autoflow="disabledAutoflow"
-        @closePhotoSidebar="closePhotoSidebar"
-        @autoflow="handleAutoflow"
-        @click="openModalPhotos"
-      >
-        <SheetMedia
-          v-if="isShowAutoflow"
-          :media="sheetMedia"
+    <div class="left-panel">
+      <SidebarSection />
+
+      <transition name="slide-x-transition">
+        <PhotoSidebar
+          v-show="isMediaSidebarOpen"
+          media-type="Photos"
+          :is-show-autoflow="isShowAutoflow"
+          :disabled-autoflow="disabledAutoflow"
           :is-media-sidebar-open="isMediaSidebarOpen"
+          :media="sheetMedia"
+          @autoflow="handleAutoflow"
+          @closePhotoSidebar="closePhotoSidebar"
+          @click="openModalPhotos"
           @remove="onRemovePhoto"
           @drag="onDrag"
         />
-      </PhotoSidebar>
-    </transition>
+      </transition>
+    </div>
 
     <PageEdition
       ref="canvasEditor"
@@ -54,6 +54,22 @@
       :selected-image="selectedImage"
       @crop="onCrop"
       @cancel="onCancel"
+    />
+
+    <PortraiFlow
+      v-if="modalDisplay.portaitFlow"
+      container="#editor"
+      :is-open="modalDisplay.portaitFlow"
+      :selected-folders="selectedFolders"
+      @cancel="onClosePortrait"
+      @accept="onApplyPortrait"
+    />
+
+    <PortraitFolder
+      v-if="modalDisplay[toolNames.PORTRAIT]"
+      :is-open-modal="modalDisplay[toolNames.PORTRAIT]"
+      @cancel="onClosePortrait"
+      @select="onSelectPortraitFolders"
     />
   </div>
 </template>

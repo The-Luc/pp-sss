@@ -7,3 +7,5 @@ export * from './canvasSize';
 export * from './dataResult';
 export * from './background';
 export * from './user';
+export * from './portraitFlowData';
+export * from './portraitFolder';

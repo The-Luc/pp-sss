@@ -1,0 +1,39 @@
+.pp-modal-title {
+  padding: 12px !important; // override lib
+  justify-content: center;
+  border-bottom: 1px solid $color-gray17;
+
+  .top-bg {
+    display: inline-block;
+    position: absolute;
+    height: 9px;
+    width: 100%;
+    top: 0;
+    background-color: $color-stoodio-blue;
+  }
+
+  .text-title {
+    color: $color-stoodio-blue;
+    line-height: 22px;
+    font-size: 18px;
+    font-family: $font-500;
+  }
+
+  .icon-close {
+    position: absolute;
+    top: 9px;
+    right: 17px;
+    color: $color-gray38;
+    font-size: $lg-size;
+    cursor: pointer;
+
+    &::after {
+      display: none;
+    }
+  }
+}
+
+.pp-modal-title-theme {
+  padding: 8px 0 !important;
+  margin: 0 26px !important;
+}

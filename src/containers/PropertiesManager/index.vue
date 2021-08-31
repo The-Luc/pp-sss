@@ -1,5 +1,9 @@
 <template>
-  <div ref="propertiesContainer" class="properties-container">
+  <div
+    ref="propertiesContainer"
+    class="properties-container"
+    :class="{ digital: isDigital }"
+  >
     <component :is="renderObject" :is-digital="isDigital" />
   </div>
 </template>
