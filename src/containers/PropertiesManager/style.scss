@@ -5,6 +5,29 @@
   z-index: 100;
   box-shadow: 0 3px 1px -2px rgb(0 0 0 / 20%), 0 2px 2px 0 rgb(0 0 0 / 14%),
     0 1px 5px 0 rgb(0 0 0 / 12%);
+
+  .box-property-container {
+    .v-window__container {
+      max-height: 73vh;
+      overflow-y: auto;
+
+      @media screen and (min-width: 1500px) {
+        max-height: 85vh;
+      }
+    }
+  }
+  &.digital {
+    .box-property-container {
+      .v-window__container {
+        max-height: 53vh;
+        overflow-y: auto;
+
+        @media screen and (min-width: 1500px) {
+          max-height: 65vh;
+        }
+      }
+    }
+  }
 }
 
 .slide-fade-enter-active {

@@ -155,10 +155,7 @@ const blur = async (element, options, canvas) => {
   const blurValue = 1;
   const offsetBlur = 300; // pixel
 
-  const { img, cropTop, cropLeft } = await createImage(element, offsetBlur);
-
-  /*eslint no-debugger: 'off'*/
-  // debugger;
+  const { img, imgTop, imgLeft } = await createImage(element, offsetBlur);
 
   const filter = new fabric.Image.filters.Blur({
     blur: blurValue
@@ -168,8 +165,8 @@ const blur = async (element, options, canvas) => {
   element.set({ visible: false, hasControls: false, hasBorders: false });
 
   img.set({
-    top: element.top + cropTop,
-    left: element.left + cropLeft,
+    top: imgTop,
+    left: imgLeft,
     blurValue,
     visible: false
   });
@@ -367,14 +364,19 @@ const getOriginalOpacity = element =>
  */
 const createImage = (element, offsetBlur) => {
   const bounds = getObjectBounds(element);
+  const oriBounds = element.getBoundingRect(true);
 
-  const cropTop = bounds.top - element.top - offsetBlur;
-  const cropLeft = bounds.left - element.left - offsetBlur;
+  // cropTop and cropLeft are relative position to top left of the element
+  const cropTop = bounds.top - oriBounds.top - offsetBlur;
+  const cropLeft = bounds.left - oriBounds.left - offsetBlur;
   const cropWidth = bounds.width + 2 * offsetBlur;
   const cropHeight = bounds.height + 2 * offsetBlur;
 
+  const imgTop = oriBounds.top + cropTop;
+  const imgLeft = oriBounds.left + cropLeft;
+
   return new Promise(resolve => {
-    element.cloneAsImage(img => resolve({ img, cropTop, cropLeft }), {
+    element.cloneAsImage(img => resolve({ img, imgTop, imgLeft }), {
       top: cropTop,
       left: cropLeft,
       width: cropWidth,
