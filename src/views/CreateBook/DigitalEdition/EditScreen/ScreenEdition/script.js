@@ -59,7 +59,9 @@ import {
   createMediaOverlay,
   handleMouseMove,
   handleMouseOver,
-  handleMouseOut
+  handleMouseOut,
+  handleObjectSelected,
+  handleObjectDeselected
 } from '@/common/fabricObjects';
 import { createImage } from '@/common/fabricObjects';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
@@ -689,6 +691,8 @@ export default {
 
       if (isEmpty(objectData)) return;
 
+      handleObjectSelected(target);
+
       this.setSelectedObjectId({ id });
 
       setBorderHighlight(target, this.sheetLayout);
@@ -819,7 +823,8 @@ export default {
         moved: this.handleMoved,
         scaling: e => handleScalingText(e, text),
         scaled: e => this.handleTextBoxScaled(e, rect, text, data),
-        mousedblclick: ({ target }) => this.handleDbClickText(target)
+        mousedblclick: ({ target }) => this.handleDbClickText(target),
+        deselected: handleObjectDeselected.bind(null, rect)
       };
 
       object.on(events);
@@ -1299,6 +1304,10 @@ export default {
       if (isEmpty(element) || element.objectType !== objectType) return;
 
       const newProp = await this.updateElementProp(element, prop, objectType);
+
+      if (prop.playInOrder || prop.playOutOrder) {
+        handleObjectSelected(element);
+      }
 
       this.updateCurrentObject(element, newProp);
 
@@ -1783,7 +1792,8 @@ export default {
         moved: this.handleMoved,
         scaling: e => handleScalingText(e, text),
         scaled: e => this.handleTextBoxScaled(e, rect, text, data),
-        mousedblclick: ({ target }) => this.handleDbClickText(target)
+        mousedblclick: ({ target }) => this.handleDbClickText(target),
+        deselected: handleObjectDeselected.bind(null, rect)
       });
     },
     /**

@@ -385,6 +385,19 @@ const drawClipPath = function(ctx) {
   const canvas = this.renderClipPathCache();
   this.drawClipPathOnCache(ctx, canvas);
 };
+/**
+ * Rect Render animation indicator
+ * @param {CanvasRenderingContext2D} ctx Context to render on
+ */
+const rectRenderFill = function(ctx) {
+  fabric.Rect.prototype._renderFill.call(this, ctx);
+  if (this.playIn) {
+    ctx.drawImage(this.playIn, this.width / 2 - 250, -this.height / 2);
+  }
+  if (this.playOut) {
+    ctx.drawImage(this.playOut, this.width / 2 - 150, -this.height / 2);
+  }
+};
 
 /**
  * Rect Render function with override on clipPath to support double stroke
@@ -426,6 +439,7 @@ const rectRender = function(ctx) {
  * @param {fabric.Rect} rect - the object to enable double stroke
  */
 export const useDoubleStroke = function(rect) {
+  rect._renderFill = rectRenderFill;
   rect._render = rectRender;
 };
 

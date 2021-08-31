@@ -18,7 +18,7 @@
         </v-btn>
       </div>
     </div>
-    <div v-if="isShowOptions" class="control-options">
+    <div v-if="isShowOptions" :key="componentKey" class="control-options">
       <div v-if="selectedStyle.showDirection" class="control-item">
         <span class="properties-title">Direction</span>
         <PpSelect
