@@ -122,7 +122,7 @@ pipeline {
                     when { branch 'develop' }
                     steps {
                         script {
-                            sh "cd /jenkins/workspace/pp-tools-sonar"
+                            sh "cd /jenkins/workspace/pp-tools"
                             sh "/jenkins/sonar-scanner/bin/sonar-scanner -Dsonar.projectKey=parallel-publishing-tools -Dsonar.branch.name=develop -Dsonar.host.url=https://sonar.successsoftware.global -Dsonar.login=7a6a5d675e00f15f417b7a277812bf6618a16c83"
                         }
                     }
@@ -132,7 +132,7 @@ pipeline {
                     when { branch 'qa' }
                     steps {
                         script {
-                            sh "cd /jenkins/workspace/pp-tools-sonar"
+                            sh "cd /jenkins/workspace/pp-tools"
                             sh "/jenkins/sonar-scanner/bin/sonar-scanner -Dsonar.projectKey=parallel-publishing-tools -Dsonar.branch.name=qa -Dsonar.host.url=https://sonar.successsoftware.global -Dsonar.login=7a6a5d675e00f15f417b7a277812bf6618a16c83"
                         }
                     }
