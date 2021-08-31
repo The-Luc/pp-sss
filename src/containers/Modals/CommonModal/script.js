@@ -19,10 +19,6 @@ export default {
       type: Boolean,
       default: false
     },
-    isCloseIconDisplayed: {
-      type: Boolean,
-      default: true
-    },
     isThemeUsed: {
       type: Boolean,
       default: false
@@ -54,7 +50,19 @@ export default {
       type: String,
       default: 'Ok'
     },
-    isDisableAccept: {
+    isCloseIconDisplayed: {
+      type: Boolean,
+      default: true
+    },
+    isBackIconDisplayed: {
+      type: Boolean,
+      default: false
+    },
+    isAcceptButtonDisabled: {
+      type: Boolean,
+      default: true
+    },
+    isCancelButtonDisplayed: {
       type: Boolean,
       default: true
     }
@@ -65,9 +73,6 @@ export default {
       isDefaulFooterDisplayed:
         this.isFooterDisplayed && isEmpty(this.$slots.footer)
     };
-  },
-  mounted() {
-    console.log('mounted'); // TODO: remove after finish
   },
   methods: {
     /**
@@ -81,6 +86,12 @@ export default {
      */
     onCancel() {
       this.$emit('cancel');
+    },
+    /**
+     * Emit back event
+     */
+    onBack() {
+      this.$emit('back');
     },
     /**
      * Fire when user click Escape and then call onClickOutside

@@ -3,10 +3,13 @@ export default {
     title: {
       type: String
     },
+    isThemeUsed: {
+      type: Boolean
+    },
     isCloseIconDisplayed: {
       type: Boolean
     },
-    isThemeUsed: {
+    isBackIconDisplayed: {
       type: Boolean
     }
   },
@@ -15,7 +18,13 @@ export default {
      * Emit cancel event when click on exit button
      */
     onCancel() {
-      this.$emit('click');
+      this.$emit('cancel');
+    },
+    /**
+     * Emit cancel event when click on exit button
+     */
+    onBack() {
+      this.$emit('back');
     }
   }
 };

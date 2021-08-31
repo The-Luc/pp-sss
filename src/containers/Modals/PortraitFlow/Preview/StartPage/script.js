@@ -1,16 +1,27 @@
 import PpSelect from '@/components/Selectors/Select';
 
+import { isEmpty } from '@/common/utils';
+
 export default {
   components: {
     PpSelect
   },
   props: {
-    pages: {
+    selectedPages: {
       type: Array
     },
-    currentPage: {
-      type: Object,
-      default: () => ({ name: '', value: '' })
+    selectedPage: {
+      type: Number
+    }
+  },
+  computed: {
+    page() {
+      return { name: this.selectedPage, value: this.selectedPage };
+    },
+    pages() {
+      return isEmpty(this.selectedPages)
+        ? [{ name: 1, value: 1 }]
+        : this.selectedPages.map(p => ({ name: p, value: p }));
     }
   },
   methods: {
@@ -20,7 +31,7 @@ export default {
      * @param {Object}  page  selected page
      */
     onStartPageChange(page) {
-      this.$emit('pageChange', { page });
+      this.$emit('pageChange', { pageNo: page.value });
     }
   }
 };

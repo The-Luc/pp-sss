@@ -1,4 +1,4 @@
-import { CLASS_ROLE } from '../constants/classRole';
+import { CLASS_ROLE } from '../constants';
 import { BaseEntity } from './base';
 
 export class PortraitFolder extends BaseEntity {

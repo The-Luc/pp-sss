@@ -1,6 +1,15 @@
-import { DEFAULT_COLOR } from '../constants';
 import { BaseObject } from './base';
 import { BaseBorder, BaseShadow } from './element';
+
+import {
+  DEFAULT_COLOR,
+  PORTRAIT_IMAGE_MASK,
+  PORTRAIT_NAME_DISPLAY,
+  PORTRAIT_NAME_POSITION,
+  DEFAUL_PORTRAIT,
+  PORTRAIT_FLOW_OPTION_SINGLE,
+  PORTRAIT_FLOW_OPTION_MULTI
+} from '../constants';
 
 export class MarginSettings extends BaseObject {
   top = 0;
@@ -18,8 +27,8 @@ export class MarginSettings extends BaseObject {
 }
 
 export class PortraitLayoutSettings extends BaseObject {
-  rowCount = 0;
-  colCount = 0;
+  rowCount = DEFAUL_PORTRAIT.ROW_COUNT;
+  colCount = DEFAUL_PORTRAIT.COLUMN_COUNT;
   margins = new MarginSettings();
 
   /**
@@ -71,8 +80,8 @@ export class PortraitTextSettings extends BaseObject {
   pageTitleFontSettings = new PortraitFontSettings();
   pageTitleMargins = new MarginSettings();
   nameTextFontSettings = new PortraitFontSettings();
-  nameDisplay = ''; // FIRST_LAST, LAST_FIRST
-  namePosition = ''; // CENTERED, OUTSIDE
+  nameDisplay = PORTRAIT_NAME_DISPLAY.FIRST_LAST; // FIRST_LAST, LAST_FIRST
+  namePosition = PORTRAIT_NAME_POSITION.CENTERED; // CENTERED, OUTSIDE
   nameLines = '';
   nameWidth = 0;
   nameGap = '';
@@ -89,7 +98,7 @@ export class PortraitTextSettings extends BaseObject {
 export class PortraitImageSettings extends BaseObject {
   border = new BaseBorder();
   shadow = new BaseShadow();
-  mask = ''; // NONE, ROUNDED_CORNERS, OVAL, CIRCLE, SQUARE
+  mask = PORTRAIT_IMAGE_MASK.NONE; // NONE, ROUNDED_CORNERS, OVAL, CIRCLE, SQUARE
 
   /**
    * @param {PortraitTextSettings} props
@@ -122,8 +131,12 @@ export class PortraitFlowData extends BaseObject {
   teacherSettings = new PortraitTeacherSettings();
   textSettings = new PortraitTextSettings();
   imageSettings = new PortraitImageSettings();
-  flowSingleSettings = new PortraitFlowSettings();
-  flowMultiSettings = new PortraitFlowSettings();
+  flowSingleSettings = new PortraitFlowSettings({
+    flowOption: PORTRAIT_FLOW_OPTION_SINGLE.AUTO.id
+  });
+  flowMultiSettings = new PortraitFlowSettings({
+    flowOption: PORTRAIT_FLOW_OPTION_MULTI.AUTO.id
+  });
   savedDate = '';
 
   /**

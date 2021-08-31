@@ -1,23 +1,28 @@
 <template>
-  <div id="portrait-flow">
+  <div id="portrait-flow" :class="isPreviewDisplayed ? 'preview' : ''">
     <CommonModal
-      title="Portrait Flow"
       accept-text="Apply Portraits to Pages"
-      container="#portrait-flow"
       width="1162"
+      container="#portrait-flow"
+      :title="title"
       :is-open-modal="isOpen"
-      :is-disable-accept="false"
+      :is-back-icon-displayed="isPreviewDisplayed"
+      :is-close-icon-displayed="!isPreviewDisplayed"
+      :is-accept-button-disabled="false"
+      :is-cancel-button-displayed="!isPreviewDisplayed"
       @cancel="onCancel"
       @accept="onAccept"
+      @back="onBack"
     >
-      <Preview :selected-folders="selectedFolders" />
-
-      <Settings
-        @settingTabChange="onSettingTabChange"
-        @saveSetting="onSaveSettings"
+      <FlowSettings
+        v-show="!isPreviewDisplayed"
+        :selected-folders="selectedFolders"
+        :flow-settings="flowSettings"
+        :required-pages="requiredPages"
+        @showPreview="onShowPreview"
       />
 
-      <SettingContent :current-tab="currentTab" />
+      <FlowPreview v-show="isPreviewDisplayed" />
     </CommonModal>
   </div>
 </template>

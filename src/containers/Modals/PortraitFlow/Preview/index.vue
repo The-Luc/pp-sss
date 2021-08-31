@@ -2,11 +2,26 @@
   <div class="preview-container">
     <FoldersInfo :selected-folders="selectedFolders" />
 
-    <PreviewThumbnail :pages="pages" :current-page="currentPage" />
+    <PreviewThumbnail
+      :portraits="portraits"
+      :layout="layoutSettings"
+      :page-no="pageNo"
+      :background-url="backgroundUrl"
+      @moveBack="onMoveToPreviousPage"
+      @moveNext="onMoveToNextPage"
+    />
 
-    <StartPage :pages="pages" :current-page="currentPage" />
+    <StartPage
+      :selected-pages="pages"
+      :selected-page="startPage"
+      @pageChange="onStartPageChange"
+    />
 
-    <PreviewInfo :total-portrait="75" :total-page="5" />
+    <PreviewInfo
+      :total-portrait="flowSettings.totalPortraitsCount"
+      :total-page="requiredPages.length"
+      @showPreview="onShowPreview"
+    />
   </div>
 </template>
 

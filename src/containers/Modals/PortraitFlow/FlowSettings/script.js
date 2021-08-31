@@ -1,0 +1,56 @@
+import Preview from '../Preview';
+import Settings from '../Settings';
+import SettingContent from '../SettingContent';
+
+export default {
+  components: {
+    Preview,
+    Settings,
+    SettingContent
+  },
+  props: {
+    selectedFolders: {
+      type: Array,
+      default: () => []
+    },
+    flowSettings: {
+      type: Object
+    },
+    requiredPages: {
+      type: Array
+    }
+  },
+  data() {
+    return {
+      currentTab: null,
+      displayedPageNo: this.flowSettings?.startOnPageNumber
+    };
+  },
+  methods: {
+    onSaveSettings() {
+      console.log('save settings');
+    },
+    /**
+     * Fire when setting tab change
+     *
+     * @param {Number}  tabIndex  index of selected tab
+     */
+    onSettingTabChange({ tabIndex }) {
+      this.currentTab = tabIndex;
+    },
+    /**
+     * Set new start page
+     *
+     * @param {Number}  pageNo  selected page
+     */
+    onStartPageChange({ pageNo }) {
+      this.$emit('startPageChange', { pageNo });
+    },
+    /**
+     * Show preview
+     */
+    onShowPreview() {
+      this.$emit('showPreview');
+    }
+  }
+};

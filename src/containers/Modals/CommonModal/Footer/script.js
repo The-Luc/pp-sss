@@ -6,7 +6,10 @@ export default {
     acceptText: {
       type: String
     },
-    isDisableAccept: {
+    isAcceptButtonDisabled: {
+      type: Boolean
+    },
+    isCancelButtonDisplayed: {
       type: Boolean
     }
   },

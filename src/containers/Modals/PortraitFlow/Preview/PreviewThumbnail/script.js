@@ -1,59 +1,80 @@
+import emptyAvatar from '@/assets/image/empty.png';
+
 import { isEmpty } from '@/common/utils';
 
 export default {
   props: {
-    pages: {
+    portraits: {
       type: Array
     },
-    currentPage: {
-      type: Object,
-      default: () => ({ name: '', value: '' })
+    layout: {
+      type: Object
+    },
+    pageNo: {
+      type: Number
+    },
+    backgroundUrl: {
+      type: String
+    },
+    isDisableMoveBack: {
+      type: Boolean,
+      default: false
+    },
+    isDisableMoveNext: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
     return {
-      selectedPage: this.currentPage?.value
+      portraitData: [[]]
     };
   },
-  computed: {
-    thumbUrl() {
-      const page = this.pages.filter(({ value }) => {
-        return this.selectedPage === value;
-      });
+  watch: {
+    layout(value) {
+      if (isEmpty(value)) return;
 
-      return isEmpty(page) ? '' : page.thumbUrl;
+      this.updatePortraitData();
+    },
+    portraits(value) {
+      if (isEmpty(value)) return;
+
+      this.updatePortraitData();
     }
   },
-  watch: {
-    currentPage: {
-      deep: true,
-      handler(newVal, oldVal) {
-        if (JSON.stringify(newVal) === JSON.stringify(oldVal)) return;
-
-        if (isEmpty(newVal?.value) || newVal.value <= this.selectedPage) return;
-
-        this.selectedPage = newVal.value;
-      }
-    }
+  created() {
+    this.updatePortraitData();
   },
   methods: {
     /**
      * Select last page
      */
-    onMoveToLast() {
-      if (this.selectedPage > this.pages[0].value) {
-        this.selectedPage--;
-      }
+    onMoveBack() {
+      this.$emit('moveBack', { selectedPage: this.pageNo });
     },
     /**
      * Select next page
      */
-    onMoveToNext() {
-      const totalPage = this.pages.length;
+    onMoveNext() {
+      this.$emit('moveNext', { selectedPage: this.pageNo });
+    },
+    /**
+     * Update portrait data
+     */
+    updatePortraitData() {
+      const rowData = [...Array(this.layout.rowCount).keys()];
 
-      if (this.selectedPage < this.pages[totalPage - 1].value) {
-        this.selectedPage++;
-      }
+      this.portraitData = rowData.map(rowInd => {
+        return [...Array(this.layout.colCount).keys()].map(colInd => {
+          const index = rowInd * this.layout.colCount + colInd;
+
+          if (index >= this.portraits.length) {
+            return { imageUrl: emptyAvatar };
+          }
+
+          return this.portraits[index];
+        });
+      });
     }
   }
 };
