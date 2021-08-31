@@ -10,6 +10,7 @@
           :is-menu-open="isMenuOpen"
           :properties-type="propertiesType"
           :is-prompt="isPrompt"
+          :disabled-toolbar-items="disabledItems"
           @click="onClickLeftTool"
         />
       </div>
@@ -22,6 +23,7 @@
           :is-menu-open="isMenuOpen"
           :properties-type="propertiesType"
           :is-prompt="isPrompt"
+          :disabled-toolbar-items="disabledItems"
           @click="onClickRightTool"
         />
       </div>

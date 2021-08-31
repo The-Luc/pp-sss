@@ -1,7 +1,7 @@
 import { CLASS_ROLE } from '../constants/classRole';
-import { BaseObject } from './base';
+import { BaseEntity } from './base';
 
-export class PortraitFolder extends BaseObject {
+export class PortraitFolder extends BaseEntity {
   name = '';
   thumbUrl = '';
   assetsCount = 0;
@@ -16,7 +16,7 @@ export class PortraitFolder extends BaseObject {
   }
 }
 
-export class PortraitAsset extends BaseObject {
+export class PortraitAsset extends BaseEntity {
   firstName = '';
   lastName = '';
   thumbUrl = '';

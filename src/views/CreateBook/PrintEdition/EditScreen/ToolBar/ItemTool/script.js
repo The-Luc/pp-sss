@@ -1,7 +1,5 @@
 import ToolButton from '@/components/Buttons/ToolButton';
 
-import { useToolBar } from '@/hooks';
-
 import { isToolActivated } from '@/common/utils';
 
 export default {
@@ -26,12 +24,11 @@ export default {
     isPrompt: {
       type: Boolean,
       default: false
+    },
+    disabledToolbarItems: {
+      type: Array,
+      default: () => []
     }
-  },
-  setup() {
-    const { disabledToolbarItems } = useToolBar();
-
-    return { disabledToolbarItems };
   },
   computed: {
     /**

@@ -14,6 +14,43 @@
 
           .v-card__text {
             flex: 1;
+            padding: 0;
+            .content-portrait-folder {
+              height: 100%;
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              .content-title {
+                font-family: $font-500;
+                font-size: 13px;
+                color: $color-gray5;
+                margin: 12px 0;
+              }
+              .portrait-folder-item-container {
+                display: flex;
+                flex: 1;
+                width: calc(100% + 24px);
+                padding: 0 70px 57px 116px;
+                flex-wrap: wrap;
+                margin: 0 62px 0 -24px;
+                overflow: auto;
+                position: relative;
+
+                &.empty-container {
+                  overflow: hidden;
+                  .empty-portrait-folder-text {
+                    width: 510px;
+                    font-family: $font-500;
+                    font-size: 14px;
+                    color: $color-stoodio-toolbartext;
+                    position: absolute;
+                    top: 30%;
+                    left: 25%;
+                    text-align: center;
+                  }
+                }
+              }
+            }
           }
 
           .pp-modal-footer {
