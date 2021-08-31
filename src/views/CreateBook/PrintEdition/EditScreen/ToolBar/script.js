@@ -60,10 +60,9 @@ export default {
   },
   computed: {
     disabledItems() {
-      if (this.currentSheet.type !== SHEET_TYPE.COVER) {
-        return this.disabledToolbarItems;
-      }
-      return [...this.disabledToolbarItems, TOOL_NAME.PORTRAIT];
+      return this.currentSheet.type !== SHEET_TYPE.COVER
+        ? this.disabledToolbarItems
+        : [...this.disabledToolbarItems, TOOL_NAME.PORTRAIT];
     }
   },
   methods: {
