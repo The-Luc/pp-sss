@@ -141,3 +141,10 @@ export const useBackgroundGetter = (isDigital = false) => {
     backgrounds
   };
 };
+
+export const useBackgroundAction = () => {
+  return {
+    getPageBackground: backgroundService.getPageBackground,
+    getPageBackgrounds: backgroundService.getPageBackgrounds
+  };
+};

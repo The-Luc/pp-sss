@@ -172,7 +172,16 @@ export const toFabricTextGroupProp = prop => {
       width: DEFAULT_RULE_DATA.WIDTH,
       height: DEFAULT_RULE_DATA.HEIGHT
     },
-    restrict: ['id', 'shadow', 'alignment', 'fontSize', 'rotation', 'style']
+    restrict: [
+      'id',
+      'shadow',
+      'alignment',
+      'fontSize',
+      'rotation',
+      'style',
+      'animationIn',
+      'animationOut'
+    ]
   };
 
   return mapObject(prop, mapRules);
@@ -794,4 +803,64 @@ export const fabricToPpObject = fabricObject => {
       height: pxToIn(height * scaleY)
     }
   };
+};
+
+const createSVGElement = (val, fill) => {
+  return new Promise(resolve => {
+    const svgNS = 'http://www.w3.org/2000/svg';
+    const DOMURL = window.URL || window.webkitURL || window;
+    const img = new Image();
+
+    const svg = document.createElementNS(svgNS, 'svg');
+    svg.setAttribute('width', '100');
+    svg.setAttribute('height', '100');
+
+    const rect = document.createElementNS(svgNS, 'rect');
+    rect.setAttribute('width', '100%');
+    rect.setAttribute('height', '100%');
+    rect.setAttribute('stroke', 'black');
+    rect.setAttribute('stroke-width', '10');
+    rect.setAttribute('fill', fill);
+
+    const text = document.createElementNS(svgNS, 'text');
+    text.setAttribute('x', '50%');
+    text.setAttribute('y', '50%');
+    text.setAttribute('dominant-baseline', 'middle');
+    text.setAttribute('text-anchor', 'middle');
+    text.setAttribute('font-size', '50');
+    text.innerHTML = val;
+
+    svg.append(rect);
+    svg.append(text);
+
+    const xml = new XMLSerializer().serializeToString(svg);
+    const blob = new Blob([xml], {
+      type: 'image/svg+xml;charset=utf-8'
+    });
+
+    const url = DOMURL.createObjectURL(blob);
+
+    img.onload = function() {
+      resolve(img);
+      DOMURL.revokeObjectURL(url);
+    };
+
+    img.src = url;
+  });
+};
+
+export const handleObjectSelected = async target => {
+  if (target.objectType === OBJECT_TYPE.TEXT) {
+    const [rect] = target.getObjects();
+    const playInEle = createSVGElement(target.playInOrder || 1, 'white');
+    const playOutEle = createSVGElement(target.playOutOrder || 1, 'lightgray');
+    const [playIn, playOut] = await Promise.all([playInEle, playOutEle]);
+    rect.set({ playIn, playOut, dirty: true });
+    target.canvas.renderAll();
+  }
+};
+
+export const handleObjectDeselected = target => {
+  target.set({ playIn: null, playOut: null, dirty: true });
+  target.canvas.renderAll();
 };

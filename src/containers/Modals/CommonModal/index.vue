@@ -13,8 +13,10 @@
         v-if="isDefaulHeaderDisplayed"
         :title="title"
         :is-theme-used="isThemeUsed"
+        :is-back-icon-displayed="isBackIconDisplayed"
         :is-close-icon-displayed="isCloseIconDisplayed"
-        @click="onCancel"
+        @back="onBack"
+        @cancel="onCancel"
       />
 
       <slot name="header"></slot>
@@ -27,7 +29,8 @@
         v-if="isDefaulFooterDisplayed"
         :cancel-text="cancelText"
         :accept-text="acceptText"
-        :is-disable-accept="isDisableAccept"
+        :is-accept-button-disabled="isAcceptButtonDisabled"
+        :is-cancel-button-displayed="isCancelButtonDisplayed"
         @cancel="onCancel"
         @accept="onAccept"
       />
@@ -39,4 +42,4 @@
 
 <script src="./script.js" />
 
-<style lang="scss" src="./style.scss" />
+<style lang="scss" src="./style.scss" scoped />

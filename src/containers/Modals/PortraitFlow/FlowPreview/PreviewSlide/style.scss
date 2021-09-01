@@ -1,0 +1,95 @@
+.slide-container {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+
+  .slide-content {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+
+    ::v-deep {
+      .preview-thumbnail {
+        width: 329px;
+        height: 429px;
+      }
+    }
+
+    &.not-full {
+      justify-content: center;
+      
+      .slide-item {
+        margin-left: 22px;
+        margin-right: 22px;
+      }
+    }
+
+    .page-info {
+      display: flex;
+      margin-top: 12px;
+      justify-content: space-between;
+      color: $color-gray5;
+      line-height: 15px;
+      font-size: $md-size;
+
+      .flow-no {
+        font-family: $font-700;
+      }
+
+      .page-no {
+        font-family: $font-300;
+      }
+    }
+  }
+
+  .slide-navigator {
+    display: flex;
+    width: 100%;
+    margin-top: 42px;
+    justify-content: space-between;
+
+    .icon {
+      position: relative;
+      align-items: center;
+      color: $color-gray2;
+      line-height: 0;
+      cursor: pointer;
+
+      &.disabled {
+        opacity: 0.4;
+        pointer-events: none;
+      }
+
+      .icon-inner {
+        position: absolute;
+        top: 3px;
+        font-size: 18px;
+
+        &-back {
+          left: 2px;
+        }
+
+        &-next {
+          right: 3px;
+        }
+      }
+    }
+
+    .paggings {
+      display: flex;
+      align-items: center;
+      color: $color-gray11;
+      line-height: 0;
+
+      .pagging {
+        margin: 2px;
+        font-size: 14px;
+        cursor: pointer;
+
+        &.active {
+          color: $color-stoodio-toolbartext;
+        }
+      }
+    }
+  }
+}

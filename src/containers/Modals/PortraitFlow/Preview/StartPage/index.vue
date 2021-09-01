@@ -6,7 +6,7 @@
       id="pages"
       container="#pages"
       :items="pages"
-      :selected-val="currentPage"
+      :selected-val="page"
       @change="onStartPageChange"
     />
   </div>

@@ -8,7 +8,13 @@
       <Vertical />
     </div>
     <Spacing />
-    <Animation v-if="isDigitalEdition" title="Text animation" />
+    <Animation
+      v-if="isDigitalEdition"
+      title="Text animation"
+      :play-in-config="playInConfig"
+      :play-out-config="playOutConfig"
+      @change="changeAnimation"
+    />
   </div>
 </template>
 

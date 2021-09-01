@@ -14,7 +14,7 @@ export default {
      * Open Preview modal
      */
     onShowPreview() {
-      console.log('open preview');
+      this.$emit('showPreview');
     }
   }
 };

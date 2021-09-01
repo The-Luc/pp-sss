@@ -17,7 +17,7 @@ export default {
      * @param {Number}  tabIndex  index of selected tab
      */
     onTabChange(tabIndex) {
-      this.$emit('settingTabChange', tabIndex);
+      this.$emit('settingTabChange', { tabIndex });
     }
   }
 };

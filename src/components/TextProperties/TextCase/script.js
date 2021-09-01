@@ -1,21 +1,17 @@
 import PpButtonGroup from '@/components/Buttons/ButtonGroup';
 
-import { useElementProperties } from '@/hooks';
 import { ICON_LOCAL, TEXT_CASE } from '@/common/constants';
-
 import { isEmpty } from '@/common/utils';
-import { EVENT_TYPE } from '@/common/constants/eventType';
 
 export default {
   components: {
     PpButtonGroup
   },
-  setup() {
-    const { getProperty } = useElementProperties();
-
-    return {
-      getProperty
-    };
+  props: {
+    selectedCase: {
+      type: String,
+      required: true
+    }
   },
   data() {
     return {
@@ -27,20 +23,14 @@ export default {
       CAPITALIZE: TEXT_CASE.CAPITALIZE
     };
   },
-  computed: {
-    selectedCase() {
-      return this.getProperty('textCase') || null;
-    }
-  },
   methods: {
     /**
-     * Detect click on item on text case properties
-     * @param  {String} data Receive item information
+     * Emit to back value to parent
+     * @param {String} data value to change
      */
     onChange(data) {
       const value = isEmpty(data) ? TEXT_CASE.NONE : data;
-
-      this.$root.$emit(EVENT_TYPE.CHANGE_TEXT_PROPERTIES, {
+      this.$emit('change', {
         textCase: value
       });
     }

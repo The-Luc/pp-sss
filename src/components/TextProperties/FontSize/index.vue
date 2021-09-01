@@ -2,8 +2,9 @@
   <div class="font-size-container">
     <span class="properties-title">Font Size:</span>
     <PpCombobox
-      :items="items"
-      :nudge-width="76"
+      :key="componentKey"
+      :items="fontSize"
+      :nudge-width="nudgeWidth"
       :prepended-icon="prependedIcon"
       :appended-icon="appendedIcon"
       :selected-val="selectedSize"
@@ -14,4 +15,4 @@
 
 <script src="./script.js" />
 
-<style lang="scss" src="./style.scss" />
+<style lang="scss" src="./style.scss" scoped />

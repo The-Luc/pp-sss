@@ -20,6 +20,7 @@ pipeline {
             when {
                 allOf {
                     anyOf {
+                        expression { params.NodeInstall == true }
                         changeset "package-lock.json"
                         changeset "package.json"
                     }
@@ -104,6 +105,24 @@ pipeline {
                             }
                         }
                     }
+                }
+            }
+        }
+
+        stage('Sonar-DEV') {
+            when { branch 'develop' }
+            steps {
+                script {
+                    sh "/jenkins/sonar-scanner/bin/sonar-scanner -Dsonar.projectKey=parallel-publishing-tools -Dsonar.branch.name=develop -Dsonar.host.url=https://sonar.successsoftware.global -Dsonar.login=7a6a5d675e00f15f417b7a277812bf6618a16c83"
+                }
+            }
+        }
+
+        stage('Sonar-QA') {
+            when { branch 'qa' }
+            steps {
+                script {
+                    sh "/jenkins/sonar-scanner/bin/sonar-scanner -Dsonar.projectKey=parallel-publishing-tools -Dsonar.branch.name=qa -Dsonar.host.url=https://sonar.successsoftware.global -Dsonar.login=7a6a5d675e00f15f417b7a277812bf6618a16c83"
                 }
             }
         }

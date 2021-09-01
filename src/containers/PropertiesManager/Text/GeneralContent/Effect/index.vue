@@ -1,8 +1,8 @@
 <template>
   <div class="effect-container">
-    <Color />
-    <Presentation />
-    <TextCase />
+    <Color :color="color" @change="onChangeColor" />
+    <Presentation :selected-styles="selectedStyles" @change="onChange" />
+    <TextCase :selected-case="selectedCase" @change="onChange" />
   </div>
 </template>
 

@@ -6,7 +6,7 @@
       container="#portrait-folder"
       width="796"
       :is-open-modal="isOpenModal"
-      :is-disable-accept="isDisableSelect"
+      :is-accept-button-disabled="isDisableSelect"
       @cancel="onCancel"
       @accept="onSelect"
     >
