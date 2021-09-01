@@ -172,7 +172,16 @@ export const toFabricTextGroupProp = prop => {
       width: DEFAULT_RULE_DATA.WIDTH,
       height: DEFAULT_RULE_DATA.HEIGHT
     },
-    restrict: ['id', 'shadow', 'alignment', 'fontSize', 'rotation', 'style']
+    restrict: [
+      'id',
+      'shadow',
+      'alignment',
+      'fontSize',
+      'rotation',
+      'style',
+      'animationIn',
+      'animationOut'
+    ]
   };
 
   return mapObject(prop, mapRules);

@@ -97,7 +97,9 @@ import {
   isVideoPlaying,
   isValidTargetToCopyPast,
   getUniqueId,
-  isContainDebounceProp
+  isContainDebounceProp,
+  animateIn,
+  animateOut
 } from '@/common/utils';
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
 
@@ -120,6 +122,11 @@ import {
   ShapeElementObject,
   VideoElementObject
 } from '@/common/models/element';
+import {
+  CONTROL_TYPE,
+  PLAY_IN_STYLES,
+  PLAY_OUT_STYLES
+} from '@/common/constants/animationProperty';
 
 const ELEMENTS = {
   [OBJECT_TYPE.TEXT]: 'a text box',
@@ -383,6 +390,7 @@ export default {
       });
       setActiveCanvas(window.digitalCanvas);
       useDigitalOverrides(fabric.Object.prototype);
+      fabric.textureSize = 4096;
       this.updateCanvasSize();
       this.digitalCanvas = window.digitalCanvas;
       this.updateCanvasEventListeners();
@@ -416,6 +424,10 @@ export default {
         {
           name: EVENT_TYPE.DIGITAL_ADD_ELEMENT,
           handler: this.onAddElement
+        },
+        {
+          name: EVENT_TYPE.PREVIEW_ANIMATION,
+          handler: this.previewAnimation
         },
         {
           name: EVENT_TYPE.CHANGE_OBJECT_IDS_ORDER,
@@ -727,7 +739,10 @@ export default {
     /**
      * Event fire when fabric object has been added
      */
-    onObjectAdded() {
+    onObjectAdded({ target }) {
+      // fake object is added when blur animation running, do not need to update canva when it's added
+      if (target.fakeObject) return;
+
       this.handleCanvasChanged();
     },
 
@@ -741,9 +756,12 @@ export default {
     /**
      * Event fire when fabric object has been removed
      */
-    onObjectRemoved() {
-      this.setCurrentObject(null);
+    onObjectRemoved({ target }) {
+      // fake object is removed when blur animation end, do not need to update canva when it's removed
+      if (target.fakeObject) return;
+
       this.handleCanvasChanged();
+      this.setCurrentObject(null);
     },
 
     /**
@@ -1317,6 +1335,39 @@ export default {
         this.setObjectProperties(newProp);
       }
     },
+
+    previewAnimation(config) {
+      const object = this.digitalCanvas.getActiveObject();
+
+      const style = config.style;
+      const args = [object, config, this.digitalCanvas];
+
+      if (config.type === CONTROL_TYPE.PLAY_IN) {
+        style === PLAY_IN_STYLES.BLUR && animateIn.blur(...args);
+
+        style === PLAY_IN_STYLES.FADE_IN && animateIn.fade(...args);
+
+        style === PLAY_IN_STYLES.FADE_SCALE && animateIn.fadeScale(...args);
+
+        style === PLAY_IN_STYLES.FADE_SLIDE_IN && animateIn.fadeSlide(...args);
+
+        style === PLAY_IN_STYLES.SLIDE_IN && animateIn.slide(...args);
+      }
+
+      if (config.type === CONTROL_TYPE.PLAY_OUT) {
+        style === PLAY_OUT_STYLES.BLUR && animateOut.blur(...args);
+
+        style === PLAY_OUT_STYLES.FADE_OUT && animateOut.fade(...args);
+
+        style === PLAY_OUT_STYLES.FADE_SCALE && animateOut.fadeScale(...args);
+
+        style === PLAY_OUT_STYLES.FADE_SLIDE_OUT &&
+          animateOut.fadeSlide(...args);
+
+        style === PLAY_OUT_STYLES.SLIDE_OUT && animateOut.slide(...args);
+      }
+    },
+
     /**
      * get fired when you click 'send' button
      * change the objectIds order and update z-index of object on canvas

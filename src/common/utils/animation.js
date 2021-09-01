@@ -1,17 +1,7 @@
 import { fabric } from 'fabric';
 import { OBJECT_TYPE } from '../constants';
+import { ANIMATION_DIR, DELAY_DURATION } from '../constants/animationProperty';
 import { applyTextBoxProperties } from '../fabricObjects';
-
-// TODO: -Luc: Will be deleted later when integrate with An's code
-// START TEMPORARY CODE ==================
-const ANIMATION_DIR = {
-  LEFT_RIGHT: 'leftToRight',
-  RIGHT_LEFT: 'rightToLeft',
-  TOP_BOTTOM: 'topToBottom',
-  BOTTOM_TOP: 'bottomToTop'
-};
-const DELAY_DURATION = 500;
-// END TEMPORARY CODE =====================
 
 /**
  * Handle fade animation
@@ -19,7 +9,7 @@ const DELAY_DURATION = 500;
  * @param {Object} options animation option
  * @param {Object} canvas fabric canvas
  */
-const fade = (element, options, canvas) => {
+const fadeIn = (element, options, canvas) => {
   const { duration } = options;
   if (!duration) return;
 
@@ -36,12 +26,34 @@ const fade = (element, options, canvas) => {
 };
 
 /**
- * Handle fade-scalde animation
+ * Handle fade animation
  * @param {Object} element fabric object animating
  * @param {Object} options animation option
  * @param {Object} canvas fabric canvas
  */
-const fadeScale = (element, options, canvas) => {
+const fadeOut = (element, options, canvas) => {
+  const { duration } = options;
+  if (!duration) return;
+
+  const config = {
+    animateProps: {
+      opacity: 0
+    },
+    revertedProps: {
+      opacity: getOriginalOpacity(element)
+    },
+    duration: duration
+  };
+  animationHandler(element, config, canvas);
+};
+
+/**
+ * Handle fade-scale animation
+ * @param {Object} element fabric object animating
+ * @param {Object} options animation option
+ * @param {Object} canvas fabric canvas
+ */
+const fadeScaleIn = (element, options, canvas) => {
   const { duration, scale } = options;
   if (!duration || !scale) return;
 
@@ -83,16 +95,63 @@ const fadeScale = (element, options, canvas) => {
 };
 
 /**
+ * Handle fade-scale animation
+ * @param {Object} element fabric object animating
+ * @param {Object} options animation option
+ * @param {Object} canvas fabric canvas
+ */
+const fadeScaleOut = (element, options, canvas) => {
+  const { duration, scale } = options;
+  if (!duration || !scale) return;
+
+  const center = element.getCenterPoint();
+  const originTop = element.top;
+  const originLeft = element.left;
+
+  const animateProps = {
+    opacity: 0,
+    scaleX: scale,
+    scaleY: scale
+  };
+
+  const startState = {
+    top: center.y,
+    left: center.x,
+    originX: 'center',
+    originY: 'center'
+  };
+
+  const revertedProps = {
+    opacity: getOriginalOpacity(element),
+    scaleX: element.scaleX ?? 1,
+    scaleY: element.scaleY ?? 1,
+    originX: 'left',
+    originY: 'top',
+    top: originTop,
+    left: originLeft
+  };
+
+  const config = {
+    startState,
+    animateProps,
+    duration,
+    revertedProps
+  };
+
+  animationHandler(element, config, canvas);
+};
+
+/**
  * Handle slide animation
  * @param {Object} element fabric object animating
  * @param {Object} options animation option
  * @param {Object} canvas fabric canvas
  */
-const slide = (element, options, canvas) => {
+const slideIn = (element, options, canvas) => {
   const { duration, direction } = options;
   if (!duration || !direction) return;
 
-  const { oriPos, startPos, animatePropName } = calcSlidePosition(
+  const { oriPos, startPos, animatePropName } = calcSlideInPosition(
     element,
     direction,
     canvas
@@ -112,16 +171,45 @@ const slide = (element, options, canvas) => {
 };
 
 /**
+ * Handle slide animation
+ * @param {Object} element fabric object animating
+ * @param {Object} options animation option
+ * @param {Object} canvas fabric canvas
+ */
+const slideOut = (element, options, canvas) => {
+  const { duration, direction } = options;
+  if (!duration || !direction) return;
+
+  const { oriPos, endPos, animatePropName } = calcSlideOutPosition(
+    element,
+    direction,
+    canvas
+  );
+
+  const config = {
+    animateProps: {
+      [animatePropName]: endPos
+    },
+    revertedProps: {
+      [animatePropName]: oriPos
+    },
+    duration
+  };
+
+  animationHandler(element, config, canvas);
+};
+
+/**
  * Handle fade-slide animation
  * @param {Object} element fabric object animating
  * @param {Object} options animation option
  * @param {Object} canvas fabric canvas
  */
-const fadeSlide = (element, options, canvas) => {
+const fadeSlideIn = (element, options, canvas) => {
   const { duration, direction } = options;
   if (!duration || !direction) return;
 
-  const { oriPos, startPosForFade, animatePropName } = calcSlidePosition(
+  const { oriPos, startPosForFade, animatePropName } = calcSlideInPosition(
     element,
     direction,
     canvas
@@ -143,16 +231,81 @@ const fadeSlide = (element, options, canvas) => {
 };
 
 /**
+ * Handle fade-slide animation
+ * @param {Object} element fabric object animating
+ * @param {Object} options animation option
+ * @param {Object} canvas fabric canvas
+ */
+const fadeSlideOut = (element, options, canvas) => {
+  const { duration, direction } = options;
+  if (!duration || !direction) return;
+
+  const { oriPos, endPosForFade, animatePropName } = calcSlideOutPosition(
+    element,
+    direction,
+    canvas
+  );
+
+  const config = {
+    animateProps: {
+      [animatePropName]: endPosForFade,
+      opacity: 0
+    },
+    revertedProps: {
+      [animatePropName]: oriPos,
+      opacity: getOriginalOpacity(element)
+    },
+    duration
+  };
+
+  animationHandler(element, config, canvas);
+};
+
+/**
+ * Handle blur-in animation
+ * @param {Object} element fabric object animating
+ * @param {Object} options animation option
+ * @param {Object} canvas fabric canvas
+ */
+const blurIn = (element, options, canvas) => {
+  const blurOption = {
+    ...options,
+    startValue: 1,
+    endValue: 0,
+    isBlurIn: true
+  };
+
+  handleBlurEffect(element, blurOption, canvas);
+};
+
+/**
+ * Handle blur-out animation
+ * @param {Object} element fabric object animating
+ * @param {Object} options animation option
+ * @param {Object} canvas fabric canvas
+ */
+const blurOut = (element, options, canvas) => {
+  const blurOption = {
+    ...options,
+    startValue: 0,
+    endValue: 1,
+    isBlurOut: true
+  };
+
+  handleBlurEffect(element, blurOption, canvas);
+};
+
+/**
  * Handle blur animation
  * @param {Object} element fabric object animating
  * @param {Object} options animation option
  * @param {Object} canvas fabric canvas
  */
-const blur = async (element, options, canvas) => {
+const handleBlurEffect = async (element, options, canvas) => {
   const { duration } = options;
   if (!duration) return;
 
-  const blurValue = 1;
+  const blurValue = options.startValue;
   const offsetBlur = 300; // pixel
 
   const { img, imgTop, imgLeft } = await createImage(element, offsetBlur);
@@ -162,22 +315,28 @@ const blur = async (element, options, canvas) => {
   });
   img.filters.push(filter);
 
-  element.set({ visible: false, hasControls: false, hasBorders: false });
+  element.set({
+    visible: options.isBlurOut ? true : false,
+    hasControls: false,
+    hasBorders: false
+  });
 
   img.set({
     top: imgTop,
     left: imgLeft,
     blurValue,
-    visible: false
+    visible: false,
+    fakeObject: true
   });
 
   canvas.add(img);
   canvas.renderAll();
 
   setTimeout(() => {
+    element.set('visible', false);
     img.set('visible', true);
     img.animate(
-      { blurValue: 0 },
+      { blurValue: options.endValue },
       {
         duration,
         onChange: () => {
@@ -186,29 +345,44 @@ const blur = async (element, options, canvas) => {
 
           canvas.renderAll();
         },
-        onComplete: () => {
-          element.set({ visible: true });
-          canvas.remove(img);
-
-          setTimeout(() => {
-            element.set({
-              hasControls: true,
-              hasBorders: true
-            });
-            canvas.renderAll();
-          }, 200);
-        }
+        onComplete
       }
     );
   }, DELAY_DURATION);
+
+  function onComplete() {
+    if (options.isBlurIn) {
+      canvas.remove(img);
+      element.set({ visible: true });
+    }
+    setTimeout(() => {
+      if (options.isBlurOut) {
+        canvas.remove(img);
+        element.set({ visible: true });
+      }
+      element.set({
+        hasControls: true,
+        hasBorders: true
+      });
+      canvas.renderAll();
+    }, DELAY_DURATION);
+  }
 };
 
 export const animateIn = {
-  fade,
-  fadeScale,
-  fadeSlide,
-  slide,
-  blur
+  fade: fadeIn,
+  fadeScale: fadeScaleIn,
+  fadeSlide: fadeSlideIn,
+  slide: slideIn,
+  blur: blurIn
+};
+
+export const animateOut = {
+  fade: fadeOut,
+  fadeScale: fadeScaleOut,
+  fadeSlide: fadeSlideOut,
+  slide: slideOut,
+  blur: blurOut
 };
 
 // ============== HELPER FUNCTIONS ====================
@@ -232,19 +406,18 @@ const animationHandler = (element, config, canvas) => {
       duration,
       onChange: canvas.renderAll.bind(canvas),
       onComplete: () => {
-        element.set(revertedProps);
-
-        if (element.objectType === OBJECT_TYPE.TEXT && animateProps.opacity) {
-          applyTextBoxProperties(element, { opacity: animateProps.opacity });
-        }
-
         setTimeout(() => {
+          element.set(revertedProps).setCoords();
+
+          if (element.objectType === OBJECT_TYPE.TEXT && animateProps.opacity) {
+            applyTextBoxProperties(element, { opacity: animateProps.opacity });
+          }
           element.set({
             hasControls: true,
             hasBorders: true
           });
           canvas.renderAll();
-        }, 200);
+        }, DELAY_DURATION);
       }
     });
   }, DELAY_DURATION);
@@ -258,8 +431,9 @@ const animationHandler = (element, config, canvas) => {
  * @param {Object} canvas fabric canvas
  * @returns an objects providing information for slide animation
  */
-const calcSlidePosition = (element, direction, canvas) => {
+const calcSlideInPosition = (element, direction, canvas) => {
   const { top, left, width, height } = getObjectBounds(element);
+  const slideDistance = 300;
 
   const { left: oriLeft, top: oriTop } = element;
 
@@ -279,7 +453,7 @@ const calcSlidePosition = (element, direction, canvas) => {
     return {
       ...horizontalAnimation,
       startPos,
-      startPosForFade: oriLeft * 0.8
+      startPosForFade: oriLeft - slideDistance
     };
   }
   if (direction === ANIMATION_DIR.RIGHT_LEFT) {
@@ -289,7 +463,7 @@ const calcSlidePosition = (element, direction, canvas) => {
     return {
       ...horizontalAnimation,
       startPos,
-      startPosForFade: oriLeft * 1.2
+      startPosForFade: oriLeft + slideDistance
     };
   }
   if (direction === ANIMATION_DIR.TOP_BOTTOM) {
@@ -298,7 +472,7 @@ const calcSlidePosition = (element, direction, canvas) => {
     return {
       ...verticalAnimation,
       startPos,
-      startPosForFade: oriTop * 0.8
+      startPosForFade: oriTop - slideDistance
     };
   }
   if (direction === ANIMATION_DIR.BOTTOM_TOP) {
@@ -308,7 +482,70 @@ const calcSlidePosition = (element, direction, canvas) => {
     return {
       ...verticalAnimation,
       startPos,
-      startPosForFade: oriTop * 1.2
+      startPosForFade: oriTop + slideDistance
+    };
+  }
+};
+
+/**
+ *	To calculate ending position of sliding animation
+ *
+ * @param {Object} element fabric object animating
+ * @param {String} direction constant showing animation direction
+ * @param {Object} canvas fabric canvas
+ * @returns an objects providing information for slide animation
+ */
+const calcSlideOutPosition = (element, direction, canvas) => {
+  const { top, left, width, height } = getObjectBounds(element);
+  const slideDistance = 300;
+
+  const { left: oriLeft, top: oriTop } = element;
+
+  const horizontalAnimation = {
+    oriPos: oriLeft,
+    animatePropName: 'left'
+  };
+
+  const verticalAnimation = {
+    oriPos: oriTop,
+    animatePropName: 'top'
+  };
+
+  if (direction === ANIMATION_DIR.LEFT_RIGHT) {
+    const canvasWidth = canvas.getWidth() / canvas.getZoom();
+    const endPos = Math.abs(left - oriLeft) + canvasWidth;
+
+    return {
+      ...horizontalAnimation,
+      endPos,
+      endPosForFade: oriLeft + slideDistance
+    };
+  }
+  if (direction === ANIMATION_DIR.RIGHT_LEFT) {
+    const endPos = -1 * Math.abs(left + width - oriLeft);
+    return {
+      ...horizontalAnimation,
+      endPos,
+      endPosForFade: oriLeft - slideDistance
+    };
+  }
+  if (direction === ANIMATION_DIR.TOP_BOTTOM) {
+    const canvasHeight = canvas.getHeight() / canvas.getZoom();
+    const endPos = Math.abs(top - oriTop) + canvasHeight;
+
+    return {
+      ...verticalAnimation,
+      endPos,
+      endPosForFade: oriTop + slideDistance
+    };
+  }
+  if (direction === ANIMATION_DIR.BOTTOM_TOP) {
+    const endPos = -1 * Math.abs(top + height - oriTop);
+
+    return {
+      ...verticalAnimation,
+      endPos,
+      endPosForFade: oriTop - slideDistance
     };
   }
 };

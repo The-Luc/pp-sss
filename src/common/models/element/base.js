@@ -65,6 +65,22 @@ export class BaseShadow extends BaseObject {
   }
 }
 
+export class BaseAnimation extends BaseObject {
+  type = '';
+  style = '';
+  duration = 0.8;
+  direction = '';
+  scale = 50;
+
+  /**
+   * @param {BaseAnimation} props
+   */
+  constructor(props) {
+    super(props);
+    this._set(props);
+  }
+}
+
 export class BaseFlip extends BaseObject {
   horizontal = false;
   vertical = false;
@@ -97,6 +113,8 @@ export class BaseMoveableElementObject extends BaseElementObject {
   coord = new BasePosition();
   border = new BaseBorder();
   shadow = new BaseShadow();
+  animationIn = new BaseAnimation();
+  animationOut = new BaseAnimation();
 
   /**
    * @param {BaseMoveableElementObject} props

@@ -9,6 +9,7 @@ export const EVENT_TYPE = {
   CHANGE_IMAGE_PROPERTIES: 'changeImageProperties',
   CHANGE_VIDEO_PROPERTIES: 'changeVideoProperties',
   CHANGE_OBJECT_IDS_ORDER: 'changeObjectIdsOrder',
+  PREVIEW_ANIMATION: 'previewAnimation',
   DIGITAL_BACKGROUND_ADD: 'digitalAddBackground',
   DIGITAL_BACKGROUND_PROP_CHANGE: 'digitalChangeBackgroundProperties',
   DIGITAL_BACKGROUND_REMOVE: 'digitalDeleteBackground',
