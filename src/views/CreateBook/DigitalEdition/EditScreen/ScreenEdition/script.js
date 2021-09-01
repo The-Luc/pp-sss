@@ -1342,7 +1342,7 @@ export default {
       const style = config.style;
       const args = [object, config, this.digitalCanvas];
 
-      if (config.type === CONTROL_TYPE.PLAY_IN) {
+      if (config.controlType === CONTROL_TYPE.PLAY_IN) {
         style === PLAY_IN_STYLES.BLUR && animateIn.blur(...args);
 
         style === PLAY_IN_STYLES.FADE_IN && animateIn.fade(...args);
@@ -1354,7 +1354,7 @@ export default {
         style === PLAY_IN_STYLES.SLIDE_IN && animateIn.slide(...args);
       }
 
-      if (config.type === CONTROL_TYPE.PLAY_OUT) {
+      if (config.controlType === CONTROL_TYPE.PLAY_OUT) {
         style === PLAY_OUT_STYLES.BLUR && animateOut.blur(...args);
 
         style === PLAY_OUT_STYLES.FADE_OUT && animateOut.fade(...args);

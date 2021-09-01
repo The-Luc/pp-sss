@@ -92,7 +92,7 @@ export default {
     onChangeStyle(style) {
       const data = {
         style: style.value,
-        type: this.type,
+        controlType: this.type,
         duration: this.defaultDuration,
         direction: this.defaultDirection.value,
         scale: this.defaultScale
