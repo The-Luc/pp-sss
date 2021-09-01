@@ -77,6 +77,24 @@ export const PORTRAIT_FLOW_OPTION_MULTI = {
 };
 
 export const DEFAUL_PORTRAIT = {
-  ROW_COUNT: 4,
-  COLUMN_COUNT: 4
+  ROW_COUNT: 5,
+  COLUMN_COUNT: 5
 };
+
+export const PORTRAIT_COL_ROW_RANGE = {
+  MIN: 1,
+  MAX: 8
+};
+
+export const PORTRAIT_MARGIN_OPTIONS = [
+  { name: '0.5"', value: 0.5 },
+  { name: '1" ', value: 1 },
+  { name: '1.5"', value: 1.5 },
+  { name: '2"', value: 2 },
+  { name: '2.5"', value: 2.5 },
+  { name: '3"', value: 3 },
+  { name: '3.5"', value: 3.5 },
+  { name: '4"', value: 4 },
+  { name: '4.5"', value: 4.5 },
+  { name: '5"', value: 5 }
+];

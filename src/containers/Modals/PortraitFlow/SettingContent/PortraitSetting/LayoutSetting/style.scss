@@ -1,0 +1,17 @@
+.layout-setting-container {
+  border-bottom: 1px solid $color-gray17;
+  padding-bottom: 17px;
+
+  .control-group {
+    display: flex;
+    justify-content: space-between;
+
+    &:not(:last-of-type) {
+      margin-bottom: 10px;
+    }
+
+    ::v-deep .v-input {
+      flex: 0;
+    }
+  }
+}

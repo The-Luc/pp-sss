@@ -1,8 +1,10 @@
 import TextSetting from './TextSetting';
+import PortraitSetting from './PortraitSetting';
 
 export default {
   components: {
-    TextSetting
+    TextSetting,
+    PortraitSetting
   },
   props: {
     currentTab: {
