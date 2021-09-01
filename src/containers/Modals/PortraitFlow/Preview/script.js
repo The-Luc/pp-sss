@@ -1,16 +1,16 @@
 import FoldersInfo from './FoldersInfo';
-import PreviewThumbnail from './PreviewThumbnail';
+import PreviewContainer from './PreviewContainer';
 import StartPage from './StartPage';
 import PreviewInfo from './PreviewInfo';
 
-import BG_SINGLE_PAGE_1 from '@/assets/image/layouts/background/bg-single-page-01.jpg';
+import { useBackgroundAction } from '@/hooks';
 
 import { getPortraitForPage, isEmpty } from '@/common/utils';
 
 export default {
   components: {
     FoldersInfo,
-    PreviewThumbnail,
+    PreviewContainer,
     StartPage,
     PreviewInfo
   },
@@ -28,6 +28,11 @@ export default {
       type: Object
     }
   },
+  setup() {
+    const { getPageBackground } = useBackgroundAction();
+
+    return { getPageBackground };
+  },
   data() {
     return {
       pages: [1, 2, 3], // TODO: get from current sheet list (implement in another ticket)
@@ -39,8 +44,10 @@ export default {
   computed: {
     selectedPages() {
       return this.requiredPages.map(p => {
-        // TODO: will get background from API
-        return { pageNo: p, backgroundUrl: BG_SINGLE_PAGE_1 };
+        return {
+          pageNo: p,
+          backgroundUrl: this.getPageBackground(p)
+        };
       });
     },
     startPage() {

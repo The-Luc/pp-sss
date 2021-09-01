@@ -1,6 +1,11 @@
 <template>
   <div class="preview-wrapper">
-    FLOW PREVIEW Component
+    <div class="summary">
+      {{ flowSettings.totalPortraitsCount }} portraits =
+      {{ requiredPages.length }} pages
+    </div>
+
+    <PreviewSlide :items="previewItems" />
   </div>
 </template>
 

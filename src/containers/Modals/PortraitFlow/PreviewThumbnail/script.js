@@ -5,24 +5,15 @@ import { isEmpty } from '@/common/utils';
 export default {
   props: {
     portraits: {
-      type: Array
+      type: Array,
+      default: () => []
     },
     layout: {
-      type: Object
-    },
-    pageNo: {
-      type: Number
+      type: Object,
+      default: () => ({})
     },
     backgroundUrl: {
       type: String
-    },
-    isDisableMoveBack: {
-      type: Boolean,
-      default: false
-    },
-    isDisableMoveNext: {
-      type: Boolean,
-      default: false
     }
   },
   data() {
@@ -46,18 +37,6 @@ export default {
     this.updatePortraitData();
   },
   methods: {
-    /**
-     * Select last page
-     */
-    onMoveBack() {
-      this.$emit('moveBack', { selectedPage: this.pageNo });
-    },
-    /**
-     * Select next page
-     */
-    onMoveNext() {
-      this.$emit('moveNext', { selectedPage: this.pageNo });
-    },
     /**
      * Update portrait data
      */

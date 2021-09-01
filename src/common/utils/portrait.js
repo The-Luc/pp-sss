@@ -1,8 +1,10 @@
 /**
  * Get range of portrait for selected page
  *
- * @param {Number}  currentIndex  index of page in list of selected page
- * @param {Number}  maxPortrait   max portrait per page
+ * @param   {Number}  currentIndex  index of page in list of selected page
+ * @param   {Number}  maxPortrait   max portrait per page
+ * @param   {Number}  totalPortrait total portrait
+ * @returns {Object}                min index & max index of protrait in folder
  */
 const getRangePortraitSingleFolder = (
   currentIndex,
@@ -21,8 +23,11 @@ const getRangePortraitSingleFolder = (
 /**
  * Get portraits for select page (single folder)
  *
- * @param {Number}  currentIndex  index of page in list of selected page
- * @param {Number}  maxPortrait   max portrait per page
+ * @param   {Number}  currentIndex  index of page in list of selected page
+ * @param   {Number}  maxPortrait   max portrait per page
+ * @param   {Array}   folders       selected portrait folders
+ * @param   {Number}  totalPortrait total portrait
+ * @returns {Array}                 portraits
  */
 const getPortraitsSingleFolder = (
   currentIndex,
@@ -41,6 +46,16 @@ const getPortraitsSingleFolder = (
   });
 };
 
+/**
+ * Get portraits for select page
+ *
+ * @param   {Number}  currentIndex  index of page in list of selected page
+ * @param   {Number}  rowCount      total row in config
+ * @param   {Number}  colCount      total column in config
+ * @param   {Number}  totalPortrait total portrait
+ * @param   {Array}   folders       selected portrait folders
+ * @returns {Array}                 portraits
+ */
 export const getPortraitForPage = (
   currentIndex,
   rowCount,

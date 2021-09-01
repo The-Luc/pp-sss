@@ -2,7 +2,7 @@
   <div class="preview-container">
     <FoldersInfo :selected-folders="selectedFolders" />
 
-    <PreviewThumbnail
+    <PreviewContainer
       :portraits="portraits"
       :layout="layoutSettings"
       :page-no="pageNo"

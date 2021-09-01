@@ -29,7 +29,8 @@ export default {
     return {
       flowSettings: {},
       requiredPages: [],
-      isPreviewDisplayed: false
+      isPreviewDisplayed: false,
+      flowReviewCompKey: true
     };
   },
   created() {
@@ -78,6 +79,8 @@ export default {
      * Show preview
      */
     onShowPreview() {
+      this.flowReviewCompKey = !this.flowReviewCompKey;
+
       this.isPreviewDisplayed = true;
     },
     /**

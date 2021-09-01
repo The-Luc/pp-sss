@@ -4,7 +4,11 @@ import { isEmpty } from '@/common/utils';
 
 import { BACKGROUND_PAGE_TYPE } from '@/common/constants';
 
-import { BACKGROUNDS, BACKGROUND_CATEGORIES } from '@/mock/backgrounds';
+import {
+  BACKGROUNDS,
+  BACKGROUND_CATEGORIES,
+  getBackgroundOfPage
+} from '@/mock/backgrounds';
 
 const backgroundService = {
   /**
@@ -90,6 +94,28 @@ const backgroundService = {
 
       resolve(result);
     });
+  },
+  /**
+   * Get background of pages
+   *
+   * @param   {Array} pageNos list of page number
+   * @returns {Array}         list of background url
+   */
+  getPageBackgrounds: pageNos => {
+    const backgrounds = {};
+
+    pageNos.forEach(p => (backgrounds[p] = getBackgroundOfPage(p)));
+
+    return backgrounds;
+  },
+  /**
+   * Get background of page
+   *
+   * @param   {Number} pageNo page number
+   * @returns {String}        background url
+   */
+  getPageBackground: pageNo => {
+    return getBackgroundOfPage(pageNo);
   }
 };
 

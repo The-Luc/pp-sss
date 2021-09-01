@@ -173,3 +173,15 @@ export const BACKGROUNDS = [
     imageUrl: THEME_7
   })
 ];
+
+const singleBgs = [THEME_6, COLOR_6, THEME_7, COLOR_7];
+
+const backgroundPages = {};
+
+[...Array(50).keys()].forEach(k => {
+  backgroundPages[k] = singleBgs[Math.floor(Math.random() * singleBgs.length)];
+});
+
+export const getBackgroundOfPage = pageNo => {
+  return backgroundPages[pageNo];
+};

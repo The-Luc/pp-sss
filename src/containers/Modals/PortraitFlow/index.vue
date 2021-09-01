@@ -22,7 +22,13 @@
         @showPreview="onShowPreview"
       />
 
-      <FlowPreview v-show="isPreviewDisplayed" />
+      <FlowPreview
+        v-show="isPreviewDisplayed"
+        :key="flowReviewCompKey"
+        :selected-folders="selectedFolders"
+        :flow-settings="flowSettings"
+        :required-pages="requiredPages"
+      />
     </CommonModal>
   </div>
 </template>
