@@ -1,10 +1,10 @@
 <template>
   <div class="font-container">
     <div class="col-7">
-      <FontFamily :items="fontFamily" />
+      <FontFamily :selected-font="selectedFont" @change="onChangFontFamily" />
     </div>
     <div class="col-4">
-      <FontSize :items="fontSize" />
+      <FontSize :selected-size="selectedSize" @change="onChangFontSize" />
     </div>
   </div>
 </template>
