@@ -14,7 +14,11 @@
       @saveSetting="onSaveSettings"
     />
 
-    <SettingContent :current-tab="currentTab" />
+    <SettingContent
+      :current-tab="currentTab"
+      :flow-settings="flowSettings"
+      @settingChange="onSettingChange"
+    />
   </div>
 </template>
 

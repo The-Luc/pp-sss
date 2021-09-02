@@ -66,6 +66,12 @@ export default {
       if (isEmpty(value)) return;
 
       this.updatePreviewData(value);
+    },
+    flowSettings: {
+      deep: true,
+      handler() {
+        this.updatePreviewData(this.displayedPageNo);
+      }
     }
   },
   created() {

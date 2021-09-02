@@ -81,6 +81,8 @@ export const DEFAUL_PORTRAIT = {
   COLUMN_COUNT: 5
 };
 
+export const DEFAULT_PORTRAIT_RATIO = 1.25; // width / height ratio
+
 export const PORTRAIT_COL_ROW_RANGE = {
   MIN: 1,
   MAX: 8

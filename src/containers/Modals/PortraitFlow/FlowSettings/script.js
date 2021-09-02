@@ -51,6 +51,14 @@ export default {
      */
     onShowPreview() {
       this.$emit('showPreview');
+    },
+
+    /**
+     * To emit data to parent components to handle config changed
+     * @param {Object} val configuration changed
+     */
+    onSettingChange(val) {
+      this.$emit('settingChange', val);
     }
   }
 };

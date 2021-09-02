@@ -1,6 +1,9 @@
 <template>
   <div class="portrait-setting-container">
-    <LayoutSetting />
+    <LayoutSetting
+      :layout-settings="flowSettings.layoutSettings"
+      @change="onLayoutChange"
+    />
     <TeacherSetting />
   </div>
 </template>

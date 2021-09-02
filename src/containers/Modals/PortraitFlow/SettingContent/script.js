@@ -10,6 +10,15 @@ export default {
     currentTab: {
       type: Number,
       default: 0
+    },
+    flowSettings: {
+      type: Object,
+      default: () => ({})
+    }
+  },
+  methods: {
+    onSettingChange(val) {
+      this.$emit('settingChange', val);
     }
   }
 };
