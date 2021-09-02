@@ -1,6 +1,6 @@
-import Preview from '../Preview';
-import Settings from '../Settings';
-import SettingContent from '../SettingContent';
+import Preview from './Preview';
+import Settings from './Settings';
+import SettingContent from './SettingContent';
 
 export default {
   components: {
@@ -27,8 +27,11 @@ export default {
     };
   },
   methods: {
+    /**
+     * Save setting by emit to parent
+     */
     onSaveSettings() {
-      console.log('save settings');
+      this.$emit('saveSettings');
     },
     /**
      * Fire when setting tab change
@@ -47,7 +50,7 @@ export default {
       this.$emit('startPageChange', { pageNo });
     },
     /**
-     * Show preview
+     * Show preview by emit to parent
      */
     onShowPreview() {
       this.$emit('showPreview');

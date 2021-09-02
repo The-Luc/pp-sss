@@ -66,7 +66,7 @@ export class BaseShadow extends BaseObject {
 }
 
 export class BaseAnimation extends BaseObject {
-  type = '';
+  controlType = '';
   style = '';
   duration = 0.8;
   direction = '';

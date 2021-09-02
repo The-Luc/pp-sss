@@ -84,6 +84,12 @@ export default {
       this.isPreviewDisplayed = true;
     },
     /**
+     * Save settings
+     */
+    onSaveSettings() {
+      console.log('save settings');
+    },
+    /**
      * Get total asset in selected folders
      *
      * @returns {Number}  total asset

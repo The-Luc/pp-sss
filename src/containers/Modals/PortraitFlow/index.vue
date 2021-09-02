@@ -21,6 +21,7 @@
         :required-pages="requiredPages"
         @showPreview="onShowPreview"
         @settingChange="onSettingChange"
+        @saveSettings="onSaveSettings"
       />
 
       <FlowPreview
