@@ -3,7 +3,7 @@
     <div class="intro">Does the folder include:</div>
     <div v-for="row in dataUI" :key="row.name" class="control-group">
       <div class="">{{ row.name }}</div>
-      <PpCombobox
+      <pp-combobox
         :items="row.options"
         :margin-menu="0"
         :nudge-width="80"

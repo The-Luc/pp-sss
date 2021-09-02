@@ -1,7 +1,7 @@
 <template>
   <v-tabs-items v-model="currentTab">
     <v-tab-item>
-      <PortraitSetting
+      <portrait-setting
         :flow-settings="flowSettings"
         @portraitSettingChange="onSettingChange"
       />

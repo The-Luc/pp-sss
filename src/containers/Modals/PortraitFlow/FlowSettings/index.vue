@@ -14,7 +14,7 @@
       @saveSetting="onSaveSettings"
     />
 
-    <SettingContent
+    <setting-content
       :current-tab="currentTab"
       :flow-settings="flowSettings"
       @settingChange="onSettingChange"

@@ -12,6 +12,9 @@ export default {
       dataUI: null
     };
   },
+  created() {
+    this.initData();
+  },
   methods: {
     onChangeTeacherInclude() {
       //
@@ -30,47 +33,49 @@ export default {
     },
     onChangeAsstSize() {
       //
+    },
+    /**
+     * To create initial data
+     */
+    initData() {
+      this.dataUI = [
+        {
+          name: 'Teacher Portraits',
+          options: this.marginOptions,
+          selected: this.marginOptions[0],
+          onChangeFn: this.onChangeTeacherInclude
+        },
+        {
+          name: 'Assistant Teacher Portraits',
+          options: this.marginOptions,
+          selected: this.marginOptions[0],
+          onChangeFn: this.onChangeAsstInclude
+        },
+        {
+          name: 'Teacher Placement',
+          options: this.marginOptions,
+          selected: this.marginOptions[0],
+          onChangeFn: this.onChangeTeacherPlacement
+        },
+        {
+          name: 'Teacher Portrait Size',
+          options: this.marginOptions,
+          selected: this.marginOptions[0],
+          onChangeFn: this.onChangeTeacherSize
+        },
+        {
+          name: 'Assistant Teacher Placement',
+          options: this.marginOptions,
+          selected: this.marginOptions[0],
+          onChangeFn: this.onChangeAsstPlacement
+        },
+        {
+          name: 'Assistant Teacher Portrait Size',
+          options: this.marginOptions,
+          selected: this.marginOptions[0],
+          onChangeFn: this.onChangeAsstSize
+        }
+      ];
     }
-  },
-
-  created() {
-    this.dataUI = [
-      {
-        name: 'Teacher Portraits',
-        options: this.marginOptions,
-        selected: this.marginOptions[0],
-        onChangeFn: this.onChangeTeacherInclude
-      },
-      {
-        name: 'Assistant Teacher Portraits',
-        options: this.marginOptions,
-        selected: this.marginOptions[0],
-        onChangeFn: this.onChangeAsstInclude
-      },
-      {
-        name: 'Teacher Placement',
-        options: this.marginOptions,
-        selected: this.marginOptions[0],
-        onChangeFn: this.onChangeTeacherPlacement
-      },
-      {
-        name: 'Teacher Portrait Size',
-        options: this.marginOptions,
-        selected: this.marginOptions[0],
-        onChangeFn: this.onChangeTeacherSize
-      },
-      {
-        name: 'Assistant Teacher Placement',
-        options: this.marginOptions,
-        selected: this.marginOptions[0],
-        onChangeFn: this.onChangeAsstPlacement
-      },
-      {
-        name: 'Assistant Teacher Portrait Size',
-        options: this.marginOptions,
-        selected: this.marginOptions[0],
-        onChangeFn: this.onChangeAsstSize
-      }
-    ];
   }
 };
