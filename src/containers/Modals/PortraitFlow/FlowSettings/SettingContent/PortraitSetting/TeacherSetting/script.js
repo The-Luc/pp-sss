@@ -6,10 +6,8 @@ export default {
     PpCombobox
   },
   data() {
-    const marginOptions = PORTRAIT_MARGIN_OPTIONS;
-
     return {
-      marginOptions,
+      marginOptions: PORTRAIT_MARGIN_OPTIONS,
       appendedIcon: ICON_LOCAL.APPENDED_ICON,
       dataUI: null
     };

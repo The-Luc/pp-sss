@@ -16,22 +16,9 @@ export default {
     }
   },
   data() {
-    const marginOptions = PORTRAIT_MARGIN_OPTIONS;
-
-    const min = PORTRAIT_COL_ROW_RANGE.MIN;
-    const max = PORTRAIT_COL_ROW_RANGE.MAX;
-    const range = max - min + 1;
-
-    const colRowOptions = Array.from({ length: range }, (_, i) => {
-      const val = i + min;
-      return {
-        name: val + '',
-        value: val
-      };
-    });
     return {
-      marginOptions,
-      colRowOptions,
+      marginOptions: PORTRAIT_MARGIN_OPTIONS,
+      colRowOptions: null,
       appendedIcon: ICON_LOCAL.APPENDED_ICON,
       dataUI: null
     };
@@ -67,6 +54,9 @@ export default {
         o => o.value === this.layoutSettings.margins.right
       );
     }
+  },
+  created() {
+    this.initData();
   },
   methods: {
     /**
@@ -122,47 +112,61 @@ export default {
      */
     emitEvent(val) {
       this.$emit('change', { ...this.layoutSettings, ...val });
-    }
-  },
+    },
+    /**
+     * To create initial data
+     */
+    initData() {
+      const min = PORTRAIT_COL_ROW_RANGE.MIN;
+      const max = PORTRAIT_COL_ROW_RANGE.MAX;
+      const range = max - min + 1;
 
-  created() {
-    this.dataUI = [
-      {
-        name: 'Row',
-        options: this.colRowOptions,
-        selected: this.selectedRow,
-        onChangeFn: this.onChangeRow
-      },
-      {
-        name: 'Col',
-        options: this.colRowOptions,
-        selected: this.selectedCol,
-        onChangeFn: this.onChangeCol
-      },
-      {
-        name: 'Top Margin',
-        options: this.marginOptions,
-        selected: this.selectedTop,
-        onChangeFn: this.onChangeTop
-      },
-      {
-        name: 'Bottom Margin',
-        options: this.marginOptions,
-        selected: this.selectedBottom,
-        onChangeFn: this.onChangeBottom
-      },
-      {
-        name: 'Left Margin',
-        options: this.marginOptions,
-        selected: this.selectedLeft,
-        onChangeFn: this.onChangeLeft
-      },
-      {
-        name: 'Right Margin',
-        options: this.marginOptions,
-        selected: this.selectedRight,
-        onChangeFn: this.onChangeRight
-      }
-    ];
+      this.colRowOptions = Array.from({ length: range }, (_, i) => {
+        const val = i + min;
+        return {
+          name: val + '',
+          value: val
+        };
+      });
+
+      this.dataUI = [
+        {
+          name: 'Row',
+          options: this.colRowOptions,
+          selected: this.selectedRow,
+          onChangeFn: this.onChangeRow
+        },
+        {
+          name: 'Col',
+          options: this.colRowOptions,
+          selected: this.selectedCol,
+          onChangeFn: this.onChangeCol
+        },
+        {
+          name: 'Top Margin',
+          options: this.marginOptions,
+          selected: this.selectedTop,
+          onChangeFn: this.onChangeTop
+        },
+        {
+          name: 'Bottom Margin',
+          options: this.marginOptions,
+          selected: this.selectedBottom,
+          onChangeFn: this.onChangeBottom
+        },
+        {
+          name: 'Left Margin',
+          options: this.marginOptions,
+          selected: this.selectedLeft,
+          onChangeFn: this.onChangeLeft
+        },
+        {
+          name: 'Right Margin',
+          options: this.marginOptions,
+          selected: this.selectedRight,
+          onChangeFn: this.onChangeRight
+        }
+      ];
+    }
   }
 };

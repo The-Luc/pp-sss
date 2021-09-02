@@ -1,10 +1,11 @@
 <template>
   <v-tabs-items v-model="currentTab">
-    <v-tab-item
-      ><PortraitSetting
+    <v-tab-item>
+      <PortraitSetting
         :flow-settings="flowSettings"
         @portraitSettingChange="onSettingChange"
-    /></v-tab-item>
+      />
+    </v-tab-item>
     <v-tab-item><TextSetting /></v-tab-item>
     <v-tab-item>Image Settings Component</v-tab-item>
     <v-tab-item>Flow Settings Component</v-tab-item>
