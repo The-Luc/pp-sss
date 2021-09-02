@@ -160,6 +160,9 @@ export default {
       return [...Array(totalPage).keys()].map(p => {
         return p + this.flowSettings.startOnPageNumber;
       });
+    },
+    onSettingChange(val) {
+      this.flowSettings = { ...this.flowSettings, ...val };
     }
   }
 };
