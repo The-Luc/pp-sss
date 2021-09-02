@@ -1,0 +1,23 @@
+.slide-item {
+  &.use-margin {
+    margin-left: 22px;
+    margin-right: 22px;
+  }
+
+  .page-info {
+    display: flex;
+    margin-top: 12px;
+    justify-content: space-between;
+    color: $color-gray5;
+    line-height: 15px;
+    font-size: $md-size;
+
+    .flow-no {
+      font-family: $font-700;
+    }
+
+    .page-no {
+      font-family: $font-300;
+    }
+  }
+}

@@ -20,6 +20,7 @@
         :flow-settings="flowSettings"
         :required-pages="requiredPages"
         @showPreview="onShowPreview"
+        @saveSettings="onSaveSettings"
       />
 
       <FlowPreview

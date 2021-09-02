@@ -1,0 +1,23 @@
+.slide-navigator {
+  display: flex;
+  width: 100%;
+  margin-top: 42px;
+  justify-content: space-between;
+
+  .paging {
+    display: flex;
+    align-items: center;
+    line-height: 0;
+
+    .item {
+      margin: 2px;
+      font-size: 14px;
+      color: $color-gray11;
+      cursor: pointer;
+
+      &.active {
+        color: $color-stoodio-toolbartext;
+      }
+    }
+  }
+}

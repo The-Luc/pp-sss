@@ -1,0 +1,28 @@
+.control-container {
+  width: 24px;
+  height: 24px;
+  position: relative;
+  align-items: center;
+  color: $color-gray2;
+  line-height: 0;
+  cursor: pointer;
+
+  &.disabled {
+    opacity: 0.4;
+    pointer-events: none;
+  }
+
+  .inner {
+    position: absolute;
+    top: 3px;
+    font-size: 18px;
+
+    &-back {
+      left: 2px;
+    }
+
+    &-next {
+      right: 3px;
+    }
+  }
+}

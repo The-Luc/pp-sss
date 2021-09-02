@@ -3,15 +3,15 @@ import { mapGetters } from 'vuex';
 import { GETTERS } from '@/store/modules/app/const';
 import { EDITION, TOOL_NAME, NO_SUBMENU_TOOLS } from '@/common/constants';
 
-import PrintThemes from './PrintThemes';
-import PrintLayouts from './PrintEdition/Layouts';
-import DigitalLayouts from './DigitalEdition/Layouts';
-import PrintBackgrounds from './PrintEdition/Backgrounds';
-import DigitalBackgrounds from './DigitalEdition/Backgrounds';
+import PrintThemes from './Themes/PrintThemes';
+import DigitalThemes from './Themes/DigitalThemes';
+import PrintLayouts from './Layouts/PrintLayouts';
+import DigitalLayouts from './Layouts/DigitalLayouts';
+import PrintBackgrounds from './Backgrounds/PrintBackgrounds';
+import DigitalBackgrounds from './Backgrounds/DigitalBackgrounds';
 import Shapes from './Shapes';
-import ClipArt from './ClipArt';
+import ClipArts from './ClipArts';
 import Actions from './Actions';
-import DigitalThemes from './DigitalThemes';
 
 const {
   PRINT_THEMES,
@@ -52,7 +52,7 @@ export default {
     [TOOL_NAME.DIGITAL_LAYOUTS]: DigitalLayouts,
     [TOOL_NAME.PRINT_BACKGROUNDS]: PrintBackgrounds,
     [TOOL_NAME.DIGITAL_BACKGROUNDS]: DigitalBackgrounds,
-    [TOOL_NAME.CLIP_ART]: ClipArt,
+    [TOOL_NAME.CLIP_ART]: ClipArts,
     [TOOL_NAME.SHAPES]: Shapes,
     [TOOL_NAME.ACTIONS]: Actions
   },

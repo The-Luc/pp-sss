@@ -13,7 +13,7 @@ import GanttChartModal from '@/views/CreateBook/Manager/Summary/SummaryInfo/Prog
 import EmptySection from '@/containers/Modals/EmptySection';
 import SelectTheme from '@/views/CreateBook/PrintEdition/EditScreen/Modal';
 import ModalSelectPage from '@/views/CreateBook/PrintEdition/EditScreen/PageEdition/ModalSelectPage';
-import ModalBackgroundSelectPage from '@/containers/ToolPopoverManager/PrintEdition/Backgrounds/ModalSelectPage';
+import ModalBackgroundSelectPage from '@/containers/ToolPopoverManager/Backgrounds/PrintBackgrounds/ModalSelectPage';
 import SelectThemeDigital from '@/views/CreateBook/DigitalEdition/EditScreen/ModalTheme';
 import AddDigitalFrame from '@/views/CreateBook/DigitalEdition/EditScreen/ModalLayout';
 import OverrideLayout from '@/views/CreateBook/DigitalEdition/EditScreen/OverrideLayoutModal';
