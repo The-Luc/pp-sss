@@ -1,9 +1,5 @@
 import PpCombobox from '@/components/Selectors/Combobox';
-import {
-  ICON_LOCAL,
-  PORTRAIT_COL_ROW_RANGE,
-  PORTRAIT_MARGIN_OPTIONS
-} from '@/common/constants';
+import { ICON_LOCAL, PORTRAIT_MARGIN_OPTIONS } from '@/common/constants';
 
 export default {
   components: {
@@ -12,42 +8,29 @@ export default {
   data() {
     const marginOptions = PORTRAIT_MARGIN_OPTIONS;
 
-    const min = PORTRAIT_COL_ROW_RANGE.MIN;
-    const max = PORTRAIT_COL_ROW_RANGE.MAX;
-    const range = max - min + 1;
-
-    const colRolOptions = Array.from({ length: range }, (_, i) => {
-      const val = i + min;
-      return {
-        name: val + '',
-        value: val
-      };
-    });
     return {
       marginOptions,
-      colRolOptions,
       appendedIcon: ICON_LOCAL.APPENDED_ICON,
       dataUI: null
     };
   },
   methods: {
-    onChangeRow() {
-      console.log('change row');
+    onChangeTeacherInclude() {
       //
     },
-    onChangeCol() {
+    onChangeAsstInclude() {
       //
     },
-    onChangeTop() {
+    onChangeTeacherPlacement() {
       //
     },
-    onChangeBottom() {
+    onChangeTeacherSize() {
       //
     },
-    onChangeLeft() {
+    onChangeAsstPlacement() {
       //
     },
-    onChangeRight() {
+    onChangeAsstSize() {
       //
     }
   },
@@ -56,39 +39,39 @@ export default {
     this.dataUI = [
       {
         name: 'Teacher Portraits',
-        options: this.colRolOptions,
-        selected: 0,
-        onChangeFn: this.onChangeRow
+        options: this.marginOptions,
+        selected: this.marginOptions[0],
+        onChangeFn: this.onChangeTeacherInclude
       },
       {
         name: 'Assistant Teacher Portraits',
-        options: this.colRolOptions,
-        selected: 0,
-        onChangeFn: this.onChangeCol
+        options: this.marginOptions,
+        selected: this.marginOptions[0],
+        onChangeFn: this.onChangeAsstInclude
       },
       {
         name: 'Teacher Placement',
         options: this.marginOptions,
-        selected: 0,
-        onChangeFn: this.onChangeTop
+        selected: this.marginOptions[0],
+        onChangeFn: this.onChangeTeacherPlacement
       },
       {
         name: 'Teacher Portrait Size',
         options: this.marginOptions,
-        selected: 0,
-        onChangeFn: this.onChangeBottom
+        selected: this.marginOptions[0],
+        onChangeFn: this.onChangeTeacherSize
       },
       {
         name: 'Assistant Teacher Placement',
         options: this.marginOptions,
-        selected: 0,
-        onChangeFn: this.onChangeLeft
+        selected: this.marginOptions[0],
+        onChangeFn: this.onChangeAsstPlacement
       },
       {
         name: 'Assistant Teacher Portrait Size',
         options: this.marginOptions,
-        selected: 0,
-        onChangeFn: this.onChangeRight
+        selected: this.marginOptions[0],
+        onChangeFn: this.onChangeAsstSize
       }
     ];
   }
