@@ -3,7 +3,7 @@ import {
   GETTERS as DIGITAL_GETTERS,
   MUTATES as DIGITAL_MUTATES
 } from '@/store/modules/digital/const';
-import { MUTATES, GETTERS } from '@/store/modules/app/const';
+import { MUTATES } from '@/store/modules/app/const';
 import { PROPERTIES_TOOLS } from '@/common/constants';
 import { cloneDeep } from 'lodash';
 
@@ -49,15 +49,7 @@ export const useFrame = () => {
  * and handling the opening event of Frame Info tab
  */
 export const useFrameSwitching = () => {
-  const { isMenuOpen } = useGetters({
-    currentFrame: DIGITAL_GETTERS.CURRENT_FRAME,
-    isMenuOpen: GETTERS.IS_OPEN_MENU_PROPERTIES
-  });
-
-  const {
-    setPropertiesObjectType,
-    setCurrentFrameVisited
-  } = useMutations({
+  const { setPropertiesObjectType, setCurrentFrameVisited } = useMutations({
     setPropertiesObjectType: MUTATES.SET_PROPERTIES_OBJECT_TYPE,
     setCurrentFrameVisited: DIGITAL_MUTATES.SET_FRAME_VISITED
   });
