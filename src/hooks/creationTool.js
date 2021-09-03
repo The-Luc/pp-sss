@@ -58,7 +58,6 @@ export const useToolBar = () => {
     themeId,
     selectedObjectType,
     propertiesType,
-    isMenuOpen,
     selectedToolName,
     isMediaSidebarOpen,
     disabledToolbarItems
@@ -66,7 +65,6 @@ export const useToolBar = () => {
     themeId: GETTERS.DEFAULT_THEME_ID,
     selectedObjectType: APP_GETTERS.SELECTED_OBJECT_TYPE,
     propertiesType: APP_GETTERS.PROPERTIES_OBJECT_TYPE,
-    isMenuOpen: APP_GETTERS.IS_OPEN_MENU_PROPERTIES,
     selectedToolName: APP_GETTERS.SELECTED_TOOL_NAME,
     isMediaSidebarOpen: APP_GETTERS.IS_MEDIA_SIDEBAR_OPEN,
     disabledToolbarItems: APP_GETTERS.DISABLED_TOOLBAR_ITEMS
@@ -88,7 +86,6 @@ export const useToolBar = () => {
     themeId,
     selectedObjectType,
     propertiesType,
-    isMenuOpen,
     selectedToolName,
     setToolNameSelected,
     isMediaSidebarOpen,

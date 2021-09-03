@@ -16,10 +16,6 @@ export default {
     selectedToolName: {
       type: String
     },
-    isMenuOpen: {
-      type: Boolean,
-      default: false
-    },
     propertiesType: {
       type: String
     },
