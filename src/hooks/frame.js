@@ -56,23 +56,17 @@ export const useFrameSwitching = () => {
 
   const {
     setPropertiesObjectType,
-    setIsOpenProperties,
     setCurrentFrameVisited
   } = useMutations({
     setPropertiesObjectType: MUTATES.SET_PROPERTIES_OBJECT_TYPE,
-    setIsOpenProperties: MUTATES.TOGGLE_MENU_PROPERTIES,
     setCurrentFrameVisited: DIGITAL_MUTATES.SET_FRAME_VISITED
   });
 
   const handleSwitchFrame = frame => {
     //open frame information panel
     if (!frame.isVisited) {
-      setPropertiesObjectType({ type: PROPERTIES_TOOLS.FRAME_INFO.type });
-      setIsOpenProperties({ isOpen: !isMenuOpen.value });
+      setPropertiesObjectType({ type: PROPERTIES_TOOLS.FRAME_INFO.name });
       setCurrentFrameVisited({ value: true });
-    } else {
-      setPropertiesObjectType({ type: '' });
-      setIsOpenProperties({ isOpen: false });
     }
   };
 

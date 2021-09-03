@@ -22,7 +22,6 @@ export const state = {
     }
   },
   propertiesModal: {
-    isOpen: false,
     selectedObjectType: '',
     propertiesObjectType: '',
     selectedObjectId: ''

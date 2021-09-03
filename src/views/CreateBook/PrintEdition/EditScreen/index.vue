@@ -10,11 +10,7 @@
       @toggleModal="onToggleModal"
     />
 
-    <FeedbackBar
-      :is-open-menu-properties="isOpenMenuProperties"
-      :selected-tool-name="selectedToolName"
-      @zoom="onZoom"
-    />
+    <FeedbackBar @zoom="onZoom" />
 
     <div class="left-panel">
       <SidebarSection />

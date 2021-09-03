@@ -1,8 +1,5 @@
 import { useGetters, useMutations } from 'vuex-composition-helpers';
-import {
-  GETTERS as APP_GETTERS,
-  MUTATES as APP_MUTATES
-} from '@/store/modules/app/const';
+import { GETTERS as APP_GETTERS } from '@/store/modules/app/const';
 import { MUTATES as PRINT_MUTATES } from '@/store/modules/print/const';
 import { MUTATES as DIGITAL_MUTATES } from '@/store/modules/digital/const';
 import { useAppCommon } from './common';
@@ -12,12 +9,7 @@ export const useMenuProperties = () => {
     isOpenMenuProperties: APP_GETTERS.IS_OPEN_MENU_PROPERTIES
   });
 
-  const { toggleMenuProperties } = useMutations({
-    toggleMenuProperties: APP_MUTATES.TOGGLE_MENU_PROPERTIES
-  });
-
   return {
-    toggleMenuProperties,
     isOpenMenuProperties
   };
 };

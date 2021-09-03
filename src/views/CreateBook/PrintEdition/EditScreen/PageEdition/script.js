@@ -6,7 +6,6 @@ import { imageBorderModifier, usePrintOverrides } from '@/plugins/fabric';
 
 import {
   useInfoBar,
-  useMenuProperties,
   useMutationPrintSheet,
   useProperties,
   useAppCommon,
@@ -91,7 +90,8 @@ import {
   DEFAULT_IMAGE,
   LAYOUT_PAGE_TYPE,
   SAVE_STATUS,
-  IMAGE_LOCAL
+  IMAGE_LOCAL,
+  PROPERTIES_TOOLS
 } from '@/common/constants';
 import SizeWrapper from '@/components/SizeWrapper';
 import PrintCanvasLines from './PrintCanvasLines';
@@ -134,7 +134,6 @@ export default {
     const { setInfoBar, zoom } = useInfoBar();
     const { onSaveStyle } = useStyle();
     const { savePrintEditScreen, getDataEditScreen } = useSaveData();
-    const { isOpenMenuProperties } = useMenuProperties();
     const {
       setPropertyById: setObjectPropById,
       setProperty: setObjectProp
@@ -152,7 +151,6 @@ export default {
       getDataEditScreen,
       setObjectPropById,
       setObjectProp,
-      isOpenMenuProperties,
       updateSavingStatus,
       savingStatus,
       updateSheetThumbnail,
@@ -232,6 +230,7 @@ export default {
         this.countPaste = 1;
 
         this.setSelectedObjectId({ id: '' });
+        this.setPropertiesObjectType({ type: '' });
         this.setCurrentObject(null);
         this.updateCanvasSize();
 
@@ -768,20 +767,10 @@ export default {
       }
     },
     /**
-     * Open text properties modal and set default properties
-     *
-     * @param {String}  objectType  type of selected object
-     */
-    openProperties(objectType, id) {
-      this.setIsOpenProperties({ isOpen: true, objectId: id });
-    },
-    /**
      * Reset configs text properties when close object
      */
     resetConfigTextProperties() {
-      if (this.propertiesObjectType !== OBJECT_TYPE.BACKGROUND) {
-        this.setIsOpenProperties({ isOpen: false });
-
+      if (!isNonElementPropSelected(this.propertiesObjectType)) {
         this.setPropertiesObjectType({ type: '' });
       }
 
@@ -863,9 +852,9 @@ export default {
 
       this.setObjectTypeSelected({ type: objectData.type });
 
-      this.setPropertiesObjectType({ type: objectData.type });
+      this.setPropertiesObjectType({ type: PROPERTIES_TOOLS.PROPERTIES.name });
 
-      this.openProperties(objectData.type, id);
+      this.setIsOpenProperties({ objectId: id });
     },
     /**
      * Event fire when user double click on Text area and allow user edit text as
@@ -1037,8 +1026,6 @@ export default {
       if (this.totalBackground > 0) return;
 
       this.closeProperties();
-
-      this.setIsOpenProperties({ isOpen: false });
 
       this.setPropertiesObjectType({ type: '' });
     },
@@ -1910,8 +1897,6 @@ export default {
       }
 
       if (isNonElementPropSelected(this.propertiesObjectType)) {
-        this.setIsOpenProperties({ isOpen: false });
-
         this.setPropertiesObjectType({ type: '' });
       }
 

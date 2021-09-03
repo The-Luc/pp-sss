@@ -8,7 +8,7 @@ import {
   useFrame,
   useFrameAdd,
   useModal,
-  useMenuProperties
+  useToolBar
 } from '@/hooks';
 
 import { MODAL_TYPES } from '@/common/constants';
@@ -47,14 +47,14 @@ export default {
     const { moveFrame } = useFrameOrdering();
     const { setCurrentFrameId } = useFrame();
     const { handleAddFrame } = useFrameAdd();
-    const { toggleMenuProperties } = useMenuProperties();
+    const { setPropertiesType } = useToolBar();
 
     return {
       toggleModal,
       moveFrame,
       handleAddFrame,
       setCurrentFrameId,
-      toggleMenuProperties
+      setPropertiesType
     };
   },
   methods: {
@@ -89,7 +89,8 @@ export default {
      * @param {Element} target add frame button
      */
     addFrame({ target }) {
-      this.toggleMenuProperties({ isOpen: false });
+      this.setPropertiesType({ type: '' });
+
       const { left, width } = target.getBoundingClientRect();
       const centerX = left + width / 2;
       this.toggleModal({

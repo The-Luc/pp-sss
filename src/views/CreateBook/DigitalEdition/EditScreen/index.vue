@@ -12,12 +12,7 @@
       @endInstruction="onInstructionEnd"
     />
 
-    <FeedbackBar
-      :is-open-menu-properties="isOpenMenuProperties"
-      :selected-tool-name="selectedToolName"
-      :is-digital="true"
-      @zoom="onZoom"
-    />
+    <FeedbackBar :is-digital="true" @zoom="onZoom" />
 
     <div class="left-panel">
       <SidebarSection />

@@ -9,14 +9,7 @@ import {
   SHEET_TYPE
 } from '@/common/constants';
 import { useLayoutPrompt, useToolBar, useSheet } from '@/hooks';
-import {
-  isEmpty,
-  getRightToolItems,
-  isInstructionTool,
-  isElementTool,
-  isTogglePropertiesMenu,
-  getNonElementToolType
-} from '@/common/utils';
+import { isEmpty, getRightToolItems, isInstructionTool } from '@/common/utils';
 
 export default {
   components: {
@@ -34,9 +27,11 @@ export default {
       togglePropertiesMenu,
       updateMediaSidebarOpen,
       isMediaSidebarOpen,
-      disabledToolbarItems
+      disabledToolbarItems,
+      setPropertiesType
     } = useToolBar();
     const { currentSheet } = useSheet();
+
     return {
       isPrompt,
       themeId,
@@ -49,13 +44,14 @@ export default {
       updateMediaSidebarOpen,
       isMediaSidebarOpen,
       disabledToolbarItems,
-      currentSheet
+      currentSheet,
+      setPropertiesType
     };
   },
   data() {
     return {
       itemsToolLeft: PRINT_CREATION_TOOLS,
-      itemsToolRight: [getRightToolItems(PRINT_RIGHT_TOOLS)]
+      itemsToolRight: getRightToolItems(PRINT_RIGHT_TOOLS)
     };
   },
   computed: {
@@ -73,9 +69,7 @@ export default {
     onClickRightTool(item) {
       if (isEmpty(this.themeId)) return;
 
-      const isElementProp = isElementTool(item);
-
-      if (isElementProp && isEmpty(this.selectedObjectType)) return;
+      if (item.isElementProperties && isEmpty(this.selectedObjectType)) return;
 
       if (isInstructionTool(this.selectedToolName)) {
         this.$emit('switchTool', '');
@@ -83,17 +77,9 @@ export default {
         this.setToolNameSelected({ name: '' });
       }
 
-      const isToggle = isTogglePropertiesMenu(
-        item,
-        this.propertiesType,
-        isElementProp
-      );
+      const toolType = item.name === this.propertiesType ? '' : item.name;
 
-      const propType = isElementProp
-        ? this.selectedObjectType
-        : getNonElementToolType(item?.name);
-
-      this.togglePropertiesMenu(propType, isToggle ? !this.isMenuOpen : true);
+      this.setPropertiesType({ type: toolType });
     },
     /**
      * Detect click on item on left creattion tool
