@@ -140,13 +140,18 @@ export default {
     AddBoxInstruction,
     Frames
   },
+  props: {
+    frames: {
+      type: Array,
+      default: () => []
+    }
+  },
   setup() {
     const { drawLayout } = useDrawLayout();
     const { setInfoBar, zoom } = useInfoBar();
     const { openPrompt } = useLayoutPrompt();
     const { handleSwitchFrame } = useFrameSwitching();
     const {
-      frames,
       currentFrame,
       currentFrameId,
       updateFrameObjects,
@@ -162,7 +167,6 @@ export default {
     const { updateMediaSidebarOpen } = useToolBar();
 
     return {
-      frames,
       currentFrame,
       currentFrameId,
       drawLayout,

@@ -26,6 +26,7 @@ import {
   ROLE,
   SAVE_STATUS,
   SAVING_DURATION,
+  SHEET_TYPE,
   TOOL_NAME
 } from '@/common/constants';
 import {
@@ -42,7 +43,12 @@ import {
   useToolBar
 } from '@/hooks';
 import { EDITION } from '@/common/constants';
-import { isEmpty, isPositiveInteger, getEditionListPath } from '@/common/utils';
+import {
+  isEmpty,
+  isPositiveInteger,
+  getEditionListPath,
+  mergeArrayNonEmpty
+} from '@/common/utils';
 
 import { useSaveData } from './PageEdition/composables';
 import {
@@ -76,11 +82,15 @@ export default {
     const { savePrintEditScreen, getDataEditScreen } = useSaveData();
     const { setPropertyById, setPropOfMultipleObjects } = useProperties();
     const { updateSavingStatus } = useSavingStatus();
-    const { sheetMedia } = useSheet();
+    const { sheetMedia, currentSheet } = useSheet();
     const { updateSheetMedia, deleteSheetMedia } = useActionsEditionSheet();
     const { getBookPrintInfo } = useBookPrintInfo();
     const { listObjects } = useObjectProperties();
-    const { isMediaSidebarOpen, updateMediaSidebarOpen } = useToolBar();
+    const {
+      isMediaSidebarOpen,
+      updateMediaSidebarOpen,
+      disabledToolbarItems
+    } = useToolBar();
 
     return {
       pageSelected,
@@ -101,7 +111,9 @@ export default {
       listObjects,
       setPropOfMultipleObjects,
       isMediaSidebarOpen,
-      updateMediaSidebarOpen
+      updateMediaSidebarOpen,
+      disabledToolbarItems,
+      currentSheet
     };
   },
   data() {
@@ -131,6 +143,12 @@ export default {
       );
 
       return !hasEmptyImage;
+    },
+    disabledItems() {
+      const portrait =
+        this.currentSheet.type === SHEET_TYPE.COVER ? TOOL_NAME.PORTRAIT : '';
+
+      return mergeArrayNonEmpty(this.disabledToolbarItems, [portrait]);
     }
   },
   watch: {

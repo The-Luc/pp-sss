@@ -1,0 +1,10 @@
+.transition-item {
+  .properties {
+    display: flex;
+    flex-direction: column;
+
+    .group {
+      display: flex;
+    }
+  }
+}

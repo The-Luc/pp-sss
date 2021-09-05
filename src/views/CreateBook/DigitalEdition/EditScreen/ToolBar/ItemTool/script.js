@@ -1,7 +1,5 @@
 import ToolButton from '@/components/Buttons/ToolButton';
 
-import { useToolBar } from '@/hooks';
-
 import { isToolActivated } from '@/common/utils';
 
 export default {
@@ -22,12 +20,11 @@ export default {
     isPrompt: {
       type: Boolean,
       default: false
+    },
+    disabledItems: {
+      type: Array,
+      default: () => []
     }
-  },
-  setup() {
-    const { disabledToolbarItems } = useToolBar();
-
-    return { disabledToolbarItems };
   },
   methods: {
     /**
@@ -44,7 +41,7 @@ export default {
      * @returns {Boolean}       item is disabled
      */
     isDisabledItem({ name }) {
-      return this.disabledToolbarItems.includes(name);
+      return this.disabledItems.includes(name);
     },
     /**
      * Check whether icon tool active or not

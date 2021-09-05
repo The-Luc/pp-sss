@@ -1,0 +1,10 @@
+.group-item {
+  width: 63px;
+
+  ::v-deep {
+    .pp-number {
+      max-width: 100%;
+      height: 26px;
+    }
+  }
+}

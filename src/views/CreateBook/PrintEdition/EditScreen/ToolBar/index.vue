@@ -9,7 +9,7 @@
           :selected-tool-name="selectedToolName"
           :properties-type="propertiesType"
           :is-prompt="isPrompt"
-          :disabled-toolbar-items="disabledItems"
+          :disabled-items="disabledItems"
           @click="onClickLeftTool"
         />
       </div>
@@ -21,7 +21,7 @@
           :selected-tool-name="selectedToolName"
           :properties-type="propertiesType"
           :is-prompt="isPrompt"
-          :disabled-toolbar-items="disabledItems"
+          :disabled-items="disabledItems"
           @click="onClickRightTool"
         />
       </div>

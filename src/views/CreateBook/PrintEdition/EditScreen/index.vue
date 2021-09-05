@@ -3,6 +3,7 @@
     <Header name-editor="print editor" @onClickSave="onClickSavePrintCanvas" />
 
     <ToolBar
+      :disabled-items="disabledItems"
       @undo="onUndo"
       @redo="onRedo"
       @switchTool="onToolSwitch"

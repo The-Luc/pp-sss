@@ -5,15 +5,20 @@ import {
   OBJECT_TYPE,
   PRINT_RIGHT_TOOLS,
   EDITION,
-  PRINT_CREATION_TOOLS,
-  SHEET_TYPE
+  PRINT_CREATION_TOOLS
 } from '@/common/constants';
-import { useLayoutPrompt, useToolBar, useSheet } from '@/hooks';
+import { useLayoutPrompt, useToolBar } from '@/hooks';
 import { isEmpty, getRightToolItems, isInstructionTool } from '@/common/utils';
 
 export default {
   components: {
     ItemTool
+  },
+  props: {
+    disabledItems: {
+      type: Array,
+      default: () => []
+    }
   },
   setup() {
     const { isPrompt } = useLayoutPrompt(EDITION.PRINT);
@@ -26,10 +31,8 @@ export default {
       togglePropertiesMenu,
       updateMediaSidebarOpen,
       isMediaSidebarOpen,
-      disabledToolbarItems,
       setPropertiesType
     } = useToolBar();
-    const { currentSheet } = useSheet();
 
     return {
       isPrompt,
@@ -41,8 +44,6 @@ export default {
       togglePropertiesMenu,
       updateMediaSidebarOpen,
       isMediaSidebarOpen,
-      disabledToolbarItems,
-      currentSheet,
       setPropertiesType
     };
   },
@@ -51,13 +52,6 @@ export default {
       itemsToolLeft: PRINT_CREATION_TOOLS,
       itemsToolRight: getRightToolItems(PRINT_RIGHT_TOOLS)
     };
-  },
-  computed: {
-    disabledItems() {
-      return this.currentSheet.type !== SHEET_TYPE.COVER
-        ? this.disabledToolbarItems
-        : [...this.disabledToolbarItems, TOOL_NAME.PORTRAIT];
-    }
   },
   methods: {
     /**
