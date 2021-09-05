@@ -62,7 +62,8 @@ import {
   handleMouseOver,
   handleMouseOut,
   handleObjectSelected,
-  handleObjectDeselected
+  handleObjectDeselected,
+  calcAnimationOrder
 } from '@/common/fabricObjects';
 import { createImage } from '@/common/fabricObjects';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
@@ -1317,7 +1318,16 @@ export default {
 
       const newProp = await this.updateElementProp(element, prop, objectType);
 
-      if (prop.playInOrder || prop.playOutOrder) {
+      if (prop?.animationIn?.order || prop?.animationOut?.order) {
+        const playInOrder = prop?.animationIn?.order;
+        const playOutOrder = prop?.animationOut?.order;
+
+        if (playInOrder) {
+          element.set({ playInOrder });
+        }
+        if (playOutOrder) {
+          element.set({ playOutOrder });
+        }
         handleObjectSelected(element);
       }
 
@@ -1957,6 +1967,8 @@ export default {
       this.deleteObjects({ ids });
 
       deleteSelectedObjects(this.digitalCanvas);
+
+      calcAnimationOrder(this.digitalCanvas);
     },
 
     /**

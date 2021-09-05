@@ -11,6 +11,10 @@ export default {
     selectedCase: {
       type: String,
       required: true
+    },
+    disabled: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
