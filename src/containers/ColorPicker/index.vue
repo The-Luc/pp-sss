@@ -2,7 +2,7 @@
   <div class="color-container">
     <span class="properties-title">{{ label }}: </span>
     <div class="color-content">
-      <div ref="boxColor" class="box-color">
+      <div ref="boxColor" :class="['box-color', { disabled }]">
         <div
           :style="{ backgroundColor: color }"
           class="box-color-active"
@@ -11,7 +11,7 @@
       </div>
       <v-icon v-if="showEyeDropper" @click="onOpenEyeDropper">colorize</v-icon>
       <PickerPopup
-        v-if="isOpen"
+        v-if="isOpen && !disabled"
         :top="top"
         :left="left"
         :height="height"

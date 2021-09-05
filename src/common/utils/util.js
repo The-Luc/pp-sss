@@ -393,10 +393,28 @@ export const getUniqueId = () => {
   return uniqueId();
 };
 
+/**
+ * Get different of arrays
+ *
+ * @param   {Array}     arr1      first array
+ * @param   {Array}     arr2      second array
+ * @param   {Function}  compareFn compare method
+ * @returns {Array}               result
+ */
 export const getDiffBetweenArray = (arr1, arr2, compareFn) => {
   return differenceWith(
     arr1.length >= arr2.length ? arr1 : arr2,
     arr1.length <= arr2.length ? arr1 : arr2,
     compareFn
   );
+};
+
+/**
+ * Get boolean from nullable boolean
+ *
+ * @param   {Boolean} value nullable boolean
+ * @returns {Boolean}       boolean value
+ */
+export const getBoolean = value => {
+  return isEmpty(value) ? false : value;
 };

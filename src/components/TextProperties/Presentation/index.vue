@@ -2,13 +2,13 @@
   <div class="presentation-container">
     <span class="properties-title">Presentation:</span>
     <PpButtonGroup :item="selectedStyles" multiple @change="onChange">
-      <v-btn :value="BOLD">
+      <v-btn :disabled="disabled" :value="BOLD">
         <v-icon>format_bold</v-icon>
       </v-btn>
-      <v-btn :value="ITALIC">
+      <v-btn :disabled="disabled" :value="ITALIC">
         <v-icon>format_italic</v-icon>
       </v-btn>
-      <v-btn :value="UNDERLINE">
+      <v-btn :disabled="disabled" :value="UNDERLINE">
         <v-icon>format_underlined</v-icon>
       </v-btn>
     </PpButtonGroup>

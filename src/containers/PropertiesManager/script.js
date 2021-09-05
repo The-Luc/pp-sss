@@ -1,6 +1,3 @@
-import { mapGetters } from 'vuex';
-
-import { GETTERS } from '@/store/modules/app/const';
 import { OBJECT_TYPE, PROPERTIES_TOOLS } from '@/common/constants';
 
 // Object component
@@ -12,11 +9,13 @@ import Shape from '@/containers/PropertiesManager/Shape';
 import Video from '@/containers/PropertiesManager/Video';
 import PageInfo from '@/containers/PropertiesManager/PageInfo';
 import FrameInfo from '@/containers/PropertiesManager/FrameInfo';
+import { isEmpty } from '@/common/utils';
+import { useToolBar } from '@/hooks';
 
 const { TEXT, IMAGE, CLIP_ART, BACKGROUND, SHAPE, VIDEO } = OBJECT_TYPE;
 
-const PAGE_INFO = PROPERTIES_TOOLS.PAGE_INFO.id;
-const FRAME_INFO = PROPERTIES_TOOLS.FRAME_INFO.id;
+const PAGE_INFO = PROPERTIES_TOOLS.PAGE_INFO.name;
+const FRAME_INFO = PROPERTIES_TOOLS.FRAME_INFO.name;
 
 const MenuList = {
   [TEXT]: TEXT,
@@ -36,6 +35,11 @@ export default {
       default: false
     }
   },
+  setup() {
+    const { propertiesType, selectedObjectType } = useToolBar();
+
+    return { propertiesType, selectedObjectType };
+  },
   data() {
     return {
       renderObject: '',
@@ -53,16 +57,30 @@ export default {
     [PAGE_INFO]: PageInfo,
     [FRAME_INFO]: FrameInfo
   },
-  computed: {
-    ...mapGetters({
-      propertiesObjectType: GETTERS.PROPERTIES_OBJECT_TYPE
-    })
-  },
   watch: {
-    propertiesObjectType(objectType) {
-      if (objectType) {
-        this.setObjectComponent(objectType);
+    propertiesType(val) {
+      if (isEmpty(val)) {
+        this.renderObject = null;
+
+        return;
       }
+
+      if (val === PROPERTIES_TOOLS.PROPERTIES.name) {
+        this.setObjectComponent(this.selectedObjectType);
+
+        return;
+      }
+
+      this.setObjectComponent(val);
+    },
+    selectedObjectType(val) {
+      if (isEmpty(val) && isEmpty(this.propertiesType)) {
+        this.renderObject = null;
+
+        return;
+      }
+
+      this.setObjectComponent(val);
     }
   },
   methods: {

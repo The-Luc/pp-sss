@@ -3,6 +3,11 @@ import {
   DEFAULT_PROP,
   DEFAULT_SHADOW
 } from '@/common/constants';
+import {
+  ANIMATION_DIR,
+  CONTROL_TYPE,
+  PLAY_IN_STYLES
+} from '@/common/constants/animationProperty';
 import { BaseEntity, BaseObject } from '../base';
 
 export class BaseSize extends BaseObject {
@@ -71,6 +76,7 @@ export class BaseAnimation extends BaseObject {
   duration = 0.8;
   direction = '';
   scale = 50;
+  order = 1;
 
   /**
    * @param {BaseAnimation} props
@@ -113,7 +119,11 @@ export class BaseMoveableElementObject extends BaseElementObject {
   coord = new BasePosition();
   border = new BaseBorder();
   shadow = new BaseShadow();
-  animationIn = new BaseAnimation();
+  animationIn = new BaseAnimation({
+    controlType: CONTROL_TYPE.PLAY_IN,
+    style: PLAY_IN_STYLES.FADE_SLIDE_IN,
+    direction: ANIMATION_DIR.LEFT_RIGHT
+  });
   animationOut = new BaseAnimation();
 
   /**

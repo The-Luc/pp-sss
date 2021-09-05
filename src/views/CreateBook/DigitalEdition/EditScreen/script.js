@@ -11,7 +11,7 @@ import SidebarSection from './SidebarSection';
 
 import { mapGetters, mapMutations, mapActions } from 'vuex';
 
-import { GETTERS, MUTATES } from '@/store/modules/app/const';
+import { MUTATES } from '@/store/modules/app/const';
 import {
   ACTIONS as DIGITAL_ACTIONS,
   MUTATES as DIGITAL_MUTATES,
@@ -117,8 +117,6 @@ export default {
   },
   computed: {
     ...mapGetters({
-      isOpenMenuProperties: GETTERS.IS_OPEN_MENU_PROPERTIES,
-      selectedToolName: GETTERS.SELECTED_TOOL_NAME,
       defaultThemeId: DIGITAL_GETTERS.DEFAULT_THEME_ID
     }),
     isShowAutoflow() {
