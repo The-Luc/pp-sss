@@ -119,7 +119,9 @@ export const toFabricTextProp = prop => {
       'flip',
       'rotation',
       'isConstrain',
-      'coord'
+      'coord',
+      'animationIn',
+      'animationOut'
     ]
   };
 
@@ -148,7 +150,9 @@ export const toFabricTextBorderProp = prop => {
       'rotation',
       'isConstrain',
       'style',
-      'coord'
+      'coord',
+      'animationIn',
+      'animationOut'
     ]
   };
 
@@ -805,6 +809,12 @@ export const fabricToPpObject = fabricObject => {
   };
 };
 
+/**
+ * Create image from svg element
+ * @param {Number} val object's order
+ * @param {*} fill background color
+ * @return image element
+ */
 const createSVGElement = (val, fill) => {
   return new Promise(resolve => {
     const svgNS = 'http://www.w3.org/2000/svg';
@@ -849,6 +859,10 @@ const createSVGElement = (val, fill) => {
   });
 };
 
+/**
+ * Handle when select object
+ * @param {Object} target fabric object
+ */
 export const handleObjectSelected = async target => {
   if (target.objectType === OBJECT_TYPE.TEXT) {
     const [rect] = target.getObjects();
@@ -860,7 +874,27 @@ export const handleObjectSelected = async target => {
   }
 };
 
+/**
+ * Handle when deselect object
+ * @param {Object} target fabric object
+ */
 export const handleObjectDeselected = target => {
   target.set({ playIn: null, playOut: null, dirty: true });
   target.canvas.renderAll();
+};
+
+/**
+ * Calculate animation order after delete objects
+ * @param {Element} canvas active canvas
+ */
+export const calcAnimationOrder = canvas => {
+  const objs = canvas.getObjects();
+  objs.forEach(obj => {
+    const playInOrder = obj.get('playInOrder');
+    const playOutOrder = obj.get('playOutOrder');
+    obj.set({
+      playInOrder: Math.min(objs.length, playInOrder),
+      playOutOrder: Math.min(objs.length, playOutOrder)
+    });
+  });
 };
