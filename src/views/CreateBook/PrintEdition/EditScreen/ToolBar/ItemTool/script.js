@@ -14,10 +14,6 @@ export default {
     selectedToolName: {
       type: String
     },
-    isMenuOpen: {
-      type: Boolean,
-      default: false
-    },
     propertiesType: {
       type: String
     },
@@ -28,23 +24,6 @@ export default {
     disabledToolbarItems: {
       type: Array,
       default: () => []
-    }
-  },
-  computed: {
-    /**
-     * Check whether icon tool active or not
-     * @param  {String} iconName The name of icon be clicked
-     * @return {Boolean}  Active current icon clicked and inactive icon before
-     */
-    isActive() {
-      return iconName => {
-        return isToolActivated(
-          iconName,
-          this.propertiesType,
-          this.isMenuOpen,
-          this.selectedToolName
-        );
-      };
     }
   },
   methods: {
@@ -63,6 +42,14 @@ export default {
      */
     isDisabledItem({ name }) {
       return this.disabledToolbarItems.includes(name);
+    },
+    /**
+     * Check whether icon tool active or not
+     * @param   {Object}  item  The name of icon be clicked
+     * @return  {Boolean}       Active current icon clicked and inactive icon before
+     */
+    isActive(item) {
+      return isToolActivated(item, this.propertiesType, this.selectedToolName);
     }
   }
 };

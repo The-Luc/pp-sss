@@ -4,7 +4,7 @@
       v-for="(item, index) in items"
       :key="index"
       :is-prompt="isPrompt"
-      :is-active="isActive(item.name)"
+      :is-active="isActive(item)"
       :icon-name="item.iconName"
       :title="item.title"
       :disabled="isDisabledItem(item)"

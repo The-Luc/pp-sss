@@ -26,7 +26,8 @@ import {
   EVENT_TYPE,
   WINDOW_EVENT_TYPE,
   CROP_CONTROL,
-  IMAGE_LOCAL
+  IMAGE_LOCAL,
+  PROPERTIES_TOOLS
 } from '@/common/constants';
 import {
   addPrintClipArts,
@@ -206,7 +207,6 @@ export default {
     ...mapGetters({
       pageSelected: DIGITAL_GETTERS.CURRENT_SHEET,
       sheetLayout: DIGITAL_GETTERS.SHEET_LAYOUT,
-      isOpenMenuProperties: APP_GETTERS.IS_OPEN_MENU_PROPERTIES,
       selectedObject: DIGITAL_GETTERS.CURRENT_OBJECT,
       toolNameSelected: APP_GETTERS.SELECTED_TOOL_NAME,
       currentBackgrounds: DIGITAL_GETTERS.BACKGROUNDS,
@@ -229,7 +229,7 @@ export default {
         // reset frames, frameIDs, currentFrameId
         this.setFrames({ framesList: [] });
         this.setSelectedObjectId({ id: '' });
-        this.setIsOpenProperties({ isOpen: false });
+        this.setPropertiesObjectType({ type: '' });
         this.setCurrentObject(null);
         this.updateCanvasSize();
 
@@ -260,6 +260,7 @@ export default {
       }
 
       this.setSelectedObjectId({ id: '' });
+      this.setPropertiesObjectType({ type: '' });
       this.setCurrentObject(null);
 
       resetObjects(this.digitalCanvas);
@@ -627,8 +628,6 @@ export default {
       }
 
       if (isNonElementPropSelected(this.propertiesObjectType)) {
-        this.setIsOpenProperties({ isOpen: false });
-
         this.setPropertiesObjectType({ type: '' });
       }
 
@@ -724,9 +723,9 @@ export default {
 
       this.setObjectTypeSelected({ type: objectData.type });
 
-      this.setPropertiesObjectType({ type: objectData.type });
+      this.setPropertiesObjectType({ type: PROPERTIES_TOOLS.PROPERTIES.name });
 
-      this.openProperties(objectData.type, id);
+      this.setIsOpenProperties({ objectId: id });
     },
 
     /**
@@ -939,15 +938,6 @@ export default {
       this.y = 0;
       document.body.removeEventListener('mousemove', this.handleBodyMouseMove);
       document.body.removeEventListener('keyup', this.handleKeyPress);
-    },
-
-    /**
-     * Open text properties modal and set default properties
-     *
-     * @param {String}  objectType  type of selected object
-     */
-    openProperties(objectType, id) {
-      this.setIsOpenProperties({ isOpen: true, objectId: id });
     },
 
     /**
@@ -1657,17 +1647,13 @@ export default {
 
       this.closeProperties();
 
-      this.setIsOpenProperties({ isOpen: false });
-
       this.setPropertiesObjectType({ type: '' });
     },
     /**
      * Reset configs properties when close object
      */
     resetConfigTextProperties() {
-      if (this.propertiesObjectType !== OBJECT_TYPE.BACKGROUND) {
-        this.setIsOpenProperties({ isOpen: false });
-
+      if (!isNonElementPropSelected(this.propertiesObjectType)) {
         this.setPropertiesObjectType({ type: '' });
       }
 
