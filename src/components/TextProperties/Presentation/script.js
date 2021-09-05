@@ -9,6 +9,10 @@ export default {
     selectedStyles: {
       type: Array,
       required: true
+    },
+    disabled: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
