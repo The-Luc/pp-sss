@@ -257,7 +257,6 @@ export default {
      * @returns {Number} start asset
      */
     getStartAsset(index) {
-      console.log(index * this.maxPortraitPerPage + 1);
       return index * this.maxPortraitPerPage + 1;
     },
     /**
