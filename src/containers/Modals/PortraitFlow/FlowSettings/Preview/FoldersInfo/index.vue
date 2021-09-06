@@ -1,6 +1,14 @@
 <template>
   <div class="folders-info">
-    Folders Information Component
+    <div>Folder(s):</div>
+    <div class="folder-text-wrapper">
+      <div ref="folderText" class="emphasize folder-text">
+        {{ folderNames.join(', ') }}
+      </div>
+      <folder-name v-if="isShowMoreDisplayed" :folder-names="folderNames" />
+    </div>
+    <div>Total Portraits:</div>
+    <div class="emphasize">{{ totalPortraits }}</div>
   </div>
 </template>
 

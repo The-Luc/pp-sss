@@ -36,7 +36,8 @@ export default {
   created() {
     this.flowSettings = new PortraitFlowData({
       startOnPageNumber: 1, // TODO: get from current sheet (implement in another ticket)
-      totalPortraitsCount: this.getTotalPortrait()
+      totalPortraitsCount: this.getTotalPortrait(),
+      folders: this.selectedFolders
     });
 
     this.requiredPages = this.getRequiredPages();
@@ -161,6 +162,10 @@ export default {
         return p + this.flowSettings.startOnPageNumber;
       });
     },
+    /**
+     * To update flowSetting with data come from child componenet settings
+     * @param {Object} val data will be update to flowSetting
+     */
     onSettingChange(val) {
       this.flowSettings = { ...this.flowSettings, ...val };
     }
