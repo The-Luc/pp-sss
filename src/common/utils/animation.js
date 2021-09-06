@@ -55,7 +55,7 @@ const fadeOut = (element, options, canvas) => {
  */
 const fadeScaleIn = (element, options, canvas) => {
   const { duration, scale } = options;
-  if (!duration || !scale) return;
+  if (!duration || typeof scale !== 'number') return;
 
   const center = element.getCenterPoint();
   const originTop = element.top;
@@ -102,7 +102,7 @@ const fadeScaleIn = (element, options, canvas) => {
  */
 const fadeScaleOut = (element, options, canvas) => {
   const { duration, scale } = options;
-  if (!duration || !scale) return;
+  if (!duration || typeof scale !== 'number') return;
 
   const center = element.getCenterPoint();
   const originTop = element.top;
