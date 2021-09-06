@@ -175,8 +175,8 @@ const renderImageCropControl = function(ctx) {
   const ele = this.control;
   const { width, height } = ele;
 
-  const sW = (this.width * this.scaleX) / 3;
-  const sH = (this.height * this.scaleY) / 3;
+  const sW = (this.width * this.scaleX) / 2;
+  const sH = (this.height * this.scaleY) / 2;
 
   const sX = -sW / 2 + width / 5;
   const sY = -sH + height / 2;

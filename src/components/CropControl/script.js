@@ -41,7 +41,14 @@ export default {
       const { width, height, scaleX, scaleY } = this.selectedImage;
       const objectW = width * scaleX;
       const objectH = height * scaleY;
-      return objectW < objectH ? 50 : 25;
+      const ratio = objectW / objectH;
+      return ratio < 0.5 || ratio > 3
+        ? 70
+        : ratio < 1 || ratio > 2.5
+        ? 60
+        : ratio > 1.5
+        ? 50
+        : 30;
     }
   },
   methods: {
@@ -79,9 +86,11 @@ export default {
     onCrop() {
       const canvas = this.$refs.clipper.clip();
       const url = canvas.toDataURL();
+      const translate = this.$refs.clipper.bgTL$;
       const cropInfo = {
         rotate: this.rotate,
-        scale: this.scale
+        scale: this.scale,
+        translate
       };
       this.$emit('crop', url, cropInfo);
     },
@@ -97,9 +106,14 @@ export default {
     open(val) {
       if (!val) return;
 
-      const { rotate = 0, scale = 2 } = this.selectedImage?.cropInfo || {};
+      const { rotate = 0, scale = 2, translate } =
+        this.selectedImage?.cropInfo || {};
       this.rotate = rotate;
       this.scale = scale;
+
+      setTimeout(() => {
+        this.$refs?.clipper?.setTL$?.next(translate);
+      }, 250);
     }
   }
 };

@@ -37,7 +37,7 @@ export const IMAGE_INDICATOR = {
 export const CROP_CONTROL = {
   WIDTH: 600,
   HEIGHT: 300,
-  OFFSET: 150
+  OFFSET: 50
 };
 
 export const DEFAULE_SLIDER = {
