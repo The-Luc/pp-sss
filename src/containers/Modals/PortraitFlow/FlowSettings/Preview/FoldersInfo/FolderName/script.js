@@ -7,7 +7,7 @@ export default {
   },
   data() {
     return {
-      menu: false
+      isMenuDisplayed: false
     };
   }
 };

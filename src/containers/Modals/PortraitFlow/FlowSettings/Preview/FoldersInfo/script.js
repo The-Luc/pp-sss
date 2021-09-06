@@ -30,6 +30,9 @@ export default {
         (folder, idx) => `(${idx + 1}) ${folder.name}`
       );
     },
+    folderNameText() {
+      return this.folderNames.join(', ');
+    },
     isShowMoreDisplayed() {
       return this.isOverflowing && this.selectedFolders.length > 1;
     }

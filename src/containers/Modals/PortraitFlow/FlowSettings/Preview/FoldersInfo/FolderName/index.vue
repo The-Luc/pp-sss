@@ -1,7 +1,7 @@
 <template>
   <div class="folder-name-container">
     <v-menu
-      v-model="menu"
+      v-model="isMenuDisplayed"
       min-width="324"
       max-width="324"
       absolute
@@ -9,7 +9,11 @@
       attach
     >
       <template #activator="{ on, attrs }">
-        <div v-bind="attrs" :class="{ 'btn-active': menu }" v-on="on">
+        <div
+          v-bind="attrs"
+          :class="{ 'btn-active': isMenuDisplayed }"
+          v-on="on"
+        >
           [+]
         </div>
       </template>

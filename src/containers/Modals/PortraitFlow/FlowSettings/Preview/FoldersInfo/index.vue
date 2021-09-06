@@ -3,7 +3,7 @@
     <div>Folder(s):</div>
     <div class="folder-text-wrapper">
       <div ref="folderText" class="emphasize folder-text">
-        {{ folderNames.join(', ') }}
+        {{ folderNameText }}
       </div>
       <folder-name v-if="isShowMoreDisplayed" :folder-names="folderNames" />
     </div>
