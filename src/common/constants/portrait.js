@@ -53,26 +53,26 @@ export const PORTRAIT_IMAGE_MASK = {
 export const PORTRAIT_FLOW_OPTION_SINGLE = {
   AUTO: {
     id: 0,
-    name: 'Automatically ...'
+    name: 'Automatically flow on subsequent page(s)'
   },
   MANUAL: {
     id: 1,
-    name: 'Ask me ...'
+    name: 'Allow me to designate the next page'
   }
 };
 
 export const PORTRAIT_FLOW_OPTION_MULTI = {
   AUTO: {
     id: 0,
-    name: 'Automatically ...'
-  },
-  MANUAL: {
-    id: 1,
-    name: 'Ask me ...'
+    name: 'Automatically flow on next page'
   },
   CONTINUE: {
+    id: 1,
+    name: 'Flow continuously without a break'
+  },
+  MANUAL: {
     id: 2,
-    name: 'Flow ...'
+    name: 'Allow me to designate the next page'
   }
 };
 

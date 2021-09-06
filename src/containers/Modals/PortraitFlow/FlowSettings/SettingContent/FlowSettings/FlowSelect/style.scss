@@ -1,0 +1,14 @@
+.flow-selector-container {
+  .flow-selector-title {
+    font-family: $font-500;
+    color: $color-stoodio-toolbartext;
+    font-size: 13px;
+    margin-bottom: 8px;
+  }
+  &.disabled-component {
+    opacity: 0.5;
+  }
+  ::v-deep .v-input__slot {
+    height: 30px;
+  }
+}

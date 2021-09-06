@@ -8,7 +8,13 @@
     </v-tab-item>
     <v-tab-item><TextSetting /></v-tab-item>
     <v-tab-item>Image Settings Component</v-tab-item>
-    <v-tab-item>Flow Settings Component</v-tab-item>
+    <v-tab-item>
+      <flow-settings
+        :selected-folders="selectedFolders"
+        :flow-settings="flowSettings"
+        @flowSettingChange="onSettingChange"
+      ></flow-settings>
+    </v-tab-item>
   </v-tabs-items>
 </template>
 
