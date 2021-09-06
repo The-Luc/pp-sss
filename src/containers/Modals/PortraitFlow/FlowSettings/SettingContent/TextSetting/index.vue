@@ -3,12 +3,22 @@
     <div class="title-setting">
       Text Settings
     </div>
-    <PageTitle @change="onChange" />
-    <Properties @change="onChange" />
-    <TextMargin @change="onChange" />
+    <page-title :text-settings="textSettings" @change="onChange"></page-title>
+    <properties
+      :disabled="!textSettings.isPageTitleOn"
+      :font-settings="textSettings.pageTitleFontSettings"
+      @change="onChangePageTitle"
+    ></properties>
+    <text-margin :text-settings="textSettings" @change="onChange"></text-margin>
     <div class="name-text">Name Text:</div>
-    <Properties @change="onChange" />
-    <DisplayPosition @change="onChange" />
+    <properties
+      :font-settings="textSettings.nameTextFontSettings"
+      @change="onChangeNameText"
+    ></properties>
+    <display-position
+      :text-settings="textSettings"
+      @change="onChange"
+    ></display-position>
   </div>
 </template>
 

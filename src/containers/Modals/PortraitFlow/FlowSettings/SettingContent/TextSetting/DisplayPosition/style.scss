@@ -6,7 +6,8 @@
   .title-content {
     margin-right: 10px;
   }
-  ::v-deep.pp-combobox {
+  ::v-deep.pp-combobox,
+  .pp-select {
     .v-input__control {
       max-width: 95px;
       .v-input__slot {
@@ -38,7 +39,7 @@
 }
 
 .display-position {
-  ::v-deep.pp-combobox {
+  ::v-deep.pp-select {
     .v-input__control {
       max-width: 126px;
     }

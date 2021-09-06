@@ -2,7 +2,7 @@
   display: flex;
   align-items: center;
   padding-bottom: 16px;
-  .pp-combobox {
+  .pp-select {
     ::v-deep.v-input__control {
       max-width: 61px;
       .v-input__slot {
@@ -21,13 +21,18 @@
     padding: 0;
     .project-title {
       font-size: $md-size;
-      margin: 0 9px 0 0;
+      margin: 0 6px 0 0;
     }
     input {
       width: 315px;
       height: 30px;
       border: 1px solid rgba($color-gray15, 0.6);
       margin-right: 14px;
+    }
+    &.disabled {
+      input {
+        opacity: 0.6;
+      }
     }
   }
 }

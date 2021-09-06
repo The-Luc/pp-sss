@@ -1,23 +1,13 @@
 .margin {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   margin-top: 10px;
   .text-margin {
     color: $color-stoodio-toolbartext;
-    width: 95px;
     font-size: $md-size;
     font-family: $font-500;
-    padding: 15px 10px 0 0;
-  }
-  .box-margin {
-    color: $color-gray13;
-    font-size: $xsm-size;
-    font-family: $font-300;
-    margin-right: 15px;
-    width: 80px;
-    &:last-child {
-      margin-right: 0px;
-    }
+    padding: 20px 0 0;
   }
   ::v-deep.pp-combobox {
     .v-input__control {
@@ -26,5 +16,8 @@
         padding: 0;
       }
     }
+  }
+  &.disabled {
+    opacity: 0.5;
   }
 }
