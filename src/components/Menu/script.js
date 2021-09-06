@@ -31,6 +31,9 @@ export default {
     contentClass: {
       type: String,
       default: 'pp-menu'
+    },
+    container: {
+      type: String
     }
   },
   methods: {

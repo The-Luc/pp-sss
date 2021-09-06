@@ -31,11 +31,29 @@ export const getTransitionsApi = sheetId => {
       return;
     }
 
-    resolve(
-      window.data.book.sections[sectionIndex].sheets[
-        sheetIndex
-      ].digitalData.transitions.map(t => new Transition(t))
-    );
+    const transitions =
+      window.data.book.sections[sectionIndex].sheets[sheetIndex].digitalData
+        .transitions;
+
+    resolve(transitions.map(t => new Transition(t)));
+  });
+};
+
+export const getTransitionApi = (sheetId, index) => {
+  return new Promise(resolve => {
+    const { sectionIndex, sheetIndex } = findSectionSheetIndex(sheetId);
+
+    if (sheetIndex < 0) {
+      resolve();
+
+      return;
+    }
+
+    const transition =
+      window.data.book.sections[sectionIndex].sheets[sheetIndex].digitalData
+        .transitions[index];
+
+    resolve(new Transition(transition));
   });
 };
 
@@ -114,6 +132,7 @@ export const updateTransitionApi = (sheetId, transition, index) => {
 };
 
 export default {
+  getTransition: getTransitionApi,
   getTransitions: getTransitionsApi,
   addTransition: addTransitionApi,
   removeTransition: removeTransitionApi,
