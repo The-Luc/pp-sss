@@ -59,7 +59,7 @@ export default {
       return this.flowSingleSettings.pages.map((item, index, arr) => {
         return {
           startAsset: this.getStartAsset(index),
-          assetEnd:
+          endAsset:
             arr.length - 1 === index
               ? this.flowSettings.totalPortraitsCount
               : this.getEndAsset(index),
@@ -257,6 +257,7 @@ export default {
      * @returns {Number} start asset
      */
     getStartAsset(index) {
+      console.log(index * this.maxPortraitPerPage + 1);
       return index * this.maxPortraitPerPage + 1;
     },
     /**
