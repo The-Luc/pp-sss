@@ -2,14 +2,7 @@ import Layouts from '@/containers/ToolPopoverManager/Layouts/DigitalLayouts';
 import { mapMutations } from 'vuex';
 import { MUTATES } from '@/store/modules/theme/const';
 import { EDITION } from '@/common/constants';
-import {
-  useDigitalSheetAction,
-  useFrame,
-  useFrameAdd,
-  useFrameReplace,
-  useModal,
-  useSheet
-} from '@/hooks';
+import { useFrame, useFrameAdd, useFrameReplace, useModal } from '@/hooks';
 
 // for digital. After implement saving feature, this code can be remove
 import { DIGITAL_LAYOUT_TYPES as LAYOUT_TYPES } from '@/mock/layoutTypes';
@@ -25,8 +18,6 @@ export default {
     const { handleReplaceFrame } = useFrameReplace();
     const { setSupplementalLayoutId } = useFrame();
     const { updateObjectsToStore } = useObject();
-    const { addTransition } = useDigitalSheetAction();
-    const { currentSheet } = useSheet();
 
     return {
       toggleModal,
@@ -34,9 +25,7 @@ export default {
       handleAddFrame,
       handleReplaceFrame,
       setSupplementalLayoutId,
-      updateObjectsToStore,
-      addTransition,
-      currentSheet
+      updateObjectsToStore
     };
   },
   data() {
@@ -67,8 +56,6 @@ export default {
       const frames = layout?.frames || [];
 
       this.handleAddFrame(frames);
-
-      this.addTransition(this.currentSheet.id);
 
       this.setSupplementalLayoutId({ id: layout.id });
       this.onClose();

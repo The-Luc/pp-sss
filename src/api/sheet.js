@@ -39,7 +39,7 @@ export const getTransitionsApi = sheetId => {
   });
 };
 
-export const addTransitionApi = sheetId => {
+export const addTransitionApi = (sheetId, totalTransition = 1) => {
   return new Promise(resolve => {
     const { sectionIndex, sheetIndex } = findSectionSheetIndex(sheetId);
 
@@ -49,19 +49,21 @@ export const addTransitionApi = sheetId => {
       return;
     }
 
-    window.data.book.sections[sectionIndex].sheets[
-      sheetIndex
-    ].digitalData.transitions = insertItemsToArray(
-      window.data.book.sections[sectionIndex].sheets[sheetIndex].digitalData
-        .transitions,
-      [{ value: new Transition() }]
-    );
+    for (let i = 0; i < totalTransition; i++) {
+      window.data.book.sections[sectionIndex].sheets[
+        sheetIndex
+      ].digitalData.transitions = insertItemsToArray(
+        window.data.book.sections[sectionIndex].sheets[sheetIndex].digitalData
+          .transitions,
+        [{ value: new Transition() }]
+      );
+    }
 
     resolve();
   });
 };
 
-export const removeTransitionApi = sheetId => {
+export const removeTransitionApi = (sheetId, totalTransition = 1) => {
   return new Promise(resolve => {
     const { sectionIndex, sheetIndex } = findSectionSheetIndex(sheetId);
 
@@ -71,17 +73,19 @@ export const removeTransitionApi = sheetId => {
       return;
     }
 
-    const transitions =
-      window.data.book.sections[sectionIndex].sheets[sheetIndex].digitalData
-        .transitions;
+    for (let i = 0; i < totalTransition; i++) {
+      let transitions =
+        window.data.book.sections[sectionIndex].sheets[sheetIndex].digitalData
+          .transitions;
 
-    const lastIndex = transitions.length - 1;
+      let lastIndex = transitions.length - 1;
 
-    window.data.book.sections[sectionIndex].sheets[
-      sheetIndex
-    ].digitalData.transitions = removeItemsFormArray(transitions, [
-      { index: lastIndex < 0 ? 0 : lastIndex }
-    ]);
+      window.data.book.sections[sectionIndex].sheets[
+        sheetIndex
+      ].digitalData.transitions = removeItemsFormArray(transitions, [
+        { index: lastIndex < 0 ? 0 : lastIndex }
+      ]);
+    }
 
     resolve();
   });

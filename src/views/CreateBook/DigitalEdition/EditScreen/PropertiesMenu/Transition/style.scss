@@ -1,3 +1,6 @@
-.transitions-properties-container {
-  font-size: 15px;
+.transition-properties-container {
+  .transition-wrapper {
+    max-height: 53vh;
+    overflow-y: auto;
+  }
 }

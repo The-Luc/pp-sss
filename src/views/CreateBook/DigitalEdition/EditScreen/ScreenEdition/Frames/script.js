@@ -31,17 +31,6 @@ export default {
       default: true
     }
   },
-  data() {
-    return {
-      isOpenMenu: false,
-      menuX: 0,
-      menuY: 0,
-      drag: false,
-      selectedIndex: -1,
-      moveToIndex: -1,
-      dragTargetId: null
-    };
-  },
   setup() {
     const { toggleModal } = useModal();
     const { moveFrame } = useFrameOrdering();
@@ -55,6 +44,17 @@ export default {
       handleAddFrame,
       setCurrentFrameId,
       setPropertiesType
+    };
+  },
+  data() {
+    return {
+      isOpenMenu: false,
+      menuX: 0,
+      menuY: 0,
+      drag: false,
+      selectedIndex: -1,
+      moveToIndex: -1,
+      dragTargetId: null
     };
   },
   methods: {
