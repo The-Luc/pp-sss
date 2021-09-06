@@ -8,7 +8,10 @@ import {
   PORTRAIT_NAME_POSITION,
   DEFAUL_PORTRAIT,
   PORTRAIT_FLOW_OPTION_SINGLE,
-  PORTRAIT_FLOW_OPTION_MULTI
+  PORTRAIT_FLOW_OPTION_MULTI,
+  PORTRAIT_TEACHER_PLACEMENT,
+  PORTRAIT_SIZE,
+  PORTRAIT_ASSISTANT_PLACEMENT
 } from '../constants';
 
 export class MarginSettings extends BaseObject {
@@ -43,10 +46,10 @@ export class PortraitLayoutSettings extends BaseObject {
 export class PortraitTeacherSettings extends BaseObject {
   hasTeacher = false;
   hasAssistantTeacher = false;
-  teacherPlacement = '';
-  teacherPortraitSize = '';
-  assistantTeacherPlacement = '';
-  assistantTeacherPortraitSize = '';
+  teacherPlacement = PORTRAIT_TEACHER_PLACEMENT.FIRST;
+  teacherPortraitSize = PORTRAIT_SIZE.LARGE;
+  assistantTeacherPlacement = PORTRAIT_ASSISTANT_PLACEMENT.AFTER_TEACHERS;
+  assistantTeacherPortraitSize = PORTRAIT_SIZE.SAME;
 
   /**
    * @param {PortraitTeacherSettings} props

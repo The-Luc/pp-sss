@@ -7,7 +7,7 @@ export const CLASS_ROLE = {
 export const PORTRAIT_TEACHER_PLACEMENT = {
   FIRST: 'FIRST',
   LAST: 'LAST',
-  ALPHABETIAL: 'ALPHABETIAL'
+  ALPHABETICAL: 'ALPHABETICAL'
 };
 
 export const PORTRAIT_SIZE = {
@@ -81,22 +81,4 @@ export const DEFAUL_PORTRAIT = {
   COLUMN_COUNT: 5
 };
 
-export const DEFAULT_PORTRAIT_RATIO = 1.25; // width / height ratio
-
-export const PORTRAIT_COL_ROW_RANGE = {
-  MIN: 1,
-  MAX: 8
-};
-
-export const PORTRAIT_MARGIN_OPTIONS = [
-  { name: '0.5"', value: 0.5 },
-  { name: '1" ', value: 1 },
-  { name: '1.5"', value: 1.5 },
-  { name: '2"', value: 2 },
-  { name: '2.5"', value: 2.5 },
-  { name: '3"', value: 3 },
-  { name: '3.5"', value: 3.5 },
-  { name: '4"', value: 4 },
-  { name: '4.5"', value: 4.5 },
-  { name: '5"', value: 5 }
-];
+export const DEFAULT_PORTRAIT_RATIO = 1.25; // height / width ratio
