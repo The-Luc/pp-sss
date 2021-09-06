@@ -47,6 +47,7 @@ export class SheetPrintData extends SheetEditionData {
 
 export class SheetDigitalData extends SheetEditionData {
   frames = []; // on Digital, objects is stored in sheet.digitalData.frames[n].objects
+  transitions = [];
   /**
    * @param {SheetDigitalData} props
    */

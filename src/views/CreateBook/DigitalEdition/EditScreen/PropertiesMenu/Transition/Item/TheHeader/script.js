@@ -1,11 +1,11 @@
 export default {
   props: {
-    firstName: {
-      type: String,
+    firstFrame: {
+      type: Number,
       required: true
     },
-    secondName: {
-      type: String,
+    secondFrame: {
+      type: Number,
       required: true
     },
     isExpand: {

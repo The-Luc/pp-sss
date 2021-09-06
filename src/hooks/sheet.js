@@ -1,5 +1,13 @@
 import { useGetters, useMutations, useActions } from 'vuex-composition-helpers';
 import { useAppCommon } from './common';
+
+import {
+  getTransitionsApi,
+  addTransitionApi,
+  removeTransitionApi,
+  updateTransitionApi
+} from '@/api/sheet';
+
 import digitalService from '@/api/digital';
 import printService from '@/api/print';
 
@@ -95,4 +103,13 @@ export const useMutationDigitalSheet = () => {
   // adding mutation for digital edition only here
 
   return { ...useMutationEditionSheet(true) };
+};
+
+export const useDigitalSheetAction = () => {
+  return {
+    getTransitions: getTransitionsApi,
+    addTransition: addTransitionApi,
+    removeTransition: removeTransitionApi,
+    updateTransition: updateTransitionApi
+  };
 };

@@ -283,7 +283,7 @@ export const removeItemsFormArray = (originalItems, items) => {
 export const insertItemsToArray = (originalItems, items) => {
   const _items = cloneDeep(originalItems);
 
-  _items.sort((i1, i2) => (i1?.index > i2?.index ? -1 : 1));
+  items.sort((i1, i2) => (i1?.index > i2?.index ? -1 : 1));
 
   items.forEach(item => {
     const isAddToLast = isEmpty(item.index) || item.index < 0;

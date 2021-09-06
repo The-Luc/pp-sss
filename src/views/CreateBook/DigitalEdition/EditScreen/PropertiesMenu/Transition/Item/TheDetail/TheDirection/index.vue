@@ -2,10 +2,11 @@
   <group-item name="Direction">
     <pp-select
       id="direction"
-      :items="directions"
-      :selected-val="selectedDirection"
       container="#direction"
-      @change="onChangeDirection"
+      :items="directions"
+      :selected-val="direction"
+      :disabled="disabled"
+      @change="onDirectionChange"
     >
     </pp-select>
   </group-item>

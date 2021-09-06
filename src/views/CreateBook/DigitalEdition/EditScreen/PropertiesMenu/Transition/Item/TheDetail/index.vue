@@ -1,15 +1,36 @@
 <template>
   <div class="details">
     <div class="group">
-      <transition></transition>
+      <the-transition
+        :selected-transition="transition"
+        @transitionChange="onTransitionChange"
+      ></the-transition>
 
-      <preview></preview>
+      <the-preview></the-preview>
+    </div>
+
+    <div v-if="isTransitionChanged" class="group">
+      <the-transition-target
+        @targetChange="onTargetChange"
+      ></the-transition-target>
+
+      <the-transition-application
+        @transitionApply="onTransitionApply"
+      ></the-transition-application>
     </div>
 
     <div class="group">
-      <direction></direction>
+      <the-direction
+        :selected-direction="direction"
+        :disabled="isDirectionDisabled"
+        @directionChange="onDirectionChange"
+      ></the-direction>
 
-      <duration></duration>
+      <the-duration
+        :selected-duration="duration"
+        :disabled="isDurationDisabled"
+        @durationChange="onDurationChange"
+      ></the-duration>
     </div>
   </div>
 </template>

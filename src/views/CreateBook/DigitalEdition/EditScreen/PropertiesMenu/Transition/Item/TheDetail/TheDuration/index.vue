@@ -1,10 +1,13 @@
 <template>
   <group-item name="Duration">
     <pp-input
+      :key="componentKey"
+      decimal
       suffix=" s"
-      :value="selectedDuration"
       type="text"
-      @change="onChangeDuration"
+      :value="selectedDuration"
+      :disabled="disabled"
+      @change="onDurationChange"
     >
     </pp-input>
   </group-item>
