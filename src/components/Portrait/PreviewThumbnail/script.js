@@ -48,10 +48,11 @@ export default {
      * To calculate width portrait and update layout on UI
      */
     updateLayout() {
+      const portraitsEl = this.$refs.portraits;
+      if (!portraitsEl.style) return;
+
       const row = this.layout.rowCount;
       const col = this.layout.colCount;
-
-      const portraitsEl = this.$refs.portraits;
 
       const containerWidth = window.getComputedStyle(portraitsEl).width;
       const containerHeight = window.getComputedStyle(portraitsEl).height;
@@ -80,6 +81,7 @@ export default {
      */
     updateMargins() {
       const thumbWrapperEl = this.$refs.thumbWrapper;
+      if (!thumbWrapperEl.style) return;
 
       const margins = this.layout.margins;
 

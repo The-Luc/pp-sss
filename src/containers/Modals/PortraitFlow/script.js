@@ -4,7 +4,10 @@ import FlowPreview from './FlowPreview';
 
 import { PortraitFlowData } from '@/common/models';
 
-import { PORTRAIT_FLOW_OPTION_SINGLE } from '@/common/constants';
+import {
+  PORTRAIT_FLOW_OPTION_SINGLE,
+  PORTRAIT_FLOW_OPTION_MULTI
+} from '@/common/constants';
 
 export default {
   components: {
@@ -44,6 +47,14 @@ export default {
   computed: {
     title() {
       return this.isPreviewDisplayed ? 'Portrait Flow Review' : 'Portrait Flow';
+    }
+  },
+  watch: {
+    flowSettings: {
+      deep: true,
+      handler() {
+        this.requiredPages = this.getRequiredPages();
+      }
     }
   },
   methods: {
@@ -153,11 +164,21 @@ export default {
      * @returns {Array}                       page list
      */
     getMultiFolderRequiredPages(maxPortraitPerPage) {
-      const totalPage = Math.ceil(
-        this.flowSettings.totalPortraitsCount / maxPortraitPerPage
-      );
+      const flowOption = this.flowSettings.flowSingleSettings.flowOption;
+      let totalPages = 0;
 
-      return [...Array(totalPage).keys()].map(p => {
+      if (flowOption === PORTRAIT_FLOW_OPTION_MULTI.CONTINUE.id) {
+        totalPages = Math.ceil(
+          this.flowSettings.totalPortraitsCount / maxPortraitPerPage
+        );
+      }
+      if (flowOption === PORTRAIT_FLOW_OPTION_MULTI.AUTO.id) {
+        totalPages = this.selectedFolders.reduce((total, folder) => {
+          return total + Math.ceil(folder.assetsCount / maxPortraitPerPage);
+        }, 0);
+      }
+
+      return [...Array(totalPages).keys()].map(p => {
         return p + this.flowSettings.startOnPageNumber;
       });
     },
