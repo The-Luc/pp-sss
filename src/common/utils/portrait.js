@@ -34,7 +34,7 @@ const getRangePortraitMultiFolder = (currentIndex, maxPortrait, folders) => {
   // for auto flow
   const portraitInPages = [];
 
-  // TODO: -Luc: Need to imporive later for better performance
+  // TODO: -Luc: Need to improve later for better performance
   folders.forEach((folder, idx) => {
     const pages = Math.ceil(folder.assetsCount / maxPortrait);
     for (let i = 0; i < pages; i++) {
