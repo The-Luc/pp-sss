@@ -1,5 +1,6 @@
 import { BaseObject } from './base';
 import { BaseBorder, BaseShadow } from './element';
+import { TextAlignment } from './element/text';
 
 import {
   DEFAULT_COLOR,
@@ -8,7 +9,10 @@ import {
   PORTRAIT_NAME_POSITION,
   DEFAUL_PORTRAIT,
   PORTRAIT_FLOW_OPTION_SINGLE,
-  PORTRAIT_FLOW_OPTION_MULTI
+  PORTRAIT_FLOW_OPTION_MULTI,
+  PORTRAIT_TEACHER_PLACEMENT,
+  PORTRAIT_SIZE,
+  PORTRAIT_ASSISTANT_PLACEMENT
 } from '../constants';
 
 export class MarginSettings extends BaseObject {
@@ -43,10 +47,10 @@ export class PortraitLayoutSettings extends BaseObject {
 export class PortraitTeacherSettings extends BaseObject {
   hasTeacher = false;
   hasAssistantTeacher = false;
-  teacherPlacement = '';
-  teacherPortraitSize = '';
-  assistantTeacherPlacement = '';
-  assistantTeacherPortraitSize = '';
+  teacherPlacement = PORTRAIT_TEACHER_PLACEMENT.FIRST;
+  teacherPortraitSize = PORTRAIT_SIZE.LARGE;
+  assistantTeacherPlacement = PORTRAIT_ASSISTANT_PLACEMENT.AFTER_TEACHERS;
+  assistantTeacherPortraitSize = PORTRAIT_SIZE.SAME;
 
   /**
    * @param {PortraitTeacherSettings} props
@@ -61,9 +65,11 @@ export class PortraitFontSettings extends BaseObject {
   fontFamily = '';
   fontSize = 0;
   fontColor = DEFAULT_COLOR.COLOR;
-  presentation = '';
+  isBold = false;
+  isItalic = false;
+  isUnderline = false;
   textCase = '';
-  alignment = '';
+  alignment = new TextAlignment();
 
   /**
    * @param {PortraitFontSettings} props
@@ -75,16 +81,16 @@ export class PortraitFontSettings extends BaseObject {
 }
 
 export class PortraitTextSettings extends BaseObject {
-  pageTitle = '';
+  pageTitle = 'Untitle';
   isPageTitleOn = false;
   pageTitleFontSettings = new PortraitFontSettings();
   pageTitleMargins = new MarginSettings();
   nameTextFontSettings = new PortraitFontSettings();
   nameDisplay = PORTRAIT_NAME_DISPLAY.FIRST_LAST; // FIRST_LAST, LAST_FIRST
   namePosition = PORTRAIT_NAME_POSITION.CENTERED; // CENTERED, OUTSIDE
-  nameLines = '';
-  nameWidth = 0;
-  nameGap = '';
+  nameLines = 1;
+  nameWidth = 1.5;
+  nameGap = 0.125;
 
   /**
    * @param {PortraitTextSettings} props

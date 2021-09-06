@@ -16,6 +16,12 @@ export default {
   components: {
     ItemTool
   },
+  props: {
+    disabledItems: {
+      type: Array,
+      default: () => []
+    }
+  },
   setup() {
     const { isPrompt } = useLayoutPrompt(EDITION.DIGITAL);
     const {

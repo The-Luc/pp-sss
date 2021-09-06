@@ -1,5 +1,5 @@
 <template>
-  <div class="layout-setting-container">
+  <div :key="componentKey" class="layout-setting-container">
     <div v-for="row in dataUI" :key="row.name" class="control-group">
       <div class="control-name">{{ row.name }}</div>
       <pp-combobox

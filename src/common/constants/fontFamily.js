@@ -3,5 +3,6 @@ export const FONT_FAMILY = [
   { name: 'Time News Roman', value: 'time news roman' },
   { name: 'Verdana', value: 'verdana' },
   { name: 'Georgia', value: 'georgia' },
-  { name: 'Courier', value: 'courier' }
+  { name: 'Courier', value: 'courier' },
+  { name: 'Open Sans', value: 'open sans' }
 ];

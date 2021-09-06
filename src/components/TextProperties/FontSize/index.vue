@@ -3,6 +3,7 @@
     <span class="properties-title">Font Size:</span>
     <PpCombobox
       :key="componentKey"
+      :disabled="disabled"
       :items="fontSize"
       :nudge-width="nudgeWidth"
       :prepended-icon="prependedIcon"

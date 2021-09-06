@@ -5,6 +5,9 @@
     color: $color-stoodio-toolbartext;
     font-size: $md-size;
   }
+  ::v-deep.theme--light.v-btn.v-btn--disabled.v-btn--has-bg {
+    background-color: white !important;
+  }
   .font {
     display: flex;
     margin-bottom: 10px;
@@ -32,9 +35,7 @@
   .effect {
     display: flex;
     align-items: baseline;
-    div {
-      margin-right: 23px;
-    }
+    justify-content: space-between;
     ::v-deep.color-container {
       .box-color {
         width: 80px;
@@ -44,6 +45,15 @@
           width: 65px;
         }
       }
+
+      .color-picker-container {
+        font-family: $font-300;
+        font-size: 11px;
+      }
     }
+  }
+  &.disabled {
+    opacity: 0.5;
+    pointer-events: none;
   }
 }

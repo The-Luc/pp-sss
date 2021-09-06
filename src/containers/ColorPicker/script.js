@@ -15,6 +15,10 @@ export default {
     showEyeDropper: {
       type: Boolean,
       default: true
+    },
+    disabled: {
+      type: Boolean,
+      default: false
     }
   },
   data() {

@@ -6,7 +6,12 @@
         @portraitSettingChange="onSettingChange"
       />
     </v-tab-item>
-    <v-tab-item><TextSetting /></v-tab-item>
+    <v-tab-item>
+      <text-setting
+        :text-settings="flowSettings.textSettings"
+        @portraitSettingChange="onSettingChange"
+      ></text-setting>
+    </v-tab-item>
     <v-tab-item>Image Settings Component</v-tab-item>
     <v-tab-item>
       <flow-settings

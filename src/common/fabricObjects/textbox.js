@@ -93,6 +93,10 @@ export const createTextBox = (x, y, width, height, textProperties) => {
   rect._text = text;
 
   const angle = textProperties?.coord?.rotation || DEFAULT_TEXT.COORD.ROTATION;
+
+  const playInOrder = textProperties?.animationIn?.order || 1;
+  const playOutOrder = textProperties?.animationOut?.order || 1;
+
   const group = new fabric.Group([rect, text], {
     id: dataObject.id,
     objectType: OBJECT_TYPE.TEXT,
@@ -101,7 +105,9 @@ export const createTextBox = (x, y, width, height, textProperties) => {
     lockScalingY: false,
     lockScalingX: false,
     isConstrain: text.isConstrain,
-    angle
+    angle,
+    playInOrder,
+    playOutOrder
   });
 
   const groupProp = toFabricTextGroupProp(dataObject);

@@ -3,7 +3,8 @@
   padding: 12px 22px;
   justify-content: center;
   align-items: center;
-  border-top: 1px solid $color-gray37;
+  background-color: $color-gray39;
+  border-top: 1px solid $color-gray15;
 
   .btn {
     &::v-deep.v-btn {
@@ -16,7 +17,7 @@
       .v-btn__content {
         color: $color-white;
         font-size: 11.5px;
-        font-family: $font-500;
+        font-family: $font-700;
         text-transform: initial;
       }
     }

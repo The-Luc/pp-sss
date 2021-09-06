@@ -1,38 +1,77 @@
 import PpCombobox from '@/components/Selectors/Combobox';
-
+import PpSelect from '@/components/Selectors/Select';
+import { getSelectedOption } from '@/common/utils';
+import { getValueInput, validateInputOption } from '@/common/utils';
 import {
   ICON_LOCAL,
-  TEXT_DISPLAY,
-  TEXT_POSITION,
-  NAME_GAP,
-  NAME_WIDTH
+  TEXT_DISPLAY_OPTION,
+  TEXT_POSITION_OPTION,
+  NAME_GAP_OPTION,
+  NAME_WIDTH_OPTION,
+  PORTRAIT_NAME_POSITION,
+  NAME_LINES_OPTION,
+  MIN_MAX_TEXT_SETTINGS
 } from '@/common/constants';
 
 export default {
   components: {
-    PpCombobox
+    PpCombobox,
+    PpSelect
+  },
+  props: {
+    textSettings: {
+      type: Object,
+      default: () => ({})
+    }
   },
   data() {
     return {
-      textPosition: TEXT_POSITION,
-      textDisplay: TEXT_DISPLAY,
-      nameGap: NAME_GAP,
-      nameWidth: NAME_WIDTH,
+      componentKey: true,
+      textPosition: TEXT_POSITION_OPTION,
+      textDisplay: TEXT_DISPLAY_OPTION,
+      nameGap: NAME_GAP_OPTION,
       appendedIcon: ICON_LOCAL.APPENDED_ICON
     };
   },
   computed: {
     displayVal() {
-      return { name: '', value: '' };
+      return this.textSettings.nameDisplay;
     },
     positionVal() {
-      return { name: '', value: '' };
+      return this.textSettings.namePosition;
     },
     gapVal() {
-      return { name: '', value: '' };
+      const { nameGap } = this.textSettings;
+      return getSelectedOption(nameGap, '', `${nameGap}"`);
     },
     widthVal() {
-      return { name: '', value: '' };
+      const { nameWidth } = this.textSettings;
+      return getSelectedOption(nameWidth, '', `${nameWidth}"`);
+    },
+    linesVal() {
+      const { nameLines } = this.textSettings;
+      return getSelectedOption(nameLines);
+    },
+    optionPositionVal() {
+      return this.isCenterPosition
+        ? {
+            name: 'Lines',
+            value: this.linesVal,
+            items: NAME_LINES_OPTION,
+            onChangeFn: this.onChangeLines
+          }
+        : {
+            name: 'Width',
+            value: this.widthVal,
+            items: NAME_WIDTH_OPTION,
+            onChangeFn: this.onChangeWidth
+          };
+    },
+    isCenterPosition() {
+      return (
+        this.textSettings.namePosition.value ===
+        PORTRAIT_NAME_POSITION.CENTERED.value
+      );
     }
   },
   methods: {
@@ -41,28 +80,74 @@ export default {
      * @param {Object}  data text display value user selected
      */
     onChangeDisplay(data) {
-      this.$emit('change', { textDislay: data.value });
+      this.$emit('change', { nameDisplay: data });
     },
     /**
      * Emit text position value to parent
      * @param {Object}  data text position value user selected
      */
     onChangePosition(data) {
-      this.$emit('change', { textPosition: data.value });
+      this.$emit('change', { namePosition: data });
     },
     /**
      * Emit name width value to parent
      * @param {Object}  data name width value user selected
      */
     onChangeWidth(data) {
-      this.$emit('change', { nameWidth: data.value });
+      const { isValid, value } = validateInputOption(
+        getValueInput(data),
+        MIN_MAX_TEXT_SETTINGS.MIN_WIDTH,
+        MIN_MAX_TEXT_SETTINGS.MAX_WIDTH,
+        2
+      );
+
+      if (!isValid) {
+        this.forceRenderComponent();
+        return;
+      }
+      this.$emit('change', { nameWidth: value });
+    },
+    /**
+     * Emit name lines value to parent
+     * @param {Object}  data name width value user selected
+     */
+    onChangeLines(data) {
+      const { isValid, value } = validateInputOption(
+        getValueInput(data),
+        MIN_MAX_TEXT_SETTINGS.MIN_LINES,
+        MIN_MAX_TEXT_SETTINGS.MAX_LINES,
+        0
+      );
+
+      if (!isValid) {
+        this.forceRenderComponent();
+        return;
+      }
+      this.$emit('change', { nameLines: value });
     },
     /**
      * Emit name gap value to parent
      * @param {Object}  data  name gap value user selected
      */
     onChangeGap(data) {
-      this.$emit('change', { nameGap: data.value });
+      const { isValid, value } = validateInputOption(
+        data,
+        MIN_MAX_TEXT_SETTINGS.MIN_GAP,
+        MIN_MAX_TEXT_SETTINGS.MAX_GAP,
+        3
+      );
+
+      if (!isValid) {
+        this.forceRenderComponent();
+        return;
+      }
+      this.$emit('change', { nameGap: value });
+    },
+    /**
+     * Trigger render component by changing component key
+     */
+    forceRenderComponent() {
+      this.componentKey = !this.componentKey;
     }
   }
 };

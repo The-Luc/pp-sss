@@ -46,4 +46,6 @@ export * from './uploadingProcessStatus';
 export * from './media';
 export * from './video';
 export * from './presentation';
+export * from './portraitSettingOptions';
 export * from './portrait';
+export * from './transition';

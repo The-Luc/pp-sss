@@ -4,7 +4,7 @@
     <Fonts />
     <Effect />
     <div class="alignment-container">
-      <Alignment />
+      <Alignment :selected-alignment="selectedAlignment" @change="onChange" />
       <Vertical />
     </div>
     <Spacing />
@@ -13,7 +13,7 @@
       title="Text animation"
       :play-in-config="playInConfig"
       :play-out-config="playOutConfig"
-      @change="changeAnimation"
+      @change="onChange"
     />
   </div>
 </template>

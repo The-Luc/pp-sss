@@ -59,6 +59,17 @@ export const mergeArray = (array1, array2) => {
 };
 
 /**
+ * Merge 2 arrays without duplicate & empty
+ *
+ * @param   {Array} array1  first array to merge
+ * @param   {Array} array2  second array to merge
+ * @returns {Array}         after merge array
+ */
+export const mergeArrayNonEmpty = (array1, array2) => {
+  return intersection([...array1, ...array2]).filter(item => !isEmpty(item));
+};
+
+/**
  * Map source object to other object using rules
  *
  * @param   {Object}  sourceObject  the source object is used to map
@@ -272,7 +283,7 @@ export const removeItemsFormArray = (originalItems, items) => {
 export const insertItemsToArray = (originalItems, items) => {
   const _items = cloneDeep(originalItems);
 
-  _items.sort((i1, i2) => (i1?.index > i2?.index ? -1 : 1));
+  items.sort((i1, i2) => (i1?.index > i2?.index ? -1 : 1));
 
   items.forEach(item => {
     const isAddToLast = isEmpty(item.index) || item.index < 0;

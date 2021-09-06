@@ -2,14 +2,13 @@ import PpInput from '@/components/InputProperty';
 import PpSelect from '@/components/Selectors/Select';
 import PpCombobox from '@/components/Selectors/Combobox';
 
-import { EVENT_TYPE, ICON_LOCAL } from '@/common/constants';
+import { ICON_LOCAL } from '@/common/constants';
 import {
   CONTROL_TYPE,
   DIRECTION_OPTIONS,
   NONE_OPTION,
   PLAY_IN_OPTIONS,
-  PLAY_OUT_OPTIONS,
-  VIDEO_ORDER
+  PLAY_OUT_OPTIONS
 } from '@/common/constants/animationProperty';
 import { useObjectProperties } from '@/hooks';
 
@@ -32,15 +31,15 @@ export default {
       defaultDuration: 0.8,
       defaultScale: 50,
       defaultStyle: NONE_OPTION,
-      selectedOrder: VIDEO_ORDER[0],
       defaultDirection: DIRECTION_OPTIONS[0],
       componentKey: true
     };
   },
   setup() {
-    const { listObjects } = useObjectProperties();
+    const { listObjects, currentObject } = useObjectProperties();
     return {
-      listObjects
+      listObjects,
+      currentObject
     };
   },
   computed: {
@@ -82,6 +81,10 @@ export default {
     },
     scaleValue() {
       return this.config.scale || this.defaultScale;
+    },
+    selectedOrder() {
+      const order = this.orderOptions.find(o => o.value === this.config?.order);
+      return order || this.orderOptions[0];
     }
   },
   methods: {
@@ -112,20 +115,7 @@ export default {
         return;
       }
 
-      this.selectedOrder = item;
-
-      const updateData =
-        this.type === CONTROL_TYPE.PLAY_IN
-          ? {
-              playInOrder: item.value,
-              dirty: true
-            }
-          : {
-              playOutOrder: item.value,
-              dirty: true
-            };
-
-      this.$root.$emit(EVENT_TYPE.CHANGE_TEXT_PROPERTIES, updateData);
+      this.emitEvent({ order: val.value });
     },
     /**
      * Fire when user change scale input
@@ -140,7 +130,8 @@ export default {
      * @param {Object} val Order option
      */
     onChangeDuration(val) {
-      if (val >= 0 && val <= 5) this.emitEvent({ duration: val });
+      if (Number(val) >= 0 && Number(val) <= 5)
+        this.emitEvent({ duration: Number(val) });
       else this.forceUpdate();
     },
     /**
@@ -178,8 +169,5 @@ export default {
     forceUpdate() {
       this.componentKey = !this.componentKey;
     }
-  },
-  mounted() {
-    if (!this.selectedOrder) this.selectedOrder = this.orderOptions[0];
   }
 };
