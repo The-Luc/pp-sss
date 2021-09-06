@@ -58,11 +58,11 @@ export default {
     dataSelectPageSingle() {
       return this.flowSingleSettings.pages.map((item, index, arr) => {
         return {
-          assetStart: index * this.maxPortraitPerPage + 1,
+          startAsset: this.getStartAsset(index),
           assetEnd:
             arr.length - 1 === index
               ? this.flowSettings.totalPortraitsCount
-              : (index + 1) * this.maxPortraitPerPage,
+              : this.getEndAsset(index),
           selectedVal: {
             id: item,
             name: item
@@ -99,17 +99,17 @@ export default {
         (item, index, arr) => {
           return {
             selectedVal: {
-              id: item.startPage,
-              name: item.startPage
+              id: item.startOnPage,
+              name: item.startOnPage
             },
-            selectedValEndPage: {
-              id: item.endPage,
-              name: item.endPage
+            selectedValEndOnPage: {
+              id: item.endOnPage,
+              name: item.endOnPage
             },
             pageOptions:
               index === 0
                 ? this.pageOptions
-                : this.getPageOptions(arr[index - 1].endPage)
+                : this.getPageOptions(arr[index - 1].endOnPage)
           };
         }
       );
@@ -169,7 +169,7 @@ export default {
         p => p + 1
       );
       return this.getDataFolders(pages).map(item => {
-        return item.startPage;
+        return item.startOnPage;
       });
     },
     /**
@@ -235,16 +235,37 @@ export default {
      * @returns {Array} data folders
      */
     getDataFolders(pages) {
-      let startPage = this.flowSettings.startOnPageNumber;
-      return this.selectedFolders.map((element, index) => {
-        startPage = startPage < pages[index] ? pages[index] : startPage;
-        const folderPages = this.getFolderPages(element.assetsCount, startPage);
-        startPage = folderPages[folderPages.length - 1] + 1;
-        return {
-          startPage: folderPages[0],
-          endPage: folderPages[folderPages.length - 1]
-        };
+      const { startOnPageNumber } = this.flowSettings;
+
+      const dataFolders = [];
+
+      this.selectedFolders.forEach((element, index) => {
+        const start =
+          [...dataFolders].pop()?.endOnPage + 1 || startOnPageNumber;
+        const totalPages = element.assetsCount / this.maxPortraitPerPage;
+
+        const startOnPage = Math.max(start, pages[index]);
+        const endOnPage = startOnPage + Math.ceil(totalPages);
+
+        dataFolders.push({ startOnPage, endOnPage });
       });
+      return dataFolders;
+    },
+    /**
+     * Get start asset
+     * @param {Number} index index of page
+     * @returns {Number} start asset
+     */
+    getStartAsset(index) {
+      return index * this.maxPortraitPerPage + 1;
+    },
+    /**
+     * Get end asset
+     * @param {Number} index index of page
+     * @returns {Number} end asset
+     */
+    getEndAsset(index) {
+      return (index + 1) * this.maxPortraitPerPage;
     }
   },
   created() {

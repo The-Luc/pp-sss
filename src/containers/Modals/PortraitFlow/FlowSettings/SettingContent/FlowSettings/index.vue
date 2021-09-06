@@ -16,7 +16,7 @@
           <item-select
             v-for="(item, index) in dataSelectPageSingle"
             :key="index"
-            :title="`Portraits ${item.assetStart}  - ${item.assetEnd}:`"
+            :title="`Portraits ${item.StartAsset}  - ${item.EndAsset}:`"
             descript="Page"
             :disabled="index === 0"
             :selected-val="item.selectedVal"
@@ -48,7 +48,7 @@
               :title="index === 0 ? `Folder ${index + 1}:` : ''"
               descript="Portrait flow ends on page:"
               :disabled="true"
-              :selected-val="item.selectedValEndPage"
+              :selected-val="item.selectedValEndOnPage"
               :items="pageOptions"
             ></item-select>
           </div>
