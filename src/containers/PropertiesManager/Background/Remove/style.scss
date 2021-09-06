@@ -19,7 +19,7 @@
     box-shadow: none;
 
     &::before {
-      background-color: transparent !important;
+      display: none;
     }
 
     img {

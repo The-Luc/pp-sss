@@ -1,55 +1,27 @@
 <template>
   <div class="slide-container">
-    <div class="slide-content" :class="contentCustomClass">
-      <div
+    <div class="slide-content" :class="{ 'not-full': !hasFullItem }">
+      <slide-item
         v-for="(previewData, index) in currentPage"
         :key="index"
-        class="slide-item"
-      >
-        <PreviewThumbnail
-          :portraits="previewData.item.portraits"
-          :layout="previewData.item.layout"
-          :background-url="previewData.item.backgroundUrl"
-        />
-
-        <div class="page-info">
-          <div class="flow-no">Portrait flow {{ previewData.index + 1 }}</div>
-          <div class="page-no">Page {{ previewData.item.pageNo }}</div>
-        </div>
-      </div>
+        :portraits="previewData.item.portraits"
+        :layout="previewData.item.layout"
+        :background-url="previewData.item.backgroundUrl"
+        :flow-number="previewData.index + 1"
+        :page-number="previewData.item.pageNo"
+        :is-use-margin="!hasFullItem"
+      ></slide-item>
     </div>
 
-    <div class="slide-navigator">
-      <div class="icon" :class="{ disabled: !isPosibleToBack }" @click="onBack">
-        <i class="material-icons-outlined">
-          circle
-        </i>
-        <i class="material-icons-outlined icon-inner icon-inner-back">
-          chevron_left
-        </i>
-      </div>
-
-      <div class="paggings">
-        <i
-          v-for="(page, index) in pages"
-          :key="index"
-          class="material-icons pagging"
-          :class="{ active: index === currentIndex }"
-          @click="onPageChange(index)"
-        >
-          circle
-        </i>
-      </div>
-
-      <div class="icon" :class="{ disabled: !isPosibleToNext }" @click="onNext">
-        <i class="material-icons-outlined icon-inner icon-inner-next">
-          chevron_right
-        </i>
-        <i class="material-icons-outlined" @click="onNext">
-          circle
-        </i>
-      </div>
-    </div>
+    <the-navigator
+      :pages="pages"
+      :current-page-index="currentIndex"
+      :is-posible-to-back="isPosibleToBack"
+      :is-posible-to-next="isPosibleToNext"
+      @move-next="onNext"
+      @move-back="onBack"
+      @page-selected="onPageChange"
+    ></the-navigator>
   </div>
 </template>
 

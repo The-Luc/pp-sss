@@ -1,3 +1,5 @@
+import { inToPx } from './canvas';
+
 /**
  * Get range of portrait for selected page
  *
@@ -73,4 +75,15 @@ export const getPortraitForPage = (
   }
 
   return [];
+};
+
+/**
+ *  To convert a value to appropriate ratio that used in preview portrait
+ * Inch to px with specific ratio
+ * @param {Number} val value will be converted
+ * @returns A value will be use in preview portrait
+ */
+export const getConvertedPreviewValue = val => {
+  // 20 is just arbitrary choie, need to discuss to find a right number
+  return inToPx(val) / 20;
 };

@@ -392,10 +392,18 @@ const drawClipPath = function(ctx) {
 const rectRenderFill = function(ctx) {
   fabric.Rect.prototype._renderFill.call(this, ctx);
   if (this.playIn) {
-    ctx.drawImage(this.playIn, this.width / 2 - 250, -this.height / 2);
+    ctx.drawImage(
+      this.playIn,
+      (this.width - 500) / 2,
+      (this.strokeWidth - this.height) / 2
+    );
   }
   if (this.playOut) {
-    ctx.drawImage(this.playOut, this.width / 2 - 150, -this.height / 2);
+    ctx.drawImage(
+      this.playOut,
+      (this.width - 300) / 2,
+      (this.strokeWidth - this.height) / 2
+    );
   }
 };
 

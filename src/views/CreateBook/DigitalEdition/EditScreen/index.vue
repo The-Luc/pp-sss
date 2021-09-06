@@ -6,18 +6,14 @@
     />
 
     <ToolBar
+      :disabled-items="disabledItems"
       @undo="onUndo"
       @redo="onRedo"
       @switchTool="onToolSwitch"
       @endInstruction="onInstructionEnd"
     />
 
-    <FeedbackBar
-      :is-open-menu-properties="isOpenMenuProperties"
-      :selected-tool-name="selectedToolName"
-      :is-digital="true"
-      @zoom="onZoom"
-    />
+    <FeedbackBar :is-digital="true" @zoom="onZoom" />
 
     <div class="left-panel">
       <SidebarSection />
@@ -41,6 +37,7 @@
 
     <ScreenEdition
       ref="canvasEditor"
+      :frames="frames"
       @drop="onDrop"
       @openCropControl="openCropControl"
     />

@@ -20,13 +20,10 @@ export const mutations = {
   [APP._MUTATES.SET_OBJECT_TYPE_SELECTED](state, { type }) {
     state.propertiesModal.selectedObjectType = type;
   },
-  [APP._MUTATES.TOGGLE_MENU_PROPERTIES](state, { isOpen, objectId }) {
-    state.propertiesModal.isOpen = isOpen;
-
+  [APP._MUTATES.TOGGLE_MENU_PROPERTIES](state, { objectId }) {
     state.propertiesModal.selectedObjectId = isEmpty(objectId) ? '' : objectId;
   },
   [APP._MUTATES.RESET_PRINT_CONFIG](state) {
-    state.propertiesModal.isOpen = false;
     state.colorPicker.isOpen = false;
     state.propertiesModal.selectedObjectType = '';
     state.propertiesModal.selectedObjectId = '';

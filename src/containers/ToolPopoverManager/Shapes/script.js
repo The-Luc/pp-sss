@@ -1,4 +1,4 @@
-import ShapeToolPopover from '@/components/ToolPopover/Shape';
+import ShapeToolPopover from '@/components/ToolPopovers/Shape';
 
 import { usePopoverCreationTool } from '@/hooks';
 

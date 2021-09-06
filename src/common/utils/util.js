@@ -59,6 +59,17 @@ export const mergeArray = (array1, array2) => {
 };
 
 /**
+ * Merge 2 arrays without duplicate & empty
+ *
+ * @param   {Array} array1  first array to merge
+ * @param   {Array} array2  second array to merge
+ * @returns {Array}         after merge array
+ */
+export const mergeArrayNonEmpty = (array1, array2) => {
+  return intersection([...array1, ...array2]).filter(item => !isEmpty(item));
+};
+
+/**
  * Map source object to other object using rules
  *
  * @param   {Object}  sourceObject  the source object is used to map
@@ -393,10 +404,28 @@ export const getUniqueId = () => {
   return uniqueId();
 };
 
+/**
+ * Get different of arrays
+ *
+ * @param   {Array}     arr1      first array
+ * @param   {Array}     arr2      second array
+ * @param   {Function}  compareFn compare method
+ * @returns {Array}               result
+ */
 export const getDiffBetweenArray = (arr1, arr2, compareFn) => {
   return differenceWith(
     arr1.length >= arr2.length ? arr1 : arr2,
     arr1.length <= arr2.length ? arr1 : arr2,
     compareFn
   );
+};
+
+/**
+ * Get boolean from nullable boolean
+ *
+ * @param   {Boolean} value nullable boolean
+ * @returns {Boolean}       boolean value
+ */
+export const getBoolean = value => {
+  return isEmpty(value) ? false : value;
 };

@@ -61,7 +61,9 @@ export default {
     displaySelected() {
       const displaySubName = this.getDisplaySubName(this.selectedValue);
 
-      return `${this.selectedValue.name}: ${displaySubName}`;
+      const displaySub = isEmpty(displaySubName) ? '' : `: ${displaySubName}`;
+
+      return `${this.selectedValue.name}${displaySub}`;
     }
   },
   watch: {

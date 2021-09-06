@@ -13,7 +13,7 @@ import PageEdition from './PageEdition';
 
 import { mapMutations, mapGetters, mapActions } from 'vuex';
 
-import { MUTATES, GETTERS as APP_GETTERS } from '@/store/modules/app/const';
+import { MUTATES } from '@/store/modules/app/const';
 import { MUTATES as BOOK_MUTATES } from '@/store/modules/book/const';
 import {
   ACTIONS as PRINT_ACTIONS,
@@ -26,6 +26,7 @@ import {
   ROLE,
   SAVE_STATUS,
   SAVING_DURATION,
+  SHEET_TYPE,
   TOOL_NAME
 } from '@/common/constants';
 import {
@@ -35,7 +36,6 @@ import {
   useMutationPrintSheet,
   useUser,
   useGetterPrintSheet,
-  useMenuProperties,
   useProperties,
   useSheet,
   useActionsEditionSheet,
@@ -43,7 +43,12 @@ import {
   useToolBar
 } from '@/hooks';
 import { EDITION } from '@/common/constants';
-import { isEmpty, isPositiveInteger, getEditionListPath } from '@/common/utils';
+import {
+  isEmpty,
+  isPositiveInteger,
+  getEditionListPath,
+  mergeArrayNonEmpty
+} from '@/common/utils';
 
 import { useSaveData } from './PageEdition/composables';
 import {
@@ -75,14 +80,17 @@ export default {
     const { currentUser } = useUser();
     const { currentSection } = useGetterPrintSheet();
     const { savePrintEditScreen, getDataEditScreen } = useSaveData();
-    const { isOpenMenuProperties } = useMenuProperties();
     const { setPropertyById, setPropOfMultipleObjects } = useProperties();
     const { updateSavingStatus } = useSavingStatus();
-    const { sheetMedia } = useSheet();
+    const { sheetMedia, currentSheet } = useSheet();
     const { updateSheetMedia, deleteSheetMedia } = useActionsEditionSheet();
     const { getBookPrintInfo } = useBookPrintInfo();
     const { listObjects } = useObjectProperties();
-    const { isMediaSidebarOpen, updateMediaSidebarOpen } = useToolBar();
+    const {
+      isMediaSidebarOpen,
+      updateMediaSidebarOpen,
+      disabledToolbarItems
+    } = useToolBar();
 
     return {
       pageSelected,
@@ -94,7 +102,6 @@ export default {
       currentSection,
       savePrintEditScreen,
       getDataEditScreen,
-      isOpenMenuProperties,
       setPropertyById,
       updateSavingStatus,
       sheetMedia,
@@ -104,7 +111,9 @@ export default {
       listObjects,
       setPropOfMultipleObjects,
       isMediaSidebarOpen,
-      updateMediaSidebarOpen
+      updateMediaSidebarOpen,
+      disabledToolbarItems,
+      currentSheet
     };
   },
   data() {
@@ -123,9 +132,7 @@ export default {
   },
   computed: {
     ...mapGetters({
-      printThemeSelected: PRINT_GETTERS.DEFAULT_THEME_ID,
-      selectedToolName: APP_GETTERS.SELECTED_TOOL_NAME,
-      getObjectsAndBackground: PRINT_GETTERS.GET_OBJECTS_AND_BACKGROUNDS
+      printThemeSelected: PRINT_GETTERS.DEFAULT_THEME_ID
     }),
     isShowAutoflow() {
       return !isEmpty(this.sheetMedia);
@@ -136,6 +143,12 @@ export default {
       );
 
       return !hasEmptyImage;
+    },
+    disabledItems() {
+      const portrait =
+        this.currentSheet.type === SHEET_TYPE.COVER ? TOOL_NAME.PORTRAIT : '';
+
+      return mergeArrayNonEmpty(this.disabledToolbarItems, [portrait]);
     }
   },
   watch: {

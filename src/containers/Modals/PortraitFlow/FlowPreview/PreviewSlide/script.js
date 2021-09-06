@@ -1,8 +1,10 @@
-import PreviewThumbnail from '../../PreviewThumbnail';
+import SlideItem from './SlideItem';
+import TheNavigator from './TheNavigator';
 
 export default {
   components: {
-    PreviewThumbnail
+    SlideItem,
+    TheNavigator
   },
   props: {
     itemPerPage: {
@@ -24,8 +26,8 @@ export default {
     currentPage() {
       return this.pages[this.currentIndex];
     },
-    contentCustomClass() {
-      return this.currentPage.length === this.itemPerPage ? '' : 'not-full';
+    hasFullItem() {
+      return this.currentPage.length === this.itemPerPage;
     },
     isPosibleToBack() {
       return this.currentIndex > 0;
@@ -59,7 +61,7 @@ export default {
      *
      * @param {Number}  index index of selected page
      */
-    onPageChange(index) {
+    onPageChange({ index }) {
       this.currentIndex = index;
     },
     /**

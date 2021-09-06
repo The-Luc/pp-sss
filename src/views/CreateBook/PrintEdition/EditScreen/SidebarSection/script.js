@@ -3,18 +3,11 @@ import ThumbnailItem from '@/components/Thumbnail/ThumbnailItem';
 
 import { mapGetters, mapMutations } from 'vuex';
 
-import { GETTERS as APP_GETTERS } from '@/store/modules/app/const';
 import {
   GETTERS as PRINT_GETTERS,
   MUTATES as PRINT_MUTATES
 } from '@/store/modules/print/const';
-import {
-  useLayoutPrompt,
-  useResetPrintConfig,
-  usePopoverCreationTool,
-  useUser,
-  useMenuProperties
-} from '@/hooks';
+import { useLayoutPrompt, usePopoverCreationTool, useUser } from '@/hooks';
 import { TOOL_NAME, EDITION } from '@/common/constants';
 import {
   isEmpty,
@@ -28,17 +21,13 @@ export default {
     ThumbnailItem
   },
   setup() {
-    const { resetPrintConfig } = useResetPrintConfig();
     const { setToolNameSelected } = usePopoverCreationTool();
-    const { toggleMenuProperties } = useMenuProperties();
     const { updateVisited, setIsPrompt } = useLayoutPrompt(EDITION.PRINT);
     const { currentUser } = useUser();
 
     return {
-      toggleMenuProperties,
       updateVisited,
       setToolNameSelected,
-      resetPrintConfig,
       setIsPrompt,
       currentUser
     };
@@ -51,8 +40,7 @@ export default {
   computed: {
     ...mapGetters({
       pageSelected: PRINT_GETTERS.CURRENT_SHEET,
-      sectionList: PRINT_GETTERS.SECTIONS_SHEETS,
-      isOpenMenuProperties: APP_GETTERS.IS_OPEN_MENU_PROPERTIES
+      sectionList: PRINT_GETTERS.SECTIONS_SHEETS
     }),
     sections() {
       return getSectionsWithAccessible(this.sectionList, this.currentUser);
@@ -126,8 +114,6 @@ export default {
      */
     onSelectSheet({ id }) {
       if (this.pageSelected.id !== id) this.$router.push(`${id}`);
-
-      this.toggleMenuProperties({ isOpenMenuProperties: false });
 
       this.setToolNameSelected('');
 

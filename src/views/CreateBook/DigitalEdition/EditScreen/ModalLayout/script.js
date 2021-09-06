@@ -1,4 +1,4 @@
-import Layouts from '@/containers/ToolPopoverManager/DigitalEdition/Layouts';
+import Layouts from '@/containers/ToolPopoverManager/Layouts/DigitalLayouts';
 import { mapMutations } from 'vuex';
 import { MUTATES } from '@/store/modules/theme/const';
 import { EDITION } from '@/common/constants';

@@ -41,7 +41,7 @@
         <PpInput
           suffix="s"
           :value="durationValue"
-          type="text"
+          :decimal="true"
           @change="onChangeDuration"
         />
       </div>

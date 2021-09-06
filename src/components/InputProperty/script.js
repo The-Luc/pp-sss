@@ -25,6 +25,10 @@ export default {
     type: {
       type: String,
       default: 'number'
+    },
+    decimal: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -40,7 +44,7 @@ export default {
   },
   computed: {
     roundVal() {
-      return Math.round(this.value);
+      return this.decimal ? Number(this.value) : Math.round(this.value);
     }
   },
   methods: {
@@ -49,7 +53,9 @@ export default {
      * @param   {String}  value Value user input
      */
     onNumberChange(value) {
-      this.valueLength = String(Math.round(value)).length;
+      this.valueLength = this.decimal
+        ? String(value).length
+        : String(Math.round(value)).length;
     },
     /**
      * Check if value within min and max and then emit value to parent else return previous value by force render component
@@ -60,7 +66,7 @@ export default {
         val,
         this.min,
         this.max,
-        0
+        this.decimal ? 2 : 0
       );
       if (!isValid) {
         this.forceRenderComponent();

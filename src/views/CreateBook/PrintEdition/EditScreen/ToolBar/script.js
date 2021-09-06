@@ -5,22 +5,20 @@ import {
   OBJECT_TYPE,
   PRINT_RIGHT_TOOLS,
   EDITION,
-  PRINT_CREATION_TOOLS,
-  SHEET_TYPE
+  PRINT_CREATION_TOOLS
 } from '@/common/constants';
-import { useLayoutPrompt, useToolBar, useSheet } from '@/hooks';
-import {
-  isEmpty,
-  getRightToolItems,
-  isInstructionTool,
-  isElementTool,
-  isTogglePropertiesMenu,
-  getNonElementToolType
-} from '@/common/utils';
+import { useLayoutPrompt, useToolBar } from '@/hooks';
+import { isEmpty, getRightToolItems, isInstructionTool } from '@/common/utils';
 
 export default {
   components: {
     ItemTool
+  },
+  props: {
+    disabledItems: {
+      type: Array,
+      default: () => []
+    }
   },
   setup() {
     const { isPrompt } = useLayoutPrompt(EDITION.PRINT);
@@ -28,42 +26,32 @@ export default {
       themeId,
       selectedObjectType,
       propertiesType,
-      isMenuOpen,
       selectedToolName,
       setToolNameSelected,
       togglePropertiesMenu,
       updateMediaSidebarOpen,
       isMediaSidebarOpen,
-      disabledToolbarItems
+      setPropertiesType
     } = useToolBar();
-    const { currentSheet } = useSheet();
+
     return {
       isPrompt,
       themeId,
       selectedObjectType,
       propertiesType,
-      isMenuOpen,
       selectedToolName,
       setToolNameSelected,
       togglePropertiesMenu,
       updateMediaSidebarOpen,
       isMediaSidebarOpen,
-      disabledToolbarItems,
-      currentSheet
+      setPropertiesType
     };
   },
   data() {
     return {
       itemsToolLeft: PRINT_CREATION_TOOLS,
-      itemsToolRight: [getRightToolItems(PRINT_RIGHT_TOOLS)]
+      itemsToolRight: getRightToolItems(PRINT_RIGHT_TOOLS)
     };
-  },
-  computed: {
-    disabledItems() {
-      return this.currentSheet.type !== SHEET_TYPE.COVER
-        ? this.disabledToolbarItems
-        : [...this.disabledToolbarItems, TOOL_NAME.PORTRAIT];
-    }
   },
   methods: {
     /**
@@ -73,9 +61,7 @@ export default {
     onClickRightTool(item) {
       if (isEmpty(this.themeId)) return;
 
-      const isElementProp = isElementTool(item);
-
-      if (isElementProp && isEmpty(this.selectedObjectType)) return;
+      if (item.isElementProperties && isEmpty(this.selectedObjectType)) return;
 
       if (isInstructionTool(this.selectedToolName)) {
         this.$emit('switchTool', '');
@@ -83,17 +69,9 @@ export default {
         this.setToolNameSelected({ name: '' });
       }
 
-      const isToggle = isTogglePropertiesMenu(
-        item,
-        this.propertiesType,
-        isElementProp
-      );
+      const toolType = item.name === this.propertiesType ? '' : item.name;
 
-      const propType = isElementProp
-        ? this.selectedObjectType
-        : getNonElementToolType(item?.name);
-
-      this.togglePropertiesMenu(propType, isToggle ? !this.isMenuOpen : true);
+      this.setPropertiesType({ type: toolType });
     },
     /**
      * Detect click on item on left creattion tool

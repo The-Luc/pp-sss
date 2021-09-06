@@ -9,6 +9,10 @@ export default {
     selectedFont: {
       type: Object,
       required: true
+    },
+    disabled: {
+      type: Boolean,
+      default: false
     }
   },
   data() {

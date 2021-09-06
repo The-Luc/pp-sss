@@ -12,10 +12,10 @@ import {
 } from '../constants';
 
 export class MarginSettings extends BaseObject {
-  top = 0;
-  bottom = 0;
-  left = 0;
-  right = 0;
+  top = 1;
+  bottom = 0.5;
+  left = 0.5;
+  right = 0.5;
 
   /**
    * @param {MarginSettings} props

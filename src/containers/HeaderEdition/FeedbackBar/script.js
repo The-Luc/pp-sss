@@ -2,7 +2,7 @@ import PropertiesManager from '@/containers/PropertiesManager';
 import ToolPopoverManager from '@/containers/ToolPopoverManager';
 import PpCombobox from '@/components/Selectors/Combobox';
 
-import { useInfoBar, useObjectProperties } from '@/hooks';
+import { useInfoBar, useObjectProperties, useToolBar } from '@/hooks';
 import {
   isEmpty,
   splitNumberByDecimal,
@@ -21,18 +21,17 @@ export default {
     PpCombobox
   },
   props: {
-    isOpenMenuProperties: {
-      type: Boolean,
-      default: false
-    },
-    selectedToolName: {
-      type: String,
-      default: ''
-    },
     isDigital: {
       type: Boolean,
       default: false
     }
+  },
+  setup() {
+    const { infoBar } = useInfoBar();
+    const { currentObject } = useObjectProperties();
+    const { propertiesType, selectedToolName } = useToolBar();
+
+    return { infoBar, currentObject, propertiesType, selectedToolName };
   },
   data() {
     return {
@@ -40,12 +39,6 @@ export default {
       appendedIcon: ICON_LOCAL.APPENDED_ICON_ZOOM,
       zoomOptions: ZOOM_VALUE
     };
-  },
-  setup() {
-    const { infoBar } = useInfoBar();
-    const { currentObject } = useObjectProperties();
-
-    return { infoBar, currentObject };
   },
   computed: {
     size() {

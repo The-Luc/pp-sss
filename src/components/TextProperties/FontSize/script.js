@@ -15,6 +15,10 @@ export default {
     selectedSize: {
       type: Object,
       required: true
+    },
+    disabled: {
+      type: Boolean,
+      default: false
     }
   },
   data() {

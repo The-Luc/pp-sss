@@ -1,0 +1,28 @@
+.group-item {
+  width: 86px;
+
+  .v-btn {
+    display: flex;
+    width: 100%;
+    height: 26px;
+    padding: 0;
+    color: $color-stoodio-toolbartext;
+    text-transform: capitalize;
+    line-height: $md-size;
+    letter-spacing: 0.1px;
+    font-size: $xsm-size;
+    font-family: $font-300;
+    background-color: $color-white;
+    border: 0.62px solid $color-gray15;
+    border-radius: 3px;
+    box-shadow: none;
+
+    &::before {
+      display: none;
+    }
+
+    .play-icon {
+      margin-right: -5px;
+    }
+  }
+}

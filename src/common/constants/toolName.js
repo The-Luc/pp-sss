@@ -32,57 +32,73 @@ export const ACTIONS = {
 
 export const PROPERTIES_TOOLS = {
   BACKGROUND: {
-    id: 'background',
-    name: 'Background',
+    name: OBJECT_TYPE.BACKGROUND,
+    title: 'Background',
     iconName: 'aspect_ratio',
     type: OBJECT_TYPE.BACKGROUND
   },
   PROPERTIES: {
-    id: 'properties',
-    name: 'Properties',
-    iconName: 'wysiwyg'
+    name: 'properties',
+    title: 'Properties',
+    iconName: 'wysiwyg',
+    isElementProperties: true
   },
   PAGE_INFO: {
-    id: 'pageInfo',
-    name: 'Page Info',
+    name: 'pageInfo',
+    title: 'Page Info',
     iconName: 'list_alt',
     type: 'pageInfo'
   },
   FRAME_INFO: {
-    id: 'frameInfo',
-    name: 'Frame Info',
+    name: 'frameInfo',
+    title: 'Frame Info',
     iconName: 'list_alt',
     type: 'frameInfo'
+  },
+  PLAYBACK: {
+    name: 'playback',
+    title: 'Playback',
+    iconName: 'play_circle_outline'
+  },
+  TRANSITION: {
+    name: 'transitions',
+    title: 'Transitions',
+    iconName: 'auto_awesome_motion'
+  },
+  ANIMATION: {
+    name: 'animations',
+    title: 'Animations',
+    iconName: 'animation'
   }
 };
 
 export const PRINT_RIGHT_TOOLS = [
-  PROPERTIES_TOOLS.PAGE_INFO,
-  PROPERTIES_TOOLS.BACKGROUND,
-  PROPERTIES_TOOLS.PROPERTIES
+  [
+    PROPERTIES_TOOLS.PAGE_INFO,
+    PROPERTIES_TOOLS.BACKGROUND,
+    PROPERTIES_TOOLS.PROPERTIES
+  ]
 ];
 
 export const DIGITAL_RIGHT_TOOLS = [
-  PROPERTIES_TOOLS.FRAME_INFO,
-  PROPERTIES_TOOLS.BACKGROUND,
-  PROPERTIES_TOOLS.PROPERTIES
+  [
+    PROPERTIES_TOOLS.PLAYBACK,
+    PROPERTIES_TOOLS.TRANSITION,
+    PROPERTIES_TOOLS.ANIMATION
+  ],
+  [
+    PROPERTIES_TOOLS.FRAME_INFO,
+    PROPERTIES_TOOLS.BACKGROUND,
+    PROPERTIES_TOOLS.PROPERTIES
+  ]
 ];
 
 export const INSTRUCTION_TOOLS = [TOOL_NAME.TEXT, TOOL_NAME.IMAGE_BOX];
 
 export const NON_ELEMENT_PROPERTIES_TOOLS = [
-  PROPERTIES_TOOLS.BACKGROUND,
-  PROPERTIES_TOOLS.PAGE_INFO,
-  PROPERTIES_TOOLS.FRAME_INFO
-];
-
-export const ONE_CLICK_TOOLS = [
-  TOOL_NAME.DELETE,
-  TOOL_NAME.UNDO,
-  TOOL_NAME.REDO,
-  TOOL_NAME.PHOTOS,
-  TOOL_NAME.MEDIA,
-  TOOL_NAME.PORTRAIT
+  PROPERTIES_TOOLS.BACKGROUND.name,
+  PROPERTIES_TOOLS.PAGE_INFO.name,
+  PROPERTIES_TOOLS.FRAME_INFO.name
 ];
 
 export const NO_SUBMENU_TOOLS = [

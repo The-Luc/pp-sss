@@ -7,9 +7,9 @@
           :key="index"
           :items="item"
           :selected-tool-name="selectedToolName"
-          :is-menu-open="isMenuOpen"
           :properties-type="propertiesType"
           :is-prompt="isPrompt"
+          :disabled-items="disabledItems"
           @click="data => onClickLeftTool(data)"
         />
       </div>
@@ -19,9 +19,9 @@
           :key="index"
           :items="item"
           :selected-tool-name="selectedToolName"
-          :is-menu-open="isMenuOpen"
           :properties-type="propertiesType"
           :is-prompt="isPrompt"
+          :disabled-items="disabledItems"
           @click="data => onClickRightTool(data)"
         />
       </div>

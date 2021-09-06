@@ -1,7 +1,5 @@
 import ToolButton from '@/components/Buttons/ToolButton';
 
-import { useToolBar } from '@/hooks';
-
 import { isToolActivated } from '@/common/utils';
 
 export default {
@@ -16,38 +14,16 @@ export default {
     selectedToolName: {
       type: String
     },
-    isMenuOpen: {
-      type: Boolean,
-      default: false
-    },
     propertiesType: {
       type: String
     },
     isPrompt: {
       type: Boolean,
       default: false
-    }
-  },
-  setup() {
-    const { disabledToolbarItems } = useToolBar();
-
-    return { disabledToolbarItems };
-  },
-  computed: {
-    /**
-     * Check whether icon tool active or not
-     * @param  {String} iconName The name of icon be clicked
-     * @return {Boolean}  Active current icon clicked and inactive icon before
-     */
-    isActive() {
-      return iconName => {
-        return isToolActivated(
-          iconName,
-          this.propertiesType,
-          this.isMenuOpen,
-          this.selectedToolName
-        );
-      };
+    },
+    disabledItems: {
+      type: Array,
+      default: () => []
     }
   },
   methods: {
@@ -65,7 +41,15 @@ export default {
      * @returns {Boolean}       item is disabled
      */
     isDisabledItem({ name }) {
-      return this.disabledToolbarItems.includes(name);
+      return this.disabledItems.includes(name);
+    },
+    /**
+     * Check whether icon tool active or not
+     * @param   {Object}  item  The name of icon be clicked
+     * @return  {Boolean}       Active current icon clicked and inactive icon before
+     */
+    isActive(item) {
+      return isToolActivated(item, this.propertiesType, this.selectedToolName);
     }
   }
 };

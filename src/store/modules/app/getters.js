@@ -14,7 +14,7 @@ export const getters = {
   [APP._GETTERS.SELECTED_OBJECT_TYPE]: ({ propertiesModal }) =>
     propertiesModal.selectedObjectType,
   [APP._GETTERS.IS_OPEN_MENU_PROPERTIES]: ({ propertiesModal }) =>
-    propertiesModal.isOpen,
+    !isEmpty(propertiesModal.propertiesObjectType),
   [APP._GETTERS.SELECTED_TOOL_NAME]: ({ selectedToolName }) => selectedToolName,
   [APP._GETTERS.COLOR_PICKER_PRESETS]: ({ colorPicker: { presets } }) =>
     presets.values,

@@ -84,6 +84,12 @@ export default {
       this.isPreviewDisplayed = true;
     },
     /**
+     * Save settings
+     */
+    onSaveSettings() {
+      console.log('save settings');
+    },
+    /**
      * Get total asset in selected folders
      *
      * @returns {Number}  total asset
@@ -154,6 +160,9 @@ export default {
       return [...Array(totalPage).keys()].map(p => {
         return p + this.flowSettings.startOnPageNumber;
       });
+    },
+    onSettingChange(val) {
+      this.flowSettings = { ...this.flowSettings, ...val };
     }
   }
 };
