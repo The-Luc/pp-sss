@@ -69,11 +69,12 @@ export default {
 
       portraitsEl.style.setProperty('--portrait-width', portraitWidth + 'px');
 
-      let align = 'space-between';
+     
       if (row === 1 && col === 1) {
-        align = 'center';
+        portraitsEl.style.setProperty('--align', 'center');
+
       }
-      portraitsEl.style.setProperty('--align', align);
+      portraitsEl.style.setProperty('--align', 'space-between');
     },
 
     /**
