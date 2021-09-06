@@ -25,7 +25,9 @@ import {
   SAVE_STATUS,
   SAVING_DURATION,
   OBJECT_TYPE,
-  DEFAULT_VIDEO
+  DEFAULT_VIDEO,
+  SHEET_TYPE,
+  PROPERTIES_TOOLS
 } from '@/common/constants';
 import {
   useLayoutPrompt,
@@ -41,7 +43,12 @@ import {
   useObjectProperties,
   useToolBar
 } from '@/hooks';
-import { isEmpty, isPositiveInteger, getEditionListPath } from '@/common/utils';
+import {
+  isEmpty,
+  isPositiveInteger,
+  getEditionListPath,
+  mergeArrayNonEmpty
+} from '@/common/utils';
 import { COPY_OBJECT_KEY } from '@/common/constants/config';
 
 import { useSaveData } from './composables';
@@ -78,10 +85,15 @@ export default {
     const { getBookDigitalInfo } = useBookDigitalInfo();
     const { setInfoBar } = useInfoBar();
     const { updateSheetMedia, deleteSheetMedia } = useActionsEditionSheet();
-    const { sheetMedia } = useSheet();
+    const { sheetMedia, currentSheet } = useSheet();
     const { setPropertyById, setPropOfMultipleObjects } = useProperties();
     const { listObjects } = useObjectProperties();
-    const { isMediaSidebarOpen, updateMediaSidebarOpen } = useToolBar();
+    const {
+      isMediaSidebarOpen,
+      updateMediaSidebarOpen,
+      disabledToolbarItems
+    } = useToolBar();
+    const { frames } = useFrame();
 
     return {
       pageSelected,
@@ -104,7 +116,10 @@ export default {
       setPropOfMultipleObjects,
       listObjects,
       isMediaSidebarOpen,
-      updateMediaSidebarOpen
+      updateMediaSidebarOpen,
+      disabledToolbarItems,
+      currentSheet,
+      frames
     };
   },
   data() {
@@ -128,6 +143,17 @@ export default {
       );
 
       return !hasEmptyImage;
+    },
+    disabledItems() {
+      const transition =
+        this.frames.length > 1 ? '' : PROPERTIES_TOOLS.TRANSITION.name;
+      const portrait =
+        this.currentSheet.type === SHEET_TYPE.COVER ? TOOL_NAME.PORTRAIT : '';
+
+      return mergeArrayNonEmpty(this.disabledToolbarItems, [
+        transition,
+        portrait
+      ]);
     }
   },
   watch: {

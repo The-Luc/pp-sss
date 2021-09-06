@@ -59,6 +59,17 @@ export const mergeArray = (array1, array2) => {
 };
 
 /**
+ * Merge 2 arrays without duplicate & empty
+ *
+ * @param   {Array} array1  first array to merge
+ * @param   {Array} array2  second array to merge
+ * @returns {Array}         after merge array
+ */
+export const mergeArrayNonEmpty = (array1, array2) => {
+  return intersection([...array1, ...array2]).filter(item => !isEmpty(item));
+};
+
+/**
  * Map source object to other object using rules
  *
  * @param   {Object}  sourceObject  the source object is used to map

@@ -9,6 +9,7 @@
           :selected-tool-name="selectedToolName"
           :properties-type="propertiesType"
           :is-prompt="isPrompt"
+          :disabled-items="disabledItems"
           @click="data => onClickLeftTool(data)"
         />
       </div>
@@ -20,6 +21,7 @@
           :selected-tool-name="selectedToolName"
           :properties-type="propertiesType"
           :is-prompt="isPrompt"
+          :disabled-items="disabledItems"
           @click="data => onClickRightTool(data)"
         />
       </div>

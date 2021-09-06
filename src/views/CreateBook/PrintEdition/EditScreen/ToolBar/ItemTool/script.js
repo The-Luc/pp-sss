@@ -21,7 +21,7 @@ export default {
       type: Boolean,
       default: false
     },
-    disabledToolbarItems: {
+    disabledItems: {
       type: Array,
       default: () => []
     }
@@ -41,7 +41,7 @@ export default {
      * @returns {Boolean}       item is disabled
      */
     isDisabledItem({ name }) {
-      return this.disabledToolbarItems.includes(name);
+      return this.disabledItems.includes(name);
     },
     /**
      * Check whether icon tool active or not

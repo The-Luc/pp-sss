@@ -6,6 +6,7 @@
     />
 
     <ToolBar
+      :disabled-items="disabledItems"
       @undo="onUndo"
       @redo="onRedo"
       @switchTool="onToolSwitch"
@@ -36,6 +37,7 @@
 
     <ScreenEdition
       ref="canvasEditor"
+      :frames="frames"
       @drop="onDrop"
       @openCropControl="openCropControl"
     />

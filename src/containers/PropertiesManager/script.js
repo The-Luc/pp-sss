@@ -9,6 +9,7 @@ import Shape from '@/containers/PropertiesManager/Shape';
 import Video from '@/containers/PropertiesManager/Video';
 import PageInfo from '@/containers/PropertiesManager/PageInfo';
 import FrameInfo from '@/containers/PropertiesManager/FrameInfo';
+import Transition from '@/views/CreateBook/DigitalEdition/EditScreen/PropertiesMenu/Transition';
 import { isEmpty } from '@/common/utils';
 import { useToolBar } from '@/hooks';
 
@@ -16,6 +17,7 @@ const { TEXT, IMAGE, CLIP_ART, BACKGROUND, SHAPE, VIDEO } = OBJECT_TYPE;
 
 const PAGE_INFO = PROPERTIES_TOOLS.PAGE_INFO.name;
 const FRAME_INFO = PROPERTIES_TOOLS.FRAME_INFO.name;
+const TRANSITION = PROPERTIES_TOOLS.TRANSITION.name;
 
 const MenuList = {
   [TEXT]: TEXT,
@@ -25,7 +27,8 @@ const MenuList = {
   [SHAPE]: SHAPE,
   [VIDEO]: VIDEO,
   [PAGE_INFO]: PAGE_INFO,
-  [FRAME_INFO]: FRAME_INFO
+  [FRAME_INFO]: FRAME_INFO,
+  [TRANSITION]: TRANSITION
 };
 
 export default {
@@ -55,7 +58,8 @@ export default {
     [OBJECT_TYPE.SHAPE]: Shape,
     [OBJECT_TYPE.VIDEO]: Video,
     [PAGE_INFO]: PageInfo,
-    [FRAME_INFO]: FrameInfo
+    [FRAME_INFO]: FrameInfo,
+    [TRANSITION]: Transition
   },
   watch: {
     propertiesType(val) {
@@ -90,6 +94,7 @@ export default {
      */
     setObjectComponent(objectType) {
       const ObjectComponent = MenuList[objectType];
+
       if (ObjectComponent) {
         this.renderObject = ObjectComponent;
       }
