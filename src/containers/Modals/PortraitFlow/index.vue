@@ -22,6 +22,7 @@
         @showPreview="onShowPreview"
         @settingChange="onSettingChange"
         @saveSettings="onSaveSettings"
+        @startPageChange="onStartPageChange"
       />
 
       <FlowPreview

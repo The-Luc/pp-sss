@@ -3,6 +3,7 @@ import PreviewSlide from './PreviewSlide';
 import { useBackgroundAction } from '@/hooks';
 
 import { getPortraitForPage } from '@/common/utils';
+import { PORTRAIT_FLOW_OPTION_MULTI } from '@/common/constants';
 
 export default {
   components: {
@@ -36,13 +37,19 @@ export default {
     getPreviewItems() {
       const backgrounds = this.getPageBackgrounds(this.requiredPages);
 
+      const isSingle =
+        this.selectedFolders.length === 1 ||
+        this.flowSettings.flowMultiSettings.flowOption ===
+          PORTRAIT_FLOW_OPTION_MULTI.CONTINUE.id;
+
       return this.requiredPages.map((p, index) => {
         const portraits = getPortraitForPage(
           index,
           this.flowSettings.layoutSettings.rowCount,
           this.flowSettings.layoutSettings.colCount,
           this.flowSettings.totalPortraitsCount,
-          this.selectedFolders
+          this.selectedFolders,
+          isSingle
         );
 
         return {

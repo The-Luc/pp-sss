@@ -8,6 +8,7 @@ import {
   PORTRAIT_FLOW_OPTION_SINGLE,
   PORTRAIT_FLOW_OPTION_MULTI
 } from '@/common/constants';
+import { useSheet } from '@/hooks';
 
 export default {
   components: {
@@ -28,6 +29,12 @@ export default {
       type: String
     }
   },
+  setup() {
+    const { currentSheet } = useSheet();
+    return {
+      currentSheet
+    };
+  },
   data() {
     return {
       flowSettings: {},
@@ -38,7 +45,7 @@ export default {
   },
   created() {
     this.flowSettings = new PortraitFlowData({
-      startOnPageNumber: 1, // TODO: get from current sheet (implement in another ticket)
+      startOnPageNumber: this.getStartOnPageNumber(),
       totalPortraitsCount: this.getTotalPortrait(),
       folders: this.selectedFolders
     });
@@ -84,8 +91,6 @@ export default {
      */
     onStartPageChange({ pageNo }) {
       this.flowSettings.startOnPageNumber = pageNo;
-
-      this.requiredPages = this.getRequiredPages();
     },
     /**
      * Show preview
@@ -165,19 +170,15 @@ export default {
      * @returns {Array}                       page list
      */
     getMultiFolderRequiredPages(maxPortraitPerPage) {
-      const flowOption = this.flowSettings.flowSingleSettings.flowOption;
-      let totalPages = 0;
+      const { flowOption, pages } = this.flowSettings.flowMultiSettings;
 
       if (flowOption === PORTRAIT_FLOW_OPTION_MULTI.CONTINUE.id) {
-        totalPages = Math.ceil(
-          this.flowSettings.totalPortraitsCount / maxPortraitPerPage
-        );
+        return pages;
       }
-      if (flowOption === PORTRAIT_FLOW_OPTION_MULTI.AUTO.id) {
-        totalPages = this.selectedFolders.reduce((total, folder) => {
-          return total + Math.ceil(folder.assetsCount / maxPortraitPerPage);
-        }, 0);
-      }
+
+      const totalPages = this.selectedFolders.reduce((total, folder) => {
+        return total + Math.ceil(folder.assetsCount / maxPortraitPerPage);
+      }, 0);
 
       return [...Array(totalPages).keys()].map(p => {
         return p + this.flowSettings.startOnPageNumber;
@@ -189,6 +190,10 @@ export default {
      */
     onSettingChange(val) {
       this.flowSettings = { ...this.flowSettings, ...val };
+    },
+    getStartOnPageNumber() {
+      const { pageLeftName, pageRightName } = this.currentSheet;
+      return parseInt(pageLeftName) || parseInt(pageRightName);
     }
   }
 };

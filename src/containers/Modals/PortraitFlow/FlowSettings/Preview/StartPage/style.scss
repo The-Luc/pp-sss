@@ -14,8 +14,11 @@
     font-family: $font-300;
   }
 
-  .pp-select {
+  ::v-deep .pp-select {
     width: 66px;
     max-width: 66px;
+    .v-menu__content {
+      max-height: 205px !important;
+    }
   }
 }

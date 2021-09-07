@@ -1,23 +1,23 @@
-import CommonModal from '@/containers/Modals/CommonModal';
+import PpButton from '@/components/Buttons/Button';
 
 export default {
-  components: { CommonModal },
+  components: { PpButton },
   props: {
     isOpenModal: {
       type: Boolean,
       default: false
     },
-    descript: {
+    descriptModal: {
       type: String,
-      required: false
+      required: true
     }
   },
   methods: {
     /**
-     * Select portrait folders
+     * Close modal
      */
-    onSelect() {
-      this.$emit('select', this.selectedFolders);
+    onClose() {
+      this.$emit('close');
     }
   }
 };

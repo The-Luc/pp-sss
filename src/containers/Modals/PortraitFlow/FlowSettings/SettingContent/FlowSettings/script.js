@@ -8,6 +8,7 @@ import {
   PORTRAIT_FLOW_OPTION_MULTI
 } from '@/common/constants';
 import { isEmpty } from '@/common/utils';
+import { cloneDeep } from 'lodash';
 
 export default {
   components: {
@@ -21,6 +22,12 @@ export default {
     return {
       currentSheet,
       getSheets
+    };
+  },
+  data() {
+    return {
+      isOpenModalWarning: false,
+      descriptModalWarning: ''
     };
   },
   props: {
@@ -173,11 +180,21 @@ export default {
      * @param {Number} index index of page
      */
     onChangePageSingle(val, index) {
-      const flowSettings = {
-        ...this.flowSingleSettings
-      };
+      const flowSettings = cloneDeep(this.flowSingleSettings);
       flowSettings.pages[index] = val.id;
-      this.onChangeFlow({ flowSingleSettings: flowSettings });
+
+      const dataPages = this.getDataPages(flowSettings.pages);
+
+      if (
+        dataPages[dataPages.length - 1] <=
+        this.pageOptions[this.pageOptions.length - 1].id
+      ) {
+        this.onChangeFlow({ flowSingleSettings: flowSettings });
+        return;
+      }
+
+      this.onCloseModalWarningSingle(dataPages.length, val.id);
+      this.onChangeFlow({ flowSingleSettings: this.flowSingleSettings });
     },
     /**
      * Handle change page option
@@ -185,12 +202,25 @@ export default {
      * @param {Number} index index of page
      */
     onChangePageMulti(val, index) {
-      const flowSettings = {
-        ...this.flowMultiSettings
-      };
+      const flowSettings = cloneDeep(this.flowMultiSettings);
       flowSettings.pages[index] = val.id;
 
-      this.onChangeFlow({ flowMultiSettings: flowSettings });
+      const dataFolders = this.getDataFolders(flowSettings.pages);
+
+      flowSettings.pages = dataFolders.map(item => {
+        return item.startOnPage;
+      });
+
+      if (
+        dataFolders[dataFolders.length - 1].endOnPage <=
+        this.pageOptions[this.pageOptions.length - 1].id
+      ) {
+        this.onChangeFlow({ flowMultiSettings: flowSettings });
+        return;
+      }
+
+      this.onCloseModalWarningMulti(index + 1, val.id);
+      this.onChangeFlow({ flowMultiSettings: this.flowMultiSettings });
     },
     /**
      * Get options of select page
@@ -233,11 +263,30 @@ export default {
         const totalPages = element.assetsCount / this.maxPortraitPerPage;
 
         const startOnPage = Math.max(start, pages[index]);
-        const endOnPage = startOnPage + Math.ceil(totalPages);
+        const endOnPage = startOnPage + Math.ceil(totalPages) - 1;
 
         dataFolders.push({ startOnPage, endOnPage });
       });
       return dataFolders;
+    },
+    /**
+     * Get data pages
+     * @param {Array} pages list pages
+     * @returns {Array} data pages
+     */
+    getDataPages(pages) {
+      const dataPages = [];
+
+      pages.forEach((element, index) => {
+        const page =
+          !index || element > dataPages[index - 1]
+            ? element
+            : dataPages[index - 1] + 1;
+
+        dataPages.push(page);
+      });
+
+      return dataPages;
     },
     /**
      * Get start asset
@@ -276,6 +325,38 @@ export default {
         pageOptions:
           index === 0 ? this.pageOptions : this.getPageOptions(arr[index - 1])
       };
+    },
+    /**
+     * Open modal warning
+     * @param {Number} folderNo folder
+     * @param {Number} pageNo selected page
+     */
+    onCloseModalWarningMulti(folderNo, pageNo) {
+      this.descriptModalWarning = `If you begin the portrait flow of folder ${folderNo} on page  ${pageNo}, 
+                                  based on the current settings, 
+                                  there won’t be enough pages available to flow your portraits. 
+                                  If you click “Continue” you will need to reconfigure your settings or 
+                                  select a different page to begin the portrait flow.`;
+      this.isOpenModalWarning = true;
+    },
+    /**
+     * Open modal warning
+     * @param {Number} totalPage total page
+     * @param {Number} pageNo index of folder
+     */
+    onCloseModalWarningSingle(totalPage, pageNo) {
+      this.descriptModalWarning = `If you begin this portrait flow on page ${pageNo}, 
+                                  based on the current settings, 
+                                  there are not enough pages available to flow your portraits. 
+                                  If you click “Continue” you will need to reconfigure your settings 
+                                  so that the portrait flow takes no more than ${totalPage} pages.`;
+      this.isOpenModalWarning = true;
+    },
+    /**
+     * Close modal warning
+     */
+    onCloseModalWarning() {
+      this.isOpenModalWarning = false;
     }
   },
   created() {
