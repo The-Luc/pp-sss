@@ -3,6 +3,7 @@
     <PreviewThumbnail
       :portraits="portraits"
       :layout="layout"
+      :page-number="pageNo"
       :background-url="backgroundUrl"
       :flow-settings="flowSettings"
     />

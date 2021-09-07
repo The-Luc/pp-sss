@@ -4,6 +4,7 @@
       :flow-settings="flowSettings"
       :portraits="portraits"
       :layout="layout"
+      :page-number="pageNumber"
       :background-url="backgroundUrl"
     />
 
