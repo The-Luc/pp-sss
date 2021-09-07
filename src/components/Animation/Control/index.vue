@@ -48,6 +48,7 @@
       <div class="control-item">
         <span class="properties-title">Order</span>
         <PpCombobox
+          max-height="200"
           :items="orderOptions"
           :appended-icon="appendedIcon"
           :selected-val="selectedOrder"
