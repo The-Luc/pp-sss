@@ -1,5 +1,6 @@
 import FlowSelect from './FlowSelect';
 import PpSelect from '@/components/Selectors/Select';
+import FlowWarning from '@/components/Modals/FlowWarning';
 import ItemSelect from './ItemSelect';
 import { useSheet } from '@/hooks';
 import {
@@ -12,7 +13,8 @@ export default {
   components: {
     FlowSelect,
     PpSelect,
-    ItemSelect
+    ItemSelect,
+    FlowWarning
   },
   setup() {
     const { currentSheet, getSheets } = useSheet();
