@@ -21,7 +21,7 @@ export default {
       type: Number
     },
     direction: {
-      type: Number
+      type: [Number, String]
     },
     duration: {
       type: Number

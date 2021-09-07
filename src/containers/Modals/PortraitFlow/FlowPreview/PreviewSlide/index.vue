@@ -10,6 +10,7 @@
         :flow-number="previewData.index + 1"
         :page-number="previewData.item.pageNo"
         :is-use-margin="!hasFullItem"
+        :flow-settings="flowSettings"
       ></slide-item>
     </div>
 

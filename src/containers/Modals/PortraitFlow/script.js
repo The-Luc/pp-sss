@@ -6,6 +6,9 @@ import { PortraitFlowData } from '@/common/models';
 
 import {
   PORTRAIT_FLOW_OPTION_SINGLE,
+  DEFAULT_PAGE_TITLE,
+  DEFAULT_NAME_TEXT,
+  DEFAULT_MARGIN_PAGE_TITLE,
   PORTRAIT_FLOW_OPTION_MULTI
 } from '@/common/constants';
 
@@ -43,6 +46,7 @@ export default {
       folders: this.selectedFolders
     });
 
+    this.flowSettings.textSettings = this.initDataTextSettings();
     this.requiredPages = this.getRequiredPages();
   },
   computed: {
@@ -189,6 +193,17 @@ export default {
      */
     onSettingChange(val) {
       this.flowSettings = { ...this.flowSettings, ...val };
+    },
+    /**
+     * To create initial data for text settings
+     */
+    initDataTextSettings() {
+      return {
+        ...this.flowSettings.textSettings,
+        pageTitleFontSettings: DEFAULT_PAGE_TITLE,
+        nameTextFontSettings: DEFAULT_NAME_TEXT,
+        pageTitleMargins: DEFAULT_MARGIN_PAGE_TITLE
+      };
     }
   }
 };

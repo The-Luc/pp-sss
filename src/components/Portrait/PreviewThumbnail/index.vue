@@ -3,8 +3,26 @@
     class="preview-thumbnail"
     :style="{ backgroundImage: backgroundUrl && `url(${backgroundUrl})` }"
   >
+    <div
+      v-show="showPageTitile"
+      ref="pageTitle"
+      class="page-title"
+      :style="pageTitleStyle"
+    >
+      {{ flowSettings.textSettings.pageTitle }}
+    </div>
     <div ref="thumbWrapper" class="thumb-wrapper">
-      <div class="names"></div>
+      <div v-if="!isCenterPosition" ref="outside" class="names">
+        <div
+          v-for="(portrait, idx) in portraits"
+          :key="idx"
+          class="name"
+          :style="nameTextStyle"
+        >
+          <div>{{ portrait.firstName }}</div>
+          <div>{{ portrait.lastName }}</div>
+        </div>
+      </div>
 
       <div ref="portraits" class="portraits">
         <div v-for="(portrait, idx) in portraits" :key="idx" class="portrait">
@@ -16,8 +34,9 @@
             />
           </div>
 
-          <div class="name">
-            {{ portrait.firstName + ' ' + portrait.lastName }}
+          <div v-if="isCenterPosition" class="name" :style="nameTextStyle">
+            <div>{{ portrait.firstName }}</div>
+            <div>{{ portrait.lastName }}</div>
           </div>
         </div>
       </div>

@@ -6,7 +6,9 @@ import {
   DEFAULT_SVG,
   DEFAULT_SHAPE,
   OBJECT_TYPE,
-  DEFAULT_TEXT
+  DEFAULT_TEXT,
+  TEXT_HORIZONTAL_ALIGN,
+  TEXT_CASE_VALUE
 } from '@/common/constants';
 
 import {
@@ -15,7 +17,9 @@ import {
   isEmpty,
   mapObject,
   scaleSize,
-  pxToIn
+  pxToIn,
+  ptToPxPreview,
+  inToPxPreview
 } from '@/common/utils';
 import { toFabricMediaProp } from './image';
 
@@ -303,6 +307,99 @@ export const toFabricClipArtProp = (prop, originalElement) => {
   return mapObject(prop, mapRules);
 };
 
+export const toCssPreview = prop => {
+  const horizontal = prop.isPageTitleOn
+    ? 'textAlign'
+    : prop.nameLines === 1
+    ? 'justifyContent'
+    : 'alignItems';
+
+  const mapRules = {
+    data: {
+      isBold: {
+        name: 'fontWeight',
+        parse: value => (value ? 'bold' : 'normal')
+      },
+      isItalic: {
+        name: 'fontStyle',
+        parse: value => (value ? 'italic' : 'normal')
+      },
+      isUnderline: {
+        name: 'textDecoration',
+        parse: value => (value ? 'underline' : 'none')
+      },
+      fontColor: {
+        name: 'color'
+      },
+      fontSize: {
+        name: 'fontSize',
+        parse: value => `${ptToPxPreview(value)}px`
+      },
+      horizontal: {
+        name: horizontal,
+        parse: value => parseHorizontal(prop, value)
+      },
+      textCase: {
+        name: 'textTransform',
+        parse: value => TEXT_CASE_VALUE[value]
+      },
+      nameLines: {
+        name: 'flexDirection',
+        parse: value => {
+          const direction = value === 1 ? 'row' : 'column';
+          return prop.isFirstLastDisplay ? direction : `${direction}-reverse`;
+        }
+      },
+      top: {
+        name: 'paddingTop',
+        parse: value => `${inToPxPreview(value)}px`
+      },
+      bottom: {
+        name: 'paddingBottom',
+        parse: value => `${inToPxPreview(value)}px`
+      },
+      left: {
+        name: 'paddingLeft',
+        parse: value => `${inToPxPreview(value)}px`
+      },
+      right: {
+        name: 'paddingRight',
+        parse: value => `${inToPxPreview(value)}px`
+      }
+    },
+    restrict: []
+  };
+
+  const cssStyle = mapObject(prop, mapRules);
+  cssStyle.lineHeight = cssStyle.fontSize;
+
+  return cssStyle;
+};
+
+/**
+ * Get value horizontal
+ *
+ * @param   {Object}  prop   new property
+ * @param   {String}  value  new property
+ * @returns {String}         value of horizoltal
+ */
+const parseHorizontal = (prop, value) => {
+  if (prop.isPageTitleOn) return value;
+
+  if (prop.nameLines === 1 && !prop.isFirstLastDisplay) {
+    return value === TEXT_HORIZONTAL_ALIGN.RIGHT
+      ? 'flex-start'
+      : value === TEXT_HORIZONTAL_ALIGN.LEFT
+      ? 'flex-end'
+      : value;
+  }
+
+  return value === TEXT_HORIZONTAL_ALIGN.RIGHT
+    ? 'flex-end'
+    : value === TEXT_HORIZONTAL_ALIGN.LEFT
+    ? 'flex-start'
+    : value;
+};
 /**
  * Get fabric property base on element type
  *

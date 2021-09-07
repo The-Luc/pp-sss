@@ -26,7 +26,7 @@ export default {
       default: TRANSITION_DEFAULT.value
     },
     direction: {
-      type: Number,
+      type: [Number, String],
       default: TRANS_DIRECTION_DEFAULT.value
     },
     duration: {
