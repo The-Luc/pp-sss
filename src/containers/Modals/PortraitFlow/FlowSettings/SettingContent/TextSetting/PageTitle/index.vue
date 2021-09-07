@@ -1,18 +1,16 @@
 <template>
   <div class="page-title">
-    <InputTitle
+    <input-title
+      :disabled="!isPageTitleOn"
       title-name="Page Title:"
       :title-value="pageTitle"
       @change="onChangeTitle"
-    />
-    <PpCombobox
-      :items="statusPageTitle"
-      :margin-menu="0"
-      :nudge-width="61"
+    ></input-title>
+    <pp-select
       :selected-val="statusPageTitleVal"
-      :appended-icon="appendedIcon"
+      :items="statusPageTitle"
       @change="onChangeStatus"
-    />
+    ></pp-select>
   </div>
 </template>
 

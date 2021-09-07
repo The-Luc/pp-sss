@@ -2,7 +2,16 @@ import FontFamily from '@/components/TextProperties/FontFamily';
 import FontSize from '@/components/TextProperties/FontSize';
 import Presentation from '@/components/TextProperties/Presentation';
 import TextCase from '@/components/TextProperties/TextCase';
+import Alignment from '@/components/TextProperties/Alignment';
 import ColorPicker from '@/containers/ColorPicker';
+
+import { getSelectedOption } from '@/common/utils';
+import {
+  FONT_SIZE,
+  FONT_FAMILY,
+  PRESENTATION,
+  TEXT_HORIZONTAL_ALIGN
+} from '@/common/constants';
 
 export default {
   components: {
@@ -10,23 +19,61 @@ export default {
     FontSize,
     ColorPicker,
     Presentation,
-    TextCase
+    TextCase,
+    Alignment
+  },
+  props: {
+    fontSettings: {
+      type: Object,
+      default: () => ({})
+    },
+    disabled: {
+      type: Boolean,
+      default: false
+    }
   },
   computed: {
     selectedFont() {
-      return { name: '', value: '' };
+      const selected = FONT_FAMILY.find(
+        font => font.value === this.fontSettings.fontFamily.toLowerCase()
+      );
+      return this.disabled
+        ? getSelectedOption('')
+        : getSelectedOption(selected);
     },
     selectedSize() {
-      return { name: '', value: '' };
+      const { fontSize } = this.fontSettings;
+
+      const selected = FONT_SIZE.find(item => item.value === fontSize);
+      return this.disabled
+        ? getSelectedOption('')
+        : getSelectedOption(selected || fontSize, 'pt');
     },
     colorVal() {
-      return '#000000';
+      return this.fontSettings.fontColor;
     },
     selectedStyles() {
-      return [];
+      const isBold = this.fontSettings.isBold;
+
+      const isItalic = this.fontSettings.isItalic;
+
+      const isUnderline = this.fontSettings.isUnderline;
+
+      const selected = [
+        isBold ? PRESENTATION.BOLD : '',
+        isItalic ? PRESENTATION.ITALIC : '',
+        isUnderline ? PRESENTATION.UNDERLINE : ''
+      ];
+
+      return this.disabled ? [] : selected.filter(s => s !== '');
     },
     selectedCase() {
-      return '';
+      return this.disabled ? '' : this.fontSettings.textCase;
+    },
+    selectedAlignment() {
+      return this.disabled
+        ? TEXT_HORIZONTAL_ALIGN.JUSTIFY
+        : this.fontSettings.alignment.horizontal;
     }
   },
   methods: {
@@ -39,10 +86,10 @@ export default {
     },
     /**
      * Emit color value to parent
-     * @param {String}  color color value user selected
+     * @param {String}  fontColor color value user selected
      */
-    onChangeColor(color) {
-      this.$emit('change', { color });
+    onChangeColor(fontColor) {
+      this.$emit('change', { fontColor });
     },
     /**
      * Emit font family/presentation/text case value to parent

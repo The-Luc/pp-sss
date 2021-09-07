@@ -2,10 +2,10 @@
   <group-item name="Transition">
     <pp-select
       id="transition-type"
-      :items="transitions"
-      :selected-val="selectedTransition"
       container="#transition-type"
-      @change="onChangeTransition"
+      :items="transitions"
+      :selected-val="transition"
+      @change="onTransitionChange"
     >
     </pp-select>
   </group-item>

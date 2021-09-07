@@ -4,6 +4,7 @@
       :portraits="portraits"
       :layout="layout"
       :background-url="backgroundUrl"
+      :flow-settings="flowSettings"
     />
 
     <div class="pages">

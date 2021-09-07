@@ -1,5 +1,5 @@
 <template>
-  <div class="layout-setting-container">
+  <div :key="componentKey" class="layout-setting-container">
     <div v-for="row in dataUI" :key="row.name" class="control-group">
       <div class="control-name">{{ row.name }}</div>
       <pp-combobox
@@ -8,6 +8,7 @@
         :nudge-width="80"
         :selected-val="row.selected"
         :appended-icon="appendedIcon"
+        :disabled="row.isDisabled"
         @change="row.onChangeFn"
       />
     </div>

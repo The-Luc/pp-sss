@@ -1,0 +1,18 @@
+.group-item {
+  width: 174px;
+
+  ::v-deep {
+    .v-input__slot {
+      background-color: transparent !important; // override
+      border: 1px solid $color-stoodio-blue;
+
+      .v-list-item__content {
+        .v-list-item__title {
+          span {
+            color: $color-stoodio-blue;
+          }
+        }
+      }
+    }
+  }
+}

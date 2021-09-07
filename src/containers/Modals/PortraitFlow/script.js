@@ -4,7 +4,13 @@ import FlowPreview from './FlowPreview';
 
 import { PortraitFlowData } from '@/common/models';
 
-import { PORTRAIT_FLOW_OPTION_SINGLE } from '@/common/constants';
+import {
+  PORTRAIT_FLOW_OPTION_SINGLE,
+  DEFAULT_PAGE_TITLE,
+  DEFAULT_NAME_TEXT,
+  DEFAULT_MARGIN_PAGE_TITLE,
+  PORTRAIT_FLOW_OPTION_MULTI
+} from '@/common/constants';
 
 export default {
   components: {
@@ -36,14 +42,24 @@ export default {
   created() {
     this.flowSettings = new PortraitFlowData({
       startOnPageNumber: 1, // TODO: get from current sheet (implement in another ticket)
-      totalPortraitsCount: this.getTotalPortrait()
+      totalPortraitsCount: this.getTotalPortrait(),
+      folders: this.selectedFolders
     });
 
+    this.flowSettings.textSettings = this.initDataTextSettings();
     this.requiredPages = this.getRequiredPages();
   },
   computed: {
     title() {
       return this.isPreviewDisplayed ? 'Portrait Flow Review' : 'Portrait Flow';
+    }
+  },
+  watch: {
+    flowSettings: {
+      deep: true,
+      handler() {
+        this.requiredPages = this.getRequiredPages();
+      }
     }
   },
   methods: {
@@ -153,16 +169,41 @@ export default {
      * @returns {Array}                       page list
      */
     getMultiFolderRequiredPages(maxPortraitPerPage) {
-      const totalPage = Math.ceil(
-        this.flowSettings.totalPortraitsCount / maxPortraitPerPage
-      );
+      const flowOption = this.flowSettings.flowSingleSettings.flowOption;
+      let totalPages = 0;
 
-      return [...Array(totalPage).keys()].map(p => {
+      if (flowOption === PORTRAIT_FLOW_OPTION_MULTI.CONTINUE.id) {
+        totalPages = Math.ceil(
+          this.flowSettings.totalPortraitsCount / maxPortraitPerPage
+        );
+      }
+      if (flowOption === PORTRAIT_FLOW_OPTION_MULTI.AUTO.id) {
+        totalPages = this.selectedFolders.reduce((total, folder) => {
+          return total + Math.ceil(folder.assetsCount / maxPortraitPerPage);
+        }, 0);
+      }
+
+      return [...Array(totalPages).keys()].map(p => {
         return p + this.flowSettings.startOnPageNumber;
       });
     },
+    /**
+     * To update flowSetting with data come from child componenet settings
+     * @param {Object} val data will be update to flowSetting
+     */
     onSettingChange(val) {
       this.flowSettings = { ...this.flowSettings, ...val };
+    },
+    /**
+     * To create initial data for text settings
+     */
+    initDataTextSettings() {
+      return {
+        ...this.flowSettings.textSettings,
+        pageTitleFontSettings: DEFAULT_PAGE_TITLE,
+        nameTextFontSettings: DEFAULT_NAME_TEXT,
+        pageTitleMargins: DEFAULT_MARGIN_PAGE_TITLE
+      };
     }
   }
 };

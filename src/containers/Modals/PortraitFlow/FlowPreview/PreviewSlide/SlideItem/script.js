@@ -27,6 +27,10 @@ export default {
     isUseMargin: {
       type: Boolean,
       default: false
+    },
+    flowSettings: {
+      type: Object,
+      default: () => ({})
     }
   }
 };

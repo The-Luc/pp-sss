@@ -18,6 +18,7 @@ export default {
     const { handleReplaceFrame } = useFrameReplace();
     const { setSupplementalLayoutId } = useFrame();
     const { updateObjectsToStore } = useObject();
+
     return {
       toggleModal,
       modalData,

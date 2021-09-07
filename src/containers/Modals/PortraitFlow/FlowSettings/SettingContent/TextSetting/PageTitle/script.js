@@ -1,12 +1,20 @@
 import InputTitle from '@/components/InputTitle';
 import PpCombobox from '@/components/Selectors/Combobox';
+import PpSelect from '@/components/Selectors/Select';
 
 import { ICON_LOCAL, STATUS_PAGE_TITLE } from '@/common/constants';
 
 export default {
   components: {
     InputTitle,
-    PpCombobox
+    PpCombobox,
+    PpSelect
+  },
+  props: {
+    textSettings: {
+      type: Object,
+      default: () => ({})
+    }
   },
   data() {
     return {
@@ -15,11 +23,16 @@ export default {
     };
   },
   computed: {
+    isPageTitleOn() {
+      return this.textSettings?.isPageTitleOn;
+    },
     pageTitle() {
-      return 'Untitle';
+      return this.textSettings?.pageTitle;
     },
     statusPageTitleVal() {
-      return { name: '', value: '' };
+      return this.statusPageTitle.find(
+        ({ value }) => value === this.isPageTitleOn
+      );
     }
   },
   methods: {
@@ -28,14 +41,14 @@ export default {
      * @param {String}  title page title value user entered
      */
     onChangeTitle(title) {
-      this.$emit('change', title);
+      this.$emit('change', { pageTitle: title });
     },
     /**
      * Emit status page title value to parent
      * @param {Object}  data text status page title value user selected
      */
     onChangeStatus(data) {
-      this.$emit('change', data.value);
+      this.$emit('change', { isPageTitleOn: data.value });
     }
   }
 };

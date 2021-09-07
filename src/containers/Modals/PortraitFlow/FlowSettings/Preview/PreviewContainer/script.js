@@ -24,6 +24,10 @@ export default {
     isDisableMoveNext: {
       type: Boolean,
       default: false
+    },
+    flowSettings: {
+      type: Object,
+      default: () => ({})
     }
   },
   methods: {

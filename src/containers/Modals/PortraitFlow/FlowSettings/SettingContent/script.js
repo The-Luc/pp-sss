@@ -1,10 +1,12 @@
 import TextSetting from './TextSetting';
 import PortraitSetting from './PortraitSetting';
+import FlowSettings from './FlowSettings';
 
 export default {
   components: {
     TextSetting,
-    PortraitSetting
+    PortraitSetting,
+    FlowSettings
   },
   props: {
     currentTab: {
@@ -14,6 +16,10 @@ export default {
     flowSettings: {
       type: Object,
       default: () => ({})
+    },
+    selectedFolders: {
+      type: Array,
+      default: () => []
     }
   },
   methods: {

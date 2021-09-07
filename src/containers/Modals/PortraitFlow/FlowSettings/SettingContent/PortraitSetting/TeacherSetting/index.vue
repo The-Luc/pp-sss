@@ -6,9 +6,10 @@
       <pp-combobox
         :items="row.options"
         :margin-menu="0"
-        :nudge-width="80"
+        :nudge-width="row.nudgeWidth || 196"
         :selected-val="row.selected"
         :appended-icon="appendedIcon"
+        :disabled="row.isDisabled"
         @change="row.onChangeFn"
       />
     </div>

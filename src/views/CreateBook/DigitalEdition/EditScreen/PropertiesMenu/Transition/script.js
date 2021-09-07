@@ -1,7 +1,7 @@
 import BoxProperties from '@/components/Properties/BoxProperties';
 import Item from './Item';
 
-import { useFrame } from '@/hooks';
+import { useDigitalSheetAction, useSheet } from '@/hooks';
 
 export default {
   components: {
@@ -9,8 +9,17 @@ export default {
     Item
   },
   setup() {
-    const { frames } = useFrame();
+    const { getTransitions } = useDigitalSheetAction();
+    const { currentSheet } = useSheet();
 
-    return { frames };
+    return { getTransitions, currentSheet };
+  },
+  data() {
+    return {
+      transitions: []
+    };
+  },
+  async mounted() {
+    this.transitions = await this.getTransitions(this.currentSheet.id);
   }
 };

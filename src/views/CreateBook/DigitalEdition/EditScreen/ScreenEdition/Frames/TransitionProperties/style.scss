@@ -1,0 +1,55 @@
+.transition-properties-container {
+  width: 320px;
+  position: absolute;
+
+  &::before {
+    position: absolute;
+    content: '';
+    bottom: -7px;
+    left: calc(50% - 7px);
+    z-index: 999;
+    transform: rotate(45deg);
+    border-left: 7px solid $color-stoodio-lightgray;
+    border-right: 7px solid $color-stoodio-lightgray;
+    border-bottom: 13px solid $color-stoodio-lightgray;
+    box-shadow: 0 0 6px #00000080;
+  }
+
+  &::after {
+    content: '';
+    height: 12px;
+    width: 30px;
+    position: absolute;
+    left: calc(50% - 15px);
+    bottom: 0;
+    z-index: 999;
+    background-color: $color-stoodio-lightgray;
+    border-right: 1px solid $color-stoodio-lightgray;
+    border-top: 1px solid $color-stoodio-lightgray;
+  }
+
+  ::v-deep {
+    .menu-content {
+      display: flex;
+      max-width: 100%;
+      position: relative;
+      border-radius: 0;
+      box-shadow: none;
+      overflow: visible;
+      contain: none;
+      will-change: auto;
+
+      .v-list {
+        width: 100%;
+        padding: 0;
+        background: none;
+        box-shadow: none;
+      }
+
+      .details {
+        border-radius: 8px;
+        box-shadow: 0 0 6px #00000080;
+      }
+    }
+  }
+}

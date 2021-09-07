@@ -1,6 +1,6 @@
 <template>
   <div class="group-item">
-    <div class="label">{{ name }}</div>
+    <div v-if="isNameDisplayed" class="label">{{ name }}</div>
 
     <div class="content">
       <slot />

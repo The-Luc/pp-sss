@@ -1,5 +1,14 @@
 import { useGetters, useMutations, useActions } from 'vuex-composition-helpers';
 import { useAppCommon } from './common';
+
+import {
+  getTransitionApi,
+  getTransitionsApi,
+  addTransitionApi,
+  removeTransitionApi,
+  updateTransitionApi
+} from '@/api/sheet';
+
 import digitalService from '@/api/digital';
 import printService from '@/api/print';
 
@@ -19,16 +28,18 @@ export const useSheet = () => {
 
   const GETTERS = isDigital ? DIGITAL_GETTERS : PRINT_GETTERS;
 
-  const { sheetLayout, currentSheet, sheetMedia } = useGetters({
+  const { sheetLayout, currentSheet, sheetMedia, getSheets } = useGetters({
     sheetLayout: GETTERS.SHEET_LAYOUT,
     currentSheet: GETTERS.CURRENT_SHEET,
-    sheetMedia: GETTERS.GET_SHEET_MEDIA
+    sheetMedia: GETTERS.GET_SHEET_MEDIA,
+    getSheets: GETTERS.GET_SHEETS
   });
 
   return {
     sheetLayout,
     currentSheet,
-    sheetMedia
+    sheetMedia,
+    getSheets
   };
 };
 
@@ -95,4 +106,14 @@ export const useMutationDigitalSheet = () => {
   // adding mutation for digital edition only here
 
   return { ...useMutationEditionSheet(true) };
+};
+
+export const useDigitalSheetAction = () => {
+  return {
+    getTransition: getTransitionApi,
+    getTransitions: getTransitionsApi,
+    addTransition: addTransitionApi,
+    removeTransition: removeTransitionApi,
+    updateTransition: updateTransitionApi
+  };
 };

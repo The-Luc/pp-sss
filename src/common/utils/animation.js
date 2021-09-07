@@ -1,6 +1,10 @@
 import { fabric } from 'fabric';
 import { OBJECT_TYPE } from '../constants';
-import { ANIMATION_DIR, DELAY_DURATION } from '../constants/animationProperty';
+import {
+  ANIMATION_DIR,
+  BLUR_DELAY_DURATION,
+  DELAY_DURATION
+} from '../constants/animationProperty';
 import { applyTextBoxProperties } from '../fabricObjects';
 
 /**
@@ -209,7 +213,7 @@ const fadeSlideIn = (element, options, canvas) => {
   const { duration, direction } = options;
   if (!duration || !direction) return;
 
-  const { oriPos, startPosForFade, animatePropName } = calcSlideInPosition(
+  const { oriPos, startPos, animatePropName } = calcSlideInPosition(
     element,
     direction,
     canvas
@@ -217,7 +221,7 @@ const fadeSlideIn = (element, options, canvas) => {
 
   const config = {
     startState: {
-      [animatePropName]: startPosForFade,
+      [animatePropName]: startPos,
       opacity: 0
     },
     animateProps: {
@@ -240,7 +244,7 @@ const fadeSlideOut = (element, options, canvas) => {
   const { duration, direction } = options;
   if (!duration || !direction) return;
 
-  const { oriPos, endPosForFade, animatePropName } = calcSlideOutPosition(
+  const { oriPos, endPos, animatePropName } = calcSlideOutPosition(
     element,
     direction,
     canvas
@@ -248,7 +252,7 @@ const fadeSlideOut = (element, options, canvas) => {
 
   const config = {
     animateProps: {
-      [animatePropName]: endPosForFade,
+      [animatePropName]: endPos,
       opacity: 0
     },
     revertedProps: {
@@ -288,7 +292,7 @@ const blurOut = (element, options, canvas) => {
   const blurOption = {
     ...options,
     startValue: 0,
-    endValue: 1,
+    endValue: 2,
     isBlurOut: true
   };
 
@@ -307,6 +311,10 @@ const handleBlurEffect = async (element, options, canvas) => {
 
   const blurValue = options.startValue;
   const offsetBlur = 300; // pixel
+
+  //hide order boxes
+  const { playIn, playOut } = hidePlayOrderBox(element);
+  canvas.renderAll();
 
   const { img, imgTop, imgLeft } = await createImage(element, offsetBlur);
 
@@ -351,21 +359,22 @@ const handleBlurEffect = async (element, options, canvas) => {
   }, DELAY_DURATION);
 
   function onComplete() {
+    canvas.remove(img);
+
     if (options.isBlurIn) {
-      canvas.remove(img);
       element.set({ visible: true });
     }
     setTimeout(() => {
-      if (options.isBlurOut) {
-        canvas.remove(img);
-        element.set({ visible: true });
-      }
       element.set({
+        visible: true,
         hasControls: true,
         hasBorders: true
       });
+
+      showPlayOrderBox(element, playIn, playOut);
+
       canvas.renderAll();
-    }, DELAY_DURATION);
+    }, BLUR_DELAY_DURATION);
   }
 };
 
@@ -397,7 +406,12 @@ const animationHandler = (element, config, canvas) => {
   const { startState, animateProps, duration, revertedProps = {} } = config;
 
   element.set(startState);
-  element.set({ hasControls: false, hasBorders: false });
+  element.set({
+    hasControls: false,
+    hasBorders: false
+  });
+
+  const { playIn, playOut } = hidePlayOrderBox(element);
 
   canvas.renderAll();
 
@@ -416,6 +430,9 @@ const animationHandler = (element, config, canvas) => {
             hasControls: true,
             hasBorders: true
           });
+
+          showPlayOrderBox(element, playIn, playOut);
+
           canvas.renderAll();
         }, DELAY_DURATION);
       }
@@ -433,7 +450,6 @@ const animationHandler = (element, config, canvas) => {
  */
 const calcSlideInPosition = (element, direction, canvas) => {
   const { top, left, width, height } = getObjectBounds(element);
-  const slideDistance = 300;
 
   const { left: oriLeft, top: oriTop } = element;
 
@@ -452,8 +468,7 @@ const calcSlideInPosition = (element, direction, canvas) => {
 
     return {
       ...horizontalAnimation,
-      startPos,
-      startPosForFade: oriLeft - slideDistance
+      startPos
     };
   }
   if (direction === ANIMATION_DIR.RIGHT_LEFT) {
@@ -462,8 +477,7 @@ const calcSlideInPosition = (element, direction, canvas) => {
 
     return {
       ...horizontalAnimation,
-      startPos,
-      startPosForFade: oriLeft + slideDistance
+      startPos
     };
   }
   if (direction === ANIMATION_DIR.TOP_BOTTOM) {
@@ -471,8 +485,7 @@ const calcSlideInPosition = (element, direction, canvas) => {
 
     return {
       ...verticalAnimation,
-      startPos,
-      startPosForFade: oriTop - slideDistance
+      startPos
     };
   }
   if (direction === ANIMATION_DIR.BOTTOM_TOP) {
@@ -481,8 +494,7 @@ const calcSlideInPosition = (element, direction, canvas) => {
 
     return {
       ...verticalAnimation,
-      startPos,
-      startPosForFade: oriTop + slideDistance
+      startPos
     };
   }
 };
@@ -497,7 +509,6 @@ const calcSlideInPosition = (element, direction, canvas) => {
  */
 const calcSlideOutPosition = (element, direction, canvas) => {
   const { top, left, width, height } = getObjectBounds(element);
-  const slideDistance = 300;
 
   const { left: oriLeft, top: oriTop } = element;
 
@@ -517,16 +528,14 @@ const calcSlideOutPosition = (element, direction, canvas) => {
 
     return {
       ...horizontalAnimation,
-      endPos,
-      endPosForFade: oriLeft + slideDistance
+      endPos
     };
   }
   if (direction === ANIMATION_DIR.RIGHT_LEFT) {
     const endPos = -1 * Math.abs(left + width - oriLeft);
     return {
       ...horizontalAnimation,
-      endPos,
-      endPosForFade: oriLeft - slideDistance
+      endPos
     };
   }
   if (direction === ANIMATION_DIR.TOP_BOTTOM) {
@@ -535,8 +544,7 @@ const calcSlideOutPosition = (element, direction, canvas) => {
 
     return {
       ...verticalAnimation,
-      endPos,
-      endPosForFade: oriTop + slideDistance
+      endPos
     };
   }
   if (direction === ANIMATION_DIR.BOTTOM_TOP) {
@@ -544,8 +552,7 @@ const calcSlideOutPosition = (element, direction, canvas) => {
 
     return {
       ...verticalAnimation,
-      endPos,
-      endPosForFade: oriTop - slideDistance
+      endPos
     };
   }
 };
@@ -620,4 +627,51 @@ const createImage = (element, offsetBlur) => {
       height: cropHeight
     });
   });
+};
+
+/**
+ * To hide control border and order boxes on selected element
+ *
+ * @param {Object} element fabric element
+ * @returns playOrder image
+ */
+const hidePlayOrderBox = (element, isStop) => {
+  if (element.playIn) {
+    const { playIn, playOut } = element;
+
+    element.set({
+      playIn: null,
+      playOut: null,
+      dirty: true
+    });
+
+    return { playIn, playOut };
+  }
+  if (isStop) return;
+
+  const rect = element.getObjects()[0];
+  return hidePlayOrderBox(rect, true);
+};
+
+/**
+ * To show control border and order boxes on selected element
+ *
+ * @param {Object} element fabric element
+ * @param {Object} playIn HTML Image image of order box play in
+ * @param {Object} playOut HTML Image image of order box play out
+ * @param {Boolean} isStop a sign to stop the recursive
+ */
+const showPlayOrderBox = (element, playIn, playOut, isStop) => {
+  if ('playIn' in element) {
+    element.set({
+      playIn,
+      playOut,
+      dirty: true
+    });
+  }
+
+  if (isStop) return;
+
+  const rect = element.getObjects()[0];
+  return showPlayOrderBox(rect, playIn, playOut, true);
 };

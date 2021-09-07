@@ -9,6 +9,10 @@ export class ImageCrop extends BaseObject {
   cropRight = 0;
   scale = 1;
   rotate = 0;
+  translate = {
+    left: 0,
+    top: 0
+  };
 
   /**
    * @param {ImageCrop} props

@@ -2,49 +2,45 @@
   <div>
     <div class="display display-position">
       <div class="title-content ">Name Display:</div>
-      <PpCombobox
+      <pp-select
         :items="textDisplay"
-        :margin-menu="0"
-        :nudge-width="126"
         :selected-val="displayVal"
-        :appended-icon="appendedIcon"
         @change="onChangeDisplay"
-      />
+      ></pp-select>
     </div>
     <div class="position-content">
       <div class="position display-position">
         <div class="title-content ">Name Position:</div>
-        <PpCombobox
+        <pp-select
           :items="textPosition"
-          :margin-menu="0"
-          :nudge-width="126"
           :selected-val="positionVal"
-          :appended-icon="appendedIcon"
           @change="onChangePosition"
-        />
+        ></pp-select>
       </div>
       <div class="position">
-        <div class="title-content">Name Width:</div>
-        <PpCombobox
-          :items="nameWidth"
+        <div class="title-content">Name {{ optionPositionVal.name }}:</div>
+        <pp-combobox
+          :key="componentKey"
+          :items="optionPositionVal.items"
           :margin-menu="0"
           :nudge-width="95"
-          :selected-val="widthVal"
+          :selected-val="optionPositionVal.value"
           :appended-icon="appendedIcon"
-          @change="onChangeWidth"
-        />
+          @change="optionPositionVal.onChangeFn"
+        ></pp-combobox>
       </div>
     </div>
-    <div class="name-gap">
+    <div v-if="!isCenterPosition" class="name-gap">
       <div class="title-content">Name Gap:</div>
-      <PpCombobox
+      <pp-combobox
+        :key="componentKey"
         :items="nameGap"
         :margin-menu="0"
         :nudge-width="95"
         :selected-val="gapVal"
         :appended-icon="appendedIcon"
         @change="onChangeGap"
-      />
+      ></pp-combobox>
     </div>
   </div>
 </template>

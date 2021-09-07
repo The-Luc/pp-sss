@@ -4,6 +4,7 @@ import {
   PORTRAIT_COL_ROW_RANGE,
   PORTRAIT_MARGIN_OPTIONS
 } from '@/common/constants';
+import { getValueInput, validateInputOption } from '@/common/utils';
 
 export default {
   components: {
@@ -20,8 +21,17 @@ export default {
       marginOptions: PORTRAIT_MARGIN_OPTIONS,
       colRowOptions: null,
       appendedIcon: ICON_LOCAL.APPENDED_ICON,
-      dataUI: null
+      dataUI: null,
+      componentKey: true
     };
+  },
+  watch: {
+    layoutSettings: {
+      deep: true,
+      handler() {
+        this.initData();
+      }
+    }
   },
   computed: {
     selectedRow() {
@@ -35,24 +45,23 @@ export default {
       );
     },
     selectedTop() {
-      return this.marginOptions.find(
-        o => o.value === this.layoutSettings.margins.top
-      );
+      const top = this.layoutSettings.margins.top;
+      return { name: top + '"', value: top };
     },
     selectedBottom() {
-      return this.marginOptions.find(
-        o => o.value === this.layoutSettings.margins.bottom
-      );
+      const bottom = this.layoutSettings.margins.bottom;
+      return { name: bottom + '"', value: bottom };
     },
     selectedLeft() {
-      return this.marginOptions.find(
-        o => o.value === this.layoutSettings.margins.left
-      );
+      const left = this.layoutSettings.margins.left;
+      return { name: left + '"', value: left };
     },
     selectedRight() {
-      return this.marginOptions.find(
-        o => o.value === this.layoutSettings.margins.right
-      );
+      const right = this.layoutSettings.margins.right;
+      return { name: right + '"', value: right };
+    },
+    isDisabledBottom() {
+      return this.layoutSettings.rowCount === 1 ? true : false;
     }
   },
   created() {
@@ -63,42 +72,60 @@ export default {
      * Fire when user change row
      */
     onChangeRow(val) {
-      this.emitEvent({ rowCount: +val || val.value });
+      const value = this.validateInput(val, this.colRowOptions, 0);
+      if (!value) return;
+
+      this.emitEvent({ rowCount: value });
     },
 
     /**
      * Fire when user change column
      */
     onChangeCol(val) {
-      this.emitEvent({ colCount: +val || val.value });
+      const value = this.validateInput(val, this.colRowOptions, 0);
+      if (!value) return;
+
+      this.emitEvent({ colCount: value });
     },
 
     /**
      * Fire when user change top margin
      */
     onChangeTop(val) {
-      this.onChangeMargins({ top: +val || val.value });
+      const value = this.validateInput(val, this.marginOptions, 2);
+      if (!value) return;
+
+      this.onChangeMargins({ top: value });
     },
 
     /**
      * Fire when user change bottom margin
      */
     onChangeBottom(val) {
-      this.onChangeMargins({ bottom: +val || val.value });
+      const value = this.validateInput(val, this.marginOptions, 2);
+      if (!value) return;
+
+      this.onChangeMargins({ bottom: value });
     },
 
     /**
      * Fire when user change left margin
      */
     onChangeLeft(val) {
-      this.onChangeMargins({ left: +val || val.value });
+      const value = this.validateInput(val, this.marginOptions, 2);
+      if (!value) return;
+
+      this.onChangeMargins({ left: value });
     },
 
     /**
      * Fire when user change right margin
      */
     onChangeRight(val) {
-      this.onChangeMargins({ right: +val || val.value });
+      const value = this.validateInput(val, this.marginOptions, 2);
+      if (!value) return;
+
+      this.onChangeMargins({ right: value });
     },
     /**
      * to call emit data
@@ -112,6 +139,30 @@ export default {
      */
     emitEvent(val) {
       this.$emit('change', { ...this.layoutSettings, ...val });
+    },
+
+    /**
+     * To validate value from input field
+     * @param {Object} val Object get from input field
+     * @param {Object} options Object that user choose from combobox
+     * @param {Number} decimal number indicate decimal places
+     * @returns a value from input field
+     */
+    validateInput(val, options, decimal) {
+      const { isValid, value } = validateInputOption(
+        getValueInput(val),
+        options[0].value,
+        options[options.length - 1].value,
+        decimal,
+        options
+      );
+
+      if (!isValid) {
+        this.componentKey = !this.componentKey;
+        return;
+      }
+
+      return value;
     },
     /**
      * To create initial data
@@ -131,13 +182,13 @@ export default {
 
       this.dataUI = [
         {
-          name: 'Row',
+          name: 'Rows',
           options: this.colRowOptions,
           selected: this.selectedRow,
           onChangeFn: this.onChangeRow
         },
         {
-          name: 'Col',
+          name: 'Columns',
           options: this.colRowOptions,
           selected: this.selectedCol,
           onChangeFn: this.onChangeCol
@@ -152,7 +203,8 @@ export default {
           name: 'Bottom Margin',
           options: this.marginOptions,
           selected: this.selectedBottom,
-          onChangeFn: this.onChangeBottom
+          onChangeFn: this.onChangeBottom,
+          isDisabled: this.isDisabledBottom
         },
         {
           name: 'Left Margin',
