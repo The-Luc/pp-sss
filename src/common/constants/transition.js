@@ -1,3 +1,5 @@
+import { ANIMATION_DIR, DIRECTION_OPTIONS } from './animationProperty';
+
 export const TRANSITION = {
   NONE: 0,
   PUSH: 1,
@@ -36,31 +38,9 @@ export const TRANSITION_OPTIONS = [
 
 export const TRANSITION_DEFAULT = TRANSITION_OPTIONS[1];
 
-export const TRANS_DIRECTION = {
-  LEFT_RIGTH: 0,
-  RIGHT_LEFT: 1,
-  TOP_BOTTOM: 2,
-  BOTTOM_TOP: 3
-};
+export const TRANS_DIRECTION = ANIMATION_DIR;
 
-export const TRANS_DIRECTION_OPTIONS = [
-  {
-    name: 'Left to Right',
-    value: TRANS_DIRECTION.LEFT_RIGTH
-  },
-  {
-    name: 'Right to Left',
-    value: TRANS_DIRECTION.RIGHT_LEFT
-  },
-  {
-    name: 'Top to Bottom',
-    value: TRANS_DIRECTION.TOP_BOTTOM
-  },
-  {
-    name: 'Bottom to Top',
-    value: TRANS_DIRECTION.BOTTOM_TOP
-  }
-];
+export const TRANS_DIRECTION_OPTIONS = DIRECTION_OPTIONS;
 
 export const TRANS_DIRECTION_DEFAULT = TRANS_DIRECTION_OPTIONS[2];
 
