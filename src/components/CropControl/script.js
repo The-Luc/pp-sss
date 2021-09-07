@@ -111,6 +111,8 @@ export default {
       this.rotate = rotate;
       this.scale = scale;
 
+      if (!translate) return;
+
       setTimeout(() => {
         this.$refs?.clipper?.setTL$?.next(translate);
       }, 250);

@@ -141,12 +141,12 @@ export default {
       portraitsEl.style.setProperty('--col-count', this.layout.colCount);
 
       portraitsEl.style.setProperty('--portrait-width', portraitWidth + 'px');
-     
+
       if (row === 1 && col === 1) {
         portraitsEl.style.setProperty('--align', 'center');
         return;
       }
-      
+
       portraitsEl.style.setProperty('--align', 'space-between');
     },
 
