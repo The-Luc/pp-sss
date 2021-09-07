@@ -106,7 +106,7 @@ const folder4 = new PortraitFolder({
   id: uniqueId(),
   name: 'The best students of Mr. Thompson Year 2019',
   thumbUrl: STUDENT_THUMB_02,
-  assetsCount: 55,
+  assetsCount: 54,
   assets: [teacher1, ...getRandomStudents(53)]
 });
 

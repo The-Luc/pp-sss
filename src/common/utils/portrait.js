@@ -23,6 +23,35 @@ const getRangePortraitSingleFolder = (
 };
 
 /**
+ * Get range of portrait for selected page
+ *
+ * @param   {Number}  currentIndex  index of page in list of selected page
+ * @param   {Number}  maxPortrait   max portrait per page
+ * @param   {Array}   folders       selected portrait folders
+ * @returns {Object}                min index & max index of protrait and folder index
+ */
+const getRangePortraitMultiFolder = (currentIndex, maxPortrait, folders) => {
+  // for auto flow
+  const portraitInPages = [];
+
+  // TODO: -Luc: Need to improve later for better performance
+  folders.forEach((folder, idx) => {
+    const pages = Math.ceil(folder.assetsCount / maxPortrait);
+    for (let i = 0; i < pages; i++) {
+      const { max, min } = getRangePortraitSingleFolder(
+        i,
+        maxPortrait,
+        folder.assetsCount
+      );
+      portraitInPages.push({ folderIdx: idx, min, max });
+    }
+  });
+  const { max, min, folderIdx } = portraitInPages[currentIndex];
+
+  return { min, max, folderIdx };
+};
+
+/**
  * Get portraits for select page (single folder)
  *
  * @param   {Number}  currentIndex  index of page in list of selected page
@@ -45,6 +74,26 @@ const getPortraitsSingleFolder = (
 
   return [...Array(max - min + 1).keys()].map(k => {
     return folders[0].assets[k + min];
+  });
+};
+
+/**
+ * Get portraits for select page (multi-folder)
+ *
+ * @param   {Number}  currentIndex  index of page in list of selected page
+ * @param   {Number}  maxPortrait   max portrait per page
+ * @param   {Array}   folders       selected portrait folders
+ * @returns {Array}                 portraits
+ */
+const getPortraitsMultiFolder = (currentIndex, maxPortrait, folders) => {
+  const { min, max, folderIdx } = getRangePortraitMultiFolder(
+    currentIndex,
+    maxPortrait,
+    folders
+  );
+
+  return [...Array(max - min + 1).keys()].map(k => {
+    return folders[folderIdx].assets[k + min];
   });
 };
 
@@ -74,7 +123,7 @@ export const getPortraitForPage = (
     );
   }
 
-  return [];
+  return getPortraitsMultiFolder(currentIndex, rowCount * colCount, folders);
 };
 
 /**

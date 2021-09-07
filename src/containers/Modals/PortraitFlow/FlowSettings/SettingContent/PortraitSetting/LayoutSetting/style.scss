@@ -13,5 +13,15 @@
     ::v-deep .v-input {
       flex: 0;
     }
+
+    // Increase width of combobox
+    ::v-deep .v-input__control {
+      width: 80px;
+      max-width: 80px;
+
+      .v-input__slot {
+        padding: 0;
+      }
+    }
   }
 }
