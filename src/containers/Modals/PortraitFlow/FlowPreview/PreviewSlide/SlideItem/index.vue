@@ -1,6 +1,7 @@
 <template>
   <div class="slide-item" :class="{ 'use-margin': isUseMargin }">
     <PreviewThumbnail
+      :flow-settings="flowSettings"
       :portraits="portraits"
       :layout="layout"
       :background-url="backgroundUrl"
