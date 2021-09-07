@@ -17,6 +17,7 @@
     <setting-content
       :current-tab="currentTab"
       :flow-settings="flowSettings"
+      :selected-folders="selectedFolders"
       @settingChange="onSettingChange"
     />
   </div>

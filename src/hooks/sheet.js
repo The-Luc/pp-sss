@@ -28,16 +28,18 @@ export const useSheet = () => {
 
   const GETTERS = isDigital ? DIGITAL_GETTERS : PRINT_GETTERS;
 
-  const { sheetLayout, currentSheet, sheetMedia } = useGetters({
+  const { sheetLayout, currentSheet, sheetMedia, getSheets } = useGetters({
     sheetLayout: GETTERS.SHEET_LAYOUT,
     currentSheet: GETTERS.CURRENT_SHEET,
-    sheetMedia: GETTERS.GET_SHEET_MEDIA
+    sheetMedia: GETTERS.GET_SHEET_MEDIA,
+    getSheets: GETTERS.GET_SHEETS
   });
 
   return {
     sheetLayout,
     currentSheet,
-    sheetMedia
+    sheetMedia,
+    getSheets
   };
 };
 
