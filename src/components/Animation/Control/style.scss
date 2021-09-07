@@ -31,6 +31,36 @@
         margin-left: 0;
       }
     }
+
+    &::v-deep {
+      .pp-select.apply-select {
+        .v-select__selections input::placeholder {
+          color: $color-stoodio-blue;
+          font-size: 11px;
+        }
+
+        .v-input__slot {
+          border-color: $color-stoodio-blue;
+        }
+
+        .item-selected {
+          .v-list-item__title {
+            max-width: 145px;
+
+            span {
+              color: $color-stoodio-blue;
+            }
+          }
+        }
+      }
+    }
+
+    .apply-btn {
+      width: 90px;
+      border-color: $color-stoodio-blue;
+      background-color: $color-stoodio-blue;
+      color: $color-white;
+    }
   }
 
   .control-options {
@@ -55,4 +85,13 @@
       }
     }
   }
+}
+
+.apply-select-header {
+  margin-top: -8px;
+  padding: 0 10px;
+  font-size: 11px;
+  font-weight: bold;
+  background-color: $color-stoodio-blue;
+  color: $color-white;
 }

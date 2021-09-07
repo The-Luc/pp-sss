@@ -8,7 +8,8 @@ import {
   DIRECTION_OPTIONS,
   NONE_OPTION,
   PLAY_IN_OPTIONS,
-  PLAY_OUT_OPTIONS
+  PLAY_OUT_OPTIONS,
+  TEXT_APPLY_OPTIONS
 } from '@/common/constants/animationProperty';
 import { useObjectProperties } from '@/hooks';
 
@@ -28,10 +29,14 @@ export default {
     return {
       appendedIcon: ICON_LOCAL.APPENDED_ICON,
       directionOptions: DIRECTION_OPTIONS,
+      applyOptions: TEXT_APPLY_OPTIONS,
+      selectedApplyOption: null,
       defaultDuration: 0.8,
       defaultScale: 50,
       defaultStyle: NONE_OPTION,
       defaultDirection: DIRECTION_OPTIONS[0],
+      showApplyOptions: false,
+      showApplyButton: false,
       componentKey: true
     };
   },
@@ -93,6 +98,8 @@ export default {
      * @param {Object} val A style option
      */
     onChangeStyle(style) {
+      if (style.value !== NONE_OPTION.value) this.showApplyOptions = true;
+
       const data = {
         style: style.value,
         controlType: this.type,
@@ -100,6 +107,7 @@ export default {
         direction: this.defaultDirection.value,
         scale: this.defaultScale
       };
+
       this.$emit('change', { ...data });
     },
     /**
@@ -168,6 +176,15 @@ export default {
      */
     forceUpdate() {
       this.componentKey = !this.componentKey;
+    },
+    onChangeApplyOption(val) {
+      this.selectedApplyOption = val;
+      this.showApplyButton = true;
+    },
+    onClickApply() {
+      this.selectedApplyOption = null;
+      this.showApplyOptions = false;
+      this.showApplyButton = false;
     }
   }
 };

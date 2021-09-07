@@ -5,6 +5,7 @@
     item-text="name"
     item-value="value"
     solo
+    :placeholder="placeholder"
     :attach="container"
     :disabled="disabled"
     append-icon=""
@@ -16,6 +17,10 @@
     @click="onClick"
     @focus="onFocus"
   >
+    <template #prepend-item>
+      <slot />
+    </template>
+
     <template #selection="{ item }">
       <v-list-item class="pp-select--item item-selected">
         <v-list-item-content>

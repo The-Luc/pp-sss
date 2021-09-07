@@ -18,6 +18,24 @@
         </v-btn>
       </div>
     </div>
+    <div v-if="showApplyOptions" class="control-style mt-3">
+      <div class="col-7">
+        <PpSelect
+          class="apply-select"
+          :items="applyOptions"
+          :selected-val="selectedApplyOption"
+          placeholder="Apply to..."
+          @change="onChangeApplyOption"
+        >
+          <div class="apply-select-header">Apply Animation change to:</div>
+        </PpSelect>
+      </div>
+      <div v-if="showApplyButton" class="col-5">
+        <v-btn class="apply-btn" outlined @click="onClickApply">
+          Apply
+        </v-btn>
+      </div>
+    </div>
     <div v-if="isShowOptions" :key="componentKey" class="control-options">
       <div v-if="selectedStyle.showDirection" class="control-item">
         <span class="properties-title">Direction</span>
