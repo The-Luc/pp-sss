@@ -56,21 +56,7 @@ export default {
     },
 
     dataSelectPageSingle() {
-      return this.flowSingleSettings.pages.map((item, index, arr) => {
-        return {
-          startAsset: this.getStartAsset(index),
-          endAsset:
-            arr.length - 1 === index
-              ? this.flowSettings.totalPortraitsCount
-              : this.getEndAsset(index),
-          selectedVal: {
-            id: item,
-            name: item
-          },
-          pageOptions:
-            index === 0 ? this.pageOptions : this.getPageOptions(arr[index - 1])
-        };
-      });
+      return this.flowSingleSettings.pages.map(this.calculateDataSelectPage);
     },
 
     portraitFlowOptionMulti() {
@@ -266,6 +252,28 @@ export default {
      */
     getEndAsset(index) {
       return (index + 1) * this.maxPortraitPerPage;
+    },
+    /**
+     * calculate data select page
+     * @param {Object} folder portrait folder
+     * @param {Number} index index of folder
+     * @param {Array} arr portrait folders
+     * @returns {Object} data select page
+     */
+    calculateDataSelectPage(folder, index, arr) {
+      return {
+        startAsset: this.getStartAsset(index),
+        endAsset:
+          arr.length - 1 === index
+            ? this.flowSettings.totalPortraitsCount
+            : this.getEndAsset(index),
+        selectedVal: {
+          id: folder,
+          name: folder
+        },
+        pageOptions:
+          index === 0 ? this.pageOptions : this.getPageOptions(arr[index - 1])
+      };
     }
   },
   created() {
