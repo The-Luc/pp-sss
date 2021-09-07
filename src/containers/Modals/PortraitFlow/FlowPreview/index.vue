@@ -4,8 +4,7 @@
       {{ flowSettings.totalPortraitsCount }} portraits =
       {{ requiredPages.length }} pages
     </div>
-
-    <PreviewSlide :items="previewItems" />
+    <PreviewSlide :flow-settings="flowSettings" :items="previewItems" />
   </div>
 </template>
 

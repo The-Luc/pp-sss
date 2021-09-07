@@ -49,3 +49,4 @@ export * from './presentation';
 export * from './portraitSettingOptions';
 export * from './portrait';
 export * from './transition';
+export * from './animationProperty';

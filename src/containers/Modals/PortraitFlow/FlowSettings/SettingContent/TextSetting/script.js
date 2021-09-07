@@ -6,7 +6,6 @@ import DisplayPosition from './DisplayPosition';
 import { isEmpty } from '@/common/utils';
 import {
   DEFAULT_PAGE_TITLE,
-  DEFAULT_NAME_TEXT,
   DEFAULT_MARGIN_PAGE_TITLE
 } from '@/common/constants';
 
@@ -22,9 +21,6 @@ export default {
       type: Object,
       default: () => ({})
     }
-  },
-  created() {
-    this.initData();
   },
   methods: {
     /**
@@ -68,18 +64,6 @@ export default {
           ...this.textSettings.nameTextFontSettings,
           ...data
         }
-      };
-      this.$emit('portraitSettingChange', { textSettings });
-    },
-    /**
-     * To create initial data
-     */
-    initData() {
-      const textSettings = {
-        ...this.textSettings,
-        pageTitleFontSettings: DEFAULT_PAGE_TITLE,
-        nameTextFontSettings: DEFAULT_NAME_TEXT,
-        pageTitleMargins: DEFAULT_MARGIN_PAGE_TITLE
       };
       this.$emit('portraitSettingChange', { textSettings });
     }

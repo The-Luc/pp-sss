@@ -11,6 +11,10 @@ export default {
       type: Number,
       default: 3
     },
+    flowSettings: {
+      type: Object,
+      default: () => ({})
+    },
     items: {
       type: Array,
       default: () => []

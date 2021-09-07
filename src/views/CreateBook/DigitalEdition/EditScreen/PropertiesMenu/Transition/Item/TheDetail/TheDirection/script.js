@@ -16,7 +16,7 @@ export default {
   },
   props: {
     selectedDirection: {
-      type: Number
+      type: [Number, String]
     },
     disabled: {
       type: Boolean

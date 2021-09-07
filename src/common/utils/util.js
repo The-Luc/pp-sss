@@ -7,6 +7,7 @@ import {
 } from 'lodash';
 
 import { STATUS } from '@/common/constants';
+import { inToPx, ptToPx, getPagePrintSize } from '@/common/utils';
 
 export let activeCanvas = null;
 
@@ -428,4 +429,34 @@ export const getDiffBetweenArray = (arr1, arr2, compareFn) => {
  */
 export const getBoolean = value => {
   return isEmpty(value) ? false : value;
+};
+
+/**
+ * Convert pt to px for preview portrait flow
+ *
+ * @param   {Number}  val - the pt value that need to be converted
+ * @returns {Number}  the result px
+ */
+export const ptToPxPreview = value => {
+  const { pageHeight } = getPagePrintSize().pixels;
+  const previewHeight = 314;
+
+  const ratio = pageHeight / previewHeight;
+
+  return ptToPx(value) / ratio;
+};
+
+/**
+ * Convert in to px for preview portrait flow
+ *
+ * @param   {Number}  val - the in value that need to be converted
+ * @returns {Number}  the result px
+ */
+export const inToPxPreview = value => {
+  const { pageHeight } = getPagePrintSize().pixels;
+  const previewHeight = 314;
+
+  const ratio = pageHeight / previewHeight;
+
+  return inToPx(value) / ratio;
 };

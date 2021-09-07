@@ -7,6 +7,7 @@
       :layout="layoutSettings"
       :page-no="pageNo"
       :background-url="backgroundUrl"
+      :flow-settings="flowSettings"
       @moveBack="onMoveToPreviousPage"
       @moveNext="onMoveToNextPage"
     />
