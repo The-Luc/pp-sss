@@ -65,7 +65,7 @@
         ></pp-input>
       </div>
       <div v-if="selectedStyle.showScale" class="control-item">
-        <span class="properties-title">Scale:</span>
+        <span class="properties-title">Scale</span>
         <pp-input
           suffix="%"
           :value="scaleValue"

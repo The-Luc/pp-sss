@@ -83,6 +83,10 @@
       .pp-select {
         max-width: 135px;
       }
+
+      &::v-deep .pp-number.length-1 input {
+        max-width: 9px !important;
+      }
     }
   }
 }
