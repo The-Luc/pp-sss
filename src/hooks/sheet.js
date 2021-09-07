@@ -2,6 +2,7 @@ import { useGetters, useMutations, useActions } from 'vuex-composition-helpers';
 import { useAppCommon } from './common';
 
 import {
+  getTransitionApi,
   getTransitionsApi,
   addTransitionApi,
   removeTransitionApi,
@@ -107,6 +108,7 @@ export const useMutationDigitalSheet = () => {
 
 export const useDigitalSheetAction = () => {
   return {
+    getTransition: getTransitionApi,
     getTransitions: getTransitionsApi,
     addTransition: addTransitionApi,
     removeTransition: removeTransitionApi,

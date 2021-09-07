@@ -78,7 +78,8 @@ import {
   useMutationDigitalSheet,
   useElementProperties,
   useStyle,
-  useToolBar
+  useToolBar,
+  useDigitalSheetAction
 } from '@/hooks';
 
 import {
@@ -167,6 +168,8 @@ export default {
     const { getProperty } = useElementProperties();
     const { updateMediaSidebarOpen } = useToolBar();
 
+    const { addTransition, removeTransition } = useDigitalSheetAction();
+
     return {
       currentFrame,
       currentFrameId,
@@ -187,7 +190,9 @@ export default {
       updateSheetThumbnail,
       firstFrameThumbnail,
       getProperty,
-      updateMediaSidebarOpen
+      updateMediaSidebarOpen,
+      addTransition,
+      removeTransition
     };
   },
   data() {
@@ -205,7 +210,8 @@ export default {
       isProcessingPaste: false,
       isCanvasChanged: false,
       autoSaveTimer: null,
-      undoRedoCanvas: null
+      undoRedoCanvas: null,
+      isFrameLoaded: false
     };
   },
   computed: {
@@ -229,6 +235,8 @@ export default {
       async handler(val, oldVal) {
         if (val?.id === oldVal?.id) return;
 
+        this.isFrameLoaded = false;
+
         this.saveData(oldVal.id, this.currentFrameId);
 
         // reset frames, frameIDs, currentFrameId
@@ -241,6 +249,8 @@ export default {
         resetObjects(this.digitalCanvas);
 
         await this.getDataCanvas();
+
+        this.isFrameLoaded = true;
 
         this.setCurrentFrameId({ id: this.frames[0].id });
 
@@ -307,6 +317,14 @@ export default {
     },
     zoom(newVal, oldVal) {
       if (newVal !== oldVal) this.updateCanvasSize();
+    },
+    'frames.length'(newVal, oldVal) {
+      if (!this.isFrameLoaded || newVal === oldVal) return;
+
+      const changed = newVal - oldVal;
+
+      if (changed > 0) this.addTransition(this.pageSelected.id, changed);
+      else this.removeTransition(this.pageSelected.id, -changed);
     }
   },
   beforeDestroy() {

@@ -7,6 +7,7 @@
     :close-on-content-click="isCloseMenu"
     :position-x="menuX"
     :position-y="menuY"
+    :attach="container"
   >
     <v-list ref="menu" v-click-outside="onClickOutsideMenu">
       <v-list-item v-for="(item, i) in items" :key="i">

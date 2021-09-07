@@ -2,6 +2,7 @@ import Draggable from 'vuedraggable';
 
 import EmptyFrame from './EmptyFrame';
 import FrameMenu from './FrameMenu';
+import TransitionProperties from './TransitionProperties';
 
 import {
   useFrameOrdering,
@@ -17,7 +18,8 @@ export default {
   components: {
     EmptyFrame,
     FrameMenu,
-    Draggable
+    Draggable,
+    TransitionProperties
   },
   props: {
     frames: {
@@ -30,17 +32,6 @@ export default {
       type: Boolean,
       default: true
     }
-  },
-  data() {
-    return {
-      isOpenMenu: false,
-      menuX: 0,
-      menuY: 0,
-      drag: false,
-      selectedIndex: -1,
-      moveToIndex: -1,
-      dragTargetId: null
-    };
   },
   setup() {
     const { toggleModal } = useModal();
@@ -55,6 +46,20 @@ export default {
       handleAddFrame,
       setCurrentFrameId,
       setPropertiesType
+    };
+  },
+  data() {
+    return {
+      isOpenMenu: false,
+      menuX: 0,
+      menuY: 0,
+      drag: false,
+      selectedIndex: -1,
+      moveToIndex: -1,
+      dragTargetId: null,
+      transitionIndex: -1,
+      transitionX: 0,
+      transitionY: 0
     };
   },
   methods: {
@@ -217,6 +222,54 @@ export default {
       setTimeout(() => {
         this.$emit('onFrameClick', this.frames[selectedIndex]?.id);
       }, 20);
+    },
+    /**
+     * Fire when click on transition icon
+     *
+     * @param {Object}  event the event
+     * @param {Number}  index current index of transition
+     */
+    onTransitionClick(event, index) {
+      event.stopPropagation();
+
+      if (this.transitionIndex === index) {
+        this.transitionIndex = -1;
+
+        return;
+      }
+
+      const element = event.target.className.includes('transition')
+        ? event.target
+        : event.target.parentElement;
+
+      const { x, y } = element.getBoundingClientRect();
+
+      const iconWidth = 20;
+
+      setTimeout(() => {
+        // 160: half width of modal
+        this.transitionX = x - 160 + iconWidth / 2;
+
+        // 116 is height of modal, 4 is space between modal & icon
+        this.transitionY = y - 116 - iconWidth / 2 - 4;
+
+        this.transitionIndex = index;
+      }, 20);
+    },
+    /**
+     * Check if transition icon is active
+     *
+     * @param   {Number}  index current index of transition
+     * @returns {Boolean}       is actived
+     */
+    isTransitionIconActive(index) {
+      return index - 1 === this.transitionIndex;
+    },
+    /**
+     * Close transition menu
+     */
+    closeTransitionMenu() {
+      this.transitionIndex = -1;
     }
   }
 };

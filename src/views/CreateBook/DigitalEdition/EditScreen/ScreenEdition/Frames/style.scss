@@ -37,6 +37,10 @@
         display: none;
       }
 
+      .transition {
+        display: none;
+      }
+
       .frame-item {
         padding: 0;
         border: none;
@@ -57,6 +61,35 @@
         img {
           display: none;
         }
+      }
+    }
+
+    .transition {
+      display: flex;
+      width: 21px;
+      height: 21px;
+      position: absolute;
+      top: calc(50% - 20px);
+      left: -34px;
+      z-index: 1;
+      justify-content: center;
+      align-items: center;
+      background-color: $color-white;
+      border: 1px solid $color-stoodio-blue;
+      border-radius: 3px;
+      cursor: pointer;
+
+      &.active {
+        background-color: $color-stoodio-blue;
+
+        .v-icon {
+          color: $color-white;
+        }
+      }
+
+      .v-icon {
+        color: $color-stoodio-blue;
+        font-size: 14px;
       }
     }
 
@@ -141,6 +174,10 @@
         width: 40px;
       }
 
+      .transition {
+        left: -30px;
+      }
+
       .frame-item {
         width: 140px;
         height: 85px;
@@ -156,6 +193,10 @@
       &:nth-child(n + 2)::before {
         left: -30px;
         width: 30px;
+      }
+
+      .transition {
+        left: -25px;
       }
 
       .frame-item {

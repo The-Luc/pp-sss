@@ -1,28 +1,19 @@
 import Modal from '@/containers/Modals/Modal';
 import PpButton from '@/components/Buttons/Button';
-import {
-  useDigitalSheetAction,
-  useFrame,
-  useFrameDelete,
-  useModal,
-  useSheet
-} from '@/hooks';
+
+import { useFrame, useFrameDelete, useModal } from '@/hooks';
 
 export default {
   setup() {
     const { handleDeleteFrame } = useFrameDelete();
     const { currentFrameId } = useFrame();
     const { modalData, toggleModal } = useModal();
-    const { removeTransition } = useDigitalSheetAction();
-    const { currentSheet } = useSheet();
 
     return {
       handleDeleteFrame,
       currentFrameId,
       toggleModal,
-      modalData,
-      removeTransition,
-      currentSheet
+      modalData
     };
   },
   components: {
@@ -35,8 +26,6 @@ export default {
      */
     onAction() {
       this.handleDeleteFrame(this.modalData.props.id);
-
-      this.removeTransition(this.currentSheet.id);
 
       this.onCancel();
     },
