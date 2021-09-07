@@ -136,3 +136,4 @@ export const CONTROL_TYPE = {
 };
 
 export const DELAY_DURATION = 500;
+export const BLUR_DELAY_DURATION = 1000;
