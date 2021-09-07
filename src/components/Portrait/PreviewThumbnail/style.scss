@@ -26,11 +26,12 @@
       --portrait-height: calc(
         var(--portrait-width) * 1.25 + var(--name-height)
       );
+      --align: space-between;
       display: grid;
       grid-template-columns: repeat(var(--col-count), var(--portrait-width));
       grid-template-rows: repeat(var(--row-count), var(--portrait-height));
-      justify-content: space-between;
-      align-content: space-between;
+      justify-content: var(--align);
+      align-content: var(--align);
 
       .portrait {
         display: flex;

@@ -8,6 +8,7 @@
         :nudge-width="80"
         :selected-val="row.selected"
         :appended-icon="appendedIcon"
+        :disabled="row.isDisabled"
         @change="row.onChangeFn"
       />
     </div>
