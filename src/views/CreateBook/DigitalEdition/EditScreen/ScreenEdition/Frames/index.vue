@@ -1,15 +1,16 @@
 <template>
   <div class="frames-container">
-    <FrameMenu
+    <frame-menu
       :is-open="isOpenMenu"
       :menu-x="menuX"
       :menu-y="menuY"
       @onClose="onCloseMenu"
       @onReplaceLayout="onReplaceLayout"
       @onDeleteFrame="onDeleteFrame"
-    />
+    ></frame-menu>
+
     <div class="row frame-row">
-      <Draggable
+      <draggable
         v-model="frames"
         class="row frame-row actual"
         ghost-class="ghost"
@@ -27,6 +28,15 @@
           class="frame-container"
           @click="onFrameClick(id)"
         >
+          <div
+            v-if="index > 0"
+            class="transition"
+            :class="{ active: isTransitionIconActive(index) }"
+            @click="onTransitionClick($event, index - 1)"
+          >
+            <v-icon>auto_awesome_motion</v-icon>
+          </div>
+
           <div
             class="frame-item"
             :class="{
@@ -48,11 +58,21 @@
               class="frame-image"
             />
           </div>
+
           <div class="frame-name">Frame {{ index + 1 }}</div>
         </div>
-      </Draggable>
-      <EmptyFrame v-if="showAddFrame" @click="addFrame" />
+      </draggable>
+
+      <empty-frame v-if="showAddFrame" @click="addFrame"></empty-frame>
     </div>
+
+    <transition-properties
+      v-if="transitionIndex > -1"
+      :index="transitionIndex"
+      :top="transitionY"
+      :left="transitionX"
+      @onClose="closeTransitionMenu"
+    ></transition-properties>
   </div>
 </template>
 

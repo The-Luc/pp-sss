@@ -1,15 +1,17 @@
 <template>
-  <div class="transitions-properties-container">
+  <div class="transition-properties-container">
     <box-properties title="Transitions">
-      <item
-        v-for="(item, index) in transitions"
-        :key="index"
-        :first-frame="index + 1"
-        :second-frame="index + 2"
-        :transition="item.transition"
-        :direction="item.direction"
-        :duration="item.duration"
-      ></item>
+      <div class="transition-wrapper">
+        <item
+          v-for="(item, index) in transitions"
+          :key="index"
+          :first-frame="index + 1"
+          :second-frame="index + 2"
+          :transition="item.transition"
+          :direction="item.direction"
+          :duration="item.duration"
+        ></item>
+      </div>
     </box-properties>
   </div>
 </template>

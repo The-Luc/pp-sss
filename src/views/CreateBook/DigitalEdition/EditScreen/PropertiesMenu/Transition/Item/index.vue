@@ -1,6 +1,7 @@
 <template>
   <div class="transition-item">
     <the-header
+      v-if="isHeaderDisplayed"
       :first-frame="firstFrame"
       :second-frame="secondFrame"
       :is-expand="isExpand"

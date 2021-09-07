@@ -32,6 +32,10 @@ export default {
     duration: {
       type: Number,
       default: TRANS_DURATION_DEFAULT
+    },
+    isHeaderDisplayed: {
+      type: Boolean,
+      default: true
     }
   },
   data() {
@@ -70,6 +74,8 @@ export default {
       this.currentTransition = transition;
 
       this.isTransitionChanged = this.currentTransition !== this.transition;
+
+      this.$emit('transitionChange', { isChanged: this.isTransitionChanged });
     },
     /**
      * Change direction

@@ -31,15 +31,15 @@ export const getTransitionsApi = sheetId => {
       return;
     }
 
-    resolve(
-      window.data.book.sections[sectionIndex].sheets[
-        sheetIndex
-      ].digitalData.transitions.map(t => new Transition(t))
-    );
+    const transitions =
+      window.data.book.sections[sectionIndex].sheets[sheetIndex].digitalData
+        .transitions;
+
+    resolve(transitions.map(t => new Transition(t)));
   });
 };
 
-export const addTransitionApi = sheetId => {
+export const getTransitionApi = (sheetId, index) => {
   return new Promise(resolve => {
     const { sectionIndex, sheetIndex } = findSectionSheetIndex(sheetId);
 
@@ -49,19 +49,39 @@ export const addTransitionApi = sheetId => {
       return;
     }
 
-    window.data.book.sections[sectionIndex].sheets[
-      sheetIndex
-    ].digitalData.transitions = insertItemsToArray(
+    const transition =
       window.data.book.sections[sectionIndex].sheets[sheetIndex].digitalData
-        .transitions,
-      [{ value: new Transition() }]
-    );
+        .transitions[index];
+
+    resolve(new Transition(transition));
+  });
+};
+
+export const addTransitionApi = (sheetId, totalTransition = 1) => {
+  return new Promise(resolve => {
+    const { sectionIndex, sheetIndex } = findSectionSheetIndex(sheetId);
+
+    if (sheetIndex < 0) {
+      resolve();
+
+      return;
+    }
+
+    for (let i = 0; i < totalTransition; i++) {
+      window.data.book.sections[sectionIndex].sheets[
+        sheetIndex
+      ].digitalData.transitions = insertItemsToArray(
+        window.data.book.sections[sectionIndex].sheets[sheetIndex].digitalData
+          .transitions,
+        [{ value: new Transition() }]
+      );
+    }
 
     resolve();
   });
 };
 
-export const removeTransitionApi = sheetId => {
+export const removeTransitionApi = (sheetId, totalTransition = 1) => {
   return new Promise(resolve => {
     const { sectionIndex, sheetIndex } = findSectionSheetIndex(sheetId);
 
@@ -71,17 +91,19 @@ export const removeTransitionApi = sheetId => {
       return;
     }
 
-    const transitions =
-      window.data.book.sections[sectionIndex].sheets[sheetIndex].digitalData
-        .transitions;
+    for (let i = 0; i < totalTransition; i++) {
+      let transitions =
+        window.data.book.sections[sectionIndex].sheets[sheetIndex].digitalData
+          .transitions;
 
-    const lastIndex = transitions.length - 1;
+      let lastIndex = transitions.length - 1;
 
-    window.data.book.sections[sectionIndex].sheets[
-      sheetIndex
-    ].digitalData.transitions = removeItemsFormArray(transitions, [
-      { index: lastIndex < 0 ? 0 : lastIndex }
-    ]);
+      window.data.book.sections[sectionIndex].sheets[
+        sheetIndex
+      ].digitalData.transitions = removeItemsFormArray(transitions, [
+        { index: lastIndex < 0 ? 0 : lastIndex }
+      ]);
+    }
 
     resolve();
   });
@@ -110,6 +132,7 @@ export const updateTransitionApi = (sheetId, transition, index) => {
 };
 
 export default {
+  getTransition: getTransitionApi,
   getTransitions: getTransitionsApi,
   addTransition: addTransitionApi,
   removeTransition: removeTransitionApi,
