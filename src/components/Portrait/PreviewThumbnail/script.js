@@ -71,6 +71,7 @@ export default {
      
       if (row === 1 && col === 1) {
         portraitsEl.style.setProperty('--align', 'center');
+        return;
       }
       
       portraitsEl.style.setProperty('--align', 'space-between');
