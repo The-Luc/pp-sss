@@ -82,7 +82,9 @@ export default {
       return direction;
     },
     durationValue() {
-      return this.config.duration || this.defaultDuration;
+      return !isNaN(this.config.duration)
+        ? this.config.duration
+        : this.defaultDuration;
     },
     scaleValue() {
       return this.config.scale || this.defaultScale;
@@ -177,10 +179,18 @@ export default {
     forceUpdate() {
       this.componentKey = !this.componentKey;
     },
+    /**
+     * Fire when user change the apply option
+     * @param {Object} val apply option
+     */
     onChangeApplyOption(val) {
       this.selectedApplyOption = val;
       this.showApplyButton = true;
     },
+
+    /**
+     * Fire when user click apply button
+     */
     onClickApply() {
       this.selectedApplyOption = null;
       this.showApplyOptions = false;
