@@ -307,7 +307,7 @@ export const toFabricClipArtProp = (prop, originalElement) => {
   return mapObject(prop, mapRules);
 };
 
-export const toCssPreview = prop => {
+export const toCssPreview = (prop, previewHeight) => {
   const horizontal = prop.isPageTitleOn
     ? 'textAlign'
     : prop.nameLines === 1
@@ -333,7 +333,7 @@ export const toCssPreview = prop => {
       },
       fontSize: {
         name: 'fontSize',
-        parse: value => `${ptToPxPreview(value)}px`
+        parse: value => `${ptToPxPreview(value, previewHeight)}px`
       },
       horizontal: {
         name: horizontal,
@@ -352,19 +352,19 @@ export const toCssPreview = prop => {
       },
       top: {
         name: 'paddingTop',
-        parse: value => `${inToPxPreview(value)}px`
+        parse: value => `${inToPxPreview(value, previewHeight)}px`
       },
       bottom: {
         name: 'paddingBottom',
-        parse: value => `${inToPxPreview(value)}px`
+        parse: value => `${inToPxPreview(value, previewHeight)}px`
       },
       left: {
         name: 'paddingLeft',
-        parse: value => `${inToPxPreview(value)}px`
+        parse: value => `${inToPxPreview(value, previewHeight)}px`
       },
       right: {
         name: 'paddingRight',
-        parse: value => `${inToPxPreview(value)}px`
+        parse: value => `${inToPxPreview(value, previewHeight)}px`
       }
     },
     restrict: []
@@ -381,24 +381,24 @@ export const toCssPreview = prop => {
  * @param   {Object}  prop  stored properties
  * @returns {Object}        css preview
  */
-export const toMarginCssPreview = prop => {
+export const toMarginCssPreview = (prop, previewHeight) => {
   const mapRules = {
     data: {
       top: {
         name: 'marginTop',
-        parse: value => `${inToPxPreview(value)}px`
+        parse: value => `${inToPxPreview(value, previewHeight)}px`
       },
       bottom: {
         name: 'marginBottom',
-        parse: value => `${inToPxPreview(value)}px`
+        parse: value => `${inToPxPreview(value, previewHeight)}px`
       },
       left: {
         name: 'marginLeft',
-        parse: value => `${inToPxPreview(value)}px`
+        parse: value => `${inToPxPreview(value, previewHeight)}px`
       },
       right: {
         name: 'marginRight',
-        parse: value => `${inToPxPreview(value)}px`
+        parse: value => `${inToPxPreview(value, previewHeight)}px`
       }
     },
     restrict: []

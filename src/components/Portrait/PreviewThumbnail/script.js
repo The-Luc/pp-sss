@@ -34,7 +34,8 @@ export default {
       defaultGap: 0.15,
       defaultRatio: DEFAULT_PORTRAIT_RATIO,
       portraitWidth: 0,
-      namesHeight: {}
+      namesHeight: {},
+      previewHeight: 0
     };
   },
   computed: {
@@ -45,11 +46,14 @@ export default {
         nameGap
       } = this.flowSettings.textSettings;
 
-      const style = toCssPreview({
-        isFirstLastDisplay: this.isFirstLastDisplay,
-        nameLines,
-        ...nameTextFontSettings
-      });
+      const style = toCssPreview(
+        {
+          isFirstLastDisplay: this.isFirstLastDisplay,
+          nameLines,
+          ...nameTextFontSettings
+        },
+        this.previewHeight
+      );
 
       if (nameLines === 2) {
         style.justifyContent = this.isFirstLastDisplay
@@ -58,7 +62,7 @@ export default {
       }
 
       if (!this.isCenterPosition) {
-        style.paddingBottom = `${inToPxPreview(nameGap)}px`;
+        style.paddingBottom = `${this.convertIntoPx(nameGap)}px`;
       }
 
       return style;
@@ -70,11 +74,14 @@ export default {
         pageTitleMargins
       } = this.flowSettings.textSettings;
 
-      return toCssPreview({
-        isPageTitleOn,
-        ...pageTitleFontSettings,
-        ...pageTitleMargins
-      });
+      return toCssPreview(
+        {
+          isPageTitleOn,
+          ...pageTitleFontSettings,
+          ...pageTitleMargins
+        },
+        this.previewHeight
+      );
     },
     isCenterPosition() {
       const { namePosition } = this.flowSettings.textSettings;
@@ -90,10 +97,12 @@ export default {
     nameContainerStyle() {
       const { nameWidth } = this.flowSettings.textSettings;
 
-      const style = toMarginCssPreview({
-        ...this.layout.margins,
-        width: `${inToPxPreview(nameWidth)}px`
-      });
+      const style = toMarginCssPreview(
+        { ...this.layout.margins },
+        this.previewHeight
+      );
+
+      style.width = `${this.convertIntoPx(nameWidth)}px`;
 
       if (this.showPageTitile) style.marginTop = '0px';
 
@@ -128,20 +137,6 @@ export default {
       handler(newVal, oldVal) {
         if (newVal !== oldVal) {
           this.$nextTick(() => {
-            const pageTitleHeight = this.$refs?.pageTitle?.clientHeight;
-            const height = this.showPageTitile ? pageTitleHeight : 0;
-
-            const row = this.layout.rowCount;
-            const nameContainerHeight = this.$refs?.portraits?.clientHeight;
-            const gridHeight = this.portraitWidth * 1.25 + 10;
-            const gap = (nameContainerHeight - gridHeight * row) / (row - 1);
-
-            this.namesHeight = { height: `${gridHeight + gap}px` };
-
-            if (pageTitleHeight) {
-              this.$refs.thumbWrapper.style.height = `calc(100% - ${height}px)`;
-            }
-
             this.updatePortraitData();
           });
         }
@@ -150,6 +145,7 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
+      this.previewHeight = this.$refs.thumbWrapper.clientHeight;
       this.updatePortraitData();
     });
   },
@@ -159,8 +155,10 @@ export default {
      */
     updatePortraitData() {
       // order of function calls is matter
+      this.setThumbWrapperHeight();
       this.updateMargins();
       this.updateLayout();
+      this.setNamesHeight();
     },
 
     /**
@@ -209,19 +207,48 @@ export default {
       const margins = this.layout.margins;
       const nameWidth = this.flowSettings.textSettings.nameWidth;
 
-      const top = this.showPageTitile ? 0 : inToPxPreview(margins.top);
+      const top = this.showPageTitile ? 0 : this.convertIntoPx(margins.top);
 
-      const bottom = inToPxPreview(margins.bottom);
+      const bottom = this.convertIntoPx(margins.bottom);
 
-      const offset = this.isCenterPosition ? 0 : inToPxPreview(nameWidth);
+      const offset = this.isCenterPosition ? 0 : this.convertIntoPx(nameWidth);
+
       const offsetRight = this.isPageRight ? offset : 0;
       const offsetLeft = this.isPageRight ? 0 : offset;
 
-      const left = inToPxPreview(margins.left) + offsetLeft;
+      const left = this.convertIntoPx(margins.left) + offsetLeft;
 
-      const right = inToPxPreview(margins.right) + offsetRight;
+      const right = this.convertIntoPx(margins.right) + offsetRight;
 
       thumbWrapperEl.style.padding = `${top}px ${right}px ${bottom}px ${left}px`;
+    },
+    /**
+     * Set height for name container when position name is outside
+     */
+    setNamesHeight() {
+      const row = this.layout.rowCount;
+      const nameContainerHeight = this.$refs?.portraits?.clientHeight;
+      const gridHeight = this.portraitWidth * 1.25 + 10;
+      const gap = (nameContainerHeight - gridHeight * row) / (row - 1);
+
+      this.namesHeight = { height: `${gridHeight + gap}px` };
+    },
+    /**
+     * Set height for thumbnail wrapper container when has page title
+     */
+    setThumbWrapperHeight() {
+      const pageTitleHeight = this.$refs?.pageTitle?.clientHeight;
+      const height = this.showPageTitile ? pageTitleHeight : 0;
+
+      if (pageTitleHeight) {
+        this.$refs.thumbWrapper.style.height = `calc(100% - ${height}px)`;
+      }
+    },
+    /**
+     * Convert value from in to px
+     */
+    convertIntoPx(value) {
+      return inToPxPreview(value, this.previewHeight);
     }
   }
 };

@@ -68,7 +68,6 @@
           line-height: 1;
           display: flex;
           div {
-            padding: 0 2px;
             white-space: nowrap;
           }
         }
@@ -79,4 +78,10 @@
 
 .lastname::after {
   content: ', ';
+  white-space: pre;
+}
+
+.firstname::after {
+  content: ' ';
+  white-space: pre;
 }

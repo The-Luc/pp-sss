@@ -196,7 +196,8 @@ export const DEFAULT_PAGE_TITLE = {
 
 export const DEFAULT_NAME_TEXT = {
   ...DEFAULT_TEXT_PROPERTIES,
-  fontSize: 12
+  fontSize: 12,
+  isBold: false
 };
 
 export const DEFAULT_NAME_WIDTH = 1.25;
