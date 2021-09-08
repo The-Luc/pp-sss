@@ -1,5 +1,5 @@
 <template>
-  <div id="portrait-flow" :class="isPreviewDisplayed ? 'preview' : ''">
+  <div id="portrait-flow" :class="{ preview: isPreviewDisplayed }">
     <CommonModal
       accept-text="Apply Portraits to Pages"
       width="1162"
@@ -22,6 +22,7 @@
         @showPreview="onShowPreview"
         @settingChange="onSettingChange"
         @saveSettings="onSaveSettings"
+        @startPageChange="onStartPageChange"
       />
 
       <FlowPreview

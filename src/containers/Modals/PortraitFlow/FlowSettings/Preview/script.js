@@ -3,9 +3,10 @@ import PreviewContainer from './PreviewContainer';
 import StartPage from './StartPage';
 import PreviewInfo from './PreviewInfo';
 
-import { useBackgroundAction } from '@/hooks';
+import { useBackgroundAction, useSheet } from '@/hooks';
 
 import { getPortraitForPage, isEmpty } from '@/common/utils';
+import { PORTRAIT_FLOW_OPTION_MULTI } from '@/common/constants';
 
 export default {
   components: {
@@ -30,12 +31,12 @@ export default {
   },
   setup() {
     const { getPageBackground } = useBackgroundAction();
+    const { getSheets } = useSheet();
 
-    return { getPageBackground };
+    return { getPageBackground, getSheets };
   },
   data() {
     return {
-      pages: [1, 2, 3], // TODO: get from current sheet list (implement in another ticket)
       pageNo: '',
       backgroundUrl: '',
       portraits: []
@@ -59,6 +60,10 @@ export default {
     },
     layoutSettings() {
       return this.flowSettings.layoutSettings;
+    },
+    pages() {
+      const totalSheet = Object.values(this.getSheets).length * 2 - 4;
+      return Array.from({ length: totalSheet }, (_, i) => i + 1);
     }
   },
   watch: {
@@ -144,12 +149,18 @@ export default {
       this.pageNo = page.pageNo;
       this.backgroundUrl = page.backgroundUrl;
 
+      const isSingle =
+        this.selectedFolders.length === 1 ||
+        this.flowSettings.flowMultiSettings.flowOption ===
+          PORTRAIT_FLOW_OPTION_MULTI.CONTINUE.id;
+
       this.portraits = getPortraitForPage(
         index,
         this.flowSettings.layoutSettings.rowCount,
         this.flowSettings.layoutSettings.colCount,
         this.flowSettings.totalPortraitsCount,
-        this.selectedFolders
+        this.selectedFolders,
+        isSingle
       );
     }
   }

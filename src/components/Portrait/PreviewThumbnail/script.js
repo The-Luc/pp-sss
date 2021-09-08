@@ -4,7 +4,7 @@ import {
   PORTRAIT_NAME_POSITION
 } from '@/common/constants';
 import { isEmpty, inToPxPreview } from '@/common/utils';
-import { toCssPreview } from '@/common/fabricObjects';
+import { toCssPreview, toMarginCssPreview } from '@/common/fabricObjects';
 
 export default {
   props: {
@@ -22,24 +22,30 @@ export default {
     flowSettings: {
       type: Object,
       default: () => ({})
+    },
+    pageNumber: {
+      type: Number,
+      default: 0
     }
   },
   data() {
     return {
       portraitData: [],
       defaultGap: 0.15,
-      defaultRatio: DEFAULT_PORTRAIT_RATIO
+      defaultRatio: DEFAULT_PORTRAIT_RATIO,
+      portraitWidth: 0,
+      namesHeight: {}
     };
   },
   computed: {
     nameTextStyle() {
       const {
         nameTextFontSettings,
-        nameLines
+        nameLines,
+        nameGap
       } = this.flowSettings.textSettings;
 
       const style = toCssPreview({
-        isCenterPosition: this.isCenterPosition,
         isFirstLastDisplay: this.isFirstLastDisplay,
         nameLines,
         ...nameTextFontSettings
@@ -49,6 +55,10 @@ export default {
         style.justifyContent = this.isFirstLastDisplay
           ? style.justifyContent
           : 'flex-end';
+      }
+
+      if (!this.isCenterPosition) {
+        style.paddingBottom = `${inToPxPreview(nameGap)}px`;
       }
 
       return style;
@@ -76,6 +86,32 @@ export default {
     isFirstLastDisplay() {
       const { nameDisplay } = this.flowSettings.textSettings;
       return nameDisplay.value === PORTRAIT_NAME_DISPLAY.FIRST_LAST.value;
+    },
+    nameContainerStyle() {
+      const { nameWidth } = this.flowSettings.textSettings;
+
+      const style = toMarginCssPreview({
+        ...this.layout.margins,
+        width: `${inToPxPreview(nameWidth)}px`
+      });
+
+      if (this.showPageTitile) style.marginTop = '0px';
+
+      return style;
+    },
+    namePortrait() {
+      const arrayPortrait = Object.values(this.portraits);
+      const result = [];
+
+      while (arrayPortrait.length) {
+        const item = arrayPortrait.splice(0, this.layout.colCount);
+        result.push(item);
+      }
+
+      return result;
+    },
+    isPageRight() {
+      return this.pageNumber % 2 === 0;
     }
   },
   watch: {
@@ -84,6 +120,9 @@ export default {
 
       this.updatePortraitData();
     },
+    pageNumber(newVal, oldVal) {
+      if (newVal !== oldVal) this.updatePortraitData();
+    },
     flowSettings: {
       deep: true,
       handler(newVal, oldVal) {
@@ -91,6 +130,13 @@ export default {
           this.$nextTick(() => {
             const pageTitleHeight = this.$refs?.pageTitle?.clientHeight;
             const height = this.showPageTitile ? pageTitleHeight : 0;
+
+            const row = this.layout.rowCount;
+            const nameContainerHeight = this.$refs?.portraits?.clientHeight;
+            const gridHeight = this.portraitWidth * 1.25 + 10;
+            const gap = (nameContainerHeight - gridHeight * row) / (row - 1);
+
+            this.namesHeight = { height: `${gridHeight + gap}px` };
 
             if (pageTitleHeight) {
               this.$refs.thumbWrapper.style.height = `calc(100% - ${height}px)`;
@@ -135,18 +181,21 @@ export default {
       const height =
         parseInt(containerHeight) / (row + (row - 1) * this.defaultGap);
 
-      const portraitWidth = Math.min(width, (height - 10) / this.defaultRatio);
+      this.portraitWidth = Math.min(width, (height - 10) / this.defaultRatio);
 
       portraitsEl.style.setProperty('--row-count', this.layout.rowCount);
       portraitsEl.style.setProperty('--col-count', this.layout.colCount);
 
-      portraitsEl.style.setProperty('--portrait-width', portraitWidth + 'px');
-     
+      portraitsEl.style.setProperty(
+        '--portrait-width',
+        this.portraitWidth + 'px'
+      );
+
       if (row === 1 && col === 1) {
         portraitsEl.style.setProperty('--align', 'center');
         return;
       }
-      
+
       portraitsEl.style.setProperty('--align', 'space-between');
     },
 
@@ -158,11 +207,19 @@ export default {
       if (!thumbWrapperEl.style) return;
 
       const margins = this.layout.margins;
+      const nameWidth = this.flowSettings.textSettings.nameWidth;
 
       const top = this.showPageTitile ? 0 : inToPxPreview(margins.top);
+
       const bottom = inToPxPreview(margins.bottom);
-      const left = inToPxPreview(margins.left);
-      const right = inToPxPreview(margins.right);
+
+      const offset = this.isCenterPosition ? 0 : inToPxPreview(nameWidth);
+      const offsetRight = this.isPageRight ? offset : 0;
+      const offsetLeft = this.isPageRight ? 0 : offset;
+
+      const left = inToPxPreview(margins.left) + offsetLeft;
+
+      const right = inToPxPreview(margins.right) + offsetRight;
 
       thumbWrapperEl.style.padding = `${top}px ${right}px ${bottom}px ${left}px`;
     }

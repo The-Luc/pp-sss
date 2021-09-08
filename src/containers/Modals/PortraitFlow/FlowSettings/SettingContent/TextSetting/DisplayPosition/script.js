@@ -10,7 +10,8 @@ import {
   NAME_WIDTH_OPTION,
   PORTRAIT_NAME_POSITION,
   NAME_LINES_OPTION,
-  MIN_MAX_TEXT_SETTINGS
+  MIN_MAX_TEXT_SETTINGS,
+  DEFAULT_NAME_WIDTH
 } from '@/common/constants';
 
 export default {
@@ -87,7 +88,12 @@ export default {
      * @param {Object}  data text position value user selected
      */
     onChangePosition(data) {
-      this.$emit('change', { namePosition: data });
+      this.$emit('change', {
+        namePosition: data,
+        nameGap: MIN_MAX_TEXT_SETTINGS.MIN_GAP,
+        nameLines: MIN_MAX_TEXT_SETTINGS.MIN_LINES,
+        nameWidth: DEFAULT_NAME_WIDTH
+      });
     },
     /**
      * Emit name width value to parent
@@ -131,7 +137,7 @@ export default {
      */
     onChangeGap(data) {
       const { isValid, value } = validateInputOption(
-        data,
+        getValueInput(data),
         MIN_MAX_TEXT_SETTINGS.MIN_GAP,
         MIN_MAX_TEXT_SETTINGS.MAX_GAP,
         3

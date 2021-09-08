@@ -28,6 +28,12 @@ img {
   visibility: hidden !important;
 }
 
+.disabled,
+.v-input--is-disabled {
+  opacity: 0.4 !important; // override
+  pointer-events: none;
+}
+
 .theme--light.v-application {
   color: $color-stoodio-toolbartext;
 }

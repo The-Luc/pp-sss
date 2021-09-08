@@ -375,7 +375,37 @@ export const toCssPreview = prop => {
 
   return cssStyle;
 };
+/**
+ * Convert stored properties to css preview
+ *
+ * @param   {Object}  prop  stored properties
+ * @returns {Object}        css preview
+ */
+export const toMarginCssPreview = prop => {
+  const mapRules = {
+    data: {
+      top: {
+        name: 'marginTop',
+        parse: value => `${inToPxPreview(value)}px`
+      },
+      bottom: {
+        name: 'marginBottom',
+        parse: value => `${inToPxPreview(value)}px`
+      },
+      left: {
+        name: 'marginLeft',
+        parse: value => `${inToPxPreview(value)}px`
+      },
+      right: {
+        name: 'marginRight',
+        parse: value => `${inToPxPreview(value)}px`
+      }
+    },
+    restrict: []
+  };
 
+  return mapObject(prop, mapRules);
+};
 /**
  * Get value horizontal
  *

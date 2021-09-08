@@ -167,7 +167,7 @@ export const DEFAULT_MARGIN_PAGE_TITLE = {
 export const MIN_MAX_TEXT_SETTINGS = {
   MIN_MARGIN: 0.45,
   MAX_MARGIN: 4,
-  MIN_BOTTOM_MARGIN: 0.25,
+  MIN_BOTTOM_MARGIN: 0,
   MIN_LINES: 1,
   MAX_LINES: 2,
   MIN_WIDTH: 1.25,
@@ -196,5 +196,7 @@ export const DEFAULT_PAGE_TITLE = {
 
 export const DEFAULT_NAME_TEXT = {
   ...DEFAULT_TEXT_PROPERTIES,
-  fontSize: 8
+  fontSize: 12
 };
+
+export const DEFAULT_NAME_WIDTH = 1.25;

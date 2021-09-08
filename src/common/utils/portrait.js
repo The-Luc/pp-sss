@@ -72,8 +72,12 @@ const getPortraitsSingleFolder = (
     totalPortrait
   );
 
+  const assets = folders.reduce((result, item) => {
+    return result.concat(item.assets);
+  }, []);
+
   return [...Array(max - min + 1).keys()].map(k => {
-    return folders[0].assets[k + min];
+    return assets[k + min];
   });
 };
 
@@ -112,9 +116,10 @@ export const getPortraitForPage = (
   rowCount,
   colCount,
   totalPortrait,
-  folders
+  folders,
+  isSingle
 ) => {
-  if (folders.length === 1) {
+  if (isSingle) {
     return getPortraitsSingleFolder(
       currentIndex,
       rowCount * colCount,

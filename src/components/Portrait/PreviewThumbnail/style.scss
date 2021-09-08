@@ -10,9 +10,13 @@
     width: 100%;
     height: 100%;
 
-    .names {
+    .name-container {
       position: absolute;
-      height: 100%;
+      display: flex;
+      flex-direction: column;
+      &.right {
+        right: 0;
+      }
       .name {
         display: flex;
         div {
@@ -71,4 +75,8 @@
       }
     }
   }
+}
+
+.lastname::after {
+  content: ', ';
 }

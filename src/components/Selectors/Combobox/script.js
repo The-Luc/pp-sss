@@ -41,6 +41,10 @@ export default {
     nudgePosition: {
       type: Object,
       default: () => ({})
+    },
+    maxHeight: {
+      type: String,
+      default: 'auto'
     }
   },
   data() {

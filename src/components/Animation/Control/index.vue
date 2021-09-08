@@ -3,11 +3,11 @@
     <span class="properties-title">{{ title }}</span>
     <div class="control-style">
       <div class="col-7">
-        <PpSelect
+        <pp-select
           :items="styleOptions"
           :selected-val="selectedStyle"
           @change="onChangeStyle"
-        />
+        ></pp-select>
       </div>
       <div class="col-5">
         <v-btn v-if="isShowOptions" outlined @click="onClickPreview">
@@ -18,41 +18,60 @@
         </v-btn>
       </div>
     </div>
+    <div v-if="showApplyOptions" class="control-style mt-3">
+      <div class="col-7">
+        <pp-select
+          class="apply-select"
+          :items="applyOptions"
+          :selected-val="selectedApplyOption"
+          placeholder="Apply to..."
+          @change="onChangeApplyOption"
+        >
+          <div class="apply-select-header">Apply Animation change to:</div>
+        </pp-select>
+      </div>
+      <div v-if="showApplyButton" class="col-5">
+        <v-btn class="apply-btn" outlined @click="onClickApply">
+          Apply
+        </v-btn>
+      </div>
+    </div>
     <div v-if="isShowOptions" :key="componentKey" class="control-options">
       <div v-if="selectedStyle.showDirection" class="control-item">
         <span class="properties-title">Direction</span>
-        <PpSelect
+        <pp-select
           :items="directionOptions"
           :selected-val="selectedDirection"
           @change="onChangeDirection"
-        />
+        ></pp-select>
       </div>
       <div class="control-item">
         <span class="properties-title">Order</span>
-        <PpCombobox
+        <pp-combobox
+          max-height="200"
           :items="orderOptions"
           :appended-icon="appendedIcon"
           :selected-val="selectedOrder"
           @change="onChangeOrder"
-        />
+        ></pp-combobox>
       </div>
       <div class="control-item">
         <span class="properties-title">Duration</span>
-        <PpInput
+        <pp-input
           suffix="s"
           :value="durationValue"
           :decimal="true"
           @change="onChangeDuration"
-        />
+        ></pp-input>
       </div>
       <div v-if="selectedStyle.showScale" class="control-item">
-        <span class="properties-title">Scale:</span>
-        <PpInput
+        <span class="properties-title">Scale</span>
+        <pp-input
           suffix="%"
           :value="scaleValue"
           type="text"
           @change="onChangeScale"
-        />
+        ></pp-input>
       </div>
     </div>
   </div>

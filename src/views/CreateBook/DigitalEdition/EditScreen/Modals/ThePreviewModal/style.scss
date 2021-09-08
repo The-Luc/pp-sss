@@ -1,0 +1,253 @@
+#transition-preview {
+  ::v-deep {
+    .v-card__text {
+      display: flex;
+      height: 450px;
+      justify-content: space-around;
+      align-items: center;
+
+      .container {
+        position: relative;
+        display: flex;
+        width: 713px;
+        height: 400px;
+        justify-content: center;
+        align-items: center;
+
+        .thumb {
+          width: 100%;
+          height: 100%;
+          position: absolute;
+          background-size: cover;
+        }
+      }
+    }
+  }
+}
+
+/** ======= [PUSH] ======= **/
+
+/** [TOP BOTTOM] START **/
+.transition-1-topToBottom-enter-active {
+  top: calc(-100% - 25px);
+}
+
+.transition-1-topToBottom-enter-to {
+  top: 0;
+}
+
+.transition-1-topToBottom-leave-active {
+  top: 0;
+}
+
+.transition-1-topToBottom-leave-to {
+  top: calc(100% + 25px);
+}
+/** [TOP BOTTOM] END **/
+
+/** [BOTTOM TOP] START **/
+.transition-1-bottomToTop-enter-active {
+  top: calc(100% + 25px);
+}
+
+.transition-1-bottomToTop-enter-to {
+  top: 0;
+}
+
+.transition-1-bottomToTop-leave-active {
+  top: 0;
+}
+
+.transition-1-bottomToTop-leave-to {
+  top: calc(-100% - 25px);
+}
+/** [TOP BOTTOM] END **/
+
+/** [LEFT RIGHT] START **/
+.transition-1-leftToRight-enter-active {
+  left: calc(-100% - 25px);
+}
+
+.transition-1-leftToRight-enter-to {
+  left: 0;
+}
+
+.transition-1-leftToRight-leave-active {
+  left: 0;
+}
+
+.transition-1-leftToRight-leave-to {
+  left: calc(100% + 25px);
+}
+/** [LEFT RIGHT] END **/
+
+/** [RIGHT LEFT] START **/
+.transition-1-rightToLeft-enter-active {
+  left: calc(100% + 25px);
+}
+
+.transition-1-rightToLeft-enter-to {
+  left: 0;
+}
+
+.transition-1-rightToLeft-leave-active {
+  left: 0;
+}
+
+.transition-1-rightToLeft-leave-to {
+  left: calc(-100% - 25px);
+}
+/** [RIGHT LEFT] END **/
+
+/** ======= [MOVE IN] ======= **/
+
+/** [TOP BOTTOM] START **/
+.transition-2-topToBottom-enter-active {
+  top: -100%;
+}
+
+.transition-2-topToBottom-enter-to {
+  top: 0;
+}
+/** [TOP BOTTOM] END **/
+
+/** [BOTTOM TOP] START **/
+.transition-2-bottomToTop-enter-active {
+  top: 100%;
+}
+
+.transition-2-bottomToTop-enter-to {
+  top: 0;
+}
+/** [TOP BOTTOM] END **/
+
+/** [LEFT RIGHT] START **/
+.transition-2-leftToRight-enter-active {
+  left: -100%;
+}
+
+.transition-2-leftToRight-enter-to {
+  left: 0;
+}
+/** [LEFT RIGHT] END **/
+
+/** [RIGHT LEFT] START **/
+.transition-2-rightToLeft-enter-active {
+  left: 100%;
+}
+
+.transition-2-rightToLeft-enter-to {
+  left: 0;
+}
+/** [RIGHT LEFT] END **/
+
+/** ======= [DISSOLVE] ======= **/
+.transition-3--enter-active {
+  top: 0;
+  opacity: 0;
+}
+
+.transition-3--enter-to {
+  opacity: 1;
+}
+
+.transition-3--leave-active {
+  top: 0;
+  z-index: 1;
+}
+
+.transition-3--leave-to {
+  opacity: 0;
+}
+
+/** ======= [REVEAL] ======= **/
+
+/** [TOP BOTTOM] START **/
+.transition-4-topToBottom-leave-active {
+  z-index: 1;
+  top: 0;
+}
+
+.transition-4-topToBottom-leave-to {
+  top: 100%;
+}
+/** [TOP BOTTOM] END **/
+
+/** [BOTTOM TOP] START **/
+.transition-4-bottomToTop-leave-active {
+  z-index: 1;
+  top: 0;
+}
+
+.transition-4-bottomToTop-leave-to {
+  top: -100%;
+}
+/** [TOP BOTTOM] END **/
+
+/** [LEFT RIGHT] START **/
+.transition-4-leftToRight-leave-active {
+  z-index: 1;
+  left: 0;
+}
+
+.transition-4-leftToRight-leave-to {
+  left: 100%;
+}
+/** [LEFT RIGHT] END **/
+
+/** [RIGHT LEFT] START **/
+.transition-4-rightToLeft-leave-active {
+  z-index: 1;
+  left: 0;
+}
+
+.transition-4-rightToLeft-leave-to {
+  left: -100%;
+}
+/** [RIGHT LEFT] END **/
+
+/** ======= [WIPE] ======= **/
+
+/** [TOP BOTTOM] START **/
+.transition-5-topToBottom-leave-active {
+  bottom: 0;
+  z-index: 1;
+}
+
+.transition-5-topToBottom-leave-to {
+  height: 0 !important; // override
+}
+/** [TOP BOTTOM] END **/
+
+/** [BOTTOM TOP] START **/
+.transition-5-bottomToTop-leave-active {
+  top: 0;
+  z-index: 1;
+}
+
+.transition-5-bottomToTop-leave-to {
+  height: 0 !important; // override
+}
+/** [TOP BOTTOM] END **/
+
+/** [LEFT RIGHT] START **/
+.transition-5-leftToRight-leave-active {
+  right: 0;
+  z-index: 1;
+}
+
+.transition-5-leftToRight-leave-to {
+  width: 0 !important; // override
+}
+/** [LEFT RIGHT] END **/
+
+/** [RIGHT LEFT] START **/
+.transition-5-rightToLeft-leave-active {
+  left: 0;
+  z-index: 1;
+}
+
+.transition-5-rightToLeft-leave-to {
+  width: 0 !important; // override
+}
+/** [RIGHT LEFT] END **/

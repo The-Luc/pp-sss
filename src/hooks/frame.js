@@ -1,4 +1,9 @@
-import { useMutations, useGetters } from 'vuex-composition-helpers';
+import {
+  useMutations,
+  useGetters,
+  createNamespacedHelpers
+} from 'vuex-composition-helpers';
+const { useState: useDigitalState } = createNamespacedHelpers('digital');
 import {
   GETTERS as DIGITAL_GETTERS,
   MUTATES as DIGITAL_MUTATES
@@ -164,4 +169,19 @@ export const useFrameTitle = () => {
   });
 
   return { setFrameTitle };
+};
+
+export const useFrameAction = () => {
+  const {
+    frameIds: { value: frameIds },
+    frames: { value: frames }
+  } = useDigitalState(['frameIds', 'frames']);
+
+  const getPreviewUrlByIndex = index => {
+    if (index >= frameIds.length) return '';
+
+    return frames[frameIds[index]]?.previewImageUrl;
+  };
+
+  return { getPreviewUrlByIndex };
 };

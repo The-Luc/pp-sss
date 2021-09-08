@@ -55,6 +55,12 @@
         </div>
       </div>
     </div>
+
+    <flow-warning
+      :is-open-modal="isOpenModalWarning"
+      :descript-modal="descriptModalWarning"
+      @close="onCloseModalWarning"
+    ></flow-warning>
   </div>
 </template>
 

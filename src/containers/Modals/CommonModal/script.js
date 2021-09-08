@@ -31,7 +31,7 @@ export default {
       type: Boolean,
       default: false
     },
-    isShowHeader: {
+    isHeaderDisplayed: {
       type: Boolean,
       default: true
     },
@@ -69,7 +69,8 @@ export default {
   },
   data() {
     return {
-      isDefaulHeaderDisplayed: this.isShowHeader && isEmpty(this.$slots.header),
+      isDefaulHeaderDisplayed:
+        this.isHeaderDisplayed && isEmpty(this.$slots.header),
       isDefaulFooterDisplayed:
         this.isFooterDisplayed && isEmpty(this.$slots.footer)
     };

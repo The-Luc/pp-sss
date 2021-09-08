@@ -11,8 +11,7 @@
       @onClickOutsideMenu="onClickOutsideMenu"
     >
       <item
-        :first-frame="0"
-        :second-frame="0"
+        :transition-index="index"
         :is-header-displayed="false"
         :transition="transition.transition"
         :direction="transition.direction"

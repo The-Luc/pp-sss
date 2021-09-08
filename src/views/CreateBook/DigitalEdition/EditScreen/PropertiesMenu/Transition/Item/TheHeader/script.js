@@ -1,12 +1,7 @@
 export default {
   props: {
-    firstFrame: {
-      type: Number,
-      required: true
-    },
-    secondFrame: {
-      type: Number,
-      required: true
+    transitionIndex: {
+      type: Number
     },
     isExpand: {
       type: Boolean,
