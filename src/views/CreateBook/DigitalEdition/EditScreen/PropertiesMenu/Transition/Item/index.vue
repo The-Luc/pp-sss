@@ -2,14 +2,14 @@
   <div class="transition-item">
     <the-header
       v-if="isHeaderDisplayed"
-      :first-frame="firstFrame"
-      :second-frame="secondFrame"
+      :transition-index="transitionIndex"
       :is-expand="isExpand"
       @toggleExpand="onToggleExpand"
     ></the-header>
 
     <the-detail
       v-if="isExpand"
+      :transition-index="transitionIndex"
       :transition="currentTransition"
       :direction="currentDirection"
       :duration="currentDuration"

@@ -17,6 +17,9 @@ export default {
     TheDuration
   },
   props: {
+    transitionIndex: {
+      type: Number
+    },
     transition: {
       type: Number
     },
@@ -24,7 +27,7 @@ export default {
       type: [Number, String]
     },
     duration: {
-      type: Number
+      type: [Number, String]
     },
     isTransitionChanged: {
       type: Boolean

@@ -1,6 +1,6 @@
 import TheHeader from './TheHeader';
-
 import TheDetail from './TheDetail';
+
 import {
   TRANSITION_DEFAULT,
   TRANS_DIRECTION_DEFAULT,
@@ -13,11 +13,7 @@ export default {
     TheDetail
   },
   props: {
-    firstFrame: {
-      type: Number,
-      required: true
-    },
-    secondFrame: {
+    transitionIndex: {
       type: Number,
       required: true
     },
@@ -30,7 +26,7 @@ export default {
       default: TRANS_DIRECTION_DEFAULT.value
     },
     duration: {
-      type: Number,
+      type: [Number, String],
       default: TRANS_DURATION_DEFAULT
     },
     isHeaderDisplayed: {

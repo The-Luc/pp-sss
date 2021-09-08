@@ -5,8 +5,7 @@
         <item
           v-for="(item, index) in transitions"
           :key="index"
-          :first-frame="index + 1"
-          :second-frame="index + 2"
+          :transition-index="index"
           :transition="item.transition"
           :direction="item.direction"
           :duration="item.duration"

@@ -29,6 +29,8 @@ export default {
   },
   computed: {
     direction() {
+      if (this.disabled) return {};
+
       if (isEmpty(this.selectedDirection)) return TRANS_DIRECTION_DEFAULT;
 
       const direction = TRANS_DIRECTION_OPTIONS.find(
@@ -36,6 +38,15 @@ export default {
       );
 
       return isEmpty(direction) ? TRANS_DIRECTION_DEFAULT : direction;
+    }
+  },
+  watch: {
+    disabled(newVal, oldVal) {
+      if (newVal === oldVal) return;
+
+      const direction = newVal ? '' : TRANS_DIRECTION_DEFAULT.value;
+
+      this.$emit('directionChange', { direction });
     }
   },
   methods: {

@@ -8,7 +8,7 @@
       arrow_right
     </v-icon>
 
-    <div class="name">Frame {{ firstFrame }}</div>
+    <div class="name">Frame {{ transitionIndex + 1 }}</div>
 
     <div class="symbol-link">
       <div class="square">
@@ -16,7 +16,7 @@
       </div>
     </div>
 
-    <div class="name">Frame {{ secondFrame }}</div>
+    <div class="name">Frame {{ transitionIndex + 2 }}</div>
   </div>
 </template>
 
