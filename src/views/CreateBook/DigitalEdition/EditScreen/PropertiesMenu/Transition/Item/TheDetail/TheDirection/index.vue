@@ -1,8 +1,6 @@
 <template>
   <group-item name="Direction">
     <pp-select
-      id="direction"
-      container="#direction"
       :items="directions"
       :selected-val="direction"
       :disabled="disabled"
