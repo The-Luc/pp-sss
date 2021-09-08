@@ -1,8 +1,6 @@
 <template>
   <group-item name="Transition">
     <pp-select
-      id="transition-type"
-      container="#transition-type"
       :items="transitions"
       :selected-val="transition"
       @change="onTransitionChange"
