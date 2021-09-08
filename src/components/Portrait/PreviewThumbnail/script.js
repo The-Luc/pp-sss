@@ -1,7 +1,9 @@
 import {
   DEFAULT_PORTRAIT_RATIO,
   PORTRAIT_NAME_DISPLAY,
-  PORTRAIT_NAME_POSITION
+  PORTRAIT_NAME_POSITION,
+  CLASS_ROLE,
+  PORTRAIT_SIZE
 } from '@/common/constants';
 import { isEmpty, inToPxPreview } from '@/common/utils';
 import { toCssPreview, toMarginCssPreview } from '@/common/fabricObjects';
@@ -161,6 +163,7 @@ export default {
       // order of function calls is matter
       this.updateMargins();
       this.updateLayout();
+      this.updateLargePortraitSize();
     },
 
     /**
@@ -222,6 +225,56 @@ export default {
       const right = inToPxPreview(margins.right) + offsetRight;
 
       thumbWrapperEl.style.padding = `${top}px ${right}px ${bottom}px ${left}px`;
+    },
+
+    /**
+     *  Fire when loop through portraits
+     * To dynamically adding class for styling
+     *
+     * @param {Object} portrait portraits which displayed on preview
+     * @returns class string for styling
+     */
+    isLargePortrait(portrait) {
+      const {
+        hasTeacher,
+        teacherPortraitSize,
+        assistantTeacherPortraitSize
+      } = this.flowSettings.teacherSettings;
+
+      if (!hasTeacher) return false;
+
+      const isEnlargeTeacher =
+        portrait.classRole === CLASS_ROLE.PRIMARY_TEACHER &&
+        teacherPortraitSize === PORTRAIT_SIZE.LARGE;
+
+      const isEnlargeAsst =
+        portrait.classRole === CLASS_ROLE.ASSISTANT_TEACHER &&
+        assistantTeacherPortraitSize === PORTRAIT_SIZE.LARGE;
+
+      return isEnlargeAsst || isEnlargeTeacher;
+    },
+
+    /**
+     * Update large portrait: class name & css style
+     */
+    updateLargePortraitSize() {
+      const portraitsEl = this.$refs.portraits;
+      const largeEl = portraitsEl.querySelector('.enlarge');
+
+      if (!largeEl) return;
+      const rawWidth = window.getComputedStyle(largeEl).width;
+      const rawHeight = window.getComputedStyle(largeEl).height;
+
+      const width = parseFloat(rawWidth);
+      const height = parseFloat(rawHeight);
+
+      if (!width || !height) return;
+
+      const calcHeight = width * 1.25;
+      const enlargeHeight = Math.min(height, calcHeight);
+      const endlargeWidth = (enlargeHeight - 10) * 0.8 + 'px';
+
+      portraitsEl.style.setProperty('--enlarge-width', endlargeWidth);
     }
   }
 };

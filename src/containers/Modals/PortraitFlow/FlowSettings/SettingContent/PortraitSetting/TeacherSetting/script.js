@@ -26,6 +26,14 @@ export default {
     layout: {
       type: Object,
       default: () => ({})
+    },
+    numOfTeachers: {
+      type: Number,
+      default: 0
+    },
+    numOfAsstTeachers: {
+      type: Number,
+      default: 0
     }
   },
   data() {
@@ -53,6 +61,8 @@ export default {
       );
     },
     hasAssistantTeacher() {
+      if (this.numOfAsstTeachers === 0) return this.disabledOption;
+
       return this.getSelectedOption(
         this.teacherSettings.hasAssistantTeacher,
         this.yesNoOptions
@@ -75,7 +85,12 @@ export default {
       );
     },
     asstTeacherPlacement() {
-      if (!this.teacherSettings.hasAssistantTeacher) return this.disabledOption;
+      if (
+        !this.teacherSettings.hasAssistantTeacher ||
+        this.teacherSettings.teacherPlacement ===
+          PORTRAIT_TEACHER_PLACEMENT.ALPHABETICAL
+      )
+        return this.disabledOption;
 
       return this.getSelectedOption(
         this.teacherSettings.assistantTeacherPlacement,
@@ -91,46 +106,78 @@ export default {
       );
     },
     isDisabledHasTeacher() {
-      if (!this.isSingleFolder) return true;
+      if (!this.isSingleFolder || !this.isHasTeacher) return true;
 
       return false;
     },
     isDisabledHasAsstTeacher() {
-      if (!this.isSingleFolder || !this.teacherSettings.hasTeacher) return true;
+      if (
+        !this.isSingleFolder ||
+        !this.teacherSettings.hasTeacher ||
+        this.numOfAsstTeachers === 0
+      )
+        return true;
 
       return false;
     },
     isDisabledTeacherPlacement() {
       if (!this.isSingleFolder || !this.teacherSettings.hasTeacher) return true;
 
+      return false;
+    },
+    isDisabledTeacherPortraitSize() {
+      const isAlphabetPlacement =
+        this.teacherSettings.teacherPlacement ===
+        PORTRAIT_TEACHER_PLACEMENT.ALPHABETICAL;
+
+      if (
+        !this.isSingleFolder ||
+        !this.teacherSettings.hasTeacher ||
+        this.numOfTeachers > 2 ||
+        isAlphabetPlacement
+      )
+        return true;
+
       const isLessThanFour = this.layout.col < 4 && this.layout.row < 4;
       if (isLessThanFour) return true;
 
       return false;
     },
-    isDisabledTeacherPortraitSize() {
-      if (!this.isSingleFolder || !this.teacherSettings.hasTeacher) return true;
-
-      return false;
-    },
     isDisabledAsstPlacement() {
-      if (!this.isSingleFolder || !this.teacherSettings.hasAssistantTeacher)
+      if (
+        !this.isSingleFolder ||
+        !this.teacherSettings.hasAssistantTeacher ||
+        this.teacherSettings.teacherPlacement ===
+          PORTRAIT_TEACHER_PLACEMENT.ALPHABETICAL
+      )
         return true;
+
+      if (this.isTeacherPortraitLarge && !this.isAsstPortraitLarge) return true;
 
       return false;
     },
     isDisabledAsstPortraitSize() {
-      const isTeacherSizeSame =
-        this.teacherSettings.teacherPortraitSize === PORTRAIT_SIZE.SAME;
-
       if (
         !this.isSingleFolder ||
         !this.teacherSettings.hasAssistantTeacher ||
-        isTeacherSizeSame
+        !this.isTeacherPortraitLarge ||
+        (this.isTeacherPortraitLarge && this.numOfTeachers >= 2)
       )
         return true;
 
       return false;
+    },
+    isTeacherPortraitLarge() {
+      return this.teacherSettings.teacherPortraitSize === PORTRAIT_SIZE.LARGE;
+    },
+    isAsstPortraitLarge() {
+      return (
+        this.teacherSettings.assistantTeacherPortraitSize ===
+        PORTRAIT_SIZE.LARGE
+      );
+    },
+    isHasTeacher() {
+      return this.numOfTeachers > 0;
     }
   },
   created() {
@@ -141,6 +188,7 @@ export default {
       deep: true,
       handler() {
         this.initData();
+        this.applyRules();
       }
     },
     layout: {
@@ -151,6 +199,85 @@ export default {
     }
   },
   methods: {
+    /**
+     * Apply rules to multiple inputs
+     */
+    applyRules() {
+      this.asstPlacementRule();
+      this.numberOfLargePortraitsRule();
+      this.alphabeticalOrder();
+    },
+    /**
+     * Rule for Assistant placement
+     */
+    asstPlacementRule() {
+      /*
+      If Teacher Size is “Large” and assistant teacher is “Same”,
+      the assistant portrait has to be “After Teacher” when teacher is in “First Position” 
+      and “Before Teacher” when teacher is in the last position
+      */
+      const {
+        teacherPlacement,
+        assistantTeacherPlacement
+      } = this.teacherSettings;
+
+      if (this.isTeacherPortraitLarge && !this.isAsstPortraitLarge) {
+        const asstAfterTeacherValue =
+          PORTRAIT_ASSISTANT_PLACEMENT.AFTER_TEACHERS;
+
+        if (
+          teacherPlacement === PORTRAIT_TEACHER_PLACEMENT.FIRST &&
+          assistantTeacherPlacement !== asstAfterTeacherValue
+        ) {
+          this.onChangeAsstPlacement(asstAfterTeacherValue);
+        }
+
+        const asstBeforeTeacher = PORTRAIT_ASSISTANT_PLACEMENT.BEFORE_TEACHERS;
+        if (
+          teacherPlacement === PORTRAIT_TEACHER_PLACEMENT.LAST &&
+          assistantTeacherPlacement !== asstBeforeTeacher
+        ) {
+          this.onChangeAsstPlacement(asstBeforeTeacher);
+        }
+      }
+    },
+    /**
+     * Rule for maximun number of large portraits
+     */
+    numberOfLargePortraitsRule() {
+      /*
+      ONLY 2 portraits are allowed to be “Large” at a time. 
+      If 2 teachers are large, assistant teacher size option is fixed to “Same” 
+      If there are more than 2 teachers, 
+      Teacher Size and Assistant Teacher size are all fixed to “Same”
+      */
+      if (!this.isTeacherPortraitLarge) return;
+
+      if (this.numOfTeachers > 2) {
+        // assistant portrait size will be set 'SAME' automatically
+        this.onChangeTeacherSize(PORTRAIT_SIZE.SAME);
+      }
+
+      if (
+        this.numOfTeachers === 2 &&
+        this.teacherSettings.assistantTeacherPortraitSize !== PORTRAIT_SIZE.SAME
+      ) {
+        this.onChangeAsstSize(PORTRAIT_SIZE.SAME);
+      }
+    },
+    /**
+     * Rule for teacher placement in alphabetical
+     */
+    alphabeticalOrder() {
+      const { teacherPlacement, teacherPortraitSize } = this.teacherSettings;
+
+      if (
+        teacherPlacement === PORTRAIT_TEACHER_PLACEMENT.ALPHABETICAL &&
+        teacherPortraitSize !== PORTRAIT_SIZE.SAME
+      ) {
+        this.onChangeTeacherSize(PORTRAIT_SIZE.SAME);
+      }
+    },
     /**
      * Fire when user change teacher combobox
      * @param {Object} val selected option from combobox
@@ -240,7 +367,8 @@ export default {
      * @returns a selected option
      */
     getSelectedOption(val, options) {
-      if (!this.isSingleFolder) return this.disabledOption;
+      if (!this.isSingleFolder || this.numOfTeachers === 0)
+        return this.disabledOption;
 
       return options.find(o => o.value === val);
     },

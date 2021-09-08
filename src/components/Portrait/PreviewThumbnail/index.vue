@@ -37,7 +37,11 @@
         </div>
       </div>
       <div ref="portraits" class="portraits">
-        <div v-for="(portrait, idx) in portraits" :key="idx" class="portrait">
+        <div
+          v-for="(portrait, idx) in portraits"
+          :key="idx"
+          :class="{ portrait, enlarge: isLargePortrait(portrait) }"
+        >
           <div class="photo-container">
             <img
               class="photo"
