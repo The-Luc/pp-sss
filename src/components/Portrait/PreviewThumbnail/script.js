@@ -240,9 +240,7 @@ export default {
       const pageTitleHeight = this.$refs?.pageTitle?.clientHeight;
       const height = this.showPageTitile ? pageTitleHeight : 0;
 
-      if (pageTitleHeight) {
-        this.$refs.thumbWrapper.style.height = `calc(100% - ${height}px)`;
-      }
+      this.$refs.thumbWrapper.style.height = `calc(100% - ${height}px)`;
     },
     /**
      * Convert value from in to px

@@ -158,7 +158,7 @@ export const STATUS_PAGE_TITLE = [
 ];
 
 export const DEFAULT_MARGIN_PAGE_TITLE = {
-  top: 0.45,
+  top: 0.5,
   left: 0.5,
   right: 0.5,
   bottom: 0.25

@@ -7,6 +7,7 @@ import {
   STATUS_PAGE_TITLE,
   DEFAULT_VALUE_PAGE_TITLE
 } from '@/common/constants';
+import { isEmpty } from '@/common/utils';
 
 export default {
   components: {
@@ -22,6 +23,7 @@ export default {
   },
   data() {
     return {
+      componentKey: true,
       statusPageTitle: STATUS_PAGE_TITLE,
       appendedIcon: ICON_LOCAL.APPENDED_ICON
     };
@@ -45,7 +47,10 @@ export default {
      * @param {String}  title page title value user entered
      */
     onChangeTitle(title) {
-      this.$emit('change', { pageTitle: title });
+      const pageTitle = isEmpty(title) ? DEFAULT_VALUE_PAGE_TITLE : title;
+      this.$emit('change', { pageTitle });
+
+      this.componentKey = !this.componentKey;
     },
     /**
      * Emit status page title value to parent
