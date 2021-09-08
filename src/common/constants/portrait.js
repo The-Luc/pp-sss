@@ -201,3 +201,4 @@ export const DEFAULT_NAME_TEXT = {
 };
 
 export const DEFAULT_NAME_WIDTH = 1.25;
+export const DEFAULT_VALUE_PAGE_TITLE = 'Untitled';

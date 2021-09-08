@@ -2,7 +2,11 @@ import InputTitle from '@/components/InputTitle';
 import PpCombobox from '@/components/Selectors/Combobox';
 import PpSelect from '@/components/Selectors/Select';
 
-import { ICON_LOCAL, STATUS_PAGE_TITLE } from '@/common/constants';
+import {
+  ICON_LOCAL,
+  STATUS_PAGE_TITLE,
+  DEFAULT_VALUE_PAGE_TITLE
+} from '@/common/constants';
 
 export default {
   components: {
@@ -48,7 +52,10 @@ export default {
      * @param {Object}  data text status page title value user selected
      */
     onChangeStatus(data) {
-      this.$emit('change', { isPageTitleOn: data.value });
+      this.$emit('change', {
+        isPageTitleOn: data.value,
+        pageTitle: DEFAULT_VALUE_PAGE_TITLE
+      });
     }
   }
 };
