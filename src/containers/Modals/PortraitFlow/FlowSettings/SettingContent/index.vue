@@ -17,7 +17,9 @@
       <flow-settings
         :selected-folders="selectedFolders"
         :flow-settings="flowSettings"
-        @flowSettingChange="onSettingChange"
+        @settingChange="onSettingChange"
+        @flowSettingChange="onFlowSettingChange"
+        @pageSettingChange="onPageSettingChange"
       ></flow-settings>
     </v-tab-item>
   </v-tabs-items>

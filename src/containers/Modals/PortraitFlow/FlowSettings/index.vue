@@ -19,6 +19,8 @@
       :flow-settings="flowSettings"
       :selected-folders="selectedFolders"
       @settingChange="onSettingChange"
+      @flowSettingChange="onFlowSettingChange"
+      @pageSettingChange="onPageSettingChange"
     />
   </div>
 </template>

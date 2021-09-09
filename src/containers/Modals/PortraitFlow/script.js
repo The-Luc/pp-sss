@@ -1,23 +1,29 @@
 import CommonModal from '../CommonModal';
 import FlowSettings from './FlowSettings';
 import FlowPreview from './FlowPreview';
-
+import FlowWarning from '@/components/Modals/FlowWarning';
 import { PortraitFlowData } from '@/common/models';
 
 import {
-  PORTRAIT_FLOW_OPTION_SINGLE,
   DEFAULT_PAGE_TITLE,
   DEFAULT_NAME_TEXT,
   DEFAULT_MARGIN_PAGE_TITLE,
   PORTRAIT_FLOW_OPTION_MULTI
 } from '@/common/constants';
 import { useSheet } from '@/hooks';
+import { cloneDeep } from 'lodash';
+import {
+  getSelectedDataOfFolders,
+  getPagesOfFolder,
+  getSelectedDataOfPages
+} from '@/common/utils';
 
 export default {
   components: {
     CommonModal,
     FlowSettings,
-    FlowPreview
+    FlowPreview,
+    FlowWarning
   },
   props: {
     isOpen: {
@@ -33,9 +39,10 @@ export default {
     }
   },
   setup() {
-    const { currentSheet } = useSheet();
+    const { currentSheet, getSheets } = useSheet();
     return {
-      currentSheet
+      currentSheet,
+      getSheets
     };
   },
   data() {
@@ -43,7 +50,9 @@ export default {
       flowSettings: {},
       requiredPages: [],
       isPreviewDisplayed: false,
-      flowReviewCompKey: true
+      flowReviewCompKey: true,
+      flowWarning: false,
+      flowWarningDescript: ''
     };
   },
   created() {
@@ -54,11 +63,24 @@ export default {
     });
 
     this.flowSettings.textSettings = this.initDataTextSettings();
+    this.initDataFlowSettings();
     this.requiredPages = this.getRequiredPages();
   },
   computed: {
     title() {
       return this.isPreviewDisplayed ? 'Portrait Flow Review' : 'Portrait Flow';
+    },
+    isMultiFolder() {
+      return this.selectedFolders.length > 1;
+    },
+    maxPortraitPerPage() {
+      const totalRow = this.flowSettings.layoutSettings.rowCount;
+      const totalCol = this.flowSettings.layoutSettings.colCount;
+
+      return totalRow * totalCol;
+    },
+    maxPageOption() {
+      return Object.values(this.getSheets).length * 2 - 4;
     }
   },
   watch: {
@@ -94,7 +116,7 @@ export default {
      * @param {Number}  pageNo  selected page
      */
     onStartPageChange({ pageNo }) {
-      this.flowSettings.startOnPageNumber = pageNo;
+      this.onPageSettingChange({ id: pageNo, index: 0 });
     },
     /**
      * Show preview
@@ -139,54 +161,39 @@ export default {
 
       const maxPortraitPerPage = totalRow * totalCol;
 
-      if (this.selectedFolders.length === 1) {
-        return this.getSingleFolderRequiredPages(maxPortraitPerPage);
+      if (!this.isMultiFolder) {
+        return this.getSingleFolderRequiredPages();
       }
-
       return this.getMultiFolderRequiredPages(maxPortraitPerPage);
     },
     /**
      * Get required pages for single folder
      *
-     * @param   {Number}  maxPortraitPerPage  max portrait per page
      * @returns {Array}                       page list
      */
-    getSingleFolderRequiredPages(maxPortraitPerPage) {
-      if (
-        this.flowSettings.flowSingleSettings.flowOption ===
-        PORTRAIT_FLOW_OPTION_SINGLE.MANUAL.id
-      ) {
-        return this.flowSettings.flowSingleSettings.pages;
-      }
-
-      const totalPage = Math.ceil(
-        this.flowSettings.totalPortraitsCount / maxPortraitPerPage
-      );
-
-      return [...Array(totalPage).keys()].map(p => {
-        return p + this.flowSettings.startOnPageNumber;
-      });
+    getSingleFolderRequiredPages() {
+      return this.flowSettings.flowSingleSettings.pages;
     },
     /**
      * Get required pages for multi folder
      *
-     * @param   {Number}  maxPortraitPerPage  max portrait per page
      * @returns {Array}                       page list
      */
-    getMultiFolderRequiredPages(maxPortraitPerPage) {
+    getMultiFolderRequiredPages() {
       const { flowOption, pages } = this.flowSettings.flowMultiSettings;
 
       if (flowOption === PORTRAIT_FLOW_OPTION_MULTI.CONTINUE.id) {
         return pages;
       }
 
-      const totalPages = this.selectedFolders.reduce((total, folder) => {
-        return total + Math.ceil(folder.assetsCount / maxPortraitPerPage);
-      }, 0);
+      const selectedData = getSelectedDataOfFolders(
+        pages,
+        this.flowSettings.startOnPageNumber,
+        this.selectedFolders,
+        this.maxPortraitPerPage
+      );
 
-      return [...Array(totalPages).keys()].map(p => {
-        return p + this.flowSettings.startOnPageNumber;
-      });
+      return selectedData.map(item => item.requiredPages).flat(1); //phan ga ra 2 cap
     },
     /**
      * To update flowSetting with data come from child componenet settings
@@ -194,10 +201,6 @@ export default {
      */
     onSettingChange(val) {
       this.flowSettings = { ...this.flowSettings, ...val };
-    },
-    getStartOnPageNumber() {
-      const { pageLeftName, pageRightName } = this.currentSheet;
-      return parseInt(pageLeftName) || parseInt(pageRightName);
     },
     /**
      * To create initial data for text settings
@@ -209,6 +212,206 @@ export default {
         nameTextFontSettings: DEFAULT_NAME_TEXT,
         pageTitleMargins: DEFAULT_MARGIN_PAGE_TITLE
       };
+    },
+    /**
+     * Get start on page from current sheet
+     */ getStartOnPageNumber() {
+      const { pageLeftName, pageRightName } = this.currentSheet;
+      return parseInt(pageLeftName) || parseInt(pageRightName);
+    },
+    /**
+     * Handle flow setting change
+     * @param {Number} val id selected flow
+     */
+    onFlowSettingChange(val) {
+      if (this.isMultiFolder) {
+        this.onMultiFolderFlowChange(val);
+        return;
+      }
+      this.onSingleFolderFlowChange(val);
+    },
+    /**
+     * Handle single flow setting change
+     * @param {Number} val id selected flow
+     */
+    onSingleFolderFlowChange(val) {
+      const flowSettings = {
+        flowOption: val,
+        pages: this.getSingleFolderDefaultPages(val)
+      };
+
+      this.onSettingChange({
+        flowSingleSettings: flowSettings
+      });
+    },
+    /**
+     * Handle multi flow setting change
+     * @param {Number} val id selected flow
+     */
+    onMultiFolderFlowChange(val) {
+      const flowSettings = {
+        flowOption: val,
+        pages: this.getMultiFolderDefaultPages(val)
+      };
+
+      this.onSettingChange({
+        flowMultiSettings: flowSettings
+      });
+    },
+    /**
+     * Get multi default pages
+     * @param {Number} id selected option
+     * @returns {Array} default pages
+     */
+    getMultiFolderDefaultPages(id) {
+      if (id === PORTRAIT_FLOW_OPTION_MULTI.CONTINUE.id) {
+        return this.getSingleFolderDefaultPages();
+      }
+      const pages = [...Array(this.selectedFolders.length).keys()].map(
+        p => p + 1
+      );
+      return getSelectedDataOfFolders(
+        pages,
+        this.flowSettings.startOnPageNumber,
+        this.selectedFolders,
+        this.maxPortraitPerPage
+      ).map(item => item.startOnPage);
+    },
+    /**
+     * Get single default pages
+     * @param {Number} id selected option
+     * @returns {Array} default pages
+     */
+    getSingleFolderDefaultPages() {
+      const { totalPortraitsCount, startOnPageNumber } = this.flowSettings;
+
+      return getPagesOfFolder(
+        totalPortraitsCount,
+        startOnPageNumber,
+        this.maxPortraitPerPage
+      );
+    },
+
+    /**
+     * Handle flow setting change
+     * @param {String} id selected page
+     * @param {Number} index index of page
+     */
+    onPageSettingChange({ id, index }) {
+      if (this.isMultiFolder) {
+        this.onMultiFolderPageChange(id, index);
+        return;
+      }
+      this.onSingleFolderPageChange(id, index);
+    },
+    /**
+     * Handle flow setting change
+     * @param {String} id selected page
+     * @param {Number} index index of page
+     */
+    onSingleFolderPageChange(id, index) {
+      const flowSettings = cloneDeep(this.flowSettings.flowSingleSettings);
+      flowSettings.pages[index] = id;
+
+      const startOnPageNumber = !index
+        ? id
+        : this.flowSettings.startOnPageNumber;
+
+      flowSettings.pages = getSelectedDataOfPages(
+        flowSettings.pages,
+        startOnPageNumber
+      );
+      flowSettings.pages, startOnPageNumber;
+
+      if (
+        flowSettings.pages[flowSettings.pages.length - 1] <= this.maxPageOption
+      ) {
+        this.onSettingChange({
+          flowSingleSettings: flowSettings,
+          startOnPageNumber: flowSettings.pages[0]
+        });
+        return;
+      }
+
+      this.onSettingChange({
+        flowSingleSettings: this.flowSettings.flowSingleSettings,
+        startOnPageNumber: this.flowSettings.startOnPageNumber
+      });
+      this.onSingleFolderFlowWarningOpen(flowSettings.pages.length, id);
+    },
+    /**
+     * Handle flow setting change
+     * @param {String} id selected page
+     * @param {Number} index index of page
+     */
+    onMultiFolderPageChange(id, index) {
+      const flowSettings = cloneDeep(this.flowSettings.flowMultiSettings);
+      flowSettings.pages[index] = id;
+      const startOnPageNumber = !index
+        ? id
+        : this.flowSettings.startOnPageNumber;
+      const selectedData = getSelectedDataOfFolders(
+        flowSettings.pages,
+        startOnPageNumber,
+        this.selectedFolders,
+        this.maxPortraitPerPage
+      );
+
+      flowSettings.pages = selectedData.map(item => {
+        return item.startOnPage;
+      });
+      if (
+        selectedData[selectedData.length - 1].endOnPage <= this.maxPageOption
+      ) {
+        this.onSettingChange({
+          flowMultiSettings: flowSettings,
+          startOnPageNumber: flowSettings.pages[0]
+        });
+        return;
+      }
+      this.onSettingChange({
+        flowMultiSettings: this.flowSettings.flowMultiSettings,
+        startOnPageNumber: this.flowSettings.startOnPageNumber
+      });
+      this.onMultiFolderFlowWarning(index + 1, id);
+    },
+    /**
+     * Open modal warning
+     * @param {Number} folderNo folder
+     * @param {Number} pageNo selected page
+     */
+    onMultiFolderFlowWarning(folderNo, pageNo) {
+      this.flowWarningDescript = `If you begin the portrait flow of folder ${folderNo} on page  ${pageNo}, 
+                                      based on the current settings, 
+                                      there won’t be enough pages available to flow your portraits. 
+                                      If you click “Continue” you will need to reconfigure your settings or 
+                                      select a different page to begin the portrait flow.`;
+      this.flowWarning = true;
+    },
+    /**
+     * Open modal warning
+     * @param {Number} totalPage total page
+     * @param {Number} pageNo index of folder
+     */
+    onSingleFolderFlowWarningOpen(totalPage, pageNo) {
+      this.flowWarningDescript = `If you begin this portrait flow on page ${pageNo}, 
+                                      based on the current settings, 
+                                      there are not enough pages available to flow your portraits. 
+                                      If you click “Continue” you will need to reconfigure your settings 
+                                      so that the portrait flow takes no more than ${totalPage} pages.`;
+      this.flowWarning = true;
+    },
+    /**
+     * Close modal warning
+     */
+    onFlowWarningClose() {
+      this.flowWarning = false;
+    },
+    initDataFlowSettings() {
+      const { flowOption } = this.isMultiFolder
+        ? this.flowSettings.flowMultiSettings
+        : this.flowSettings.flowSingleSettings;
+      this.onFlowSettingChange(flowOption);
     }
   }
 };

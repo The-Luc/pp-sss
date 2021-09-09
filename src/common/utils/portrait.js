@@ -141,3 +141,55 @@ export const getConvertedPreviewValue = val => {
   // 20 is just arbitrary choie, need to discuss to find a right number
   return inToPx(val) / 20;
 };
+
+export const getSelectedDataOfFolders = (
+  pagesCurrent,
+  startOnPageCurrent,
+  folders,
+  maxPortraitPerPage
+) => {
+  const selectedData = [];
+  folders.forEach((element, index) => {
+    const startOnPage = !index
+      ? startOnPageCurrent
+      : Math.max(selectedData[index - 1].endOnPage + 1, pagesCurrent[index]);
+    const pages = getPagesOfFolder(
+      element.assetsCount,
+      startOnPage,
+      maxPortraitPerPage
+    );
+    selectedData.push({
+      startOnPage: pages[0],
+      endOnPage: pages[pages.length - 1],
+      requiredPages: pages
+    });
+  });
+
+  return selectedData;
+};
+
+export const getPagesOfFolder = (
+  totalPortraitsCount,
+  startOnPageCurrent,
+  maxPortraitPerPage
+) => {
+  const totalPage = Math.ceil(totalPortraitsCount / maxPortraitPerPage);
+
+  return [...Array(totalPage).keys()].map(p => {
+    return p + startOnPageCurrent;
+  });
+};
+
+export const getSelectedDataOfPages = (pages, startOnPageNumber) => {
+  const selectedData = [];
+
+  pages.forEach((element, index) => {
+    const page = !index
+      ? startOnPageNumber
+      : Math.max(selectedData[index - 1] + 1, element);
+
+    selectedData.push(page);
+  });
+
+  return selectedData;
+};
