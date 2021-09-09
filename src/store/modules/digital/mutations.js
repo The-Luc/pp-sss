@@ -263,5 +263,8 @@ export const mutations = {
   [DIGITAL._MUTATES.SET_BOOK_INFO]: setBookInfo,
   [DIGITAL._MUTATES.SET_SHEET_MEDIA](state, { media }) {
     state.sheets[state.currentSheetId].media = media;
+  },
+  [DIGITAL._MUTATES.UPDATE_TRIGGER_TRANSITION](state) {
+    state.triggerChange.transition = !state.triggerChange.transition;
   }
 };

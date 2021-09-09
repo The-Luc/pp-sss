@@ -5,8 +5,17 @@ import PreviewInfo from './PreviewInfo';
 
 import { useBackgroundAction, useSheet } from '@/hooks';
 
-import { getPortraitForPage, isEmpty } from '@/common/utils';
-import { PORTRAIT_FLOW_OPTION_MULTI } from '@/common/constants';
+import {
+  getPortraitForPage,
+  getPortraitsByRole,
+  getTeacherAndAsstOrder,
+  isEmpty,
+  sortPortraitByName
+} from '@/common/utils';
+import {
+  PORTRAIT_TEACHER_PLACEMENT,
+  PORTRAIT_FLOW_OPTION_MULTI
+} from '@/common/constants';
 
 export default {
   components: {
@@ -80,9 +89,16 @@ export default {
       handler() {
         this.updatePreviewData(this.displayedPageNo);
       }
+    },
+    ['flowSettings.teacherSettings']: {
+      deep: true,
+      handler() {
+        this.updatePortraitOrder();
+      }
     }
   },
   created() {
+    this.updatePortraitOrder();
     this.updatePreviewData(this.displayedPageNo);
   },
   methods: {
@@ -161,10 +177,45 @@ export default {
         index,
         this.flowSettings.layoutSettings.rowCount,
         this.flowSettings.layoutSettings.colCount,
-        this.flowSettings.totalPortraitsCount,
-        this.selectedFolders,
+        this.flowSettings.teacherSettings,
+        this.flowSettings.folders,
         isSingle
       );
+    },
+    /**
+     * Update the order portrait when use choose teacher placement FIRST or LAST
+     */
+    updatePortraitOrder() {
+      const {
+        teacherPlacement,
+        assistantTeacherPlacement
+      } = this.flowSettings.teacherSettings;
+
+      if (teacherPlacement === PORTRAIT_TEACHER_PLACEMENT.ALPHABETICAL) {
+        this.flowSettings.folders[0].assets.sort(sortPortraitByName);
+        return;
+      }
+      const { students, teachers, asstTeachers } = getPortraitsByRole(
+        this.flowSettings.folders[0]
+      );
+
+      const teacherAndAsst = getTeacherAndAsstOrder(
+        teachers,
+        asstTeachers,
+        assistantTeacherPlacement
+      );
+
+      if (teacherPlacement === PORTRAIT_TEACHER_PLACEMENT.FIRST) {
+        this.flowSettings.folders[0].assets = [...teacherAndAsst, ...students];
+
+        return;
+      }
+
+      if (teacherPlacement === PORTRAIT_TEACHER_PLACEMENT.LAST) {
+        this.flowSettings.folders[0].assets = [...students, ...teacherAndAsst];
+
+        return;
+      }
     }
   }
 };

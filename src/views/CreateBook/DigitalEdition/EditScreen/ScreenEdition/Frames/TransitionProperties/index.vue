@@ -11,12 +11,13 @@
       @onClickOutsideMenu="onClickOutsideMenu"
     >
       <item
-        :first-frame="0"
-        :second-frame="0"
+        :transition-index="index"
+        :sheet-id="sheetId"
         :is-header-displayed="false"
         :transition="transition.transition"
         :direction="transition.direction"
         :duration="transition.duration"
+        :is-expand-default="true"
         @transitionChange="onTransitionChange"
       ></item>
     </custom-menu>

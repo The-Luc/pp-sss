@@ -1,10 +1,9 @@
 <template>
   <group-item :is-name-displayed="false">
     <pp-select
-      id="target-type"
-      container="#target-type"
+      data-container="transition-properties"
       :items="targets"
-      :selected-val="defaultValue"
+      :placeholder="unSelectedValue"
       @change="onTargetChange"
     >
     </pp-select>

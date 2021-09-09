@@ -5,6 +5,7 @@
     item-text="name"
     item-value="value"
     solo
+    :placeholder="placeholder"
     :attach="container"
     :disabled="disabled"
     append-icon=""
@@ -16,6 +17,10 @@
     @click="onClick"
     @focus="onFocus"
   >
+    <template #prepend-item>
+      <slot />
+    </template>
+
     <template #selection="{ item }">
       <v-list-item class="pp-select--item item-selected">
         <v-list-item-content>
@@ -38,6 +43,7 @@
       <v-list-item
         v-slot="{ active }"
         class="pp-select--item"
+        :data-container="dataContainer"
         v-bind="attrs"
         v-on="on"
       >
@@ -45,18 +51,29 @@
           v-if="!isImgOpts"
           :style="{ visibility: active ? 'visible' : 'hidden' }"
           class="icon-ative"
+          :data-container="dataContainer"
           :src="activeMenuIcon"
           alt="icon-active"
         />
         <v-list-item-content>
           <v-list-item-title>
-            <v-row no-gutters align="center">
-              <v-icon v-if="item.icon">{{ item.icon }}</v-icon>
+            <v-row no-gutters align="center" :data-container="dataContainer">
+              <v-icon v-if="item.icon" :data-container="dataContainer">{{
+                item.icon
+              }}</v-icon>
               <template v-if="isImgOpts">
-                <img :src="item.previewImageUrl" style="max-width: 70px" />
+                <img
+                  :src="item.previewImageUrl"
+                  :data-container="dataContainer"
+                  style="max-width: 70px"
+                />
               </template>
               <template v-else>
-                <span :style="getStyle(item.cssStyle)">{{ item.name }}</span>
+                <span
+                  :data-container="dataContainer"
+                  :style="getStyle(item.cssStyle)"
+                  >{{ item.name }}</span
+                >
               </template>
             </v-row>
           </v-list-item-title>
@@ -65,10 +82,19 @@
     </template>
 
     <template v-if="prependedIcon" #prepend>
-      <img :src="prependedIcon" alt="prepend-icon" class="prepend-icon" />
+      <img
+        :src="prependedIcon"
+        :data-container="dataContainer"
+        alt="prepend-icon"
+        class="prepend-icon"
+      />
     </template>
     <template v-if="appendedIcon && !disabled" #append>
-      <img :src="appendedIcon" alt="arrow-select" />
+      <img
+        :src="appendedIcon"
+        :data-container="dataContainer"
+        alt="arrow-select"
+      />
     </template>
   </v-select>
 </template>

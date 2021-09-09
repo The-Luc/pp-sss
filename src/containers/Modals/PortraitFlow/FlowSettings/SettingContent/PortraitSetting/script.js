@@ -1,3 +1,4 @@
+import { CLASS_ROLE } from '@/common/constants';
 import LayoutSetting from './LayoutSetting';
 import TeacherSetting from './TeacherSetting';
 
@@ -21,6 +22,21 @@ export default {
         col: this.flowSettings.layoutSettings.colCount,
         row: this.flowSettings.layoutSettings.rowCount
       };
+    },
+    numOfTeachers() {
+      return this.flowSettings.folders[0].assets.reduce((acc, p) => {
+        const isTeacher = p.classRole === CLASS_ROLE.PRIMARY_TEACHER;
+        return isTeacher ? acc + 1 : acc;
+      }, 0);
+    },
+    numOfAsstTeachers() {
+      return this.flowSettings.folders[0].assets.reduce((acc, p) => {
+        const isAsstTeacher = p.classRole === CLASS_ROLE.ASSISTANT_TEACHER;
+        return isAsstTeacher ? acc + 1 : acc;
+      }, 0);
+    },
+    isPageTitleOn() {
+      return this.flowSettings.textSettings.isPageTitleOn;
     }
   },
   methods: {

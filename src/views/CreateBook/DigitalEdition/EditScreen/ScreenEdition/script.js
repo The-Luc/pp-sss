@@ -79,7 +79,7 @@ import {
   useElementProperties,
   useStyle,
   useToolBar,
-  useDigitalSheetAction
+  useActionDigitalSheet
 } from '@/hooks';
 
 import {
@@ -168,7 +168,7 @@ export default {
     const { getProperty } = useElementProperties();
     const { updateMediaSidebarOpen } = useToolBar();
 
-    const { addTransition, removeTransition } = useDigitalSheetAction();
+    const { addTransition, removeTransition } = useActionDigitalSheet();
 
     return {
       currentFrame,
@@ -1358,6 +1358,10 @@ export default {
       }
     },
 
+    /**
+     * Handle aniamtion of selected objects
+     * @param {Objec} config config for animation
+     */
     previewAnimation(config) {
       const object = this.digitalCanvas.getActiveObject();
 

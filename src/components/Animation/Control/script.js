@@ -8,7 +8,8 @@ import {
   DIRECTION_OPTIONS,
   NONE_OPTION,
   PLAY_IN_OPTIONS,
-  PLAY_OUT_OPTIONS
+  PLAY_OUT_OPTIONS,
+  TEXT_APPLY_OPTIONS
 } from '@/common/constants/animationProperty';
 import { useObjectProperties } from '@/hooks';
 
@@ -22,16 +23,23 @@ export default {
     config: {
       type: Object,
       default: () => ({})
+    },
+    isDisabledPreview: {
+      type: Boolean
     }
   },
   data() {
     return {
       appendedIcon: ICON_LOCAL.APPENDED_ICON,
       directionOptions: DIRECTION_OPTIONS,
+      applyOptions: TEXT_APPLY_OPTIONS,
+      selectedApplyOption: null,
       defaultDuration: 0.8,
       defaultScale: 50,
       defaultStyle: NONE_OPTION,
       defaultDirection: DIRECTION_OPTIONS[0],
+      showApplyOptions: false,
+      showApplyButton: false,
       componentKey: true
     };
   },
@@ -77,7 +85,9 @@ export default {
       return direction;
     },
     durationValue() {
-      return this.config.duration || this.defaultDuration;
+      return !isNaN(this.config.duration)
+        ? this.config.duration
+        : this.defaultDuration;
     },
     scaleValue() {
       return this.config.scale || this.defaultScale;
@@ -93,6 +103,8 @@ export default {
      * @param {Object} val A style option
      */
     onChangeStyle(style) {
+      if (style.value !== NONE_OPTION.value) this.showApplyOptions = true;
+
       const data = {
         style: style.value,
         controlType: this.type,
@@ -100,6 +112,7 @@ export default {
         direction: this.defaultDirection.value,
         scale: this.defaultScale
       };
+
       this.$emit('change', { ...data });
     },
     /**
@@ -168,6 +181,23 @@ export default {
      */
     forceUpdate() {
       this.componentKey = !this.componentKey;
+    },
+    /**
+     * Fire when user change the apply option
+     * @param {Object} val apply option
+     */
+    onChangeApplyOption(val) {
+      this.selectedApplyOption = val;
+      this.showApplyButton = true;
+    },
+
+    /**
+     * Fire when user click apply button
+     */
+    onClickApply() {
+      this.selectedApplyOption = null;
+      this.showApplyOptions = false;
+      this.showApplyButton = false;
     }
   }
 };

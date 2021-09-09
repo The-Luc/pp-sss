@@ -4,10 +4,12 @@ import CropControl from '@/components/CropControl';
 import Header from '@/containers/HeaderEdition/Header';
 import FeedbackBar from '@/containers/HeaderEdition/FeedbackBar';
 import MediaModal from '@/containers/Modals/Media';
+import PortraitFolder from '@/containers/Modals/PortraitFolder';
 
 import ToolBar from './ToolBar';
 import ScreenEdition from './ScreenEdition';
 import SidebarSection from './SidebarSection';
+import ThePreviewModal from './Modals/ThePreviewModal';
 
 import { mapGetters, mapMutations, mapActions } from 'vuex';
 
@@ -27,14 +29,15 @@ import {
   OBJECT_TYPE,
   DEFAULT_VIDEO,
   SHEET_TYPE,
-  PROPERTIES_TOOLS
+  PROPERTIES_TOOLS,
+  EVENT_TYPE
 } from '@/common/constants';
 import {
   useLayoutPrompt,
   usePopoverCreationTool,
   useMutationDigitalSheet,
   useUser,
-  useGetterDigitalSheet,
+  useGetterDigitalSection,
   useFrame,
   useInfoBar,
   useActionsEditionSheet,
@@ -71,14 +74,16 @@ export default {
     SidebarSection,
     PhotoSidebar,
     MediaModal,
-    CropControl
+    CropControl,
+    PortraitFolder,
+    ThePreviewModal
   },
   setup() {
     const { pageSelected, updateVisited } = useLayoutPrompt(EDITION.DIGITAL);
     const { setToolNameSelected } = usePopoverCreationTool();
     const { setCurrentSheetId } = useMutationDigitalSheet();
     const { currentUser } = useUser();
-    const { currentSection } = useGetterDigitalSheet();
+    const { currentSection } = useGetterDigitalSection();
     const { currentFrameId, updateFrameObjects } = useFrame();
     const { saveEditScreen, getDataEditScreen } = useSaveData();
     const { updateSavingStatus } = useSavingStatus();
@@ -127,7 +132,18 @@ export default {
       isOpenModal: false,
       isOpenCropControl: false,
       dragItem: null,
-      selectedImage: null
+      selectedImage: null,
+      toolNames: TOOL_NAME,
+      modalType: MODAL_TYPES,
+      modal: {
+        [MODAL_TYPES.TRANSITION_PREVIEW]: {
+          isOpen: false,
+          data: {}
+        },
+        [TOOL_NAME.PORTRAIT]: {
+          isOpen: false
+        }
+      }
     };
   },
   computed: {
@@ -207,7 +223,12 @@ export default {
 
     next();
   },
+  mounted() {
+    this.handleEventListeners();
+  },
   destroyed() {
+    this.handleEventListeners(false);
+
     this.setPropertiesObjectType({ type: '' });
 
     this.setCurrentSheetId({ id: '' });
@@ -477,6 +498,83 @@ export default {
       const activeObject = canvas.getActiveObject();
       this.selectedImage = activeObject;
       this.isOpenCropControl = true;
+    },
+    /**
+     * Close portrait modal
+     */
+    onClosePortrait() {
+      this.onToggleModal({ modal: TOOL_NAME.PORTRAIT });
+      this.setToolNameSelected('');
+    },
+    /**
+     * Selected portrait folders
+     *
+     * @param {Array}  folders  portrait folders
+     */
+    onSelectPortraitFolders(folders) {
+      console.log('folders:', folders);
+    },
+    /**
+     * Handle adding & removing events
+     * @param {Boolean} isOn if need to set event
+     */
+    handleEventListeners(isOn = true) {
+      const modalEvents = [
+        {
+          name: EVENT_TYPE.TRANSITION_PREVIEW,
+          handler: this.previewTransition
+        }
+      ];
+
+      const events = [...modalEvents];
+
+      events.forEach(event => {
+        this.$root.$off(event.name, event.handler);
+
+        if (isOn) this.$root.$on(event.name, event.handler);
+      });
+    },
+    /**
+     * Open Preview Transition modal with data
+     *
+     * @param {Number}          transition  selected transition type
+     * @param {Number | String} direction   selected direction type
+     * @param {Number | String} duration    selected duration type
+     * @param {String}          previewUrl1 url of 1st preview image
+     * @param {String}          previewUrl2 url of 2nd preview image
+     */
+    previewTransition({
+      transition,
+      direction,
+      duration,
+      previewUrl1,
+      previewUrl2
+    }) {
+      this.modal[MODAL_TYPES.TRANSITION_PREVIEW].data = {
+        transition,
+        direction,
+        duration,
+        previewUrl1,
+        previewUrl2
+      };
+
+      this.onToggleModal({ modal: MODAL_TYPES.TRANSITION_PREVIEW });
+    },
+    /**
+     * Toggle modal
+     *
+     * @param {String}  modal     name of modal
+     * @param {Boolean} isToggle  is toggle modal or not
+     * @param {Boolean} isOpen    if not toggle, open or hide modal
+     */
+    onToggleModal({ modal, isToggle = true, isOpen = true }) {
+      Object.keys(this.modal).forEach(k => {
+        if (k !== modal) this.modal[k].isOpen = false;
+      });
+
+      if (isEmpty(modal)) return;
+
+      this.modal[modal].isOpen = isToggle ? !this.modal[modal].isOpen : isOpen;
     }
   }
 };

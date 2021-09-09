@@ -1,9 +1,6 @@
+import { TRANS_TARGET } from '@/common/constants';
 import { Transition } from '@/common/models';
-import {
-  insertItemsToArray,
-  modifyItemsInArray,
-  removeItemsFormArray
-} from '@/common/utils';
+import { insertItemsToArray, modifyItemsInArray } from '@/common/utils';
 
 const findSectionSheetIndex = sheetId => {
   const sectionIndex = window.data.book.sections.findIndex(section => {
@@ -19,6 +16,18 @@ const findSectionSheetIndex = sheetId => {
   return sheetIndex < 0
     ? { sectionIndex: -1, sheetIndex: -1 }
     : { sectionIndex, sheetIndex };
+};
+
+const replaceTransition = (transition, sectionIndex, sheetIndex) => {
+  const totalTransition =
+    window.data.book.sections[sectionIndex].sheets[sheetIndex].digitalData
+      .transitions.length;
+
+  for (let i = 0; i < totalTransition; i++) {
+    window.data.book.sections[sectionIndex].sheets[
+      sheetIndex
+    ].digitalData.transitions[i] = transition;
+  }
 };
 
 export const getTransitionsApi = sheetId => {
@@ -91,41 +100,100 @@ export const removeTransitionApi = (sheetId, totalTransition = 1) => {
       return;
     }
 
-    for (let i = 0; i < totalTransition; i++) {
-      let transitions =
-        window.data.book.sections[sectionIndex].sheets[sheetIndex].digitalData
-          .transitions;
+    const { transitions } = window.data.book.sections[sectionIndex].sheets[
+      sheetIndex
+    ].digitalData;
 
-      let lastIndex = transitions.length - 1;
-
-      window.data.book.sections[sectionIndex].sheets[
-        sheetIndex
-      ].digitalData.transitions = removeItemsFormArray(transitions, [
-        { index: lastIndex < 0 ? 0 : lastIndex }
-      ]);
-    }
+    window.data.book.sections[sectionIndex].sheets[
+      sheetIndex
+    ].digitalData.transitions = Array.from(
+      { length: transitions.length - totalTransition },
+      (_, index) => {
+        return transitions[index];
+      }
+    );
 
     resolve();
   });
 };
 
-export const updateTransitionApi = (sheetId, transition, index) => {
-  return new Promise(resolve => {
-    const { sectionIndex, sheetIndex } = findSectionSheetIndex(sheetId);
+/**
+ *
+ * @param {Object}  transition      transition to be applied
+ * @param {Number}  targetType      transition / screen / sheet / book
+ * @param {Number}  sheetId         id of sheet
+ * @param {Number}  transitionIndex index of transition
+ */
+export const applyTransitionApi = (
+  transition,
+  targetType,
+  sheetId,
+  transitionIndex
+) => {
+  if (targetType === TRANS_TARGET.SELF) {
+    return new Promise(resolve => {
+      const { sectionIndex, sheetIndex } = findSectionSheetIndex(sheetId);
 
-    if (sheetIndex < 0) {
+      if (sheetIndex < 0) {
+        resolve();
+
+        return;
+      }
+
+      window.data.book.sections[sectionIndex].sheets[
+        sheetIndex
+      ].digitalData.transitions = modifyItemsInArray(
+        window.data.book.sections[sectionIndex].sheets[sheetIndex].digitalData
+          .transitions,
+        [{ index: transitionIndex, value: transition }]
+      );
+
       resolve();
+    });
+  }
 
-      return;
-    }
+  if (targetType === TRANS_TARGET.SHEET) {
+    return new Promise(resolve => {
+      const { sectionIndex, sheetIndex } = findSectionSheetIndex(sheetId);
 
-    window.data.book.sections[sectionIndex].sheets[
-      sheetIndex
-    ].digitalData.transitions = modifyItemsInArray(
-      window.data.book.sections[sectionIndex].sheets[sheetIndex].digitalData
-        .transitions,
-      [{ index, value: transition }]
-    );
+      if (sheetIndex < 0) {
+        resolve();
+
+        return;
+      }
+
+      replaceTransition(transition, sectionIndex, sheetIndex);
+
+      resolve();
+    });
+  }
+
+  if (targetType === TRANS_TARGET.SECTION) {
+    return new Promise(resolve => {
+      const { sectionIndex } = findSectionSheetIndex(sheetId);
+
+      if (sectionIndex < 0) {
+        resolve();
+
+        return;
+      }
+
+      window.data.book.sections[sectionIndex].sheets.forEach(
+        (_, sheetIndex) => {
+          replaceTransition(transition, sectionIndex, sheetIndex);
+        }
+      );
+
+      resolve();
+    });
+  }
+
+  return new Promise(resolve => {
+    window.data.book.sections.forEach((section, sectionIndex) => {
+      section.sheets.forEach((_, sheetIndex) => {
+        replaceTransition(transition, sectionIndex, sheetIndex);
+      });
+    });
 
     resolve();
   });
@@ -136,5 +204,5 @@ export default {
   getTransitions: getTransitionsApi,
   addTransition: addTransitionApi,
   removeTransition: removeTransitionApi,
-  updateTransition: updateTransitionApi
+  applyTransition: applyTransitionApi
 };

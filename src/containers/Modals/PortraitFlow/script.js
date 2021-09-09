@@ -8,14 +8,16 @@ import {
   DEFAULT_PAGE_TITLE,
   DEFAULT_NAME_TEXT,
   DEFAULT_MARGIN_PAGE_TITLE,
-  PORTRAIT_FLOW_OPTION_MULTI
+  PORTRAIT_FLOW_OPTION_MULTI,
+  PORTRAIT_FLOW_OPTION_SINGLE
 } from '@/common/constants';
 import { useSheet } from '@/hooks';
 import { cloneDeep } from 'lodash';
 import {
   getSelectedDataOfFolders,
   getPagesOfFolder,
-  getSelectedDataOfPages
+  getSelectedDataOfPages,
+  calcAdditionPortraitSlot
 } from '@/common/utils';
 
 export default {
@@ -86,8 +88,16 @@ export default {
   watch: {
     flowSettings: {
       deep: true,
-      handler() {
+      handler(newVal, oldVal) {
         this.requiredPages = this.getRequiredPages();
+        if (
+          JSON.stringify(newVal.layoutSettings) ===
+            JSON.stringify(oldVal.layoutSettings) &&
+          JSON.stringify(newVal.teacherSettings) ===
+            JSON.stringify(oldVal.teacherSettings)
+        )
+          return;
+        this.initDataFlowSettings();
       }
     }
   },
@@ -285,8 +295,14 @@ export default {
     getSingleFolderDefaultPages() {
       const { totalPortraitsCount, startOnPageNumber } = this.flowSettings;
 
+      const additionalSlots = calcAdditionPortraitSlot(
+        this.flowSettings.teacherSettings,
+        this.selectedFolders[0]
+      );
+
+      const totalPortraits = totalPortraitsCount + additionalSlots;
       return getPagesOfFolder(
-        totalPortraitsCount,
+        totalPortraits,
         startOnPageNumber,
         this.maxPortraitPerPage
       );
@@ -409,8 +425,8 @@ export default {
     },
     initDataFlowSettings() {
       const { flowOption } = this.isMultiFolder
-        ? this.flowSettings.flowMultiSettings
-        : this.flowSettings.flowSingleSettings;
+        ? PORTRAIT_FLOW_OPTION_MULTI.AUTO.id
+        : PORTRAIT_FLOW_OPTION_SINGLE.AUTO.id;
       this.onFlowSettingChange(flowOption);
     }
   }

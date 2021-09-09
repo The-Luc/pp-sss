@@ -14,6 +14,9 @@ export default {
     layoutSettings: {
       type: Object,
       default: () => ({})
+    },
+    isPageTitleOn: {
+      type: Boolean
     }
   },
   data() {
@@ -31,6 +34,9 @@ export default {
       handler() {
         this.initData();
       }
+    },
+    isPageTitleOn() {
+      this.initData();
     }
   },
   computed: {
@@ -62,6 +68,12 @@ export default {
     },
     isDisabledBottom() {
       return this.layoutSettings.rowCount === 1 ? true : false;
+    },
+    isDisabledRight() {
+      return this.layoutSettings.colCount === 1 ? true : false;
+    },
+    isDisabledTop() {
+      return this.isPageTitleOn;
     }
   },
   created() {
@@ -197,7 +209,8 @@ export default {
           name: 'Top Margin',
           options: this.marginOptions,
           selected: this.selectedTop,
-          onChangeFn: this.onChangeTop
+          onChangeFn: this.onChangeTop,
+          isDisabled: this.isDisabledTop
         },
         {
           name: 'Bottom Margin',
@@ -216,7 +229,8 @@ export default {
           name: 'Right Margin',
           options: this.marginOptions,
           selected: this.selectedRight,
-          onChangeFn: this.onChangeRight
+          onChangeFn: this.onChangeRight,
+          isDisabled: this.isDisabledRight
         }
       ];
     }

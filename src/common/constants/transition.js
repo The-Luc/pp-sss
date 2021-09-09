@@ -51,27 +51,23 @@ export const TRANS_DURATION_DEFAULT = 0.8;
 export const TRANS_TARGET = {
   NONE: 0,
   SELF: 1,
-  CURRENT_SHEET: 2,
-  CURRENT_SECTION: 3,
+  SHEET: 2,
+  SECTION: 3,
   ALL: 4
 };
 
 export const TRANS_TARGET_OPTIONS = [
-  {
-    name: 'Apply To…',
-    value: TRANS_TARGET.NONE
-  },
   {
     name: 'This transition only',
     value: TRANS_TARGET.SELF
   },
   {
     name: 'All transitions in this screen',
-    value: TRANS_TARGET.CURRENT_SHEET
+    value: TRANS_TARGET.SHEET
   },
   {
     name: 'All transitions in this section',
-    value: TRANS_TARGET.CURRENT_SECTION
+    value: TRANS_TARGET.SECTION
   },
   {
     name: 'All transitions in the Digital Yearbook',
@@ -79,4 +75,7 @@ export const TRANS_TARGET_OPTIONS = [
   }
 ];
 
-export const TRANS_TARGET_DEFAULT = TRANS_TARGET_OPTIONS[0];
+export const TRANS_TARGET_DEFAULT = {
+  name: 'Apply To…',
+  value: TRANS_TARGET.NONE
+};

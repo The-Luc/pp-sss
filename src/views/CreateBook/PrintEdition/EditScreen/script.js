@@ -35,7 +35,7 @@ import {
   useInfoBar,
   useMutationPrintSheet,
   useUser,
-  useGetterPrintSheet,
+  useGetterPrintSection,
   useProperties,
   useSheet,
   useActionsEditionSheet,
@@ -78,7 +78,7 @@ export default {
     const { setInfoBar } = useInfoBar();
     const { setCurrentSheetId } = useMutationPrintSheet();
     const { currentUser } = useUser();
-    const { currentSection } = useGetterPrintSheet();
+    const { currentSection } = useGetterPrintSection();
     const { savePrintEditScreen, getDataEditScreen } = useSaveData();
     const { setPropertyById, setPropOfMultipleObjects } = useProperties();
     const { updateSavingStatus } = useSavingStatus();

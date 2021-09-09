@@ -1,4 +1,9 @@
-import { useMutations, useGetters } from 'vuex-composition-helpers';
+import {
+  useMutations,
+  useGetters,
+  createNamespacedHelpers
+} from 'vuex-composition-helpers';
+const { useState: useDigitalState } = createNamespacedHelpers('digital');
 import {
   GETTERS as DIGITAL_GETTERS,
   MUTATES as DIGITAL_MUTATES
@@ -15,12 +20,16 @@ export const useFrame = () => {
     currentFrame,
     frames,
     currentFrameId,
-    firstFrameThumbnail
+    firstFrameThumbnail,
+    currentFrameIndex,
+    totalFrame
   } = useGetters({
     frames: DIGITAL_GETTERS.GET_FRAMES_WIDTH_IDS,
     currentFrame: DIGITAL_GETTERS.CURRENT_FRAME,
     currentFrameId: DIGITAL_GETTERS.CURRENT_FRAME_ID,
-    firstFrameThumbnail: DIGITAL_GETTERS.GET_FIRST_FRAME_THUMBNAIL
+    firstFrameThumbnail: DIGITAL_GETTERS.GET_FIRST_FRAME_THUMBNAIL,
+    currentFrameIndex: DIGITAL_GETTERS.CURRENT_FRAME_INDEX,
+    totalFrame: DIGITAL_GETTERS.TOTAL_FRAME
   });
 
   const {
@@ -40,7 +49,9 @@ export const useFrame = () => {
     setCurrentFrameId,
     setSupplementalLayoutId,
     updateFrameObjects,
-    firstFrameThumbnail
+    firstFrameThumbnail,
+    currentFrameIndex,
+    totalFrame
   };
 };
 
@@ -164,4 +175,19 @@ export const useFrameTitle = () => {
   });
 
   return { setFrameTitle };
+};
+
+export const useFrameAction = () => {
+  const {
+    frameIds: { value: frameIds },
+    frames: { value: frames }
+  } = useDigitalState(['frameIds', 'frames']);
+
+  const getPreviewUrlByIndex = index => {
+    if (index >= frameIds.length) return '';
+
+    return frames[frameIds[index]]?.previewImageUrl;
+  };
+
+  return { getPreviewUrlByIndex };
 };

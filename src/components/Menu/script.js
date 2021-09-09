@@ -43,8 +43,8 @@ export default {
         item
       });
     },
-    onClickOutsideMenu() {
-      this.$emit('onClickOutsideMenu');
+    onClickOutsideMenu(event) {
+      this.$emit('onClickOutsideMenu', { event });
     }
   },
   mounted() {

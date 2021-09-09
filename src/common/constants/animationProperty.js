@@ -130,6 +130,25 @@ export const VIDEO_ORDER = [
   }
 ];
 
+export const TEXT_APPLY_OPTIONS = [
+  {
+    name: 'This text only',
+    value: 'self'
+  },
+  {
+    name: 'This text on the frame',
+    value: 'frame'
+  },
+  {
+    name: 'This text in this section',
+    value: 'section'
+  },
+  {
+    name: 'All text in the Digital Yearbook',
+    value: 'book'
+  }
+];
+
 export const CONTROL_TYPE = {
   PLAY_IN: 'playIn',
   PLAY_OUT: 'playOut'

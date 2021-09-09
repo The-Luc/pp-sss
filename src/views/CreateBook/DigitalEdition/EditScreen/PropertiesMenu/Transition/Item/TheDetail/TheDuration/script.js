@@ -2,7 +2,7 @@ import PpInput from '@/components/InputProperty';
 
 import GroupItem from '../GroupItem';
 
-import { isInRange } from '@/common/utils';
+import { isEmpty, isInRange } from '@/common/utils';
 
 import {
   TRANS_DURATION_DEFAULT,
@@ -16,7 +16,7 @@ export default {
   },
   props: {
     selectedDuration: {
-      type: Number,
+      type: [Number, String],
       default: TRANS_DURATION_DEFAULT
     },
     disabled: {
@@ -27,6 +27,20 @@ export default {
     return {
       componentKey: true
     };
+  },
+  computed: {
+    duration() {
+      return isEmpty(this.selectedDuration) ? 0 : this.selectedDuration;
+    }
+  },
+  watch: {
+    disabled(newVal, oldVal) {
+      if (newVal === oldVal) return;
+
+      const duration = newVal ? '' : TRANS_DURATION_DEFAULT;
+
+      this.$emit('durationChange', { duration });
+    }
   },
   methods: {
     /**

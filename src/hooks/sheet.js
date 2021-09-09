@@ -6,7 +6,7 @@ import {
   getTransitionsApi,
   addTransitionApi,
   removeTransitionApi,
-  updateTransitionApi
+  applyTransitionApi
 } from '@/api/sheet';
 
 import digitalService from '@/api/digital';
@@ -43,7 +43,9 @@ export const useSheet = () => {
   };
 };
 
-const useMutationEditionSheet = (isDigital = false) => {
+const useMutationEditionSheet = () => {
+  const { value: isDigital } = useAppCommon().isDigitalEdition;
+
   const MUTATES = isDigital ? DIGITAL_MUTATES : PRINT_MUTATES;
 
   const { setCurrentSheetId, updateSheetThumbnail } = useMutations({
@@ -103,17 +105,56 @@ export const useMutationPrintSheet = () => {
 };
 
 export const useMutationDigitalSheet = () => {
-  // adding mutation for digital edition only here
+  const { updateTriggerTransition } = useMutations({
+    updateTriggerTransition: DIGITAL_MUTATES.UPDATE_TRIGGER_TRANSITION
+  });
 
-  return { ...useMutationEditionSheet(true) };
+  return { ...useMutationEditionSheet(), updateTriggerTransition };
 };
 
-export const useDigitalSheetAction = () => {
+export const useGetterDigitalSheet = () => {
+  const { triggerTransition } = useGetters({
+    triggerTransition: DIGITAL_GETTERS.TRIGGER_TRANSITION
+  });
+
+  return { triggerTransition };
+};
+
+export const useActionDigitalSheet = () => {
+  const { updateTriggerTransition } = useMutationDigitalSheet();
+
+  const getAndCorrectTransitions = async (sheetId, total) => {
+    const transitions = await getTransitionsApi(sheetId);
+
+    if (transitions.length === total) return transitions;
+
+    if (transitions.length > total) {
+      await removeTransitionApi(sheetId, transitions.length - total);
+
+      return await getTransitionsApi(sheetId);
+    }
+
+    await addTransitionApi(sheetId, total - transitions.length);
+
+    return await getTransitionsApi(sheetId);
+  };
+
+  const applyTransition = async (
+    transition,
+    targetType,
+    sheetId,
+    transitionIndex
+  ) => {
+    await applyTransitionApi(transition, targetType, sheetId, transitionIndex);
+
+    updateTriggerTransition();
+  };
+
   return {
     getTransition: getTransitionApi,
-    getTransitions: getTransitionsApi,
+    getAndCorrectTransitions,
     addTransition: addTransitionApi,
     removeTransition: removeTransitionApi,
-    updateTransition: updateTransitionApi
+    applyTransition
   };
 };

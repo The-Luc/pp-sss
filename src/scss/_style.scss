@@ -28,6 +28,12 @@ img {
   visibility: hidden !important;
 }
 
+.disabled,
+.v-input--is-disabled {
+  opacity: 0.4 !important; // override
+  pointer-events: none;
+}
+
 .theme--light.v-application {
   color: $color-stoodio-toolbartext;
 }
@@ -89,6 +95,7 @@ body,
 .pp-select-sub {
   &--item {
     min-height: 20px;
+    overflow: hidden;
 
     &:not(:last-child) {
       margin-bottom: 5px;
@@ -122,9 +129,21 @@ body,
       padding: 0;
 
       span {
-        color: $color-stoodio-toolbartext;
-        font-size: $xsm-size;
-        font-family: $font-500;
+        @extend %selector-display-item;
+
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+      }
+    }
+  }
+
+  .v-select__slot {
+    input {
+      margin-top: -2px;
+
+      &::placeholder {
+        @extend %selector-display-item;
       }
     }
   }
@@ -213,9 +232,9 @@ body,
 
       .v-select__selection--comma,
       .v-select__selection--disabled {
+        color: $color-stoodio-toolbartext;
         font-size: $xs-size + 1;
         font-family: $font-500;
-        color: $color-stoodio-toolbartext;
       }
     }
   }

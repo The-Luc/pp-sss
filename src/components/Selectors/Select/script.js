@@ -34,6 +34,12 @@ export default {
     },
     container: {
       type: String
+    },
+    placeholder: {
+      type: String
+    },
+    dataContainer: {
+      type: String
     }
   },
   methods: {

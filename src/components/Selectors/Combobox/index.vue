@@ -17,7 +17,7 @@
       value: isOpenMenu,
       closeOnContentClick: true,
       closeOnClick: true,
-      maxHeight: 'auto',
+      maxHeight: maxHeight,
       positionX: menuX + marginMenu, // width of .v-input__prepend-outer + margin
       positionY: menuY,
       absolute: true,

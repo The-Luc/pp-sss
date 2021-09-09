@@ -6,7 +6,12 @@
         @transitionChange="onTransitionChange"
       ></the-transition>
 
-      <the-preview></the-preview>
+      <the-preview
+        :transition-index="transitionIndex"
+        :transition="transition"
+        :direction="direction"
+        :duration="duration"
+      ></the-preview>
     </div>
 
     <div v-if="isTransitionChanged" class="group">

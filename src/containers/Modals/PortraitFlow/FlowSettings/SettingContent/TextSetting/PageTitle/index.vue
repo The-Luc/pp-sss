@@ -1,6 +1,7 @@
 <template>
   <div class="page-title">
     <input-title
+      :key="componentKey"
       :disabled="!isPageTitleOn"
       title-name="Page Title:"
       :title-value="pageTitle"

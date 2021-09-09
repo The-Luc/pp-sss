@@ -5,11 +5,12 @@
         <item
           v-for="(item, index) in transitions"
           :key="index"
-          :first-frame="index + 1"
-          :second-frame="index + 2"
+          :transition-index="index"
+          :sheet-id="sheetId"
           :transition="item.transition"
           :direction="item.direction"
           :duration="item.duration"
+          :is-expand-default="index === currentFrameIndex"
         ></item>
       </div>
     </box-properties>

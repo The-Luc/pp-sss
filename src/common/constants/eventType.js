@@ -26,7 +26,8 @@ export const EVENT_TYPE = {
   VIDEO_STOP_KEEP_REWIND: 'videoStopKeepRewind',
   VIDEO_FORWARD: 'videoForward',
   VIDEO_KEEP_FORWARD: 'videoKeepForward',
-  VIDEO_STOP_KEEP_FORWARD: 'videoStopKeepForward'
+  VIDEO_STOP_KEEP_FORWARD: 'videoStopKeepForward',
+  TRANSITION_PREVIEW: 'transitionPreview'
 };
 
 export const CANVAS_EVENT_TYPE = {

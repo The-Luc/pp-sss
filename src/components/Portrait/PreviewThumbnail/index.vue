@@ -12,31 +12,55 @@
       {{ flowSettings.textSettings.pageTitle }}
     </div>
     <div ref="thumbWrapper" class="thumb-wrapper">
-      <div v-if="!isCenterPosition" ref="outside" class="names">
+      <div
+        v-show="!isCenterPosition"
+        :class="['name-container', { right: isPageRight }]"
+        :style="nameContainerStyle"
+      >
         <div
-          v-for="(portrait, idx) in portraits"
-          :key="idx"
-          class="name"
-          :style="nameTextStyle"
+          v-for="(item, index) in namePortrait"
+          :key="index"
+          class="names"
+          :style="namesHeight"
         >
-          <div>{{ portrait.firstName }}</div>
-          <div>{{ portrait.lastName }}</div>
+          <div
+            v-for="(portrait, i) in item"
+            :key="i"
+            class="name"
+            :style="nameTextStyle"
+          >
+            <div :class="{ firstname: isFirstLastDisplay }">
+              {{ portrait.firstName }}
+            </div>
+            <div :class="{ lastname: !isFirstLastDisplay }">
+              {{ portrait.lastName }}
+            </div>
+          </div>
         </div>
       </div>
+      <div ref="portraitsContainer" class="portraits-container">
+        <div ref="portraits" class="portraits">
+          <div
+            v-for="(portrait, idx) in portraits"
+            :key="idx"
+            :class="{ portrait, enlarge: isLargePortrait(portrait) }"
+          >
+            <div class="photo-container">
+              <img
+                class="photo"
+                :src="portrait.imageUrl"
+                :alt="portrait.firstName"
+              />
+            </div>
 
-      <div ref="portraits" class="portraits">
-        <div v-for="(portrait, idx) in portraits" :key="idx" class="portrait">
-          <div class="photo-container">
-            <img
-              class="photo"
-              :src="portrait.imageUrl"
-              :alt="portrait.firstName"
-            />
-          </div>
-
-          <div v-if="isCenterPosition" class="name" :style="nameTextStyle">
-            <div>{{ portrait.firstName }}</div>
-            <div>{{ portrait.lastName }}</div>
+            <div v-if="isCenterPosition" class="name" :style="nameTextStyle">
+              <div :class="{ firstname: isFirstLastDisplay }">
+                {{ portrait.firstName }}
+              </div>
+              <div :class="{ lastname: !isFirstLastDisplay }">
+                {{ portrait.lastName }}
+              </div>
+            </div>
           </div>
         </div>
       </div>

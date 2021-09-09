@@ -7,7 +7,7 @@
     content: '';
     bottom: -7px;
     left: calc(50% - 7px);
-    z-index: 999;
+    z-index: 20;
     transform: rotate(45deg);
     border-left: 7px solid $color-stoodio-lightgray;
     border-right: 7px solid $color-stoodio-lightgray;
@@ -22,7 +22,7 @@
     position: absolute;
     left: calc(50% - 15px);
     bottom: 0;
-    z-index: 999;
+    z-index: 20;
     background-color: $color-stoodio-lightgray;
     border-right: 1px solid $color-stoodio-lightgray;
     border-top: 1px solid $color-stoodio-lightgray;
