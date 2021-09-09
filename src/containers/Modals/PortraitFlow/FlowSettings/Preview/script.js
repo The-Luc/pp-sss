@@ -63,16 +63,19 @@ export default {
     startPage() {
       const settingPage = this.flowSettings.startOnPageNumber;
 
-      const startPage = this.pages.find(p => p === settingPage);
+      const startPage = this.pages.find(p => p.value === settingPage);
 
-      return isEmpty(startPage) ? 1 : startPage;
+      return isEmpty(startPage) ? { name: 1, value: 1 } : { ...startPage };
     },
     layoutSettings() {
       return this.flowSettings.layoutSettings;
     },
     pages() {
       const totalSheet = Object.values(this.getSheets).length * 2 - 4;
-      return Array.from({ length: totalSheet }, (_, i) => i + 1);
+      const pages = Array.from({ length: totalSheet }, (_, i) => i + 1);
+      return isEmpty(pages)
+        ? [{ name: 1, value: 1 }]
+        : pages.map(p => ({ name: p, value: p }));
     }
   },
   watch: {

@@ -20,6 +20,7 @@
       ></the-transition-target>
 
       <the-transition-application
+        v-show="hasTarget"
         @transitionApply="onTransitionApply"
       ></the-transition-application>
     </div>

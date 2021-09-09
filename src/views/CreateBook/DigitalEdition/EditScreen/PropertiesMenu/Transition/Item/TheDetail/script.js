@@ -33,6 +33,11 @@ export default {
       type: Boolean
     }
   },
+  data() {
+    return {
+      hasTarget: false
+    };
+  },
   computed: {
     isDirectionDisabled() {
       return (
@@ -76,6 +81,8 @@ export default {
      */
     onTargetChange({ target }) {
       this.$emit('targetChange', { target });
+
+      this.hasTarget = true;
     },
     /**
      * Emit click event to parent
