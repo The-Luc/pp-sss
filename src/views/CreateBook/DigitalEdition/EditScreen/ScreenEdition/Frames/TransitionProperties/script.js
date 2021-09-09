@@ -2,7 +2,12 @@ import CustomMenu from '@/components/Menu';
 
 import Item from '../../../PropertiesMenu//Transition/Item';
 
-import { useDigitalSheetAction, useSheet } from '@/hooks';
+import {
+  useActionDigitalSheet,
+  useGetterDigitalSheet,
+  useSheet
+} from '@/hooks';
+import { isEmpty } from '@/common/utils';
 
 export default {
   components: {
@@ -24,22 +29,26 @@ export default {
     }
   },
   setup() {
-    const { getTransition } = useDigitalSheetAction();
+    const { getTransition } = useActionDigitalSheet();
     const { currentSheet } = useSheet();
+    const { triggerTransition } = useGetterDigitalSheet();
 
-    return { getTransition, currentSheet };
+    return { getTransition, currentSheet, triggerTransition };
   },
   data() {
     return {
       transition: {},
-      topValue: this.top
+      topValue: this.top,
+      sheetId: this.currentSheet.id
     };
   },
-  async mounted() {
-    this.transition = await this.getTransition(
-      this.currentSheet.id,
-      this.index
-    );
+  watch: {
+    triggerTransition() {
+      this.updateTransition();
+    }
+  },
+  mounted() {
+    this.updateTransition();
   },
   methods: {
     /**
@@ -51,8 +60,18 @@ export default {
       // 36 is height of Apply to
       this.topValue = isChanged ? this.top - 36 : this.top;
     },
-    onClickOutsideMenu() {
-      this.$emit('onClose');
+    onClickOutsideMenu({ event }) {
+      const target = event.target?.getAttribute('data-container');
+
+      if (isEmpty(target) || target !== 'transition-properties') {
+        this.$emit('onClose');
+      }
+    },
+    /**
+     * Update transition
+     */
+    async updateTransition() {
+      this.transition = await this.getTransition(this.sheetId, this.index);
     }
   }
 };

@@ -6,6 +6,12 @@
       background-color: transparent !important; // override
       border: 1px solid $color-stoodio-blue;
 
+      .v-select__slot {
+        input::placeholder {
+          color: $color-stoodio-blue;
+        }
+      }
+
       .v-list-item__content {
         .v-list-item__title {
           span {

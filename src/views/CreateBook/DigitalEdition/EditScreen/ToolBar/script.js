@@ -118,6 +118,10 @@ export default {
       if (name === TOOL_NAME.MEDIA) {
         this.updateMediaSidebarOpen({ isOpen: !this.isMediaSidebarOpen });
       }
+
+      if (name === TOOL_NAME.PORTRAIT) {
+        this.$emit('toggleModal', { modal: name });
+      }
     }
   }
 };

@@ -36,13 +36,13 @@ export const useGetterEditionSection = () => {
   };
 };
 
-export const useGetterPrintSheet = () => {
+export const useGetterPrintSection = () => {
   // adding getter for print edition only here
 
   return { ...useGetterEditionSection() };
 };
 
-export const useGetterDigitalSheet = () => {
+export const useGetterDigitalSection = () => {
   // adding getter for digital edition only here
 
   return { ...useGetterEditionSection() };

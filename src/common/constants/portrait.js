@@ -158,7 +158,7 @@ export const STATUS_PAGE_TITLE = [
 ];
 
 export const DEFAULT_MARGIN_PAGE_TITLE = {
-  top: 0.45,
+  top: 0.5,
   left: 0.5,
   right: 0.5,
   bottom: 0.25
@@ -196,7 +196,9 @@ export const DEFAULT_PAGE_TITLE = {
 
 export const DEFAULT_NAME_TEXT = {
   ...DEFAULT_TEXT_PROPERTIES,
-  fontSize: 12
+  fontSize: 12,
+  isBold: false
 };
 
 export const DEFAULT_NAME_WIDTH = 1.25;
+export const DEFAULT_VALUE_PAGE_TITLE = 'Untitled';

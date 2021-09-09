@@ -11,6 +11,10 @@ export default {
     disabled: {
       type: Boolean,
       default: false
+    },
+    maxlength: {
+      type: String,
+      default: ''
     }
   },
   data() {

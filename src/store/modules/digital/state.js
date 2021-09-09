@@ -20,6 +20,7 @@ export const state = {
     background: true,
     shape: true,
     clipArt: true,
-    applyLayout: true
+    applyLayout: true,
+    transition: true
   }
 };

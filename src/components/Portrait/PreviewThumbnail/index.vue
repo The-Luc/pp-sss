@@ -29,8 +29,10 @@
             class="name"
             :style="nameTextStyle"
           >
-            <div>{{ portrait.firstName }}</div>
-            <div :class="{ lastName: !isFirstLastDisplay }">
+            <div :class="{ firstname: isFirstLastDisplay }">
+              {{ portrait.firstName }}
+            </div>
+            <div :class="{ lastname: !isFirstLastDisplay }">
               {{ portrait.lastName }}
             </div>
           </div>
@@ -51,11 +53,12 @@
               />
             </div>
 
-            <div v-if="isCenterPosition" class="name" :style="nameTextStyle">
-              <div>{{ portrait.firstName }}</div>
-              <div :class="{ lastname: !isFirstLastDisplay }">
-                {{ portrait.lastName }}
-              </div>
+          <div v-if="isCenterPosition" class="name" :style="nameTextStyle">
+            <div :class="{ firstname: isFirstLastDisplay }">
+              {{ portrait.firstName }}
+            </div>
+            <div :class="{ lastname: !isFirstLastDisplay }">
+              {{ portrait.lastName }}
             </div>
           </div>
         </div>

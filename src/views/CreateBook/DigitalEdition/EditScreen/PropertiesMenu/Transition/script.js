@@ -1,7 +1,11 @@
 import BoxProperties from '@/components/Properties/BoxProperties';
 import Item from './Item';
 
-import { useDigitalSheetAction, useSheet } from '@/hooks';
+import {
+  useActionDigitalSheet,
+  useGetterDigitalSheet,
+  useSheet
+} from '@/hooks';
 
 export default {
   components: {
@@ -9,17 +13,32 @@ export default {
     Item
   },
   setup() {
-    const { getTransitions } = useDigitalSheetAction();
+    const { getTransitions } = useActionDigitalSheet();
     const { currentSheet } = useSheet();
+    const { triggerTransition } = useGetterDigitalSheet();
 
-    return { getTransitions, currentSheet };
+    return { getTransitions, currentSheet, triggerTransition };
   },
   data() {
     return {
-      transitions: []
+      transitions: [],
+      sheetId: this.currentSheet.id
     };
   },
-  async mounted() {
-    this.transitions = await this.getTransitions(this.currentSheet.id);
+  watch: {
+    triggerTransition() {
+      this.updateTransitions();
+    }
+  },
+  mounted() {
+    this.updateTransitions();
+  },
+  methods: {
+    /**
+     * Update transitions
+     */
+    async updateTransitions() {
+      this.transitions = await this.getTransitions(this.sheetId);
+    }
   }
 };

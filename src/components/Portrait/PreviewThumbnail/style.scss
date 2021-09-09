@@ -75,7 +75,6 @@
           line-height: 1;
           display: flex;
           div {
-            padding: 0 2px;
             white-space: nowrap;
           }
         }
@@ -96,5 +95,9 @@
 }
 
 .lastname::after {
-  content: ', ';
+  content: ', \00a0 ';
+}
+
+.firstname::after {
+  content: '\00a0';
 }

@@ -1,14 +1,6 @@
 .page-number-properties {
   display: flex;
   padding: 10px;
-  &.disabled {
-    filter: opacity(0.4);
-    .color-container {
-      .color-content .box-color {
-        cursor: default;
-      }
-    }
-  }
   .properties-font-family {
     margin-right: 15px;
     .v-input {

@@ -6,7 +6,7 @@ import {
   getTransitionsApi,
   addTransitionApi,
   removeTransitionApi,
-  updateTransitionApi
+  applyTransitionApi
 } from '@/api/sheet';
 
 import digitalService from '@/api/digital';
@@ -43,7 +43,9 @@ export const useSheet = () => {
   };
 };
 
-const useMutationEditionSheet = (isDigital = false) => {
+const useMutationEditionSheet = () => {
+  const { value: isDigital } = useAppCommon().isDigitalEdition;
+
   const MUTATES = isDigital ? DIGITAL_MUTATES : PRINT_MUTATES;
 
   const { setCurrentSheetId, updateSheetThumbnail } = useMutations({
@@ -103,17 +105,40 @@ export const useMutationPrintSheet = () => {
 };
 
 export const useMutationDigitalSheet = () => {
-  // adding mutation for digital edition only here
+  const { updateTriggerTransition } = useMutations({
+    updateTriggerTransition: DIGITAL_MUTATES.UPDATE_TRIGGER_TRANSITION
+  });
 
-  return { ...useMutationEditionSheet(true) };
+  return { ...useMutationEditionSheet(), updateTriggerTransition };
 };
 
-export const useDigitalSheetAction = () => {
+export const useGetterDigitalSheet = () => {
+  const { triggerTransition } = useGetters({
+    triggerTransition: DIGITAL_GETTERS.TRIGGER_TRANSITION
+  });
+
+  return { triggerTransition };
+};
+
+export const useActionDigitalSheet = () => {
+  const { updateTriggerTransition } = useMutationDigitalSheet();
+
+  const applyTransition = async (
+    transition,
+    targetType,
+    sheetId,
+    transitionIndex
+  ) => {
+    await applyTransitionApi(transition, targetType, sheetId, transitionIndex);
+
+    updateTriggerTransition();
+  };
+
   return {
     getTransition: getTransitionApi,
     getTransitions: getTransitionsApi,
     addTransition: addTransitionApi,
     removeTransition: removeTransitionApi,
-    updateTransition: updateTransitionApi
+    applyTransition
   };
 };
