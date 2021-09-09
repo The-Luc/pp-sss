@@ -34,6 +34,7 @@
         var(--portrait-width) * 1.25 + var(--name-height)
       );
       --align: space-between;
+      --enlarge-width: 100%;
       display: grid;
       grid-template-columns: repeat(var(--col-count), var(--portrait-width));
       grid-template-rows: repeat(var(--row-count), var(--portrait-height));
