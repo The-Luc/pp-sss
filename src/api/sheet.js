@@ -1,10 +1,6 @@
 import { TRANS_TARGET } from '@/common/constants';
 import { Transition } from '@/common/models';
-import {
-  insertItemsToArray,
-  modifyItemsInArray,
-  removeItemsFormArray
-} from '@/common/utils';
+import { insertItemsToArray, modifyItemsInArray } from '@/common/utils';
 
 const findSectionSheetIndex = sheetId => {
   const sectionIndex = window.data.book.sections.findIndex(section => {
@@ -104,19 +100,18 @@ export const removeTransitionApi = (sheetId, totalTransition = 1) => {
       return;
     }
 
-    for (let i = 0; i < totalTransition; i++) {
-      let transitions =
-        window.data.book.sections[sectionIndex].sheets[sheetIndex].digitalData
-          .transitions;
+    const { transitions } = window.data.book.sections[sectionIndex].sheets[
+      sheetIndex
+    ].digitalData;
 
-      let lastIndex = transitions.length - 1;
-
-      window.data.book.sections[sectionIndex].sheets[
-        sheetIndex
-      ].digitalData.transitions = removeItemsFormArray(transitions, [
-        { index: lastIndex < 0 ? 0 : lastIndex }
-      ]);
-    }
+    window.data.book.sections[sectionIndex].sheets[
+      sheetIndex
+    ].digitalData.transitions = Array.from(
+      { length: transitions.length - totalTransition },
+      (_, index) => {
+        return transitions[index];
+      }
+    );
 
     resolve();
   });

@@ -17,6 +17,7 @@
         :transition="transition.transition"
         :direction="transition.direction"
         :duration="transition.duration"
+        :is-expand-default="true"
         @transitionChange="onTransitionChange"
       ></item>
     </custom-menu>

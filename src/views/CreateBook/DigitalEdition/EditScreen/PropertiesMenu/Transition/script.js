@@ -3,6 +3,7 @@ import Item from './Item';
 
 import {
   useActionDigitalSheet,
+  useFrame,
   useGetterDigitalSheet,
   useSheet
 } from '@/hooks';
@@ -13,11 +14,18 @@ export default {
     Item
   },
   setup() {
-    const { getTransitions } = useActionDigitalSheet();
+    const { getAndCorrectTransitions } = useActionDigitalSheet();
     const { currentSheet } = useSheet();
     const { triggerTransition } = useGetterDigitalSheet();
+    const { currentFrameIndex, totalFrame } = useFrame();
 
-    return { getTransitions, currentSheet, triggerTransition };
+    return {
+      getAndCorrectTransitions,
+      currentSheet,
+      triggerTransition,
+      currentFrameIndex,
+      totalFrame
+    };
   },
   data() {
     return {
@@ -38,7 +46,10 @@ export default {
      * Update transitions
      */
     async updateTransitions() {
-      this.transitions = await this.getTransitions(this.sheetId);
+      this.transitions = await this.getAndCorrectTransitions(
+        this.sheetId,
+        this.totalFrame - 1
+      );
     }
   }
 };

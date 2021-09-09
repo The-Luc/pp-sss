@@ -10,6 +10,7 @@
           :transition="item.transition"
           :direction="item.direction"
           :duration="item.duration"
+          :is-expand-default="index === currentFrameIndex"
         ></item>
       </div>
     </box-properties>
