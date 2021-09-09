@@ -69,11 +69,20 @@ export default {
       this.topValue = isChanged ? this.top - 36 : this.top;
     },
     onClickOutsideMenu({ event }) {
-      const target = event.target?.getAttribute('data-container');
+      const target = event.target;
 
-      if (isEmpty(target) || target !== 'transition-properties') {
-        this.$emit('onClose');
-      }
+      const container = 'transition-properties';
+      const atrribute = 'data-container';
+
+      const selfContainer = target.getAttribute(atrribute);
+
+      if (!isEmpty(selfContainer) && selfContainer === container) return;
+
+      const query = `[${atrribute}="${container}"]`;
+
+      if (target.closest(query) || target.querySelector(query)) return;
+
+      this.$emit('onClose');
     },
     /**
      * Update transition

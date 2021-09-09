@@ -49,6 +49,13 @@ export default {
       return this.transition === TRANSITION.NONE;
     }
   },
+  watch: {
+    isTransitionChanged(newValue, oldValue) {
+      if (newValue === oldValue || !newValue) return;
+
+      this.hasTarget = false;
+    }
+  },
   methods: {
     /**
      * Emit change event to parent

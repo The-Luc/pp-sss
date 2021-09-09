@@ -51,26 +51,23 @@
           v-if="!isImgOpts"
           :style="{ visibility: active ? 'visible' : 'hidden' }"
           class="icon-ative"
-          :data-container="dataContainer"
           :src="activeMenuIcon"
           alt="icon-active"
         />
         <v-list-item-content>
           <v-list-item-title>
-            <v-row no-gutters align="center" :data-container="dataContainer">
-              <v-icon v-if="item.icon" :data-container="dataContainer">{{
+            <v-row no-gutters align="center">
+              <v-icon v-if="item.icon">{{
                 item.icon
               }}</v-icon>
               <template v-if="isImgOpts">
                 <img
                   :src="item.previewImageUrl"
-                  :data-container="dataContainer"
                   style="max-width: 70px"
                 />
               </template>
               <template v-else>
                 <span
-                  :data-container="dataContainer"
                   :style="getStyle(item.cssStyle)"
                   >{{ item.name }}</span
                 >
