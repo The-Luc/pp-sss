@@ -139,6 +139,22 @@ export default {
       handler(newVal, oldVal) {
         if (newVal !== oldVal) {
           this.$nextTick(() => {
+            const pageTitleHeight = this.$refs?.pageTitle?.clientHeight;
+            const height = this.showPageTitile ? pageTitleHeight : 0;
+
+            const row = this.layout.rowCount;
+            const nameContainerHeight = this.$refs?.portraits?.clientHeight;
+            const imageHeight = this.portraitWidth * 1.25;
+            // gridHeight is made up image height + name height (name height is 10% of image height)
+            const gridHeight = imageHeight + imageHeight * 0.1;
+            const gap = (nameContainerHeight - gridHeight * row) / (row - 1);
+
+            this.namesHeight = { height: `${gridHeight + gap}px` };
+
+            if (pageTitleHeight) {
+              this.$refs.thumbWrapper.style.height = `calc(100% - ${height}px)`;
+            }
+
             this.updatePortraitData();
           });
         }
@@ -169,20 +185,25 @@ export default {
      */
     updateLayout() {
       const portraitsEl = this.$refs.portraits;
+      const portraitsContainerEl = this.$refs.portraitsContainer;
+
       if (!portraitsEl.style) return;
 
       const row = this.layout.rowCount;
       const col = this.layout.colCount;
 
-      const containerWidth = window.getComputedStyle(portraitsEl).width;
-      const containerHeight = window.getComputedStyle(portraitsEl).height;
+      const containerWidth = portraitsContainerEl.clientWidth;
+      const containerHeight = portraitsContainerEl.clientHeight;
 
       const width =
         parseInt(containerWidth) / (col + (col - 1) * this.defaultGap);
       const height =
         parseInt(containerHeight) / (row + (row - 1) * this.defaultGap);
 
-      this.portraitWidth = Math.min(width, (height - 10) / this.defaultRatio);
+      this.portraitWidth = Math.min(
+        width,
+        (height - height * 0.1) / this.defaultRatio
+      );
 
       portraitsEl.style.setProperty('--row-count', this.layout.rowCount);
       portraitsEl.style.setProperty('--col-count', this.layout.colCount);

@@ -4,6 +4,7 @@
     <Control
       type="playIn"
       :config="playInConfig"
+      :is-disabled-preview="isDisabledPreview"
       @preview="onPreview"
       @change="changePlayIn"
     />
@@ -11,6 +12,7 @@
     <Control
       type="playOut"
       :config="playOutConfig"
+      :is-disabled-preview="isDisabledPreview"
       @preview="onPreview"
       @change="changePlayOut"
     />

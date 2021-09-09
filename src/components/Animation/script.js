@@ -1,5 +1,12 @@
 import { EVENT_TYPE } from '@/common/constants';
 import Control from './Control';
+import {
+  BLUR_DELAY_DURATION,
+  DELAY_DURATION,
+  PLAY_IN_STYLES,
+  PLAY_OUT_STYLES,
+  CONTROL_TYPE
+} from '@/common/constants/animationProperty';
 
 export default {
   components: {
@@ -19,6 +26,11 @@ export default {
       default: () => ({})
     }
   },
+  data() {
+    return {
+      isDisabledPreview: false
+    };
+  },
   methods: {
     changePlayIn(val) {
       this.$emit('change', { animationIn: val });
@@ -32,7 +44,32 @@ export default {
      * @param {Object} config configuration for animation
      */
     onPreview(config) {
+      const inactiveTime = this.totalAnimationDuration(config);
+      this.isDisabledPreview = true;
+
       this.$root.$emit(EVENT_TYPE.PREVIEW_ANIMATION, config);
+
+      setTimeout(() => {
+        this.isDisabledPreview = false;
+      }, inactiveTime);
+    },
+
+    /**
+     * Calc total time to perform animation
+     *
+     * @param {Object} config animation config
+     * @returns  total animation duration
+     */
+    totalAnimationDuration(config) {
+      const STYLE =
+        config.controlType === CONTROL_TYPE.PLAY_IN
+          ? PLAY_IN_STYLES
+          : PLAY_OUT_STYLES;
+
+      const delayDuration =
+        config.style === STYLE.BLUR ? BLUR_DELAY_DURATION : DELAY_DURATION;
+
+      return delayDuration * 2 + config.duration;
     }
   }
 };
