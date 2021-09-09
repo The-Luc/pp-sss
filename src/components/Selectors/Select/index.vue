@@ -57,20 +57,12 @@
         <v-list-item-content>
           <v-list-item-title>
             <v-row no-gutters align="center">
-              <v-icon v-if="item.icon">{{
-                item.icon
-              }}</v-icon>
+              <v-icon v-if="item.icon">{{ item.icon }}</v-icon>
               <template v-if="isImgOpts">
-                <img
-                  :src="item.previewImageUrl"
-                  style="max-width: 70px"
-                />
+                <img :src="item.previewImageUrl" style="max-width: 70px" />
               </template>
               <template v-else>
-                <span
-                  :style="getStyle(item.cssStyle)"
-                  >{{ item.name }}</span
-                >
+                <span :style="getStyle(item.cssStyle)">{{ item.name }}</span>
               </template>
             </v-row>
           </v-list-item-title>
