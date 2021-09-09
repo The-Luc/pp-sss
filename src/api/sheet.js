@@ -1,10 +1,6 @@
 import { TRANS_TARGET } from '@/common/constants';
 import { Transition } from '@/common/models';
-import {
-  insertItemsToArray,
-  modifyItemsInArray,
-  removeItemsFormArray
-} from '@/common/utils';
+import { insertItemsToArray, modifyItemsInArray } from '@/common/utils';
 
 const findSectionSheetIndex = sheetId => {
   const sectionIndex = window.data.book.sections.findIndex(section => {

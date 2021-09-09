@@ -22,8 +22,6 @@ import {
   MUTATES as DIGITAL_MUTATES,
   ACTIONS as DIGITAL_ACTIONS
 } from '@/store/modules/digital/const';
-import { isEmpty } from '@/common/utils';
-import { Transition } from '@/common/models';
 
 export const useSheet = () => {
   const { value: isDigital } = useAppCommon().isDigitalEdition;
