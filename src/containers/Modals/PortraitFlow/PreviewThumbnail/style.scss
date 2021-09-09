@@ -1,0 +1,45 @@
+.preview-thumbnail {
+  display: flex;
+  width: 242px;
+  height: 314px;
+  background-size: cover;
+  background-position: center;
+
+  .thumb-wrapper {
+    display: flex;
+    width: 100%;
+    padding: 20px 10px;
+
+    .names {
+      display: none;
+    }
+
+    .portraits {
+      display: flex;
+      width: 100%;
+      max-width: 100%;
+      height: 100%;
+      flex-direction: column;
+      justify-content: space-between;
+
+      .portrait-row {
+        display: flex;
+        width: 100%;
+        justify-content: space-between;
+
+        .portrait {
+          display: flex;
+          max-width: 18%;
+          flex-direction: column;
+          align-items: center;
+
+          .name {
+            width: 100%;
+            text-align: center;
+            font-size: 10px;
+          }
+        }
+      }
+    }
+  }
+}
