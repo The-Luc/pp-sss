@@ -37,7 +37,7 @@ import {
   usePopoverCreationTool,
   useMutationDigitalSheet,
   useUser,
-  useGetterDigitalSheet,
+  useGetterDigitalSection,
   useFrame,
   useInfoBar,
   useActionsEditionSheet,
@@ -83,7 +83,7 @@ export default {
     const { setToolNameSelected } = usePopoverCreationTool();
     const { setCurrentSheetId } = useMutationDigitalSheet();
     const { currentUser } = useUser();
-    const { currentSection } = useGetterDigitalSheet();
+    const { currentSection } = useGetterDigitalSection();
     const { currentFrameId, updateFrameObjects } = useFrame();
     const { saveEditScreen, getDataEditScreen } = useSaveData();
     const { updateSavingStatus } = useSavingStatus();

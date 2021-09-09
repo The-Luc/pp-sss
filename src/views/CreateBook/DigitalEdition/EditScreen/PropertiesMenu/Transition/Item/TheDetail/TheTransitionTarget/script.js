@@ -12,7 +12,7 @@ export default {
   data() {
     return {
       targets: TRANS_TARGET_OPTIONS,
-      defaultValue: TRANS_TARGET_DEFAULT
+      unSelectedValue: TRANS_TARGET_DEFAULT.name
     };
   },
   methods: {

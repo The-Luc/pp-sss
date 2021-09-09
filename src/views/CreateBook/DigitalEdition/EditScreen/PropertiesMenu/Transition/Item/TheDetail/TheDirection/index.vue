@@ -1,6 +1,7 @@
 <template>
   <group-item name="Direction">
     <pp-select
+      data-container="transition-properties"
       :items="directions"
       :selected-val="direction"
       :disabled="disabled"

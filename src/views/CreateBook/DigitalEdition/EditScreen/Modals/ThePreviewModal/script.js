@@ -65,7 +65,7 @@ export default {
       const direction = {
         [TRANS_DIRECTION.TOP_BOTTOM]: 'bottom',
         [TRANS_DIRECTION.BOTTOM_TOP]: 'top',
-        [TRANS_DIRECTION.LEFT_RIGTH]: 'right',
+        [TRANS_DIRECTION.LEFT_RIGHT]: 'right',
         [TRANS_DIRECTION.RIGHT_LEFT]: 'left'
       };
 

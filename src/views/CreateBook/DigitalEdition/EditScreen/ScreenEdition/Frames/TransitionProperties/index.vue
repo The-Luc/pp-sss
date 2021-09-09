@@ -12,6 +12,7 @@
     >
       <item
         :transition-index="index"
+        :sheet-id="sheetId"
         :is-header-displayed="false"
         :transition="transition.transition"
         :direction="transition.direction"

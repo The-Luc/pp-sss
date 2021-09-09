@@ -6,6 +6,7 @@
           v-for="(item, index) in transitions"
           :key="index"
           :transition-index="index"
+          :sheet-id="sheetId"
           :transition="item.transition"
           :direction="item.direction"
           :duration="item.duration"

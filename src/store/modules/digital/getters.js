@@ -111,5 +111,7 @@ export const getters = {
   [DIGITAL._GETTERS.GET_SHEET_MEDIA]: ({ sheets, currentSheetId }) => {
     const media = sheets[currentSheetId]?.media;
     return isEmpty(media) ? [] : media;
-  }
+  },
+  [DIGITAL._GETTERS.TRIGGER_TRANSITION]: ({ triggerChange }) =>
+    triggerChange.transition
 };
