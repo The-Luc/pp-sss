@@ -36,24 +36,26 @@
           </div>
         </div>
       </div>
-      <div ref="portraits" class="portraits">
-        <div
-          v-for="(portrait, idx) in portraits"
-          :key="idx"
-          :class="{ portrait, enlarge: isLargePortrait(portrait) }"
-        >
-          <div class="photo-container">
-            <img
-              class="photo"
-              :src="portrait.imageUrl"
-              :alt="portrait.firstName"
-            />
-          </div>
+      <div ref="portraitsContainer" class="portraits-container">
+        <div ref="portraits" class="portraits">
+          <div
+            v-for="(portrait, idx) in portraits"
+            :key="idx"
+            :class="{ portrait, enlarge: isLargePortrait(portrait) }"
+          >
+            <div class="photo-container">
+              <img
+                class="photo"
+                :src="portrait.imageUrl"
+                :alt="portrait.firstName"
+              />
+            </div>
 
-          <div v-if="isCenterPosition" class="name" :style="nameTextStyle">
-            <div>{{ portrait.firstName }}</div>
-            <div :class="{ lastname: !isFirstLastDisplay }">
-              {{ portrait.lastName }}
+            <div v-if="isCenterPosition" class="name" :style="nameTextStyle">
+              <div>{{ portrait.firstName }}</div>
+              <div :class="{ lastname: !isFirstLastDisplay }">
+                {{ portrait.lastName }}
+              </div>
             </div>
           </div>
         </div>
