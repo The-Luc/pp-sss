@@ -424,7 +424,7 @@ export default {
       this.flowWarning = false;
     },
     initDataFlowSettings() {
-      const { flowOption } = this.isMultiFolder
+      const flowOption = this.isMultiFolder
         ? PORTRAIT_FLOW_OPTION_MULTI.AUTO.id
         : PORTRAIT_FLOW_OPTION_SINGLE.AUTO.id;
       this.onFlowSettingChange(flowOption);
