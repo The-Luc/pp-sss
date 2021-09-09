@@ -11,6 +11,7 @@
       @redo="onRedo"
       @switchTool="onToolSwitch"
       @endInstruction="onInstructionEnd"
+      @toggleModal="onToggleModal"
     />
 
     <FeedbackBar :is-digital="true" @zoom="onZoom" />
@@ -55,6 +56,13 @@
       @crop="onCrop"
       @cancel="onCancel"
     />
+
+    <portrait-folder
+      v-if="modal[toolNames.PORTRAIT].isOpen"
+      :is-open-modal="modal[toolNames.PORTRAIT].isOpen"
+      @cancel="onClosePortrait"
+      @select="onSelectPortraitFolders"
+    ></portrait-folder>
 
     <the-preview-modal
       v-if="modal[modalType.TRANSITION_PREVIEW].isOpen"

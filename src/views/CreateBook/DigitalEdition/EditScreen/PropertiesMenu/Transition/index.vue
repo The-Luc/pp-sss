@@ -6,9 +6,11 @@
           v-for="(item, index) in transitions"
           :key="index"
           :transition-index="index"
+          :sheet-id="sheetId"
           :transition="item.transition"
           :direction="item.direction"
           :duration="item.duration"
+          :is-expand-default="index === currentFrameIndex"
         ></item>
       </div>
     </box-properties>

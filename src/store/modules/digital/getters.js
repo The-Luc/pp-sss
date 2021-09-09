@@ -111,5 +111,13 @@ export const getters = {
   [DIGITAL._GETTERS.GET_SHEET_MEDIA]: ({ sheets, currentSheetId }) => {
     const media = sheets[currentSheetId]?.media;
     return isEmpty(media) ? [] : media;
+  },
+  [DIGITAL._GETTERS.TRIGGER_TRANSITION]: ({ triggerChange }) =>
+    triggerChange.transition,
+  [DIGITAL._GETTERS.CURRENT_FRAME_INDEX]: ({ frameIds, currentFrameId }) => {
+    return frameIds.indexOf(currentFrameId);
+  },
+  [DIGITAL._GETTERS.TOTAL_FRAME]: ({ frameIds }) => {
+    return frameIds.length;
   }
 };

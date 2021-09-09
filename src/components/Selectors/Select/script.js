@@ -37,6 +37,9 @@ export default {
     },
     placeholder: {
       type: String
+    },
+    dataContainer: {
+      type: String
     }
   },
   methods: {

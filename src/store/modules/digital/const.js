@@ -31,6 +31,9 @@ class GetterClass extends BaseObject {
   CURRENT_SECTION = 'getCurrentSection';
   GET_FIRST_FRAME_THUMBNAIL = 'getFirstFrameThumbnail';
   GET_SHEET_MEDIA = 'getSheetMedia';
+  TRIGGER_TRANSITION = 'getTriggerTransition';
+  CURRENT_FRAME_INDEX = 'getCurrentFrameIndex';
+  TOTAL_FRAME = 'getTotalFrame';
 
   constructor(props) {
     super(props);
@@ -100,6 +103,7 @@ class MutationClass extends BaseObject {
   SET_BACKGROUNDS = 'setBackgrounds';
   SET_BOOK_INFO = 'setBookInfo';
   SET_SHEET_MEDIA = 'setSheetMedia';
+  UPDATE_TRIGGER_TRANSITION = 'updateTriggerTransition';
 
   constructor(props) {
     super(props);

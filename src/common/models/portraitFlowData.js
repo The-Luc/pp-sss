@@ -12,7 +12,8 @@ import {
   PORTRAIT_FLOW_OPTION_MULTI,
   PORTRAIT_TEACHER_PLACEMENT,
   PORTRAIT_SIZE,
-  PORTRAIT_ASSISTANT_PLACEMENT
+  PORTRAIT_ASSISTANT_PLACEMENT,
+  DEFAULT_VALUE_PAGE_TITLE
 } from '../constants';
 
 export class MarginSettings extends BaseObject {
@@ -81,7 +82,7 @@ export class PortraitFontSettings extends BaseObject {
 }
 
 export class PortraitTextSettings extends BaseObject {
-  pageTitle = 'Untitle';
+  pageTitle = DEFAULT_VALUE_PAGE_TITLE;
   isPageTitleOn = false;
   pageTitleFontSettings = new PortraitFontSettings();
   pageTitleMargins = new MarginSettings();
@@ -107,7 +108,7 @@ export class PortraitImageSettings extends BaseObject {
   mask = PORTRAIT_IMAGE_MASK.NONE; // NONE, ROUNDED_CORNERS, OVAL, CIRCLE, SQUARE
 
   /**
-   * @param {PortraitTextSettings} props
+   * @param {PortraitImageSettings} props
    */
   constructor(props) {
     super(props);

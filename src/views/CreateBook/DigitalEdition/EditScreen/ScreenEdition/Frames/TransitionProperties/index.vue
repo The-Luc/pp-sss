@@ -12,10 +12,12 @@
     >
       <item
         :transition-index="index"
+        :sheet-id="sheetId"
         :is-header-displayed="false"
         :transition="transition.transition"
         :direction="transition.direction"
         :duration="transition.duration"
+        :is-expand-default="true"
         @transitionChange="onTransitionChange"
       ></item>
     </custom-menu>

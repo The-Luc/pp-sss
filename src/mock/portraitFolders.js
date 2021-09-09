@@ -88,10 +88,10 @@ const folder1 = new PortraitFolder({
 
 const folder2 = new PortraitFolder({
   id: uniqueId(),
-  name: '6th Grade',
+  name: '6th Grade with 2 teachers',
   thumbUrl: STUDENT_THUMB_01,
-  assetsCount: 72,
-  assets: [teacher2, assistant1, ...getRandomStudents(70)]
+  assetsCount: 73,
+  assets: [teacher1, teacher2, assistant1, ...getRandomStudents(70)]
 });
 
 const folder3 = new PortraitFolder({
@@ -107,7 +107,47 @@ const folder4 = new PortraitFolder({
   name: 'The best students of Mr. Thompson Year 2019',
   thumbUrl: STUDENT_THUMB_02,
   assetsCount: 54,
-  assets: [teacher1, ...getRandomStudents(53)]
+  assets: [assistant1, ...getRandomStudents(53)]
 });
 
-export const portraitFolders = [folder1, folder2, folder3, folder4];
+const folder5 = new PortraitFolder({
+  id: uniqueId(),
+  name: 'No Teacher Class',
+  thumbUrl: STUDENT_THUMB_01,
+  assetsCount: 30,
+  assets: [...getRandomStudents(30)]
+});
+
+const folder6 = new PortraitFolder({
+  id: uniqueId(),
+  name: 'Three Teachers Class',
+  thumbUrl: TEACHER_THUMB_01,
+  assetsCount: 43,
+  assets: [teacher1, teacher2, teacher1, ...getRandomStudents(40)]
+});
+
+const folder7 = new PortraitFolder({
+  id: uniqueId(),
+  name: '3 Teachers and 1 Assistants',
+  thumbUrl: TEACHER_THUMB_02,
+  assetsCount: 44,
+  assets: [teacher1, teacher2, teacher1, assistant1, ...getRandomStudents(40)]
+});
+
+const folder8 = new PortraitFolder({
+  id: uniqueId(),
+  name: '2 Teachers and 2 Assistants',
+  thumbUrl: TEACHER_THUMB_02,
+  assetsCount: 44,
+  assets: [teacher1, teacher2, assistant1, assistant1, ...getRandomStudents(40)]
+});
+export const portraitFolders = [
+  folder1,
+  folder2,
+  folder3,
+  folder4,
+  folder5,
+  folder6,
+  folder7,
+  folder8
+];

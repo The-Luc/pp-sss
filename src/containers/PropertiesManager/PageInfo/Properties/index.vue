@@ -22,6 +22,7 @@
       />
     </div>
     <ColorPicker
+      :disabled="disabled"
       :color="color"
       :show-eye-dropper="false"
       @change="onChangeColor"

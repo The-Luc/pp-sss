@@ -3,6 +3,7 @@
     <div class="frame-info-container">
       <InputTitle
         :key="componentKey"
+        maxlength="50"
         title-name="Frame Title:"
         :title-value="frameTitle"
         @change="onChangeTitle"

@@ -10,7 +10,12 @@
         ></pp-select>
       </div>
       <div class="col-5">
-        <v-btn v-if="isShowOptions" outlined @click="onClickPreview">
+        <v-btn
+          v-if="isShowOptions"
+          outlined
+          :disabled="isDisabledPreview"
+          @click="onClickPreview"
+        >
           Preview
           <v-icon right>
             mdi-play
