@@ -108,7 +108,7 @@ export class PortraitImageSettings extends BaseObject {
   mask = PORTRAIT_IMAGE_MASK.NONE; // NONE, ROUNDED_CORNERS, OVAL, CIRCLE, SQUARE
 
   /**
-   * @param {PortraitTextSettings} props
+   * @param {PortraitImageSettings} props
    */
   constructor(props) {
     super(props);

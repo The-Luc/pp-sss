@@ -77,11 +77,9 @@
 }
 
 .lastname::after {
-  content: ', ';
-  white-space: pre;
+  content: ', \00a0 ';
 }
 
 .firstname::after {
-  content: ' ';
-  white-space: pre;
+  content: '\00a0';
 }

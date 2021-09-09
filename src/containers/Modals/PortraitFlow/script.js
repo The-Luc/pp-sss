@@ -12,6 +12,7 @@ import {
   PORTRAIT_FLOW_OPTION_MULTI
 } from '@/common/constants';
 import { useSheet } from '@/hooks';
+import { calcAdditionPortraitSlot } from '@/common/utils';
 
 export default {
   components: {
@@ -159,9 +160,16 @@ export default {
         return this.flowSettings.flowSingleSettings.pages;
       }
 
-      const totalPage = Math.ceil(
-        this.flowSettings.totalPortraitsCount / maxPortraitPerPage
+      // take into account of teacher portrait size
+      const additionalSlots = calcAdditionPortraitSlot(
+        this.flowSettings.teacherSettings,
+        this.selectedFolders[0]
       );
+
+      const totalPortraitsCount =
+        this.flowSettings.totalPortraitsCount + additionalSlots;
+
+      const totalPage = Math.ceil(totalPortraitsCount / maxPortraitPerPage);
 
       return [...Array(totalPage).keys()].map(p => {
         return p + this.flowSettings.startOnPageNumber;
