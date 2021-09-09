@@ -23,6 +23,9 @@ export default {
     config: {
       type: Object,
       default: () => ({})
+    },
+    isDisabledPreview: {
+      type: Boolean
     }
   },
   data() {

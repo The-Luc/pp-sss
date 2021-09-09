@@ -1358,6 +1358,10 @@ export default {
       }
     },
 
+    /**
+     * Handle aniamtion of selected objects
+     * @param {Objec} config config for animation
+     */
     previewAnimation(config) {
       const object = this.digitalCanvas.getActiveObject();
 

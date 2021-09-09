@@ -120,7 +120,7 @@ const folder5 = new PortraitFolder({
 
 const folder6 = new PortraitFolder({
   id: uniqueId(),
-  name: 'Three teacher class',
+  name: 'Three Teachers Class',
   thumbUrl: TEACHER_THUMB_01,
   assetsCount: 43,
   assets: [teacher1, teacher2, teacher1, ...getRandomStudents(40)]
@@ -128,7 +128,7 @@ const folder6 = new PortraitFolder({
 
 const folder7 = new PortraitFolder({
   id: uniqueId(),
-  name: '3 Teachers and 1 Assistant',
+  name: '3 Teachers and 1 Assistants',
   thumbUrl: TEACHER_THUMB_02,
   assetsCount: 44,
   assets: [teacher1, teacher2, teacher1, assistant1, ...getRandomStudents(40)]
@@ -136,7 +136,7 @@ const folder7 = new PortraitFolder({
 
 const folder8 = new PortraitFolder({
   id: uniqueId(),
-  name: '2 Teachers and 2 Assistant',
+  name: '2 Teachers and 2 Assistants',
   thumbUrl: TEACHER_THUMB_02,
   assetsCount: 44,
   assets: [teacher1, teacher2, assistant1, assistant1, ...getRandomStudents(40)]
