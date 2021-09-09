@@ -437,10 +437,8 @@ export const getBoolean = value => {
  * @param   {Number}  val - the pt value that need to be converted
  * @returns {Number}  the result px
  */
-export const ptToPxPreview = value => {
+export const ptToPxPreview = (value, previewHeight) => {
   const { pageHeight } = getPagePrintSize().pixels;
-  const previewHeight = 314;
-
   const ratio = pageHeight / previewHeight;
 
   return ptToPx(value) / ratio;
@@ -452,10 +450,8 @@ export const ptToPxPreview = value => {
  * @param   {Number}  val - the in value that need to be converted
  * @returns {Number}  the result px
  */
-export const inToPxPreview = value => {
+export const inToPxPreview = (value, previewHeight) => {
   const { pageHeight } = getPagePrintSize().pixels;
-  const previewHeight = 314;
-
   const ratio = pageHeight / previewHeight;
 
   return inToPx(value) / ratio;
