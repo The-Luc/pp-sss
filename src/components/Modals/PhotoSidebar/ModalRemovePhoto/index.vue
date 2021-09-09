@@ -14,12 +14,17 @@
       </v-card-title>
       <v-card-text class="pp-modal-content">
         <div>
-          Note: This action will remove the {{ modalType }} from the
-          {{ type }} palette but will not remove it from the layout.
+          Note: This action will remove the
+          {{ isVideo ? 'video' : 'photo' }} from the {{ modalType }} palette but
+          will not remove it from the layout.
         </div>
-        <div>
-          To remove the {{ modalType }} from the layout, go to the Reset tab in
-          Image Properties.
+        <div v-if="isVideo">
+          To remove the video from the layout, either delete the media frame or
+          replace with a different media asset.
+        </div>
+        <div v-else>
+          To remove the photo from the layout, go to the Reset tab in Image
+          Properties.
         </div>
       </v-card-text>
       <v-card-actions class="pp-modal-action">

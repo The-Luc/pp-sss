@@ -32,7 +32,8 @@
     </PhotoContent>
 
     <ModalRemovePhoto
-      :type="mediaType"
+      :modal-type="mediaType"
+      :delete-type="deleteType"
       :open="showRemoveModal"
       @remove="onRemove"
       @cancel="onCancel"
