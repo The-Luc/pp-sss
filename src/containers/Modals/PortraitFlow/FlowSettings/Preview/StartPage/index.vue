@@ -5,8 +5,8 @@
     <PpSelect
       id="pages"
       container="#pages"
-      :items="pages"
-      :selected-val="page"
+      :items="selectedPages"
+      :selected-val="selectedPage"
       @change="onStartPageChange"
     />
   </div>

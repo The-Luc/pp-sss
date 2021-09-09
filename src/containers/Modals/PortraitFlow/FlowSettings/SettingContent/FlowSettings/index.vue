@@ -10,7 +10,7 @@
           :disabled="isMultiple"
           :items="portraitFlowOptionSingle"
           :selected-val="selectedFlowSingle"
-          @change="onChange"
+          @change="onFlowSettingChange"
         ></flow-select>
         <div v-if="isShowSelectPageSingle" class="page-select">
           <item-select
@@ -21,7 +21,7 @@
             :disabled="index === 0"
             :selected-val="item.selectedVal"
             :items="item.pageOptions"
-            @change="onChangePageSingle($event, index)"
+            @change="onPageSettingChange($event, index)"
           ></item-select>
         </div>
       </div>
@@ -31,7 +31,7 @@
           :disabled="!isMultiple"
           :items="portraitFlowOptionMulti"
           :selected-val="selectedFlowMulti"
-          @change="onChange"
+          @change="onFlowSettingChange"
         ></flow-select>
         <div v-if="isShowSelectPageMulti" class="page-select">
           <div v-for="(item, index) in dataSelectPageMulti" :key="index">
@@ -41,7 +41,7 @@
               descript="Portrait flow starts on page:"
               :selected-val="item.selectedVal"
               :items="item.pageOptions"
-              @change="onChangePageMulti($event, index)"
+              @change="onPageSettingChange($event, index)"
             ></item-select>
             <item-select
               v-if="index !== dataSelectPageMulti.length - 1"
@@ -55,12 +55,6 @@
         </div>
       </div>
     </div>
-
-    <flow-warning
-      :is-open-modal="isOpenModalWarning"
-      :descript-modal="descriptModalWarning"
-      @close="onCloseModalWarning"
-    ></flow-warning>
   </div>
 </template>
 

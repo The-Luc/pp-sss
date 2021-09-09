@@ -25,6 +25,12 @@ export default {
   methods: {
     onSettingChange(val) {
       this.$emit('settingChange', val);
+    },
+    onFlowSettingChange(val) {
+      this.$emit('flowSettingChange', val);
+    },
+    onPageSettingChange(val) {
+      this.$emit('pageSettingChange', val);
     }
   }
 };

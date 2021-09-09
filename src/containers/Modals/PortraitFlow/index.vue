@@ -23,6 +23,8 @@
         @settingChange="onSettingChange"
         @saveSettings="onSaveSettings"
         @startPageChange="onStartPageChange"
+        @flowSettingChange="onFlowSettingChange"
+        @pageSettingChange="onPageSettingChange"
       />
 
       <FlowPreview
@@ -33,6 +35,11 @@
         :required-pages="requiredPages"
       />
     </CommonModal>
+    <flow-warning
+      :is-open-modal="flowWarning"
+      :descript-modal="flowWarningDescript"
+      @close="onFlowWarningClose"
+    ></flow-warning>
   </div>
 </template>
 
