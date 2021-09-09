@@ -22,6 +22,8 @@ import {
   MUTATES as DIGITAL_MUTATES,
   ACTIONS as DIGITAL_ACTIONS
 } from '@/store/modules/digital/const';
+import { isEmpty } from '@/common/utils';
+import { Transition } from '@/common/models';
 
 export const useSheet = () => {
   const { value: isDigital } = useAppCommon().isDigitalEdition;
@@ -123,6 +125,22 @@ export const useGetterDigitalSheet = () => {
 export const useActionDigitalSheet = () => {
   const { updateTriggerTransition } = useMutationDigitalSheet();
 
+  const getAndCorrectTransitions = async (sheetId, total) => {
+    const transitions = await getTransitionsApi(sheetId);
+
+    if (transitions.length === total) return transitions;
+
+    if (transitions.length > total) {
+      await removeTransitionApi(sheetId, transitions.length - total);
+
+      return await getTransitionsApi(sheetId);
+    }
+
+    await addTransitionApi(sheetId, total - transitions.length);
+
+    return await getTransitionsApi(sheetId);
+  };
+
   const applyTransition = async (
     transition,
     targetType,
@@ -136,7 +154,7 @@ export const useActionDigitalSheet = () => {
 
   return {
     getTransition: getTransitionApi,
-    getTransitions: getTransitionsApi,
+    getAndCorrectTransitions,
     addTransition: addTransitionApi,
     removeTransition: removeTransitionApi,
     applyTransition

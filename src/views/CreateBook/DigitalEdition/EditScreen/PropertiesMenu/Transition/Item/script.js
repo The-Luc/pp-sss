@@ -42,6 +42,10 @@ export default {
     isHeaderDisplayed: {
       type: Boolean,
       default: true
+    },
+    isExpandDefault: {
+      type: Boolean,
+      default: false
     }
   },
   setup() {
@@ -51,7 +55,7 @@ export default {
   },
   data() {
     return {
-      isExpand: false,
+      isExpand: this.isExpandDefault,
       currentTransition: this.transition,
       currentDirection: this.direction,
       currentDuration: this.duration,
