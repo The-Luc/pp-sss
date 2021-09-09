@@ -139,22 +139,6 @@ export default {
       handler(newVal, oldVal) {
         if (newVal !== oldVal) {
           this.$nextTick(() => {
-            const pageTitleHeight = this.$refs?.pageTitle?.clientHeight;
-            const height = this.showPageTitile ? pageTitleHeight : 0;
-
-            const row = this.layout.rowCount;
-            const nameContainerHeight = this.$refs?.portraits?.clientHeight;
-            const imageHeight = this.portraitWidth * 1.25;
-            // gridHeight is made up image height + name height (name height is 10% of image height)
-            const gridHeight = imageHeight + imageHeight * 0.1;
-            const gap = (nameContainerHeight - gridHeight * row) / (row - 1);
-
-            this.namesHeight = { height: `${gridHeight + gap}px` };
-
-            if (pageTitleHeight) {
-              this.$refs.thumbWrapper.style.height = `calc(100% - ${height}px)`;
-            }
-
             this.updatePortraitData();
           });
         }
@@ -252,7 +236,7 @@ export default {
     setNamesHeight() {
       const row = this.layout.rowCount;
       const nameContainerHeight = this.$refs?.portraits?.clientHeight;
-      const gridHeight = this.portraitWidth * 1.25 + 10;
+      const gridHeight = this.portraitWidth * this.defaultRatio;
       const gap = (nameContainerHeight - gridHeight * row) / (row - 1);
 
       this.namesHeight = { height: `${gridHeight + gap}px` };
