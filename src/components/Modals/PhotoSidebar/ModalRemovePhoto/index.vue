@@ -10,7 +10,9 @@
     <v-card>
       <v-card-title class="pp-modal-title">
         <span class="top-bg" />
-        <span class="text-size-xl text-title"> Remove {{ modalType }}? </span>
+        <span class="text-size-xl text-title">
+          Remove {{ isVideo ? 'Video' : 'Photo' }}?
+        </span>
       </v-card-title>
       <v-card-text class="pp-modal-content">
         <div>
