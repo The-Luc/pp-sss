@@ -52,6 +52,11 @@
       font-family: $font-500;
       font-size: 13px;
       color: $color-stoodio-toolbartext;
+      text-align: center;
+      width: 100%;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
     }
   }
 

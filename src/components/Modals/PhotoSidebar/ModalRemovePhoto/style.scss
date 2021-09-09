@@ -1,3 +1,10 @@
+::v-deep .modal-remove-photo.v-dialog {
+  border-radius: 0;
+  .v-sheet.v-card {
+    border-radius: 0;
+  }
+}
+
 .pp-modal-title {
   justify-content: center;
   color: $color-stoodio-blue;

@@ -4,6 +4,7 @@ import CropControl from '@/components/CropControl';
 import Header from '@/containers/HeaderEdition/Header';
 import FeedbackBar from '@/containers/HeaderEdition/FeedbackBar';
 import MediaModal from '@/containers/Modals/Media';
+import PortraitFolder from '@/containers/Modals/PortraitFolder';
 
 import ToolBar from './ToolBar';
 import ScreenEdition from './ScreenEdition';
@@ -74,6 +75,7 @@ export default {
     PhotoSidebar,
     MediaModal,
     CropControl,
+    PortraitFolder,
     ThePreviewModal
   },
   setup() {
@@ -131,11 +133,15 @@ export default {
       isOpenCropControl: false,
       dragItem: null,
       selectedImage: null,
+      toolNames: TOOL_NAME,
       modalType: MODAL_TYPES,
       modal: {
         [MODAL_TYPES.TRANSITION_PREVIEW]: {
           isOpen: false,
           data: {}
+        },
+        [TOOL_NAME.PORTRAIT]: {
+          isOpen: false
         }
       }
     };
@@ -494,8 +500,22 @@ export default {
       this.isOpenCropControl = true;
     },
     /**
-     * Handle adding & removing events
+     * Close portrait modal
+     */
+    onClosePortrait() {
+      this.onToggleModal({ modal: TOOL_NAME.PORTRAIT });
+      this.setToolNameSelected('');
+    },
+    /**
+     * Selected portrait folders
      *
+     * @param {Array}  folders  portrait folders
+     */
+    onSelectPortraitFolders(folders) {
+      console.log('folders:', folders);
+    },
+    /**
+     * Handle adding & removing events
      * @param {Boolean} isOn if need to set event
      */
     handleEventListeners(isOn = true) {
