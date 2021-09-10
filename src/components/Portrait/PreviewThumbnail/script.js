@@ -71,11 +71,11 @@ export default {
       }
 
       if (!this.isCenterPosition) {
-        style.paddingBottom = `${this.convertIntoPx(nameGap)}px`;
+        style.marginBottom = `${this.convertIntoPx(nameGap)}px`;
         style.height = `${this.convertPttoPx(nameTextFontSettings.fontSize)}px`;
+      } else {
+        style.marginTop = `${this.convertIntoPx(0.1)}px`;
       }
-
-      style.marginTop = `${this.convertIntoPx(0.1)}px`;
 
       return style;
     },
@@ -131,11 +131,28 @@ export default {
       return style;
     },
     namePortrait() {
+      const { rowCount, colCount } = this.layout;
+      const portraitPerPage = rowCount * colCount;
+      const isOnStartPage =
+        this.pageNumber === this.flowSettings.startOnPageNumber;
+
       const arrayPortrait = Object.values(this.portraits);
       const result = [];
 
+      if (this.portraits.length < portraitPerPage && isOnStartPage) {
+        const numLargePortrait = (portraitPerPage - this.portraits.length) / 3;
+
+        for (let i = 1; i <= rowCount; i++) {
+          const value = i < 3 ? colCount - numLargePortrait * i : colCount;
+          const item = arrayPortrait.splice(0, value);
+          result.push(item);
+        }
+
+        return result;
+      }
+
       while (arrayPortrait.length) {
-        const item = arrayPortrait.splice(0, this.layout.colCount);
+        const item = arrayPortrait.splice(0, colCount);
         result.push(item);
       }
 
