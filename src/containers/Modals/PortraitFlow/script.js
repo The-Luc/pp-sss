@@ -487,9 +487,7 @@ export default {
         return [...students, ...teacherAndAsst];
       }
 
-      if (teacherPlacement === PORTRAIT_TEACHER_PLACEMENT.ALPHABETICAL) {
-        return [...teacherAndAsst, ...students].sort(sortPortraitByName);
-      }
+      return [...teacherAndAsst, ...students].sort(sortPortraitByName);
     },
     /**
      * Update order of portrait in assets
