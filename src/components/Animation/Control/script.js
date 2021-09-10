@@ -2,7 +2,7 @@ import PpInput from '@/components/InputProperty';
 import PpSelect from '@/components/Selectors/Select';
 import PpCombobox from '@/components/Selectors/Combobox';
 
-import { ICON_LOCAL } from '@/common/constants';
+import { ICON_LOCAL, OBJECT_TYPE } from '@/common/constants';
 import {
   CONTROL_TYPE,
   DIRECTION_OPTIONS,
@@ -61,10 +61,12 @@ export default {
         : PLAY_OUT_OPTIONS;
     },
     orderOptions() {
-      return Object.keys(this.listObjects).map((_, i) => ({
-        name: i + 1,
-        value: i + 1
-      }));
+      return Object.values(this.listObjects)
+        .filter(obj => obj?.type && obj.type !== OBJECT_TYPE.BACKGROUND)
+        .map((_, i) => ({
+          name: i + 1,
+          value: i + 1
+        }));
     },
     isShowOptions() {
       return this.selectedStyle?.value !== NONE_OPTION.value;
