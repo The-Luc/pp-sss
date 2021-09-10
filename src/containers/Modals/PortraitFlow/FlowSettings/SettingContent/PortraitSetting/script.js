@@ -27,17 +27,18 @@ export default {
         row: this.flowSettings.layoutSettings.rowCount
       };
     },
-    numOfTeachers() {
-      return this.selectedFolders[0].assets.reduce((acc, p) => {
-        const isTeacher = p.classRole === CLASS_ROLE.PRIMARY_TEACHER;
-        return isTeacher ? acc + 1 : acc;
-      }, 0);
+    selectedFolderAssets() {
+      return this.selectedFolders[0].assets;
     },
     numOfAsstTeachers() {
-      return this.selectedFolders[0].assets.reduce((acc, p) => {
-        const isAsstTeacher = p.classRole === CLASS_ROLE.ASSISTANT_TEACHER;
-        return isAsstTeacher ? acc + 1 : acc;
-      }, 0);
+      return this.selectedFolderAssets.filter(
+        ({ classRole }) => classRole === CLASS_ROLE.ASSISTANT_TEACHER
+      ).length;
+    },
+    numOfTeachers() {
+      return this.selectedFolderAssets.filter(
+        ({ classRole }) => classRole === CLASS_ROLE.PRIMARY_TEACHER
+      ).length;
     },
     isPageTitleOn() {
       return this.flowSettings.textSettings.isPageTitleOn;
