@@ -21,7 +21,8 @@ import {
   calcAdditionPortraitSlot,
   getTotalPagesForLastPlacement,
   getPortraitsByRole,
-  getTeacherAndAsstOrder
+  getTeacherAndAsstOrder,
+  sortPortraitByName
 } from '@/common/utils';
 
 export default {
@@ -484,6 +485,10 @@ export default {
 
       if (teacherPlacement === PORTRAIT_TEACHER_PLACEMENT.LAST) {
         return [...students, ...teacherAndAsst];
+      }
+
+      if (teacherPlacement === PORTRAIT_TEACHER_PLACEMENT.ALPHABETICAL) {
+        return [...teacherAndAsst, ...students].sort(sortPortraitByName);
       }
     },
     /**
