@@ -461,7 +461,7 @@ export default {
      * @returns {Array} pages
      */
     getBasePages(total, min) {
-      return [...Array(total).keys()].map(p => p + min);
+      return Array.from({ length: total }, (_, index) => index + min);
     }
   }
 };
