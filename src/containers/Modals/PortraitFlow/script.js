@@ -112,7 +112,7 @@ export default {
      * Emit accept event to parent
      */
     onAccept() {
-      this.$emit('accept');
+      this.$emit('accept', this.flowSettings);
     },
     /**
      * Emit back event

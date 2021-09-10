@@ -1,3 +1,7 @@
+import { DEFAULT_IMAGE } from '../constants';
+import { ImageElementObject } from '../models/element';
+import { getPagePrintSize, pxToIn } from './canvas';
+import { getUniqueId } from './util';
 import {
   CLASS_ROLE,
   PORTRAIT_ASSISTANT_PLACEMENT,
@@ -351,4 +355,47 @@ export const getSelectedDataOfPages = (pages, startOnPageNumber) => {
   });
 
   return selectedData;
+};
+
+/**
+ * Draw portrait images to canvas
+ * @return array image objects
+ */
+export const createPortraitImage = settings => {
+  const { colCount, rowCount } = settings.layoutSettings;
+
+  const colGap = 100;
+  const rowGap = 100;
+
+  const totalColGap = (colCount - 1) * colGap;
+  const totalRowGap = rowCount * rowGap;
+
+  const { safeMargin, pageWidth, pageHeight } = getPagePrintSize().pixels;
+
+  const totalWidth = pageWidth - totalColGap - safeMargin * 2;
+  const totalHeight = pageHeight - totalRowGap - safeMargin * 2;
+
+  const itemWidth = totalWidth / colCount;
+  const itemHeight = totalHeight / rowCount;
+
+  const imgs = Array.from({ length: rowCount }, (_, j) => {
+    return Array.from({ length: colCount }, (_, i) => ({
+      ...new ImageElementObject({
+        id: getUniqueId(),
+        imageUrl: DEFAULT_IMAGE.IMAGE_URL
+      }),
+      coord: {
+        rotation: 0,
+        x: i * pxToIn(itemWidth + colGap) + pxToIn(safeMargin) + 0.1,
+        y: j * pxToIn(itemHeight + rowGap) + pxToIn(safeMargin) + 0.1
+      },
+      size: {
+        width: pxToIn(itemWidth),
+        height: pxToIn(itemHeight)
+      },
+      selectable: false,
+      hasImage: true
+    }));
+  });
+  return [].concat(...imgs);
 };

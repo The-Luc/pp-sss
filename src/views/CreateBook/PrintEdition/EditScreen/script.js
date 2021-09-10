@@ -47,7 +47,8 @@ import {
   isEmpty,
   isPositiveInteger,
   getEditionListPath,
-  mergeArrayNonEmpty
+  mergeArrayNonEmpty,
+  resetObjects
 } from '@/common/utils';
 
 import { useSaveData } from './PageEdition/composables';
@@ -58,6 +59,7 @@ import {
 } from '@/common/fabricObjects';
 import { useSavingStatus } from '../../composables';
 import { useBookPrintInfo } from './composables';
+import { createPortraitImage } from '@/common/utils/portrait';
 
 export default {
   components: {
@@ -470,8 +472,14 @@ export default {
     /**
      * Apply portrait to page
      */
-    onApplyPortrait() {
-      console.log('onApplyPortrait');
+    onApplyPortrait(settings) {
+      const canvas = this.$refs.canvasEditor.printCanvas;
+      const imgs = createPortraitImage(settings);
+
+      resetObjects(canvas);
+      this.$refs.canvasEditor.drawObjectsOnCanvas(imgs);
+
+      this.onClosePortrait();
     },
     /**
      * Selected portrait folders

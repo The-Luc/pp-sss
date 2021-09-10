@@ -130,22 +130,29 @@ export const VIDEO_ORDER = [
   }
 ];
 
+export const APPLY_MODE = {
+  SELF: 'self',
+  FRAME: 'frame',
+  SECTION: 'section',
+  BOOK: 'book'
+};
+
 export const TEXT_APPLY_OPTIONS = [
   {
     name: 'This text only',
-    value: 'self'
+    value: APPLY_MODE.SELF
   },
   {
     name: 'This text on the frame',
-    value: 'frame'
+    value: APPLY_MODE.FRAME
   },
   {
     name: 'This text in this section',
-    value: 'section'
+    value: APPLY_MODE.SECTION
   },
   {
     name: 'All text in the Digital Yearbook',
-    value: 'book'
+    value: APPLY_MODE.BOOK
   }
 ];
 

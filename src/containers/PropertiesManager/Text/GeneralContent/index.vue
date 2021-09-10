@@ -14,6 +14,7 @@
       :play-in-config="playInConfig"
       :play-out-config="playOutConfig"
       @change="onChange"
+      @apply="onApply"
     />
   </div>
 </template>

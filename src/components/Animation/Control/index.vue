@@ -31,9 +31,7 @@
           :selected-val="selectedApplyOption"
           placeholder="Apply to..."
           @change="onChangeApplyOption"
-        >
-          <div class="apply-select-header">Apply Animation change to:</div>
-        </pp-select>
+        ></pp-select>
       </div>
       <div v-if="showApplyButton" class="col-5">
         <v-btn class="apply-btn" outlined @click="onClickApply">

@@ -47,6 +47,10 @@ export default {
      */
     onChange(val) {
       this.$root.$emit(EVENT_TYPE.CHANGE_TEXT_PROPERTIES, val);
+    },
+
+    onApply(val) {
+      this.$root.$emit(EVENT_TYPE.APPLY_TEXT_ANIMATION, val);
     }
   }
 };
