@@ -155,7 +155,7 @@ export default {
     },
     disabledAutoflow() {
       const hasEmptyImage = Object.values(this.listObjects).some(
-        obj => obj.type === OBJECT_TYPE.IMAGE && !obj.hasImage
+        obj => obj?.type === OBJECT_TYPE.IMAGE && !obj.hasImage
       );
 
       return !hasEmptyImage;
