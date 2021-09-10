@@ -280,9 +280,7 @@ export default {
       if (id === PORTRAIT_FLOW_OPTION_MULTI.CONTINUE.id) {
         return this.getSingleFolderDefaultPages();
       }
-      const pages = [...Array(this.selectedFolders.length).keys()].map(
-        p => p + 1
-      );
+      const pages = this.getBasePages(this.selectedFolders.length, 1);
       return getSelectedDataOfFolders(
         pages,
         this.flowSettings.startOnPageNumber,
@@ -326,9 +324,7 @@ export default {
         this.maxPortraitPerPage
       );
 
-      return [...Array(totalPage).keys()].map(p => {
-        return p + startOnPageNumber;
-      });
+      return this.getBasePages(totalPage, startOnPageNumber);
     },
 
     /**
@@ -357,9 +353,7 @@ export default {
         : this.flowSettings.startOnPageNumber;
 
       if (flowSettings.flowOption === PORTRAIT_FLOW_OPTION_SINGLE.AUTO.id) {
-        flowSettings.pages = [...Array(flowSettings.pages.length).keys()].map(
-          p => p + 1
-        );
+        flowSettings.pages = this.getBasePages(flowSettings.pages.length, 1);
       }
 
       flowSettings.pages = getSelectedDataOfPages(
@@ -395,9 +389,7 @@ export default {
         ? id
         : this.flowSettings.startOnPageNumber;
       if (flowSettings.flowOption === PORTRAIT_FLOW_OPTION_MULTI.AUTO.id) {
-        flowSettings.pages = [...Array(flowSettings.pages.length).keys()].map(
-          p => p + 1
-        );
+        flowSettings.pages = this.getBasePages(flowSettings.pages.length, 1);
       }
       const selectedData = getSelectedDataOfFolders(
         flowSettings.pages,
@@ -461,6 +453,15 @@ export default {
         ? PORTRAIT_FLOW_OPTION_MULTI.AUTO.id
         : PORTRAIT_FLOW_OPTION_SINGLE.AUTO.id;
       this.onFlowSettingChange(flowOption);
+    },
+    /**
+     * Get base pages
+     * @param {Number} total total pages
+     * @param {Number} min min page number
+     * @returns {Array} pages
+     */
+    getBasePages(total, min) {
+      return [...Array(total).keys()].map(p => p + min);
     }
   }
 };
