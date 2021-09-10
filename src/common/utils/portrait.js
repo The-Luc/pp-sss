@@ -39,12 +39,16 @@ const getRangePortrait = (currentIndex, maxPortrait, totalPortrait) => {
  */
 const getRangePortraitSingleFolder = (
   currentIndex,
-  maxPortrait,
+  rows,
+  cols,
   folders,
   teacherSettings
 ) => {
-  const { isHasLargeTeacher } = isHasLargePortrait(teacherSettings);
+  const { isHasLargeTeacher, isHasLargeAsst } = isHasLargePortrait(
+    teacherSettings
+  );
   const totalPortrait = folders.reduce((sum, f) => sum + f.assetsCount, 0);
+  const maxPortrait = rows * cols;
 
   if (folders.length > 1 || !isHasLargeTeacher) {
     return getRangePortrait(currentIndex, maxPortrait, totalPortrait);
@@ -61,21 +65,61 @@ const getRangePortraitSingleFolder = (
       totalPortrait
     );
 
-    return { min: Math.max(min - extraSlots, 0), max: max - extraSlots };
+    const totalPages = Math.ceil((totalPortrait + extraSlots) / maxPortrait);
+    if (currentIndex === 0) return { min: 0, max: max - extraSlots };
+
+    const newMin = min - extraSlots;
+    if (currentIndex === totalPages - 1) {
+      return { min: newMin, max };
+    }
+
+    return { min: newMin, max: newMin + maxPortrait - 1 };
   }
 
   if (teacherSettings.teacherPlacement === PORTRAIT_TEACHER_PLACEMENT.LAST) {
+    const totalPages = getTotalPagesForLastPlacement(
+      rows,
+      totalPortrait,
+      extraSlots,
+      maxPortrait
+    );
+
+    if (currentIndex === totalPages - 1) {
+      const { max } = getRangePortrait(
+        currentIndex - 1,
+        maxPortrait,
+        totalPortrait
+      );
+
+      return { min: max, max: totalPortrait - 1 };
+    }
+
     const { min, max } = getRangePortrait(
       currentIndex,
       maxPortrait,
       totalPortrait
     );
 
-    // TODO: -Luc: will be implement next
-    // currentIndex out of range: last page only large portrait
-    // const numberLargePortrait = extraSlots % 3;
+    const lastPortrait = folders[0].assets[max];
+    const isStudentLast = lastPortrait.classRole === CLASS_ROLE.STUDENT;
+    const isSmallAsstLast =
+      lastPortrait.classRole === CLASS_ROLE.ASSISTANT_TEACHER &&
+      !isHasLargeAsst;
 
-    return { min, max };
+    if (isStudentLast || isSmallAsstLast) return { min, max };
+
+    const numLargePortrait = extraSlots / 3;
+    const portraitsOnLastPage = totalPortrait % maxPortrait;
+    const isEnoughRow = maxPortrait - cols > portraitsOnLastPage;
+
+    if (!isEnoughRow) return { min, max: max - numLargePortrait };
+
+    const vacantCols = cols - (portraitsOnLastPage % cols);
+
+    if (vacantCols >= 2 || (vacantCols >= 1 && numLargePortrait === 1))
+      return { min, max };
+
+    return { min, max: max - 1 };
   }
 };
 
@@ -115,13 +159,15 @@ const getRangePortraitMultiFolder = (currentIndex, maxPortrait, folders) => {
  */
 const getPortraitsSingleFolder = (
   currentIndex,
-  maxPortrait,
+  rows,
+  cols,
   folders,
   teacherSettings
 ) => {
   const { min, max } = getRangePortraitSingleFolder(
     currentIndex,
-    maxPortrait,
+    rows,
+    cols,
     folders,
     teacherSettings
   );
@@ -176,7 +222,8 @@ export const getPortraitForPage = (
   if (isSingle) {
     return getPortraitsSingleFolder(
       currentIndex,
-      rowCount * colCount,
+      rowCount,
+      colCount,
       folders,
       teacherSettings
     );
@@ -231,11 +278,14 @@ const isHasLargePortrait = teacherSettings => {
     hasTeacher,
     hasAssistantTeacher,
     teacherPortraitSize,
-    assistantTeacherPortraitSize
+    assistantTeacherPortraitSize,
+    teacherPlacement
   } = teacherSettings;
 
   const isHasLargeTeacher =
-    hasTeacher && teacherPortraitSize === PORTRAIT_SIZE.LARGE;
+    hasTeacher &&
+    teacherPortraitSize === PORTRAIT_SIZE.LARGE &&
+    teacherPlacement !== PORTRAIT_TEACHER_PLACEMENT.ALPHABETICAL;
   const isHasLargeAsst =
     hasAssistantTeacher && assistantTeacherPortraitSize === PORTRAIT_SIZE.LARGE;
 
@@ -303,6 +353,31 @@ export const getPortraitsByRole = folder => {
   students.sort(sortPortraitByName);
 
   return { students, teachers, asstTeachers };
+};
+
+/**
+ * To calc the number of pages needed when teacher placement is "LAST"
+ * @param {Number} rows row count
+ * @param {Number} totalPortrait Total portrait in selected folder
+ * @param {Number} extraSlots extra slot needed because of large portrait
+ * @param {Number} portraitPerPage number of portrati per page
+ * @returns total pages when teacher placement is "LAST"
+ */
+export const getTotalPagesForLastPlacement = (
+  rows,
+  totalPortrait,
+  extraSlots,
+  portraitPerPage
+) => {
+  const numLargePortrait = extraSlots / 3;
+  const portraitsOnLastPage =
+    (totalPortrait - numLargePortrait) % portraitPerPage;
+
+  const isRequiredExtraPage =
+    portraitsOnLastPage + rows + numLargePortrait * 2 > portraitPerPage;
+  const newPage = isRequiredExtraPage ? 1 : 0;
+
+  return Math.ceil(totalPortrait / portraitPerPage) + newPage;
 };
 
 export const getSelectedDataOfFolders = (

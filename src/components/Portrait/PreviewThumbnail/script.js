@@ -3,10 +3,17 @@ import {
   PORTRAIT_NAME_DISPLAY,
   PORTRAIT_NAME_POSITION,
   CLASS_ROLE,
-  PORTRAIT_SIZE
+  PORTRAIT_SIZE,
+  PORTRAIT_TEACHER_PLACEMENT
 } from '@/common/constants';
-import { isEmpty, inToPxPreview, ptToPxPreview } from '@/common/utils';
+import {
+  isEmpty,
+  inToPxPreview,
+  ptToPxPreview,
+  calcAdditionPortraitSlot
+} from '@/common/utils';
 import { toCssPreview, toMarginCssPreview } from '@/common/fabricObjects';
+import { PortraitAsset } from '@/common/models';
 
 export default {
   props: {
@@ -135,7 +142,38 @@ export default {
       return result;
     },
     isPageRight() {
-      return this.pageNumber % 2 !== 0;
+      return this.pageNumber % 2 === 0;
+    },
+    computedPortraits() {
+      const portraitPerPage = this.layout.rowCount * this.layout.colCount;
+
+      if (
+        this.portraits.length === portraitPerPage ||
+        this.pageNumber === this.flowSettings.startOnPageNumber
+      )
+        return this.portraits;
+
+      const extraSlots = calcAdditionPortraitSlot(
+        this.flowSettings.teacherSettings,
+        this.flowSettings.folders[0]
+      );
+
+      const addingSlots =
+        this.flowSettings.teacherSettings.teacherPlacement ===
+        PORTRAIT_TEACHER_PLACEMENT.LAST
+          ? extraSlots
+          : 0;
+
+      const numEmptyCell = Math.max(
+        Math.abs(portraitPerPage - this.portraits.length - addingSlots),
+        0
+      );
+
+      const emptyPortrait = new PortraitAsset();
+      return [
+        ...this.portraits,
+        ...new Array(numEmptyCell).fill(emptyPortrait)
+      ];
     }
   },
   watch: {
@@ -312,19 +350,18 @@ export default {
       const largeEl = portraitsEl.querySelector('.enlarge');
 
       if (!largeEl) return;
-      const rawWidth = window.getComputedStyle(largeEl).width;
-      const rawHeight = window.getComputedStyle(largeEl).height;
+      const rawWidth = largeEl.clientWidth;
+      const rawHeight = largeEl.clientHeight;
 
       const width = parseFloat(rawWidth);
       const height = parseFloat(rawHeight);
 
       if (!width || !height) return;
 
-      const calcHeight = width * 1.25;
-      const enlargeHeight = Math.min(height, calcHeight);
-      const endlargeWidth = (enlargeHeight - 10) * 0.8 + 'px';
+      const calcImageWidth = (height * 0.9) / this.defaultRatio;
+      const enlargeWidth = Math.min(width, calcImageWidth) + 'px';
 
-      portraitsEl.style.setProperty('--enlarge-width', endlargeWidth);
+      portraitsEl.style.setProperty('--enlarge-width', enlargeWidth);
     }
   }
 };
