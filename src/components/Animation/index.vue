@@ -7,6 +7,7 @@
       :is-disabled-preview="isDisabledPreview"
       @preview="onPreview"
       @change="changePlayIn"
+      @apply="applyPlayIn"
     />
     <div class="horizontal-line"></div>
     <Control
@@ -15,6 +16,7 @@
       :is-disabled-preview="isDisabledPreview"
       @preview="onPreview"
       @change="changePlayOut"
+      @apply="applyPlayOut"
     />
   </div>
 </template>

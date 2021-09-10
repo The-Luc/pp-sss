@@ -95,7 +95,10 @@ body,
 .pp-select-sub {
   &--item {
     min-height: 20px;
-    overflow: hidden;
+
+    &.item-selected {
+      overflow: hidden;
+    }
 
     &:not(:last-child) {
       margin-bottom: 5px;

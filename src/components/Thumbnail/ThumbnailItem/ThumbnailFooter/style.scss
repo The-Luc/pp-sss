@@ -16,7 +16,7 @@
   &.digital {
     justify-content: space-around;
 
-    .editor {
+    &.editor {
       justify-content: flex-start;
     }
   }

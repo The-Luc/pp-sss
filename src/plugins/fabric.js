@@ -385,27 +385,6 @@ const drawClipPath = function(ctx) {
   const canvas = this.renderClipPathCache();
   this.drawClipPathOnCache(ctx, canvas);
 };
-/**
- * Rect Render animation indicator
- * @param {CanvasRenderingContext2D} ctx Context to render on
- */
-const rectRenderFill = function(ctx) {
-  fabric.Rect.prototype._renderFill.call(this, ctx);
-  if (this.playIn) {
-    ctx.drawImage(
-      this.playIn,
-      (this.width - 500) / 2,
-      (this.strokeWidth - this.height) / 2
-    );
-  }
-  if (this.playOut) {
-    ctx.drawImage(
-      this.playOut,
-      (this.width - 300) / 2,
-      (this.strokeWidth - this.height) / 2
-    );
-  }
-};
 
 /**
  * Rect Render function with override on clipPath to support double stroke
@@ -447,7 +426,6 @@ const rectRender = function(ctx) {
  * @param {fabric.Rect} rect - the object to enable double stroke
  */
 export const useDoubleStroke = function(rect) {
-  rect._renderFill = rectRenderFill;
   rect._render = rectRender;
 };
 
@@ -724,6 +702,95 @@ const textRender = function(ctx) {
  */
 export const useTextOverride = function(text) {
   text.render = textRender;
+};
+
+/**
+ * Render order icon with rotation
+ * @param {CanvasRenderingContext2D} ctx Context to render on
+ * @param {Element} element order element
+ * @param {Number} top canvas object position top
+ * @param {Number} left canvas object position left
+ * @param {Number} width element width
+ * @param {Number} height element height
+ * @param {Number} zoom canvas zoom value
+ * @param {Number} angle object rotation value
+ * @param {Number} radius icon distance
+ */
+const rotateIcon = function(
+  ctx,
+  element,
+  top,
+  left,
+  width,
+  height,
+  zoom,
+  angle,
+  radius
+) {
+  const centerX = (Math.cos(angle) * radius + left) * zoom;
+  const centerY = (Math.sin(angle) * radius + top) * zoom;
+  ctx.save();
+  ctx.translate(centerX, centerY);
+  ctx.rotate(angle);
+  ctx.drawImage(
+    element,
+    (-width / 2) * zoom,
+    (-height / 2) * zoom,
+    width * zoom,
+    height * zoom
+  );
+  ctx.restore();
+};
+
+/**
+ * Apply animation play in/out icon
+ * @param @param {CanvasRenderingContext2D} ctx Context to render on
+ */
+const renderControls = function(ctx) {
+  fabric.Group.prototype._renderControls.call(this, ctx);
+
+  const zoom = this.canvas.getZoom();
+  const angle = (Math.PI * (this.angle % 360)) / 180;
+
+  if (this.playIn) {
+    const { width, height } = this.playIn;
+    const radius = this.width - width * 2;
+
+    rotateIcon(
+      ctx,
+      this.playIn,
+      this.top,
+      this.left,
+      width,
+      height,
+      zoom,
+      angle,
+      radius
+    );
+  }
+  if (this.playOut) {
+    const { width, height } = this.playOut;
+    const radius = this.width - width;
+    rotateIcon(
+      ctx,
+      this.playOut,
+      this.top,
+      this.left,
+      width,
+      height,
+      zoom,
+      angle,
+      radius
+    );
+  }
+};
+
+/**
+ * Allow fabric text object to have lineHeight override
+ * @param {fabric.Group} text - the object to enable lineHeight override
+ */
+export const useTextGroupOverride = function(group) {
+  group._renderControls = renderControls;
 };
 
 /**

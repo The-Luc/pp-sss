@@ -9,7 +9,8 @@ import {
   DEFAULT_NAME_TEXT,
   DEFAULT_MARGIN_PAGE_TITLE,
   PORTRAIT_FLOW_OPTION_MULTI,
-  PORTRAIT_FLOW_OPTION_SINGLE
+  PORTRAIT_FLOW_OPTION_SINGLE,
+  PORTRAIT_TEACHER_PLACEMENT
 } from '@/common/constants';
 import { useSheet } from '@/hooks';
 import { cloneDeep } from 'lodash';
@@ -17,7 +18,8 @@ import {
   getSelectedDataOfFolders,
   getPagesOfFolder,
   getSelectedDataOfPages,
-  calcAdditionPortraitSlot
+  calcAdditionPortraitSlot,
+  getTotalPagesForLastPlacement
 } from '@/common/utils';
 
 export default {
@@ -112,7 +114,7 @@ export default {
      * Emit accept event to parent
      */
     onAccept() {
-      this.$emit('accept');
+      this.$emit('accept', this.flowSettings);
     },
     /**
      * Emit back event
@@ -295,18 +297,38 @@ export default {
      */
     getSingleFolderDefaultPages() {
       const { totalPortraitsCount, startOnPageNumber } = this.flowSettings;
+      const teacherPlacement = this.flowSettings.teacherSettings
+        .teacherPlacement;
 
-      const additionalSlots = calcAdditionPortraitSlot(
+      const extraSlots = calcAdditionPortraitSlot(
         this.flowSettings.teacherSettings,
         this.selectedFolders[0]
       );
 
-      const totalPortraits = totalPortraitsCount + additionalSlots;
-      return getPagesOfFolder(
-        totalPortraits,
-        startOnPageNumber,
+      if (
+        teacherPlacement === PORTRAIT_TEACHER_PLACEMENT.FIRST ||
+        extraSlots === 0
+      ) {
+        const totalPage = Math.ceil(totalPortraitsCount + extraSlots);
+        return getPagesOfFolder(
+          totalPage,
+          startOnPageNumber,
+          this.maxPortraitPerPage
+        );
+      }
+
+      const rows = this.flowSettings.layoutSettings.rowCount;
+
+      const totalPage = getTotalPagesForLastPlacement(
+        rows,
+        totalPortraitsCount,
+        extraSlots,
         this.maxPortraitPerPage
       );
+
+      return [...Array(totalPage).keys()].map(p => {
+        return p + startOnPageNumber;
+      });
     },
 
     /**

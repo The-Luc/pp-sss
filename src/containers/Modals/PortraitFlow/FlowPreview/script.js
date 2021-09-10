@@ -47,7 +47,7 @@ export default {
           index,
           this.flowSettings.layoutSettings.rowCount,
           this.flowSettings.layoutSettings.colCount,
-          this.flowSettings.totalPortraitsCount,
+          this.flowSettings.teacherSettings,
           this.selectedFolders,
           isSingle
         );

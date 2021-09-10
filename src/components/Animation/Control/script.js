@@ -38,6 +38,7 @@ export default {
       defaultScale: 50,
       defaultStyle: NONE_OPTION,
       defaultDirection: DIRECTION_OPTIONS[0],
+      defaultOrder: 1,
       showApplyOptions: false,
       showApplyButton: false,
       componentKey: true
@@ -90,7 +91,7 @@ export default {
         : this.defaultDuration;
     },
     scaleValue() {
-      return this.config.scale || this.defaultScale;
+      return !isNaN(this.config.scale) ? this.config.scale : this.defaultScale;
     },
     selectedOrder() {
       const order = this.orderOptions.find(o => o.value === this.config?.order);
@@ -103,14 +104,17 @@ export default {
      * @param {Object} val A style option
      */
     onChangeStyle(style) {
-      if (style.value !== NONE_OPTION.value) this.showApplyOptions = true;
+      if (style.value !== this.selectedStyle.value) {
+        this.showApplyOptions = true;
+      }
 
       const data = {
         style: style.value,
         controlType: this.type,
         duration: this.defaultDuration,
         direction: this.defaultDirection.value,
-        scale: this.defaultScale
+        scale: this.defaultScale,
+        order: this.defaultOrder
       };
 
       this.$emit('change', { ...data });
@@ -195,6 +199,7 @@ export default {
      * Fire when user click apply button
      */
     onClickApply() {
+      this.$emit('apply', this.selectedApplyOption.value, this.config);
       this.selectedApplyOption = null;
       this.showApplyOptions = false;
       this.showApplyButton = false;

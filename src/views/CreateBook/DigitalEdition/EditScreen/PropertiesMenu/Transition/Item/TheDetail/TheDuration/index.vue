@@ -1,5 +1,5 @@
 <template>
-  <group-item name="Duration">
+  <group-item name="Duration" :disabled="disabled">
     <pp-input
       v-if="!disabled"
       :key="componentKey"
