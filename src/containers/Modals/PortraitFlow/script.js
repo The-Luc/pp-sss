@@ -160,15 +160,10 @@ export default {
         return this.selectedFolders[0].assets.length;
       }
 
-      const sum = this.this.flowSettings.folders.reduce(
-        (accumulator, currentValue) => {
-          const total = accumulator.assets.length + currentValue.assets.length;
-
-          return { assets: { length: total } };
-        }
+      return this.selectedFolders.reduce(
+        (acc, val) => acc + val.assets.length,
+        0
       );
-
-      return sum.assets.length;
     },
     /**
      * Get required pages
@@ -458,13 +453,14 @@ export default {
      * Update the order portrait when use choose teacher placement FIRST or LAST
      */
     rearrangePortraitOrder() {
+      if (this.isMultiFolder) return;
+
       const {
         teacherPlacement,
         assistantTeacherPlacement,
         hasTeacher,
         hasAssistantTeacher
       } = this.flowSettings.teacherSettings;
-      if (this.isMultiFolder) return;
 
       const { students, teachers, asstTeachers } = getPortraitsByRole(
         this.selectedFolders[0]
@@ -494,6 +490,8 @@ export default {
      * Update order of portrait in assets
      */
     updatePortraitOrder() {
+      if (this.isMultiFolder) return;
+
       const portraits = this.rearrangePortraitOrder();
 
       this.flowSettings.folders[0].assets = portraits;
