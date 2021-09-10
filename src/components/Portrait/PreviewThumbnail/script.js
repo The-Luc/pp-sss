@@ -306,7 +306,9 @@ export default {
     setNamesHeight() {
       const row = this.layout.rowCount;
       const nameContainerHeight = this.$refs?.portraits?.clientHeight;
-      const gridHeight = this.portraitWidth * this.defaultRatio;
+      const portraitHeight = this.portraitWidth * this.defaultRatio;
+
+      const gridHeight = portraitHeight + portraitHeight * 0.1;
       const gap = (nameContainerHeight - gridHeight * row) / (row - 1);
 
       this.namesHeight = { height: `${gridHeight + gap}px` };
