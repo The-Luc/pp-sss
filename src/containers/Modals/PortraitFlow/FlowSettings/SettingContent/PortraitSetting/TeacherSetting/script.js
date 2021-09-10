@@ -297,9 +297,6 @@ export default {
         return;
 
       this.onChangeTeacherSize(PORTRAIT_SIZE.SAME);
-      // this.handleChangeData({ teacherPortraitSize: PORTRAIT_SIZE.SAME });
-
-      // if (this.teacherSettings.assistantTeacherPortraitSize = PORTRAIT_SIZE.LARGE)
     },
 
     /**
