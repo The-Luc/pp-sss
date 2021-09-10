@@ -225,7 +225,8 @@ export default {
     },
     /**
      * Get start on page from current sheet
-     */ getStartOnPageNumber() {
+     */
+    getStartOnPageNumber() {
       const { pageLeftName, pageRightName } = this.currentSheet;
       return parseInt(pageLeftName) || parseInt(pageRightName);
     },

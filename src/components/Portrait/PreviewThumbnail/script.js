@@ -5,7 +5,7 @@ import {
   CLASS_ROLE,
   PORTRAIT_SIZE
 } from '@/common/constants';
-import { isEmpty, inToPxPreview } from '@/common/utils';
+import { isEmpty, inToPxPreview, ptToPxPreview } from '@/common/utils';
 import { toCssPreview, toMarginCssPreview } from '@/common/fabricObjects';
 
 export default {
@@ -65,7 +65,10 @@ export default {
 
       if (!this.isCenterPosition) {
         style.paddingBottom = `${this.convertIntoPx(nameGap)}px`;
+        style.height = `${this.convertPttoPx(nameTextFontSettings.fontSize)}px`;
       }
+
+      style.marginTop = `${this.convertIntoPx(0.1)}px`;
 
       return style;
     },
@@ -98,11 +101,21 @@ export default {
     },
     nameContainerStyle() {
       const { nameWidth } = this.flowSettings.textSettings;
+      const nameContainerWidth = this.$refs?.portraits?.clientWidth;
+      const col = this.layout.colCount;
+      const gapWidth =
+        (nameContainerWidth - this.portraitWidth * col) / (col - 1);
 
       const style = toMarginCssPreview(
         { ...this.layout.margins },
         this.previewHeight
       );
+
+      if (this.isPageRight) {
+        style.paddingLeft = `${gapWidth}px`;
+      } else {
+        style.paddingRight = `${gapWidth}px`;
+      }
 
       style.width = `${this.convertIntoPx(nameWidth)}px`;
 
@@ -122,7 +135,7 @@ export default {
       return result;
     },
     isPageRight() {
-      return this.pageNumber % 2 === 0;
+      return this.pageNumber % 2 !== 0;
     }
   },
   watch: {
@@ -148,7 +161,9 @@ export default {
   mounted() {
     this.$nextTick(() => {
       this.previewHeight = this.$refs.thumbWrapper.clientHeight;
-      this.updatePortraitData();
+      setTimeout(() => {
+        this.updatePortraitData();
+      }, 10);
     });
   },
   methods: {
@@ -256,7 +271,12 @@ export default {
     convertIntoPx(value) {
       return inToPxPreview(value, this.previewHeight);
     },
-
+    /**
+     * Convert value from pt to px
+     */
+    convertPttoPx(value) {
+      return ptToPxPreview(value, this.previewHeight);
+    },
     /**
      *  Fire when loop through portraits
      * To dynamically adding class for styling
