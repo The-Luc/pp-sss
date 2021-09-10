@@ -157,6 +157,8 @@ export default {
      * @param {Object} event fired event
      */
     onChoose(event) {
+      this.closeTransitionMenu();
+
       this.moveToIndex = -1;
 
       this.selectedIndex = event.oldIndex;
@@ -250,8 +252,8 @@ export default {
         // 160: half width of modal
         this.transitionX = x - 160 + iconWidth / 2;
 
-        // 116 is height of modal
-        this.transitionY = y - 116 - iconWidth / 2;
+        // 116 is height of modal, 3 is space between modal & icon
+        this.transitionY = y - 116 - iconWidth / 2 - 3;
 
         this.transitionIndex = index;
       }, 20);
