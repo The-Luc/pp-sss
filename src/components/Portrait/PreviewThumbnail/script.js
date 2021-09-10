@@ -133,33 +133,33 @@ export default {
     namePortrait() {
       const { rowCount, colCount } = this.layout;
       const portraitPerPage = rowCount * colCount;
+      const numLargePortrait = (portraitPerPage - this.portraits.length) / 3;
+
       const isOnStartPage =
         this.pageNumber === this.flowSettings.startOnPageNumber;
 
       const arrayPortrait = Object.values(this.portraits);
-      const result = [];
+      const arrayNamePortrait = [];
 
-      if (this.portraits.length < portraitPerPage && isOnStartPage) {
-        const numLargePortrait = (portraitPerPage - this.portraits.length) / 3;
-
-        for (let i = 1; i <= rowCount; i++) {
-          const value = i < 3 ? colCount - numLargePortrait * i : colCount;
-          const item = arrayPortrait.splice(0, value);
-          result.push(item);
+      if (this.portraits.length === portraitPerPage || !isOnStartPage) {
+        while (arrayPortrait.length) {
+          arrayNamePortrait.push(arrayPortrait.splice(0, colCount));
         }
 
-        return result;
+        return arrayNamePortrait;
       }
 
-      while (arrayPortrait.length) {
-        const item = arrayPortrait.splice(0, colCount);
-        result.push(item);
+      for (let i = 1; i <= rowCount; i++) {
+        const numPortraitForRow =
+          i < 3 ? colCount - numLargePortrait * i : colCount;
+
+        arrayNamePortrait.push(arrayPortrait.splice(0, numPortraitForRow));
       }
 
-      return result;
+      return arrayNamePortrait;
     },
     isPageRight() {
-      return this.pageNumber % 2 === 0;
+      return this.pageNumber % 2 !== 0;
     },
     computedPortraits() {
       const portraitPerPage = this.layout.rowCount * this.layout.colCount;
@@ -268,7 +268,8 @@ export default {
       );
 
       if (row === 1 && col === 1) {
-        portraitsEl.style.setProperty('--align', 'center');
+        const align = !this.isCenterPosition ? '' : 'center';
+        portraitsEl.style.setProperty('--align', align);
         return;
       }
 

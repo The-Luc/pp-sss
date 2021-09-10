@@ -19,8 +19,8 @@
       }
       .name {
         display: flex;
-        div {
-          padding: 0 2px;
+        div::after {
+          content: '\00a0';
         }
       }
     }
@@ -79,8 +79,10 @@
           line-height: 1;
           display: flex;
           div {
-            padding: 0 2px;
             white-space: nowrap;
+            &::after {
+              content: '\00a0';
+            }
           }
         }
 
