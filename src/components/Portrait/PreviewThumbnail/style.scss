@@ -19,9 +19,6 @@
       }
       .name {
         display: flex;
-        div::after {
-          content: '\00a0';
-        }
       }
     }
 
@@ -80,9 +77,6 @@
           display: flex;
           div {
             white-space: nowrap;
-            &::after {
-              content: '\00a0';
-            }
           }
         }
 
@@ -99,4 +93,8 @@
       }
     }
   }
+}
+
+.space::after {
+  content: '\00a0';
 }
