@@ -30,7 +30,7 @@
       <FlowPreview
         v-show="isPreviewDisplayed"
         :key="flowReviewCompKey"
-        :selected-folders="selectedFolders"
+        :selected-folders="flowSettings.folders"
         :flow-settings="flowSettings"
         :required-pages="requiredPages"
       />

@@ -138,7 +138,7 @@ export default {
       )
         return true;
 
-      const isLessThanFour = this.layout.col < 4 && this.layout.row < 4;
+      const isLessThanFour = this.layout.col < 4 || this.layout.row < 4;
       if (isLessThanFour) return true;
 
       return false;
@@ -197,8 +197,11 @@ export default {
     },
     layout: {
       deep: true,
-      handler() {
+      handler(val, oldval) {
+        if (JSON.stringify(val) === JSON.stringify(oldval)) return;
+
         this.initData();
+        this.teacherPortraitSizeRule();
       }
     }
   },
@@ -282,6 +285,20 @@ export default {
         this.onChangeTeacherSize(PORTRAIT_SIZE.SAME);
       }
     },
+    /**
+     *  Rule for teacher portrait size
+     */
+    teacherPortraitSizeRule() {
+      if (
+        this.layout.col > 4 &&
+        this.layout.row > 4 &&
+        this.teacherSettings.teacherPortraitSize === PORTRAIT_SIZE.LARGE
+      )
+        return;
+
+      this.handleChangeData({ teacherPortraitSize: PORTRAIT_SIZE.SAME });
+    },
+
     /**
      * Fire when user change teacher combobox
      * @param {Object} val selected option from combobox

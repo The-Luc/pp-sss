@@ -11,6 +11,10 @@ export default {
     flowSettings: {
       type: Object,
       default: () => ({})
+    },
+    selectedFolders: {
+      type: Array,
+      required: true
     }
   },
   computed: {
@@ -24,13 +28,13 @@ export default {
       };
     },
     numOfTeachers() {
-      return this.flowSettings.folders[0].assets.reduce((acc, p) => {
+      return this.selectedFolders[0].assets.reduce((acc, p) => {
         const isTeacher = p.classRole === CLASS_ROLE.PRIMARY_TEACHER;
         return isTeacher ? acc + 1 : acc;
       }, 0);
     },
     numOfAsstTeachers() {
-      return this.flowSettings.folders[0].assets.reduce((acc, p) => {
+      return this.selectedFolders[0].assets.reduce((acc, p) => {
         const isAsstTeacher = p.classRole === CLASS_ROLE.ASSISTANT_TEACHER;
         return isAsstTeacher ? acc + 1 : acc;
       }, 0);
