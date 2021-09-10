@@ -31,7 +31,7 @@
       </v-card-text>
       <v-card-actions class="pp-modal-action">
         <PpButton class="pp-button remove-btn" is-active @click="onRemove">
-          Remove {{ modalType }}
+          Remove {{ isVideo ? 'Video' : 'Photo' }}
         </PpButton>
         <PpButton class="pp-button cancel-btn" @click="onCancel">
           Cancel
