@@ -1,10 +1,11 @@
 .frames-container {
+  height: 23.5%;
+  max-height: 145px;
   border-top: 1px solid $color-gray6;
-  height: 22.5%;
 
   .frame-row {
     display: flex;
-    height: 100%;
+    height: calc(100% - 7px);
     align-items: center;
     flex-wrap: nowrap;
     overflow-x: auto;

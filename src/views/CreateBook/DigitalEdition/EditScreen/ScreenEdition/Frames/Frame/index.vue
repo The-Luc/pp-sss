@@ -1,5 +1,9 @@
 <template>
-  <div class="frame-container" @click="onFrameClick">
+  <div
+    class="frame-container"
+    :class="{ empty: isEmpty }"
+    @click="onFrameClick"
+  >
     <div
       v-if="index > 0"
       class="transition"
@@ -19,14 +23,19 @@
       ></three-dot-menu-icon>
 
       <img
-        v-if="previewImageUrl"
+        v-if="previewImageUrl && !isEmpty"
         :src="previewImageUrl"
         alt="frame thumbnail"
         class="frame-image"
       />
+
+      <div v-if="isEmpty" class="add-frame-content">
+        <v-icon>add_circle_outline</v-icon>
+        Add Frame
+      </div>
     </div>
 
-    <div class="frame-name">Frame {{ index + 1 }}</div>
+    <div class="frame-name">{{ isEmpty ? '' : `Frame ${index + 1}` }}</div>
   </div>
 </template>
 

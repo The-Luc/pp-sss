@@ -22,34 +22,6 @@
         @end="onEnd"
         @unchoose="onUnchoose"
       >
-        <!--<template v-for="({ id, frame }, index) in frames">-->
-        <!--<template v-for="index in frames.length * 2">
-          <div
-            v-if="index > 0 && index % 2 === 0"
-            :key="`transaction-${index}`"
-            class="transition"
-            :class="{ active: false }"
-            @click="toggleTransitionPopup"
-          >
-            <v-icon>auto_awesome_motion</v-icon>
-          </div>
-          <frame
-            v-if="index % 2 !== 0"
-            :id="getFrame(index).id"
-            :key="index"
-            :ref="`frame-${getFrame(index).id}`"
-            :index="getIndex(index)"
-            :preview-image-url="getFrame(index).frame.previewImageUrl"
-            :is-package-layout="getFrame(index).frame.fromLayout"
-            :active-id="activeFrameId"
-            :drag-target-id="dragTargetId"
-            :active-transition-index="transitionIndex"
-            :is-frame-menu-displayed="isOpenMenu"
-            @click="onFrameClick"
-            @toggleTransition="toggleTransitionPopup"
-            @toggleMenu="onOptionClick"
-          ></frame>
-        </template>-->
         <frame
           v-for="({ id, frame }, index) in frames"
           :id="id"
@@ -68,7 +40,13 @@
         ></frame>
       </draggable>
 
-      <empty-frame v-if="showAddFrame" @click="addFrame"></empty-frame>
+      <frame
+        v-if="showAddFrame"
+        id="null"
+        :index="-1"
+        :is-empty="true"
+        @click="addFrame"
+      ></frame>
     </div>
 
     <transition-properties

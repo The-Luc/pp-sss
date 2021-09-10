@@ -33,7 +33,12 @@ export default {
       default: -1
     },
     isFrameMenuDisplayed: {
-      type: Boolean
+      type: Boolean,
+      default: false
+    },
+    isEmpty: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -60,9 +65,11 @@ export default {
   methods: {
     /**
      * Emit click event on frame to parent
+     *
+     * @param {Object} event mouse event parameter when click element
      */
-    onFrameClick() {
-      this.$emit('click', { id: this.id });
+    onFrameClick(event) {
+      this.$emit('click', { event, id: this.id });
     },
     /**
      * Emit click event on transition icon to parent
@@ -83,7 +90,7 @@ export default {
      *
      * @param {Object} event mouse event
      */
-    onMenuIconClick(event) {
+    onMenuIconClick({ event }) {
       this.$emit('toggleMenu', { event });
     }
   }

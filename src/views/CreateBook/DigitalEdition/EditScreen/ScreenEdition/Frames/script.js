@@ -1,7 +1,6 @@
 import Draggable from 'vuedraggable';
 
 import Frame from './Frame';
-import EmptyFrame from './EmptyFrame';
 import FrameMenu from './FrameMenu';
 import TransitionProperties from './TransitionProperties';
 
@@ -18,7 +17,6 @@ import { MODAL_TYPES } from '@/common/constants';
 export default {
   components: {
     Frame,
-    EmptyFrame,
     FrameMenu,
     Draggable,
     TransitionProperties
@@ -95,7 +93,7 @@ export default {
      * Fire when click add frame button
      * @param {Element} target add frame button
      */
-    addFrame({ target }) {
+    addFrame({ event: { target } }) {
       this.setPropertiesType({ type: '' });
 
       const { left, width } = target.getBoundingClientRect();
@@ -145,6 +143,7 @@ export default {
 
       const element = event.target;
       const { x, y } = element.getBoundingClientRect();
+
       this.menuX = x - 195;
       this.menuY = y - 205;
     },
@@ -267,12 +266,6 @@ export default {
      */
     closeTransitionMenu() {
       this.transitionIndex = -1;
-    },
-    getIndex(index) {
-      return index - Math.floor(index / 2) - 1;
-    },
-    getFrame(index) {
-      return this.frames[this.getIndex(index)];
     }
   }
 };
