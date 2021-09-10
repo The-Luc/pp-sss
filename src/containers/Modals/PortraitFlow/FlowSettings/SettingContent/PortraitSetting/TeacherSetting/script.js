@@ -189,6 +189,10 @@ export default {
       handler() {
         this.initData();
         this.applyRules();
+
+        this.$nextTick(() => {
+          this.disableInputField();
+        });
       }
     },
     layout: {
@@ -372,6 +376,12 @@ export default {
 
       return options.find(o => o.value === val);
     },
+    disableInputField() {
+      const teacherSettingsEl = this.$refs.teacherSettings;
+      const inputs = teacherSettingsEl.querySelectorAll('input[type="text"]');
+
+      inputs.forEach(input => (input.disabled = true));
+    },
     /**
      * To create initial data
      */
@@ -423,5 +433,8 @@ export default {
         }
       ];
     }
+  },
+  mounted() {
+    this.disableInputField();
   }
 };
