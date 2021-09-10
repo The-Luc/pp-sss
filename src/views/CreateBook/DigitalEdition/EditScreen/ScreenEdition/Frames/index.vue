@@ -15,52 +15,57 @@
         class="row frame-row actual"
         ghost-class="ghost"
         drag-class="drag-item"
+        handle=".frame-item"
         :move="onMove"
         @choose="onChoose"
         @start="drag = true"
         @end="onEnd"
         @unchoose="onUnchoose"
       >
-        <div
-          v-for="({ id, frame }, index) in frames"
-          :key="id"
-          :ref="`frame-${id}`"
-          class="frame-container"
-          @click="onFrameClick(id)"
-        >
+        <!--<template v-for="({ id, frame }, index) in frames">-->
+        <!--<template v-for="index in frames.length * 2">
           <div
-            v-if="index > 0"
+            v-if="index > 0 && index % 2 === 0"
+            :key="`transaction-${index}`"
             class="transition"
-            :class="{ active: isTransitionIconActive(index) }"
-            @click="onTransitionClick($event, index - 1)"
+            :class="{ active: false }"
+            @click="toggleTransitionPopup"
           >
             <v-icon>auto_awesome_motion</v-icon>
           </div>
-
-          <div
-            class="frame-item"
-            :class="{
-              active: id === activeFrameId,
-              'drag-target': id === dragTargetId
-            }"
-          >
-            <img
-              v-if="id === activeFrameId && !isOpenMenu && !frame.fromLayout"
-              class="frame-item-option"
-              src="@/assets/icons/three-dots.svg"
-              alt="option button"
-              @click="onOptionClick($event, id)"
-            />
-            <img
-              v-if="frame.previewImageUrl"
-              :src="frame.previewImageUrl"
-              alt="frame thumbnail"
-              class="frame-image"
-            />
-          </div>
-
-          <div class="frame-name">Frame {{ index + 1 }}</div>
-        </div>
+          <frame
+            v-if="index % 2 !== 0"
+            :id="getFrame(index).id"
+            :key="index"
+            :ref="`frame-${getFrame(index).id}`"
+            :index="getIndex(index)"
+            :preview-image-url="getFrame(index).frame.previewImageUrl"
+            :is-package-layout="getFrame(index).frame.fromLayout"
+            :active-id="activeFrameId"
+            :drag-target-id="dragTargetId"
+            :active-transition-index="transitionIndex"
+            :is-frame-menu-displayed="isOpenMenu"
+            @click="onFrameClick"
+            @toggleTransition="toggleTransitionPopup"
+            @toggleMenu="onOptionClick"
+          ></frame>
+        </template>-->
+        <frame
+          v-for="({ id, frame }, index) in frames"
+          :id="id"
+          :key="id"
+          :ref="`frame-${id}`"
+          :index="index"
+          :preview-image-url="frame.previewImageUrl"
+          :is-package-layout="frame.fromLayout"
+          :active-id="activeFrameId"
+          :drag-target-id="dragTargetId"
+          :active-transition-index="transitionIndex"
+          :is-frame-menu-displayed="isOpenMenu"
+          @click="onFrameClick"
+          @toggleTransition="toggleTransitionPopup"
+          @toggleMenu="onOptionClick"
+        ></frame>
       </draggable>
 
       <empty-frame v-if="showAddFrame" @click="addFrame"></empty-frame>

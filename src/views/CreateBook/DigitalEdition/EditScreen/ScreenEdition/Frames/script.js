@@ -1,5 +1,6 @@
 import Draggable from 'vuedraggable';
 
+import Frame from './Frame';
 import EmptyFrame from './EmptyFrame';
 import FrameMenu from './FrameMenu';
 import TransitionProperties from './TransitionProperties';
@@ -16,6 +17,7 @@ import { MODAL_TYPES } from '@/common/constants';
 
 export default {
   components: {
+    Frame,
     EmptyFrame,
     FrameMenu,
     Draggable,
@@ -84,7 +86,7 @@ export default {
      * Fire when click on an frame
      * @param {Number} id Id of the clicked frame
      */
-    onFrameClick(id) {
+    onFrameClick({ id }) {
       if (id === this.currentFrameId) return;
 
       this.setCurrentFrameId({ id });
@@ -135,8 +137,10 @@ export default {
 
     /**
      * To toggle the option menu of a frame
+     *
+     * @param {Object} event fired event
      */
-    onOptionClick(event) {
+    onOptionClick({ event }) {
       this.isOpenMenu = true;
 
       const element = event.target;
@@ -228,10 +232,10 @@ export default {
     /**
      * Fire when click on transition icon
      *
-     * @param {Object}  event the event
+     * @param {Object}  target the target
      * @param {Number}  index current index of transition
      */
-    onTransitionClick(event, index) {
+    toggleTransitionPopup({ event, target, index }) {
       event.stopPropagation();
 
       if (this.transitionIndex === index) {
@@ -240,9 +244,9 @@ export default {
         return;
       }
 
-      const element = event.target.className.includes('transition')
-        ? event.target
-        : event.target.parentElement;
+      const element = target.className.includes('transition')
+        ? target
+        : target.parentElement;
 
       const { x, y } = element.getBoundingClientRect();
 
@@ -259,19 +263,16 @@ export default {
       }, 20);
     },
     /**
-     * Check if transition icon is active
-     *
-     * @param   {Number}  index current index of transition
-     * @returns {Boolean}       is actived
-     */
-    isTransitionIconActive(index) {
-      return index - 1 === this.transitionIndex;
-    },
-    /**
      * Close transition menu
      */
     closeTransitionMenu() {
       this.transitionIndex = -1;
+    },
+    getIndex(index) {
+      return index - Math.floor(index / 2) - 1;
+    },
+    getFrame(index) {
+      return this.frames[this.getIndex(index)];
     }
   }
 };
