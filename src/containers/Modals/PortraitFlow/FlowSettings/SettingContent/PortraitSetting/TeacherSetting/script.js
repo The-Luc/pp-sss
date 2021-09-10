@@ -290,13 +290,16 @@ export default {
      */
     teacherPortraitSizeRule() {
       if (
-        this.layout.col > 4 &&
-        this.layout.row > 4 &&
+        this.layout.col >= 4 &&
+        this.layout.row >= 4 &&
         this.teacherSettings.teacherPortraitSize === PORTRAIT_SIZE.LARGE
       )
         return;
 
-      this.handleChangeData({ teacherPortraitSize: PORTRAIT_SIZE.SAME });
+      this.onChangeTeacherSize(PORTRAIT_SIZE.SAME);
+      // this.handleChangeData({ teacherPortraitSize: PORTRAIT_SIZE.SAME });
+
+      // if (this.teacherSettings.assistantTeacherPortraitSize = PORTRAIT_SIZE.LARGE)
     },
 
     /**
