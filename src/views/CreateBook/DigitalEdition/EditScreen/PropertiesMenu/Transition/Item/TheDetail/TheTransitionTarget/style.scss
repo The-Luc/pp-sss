@@ -3,7 +3,7 @@
 
   ::v-deep {
     .v-input__slot {
-      background-color: transparent !important; // override
+      background-color: $color-white !important; // override
       border: 1px solid $color-stoodio-blue;
 
       .v-select__slot {

@@ -191,7 +191,7 @@ export const DEFAULT_TEXT_PROPERTIES = {
 
 export const DEFAULT_PAGE_TITLE = {
   ...DEFAULT_TEXT_PROPERTIES,
-  fontSize: 23
+  fontSize: 20
 };
 
 export const DEFAULT_NAME_TEXT = {

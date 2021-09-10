@@ -19,7 +19,9 @@ import {
   getPagesOfFolder,
   getSelectedDataOfPages,
   calcAdditionPortraitSlot,
-  getTotalPagesForLastPlacement
+  getTotalPagesForLastPlacement,
+  getPortraitsByRole,
+  getTeacherAndAsstOrder
 } from '@/common/utils';
 
 export default {
@@ -63,7 +65,7 @@ export default {
     this.flowSettings = new PortraitFlowData({
       startOnPageNumber: this.getStartOnPageNumber(),
       totalPortraitsCount: this.getTotalPortrait(),
-      folders: this.selectedFolders
+      folders: cloneDeep(this.selectedFolders)
     });
 
     this.flowSettings.textSettings = this.initDataTextSettings();
@@ -100,8 +102,12 @@ export default {
         )
           return;
         this.initDataFlowSettings();
+        this.updatePortraitOrder();
       }
     }
+  },
+  mounted() {
+    this.updatePortraitOrder();
   },
   methods: {
     /**
@@ -150,17 +156,14 @@ export default {
      * @returns {Number}  total asset
      */
     getTotalPortrait() {
-      if (this.selectedFolders.length === 1) {
+      if (!this.isMultiFolder) {
         return this.selectedFolders[0].assets.length;
       }
 
-      const sum = this.selectedFolders.reduce((accumulator, currentValue) => {
-        const total = accumulator.assets.length + currentValue.assets.length;
-
-        return { assets: { length: total } };
-      });
-
-      return sum.assets.length;
+      return this.selectedFolders.reduce(
+        (acc, val) => acc + val.assets.length,
+        0
+      );
     },
     /**
      * Get required pages
@@ -181,7 +184,7 @@ export default {
     /**
      * Get required pages for single folder
      *
-     * @returns {Array}                       page list
+     * @returns {Array} page list
      */
     getSingleFolderRequiredPages() {
       return this.flowSettings.flowSingleSettings.pages;
@@ -189,7 +192,7 @@ export default {
     /**
      * Get required pages for multi folder
      *
-     * @returns {Array}                       page list
+     * @returns {Array} page list
      */
     getMultiFolderRequiredPages() {
       const { flowOption, pages } = this.flowSettings.flowMultiSettings;
@@ -280,9 +283,7 @@ export default {
       if (id === PORTRAIT_FLOW_OPTION_MULTI.CONTINUE.id) {
         return this.getSingleFolderDefaultPages();
       }
-      const pages = [...Array(this.selectedFolders.length).keys()].map(
-        p => p + 1
-      );
+      const pages = this.getBasePages(this.selectedFolders.length, 1);
       return getSelectedDataOfFolders(
         pages,
         this.flowSettings.startOnPageNumber,
@@ -302,7 +303,7 @@ export default {
 
       const extraSlots = calcAdditionPortraitSlot(
         this.flowSettings.teacherSettings,
-        this.selectedFolders[0]
+        this.flowSettings.folders[0]
       );
 
       if (
@@ -326,9 +327,7 @@ export default {
         this.maxPortraitPerPage
       );
 
-      return [...Array(totalPage).keys()].map(p => {
-        return p + startOnPageNumber;
-      });
+      return this.getBasePages(totalPage, startOnPageNumber);
     },
 
     /**
@@ -356,11 +355,14 @@ export default {
         ? id
         : this.flowSettings.startOnPageNumber;
 
+      if (flowSettings.flowOption === PORTRAIT_FLOW_OPTION_SINGLE.AUTO.id) {
+        flowSettings.pages = this.getBasePages(flowSettings.pages.length, 1);
+      }
+
       flowSettings.pages = getSelectedDataOfPages(
         flowSettings.pages,
         startOnPageNumber
       );
-      flowSettings.pages, startOnPageNumber;
 
       if (
         flowSettings.pages[flowSettings.pages.length - 1] <= this.maxPageOption
@@ -389,6 +391,9 @@ export default {
       const startOnPageNumber = !index
         ? id
         : this.flowSettings.startOnPageNumber;
+      if (flowSettings.flowOption === PORTRAIT_FLOW_OPTION_MULTI.AUTO.id) {
+        flowSettings.pages = this.getBasePages(flowSettings.pages.length, 1);
+      }
       const selectedData = getSelectedDataOfFolders(
         flowSettings.pages,
         startOnPageNumber,
@@ -446,11 +451,69 @@ export default {
     onFlowWarningClose() {
       this.flowWarning = false;
     },
+    /**
+     * Update the order portrait when use choose teacher placement FIRST or LAST
+     */
+    rearrangePortraitOrder() {
+      if (this.isMultiFolder) return;
+
+      const {
+        teacherPlacement,
+        assistantTeacherPlacement,
+        hasTeacher,
+        hasAssistantTeacher
+      } = this.flowSettings.teacherSettings;
+
+      const { students, teachers, asstTeachers } = getPortraitsByRole(
+        this.selectedFolders[0]
+      );
+
+      if (!hasTeacher) {
+        return students;
+      }
+
+      const teacherAndAsst = !hasAssistantTeacher
+        ? teachers
+        : getTeacherAndAsstOrder(
+            teachers,
+            asstTeachers,
+            assistantTeacherPlacement
+          );
+
+      if (teacherPlacement === PORTRAIT_TEACHER_PLACEMENT.FIRST) {
+        return [...teacherAndAsst, ...students];
+      }
+
+      if (teacherPlacement === PORTRAIT_TEACHER_PLACEMENT.LAST) {
+        return [...students, ...teacherAndAsst];
+      }
+    },
+    /**
+     * Update order of portrait in assets
+     */
+    updatePortraitOrder() {
+      if (this.isMultiFolder) return;
+
+      const portraits = this.rearrangePortraitOrder();
+
+      this.flowSettings.folders[0].assets = portraits;
+      this.flowSettings.folders[0].assetsCount = portraits.length;
+      this.flowSettings.totalPortraitsCount = portraits.length;
+    },
     initDataFlowSettings() {
       const flowOption = this.isMultiFolder
         ? PORTRAIT_FLOW_OPTION_MULTI.AUTO.id
         : PORTRAIT_FLOW_OPTION_SINGLE.AUTO.id;
       this.onFlowSettingChange(flowOption);
+    },
+    /**
+     * Get base pages
+     * @param {Number} total total pages
+     * @param {Number} min min page number
+     * @returns {Array} pages
+     */
+    getBasePages(total, min) {
+      return Array.from({ length: total }, (_, index) => index + min);
     }
   }
 };

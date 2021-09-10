@@ -237,7 +237,7 @@ export const getBookDigitalInfo = async bookId => {
 
   const { book } = cloneDeep(window.data);
 
-  const sections = book.sections.map((section, sectionIndex) => {
+  const sections = book.sections.map(section => {
     const sheets = section.sheets.map((sheet, sheetIndex) => {
       const {
         themeId,
@@ -261,9 +261,7 @@ export const getBookDigitalInfo = async bookId => {
       });
     });
 
-    if (sectionIndex > 0) {
-      totalSheet += section.sheets.length;
-    }
+    totalSheet += section.sheets.length;
 
     return new SectionEditionInfo({
       ...section,

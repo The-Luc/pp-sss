@@ -56,6 +56,7 @@ const getRangePortraitSingleFolder = (
 
   // how many additional slots
   const extraSlots = calcAdditionPortraitSlot(teacherSettings, folders[0]);
+  const numLargePortrait = extraSlots / 3;
 
   // first placement
   if (teacherSettings.teacherPlacement === PORTRAIT_TEACHER_PLACEMENT.FIRST) {
@@ -91,7 +92,9 @@ const getRangePortraitSingleFolder = (
         totalPortrait
       );
 
-      return { min: max, max: totalPortrait - 1 };
+      if (numLargePortrait == 1) return { min: max, max: totalPortrait - 1 };
+
+      return { min: max - 1, max: totalPortrait - 1 };
     }
 
     const { min, max } = getRangePortrait(
@@ -108,7 +111,6 @@ const getRangePortraitSingleFolder = (
 
     if (isStudentLast || isSmallAsstLast) return { min, max };
 
-    const numLargePortrait = extraSlots / 3;
     const portraitsOnLastPage = totalPortrait % maxPortrait;
     const isEnoughRow = maxPortrait - cols > portraitsOnLastPage;
 

@@ -1,5 +1,5 @@
 <template>
-  <group-item name="Direction">
+  <group-item name="Direction" :disabled="disabled">
     <pp-select
       data-container="transition-properties"
       :items="directions"
