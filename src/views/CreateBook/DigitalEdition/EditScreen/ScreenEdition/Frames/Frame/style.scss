@@ -14,6 +14,8 @@
   }
 
   &.empty {
+    margin-right: 0 !important; // override
+
     &::before {
       border-bottom: 1px dashed $color-gray6;
     }
@@ -31,7 +33,7 @@
         font-family: $font-500;
         cursor: pointer;
       }
-  
+
       .v-icon {
         font-size: 12px;
         color: $color-stoodio-toolbartext;
