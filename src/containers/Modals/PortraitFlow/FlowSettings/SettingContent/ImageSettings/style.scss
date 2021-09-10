@@ -1,0 +1,23 @@
+.image-setting-container {
+  padding: 0 26px 0 18px;
+  .title-setting {
+    color: $color-gray5;
+    font-size: 16px;
+    font-family: $font-500;
+    margin: 10px 0;
+  }
+  &::v-deep {
+    .border-container {
+      padding: 0 0 16px;
+      .properties-title {
+        font-size: 13px;
+      }
+    }
+    .pp-shadow-container {
+      padding: 10px 0 16px;
+      .properties-title {
+        font-size: 13px;
+      }
+    }
+  }
+}
