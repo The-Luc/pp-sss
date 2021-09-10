@@ -1018,7 +1018,11 @@ export const handleObjectDeselected = target => {
  * @return updated objects
  */
 export const calcAnimationOrder = canvas => {
-  const objs = canvas.getObjects();
+  const objs = canvas
+    .getObjects()
+    .filter(
+      obj => obj?.objectType && obj.objectType !== OBJECT_TYPE.BACKGROUND
+    );
   const updatedObjs = [];
 
   objs.forEach(obj => {
