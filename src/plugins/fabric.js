@@ -705,6 +705,44 @@ export const useTextOverride = function(text) {
 };
 
 /**
+ * Render order icon with rotation
+ * @param {CanvasRenderingContext2D} ctx Context to render on
+ * @param {Element} element order element
+ * @param {Number} top canvas object position top
+ * @param {Number} left canvas object position left
+ * @param {Number} width element width
+ * @param {Number} height element height
+ * @param {Number} zoom canvas zoom value
+ * @param {Number} angle object rotation value
+ * @param {Number} radius icon distance
+ */
+const rotateIcon = function(
+  ctx,
+  element,
+  top,
+  left,
+  width,
+  height,
+  zoom,
+  angle,
+  radius
+) {
+  const centerX = (Math.cos(angle) * radius + left) * zoom;
+  const centerY = (Math.sin(angle) * radius + top) * zoom;
+  ctx.save();
+  ctx.translate(centerX, centerY);
+  ctx.rotate(angle);
+  ctx.drawImage(
+    element,
+    (-width / 2) * zoom,
+    (-height / 2) * zoom,
+    width * zoom,
+    height * zoom
+  );
+  ctx.restore();
+};
+
+/**
  * Apply animation play in/out icon
  * @param @param {CanvasRenderingContext2D} ctx Context to render on
  */
@@ -712,25 +750,37 @@ const renderControls = function(ctx) {
   fabric.Group.prototype._renderControls.call(this, ctx);
 
   const zoom = this.canvas.getZoom();
+  const angle = (Math.PI * (this.angle % 360)) / 180;
 
   if (this.playIn) {
     const { width, height } = this.playIn;
-    ctx.drawImage(
+    const radius = this.width - width * 2;
+
+    rotateIcon(
+      ctx,
       this.playIn,
-      (this.left + this.width - width * 2 - 50) * zoom,
-      (this.top - width / 2) * zoom,
-      width * zoom,
-      height * zoom
+      this.top,
+      this.left,
+      width,
+      height,
+      zoom,
+      angle,
+      radius
     );
   }
   if (this.playOut) {
     const { width, height } = this.playOut;
-    ctx.drawImage(
+    const radius = this.width - width;
+    rotateIcon(
+      ctx,
       this.playOut,
-      (this.left + this.width - width - 50) * zoom,
-      (this.top - width / 2) * zoom,
-      width * zoom,
-      height * zoom
+      this.top,
+      this.left,
+      width,
+      height,
+      zoom,
+      angle,
+      radius
     );
   }
 };
