@@ -71,11 +71,11 @@ export default {
       }
 
       if (!this.isCenterPosition) {
-        style.paddingBottom = `${this.convertIntoPx(nameGap)}px`;
+        style.marginBottom = `${this.convertIntoPx(nameGap)}px`;
         style.height = `${this.convertPttoPx(nameTextFontSettings.fontSize)}px`;
+      } else {
+        style.marginTop = `${this.convertIntoPx(0.1)}px`;
       }
-
-      style.marginTop = `${this.convertIntoPx(0.1)}px`;
 
       return style;
     },
@@ -131,18 +131,35 @@ export default {
       return style;
     },
     namePortrait() {
-      const arrayPortrait = Object.values(this.portraits);
-      const result = [];
+      const { rowCount, colCount } = this.layout;
+      const portraitPerPage = rowCount * colCount;
+      const numLargePortrait = (portraitPerPage - this.portraits.length) / 3;
 
-      while (arrayPortrait.length) {
-        const item = arrayPortrait.splice(0, this.layout.colCount);
-        result.push(item);
+      const isOnStartPage =
+        this.pageNumber === this.flowSettings.startOnPageNumber;
+
+      const arrayPortrait = Object.values(this.portraits);
+      const arrayNamePortrait = [];
+
+      if (this.portraits.length === portraitPerPage || !isOnStartPage) {
+        while (arrayPortrait.length) {
+          arrayNamePortrait.push(arrayPortrait.splice(0, colCount));
+        }
+
+        return arrayNamePortrait;
       }
 
-      return result;
+      for (let i = 1; i <= rowCount; i++) {
+        const numPortraitForRow =
+          i < 3 ? colCount - numLargePortrait * i : colCount;
+
+        arrayNamePortrait.push(arrayPortrait.splice(0, numPortraitForRow));
+      }
+
+      return arrayNamePortrait;
     },
     isPageRight() {
-      return this.pageNumber % 2 === 0;
+      return this.pageNumber % 2 !== 0;
     },
     computedPortraits() {
       const portraitPerPage = this.layout.rowCount * this.layout.colCount;
@@ -251,7 +268,8 @@ export default {
       );
 
       if (row === 1 && col === 1) {
-        portraitsEl.style.setProperty('--align', 'center');
+        const align = !this.isCenterPosition ? '' : 'center';
+        portraitsEl.style.setProperty('--align', align);
         return;
       }
 
@@ -289,7 +307,9 @@ export default {
     setNamesHeight() {
       const row = this.layout.rowCount;
       const nameContainerHeight = this.$refs?.portraits?.clientHeight;
-      const gridHeight = this.portraitWidth * this.defaultRatio;
+      const portraitHeight = this.portraitWidth * this.defaultRatio;
+
+      const gridHeight = portraitHeight + portraitHeight * 0.1;
       const gap = (nameContainerHeight - gridHeight * row) / (row - 1);
 
       this.namesHeight = { height: `${gridHeight + gap}px` };
