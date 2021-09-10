@@ -21,8 +21,7 @@ import {
   calcAdditionPortraitSlot,
   getTotalPagesForLastPlacement,
   getPortraitsByRole,
-  getTeacherAndAsstOrder,
-  sortPortraitByName
+  getTeacherAndAsstOrder
 } from '@/common/utils';
 
 export default {

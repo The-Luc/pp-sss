@@ -5,17 +5,8 @@ import PreviewInfo from './PreviewInfo';
 
 import { useBackgroundAction, useSheet } from '@/hooks';
 
-import {
-  getPortraitForPage,
-  getPortraitsByRole,
-  getTeacherAndAsstOrder,
-  isEmpty,
-  sortPortraitByName
-} from '@/common/utils';
-import {
-  PORTRAIT_TEACHER_PLACEMENT,
-  PORTRAIT_FLOW_OPTION_MULTI
-} from '@/common/constants';
+import { getPortraitForPage, isEmpty } from '@/common/utils';
+import { PORTRAIT_FLOW_OPTION_MULTI } from '@/common/constants';
 
 export default {
   components: {
