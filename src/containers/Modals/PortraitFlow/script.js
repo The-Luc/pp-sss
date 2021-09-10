@@ -225,7 +225,8 @@ export default {
     },
     /**
      * Get start on page from current sheet
-     */ getStartOnPageNumber() {
+     */
+    getStartOnPageNumber() {
       const { pageLeftName, pageRightName } = this.currentSheet;
       return parseInt(pageLeftName) || parseInt(pageRightName);
     },
@@ -333,11 +334,16 @@ export default {
         ? id
         : this.flowSettings.startOnPageNumber;
 
+      if (flowSettings.flowOption === PORTRAIT_FLOW_OPTION_SINGLE.AUTO.id) {
+        flowSettings.pages = [...Array(flowSettings.pages.length).keys()].map(
+          p => p + 1
+        );
+      }
+
       flowSettings.pages = getSelectedDataOfPages(
         flowSettings.pages,
         startOnPageNumber
       );
-      flowSettings.pages, startOnPageNumber;
 
       if (
         flowSettings.pages[flowSettings.pages.length - 1] <= this.maxPageOption
@@ -366,6 +372,11 @@ export default {
       const startOnPageNumber = !index
         ? id
         : this.flowSettings.startOnPageNumber;
+      if (flowSettings.flowOption === PORTRAIT_FLOW_OPTION_MULTI.AUTO.id) {
+        flowSettings.pages = [...Array(flowSettings.pages.length).keys()].map(
+          p => p + 1
+        );
+      }
       const selectedData = getSelectedDataOfFolders(
         flowSettings.pages,
         startOnPageNumber,
