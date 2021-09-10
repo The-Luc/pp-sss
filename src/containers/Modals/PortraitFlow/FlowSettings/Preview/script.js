@@ -87,7 +87,7 @@ export default {
     flowSettings: {
       deep: true,
       handler() {
-        this.updatePreviewData(this.displayedPageNo);
+        this.updatePreviewData(this.pageNo);
       }
     },
     ['flowSettings.teacherSettings']: {

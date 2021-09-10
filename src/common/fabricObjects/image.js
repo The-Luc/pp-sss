@@ -186,7 +186,7 @@ export const setImageSrc = async (imageObject, imageSrc) => {
       applyShadowToObject(img, imageObject);
 
       if (hasImage) {
-        centercrop(imageObject, img.set.bind(img));
+        centercrop(imageObject);
         newProp.zoomLevel = img.zoomLevel;
       }
 
@@ -291,10 +291,10 @@ export const handleMouseMove = event => {
  * @param {Object} target Fabric object selected
  */
 const handleHoverImage = target => {
-  if (!target.hasImage) return;
+  if (!target.hasImage || !target.selectable) return;
 
   const { width, height, scaleX, scaleY } = target;
-  const { x, y } = target.getLocalPointer(event.e);
+  const { x, y } = target.getLocalPointer();
 
   const controlStartX = (width * scaleX - CROP_CONTROL.WIDTH) / 2;
   const controlEndX = controlStartX + CROP_CONTROL.WIDTH / 2;
@@ -362,7 +362,12 @@ const handleHoverVideo = target => {
  * @param {*} target - fabric object
  */
 export const handleMouseOver = ({ target }) => {
-  if (target?.objectType !== OBJECT_TYPE.IMAGE || !target.hasImage) return;
+  if (
+    target?.objectType !== OBJECT_TYPE.IMAGE ||
+    !target.hasImage ||
+    !target.selectable
+  )
+    return;
 
   target.set({
     showControl: true,
@@ -377,7 +382,12 @@ export const handleMouseOver = ({ target }) => {
  * @param {*} target - fabric object
  */
 export const handleMouseOut = ({ target }) => {
-  if (target?.objectType !== OBJECT_TYPE.IMAGE || !target.hasImage) return;
+  if (
+    target?.objectType !== OBJECT_TYPE.IMAGE ||
+    !target.hasImage ||
+    !target.selectable
+  )
+    return;
 
   target.set({
     showControl: false,
@@ -608,10 +618,7 @@ export const setVideoSrc = async (
 
   applyShadowToObject(imageObject, imageObject);
 
-  const { zoomLevel } = centercrop(
-    imageObject,
-    imageObject.set.bind(imageObject)
-  );
+  const { zoomLevel } = centercrop(imageObject);
 
   return {
     type: OBJECT_TYPE.VIDEO,

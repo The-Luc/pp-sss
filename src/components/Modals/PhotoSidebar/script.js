@@ -34,7 +34,8 @@ export default {
   data() {
     return {
       showRemoveModal: false,
-      selectedItem: null
+      selectedItem: null,
+      deleteType: ASSET_TYPE.PICTURE
     };
   },
   watch: {
@@ -65,10 +66,11 @@ export default {
     },
     /**
      * Hanlde open confirm modal after click remove icon
-     * @param {Object} photo photo will be removed
+     * @param {Object} media media will be removed
      */
-    onShowRemoveModal(photo) {
-      this.selectedItem = photo;
+    onShowRemoveModal(media) {
+      this.selectedItem = media;
+      this.deleteType = media.type;
       this.showRemoveModal = true;
     },
     /**

@@ -1,4 +1,5 @@
 import PpButton from '@/components/Buttons/Button';
+import { ASSET_TYPE } from '@/common/constants';
 
 export default {
   components: {
@@ -9,14 +10,18 @@ export default {
       type: Boolean,
       default: false
     },
-    type: {
+    modalType: {
       type: String,
-      required: true
+      default: 'Media'
+    },
+    deleteType: {
+      type: String,
+      default: ASSET_TYPE.VIDEO
     }
   },
   computed: {
-    modalType() {
-      return this.type === 'Photos' ? 'photo' : 'media';
+    isVideo() {
+      return this.deleteType === ASSET_TYPE.VIDEO;
     }
   },
   methods: {

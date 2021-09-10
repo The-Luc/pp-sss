@@ -70,6 +70,24 @@ export default {
         config.style === STYLE.BLUR ? BLUR_DELAY_DURATION : DELAY_DURATION;
 
       return delayDuration * 2 + config.duration;
+    },
+
+    /**
+     * Handle apply play in animation
+     * @param {String} mode apply mode
+     * @param {Object} config animation configuration
+     */
+    applyPlayIn(mode, config) {
+      this.$emit('apply', { mode, animationIn: config });
+    },
+
+    /**
+     * Handle apply play out animation
+     * @param {String} mode apply mode
+     * @param {Object} config animation configuration
+     */
+    applyPlayOut(mode, config) {
+      this.$emit('apply', { mode, animationOut: config });
     }
   }
 };

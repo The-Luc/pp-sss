@@ -7,11 +7,16 @@
   >
     <div class="border-inside"></div>
 
-    <div v-if="isEditIconDisplayed" class="thumbnail-edit">
-      <router-link tag="div" class="icon-wrapper" :to="toLink">
+    <router-link
+      v-if="isEditIconDisplayed"
+      tag="div"
+      class="thumbnail-edit"
+      :to="toLink"
+    >
+      <div class="icon-wrapper">
         <v-icon class="icon-edit">edit</v-icon>
-      </router-link>
-    </div>
+      </div>
+    </router-link>
   </div>
 </template>
 

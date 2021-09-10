@@ -385,27 +385,6 @@ const drawClipPath = function(ctx) {
   const canvas = this.renderClipPathCache();
   this.drawClipPathOnCache(ctx, canvas);
 };
-/**
- * Rect Render animation indicator
- * @param {CanvasRenderingContext2D} ctx Context to render on
- */
-const rectRenderFill = function(ctx) {
-  fabric.Rect.prototype._renderFill.call(this, ctx);
-  if (this.playIn) {
-    ctx.drawImage(
-      this.playIn,
-      (this.width - 500) / 2,
-      (this.strokeWidth - this.height) / 2
-    );
-  }
-  if (this.playOut) {
-    ctx.drawImage(
-      this.playOut,
-      (this.width - 300) / 2,
-      (this.strokeWidth - this.height) / 2
-    );
-  }
-};
 
 /**
  * Rect Render function with override on clipPath to support double stroke
@@ -447,7 +426,6 @@ const rectRender = function(ctx) {
  * @param {fabric.Rect} rect - the object to enable double stroke
  */
 export const useDoubleStroke = function(rect) {
-  rect._renderFill = rectRenderFill;
   rect._render = rectRender;
 };
 
@@ -724,6 +702,45 @@ const textRender = function(ctx) {
  */
 export const useTextOverride = function(text) {
   text.render = textRender;
+};
+
+/**
+ * Apply animation play in/out icon
+ * @param @param {CanvasRenderingContext2D} ctx Context to render on
+ */
+const renderControls = function(ctx) {
+  fabric.Group.prototype._renderControls.call(this, ctx);
+
+  const zoom = this.canvas.getZoom();
+
+  if (this.playIn) {
+    const { width, height } = this.playIn;
+    ctx.drawImage(
+      this.playIn,
+      (this.left + this.width - width * 2 - 50) * zoom,
+      (this.top - width / 2) * zoom,
+      width * zoom,
+      height * zoom
+    );
+  }
+  if (this.playOut) {
+    const { width, height } = this.playOut;
+    ctx.drawImage(
+      this.playOut,
+      (this.left + this.width - width - 50) * zoom,
+      (this.top - width / 2) * zoom,
+      width * zoom,
+      height * zoom
+    );
+  }
+};
+
+/**
+ * Allow fabric text object to have lineHeight override
+ * @param {fabric.Group} text - the object to enable lineHeight override
+ */
+export const useTextGroupOverride = function(group) {
+  group._renderControls = renderControls;
 };
 
 /**
