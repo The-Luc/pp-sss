@@ -38,6 +38,7 @@ export default {
       defaultScale: 50,
       defaultStyle: NONE_OPTION,
       defaultDirection: DIRECTION_OPTIONS[0],
+      defaultOrder: 1,
       showApplyOptions: false,
       showApplyButton: false,
       componentKey: true
@@ -112,7 +113,8 @@ export default {
         controlType: this.type,
         duration: this.defaultDuration,
         direction: this.defaultDirection.value,
-        scale: this.defaultScale
+        scale: this.defaultScale,
+        order: this.defaultOrder
       };
 
       this.$emit('change', { ...data });
