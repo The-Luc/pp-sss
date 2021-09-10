@@ -1,6 +1,8 @@
 <template>
   <div class="group-item">
-    <div v-if="isNameDisplayed" class="label">{{ name }}</div>
+    <div v-if="isNameDisplayed" class="label" :class="{ disabled: disabled }">
+      {{ name }}
+    </div>
 
     <div class="content">
       <slot />

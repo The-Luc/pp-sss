@@ -1,6 +1,8 @@
 <template>
   <div class="thumbnail-view-footer" :class="customCssClass">
-    <div class="name-page">{{ pageNames.left }}</div>
+    <div v-if="!isMiddleNameDisplayed" class="name-page">
+      {{ pageLeftName }}
+    </div>
 
     <div v-if="isLinkDisplayed" class="link-status" @click="changeLinkStatus">
       <v-icon class="icon-link" :class="linkData.cssClass">
@@ -9,10 +11,12 @@
     </div>
 
     <div v-if="isMiddleNameDisplayed" class="name-page">
-      {{ pageNames.middle }}
+      {{ pageLeftName }}
     </div>
 
-    <div class="name-page">{{ pageNames.right }}</div>
+    <div v-if="!isMiddleNameDisplayed" class="name-page">
+      {{ pageRightName }}
+    </div>
   </div>
 </template>
 

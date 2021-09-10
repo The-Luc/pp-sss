@@ -28,6 +28,8 @@
         :page-names="pageNames"
         :custom-css-class="customCssClass"
         :is-link-icon-displayed="!isEditor"
+        :is-digital="isDigital"
+        :is-editor="isEditor"
         @updateLink="onUpdateLink"
       />
     </div>
