@@ -308,11 +308,8 @@ export const toFabricClipArtProp = (prop, originalElement) => {
 };
 
 export const toCssPreview = (prop, previewHeight) => {
-  const horizontal = prop.isPageTitleOn
-    ? 'textAlign'
-    : prop.nameLines === 1
-    ? 'justifyContent'
-    : 'alignItems';
+  const isOneLine = prop.nameLines === 1 ? 'justifyContent' : 'alignItems';
+  const horizontal = prop.isPageTitleOn ? 'textAlign' : isOneLine;
 
   const mapRules = {
     data: {
@@ -416,19 +413,13 @@ export const toMarginCssPreview = (prop, previewHeight) => {
 const parseHorizontal = (prop, value) => {
   if (prop.isPageTitleOn) return value;
 
-  if (prop.nameLines === 1 && !prop.isFirstLastDisplay) {
-    return value === TEXT_HORIZONTAL_ALIGN.RIGHT
-      ? 'flex-start'
-      : value === TEXT_HORIZONTAL_ALIGN.LEFT
-      ? 'flex-end'
-      : value;
-  }
+  const isOneLine = prop.nameLines === 1 && !prop.isFirstLastDisplay;
+  const alignLeft = isOneLine ? 'flex-end' : 'flex-start';
+  const alignRight = isOneLine ? 'flex-start' : 'flex-end';
 
-  return value === TEXT_HORIZONTAL_ALIGN.RIGHT
-    ? 'flex-end'
-    : value === TEXT_HORIZONTAL_ALIGN.LEFT
-    ? 'flex-start'
-    : value;
+  if (value === TEXT_HORIZONTAL_ALIGN.RIGHT) return alignRight;
+
+  return value === TEXT_HORIZONTAL_ALIGN.LEFT ? alignLeft : value;
 };
 /**
  * Get fabric property base on element type
