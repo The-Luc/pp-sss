@@ -5,6 +5,7 @@
       :required-pages="requiredPages"
       :displayed-page-no="displayedPageNo"
       :flow-settings="flowSettings"
+      :preview-portraits-range="previewPortraitsRange"
       @startPageChange="onStartPageChange"
       @showPreview="onShowPreview"
     />

@@ -42,7 +42,7 @@
       <div ref="portraitsContainer" class="portraits-container">
         <div ref="portraits" class="portraits">
           <div
-            v-for="(portrait, idx) in computedPortraits"
+            v-for="(portrait, idx) in portraits"
             :key="idx"
             :class="{ portrait, enlarge: isLargePortrait(portrait) }"
           >
