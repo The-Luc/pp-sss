@@ -1,5 +1,4 @@
 import { LINK_STATUS } from '@/common/constants';
-import { isEmpty } from '@/common/utils';
 
 export default {
   props: {
@@ -15,6 +14,14 @@ export default {
       type: Boolean,
       default: true
     },
+    isEditor: {
+      type: Boolean,
+      default: false
+    },
+    isDigital: {
+      type: Boolean,
+      default: false
+    },
     customCssClass: {
       type: Array,
       default: () => []
@@ -23,7 +30,9 @@ export default {
   data() {
     return {
       isLinkDisplayed: false,
-      isMiddleNameDisplayed: false
+      isMiddleNameDisplayed: false,
+      pageLeftName: this.pageNames.left,
+      pageRightName: this.pageNames.right
     };
   },
   computed: {
@@ -32,14 +41,12 @@ export default {
     }
   },
   mounted() {
-    const isDigital = !isEmpty(this.pageNames.middle);
-
     this.isLinkDisplayed =
-      !isDigital &&
+      !this.isDigital &&
       this.isLinkIconDisplayed &&
       this.linkType !== LINK_STATUS.NONE;
 
-    this.isMiddleNameDisplayed = isDigital;
+    this.isMiddleNameDisplayed = this.isDigital && !this.isEditor;
   },
   methods: {
     /**

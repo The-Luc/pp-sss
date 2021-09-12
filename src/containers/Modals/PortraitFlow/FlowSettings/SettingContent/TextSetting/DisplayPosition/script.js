@@ -11,7 +11,8 @@ import {
   PORTRAIT_NAME_POSITION,
   NAME_LINES_OPTION,
   MIN_MAX_TEXT_SETTINGS,
-  DEFAULT_NAME_WIDTH
+  DEFAULT_NAME_WIDTH,
+  DEFAULT_NAME_LINES
 } from '@/common/constants';
 
 export default {
@@ -90,7 +91,7 @@ export default {
     onChangePosition(data) {
       this.$emit('change', {
         namePosition: data,
-        nameGap: MIN_MAX_TEXT_SETTINGS.MIN_GAP,
+        nameGap: DEFAULT_NAME_LINES,
         nameLines: MIN_MAX_TEXT_SETTINGS.MIN_LINES,
         nameWidth: DEFAULT_NAME_WIDTH
       });

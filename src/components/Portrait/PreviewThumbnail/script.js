@@ -3,10 +3,17 @@ import {
   PORTRAIT_NAME_DISPLAY,
   PORTRAIT_NAME_POSITION,
   CLASS_ROLE,
-  PORTRAIT_SIZE
+  PORTRAIT_SIZE,
+  PORTRAIT_TEACHER_PLACEMENT
 } from '@/common/constants';
-import { isEmpty, inToPxPreview } from '@/common/utils';
+import {
+  isEmpty,
+  inToPxPreview,
+  ptToPxPreview,
+  calcAdditionPortraitSlot
+} from '@/common/utils';
 import { toCssPreview, toMarginCssPreview } from '@/common/fabricObjects';
+import { PortraitAsset } from '@/common/models';
 
 export default {
   props: {
@@ -64,7 +71,10 @@ export default {
       }
 
       if (!this.isCenterPosition) {
-        style.paddingBottom = `${this.convertIntoPx(nameGap)}px`;
+        style.marginBottom = `${this.convertIntoPx(nameGap)}px`;
+        style.height = `${this.convertPttoPx(nameTextFontSettings.fontSize)}px`;
+      } else {
+        style.marginTop = `${this.convertIntoPx(0.1)}px`;
       }
 
       return style;
@@ -98,11 +108,21 @@ export default {
     },
     nameContainerStyle() {
       const { nameWidth } = this.flowSettings.textSettings;
+      const nameContainerWidth = this.$refs?.portraits?.clientWidth;
+      const col = this.layout.colCount;
+      const gapWidth =
+        (nameContainerWidth - this.portraitWidth * col) / (col - 1);
 
       const style = toMarginCssPreview(
         { ...this.layout.margins },
         this.previewHeight
       );
+
+      if (this.isPageRight) {
+        style.paddingLeft = `${gapWidth}px`;
+      } else {
+        style.paddingRight = `${gapWidth}px`;
+      }
 
       style.width = `${this.convertIntoPx(nameWidth)}px`;
 
@@ -111,18 +131,66 @@ export default {
       return style;
     },
     namePortrait() {
-      const arrayPortrait = Object.values(this.portraits);
-      const result = [];
+      const { rowCount, colCount } = this.layout;
+      const portraitPerPage = rowCount * colCount;
+      const numLargePortrait = (portraitPerPage - this.portraits.length) / 3;
 
-      while (arrayPortrait.length) {
-        const item = arrayPortrait.splice(0, this.layout.colCount);
-        result.push(item);
+      const isOnStartPage =
+        this.pageNumber === this.flowSettings.startOnPageNumber;
+
+      const arrayPortrait = Object.values(this.portraits);
+      const arrayNamePortrait = [];
+
+      if (this.portraits.length === portraitPerPage || !isOnStartPage) {
+        while (arrayPortrait.length) {
+          arrayNamePortrait.push(arrayPortrait.splice(0, colCount));
+        }
+
+        return arrayNamePortrait;
       }
 
-      return result;
+      for (let i = 1; i <= rowCount; i++) {
+        const numPortraitForRow =
+          i < 3 ? colCount - numLargePortrait * i : colCount;
+
+        arrayNamePortrait.push(arrayPortrait.splice(0, numPortraitForRow));
+      }
+
+      return arrayNamePortrait;
     },
     isPageRight() {
-      return this.pageNumber % 2 === 0;
+      return this.pageNumber % 2 !== 0;
+    },
+    computedPortraits() {
+      const portraitPerPage = this.layout.rowCount * this.layout.colCount;
+
+      if (
+        this.portraits.length === portraitPerPage ||
+        this.pageNumber === this.flowSettings.startOnPageNumber
+      )
+        return this.portraits;
+
+      const extraSlots = calcAdditionPortraitSlot(
+        this.flowSettings.teacherSettings,
+        this.flowSettings.folders[0]
+      );
+
+      const addingSlots =
+        this.flowSettings.teacherSettings.teacherPlacement ===
+        PORTRAIT_TEACHER_PLACEMENT.LAST
+          ? extraSlots
+          : 0;
+
+      const numEmptyCell = Math.max(
+        Math.abs(portraitPerPage - this.portraits.length - addingSlots),
+        0
+      );
+
+      const emptyPortrait = new PortraitAsset();
+      return [
+        ...this.portraits,
+        ...new Array(numEmptyCell).fill(emptyPortrait)
+      ];
     }
   },
   watch: {
@@ -148,7 +216,9 @@ export default {
   mounted() {
     this.$nextTick(() => {
       this.previewHeight = this.$refs.thumbWrapper.clientHeight;
-      this.updatePortraitData();
+      setTimeout(() => {
+        this.updatePortraitData();
+      }, 10);
     });
   },
   methods: {
@@ -198,7 +268,8 @@ export default {
       );
 
       if (row === 1 && col === 1) {
-        portraitsEl.style.setProperty('--align', 'center');
+        const align = !this.isCenterPosition ? '' : 'center';
+        portraitsEl.style.setProperty('--align', align);
         return;
       }
 
@@ -236,7 +307,9 @@ export default {
     setNamesHeight() {
       const row = this.layout.rowCount;
       const nameContainerHeight = this.$refs?.portraits?.clientHeight;
-      const gridHeight = this.portraitWidth * this.defaultRatio;
+      const portraitHeight = this.portraitWidth * this.defaultRatio;
+
+      const gridHeight = portraitHeight + portraitHeight * 0.1;
       const gap = (nameContainerHeight - gridHeight * row) / (row - 1);
 
       this.namesHeight = { height: `${gridHeight + gap}px` };
@@ -256,7 +329,12 @@ export default {
     convertIntoPx(value) {
       return inToPxPreview(value, this.previewHeight);
     },
-
+    /**
+     * Convert value from pt to px
+     */
+    convertPttoPx(value) {
+      return ptToPxPreview(value, this.previewHeight);
+    },
     /**
      *  Fire when loop through portraits
      * To dynamically adding class for styling
@@ -292,19 +370,18 @@ export default {
       const largeEl = portraitsEl.querySelector('.enlarge');
 
       if (!largeEl) return;
-      const rawWidth = window.getComputedStyle(largeEl).width;
-      const rawHeight = window.getComputedStyle(largeEl).height;
+      const rawWidth = largeEl.clientWidth;
+      const rawHeight = largeEl.clientHeight;
 
       const width = parseFloat(rawWidth);
       const height = parseFloat(rawHeight);
 
       if (!width || !height) return;
 
-      const calcHeight = width * 1.25;
-      const enlargeHeight = Math.min(height, calcHeight);
-      const endlargeWidth = (enlargeHeight - 10) * 0.8 + 'px';
+      const calcImageWidth = (height * 0.9) / this.defaultRatio;
+      const enlargeWidth = Math.min(width, calcImageWidth) + 'px';
 
-      portraitsEl.style.setProperty('--enlarge-width', endlargeWidth);
+      portraitsEl.style.setProperty('--enlarge-width', enlargeWidth);
     }
   }
 };

@@ -19,9 +19,6 @@
       }
       .name {
         display: flex;
-        div {
-          padding: 0 2px;
-        }
       }
     }
 
@@ -36,7 +33,7 @@
       --col-count: 5;
       --portrait-width: 35px;
       --image-height: calc(var(--portrait-width) * 1.25);
-      --name-height: calc(var(--portrait-height) * 0.1);
+      --name-height: calc(var(--image-height) * 0.1);
       --portrait-height: calc(var(--name-height) + var(--image-height));
       --align: space-between;
       --enlarge-width: 100%;
@@ -65,6 +62,10 @@
           left: 0;
           width: 100%;
           height: 100%;
+
+          &[src=''] {
+            display: none;
+          }
         }
 
         .name {
@@ -94,10 +95,6 @@
   }
 }
 
-.lastname::after {
-  content: ', \00a0 ';
-}
-
-.firstname::after {
+.space::after {
   content: '\00a0';
 }

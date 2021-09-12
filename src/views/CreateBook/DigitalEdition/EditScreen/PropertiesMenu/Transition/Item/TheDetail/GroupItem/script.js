@@ -6,6 +6,10 @@ export default {
     isNameDisplayed: {
       type: Boolean,
       default: true
+    },
+    disabled: {
+      type: Boolean,
+      default: false
     }
   }
 };

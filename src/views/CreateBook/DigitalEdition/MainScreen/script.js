@@ -42,7 +42,7 @@ export default {
      * @returns {Object}            name of page
      */
     getPageName({ pageName }) {
-      return { middle: pageName };
+      return { left: pageName };
     }
   }
 };

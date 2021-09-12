@@ -2,7 +2,7 @@ import PpInput from '@/components/InputProperty';
 import PpSelect from '@/components/Selectors/Select';
 import PpCombobox from '@/components/Selectors/Combobox';
 
-import { ICON_LOCAL } from '@/common/constants';
+import { ICON_LOCAL, OBJECT_TYPE } from '@/common/constants';
 import {
   CONTROL_TYPE,
   DIRECTION_OPTIONS,
@@ -38,6 +38,7 @@ export default {
       defaultScale: 50,
       defaultStyle: NONE_OPTION,
       defaultDirection: DIRECTION_OPTIONS[0],
+      defaultOrder: 1,
       showApplyOptions: false,
       showApplyButton: false,
       componentKey: true
@@ -60,10 +61,12 @@ export default {
         : PLAY_OUT_OPTIONS;
     },
     orderOptions() {
-      return Object.keys(this.listObjects).map((_, i) => ({
-        name: i + 1,
-        value: i + 1
-      }));
+      return Object.values(this.listObjects)
+        .filter(obj => obj?.type && obj.type !== OBJECT_TYPE.BACKGROUND)
+        .map((_, i) => ({
+          name: i + 1,
+          value: i + 1
+        }));
     },
     isShowOptions() {
       return this.selectedStyle?.value !== NONE_OPTION.value;
@@ -90,7 +93,7 @@ export default {
         : this.defaultDuration;
     },
     scaleValue() {
-      return this.config.scale || this.defaultScale;
+      return !isNaN(this.config.scale) ? this.config.scale : this.defaultScale;
     },
     selectedOrder() {
       const order = this.orderOptions.find(o => o.value === this.config?.order);
@@ -103,14 +106,17 @@ export default {
      * @param {Object} val A style option
      */
     onChangeStyle(style) {
-      if (style.value !== NONE_OPTION.value) this.showApplyOptions = true;
+      if (style.value !== this.selectedStyle.value) {
+        this.showApplyOptions = true;
+      }
 
       const data = {
         style: style.value,
         controlType: this.type,
         duration: this.defaultDuration,
         direction: this.defaultDirection.value,
-        scale: this.defaultScale
+        scale: this.defaultScale,
+        order: this.defaultOrder
       };
 
       this.$emit('change', { ...data });
@@ -195,6 +201,7 @@ export default {
      * Fire when user click apply button
      */
     onClickApply() {
+      this.$emit('apply', this.selectedApplyOption.value, this.config);
       this.selectedApplyOption = null;
       this.showApplyOptions = false;
       this.showApplyButton = false;

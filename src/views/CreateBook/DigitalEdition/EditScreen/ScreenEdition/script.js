@@ -27,7 +27,8 @@ import {
   WINDOW_EVENT_TYPE,
   CROP_CONTROL,
   IMAGE_LOCAL,
-  PROPERTIES_TOOLS
+  PROPERTIES_TOOLS,
+  APPLY_MODE
 } from '@/common/constants';
 import {
   addPrintClipArts,
@@ -79,7 +80,9 @@ import {
   useElementProperties,
   useStyle,
   useToolBar,
-  useActionDigitalSheet
+  useActionDigitalSheet,
+  useProperties,
+  useGetterEditionSection
 } from '@/hooks';
 
 import {
@@ -170,6 +173,9 @@ export default {
 
     const { addTransition, removeTransition } = useActionDigitalSheet();
 
+    const { setPropOfMultipleObjects } = useProperties();
+    const { currentSection } = useGetterEditionSection();
+
     return {
       currentFrame,
       currentFrameId,
@@ -192,7 +198,9 @@ export default {
       getProperty,
       updateMediaSidebarOpen,
       addTransition,
-      removeTransition
+      removeTransition,
+      setPropOfMultipleObjects,
+      currentSection
     };
   },
   data() {
@@ -571,6 +579,10 @@ export default {
         {
           name: EVENT_TYPE.PASTE_OBJ,
           handler: this.handlePaste
+        },
+        {
+          name: EVENT_TYPE.APPLY_TEXT_ANIMATION,
+          handler: this.handleApplyTextAnimation
         }
       ];
 
@@ -725,7 +737,7 @@ export default {
 
       if (isEmpty(objectData)) return;
 
-      handleObjectSelected(target);
+      handleObjectSelected(target, objectData);
 
       this.setSelectedObjectId({ id });
 
@@ -1346,7 +1358,7 @@ export default {
         if (playOutOrder) {
           element.set({ playOutOrder });
         }
-        handleObjectSelected(element);
+        handleObjectSelected(element, prop);
       }
 
       this.updateCurrentObject(element, newProp);
@@ -1990,7 +2002,8 @@ export default {
 
       deleteSelectedObjects(this.digitalCanvas);
 
-      calcAnimationOrder(this.digitalCanvas);
+      const props = calcAnimationOrder(this.digitalCanvas);
+      this.setPropOfMultipleObjects({ data: props });
     },
 
     /**
@@ -2413,6 +2426,25 @@ export default {
         if (!target.isHoverPlayIcon) return;
 
         this.videoTogglePlay();
+      }
+    },
+
+    /**
+     * Handle apply animation for textbox
+     * @param {Object} animation animation config
+     */
+    handleApplyTextAnimation(animation) {
+      const mode = animation.mode;
+      if (mode === APPLY_MODE.FRAME) {
+        const objects = this.currentFrame.objects;
+        const props = objects.map(obj => ({
+          id: obj.id,
+          prop: {
+            animationIn: animation.animationIn || {},
+            animationOut: animation.animationOut || {}
+          }
+        }));
+        this.setPropOfMultipleObjects({ data: props });
       }
     }
   }

@@ -158,7 +158,7 @@ export const STATUS_PAGE_TITLE = [
 ];
 
 export const DEFAULT_MARGIN_PAGE_TITLE = {
-  top: 0.5,
+  top: 0.45,
   left: 0.5,
   right: 0.5,
   bottom: 0.25
@@ -170,9 +170,9 @@ export const MIN_MAX_TEXT_SETTINGS = {
   MIN_BOTTOM_MARGIN: 0,
   MIN_LINES: 1,
   MAX_LINES: 2,
-  MIN_WIDTH: 1.25,
-  MAX_WIDTH: 3,
-  MIN_GAP: 0.125,
+  MIN_WIDTH: 1,
+  MAX_WIDTH: 4,
+  MIN_GAP: 0.1,
   MAX_GAP: 1
 };
 
@@ -196,9 +196,10 @@ export const DEFAULT_PAGE_TITLE = {
 
 export const DEFAULT_NAME_TEXT = {
   ...DEFAULT_TEXT_PROPERTIES,
-  fontSize: 12,
+  fontSize: 8,
   isBold: false
 };
 
-export const DEFAULT_NAME_WIDTH = 1.25;
+export const DEFAULT_NAME_WIDTH = 1.5;
+export const DEFAULT_NAME_LINES = 0.125;
 export const DEFAULT_VALUE_PAGE_TITLE = 'Untitled';

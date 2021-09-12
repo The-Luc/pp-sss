@@ -1,5 +1,5 @@
 <template>
-  <div class="teacher-setting-container">
+  <div ref="teacherSettings" class="teacher-setting-container">
     <div class="intro">Does the folder include:</div>
     <div v-for="row in dataUI" :key="row.name" class="control-group">
       <div class="">{{ row.name }}</div>

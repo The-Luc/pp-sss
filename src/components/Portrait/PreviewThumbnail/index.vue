@@ -29,11 +29,12 @@
             class="name"
             :style="nameTextStyle"
           >
-            <div :class="{ firstname: isFirstLastDisplay }">
+            <div :class="{ space: isFirstLastDisplay }">
               {{ portrait.firstName }}
             </div>
-            <div :class="{ lastname: !isFirstLastDisplay }">
-              {{ portrait.lastName }}
+            <div :class="{ space: !isFirstLastDisplay }">
+              <span>{{ portrait.lastName }}</span>
+              <span v-if="!isFirstLastDisplay">,</span>
             </div>
           </div>
         </div>
@@ -41,7 +42,7 @@
       <div ref="portraitsContainer" class="portraits-container">
         <div ref="portraits" class="portraits">
           <div
-            v-for="(portrait, idx) in portraits"
+            v-for="(portrait, idx) in computedPortraits"
             :key="idx"
             :class="{ portrait, enlarge: isLargePortrait(portrait) }"
           >
@@ -54,11 +55,12 @@
             </div>
 
             <div v-if="isCenterPosition" class="name" :style="nameTextStyle">
-              <div :class="{ firstname: isFirstLastDisplay }">
+              <div :class="{ space: isFirstLastDisplay }">
                 {{ portrait.firstName }}
               </div>
-              <div :class="{ lastname: !isFirstLastDisplay }">
-                {{ portrait.lastName }}
+              <div :class="{ space: !isFirstLastDisplay }">
+                <span>{{ portrait.lastName }}</span>
+                <span v-if="!isFirstLastDisplay">,</span>
               </div>
             </div>
           </div>

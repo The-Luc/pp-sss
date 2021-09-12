@@ -989,14 +989,16 @@ const createSVGElement = (val, fill) => {
 /**
  * Handle when select object
  * @param {Object} target fabric object
+ * @param {Object} data object data stored
  */
-export const handleObjectSelected = async target => {
+export const handleObjectSelected = async (target, data) => {
   if (target.objectType === OBJECT_TYPE.TEXT) {
-    const [rect] = target.getObjects();
-    const playInEle = createSVGElement(target.playInOrder || 1, 'white');
-    const playOutEle = createSVGElement(target.playOutOrder || 1, 'lightgray');
+    const playInOrder = data?.animationIn?.order || target?.playInOrder || 1;
+    const playOutOrder = data?.animationOut?.order || target?.playOutOrder || 1;
+    const playInEle = createSVGElement(playInOrder, 'white');
+    const playOutEle = createSVGElement(playOutOrder, 'lightgray');
     const [playIn, playOut] = await Promise.all([playInEle, playOutEle]);
-    rect.set({ playIn, playOut, dirty: true });
+    target.set({ playIn, playOut, dirty: true });
     target.canvas.renderAll();
   }
 };
@@ -1013,15 +1015,37 @@ export const handleObjectDeselected = target => {
 /**
  * Calculate animation order after delete objects
  * @param {Element} canvas active canvas
+ * @return updated objects
  */
 export const calcAnimationOrder = canvas => {
-  const objs = canvas.getObjects();
+  const objs = canvas
+    .getObjects()
+    .filter(
+      obj => obj?.objectType && obj.objectType !== OBJECT_TYPE.BACKGROUND
+    );
+  const updatedObjs = [];
+
   objs.forEach(obj => {
-    const playInOrder = obj.get('playInOrder');
-    const playOutOrder = obj.get('playOutOrder');
+    const playInOrder = obj.get('playInOrder') || 1;
+    const playOutOrder = obj.get('playOutOrder') || 1;
+
     obj.set({
       playInOrder: Math.min(objs.length, playInOrder),
       playOutOrder: Math.min(objs.length, playOutOrder)
     });
+
+    updatedObjs.push({
+      id: obj.id,
+      prop: {
+        animationIn: {
+          order: Math.min(objs.length, playInOrder)
+        },
+        animationOut: {
+          order: Math.min(objs.length, playOutOrder)
+        }
+      }
+    });
   });
+
+  return updatedObjs;
 };

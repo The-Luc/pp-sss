@@ -2,6 +2,7 @@
   <v-tabs-items v-model="currentTab">
     <v-tab-item>
       <portrait-setting
+        :selected-folders="selectedFolders"
         :flow-settings="flowSettings"
         @portraitSettingChange="onSettingChange"
       />

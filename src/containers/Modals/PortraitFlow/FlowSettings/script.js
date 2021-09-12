@@ -22,12 +22,13 @@ export default {
   },
   data() {
     return {
-      currentTab: null
+      currentTab: null,
+      displayedPageNo: this.flowSettings?.startOnPageNumber
     };
   },
-  computed: {
-    displayedPageNo() {
-      return this.flowSettings?.startOnPageNumber;
+  watch: {
+    'flowSettings.startOnPageNumber'(value) {
+      this.displayedPageNo = value;
     }
   },
   methods: {

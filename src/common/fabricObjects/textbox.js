@@ -26,7 +26,11 @@ import {
   toFabricTextBorderProp,
   toFabricTextGroupProp
 } from './common';
-import { useDoubleStroke, useTextOverride } from '@/plugins/fabric';
+import {
+  useDoubleStroke,
+  useTextGroupOverride,
+  useTextOverride
+} from '@/plugins/fabric';
 
 /**
  * Handle creating a TextBox into canvas
@@ -109,6 +113,8 @@ export const createTextBox = (x, y, width, height, textProperties) => {
     playInOrder,
     playOutOrder
   });
+
+  useTextGroupOverride(group);
 
   const groupProp = toFabricTextGroupProp(dataObject);
   const { flipX, flipY } = groupProp;
