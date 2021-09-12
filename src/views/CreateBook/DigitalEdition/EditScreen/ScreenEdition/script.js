@@ -1982,12 +1982,12 @@ export default {
       });
 
       if (type === OBJECT_TYPE.IMAGE && hasImage && !control) {
-        const control = await createMediaOverlay(IMAGE_LOCAL.CONTROL_ICON, {
+        const controlBtn = await createMediaOverlay(IMAGE_LOCAL.CONTROL_ICON, {
           width: CROP_CONTROL.WIDTH,
           height: CROP_CONTROL.HEIGHT
         });
 
-        media.set({ control });
+        media.set({ controlBtn });
       }
 
       return media;

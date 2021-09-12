@@ -144,16 +144,16 @@ export const pastePpObject = async (
     setProcessingPaste();
     return;
   }
-  const { sheetId, fabric } = JSON.parse(objectCopy);
+  const { sheetId, fabric: savedFabric } = JSON.parse(objectCopy);
 
   canvas.discardActiveObject();
 
-  const { minLeft, minTop } = getMinPositionObject(fabric);
+  const { minLeft, minTop } = getMinPositionObject(savedFabric);
 
   const listPastedObjects = await handlePasteItems(
     objects,
     sheetId,
-    fabric,
+    savedFabric,
     minLeft,
     minTop,
     pageSelected,

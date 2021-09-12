@@ -85,10 +85,10 @@ export default {
           subItems: []
         };
         if (CLIP_ART_TYPE[k].id === 0) {
-          clType.subItems = Object.keys(CLIP_ART_CATEGORIES).map(k => {
+          clType.subItems = Object.keys(CLIP_ART_CATEGORIES).map(key => {
             return {
-              ...CLIP_ART_CATEGORIES[k],
-              value: CLIP_ART_CATEGORIES[k].id
+              ...CLIP_ART_CATEGORIES[key],
+              value: CLIP_ART_CATEGORIES[key].id
             };
           });
         }

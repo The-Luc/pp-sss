@@ -9,10 +9,10 @@ export const useSaveData = () => {
     sheets: PRINT_GETTERS.GET_SHEETS
   });
 
-  const savePrintMainScreen = async sheets => {
+  const savePrintMainScreen = async sheetsData => {
     const data = {};
 
-    Object.values(sheets).forEach(sheet => {
+    Object.values(sheetsData).forEach(sheet => {
       const props = {
         link: sheet.link
       };
