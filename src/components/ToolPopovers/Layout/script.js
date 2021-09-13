@@ -155,7 +155,7 @@ export default {
 
       if (!this.layoutId) return;
 
-      const layout = this.layouts.find(layout => layout.id === this.layoutId);
+      const layout = this.layouts.find(l => l.id === this.layoutId);
 
       if (layout) this.selectedLayout = layout;
     },
