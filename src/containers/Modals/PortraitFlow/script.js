@@ -90,7 +90,7 @@ export default {
     },
     previewPortraitsRange() {
       /*
-      Retrun: 
+      Return: 
         - Number of pages
         - Min - max indexes of particular page number
         - folderIndex
