@@ -15,14 +15,14 @@ import {
 import { useSheet } from '@/hooks';
 import { cloneDeep } from 'lodash';
 import {
+  isEmpty,
   getSelectedDataOfFolders,
-  getPagesOfFolder,
   getSelectedDataOfPages,
-  calcAdditionPortraitSlot,
-  getTotalPagesForLastPlacement,
   getPortraitsByRole,
   getTeacherAndAsstOrder,
-  sortPortraitByName
+  sortPortraitByName,
+  getRangePortraitMultiFolder,
+  getRangePortraitSingleFolder
 } from '@/common/utils';
 
 export default {
@@ -81,13 +81,44 @@ export default {
       return this.selectedFolders.length > 1;
     },
     maxPortraitPerPage() {
-      const totalRow = this.flowSettings.layoutSettings.rowCount;
-      const totalCol = this.flowSettings.layoutSettings.colCount;
+      const { rowCount, colCount } = this.flowSettings.layoutSettings;
 
-      return totalRow * totalCol;
+      return rowCount * colCount;
     },
     maxPageOption() {
       return Object.values(this.getSheets).length * 2 - 4;
+    },
+    previewPortraitsRange() {
+      /*
+      Return: 
+        - Number of pages
+        - Min - max indexes of particular page number
+        - folderIndex
+      Data struct: [{min, max, folderIdx},{...}]
+      */
+      if (isEmpty(this.flowSettings)) return;
+
+      const rows = this.flowSettings.layoutSettings.rowCount;
+      const cols = this.flowSettings.layoutSettings.colCount;
+      const folders = this.flowSettings.folders;
+
+      if (this.isMultiFolder) {
+        const { flowOption } = this.flowSettings.flowMultiSettings;
+        const isContinuousFlow =
+          flowOption === PORTRAIT_FLOW_OPTION_MULTI.CONTINUE.id;
+
+        return getRangePortraitMultiFolder(
+          this.maxPortraitPerPage,
+          this.flowSettings.folders,
+          isContinuousFlow
+        );
+      }
+      return getRangePortraitSingleFolder(
+        rows,
+        cols,
+        folders[0],
+        this.flowSettings.teacherSettings
+      );
     }
   },
   watch: {
@@ -105,6 +136,18 @@ export default {
         this.initDataFlowSettings();
         this.updatePortraitOrder();
       }
+    },
+    previewPortraitsRange(val, oldVal) {
+      if (!val || !val.length || val?.length === oldVal?.length) return;
+
+      if (this.isMultiFolder) {
+        const { flowOption } = this.flowSettings.flowMultiSettings;
+        const pages = this.getMultiFolderDefaultPages(flowOption);
+        this.flowSettings.flowMultiSettings.pages = pages;
+      }
+
+      const pages = this.getSingleFolderDefaultPages();
+      this.flowSettings.flowSingleSettings.pages = pages;
     }
   },
   mounted() {
@@ -172,15 +215,9 @@ export default {
      * @returns {Array} page list
      */
     getRequiredPages() {
-      const totalRow = this.flowSettings.layoutSettings.rowCount;
-      const totalCol = this.flowSettings.layoutSettings.colCount;
-
-      const maxPortraitPerPage = totalRow * totalCol;
-
-      if (!this.isMultiFolder) {
-        return this.getSingleFolderRequiredPages();
-      }
-      return this.getMultiFolderRequiredPages(maxPortraitPerPage);
+      return this.isMultiFolder
+        ? this.getMultiFolderRequiredPages()
+        : this.getSingleFolderRequiredPages();
     },
     /**
      * Get required pages for single folder
@@ -252,28 +289,24 @@ export default {
      * @param {Number} val id selected flow
      */
     onSingleFolderFlowChange(val) {
-      const flowSettings = {
+      const flowSingleSettings = {
         flowOption: val,
         pages: this.getSingleFolderDefaultPages(val)
       };
 
-      this.onSettingChange({
-        flowSingleSettings: flowSettings
-      });
+      this.onSettingChange({ flowSingleSettings });
     },
     /**
      * Handle multi flow setting change
      * @param {Number} val id selected flow
      */
     onMultiFolderFlowChange(val) {
-      const flowSettings = {
+      const flowMultiSettings = {
         flowOption: val,
         pages: this.getMultiFolderDefaultPages(val)
       };
 
-      this.onSettingChange({
-        flowMultiSettings: flowSettings
-      });
+      this.onSettingChange({ flowMultiSettings });
     },
     /**
      * Get multi default pages
@@ -298,35 +331,8 @@ export default {
      * @returns {Array} default pages
      */
     getSingleFolderDefaultPages() {
-      const { totalPortraitsCount, startOnPageNumber } = this.flowSettings;
-      const teacherPlacement = this.flowSettings.teacherSettings
-        .teacherPlacement;
-
-      const extraSlots = calcAdditionPortraitSlot(
-        this.flowSettings.teacherSettings,
-        this.flowSettings.folders[0]
-      );
-
-      if (
-        teacherPlacement === PORTRAIT_TEACHER_PLACEMENT.FIRST ||
-        extraSlots === 0
-      ) {
-        const totalPage = Math.ceil(totalPortraitsCount + extraSlots);
-        return getPagesOfFolder(
-          totalPage,
-          startOnPageNumber,
-          this.maxPortraitPerPage
-        );
-      }
-
-      const rows = this.flowSettings.layoutSettings.rowCount;
-
-      const totalPage = getTotalPagesForLastPlacement(
-        rows,
-        totalPortraitsCount,
-        extraSlots,
-        this.maxPortraitPerPage
-      );
+      const totalPage = this.previewPortraitsRange.length;
+      const { startOnPageNumber } = this.flowSettings;
 
       return this.getBasePages(totalPage, startOnPageNumber);
     },
@@ -503,6 +509,9 @@ export default {
       this.flowSettings.folders[0].assetsCount = portraits.length;
       this.flowSettings.totalPortraitsCount = portraits.length;
     },
+    /**
+     * Initital data for portrait flow
+     */
     initDataFlowSettings() {
       const flowOption = this.isMultiFolder
         ? PORTRAIT_FLOW_OPTION_MULTI.AUTO.id

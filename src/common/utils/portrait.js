@@ -12,20 +12,31 @@ import {
 import { cloneDeep } from 'lodash';
 
 /**
- * Get range of portrait for selected page
+ * Get range of portrait
  *
- * @param   {Number}  currentIndex  index of page in list of selected page
  * @param   {Number}  maxPortrait   max portrait per page
  * @param   {Number}  totalPortrait total portrait
- * @returns {Object}                min index & max index of protrait in folder
+ * @param   {Number}  folderIdx index of selected folder
+ * @param   {Number}  firstPage [optional] number of portraits in the first page (if specified)
+ * @returns  array of min index & max index & folder index
  */
-const getRangePortrait = (currentIndex, maxPortrait, totalPortrait) => {
-  const estimatePortrait = maxPortrait * (currentIndex + 1);
+const getRangePortrait = (maxPortrait, totalPortrait, folderIdx, firstPage) => {
+  const pageInfo = [];
+  let count = 0;
 
-  const min = maxPortrait * currentIndex;
-  const max = Math.min(totalPortrait, estimatePortrait) - 1;
+  if (firstPage) {
+    count = firstPage;
+    pageInfo.push({ folderIdx, min: 0, max: firstPage - 1 });
+  }
 
-  return { min, max };
+  while (count < totalPortrait) {
+    const max = Math.min(count + maxPortrait, totalPortrait);
+
+    pageInfo.push({ folderIdx, min: count, max: max - 1 });
+    count = max;
+  }
+
+  return pageInfo;
 };
 
 /**
@@ -37,92 +48,57 @@ const getRangePortrait = (currentIndex, maxPortrait, totalPortrait) => {
  * @param   {Number}  totalPortrait total portrait
  * @returns {Object}                min index & max index of protrait in folder
  */
-const getRangePortraitSingleFolder = (
-  currentIndex,
+export const getRangePortraitSingleFolder = (
   rows,
   cols,
-  folders,
+  folder,
   teacherSettings
 ) => {
-  const { isHasLargeTeacher, isHasLargeAsst } = isHasLargePortrait(
-    teacherSettings
-  );
-  const totalPortrait = folders.reduce((sum, f) => sum + f.assetsCount, 0);
+  const { isHasLargeTeacher } = isHasLargePortrait(teacherSettings);
   const maxPortrait = rows * cols;
+  const { assetsCount, assets } = folder;
+  const folderIdx = 0; //folder index is always 0 because there is only 1 folder
 
-  if (folders.length > 1 || !isHasLargeTeacher) {
-    return getRangePortrait(currentIndex, maxPortrait, totalPortrait);
+  if (!isHasLargeTeacher) {
+    return getRangePortrait(maxPortrait, assetsCount, folderIdx);
   }
 
   // how many additional slots
-  const extraSlots = calcAdditionPortraitSlot(teacherSettings, folders[0]);
-  const numLargePortrait = extraSlots / 3;
+  const extraSlots = calcAdditionPortraitSlot(teacherSettings, assets);
 
-  // first placement
+  // has teacher and first placement
   if (teacherSettings.teacherPlacement === PORTRAIT_TEACHER_PLACEMENT.FIRST) {
-    const { min, max } = getRangePortrait(
-      currentIndex,
-      maxPortrait,
-      totalPortrait
-    );
+    // firstPage: number of portraits in the first page
+    const firstPage = maxPortrait - extraSlots;
 
-    const totalPages = Math.ceil((totalPortrait + extraSlots) / maxPortrait);
-    if (currentIndex === 0) return { min: 0, max: max - extraSlots };
-
-    const newMin = min - extraSlots;
-    if (currentIndex === totalPages - 1) {
-      return { min: newMin, max };
-    }
-
-    return { min: newMin, max: newMin + maxPortrait - 1 };
+    return getRangePortrait(maxPortrait, assetsCount, folderIdx, firstPage);
   }
 
-  if (teacherSettings.teacherPlacement === PORTRAIT_TEACHER_PLACEMENT.LAST) {
-    const totalPages = getTotalPagesForLastPlacement(
-      rows,
-      totalPortrait,
-      extraSlots,
-      maxPortrait
-    );
+  // has teacher and last placment
+  const numLargePortrait = extraSlots / 3;
+  const portraitRange = getRangePortrait(maxPortrait, assetsCount, folderIdx);
 
-    if (currentIndex === totalPages - 1) {
-      const { max } = getRangePortrait(
-        currentIndex - 1,
-        maxPortrait,
-        totalPortrait
-      );
+  const lastPageIndex = portraitRange.length - 1;
+  const portraitsOnLastPage = assetsCount % maxPortrait;
+  const isEnoughRow = maxPortrait - cols > portraitsOnLastPage;
+  const { max } = portraitRange[lastPageIndex];
 
-      if (numLargePortrait == 1) return { min: max, max: totalPortrait - 1 };
+  if (!isEnoughRow) {
+    portraitRange[lastPageIndex].max = max - numLargePortrait;
+    portraitRange.push({ folderIdx, max, min: max - numLargePortrait + 1 });
 
-      return { min: max - 1, max: totalPortrait - 1 };
-    }
-
-    const { min, max } = getRangePortrait(
-      currentIndex,
-      maxPortrait,
-      totalPortrait
-    );
-
-    const lastPortrait = folders[0].assets[max];
-    const isStudentLast = lastPortrait.classRole === CLASS_ROLE.STUDENT;
-    const isSmallAsstLast =
-      lastPortrait.classRole === CLASS_ROLE.ASSISTANT_TEACHER &&
-      !isHasLargeAsst;
-
-    if (isStudentLast || isSmallAsstLast) return { min, max };
-
-    const portraitsOnLastPage = totalPortrait % maxPortrait;
-    const isEnoughRow = maxPortrait - cols > portraitsOnLastPage;
-
-    if (!isEnoughRow) return { min, max: max - numLargePortrait };
-
-    const vacantCols = cols - (portraitsOnLastPage % cols);
-
-    if (vacantCols >= 2 || (vacantCols >= 1 && numLargePortrait === 1))
-      return { min, max };
-
-    return { min, max: max - 1 };
+    return portraitRange;
   }
+
+  const isNextToLastRow = portraitsOnLastPage / rows > rows - 1;
+  if (numLargePortrait === 2 && isNextToLastRow) {
+    portraitRange[lastPageIndex].max = max - 1;
+    portraitRange.push({ folderIdx, max, min: max });
+
+    return portraitRange;
+  }
+
+  return portraitRange;
 };
 
 /**
@@ -133,121 +109,40 @@ const getRangePortraitSingleFolder = (
  * @param   {Array}   folders       selected portrait folders
  * @returns {Object}                min index & max index of protrait and folder index
  */
-const getRangePortraitMultiFolder = (currentIndex, maxPortrait, folders) => {
-  // for auto flow
-  const portraitInPages = [];
-
-  // TODO: -Luc: Need to improve later for better performance
-  folders.forEach((folder, idx) => {
-    const pages = Math.ceil(folder.assetsCount / maxPortrait);
-    for (let i = 0; i < pages; i++) {
-      const { max, min } = getRangePortrait(i, maxPortrait, folder.assetsCount);
-      portraitInPages.push({ folderIdx: idx, min, max });
-    }
-  });
-  const { max, min, folderIdx } = portraitInPages[currentIndex];
-
-  return { min, max, folderIdx };
-};
-
-/**
- * Get portraits for select page (single folder)
- *
- * @param   {Number}  currentIndex  index of page in list of selected page
- * @param   {Number}  maxPortrait   max portrait per page
- * @param   {Array}   folders       selected portrait folders
- * @param   {Number}  totalPortrait total portrait
- * @returns {Array}                 portraits
- */
-const getPortraitsSingleFolder = (
-  currentIndex,
-  rows,
-  cols,
+export const getRangePortraitMultiFolder = (
+  maxPortrait,
   folders,
-  teacherSettings
+  isContinuousFlow
 ) => {
-  const { min, max } = getRangePortraitSingleFolder(
-    currentIndex,
-    rows,
-    cols,
-    folders,
-    teacherSettings
-  );
-
-  const assets = folders.reduce((result, item) => {
-    return result.concat(item.assets);
-  }, []);
-
-  return [...Array(max - min + 1).keys()].map(k => {
-    return assets[k + min];
-  });
-};
-
-/**
- * Get portraits for select page (multi-folder)
- *
- * @param   {Number}  currentIndex  index of page in list of selected page
- * @param   {Number}  maxPortrait   max portrait per page
- * @param   {Array}   folders       selected portrait folders
- * @returns {Array}                 portraits
- */
-const getPortraitsMultiFolder = (currentIndex, maxPortrait, folders) => {
-  const { min, max, folderIdx } = getRangePortraitMultiFolder(
-    currentIndex,
-    maxPortrait,
-    folders
-  );
-
-  return [...Array(max - min + 1).keys()].map(k => {
-    return folders[folderIdx].assets[k + min];
-  });
-};
-
-/**
- * Get portraits for select page
- *
- * @param   {Number}  currentIndex  index of page in list of selected page
- * @param   {Number}  rowCount      total row in config
- * @param   {Number}  colCount      total column in config
- * @param   {Number}  totalPortrait total portrait
- * @param   {Array}   folders       selected portrait folders
- * @returns {Array}                 portraits
- */
-export const getPortraitForPage = (
-  currentIndex,
-  rowCount,
-  colCount,
-  teacherSettings,
-  folders,
-  isSingle
-) => {
-  if (isSingle) {
-    return getPortraitsSingleFolder(
-      currentIndex,
-      rowCount,
-      colCount,
-      folders,
-      teacherSettings
-    );
+  if (isContinuousFlow) {
+    const totalPortraits = folders.reduce((acc, p) => acc + p.assetsCount, 0);
+    return getRangePortrait(maxPortrait, totalPortraits, 0);
   }
 
-  return getPortraitsMultiFolder(currentIndex, rowCount * colCount, folders);
+  const portraitInPages = [];
+
+  folders.forEach(({ assetsCount }, idx) => {
+    const portraitRange = getRangePortrait(maxPortrait, assetsCount, idx);
+    portraitInPages.push(...portraitRange);
+  });
+
+  return portraitInPages;
 };
 
 /**
  * To caculate the number of slots need for large size portraits
  *
  * @param {Object} teacherSettings config for teacherSettings
- * @param {Array} folder array of portrait in selected folder
+ * @param {Array} portraits array of portrait in selected folder
  * @returns number of slots need for large size portraits
  */
-export const calcAdditionPortraitSlot = (teacherSettings, folder) => {
+const calcAdditionPortraitSlot = (teacherSettings, portraits) => {
   if (!teacherSettings.hasTeacher) return 0;
 
   let numTeacher = 0;
   let numAssistant = 0;
 
-  folder.assets.forEach(p => {
+  portraits.forEach(p => {
     if (p.classRole === CLASS_ROLE.PRIMARY_TEACHER) {
       numTeacher++;
     }
@@ -355,31 +250,6 @@ export const getPortraitsByRole = folder => {
   students.sort(sortPortraitByName);
 
   return { students, teachers, asstTeachers };
-};
-
-/**
- * To calc the number of pages needed when teacher placement is "LAST"
- * @param {Number} rows row count
- * @param {Number} totalPortrait Total portrait in selected folder
- * @param {Number} extraSlots extra slot needed because of large portrait
- * @param {Number} portraitPerPage number of portrati per page
- * @returns total pages when teacher placement is "LAST"
- */
-export const getTotalPagesForLastPlacement = (
-  rows,
-  totalPortrait,
-  extraSlots,
-  portraitPerPage
-) => {
-  const numLargePortrait = extraSlots / 3;
-  const portraitsOnLastPage =
-    (totalPortrait - numLargePortrait) % portraitPerPage;
-
-  const isRequiredExtraPage =
-    portraitsOnLastPage + rows + numLargePortrait * 2 > portraitPerPage;
-  const newPage = isRequiredExtraPage ? 1 : 0;
-
-  return Math.ceil(totalPortrait / portraitPerPage) + newPage;
 };
 
 export const getSelectedDataOfFolders = (
