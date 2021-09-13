@@ -1,6 +1,6 @@
 import Draggable from 'vuedraggable';
 
-import Frame from './Frame';
+import DigitalFrame from './DigitalFrame';
 import FrameMenu from './FrameMenu';
 import TransitionProperties from './TransitionProperties';
 
@@ -16,7 +16,7 @@ import { MODAL_TYPES } from '@/common/constants';
 
 export default {
   components: {
-    Frame,
+    DigitalFrame,
     FrameMenu,
     Draggable,
     TransitionProperties
