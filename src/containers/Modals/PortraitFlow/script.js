@@ -215,10 +215,9 @@ export default {
      * @returns {Array} page list
      */
     getRequiredPages() {
-      if (this.isMultiFolder) {
-        return this.getMultiFolderRequiredPages();
-      }
-      return this.getSingleFolderRequiredPages();
+      return this.isMultiFolder
+        ? this.getMultiFolderRequiredPages()
+        : this.getSingleFolderRequiredPages();
     },
     /**
      * Get required pages for single folder
