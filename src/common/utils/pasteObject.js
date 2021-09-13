@@ -55,7 +55,8 @@ const getCenterPage = (pageSelected, targetCanvas = window.printCanvas) => {
   const isFrontCover = isHalfRight(pageSelected);
   const isBackCover = isHalfLeft(pageSelected);
 
-  const centerX = pageCenterX * (isFrontCover ? 1.5 : isBackCover ? 0.5 : 1);
+  const backCoverVal = isBackCover ? 0.5 : 1;
+  const centerX = pageCenterX * (isFrontCover ? 1.5 : backCoverVal);
 
   return {
     x: centerX,

@@ -70,10 +70,11 @@ export const actions = {
 
     const firstBg = backgrounds[0];
     const secondBg = backgrounds[1];
+    const hasSecondBg = secondBg ? secondBg : {};
 
     const leftBackground = firstBg?.isLeftPage ? firstBg : {};
     const rightBackground =
-      firstBg && !firstBg.isLeftPage ? firstBg : secondBg ? secondBg : {};
+      firstBg && !firstBg.isLeftPage ? firstBg : hasSecondBg;
 
     commit(PRINT._MUTATES.SET_BACKGROUNDS, {
       backgrounds: {

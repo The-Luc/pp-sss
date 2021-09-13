@@ -42,13 +42,12 @@ export default {
       const objectW = width * scaleX;
       const objectH = height * scaleY;
       const ratio = objectW / objectH;
-      return ratio < 0.5 || ratio > 3
-        ? 70
-        : ratio < 1 || ratio > 2.5
-        ? 60
-        : ratio > 1.5
-        ? 50
-        : 30;
+
+      if (ratio < 0.5 || ratio > 3) return 70;
+
+      if (ratio < 1 || ratio > 2.5) return 60;
+
+      return ratio > 1.5 ? 50 : 30;
     }
   },
   methods: {
