@@ -41,7 +41,7 @@ export default {
   },
   data() {
     return {
-      pageNo: '',
+      pageNo: 1,
       backgroundUrl: '',
       portraits: []
     };
@@ -147,6 +147,8 @@ export default {
      * @param {Number}  selectedPageNo  selected page number
      */
     updatePreviewData(selectedPageNo) {
+      if (isEmpty(this.selectedPages)) return;
+
       const index = this.selectedPages.findIndex(
         ({ pageNo }) => pageNo === selectedPageNo
       );

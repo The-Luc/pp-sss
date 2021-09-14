@@ -1,6 +1,7 @@
 import PreviewSlide from './PreviewSlide';
 
 import { useBackgroundAction } from '@/hooks';
+import { isEmpty } from '@/common/utils';
 
 import { PORTRAIT_FLOW_OPTION_MULTI } from '@/common/constants';
 
@@ -38,6 +39,8 @@ export default {
   },
   methods: {
     getPreviewItems() {
+      if (isEmpty(this.flowSettings)) return [];
+
       const backgrounds = this.getPageBackgrounds(this.requiredPages);
 
       const { flowMultiSettings, folders } = this.flowSettings;

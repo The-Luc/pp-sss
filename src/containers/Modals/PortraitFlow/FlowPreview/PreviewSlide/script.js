@@ -31,7 +31,7 @@ export default {
       return this.pages[this.currentIndex];
     },
     hasFullItem() {
-      return this.currentPage.length === this.itemPerPage;
+      return this.currentPage?.length === this.itemPerPage;
     },
     isPosibleToBack() {
       return this.currentIndex > 0;

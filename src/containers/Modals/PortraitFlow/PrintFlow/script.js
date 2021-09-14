@@ -1,36 +1,22 @@
-import CommonModal from '../CommonModal';
-import FlowSettings from './FlowSettings';
-import FlowPreview from './FlowPreview';
-import FlowWarning from '@/components/Modals/FlowWarning';
-import { PortraitFlowData } from '@/common/models';
+import CommonFlow from '../CommonFlow';
 
 import {
-  DEFAULT_PAGE_TITLE,
-  DEFAULT_NAME_TEXT,
-  DEFAULT_MARGIN_PAGE_TITLE,
   PORTRAIT_FLOW_OPTION_MULTI,
-  PORTRAIT_FLOW_OPTION_SINGLE,
-  PORTRAIT_TEACHER_PLACEMENT
+  PORTRAIT_FLOW_OPTION_SINGLE
 } from '@/common/constants';
-import { useSheet } from '@/hooks';
+import { useAppCommon, useSheet } from '@/hooks';
 import { cloneDeep } from 'lodash';
 import {
   isEmpty,
   getSelectedDataOfFolders,
   getSelectedDataOfPages,
-  getPortraitsByRole,
-  getTeacherAndAsstOrder,
-  sortPortraitByName,
   getRangePortraitMultiFolder,
   getRangePortraitSingleFolder
 } from '@/common/utils';
 
 export default {
   components: {
-    CommonModal,
-    FlowSettings,
-    FlowPreview,
-    FlowWarning
+    CommonFlow
   },
   props: {
     isOpen: {
@@ -47,8 +33,9 @@ export default {
   },
   setup() {
     const { currentSheet, getSheets } = useSheet();
+    const { isDigitalEdition } = useAppCommon();
 
-    return { currentSheet, getSheets };
+    return { currentSheet, getSheets, isDigitalEdition };
   },
   data() {
     return {
@@ -56,28 +43,12 @@ export default {
       requiredPages: [],
       isPreviewDisplayed: false,
       flowReviewCompKey: true,
-      flowWarning: false,
-      flowWarningDescript: ''
+      isWarningDisplayed: false,
+      warningText: '',
+      startPage: 1
     };
   },
-  created() {
-    this.flowSettings = new PortraitFlowData({
-      startOnPageNumber: this.getStartOnPageNumber(),
-      totalPortraitsCount: this.getTotalPortrait(),
-      folders: cloneDeep(this.selectedFolders)
-    });
-
-    this.flowSettings.textSettings = this.initDataTextSettings();
-    this.initDataFlowSettings();
-    this.requiredPages = this.getRequiredPages();
-  },
   computed: {
-    title() {
-      return this.isPreviewDisplayed ? 'Portrait Flow Review' : 'Portrait Flow';
-    },
-    isMultiFolder() {
-      return this.selectedFolders.length > 1;
-    },
     maxPortraitPerPage() {
       const { rowCount, colCount } = this.flowSettings.layoutSettings;
 
@@ -94,7 +65,7 @@ export default {
         - folderIndex
       Data struct: [{min, max, folderIdx},{...}]
       */
-      if (isEmpty(this.flowSettings)) return;
+      if (isEmpty(this.flowSettings?.layoutSettings)) return [];
 
       const rows = this.flowSettings.layoutSettings.rowCount;
       const cols = this.flowSettings.layoutSettings.colCount;
@@ -111,30 +82,21 @@ export default {
           isContinuousFlow
         );
       }
+
       return getRangePortraitSingleFolder(
         rows,
         cols,
         folders[0],
         this.flowSettings.teacherSettings
       );
+    },
+    initFlowOption() {
+      return this.isMultiFolder
+        ? PORTRAIT_FLOW_OPTION_MULTI.AUTO.id
+        : PORTRAIT_FLOW_OPTION_SINGLE.AUTO.id;
     }
   },
   watch: {
-    flowSettings: {
-      deep: true,
-      handler(newVal, oldVal) {
-        this.requiredPages = this.getRequiredPages();
-        if (
-          JSON.stringify(newVal.layoutSettings) ===
-            JSON.stringify(oldVal.layoutSettings) &&
-          JSON.stringify(newVal.teacherSettings) ===
-            JSON.stringify(oldVal.teacherSettings)
-        )
-          return;
-        this.initDataFlowSettings();
-        this.updatePortraitOrder();
-      }
-    },
     previewPortraitsRange(val, oldVal) {
       if (!val || !val.length || val?.length === oldVal?.length) return;
 
@@ -148,9 +110,6 @@ export default {
       this.flowSettings.flowSingleSettings.pages = pages;
     }
   },
-  mounted() {
-    this.updatePortraitOrder();
-  },
   methods: {
     /**
      * Emit cancel event to parent
@@ -161,30 +120,18 @@ export default {
     /**
      * Emit accept event to parent
      */
-    onAccept() {
+    onApply() {
       this.$emit('accept', this.flowSettings);
-    },
-    /**
-     * Emit back event
-     */
-    onBack() {
-      this.isPreviewDisplayed = false;
     },
     /**
      * Set new start page
      *
      * @param {Number}  pageNo  selected page
      */
-    onStartPageChange({ pageNo }) {
-      this.onPageSettingChange({ id: pageNo, index: 0 });
-    },
-    /**
-     * Show preview
-     */
-    onShowPreview() {
-      this.flowReviewCompKey = !this.flowReviewCompKey;
+    onStartPageChange({ startNo }) {
+      this.startPage = startNo;
 
-      this.isPreviewDisplayed = true;
+      this.onPageSettingChange({ id: startNo, index: 0 });
     },
     /**
      * Save settings
@@ -193,19 +140,10 @@ export default {
       console.log('save settings');
     },
     /**
-     * Get total asset in selected folders
-     *
-     * @returns {Number}  total asset
+     * Update require pages
      */
-    getTotalPortrait() {
-      if (!this.isMultiFolder) {
-        return this.selectedFolders[0].assets.length;
-      }
-
-      return this.selectedFolders.reduce(
-        (acc, val) => acc + val.assets.length,
-        0
-      );
+    onRequirePageUpdate() {
+      this.requiredPages = this.getRequiredPages();
     },
     /**
      * Get required pages
@@ -248,21 +186,10 @@ export default {
     },
     /**
      * To update flowSetting with data come from child componenet settings
-     * @param {Object} val data will be update to flowSetting
+     * @param {Object} setting data will be update to flowSetting
      */
-    onSettingChange(val) {
-      this.flowSettings = { ...this.flowSettings, ...val };
-    },
-    /**
-     * To create initial data for text settings
-     */
-    initDataTextSettings() {
-      return {
-        ...this.flowSettings.textSettings,
-        pageTitleFontSettings: DEFAULT_PAGE_TITLE,
-        nameTextFontSettings: DEFAULT_NAME_TEXT,
-        pageTitleMargins: DEFAULT_MARGIN_PAGE_TITLE
-      };
+    onSettingChange({ setting }) {
+      this.flowSettings = { ...this.flowSettings, ...setting };
     },
     /**
      * Get start on page from current sheet
@@ -273,14 +200,14 @@ export default {
     },
     /**
      * Handle flow setting change
-     * @param {Number} val id selected flow
+     * @param {Number} setting id selected flow
      */
-    onFlowSettingChange(val) {
+    onFlowSettingChange({ setting }) {
       if (this.isMultiFolder) {
-        this.onMultiFolderFlowChange(val);
+        this.onMultiFolderFlowChange(setting);
         return;
       }
-      this.onSingleFolderFlowChange(val);
+      this.onSingleFolderFlowChange(setting);
     },
     /**
      * Handle single flow setting change
@@ -292,7 +219,7 @@ export default {
         pages: this.getSingleFolderDefaultPages(val)
       };
 
-      this.onSettingChange({ flowSingleSettings });
+      this.onSettingChange({ setting: { flowSingleSettings } });
     },
     /**
      * Handle multi flow setting change
@@ -304,7 +231,7 @@ export default {
         pages: this.getMultiFolderDefaultPages(val)
       };
 
-      this.onSettingChange({ flowMultiSettings });
+      this.onSettingChange({ setting: { flowMultiSettings } });
     },
     /**
      * Get multi default pages
@@ -373,17 +300,21 @@ export default {
         flowSettings.pages[flowSettings.pages.length - 1] <= this.maxPageOption
       ) {
         this.onSettingChange({
-          flowSingleSettings: flowSettings,
-          startOnPageNumber: flowSettings.pages[0]
+          setting: {
+            flowSingleSettings: flowSettings,
+            startOnPageNumber: flowSettings.pages[0]
+          }
         });
         return;
       }
 
       this.onSettingChange({
-        flowSingleSettings: this.flowSettings.flowSingleSettings,
-        startOnPageNumber: this.flowSettings.startOnPageNumber
+        setting: {
+          flowSingleSettings: this.flowSettings.flowSingleSettings,
+          startOnPageNumber: this.flowSettings.startOnPageNumber
+        }
       });
-      this.onSingleFolderFlowWarningOpen(flowSettings.pages.length, id);
+      this.displaySingleFolderWarning(flowSettings.pages.length, id);
     },
     /**
      * Handle flow setting change
@@ -413,108 +344,52 @@ export default {
         selectedData[selectedData.length - 1].endOnPage <= this.maxPageOption
       ) {
         this.onSettingChange({
-          flowMultiSettings: flowSettings,
-          startOnPageNumber: flowSettings.pages[0]
+          setting: {
+            flowMultiSettings: flowSettings,
+            startOnPageNumber: flowSettings.pages[0]
+          }
         });
         return;
       }
       this.onSettingChange({
-        flowMultiSettings: this.flowSettings.flowMultiSettings,
-        startOnPageNumber: this.flowSettings.startOnPageNumber
+        setting: {
+          flowMultiSettings: this.flowSettings.flowMultiSettings,
+          startOnPageNumber: this.flowSettings.startOnPageNumber
+        }
       });
-      this.onMultiFolderFlowWarning(index + 1, id);
+      this.displayMultiFolderWarning(index + 1, id);
     },
     /**
      * Open modal warning
      * @param {Number} folderNo folder
      * @param {Number} pageNo selected page
      */
-    onMultiFolderFlowWarning(folderNo, pageNo) {
-      this.flowWarningDescript = `If you begin the portrait flow of folder ${folderNo} on page  ${pageNo}, 
+    displayMultiFolderWarning(folderNo, pageNo) {
+      this.warningText = `If you begin the portrait flow of folder ${folderNo} on page  ${pageNo}, 
                                       based on the current settings, 
                                       there won’t be enough pages available to flow your portraits. 
                                       If you click “Continue” you will need to reconfigure your settings or 
                                       select a different page to begin the portrait flow.`;
-      this.flowWarning = true;
+      this.isWarningDisplayed = true;
     },
     /**
      * Open modal warning
      * @param {Number} totalPage total page
      * @param {Number} pageNo index of folder
      */
-    onSingleFolderFlowWarningOpen(totalPage, pageNo) {
-      this.flowWarningDescript = `If you begin this portrait flow on page ${pageNo}, 
+    displaySingleFolderWarning(totalPage, pageNo) {
+      this.warningText = `If you begin this portrait flow on page ${pageNo}, 
                                       based on the current settings, 
                                       there are not enough pages available to flow your portraits. 
                                       If you click “Continue” you will need to reconfigure your settings 
                                       so that the portrait flow takes no more than ${totalPage} pages.`;
-      this.flowWarning = true;
+      this.isWarningDisplayed = true;
     },
     /**
      * Close modal warning
      */
     onFlowWarningClose() {
-      this.flowWarning = false;
-    },
-    /**
-     * Update the order portrait when use choose teacher placement FIRST or LAST
-     */
-    rearrangePortraitOrder() {
-      if (this.isMultiFolder) return;
-
-      const {
-        teacherPlacement,
-        assistantTeacherPlacement,
-        hasTeacher,
-        hasAssistantTeacher
-      } = this.flowSettings.teacherSettings;
-
-      const { students, teachers, asstTeachers } = getPortraitsByRole(
-        this.selectedFolders[0]
-      );
-
-      if (!hasTeacher) {
-        return students;
-      }
-
-      const teacherAndAsst = !hasAssistantTeacher
-        ? teachers
-        : getTeacherAndAsstOrder(
-            teachers,
-            asstTeachers,
-            assistantTeacherPlacement
-          );
-
-      if (teacherPlacement === PORTRAIT_TEACHER_PLACEMENT.FIRST) {
-        return [...teacherAndAsst, ...students];
-      }
-
-      if (teacherPlacement === PORTRAIT_TEACHER_PLACEMENT.LAST) {
-        return [...students, ...teacherAndAsst];
-      }
-
-      return [...teacherAndAsst, ...students].sort(sortPortraitByName);
-    },
-    /**
-     * Update order of portrait in assets
-     */
-    updatePortraitOrder() {
-      if (this.isMultiFolder) return;
-
-      const portraits = this.rearrangePortraitOrder();
-
-      this.flowSettings.folders[0].assets = portraits;
-      this.flowSettings.folders[0].assetsCount = portraits.length;
-      this.flowSettings.totalPortraitsCount = portraits.length;
-    },
-    /**
-     * Initital data for portrait flow
-     */
-    initDataFlowSettings() {
-      const flowOption = this.isMultiFolder
-        ? PORTRAIT_FLOW_OPTION_MULTI.AUTO.id
-        : PORTRAIT_FLOW_OPTION_SINGLE.AUTO.id;
-      this.onFlowSettingChange(flowOption);
+      this.isWarningDisplayed = false;
     },
     /**
      * Get base pages

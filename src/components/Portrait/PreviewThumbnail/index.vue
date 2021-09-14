@@ -9,7 +9,7 @@
       class="page-title"
       :style="pageTitleStyle"
     >
-      {{ flowSettings.textSettings.pageTitle }}
+      {{ title }}
     </div>
 
     <div ref="thumbWrapper" class="thumb-wrapper">
