@@ -3,7 +3,7 @@
     <v-btn @click.native="onPreview">
       <span>Preview</span>
 
-      <v-icon class="play-icon">arrow_right</v-icon>
+      <v-icon class="play-icon">mdi-play</v-icon>
     </v-btn>
   </group-item>
 </template>
