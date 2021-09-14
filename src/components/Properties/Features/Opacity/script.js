@@ -1,4 +1,5 @@
-import Slider from '@/components/Slider';
+import Slider from '@/components/Slider/Slider';
+
 import { validateInputOption } from '@/common/utils';
 
 export default {

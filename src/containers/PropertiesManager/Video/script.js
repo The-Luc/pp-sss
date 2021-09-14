@@ -1,8 +1,8 @@
 import Properties from '@/components/Properties/BoxProperties';
 import TabPropertiesMenu from '@/containers/TabPropertiesMenu';
+import StyleContent from '@/components/Properties/Groups/General';
+import ArrangeContent from '@/components/Properties/Groups/Arrange';
 import Movie from './Movie';
-import StyleContent from '@/components/General';
-import ArrangeContent from '@/components/Arrange';
 
 import { useElementProperties } from '@/hooks';
 import { DEFAULT_VIDEO, EVENT_TYPE } from '@/common/constants';

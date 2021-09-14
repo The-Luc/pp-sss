@@ -1,5 +1,7 @@
-import { ARRANGE_SEND } from '@/common/constants/arrange';
 import ButtonProperty from '@/components/Buttons/ButtonProperty';
+
+import { ARRANGE_SEND } from '@/common/constants/arrange';
+
 export default {
   components: {
     ButtonProperty

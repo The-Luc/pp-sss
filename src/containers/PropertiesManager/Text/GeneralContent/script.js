@@ -1,10 +1,11 @@
+import Alignment from '@/components/Properties/Groups/TextProperties/Alignment';
+import Animation from '@/components/Properties/Features/Animation';
 import TextStyle from './TextStyle';
 import Fonts from './Font';
 import Effect from './Effect';
-import Alignment from '@/components/TextProperties/Alignment';
 import Vertical from './Vertical';
 import Spacing from './Spacing';
-import Animation from '@/components/Animation';
+
 import { useAppCommon, useElementProperties } from '@/hooks';
 import { EVENT_TYPE, TEXT_HORIZONTAL_ALIGN } from '@/common/constants';
 

@@ -1,6 +1,6 @@
 import PpSelect from '@/components/Selectors/Select';
-import FontSize from '@/components/TextProperties/FontSize';
-import FontFamily from '@/components/TextProperties/FontFamily';
+import FontSize from '@/components/Properties/Groups/TextProperties/FontSize';
+import FontFamily from '@/components/Properties/Groups/TextProperties/FontFamily';
 
 import { useElementProperties } from '@/hooks';
 import { FONT_SIZE, FONT_FAMILY } from '@/common/constants';
