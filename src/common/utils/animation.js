@@ -73,8 +73,8 @@ const fadeScaleIn = (element, options, canvas) => {
 
   const startState = {
     opacity: 0,
-    scaleX: scale,
-    scaleY: scale,
+    scaleX: element.scaleX * scale,
+    scaleY: element.scaleY * scale,
     top: center.y,
     left: center.x,
     originX: 'center',
@@ -114,8 +114,8 @@ const fadeScaleOut = (element, options, canvas) => {
 
   const animateProps = {
     opacity: 0,
-    scaleX: scale,
-    scaleY: scale
+    scaleX: element.scaleX * scale,
+    scaleY: element.scaleY * scale
   };
 
   const startState = {
@@ -649,7 +649,10 @@ const hidePlayOrderBox = (element, isStop) => {
   }
   if (isStop) return;
 
-  const rect = element.getObjects()[0];
+  const rect = element.getObject && element.getObjects()[0];
+
+  if (!rect) return { playIn: null, playout: null };
+
   return hidePlayOrderBox(rect, true);
 };
 
@@ -670,8 +673,9 @@ const showPlayOrderBox = (element, playIn, playOut, isStop) => {
     });
   }
 
-  if (isStop) return;
+  const rect = element.getObject && element.getObjects()[0];
 
-  const rect = element.getObjects()[0];
+  if (isStop || !rect) return;
+
   return showPlayOrderBox(rect, playIn, playOut, true);
 };

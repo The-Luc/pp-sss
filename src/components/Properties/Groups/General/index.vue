@@ -1,23 +1,32 @@
 <template>
   <div>
-    <FillColor
+    <fill-color
       v-if="isAllowFillColor"
       :value="colorValue"
       @change="onChangeColor"
     />
 
-    <Opacity :value="opacityValue" @change="onChangeOpacity" />
+    <opacity :value="opacityValue" @change="onChangeOpacity" />
 
-    <Border
+    <border
       v-if="isShowBorder"
       :current-border="currentBorder"
       @change="onChangeBorder"
     />
 
-    <Shadow
+    <shadow
       :current-shadow="currentShadow"
       @change="onChangeShadow"
       @changeDropShadow="onChangeDropShadow"
+    />
+
+    <animation
+      v-if="isDigital"
+      :title="animationTitle"
+      :play-in-config="playInConfig"
+      :play-out-config="playOutConfig"
+      @change="onChangeAnimation"
+      @apply="onApplyAnimation"
     />
   </div>
 </template>

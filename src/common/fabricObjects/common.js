@@ -23,6 +23,7 @@ import {
   inToPxPreview
 } from '@/common/utils';
 import { toFabricMediaProp } from './image';
+import { useGroupOverride } from '@/plugins/fabric';
 
 export const DEFAULT_RULE_DATA = {
   TYPE: {
@@ -729,7 +730,10 @@ export const addPrintSvgs = async (
 
   if (isEmpty(svgs) || svgs.length != svgObjects.length) return;
 
-  svgs.forEach(s => addEventListeners(s, eventListeners));
+  svgs.forEach(s => {
+    useGroupOverride(s);
+    addEventListeners(s, eventListeners);
+  });
 
   handleAddSvgsToCanvas({
     svgs,
@@ -984,15 +988,13 @@ const createSVGElement = (val, fill) => {
  * @param {Object} data object data stored
  */
 export const handleObjectSelected = async (target, data) => {
-  if (target.objectType === OBJECT_TYPE.TEXT) {
-    const playInOrder = data?.animationIn?.order || target?.playInOrder || 1;
-    const playOutOrder = data?.animationOut?.order || target?.playOutOrder || 1;
-    const playInEle = createSVGElement(playInOrder, 'white');
-    const playOutEle = createSVGElement(playOutOrder, 'lightgray');
-    const [playIn, playOut] = await Promise.all([playInEle, playOutEle]);
-    target.set({ playIn, playOut, dirty: true });
-    target.canvas.renderAll();
-  }
+  const playInOrder = data?.animationIn?.order || target?.playInOrder || 1;
+  const playOutOrder = data?.animationOut?.order || target?.playOutOrder || 1;
+  const playInEle = createSVGElement(playInOrder, 'white');
+  const playOutEle = createSVGElement(playOutOrder, 'lightgray');
+  const [playIn, playOut] = await Promise.all([playInEle, playOutEle]);
+  target.set({ playIn, playOut, dirty: true });
+  target.canvas.renderAll();
 };
 
 /**

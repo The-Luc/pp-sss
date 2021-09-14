@@ -3,7 +3,11 @@ import { fabric } from 'fabric';
 import SizeWrapper from '@/components/SizeWrapper';
 import AddBoxInstruction from '@/components/AddBoxInstruction';
 import Frames from './Frames';
-import { imageBorderModifier, useDigitalOverrides } from '@/plugins/fabric';
+import {
+  imageBorderModifier,
+  useDigitalOverrides,
+  useGroupOverride
+} from '@/plugins/fabric';
 import {
   ARRANGE_SEND,
   ASSET_TYPE,
@@ -1853,6 +1857,8 @@ export default {
           rotation: objectData.coord.rotation
         }
       });
+
+      useGroupOverride(svg);
 
       applyShadowToObject(svg, {
         dropShadow,

@@ -1,0 +1,21 @@
+.name {
+  display: flex;
+
+  &.under-portrait {
+    height: var(--name-height);
+    width: 100%;
+    text-align: center;
+    line-height: 1px;
+    font-size: 8px;
+
+    div {
+      white-space: nowrap;
+    }
+  }
+
+  div {
+    .space::after {
+      content: '\00a0';
+    }
+  }
+}

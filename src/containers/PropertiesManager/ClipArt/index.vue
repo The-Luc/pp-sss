@@ -6,13 +6,18 @@
           General
         </v-tab>
         <v-tab-item value="general">
-          <GeneralContent
+          <general-content
             :is-allow-fill-color="isAllowFillColor"
             :color-value="colorValue"
             :opacity-value="opacityValue"
             :current-shadow="currentShadow"
+            :is-digital="isDigitalEdition"
+            :play-in-config="playInConfig"
+            :play-out-config="playOutConfig"
+            animation-title="Clip Art Animation"
             @change="onChange"
             @changeShadow="onChangeShadow"
+            @onApply="onApplyAnimation"
           />
         </v-tab-item>
         <v-tab href="#arrange">

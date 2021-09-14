@@ -1,3 +1,6 @@
+import NameSection from './NameSection';
+import PortraitSection from './PortraitSection';
+
 import {
   DEFAULT_PORTRAIT_RATIO,
   PORTRAIT_NAME_DISPLAY,
@@ -16,6 +19,10 @@ import {
 } from '@/common/fabricObjects';
 
 export default {
+  components: {
+    NameSection,
+    PortraitSection
+  },
   props: {
     portraits: {
       type: Array,
@@ -49,6 +56,8 @@ export default {
   },
   computed: {
     nameTextStyle() {
+      if (isEmpty(this.flowSettings)) return {};
+
       const {
         nameTextFontSettings,
         nameLines,
@@ -80,6 +89,8 @@ export default {
       return style;
     },
     pageTitleStyle() {
+      if (isEmpty(this.flowSettings)) return {};
+
       const {
         pageTitleFontSettings,
         isPageTitleOn,
@@ -96,17 +107,21 @@ export default {
       );
     },
     isCenterPosition() {
-      const { namePosition } = this.flowSettings.textSettings;
-      return namePosition.value === PORTRAIT_NAME_POSITION.CENTERED.value;
+      const namePosition = this.flowSettings.textSettings?.namePosition;
+
+      return namePosition?.value === PORTRAIT_NAME_POSITION.CENTERED.value;
     },
     showPageTitile() {
-      return this.flowSettings.textSettings.isPageTitleOn;
+      return this.flowSettings.textSettings?.isPageTitleOn;
     },
     isFirstLastDisplay() {
-      const { nameDisplay } = this.flowSettings.textSettings;
-      return nameDisplay.value === PORTRAIT_NAME_DISPLAY.FIRST_LAST.value;
+      const nameDisplay = this.flowSettings.textSettings?.nameDisplay;
+
+      return nameDisplay?.value === PORTRAIT_NAME_DISPLAY.FIRST_LAST.value;
     },
     nameContainerStyle() {
+      if (isEmpty(this.flowSettings)) return {};
+
       const { nameWidth } = this.flowSettings.textSettings;
       const nameContainerWidth = this.$refs?.portraits?.clientWidth;
       const col = this.layout.colCount;
@@ -130,7 +145,9 @@ export default {
 
       return style;
     },
-    namePortrait() {
+    portraitNames() {
+      if (isEmpty(this.flowSettings)) return [];
+
       const { rowCount, colCount } = this.layout;
       const portraitPerPage = rowCount * colCount;
       const numLargePortrait = (portraitPerPage - this.portraits.length) / 3;
@@ -138,25 +155,25 @@ export default {
       const isOnStartPage =
         this.pageNumber === this.flowSettings.startOnPageNumber;
 
-      const arrayPortrait = Object.values(this.portraits);
-      const arrayNamePortrait = [];
+      const portraitArray = Object.values(this.portraits);
+      const portraitNameArray = [];
 
       if (this.portraits.length === portraitPerPage || !isOnStartPage) {
-        while (arrayPortrait.length) {
-          arrayNamePortrait.push(arrayPortrait.splice(0, colCount));
+        while (portraitArray.length) {
+          portraitNameArray.push(portraitArray.splice(0, colCount));
         }
 
-        return arrayNamePortrait;
+        return portraitNameArray;
       }
 
       for (let i = 1; i <= rowCount; i++) {
         const numPortraitForRow =
           i < 3 ? colCount - numLargePortrait * i : colCount;
 
-        arrayNamePortrait.push(arrayPortrait.splice(0, numPortraitForRow));
+        portraitNameArray.push(portraitArray.splice(0, numPortraitForRow));
       }
 
-      return arrayNamePortrait;
+      return portraitNameArray;
     },
     isPageRight() {
       return this.pageNumber % 2 !== 0;
@@ -193,6 +210,17 @@ export default {
         ...cssMask,
         ...customBorder
       };
+    },
+    portraitItems() {
+      return this.portraits.map(p => {
+        return {
+          ...p,
+          isLargePortrait: this.isLargePortrait(p)
+        };
+      });
+    },
+    title() {
+      return this.flowSettings.textSettings?.pageTitle;
     }
   },
   watch: {
@@ -218,6 +246,7 @@ export default {
   mounted() {
     this.$nextTick(() => {
       this.previewHeight = this.$refs.thumbWrapper.clientHeight;
+
       setTimeout(() => {
         this.updatePortraitData();
       }, 10);
@@ -240,8 +269,9 @@ export default {
      * To calculate width portrait and update layout on UI
      */
     updateLayout() {
-      const portraitsEl = this.$refs.portraits;
-      const portraitsContainerEl = this.$refs.portraitsContainer;
+      const portraitsEl = this.$refs.portraitsSection.$refs.portraits;
+      const portraitsContainerEl = this.$refs.portraitsSection.$refs
+        .portraitsContainer;
 
       if (!portraitsEl.style) return;
 
@@ -286,7 +316,7 @@ export default {
       if (!thumbWrapperEl.style) return;
 
       const margins = this.layout.margins;
-      const nameWidth = this.flowSettings.textSettings.nameWidth;
+      const nameWidth = this.flowSettings.textSettings?.nameWidth;
 
       const top = this.showPageTitile ? 0 : this.convertIntoPx(margins.top);
 
@@ -368,7 +398,7 @@ export default {
      * Update large portrait: class name & css style
      */
     updateLargePortraitSize() {
-      const portraitsEl = this.$refs.portraits;
+      const portraitsEl = this.$refs.portraitsSection.$refs.portraits;
       const largeEl = portraitsEl.querySelector('.enlarge');
 
       if (!largeEl) return;
