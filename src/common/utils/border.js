@@ -18,8 +18,10 @@ export const getRectDashes = (width, height, strokeType, strokeWidth) => {
   if (strokeType === BORDER_STYLES.ROUND) {
     dashArray = getRoundDashes(width, height, strokeWidth);
   } else if (strokeType === BORDER_STYLES.SQUARE) {
-    const widthArray = getLineDashes(width, 0, 0, 0);
-    const heightArray = getLineDashes(0, height, 0, 0);
+    const dashLength = Math.min(Math.min(width, height) * 0.1, 100);
+
+    const widthArray = getLineDashes(width, 0, 0, 0, dashLength);
+    const heightArray = getLineDashes(0, height, 0, 0, dashLength);
     dashArray = [widthArray, 0, heightArray, 0, widthArray, 0, heightArray];
   }
   return [].concat(...dashArray);
@@ -81,22 +83,26 @@ const getRoundDashes = (width, height, strokeWidth) => {
 };
 
 // same as previous snippet except that it does return all the segment's dashes
-const getLineDashes = (x1, y1, x2, y2) => {
-  const length = Math.hypot(x2 - x1, y2 - y1); // ()
-  let dash_length = length / 8;
+const getLineDashes = (x1, y1, x2, y2, dashLength) => {
+  const length = Math.hypot(x2 - x1, y2 - y1) + 2; // calc distance between two points
 
-  const dash_gap = dash_length * 0.66666;
-  dash_length -= dash_gap * 0.3333;
+  const dashAndGapNumber = Math.floor(length / dashLength);
+  const oddNumDashGap =
+    dashAndGapNumber % 2 ? dashAndGapNumber : dashAndGapNumber + 1;
+  const numGaps = (oddNumDashGap - 1) / 2;
+  const numDashes = numGaps + 1;
+  const gapLength = dashLength;
+  const totalBars = numDashes + numGaps;
 
-  let total_length = 0;
-  const dasharray = [];
-  let next;
-  while (total_length < length) {
-    next = dasharray.length % 2 ? dash_gap : dash_length;
-    total_length += next;
-    dasharray.push(next);
-  }
-  return dasharray;
+  const calcLineLength = oddNumDashGap * dashLength;
+  const remaining = length - calcLineLength;
+  const acctualDashLength = remaining / numDashes + dashLength;
+
+  const dashArray = Array(totalBars)
+    .fill(0)
+    .map((_, idx) => (idx % 2 === 0 ? acctualDashLength : gapLength));
+
+  return dashArray;
 };
 
 export const getStrokeLineCap = strokeType => {
