@@ -20,6 +20,10 @@ export default {
     nameCssStyle: {
       type: Object,
       default: () => ({})
+    },
+    imageStyle: {
+      type: Object,
+      default: () => ({})
     }
   }
 };

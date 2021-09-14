@@ -29,6 +29,7 @@
         :is-first-last-display="isFirstLastDisplay"
         :is-center-position="isCenterPosition"
         :name-css-style="nameTextStyle"
+        :image-style="imageStyle"
       ></portrait-section>
     </div>
   </div>

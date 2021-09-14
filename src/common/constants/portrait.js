@@ -203,3 +203,45 @@ export const DEFAULT_NAME_TEXT = {
 export const DEFAULT_NAME_WIDTH = 1.5;
 export const DEFAULT_NAME_LINES = 0.125;
 export const DEFAULT_VALUE_PAGE_TITLE = 'Untitled';
+
+export const CSS_PORTRAIT_IMAGE_MASK = {
+  [PORTRAIT_IMAGE_MASK.NONE]: {
+    value: PORTRAIT_IMAGE_MASK.NONE,
+    className: 'mask-style-none',
+    name: 'None',
+    style: {}
+  },
+  [PORTRAIT_IMAGE_MASK.ROUNDED]: {
+    value: PORTRAIT_IMAGE_MASK.ROUNDED,
+    className: 'mask-style-rounded',
+    name: 'Rounded Corners',
+    style: {
+      borderRadius: '15%'
+    }
+  },
+  [PORTRAIT_IMAGE_MASK.OVAL]: {
+    value: PORTRAIT_IMAGE_MASK.OVAL,
+    className: 'mask-style-oval',
+    name: 'Oval',
+    style: {
+      borderRadius: '50%'
+    }
+  },
+  [PORTRAIT_IMAGE_MASK.CIRCLE]: {
+    value: PORTRAIT_IMAGE_MASK.CIRCLE,
+    className: 'mask-style-circle',
+    name: 'Circle',
+    style: {
+      height: 'calc(100% / 1.25)',
+      borderRadius: '50%'
+    }
+  },
+  [PORTRAIT_IMAGE_MASK.SQUARE]: {
+    value: PORTRAIT_IMAGE_MASK.SQUARE,
+    className: 'mask-style-square',
+    name: 'Square',
+    style: {
+      height: 'calc(100% / 1.25)'
+    }
+  }
+};
