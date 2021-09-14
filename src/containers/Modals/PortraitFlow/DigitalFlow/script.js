@@ -4,7 +4,7 @@ import {
   PORTRAIT_FLOW_OPTION_MULTI,
   PORTRAIT_FLOW_OPTION_SINGLE
 } from '@/common/constants';
-import { useAppCommon, useSheet } from '@/hooks';
+import { useSheet } from '@/hooks';
 import { cloneDeep } from 'lodash';
 import {
   isEmpty,
@@ -33,9 +33,8 @@ export default {
   },
   setup() {
     const { currentSheet, getSheets } = useSheet();
-    const { isDigitalEdition } = useAppCommon();
 
-    return { currentSheet, getSheets, isDigitalEdition };
+    return { currentSheet, getSheets };
   },
   data() {
     return {
