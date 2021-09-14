@@ -21,7 +21,12 @@
         title="Backward"
         @click="onClick(SEND.BACKWARD)"
       >
-        <img slot="icon" class="icon-right" src="@/assets/icons/backward.svg" />
+        <img
+          slot="icon"
+          class="icon-right"
+          src="@/assets/icons/backward.svg"
+          alt="Icon of backward button"
+        />
       </ButtonProperty>
       <ButtonProperty
         :disabled="disabled"
@@ -29,7 +34,12 @@
         title="Forward"
         @click="onClick(SEND.FORWARD)"
       >
-        <img slot="icon" class="icon-right" src="@/assets/icons/forward.svg" />
+        <img
+          slot="icon"
+          class="icon-right"
+          src="@/assets/icons/forward.svg"
+          alt="Icon of forward button"
+        />
       </ButtonProperty>
     </div>
   </div>

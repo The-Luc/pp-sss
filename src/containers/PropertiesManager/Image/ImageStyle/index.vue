@@ -21,7 +21,7 @@
         </div>
       </div>
       <div class="select-icon-dropdown" @click="onOpenDropdown">
-        <img src="@/assets/icons/arrow-select.svg" />
+        <img src="@/assets/icons/arrow-select.svg" alt="Icon dropdown" />
       </div>
     </div>
     <div

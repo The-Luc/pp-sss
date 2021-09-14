@@ -8,7 +8,7 @@
           class="w-100 btn-detail button-property"
           @click.native="onClickCropImage"
         >
-          <img src="@/assets/icons/crop-image.svg" />
+          <img src="@/assets/icons/crop-image.svg" alt="Icon crop" />
           <span>
             Centercrop Image
           </span>
@@ -18,7 +18,7 @@
           class="w-100 btn-detail button-property"
           @click.native="onClickRemoveImage"
         >
-          <img src="@/assets/icons/remove-image.svg" />
+          <img src="@/assets/icons/remove-image.svg" alt="Icon remove" />
           <span>Remove Image</span>
         </PpButton>
       </div>

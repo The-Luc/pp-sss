@@ -6,7 +6,7 @@
         class="w-100 btn-detail button-property"
         @click.native="onClickBackgroundImage"
       >
-        <img src="@/assets/icons/fill-image.svg" />
+        <img src="@/assets/icons/fill-image.svg" alt="Icon fill spread" />
         <span>
           Fill Spread As Background Image
         </span>

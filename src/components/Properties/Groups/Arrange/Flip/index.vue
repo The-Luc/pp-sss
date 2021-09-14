@@ -11,6 +11,7 @@
           slot="icon"
           class="icon-right"
           src="@/assets/icons/switch-right.svg"
+          alt="Icon of horizontal button"
         />
       </ButtonProperty>
       <ButtonProperty
@@ -22,6 +23,7 @@
           slot="icon"
           class="icon-right"
           src="@/assets/icons/switch-top.svg"
+          alt="Icon of vertical button"
         />
       </ButtonProperty>
     </div>
