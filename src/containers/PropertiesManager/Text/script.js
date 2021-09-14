@@ -1,8 +1,8 @@
 import Properties from '@/components/Properties/BoxProperties';
+import StyleContent from '@/components/Properties/Groups/General';
+import ArrangeContent from '@/components/Properties/Groups/Arrange';
 import TabPropertiesMenu from '@/containers/TabPropertiesMenu';
 import GeneralContent from './GeneralContent';
-import StyleContent from '@/components/General';
-import ArrangeContent from '@/components/Arrange';
 
 import { useElementProperties } from '@/hooks';
 import { DEFAULT_TEXT } from '@/common/constants';

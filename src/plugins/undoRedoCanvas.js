@@ -34,10 +34,12 @@ class UndoRedoCanvas {
    * @param {Object} options  option for config
    */
   constructor(options) {
-    if (!hasOwnProperty(options, 'canvas')) throw 'Canvas must be set';
+    if (!hasOwnProperty(options, 'canvas')) {
+      throw new Error('Canvas must be set');
+    }
 
     if (!hasOwnProperty(options, 'renderCanvasFn')) {
-      throw 'Render canvas method must be set';
+      throw new Error('Render canvas method must be set');
     }
 
     this._canvas = options.canvas;

@@ -1,8 +1,9 @@
-import Send from '@/components/Arrange/Send';
-import Size from '@/components/Arrange/Size';
-import Position from '@/components/Arrange/Position';
-import Flip from '@/components/Arrange/Flip';
-import Rotate from '@/components/Arrange/Rotate';
+import Send from './Send';
+import Size from './Size';
+import Position from './Position';
+import Flip from './Flip';
+import Rotate from './Rotate';
+
 import { EVENT_TYPE } from '@/common/constants/eventType';
 
 export default {

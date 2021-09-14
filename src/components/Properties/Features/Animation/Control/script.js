@@ -1,4 +1,4 @@
-import PpInput from '@/components/InputProperty';
+import PpInput from '@/components/Input/InputProperty';
 import PpSelect from '@/components/Selectors/Select';
 import PpCombobox from '@/components/Selectors/Combobox';
 

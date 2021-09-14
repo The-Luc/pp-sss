@@ -1,4 +1,4 @@
-import PpInput from '@/components/InputProperty';
+import PpInput from '@/components/Input/InputProperty';
 export default {
   components: {
     PpInput
