@@ -28,7 +28,7 @@ import {
 } from './common';
 import {
   useDoubleStroke,
-  useTextGroupOverride,
+  useGroupOverride,
   useTextOverride
 } from '@/plugins/fabric';
 
@@ -114,7 +114,7 @@ export const createTextBox = (x, y, width, height, textProperties) => {
     playOutOrder
   });
 
-  useTextGroupOverride(group);
+  useGroupOverride(group);
 
   const groupProp = toFabricTextGroupProp(dataObject);
   const { flipX, flipY } = groupProp;

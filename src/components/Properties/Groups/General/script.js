@@ -2,13 +2,15 @@ import FillColor from '@/containers/Properties/Features/FillColor';
 import Opacity from '@/components/Properties/Features/Opacity';
 import Shadow from '@/components/Properties/Features/Shadow';
 import Border from '@/components/Properties/Features/Border';
+import Animation from '@/components/Properties/Features/Animation';
 
 export default {
   components: {
     FillColor,
     Opacity,
     Shadow,
-    Border
+    Border,
+    Animation
   },
   props: {
     colorValue: {
@@ -34,6 +36,21 @@ export default {
     currentBorder: {
       type: Object,
       default: () => ({})
+    },
+    isDigital: {
+      type: Boolean
+    },
+    playInConfig: {
+      type: Object,
+      default: () => ({})
+    },
+    playOutConfig: {
+      type: Object,
+      default: () => ({})
+    },
+    animationTitle: {
+      type: String,
+      default: ''
     }
   },
   methods: {
@@ -71,6 +88,20 @@ export default {
      */
     onChangeBorder(object) {
       this.$emit('changeBorder', object);
+    },
+    /**
+     * Emit animation option selected
+     * @param {Object} animationConfig Animation option selected
+     */
+    onChangeAnimation(object) {
+      this.$emit('change', object);
+    },
+    /**
+     * Emit apply option selected
+     * @param {Object} applyOption apply option selected
+     */
+    onApplyAnimation(object) {
+      this.$emit('onApply', object);
     }
   }
 };

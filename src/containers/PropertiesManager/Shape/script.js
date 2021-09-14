@@ -3,7 +3,7 @@ import TabPropertiesMenu from '@/containers/TabPropertiesMenu';
 import ArrangeContent from '@/components/Properties/Groups/Arrange';
 import GeneralContent from '@/components/Properties/Groups/General';
 
-import { useElementProperties } from '@/hooks';
+import { useElementProperties, useAppCommon } from '@/hooks';
 import { computedObjectSize } from '@/common/utils';
 
 import { DEFAULT_SHAPE, DEFAULT_PROP } from '@/common/constants';
@@ -18,9 +18,11 @@ export default {
   },
   setup() {
     const { getProperty } = useElementProperties();
+    const { isDigitalEdition } = useAppCommon();
 
     return {
-      getProperty
+      getProperty,
+      isDigitalEdition
     };
   },
   computed: {
@@ -74,6 +76,12 @@ export default {
     },
     currentShadow() {
       return this.getProperty('shadow');
+    },
+    playInConfig() {
+      return this.getProperty('animationIn') || {};
+    },
+    playOutConfig() {
+      return this.getProperty('animationOut') || {};
     }
   },
   methods: {
@@ -128,6 +136,10 @@ export default {
           ...shadowCfg
         }
       });
+    },
+    onApplyAnimation(val) {
+      console.log(val);
+      //  will be implement soon
     }
   }
 };

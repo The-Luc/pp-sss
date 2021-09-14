@@ -754,7 +754,7 @@ const renderControls = function(ctx) {
 
   if (this.playIn) {
     const { width, height } = this.playIn;
-    const radius = this.width - width * 2;
+    const radius = this.width * this.scaleX - width * 2;
 
     rotateIcon(
       ctx,
@@ -770,7 +770,8 @@ const renderControls = function(ctx) {
   }
   if (this.playOut) {
     const { width, height } = this.playOut;
-    const radius = this.width - width;
+    const radius = this.width * this.scaleX - width;
+
     rotateIcon(
       ctx,
       this.playOut,
@@ -789,7 +790,7 @@ const renderControls = function(ctx) {
  * Allow fabric text object to have lineHeight override
  * @param {fabric.Group} text - the object to enable lineHeight override
  */
-export const useTextGroupOverride = function(group) {
+export const useGroupOverride = function(group) {
   group._renderControls = renderControls;
 };
 
