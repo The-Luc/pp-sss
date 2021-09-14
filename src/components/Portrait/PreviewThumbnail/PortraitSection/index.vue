@@ -7,11 +7,9 @@
         :class="{ portrait, enlarge: portrait.isLargePortrait }"
       >
         <div class="photo-container">
-          <img
-            class="photo"
-            :src="portrait.imageUrl"
-            :alt="portrait.firstName"
-          />
+          <div v-show="portrait.imageUrl" class="photo" :style="imageStyle">
+            <img :src="portrait.imageUrl" :alt="portrait.firstName" />
+          </div>
         </div>
 
         <name-item

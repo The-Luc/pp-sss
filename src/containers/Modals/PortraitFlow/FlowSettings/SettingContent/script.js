@@ -1,12 +1,14 @@
 import TextSetting from './TextSetting';
 import PortraitSetting from './PortraitSetting';
 import FlowSettings from './FlowSettings';
+import ImageSettings from './ImageSettings';
 
 export default {
   components: {
     TextSetting,
     PortraitSetting,
-    FlowSettings
+    FlowSettings,
+    ImageSettings
   },
   props: {
     currentTab: {

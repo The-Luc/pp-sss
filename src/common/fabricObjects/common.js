@@ -8,7 +8,8 @@ import {
   OBJECT_TYPE,
   DEFAULT_TEXT,
   TEXT_HORIZONTAL_ALIGN,
-  TEXT_CASE_VALUE
+  TEXT_CASE_VALUE,
+  HTML_BORDER_STYLE
 } from '@/common/constants';
 
 import {
@@ -1041,4 +1042,49 @@ export const calcAnimationOrder = canvas => {
   });
 
   return updatedObjs;
+};
+
+export const toCssBorder = (prop, previewHeight) => {
+  const mapRules = {
+    data: {
+      stroke: {
+        name: 'borderColor'
+      },
+      strokeWidth: {
+        name: 'borderWidth',
+        parse: value => `${Math.ceil(ptToPxPreview(value, previewHeight))}px`
+      },
+      strokeLineType: {
+        name: 'borderStyle',
+        parse: value => HTML_BORDER_STYLE[value]
+      }
+    },
+    restrict: ['strokeDashArray', 'showBorder']
+  };
+
+  const cssStyle = mapObject(prop, mapRules);
+
+  const { showBorder } = prop;
+  cssStyle.borderWidth = showBorder ? cssStyle.borderWidth : '0';
+
+  return cssStyle;
+};
+
+export const toCssShadow = (prop, previewHeight) => {
+  const { dropShadow, shadowAngle, shadowBlur, shadowColor, shadowOffset } =
+    prop || {};
+
+  const rad = (-Math.PI * (shadowAngle % 360)) / 180;
+  const blur = Math.ceil(ptToPxPreview(shadowBlur, previewHeight));
+
+  const offsetX = Math.ceil(
+    ptToPxPreview(shadowOffset * Math.sin(rad), previewHeight)
+  );
+  const offsetY = Math.ceil(
+    ptToPxPreview(shadowOffset * Math.cos(rad), previewHeight)
+  );
+
+  const boxShadow = `${offsetX}px ${offsetY}px ${blur}px ${shadowColor}`;
+
+  return dropShadow ? { boxShadow } : {};
 };

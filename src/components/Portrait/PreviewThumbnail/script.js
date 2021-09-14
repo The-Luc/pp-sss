@@ -6,10 +6,17 @@ import {
   PORTRAIT_NAME_DISPLAY,
   PORTRAIT_NAME_POSITION,
   CLASS_ROLE,
-  PORTRAIT_SIZE
+  PORTRAIT_SIZE,
+  CSS_PORTRAIT_IMAGE_MASK,
+  BORDER_STYLES
 } from '@/common/constants';
 import { isEmpty, inToPxPreview, ptToPxPreview } from '@/common/utils';
-import { toCssPreview, toMarginCssPreview } from '@/common/fabricObjects';
+import {
+  toCssPreview,
+  toMarginCssPreview,
+  toCssBorder,
+  toCssShadow
+} from '@/common/fabricObjects';
 
 export default {
   components: {
@@ -170,6 +177,39 @@ export default {
     },
     isPageRight() {
       return this.pageNumber % 2 !== 0;
+    },
+    imageStyle() {
+      const { border, shadow, mask } = this.flowSettings.imageSettings;
+      const cssBorder = toCssBorder(border, this.previewHeight);
+      const cssShadow = toCssShadow(shadow, this.previewHeight);
+      const cssMask = CSS_PORTRAIT_IMAGE_MASK[mask].style;
+
+      const { strokeLineType, strokeWidth } = border || {};
+
+      const space = Math.round(
+        ptToPxPreview(strokeWidth, this.previewHeight) / 4
+      );
+      const position = -Math.ceil(
+        ptToPxPreview(strokeWidth, this.previewHeight) / 2
+      );
+
+      const radius = cssMask.borderRadius || 0;
+      const color = cssBorder.borderColor || 'transparent';
+
+      const customBorder = {
+        '--display': strokeLineType === BORDER_STYLES.DOUBLE ? 'block' : 'none',
+        '--space': `${space}px`,
+        '--position': `${position}px`,
+        '--radius': radius,
+        '--color': color
+      };
+
+      return {
+        ...cssBorder,
+        ...cssShadow,
+        ...cssMask,
+        ...customBorder
+      };
     },
     portraitItems() {
       return this.portraits.map(p => {

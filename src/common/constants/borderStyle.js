@@ -61,5 +61,6 @@ reservedBorderStyle;
 export const HTML_BORDER_STYLE = {
   [BORDER_STYLES.SQUARE]: 'dashed',
   [BORDER_STYLES.ROUND]: 'dotted',
-  [BORDER_STYLES.DOUBLE]: 'solid'
+  [BORDER_STYLES.DOUBLE]: 'solid',
+  [BORDER_STYLES.SOLID]: 'solid'
 };
