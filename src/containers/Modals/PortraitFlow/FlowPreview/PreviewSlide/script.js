@@ -85,53 +85,12 @@ export default {
           });
         });
       });
-
-      /*return pages.map(({ minInPage, totalRow }) => {
-        return [...Array(totalRow).keys()].map(indRow => {
-          const minInRow = indRow * this.itemPerRow + minInPage;
-          const estimateMaxInRow =
-            (indRow + 1) * this.itemPerRow + minInPage - 1;
-
-          const maxInRow =
-            estimateMaxInRow >= totalItem ? totalItem - 1 : estimateMaxInRow;
-
-          return [...Array(maxInRow - minInRow + 1).keys()].map(indItem => {
-            return {
-              item: this.items[indItem + minInRow],
-              index: indItem + minInRow
-            };
-          });
-        });
-      });*/
-
-      /*return [...Array(totalPage).keys()].map(indPage => {
-        const minInPage = indPage * this.itemPerPage;
-        const estimateMaxInPage = (indPage + 1) * this.itemPerPage - 1;
-
-        const maxInPage =
-          estimateMaxInPage >= totalItem ? totalItem - 1 : estimateMaxInPage;
-
-        const totalRow = Math.ceil(
-          (maxInPage - minInPage + 1) / this.itemPerRow
-        );
-
-        return [...Array(totalRow).keys()].map(indRow => {
-          const minInRow = indRow * this.itemPerRow + minInPage;
-          const estimateMaxInRow =
-            (indRow + 1) * this.itemPerRow + minInPage - 1;
-
-          const maxInRow =
-            estimateMaxInRow >= totalItem ? totalItem - 1 : estimateMaxInRow;
-
-          return [...Array(maxInRow - minInRow + 1).keys()].map(indItem => {
-            return {
-              item: this.items[indItem + minInRow],
-              index: indItem + minInRow
-            };
-          });
-        });
-      });*/
     },
+    /**
+     * Get page data
+     *
+     * @returns {Array} page data
+     */
     getPageData() {
       const totalItem = this.items.length;
 
@@ -151,6 +110,12 @@ export default {
         return { minIndex: minInPage, totalRow };
       });
     },
+    /**
+     * Get row data from page data
+     *
+     * @param   {Array} pageData  page data
+     * @returns {Array}           row data
+     */
     getRowData(pageData) {
       const totalItem = this.items.length;
 
