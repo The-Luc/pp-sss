@@ -4,7 +4,7 @@ import CropControl from '@/components/CropControl';
 import Header from '@/containers/HeaderEdition/Header';
 import FeedbackBar from '@/containers/HeaderEdition/FeedbackBar';
 import MediaModal from '@/containers/Modals/Media';
-import PortraiFlow from '@/containers/Modals/PortraitFlow';
+import PortraitFlow from '@/containers/Modals/PortraitFlow';
 import PortraitFolder from '@/containers/Modals/PortraitFolder';
 
 import ToolBar from './ToolBar';
@@ -71,7 +71,7 @@ export default {
     PhotoSidebar,
     MediaModal,
     CropControl,
-    PortraiFlow,
+    PortraitFlow,
     PortraitFolder
   },
   setup() {
