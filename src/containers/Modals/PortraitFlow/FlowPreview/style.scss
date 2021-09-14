@@ -5,6 +5,14 @@
   padding: 13px 45px 17px 45px;
   flex-direction: column;
 
+  &.digital {
+    padding-bottom: 10px;
+
+    .summary {
+      margin-bottom: 3px;
+    }
+  }
+
   .summary {
     width: 100%;
     margin-bottom: 66px;
@@ -12,11 +20,5 @@
     text-align: center;
     font-size: 14px;
     font-family: $font-500;
-  }
-
-  ::v-deep {
-    .slide-container {
-      height: calc(100% - 88px);
-    }
   }
 }

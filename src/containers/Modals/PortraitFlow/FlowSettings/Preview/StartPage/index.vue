@@ -1,6 +1,6 @@
 <template>
-  <div class="start-page">
-    <div class="label">Start Portrait Flow on Page:</div>
+  <div class="start-page" :class="{ digital: isDigital }">
+    <div class="label">Start Portrait Flow on {{ containerName }}:</div>
 
     <PpSelect
       id="pages"

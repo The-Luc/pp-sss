@@ -7,6 +7,11 @@
   align-items: center;
   border: 1px solid $color-gray17;
 
+  &.digital {
+    height: 194px;
+    padding: 8px 11px;
+  }
+
   .pages {
     display: flex;
     width: 100%;

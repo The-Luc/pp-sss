@@ -7,10 +7,6 @@ export default {
     TheNavigator
   },
   props: {
-    itemPerPage: {
-      type: Number,
-      default: 3
-    },
     flowSettings: {
       type: Object,
       default: () => ({})
@@ -18,20 +14,22 @@ export default {
     items: {
       type: Array,
       default: () => []
+    },
+    isDigital: {
+      type: Boolean
     }
   },
   data() {
     return {
+      itemPerPage: this.isDigital ? 4 : 3,
+      itemPerRow: this.isDigital ? 2 : 3,
       currentIndex: 0,
-      pages: [[]]
+      pages: [[[]]]
     };
   },
   computed: {
     currentPage() {
       return this.pages[this.currentIndex];
-    },
-    hasFullItem() {
-      return this.currentPage?.length === this.itemPerPage;
     },
     isPosibleToBack() {
       return this.currentIndex > 0;
@@ -74,24 +72,40 @@ export default {
      * @returns {Array} page data
      */
     getPages() {
-      const totalPage = Math.ceil(this.items.length / this.itemPerPage);
+      const totalItem = this.items.length;
+
+      const totalPage = Math.ceil(totalItem / this.itemPerPage);
 
       return [...Array(totalPage).keys()].map(indPage => {
-        const min = indPage * this.itemPerPage;
-        const estimateMax = (indPage + 1) * this.itemPerPage - 1;
+        const minInPage = indPage * this.itemPerPage;
+        const estimateMaxInPage = (indPage + 1) * this.itemPerPage - 1;
 
-        const max =
-          estimateMax >= this.items.length
-            ? this.items.length - 1
-            : estimateMax;
+        const maxInPage =
+          estimateMaxInPage >= totalItem ? totalItem - 1 : estimateMaxInPage;
 
-        return [...Array(max - min + 1).keys()].map(indItem => {
-          return {
-            item: this.items[indItem + min],
-            index: indItem + min
-          };
+        const totalRow = Math.ceil(
+          (maxInPage - minInPage + 1) / this.itemPerRow
+        );
+
+        return [...Array(totalRow).keys()].map(indRow => {
+          const minInRow = indRow * this.itemPerRow + minInPage;
+          const estimateMaxInRow =
+            (indRow + 1) * this.itemPerRow + minInPage - 1;
+
+          const maxInRow =
+            estimateMaxInRow >= totalItem ? totalItem - 1 : estimateMaxInRow;
+
+          return [...Array(maxInRow - minInRow + 1).keys()].map(indItem => {
+            return {
+              item: this.items[indItem + minInRow],
+              index: indItem + minInRow
+            };
+          });
         });
       });
+    },
+    hasFullItem(totalItem) {
+      return totalItem === this.itemPerRow;
     }
   }
 };

@@ -20,6 +20,9 @@ export default {
     isPosibleToNext: {
       type: Boolean,
       default: false
+    },
+    isDigital: {
+      type: Boolean
     }
   },
   methods: {

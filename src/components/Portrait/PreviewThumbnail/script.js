@@ -42,6 +42,10 @@ export default {
     pageNumber: {
       type: Number,
       default: 0
+    },
+    isDigital: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -179,6 +183,8 @@ export default {
       return this.pageNumber % 2 !== 0;
     },
     imageStyle() {
+      if (isEmpty(this.flowSettings)) return {};
+
       const { border, shadow, mask } = this.flowSettings.imageSettings;
       const cssBorder = toCssBorder(border, this.previewHeight);
       const cssShadow = toCssShadow(shadow, this.previewHeight);

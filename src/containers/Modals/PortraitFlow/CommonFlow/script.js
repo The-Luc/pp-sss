@@ -65,11 +65,14 @@ export default {
     previewPortraitsRange: {
       type: Array,
       required: () => []
+    },
+    isDigital: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
     return {
-      //flowSettings: {},
       isPreviewDisplayed: false,
       flowReviewCompKey: true
     };

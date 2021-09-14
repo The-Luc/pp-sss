@@ -31,6 +31,9 @@ export default {
     previewPortraitsRange: {
       type: Array,
       required: true
+    },
+    isDigital: {
+      type: Boolean
     }
   },
   setup() {
@@ -43,7 +46,8 @@ export default {
     return {
       pageNo: 1,
       backgroundUrl: '',
-      portraits: []
+      portraits: [],
+      containerName: this.isDigital ? 'Frame' : 'Page'
     };
   },
   computed: {

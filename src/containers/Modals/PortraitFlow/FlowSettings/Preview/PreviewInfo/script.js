@@ -7,6 +7,9 @@ export default {
     totalPage: {
       type: Number,
       default: 0
+    },
+    containerName: {
+      type: String
     }
   },
   methods: {

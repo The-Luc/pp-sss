@@ -1,10 +1,15 @@
 <template>
-  <div class="preview-wrapper">
+  <div class="preview-wrapper" :class="{ digital: isDigital }">
     <div class="summary">
       {{ flowSettings.totalPortraitsCount }} portraits =
-      {{ requiredPages.length }} pages
+      {{ `${requiredPages.length} ${isDigital ? 'frames' : 'pages'}` }}
     </div>
-    <PreviewSlide :flow-settings="flowSettings" :items="previewItems" />
+
+    <PreviewSlide
+      :flow-settings="flowSettings"
+      :items="previewItems"
+      :is-digital="isDigital"
+    />
   </div>
 </template>
 

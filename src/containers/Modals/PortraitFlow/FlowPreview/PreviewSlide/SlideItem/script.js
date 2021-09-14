@@ -24,6 +24,10 @@ export default {
       type: Number,
       default: 1
     },
+    screenNumber: {
+      type: Number,
+      default: 2
+    },
     isUseMargin: {
       type: Boolean,
       default: false
@@ -31,6 +35,19 @@ export default {
     flowSettings: {
       type: Object,
       default: () => ({})
+    },
+    isDigital: {
+      type: Boolean
+    }
+  },
+  computed: {
+    leftText() {
+      return this.isDigital ? '' : `Portrait flow ${this.flowNumber}`;
+    },
+    rightText() {
+      return this.isDigital
+        ? `Screen ${this.screenNumber}: Frame ${this.pageNumber}`
+        : `Page ${this.pageNumber}`;
     }
   }
 };

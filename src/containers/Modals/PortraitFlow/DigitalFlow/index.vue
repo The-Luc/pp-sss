@@ -10,6 +10,7 @@
     :is-warning-displayed="isWarningDisplayed"
     :warning-text="warningText"
     :container="container"
+    :is-digital="true"
     @cancel="onCancel"
     @accept="onApply"
     @startChange="onStartPageChange"

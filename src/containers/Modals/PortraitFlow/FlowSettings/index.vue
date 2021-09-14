@@ -6,6 +6,7 @@
       :displayed-page-no="displayedPageNo"
       :flow-settings="flowSettings"
       :preview-portraits-range="previewPortraitsRange"
+      :is-digital="isDigital"
       @startPageChange="onStartPageChange"
       @showPreview="onShowPreview"
     />

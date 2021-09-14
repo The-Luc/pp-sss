@@ -4,6 +4,10 @@
   margin-top: 42px;
   justify-content: space-between;
 
+  &.digital {
+    margin-top: 12px;
+  }
+
   .paging {
     display: flex;
     align-items: center;

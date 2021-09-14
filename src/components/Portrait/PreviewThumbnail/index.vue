@@ -1,6 +1,7 @@
 <template>
   <div
     class="preview-thumbnail"
+    :class="{ landscape: isDigital }"
     :style="{ backgroundImage: backgroundUrl && `url(${backgroundUrl})` }"
   >
     <div

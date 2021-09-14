@@ -8,6 +8,8 @@
       :page-no="pageNo"
       :background-url="backgroundUrl"
       :flow-settings="flowSettings"
+      :is-digital="isDigital"
+      :container-name="containerName"
       @moveBack="onMoveToPreviousPage"
       @moveNext="onMoveToNextPage"
     />
@@ -15,12 +17,15 @@
     <StartPage
       :selected-pages="pages"
       :selected-page="startPage"
+      :is-digital="isDigital"
+      :container-name="containerName"
       @pageChange="onStartPageChange"
     />
 
     <PreviewInfo
       :total-portrait="flowSettings.totalPortraitsCount"
       :total-page="requiredPages.length"
+      :container-name="containerName"
       @showPreview="onShowPreview"
     />
   </div>
