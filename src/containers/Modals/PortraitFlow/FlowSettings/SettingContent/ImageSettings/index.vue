@@ -4,9 +4,13 @@
       Image Settings
     </div>
 
-    <Border :current-border="imageSettings.border" />
+    <Border :current-border="imageSettings.border" @change="onBorderChange" />
 
-    <Shadow :current-shadow="imageSettings.shadow" />
+    <Shadow
+      :current-shadow="imageSettings.shadow"
+      @change="onShadowChange"
+      @changeDropShadow="onShadowChange"
+    />
   </div>
 </template>
 

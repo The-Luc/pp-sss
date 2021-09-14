@@ -16,7 +16,7 @@ export const DEFAULT_SVG = {
 };
 
 export const DEFAULT_BORDER = {
-  SHOW_BORDER: true,
+  SHOW_BORDER: false,
   STROKE: '#000000',
   STROKE_WIDTH: 0,
   STROKE_DASH_ARRAY: [],

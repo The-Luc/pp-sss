@@ -4,7 +4,9 @@ import {
   PORTRAIT_NAME_POSITION,
   CLASS_ROLE,
   PORTRAIT_SIZE,
-  PORTRAIT_TEACHER_PLACEMENT
+  PORTRAIT_TEACHER_PLACEMENT,
+  CSS_PORTRAIT_IMAGE_MASK,
+  BORDER_STYLES
 } from '@/common/constants';
 import {
   isEmpty,
@@ -12,7 +14,12 @@ import {
   ptToPxPreview,
   calcAdditionPortraitSlot
 } from '@/common/utils';
-import { toCssPreview, toMarginCssPreview } from '@/common/fabricObjects';
+import {
+  toCssPreview,
+  toMarginCssPreview,
+  toCssBorder,
+  toCssShadow
+} from '@/common/fabricObjects';
 import { PortraitAsset } from '@/common/models';
 
 export default {
@@ -191,6 +198,34 @@ export default {
         ...this.portraits,
         ...new Array(numEmptyCell).fill(emptyPortrait)
       ];
+    },
+    imageStyle() {
+      const { border, shadow, mask } = this.flowSettings.imageSettings;
+      const cssBorder = toCssBorder(border, this.previewHeight);
+      const cssShadow = toCssShadow(shadow, this.previewHeight);
+      const cssMask = CSS_PORTRAIT_IMAGE_MASK[mask];
+
+      const { strokeLineType, strokeWidth } = border || {};
+
+      const space = Math.round(
+        ptToPxPreview(strokeWidth, this.previewHeight) / 4
+      );
+      const position = -Math.ceil(
+        ptToPxPreview(strokeWidth, this.previewHeight) / 2
+      );
+
+      const customBorder = {
+        '--display': strokeLineType === BORDER_STYLES.DOUBLE ? 'block' : 'none',
+        '--space': `${space}px`,
+        '--position': `${position}px`
+      };
+
+      return {
+        ...cssBorder,
+        ...cssShadow,
+        ...cssMask,
+        ...customBorder
+      };
     }
   },
   watch: {

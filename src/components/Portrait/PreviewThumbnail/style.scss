@@ -3,6 +3,7 @@
   height: 314px;
   background-size: cover;
   background-position: center;
+  overflow: hidden;
 
   .thumb-wrapper {
     position: relative;
@@ -25,7 +26,6 @@
     .portraits-container {
       width: 100%;
       height: 100%;
-      overflow: hidden;
     }
 
     .portraits {
@@ -52,19 +52,32 @@
         .photo-container {
           width: 100%;
           padding-top: 125%;
-          overflow: hidden;
           position: relative;
         }
 
         .photo {
           position: absolute;
-          top: 0;
-          left: 0;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
           width: 100%;
           height: 100%;
 
-          &[src=''] {
-            display: none;
+          img {
+            width: 100%;
+            height: 100%;
+          }
+
+          &:before {
+            display: var(--display);
+            position: absolute;
+            content: '';
+            top: var(--position);
+            right: var(--position);
+            bottom: var(--position);
+            left: var(--position);
+            border: solid white;
+            border-width: var(--space);
           }
         }
 
