@@ -1,7 +1,7 @@
 import PhotoSidebar from '@/components/Modals/PhotoSidebar';
 import CropControl from '@/components/CropControl';
 
-import Header from '@/containers/HeaderEdition/Header';
+import EditorHeader from '@/containers/HeaderEdition/Header';
 import FeedbackBar from '@/containers/HeaderEdition/FeedbackBar';
 import MediaModal from '@/containers/Modals/Media';
 import PortraitFlow from '@/containers/Modals/PortraitFlow';
@@ -64,7 +64,7 @@ import { createPortraitImage } from '@/common/utils/portrait';
 export default {
   components: {
     ToolBar,
-    Header,
+    EditorHeader,
     FeedbackBar,
     PageEdition,
     SidebarSection,

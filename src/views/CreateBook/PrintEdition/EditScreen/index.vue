@@ -1,9 +1,9 @@
 <template>
   <div id="editor" class="row print-main">
-    <header
+    <editor-header
       name-editor="print editor"
       @onClickSave="onClickSavePrintCanvas"
-    ></header>
+    ></editor-header>
 
     <tool-bar
       :disabled-items="disabledItems"

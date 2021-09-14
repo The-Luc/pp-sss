@@ -1,10 +1,11 @@
 import PhotoSidebar from '@/components/Modals/PhotoSidebar';
 import CropControl from '@/components/CropControl';
 
-import Header from '@/containers/HeaderEdition/Header';
+import EditorHeader from '@/containers/HeaderEdition/Header';
 import FeedbackBar from '@/containers/HeaderEdition/FeedbackBar';
 import MediaModal from '@/containers/Modals/Media';
 import PortraitFolder from '@/containers/Modals/PortraitFolder';
+import PortraitFlow from '@/containers/Modals/PortraitFlow/DigitalFlow';
 
 import ToolBar from './ToolBar';
 import ScreenEdition from './ScreenEdition';
@@ -68,7 +69,7 @@ import {
 export default {
   components: {
     ToolBar,
-    Header,
+    EditorHeader,
     FeedbackBar,
     ScreenEdition,
     SidebarSection,
@@ -76,7 +77,8 @@ export default {
     MediaModal,
     CropControl,
     PortraitFolder,
-    ThePreviewModal
+    ThePreviewModal,
+    PortraitFlow
   },
   setup() {
     const { pageSelected, updateVisited } = useLayoutPrompt(EDITION.DIGITAL);
@@ -142,6 +144,10 @@ export default {
         },
         [TOOL_NAME.PORTRAIT]: {
           isOpen: false
+        },
+        [MODAL_TYPES.PORTRAIT_FLOW]: {
+          isOpen: false,
+          data: {}
         }
       }
     };
@@ -512,7 +518,11 @@ export default {
      * @param {Array}  folders  portrait folders
      */
     onSelectPortraitFolders(folders) {
-      console.log('folders:', folders);
+      this.onClosePortrait();
+
+      this.modal[MODAL_TYPES.PORTRAIT_FLOW].data = { folders };
+
+      this.onToggleModal({ modal: MODAL_TYPES.PORTRAIT_FLOW });
     },
     /**
      * Handle adding & removing events
@@ -575,6 +585,12 @@ export default {
       if (isEmpty(modal)) return;
 
       this.modal[modal].isOpen = isToggle ? !this.modal[modal].isOpen : isOpen;
+    },
+    /**
+     * Apply portrait to page
+     */
+    onApplyPortrait() {
+      this.onClosePortrait();
     }
   }
 };

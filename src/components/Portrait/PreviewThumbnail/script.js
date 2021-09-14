@@ -49,6 +49,8 @@ export default {
   },
   computed: {
     nameTextStyle() {
+      if (isEmpty(this.flowSettings)) return {};
+
       const {
         nameTextFontSettings,
         nameLines,
@@ -80,6 +82,8 @@ export default {
       return style;
     },
     pageTitleStyle() {
+      if (isEmpty(this.flowSettings)) return {};
+
       const {
         pageTitleFontSettings,
         isPageTitleOn,
@@ -96,17 +100,21 @@ export default {
       );
     },
     isCenterPosition() {
-      const { namePosition } = this.flowSettings.textSettings;
-      return namePosition.value === PORTRAIT_NAME_POSITION.CENTERED.value;
+      const namePosition = this.flowSettings.textSettings?.namePosition;
+
+      return namePosition?.value === PORTRAIT_NAME_POSITION.CENTERED.value;
     },
     showPageTitile() {
-      return this.flowSettings.textSettings.isPageTitleOn;
+      return this.flowSettings.textSettings?.isPageTitleOn;
     },
     isFirstLastDisplay() {
-      const { nameDisplay } = this.flowSettings.textSettings;
-      return nameDisplay.value === PORTRAIT_NAME_DISPLAY.FIRST_LAST.value;
+      const nameDisplay = this.flowSettings.textSettings?.nameDisplay;
+
+      return nameDisplay?.value === PORTRAIT_NAME_DISPLAY.FIRST_LAST.value;
     },
     nameContainerStyle() {
+      if (isEmpty(this.flowSettings)) return {};
+
       const { nameWidth } = this.flowSettings.textSettings;
       const nameContainerWidth = this.$refs?.portraits?.clientWidth;
       const col = this.layout.colCount;
@@ -131,6 +139,8 @@ export default {
       return style;
     },
     portraitNames() {
+      if (isEmpty(this.flowSettings)) return [];
+
       const { rowCount, colCount } = this.layout;
       const portraitPerPage = rowCount * colCount;
       const numLargePortrait = (portraitPerPage - this.portraits.length) / 3;
@@ -168,6 +178,9 @@ export default {
           isLargePortrait: this.isLargePortrait(p)
         };
       });
+    },
+    title() {
+      return this.flowSettings.textSettings?.pageTitle;
     }
   },
   watch: {
@@ -263,7 +276,7 @@ export default {
       if (!thumbWrapperEl.style) return;
 
       const margins = this.layout.margins;
-      const nameWidth = this.flowSettings.textSettings.nameWidth;
+      const nameWidth = this.flowSettings.textSettings?.nameWidth;
 
       const top = this.showPageTitile ? 0 : this.convertIntoPx(margins.top);
 
