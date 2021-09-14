@@ -19,6 +19,7 @@
         :selected-folders="selectedFolders"
         :flow-settings="flowSettings"
         :required-pages="requiredPages"
+        :preview-portraits-range="previewPortraitsRange"
         @showPreview="onShowPreview"
         @settingChange="onSettingChange"
         @saveSettings="onSaveSettings"
@@ -33,6 +34,7 @@
         :selected-folders="flowSettings.folders"
         :flow-settings="flowSettings"
         :required-pages="requiredPages"
+        :preview-portraits-range="previewPortraitsRange"
       />
     </CommonModal>
     <flow-warning

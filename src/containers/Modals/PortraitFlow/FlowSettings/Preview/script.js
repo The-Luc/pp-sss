@@ -5,7 +5,7 @@ import PreviewInfo from './PreviewInfo';
 
 import { useBackgroundAction, useSheet } from '@/hooks';
 
-import { getPortraitForPage, isEmpty } from '@/common/utils';
+import { isEmpty } from '@/common/utils';
 import { PORTRAIT_FLOW_OPTION_MULTI } from '@/common/constants';
 
 export default {
@@ -27,6 +27,10 @@ export default {
     },
     flowSettings: {
       type: Object
+    },
+    previewPortraitsRange: {
+      type: Array,
+      required: true
     }
   },
   setup() {
@@ -152,19 +156,23 @@ export default {
       this.pageNo = page.pageNo;
       this.backgroundUrl = page.backgroundUrl;
 
-      const isSingle =
-        this.selectedFolders.length === 1 ||
-        this.flowSettings.flowMultiSettings.flowOption ===
-          PORTRAIT_FLOW_OPTION_MULTI.CONTINUE.id;
+      const { flowMultiSettings, folders } = this.flowSettings;
+      const isContinuousFlow =
+        flowMultiSettings.flowOption === PORTRAIT_FLOW_OPTION_MULTI.CONTINUE.id;
+      const isSingle = folders.length === 1;
 
-      this.portraits = getPortraitForPage(
-        index,
-        this.flowSettings.layoutSettings.rowCount,
-        this.flowSettings.layoutSettings.colCount,
-        this.flowSettings.teacherSettings,
-        this.flowSettings.folders,
-        isSingle
+      const { min, max, folderIdx } = this.previewPortraitsRange[index];
+
+      if (isSingle || !isContinuousFlow) {
+        this.portraits = folders[folderIdx].assets.slice(min, max + 1);
+      }
+
+      // case of continuos multi-folders
+      const totalPortraits = folders.reduce(
+        (acc, p) => acc.concat(p.assets),
+        []
       );
+      this.portraits = totalPortraits.slice(min, max + 1);
     }
   }
 };

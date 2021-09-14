@@ -1,5 +1,7 @@
+import TextFieldProperty from '@/components/Input/TextFieldProperty';
+
 import { splitNumberByDecimal, validateInputOption } from '@/common/utils';
-import TextFieldProperty from '@/components/TextFieldProperty';
+
 export default {
   components: {
     TextFieldProperty

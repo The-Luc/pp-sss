@@ -1,6 +1,6 @@
 import Color from '@/containers/ColorPicker';
-import Presentation from '@/components/TextProperties/Presentation';
-import TextCase from '@/components/TextProperties/TextCase';
+import Presentation from '@/components/Properties/Groups/TextProperties/Presentation';
+import TextCase from '@/components/Properties/Groups/TextProperties/TextCase';
 
 import { useElementProperties } from '@/hooks';
 import { EVENT_TYPE } from '@/common/constants/eventType';

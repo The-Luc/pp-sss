@@ -1,7 +1,7 @@
 import Properties from '@/components/Properties/BoxProperties';
 import TabPropertiesMenu from '@/containers/TabPropertiesMenu';
-import ArrangeContent from '@/components/Arrange';
-import GeneralContent from '@/components/General';
+import ArrangeContent from '@/components/Properties/Groups/Arrange';
+import GeneralContent from '@/components/Properties/Groups/General';
 
 import { useElementProperties } from '@/hooks';
 import { computedObjectSize } from '@/common/utils';

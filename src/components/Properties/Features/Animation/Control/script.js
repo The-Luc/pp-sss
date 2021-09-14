@@ -1,4 +1,4 @@
-import PpInput from '@/components/InputProperty';
+import PpInput from '@/components/Input/InputProperty';
 import PpSelect from '@/components/Selectors/Select';
 import PpCombobox from '@/components/Selectors/Combobox';
 
@@ -74,9 +74,7 @@ export default {
     selectedStyle() {
       if (!this.config.style) return this.defaultStyle;
 
-      const style = this.styleOptions.find(
-        style => style.value === this.config.style
-      );
+      const style = this.styleOptions.find(s => s.value === this.config.style);
       return style || this.defaultStyle;
     },
     selectedDirection() {

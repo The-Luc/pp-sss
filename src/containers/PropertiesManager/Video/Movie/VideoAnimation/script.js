@@ -1,6 +1,6 @@
 import PpCombobox from '@/components/Selectors/Combobox';
 import Select from '@/components/Selectors/Select';
-import PpInput from '@/components/InputProperty';
+import PpInput from '@/components/Input/InputProperty';
 
 import { ICON_LOCAL } from '@/common/constants';
 import {

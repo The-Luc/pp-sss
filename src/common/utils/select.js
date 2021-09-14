@@ -12,11 +12,8 @@ export const getSelectedOption = (data, unit, displayData = '') => {
     return { name: data.name, value: data.value };
   }
 
-  const name = isEmpty(displayData)
-    ? unit
-      ? `${data} ${unit}`
-      : data
-    : displayData;
+  const hasUnit = unit ? `${data} ${unit}` : data;
+  const name = isEmpty(displayData) ? hasUnit : displayData;
 
   return { name, value: data };
 };

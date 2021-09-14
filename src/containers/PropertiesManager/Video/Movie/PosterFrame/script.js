@@ -1,7 +1,8 @@
+import RangeSlider from '@/components/Slider/RangeSlider';
+import MediaModal from '@/containers/Modals/Media';
+
 import { EVENT_TYPE } from '@/common/constants';
 import { isEmpty } from '@/common/utils';
-import RangeSlider from '@/components/RangeSlider';
-import MediaModal from '@/containers/Modals/Media';
 
 import { useElementProperties } from '@/hooks';
 

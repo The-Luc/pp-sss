@@ -18,6 +18,10 @@ export default {
     },
     requiredPages: {
       type: Array
+    },
+    previewPortraitsRange: {
+      type: Array,
+      required: true
     }
   },
   data() {

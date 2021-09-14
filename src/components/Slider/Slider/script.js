@@ -1,5 +1,6 @@
+import PpInput from '@/components/Input/InputProperty';
+
 import { DEFAULE_SLIDER } from '@/common/constants';
-import PpInput from '@/components/InputProperty';
 
 export default {
   props: {

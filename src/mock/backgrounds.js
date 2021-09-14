@@ -8,6 +8,8 @@ import THEME_4 from '@/assets/image/backgrounds/theme-4.png';
 import THEME_5 from '@/assets/image/backgrounds/theme-5.png';
 import THEME_6 from '@/assets/image/backgrounds/theme-6.png';
 import THEME_7 from '@/assets/image/backgrounds/theme-7.png';
+import THEME_8 from '@/assets/image/backgrounds/theme-8.jpg';
+import THEME_9 from '@/assets/image/backgrounds/theme-9.jpg';
 
 import COLOR_1 from '@/assets/image/backgrounds/color-1.png';
 import COLOR_2 from '@/assets/image/backgrounds/color-2.png';
@@ -174,7 +176,7 @@ export const BACKGROUNDS = [
   })
 ];
 
-const singleBgs = [THEME_6, COLOR_6, THEME_7, COLOR_7];
+const singleBgs = [COLOR_6, THEME_7, COLOR_7, THEME_8, THEME_9];
 
 const backgroundPages = {};
 

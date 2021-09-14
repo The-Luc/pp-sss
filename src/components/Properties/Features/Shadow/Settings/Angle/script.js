@@ -1,7 +1,8 @@
-import PpNumber from '@/components/InputProperty';
+import PpNumber from '@/components/Input/InputProperty';
+import AnglePicker from '@/components/Properties/Features/AnglePicker';
+
 import { validateInputOption } from '@/common/utils';
 import { SHADOW_VALUE } from '@/common/constants/shadow';
-import AnglePicker from '@/components/AnglePicker';
 
 export default {
   components: {

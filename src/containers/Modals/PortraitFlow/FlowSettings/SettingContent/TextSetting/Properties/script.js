@@ -1,8 +1,8 @@
-import FontFamily from '@/components/TextProperties/FontFamily';
-import FontSize from '@/components/TextProperties/FontSize';
-import Presentation from '@/components/TextProperties/Presentation';
-import TextCase from '@/components/TextProperties/TextCase';
-import Alignment from '@/components/TextProperties/Alignment';
+import FontFamily from '@/components/Properties/Groups/TextProperties/FontFamily';
+import FontSize from '@/components/Properties/Groups/TextProperties/FontSize';
+import Presentation from '@/components/Properties/Groups/TextProperties/Presentation';
+import TextCase from '@/components/Properties/Groups/TextProperties/TextCase';
+import Alignment from '@/components/Properties/Groups/TextProperties/Alignment';
 import ColorPicker from '@/containers/ColorPicker';
 
 import { getSelectedOption } from '@/common/utils';

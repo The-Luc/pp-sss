@@ -12,7 +12,10 @@ export default {
   computed: {
     totalThumbnailDisplay() {
       const totalAseets = this.album.assets.length;
-      return totalAseets < 4 ? (totalAseets < 1 ? 0 : 1) : 4;
+
+      if (totalAseets < 1) return 0;
+
+      return totalAseets < 4 ? 1 : 4;
     }
   }
 };

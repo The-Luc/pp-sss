@@ -57,9 +57,9 @@ const printService = {
         totalSheets += section.sheetIds.length;
       }
 
-      const { name, color, id, assigneeId } = section;
+      const { name, color, id: sectionId, assigneeId } = section;
 
-      return { id, name, color, assigneeId, sheets };
+      return { id: sectionId, name, color, assigneeId, sheets };
     });
 
     return isEmpty(data) ? getErrorWithMessages([]) : getSuccessWithData(data);

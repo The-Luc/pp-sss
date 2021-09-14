@@ -1,6 +1,6 @@
 import PpSelect from '@/components/Selectors/Select';
 import Properties from '@/components/Properties/BoxProperties';
-import InputTitle from '@/components/InputTitle';
+import InputTitle from '@/components/Properties/Features/InputTitle';
 
 import { DELAY_OPTION } from '@/common/constants';
 import { useFrame, useFrameTitle } from '@/hooks';

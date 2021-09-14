@@ -21,15 +21,13 @@ export const getLayoutOptSelectedById = (
   listLayoutType,
   layoutId
 ) => {
-  const layout = listLayouts.find(layout => layout.id === layoutId);
+  const layout = listLayouts.find(l => l.id === layoutId);
 
   const layoutType = listLayoutType.find(({ value }) => value === layout.type);
 
   if (!isEmpty(layoutType)) return layoutType;
 
-  const layoutOpt = listLayoutType.find(
-    layout => layout.value === CUSTOM_LAYOUT_TYPE
-  );
+  const layoutOpt = listLayoutType.find(l => l.value === CUSTOM_LAYOUT_TYPE);
 
   const indexSubItem =
     layout.pageType === LAYOUT_PAGE_TYPE.SINGLE_PAGE.id ? 0 : 1;

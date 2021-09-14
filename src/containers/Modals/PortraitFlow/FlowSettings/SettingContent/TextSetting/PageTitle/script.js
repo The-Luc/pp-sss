@@ -1,4 +1,4 @@
-import InputTitle from '@/components/InputTitle';
+import InputTitle from '@/components/Properties/Features/InputTitle';
 import PpCombobox from '@/components/Selectors/Combobox';
 import PpSelect from '@/components/Selectors/Select';
 

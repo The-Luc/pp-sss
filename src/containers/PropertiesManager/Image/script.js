@@ -1,7 +1,7 @@
 import Properties from '@/components/Properties/BoxProperties';
 import TabPropertiesMenu from '@/containers/TabPropertiesMenu';
-import ArrangeContent from '@/components/Arrange';
-import General from '@/components/General';
+import ArrangeContent from '@/components/Properties/Groups/Arrange';
+import General from '@/components/Properties/Groups/General';
 import ImageStyle from './ImageStyle';
 import Reset from './Reset';
 
