@@ -62,10 +62,12 @@
           transform: translate(-50%, -50%);
           width: 100%;
           height: 100%;
-
+          background-color: var(--color);
           img {
             width: 100%;
             height: 100%;
+            border-radius: var(--radius);
+            color: transparent;
           }
 
           &:before {
@@ -78,6 +80,7 @@
             left: var(--position);
             border: solid white;
             border-width: var(--space);
+            border-radius: var(--radius);
           }
         }
 

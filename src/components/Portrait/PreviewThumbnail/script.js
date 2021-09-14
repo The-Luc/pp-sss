@@ -165,7 +165,7 @@ export default {
       const { border, shadow, mask } = this.flowSettings.imageSettings;
       const cssBorder = toCssBorder(border, this.previewHeight);
       const cssShadow = toCssShadow(shadow, this.previewHeight);
-      const cssMask = CSS_PORTRAIT_IMAGE_MASK[mask];
+      const cssMask = CSS_PORTRAIT_IMAGE_MASK[mask].style;
 
       const { strokeLineType, strokeWidth } = border || {};
 
@@ -176,10 +176,15 @@ export default {
         ptToPxPreview(strokeWidth, this.previewHeight) / 2
       );
 
+      const radius = cssMask.borderRadius || 0;
+      const color = cssBorder.borderColor || 'transparent';
+
       const customBorder = {
         '--display': strokeLineType === BORDER_STYLES.DOUBLE ? 'block' : 'none',
         '--space': `${space}px`,
-        '--position': `${position}px`
+        '--position': `${position}px`,
+        '--radius': radius,
+        '--color': color
       };
 
       return {

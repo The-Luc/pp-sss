@@ -6,17 +6,29 @@
     font-family: $font-500;
     margin: 10px 0;
   }
+  .image-mask {
+    padding: 10px 0 16px;
+    .image-mask-title {
+      color: $color-stoodio-toolbartext;
+      font-size: 13px;
+      font-family: $font-500;
+      margin-bottom: 5px;
+    }
+  }
+
   &::v-deep {
     .border-container {
       padding: 0 0 16px;
       .properties-title {
         font-size: 13px;
+        color: $color-stoodio-toolbartext;
       }
     }
     .pp-shadow-container {
       padding: 10px 0 16px;
       .properties-title {
         font-size: 13px;
+        color: $color-stoodio-toolbartext;
       }
     }
   }
