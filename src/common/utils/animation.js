@@ -274,7 +274,7 @@ const fadeSlideOut = (element, options, canvas) => {
 const blurIn = (element, options, canvas) => {
   const blurOption = {
     ...options,
-    startValue: 1,
+    startValue: 1.3,
     endValue: 0,
     isBlurIn: true
   };
@@ -292,7 +292,7 @@ const blurOut = (element, options, canvas) => {
   const blurOption = {
     ...options,
     startValue: 0,
-    endValue: 2,
+    endValue: 1.3,
     isBlurOut: true
   };
 
@@ -610,7 +610,18 @@ const createImage = (element, offsetBlur) => {
   const bounds = getObjectBounds(element);
   const oriBounds = element.getBoundingRect(true);
 
+  /*
+  For text object cloneAsImage crops images at top left (0,0)
+  However, other objects, it take from center,
+  So the objectOffset below adjusts the croping points to object's top left 
+  */
+  const objectOffsetTop =
+    element.objectType === OBJECT_TYPE.TEXT ? 0 : oriBounds.height / 2;
+  const objectOffsetLeft =
+    element.objectType === OBJECT_TYPE.TEXT ? 0 : oriBounds.width / 2;
+
   // cropTop and cropLeft are relative position to top left of the element
+
   const cropTop = bounds.top - oriBounds.top - offsetBlur;
   const cropLeft = bounds.left - oriBounds.left - offsetBlur;
   const cropWidth = bounds.width + 2 * offsetBlur;
@@ -621,8 +632,8 @@ const createImage = (element, offsetBlur) => {
 
   return new Promise(resolve => {
     element.cloneAsImage(img => resolve({ img, imgTop, imgLeft }), {
-      top: cropTop,
-      left: cropLeft,
+      top: cropTop - objectOffsetTop,
+      left: cropLeft - objectOffsetLeft,
       width: cropWidth,
       height: cropHeight
     });
