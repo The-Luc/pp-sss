@@ -23,6 +23,10 @@ export default {
       type: Array,
       required: true
     },
+    savedSettings: {
+      type: Array,
+      default: () => []
+    },
     isDigital: {
       type: Boolean
     }
@@ -80,6 +84,10 @@ export default {
     },
     onPageSettingChange(val) {
       this.$emit('pageSettingChange', val);
+    },
+    onLoadSetting(id) {
+      this.currentTab = 0;
+      this.$emit('loadSetting', id);
     }
   }
 };

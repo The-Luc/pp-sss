@@ -1,10 +1,11 @@
 <template>
-  <v-tabs vertical hide-slider @change="onTabChange">
+  <v-tabs :value="currentTab" vertical hide-slider @change="onTabChange">
     <div class="settings">
       <TabHeader title="Portrait Settings" />
       <TabHeader title="Text Settings" />
       <TabHeader title="Image Settings" />
       <TabHeader title="Flow Settings" />
+      <TabHeader v-if="savedSettings.length > 0" title="Save Settings" />
     </div>
 
     <div class="save-settings">

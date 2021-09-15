@@ -48,6 +48,9 @@ export default {
     };
   },
   computed: {
+    isMultiFolder() {
+      return this.selectedFolders.length > 1;
+    },
     maxPortraitPerPage() {
       const { rowCount, colCount } = this.flowSettings.layoutSettings;
 
@@ -131,12 +134,6 @@ export default {
       this.startPage = startNo;
 
       this.onPageSettingChange({ id: startNo, index: 0 });
-    },
-    /**
-     * Save settings
-     */
-    onSaveSettings() {
-      console.log('save settings');
     },
     /**
      * Update require pages

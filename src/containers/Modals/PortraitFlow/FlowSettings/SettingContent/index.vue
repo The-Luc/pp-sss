@@ -28,6 +28,12 @@
         @pageSettingChange="onPageSettingChange"
       ></flow-settings>
     </v-tab-item>
+    <v-tab-item>
+      <save-setting
+        :saved-settings="savedSettings"
+        @loadSetting="onLoadSetting"
+      ></save-setting>
+    </v-tab-item>
   </v-tabs-items>
 </template>
 

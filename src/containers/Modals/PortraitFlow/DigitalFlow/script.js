@@ -48,6 +48,9 @@ export default {
     };
   },
   computed: {
+    isMultiFolder() {
+      return this.selectedFolders.length > 1;
+    },
     maxPortraitPerPage() {
       const { rowCount, colCount } = this.flowSettings.layoutSettings;
 

@@ -1,8 +1,10 @@
 .v-tabs-items {
   width: 100%;
-  max-width: calc(100% - 626px);
-  padding: 14px;
+  max-width: calc(100% - 640px);
+  padding-left: 14px;
   padding-bottom: $portrait-flow-padding-bottom;
   border-left: $portrait-border;
   overflow: auto;
+  margin: 14px;
+  margin-left: 0;
 }
