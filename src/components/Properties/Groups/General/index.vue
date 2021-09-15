@@ -14,7 +14,7 @@
       @change="onChangeBorder"
     />
 
-    <shadow
+    <pp-shadow
       :current-shadow="currentShadow"
       @change="onChangeShadow"
       @changeDropShadow="onChangeDropShadow"
