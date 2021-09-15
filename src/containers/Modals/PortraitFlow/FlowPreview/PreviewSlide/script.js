@@ -7,10 +7,6 @@ export default {
     TheNavigator
   },
   props: {
-    itemPerPage: {
-      type: Number,
-      default: 3
-    },
     flowSettings: {
       type: Object,
       default: () => ({})
@@ -18,20 +14,22 @@ export default {
     items: {
       type: Array,
       default: () => []
+    },
+    isDigital: {
+      type: Boolean
     }
   },
   data() {
     return {
+      itemPerPage: this.isDigital ? 4 : 3,
+      itemPerRow: this.isDigital ? 2 : 3,
       currentIndex: 0,
-      pages: [[]]
+      pages: [[[]]]
     };
   },
   computed: {
     currentPage() {
       return this.pages[this.currentIndex];
-    },
-    hasFullItem() {
-      return this.currentPage?.length === this.itemPerPage;
     },
     isPosibleToBack() {
       return this.currentIndex > 0;
@@ -74,24 +72,74 @@ export default {
      * @returns {Array} page data
      */
     getPages() {
-      const totalPage = Math.ceil(this.items.length / this.itemPerPage);
+      const pages = this.getPageData();
+      const rows = this.getRowData(pages);
 
-      return [...Array(totalPage).keys()].map(indPage => {
-        const min = indPage * this.itemPerPage;
-        const estimateMax = (indPage + 1) * this.itemPerPage - 1;
-
-        const max =
-          estimateMax >= this.items.length
-            ? this.items.length - 1
-            : estimateMax;
-
-        return [...Array(max - min + 1).keys()].map(indItem => {
-          return {
-            item: this.items[indItem + min],
-            index: indItem + min
-          };
+      return rows.map(page => {
+        return page.map(({ minIndex, totalItem }) => {
+          return [...Array(totalItem).keys()].map(indItem => {
+            return {
+              item: this.items[indItem + minIndex],
+              index: indItem + minIndex
+            };
+          });
         });
       });
+    },
+    /**
+     * Get page data
+     *
+     * @returns {Array} page data
+     */
+    getPageData() {
+      const totalItem = this.items.length;
+
+      const totalPage = Math.ceil(totalItem / this.itemPerPage);
+
+      return [...Array(totalPage).keys()].map(indPage => {
+        const minInPage = indPage * this.itemPerPage;
+        const estimateMaxInPage = (indPage + 1) * this.itemPerPage - 1;
+
+        const maxInPage =
+          estimateMaxInPage >= totalItem ? totalItem - 1 : estimateMaxInPage;
+
+        const totalRow = Math.ceil(
+          (maxInPage - minInPage + 1) / this.itemPerRow
+        );
+
+        return { minIndex: minInPage, totalRow };
+      });
+    },
+    /**
+     * Get row data from page data
+     *
+     * @param   {Array} pageData  page data
+     * @returns {Array}           row data
+     */
+    getRowData(pageData) {
+      const totalItem = this.items.length;
+
+      return pageData.map(({ minIndex, totalRow }) => {
+        return [...Array(totalRow).keys()].map(indRow => {
+          const minInRow = indRow * this.itemPerRow + minIndex;
+          const estimateMaxInRow =
+            (indRow + 1) * this.itemPerRow + minIndex - 1;
+
+          const maxInRow =
+            estimateMaxInRow >= totalItem ? totalItem - 1 : estimateMaxInRow;
+
+          return { minIndex: minInRow, totalItem: maxInRow - minInRow + 1 };
+        });
+      });
+    },
+    /**
+     * Check if row contain full item
+     *
+     * @param   {Number}  totalItem total item in row
+     * @returns {Boolean}           is contain full item
+     */
+    hasFullItem(totalItem) {
+      return totalItem === this.itemPerRow;
     }
   }
 };

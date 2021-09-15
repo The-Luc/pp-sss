@@ -1,16 +1,23 @@
 <template>
-  <div class="slide-container">
-    <div class="slide-content" :class="{ 'not-full': !hasFullItem }">
+  <div class="slide-container" :class="{ digital: isDigital }">
+    <div
+      v-for="(row, pageIndex) in currentPage"
+      :key="`row-${pageIndex}`"
+      class="slide-content"
+      :class="{ 'not-full': !hasFullItem(row.length) }"
+    >
       <slide-item
-        v-for="(previewData, index) in currentPage"
-        :key="index"
+        v-for="(previewData, itemIndex) in row"
+        :key="`item-${itemIndex}`"
         :portraits="previewData.item.portraits"
         :layout="previewData.item.layout"
         :background-url="previewData.item.backgroundUrl"
         :flow-number="previewData.index + 1"
         :page-number="previewData.item.pageNo"
-        :is-use-margin="!hasFullItem"
+        :screen-number="previewData.item.screenNo"
+        :is-use-margin="!hasFullItem(row.length)"
         :flow-settings="flowSettings"
+        :is-digital="isDigital"
       ></slide-item>
     </div>
 
@@ -19,6 +26,7 @@
       :current-page-index="currentIndex"
       :is-posible-to-back="isPosibleToBack"
       :is-posible-to-next="isPosibleToNext"
+      :is-digital="isDigital"
       @move-next="onNext"
       @move-back="onBack"
       @page-selected="onPageChange"

@@ -1,19 +1,24 @@
 .slide-container {
   display: flex;
   width: 100%;
+  height: calc(100% - 88px);
   flex-direction: column;
+
+  &.digital {
+    height: 594px;
+
+    .slide-content {
+      height: 570px;
+      margin-top: 12px;
+      padding: 0 80px;
+      align-items: center;
+    }
+  }
 
   .slide-content {
     display: flex;
     width: 100%;
     justify-content: space-between;
-
-    ::v-deep {
-      .preview-thumbnail {
-        width: 329px;
-        height: 429px;
-      }
-    }
 
     &.not-full {
       justify-content: center;

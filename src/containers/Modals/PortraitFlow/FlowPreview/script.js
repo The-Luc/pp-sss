@@ -25,6 +25,9 @@ export default {
     previewPortraitsRange: {
       type: Array,
       required: true
+    },
+    isDigital: {
+      type: Boolean
     }
   },
   data() {

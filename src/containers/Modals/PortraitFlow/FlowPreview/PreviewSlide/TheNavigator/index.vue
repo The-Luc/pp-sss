@@ -1,5 +1,5 @@
 <template>
-  <div class="slide-navigator">
+  <div class="slide-navigator" :class="{ digital: isDigital }">
     <move-control
       is-back-control
       :disabled="!isPosibleToBack"

@@ -6,6 +6,10 @@
   margin-bottom: 14px;
   align-items: center;
 
+  &.digital {
+    margin-bottom: 177px;
+  }
+
   .label {
     margin-right: 8px;
     color: $color-gray5;
