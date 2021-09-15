@@ -1,6 +1,6 @@
 import FillColor from '@/containers/Properties/Features/FillColor';
 import Opacity from '@/components/Properties/Features/Opacity';
-import Shadow from '@/components/Properties/Features/Shadow';
+import PpShadow from '@/components/Properties/Features/Shadow';
 import Border from '@/components/Properties/Features/Border';
 import Animation from '@/components/Properties/Features/Animation';
 
@@ -8,7 +8,7 @@ export default {
   components: {
     FillColor,
     Opacity,
-    Shadow,
+    PpShadow,
     Border,
     Animation
   },
