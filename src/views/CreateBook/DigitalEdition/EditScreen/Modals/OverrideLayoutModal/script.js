@@ -1,9 +1,10 @@
-import { mapActions } from 'vuex';
 import Modal from '@/containers/Modals/Modal';
-import { ACTIONS as DIGITAL_ACTIONS } from '@/store/modules/digital/const';
 import PpButton from '@/components/Buttons/Button';
+
+import { mapActions } from 'vuex';
+import { ACTIONS as DIGITAL_ACTIONS } from '@/store/modules/digital/const';
 import { useFrame, useFrameReplace, useModal } from '@/hooks';
-import { useObject } from '../composables';
+import { useObject } from '../../composables';
 
 export default {
   setup() {
