@@ -4,7 +4,7 @@ import CropControl from '@/components/CropControl';
 import EditorHeader from '@/containers/HeaderEdition/Header';
 import FeedbackBar from '@/containers/HeaderEdition/FeedbackBar';
 import MediaModal from '@/containers/Modals/Media';
-import PortraitFlow from '@/containers/Modals/PortraitFlow';
+import PortraitFlow from '@/containers/Modals/PortraitFlow/PrintFlow';
 import PortraitFolder from '@/containers/Modals/PortraitFolder';
 
 import ToolBar from './ToolBar';
