@@ -1,13 +1,16 @@
 <template>
   <div class="preview-wrapper" :class="{ digital: isDigital }">
-    <PreviewThumbnail
-      :portraits="portraits"
-      :layout="layout"
-      :page-number="pageNo"
-      :background-url="backgroundUrl"
-      :flow-settings="flowSettings"
-      :is-digital="isDigital"
-    />
+    <transition name="thumb-preview">
+      <preview-thumbnail
+        :key="pageNo"
+        :portraits="portraits"
+        :layout="layout"
+        :page-number="pageNo"
+        :background-url="backgroundUrl"
+        :flow-settings="flowSettings"
+        :is-digital="isDigital"
+      ></preview-thumbnail>
+    </transition>
 
     <div class="pages">
       <div

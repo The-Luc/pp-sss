@@ -13,7 +13,7 @@
     <Frames
       :frames="frames"
       :active-frame-id="currentFrameId"
-      :show-add-frame="showAddFrame"
+      :show-add-frame="true"
     />
     <AddBoxInstruction v-if="visible" :element="element" :x="x" :y="y" />
   </div>

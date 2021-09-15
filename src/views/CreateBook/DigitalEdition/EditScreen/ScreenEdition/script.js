@@ -21,7 +21,6 @@ import {
   DIGITAL_CANVAS_SIZE,
   AUTOSAVE_INTERVAL,
   DEBOUNCE_MUTATION,
-  MAX_SUPPLEMENTAL_FRAMES,
   MIN_IMAGE_SIZE,
   PASTE,
   THUMBNAIL_IMAGE_CONFIG,
@@ -217,7 +216,6 @@ export default {
       visible: false,
       awaitingAdd: '',
       digitalCanvas: null,
-      showAddFrame: true,
       countPaste: 1,
       isProcessingPaste: false,
       isCanvasChanged: false,
@@ -309,17 +307,6 @@ export default {
       resetObjects(this.digitalCanvas);
 
       await this.drawObjectsOnCanvas(this.sheetLayout);
-    },
-
-    frames: {
-      deep: true,
-      handler(val, oldVal) {
-        if (val.length === oldVal.length) return;
-
-        const supplementalFrames = val.filter(item => !item.frame?.fromLayout);
-
-        this.handleShowAddFrame(supplementalFrames);
-      }
     },
     firstFrameThumbnail(val) {
       this.updateSheetThumbnail({
@@ -1721,13 +1708,6 @@ export default {
     closeProperties() {
       this.toggleActiveObjects(false);
       this.resetConfigTextProperties();
-    },
-    /**
-     * Handle show/hide add frame button
-     * @param {Array} frames supplemental frames
-     */
-    handleShowAddFrame(frames) {
-      this.showAddFrame = frames.length < MAX_SUPPLEMENTAL_FRAMES;
     },
     /**
      * Function handle to set object(s) to clipboard when user press Ctrl + C (Windows), Command + C (macOS), or from action menu
