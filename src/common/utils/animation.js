@@ -332,6 +332,8 @@ const handleBlurEffect = async (element, options, canvas) => {
   img.set({
     top: imgTop,
     left: imgLeft,
+    stroke: 'red',
+    strokeWidth: 3,
     blurValue,
     visible: false,
     fakeObject: true
