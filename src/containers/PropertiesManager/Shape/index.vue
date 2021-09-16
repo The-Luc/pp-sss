@@ -17,6 +17,7 @@
             @change="onChange"
             @changeShadow="onChangeShadow"
             @onApply="onApplyAnimation"
+            @preview="onClickPreview"
           />
         </v-tab-item>
 

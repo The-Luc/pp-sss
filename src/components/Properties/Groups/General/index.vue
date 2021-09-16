@@ -27,6 +27,7 @@
       :play-out-config="playOutConfig"
       @change="onChangeAnimation"
       @apply="onApplyAnimation"
+      @preview="onClickPreview"
     />
   </div>
 </template>

@@ -47,7 +47,7 @@ export default {
       const inactiveTime = this.totalAnimationDuration(config);
       this.isDisabledPreview = true;
 
-      this.$root.$emit(EVENT_TYPE.PREVIEW_ANIMATION, config);
+      this.$emit('preview', config);
 
       setTimeout(() => {
         this.isDisabledPreview = false;

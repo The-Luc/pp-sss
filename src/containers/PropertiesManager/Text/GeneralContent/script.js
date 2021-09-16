@@ -52,6 +52,13 @@ export default {
 
     onApply(val) {
       this.$root.$emit(EVENT_TYPE.APPLY_TEXT_ANIMATION, val);
+    },
+    /**
+     * Emit preview option selected object
+     * @param {Object} animationConfig preview option
+     */
+    onClickPreview(config) {
+      this.$root.$emit(EVENT_TYPE.PREVIEW_ANIMATION, config);
     }
   }
 };
