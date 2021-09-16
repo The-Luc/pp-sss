@@ -206,10 +206,10 @@ export default {
 
       const doubleBorderDisplay = isDoubleBorder ? 'block' : 'none';
       const doubleBorderWidth = `${Math.round(
-        ptToPxPreview(strokeWidth, this.previewHeight) / 4
+        this.convertPttoPx(strokeWidth) / 4
       )}px`;
       const doubleBorderPosition = `${Math.ceil(
-        ptToPxPreview(strokeWidth, this.previewHeight) / 2
+        this.convertPttoPx(strokeWidth) / 2
       )}px`;
 
       const shadowDisplay = dropShadow ? 'block' : 'none';
