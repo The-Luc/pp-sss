@@ -136,7 +136,7 @@ export const getRangePortraitMultiFolder = (
  * @param {Array} portraits array of portrait in selected folder
  * @returns number of slots need for large size portraits
  */
-const calcAdditionPortraitSlot = (teacherSettings, portraits) => {
+export const calcAdditionPortraitSlot = (teacherSettings, portraits) => {
   if (!teacherSettings.hasTeacher) return 0;
 
   let numTeacher = 0;

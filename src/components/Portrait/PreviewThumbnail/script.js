@@ -8,9 +8,15 @@ import {
   CLASS_ROLE,
   PORTRAIT_SIZE,
   CSS_PORTRAIT_IMAGE_MASK,
-  BORDER_STYLES
+  BORDER_STYLES,
+  PORTRAIT_TEACHER_PLACEMENT
 } from '@/common/constants';
-import { isEmpty, inToPxPreview, ptToPxPreview } from '@/common/utils';
+import {
+  isEmpty,
+  inToPxPreview,
+  ptToPxPreview,
+  calcAdditionPortraitSlot
+} from '@/common/utils';
 import {
   toCssPreview,
   toMarginCssPreview,
@@ -74,7 +80,8 @@ export default {
           nameLines,
           ...nameTextFontSettings
         },
-        this.previewHeight
+        this.previewHeight,
+        this.isDigital
       );
 
       if (nameLines === 2) {
@@ -107,7 +114,8 @@ export default {
           ...pageTitleFontSettings,
           ...pageTitleMargins
         },
-        this.previewHeight
+        this.previewHeight,
+        this.isDigital
       );
     },
     isCenterPosition() {
@@ -116,6 +124,7 @@ export default {
       return namePosition?.value === PORTRAIT_NAME_POSITION.CENTERED.value;
     },
     showPageTitile() {
+      if (this.pageNumber !== this.flowSettings.startOnPageNumber) return false;
       return this.flowSettings.textSettings?.isPageTitleOn;
     },
     isFirstLastDisplay() {
@@ -127,14 +136,15 @@ export default {
       if (isEmpty(this.flowSettings)) return {};
 
       const { nameWidth } = this.flowSettings.textSettings;
-      const nameContainerWidth = this.$refs?.portraits?.clientWidth;
+      const nameContainerWidth = this.$refs.portraitsSection?.$el.clientWidth;
       const col = this.layout.colCount;
       const gapWidth =
         (nameContainerWidth - this.portraitWidth * col) / (col - 1);
 
       const style = toMarginCssPreview(
         { ...this.layout.margins },
-        this.previewHeight
+        this.previewHeight,
+        this.isDigital
       );
 
       if (this.isPageRight) {
@@ -152,27 +162,53 @@ export default {
     portraitNames() {
       if (isEmpty(this.flowSettings)) return [];
 
-      const { rowCount, colCount } = this.layout;
-      const portraitPerPage = rowCount * colCount;
-      const numLargePortrait = (portraitPerPage - this.portraits.length) / 3;
+      const {
+        teacherSettings,
+        flowSingleSettings,
+        startOnPageNumber,
+        folders
+      } = this.flowSettings;
 
-      const isOnStartPage =
-        this.pageNumber === this.flowSettings.startOnPageNumber;
+      const { rowCount, colCount } = this.layout;
+      const teacherPlacement = teacherSettings.teacherPlacement;
+      const pages = flowSingleSettings.pages;
+
+      const numLargePortrait =
+        calcAdditionPortraitSlot(teacherSettings, folders[0].assets) / 3;
+
+      const isOnStartPage = this.pageNumber === startOnPageNumber;
+      const isOnLastPage = this.pageNumber === pages[pages.length - 1];
 
       const portraitArray = Object.values(this.portraits);
       const portraitNameArray = [];
 
-      if (this.portraits.length === portraitPerPage || !isOnStartPage) {
-        while (portraitArray.length) {
-          portraitNameArray.push(portraitArray.splice(0, colCount));
+      const isLargePortraitOnFirst =
+        teacherPlacement === PORTRAIT_TEACHER_PLACEMENT.FIRST &&
+        numLargePortrait > 0;
+
+      const lastRowCount = this.portraits.length % colCount;
+
+      if (isOnStartPage && isLargePortraitOnFirst) {
+        for (let i = 1; i <= rowCount; i++) {
+          const numPortraitForRow =
+            i < 3 ? colCount - numLargePortrait * i : colCount;
+
+          portraitNameArray.push(portraitArray.splice(0, numPortraitForRow));
         }
 
         return portraitNameArray;
       }
 
+      if (!isOnLastPage || lastRowCount + numLargePortrait <= colCount) {
+        while (portraitArray.length) {
+          portraitNameArray.push(portraitArray.splice(0, colCount));
+        }
+        return portraitNameArray;
+      }
+
       for (let i = 1; i <= rowCount; i++) {
-        const numPortraitForRow =
-          i < 3 ? colCount - numLargePortrait * i : colCount;
+        const lastRow = Math.floor(this.portraits.length / colCount) + 1;
+        const numPortraitForRow = i === lastRow ? lastRowCount - 1 : colCount;
 
         portraitNameArray.push(portraitArray.splice(0, numPortraitForRow));
       }
@@ -180,6 +216,7 @@ export default {
       return portraitNameArray;
     },
     isPageRight() {
+      if (this.isDigital) return false;
       return this.pageNumber % 2 !== 0;
     },
     imageStyle() {
@@ -252,10 +289,7 @@ export default {
   mounted() {
     this.$nextTick(() => {
       this.previewHeight = this.$refs.thumbWrapper.clientHeight;
-
-      setTimeout(() => {
-        this.updatePortraitData();
-      }, 10);
+      this.updatePortraitData();
     });
   },
   methods: {
@@ -344,7 +378,7 @@ export default {
      */
     setNamesHeight() {
       const row = this.layout.rowCount;
-      const nameContainerHeight = this.$refs?.portraits?.clientHeight;
+      const nameContainerHeight = this.$refs.portraitsSection?.$el.clientHeight;
       const portraitHeight = this.portraitWidth * this.defaultRatio;
 
       const gridHeight = portraitHeight + portraitHeight * 0.1;
@@ -356,7 +390,11 @@ export default {
      * Set height for thumbnail wrapper container when has page title
      */
     setThumbWrapperHeight() {
-      const pageTitleHeight = this.$refs?.pageTitle?.clientHeight;
+      const { lineHeight, paddingBottom, paddingTop } = this.pageTitleStyle;
+      const pageTitleHeight =
+        parseFloat(lineHeight) +
+        parseFloat(paddingBottom) +
+        parseFloat(paddingTop);
       const height = this.showPageTitile ? pageTitleHeight : 0;
 
       this.$refs.thumbWrapper.style.height = `calc(100% - ${height}px)`;
@@ -365,13 +403,13 @@ export default {
      * Convert value from in to px
      */
     convertIntoPx(value) {
-      return inToPxPreview(value, this.previewHeight);
+      return inToPxPreview(value, this.previewHeight, this.isDigital);
     },
     /**
      * Convert value from pt to px
      */
     convertPttoPx(value) {
-      return ptToPxPreview(value, this.previewHeight);
+      return ptToPxPreview(value, this.previewHeight, this.isDigital);
     },
     /**
      *  Fire when loop through portraits
