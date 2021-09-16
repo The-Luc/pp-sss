@@ -101,7 +101,7 @@ export const createTextBox = (x, y, width, height, textProperties) => {
 
   const playInOrder = textProperties?.animationIn?.order || 1;
   const playOutOrder = textProperties?.animationOut?.order || 1;
-  const selectable = textProperties?.selectable;
+  const selectable = newText.selectable;
 
   const group = new fabric.Group([rect, text], {
     id: dataObject.id,
