@@ -209,13 +209,17 @@ export const CSS_PORTRAIT_IMAGE_MASK = {
     value: PORTRAIT_IMAGE_MASK.NONE,
     className: 'mask-style-none',
     name: 'None',
-    style: {}
+    style: {
+      height: '125%',
+      borderRadius: '0'
+    }
   },
   [PORTRAIT_IMAGE_MASK.ROUNDED]: {
     value: PORTRAIT_IMAGE_MASK.ROUNDED,
     className: 'mask-style-rounded',
     name: 'Rounded Corners',
     style: {
+      height: '125%',
       borderRadius: '15%'
     }
   },
@@ -224,7 +228,8 @@ export const CSS_PORTRAIT_IMAGE_MASK = {
     className: 'mask-style-oval',
     name: 'Oval',
     style: {
-      borderRadius: '50%'
+      height: '125%',
+      borderRadius: '999px'
     }
   },
   [PORTRAIT_IMAGE_MASK.CIRCLE]: {
@@ -232,7 +237,7 @@ export const CSS_PORTRAIT_IMAGE_MASK = {
     className: 'mask-style-circle',
     name: 'Circle',
     style: {
-      height: 'calc(100% / 1.25)',
+      height: '100%',
       borderRadius: '50%'
     }
   },
@@ -241,7 +246,8 @@ export const CSS_PORTRAIT_IMAGE_MASK = {
     className: 'mask-style-square',
     name: 'Square',
     style: {
-      height: 'calc(100% / 1.25)'
+      height: '100%',
+      borderRadius: '0'
     }
   }
 };

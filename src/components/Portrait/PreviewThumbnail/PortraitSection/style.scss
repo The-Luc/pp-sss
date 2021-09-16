@@ -37,35 +37,57 @@
 
       .photo-container {
         width: 100%;
-        padding-top: 125%;
+        padding-top: var(--image-height);
         position: relative;
 
         .photo {
           position: absolute;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%);
+          top: 0;
+          left: 0;
+          transform: translate(0, 0);
           width: 100%;
           height: 100%;
-          background-color: var(--color);
           img {
             width: 100%;
             height: 100%;
-            border-radius: var(--radius);
+            background-clip: padding-box;
+            border-width: var(--border-width);
+            border-color: var(--border-color);
+            border-style: var(--border-style);
+            border-radius: var(--border-radius);
             color: transparent;
           }
 
           &:before {
-            display: var(--display);
+            display: var(--double-border-display);
             position: absolute;
             content: '';
-            top: var(--position);
-            right: var(--position);
-            bottom: var(--position);
-            left: var(--position);
+            top: var(--double-border-position);
+            right: var(--double-border-position);
+            bottom: var(--double-border-position);
+            left: var(--double-border-position);
             border: solid white;
-            border-width: var(--space);
-            border-radius: var(--radius);
+            border-width: var(--double-border-width);
+            border-radius: var(--border-radius);
+          }
+
+          &:after {
+            content: '';
+            position: absolute;
+            display: var(--shadow-display);
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            background-clip: padding-box;
+            background-color: var(--shadow-color);
+            filter: var(--shadow-filter);
+            transform: var(--shadow-transform);
+            border-color: var(--shadow-color);
+            border-width: var(--border-width);
+            border-style: var(--border-style);
+            border-radius: var(--border-radius);
+            z-index: -1;
           }
         }
       }

@@ -6,8 +6,8 @@
         :key="index"
         :class="{ portrait, enlarge: portrait.isLargePortrait }"
       >
-        <div class="photo-container">
-          <div v-show="portrait.imageUrl" class="photo" :style="imageStyle">
+        <div class="photo-container" :style="imageStyle">
+          <div v-show="portrait.imageUrl" class="photo">
             <img :src="portrait.imageUrl" :alt="portrait.firstName" />
           </div>
         </div>
