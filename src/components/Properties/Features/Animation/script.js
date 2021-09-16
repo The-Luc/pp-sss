@@ -1,4 +1,3 @@
-import { EVENT_TYPE } from '@/common/constants';
 import Control from './Control';
 import {
   BLUR_DELAY_DURATION,
