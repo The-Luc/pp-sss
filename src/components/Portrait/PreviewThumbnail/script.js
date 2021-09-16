@@ -185,36 +185,102 @@ export default {
     imageStyle() {
       if (isEmpty(this.flowSettings)) return {};
 
+      // const { border, shadow, mask } = this.flowSettings.imageSettings;
+      // const cssBorder = toCssBorder(border, this.previewHeight);
+      // const cssShadow = toCssShadow(shadow, this.previewHeight);
+      // const cssMask = CSS_PORTRAIT_IMAGE_MASK[mask].style;
+
+      // const { strokeLineType, strokeWidth } = border || {};
+
+      // const space = Math.round(
+      //   ptToPxPreview(strokeWidth, this.previewHeight) / 4
+      // );
+      // const position = -Math.ceil(
+      //   ptToPxPreview(strokeWidth, this.previewHeight) / 2
+      // );
+
+      // const radius = cssMask.borderRadius || 0;
+      // const color = cssBorder.borderColor || 'transparent';
+
+      // const customBorder = {
+      //   '--display': strokeLineType === BORDER_STYLES.DOUBLE ? 'block' : 'none',
+      //   '--space': `${space}px`,
+      //   '--position': `${position}px`,
+      //   '--radius': radius,
+      //   '--color': color
+      // };
+
+      // const isDoubleBorder = strokeLineType === BORDER_STYLES.DOUBLE;
+
+      // const space = Math.round(
+      //   ptToPxPreview(strokeWidth, this.previewHeight) / 4
+      // );
+      // const position = -Math.ceil(
+      //   ptToPxPreview(strokeWidth, this.previewHeight) / 2
+      // );
+      // const color = cssBorder.borderColor || 'transparent';
+      // const radius = isDoubleBorder ? cssMask.borderRadius : 0;
+      // const overflow = isDoubleBorder ? 'inherit' : 'hidden';
+      // const display = isDoubleBorder ? 'block' : 'none';
+
+      // const variableCss = {
+      //   '--overflow': overflow,
+      //   '--display': display,
+      //   '--space': `${space}px`,
+      //   '--position': `${position}px`,
+      //   '--radius': radius,
+      //   '--color': color
+      // };
+
+      // return {
+      //   ...cssBorder,
+      //   ...cssShadow,
+      //   ...cssMask,
+      //   ...variableCss
+      // };
+
       const { border, shadow, mask } = this.flowSettings.imageSettings;
-      const cssBorder = toCssBorder(border, this.previewHeight);
-      const cssShadow = toCssShadow(shadow, this.previewHeight);
-      const cssMask = CSS_PORTRAIT_IMAGE_MASK[mask].style;
+      const { strokeLineType, strokeWidth } = border;
+      const { borderColor, borderWidth, borderStyle } = toCssBorder(
+        border,
+        this.previewHeight
+      );
+      const {
+        shadowBlur,
+        shadowOffsetX,
+        shadowOffsetY,
+        shadowColor,
+        dropShadow
+      } = toCssShadow(shadow, this.previewHeight);
 
-      const { strokeLineType, strokeWidth } = border || {};
+      const isDoubleBorder = strokeLineType === BORDER_STYLES.DOUBLE;
 
-      const space = Math.round(
+      const doubleBorderDisplay = isDoubleBorder ? 'block' : 'none';
+      const doubleBorderWidth = `${Math.round(
         ptToPxPreview(strokeWidth, this.previewHeight) / 4
-      );
-      const position = -Math.ceil(
+      )}px`;
+      const doubleBorderPosition = `${Math.ceil(
         ptToPxPreview(strokeWidth, this.previewHeight) / 2
-      );
+      )}px`;
 
-      const radius = cssMask.borderRadius || 0;
-      const color = cssBorder.borderColor || 'transparent';
+      const shadowDisplay = dropShadow ? 'block' : 'none';
 
-      const customBorder = {
-        '--display': strokeLineType === BORDER_STYLES.DOUBLE ? 'block' : 'none',
-        '--space': `${space}px`,
-        '--position': `${position}px`,
-        '--radius': radius,
-        '--color': color
+      const cssVariable = {
+        '--border-color': borderColor,
+        '--border-width': borderWidth,
+        '--border-style': borderStyle,
+        '--shadow-blur': shadowBlur,
+        '--shadow-offset-x': shadowOffsetX,
+        '--shadow-offset-y': shadowOffsetY,
+        '--shadow-color': shadowColor,
+        '--shadow-display': shadowDisplay,
+        '--double-border-display': doubleBorderDisplay,
+        '--double-border-position': doubleBorderPosition,
+        '--double-border-width': doubleBorderWidth
       };
 
       return {
-        ...cssBorder,
-        ...cssShadow,
-        ...cssMask,
-        ...customBorder
+        ...cssVariable
       };
     },
     portraitItems() {
