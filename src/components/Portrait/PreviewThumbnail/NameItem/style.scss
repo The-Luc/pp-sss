@@ -13,9 +13,7 @@
     }
   }
 
-  div {
-    .space::after {
-      content: '\00a0';
-    }
+  .space::after {
+    content: '\00a0';
   }
 }
