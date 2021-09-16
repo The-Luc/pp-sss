@@ -29,16 +29,22 @@ export default {
     }
   },
   data() {
+    const styleOptions =
+      this.type === CONTROL_TYPE.PLAY_IN ? PLAY_IN_OPTIONS : PLAY_OUT_OPTIONS;
+
+    const title = this.type === CONTROL_TYPE.PLAY_IN ? 'Play In' : 'Play Out';
+
     return {
       appendedIcon: ICON_LOCAL.APPENDED_ICON,
-      directionOptions: DIRECTION_OPTIONS,
+      title,
+      styleOptions,
       applyOptions: TEXT_APPLY_OPTIONS,
+      directionOptions: DIRECTION_OPTIONS,
+      selectedStyle: NONE_OPTION,
       selectedApplyOption: null,
-      defaultDuration: 0.8,
-      defaultScale: 50,
-      defaultStyle: NONE_OPTION,
-      defaultDirection: DIRECTION_OPTIONS[0],
-      defaultOrder: 1,
+      selectedDirection: DIRECTION_OPTIONS[0],
+      durationValue: 0.8,
+      scaleValue: 50,
       showApplyOptions: false,
       showApplyButton: false,
       componentKey: true
@@ -52,14 +58,6 @@ export default {
     };
   },
   computed: {
-    title() {
-      return this.type === CONTROL_TYPE.PLAY_IN ? 'Play In' : 'Play Out';
-    },
-    styleOptions() {
-      return this.type === CONTROL_TYPE.PLAY_IN
-        ? PLAY_IN_OPTIONS
-        : PLAY_OUT_OPTIONS;
-    },
     orderOptions() {
       return Object.values(this.listObjects)
         .filter(obj => obj?.type && obj.type !== OBJECT_TYPE.BACKGROUND)
@@ -68,34 +66,12 @@ export default {
           value: i + 1
         }));
     },
-    isShowOptions() {
-      return this.selectedStyle?.value !== NONE_OPTION.value;
-    },
-    selectedStyle() {
-      if (!this.config.style) return this.defaultStyle;
-
-      const style = this.styleOptions.find(s => s.value === this.config.style);
-      return style || this.defaultStyle;
-    },
-    selectedDirection() {
-      if (!this.config.direction) return this.defaultDirection;
-
-      const direction = this.directionOptions.find(
-        dir => dir.value === this.config.direction
-      );
-      return direction;
-    },
-    durationValue() {
-      return !isNaN(this.config.duration)
-        ? this.config.duration
-        : this.defaultDuration;
-    },
-    scaleValue() {
-      return !isNaN(this.config.scale) ? this.config.scale : this.defaultScale;
-    },
     selectedOrder() {
       const order = this.orderOptions.find(o => o.value === this.config?.order);
       return order || this.orderOptions[0];
+    },
+    isShowOptions() {
+      return this.selectedStyle?.value !== NONE_OPTION.value;
     }
   },
   methods: {
@@ -108,16 +84,9 @@ export default {
         this.showApplyOptions = true;
       }
 
-      const data = {
-        style: style.value,
-        controlType: this.type,
-        duration: this.defaultDuration,
-        direction: this.defaultDirection.value,
-        scale: this.defaultScale,
-        order: this.defaultOrder
-      };
+      this.selectedStyle = style;
 
-      this.$emit('change', { ...data });
+      this.resetConfig();
     },
     /**
      * Fire when user change the order combobox
@@ -139,7 +108,7 @@ export default {
      * @param {Object} val Order option
      */
     onChangeScale(val) {
-      if (val >= 0 && val <= 100) this.emitEvent({ scale: val });
+      if (val >= 0 && val <= 100) this.scaleValue = val;
       else this.forceUpdate();
     },
     /**
@@ -147,8 +116,7 @@ export default {
      * @param {Object} val Order option
      */
     onChangeDuration(val) {
-      if (Number(val) >= 0 && Number(val) <= 5)
-        this.emitEvent({ duration: Number(val) });
+      if (Number(val) >= 0 && Number(val) <= 5) this.durationValue = val;
       else this.forceUpdate();
     },
     /**
@@ -156,7 +124,7 @@ export default {
      * @param {Object} val Direction option
      */
     onChangeDirection(val) {
-      this.emitEvent({ direction: val.value });
+      this.selectedDirection = val;
     },
     /**
      * To emit animation config to parent component
@@ -169,12 +137,12 @@ export default {
      * Fire when click preview button
      */
     onClickPreview() {
-      if (this.config.style === NONE_OPTION.value) return;
+      if (this.selectedStyle.value === NONE_OPTION.value) return;
 
       const animateData = {
-        ...this.config,
-        duration: this.config.duration * 1000,
-        scale: this.config.scale / 100
+        duration: this.durationValue * 1000,
+        scale: this.scaleValue / 100,
+        direction: this.selectedDirection.value
       };
 
       this.$emit('preview', animateData);
@@ -199,10 +167,23 @@ export default {
      * Fire when user click apply button
      */
     onClickApply() {
-      this.$emit('apply', this.selectedApplyOption.value, this.config);
+      const animateData = {
+        duration: this.durationValue * 1000,
+        scale: this.scaleValue / 100,
+        direction: this.selectedDirection.value
+      };
+      this.$emit('apply', this.selectedApplyOption.value, animateData);
       this.selectedApplyOption = null;
       this.showApplyOptions = false;
       this.showApplyButton = false;
+    },
+    /**
+     * Reset config to default
+     */
+    resetConfig() {
+      this.selectedDirection = this.directionOptions[0];
+      this.durationValue = 0.8;
+      this.scaleValue = 50;
     }
   }
 };

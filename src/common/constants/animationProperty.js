@@ -143,11 +143,11 @@ export const TEXT_APPLY_OPTIONS = [
     value: APPLY_MODE.SELF
   },
   {
-    name: 'This text on the frame',
+    name: 'All text on the frame',
     value: APPLY_MODE.FRAME
   },
   {
-    name: 'This text in this section',
+    name: 'All text in this section',
     value: APPLY_MODE.SECTION
   },
   {
