@@ -50,7 +50,7 @@ export default {
         : getSelectedOption(selected || fontSize, 'pt');
     },
     colorVal() {
-      return this.fontSettings.fontColor;
+      return this.fontSettings.color;
     },
     selectedStyles() {
       const isBold = this.fontSettings.isBold;
@@ -86,10 +86,10 @@ export default {
     },
     /**
      * Emit color value to parent
-     * @param {String}  fontColor color value user selected
+     * @param {String}  color color value user selected
      */
-    onChangeColor(fontColor) {
-      this.$emit('change', { fontColor });
+    onChangeColor(color) {
+      this.$emit('change', { color });
     },
     /**
      * Emit font family/presentation/text case value to parent

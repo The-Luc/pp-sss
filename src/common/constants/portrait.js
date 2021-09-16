@@ -178,7 +178,7 @@ export const MIN_MAX_TEXT_SETTINGS = {
 
 export const DEFAULT_TEXT_PROPERTIES = {
   fontFamily: 'Open Sans',
-  fontColor: DEFAULT_COLOR.COLOR,
+  color: DEFAULT_COLOR.COLOR,
   isBold: true,
   isItalic: false,
   isUnderline: false,

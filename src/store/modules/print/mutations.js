@@ -2,6 +2,7 @@ import { cloneDeep, merge } from 'lodash';
 
 import {
   addObject,
+  addObjects,
   deleteObjects,
   setBackgrounds,
   setBookInfo
@@ -112,6 +113,7 @@ export const mutations = {
     state.currentObjectId = id;
   },
   [PRINT._MUTATES.ADD_OBJECT]: addObject,
+  [PRINT._MUTATES.ADD_OBJECTS]: addObjects,
   [PRINT._MUTATES.SET_PROP](state, { prop }) {
     if (!state.currentObjectId) return;
 

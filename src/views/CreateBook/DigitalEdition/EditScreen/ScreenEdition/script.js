@@ -6,7 +6,7 @@ import Frames from './Frames';
 import {
   imageBorderModifier,
   useDigitalOverrides,
-  useGroupOverride
+  useObjectControlsOverride
 } from '@/plugins/fabric';
 import {
   ARRANGE_SEND,
@@ -1838,7 +1838,7 @@ export default {
         }
       });
 
-      useGroupOverride(svg);
+      useObjectControlsOverride(svg);
 
       applyShadowToObject(svg, {
         dropShadow,

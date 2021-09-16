@@ -162,7 +162,7 @@ export default {
      * Emit accept event to parent
      */
     onAccept() {
-      this.$emit('accept', this.flowSettings);
+      this.$emit('accept', this.flowSettings, this.requiredPages);
     },
     /**
      * Emit back event
@@ -244,7 +244,7 @@ export default {
         this.maxPortraitPerPage
       );
 
-      return selectedData.map(item => item.requiredPages).flat(1); //phan ga ra 2 cap
+      return selectedData.map(item => item.requiredPages).flat(1);
     },
     /**
      * To update flowSetting with data come from child componenet settings

@@ -1,15 +1,17 @@
-import { DEFAULT_IMAGE } from '../constants';
-import { ImageElementObject } from '../models/element';
+import { ImageElementObject, TextElementObject } from '../models/element';
 import { getPagePrintSize, pxToIn } from './canvas';
 import { getUniqueId } from './util';
 import {
   CLASS_ROLE,
   PORTRAIT_ASSISTANT_PLACEMENT,
+  PORTRAIT_IMAGE_MASK,
   PORTRAIT_SIZE,
   PORTRAIT_TEACHER_PLACEMENT
 } from '@/common/constants';
 
 import { cloneDeep } from 'lodash';
+import { activeCanvas, ptToPx } from '.';
+import { measureTextWidth } from './textSize';
 
 /**
  * Get range of portrait
@@ -306,43 +308,299 @@ export const getSelectedDataOfPages = (pages, startOnPageNumber) => {
 
 /**
  * Draw portrait images to canvas
+ * @param settings flow settings for portraits
+ * @param assets assets will be applied
+ * @param isRight flag for right page of sheet
+ * @param isFirstPage flag for first page will be applied
  * @return array image objects
  */
-export const createPortraitImage = settings => {
-  const { colCount, rowCount } = settings.layoutSettings;
+export const createPortraitObjects = (
+  settings,
+  assets,
+  isRight,
+  isFirstPage
+) => {
+  const { colCount, rowCount, margins } = settings.layoutSettings;
 
-  const colGap = 100;
-  const rowGap = 100;
+  const {
+    nameTextFontSettings,
+    isPageTitleOn,
+    nameDisplay,
+    nameGap,
+    nameLines,
+    namePosition,
+    nameWidth,
+    pageTitle,
+    pageTitleFontSettings,
+    pageTitleMargins
+  } = settings.textSettings;
 
-  const totalColGap = (colCount - 1) * colGap;
-  const totalRowGap = rowCount * rowGap;
+  const {
+    teacherPortraitSize,
+    assistantTeacherPortraitSize,
+    hasTeacher
+  } = settings.teacherSettings;
 
-  const { safeMargin, pageWidth, pageHeight } = getPagePrintSize().pixels;
+  const { border, shadow, mask } = settings.imageSettings;
 
-  const totalWidth = pageWidth - totalColGap - safeMargin * 2;
-  const totalHeight = pageHeight - totalRowGap - safeMargin * 2;
+  const {
+    safeMargin,
+    pageWidth,
+    pageHeight,
+    bleedLeft,
+    bleedTop
+  } = getPagePrintSize().inches;
 
-  const itemWidth = totalWidth / colCount;
-  const itemHeight = totalHeight / rowCount;
+  const titleMeasureWidth =
+    pxToIn(
+      measureTextWidth(activeCanvas, pageTitle, {
+        fontSize: `${ptToPx(pageTitleFontSettings.fontSize)}px`,
+        fontFamily: pageTitleFontSettings.fontFamily
+      })
+    ) +
+    bleedLeft * 2;
+  const titleLines = Math.ceil(
+    titleMeasureWidth / (pageWidth - safeMargin * 2)
+  );
+  const titleHeight =
+    pxToIn(ptToPx(pageTitleFontSettings.fontSize)) * titleLines;
+  const textHeight =
+    namePosition?.value === 0
+      ? pxToIn(ptToPx(nameTextFontSettings.fontSize)) * nameLines
+      : 0;
 
-  const imgs = Array.from({ length: rowCount }, (_, j) => {
-    return Array.from({ length: colCount }, (_, i) => ({
-      ...new ImageElementObject({
-        id: getUniqueId(),
-        imageUrl: DEFAULT_IMAGE.IMAGE_URL
-      }),
+  const offsetTitle = isFirstPage && isPageTitleOn ? titleHeight : 0;
+  const offsetName = namePosition.value !== 0 ? nameWidth : 0;
+  const offsetNameLeft = isRight ? 0 : offsetName;
+  const offsetNameRight = isRight ? offsetName : 0;
+
+  const offsetTop =
+    (isFirstPage && isPageTitleOn
+      ? pageTitleMargins.top + pageTitleMargins.bottom
+      : margins.top) + offsetTitle;
+  const offsetBottom = margins.bottom;
+  const offsetRight = margins.right + offsetNameRight;
+  const offsetLeft = margins.left + offsetNameLeft;
+
+  const totalHeight = pageHeight - offsetTop - offsetBottom - textHeight;
+  const totalWidth = pageWidth - offsetLeft - offsetRight;
+
+  const defaultGap = 0.15;
+
+  const isSquareImage = [
+    PORTRAIT_IMAGE_MASK.CIRCLE,
+    PORTRAIT_IMAGE_MASK.SQUARE
+  ].includes(mask);
+  const imageRatio = isSquareImage ? 1 : 1.25;
+
+  const isFirstLast = nameDisplay.value === 0;
+
+  const tmpHeight = totalHeight / rowCount - defaultGap - textHeight;
+  const tmpWidth = totalWidth / colCount - defaultGap;
+
+  const itemHeight = Math.min(tmpHeight, tmpWidth * imageRatio);
+  const itemWidth = itemHeight / imageRatio;
+
+  const colGap = (totalWidth - itemWidth * colCount) / (colCount - 1);
+  const rowGap = (totalHeight - itemHeight * rowCount) / (rowCount - 1);
+
+  const borderOffset = border.showBorder
+    ? pxToIn(ptToPx(border.strokeWidth))
+    : 0;
+
+  const largeTeacherHeight = Math.min(
+    (itemWidth * 2 + colGap) * imageRatio,
+    itemHeight * 2 + rowGap
+  );
+  const largeTeacherWidth = largeTeacherHeight / imageRatio;
+
+  const hasLargeTeacher =
+    hasTeacher && teacherPortraitSize === PORTRAIT_SIZE.LARGE;
+  const hasLargeAstTeacher =
+    hasTeacher && assistantTeacherPortraitSize === PORTRAIT_SIZE.LARGE;
+
+  const objs = [];
+  const splitAssets = [];
+
+  while (assets.length) {
+    splitAssets.push(assets.splice(0, colCount));
+  }
+
+  splitAssets.forEach((rowAssets, rowIndex) => {
+    rowAssets.forEach(
+      ({ lastName, firstName, imageUrl, classRole }, colIndex) => {
+        if (!imageUrl) return;
+
+        const isLargeAsst =
+          [CLASS_ROLE.PRIMARY_TEACHER, CLASS_ROLE.ASSISTANT_TEACHER].includes(
+            classRole
+          ) &&
+          (hasLargeTeacher || hasLargeAstTeacher);
+
+        const offsetX = isRight
+          ? bleedLeft + pageWidth + margins.left
+          : offsetLeft + bleedLeft;
+        const offsetY = bleedTop + offsetTop;
+
+        const x = colIndex * (itemWidth + colGap) + offsetX;
+        const y = rowIndex * (itemHeight + rowGap) + offsetY;
+
+        const nameSpace = `${nameLines > 1 ? '\n' : ' '}`;
+        const value = isFirstLast
+          ? `${firstName}${nameSpace}${lastName}`
+          : `${lastName},${nameSpace}${firstName}`;
+        const measureOptions = {
+          fontSize: `${ptToPx(nameTextFontSettings.fontSize)}px`,
+          fontFamily: nameTextFontSettings.fontFamily
+        };
+
+        const textWidth =
+          pxToIn(measureTextWidth(activeCanvas, value, measureOptions)) +
+          bleedLeft * 2;
+
+        const imageWidth = isLargeAsst ? largeTeacherWidth : itemWidth;
+        const imageHeight = isLargeAsst ? largeTeacherHeight : itemHeight;
+
+        const img = new ImageElementObject({
+          id: getUniqueId(),
+          imageUrl,
+          coord: { x, y },
+          size: {
+            width: imageWidth - borderOffset,
+            height: imageHeight - borderOffset
+          },
+          border,
+          shadow,
+          hasImage: true,
+          fromPortrait: true,
+          selectable: false
+        });
+
+        const textX = isRight
+          ? pageWidth + margins.left + bleedLeft + totalWidth
+          : margins.left;
+        const textY = y + colIndex * (nameGap + textHeight) - bleedTop;
+
+        const text = new TextElementObject({
+          id: getUniqueId(),
+          text: value,
+          coord: {
+            x: namePosition.value === 0 ? x - bleedLeft : textX,
+            y: namePosition.value === 0 ? y + imageHeight - bleedTop : textY
+          },
+          size: {
+            width:
+              namePosition.value === 0
+                ? Math.max(imageWidth + bleedLeft * 2, textWidth)
+                : Math.max(textWidth, nameWidth + bleedLeft),
+            height: namePosition.value === 0 ? rowGap : textHeight
+          },
+          ...nameTextFontSettings,
+          selectable: false
+        });
+
+        objs.push(img, text);
+      }
+    );
+  });
+
+  if (isPageTitleOn && isFirstPage) {
+    const title = new TextElementObject({
+      id: getUniqueId(),
+      text: pageTitle,
       coord: {
-        rotation: 0,
-        x: i * pxToIn(itemWidth + colGap) + pxToIn(safeMargin) + 0.1,
-        y: j * pxToIn(itemHeight + rowGap) + pxToIn(safeMargin) + 0.1
+        x: pageTitleMargins.left,
+        y: pageTitleMargins.top
       },
       size: {
-        width: pxToIn(itemWidth),
-        height: pxToIn(itemHeight)
+        width:
+          pageWidth +
+          bleedLeft * 2 -
+          pageTitleMargins.left -
+          pageTitleMargins.right,
+        height: titleHeight
       },
-      selectable: false,
-      hasImage: true
-    }));
+      ...pageTitleFontSettings,
+      selectable: false
+    });
+
+    objs.push(title);
+  }
+
+  return objs;
+};
+
+/**
+ * Create page objects for render portraits
+ * @param {*} settings flow settings for portraits
+ * @param {*} requiredPages pages are required to render portraits
+ * @returns page objects will be stored
+ */
+export const getPageObjects = (settings, requiredPages) => {
+  const { teacherSettings, folders, layoutSettings } = settings;
+  const {
+    teacherPortraitSize,
+    assistantTeacherPortraitSize,
+    hasTeacher
+  } = teacherSettings;
+
+  const { rowCount, colCount } = layoutSettings;
+  const itemPerPage = rowCount * colCount;
+
+  const portraitRange = getRangePortraitSingleFolder(
+    rowCount,
+    colCount,
+    folders[0],
+    teacherSettings
+  );
+
+  const hasLargeAsset =
+    hasTeacher &&
+    (teacherPortraitSize === PORTRAIT_SIZE.LARGE ||
+      assistantTeacherPortraitSize === PORTRAIT_SIZE.LARGE);
+
+  const totalAssets = folders.reduce((rs, p) => rs.concat(p.assets), []);
+  const pageObjects = {};
+
+  requiredPages.forEach((page, index) => {
+    const { min, max } = portraitRange[index] || {};
+    const assetsPerPage = hasLargeAsset ? max - min + 1 : itemPerPage;
+    const assets = totalAssets.splice(0, assetsPerPage);
+    const tmpAssets = [];
+
+    const primaryTeacherIndex = assets.findIndex(
+      asset =>
+        hasTeacher &&
+        asset.classRole === CLASS_ROLE.PRIMARY_TEACHER &&
+        teacherPortraitSize === PORTRAIT_SIZE.LARGE
+    );
+
+    if (primaryTeacherIndex >= 0) {
+      assets.splice(primaryTeacherIndex + 1, 0, {});
+      tmpAssets.push({}, {});
+    }
+
+    const assistantTeacherIndex = assets.findIndex(
+      asset =>
+        hasTeacher &&
+        asset.classRole === CLASS_ROLE.ASSISTANT_TEACHER &&
+        assistantTeacherPortraitSize === PORTRAIT_SIZE.LARGE
+    );
+
+    if (assistantTeacherIndex >= 0) {
+      assets.splice(assistantTeacherIndex + 1, 0, {});
+      tmpAssets.push({}, {});
+    }
+
+    assets.splice(colCount, 0, ...tmpAssets);
+
+    pageObjects[page] = createPortraitObjects(
+      settings,
+      assets,
+      page % 2,
+      index === 0
+    );
   });
-  return [].concat(...imgs);
+
+  return pageObjects;
 };

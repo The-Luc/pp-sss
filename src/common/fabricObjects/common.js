@@ -23,7 +23,7 @@ import {
   inToPxPreview
 } from '@/common/utils';
 import { toFabricMediaProp } from './image';
-import { useGroupOverride } from '@/plugins/fabric';
+import { useObjectControlsOverride } from '@/plugins/fabric';
 
 export const DEFAULT_RULE_DATA = {
   TYPE: {
@@ -326,9 +326,6 @@ export const toCssPreview = (prop, previewHeight) => {
       isUnderline: {
         name: 'textDecoration',
         parse: value => (value ? 'underline' : 'none')
-      },
-      fontColor: {
-        name: 'color'
       },
       fontSize: {
         name: 'fontSize',
@@ -731,7 +728,7 @@ export const addPrintSvgs = async (
   if (isEmpty(svgs) || svgs.length != svgObjects.length) return;
 
   svgs.forEach(s => {
-    useGroupOverride(s);
+    useObjectControlsOverride(s);
     addEventListeners(s, eventListeners);
   });
 
