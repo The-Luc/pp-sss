@@ -30,6 +30,7 @@ export class ImageElementObject extends BaseMoveableElementObject {
   imageUrl = '';
   originalUrl = '';
   hasImage = false;
+  fromPortrait = false;
   cropInfo = new ImageCrop();
   strokeUniform = DEFAULT_IMAGE.STROKE_UNIFORM;
   paintFirst = DEFAULT_IMAGE.PAINT_FIRST;

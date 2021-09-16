@@ -68,7 +68,7 @@ export default {
       return this.isFrontCover || this.isBackCover;
     },
     isNumberingOff() {
-      return !this.disabled ? false : this.isCover ? false : true;
+      return this.disabled ? !this.isCover : false;
     }
   },
   methods: {
@@ -77,13 +77,13 @@ export default {
      * @param {Boolean} status - value status left page number selected
      */
     onChangeStatusLeft(status) {
-      const value = this.isCover
-        ? { isNumberOn: status.value }
-        : this.isFrontCover
+      const frontCoverValue = this.isFrontCover
         ? { isRightNumberOn: status.value }
         : { isLeftNumberOn: status.value };
 
-      this.$emit('change', value);
+      const coverValue = { isNumberOn: status.value };
+
+      this.$emit('change', this.isCover ? coverValue : frontCoverValue);
     },
     /**
      * Emit Status right page number change to parent

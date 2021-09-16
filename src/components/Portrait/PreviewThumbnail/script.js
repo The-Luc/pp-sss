@@ -1,21 +1,28 @@
+import NameSection from './NameSection';
+import PortraitSection from './PortraitSection';
+
 import {
   DEFAULT_PORTRAIT_RATIO,
   PORTRAIT_NAME_DISPLAY,
   PORTRAIT_NAME_POSITION,
   CLASS_ROLE,
   PORTRAIT_SIZE,
-  PORTRAIT_TEACHER_PLACEMENT
+  CSS_PORTRAIT_IMAGE_MASK,
+  BORDER_STYLES
 } from '@/common/constants';
+import { isEmpty, inToPxPreview, ptToPxPreview } from '@/common/utils';
 import {
-  isEmpty,
-  inToPxPreview,
-  ptToPxPreview,
-  calcAdditionPortraitSlot
-} from '@/common/utils';
-import { toCssPreview, toMarginCssPreview } from '@/common/fabricObjects';
-import { PortraitAsset } from '@/common/models';
+  toCssPreview,
+  toMarginCssPreview,
+  toCssBorder,
+  toCssShadow
+} from '@/common/fabricObjects';
 
 export default {
+  components: {
+    NameSection,
+    PortraitSection
+  },
   props: {
     portraits: {
       type: Array,
@@ -35,6 +42,10 @@ export default {
     pageNumber: {
       type: Number,
       default: 0
+    },
+    isDigital: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -49,6 +60,8 @@ export default {
   },
   computed: {
     nameTextStyle() {
+      if (isEmpty(this.flowSettings)) return {};
+
       const {
         nameTextFontSettings,
         nameLines,
@@ -80,6 +93,8 @@ export default {
       return style;
     },
     pageTitleStyle() {
+      if (isEmpty(this.flowSettings)) return {};
+
       const {
         pageTitleFontSettings,
         isPageTitleOn,
@@ -96,17 +111,21 @@ export default {
       );
     },
     isCenterPosition() {
-      const { namePosition } = this.flowSettings.textSettings;
-      return namePosition.value === PORTRAIT_NAME_POSITION.CENTERED.value;
+      const namePosition = this.flowSettings.textSettings?.namePosition;
+
+      return namePosition?.value === PORTRAIT_NAME_POSITION.CENTERED.value;
     },
     showPageTitile() {
-      return this.flowSettings.textSettings.isPageTitleOn;
+      return this.flowSettings.textSettings?.isPageTitleOn;
     },
     isFirstLastDisplay() {
-      const { nameDisplay } = this.flowSettings.textSettings;
-      return nameDisplay.value === PORTRAIT_NAME_DISPLAY.FIRST_LAST.value;
+      const nameDisplay = this.flowSettings.textSettings?.nameDisplay;
+
+      return nameDisplay?.value === PORTRAIT_NAME_DISPLAY.FIRST_LAST.value;
     },
     nameContainerStyle() {
+      if (isEmpty(this.flowSettings)) return {};
+
       const { nameWidth } = this.flowSettings.textSettings;
       const nameContainerWidth = this.$refs?.portraits?.clientWidth;
       const col = this.layout.colCount;
@@ -130,7 +149,9 @@ export default {
 
       return style;
     },
-    namePortrait() {
+    portraitNames() {
+      if (isEmpty(this.flowSettings)) return [];
+
       const { rowCount, colCount } = this.layout;
       const portraitPerPage = rowCount * colCount;
       const numLargePortrait = (portraitPerPage - this.portraits.length) / 3;
@@ -138,59 +159,74 @@ export default {
       const isOnStartPage =
         this.pageNumber === this.flowSettings.startOnPageNumber;
 
-      const arrayPortrait = Object.values(this.portraits);
-      const arrayNamePortrait = [];
+      const portraitArray = Object.values(this.portraits);
+      const portraitNameArray = [];
 
       if (this.portraits.length === portraitPerPage || !isOnStartPage) {
-        while (arrayPortrait.length) {
-          arrayNamePortrait.push(arrayPortrait.splice(0, colCount));
+        while (portraitArray.length) {
+          portraitNameArray.push(portraitArray.splice(0, colCount));
         }
 
-        return arrayNamePortrait;
+        return portraitNameArray;
       }
 
       for (let i = 1; i <= rowCount; i++) {
         const numPortraitForRow =
           i < 3 ? colCount - numLargePortrait * i : colCount;
 
-        arrayNamePortrait.push(arrayPortrait.splice(0, numPortraitForRow));
+        portraitNameArray.push(portraitArray.splice(0, numPortraitForRow));
       }
 
-      return arrayNamePortrait;
+      return portraitNameArray;
     },
     isPageRight() {
       return this.pageNumber % 2 !== 0;
     },
-    computedPortraits() {
-      const portraitPerPage = this.layout.rowCount * this.layout.colCount;
+    imageStyle() {
+      if (isEmpty(this.flowSettings)) return {};
 
-      if (
-        this.portraits.length === portraitPerPage ||
-        this.pageNumber === this.flowSettings.startOnPageNumber
-      )
-        return this.portraits;
+      const { border, shadow, mask } = this.flowSettings.imageSettings;
+      const cssBorder = toCssBorder(border, this.previewHeight);
+      const cssShadow = toCssShadow(shadow, this.previewHeight);
+      const cssMask = CSS_PORTRAIT_IMAGE_MASK[mask].style;
 
-      const extraSlots = calcAdditionPortraitSlot(
-        this.flowSettings.teacherSettings,
-        this.flowSettings.folders[0]
+      const { strokeLineType, strokeWidth } = border || {};
+
+      const space = Math.round(
+        ptToPxPreview(strokeWidth, this.previewHeight) / 4
+      );
+      const position = -Math.ceil(
+        ptToPxPreview(strokeWidth, this.previewHeight) / 2
       );
 
-      const addingSlots =
-        this.flowSettings.teacherSettings.teacherPlacement ===
-        PORTRAIT_TEACHER_PLACEMENT.LAST
-          ? extraSlots
-          : 0;
+      const radius = cssMask.borderRadius || 0;
+      const color = cssBorder.borderColor || 'transparent';
 
-      const numEmptyCell = Math.max(
-        Math.abs(portraitPerPage - this.portraits.length - addingSlots),
-        0
-      );
+      const customBorder = {
+        '--display': strokeLineType === BORDER_STYLES.DOUBLE ? 'block' : 'none',
+        '--space': `${space}px`,
+        '--position': `${position}px`,
+        '--radius': radius,
+        '--color': color
+      };
 
-      const emptyPortrait = new PortraitAsset();
-      return [
-        ...this.portraits,
-        ...new Array(numEmptyCell).fill(emptyPortrait)
-      ];
+      return {
+        ...cssBorder,
+        ...cssShadow,
+        ...cssMask,
+        ...customBorder
+      };
+    },
+    portraitItems() {
+      return this.portraits.map(p => {
+        return {
+          ...p,
+          isLargePortrait: this.isLargePortrait(p)
+        };
+      });
+    },
+    title() {
+      return this.flowSettings.textSettings?.pageTitle;
     }
   },
   watch: {
@@ -216,6 +252,7 @@ export default {
   mounted() {
     this.$nextTick(() => {
       this.previewHeight = this.$refs.thumbWrapper.clientHeight;
+
       setTimeout(() => {
         this.updatePortraitData();
       }, 10);
@@ -238,8 +275,9 @@ export default {
      * To calculate width portrait and update layout on UI
      */
     updateLayout() {
-      const portraitsEl = this.$refs.portraits;
-      const portraitsContainerEl = this.$refs.portraitsContainer;
+      const portraitsEl = this.$refs.portraitsSection.$refs.portraits;
+      const portraitsContainerEl = this.$refs.portraitsSection.$refs
+        .portraitsContainer;
 
       if (!portraitsEl.style) return;
 
@@ -284,7 +322,7 @@ export default {
       if (!thumbWrapperEl.style) return;
 
       const margins = this.layout.margins;
-      const nameWidth = this.flowSettings.textSettings.nameWidth;
+      const nameWidth = this.flowSettings.textSettings?.nameWidth;
 
       const top = this.showPageTitile ? 0 : this.convertIntoPx(margins.top);
 
@@ -366,7 +404,7 @@ export default {
      * Update large portrait: class name & css style
      */
     updateLargePortraitSize() {
-      const portraitsEl = this.$refs.portraits;
+      const portraitsEl = this.$refs.portraitsSection.$refs.portraits;
       const largeEl = portraitsEl.querySelector('.enlarge');
 
       if (!largeEl) return;

@@ -11,19 +11,22 @@ import GanttChartModal from '@/views/CreateBook/Manager/Summary/SummaryInfo/Prog
 
 // Don't allow close when click outside
 import EmptySection from '@/containers/Modals/EmptySection';
-import SelectTheme from '@/views/CreateBook/PrintEdition/EditScreen/Modal';
-import ModalSelectPage from '@/views/CreateBook/PrintEdition/EditScreen/PageEdition/ModalSelectPage';
+import ModalSaveStyle from '@/containers/Modals/SaveStyle/SaveStyleModal';
+import ModalStyleSaved from '@/containers/Modals/SaveStyle/SavedModal';
+
 import ModalBackgroundSelectPage from '@/containers/ToolPopoverManager/Backgrounds/PrintBackgrounds/ModalSelectPage';
-import SelectThemeDigital from '@/views/CreateBook/DigitalEdition/EditScreen/ModalTheme';
-import AddDigitalFrame from '@/views/CreateBook/DigitalEdition/EditScreen/ModalLayout';
-import OverrideLayout from '@/views/CreateBook/DigitalEdition/EditScreen/OverrideLayoutModal';
-import DeleteFrame from '@/views/CreateBook/DigitalEdition/EditScreen/ModalConfirmDelete';
-import ModalResetLayout from '@/views/CreateBook/PrintEdition/EditScreen/PageEdition/ModalResetLayout';
-import ModalSaveLayout from '@/views/CreateBook/PrintEdition/EditScreen/PageEdition/ModalSaveLayout/ModalSaveLayout';
-import ModalSelectPageOfLayout from '@/views/CreateBook/PrintEdition/EditScreen/PageEdition/ModalSaveLayout/ModalSelectPageOfLayout';
-import ModalSaveStyle from '@/containers/SaveStyle/SaveStyleModal';
-import ModalStyleSaved from '@/containers/SaveStyle/SavedModal';
-import ModalSaveLayoutSuccess from '@/views/CreateBook/PrintEdition/EditScreen/PageEdition/ModalSaveLayout/ModalSaveLayoutSuccess';
+
+import SelectTheme from '@/views/CreateBook/PrintEdition/EditScreen/Modals/ThemesModal';
+import ModalSelectPage from '@/views/CreateBook/PrintEdition/EditScreen/Modals/ModalSelectPage';
+import ModalResetLayout from '@/views/CreateBook/PrintEdition/EditScreen/Modals/ModalResetLayout';
+import ModalSaveLayout from '@/views/CreateBook/PrintEdition/EditScreen/Modals/ModalSaveLayout/ModalSaveLayout';
+import ModalSelectPageOfLayout from '@/views/CreateBook/PrintEdition/EditScreen/Modals/ModalSaveLayout/ModalSelectPageOfLayout';
+import ModalSaveLayoutSuccess from '@/views/CreateBook/PrintEdition/EditScreen/Modals/ModalSaveLayout/ModalSaveLayoutSuccess';
+
+import SelectThemeDigital from '@/views/CreateBook/DigitalEdition/EditScreen/Modals/ModalTheme';
+import AddDigitalFrame from '@/views/CreateBook/DigitalEdition/EditScreen/Modals/ModalLayout';
+import OverrideLayout from '@/views/CreateBook/DigitalEdition/EditScreen/Modals/OverrideLayoutModal';
+import DeleteFrame from '@/views/CreateBook/DigitalEdition/EditScreen/Modals/ModalConfirmDelete';
 
 const {
   HELP,

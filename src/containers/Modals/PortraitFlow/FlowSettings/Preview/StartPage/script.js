@@ -10,6 +10,12 @@ export default {
     },
     selectedPage: {
       type: Object
+    },
+    isDigital: {
+      type: Boolean
+    },
+    containerName: {
+      type: String
     }
   },
   methods: {

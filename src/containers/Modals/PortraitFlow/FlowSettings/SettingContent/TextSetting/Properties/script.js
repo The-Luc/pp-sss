@@ -1,8 +1,8 @@
-import FontFamily from '@/components/TextProperties/FontFamily';
-import FontSize from '@/components/TextProperties/FontSize';
-import Presentation from '@/components/TextProperties/Presentation';
-import TextCase from '@/components/TextProperties/TextCase';
-import Alignment from '@/components/TextProperties/Alignment';
+import FontFamily from '@/components/Properties/Groups/TextProperties/FontFamily';
+import FontSize from '@/components/Properties/Groups/TextProperties/FontSize';
+import Presentation from '@/components/Properties/Groups/TextProperties/Presentation';
+import TextCase from '@/components/Properties/Groups/TextProperties/TextCase';
+import Alignment from '@/components/Properties/Groups/TextProperties/Alignment';
 import ColorPicker from '@/containers/ColorPicker';
 
 import { getSelectedOption } from '@/common/utils';
@@ -50,7 +50,7 @@ export default {
         : getSelectedOption(selected || fontSize, 'pt');
     },
     colorVal() {
-      return this.fontSettings.fontColor;
+      return this.fontSettings.color;
     },
     selectedStyles() {
       const isBold = this.fontSettings.isBold;
@@ -86,10 +86,10 @@ export default {
     },
     /**
      * Emit color value to parent
-     * @param {String}  fontColor color value user selected
+     * @param {String}  color color value user selected
      */
-    onChangeColor(fontColor) {
-      this.$emit('change', { fontColor });
+    onChangeColor(color) {
+      this.$emit('change', { color });
     },
     /**
      * Emit font family/presentation/text case value to parent

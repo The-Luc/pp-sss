@@ -120,14 +120,16 @@ const renderFillImage = function(ctx) {
   const diffWidth = (elWidth - fWidth) / 2;
   const diffHeight = (elHeight - fHeight) / 2;
 
-  const sX = this.hasImage ? diffWidth : cropX * scaleX;
-  const sY = this.hasImage ? diffHeight : cropY * scaleY;
-  const sW = this.hasImage
-    ? (w * this.scaleX) / zoomLevel
-    : min(w * scaleX, elWidth - sX); // the width height cannot exceed element width/height, starting from the crop offset.
-  const sH = this.hasImage
-    ? (h * this.scaleY) / zoomLevel
-    : min(h * scaleY, elHeight - sY);
+  const sX = this.hasImage && !this.fromPortrait ? diffWidth : cropX * scaleX;
+  const sY = this.hasImage && !this.fromPortrait ? diffHeight : cropY * scaleY;
+  const sW =
+    this.hasImage && !this.fromPortrait
+      ? (w * this.scaleX) / zoomLevel
+      : min(w * scaleX, elWidth - sX); // the width height cannot exceed element width/height, starting from the crop offset.
+  const sH =
+    this.hasImage && !this.fromPortrait
+      ? (h * this.scaleY) / zoomLevel
+      : min(h * scaleY, elHeight - sY);
 
   const dX = -w / 2 + offsetX / 2;
   const dY = -h / 2 + (offsetX / 2) * XYRatio;
@@ -693,6 +695,7 @@ const textRender = function(ctx) {
   if (this.lineSpacing && this.lineHeight !== lineHeight) {
     this.set({ lineHeight });
   }
+
   fabric.Textbox.prototype.render.call(this, ctx);
 };
 
@@ -754,7 +757,7 @@ const renderControls = function(ctx) {
 
   if (this.playIn) {
     const { width, height } = this.playIn;
-    const radius = this.width - width * 2;
+    const radius = this.width * this.scaleX - width * 2;
 
     rotateIcon(
       ctx,
@@ -770,7 +773,8 @@ const renderControls = function(ctx) {
   }
   if (this.playOut) {
     const { width, height } = this.playOut;
-    const radius = this.width - width;
+    const radius = this.width * this.scaleX - width;
+
     rotateIcon(
       ctx,
       this.playOut,
@@ -787,10 +791,10 @@ const renderControls = function(ctx) {
 
 /**
  * Allow fabric text object to have lineHeight override
- * @param {fabric.Group} text - the object to enable lineHeight override
+ * @param {fabric.Group} fabricObject - the object will be applied override
  */
-export const useTextGroupOverride = function(group) {
-  group._renderControls = renderControls;
+export const useObjectControlsOverride = function(fabricObject) {
+  fabricObject._renderControls = renderControls;
 };
 
 /**

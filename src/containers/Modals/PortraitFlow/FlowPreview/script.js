@@ -1,8 +1,8 @@
 import PreviewSlide from './PreviewSlide';
 
 import { useBackgroundAction } from '@/hooks';
+import { isEmpty } from '@/common/utils';
 
-import { getPortraitForPage } from '@/common/utils';
 import { PORTRAIT_FLOW_OPTION_MULTI } from '@/common/constants';
 
 export default {
@@ -21,6 +21,13 @@ export default {
     requiredPages: {
       type: Array,
       default: () => []
+    },
+    previewPortraitsRange: {
+      type: Array,
+      required: true
+    },
+    isDigital: {
+      type: Boolean
     }
   },
   data() {
@@ -35,22 +42,23 @@ export default {
   },
   methods: {
     getPreviewItems() {
+      if (isEmpty(this.flowSettings)) return [];
+
       const backgrounds = this.getPageBackgrounds(this.requiredPages);
 
-      const isSingle =
-        this.selectedFolders.length === 1 ||
-        this.flowSettings.flowMultiSettings.flowOption ===
-          PORTRAIT_FLOW_OPTION_MULTI.CONTINUE.id;
+      const { flowMultiSettings, folders } = this.flowSettings;
+      const isContinuousFlow =
+        flowMultiSettings.flowOption === PORTRAIT_FLOW_OPTION_MULTI.CONTINUE.id;
+      const isSingle = folders.length === 1;
+
+      const totalPortraits =
+        isSingle || !isContinuousFlow
+          ? folders.map(f => f.assets)
+          : [folders.reduce((acc, p) => acc.concat(p.assets), [])];
 
       return this.requiredPages.map((p, index) => {
-        const portraits = getPortraitForPage(
-          index,
-          this.flowSettings.layoutSettings.rowCount,
-          this.flowSettings.layoutSettings.colCount,
-          this.flowSettings.teacherSettings,
-          this.selectedFolders,
-          isSingle
-        );
+        const { min, max, folderIdx } = this.previewPortraitsRange[index];
+        const portraits = totalPortraits[folderIdx].slice(min, max + 1);
 
         return {
           portraits,

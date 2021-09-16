@@ -22,7 +22,7 @@
         @end="onEnd"
         @unchoose="onUnchoose"
       >
-        <frame
+        <digital-frame
           v-for="({ id, frame }, index) in frames"
           :id="id"
           :key="id"
@@ -37,16 +37,16 @@
           @click="onFrameClick"
           @toggleTransition="toggleTransitionPopup"
           @toggleMenu="onOptionClick"
-        ></frame>
+        ></digital-frame>
       </draggable>
 
-      <frame
+      <digital-frame
         v-if="showAddFrame"
         id="null"
         :index="-1"
         :is-empty="true"
         @click="addFrame"
-      ></frame>
+      ></digital-frame>
     </div>
 
     <transition-properties

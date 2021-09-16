@@ -18,6 +18,17 @@ export default {
     },
     requiredPages: {
       type: Array
+    },
+    previewPortraitsRange: {
+      type: Array,
+      required: true
+    },
+    savedSettings: {
+      type: Array,
+      default: () => []
+    },
+    isDigital: {
+      type: Boolean
     }
   },
   data() {
@@ -73,6 +84,10 @@ export default {
     },
     onPageSettingChange(val) {
       this.$emit('pageSettingChange', val);
+    },
+    onLoadSetting(id) {
+      this.currentTab = 0;
+      this.$emit('loadSetting', id);
     }
   }
 };

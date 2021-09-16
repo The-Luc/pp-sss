@@ -1,0 +1,89 @@
+.mask-select-container {
+  position: relative;
+  ::v-deep .mask-select {
+    .v-input__control {
+      .v-input__slot {
+        min-height: 26px;
+        height: 26px;
+        padding: 0 5px 0 8px;
+        border: 1px solid $color-gray15;
+        box-shadow: none;
+        font-size: 11px;
+        font-family: $font-500;
+        color: $color-stoodio-toolbartext;
+        margin: 0;
+      }
+      .v-text-field__details {
+        display: none;
+      }
+    }
+  }
+  .dropdown {
+    .v-list {
+      display: flex;
+      padding: 8px 4px 4px;
+      height: 112px;
+      .v-list-item {
+        flex: 1;
+        height: 100%;
+        margin: 0 4px;
+        padding: 0px;
+        display: flex;
+        flex-direction: column;
+        .shape-container {
+          width: 100%;
+          flex: 1;
+          border: 1px solid $color-gray14;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          .mask-style-none {
+            width: 40px;
+            height: 50px;
+            border: 1px solid $color-gray15;
+          }
+          .mask-style-rounded {
+            width: 40px;
+            height: 50px;
+            border-radius: 15%;
+            background-color: $color-gray15;
+          }
+          .mask-style-oval {
+            width: 40px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: $color-gray15;
+          }
+          .mask-style-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: $color-gray15;
+          }
+          .mask-style-square {
+            width: 40px;
+            height: 40px;
+            background-color: $color-gray15;
+          }
+
+          &.item-active {
+            border: 2px solid $color-stoodio-blue;
+          }
+        }
+        .name {
+          margin-top: 2px;
+          font-family: $font-500;
+          font-size: 11px;
+          color: $color-stoodio-toolbartext;
+          width: 110%;
+          text-align: center;
+        }
+
+        &::before,
+        &::after {
+          display: none;
+        }
+      }
+    }
+  }
+}

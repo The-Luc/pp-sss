@@ -1,7 +1,7 @@
 import Properties from '@/components/Properties/BoxProperties';
 import TabMenu from '@/components/TabMenu';
 import Opacity from '@/components/Properties/Features/Opacity';
-import Flip from '@/components/Arrange/Flip';
+import Flip from '@/components/Properties/Groups/Arrange/Flip';
 import Remove from '../Remove';
 
 export default {

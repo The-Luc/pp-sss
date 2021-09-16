@@ -14,8 +14,8 @@ export const PASTE = {
 
 // live thumbnail on the left sidebar
 export const THUMBNAIL_IMAGE_CONFIG = {
-  QUALITY: 0.5,
-  MULTIPLIER: 0.5,
+  QUALITY: 0.9,
+  MULTIPLIER: 0.9,
   FORMAT: 'jpeg'
 };
 

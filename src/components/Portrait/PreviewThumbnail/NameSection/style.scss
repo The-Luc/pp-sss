@@ -1,0 +1,9 @@
+.name-container {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+
+  &.right {
+    right: 0;
+  }
+}

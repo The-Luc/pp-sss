@@ -28,6 +28,12 @@ export default {
     flowSettings: {
       type: Object,
       default: () => ({})
+    },
+    isDigital: {
+      type: Boolean
+    },
+    containerName: {
+      type: String
     }
   },
   methods: {

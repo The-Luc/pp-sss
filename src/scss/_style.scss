@@ -96,10 +96,6 @@ body,
   &--item {
     min-height: 20px;
 
-    &.item-selected {
-      overflow: hidden;
-    }
-
     &:not(:last-child) {
       margin-bottom: 5px;
     }
@@ -107,6 +103,7 @@ body,
     &.item-selected {
       padding: 0;
       margin-bottom: 0;
+      overflow: hidden;
     }
 
     &.v-list-item--active,

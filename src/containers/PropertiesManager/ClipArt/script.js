@@ -1,18 +1,21 @@
 import Properties from '@/components/Properties/BoxProperties';
 import TabPropertiesMenu from '@/containers/TabPropertiesMenu';
-import ArrangeContent from '@/components/Arrange';
-import GeneralContent from '@/components/General';
+import ArrangeContent from '@/components/Properties/Groups/Arrange';
+import GeneralContent from '@/components/Properties/Groups/General';
+
 import { DEFAULT_CLIP_ART, DEFAULT_PROP } from '@/common/constants';
-import { useElementProperties } from '@/hooks';
+import { useElementProperties, useAppCommon } from '@/hooks';
 import { computedObjectSize } from '@/common/utils';
 import { EVENT_TYPE } from '@/common/constants/eventType';
 
 export default {
   setup() {
     const { getProperty } = useElementProperties();
+    const { isDigitalEdition } = useAppCommon();
 
     return {
-      getProperty
+      getProperty,
+      isDigitalEdition
     };
   },
   components: {
@@ -82,6 +85,12 @@ export default {
     },
     isAllowFillColor() {
       return !this.getProperty('isColorful');
+    },
+    playInConfig() {
+      return this.getProperty('animationIn') || {};
+    },
+    playOutConfig() {
+      return this.getProperty('animationOut') || {};
     }
   },
   methods: {
@@ -136,6 +145,10 @@ export default {
           ...shadowCfg
         }
       });
+    },
+    onApplyAnimation(val) {
+      console.log(val);
+      //  will be implement soon
     }
   }
 };

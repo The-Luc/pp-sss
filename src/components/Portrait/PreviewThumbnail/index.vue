@@ -1,6 +1,7 @@
 <template>
   <div
     class="preview-thumbnail"
+    :class="{ landscape: isDigital }"
     :style="{ backgroundImage: backgroundUrl && `url(${backgroundUrl})` }"
   >
     <div
@@ -9,63 +10,28 @@
       class="page-title"
       :style="pageTitleStyle"
     >
-      {{ flowSettings.textSettings.pageTitle }}
+      {{ title }}
     </div>
-    <div ref="thumbWrapper" class="thumb-wrapper">
-      <div
-        v-show="!isCenterPosition"
-        :class="['name-container', { right: isPageRight }]"
-        :style="nameContainerStyle"
-      >
-        <div
-          v-for="(item, index) in namePortrait"
-          :key="index"
-          class="names"
-          :style="namesHeight"
-        >
-          <div
-            v-for="(portrait, i) in item"
-            :key="i"
-            class="name"
-            :style="nameTextStyle"
-          >
-            <div :class="{ space: isFirstLastDisplay }">
-              {{ portrait.firstName }}
-            </div>
-            <div :class="{ space: !isFirstLastDisplay }">
-              <span>{{ portrait.lastName }}</span>
-              <span v-if="!isFirstLastDisplay">,</span>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div ref="portraitsContainer" class="portraits-container">
-        <div ref="portraits" class="portraits">
-          <div
-            v-for="(portrait, idx) in computedPortraits"
-            :key="idx"
-            :class="{ portrait, enlarge: isLargePortrait(portrait) }"
-          >
-            <div class="photo-container">
-              <img
-                class="photo"
-                :src="portrait.imageUrl"
-                :alt="portrait.firstName"
-              />
-            </div>
 
-            <div v-if="isCenterPosition" class="name" :style="nameTextStyle">
-              <div :class="{ space: isFirstLastDisplay }">
-                {{ portrait.firstName }}
-              </div>
-              <div :class="{ space: !isFirstLastDisplay }">
-                <span>{{ portrait.lastName }}</span>
-                <span v-if="!isFirstLastDisplay">,</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+    <div ref="thumbWrapper" class="thumb-wrapper">
+      <name-section
+        v-show="!isCenterPosition"
+        :portraits="portraitNames"
+        :is-first-last-display="isFirstLastDisplay"
+        :is-page-right="isPageRight"
+        :name-css-style="nameTextStyle"
+        :row-css-style="namesHeight"
+        :container-css-style="nameContainerStyle"
+      ></name-section>
+
+      <portrait-section
+        ref="portraitsSection"
+        :portraits="portraitItems"
+        :is-first-last-display="isFirstLastDisplay"
+        :is-center-position="isCenterPosition"
+        :name-css-style="nameTextStyle"
+        :image-style="imageStyle"
+      ></portrait-section>
     </div>
   </div>
 </template>

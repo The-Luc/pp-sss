@@ -1,10 +1,10 @@
 import PhotoSidebar from '@/components/Modals/PhotoSidebar';
 import CropControl from '@/components/CropControl';
 
-import Header from '@/containers/HeaderEdition/Header';
+import EditorHeader from '@/containers/HeaderEdition/Header';
 import FeedbackBar from '@/containers/HeaderEdition/FeedbackBar';
 import MediaModal from '@/containers/Modals/Media';
-import PortraiFlow from '@/containers/Modals/PortraitFlow';
+import PortraitFlow from '@/containers/Modals/PortraitFlow/PrintFlow';
 import PortraitFolder from '@/containers/Modals/PortraitFolder';
 
 import ToolBar from './ToolBar';
@@ -51,7 +51,7 @@ import {
   resetObjects
 } from '@/common/utils';
 
-import { useSaveData } from './PageEdition/composables';
+import { useSaveData, useBookObjects } from './PageEdition/composables';
 import {
   handleChangeMediaSrc,
   getAvailableImages,
@@ -59,19 +59,19 @@ import {
 } from '@/common/fabricObjects';
 import { useSavingStatus } from '../../composables';
 import { useBookPrintInfo } from './composables';
-import { createPortraitImage } from '@/common/utils/portrait';
+import { getPageObjects } from '@/common/utils/portrait';
 
 export default {
   components: {
     ToolBar,
-    Header,
+    EditorHeader,
     FeedbackBar,
     PageEdition,
     SidebarSection,
     PhotoSidebar,
     MediaModal,
     CropControl,
-    PortraiFlow,
+    PortraitFlow,
     PortraitFolder
   },
   setup() {
@@ -81,10 +81,14 @@ export default {
     const { setCurrentSheetId } = useMutationPrintSheet();
     const { currentUser } = useUser();
     const { currentSection } = useGetterPrintSection();
-    const { savePrintEditScreen, getDataEditScreen } = useSaveData();
+    const {
+      savePrintEditScreen,
+      getDataEditScreen,
+      savePortraitObjects
+    } = useSaveData();
     const { setPropertyById, setPropOfMultipleObjects } = useProperties();
     const { updateSavingStatus } = useSavingStatus();
-    const { sheetMedia, currentSheet } = useSheet();
+    const { sheetMedia, currentSheet, getSheets } = useSheet();
     const { updateSheetMedia, deleteSheetMedia } = useActionsEditionSheet();
     const { getBookPrintInfo } = useBookPrintInfo();
     const { listObjects } = useObjectProperties();
@@ -93,6 +97,8 @@ export default {
       updateMediaSidebarOpen,
       disabledToolbarItems
     } = useToolBar();
+
+    const { addObjecs, deleteObjects } = useBookObjects();
 
     return {
       pageSelected,
@@ -115,7 +121,11 @@ export default {
       isMediaSidebarOpen,
       updateMediaSidebarOpen,
       disabledToolbarItems,
-      currentSheet
+      currentSheet,
+      getSheets,
+      savePortraitObjects,
+      addObjecs,
+      deleteObjects
     };
   },
   data() {
@@ -141,7 +151,7 @@ export default {
     },
     disabledAutoflow() {
       const hasEmptyImage = Object.values(this.listObjects).some(
-        obj => obj.type === OBJECT_TYPE.IMAGE && !obj.hasImage
+        obj => obj?.type === OBJECT_TYPE.IMAGE && !obj.hasImage
       );
 
       return !hasEmptyImage;
@@ -341,6 +351,7 @@ export default {
       } = this.dragItem;
 
       const target = event.target;
+
       const pointer = this.$refs.canvasEditor.printCanvas.getPointer(event.e);
 
       this.dragItem = null;
@@ -348,7 +359,7 @@ export default {
       const isImage = target?.objectType === OBJECT_TYPE.IMAGE;
       const isVideo = target?.objectType === OBJECT_TYPE.VIDEO;
 
-      if (!target || (!isImage && !isVideo)) {
+      if (!target || (!isImage && !isVideo) || !target.selectable) {
         const x = pointer.x - offsetX * 3;
         const y = pointer.y - offsetY * 3;
 
@@ -471,13 +482,48 @@ export default {
     },
     /**
      * Apply portrait to page
+     * @param {Object} settings config for portrait
      */
-    onApplyPortrait(settings) {
-      const canvas = this.$refs.canvasEditor.printCanvas;
-      const imgs = createPortraitImage(settings);
+    async onApplyPortrait(settings, requiredPages) {
+      const pages = getPageObjects(settings, requiredPages);
 
-      resetObjects(canvas);
-      this.$refs.canvasEditor.drawObjectsOnCanvas(imgs);
+      const saveQueue = [];
+
+      Object.values(this.getSheets).forEach(sheet => {
+        const leftPageNumber = +sheet?.pageLeftName;
+        const rightPageNumber = +sheet?.pageRightName;
+
+        const leftObjects = pages[leftPageNumber] || [];
+        const rightObjects = pages[rightPageNumber] || [];
+
+        const objects = [...leftObjects, ...rightObjects];
+
+        if (!isEmpty(objects)) {
+          if (sheet.id === this.pageSelected.id) {
+            const canvas = this.$refs.canvasEditor.printCanvas;
+            const ids = canvas
+              .getObjects()
+              .filter(obj => obj?.type && obj.type !== OBJECT_TYPE.BACKGROUND)
+              .map(obj => obj.id);
+
+            resetObjects(canvas);
+
+            this.deleteObjects({ ids });
+
+            this.addObjecs({
+              objects: objects.map(obj => ({ id: obj.id, newObject: obj }))
+            });
+
+            this.$refs.canvasEditor.drawObjectsOnCanvas(objects);
+
+            canvas.renderAll();
+          }
+          const saveObjetcs = this.savePortraitObjects(sheet.id, objects);
+          saveQueue.push(saveObjetcs);
+        }
+      });
+
+      await Promise.all(saveQueue);
 
       this.onClosePortrait();
     },

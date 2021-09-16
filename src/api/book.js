@@ -269,10 +269,10 @@ export const getBookDigitalInfo = async bookId => {
     });
   });
 
-  const { pageInfo, themeId } = book.digitalData;
+  const { pageInfo, themeId: defaultThemeId } = book.digitalData;
 
   return Promise.resolve({
-    ...new BookDigitalInfo({ ...book, pageInfo, themeId }),
+    ...new BookDigitalInfo({ ...book, pageInfo, themeId: defaultThemeId }),
     sectionsSheets: sections
   });
 };

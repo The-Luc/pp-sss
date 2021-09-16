@@ -10,8 +10,13 @@
             :color-value="colorValue"
             :opacity-value="opacityValue"
             :current-shadow="currentShadow"
+            :is-digital="isDigitalEdition"
+            :play-in-config="playInConfig"
+            :play-out-config="playOutConfig"
+            animation-title="Shape Animation"
             @change="onChange"
             @changeShadow="onChangeShadow"
+            @onApply="onApplyAnimation"
           />
         </v-tab-item>
 

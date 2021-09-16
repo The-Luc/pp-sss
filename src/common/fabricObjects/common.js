@@ -8,7 +8,8 @@ import {
   OBJECT_TYPE,
   DEFAULT_TEXT,
   TEXT_HORIZONTAL_ALIGN,
-  TEXT_CASE_VALUE
+  TEXT_CASE_VALUE,
+  HTML_BORDER_STYLE
 } from '@/common/constants';
 
 import {
@@ -22,6 +23,7 @@ import {
   inToPxPreview
 } from '@/common/utils';
 import { toFabricMediaProp } from './image';
+import { useObjectControlsOverride } from '@/plugins/fabric';
 
 export const DEFAULT_RULE_DATA = {
   TYPE: {
@@ -308,11 +310,8 @@ export const toFabricClipArtProp = (prop, originalElement) => {
 };
 
 export const toCssPreview = (prop, previewHeight) => {
-  const horizontal = prop.isPageTitleOn
-    ? 'textAlign'
-    : prop.nameLines === 1
-    ? 'justifyContent'
-    : 'alignItems';
+  const isOneLine = prop.nameLines === 1 ? 'justifyContent' : 'alignItems';
+  const horizontal = prop.isPageTitleOn ? 'textAlign' : isOneLine;
 
   const mapRules = {
     data: {
@@ -327,9 +326,6 @@ export const toCssPreview = (prop, previewHeight) => {
       isUnderline: {
         name: 'textDecoration',
         parse: value => (value ? 'underline' : 'none')
-      },
-      fontColor: {
-        name: 'color'
       },
       fontSize: {
         name: 'fontSize',
@@ -416,19 +412,13 @@ export const toMarginCssPreview = (prop, previewHeight) => {
 const parseHorizontal = (prop, value) => {
   if (prop.isPageTitleOn) return value;
 
-  if (prop.nameLines === 1 && !prop.isFirstLastDisplay) {
-    return value === TEXT_HORIZONTAL_ALIGN.RIGHT
-      ? 'flex-start'
-      : value === TEXT_HORIZONTAL_ALIGN.LEFT
-      ? 'flex-end'
-      : value;
-  }
+  const isOneLine = prop.nameLines === 1 && !prop.isFirstLastDisplay;
+  const alignLeft = isOneLine ? 'flex-end' : 'flex-start';
+  const alignRight = isOneLine ? 'flex-start' : 'flex-end';
 
-  return value === TEXT_HORIZONTAL_ALIGN.RIGHT
-    ? 'flex-end'
-    : value === TEXT_HORIZONTAL_ALIGN.LEFT
-    ? 'flex-start'
-    : value;
+  if (value === TEXT_HORIZONTAL_ALIGN.RIGHT) return alignRight;
+
+  return value === TEXT_HORIZONTAL_ALIGN.LEFT ? alignLeft : value;
 };
 /**
  * Get fabric property base on element type
@@ -737,7 +727,10 @@ export const addPrintSvgs = async (
 
   if (isEmpty(svgs) || svgs.length != svgObjects.length) return;
 
-  svgs.forEach(s => addEventListeners(s, eventListeners));
+  svgs.forEach(s => {
+    useObjectControlsOverride(s);
+    addEventListeners(s, eventListeners);
+  });
 
   handleAddSvgsToCanvas({
     svgs,
@@ -992,15 +985,13 @@ const createSVGElement = (val, fill) => {
  * @param {Object} data object data stored
  */
 export const handleObjectSelected = async (target, data) => {
-  if (target.objectType === OBJECT_TYPE.TEXT) {
-    const playInOrder = data?.animationIn?.order || target?.playInOrder || 1;
-    const playOutOrder = data?.animationOut?.order || target?.playOutOrder || 1;
-    const playInEle = createSVGElement(playInOrder, 'white');
-    const playOutEle = createSVGElement(playOutOrder, 'lightgray');
-    const [playIn, playOut] = await Promise.all([playInEle, playOutEle]);
-    target.set({ playIn, playOut, dirty: true });
-    target.canvas.renderAll();
-  }
+  const playInOrder = data?.animationIn?.order || target?.playInOrder || 1;
+  const playOutOrder = data?.animationOut?.order || target?.playOutOrder || 1;
+  const playInEle = createSVGElement(playInOrder, 'white');
+  const playOutEle = createSVGElement(playOutOrder, 'lightgray');
+  const [playIn, playOut] = await Promise.all([playInEle, playOutEle]);
+  target.set({ playIn, playOut, dirty: true });
+  target.canvas.renderAll();
 };
 
 /**
@@ -1018,7 +1009,11 @@ export const handleObjectDeselected = target => {
  * @return updated objects
  */
 export const calcAnimationOrder = canvas => {
-  const objs = canvas.getObjects();
+  const objs = canvas
+    .getObjects()
+    .filter(
+      obj => obj?.objectType && obj.objectType !== OBJECT_TYPE.BACKGROUND
+    );
   const updatedObjs = [];
 
   objs.forEach(obj => {
@@ -1044,4 +1039,49 @@ export const calcAnimationOrder = canvas => {
   });
 
   return updatedObjs;
+};
+
+export const toCssBorder = (prop, previewHeight) => {
+  const mapRules = {
+    data: {
+      stroke: {
+        name: 'borderColor'
+      },
+      strokeWidth: {
+        name: 'borderWidth',
+        parse: value => `${Math.ceil(ptToPxPreview(value, previewHeight))}px`
+      },
+      strokeLineType: {
+        name: 'borderStyle',
+        parse: value => HTML_BORDER_STYLE[value]
+      }
+    },
+    restrict: ['strokeDashArray', 'showBorder']
+  };
+
+  const cssStyle = mapObject(prop, mapRules);
+
+  const { showBorder } = prop;
+  cssStyle.borderWidth = showBorder ? cssStyle.borderWidth : '0';
+
+  return cssStyle;
+};
+
+export const toCssShadow = (prop, previewHeight) => {
+  const { dropShadow, shadowAngle, shadowBlur, shadowColor, shadowOffset } =
+    prop || {};
+
+  const rad = (-Math.PI * (shadowAngle % 360)) / 180;
+  const blur = Math.ceil(ptToPxPreview(shadowBlur, previewHeight));
+
+  const offsetX = Math.ceil(
+    ptToPxPreview(shadowOffset * Math.sin(rad), previewHeight)
+  );
+  const offsetY = Math.ceil(
+    ptToPxPreview(shadowOffset * Math.cos(rad), previewHeight)
+  );
+
+  const boxShadow = `${offsetX}px ${offsetY}px ${blur}px ${shadowColor}`;
+
+  return dropShadow ? { boxShadow } : {};
 };

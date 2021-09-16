@@ -13,7 +13,12 @@
         @portraitSettingChange="onSettingChange"
       ></text-setting>
     </v-tab-item>
-    <v-tab-item>Image Settings Component</v-tab-item>
+    <v-tab-item>
+      <image-settings
+        :image-settings="flowSettings.imageSettings"
+        @portraitSettingChange="onSettingChange"
+      ></image-settings>
+    </v-tab-item>
     <v-tab-item>
       <flow-settings
         :selected-folders="selectedFolders"
@@ -22,6 +27,12 @@
         @flowSettingChange="onFlowSettingChange"
         @pageSettingChange="onPageSettingChange"
       ></flow-settings>
+    </v-tab-item>
+    <v-tab-item>
+      <save-setting
+        :saved-settings="savedSettings"
+        @loadSetting="onLoadSetting"
+      ></save-setting>
     </v-tab-item>
   </v-tabs-items>
 </template>

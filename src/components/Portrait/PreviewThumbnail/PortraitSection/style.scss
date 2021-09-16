@@ -1,0 +1,74 @@
+.portraits-container {
+  width: 100%;
+  height: 100%;
+
+  .portraits {
+    --row-count: 5;
+    --col-count: 5;
+    --portrait-width: 35px;
+    --image-height: calc(var(--portrait-width) * 1.25);
+    --name-height: calc(var(--image-height) * 0.1);
+    --portrait-height: calc(var(--name-height) + var(--image-height));
+    --align: space-between;
+    --enlarge-width: 100%;
+
+    display: grid;
+    height: 100%;
+    grid-template-columns: repeat(var(--col-count), var(--portrait-width));
+    grid-template-rows: repeat(var(--row-count), var(--portrait-height));
+    justify-content: var(--align);
+    align-content: var(--align);
+
+    .portrait {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      // style for large portraits
+      &.enlarge {
+        grid-column: span 2;
+        grid-row: span 2;
+
+        .photo-container {
+          width: var(--enlarge-width);
+          padding-top: calc(var(--enlarge-width) * 1.25);
+        }
+      }
+
+      .photo-container {
+        width: 100%;
+        padding-top: 125%;
+        position: relative;
+
+        .photo {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          width: 100%;
+          height: 100%;
+          background-color: var(--color);
+          img {
+            width: 100%;
+            height: 100%;
+            border-radius: var(--radius);
+            color: transparent;
+          }
+
+          &:before {
+            display: var(--display);
+            position: absolute;
+            content: '';
+            top: var(--position);
+            right: var(--position);
+            bottom: var(--position);
+            left: var(--position);
+            border: solid white;
+            border-width: var(--space);
+            border-radius: var(--radius);
+          }
+        }
+      }
+    }
+  }
+}

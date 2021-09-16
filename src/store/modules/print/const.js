@@ -72,6 +72,7 @@ class MutationClass extends BaseObject {
   SET_BACKGROUND = 'setBackground';
   SET_CURRENT_OBJECT_ID = 'setCurrentObjectId';
   ADD_OBJECT = 'addObject';
+  ADD_OBJECTS = 'addObjects';
   SET_PROP = 'setObjectProperty';
   SET_PROP_BY_ID = 'setObjectPropertyById';
   SET_PROP_OF_MULIPLE_OBJECTS = 'setPropOfMultipleObjects';

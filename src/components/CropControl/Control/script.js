@@ -1,5 +1,6 @@
+import Slider from '@/components/Slider/Slider';
+
 import { DEFAULE_SLIDER } from '@/common/constants';
-import Slider from '@/components/Slider';
 
 export default {
   props: {

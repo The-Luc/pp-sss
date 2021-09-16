@@ -1,16 +1,20 @@
 <template>
-  <div class="slide-item" :class="{ 'use-margin': isUseMargin }">
+  <div
+    class="slide-item"
+    :class="{ 'use-margin': isUseMargin, digital: isDigital }"
+  >
     <PreviewThumbnail
       :flow-settings="flowSettings"
       :portraits="portraits"
       :layout="layout"
       :page-number="pageNumber"
       :background-url="backgroundUrl"
+      :is-digital="isDigital"
     />
 
     <div class="page-info">
-      <div class="flow-no">Portrait flow {{ flowNumber }}</div>
-      <div class="page-no">Page {{ pageNumber }}</div>
+      <div class="left">{{ leftText }}</div>
+      <div class="right">{{ rightText }}</div>
     </div>
   </div>
 </template>

@@ -404,17 +404,17 @@ export default {
      */
     async filterLayoutType() {
       if (this.pageSelected.type === SHEET_TYPE.NORMAL) {
-        const opts = [...this.layoutTypesOrigin];
+        const layoutTypeOpts = [...this.layoutTypesOrigin];
 
         if (!isEmpty(this.favoriteLayouts) || !isEmpty(this.customLayouts)) {
           const extraMenu = await this.getFavoriteLayoutTypeMenu(
             SHEET_TYPE.NORMAL
           );
 
-          opts.push(extraMenu);
+          layoutTypeOpts.push(extraMenu);
         }
 
-        this.layoutTypes = opts;
+        this.layoutTypes = layoutTypeOpts;
 
         return;
       }

@@ -1,4 +1,4 @@
-import RangeSlider from '@/components/RangeSlider';
+import RangeSlider from '@/components/Slider/RangeSlider';
 
 export default {
   components: {

@@ -73,8 +73,9 @@ export const computedObjectSize = (
   const ratio = newSize[key] / oldSize[key];
   const dimensional = key === 'width' ? 'height' : 'width';
   const newValue = oldSize[dimensional] * ratio;
-  const dimensionalValue =
-    newValue < minSize ? minSize : newValue > maxSize ? maxSize : newValue;
+  const maxValue = newValue > maxSize ? maxSize : newValue;
+
+  const dimensionalValue = newValue < minSize ? minSize : maxValue;
 
   return { ...oldSize, ...newSize, [dimensional]: dimensionalValue };
 };

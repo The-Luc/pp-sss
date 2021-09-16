@@ -1,0 +1,48 @@
+.save-setting-container {
+  padding: 0 26px 0 18px;
+  .setting-title {
+    color: $color-gray5;
+    font-size: 16px;
+    font-family: $font-500;
+    margin: 10px 0 18px;
+  }
+  .setting {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid $color-gray17;
+    margin-bottom: 2px;
+    &-info {
+      line-height: 15px;
+      .name {
+        color: $color-gray5;
+        font-size: $md-size;
+        font-family: $font-500;
+      }
+      .date {
+        color: $color-gray29;
+        font-size: $xsm-size;
+        font-family: $font-300-italic;
+      }
+    }
+    &-load {
+      .load {
+        width: 84px;
+        height: 24px;
+        text-transform: capitalize;
+        color: $color-stoodio-blue;
+        letter-spacing: 0.1px;
+        font-family: $font-300;
+        font-size: 11px;
+        border: 1px solid $color-stoodio-blue;
+        border-radius: 3px;
+        margin: 0px;
+
+        &::before,
+        &::after {
+          display: none;
+        }
+      }
+    }
+  }
+}

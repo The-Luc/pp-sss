@@ -1,12 +1,16 @@
 <template>
-  <div class="preview-wrapper">
-    <PreviewThumbnail
-      :portraits="portraits"
-      :layout="layout"
-      :page-number="pageNo"
-      :background-url="backgroundUrl"
-      :flow-settings="flowSettings"
-    />
+  <div class="preview-wrapper" :class="{ digital: isDigital }">
+    <transition name="thumb-preview">
+      <preview-thumbnail
+        :key="pageNo"
+        :portraits="portraits"
+        :layout="layout"
+        :page-number="pageNo"
+        :background-url="backgroundUrl"
+        :flow-settings="flowSettings"
+        :is-digital="isDigital"
+      ></preview-thumbnail>
+    </transition>
 
     <div class="pages">
       <div
@@ -14,17 +18,17 @@
         :disabled="isDisableMoveBack"
         @click="onMoveBack"
       >
-        Last Page
+        Last {{ containerName }}
       </div>
 
-      <div class="text currentPage">Page {{ pageNo }}</div>
+      <div class="text currentPage">{{ containerName }} {{ pageNo }}</div>
 
       <div
         class="text clickable"
         :disabled="isDisableMoveNext"
         @click="onMoveNext"
       >
-        Next Page
+        Next {{ containerName }}
       </div>
     </div>
   </div>

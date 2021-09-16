@@ -1,5 +1,6 @@
 import { useMutations, useGetters, useActions } from 'vuex-composition-helpers';
 import { getPhotos, searchPhotos, getMedia, searchMedia } from '@/api/photo';
+import printPortraitSevice from '@/api/portrait';
 
 import {
   MUTATES as APP_MUTATES,
@@ -48,5 +49,21 @@ export const usePhotos = () => {
     updatePhotoVisited,
     getSmartbox,
     getSearch
+  };
+};
+
+export const usePortraitFlow = () => {
+  const saveSettings = async flowSettings => {
+    await printPortraitSevice.savePortraitSettings(flowSettings);
+  };
+
+  const getSavedSettings = async () => {
+    const savedSettings = await printPortraitSevice.getSavedPortraitSettings();
+    return savedSettings;
+  };
+
+  return {
+    saveSettings,
+    getSavedSettings
   };
 };

@@ -1,26 +1,26 @@
 <template>
   <div class="row digital-main">
-    <Header
+    <editor-header
       name-editor="digital editor"
       @onClickSave="onClickSaveDigitalCanvas"
-    />
+    ></editor-header>
 
-    <ToolBar
+    <tool-bar
       :disabled-items="disabledItems"
       @undo="onUndo"
       @redo="onRedo"
       @switchTool="onToolSwitch"
       @endInstruction="onInstructionEnd"
       @toggleModal="onToggleModal"
-    />
+    ></tool-bar>
 
-    <FeedbackBar :is-digital="true" @zoom="onZoom" />
+    <feedback-bar :is-digital="true" @zoom="onZoom"></feedback-bar>
 
     <div class="left-panel">
-      <SidebarSection />
+      <sidebar-section></sidebar-section>
 
       <transition name="slide-x-transition">
-        <PhotoSidebar
+        <photo-sidebar
           v-show="isMediaSidebarOpen"
           media-type="Media"
           :is-show-autoflow="isShowAutoflow"
@@ -32,30 +32,30 @@
           @closePhotoSidebar="closeMediaSidebar"
           @autoflow="handleAutoflow"
           @click="openModalMedia"
-        />
+        ></photo-sidebar>
       </transition>
     </div>
 
-    <ScreenEdition
+    <screen-edition
       ref="canvasEditor"
       :frames="frames"
       @drop="onDrop"
       @openCropControl="openCropControl"
-    />
+    ></screen-edition>
 
-    <MediaModal
+    <media-modal
       type="media"
       :is-open-modal="isOpenModal"
       @select="handleSelectedMedia"
       @cancel="onCancel"
-    />
+    ></media-modal>
 
-    <CropControl
+    <crop-control
       :open="isOpenCropControl"
       :selected-image="selectedImage"
       @crop="onCrop"
       @cancel="onCancel"
-    />
+    ></crop-control>
 
     <portrait-folder
       v-if="modal[toolNames.PORTRAIT].isOpen"
@@ -63,6 +63,15 @@
       @cancel="onClosePortrait"
       @select="onSelectPortraitFolders"
     ></portrait-folder>
+
+    <portrait-flow
+      v-if="modal[modalType.PORTRAIT_FLOW].isOpen"
+      container="#editor"
+      :is-open="modal[modalType.PORTRAIT_FLOW].isOpen"
+      :selected-folders="modal[modalType.PORTRAIT_FLOW].data.folders"
+      @cancel="onToggleModal({ modal: modalType.PORTRAIT_FLOW })"
+      @accept="onApplyPortrait"
+    ></portrait-flow>
 
     <the-preview-modal
       v-if="modal[modalType.TRANSITION_PREVIEW].isOpen"
