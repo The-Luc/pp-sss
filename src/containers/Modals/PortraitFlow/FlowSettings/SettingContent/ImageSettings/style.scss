@@ -39,7 +39,8 @@
         display: none;
       }
       .color-picker-container {
-        .vc-mix-color-code-container {
+        .vc-mix-color-code-container,
+        .vc-mix-color-alpha-container {
           font-size: 11px;
           font-family: $font-300;
         }

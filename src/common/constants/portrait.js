@@ -229,7 +229,7 @@ export const CSS_PORTRAIT_IMAGE_MASK = {
     name: 'Oval',
     style: {
       height: '125%',
-      borderRadius: '50%'
+      borderRadius: '999px'
     }
   },
   [PORTRAIT_IMAGE_MASK.CIRCLE]: {
