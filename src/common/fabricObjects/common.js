@@ -1081,8 +1081,6 @@ export const toCssShadow = (prop, previewHeight) => {
     ptToPxPreview(shadowOffset * Math.cos(rad), previewHeight)
   );
 
-  // const boxShadow = `${offsetX}px ${offsetY}px ${blur}px ${shadowColor}`;
-
   return {
     shadowBlur: blur,
     shadowOffsetX: offsetX,
