@@ -31,13 +31,6 @@ export default {
     };
   },
   methods: {
-    changePlayIn(val) {
-      this.$emit('change', { animationIn: val });
-    },
-
-    changePlayOut(val) {
-      this.$emit('change', { animationOut: val });
-    },
     /**
      * Emit animation event to root componenet
      * @param {Object} config configuration for animation

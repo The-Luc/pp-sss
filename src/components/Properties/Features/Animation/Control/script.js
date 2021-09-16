@@ -127,19 +127,14 @@ export default {
       this.selectedDirection = val;
     },
     /**
-     * To emit animation config to parent component
-     * @param {Object} val config that change by user
-     */
-    emitEvent(val) {
-      this.$emit('change', { ...this.config, ...val });
-    },
-    /**
      * Fire when click preview button
      */
     onClickPreview() {
       if (this.selectedStyle.value === NONE_OPTION.value) return;
 
       const animateData = {
+        controlType: this.type,
+        style: this.selectedStyle.value,
         duration: this.durationValue * 1000,
         scale: this.scaleValue / 100,
         direction: this.selectedDirection.value

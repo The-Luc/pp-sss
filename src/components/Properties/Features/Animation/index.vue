@@ -6,7 +6,6 @@
       :config="playInConfig"
       :is-disabled-preview="isDisabledPreview"
       @preview="onPreview"
-      @change="changePlayIn"
       @apply="applyPlayIn"
     />
     <div class="horizontal-line"></div>
@@ -15,7 +14,6 @@
       :config="playOutConfig"
       :is-disabled-preview="isDisabledPreview"
       @preview="onPreview"
-      @change="changePlayOut"
       @apply="applyPlayOut"
     />
   </div>
