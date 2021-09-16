@@ -65,7 +65,7 @@ export class PortraitTeacherSettings extends BaseObject {
 export class PortraitFontSettings extends BaseObject {
   fontFamily = '';
   fontSize = 0;
-  fontColor = DEFAULT_COLOR.COLOR;
+  color = DEFAULT_COLOR.COLOR;
   isBold = false;
   isItalic = false;
   isUnderline = false;

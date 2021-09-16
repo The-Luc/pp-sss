@@ -1,6 +1,7 @@
 import TextSetting from './TextSetting';
 import PortraitSetting from './PortraitSetting';
 import FlowSettings from './FlowSettings';
+import SaveSetting from './SaveSetting';
 import ImageSettings from './ImageSettings';
 
 export default {
@@ -8,6 +9,7 @@ export default {
     TextSetting,
     PortraitSetting,
     FlowSettings,
+    SaveSetting,
     ImageSettings
   },
   props: {
@@ -22,6 +24,10 @@ export default {
     selectedFolders: {
       type: Array,
       default: () => []
+    },
+    savedSettings: {
+      type: Array,
+      default: () => []
     }
   },
   methods: {
@@ -33,6 +39,13 @@ export default {
     },
     onPageSettingChange(val) {
       this.$emit('pageSettingChange', val);
+    },
+    /**
+     * Emit event load setting to parent
+     * @param {Number}  id id of portrait setting to load
+     */
+    onLoadSetting(id) {
+      this.$emit('loadSetting', id);
     }
   }
 };

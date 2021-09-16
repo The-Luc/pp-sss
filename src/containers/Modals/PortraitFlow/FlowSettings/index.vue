@@ -11,18 +11,22 @@
       @showPreview="onShowPreview"
     />
 
-    <Settings
+    <settings
+      :saved-settings="savedSettings"
+      :current-tab="currentTab"
       @settingTabChange="onSettingTabChange"
       @saveSetting="onSaveSettings"
-    />
+    ></settings>
 
     <setting-content
       :current-tab="currentTab"
       :flow-settings="flowSettings"
       :selected-folders="selectedFolders"
+      :saved-settings="savedSettings"
       @settingChange="onSettingChange"
       @flowSettingChange="onFlowSettingChange"
       @pageSettingChange="onPageSettingChange"
+      @loadSetting="onLoadSetting"
     />
   </div>
 </template>

@@ -4,6 +4,16 @@ export default {
   components: {
     TabHeader
   },
+  props: {
+    currentTab: {
+      type: Number,
+      default: 0
+    },
+    savedSettings: {
+      type: Array,
+      default: () => []
+    }
+  },
   methods: {
     /**
      * Emit accept event to parent

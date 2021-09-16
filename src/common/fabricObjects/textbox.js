@@ -28,7 +28,7 @@ import {
 } from './common';
 import {
   useDoubleStroke,
-  useGroupOverride,
+  useObjectControlsOverride,
   useTextOverride
 } from '@/plugins/fabric';
 
@@ -61,7 +61,8 @@ export const createTextBox = (x, y, width, height, textProperties) => {
     left: padding,
     top: padding,
     width: width - padding * 2,
-    padding
+    padding,
+    noWrap: true
   });
 
   updateTextCase(text, dataObject.newObject);
@@ -100,6 +101,7 @@ export const createTextBox = (x, y, width, height, textProperties) => {
 
   const playInOrder = textProperties?.animationIn?.order || 1;
   const playOutOrder = textProperties?.animationOut?.order || 1;
+  const selectable = newText.selectable;
 
   const group = new fabric.Group([rect, text], {
     id: dataObject.id,
@@ -111,10 +113,11 @@ export const createTextBox = (x, y, width, height, textProperties) => {
     isConstrain: text.isConstrain,
     angle,
     playInOrder,
-    playOutOrder
+    playOutOrder,
+    selectable
   });
 
-  useGroupOverride(group);
+  useObjectControlsOverride(group);
 
   const groupProp = toFabricTextGroupProp(dataObject);
   const { flipX, flipY } = groupProp;
@@ -679,7 +682,7 @@ export const updateTextListeners = (
  */
 export const enableTextEditMode = (group, onCompleted) => {
   const canvas = group.canvas;
-  if (isEmpty(canvas)) return;
+  if (isEmpty(canvas) || !group.selectable) return;
 
   const [rect, text] = getObjectsFromTextBox(group);
 

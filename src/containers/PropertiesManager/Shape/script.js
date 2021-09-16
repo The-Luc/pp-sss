@@ -140,6 +140,13 @@ export default {
     onApplyAnimation(val) {
       console.log(val);
       //  will be implement soon
+    },
+    /**
+     * Emit preview option selected object
+     * @param {Object} animationConfig preview option
+     */
+    onClickPreview(config) {
+      this.$root.$emit(EVENT_TYPE.PREVIEW_ANIMATION, config);
     }
   }
 };

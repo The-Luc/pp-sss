@@ -21,12 +21,14 @@
         :required-pages="requiredPages"
         :preview-portraits-range="previewPortraitsRange"
         :is-digital="isDigital"
+        :saved-settings="savedSettings"
         @showPreview="onShowPreview"
         @settingChange="onSettingChange"
         @saveSettings="onSaveSettings"
         @startPageChange="onStartChange"
         @flowSettingChange="onFlowSettingChange"
         @pageSettingChange="onPageSettingChange"
+        @loadSetting="onLoadSetting"
       />
 
       <FlowPreview
@@ -45,6 +47,14 @@
       :descript-modal="warningText"
       @close="onFlowWarningClose"
     ></flow-warning>
+
+    <save-settings-modal
+      :is-open-modal="isOpenSaveSettingsModal"
+      @cancel="onCancelSaveSettings"
+      @SaveSettings="onSaveSettings"
+    ></save-settings-modal>
+
+    <saved-modal :is-open-modal="isOpenModalSuccess"> </saved-modal>
   </div>
 </template>
 

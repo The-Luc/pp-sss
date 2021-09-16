@@ -1,10 +1,13 @@
 import FlowWarning from '@/components/Modals/FlowWarning';
+import SaveSettingsModal from '@/components/Modals/SaveSettings/SavedSettingModal';
+import SavedModal from '@/components/Modals/SaveSettings/SavedModal';
 
 import CommonModal from '../../CommonModal';
 import FlowSettings from '../FlowSettings';
 import FlowPreview from '../FlowPreview';
 
 import { PortraitFlowData } from '@/common/models';
+import { usePortraitFlow } from '@/views/CreateBook/composables';
 
 import {
   DEFAULT_PAGE_TITLE,
@@ -25,7 +28,9 @@ export default {
     CommonModal,
     FlowSettings,
     FlowPreview,
-    FlowWarning
+    FlowWarning,
+    SavedModal,
+    SaveSettingsModal
   },
   props: {
     isOpen: {
@@ -71,13 +76,21 @@ export default {
       default: false
     }
   },
+  setup() {
+    const { saveSettings, getSavedSettings } = usePortraitFlow();
+
+    return { saveSettings, getSavedSettings };
+  },
   data() {
     return {
       isPreviewDisplayed: false,
-      flowReviewCompKey: true
+      flowReviewCompKey: true,
+      savedSettings: [],
+      isOpenModalSuccess: false,
+      isOpenSaveSettingsModal: false
     };
   },
-  created() {
+  async created() {
     const flowSettings = new PortraitFlowData({
       startOnPageNumber: this.startNumber,
       totalPortraitsCount: this.getTotalPortrait(),
@@ -86,6 +99,8 @@ export default {
     });
 
     this.onSettingChange(flowSettings);
+
+    this.savedSettings = await this.getSavedSettings();
   },
   computed: {
     title() {
@@ -155,9 +170,23 @@ export default {
     },
     /**
      * Save settings
+     * @param {Object}  name name save settings
      */
-    onSaveSettings() {
-      this.$emit('saveSetting');
+    async onSaveSettings(name) {
+      if (!this.isOpenSaveSettingsModal) {
+        this.isOpenSaveSettingsModal = true;
+        return;
+      }
+
+      await this.saveSettings({ ...this.flowSettings, ...name });
+      this.onCancelSaveSettings();
+
+      this.isOpenModalSuccess = true;
+      setTimeout(() => {
+        this.isOpenModalSuccess = false;
+      }, 2000);
+
+      this.savedSettings = await this.getSavedSettings();
     },
     /**
      * Handle flow setting change
@@ -263,6 +292,20 @@ export default {
       this.flowSettings.folders[0].assets = portraits;
       this.flowSettings.folders[0].assetsCount = portraits.length;
       this.flowSettings.totalPortraitsCount = portraits.length;
+    },
+    /**
+     * Load portrait setting saved
+     * @param {Number} id id of portrait to load
+     */
+    onLoadSetting(id) {
+      const portraitSetting = this.savedSettings.find(item => item.id === id);
+      this.flowSettings = { ...this.flowSettings, ...portraitSetting };
+    },
+    /**
+     * Cancel modal save setting
+     */
+    onCancelSaveSettings() {
+      this.isOpenSaveSettingsModal = false;
     }
   }
 };

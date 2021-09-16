@@ -1,0 +1,16 @@
+#saved-setting {
+  ::v-deep .pp-modal {
+    min-width: 365px !important;
+    height: auto !important;
+    min-height: auto !important;
+    border-radius: 17px;
+  }
+}
+.saved-message {
+  text-align: center;
+  padding: 88px 35px;
+  font-family: $font-500;
+  font-size: 21px;
+  color: $color-stoodio-blue;
+  letter-spacing: 0;
+}

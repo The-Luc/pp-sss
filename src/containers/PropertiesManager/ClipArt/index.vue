@@ -18,6 +18,7 @@
             @change="onChange"
             @changeShadow="onChangeShadow"
             @onApply="onApplyAnimation"
+            @preview="onClickPreview"
           />
         </v-tab-item>
         <v-tab href="#arrange">

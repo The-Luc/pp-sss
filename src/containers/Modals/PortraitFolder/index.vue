@@ -1,7 +1,7 @@
 <template>
   <div id="portrait-folder">
     <CommonModal
-      title="Select Portait Folders"
+      title="Select Portrait Folders"
       accept-text="Select"
       container="#portrait-folder"
       width="796"

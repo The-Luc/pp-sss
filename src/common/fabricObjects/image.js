@@ -237,7 +237,7 @@ export const centercrop = imageObject => {
  * @param {*} target - Image object has applied drag trigger
  */
 export const handleDragEnter = ({ target }) => {
-  if (target.cachedStrokeData) return;
+  if (target.cachedStrokeData || !target.selectable) return;
 
   const cachedStrokeData = {
     stroke: target.stroke,
@@ -258,7 +258,7 @@ export const handleDragEnter = ({ target }) => {
  * @param {*} target - Image object has applied drag trigger
  */
 export const handleDragLeave = ({ target }) => {
-  if (isEmpty(target.cachedStrokeData)) return;
+  if (isEmpty(target.cachedStrokeData) || !target.selectable) return;
 
   const { stroke, strokeWidth } = target.cachedStrokeData;
   target.set({

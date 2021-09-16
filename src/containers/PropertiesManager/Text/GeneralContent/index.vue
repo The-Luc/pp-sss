@@ -15,6 +15,7 @@
       :play-out-config="playOutConfig"
       @change="onChange"
       @apply="onApply"
+      @preview="onClickPreview"
     />
   </div>
 </template>
