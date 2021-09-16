@@ -37,13 +37,14 @@
 
       .photo-container {
         width: 100%;
-        padding-top: 125%;
+        padding-top: var(--image-height);
         position: relative;
 
         .photo {
           position: absolute;
           top: 0;
           left: 0;
+          transform: translate(0, 0);
           width: 100%;
           height: 100%;
           img {
@@ -53,6 +54,7 @@
             border-width: var(--border-width);
             border-color: var(--border-color);
             border-style: var(--border-style);
+            border-radius: var(--border-radius);
             color: transparent;
           }
 
@@ -66,22 +68,25 @@
             left: var(--double-border-position);
             border: solid white;
             border-width: var(--double-border-width);
-            border-radius: var(--radius);
+            border-radius: var(--border-radius);
           }
 
           &:after {
             content: '';
             position: absolute;
             display: var(--shadow-display);
-            width: 100%;
-            height: 100%;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
             background-clip: padding-box;
             background-color: var(--shadow-color);
-            // filter: blur(var(--shadow-blur));
-            transform: translate(10px, 10px);
+            filter: var(--shadow-filter);
+            transform: var(--shadow-transform);
             border-color: var(--shadow-color);
             border-width: var(--border-width);
             border-style: var(--border-style);
+            border-radius: var(--border-radius);
             z-index: -1;
           }
         }
