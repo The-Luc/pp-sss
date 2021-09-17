@@ -1,8 +1,10 @@
-import { fabric } from 'fabric';
-
 import SizeWrapper from '@/components/SizeWrapper';
 import AddBoxInstruction from '@/components/AddBoxInstruction';
 import Frames from './Frames';
+import TheAnimationOrder from './TheAnimationOrder';
+
+import { fabric } from 'fabric';
+
 import {
   imageBorderModifier,
   useDigitalOverrides,
@@ -148,7 +150,8 @@ export default {
   components: {
     SizeWrapper,
     AddBoxInstruction,
-    Frames
+    Frames,
+    TheAnimationOrder
   },
   props: {
     frames: {
@@ -248,7 +251,9 @@ export default {
       isCanvasChanged: false,
       autoSaveTimer: null,
       undoRedoCanvas: null,
-      isFrameLoaded: false
+      isFrameLoaded: false,
+      isBgPropMenuOpen: false,
+      isScroll: { x: false, y: false }
     };
   },
   computed: {
@@ -402,16 +407,23 @@ export default {
         height: 0
       };
 
+      const canvasMargin = 16;
+
       if (this.zoom > 0) {
         canvasSize.height = DIGITAL_CANVAS_SIZE.HEIGHT * this.zoom;
         canvasSize.width = DIGITAL_CANVAS_SIZE.WIDTH * this.zoom;
       } else if (this.containerSize.ratio > DIGITAL_CANVAS_SIZE.RATIO) {
-        canvasSize.height = this.containerSize.height;
+        canvasSize.height = this.containerSize.height - canvasMargin;
         canvasSize.width = canvasSize.height * DIGITAL_CANVAS_SIZE.RATIO;
       } else {
-        canvasSize.width = this.containerSize.width;
+        canvasSize.width = this.containerSize.width - canvasMargin;
         canvasSize.height = canvasSize.width / DIGITAL_CANVAS_SIZE.RATIO;
       }
+
+      this.isScroll = {
+        x: canvasSize.width > this.containerSize.width - canvasMargin,
+        y: canvasSize.height > this.containerSize.height - canvasMargin
+      };
 
       const zoom =
         this.zoom === 0
@@ -516,6 +528,10 @@ export default {
         {
           name: EVENT_TYPE.DIGITAL_BACKGROUND_REMOVE,
           handler: this.removeBackground
+        },
+        {
+          name: EVENT_TYPE.BACKGROUND_SELECT,
+          handler: this.backgroundToggleSelection
         }
       ];
 
@@ -1712,6 +1728,20 @@ export default {
       this.closeProperties();
 
       this.setPropertiesObjectType({ type: '' });
+    },
+    /**
+     * Event fire when user open / close background properties menu
+     *
+     * @param {Booean} isSelected  is background prop menu opened
+     */
+    backgroundToggleSelection({ isSelected }) {
+      if (window.digitalCanvas.getObjects().length === 0) return;
+
+      const background = window.digitalCanvas.getObjects()[0];
+
+      if (background.objectType !== OBJECT_TYPE.BACKGROUND) return;
+
+      this.isBgPropMenuOpen = isSelected;
     },
     /**
      * Reset configs properties when close object

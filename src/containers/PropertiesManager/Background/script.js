@@ -1,26 +1,24 @@
-import Properties from '@/components/Properties/BoxProperties';
+import PropertiesContainer from '@/components/Properties/BoxProperties';
 import TabMenu from '@/components/TabMenu';
+import Animation from '@/components/Properties/Features/Animation';
 import PropertiesContent from './PropertiesContent';
 
 import { useBackgroundProperties } from '@/hooks';
 import { isEmpty } from '@/common/utils';
+import { EVENT_TYPE } from '@/common/constants';
 
 export default {
   components: {
-    Properties,
+    PropertiesContainer,
     TabMenu,
-    PropertiesContent
+    PropertiesContent,
+    Animation
   },
   props: {
     isDigital: {
       type: Boolean,
       default: false
     }
-  },
-  data() {
-    return {
-      activeTab: ''
-    };
   },
   setup({ isDigital }) {
     const { backgroundsProps, triggerChange } = useBackgroundProperties(
@@ -30,6 +28,11 @@ export default {
     return {
       backgroundsProps,
       triggerChange
+    };
+  },
+  data() {
+    return {
+      activeTab: ''
     };
   },
   computed: {
@@ -119,6 +122,16 @@ export default {
       }
     }
   },
+  mounted() {
+    if (this.isDigital) {
+      this.$root.$emit(EVENT_TYPE.BACKGROUND_SELECT, { isSelected: true });
+    }
+  },
+  beforeDestroy() {
+    if (this.isDigital) {
+      this.$root.$emit(EVENT_TYPE.BACKGROUND_SELECT, { isSelected: false });
+    }
+  },
   methods: {
     /**
      * Fire when opacity is changed from opacity component
@@ -127,11 +140,11 @@ export default {
      * @param {Number}  opacity the opacity data
      */
     onChangeOpacity({ isLeft, opacity }) {
-      const methodName = this.isDigital
+      const eventName = this.isDigital
         ? 'digitalChangeBackgroundProperties'
         : 'printChangeBackgroundProperties';
 
-      this.$root.$emit(methodName, {
+      this.$root.$emit(eventName, {
         backgroundId: this.getId(isLeft),
         isLeftBackground: isLeft,
         prop: { opacity }
@@ -143,11 +156,11 @@ export default {
      * @param {Boolean} isLeft  is left background change
      */
     onRemove(isLeft) {
-      const methodName = this.isDigital
+      const eventName = this.isDigital
         ? 'digitalDeleteBackground'
         : 'printDeleteBackground';
 
-      this.$root.$emit(methodName, {
+      this.$root.$emit(eventName, {
         backgroundId: this.getId(isLeft),
         isLeftBackground: isLeft
       });
@@ -172,6 +185,20 @@ export default {
      */
     onTabChange(tabName) {
       this.activeTab = tabName;
+    },
+    /**
+     * Emit animation option selected
+     * @param {Object} animationConfig Animation option selected
+     */
+    onChangeAnimation(object) {
+      this.$emit('change', object);
+    },
+    /**
+     * Emit apply option selected
+     * @param {Object} applyOption apply option selected
+     */
+    onApplyAnimation(object) {
+      this.$emit('onApply', object);
     }
   }
 };

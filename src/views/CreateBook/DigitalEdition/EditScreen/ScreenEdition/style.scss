@@ -8,29 +8,26 @@
   flex-direction: column;
 
   .digital-canvas-container {
-    margin: 24px;
+    height: calc(100% - 125px);
+    margin: 6px;
     position: relative;
-    overflow: auto;
-    height: calc(100% - 190px);
-    .digital-canvas {
+    overflow: hidden;
+  
+    &.scroll-x {
+      overflow-x: auto;
+    }
+  
+    &.scroll-y {
+      overflow-y: auto;
+    }
+
+    ::v-deep .canvas-container {
+      margin: 8px;
       box-shadow: 1px 1px 3px 1px rgba($color-black, 0.25);
+    }
+
+    .digital-canvas {
       background-color: $color-white;
-    }
-  }
-}
-@media only screen and (max-width: 1600px) {
-  .screen-edition {
-    .digital-canvas-container {
-      margin: 20px;
-      height: calc(100% - 160px);
-    }
-  }
-}
-@media screen and (max-width: 1366px) {
-  .screen-edition {
-    .digital-canvas-container {
-      margin: 15px;
-      height: calc(100% - 133px);
     }
   }
 }
