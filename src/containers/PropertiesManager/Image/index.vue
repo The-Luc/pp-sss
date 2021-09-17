@@ -11,25 +11,20 @@
             :options="imageStyle"
             @onSelectImageStyle="onSelectImageStyle"
           />
-          <General
+          <general-content
             :is-allow-fill-color="false"
             :is-show-border="true"
             :opacity-value="opacityValue"
             :current-shadow="currentShadow"
             :current-border="currentBorder"
             :is-digital="isDigitalEdition"
-            :play-in-config="playInConfig"
-            :play-out-config="playOutConfig"
-            :play-in-order="playInOrder"
-            :play-out-order="playOutOrder"
-            animation-title="Image Animation"
             @change="onChange"
             @changeShadow="onChangeShadow"
             @changeBorder="onChangeBorder"
             @onApply="onApplyAnimation"
             @preview="onClickPreview"
             @changeOrder="onChangeOrder"
-          />
+          ></general-content>
         </v-tab-item>
         <v-tab href="#arrange">
           Arrange

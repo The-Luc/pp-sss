@@ -12,17 +12,12 @@
             :opacity-value="opacityValue"
             :current-shadow="currentShadow"
             :is-digital="isDigitalEdition"
-            :play-in-config="playInConfig"
-            :play-out-config="playOutConfig"
-            :play-in-order="playInOrder"
-            :play-out-order="playOutOrder"
-            animation-title="Clip Art Animation"
             @change="onChange"
             @changeShadow="onChangeShadow"
             @onApply="onApplyAnimation"
             @preview="onClickPreview"
             @changeOrder="onChangeOrder"
-          />
+          ></general-content>
         </v-tab-item>
         <v-tab href="#arrange">
           Arrange

@@ -1,10 +1,10 @@
-import Select from '@/components/Selectors/Select';
+import PpSelect from '@/components/Selectors/Select';
 import { useElementProperties } from '@/hooks';
 import { BORDER_STYLE, BORDER_STYLES } from '@/common/constants';
 
 export default {
   components: {
-    Select
+    PpSelect
   },
   setup() {
     const { getProperty } = useElementProperties();

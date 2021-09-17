@@ -2,21 +2,17 @@ import PpInput from '@/components/Input/InputProperty';
 import PpSelect from '@/components/Selectors/Select';
 import PpCombobox from '@/components/Selectors/Combobox';
 
-import { ICON_LOCAL, OBJECT_TYPE } from '@/common/constants';
+import { isEmpty } from '@/common/utils';
+
+import { ICON_LOCAL } from '@/common/constants';
 import {
   CONTROL_TYPE,
   DIRECTION_OPTIONS,
   NONE_OPTION,
   PLAY_IN_OPTIONS,
   PLAY_OUT_OPTIONS,
-  TEXT_APPLY_OPTIONS,
-  IMAGE_APPLY_OPTIONS,
-  SHAPE_APPLY_OPTIONS,
-  CLIP_ART_APPLY_OPTIONS,
-  BACKGROUND_APPLY_OPTIONS,
   DEFAULT_ANIMATION
 } from '@/common/constants/animationProperty';
-import { useObjectProperties } from '@/hooks';
 
 export default {
   components: { PpSelect, PpInput, PpCombobox },
@@ -36,15 +32,17 @@ export default {
     isDisabledPreview: {
       type: Boolean
     },
-    objectType: {
-      type: String
-    },
     disabled: {
       type: Boolean
     },
     isOrderDisabled: {
-      type: Boolean,
-      default: false
+      type: Boolean
+    },
+    applyOptions: {
+      type: Array
+    },
+    orderOptions: {
+      type: Array
     }
   },
   data() {
@@ -57,7 +55,6 @@ export default {
       appendedIcon: ICON_LOCAL.APPENDED_ICON,
       title,
       styleOptions,
-      applyOptions: [],
       directionOptions: DIRECTION_OPTIONS,
       selectedStyle: NONE_OPTION,
       selectedApplyOption: null,
@@ -69,25 +66,13 @@ export default {
       componentKey: true
     };
   },
-  setup() {
-    const { listObjects, currentObject } = useObjectProperties();
-    return {
-      listObjects,
-      currentObject
-    };
-  },
   computed: {
-    orderOptions() {
-      return Object.values(this.listObjects)
-        .filter(obj => obj?.type && obj.type !== OBJECT_TYPE.BACKGROUND)
-        .map((_, i) => ({
-          name: i + 1,
-          value: i + 1
-        }));
-    },
     selectedOrder() {
+      if (isEmpty(this.order)) return this.orderOptions[0];
+
       const order = this.orderOptions.find(o => o.value === this.order);
-      return order || this.orderOptions[0];
+
+      return order || { name: this.order, value: this.order };
     },
     isShowOptions() {
       return this.selectedStyle?.value !== NONE_OPTION.value;
@@ -238,23 +223,6 @@ export default {
         NONE_OPTION;
       this.durationValue = config.duration || DEFAULT_ANIMATION.DURATION;
       this.scaleValue = config.scale || DEFAULT_ANIMATION.SCALE;
-      this.applyOptions = this.getApplyOptions();
-    },
-
-    getApplyOptions() {
-      if (this.objectType === OBJECT_TYPE.TEXT) {
-        return TEXT_APPLY_OPTIONS;
-      }
-      if (this.objectType === OBJECT_TYPE.IMAGE) {
-        return IMAGE_APPLY_OPTIONS;
-      }
-      if (this.objectType === OBJECT_TYPE.SHAPE) {
-        return SHAPE_APPLY_OPTIONS;
-      }
-      if (this.objectType === OBJECT_TYPE.CLIP_ART) {
-        return CLIP_ART_APPLY_OPTIONS;
-      }
-      return BACKGROUND_APPLY_OPTIONS;
     }
   },
   created() {
@@ -263,9 +231,6 @@ export default {
   watch: {
     config(val) {
       this.setConfigData(val);
-    },
-    objectType() {
-      this.setConfigData();
     }
   }
 };

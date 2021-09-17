@@ -1,7 +1,7 @@
 import Properties from '@/components/Properties/BoxProperties';
-import TabPropertiesMenu from '@/containers/TabPropertiesMenu';
-import StyleContent from '@/components/Properties/Groups/General';
 import ArrangeContent from '@/components/Properties/Groups/Arrange';
+import TabPropertiesMenu from '@/containers/TabPropertiesMenu';
+import StyleContent from '@/containers/Properties/Groups/General';
 import Movie from './Movie';
 
 import { useElementProperties } from '@/hooks';
