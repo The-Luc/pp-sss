@@ -3,7 +3,7 @@ import PpButton from '@/components/Buttons/Button';
 
 import { mapActions } from 'vuex';
 import { ACTIONS as DIGITAL_ACTIONS } from '@/store/modules/digital/const';
-import { useFrame, useFrameReplace, useModal } from '@/hooks';
+import { useAnimation, useFrame, useFrameReplace, useModal } from '@/hooks';
 import { useObject } from '../../composables';
 
 export default {
@@ -12,6 +12,7 @@ export default {
     const { currentFrameId, setSupplementalLayoutId } = useFrame();
     const { toggleModal, modalData } = useModal();
     const { updateObjectsToStore } = useObject();
+    const { updatePlayInIds, updatePlayOutIds } = useAnimation();
 
     return {
       handleReplaceFrame,
@@ -19,7 +20,9 @@ export default {
       setSupplementalLayoutId,
       modalData,
       toggleModal,
-      updateObjectsToStore
+      updateObjectsToStore,
+      updatePlayInIds,
+      updatePlayOutIds
     };
   },
   components: {
@@ -38,6 +41,8 @@ export default {
         const frame = sheetData.layout?.frames[0] || [];
 
         this.updateObjectsToStore({ objects: frame.objects });
+        this.updatePlayInIds({ playInIds: frame.playInIds });
+        this.updatePlayOutIds({ playOutIds: frame.playOutIds });
         this.handleReplaceFrame({ frame, frameId: this.currentFrameId });
 
         this.setSupplementalLayoutId({ id: sheetData.layout.id });

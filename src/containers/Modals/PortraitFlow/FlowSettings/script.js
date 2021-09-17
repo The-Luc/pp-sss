@@ -63,7 +63,7 @@ export default {
      * @param {Number}  pageNo  selected page
      */
     onStartPageChange({ pageNo }) {
-      this.$emit('startPageChange', { pageNo });
+      this.$emit('startPageChange', { startNo: pageNo });
     },
     /**
      * Show preview by emit to parent

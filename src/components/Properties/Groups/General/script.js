@@ -102,6 +102,20 @@ export default {
      */
     onApplyAnimation(object) {
       this.$emit('onApply', object);
+    },
+    /**
+     * Emit preview option selected object
+     * @param {Object} animationConfig preview option
+     */
+    onClickPreview(config) {
+      this.$emit('preview', config);
+    },
+    /**
+     * Emit order option selected object
+     * @param {Object} order order option
+     */
+    onChangeOrder(order) {
+      this.$emit('changeOrder', order);
     }
   }
 };

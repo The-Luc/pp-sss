@@ -1,3 +1,4 @@
+import { APPLY_MODE, OBJECT_TYPE } from '@/common/constants';
 import { getSuccessWithData, getErrorWithMessages } from '@/common/models';
 import { parseItem } from '@/common/storage/session.helper';
 
@@ -237,6 +238,68 @@ const digitalService = {
         error: err
       });
     }
+  },
+
+  /**
+   * Save animation play in/out config
+   * @param {Object} animationConfig config will be saved to objects
+   */
+  saveAnimationConfig: async animationConfig => {
+    const { animationIn, animationOut } = animationConfig;
+
+    const promises = [];
+
+    if (!isEmpty(animationIn)) {
+      const {
+        TextObject,
+        ImageObject,
+        ShapeObject,
+        ClipArtObject
+      } = animationIn;
+
+      if (!isEmpty(TextObject)) {
+        promises.push(savePlayInConfig(OBJECT_TYPE.TEXT, TextObject));
+      }
+
+      if (!isEmpty(ImageObject)) {
+        promises.push(savePlayInConfig(OBJECT_TYPE.IMAGE, ImageObject));
+      }
+
+      if (!isEmpty(ShapeObject)) {
+        promises.push(savePlayInConfig(OBJECT_TYPE.SHAPE, ShapeObject));
+      }
+
+      if (!isEmpty(ClipArtObject)) {
+        promises.push(savePlayInConfig(OBJECT_TYPE.CLIP_ART, ClipArtObject));
+      }
+    }
+
+    if (!isEmpty(animationOut)) {
+      const {
+        TextObject,
+        ImageObject,
+        ShapeObject,
+        ClipArtObject
+      } = animationOut;
+
+      if (!isEmpty(TextObject)) {
+        promises.push(savePlayOutConfig(OBJECT_TYPE.TEXT, TextObject));
+      }
+
+      if (!isEmpty(ImageObject)) {
+        promises.push(savePlayOutConfig(OBJECT_TYPE.IMAGE, ImageObject));
+      }
+
+      if (!isEmpty(ShapeObject)) {
+        promises.push(savePlayOutConfig(OBJECT_TYPE.SHAPE, ShapeObject));
+      }
+
+      if (!isEmpty(ClipArtObject)) {
+        promises.push(savePlayOutConfig(OBJECT_TYPE.CLIP_ART, ClipArtObject));
+      }
+    }
+
+    return await Promise.all(promises);
   }
 };
 
@@ -251,4 +314,76 @@ function getSheetsFromStorage() {
   });
 
   return sheets;
+}
+
+// TODO: Remove when integrate API
+// Temporary helper function
+function getSheetObjects(sheetId) {
+  const sheets = getSheetsFromStorage();
+
+  const objects = [];
+
+  sheets[sheetId].digitalData.frames.forEach(frame => {
+    objects.push(...frame.frame.objects);
+  });
+
+  return objects;
+}
+
+// TODO: Remove when integrate API
+// Temporary helper function
+function getBookObjects() {
+  const objects = [];
+
+  window.data.book.sections.forEach(section => {
+    section.sheets.forEach(sheet => {
+      sheet.digitalData.frames.forEach(frame => {
+        objects.push(...frame.frame.objects);
+      });
+    });
+  });
+
+  return objects;
+}
+
+// TODO: Remove when integrate API
+// Temporary helper function
+async function savePlayInConfig(objectType, config) {
+  const { storeType, storeTypeId, setting } = config;
+
+  if (!storeType || !storeTypeId) return Promise.reject();
+
+  const objects =
+    storeType === APPLY_MODE.SECTION
+      ? getSheetObjects(storeTypeId)
+      : getBookObjects(storeTypeId);
+
+  objects.forEach(object => {
+    if (object.type === objectType) {
+      object.animationIn = setting;
+    }
+  });
+
+  return Promise.resolve({ success: true });
+}
+
+// TODO: Remove when integrate API
+// Temporary helper function
+async function savePlayOutConfig(objectType, config) {
+  const { storeType, storeTypeId, setting } = config;
+
+  if (!storeType || !storeTypeId) return Promise.reject();
+
+  const objects =
+    storeType === APPLY_MODE.SECTION
+      ? getSheetObjects(storeTypeId)
+      : getBookObjects();
+
+  objects.forEach(object => {
+    if (object.type === objectType) {
+      object.animationOut = setting;
+    }
+  });
+
+  return Promise.resolve({ success: true });
 }

@@ -309,7 +309,7 @@ export const toFabricClipArtProp = (prop, originalElement) => {
   return mapObject(prop, mapRules);
 };
 
-export const toCssPreview = (prop, previewHeight) => {
+export const toCssPreview = (prop, previewHeight, isDigital) => {
   const isOneLine = prop.nameLines === 1 ? 'justifyContent' : 'alignItems';
   const horizontal = prop.isPageTitleOn ? 'textAlign' : isOneLine;
 
@@ -329,7 +329,7 @@ export const toCssPreview = (prop, previewHeight) => {
       },
       fontSize: {
         name: 'fontSize',
-        parse: value => `${ptToPxPreview(value, previewHeight)}px`
+        parse: value => `${ptToPxPreview(value, previewHeight, isDigital)}px`
       },
       horizontal: {
         name: horizontal,
@@ -348,19 +348,19 @@ export const toCssPreview = (prop, previewHeight) => {
       },
       top: {
         name: 'paddingTop',
-        parse: value => `${inToPxPreview(value, previewHeight)}px`
+        parse: value => `${inToPxPreview(value, previewHeight, isDigital)}px`
       },
       bottom: {
         name: 'paddingBottom',
-        parse: value => `${inToPxPreview(value, previewHeight)}px`
+        parse: value => `${inToPxPreview(value, previewHeight, isDigital)}px`
       },
       left: {
         name: 'paddingLeft',
-        parse: value => `${inToPxPreview(value, previewHeight)}px`
+        parse: value => `${inToPxPreview(value, previewHeight, isDigital)}px`
       },
       right: {
         name: 'paddingRight',
-        parse: value => `${inToPxPreview(value, previewHeight)}px`
+        parse: value => `${inToPxPreview(value, previewHeight, isDigital)}px`
       }
     },
     restrict: []
@@ -377,24 +377,24 @@ export const toCssPreview = (prop, previewHeight) => {
  * @param   {Object}  prop  stored properties
  * @returns {Object}        css preview
  */
-export const toMarginCssPreview = (prop, previewHeight) => {
+export const toMarginCssPreview = (prop, previewHeight, isDigital) => {
   const mapRules = {
     data: {
       top: {
         name: 'marginTop',
-        parse: value => `${inToPxPreview(value, previewHeight)}px`
+        parse: value => `${inToPxPreview(value, previewHeight, isDigital)}px`
       },
       bottom: {
         name: 'marginBottom',
-        parse: value => `${inToPxPreview(value, previewHeight)}px`
+        parse: value => `${inToPxPreview(value, previewHeight, isDigital)}px`
       },
       left: {
         name: 'marginLeft',
-        parse: value => `${inToPxPreview(value, previewHeight)}px`
+        parse: value => `${inToPxPreview(value, previewHeight, isDigital)}px`
       },
       right: {
         name: 'marginRight',
-        parse: value => `${inToPxPreview(value, previewHeight)}px`
+        parse: value => `${inToPxPreview(value, previewHeight, isDigital)}px`
       }
     },
     restrict: []
@@ -985,8 +985,8 @@ const createSVGElement = (val, fill) => {
  * @param {Object} data object data stored
  */
 export const handleObjectSelected = async (target, data) => {
-  const playInOrder = data?.animationIn?.order || target?.playInOrder || 1;
-  const playOutOrder = data?.animationOut?.order || target?.playOutOrder || 1;
+  const playInOrder = data?.playInOrder || target?.playInOrder || 1;
+  const playOutOrder = data?.playOutOrder || target?.playOutOrder || 1;
   const playInEle = createSVGElement(playInOrder, 'white');
   const playOutEle = createSVGElement(playOutOrder, 'lightgray');
   const [playIn, playOut] = await Promise.all([playInEle, playOutEle]);
@@ -1081,7 +1081,11 @@ export const toCssShadow = (prop, previewHeight) => {
     ptToPxPreview(shadowOffset * Math.cos(rad), previewHeight)
   );
 
-  const boxShadow = `${offsetX}px ${offsetY}px ${blur}px ${shadowColor}`;
-
-  return dropShadow ? { boxShadow } : {};
+  return {
+    shadowBlur: blur,
+    shadowOffsetX: offsetX,
+    shadowOffsetY: offsetY,
+    shadowColor,
+    dropShadow
+  };
 };

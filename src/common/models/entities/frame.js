@@ -6,6 +6,8 @@ export class FrameEntity extends BaseElementEntity {
   title = '';
   delay = 0;
   objects = [];
+  playInIds = [];
+  playOutIds = [];
   previewImageUrl = '';
   fromLayout = true;
   isVisited = false;

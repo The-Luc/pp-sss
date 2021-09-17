@@ -30,6 +30,21 @@
         font-size: 13px;
         color: $color-stoodio-toolbartext;
       }
+      .group-setting-container {
+        margin-bottom: 0;
+      }
+    }
+    .color-content {
+      .v-icon {
+        display: none;
+      }
+      .color-picker-container {
+        .vc-mix-color-code-container,
+        .vc-mix-color-alpha-container {
+          font-size: 11px;
+          font-family: $font-300;
+        }
+      }
     }
   }
 }

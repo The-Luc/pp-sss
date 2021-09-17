@@ -22,5 +22,8 @@ export const state = {
     clipArt: true,
     applyLayout: true,
     transition: true
-  }
+  },
+  storeAnimationProp: {},
+  playInIds: [],
+  playOutIds: []
 };

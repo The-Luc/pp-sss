@@ -5,8 +5,13 @@ import General from '@/components/Properties/Groups/General';
 import ImageStyle from './ImageStyle';
 import Reset from './Reset';
 
-import { useElementProperties } from '@/hooks';
-import { DEFAULT_IMAGE, EVENT_TYPE, IMAGE_STYLE } from '@/common/constants';
+import { useAppCommon, useElementProperties, useAnimation } from '@/hooks';
+import {
+  DEFAULT_IMAGE,
+  EVENT_TYPE,
+  IMAGE_STYLE,
+  OBJECT_TYPE
+} from '@/common/constants';
 import { computedObjectSize } from '@/common/utils';
 
 export default {
@@ -20,9 +25,14 @@ export default {
   },
   setup() {
     const { getProperty } = useElementProperties();
+    const { isDigitalEdition } = useAppCommon();
+    const { playInOrder, playOutOrder } = useAnimation();
 
     return {
-      getProperty
+      getProperty,
+      isDigitalEdition,
+      playInOrder,
+      playOutOrder
     };
   },
   data() {
@@ -83,6 +93,12 @@ export default {
     },
     styleSelected() {
       return this.getProperty('styleId');
+    },
+    playInConfig() {
+      return this.getProperty('animationIn') || {};
+    },
+    playOutConfig() {
+      return this.getProperty('animationOut') || {};
     }
   },
   methods: {
@@ -181,6 +197,30 @@ export default {
     onClickBackgroundImage() {
       console.log('onClickBackgroundImage');
       //TODO
+    },
+    /**
+     * Handle apply animation config
+     * @param {Object} val
+     */
+    onApplyAnimation(val) {
+      this.$root.$emit(EVENT_TYPE.APPLY_ANIMATION, {
+        objectType: OBJECT_TYPE.IMAGE,
+        ...val
+      });
+    },
+    /**
+     * Emit preview option selected object
+     * @param {Object} animationConfig preview option
+     */
+    onClickPreview(config) {
+      this.$root.$emit(EVENT_TYPE.PREVIEW_ANIMATION, config);
+    },
+    /**
+     * Handle change object's animation order
+     * @param {Number} order animation order
+     */
+    onChangeOrder(order) {
+      this.$root.$emit(EVENT_TYPE.CHANGE_ANIMATION_ORDER, order);
     }
   }
 };

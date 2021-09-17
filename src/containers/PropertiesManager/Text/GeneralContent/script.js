@@ -6,8 +6,12 @@ import Effect from './Effect';
 import Vertical from './Vertical';
 import Spacing from './Spacing';
 
-import { useAppCommon, useElementProperties } from '@/hooks';
-import { EVENT_TYPE, TEXT_HORIZONTAL_ALIGN } from '@/common/constants';
+import { useAppCommon, useElementProperties, useAnimation } from '@/hooks';
+import {
+  EVENT_TYPE,
+  OBJECT_TYPE,
+  TEXT_HORIZONTAL_ALIGN
+} from '@/common/constants';
 
 export default {
   components: {
@@ -22,10 +26,13 @@ export default {
   setup() {
     const { isDigitalEdition } = useAppCommon();
     const { getProperty } = useElementProperties();
+    const { playInOrder, playOutOrder } = useAnimation();
 
     return {
       getProperty,
-      isDigitalEdition
+      isDigitalEdition,
+      playInOrder,
+      playOutOrder
     };
   },
   computed: {
@@ -50,8 +57,30 @@ export default {
       this.$root.$emit(EVENT_TYPE.CHANGE_TEXT_PROPERTIES, val);
     },
 
+    /**
+     * Handle apply animation configuration
+     * @param {Object} val animation config will be applied to objects
+     */
     onApply(val) {
-      this.$root.$emit(EVENT_TYPE.APPLY_TEXT_ANIMATION, val);
+      this.$root.$emit(EVENT_TYPE.APPLY_ANIMATION, {
+        objectType: OBJECT_TYPE.TEXT,
+        ...val
+      });
+    },
+
+    /**
+     * Handle change object's animation order
+     * @param {Number} order animation order
+     */
+    onChangeOrder(order) {
+      this.$root.$emit(EVENT_TYPE.CHANGE_ANIMATION_ORDER, order);
+    },
+    /**
+     * Emit preview option selected object
+     * @param {Object} animationConfig preview option
+     */
+    onClickPreview(config) {
+      this.$root.$emit(EVENT_TYPE.PREVIEW_ANIMATION, config);
     }
   }
 };

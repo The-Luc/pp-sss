@@ -4,19 +4,23 @@
     <Control
       type="playIn"
       :config="playInConfig"
+      :order="playInOrder"
       :is-disabled-preview="isDisabledPreview"
+      :object-type="objectType"
       @preview="onPreview"
-      @change="changePlayIn"
       @apply="applyPlayIn"
+      @changeOrder="onPlayInOrderChange"
     />
     <div class="horizontal-line"></div>
     <Control
       type="playOut"
       :config="playOutConfig"
+      :order="playOutOrder"
       :is-disabled-preview="isDisabledPreview"
+      :object-type="objectType"
       @preview="onPreview"
-      @change="changePlayOut"
       @apply="applyPlayOut"
+      @changeOrder="onPlayOutOrderChange"
     />
   </div>
 </template>

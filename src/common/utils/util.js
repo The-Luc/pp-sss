@@ -6,7 +6,7 @@ import {
   differenceWith
 } from 'lodash';
 
-import { STATUS } from '@/common/constants';
+import { STATUS, DIGITAL_CANVAS_SIZE } from '@/common/constants';
 import { inToPx, ptToPx, getPagePrintSize } from '@/common/utils';
 
 export let activeCanvas = null;
@@ -437,9 +437,12 @@ export const getBoolean = value => {
  * @param   {Number}  val - the pt value that need to be converted
  * @returns {Number}  the result px
  */
-export const ptToPxPreview = (value, previewHeight) => {
-  const { pageHeight } = getPagePrintSize().pixels;
-  const ratio = pageHeight / previewHeight;
+export const ptToPxPreview = (value, previewHeight, isDigital = false) => {
+  const canvasHeight = isDigital
+    ? DIGITAL_CANVAS_SIZE.HEIGHT
+    : getPagePrintSize().pixels.pageHeight;
+
+  const ratio = canvasHeight / previewHeight;
 
   return ptToPx(value) / ratio;
 };
@@ -450,9 +453,12 @@ export const ptToPxPreview = (value, previewHeight) => {
  * @param   {Number}  val - the in value that need to be converted
  * @returns {Number}  the result px
  */
-export const inToPxPreview = (value, previewHeight) => {
-  const { pageHeight } = getPagePrintSize().pixels;
-  const ratio = pageHeight / previewHeight;
+export const inToPxPreview = (value, previewHeight, isDigital = false) => {
+  const canvasHeight = isDigital
+    ? DIGITAL_CANVAS_SIZE.HEIGHT
+    : getPagePrintSize().pixels.pageHeight;
+
+  const ratio = canvasHeight / previewHeight;
 
   return inToPx(value) / ratio;
 };

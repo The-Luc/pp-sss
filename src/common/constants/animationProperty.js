@@ -143,15 +143,87 @@ export const TEXT_APPLY_OPTIONS = [
     value: APPLY_MODE.SELF
   },
   {
-    name: 'This text on the frame',
+    name: 'All text on the frame',
     value: APPLY_MODE.FRAME
   },
   {
-    name: 'This text in this section',
+    name: 'All text in this section',
     value: APPLY_MODE.SECTION
   },
   {
     name: 'All text in the Digital Yearbook',
+    value: APPLY_MODE.BOOK
+  }
+];
+
+export const IMAGE_APPLY_OPTIONS = [
+  {
+    name: 'This image only',
+    value: APPLY_MODE.SELF
+  },
+  {
+    name: 'All image on the frame',
+    value: APPLY_MODE.FRAME
+  },
+  {
+    name: 'All image in this section',
+    value: APPLY_MODE.SECTION
+  },
+  {
+    name: 'All image in the Digital Yearbook',
+    value: APPLY_MODE.BOOK
+  }
+];
+
+export const SHAPE_APPLY_OPTIONS = [
+  {
+    name: 'This shape only',
+    value: APPLY_MODE.SELF
+  },
+  {
+    name: 'All shape on the frame',
+    value: APPLY_MODE.FRAME
+  },
+  {
+    name: 'All shape in this section',
+    value: APPLY_MODE.SECTION
+  },
+  {
+    name: 'All shape in the Digital Yearbook',
+    value: APPLY_MODE.BOOK
+  }
+];
+
+export const CLIP_ART_APPLY_OPTIONS = [
+  {
+    name: 'This clip art only',
+    value: APPLY_MODE.SELF
+  },
+  {
+    name: 'All clip art on the frame',
+    value: APPLY_MODE.FRAME
+  },
+  {
+    name: 'All clip art in this section',
+    value: APPLY_MODE.SECTION
+  },
+  {
+    name: 'All clip art in the Digital Yearbook',
+    value: APPLY_MODE.BOOK
+  }
+];
+
+export const BACKGROUND_APPLY_OPTIONS = [
+  {
+    name: 'This background only',
+    value: APPLY_MODE.SELF
+  },
+  {
+    name: 'All background in this section',
+    value: APPLY_MODE.SECTION
+  },
+  {
+    name: 'All background in the Digital Yearbook',
     value: APPLY_MODE.BOOK
   }
 ];
@@ -163,3 +235,11 @@ export const CONTROL_TYPE = {
 
 export const DELAY_DURATION = 500;
 export const BLUR_DELAY_DURATION = 1000;
+
+export const DEFAULT_ANIMATION = {
+  STYLE: NONE_OPTION,
+  DIRECTION: '',
+  DURATION: 0.8,
+  SCALE: 50,
+  ORDER: 1
+};

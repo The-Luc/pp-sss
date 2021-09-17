@@ -3,10 +3,10 @@ import TabPropertiesMenu from '@/containers/TabPropertiesMenu';
 import ArrangeContent from '@/components/Properties/Groups/Arrange';
 import GeneralContent from '@/components/Properties/Groups/General';
 
-import { useElementProperties, useAppCommon } from '@/hooks';
+import { useElementProperties, useAppCommon, useAnimation } from '@/hooks';
 import { computedObjectSize } from '@/common/utils';
 
-import { DEFAULT_SHAPE, DEFAULT_PROP } from '@/common/constants';
+import { DEFAULT_SHAPE, DEFAULT_PROP, OBJECT_TYPE } from '@/common/constants';
 import { EVENT_TYPE } from '@/common/constants/eventType';
 
 export default {
@@ -19,10 +19,13 @@ export default {
   setup() {
     const { getProperty } = useElementProperties();
     const { isDigitalEdition } = useAppCommon();
+    const { playInOrder, playOutOrder } = useAnimation();
 
     return {
       getProperty,
-      isDigitalEdition
+      isDigitalEdition,
+      playInOrder,
+      playOutOrder
     };
   },
   computed: {
@@ -138,8 +141,24 @@ export default {
       });
     },
     onApplyAnimation(val) {
-      console.log(val);
-      //  will be implement soon
+      this.$root.$emit(EVENT_TYPE.APPLY_ANIMATION, {
+        objectType: OBJECT_TYPE.SHAPE,
+        ...val
+      });
+    },
+    /**
+     * Emit preview option selected object
+     * @param {Object} animationConfig preview option
+     */
+    onClickPreview(config) {
+      this.$root.$emit(EVENT_TYPE.PREVIEW_ANIMATION, config);
+    },
+    /**
+     * Handle change object's animation order
+     * @param {Number} order animation order
+     */
+    onChangeOrder(order) {
+      this.$root.$emit(EVENT_TYPE.CHANGE_ANIMATION_ORDER, order);
     }
   }
 };

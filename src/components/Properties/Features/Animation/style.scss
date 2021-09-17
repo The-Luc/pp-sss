@@ -1,6 +1,7 @@
 .animation-container {
   background-color: $color-stoodio-lightgray;
   padding: 10px 12px;
+  text-transform: initial;
 
   .properties-title {
     color: $color-stoodio-toolbartext;
@@ -9,7 +10,7 @@
     margin-bottom: 5px;
 
     &::after {
-      content: "\003A";
+      content: '\003A';
     }
   }
 

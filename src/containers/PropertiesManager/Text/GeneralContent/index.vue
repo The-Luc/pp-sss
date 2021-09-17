@@ -13,8 +13,12 @@
       title="Text animation"
       :play-in-config="playInConfig"
       :play-out-config="playOutConfig"
+      :play-in-order="playInOrder"
+      :play-out-order="playOutOrder"
       @change="onChange"
       @apply="onApply"
+      @preview="onClickPreview"
+      @changeOrder="onChangeOrder"
     />
   </div>
 </template>
