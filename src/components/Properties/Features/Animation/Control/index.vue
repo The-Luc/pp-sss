@@ -55,13 +55,16 @@
         ></pp-select>
       </div>
 
-      <div class="control-item" :class="{ disabled: isOrderDisabled }">
-        <span class="properties-title">Order</span>
+      <div class="control-item">
+        <span class="properties-title" :class="{ disabled: isOrderDisabled }"
+          >Order</span
+        >
         <pp-combobox
           max-height="200"
           :items="orderOptions"
           :appended-icon="appendedIcon"
           :selected-val="selectedOrder"
+          :disabled="isOrderDisabled"
           @change="onChangeOrder"
         ></pp-combobox>
       </div>
