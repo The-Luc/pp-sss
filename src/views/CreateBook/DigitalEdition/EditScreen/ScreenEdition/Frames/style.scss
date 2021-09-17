@@ -1,16 +1,17 @@
 .frames-container {
-  height: 23.5%;
-  max-height: 145px;
+  height: 125px;
+  min-height: 125px;
   border-top: 1px solid $color-gray6;
 
   .frame-row {
     display: flex;
-    height: calc(100% - 7px);
+    height: calc(100% - 6px);
     align-items: center;
     flex-wrap: nowrap;
     overflow-x: auto;
 
     &.actual {
+      height: auto;
       flex-grow: 0;
       flex-shrink: 0;
       overflow: hidden;

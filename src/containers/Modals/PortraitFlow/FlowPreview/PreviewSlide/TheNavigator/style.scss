@@ -5,7 +5,11 @@
   justify-content: space-between;
 
   &.digital {
-    margin-top: 12px;
+    margin-top: 14px;
+  }
+
+  &.disabled {
+    opacity: 1 !important; // override
   }
 
   .paging {

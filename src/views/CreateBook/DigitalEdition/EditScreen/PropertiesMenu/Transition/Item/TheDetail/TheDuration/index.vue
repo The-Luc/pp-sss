@@ -5,7 +5,7 @@
       :key="componentKey"
       decimal
       type="text"
-      suffix=" s"
+      suffix="s"
       :value="duration"
       :disabled="disabled"
       @change="onDurationChange"

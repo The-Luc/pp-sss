@@ -12,7 +12,7 @@
       ></preview-thumbnail>
     </transition>
 
-    <div class="pages">
+    <div class="pages" :class="{ disabled: disabled }">
       <div
         class="text clickable"
         :disabled="isDisableMoveBack"
