@@ -207,8 +207,12 @@ export default {
     onFlowWarningClose() {
       this.$emit('closeWarning');
     },
-    onPageSettingChange() {
-      this.$emit('pageSettingChange');
+    /**
+     * Handle page/frame setting change
+     * @param {Object} val value of selected page/frame
+     */
+    onPageSettingChange(val) {
+      this.$emit('pageSettingChange', val);
     },
     /**
      * Initital data for portrait flow
