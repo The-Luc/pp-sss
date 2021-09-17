@@ -1,7 +1,9 @@
 import PpCombobox from '@/components/Selectors/Combobox';
 import {
   ICON_LOCAL,
-  PORTRAIT_COL_ROW_RANGE,
+  PRINT_COL_ROW_RANGE,
+  DIGITAL_COL_RANGE,
+  DIGITAL_ROW_RANGE,
   PORTRAIT_MARGIN_OPTIONS
 } from '@/common/constants';
 import { getValueInput, validateInputOption } from '@/common/utils';
@@ -17,12 +19,16 @@ export default {
     },
     isPageTitleOn: {
       type: Boolean
+    },
+    isDigital: {
+      type: Boolean
     }
   },
   data() {
     return {
       marginOptions: PORTRAIT_MARGIN_OPTIONS,
-      colRowOptions: null,
+      colOptions: null,
+      rowOptions: null,
       appendedIcon: ICON_LOCAL.APPENDED_ICON,
       dataUI: null,
       componentKey: true
@@ -41,12 +47,12 @@ export default {
   },
   computed: {
     selectedRow() {
-      return this.colRowOptions.find(
+      return this.rowOptions.find(
         o => o.value === this.layoutSettings.rowCount
       );
     },
     selectedCol() {
-      return this.colRowOptions.find(
+      return this.colOptions.find(
         o => o.value === this.layoutSettings.colCount
       );
     },
@@ -84,7 +90,7 @@ export default {
      * Fire when user change row
      */
     onChangeRow(val) {
-      const value = this.validateInput(val, this.colRowOptions, 0);
+      const value = this.validateInput(val, this.rowOptions, 0);
       if (!value) return;
 
       this.emitEvent({ rowCount: value });
@@ -94,7 +100,7 @@ export default {
      * Fire when user change column
      */
     onChangeCol(val) {
-      const value = this.validateInput(val, this.colRowOptions, 0);
+      const value = this.validateInput(val, this.colOptions, 0);
       if (!value) return;
 
       this.emitEvent({ colCount: value });
@@ -177,31 +183,69 @@ export default {
       return value;
     },
     /**
-     * To create initial data
+     * To get col range of portrait
+     * @returns <object> max and min column numbers
      */
-    initData() {
-      const min = PORTRAIT_COL_ROW_RANGE.MIN;
-      const max = PORTRAIT_COL_ROW_RANGE.MAX;
+    getColRange() {
+      const min = this.isDigital
+        ? DIGITAL_COL_RANGE.MIN
+        : PRINT_COL_ROW_RANGE.MIN;
+      const max = this.isDigital
+        ? DIGITAL_COL_RANGE.MAX
+        : PRINT_COL_ROW_RANGE.MAX;
+      return { max, min };
+    },
+    /**
+     * To get col range of portrait
+     * @returns <object> max and min column numbers
+     */
+    getRowRange() {
+      const min = this.isDigital
+        ? DIGITAL_ROW_RANGE.MIN
+        : PRINT_COL_ROW_RANGE.MIN;
+      const max = this.isDigital
+        ? DIGITAL_ROW_RANGE.MAX
+        : PRINT_COL_ROW_RANGE.MAX;
+      return { max, min };
+    },
+    /**
+     * To create an array of option based on its min-max
+     * @param {Number} min lower bound of range
+     * @param {Number} max upper bound of range
+     * @returns <Array> of options
+     */
+    createOptions(min, max) {
       const range = max - min + 1;
 
-      this.colRowOptions = Array.from({ length: range }, (_, i) => {
+      return Array.from({ length: range }, (_, i) => {
         const val = i + min;
         return {
           name: val + '',
           value: val
         };
       });
+    },
+
+    /**
+     * To create initial data
+     */
+    initData() {
+      const { min: minRow, max: maxRow } = this.getRowRange();
+      const { min: minCol, max: maxCol } = this.getColRange();
+
+      this.rowOptions = this.createOptions(minRow, maxRow);
+      this.colOptions = this.createOptions(minCol, maxCol);
 
       this.dataUI = [
         {
           name: 'Rows',
-          options: this.colRowOptions,
+          options: this.rowOptions,
           selected: this.selectedRow,
           onChangeFn: this.onChangeRow
         },
         {
           name: 'Columns',
-          options: this.colRowOptions,
+          options: this.colOptions,
           selected: this.selectedCol,
           onChangeFn: this.onChangeCol
         },

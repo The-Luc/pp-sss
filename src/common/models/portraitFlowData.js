@@ -7,20 +7,21 @@ import {
   PORTRAIT_IMAGE_MASK,
   PORTRAIT_NAME_DISPLAY,
   PORTRAIT_NAME_POSITION,
-  DEFAUL_PORTRAIT,
+  DEFAULT_PRINT_PORTRAIT,
   PORTRAIT_FLOW_OPTION_SINGLE,
   PORTRAIT_FLOW_OPTION_MULTI,
   PORTRAIT_TEACHER_PLACEMENT,
   PORTRAIT_SIZE,
   PORTRAIT_ASSISTANT_PLACEMENT,
-  DEFAULT_VALUE_PAGE_TITLE
+  DEFAULT_VALUE_PAGE_TITLE,
+  DEFAULT_MARGIN
 } from '../constants';
 
 export class MarginSettings extends BaseObject {
-  top = 1;
-  bottom = 0.5;
-  left = 0.5;
-  right = 0.5;
+  top = DEFAULT_MARGIN.TOP;
+  bottom = DEFAULT_MARGIN.BOTTOM;
+  left = DEFAULT_MARGIN.LEFT;
+  right = DEFAULT_MARGIN.RIGHT;
 
   /**
    * @param {MarginSettings} props
@@ -32,8 +33,8 @@ export class MarginSettings extends BaseObject {
 }
 
 export class PortraitLayoutSettings extends BaseObject {
-  rowCount = DEFAUL_PORTRAIT.ROW_COUNT;
-  colCount = DEFAUL_PORTRAIT.COLUMN_COUNT;
+  rowCount = DEFAULT_PRINT_PORTRAIT.ROW_COUNT;
+  colCount = DEFAULT_PRINT_PORTRAIT.COLUMN_COUNT;
   margins = new MarginSettings();
 
   /**

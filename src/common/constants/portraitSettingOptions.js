@@ -4,9 +4,37 @@ import {
   PORTRAIT_TEACHER_PLACEMENT
 } from './portrait';
 
-export const PORTRAIT_COL_ROW_RANGE = {
+export const DEFAULT_PRINT_PORTRAIT = {
+  ROW_COUNT: 5,
+  COLUMN_COUNT: 5
+};
+
+export const DEFAULT_DIGITAL_PORTRAIT = {
+  ROW_COUNT: 3,
+  COLUMN_COUNT: 8
+};
+
+export const DEFAULT_MARGIN = {
+  TOP: 1,
+  BOTTOM: 0.5,
+  LEFT: 0.5,
+  RIGHT: 0.5,
+  DIGITAL_BOTTOM: 0.75
+};
+
+export const PRINT_COL_ROW_RANGE = {
   MIN: 1,
   MAX: 8
+};
+
+export const DIGITAL_COL_RANGE = {
+  MIN: 1,
+  MAX: 12
+};
+
+export const DIGITAL_ROW_RANGE = {
+  MIN: 1,
+  MAX: 5
 };
 
 export const PORTRAIT_MARGIN_OPTIONS = [

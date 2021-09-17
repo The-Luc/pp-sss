@@ -4,6 +4,7 @@
       <portrait-setting
         :selected-folders="selectedFolders"
         :flow-settings="flowSettings"
+        :is-digital="isDigital"
         @portraitSettingChange="onSettingChange"
       />
     </v-tab-item>
