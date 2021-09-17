@@ -106,6 +106,7 @@ export const getters = {
       sheet: sheets[sheetId],
       frames: framesArray
     };
+
     return data;
   },
   [DIGITAL._GETTERS.GET_SHEET_MEDIA]: ({ sheets, currentSheetId }) => {
@@ -119,5 +120,24 @@ export const getters = {
   },
   [DIGITAL._GETTERS.TOTAL_FRAME]: ({ frameIds }) => {
     return frameIds.length;
+  },
+  [DIGITAL._GETTERS.STORE_ANIMATION_PROP]: ({ storeAnimationProp }) => {
+    return storeAnimationProp;
+  },
+  [DIGITAL._GETTERS.PLAY_IN_ORDER]: ({ playInIds, currentObjectId }) => {
+    if (!currentObjectId) return;
+
+    const index =
+      playInIds.findIndex(ids => ids.includes(currentObjectId)) || 0;
+
+    return index + 1;
+  },
+  [DIGITAL._GETTERS.PLAY_OUT_ORDER]: ({ playOutIds, currentObjectId }) => {
+    if (!currentObjectId) return;
+
+    const index =
+      playOutIds.findIndex(ids => ids.includes(currentObjectId)) || 0;
+
+    return index + 1;
   }
 };

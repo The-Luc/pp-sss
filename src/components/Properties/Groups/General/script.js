@@ -109,6 +109,13 @@ export default {
      */
     onClickPreview(config) {
       this.$emit('preview', config);
+    },
+    /**
+     * Emit order option selected object
+     * @param {Object} order order option
+     */
+    onChangeOrder(order) {
+      this.$emit('changeOrder', order);
     }
   }
 };

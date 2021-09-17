@@ -985,8 +985,8 @@ const createSVGElement = (val, fill) => {
  * @param {Object} data object data stored
  */
 export const handleObjectSelected = async (target, data) => {
-  const playInOrder = data?.animationIn?.order || target?.playInOrder || 1;
-  const playOutOrder = data?.animationOut?.order || target?.playOutOrder || 1;
+  const playInOrder = data?.playInOrder || target?.playInOrder || 1;
+  const playOutOrder = data?.playOutOrder || target?.playOutOrder || 1;
   const playInEle = createSVGElement(playInOrder, 'white');
   const playOutEle = createSVGElement(playOutOrder, 'lightgray');
   const [playIn, playOut] = await Promise.all([playInEle, playOutEle]);

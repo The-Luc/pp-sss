@@ -34,6 +34,9 @@ class GetterClass extends BaseObject {
   TRIGGER_TRANSITION = 'getTriggerTransition';
   CURRENT_FRAME_INDEX = 'getCurrentFrameIndex';
   TOTAL_FRAME = 'getTotalFrame';
+  STORE_ANIMATION_PROP = 'storeAnimationProp';
+  PLAY_IN_ORDER = 'playInOrder';
+  PLAY_OUT_ORDER = 'playOutOrder';
 
   constructor(props) {
     super(props);
@@ -104,6 +107,11 @@ class MutationClass extends BaseObject {
   SET_BOOK_INFO = 'setBookInfo';
   SET_SHEET_MEDIA = 'setSheetMedia';
   UPDATE_TRIGGER_TRANSITION = 'updateTriggerTransition';
+  SET_STORE_ANIMATION_PROP = 'setStoreAnimationProp';
+  SET_PLAY_IN_ORDER = 'setPlayInOrder';
+  SET_PLAY_OUT_ORDER = 'setPlayOutOrder';
+  SET_PLAY_IN_IDS = 'setPlayInIds';
+  SET_PLAY_OUT_IDS = 'setPlayOutIds';
 
   constructor(props) {
     super(props);

@@ -85,7 +85,9 @@ import {
   useToolBar,
   useActionDigitalSheet,
   useProperties,
-  useGetterEditionSection
+  useGetterEditionSection,
+  useBook,
+  useAnimation
 } from '@/hooks';
 
 import {
@@ -167,7 +169,11 @@ export default {
     } = useFrame();
     const { toggleModal, modalData } = useModal();
     const { onSaveStyle } = useStyle();
-    const { getDataEditScreen, saveEditScreen } = useSaveData();
+    const {
+      getDataEditScreen,
+      saveEditScreen,
+      saveAnimationConfig
+    } = useSaveData();
     const { updateSavingStatus, savingStatus } = useSavingStatus();
     const { updateObjectsToStore } = useObject();
     const { updateSheetThumbnail } = useMutationDigitalSheet();
@@ -178,6 +184,17 @@ export default {
 
     const { setPropOfMultipleObjects } = useProperties();
     const { currentSection } = useGetterEditionSection();
+    const {
+      storeAnimationProp,
+      setStoreAnimationProp,
+      playInOrder,
+      playOutOrder,
+      setPlayInOrder,
+      setPlayOutOrder,
+      updatePlayInIds,
+      updatePlayOutIds
+    } = useAnimation();
+    const { book } = useBook();
 
     return {
       currentFrame,
@@ -203,7 +220,17 @@ export default {
       addTransition,
       removeTransition,
       setPropOfMultipleObjects,
-      currentSection
+      currentSection,
+      storeAnimationProp,
+      setStoreAnimationProp,
+      book,
+      saveAnimationConfig,
+      playInOrder,
+      playOutOrder,
+      setPlayInOrder,
+      setPlayOutOrder,
+      updatePlayInIds,
+      updatePlayOutIds
     };
   },
   data() {
@@ -291,6 +318,8 @@ export default {
       resetObjects(this.digitalCanvas);
 
       this.updateObjectsToStore({ objects: this.currentFrame.objects });
+      this.updatePlayInIds({ playInIds: this.currentFrame.playInIds });
+      this.updatePlayOutIds({ playOutIds: this.currentFrame.playOutIds });
       this.handleSwitchFrame(this.currentFrame);
 
       this.undoRedoCanvas.reset();
@@ -572,8 +601,12 @@ export default {
           handler: this.handlePaste
         },
         {
-          name: EVENT_TYPE.APPLY_TEXT_ANIMATION,
-          handler: this.handleApplyTextAnimation
+          name: EVENT_TYPE.APPLY_ANIMATION,
+          handler: this.handleApplyAnimation
+        },
+        {
+          name: EVENT_TYPE.CHANGE_ANIMATION_ORDER,
+          handler: this.handleChangeAnimationOrder
         }
       ];
 
@@ -728,8 +761,6 @@ export default {
 
       if (isEmpty(objectData)) return;
 
-      handleObjectSelected(target, objectData);
-
       this.setSelectedObjectId({ id });
 
       setBorderHighlight(target, this.sheetLayout);
@@ -752,6 +783,11 @@ export default {
       this.setPropertiesObjectType({ type: PROPERTIES_TOOLS.PROPERTIES.name });
 
       this.setIsOpenProperties({ objectId: id });
+
+      handleObjectSelected(target, {
+        playInOrder: this.playInOrder,
+        playOutOrder: this.playOutOrder
+      });
     },
 
     /**
@@ -1339,19 +1375,6 @@ export default {
 
       const newProp = await this.updateElementProp(element, prop, objectType);
 
-      if (prop?.animationIn?.order || prop?.animationOut?.order) {
-        const playInOrder = prop?.animationIn?.order;
-        const playOutOrder = prop?.animationOut?.order;
-
-        if (playInOrder) {
-          element.set({ playInOrder });
-        }
-        if (playOutOrder) {
-          element.set({ playOutOrder });
-        }
-        handleObjectSelected(element, prop);
-      }
-
       this.updateCurrentObject(element, newProp);
 
       if (isContainDebounceProp(newProp)) {
@@ -1518,6 +1541,8 @@ export default {
       };
 
       const image = await createImage(newMedia.newObject);
+
+      useObjectControlsOverride(image.object);
 
       if (!isEmpty(image.size)) {
         newMedia.newObject.update({ size: image.size });
@@ -1921,6 +1946,9 @@ export default {
 
       const mediaObject = await createImage(mediaProperties);
       const media = mediaObject?.object;
+
+      useObjectControlsOverride(media);
+
       const {
         border,
         hasImage,
@@ -2066,6 +2094,8 @@ export default {
       this.updateFrameObjects({ frameId });
       const data = this.getDataEditScreen(sheetId);
       await this.saveEditScreen(data);
+      await this.saveAnimationConfig(this.storeAnimationProp);
+      this.setStoreAnimationProp({});
     },
     /**
      * Change fabric properties of current element
@@ -2416,22 +2446,82 @@ export default {
     },
 
     /**
-     * Handle apply animation for textbox
-     * @param {Object} animation animation config
+     * Handle apply animation
+     * @param {String} storeType store type to apply animation
+     * @param {Object} animationIn config for play in animation
+     * @param {Object} animationOut config for play out animation
      */
-    handleApplyTextAnimation(animation) {
-      const mode = animation.mode;
-      if (mode === APPLY_MODE.FRAME) {
-        const objects = this.currentFrame.objects;
-        const props = objects.map(obj => ({
-          id: obj.id,
-          prop: {
-            animationIn: animation.animationIn || {},
-            animationOut: animation.animationOut || {}
-          }
-        }));
-        this.setPropOfMultipleObjects({ data: props });
+    handleApplyAnimation({ objectType, storeType, animationIn, animationOut }) {
+      const prop = { animationIn, animationOut };
+
+      if (storeType === APPLY_MODE.SELF) {
+        return this.setObjectProp({ prop });
       }
+
+      if (storeType === APPLY_MODE.FRAME) {
+        const objects = this.currentFrame.objects;
+        const props = objects
+          .filter(obj => obj.type === objectType)
+          .map(obj => ({ id: obj.id, prop }));
+
+        return this.setPropOfMultipleObjects({ data: props });
+      }
+
+      const storeTypeId =
+        storeType === APPLY_MODE.SECTION ? this.pageSelected.id : this.book.id;
+
+      const storeAnimationProp = {};
+
+      if (!isEmpty(animationIn)) {
+        storeAnimationProp.animationIn = {
+          [objectType]: {
+            storeType,
+            storeTypeId,
+            setting: animationIn
+          }
+        };
+      }
+
+      if (!isEmpty(animationOut)) {
+        storeAnimationProp.animationOut = {
+          [objectType]: {
+            storeType,
+            storeTypeId,
+            setting: animationOut
+          }
+        };
+      }
+
+      this.setStoreAnimationProp({ storeAnimationProp });
+
+      const objects = this.currentFrame.objects;
+      const props = objects
+        .filter(obj => obj.type === objectType)
+        .map(obj => ({ id: obj.id, prop }));
+
+      this.setPropOfMultipleObjects({ data: props });
+    },
+
+    /**
+     * Handle change animation order
+     * @param {Number} playInOrder object's play in order
+     * @param {Number} playOutOrder object's play out order
+     */
+    handleChangeAnimationOrder({ playInOrder, playOutOrder }) {
+      if (!isNaN(playInOrder)) {
+        this.setPlayInOrder(playInOrder);
+      }
+
+      if (!isNaN(playOutOrder)) {
+        this.setPlayOutOrder(playOutOrder);
+      }
+
+      const target = this.digitalCanvas.getActiveObject();
+
+      handleObjectSelected(target, {
+        playInOrder: this.playInOrder,
+        playOutOrder: this.playOutOrder
+      });
     }
   }
 };

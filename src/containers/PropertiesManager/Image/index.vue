@@ -17,9 +17,18 @@
             :opacity-value="opacityValue"
             :current-shadow="currentShadow"
             :current-border="currentBorder"
+            :is-digital="isDigitalEdition"
+            :play-in-config="playInConfig"
+            :play-out-config="playOutConfig"
+            :play-in-order="playInOrder"
+            :play-out-order="playOutOrder"
+            animation-title="Image Animation"
             @change="onChange"
             @changeShadow="onChangeShadow"
             @changeBorder="onChangeBorder"
+            @onApply="onApplyAnimation"
+            @preview="onClickPreview"
+            @changeOrder="onChangeOrder"
           />
         </v-tab-item>
         <v-tab href="#arrange">

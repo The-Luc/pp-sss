@@ -27,7 +27,11 @@ export const useSaveData = () => {
     };
   };
 
-  return { saveEditScreen, getDataEditScreen };
+  const saveAnimationConfig = async animationConfig => {
+    return await digitalService.saveAnimationConfig(animationConfig);
+  };
+
+  return { saveEditScreen, getDataEditScreen, saveAnimationConfig };
 };
 
 export const useObject = () => {

@@ -6,6 +6,7 @@ import {
   PLAY_OUT_STYLES,
   CONTROL_TYPE
 } from '@/common/constants/animationProperty';
+import { useElementProperties } from '@/hooks';
 
 export default {
   components: {
@@ -23,12 +24,30 @@ export default {
     playOutConfig: {
       type: Object,
       default: () => ({})
+    },
+    playInOrder: {
+      type: Number,
+      default: 1
+    },
+    playOutOrder: {
+      type: Number,
+      default: 1
     }
   },
   data() {
     return {
       isDisabledPreview: false
     };
+  },
+  setup() {
+    const { getProperty } = useElementProperties();
+
+    return { getProperty };
+  },
+  computed: {
+    objectType() {
+      return this.getProperty('type');
+    }
   },
   methods: {
     /**
@@ -69,8 +88,8 @@ export default {
      * @param {String} mode apply mode
      * @param {Object} config animation configuration
      */
-    applyPlayIn(mode, config) {
-      this.$emit('apply', { mode, animationIn: config });
+    applyPlayIn(storeType, config) {
+      this.$emit('apply', { storeType, animationIn: config });
     },
 
     /**
@@ -78,8 +97,16 @@ export default {
      * @param {String} mode apply mode
      * @param {Object} config animation configuration
      */
-    applyPlayOut(mode, config) {
-      this.$emit('apply', { mode, animationOut: config });
+    applyPlayOut(storeType, config) {
+      this.$emit('apply', { storeType, animationOut: config });
+    },
+
+    onPlayInOrderChange(playInOrder) {
+      this.$emit('changeOrder', { playInOrder });
+    },
+
+    onPlayOutOrderChange(playOutOrder) {
+      this.$emit('changeOrder', { playOutOrder });
     }
   }
 };

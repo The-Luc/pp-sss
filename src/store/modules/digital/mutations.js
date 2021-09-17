@@ -63,6 +63,12 @@ export const mutations = {
 
     state.objects = objects;
   },
+  [DIGITAL._MUTATES.SET_PLAY_IN_IDS](state, { playInIds }) {
+    state.playInIds = playInIds || [];
+  },
+  [DIGITAL._MUTATES.SET_PLAY_OUT_IDS](state, { playOutIds }) {
+    state.playOutIds = playOutIds || [];
+  },
   [DIGITAL._MUTATES.SET_CURRENT_SHEET_ID](state, { id }) {
     state.currentSheetId = id;
   },
@@ -246,7 +252,7 @@ export const mutations = {
     frames[currentFrameId].frameTitle = value;
   },
   [DIGITAL._MUTATES.UPDATE_OBJECTS_TO_FRAME](
-    { frames, background, objects, objectIds },
+    { frames, background, objects, objectIds, playInIds, playOutIds },
     { frameId }
   ) {
     if (!frameId || !frames[frameId]) return;
@@ -258,6 +264,8 @@ export const mutations = {
     ];
 
     frames[frameId].objects = objectsData;
+    frames[frameId].playInIds = playInIds;
+    frames[frameId].playOutIds = playOutIds;
   },
   [DIGITAL._MUTATES.SET_BACKGROUNDS]: setBackgrounds,
   [DIGITAL._MUTATES.SET_BOOK_INFO]: setBookInfo,
@@ -266,5 +274,59 @@ export const mutations = {
   },
   [DIGITAL._MUTATES.UPDATE_TRIGGER_TRANSITION](state) {
     state.triggerChange.transition = !state.triggerChange.transition;
+  },
+  [DIGITAL._MUTATES.SET_STORE_ANIMATION_PROP](state, { storeAnimationProp }) {
+    if (isEmpty(storeAnimationProp)) {
+      return (state.storeAnimationProp = {});
+    }
+
+    const currentProp = cloneDeep(state.storeAnimationProp);
+
+    state.storeAnimationProp = merge(currentProp, storeAnimationProp);
+  },
+  [DIGITAL._MUTATES.SET_PLAY_IN_ORDER](state, order) {
+    const id = state.currentObjectId;
+    const newIndex = order - 1;
+
+    if (!id || newIndex < 0) return;
+
+    const playInIds = cloneDeep(state.playInIds);
+
+    const ids = playInIds.find(ids => ids.includes(id));
+
+    if (!isEmpty(ids)) {
+      const index = ids.findIndex(i => +i === +id);
+      ids.splice(index, 1);
+    }
+
+    if (!playInIds[newIndex]) {
+      playInIds[newIndex] = [];
+    }
+
+    playInIds[newIndex].push(id);
+
+    state.playInIds = [...playInIds].map(item => item || []);
+  },
+  [DIGITAL._MUTATES.SET_PLAY_OUT_ORDER](state, order) {
+    const id = state.currentObjectId;
+    const newIndex = order - 1;
+
+    if (!id || newIndex < 0) return;
+
+    const playOutIds = cloneDeep(state.playOutIds);
+    const ids = playOutIds.find(ids => ids.includes(id));
+
+    if (!isEmpty(ids)) {
+      const index = ids.findIndex(i => +i === +id);
+      ids.splice(index, 1);
+    }
+
+    if (!playOutIds[newIndex]) {
+      playOutIds[newIndex] = [];
+    }
+
+    playOutIds[newIndex].push(id);
+
+    state.playOutIds = [...playOutIds].map(item => item || []);
   }
 };

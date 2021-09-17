@@ -17,7 +17,6 @@ import { mapGetters, mapMutations, mapActions } from 'vuex';
 import { MUTATES } from '@/store/modules/app/const';
 import {
   ACTIONS as DIGITAL_ACTIONS,
-  MUTATES as DIGITAL_MUTATES,
   GETTERS as DIGITAL_GETTERS
 } from '@/store/modules/digital/const';
 import {
@@ -45,7 +44,9 @@ import {
   useSheet,
   useProperties,
   useObjectProperties,
-  useToolBar
+  useToolBar,
+  useBook,
+  useAnimation
 } from '@/hooks';
 import {
   isEmpty,
@@ -87,7 +88,11 @@ export default {
     const { currentUser } = useUser();
     const { currentSection } = useGetterDigitalSection();
     const { currentFrameId, updateFrameObjects } = useFrame();
-    const { saveEditScreen, getDataEditScreen } = useSaveData();
+    const {
+      saveEditScreen,
+      getDataEditScreen,
+      saveAnimationConfig
+    } = useSaveData();
     const { updateSavingStatus } = useSavingStatus();
     const { getBookDigitalInfo } = useBookDigitalInfo();
     const { setInfoBar } = useInfoBar();
@@ -101,6 +106,10 @@ export default {
       disabledToolbarItems
     } = useToolBar();
     const { frames } = useFrame();
+
+    const { setBookId } = useBook();
+
+    const { storeAnimationProp } = useAnimation();
 
     return {
       pageSelected,
@@ -126,7 +135,10 @@ export default {
       updateMediaSidebarOpen,
       disabledToolbarItems,
       currentSheet,
-      frames
+      frames,
+      setBookId,
+      storeAnimationProp,
+      saveAnimationConfig
     };
   },
   data() {
@@ -192,6 +204,8 @@ export default {
     next(async vm => {
       const bookId = to.params.bookId;
 
+      vm.setBookId({ bookId });
+
       const editionMainUrl = getEditionListPath(bookId, EDITION.DIGITAL);
 
       if (!isPositiveInteger(to.params?.sheetId)) {
@@ -248,7 +262,6 @@ export default {
       getDataPageEdit: DIGITAL_ACTIONS.GET_DATA_EDIT
     }),
     ...mapMutations({
-      setBookId: DIGITAL_MUTATES.SET_BOOK_ID,
       toggleModal: MUTATES.TOGGLE_MODAL,
       setPropertiesObjectType: MUTATES.SET_PROPERTIES_OBJECT_TYPE,
       setInfo: MUTATES.SET_GENERAL_INFO,
@@ -275,6 +288,7 @@ export default {
       this.updateFrameObjects({ frameId: this.currentFrameId });
       const data = this.getDataEditScreen(this.pageSelected.id);
       await this.saveEditScreen(data);
+      await this.saveAnimationConfig(this.storeAnimationProp);
 
       this.updateSavingStatus({ status: SAVE_STATUS.END });
 

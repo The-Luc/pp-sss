@@ -9,7 +9,12 @@ import {
   NONE_OPTION,
   PLAY_IN_OPTIONS,
   PLAY_OUT_OPTIONS,
-  TEXT_APPLY_OPTIONS
+  TEXT_APPLY_OPTIONS,
+  IMAGE_APPLY_OPTIONS,
+  SHAPE_APPLY_OPTIONS,
+  CLIP_ART_APPLY_OPTIONS,
+  BACKGROUND_APPLY_OPTIONS,
+  DEFAULT_ANIMATION
 } from '@/common/constants/animationProperty';
 import { useObjectProperties } from '@/hooks';
 
@@ -24,8 +29,15 @@ export default {
       type: Object,
       default: () => ({})
     },
+    order: {
+      type: Number,
+      default: 1
+    },
     isDisabledPreview: {
       type: Boolean
+    },
+    objectType: {
+      type: String
     }
   },
   data() {
@@ -38,7 +50,7 @@ export default {
       appendedIcon: ICON_LOCAL.APPENDED_ICON,
       title,
       styleOptions,
-      applyOptions: TEXT_APPLY_OPTIONS,
+      applyOptions: [],
       directionOptions: DIRECTION_OPTIONS,
       selectedStyle: NONE_OPTION,
       selectedApplyOption: null,
@@ -67,7 +79,7 @@ export default {
         }));
     },
     selectedOrder() {
-      const order = this.orderOptions.find(o => o.value === this.config?.order);
+      const order = this.orderOptions.find(o => o.value === this.order);
       return order || this.orderOptions[0];
     },
     isShowOptions() {
@@ -101,29 +113,51 @@ export default {
         return;
       }
 
-      this.emitEvent({ order: val.value });
+      this.$emit('changeOrder', val.value);
     },
     /**
      * Fire when user change scale input
      * @param {Object} val Order option
      */
     onChangeScale(val) {
-      if (val >= 0 && val <= 100) this.scaleValue = val;
-      else this.forceUpdate();
+      if (Number(val) < 0 || Number(val) > 100) {
+        this.forceUpdate();
+
+        return;
+      }
+
+      if (val !== this.scaleValue) {
+        this.showApplyOptions = true;
+      }
+
+      this.scaleValue = val;
     },
     /**
      * Fire when user change the duration input
      * @param {Object} val Order option
      */
     onChangeDuration(val) {
-      if (Number(val) >= 0 && Number(val) <= 5) this.durationValue = val;
-      else this.forceUpdate();
+      if (Number(val) < 0 || Number(val) > 5) {
+        this.forceUpdate();
+
+        return;
+      }
+
+      if (val !== this.durationValue) {
+        this.showApplyOptions = true;
+      }
+
+      this.durationValue = val;
     },
     /**
      * Fire when user change the direction
      * @param {Object} val Direction option
      */
     onChangeDirection(val) {
+      if (val.value !== this.selectedDirection.value) {
+        this.showApplyOptions = true;
+      }
+
       this.selectedDirection = val;
     },
     /**
@@ -163,11 +197,14 @@ export default {
      */
     onClickApply() {
       const animateData = {
-        duration: this.durationValue * 1000,
-        scale: this.scaleValue / 100,
+        style: this.selectedStyle.value,
+        duration: this.durationValue,
+        scale: this.scaleValue,
         direction: this.selectedDirection.value
       };
+
       this.$emit('apply', this.selectedApplyOption.value, animateData);
+
       this.selectedApplyOption = null;
       this.showApplyOptions = false;
       this.showApplyButton = false;
@@ -177,8 +214,51 @@ export default {
      */
     resetConfig() {
       this.selectedDirection = this.directionOptions[0];
-      this.durationValue = 0.8;
-      this.scaleValue = 50;
+      this.durationValue = DEFAULT_ANIMATION.DURATION;
+      this.scaleValue = DEFAULT_ANIMATION.SCALE;
+    },
+
+    /**
+     * Load saved config for animation
+     * @param {Object} config config for animation
+     */
+    setConfigData(config) {
+      this.selectedDirection =
+        this.directionOptions.find(opt => opt.value === config.direction) ||
+        this.directionOptions[0];
+      this.selectedStyle =
+        this.styleOptions.find(opt => opt.value === config.style) ||
+        NONE_OPTION;
+      this.durationValue = config.duration || DEFAULT_ANIMATION.DURATION;
+      this.scaleValue = config.scale || DEFAULT_ANIMATION.SCALE;
+      this.applyOptions = this.getApplyOptions();
+    },
+
+    getApplyOptions() {
+      if (this.objectType === OBJECT_TYPE.TEXT) {
+        return TEXT_APPLY_OPTIONS;
+      }
+      if (this.objectType === OBJECT_TYPE.IMAGE) {
+        return IMAGE_APPLY_OPTIONS;
+      }
+      if (this.objectType === OBJECT_TYPE.SHAPE) {
+        return SHAPE_APPLY_OPTIONS;
+      }
+      if (this.objectType === OBJECT_TYPE.CLIP_ART) {
+        return CLIP_ART_APPLY_OPTIONS;
+      }
+      return BACKGROUND_APPLY_OPTIONS;
+    }
+  },
+  created() {
+    this.setConfigData(this.config);
+  },
+  watch: {
+    config(val) {
+      this.setConfigData(val);
+    },
+    objectType() {
+      this.setConfigData();
     }
   }
 };
