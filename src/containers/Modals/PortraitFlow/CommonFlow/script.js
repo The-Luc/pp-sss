@@ -235,10 +235,14 @@ export default {
      * To create initial data for text settings
      */
     initDataTextSettings() {
+      const defaulfNameText = this.isDigital
+        ? { ...DEFAULT_NAME_TEXT, fontSize: 9 }
+        : DEFAULT_NAME_TEXT;
+
       return {
         ...this.flowSettings.textSettings,
         pageTitleFontSettings: DEFAULT_PAGE_TITLE,
-        nameTextFontSettings: DEFAULT_NAME_TEXT,
+        nameTextFontSettings: defaulfNameText,
         pageTitleMargins: DEFAULT_MARGIN_PAGE_TITLE
       };
     },
@@ -299,7 +303,9 @@ export default {
      */
     onLoadSetting(id) {
       const portraitSetting = this.savedSettings.find(item => item.id === id);
-      this.flowSettings = { ...this.flowSettings, ...portraitSetting };
+      const flowSettings = { ...this.flowSettings, ...portraitSetting };
+
+      this.onSettingChange(flowSettings);
     },
     /**
      * Cancel modal save setting
