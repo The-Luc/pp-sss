@@ -15,6 +15,8 @@
         :play-in-config="{}"
         :play-out-config="{}"
         :disabled="isDisabled"
+        :is-play-in-order-disabled="true"
+        :is-play-out-order-disabled="true"
         @change="onChangeAnimation"
         @apply="onApplyAnimation"
       ></animation>

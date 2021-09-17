@@ -7,7 +7,7 @@
     <div class="control-style">
       <div class="col-7">
         <pp-select
-          disabled
+          :disabled="disabled"
           :items="styleOptions"
           :selected-val="selectedStyle"
           @change="onChangeStyle"
@@ -55,7 +55,7 @@
         ></pp-select>
       </div>
 
-      <div class="control-item">
+      <div class="control-item" :class="{ disabled: isOrderDisabled }">
         <span class="properties-title">Order</span>
         <pp-combobox
           max-height="200"

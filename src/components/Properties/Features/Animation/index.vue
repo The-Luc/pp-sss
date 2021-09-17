@@ -4,31 +4,33 @@
       {{ title }}
     </span>
 
-    <Control
+    <control
       type="playIn"
-      disabled
+      :disabled="disabled"
       :config="playInConfig"
       :order="playInOrder"
-      :is-disabled-preview="isDisabledPreview"
       :object-type="objectType"
+      :is-disabled-preview="isDisabledPreview"
+      :is-order-disabled="isPlayInOrderDisabled"
       @preview="onPreview"
       @apply="applyPlayIn"
       @changeOrder="onPlayInOrderChange"
-    />
+    ></control>
 
     <div class="horizontal-line"></div>
 
-    <Control
+    <control
       type="playOut"
-      disabled
+      :disabled="disabled"
       :config="playOutConfig"
       :order="playOutOrder"
-      :is-disabled-preview="isDisabledPreview"
       :object-type="objectType"
+      :is-disabled-preview="isDisabledPreview"
+      :is-order-disabled="isPlayOutOrderDisabled"
       @preview="onPreview"
       @apply="applyPlayOut"
       @changeOrder="onPlayOutOrderChange"
-    />
+    ></control>
   </div>
 </template>
 

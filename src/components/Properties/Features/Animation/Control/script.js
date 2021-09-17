@@ -41,6 +41,10 @@ export default {
     },
     disabled: {
       type: Boolean
+    },
+    isOrderDisabled: {
+      type: Boolean,
+      default: false
     }
   },
   data() {

@@ -36,6 +36,14 @@ export default {
     disabled: {
       type: Boolean,
       default: false
+    },
+    isPlayInOrderDisabled: {
+      type: Boolean,
+      default: false
+    },
+    isPlayOutOrderDisabled: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
