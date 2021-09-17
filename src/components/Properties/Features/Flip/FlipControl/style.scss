@@ -1,0 +1,8 @@
+::v-deep .v-icon {
+  color: $color-stoodio-toolbartext !important; // override
+  font-size: 21px !important; // override
+
+  &.vertical {
+    transform: rotate(-90deg);
+  }
+}

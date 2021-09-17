@@ -38,6 +38,9 @@ export default {
     },
     objectType: {
       type: String
+    },
+    disabled: {
+      type: Boolean
     }
   },
   data() {

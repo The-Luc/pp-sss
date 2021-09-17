@@ -29,7 +29,7 @@ img {
 }
 
 .disabled,
-.v-input--is-disabled {
+[class*='disabled'] {
   opacity: 0.4 !important; // override
   pointer-events: none;
 }

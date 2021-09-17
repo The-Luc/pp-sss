@@ -1,13 +1,16 @@
 <template>
-  <div class="background-prop-content" :class="disabled && 'disabled'">
-    <Opacity :value="opacity" :disabled="disabled" @change="onChangeOpacity" />
+  <div class="background-prop-content">
+    <opacity :value="opacity" :disabled="disabled" @change="onChangeOpacity" />
 
     <div class="group-container">
-      <Flip :disabled="disabled" />
+      <flip :disabled="disabled" />
 
       <v-divider vertical class="item-vertical"></v-divider>
 
-      <Remove :disabled="disabled" @click="onClickRemove" />
+      <remove-button
+        :disabled="disabled"
+        @click="onClickRemove"
+      ></remove-button>
     </div>
   </div>
 </template>

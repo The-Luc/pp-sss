@@ -3,17 +3,18 @@
     <properties-container v-if="isSingle" title="Background Properties">
       <properties-content
         :opacity="opacityValue"
-        :disabled="isDisabled"
         :is-left="isLeft"
+        :disabled="isDisabled"
         @opacityChange="onChangeOpacity"
         @remove="onRemove"
       ></properties-content>
 
       <animation
-        v-if="true"
+        v-if="isDigital"
         title="Background Animation"
         :play-in-config="{}"
         :play-out-config="{}"
+        :disabled="isDisabled"
         @change="onChangeAnimation"
         @apply="onApplyAnimation"
       ></animation>
