@@ -56,9 +56,9 @@
       </div>
 
       <div class="control-item">
-        <span class="properties-title" :class="{ disabled: isOrderDisabled }"
-          >Order</span
-        >
+        <span class="properties-title" :class="{ disabled: isOrderDisabled }">
+          Order
+        </span>
         <pp-combobox
           max-height="200"
           :items="orderOptions"
