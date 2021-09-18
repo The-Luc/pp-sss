@@ -6,7 +6,9 @@
 
   &-button {
     width: 144px;
-    height: 34px !important;
+    height: 34px !important; // override
+    position: relative;
+    padding: 0 !important; // override
     color: $color-stoodio-blue;
     text-transform: capitalize;
     line-height: $md-size;
@@ -22,8 +24,13 @@
       display: none;
     }
 
-    img {
-      margin-right: 5px !important;
+    .v-icon {
+      margin-right: 2px;
+      font-size: 14px;
+    }
+
+    .text {
+      padding-top: 1px;
     }
   }
 }

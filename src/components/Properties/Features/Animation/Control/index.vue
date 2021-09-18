@@ -21,7 +21,7 @@
           :disabled="isDisabledPreview"
           @click="onClickPreview"
         >
-          Preview
+          <span>Preview</span>
           <v-icon right>mdi-play</v-icon>
         </v-btn>
       </div>
