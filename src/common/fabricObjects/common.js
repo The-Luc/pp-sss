@@ -785,7 +785,7 @@ const getShadowBaseOnConfig = function({
   shadowAngle,
   shadowColor
 }) {
-  if (!dropShadow) return {};
+  if (!dropShadow) return new fabric.Shadow();
 
   const clr = Color(shadowColor)
     .alpha(shadowOpacity)
