@@ -4,6 +4,7 @@
       :layout-settings="flowSettings.layoutSettings"
       :is-single-folder="isSingleFolder"
       :is-page-title-on="isPageTitleOn"
+      :is-digital="isDigital"
       @change="onLayoutChange"
     />
     <teacher-setting

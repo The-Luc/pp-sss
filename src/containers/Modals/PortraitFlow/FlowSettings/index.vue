@@ -23,6 +23,7 @@
       :flow-settings="flowSettings"
       :selected-folders="selectedFolders"
       :saved-settings="savedSettings"
+      :is-digital="isDigital"
       @settingChange="onSettingChange"
       @flowSettingChange="onFlowSettingChange"
       @pageSettingChange="onPageSettingChange"

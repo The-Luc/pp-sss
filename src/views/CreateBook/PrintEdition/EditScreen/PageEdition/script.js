@@ -174,7 +174,8 @@ export default {
       isCanvasChanged: false,
       autoSaveTimer: null,
       undoRedoCanvas: null,
-      printCanvas: null
+      printCanvas: null,
+      isScroll: { x: false, y: false }
     };
   },
   computed: {
@@ -610,6 +611,11 @@ export default {
         canvasSize.width = this.containerSize.width;
         canvasSize.height = canvasSize.width / printRatio;
       }
+
+      this.isScroll = {
+        x: canvasSize.width > this.containerSize.width,
+        y: canvasSize.height > this.containerSize.height
+      };
 
       const currentZoom =
         this.zoom === 0 ? canvasSize.width / sheetWidth : this.zoom;

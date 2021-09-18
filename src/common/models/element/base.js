@@ -5,7 +5,6 @@ import {
 } from '@/common/constants';
 import {
   ANIMATION_DIR,
-  CONTROL_TYPE,
   PLAY_IN_STYLES
 } from '@/common/constants/animationProperty';
 import { BaseEntity, BaseObject } from '../base';
@@ -71,7 +70,6 @@ export class BaseShadow extends BaseObject {
 }
 
 export class BaseAnimation extends BaseObject {
-  controlType = '';
   style = '';
   duration = 0.8;
   direction = '';
@@ -121,7 +119,6 @@ export class BaseMoveableElementObject extends BaseElementObject {
   border = new BaseBorder();
   shadow = new BaseShadow();
   animationIn = new BaseAnimation({
-    controlType: CONTROL_TYPE.PLAY_IN,
     style: PLAY_IN_STYLES.FADE_SLIDE_IN,
     direction: ANIMATION_DIR.LEFT_RIGHT
   });

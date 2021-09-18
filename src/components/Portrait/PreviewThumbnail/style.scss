@@ -1,11 +1,11 @@
 .preview-thumbnail {
   width: 242px;
-  height: 314px;
+  height: 313px;
   background-size: cover;
   background-position: center;
   border: 1px solid $color-gray17;
   overflow: hidden;
-  transition: all 1s;
+  transition: all 0.55s;
 
   &.landscape {
     width: 280px;

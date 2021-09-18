@@ -23,6 +23,10 @@
     font-size: $xs-size;
     font-family: $font-300;
 
+    &.disabled {
+      opacity: 1 !important; // override
+    }
+
     .text {
       line-height: 12px;
     }

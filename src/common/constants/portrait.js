@@ -83,17 +83,7 @@ export const PORTRAIT_FLOW_OPTION_MULTI = {
   }
 };
 
-export const DEFAUL_PORTRAIT = {
-  ROW_COUNT: 5,
-  COLUMN_COUNT: 5
-};
-
 export const DEFAULT_PORTRAIT_RATIO = 1.25; // height / width ratio
-
-export const PORTRAIT_COL_ROW_RANGE = {
-  MIN: 1,
-  MAX: 8
-};
 
 export const PORTRAIT_MARGIN_OPTIONS = [
   { name: '0.5"', value: 0.5 },

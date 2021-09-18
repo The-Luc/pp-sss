@@ -3,26 +3,45 @@ $rulerWidth: 23px;
 .page-wrapper {
   position: absolute;
   width: 100%;
-  height: 100%;
+  height: calc(100% - 7px);
   top: 0;
   left: 0;
-  overflow: auto;
-  background-color: #f4f4f4;
+  background-color: $color-white4;
+  overflow: hidden;
+
+  &.scroll-x {
+    overflow-x: auto;
+  }
+
+  &.scroll-y {
+    overflow-y: auto;
+  }
 
   .ruler-wrapper {
-    position: absolute;
     width: 100%;
     height: $rulerWidth;
+    background-color: $color-white;
+    border: 1px solid $color-gray40;
+    border-width: 0 0 1px 0;
+
     &::before {
       content: '';
       display: block;
       position: absolute;
       width: $rulerWidth;
       height: $rulerWidth;
-      background-color: #d0d2d3;
+      background-color: $color-gray11;
       top: 0;
       left: 0;
     }
+  }
+
+  .ruler-y-wrapper {
+    width: $rulerWidth;
+    height: 100%;
+    background-color: $color-white;
+    border: 1px solid $color-gray40;
+    border-width: 0 1px 0 0;
   }
 
   .ruler-x-placeholder,
@@ -36,8 +55,8 @@ $rulerWidth: 23px;
     height: $rulerWidth;
     left: $rulerWidth - 1;
     right: 0;
-    background-color: white;
-    border: 1px solid #b4b4b5;
+    background-color: $color-white;
+    border: 1px solid $color-gray40;
     border-top-width: 0;
     border-right-width: 0;
   }
@@ -48,7 +67,7 @@ $rulerWidth: 23px;
     left: 0;
     width: $rulerWidth;
     background-color: white;
-    border: 1px solid #b4b4b5;
+    border: 1px solid $color-gray40;
     border-bottom-width: 0;
     border-left-width: 0;
   }

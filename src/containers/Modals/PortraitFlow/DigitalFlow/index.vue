@@ -4,6 +4,7 @@
     :selected-folders="selectedFolders"
     :flow-settings="flowSettings"
     :init-flow-option="initFlowOption"
+    :initial-layout-setting="initialLayoutSetting"
     :start-number="startPage"
     :required-pages="requiredPages"
     :preview-portraits-range="previewPortraitsRange"

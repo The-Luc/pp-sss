@@ -1,17 +1,32 @@
 <template>
   <div class="background-properties-container">
-    <Properties v-if="isSingle" title="Background Properties">
-      <PropertiesContent
+    <properties-container v-if="isSingle" title="Background Properties">
+      <properties-content
         :opacity="opacityValue"
-        :disabled="isDisabled"
         :is-left="isLeft"
+        :disabled="isDisabled"
         @opacityChange="onChangeOpacity"
         @remove="onRemove"
-      />
-    </Properties>
+      ></properties-content>
 
-    <Properties v-else title="Background Properties">
-      <TabMenu
+      <animation
+        v-if="isDigital"
+        title="Background Animation"
+        :play-in-config="{}"
+        :play-out-config="{}"
+        :play-in-order="0"
+        :play-out-order="totalPlayOutOrder + 1"
+        :apply-options="applyOptions"
+        :disabled="isDisabled"
+        :is-play-in-order-disabled="true"
+        :is-play-out-order-disabled="true"
+        @change="onChangeAnimation"
+        @apply="onApplyAnimation"
+      ></animation>
+    </properties-container>
+
+    <properties-container v-else title="Background Properties">
+      <tab-menu
         class="background-tabs"
         :active-tab-name="activeTab"
         @change="onTabChange"
@@ -20,29 +35,29 @@
           Left Hand Page
         </v-tab>
         <v-tab-item value="background-left">
-          <PropertiesContent
+          <properties-content
             :opacity="opacityValue.left"
             :disabled="isDisabled.left"
             :is-left="isLeft.left"
             @opacityChange="onChangeOpacity"
             @remove="onRemove"
-          />
+          ></properties-content>
         </v-tab-item>
 
         <v-tab href="#background-right">
           Right Hand Page
         </v-tab>
         <v-tab-item value="background-right">
-          <PropertiesContent
+          <properties-content
             :opacity="opacityValue.right"
             :disabled="isDisabled.right"
             :is-left="isLeft.right"
             @opacityChange="onChangeOpacity"
             @remove="onRemove"
-          />
+          ></properties-content>
         </v-tab-item>
-      </TabMenu>
-    </Properties>
+      </tab-menu>
+    </properties-container>
   </div>
 </template>
 

@@ -113,11 +113,12 @@ export const useMutationDigitalSheet = () => {
 };
 
 export const useGetterDigitalSheet = () => {
-  const { triggerTransition } = useGetters({
-    triggerTransition: DIGITAL_GETTERS.TRIGGER_TRANSITION
+  const { triggerTransition, totalPlayOutOrder } = useGetters({
+    triggerTransition: DIGITAL_GETTERS.TRIGGER_TRANSITION,
+    totalPlayOutOrder: DIGITAL_GETTERS.TOTAL_ANIMATION_PLAY_OUT_ORDER
   });
 
-  return { triggerTransition };
+  return { triggerTransition, totalPlayOutOrder };
 };
 
 export const useActionDigitalSheet = () => {

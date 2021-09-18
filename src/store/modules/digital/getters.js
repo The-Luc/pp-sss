@@ -139,5 +139,8 @@ export const getters = {
       playOutIds.findIndex(ids => ids.includes(currentObjectId)) || 0;
 
     return index + 1;
+  },
+  [DIGITAL._GETTERS.TOTAL_ANIMATION_PLAY_OUT_ORDER]: ({ playOutIds }) => {
+    return playOutIds.length;
   }
 };

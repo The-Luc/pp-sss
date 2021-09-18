@@ -1,12 +1,12 @@
 <template>
   <div class="border-style-container">
     <label class="properties-title">Style:</label>
-    <Select
+    <pp-select
       :items="options"
       is-img-opts
       :selected-val="selectedBorderStyle"
       @change="onChange"
-    />
+    ></pp-select>
   </div>
 </template>
 

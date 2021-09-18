@@ -1,6 +1,6 @@
 .transition-properties-container {
   .transition-wrapper {
-    max-height: 53vh;
+    max-height: calc(100vh - 290px);
     overflow-y: auto;
   }
 }

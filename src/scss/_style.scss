@@ -29,7 +29,7 @@ img {
 }
 
 .disabled,
-.v-input--is-disabled {
+[class*='disabled'] {
   opacity: 0.4 !important; // override
   pointer-events: none;
 }
@@ -102,6 +102,7 @@ body,
 
     &.item-selected {
       padding: 0;
+      padding-top: 1px;
       margin-bottom: 0;
       overflow: hidden;
     }
@@ -134,16 +135,6 @@ body,
         text-overflow: ellipsis;
         white-space: nowrap;
         overflow: hidden;
-      }
-    }
-  }
-
-  .v-select__slot {
-    input {
-      margin-top: -2px;
-
-      &::placeholder {
-        @extend %selector-display-item;
       }
     }
   }
@@ -235,6 +226,16 @@ body,
         color: $color-stoodio-toolbartext;
         font-size: $xs-size + 1;
         font-family: $font-500;
+      }
+    }
+  }
+
+  .v-select__slot {
+    input {
+      margin-top: -2px;
+
+      &::placeholder {
+        @extend %selector-display-item;
       }
     }
   }

@@ -1,13 +1,18 @@
 <template>
-  <div class="page-wrapper">
+  <div
+    class="page-wrapper"
+    :class="{ 'scroll-x': isScrollX, 'scroll-y': isScrollY }"
+  >
     <div class="ruler-wrapper">
       <div class="ruler-x-placeholder" :style="{ width: rulerSize.width }">
         <slot name="ruler-x"></slot>
       </div>
     </div>
 
-    <div class="ruler-y-placeholder" :style="{ height: rulerSize.height }">
-      <slot name="ruler-y"></slot>
+    <div class="ruler-y-wrapper">
+      <div class="ruler-y-placeholder" :style="{ height: rulerSize.height }">
+        <slot name="ruler-y"></slot>
+      </div>
     </div>
 
     <div class="inner-ruler-wrapper">

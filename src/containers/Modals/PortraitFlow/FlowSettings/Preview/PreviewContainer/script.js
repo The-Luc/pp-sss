@@ -36,6 +36,20 @@ export default {
       type: String
     }
   },
+  data() {
+    return {
+      disabled: false
+    };
+  },
+  watch: {
+    pageNo(newValue, oldValue) {
+      if (newValue === oldValue) return;
+
+      this.disabled = true;
+
+      setTimeout(() => (this.disabled = false), 560);
+    }
+  },
   methods: {
     /**
      * Select last page

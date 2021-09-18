@@ -15,6 +15,9 @@ export default {
     selectedFolders: {
       type: Array,
       required: true
+    },
+    isDigital: {
+      type: Boolean
     }
   },
   computed: {

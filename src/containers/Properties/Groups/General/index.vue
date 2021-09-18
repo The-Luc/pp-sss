@@ -21,10 +21,14 @@
     />
 
     <animation
-      v-if="isDigital"
+      v-if="isDigital && isAnimationDisplayed"
       :title="animationTitle"
       :play-in-config="playInConfig"
       :play-out-config="playOutConfig"
+      :play-in-order="playInOrder"
+      :play-out-order="playOutOrder"
+      :apply-options="applyOptions"
+      :order-options="orderOptions"
       @change="onChangeAnimation"
       @apply="onApplyAnimation"
       @preview="onClickPreview"

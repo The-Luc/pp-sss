@@ -28,6 +28,9 @@ export default {
     savedSettings: {
       type: Array,
       default: () => []
+    },
+    isDigital: {
+      type: Boolean
     }
   },
   methods: {

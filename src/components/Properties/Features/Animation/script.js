@@ -6,7 +6,6 @@ import {
   PLAY_OUT_STYLES,
   CONTROL_TYPE
 } from '@/common/constants/animationProperty';
-import { useElementProperties } from '@/hooks';
 
 export default {
   components: {
@@ -32,22 +31,32 @@ export default {
     playOutOrder: {
       type: Number,
       default: 1
+    },
+    disabled: {
+      type: Boolean,
+      default: false
+    },
+    isPlayInOrderDisabled: {
+      type: Boolean,
+      default: false
+    },
+    isPlayOutOrderDisabled: {
+      type: Boolean,
+      default: false
+    },
+    applyOptions: {
+      type: Array,
+      default: () => []
+    },
+    orderOptions: {
+      type: Array,
+      default: () => [{ name: 1, value: 1 }]
     }
   },
   data() {
     return {
       isDisabledPreview: false
     };
-  },
-  setup() {
-    const { getProperty } = useElementProperties();
-
-    return { getProperty };
-  },
-  computed: {
-    objectType() {
-      return this.getProperty('type');
-    }
   },
   methods: {
     /**

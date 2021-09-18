@@ -1,0 +1,30 @@
+.animation-order {
+  display: flex;
+  position: absolute;
+  top: 0;
+  left: 16px;
+  z-index: 2;
+
+  .order {
+    width: 16px;
+    height: 16px;
+    padding: 3px 0;
+    text-align: center;
+    color: $color-gray5;
+    line-height: $xs-size;
+    font-size: $xs-size;
+    font-family: $font-500;
+    border-radius: 2px;
+    border: 1px solid $color-stoodio-toolbartext;
+    box-shadow: 0 0 3px $color-black6;
+
+    &.play-in {
+      background-color: $color-white;
+    }
+
+    &.play-out {
+      margin-left: -1px;
+      background-color: $color-gray36;
+    }
+  }
+}

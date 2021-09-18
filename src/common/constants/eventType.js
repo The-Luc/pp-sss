@@ -29,7 +29,8 @@ export const EVENT_TYPE = {
   VIDEO_STOP_KEEP_FORWARD: 'videoStopKeepForward',
   TRANSITION_PREVIEW: 'transitionPreview',
   APPLY_ANIMATION: 'applyAnimation',
-  CHANGE_ANIMATION_ORDER: 'changeAnimationOrder'
+  CHANGE_ANIMATION_ORDER: 'changeAnimationOrder',
+  BACKGROUND_SELECT: 'backgroundToggleSelection'
 };
 
 export const CANVAS_EVENT_TYPE = {

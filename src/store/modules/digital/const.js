@@ -37,6 +37,7 @@ class GetterClass extends BaseObject {
   STORE_ANIMATION_PROP = 'storeAnimationProp';
   PLAY_IN_ORDER = 'playInOrder';
   PLAY_OUT_ORDER = 'playOutOrder';
+  TOTAL_ANIMATION_PLAY_OUT_ORDER = 'getTotalAnimationPlayOutOrder';
 
   constructor(props) {
     super(props);

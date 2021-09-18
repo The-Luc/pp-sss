@@ -1,6 +1,11 @@
 <template>
   <div class="page-edition">
-    <PageWrapper ref="pageWrapper" :ruler-size="rulerSize">
+    <PageWrapper
+      ref="pageWrapper"
+      :ruler-size="rulerSize"
+      :is-scroll-x="isScroll.x"
+      :is-scroll-y="isScroll.y"
+    >
       <template #ruler-x>
         <XRuler
           :canvas-size="canvasSize"
