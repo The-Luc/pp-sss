@@ -166,7 +166,7 @@ export default {
         direction: this.selectedDirection.value
       };
 
-      this.$emit('preview', animateData);
+      this.$emit('preview', { config: animateData });
     },
 
     /**

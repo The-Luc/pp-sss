@@ -63,11 +63,11 @@ export default {
      * Emit animation event to root componenet
      * @param {Object} config configuration for animation
      */
-    onPreview(config) {
+    onPreview({ config }) {
       const inactiveTime = this.totalAnimationDuration(config);
       this.isDisabledPreview = true;
 
-      this.$emit('preview', config);
+      this.$emit('preview', { config });
 
       setTimeout(() => {
         this.isDisabledPreview = false;

@@ -7,7 +7,11 @@ import { useBackgroundProperties, useGetterDigitalSheet } from '@/hooks';
 
 import { isEmpty } from '@/common/utils';
 
-import { BACKGROUND_APPLY_OPTIONS, EVENT_TYPE } from '@/common/constants';
+import {
+  BACKGROUND_APPLY_OPTIONS,
+  EVENT_TYPE,
+  OBJECT_TYPE
+} from '@/common/constants';
 
 export default {
   components: {
@@ -202,6 +206,16 @@ export default {
      */
     onApplyAnimation(object) {
       this.$emit('onApply', object);
+    },
+    /**
+     * Emit apply option selected
+     * @param {Object} applyOption apply option selected
+     */
+    onPreviewAnimation({ config }) {
+      this.$root.$emit(EVENT_TYPE.PREVIEW_ANIMATION, {
+        config,
+        objectType: OBJECT_TYPE.BACKGROUND
+      });
     }
   }
 };

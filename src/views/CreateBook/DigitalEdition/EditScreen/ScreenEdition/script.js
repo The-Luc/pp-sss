@@ -69,7 +69,8 @@ import {
   handleMouseOut,
   handleObjectSelected,
   handleObjectDeselected,
-  calcAnimationOrder
+  calcAnimationOrder,
+  getBackgroundObject
 } from '@/common/fabricObjects';
 import { createImage } from '@/common/fabricObjects';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
@@ -1402,10 +1403,18 @@ export default {
 
     /**
      * Handle aniamtion of selected objects
-     * @param {Objec} config config for animation
+     * @param {Object} config config for animation
      */
-    previewAnimation(config) {
-      const object = this.digitalCanvas.getActiveObject();
+    previewAnimation({ config, objectType }) {
+      const isBackground = objectType === OBJECT_TYPE.BACKGROUND;
+
+      const background = getBackgroundObject(this.digitalCanvas);
+
+      if (isBackground && isEmpty(background)) return;
+
+      const object = isBackground
+        ? background
+        : this.digitalCanvas.getActiveObject();
 
       const style = config.style;
       const args = [object, config, this.digitalCanvas];
@@ -1735,11 +1744,9 @@ export default {
      * @param {Booean} isSelected  is background prop menu opened
      */
     backgroundToggleSelection({ isSelected }) {
-      if (window.digitalCanvas.getObjects().length === 0) return;
+      const background = getBackgroundObject(this.digitalCanvas);
 
-      const background = window.digitalCanvas.getObjects()[0];
-
-      if (background.objectType !== OBJECT_TYPE.BACKGROUND) return;
+      if (isEmpty(background)) return;
 
       this.isBgPropMenuOpen = isSelected;
     },

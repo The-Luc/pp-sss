@@ -122,3 +122,16 @@ export const createBackgroundFabricObject = (
     });
   });
 };
+
+/**
+ * Get background in canvas
+ *
+ * @returns {Object}  background or null if no background
+ */
+export const getBackgroundObject = canvas => {
+  if (canvas.getObjects().length === 0) return null;
+
+  const object = canvas.getObjects()[0];
+
+  return object.objectType === OBJECT_TYPE.BACKGROUND ? object : null;
+};
