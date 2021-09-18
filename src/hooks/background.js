@@ -3,6 +3,8 @@ import { useGetters, useMutations } from 'vuex-composition-helpers';
 import backgroundService from '@/api/background';
 import themeService from '@/api/themes';
 
+import { useAppCommon } from './common';
+
 import { isOk } from '@/common/utils';
 
 import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
@@ -11,7 +13,9 @@ import { MUTATES as APP_MUTATES } from '@/store/modules/app/const';
 
 import { BACKGROUND_TYPE, BACKGROUND_TYPE_NAME } from '@/common/constants';
 
-export const useBackgroundProperties = (isDigital = false) => {
+export const useBackgroundProperties = () => {
+  const { value: isDigital } = useAppCommon().isDigitalEdition;
+
   const GETTERS = isDigital ? DIGITAL_GETTERS : PRINT_GETTERS;
 
   const { triggerChange, backgroundsProps } = useGetters({
@@ -25,7 +29,9 @@ export const useBackgroundProperties = (isDigital = false) => {
   };
 };
 
-export const useBackgroundMenu = (isDigital = false) => {
+export const useBackgroundMenu = () => {
+  const { value: isDigital } = useAppCommon().isDigitalEdition;
+
   const GETTERS = isDigital ? DIGITAL_GETTERS : PRINT_GETTERS;
 
   const { currentThemeId, userSelectedBackground } = useGetters({
@@ -130,7 +136,9 @@ export const useDigitalBackgroundMenu = () => {
   };
 };
 
-export const useBackgroundGetter = (isDigital = false) => {
+export const useBackgroundGetter = () => {
+  const { value: isDigital } = useAppCommon().isDigitalEdition;
+
   const GETTERS = isDigital ? DIGITAL_GETTERS : PRINT_GETTERS;
 
   const { backgrounds } = useGetters({

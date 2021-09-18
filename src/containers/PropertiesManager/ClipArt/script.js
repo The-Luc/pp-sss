@@ -1,28 +1,26 @@
 import Properties from '@/components/Properties/BoxProperties';
-import TabPropertiesMenu from '@/containers/TabPropertiesMenu';
 import ArrangeContent from '@/components/Properties/Groups/Arrange';
-import GeneralContent from '@/components/Properties/Groups/General';
+import GeneralContent from '@/containers/Properties/Groups/General';
+import TabPropertiesMenu from '@/containers/TabPropertiesMenu';
+
+import { useElementProperties, useAppCommon } from '@/hooks';
+import { computedObjectSize } from '@/common/utils';
 
 import {
   DEFAULT_CLIP_ART,
   DEFAULT_PROP,
-  OBJECT_TYPE
+  OBJECT_TYPE,
+  EVENT_TYPE
 } from '@/common/constants';
-import { useElementProperties, useAppCommon, useAnimation } from '@/hooks';
-import { computedObjectSize } from '@/common/utils';
-import { EVENT_TYPE } from '@/common/constants/eventType';
 
 export default {
   setup() {
     const { getProperty } = useElementProperties();
     const { isDigitalEdition } = useAppCommon();
-    const { playInOrder, playOutOrder } = useAnimation();
 
     return {
       getProperty,
-      isDigitalEdition,
-      playInOrder,
-      playOutOrder
+      isDigitalEdition
     };
   },
   components: {
@@ -92,12 +90,6 @@ export default {
     },
     isAllowFillColor() {
       return !this.getProperty('isColorful');
-    },
-    playInConfig() {
-      return this.getProperty('animationIn') || {};
-    },
-    playOutConfig() {
-      return this.getProperty('animationOut') || {};
     }
   },
   methods: {

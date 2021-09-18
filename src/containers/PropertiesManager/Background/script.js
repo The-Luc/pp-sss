@@ -3,9 +3,11 @@ import TabMenu from '@/components/TabMenu';
 import Animation from '@/components/Properties/Features/Animation';
 import PropertiesContent from './PropertiesContent';
 
-import { useBackgroundProperties } from '@/hooks';
+import { useBackgroundProperties, useGetterDigitalSheet } from '@/hooks';
+
 import { isEmpty } from '@/common/utils';
-import { EVENT_TYPE } from '@/common/constants';
+
+import { BACKGROUND_APPLY_OPTIONS, EVENT_TYPE } from '@/common/constants';
 
 export default {
   components: {
@@ -20,19 +22,20 @@ export default {
       default: false
     }
   },
-  setup({ isDigital }) {
-    const { backgroundsProps, triggerChange } = useBackgroundProperties(
-      isDigital
-    );
+  setup() {
+    const { backgroundsProps, triggerChange } = useBackgroundProperties();
+    const { totalPlayOutOrder } = useGetterDigitalSheet();
 
     return {
       backgroundsProps,
-      triggerChange
+      triggerChange,
+      totalPlayOutOrder
     };
   },
   data() {
     return {
-      activeTab: ''
+      activeTab: '',
+      applyOptions: BACKGROUND_APPLY_OPTIONS
     };
   },
   computed: {
