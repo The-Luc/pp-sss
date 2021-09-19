@@ -253,7 +253,7 @@ export default {
       autoSaveTimer: null,
       undoRedoCanvas: null,
       isFrameLoaded: false,
-      isBgPropMenuOpen: false,
+      isBackgroundPropMenuOpen: false,
       isScroll: { x: false, y: false }
     };
   },
@@ -316,6 +316,8 @@ export default {
       if (isSwitchFrame) {
         this.saveData(this.pageSelected.id, oldVal);
       }
+
+      this.isBackgroundPropMenuOpen = false;
 
       this.setSelectedObjectId({ id: '' });
       this.setPropertiesObjectType({ type: '' });
@@ -728,7 +730,7 @@ export default {
      * Event fire when selection of fabric canvas has been created
      */
     onSelectionCreated() {
-      console.log('selection:created');
+      // TODO: adding code
     },
 
     /**
@@ -828,7 +830,7 @@ export default {
      * Event fire when fabric object has been modified
      */
     onObjectModified() {
-      console.log('object:modified');
+      // TODO: adding code
     },
 
     /**
@@ -1748,7 +1750,7 @@ export default {
 
       if (isEmpty(background)) return;
 
-      this.isBgPropMenuOpen = isSelected;
+      this.isBackgroundPropMenuOpen = isSelected;
     },
     /**
      * Reset configs properties when close object
@@ -2499,7 +2501,9 @@ export default {
 
       const isBackground = objectType === OBJECT_TYPE.BACKGROUND;
 
-      if (!isBackground && storeType === APPLY_MODE.SELF) {
+      if (isBackground) {
+        return this.setBackgroundProp({ prop });
+      } else if (!isBackground && storeType === APPLY_MODE.SELF) {
         return this.setObjectProp({ prop });
       }
 
@@ -2526,8 +2530,6 @@ export default {
       };
 
       this.setStoreAnimationProp({ storeAnimationProp });
-
-      if (isBackground) return this.setBackgroundProp({ prop });
 
       const objects = this.currentFrame.objects;
       const props = objects
