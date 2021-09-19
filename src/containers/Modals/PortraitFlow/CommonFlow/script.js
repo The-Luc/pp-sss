@@ -106,7 +106,7 @@ export default {
 
     this.onSettingChange(flowSettings);
 
-    this.savedSettings = await this.getSavedSettings();
+    this.savedSettings = await this.getSavedSettings(this.isDigital);
   },
   computed: {
     title() {
@@ -184,7 +184,10 @@ export default {
         return;
       }
 
-      await this.saveSettings({ ...this.flowSettings, ...name });
+      await this.saveSettings(
+        { ...this.flowSettings, ...name },
+        this.isDigital
+      );
       this.onCancelSaveSettings();
 
       this.isOpenModalSuccess = true;
@@ -192,7 +195,7 @@ export default {
         this.isOpenModalSuccess = false;
       }, 2000);
 
-      this.savedSettings = await this.getSavedSettings();
+      this.savedSettings = await this.getSavedSettings(this.isDigital);
     },
     /**
      * Handle flow setting change

@@ -14,5 +14,7 @@ export const STORAGE_KEY = {
   digitalLayout: 'digitalLayout',
   digitalLayoutType: 'digitalLayoutType',
   printSavedlayout: 'printSavedlayout',
-  printFavoritesLayout: 'printFavoritesLayout'
+  printFavoritesLayout: 'printFavoritesLayout',
+  printSavedPortraitSettings: 'printSavedPortraitSettings',
+  digitalSavedPortraitSettings: 'digitalSavedPortraitSettings'
 };
