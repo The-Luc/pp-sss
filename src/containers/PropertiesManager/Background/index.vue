@@ -1,34 +1,38 @@
 <template>
   <div class="background-properties-container">
     <properties-container v-if="isSingle" title="Background Properties">
-      <properties-content
-        :opacity="opacityValue"
-        :is-left="isLeft"
-        :disabled="isDisabled"
-        @opacityChange="onChangeOpacity"
-        @remove="onRemove"
-      ></properties-content>
+      <div
+        class="background-properties-wrapper"
+        :class="{ digital: isDigital }"
+      >
+        <properties-content
+          :opacity="opacityValue"
+          :is-left="isLeft"
+          :disabled="isDisabled"
+          @opacityChange="onChangeOpacity"
+          @remove="onRemove"
+        ></properties-content>
 
-      <animation
-        v-if="isDigital"
-        title="Background Animation"
-        :play-in-config="{}"
-        :play-out-config="{}"
-        :play-in-order="0"
-        :play-out-order="totalPlayOutOrder + 1"
-        :apply-options="applyOptions"
-        :disabled="isDisabled"
-        :is-play-in-order-disabled="true"
-        :is-play-out-order-disabled="true"
-        @preview="onPreviewAnimation"
-        @change="onChangeAnimation"
-        @apply="onApplyAnimation"
-      ></animation>
+        <animation
+          v-if="isDigital"
+          title="Background Animation"
+          :play-in-config="playInConfig"
+          :play-out-config="playOutConfig"
+          :play-in-order="0"
+          :play-out-order="totalPlayOutOrder + 1"
+          :apply-options="applyOptions"
+          :disabled="isDisabled"
+          :is-play-in-order-disabled="true"
+          :is-play-out-order-disabled="true"
+          @preview="onPreviewAnimation"
+          @apply="onApplyAnimation"
+        ></animation>
+      </div>
     </properties-container>
 
     <properties-container v-else title="Background Properties">
       <tab-menu
-        class="background-tabs"
+        class="background-properties-wrapper"
         :active-tab-name="activeTab"
         @change="onTabChange"
       >

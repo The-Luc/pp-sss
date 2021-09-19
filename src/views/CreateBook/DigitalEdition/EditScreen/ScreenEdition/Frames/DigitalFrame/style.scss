@@ -2,23 +2,21 @@
   margin: 0 18px;
   position: relative;
 
-  &:nth-child(n + 2) {
-    .frame-item::before {
-      content: '';
-      display: block;
-      width: 36px;
-      height: calc(50% - 0.5px);
-      position: absolute;
-      top: 0;
-      left: -36px;
-      border-bottom: 1px solid $color-gray6;
-    }
+  &:nth-child(n + 2)::before {
+    content: '';
+    display: block;
+    width: 36px;
+    height: calc(50% - 6.5px);
+    position: absolute;
+    top: 0;
+    left: -36px;
+    border-bottom: 1px solid $color-gray6;
   }
 
   &.empty {
     margin-right: 0 !important; // override
 
-    .frame-item::before {
+    &::before {
       border-bottom: 1px dashed $color-gray6;
     }
 

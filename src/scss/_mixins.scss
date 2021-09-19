@@ -1,0 +1,11 @@
+@mixin prop-menu-scrollable($has-tab: false) {
+  max-height: calc(100vh - #{getPropMenuHeight($has-tab)} - 6px);
+  padding-right: 2px;
+  overflow-y: auto;
+
+  &.digital {
+    max-height: calc(
+      100vh - #{getPropMenuHeight($has-tab, $frame-container-height)} + 2px
+    );
+  }
+}

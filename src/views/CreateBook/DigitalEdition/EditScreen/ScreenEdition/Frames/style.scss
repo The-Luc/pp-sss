@@ -1,6 +1,6 @@
 .frames-container {
-  height: 125px;
-  min-height: 125px;
+  height: $frame-container-height;
+  min-height: $frame-container-height;
   border-top: 1px solid $color-gray6;
 
   .frame-row {

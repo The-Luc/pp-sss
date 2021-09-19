@@ -70,12 +70,18 @@ export default {
     const objectType = this.getProperty('type');
 
     return {
-      playInConfig: this.getProperty('animationIn') || {},
-      playOutConfig: this.getProperty('animationOut') || {},
       animationTitle: this.getAnimationTitle(objectType),
       applyOptions: this.getApplyOptions(objectType),
       orderOptions: getOrdeOptions(this.listObjects)
     };
+  },
+  computed: {
+    playInConfig() {
+      return this.getProperty('animationIn') || {};
+    },
+    playOutConfig() {
+      return this.getProperty('animationOut') || {};
+    }
   },
   methods: {
     /**
@@ -112,13 +118,6 @@ export default {
      */
     onChangeBorder(object) {
       this.$emit('changeBorder', object);
-    },
-    /**
-     * Emit animation option selected
-     * @param {Object} animationConfig Animation option selected
-     */
-    onChangeAnimation(object) {
-      this.$emit('change', object);
     },
     /**
      * Emit apply option selected

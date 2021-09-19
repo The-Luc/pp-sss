@@ -523,7 +523,7 @@ export default {
           handler: this.addBackground
         },
         {
-          name: EVENT_TYPE.DIGITAL_BACKGROUND_PROP_CHANGE,
+          name: EVENT_TYPE.BACKGROUND_PROP_CHANGE,
           handler: this.changeBackgroundProperties
         },
         {
@@ -2489,9 +2489,17 @@ export default {
      * @param {Object} animationOut config for play out animation
      */
     handleApplyAnimation({ objectType, storeType, animationIn, animationOut }) {
-      const prop = { animationIn, animationOut };
+      const animationType = isEmpty(animationIn)
+        ? 'animationOut'
+        : 'animationIn';
 
-      if (storeType === APPLY_MODE.SELF) {
+      const animationConfig = isEmpty(animationIn) ? animationOut : animationIn;
+
+      const prop = { [animationType]: animationConfig };
+
+      const isBackground = objectType === OBJECT_TYPE.BACKGROUND;
+
+      if (!isBackground && storeType === APPLY_MODE.SELF) {
         return this.setObjectProp({ prop });
       }
 
@@ -2507,29 +2515,19 @@ export default {
       const storeTypeId =
         storeType === APPLY_MODE.SECTION ? this.pageSelected.id : this.book.id;
 
-      const storeAnimationProp = {};
-
-      if (!isEmpty(animationIn)) {
-        storeAnimationProp.animationIn = {
+      const storeAnimationProp = {
+        [animationType]: {
           [objectType]: {
             storeType,
             storeTypeId,
-            setting: animationIn
+            setting: animationConfig
           }
-        };
-      }
-
-      if (!isEmpty(animationOut)) {
-        storeAnimationProp.animationOut = {
-          [objectType]: {
-            storeType,
-            storeTypeId,
-            setting: animationOut
-          }
-        };
-      }
+        }
+      };
 
       this.setStoreAnimationProp({ storeAnimationProp });
+
+      if (isBackground) return this.setBackgroundProp({ prop });
 
       const objects = this.currentFrame.objects;
       const props = objects

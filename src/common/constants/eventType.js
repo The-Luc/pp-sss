@@ -11,7 +11,7 @@ export const EVENT_TYPE = {
   CHANGE_OBJECT_IDS_ORDER: 'changeObjectIdsOrder',
   PREVIEW_ANIMATION: 'previewAnimation',
   DIGITAL_BACKGROUND_ADD: 'digitalAddBackground',
-  DIGITAL_BACKGROUND_PROP_CHANGE: 'digitalChangeBackgroundProperties',
+  BACKGROUND_PROP_CHANGE: 'changeBackgroundProperties',
   DIGITAL_BACKGROUND_REMOVE: 'digitalDeleteBackground',
   SAVE_STYLE: 'saveStyle',
   COPY_OBJ: 'copyObj',
