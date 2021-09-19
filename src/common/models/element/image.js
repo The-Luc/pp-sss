@@ -1,4 +1,8 @@
-import { DEFAULT_IMAGE, OBJECT_TYPE } from '@/common/constants';
+import {
+  DEFAULT_IMAGE,
+  OBJECT_TYPE,
+  PORTRAIT_IMAGE_MASK
+} from '@/common/constants';
 import { BaseObject } from '../base';
 import { BaseMoveableElementObject } from './base';
 
@@ -37,6 +41,7 @@ export class ImageElementObject extends BaseMoveableElementObject {
   isConstrain = true;
   zoomLevel = 0;
   showControl = false;
+  mask = PORTRAIT_IMAGE_MASK.NONE;
 
   /**
    * @param {ImageElementObject} props

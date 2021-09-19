@@ -134,7 +134,7 @@ export default {
      * Emit accept event to parent
      */
     onApply() {
-      this.$emit('accept', this.flowSettings);
+      this.$emit('accept', this.flowSettings, this.requiredPages);
     },
     /**
      * Set new start page

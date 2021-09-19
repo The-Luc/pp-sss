@@ -8,6 +8,7 @@ import { fabric } from 'fabric';
 import {
   imageBorderModifier,
   useDigitalOverrides,
+  useDoubleStroke,
   useObjectControlsOverride
 } from '@/plugins/fabric';
 import {
@@ -70,6 +71,7 @@ import {
   handleObjectSelected,
   handleObjectDeselected,
   calcAnimationOrder,
+  createPortraitImage,
   getBackgroundObject
 } from '@/common/fabricObjects';
 import { createImage } from '@/common/fabricObjects';
@@ -1300,6 +1302,9 @@ export default {
         case OBJECT_TYPE.VIDEO:
           this.changeVideoProperties(prop);
           break;
+        case OBJECT_TYPE.PORTRAIT_IMAGE:
+          this.changeElementProperties(prop, objectType);
+          break;
         default:
           return;
       }
@@ -1952,6 +1957,10 @@ export default {
         return this.createMediaFromPpData(newData);
       }
 
+      if (newData.type === OBJECT_TYPE.PORTRAIT_IMAGE) {
+        return this.createPortraitImageFromPpData(newData);
+      }
+
       if (
         newData.type === OBJECT_TYPE.CLIP_ART ||
         newData.type === OBJECT_TYPE.SHAPE
@@ -2046,6 +2055,34 @@ export default {
       return media;
     },
     /**
+     * create fabric object
+     *
+     * @param {Object} properties PpData of the of a background object {id, size, coord,...}
+     * @returns {Object} a fabric objec
+     */
+    async createPortraitImageFromPpData(properties) {
+      const eventListeners = {
+        scaling: this.handleScaling,
+        scaled: this.handleScaled,
+        rotated: this.handleRotated,
+        moved: this.handleMoved
+      };
+
+      const image = await createPortraitImage(properties);
+
+      const { border, shadow } = properties;
+
+      useDoubleStroke(image);
+
+      addEventListeners(image, eventListeners);
+
+      applyShadowToObject(image, shadow);
+
+      applyBorderToImageObject(image, border);
+
+      return image;
+    },
+    /**
      * Delete objects on canvas
      */
     deleteObject() {
@@ -2083,6 +2120,10 @@ export default {
           objectData.type === OBJECT_TYPE.VIDEO
         ) {
           return this.createMediaFromPpData(objectData);
+        }
+
+        if (objectData.type === OBJECT_TYPE.PORTRAIT_IMAGE) {
+          return this.createPortraitImageFromPpData(objectData);
         }
 
         if (objectData.type === OBJECT_TYPE.BACKGROUND) {
@@ -2537,6 +2578,18 @@ export default {
         .map(obj => ({ id: obj.id, prop }));
 
       this.setPropOfMultipleObjects({ data: props });
+
+      if ([APPLY_MODE.SECTION, APPLY_MODE.BOOK].includes(storeType)) {
+        this.frames.forEach(({ frame: { objects, id } }) => {
+          objects.forEach(obj => {
+            if (obj.type === objectType) {
+              obj.animationIn = merge(obj.animationIn, prop.animationIn);
+              obj.animationOut = merge(obj.animationOut, prop.animationOut);
+            }
+          });
+          this.updateFrameObjects({ frameId: id });
+        });
+      }
     },
 
     /**

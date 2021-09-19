@@ -3,6 +3,8 @@ import { getPagePrintSize, pxToIn } from './canvas';
 import { getUniqueId } from './util';
 import {
   CLASS_ROLE,
+  DIGITAL_PAGE_SIZE,
+  OBJECT_TYPE,
   PORTRAIT_ASSISTANT_PLACEMENT,
   PORTRAIT_IMAGE_MASK,
   PORTRAIT_SIZE,
@@ -312,13 +314,15 @@ export const getSelectedDataOfPages = (pages, startOnPageNumber) => {
  * @param assets assets will be applied
  * @param isRight flag for right page of sheet
  * @param isFirstPage flag for first page will be applied
+ * @param isDigital flag for digital edition
  * @return array image objects
  */
 export const createPortraitObjects = (
   settings,
   assets,
   isRight,
-  isFirstPage
+  isFirstPage,
+  isDigital
 ) => {
   const { colCount, rowCount, margins } = settings.layoutSettings;
 
@@ -343,13 +347,17 @@ export const createPortraitObjects = (
 
   const { border, shadow, mask } = settings.imageSettings;
 
-  const {
-    safeMargin,
-    pageWidth,
-    pageHeight,
-    bleedLeft,
-    bleedTop
-  } = getPagePrintSize().inches;
+  const digitalPageSize = {
+    safeMargin: 0,
+    pageWidth: DIGITAL_PAGE_SIZE.PDF_WIDTH,
+    pageHeight: DIGITAL_PAGE_SIZE.PDF_HEIGHT,
+    bleedLeft: 0,
+    bleedTop: 0
+  };
+
+  const { safeMargin, pageWidth, pageHeight, bleedLeft, bleedTop } = isDigital
+    ? digitalPageSize
+    : getPagePrintSize().inches;
 
   const titleMeasureWidth =
     pxToIn(
@@ -391,6 +399,15 @@ export const createPortraitObjects = (
     PORTRAIT_IMAGE_MASK.CIRCLE,
     PORTRAIT_IMAGE_MASK.SQUARE
   ].includes(mask);
+
+  const objectType = [
+    PORTRAIT_IMAGE_MASK.ROUNDED,
+    PORTRAIT_IMAGE_MASK.CIRCLE,
+    PORTRAIT_IMAGE_MASK.OVAL
+  ].includes(mask)
+    ? OBJECT_TYPE.PORTRAIT_IMAGE
+    : OBJECT_TYPE.IMAGE;
+
   const imageRatio = isSquareImage ? 1 : 1.25;
 
   const isFirstLast = nameDisplay.value === 0;
@@ -469,11 +486,12 @@ export const createPortraitObjects = (
             width: imageWidth - borderOffset,
             height: imageHeight - borderOffset
           },
+          mask,
           border,
           shadow,
           hasImage: true,
           fromPortrait: true,
-          selectable: false
+          type: objectType
         });
 
         const textX = isRight
@@ -495,8 +513,7 @@ export const createPortraitObjects = (
                 : Math.max(textWidth, nameWidth + bleedLeft),
             height: namePosition.value === 0 ? rowGap : textHeight
           },
-          ...nameTextFontSettings,
-          selectable: false
+          ...nameTextFontSettings
         });
 
         objs.push(img, text);
@@ -520,8 +537,7 @@ export const createPortraitObjects = (
           pageTitleMargins.right,
         height: titleHeight
       },
-      ...pageTitleFontSettings,
-      selectable: false
+      ...pageTitleFontSettings
     });
 
     objs.push(title);
@@ -534,9 +550,10 @@ export const createPortraitObjects = (
  * Create page objects for render portraits
  * @param {*} settings flow settings for portraits
  * @param {*} requiredPages pages are required to render portraits
+ * @param isDigital flag for digital edition
  * @returns page objects will be stored
  */
-export const getPageObjects = (settings, requiredPages) => {
+export const getPageObjects = (settings, requiredPages, isDigital) => {
   const { teacherSettings, folders, layoutSettings } = settings;
   const {
     teacherPortraitSize,
@@ -594,11 +611,14 @@ export const getPageObjects = (settings, requiredPages) => {
 
     assets.splice(colCount, 0, ...tmpAssets);
 
+    const isRightPage = !isDigital && page % 2;
+
     pageObjects[page] = createPortraitObjects(
       settings,
       assets,
-      page % 2,
-      index === 0
+      isRightPage,
+      index === 0,
+      isDigital
     );
   });
 

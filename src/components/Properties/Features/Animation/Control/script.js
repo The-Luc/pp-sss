@@ -208,6 +208,8 @@ export default {
       this.selectedDirection = this.directionOptions[0];
       this.durationValue = DEFAULT_ANIMATION.DURATION;
       this.scaleValue = DEFAULT_ANIMATION.SCALE;
+
+      this.onChangeOrder(this.orderOptions[0]);
     },
 
     /**

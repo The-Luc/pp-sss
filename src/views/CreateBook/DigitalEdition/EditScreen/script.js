@@ -46,13 +46,17 @@ import {
   useObjectProperties,
   useToolBar,
   useBook,
-  useAnimation
+  useAnimation,
+  useObjects
 } from '@/hooks';
 import {
   isEmpty,
   isPositiveInteger,
   getEditionListPath,
-  mergeArrayNonEmpty
+  mergeArrayNonEmpty,
+  getPageObjects,
+  resetObjects,
+  getUniqueId
 } from '@/common/utils';
 import { COPY_OBJECT_KEY } from '@/common/constants/config';
 
@@ -66,6 +70,7 @@ import {
   setImageSrc,
   setVideoSrc
 } from '@/common/fabricObjects';
+import { cloneDeep } from 'lodash';
 
 export default {
   components: {
@@ -87,7 +92,12 @@ export default {
     const { setCurrentSheetId } = useMutationDigitalSheet();
     const { currentUser } = useUser();
     const { currentSection } = useGetterDigitalSection();
-    const { currentFrameId, updateFrameObjects } = useFrame();
+    const {
+      currentFrameId,
+      updateFrameObjects,
+      setFrames,
+      setCurrentFrameId
+    } = useFrame();
     const {
       saveEditScreen,
       getDataEditScreen,
@@ -110,6 +120,8 @@ export default {
     const { setBookId } = useBook();
 
     const { storeAnimationProp } = useAnimation();
+
+    const { addObjecs, deleteObjects } = useObjects();
 
     return {
       pageSelected,
@@ -138,7 +150,11 @@ export default {
       frames,
       setBookId,
       storeAnimationProp,
-      saveAnimationConfig
+      saveAnimationConfig,
+      addObjecs,
+      deleteObjects,
+      setFrames,
+      setCurrentFrameId
     };
   },
   data() {
@@ -600,11 +616,64 @@ export default {
 
       this.modal[modal].isOpen = isToggle ? !this.modal[modal].isOpen : isOpen;
     },
+
     /**
      * Apply portrait to page
+     * @param {Object} settings config for portrait
+     * @param {Object} requiredPages pages to apply portraits
      */
-    onApplyPortrait() {
-      this.onClosePortrait();
+    async onApplyPortrait(settings, requiredPages) {
+      const pages = getPageObjects(settings, requiredPages, true);
+
+      const canvas = this.$refs.canvasEditor.digitalCanvas;
+
+      const ids = Object.keys(this.listObjects);
+
+      const frames = cloneDeep(this.frames);
+      const currentId = this.currentFrameId;
+
+      this.setFrames({ framesList: [] });
+
+      Object.values(pages).forEach((objects, index) => {
+        if (!frames[index]) {
+          const blankFrame = {
+            id: getUniqueId(),
+            frame: {
+              previewImageUrl: '',
+              id: 0,
+              fromLayout: false,
+              frameTitle: '',
+              objects,
+              isVisited: true
+            }
+          };
+
+          return frames.push(blankFrame);
+        }
+
+        frames[index].frame.objects = objects;
+
+        if (frames[index].id === currentId) {
+          resetObjects(canvas);
+
+          this.deleteObjects({ ids });
+
+          this.addObjecs({
+            objects: objects.map(obj => ({ id: obj.id, newObject: obj }))
+          });
+
+          this.$refs.canvasEditor.drawObjectsOnCanvas(objects);
+
+          canvas.renderAll();
+        }
+      });
+
+      this.setFrames({ framesList: frames });
+
+      this.setCurrentFrameId({ id: currentId });
+
+      this.onToggleModal({ modal: '' });
+      this.setToolNameSelected('');
     }
   }
 };

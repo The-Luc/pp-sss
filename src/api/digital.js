@@ -419,7 +419,7 @@ async function savePlayInConfig(objectType, config) {
 
   objects.forEach(object => {
     if (object.type === objectType) {
-      object.animationIn = setting;
+      object.animationIn = { ...setting };
     }
   });
 
@@ -440,7 +440,7 @@ async function savePlayOutConfig(objectType, config) {
 
   objects.forEach(object => {
     if (object.type === objectType) {
-      object.animationOut = setting;
+      object.animationOut = { ...setting };
     }
   });
 

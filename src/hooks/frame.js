@@ -31,11 +31,13 @@ export const useFrame = () => {
   const {
     setSupplementalLayoutId,
     updateFrameObjects,
-    setCurrentFrameId
+    setCurrentFrameId,
+    setFrames
   } = useMutations({
     setSupplementalLayoutId: DIGITAL_MUTATES.SET_SUPPLEMENTAL_LAYOUT_ID,
     setCurrentFrameId: DIGITAL_MUTATES.SET_CURRENT_FRAME_ID,
-    updateFrameObjects: DIGITAL_MUTATES.UPDATE_OBJECTS_TO_FRAME
+    updateFrameObjects: DIGITAL_MUTATES.UPDATE_OBJECTS_TO_FRAME,
+    setFrames: DIGITAL_MUTATES.SET_FRAMES
   });
 
   return {
@@ -45,7 +47,8 @@ export const useFrame = () => {
     setCurrentFrameId,
     setSupplementalLayoutId,
     updateFrameObjects,
-    firstFrameThumbnail
+    firstFrameThumbnail,
+    setFrames
   };
 };
 
