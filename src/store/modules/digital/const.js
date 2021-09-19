@@ -32,8 +32,6 @@ class GetterClass extends BaseObject {
   GET_FIRST_FRAME_THUMBNAIL = 'getFirstFrameThumbnail';
   GET_SHEET_MEDIA = 'getSheetMedia';
   TRIGGER_TRANSITION = 'getTriggerTransition';
-  CURRENT_FRAME_INDEX = 'getCurrentFrameIndex';
-  TOTAL_FRAME = 'getTotalFrame';
   STORE_ANIMATION_PROP = 'storeAnimationProp';
   PLAY_IN_ORDER = 'playInOrder';
   PLAY_OUT_ORDER = 'playOutOrder';

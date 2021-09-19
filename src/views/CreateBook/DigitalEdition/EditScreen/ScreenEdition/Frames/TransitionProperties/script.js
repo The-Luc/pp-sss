@@ -4,7 +4,6 @@ import Item from '../../../PropertiesMenu//Transition/Item';
 
 import {
   useActionDigitalSheet,
-  useFrame,
   useGetterDigitalSheet,
   useSheet
 } from '@/hooks';
@@ -31,16 +30,14 @@ export default {
     }
   },
   setup() {
-    const { getAndCorrectTransitions } = useActionDigitalSheet();
+    const { getTransition } = useActionDigitalSheet();
     const { currentSheet } = useSheet();
     const { triggerTransition } = useGetterDigitalSheet();
-    const { totalFrame } = useFrame();
 
     return {
-      getAndCorrectTransitions,
+      getTransition,
       currentSheet,
-      triggerTransition,
-      totalFrame
+      triggerTransition
     };
   },
   data() {
@@ -88,12 +85,7 @@ export default {
      * Update transition
      */
     async updateTransition() {
-      const transitions = await this.getAndCorrectTransitions(
-        this.sheetId,
-        this.totalFrame - 1
-      );
-
-      this.transition = transitions[this.index];
+      this.transition = await this.getTransition(this.sheetId, this.index);
     }
   }
 };

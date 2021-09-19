@@ -115,12 +115,6 @@ export const getters = {
   },
   [DIGITAL._GETTERS.TRIGGER_TRANSITION]: ({ triggerChange }) =>
     triggerChange.transition,
-  [DIGITAL._GETTERS.CURRENT_FRAME_INDEX]: ({ frameIds, currentFrameId }) => {
-    return frameIds.indexOf(currentFrameId);
-  },
-  [DIGITAL._GETTERS.TOTAL_FRAME]: ({ frameIds }) => {
-    return frameIds.length;
-  },
   [DIGITAL._GETTERS.STORE_ANIMATION_PROP]: ({ storeAnimationProp }) => {
     return storeAnimationProp;
   },

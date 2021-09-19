@@ -20,16 +20,12 @@ export const useFrame = () => {
     currentFrame,
     frames,
     currentFrameId,
-    firstFrameThumbnail,
-    currentFrameIndex,
-    totalFrame
+    firstFrameThumbnail
   } = useGetters({
     frames: DIGITAL_GETTERS.GET_FRAMES_WIDTH_IDS,
     currentFrame: DIGITAL_GETTERS.CURRENT_FRAME,
     currentFrameId: DIGITAL_GETTERS.CURRENT_FRAME_ID,
-    firstFrameThumbnail: DIGITAL_GETTERS.GET_FIRST_FRAME_THUMBNAIL,
-    currentFrameIndex: DIGITAL_GETTERS.CURRENT_FRAME_INDEX,
-    totalFrame: DIGITAL_GETTERS.TOTAL_FRAME
+    firstFrameThumbnail: DIGITAL_GETTERS.GET_FIRST_FRAME_THUMBNAIL
   });
 
   const {
@@ -49,9 +45,7 @@ export const useFrame = () => {
     setCurrentFrameId,
     setSupplementalLayoutId,
     updateFrameObjects,
-    firstFrameThumbnail,
-    currentFrameIndex,
-    totalFrame
+    firstFrameThumbnail
   };
 };
 
