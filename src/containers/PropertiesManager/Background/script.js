@@ -215,6 +215,16 @@ export default {
       });
     },
     /**
+     * Emit apply option selected
+     * @param {Object} applyOption apply option selected
+     */
+    onPreviewAnimation({ config }) {
+      this.$root.$emit(EVENT_TYPE.PREVIEW_ANIMATION, {
+        config,
+        objectType: OBJECT_TYPE.BACKGROUND
+      });
+    },
+    /**
      * Get the id of background which triggered event
      *
      * @param   {Boolean} isLeft  is left background

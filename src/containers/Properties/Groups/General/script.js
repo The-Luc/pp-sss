@@ -130,8 +130,8 @@ export default {
      * Emit preview option selected object
      * @param {Object} animationConfig preview option
      */
-    onClickPreview(config) {
-      this.$emit('preview', config);
+    onClickPreview({ config }) {
+      this.$emit('preview', { config });
     },
     /**
      * Emit order option selected object

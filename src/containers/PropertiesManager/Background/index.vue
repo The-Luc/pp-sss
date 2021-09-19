@@ -24,6 +24,7 @@
           :disabled="isDisabled"
           :is-play-in-order-disabled="true"
           :is-play-out-order-disabled="true"
+          @preview="onPreviewAnimation"
           @apply="onApplyAnimation"
         ></animation>
       </div>
