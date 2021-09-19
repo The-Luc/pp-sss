@@ -1,15 +1,19 @@
 .print-editor {
   .print-editor-tool {
-    border-top: 1px solid $color-gray;
+    flex-wrap: nowrap;
     padding: 6px 0;
     align-items: center;
     justify-content: space-between;
+    border-top: 1px solid $color-gray;
+
     .tool-left,
     .tool-right {
       display: flex;
+
       .item-tool:last-child {
         border-right: none;
       }
+
       .item-tool:first-child {
         margin-left: 20px;
       }

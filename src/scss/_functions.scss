@@ -1,0 +1,15 @@
+@function getPropMenuHeight($has-tab: false, $frame-height: 0) {
+  $editor-header-height: 42px;
+  $editor-title-height: 51px;
+  $editor-toolbar-height: 50px;
+  $editor-infobar-height: 24px;
+
+  $total-height: $editor-header-height + $editor-title-height + $editor-toolbar-height +
+  $editor-infobar-height + $frame-height;
+
+  @if $has-tab {
+    @return $total-height + 30px;
+  }
+
+  @return $total-height;
+}

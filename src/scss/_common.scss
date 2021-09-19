@@ -11,3 +11,16 @@
 .pointer {
   cursor: pointer;
 }
+
+.hide {
+  display: none !important;
+}
+
+.invisible {
+  visibility: hidden !important;
+}
+
+[class*='disabled'] {
+  opacity: 0.4 !important; // override
+  pointer-events: none;
+}

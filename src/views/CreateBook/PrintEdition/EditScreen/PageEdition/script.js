@@ -1616,7 +1616,7 @@ export default {
 
       const backgroundEvents = {
         printAddBackground: this.addBackground,
-        printChangeBackgroundProperties: this.changeBackgroundProperties,
+        [EVENT_TYPE.BACKGROUND_PROP_CHANGE]: this.changeBackgroundProperties,
         printDeleteBackground: this.removeBackground
       };
 

@@ -1,7 +1,7 @@
 <template>
   <div class="transition-properties-container">
     <box-properties title="Transitions">
-      <div class="transition-wrapper">
+      <div class="transition-wrapper digital">
         <item
           v-for="(item, index) in transitions"
           :key="index"

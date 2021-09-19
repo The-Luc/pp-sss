@@ -1,6 +1,5 @@
 .transition-properties-container {
   .transition-wrapper {
-    max-height: calc(100vh - 290px);
-    overflow-y: auto;
+    @include prop-menu-scrollable(false);
   }
 }
