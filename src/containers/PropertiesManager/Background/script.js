@@ -215,15 +215,6 @@ export default {
       });
     },
     /**
-     * Get the id of background which triggered event
-     *
-     * @param   {Boolean} isLeft  is left background
-     * @returns {String}          id of background
-     */
-    onApplyAnimation(object) {
-      this.$emit('onApply', object);
-    },
-    /**
      * Emit apply option selected
      * @param {Object} applyOption apply option selected
      */
@@ -233,6 +224,12 @@ export default {
         objectType: OBJECT_TYPE.BACKGROUND
       });
     },
+    /**
+     * Get the id of background which triggered event
+     *
+     * @param   {Boolean} isLeft  is left background
+     * @returns {String}          id of background
+     */
     getId(isLeft) {
       const position = isLeft ? 'left' : 'right';
 
