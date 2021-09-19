@@ -341,7 +341,7 @@ const handleBlurEffect = (element, options, canvas) => {
     fakeObject: true
   });
 
-  canvas.add(img);
+  canvas.insertAt(img, canvas.getObjects().indexOf(element));
   canvas.renderAll();
 
   setTimeout(() => {
