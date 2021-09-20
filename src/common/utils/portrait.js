@@ -159,10 +159,6 @@ export const calcAdditionPortraitSlot = (teacherSettings, portraits) => {
     teacherSettings
   );
 
-  if (numTeacher > 2) return 0;
-
-  if (numTeacher === 2) return 6;
-
   const teacherCount = isHasLargeTeacher ? numTeacher : 0;
   const asstCount = isHasLargeAsst ? numAssistant : 0;
 
