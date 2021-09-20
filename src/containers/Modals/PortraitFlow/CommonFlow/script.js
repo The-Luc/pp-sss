@@ -13,7 +13,8 @@ import {
   DEFAULT_PAGE_TITLE,
   DEFAULT_NAME_TEXT,
   DEFAULT_MARGIN_PAGE_TITLE,
-  PORTRAIT_TEACHER_PLACEMENT
+  PORTRAIT_TEACHER_PLACEMENT,
+  PORTRAIT_NAME_DISPLAY
 } from '@/common/constants';
 import { cloneDeep, merge } from 'lodash';
 import {
@@ -114,6 +115,12 @@ export default {
     },
     isMultiFolder() {
       return this.selectedFolders.length > 1;
+    },
+    isFirstLast() {
+      return (
+        this.flowSettings.textSettings.nameDisplay.value ===
+        PORTRAIT_NAME_DISPLAY.FIRST_LAST.value
+      );
     }
   },
   watch: {
@@ -128,8 +135,11 @@ export default {
         const isSameTeacher =
           JSON.stringify(newVal.teacherSettings) ===
           JSON.stringify(oldVal.teacherSettings);
+        const isSameText =
+          JSON.stringify(newVal.textSettings) ===
+          JSON.stringify(oldVal.textSettings);
 
-        if (isSameLayout && isSameTeacher) return;
+        if (isSameLayout && isSameTeacher && isSameText) return;
 
         this.initDataFlowSettings();
         this.updatePortraitOrder();
@@ -276,6 +286,10 @@ export default {
         this.selectedFolders[0]
       );
 
+      students.sort(sortPortraitByName(this.isFirstLast));
+      teachers.sort(sortPortraitByName(this.isFirstLast));
+      asstTeachers.sort(sortPortraitByName(this.isFirstLast));
+
       if (!hasTeacher) {
         return students;
       }
@@ -296,13 +310,29 @@ export default {
         return [...students, ...teacherAndAsst];
       }
 
-      return [...teacherAndAsst, ...students].sort(sortPortraitByName);
+      return [...teacherAndAsst, ...students].sort(
+        sortPortraitByName(this.isFirstLast)
+      );
     },
     /**
      * Update order of portrait in assets
      */
     updatePortraitOrder() {
-      if (isEmpty(this.flowSettings) || this.isMultiFolder) return;
+      if (isEmpty(this.flowSettings)) return;
+
+      if (this.isMultiFolder) {
+        const folders = cloneDeep(this.flowSettings.folders);
+
+        folders.forEach(f =>
+          f.assets.sort(sortPortraitByName(this.isFirstLast))
+        );
+
+        this.onSettingChange({
+          ...this.flowSettings,
+          folders
+        });
+        return;
+      }
 
       const portraits = this.rearrangePortraitOrder();
 
