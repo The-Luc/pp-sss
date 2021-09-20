@@ -191,7 +191,7 @@ export default {
         teacherPlacement === PORTRAIT_TEACHER_PLACEMENT.FIRST &&
         numLargePortrait > 0;
 
-      const lastRowCount = this.portraits.length % colCount;
+      const lastRowCount = this.portraits.length % colCount || colCount;
 
       if (isOnStartPage && isLargePortraitOnFirst) {
         for (let i = 1; i <= rowCount; i++) {
@@ -203,8 +203,11 @@ export default {
 
         return portraitNameArray;
       }
-
-      if (!isOnLastPage || lastRowCount + numLargePortrait <= colCount) {
+      if (
+        !isOnLastPage ||
+        (lastRowCount > 1 && lastRowCount + numLargePortrait <= colCount) ||
+        (lastRowCount === 1 && numLargePortrait < 2)
+      ) {
         while (portraitArray.length) {
           portraitNameArray.push(portraitArray.splice(0, colCount));
         }
@@ -212,9 +215,11 @@ export default {
       }
 
       for (let i = 1; i <= rowCount; i++) {
-        const lastRow = Math.floor(this.portraits.length / colCount) + 1;
-        const numPortraitForRow = i === lastRow ? lastRowCount - 1 : colCount;
+        const spliceVal = lastRowCount === 1 ? colCount : lastRowCount;
+        const portraitLength = this.portraits.length + numLargePortrait;
 
+        const lastRow = Math.floor(portraitLength / colCount);
+        const numPortraitForRow = i === lastRow ? spliceVal - 1 : colCount;
         portraitNameArray.push(portraitArray.splice(0, numPortraitForRow));
       }
 

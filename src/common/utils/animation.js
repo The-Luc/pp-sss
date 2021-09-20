@@ -155,7 +155,7 @@ const fadeScaleOut = (element, options, canvas) => {
  */
 const slideIn = (element, options, canvas) => {
   const { duration, direction } = options;
-  if (!duration || !direction) return;
+  if (!duration || isEmpty(direction)) return;
 
   const { oriPos, startPos, animatePropName } = calcSlideInPosition(
     element,
@@ -184,7 +184,7 @@ const slideIn = (element, options, canvas) => {
  */
 const slideOut = (element, options, canvas) => {
   const { duration, direction } = options;
-  if (!duration || !direction) return;
+  if (!duration || isEmpty(direction)) return;
 
   const { oriPos, endPos, animatePropName } = calcSlideOutPosition(
     element,
@@ -213,7 +213,7 @@ const slideOut = (element, options, canvas) => {
  */
 const fadeSlideIn = (element, options, canvas) => {
   const { duration, direction } = options;
-  if (!duration || !direction) return;
+  if (!duration || isEmpty(direction)) return;
 
   const { oriPos, startPos, animatePropName } = calcSlideInPosition(
     element,
@@ -244,7 +244,7 @@ const fadeSlideIn = (element, options, canvas) => {
  */
 const fadeSlideOut = (element, options, canvas) => {
   const { duration, direction } = options;
-  if (!duration || !direction) return;
+  if (!duration || isEmpty(direction)) return;
 
   const { oriPos, endPos, animatePropName } = calcSlideOutPosition(
     element,

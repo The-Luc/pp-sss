@@ -86,7 +86,9 @@ export default {
     flowSettings: {
       deep: true,
       handler() {
-        this.updatePreviewData(this.pageNo);
+        const lastPage = this.requiredPages[this.requiredPages.length - 1];
+        const pageNumber = this.pageNo > lastPage ? 1 : this.pageNo;
+        this.updatePreviewData(pageNumber);
       }
     }
   },
