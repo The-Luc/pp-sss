@@ -282,7 +282,7 @@ export default {
 
         this.isFrameLoaded = false;
 
-        this.saveData(oldVal.id, this.currentFrameId);
+        await this.saveData(oldVal.id, this.currentFrameId);
 
         // reset frames, frameIDs, currentFrameId
         this.setFrames({ framesList: [] });
@@ -2596,6 +2596,7 @@ export default {
             obj.animationOut = merge(obj.animationOut, prop.animationOut);
           }
         });
+
         this.updateFrameObjects({ frameId: id });
       });
     },
