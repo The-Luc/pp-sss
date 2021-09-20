@@ -1,6 +1,6 @@
 import { useMutations, useGetters, useActions } from 'vuex-composition-helpers';
 import { getPhotos, searchPhotos, getMedia, searchMedia } from '@/api/photo';
-import printPortraitSevice from '@/api/portrait';
+import portraitSevice from '@/api/portrait';
 
 import {
   MUTATES as APP_MUTATES,
@@ -53,12 +53,16 @@ export const usePhotos = () => {
 };
 
 export const usePortraitFlow = () => {
-  const saveSettings = async flowSettings => {
-    await printPortraitSevice.savePortraitSettings(flowSettings);
+  const saveSettings = async (flowSettings, isDigital) => {
+    isDigital
+      ? await portraitSevice.savePortraitSettingsDigital(flowSettings)
+      : await portraitSevice.savePortraitSettingsPrint(flowSettings);
   };
 
-  const getSavedSettings = async () => {
-    const savedSettings = await printPortraitSevice.getSavedPortraitSettings();
+  const getSavedSettings = async isDigital => {
+    const savedSettings = isDigital
+      ? await portraitSevice.getSavedPortraitSettingsDigital()
+      : await portraitSevice.getSavedPortraitSettingsPrint();
     return savedSettings;
   };
 

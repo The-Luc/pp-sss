@@ -18,7 +18,8 @@ import {
   VIDEO_EVENT_TYPE,
   VIDEO_PLAY_ICON,
   CROP_CONTROL,
-  DEFAULT_VIDEO
+  DEFAULT_VIDEO,
+  PORTRAIT_IMAGE_MASK
 } from '../constants';
 import { videoInitEvent } from '@/plugins/fabric';
 
@@ -100,6 +101,26 @@ export const toFabricMediaProp = (prop, originalElement) => {
       }
     },
     restrict: ['border', 'cropInfo']
+  };
+  return mapObject(prop, mapRules);
+};
+
+/**
+ * Convert stored image properties to fabric properties
+ *
+ * @param   {Object}  prop  stored image properties
+ * @returns {Object}        fabric properties
+ */
+export const toFabricPortraitImageProp = prop => {
+  const mapRules = {
+    data: {
+      type: DEFAULT_RULE_DATA.TYPE,
+      x: DEFAULT_RULE_DATA.X,
+      y: DEFAULT_RULE_DATA.Y,
+      width: DEFAULT_RULE_DATA.WIDTH,
+      height: DEFAULT_RULE_DATA.HEIGHT
+    },
+    restrict: ['border', 'shadow', 'cropInfo']
   };
   return mapObject(prop, mapRules);
 };
@@ -237,7 +258,7 @@ export const centercrop = imageObject => {
  * @param {*} target - Image object has applied drag trigger
  */
 export const handleDragEnter = ({ target }) => {
-  if (target.cachedStrokeData || !target.selectable) return;
+  if (target.cachedStrokeData || target.fromPortrait) return;
 
   const cachedStrokeData = {
     stroke: target.stroke,
@@ -258,7 +279,7 @@ export const handleDragEnter = ({ target }) => {
  * @param {*} target - Image object has applied drag trigger
  */
 export const handleDragLeave = ({ target }) => {
-  if (isEmpty(target.cachedStrokeData) || !target.selectable) return;
+  if (isEmpty(target.cachedStrokeData) || target.fromPortrait) return;
 
   const { stroke, strokeWidth } = target.cachedStrokeData;
   target.set({
@@ -291,7 +312,7 @@ export const handleMouseMove = event => {
  * @param {Object} target Fabric object selected
  */
 const handleHoverImage = target => {
-  if (!target.hasImage || !target.selectable) return;
+  if (!target.hasImage || target.fromPortrait) return;
 
   const { width, height, scaleX, scaleY } = target;
   const { x, y } = target.getLocalPointer();
@@ -365,7 +386,7 @@ export const handleMouseOver = ({ target }) => {
   if (
     target?.objectType !== OBJECT_TYPE.IMAGE ||
     !target.hasImage ||
-    !target.selectable
+    target.fromPortrait
   )
     return;
 
@@ -385,7 +406,7 @@ export const handleMouseOut = ({ target }) => {
   if (
     target?.objectType !== OBJECT_TYPE.IMAGE ||
     !target.hasImage ||
-    !target.selectable
+    target.fromPortrait
   )
     return;
 
@@ -651,4 +672,42 @@ export const handleChangeMediaSrc = async (
   prop.imageId = id;
 
   return { id: target.id, prop };
+};
+
+/**
+ * Create new fabric object width initial properties
+ * @param {Object} props initial properties of portrait image
+ * @returns {Object} instance of fabric object
+ */
+export const createPortraitImage = async props => {
+  return new Promise(resolve => {
+    const {
+      top,
+      left,
+      width,
+      height,
+      mask,
+      imageUrl,
+      objectType
+    } = toFabricPortraitImageProp(props);
+
+    const radiusRatio = mask === PORTRAIT_IMAGE_MASK.ROUNDED ? 10 : 2;
+
+    const rect = new fabric.Rect({
+      top,
+      left,
+      width,
+      height,
+      rx: width / radiusRatio,
+      ry: width / radiusRatio,
+      mask,
+      objectType,
+      fill: 'red'
+    });
+
+    createMediaOverlay(imageUrl, { width, height }).then(img => {
+      rect.set({ img });
+      resolve(rect);
+    });
+  });
 };

@@ -5,7 +5,9 @@ import {
   BLUR_DELAY_DURATION,
   DELAY_DURATION
 } from '../constants/animationProperty';
+
 import { applyTextBoxProperties } from '../fabricObjects';
+import { isEmpty } from '../utils';
 
 /**
  * Handle fade animation
@@ -562,6 +564,22 @@ const calcSlideOutPosition = (element, direction, canvas) => {
 };
 
 /**
+ * Get shadow of object
+ *
+ * @param   {Object}  obj fabric object
+ * @returns {Object}      shadow or null
+ */
+const getShadow = obj => {
+  if (isEmpty(obj)) return null;
+
+  if (!isEmpty(obj.shadow)) return obj.shadow;
+
+  const isEmptySubObject = isEmpty(obj.getObjects) || isEmpty(obj.getObjects());
+
+  return isEmptySubObject ? null : obj.getObjects()[0].shadow;
+};
+
+/**
  * To get object's bounding rectangle including shadow
  * @param {Object} obj fabric object
  * @returns bounding rec object including shadow
@@ -569,7 +587,7 @@ const calcSlideOutPosition = (element, direction, canvas) => {
 const getObjectBounds = obj => {
   const bounds = obj.getBoundingRect(true);
 
-  const shadow = obj.shadow || (obj.getObjects && obj.getObjects()[0]?.shadow);
+  const shadow = getShadow(obj);
 
   if (!shadow) return bounds;
 

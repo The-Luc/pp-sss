@@ -29,7 +29,6 @@
       :play-out-order="playOutOrder"
       :apply-options="applyOptions"
       :order-options="orderOptions"
-      @change="onChangeAnimation"
       @apply="onApplyAnimation"
       @preview="onClickPreview"
       @changeOrder="onChangeOrder"

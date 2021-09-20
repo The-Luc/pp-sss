@@ -21,6 +21,8 @@ const keyLayoutDigital = `${STORAGE_KEY.digitalLayout}`;
 const keyLayoutTypeDigital = `${STORAGE_KEY.digitalLayoutType}`;
 const keySavedLayoutPrint = `${STORAGE_KEY.printSavedlayout}`;
 const keyFavoritesLayoutPrint = `${STORAGE_KEY.printFavoritesLayout}`;
+const keySavedSettingsPrint = `${STORAGE_KEY.printSavedPortraitSettings}`;
+const keySavedSettingsDigital = `${STORAGE_KEY.digitalSavedPortraitSettings}`;
 
 // TODO: remove when integrate with API
 const setMockBookDataToStorage = () => {
@@ -91,6 +93,14 @@ const saveOnUnloadEvent = () => {
       keyFavoritesLayoutPrint,
       JSON.stringify(window.data.printFavoritesLayouts)
     );
+    setItem(
+      keySavedSettingsPrint,
+      JSON.stringify(window.data.printSavedSettings)
+    );
+    setItem(
+      keySavedSettingsDigital,
+      JSON.stringify(window.data.digitalSavedSettings)
+    );
   });
 };
 
@@ -144,9 +154,18 @@ const getLayoutData = () => {
   window.data.digitalLayoutTypes = digitalLayoutTypes;
 };
 
+const getPortraitSettings = () => {
+  const printSavedSettings = parseItem(keySavedSettingsPrint) || [];
+  const digitalSavedSettings = parseItem(keySavedSettingsDigital) || [];
+  // Save to window.data variable
+  window.data.printSavedSettings = printSavedSettings;
+  window.data.digitalSavedSettings = digitalSavedSettings;
+};
+
 const initData = () => {
   getBookData();
   getLayoutData();
+  getPortraitSettings();
 };
 
 export default {

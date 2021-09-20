@@ -88,10 +88,10 @@ export default {
     },
     /**
      * Emit preview option selected object
-     * @param {Object} animationConfig preview option
+     * @param {Object} config preview option
      */
-    onClickPreview(config) {
-      this.$root.$emit(EVENT_TYPE.PREVIEW_ANIMATION, config);
+    onClickPreview({ config }) {
+      this.$root.$emit(EVENT_TYPE.PREVIEW_ANIMATION, { config });
     }
   }
 };

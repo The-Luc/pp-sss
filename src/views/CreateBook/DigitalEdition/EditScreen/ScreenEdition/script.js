@@ -8,6 +8,7 @@ import { fabric } from 'fabric';
 import {
   imageBorderModifier,
   useDigitalOverrides,
+  useDoubleStroke,
   useObjectControlsOverride
 } from '@/plugins/fabric';
 import {
@@ -69,7 +70,9 @@ import {
   handleMouseOut,
   handleObjectSelected,
   handleObjectDeselected,
-  calcAnimationOrder
+  calcAnimationOrder,
+  createPortraitImage,
+  getBackgroundObject
 } from '@/common/fabricObjects';
 import { createImage } from '@/common/fabricObjects';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
@@ -252,7 +255,7 @@ export default {
       autoSaveTimer: null,
       undoRedoCanvas: null,
       isFrameLoaded: false,
-      isBgPropMenuOpen: false,
+      isBackgroundPropMenuOpen: false,
       isScroll: { x: false, y: false }
     };
   },
@@ -315,6 +318,8 @@ export default {
       if (isSwitchFrame) {
         this.saveData(this.pageSelected.id, oldVal);
       }
+
+      this.isBackgroundPropMenuOpen = false;
 
       this.setSelectedObjectId({ id: '' });
       this.setPropertiesObjectType({ type: '' });
@@ -522,7 +527,7 @@ export default {
           handler: this.addBackground
         },
         {
-          name: EVENT_TYPE.DIGITAL_BACKGROUND_PROP_CHANGE,
+          name: EVENT_TYPE.BACKGROUND_PROP_CHANGE,
           handler: this.changeBackgroundProperties
         },
         {
@@ -727,7 +732,7 @@ export default {
      * Event fire when selection of fabric canvas has been created
      */
     onSelectionCreated() {
-      console.log('selection:created');
+      // TODO: adding code
     },
 
     /**
@@ -827,7 +832,7 @@ export default {
      * Event fire when fabric object has been modified
      */
     onObjectModified() {
-      console.log('object:modified');
+      // TODO: adding code
     },
 
     /**
@@ -1297,6 +1302,9 @@ export default {
         case OBJECT_TYPE.VIDEO:
           this.changeVideoProperties(prop);
           break;
+        case OBJECT_TYPE.PORTRAIT_IMAGE:
+          this.changeElementProperties(prop, objectType);
+          break;
         default:
           return;
       }
@@ -1402,10 +1410,18 @@ export default {
 
     /**
      * Handle aniamtion of selected objects
-     * @param {Objec} config config for animation
+     * @param {Object} config config for animation
      */
-    previewAnimation(config) {
-      const object = this.digitalCanvas.getActiveObject();
+    previewAnimation({ config, objectType }) {
+      const isBackground = objectType === OBJECT_TYPE.BACKGROUND;
+
+      const background = getBackgroundObject(this.digitalCanvas);
+
+      if (isBackground && isEmpty(background)) return;
+
+      const object = isBackground
+        ? background
+        : this.digitalCanvas.getActiveObject();
 
       const style = config.style;
       const args = [object, config, this.digitalCanvas];
@@ -1735,13 +1751,11 @@ export default {
      * @param {Booean} isSelected  is background prop menu opened
      */
     backgroundToggleSelection({ isSelected }) {
-      if (window.digitalCanvas.getObjects().length === 0) return;
+      const background = getBackgroundObject(this.digitalCanvas);
 
-      const background = window.digitalCanvas.getObjects()[0];
+      if (isEmpty(background)) return;
 
-      if (background.objectType !== OBJECT_TYPE.BACKGROUND) return;
-
-      this.isBgPropMenuOpen = isSelected;
+      this.isBackgroundPropMenuOpen = isSelected;
     },
     /**
      * Reset configs properties when close object
@@ -1943,6 +1957,10 @@ export default {
         return this.createMediaFromPpData(newData);
       }
 
+      if (newData.type === OBJECT_TYPE.PORTRAIT_IMAGE) {
+        return this.createPortraitImageFromPpData(newData);
+      }
+
       if (
         newData.type === OBJECT_TYPE.CLIP_ART ||
         newData.type === OBJECT_TYPE.SHAPE
@@ -2037,6 +2055,34 @@ export default {
       return media;
     },
     /**
+     * create fabric object
+     *
+     * @param {Object} properties PpData of the of a background object {id, size, coord,...}
+     * @returns {Object} a fabric objec
+     */
+    async createPortraitImageFromPpData(properties) {
+      const eventListeners = {
+        scaling: this.handleScaling,
+        scaled: this.handleScaled,
+        rotated: this.handleRotated,
+        moved: this.handleMoved
+      };
+
+      const image = await createPortraitImage(properties);
+
+      const { border, shadow } = properties;
+
+      useDoubleStroke(image);
+
+      addEventListeners(image, eventListeners);
+
+      applyShadowToObject(image, shadow);
+
+      applyBorderToImageObject(image, border);
+
+      return image;
+    },
+    /**
      * Delete objects on canvas
      */
     deleteObject() {
@@ -2074,6 +2120,10 @@ export default {
           objectData.type === OBJECT_TYPE.VIDEO
         ) {
           return this.createMediaFromPpData(objectData);
+        }
+
+        if (objectData.type === OBJECT_TYPE.PORTRAIT_IMAGE) {
+          return this.createPortraitImageFromPpData(objectData);
         }
 
         if (objectData.type === OBJECT_TYPE.BACKGROUND) {
@@ -2482,9 +2532,19 @@ export default {
      * @param {Object} animationOut config for play out animation
      */
     handleApplyAnimation({ objectType, storeType, animationIn, animationOut }) {
-      const prop = { animationIn, animationOut };
+      const animationType = isEmpty(animationIn)
+        ? 'animationOut'
+        : 'animationIn';
 
-      if (storeType === APPLY_MODE.SELF) {
+      const animationConfig = isEmpty(animationIn) ? animationOut : animationIn;
+
+      const prop = { [animationType]: animationConfig };
+
+      const isBackground = objectType === OBJECT_TYPE.BACKGROUND;
+
+      if (isBackground) {
+        return this.setBackgroundProp({ prop });
+      } else if (!isBackground && storeType === APPLY_MODE.SELF) {
         return this.setObjectProp({ prop });
       }
 
@@ -2500,27 +2560,15 @@ export default {
       const storeTypeId =
         storeType === APPLY_MODE.SECTION ? this.pageSelected.id : this.book.id;
 
-      const storeAnimationProp = {};
-
-      if (!isEmpty(animationIn)) {
-        storeAnimationProp.animationIn = {
+      const storeAnimationProp = {
+        [animationType]: {
           [objectType]: {
             storeType,
             storeTypeId,
-            setting: animationIn
+            setting: animationConfig
           }
-        };
-      }
-
-      if (!isEmpty(animationOut)) {
-        storeAnimationProp.animationOut = {
-          [objectType]: {
-            storeType,
-            storeTypeId,
-            setting: animationOut
-          }
-        };
-      }
+        }
+      };
 
       this.setStoreAnimationProp({ storeAnimationProp });
 
@@ -2530,6 +2578,18 @@ export default {
         .map(obj => ({ id: obj.id, prop }));
 
       this.setPropOfMultipleObjects({ data: props });
+
+      if ([APPLY_MODE.SECTION, APPLY_MODE.BOOK].includes(storeType)) {
+        this.frames.forEach(({ frame: { objects, id } }) => {
+          objects.forEach(obj => {
+            if (obj.type === objectType) {
+              obj.animationIn = merge(obj.animationIn, prop.animationIn);
+              obj.animationOut = merge(obj.animationOut, prop.animationOut);
+            }
+          });
+          this.updateFrameObjects({ frameId: id });
+        });
+      }
     },
 
     /**

@@ -415,10 +415,9 @@ export default {
       const nameContainerHeight = this.$refs.portraitsSection?.$el.clientHeight;
       const portraitHeight = this.portraitWidth * this.defaultRatio;
 
-      const gridHeight = portraitHeight + portraitHeight * 0.1;
-      const gap = (nameContainerHeight - gridHeight * row) / (row - 1);
+      const gap = (nameContainerHeight - portraitHeight * row) / (row - 1);
 
-      this.namesHeight = { height: `${gridHeight + gap}px` };
+      this.namesHeight = { height: `${portraitHeight + gap}px` };
     },
     /**
      * Set height for thumbnail wrapper container when has page title

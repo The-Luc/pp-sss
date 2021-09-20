@@ -4,7 +4,8 @@ import {
   BORDER_STYLES,
   DEFAULT_TEXT,
   OBJECT_TYPE,
-  VIDEO_MSPF
+  VIDEO_MSPF,
+  PORTRAIT_IMAGE_MASK
 } from '@/common/constants';
 
 import {
@@ -424,11 +425,39 @@ const rectRender = function(ctx) {
 };
 
 /**
+ * Render rounded, oval and circle image
+ * @param {CanvasRenderingContext2D} ctx Context to render on
+ */
+const maskRender = function(ctx) {
+  if (this.img) {
+    const x = (this.strokeWidth - this.width) / 2;
+    const y = (this.strokeWidth - this.height) / 2;
+    const w = this.width - this.strokeWidth;
+    const h = this.height - this.strokeWidth;
+    const r = this.mask === PORTRAIT_IMAGE_MASK.ROUNDED ? w / 10 : w / 2;
+    ctx.save();
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + w, y, x + w, y + h, r);
+    ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r);
+    ctx.arcTo(x, y, x + w, y, r);
+    ctx.closePath();
+    ctx.clip();
+    ctx.drawImage(this.img, x, y, w, h);
+    ctx.restore();
+  }
+};
+
+/**
  * Allow fabric rect object to have double stroke
  * @param {fabric.Rect} rect - the object to enable double stroke
  */
 export const useDoubleStroke = function(rect) {
-  rect._render = rectRender;
+  rect._render = function(ctx) {
+    rectRender.call(this, ctx);
+    maskRender.call(this, ctx);
+  };
 };
 
 const getTimeToSet = (checkTime, duration) => {
@@ -749,8 +778,8 @@ const rotateIcon = function(
  * Apply animation play in/out icon
  * @param @param {CanvasRenderingContext2D} ctx Context to render on
  */
-const renderControls = function(ctx) {
-  fabric.Group.prototype._renderControls.call(this, ctx);
+const renderControls = function(ctx, styleOverride) {
+  fabric.Object.prototype._renderControls.call(this, ctx, styleOverride);
 
   const zoom = this.canvas.getZoom();
   const angle = (Math.PI * (this.angle % 360)) / 180;

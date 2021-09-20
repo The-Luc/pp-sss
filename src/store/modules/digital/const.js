@@ -32,8 +32,6 @@ class GetterClass extends BaseObject {
   GET_FIRST_FRAME_THUMBNAIL = 'getFirstFrameThumbnail';
   GET_SHEET_MEDIA = 'getSheetMedia';
   TRIGGER_TRANSITION = 'getTriggerTransition';
-  CURRENT_FRAME_INDEX = 'getCurrentFrameIndex';
-  TOTAL_FRAME = 'getTotalFrame';
   STORE_ANIMATION_PROP = 'storeAnimationProp';
   PLAY_IN_ORDER = 'playInOrder';
   PLAY_OUT_ORDER = 'playOutOrder';
@@ -79,6 +77,7 @@ class MutationClass extends BaseObject {
   SET_BACKGROUND = 'setBackground';
   SET_CURRENT_OBJECT_ID = 'setCurrentObjectId';
   ADD_OBJECT = 'addObject';
+  ADD_OBJECTS = 'addObjects';
   SET_PROP = 'setObjectProperty';
   SET_PROP_BY_ID = 'setObjectPropertyById';
   SET_PROP_OF_MULIPLE_OBJECTS = 'setPropOfMultipleObjects';

@@ -1,5 +1,9 @@
-@import './extend';
-@import './variables';
+html,
+body,
+.container {
+  height: 100%;
+  overflow: hidden;
+}
 
 p,
 .container,
@@ -20,29 +24,15 @@ img {
   height: auto;
 }
 
-.hide {
-  display: none !important;
-}
-
-.invisible {
-  visibility: hidden !important;
-}
-
-.disabled,
-[class*='disabled'] {
-  opacity: 0.4 !important; // override
-  pointer-events: none;
-}
-
 .theme--light.v-application {
   color: $color-stoodio-toolbartext;
 }
 
-html,
-body,
-.container {
-  height: 100%;
-  overflow: hidden;
+.dot {
+  min-width: 6px;
+  max-width: 6px;
+  height: 6px;
+  border-radius: 50%;
 }
 
 /* SCROLLBAR & SCROLLBAR CONTAINER - Start */
@@ -57,7 +47,7 @@ body,
 
 ::-webkit-scrollbar-track {
   background: $color-gray11;
-  box-shadow: inset 0 0 0 1px white;
+  box-shadow: inset 0 0 0 1px $color-white;
 }
 
 ::-webkit-scrollbar-thumb {
@@ -80,13 +70,6 @@ body,
   }
 }
 /* COLOR PICKER - End */
-
-.dot {
-  min-width: 6px;
-  max-width: 6px;
-  height: 6px;
-  border-radius: 50%;
-}
 
 /* SELECTOR - Start */
 .pp-combobox,

@@ -40,7 +40,8 @@ import {
   useSheet,
   useActionsEditionSheet,
   useObjectProperties,
-  useToolBar
+  useToolBar,
+  useObjects
 } from '@/hooks';
 import { EDITION } from '@/common/constants';
 import {
@@ -51,7 +52,7 @@ import {
   resetObjects
 } from '@/common/utils';
 
-import { useSaveData, useBookObjects } from './PageEdition/composables';
+import { useSaveData } from './PageEdition/composables';
 import {
   handleChangeMediaSrc,
   getAvailableImages,
@@ -98,7 +99,7 @@ export default {
       disabledToolbarItems
     } = useToolBar();
 
-    const { addObjecs, deleteObjects } = useBookObjects();
+    const { addObjecs, deleteObjects } = useObjects();
 
     return {
       pageSelected,
@@ -359,7 +360,7 @@ export default {
       const isImage = target?.objectType === OBJECT_TYPE.IMAGE;
       const isVideo = target?.objectType === OBJECT_TYPE.VIDEO;
 
-      if (!target || (!isImage && !isVideo) || !target.selectable) {
+      if (!target || (!isImage && !isVideo) || target.fromPortrait) {
         const x = pointer.x - offsetX * 3;
         const y = pointer.y - offsetY * 3;
 
@@ -483,6 +484,7 @@ export default {
     /**
      * Apply portrait to page
      * @param {Object} settings config for portrait
+     * @param {Array} requiredPages pages to apply portraits
      */
     async onApplyPortrait(settings, requiredPages) {
       const pages = getPageObjects(settings, requiredPages);
@@ -501,10 +503,8 @@ export default {
         if (!isEmpty(objects)) {
           if (sheet.id === this.pageSelected.id) {
             const canvas = this.$refs.canvasEditor.printCanvas;
-            const ids = canvas
-              .getObjects()
-              .filter(obj => obj?.type && obj.type !== OBJECT_TYPE.BACKGROUND)
-              .map(obj => obj.id);
+
+            const ids = Object.keys(this.listObjects);
 
             resetObjects(canvas);
 

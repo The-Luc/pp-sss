@@ -166,7 +166,7 @@ export default {
         direction: this.selectedDirection.value
       };
 
-      this.$emit('preview', animateData);
+      this.$emit('preview', { config: animateData });
     },
 
     /**
@@ -208,6 +208,8 @@ export default {
       this.selectedDirection = this.directionOptions[0];
       this.durationValue = DEFAULT_ANIMATION.DURATION;
       this.scaleValue = DEFAULT_ANIMATION.SCALE;
+
+      this.onChangeOrder(this.orderOptions[0]);
     },
 
     /**

@@ -682,7 +682,7 @@ export const updateTextListeners = (
  */
 export const enableTextEditMode = (group, onCompleted) => {
   const canvas = group.canvas;
-  if (isEmpty(canvas) || !group.selectable) return;
+  if (isEmpty(canvas) || group.fromPortrait) return;
 
   const [rect, text] = getObjectsFromTextBox(group);
 

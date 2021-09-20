@@ -2,7 +2,11 @@ import { mapGetters, mapMutations, mapActions } from 'vuex';
 import { fabric } from 'fabric';
 import { cloneDeep, merge, debounce } from 'lodash';
 
-import { imageBorderModifier, usePrintOverrides } from '@/plugins/fabric';
+import {
+  imageBorderModifier,
+  useDoubleStroke,
+  usePrintOverrides
+} from '@/plugins/fabric';
 
 import {
   useInfoBar,
@@ -69,7 +73,8 @@ import {
   createMediaOverlay,
   handleMouseMove,
   handleMouseOver,
-  handleMouseOut
+  handleMouseOut,
+  createPortraitImage
 } from '@/common/fabricObjects';
 
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
@@ -420,6 +425,34 @@ export default {
     /**
      * create fabric object
      *
+     * @param {Object} properties PpData of the of a background object {id, size, coord,...}
+     * @returns {Object} a fabric objec
+     */
+    async createPortraitImageFromPpData(properties) {
+      const eventListeners = {
+        scaling: this.handleScaling,
+        scaled: this.handleScaled,
+        rotated: this.handleRotated,
+        moved: this.handleMoved
+      };
+      const image = await createPortraitImage(properties);
+
+      const { border, shadow } = properties;
+
+      useDoubleStroke(image);
+
+      addEventListeners(image, eventListeners);
+
+      applyShadowToObject(image, shadow);
+
+      applyBorderToImageObject(image, border);
+
+      return image;
+    },
+
+    /**
+     * create fabric object
+     *
      * @param {Object} textProperties PpData of the of a text object {id, size, coord,...}
      * @returns {Object} a fabric object
      */
@@ -525,6 +558,10 @@ export default {
 
       if (newData.type === OBJECT_TYPE.IMAGE) {
         return this.createImageFromPpData(newData);
+      }
+
+      if (newData.type === OBJECT_TYPE.PORTRAIT_IMAGE) {
+        return this.createPortraitImageFromPpData(newData);
       }
 
       if (
@@ -1586,6 +1623,9 @@ export default {
         case OBJECT_TYPE.IMAGE:
           this.changeImageProperties(prop);
           break;
+        case OBJECT_TYPE.PORTRAIT_IMAGE:
+          this.changeElementProperties(prop, objectType);
+          break;
         default:
           return;
       }
@@ -1616,7 +1656,7 @@ export default {
 
       const backgroundEvents = {
         printAddBackground: this.addBackground,
-        printChangeBackgroundProperties: this.changeBackgroundProperties,
+        [EVENT_TYPE.BACKGROUND_PROP_CHANGE]: this.changeBackgroundProperties,
         printDeleteBackground: this.removeBackground
       };
 
@@ -1692,6 +1732,10 @@ export default {
 
         if (objectData.type === OBJECT_TYPE.IMAGE) {
           return this.createImageFromPpData(objectData);
+        }
+
+        if (objectData.type === OBJECT_TYPE.PORTRAIT_IMAGE) {
+          return this.createPortraitImageFromPpData(objectData);
         }
 
         if (objectData.type === OBJECT_TYPE.BACKGROUND) {

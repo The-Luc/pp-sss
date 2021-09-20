@@ -5,8 +5,9 @@
       :disabled="disabled"
       @click.native="onRemove"
     >
-      <img src="@/assets/icons/restrict.svg" alt="Remove background" />
-      Remove Background
+      <v-icon>do_not_disturb</v-icon>
+
+      <span class="text">Remove Background</span>
     </v-btn>
   </div>
 </template>

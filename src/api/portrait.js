@@ -1,7 +1,7 @@
 import moment from 'moment';
 
 import { portraitFolders } from '@/mock/portraitFolders';
-import { getUniqueId } from '@/common/utils';
+import { cloneDeep } from 'lodash';
 
 export const getPortraitFolders = () => {
   return new Promise(resolve => {
@@ -11,28 +11,27 @@ export const getPortraitFolders = () => {
   });
 };
 
-const printPortraitSevice = {
+const portraitSevice = {
   /**
    * Save portrait settings
    * @param   {Object}  portraitSettings  portrait settings for save
    */
-  savePortraitSettings: async portraitSettings => {
+  savePortraitSettingsPrint: async portraitSettings => {
     try {
-      const saveSettingsJson = await printPortraitSevice.getSavedPortraitSettings();
-      delete portraitSettings.folders;
+      const saveSettingsJson = await portraitSevice.getSavedPortraitSettingsPrint();
+      const printPortraitSettings = cloneDeep(portraitSettings);
+      delete printPortraitSettings.folders;
 
       const saveSettings = {
-        id: getUniqueId(),
-        ...portraitSettings,
+        id: Date.now(),
+        ...printPortraitSettings,
         savedDate: moment(new Date()).format('ll')
       };
 
       saveSettingsJson.unshift(saveSettings);
 
-      window.sessionStorage.setItem(
-        'portraitSettings',
-        JSON.stringify(saveSettingsJson)
-      );
+      window.data.printSavedSettings = saveSettingsJson;
+
       return Promise.resolve({
         success: true
       });
@@ -48,10 +47,54 @@ const printPortraitSevice = {
    * Get list saved portrait settings
    * @returns {Array}   saved portrait settings
    */
-  getSavedPortraitSettings: async () => {
+  getSavedPortraitSettingsPrint: async () => {
     try {
-      const savedSettings = window.sessionStorage.getItem('portraitSettings');
-      const savedSettingsJson = savedSettings ? JSON.parse(savedSettings) : [];
+      const savedSettings = window.data.printSavedSettings;
+      const savedSettingsJson = savedSettings || [];
+      return Promise.resolve(savedSettingsJson);
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  },
+
+  /**
+   * Save portrait settings
+   * @param   {Object}  portraitSettings  portrait settings for save
+   */
+  savePortraitSettingsDigital: async portraitSettings => {
+    try {
+      const saveSettingsJson = await portraitSevice.getSavedPortraitSettingsDigital();
+      const digitalPortraitSettings = cloneDeep(portraitSettings);
+      delete digitalPortraitSettings.folders;
+
+      const saveSettings = {
+        id: Date.now(),
+        ...portraitSettings,
+        savedDate: moment(new Date()).format('ll')
+      };
+
+      saveSettingsJson.unshift(saveSettings);
+
+      window.data.digitalSavedSettings = saveSettingsJson;
+      return Promise.resolve({
+        success: true
+      });
+    } catch (error) {
+      return Promise.reject({
+        success: false,
+        error
+      });
+    }
+  },
+
+  /**
+   * Get list saved portrait settings
+   * @returns {Array}   saved portrait settings
+   */
+  getSavedPortraitSettingsDigital: async () => {
+    try {
+      const savedSettings = window.data.digitalSavedSettings;
+      const savedSettingsJson = savedSettings || [];
       return Promise.resolve(savedSettingsJson);
     } catch (error) {
       return Promise.reject(error);
@@ -59,4 +102,4 @@ const printPortraitSevice = {
   }
 };
 
-export default printPortraitSevice;
+export default portraitSevice;
