@@ -157,10 +157,6 @@ export const calcAdditionPortraitSlot = (teacherSettings, portraits) => {
     teacherSettings
   );
 
-  if (numTeacher > 2) return 0;
-
-  if (numTeacher === 2) return 6;
-
   const teacherCount = isHasLargeTeacher ? numTeacher : 0;
   const asstCount = isHasLargeAsst ? numAssistant : 0;
 
@@ -565,6 +561,7 @@ export const getPageObjects = (settings, requiredPages) => {
   requiredPages.forEach((page, index) => {
     const { min, max } = portraitRange[index] || {};
     const assetsPerPage = hasLargeAsset ? max - min + 1 : itemPerPage;
+
     const assets = totalAssets.splice(0, assetsPerPage);
     const tmpAssets = [];
 
