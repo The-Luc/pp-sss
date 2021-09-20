@@ -307,18 +307,18 @@ const blurOut = (element, options, canvas) => {
  * @param {Object} options animation option
  * @param {Object} canvas fabric canvas
  */
-const handleBlurEffect = async (element, options, canvas) => {
+const handleBlurEffect = (element, options, canvas) => {
   const { duration } = options;
   if (!duration) return;
 
   const blurValue = options.startValue;
-  const offsetBlur = 300; // pixel
+  const blurOffset = 200; // pixel
 
   //hide order boxes
   const { playIn, playOut } = hidePlayOrderBox(element);
   canvas.renderAll();
 
-  const { img, imgTop, imgLeft } = await createImage(element, offsetBlur);
+  const img = createImage(element, blurOffset);
 
   const filter = new fabric.Image.filters.Blur({
     blur: blurValue
@@ -331,15 +331,19 @@ const handleBlurEffect = async (element, options, canvas) => {
     hasBorders: false
   });
 
+  const centerPoint = element.getCenterPoint();
+
   img.set({
-    top: imgTop,
-    left: imgLeft,
+    originX: 'center',
+    originY: 'center',
+    top: centerPoint.y,
+    left: centerPoint.x,
     blurValue,
     visible: false,
     fakeObject: true
   });
 
-  canvas.add(img);
+  canvas.insertAt(img, canvas.getObjects().indexOf(element));
   canvas.renderAll();
 
   setTimeout(() => {
@@ -585,7 +589,7 @@ const getObjectBounds = obj => {
 
   const shadow = getShadow(obj);
 
-  if (shadow === null) return bounds;
+  if (!shadow) return bounds;
 
   const blur = shadow.blur;
   const signX = shadow.offsetX >= 0.0 ? 1.0 : -1.0;
@@ -617,46 +621,6 @@ const getObjectBounds = obj => {
  */
 const getOriginalOpacity = element =>
   element.opacity ?? element?.getObjects()[0]?.opacity ?? 1;
-
-/**
- * Create a image from fabric object
- * @param {Object} element fabric element
- * @param {Number} offsetBlur offsect to bouding box, this value ensure copping image capture blur effect
- * @returns {Object} a cropping image and its top left position
- */
-const createImage = (element, offsetBlur) => {
-  const bounds = getObjectBounds(element);
-  const oriBounds = element.getBoundingRect(true);
-
-  /*
-  For text object cloneAsImage crops images at top left (0,0)
-  However, other objects, it take from center,
-  So the objectOffset below adjusts the croping points to object's top left 
-  */
-  const objectOffsetTop =
-    element.objectType === OBJECT_TYPE.TEXT ? 0 : oriBounds.height / 2;
-  const objectOffsetLeft =
-    element.objectType === OBJECT_TYPE.TEXT ? 0 : oriBounds.width / 2;
-
-  // cropTop and cropLeft are relative position to top left of the element
-
-  const cropTop = bounds.top - oriBounds.top - offsetBlur;
-  const cropLeft = bounds.left - oriBounds.left - offsetBlur;
-  const cropWidth = bounds.width + 2 * offsetBlur;
-  const cropHeight = bounds.height + 2 * offsetBlur;
-
-  const imgTop = oriBounds.top + cropTop;
-  const imgLeft = oriBounds.left + cropLeft;
-
-  return new Promise(resolve => {
-    element.cloneAsImage(img => resolve({ img, imgTop, imgLeft }), {
-      top: cropTop - objectOffsetTop,
-      left: cropLeft - objectOffsetLeft,
-      width: cropWidth,
-      height: cropHeight
-    });
-  });
-};
 
 /**
  * To hide control border and order boxes on selected element
@@ -707,4 +671,98 @@ const showPlayOrderBox = (element, playIn, playOut, isStop) => {
   if (isStop || !rect) return;
 
   return showPlayOrderBox(rect, playIn, playOut, true);
+};
+
+/**
+ * Create a image from fabric object
+ * @param {Object} element fabric element
+ * @param {Number} offsetBlur offsect to bouding box, this value ensure copping image capture blur effect
+ * @returns {Object} a cropping image and its top left position
+ */
+const createImage = (element, blurOffset) => {
+  const canvasEl = toCanvasElement(element, blurOffset);
+
+  return new fabric.Image(canvasEl);
+};
+
+/**
+ * Create a canvas element from fabric object
+ * @param {Object} element fabric element
+ * @param {Number} offsetBlur offsect to bouding box, this value ensure copping image capture blur effect
+ * @returns {Object} a cropping element of fabric object
+ */
+const toCanvasElement = (element, blurOffset) => {
+  const origParams = fabric.util.saveObjectTransform(element);
+  const originalGroup = element.group;
+  const originalShadow =
+    element.objectType === OBJECT_TYPE.TEXT
+      ? element.getObjects()[0].shadow
+      : element.shadow;
+
+  delete element.group;
+
+  const el = fabric.util.createCanvasElement();
+
+  const boundingRect = element.getBoundingRect(true, true);
+  const shadow = originalShadow;
+  const shadowOffset = { x: 0, y: 0 };
+
+  if (shadow) {
+    const shadowBlur = shadow.blur;
+    const scaling = shadow.nonScaling
+      ? { scaleX: 1, scaleY: 1 }
+      : element.getObjectScaling();
+
+    // consider non scaling shadow.
+    shadowOffset.x =
+      2 *
+      Math.round(Math.abs(shadow.offsetX) + shadowBlur) *
+      Math.abs(scaling.scaleX);
+    shadowOffset.y =
+      2 *
+      Math.round(Math.abs(shadow.offsetY) + shadowBlur) *
+      Math.abs(scaling.scaleY);
+  }
+
+  const offset = blurOffset || 0;
+  const width = boundingRect.width + shadowOffset.x + offset;
+  const height = boundingRect.height + shadowOffset.y + offset;
+
+  // if the current width/height is not an integer
+  // we need to make it so.
+  el.width = Math.ceil(width);
+  el.height = Math.ceil(height);
+
+  let canvas = new fabric.StaticCanvas(el, {
+    enableRetinaScaling: false,
+    renderOnAddRemove: false,
+    skipOffscreen: false
+  });
+
+  element.setPositionByOrigin(
+    new fabric.Point(canvas.width / 2, canvas.height / 2),
+    'center',
+    'center'
+  );
+
+  const originalCanvas = element.canvas;
+  canvas.add(element);
+
+  const canvasEl = canvas.toCanvasElement();
+
+  element.shadow = originalShadow;
+  element.set('canvas', originalCanvas);
+
+  if (originalGroup) {
+    element.group = originalGroup;
+  }
+  element.set(origParams).setCoords();
+  // canvas.dispose will call image.dispose that will nullify the elements
+  // since this canvas is a simple element for the process, we remove references
+  // to objects in this way in order to avoid object trashing.
+  canvas._objects = [];
+  canvas.dispose();
+  canvas = null;
+
+  return canvasEl;
 };
