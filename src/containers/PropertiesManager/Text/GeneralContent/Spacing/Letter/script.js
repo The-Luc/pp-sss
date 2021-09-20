@@ -29,6 +29,7 @@ export default {
   },
   data() {
     return {
+      componentKey: true,
       prependedIcon: ICON_LOCAL.PREPENDED_LETTER,
       appendedIcon: ICON_LOCAL.APPENDED_ICON
     };
@@ -53,8 +54,12 @@ export default {
         0,
         this.items
       );
-      const updateData = isValid ? { letterSpacing } : {};
-      this.$root.$emit(EVENT_TYPE.CHANGE_TEXT_PROPERTIES, updateData);
+      if (!isValid) {
+        this.componentKey = !this.componentKey;
+        return;
+      }
+
+      this.$root.$emit(EVENT_TYPE.CHANGE_TEXT_PROPERTIES, { letterSpacing });
     }
   }
 };

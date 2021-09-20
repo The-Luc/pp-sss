@@ -1383,6 +1383,14 @@ export default {
 
       const element = window.printCanvas.getActiveObject();
 
+      if (!isEmpty(prop.fontSize)) {
+        const { x, y } = element?.aCoords?.tl || {};
+        prop.coord = {
+          x: pxToIn(x),
+          y: pxToIn(y)
+        };
+      }
+
       if (isEmpty(element) || element.objectType !== objectType) return;
 
       const newProp = this.updateElementProp(element, prop, objectType);

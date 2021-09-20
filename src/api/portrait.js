@@ -23,8 +23,8 @@ const portraitSevice = {
       delete printPortraitSettings.folders;
 
       const saveSettings = {
-        id: Date.now(),
         ...printPortraitSettings,
+        id: Date.now(),
         savedDate: moment(new Date()).format('ll')
       };
 
@@ -68,8 +68,8 @@ const portraitSevice = {
       delete digitalPortraitSettings.folders;
 
       const saveSettings = {
-        id: Date.now(),
         ...portraitSettings,
+        id: Date.now(),
         savedDate: moment(new Date()).format('ll')
       };
 

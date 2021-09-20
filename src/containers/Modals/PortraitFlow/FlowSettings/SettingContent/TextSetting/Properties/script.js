@@ -78,13 +78,6 @@ export default {
   },
   methods: {
     /**
-     * Emit font size value to parent
-     * @param {Number}  fontSize font size value user entered
-     */
-    onChangFontSize(fontSize) {
-      this.$emit('change', { fontSize });
-    },
-    /**
      * Emit color value to parent
      * @param {String}  color color value user selected
      */
@@ -92,7 +85,7 @@ export default {
       this.$emit('change', { color });
     },
     /**
-     * Emit font family/presentation/text case value to parent
+     * Emit font fontSize/family/presentation/text case value to parent
      * @param {Object}  data font family/presentation/text case value user entered or selected
      */
     onChange(data) {
