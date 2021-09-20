@@ -1,13 +1,13 @@
 import Properties from '@/components/Properties/BoxProperties';
-import StyleContent from '@/components/Properties/Groups/General';
 import ArrangeContent from '@/components/Properties/Groups/Arrange';
+import StyleContent from '@/containers/Properties/Groups/General';
 import TabPropertiesMenu from '@/containers/TabPropertiesMenu';
 import GeneralContent from './GeneralContent';
 
-import { useElementProperties } from '@/hooks';
-import { DEFAULT_TEXT } from '@/common/constants';
 import { computedObjectSize, activeCanvas } from '@/common/utils';
-import { EVENT_TYPE } from '@/common/constants/eventType';
+import { useElementProperties } from '@/hooks';
+
+import { DEFAULT_TEXT, EVENT_TYPE } from '@/common/constants';
 
 export default {
   components: {

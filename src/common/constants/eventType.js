@@ -11,7 +11,7 @@ export const EVENT_TYPE = {
   CHANGE_OBJECT_IDS_ORDER: 'changeObjectIdsOrder',
   PREVIEW_ANIMATION: 'previewAnimation',
   DIGITAL_BACKGROUND_ADD: 'digitalAddBackground',
-  DIGITAL_BACKGROUND_PROP_CHANGE: 'digitalChangeBackgroundProperties',
+  BACKGROUND_PROP_CHANGE: 'changeBackgroundProperties',
   DIGITAL_BACKGROUND_REMOVE: 'digitalDeleteBackground',
   SAVE_STYLE: 'saveStyle',
   COPY_OBJ: 'copyObj',
@@ -29,7 +29,8 @@ export const EVENT_TYPE = {
   VIDEO_STOP_KEEP_FORWARD: 'videoStopKeepForward',
   TRANSITION_PREVIEW: 'transitionPreview',
   APPLY_ANIMATION: 'applyAnimation',
-  CHANGE_ANIMATION_ORDER: 'changeAnimationOrder'
+  CHANGE_ANIMATION_ORDER: 'changeAnimationOrder',
+  BACKGROUND_SELECT: 'backgroundToggleSelection'
 };
 
 export const CANVAS_EVENT_TYPE = {

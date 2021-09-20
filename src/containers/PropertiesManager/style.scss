@@ -8,23 +8,15 @@
 
   .box-property-container {
     .v-window__container {
-      max-height: 73vh;
+      max-height: calc(100vh - 198px);
       overflow-y: auto;
-
-      @media screen and (min-width: 1500px) {
-        max-height: 85vh;
-      }
     }
   }
   &.digital {
     .box-property-container {
       .v-window__container {
-        max-height: 53vh;
+        max-height: calc(100vh - 320px);
         overflow-y: auto;
-
-        @media screen and (min-width: 1500px) {
-          max-height: 65vh;
-        }
       }
     }
   }

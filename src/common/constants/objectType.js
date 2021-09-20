@@ -5,7 +5,8 @@ export const OBJECT_TYPE = {
   CLIP_ART: 'ClipArtObject',
   SHAPE: 'ShapeObject',
   RECT: 'RectObject',
-  VIDEO: 'VideoObject'
+  VIDEO: 'VideoObject',
+  PORTRAIT_IMAGE: 'PortraitImage'
 };
 
 export const FABRIC_OBJECT_TYPE = {

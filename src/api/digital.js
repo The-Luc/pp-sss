@@ -1,5 +1,9 @@
 import { APPLY_MODE, OBJECT_TYPE } from '@/common/constants';
-import { getSuccessWithData, getErrorWithMessages } from '@/common/models';
+import {
+  getSuccessWithData,
+  getErrorWithMessages,
+  Transition
+} from '@/common/models';
 import { parseItem } from '@/common/storage/session.helper';
 
 import { isEmpty, getPageName } from '@/common/utils';
@@ -127,6 +131,61 @@ const digitalService = {
     const { sheets } = await bookService.getBookDigital(bookId);
 
     const frames = sheets[sheetId].frames;
+
+    /**
+     * Temp code for re-checking transition - START
+     * It should be done in backend
+     */
+    const findSectionSheetIndex = () => {
+      const sectionIndex = window.data.book.sections.findIndex(section => {
+        return section.sheets.findIndex(({ id }) => id === sheetId) >= 0;
+      });
+
+      if (sectionIndex < 0) return { sectionIndex: -1, sheetIndex: -1 };
+
+      const sheetIndex = window.data.book.sections[
+        sectionIndex
+      ].sheets.findIndex(({ id }) => id === sheetId);
+
+      return sheetIndex < 0
+        ? { sectionIndex: -1, sheetIndex: -1 }
+        : { sectionIndex, sheetIndex };
+    };
+
+    const reCalculateTransition = () => {
+      const { sectionIndex, sheetIndex } = findSectionSheetIndex(sheetId);
+
+      if (sheetIndex < 0) return;
+
+      const transitions =
+        window.data.book.sections[sectionIndex].sheets[sheetIndex].digitalData
+          .transitions;
+
+      const correctTotal = frames.length - 1;
+
+      if (transitions.length === correctTotal) return;
+
+      if (transitions.length > correctTotal) {
+        const totalMore = transitions.length - correctTotal;
+
+        transitions.splice(transitions.length - totalMore, totalMore);
+      }
+
+      if (transitions.length < correctTotal) {
+        const totalLess = correctTotal - transitions.length;
+
+        for (let i = 0; i < totalLess; i++) {
+          transitions.splice(transitions.length, 1, new Transition());
+        }
+      }
+
+      window.data.book.sections[sectionIndex].sheets[
+        sheetIndex
+      ].digitalData.transitions = transitions;
+    };
+
+    reCalculateTransition();
+    /** Temp code for re-checking transition - END */
 
     const data = frames || [];
 
@@ -360,7 +419,7 @@ async function savePlayInConfig(objectType, config) {
 
   objects.forEach(object => {
     if (object.type === objectType) {
-      object.animationIn = setting;
+      object.animationIn = { ...setting };
     }
   });
 
@@ -381,7 +440,7 @@ async function savePlayOutConfig(objectType, config) {
 
   objects.forEach(object => {
     if (object.type === objectType) {
-      object.animationOut = setting;
+      object.animationOut = { ...setting };
     }
   });
 

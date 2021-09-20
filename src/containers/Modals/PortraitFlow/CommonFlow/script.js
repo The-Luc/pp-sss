@@ -15,7 +15,7 @@ import {
   DEFAULT_MARGIN_PAGE_TITLE,
   PORTRAIT_TEACHER_PLACEMENT
 } from '@/common/constants';
-import { cloneDeep } from 'lodash';
+import { cloneDeep, merge } from 'lodash';
 import {
   getPortraitsByRole,
   getTeacherAndAsstOrder,
@@ -74,6 +74,10 @@ export default {
     isDigital: {
       type: Boolean,
       default: false
+    },
+    initialLayoutSetting: {
+      type: Object,
+      default: () => ({})
     }
   },
   setup() {
@@ -98,9 +102,11 @@ export default {
       textSettings: this.initDataTextSettings()
     });
 
+    merge(flowSettings.layoutSettings, this.initialLayoutSetting);
+
     this.onSettingChange(flowSettings);
 
-    this.savedSettings = await this.getSavedSettings();
+    this.savedSettings = await this.getSavedSettings(this.isDigital);
   },
   computed: {
     title() {
@@ -178,7 +184,10 @@ export default {
         return;
       }
 
-      await this.saveSettings({ ...this.flowSettings, ...name });
+      await this.saveSettings(
+        { ...this.flowSettings, ...name },
+        this.isDigital
+      );
       this.onCancelSaveSettings();
 
       this.isOpenModalSuccess = true;
@@ -186,7 +195,7 @@ export default {
         this.isOpenModalSuccess = false;
       }, 2000);
 
-      this.savedSettings = await this.getSavedSettings();
+      this.savedSettings = await this.getSavedSettings(this.isDigital);
     },
     /**
      * Handle flow setting change
@@ -297,9 +306,16 @@ export default {
 
       const portraits = this.rearrangePortraitOrder();
 
-      this.flowSettings.folders[0].assets = portraits;
-      this.flowSettings.folders[0].assetsCount = portraits.length;
-      this.flowSettings.totalPortraitsCount = portraits.length;
+      const folders = cloneDeep(this.flowSettings.folders);
+
+      folders[0].assets = portraits;
+      folders[0].assetsCount = portraits.length;
+
+      this.onSettingChange({
+        ...this.flowSettings,
+        totalPortraitsCount: portraits.length,
+        folders
+      });
     },
     /**
      * Load portrait setting saved

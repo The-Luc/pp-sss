@@ -2,7 +2,9 @@ import CommonFlow from '../CommonFlow';
 
 import {
   PORTRAIT_FLOW_OPTION_MULTI,
-  PORTRAIT_FLOW_OPTION_SINGLE
+  PORTRAIT_FLOW_OPTION_SINGLE,
+  DEFAULT_DIGITAL_PORTRAIT,
+  DEFAULT_MARGIN
 } from '@/common/constants';
 import { useSheet } from '@/hooks';
 import { cloneDeep } from 'lodash';
@@ -37,6 +39,14 @@ export default {
     return { currentSheet, getSheets };
   },
   data() {
+    const initialLayoutSetting = {
+      rowCount: DEFAULT_DIGITAL_PORTRAIT.ROW_COUNT,
+      colCount: DEFAULT_DIGITAL_PORTRAIT.COLUMN_COUNT,
+      margins: {
+        bottom: DEFAULT_MARGIN.DIGITAL_BOTTOM
+      }
+    };
+
     return {
       flowSettings: {},
       requiredPages: [],
@@ -44,7 +54,8 @@ export default {
       flowReviewCompKey: true,
       isWarningDisplayed: false,
       warningText: '',
-      startPage: 1
+      startPage: 1,
+      initialLayoutSetting
     };
   },
   computed: {
@@ -123,7 +134,7 @@ export default {
      * Emit accept event to parent
      */
     onApply() {
-      this.$emit('accept', this.flowSettings);
+      this.$emit('accept', this.flowSettings, this.requiredPages);
     },
     /**
      * Set new start page

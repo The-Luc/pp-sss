@@ -6,12 +6,19 @@ import Effect from './Effect';
 import Vertical from './Vertical';
 import Spacing from './Spacing';
 
-import { useAppCommon, useElementProperties, useAnimation } from '@/hooks';
+import {
+  useAppCommon,
+  useElementProperties,
+  useAnimation,
+  useObjectProperties
+} from '@/hooks';
 import {
   EVENT_TYPE,
   OBJECT_TYPE,
+  TEXT_APPLY_OPTIONS,
   TEXT_HORIZONTAL_ALIGN
 } from '@/common/constants';
+import { getOrdeOptions } from '@/common/utils';
 
 export default {
   components: {
@@ -27,21 +34,25 @@ export default {
     const { isDigitalEdition } = useAppCommon();
     const { getProperty } = useElementProperties();
     const { playInOrder, playOutOrder } = useAnimation();
+    const { listObjects } = useObjectProperties();
 
     return {
       getProperty,
       isDigitalEdition,
       playInOrder,
-      playOutOrder
+      playOutOrder,
+      listObjects
+    };
+  },
+  data() {
+    return {
+      playInConfig: this.getProperty('animationIn') || {},
+      playOutConfig: this.getProperty('animationOut') || {},
+      applyOptions: TEXT_APPLY_OPTIONS,
+      orderOptions: getOrdeOptions(this.listObjects)
     };
   },
   computed: {
-    playInConfig() {
-      return this.getProperty('animationIn') || {};
-    },
-    playOutConfig() {
-      return this.getProperty('animationOut') || {};
-    },
     selectedAlignment() {
       return (
         this.getProperty('alignment')?.horizontal || TEXT_HORIZONTAL_ALIGN.LEFT
@@ -77,10 +88,10 @@ export default {
     },
     /**
      * Emit preview option selected object
-     * @param {Object} animationConfig preview option
+     * @param {Object} config preview option
      */
-    onClickPreview(config) {
-      this.$root.$emit(EVENT_TYPE.PREVIEW_ANIMATION, config);
+    onClickPreview({ config }) {
+      this.$root.$emit(EVENT_TYPE.PREVIEW_ANIMATION, { config });
     }
   }
 };

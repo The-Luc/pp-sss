@@ -20,26 +20,24 @@ export const useFrame = () => {
     currentFrame,
     frames,
     currentFrameId,
-    firstFrameThumbnail,
-    currentFrameIndex,
-    totalFrame
+    firstFrameThumbnail
   } = useGetters({
     frames: DIGITAL_GETTERS.GET_FRAMES_WIDTH_IDS,
     currentFrame: DIGITAL_GETTERS.CURRENT_FRAME,
     currentFrameId: DIGITAL_GETTERS.CURRENT_FRAME_ID,
-    firstFrameThumbnail: DIGITAL_GETTERS.GET_FIRST_FRAME_THUMBNAIL,
-    currentFrameIndex: DIGITAL_GETTERS.CURRENT_FRAME_INDEX,
-    totalFrame: DIGITAL_GETTERS.TOTAL_FRAME
+    firstFrameThumbnail: DIGITAL_GETTERS.GET_FIRST_FRAME_THUMBNAIL
   });
 
   const {
     setSupplementalLayoutId,
     updateFrameObjects,
-    setCurrentFrameId
+    setCurrentFrameId,
+    setFrames
   } = useMutations({
     setSupplementalLayoutId: DIGITAL_MUTATES.SET_SUPPLEMENTAL_LAYOUT_ID,
     setCurrentFrameId: DIGITAL_MUTATES.SET_CURRENT_FRAME_ID,
-    updateFrameObjects: DIGITAL_MUTATES.UPDATE_OBJECTS_TO_FRAME
+    updateFrameObjects: DIGITAL_MUTATES.UPDATE_OBJECTS_TO_FRAME,
+    setFrames: DIGITAL_MUTATES.SET_FRAMES
   });
 
   return {
@@ -50,8 +48,7 @@ export const useFrame = () => {
     setSupplementalLayoutId,
     updateFrameObjects,
     firstFrameThumbnail,
-    currentFrameIndex,
-    totalFrame
+    setFrames
   };
 };
 

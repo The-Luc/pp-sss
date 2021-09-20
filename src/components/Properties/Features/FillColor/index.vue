@@ -1,6 +1,10 @@
 <template>
   <div class="fill-color-container">
-    <ColorPicker label="Fill Color" :color="value" @change="onChange" />
+    <color-picker
+      label="Fill Color"
+      :color="value"
+      @change="onChange"
+    ></color-picker>
   </div>
 </template>
 

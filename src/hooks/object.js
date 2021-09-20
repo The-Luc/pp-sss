@@ -1,7 +1,13 @@
-import { useGetters } from 'vuex-composition-helpers';
+import { useGetters, useMutations } from 'vuex-composition-helpers';
 import { GETTERS as APP_GETTERS } from '@/store/modules/app/const';
-import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
-import { GETTERS as DIGITAL_GETTERS } from '@/store/modules/digital/const';
+import {
+  GETTERS as PRINT_GETTERS,
+  MUTATES as PRINT_MUTATES
+} from '@/store/modules/print/const';
+import {
+  GETTERS as DIGITAL_GETTERS,
+  MUTATES as DIGITAL_MUTATES
+} from '@/store/modules/digital/const';
 import { useAppCommon } from './common';
 
 export const useObjectProperties = () => {
@@ -47,5 +53,25 @@ export const useTotalObjects = (isDigital = false) => {
   return {
     totalBackground,
     totalObject
+  };
+};
+
+/**
+ * The hook allow update book objetcs
+ * @return {Object} Function to update book objetcs
+ */
+export const useObjects = () => {
+  const { value: isDigital } = useAppCommon().isDigitalEdition;
+
+  const MUTATES = isDigital ? DIGITAL_MUTATES : PRINT_MUTATES;
+
+  const { addObjecs, deleteObjects } = useMutations({
+    addObjecs: MUTATES.ADD_OBJECTS,
+    deleteObjects: MUTATES.DELETE_OBJECTS
+  });
+
+  return {
+    addObjecs,
+    deleteObjects
   };
 };

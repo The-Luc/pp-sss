@@ -61,7 +61,8 @@ export default {
       defaultRatio: DEFAULT_PORTRAIT_RATIO,
       portraitWidth: 0,
       namesHeight: {},
-      previewHeight: 0
+      previewHeight: 0,
+      lineHeight: 0
     };
   },
   computed: {
@@ -83,6 +84,10 @@ export default {
         this.previewHeight,
         this.isDigital
       );
+
+      this.lineHeight = this.isCenterPosition
+        ? parseFloat(style.lineHeight) * nameLines
+        : 0;
 
       if (nameLines === 2) {
         style.justifyContent = this.isFirstLastDisplay
@@ -328,16 +333,24 @@ export default {
      */
     updateLayout() {
       const portraitsEl = this.$refs.portraitsSection.$refs.portraits;
-      const portraitsContainerEl = this.$refs.portraitsSection.$refs
-        .portraitsContainer;
+      const thumbWrapperEl = this.$refs.thumbWrapper;
 
       if (!portraitsEl.style) return;
 
       const row = this.layout.rowCount;
       const col = this.layout.colCount;
 
-      const containerWidth = portraitsContainerEl.clientWidth;
-      const containerHeight = portraitsContainerEl.clientHeight;
+      const styles = window.getComputedStyle(thumbWrapperEl);
+
+      const containerHeight =
+        thumbWrapperEl.clientHeight -
+        parseFloat(styles.paddingTop) -
+        parseFloat(styles.paddingBottom);
+
+      const containerWidth =
+        thumbWrapperEl.clientWidth -
+        parseFloat(styles.paddingLeft) -
+        parseFloat(styles.paddingRight);
 
       const width =
         parseInt(containerWidth) / (col + (col - 1) * this.defaultGap);
@@ -346,11 +359,14 @@ export default {
 
       this.portraitWidth = Math.min(
         width,
-        (height - height * 0.1) / this.defaultRatio
+        (height - this.lineHeight) / this.defaultRatio
       );
+
+      this.portraitWidth = Math.max(this.portraitWidth, 0);
 
       portraitsEl.style.setProperty('--row-count', this.layout.rowCount);
       portraitsEl.style.setProperty('--col-count', this.layout.colCount);
+      portraitsEl.style.setProperty('--name-height', this.lineHeight + 'px');
 
       portraitsEl.style.setProperty(
         '--portrait-width',
@@ -399,10 +415,9 @@ export default {
       const nameContainerHeight = this.$refs.portraitsSection?.$el.clientHeight;
       const portraitHeight = this.portraitWidth * this.defaultRatio;
 
-      const gridHeight = portraitHeight + portraitHeight * 0.1;
-      const gap = (nameContainerHeight - gridHeight * row) / (row - 1);
+      const gap = (nameContainerHeight - portraitHeight * row) / (row - 1);
 
-      this.namesHeight = { height: `${gridHeight + gap}px` };
+      this.namesHeight = { height: `${portraitHeight + gap}px` };
     },
     /**
      * Set height for thumbnail wrapper container when has page title
@@ -472,7 +487,7 @@ export default {
 
       if (!width || !height) return;
 
-      const calcImageWidth = (height * 0.9) / this.defaultRatio;
+      const calcImageWidth = (height - this.lineHeight) / this.defaultRatio;
       const enlargeWidth = Math.min(width, calcImageWidth) + 'px';
 
       portraitsEl.style.setProperty('--enlarge-width', enlargeWidth);

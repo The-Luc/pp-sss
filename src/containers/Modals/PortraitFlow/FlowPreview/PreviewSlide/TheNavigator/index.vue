@@ -1,5 +1,8 @@
 <template>
-  <div class="slide-navigator" :class="{ digital: isDigital }">
+  <div
+    class="slide-navigator"
+    :class="{ digital: isDigital, disabled: disabled }"
+  >
     <move-control
       is-back-control
       :disabled="!isPosibleToBack"
@@ -9,11 +12,12 @@
     <div class="paging">
       <i
         v-for="(page, index) in pages"
+        :ref="`page${isActivated(index) ? 'Selected' : ''}`"
         :key="index"
         class="material-icons item"
         :data-test="index"
         :data-test2="index === currentPageIndex"
-        :class="{ active: index === currentPageIndex }"
+        :class="{ active: isActivated(index) }"
         @click="onSelected(index)"
       >
         circle

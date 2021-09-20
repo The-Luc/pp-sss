@@ -16,6 +16,14 @@ export default {
     rulerSize: {
       type: Object,
       required: true
+    },
+    isScrollX: {
+      type: Boolean,
+      default: false
+    },
+    isScrollY: {
+      type: Boolean,
+      default: false
     }
   },
   data() {

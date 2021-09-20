@@ -8,18 +8,19 @@
       <Vertical />
     </div>
     <Spacing />
-    <Animation
+    <animation
       v-if="isDigitalEdition"
       title="Text animation"
       :play-in-config="playInConfig"
       :play-out-config="playOutConfig"
       :play-in-order="playInOrder"
       :play-out-order="playOutOrder"
-      @change="onChange"
+      :apply-options="applyOptions"
+      :order-options="orderOptions"
       @apply="onApply"
       @preview="onClickPreview"
       @changeOrder="onChangeOrder"
-    />
+    ></animation>
   </div>
 </template>
 

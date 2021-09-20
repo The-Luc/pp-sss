@@ -115,12 +115,6 @@ export const getters = {
   },
   [DIGITAL._GETTERS.TRIGGER_TRANSITION]: ({ triggerChange }) =>
     triggerChange.transition,
-  [DIGITAL._GETTERS.CURRENT_FRAME_INDEX]: ({ frameIds, currentFrameId }) => {
-    return frameIds.indexOf(currentFrameId);
-  },
-  [DIGITAL._GETTERS.TOTAL_FRAME]: ({ frameIds }) => {
-    return frameIds.length;
-  },
   [DIGITAL._GETTERS.STORE_ANIMATION_PROP]: ({ storeAnimationProp }) => {
     return storeAnimationProp;
   },
@@ -139,5 +133,8 @@ export const getters = {
       playOutIds.findIndex(ids => ids.includes(currentObjectId)) || 0;
 
     return index + 1;
+  },
+  [DIGITAL._GETTERS.TOTAL_ANIMATION_PLAY_OUT_ORDER]: ({ playOutIds }) => {
+    return playOutIds.length;
   }
 };

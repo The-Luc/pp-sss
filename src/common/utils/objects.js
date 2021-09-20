@@ -161,3 +161,18 @@ export const isVideoPlaying = video => {
 export const isContainDebounceProp = prop => {
   return DEBOUNCE_PROPERTIES.some(p => !isEmpty(prop[p]));
 };
+
+/**
+ * Get order options from order
+ *
+ * @param   {Array} objects order list
+ * @returns {Array}         options
+ */
+export const getOrdeOptions = objects => {
+  return Object.values(objects)
+    .filter(obj => obj?.type && obj.type !== OBJECT_TYPE.BACKGROUND)
+    .map((_, i) => ({
+      name: i + 1,
+      value: i + 1
+    }));
+};

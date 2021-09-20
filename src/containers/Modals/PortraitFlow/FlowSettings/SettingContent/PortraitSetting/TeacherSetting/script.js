@@ -171,7 +171,9 @@ export default {
   watch: {
     teacherSettings: {
       deep: true,
-      handler() {
+      handler(val, oldVal) {
+        if (JSON.stringify(val) === JSON.stringify(oldVal)) return;
+
         this.initData();
         this.applyRules();
 
@@ -182,8 +184,8 @@ export default {
     },
     layout: {
       deep: true,
-      handler(val, oldval) {
-        if (JSON.stringify(val) === JSON.stringify(oldval)) return;
+      handler(val, oldVal) {
+        if (JSON.stringify(val) === JSON.stringify(oldVal)) return;
 
         this.initData();
         this.teacherPortraitSizeRule();
@@ -198,6 +200,7 @@ export default {
       this.asstPlacementRule();
       this.numberOfLargePortraitsRule();
       this.alphabeticalOrder();
+      this.teacherPortraitSizeRule();
     },
     /**
      * Rule for Assistant placement
@@ -378,6 +381,9 @@ export default {
 
       return options.find(o => o.value === val);
     },
+    /**
+     * To disable all input fields in teacher settings
+     */
     disableInputField() {
       const teacherSettingsEl = this.$refs.teacherSettings;
       const inputs = teacherSettingsEl.querySelectorAll('input[type="text"]');

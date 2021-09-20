@@ -7,7 +7,7 @@
     --col-count: 5;
     --portrait-width: 35px;
     --image-height: calc(var(--portrait-width) * 1.25);
-    --name-height: calc(var(--image-height) * 0.1);
+    --name-height: 0;
     --portrait-height: calc(var(--name-height) + var(--image-height));
     --align: space-between;
     --enlarge-width: 100%;

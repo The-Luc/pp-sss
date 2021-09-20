@@ -1,8 +1,8 @@
 import Properties from '@/components/Properties/BoxProperties';
 import TabMenu from '@/components/TabMenu';
 import Opacity from '@/components/Properties/Features/Opacity';
-import Flip from '@/components/Properties/Groups/Arrange/Flip';
-import Remove from '../Remove';
+import Flip from '@/components/Properties/Features/Flip';
+import RemoveButton from './Remove';
 
 export default {
   components: {
@@ -10,7 +10,7 @@ export default {
     TabMenu,
     Opacity,
     Flip,
-    Remove
+    RemoveButton
   },
   props: {
     opacity: {

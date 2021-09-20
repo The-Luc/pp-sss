@@ -1,8 +1,22 @@
-import FillColor from '@/containers/Properties/Features/FillColor';
+import FillColor from '@/components/Properties/Features/FillColor';
 import Opacity from '@/components/Properties/Features/Opacity';
 import PpShadow from '@/components/Properties/Features/Shadow';
 import Border from '@/components/Properties/Features/Border';
 import Animation from '@/components/Properties/Features/Animation';
+
+import {
+  useAnimation,
+  useElementProperties,
+  useObjectProperties
+} from '@/hooks';
+
+import {
+  CLIP_ART_APPLY_OPTIONS,
+  IMAGE_APPLY_OPTIONS,
+  OBJECT_TYPE,
+  SHAPE_APPLY_OPTIONS
+} from '@/common/constants';
+import { getOrdeOptions } from '@/common/utils';
 
 export default {
   components: {
@@ -40,17 +54,33 @@ export default {
     isDigital: {
       type: Boolean
     },
-    playInConfig: {
-      type: Object,
-      default: () => ({})
+    isAnimationDisplayed: {
+      type: Boolean,
+      default: true
+    }
+  },
+  setup() {
+    const { listObjects } = useObjectProperties();
+    const { getProperty } = useElementProperties();
+    const { playInOrder, playOutOrder } = useAnimation();
+
+    return { listObjects, getProperty, playInOrder, playOutOrder };
+  },
+  data() {
+    const objectType = this.getProperty('type');
+
+    return {
+      animationTitle: this.getAnimationTitle(objectType),
+      applyOptions: this.getApplyOptions(objectType),
+      orderOptions: getOrdeOptions(this.listObjects)
+    };
+  },
+  computed: {
+    playInConfig() {
+      return this.getProperty('animationIn') || {};
     },
-    playOutConfig: {
-      type: Object,
-      default: () => ({})
-    },
-    animationTitle: {
-      type: String,
-      default: ''
+    playOutConfig() {
+      return this.getProperty('animationOut') || {};
     }
   },
   methods: {
@@ -90,13 +120,6 @@ export default {
       this.$emit('changeBorder', object);
     },
     /**
-     * Emit animation option selected
-     * @param {Object} animationConfig Animation option selected
-     */
-    onChangeAnimation(object) {
-      this.$emit('change', object);
-    },
-    /**
      * Emit apply option selected
      * @param {Object} applyOption apply option selected
      */
@@ -107,8 +130,8 @@ export default {
      * Emit preview option selected object
      * @param {Object} animationConfig preview option
      */
-    onClickPreview(config) {
-      this.$emit('preview', config);
+    onClickPreview({ config }) {
+      this.$emit('preview', { config });
     },
     /**
      * Emit order option selected object
@@ -116,6 +139,36 @@ export default {
      */
     onChangeOrder(order) {
       this.$emit('changeOrder', order);
+    },
+    /**
+     * Get animation title for current object
+     *
+     * @param   {String}  objectType  type of current object
+     * @returns {String}              title
+     */
+    getAnimationTitle(objectType) {
+      if (objectType === OBJECT_TYPE.SHAPE) return 'Shape Animation';
+
+      if (objectType === OBJECT_TYPE.CLIP_ART) return 'Clip Art Animation';
+
+      if (objectType === OBJECT_TYPE.IMAGE) return 'Image Animation';
+
+      return '';
+    },
+    /**
+     * Get apply options for current object
+     *
+     * @param   {String}  objectType  type of current object
+     * @returns {Array}               array options
+     */
+    getApplyOptions(objectType) {
+      if (objectType === OBJECT_TYPE.SHAPE) return SHAPE_APPLY_OPTIONS;
+
+      if (objectType === OBJECT_TYPE.CLIP_ART) return CLIP_ART_APPLY_OPTIONS;
+
+      if (objectType === OBJECT_TYPE.IMAGE) return IMAGE_APPLY_OPTIONS;
+
+      return [];
     }
   }
 };

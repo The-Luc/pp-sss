@@ -1,11 +1,11 @@
 import Properties from '@/components/Properties/BoxProperties';
-import TabPropertiesMenu from '@/containers/TabPropertiesMenu';
 import ArrangeContent from '@/components/Properties/Groups/Arrange';
-import General from '@/components/Properties/Groups/General';
+import TabPropertiesMenu from '@/containers/TabPropertiesMenu';
+import GeneralContent from '@/containers/Properties/Groups/General';
 import ImageStyle from './ImageStyle';
 import Reset from './Reset';
 
-import { useAppCommon, useElementProperties, useAnimation } from '@/hooks';
+import { useAppCommon, useElementProperties } from '@/hooks';
 import {
   DEFAULT_IMAGE,
   EVENT_TYPE,
@@ -19,20 +19,17 @@ export default {
     Properties,
     TabPropertiesMenu,
     ArrangeContent,
-    General,
+    GeneralContent,
     ImageStyle,
     Reset
   },
   setup() {
     const { getProperty } = useElementProperties();
     const { isDigitalEdition } = useAppCommon();
-    const { playInOrder, playOutOrder } = useAnimation();
 
     return {
       getProperty,
-      isDigitalEdition,
-      playInOrder,
-      playOutOrder
+      isDigitalEdition
     };
   },
   data() {
@@ -93,12 +90,6 @@ export default {
     },
     styleSelected() {
       return this.getProperty('styleId');
-    },
-    playInConfig() {
-      return this.getProperty('animationIn') || {};
-    },
-    playOutConfig() {
-      return this.getProperty('animationOut') || {};
     }
   },
   methods: {
@@ -210,10 +201,10 @@ export default {
     },
     /**
      * Emit preview option selected object
-     * @param {Object} animationConfig preview option
+     * @param {Object} config preview option
      */
-    onClickPreview(config) {
-      this.$root.$emit(EVENT_TYPE.PREVIEW_ANIMATION, config);
+    onClickPreview({ config }) {
+      this.$root.$emit(EVENT_TYPE.PREVIEW_ANIMATION, { config });
     },
     /**
      * Handle change object's animation order

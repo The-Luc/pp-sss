@@ -6,23 +6,25 @@
           General
         </v-tab>
         <v-tab-item value="general">
-          <GeneralContent />
+          <general-content></general-content>
         </v-tab-item>
 
         <v-tab href="#style">
           Style
         </v-tab>
         <v-tab-item value="style">
-          <StyleContent
+          <style-content
             :is-allow-fill-color="false"
             :is-show-border="true"
             :opacity-value="opacityValue"
             :current-shadow="currentShadow"
             :current-border="currentBorder"
+            :is-digital="true"
+            :is-animation-displayed="false"
             @change="onChange"
             @changeShadow="onChangeShadow"
             @changeBorder="onChangeBorder"
-          />
+          ></style-content>
         </v-tab-item>
 
         <v-tab href="#arrange">

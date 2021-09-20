@@ -1,29 +1,20 @@
 <template>
   <div class="d-flex flex-column flip-container">
-    <span class="properties-title">Flip:</span>
+    <span class="properties-title" :class="{ disabled: disabled }">Flip:</span>
 
     <div class="d-flex">
-      <ButtonProperty title="Horizontal">
-        <img
-          slot="icon"
-          class="icon-right"
-          src="@/assets/icons/switch-right.svg"
-          alt="Icon of horizontal button"
-        />
-      </ButtonProperty>
+      <flip-control
+        :disabled="disabled"
+        @click="onClickHorizontal"
+      ></flip-control>
 
-      <ButtonProperty title="Vertical">
-        <img
-          slot="icon"
-          class="icon-right"
-          src="@/assets/icons/switch-top.svg"
-          alt="Icon of vertical button"
-        />
-      </ButtonProperty>
+      <flip-control
+        :is-horizontal="false"
+        :disabled="disabled"
+        @click="onClickVertical"
+      ></flip-control>
     </div>
   </div>
 </template>
 
 <script src="./script.js" />
-
-<style lang="scss" src="./style.scss" />

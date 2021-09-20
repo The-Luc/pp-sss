@@ -8,6 +8,7 @@ import DIGITAL from './const';
 import { isEmpty } from '@/common/utils';
 import {
   addObject,
+  addObjects,
   deleteObjects,
   setBackgrounds,
   setBookInfo
@@ -79,6 +80,7 @@ export const mutations = {
     state.currentObjectId = id;
   },
   [DIGITAL._MUTATES.ADD_OBJECT]: addObject,
+  [DIGITAL._MUTATES.ADD_OBJECTS]: addObjects,
   [DIGITAL._MUTATES.SET_PROP](state, { prop }) {
     if (!state.currentObjectId) return;
 

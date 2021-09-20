@@ -113,31 +113,16 @@ export const useMutationDigitalSheet = () => {
 };
 
 export const useGetterDigitalSheet = () => {
-  const { triggerTransition } = useGetters({
-    triggerTransition: DIGITAL_GETTERS.TRIGGER_TRANSITION
+  const { triggerTransition, totalPlayOutOrder } = useGetters({
+    triggerTransition: DIGITAL_GETTERS.TRIGGER_TRANSITION,
+    totalPlayOutOrder: DIGITAL_GETTERS.TOTAL_ANIMATION_PLAY_OUT_ORDER
   });
 
-  return { triggerTransition };
+  return { triggerTransition, totalPlayOutOrder };
 };
 
 export const useActionDigitalSheet = () => {
   const { updateTriggerTransition } = useMutationDigitalSheet();
-
-  const getAndCorrectTransitions = async (sheetId, total) => {
-    const transitions = await getTransitionsApi(sheetId);
-
-    if (transitions.length === total) return transitions;
-
-    if (transitions.length > total) {
-      await removeTransitionApi(sheetId, transitions.length - total);
-
-      return await getTransitionsApi(sheetId);
-    }
-
-    await addTransitionApi(sheetId, total - transitions.length);
-
-    return await getTransitionsApi(sheetId);
-  };
 
   const applyTransition = async (
     transition,
@@ -152,7 +137,7 @@ export const useActionDigitalSheet = () => {
 
   return {
     getTransition: getTransitionApi,
-    getAndCorrectTransitions,
+    getTransitions: getTransitionsApi,
     addTransition: addTransitionApi,
     removeTransition: removeTransitionApi,
     applyTransition
