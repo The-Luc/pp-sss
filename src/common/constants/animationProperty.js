@@ -1,13 +1,13 @@
 export const PLAYBACK_OPTIONS = [
   {
     name: 'Play in Template',
-    value: 'playInTemplate'
+    value: 0
   }
 ];
 
 export const NONE_OPTION = {
   name: 'None',
-  value: 'none'
+  value: 0
 };
 
 export const REPEAT_OPTIONS = [NONE_OPTION];
@@ -16,24 +16,24 @@ export const PLAY_IN_OUT_OPTIONS = [
   NONE_OPTION,
   {
     name: 'Fade and Scale',
-    value: 'fadeAndScale'
+    value: 0
   }
 ];
 
 export const PLAY_IN_STYLES = {
-  BLUR: 'blur',
-  FADE_IN: 'fadeIn',
-  FADE_SCALE: 'fadeAndScale',
-  FADE_SLIDE_IN: 'fadeAndSlideIn',
-  SLIDE_IN: 'slideIn'
+  BLUR: 1,
+  FADE_IN: 2,
+  FADE_SCALE: 3,
+  FADE_SLIDE_IN: 4,
+  SLIDE_IN: 5
 };
 
 export const PLAY_OUT_STYLES = {
-  BLUR: 'blur',
-  FADE_OUT: 'fadeOut',
-  FADE_SCALE: 'fadeAndScale',
-  FADE_SLIDE_OUT: 'fadeAndSlideOut',
-  SLIDE_OUT: 'slideOut'
+  BLUR: 1,
+  FADE_OUT: 2,
+  FADE_SCALE: 3,
+  FADE_SLIDE_OUT: 4,
+  SLIDE_OUT: 5
 };
 export const PLAY_IN_OPTIONS = [
   NONE_OPTION,
@@ -90,10 +90,10 @@ export const PLAY_OUT_OPTIONS = [
 ];
 
 export const ANIMATION_DIR = {
-  LEFT_RIGHT: 'leftToRight',
-  RIGHT_LEFT: 'rightToLeft',
-  TOP_BOTTOM: 'topToBottom',
-  BOTTOM_TOP: 'bottomToTop'
+  LEFT_RIGHT: 0,
+  RIGHT_LEFT: 1,
+  TOP_BOTTOM: 2,
+  BOTTOM_TOP: 3
 };
 
 export const DIRECTION_OPTIONS = [
@@ -122,11 +122,11 @@ export const DIRECTION_OPTIONS = [
 export const VIDEO_ORDER = [
   {
     name: '1',
-    value: '1'
+    value: 1
   },
   {
     name: '2',
-    value: '2'
+    value: 2
   }
 ];
 

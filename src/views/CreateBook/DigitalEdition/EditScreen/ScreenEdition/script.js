@@ -2542,10 +2542,10 @@ export default {
 
       const isBackground = objectType === OBJECT_TYPE.BACKGROUND;
 
-      if (isBackground) {
-        return this.setBackgroundProp({ prop });
-      } else if (!isBackground && storeType === APPLY_MODE.SELF) {
-        return this.setObjectProp({ prop });
+      if (storeType === APPLY_MODE.SELF) {
+        return isBackground
+          ? this.setBackgroundProp({ prop })
+          : this.setObjectProp({ prop });
       }
 
       if (storeType === APPLY_MODE.FRAME) {
@@ -2557,14 +2557,16 @@ export default {
         return this.setPropOfMultipleObjects({ data: props });
       }
 
-      const storeTypeId =
-        storeType === APPLY_MODE.SECTION ? this.pageSelected.id : this.book.id;
+      const storeTypeId = {
+        [APPLY_MODE.SECTION]: this.pageSelected.sectionId,
+        [APPLY_MODE.BOOK]: this.book.id
+      };
 
       const storeAnimationProp = {
         [animationType]: {
           [objectType]: {
             storeType,
-            storeTypeId,
+            storeTypeId: storeTypeId[storeType],
             setting: animationConfig
           }
         }
@@ -2579,17 +2581,15 @@ export default {
 
       this.setPropOfMultipleObjects({ data: props });
 
-      if ([APPLY_MODE.SECTION, APPLY_MODE.BOOK].includes(storeType)) {
-        this.frames.forEach(({ frame: { objects, id } }) => {
-          objects.forEach(obj => {
-            if (obj.type === objectType) {
-              obj.animationIn = merge(obj.animationIn, prop.animationIn);
-              obj.animationOut = merge(obj.animationOut, prop.animationOut);
-            }
-          });
-          this.updateFrameObjects({ frameId: id });
+      this.frames.forEach(({ frame: { objects, id } }) => {
+        objects.forEach(obj => {
+          if (obj.type === objectType) {
+            obj.animationIn = merge(obj.animationIn, prop.animationIn);
+            obj.animationOut = merge(obj.animationOut, prop.animationOut);
+          }
         });
-      }
+        this.updateFrameObjects({ frameId: id });
+      });
     },
 
     /**
