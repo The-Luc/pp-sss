@@ -175,6 +175,8 @@ export default {
 
       if (isSingle || !isContinuousFlow) {
         this.portraits = folders[folderIdx].assets.slice(min, max + 1);
+
+        return;
       }
 
       // case of continuos multi-folders

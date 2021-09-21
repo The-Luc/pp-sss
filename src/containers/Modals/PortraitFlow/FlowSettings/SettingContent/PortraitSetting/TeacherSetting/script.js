@@ -197,11 +197,21 @@ export default {
      * Apply rules to multiple inputs
      */
     applyRules() {
+      this.multiFolderRule();
       this.asstPlacementRule();
       this.numberOfLargePortraitsRule();
       this.alphabeticalOrder();
       this.teacherPortraitSizeRule();
     },
+    /**
+     * Rule for selecting multi-folder
+     */
+    multiFolderRule() {
+      if (this.isSingleFolder) return;
+
+      this.onChangeHasTeacher(false);
+    },
+
     /**
      * Rule for Assistant placement
      */

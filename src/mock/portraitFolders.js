@@ -88,7 +88,7 @@ const folder1 = new PortraitFolder({
 
 const folder2 = new PortraitFolder({
   id: uniqueId(),
-  name: '6th Grade with 2 teachers',
+  name: '6th Grade with 2 Teachers and 1 Assistant',
   thumbUrl: STUDENT_THUMB_01,
   assetsCount: 73,
   assets: [teacher1, teacher2, assistant1, ...getRandomStudents(70)]
@@ -128,7 +128,7 @@ const folder6 = new PortraitFolder({
 
 const folder7 = new PortraitFolder({
   id: uniqueId(),
-  name: '3 Teachers and 1 Assistants',
+  name: '3 Teachers and 1 Assistant',
   thumbUrl: TEACHER_THUMB_02,
   assetsCount: 44,
   assets: [teacher1, teacher2, teacher1, assistant1, ...getRandomStudents(40)]
@@ -141,6 +141,15 @@ const folder8 = new PortraitFolder({
   assetsCount: 44,
   assets: [teacher1, teacher2, assistant1, assistant1, ...getRandomStudents(40)]
 });
+
+const folder9 = new PortraitFolder({
+  id: uniqueId(),
+  name: '1 Teachers and 2 Assistants',
+  thumbUrl: TEACHER_THUMB_01,
+  assetsCount: 43,
+  assets: [teacher1, assistant1, assistant1, ...getRandomStudents(40)]
+});
+
 export const portraitFolders = [
   folder1,
   folder2,
@@ -149,5 +158,6 @@ export const portraitFolders = [
   folder5,
   folder6,
   folder7,
-  folder8
+  folder8,
+  folder9
 ];
