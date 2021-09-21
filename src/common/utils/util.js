@@ -6,10 +6,9 @@ import {
   differenceWith
 } from 'lodash';
 
-import { STATUS, DIGITAL_CANVAS_SIZE } from '@/common/constants';
-import { inToPx, ptToPx, getPagePrintSize } from '@/common/utils';
+import { inToPx, ptToPx, getPagePrintSize } from './canvas';
 
-export let activeCanvas = null;
+import { STATUS, DIGITAL_CANVAS_SIZE } from '@/common/constants';
 
 /**
  * Get theme option from list themes option by id
@@ -188,11 +187,6 @@ export const setCanvasUniformScaling = (canvas, isConstrain) => {
     uniformScaling: isConstrain
   });
 };
-
-/**
- * Set current canvas is focused
- */
-export const setActiveCanvas = canvas => (activeCanvas = canvas);
 
 /**
  * Compare 2 item by id

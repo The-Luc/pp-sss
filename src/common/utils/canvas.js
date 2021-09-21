@@ -7,11 +7,29 @@ import {
   HARD_COVER_BLEED_X,
   SOFTCOVER_SPINE_SIZES,
   PRINT_DPI,
+  DIGITAL_DPI,
   PRINT_PAGE_SIZE,
-  PAGE_NUMBER_TYPE
+  PAGE_NUMBER_TYPE,
+  EDITION
 } from '@/common/constants';
 import { SizeSummary } from '@/common/models';
 import { isEmpty } from './util';
+
+let activeEdition = null;
+let activeCanvas = null;
+
+const getDpi = () => {
+  return activeEdition === EDITION.DIGITAL ? DIGITAL_DPI : PRINT_DPI;
+};
+
+export const setActiveEdition = (canvas, edition) => {
+  activeEdition = edition;
+  activeCanvas = canvas;
+};
+
+export const getActiveCanvas = () => {
+  return activeCanvas;
+};
 
 /**
  * Convert Object Inches to Pixels value
@@ -122,7 +140,7 @@ export const getPagePrintSize = () => {
  * @param   {Number}  size - the size pt that need to be converted
  * @returns {Number}  the scaled-size
  */
-export const scaleSize = size => (size * PRINT_DPI) / 72;
+export const scaleSize = size => (size * getDpi()) / 72;
 
 /**
  * Responsively convert size to a correct scale size base on current DPI
@@ -130,7 +148,7 @@ export const scaleSize = size => (size * PRINT_DPI) / 72;
  * @param   {Number}  size - the size px that need to be converted
  * @returns {Number}  the scaled-size
  */
-export const unscaleSize = size => (size * 72) / PRINT_DPI;
+export const unscaleSize = size => (size * 72) / getDpi();
 
 /**
  * Convert pt to px
@@ -154,7 +172,7 @@ export const pxToPt = val => unscaleSize(val);
  * @param   {Number}  val - the inch value that need to be converted
  * @returns {Number}  the result px
  */
-export const inToPx = val => val * PRINT_DPI;
+export const inToPx = val => val * getDpi();
 
 /**
  * Conver px to inch
@@ -162,7 +180,7 @@ export const inToPx = val => val * PRINT_DPI;
  * @param   {Number}  val - the px value that need to be converted
  * @returns {Number}  the result inch
  */
-export const pxToIn = val => val / PRINT_DPI;
+export const pxToIn = val => val / getDpi();
 
 /**
  * To select the last object added into canvas

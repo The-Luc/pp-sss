@@ -12,7 +12,7 @@ import {
 } from '@/common/constants';
 
 import { cloneDeep } from 'lodash';
-import { activeCanvas, ptToPx } from '.';
+import { getActiveCanvas, ptToPx } from './canvas';
 import { measureTextWidth } from './textSize';
 
 /**
@@ -357,7 +357,7 @@ export const createPortraitObjects = (
 
   const titleMeasureWidth =
     pxToIn(
-      measureTextWidth(activeCanvas, pageTitle, {
+      measureTextWidth(getActiveCanvas(), pageTitle, {
         fontSize: `${ptToPx(pageTitleFontSettings.fontSize)}px`,
         fontFamily: pageTitleFontSettings.fontFamily
       })
@@ -468,7 +468,7 @@ export const createPortraitObjects = (
         };
 
         const textWidth =
-          pxToIn(measureTextWidth(activeCanvas, value, measureOptions)) +
+          pxToIn(measureTextWidth(getActiveCanvas(), value, measureOptions)) +
           bleedLeft * 2;
 
         const imageWidth = isLargeAsst ? largeTeacherWidth : itemWidth;
