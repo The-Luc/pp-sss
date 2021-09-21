@@ -2,7 +2,7 @@ import PpInput from '@/components/Input/InputProperty';
 import PpSelect from '@/components/Selectors/Select';
 import PpCombobox from '@/components/Selectors/Combobox';
 
-import { isEmpty } from '@/common/utils';
+import { isEmpty, splitNumberByDecimal } from '@/common/utils';
 
 import { ICON_LOCAL } from '@/common/constants';
 import {
@@ -98,25 +98,19 @@ export default {
      */
     onChangeOrder(val) {
       const item = this.orderOptions.find(
-        opt => opt === val || opt.value === val
+        opt => opt === val || +opt.value === +val
       );
-      if (!item) {
-        this.forceUpdate();
-        return;
-      }
 
-      this.$emit('changeOrder', val.value);
+      if (!item) return this.forceUpdate();
+
+      this.$emit('changeOrder', item.value);
     },
     /**
      * Fire when user change scale input
      * @param {Object} val Order option
      */
     onChangeScale(val) {
-      if (Number(val) < 0 || Number(val) > 100) {
-        this.forceUpdate();
-
-        return;
-      }
+      if (Number(val) < 0 || Number(val) > 100) return this.forceUpdate();
 
       if (val !== this.scaleValue) {
         this.showApplyOptions = true;
@@ -126,19 +120,18 @@ export default {
     },
     /**
      * Fire when user change the duration input
-     * @param {Object} val Order option
+     * @param {Object} value Order option
      */
-    onChangeDuration(val) {
-      if (Number(val) < 0 || Number(val) > 5) {
+    onChangeDuration(value) {
+      const val = splitNumberByDecimal(value, 1);
+
+      if (Number(val) < 0 || Number(val) > 5 || val === this.durationValue) {
         this.forceUpdate();
 
         return;
       }
 
-      if (val !== this.durationValue) {
-        this.showApplyOptions = true;
-      }
-
+      this.showApplyOptions = true;
       this.durationValue = val;
     },
     /**
@@ -225,6 +218,10 @@ export default {
         NONE_OPTION;
       this.durationValue = config.duration || DEFAULT_ANIMATION.DURATION;
       this.scaleValue = config.scale || DEFAULT_ANIMATION.SCALE;
+
+      if (this.selectedStyle === NONE_OPTION) {
+        this.onChangeOrder(this.orderOptions[0]);
+      }
     }
   },
   created() {

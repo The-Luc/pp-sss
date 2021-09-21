@@ -10,7 +10,7 @@
       :is-close-icon-displayed="false"
       width="365"
     >
-      <div class="saved-message">Your settings have been saved</div>
+      <div class="saved-message">{{ message }}</div>
     </common-modal>
   </div>
 </template>

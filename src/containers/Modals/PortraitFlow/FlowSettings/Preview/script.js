@@ -47,15 +47,17 @@ export default {
       pageNo: 1,
       backgroundUrl: '',
       portraits: [],
-      containerName: this.isDigital ? 'Frame' : 'Page'
+      containerName: this.isDigital ? 'Frame' : 'Page',
+      index: 0
     };
   },
   computed: {
     selectedPages() {
       return this.requiredPages.map(p => {
+        const pageNo = typeof p === 'object' ? p.frame : p;
         return {
-          pageNo: p,
-          backgroundUrl: this.getPageBackground(p)
+          pageNo,
+          backgroundUrl: this.getPageBackground(pageNo)
         };
       });
     },
@@ -70,7 +72,9 @@ export default {
       return this.flowSettings.layoutSettings;
     },
     pages() {
-      const totalSheet = Object.values(this.getSheets).length * 2 - 4;
+      const totalSheet = this.isDigital
+        ? this.flowSettings.startOnPageNumber + 5
+        : Object.values(this.getSheets).length * 2 - 4;
       const pages = Array.from({ length: totalSheet }, (_, i) => i + 1);
       return isEmpty(pages)
         ? [{ name: 1, value: 1 }]
@@ -80,22 +84,21 @@ export default {
   watch: {
     displayedPageNo(value) {
       if (isEmpty(value)) return;
-
-      this.updatePreviewData(value);
+      this.index = this.selectedPages.findIndex(
+        ({ pageNo }) => pageNo === value
+      );
+      this.updatePreviewData();
     },
     flowSettings: {
       deep: true,
       handler() {
-        const lastPage = this.requiredPages[this.requiredPages.length - 1];
-        const startPage = this.requiredPages[0];
-
-        const pageNumber = this.pageNo > lastPage ? startPage : this.pageNo;
-        this.updatePreviewData(pageNumber);
+        this.index = Math.max(
+          this.selectedPages.findIndex(({ pageNo }) => pageNo === this.pageNo),
+          0
+        );
+        this.updatePreviewData();
       }
     }
-  },
-  created() {
-    this.updatePreviewData(this.displayedPageNo);
   },
   methods: {
     /**
@@ -135,9 +138,7 @@ export default {
      * @param {Number}  nextMove    1 or -1
      */
     changePage(currentPage, nextMove) {
-      const currentIndex = this.selectedPages.findIndex(
-        ({ pageNo }) => pageNo === currentPage
-      );
+      const currentIndex = this.index;
 
       if (isEmpty(currentIndex)) return;
 
@@ -145,23 +146,19 @@ export default {
 
       if (nextMove > 0 && currentIndex > this.selectedPages.length - 2) return;
 
-      const nextIndex = currentIndex + nextMove;
+      this.index = currentIndex + nextMove;
 
-      this.updatePreviewData(this.selectedPages[nextIndex].pageNo);
+      this.updatePreviewData();
     },
     /**
      * Update preview of selected page
      *
      * @param {Number}  selectedPageNo  selected page number
      */
-    updatePreviewData(selectedPageNo) {
+    updatePreviewData() {
       if (isEmpty(this.selectedPages)) return;
 
-      const index = this.selectedPages.findIndex(
-        ({ pageNo }) => pageNo === selectedPageNo
-      );
-
-      const page = isEmpty(index) ? {} : this.selectedPages[index];
+      const page = isEmpty(this.index) ? {} : this.selectedPages[this.index];
 
       this.pageNo = page.pageNo;
       this.backgroundUrl = page.backgroundUrl;
@@ -171,7 +168,7 @@ export default {
         flowMultiSettings.flowOption === PORTRAIT_FLOW_OPTION_MULTI.CONTINUE.id;
       const isSingle = folders.length === 1;
 
-      const { min, max, folderIdx } = this.previewPortraitsRange[index];
+      const { min, max, folderIdx } = this.previewPortraitsRange[this.index];
 
       if (isSingle || !isContinuousFlow) {
         this.portraits = folders[folderIdx].assets.slice(min, max + 1);

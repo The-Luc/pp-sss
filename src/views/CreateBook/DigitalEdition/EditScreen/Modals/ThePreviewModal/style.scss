@@ -1,3 +1,8 @@
+$thumb-height: 400px;
+$thumb-width: 713px;
+$mask-length: 60px;
+$mask-overlay: 5px;
+
 #transition-preview {
   ::v-deep {
     .v-card__text {
@@ -9,245 +14,365 @@
       .container {
         position: relative;
         display: flex;
-        width: 713px;
-        height: 400px;
+        width: $thumb-width;
+        height: $thumb-height;
         justify-content: center;
         align-items: center;
 
+        .wrapper,
         .thumb {
           width: 100%;
           height: 100%;
-          position: absolute;
           background-size: cover;
         }
+
+        .wrapper {
+          .thumb {
+            position: absolute;
+          }
+        }
+
+        .thumb-mask {
+          display: none;
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background-size: cover;
+          mask-repeat: no-repeat;
+        }
+
+        /** ======= [PUSH] ======= **/
+
+        /** [TOP BOTTOM] START **/
+        .transition-1-2-enter-active {
+          position: absolute;
+          transform: translateY(-100%) translateY(-25px);
+        }
+
+        .transition-1-2-enter-to {
+          transform: translateY(0);
+        }
+
+        .transition-1-2-leave-active {
+          transform: translateY(0);
+        }
+
+        .transition-1-2-leave-to {
+          transform: translateY(100%) translateY(25px);
+        }
+        /** [TOP BOTTOM] END **/
+
+        /** [BOTTOM TOP] START **/
+        .transition-1-3-enter-active {
+          position: absolute;
+          transform: translateY(100%) translateY(25px);
+        }
+
+        .transition-1-3-enter-to {
+          transform: translateY(0);
+        }
+
+        .transition-1-3-leave-active {
+          transform: translateY(0);
+        }
+
+        .transition-1-3-leave-to {
+          transform: translateY(-100%) translateY(-25px);
+        }
+        /** [TOP BOTTOM] END **/
+
+        /** [LEFT RIGHT] START **/
+        .transition-1-0-enter-active {
+          position: absolute;
+          transform: translateX(-100%) translateX(-25px);
+        }
+
+        .transition-1-0-enter-to {
+          transform: translateX(0);
+        }
+
+        .transition-1-0-leave-active {
+          transform: translateX(0);
+        }
+
+        .transition-1-0-leave-to {
+          transform: translateX(100%) translateX(25px);
+        }
+        /** [LEFT RIGHT] END **/
+
+        /** [RIGHT LEFT] START **/
+        .transition-1-1-enter-active {
+          position: absolute;
+          transform: translateX(100%) translateX(25px);
+        }
+
+        .transition-1-1-enter-to {
+          transform: translateX(0);
+        }
+
+        .transition-1-1-leave-active {
+          transform: translateX(0);
+        }
+
+        .transition-1-1-leave-to {
+          transform: translateX(-100%) translateX(-25px);
+        }
+        /** [RIGHT LEFT] END **/
+
+        /** ======= [MOVE IN] ======= **/
+
+        /** [TOP BOTTOM] START **/
+        .transition-2-2-enter-active {
+          position: absolute;
+          transform: translateY(-100%);
+        }
+
+        .transition-2-2-enter-to {
+          transform: translateY(0);
+        }
+        /** [TOP BOTTOM] END **/
+
+        /** [BOTTOM TOP] START **/
+        .transition-2-3-enter-active {
+          position: absolute;
+          transform: translateY(100%);
+        }
+
+        .transition-2-3-enter-to {
+          transform: translateY(0);
+        }
+        /** [TOP BOTTOM] END **/
+
+        /** [LEFT RIGHT] START **/
+        .transition-2-0-enter-active {
+          position: absolute;
+          transform: translateX(-100%);
+        }
+
+        .transition-2-0-enter-to {
+          transform: translateX(0);
+        }
+        /** [LEFT RIGHT] END **/
+
+        /** [RIGHT LEFT] START **/
+        .transition-2-1-enter-active {
+          position: absolute;
+          transform: translateX(100%);
+        }
+
+        .transition-2-1-enter-to {
+          transform: translateX(0);
+        }
+        /** [RIGHT LEFT] END **/
+
+        /** ======= [DISSOLVE] ======= **/
+        .transition-3--enter-active {
+          position: absolute;
+          opacity: 0;
+        }
+
+        .transition-3--enter-to {
+          opacity: 1;
+        }
+
+        .transition-3--leave-active {
+          z-index: 1;
+        }
+
+        .transition-3--leave-to {
+          opacity: 0;
+        }
+
+        /** ======= [REVEAL] ======= **/
+
+        /** [TOP BOTTOM] START **/
+        .transition-4-2-enter-active {
+          position: absolute;
+        }
+
+        .transition-4-2-leave-active {
+          z-index: 1;
+          transform: translateY(0);
+        }
+
+        .transition-4-2-leave-to {
+          transform: translateY(100%);
+        }
+        /** [TOP BOTTOM] END **/
+
+        /** [BOTTOM TOP] START **/
+        .transition-4-3-enter-active {
+          position: absolute;
+        }
+
+        .transition-4-3-leave-active {
+          z-index: 1;
+          transform: translateY(0);
+        }
+
+        .transition-4-3-leave-to {
+          transform: translateY(-100%);
+        }
+        /** [TOP BOTTOM] END **/
+
+        /** [LEFT RIGHT] START **/
+        .transition-4-0-enter-active {
+          position: absolute;
+        }
+
+        .transition-4-0-leave-active {
+          z-index: 1;
+          transform: translateX(0);
+        }
+
+        .transition-4-0-leave-to {
+          transform: translateX(100%);
+        }
+        /** [LEFT RIGHT] END **/
+
+        /** [RIGHT LEFT] START **/
+        .transition-4-1-enter-active {
+          position: absolute;
+        }
+
+        .transition-4-1-leave-active {
+          z-index: 1;
+          transform: translateX(0);
+        }
+
+        .transition-4-1-leave-to {
+          transform: translateX(-100%);
+        }
+        /** [RIGHT LEFT] END **/
+
+        /** ======= [WIPE] ======= **/
+
+        /** [TOP BOTTOM] START **/
+        .thumb {
+          &.transition-5-2-leave-active {
+            z-index: 1;
+            clip-path: inset(0 -1px -1px 0);
+          }
+
+          &.transition-5-2-leave-to {
+            clip-path: inset(#{$mask-length + $thumb-height} -1px -1px 0);
+          }
+        }
+
+        .thumb-mask {
+          &.transition-5-2-enter-active {
+            display: flex;
+            z-index: 99;
+            mask-size: $thumb-width $mask-length;
+            mask-position: 0 #{$mask-overlay - $mask-length};
+            mask-image: linear-gradient(
+              to bottom,
+              rgba(0, 0, 0, 0),
+              rgba(0, 0, 0, 1)
+            );
+          }
+
+          &.transition-5-2-enter-to {
+            mask-position: 0 #{$mask-overlay + $thumb-height};
+          }
+        }
+        /** [TOP BOTTOM] END **/
+
+        /** [BOTTOM TOP] START **/
+        .thumb {
+          &.transition-5-3-leave-active {
+            z-index: 1;
+            clip-path: inset(0 -1px 0 0);
+          }
+
+          &.transition-5-3-leave-to {
+            clip-path: inset(0 -1px #{$mask-length + $thumb-height} 0);
+          }
+        }
+
+        .thumb-mask {
+          &.transition-5-3-enter-active {
+            display: flex;
+            z-index: 99;
+            mask-size: $thumb-width $mask-length;
+            mask-position: 0 #{- $mask-overlay + $thumb-height};
+            mask-image: linear-gradient(
+              to top,
+              rgba(0, 0, 0, 0),
+              rgba(0, 0, 0, 1)
+            );
+          }
+
+          &.transition-5-3-enter-to {
+            mask-position: 0 #{- $mask-overlay - $mask-length};
+          }
+        }
+        /** [TOP BOTTOM] END **/
+
+        /** [LEFT RIGHT] START **/
+        .thumb {
+          &.transition-5-0-leave-active {
+            z-index: 1;
+            clip-path: inset(0 -1px -1px 0);
+          }
+
+          &.transition-5-0-leave-to {
+            clip-path: inset(0 -1px -1px #{$mask-length + $thumb-width});
+          }
+        }
+
+        .thumb-mask {
+          &.transition-5-0-enter-active {
+            display: flex;
+            z-index: 99;
+            mask-size: $mask-length $thumb-height;
+            mask-position: #{$mask-overlay - $mask-length} 0;
+            mask-image: linear-gradient(
+              to right,
+              rgba(0, 0, 0, 0),
+              rgba(0, 0, 0, 1)
+            );
+          }
+
+          &.transition-5-0-enter-to {
+            mask-position: #{$mask-overlay + $thumb-width} 0;
+          }
+        }
+        /** [LEFT RIGHT] END **/
+
+        /** [RIGHT LEFT] START **/
+        .thumb {
+          &.transition-5-1-leave-active {
+            z-index: 1;
+            clip-path: inset(0 0 -1px 0);
+          }
+
+          &.transition-5-1-leave-to {
+            clip-path: inset(0 #{$mask-length + $thumb-width} -1px 0);
+          }
+        }
+
+        .thumb-mask {
+          &.transition-5-1-enter-active {
+            display: flex;
+            z-index: 99;
+            mask-size: $mask-length $thumb-height;
+            mask-position: #{- $mask-overlay + $thumb-width} 0;
+            mask-image: linear-gradient(
+              to left,
+              rgba(0, 0, 0, 0),
+              rgba(0, 0, 0, 1)
+            );
+          }
+
+          &.transition-5-1-enter-to {
+            mask-position: #{- $mask-overlay - $mask-length} 0;
+          }
+        }
+        /** [RIGHT LEFT] END **/
       }
     }
   }
 }
-
-/** ======= [PUSH] ======= **/
-
-/** [TOP BOTTOM] START **/
-.transition-1-topToBottom-enter-active {
-  top: calc(-100% - 25px);
-}
-
-.transition-1-topToBottom-enter-to {
-  top: 0;
-}
-
-.transition-1-topToBottom-leave-active {
-  top: 0;
-}
-
-.transition-1-topToBottom-leave-to {
-  top: calc(100% + 25px);
-}
-/** [TOP BOTTOM] END **/
-
-/** [BOTTOM TOP] START **/
-.transition-1-bottomToTop-enter-active {
-  top: calc(100% + 25px);
-}
-
-.transition-1-bottomToTop-enter-to {
-  top: 0;
-}
-
-.transition-1-bottomToTop-leave-active {
-  top: 0;
-}
-
-.transition-1-bottomToTop-leave-to {
-  top: calc(-100% - 25px);
-}
-/** [TOP BOTTOM] END **/
-
-/** [LEFT RIGHT] START **/
-.transition-1-leftToRight-enter-active {
-  left: calc(-100% - 25px);
-}
-
-.transition-1-leftToRight-enter-to {
-  left: 0;
-}
-
-.transition-1-leftToRight-leave-active {
-  left: 0;
-}
-
-.transition-1-leftToRight-leave-to {
-  left: calc(100% + 25px);
-}
-/** [LEFT RIGHT] END **/
-
-/** [RIGHT LEFT] START **/
-.transition-1-rightToLeft-enter-active {
-  left: calc(100% + 25px);
-}
-
-.transition-1-rightToLeft-enter-to {
-  left: 0;
-}
-
-.transition-1-rightToLeft-leave-active {
-  left: 0;
-}
-
-.transition-1-rightToLeft-leave-to {
-  left: calc(-100% - 25px);
-}
-/** [RIGHT LEFT] END **/
-
-/** ======= [MOVE IN] ======= **/
-
-/** [TOP BOTTOM] START **/
-.transition-2-topToBottom-enter-active {
-  top: -100%;
-}
-
-.transition-2-topToBottom-enter-to {
-  top: 0;
-}
-/** [TOP BOTTOM] END **/
-
-/** [BOTTOM TOP] START **/
-.transition-2-bottomToTop-enter-active {
-  top: 100%;
-}
-
-.transition-2-bottomToTop-enter-to {
-  top: 0;
-}
-/** [TOP BOTTOM] END **/
-
-/** [LEFT RIGHT] START **/
-.transition-2-leftToRight-enter-active {
-  left: -100%;
-}
-
-.transition-2-leftToRight-enter-to {
-  left: 0;
-}
-/** [LEFT RIGHT] END **/
-
-/** [RIGHT LEFT] START **/
-.transition-2-rightToLeft-enter-active {
-  left: 100%;
-}
-
-.transition-2-rightToLeft-enter-to {
-  left: 0;
-}
-/** [RIGHT LEFT] END **/
-
-/** ======= [DISSOLVE] ======= **/
-.transition-3--enter-active {
-  top: 0;
-  opacity: 0;
-}
-
-.transition-3--enter-to {
-  opacity: 1;
-}
-
-.transition-3--leave-active {
-  top: 0;
-  z-index: 1;
-}
-
-.transition-3--leave-to {
-  opacity: 0;
-}
-
-/** ======= [REVEAL] ======= **/
-
-/** [TOP BOTTOM] START **/
-.transition-4-topToBottom-leave-active {
-  z-index: 1;
-  top: 0;
-}
-
-.transition-4-topToBottom-leave-to {
-  top: 100%;
-}
-/** [TOP BOTTOM] END **/
-
-/** [BOTTOM TOP] START **/
-.transition-4-bottomToTop-leave-active {
-  z-index: 1;
-  top: 0;
-}
-
-.transition-4-bottomToTop-leave-to {
-  top: -100%;
-}
-/** [TOP BOTTOM] END **/
-
-/** [LEFT RIGHT] START **/
-.transition-4-leftToRight-leave-active {
-  z-index: 1;
-  left: 0;
-}
-
-.transition-4-leftToRight-leave-to {
-  left: 100%;
-}
-/** [LEFT RIGHT] END **/
-
-/** [RIGHT LEFT] START **/
-.transition-4-rightToLeft-leave-active {
-  z-index: 1;
-  left: 0;
-}
-
-.transition-4-rightToLeft-leave-to {
-  left: -100%;
-}
-/** [RIGHT LEFT] END **/
-
-/** ======= [WIPE] ======= **/
-
-/** [TOP BOTTOM] START **/
-.transition-5-topToBottom-leave-active {
-  bottom: 0;
-  z-index: 1;
-}
-
-.transition-5-topToBottom-leave-to {
-  height: 0 !important; // override
-}
-/** [TOP BOTTOM] END **/
-
-/** [BOTTOM TOP] START **/
-.transition-5-bottomToTop-leave-active {
-  top: 0;
-  z-index: 1;
-}
-
-.transition-5-bottomToTop-leave-to {
-  height: 0 !important; // override
-}
-/** [TOP BOTTOM] END **/
-
-/** [LEFT RIGHT] START **/
-.transition-5-leftToRight-leave-active {
-  right: 0;
-  z-index: 1;
-}
-
-.transition-5-leftToRight-leave-to {
-  width: 0 !important; // override
-}
-/** [LEFT RIGHT] END **/
-
-/** [RIGHT LEFT] START **/
-.transition-5-rightToLeft-leave-active {
-  left: 0;
-  z-index: 1;
-}
-
-.transition-5-rightToLeft-leave-to {
-  width: 0 !important; // override
-}
-/** [RIGHT LEFT] END **/

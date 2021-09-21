@@ -21,13 +21,23 @@
       ></image-settings>
     </v-tab-item>
     <v-tab-item>
-      <flow-settings
+      <digital-flow-settings
+        v-if="isDigital"
         :selected-folders="selectedFolders"
         :flow-settings="flowSettings"
         @settingChange="onSettingChange"
         @flowSettingChange="onFlowSettingChange"
         @pageSettingChange="onPageSettingChange"
-      ></flow-settings>
+        @screenSettingChange="onScreenSettingChange"
+      ></digital-flow-settings>
+      <print-flow-settings
+        v-else
+        :selected-folders="selectedFolders"
+        :flow-settings="flowSettings"
+        @settingChange="onSettingChange"
+        @flowSettingChange="onFlowSettingChange"
+        @pageSettingChange="onPageSettingChange"
+      ></print-flow-settings>
     </v-tab-item>
     <v-tab-item>
       <save-setting

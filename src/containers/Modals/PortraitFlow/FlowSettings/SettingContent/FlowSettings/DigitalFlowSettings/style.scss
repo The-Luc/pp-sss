@@ -1,0 +1,53 @@
+.flow-settings-container {
+  height: 100%;
+  width: 100%;
+  padding: 0 26px 0 18px;
+  .title-setting {
+    color: $color-gray5;
+    font-size: 16px;
+    font-family: $font-500;
+    margin: 10px 0;
+  }
+  .flow-settings-content {
+    .flow-settings-multiple {
+      margin-top: 24px;
+      .frame-select {
+        .select-container {
+          display: flex;
+          ::v-deep .page-select-item {
+            .page-select-item-descript {
+              width: 168px;
+            }
+            .page-select-item-title {
+              width: 66px;
+            }
+          }
+          ::v-deep .page-select-item.screen-select {
+            .page-select-item-descript {
+              width: 14px;
+            }
+            .page-select-item-title {
+              display: none;
+            }
+            .v-input__slot {
+              width: 110px;
+            }
+          }
+        }
+      }
+    }
+    .frame-select {
+      margin-top: 15px;
+    }
+  }
+  .flow-settings-message {
+    margin-top: 10px;
+    font-family: $font-300;
+    font-size: 11px;
+    font-style: italic;
+    color: $color-stoodio-toolbartext;
+    &.disabled-massage {
+      opacity: 0.5;
+    }
+  }
+}

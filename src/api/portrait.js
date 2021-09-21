@@ -21,6 +21,7 @@ const portraitSevice = {
       const saveSettingsJson = await portraitSevice.getSavedPortraitSettingsPrint();
       const printPortraitSettings = cloneDeep(portraitSettings);
       delete printPortraitSettings.folders;
+      delete printPortraitSettings.totalPortraitsCount;
 
       const saveSettings = {
         ...printPortraitSettings,
@@ -66,9 +67,10 @@ const portraitSevice = {
       const saveSettingsJson = await portraitSevice.getSavedPortraitSettingsDigital();
       const digitalPortraitSettings = cloneDeep(portraitSettings);
       delete digitalPortraitSettings.folders;
+      delete digitalPortraitSettings.totalPortraitsCount;
 
       const saveSettings = {
-        ...portraitSettings,
+        ...digitalPortraitSettings,
         id: Date.now(),
         savedDate: moment(new Date()).format('ll')
       };

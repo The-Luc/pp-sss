@@ -17,7 +17,7 @@
             v-for="(item, index) in dataSelectPageSingle"
             :key="index"
             :title="`Portraits ${item.startAsset}  - ${item.endAsset}:`"
-            descript="Page"
+            descript="Page:"
             :disabled="index === 0"
             :selected-val="item.selectedVal"
             :items="item.pageOptions"

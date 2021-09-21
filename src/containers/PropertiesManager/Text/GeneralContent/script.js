@@ -46,13 +46,19 @@ export default {
   },
   data() {
     return {
-      playInConfig: this.getProperty('animationIn') || {},
-      playOutConfig: this.getProperty('animationOut') || {},
-      applyOptions: TEXT_APPLY_OPTIONS,
-      orderOptions: getOrdeOptions(this.listObjects)
+      applyOptions: TEXT_APPLY_OPTIONS
     };
   },
   computed: {
+    playInConfig() {
+      return this.getProperty('animationIn') || {};
+    },
+    playOutConfig() {
+      return this.getProperty('animationOut') || {};
+    },
+    orderOptions() {
+      return getOrdeOptions(this.listObjects);
+    },
     selectedAlignment() {
       return (
         this.getProperty('alignment')?.horizontal || TEXT_HORIZONTAL_ALIGN.LEFT

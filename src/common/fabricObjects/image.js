@@ -696,12 +696,14 @@ export const createPortraitImage = async props => {
       height,
       mask,
       imageUrl,
-      objectType
+      objectType,
+      id
     } = toFabricPortraitImageProp(props);
 
     const radiusRatio = mask === PORTRAIT_IMAGE_MASK.ROUNDED ? 10 : 2;
 
     const rect = new fabric.Rect({
+      id,
       top,
       left,
       width,

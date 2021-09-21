@@ -37,6 +37,7 @@ class GetterClass extends BaseObject {
   PLAY_OUT_IDS = 'playOutIds';
   PLAY_IN_ORDER = 'playInOrder';
   PLAY_OUT_ORDER = 'playOutOrder';
+  GET_FRAME_IDS = 'getFrameIds';
   TOTAL_ANIMATION_PLAY_OUT_ORDER = 'getTotalAnimationPlayOutOrder';
 
   constructor(props) {

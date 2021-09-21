@@ -4,13 +4,21 @@
     height: auto !important;
     min-height: auto !important;
     border-radius: 17px;
+    .v-card {
+      height: 200px;
+    }
+    .v-card__text {
+      height: 100%;
+      align-items: center;
+    }
   }
 }
 .saved-message {
   text-align: center;
-  padding: 88px 35px;
+  padding: 0 35px;
   font-family: $font-500;
   font-size: 21px;
   color: $color-stoodio-blue;
   letter-spacing: 0;
+  line-height: normal;
 }
