@@ -29,6 +29,7 @@ export default {
   },
   data() {
     return {
+      componentKey: true,
       prependedIcon: ICON_LOCAL.PREPENDED_LINE,
       appendedIcon: ICON_LOCAL.APPENDED_ICON
     };
@@ -61,8 +62,15 @@ export default {
         this.items,
         'pt'
       );
-      const updateData = isValid ? { lineSpacing: isAuto ? 0 : value } : {};
-      this.$root.$emit(EVENT_TYPE.CHANGE_TEXT_PROPERTIES, updateData);
+
+      if (!isValid) {
+        this.componentKey = !this.componentKey;
+        return;
+      }
+
+      this.$root.$emit(EVENT_TYPE.CHANGE_TEXT_PROPERTIES, {
+        lineSpacing: isAuto ? 0 : value
+      });
     }
   }
 };

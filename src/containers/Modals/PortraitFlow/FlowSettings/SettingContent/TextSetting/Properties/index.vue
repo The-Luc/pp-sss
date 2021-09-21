@@ -10,7 +10,7 @@
         :disabled="disabled"
         :nudge-width="80"
         :selected-size="selectedSize"
-        @change="onChangFontSize"
+        @change="onChange"
       ></font-size>
     </div>
     <div class="effect">

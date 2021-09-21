@@ -6,7 +6,6 @@ import {
 } from '@/store/modules/print/const';
 
 import { pageNumberOff } from '@/common/fabricObjects';
-import { getActiveCanvas } from '@/common/utils';
 import {
   SHEET_TYPE,
   LINK_STATUS,
@@ -132,7 +131,7 @@ export default {
     drawPageNumberOnCanvas(isNumberOn, pageNumberType) {
       isNumberOn
         ? this.$root.$emit('pageNumber')
-        : pageNumberOff(pageNumberType, getActiveCanvas());
+        : pageNumberOff(pageNumberType);
     }
   }
 };
