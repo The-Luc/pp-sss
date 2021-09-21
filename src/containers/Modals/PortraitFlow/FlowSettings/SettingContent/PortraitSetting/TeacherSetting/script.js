@@ -106,7 +106,7 @@ export default {
       );
     },
     isDisabledHasTeacher() {
-      return !this.isSingleFolder || !this.isHasTeacher;
+      return !this.isSingleFolder || !this.isHasTeacherInFolder;
     },
     isDisabledHasAsstTeacher() {
       return (
@@ -149,7 +149,8 @@ export default {
         !this.isSingleFolder ||
         !this.teacherSettings.hasAssistantTeacher ||
         !this.isTeacherPortraitLarge ||
-        (this.isTeacherPortraitLarge && this.numOfTeachers >= 2)
+        (this.isTeacherPortraitLarge && this.numOfTeachers >= 2) ||
+        this.numOfAsstTeachers >= 2
       );
     },
     isTeacherPortraitLarge() {
@@ -161,7 +162,7 @@ export default {
         PORTRAIT_SIZE.LARGE
       );
     },
-    isHasTeacher() {
+    isHasTeacherInFolder() {
       return this.numOfTeachers > 0;
     }
   },
@@ -198,10 +199,12 @@ export default {
      */
     applyRules() {
       this.multiFolderRule();
+      this.loadingSettingRule();
       this.asstPlacementRule();
       this.numberOfLargePortraitsRule();
       this.alphabeticalOrder();
       this.teacherPortraitSizeRule();
+      this.numberOfAsstTeachersRule();
     },
     /**
      * Rule for selecting multi-folder
@@ -211,7 +214,27 @@ export default {
 
       this.onChangeHasTeacher(false);
     },
+    /**
+     * Rule for number of assistants in the folder
+     */
+    numberOfAsstTeachersRule() {
+      if (
+        !this.hasAssistantTeacher.value ||
+        this.numOfAsstTeachers < 2 ||
+        this.asstTeacherPortraitSize.value === PORTRAIT_SIZE.SAME
+      )
+        return;
 
+      this.onChangeAsstSize(PORTRAIT_SIZE.SAME);
+    },
+    /**
+     * Rule for loading new settings
+     */
+    loadingSettingRule() {
+      if (this.isHasTeacherInFolder) return;
+
+      this.onChangeHasTeacher(false);
+    },
     /**
      * Rule for Assistant placement
      */
