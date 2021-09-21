@@ -6,7 +6,7 @@ import {
   PAGE_NUMBER_POSITION,
   PAGE_NUMBER_TYPE
 } from '@/common/constants';
-import { ptToPx, pxToIn, mapObject, activeCanvas } from '@/common/utils';
+import { ptToPx, pxToIn, mapObject, getActiveCanvas } from '@/common/utils';
 import { DEFAULT_RULE_DATA } from '@/common/fabricObjects/common';
 
 /**
@@ -157,11 +157,15 @@ export const updateBringToFrontPageNumber = canvas => {
  * @param   {Object}  canvas  the canvas
  */
 export const pageNumberOff = pageNumberType => {
-  activeCanvas.getObjects().forEach(obj => {
-    if (obj.objectType === pageNumberType) {
-      activeCanvas.remove(obj).renderAll();
-    }
-  });
+  getActiveCanvas()
+    .getObjects()
+    .forEach(obj => {
+      if (obj.objectType === pageNumberType) {
+        getActiveCanvas()
+          .remove(obj)
+          .renderAll();
+      }
+    });
 };
 /**
  * Check if it exists left page number or right page number
@@ -170,7 +174,7 @@ export const pageNumberOff = pageNumberType => {
  * @returns {Boolean} is type page number
  */
 const isPageNumberExisted = pageNumberType => {
-  const objects = activeCanvas.getObjects();
+  const objects = getActiveCanvas().getObjects();
 
   const totalObject = objects.length;
 
