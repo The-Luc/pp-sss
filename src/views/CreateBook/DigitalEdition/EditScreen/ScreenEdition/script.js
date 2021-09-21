@@ -2076,12 +2076,12 @@ export default {
       });
 
       if (type === OBJECT_TYPE.IMAGE && hasImage && !control) {
-        const controlBtn = await createMediaOverlay(IMAGE_LOCAL.CONTROL_ICON, {
+        const control = await createMediaOverlay(IMAGE_LOCAL.CONTROL_ICON, {
           width: CROP_CONTROL.WIDTH,
           height: CROP_CONTROL.HEIGHT
         });
 
-        media.set({ controlBtn });
+        media.set({ control });
       }
 
       return media;

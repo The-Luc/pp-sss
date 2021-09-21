@@ -98,25 +98,19 @@ export default {
      */
     onChangeOrder(val) {
       const item = this.orderOptions.find(
-        opt => opt === val || opt.value === val
+        opt => opt === val || +opt.value === +val
       );
-      if (!item) {
-        this.forceUpdate();
-        return;
-      }
 
-      this.$emit('changeOrder', val.value);
+      if (!item) return this.forceUpdate();
+
+      this.$emit('changeOrder', item.value);
     },
     /**
      * Fire when user change scale input
      * @param {Object} val Order option
      */
     onChangeScale(val) {
-      if (Number(val) < 0 || Number(val) > 100) {
-        this.forceUpdate();
-
-        return;
-      }
+      if (Number(val) < 0 || Number(val) > 100) return this.forceUpdate();
 
       if (val !== this.scaleValue) {
         this.showApplyOptions = true;
@@ -224,6 +218,10 @@ export default {
         NONE_OPTION;
       this.durationValue = config.duration || DEFAULT_ANIMATION.DURATION;
       this.scaleValue = config.scale || DEFAULT_ANIMATION.SCALE;
+
+      if (this.selectedStyle === NONE_OPTION) {
+        this.onChangeOrder(this.orderOptions[0]);
+      }
     }
   },
   created() {
