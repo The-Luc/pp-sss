@@ -178,7 +178,7 @@ export default {
 
       const { rowCount, colCount } = this.layout;
       const teacherPlacement = teacherSettings.teacherPlacement;
-      const pages = flowSingleSettings.pages;
+      const pages = flowSingleSettings.pages || [];
 
       const numLargePortrait =
         calcAdditionPortraitSlot(teacherSettings, folders[0].assets) / 3;

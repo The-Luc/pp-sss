@@ -140,5 +140,8 @@ export const getters = {
   },
   [DIGITAL._GETTERS.TOTAL_ANIMATION_PLAY_OUT_ORDER]: ({ playOutIds }) => {
     return playOutIds.length;
+  },
+  [DIGITAL._GETTERS.GET_FRAME_IDS]: ({ frameIds }) => {
+    return frameIds;
   }
 };

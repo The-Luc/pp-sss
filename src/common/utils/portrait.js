@@ -618,3 +618,28 @@ export const getPageObjects = (settings, requiredPages, isDigital) => {
 
   return pageObjects;
 };
+
+export const getDataScreenOfMultiFolder = (
+  screens,
+  folders,
+  maxPortraitPerPage
+) => {
+  let totalLast = 0;
+  return Object.keys(screens).map(key => {
+    const folder = screens[key].map((_, folderInd) => {
+      return folders[totalLast + folderInd];
+    });
+
+    totalLast += screens[key].length;
+
+    return {
+      screen: parseInt(key),
+      frames: getSelectedDataOfFolders(
+        screens[key],
+        screens[key][0],
+        folder,
+        maxPortraitPerPage
+      )
+    };
+  });
+};

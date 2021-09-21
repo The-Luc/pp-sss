@@ -27,6 +27,7 @@
       @settingChange="onSettingChange"
       @flowSettingChange="onFlowSettingChange"
       @pageSettingChange="onPageSettingChange"
+      @screenSettingChange="onScreenSettingChange"
       @loadSetting="onLoadSetting"
     />
   </div>

@@ -396,5 +396,8 @@ export default {
     getBasePages(total, min) {
       return Array.from({ length: total }, (_, index) => index + min);
     }
+  },
+  created() {
+    this.startPage = this.getStartOnPageNumber();
   }
 };

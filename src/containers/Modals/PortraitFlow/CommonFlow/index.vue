@@ -29,6 +29,7 @@
         @startPageChange="onStartChange"
         @flowSettingChange="onFlowSettingChange"
         @pageSettingChange="onPageSettingChange"
+        @screenSettingChange="onScreenSettingChange"
         @loadSetting="onLoadSetting"
       />
 

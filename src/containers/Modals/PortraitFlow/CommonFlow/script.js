@@ -62,7 +62,8 @@ export default {
       default: false
     },
     warningText: {
-      type: String
+      type: String,
+      default: ''
     },
     initFlowOption: {
       type: Number,
@@ -237,6 +238,9 @@ export default {
      */
     onPageSettingChange(val) {
       this.$emit('pageSettingChange', val);
+    },
+    onScreenSettingChange(val) {
+      this.$emit('screenSettingChange', val);
     },
     /**
      * Initital data for portrait flow

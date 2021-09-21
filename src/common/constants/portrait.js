@@ -83,6 +83,32 @@ export const PORTRAIT_FLOW_OPTION_MULTI = {
   }
 };
 
+export const DIGITAL_PORTRAIT_FLOW_OPTION_SINGLE = {
+  AUTO_NEXT_FRAME: {
+    id: 0,
+    name: 'Automatically flow on subsequent frame(s)'
+  },
+  MANUAL: {
+    id: 1,
+    name: 'Ask me to designate the next frame'
+  }
+};
+
+export const DIGITAL_PORTRAIT_FLOW_OPTION_MULTI = {
+  AUTO_NEXT_FRAME: {
+    id: 0,
+    name: 'Automatically flow on next frame'
+  },
+  AUTO_NEXT_SCREEN: {
+    id: 1,
+    name: 'Automatically flow on next screen'
+  },
+  MANUAL: {
+    id: 2,
+    name: 'Allow me to designate the next frame/screen'
+  }
+};
+
 export const DEFAULT_PORTRAIT_RATIO = 1.25; // height / width ratio
 
 export const PORTRAIT_MARGIN_OPTIONS = [
