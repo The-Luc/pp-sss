@@ -77,9 +77,6 @@ export default {
     },
     isDisabledRight() {
       return this.layoutSettings.colCount === 1 ? true : false;
-    },
-    isDisabledTop() {
-      return this.isPageTitleOn;
     }
   },
   created() {
@@ -253,8 +250,7 @@ export default {
           name: 'Top Margin',
           options: this.marginOptions,
           selected: this.selectedTop,
-          onChangeFn: this.onChangeTop,
-          isDisabled: this.isDisabledTop
+          onChangeFn: this.onChangeTop
         },
         {
           name: 'Bottom Margin',

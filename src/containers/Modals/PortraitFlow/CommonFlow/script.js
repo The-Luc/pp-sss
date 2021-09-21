@@ -92,7 +92,11 @@ export default {
       flowReviewCompKey: true,
       savedSettings: [],
       isOpenModalSuccess: false,
-      isOpenSaveSettingsModal: false
+      isOpenSaveSettingsModal: false,
+      triggerTab: false,
+      saveMsg: 'Your settings have been saved',
+      loadMsg: 'Your saved portrait settings have loaded',
+      message: ''
     };
   },
   async created() {
@@ -200,6 +204,7 @@ export default {
       );
       this.onCancelSaveSettings();
 
+      this.message = this.saveMsg;
       this.isOpenModalSuccess = true;
       setTimeout(() => {
         this.isOpenModalSuccess = false;
@@ -355,7 +360,13 @@ export default {
       const portraitSetting = this.savedSettings.find(item => item.id === id);
       const flowSettings = { ...this.flowSettings, ...portraitSetting };
 
-      this.onSettingChange(flowSettings);
+      this.message = this.loadMsg;
+      this.isOpenModalSuccess = true;
+      setTimeout(() => {
+        this.isOpenModalSuccess = false;
+        this.onSettingChange(flowSettings);
+        this.triggerTab = !this.triggerTab;
+      }, 2000);
     },
     /**
      * Cancel modal save setting

@@ -2,7 +2,7 @@ import PpInput from '@/components/Input/InputProperty';
 import PpSelect from '@/components/Selectors/Select';
 import PpCombobox from '@/components/Selectors/Combobox';
 
-import { isEmpty } from '@/common/utils';
+import { isEmpty, splitNumberByDecimal } from '@/common/utils';
 
 import { ICON_LOCAL } from '@/common/constants';
 import {
@@ -126,19 +126,18 @@ export default {
     },
     /**
      * Fire when user change the duration input
-     * @param {Object} val Order option
+     * @param {Object} value Order option
      */
-    onChangeDuration(val) {
-      if (Number(val) < 0 || Number(val) > 5) {
+    onChangeDuration(value) {
+      const val = splitNumberByDecimal(value, 1);
+
+      if (Number(val) < 0 || Number(val) > 5 || val === this.durationValue) {
         this.forceUpdate();
 
         return;
       }
 
-      if (val !== this.durationValue) {
-        this.showApplyOptions = true;
-      }
-
+      this.showApplyOptions = true;
       this.durationValue = val;
     },
     /**

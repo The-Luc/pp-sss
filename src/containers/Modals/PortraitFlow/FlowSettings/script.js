@@ -29,6 +29,9 @@ export default {
     },
     isDigital: {
       type: Boolean
+    },
+    triggerTab: {
+      type: Boolean
     }
   },
   data() {
@@ -40,6 +43,11 @@ export default {
   watch: {
     'flowSettings.startOnPageNumber'(value) {
       this.displayedPageNo = value;
+    },
+    triggerTab(oldval, newVal) {
+      if (oldval !== newVal) {
+        this.currentTab = 0;
+      }
     }
   },
   methods: {
@@ -86,7 +94,6 @@ export default {
       this.$emit('pageSettingChange', val);
     },
     onLoadSetting(id) {
-      this.currentTab = 0;
       this.$emit('loadSetting', id);
     }
   }

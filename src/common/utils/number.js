@@ -83,7 +83,7 @@ export const splitNumberByDecimal = (value, decimalCount = 2) => {
 
   if (!decimal) return parseFloat(trunc);
 
-  if (String(decimal).length > 2) {
+  if (String(decimal).length > decimalCount) {
     decimal = String(decimal).substring(0, decimalCount);
   }
   return parseFloat(`${trunc}.${decimal}`);

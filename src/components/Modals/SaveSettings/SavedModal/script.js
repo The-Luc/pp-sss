@@ -8,6 +8,10 @@ export default {
     isOpenModal: {
       type: Boolean,
       default: false
+    },
+    message: {
+      type: String,
+      default: ''
     }
   }
 };
