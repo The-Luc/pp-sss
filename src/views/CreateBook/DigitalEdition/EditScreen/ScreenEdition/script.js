@@ -34,7 +34,8 @@ import {
   CROP_CONTROL,
   IMAGE_LOCAL,
   PROPERTIES_TOOLS,
-  APPLY_MODE
+  APPLY_MODE,
+  EDITION
 } from '@/common/constants';
 import {
   addPrintClipArts,
@@ -101,7 +102,7 @@ import {
   pxToIn,
   resetObjects,
   selectLatestObject,
-  setActiveCanvas,
+  setActiveEdition,
   setBorderHighlight,
   setBorderObject,
   setCanvasUniformScaling,
@@ -457,7 +458,7 @@ export default {
         backgroundColor: '#fff',
         preserveObjectStacking: true
       });
-      setActiveCanvas(window.digitalCanvas);
+      setActiveEdition(window.digitalCanvas, EDITION.DIGITAL);
       useDigitalOverrides(fabric.Object.prototype);
       fabric.textureSize = 4096;
       this.updateCanvasSize();

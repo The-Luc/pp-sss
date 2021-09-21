@@ -4,7 +4,7 @@ import FontFamily from '@/components/Properties/Groups/TextProperties/FontFamily
 
 import { useElementProperties } from '@/hooks';
 import { FONT_SIZE, FONT_FAMILY } from '@/common/constants';
-import { getSelectedOption, pxToIn, activeCanvas } from '@/common/utils';
+import { getSelectedOption, pxToIn, getActiveCanvas } from '@/common/utils';
 
 import { EVENT_TYPE } from '@/common/constants/eventType';
 
@@ -44,7 +44,7 @@ export default {
      * @param {Any} data size of text (string or object)
      */
     onChangFontSize(value) {
-      const activeObj = activeCanvas?.getActiveObject();
+      const activeObj = getActiveCanvas()?.getActiveObject();
       const { x, y } = activeObj?.aCoords?.tl || {};
       const updateData = {
         fontSize: value,
