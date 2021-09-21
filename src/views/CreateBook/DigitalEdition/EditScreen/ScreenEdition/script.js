@@ -2659,6 +2659,7 @@ export default {
 
     /**
      * Handle open animation properties
+     * @param {Object} event mouse event when click to canvas
      */
     handleOpenAnimations(event) {
       if (this.propertiesType !== PROPERTIES_TOOLS.ANIMATION.name) return;
