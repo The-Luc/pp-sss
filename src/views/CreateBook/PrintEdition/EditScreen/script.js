@@ -364,7 +364,7 @@ export default {
       const isImage = target?.objectType === OBJECT_TYPE.IMAGE;
       const isVideo = target?.objectType === OBJECT_TYPE.VIDEO;
 
-      if (!target || (!isImage && !isVideo) || target.fromPortrait) {
+      if (!target || (!isImage && !isVideo)) {
         const x = pointer.x - offsetX * 3;
         const y = pointer.y - offsetY * 3;
 
@@ -386,7 +386,11 @@ export default {
       prop.imageId = imageId;
       prop.originalUrl = imageUrl;
 
-      target.set({ originalUrl: imageUrl, cropInfo: null });
+      target.set({
+        originalUrl: imageUrl,
+        cropInfo: null,
+        fromPortrait: false
+      });
 
       this.setPropertyById({ id: target.id, prop });
       this.$refs.canvasEditor.getThumbnailUrl();
