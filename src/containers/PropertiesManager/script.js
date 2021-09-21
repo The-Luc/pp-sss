@@ -10,6 +10,7 @@ import Video from '@/containers/PropertiesManager/Video';
 import PageInfo from '@/containers/PropertiesManager/PageInfo';
 import FrameInfo from '@/containers/PropertiesManager/FrameInfo';
 import Transition from '@/views/CreateBook/DigitalEdition/EditScreen/PropertiesMenu/Transition';
+import Animation from '@/containers/PropertiesManager/Animation';
 import { isEmpty } from '@/common/utils';
 import { useToolBar } from '@/hooks';
 
@@ -18,6 +19,7 @@ const { TEXT, IMAGE, CLIP_ART, BACKGROUND, SHAPE, VIDEO } = OBJECT_TYPE;
 const PAGE_INFO = PROPERTIES_TOOLS.PAGE_INFO.name;
 const FRAME_INFO = PROPERTIES_TOOLS.FRAME_INFO.name;
 const TRANSITION = PROPERTIES_TOOLS.TRANSITION.name;
+const ANIMATION = PROPERTIES_TOOLS.ANIMATION.name;
 
 const MenuList = {
   [TEXT]: TEXT,
@@ -28,7 +30,8 @@ const MenuList = {
   [VIDEO]: VIDEO,
   [PAGE_INFO]: PAGE_INFO,
   [FRAME_INFO]: FRAME_INFO,
-  [TRANSITION]: TRANSITION
+  [TRANSITION]: TRANSITION,
+  [ANIMATION]: ANIMATION
 };
 
 export default {
@@ -59,7 +62,8 @@ export default {
     [OBJECT_TYPE.VIDEO]: Video,
     [PAGE_INFO]: PageInfo,
     [FRAME_INFO]: FrameInfo,
-    [TRANSITION]: Transition
+    [TRANSITION]: Transition,
+    [ANIMATION]: Animation
   },
   watch: {
     propertiesType(val) {

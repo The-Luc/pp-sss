@@ -118,6 +118,12 @@ export const getters = {
   [DIGITAL._GETTERS.STORE_ANIMATION_PROP]: ({ storeAnimationProp }) => {
     return storeAnimationProp;
   },
+  [DIGITAL._GETTERS.PLAY_IN_IDS]: ({ playInIds }) => {
+    return playInIds;
+  },
+  [DIGITAL._GETTERS.PLAY_OUT_IDS]: ({ playOutIds }) => {
+    return playOutIds;
+  },
   [DIGITAL._GETTERS.PLAY_IN_ORDER]: ({ playInIds, currentObjectId }) => {
     if (!currentObjectId) return;
 

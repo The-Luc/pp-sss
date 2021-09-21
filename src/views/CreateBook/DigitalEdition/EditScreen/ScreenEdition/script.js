@@ -116,7 +116,8 @@ import {
   getUniqueId,
   isContainDebounceProp,
   animateIn,
-  animateOut
+  animateOut,
+  renderOrderBoxes
 } from '@/common/utils';
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
 
@@ -196,6 +197,8 @@ export default {
       setStoreAnimationProp,
       playInOrder,
       playOutOrder,
+      playInIds,
+      playOutIds,
       setPlayInOrder,
       setPlayOutOrder,
       updatePlayInIds,
@@ -234,6 +237,8 @@ export default {
       saveAnimationConfig,
       playInOrder,
       playOutOrder,
+      playInIds,
+      playOutIds,
       setPlayInOrder,
       setPlayOutOrder,
       updatePlayInIds,
@@ -629,6 +634,10 @@ export default {
         {
           name: EVENT_TYPE.CHANGE_ANIMATION_ORDER,
           handler: this.handleChangeAnimationOrder
+        },
+        {
+          name: EVENT_TYPE.ANIMATION_SELECT,
+          handler: this.handleSelectAnimationObject
         }
       ];
 
@@ -702,6 +711,20 @@ export default {
         toolName &&
         toolName !== TOOL_NAME.DELETE &&
         toolName !== TOOL_NAME.ACTIONS;
+
+      const isAnimation = toolName === PROPERTIES_TOOLS.ANIMATION.name;
+
+      if (!toolName) {
+        const objects = this.digitalCanvas.getObjects();
+        objects.forEach(obj => obj.set({ selectable: true }));
+        this.digitalCanvas.renderAll();
+      }
+
+      if (isAnimation) {
+        this.handleOpenAnimations();
+
+        return;
+      }
 
       if (isDiscard) {
         this.digitalCanvas?.discardActiveObject();
@@ -2521,6 +2544,9 @@ export default {
      */
     handleMouseDown(event) {
       const target = event.target;
+
+      if (!target.selectable) return;
+
       if (target.objectType === OBJECT_TYPE.IMAGE) {
         if (!target.isHoverControl) return;
 
@@ -2626,6 +2652,48 @@ export default {
       handleObjectSelected(target, {
         playInOrder: this.playInOrder,
         playOutOrder: this.playOutOrder
+      });
+    },
+
+    /**
+     * Handle open animation properties
+     */
+    handleOpenAnimations() {
+      this.digitalCanvas?.discardActiveObject();
+      const objects = cloneDeep(this.listObjects);
+      const playInIds = cloneDeep(this.playInIds);
+      const playOutIds = cloneDeep(this.playOutIds);
+      playInIds.forEach((ids, index) => {
+        ids.forEach(id => {
+          if (!isEmpty(objects[id])) {
+            objects[id].playIn = index + 1;
+          }
+        });
+      });
+      playOutIds.forEach((ids, index) => {
+        ids.forEach(id => {
+          if (!isEmpty(objects[id])) {
+            objects[id].playOut = index + 1;
+          }
+        });
+      });
+      renderOrderBoxes(objects);
+    },
+
+    /**
+     * Handle select animation object
+     * @param {String} id parallel object's id
+     */
+    handleSelectAnimationObject(id) {
+      this.digitalCanvas?.discardActiveObject();
+      const objects = this.digitalCanvas.getObjects();
+      const ctx = this.digitalCanvas.getContext('2d');
+
+      objects.forEach(object => {
+        object._renderControls.call(object, ctx, {
+          hasBorders: object.id === id,
+          hasControls: false
+        });
       });
     }
   }

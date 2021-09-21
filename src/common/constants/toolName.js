@@ -68,7 +68,8 @@ export const PROPERTIES_TOOLS = {
   ANIMATION: {
     name: 'animations',
     title: 'Animations',
-    iconName: 'animation'
+    iconName: 'animation',
+    isDiscardObjects: true
   }
 };
 
@@ -98,7 +99,8 @@ export const INSTRUCTION_TOOLS = [TOOL_NAME.TEXT, TOOL_NAME.IMAGE_BOX];
 export const NON_ELEMENT_PROPERTIES_TOOLS = [
   PROPERTIES_TOOLS.BACKGROUND.name,
   PROPERTIES_TOOLS.PAGE_INFO.name,
-  PROPERTIES_TOOLS.FRAME_INFO.name
+  PROPERTIES_TOOLS.FRAME_INFO.name,
+  PROPERTIES_TOOLS.ANIMATION.name
 ];
 
 export const NO_SUBMENU_TOOLS = [

@@ -748,7 +748,7 @@ export const useTextOverride = function(text) {
  * @param {Number} angle object rotation value
  * @param {Number} radius icon distance
  */
-const rotateIcon = function(
+export const rotateIcon = function(
   ctx,
   element,
   top,

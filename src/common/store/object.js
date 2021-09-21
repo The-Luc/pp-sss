@@ -14,6 +14,17 @@ export const addObject = (state, { id, newObject }) => {
   state.objects = insertItemsToObject(state.objects, [
     { key: id, value: newObject }
   ]);
+
+  if (isEmpty(state.playInIds)) {
+    state.playInIds = [[]];
+  }
+
+  if (isEmpty(state.playOutIds)) {
+    state.playOutIds = [[]];
+  }
+
+  state.playInIds[0].push(id);
+  state.playOutIds[0].push(id);
 };
 
 export const addObjects = (state, { objects }) => {
@@ -28,6 +39,19 @@ export const addObjects = (state, { objects }) => {
     state.objects,
     objects.map(({ id, newObject }) => ({ key: id, value: newObject }))
   );
+
+  if (isEmpty(state.playInIds)) {
+    state.playInIds = [[]];
+  }
+
+  if (isEmpty(state.playOutIds)) {
+    state.playOutIds = [[]];
+  }
+
+  const ids = objects.map(obj => obj.id);
+
+  state.playInIds[0].push(...ids);
+  state.playOutIds[0].push(...ids);
 };
 
 export const deleteObjects = (state, { ids }) => {

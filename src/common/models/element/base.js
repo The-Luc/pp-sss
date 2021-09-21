@@ -103,6 +103,7 @@ export class BaseElementObject extends BaseEntity {
   opacity = DEFAULT_PROP.OPACITY;
   flip = new BaseFlip();
   selectable = true;
+  name = '';
 
   /**
    * @param {BaseElementObject} props

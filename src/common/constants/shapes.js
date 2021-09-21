@@ -19,72 +19,84 @@ export const SHAPES = [
     id: 0,
     thumbnail: LINE,
     pathData: LINE,
-    fillMode: SVG_FILL_MODE.STROKE
+    fillMode: SVG_FILL_MODE.STROKE,
+    name: 'Line'
   }),
   new ShapeElementEntity({
     id: 1,
     thumbnail: ARROW,
     pathData: ARROW,
-    fillMode: SVG_FILL_MODE.FILL
+    fillMode: SVG_FILL_MODE.FILL,
+    name: 'Arrow'
   }),
   new ShapeElementEntity({
     id: 2,
     thumbnail: RECT,
     pathData: RECT,
-    fillMode: SVG_FILL_MODE.FILL
+    fillMode: SVG_FILL_MODE.FILL,
+    name: 'Rect'
   }),
   new ShapeElementEntity({
     id: 3,
     thumbnail: RECT_ROUNDED,
     pathData: RECT_ROUNDED,
-    fillMode: SVG_FILL_MODE.FILL
+    fillMode: SVG_FILL_MODE.FILL,
+    name: 'Rect Rounded'
   }),
   new ShapeElementEntity({
     id: 4,
     thumbnail: CIRCLE,
     pathData: CIRCLE,
-    fillMode: SVG_FILL_MODE.FILL
+    fillMode: SVG_FILL_MODE.FILL,
+    name: 'Circle'
   }),
   new ShapeElementEntity({
     id: 5,
     thumbnail: TRIANGLE,
     pathData: TRIANGLE,
-    fillMode: SVG_FILL_MODE.FILL
+    fillMode: SVG_FILL_MODE.FILL,
+    name: 'Triangle'
   }),
   new ShapeElementEntity({
     id: 6,
     thumbnail: STAR,
     pathData: STAR,
-    fillMode: SVG_FILL_MODE.FILL
+    fillMode: SVG_FILL_MODE.FILL,
+    name: 'Start'
   }),
   new ShapeElementEntity({
     id: 7,
     thumbnail: PENTAGON,
     pathData: PENTAGON,
-    fillMode: SVG_FILL_MODE.FILL
+    fillMode: SVG_FILL_MODE.FILL,
+    name: 'Pentagon'
   }),
   new ShapeElementEntity({
     id: 8,
     thumbnail: HEXAGON,
     pathData: HEXAGON,
-    fillMode: SVG_FILL_MODE.FILL
+    fillMode: SVG_FILL_MODE.FILL,
+    name: 'Hexagon'
   }),
   new ShapeElementEntity({
     id: 9,
     thumbnail: OCTAGON,
     pathData: OCTAGON,
-    fillMode: SVG_FILL_MODE.FILL
+    fillMode: SVG_FILL_MODE.FILL,
+    name: 'Octagon'
   }),
   new ShapeElementEntity({
     id: 10,
     thumbnail: TRAPEZOID,
     pathData: TRAPEZOID,
-    fillMode: SVG_FILL_MODE.FILL
+    fillMode: SVG_FILL_MODE.FILL,
+    name: 'Trapzoid'
   }),
   new ShapeElementEntity({
     id: 11,
     thumbnail: RHOMBUS,
     pathData: RHOMBUS,
-    fillMode: SVG_FILL_MODE.FILL
+    fillMode: SVG_FILL_MODE.FILL,
+    name: 'Rhombus'
   })
 ];
