@@ -203,13 +203,10 @@ export const sortPortraitByName = isFirstLast => {
 
     const nameA = (a[first] + a[last]).toUpperCase();
     const nameB = (b[first] + b[last]).toUpperCase();
-    if (nameA < nameB) {
-      return -1;
-    }
-    if (nameA > nameB) {
-      return 1;
-    }
-    return 0;
+
+    if (nameA === nameB) return 0;
+
+    return nameA > nameB ? 1 : -1;
   };
 };
 
