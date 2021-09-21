@@ -1,7 +1,7 @@
 import { fabric } from 'fabric';
 
 import {
-  activeCanvas,
+  getActiveCanvas,
   getStrokeLineCap,
   inToPx,
   isEmpty,
@@ -226,7 +226,7 @@ export const setImageSrc = async (imageObject, imageSrc) => {
  * @returns {Array} List activate Image box
  */
 export const getAvailableImages = () => {
-  return activeCanvas
+  return getActiveCanvas()
     .getObjects()
     .filter(
       object => object.objectType === OBJECT_TYPE.IMAGE && !object.hasImage
@@ -258,7 +258,8 @@ export const centercrop = imageObject => {
  * @param {*} target - Image object has applied drag trigger
  */
 export const handleDragEnter = ({ target }) => {
-  if (target.cachedStrokeData || target.fromPortrait) return;
+  if (target.cachedStrokeData || target.fromPortrait || !target.selectable)
+    return;
 
   const cachedStrokeData = {
     stroke: target.stroke,
@@ -271,7 +272,7 @@ export const handleDragEnter = ({ target }) => {
     strokeWidth: IMAGE_INDICATOR.STROKE_WIDTH
   });
 
-  activeCanvas.renderAll();
+  getActiveCanvas().renderAll();
 };
 
 /**
@@ -279,7 +280,12 @@ export const handleDragEnter = ({ target }) => {
  * @param {*} target - Image object has applied drag trigger
  */
 export const handleDragLeave = ({ target }) => {
-  if (isEmpty(target.cachedStrokeData) || target.fromPortrait) return;
+  if (
+    isEmpty(target.cachedStrokeData) ||
+    target.fromPortrait ||
+    !target.selectable
+  )
+    return;
 
   const { stroke, strokeWidth } = target.cachedStrokeData;
   target.set({
@@ -288,7 +294,7 @@ export const handleDragLeave = ({ target }) => {
     cachedStrokeData: null
   });
 
-  activeCanvas.renderAll();
+  getActiveCanvas().renderAll();
 };
 
 /**
@@ -312,7 +318,7 @@ export const handleMouseMove = event => {
  * @param {Object} target Fabric object selected
  */
 const handleHoverImage = target => {
-  if (!target.hasImage || target.fromPortrait) return;
+  if (!target.hasImage || target.fromPortrait || !target.selectable) return;
 
   const { width, height, scaleX, scaleY } = target;
   const { x, y } = target.getLocalPointer();
@@ -386,7 +392,8 @@ export const handleMouseOver = ({ target }) => {
   if (
     target?.objectType !== OBJECT_TYPE.IMAGE ||
     !target.hasImage ||
-    target.fromPortrait
+    target.fromPortrait ||
+    !target.selectable
   )
     return;
 
@@ -406,7 +413,8 @@ export const handleMouseOut = ({ target }) => {
   if (
     target?.objectType !== OBJECT_TYPE.IMAGE ||
     !target.hasImage ||
-    target.fromPortrait
+    target.fromPortrait ||
+    !target.selectable
   )
     return;
 
@@ -471,9 +479,9 @@ export const createMediaOverlay = (src, options) => {
  * Render video by video frames
  */
 const reqAnimFrame = renderFn => {
-  activeCanvas.renderAll();
+  getActiveCanvas().renderAll();
 
-  const objects = activeCanvas.getObjects();
+  const objects = getActiveCanvas().getObjects();
 
   const isPlaying = objects.some(obj => obj.isPlaying);
 

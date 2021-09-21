@@ -313,7 +313,8 @@ const digitalService = {
         TextObject,
         ImageObject,
         ShapeObject,
-        ClipArtObject
+        ClipArtObject,
+        BackgroundObject
       } = animationIn;
 
       if (!isEmpty(TextObject)) {
@@ -331,6 +332,12 @@ const digitalService = {
       if (!isEmpty(ClipArtObject)) {
         promises.push(savePlayInConfig(OBJECT_TYPE.CLIP_ART, ClipArtObject));
       }
+
+      if (!isEmpty(BackgroundObject)) {
+        promises.push(
+          savePlayInConfig(OBJECT_TYPE.BACKGROUND, BackgroundObject)
+        );
+      }
     }
 
     if (!isEmpty(animationOut)) {
@@ -338,7 +345,8 @@ const digitalService = {
         TextObject,
         ImageObject,
         ShapeObject,
-        ClipArtObject
+        ClipArtObject,
+        BackgroundObject
       } = animationOut;
 
       if (!isEmpty(TextObject)) {
@@ -355,6 +363,12 @@ const digitalService = {
 
       if (!isEmpty(ClipArtObject)) {
         promises.push(savePlayOutConfig(OBJECT_TYPE.CLIP_ART, ClipArtObject));
+      }
+
+      if (!isEmpty(BackgroundObject)) {
+        promises.push(
+          savePlayOutConfig(OBJECT_TYPE.BACKGROUND, BackgroundObject)
+        );
       }
     }
 
@@ -377,13 +391,17 @@ function getSheetsFromStorage() {
 
 // TODO: Remove when integrate API
 // Temporary helper function
-function getSheetObjects(sheetId) {
-  const sheets = getSheetsFromStorage();
+function getSectionObjects(sectionId) {
+  const section = window.data.book.sections.find(s => s.id === sectionId);
+
+  if (isEmpty(section)) return [];
 
   const objects = [];
 
-  sheets[sheetId].digitalData.frames.forEach(frame => {
-    objects.push(...frame.frame.objects);
+  section.sheets.forEach(sheet => {
+    sheet.digitalData.frames.forEach(frame => {
+      objects.push(...frame.frame.objects);
+    });
   });
 
   return objects;
@@ -414,7 +432,7 @@ async function savePlayInConfig(objectType, config) {
 
   const objects =
     storeType === APPLY_MODE.SECTION
-      ? getSheetObjects(storeTypeId)
+      ? getSectionObjects(storeTypeId)
       : getBookObjects(storeTypeId);
 
   objects.forEach(object => {
@@ -435,7 +453,7 @@ async function savePlayOutConfig(objectType, config) {
 
   const objects =
     storeType === APPLY_MODE.SECTION
-      ? getSheetObjects(storeTypeId)
+      ? getSectionObjects(storeTypeId)
       : getBookObjects();
 
   objects.forEach(object => {

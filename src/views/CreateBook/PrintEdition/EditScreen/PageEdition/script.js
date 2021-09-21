@@ -32,7 +32,7 @@ import {
   setBorderObject,
   setCanvasUniformScaling,
   setBorderHighlight,
-  setActiveCanvas,
+  setActiveEdition,
   isNonElementPropSelected,
   copyPpObject,
   pastePpObject,
@@ -96,7 +96,8 @@ import {
   LAYOUT_PAGE_TYPE,
   SAVE_STATUS,
   IMAGE_LOCAL,
-  PROPERTIES_TOOLS
+  PROPERTIES_TOOLS,
+  EDITION
 } from '@/common/constants';
 import SizeWrapper from '@/components/SizeWrapper';
 import PrintCanvasLines from './PrintCanvasLines';
@@ -710,7 +711,7 @@ export default {
         preserveObjectStacking: true
       });
       window.printCanvas = this.printCanvas;
-      setActiveCanvas(window.printCanvas);
+      setActiveEdition(window.printCanvas, EDITION.PRINT);
       usePrintOverrides(fabric.Object.prototype);
       this.updateCanvasSize();
       window.printCanvas.on({
@@ -1382,6 +1383,14 @@ export default {
       if (isEmpty(prop)) return;
 
       const element = window.printCanvas.getActiveObject();
+
+      if (!isEmpty(prop.fontSize)) {
+        const { x, y } = element?.aCoords?.tl || {};
+        prop.coord = {
+          x: pxToIn(x),
+          y: pxToIn(y)
+        };
+      }
 
       if (isEmpty(element) || element.objectType !== objectType) return;
 

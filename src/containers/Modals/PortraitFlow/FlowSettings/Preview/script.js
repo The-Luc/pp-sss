@@ -87,7 +87,9 @@ export default {
       deep: true,
       handler() {
         const lastPage = this.requiredPages[this.requiredPages.length - 1];
-        const pageNumber = this.pageNo > lastPage ? 1 : this.pageNo;
+        const startPage = this.requiredPages[0];
+
+        const pageNumber = this.pageNo > lastPage ? startPage : this.pageNo;
         this.updatePreviewData(pageNumber);
       }
     }
@@ -173,6 +175,8 @@ export default {
 
       if (isSingle || !isContinuousFlow) {
         this.portraits = folders[folderIdx].assets.slice(min, max + 1);
+
+        return;
       }
 
       // case of continuos multi-folders

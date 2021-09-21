@@ -30,7 +30,8 @@ export const EVENT_TYPE = {
   TRANSITION_PREVIEW: 'transitionPreview',
   APPLY_ANIMATION: 'applyAnimation',
   CHANGE_ANIMATION_ORDER: 'changeAnimationOrder',
-  BACKGROUND_SELECT: 'backgroundToggleSelection'
+  BACKGROUND_SELECT: 'backgroundToggleSelection',
+  ANIMATION_SELECT: 'selectAnimationObject'
 };
 
 export const CANVAS_EVENT_TYPE = {

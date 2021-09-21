@@ -1,3 +1,4 @@
+import { rotateIcon } from '@/plugins/fabric';
 import { fabric } from 'fabric';
 import { OBJECT_TYPE } from '../constants';
 import {
@@ -6,8 +7,9 @@ import {
   DELAY_DURATION
 } from '../constants/animationProperty';
 
-import { applyTextBoxProperties } from '../fabricObjects';
-import { isEmpty } from '../utils';
+import { applyTextBoxProperties, createSVGElement } from '../fabricObjects';
+import { isEmpty, getActiveCanvas } from '../utils';
+import { inToPx } from './canvas';
 
 /**
  * Handle fade animation
@@ -765,4 +767,60 @@ const toCanvasElement = (element, blurOffset) => {
   canvas = null;
 
   return canvasEl;
+};
+
+export const renderOrderBoxes = objects => {
+  const canvas = getActiveCanvas();
+  canvas.getObjects().forEach(obj => obj.set({ selectable: false }));
+  return Object.values(objects).map(renderOrderBox);
+};
+
+export const renderOrderBox = async data => {
+  if (!data.type || data.type === OBJECT_TYPE.BACKGROUND) return;
+  const canvas = getActiveCanvas();
+  const ctx = canvas.getContext('2d');
+  const eleWidth = 40;
+  const eleHeight = 40;
+  const {
+    size: { width },
+    coord: { x, y, rotation = 0 },
+    playIn = 1,
+    playOut = 1
+  } = data;
+
+  const zoom = canvas.getZoom();
+  const angle = (Math.PI * (rotation % 360)) / 180;
+
+  if (playIn) {
+    const ele = await createSVGElement(playIn, 'white');
+    const radius = inToPx(width) - ele.width * 2;
+
+    rotateIcon(
+      ctx,
+      ele,
+      inToPx(y),
+      inToPx(x),
+      eleWidth,
+      eleHeight,
+      zoom,
+      angle,
+      radius
+    );
+  }
+  if (playOut) {
+    const ele = await createSVGElement(playOut, 'lightgray');
+    const radius = inToPx(width) - eleWidth;
+
+    rotateIcon(
+      ctx,
+      ele,
+      inToPx(y),
+      inToPx(x),
+      eleWidth,
+      eleHeight,
+      zoom,
+      angle,
+      radius
+    );
+  }
 };

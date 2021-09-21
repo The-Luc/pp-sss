@@ -233,6 +233,7 @@ export default {
   watch: {
     config(val) {
       this.setConfigData(val);
+      this.showApplyOptions = false;
     }
   }
 };

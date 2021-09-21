@@ -33,6 +33,8 @@ class GetterClass extends BaseObject {
   GET_SHEET_MEDIA = 'getSheetMedia';
   TRIGGER_TRANSITION = 'getTriggerTransition';
   STORE_ANIMATION_PROP = 'storeAnimationProp';
+  PLAY_IN_IDS = 'playInIds';
+  PLAY_OUT_IDS = 'playOutIds';
   PLAY_IN_ORDER = 'playInOrder';
   PLAY_OUT_ORDER = 'playOutOrder';
   TOTAL_ANIMATION_PLAY_OUT_ORDER = 'getTotalAnimationPlayOutOrder';
@@ -112,6 +114,7 @@ class MutationClass extends BaseObject {
   SET_PLAY_OUT_ORDER = 'setPlayOutOrder';
   SET_PLAY_IN_IDS = 'setPlayInIds';
   SET_PLAY_OUT_IDS = 'setPlayOutIds';
+  UPDATE_ANIMATION_ORDER = 'updateAnimationOrder';
 
   constructor(props) {
     super(props);

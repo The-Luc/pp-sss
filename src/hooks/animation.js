@@ -10,9 +10,11 @@ export const useAnimation = () => {
     storeAnimationProp: GETTERS.STORE_ANIMATION_PROP
   });
 
-  const { playInOrder, playOutOrder } = useGetters({
+  const { playInOrder, playOutOrder, playInIds, playOutIds } = useGetters({
     playInOrder: GETTERS.PLAY_IN_ORDER,
-    playOutOrder: GETTERS.PLAY_OUT_ORDER
+    playOutOrder: GETTERS.PLAY_OUT_ORDER,
+    playInIds: GETTERS.PLAY_IN_IDS,
+    playOutIds: GETTERS.PLAY_OUT_IDS
   });
 
   const {
@@ -30,6 +32,8 @@ export const useAnimation = () => {
   return {
     storeAnimationProp,
     setStoreAnimationProp,
+    playInIds,
+    playOutIds,
     playInOrder,
     playOutOrder,
     setPlayInOrder,

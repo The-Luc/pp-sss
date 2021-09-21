@@ -61,11 +61,17 @@ export default {
       defaultRatio: DEFAULT_PORTRAIT_RATIO,
       portraitWidth: 0,
       namesHeight: {},
-      previewHeight: 0,
-      lineHeight: 0
+      previewHeight: 0
     };
   },
   computed: {
+    lineHeight() {
+      const { fontSize } = this.flowSettings.textSettings.nameTextFontSettings;
+      const lineHeight = this.convertPttoPx(fontSize);
+      const { nameLines } = this.flowSettings.textSettings;
+
+      return this.isCenterPosition ? parseFloat(lineHeight) * nameLines : 0;
+    },
     nameTextStyle() {
       if (isEmpty(this.flowSettings)) return {};
 
@@ -84,10 +90,6 @@ export default {
         this.previewHeight,
         this.isDigital
       );
-
-      this.lineHeight = this.isCenterPosition
-        ? parseFloat(style.lineHeight) * nameLines
-        : 0;
 
       if (nameLines === 2) {
         style.justifyContent = this.isFirstLastDisplay

@@ -162,15 +162,15 @@ export const IMAGE_APPLY_OPTIONS = [
     value: APPLY_MODE.SELF
   },
   {
-    name: 'All image on the frame',
+    name: 'All images on the frame',
     value: APPLY_MODE.FRAME
   },
   {
-    name: 'All image in this section',
+    name: 'All images in this section',
     value: APPLY_MODE.SECTION
   },
   {
-    name: 'All image in the Digital Yearbook',
+    name: 'All images in the Digital Yearbook',
     value: APPLY_MODE.BOOK
   }
 ];
@@ -181,15 +181,15 @@ export const SHAPE_APPLY_OPTIONS = [
     value: APPLY_MODE.SELF
   },
   {
-    name: 'All shape on the frame',
+    name: 'All shapes on the frame',
     value: APPLY_MODE.FRAME
   },
   {
-    name: 'All shape in this section',
+    name: 'All shapes in this section',
     value: APPLY_MODE.SECTION
   },
   {
-    name: 'All shape in the Digital Yearbook',
+    name: 'All shapes in the Digital Yearbook',
     value: APPLY_MODE.BOOK
   }
 ];
@@ -200,15 +200,15 @@ export const CLIP_ART_APPLY_OPTIONS = [
     value: APPLY_MODE.SELF
   },
   {
-    name: 'All clip art on the frame',
+    name: 'All clip arts on the frame',
     value: APPLY_MODE.FRAME
   },
   {
-    name: 'All clip art in this section',
+    name: 'All clip arts in this section',
     value: APPLY_MODE.SECTION
   },
   {
-    name: 'All clip art in the Digital Yearbook',
+    name: 'All clip arts in the Digital Yearbook',
     value: APPLY_MODE.BOOK
   }
 ];
@@ -219,11 +219,11 @@ export const BACKGROUND_APPLY_OPTIONS = [
     value: APPLY_MODE.SELF
   },
   {
-    name: 'All background in this section',
+    name: 'All backgrounds in this section',
     value: APPLY_MODE.SECTION
   },
   {
-    name: 'All background in the Digital Yearbook',
+    name: 'All backgrounds in the Digital Yearbook',
     value: APPLY_MODE.BOOK
   }
 ];

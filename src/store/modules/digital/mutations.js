@@ -307,7 +307,15 @@ export const mutations = {
 
     playInIds[newIndex].push(id);
 
-    state.playInIds = [...playInIds].map(item => item || []);
+    const tmpArr = [...playInIds].map(item => item || []);
+    const reverseArr = [...tmpArr].reverse();
+
+    reverseArr.forEach(ids => {
+      if (isEmpty(ids)) tmpArr.pop();
+      else reverseArr.length = 0;
+    });
+
+    state.playInIds = tmpArr;
   },
   [DIGITAL._MUTATES.SET_PLAY_OUT_ORDER](state, order) {
     const id = state.currentObjectId;
@@ -329,6 +337,40 @@ export const mutations = {
 
     playOutIds[newIndex].push(id);
 
-    state.playOutIds = [...playOutIds].map(item => item || []);
+    const tmpArr = [...playOutIds].map(item => item || []);
+    const reverseArr = [...tmpArr].reverse();
+
+    reverseArr.forEach(ids => {
+      if (isEmpty(ids)) tmpArr.pop();
+      else reverseArr.length = 0;
+    });
+
+    state.playOutIds = tmpArr;
+  },
+  [DIGITAL._MUTATES.UPDATE_ANIMATION_ORDER](state, { objects }) {
+    if (isEmpty(objects)) return;
+
+    if (isEmpty(state.playInIds)) {
+      state.playInIds = [[]];
+    }
+
+    if (isEmpty(state.playOutIds)) {
+      state.playOutIds = [[]];
+    }
+
+    objects.forEach(object => {
+      if (!object.type || object.type === OBJECT_TYPE.BACKGROUND) return;
+
+      const playInIds = [].concat(...state.playInIds);
+      const playOutIds = [].concat(...state.playOutIds);
+
+      if (!playInIds.includes(object.id)) {
+        state.playInIds[0].push(object.id);
+      }
+
+      if (!playOutIds.includes(object.id)) {
+        state.playOutIds[0].push(object.id);
+      }
+    });
   }
 };

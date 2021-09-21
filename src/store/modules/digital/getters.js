@@ -118,21 +118,25 @@ export const getters = {
   [DIGITAL._GETTERS.STORE_ANIMATION_PROP]: ({ storeAnimationProp }) => {
     return storeAnimationProp;
   },
+  [DIGITAL._GETTERS.PLAY_IN_IDS]: ({ playInIds }) => {
+    return playInIds;
+  },
+  [DIGITAL._GETTERS.PLAY_OUT_IDS]: ({ playOutIds }) => {
+    return playOutIds;
+  },
   [DIGITAL._GETTERS.PLAY_IN_ORDER]: ({ playInIds, currentObjectId }) => {
     if (!currentObjectId) return;
 
-    const index =
-      playInIds.findIndex(ids => ids.includes(currentObjectId)) || 0;
+    const index = playInIds.findIndex(ids => ids.includes(currentObjectId));
 
-    return index + 1;
+    return index < 0 ? 1 : index + 1;
   },
   [DIGITAL._GETTERS.PLAY_OUT_ORDER]: ({ playOutIds, currentObjectId }) => {
     if (!currentObjectId) return;
 
-    const index =
-      playOutIds.findIndex(ids => ids.includes(currentObjectId)) || 0;
+    const index = playOutIds.findIndex(ids => ids.includes(currentObjectId));
 
-    return index + 1;
+    return index < 0 ? 1 : index + 1;
   },
   [DIGITAL._GETTERS.TOTAL_ANIMATION_PLAY_OUT_ORDER]: ({ playOutIds }) => {
     return playOutIds.length;

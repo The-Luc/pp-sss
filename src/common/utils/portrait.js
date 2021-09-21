@@ -12,7 +12,7 @@ import {
 } from '@/common/constants';
 
 import { cloneDeep } from 'lodash';
-import { activeCanvas, ptToPx } from '.';
+import { getActiveCanvas, ptToPx } from './canvas';
 import { measureTextWidth } from './textSize';
 
 /**
@@ -196,16 +196,18 @@ const isHasLargePortrait = teacherSettings => {
  * @param {Object} b portrait object will be sort
  * @returns value sort junction will consume
  */
-export const sortPortraitByName = (a, b) => {
-  const nameA = (a.lastName + a.firstName).toUpperCase();
-  const nameB = (b.lastName + b.firstName).toUpperCase();
-  if (nameA < nameB) {
-    return -1;
-  }
-  if (nameA > nameB) {
-    return 1;
-  }
-  return 0;
+export const sortPortraitByName = isFirstLast => {
+  return (a, b) => {
+    const first = isFirstLast ? 'firstName' : 'lastName';
+    const last = isFirstLast ? 'lastName' : 'firstName';
+
+    const nameA = (a[first] + a[last]).toUpperCase();
+    const nameB = (b[first] + b[last]).toUpperCase();
+
+    if (nameA === nameB) return 0;
+
+    return nameA > nameB ? 1 : -1;
+  };
 };
 
 /**
@@ -244,10 +246,6 @@ export const getPortraitsByRole = folder => {
     p => p.classRole === CLASS_ROLE.ASSISTANT_TEACHER
   );
   const students = portraits.filter(p => p.classRole === CLASS_ROLE.STUDENT);
-
-  teachers.sort(sortPortraitByName);
-  asstTeachers.sort(sortPortraitByName);
-  students.sort(sortPortraitByName);
 
   return { students, teachers, asstTeachers };
 };
@@ -357,7 +355,7 @@ export const createPortraitObjects = (
 
   const titleMeasureWidth =
     pxToIn(
-      measureTextWidth(activeCanvas, pageTitle, {
+      measureTextWidth(getActiveCanvas(), pageTitle, {
         fontSize: `${ptToPx(pageTitleFontSettings.fontSize)}px`,
         fontFamily: pageTitleFontSettings.fontFamily
       })
@@ -468,7 +466,7 @@ export const createPortraitObjects = (
         };
 
         const textWidth =
-          pxToIn(measureTextWidth(activeCanvas, value, measureOptions)) +
+          pxToIn(measureTextWidth(getActiveCanvas(), value, measureOptions)) +
           bleedLeft * 2;
 
         const imageWidth = isLargeAsst ? largeTeacherWidth : itemWidth;

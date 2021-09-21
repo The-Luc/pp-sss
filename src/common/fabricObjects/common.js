@@ -935,21 +935,21 @@ export const fabricToPpObject = fabricObject => {
  * @param {*} fill background color
  * @return image element
  */
-const createSVGElement = (val, fill) => {
+export const createSVGElement = (val, fill) => {
   return new Promise(resolve => {
     const svgNS = 'http://www.w3.org/2000/svg';
     const DOMURL = window.URL || window.webkitURL || window;
     const img = new Image();
 
     const svg = document.createElementNS(svgNS, 'svg');
-    svg.setAttribute('width', '100');
-    svg.setAttribute('height', '100');
+    svg.setAttribute('width', '40');
+    svg.setAttribute('height', '40');
 
     const rect = document.createElementNS(svgNS, 'rect');
     rect.setAttribute('width', '100%');
     rect.setAttribute('height', '100%');
     rect.setAttribute('stroke', 'black');
-    rect.setAttribute('stroke-width', '10');
+    rect.setAttribute('stroke-width', '4');
     rect.setAttribute('fill', fill);
 
     const text = document.createElementNS(svgNS, 'text');
@@ -957,7 +957,7 @@ const createSVGElement = (val, fill) => {
     text.setAttribute('y', '50%');
     text.setAttribute('dominant-baseline', 'middle');
     text.setAttribute('text-anchor', 'middle');
-    text.setAttribute('font-size', '50');
+    text.setAttribute('font-size', '20');
     text.innerHTML = val;
 
     svg.append(rect);
