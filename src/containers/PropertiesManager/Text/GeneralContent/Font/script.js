@@ -4,7 +4,7 @@ import FontFamily from '@/components/Properties/Groups/TextProperties/FontFamily
 
 import { useElementProperties } from '@/hooks';
 import { FONT_SIZE, FONT_FAMILY } from '@/common/constants';
-import { getSelectedOption, pxToIn, activeCanvas } from '@/common/utils';
+import { getSelectedOption } from '@/common/utils';
 
 import { EVENT_TYPE } from '@/common/constants/eventType';
 
@@ -40,27 +40,10 @@ export default {
   },
   methods: {
     /**
-     * Set size for object text
-     * @param {Any} data size of text (string or object)
+     * Change fontSize/fontFamily of text box selected
+     * @param {Object} data new fontSize/fontFamily of text box
      */
-    onChangFontSize(value) {
-      const activeObj = activeCanvas?.getActiveObject();
-      const { x, y } = activeObj?.aCoords?.tl || {};
-      const updateData = {
-        fontSize: value,
-        coord: {
-          x: pxToIn(x),
-          y: pxToIn(y)
-        }
-      };
-
-      this.$root.$emit(EVENT_TYPE.CHANGE_TEXT_PROPERTIES, updateData);
-    },
-    /**
-     * Change font family of text box selected
-     * @param {Object} data new font family of text box
-     */
-    onChangFontFamily(value) {
+    onChange(value) {
       this.$root.$emit(EVENT_TYPE.CHANGE_TEXT_PROPERTIES, value);
     }
   }

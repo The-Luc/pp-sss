@@ -1,7 +1,7 @@
 import { fabric } from 'fabric';
 
 import {
-  activeCanvas,
+  getActiveCanvas,
   getStrokeLineCap,
   inToPx,
   isEmpty,
@@ -226,7 +226,7 @@ export const setImageSrc = async (imageObject, imageSrc) => {
  * @returns {Array} List activate Image box
  */
 export const getAvailableImages = () => {
-  return activeCanvas
+  return getActiveCanvas()
     .getObjects()
     .filter(
       object => object.objectType === OBJECT_TYPE.IMAGE && !object.hasImage
@@ -271,7 +271,7 @@ export const handleDragEnter = ({ target }) => {
     strokeWidth: IMAGE_INDICATOR.STROKE_WIDTH
   });
 
-  activeCanvas.renderAll();
+  getActiveCanvas().renderAll();
 };
 
 /**
@@ -288,7 +288,7 @@ export const handleDragLeave = ({ target }) => {
     cachedStrokeData: null
   });
 
-  activeCanvas.renderAll();
+  getActiveCanvas().renderAll();
 };
 
 /**
@@ -471,9 +471,9 @@ export const createMediaOverlay = (src, options) => {
  * Render video by video frames
  */
 const reqAnimFrame = renderFn => {
-  activeCanvas.renderAll();
+  getActiveCanvas().renderAll();
 
-  const objects = activeCanvas.getObjects();
+  const objects = getActiveCanvas().getObjects();
 
   const isPlaying = objects.some(obj => obj.isPlaying);
 

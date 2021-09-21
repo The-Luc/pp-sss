@@ -48,7 +48,7 @@ export default {
         this.forceRenderComponent();
         return;
       }
-      this.$emit('change', value);
+      this.$emit('change', { fontSize: value });
     },
     /**
      * Trigger render component by changing component key

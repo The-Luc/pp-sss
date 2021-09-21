@@ -14,7 +14,7 @@ import {
   getThemeOptSelectedById,
   getLayoutOptSelectedById,
   resetObjects,
-  activeCanvas,
+  getActiveCanvas,
   isEmpty,
   insertItemsToArray,
   removeItemsFormArray,
@@ -336,7 +336,7 @@ export default {
         layout
       });
 
-      resetObjects(activeCanvas);
+      resetObjects(getActiveCanvas());
 
       // draw layout on canvas
       this.$root.$emit('drawLayout');

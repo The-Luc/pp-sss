@@ -34,7 +34,8 @@ import {
   CROP_CONTROL,
   IMAGE_LOCAL,
   PROPERTIES_TOOLS,
-  APPLY_MODE
+  APPLY_MODE,
+  EDITION
 } from '@/common/constants';
 import {
   addPrintClipArts,
@@ -101,7 +102,7 @@ import {
   pxToIn,
   resetObjects,
   selectLatestObject,
-  setActiveCanvas,
+  setActiveEdition,
   setBorderHighlight,
   setBorderObject,
   setCanvasUniformScaling,
@@ -282,7 +283,7 @@ export default {
 
         this.isFrameLoaded = false;
 
-        this.saveData(oldVal.id, this.currentFrameId);
+        await this.saveData(oldVal.id, this.currentFrameId);
 
         // reset frames, frameIDs, currentFrameId
         this.setFrames({ framesList: [] });
@@ -457,7 +458,7 @@ export default {
         backgroundColor: '#fff',
         preserveObjectStacking: true
       });
-      setActiveCanvas(window.digitalCanvas);
+      setActiveEdition(window.digitalCanvas, EDITION.DIGITAL);
       useDigitalOverrides(fabric.Object.prototype);
       fabric.textureSize = 4096;
       this.updateCanvasSize();
@@ -1394,6 +1395,14 @@ export default {
       if (isEmpty(prop)) return;
 
       const element = window.digitalCanvas.getActiveObject();
+
+      if (!isEmpty(prop.fontSize)) {
+        const { x, y } = element?.aCoords?.tl || {};
+        prop.coord = {
+          x: pxToIn(x),
+          y: pxToIn(y)
+        };
+      }
 
       if (isEmpty(element) || element.objectType !== objectType) return;
 
@@ -2588,6 +2597,7 @@ export default {
             obj.animationOut = merge(obj.animationOut, prop.animationOut);
           }
         });
+
         this.updateFrameObjects({ frameId: id });
       });
     },
