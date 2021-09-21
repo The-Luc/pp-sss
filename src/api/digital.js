@@ -365,7 +365,7 @@ const digitalService = {
         promises.push(savePlayOutConfig(OBJECT_TYPE.CLIP_ART, ClipArtObject));
       }
 
-      if (!isEmpty(ClipArtObject)) {
+      if (!isEmpty(BackgroundObject)) {
         promises.push(
           savePlayOutConfig(OBJECT_TYPE.BACKGROUND, BackgroundObject)
         );

@@ -72,7 +72,7 @@ export class BaseShadow extends BaseObject {
 export class BaseAnimation extends BaseObject {
   style = '';
   duration = 0.8;
-  direction = '';
+  direction = 0;
   scale = 50;
   order = 1;
 

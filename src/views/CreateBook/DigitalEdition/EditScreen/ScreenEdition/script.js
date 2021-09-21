@@ -2558,12 +2558,8 @@ export default {
       }
 
       if (storeType === APPLY_MODE.FRAME) {
-        const objects = this.currentFrame.objects;
-        const props = objects
-          .filter(obj => obj.type === objectType)
-          .map(obj => ({ id: obj.id, prop }));
-
-        return this.setPropOfMultipleObjects({ data: props });
+        this.setPropMultiObjectsBaseOnType(objectType, prop);
+        return;
       }
 
       const storeTypeId = {
@@ -2583,12 +2579,7 @@ export default {
 
       this.setStoreAnimationProp({ storeAnimationProp });
 
-      const objects = this.currentFrame.objects;
-      const props = objects
-        .filter(obj => obj.type === objectType)
-        .map(obj => ({ id: obj.id, prop }));
-
-      this.setPropOfMultipleObjects({ data: props });
+      this.setPropMultiObjectsBaseOnType(objectType, prop);
 
       this.frames.forEach(({ frame: { objects, id } }) => {
         objects.forEach(obj => {
@@ -2600,6 +2591,20 @@ export default {
 
         this.updateFrameObjects({ frameId: id });
       });
+    },
+
+    /**
+     * Set prop for multi objects based on their type
+     * @param {String} objectType Type of object
+     * @param {Object} prop Prop will be set to objects
+     */
+    setPropMultiObjectsBaseOnType(objectType, prop) {
+      const objects = Object.values(this.currentObjects);
+      const props = objects
+        .filter(obj => obj.type === objectType)
+        .map(obj => ({ id: obj.id, prop }));
+
+      this.setPropOfMultipleObjects({ data: props });
     },
 
     /**
