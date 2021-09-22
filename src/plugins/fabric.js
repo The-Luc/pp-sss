@@ -429,24 +429,25 @@ const rectRender = function(ctx) {
  * @param {CanvasRenderingContext2D} ctx Context to render on
  */
 const maskRender = function(ctx) {
-  if (this.img) {
-    const x = (this.strokeWidth - this.width) / 2;
-    const y = (this.strokeWidth - this.height) / 2;
-    const w = this.width - this.strokeWidth;
-    const h = this.height - this.strokeWidth;
-    const r = this.mask === PORTRAIT_IMAGE_MASK.ROUNDED ? w / 10 : w / 2;
-    ctx.save();
-    ctx.beginPath();
-    ctx.moveTo(x + r, y);
-    ctx.arcTo(x + w, y, x + w, y + h, r);
-    ctx.arcTo(x + w, y + h, x, y + h, r);
-    ctx.arcTo(x, y + h, x, y, r);
-    ctx.arcTo(x, y, x + w, y, r);
-    ctx.closePath();
-    ctx.clip();
-    ctx.drawImage(this.img, x, y, w, h);
-    ctx.restore();
-  }
+  if (!this.img) return;
+
+  const x = (this.strokeWidth - this.width) / 2;
+  const y = (this.strokeWidth - this.height) / 2;
+  const w = this.width - this.strokeWidth;
+  const h = this.height - this.strokeWidth;
+  const r = this.mask === PORTRAIT_IMAGE_MASK.ROUNDED ? w / 10 : w / 2;
+
+  ctx.save();
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.arcTo(x + w, y, x + w, y + h, r);
+  ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r);
+  ctx.arcTo(x, y, x + w, y, r);
+  ctx.closePath();
+  ctx.clip();
+  ctx.drawImage(this.img, x, y, w, h);
+  ctx.restore();
 };
 
 /**
