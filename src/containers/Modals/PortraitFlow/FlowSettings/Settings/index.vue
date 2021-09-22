@@ -5,7 +5,7 @@
       <TabHeader title="Text Settings" />
       <TabHeader title="Image Settings" />
       <TabHeader title="Flow Settings" />
-      <TabHeader v-if="savedSettings.length > 0" title="Save Settings" />
+      <TabHeader v-if="savedSettings.length > 0" title="Saved Settings" />
     </div>
 
     <div class="save-settings">

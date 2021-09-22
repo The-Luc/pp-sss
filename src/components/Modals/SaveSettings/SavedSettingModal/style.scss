@@ -6,6 +6,10 @@
     .pp-modal-title-theme {
       height: 65px;
       margin: 0 !important;
+      padding: 12px 0 4px 0 !important;
+      .text-title {
+        font-size: $xl-size;
+      }
     }
     .card-text-theme-modal {
       display: block !important;
