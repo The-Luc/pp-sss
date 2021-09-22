@@ -41,7 +41,8 @@ import {
   useActionsEditionSheet,
   useObjectProperties,
   useToolBar,
-  useObjects
+  useObjects,
+  useBackgroundProperties
 } from '@/hooks';
 import { EDITION } from '@/common/constants';
 import {
@@ -101,6 +102,8 @@ export default {
 
     const { addObjecs, deleteObjects } = useObjects();
 
+    const { backgroundsProps } = useBackgroundProperties();
+
     return {
       pageSelected,
       setToolNameSelected,
@@ -126,7 +129,8 @@ export default {
       getSheets,
       savePortraitObjects,
       addObjecs,
-      deleteObjects
+      deleteObjects,
+      backgroundsProps
     };
   },
   data() {
@@ -360,7 +364,7 @@ export default {
       const isImage = target?.objectType === OBJECT_TYPE.IMAGE;
       const isVideo = target?.objectType === OBJECT_TYPE.VIDEO;
 
-      if (!target || (!isImage && !isVideo) || target.fromPortrait) {
+      if (!target || (!isImage && !isVideo)) {
         const x = pointer.x - offsetX * 3;
         const y = pointer.y - offsetY * 3;
 
@@ -382,7 +386,11 @@ export default {
       prop.imageId = imageId;
       prop.originalUrl = imageUrl;
 
-      target.set({ originalUrl: imageUrl, cropInfo: null });
+      target.set({
+        originalUrl: imageUrl,
+        cropInfo: null,
+        fromPortrait: false
+      });
 
       this.setPropertyById({ id: target.id, prop });
       this.$refs.canvasEditor.getThumbnailUrl();
@@ -500,27 +508,40 @@ export default {
 
         const objects = [...leftObjects, ...rightObjects];
 
-        if (!isEmpty(objects)) {
-          if (sheet.id === this.pageSelected.id) {
-            const canvas = this.$refs.canvasEditor.printCanvas;
+        if (isEmpty(objects)) return;
 
-            const ids = Object.keys(this.listObjects);
+        this.updateVisited({ sheetId: sheet.id });
 
-            resetObjects(canvas);
+        const saveObjetcs = this.savePortraitObjects(sheet.id, objects);
 
-            this.deleteObjects({ ids });
+        saveQueue.push(saveObjetcs);
 
-            this.addObjecs({
-              objects: objects.map(obj => ({ id: obj.id, newObject: obj }))
-            });
+        if (sheet.id !== this.pageSelected.id) return;
 
-            this.$refs.canvasEditor.drawObjectsOnCanvas(objects);
+        const canvas = this.$refs.canvasEditor.printCanvas;
 
-            canvas.renderAll();
-          }
-          const saveObjetcs = this.savePortraitObjects(sheet.id, objects);
-          saveQueue.push(saveObjetcs);
-        }
+        const ids = Object.keys(this.listObjects);
+
+        const { left, right, background } = this.backgroundsProps;
+
+        const backgrounds = [left, right, background].filter(
+          bg => !isEmpty(bg)
+        );
+
+        resetObjects(canvas);
+
+        this.deleteObjects({ ids });
+
+        this.addObjecs({
+          objects: objects.map(obj => ({ id: obj.id, newObject: obj }))
+        });
+
+        this.$refs.canvasEditor.drawObjectsOnCanvas([
+          ...backgrounds,
+          ...objects
+        ]);
+
+        canvas.renderAll();
       });
 
       await Promise.all(saveQueue);

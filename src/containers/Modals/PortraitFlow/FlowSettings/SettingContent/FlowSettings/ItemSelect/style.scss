@@ -13,12 +13,15 @@
     }
   }
   .page-select-item-title {
-    width: 128px;
+    width: 116px;
     font-family: $font-500;
     font-size: 13px;
     color: $color-stoodio-toolbartext;
   }
   .page-select-item-descript {
-    width: 40px;
+    margin: 0 10px;
+    font-family: $font-300;
+    font-size: 13px;
+    color: $color-stoodio-toolbartext;
   }
 }

@@ -824,3 +824,20 @@ export const renderOrderBox = async data => {
     );
   }
 };
+
+export const removeAnimationOrders = (animationOrders, objectIds) => {
+  objectIds.forEach(id => {
+    const idsIndex = animationOrders.findIndex(ids => ids.includes(id));
+
+    if (isEmpty(animationOrders[idsIndex])) return;
+
+    const index = animationOrders[idsIndex].findIndex(i => +i === +id);
+    animationOrders[idsIndex].splice(index, 1);
+
+    if (!isEmpty(animationOrders[idsIndex])) return;
+
+    animationOrders.splice(idsIndex, 1);
+  });
+
+  return animationOrders;
+};

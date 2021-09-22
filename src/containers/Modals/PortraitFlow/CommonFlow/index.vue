@@ -22,12 +22,14 @@
         :preview-portraits-range="previewPortraitsRange"
         :is-digital="isDigital"
         :saved-settings="savedSettings"
+        :trigger-tab="triggerTab"
         @showPreview="onShowPreview"
         @settingChange="onSettingChange"
         @saveSettings="onSaveSettings"
         @startPageChange="onStartChange"
         @flowSettingChange="onFlowSettingChange"
         @pageSettingChange="onPageSettingChange"
+        @screenSettingChange="onScreenSettingChange"
         @loadSetting="onLoadSetting"
       />
 
@@ -54,7 +56,8 @@
       @SaveSettings="onSaveSettings"
     ></save-settings-modal>
 
-    <saved-modal :is-open-modal="isOpenModalSuccess"> </saved-modal>
+    <saved-modal :is-open-modal="isOpenModalSuccess" :message="message">
+    </saved-modal>
   </div>
 </template>
 

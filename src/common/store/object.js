@@ -3,7 +3,8 @@ import {
   insertItemsToArray,
   insertItemsToObject,
   removeItemsFormArray,
-  removeItemsFormObject
+  removeItemsFormObject,
+  removeAnimationOrders
 } from '../utils';
 
 export const addObject = (state, { id, newObject }) => {
@@ -64,4 +65,15 @@ export const deleteObjects = (state, { ids }) => {
     state.objects,
     ids.map(id => ({ key: id }))
   );
+
+  if (isEmpty(state.playInIds)) {
+    state.playInIds = [[]];
+  }
+
+  if (isEmpty(state.playOutIds)) {
+    state.playOutIds = [[]];
+  }
+
+  state.playInIds = removeAnimationOrders(state.playInIds, ids);
+  state.playOutIds = removeAnimationOrders(state.playOutIds, ids);
 };

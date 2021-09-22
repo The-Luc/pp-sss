@@ -120,6 +120,7 @@ export class PortraitImageSettings extends BaseObject {
 export class PortraitFlowSettings extends BaseObject {
   flowOption = ''; // AUTO, CONTINUE (for multi folders), MANUAL
   pages = []; // [2, 3, 4]
+  screen = {};
 
   /**
    * @param {PortraitFlowSettings} props

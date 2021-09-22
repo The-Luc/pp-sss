@@ -33,6 +33,7 @@ export default {
   data() {
     return {
       imageUrl: this.firstImageUrl,
+      maskUrl: this.firstImageUrl,
       backgroundPosition: this.getPosition(),
       transitionCss: isEmpty(this.duration) ? '' : `all ${this.duration}s`,
       transitionType: `transition-${this.transition}-${this.direction}`,

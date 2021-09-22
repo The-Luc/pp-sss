@@ -29,6 +29,9 @@ export default {
     },
     isDigital: {
       type: Boolean
+    },
+    triggerTab: {
+      type: Boolean
     }
   },
   data() {
@@ -40,6 +43,11 @@ export default {
   watch: {
     'flowSettings.startOnPageNumber'(value) {
       this.displayedPageNo = value;
+    },
+    triggerTab(oldval, newVal) {
+      if (oldval !== newVal) {
+        this.currentTab = 0;
+      }
     }
   },
   methods: {
@@ -79,14 +87,32 @@ export default {
     onSettingChange(val) {
       this.$emit('settingChange', val);
     },
+    /**
+     * To emit data to parent components to handle config changed
+     * @param {Object} val configuration changed
+     */
     onFlowSettingChange(val) {
       this.$emit('flowSettingChange', val);
     },
+    /**
+     * To emit data to parent components to handle config changed
+     * @param {Object} val configuration changed
+     */
     onPageSettingChange(val) {
       this.$emit('pageSettingChange', val);
     },
+    /**
+     * To emit data to parent components to handle config changed
+     * @param {Object} val configuration changed
+     */
+    onScreenSettingChange(val) {
+      this.$emit('screenSettingChange', val);
+    },
+    /**
+     * Emit event load setting to parent
+     * @param {Number}  id id of portrait setting to load
+     */
     onLoadSetting(id) {
-      this.currentTab = 0;
       this.$emit('loadSetting', id);
     }
   }

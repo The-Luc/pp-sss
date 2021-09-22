@@ -83,7 +83,7 @@ export const getRangePortraitSingleFolder = (
   const portraitRange = getRangePortrait(maxPortrait, assetsCount, folderIdx);
 
   const lastPageIndex = portraitRange.length - 1;
-  const portraitsOnLastPage = assetsCount % maxPortrait;
+  const portraitsOnLastPage = assetsCount % maxPortrait || maxPortrait;
   const isEnoughRow = maxPortrait - cols > portraitsOnLastPage;
   const { max } = portraitRange[lastPageIndex];
 
@@ -384,10 +384,12 @@ export const createPortraitObjects = (
   const offsetRight = margins.right + offsetNameRight;
   const offsetLeft = margins.left + offsetNameLeft;
 
-  const totalHeight = pageHeight - offsetTop - offsetBottom - textHeight;
-  const totalWidth = pageWidth - offsetLeft - offsetRight;
-
   const defaultGap = 0.15;
+  const defaultTextGap = 0.05;
+
+  const totalHeight =
+    pageHeight - offsetTop - offsetBottom - textHeight - defaultTextGap;
+  const totalWidth = pageWidth - offsetLeft - offsetRight;
 
   const isSquareImage = [
     PORTRAIT_IMAGE_MASK.CIRCLE,
@@ -412,8 +414,10 @@ export const createPortraitObjects = (
   const itemHeight = Math.min(tmpHeight, tmpWidth * imageRatio);
   const itemWidth = itemHeight / imageRatio;
 
-  const colGap = (totalWidth - itemWidth * colCount) / (colCount - 1);
-  const rowGap = (totalHeight - itemHeight * rowCount) / (rowCount - 1);
+  const colGap =
+    colCount > 1 ? (totalWidth - itemWidth * colCount) / (colCount - 1) : 0;
+  const rowGap =
+    rowCount > 1 ? (totalHeight - itemHeight * rowCount) / (rowCount - 1) : 0;
 
   const borderOffset = border.showBorder
     ? pxToIn(ptToPx(border.strokeWidth))
@@ -498,7 +502,10 @@ export const createPortraitObjects = (
           text: value,
           coord: {
             x: namePosition.value === 0 ? x - bleedLeft : textX,
-            y: namePosition.value === 0 ? y + imageHeight - bleedTop : textY
+            y:
+              namePosition.value === 0
+                ? y + imageHeight - bleedTop + defaultTextGap
+                : textY
           },
           size: {
             width:
@@ -520,7 +527,7 @@ export const createPortraitObjects = (
       id: getUniqueId(),
       text: pageTitle,
       coord: {
-        x: pageTitleMargins.left,
+        x: isRight ? pageTitleMargins.left + pageWidth : pageTitleMargins.left,
         y: pageTitleMargins.top
       },
       size: {
@@ -617,4 +624,29 @@ export const getPageObjects = (settings, requiredPages, isDigital) => {
   });
 
   return pageObjects;
+};
+
+export const getDataScreenOfMultiFolder = (
+  screens,
+  folders,
+  maxPortraitPerPage
+) => {
+  let totalLast = 0;
+  return Object.keys(screens).map(key => {
+    const folder = screens[key].map((_, folderInd) => {
+      return folders[totalLast + folderInd];
+    });
+
+    totalLast += screens[key].length;
+
+    return {
+      screen: parseInt(key),
+      frames: getSelectedDataOfFolders(
+        screens[key],
+        screens[key][0],
+        folder,
+        maxPortraitPerPage
+      )
+    };
+  });
 };

@@ -1,7 +1,5 @@
-import FlowSelect from './FlowSelect';
-import PpSelect from '@/components/Selectors/Select';
-
-import ItemSelect from './ItemSelect';
+import FlowSelect from '../FlowSelect';
+import ItemSelect from '../ItemSelect';
 import { useSheet } from '@/hooks';
 import {
   PORTRAIT_FLOW_OPTION_SINGLE,
@@ -12,7 +10,6 @@ import { getSelectedDataOfFolders } from '@/common/utils';
 export default {
   components: {
     FlowSelect,
-    PpSelect,
     ItemSelect
   },
   setup() {
@@ -176,9 +173,18 @@ export default {
           index === 0 ? this.pageOptions : this.getPageOptions(arr[index - 1])
       };
     },
+    /**
+     * To emit data to parent components to handle config changed
+     * @param {Object} val configuration changed
+     */
     onFlowSettingChange(val) {
       this.$emit('flowSettingChange', val.id);
     },
+    /**
+     * To emit data to parent components to handle config changed
+     * @param {Object} val value of selected page
+     * @param {Object} index index of folder
+     */
     onPageSettingChange(val, index) {
       this.$emit('pageSettingChange', {
         id: val.id,

@@ -258,8 +258,7 @@ export const centercrop = imageObject => {
  * @param {*} target - Image object has applied drag trigger
  */
 export const handleDragEnter = ({ target }) => {
-  if (target.cachedStrokeData || target.fromPortrait || !target.selectable)
-    return;
+  if (target.cachedStrokeData || !target.selectable) return;
 
   const cachedStrokeData = {
     stroke: target.stroke,
@@ -280,12 +279,7 @@ export const handleDragEnter = ({ target }) => {
  * @param {*} target - Image object has applied drag trigger
  */
 export const handleDragLeave = ({ target }) => {
-  if (
-    isEmpty(target.cachedStrokeData) ||
-    target.fromPortrait ||
-    !target.selectable
-  )
-    return;
+  if (isEmpty(target.cachedStrokeData) || !target.selectable) return;
 
   const { stroke, strokeWidth } = target.cachedStrokeData;
   target.set({
@@ -318,7 +312,7 @@ export const handleMouseMove = event => {
  * @param {Object} target Fabric object selected
  */
 const handleHoverImage = target => {
-  if (!target.hasImage || target.fromPortrait || !target.selectable) return;
+  if (!target.hasImage || !target.selectable) return;
 
   const { width, height, scaleX, scaleY } = target;
   const { x, y } = target.getLocalPointer();
@@ -392,7 +386,6 @@ export const handleMouseOver = ({ target }) => {
   if (
     target?.objectType !== OBJECT_TYPE.IMAGE ||
     !target.hasImage ||
-    target.fromPortrait ||
     !target.selectable
   )
     return;
@@ -413,7 +406,6 @@ export const handleMouseOut = ({ target }) => {
   if (
     target?.objectType !== OBJECT_TYPE.IMAGE ||
     !target.hasImage ||
-    target.fromPortrait ||
     !target.selectable
   )
     return;
@@ -696,12 +688,14 @@ export const createPortraitImage = async props => {
       height,
       mask,
       imageUrl,
-      objectType
+      objectType,
+      id
     } = toFabricPortraitImageProp(props);
 
     const radiusRatio = mask === PORTRAIT_IMAGE_MASK.ROUNDED ? 10 : 2;
 
     const rect = new fabric.Rect({
+      id,
       top,
       left,
       width,

@@ -42,6 +42,11 @@ export default {
   },
   methods: {
     getPreviewItems() {
+      return this.isDigital
+        ? this.getDigitalPreviewItems()
+        : this.getPrintPreviewItems();
+    },
+    getPrintPreviewItems() {
       if (isEmpty(this.flowSettings)) return [];
 
       const backgrounds = this.getPageBackgrounds(this.requiredPages);
@@ -65,6 +70,29 @@ export default {
           layout: this.flowSettings.layoutSettings,
           backgroundUrl: backgrounds[p],
           pageNo: p
+        };
+      });
+    },
+    getDigitalPreviewItems() {
+      if (isEmpty(this.flowSettings)) return [];
+      const backgrounds = this.getPageBackgrounds(
+        this.requiredPages.map(item => item.frame)
+      );
+
+      const { folders } = this.flowSettings;
+
+      const totalPortraits = folders.map(f => f.assets);
+
+      return this.requiredPages.map((p, index) => {
+        const { min, max, folderIdx } = this.previewPortraitsRange[index];
+        const portraits = totalPortraits[folderIdx].slice(min, max + 1);
+
+        return {
+          portraits,
+          layout: this.flowSettings.layoutSettings,
+          backgroundUrl: backgrounds[p],
+          pageNo: p.frame,
+          screenNo: p.screen
         };
       });
     }
