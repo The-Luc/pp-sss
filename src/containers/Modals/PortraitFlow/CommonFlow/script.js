@@ -80,6 +80,10 @@ export default {
     initialLayoutSetting: {
       type: Object,
       default: () => ({})
+    },
+    isAcceptButtonDisabled: {
+      type: Boolean,
+      default: false
     }
   },
   setup() {
@@ -145,9 +149,8 @@ export default {
           JSON.stringify(oldVal.textSettings);
 
         if (isSameLayout && isSameTeacher && isSameText) return;
-
-        this.initDataFlowSettings();
         this.updatePortraitOrder();
+        this.initDataFlowSettings();
       }
     }
   },

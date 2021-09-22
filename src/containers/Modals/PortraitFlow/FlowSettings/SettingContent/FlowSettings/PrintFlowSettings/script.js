@@ -5,8 +5,7 @@ import {
   PORTRAIT_FLOW_OPTION_SINGLE,
   PORTRAIT_FLOW_OPTION_MULTI
 } from '@/common/constants';
-import { getSelectedDataOfFolders } from '@/common/utils';
-
+import { getSelectedDataOfFolders, isEmpty } from '@/common/utils';
 export default {
   components: {
     FlowSelect,
@@ -104,8 +103,14 @@ export default {
           },
           pageOptions:
             index === 0
-              ? this.pageOptions
-              : this.getPageOptions(arr[index - 1].endOnPage)
+              ? this.getPageOptions(0, item.endOnPage)
+              : this.getPageOptions(arr[index - 1].endOnPage, item.startOnPage),
+          endOnPageOptions: [
+            {
+              id: item.endOnPage,
+              name: item.endOnPage
+            }
+          ]
         };
       });
     },
@@ -117,11 +122,15 @@ export default {
     },
 
     pageOptions() {
-      const totalSheet = Object.values(this.getSheets).length * 2 - 4;
-      return Array.from({ length: totalSheet }, (_, i) => i + 1).map(item => ({
-        id: item,
-        name: item
-      }));
+      return Array.from({ length: this.maxPageOption }, (_, i) => i + 1).map(
+        item => ({
+          id: item,
+          name: item
+        })
+      );
+    },
+    maxPageOption() {
+      return Object.values(this.getSheets).length * 2 - 4;
     }
   },
   methods: {
@@ -130,10 +139,18 @@ export default {
      * @param {Number} minValue min value
      * @returns {Array} page options
      */
-    getPageOptions(minValue) {
-      return this.pageOptions.filter(item => {
+    getPageOptions(minValue, value) {
+      const options = this.pageOptions.filter(item => {
         return item.id > minValue;
       });
+      return !isEmpty(options)
+        ? options
+        : [
+            {
+              id: value,
+              name: value
+            }
+          ];
     },
     /**
      * Get start asset
@@ -170,7 +187,9 @@ export default {
           name: folder
         },
         pageOptions:
-          index === 0 ? this.pageOptions : this.getPageOptions(arr[index - 1])
+          index === 0
+            ? this.getPageOptions(0, folder)
+            : this.getPageOptions(arr[index - 1], folder)
       };
     },
     /**

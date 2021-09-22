@@ -5,7 +5,7 @@ import {
   PORTRAIT_FLOW_OPTION_SINGLE
 } from '@/common/constants';
 import { useSheet } from '@/hooks';
-import { cloneDeep } from 'lodash';
+import { cloneDeep, first, last } from 'lodash';
 import {
   isEmpty,
   getSelectedDataOfFolders,
@@ -96,6 +96,9 @@ export default {
       return this.isMultiFolder
         ? PORTRAIT_FLOW_OPTION_MULTI.AUTO.id
         : PORTRAIT_FLOW_OPTION_SINGLE.AUTO.id;
+    },
+    isAcceptButtonDisabled() {
+      return last(this.requiredPages) > this.maxPageOption;
     }
   },
   watch: {
@@ -110,6 +113,30 @@ export default {
 
       const pages = this.getSingleFolderDefaultPages();
       this.flowSettings.flowSingleSettings.pages = pages;
+    },
+    flowSettings: {
+      deep: true,
+      handler(newVal, oldVal) {
+        const isSameLayout =
+          JSON.stringify(newVal.layoutSettings) ===
+          JSON.stringify(oldVal.layoutSettings);
+        const isSameTeacher =
+          JSON.stringify(newVal.teacherSettings) ===
+          JSON.stringify(oldVal.teacherSettings);
+        const overFlow = last(this.requiredPages) > this.maxPageOption;
+        if ((isSameLayout && isSameTeacher) || !overFlow) {
+          this.onFlowWarningClose();
+          return;
+        }
+        const folderNo = 1;
+        const pageNo = first(this.requiredPages);
+        const totalPage = this.requiredPages.length;
+        if (this.isMultiFolder) {
+          this.displayMultiFolderWarning(folderNo, pageNo);
+          return;
+        }
+        this.displaySingleFolderWarning(totalPage, pageNo);
+      }
     }
   },
   methods: {
@@ -277,6 +304,7 @@ export default {
      */
     onSingleFolderPageChange(id, index) {
       const flowSettings = cloneDeep(this.flowSettings.flowSingleSettings);
+      const oldPage = flowSettings.pages[index];
       flowSettings.pages[index] = id;
 
       const startOnPageNumber = !index
@@ -291,10 +319,9 @@ export default {
         flowSettings.pages,
         startOnPageNumber
       );
-
-      if (
-        flowSettings.pages[flowSettings.pages.length - 1] <= this.maxPageOption
-      ) {
+      const overFlow = last(flowSettings.pages) > this.maxPageOption;
+      const increaseNumberOfPages = id > oldPage;
+      if (!overFlow || !increaseNumberOfPages) {
         this.onSettingChange({
           setting: {
             flowSingleSettings: flowSettings,
@@ -319,6 +346,7 @@ export default {
      */
     onMultiFolderPageChange(id, index) {
       const flowSettings = cloneDeep(this.flowSettings.flowMultiSettings);
+      const oldPage = flowSettings.pages[index];
       flowSettings.pages[index] = id;
       const startOnPageNumber = !index
         ? id
@@ -336,9 +364,9 @@ export default {
       flowSettings.pages = selectedData.map(item => {
         return item.startOnPage;
       });
-      if (
-        selectedData[selectedData.length - 1].endOnPage <= this.maxPageOption
-      ) {
+      const overFlow = last(selectedData).endOnPage > this.maxPageOption;
+      const increaseNumberOfPages = id > oldPage;
+      if (!overFlow || !increaseNumberOfPages) {
         this.onSettingChange({
           setting: {
             flowMultiSettings: flowSettings,
