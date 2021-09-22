@@ -200,6 +200,10 @@ export default {
     applyRules() {
       this.multiFolderRule();
       this.loadingSettingRule();
+
+      // No need apply rules if there are more than 1 folder
+      if (!this.isSingleFolder) return;
+
       this.asstPlacementRule();
       this.numberOfLargePortraitsRule();
       this.alphabeticalOrder();

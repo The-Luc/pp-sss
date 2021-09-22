@@ -49,7 +49,7 @@ export default {
   },
   methods: {
     /**
-     * Go fire when users change layout setings
+     * Get fired when users change layout setings
      * @param {Object} val config of layout settings
      */
     onLayoutChange(val) {
@@ -57,7 +57,7 @@ export default {
     },
 
     /**
-     * Go fire when users change teacher setings
+     * Get fired when users change teacher setings
      * @param {Object} val config of teacher settings
      */
     onTeacherSettingsChange(val) {
