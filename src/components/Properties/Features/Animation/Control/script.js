@@ -216,8 +216,8 @@ export default {
       this.selectedStyle =
         this.styleOptions.find(opt => opt.value === config.style) ||
         NONE_OPTION;
-      this.durationValue = config.duration || DEFAULT_ANIMATION.DURATION;
-      this.scaleValue = config.scale || DEFAULT_ANIMATION.SCALE;
+      this.durationValue = config.duration ?? DEFAULT_ANIMATION.DURATION;
+      this.scaleValue = config.scale ?? DEFAULT_ANIMATION.SCALE;
 
       if (this.selectedStyle === NONE_OPTION) {
         this.onChangeOrder(this.orderOptions[0]);
