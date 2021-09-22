@@ -524,7 +524,8 @@ export default {
     async onCrop(value, cropInfo) {
       const prop = await setImageSrc(this.selectedImage, value);
       prop.cropInfo = cropInfo;
-      this.selectedImage.set({ cropInfo });
+      prop.fromPortrait = false;
+      this.selectedImage.set({ cropInfo, fromPortrait: false });
       this.setPropertyById({ id: this.selectedImage.id, prop });
       this.$refs.canvasEditor.getThumbnailUrl();
       this.onCancel();

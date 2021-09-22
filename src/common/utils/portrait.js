@@ -447,10 +447,8 @@ export const createPortraitObjects = (
         if (!imageUrl) return;
 
         const isLargeAsst =
-          [CLASS_ROLE.PRIMARY_TEACHER, CLASS_ROLE.ASSISTANT_TEACHER].includes(
-            classRole
-          ) &&
-          (hasLargeTeacher || hasLargeAstTeacher);
+          (classRole === CLASS_ROLE.PRIMARY_TEACHER && hasLargeTeacher) ||
+          (classRole === CLASS_ROLE.ASSISTANT_TEACHER && hasLargeAstTeacher);
 
         const offsetX = isRight
           ? bleedLeft + pageWidth + margins.left
@@ -479,6 +477,7 @@ export const createPortraitObjects = (
         const img = new ImageElementObject({
           id: getUniqueId(),
           imageUrl,
+          originalUrl: imageUrl,
           coord: { x, y },
           size: {
             width: imageWidth - borderOffset,
