@@ -28,6 +28,35 @@ export const getRectDashes = (width, height, strokeType, strokeWidth) => {
 };
 
 /**
+ * Calculate dashArray for rect of portrait image
+ *
+ * @param   {Number}  width  - the width need to calc
+ * @param   {Number}  height  - the height need to calc
+ * @param   {String}  strokeType  current stroke type
+ * @param   {Number}  strokeWidth  current stroke width
+ * @param   {Number}  perimeter  perimeter of object
+ * @returns {Array<Number>} dashArray
+ */
+export const getRectDashesForPortrait = (
+  width,
+  height,
+  strokeType,
+  strokeWidth,
+  perimeter
+) => {
+  if (!strokeWidth) return [];
+
+  if (strokeType === BORDER_STYLES.ROUND)
+    return calcRoundDash(perimeter, strokeWidth);
+
+  if (strokeType === BORDER_STYLES.SQUARE) {
+    const dashLength = Math.min(Math.min(width, height) * 0.1, 100);
+
+    return getLineDashes(perimeter, 0, 0, 0, dashLength, true);
+  }
+};
+
+/**
  * Calculate dashArray repeat base on number of points and dashTemplate
  *
  * @param   {Number}  points  - the length need to calc
@@ -83,18 +112,17 @@ const getRoundDashes = (width, height, strokeWidth) => {
 };
 
 // same as previous snippet except that it does return all the segment's dashes
-const getLineDashes = (x1, y1, x2, y2, dashLength) => {
+const getLineDashes = (x1, y1, x2, y2, dashLength, isSelfClosed) => {
   const length = Math.hypot(x2 - x1, y2 - y1) + 2; // calc distance between two points
 
-  const dashAndGapNumber = Math.floor(length / dashLength);
-  const oddNumDashGap =
-    dashAndGapNumber % 2 ? dashAndGapNumber : dashAndGapNumber + 1;
-  const numGaps = (oddNumDashGap - 1) / 2;
-  const numDashes = numGaps + 1;
   const gapLength = dashLength;
-  const totalBars = numDashes + numGaps;
+  const { totalBars, numDashes } = calcDashNumber(
+    length,
+    dashLength,
+    isSelfClosed
+  );
 
-  const calcLineLength = oddNumDashGap * dashLength;
+  const calcLineLength = totalBars * dashLength;
   const remaining = length - calcLineLength;
   const acctualDashLength = remaining / numDashes + dashLength;
 
@@ -103,6 +131,29 @@ const getLineDashes = (x1, y1, x2, y2, dashLength) => {
     .map((_, idx) => (idx % 2 === 0 ? acctualDashLength : gapLength));
 
   return dashArray;
+};
+
+/**
+ * To calculate number of dash of particular line
+ *
+ * @param {Number} length length of dashed line
+ * @param {Number} dashLength length of a dash
+ * @param {Boolean} isSelfClosed whether it a opened-line or enclosed line
+ * @returns {Object} total number of dashes and gaps, number of dashes
+ */
+const calcDashNumber = (length, dashLength, isSelfClosed) => {
+  const dashNumber = Math.floor(length / dashLength);
+  const isEven = dashNumber % 2 === 0;
+
+  if (isSelfClosed) {
+    const totalBars = isEven ? dashNumber : dashNumber + 1;
+    const numDashes = totalBars / 2;
+    return { totalBars, numDashes };
+  }
+
+  const totalBars = isEven ? dashNumber + 1 : dashNumber;
+  const numDashes = Math.ceil(totalBars / 2);
+  return { totalBars, numDashes };
 };
 
 export const getStrokeLineCap = strokeType => {
