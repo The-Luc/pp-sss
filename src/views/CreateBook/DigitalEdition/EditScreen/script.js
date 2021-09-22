@@ -628,7 +628,11 @@ export default {
      * @param {Object} requiredPages pages to apply portraits
      */
     async onApplyPortrait(settings, requiredPages) {
-      const pages = getPageObjects(settings, requiredPages, true);
+      const requiredFrames = requiredPages[this.pageSelected.id];
+
+      if (isEmpty(requiredFrames)) return;
+
+      const pages = getPageObjects(settings, requiredFrames, true);
 
       const canvas = this.$refs.canvasEditor.digitalCanvas;
 
