@@ -10,6 +10,7 @@ import {
 
 import {
   getRectDashes,
+  getRectDashesForPortrait,
   isEmpty,
   ptToPx,
   videoEndRewindEvent,
@@ -413,12 +414,36 @@ const rectRender = function(ctx) {
   if (
     [BORDER_STYLES.ROUND, BORDER_STYLES.SQUARE].includes(this.strokeLineType)
   ) {
-    this.strokeDashArray = getRectDashes(
-      this.width,
-      this.height,
-      this.strokeLineType,
-      this.strokeWidth
-    );
+    if (
+      [
+        PORTRAIT_IMAGE_MASK.OVAL,
+        PORTRAIT_IMAGE_MASK.ROUNDED,
+        PORTRAIT_IMAGE_MASK.CIRCLE
+      ].includes(this.mask)
+    ) {
+      const width = this.width * this.scaleX;
+      const height = this.height * this.scaleY;
+      const radius = this.rx * this.scaleX;
+
+      // get perimeter of rounded corner object
+      const perimeter =
+        2 * (width + height) - 8 * radius + 2 * radius * Math.PI;
+
+      this.strokeDashArray = getRectDashesForPortrait(
+        width,
+        height,
+        this.strokeLineType,
+        this.strokeWidth,
+        perimeter
+      );
+    } else {
+      this.strokeDashArray = getRectDashes(
+        this.width,
+        this.height,
+        this.strokeLineType,
+        this.strokeWidth
+      );
+    }
   }
 
   fabric.Rect.prototype._render.call(this, ctx);

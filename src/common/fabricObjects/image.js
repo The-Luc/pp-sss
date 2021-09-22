@@ -704,7 +704,8 @@ export const createPortraitImage = async props => {
       ry: width / radiusRatio,
       mask,
       objectType,
-      fill: 'transparent'
+      fill: 'transparent',
+      strokeUniform: true
     });
 
     createMediaOverlay(imageUrl, { width, height }).then(img => {
