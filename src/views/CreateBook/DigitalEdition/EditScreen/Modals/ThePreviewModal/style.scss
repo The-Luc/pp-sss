@@ -249,19 +249,54 @@ $mask-overlay: 5px;
 
         /** ======= [WIPE] ======= **/
 
-        /** [TOP BOTTOM] START **/
         .thumb {
+          /** [TOP BOTTOM] START **/
           &.transition-5-2-leave-active {
             z-index: 1;
-            clip-path: inset(0 -1px -1px 0);
+            clip-path: inset(0 0 0 0);
           }
 
           &.transition-5-2-leave-to {
-            clip-path: inset(#{$mask-length + $thumb-height} -1px -1px 0);
+            clip-path: inset(#{$mask-length + $thumb-height} 0 0 0);
           }
+          /** [TOP BOTTOM] END **/
+
+          /** [BOTTOM TOP] START **/
+          &.transition-5-3-leave-active {
+            z-index: 1;
+            clip-path: inset(0 0 0 0);
+          }
+
+          &.transition-5-3-leave-to {
+            clip-path: inset(0 0 #{$mask-length + $thumb-height} 0);
+          }
+          /** [TOP BOTTOM] END **/
+
+          /** [LEFT RIGHT] START **/
+          &.transition-5-0-leave-active {
+            z-index: 1;
+            clip-path: inset(0 0 0 0);
+          }
+
+          &.transition-5-0-leave-to {
+            clip-path: inset(0 0 0 #{$mask-length + $thumb-width});
+          }
+          /** [LEFT RIGHT] END **/
+
+          /** [RIGHT LEFT] START **/
+          &.transition-5-1-leave-active {
+            z-index: 1;
+            clip-path: inset(0 0 0 0);
+          }
+
+          &.transition-5-1-leave-to {
+            clip-path: inset(0 #{$mask-length + $thumb-width} 0 0);
+          }
+          /** [RIGHT LEFT] END **/
         }
 
         .thumb-mask {
+          /** [TOP BOTTOM] START **/
           &.transition-5-2-enter-active {
             display: flex;
             z-index: 99;
@@ -277,22 +312,9 @@ $mask-overlay: 5px;
           &.transition-5-2-enter-to {
             mask-position: 0 #{$mask-overlay + $thumb-height};
           }
-        }
-        /** [TOP BOTTOM] END **/
+          /** [TOP BOTTOM] END **/
 
-        /** [BOTTOM TOP] START **/
-        .thumb {
-          &.transition-5-3-leave-active {
-            z-index: 1;
-            clip-path: inset(0 -1px 0 0);
-          }
-
-          &.transition-5-3-leave-to {
-            clip-path: inset(0 -1px #{$mask-length + $thumb-height} 0);
-          }
-        }
-
-        .thumb-mask {
+          /** [BOTTOM TOP] START **/
           &.transition-5-3-enter-active {
             display: flex;
             z-index: 99;
@@ -308,22 +330,9 @@ $mask-overlay: 5px;
           &.transition-5-3-enter-to {
             mask-position: 0 #{- $mask-overlay - $mask-length};
           }
-        }
-        /** [TOP BOTTOM] END **/
+          /** [TOP BOTTOM] END **/
 
-        /** [LEFT RIGHT] START **/
-        .thumb {
-          &.transition-5-0-leave-active {
-            z-index: 1;
-            clip-path: inset(0 -1px -1px 0);
-          }
-
-          &.transition-5-0-leave-to {
-            clip-path: inset(0 -1px -1px #{$mask-length + $thumb-width});
-          }
-        }
-
-        .thumb-mask {
+          /** [LEFT RIGHT] START **/
           &.transition-5-0-enter-active {
             display: flex;
             z-index: 99;
@@ -339,22 +348,9 @@ $mask-overlay: 5px;
           &.transition-5-0-enter-to {
             mask-position: #{$mask-overlay + $thumb-width} 0;
           }
-        }
-        /** [LEFT RIGHT] END **/
+          /** [LEFT RIGHT] END **/
 
-        /** [RIGHT LEFT] START **/
-        .thumb {
-          &.transition-5-1-leave-active {
-            z-index: 1;
-            clip-path: inset(0 0 -1px 0);
-          }
-
-          &.transition-5-1-leave-to {
-            clip-path: inset(0 #{$mask-length + $thumb-width} -1px 0);
-          }
-        }
-
-        .thumb-mask {
+          /** [RIGHT LEFT] START **/
           &.transition-5-1-enter-active {
             display: flex;
             z-index: 99;
@@ -370,8 +366,8 @@ $mask-overlay: 5px;
           &.transition-5-1-enter-to {
             mask-position: #{- $mask-overlay - $mask-length} 0;
           }
+          /** [RIGHT LEFT] END **/
         }
-        /** [RIGHT LEFT] END **/
       }
     }
   }

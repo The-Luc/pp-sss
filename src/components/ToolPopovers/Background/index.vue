@@ -29,7 +29,7 @@
       </template>
 
       <template #content>
-        <div class="background-item-container">
+        <div ref="container" class="background-item-container">
           <div
             v-show="backgrounds.length === 0"
             class="empty-background-content"

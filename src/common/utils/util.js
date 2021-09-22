@@ -39,7 +39,11 @@ export const isEmpty = obj => {
   }
 
   if (objType === 'object' && isNaN(parseInt(obj.length, 10))) {
-    return JSON.stringify(obj) === JSON.stringify({});
+    try {
+      return JSON.stringify(obj) === JSON.stringify({});
+    } catch {
+      return false;
+    }
   }
 
   if (objType === 'object') return obj.length === 0;
@@ -455,4 +459,47 @@ export const inToPxPreview = (value, previewHeight, isDigital = false) => {
   const ratio = canvasHeight / previewHeight;
 
   return inToPx(value) / ratio;
+};
+
+/**
+ * Get element from selected ref
+ *
+ * @param   {Object}  refs  current refs
+ * @param   {String}  refId ref id of selected ref
+ * @returns {Object}        element get from selected ref
+ */
+export const getRefElement = (refs, refId) => {
+  if (isEmpty(refs) || isEmpty(refs[refId])) return null;
+
+  const object = isEmpty(refs[refId].length) ? refs[refId] : refs[refId][0];
+
+  return isEmpty(object?.$el) ? object : object.$el;
+};
+
+/**
+ * Auto scroll to element
+ *
+ * @param {Object}  refs      current refs
+ * @param {String}  refId     ref id of target element
+ * @param {String}  blockType type of block
+ */
+export const autoScroll = (
+  refs,
+  refId,
+  parentContainer = null,
+  blockType = 'center'
+) => {
+  setTimeout(() => {
+    const element = getRefElement(refs, refId);
+
+    if (isEmpty(element)) {
+      if (!isEmpty(parentContainer)) parentContainer.scrollTop = 0;
+
+      return;
+    }
+
+    const block = isEmpty(blockType) ? {} : { block: blockType };
+
+    scrollToElement(element, block);
+  }, 20);
 };

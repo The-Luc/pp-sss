@@ -1,4 +1,4 @@
-import { isEmpty, scrollToElement } from '@/common/utils';
+import { autoScroll } from '@/common/utils';
 
 export default {
   props: {
@@ -33,7 +33,7 @@ export default {
     }
   },
   async mounted() {
-    this.autoScroll(this.assigneeId);
+    autoScroll(this.$refs, `user${this.assigneeId}`);
   },
   methods: {
     /**
@@ -49,20 +49,6 @@ export default {
      */
     onClickOutside() {
       this.$emit('clickOutside');
-    },
-    /**
-     * Get user refs by id and handle auto scroll
-     *
-     * @param {Number}  userId  selected user id
-     */
-    autoScroll(userId) {
-      setTimeout(() => {
-        const currentUser = this.$refs[`user${userId}`];
-
-        if (isEmpty(currentUser)) return;
-
-        scrollToElement(currentUser[0]?.$el, { block: 'center' });
-      }, 20);
     }
   }
 };

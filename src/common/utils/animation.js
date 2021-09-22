@@ -452,7 +452,7 @@ const animationHandler = (element, config, canvas) => {
  *	To calculate starting position when slide animation take place
  *
  * @param {Object} element fabric object animating
- * @param {String} direction constant showing animation direction
+ * @param {Number | String} direction constant showing animation direction
  * @param {Object} canvas fabric canvas
  * @returns an objects providing information for slide animation
  */

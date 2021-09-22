@@ -39,10 +39,7 @@ export const computedObjectData = (
   let top = objectPositionY * ratioLayoutHeight - centerTopPoint;
   const width = objectWidth * ratioLayoutWidth;
   const height = objectHeight * ratioLayoutHeight;
-  // if (position === 'right') {// TODO later
-  //   // Adjust left position when use select right from single page
-  //   left += canvasWidth / 2;
-  // }
+
   return {
     left,
     top,
