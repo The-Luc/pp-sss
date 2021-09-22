@@ -83,7 +83,7 @@ export const getRangePortraitSingleFolder = (
   const portraitRange = getRangePortrait(maxPortrait, assetsCount, folderIdx);
 
   const lastPageIndex = portraitRange.length - 1;
-  const portraitsOnLastPage = assetsCount % maxPortrait;
+  const portraitsOnLastPage = assetsCount % maxPortrait || maxPortrait;
   const isEnoughRow = maxPortrait - cols > portraitsOnLastPage;
   const { max } = portraitRange[lastPageIndex];
 
