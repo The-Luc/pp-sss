@@ -206,6 +206,8 @@ export default {
     } = useAnimation();
     const { book } = useBook();
 
+    const { setToolNameSelected, propertiesType } = useToolBar();
+
     return {
       currentFrame,
       currentFrameId,
@@ -242,7 +244,9 @@ export default {
       setPlayInOrder,
       setPlayOutOrder,
       updatePlayInIds,
-      updatePlayOutIds
+      updatePlayOutIds,
+      setToolNameSelected,
+      propertiesType
     };
   },
   data() {
@@ -392,7 +396,6 @@ export default {
     ...mapMutations({
       setBookId: DIGITAL_MUTATES.SET_BOOK_ID,
       setIsOpenProperties: MUTATES.TOGGLE_MENU_PROPERTIES,
-      setToolNameSelected: MUTATES.SET_TOOL_NAME_SELECTED,
       setObjectTypeSelected: MUTATES.SET_OBJECT_TYPE_SELECTED,
       setSelectedObjectId: DIGITAL_MUTATES.SET_CURRENT_OBJECT_ID,
       setCurrentObject: MUTATES.SET_CURRENT_OBJECT,
@@ -717,14 +720,11 @@ export default {
       if (!toolName) {
         const objects = this.digitalCanvas.getObjects();
         objects.forEach(obj => obj.set({ selectable: true }));
+        this.backgroundToggleSelection({ isSelected: false });
         this.digitalCanvas.renderAll();
       }
 
-      if (isAnimation) {
-        this.handleOpenAnimations();
-
-        return;
-      }
+      if (isAnimation) return this.handleOpenAnimations();
 
       if (isDiscard) {
         this.digitalCanvas?.discardActiveObject();
@@ -898,6 +898,8 @@ export default {
      * Event fire when click on fabric canvas
      */
     onMouseDown(event) {
+      this.handleOpenAnimations(event);
+
       if (this.awaitingAdd) {
         this.stopAddingInstruction();
         this.setToolNameSelected({ name: '' });
@@ -2657,12 +2659,34 @@ export default {
 
     /**
      * Handle open animation properties
+     * @param {Object} event mouse event when click to canvas
      */
-    handleOpenAnimations() {
+    handleOpenAnimations(event) {
+      if (this.propertiesType !== PROPERTIES_TOOLS.ANIMATION.name) return;
+
+      if (event?.target && event.target.objectType !== OBJECT_TYPE.BACKGROUND) {
+        const objects = this.digitalCanvas.getObjects();
+
+        objects.forEach(object => {
+          object.set({ selectable: true });
+          object.setControlsVisibility({ mtr: true });
+        });
+
+        this.backgroundToggleSelection({ isSelected: false });
+
+        this.digitalCanvas.setActiveObject(event.target);
+
+        return;
+      }
+
       this.digitalCanvas?.discardActiveObject();
+      this.digitalCanvas?.renderAll();
+
       const objects = cloneDeep(this.listObjects);
+
       const playInIds = cloneDeep(this.playInIds);
       const playOutIds = cloneDeep(this.playOutIds);
+
       playInIds.forEach((ids, index) => {
         ids.forEach(id => {
           if (!isEmpty(objects[id])) {
@@ -2670,6 +2694,7 @@ export default {
           }
         });
       });
+
       playOutIds.forEach((ids, index) => {
         ids.forEach(id => {
           if (!isEmpty(objects[id])) {
@@ -2677,7 +2702,10 @@ export default {
           }
         });
       });
+
       renderOrderBoxes(objects);
+
+      this.backgroundToggleSelection({ isSelected: true });
     },
 
     /**
@@ -2685,14 +2713,22 @@ export default {
      * @param {String} id parallel object's id
      */
     handleSelectAnimationObject(id) {
-      this.digitalCanvas?.discardActiveObject();
+      this.handleOpenAnimations();
+
       const objects = this.digitalCanvas.getObjects();
       const ctx = this.digitalCanvas.getContext('2d');
 
       objects.forEach(object => {
+        if (object.id !== id) {
+          object.setControlsVisibility({ mtr: true });
+          return;
+        }
+
+        object.setControlsVisibility({ mtr: false });
+
         object._renderControls.call(object, ctx, {
-          hasBorders: object.id === id,
-          hasControls: false
+          hasBorders: true,
+          hasControls: true
         });
       });
     }
