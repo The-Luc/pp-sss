@@ -826,7 +826,7 @@ export const renderOrderBox = async data => {
   }
 };
 
-export const removeAnimationOrders = (animationOrders, objectIds) => {
+export const removeAnimationOrders = (animationOrders, objectIds, objects) => {
   objectIds.forEach(id => {
     const idsIndex = animationOrders.findIndex(ids => ids.includes(id));
 
@@ -850,5 +850,27 @@ export const removeAnimationOrders = (animationOrders, objectIds) => {
     last(animationOrders)?.push(...lastItems);
   }
 
-  return animationOrders;
+  return sortAnimationOrder(animationOrders, objects);
+};
+
+export const sortAnimationOrder = (animationOrders, objects) => {
+  const sortOrderList = [
+    OBJECT_TYPE.TEXT,
+    OBJECT_TYPE.IMAGE,
+    OBJECT_TYPE.VIDEO,
+    OBJECT_TYPE.CLIP_ART,
+    OBJECT_TYPE.SHAPE
+  ];
+
+  return animationOrders.map(ids => {
+    return ids.sort((first, second) => {
+      const firstObjType = objects[first].type;
+      const secondObjType = objects[second].type;
+
+      return (
+        sortOrderList.indexOf(firstObjType) -
+        sortOrderList.indexOf(secondObjType)
+      );
+    });
+  });
 };

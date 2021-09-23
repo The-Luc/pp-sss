@@ -153,6 +153,8 @@ export const useBackgroundGetter = () => {
 export const useBackgroundAction = () => {
   return {
     getPageBackground: backgroundService.getPageBackground,
-    getPageBackgrounds: backgroundService.getPageBackgrounds
+    getPageBackgrounds: backgroundService.getPageBackgrounds,
+    getFrameBackground: backgroundService.getFrameBackground,
+    getFrameBackgrounds: backgroundService.getFrameBackgrounds
   };
 };

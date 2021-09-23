@@ -683,7 +683,9 @@ export default {
         this.deleteObjects({ ids });
 
         this.addObjecs({
-          objects: objects.map(obj => ({ id: obj.id, newObject: obj }))
+          objects: objects
+            .filter(obj => obj.type !== OBJECT_TYPE.BACKGROUND)
+            .map(obj => ({ id: obj.id, newObject: obj }))
         });
 
         this.setFrames({ framesList });
@@ -734,6 +736,13 @@ export default {
       });
 
       return currentFrames;
+    },
+    /**
+     * Cancel apply warning modal
+     */
+    onCancelApplyPortrait() {
+      this.onToggleModal({ modal: MODAL_TYPES.PORTRAIT_FLOW });
+      this.setToolNameSelected(TOOL_NAME.PORTRAIT);
     }
   }
 };

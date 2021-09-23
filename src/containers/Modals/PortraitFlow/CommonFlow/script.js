@@ -120,7 +120,9 @@ export default {
   },
   computed: {
     title() {
-      return this.isPreviewDisplayed ? 'Portrait Flow Review' : 'Portrait Flow';
+      return this.isPreviewDisplayed
+        ? 'Portrait Flow Preview'
+        : 'Portrait Flow';
     },
     isMultiFolder() {
       return this.selectedFolders.length > 1;

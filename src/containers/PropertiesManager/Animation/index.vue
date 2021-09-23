@@ -1,6 +1,6 @@
 <template>
   <div class="animation-properties-container">
-    <properties-container title="Animation">
+    <properties-container title="Animations">
       <animation-box
         type="playIn"
         :items="playInItems"

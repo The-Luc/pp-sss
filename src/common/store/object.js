@@ -4,7 +4,8 @@ import {
   insertItemsToObject,
   removeItemsFormArray,
   removeItemsFormObject,
-  removeAnimationOrders
+  removeAnimationOrders,
+  sortAnimationOrder
 } from '../utils';
 
 export const addObject = (state, { id, newObject }) => {
@@ -26,6 +27,9 @@ export const addObject = (state, { id, newObject }) => {
 
   state.playInIds[0].push(id);
   state.playOutIds[0].push(id);
+
+  state.playInIds = sortAnimationOrder(state.playInIds, state.objects);
+  state.playOutIds = sortAnimationOrder(state.playOutIds, state.objects);
 };
 
 export const addObjects = (state, { objects }) => {
@@ -53,6 +57,9 @@ export const addObjects = (state, { objects }) => {
 
   state.playInIds[0].push(...ids);
   state.playOutIds[0].push(...ids);
+
+  state.playInIds = sortAnimationOrder(state.playInIds, state.objects);
+  state.playOutIds = sortAnimationOrder(state.playOutIds, state.objects);
 };
 
 export const deleteObjects = (state, { ids }) => {
@@ -74,6 +81,10 @@ export const deleteObjects = (state, { ids }) => {
     state.playOutIds = [[]];
   }
 
-  state.playInIds = removeAnimationOrders(state.playInIds, ids);
-  state.playOutIds = removeAnimationOrders(state.playOutIds, ids);
+  state.playInIds = removeAnimationOrders(state.playInIds, ids, state.objects);
+  state.playOutIds = removeAnimationOrders(
+    state.playOutIds,
+    ids,
+    state.objects
+  );
 };

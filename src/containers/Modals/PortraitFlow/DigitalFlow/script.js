@@ -1,4 +1,5 @@
 import CommonFlow from '../CommonFlow';
+import ApplyPortrait from '../ApplyPortrait';
 
 import {
   DIGITAL_PORTRAIT_FLOW_OPTION_SINGLE,
@@ -19,7 +20,8 @@ import {
 
 export default {
   components: {
-    CommonFlow
+    CommonFlow,
+    ApplyPortrait
   },
   props: {
     isOpen: {
@@ -63,7 +65,8 @@ export default {
       isWarningDisplayed: false,
       warningText: '',
       startPage: 1,
-      initialLayoutSetting
+      initialLayoutSetting,
+      isShowApplyPortrait: false
     };
   },
   computed: {
@@ -125,6 +128,11 @@ export default {
 
       const screen = this.getSingleFolderDefaultFrames();
       this.flowSettings.flowSingleSettings.screen = screen;
+    },
+    isOpen(val) {
+      if (!val) return;
+      this.startPage = this.getStartOnPageNumber();
+      this.flowSettings = {};
     }
   },
   methods: {
@@ -138,7 +146,21 @@ export default {
      * Emit accept event to parent
      */
     onApply() {
+      if (!this.isShowApplyPortrait) {
+        this.onCancel();
+        this.isShowApplyPortrait = true;
+        return;
+      }
+
       this.$emit('accept', this.flowSettings, this.requiredFrames);
+      this.isShowApplyPortrait = false;
+    },
+    /**
+     * Emit cancel event to parent
+     */
+    onCancelApplyPortrait() {
+      this.isShowApplyPortrait = false;
+      this.$emit('cancelApplyPortrait');
     },
     /**
      * Set new start frame
@@ -427,8 +449,5 @@ export default {
     getBaseFrames(total, min) {
       return Array.from({ length: total }, (_, index) => index + min);
     }
-  },
-  created() {
-    this.startPage = this.getStartOnPageNumber();
   }
 };

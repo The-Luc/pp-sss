@@ -41,9 +41,6 @@ export default {
     }
   },
   computed: {
-    leftText() {
-      return this.isDigital ? '' : `Portrait flow ${this.flowNumber}`;
-    },
     rightText() {
       return this.isDigital
         ? `Screen ${this.screenNumber}: Frame ${this.pageNumber}`

@@ -71,12 +71,6 @@ export default {
     selectedRight() {
       const right = this.layoutSettings.margins.right;
       return { name: right + '"', value: right };
-    },
-    isDisabledBottom() {
-      return this.layoutSettings.rowCount === 1 ? true : false;
-    },
-    isDisabledRight() {
-      return this.layoutSettings.colCount === 1 ? true : false;
     }
   },
   created() {
@@ -256,8 +250,7 @@ export default {
           name: 'Bottom Margin',
           options: this.marginOptions,
           selected: this.selectedBottom,
-          onChangeFn: this.onChangeBottom,
-          isDisabled: this.isDisabledBottom
+          onChangeFn: this.onChangeBottom
         },
         {
           name: 'Left Margin',
@@ -269,8 +262,7 @@ export default {
           name: 'Right Margin',
           options: this.marginOptions,
           selected: this.selectedRight,
-          onChangeFn: this.onChangeRight,
-          isDisabled: this.isDisabledRight
+          onChangeFn: this.onChangeRight
         }
       ];
     }

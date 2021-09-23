@@ -1,4 +1,5 @@
 import CommonFlow from '../CommonFlow';
+import ApplyPortrait from '../ApplyPortrait';
 
 import {
   PORTRAIT_FLOW_OPTION_MULTI,
@@ -16,7 +17,8 @@ import {
 
 export default {
   components: {
-    CommonFlow
+    CommonFlow,
+    ApplyPortrait
   },
   props: {
     isOpen: {
@@ -44,7 +46,8 @@ export default {
       flowReviewCompKey: true,
       isWarningDisplayed: false,
       warningText: '',
-      startPage: 1
+      startPage: 1,
+      isShowApplyPortrait: false
     };
   },
   computed: {
@@ -114,6 +117,11 @@ export default {
       const pages = this.getSingleFolderDefaultPages();
       this.flowSettings.flowSingleSettings.pages = pages;
     },
+    isOpen(val) {
+      if (!val) return;
+      this.startPage = this.getStartOnPageNumber();
+      this.flowSettings = {};
+    },
     flowSettings: {
       deep: true,
       handler(newVal, oldVal) {
@@ -150,7 +158,21 @@ export default {
      * Emit accept event to parent
      */
     onApply() {
+      if (!this.isShowApplyPortrait) {
+        this.onCancel();
+        this.isShowApplyPortrait = true;
+        return;
+      }
+
       this.$emit('accept', this.flowSettings, this.requiredPages);
+      this.isShowApplyPortrait = false;
+    },
+    /**
+     * Emit cancel event to parent
+     */
+    onCancelApplyPortrait() {
+      this.isShowApplyPortrait = false;
+      this.$emit('cancelApplyPortrait');
     },
     /**
      * Set new start page
@@ -424,8 +446,5 @@ export default {
     getBasePages(total, min) {
       return Array.from({ length: total }, (_, index) => index + min);
     }
-  },
-  created() {
-    this.startPage = this.getStartOnPageNumber();
   }
 };
