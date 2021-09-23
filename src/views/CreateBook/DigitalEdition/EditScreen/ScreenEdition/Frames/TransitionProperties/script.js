@@ -61,7 +61,7 @@ export default {
      *
      * @param {Boolean}  isChanged  is changed
      */
-    onTransitionChange({ isChanged }) {
+    onSettingChanged({ isChanged }) {
       // 36 is height of Apply to
       this.topValue = isChanged ? this.top - 36 : this.top;
     },

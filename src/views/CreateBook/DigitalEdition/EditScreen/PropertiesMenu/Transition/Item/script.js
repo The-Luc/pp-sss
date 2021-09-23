@@ -6,6 +6,7 @@ import { Transition } from '@/common/models';
 import { useActionDigitalSheet } from '@/hooks';
 
 import {
+  TRANSITION,
   TRANSITION_DEFAULT,
   TRANS_DIRECTION_DEFAULT,
   TRANS_DURATION_DEFAULT,
@@ -59,7 +60,7 @@ export default {
       currentTransition: this.transition,
       currentDirection: this.direction,
       currentDuration: this.duration,
-      isTransitionChanged: false,
+      isSettingChanged: false,
       transitionTarget: TRANS_TARGET_DEFAULT.value
     };
   },
@@ -71,11 +72,15 @@ export default {
     },
     direction(value) {
       this.currentDirection = value;
+
+      this.onDirectionChange({ direction: value });
     },
     duration(value) {
       this.currentDuration = value;
+
+      this.onDurationChange({ duration: value });
     },
-    isTransitionChanged(newValue, oldValue) {
+    isSettingChanged(newValue, oldValue) {
       if (newValue === oldValue || !newValue) return;
 
       this.onTargetChange({ target: TRANS_TARGET_DEFAULT.value });
@@ -96,9 +101,18 @@ export default {
     onTransitionChange({ transition }) {
       this.currentTransition = transition;
 
-      this.isTransitionChanged = this.currentTransition !== this.transition;
+      if (
+        transition !== TRANSITION.NONE &&
+        transition !== TRANSITION.DISSOLVE
+      ) {
+        this.currentDirection = TRANS_DIRECTION_DEFAULT.value;
+      }
 
-      this.$emit('transitionChange', { isChanged: this.isTransitionChanged });
+      if (transition !== TRANSITION.NONE) {
+        this.currentDuration = TRANS_DURATION_DEFAULT;
+      }
+
+      this.setChange();
     },
     /**
      * Change direction
@@ -107,6 +121,8 @@ export default {
      */
     onDirectionChange({ direction }) {
       this.currentDirection = direction;
+
+      this.setChange();
     },
     /**
      * Change duration
@@ -115,6 +131,8 @@ export default {
      */
     onDurationChange({ duration }) {
       this.currentDuration = duration;
+
+      this.setChange();
     },
     /**
      * Change transtition target
@@ -142,6 +160,19 @@ export default {
         this.sheetId,
         this.transitionIndex
       );
+    },
+    /**
+     * Set change value
+     */
+    setChange() {
+      const isTransitionChanged = this.currentTransition !== this.transition;
+      const isDirectionChanged = this.currentDirection !== this.direction;
+      const isDurationChanged = this.currentDuration !== this.duration;
+
+      this.isSettingChanged =
+        isTransitionChanged || isDirectionChanged || isDurationChanged;
+
+      this.$emit('settingChange', { isChanged: this.isSettingChanged });
     }
   }
 };

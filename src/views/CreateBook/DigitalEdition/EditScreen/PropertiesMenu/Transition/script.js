@@ -4,6 +4,7 @@ import Item from './Item';
 
 import {
   useActionDigitalSheet,
+  useFrame,
   useGetterDigitalSheet,
   useSheet
 } from '@/hooks';
@@ -17,11 +18,13 @@ export default {
     const { getTransitions } = useActionDigitalSheet();
     const { currentSheet } = useSheet();
     const { triggerTransition } = useGetterDigitalSheet();
+    const { currentFrameIndex } = useFrame();
 
     return {
       getTransitions,
       currentSheet,
-      triggerTransition
+      triggerTransition,
+      currentFrameIndex
     };
   },
   data() {
@@ -31,12 +34,12 @@ export default {
     };
   },
   watch: {
-    triggerTransition() {
-      this.updateTransitions();
+    triggerTransition: {
+      immediate: true,
+      handler() {
+        this.updateTransitions();
+      }
     }
-  },
-  mounted() {
-    this.updateTransitions();
   },
   methods: {
     /**

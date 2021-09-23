@@ -29,7 +29,7 @@ export default {
     duration: {
       type: [Number, String]
     },
-    isTransitionChanged: {
+    isSettingChanged: {
       type: Boolean
     }
   },
@@ -50,7 +50,7 @@ export default {
     }
   },
   watch: {
-    isTransitionChanged(newValue, oldValue) {
+    isSettingChanged(newValue, oldValue) {
       if (newValue === oldValue || !newValue) return;
 
       this.hasTarget = false;
