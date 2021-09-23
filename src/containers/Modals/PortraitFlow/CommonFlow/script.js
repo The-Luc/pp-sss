@@ -203,9 +203,21 @@ export default {
         this.isOpenSaveSettingsModal = true;
         return;
       }
+      const {
+        imageSettings,
+        layoutSettings,
+        teacherSettings,
+        textSettings
+      } = this.flowSettings;
 
       await this.saveSettings(
-        { ...this.flowSettings, ...name },
+        {
+          imageSettings,
+          layoutSettings,
+          teacherSettings,
+          textSettings,
+          ...name
+        },
         this.isDigital
       );
       this.onCancelSaveSettings();
