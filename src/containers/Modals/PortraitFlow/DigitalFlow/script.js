@@ -132,7 +132,6 @@ export default {
     isOpen(val) {
       if (!val) return;
       this.startPage = this.getStartOnPageNumber();
-      this.flowSettings = {};
     }
   },
   methods: {
@@ -141,26 +140,28 @@ export default {
      */
     onCancel() {
       this.$emit('cancel');
+      this.flowSettings = {};
     },
     /**
      * Emit accept event to parent
      */
     onApply() {
       if (!this.isShowApplyPortrait) {
-        this.onCancel();
+        this.onCancelApplyPortrait();
         this.isShowApplyPortrait = true;
         return;
       }
 
       this.$emit('accept', this.flowSettings, this.requiredFrames);
       this.isShowApplyPortrait = false;
+      this.flowSettings = {};
     },
     /**
      * Emit cancel event to parent
      */
     onCancelApplyPortrait() {
-      this.isShowApplyPortrait = false;
-      this.$emit('cancelApplyPortrait');
+      this.isShowApplyPortrait = !this.isShowApplyPortrait;
+      this.$emit('cancelApplyPortrait', this.isShowApplyPortrait);
     },
     /**
      * Set new start frame

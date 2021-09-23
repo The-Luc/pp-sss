@@ -551,7 +551,16 @@ export default {
      * Close portrait modal
      */
     onClosePortrait() {
-      this.onToggleModal({ modal: TOOL_NAME.PORTRAIT });
+      this.onToggleModal({
+        modal: MODAL_TYPES.PORTRAIT_FLOW,
+        isToggle: false,
+        isOpen: false
+      });
+      this.onToggleModal({
+        modal: TOOL_NAME.PORTRAIT,
+        isToggle: false,
+        isOpen: false
+      });
       this.setToolNameSelected('');
     },
     /**
@@ -560,10 +569,9 @@ export default {
      * @param {Array}  folders  portrait folders
      */
     onSelectPortraitFolders(folders) {
-      this.onClosePortrait();
-
       this.modal[MODAL_TYPES.PORTRAIT_FLOW].data = { folders };
 
+      this.onToggleModal({ modal: TOOL_NAME.PORTRAIT });
       this.onToggleModal({ modal: MODAL_TYPES.PORTRAIT_FLOW });
     },
     /**
@@ -740,9 +748,9 @@ export default {
     /**
      * Cancel apply warning modal
      */
-    onCancelApplyPortrait() {
+    onCancelApplyPortrait(isShowApplyPortrait) {
       this.onToggleModal({ modal: MODAL_TYPES.PORTRAIT_FLOW });
-      this.setToolNameSelected(TOOL_NAME.PORTRAIT);
+      this.setToolNameSelected(isShowApplyPortrait ? '' : TOOL_NAME.PORTRAIT);
     }
   }
 };
