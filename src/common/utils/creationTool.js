@@ -22,7 +22,6 @@ const getToolItems = (toolGroups, isRightTool = true) => {
         isUseCustomAction: getBoolean(t.isUseCustomAction),
         isNotHighlight: getBoolean(t.isNotHighlight),
         isNotDiscard: getBoolean(t.isNotDiscard),
-        isDiscardObjects: getBoolean(t.isDiscardObjects),
         isRightTool
       };
     });
