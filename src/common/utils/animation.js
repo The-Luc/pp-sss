@@ -941,8 +941,8 @@ export const sortAnimationOrder = (animationOrders, objects) => {
 
   return animationOrders.map(ids => {
     return ids.sort((first, second) => {
-      const firstObjType = objects[first].type;
-      const secondObjType = objects[second].type;
+      const firstObjType = objects[first]?.type;
+      const secondObjType = objects[second]?.type;
 
       return (
         sortOrderList.indexOf(firstObjType) -
