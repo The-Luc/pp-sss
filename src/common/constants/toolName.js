@@ -68,8 +68,7 @@ export const PROPERTIES_TOOLS = {
   ANIMATION: {
     name: 'animations',
     title: 'Animations',
-    iconName: 'animation',
-    isDiscardObjects: true
+    iconName: 'animation'
   }
 };
 

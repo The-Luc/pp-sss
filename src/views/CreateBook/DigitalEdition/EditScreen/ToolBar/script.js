@@ -74,8 +74,6 @@ export default {
       const toolType = item.name === this.propertiesType ? '' : item.name;
 
       this.setPropertiesType({ type: toolType });
-
-      if (item.isDiscardObjects) this.$emit('switchTool', toolType);
     },
     /**
      * Detect click on item on left creattion tool
