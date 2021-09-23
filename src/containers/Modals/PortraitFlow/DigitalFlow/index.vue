@@ -23,6 +23,7 @@
     ></common-flow>
 
     <apply-portrait
+      :is-digital="true"
       :is-open-modal="isShowApplyPortrait"
       @apply="onApply"
       @cancel="onCancelApplyPortrait"
