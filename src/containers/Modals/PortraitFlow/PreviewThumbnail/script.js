@@ -178,7 +178,9 @@ export default {
 
       const { rowCount, colCount } = this.layout;
       const teacherPlacement = teacherSettings.teacherPlacement;
-      const pages = flowSingleSettings.pages || [];
+      const pages = this.isDigital
+        ? Object.values(flowSingleSettings.screen)[0]
+        : flowSingleSettings.pages;
 
       const numLargePortrait =
         calcAdditionPortraitSlot(teacherSettings, folders[0].assets) / 3;
@@ -318,7 +320,7 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-      this.previewHeight = this.$refs.thumbWrapper.clientHeight;
+      this.previewHeight = this.$refs.thumbWrapper?.clientHeight;
       this.updatePortraitData();
     });
   },
@@ -339,10 +341,10 @@ export default {
      * To calculate width portrait and update layout on UI
      */
     updateLayout() {
-      const portraitsEl = this.$refs.portraitsSection.$refs.portraits;
+      const portraitsEl = this.$refs.portraitsSection?.$refs.portraits;
       const thumbWrapperEl = this.$refs.thumbWrapper;
 
-      if (!portraitsEl.style) return;
+      if (!portraitsEl?.style) return;
 
       const row = this.layout.rowCount;
       const col = this.layout.colCount;
@@ -350,7 +352,7 @@ export default {
       const styles = window.getComputedStyle(thumbWrapperEl);
 
       const containerHeight =
-        thumbWrapperEl.clientHeight -
+        thumbWrapperEl?.clientHeight -
         parseFloat(styles.paddingTop) -
         parseFloat(styles.paddingBottom);
 
@@ -394,7 +396,7 @@ export default {
      */
     updateMargins() {
       const thumbWrapperEl = this.$refs.thumbWrapper;
-      if (!thumbWrapperEl.style) return;
+      if (!thumbWrapperEl?.style) return;
 
       const margins = this.layout.margins;
       const nameWidth = this.flowSettings.textSettings?.nameWidth;
@@ -430,6 +432,7 @@ export default {
      * Set height for thumbnail wrapper container when has page title
      */
     setThumbWrapperHeight() {
+      const thumbWrapper = this.$refs.thumbWrapper;
       const { lineHeight, paddingBottom, paddingTop } = this.pageTitleStyle;
       const pageTitleHeight =
         parseFloat(lineHeight) +
@@ -437,7 +440,7 @@ export default {
         parseFloat(paddingTop);
       const height = this.showPageTitile ? pageTitleHeight : 0;
 
-      this.$refs.thumbWrapper.style.height = `calc(100% - ${height}px)`;
+      if (thumbWrapper) thumbWrapper.style.height = `calc(100% - ${height}px)`;
     },
     /**
      * Convert value from in to px
@@ -482,8 +485,8 @@ export default {
      * Update large portrait: class name & css style
      */
     updateLargePortraitSize() {
-      const portraitsEl = this.$refs.portraitsSection.$refs.portraits;
-      const largeEl = portraitsEl.querySelector('.enlarge');
+      const portraitsEl = this.$refs.portraitsSection?.$refs.portraits;
+      const largeEl = portraitsEl?.querySelector('.enlarge');
 
       if (!largeEl) return;
       const rawWidth = largeEl.clientWidth;

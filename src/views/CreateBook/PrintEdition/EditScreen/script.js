@@ -546,8 +546,13 @@ export default {
       });
 
       await Promise.all(saveQueue);
-
-      this.onClosePortrait();
+    },
+    /**
+     * Cancel apply warning modal
+     */
+    onCancelApplyPortrait() {
+      this.modalDisplay.portaitFlow = true;
+      this.setToolNameSelected(TOOL_NAME.PORTRAIT);
     },
     /**
      * Selected portrait folders

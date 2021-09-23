@@ -734,6 +734,13 @@ export default {
       });
 
       return currentFrames;
+    },
+    /**
+     * Cancel apply warning modal
+     */
+    onCancelApplyPortrait() {
+      this.onToggleModal({ modal: MODAL_TYPES.PORTRAIT_FLOW });
+      this.setToolNameSelected(TOOL_NAME.PORTRAIT);
     }
   }
 };

@@ -33,6 +33,7 @@ export default {
      */
     onCancel() {
       this.$emit('cancel');
+      this.settingName = '';
     }
   }
 };

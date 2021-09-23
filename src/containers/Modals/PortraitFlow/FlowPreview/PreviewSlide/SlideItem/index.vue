@@ -13,7 +13,6 @@
     />
 
     <div class="page-info">
-      <div class="left">{{ leftText }}</div>
       <div class="right">{{ rightText }}</div>
     </div>
   </div>
