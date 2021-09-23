@@ -31,7 +31,19 @@ export const useSaveData = () => {
     return await digitalService.saveAnimationConfig(animationConfig);
   };
 
-  return { saveEditScreen, getDataEditScreen, saveAnimationConfig };
+  const saveSheetFrames = async (sheetId, frames) => {
+    return await digitalService.updateSheet(sheetId, {
+      frames,
+      isVisited: true
+    });
+  };
+
+  return {
+    saveEditScreen,
+    getDataEditScreen,
+    saveAnimationConfig,
+    saveSheetFrames
+  };
 };
 
 export const useObject = () => {
