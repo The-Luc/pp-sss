@@ -66,6 +66,12 @@ const fadeScaleIn = (element, options, canvas) => {
   const { duration, scale } = options;
   if (!duration || typeof scale !== 'number') return;
 
+  if (element.hasImage) {
+    options.isPlayIn = true;
+    handleFadeScaleImage(element, options, canvas);
+    return;
+  }
+
   const center = element.getCenterPoint();
   const originTop = element.top;
   const originLeft = element.left;
@@ -112,6 +118,12 @@ const fadeScaleIn = (element, options, canvas) => {
 const fadeScaleOut = (element, options, canvas) => {
   const { duration, scale } = options;
   if (!duration || typeof scale !== 'number') return;
+
+  if (element.hasImage) {
+    options.isPlayOut = true;
+    handleFadeScaleImage(element, options, canvas);
+    return;
+  }
 
   const center = element.getCenterPoint();
   const originTop = element.top;
@@ -281,7 +293,7 @@ const blurIn = (element, options, canvas) => {
     ...options,
     startValue: 1.3,
     endValue: 0,
-    isBlurIn: true
+    isPlayIn: true
   };
 
   handleBlurEffect(element, blurOption, canvas);
@@ -298,7 +310,7 @@ const blurOut = (element, options, canvas) => {
     ...options,
     startValue: 0,
     endValue: 1.3,
-    isBlurOut: true
+    isPlayOut: true
   };
 
   handleBlurEffect(element, blurOption, canvas);
@@ -311,25 +323,91 @@ const blurOut = (element, options, canvas) => {
  * @param {Object} canvas fabric canvas
  */
 const handleBlurEffect = (element, options, canvas) => {
-  const { duration } = options;
+  const { duration, isPlayIn, isPlayOut } = options;
   if (!duration) return;
 
-  const blurValue = options.startValue;
-  const blurOffset = 200; // pixel
+  const croppingOffset = 200; //pixel
+
+  const startState = {
+    blurValue: options.startValue
+  };
+
+  const animateProps = {
+    blurValue: options.endValue
+  };
+
+  const config = {
+    startState,
+    animateProps,
+    croppingOffset,
+    isBlur: true,
+    duration,
+    isPlayIn: Boolean(isPlayIn),
+    isPlayOut: Boolean(isPlayOut)
+  };
+
+  handleEffectOnImage(element, config, canvas);
+};
+
+/**
+ * Handle scale in animation of image
+ * @param {Object} element fabric object animating
+ * @param {Object} options animation option
+ * @param {Object} canvas fabric canvas
+ */
+const handleFadeScaleImage = (element, options, canvas) => {
+  const { scale, isPlayIn, isPlayOut } = options;
+
+  const visibleState = {
+    opacity: 1,
+    scaleX: 1,
+    scaleY: 1
+  };
+
+  const hiddenState = {
+    opacity: 0,
+    scaleX: scale,
+    scaleY: scale
+  };
+
+  const config = {
+    animateProps: isPlayIn ? visibleState : hiddenState,
+    startState: isPlayIn ? hiddenState : visibleState,
+    duration: options.duration,
+    isPlayIn: Boolean(isPlayIn),
+    isPlayOut: Boolean(isPlayOut)
+  };
+
+  handleEffectOnImage(element, config, canvas);
+};
+
+/**
+ * Handle animation which only can be done on image object
+ * This function create a image from fabric object, then apply animation on it
+ *
+ * @param {Object} element fabric object animating
+ * @param {Object} options animation option
+ * @param {Object} canvas fabric canvas
+ */
+const handleEffectOnImage = (element, options, canvas) => {
+  const { duration, animateProps, startState, isBlur } = options;
+
+  const offset = options.croppingOffset;
 
   //hide order boxes
   const { playIn, playOut } = hidePlayOrderBox(element);
   canvas.renderAll();
 
-  const img = createImage(element, blurOffset);
+  const img = createImage(element, offset);
 
   const filter = new fabric.Image.filters.Blur({
-    blur: blurValue
+    blur: startState.blurValue || 0
   });
-  img.filters.push(filter);
+
+  if (isBlur) img.filters.push(filter);
 
   element.set({
-    visible: options.isBlurOut ? true : false,
+    visible: options.isPlayOut ? true : false,
     hasControls: false,
     hasBorders: false
   });
@@ -337,11 +415,11 @@ const handleBlurEffect = (element, options, canvas) => {
   const centerPoint = element.getCenterPoint();
 
   img.set({
+    ...startState,
     originX: 'center',
     originY: 'center',
     top: centerPoint.y,
     left: centerPoint.x,
-    blurValue,
     visible: false,
     fakeObject: true
   });
@@ -352,25 +430,24 @@ const handleBlurEffect = (element, options, canvas) => {
   setTimeout(() => {
     element.set('visible', false);
     img.set('visible', true);
-    img.animate(
-      { blurValue: options.endValue },
-      {
-        duration,
-        onChange: () => {
+    img.animate(animateProps, {
+      duration,
+      onChange: () => {
+        if (options.isBlur) {
           filter.blur = img.blurValue;
           img.applyFilters();
+        }
 
-          canvas.renderAll();
-        },
-        onComplete
-      }
-    );
+        canvas.renderAll();
+      },
+      onComplete
+    });
   }, DELAY_DURATION);
 
   function onComplete() {
     canvas.remove(img);
 
-    if (options.isBlurIn) {
+    if (options.isPlayIn) {
       element.set({ visible: true });
     }
     setTimeout(() => {
@@ -826,7 +903,7 @@ export const renderOrderBox = async data => {
   }
 };
 
-export const removeAnimationOrders = (animationOrders, objectIds) => {
+export const removeAnimationOrders = (animationOrders, objectIds, objects) => {
   objectIds.forEach(id => {
     const idsIndex = animationOrders.findIndex(ids => ids.includes(id));
 
@@ -850,5 +927,27 @@ export const removeAnimationOrders = (animationOrders, objectIds) => {
     last(animationOrders)?.push(...lastItems);
   }
 
-  return animationOrders;
+  return sortAnimationOrder(animationOrders, objects);
+};
+
+export const sortAnimationOrder = (animationOrders, objects) => {
+  const sortOrderList = [
+    OBJECT_TYPE.TEXT,
+    OBJECT_TYPE.IMAGE,
+    OBJECT_TYPE.VIDEO,
+    OBJECT_TYPE.CLIP_ART,
+    OBJECT_TYPE.SHAPE
+  ];
+
+  return animationOrders.map(ids => {
+    return ids.sort((first, second) => {
+      const firstObjType = objects[first].type;
+      const secondObjType = objects[second].type;
+
+      return (
+        sortOrderList.indexOf(firstObjType) -
+        sortOrderList.indexOf(secondObjType)
+      );
+    });
+  });
 };

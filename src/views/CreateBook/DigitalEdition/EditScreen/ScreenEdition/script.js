@@ -373,6 +373,26 @@ export default {
 
       if (changed > 0) this.addTransition(this.pageSelected.id, changed);
       else this.removeTransition(this.pageSelected.id, -changed);
+    },
+    propertiesType(val) {
+      const isAnimation = val === PROPERTIES_TOOLS.ANIMATION.name;
+      const isBackground = val === PROPERTIES_TOOLS.BACKGROUND.name;
+
+      this.backgroundToggleSelection({
+        isSelected: isAnimation || isBackground
+      });
+
+      if (isAnimation) {
+        return this.handleOpenAnimations();
+      }
+
+      const objects = this.digitalCanvas.getObjects();
+
+      objects.forEach(obj =>
+        obj.set({ selectable: obj.objectType !== OBJECT_TYPE.BACKGROUND })
+      );
+
+      this.digitalCanvas.renderAll();
     }
   },
   beforeDestroy() {
@@ -715,17 +735,6 @@ export default {
         toolName !== TOOL_NAME.DELETE &&
         toolName !== TOOL_NAME.ACTIONS;
 
-      const isAnimation = toolName === PROPERTIES_TOOLS.ANIMATION.name;
-
-      if (!toolName) {
-        const objects = this.digitalCanvas.getObjects();
-        objects.forEach(obj => obj.set({ selectable: true }));
-        this.backgroundToggleSelection({ isSelected: false });
-        this.digitalCanvas.renderAll();
-      }
-
-      if (isAnimation) return this.handleOpenAnimations();
-
       if (isDiscard) {
         this.digitalCanvas?.discardActiveObject();
         this.digitalCanvas?.renderAll();
@@ -898,7 +907,9 @@ export default {
      * Event fire when click on fabric canvas
      */
     onMouseDown(event) {
-      this.handleOpenAnimations(event);
+      if (this.propertiesType === PROPERTIES_TOOLS.ANIMATION.name) {
+        return this.handleOpenAnimations(event);
+      }
 
       if (this.awaitingAdd) {
         this.stopAddingInstruction();
@@ -2662,17 +2673,15 @@ export default {
      * @param {Object} event mouse event when click to canvas
      */
     handleOpenAnimations(event) {
-      if (this.propertiesType !== PROPERTIES_TOOLS.ANIMATION.name) return;
-
       if (event?.target && event.target.objectType !== OBJECT_TYPE.BACKGROUND) {
         const objects = this.digitalCanvas.getObjects();
 
         objects.forEach(object => {
-          object.set({ selectable: true });
+          object.set({
+            selectable: object.objectType !== OBJECT_TYPE.BACKGROUND
+          });
           object.setControlsVisibility({ mtr: true });
         });
-
-        this.backgroundToggleSelection({ isSelected: false });
 
         this.digitalCanvas.setActiveObject(event.target);
 
@@ -2704,8 +2713,6 @@ export default {
       });
 
       renderOrderBoxes(objects);
-
-      this.backgroundToggleSelection({ isSelected: true });
     },
 
     /**

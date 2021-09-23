@@ -1,5 +1,6 @@
 import {
   EVENT_TYPE,
+  OBJECT_TYPE,
   PLAY_IN_OPTIONS,
   PLAY_OUT_OPTIONS
 } from '@/common/constants';
@@ -33,6 +34,15 @@ export default {
   },
 
   data() {
+    const objectTypeMapping = {
+      [OBJECT_TYPE.BACKGROUND]: 'Background',
+      [OBJECT_TYPE.TEXT]: '',
+      [OBJECT_TYPE.IMAGE]: 'Image',
+      [OBJECT_TYPE.VIDEO]: 'Video',
+      [OBJECT_TYPE.PORTRAIT_IMAGE]: 'Image',
+      [OBJECT_TYPE.SHAPE]: 'Shape',
+      [OBJECT_TYPE.CLIP_ART]: 'Clip Art'
+    };
     const playInStyleMapping = PLAY_IN_OPTIONS.reduce(
       (obj, { name, value }) => {
         obj[value] = name;
@@ -52,6 +62,7 @@ export default {
     return {
       playInStyleMapping,
       playOutStyleMapping,
+      objectTypeMapping,
       selectedItem: null
     };
   },
@@ -94,7 +105,7 @@ export default {
      */
     getAnimaitonData(ids, index, isPlayIn) {
       return ids.map(id => {
-        const { animationIn, animationOut } = this.listObjects[id] || {};
+        const { animationIn, animationOut, type } = this.listObjects[id] || {};
 
         const config = isPlayIn ? animationIn : animationOut;
 
@@ -110,6 +121,7 @@ export default {
           id,
           name,
           style,
+          type: this.objectTypeMapping[type],
           order: index + 1
         };
       });
@@ -137,7 +149,9 @@ export default {
 
       const order = isPlayIn ? 0 : this.playOutIds.length + 1;
 
-      return { id, name, style, order };
+      const type = this.objectTypeMapping[background.type];
+
+      return { id, name, style, order, type };
     },
 
     /**

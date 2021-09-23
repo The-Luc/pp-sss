@@ -16,8 +16,13 @@
         <div :class="['animation-order', { 'play-out': isPlayOut }]">
           <span>{{ config.order }}</span>
         </div>
+        <div class="animation-type">
+          <span v-if="config.type">{{ config.type }}</span>
+        </div>
         <div class="animation-name">
-          <span>{{ config.name }}</span>
+          <span :class="{ 'empty-type': !config.type }">
+            {{ config.name }}
+          </span>
         </div>
         <div class="animation-style">
           <span>{{ config.style }}</span>
