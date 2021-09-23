@@ -131,7 +131,7 @@ export const useDigitalBackgroundMenu = () => {
   };
 
   return {
-    ...useBackgroundMenu(true),
+    ...useBackgroundMenu(),
     getBackgroundData
   };
 };

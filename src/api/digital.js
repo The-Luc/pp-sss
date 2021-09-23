@@ -154,7 +154,7 @@ const digitalService = {
     };
 
     const reCalculateTransition = () => {
-      const { sectionIndex, sheetIndex } = findSectionSheetIndex(sheetId);
+      const { sectionIndex, sheetIndex } = findSectionSheetIndex();
 
       if (sheetIndex < 0) return;
 
@@ -434,7 +434,7 @@ async function savePlayInConfig(objectType, config) {
   const objects =
     storeType === APPLY_MODE.SECTION
       ? getSectionObjects(storeTypeId)
-      : getBookObjects(storeTypeId);
+      : getBookObjects();
 
   objects.forEach(object => {
     if (object.type === objectType) {

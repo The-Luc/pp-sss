@@ -8,7 +8,7 @@ import {
   isEmpty,
   getDisplayBackgroundTypes,
   getDisplayBackgroundPageTypes,
-  scrollToElement
+  autoScroll
 } from '@/common/utils';
 
 export default {
@@ -75,18 +75,19 @@ export default {
     }
   },
   watch: {
-    backgrounds(val) {
-      if (isEmpty(val)) return;
-
-      this.autoScroll(this.appliedBackground?.id);
+    backgrounds: {
+      immediate: true,
+      handler() {
+        autoScroll(
+          this.$refs,
+          `background${this.appliedBackground?.id}`,
+          this.$refs.container ? this.$refs.container.parentElement : null
+        );
+      }
     }
   },
   mounted() {
     this.initData();
-
-    if (isEmpty(this.appliedBackground)) return;
-
-    this.autoScroll(this.appliedBackground?.id);
   },
   methods: {
     /**
@@ -135,20 +136,6 @@ export default {
       this.$emit('applyBackground', this.selectedBackground);
 
       this.onClose();
-    },
-    /**
-     * Get background refs by id and handle auto scroll
-     *
-     * @param {Number}  backgroundId  selected background id
-     */
-    autoScroll(backgroundId) {
-      setTimeout(() => {
-        const currentBackground = this.$refs[`background${backgroundId}`];
-
-        if (isEmpty(currentBackground)) return;
-
-        scrollToElement(currentBackground[0]?.$el, { block: 'center' });
-      }, 20);
     }
   }
 };

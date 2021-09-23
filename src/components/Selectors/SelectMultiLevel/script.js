@@ -1,7 +1,7 @@
 import SelectSubLevel from './SelectSubLevel';
 
 import { ICON_LOCAL } from '@/common/constants';
-import { isEmpty } from '@/common/utils';
+import { getRefElement, isEmpty } from '@/common/utils';
 
 export default {
   components: {
@@ -123,7 +123,9 @@ export default {
     onChange(data) {
       const elementDataId = this.getDataIdByValue({ value: data.value });
 
-      this.$refs[`${elementDataId}`].$el.click();
+      const element = getRefElement(this.$refs, elementDataId);
+
+      if (!isEmpty(element)) element.click();
 
       this.$emit('change', { value: data.value, sub: data.sub });
     },

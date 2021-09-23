@@ -1,6 +1,6 @@
 import MoveControl from './MoveControl';
 
-import { isEmpty, scrollToElement } from '@/common/utils';
+import { autoScroll } from '@/common/utils';
 
 export default {
   components: {
@@ -36,7 +36,7 @@ export default {
     currentPageIndex(newValue, oldValue) {
       if (newValue === oldValue) return;
 
-      this.autoScroll();
+      autoScroll(this.$refs, 'pageSelected');
 
       this.disabled = true;
 
@@ -72,20 +72,6 @@ export default {
      */
     isActivated(index) {
       return index === this.currentPageIndex;
-    },
-    /**
-     * Get background refs by id and handle auto scroll
-     *
-     * @param {Number}  backgroundId  selected background id
-     */
-    autoScroll() {
-      setTimeout(() => {
-        const current = this.$refs['pageSelected'];
-
-        if (isEmpty(current)) return;
-
-        scrollToElement(current[0], { block: 'center' });
-      }, 20);
     }
   }
 };

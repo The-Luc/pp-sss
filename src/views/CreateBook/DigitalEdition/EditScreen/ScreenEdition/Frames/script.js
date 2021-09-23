@@ -13,6 +13,7 @@ import {
 } from '@/hooks';
 
 import { MODAL_TYPES } from '@/common/constants';
+import { getRefElement, isEmpty } from '@/common/utils';
 
 export default {
   components: {
@@ -114,7 +115,9 @@ export default {
      * @param {Element} target add frame button
      */
     onReplaceLayout() {
-      const target = this.$refs[`frame-${this.activeFrameId}`][0];
+      const target = getRefElement(this.$refs, `frame-${this.activeFrameId}`);
+
+      if (isEmpty(target)) return;
 
       const { left, width } = target.getBoundingClientRect();
       const centerX = left + width / 2;

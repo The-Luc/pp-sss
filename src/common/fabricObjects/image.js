@@ -485,7 +485,7 @@ const reqAnimFrame = renderFn => {
 /**
  * Render video by video frames
  */
-export const requestAnimFrame = (isSeek = false, obj) => {
+export const requestAnimFrame = (isSeek = false, obj = null) => {
   fabric.util.requestAnimFrame(function render() {
     if (obj) obj.set({ dirty: true });
 

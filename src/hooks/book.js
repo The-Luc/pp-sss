@@ -1,6 +1,10 @@
 import { useActions, useGetters, useMutations } from 'vuex-composition-helpers';
 
-import { ACTIONS, GETTERS, MUTATES } from '@/store/modules/book/const';
+import {
+  ACTIONS as BOOK_ACTIONS,
+  GETTERS as BOOK_GETTERS,
+  MUTATES as BOOK_MUTATES
+} from '@/store/modules/book/const';
 import { MUTATES as PRINT_MUTATES } from '@/store/modules/print/const';
 import { MUTATES as DIGITAL_MUTATES } from '@/store/modules/digital/const';
 
@@ -12,15 +16,15 @@ import bookService from '@/api/book';
  */
 export const useBook = () => {
   const { getBook } = useActions({
-    getBook: ACTIONS.GET_BOOK
+    getBook: BOOK_ACTIONS.GET_BOOK
   });
 
   const { book } = useGetters({
-    book: GETTERS.BOOK_DETAIL
+    book: BOOK_GETTERS.BOOK_DETAIL
   });
 
   const { setBookId } = useMutations({
-    setBookId: MUTATES.SET_BOOK_ID
+    setBookId: BOOK_MUTATES.SET_BOOK_ID
   });
 
   return {
