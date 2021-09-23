@@ -201,6 +201,8 @@ export default {
       this.selectedDirection = this.directionOptions[0];
       this.durationValue = DEFAULT_ANIMATION.DURATION;
       this.scaleValue = DEFAULT_ANIMATION.SCALE;
+      this.selectedApplyOption = null;
+      this.showApplyButton = false;
 
       this.onChangeOrder(this.orderOptions[0]);
     },
@@ -216,8 +218,8 @@ export default {
       this.selectedStyle =
         this.styleOptions.find(opt => opt.value === config.style) ||
         NONE_OPTION;
-      this.durationValue = config.duration || DEFAULT_ANIMATION.DURATION;
-      this.scaleValue = config.scale || DEFAULT_ANIMATION.SCALE;
+      this.durationValue = config.duration ?? DEFAULT_ANIMATION.DURATION;
+      this.scaleValue = config.scale ?? DEFAULT_ANIMATION.SCALE;
 
       if (this.selectedStyle === NONE_OPTION) {
         this.onChangeOrder(this.orderOptions[0]);

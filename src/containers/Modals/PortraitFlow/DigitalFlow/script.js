@@ -138,7 +138,7 @@ export default {
      * Emit accept event to parent
      */
     onApply() {
-      this.$emit('accept', this.flowSettings, this.requiredPages);
+      this.$emit('accept', this.flowSettings, this.requiredFrames);
     },
     /**
      * Set new start frame

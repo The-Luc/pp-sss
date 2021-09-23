@@ -10,6 +10,7 @@ import {
 
 import {
   getRectDashes,
+  getRectDashesForPortrait,
   isEmpty,
   ptToPx,
   videoEndRewindEvent,
@@ -413,12 +414,36 @@ const rectRender = function(ctx) {
   if (
     [BORDER_STYLES.ROUND, BORDER_STYLES.SQUARE].includes(this.strokeLineType)
   ) {
-    this.strokeDashArray = getRectDashes(
-      this.width,
-      this.height,
-      this.strokeLineType,
-      this.strokeWidth
-    );
+    if (
+      [
+        PORTRAIT_IMAGE_MASK.OVAL,
+        PORTRAIT_IMAGE_MASK.ROUNDED,
+        PORTRAIT_IMAGE_MASK.CIRCLE
+      ].includes(this.mask)
+    ) {
+      const width = this.width * this.scaleX;
+      const height = this.height * this.scaleY;
+      const radius = this.rx * this.scaleX;
+
+      // get perimeter of rounded corner object
+      const perimeter =
+        2 * (width + height) - 8 * radius + 2 * radius * Math.PI;
+
+      this.strokeDashArray = getRectDashesForPortrait(
+        width,
+        height,
+        this.strokeLineType,
+        this.strokeWidth,
+        perimeter
+      );
+    } else {
+      this.strokeDashArray = getRectDashes(
+        this.width,
+        this.height,
+        this.strokeLineType,
+        this.strokeWidth
+      );
+    }
   }
 
   fabric.Rect.prototype._render.call(this, ctx);
@@ -429,24 +454,25 @@ const rectRender = function(ctx) {
  * @param {CanvasRenderingContext2D} ctx Context to render on
  */
 const maskRender = function(ctx) {
-  if (this.img) {
-    const x = (this.strokeWidth - this.width) / 2;
-    const y = (this.strokeWidth - this.height) / 2;
-    const w = this.width - this.strokeWidth;
-    const h = this.height - this.strokeWidth;
-    const r = this.mask === PORTRAIT_IMAGE_MASK.ROUNDED ? w / 10 : w / 2;
-    ctx.save();
-    ctx.beginPath();
-    ctx.moveTo(x + r, y);
-    ctx.arcTo(x + w, y, x + w, y + h, r);
-    ctx.arcTo(x + w, y + h, x, y + h, r);
-    ctx.arcTo(x, y + h, x, y, r);
-    ctx.arcTo(x, y, x + w, y, r);
-    ctx.closePath();
-    ctx.clip();
-    ctx.drawImage(this.img, x, y, w, h);
-    ctx.restore();
-  }
+  if (!this.img) return;
+
+  const x = (this.strokeWidth - this.width) / 2;
+  const y = (this.strokeWidth - this.height) / 2;
+  const w = this.width - this.strokeWidth;
+  const h = this.height - this.strokeWidth;
+  const r = this.mask === PORTRAIT_IMAGE_MASK.ROUNDED ? w / 10 : w / 2;
+
+  ctx.save();
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.arcTo(x + w, y, x + w, y + h, r);
+  ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r);
+  ctx.arcTo(x, y, x + w, y, r);
+  ctx.closePath();
+  ctx.clip();
+  ctx.drawImage(this.img, x, y, w, h);
+  ctx.restore();
 };
 
 /**

@@ -1,4 +1,4 @@
-import PreviewThumbnail from '@/components/Portrait/PreviewThumbnail';
+import PreviewThumbnail from '../../../PreviewThumbnail';
 
 export default {
   components: {
