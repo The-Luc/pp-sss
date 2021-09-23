@@ -47,7 +47,8 @@ import {
   useToolBar,
   useBook,
   useAnimation,
-  useObjects
+  useObjects,
+  useBackgroundProperties
 } from '@/hooks';
 import {
   isEmpty,
@@ -101,13 +102,14 @@ export default {
     const {
       saveEditScreen,
       getDataEditScreen,
-      saveAnimationConfig
+      saveAnimationConfig,
+      saveSheetFrames
     } = useSaveData();
     const { updateSavingStatus } = useSavingStatus();
     const { getBookDigitalInfo } = useBookDigitalInfo();
     const { setInfoBar } = useInfoBar();
     const { updateSheetMedia, deleteSheetMedia } = useActionsEditionSheet();
-    const { sheetMedia, currentSheet } = useSheet();
+    const { sheetMedia, currentSheet, getSheets } = useSheet();
     const { setPropertyById, setPropOfMultipleObjects } = useProperties();
     const { listObjects } = useObjectProperties();
     const {
@@ -122,6 +124,8 @@ export default {
     const { storeAnimationProp } = useAnimation();
 
     const { addObjecs, deleteObjects } = useObjects();
+
+    const { backgroundsProps } = useBackgroundProperties();
 
     return {
       pageSelected,
@@ -154,7 +158,10 @@ export default {
       addObjecs,
       deleteObjects,
       setFrames,
-      setCurrentFrameId
+      setCurrentFrameId,
+      getSheets,
+      saveSheetFrames,
+      backgroundsProps
     };
   },
   data() {
@@ -628,19 +635,78 @@ export default {
      * @param {Object} requiredPages pages to apply portraits
      */
     async onApplyPortrait(settings, requiredPages) {
-      const pages = getPageObjects(settings, requiredPages, true);
+      const sheets = Object.values(this.getSheets).reduce((obj, sheet) => {
+        const key = Number(sheet.pageName);
+        obj[key] = sheet;
+        return obj;
+      }, {});
 
-      const canvas = this.$refs.canvasEditor.digitalCanvas;
+      const requiredScreens = requiredPages.reduce((obj, { screen, frame }) => {
+        const key = sheets[screen].id;
+        if (!obj[key]) obj[key] = [];
+        obj[key].push(frame);
+        return obj;
+      }, {});
 
-      const ids = Object.keys(this.listObjects);
+      Object.keys(requiredScreens).forEach(screenId => {
+        const requiredFrames = requiredScreens[screenId];
 
-      const frames = cloneDeep(this.frames);
-      const currentId = this.currentFrameId;
+        if (isEmpty(requiredFrames)) return;
 
-      this.setFrames({ framesList: [] });
+        const pages = getPageObjects(settings, requiredFrames, true);
 
-      Object.values(pages).forEach((objects, index) => {
-        if (!frames[index]) {
+        const canvas = this.$refs.canvasEditor.digitalCanvas;
+
+        const frames =
+          +screenId === this.pageSelected.id
+            ? cloneDeep(this.frames)
+            : cloneDeep(this.getSheets[screenId].frames);
+
+        const framesList = this.getRequiredFramesData(frames, pages);
+
+        if (+screenId !== +this.pageSelected.id) {
+          return this.saveSheetFrames(screenId, framesList);
+        }
+
+        const currentId = this.currentFrameId;
+        const ids = Object.keys(this.listObjects);
+
+        this.setFrames({ framesList: [] });
+
+        const currentFrame = framesList.find(f => +f.id === +currentId);
+
+        const {
+          id,
+          frame: { objects }
+        } = currentFrame || framesList[0];
+
+        this.deleteObjects({ ids });
+
+        this.addObjecs({
+          objects: objects.map(obj => ({ id: obj.id, newObject: obj }))
+        });
+
+        this.setFrames({ framesList });
+
+        this.setCurrentFrameId({ id });
+
+        resetObjects(canvas);
+
+        this.$refs.canvasEditor.drawObjectsOnCanvas(objects);
+
+        canvas.renderAll();
+      });
+
+      this.onToggleModal({ modal: '' });
+      this.setToolNameSelected('');
+    },
+
+    getRequiredFramesData(currentFrames, requiredFrames) {
+      Array.from({
+        length: Math.max(...Object.keys(requiredFrames))
+      }).forEach((_, index) => {
+        const objects = requiredFrames[index + 1] || [];
+        if (!currentFrames[index]) {
           const blankFrame = {
             id: getUniqueId(),
             frame: {
@@ -653,32 +719,21 @@ export default {
             }
           };
 
-          return frames.push(blankFrame);
+          return currentFrames.push(blankFrame);
         }
 
-        frames[index].frame.objects = objects;
+        if (isEmpty(objects)) return;
 
-        if (frames[index].id === currentId) {
-          resetObjects(canvas);
+        const background = currentFrames[index].frame.objects.find(
+          obj => obj.type === OBJECT_TYPE.BACKGROUND
+        );
 
-          this.deleteObjects({ ids });
+        if (!isEmpty(background)) objects.unshift(background);
 
-          this.addObjecs({
-            objects: objects.map(obj => ({ id: obj.id, newObject: obj }))
-          });
-
-          this.$refs.canvasEditor.drawObjectsOnCanvas(objects);
-
-          canvas.renderAll();
-        }
+        currentFrames[index].frame.objects = objects;
       });
 
-      this.setFrames({ framesList: frames });
-
-      this.setCurrentFrameId({ id: currentId });
-
-      this.onToggleModal({ modal: '' });
-      this.setToolNameSelected('');
+      return currentFrames;
     }
   }
 };

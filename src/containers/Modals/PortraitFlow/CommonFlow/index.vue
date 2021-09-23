@@ -8,7 +8,7 @@
       :is-open-modal="isOpen"
       :is-back-icon-displayed="isPreviewDisplayed"
       :is-close-icon-displayed="!isPreviewDisplayed"
-      :is-accept-button-disabled="false"
+      :is-accept-button-disabled="isAcceptButtonDisabled"
       :is-cancel-button-displayed="!isPreviewDisplayed"
       @cancel="onCancel"
       @accept="onAccept"

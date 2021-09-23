@@ -1,4 +1,4 @@
-import CommonModal from '../CommonModal';
+import CommonModal from '@/components/Modals/CommonModal';
 import Item from './Item';
 import { usePortrait } from '@/hooks';
 import {

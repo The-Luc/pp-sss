@@ -42,7 +42,7 @@ const digitalService = {
     const data = sectionsAsArray.map(section => {
       const sheets = section.sheetIds.map((sheetId, sheetIndex) => {
         const sheet = sheetData[sheetId];
-        const { id, type, thumbnailUrl, link } = sheet;
+        const { id, type, thumbnailUrl, link, frames } = sheet;
 
         const pageName = getPageName(sheetIndex, totalSheets);
 
@@ -51,7 +51,8 @@ const digitalService = {
           type,
           thumbnailUrl,
           link,
-          pageName
+          pageName,
+          frames
         };
       });
 

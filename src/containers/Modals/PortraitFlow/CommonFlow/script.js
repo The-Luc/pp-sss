@@ -1,10 +1,10 @@
-import FlowWarning from '@/components/Modals/FlowWarning';
-import SaveSettingsModal from '@/components/Modals/SaveSettings/SavedSettingModal';
-import SavedModal from '@/components/Modals/SaveSettings/SavedModal';
+import CommonModal from '@/components/Modals/CommonModal';
 
-import CommonModal from '../../CommonModal';
+import FlowWarning from '../FlowWarning';
 import FlowSettings from '../FlowSettings';
 import FlowPreview from '../FlowPreview';
+import SaveSettingsModal from '../SaveSettings/SavedSettingModal';
+import SavedModal from '../SaveSettings/SavedModal';
 
 import { PortraitFlowData } from '@/common/models';
 import { usePortraitFlow } from '@/views/CreateBook/composables';
@@ -80,6 +80,10 @@ export default {
     initialLayoutSetting: {
       type: Object,
       default: () => ({})
+    },
+    isAcceptButtonDisabled: {
+      type: Boolean,
+      default: false
     }
   },
   setup() {
@@ -145,9 +149,8 @@ export default {
           JSON.stringify(oldVal.textSettings);
 
         if (isSameLayout && isSameTeacher && isSameText) return;
-
-        this.initDataFlowSettings();
         this.updatePortraitOrder();
+        this.initDataFlowSettings();
       }
     }
   },

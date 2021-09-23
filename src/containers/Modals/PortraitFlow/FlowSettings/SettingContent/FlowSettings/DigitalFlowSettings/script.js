@@ -6,6 +6,7 @@ import {
   DIGITAL_PORTRAIT_FLOW_OPTION_MULTI
 } from '@/common/constants';
 import { getDataScreenOfMultiFolder } from '@/common/utils';
+import { cloneDeep } from 'lodash';
 
 export default {
   components: {
@@ -83,15 +84,12 @@ export default {
       return this.currentSection.sheetIds.length < this.selectedFolders.length;
     },
     portraitFlowOptionMulti() {
-      const option = Object.values(DIGITAL_PORTRAIT_FLOW_OPTION_MULTI);
-      if (!this.isSmallerNumberOfScreen) {
-        return option;
+      const options = cloneDeep(DIGITAL_PORTRAIT_FLOW_OPTION_MULTI);
+      if (this.isSmallerNumberOfScreen) {
+        delete options.AUTO_NEXT_SCREEN;
+        options.MANUAL.name = 'Allow me to designate the next frame';
       }
-      return option.filter(item => {
-        return (
-          item.id !== DIGITAL_PORTRAIT_FLOW_OPTION_MULTI.AUTO_NEXT_SCREEN.id
-        );
-      });
+      return Object.values(options);
     },
     selectedFlowMulti() {
       return this.portraitFlowOptionMulti.find(
