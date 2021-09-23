@@ -719,7 +719,9 @@ export default {
 
       if (!toolName) {
         const objects = this.digitalCanvas.getObjects();
-        objects.forEach(obj => obj.set({ selectable: true }));
+        objects.forEach(obj =>
+          obj.set({ selectable: obj.objectType !== OBJECT_TYPE.BACKGROUND })
+        );
         this.backgroundToggleSelection({ isSelected: false });
         this.digitalCanvas.renderAll();
       }
@@ -2662,13 +2664,17 @@ export default {
      * @param {Object} event mouse event when click to canvas
      */
     handleOpenAnimations(event) {
-      if (this.propertiesType !== PROPERTIES_TOOLS.ANIMATION.name) return;
+      if (this.propertiesType !== PROPERTIES_TOOLS.ANIMATION.name) {
+        return this.backgroundToggleSelection({ isSelected: false });
+      }
 
       if (event?.target && event.target.objectType !== OBJECT_TYPE.BACKGROUND) {
         const objects = this.digitalCanvas.getObjects();
 
         objects.forEach(object => {
-          object.set({ selectable: true });
+          object.set({
+            selectable: object.objectType !== OBJECT_TYPE.BACKGROUND
+          });
           object.setControlsVisibility({ mtr: true });
         });
 

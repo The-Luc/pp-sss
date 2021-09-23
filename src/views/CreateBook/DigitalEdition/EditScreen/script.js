@@ -683,7 +683,9 @@ export default {
         this.deleteObjects({ ids });
 
         this.addObjecs({
-          objects: objects.map(obj => ({ id: obj.id, newObject: obj }))
+          objects: objects
+            .filter(obj => obj.type !== OBJECT_TYPE.BACKGROUND)
+            .map(obj => ({ id: obj.id, newObject: obj }))
         });
 
         this.setFrames({ framesList });

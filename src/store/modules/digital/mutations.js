@@ -1,6 +1,6 @@
 import { cloneDeep, merge } from 'lodash';
 
-import { getUniqueId, moveItem } from '@/common/utils';
+import { getUniqueId, moveItem, sortAnimationOrder } from '@/common/utils';
 
 import { OBJECT_TYPE } from '@/common/constants';
 
@@ -315,7 +315,7 @@ export const mutations = {
       else reverseArr.length = 0;
     });
 
-    state.playInIds = tmpArr;
+    state.playInIds = sortAnimationOrder(tmpArr, state.objects);
   },
   [DIGITAL._MUTATES.SET_PLAY_OUT_ORDER](state, order) {
     const id = state.currentObjectId;
@@ -345,7 +345,7 @@ export const mutations = {
       else reverseArr.length = 0;
     });
 
-    state.playOutIds = tmpArr;
+    state.playOutIds = sortAnimationOrder(tmpArr, state.objects);
   },
   [DIGITAL._MUTATES.UPDATE_ANIMATION_ORDER](state, { objects }) {
     if (isEmpty(objects)) return;
@@ -372,5 +372,8 @@ export const mutations = {
         state.playOutIds[0].push(object.id);
       }
     });
+
+    state.playInIds = sortAnimationOrder(state.playInIds, state.objects);
+    state.playOutIds = sortAnimationOrder(state.playOutIds, state.objects);
   }
 };

@@ -1,5 +1,6 @@
 import { isEmpty } from '@/common/utils';
 
+import { OBJECT_TYPE, NONE_OPTION } from '@/common/constants';
 import DIGITAL from './const';
 
 export const getters = {
@@ -138,8 +139,17 @@ export const getters = {
 
     return index < 0 ? 1 : index + 1;
   },
-  [DIGITAL._GETTERS.TOTAL_ANIMATION_PLAY_OUT_ORDER]: ({ playOutIds }) => {
-    return playOutIds.length;
+  [DIGITAL._GETTERS.TOTAL_ANIMATION_PLAY_OUT_ORDER]: ({
+    playOutIds,
+    objects
+  }) => {
+    const hasOrder = Object.values(objects).some(
+      obj =>
+        obj.type !== OBJECT_TYPE.BACKGROUND &&
+        obj.animationOut.style !== NONE_OPTION.value
+    );
+
+    return hasOrder ? playOutIds.length : 0;
   },
   [DIGITAL._GETTERS.GET_FRAME_IDS]: ({ frameIds }) => {
     return frameIds;
