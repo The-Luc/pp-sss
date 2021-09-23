@@ -1,4 +1,4 @@
-import CommonModal from '@/containers/Modals/CommonModal';
+import CommonModal from '@/components/Modals/CommonModal';
 
 import { isEmpty } from '@/common/utils';
 

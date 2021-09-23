@@ -1,5 +1,6 @@
 import { rotateIcon } from '@/plugins/fabric';
 import { fabric } from 'fabric';
+import { last } from 'lodash';
 import { OBJECT_TYPE } from '../constants';
 import {
   ANIMATION_DIR,
@@ -452,7 +453,7 @@ const animationHandler = (element, config, canvas) => {
  *	To calculate starting position when slide animation take place
  *
  * @param {Object} element fabric object animating
- * @param {String} direction constant showing animation direction
+ * @param {Number | String} direction constant showing animation direction
  * @param {Object} canvas fabric canvas
  * @returns an objects providing information for slide animation
  */
@@ -829,15 +830,25 @@ export const removeAnimationOrders = (animationOrders, objectIds) => {
   objectIds.forEach(id => {
     const idsIndex = animationOrders.findIndex(ids => ids.includes(id));
 
-    if (isEmpty(animationOrders[idsIndex])) return;
+    if (idsIndex < 0) return;
 
-    const index = animationOrders[idsIndex].findIndex(i => +i === +id);
-    animationOrders[idsIndex].splice(index, 1);
+    const ids = animationOrders[idsIndex];
 
-    if (!isEmpty(animationOrders[idsIndex])) return;
-
-    animationOrders.splice(idsIndex, 1);
+    const index = ids.findIndex(i => +i === +id);
+    ids.splice(index, 1);
   });
+
+  const totalObjects = [].concat(...animationOrders).length;
+
+  if (animationOrders.length <= totalObjects) return animationOrders;
+
+  const diff = animationOrders.length - totalObjects;
+
+  for (let i = 0; i < diff; i++) {
+    const lastItems = [...last(animationOrders)];
+    animationOrders.pop();
+    last(animationOrders)?.push(...lastItems);
+  }
 
   return animationOrders;
 };

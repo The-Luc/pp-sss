@@ -7,6 +7,8 @@ import {
   OBJECT_TYPE,
   PORTRAIT_ASSISTANT_PLACEMENT,
   PORTRAIT_IMAGE_MASK,
+  PORTRAIT_NAME_DISPLAY,
+  PORTRAIT_NAME_POSITION,
   PORTRAIT_SIZE,
   PORTRAIT_TEACHER_PLACEMENT
 } from '@/common/constants';
@@ -341,6 +343,8 @@ export const createPortraitObjects = (
 
   const { border, shadow, mask } = settings.imageSettings;
 
+  const isNameOutSide = namePosition.value === PORTRAIT_NAME_POSITION.OUTSIDE;
+
   const digitalPageSize = {
     safeMargin: 0,
     pageWidth: DIGITAL_PAGE_SIZE.PDF_WIDTH,
@@ -366,13 +370,12 @@ export const createPortraitObjects = (
   );
   const titleHeight =
     pxToIn(ptToPx(pageTitleFontSettings.fontSize)) * titleLines;
-  const textHeight =
-    namePosition?.value === 0
-      ? pxToIn(ptToPx(nameTextFontSettings.fontSize)) * nameLines
-      : 0;
+  const textHeight = isNameOutSide
+    ? 0
+    : pxToIn(ptToPx(nameTextFontSettings.fontSize)) * nameLines;
 
   const offsetTitle = isFirstPage && isPageTitleOn ? titleHeight : 0;
-  const offsetName = namePosition.value !== 0 ? nameWidth : 0;
+  const offsetName = isNameOutSide ? nameWidth : 0;
   const offsetNameLeft = isRight ? 0 : offsetName;
   const offsetNameRight = isRight ? offsetName : 0;
 
@@ -386,6 +389,7 @@ export const createPortraitObjects = (
 
   const defaultGap = 0.15;
   const defaultTextGap = 0.05;
+  const defaultTextPadding = 0.125;
 
   const totalHeight =
     pageHeight - offsetTop - offsetBottom - textHeight - defaultTextGap;
@@ -406,7 +410,7 @@ export const createPortraitObjects = (
 
   const imageRatio = isSquareImage ? 1 : 1.25;
 
-  const isFirstLast = nameDisplay.value === 0;
+  const isFirstLast = nameDisplay.value === PORTRAIT_NAME_DISPLAY.FIRST_LAST;
 
   const tmpHeight = totalHeight / rowCount - defaultGap - textHeight;
   const tmpWidth = totalWidth / colCount - defaultGap;
@@ -447,11 +451,10 @@ export const createPortraitObjects = (
         if (!imageUrl) return;
 
         const isLargeAsst =
-          [CLASS_ROLE.PRIMARY_TEACHER, CLASS_ROLE.ASSISTANT_TEACHER].includes(
-            classRole
-          ) &&
-          (hasLargeTeacher || hasLargeAstTeacher);
+          (classRole === CLASS_ROLE.PRIMARY_TEACHER && hasLargeTeacher) ||
+          (classRole === CLASS_ROLE.ASSISTANT_TEACHER && hasLargeAstTeacher);
 
+        //image margin top and left
         const offsetX = isRight
           ? bleedLeft + pageWidth + margins.left
           : offsetLeft + bleedLeft;
@@ -471,7 +474,7 @@ export const createPortraitObjects = (
 
         const textWidth =
           pxToIn(measureTextWidth(getActiveCanvas(), value, measureOptions)) +
-          bleedLeft * 2;
+          defaultTextPadding * 2;
 
         const imageWidth = isLargeAsst ? largeTeacherWidth : itemWidth;
         const imageHeight = isLargeAsst ? largeTeacherHeight : itemHeight;
@@ -479,6 +482,7 @@ export const createPortraitObjects = (
         const img = new ImageElementObject({
           id: getUniqueId(),
           imageUrl,
+          originalUrl: imageUrl,
           coord: { x, y },
           size: {
             width: imageWidth - borderOffset,
@@ -501,18 +505,16 @@ export const createPortraitObjects = (
           id: getUniqueId(),
           text: value,
           coord: {
-            x: namePosition.value === 0 ? x - bleedLeft : textX,
-            y:
-              namePosition.value === 0
-                ? y + imageHeight - bleedTop + defaultTextGap
-                : textY
+            x: isNameOutSide ? textX : x - defaultTextPadding,
+            y: isNameOutSide
+              ? textY
+              : y + imageHeight - defaultTextPadding + defaultTextGap
           },
           size: {
-            width:
-              namePosition.value === 0
-                ? Math.max(imageWidth + bleedLeft * 2, textWidth)
-                : Math.max(textWidth, nameWidth + bleedLeft),
-            height: namePosition.value === 0 ? rowGap : textHeight
+            width: isNameOutSide
+              ? Math.max(textWidth, nameWidth + defaultTextPadding)
+              : Math.max(imageWidth + defaultTextPadding * 2, textWidth),
+            height: isNameOutSide ? textHeight : rowGap
           },
           ...nameTextFontSettings
         });

@@ -485,7 +485,7 @@ const reqAnimFrame = renderFn => {
 /**
  * Render video by video frames
  */
-export const requestAnimFrame = (isSeek = false, obj) => {
+export const requestAnimFrame = (isSeek = false, obj = null) => {
   fabric.util.requestAnimFrame(function render() {
     if (obj) obj.set({ dirty: true });
 
@@ -704,7 +704,8 @@ export const createPortraitImage = async props => {
       ry: width / radiusRatio,
       mask,
       objectType,
-      fill: 'transparent'
+      fill: 'transparent',
+      strokeUniform: true
     });
 
     createMediaOverlay(imageUrl, { width, height }).then(img => {

@@ -1,28 +1,37 @@
 <template>
   <div
     class="preview-thumbnail"
+    :class="{ landscape: isDigital }"
     :style="{ backgroundImage: backgroundUrl && `url(${backgroundUrl})` }"
   >
-    <div class="thumb-wrapper">
-      <div class="names"></div>
+    <div
+      v-show="showPageTitile"
+      ref="pageTitle"
+      class="page-title"
+      :style="pageTitleStyle"
+    >
+      {{ title }}
+    </div>
 
-      <div class="portraits">
-        <div
-          v-for="(dataRow, rowIndex) in portraitData"
-          :key="rowIndex"
-          class="portrait-row"
-        >
-          <div
-            v-for="(portrait, colIndex) in dataRow"
-            :key="colIndex"
-            class="portrait"
-          >
-            <img :src="portrait.imageUrl" :alt="portrait.firstName" />
+    <div ref="thumbWrapper" class="thumb-wrapper">
+      <name-section
+        v-show="!isCenterPosition"
+        :portraits="portraitNames"
+        :is-first-last-display="isFirstLastDisplay"
+        :is-page-right="isPageRight"
+        :name-css-style="nameTextStyle"
+        :row-css-style="namesHeight"
+        :container-css-style="nameContainerStyle"
+      ></name-section>
 
-            <div class="name">{{ portrait.firstName }}</div>
-          </div>
-        </div>
-      </div>
+      <portrait-section
+        ref="portraitsSection"
+        :portraits="portraitItems"
+        :is-first-last-display="isFirstLastDisplay"
+        :is-center-position="isCenterPosition"
+        :name-css-style="nameTextStyle"
+        :image-style="imageStyle"
+      ></portrait-section>
     </div>
   </div>
 </template>

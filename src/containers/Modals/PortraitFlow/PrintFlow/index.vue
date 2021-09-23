@@ -10,6 +10,7 @@
     :is-warning-displayed="isWarningDisplayed"
     :warning-text="warningText"
     :container="container"
+    :is-accept-button-disabled="isAcceptButtonDisabled"
     @cancel="onCancel"
     @accept="onApply"
     @startChange="onStartPageChange"

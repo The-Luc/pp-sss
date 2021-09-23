@@ -39,6 +39,7 @@
               v-if="index !== 0"
               :title="`Folder ${index + 1}:`"
               descript="Portrait flow starts on page:"
+              :disabled="item.selectedVal.id > maxPageOption"
               :selected-val="item.selectedVal"
               :items="item.pageOptions"
               @change="onPageSettingChange($event, index)"
@@ -49,7 +50,7 @@
               descript="Portrait flow ends on page:"
               :disabled="true"
               :selected-val="item.selectedValEndOnPage"
-              :items="pageOptions"
+              :items="item.endOnPageOptions"
             ></item-select>
           </div>
         </div>

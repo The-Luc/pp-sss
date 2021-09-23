@@ -468,7 +468,7 @@ export default {
       });
       setActiveEdition(window.digitalCanvas, EDITION.DIGITAL);
       useDigitalOverrides(fabric.Object.prototype);
-      fabric.textureSize = 4096;
+      fabric.initFilterBackend();
       this.updateCanvasSize();
       this.digitalCanvas = window.digitalCanvas;
       this.updateCanvasEventListeners();

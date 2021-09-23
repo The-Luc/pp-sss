@@ -72,6 +72,7 @@
             border: solid white;
             border-width: var(--double-border-width);
             border-radius: var(--border-radius);
+            z-index: 1;
           }
 
           &:after {
