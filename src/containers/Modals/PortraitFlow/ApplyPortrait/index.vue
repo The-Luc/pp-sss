@@ -11,8 +11,10 @@
       :is-close-icon-displayed="false"
     >
       <div class="apply-warning-body">
-        Be aware that applying portraits to these pages will<br />
-        overwrite everything on the page except the background.
+        Be aware that applying portraits to these
+        {{ isDigital ? 'frame' : 'page' }}s will<br />
+        overwrite everything on the {{ isDigital ? 'frame' : 'page' }} except
+        the background.
         <br />
         <br />
         Do you wish to proceed?
@@ -21,7 +23,7 @@
       <template #footer>
         <div class="apply-warning-footer">
           <pp-button class="pp-btn-save" is-active @click="onApply">
-            Yes, apply portraits to pages
+            Yes, apply portraits to {{ isDigital ? 'frame' : 'page' }}s
           </pp-button>
           <pp-button class="pp-btn-cancel" @click="onCancel">
             No, take me back to portrait manager
