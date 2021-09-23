@@ -673,6 +673,12 @@ export default {
         const framesList = this.getRequiredFramesData(frames, pages);
 
         if (+screenId !== +this.pageSelected.id) {
+          const hasPackageFrame = framesList.some(f => f.frame.fromLayout);
+
+          if (!hasPackageFrame && framesList[0]?.frame) {
+            framesList[0].frame.fromLayout = true;
+          }
+
           return this.saveSheetFrames(screenId, framesList);
         }
 

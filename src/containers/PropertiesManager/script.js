@@ -99,6 +99,11 @@ export default {
     setObjectComponent(objectType) {
       const ObjectComponent = MenuList[objectType];
 
+      //TODO: Implement ObjectComponent for portrait image
+      if (objectType === OBJECT_TYPE.PORTRAIT_IMAGE) {
+        this.renderObject = '';
+      }
+
       if (ObjectComponent) {
         this.renderObject = ObjectComponent;
       }

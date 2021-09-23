@@ -6,6 +6,7 @@ import {
   DIGITAL_PAGE_SIZE,
   OBJECT_TYPE,
   PORTRAIT_ASSISTANT_PLACEMENT,
+  PORTRAIT_FLOW_OPTION_MULTI,
   PORTRAIT_IMAGE_MASK,
   PORTRAIT_NAME_DISPLAY,
   PORTRAIT_NAME_POSITION,
@@ -583,7 +584,12 @@ export const createPortraitObjects = (
  * @returns page objects will be stored
  */
 export const getPageObjects = (settings, requiredPages, isDigital) => {
-  const { teacherSettings, folders, layoutSettings } = settings;
+  const {
+    teacherSettings,
+    folders,
+    layoutSettings,
+    flowMultiSettings
+  } = settings;
   const {
     teacherPortraitSize,
     assistantTeacherPortraitSize,
@@ -593,50 +599,60 @@ export const getPageObjects = (settings, requiredPages, isDigital) => {
   const { rowCount, colCount } = layoutSettings;
   const itemPerPage = rowCount * colCount;
 
-  const portraitRange = getRangePortraitSingleFolder(
-    rowCount,
-    colCount,
-    folders[0],
-    teacherSettings
-  );
+  const isSingel = folders.length === 1;
+  const isContinuousFlow =
+    flowMultiSettings?.flowOption === PORTRAIT_FLOW_OPTION_MULTI.CONTINUE.id;
 
-  const hasLargeAsset =
-    hasTeacher &&
-    (teacherPortraitSize === PORTRAIT_SIZE.LARGE ||
-      assistantTeacherPortraitSize === PORTRAIT_SIZE.LARGE);
+  const portraitRange = isSingel
+    ? getRangePortraitSingleFolder(
+        rowCount,
+        colCount,
+        folders[0],
+        teacherSettings
+      )
+    : getRangePortraitMultiFolder(itemPerPage, folders, isContinuousFlow);
 
   const totalAssets = folders.reduce((rs, p) => rs.concat(p.assets), []);
   const pageObjects = {};
 
   requiredPages.forEach((page, index) => {
     const { min, max } = portraitRange[index] || {};
-    const assetsPerPage = hasLargeAsset ? max - min + 1 : itemPerPage;
-    const assets = totalAssets.splice(0, assetsPerPage);
+    const assets = totalAssets.splice(0, max - min + 1);
     const tmpAssets = [];
 
-    const primaryTeacherIndex = assets.findIndex(
-      asset =>
-        hasTeacher &&
-        asset.classRole === CLASS_ROLE.PRIMARY_TEACHER &&
-        teacherPortraitSize === PORTRAIT_SIZE.LARGE
-    );
+    const primaryTeachers = assets
+      .map((asset, assetIndex) => ({
+        ...asset,
+        assetIndex
+      }))
+      .filter(
+        asset =>
+          hasTeacher &&
+          asset.classRole === CLASS_ROLE.PRIMARY_TEACHER &&
+          teacherPortraitSize === PORTRAIT_SIZE.LARGE
+      );
 
-    if (primaryTeacherIndex >= 0) {
-      assets.splice(primaryTeacherIndex + 1, 0, {});
+    primaryTeachers.forEach((teacher, index) => {
+      assets.splice(teacher.assetIndex + 1 + index, 0, {});
       tmpAssets.push({}, {});
-    }
+    });
 
-    const assistantTeacherIndex = assets.findIndex(
-      asset =>
-        hasTeacher &&
-        asset.classRole === CLASS_ROLE.ASSISTANT_TEACHER &&
-        assistantTeacherPortraitSize === PORTRAIT_SIZE.LARGE
-    );
+    const assistantTeachers = assets
+      .map((asset, assetIndex) => ({
+        ...asset,
+        assetIndex
+      }))
+      .filter(
+        asset =>
+          hasTeacher &&
+          asset.classRole === CLASS_ROLE.ASSISTANT_TEACHER &&
+          assistantTeacherPortraitSize === PORTRAIT_SIZE.LARGE
+      );
 
-    if (assistantTeacherIndex >= 0) {
-      assets.splice(assistantTeacherIndex + 1, 0, {});
+    assistantTeachers.forEach(teacher => {
+      assets.splice(teacher.assetIndex + 1, 0, {});
       tmpAssets.push({}, {});
-    }
+    });
 
     assets.splice(colCount, 0, ...tmpAssets);
 
