@@ -37,10 +37,10 @@ export default {
     }
   },
   setup() {
-    const { getPageBackground } = useBackgroundAction();
+    const { getPageBackground, getFrameBackground } = useBackgroundAction();
     const { getSheets } = useSheet();
 
-    return { getPageBackground, getSheets };
+    return { getPageBackground, getFrameBackground, getSheets };
   },
   data() {
     return {
@@ -54,11 +54,12 @@ export default {
   computed: {
     selectedPages() {
       return this.requiredPages.map(p => {
-        const pageNo = typeof p === 'object' ? p.frame : p;
-        return {
-          pageNo,
-          backgroundUrl: this.getPageBackground(pageNo)
-        };
+        const pageNo = this.isDigital ? p.frame : p;
+        const backgroundUrl = this.isDigital
+          ? this.getFrameBackground(pageNo)
+          : this.getPageBackground(pageNo);
+
+        return { pageNo, backgroundUrl };
       });
     },
     startPage() {

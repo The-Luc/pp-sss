@@ -7,6 +7,7 @@ import { BACKGROUND_PAGE_TYPE } from '@/common/constants';
 import {
   BACKGROUNDS,
   BACKGROUND_CATEGORIES,
+  getBackgroundOfFrame,
   getBackgroundOfPage
 } from '@/mock/backgrounds';
 
@@ -116,6 +117,28 @@ const backgroundService = {
    */
   getPageBackground: pageNo => {
     return getBackgroundOfPage(pageNo);
+  },
+  /**
+   * Get background of frames
+   *
+   * @param   {Array} frameNos  list of frame number
+   * @returns {Array}           list of background url
+   */
+  getFrameBackgrounds: frameNos => {
+    const backgrounds = {};
+
+    frameNos.forEach(f => (backgrounds[f] = getBackgroundOfFrame(f)));
+
+    return backgrounds;
+  },
+  /**
+   * Get background of frame
+   *
+   * @param   {Number} frameNo  frame number
+   * @returns {String}          background url
+   */
+  getFrameBackground: frameNo => {
+    return getBackgroundOfFrame(frameNo);
   }
 };
 

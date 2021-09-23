@@ -36,9 +36,9 @@ export default {
     };
   },
   setup() {
-    const { getPageBackgrounds } = useBackgroundAction();
+    const { getPageBackgrounds, getFrameBackgrounds } = useBackgroundAction();
 
-    return { getPageBackgrounds };
+    return { getPageBackgrounds, getFrameBackgrounds };
   },
   methods: {
     getPreviewItems() {
@@ -75,7 +75,8 @@ export default {
     },
     getDigitalPreviewItems() {
       if (isEmpty(this.flowSettings)) return [];
-      const backgrounds = this.getPageBackgrounds(
+
+      const backgrounds = this.getFrameBackgrounds(
         this.requiredPages.map(item => item.frame)
       );
 
@@ -90,7 +91,7 @@ export default {
         return {
           portraits,
           layout: this.flowSettings.layoutSettings,
-          backgroundUrl: backgrounds[p],
+          backgroundUrl: backgrounds[p.frame],
           pageNo: p.frame,
           screenNo: p.screen
         };

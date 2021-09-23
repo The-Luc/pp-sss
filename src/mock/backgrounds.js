@@ -1,3 +1,5 @@
+import { isEmpty } from '@/common/utils';
+
 import { BackgroundElementEntity as BackgroundElement } from '@/common/models/entities/elements';
 import { BACKGROUND_TYPE, BACKGROUND_PAGE_TYPE } from '@/common/constants';
 
@@ -176,14 +178,26 @@ export const BACKGROUNDS = [
   })
 ];
 
-const singleBgs = [COLOR_6, THEME_7, COLOR_7, THEME_8, THEME_9];
+const pageBgs = [COLOR_6, THEME_7, COLOR_7, THEME_8, THEME_9];
+const frameBgs = [COLOR_1, COLOR_2, COLOR_3, COLOR_4, COLOR_5];
 
 const backgroundPages = {};
-
-[...Array(50).keys()].forEach(k => {
-  backgroundPages[k] = singleBgs[Math.floor(Math.random() * singleBgs.length)];
-});
+const backgroundFrames = {};
 
 export const getBackgroundOfPage = pageNo => {
+  if (isEmpty(backgroundPages[pageNo])) {
+    backgroundPages[pageNo] =
+      pageBgs[Math.floor(Math.random() * pageBgs.length)];
+  }
+
   return backgroundPages[pageNo];
+};
+
+export const getBackgroundOfFrame = frameNo => {
+  if (isEmpty(backgroundFrames[frameNo])) {
+    backgroundFrames[frameNo] =
+      frameBgs[Math.floor(Math.random() * frameBgs.length)];
+  }
+
+  return backgroundFrames[frameNo];
 };
