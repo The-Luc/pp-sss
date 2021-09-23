@@ -86,23 +86,49 @@ export const getRangePortraitSingleFolder = (
 
   const lastPageIndex = portraitRange.length - 1;
   const portraitsOnLastPage = assetsCount % maxPortrait || maxPortrait;
-  const isEnoughRow = maxPortrait - cols > portraitsOnLastPage;
   const { max } = portraitRange[lastPageIndex];
+  const numVacantSlots = maxPortrait - portraitsOnLastPage;
 
-  if (!isEnoughRow) {
-    portraitRange[lastPageIndex].max = max - numLargePortrait;
-    portraitRange.push({ folderIdx, max, min: max - numLargePortrait + 1 });
+  /*
+    Based on number of vacant slots to decide wheter move large portrait to a new page/frame or not
+
+    Number of slot required for 1 large portrait: a = cols + 1
+    Number of slot required for 2 large portrait: b =cols + 2
+
+    if numVacantSlots > b => can accomodate 2 large portrait
+    if numVacantSlots > a => can accomodate 1 large portrait
+  */
+
+  // Special case, need to be check first
+  // two large portarits: one on the last page, one on the near last page
+  if (portraitsOnLastPage === 1 && numLargePortrait > 1) {
+    portraitRange[lastPageIndex - 1].max -= 1;
+    portraitRange[lastPageIndex].min -= 1;
 
     return portraitRange;
   }
 
-  const isNextToLastRow = portraitsOnLastPage / rows > rows - 1;
-  if (numLargePortrait === 2 && isNextToLastRow) {
+  if (
+    numVacantSlots >= cols + 2 ||
+    (numVacantSlots >= cols + 1 && numLargePortrait === 1)
+  ) {
+    return portraitRange;
+  }
+
+  if (
+    numVacantSlots >= cols + 1 ||
+    (numVacantSlots >= cols && numLargePortrait === 2)
+  ) {
+    // move 1 large portrait to a new page
     portraitRange[lastPageIndex].max = max - 1;
     portraitRange.push({ folderIdx, max, min: max });
 
     return portraitRange;
   }
+
+  // not enough row to add large portrats, so all large portraits is moved to the new page/frame
+  portraitRange[lastPageIndex].max = max - numLargePortrait;
+  portraitRange.push({ folderIdx, max, min: max - numLargePortrait + 1 });
 
   return portraitRange;
 };
