@@ -1,7 +1,6 @@
 import moment from 'moment';
 
 import { portraitFolders } from '@/mock/portraitFolders';
-import { cloneDeep } from 'lodash';
 
 export const getPortraitFolders = () => {
   return new Promise(resolve => {
@@ -19,12 +18,9 @@ const portraitSevice = {
   savePortraitSettingsPrint: async portraitSettings => {
     try {
       const saveSettingsJson = await portraitSevice.getSavedPortraitSettingsPrint();
-      const printPortraitSettings = cloneDeep(portraitSettings);
-      delete printPortraitSettings.folders;
-      delete printPortraitSettings.totalPortraitsCount;
 
       const saveSettings = {
-        ...printPortraitSettings,
+        ...portraitSettings,
         id: Date.now(),
         savedDate: moment(new Date()).format('ll')
       };
@@ -65,12 +61,9 @@ const portraitSevice = {
   savePortraitSettingsDigital: async portraitSettings => {
     try {
       const saveSettingsJson = await portraitSevice.getSavedPortraitSettingsDigital();
-      const digitalPortraitSettings = cloneDeep(portraitSettings);
-      delete digitalPortraitSettings.folders;
-      delete digitalPortraitSettings.totalPortraitsCount;
 
       const saveSettings = {
-        ...digitalPortraitSettings,
+        ...portraitSettings,
         id: Date.now(),
         savedDate: moment(new Date()).format('ll')
       };

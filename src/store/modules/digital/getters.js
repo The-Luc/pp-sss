@@ -1,6 +1,6 @@
 import { isEmpty } from '@/common/utils';
 
-import { OBJECT_TYPE, NONE_OPTION } from '@/common/constants';
+import { OBJECT_TYPE } from '@/common/constants';
 import DIGITAL from './const';
 
 export const getters = {
@@ -144,9 +144,7 @@ export const getters = {
     objects
   }) => {
     const hasOrder = Object.values(objects).some(
-      obj =>
-        obj.type !== OBJECT_TYPE.BACKGROUND &&
-        obj.animationOut.style !== NONE_OPTION.value
+      obj => obj.type !== OBJECT_TYPE.BACKGROUND && obj.animationOut.style
     );
 
     return hasOrder ? playOutIds.length : 0;
