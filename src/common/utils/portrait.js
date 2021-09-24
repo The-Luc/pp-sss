@@ -495,7 +495,9 @@ export const createPortraitObjects = (
         const tmpX = colIndex * (itemWidth + colGap) + offsetX;
         const tmpY = rowIndex * (itemHeight + rowGap) + offsetY;
 
-        const isOverFlow = isLargeAsst && tmpX + largeTeacherWidth > pageWidth;
+        const maxPageWidth = isRight ? pageWidth * 2 : pageWidth;
+        const isOverFlow =
+          isLargeAsst && tmpX + largeTeacherWidth > maxPageWidth;
 
         const x = isOverFlow ? offsetX : tmpX;
         const y = isOverFlow ? tmpY + itemHeight + rowGap : tmpY;
