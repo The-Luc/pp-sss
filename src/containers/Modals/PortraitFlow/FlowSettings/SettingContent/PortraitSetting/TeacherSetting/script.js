@@ -190,7 +190,7 @@ export default {
         if (JSON.stringify(val) === JSON.stringify(oldVal)) return;
 
         this.initData();
-        this.teacherPortraitSizeRule();
+        this.teacherPortraitSizeRule(true);
       }
     }
   },
@@ -241,6 +241,7 @@ export default {
       if (this.isHasTeacherInFolder) return;
 
       this.rules.hasTeacher = false;
+      this.rules.hasAssistantTeacher = false;
     },
     /**
      * Rule for Assistant placement
@@ -316,13 +317,18 @@ export default {
     /**
      *  Rule for teacher portrait size
      */
-    teacherPortraitSizeRule() {
+    teacherPortraitSizeRule(isEmit) {
       if (
         this.layout.col >= 4 &&
         this.layout.row >= 4 &&
         this.teacherSettings.teacherPortraitSize === PORTRAIT_SIZE.LARGE
       )
         return;
+
+      if (isEmit) {
+        this.onChangeTeacherSize(PORTRAIT_SIZE.SAME);
+        return;
+      }
 
       this.rules.teacherPortraitSize = PORTRAIT_SIZE.SAME;
     },

@@ -293,6 +293,8 @@ const blurIn = (element, options, canvas) => {
     ...options,
     startValue: 1.3,
     endValue: 0,
+    opacityStart: 0,
+    opacityEnd: 1,
     isPlayIn: true
   };
 
@@ -310,6 +312,8 @@ const blurOut = (element, options, canvas) => {
     ...options,
     startValue: 0,
     endValue: 1.3,
+    opacityStart: 1,
+    opacityEnd: 0,
     isPlayOut: true
   };
 
@@ -329,11 +333,13 @@ const handleBlurEffect = (element, options, canvas) => {
   const croppingOffset = 200; //pixel
 
   const startState = {
-    blurValue: options.startValue
+    blurValue: options.startValue,
+    opacity: options.opacityStart
   };
 
   const animateProps = {
-    blurValue: options.endValue
+    blurValue: options.endValue,
+    opacity: options.opacityEnd
   };
 
   const config = {
@@ -818,6 +824,7 @@ const toCanvasElement = (element, blurOffset) => {
     renderOnAddRemove: false,
     skipOffscreen: false
   });
+  canvas.backgroundColor = '#ffffff01';
 
   element.setPositionByOrigin(
     new fabric.Point(canvas.width / 2, canvas.height / 2),

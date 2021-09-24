@@ -45,7 +45,7 @@
               <item-select
                 v-if="index !== 0"
                 :title="`Folder ${index + 1}:`"
-                descript="Portrait flow starts on page:"
+                descript="Portrait flow starts on frame:"
                 :selected-val="item.selectedVal"
                 :items="item.frameOptions"
                 @change="
@@ -53,28 +53,29 @@
                 "
               ></item-select>
               <item-select
-                v-if="index !== 0 && !isSmallerNumberOfScreen"
+                v-if="index !== 0 && !isSingleScreen"
                 class="screen-select"
                 :title="''"
                 descript="of"
                 :selected-val="item.selectedValScreen"
                 :items="item.screenOptions"
-                @change="onScreenSettingChange($event, item.screen)"
+                @change="
+                  onScreenSettingChange($event, item.frameIndex, item.screen)
+                "
               ></item-select>
             </div>
             <div class="select-container">
               <item-select
                 v-if="index !== dataSelectFrameMulti.length - 1"
                 :title="index === 0 ? `Folder ${index + 1}:` : ''"
-                descript="Portrait flow ends on page:"
+                descript="Portrait flow ends on frame:"
                 :disabled="true"
                 :selected-val="item.selectedValEndOnFrame"
                 :items="item.endOnFrameOptions"
               ></item-select>
               <item-select
                 v-if="
-                  index !== dataSelectFrameMulti.length - 1 &&
-                    !isSmallerNumberOfScreen
+                  index !== dataSelectFrameMulti.length - 1 && !isSingleScreen
                 "
                 class="screen-select"
                 :title="''"
