@@ -121,23 +121,16 @@ export default {
       if (!val) return;
       this.startPage = this.getStartOnPageNumber();
     },
-    flowSettings: {
+    requiredPages: {
       deep: true,
-      handler(newVal, oldVal) {
-        const isSameLayout =
-          JSON.stringify(newVal.layoutSettings) ===
-          JSON.stringify(oldVal.layoutSettings);
-        const isSameTeacher =
-          JSON.stringify(newVal.teacherSettings) ===
-          JSON.stringify(oldVal.teacherSettings);
-        const overFlow = last(this.requiredPages) > this.maxPageOption;
-        if ((isSameLayout && isSameTeacher) || !overFlow) {
-          this.onFlowWarningClose();
+      handler(newVal) {
+        const overFlow = last(newVal) > this.maxPageOption;
+        if (!overFlow) {
           return;
         }
         const folderNo = 1;
-        const pageNo = first(this.requiredPages);
-        const totalPage = this.requiredPages.length;
+        const pageNo = first(newVal);
+        const totalPage = newVal.length;
         if (this.isMultiFolder) {
           this.displayMultiFolderWarning(folderNo, pageNo);
           return;
@@ -417,6 +410,7 @@ export default {
                                       there won’t be enough pages available to flow your portraits. 
                                       If you click “Continue” you will need to reconfigure your settings or 
                                       select a different page to begin the portrait flow.`;
+
       this.isWarningDisplayed = true;
     },
     /**
