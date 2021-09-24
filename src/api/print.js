@@ -4,6 +4,7 @@ import { parseItem } from '@/common/storage/session.helper';
 
 import { isEmpty, getPageLeftName, getPageRightName } from '@/common/utils';
 import bookService from './book';
+import { OBJECT_TYPE } from '@/common/constants';
 
 const printService = {
   /**
@@ -296,7 +297,7 @@ const printService = {
   /**
    * to saves object and backgrounds
    */
-  saveObjectsAndBackground: (sheetId, data) => {
+  saveObjectsAndBackground: (sheetId, data, isKeepBackground) => {
     return new Promise(resolve => {
       if (!sheetId) {
         resolve();
@@ -305,6 +306,15 @@ const printService = {
       const sheets = getSheetsFromStorage();
 
       const sheet = sheets[sheetId];
+
+      //TODO: Implement get bacground in api get sheet data and remove this logic
+      if (isKeepBackground) {
+        const backgrounds = cloneDeep(sheet.printData.objects).filter(
+          obj => obj.type === OBJECT_TYPE.BACKGROUND
+        );
+
+        data.unshift(...backgrounds);
+      }
 
       sheet.printData.objects = data;
 

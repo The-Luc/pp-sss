@@ -11,7 +11,8 @@ import {
   PORTRAIT_NAME_DISPLAY,
   PORTRAIT_NAME_POSITION,
   PORTRAIT_SIZE,
-  PORTRAIT_TEACHER_PLACEMENT
+  PORTRAIT_TEACHER_PLACEMENT,
+  TEXT_HORIZONTAL_ALIGN
 } from '@/common/constants';
 
 import { cloneDeep } from 'lodash';
@@ -370,7 +371,8 @@ export const createPortraitObjects = (
 
   const { border, shadow, mask } = settings.imageSettings;
 
-  const isNameOutSide = namePosition.value === PORTRAIT_NAME_POSITION.OUTSIDE;
+  const isNameOutSide =
+    namePosition.value === PORTRAIT_NAME_POSITION.OUTSIDE.value;
 
   const digitalPageSize = {
     safeMargin: 0,
@@ -383,6 +385,9 @@ export const createPortraitObjects = (
   const { safeMargin, pageWidth, pageHeight, bleedLeft, bleedTop } = isDigital
     ? digitalPageSize
     : getPagePrintSize().inches;
+
+  const isTextAlignRight =
+    nameTextFontSettings?.alignment?.horizontal === TEXT_HORIZONTAL_ALIGN.RIGHT;
 
   const titleMeasureWidth =
     pxToIn(
@@ -397,9 +402,9 @@ export const createPortraitObjects = (
   );
   const titleHeight =
     pxToIn(ptToPx(pageTitleFontSettings.fontSize)) * titleLines;
-  const textHeight = isNameOutSide
-    ? 0
-    : pxToIn(ptToPx(nameTextFontSettings.fontSize)) * nameLines;
+
+  const nameHeight = pxToIn(ptToPx(nameTextFontSettings.fontSize)) * nameLines;
+  const textHeight = isNameOutSide ? 0 : nameHeight;
 
   const offsetTitle = isFirstPage && isPageTitleOn ? titleHeight : 0;
   const offsetName = isNameOutSide ? nameWidth : 0;
@@ -490,7 +495,9 @@ export const createPortraitObjects = (
         const tmpX = colIndex * (itemWidth + colGap) + offsetX;
         const tmpY = rowIndex * (itemHeight + rowGap) + offsetY;
 
-        const isOverFlow = isLargeAsst && tmpX + largeTeacherWidth > pageWidth;
+        const maxPageWidth = isRight ? pageWidth * 2 : pageWidth;
+        const isOverFlow =
+          isLargeAsst && tmpX + largeTeacherWidth > maxPageWidth;
 
         const x = isOverFlow ? offsetX : tmpX;
         const y = isOverFlow ? tmpY + itemHeight + rowGap : tmpY;
@@ -528,19 +535,25 @@ export const createPortraitObjects = (
           type: objectType
         });
 
-        const textX = isRight
-          ? pageWidth + margins.left + bleedLeft + totalWidth
-          : margins.left;
-        const textY = y + colIndex * (nameGap + textHeight) - bleedTop;
+        const textOutsideX = !isRight
+          ? margins.left
+          : isTextAlignRight
+          ? (pageWidth + bleedLeft) * 2 - margins.right - textWidth
+          : pageWidth + margins.left + bleedLeft + totalWidth;
+
+        const textOutsideY = y + colIndex * (nameGap + nameHeight) - bleedTop;
+
+        const textX = isTextAlignRight
+          ? x - textWidth + imageWidth + defaultTextPadding
+          : x - defaultTextPadding;
+        const textY = y + imageHeight - defaultTextPadding + defaultTextGap;
 
         const text = new TextElementObject({
           id: getUniqueId(),
           text: value,
           coord: {
-            x: isNameOutSide ? textX : x - defaultTextPadding,
-            y: isNameOutSide
-              ? textY
-              : y + imageHeight - defaultTextPadding + defaultTextGap
+            x: isNameOutSide ? textOutsideX : textX,
+            y: isNameOutSide ? textOutsideY : textY
           },
           size: {
             width: isNameOutSide

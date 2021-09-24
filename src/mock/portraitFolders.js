@@ -152,9 +152,9 @@ const folder9 = new PortraitFolder({
 
 const folder10 = new PortraitFolder({
   id: uniqueId(),
-  name: '1 Teachers and 2 Assistants',
+  name: '1 Teachers and 1 Assistants',
   thumbUrl: TEACHER_THUMB_01,
-  assetsCount: 43,
+  assetsCount: 6,
   assets: [teacher2, assistant1, ...getRandomStudents(4)]
 });
 
