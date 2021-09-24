@@ -12,10 +12,10 @@ export default {
     ItemSelect
   },
   setup() {
-    const { currentSheet, getSheets } = useSheet();
+    const { currentSheet, getSheets: sheets } = useSheet();
     return {
       currentSheet,
-      getSheets
+      sheets
     };
   },
   data() {
@@ -122,15 +122,15 @@ export default {
     },
 
     pageOptions() {
-      return Array.from({ length: this.maxPageOption }, (_, i) => i + 1).map(
+      return Array.from({ length: this.maxPageVal }, (_, i) => i + 1).map(
         item => ({
           id: item,
           name: item
         })
       );
     },
-    maxPageOption() {
-      return Object.values(this.getSheets).length * 2 - 4;
+    maxPageVal() {
+      return Object.values(this.sheets).length * 2 - 4;
     }
   },
   methods: {

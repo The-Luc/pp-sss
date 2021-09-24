@@ -3,7 +3,7 @@ import PreviewContainer from './PreviewContainer';
 import StartPage from './StartPage';
 import PreviewInfo from './PreviewInfo';
 
-import { useBackgroundAction, useSheet } from '@/hooks';
+import { useBackgroundAction, useSheet, useFrame } from '@/hooks';
 
 import { isEmpty } from '@/common/utils';
 import { PORTRAIT_FLOW_OPTION_MULTI } from '@/common/constants';
@@ -39,8 +39,9 @@ export default {
   setup() {
     const { getPageBackground, getFrameBackground } = useBackgroundAction();
     const { getSheets } = useSheet();
+    const { frameIds } = useFrame();
 
-    return { getPageBackground, getFrameBackground, getSheets };
+    return { getPageBackground, getFrameBackground, getSheets, frameIds };
   },
   data() {
     return {
@@ -74,7 +75,7 @@ export default {
     },
     pages() {
       const totalSheet = this.isDigital
-        ? this.flowSettings.startOnPageNumber + 5
+        ? this.frameIds.length
         : Object.values(this.getSheets).length * 2 - 4;
       const pages = Array.from({ length: totalSheet }, (_, i) => i + 1);
       return isEmpty(pages)

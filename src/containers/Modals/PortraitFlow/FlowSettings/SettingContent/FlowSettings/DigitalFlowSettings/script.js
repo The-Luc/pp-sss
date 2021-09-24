@@ -1,6 +1,6 @@
 import FlowSelect from '../FlowSelect';
 import ItemSelect from '../ItemSelect';
-import { useSheet, useGetterEditionSection } from '@/hooks';
+import { useSheet, useGetterEditionSection, useFrame } from '@/hooks';
 import {
   DIGITAL_PORTRAIT_FLOW_OPTION_SINGLE,
   DIGITAL_PORTRAIT_FLOW_OPTION_MULTI
@@ -14,12 +14,14 @@ export default {
     ItemSelect
   },
   setup() {
-    const { currentSheet, getSheets } = useSheet();
+    const { currentSheet, getSheets: sheets } = useSheet();
     const { currentSection } = useGetterEditionSection();
+    const { frameIds } = useFrame();
     return {
       currentSheet,
-      getSheets,
-      currentSection
+      sheets,
+      currentSection,
+      frameIds
     };
   },
   data() {
@@ -83,10 +85,15 @@ export default {
     isSmallerNumberOfScreen() {
       return this.currentSection.sheetIds.length < this.selectedFolders.length;
     },
+    isSingleScreen() {
+      return this.currentSection.sheetIds.length === 1;
+    },
     portraitFlowOptionMulti() {
       const options = cloneDeep(DIGITAL_PORTRAIT_FLOW_OPTION_MULTI);
       if (this.isSmallerNumberOfScreen) {
         delete options.AUTO_NEXT_SCREEN;
+      }
+      if (this.isSingleScreen) {
         options.MANUAL.name = 'Allow me to designate the next frame';
       }
       return Object.values(options);
@@ -150,7 +157,13 @@ export default {
           id: item.frame,
           name: item.frame
         },
-        frameOptions: this.frameOptions(arr[index - 1]?.frame, item.frame),
+        frameOptions: !item.frameIndex
+          ? this.frameOptions(1, item.frame, item.screen)
+          : this.frameOptions(
+              arr[index - 1].frame + 1,
+              item.frame,
+              item.screen
+            ),
         screen: item.screen,
         frameIndex: item.frameIndex
       };
@@ -169,11 +182,18 @@ export default {
           name: item.frame.startOnPage
         },
         screen: parseInt(item.screen),
-        frameOptions: this.frameOptions(
-          arr[index - 1]?.frame.endOnPage,
-          item.frame.startOnPage
+        frameOptions: !item.frameIndex
+          ? this.frameOptions(1, item.frame.startOnPage, item.screen)
+          : this.frameOptions(
+              arr[index - 1].frame.endOnPage + 1,
+              item.frame.startOnPage,
+              item.screen
+            ),
+        endOnFrameOptions: this.frameOptions(
+          item.frame.endOnPage,
+          item.frame.endOnPage,
+          item.screen
         ),
-        endOnFrameOptions: this.frameOptions(null, item.frame.endOnPage),
         selectedValEndOnFrame: {
           id: item.frame.endOnPage,
           name: item.frame.endOnPage
@@ -183,8 +203,8 @@ export default {
           name: 'Screen ' + item.screen
         },
         screenOptions: !index
-          ? this.screenOptions(item.screen, arr[index + 1]?.screen)
-          : this.screenOptions(arr[index - 1].screen, arr[index + 1]?.screen),
+          ? this.screenOptions(item.screen)
+          : this.screenOptions(arr[index - 1].screen),
         frameIndex: item.frameIndex
       };
     },
@@ -203,13 +223,15 @@ export default {
     },
     /**
      * To emit data to parent components to handle config changed
-     * @param {Object} val value of selected frame
-     * @param {Object} screen screen
+     * @param {Object} val value of selected screen
+     * @param {Object} frameIndex frame index of selected screen
+     * @param {Object} oldScreenId old screen id
      */
-    onScreenSettingChange(val, screen) {
+    onScreenSettingChange(val, frameIndex, oldScreenId) {
       this.$emit('screenSettingChange', {
-        id: val.id,
-        screen
+        newScreenId: val.id,
+        frameIndex,
+        oldScreenId
       });
     },
     /**
@@ -218,7 +240,7 @@ export default {
      * @param {Number} max max value
      * @returns {Array} screen options
      */
-    screenOptions(min, max) {
+    screenOptions(min) {
       const totalSheet = this.currentSection.sheetIds.length;
       const startOption = parseInt(this.currentSheet.pageName);
       const screenOptions = Array.from(
@@ -228,29 +250,45 @@ export default {
         id: item,
         name: 'Screen ' + item
       }));
-      return max
-        ? screenOptions.filter(item => {
-            return item.id >= min && item.id <= max;
-          })
-        : screenOptions.filter(item => {
-            return item.id >= min;
-          });
+      return screenOptions.filter(item => {
+        return item.id >= min;
+      });
+    },
+    /**
+     * Get total frames of screens
+     * @param {Number} screenId screen id
+     * @returns {Object} frame options
+     */
+    getTotalFramesOfScreens(screenId) {
+      const totalFramesOfScreens = Object.values(this.sheets).reduce(
+        (obj, sheet) => {
+          const key = Number(sheet.pageName);
+          obj[key] = sheet.frames.length || 1;
+          return obj;
+        },
+        {}
+      );
+      totalFramesOfScreens[
+        Number(this.currentSheet.pageName)
+      ] = this.frameIds.length;
+      return totalFramesOfScreens[screenId];
     },
     /**
      * Get options of select frame
      * @param {Number} min min value
      * @param {Number} value selected value
+     * @param {Number} screenId screen id of selected value
      * @returns {Array} frame options
      */
-    frameOptions(min, value) {
-      const minValue = min ? Math.min(min, value - 1) : value - 1;
-      const totalSheet = value + 5;
-      return Array.from({ length: totalSheet }, (_, i) => i + 1)
+    frameOptions(min, value, screenId) {
+      const totalFramesOfScreen = this.getTotalFramesOfScreens(screenId);
+      const maxOptions = Math.max(totalFramesOfScreen, value) + 5;
+      return Array.from({ length: maxOptions }, (_, i) => i + 1)
         .map(item => ({
           id: item,
           name: item
         }))
-        .filter(item => item.id > minValue);
+        .filter(item => item.id >= min);
     }
   }
 };

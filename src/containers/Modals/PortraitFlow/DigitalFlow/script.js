@@ -405,24 +405,32 @@ export default {
     },
     /**
      * Handle screen setting change
-     * @param {Number} id value of selected new screen
-     * @param {Number} screen id of screen
+     * @param {Number} newScreenId id of new screen
+     * @param {Number} frameIndex frame index of selected in screen
+     * @param {Number} oldScreenId id of old screen
      */
-    onScreenSettingChange({ id, screen }) {
+    onScreenSettingChange({ newScreenId, frameIndex, oldScreenId }) {
       const flowSettings = cloneDeep(this.flowSettings.flowMultiSettings);
-      if (isEmpty(flowSettings.screen[id])) {
-        flowSettings.screen[id] = [];
+      if (isEmpty(flowSettings.screen[newScreenId])) {
+        flowSettings.screen[newScreenId] = [];
       }
-      if (id < screen) {
-        const frame = flowSettings.screen[screen].shift();
-        flowSettings.screen[id].push(frame);
+      if (newScreenId < oldScreenId) {
+        flowSettings.screen[oldScreenId].shift();
+        flowSettings.screen[newScreenId].push(1);
       }
-      if (id > screen) {
-        const frame = flowSettings.screen[screen].pop();
-        flowSettings.screen[id].unshift(frame);
+      if (newScreenId > oldScreenId) {
+        const totalFrameAutoFlow = this.getTotalFrameAutoFlow(
+          flowSettings,
+          oldScreenId,
+          newScreenId,
+          frameIndex
+        );
+        for (let i = 0; i < totalFrameAutoFlow; i++) {
+          flowSettings.screen[newScreenId].unshift(1);
+        }
       }
-      if (isEmpty(flowSettings.screen[screen])) {
-        delete flowSettings.screen[screen];
+      if (isEmpty(flowSettings.screen[oldScreenId])) {
+        delete flowSettings.screen[oldScreenId];
       }
       const dataScreen = getDataScreenOfMultiFolder(
         flowSettings.screen,
@@ -449,6 +457,27 @@ export default {
      */
     getBaseFrames(total, min) {
       return Array.from({ length: total }, (_, index) => index + min);
+    },
+    /**
+     * Get total frame auto flow
+     * @param {Number} flowSettings flow settings
+     * @param {Number} newScreenId id of new screen
+     * @param {Number} frameIndex frame index of selected in screen
+     * @param {Number} oldScreenId id of old screen
+     * @returns {Number} total frame auto flow
+     */
+    getTotalFrameAutoFlow(flowSettings, oldScreenId, newScreenId, frameIndex) {
+      const frameAutoFlow =
+        flowSettings.screen[oldScreenId].length - frameIndex;
+      flowSettings.screen[oldScreenId].splice(frameIndex, frameAutoFlow);
+      return Object.keys(flowSettings.screen).reduce((result, item) => {
+        if (item <= oldScreenId || item >= newScreenId) {
+          return result;
+        }
+        const count = flowSettings.screen[item].length;
+        delete flowSettings.screen[item];
+        return result + count;
+      }, frameAutoFlow);
     }
   }
 };
