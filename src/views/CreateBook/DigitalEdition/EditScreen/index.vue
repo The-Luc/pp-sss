@@ -68,7 +68,7 @@
       container="#editor"
       :is-open="modal[modalType.PORTRAIT_FLOW].isOpen"
       :selected-folders="modal[modalType.PORTRAIT_FLOW].data.folders"
-      @cancel="onToggleModal({ modal: modalType.PORTRAIT_FLOW })"
+      @cancel="onClosePortrait"
       @accept="onApplyPortrait"
       @cancelApplyPortrait="onCancelApplyPortrait"
     ></portrait-flow>

@@ -14,7 +14,7 @@
       ></the-preview>
     </div>
 
-    <div v-if="isTransitionChanged" class="group">
+    <div v-if="isSettingChanged" class="group">
       <the-transition-target
         @targetChange="onTargetChange"
       ></the-transition-target>

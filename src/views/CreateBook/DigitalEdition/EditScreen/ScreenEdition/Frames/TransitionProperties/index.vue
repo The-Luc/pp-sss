@@ -18,7 +18,7 @@
         :direction="transition.direction"
         :duration="transition.duration"
         :is-expand-default="true"
-        @transitionChange="onTransitionChange"
+        @settingChange="onSettingChanged"
       ></item>
     </custom-menu>
   </div>

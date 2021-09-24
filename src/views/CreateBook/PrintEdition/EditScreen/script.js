@@ -550,9 +550,9 @@ export default {
     /**
      * Cancel apply warning modal
      */
-    onCancelApplyPortrait() {
-      this.modalDisplay.portaitFlow = true;
-      this.setToolNameSelected(TOOL_NAME.PORTRAIT);
+    onCancelApplyPortrait(isShowApplyPortrait) {
+      this.modalDisplay.portaitFlow = !this.modalDisplay.portaitFlow;
+      this.setToolNameSelected(isShowApplyPortrait ? '' : TOOL_NAME.PORTRAIT);
     },
     /**
      * Selected portrait folders

@@ -2,7 +2,7 @@
   <div class="preview-wrapper" :class="{ digital: isDigital }">
     <div class="summary">
       {{ flowSettings.totalPortraitsCount }} portraits =
-      {{ `${requiredPages.length} ${isDigital ? 'frames' : 'pages'}` }}
+      {{ `${requiredPages.length} ${isDigital ? 'frame' : 'page'}(s)` }}
     </div>
 
     <PreviewSlide

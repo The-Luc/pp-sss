@@ -13,7 +13,7 @@
       :transition="currentTransition"
       :direction="currentDirection"
       :duration="currentDuration"
-      :is-transition-changed="isTransitionChanged"
+      :is-setting-changed="isSettingChanged"
       @transitionChange="onTransitionChange"
       @directionChange="onDirectionChange"
       @durationChange="onDurationChange"

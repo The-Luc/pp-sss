@@ -150,6 +150,14 @@ const folder9 = new PortraitFolder({
   assets: [teacher1, assistant1, assistant1, ...getRandomStudents(40)]
 });
 
+const folder10 = new PortraitFolder({
+  id: uniqueId(),
+  name: '1 Teachers and 2 Assistants',
+  thumbUrl: TEACHER_THUMB_01,
+  assetsCount: 43,
+  assets: [teacher2, assistant1, ...getRandomStudents(4)]
+});
+
 export const portraitFolders = [
   folder1,
   folder2,
@@ -159,5 +167,6 @@ export const portraitFolders = [
   folder6,
   folder7,
   folder8,
-  folder9
+  folder9,
+  folder10
 ];

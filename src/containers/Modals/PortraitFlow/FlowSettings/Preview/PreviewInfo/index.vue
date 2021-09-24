@@ -4,7 +4,7 @@
 
     <div class="description">
       {{ totalPortrait }} portraits will require {{ totalPage }}
-      {{ `${containerName.toLowerCase()}s` }}
+      {{ `${containerName.toLowerCase()}(s)` }}
     </div>
 
     <div class="preview">
