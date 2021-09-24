@@ -487,8 +487,13 @@ export const createPortraitObjects = (
           : offsetLeft + bleedLeft;
         const offsetY = bleedTop + offsetTop;
 
-        const x = colIndex * (itemWidth + colGap) + offsetX;
-        const y = rowIndex * (itemHeight + rowGap) + offsetY;
+        const tmpX = colIndex * (itemWidth + colGap) + offsetX;
+        const tmpY = rowIndex * (itemHeight + rowGap) + offsetY;
+
+        const isOverFlow = isLargeAsst && tmpX + largeTeacherWidth > pageWidth;
+
+        const x = isOverFlow ? offsetX : tmpX;
+        const y = isOverFlow ? tmpY + itemHeight + rowGap : tmpY;
 
         const nameSpace = `${nameLines > 1 ? '\n' : ' '}`;
         const value = isFirstLast
@@ -593,7 +598,8 @@ export const getPageObjects = (settings, requiredPages, isDigital) => {
   const {
     teacherPortraitSize,
     assistantTeacherPortraitSize,
-    hasTeacher
+    hasTeacher,
+    teacherPlacement
   } = teacherSettings;
 
   const { rowCount, colCount } = layoutSettings;
@@ -654,7 +660,9 @@ export const getPageObjects = (settings, requiredPages, isDigital) => {
       tmpAssets.push({}, {});
     });
 
-    assets.splice(colCount, 0, ...tmpAssets);
+    if (teacherPlacement === PORTRAIT_TEACHER_PLACEMENT.FIRST) {
+      assets.splice(colCount, 0, ...tmpAssets);
+    }
 
     const isRightPage = !isDigital && page % 2;
 
