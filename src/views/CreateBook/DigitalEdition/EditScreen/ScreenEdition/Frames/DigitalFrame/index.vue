@@ -1,7 +1,7 @@
 <template>
   <div
     class="frame-container"
-    :class="{ empty: isEmpty }"
+    :class="{ empty: isEmpty, 'is-scrollable': isScrollable }"
     @click="onFrameClick"
   >
     <div
