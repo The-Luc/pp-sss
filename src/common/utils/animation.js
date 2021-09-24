@@ -934,6 +934,7 @@ export const sortAnimationOrder = (animationOrders, objects) => {
   const sortOrderList = [
     OBJECT_TYPE.TEXT,
     OBJECT_TYPE.IMAGE,
+    OBJECT_TYPE.PORTRAIT_IMAGE,
     OBJECT_TYPE.VIDEO,
     OBJECT_TYPE.CLIP_ART,
     OBJECT_TYPE.SHAPE
