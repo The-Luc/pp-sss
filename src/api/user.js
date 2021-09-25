@@ -57,10 +57,6 @@ export const authenticateApi = (bookId, sheetId) => {
     }
 
     const assigneeId = window.data.book.sections[sectionIndex].assigneeId;
-    console.log(role, ROLE.ADMIN);
-    console.log(id, assigneeId);
-    console.log(role === `${ROLE.ADMIN}`);
-    console.log(id === `${assigneeId}`);
 
     if (role === `${ROLE.ADMIN}` || id === `${assigneeId}`) {
       resolve(getSuccessWithData({}));
