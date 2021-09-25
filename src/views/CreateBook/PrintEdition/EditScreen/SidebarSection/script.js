@@ -9,11 +9,7 @@ import {
 } from '@/store/modules/print/const';
 import { useLayoutPrompt, usePopoverCreationTool, useUser } from '@/hooks';
 import { TOOL_NAME, EDITION } from '@/common/constants';
-import {
-  isEmpty,
-  scrollToElement,
-  getSectionsWithAccessible
-} from '@/common/utils';
+import { isEmpty, getSectionsWithAccessible, autoScroll } from '@/common/utils';
 
 export default {
   components: {
@@ -79,11 +75,7 @@ export default {
      * @param  {Number} pageSelected Sheet's id selected
      */
     autoScrollToSpread(pageSelected) {
-      const currentSpreadActive = this.$refs[`spread${pageSelected}`];
-
-      if (isEmpty(currentSpreadActive)) return;
-
-      scrollToElement(currentSpreadActive[0]?.$el);
+      autoScroll(this.$refs, `spread${pageSelected}`);
     },
     /**
      * Get names of page of selected sheet

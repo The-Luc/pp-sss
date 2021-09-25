@@ -23,7 +23,6 @@ import {
 import {
   MODAL_TYPES,
   OBJECT_TYPE,
-  ROLE,
   SAVE_STATUS,
   SAVING_DURATION,
   SHEET_TYPE,
@@ -35,7 +34,6 @@ import {
   useInfoBar,
   useMutationPrintSheet,
   useUser,
-  useGetterPrintSection,
   useProperties,
   useSheet,
   useActionsEditionSheet,
@@ -47,10 +45,10 @@ import {
 import { EDITION } from '@/common/constants';
 import {
   isEmpty,
-  isPositiveInteger,
   getEditionListPath,
   mergeArrayNonEmpty,
-  resetObjects
+  resetObjects,
+  isOk
 } from '@/common/utils';
 
 import { useSaveData } from './PageEdition/composables';
@@ -81,8 +79,7 @@ export default {
     const { setToolNameSelected } = usePopoverCreationTool();
     const { setInfoBar } = useInfoBar();
     const { setCurrentSheetId } = useMutationPrintSheet();
-    const { currentUser } = useUser();
-    const { currentSection } = useGetterPrintSection();
+    const { currentUser, authenticate } = useUser();
     const {
       savePrintEditScreen,
       getDataEditScreen,
@@ -111,7 +108,7 @@ export default {
       setInfoBar,
       setCurrentSheetId,
       currentUser,
-      currentSection,
+      authenticate,
       savePrintEditScreen,
       getDataEditScreen,
       setPropertyById,
@@ -180,11 +177,14 @@ export default {
   },
   beforeRouteEnter(to, _, next) {
     next(async vm => {
-      const bookId = to.params.bookId;
+      const bookId = to.params?.bookId;
+      const sheetId = to.params?.sheetId;
+
+      const authenticateResult = await vm.authenticate(bookId, sheetId);
 
       const editionMainUrl = getEditionListPath(bookId, EDITION.PRINT);
 
-      if (!isPositiveInteger(to.params?.sheetId)) {
+      if (!isOk(authenticateResult)) {
         vm.$router.replace(editionMainUrl);
 
         return;
@@ -192,22 +192,7 @@ export default {
 
       await vm.getBookPrintInfo(bookId);
 
-      vm.setCurrentSheetId({ id: parseInt(to.params.sheetId) });
-
-      if (isEmpty(vm.currentSection)) {
-        vm.$router.replace(editionMainUrl);
-
-        return;
-      }
-
-      const isAdmin = vm.currentUser.role === ROLE.ADMIN;
-      const isAssigned = vm.currentUser.id === vm.currentSection.assigneeId;
-
-      if (!isAdmin && !isAssigned) {
-        vm.$router.replace(editionMainUrl);
-
-        return;
-      }
+      vm.setCurrentSheetId({ id: parseInt(sheetId) });
 
       if (isEmpty(vm.printThemeSelected)) {
         vm.openSelectThemeModal();
