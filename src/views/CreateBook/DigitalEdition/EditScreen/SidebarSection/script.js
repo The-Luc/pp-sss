@@ -9,11 +9,7 @@ import {
 } from '@/store/modules/digital/const';
 import { useLayoutPrompt, usePopoverCreationTool, useUser } from '@/hooks';
 import { TOOL_NAME, EDITION } from '@/common/constants';
-import {
-  isEmpty,
-  scrollToElement,
-  getSectionsWithAccessible
-} from '@/common/utils';
+import { isEmpty, getSectionsWithAccessible, autoScroll } from '@/common/utils';
 
 export default {
   components: {
@@ -79,11 +75,7 @@ export default {
      * @param  {Number} pageSelected Sheet's id selected
      */
     autoScrollToScreen(pageSelected) {
-      const currentScreendActive = this.$refs[`screen${pageSelected}`];
-
-      if (isEmpty(currentScreendActive)) return;
-
-      scrollToElement(currentScreendActive[0].$el);
+      autoScroll(this.$refs, `screen${pageSelected}`);
     },
     /**
      * Get name of page of selected sheet

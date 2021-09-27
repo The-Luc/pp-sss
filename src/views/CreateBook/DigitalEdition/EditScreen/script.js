@@ -23,7 +23,6 @@ import {
   EDITION,
   MODAL_TYPES,
   TOOL_NAME,
-  ROLE,
   SAVE_STATUS,
   SAVING_DURATION,
   OBJECT_TYPE,
@@ -37,7 +36,6 @@ import {
   usePopoverCreationTool,
   useMutationDigitalSheet,
   useUser,
-  useGetterDigitalSection,
   useFrame,
   useInfoBar,
   useActionsEditionSheet,
@@ -52,12 +50,12 @@ import {
 } from '@/hooks';
 import {
   isEmpty,
-  isPositiveInteger,
   getEditionListPath,
   mergeArrayNonEmpty,
   getPageObjects,
   resetObjects,
-  getUniqueId
+  getUniqueId,
+  isOk
 } from '@/common/utils';
 import { COPY_OBJECT_KEY } from '@/common/constants/config';
 
@@ -91,8 +89,7 @@ export default {
     const { pageSelected, updateVisited } = useLayoutPrompt(EDITION.DIGITAL);
     const { setToolNameSelected } = usePopoverCreationTool();
     const { setCurrentSheetId } = useMutationDigitalSheet();
-    const { currentUser } = useUser();
-    const { currentSection } = useGetterDigitalSection();
+    const { currentUser, authenticate } = useUser();
     const {
       currentFrameId,
       updateFrameObjects,
@@ -133,7 +130,7 @@ export default {
       setToolNameSelected,
       setCurrentSheetId,
       currentUser,
-      currentSection,
+      authenticate,
       currentFrameId,
       updateFrameObjects,
       saveEditScreen,
@@ -226,36 +223,24 @@ export default {
   },
   async beforeRouteEnter(to, _, next) {
     next(async vm => {
-      const bookId = to.params.bookId;
+      const bookId = to.params?.bookId;
+      const sheetId = to.params?.sheetId;
 
-      vm.setBookId({ bookId });
+      const authenticateResult = await vm.authenticate(bookId, sheetId);
 
       const editionMainUrl = getEditionListPath(bookId, EDITION.DIGITAL);
 
-      if (!isPositiveInteger(to.params?.sheetId)) {
+      if (!isOk(authenticateResult)) {
         vm.$router.replace(editionMainUrl);
 
         return;
       }
+
+      vm.setBookId({ bookId });
 
       await vm.getBookDigitalInfo(bookId);
 
-      vm.setCurrentSheetId({ id: parseInt(to.params.sheetId) });
-
-      if (isEmpty(vm.currentSection)) {
-        vm.$router.replace(editionMainUrl);
-
-        return;
-      }
-
-      const isAdmin = vm.currentUser.role === ROLE.ADMIN;
-      const isAssigned = vm.currentUser.id === vm.currentSection.assigneeId;
-
-      if (!isAdmin && !isAssigned) {
-        vm.$router.replace(editionMainUrl);
-
-        return;
-      }
+      vm.setCurrentSheetId({ id: parseInt(sheetId) });
 
       if (isEmpty(vm.defaultThemeId)) {
         vm.openSelectThemeModal();

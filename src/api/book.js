@@ -244,8 +244,7 @@ export const getBookDigitalInfo = async bookId => {
         layoutId,
         thumbnailUrl,
         isVisited,
-        media,
-        frames
+        media
       } = sheet.digitalData;
 
       const pageName = getPageName(sheetIndex, totalSheet);
@@ -258,8 +257,7 @@ export const getBookDigitalInfo = async bookId => {
         thumbnailUrl,
         isVisited,
         media,
-        pageName,
-        frames
+        pageName
       });
     });
 

@@ -1,3 +1,5 @@
+import { ROLE } from '@/common/constants';
+import { getErrorWithMessages, getSuccessWithData } from '@/common/models';
 import { User } from '@/common/models/user';
 
 import { isEmpty } from '@/common/utils';
@@ -27,7 +29,47 @@ export const getUsersApi = () => {
   });
 };
 
+export const authenticateApi = (bookId, sheetId) => {
+  return new Promise(resolve => {
+    if (isEmpty(bookId)) {
+      resolve(getErrorWithMessages(''));
+
+      return;
+    }
+
+    const id = window.sessionStorage.getItem('userId');
+    const role = window.sessionStorage.getItem('userRole');
+
+    if (isEmpty(id)) {
+      resolve(getErrorWithMessages(''));
+
+      return;
+    }
+
+    const sectionIndex = window.data.book.sections.findIndex(section => {
+      return section.sheets.findIndex(({ id }) => `${id}` === sheetId) >= 0;
+    });
+
+    if (sectionIndex < 0) {
+      resolve(getErrorWithMessages(''));
+
+      return;
+    }
+
+    const assigneeId = window.data.book.sections[sectionIndex].assigneeId;
+
+    if (role === `${ROLE.ADMIN}` || id === `${assigneeId}`) {
+      resolve(getSuccessWithData({}));
+
+      return;
+    }
+
+    resolve(getErrorWithMessages(''));
+  });
+};
+
 export default {
   getCurrentUser: getCurrentUserApi,
-  getUsers: getUsersApi
+  getUsers: getUsersApi,
+  authenticate: authenticateApi
 };
