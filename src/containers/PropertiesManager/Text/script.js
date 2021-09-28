@@ -4,7 +4,7 @@ import StyleContent from '@/containers/Properties/Groups/General';
 import TabPropertiesMenu from '@/containers/TabPropertiesMenu';
 import GeneralContent from './GeneralContent';
 
-import { computedObjectSize, getActiveCanvas } from '@/common/utils';
+import { computedObjectSize, isEditingActiveObject } from '@/common/utils';
 import { useElementProperties } from '@/hooks';
 
 import { DEFAULT_TEXT, EVENT_TYPE } from '@/common/constants';
@@ -30,9 +30,7 @@ export default {
       return coord?.rotation || 0;
     },
     disabled() {
-      const activeObj = getActiveCanvas()?.getActiveObject();
-
-      return !!activeObj?.isEditing;
+      return isEditingActiveObject();
     },
     position() {
       const coord = this.getProperty('coord');

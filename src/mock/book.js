@@ -44,9 +44,9 @@ const book = new BookDetailEntity({
   totalSheets: 11,
   totalScreens: 11,
   createdDate: '11/27/20',
-  deliveryDate: '08/21/21',
-  releaseDate: '08/07/21',
-  saleDate: '05/16/21',
+  deliveryDate: '08/21/22',
+  releaseDate: '08/07/22',
+  saleDate: '05/16/22',
   coverOption: COVER_TYPE.HARD_OVER,
   numberMaxPages: 48,
   deliveryOption: 'Bulk Ship To School',
@@ -80,7 +80,7 @@ const book = new BookDetailEntity({
       draggable: false,
       color: '#fcd726',
       status: 0,
-      dueDate: '05/20/21',
+      dueDate: '05/20/22',
       order: 0,
       assigneeId: 1,
       sheets: [
@@ -115,7 +115,7 @@ const book = new BookDetailEntity({
       draggable: false,
       color: '#a4ca52',
       status: 1,
-      dueDate: '05/23/21',
+      dueDate: '05/23/22',
       order: 1,
       assigneeId: 1,
       sheets: [
@@ -247,7 +247,7 @@ const book = new BookDetailEntity({
       draggable: true,
       color: '#bc72c2',
       status: 2,
-      dueDate: '05/25/21',
+      dueDate: '05/25/22',
       order: 2,
       assigneeId: 1,
       sheets: [
@@ -331,7 +331,7 @@ const book = new BookDetailEntity({
       name: 'Student of the best class of Year 2019',
       color: 'orange',
       status: 0,
-      dueDate: '05/27/21',
+      dueDate: '05/27/22',
       order: 3,
       assigneeId: 893,
       sheets: [
@@ -367,7 +367,7 @@ const book = new BookDetailEntity({
       name: 'Signatures',
       color: '#0b49f5',
       status: 3,
-      dueDate: '06/01/21',
+      dueDate: '06/01/22',
       order: 4,
       assigneeId: 893,
       sheets: [
