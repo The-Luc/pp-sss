@@ -173,23 +173,43 @@ const renderVideoThumbnail = function(ctx) {
 
 /**
  * Handle render thumbnail for video object
- * @param {2D context Object} ctx the object enable to modify context canvas
+ * @param {Object} target the fabric object enable to modify
  */
-const renderImageCropControl = function(ctx) {
-  const ele = this.control;
-  const { width, height } = ele;
+export const renderImageCropControl = function(target) {
+  if (!target.hasImage || !target.selectable) return;
 
-  const sW = (this.width * this.scaleX) / 2;
-  const sH = (this.height * this.scaleY) / 2;
+  const { width, height, canvas, control, scaleX, scaleY, angle } = target;
 
-  const sX = -sW / 2 + width / 5;
-  const sY = -sH + height / 2;
+  const zoom = canvas.getZoom();
+  const ctx = canvas.getContext('2d');
 
-  const dX = -this.width / 2;
-  const dY = -this.height / 2;
+  const rad = (Math.PI * (angle % 360)) / 180;
 
-  ctx.shadowColor = 'transparent';
-  ctx.drawImage(ele, sX, sY, sW, sH, dX, dY, this.width, this.height);
+  const eleWidth = width * scaleX * zoom;
+  const eleHeight = height * scaleY * zoom;
+
+  const iconWidth = Math.min(eleWidth / 3, eleHeight / 1.5);
+  const iconHeight = iconWidth / 2;
+
+  const { x, y } = target.getCenterPoint();
+
+  const offsetY = (eleHeight - iconHeight) / 2 - 15 * zoom;
+
+  const centerX = x * zoom;
+  const centerY = y * zoom;
+
+  ctx.save();
+  ctx.translate(centerX, centerY);
+  ctx.rotate(rad);
+  ctx.translate(0, offsetY);
+  ctx.drawImage(
+    control,
+    -iconWidth / 2,
+    -iconHeight / 2,
+    iconWidth,
+    iconHeight
+  );
+  ctx.restore();
 };
 
 /**
@@ -275,13 +295,7 @@ const renderFill = function(ctx) {
   if (!elementToDraw) return;
 
   if (this.objectType === OBJECT_TYPE.IMAGE) {
-    renderFillImage.call(this, ctx);
-
-    if (this.showControl) {
-      renderImageCropControl.call(this, ctx);
-    }
-
-    return;
+    return renderFillImage.call(this, ctx);
   }
 
   if (this.showThumbnail) {
