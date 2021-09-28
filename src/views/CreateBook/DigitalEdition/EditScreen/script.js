@@ -10,7 +10,7 @@ import PortraitFlow from '@/containers/Modals/PortraitFlow/DigitalFlow';
 import ToolBar from './ToolBar';
 import ScreenEdition from './ScreenEdition';
 import SidebarSection from './SidebarSection';
-import ThePreviewModal from './Modals/ThePreviewModal';
+import TheTransitionPreview from './Modals/TheTransitionPreview';
 
 import { mapGetters, mapMutations, mapActions } from 'vuex';
 
@@ -82,7 +82,7 @@ export default {
     MediaModal,
     CropControl,
     PortraitFolder,
-    ThePreviewModal,
+    TheTransitionPreview,
     PortraitFlow
   },
   setup() {

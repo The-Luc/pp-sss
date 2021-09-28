@@ -1,12 +1,15 @@
 import CommonModal from '@/components/Modals/CommonModal';
 
+import TheContent from './TheContent';
+
 import { isEmpty } from '@/common/utils';
 
 import { TRANSITION, TRANS_DIRECTION } from '@/common/constants';
 
 export default {
   components: {
-    CommonModal
+    CommonModal,
+    TheContent
   },
   props: {
     transition: {
@@ -37,7 +40,8 @@ export default {
       backgroundPosition: this.getPosition(),
       transitionCss: isEmpty(this.duration) ? '' : `all ${this.duration}s`,
       transitionType: `transition-${this.transition}-${this.direction}`,
-      imageKey: false
+      imageKey: false,
+      isWipeTransition: this.transition === TRANSITION.WIPE
     };
   },
   mounted() {

@@ -6,7 +6,7 @@ export class SectionBase extends BaseEntity {
   color = '';
 
   /**
-   * @param {SectionInfo} props
+   * @param {SectionDetail} props
    */
   constructor(props) {
     super(props);
@@ -14,7 +14,7 @@ export class SectionBase extends BaseEntity {
   }
 }
 
-export class SectionInfo extends SectionBase {
+export class SectionDetail extends SectionBase {
   dueDate = null;
   status = 0;
   draggable = true;
@@ -22,7 +22,7 @@ export class SectionInfo extends SectionBase {
   sheetIds = [];
 
   /**
-   * @param {SectionInfo} props
+   * @param {SectionDetail} props
    */
   constructor(props) {
     super(props);
@@ -30,11 +30,11 @@ export class SectionInfo extends SectionBase {
   }
 }
 
-export class SectionEditionInfo extends SectionBase {
+export class SectionEditionDetail extends SectionBase {
   sheets = [];
 
   /**
-   * @param {SectionEditionInfo} props
+   * @param {SectionEditionDetail} props
    */
   constructor(props) {
     super(props);
