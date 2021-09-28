@@ -11,6 +11,8 @@ import {
 } from '@/common/models/entities';
 import { uniqueId } from 'lodash';
 
+import { portraitFolders } from './portraitFolders';
+
 const spreadInfo = {
   leftTitle: '', // spread title use left for link
   rightTitle: '',
@@ -56,6 +58,7 @@ const book = new BookDetailEntity({
   insideFrontCoverId: 2,
   insideBackCoverId: 11,
   isPhotoVisited: false,
+  portraitFolders: [...portraitFolders],
   estimatedQuantity: {
     min: 50,
     max: 100

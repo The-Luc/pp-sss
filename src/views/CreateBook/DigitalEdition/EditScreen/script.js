@@ -46,7 +46,8 @@ import {
   useBook,
   useAnimation,
   useObjects,
-  useBackgroundProperties
+  useBackgroundProperties,
+  usePortrait
 } from '@/hooks';
 import {
   isEmpty,
@@ -124,6 +125,8 @@ export default {
 
     const { backgroundsProps } = useBackgroundProperties();
 
+    const { saveSelectedPortraitFolders } = usePortrait();
+
     return {
       pageSelected,
       updateVisited,
@@ -158,7 +161,8 @@ export default {
       setCurrentFrameId,
       getSheets,
       saveSheetFrames,
-      backgroundsProps
+      backgroundsProps,
+      saveSelectedPortraitFolders
     };
   },
   data() {
@@ -701,6 +705,12 @@ export default {
 
       this.onToggleModal({ modal: '' });
       this.setToolNameSelected('');
+
+      const selectedFolderIds = this.modal[
+        MODAL_TYPES.PORTRAIT_FLOW
+      ].data.folders.map(item => item.id);
+
+      this.saveSelectedPortraitFolders(selectedFolderIds);
     },
 
     getRequiredFramesData(currentFrames, requiredFrames) {

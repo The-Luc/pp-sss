@@ -16,6 +16,12 @@
     </div>
     <div class="item-assets-count">
       {{ portraitFolder.assetsCount }} portraits
+      <v-icon
+        v-if="portraitFolder.isSelected"
+        class="selected-icon"
+        alt="selected-icon"
+        >done</v-icon
+      >
     </div>
   </div>
 
