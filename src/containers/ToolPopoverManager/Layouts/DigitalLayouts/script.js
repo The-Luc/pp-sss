@@ -14,7 +14,6 @@ import {
   getThemeOptSelectedById,
   getLayoutOptSelectedById,
   resetObjects,
-  getActiveCanvas,
   isEmpty,
   entitiesToObjects
 } from '@/common/utils';
@@ -387,7 +386,7 @@ export default {
         layout
       });
 
-      resetObjects(getActiveCanvas());
+      resetObjects();
 
       this.$root.$emit('pageNumber');
     },
