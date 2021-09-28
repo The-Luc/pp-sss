@@ -138,6 +138,23 @@ const renderFillImage = function(ctx) {
   const dW = min(w, elWidth / scaleX - cropX) - offsetX;
   const dH = min(h, elHeight / scaleY - cropY) - offsetY;
 
+  if (
+    this.fromPortrait &&
+    this.width * this.scaleX === this.height * this.scaleY
+  ) {
+    return ctx.drawImage(
+      elementToDraw,
+      sX,
+      sY + (sH - sW) / 2,
+      sW,
+      sW,
+      dX,
+      dY,
+      dW,
+      dH
+    );
+  }
+
   ctx.drawImage(elementToDraw, sX, sY, sW, sH, dX, dY, dW, dH);
 };
 

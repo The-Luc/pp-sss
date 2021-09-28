@@ -388,6 +388,9 @@ export const createPortraitObjects = (
 
   const isTextAlignRight =
     nameTextFontSettings?.alignment?.horizontal === TEXT_HORIZONTAL_ALIGN.RIGHT;
+  
+  const isTextAlignCenter =
+    nameTextFontSettings?.alignment?.horizontal === TEXT_HORIZONTAL_ALIGN.CENTER;
 
   const titleMeasureWidth =
     pxToIn(
@@ -545,6 +548,8 @@ export const createPortraitObjects = (
 
         const textX = isTextAlignRight
           ? x - textWidth + imageWidth + defaultTextPadding
+          : isTextAlignCenter && textWidth > imageWidth
+          ? x - (textWidth - imageWidth) / 2
           : x - defaultTextPadding;
         const textY = y + imageHeight - defaultTextPadding + defaultTextGap;
 
