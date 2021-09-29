@@ -11,8 +11,6 @@ import {
 } from '@/common/models/entities';
 import { uniqueId } from 'lodash';
 
-import { portraitFolders } from './portraitFolders';
-
 const spreadInfo = {
   leftTitle: '', // spread title use left for link
   rightTitle: '',

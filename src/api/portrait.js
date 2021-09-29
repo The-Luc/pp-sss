@@ -1,19 +1,19 @@
 import moment from 'moment';
 
-import { portraitFolders } from '@/mock/portraitFolders';
+import { portraitFolders as mockPortraitFolders } from '@/mock/portraitFolders';
 
 export const getPortraitFolders = () => {
   return new Promise(resolve => {
     setTimeout(() => {
+      const { selectedPortraitFolders } = window.data.book;
+      const portraitFolders = mockPortraitFolders.map(item => {
+        if (!selectedPortraitFolders.includes(item.id)) return item;
+        return {
+          ...item,
+          isSelected: true
+        };
+      });
       resolve(portraitFolders);
-    });
-  });
-};
-
-export const getSelectedPortraitFolders = () => {
-  return new Promise(resolve => {
-    setTimeout(() => {
-      resolve(window.data.book.selectedPortraitFolders);
     });
   });
 };

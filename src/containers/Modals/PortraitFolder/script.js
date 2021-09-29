@@ -21,11 +21,10 @@ export default {
     }
   },
   setup() {
-    const { getPortraitFolders, getSelectedPortraitFolders } = usePortrait();
+    const { getPortraitFolders } = usePortrait();
 
     return {
-      getPortraitFolders,
-      getSelectedPortraitFolders
+      getPortraitFolders
     };
   },
 
@@ -90,14 +89,6 @@ export default {
     }
   },
   async created() {
-    const portraitFolders = await this.getPortraitFolders();
-    const selectedPortraitFolders = await this.getSelectedPortraitFolders();
-    this.portraitFolders = portraitFolders.map(item => {
-      if (!selectedPortraitFolders.includes(item.id)) return item;
-      return {
-        ...item,
-        isSelected: true
-      };
-    });
+    this.portraitFolders = await this.getPortraitFolders();
   }
 };

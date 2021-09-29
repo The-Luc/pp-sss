@@ -1,13 +1,11 @@
 import {
   getPortraitFolders,
-  saveSelectedPortraitFolders,
-  getSelectedPortraitFolders
+  saveSelectedPortraitFolders
 } from '@/api/portrait';
 
 export const usePortrait = () => {
   return {
     getPortraitFolders,
-    saveSelectedPortraitFolders,
-    getSelectedPortraitFolders
+    saveSelectedPortraitFolders
   };
 };
