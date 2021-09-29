@@ -6,5 +6,9 @@ export const CLIP_ART_TYPE = {
   FAVORITE: {
     id: 1,
     name: 'Saved Favorites'
+  },
+  SEARCH: {
+    id: 2,
+    name: 'Search'
   }
 };

@@ -3,6 +3,7 @@
     <PpToolPopover
       title="Clip Art"
       action-text="Select"
+      :disabled="selectedClipArtId.length === 0"
       @cancel="onCancel"
       @change="addClipArts"
     >
@@ -19,7 +20,29 @@
       </template>
 
       <template #content>
-        <div class="clip-art-item-container">
+        <div v-if="isShowSearchInput" :key="searchInput" class="search-clipart">
+          <input type="text" placeholder="Search" @keyup.enter="onSearch" />
+          <div v-if="!firstTime" class="search-result">
+            {{ clipArts.length }} matches for: <span>{{ searchInput }}</span>
+          </div>
+        </div>
+        <div
+          v-if="clipArts.length === 0"
+          class="clip-art-item-container search-item empty"
+        >
+          <Item
+            v-for="(clipArt, index) in clipArtEmptyLength"
+            :key="index"
+            is-empty
+          />
+        </div>
+        <div
+          v-else
+          :class="[
+            'clip-art-item-container',
+            { 'search-item': isShowSearchInput }
+          ]"
+        >
           <Item
             v-for="clipArt in clipArts"
             :key="clipArt.id"

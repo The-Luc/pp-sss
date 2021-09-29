@@ -196,6 +196,8 @@ export default {
         numLargePortrait > 0;
 
       const lastRowCount = this.portraits.length % colCount || colCount;
+      const isOneLine =
+        lastRowCount > 1 && lastRowCount + numLargePortrait <= colCount;
 
       if (isOnStartPage && isLargePortraitOnFirst) {
         for (let i = 1; i <= rowCount; i++) {
@@ -209,7 +211,8 @@ export default {
       }
       if (
         !isOnLastPage ||
-        (lastRowCount > 1 && lastRowCount + numLargePortrait <= colCount) ||
+        isLargePortraitOnFirst ||
+        isOneLine ||
         (lastRowCount === 1 && numLargePortrait < 2)
       ) {
         while (portraitArray.length) {

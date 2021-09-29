@@ -28,6 +28,11 @@
     }
   }
 
+  &.empty {
+    opacity: 0.4;
+    pointer-events: none;
+  }
+
   .clip-art-preview-img {
     display: flex;
     justify-content: center;

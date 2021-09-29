@@ -15,7 +15,7 @@
       </v-icon>
     </div>
   </div>
-  <div v-else class="clip-art-item" />
+  <div v-else class="clip-art-item empty" />
 </template>
 
 <script src="./script.js" />

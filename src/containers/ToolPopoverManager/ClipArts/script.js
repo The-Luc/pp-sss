@@ -1,10 +1,11 @@
-import { mapMutations } from 'vuex';
-import ClipArtToolPopover from '@/components/ToolPopovers/ClipArt';
-import { loadClipArts, loadClipArtCategories } from '@/api/clipArt';
-import { MUTATES as APP_MUTATES } from '@/store/modules/app/const';
-import { CLIP_ART_TYPE } from '@/common/constants';
 import { cloneDeep } from 'lodash';
-import { EVENT_TYPE } from '@/common/constants/eventType';
+
+import ClipArtToolPopover from '@/components/ToolPopovers/ClipArt';
+import { loadClipArtCategories } from '@/api/clipArt';
+import { CLIP_ART_TYPE, EVENT_TYPE } from '@/common/constants';
+
+import { useClipArt } from '@/views/CreateBook/composables';
+import { usePopoverCreationTool } from '@/hooks';
 
 export default {
   components: {
@@ -19,15 +20,17 @@ export default {
       chosenClipArtType: { value: '', sub: '' }
     };
   },
-  computed: {
-    clipArts() {
-      return this.clipArtList.filter(item => item.category === this.category);
-    }
+  setup() {
+    const { getSearch, getClipArt } = useClipArt();
+    const { setToolNameSelected } = usePopoverCreationTool();
+
+    return {
+      getSearch,
+      getClipArt,
+      setToolNameSelected
+    };
   },
   methods: {
-    ...mapMutations({
-      setToolNameSelected: APP_MUTATES.SET_TOOL_NAME_SELECTED
-    }),
     /**
      * Add clip art id to array clip art selected
      */
@@ -44,9 +47,7 @@ export default {
      * Set tool name selected is empty to close popover after click Cancel button
      */
     onCancel() {
-      this.setToolNameSelected({
-        name: ''
-      });
+      this.setToolNameSelected('');
       this.selectedClipArtId = [];
     },
     /**
@@ -63,8 +64,8 @@ export default {
      * Change clip art type when selected
      * @param {Object} clipArtType - Clip art type and category selected
      */
-    onChangeClipArtType(clipArtType) {
-      this.category = clipArtType.sub.value;
+    async onChangeClipArtType(clipArtType) {
+      this.clipArtList = await this.getClipArt(clipArtType.sub.value);
 
       this.chosenClipArtType = {
         value: clipArtType.value,
@@ -94,12 +95,22 @@ export default {
         }
         return clType;
       });
+    },
+    /**
+     * To search base on value input
+     * @param {String}  input value to search
+     */
+    async onSearch(input) {
+      this.clipArtList = await this.getSearch(input);
     }
   },
   async created() {
-    this.clipArtList = await loadClipArts();
+    this.clipArtList = await this.getClipArt(this.category);
     const clipArtTypes = await this.clipArtTypes();
-    this.displayClipArtTypes = clipArtTypes.filter(b => b.subItems.length > 0);
+
+    this.displayClipArtTypes = clipArtTypes.filter(
+      b => b.id !== CLIP_ART_TYPE.FAVORITE.id
+    );
 
     if (this.displayClipArtTypes.length === 0) return;
 
