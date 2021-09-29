@@ -8,8 +8,7 @@
     </div>
     <Playback />
     <animation
-      v-if="isDigitalEdition"
-      title="Text animation"
+      title="Video animation"
       :play-in-config="playInConfig"
       :play-out-config="playOutConfig"
       :play-in-order="playInOrder"

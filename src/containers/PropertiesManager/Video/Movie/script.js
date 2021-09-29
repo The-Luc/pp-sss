@@ -6,7 +6,6 @@ import Playback from './Playback';
 import Animation from '@/components/Properties/Features/Animation';
 import {
   useAnimation,
-  useAppCommon,
   useElementProperties,
   useObjectProperties
 } from '@/hooks';
@@ -27,14 +26,12 @@ export default {
     Animation
   },
   setup() {
-    const { isDigitalEdition } = useAppCommon();
     const { getProperty } = useElementProperties();
     const { playInOrder, playOutOrder } = useAnimation();
     const { listObjects } = useObjectProperties();
 
     return {
       getProperty,
-      isDigitalEdition,
       playInOrder,
       playOutOrder,
       listObjects
