@@ -5,7 +5,7 @@
       accept-text="Select"
       container="#portrait-folder"
       width="796"
-      :is-open-modal="isOpenModal"
+      :is-open-modal="isOpenModal && !isOpenReflowPortrait"
       :is-accept-button-disabled="isDisableSelect"
       @cancel="onCancel"
       @accept="onSelect"
@@ -47,6 +47,13 @@
         </div>
       </div>
     </CommonModal>
+
+    <reflow-portrait
+      :is-open-modal="isOpenModal && isOpenReflowPortrait"
+      :flowed-folders="flowedFolders"
+      @apply="onSelect"
+      @cancel="onCancel"
+    ></reflow-portrait>
   </div>
 </template>
 

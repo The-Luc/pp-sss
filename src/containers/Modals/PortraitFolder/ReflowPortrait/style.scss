@@ -1,0 +1,49 @@
+#reflow-portrait {
+  ::v-deep {
+    .v-dialog__content {
+      .v-dialog.pp-modal {
+        height: auto;
+        .pp-modal-title-theme {
+          height: 65px;
+          margin: 0 !important;
+          padding: 12px 0 4px 0 !important;
+          .text-title {
+            font-size: $xl-size;
+          }
+        }
+
+        .reflow-portrait-message {
+          margin-top: 20px;
+          text-align: center;
+          font-family: $font-500;
+          font-size: 13px;
+          color: $color-gray16;
+        }
+        .reflow-portrait-folder {
+          text-align: center;
+          font-family: $font-500;
+          font-size: 13px;
+          color: $color-gray16;
+          font-weight: 700;
+          margin: 24px 0;
+        }
+
+        .reflow-portrait-footer {
+          margin-bottom: 32px;
+          .pp-btn {
+            width: 238px;
+            height: 36px;
+            margin: 0 auto;
+            opacity: 1;
+            &:not(.active) {
+              background-color: $color-gray19;
+              border-color: $color-gray19;
+              margin-top: 10px;
+              color: white;
+            }
+          }
+        }
+      }
+    }
+  }
+}

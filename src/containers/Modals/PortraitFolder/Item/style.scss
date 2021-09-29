@@ -68,5 +68,22 @@
     width: 100%;
     border-top: 1px solid $color-gray14;
     padding: 4px;
+    position: relative;
+
+    .selected-icon {
+      display: block;
+      height: 16px;
+      width: 16px;
+      line-height: 16px;
+      text-align: center;
+      font-size: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      right: 0;
+      position: absolute;
+      color: $color-white;
+      background-color: $color-green2;
+      border-radius: 50%;
+    }
   }
 }
