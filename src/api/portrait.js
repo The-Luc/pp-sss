@@ -1,4 +1,5 @@
 import moment from 'moment';
+
 import { portraitFolders } from '@/mock/portraitFolders';
 
 export const getPortraitFolders = () => {

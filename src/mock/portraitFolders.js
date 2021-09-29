@@ -83,8 +83,7 @@ const folder1 = new PortraitFolder({
   name: 'Administration and Staff',
   thumbUrl: TEACHER_THUMB_01,
   assetsCount: 47,
-  assets: [teacher1, assistant1, ...getRandomStudents(45)],
-  isSelected: false
+  assets: [teacher1, assistant1, ...getRandomStudents(45)]
 });
 
 const folder2 = new PortraitFolder({
@@ -92,8 +91,7 @@ const folder2 = new PortraitFolder({
   name: '6th Grade with 2 Teachers and 1 Assistant',
   thumbUrl: STUDENT_THUMB_01,
   assetsCount: 73,
-  assets: [teacher1, teacher2, assistant1, ...getRandomStudents(70)],
-  isSelected: false
+  assets: [teacher1, teacher2, assistant1, ...getRandomStudents(70)]
 });
 
 const folder3 = new PortraitFolder({
@@ -101,8 +99,7 @@ const folder3 = new PortraitFolder({
   name: 'Letter',
   thumbUrl: TEACHER_THUMB_02,
   assetsCount: 61,
-  assets: [teacher2, ...getRandomStudents(60)],
-  isSelected: false
+  assets: [teacher2, ...getRandomStudents(60)]
 });
 
 const folder4 = new PortraitFolder({
@@ -110,8 +107,7 @@ const folder4 = new PortraitFolder({
   name: 'The best students of Mr. Thompson Year 2019',
   thumbUrl: STUDENT_THUMB_02,
   assetsCount: 54,
-  assets: [assistant1, ...getRandomStudents(53)],
-  isSelected: false
+  assets: [assistant1, ...getRandomStudents(53)]
 });
 
 const folder5 = new PortraitFolder({
@@ -119,8 +115,7 @@ const folder5 = new PortraitFolder({
   name: 'No Teacher Class',
   thumbUrl: STUDENT_THUMB_01,
   assetsCount: 30,
-  assets: [...getRandomStudents(30)],
-  isSelected: false
+  assets: [...getRandomStudents(30)]
 });
 
 const folder6 = new PortraitFolder({
@@ -128,8 +123,7 @@ const folder6 = new PortraitFolder({
   name: 'Three Teachers Class',
   thumbUrl: TEACHER_THUMB_01,
   assetsCount: 43,
-  assets: [teacher1, teacher2, teacher1, ...getRandomStudents(40)],
-  isSelected: false
+  assets: [teacher1, teacher2, teacher1, ...getRandomStudents(40)]
 });
 
 const folder7 = new PortraitFolder({
@@ -137,8 +131,7 @@ const folder7 = new PortraitFolder({
   name: '3 Teachers and 1 Assistant',
   thumbUrl: TEACHER_THUMB_02,
   assetsCount: 44,
-  assets: [teacher1, teacher2, teacher1, assistant1, ...getRandomStudents(40)],
-  isSelected: false
+  assets: [teacher1, teacher2, teacher1, assistant1, ...getRandomStudents(40)]
 });
 
 const folder8 = new PortraitFolder({
@@ -146,14 +139,7 @@ const folder8 = new PortraitFolder({
   name: '2 Teachers and 2 Assistants',
   thumbUrl: TEACHER_THUMB_02,
   assetsCount: 44,
-  assets: [
-    teacher1,
-    teacher2,
-    assistant1,
-    assistant1,
-    ...getRandomStudents(40)
-  ],
-  isSelected: false
+  assets: [teacher1, teacher2, assistant1, assistant1, ...getRandomStudents(40)]
 });
 
 const folder9 = new PortraitFolder({
@@ -161,8 +147,7 @@ const folder9 = new PortraitFolder({
   name: '1 Teachers and 2 Assistants',
   thumbUrl: TEACHER_THUMB_01,
   assetsCount: 43,
-  assets: [teacher1, assistant1, assistant1, ...getRandomStudents(40)],
-  isSelected: false
+  assets: [teacher1, assistant1, assistant1, ...getRandomStudents(40)]
 });
 
 const folder10 = new PortraitFolder({
@@ -170,8 +155,7 @@ const folder10 = new PortraitFolder({
   name: '1 Teachers and 1 Assistants',
   thumbUrl: TEACHER_THUMB_01,
   assetsCount: 6,
-  assets: [teacher2, assistant1, ...getRandomStudents(4)],
-  isSelected: false
+  assets: [teacher2, assistant1, ...getRandomStudents(4)]
 });
 
 export const portraitFolders = [
