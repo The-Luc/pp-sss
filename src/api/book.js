@@ -1,12 +1,13 @@
 import {
   BookDetail,
-  SectionInfo,
+  SectionDetail,
   BookManagerDetail,
-  BookPrintInfo,
-  BookDigitalInfo,
-  SheetPrintInfo,
-  SheetDigitalInfo,
-  SectionEditionInfo
+  BookPrintDetail,
+  BookDigitalDetail,
+  SheetPrintDetail,
+  SheetDigitalDetail,
+  SectionEditionDetail,
+  SheetDetail
 } from '@/common/models';
 import { SheetEntity } from '@/common/models/entities';
 
@@ -48,7 +49,7 @@ export const getBookDetail = bookId => {
 
       // adding sheetIds to section
       section.sheetIds = sheetIds;
-      sectionsAsObject[id] = new SectionInfo(section);
+      sectionsAsObject[id] = new SectionDetail(section);
     });
 
     sheetData.forEach(sheet => {
@@ -83,7 +84,7 @@ export const getBookManager = async bookId => {
   // TODO: define sheet class for manager
   const printSheets = {};
   sheets.forEach(sheet => {
-    const newSheet = new SheetPrintInfo({
+    const newSheet = new SheetDetail({
       ...sheet,
       ...sheet.printData
     });
@@ -107,7 +108,7 @@ export const getBookPrint = async bookId => {
     sections
   } = await bookService.getBook(bookId);
 
-  const bookPrint = new BookPrintInfo({
+  const bookPrint = new BookPrintDetail({
     ...book,
     pageInfo: book.printData.pageInfo,
     themeId: book.printData.themeId
@@ -115,7 +116,7 @@ export const getBookPrint = async bookId => {
 
   const sheetsPrint = sheets.map(
     s =>
-      new SheetPrintInfo({
+      new SheetPrintDetail({
         ...s,
         ...s.printData
       })
@@ -143,14 +144,14 @@ export const getBookDigital = async bookId => {
     sections
   } = await bookService.getBook(bookId);
 
-  const bookDigital = new BookDigitalInfo({
+  const bookDigital = new BookDigitalDetail({
     ...book,
     themeId: book.digitalData.themeId
   });
 
   const sheetsDigital = sheets.map(
     s =>
-      new SheetDigitalInfo({
+      new SheetDigitalDetail({
         ...s,
         ...s.digitalData
       })
@@ -196,7 +197,7 @@ export const getBookPrintInfo = async bookId => {
       const pageLeftName = getPageLeftName(sheet, sheetIndex, totalSheet);
       const pageRightName = getPageRightName(sheet, sheetIndex, totalSheet);
 
-      return new SheetPrintInfo({
+      return new SheetPrintDetail({
         ...sheet,
         sectionId: section.id,
         themeId,
@@ -215,7 +216,7 @@ export const getBookPrintInfo = async bookId => {
       totalSheet += section.sheets.length;
     }
 
-    return new SectionEditionInfo({
+    return new SectionEditionDetail({
       ...section,
       sheets
     });
@@ -224,7 +225,7 @@ export const getBookPrintInfo = async bookId => {
   const { pageInfo, themeId } = book.printData;
 
   return Promise.resolve({
-    ...new BookPrintInfo({ ...book, pageInfo, themeId }),
+    ...new BookPrintDetail({ ...book, pageInfo, themeId }),
     sectionsSheets: sections
   });
 };
@@ -249,7 +250,7 @@ export const getBookDigitalInfo = async bookId => {
 
       const pageName = getPageName(sheetIndex, totalSheet);
 
-      return new SheetDigitalInfo({
+      return new SheetDigitalDetail({
         ...sheet,
         sectionId: section.id,
         themeId,
@@ -263,7 +264,7 @@ export const getBookDigitalInfo = async bookId => {
 
     totalSheet += section.sheets.length;
 
-    return new SectionEditionInfo({
+    return new SectionEditionDetail({
       ...section,
       sheets
     });
@@ -272,7 +273,7 @@ export const getBookDigitalInfo = async bookId => {
   const { pageInfo, themeId: defaultThemeId } = book.digitalData;
 
   return Promise.resolve({
-    ...new BookDigitalInfo({ ...book, pageInfo, themeId: defaultThemeId }),
+    ...new BookDigitalDetail({ ...book, pageInfo, themeId: defaultThemeId }),
     sectionsSheets: sections
   });
 };

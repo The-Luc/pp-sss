@@ -1,4 +1,5 @@
 import { cloneDeep } from 'lodash';
+import { getActiveCanvas } from './canvas';
 import {
   CUSTOM_LAYOUT_TYPE,
   LAYOUT_PAGE_TYPE,
@@ -44,13 +45,14 @@ export const getLayoutOptSelectedById = (
  * @param {Number | String} position left or right || FRONT_COVER or BACK_COVER
  * @returns an object have coords changed
  */
-export const changeObjectsCoords = (objects, position, targetCanvas) => {
+export const changeObjectsCoords = (objects, position) => {
   const isLeftPage = position === 'left' || position === SHEET_TYPE.BACK_COVER;
 
   const newObjects = cloneDeep(objects);
 
   if (isLeftPage) return newObjects;
 
+  const targetCanvas = getActiveCanvas();
   const { width } = targetCanvas;
   const zoom = targetCanvas.getZoom();
   const midCanvas = pxToIn(width / zoom / 2);

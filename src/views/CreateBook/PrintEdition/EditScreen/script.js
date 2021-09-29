@@ -40,7 +40,8 @@ import {
   useObjectProperties,
   useToolBar,
   useObjects,
-  useBackgroundProperties
+  useBackgroundProperties,
+  usePortrait
 } from '@/hooks';
 import { EDITION } from '@/common/constants';
 import {
@@ -101,6 +102,8 @@ export default {
 
     const { backgroundsProps } = useBackgroundProperties();
 
+    const { saveSelectedPortraitFolders } = usePortrait();
+
     return {
       pageSelected,
       setToolNameSelected,
@@ -127,7 +130,8 @@ export default {
       savePortraitObjects,
       addObjecs,
       deleteObjects,
-      backgroundsProps
+      backgroundsProps,
+      saveSelectedPortraitFolders
     };
   },
   data() {
@@ -531,6 +535,10 @@ export default {
       });
 
       await Promise.all(saveQueue);
+
+      const selectedFolderIds = this.selectedFolders.map(item => item.id);
+
+      this.saveSelectedPortraitFolders(selectedFolderIds);
     },
     /**
      * Cancel apply warning modal

@@ -10,7 +10,7 @@ import PortraitFlow from '@/containers/Modals/PortraitFlow/DigitalFlow';
 import ToolBar from './ToolBar';
 import ScreenEdition from './ScreenEdition';
 import SidebarSection from './SidebarSection';
-import ThePreviewModal from './Modals/ThePreviewModal';
+import TheTransitionPreview from './Modals/TheTransitionPreview';
 
 import { mapGetters, mapMutations, mapActions } from 'vuex';
 
@@ -46,7 +46,8 @@ import {
   useBook,
   useAnimation,
   useObjects,
-  useBackgroundProperties
+  useBackgroundProperties,
+  usePortrait
 } from '@/hooks';
 import {
   isEmpty,
@@ -82,7 +83,7 @@ export default {
     MediaModal,
     CropControl,
     PortraitFolder,
-    ThePreviewModal,
+    TheTransitionPreview,
     PortraitFlow
   },
   setup() {
@@ -124,6 +125,8 @@ export default {
 
     const { backgroundsProps } = useBackgroundProperties();
 
+    const { saveSelectedPortraitFolders } = usePortrait();
+
     return {
       pageSelected,
       updateVisited,
@@ -158,7 +161,8 @@ export default {
       setCurrentFrameId,
       getSheets,
       saveSheetFrames,
-      backgroundsProps
+      backgroundsProps,
+      saveSelectedPortraitFolders
     };
   },
   data() {
@@ -629,6 +633,7 @@ export default {
      * @param {Object} requiredPages pages to apply portraits
      */
     async onApplyPortrait(settings, requiredPages) {
+      const { flowMultiSettings } = settings;
       const sheets = Object.values(this.getSheets).reduce((obj, sheet) => {
         const key = Number(sheet.pageName);
         obj[key] = sheet;
@@ -642,12 +647,14 @@ export default {
         return obj;
       }, {});
 
-      Object.keys(requiredScreens).forEach(screenId => {
+      Object.keys(requiredScreens).forEach((screenId, screenIndex) => {
         const requiredFrames = requiredScreens[screenId];
 
         if (isEmpty(requiredFrames)) return;
-
-        const pages = getPageObjects(settings, requiredFrames, true);
+        const requiredFolders =
+          Object.values(flowMultiSettings.screen)?.[screenIndex]?.length || 1;
+        const folders = settings.folders.splice(0, requiredFolders);
+        const pages = getPageObjects(settings, requiredFrames, true, folders);
 
         const canvas = this.$refs.canvasEditor.digitalCanvas;
 
@@ -701,6 +708,12 @@ export default {
 
       this.onToggleModal({ modal: '' });
       this.setToolNameSelected('');
+
+      const selectedFolderIds = this.modal[
+        MODAL_TYPES.PORTRAIT_FLOW
+      ].data.folders.map(item => item.id);
+
+      this.saveSelectedPortraitFolders(selectedFolderIds);
     },
 
     getRequiredFramesData(currentFrames, requiredFrames) {

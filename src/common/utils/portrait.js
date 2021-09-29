@@ -389,6 +389,10 @@ export const createPortraitObjects = (
   const isTextAlignRight =
     nameTextFontSettings?.alignment?.horizontal === TEXT_HORIZONTAL_ALIGN.RIGHT;
 
+  const isTextAlignCenter =
+    nameTextFontSettings?.alignment?.horizontal ===
+    TEXT_HORIZONTAL_ALIGN.CENTER;
+
   const titleMeasureWidth =
     pxToIn(
       measureTextWidth(getActiveCanvas(), pageTitle, {
@@ -545,6 +549,8 @@ export const createPortraitObjects = (
 
         const textX = isTextAlignRight
           ? x - textWidth + imageWidth + defaultTextPadding
+          : isTextAlignCenter && textWidth > imageWidth
+          ? x - (textWidth - imageWidth) / 2
           : x - defaultTextPadding;
         const textY = y + imageHeight - defaultTextPadding + defaultTextGap;
 
@@ -601,19 +607,21 @@ export const createPortraitObjects = (
  * @param isDigital flag for digital edition
  * @returns page objects will be stored
  */
-export const getPageObjects = (settings, requiredPages, isDigital) => {
-  const {
-    teacherSettings,
-    folders,
-    layoutSettings,
-    flowMultiSettings
-  } = settings;
+export const getPageObjects = (
+  settings,
+  requiredPages,
+  isDigital,
+  requiredFolders
+) => {
+  const { teacherSettings, layoutSettings, flowMultiSettings } = settings;
   const {
     teacherPortraitSize,
     assistantTeacherPortraitSize,
     hasTeacher,
     teacherPlacement
   } = teacherSettings;
+
+  const folders = requiredFolders || settings.folders;
 
   const { rowCount, colCount } = layoutSettings;
   const itemPerPage = rowCount * colCount;

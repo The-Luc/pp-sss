@@ -111,12 +111,12 @@ export class BookManagerDetail extends BookBase {
   }
 }
 
-export class BookEditionInfo extends BookBase {
+export class BookEditionDetail extends BookBase {
   themeId = null;
   isPhotoVisited = false;
 
   /**
-   * @param {BookPrintInfo} props
+   * @param {BookEditionDetail} props
    */
   constructor(props) {
     super(props);
@@ -124,13 +124,13 @@ export class BookEditionInfo extends BookBase {
   }
 }
 
-export class BookPrintInfo extends BookEditionInfo {
+export class BookPrintDetail extends BookEditionDetail {
   pageInfo = new PageInfo();
   coverOption = '';
   numberMaxPages = 0;
 
   /**
-   * @param {BookPrintInfo} props
+   * @param {BookPrintDetail} props
    */
   constructor(props) {
     super(props);
@@ -138,9 +138,9 @@ export class BookPrintInfo extends BookEditionInfo {
   }
 }
 
-export class BookDigitalInfo extends BookEditionInfo {
+export class BookDigitalDetail extends BookEditionDetail {
   /**
-   * @param {BookDigitalInfo} props
+   * @param {BookDigitalDetail} props
    */
   constructor(props) {
     super(props);

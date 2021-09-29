@@ -275,7 +275,7 @@ export default {
         this.transitionX = x - 160 + iconWidth / 2;
 
         // 116 is height of modal, 3 is space between modal & icon
-        this.transitionY = y - 116 - iconWidth / 2 - 3;
+        this.transitionY = y - 116 - iconWidth / 2 + 3;
 
         this.transitionIndex = index;
       }, 20);

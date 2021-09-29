@@ -1,5 +1,6 @@
 import CommonModal from '@/components/Modals/CommonModal';
 import Item from './Item';
+import ReflowPortrait from './ReflowPortrait';
 import { usePortrait } from '@/hooks';
 import {
   insertItemsToArray,
@@ -8,7 +9,7 @@ import {
 } from '@/common/utils';
 
 export default {
-  components: { CommonModal, Item },
+  components: { CommonModal, Item, ReflowPortrait },
   props: {
     isOpenModal: {
       type: Boolean,
@@ -30,7 +31,8 @@ export default {
   data() {
     return {
       portraitFolders: [],
-      selectedFolders: []
+      selectedFolders: [],
+      isOpenReflowPortrait: false
     };
   },
   computed: {
@@ -44,6 +46,9 @@ export default {
     },
     isDisableSelect() {
       return isEmpty(this.selectedFolders);
+    },
+    flowedFolders() {
+      return this.selectedFolders.filter(item => item.isSelected);
     }
   },
   methods: {
@@ -57,7 +62,11 @@ export default {
      * Select portrait folders
      */
     onSelect() {
-      this.$emit('select', this.selectedFolders);
+      if (isEmpty(this.flowedFolders) || this.isOpenReflowPortrait) {
+        this.$emit('select', this.selectedFolders);
+        return;
+      }
+      this.isOpenReflowPortrait = true;
     },
     /**
      * Selected portrait folder
