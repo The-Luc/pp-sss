@@ -156,6 +156,25 @@ export const TEXT_APPLY_OPTIONS = [
   }
 ];
 
+export const VIDEO_APPLY_OPTIONS = [
+  {
+    name: 'This video only',
+    value: APPLY_MODE.SELF
+  },
+  {
+    name: 'All videos on the frame',
+    value: APPLY_MODE.FRAME
+  },
+  {
+    name: 'All videos in this section',
+    value: APPLY_MODE.SECTION
+  },
+  {
+    name: 'All videos in the Digital Yearbook',
+    value: APPLY_MODE.BOOK
+  }
+];
+
 export const IMAGE_APPLY_OPTIONS = [
   {
     name: 'This image only',
