@@ -56,6 +56,7 @@ const book = new BookDetailEntity({
   insideFrontCoverId: 2,
   insideBackCoverId: 11,
   isPhotoVisited: false,
+  selectedPortraitFolders: [],
   estimatedQuantity: {
     min: 50,
     max: 100
