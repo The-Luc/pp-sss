@@ -629,6 +629,7 @@ export default {
      * @param {Object} requiredPages pages to apply portraits
      */
     async onApplyPortrait(settings, requiredPages) {
+      const { flowMultiSettings } = settings;
       const sheets = Object.values(this.getSheets).reduce((obj, sheet) => {
         const key = Number(sheet.pageName);
         obj[key] = sheet;
@@ -642,12 +643,14 @@ export default {
         return obj;
       }, {});
 
-      Object.keys(requiredScreens).forEach(screenId => {
+      Object.keys(requiredScreens).forEach((screenId, screenIndex) => {
         const requiredFrames = requiredScreens[screenId];
 
         if (isEmpty(requiredFrames)) return;
-
-        const pages = getPageObjects(settings, requiredFrames, true);
+        const requiredFolders =
+          Object.values(flowMultiSettings.screen)?.[screenIndex]?.length || 1;
+        const folders = settings.folders.splice(0, requiredFolders);
+        const pages = getPageObjects(settings, requiredFrames, true, folders);
 
         const canvas = this.$refs.canvasEditor.digitalCanvas;
 
