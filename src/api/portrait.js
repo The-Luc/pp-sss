@@ -7,10 +7,9 @@ export const getPortraitFolders = () => {
     setTimeout(() => {
       const { selectedPortraitFolders } = window.data.book;
       const portraitFolders = mockPortraitFolders.map(item => {
-        if (!selectedPortraitFolders.includes(item.id)) return item;
         return {
           ...item,
-          isSelected: true
+          isSelected: selectedPortraitFolders.includes(item.id)
         };
       });
       resolve(portraitFolders);
