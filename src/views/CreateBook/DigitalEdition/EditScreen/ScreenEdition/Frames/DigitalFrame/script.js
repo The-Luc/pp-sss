@@ -39,6 +39,10 @@ export default {
     isEmpty: {
       type: Boolean,
       default: false
+    },
+    isScrollable: {
+      type: Boolean,
+      default: false
     }
   },
   data() {

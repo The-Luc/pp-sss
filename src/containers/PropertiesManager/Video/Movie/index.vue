@@ -7,12 +7,18 @@
       <PosterFrame />
     </div>
     <Playback />
-    <div class="video-animation">
-      <p class="animation-title">Video Animation:</p>
-      <VideoAnimation title="Play In:" />
-      <div class="horizontal-line"></div>
-      <VideoAnimation title="Play Out:" />
-    </div>
+    <animation
+      title="Video animation"
+      :play-in-config="playInConfig"
+      :play-out-config="playOutConfig"
+      :play-in-order="playInOrder"
+      :play-out-order="playOutOrder"
+      :apply-options="applyOptions"
+      :order-options="orderOptions"
+      @apply="onApply"
+      @preview="onClickPreview"
+      @changeOrder="onChangeOrder"
+    ></animation>
   </div>
 </template>
 

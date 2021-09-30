@@ -11,6 +11,7 @@
 
     <div class="row frame-row">
       <draggable
+        ref="frames"
         v-model="frames"
         class="row frame-row actual"
         ghost-class="ghost"
@@ -45,7 +46,8 @@
         id="null"
         :index="-1"
         :is-empty="true"
-        @click="addFrame"
+        :is-scrollable="isScrollable"
+        @click="onAddFrame"
       ></digital-frame>
     </div>
 

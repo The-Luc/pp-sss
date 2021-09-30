@@ -10,7 +10,7 @@ import PortraitFlow from '@/containers/Modals/PortraitFlow/DigitalFlow';
 import ToolBar from './ToolBar';
 import ScreenEdition from './ScreenEdition';
 import SidebarSection from './SidebarSection';
-import ThePreviewModal from './Modals/ThePreviewModal';
+import TheTransitionPreview from './Modals/TheTransitionPreview';
 
 import { mapGetters, mapMutations, mapActions } from 'vuex';
 
@@ -23,7 +23,6 @@ import {
   EDITION,
   MODAL_TYPES,
   TOOL_NAME,
-  ROLE,
   SAVE_STATUS,
   SAVING_DURATION,
   OBJECT_TYPE,
@@ -37,7 +36,6 @@ import {
   usePopoverCreationTool,
   useMutationDigitalSheet,
   useUser,
-  useGetterDigitalSection,
   useFrame,
   useInfoBar,
   useActionsEditionSheet,
@@ -48,16 +46,17 @@ import {
   useBook,
   useAnimation,
   useObjects,
-  useBackgroundProperties
+  useBackgroundProperties,
+  usePortrait
 } from '@/hooks';
 import {
   isEmpty,
-  isPositiveInteger,
   getEditionListPath,
   mergeArrayNonEmpty,
   getPageObjects,
   resetObjects,
-  getUniqueId
+  getUniqueId,
+  isOk
 } from '@/common/utils';
 import { COPY_OBJECT_KEY } from '@/common/constants/config';
 
@@ -84,15 +83,14 @@ export default {
     MediaModal,
     CropControl,
     PortraitFolder,
-    ThePreviewModal,
+    TheTransitionPreview,
     PortraitFlow
   },
   setup() {
     const { pageSelected, updateVisited } = useLayoutPrompt(EDITION.DIGITAL);
     const { setToolNameSelected } = usePopoverCreationTool();
     const { setCurrentSheetId } = useMutationDigitalSheet();
-    const { currentUser } = useUser();
-    const { currentSection } = useGetterDigitalSection();
+    const { currentUser, authenticate } = useUser();
     const {
       currentFrameId,
       updateFrameObjects,
@@ -127,13 +125,15 @@ export default {
 
     const { backgroundsProps } = useBackgroundProperties();
 
+    const { saveSelectedPortraitFolders } = usePortrait();
+
     return {
       pageSelected,
       updateVisited,
       setToolNameSelected,
       setCurrentSheetId,
       currentUser,
-      currentSection,
+      authenticate,
       currentFrameId,
       updateFrameObjects,
       saveEditScreen,
@@ -161,7 +161,8 @@ export default {
       setCurrentFrameId,
       getSheets,
       saveSheetFrames,
-      backgroundsProps
+      backgroundsProps,
+      saveSelectedPortraitFolders
     };
   },
   data() {
@@ -226,36 +227,24 @@ export default {
   },
   async beforeRouteEnter(to, _, next) {
     next(async vm => {
-      const bookId = to.params.bookId;
+      const bookId = to.params?.bookId;
+      const sheetId = to.params?.sheetId;
 
-      vm.setBookId({ bookId });
+      const authenticateResult = await vm.authenticate(bookId, sheetId);
 
       const editionMainUrl = getEditionListPath(bookId, EDITION.DIGITAL);
 
-      if (!isPositiveInteger(to.params?.sheetId)) {
+      if (!isOk(authenticateResult)) {
         vm.$router.replace(editionMainUrl);
 
         return;
       }
+
+      vm.setBookId({ bookId });
 
       await vm.getBookDigitalInfo(bookId);
 
-      vm.setCurrentSheetId({ id: parseInt(to.params.sheetId) });
-
-      if (isEmpty(vm.currentSection)) {
-        vm.$router.replace(editionMainUrl);
-
-        return;
-      }
-
-      const isAdmin = vm.currentUser.role === ROLE.ADMIN;
-      const isAssigned = vm.currentUser.id === vm.currentSection.assigneeId;
-
-      if (!isAdmin && !isAssigned) {
-        vm.$router.replace(editionMainUrl);
-
-        return;
-      }
+      vm.setCurrentSheetId({ id: parseInt(sheetId) });
 
       if (isEmpty(vm.defaultThemeId)) {
         vm.openSelectThemeModal();
@@ -644,6 +633,7 @@ export default {
      * @param {Object} requiredPages pages to apply portraits
      */
     async onApplyPortrait(settings, requiredPages) {
+      const { flowMultiSettings } = settings;
       const sheets = Object.values(this.getSheets).reduce((obj, sheet) => {
         const key = Number(sheet.pageName);
         obj[key] = sheet;
@@ -657,12 +647,14 @@ export default {
         return obj;
       }, {});
 
-      Object.keys(requiredScreens).forEach(screenId => {
+      Object.keys(requiredScreens).forEach((screenId, screenIndex) => {
         const requiredFrames = requiredScreens[screenId];
 
         if (isEmpty(requiredFrames)) return;
-
-        const pages = getPageObjects(settings, requiredFrames, true);
+        const requiredFolders =
+          Object.values(flowMultiSettings.screen)?.[screenIndex]?.length || 1;
+        const folders = settings.folders.splice(0, requiredFolders);
+        const pages = getPageObjects(settings, requiredFrames, true, folders);
 
         const canvas = this.$refs.canvasEditor.digitalCanvas;
 
@@ -716,6 +708,12 @@ export default {
 
       this.onToggleModal({ modal: '' });
       this.setToolNameSelected('');
+
+      const selectedFolderIds = this.modal[
+        MODAL_TYPES.PORTRAIT_FLOW
+      ].data.folders.map(item => item.id);
+
+      this.saveSelectedPortraitFolders(selectedFolderIds);
     },
 
     getRequiredFramesData(currentFrames, requiredFrames) {

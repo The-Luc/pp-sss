@@ -43,7 +43,7 @@ export class SheetBase extends BaseEntity {
   }
 }
 
-export class SheetEditionInfo extends SheetBase {
+export class SheetEditionDetail extends SheetBase {
   themeId = null;
   layoutId = null;
   thumbnailUrl = null;
@@ -52,7 +52,7 @@ export class SheetEditionInfo extends SheetBase {
   media = [];
 
   /**
-   * @param {SheetEditionInfo} props
+   * @param {SheetEditionDetail} props
    */
   constructor(props) {
     super(props);
@@ -60,13 +60,13 @@ export class SheetEditionInfo extends SheetBase {
   }
 }
 
-export class SheetPrintInfo extends SheetEditionInfo {
+export class SheetPrintDetail extends SheetEditionDetail {
   pageLeftName = null;
   pageRightName = null;
   spreadInfo = new SpreadInfo();
 
   /**
-   * @param {SheetPrintInfo} props
+   * @param {SheetPrintDetail} props
    */
   constructor(props) {
     super(props);
@@ -74,12 +74,12 @@ export class SheetPrintInfo extends SheetEditionInfo {
   }
 }
 
-export class SheetDigitalInfo extends SheetEditionInfo {
+export class SheetDigitalDetail extends SheetEditionDetail {
   pageName = null;
   frames = [];
 
   /**
-   * @param {SheetDigitalInfo} props
+   * @param {SheetDigitalDetail} props
    */
   constructor(props) {
     super(props);
@@ -87,12 +87,12 @@ export class SheetDigitalInfo extends SheetEditionInfo {
   }
 }
 
-export class SheetInfo extends SheetBase {
+export class SheetDetail extends SheetBase {
   draggable = true;
   positionFixed = POSITION_FIXED.NONE;
 
   /**
-   * @param {SheetInfo} props
+   * @param {SheetDetail} props
    */
   constructor(props) {
     super(props);

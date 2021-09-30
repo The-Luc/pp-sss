@@ -1,0 +1,26 @@
+@import './_variables';
+
+#transition-preview {
+  ::v-deep {
+    .pp-modal {
+      border-radius: 0;
+    }
+
+    .v-card__text {
+      display: flex;
+      height: 100%;
+      padding: 0;
+      justify-content: space-around;
+      align-items: center;
+
+      .container {
+        position: relative;
+        display: flex;
+        width: $thumb-width;
+        height: $thumb-height;
+        justify-content: center;
+        align-items: center;
+      }
+    }
+  }
+}

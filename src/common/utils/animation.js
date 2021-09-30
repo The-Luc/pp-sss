@@ -402,6 +402,13 @@ const handleEffectOnImage = (element, options, canvas) => {
 
   //hide order boxes
   const { playIn, playOut } = hidePlayOrderBox(element);
+
+  if (element.objectType === OBJECT_TYPE.VIDEO) {
+    element.set({
+      showPlayIcon: false
+    });
+  }
+
   canvas.renderAll();
 
   const img = createImage(element, offset);
@@ -463,6 +470,12 @@ const handleEffectOnImage = (element, options, canvas) => {
         hasBorders: true
       });
 
+      if (element.objectType === OBJECT_TYPE.VIDEO) {
+        element.set({
+          showPlayIcon: true
+        });
+      }
+
       showPlayOrderBox(element, playIn, playOut);
 
       canvas.renderAll();
@@ -503,6 +516,12 @@ const animationHandler = (element, config, canvas) => {
     hasBorders: false
   });
 
+  if (element.objectType === OBJECT_TYPE.VIDEO) {
+    element.set({
+      showPlayIcon: false
+    });
+  }
+
   const { playIn, playOut } = hidePlayOrderBox(element);
 
   canvas.renderAll();
@@ -523,6 +542,11 @@ const animationHandler = (element, config, canvas) => {
             hasBorders: true
           });
 
+          if (element.objectType === OBJECT_TYPE.VIDEO) {
+            element.set({
+              showPlayIcon: true
+            });
+          }
           showPlayOrderBox(element, playIn, playOut);
 
           canvas.renderAll();

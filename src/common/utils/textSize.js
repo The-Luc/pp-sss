@@ -58,8 +58,11 @@ export default (text, options = {}) => {
 export const measureTextWidth = (canvas, text, options) => {
   const ctx = canvas.getContext('2d');
   ctx.save();
-  ctx.font = `${options.fontSize} ${options.fontFamily}`;
-  const { width } = ctx.measureText(text);
+  const textSplit = text.split('\n').map(value => {
+    ctx.font = `${options.fontSize} ${options.fontFamily}`;
+    const { width } = ctx.measureText(value);
+    return width;
+  });
   ctx.restore();
-  return width;
+  return Math.max(...textSplit);
 };

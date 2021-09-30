@@ -21,7 +21,7 @@ import {
   DEFAULT_VIDEO,
   PORTRAIT_IMAGE_MASK
 } from '../constants';
-import { videoInitEvent } from '@/plugins/fabric';
+import { renderImageCropControl, videoInitEvent } from '@/plugins/fabric';
 
 /**
  * Create new fabric image width initial properties
@@ -314,14 +314,22 @@ export const handleMouseMove = event => {
 const handleHoverImage = target => {
   if (!target.hasImage || !target.selectable) return;
 
-  const { width, height, scaleX, scaleY } = target;
+  const { width, height, scaleX, scaleY, canvas } = target;
+
   const { x, y } = target.getLocalPointer();
 
-  const controlStartX = (width * scaleX - CROP_CONTROL.WIDTH) / 2;
-  const controlEndX = controlStartX + CROP_CONTROL.WIDTH / 2;
-  const controlStartY =
-    height * scaleY - CROP_CONTROL.HEIGHT - CROP_CONTROL.OFFSET;
-  const controlEndY = controlStartY + CROP_CONTROL.HEIGHT;
+  const zoom = canvas.getZoom();
+
+  const eleWidth = width * scaleX;
+  const eleHeight = height * scaleY;
+
+  const iconDimension = eleWidth / 6;
+
+  const controlEndX = eleWidth / 2;
+  const controlStartX = controlEndX - iconDimension;
+
+  const controlEndY = eleHeight - 15 / zoom;
+  const controlStartY = controlEndY - iconDimension;
 
   const containPointerX = x >= controlStartX && x <= controlEndX;
   const containPointerY = y >= controlStartY && y <= controlEndY;
@@ -383,19 +391,9 @@ const handleHoverVideo = target => {
  * @param {*} target - fabric object
  */
 export const handleMouseOver = ({ target }) => {
-  if (
-    target?.objectType !== OBJECT_TYPE.IMAGE ||
-    !target.hasImage ||
-    !target.selectable
-  )
-    return;
+  if (target?.objectType !== OBJECT_TYPE.IMAGE) return;
 
-  target.set({
-    showControl: true,
-    dirty: true
-  });
-
-  target.canvas.renderAll();
+  renderImageCropControl(target);
 };
 
 /**

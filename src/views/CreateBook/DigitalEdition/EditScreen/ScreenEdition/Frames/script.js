@@ -13,7 +13,7 @@ import {
 } from '@/hooks';
 
 import { MODAL_TYPES } from '@/common/constants';
-import { getRefElement, isEmpty } from '@/common/utils';
+import { autoScroll, getRefElement, isEmpty } from '@/common/utils';
 
 export default {
   components: {
@@ -60,8 +60,24 @@ export default {
       dragTargetId: null,
       transitionIndex: -1,
       transitionX: 0,
-      transitionY: 0
+      transitionY: 0,
+      isScrollable: false
     };
+  },
+  watch: {
+    activeFrameId(newValue, oldValue) {
+      if (newValue === oldValue) return;
+
+      autoScroll(this.$refs, `frame-${newValue}`);
+
+      setTimeout(() => {
+        const element = getRefElement(this.$refs, 'frames');
+
+        if (isEmpty(element)) return;
+
+        this.isScrollable = element.scrollWidth > element.offsetWidth;
+      }, 20);
+    }
   },
   methods: {
     /**
@@ -86,7 +102,7 @@ export default {
      * @param {Number} id Id of the clicked frame
      */
     onFrameClick({ id }) {
-      if (id === this.currentFrameId) return;
+      if (id === this.activeFrameId) return;
 
       this.setCurrentFrameId({ id });
     },
@@ -94,7 +110,7 @@ export default {
      * Fire when click add frame button
      * @param {Element} target add frame button
      */
-    addFrame({ event: { target } }) {
+    onAddFrame({ event: { target } }) {
       this.setPropertiesType({ type: '' });
 
       const { left, width } = target.getBoundingClientRect();
@@ -259,7 +275,7 @@ export default {
         this.transitionX = x - 160 + iconWidth / 2;
 
         // 116 is height of modal, 3 is space between modal & icon
-        this.transitionY = y - 116 - iconWidth / 2 - 3;
+        this.transitionY = y - 116 - iconWidth / 2 + 3;
 
         this.transitionIndex = index;
       }, 20);

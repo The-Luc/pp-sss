@@ -5,16 +5,19 @@
 
   .frame-row {
     display: flex;
-    height: calc(100% - 6px);
+    height: 100%;
     align-items: center;
+    justify-content: space-between;
     flex-wrap: nowrap;
-    overflow-x: auto;
+    overflow: hidden;
 
     &.actual {
-      height: auto;
+      width: calc(100% - 176px);
+      height: 100%;
       flex-grow: 0;
       flex-shrink: 0;
-      overflow: hidden;
+      justify-content: start;
+      overflow-x: auto;
     }
   }
 }

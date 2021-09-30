@@ -223,9 +223,9 @@ export const deleteSelectedObjects = canvas => {
 
 /**
  * To reset all objects of current sheet, current use for select layout case
- * @param {Ref} targetCanvas - the canvas want to reset
  */
-export const resetObjects = targetCanvas => {
+export const resetObjects = () => {
+  const targetCanvas = getActiveCanvas();
   targetCanvas
     .discardActiveObject()
     .remove(...targetCanvas.getObjects())
@@ -346,4 +346,13 @@ export const handleBodyMouseMove = ({ clientX, clientY }) => {
       width
     };
   }
+};
+
+/**
+ * Check editting active object
+ */
+export const isEditingActiveObject = () => {
+  const activeObj = getActiveCanvas()?.getActiveObject();
+
+  return !!activeObj?.isEditing;
 };

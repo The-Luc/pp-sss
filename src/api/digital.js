@@ -313,6 +313,7 @@ const digitalService = {
       const {
         TextObject,
         ImageObject,
+        VideoObject,
         ShapeObject,
         ClipArtObject,
         BackgroundObject
@@ -324,6 +325,10 @@ const digitalService = {
 
       if (!isEmpty(ImageObject)) {
         promises.push(savePlayInConfig(OBJECT_TYPE.IMAGE, ImageObject));
+      }
+
+      if (!isEmpty(VideoObject)) {
+        promises.push(savePlayInConfig(OBJECT_TYPE.VIDEO, VideoObject));
       }
 
       if (!isEmpty(ShapeObject)) {
@@ -345,6 +350,7 @@ const digitalService = {
       const {
         TextObject,
         ImageObject,
+        VideoObject,
         ShapeObject,
         ClipArtObject,
         BackgroundObject
@@ -356,6 +362,10 @@ const digitalService = {
 
       if (!isEmpty(ImageObject)) {
         promises.push(savePlayOutConfig(OBJECT_TYPE.IMAGE, ImageObject));
+      }
+
+      if (!isEmpty(VideoObject)) {
+        promises.push(savePlayOutConfig(OBJECT_TYPE.VIDEO, VideoObject));
       }
 
       if (!isEmpty(ShapeObject)) {
