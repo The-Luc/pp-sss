@@ -16,8 +16,10 @@ export const loadClipArtCategories = () =>
   });
 
 export const searchClipArt = async input => {
-  const hasNo = input.toLowerCase() === 'no';
-  const clipArt =
-    hasNo || isEmpty(input) ? [] : mockClipArts.sort(() => 0.5 - Math.random());
+  const isNoneClipArt = input.toLowerCase() === 'no' || isEmpty(input);
+  const clipArt = isNoneClipArt
+    ? []
+    : mockClipArts.sort(() => 0.5 - Math.random());
+
   return Promise.resolve(clipArt);
 };
