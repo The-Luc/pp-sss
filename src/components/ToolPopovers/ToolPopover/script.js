@@ -7,6 +7,10 @@ export default {
     actionText: {
       type: String,
       default: 'Select'
+    },
+    disabled: {
+      type: Boolean,
+      default: false
     }
   },
   methods: {

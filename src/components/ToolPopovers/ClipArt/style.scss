@@ -64,15 +64,60 @@
     }
   }
 
-  .clip-art-item-container {
+  .search-clipart {
     display: flex;
-    padding: 20px 0 65px 15px;
-    min-height: 240px;
+    justify-content: space-between;
+    align-items: center;
+    margin: 10px 0 10px 15px;
+    input {
+      padding: 0 10px;
+      font-family: $font-500;
+      font-size: $sm-size;
+      color: $color-stoodio-toolbartext;
+      border-radius: 6px;
+      height: 32px;
+      width: 212px;
+      border: 1px solid $color-gray17;
+      &:focus-visible {
+        outline: none;
+      }
+      &::placeholder {
+        color: $color-gray17;
+      }
+    }
+    .search-result {
+      font-size: $sm-size;
+      width: 177px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+      span {
+        font-family: $font-700;
+      }
+    }
+  }
+
+  .clip-art-item-container {
+    margin-top: 20px;
+    display: flex;
+    padding: 0 0 65px 15px;
     flex-wrap: wrap;
+    overflow: auto;
+    height: 390px;
+    &.search-item {
+      margin-top: 10px;
+      height: 360px;
+    }
+    &.empty {
+      overflow: hidden;
+    }
   }
 
   .tool-popover-content {
     width: 96%;
+    max-height: 410px;
+    height: 410px;
+    overflow: hidden;
   }
 
   .pp-selected-clip-art {
