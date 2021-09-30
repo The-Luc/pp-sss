@@ -219,7 +219,7 @@ export default {
       handler(newVal, oldVal) {
         if (newVal?.id !== oldVal?.id && !isEmpty(this.defaultThemeId)) {
           this.setIsPromptLayout(newVal);
-          this.getBookDigitalInfo(this.$route.params.bookId);
+          //TODO: this.getBookDigitalInfo(this.$route.params.bookId);
         }
       }
     }
