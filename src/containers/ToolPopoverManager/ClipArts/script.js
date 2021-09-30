@@ -21,12 +21,12 @@ export default {
     };
   },
   setup() {
-    const { getSearch, getClipArt } = useClipArt();
+    const { getClipArtSearch, getClipArtList } = useClipArt();
     const { setToolNameSelected } = usePopoverCreationTool();
 
     return {
-      getSearch,
-      getClipArt,
+      getClipArtSearch,
+      getClipArtList,
       setToolNameSelected
     };
   },
@@ -65,7 +65,7 @@ export default {
      * @param {Object} clipArtType - Clip art type and category selected
      */
     async onChangeClipArtType(clipArtType) {
-      this.clipArtList = await this.getClipArt(clipArtType.sub.value);
+      this.clipArtList = await this.getClipArtList(clipArtType.sub.value);
 
       this.chosenClipArtType = {
         value: clipArtType.value,
@@ -101,11 +101,11 @@ export default {
      * @param {String}  input value to search
      */
     async onSearch(input) {
-      this.clipArtList = await this.getSearch(input);
+      this.clipArtList = await this.getClipArtSearch(input);
     }
   },
   async created() {
-    this.clipArtList = await this.getClipArt(this.category);
+    this.clipArtList = await this.getClipArtList(this.category);
     const clipArtTypes = await this.clipArtTypes();
 
     this.displayClipArtTypes = clipArtTypes.filter(

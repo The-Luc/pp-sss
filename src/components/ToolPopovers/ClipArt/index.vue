@@ -22,7 +22,7 @@
       <template #content>
         <div v-if="isShowSearchInput" :key="searchInput" class="search-clipart">
           <input type="text" placeholder="Search" @keyup.enter="onSearch" />
-          <div v-if="!firstTime" class="search-result">
+          <div v-if="searchInput !== null" class="search-result">
             {{ clipArts.length }} matches for: <span>{{ searchInput }}</span>
           </div>
         </div>

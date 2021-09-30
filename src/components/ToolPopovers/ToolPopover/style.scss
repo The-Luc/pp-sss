@@ -68,6 +68,10 @@
         background-color: $color-gray24;
       }
       &.action {
+        background-color: $color-stoodio-blue;
+      }
+
+      &.v-btn--disabled {
         background-color: $color-stoodio-blue !important;
       }
     }

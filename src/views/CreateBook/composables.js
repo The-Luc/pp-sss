@@ -74,18 +74,18 @@ export const usePortraitFlow = () => {
 };
 
 export const useClipArt = () => {
-  const getSearch = async input => {
+  const getClipArtSearch = async input => {
     const listClipArt = await searchClipArt(input);
     return listClipArt;
   };
 
-  const getClipArt = async category => {
+  const getClipArtList = async category => {
     const listClipArt = await loadClipArts();
     return listClipArt.filter(item => item.category === category);
   };
 
   return {
-    getSearch,
-    getClipArt
+    getClipArtSearch,
+    getClipArtList
   };
 };

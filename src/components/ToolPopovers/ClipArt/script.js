@@ -32,8 +32,7 @@ export default {
   },
   data() {
     return {
-      searchInput: '',
-      firstTime: true,
+      searchInput: null,
       clipArtEmptyLength: 6
     };
   },
@@ -67,7 +66,7 @@ export default {
      * @param {Number} clipArtType - the current clip art type to emit via event payload
      */
     onChangeClipArtType(clipArtType) {
-      this.firstTime = true;
+      this.searchInput = null;
       this.$emit('onChangeClipArtType', clipArtType);
     },
     /**
@@ -75,8 +74,6 @@ export default {
      * @param {Object}  event event fire when press enter button
      */
     onSearch(event) {
-      this.firstTime = false;
-
       this.searchInput = event.target.value;
       this.$emit('search', this.searchInput);
 
