@@ -86,3 +86,11 @@ export const useBookDigitalInfo = () => {
     getBookDigitalInfo
   };
 };
+
+export const useVideo = () => {
+  const { totalVideoDuration } = useGetters({
+    totalVideoDuration: GETTERS.GET_TOTAL_VIDEO_DURATION
+  });
+
+  return { totalVideoDuration };
+};

@@ -41,6 +41,9 @@ class GetterClass extends BaseObject {
   GET_FRAME_IDS = 'getFrameIds';
   TOTAL_ANIMATION_PLAY_OUT_ORDER = 'getTotalAnimationPlayOutOrder';
   CURRENT_FRAME_INDEX = 'getCurrentFrameIndex';
+  GET_PLAY_IN_DURATION = 'getPlayInDuration';
+  GET_PLAY_OUT_DURATION = 'getPlayOutDuration';
+  GET_TOTAL_VIDEO_DURATION = 'getTotalVideoDuration';
 
   constructor(props) {
     super(props);
@@ -107,6 +110,7 @@ class MutationClass extends BaseObject {
   REPLACE_SUPPLEMENTAL_FRAME = 'replaceSupplementalFrame';
   MOVE_FRAME = 'moveFrame';
   SET_TITLE_FRAME = 'setTitleFrame';
+  SET_FRAME_DELAY = 'setFrameDealy';
   UPDATE_OBJECTS_TO_FRAME = 'updateObjectsToFrame';
   SET_BACKGROUNDS = 'setBackgrounds';
   SET_BOOK_INFO = 'setBookInfo';

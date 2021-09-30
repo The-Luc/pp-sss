@@ -43,13 +43,23 @@
     }
   }
 
+  // Increase width of combobox
+  .timing-delay ::v-deep .v-input__control {
+    width: 90px;
+    max-width: 90px;
+
+    .v-input__slot {
+      padding: 0;
+    }
+  }
+
   .opt-title {
     display: block;
     padding-bottom: 4px;
     color: $color-gray13;
   }
 }
-.timning-play-in,
-.timning-play-out {
+.timing-play-in,
+.timing-play-out {
   filter: opacity(0.4);
 }

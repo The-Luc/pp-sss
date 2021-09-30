@@ -11,11 +11,20 @@ export const useAnimation = () => {
     triggerChange: GETTERS.TRIGGER_ANIMATION
   });
 
-  const { playInOrder, playOutOrder, playInIds, playOutIds } = useGetters({
+  const {
+    playInOrder,
+    playOutOrder,
+    playInIds,
+    playOutIds,
+    framePlayInDuration,
+    framePlayOutDuration
+  } = useGetters({
     playInOrder: GETTERS.PLAY_IN_ORDER,
     playOutOrder: GETTERS.PLAY_OUT_ORDER,
     playInIds: GETTERS.PLAY_IN_IDS,
-    playOutIds: GETTERS.PLAY_OUT_IDS
+    playOutIds: GETTERS.PLAY_OUT_IDS,
+    framePlayInDuration: GETTERS.GET_PLAY_IN_DURATION,
+    framePlayOutDuration: GETTERS.GET_PLAY_OUT_DURATION
   });
 
   const {
@@ -43,6 +52,8 @@ export const useAnimation = () => {
     setPlayOutOrder,
     updatePlayInIds,
     updatePlayOutIds,
+    framePlayInDuration,
+    framePlayOutDuration,
     triggerChange,
     updateTriggerAnimation
   };

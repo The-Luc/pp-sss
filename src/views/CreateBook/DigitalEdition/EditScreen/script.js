@@ -56,9 +56,11 @@ import {
   getPageObjects,
   resetObjects,
   getUniqueId,
-  isOk
+  isOk,
+  parseToSecond
 } from '@/common/utils';
 import { COPY_OBJECT_KEY } from '@/common/constants/config';
+import { FrameDetail } from '@/common/models';
 
 import { useSaveData } from './composables';
 import { useSavingStatus } from '../../composables';
@@ -453,11 +455,13 @@ export default {
         offsetY,
         mediaUrl,
         thumbUrl,
-        type
+        type,
+        duration
       } = this.dragItem;
 
       const target = event.target;
       const pointer = this.$refs.canvasEditor.digitalCanvas.getPointer(event.e);
+      const durationInSeconds = parseToSecond(duration);
 
       this.dragItem = null;
 
@@ -476,7 +480,8 @@ export default {
           {
             src: mediaUrl || imageUrl,
             type,
-            thumbUrl
+            thumbUrl,
+            duration: durationInSeconds
           }
         );
 
@@ -501,7 +506,12 @@ export default {
         fromPortrait: false
       });
 
-      if (mediaUrl) prop.volume = DEFAULT_VIDEO.VOLUME;
+      if (mediaUrl) {
+        prop.volume = DEFAULT_VIDEO.VOLUME;
+        prop.duration = durationInSeconds;
+        prop.endTime = durationInSeconds;
+        prop.startTime = 0;
+      }
 
       this.setPropertyById({ id: target.id, prop });
 
@@ -724,14 +734,12 @@ export default {
         if (!currentFrames[index]) {
           const blankFrame = {
             id: getUniqueId(),
-            frame: {
-              previewImageUrl: '',
+            frame: new FrameDetail({
               id: 0,
               fromLayout: false,
-              frameTitle: '',
               objects,
               isVisited: true
-            }
+            })
           };
 
           return currentFrames.push(blankFrame);

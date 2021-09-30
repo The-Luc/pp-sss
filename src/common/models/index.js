@@ -10,3 +10,4 @@ export * from './user';
 export * from './portraitFlowData';
 export * from './portraitFolder';
 export * from './transition';
+export * from './frame';

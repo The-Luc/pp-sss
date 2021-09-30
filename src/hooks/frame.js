@@ -189,6 +189,14 @@ export const useFrameTitle = () => {
   return { setFrameTitle };
 };
 
+export const useFrameDelay = () => {
+  const { setFrameDelay } = useMutations({
+    setFrameDelay: DIGITAL_MUTATES.SET_FRAME_DELAY
+  });
+
+  return { setFrameDelay };
+};
+
 export const useFrameAction = () => {
   const {
     frameIds: { value: frameIds },

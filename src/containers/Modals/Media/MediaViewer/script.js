@@ -233,7 +233,7 @@ export default {
     getListKeywords() {
       if (this.isModalMedia || this.isPosterFrame) {
         this.keywords = getUniqueKeywords([
-          this.currentFrame.frameTitle,
+          this.currentFrame.title,
           this.currentSection.name
         ]);
         return;

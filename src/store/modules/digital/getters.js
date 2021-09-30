@@ -2,6 +2,7 @@ import { isEmpty } from '@/common/utils';
 
 import { OBJECT_TYPE } from '@/common/constants';
 import DIGITAL from './const';
+import { calcFrameAnimationDuration } from '@/common/store';
 
 export const getters = {
   [DIGITAL._GETTERS.CURRENT_SHEET]: ({ sheets, currentSheetId }) => {
@@ -156,5 +157,24 @@ export const getters = {
   },
   [DIGITAL._GETTERS.CURRENT_FRAME_INDEX]: ({ frameIds, currentFrameId }) => {
     return frameIds.indexOf(currentFrameId);
+  },
+  [DIGITAL._GETTERS.GET_PLAY_IN_DURATION]: ({
+    playInIds,
+    objects,
+    background
+  }) =>
+    calcFrameAnimationDuration(background, objects, playInIds, 'animationIn'),
+  [DIGITAL._GETTERS.GET_PLAY_OUT_DURATION]: ({
+    playOutIds,
+    objects,
+    background
+  }) =>
+    calcFrameAnimationDuration(background, objects, playOutIds, 'animationOut'),
+  [DIGITAL._GETTERS.GET_TOTAL_VIDEO_DURATION]: ({ objects }) => {
+    return Object.values(objects).reduce(
+      (acc, o) =>
+        o.type === OBJECT_TYPE.VIDEO ? acc + o.endTime - o.startTime : acc,
+      0
+    );
   }
 };

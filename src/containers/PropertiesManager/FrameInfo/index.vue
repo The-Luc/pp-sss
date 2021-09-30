@@ -11,28 +11,36 @@
       <div class="opts-container">
         <div class="frame-headline">Timing:</div>
         <div class="timing-opts">
-          <div class="timning-play-in">
+          <div class="timing-play-in">
             <span class="opt-title">Play In:</span>
             <input
               class="frame-text-input"
               type="text"
-              value="0.8 s"
+              :value="playInValue"
               disabled
             />
           </div>
-
-          <div class="timning-delay">
+          <div class="timing-delay">
             <span class="opt-title">Delay:</span>
-            <PpSelect
+            <pp-combobox
+              :key="componentKey"
               :items="delayOpts"
-              :selected-val="delayOpts[1]"
+              :selected-val="selectedDelay"
+              :margin-menu="0"
+              :nudge-width="90"
+              :appended-icon="appendedIcon"
               @change="onChangeDelay"
             />
           </div>
 
-          <div class="timning-play-out">
+          <div class="timing-play-out">
             <span class="opt-title">Play Out:</span>
-            <input class="frame-text-input" type="text" value="0 s" disabled />
+            <input
+              class="frame-text-input"
+              type="text"
+              :value="playOutValue"
+              disabled
+            />
           </div>
         </div>
       </div>

@@ -1,9 +1,7 @@
 import { DEFAULT_FRAME_DELAY } from '@/common/constants';
-import { BaseEntity } from '..';
+import { BaseObject } from '.';
 
-export class FrameEntity extends BaseEntity {
-  sheetId = '';
-  layoutId = '';
+export class FrameDetail extends BaseObject {
   title = '';
   delay = DEFAULT_FRAME_DELAY;
   objects = [];
@@ -14,7 +12,7 @@ export class FrameEntity extends BaseEntity {
   isVisited = false;
 
   /**
-   * @param {FrameEntity} props
+   * @param {FrameDetail} props
    */
   constructor(props) {
     super(props);
