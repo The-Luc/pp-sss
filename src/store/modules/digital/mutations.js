@@ -277,6 +277,9 @@ export const mutations = {
   [DIGITAL._MUTATES.UPDATE_TRIGGER_TRANSITION](state) {
     state.triggerChange.transition = !state.triggerChange.transition;
   },
+  [DIGITAL._MUTATES.UPDATE_TRIGGER_ANIMATION](state) {
+    state.triggerChange.animation = !state.triggerChange.animation;
+  },
   [DIGITAL._MUTATES.SET_STORE_ANIMATION_PROP](state, { storeAnimationProp }) {
     if (isEmpty(storeAnimationProp)) {
       return (state.storeAnimationProp = {});

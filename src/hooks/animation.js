@@ -6,8 +6,9 @@ export const useAnimation = () => {
     setStoreAnimationProp: MUTATES.SET_STORE_ANIMATION_PROP
   });
 
-  const { storeAnimationProp } = useGetters({
-    storeAnimationProp: GETTERS.STORE_ANIMATION_PROP
+  const { storeAnimationProp, triggerChange } = useGetters({
+    storeAnimationProp: GETTERS.STORE_ANIMATION_PROP,
+    triggerChange: GETTERS.TRIGGER_ANIMATION
   });
 
   const { playInOrder, playOutOrder, playInIds, playOutIds } = useGetters({
@@ -21,12 +22,14 @@ export const useAnimation = () => {
     setPlayInOrder,
     setPlayOutOrder,
     updatePlayInIds,
-    updatePlayOutIds
+    updatePlayOutIds,
+    updateTriggerAnimation
   } = useMutations({
     setPlayInOrder: MUTATES.SET_PLAY_IN_ORDER,
     setPlayOutOrder: MUTATES.SET_PLAY_OUT_ORDER,
     updatePlayInIds: MUTATES.SET_PLAY_IN_IDS,
-    updatePlayOutIds: MUTATES.SET_PLAY_OUT_IDS
+    updatePlayOutIds: MUTATES.SET_PLAY_OUT_IDS,
+    updateTriggerAnimation: MUTATES.UPDATE_TRIGGER_ANIMATION
   });
 
   return {
@@ -39,6 +42,8 @@ export const useAnimation = () => {
     setPlayInOrder,
     setPlayOutOrder,
     updatePlayInIds,
-    updatePlayOutIds
+    updatePlayOutIds,
+    triggerChange,
+    updateTriggerAnimation
   };
 };

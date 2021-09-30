@@ -20,9 +20,9 @@ export default {
     AnimationBox
   },
   setup() {
-    const { playInIds, playOutIds } = useAnimation();
+    const { playInIds, playOutIds, triggerChange } = useAnimation();
     const { listObjects } = useObjectProperties();
-    const { backgroundsProps, triggerChange } = useBackgroundProperties();
+    const { backgroundsProps } = useBackgroundProperties();
 
     return {
       playInIds,
@@ -172,6 +172,11 @@ export default {
     onSelectObject(id) {
       this.selectedItem = id;
       this.$root.$emit(EVENT_TYPE.ANIMATION_SELECT, id);
+    }
+  },
+  watch: {
+    triggerChange() {
+      this.selectedItem = null;
     }
   }
 };

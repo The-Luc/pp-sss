@@ -32,6 +32,7 @@ class GetterClass extends BaseObject {
   GET_FIRST_FRAME_THUMBNAIL = 'getFirstFrameThumbnail';
   GET_SHEET_MEDIA = 'getSheetMedia';
   TRIGGER_TRANSITION = 'getTriggerTransition';
+  TRIGGER_ANIMATION = 'getTriggerAnimation';
   STORE_ANIMATION_PROP = 'storeAnimationProp';
   PLAY_IN_IDS = 'playInIds';
   PLAY_OUT_IDS = 'playOutIds';
@@ -111,6 +112,7 @@ class MutationClass extends BaseObject {
   SET_BOOK_INFO = 'setBookInfo';
   SET_SHEET_MEDIA = 'setSheetMedia';
   UPDATE_TRIGGER_TRANSITION = 'updateTriggerTransition';
+  UPDATE_TRIGGER_ANIMATION = 'updateTriggerAnimation';
   SET_STORE_ANIMATION_PROP = 'setStoreAnimationProp';
   SET_PLAY_IN_ORDER = 'setPlayInOrder';
   SET_PLAY_OUT_ORDER = 'setPlayOutOrder';

@@ -45,6 +45,7 @@ export const CANVAS_EVENT_TYPE = {
   OBJECT_MOVED: 'object:moved',
   TEXT_CHANGED: 'text:changed',
   MOUSE_DOWN: 'mouse:down',
+  MOUSE_UP: 'mouse:up',
   DROP: 'drop'
 };
 
