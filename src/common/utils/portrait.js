@@ -446,7 +446,8 @@ export const createPortraitObjects = (
 
   const imageRatio = isSquareImage ? 1 : 1.25;
 
-  const isFirstLast = nameDisplay.value === PORTRAIT_NAME_DISPLAY.FIRST_LAST;
+  const isFirstLast =
+    nameDisplay.value === PORTRAIT_NAME_DISPLAY.FIRST_LAST.value;
 
   const tmpHeight = totalHeight / rowCount - defaultGap - textHeight;
   const tmpWidth = totalWidth / colCount - defaultGap;

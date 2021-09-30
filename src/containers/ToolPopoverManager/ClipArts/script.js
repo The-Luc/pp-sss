@@ -21,11 +21,11 @@ export default {
     };
   },
   setup() {
-    const { getClipArtSearch, getClipArtList } = useClipArt();
+    const { searchClipArt, getClipArtList } = useClipArt();
     const { setToolNameSelected } = usePopoverCreationTool();
 
     return {
-      getClipArtSearch,
+      searchClipArt,
       getClipArtList,
       setToolNameSelected
     };
@@ -101,7 +101,7 @@ export default {
      * @param {String}  input value to search
      */
     async onSearch(input) {
-      this.clipArtList = await this.getClipArtSearch(input);
+      this.clipArtList = await this.searchClipArt(input);
     }
   },
   async created() {

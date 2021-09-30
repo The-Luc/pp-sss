@@ -15,7 +15,7 @@ export const loadClipArtCategories = () =>
     });
   });
 
-export const searchClipArt = async input => {
+export const searchClipArtApi = async input => {
   const isNoneClipArt = input.toLowerCase() === 'no' || isEmpty(input);
   const clipArt = isNoneClipArt
     ? []
