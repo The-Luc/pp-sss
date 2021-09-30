@@ -73,15 +73,16 @@
       @cancelApplyPortrait="onCancelApplyPortrait"
     ></portrait-flow>
 
-    <the-transition-preview
+    <transition-preview
       v-if="modal[modalType.TRANSITION_PREVIEW].isOpen"
       :transition="modal[modalType.TRANSITION_PREVIEW].data.transition"
       :direction="modal[modalType.TRANSITION_PREVIEW].data.direction"
       :duration="modal[modalType.TRANSITION_PREVIEW].data.duration"
       :first-image-url="modal[modalType.TRANSITION_PREVIEW].data.previewUrl1"
       :second-image-url="modal[modalType.TRANSITION_PREVIEW].data.previewUrl2"
+      :canvas-size="canvasFitSize"
       @close="onToggleModal(modalType.TRANSITION_PREVIEW)"
-    ></the-transition-preview>
+    ></transition-preview>
   </div>
 </template>
 

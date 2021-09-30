@@ -269,7 +269,8 @@ export default {
       undoRedoCanvas: null,
       isFrameLoaded: false,
       isBackgroundPropMenuOpen: false,
-      isScroll: { x: false, y: false }
+      isScroll: { x: false, y: false },
+      canvasFitSize: { w: 0, h: 0 }
     };
   },
   computed: {
@@ -439,23 +440,25 @@ export default {
       setCurrentFrameId: DIGITAL_MUTATES.SET_CURRENT_FRAME_ID
     }),
     updateCanvasSize() {
-      const canvasSize = {
-        width: 0,
-        height: 0
-      };
-
       const canvasMargin = 16;
 
-      if (this.zoom > 0) {
-        canvasSize.height = DIGITAL_CANVAS_SIZE.HEIGHT * this.zoom;
-        canvasSize.width = DIGITAL_CANVAS_SIZE.WIDTH * this.zoom;
-      } else if (this.containerSize.ratio > DIGITAL_CANVAS_SIZE.RATIO) {
-        canvasSize.height = this.containerSize.height - canvasMargin;
-        canvasSize.width = canvasSize.height * DIGITAL_CANVAS_SIZE.RATIO;
+      const isWidthBigger =
+        this.containerSize.ratio > DIGITAL_CANVAS_SIZE.RATIO;
+
+      if (isWidthBigger) {
+        this.canvasFitSize.h = this.containerSize.height - canvasMargin;
+        this.canvasFitSize.w = this.canvasFitSize.h * DIGITAL_CANVAS_SIZE.RATIO;
       } else {
-        canvasSize.width = this.containerSize.width - canvasMargin;
-        canvasSize.height = canvasSize.width / DIGITAL_CANVAS_SIZE.RATIO;
+        this.canvasFitSize.w = this.containerSize.width - canvasMargin;
+        this.canvasFitSize.h = this.canvasFitSize.w / DIGITAL_CANVAS_SIZE.RATIO;
       }
+
+      const { WIDTH: realWidth, HEIGHT: realHeight } = DIGITAL_CANVAS_SIZE;
+
+      const canvasSize = {
+        width: this.zoom > 0 ? realWidth * this.zoom : this.canvasFitSize.w,
+        height: this.zoom > 0 ? realHeight * this.zoom : this.canvasFitSize.h
+      };
 
       this.isScroll = {
         x: canvasSize.width > this.containerSize.width - canvasMargin,

@@ -1,4 +1,4 @@
-import CommonModal from '@/components/Modals/CommonModal';
+import ThePreview from '../ThePreview';
 
 import TheContent from './TheContent';
 
@@ -8,7 +8,7 @@ import { TRANSITION, TRANS_DIRECTION } from '@/common/constants';
 
 export default {
   components: {
-    CommonModal,
+    ThePreview,
     TheContent
   },
   props: {
@@ -30,6 +30,10 @@ export default {
     },
     secondImageUrl: {
       type: String,
+      required: true
+    },
+    canvasSize: {
+      type: Object,
       required: true
     }
   },
