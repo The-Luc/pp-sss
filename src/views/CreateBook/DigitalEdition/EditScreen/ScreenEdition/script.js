@@ -600,6 +600,10 @@ export default {
           handler: this.changeImageProperties
         },
         {
+          name: EVENT_TYPE.CHANGE_PORTRAIT_IMAGE_PROPERTIES,
+          handler: this.changePortraitImageProperties
+        },
+        {
           name: EVENT_TYPE.REMOVE_IMAGE,
           handler: this.handleRemoveImage
         },
@@ -1171,6 +1175,9 @@ export default {
         case OBJECT_TYPE.IMAGE:
           this.changeImageProperties(prop);
           break;
+        case OBJECT_TYPE.PORTRAIT_IMAGE:
+          this.changePortraitImageProperties(prop);
+          break;
         default:
           return;
       }
@@ -1285,6 +1292,12 @@ export default {
           break;
         }
 
+        case OBJECT_TYPE.PORTRAIT_IMAGE: {
+          const prop = { scaleX: target.scaleX, scaleY: target.scaleY };
+          this.changePortraitImageProperties(prop);
+          break;
+        }
+
         case OBJECT_TYPE.VIDEO: {
           const prop = mappingElementProperties(
             currentWidthInch,
@@ -1362,7 +1375,7 @@ export default {
           this.changeVideoProperties(prop);
           break;
         case OBJECT_TYPE.PORTRAIT_IMAGE:
-          this.changeElementProperties(prop, objectType);
+          this.changePortraitImageProperties(prop);
           break;
         default:
           return;
@@ -1680,6 +1693,14 @@ export default {
      */
     changeImageProperties(prop) {
       this.changeElementProperties(prop, OBJECT_TYPE.IMAGE);
+    },
+    /**
+     * Event fire when user change any property of selected portrait image
+     *
+     * @param {Object}  prop  new prop
+     */
+    changePortraitImageProperties(prop) {
+      this.changeElementProperties(prop, OBJECT_TYPE.PORTRAIT_IMAGE);
     },
     /**
      * Event fire when user change any property of selected video
@@ -2143,6 +2164,8 @@ export default {
 
       useDoubleStroke(image);
 
+      useObjectControlsOverride(image);
+
       addEventListeners(image, eventListeners);
 
       applyShadowToObject(image, shadow);
@@ -2264,6 +2287,10 @@ export default {
         return this.updateImageElementProp(element, prop);
       }
 
+      if (objectType === OBJECT_TYPE.PORTRAIT_IMAGE) {
+        return this.updatePortraitImageElementProp(element, prop);
+      }
+
       if (objectType === OBJECT_TYPE.VIDEO) {
         return await this.updateVideoElementProp(element, prop);
       }
@@ -2316,6 +2343,36 @@ export default {
 
       if (!isEmpty(border)) {
         applyBorderToImageObject(element, border);
+      }
+
+      updateElement(element, prop, window.digitalCanvas);
+
+      const newProp = fabricToPpObject(element);
+      merge(prop, newProp);
+
+      return prop;
+    },
+
+    /**
+     * Change fabric properties of current image element
+     *
+     * @param   {Object}  element selected element
+     * @param   {Object}  prop    new prop
+     *
+     * @returns {Object}          property of element after changed
+     */
+    updatePortraitImageElementProp(element, prop) {
+      const { border, size } = prop;
+
+      if (!isEmpty(border)) {
+        applyBorderToImageObject(element, border);
+      }
+
+      if (!isEmpty(size)) {
+        const { width, height } = size;
+        prop.scaleX = inToPx(width) / element.width;
+        prop.scaleY = inToPx(height) / element.height;
+        delete prop.size;
       }
 
       updateElement(element, prop, window.digitalCanvas);

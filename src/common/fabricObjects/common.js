@@ -22,7 +22,7 @@ import {
   ptToPxPreview,
   inToPxPreview
 } from '@/common/utils';
-import { toFabricMediaProp } from './image';
+import { toFabricMediaProp, toFabricPortraitImageProp } from './image';
 import { useObjectControlsOverride } from '@/plugins/fabric';
 
 export const DEFAULT_RULE_DATA = {
@@ -442,6 +442,10 @@ const getFabricPropByType = (elementType, prop, element) => {
 
   if (elementType === OBJECT_TYPE.IMAGE || elementType === OBJECT_TYPE.VIDEO) {
     return toFabricMediaProp(prop, element);
+  }
+
+  if (elementType === OBJECT_TYPE.PORTRAIT_IMAGE) {
+    return toFabricPortraitImageProp(prop);
   }
 
   return {};
