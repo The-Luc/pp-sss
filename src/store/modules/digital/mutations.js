@@ -13,6 +13,7 @@ import {
   setBackgrounds,
   setBookInfo
 } from '@/common/store';
+import { FrameDetail } from '@/common/models';
 
 export const mutations = {
   [DIGITAL._MUTATES.SET_BOOK_ID](state, { bookId }) {
@@ -169,14 +170,11 @@ export const mutations = {
     if (framesList.length === 0) {
       const blankFrame = {
         id: getUniqueId(),
-        frame: {
-          previewImageUrl: '',
+        frame: new FrameDetail({
           id: 0,
           fromLayout: true,
-          frameTitle: '',
-          objects: [],
           isVisited: true
-        }
+        })
       };
       state.frames = { [blankFrame.id]: blankFrame.frame };
       state.frameIds = [blankFrame.id];
@@ -251,7 +249,10 @@ export const mutations = {
     );
   },
   [DIGITAL._MUTATES.SET_TITLE_FRAME]({ frames, currentFrameId }, { value }) {
-    frames[currentFrameId].frameTitle = value;
+    frames[currentFrameId].title = value;
+  },
+  [DIGITAL._MUTATES.SET_FRAME_DELAY]({ frames, currentFrameId }, { value }) {
+    frames[currentFrameId].delay = value;
   },
   [DIGITAL._MUTATES.UPDATE_OBJECTS_TO_FRAME](
     { frames, background, objects, objectIds, playInIds, playOutIds },
@@ -276,6 +277,9 @@ export const mutations = {
   },
   [DIGITAL._MUTATES.UPDATE_TRIGGER_TRANSITION](state) {
     state.triggerChange.transition = !state.triggerChange.transition;
+  },
+  [DIGITAL._MUTATES.UPDATE_TRIGGER_ANIMATION](state) {
+    state.triggerChange.animation = !state.triggerChange.animation;
   },
   [DIGITAL._MUTATES.SET_STORE_ANIMATION_PROP](state, { storeAnimationProp }) {
     if (isEmpty(storeAnimationProp)) {

@@ -11,3 +11,5 @@ export const DELAY_OPTION = [
   { name: '9 s', value: 9 },
   { name: '10 s', value: 10 }
 ];
+
+export const DEFAULT_FRAME_DELAY = 3;

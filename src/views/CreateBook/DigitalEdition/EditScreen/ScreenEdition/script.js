@@ -186,7 +186,7 @@ export default {
     const { updateObjectsToStore } = useObject();
     const { updateSheetThumbnail } = useMutationDigitalSheet();
     const { getProperty } = useElementProperties();
-    const { updateMediaSidebarOpen } = useToolBar();
+    const { updateMediaSidebarOpen, setPropertiesType } = useToolBar();
 
     const { addTransition, removeTransition } = useActionDigitalSheet();
 
@@ -202,7 +202,8 @@ export default {
       setPlayInOrder,
       setPlayOutOrder,
       updatePlayInIds,
-      updatePlayOutIds
+      updatePlayOutIds,
+      updateTriggerAnimation
     } = useAnimation();
     const { book } = useBook();
 
@@ -246,7 +247,9 @@ export default {
       updatePlayInIds,
       updatePlayOutIds,
       setToolNameSelected,
-      propertiesType
+      propertiesType,
+      updateTriggerAnimation,
+      setPropertiesType
     };
   },
   data() {
@@ -723,6 +726,7 @@ export default {
         [CANVAS_EVENT_TYPE.OBJECT_REMOVED]: this.onObjectRemoved,
         [CANVAS_EVENT_TYPE.OBJECT_MOVED]: this.onObjectMoved,
         [CANVAS_EVENT_TYPE.MOUSE_DOWN]: this.onMouseDown,
+        [CANVAS_EVENT_TYPE.MOUSE_UP]: this.onMouseUp,
         [CANVAS_EVENT_TYPE.TEXT_CHANGED]: this.onTextChanged,
         [CANVAS_EVENT_TYPE.DROP]: this.$emit.bind(this, 'drop')
       };
@@ -908,7 +912,11 @@ export default {
      */
     onMouseDown(event) {
       if (this.propertiesType === PROPERTIES_TOOLS.ANIMATION.name) {
-        return this.handleOpenAnimations(event);
+        this.digitalCanvas.getObjects().forEach(obj => {
+          obj.set({
+            selectable: obj.objectType !== OBJECT_TYPE.BACKGROUND
+          });
+        });
       }
 
       if (this.awaitingAdd) {
@@ -933,6 +941,20 @@ export default {
             this.awaitingAdd = '';
           }
         );
+      }
+    },
+    /**
+     * Event fire when click on fabric canvas
+     */
+    onMouseUp(event) {
+      const target = this.digitalCanvas.getActiveObject();
+      if (target?.type === 'activeSelection') {
+        this.setPropertiesType({ type: '' });
+        return this.setToolNameSelected({ name: '' });
+      }
+      if (this.propertiesType === PROPERTIES_TOOLS.ANIMATION.name) {
+        this.updateTriggerAnimation();
+        return this.handleSelectAnimationObject(null, event);
       }
     },
 
@@ -1593,7 +1615,9 @@ export default {
         coord,
         imageUrl: DEFAULT_IMAGE.IMAGE_URL,
         hasImage: !!options?.src,
-        originalUrl: options?.src
+        originalUrl: options?.src,
+        duration: options?.duration,
+        endTime: options?.duration
       };
 
       const newMedia = {
@@ -2672,7 +2696,7 @@ export default {
      * Handle open animation properties
      * @param {Object} event mouse event when click to canvas
      */
-    handleOpenAnimations(event) {
+    handleOpenAnimations(event, selectedId) {
       if (event?.target && event.target.objectType !== OBJECT_TYPE.BACKGROUND) {
         const objects = this.digitalCanvas.getObjects();
 
@@ -2712,15 +2736,15 @@ export default {
         });
       });
 
-      renderOrderBoxes(objects);
+      renderOrderBoxes(objects, selectedId);
     },
 
     /**
      * Handle select animation object
      * @param {String} id parallel object's id
      */
-    handleSelectAnimationObject(id) {
-      this.handleOpenAnimations();
+    handleSelectAnimationObject(id, event) {
+      this.handleOpenAnimations(event, id);
 
       const objects = this.digitalCanvas.getObjects();
       const ctx = this.digitalCanvas.getContext('2d');

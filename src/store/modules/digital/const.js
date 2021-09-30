@@ -32,6 +32,7 @@ class GetterClass extends BaseObject {
   GET_FIRST_FRAME_THUMBNAIL = 'getFirstFrameThumbnail';
   GET_SHEET_MEDIA = 'getSheetMedia';
   TRIGGER_TRANSITION = 'getTriggerTransition';
+  TRIGGER_ANIMATION = 'getTriggerAnimation';
   STORE_ANIMATION_PROP = 'storeAnimationProp';
   PLAY_IN_IDS = 'playInIds';
   PLAY_OUT_IDS = 'playOutIds';
@@ -40,6 +41,9 @@ class GetterClass extends BaseObject {
   GET_FRAME_IDS = 'getFrameIds';
   TOTAL_ANIMATION_PLAY_OUT_ORDER = 'getTotalAnimationPlayOutOrder';
   CURRENT_FRAME_INDEX = 'getCurrentFrameIndex';
+  GET_PLAY_IN_DURATION = 'getPlayInDuration';
+  GET_PLAY_OUT_DURATION = 'getPlayOutDuration';
+  GET_TOTAL_VIDEO_DURATION = 'getTotalVideoDuration';
 
   constructor(props) {
     super(props);
@@ -106,11 +110,13 @@ class MutationClass extends BaseObject {
   REPLACE_SUPPLEMENTAL_FRAME = 'replaceSupplementalFrame';
   MOVE_FRAME = 'moveFrame';
   SET_TITLE_FRAME = 'setTitleFrame';
+  SET_FRAME_DELAY = 'setFrameDealy';
   UPDATE_OBJECTS_TO_FRAME = 'updateObjectsToFrame';
   SET_BACKGROUNDS = 'setBackgrounds';
   SET_BOOK_INFO = 'setBookInfo';
   SET_SHEET_MEDIA = 'setSheetMedia';
   UPDATE_TRIGGER_TRANSITION = 'updateTriggerTransition';
+  UPDATE_TRIGGER_ANIMATION = 'updateTriggerAnimation';
   SET_STORE_ANIMATION_PROP = 'setStoreAnimationProp';
   SET_PLAY_IN_ORDER = 'setPlayInOrder';
   SET_PLAY_OUT_ORDER = 'setPlayOutOrder';

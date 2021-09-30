@@ -1,6 +1,10 @@
 import { BaseObject, BaseEntity } from './base';
 
-import { POSITION_FIXED, SHEET_TYPE } from '@/common/constants';
+import {
+  POSITION_FIXED,
+  SHEET_TYPE,
+  DEFAULT_FRAME_DELAY
+} from '@/common/constants';
 
 export class SpreadInfo extends BaseObject {
   leftTitle = '';
@@ -19,7 +23,7 @@ export class SpreadInfo extends BaseObject {
 
 export class FrameInfo extends BaseObject {
   title = '';
-  delay = 0;
+  delay = DEFAULT_FRAME_DELAY;
 
   /**
    * @param {FrameInfo} props

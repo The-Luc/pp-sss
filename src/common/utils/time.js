@@ -1,6 +1,7 @@
 import moment from 'moment';
 
 import { DATE_FORMAT, MOMENT_TYPE } from '@/common/constants';
+import { isEmpty } from '@/common/utils';
 
 /**
  * Get total different time (base on compare type) between 2 dates (included beginning)
@@ -76,4 +77,15 @@ export const getDiffMonths = (beginDate, endDate) => {
     endTime.format(DATE_FORMAT.BASE),
     MOMENT_TYPE.MONTH
   );
+};
+
+/**
+ * To convert time string to seconds
+ * @param {String} time time in format "hh:mm:ss"
+ * @returns number of seconds
+ */
+export const parseToSecond = time => {
+  if (isEmpty(time)) return;
+
+  return +time.split(':').reduce((acc, time) => 60 * acc + +time);
 };

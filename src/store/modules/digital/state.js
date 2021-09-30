@@ -21,7 +21,8 @@ export const state = {
     shape: true,
     clipArt: true,
     applyLayout: true,
-    transition: true
+    transition: true,
+    animation: true
   },
   storeAnimationProp: {},
   playInIds: [],

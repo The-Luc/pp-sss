@@ -804,6 +804,7 @@ export const useTextOverride = function(text) {
  * @param {Number} zoom canvas zoom value
  * @param {Number} angle object rotation value
  * @param {Number} radius icon distance
+ * @param {Number} opacity icon opacity
  */
 export const rotateIcon = function(
   ctx,
@@ -814,13 +815,15 @@ export const rotateIcon = function(
   height,
   zoom,
   angle,
-  radius
+  radius,
+  opacity
 ) {
   const centerX = (Math.cos(angle) * radius + left) * zoom;
   const centerY = (Math.sin(angle) * radius + top) * zoom;
   ctx.save();
   ctx.translate(centerX, centerY);
   ctx.rotate(angle);
+  ctx.globalAlpha = opacity || 1;
   ctx.drawImage(
     element,
     (-width / 2) * zoom,

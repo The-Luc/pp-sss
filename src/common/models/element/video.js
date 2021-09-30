@@ -14,6 +14,9 @@ export class VideoElementObject extends BaseMoveableElementObject {
   thumbnailUrl = '';
   customThumbnailUrl = '';
   volume = DEFAULT_VIDEO.VOLUME;
+  duration = 0;
+  startTime = 0;
+  endTime = 0;
 
   /**
    * @param {VideoElementObject} props

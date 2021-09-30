@@ -7,6 +7,7 @@ import {
   ClipArtElementEntity as ClipArtElement,
   ShapeElementEntity as ShapeElement
 } from '@/common/models/entities/elements';
+import { FrameEntity } from '@/common/models/entities/frame';
 
 import { DIGITAL_LAYOUT_TYPES as LAYOUT_TYPES } from '@/mock/layoutTypes';
 
@@ -179,83 +180,83 @@ const shape1 = new ShapeElement({
 });
 
 const frames = [
-  {
+  new FrameEntity({
     id: 1,
     fromLayout: true,
     objects: [backgrounds[0], text1, text2],
     previewImageUrl: LAYOUT_THUMB_01,
     isVisited: false,
-    frameTitle: ''
-  },
-  {
+    title: ''
+  }),
+  new FrameEntity({
     id: 2,
     fromLayout: true,
     objects: [backgrounds[1], clipArt1, clipArt2],
     previewImageUrl: LAYOUT_THUMB_02,
     isVisited: false,
-    frameTitle: ''
-  }
+    title: ''
+  })
 ];
 
 const frames2 = [
-  {
+  new FrameEntity({
     id: 1,
     fromLayout: true,
     objects: [backgrounds[3], text1, text2],
     previewImageUrl: LAYOUT_THUMB_04,
     isVisited: false,
-    frameTitle: ''
-  },
-  {
+    title: ''
+  }),
+  new FrameEntity({
     id: 2,
     fromLayout: true,
     objects: [backgrounds[4], text2, shape1],
     previewImageUrl: LAYOUT_THUMB_05,
     isVisited: false,
-    frameTitle: ''
-  },
-  {
+    title: ''
+  }),
+  new FrameEntity({
     id: 3,
     fromLayout: true,
     objects: [backgrounds[5], clipArt1, clipArt2],
     previewImageUrl: LAYOUT_THUMB_06,
     isVisited: false,
-    frameTitle: ''
-  }
+    title: ''
+  })
 ];
 const supplementalFrames = [
-  {
+  new FrameEntity({
     id: 11,
     fromLayout: false,
     objects: [backgrounds[5], text1, text2],
     previewImageUrl: LAYOUT_THUMB_06,
     isVisited: false,
-    frameTitle: ''
-  },
-  {
+    title: ''
+  }),
+  new FrameEntity({
     id: 12,
     fromLayout: false,
     objects: [backgrounds[2], clipArt1],
     previewImageUrl: LAYOUT_THUMB_03,
     isVisited: false,
-    frameTitle: ''
-  },
-  {
+    title: ''
+  }),
+  new FrameEntity({
     id: 13,
     fromLayout: false,
     objects: [backgrounds[4], text1, text2],
     previewImageUrl: LAYOUT_THUMB_05,
     isVisited: false,
-    frameTitle: ''
-  },
-  {
+    title: ''
+  }),
+  new FrameEntity({
     id: 14,
     fromLayout: false,
     objects: [backgrounds[1], clipArt1, clipArt2],
     previewImageUrl: LAYOUT_THUMB_02,
     isVisited: false,
-    frameTitle: ''
-  }
+    title: ''
+  })
 ];
 
 export const packageLayouts = [

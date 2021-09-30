@@ -878,13 +878,26 @@ const toCanvasElement = (element, blurOffset) => {
   return canvasEl;
 };
 
-export const renderOrderBoxes = objects => {
+/**
+ * Render animation order boxes
+ * @param {Array} objects list objects on the current frame
+ * @param {String} selectedId object's id has been selected
+ */
+export const renderOrderBoxes = (objects, selectedId) => {
   const canvas = getActiveCanvas();
   canvas.getObjects().forEach(obj => obj.set({ selectable: false }));
-  return Object.values(objects).map(renderOrderBox);
+  return Object.values(objects).map(obj => {
+    const opacity = !selectedId || obj.id === selectedId ? 1 : 0.5;
+    renderOrderBox(obj, opacity);
+  });
 };
 
-export const renderOrderBox = async data => {
+/**
+ * Render object order box
+ * @param {Object} data object data
+ * @param {Number} opacity object opacity
+ */
+export const renderOrderBox = async (data, opacity) => {
   if (!data.type || data.type === OBJECT_TYPE.BACKGROUND) return;
   const canvas = getActiveCanvas();
   const ctx = canvas.getContext('2d');
@@ -913,7 +926,8 @@ export const renderOrderBox = async data => {
       eleHeight,
       zoom,
       angle,
-      radius
+      radius,
+      opacity
     );
   }
   if (playOut) {
@@ -929,7 +943,8 @@ export const renderOrderBox = async data => {
       eleHeight,
       zoom,
       angle,
-      radius
+      radius,
+      opacity
     );
   }
 };
