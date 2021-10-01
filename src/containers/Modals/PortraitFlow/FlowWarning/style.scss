@@ -39,5 +39,14 @@
         height: 36px;
       }
     }
+    .button-cancel {
+      .pp-btn {
+        margin: 10px auto 0;
+        width: 238px;
+        height: 36px;
+        background-color: $color-gray19;
+        border-color: $color-gray19;
+      }
+    }
   }
 }

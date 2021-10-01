@@ -44,12 +44,6 @@
       />
     </CommonModal>
 
-    <flow-warning
-      :is-open-modal="isWarningDisplayed"
-      :descript-modal="warningText"
-      @close="onFlowWarningClose"
-    ></flow-warning>
-
     <save-settings-modal
       :is-open-modal="isOpenSaveSettingsModal"
       @cancel="onCancelSaveSettings"
