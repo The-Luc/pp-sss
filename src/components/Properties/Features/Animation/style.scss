@@ -9,10 +9,6 @@
     font-size: 11px;
     margin-bottom: 5px;
     text-transform: capitalize;
-
-    &::after {
-      content: '\003A';
-    }
   }
 
   .horizontal-line {
