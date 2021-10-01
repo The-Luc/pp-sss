@@ -8,7 +8,11 @@ import {
 
 import { inToPx, ptToPx, getPagePrintSize } from './canvas';
 
-import { STATUS, DIGITAL_CANVAS_SIZE } from '@/common/constants';
+import {
+  STATUS,
+  DIGITAL_CANVAS_SIZE,
+  DIGITAL_PAGE_SIZE
+} from '@/common/constants';
 
 /**
  * Get theme option from list themes option by id
@@ -502,4 +506,16 @@ export const autoScroll = (
 
     scrollToElement(element, block);
   }, 20);
+};
+
+export const getPageSize = isDigital => {
+  const digitalPageSize = {
+    safeMargin: 0,
+    pageWidth: DIGITAL_PAGE_SIZE.PDF_WIDTH,
+    pageHeight: DIGITAL_PAGE_SIZE.PDF_HEIGHT,
+    bleedLeft: 0,
+    bleedTop: 0
+  };
+
+  return isDigital ? digitalPageSize : getPagePrintSize().inches;
 };

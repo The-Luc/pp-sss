@@ -55,7 +55,7 @@ export default {
     onNumberChange(value) {
       this.valueLength = this.decimal
         ? String(value).length
-        : String(Math.round(value)).length;
+        : String(Math.round(+value)).length;
     },
     /**
      * Check if value within min and max and then emit value to parent else return previous value by force render component

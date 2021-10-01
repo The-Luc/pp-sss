@@ -4,10 +4,6 @@ $height: 26px;
   .properties-title {
     line-height: 1;
     color: $color-gray13;
-
-    &::after {
-      content: "\003A";
-    }
   }
 
   .control-style {
