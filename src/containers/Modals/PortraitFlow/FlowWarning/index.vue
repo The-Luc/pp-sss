@@ -8,7 +8,11 @@
   >
     <div class="header">
       <span>Warning</span>
-      <i class="material-icons-outlined icon icon-close" @click="onClose">
+      <i
+        v-if="!isShowFisrtTime"
+        class="material-icons-outlined icon icon-close"
+        @click="onContinue"
+      >
         close
       </i>
     </div>
@@ -17,9 +21,17 @@
       <div class="descript">
         {{ descriptModal }}
       </div>
-      <PpButton class="button" is-active @click.native="onClose">
-        Continue
-      </PpButton>
+      <pp-button class="button" is-active @click.native="onContinue">
+        {{ isShowFisrtTime ? 'Continue, I’ll Reconfigure' : 'Continue' }}
+      </pp-button>
+      <pp-button
+        v-if="isShowFisrtTime"
+        class="button-cancel"
+        is-active
+        @click.native="onCancel"
+      >
+        Cancel
+      </pp-button>
     </div>
   </v-dialog>
 </template>

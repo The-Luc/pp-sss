@@ -57,6 +57,9 @@ export default {
     },
     defaultDelay() {
       return this.totalVideoDuration || 3;
+    },
+    isVideoExisted() {
+      return this.totalVideoDuration > 0;
     }
   },
   watch: {
@@ -108,15 +111,15 @@ export default {
       if (this.selectedDelay.value >= this.totalVideoDuration) return;
 
       this.setFrameDelay({ value: this.totalVideoDuration });
+    },
+    /**
+     * Trigger render component by changing component key
+     */
+    forceRenderComponent() {
+      this.componentKey = !this.componentKey;
     }
   },
   created() {
     this.updateDelayDuration();
-  },
-  /**
-   * Trigger render component by changing component key
-   */
-  forceRenderComponent() {
-    this.componentKey = !this.componentKey;
   }
 };

@@ -1,5 +1,6 @@
 import CommonFlow from '../CommonFlow';
 import ApplyPortrait from '../ApplyPortrait';
+import FlowWarning from '../FlowWarning';
 
 import {
   PORTRAIT_FLOW_OPTION_MULTI,
@@ -18,13 +19,10 @@ import {
 export default {
   components: {
     CommonFlow,
-    ApplyPortrait
+    ApplyPortrait,
+    FlowWarning
   },
   props: {
-    isOpen: {
-      type: Boolean,
-      default: false
-    },
     selectedFolders: {
       type: Array,
       default: () => []
@@ -47,7 +45,9 @@ export default {
       isWarningDisplayed: false,
       warningText: '',
       startPage: 1,
-      isShowApplyPortrait: false
+      isShowApplyPortrait: false,
+      isPortrailSettingChange: false,
+      isPortraitFlowDisplayed: false
     };
   },
   computed: {
@@ -117,21 +117,32 @@ export default {
       const pages = this.getSingleFolderDefaultPages();
       this.flowSettings.flowSingleSettings.pages = pages;
     },
-    isOpen(val) {
-      if (!val) return;
-      this.startPage = this.getStartOnPageNumber();
+
+    flowSettings: {
+      deep: true,
+      handler(newVal, oldVal) {
+        const isSameLayout =
+          JSON.stringify(newVal.layoutSettings) ===
+          JSON.stringify(oldVal.layoutSettings);
+        const isSameTeacher =
+          JSON.stringify(newVal.teacherSettings) ===
+          JSON.stringify(oldVal.teacherSettings);
+        if (isSameLayout && isSameTeacher) return;
+        this.isPortrailSettingChange = true;
+      }
     },
     requiredPages: {
       deep: true,
       handler(newVal) {
         const overFlow = last(newVal) > this.maxPageOption;
-        if (!overFlow) {
+        if (!overFlow || !this.isPortrailSettingChange) {
+          this.isPortraitFlowDisplayed = true;
           return;
         }
         const folderNo = 1;
         const pageNo = first(newVal);
         const totalPage = newVal.length;
-        if (this.isMultiFolder) {
+        if (this.isMultiFolder && this.isPortraitFlowDisplayed) {
           this.displayMultiFolderWarning(folderNo, pageNo);
           return;
         }
@@ -152,21 +163,19 @@ export default {
      */
     onApply() {
       if (!this.isShowApplyPortrait) {
-        this.onCancelApplyPortrait();
+        this.isPortraitFlowDisplayed = false;
         this.isShowApplyPortrait = true;
         return;
       }
-
       this.$emit('accept', this.flowSettings, this.requiredPages);
-      this.isShowApplyPortrait = false;
-      this.flowSettings = {};
+      this.onCancel();
     },
     /**
-     * Emit cancel event to parent
+     * Cancel apply portrait
      */
     onCancelApplyPortrait() {
-      this.isShowApplyPortrait = !this.isShowApplyPortrait;
-      this.$emit('cancelApplyPortrait', this.isShowApplyPortrait);
+      this.isPortraitFlowDisplayed = true;
+      this.isShowApplyPortrait = false;
     },
     /**
      * Set new start page
@@ -430,6 +439,8 @@ export default {
      * Close modal warning
      */
     onFlowWarningClose() {
+      this.isPortraitFlowDisplayed = true;
+      this.isPortrailSettingChange = false;
       this.isWarningDisplayed = false;
     },
     /**
@@ -441,5 +452,8 @@ export default {
     getBasePages(total, min) {
       return Array.from({ length: total }, (_, index) => index + min);
     }
+  },
+  created() {
+    this.startPage = this.getStartOnPageNumber();
   }
 };

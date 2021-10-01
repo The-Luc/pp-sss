@@ -24,6 +24,7 @@
             <span class="opt-title">Delay:</span>
             <pp-combobox
               :key="componentKey"
+              :class="{ 'hide-pointer': isVideoExisted }"
               :items="delayOpts"
               :selected-val="selectedDelay"
               :margin-menu="0"

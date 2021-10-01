@@ -1,6 +1,5 @@
 import CommonModal from '@/components/Modals/CommonModal';
 
-import FlowWarning from '../FlowWarning';
 import FlowSettings from '../FlowSettings';
 import FlowPreview from '../FlowPreview';
 import SaveSettingsModal from '../SaveSettings/SavedSettingModal';
@@ -29,7 +28,6 @@ export default {
     CommonModal,
     FlowSettings,
     FlowPreview,
-    FlowWarning,
     SavedModal,
     SaveSettingsModal
   },
@@ -56,14 +54,6 @@ export default {
     requiredPages: {
       type: Array,
       default: () => []
-    },
-    isWarningDisplayed: {
-      type: Boolean,
-      default: false
-    },
-    warningText: {
-      type: String,
-      default: ''
     },
     initFlowOption: {
       type: Number,
@@ -242,12 +232,6 @@ export default {
      */
     onSettingChange(val) {
       this.$emit('settingChange', { setting: val });
-    },
-    /**
-     * Close modal warning
-     */
-    onFlowWarningClose() {
-      this.$emit('closeWarning');
     },
     /**
      * Handle page/frame setting change
