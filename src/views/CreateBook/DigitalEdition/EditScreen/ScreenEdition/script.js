@@ -93,7 +93,8 @@ import {
   useProperties,
   useGetterEditionSection,
   useBook,
-  useAnimation
+  useAnimation,
+  useFrameDelay
 } from '@/hooks';
 
 import {
@@ -128,7 +129,7 @@ import {
 } from '@/store/modules/digital/const';
 
 import { cloneDeep, debounce, merge } from 'lodash';
-import { useSaveData, useObject } from '../composables';
+import { useSaveData, useObject, useVideo } from '../composables';
 import { useSavingStatus } from '@/views/CreateBook/composables';
 import UndoRedoCanvas from '@/plugins/undoRedoCanvas';
 import {
@@ -208,6 +209,8 @@ export default {
     const { book } = useBook();
 
     const { setToolNameSelected, propertiesType } = useToolBar();
+    const { setFrameDelay } = useFrameDelay();
+    const { totalVideoDuration } = useVideo();
 
     return {
       currentFrame,
@@ -249,7 +252,9 @@ export default {
       setToolNameSelected,
       propertiesType,
       updateTriggerAnimation,
-      setPropertiesType
+      setPropertiesType,
+      setFrameDelay,
+      totalVideoDuration
     };
   },
   data() {
@@ -397,6 +402,13 @@ export default {
       );
 
       this.digitalCanvas.renderAll();
+    },
+    totalVideoDuration(newVal, oldVal) {
+      if (newVal >= oldVal) return;
+
+      const duration = this.currentFrame.delay - (oldVal - newVal) || 3;
+
+      this.setFrameDelay({ value: duration });
     }
   },
   beforeDestroy() {

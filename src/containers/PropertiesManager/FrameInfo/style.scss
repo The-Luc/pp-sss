@@ -53,6 +53,13 @@
     }
   }
 
+  // Hide select box pointer when videos exist
+  .timing-delay ::v-deep.hide-pointer {
+    .v-input__slot .pointer {
+      display: none;
+    }
+  }
+
   .opt-title {
     display: block;
     padding-bottom: 4px;

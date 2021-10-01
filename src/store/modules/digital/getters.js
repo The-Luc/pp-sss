@@ -158,18 +158,10 @@ export const getters = {
   [DIGITAL._GETTERS.CURRENT_FRAME_INDEX]: ({ frameIds, currentFrameId }) => {
     return frameIds.indexOf(currentFrameId);
   },
-  [DIGITAL._GETTERS.GET_PLAY_IN_DURATION]: ({
-    playInIds,
-    objects,
-    background
-  }) =>
-    calcFrameAnimationDuration(background, objects, playInIds, 'animationIn'),
-  [DIGITAL._GETTERS.GET_PLAY_OUT_DURATION]: ({
-    playOutIds,
-    objects,
-    background
-  }) =>
-    calcFrameAnimationDuration(background, objects, playOutIds, 'animationOut'),
+  [DIGITAL._GETTERS.GET_PLAY_IN_DURATION]: ({ playInIds, objects }) =>
+    calcFrameAnimationDuration(objects, playInIds, 'animationIn'),
+  [DIGITAL._GETTERS.GET_PLAY_OUT_DURATION]: ({ playOutIds, objects }) =>
+    calcFrameAnimationDuration(objects, playOutIds, 'animationOut'),
   [DIGITAL._GETTERS.GET_TOTAL_VIDEO_DURATION]: ({ objects }) => {
     return Object.values(objects).reduce(
       (acc, o) =>
