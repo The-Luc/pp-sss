@@ -90,6 +90,11 @@ export default {
     },
     styleSelected() {
       return this.getProperty('styleId');
+    },
+    eventType() {
+      return this.getProperty('type') === OBJECT_TYPE.IMAGE
+        ? EVENT_TYPE.CHANGE_IMAGE_PROPERTIES
+        : EVENT_TYPE.CHANGE_PORTRAIT_IMAGE_PROPERTIES;
     }
   },
   methods: {
@@ -102,7 +107,7 @@ export default {
         ...this.getProperty('flip')
       };
 
-      this.$root.$emit(EVENT_TYPE.CHANGE_IMAGE_PROPERTIES, {
+      this.$root.$emit(this.eventType, {
         flip: { [actionName]: !currentFlip[actionName] }
       });
     },
@@ -122,14 +127,14 @@ export default {
         );
         object.size = size;
       }
-      this.$root.$emit(EVENT_TYPE.CHANGE_IMAGE_PROPERTIES, object);
+      this.$root.$emit(this.eventType, object);
     },
     /**
      * Handle constrain proportions for Image
      * @param {Boolean} val
      */
     onChangeConstrain(val) {
-      this.$root.$emit(EVENT_TYPE.CHANGE_IMAGE_PROPERTIES, {
+      this.$root.$emit(this.eventType, {
         isConstrain: val
       });
     },
@@ -138,7 +143,7 @@ export default {
      * @param {Object} shadowCfg - the new shadow configs
      */
     onChangeShadow(shadowCfg) {
-      this.$root.$emit(EVENT_TYPE.CHANGE_IMAGE_PROPERTIES, {
+      this.$root.$emit(this.eventType, {
         shadow: {
           ...this.currentShadow,
           ...shadowCfg
@@ -151,7 +156,7 @@ export default {
      * @param {Object} borderCfg Border option selected
      */
     onChangeBorder(borderCfg) {
-      this.$root.$emit(EVENT_TYPE.CHANGE_IMAGE_PROPERTIES, {
+      this.$root.$emit(this.eventType, {
         border: {
           ...this.currentBorder,
           ...borderCfg
@@ -164,7 +169,7 @@ export default {
      * @param {Number} item - selected image style
      */
     onSelectImageStyle(item) {
-      this.$root.$emit(EVENT_TYPE.CHANGE_IMAGE_PROPERTIES, {
+      this.$root.$emit(this.eventType, {
         ...item?.style,
         styleId: item.id
       });

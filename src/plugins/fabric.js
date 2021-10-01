@@ -430,11 +430,12 @@ const rectRender = function(ctx) {
   this.strokeDashArray = [];
 
   if (!this.strokeWidth) {
-    fabric.Rect.prototype._render.call(this, ctx);
-    return;
+    return fabric.Rect.prototype._render.call(this, ctx);
   }
 
   if (this.strokeLineType === BORDER_STYLES.DOUBLE) {
+    if (this.fromPortrait) return fabric.Rect.prototype._render.call(this, ctx);
+
     this.clipPath = getDoubleStrokeClipPath(
       this.width,
       this.height,
@@ -506,6 +507,37 @@ const maskRender = function(ctx) {
   ctx.restore();
 };
 
+const rectRenderStroke = function(ctx) {
+  if (!this.fromPortrait || this.strokeLineType !== BORDER_STYLES.DOUBLE) {
+    return fabric.Rect.prototype._renderStroke.call(this, ctx);
+  }
+
+  ctx.save();
+  ctx.strokeStyle = this.stroke;
+  ctx.lineWidth = this.strokeWidth * 0.33;
+  ctx.stroke();
+  ctx.restore();
+
+  const x = (this.strokeWidth * 0.66 - this.width) / 2;
+  const y = (this.strokeWidth * 0.66 - this.height) / 2;
+  const w = this.width - this.strokeWidth * 0.66;
+  const h = this.height - this.strokeWidth * 0.66;
+  const r = this.mask === PORTRAIT_IMAGE_MASK.ROUNDED ? w / 10 : w / 2;
+
+  ctx.save();
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.arcTo(x + w, y, x + w, y + h, r);
+  ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r);
+  ctx.arcTo(x, y, x + w, y, r);
+  ctx.closePath();
+  ctx.clip();
+  ctx.fillStyle = this.stroke;
+  ctx.fill();
+  ctx.restore();
+};
+
 /**
  * Allow fabric rect object to have double stroke
  * @param {fabric.Rect} rect - the object to enable double stroke
@@ -515,6 +547,7 @@ export const useDoubleStroke = function(rect) {
     rectRender.call(this, ctx);
     maskRender.call(this, ctx);
   };
+  rect._renderStroke = rectRenderStroke;
 };
 
 const getTimeToSet = (checkTime, duration) => {
