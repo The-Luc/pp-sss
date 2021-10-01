@@ -10,14 +10,24 @@ export default {
     descriptModal: {
       type: String,
       required: true
+    },
+    isShowFisrtTime: {
+      type: Boolean,
+      default: true
     }
   },
   methods: {
     /**
+     * Continue setting
+     */
+    onContinue() {
+      this.$emit('continue');
+    },
+    /**
      * Close modal
      */
-    onClose() {
-      this.$emit('close');
+    onCancel() {
+      this.$emit('cancel');
     }
   }
 };

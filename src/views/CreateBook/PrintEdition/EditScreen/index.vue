@@ -57,12 +57,11 @@
     ></crop-control>
 
     <portrait-flow
+      v-if="modalDisplay.portaitFlow"
       container="#editor"
-      :is-open="modalDisplay.portaitFlow"
       :selected-folders="selectedFolders"
       @cancel="onClosePortrait"
       @accept="onApplyPortrait"
-      @cancelApplyPortrait="onCancelApplyPortrait"
     ></portrait-flow>
 
     <portrait-folder
