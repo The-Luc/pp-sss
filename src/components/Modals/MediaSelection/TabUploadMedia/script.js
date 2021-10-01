@@ -33,7 +33,7 @@ export default {
      * @param   {Object}  item  id of current book
      * @returns {Object}  File object
      */
-    getFileSyncFromEntry(item) {
+    async getFileSyncFromEntry(item) {
       return new Promise(resolve => item.file(resolve));
     },
     /**
@@ -41,7 +41,7 @@ export default {
      * @param   {Object}  reader  id of current book
      * @returns {Object}  Directories object
      */
-    getEntriesSyncFromDir(reader) {
+    async getEntriesSyncFromDir(reader) {
       return new Promise(resolve => reader.readEntries(resolve));
     },
     /**
