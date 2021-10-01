@@ -1,0 +1,24 @@
+#the-preview {
+  ::v-deep {
+    .pp-modal {
+      width: auto !important; // override
+      height: auto;
+      border-radius: 0;
+    }
+
+    .v-card__text {
+      display: flex;
+      width: 100%;
+      height: 100%;
+      padding: 0;
+      justify-content: center;
+      align-items: center;
+
+      .content-container {
+        display: flex;
+        position: relative;
+        overflow: hidden;
+      }
+    }
+  }
+}

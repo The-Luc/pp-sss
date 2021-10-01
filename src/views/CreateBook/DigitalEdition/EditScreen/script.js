@@ -10,7 +10,7 @@ import PortraitFlow from '@/containers/Modals/PortraitFlow/DigitalFlow';
 import ToolBar from './ToolBar';
 import ScreenEdition from './ScreenEdition';
 import SidebarSection from './SidebarSection';
-import TheTransitionPreview from './Modals/TheTransitionPreview';
+import TransitionPreview from './Modals/TheTransitionPreview';
 
 import { mapGetters, mapMutations, mapActions } from 'vuex';
 
@@ -85,7 +85,7 @@ export default {
     MediaModal,
     CropControl,
     PortraitFolder,
-    TheTransitionPreview,
+    TransitionPreview,
     PortraitFlow
   },
   setup() {
@@ -214,6 +214,11 @@ export default {
         transition,
         portrait
       ]);
+    },
+    canvasFitSize() {
+      if (isEmpty(this.$refs?.canvasEditor)) return { w: 800, h: 450 };
+
+      return this.$refs.canvasEditor.canvasFitSize;
     }
   },
   watch: {
@@ -222,7 +227,6 @@ export default {
       handler(newVal, oldVal) {
         if (newVal?.id !== oldVal?.id && !isEmpty(this.defaultThemeId)) {
           this.setIsPromptLayout(newVal);
-          //TODO: this.getBookDigitalInfo(this.$route.params.bookId);
         }
       }
     }

@@ -14,7 +14,15 @@ import Animation from '@/containers/PropertiesManager/Animation';
 import { isEmpty } from '@/common/utils';
 import { useToolBar } from '@/hooks';
 
-const { TEXT, IMAGE, CLIP_ART, BACKGROUND, SHAPE, VIDEO } = OBJECT_TYPE;
+const {
+  TEXT,
+  IMAGE,
+  PORTRAIT_IMAGE,
+  CLIP_ART,
+  BACKGROUND,
+  SHAPE,
+  VIDEO
+} = OBJECT_TYPE;
 
 const PAGE_INFO = PROPERTIES_TOOLS.PAGE_INFO.name;
 const FRAME_INFO = PROPERTIES_TOOLS.FRAME_INFO.name;
@@ -24,6 +32,7 @@ const ANIMATION = PROPERTIES_TOOLS.ANIMATION.name;
 const MenuList = {
   [TEXT]: TEXT,
   [IMAGE]: IMAGE,
+  [PORTRAIT_IMAGE]: PORTRAIT_IMAGE,
   [CLIP_ART]: CLIP_ART,
   [BACKGROUND]: BACKGROUND,
   [SHAPE]: SHAPE,
@@ -56,6 +65,7 @@ export default {
   components: {
     [OBJECT_TYPE.TEXT]: TextProperties,
     [OBJECT_TYPE.IMAGE]: ImageProperties,
+    [OBJECT_TYPE.PORTRAIT_IMAGE]: ImageProperties,
     [OBJECT_TYPE.CLIP_ART]: ClipArt,
     [OBJECT_TYPE.BACKGROUND]: Background,
     [OBJECT_TYPE.SHAPE]: Shape,
@@ -98,11 +108,6 @@ export default {
      */
     setObjectComponent(objectType) {
       const ObjectComponent = MenuList[objectType];
-
-      //TODO: Implement ObjectComponent for portrait image
-      if (objectType === OBJECT_TYPE.PORTRAIT_IMAGE) {
-        this.renderObject = '';
-      }
 
       if (ObjectComponent) {
         this.renderObject = ObjectComponent;

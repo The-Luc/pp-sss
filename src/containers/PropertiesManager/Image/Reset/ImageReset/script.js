@@ -1,3 +1,4 @@
+import { OBJECT_TYPE } from '@/common/constants';
 import PpButton from '@/components/Buttons/Button';
 import { useProperties } from '@/hooks';
 export default {
@@ -10,7 +11,10 @@ export default {
   },
   computed: {
     disabled() {
-      return !this.getProperty('hasImage');
+      return (
+        !this.getProperty('hasImage') ||
+        this.getProperty('type') !== OBJECT_TYPE.IMAGE
+      );
     }
   },
   methods: {
