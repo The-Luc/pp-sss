@@ -1,8 +1,8 @@
 <template>
   <div class="animation-container">
-    <span class="properties-title" :class="{ disabled: disabled }">
-      {{ title }}
-    </span>
+    <span class="properties-title" :class="{ disabled: disabled }">{{
+      title
+    }}</span>
 
     <control
       type="playIn"

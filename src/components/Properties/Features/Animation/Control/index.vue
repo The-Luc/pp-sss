@@ -1,8 +1,8 @@
 <template>
   <div class="control-container">
-    <span class="properties-title" :class="{ disabled: disabled }">
-      {{ title }}
-    </span>
+    <span class="properties-title" :class="{ disabled: disabled }">{{
+      title
+    }}</span>
 
     <div class="control-style">
       <div class="col-7">
@@ -56,9 +56,9 @@
       </div>
 
       <div class="control-item">
-        <span class="properties-title" :class="{ disabled: isOrderDisabled }">
-          Order
-        </span>
+        <span class="properties-title" :class="{ disabled: isOrderDisabled }"
+          >Order</span
+        >
         <pp-combobox
           max-height="200"
           :items="orderOptions"
