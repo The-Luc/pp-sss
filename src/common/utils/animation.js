@@ -886,7 +886,7 @@ const toCanvasElement = (element, blurOffset) => {
 export const renderOrderBoxes = (objects, selectedId) => {
   const canvas = getActiveCanvas();
   canvas.getObjects().forEach(obj => obj.set({ selectable: false }));
-  return Object.values(objects).map(obj => {
+  Object.values(objects).forEach(obj => {
     const opacity = !selectedId || obj.id === selectedId ? 1 : 0.5;
     renderOrderBox(obj, opacity);
   });
