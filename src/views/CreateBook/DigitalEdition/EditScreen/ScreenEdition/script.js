@@ -1569,7 +1569,7 @@ export default {
       // console.log(this.playInIds);
 
       playbackCoordinator(
-        this.listObjects,
+        this.currentObjects,
         this.digitalCanvas,
         this.playInIds,
         this.playOutIds
