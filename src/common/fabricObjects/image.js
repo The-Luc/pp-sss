@@ -712,7 +712,7 @@ export const createPortraitImage = async props => {
       imageUrl
     });
 
-    createMediaOverlay(imageUrl, { width, height }).then(img => {
+    createMediaOverlay(imageUrl).then(img => {
       rect.set({ img });
       resolve(rect);
     });

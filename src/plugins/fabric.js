@@ -137,11 +137,7 @@ const renderFillImage = function(ctx) {
   const dY = -h / 2 + (offsetX / 2) * XYRatio;
   const dW = min(w, elWidth / scaleX - cropX) - offsetX;
   const dH = min(h, elHeight / scaleY - cropY) - offsetY;
-
-  if (
-    this.fromPortrait &&
-    this.width * this.scaleX === this.height * this.scaleY
-  ) {
+  if (this.fromPortrait && this.mask === PORTRAIT_IMAGE_MASK.SQUARE) {
     return ctx.drawImage(
       elementToDraw,
       sX,
@@ -503,7 +499,21 @@ const maskRender = function(ctx) {
   ctx.arcTo(x, y, x + w, y, r);
   ctx.closePath();
   ctx.clip();
-  ctx.drawImage(this.img, x, y, w, h);
+  if (this.mask === PORTRAIT_IMAGE_MASK.CIRCLE) {
+    ctx.drawImage(
+      this.img,
+      0,
+      (this.img.height - this.img.width) / 2,
+      this.img.width,
+      this.img.width,
+      x,
+      y,
+      w,
+      h
+    );
+  } else {
+    ctx.drawImage(this.img, x, y, w, h);
+  }
   ctx.restore();
 };
 
