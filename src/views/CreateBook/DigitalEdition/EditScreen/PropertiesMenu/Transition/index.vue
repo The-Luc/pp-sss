@@ -7,6 +7,7 @@
           :key="index"
           :transition-index="index"
           :sheet-id="sheetId"
+          :section-id="sectionId"
           :transition="item.transition"
           :direction="item.direction"
           :duration="item.duration"

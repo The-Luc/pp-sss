@@ -12,6 +12,18 @@ export default {
     height: {
       type: String,
       default: '450px'
+    },
+    canCloseOutside: {
+      type: Boolean,
+      default: false
+    }
+  },
+  methods: {
+    /**
+     * Emit close event to parent
+     */
+    onClose() {
+      this.$emit('close');
     }
   }
 };

@@ -289,7 +289,6 @@ export default {
       object: DIGITAL_GETTERS.OBJECT_BY_ID,
       currentObjects: DIGITAL_GETTERS.GET_OBJECTS,
       totalBackground: DIGITAL_GETTERS.TOTAL_BACKGROUND,
-      listObjects: DIGITAL_GETTERS.GET_OBJECTS,
       triggerApplyLayout: DIGITAL_GETTERS.TRIGGER_APPLY_LAYOUT
     })
   },
@@ -380,8 +379,18 @@ export default {
 
       const changed = newVal - oldVal;
 
-      if (changed > 0) this.addTransition(this.pageSelected.id, changed);
-      else this.removeTransition(this.pageSelected.id, -changed);
+      if (changed > 0)
+        this.addTransition(
+          this.pageSelected.id,
+          this.pageSelected.sectionId,
+          changed
+        );
+      else
+        this.removeTransition(
+          this.pageSelected.id,
+          this.pageSelected.sectionId,
+          -changed
+        );
     },
     propertiesType(val) {
       const isAnimation = val === PROPERTIES_TOOLS.ANIMATION.name;
@@ -464,6 +473,8 @@ export default {
         this.canvasFitSize.w = this.containerSize.width - canvasMargin;
         this.canvasFitSize.h = this.canvasFitSize.w / DIGITAL_CANVAS_SIZE.RATIO;
       }
+
+      this.$emit('canvasSizeChange', { size: this.canvasFitSize });
 
       const { WIDTH: realWidth, HEIGHT: realHeight } = DIGITAL_CANVAS_SIZE;
 
@@ -2787,7 +2798,7 @@ export default {
       this.digitalCanvas?.discardActiveObject();
       this.digitalCanvas?.renderAll();
 
-      const objects = cloneDeep(this.listObjects);
+      const objects = cloneDeep(this.currentObjects);
 
       const playInIds = cloneDeep(this.playInIds);
       const playOutIds = cloneDeep(this.playOutIds);

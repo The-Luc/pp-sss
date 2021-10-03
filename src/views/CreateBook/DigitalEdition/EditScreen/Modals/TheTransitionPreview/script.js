@@ -43,7 +43,7 @@ export default {
       maskUrl: this.firstImageUrl,
       backgroundPosition: this.getPosition(),
       transitionCss: isEmpty(this.duration) ? '' : `all ${this.duration}s`,
-      transitionType: `transition-${this.transition}-${this.direction}`,
+      transitionType: `transition-${this.transition}-${this.getDirection()}`,
       imageKey: false,
       isWipeTransition: this.transition === TRANSITION.WIPE
     };
@@ -53,7 +53,9 @@ export default {
       this.imageUrl = this.secondImageUrl;
       this.imageKey = !this.imageKey;
 
-      setTimeout(this.onClose, (this.duration + 0.5) * 1000);
+      const duration = this.transition === TRANSITION.NONE ? 0 : this.duration;
+
+      setTimeout(this.onClose, (duration + 0.5) * 1000);
     }, 1000);
   },
   methods: {
@@ -79,6 +81,21 @@ export default {
       };
 
       return direction[this.direction];
+    },
+    /**
+     * Get direction
+     *
+     * @returns {String}  direction
+     */
+    getDirection() {
+      if (
+        this.transition === TRANSITION.NONE ||
+        this.transition === TRANSITION.DISSOLVE
+      ) {
+        return '';
+      }
+
+      return this.direction;
     }
   }
 };

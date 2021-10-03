@@ -11,6 +11,7 @@ import ToolBar from './ToolBar';
 import ScreenEdition from './ScreenEdition';
 import SidebarSection from './SidebarSection';
 import TransitionPreview from './Modals/TheTransitionPreview';
+import Playback from './Modals/ThePlayback';
 
 import { mapGetters, mapMutations, mapActions } from 'vuex';
 
@@ -29,7 +30,8 @@ import {
   DEFAULT_VIDEO,
   SHEET_TYPE,
   PROPERTIES_TOOLS,
-  EVENT_TYPE
+  EVENT_TYPE,
+  PLAYBACK
 } from '@/common/constants';
 import {
   useLayoutPrompt,
@@ -47,8 +49,22 @@ import {
   useAnimation,
   useObjects,
   useBackgroundProperties,
-  usePortrait
+  usePortrait,
+  useActionDigitalSheet
 } from '@/hooks';
+
+import { useSavingStatus } from '../../composables';
+import { useSaveData, useBookDigitalInfo } from './composables';
+
+import { cloneDeep } from 'lodash';
+
+import {
+  handleChangeMediaSrc,
+  getAvailableImages,
+  setImageSrc,
+  setVideoSrc
+} from '@/common/fabricObjects';
+
 import {
   isEmpty,
   getEditionListPath,
@@ -59,20 +75,10 @@ import {
   isOk,
   parseToSecond
 } from '@/common/utils';
-import { COPY_OBJECT_KEY } from '@/common/constants/config';
+
 import { FrameDetail } from '@/common/models';
 
-import { useSaveData } from './composables';
-import { useSavingStatus } from '../../composables';
-import { useBookDigitalInfo } from './composables';
-
-import {
-  handleChangeMediaSrc,
-  getAvailableImages,
-  setImageSrc,
-  setVideoSrc
-} from '@/common/fabricObjects';
-import { cloneDeep } from 'lodash';
+import { COPY_OBJECT_KEY } from '@/common/constants/config';
 
 export default {
   components: {
@@ -86,7 +92,8 @@ export default {
     CropControl,
     PortraitFolder,
     TransitionPreview,
-    PortraitFlow
+    PortraitFlow,
+    Playback
   },
   setup() {
     const { pageSelected, updateVisited } = useLayoutPrompt(EDITION.DIGITAL);
@@ -110,6 +117,7 @@ export default {
     const { setInfoBar } = useInfoBar();
     const { updateSheetMedia, deleteSheetMedia } = useActionsEditionSheet();
     const { sheetMedia, currentSheet, getSheets } = useSheet();
+    const { getPlaybackData } = useActionDigitalSheet();
     const { setPropertyById, setPropOfMultipleObjects } = useProperties();
     const { listObjects } = useObjectProperties();
     const {
@@ -164,7 +172,8 @@ export default {
       getSheets,
       saveSheetFrames,
       backgroundsProps,
-      saveSelectedPortraitFolders
+      saveSelectedPortraitFolders,
+      getPlaybackData
     };
   },
   data() {
@@ -175,6 +184,7 @@ export default {
       selectedImage: null,
       toolNames: TOOL_NAME,
       modalType: MODAL_TYPES,
+      canvasSize: { w: 800, h: 450 },
       modal: {
         [MODAL_TYPES.TRANSITION_PREVIEW]: {
           isOpen: false,
@@ -184,6 +194,10 @@ export default {
           isOpen: false
         },
         [MODAL_TYPES.PORTRAIT_FLOW]: {
+          isOpen: false,
+          data: {}
+        },
+        [MODAL_TYPES.PLAYBACK]: {
           isOpen: false,
           data: {}
         }
@@ -214,11 +228,6 @@ export default {
         transition,
         portrait
       ]);
-    },
-    canvasFitSize() {
-      if (isEmpty(this.$refs?.canvasEditor)) return { w: 800, h: 450 };
-
-      return this.$refs.canvasEditor.canvasFitSize;
     }
   },
   watch: {
@@ -587,6 +596,10 @@ export default {
         {
           name: EVENT_TYPE.TRANSITION_PREVIEW,
           handler: this.previewTransition
+        },
+        {
+          name: EVENT_TYPE.PLAYBACK,
+          handler: this.playback
         }
       ];
 
@@ -623,6 +636,38 @@ export default {
       };
 
       this.onToggleModal({ modal: MODAL_TYPES.TRANSITION_PREVIEW });
+    },
+    /**
+     * Get playback data
+     *
+     * @param   {Number}          playType  selected playback type
+     * @param   {Number | String} frameId   id of selected frame
+     * @returns {Array}                     data
+     */
+    async getPlayback(playType, frameId) {
+      if (playType === PLAYBACK.ALL) return await this.getPlaybackData();
+
+      if (playType === PLAYBACK.SCREEN) {
+        return await this.getPlaybackData(
+          this.pageSelected.sectionId,
+          this.pageSelected.id
+        );
+      }
+
+      return await this.getPlaybackData(null, null, frameId);
+    },
+    /**
+     * Open Playback modal with data
+     *
+     * @param {Number}          playType  selected playback type
+     * @param {Number | String} frameId   id of selected frame
+     */
+    async playback({ playType, frameId }) {
+      const data = await this.getPlayback(playType, frameId);
+
+      this.modal[MODAL_TYPES.PLAYBACK].data = { playbackData: data };
+
+      this.onToggleModal({ modal: MODAL_TYPES.PLAYBACK });
     },
     /**
      * Toggle modal
@@ -729,7 +774,13 @@ export default {
 
       this.saveSelectedPortraitFolders(selectedFolderIds);
     },
-
+    /**
+     * Get require frame data
+     *
+     * @param   {Array}   currentFrames   current frames data
+     * @param   {Object}  requiredFrames  require frames
+     * @returns {Array}                   frame data
+     */
     getRequiredFramesData(currentFrames, requiredFrames) {
       Array.from({
         length: Math.max(...Object.keys(requiredFrames))
@@ -768,6 +819,14 @@ export default {
     onCancelApplyPortrait(isShowApplyPortrait) {
       this.onToggleModal({ modal: MODAL_TYPES.PORTRAIT_FLOW });
       this.setToolNameSelected(isShowApplyPortrait ? '' : TOOL_NAME.PORTRAIT);
+    },
+    /**
+     * Canvas size change event
+     *
+     * @param {Object}  size  new size
+     */
+    onCanvasSizeChange({ size }) {
+      if (!isEmpty(size)) this.canvasSize = size;
     }
   }
 };

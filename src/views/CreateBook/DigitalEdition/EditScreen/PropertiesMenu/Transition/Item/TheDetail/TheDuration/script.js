@@ -33,15 +33,6 @@ export default {
       return isEmpty(this.selectedDuration) ? 0 : this.selectedDuration;
     }
   },
-  watch: {
-    disabled(newVal, oldVal) {
-      if (newVal === oldVal) return;
-
-      const duration = newVal ? '' : TRANS_DURATION_DEFAULT;
-
-      this.$emit('durationChange', { duration });
-    }
-  },
   methods: {
     /**
      * Emit change event to parent

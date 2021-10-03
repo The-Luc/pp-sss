@@ -198,15 +198,17 @@ export const useFrameDelay = () => {
 };
 
 export const useFrameAction = () => {
-  const {
-    frameIds: { value: frameIds },
-    frames: { value: frames }
-  } = useDigitalState(['frameIds', 'frames']);
+  const { frameIds: frameIdsObs, frames: framesObs } = useDigitalState([
+    'frameIds',
+    'frames'
+  ]);
 
   const getPreviewUrlByIndex = index => {
+    const frameIds = frameIdsObs.value;
+
     if (index >= frameIds.length) return '';
 
-    return frames[frameIds[index]]?.previewImageUrl;
+    return framesObs.value[frameIds[index]]?.previewImageUrl;
   };
 
   return { getPreviewUrlByIndex };
