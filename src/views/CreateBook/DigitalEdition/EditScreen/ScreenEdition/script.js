@@ -117,7 +117,8 @@ import {
   isContainDebounceProp,
   animateIn,
   animateOut,
-  renderOrderBoxes
+  renderOrderBoxes,
+  playbackCoordinator
 } from '@/common/utils';
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
 
@@ -1481,7 +1482,6 @@ export default {
      */
     previewAnimation({ config, objectType }) {
       const isBackground = objectType === OBJECT_TYPE.BACKGROUND;
-
       const background = getBackgroundObject(this.digitalCanvas);
 
       if (isBackground && isEmpty(background)) return;
@@ -1525,6 +1525,17 @@ export default {
      * @param {string} actionName indicated which 'send' button user clicked
      */
     changeObjectIdsOrder(actionName) {
+      // test
+      // console.log(this.listObjects);
+      // console.log(this.playInIds);
+
+      playbackCoordinator(
+        this.listObjects,
+        this.digitalCanvas,
+        this.playInIds,
+        this.playOutIds
+      );
+
       const selectedObject = this.digitalCanvas.getActiveObject();
       if (!selectedObject) return;
 
