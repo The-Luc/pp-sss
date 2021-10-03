@@ -1,7 +1,7 @@
 <template>
   <div class="animation-container">
     <span class="properties-title" :class="{ disabled: disabled }">
-      {{ title }}
+      {{ title }}:
     </span>
 
     <control

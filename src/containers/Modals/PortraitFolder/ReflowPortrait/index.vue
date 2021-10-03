@@ -6,7 +6,6 @@
       container="#reflow-portrait"
       :is-open-modal="isOpenModal"
       :is-theme-used="true"
-      :can-close-outside="true"
       :is-footer-displayed="false"
       :is-close-icon-displayed="false"
     >

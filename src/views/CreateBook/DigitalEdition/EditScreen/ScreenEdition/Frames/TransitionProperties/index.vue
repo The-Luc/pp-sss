@@ -13,6 +13,7 @@
       <item
         :transition-index="index"
         :sheet-id="sheetId"
+        :section-id="sectionId"
         :is-header-displayed="false"
         :transition="transition.transition"
         :direction="transition.direction"

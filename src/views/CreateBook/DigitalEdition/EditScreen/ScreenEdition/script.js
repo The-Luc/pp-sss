@@ -93,7 +93,8 @@ import {
   useProperties,
   useGetterEditionSection,
   useBook,
-  useAnimation
+  useAnimation,
+  useFrameDelay
 } from '@/hooks';
 
 import {
@@ -129,7 +130,7 @@ import {
 } from '@/store/modules/digital/const';
 
 import { cloneDeep, debounce, merge } from 'lodash';
-import { useSaveData, useObject } from '../composables';
+import { useSaveData, useObject, useVideo } from '../composables';
 import { useSavingStatus } from '@/views/CreateBook/composables';
 import UndoRedoCanvas from '@/plugins/undoRedoCanvas';
 import {
@@ -209,6 +210,8 @@ export default {
     const { book } = useBook();
 
     const { setToolNameSelected, propertiesType } = useToolBar();
+    const { setFrameDelay } = useFrameDelay();
+    const { totalVideoDuration } = useVideo();
 
     return {
       currentFrame,
@@ -250,7 +253,9 @@ export default {
       setToolNameSelected,
       propertiesType,
       updateTriggerAnimation,
-      setPropertiesType
+      setPropertiesType,
+      setFrameDelay,
+      totalVideoDuration
     };
   },
   data() {
@@ -270,7 +275,8 @@ export default {
       undoRedoCanvas: null,
       isFrameLoaded: false,
       isBackgroundPropMenuOpen: false,
-      isScroll: { x: false, y: false }
+      isScroll: { x: false, y: false },
+      canvasFitSize: { w: 0, h: 0 }
     };
   },
   computed: {
@@ -284,7 +290,6 @@ export default {
       object: DIGITAL_GETTERS.OBJECT_BY_ID,
       currentObjects: DIGITAL_GETTERS.GET_OBJECTS,
       totalBackground: DIGITAL_GETTERS.TOTAL_BACKGROUND,
-      listObjects: DIGITAL_GETTERS.GET_OBJECTS,
       triggerApplyLayout: DIGITAL_GETTERS.TRIGGER_APPLY_LAYOUT
     })
   },
@@ -375,8 +380,18 @@ export default {
 
       const changed = newVal - oldVal;
 
-      if (changed > 0) this.addTransition(this.pageSelected.id, changed);
-      else this.removeTransition(this.pageSelected.id, -changed);
+      if (changed > 0)
+        this.addTransition(
+          this.pageSelected.id,
+          this.pageSelected.sectionId,
+          changed
+        );
+      else
+        this.removeTransition(
+          this.pageSelected.id,
+          this.pageSelected.sectionId,
+          -changed
+        );
     },
     propertiesType(val) {
       const isAnimation = val === PROPERTIES_TOOLS.ANIMATION.name;
@@ -397,6 +412,13 @@ export default {
       );
 
       this.digitalCanvas.renderAll();
+    },
+    totalVideoDuration(newVal, oldVal) {
+      if (newVal >= oldVal) return;
+
+      const duration = this.currentFrame.delay - (oldVal - newVal) || 3;
+
+      this.setFrameDelay({ value: duration });
     }
   },
   beforeDestroy() {
@@ -440,23 +462,27 @@ export default {
       setCurrentFrameId: DIGITAL_MUTATES.SET_CURRENT_FRAME_ID
     }),
     updateCanvasSize() {
-      const canvasSize = {
-        width: 0,
-        height: 0
-      };
-
       const canvasMargin = 16;
 
-      if (this.zoom > 0) {
-        canvasSize.height = DIGITAL_CANVAS_SIZE.HEIGHT * this.zoom;
-        canvasSize.width = DIGITAL_CANVAS_SIZE.WIDTH * this.zoom;
-      } else if (this.containerSize.ratio > DIGITAL_CANVAS_SIZE.RATIO) {
-        canvasSize.height = this.containerSize.height - canvasMargin;
-        canvasSize.width = canvasSize.height * DIGITAL_CANVAS_SIZE.RATIO;
+      const isWidthBigger =
+        this.containerSize.ratio > DIGITAL_CANVAS_SIZE.RATIO;
+
+      if (isWidthBigger) {
+        this.canvasFitSize.h = this.containerSize.height - canvasMargin;
+        this.canvasFitSize.w = this.canvasFitSize.h * DIGITAL_CANVAS_SIZE.RATIO;
       } else {
-        canvasSize.width = this.containerSize.width - canvasMargin;
-        canvasSize.height = canvasSize.width / DIGITAL_CANVAS_SIZE.RATIO;
+        this.canvasFitSize.w = this.containerSize.width - canvasMargin;
+        this.canvasFitSize.h = this.canvasFitSize.w / DIGITAL_CANVAS_SIZE.RATIO;
       }
+
+      this.$emit('canvasSizeChange', { size: this.canvasFitSize });
+
+      const { WIDTH: realWidth, HEIGHT: realHeight } = DIGITAL_CANVAS_SIZE;
+
+      const canvasSize = {
+        width: this.zoom > 0 ? realWidth * this.zoom : this.canvasFitSize.w,
+        height: this.zoom > 0 ? realHeight * this.zoom : this.canvasFitSize.h
+      };
 
       this.isScroll = {
         x: canvasSize.width > this.containerSize.width - canvasMargin,
@@ -599,6 +625,10 @@ export default {
         {
           name: EVENT_TYPE.CHANGE_IMAGE_PROPERTIES,
           handler: this.changeImageProperties
+        },
+        {
+          name: EVENT_TYPE.CHANGE_PORTRAIT_IMAGE_PROPERTIES,
+          handler: this.changePortraitImageProperties
         },
         {
           name: EVENT_TYPE.REMOVE_IMAGE,
@@ -1172,6 +1202,9 @@ export default {
         case OBJECT_TYPE.IMAGE:
           this.changeImageProperties(prop);
           break;
+        case OBJECT_TYPE.PORTRAIT_IMAGE:
+          this.changePortraitImageProperties(prop);
+          break;
         default:
           return;
       }
@@ -1286,6 +1319,12 @@ export default {
           break;
         }
 
+        case OBJECT_TYPE.PORTRAIT_IMAGE: {
+          const prop = { scaleX: target.scaleX, scaleY: target.scaleY };
+          this.changePortraitImageProperties(prop);
+          break;
+        }
+
         case OBJECT_TYPE.VIDEO: {
           const prop = mappingElementProperties(
             currentWidthInch,
@@ -1363,7 +1402,7 @@ export default {
           this.changeVideoProperties(prop);
           break;
         case OBJECT_TYPE.PORTRAIT_IMAGE:
-          this.changeElementProperties(prop, objectType);
+          this.changePortraitImageProperties(prop);
           break;
         default:
           return;
@@ -1691,6 +1730,14 @@ export default {
      */
     changeImageProperties(prop) {
       this.changeElementProperties(prop, OBJECT_TYPE.IMAGE);
+    },
+    /**
+     * Event fire when user change any property of selected portrait image
+     *
+     * @param {Object}  prop  new prop
+     */
+    changePortraitImageProperties(prop) {
+      this.changeElementProperties(prop, OBJECT_TYPE.PORTRAIT_IMAGE);
     },
     /**
      * Event fire when user change any property of selected video
@@ -2154,6 +2201,8 @@ export default {
 
       useDoubleStroke(image);
 
+      useObjectControlsOverride(image);
+
       addEventListeners(image, eventListeners);
 
       applyShadowToObject(image, shadow);
@@ -2275,6 +2324,10 @@ export default {
         return this.updateImageElementProp(element, prop);
       }
 
+      if (objectType === OBJECT_TYPE.PORTRAIT_IMAGE) {
+        return this.updatePortraitImageElementProp(element, prop);
+      }
+
       if (objectType === OBJECT_TYPE.VIDEO) {
         return await this.updateVideoElementProp(element, prop);
       }
@@ -2327,6 +2380,36 @@ export default {
 
       if (!isEmpty(border)) {
         applyBorderToImageObject(element, border);
+      }
+
+      updateElement(element, prop, window.digitalCanvas);
+
+      const newProp = fabricToPpObject(element);
+      merge(prop, newProp);
+
+      return prop;
+    },
+
+    /**
+     * Change fabric properties of current image element
+     *
+     * @param   {Object}  element selected element
+     * @param   {Object}  prop    new prop
+     *
+     * @returns {Object}          property of element after changed
+     */
+    updatePortraitImageElementProp(element, prop) {
+      const { border, size } = prop;
+
+      if (!isEmpty(border)) {
+        applyBorderToImageObject(element, border);
+      }
+
+      if (!isEmpty(size)) {
+        const { width, height } = size;
+        prop.scaleX = inToPx(width) / element.width;
+        prop.scaleY = inToPx(height) / element.height;
+        delete prop.size;
       }
 
       updateElement(element, prop, window.digitalCanvas);
@@ -2726,7 +2809,7 @@ export default {
       this.digitalCanvas?.discardActiveObject();
       this.digitalCanvas?.renderAll();
 
-      const objects = cloneDeep(this.listObjects);
+      const objects = cloneDeep(this.currentObjects);
 
       const playInIds = cloneDeep(this.playInIds);
       const playOutIds = cloneDeep(this.playOutIds);

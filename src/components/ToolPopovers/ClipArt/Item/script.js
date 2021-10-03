@@ -2,7 +2,7 @@ export default {
   props: {
     clipArt: {
       type: Object,
-      required: true
+      default: () => ({})
     },
     selectedClipArtId: {
       type: Array,

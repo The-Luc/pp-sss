@@ -7,6 +7,7 @@ export const EVENT_TYPE = {
   ADD_CLIPARTS: 'addClipArts',
   CHANGE_CLIPART_PROPERTIES: 'changeClipArtProperties',
   CHANGE_IMAGE_PROPERTIES: 'changeImageProperties',
+  CHANGE_PORTRAIT_IMAGE_PROPERTIES: 'changePortraitImageProperties',
   CHANGE_VIDEO_PROPERTIES: 'changeVideoProperties',
   CHANGE_OBJECT_IDS_ORDER: 'changeObjectIdsOrder',
   PREVIEW_ANIMATION: 'previewAnimation',
@@ -31,7 +32,8 @@ export const EVENT_TYPE = {
   APPLY_ANIMATION: 'applyAnimation',
   CHANGE_ANIMATION_ORDER: 'changeAnimationOrder',
   BACKGROUND_SELECT: 'backgroundToggleSelection',
-  ANIMATION_SELECT: 'selectAnimationObject'
+  ANIMATION_SELECT: 'selectAnimationObject',
+  PLAYBACK: 'playback'
 };
 
 export const CANVAS_EVENT_TYPE = {

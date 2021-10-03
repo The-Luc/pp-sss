@@ -11,7 +11,7 @@
     </div>
     <div class="tool-popover-footer">
       <v-btn class="footer-btn cancel" @click="onCancel">Cancel</v-btn>
-      <v-btn class="footer-btn action" @click="onAction">{{
+      <v-btn class="footer-btn action" :disabled="disabled" @click="onAction">{{
         actionText
       }}</v-btn>
     </div>

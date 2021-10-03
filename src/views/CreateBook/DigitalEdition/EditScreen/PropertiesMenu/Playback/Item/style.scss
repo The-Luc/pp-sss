@@ -1,0 +1,15 @@
+.playback-item {
+  @extend %selector-display-item;
+
+  min-height: 23px;
+  display: flex;
+  margin: 2px 0;
+  padding: 0 20px;
+  align-items: center;
+
+  &:hover {
+    color: $color-white;
+    background-color: $color-stoodio-blue;
+    cursor: pointer;
+  }
+}

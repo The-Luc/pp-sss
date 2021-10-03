@@ -1,8 +1,7 @@
 <template>
   <div>
     <common-flow
-      v-if="isOpen"
-      :is-open="isOpen"
+      :is-open="isPortraitFlowDisplayed"
       :selected-folders="selectedFolders"
       :flow-settings="flowSettings"
       :init-flow-option="initFlowOption"
@@ -28,6 +27,14 @@
       @apply="onApply"
       @cancel="onCancelApplyPortrait"
     ></apply-portrait>
+
+    <flow-warning
+      :is-show-fisrt-time="!isPortraitFlowDisplayed"
+      :is-open-modal="isWarningDisplayed"
+      :descript-modal="warningText"
+      @continue="onFlowWarningClose"
+      @cancel="onCancel"
+    ></flow-warning>
   </div>
 </template>
 

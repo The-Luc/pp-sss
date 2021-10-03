@@ -12,7 +12,7 @@ export class Transition extends BaseObject {
   duration = TRANS_DURATION_DEFAULT;
 
   /**
-   * @param {User} props
+   * @param {Transition} props
    */
   constructor(props) {
     super(props);

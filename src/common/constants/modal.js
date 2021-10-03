@@ -18,5 +18,6 @@ export const MODAL_TYPES = {
   SAVE_STYLE_SUCCESS: 'SaveStyleSuccess',
   SAVE_LAYOUT_SUCCESS: 'SaveLayoutSuccess',
   TRANSITION_PREVIEW: 'transitionPreview',
-  PORTRAIT_FLOW: 'portraitFlow'
+  PORTRAIT_FLOW: 'portraitFlow',
+  PLAYBACK: 'playback'
 };

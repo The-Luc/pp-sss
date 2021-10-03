@@ -44,7 +44,8 @@ export default {
     return {
       transition: {},
       topValue: this.top,
-      sheetId: this.currentSheet.id
+      sheetId: this.currentSheet.id,
+      sectionId: this.currentSheet.sectionId
     };
   },
   watch: {
@@ -85,7 +86,11 @@ export default {
      * Update transition
      */
     async updateTransition() {
-      this.transition = await this.getTransition(this.sheetId, this.index);
+      this.transition = await this.getTransition(
+        this.sheetId,
+        this.sectionId,
+        this.index
+      );
     }
   }
 };

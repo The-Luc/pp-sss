@@ -118,7 +118,10 @@ export const toFabricPortraitImageProp = prop => {
       x: DEFAULT_RULE_DATA.X,
       y: DEFAULT_RULE_DATA.Y,
       width: DEFAULT_RULE_DATA.WIDTH,
-      height: DEFAULT_RULE_DATA.HEIGHT
+      height: DEFAULT_RULE_DATA.HEIGHT,
+      horizontal: DEFAULT_RULE_DATA.HORIZONTAL,
+      vertical: DEFAULT_RULE_DATA.VERTICAL,
+      rotation: DEFAULT_RULE_DATA.ROTATION
     },
     restrict: ['border', 'shadow', 'cropInfo']
   };
@@ -687,7 +690,8 @@ export const createPortraitImage = async props => {
       mask,
       imageUrl,
       objectType,
-      id
+      id,
+      fromPortrait
     } = toFabricPortraitImageProp(props);
 
     const radiusRatio = mask === PORTRAIT_IMAGE_MASK.ROUNDED ? 10 : 2;
@@ -703,10 +707,12 @@ export const createPortraitImage = async props => {
       mask,
       objectType,
       fill: 'transparent',
-      strokeUniform: true
+      strokeUniform: true,
+      fromPortrait,
+      imageUrl
     });
 
-    createMediaOverlay(imageUrl, { width, height }).then(img => {
+    createMediaOverlay(imageUrl).then(img => {
       rect.set({ img });
       resolve(rect);
     });
