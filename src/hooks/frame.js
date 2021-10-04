@@ -66,14 +66,9 @@ export const useFrame = () => {
  * and handling the opening event of Frame Info tab
  */
 export const useFrameSwitching = () => {
-  const {
-    setPropertiesObjectType,
-    setCurrentFrameVisited,
-    updateAnimationOrder
-  } = useMutations({
+  const { setPropertiesObjectType, setCurrentFrameVisited } = useMutations({
     setPropertiesObjectType: MUTATES.SET_PROPERTIES_OBJECT_TYPE,
-    setCurrentFrameVisited: DIGITAL_MUTATES.SET_FRAME_VISITED,
-    updateAnimationOrder: DIGITAL_MUTATES.UPDATE_ANIMATION_ORDER
+    setCurrentFrameVisited: DIGITAL_MUTATES.SET_FRAME_VISITED
   });
 
   const handleSwitchFrame = frame => {
@@ -82,7 +77,6 @@ export const useFrameSwitching = () => {
       setPropertiesObjectType({ type: PROPERTIES_TOOLS.FRAME_INFO.name });
       setCurrentFrameVisited({ value: true });
     }
-    updateAnimationOrder({ objects: frame.objects });
   };
 
   return { handleSwitchFrame };
