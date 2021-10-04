@@ -1,0 +1,31 @@
+%max-size {
+  width: 100%;
+  height: 100%;
+}
+
+%max-size-important {
+  width: 100% !important; // override
+  height: 100% !important; // override
+}
+
+.virtual {
+  @extend %max-size;
+
+  .canvas-wrapper {
+    @extend %max-size;
+
+    ::v-deep .canvas-container {
+      @extend %max-size-important;
+
+      .playback-canvas {
+        @extend %max-size-important;
+      }
+    }
+
+    &.preparation {
+      visibility: hidden;
+      position: absolute;
+      z-index: -1;
+    }
+  }
+}

@@ -3,15 +3,11 @@ import TabMenu from '@/components/TabMenu';
 import Animation from '@/components/Properties/Features/Animation';
 import PropertiesContent from './PropertiesContent';
 
-import { useBackgroundProperties, useGetterDigitalSheet } from '@/hooks';
+import { useBackgroundProperties } from '@/hooks';
 
 import { isEmpty } from '@/common/utils';
 
-import {
-  BACKGROUND_APPLY_OPTIONS,
-  EVENT_TYPE,
-  OBJECT_TYPE
-} from '@/common/constants';
+import { EVENT_TYPE, OBJECT_TYPE } from '@/common/constants';
 
 export default {
   components: {
@@ -26,22 +22,17 @@ export default {
       default: false
     }
   },
-  setup({ isDigital }) {
+  setup() {
     const { backgroundsProps, triggerChange } = useBackgroundProperties();
-    const { totalPlayOutOrder } = isDigital ? useGetterDigitalSheet() : {};
 
     return {
       backgroundsProps,
-      triggerChange,
-      totalPlayOutOrder
+      triggerChange
     };
   },
   data() {
     return {
-      activeTab: '',
-      applyOptions: BACKGROUND_APPLY_OPTIONS,
-      playInConfig: {},
-      playOutConfig: {}
+      activeTab: ''
     };
   },
   computed: {
@@ -113,18 +104,6 @@ export default {
         left: isEmpty(this.backgroundsProps.left),
         right: isEmpty(this.backgroundsProps.right)
       };
-    },
-    animationConfig() {
-      if (this.triggerChange) {
-        // just for trigger the change
-      }
-
-      if (!this.isDigital || this.backgroundsProps.isEmpty) return {};
-
-      return {
-        in: this.backgroundsProps.background.animationIn,
-        out: this.backgroundsProps.background.animationOut
-      };
     }
   },
   watch: {
@@ -139,31 +118,6 @@ export default {
 
         this.activeTab = name;
       }
-    },
-    animationConfig: {
-      deep: true,
-      immediate: true,
-      handler(newValue, oldValue) {
-        if (isEmpty(newValue)) return;
-
-        if (JSON.stringify(newValue.in) !== JSON.stringify(oldValue?.in)) {
-          this.playInConfig = newValue.in;
-        }
-
-        if (JSON.stringify(newValue.out) !== JSON.stringify(oldValue?.out)) {
-          this.playOutConfig = newValue.out;
-        }
-      }
-    }
-  },
-  mounted() {
-    if (this.isDigital) {
-      this.$root.$emit(EVENT_TYPE.BACKGROUND_SELECT, { isSelected: true });
-    }
-  },
-  beforeDestroy() {
-    if (this.isDigital) {
-      this.$root.$emit(EVENT_TYPE.BACKGROUND_SELECT, { isSelected: false });
     }
   },
   methods: {
@@ -212,16 +166,6 @@ export default {
       this.$root.$emit(EVENT_TYPE.APPLY_ANIMATION, {
         objectType: OBJECT_TYPE.BACKGROUND,
         ...config
-      });
-    },
-    /**
-     * Emit apply option selected
-     * @param {Object} applyOption apply option selected
-     */
-    onPreviewAnimation({ config }) {
-      this.$root.$emit(EVENT_TYPE.PREVIEW_ANIMATION, {
-        config,
-        objectType: OBJECT_TYPE.BACKGROUND
       });
     },
     /**

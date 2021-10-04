@@ -86,24 +86,22 @@ const mediaBase = [photo1, photo2, photo3, video1, video2, video4];
 
 const media = Array.from({ length: 20 }, () => {
   const inProject = Math.random() * 5 < 2;
-  const newMedia = {
+  return {
     ...mediaBase[getRandomInt(6)],
     inProject,
     id: uniqueId()
   };
-  return newMedia;
 });
 
 const photosBase = [photo1, photo2, photo3];
 
 const photos = Array.from({ length: 20 }, () => {
   const inProject = Math.random() * 5 < 2;
-  const photo = {
+  return {
     ...photosBase[getRandomInt(3)],
     inProject,
     id: uniqueId()
   };
-  return photo;
 });
 
 export function getRandomInt(max) {

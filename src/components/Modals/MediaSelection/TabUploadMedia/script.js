@@ -31,23 +31,23 @@ export default {
     /**
      * Get file from directories
      * @param   {Object}  item  id of current book
-     * @returns {Object}  File object
+     * @returns {Promise<Object>}  File object
      */
-    getFileSyncFromEntry(item) {
+    async getFileSyncFromEntry(item) {
       return new Promise(resolve => item.file(resolve));
     },
     /**
      * Get directories from data transfer
      * @param   {Object}  reader  id of current book
-     * @returns {Object}  Directories object
+     * @returns {Promise<Object>}  Directories object
      */
-    getEntriesSyncFromDir(reader) {
+    async getEntriesSyncFromDir(reader) {
       return new Promise(resolve => reader.readEntries(resolve));
     },
     /**
      * Traverse file tree
      * @param   {Object}  item  data transfer item
-     * @returns {Array} list files data transfer
+     * @returns {Promise<Array>} list files data transfer
      */
     async getFilesFromDroppedItem(item) {
       const webkitAsEntry = item.webkitGetAsEntry();

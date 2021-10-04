@@ -72,8 +72,7 @@ import {
   handleObjectSelected,
   handleObjectDeselected,
   calcAnimationOrder,
-  createPortraitImage,
-  getBackgroundObject
+  createPortraitImage
 } from '@/common/fabricObjects';
 import { createImage } from '@/common/fabricObjects';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
@@ -143,8 +142,7 @@ import {
 } from '@/common/models/element';
 import {
   CONTROL_TYPE,
-  PLAY_IN_STYLES,
-  PLAY_OUT_STYLES
+  PLAY_IN_STYLES
 } from '@/common/constants/animationProperty';
 
 const ELEMENTS = {
@@ -273,7 +271,6 @@ export default {
       autoSaveTimer: null,
       undoRedoCanvas: null,
       isFrameLoaded: false,
-      isBackgroundPropMenuOpen: false,
       isScroll: { x: false, y: false },
       canvasFitSize: { w: 0, h: 0 }
     };
@@ -289,7 +286,6 @@ export default {
       object: DIGITAL_GETTERS.OBJECT_BY_ID,
       currentObjects: DIGITAL_GETTERS.GET_OBJECTS,
       totalBackground: DIGITAL_GETTERS.TOTAL_BACKGROUND,
-      listObjects: DIGITAL_GETTERS.GET_OBJECTS,
       triggerApplyLayout: DIGITAL_GETTERS.TRIGGER_APPLY_LAYOUT
     })
   },
@@ -338,8 +334,6 @@ export default {
         this.saveData(this.pageSelected.id, oldVal);
       }
 
-      this.isBackgroundPropMenuOpen = false;
-
       this.setSelectedObjectId({ id: '' });
       this.setPropertiesObjectType({ type: '' });
       this.setCurrentObject(null);
@@ -380,18 +374,21 @@ export default {
 
       const changed = newVal - oldVal;
 
-      if (changed > 0) this.addTransition(this.pageSelected.id, changed);
-      else this.removeTransition(this.pageSelected.id, -changed);
+      if (changed > 0)
+        this.addTransition(
+          this.pageSelected.id,
+          this.pageSelected.sectionId,
+          changed
+        );
+      else
+        this.removeTransition(
+          this.pageSelected.id,
+          this.pageSelected.sectionId,
+          -changed
+        );
     },
     propertiesType(val) {
-      const isAnimation = val === PROPERTIES_TOOLS.ANIMATION.name;
-      const isBackground = val === PROPERTIES_TOOLS.BACKGROUND.name;
-
-      this.backgroundToggleSelection({
-        isSelected: isAnimation || isBackground
-      });
-
-      if (isAnimation) {
+      if (val === PROPERTIES_TOOLS.ANIMATION.name) {
         return this.handleOpenAnimations();
       }
 
@@ -464,6 +461,8 @@ export default {
         this.canvasFitSize.w = this.containerSize.width - canvasMargin;
         this.canvasFitSize.h = this.canvasFitSize.w / DIGITAL_CANVAS_SIZE.RATIO;
       }
+
+      this.$emit('canvasSizeChange', { size: this.canvasFitSize });
 
       const { WIDTH: realWidth, HEIGHT: realHeight } = DIGITAL_CANVAS_SIZE;
 
@@ -580,10 +579,6 @@ export default {
         {
           name: EVENT_TYPE.DIGITAL_BACKGROUND_REMOVE,
           handler: this.removeBackground
-        },
-        {
-          name: EVENT_TYPE.BACKGROUND_SELECT,
-          handler: this.backgroundToggleSelection
         }
       ];
 
@@ -1507,44 +1502,23 @@ export default {
      * Handle aniamtion of selected objects
      * @param {Object} config config for animation
      */
-    previewAnimation({ config, objectType }) {
-      const isBackground = objectType === OBJECT_TYPE.BACKGROUND;
+    previewAnimation({ config }) {
+      const object = this.digitalCanvas.getActiveObject();
 
-      const background = getBackgroundObject(this.digitalCanvas);
-
-      if (isBackground && isEmpty(background)) return;
-
-      const object = isBackground
-        ? background
-        : this.digitalCanvas.getActiveObject();
-
-      const style = config.style;
       const args = [object, config, this.digitalCanvas];
 
-      if (config.controlType === CONTROL_TYPE.PLAY_IN) {
-        style === PLAY_IN_STYLES.BLUR && animateIn.blur(...args);
+      const animation =
+        config.controlType === CONTROL_TYPE.PLAY_IN ? animateIn : animateOut;
 
-        style === PLAY_IN_STYLES.FADE_IN && animateIn.fade(...args);
+      const animatedMethods = {
+        [PLAY_IN_STYLES.BLUR]: animation.blur,
+        [PLAY_IN_STYLES.FADE_IN]: animation.fade,
+        [PLAY_IN_STYLES.FADE_SCALE]: animation.fadeScale,
+        [PLAY_IN_STYLES.FADE_SLIDE_IN]: animation.fadeSlide,
+        [PLAY_IN_STYLES.SLIDE_IN]: animation.slide
+      };
 
-        style === PLAY_IN_STYLES.FADE_SCALE && animateIn.fadeScale(...args);
-
-        style === PLAY_IN_STYLES.FADE_SLIDE_IN && animateIn.fadeSlide(...args);
-
-        style === PLAY_IN_STYLES.SLIDE_IN && animateIn.slide(...args);
-      }
-
-      if (config.controlType === CONTROL_TYPE.PLAY_OUT) {
-        style === PLAY_OUT_STYLES.BLUR && animateOut.blur(...args);
-
-        style === PLAY_OUT_STYLES.FADE_OUT && animateOut.fade(...args);
-
-        style === PLAY_OUT_STYLES.FADE_SCALE && animateOut.fadeScale(...args);
-
-        style === PLAY_OUT_STYLES.FADE_SLIDE_OUT &&
-          animateOut.fadeSlide(...args);
-
-        style === PLAY_OUT_STYLES.SLIDE_OUT && animateOut.slide(...args);
-      }
+      animatedMethods[config.style](...args);
     },
 
     /**
@@ -1615,7 +1589,6 @@ export default {
         return;
       if (actionName === ARRANGE_SEND.FORWARD) {
         updateZIndex(currentObjectIndex, currentObjectIndex + 1);
-        return;
       }
     },
 
@@ -1851,18 +1824,6 @@ export default {
       this.setPropertiesObjectType({ type: '' });
     },
     /**
-     * Event fire when user open / close background properties menu
-     *
-     * @param {Booean} isSelected  is background prop menu opened
-     */
-    backgroundToggleSelection({ isSelected }) {
-      const background = getBackgroundObject(this.digitalCanvas);
-
-      if (isEmpty(background)) return;
-
-      this.isBackgroundPropMenuOpen = isSelected;
-    },
-    /**
      * Reset configs properties when close object
      */
     resetConfigTextProperties() {
@@ -2055,27 +2016,7 @@ export default {
         });
       }
 
-      if (
-        newData.type === OBJECT_TYPE.IMAGE ||
-        newData.type === OBJECT_TYPE.VIDEO
-      ) {
-        return this.createMediaFromPpData(newData);
-      }
-
-      if (newData.type === OBJECT_TYPE.PORTRAIT_IMAGE) {
-        return this.createPortraitImageFromPpData(newData);
-      }
-
-      if (
-        newData.type === OBJECT_TYPE.CLIP_ART ||
-        newData.type === OBJECT_TYPE.SHAPE
-      ) {
-        return this.createSvgFromPpData(newData);
-      }
-
-      if (newData.type === OBJECT_TYPE.TEXT) {
-        return this.createTextFromPpData(newData);
-      }
+      return this.drawObject(newData);
     },
     /**
      * Handle create video/image object from pp data;
@@ -2211,31 +2152,7 @@ export default {
       if (isEmpty(objects)) return;
 
       const allObjectPromises = objects.map(objectData => {
-        if (
-          objectData.type === OBJECT_TYPE.SHAPE ||
-          objectData.type === OBJECT_TYPE.CLIP_ART
-        ) {
-          return this.createSvgFromPpData(objectData);
-        }
-
-        if (objectData.type === OBJECT_TYPE.TEXT) {
-          return this.createTextFromPpData(objectData);
-        }
-
-        if (
-          objectData.type === OBJECT_TYPE.IMAGE ||
-          objectData.type === OBJECT_TYPE.VIDEO
-        ) {
-          return this.createMediaFromPpData(objectData);
-        }
-
-        if (objectData.type === OBJECT_TYPE.PORTRAIT_IMAGE) {
-          return this.createPortraitImageFromPpData(objectData);
-        }
-
-        if (objectData.type === OBJECT_TYPE.BACKGROUND) {
-          return this.createBackgroundFromPpData(objectData);
-        }
+        return this.drawObject(objectData);
       });
 
       const listFabricObjects = await Promise.all(allObjectPromises);
@@ -2291,7 +2208,7 @@ export default {
      * @param   {Object}  prop        new prop
      * @param   {String}  objectType  object type of selected element
      *
-     * @returns {Object}              property of element after changed
+     * @returns {Promise<Object>}              property of element after changed
      */
     async updateElementProp(element, prop, objectType) {
       if (objectType === OBJECT_TYPE.TEXT) {
@@ -2404,7 +2321,7 @@ export default {
      * @param   {Object}  element selected element
      * @param   {Object}  prop    new prop
      *
-     * @returns {Object}          property of element after changed
+     * @returns {Promise<Object>}          property of element after changed
      */
     async updateVideoElementProp(element, prop) {
       const { border, customThumbnailUrl, thumbnailUrl } = prop;
@@ -2787,7 +2704,7 @@ export default {
       this.digitalCanvas?.discardActiveObject();
       this.digitalCanvas?.renderAll();
 
-      const objects = cloneDeep(this.listObjects);
+      const objects = cloneDeep(this.currentObjects);
 
       const playInIds = cloneDeep(this.playInIds);
       const playOutIds = cloneDeep(this.playOutIds);
@@ -2834,6 +2751,25 @@ export default {
           hasControls: true
         });
       });
+    },
+    /**
+     * Draw object into canvas
+     *
+     * @param   {Object}  objectData  object to be draw
+     * @returns {Promise}
+     */
+    drawObject(objectData) {
+      const drawObjectMethods = {
+        [OBJECT_TYPE.BACKGROUND]: this.createBackgroundFromPpData,
+        [OBJECT_TYPE.TEXT]: this.createTextFromPpData,
+        [OBJECT_TYPE.SHAPE]: this.createSvgFromPpData,
+        [OBJECT_TYPE.CLIP_ART]: this.createSvgFromPpData,
+        [OBJECT_TYPE.IMAGE]: this.createMediaFromPpData,
+        [OBJECT_TYPE.VIDEO]: this.createMediaFromPpData,
+        [OBJECT_TYPE.PORTRAIT_IMAGE]: this.createPortraitImageFromPpData
+      };
+
+      return drawObjectMethods[objectData.type](objectData);
     }
   }
 };

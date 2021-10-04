@@ -20,6 +20,10 @@
   visibility: hidden !important;
 }
 
+.virtual {
+  display: contents;
+}
+
 [class*='disabled'] {
   opacity: 0.4 !important; // override
   pointer-events: none;

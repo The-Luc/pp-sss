@@ -41,6 +41,7 @@
       :frames="frames"
       @drop="onDrop"
       @openCropControl="openCropControl"
+      @canvasSizeChange="onCanvasSizeChange"
     ></screen-edition>
 
     <media-modal
@@ -80,9 +81,16 @@
       :duration="modal[modalType.TRANSITION_PREVIEW].data.duration"
       :first-image-url="modal[modalType.TRANSITION_PREVIEW].data.previewUrl1"
       :second-image-url="modal[modalType.TRANSITION_PREVIEW].data.previewUrl2"
-      :canvas-size="canvasFitSize"
+      :canvas-size="canvasSize"
       @close="onToggleModal(modalType.TRANSITION_PREVIEW)"
     ></transition-preview>
+
+    <playback
+      v-if="modal[modalType.PLAYBACK].isOpen"
+      :canvas-size="canvasSize"
+      :playback-data="modal[modalType.PLAYBACK].data.playbackData"
+      @close="onToggleModal(modalType.PLAYBACK)"
+    ></playback>
   </div>
 </template>
 

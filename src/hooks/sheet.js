@@ -1,16 +1,21 @@
 import { useGetters, useMutations, useActions } from 'vuex-composition-helpers';
 import { useAppCommon } from './common';
+import { useAnimation } from './animation';
+import { useFrame } from './frame';
 
 import {
   getTransitionApi,
   getTransitionsApi,
   addTransitionApi,
   removeTransitionApi,
-  applyTransitionApi
+  applyTransitionApi,
+  getPlaybackDataApi
 } from '@/api/sheet';
 
 import digitalService from '@/api/digital';
 import printService from '@/api/print';
+
+import { isEmpty, isOk } from '@/common/utils';
 
 import {
   GETTERS as PRINT_GETTERS,
@@ -122,24 +127,145 @@ export const useGetterDigitalSheet = () => {
 };
 
 export const useActionDigitalSheet = () => {
+  const { generalInfo: generalInfoObs } = useAppCommon();
+
+  const { sheetLayout: sheetLayoutObs } = useSheet();
+
+  const { currentFrameId: currentFrameIdObs, frames: framesObs } = useFrame();
+
+  const { playInIds: playInIdsObs, playOutIds: playOutIdsObs } = useAnimation();
+
   const { updateTriggerTransition } = useMutationDigitalSheet();
+
+  const getBookId = () => {
+    return generalInfoObs.value.bookId;
+  };
+
+  const getTransition = async (sheetId, sectionId, transitionIndex) => {
+    return await getTransitionApi(
+      getBookId(),
+      sheetId,
+      sectionId,
+      transitionIndex
+    );
+  };
+
+  const getTransitions = async (sheetId, sectionId) => {
+    return await getTransitionsApi(getBookId(), sheetId, sectionId);
+  };
+
+  const addTransition = async (sheetId, sectionId, totalTransition = 1) => {
+    return await addTransitionApi(
+      getBookId(),
+      sheetId,
+      sectionId,
+      totalTransition
+    );
+  };
+
+  const removeTransition = async (sheetId, sectionId, totalTransition = 1) => {
+    return await removeTransitionApi(
+      getBookId(),
+      sheetId,
+      sectionId,
+      totalTransition
+    );
+  };
 
   const applyTransition = async (
     transition,
     targetType,
     sheetId,
+    sectionId,
     transitionIndex
   ) => {
-    await applyTransitionApi(transition, targetType, sheetId, transitionIndex);
+    await applyTransitionApi(
+      getBookId(),
+      transition,
+      targetType,
+      sheetId,
+      sectionId,
+      transitionIndex
+    );
 
     updateTriggerTransition();
   };
 
+  const getPlaybackData = async (
+    sectionId = null,
+    screenId = null,
+    frameId = null
+  ) => {
+    const currentFrameId = `${currentFrameIdObs.value}`;
+
+    const currentFrame = {
+      id: currentFrameId,
+      objects: sheetLayoutObs.value,
+      playInIds: playInIdsObs.value,
+      playOutIds: playOutIdsObs.value,
+      transition: {}
+    };
+
+    if ((isEmpty(sectionId) || isEmpty(screenId)) && isEmpty(frameId)) {
+      const bookPlaybackData = await getPlaybackDataApi(getBookId());
+
+      if (!isOk(bookPlaybackData)) return [];
+
+      return bookPlaybackData.data.map(d => {
+        if (`${d.id}` === currentFrameId) {
+          return { ...currentFrame, transition: d.transition };
+        }
+
+        return d;
+      });
+    }
+
+    if (isEmpty(frameId)) {
+      const transitions = await getTransitions(screenId, sectionId);
+
+      return framesObs.value.map(({ id, frame }, index) => {
+        const { objects, playInIds, playOutIds } = frame;
+        const transition = isEmpty(transitions[index])
+          ? {}
+          : transitions[index];
+
+        if (`${id}` === currentFrameId) return { ...currentFrame, transition };
+
+        return {
+          id: id,
+          objects,
+          playInIds,
+          playOutIds,
+          transition
+        };
+      });
+    }
+
+    if (`${frameId}` === currentFrameId) {
+      return [currentFrame];
+    }
+
+    const frame = framesObs.value.find(({ id }) => id === frameId);
+
+    const { objects, playInIds, playOutIds } = frame.frame;
+
+    return [
+      {
+        id: frameId,
+        objects,
+        playInIds,
+        playOutIds,
+        transition: {}
+      }
+    ];
+  };
+
   return {
-    getTransition: getTransitionApi,
-    getTransitions: getTransitionsApi,
-    addTransition: addTransitionApi,
-    removeTransition: removeTransitionApi,
-    applyTransition
+    getTransition,
+    getTransitions,
+    addTransition,
+    removeTransition,
+    applyTransition,
+    getPlaybackData
   };
 };

@@ -32,7 +32,8 @@ export const EVENT_TYPE = {
   APPLY_ANIMATION: 'applyAnimation',
   CHANGE_ANIMATION_ORDER: 'changeAnimationOrder',
   BACKGROUND_SELECT: 'backgroundToggleSelection',
-  ANIMATION_SELECT: 'selectAnimationObject'
+  ANIMATION_SELECT: 'selectAnimationObject',
+  PLAYBACK: 'playback'
 };
 
 export const CANVAS_EVENT_TYPE = {

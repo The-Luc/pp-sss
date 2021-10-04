@@ -2,10 +2,11 @@
   <div id="the-preview">
     <common-modal
       container="#the-preview"
-      :can-close-outside="false"
+      :can-close-outside="canCloseOutside"
       :is-open-modal="true"
       :is-header-displayed="false"
       :is-footer-displayed="false"
+      @cancel="onClose"
     >
       <div class="content-container" :style="{ width: width, height: height }">
         <slot></slot>

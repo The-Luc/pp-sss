@@ -11,6 +11,11 @@ $mask-overlay: 1%;
 .thumb {
   @extend %content;
 
+  /** ======= [NONE] ======= **/
+  &.transition-0--enter-active {
+    position: absolute;
+  }
+
   /** ======= [PUSH] ======= **/
 
   /** [TOP BOTTOM] START **/

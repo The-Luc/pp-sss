@@ -1,6 +1,5 @@
 import { ImageElementObject, TextElementObject } from '../models/element';
-import { pxToIn } from './canvas';
-import { getUniqueId } from './util';
+import { getUniqueId, getPageSize } from './util';
 import {
   CLASS_ROLE,
   OBJECT_TYPE,
@@ -15,9 +14,8 @@ import {
 } from '@/common/constants';
 
 import { cloneDeep } from 'lodash';
-import { getActiveCanvas, ptToPx } from './canvas';
+import { getActiveCanvas, ptToPx, pxToIn } from './canvas';
 import { measureTextWidth } from './textSize';
-import { getPageSize } from '.';
 
 /**
  * Get range of portrait
@@ -661,8 +659,8 @@ export const getPageObjects = (
           teacherPortraitSize === PORTRAIT_SIZE.LARGE
       );
 
-    primaryTeachers.forEach((teacher, index) => {
-      assets.splice(teacher.assetIndex + 1 + index, 0, {});
+    primaryTeachers.forEach((teacher, tIndex) => {
+      assets.splice(teacher.assetIndex + 1 + tIndex, 0, {});
       tmpAssets.push({}, {});
     });
 

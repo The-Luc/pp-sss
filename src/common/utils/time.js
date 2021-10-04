@@ -87,5 +87,5 @@ export const getDiffMonths = (beginDate, endDate) => {
 export const parseToSecond = time => {
   if (isEmpty(time)) return;
 
-  return +time.split(':').reduce((acc, time) => 60 * acc + +time);
+  return +time.split(':').reduce((acc, val) => 60 * acc + +val);
 };
