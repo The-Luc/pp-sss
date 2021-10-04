@@ -10,7 +10,6 @@
       class="thumb"
       :style="{
         backgroundImage: `url(${imageUrl})`,
-        backgroundPosition,
         transition: transitionCss
       }"
     ></div>

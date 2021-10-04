@@ -12,21 +12,6 @@
           @opacityChange="onChangeOpacity"
           @remove="onRemove"
         ></properties-content>
-
-        <animation
-          v-if="isDigital"
-          title="Background Animation"
-          :play-in-config="playInConfig"
-          :play-out-config="playOutConfig"
-          :play-in-order="0"
-          :play-out-order="totalPlayOutOrder + 1"
-          :apply-options="applyOptions"
-          :disabled="isDisabled"
-          :is-play-in-order-disabled="true"
-          :is-play-out-order-disabled="true"
-          @preview="onPreviewAnimation"
-          @apply="onApplyAnimation"
-        ></animation>
       </div>
     </properties-container>
 

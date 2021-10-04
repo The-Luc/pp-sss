@@ -6,7 +6,6 @@
       :component-key="`${imageKey}`"
       :image-url="imageUrl"
       :mask-url="maskUrl"
-      :background-position="backgroundPosition"
       :transition-css="transitionCss"
       :is-group="true"
     ></the-content>
@@ -17,7 +16,6 @@
       :component-key="`${imageKey}`"
       :image-url="imageUrl"
       :mask-url="maskUrl"
-      :background-position="backgroundPosition"
       :transition-css="transitionCss"
     ></the-content>
   </the-preview>
