@@ -10,6 +10,15 @@
     >
       <canvas ref="playbackCanvas2" class="playback-canvas"></canvas>
     </div>
+
+    <div
+      ref="mask"
+      class="thumb-mask"
+      :style="{
+        backgroundImage: `url(${maskUrl})`,
+        transition: transitionCss
+      }"
+    ></div>
   </div>
 </template>
 

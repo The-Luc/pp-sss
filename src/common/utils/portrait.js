@@ -477,6 +477,7 @@ export const createPortraitObjects = (
   }
 
   splitAssets.forEach((rowAssets, rowIndex) => {
+    let textOffsetY = 0;
     rowAssets.forEach(
       ({ lastName, firstName, imageUrl, classRole }, colIndex) => {
         if (!imageUrl) return;
@@ -498,9 +499,6 @@ export const createPortraitObjects = (
         const isOverFlow =
           isLargeAsst && tmpX + largeTeacherWidth > maxPageWidth;
 
-        const x = isOverFlow ? offsetX : tmpX;
-        const y = isOverFlow ? tmpY + itemHeight + rowGap : tmpY;
-
         const nameSpace = `${nameLines > 1 ? '\n' : ' '}`;
         const value = isFirstLast
           ? `${firstName}${nameSpace}${lastName}`
@@ -517,11 +515,31 @@ export const createPortraitObjects = (
         const imageWidth = isLargeAsst ? largeTeacherWidth : itemWidth;
         const imageHeight = isLargeAsst ? largeTeacherHeight : itemHeight;
 
+        const x = isOverFlow ? offsetX : tmpX;
+        const y = isOverFlow ? tmpY + itemHeight + rowGap : tmpY;
+        let imageX = x;
+
+        if (isLargeAsst) {
+          imageX += (itemWidth * 2 + colGap - imageWidth) / 2;
+        }
+
+        if (!colGap && !rowGap) {
+          if (!isNameOutSide) {
+            imageX = isRight
+              ? (pageWidth - imageWidth) / 2 + bleedLeft + pageWidth
+              : (pageWidth - imageWidth) / 2 + bleedLeft;
+          }
+          if (isNameOutSide && isRight) {
+            imageX =
+              (pageWidth - nameWidth - imageWidth) / 2 + bleedLeft + pageWidth;
+          }
+        }
+
         const img = new ImageElementObject({
           id: getUniqueId(),
           imageUrl,
           originalUrl: imageUrl,
-          coord: { x, y },
+          coord: { x: imageX, y },
           size: {
             width: imageWidth - borderOffset,
             height: imageHeight - borderOffset
@@ -542,7 +560,8 @@ export const createPortraitObjects = (
             ? (pageWidth + bleedLeft) * 2 - margins.right - textWidth
             : pageWidth + margins.left + bleedLeft + totalWidth;
 
-        const textOutsideY = y + colIndex * (nameGap + nameHeight) - bleedTop;
+        const textOutsideY = y + textOffsetY - defaultTextPadding;
+        textOffsetY += nameGap + nameHeight;
 
         let textX = 0;
         if (isTextAlignRight)
@@ -553,6 +572,16 @@ export const createPortraitObjects = (
               ? x - (textWidth - imageWidth) / 2
               : x - defaultTextPadding;
         const textY = y + imageHeight - defaultTextPadding + defaultTextGap;
+
+        if (isLargeAsst) {
+          textX += (itemWidth * 2 + colGap - imageWidth) / 2;
+        }
+
+        if (!colGap && !rowGap) {
+          textX = isRight
+            ? (pageWidth - imageWidth) / 2 - defaultTextPadding + pageWidth
+            : (pageWidth - imageWidth) / 2 - defaultTextPadding;
+        }
 
         const text = new TextElementObject({
           id: getUniqueId(),

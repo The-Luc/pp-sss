@@ -2,14 +2,15 @@ $translate-gap: 5%;
 $mask-length: 10%;
 $mask-overlay: 1%;
 
-%content {
+.thumb {
   width: 100%;
   height: 100%;
   background-size: cover;
-}
 
-.thumb {
-  @extend %content;
+  /** ======= [NONE] ======= **/
+  &.transition-0--enter-active {
+    position: absolute;
+  }
 
   /** ======= [NONE] ======= **/
   &.transition-0--enter-active {
@@ -95,10 +96,17 @@ $mask-overlay: 1%;
   /** [RIGHT LEFT] END **/
 
   /** ======= [MOVE IN] ======= **/
+  &.transition-2-0-leave-active,
+  &.transition-2-1-leave-active,
+  &.transition-2-2-leave-active,
+  &.transition-2-3-leave-active {
+    z-index: 0;
+  }
 
   /** [TOP BOTTOM] START **/
   &.transition-2-2-enter-active {
     position: absolute;
+    z-index: 1;
     transform: translateY(-100%);
   }
 
@@ -110,6 +118,7 @@ $mask-overlay: 1%;
   /** [BOTTOM TOP] START **/
   &.transition-2-3-enter-active {
     position: absolute;
+    z-index: 1;
     transform: translateY(100%);
   }
 
@@ -121,6 +130,7 @@ $mask-overlay: 1%;
   /** [LEFT RIGHT] START **/
   &.transition-2-0-enter-active {
     position: absolute;
+    z-index: 1;
     transform: translateX(-100%);
   }
 
@@ -132,6 +142,7 @@ $mask-overlay: 1%;
   /** [RIGHT LEFT] START **/
   &.transition-2-1-enter-active {
     position: absolute;
+    z-index: 1;
     transform: translateX(100%);
   }
 
@@ -219,131 +230,123 @@ $mask-overlay: 1%;
     transform: translateX(-100%);
   }
   /** [RIGHT LEFT] END **/
+
+  /** ======= [TRANSITION - WIPE] ======= **/
+
+  /** [TOP BOTTOM] START **/
+  &.transition-5-2-leave-active {
+    position: absolute;
+    z-index: 1;
+    clip-path: inset(0 0 0 0);
+  }
+
+  &.transition-5-2-leave-to {
+    clip-path: inset(#{- $mask-overlay + $mask-length + 100%} 0 0 0);
+  }
+  /** [TOP BOTTOM] END **/
+
+  /** [BOTTOM TOP] START **/
+  &.transition-5-3-leave-active {
+    position: absolute;
+    z-index: 1;
+    clip-path: inset(0 0 0 0);
+  }
+
+  &.transition-5-3-leave-to {
+    clip-path: inset(0 0 #{- $mask-overlay + $mask-length + 100%} 0);
+  }
+  /** [TOP BOTTOM] END **/
+
+  /** [LEFT RIGHT] START **/
+  &.transition-5-0-leave-active {
+    position: absolute;
+    z-index: 1;
+    clip-path: inset(0 0 0 0);
+  }
+
+  &.transition-5-0-leave-to {
+    clip-path: inset(0 0 0 #{- $mask-overlay + $mask-length + 100%});
+  }
+  /** [LEFT RIGHT] END **/
+
+  /** [RIGHT LEFT] START **/
+  &.transition-5-1-leave-active {
+    position: absolute;
+    z-index: 1;
+    clip-path: inset(0 0 0 0);
+  }
+
+  &.transition-5-1-leave-to {
+    clip-path: inset(0 #{- $mask-overlay + $mask-length + 100%} 0 0);
+  }
+  /** [RIGHT LEFT] END **/
 }
 
-.wrapper {
-  @extend %content;
+.thumb-mask {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  mask-repeat: no-repeat;
 
-  .thumb {
-    position: absolute;
+  /** ======= [TRANSITION - WIPE] ======= **/
 
-    /** ======= [TRANSITION - WIPE] ======= **/
-
-    /** [TOP BOTTOM] START **/
-    &.transition-5-2-leave-active {
-      z-index: 1;
-      clip-path: inset(0 0 0 0);
-    }
-
-    &.transition-5-2-leave-to {
-      clip-path: inset(#{- $mask-overlay + $mask-length + 100%} 0 0 0);
-    }
-    /** [TOP BOTTOM] END **/
-
-    /** [BOTTOM TOP] START **/
-    &.transition-5-3-leave-active {
-      z-index: 1;
-      clip-path: inset(0 0 0 0);
-    }
-
-    &.transition-5-3-leave-to {
-      clip-path: inset(0 0 #{- $mask-overlay + $mask-length + 100%} 0);
-    }
-    /** [TOP BOTTOM] END **/
-
-    /** [LEFT RIGHT] START **/
-    &.transition-5-0-leave-active {
-      z-index: 1;
-      clip-path: inset(0 0 0 0);
-    }
-
-    &.transition-5-0-leave-to {
-      clip-path: inset(0 0 0 #{- $mask-overlay + $mask-length + 100%});
-    }
-    /** [LEFT RIGHT] END **/
-
-    /** [RIGHT LEFT] START **/
-    &.transition-5-1-leave-active {
-      z-index: 1;
-      clip-path: inset(0 0 0 0);
-    }
-
-    &.transition-5-1-leave-to {
-      clip-path: inset(0 #{- $mask-overlay + $mask-length + 100%} 0 0);
-    }
-    /** [RIGHT LEFT] END **/
+  /** [TOP BOTTOM] START **/
+  &.transition-5-2-enter-active {
+    display: flex;
+    z-index: 99;
+    mask-size: 100% $mask-length;
+    mask-position: left 0 top #{$mask-overlay - $mask-length};
+    mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 1));
   }
 
-  .thumb-mask {
-    display: none;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-size: cover;
-    mask-repeat: no-repeat;
-
-    /** ======= [TRANSITION - WIPE] ======= **/
-
-    /** [TOP BOTTOM] START **/
-    &.transition-5-2-enter-active {
-      display: flex;
-      z-index: 99;
-      mask-size: 100% $mask-length;
-      mask-position: left 0 top #{$mask-overlay - $mask-length};
-      mask-image: linear-gradient(
-        to bottom,
-        rgba(0, 0, 0, 0),
-        rgba(0, 0, 0, 1)
-      );
-    }
-
-    &.transition-5-2-enter-to {
-      mask-position: left 0 top #{$mask-length + 100%};
-    }
-    /** [TOP BOTTOM] END **/
-
-    /** [BOTTOM TOP] START **/
-    &.transition-5-3-enter-active {
-      display: flex;
-      z-index: 99;
-      mask-size: 100% $mask-length;
-      mask-position: left 0 bottom #{$mask-overlay - $mask-length};
-      mask-image: linear-gradient(to top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 1));
-    }
-
-    &.transition-5-3-enter-to {
-      mask-position: left 0 bottom #{$mask-length + 100%};
-    }
-    /** [BOTTOM TOP] END **/
-
-    /** [LEFT RIGHT] START **/
-    &.transition-5-0-enter-active {
-      display: flex;
-      z-index: 99;
-      mask-size: $mask-length 100%;
-      mask-position: left #{$mask-overlay - $mask-length} top 0;
-      mask-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 1, 1));
-    }
-
-    &.transition-5-0-enter-to {
-      mask-position: left #{$mask-length + 100%} top 0;
-    }
-    /** [LEFT RIGHT] END **/
-
-    /** [RIGHT LEFT] START **/
-    &.transition-5-1-enter-active {
-      display: flex;
-      z-index: 99;
-      mask-size: $mask-length 100%;
-      mask-position: right #{$mask-overlay - $mask-length} top 0;
-      mask-image: linear-gradient(to left, rgba(0, 0, 0, 0), rgba(0, 0, 0, 1));
-    }
-
-    &.transition-5-1-enter-to {
-      mask-position: right #{$mask-length + 100%} top 0;
-    }
-    /** [RIGHT LEFT] END **/
+  &.transition-5-2-enter-to {
+    mask-position: left 0 top #{$mask-length + 100%};
   }
+  /** [TOP BOTTOM] END **/
+
+  /** [BOTTOM TOP] START **/
+  &.transition-5-3-enter-active {
+    display: flex;
+    z-index: 99;
+    mask-size: 100% $mask-length;
+    mask-position: left 0 bottom #{$mask-overlay - $mask-length};
+    mask-image: linear-gradient(to top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 1));
+  }
+
+  &.transition-5-3-enter-to {
+    mask-position: left 0 bottom #{$mask-length + 100%};
+  }
+  /** [BOTTOM TOP] END **/
+
+  /** [LEFT RIGHT] START **/
+  &.transition-5-0-enter-active {
+    display: flex;
+    z-index: 99;
+    mask-size: $mask-length 100%;
+    mask-position: left #{$mask-overlay - $mask-length} top 0;
+    mask-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 1, 1));
+  }
+
+  &.transition-5-0-enter-to {
+    mask-position: left #{$mask-length + 100%} top 0;
+  }
+  /** [LEFT RIGHT] END **/
+
+  /** [RIGHT LEFT] START **/
+  &.transition-5-1-enter-active {
+    display: flex;
+    z-index: 99;
+    mask-size: $mask-length 100%;
+    mask-position: right #{$mask-overlay - $mask-length} top 0;
+    mask-image: linear-gradient(to left, rgba(0, 0, 0, 0), rgba(0, 0, 0, 1));
+  }
+
+  &.transition-5-1-enter-to {
+    mask-position: right #{$mask-length + 100%} top 0;
+  }
+  /** [RIGHT LEFT] END **/
 }
