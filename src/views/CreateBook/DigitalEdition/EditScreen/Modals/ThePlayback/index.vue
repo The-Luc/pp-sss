@@ -5,7 +5,7 @@
     :can-close-outside="true"
     @close="onClose"
   >
-    The Playback {{ playbackData.length }}
+    <playback :playback-data="playbackData" @finish="onClose"></playback>
   </the-preview>
 </template>
 

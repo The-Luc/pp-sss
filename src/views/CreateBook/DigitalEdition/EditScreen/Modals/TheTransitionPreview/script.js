@@ -4,7 +4,7 @@ import TheContent from './TheContent';
 
 import { isEmpty } from '@/common/utils';
 
-import { TRANSITION, TRANS_DIRECTION } from '@/common/constants';
+import { TRANSITION } from '@/common/constants';
 
 export default {
   components: {
@@ -41,7 +41,6 @@ export default {
     return {
       imageUrl: this.firstImageUrl,
       maskUrl: this.firstImageUrl,
-      backgroundPosition: this.getPosition(),
       transitionCss: isEmpty(this.duration) ? '' : `all ${this.duration}s`,
       transitionType: `transition-${this.transition}-${this.getDirection()}`,
       imageKey: false,
@@ -66,36 +65,15 @@ export default {
       this.$emit('close');
     },
     /**
-     * Get background position
-     *
-     * @returns {String}  position of background
-     */
-    getPosition() {
-      if (this.transition !== TRANSITION.WIPE) return 'center';
-
-      const direction = {
-        [TRANS_DIRECTION.TOP_BOTTOM]: 'bottom',
-        [TRANS_DIRECTION.BOTTOM_TOP]: 'top',
-        [TRANS_DIRECTION.LEFT_RIGHT]: 'right',
-        [TRANS_DIRECTION.RIGHT_LEFT]: 'left'
-      };
-
-      return direction[this.direction];
-    },
-    /**
      * Get direction
      *
      * @returns {String}  direction
      */
     getDirection() {
-      if (
-        this.transition === TRANSITION.NONE ||
+      return this.transition === TRANSITION.NONE ||
         this.transition === TRANSITION.DISSOLVE
-      ) {
-        return '';
-      }
-
-      return this.direction;
+        ? ''
+        : this.direction;
     }
   }
 };

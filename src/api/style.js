@@ -30,7 +30,7 @@ const styleService = {
   /**
    * Get list saved text style
    *
-   * @returns {Array}   saved styles
+   * @returns {Promise<Array>}   saved styles
    */
   getSavedTextStyles: async () => {
     try {
@@ -46,7 +46,7 @@ const styleService = {
    * Save image style
    *
    * @param   {Object}  style  image style for save
-   * @returns {Array}   saved styles
+   * @returns {Promise<Array>}   saved styles
    */
   saveImageStyle: async style => {
     try {
@@ -68,7 +68,7 @@ const styleService = {
   /**
    * Get list saved image style
    *
-   * @returns {Array}   saved styles
+   * @returns {Promise<Array>}   saved styles
    */
   getSavedImageStyles: async () => {
     try {

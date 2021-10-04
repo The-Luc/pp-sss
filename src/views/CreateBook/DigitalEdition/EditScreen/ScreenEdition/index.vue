@@ -5,10 +5,6 @@
       :class="{ 'scroll-x': isScroll.x, 'scroll-y': isScroll.y }"
     >
       <SizeWrapper @mounted="onContainerReady" @updated="onContainerResized">
-        <the-animation-order
-          v-if="isBackgroundPropMenuOpen"
-        ></the-animation-order>
-
         <canvas
           id="digitalCanvas"
           ref="digitalCanvas"

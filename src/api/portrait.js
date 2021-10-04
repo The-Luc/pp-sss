@@ -58,7 +58,7 @@ const portraitSevice = {
 
   /**
    * Get list saved portrait settings
-   * @returns {Array}   saved portrait settings
+   * @returns {Promise<Array>}   saved portrait settings
    */
   getSavedPortraitSettingsPrint: async () => {
     try {
@@ -100,7 +100,7 @@ const portraitSevice = {
 
   /**
    * Get list saved portrait settings
-   * @returns {Array}   saved portrait settings
+   * @returns {Promise<Array>}   saved portrait settings
    */
   getSavedPortraitSettingsDigital: async () => {
     try {

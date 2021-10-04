@@ -32,8 +32,6 @@ const setMockBookDataToStorage = () => {
 
   const bookDetail = new BookDetailEntity(books[1719]);
 
-  const sections = [];
-
   bookDetail.sections.forEach(section => {
     const sheets = [];
 
@@ -47,7 +45,6 @@ const setMockBookDataToStorage = () => {
     });
 
     section.sheets = sheets;
-    sections.push(new SectionEntity(section));
   });
 
   setItem(keyBook, JSON.stringify(bookDetail));

@@ -15,10 +15,6 @@ export default {
     maskUrl: {
       type: String
     },
-    backgroundPosition: {
-      type: String,
-      required: true
-    },
     transitionCss: {
       type: String,
       required: true
