@@ -272,7 +272,8 @@ export default {
       undoRedoCanvas: null,
       isFrameLoaded: false,
       isScroll: { x: false, y: false },
-      canvasFitSize: { w: 0, h: 0 }
+      canvasFitSize: { w: 0, h: 0 },
+      previousFrameId: null
     };
   },
   computed: {
@@ -401,10 +402,12 @@ export default {
       this.digitalCanvas.renderAll();
     },
     totalVideoDuration(newVal, oldVal) {
-      if (newVal >= oldVal) return;
+      if (!this.previousFrameId) this.previousFrameId = this.currentFrameId;
 
-      const duration = this.currentFrame.delay - (oldVal - newVal) || 3;
+      // this check to make sure that when user switch frame the computation below does not occur.
+      if (this.previousFrameId !== this.currentFrameId) return;
 
+      const duration = this.currentFrame.delay + newVal - oldVal || 3;
       this.setFrameDelay({ value: duration });
     }
   },
