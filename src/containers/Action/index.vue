@@ -11,17 +11,7 @@
       @onClickOutsideMenu="onClickOutsideMenu"
       @onItemClick="onItemClick"
     >
-      <ButtonAdd
-        v-if="isShowAdd"
-        title="Add a Sheet"
-        @click.native="onAddSheet"
-      />
-      <ButtonDelete
-        v-if="isShowDelete"
-        class="btn-delete"
-        title="Delete This Section"
-        @click.native="onOpenModal"
-      />
+      <slot></slot>
     </Menu>
     <Calendar
       v-if="isOpenCalendar"

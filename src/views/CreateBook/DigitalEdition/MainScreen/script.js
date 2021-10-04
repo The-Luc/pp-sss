@@ -9,6 +9,7 @@ import { getSectionsWithAccessible } from '@/common/utils';
 import { GETTERS as DIGITAL_GETTERS } from '@/store/modules/digital/const';
 
 import { useBookDigitalInfo } from './composables';
+import { useSectionItems } from '@/views/CreateBook/Manager/composables';
 
 export default {
   components: {
@@ -17,8 +18,14 @@ export default {
   setup() {
     const { currentUser } = useUser();
     const { getBookDigitalInfo } = useBookDigitalInfo();
+    const { sections: bookSections } = useSectionItems();
 
-    return { currentUser, getBookDigitalInfo };
+    return { currentUser, getBookDigitalInfo, bookSections };
+  },
+  data() {
+    return {
+      sheetSelected: null
+    };
   },
   computed: {
     ...mapGetters({
@@ -34,6 +41,15 @@ export default {
   async created() {
     await this.getBookDigitalInfo(this.$route.params.bookId);
   },
+  watch: {
+    bookSections: {
+      deep: true,
+      async handler(val, oldVal) {
+        if (val !== oldVal)
+          await this.getBookDigitalInfo(this.$route.params.bookId);
+      }
+    }
+  },
   methods: {
     /**
      * Get name of page of selected sheet
@@ -43,6 +59,25 @@ export default {
      */
     getPageName({ pageName }) {
       return { left: pageName };
+    },
+    /**
+     * Toggle menu by set sheet selected id
+     */
+    toggleMenu(sheetId) {
+      if (!this.sheetSelected || this.sheetSelected !== sheetId) {
+        this.sheetSelected = sheetId;
+        return;
+      }
+
+      if (this.sheetSelected && this.sheetSelected === sheetId) {
+        this.onCloseMenu();
+      }
+    },
+    /**
+     * set sheet selected is null and close menu
+     */
+    onCloseMenu() {
+      this.sheetSelected = null;
     }
   }
 };

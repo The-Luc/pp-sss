@@ -1,6 +1,7 @@
 import Header from '../ThumbnailHeader';
 import Content from './ThumbnailContent';
 import Footer from './ThumbnailFooter';
+import Action from '@/containers/Action';
 
 import { LINK_STATUS, SHEET_TYPE } from '@/common/constants';
 import { isEmpty } from '@/common/utils';
@@ -9,9 +10,14 @@ export default {
   components: {
     Header,
     Content,
-    Footer
+    Footer,
+    Action
   },
   props: {
+    section: {
+      type: Object,
+      default: () => ({})
+    },
     name: {
       type: String,
       required: true
@@ -58,12 +64,23 @@ export default {
     isDigital: {
       type: Boolean,
       default: false
+    },
+    sheetId: {
+      type: Number,
+      default: null
+    },
+    sheetSelected: {
+      type: Number,
+      default: null
     }
   },
   data() {
     return {
       displayCssClass: '',
-      customCssClass: []
+      customCssClass: [],
+      menuX: 0,
+      menuY: 0,
+      isOpenMenu: false
     };
   },
   mounted() {
@@ -79,6 +96,11 @@ export default {
       disabledCssClass
     ].filter(c => !isEmpty(c));
   },
+  watch: {
+    sheetSelected(id) {
+      this.isOpenMenu = id === this.sheetId;
+    }
+  },
   methods: {
     /**
      * Emit event change link status
@@ -91,6 +113,36 @@ export default {
      */
     onSelect() {
       this.$emit('select');
+    },
+    /**
+     * Event fire when click more action
+     * @param {Object} event fired event
+     */
+    toggleMenu(event) {
+      const element = event.target;
+      const { x, y } = element.getBoundingClientRect();
+      this.menuX = x - 82;
+      this.menuY = y;
+
+      this.$emit('toggleMenu');
+    },
+    /**
+     * Event fire when click outside menu or scroll
+     */
+    onCloseMenu() {
+      this.$emit('closeMenu');
+    },
+    /**
+     * Event fire when click preview button
+     */
+    onPreview() {
+      this.$emit('preview');
+    },
+    /**
+     * Event fire when click PDF button
+     */
+    onPdf() {
+      this.$emit('pdf');
     }
   }
 };

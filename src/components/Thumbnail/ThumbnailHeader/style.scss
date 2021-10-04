@@ -90,8 +90,9 @@
       border: 1px solid $color-gray2;
       cursor: pointer;
 
-      &:hover {
-        border: 1px solid $color-black;
+      &.active {
+        background-color: white;
+        border: 1px solid $color-stoodio-toolbartext;
       }
 
       .icon-more {

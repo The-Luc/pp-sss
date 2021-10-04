@@ -4,6 +4,8 @@ export class SectionBase extends BaseEntity {
   name = '';
   assigneeId = null;
   color = '';
+  dueDate = null;
+  status = 0;
 
   /**
    * @param {SectionDetail} props
@@ -15,8 +17,6 @@ export class SectionBase extends BaseEntity {
 }
 
 export class SectionDetail extends SectionBase {
-  dueDate = null;
-  status = 0;
   draggable = true;
   fixed = false;
   sheetIds = [];
