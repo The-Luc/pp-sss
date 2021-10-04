@@ -13,3 +13,5 @@ export const DELAY_OPTION = [
 ];
 
 export const DEFAULT_FRAME_DELAY = 3;
+
+export const MAX_PLAYBACK_DELAY = 3600; // seconds
