@@ -14,6 +14,7 @@ import VERTICAL_VIDEO from '@/assets/video/vertical.mp4';
 import VERTICAL_THUMBNAIL from '@/assets/image/vertical-photo.jpg';
 import BUNNY_THUMBNAIL from '@/assets/image/bunny-thumbnail.jpg';
 import TOY_THUMBNAIL from '@/assets/image/toy-thumbnail.jpg';
+import TEST_THUMBNAIL from '@/assets/image/video-thumb-test.jpg';
 
 import { AlbumEntity } from '@/common/models/entities/album';
 
@@ -82,28 +83,37 @@ const video4 = new VideoAssetEntity({
   isMedia: true
 });
 
-const mediaBase = [photo1, photo2, photo3, video1, video2, video4];
+const video5 = new VideoAssetEntity({
+  id: uniqueId(),
+  mediaFileName: 'testing delay.mp4',
+  thumbUrl: TEST_THUMBNAIL,
+  mediaUrl: SAMPLE_TOY_VIDEO,
+  originalHeight: 320,
+  originalWidth: 560,
+  duration: '1:00:06',
+  isMedia: true
+});
+
+const mediaBase = [photo1, photo2, photo3, video1, video2, video4, video5];
 
 const media = Array.from({ length: 20 }, () => {
   const inProject = Math.random() * 5 < 2;
-  const newMedia = {
-    ...mediaBase[getRandomInt(6)],
+  return {
+    ...mediaBase[getRandomInt(7)],
     inProject,
     id: uniqueId()
   };
-  return newMedia;
 });
 
 const photosBase = [photo1, photo2, photo3];
 
 const photos = Array.from({ length: 20 }, () => {
   const inProject = Math.random() * 5 < 2;
-  const photo = {
+  return {
     ...photosBase[getRandomInt(3)],
     inProject,
     id: uniqueId()
   };
-  return photo;
 });
 
 export function getRandomInt(max) {

@@ -541,13 +541,6 @@ export default {
       this.saveSelectedPortraitFolders(selectedFolderIds);
     },
     /**
-     * Cancel apply warning modal
-     */
-    onCancelApplyPortrait(isShowApplyPortrait) {
-      this.modalDisplay.portaitFlow = !this.modalDisplay.portaitFlow;
-      this.setToolNameSelected(isShowApplyPortrait ? '' : TOOL_NAME.PORTRAIT);
-    },
-    /**
      * Selected portrait folders
      * @param {Array}  folders  portrait folders
      */

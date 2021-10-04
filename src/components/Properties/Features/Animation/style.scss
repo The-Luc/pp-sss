@@ -8,10 +8,7 @@
     font-family: $font-500;
     font-size: 11px;
     margin-bottom: 5px;
-
-    &::after {
-      content: '\003A';
-    }
+    text-transform: capitalize;
   }
 
   .horizontal-line {

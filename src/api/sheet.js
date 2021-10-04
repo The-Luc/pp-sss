@@ -1,21 +1,28 @@
-import { TRANS_TARGET } from '@/common/constants';
-import { Transition } from '@/common/models';
-import { insertItemsToArray, modifyItemsInArray } from '@/common/utils';
+import { TRANSITION, TRANS_TARGET } from '@/common/constants';
+import { getSuccessWithData, Transition } from '@/common/models';
+import {
+  insertItemsToArray,
+  isEmpty,
+  mergeArray,
+  modifyItemsInArray
+} from '@/common/utils';
 
-const findSectionSheetIndex = sheetId => {
-  const sectionIndex = window.data.book.sections.findIndex(section => {
-    return section.sheets.findIndex(({ id }) => id === sheetId) >= 0;
+const findSectionSheetIndex = (sheetId, sectionId) => {
+  if (isEmpty(sectionId)) return { sectionIndex: -1, sheetIndex: -1 };
+
+  const sectionIndex = window.data.book.sections.findIndex(({ id }) => {
+    return id === sectionId;
   });
 
   if (sectionIndex < 0) return { sectionIndex: -1, sheetIndex: -1 };
+
+  if (isEmpty(sheetId)) return { sectionIndex, sheetIndex: -1 };
 
   const sheetIndex = window.data.book.sections[sectionIndex].sheets.findIndex(
     ({ id }) => id === sheetId
   );
 
-  return sheetIndex < 0
-    ? { sectionIndex: -1, sheetIndex: -1 }
-    : { sectionIndex, sheetIndex };
+  return { sectionIndex, sheetIndex };
 };
 
 const replaceTransition = (transition, sectionIndex, sheetIndex) => {
@@ -30,9 +37,26 @@ const replaceTransition = (transition, sectionIndex, sheetIndex) => {
   }
 };
 
-export const getTransitionsApi = sheetId => {
+const getPlaybackDataFromFrames = (frames, transitions) => {
+  return frames.map(({ id, frame }, index) => {
+    const { objects, playInIds, playOutIds } = frame;
+
+    return {
+      id,
+      objects,
+      playInIds,
+      playOutIds,
+      transition: isEmpty(transitions[index]) ? {} : transitions[index]
+    };
+  });
+};
+
+export const getTransitionsApi = (bookId, sheetId, sectionId) => {
   return new Promise(resolve => {
-    const { sectionIndex, sheetIndex } = findSectionSheetIndex(sheetId);
+    const { sectionIndex, sheetIndex } = findSectionSheetIndex(
+      sheetId,
+      sectionId
+    );
 
     if (sheetIndex < 0) {
       resolve();
@@ -48,9 +72,17 @@ export const getTransitionsApi = sheetId => {
   });
 };
 
-export const getTransitionApi = (sheetId, index) => {
+export const getTransitionApi = (
+  bookId,
+  sheetId,
+  sectionId,
+  transitionIndex
+) => {
   return new Promise(resolve => {
-    const { sectionIndex, sheetIndex } = findSectionSheetIndex(sheetId);
+    const { sectionIndex, sheetIndex } = findSectionSheetIndex(
+      sheetId,
+      sectionId
+    );
 
     if (sheetIndex < 0) {
       resolve();
@@ -60,15 +92,23 @@ export const getTransitionApi = (sheetId, index) => {
 
     const transition =
       window.data.book.sections[sectionIndex].sheets[sheetIndex].digitalData
-        .transitions[index];
+        .transitions[transitionIndex];
 
     resolve(new Transition(transition));
   });
 };
 
-export const addTransitionApi = (sheetId, totalTransition = 1) => {
+export const addTransitionApi = (
+  bookId,
+  sheetId,
+  sectionId,
+  totalTransition = 1
+) => {
   return new Promise(resolve => {
-    const { sectionIndex, sheetIndex } = findSectionSheetIndex(sheetId);
+    const { sectionIndex, sheetIndex } = findSectionSheetIndex(
+      sheetId,
+      sectionId
+    );
 
     if (sheetIndex < 0) {
       resolve();
@@ -90,9 +130,17 @@ export const addTransitionApi = (sheetId, totalTransition = 1) => {
   });
 };
 
-export const removeTransitionApi = (sheetId, totalTransition = 1) => {
+export const removeTransitionApi = (
+  bookId,
+  sheetId,
+  sectionId,
+  totalTransition = 1
+) => {
   return new Promise(resolve => {
-    const { sectionIndex, sheetIndex } = findSectionSheetIndex(sheetId);
+    const { sectionIndex, sheetIndex } = findSectionSheetIndex(
+      sheetId,
+      sectionId
+    );
 
     if (sheetIndex < 0) {
       resolve();
@@ -125,14 +173,28 @@ export const removeTransitionApi = (sheetId, totalTransition = 1) => {
  * @param {Number}  transitionIndex index of transition
  */
 export const applyTransitionApi = (
+  bookId,
   transition,
   targetType,
   sheetId,
+  sectionId,
   transitionIndex
 ) => {
+  if (transition.transition === TRANSITION.NONE) {
+    transition.direction = -1;
+    transition.duration = 0;
+  }
+
+  if (transition.transition === TRANSITION.DISSOLVE) {
+    transition.direction = -1;
+  }
+
   if (targetType === TRANS_TARGET.SELF) {
     return new Promise(resolve => {
-      const { sectionIndex, sheetIndex } = findSectionSheetIndex(sheetId);
+      const { sectionIndex, sheetIndex } = findSectionSheetIndex(
+        sheetId,
+        sectionId
+      );
 
       if (sheetIndex < 0) {
         resolve();
@@ -154,7 +216,10 @@ export const applyTransitionApi = (
 
   if (targetType === TRANS_TARGET.SHEET) {
     return new Promise(resolve => {
-      const { sectionIndex, sheetIndex } = findSectionSheetIndex(sheetId);
+      const { sectionIndex, sheetIndex } = findSectionSheetIndex(
+        sheetId,
+        sectionId
+      );
 
       if (sheetIndex < 0) {
         resolve();
@@ -170,7 +235,7 @@ export const applyTransitionApi = (
 
   if (targetType === TRANS_TARGET.SECTION) {
     return new Promise(resolve => {
-      const { sectionIndex } = findSectionSheetIndex(sheetId);
+      const { sectionIndex } = findSectionSheetIndex(sheetId, sectionId);
 
       if (sectionIndex < 0) {
         resolve();
@@ -199,10 +264,38 @@ export const applyTransitionApi = (
   });
 };
 
+export const getPlaybackDataApi = bookId => {
+  bookId; // TODO: will use with API
+
+  return new Promise(resolve => {
+    let bookFrames = [];
+
+    window.data.book.sections.forEach(section => {
+      section.sheets.forEach(({ digitalData }) => {
+        const { frames, transitions } = digitalData;
+
+        if (isEmpty(frames)) return;
+
+        if (!isEmpty(bookFrames)) {
+          bookFrames[bookFrames.length - 1].transition = new Transition();
+        }
+
+        bookFrames = mergeArray(
+          bookFrames,
+          getPlaybackDataFromFrames(frames, transitions)
+        );
+      });
+    });
+
+    resolve(getSuccessWithData(bookFrames));
+  });
+};
+
 export default {
   getTransition: getTransitionApi,
   getTransitions: getTransitionsApi,
   addTransition: addTransitionApi,
   removeTransition: removeTransitionApi,
-  applyTransition: applyTransitionApi
+  applyTransition: applyTransitionApi,
+  getPlaybackData: getPlaybackDataApi
 };

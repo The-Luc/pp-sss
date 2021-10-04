@@ -2,7 +2,7 @@ import PpCombobox from '@/components/Selectors/Combobox';
 import Properties from '@/components/Properties/BoxProperties';
 import InputTitle from '@/components/Properties/Features/InputTitle';
 
-import { DELAY_OPTION } from '@/common/constants';
+import { DELAY_OPTION, MAX_PLAYBACK_DELAY } from '@/common/constants';
 import { ICON_LOCAL } from '@/common/constants';
 import { useFrame, useFrameTitle, useFrameDelay, useAnimation } from '@/hooks';
 import { getValueInput, validateInputOption } from '@/common/utils';
@@ -34,7 +34,7 @@ export default {
     return {
       delayOpts: DELAY_OPTION,
       componentKey: true,
-      maxDelay: 3600,
+      maxDelay: MAX_PLAYBACK_DELAY,
       appendedIcon: ICON_LOCAL.APPENDED_ICON
     };
   },
@@ -44,19 +44,24 @@ export default {
     },
     selectedDelay() {
       const delay = this.currentFrame?.delay ?? this.defaultDelay;
-      return this.getSelectedOption(delay);
+      const validDelay = delay > this.maxDelay ? this.maxDelay : delay;
+
+      return this.getSelectedOption(validDelay);
     },
     playInValue() {
-      return this.framePlayInDuration.toFixed(1) + ' s';
+      return Math.round(this.framePlayInDuration * 10) / 10 + ' s';
     },
     playOutValue() {
-      return this.framePlayOutDuration.toFixed(1) + ' s';
+      return Math.round(this.framePlayOutDuration * 10) / 10 + ' s';
     },
     minDelay() {
       return this.totalVideoDuration || 0;
     },
     defaultDelay() {
       return this.totalVideoDuration || 3;
+    },
+    isVideoExisted() {
+      return this.totalVideoDuration > 0;
     }
   },
   watch: {
@@ -78,7 +83,7 @@ export default {
         's'
       );
 
-      if (!isValid) {
+      if (!isValid || this.selectedDelay.value === value) {
         this.forceRenderComponent();
         return;
       }
@@ -108,15 +113,15 @@ export default {
       if (this.selectedDelay.value >= this.totalVideoDuration) return;
 
       this.setFrameDelay({ value: this.totalVideoDuration });
+    },
+    /**
+     * Trigger render component by changing component key
+     */
+    forceRenderComponent() {
+      this.componentKey = !this.componentKey;
     }
   },
   created() {
     this.updateDelayDuration();
-  },
-  /**
-   * Trigger render component by changing component key
-   */
-  forceRenderComponent() {
-    this.componentKey = !this.componentKey;
   }
 };

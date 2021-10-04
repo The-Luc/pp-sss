@@ -30,7 +30,8 @@ export default {
   data() {
     return {
       transitions: [],
-      sheetId: this.currentSheet.id
+      sheetId: this.currentSheet.id,
+      sectionId: this.currentSheet.sectionId
     };
   },
   watch: {
@@ -46,7 +47,10 @@ export default {
      * Update transitions
      */
     async updateTransitions() {
-      this.transitions = await this.getTransitions(this.sheetId);
+      this.transitions = await this.getTransitions(
+        this.sheetId,
+        this.sectionId
+      );
     }
   }
 };

@@ -125,11 +125,13 @@ const digitalService = {
    * Get frames of a specific sheet
    * @param {Number} bookId Id of book
    * @param {Number} sectionId Id of section
-   * @param {Number} sheetId Id of sheet
+   * @param {Number} sheetIdValue Id of sheet
    * @returns {Promise<array>} a list of frames [{id, frame:{}},...]
    */
-  getFrames: async (bookId, sectionId, sheetId) => {
+  getFrames: async (bookId, sectionId, sheetIdValue) => {
     const { sheets } = await bookService.getBookDigital(bookId);
+
+    const sheetId = parseInt(sheetIdValue);
 
     const frames = sheets[sheetId].frames;
 
@@ -210,11 +212,11 @@ const digitalService = {
       if (!sheetId) return;
 
       const sheets = getSheetsFromStorage();
+      const transitions = cloneDeep(sheets[sheetId].digitalData.transitions);
 
-      const sheet = sheets[sheetId];
-      sheet.digitalData._set(props);
+      sheets[sheetId].digitalData._set({ ...props, transitions });
 
-      resolve(sheet);
+      resolve(sheets[sheetId]);
     });
   },
 
@@ -259,8 +261,6 @@ const digitalService = {
     const sheets = getSheetsFromStorage();
 
     Object.values(sheets).forEach(s => s._set(data[s.id]));
-
-    return;
   },
   /**
    * to save sheet media

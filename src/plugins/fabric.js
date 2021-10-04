@@ -137,11 +137,7 @@ const renderFillImage = function(ctx) {
   const dY = -h / 2 + (offsetX / 2) * XYRatio;
   const dW = min(w, elWidth / scaleX - cropX) - offsetX;
   const dH = min(h, elHeight / scaleY - cropY) - offsetY;
-
-  if (
-    this.fromPortrait &&
-    this.width * this.scaleX === this.height * this.scaleY
-  ) {
+  if (this.fromPortrait && this.mask === PORTRAIT_IMAGE_MASK.SQUARE) {
     return ctx.drawImage(
       elementToDraw,
       sX,
@@ -430,11 +426,12 @@ const rectRender = function(ctx) {
   this.strokeDashArray = [];
 
   if (!this.strokeWidth) {
-    fabric.Rect.prototype._render.call(this, ctx);
-    return;
+    return fabric.Rect.prototype._render.call(this, ctx);
   }
 
   if (this.strokeLineType === BORDER_STYLES.DOUBLE) {
+    if (this.fromPortrait) return fabric.Rect.prototype._render.call(this, ctx);
+
     this.clipPath = getDoubleStrokeClipPath(
       this.width,
       this.height,
@@ -502,7 +499,52 @@ const maskRender = function(ctx) {
   ctx.arcTo(x, y, x + w, y, r);
   ctx.closePath();
   ctx.clip();
-  ctx.drawImage(this.img, x, y, w, h);
+  if (this.mask === PORTRAIT_IMAGE_MASK.CIRCLE) {
+    ctx.drawImage(
+      this.img,
+      0,
+      (this.img.height - this.img.width) / 2,
+      this.img.width,
+      this.img.width,
+      x,
+      y,
+      w,
+      h
+    );
+  } else {
+    ctx.drawImage(this.img, x, y, w, h);
+  }
+  ctx.restore();
+};
+
+const rectRenderStroke = function(ctx) {
+  if (!this.fromPortrait || this.strokeLineType !== BORDER_STYLES.DOUBLE) {
+    return fabric.Rect.prototype._renderStroke.call(this, ctx);
+  }
+
+  ctx.save();
+  ctx.strokeStyle = this.stroke;
+  ctx.lineWidth = this.strokeWidth * 0.33;
+  ctx.stroke();
+  ctx.restore();
+
+  const x = (this.strokeWidth * 0.66 - this.width) / 2;
+  const y = (this.strokeWidth * 0.66 - this.height) / 2;
+  const w = this.width - this.strokeWidth * 0.66;
+  const h = this.height - this.strokeWidth * 0.66;
+  const r = this.mask === PORTRAIT_IMAGE_MASK.ROUNDED ? w / 10 : w / 2;
+
+  ctx.save();
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.arcTo(x + w, y, x + w, y + h, r);
+  ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r);
+  ctx.arcTo(x, y, x + w, y, r);
+  ctx.closePath();
+  ctx.clip();
+  ctx.fillStyle = this.stroke;
+  ctx.fill();
   ctx.restore();
 };
 
@@ -515,6 +557,7 @@ export const useDoubleStroke = function(rect) {
     rectRender.call(this, ctx);
     maskRender.call(this, ctx);
   };
+  rect._renderStroke = rectRenderStroke;
 };
 
 const getTimeToSet = (checkTime, duration) => {

@@ -72,8 +72,7 @@ import {
   handleObjectSelected,
   handleObjectDeselected,
   calcAnimationOrder,
-  createPortraitImage,
-  getBackgroundObject
+  createPortraitImage
 } from '@/common/fabricObjects';
 import { createImage } from '@/common/fabricObjects';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
@@ -93,7 +92,8 @@ import {
   useProperties,
   useGetterEditionSection,
   useBook,
-  useAnimation
+  useAnimation,
+  useFrameDelay
 } from '@/hooks';
 
 import {
@@ -128,7 +128,7 @@ import {
 } from '@/store/modules/digital/const';
 
 import { cloneDeep, debounce, merge } from 'lodash';
-import { useSaveData, useObject } from '../composables';
+import { useSaveData, useObject, useVideo } from '../composables';
 import { useSavingStatus } from '@/views/CreateBook/composables';
 import UndoRedoCanvas from '@/plugins/undoRedoCanvas';
 import {
@@ -142,8 +142,7 @@ import {
 } from '@/common/models/element';
 import {
   CONTROL_TYPE,
-  PLAY_IN_STYLES,
-  PLAY_OUT_STYLES
+  PLAY_IN_STYLES
 } from '@/common/constants/animationProperty';
 
 const ELEMENTS = {
@@ -208,6 +207,8 @@ export default {
     const { book } = useBook();
 
     const { setToolNameSelected, propertiesType } = useToolBar();
+    const { setFrameDelay } = useFrameDelay();
+    const { totalVideoDuration } = useVideo();
 
     return {
       currentFrame,
@@ -249,7 +250,9 @@ export default {
       setToolNameSelected,
       propertiesType,
       updateTriggerAnimation,
-      setPropertiesType
+      setPropertiesType,
+      setFrameDelay,
+      totalVideoDuration
     };
   },
   data() {
@@ -268,8 +271,8 @@ export default {
       autoSaveTimer: null,
       undoRedoCanvas: null,
       isFrameLoaded: false,
-      isBackgroundPropMenuOpen: false,
-      isScroll: { x: false, y: false }
+      isScroll: { x: false, y: false },
+      previousFrameId: null
     };
   },
   computed: {
@@ -283,7 +286,6 @@ export default {
       object: DIGITAL_GETTERS.OBJECT_BY_ID,
       currentObjects: DIGITAL_GETTERS.GET_OBJECTS,
       totalBackground: DIGITAL_GETTERS.TOTAL_BACKGROUND,
-      listObjects: DIGITAL_GETTERS.GET_OBJECTS,
       triggerApplyLayout: DIGITAL_GETTERS.TRIGGER_APPLY_LAYOUT
     })
   },
@@ -332,8 +334,6 @@ export default {
         this.saveData(this.pageSelected.id, oldVal);
       }
 
-      this.isBackgroundPropMenuOpen = false;
-
       this.setSelectedObjectId({ id: '' });
       this.setPropertiesObjectType({ type: '' });
       this.setCurrentObject(null);
@@ -374,18 +374,21 @@ export default {
 
       const changed = newVal - oldVal;
 
-      if (changed > 0) this.addTransition(this.pageSelected.id, changed);
-      else this.removeTransition(this.pageSelected.id, -changed);
+      if (changed > 0)
+        this.addTransition(
+          this.pageSelected.id,
+          this.pageSelected.sectionId,
+          changed
+        );
+      else
+        this.removeTransition(
+          this.pageSelected.id,
+          this.pageSelected.sectionId,
+          -changed
+        );
     },
     propertiesType(val) {
-      const isAnimation = val === PROPERTIES_TOOLS.ANIMATION.name;
-      const isBackground = val === PROPERTIES_TOOLS.BACKGROUND.name;
-
-      this.backgroundToggleSelection({
-        isSelected: isAnimation || isBackground
-      });
-
-      if (isAnimation) {
+      if (val === PROPERTIES_TOOLS.ANIMATION.name) {
         return this.handleOpenAnimations();
       }
 
@@ -396,6 +399,15 @@ export default {
       );
 
       this.digitalCanvas.renderAll();
+    },
+    totalVideoDuration(newVal, oldVal) {
+      if (!this.previousFrameId) this.previousFrameId = this.currentFrameId;
+
+      // this check to make sure that when user switch frame the computation below does not occur.
+      if (this.previousFrameId !== this.currentFrameId) return;
+
+      const duration = this.currentFrame.delay + newVal - oldVal || 3;
+      this.setFrameDelay({ value: duration });
     }
   },
   beforeDestroy() {
@@ -439,23 +451,28 @@ export default {
       setCurrentFrameId: DIGITAL_MUTATES.SET_CURRENT_FRAME_ID
     }),
     updateCanvasSize() {
-      const canvasSize = {
-        width: 0,
-        height: 0
-      };
-
+      const canvasFitSize = { w: 0, h: 0 };
       const canvasMargin = 16;
 
-      if (this.zoom > 0) {
-        canvasSize.height = DIGITAL_CANVAS_SIZE.HEIGHT * this.zoom;
-        canvasSize.width = DIGITAL_CANVAS_SIZE.WIDTH * this.zoom;
-      } else if (this.containerSize.ratio > DIGITAL_CANVAS_SIZE.RATIO) {
-        canvasSize.height = this.containerSize.height - canvasMargin;
-        canvasSize.width = canvasSize.height * DIGITAL_CANVAS_SIZE.RATIO;
+      const isWidthBigger =
+        this.containerSize.ratio > DIGITAL_CANVAS_SIZE.RATIO;
+
+      if (isWidthBigger) {
+        canvasFitSize.h = this.containerSize.height - canvasMargin;
+        canvasFitSize.w = canvasFitSize.h * DIGITAL_CANVAS_SIZE.RATIO;
       } else {
-        canvasSize.width = this.containerSize.width - canvasMargin;
-        canvasSize.height = canvasSize.width / DIGITAL_CANVAS_SIZE.RATIO;
+        canvasFitSize.w = this.containerSize.width - canvasMargin;
+        canvasFitSize.h = canvasFitSize.w / DIGITAL_CANVAS_SIZE.RATIO;
       }
+
+      this.$emit('canvasSizeChange', { size: canvasFitSize });
+
+      const { WIDTH: realWidth, HEIGHT: realHeight } = DIGITAL_CANVAS_SIZE;
+
+      const canvasSize = {
+        width: this.zoom > 0 ? realWidth * this.zoom : canvasFitSize.w,
+        height: this.zoom > 0 ? realHeight * this.zoom : canvasFitSize.h
+      };
 
       this.isScroll = {
         x: canvasSize.width > this.containerSize.width - canvasMargin,
@@ -565,10 +582,6 @@ export default {
         {
           name: EVENT_TYPE.DIGITAL_BACKGROUND_REMOVE,
           handler: this.removeBackground
-        },
-        {
-          name: EVENT_TYPE.BACKGROUND_SELECT,
-          handler: this.backgroundToggleSelection
         }
       ];
 
@@ -598,6 +611,10 @@ export default {
         {
           name: EVENT_TYPE.CHANGE_IMAGE_PROPERTIES,
           handler: this.changeImageProperties
+        },
+        {
+          name: EVENT_TYPE.CHANGE_PORTRAIT_IMAGE_PROPERTIES,
+          handler: this.changePortraitImageProperties
         },
         {
           name: EVENT_TYPE.REMOVE_IMAGE,
@@ -1171,6 +1188,9 @@ export default {
         case OBJECT_TYPE.IMAGE:
           this.changeImageProperties(prop);
           break;
+        case OBJECT_TYPE.PORTRAIT_IMAGE:
+          this.changePortraitImageProperties(prop);
+          break;
         default:
           return;
       }
@@ -1285,6 +1305,12 @@ export default {
           break;
         }
 
+        case OBJECT_TYPE.PORTRAIT_IMAGE: {
+          const prop = { scaleX: target.scaleX, scaleY: target.scaleY };
+          this.changePortraitImageProperties(prop);
+          break;
+        }
+
         case OBJECT_TYPE.VIDEO: {
           const prop = mappingElementProperties(
             currentWidthInch,
@@ -1362,7 +1388,7 @@ export default {
           this.changeVideoProperties(prop);
           break;
         case OBJECT_TYPE.PORTRAIT_IMAGE:
-          this.changeElementProperties(prop, objectType);
+          this.changePortraitImageProperties(prop);
           break;
         default:
           return;
@@ -1479,44 +1505,23 @@ export default {
      * Handle aniamtion of selected objects
      * @param {Object} config config for animation
      */
-    previewAnimation({ config, objectType }) {
-      const isBackground = objectType === OBJECT_TYPE.BACKGROUND;
+    previewAnimation({ config }) {
+      const object = this.digitalCanvas.getActiveObject();
 
-      const background = getBackgroundObject(this.digitalCanvas);
-
-      if (isBackground && isEmpty(background)) return;
-
-      const object = isBackground
-        ? background
-        : this.digitalCanvas.getActiveObject();
-
-      const style = config.style;
       const args = [object, config, this.digitalCanvas];
 
-      if (config.controlType === CONTROL_TYPE.PLAY_IN) {
-        style === PLAY_IN_STYLES.BLUR && animateIn.blur(...args);
+      const animation =
+        config.controlType === CONTROL_TYPE.PLAY_IN ? animateIn : animateOut;
 
-        style === PLAY_IN_STYLES.FADE_IN && animateIn.fade(...args);
+      const animatedMethods = {
+        [PLAY_IN_STYLES.BLUR]: animation.blur,
+        [PLAY_IN_STYLES.FADE_IN]: animation.fade,
+        [PLAY_IN_STYLES.FADE_SCALE]: animation.fadeScale,
+        [PLAY_IN_STYLES.FADE_SLIDE_IN]: animation.fadeSlide,
+        [PLAY_IN_STYLES.SLIDE_IN]: animation.slide
+      };
 
-        style === PLAY_IN_STYLES.FADE_SCALE && animateIn.fadeScale(...args);
-
-        style === PLAY_IN_STYLES.FADE_SLIDE_IN && animateIn.fadeSlide(...args);
-
-        style === PLAY_IN_STYLES.SLIDE_IN && animateIn.slide(...args);
-      }
-
-      if (config.controlType === CONTROL_TYPE.PLAY_OUT) {
-        style === PLAY_OUT_STYLES.BLUR && animateOut.blur(...args);
-
-        style === PLAY_OUT_STYLES.FADE_OUT && animateOut.fade(...args);
-
-        style === PLAY_OUT_STYLES.FADE_SCALE && animateOut.fadeScale(...args);
-
-        style === PLAY_OUT_STYLES.FADE_SLIDE_OUT &&
-          animateOut.fadeSlide(...args);
-
-        style === PLAY_OUT_STYLES.SLIDE_OUT && animateOut.slide(...args);
-      }
+      animatedMethods[config.style](...args);
     },
 
     /**
@@ -1587,7 +1592,6 @@ export default {
         return;
       if (actionName === ARRANGE_SEND.FORWARD) {
         updateZIndex(currentObjectIndex, currentObjectIndex + 1);
-        return;
       }
     },
 
@@ -1680,6 +1684,14 @@ export default {
      */
     changeImageProperties(prop) {
       this.changeElementProperties(prop, OBJECT_TYPE.IMAGE);
+    },
+    /**
+     * Event fire when user change any property of selected portrait image
+     *
+     * @param {Object}  prop  new prop
+     */
+    changePortraitImageProperties(prop) {
+      this.changeElementProperties(prop, OBJECT_TYPE.PORTRAIT_IMAGE);
     },
     /**
      * Event fire when user change any property of selected video
@@ -1813,18 +1825,6 @@ export default {
       this.closeProperties();
 
       this.setPropertiesObjectType({ type: '' });
-    },
-    /**
-     * Event fire when user open / close background properties menu
-     *
-     * @param {Booean} isSelected  is background prop menu opened
-     */
-    backgroundToggleSelection({ isSelected }) {
-      const background = getBackgroundObject(this.digitalCanvas);
-
-      if (isEmpty(background)) return;
-
-      this.isBackgroundPropMenuOpen = isSelected;
     },
     /**
      * Reset configs properties when close object
@@ -2019,27 +2019,7 @@ export default {
         });
       }
 
-      if (
-        newData.type === OBJECT_TYPE.IMAGE ||
-        newData.type === OBJECT_TYPE.VIDEO
-      ) {
-        return this.createMediaFromPpData(newData);
-      }
-
-      if (newData.type === OBJECT_TYPE.PORTRAIT_IMAGE) {
-        return this.createPortraitImageFromPpData(newData);
-      }
-
-      if (
-        newData.type === OBJECT_TYPE.CLIP_ART ||
-        newData.type === OBJECT_TYPE.SHAPE
-      ) {
-        return this.createSvgFromPpData(newData);
-      }
-
-      if (newData.type === OBJECT_TYPE.TEXT) {
-        return this.createTextFromPpData(newData);
-      }
+      return this.drawObject(newData);
     },
     /**
      * Handle create video/image object from pp data;
@@ -2143,6 +2123,8 @@ export default {
 
       useDoubleStroke(image);
 
+      useObjectControlsOverride(image);
+
       addEventListeners(image, eventListeners);
 
       applyShadowToObject(image, shadow);
@@ -2173,31 +2155,7 @@ export default {
       if (isEmpty(objects)) return;
 
       const allObjectPromises = objects.map(objectData => {
-        if (
-          objectData.type === OBJECT_TYPE.SHAPE ||
-          objectData.type === OBJECT_TYPE.CLIP_ART
-        ) {
-          return this.createSvgFromPpData(objectData);
-        }
-
-        if (objectData.type === OBJECT_TYPE.TEXT) {
-          return this.createTextFromPpData(objectData);
-        }
-
-        if (
-          objectData.type === OBJECT_TYPE.IMAGE ||
-          objectData.type === OBJECT_TYPE.VIDEO
-        ) {
-          return this.createMediaFromPpData(objectData);
-        }
-
-        if (objectData.type === OBJECT_TYPE.PORTRAIT_IMAGE) {
-          return this.createPortraitImageFromPpData(objectData);
-        }
-
-        if (objectData.type === OBJECT_TYPE.BACKGROUND) {
-          return this.createBackgroundFromPpData(objectData);
-        }
+        return this.drawObject(objectData);
       });
 
       const listFabricObjects = await Promise.all(allObjectPromises);
@@ -2253,7 +2211,7 @@ export default {
      * @param   {Object}  prop        new prop
      * @param   {String}  objectType  object type of selected element
      *
-     * @returns {Object}              property of element after changed
+     * @returns {Promise<Object>}              property of element after changed
      */
     async updateElementProp(element, prop, objectType) {
       if (objectType === OBJECT_TYPE.TEXT) {
@@ -2262,6 +2220,10 @@ export default {
 
       if (objectType === OBJECT_TYPE.IMAGE) {
         return this.updateImageElementProp(element, prop);
+      }
+
+      if (objectType === OBJECT_TYPE.PORTRAIT_IMAGE) {
+        return this.updatePortraitImageElementProp(element, prop);
       }
 
       if (objectType === OBJECT_TYPE.VIDEO) {
@@ -2327,12 +2289,42 @@ export default {
     },
 
     /**
-     * Change fabric properties of current video element
+     * Change fabric properties of current image element
      *
      * @param   {Object}  element selected element
      * @param   {Object}  prop    new prop
      *
      * @returns {Object}          property of element after changed
+     */
+    updatePortraitImageElementProp(element, prop) {
+      const { border, size } = prop;
+
+      if (!isEmpty(border)) {
+        applyBorderToImageObject(element, border);
+      }
+
+      if (!isEmpty(size)) {
+        const { width, height } = size;
+        prop.scaleX = inToPx(width) / element.width;
+        prop.scaleY = inToPx(height) / element.height;
+        delete prop.size;
+      }
+
+      updateElement(element, prop, window.digitalCanvas);
+
+      const newProp = fabricToPpObject(element);
+      merge(prop, newProp);
+
+      return prop;
+    },
+
+    /**
+     * Change fabric properties of current video element
+     *
+     * @param   {Object}  element selected element
+     * @param   {Object}  prop    new prop
+     *
+     * @returns {Promise<Object>}          property of element after changed
      */
     async updateVideoElementProp(element, prop) {
       const { border, customThumbnailUrl, thumbnailUrl } = prop;
@@ -2715,7 +2707,7 @@ export default {
       this.digitalCanvas?.discardActiveObject();
       this.digitalCanvas?.renderAll();
 
-      const objects = cloneDeep(this.listObjects);
+      const objects = cloneDeep(this.currentObjects);
 
       const playInIds = cloneDeep(this.playInIds);
       const playOutIds = cloneDeep(this.playOutIds);
@@ -2762,6 +2754,25 @@ export default {
           hasControls: true
         });
       });
+    },
+    /**
+     * Draw object into canvas
+     *
+     * @param   {Object}  objectData  object to be draw
+     * @returns {Promise}
+     */
+    drawObject(objectData) {
+      const drawObjectMethods = {
+        [OBJECT_TYPE.BACKGROUND]: this.createBackgroundFromPpData,
+        [OBJECT_TYPE.TEXT]: this.createTextFromPpData,
+        [OBJECT_TYPE.SHAPE]: this.createSvgFromPpData,
+        [OBJECT_TYPE.CLIP_ART]: this.createSvgFromPpData,
+        [OBJECT_TYPE.IMAGE]: this.createMediaFromPpData,
+        [OBJECT_TYPE.VIDEO]: this.createMediaFromPpData,
+        [OBJECT_TYPE.PORTRAIT_IMAGE]: this.createPortraitImageFromPpData
+      };
+
+      return drawObjectMethods[objectData.type](objectData);
     }
   }
 };

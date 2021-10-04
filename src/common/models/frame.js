@@ -1,7 +1,7 @@
 import { DEFAULT_FRAME_DELAY } from '@/common/constants';
-import { BaseObject } from '.';
+import { BaseEntity } from './base';
 
-export class FrameDetail extends BaseObject {
+export class FrameDetail extends BaseEntity {
   title = '';
   delay = DEFAULT_FRAME_DELAY;
   objects = [];

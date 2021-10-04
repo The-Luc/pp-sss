@@ -1,9 +1,7 @@
 import { ImageElementObject, TextElementObject } from '../models/element';
-import { getPagePrintSize, pxToIn } from './canvas';
-import { getUniqueId } from './util';
+import { getUniqueId, getPageSize } from './util';
 import {
   CLASS_ROLE,
-  DIGITAL_PAGE_SIZE,
   OBJECT_TYPE,
   PORTRAIT_ASSISTANT_PLACEMENT,
   PORTRAIT_FLOW_OPTION_MULTI,
@@ -16,7 +14,7 @@ import {
 } from '@/common/constants';
 
 import { cloneDeep } from 'lodash';
-import { getActiveCanvas, ptToPx } from './canvas';
+import { getActiveCanvas, ptToPx, pxToIn } from './canvas';
 import { measureTextWidth } from './textSize';
 
 /**
@@ -374,17 +372,13 @@ export const createPortraitObjects = (
   const isNameOutSide =
     namePosition.value === PORTRAIT_NAME_POSITION.OUTSIDE.value;
 
-  const digitalPageSize = {
-    safeMargin: 0,
-    pageWidth: DIGITAL_PAGE_SIZE.PDF_WIDTH,
-    pageHeight: DIGITAL_PAGE_SIZE.PDF_HEIGHT,
-    bleedLeft: 0,
-    bleedTop: 0
-  };
-
-  const { safeMargin, pageWidth, pageHeight, bleedLeft, bleedTop } = isDigital
-    ? digitalPageSize
-    : getPagePrintSize().inches;
+  const {
+    safeMargin,
+    pageWidth,
+    pageHeight,
+    bleedLeft,
+    bleedTop
+  } = getPageSize(isDigital);
 
   const isTextAlignRight =
     nameTextFontSettings?.alignment?.horizontal === TEXT_HORIZONTAL_ALIGN.RIGHT;
@@ -483,6 +477,7 @@ export const createPortraitObjects = (
   }
 
   splitAssets.forEach((rowAssets, rowIndex) => {
+    let textOffsetY = 0;
     rowAssets.forEach(
       ({ lastName, firstName, imageUrl, classRole }, colIndex) => {
         if (!imageUrl) return;
@@ -504,9 +499,6 @@ export const createPortraitObjects = (
         const isOverFlow =
           isLargeAsst && tmpX + largeTeacherWidth > maxPageWidth;
 
-        const x = isOverFlow ? offsetX : tmpX;
-        const y = isOverFlow ? tmpY + itemHeight + rowGap : tmpY;
-
         const nameSpace = `${nameLines > 1 ? '\n' : ' '}`;
         const value = isFirstLast
           ? `${firstName}${nameSpace}${lastName}`
@@ -523,11 +515,31 @@ export const createPortraitObjects = (
         const imageWidth = isLargeAsst ? largeTeacherWidth : itemWidth;
         const imageHeight = isLargeAsst ? largeTeacherHeight : itemHeight;
 
+        const x = isOverFlow ? offsetX : tmpX;
+        const y = isOverFlow ? tmpY + itemHeight + rowGap : tmpY;
+        let imageX = x;
+
+        if (isLargeAsst) {
+          imageX += (itemWidth * 2 + colGap - imageWidth) / 2;
+        }
+
+        if (!colGap && !rowGap) {
+          if (!isNameOutSide) {
+            imageX = isRight
+              ? (pageWidth - imageWidth) / 2 + bleedLeft + pageWidth
+              : (pageWidth - imageWidth) / 2 + bleedLeft;
+          }
+          if (isNameOutSide && isRight) {
+            imageX =
+              (pageWidth - nameWidth - imageWidth) / 2 + bleedLeft + pageWidth;
+          }
+        }
+
         const img = new ImageElementObject({
           id: getUniqueId(),
           imageUrl,
           originalUrl: imageUrl,
-          coord: { x, y },
+          coord: { x: imageX, y },
           size: {
             width: imageWidth - borderOffset,
             height: imageHeight - borderOffset
@@ -540,20 +552,36 @@ export const createPortraitObjects = (
           type: objectType
         });
 
-        const textOutsideX = !isRight
-          ? margins.left
-          : isTextAlignRight
-          ? (pageWidth + bleedLeft) * 2 - margins.right - textWidth
-          : pageWidth + margins.left + bleedLeft + totalWidth;
+        let textOutsideX = 0;
 
-        const textOutsideY = y + colIndex * (nameGap + nameHeight) - bleedTop;
+        if (!isRight) textOutsideX = margins.left;
+        else
+          textOutsideX = isTextAlignRight
+            ? (pageWidth + bleedLeft) * 2 - margins.right - textWidth
+            : pageWidth + margins.left + bleedLeft + totalWidth;
 
-        const textX = isTextAlignRight
-          ? x - textWidth + imageWidth + defaultTextPadding
-          : isTextAlignCenter && textWidth > imageWidth
-          ? x - (textWidth - imageWidth) / 2
-          : x - defaultTextPadding;
+        const textOutsideY = y + textOffsetY - defaultTextPadding;
+        textOffsetY += nameGap + nameHeight;
+
+        let textX = 0;
+        if (isTextAlignRight)
+          textX = x - textWidth + imageWidth + defaultTextPadding;
+        else
+          textX =
+            isTextAlignCenter && textWidth > imageWidth
+              ? x - (textWidth - imageWidth) / 2
+              : x - defaultTextPadding;
         const textY = y + imageHeight - defaultTextPadding + defaultTextGap;
+
+        if (isLargeAsst) {
+          textX += (itemWidth * 2 + colGap - imageWidth) / 2;
+        }
+
+        if (!colGap && !rowGap) {
+          textX = isRight
+            ? (pageWidth - imageWidth) / 2 - defaultTextPadding + pageWidth
+            : (pageWidth - imageWidth) / 2 - defaultTextPadding;
+        }
 
         const text = new TextElementObject({
           id: getUniqueId(),
@@ -660,8 +688,8 @@ export const getPageObjects = (
           teacherPortraitSize === PORTRAIT_SIZE.LARGE
       );
 
-    primaryTeachers.forEach((teacher, index) => {
-      assets.splice(teacher.assetIndex + 1 + index, 0, {});
+    primaryTeachers.forEach((teacher, tIndex) => {
+      assets.splice(teacher.assetIndex + 1 + tIndex, 0, {});
       tmpAssets.push({}, {});
     });
 

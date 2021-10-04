@@ -40,6 +40,10 @@ export default {
       type: [Number, String],
       required: true
     },
+    sectionId: {
+      type: [Number, String],
+      required: true
+    },
     isHeaderDisplayed: {
       type: Boolean,
       default: true
@@ -67,18 +71,12 @@ export default {
   watch: {
     transition(value) {
       this.currentTransition = value;
-
-      this.onTransitionChange({ transition: value });
     },
     direction(value) {
       this.currentDirection = value;
-
-      this.onDirectionChange({ direction: value });
     },
     duration(value) {
       this.currentDuration = value;
-
-      this.onDurationChange({ duration: value });
     },
     isSettingChanged(newValue, oldValue) {
       if (newValue === oldValue || !newValue) return;
@@ -158,8 +156,13 @@ export default {
         transition,
         this.transitionTarget,
         this.sheetId,
+        this.sectionId,
         this.transitionIndex
       );
+
+      this.isSettingChanged = false;
+
+      this.triggerAfterSettingChange();
     },
     /**
      * Set change value
@@ -172,6 +175,12 @@ export default {
       this.isSettingChanged =
         isTransitionChanged || isDirectionChanged || isDurationChanged;
 
+      this.triggerAfterSettingChange();
+    },
+    /**
+     * Fire after setting change
+     */
+    triggerAfterSettingChange() {
       this.$emit('settingChange', { isChanged: this.isSettingChanged });
     }
   }

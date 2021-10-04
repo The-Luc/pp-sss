@@ -1,14 +1,14 @@
-import CommonModal from '@/components/Modals/CommonModal';
+import ThePreview from '../ThePreview';
 
 import TheContent from './TheContent';
 
 import { isEmpty } from '@/common/utils';
 
-import { TRANSITION, TRANS_DIRECTION } from '@/common/constants';
+import { TRANSITION } from '@/common/constants';
 
 export default {
   components: {
-    CommonModal,
+    ThePreview,
     TheContent
   },
   props: {
@@ -31,15 +31,18 @@ export default {
     secondImageUrl: {
       type: String,
       required: true
+    },
+    canvasSize: {
+      type: Object,
+      required: true
     }
   },
   data() {
     return {
       imageUrl: this.firstImageUrl,
       maskUrl: this.firstImageUrl,
-      backgroundPosition: this.getPosition(),
       transitionCss: isEmpty(this.duration) ? '' : `all ${this.duration}s`,
-      transitionType: `transition-${this.transition}-${this.direction}`,
+      transitionType: `transition-${this.transition}-${this.getDirection()}`,
       imageKey: false,
       isWipeTransition: this.transition === TRANSITION.WIPE
     };
@@ -49,7 +52,9 @@ export default {
       this.imageUrl = this.secondImageUrl;
       this.imageKey = !this.imageKey;
 
-      setTimeout(this.onClose, (this.duration + 0.5) * 1000);
+      const duration = this.transition === TRANSITION.NONE ? 0 : this.duration;
+
+      setTimeout(this.onClose, (duration + 0.5) * 1000);
     }, 1000);
   },
   methods: {
@@ -60,21 +65,15 @@ export default {
       this.$emit('close');
     },
     /**
-     * Get background position
+     * Get direction
      *
-     * @returns {String}  position of background
+     * @returns {String}  direction
      */
-    getPosition() {
-      if (this.transition !== TRANSITION.WIPE) return 'center';
-
-      const direction = {
-        [TRANS_DIRECTION.TOP_BOTTOM]: 'bottom',
-        [TRANS_DIRECTION.BOTTOM_TOP]: 'top',
-        [TRANS_DIRECTION.LEFT_RIGHT]: 'right',
-        [TRANS_DIRECTION.RIGHT_LEFT]: 'left'
-      };
-
-      return direction[this.direction];
+    getDirection() {
+      return this.transition === TRANSITION.NONE ||
+        this.transition === TRANSITION.DISSOLVE
+        ? ''
+        : this.direction;
     }
   }
 };

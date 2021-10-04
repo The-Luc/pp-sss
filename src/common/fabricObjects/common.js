@@ -22,7 +22,7 @@ import {
   ptToPxPreview,
   inToPxPreview
 } from '@/common/utils';
-import { toFabricMediaProp } from './image';
+import { toFabricMediaProp, toFabricPortraitImageProp } from './image';
 import { useObjectControlsOverride } from '@/plugins/fabric';
 
 export const DEFAULT_RULE_DATA = {
@@ -444,6 +444,10 @@ const getFabricPropByType = (elementType, prop, element) => {
     return toFabricMediaProp(prop, element);
   }
 
+  if (elementType === OBJECT_TYPE.PORTRAIT_IMAGE) {
+    return toFabricPortraitImageProp(prop);
+  }
+
   return {};
 };
 
@@ -546,7 +550,7 @@ export const moveToCenterPage = (
  * @param   {Object}  elementProperty the fabric property of element
  * @param   {Number}  expectedHeight  the view height of svg element
  * @param   {Number}  expectedWidth   the view width of svg element
- * @returns {Object}                  the svg data
+ * @returns {Promise<Object>}                  the svg data
  */
 export const getSvgData = (
   svgUrl,

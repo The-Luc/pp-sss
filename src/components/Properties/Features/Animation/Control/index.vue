@@ -1,7 +1,7 @@
 <template>
   <div class="control-container">
     <span class="properties-title" :class="{ disabled: disabled }">
-      {{ title }}
+      {{ title }}:
     </span>
 
     <div class="control-style">
@@ -39,15 +39,13 @@
       </div>
 
       <div v-if="showApplyButton" class="col-5">
-        <v-btn class="apply-btn" outlined @click="onClickApply">
-          Apply
-        </v-btn>
+        <v-btn class="apply-btn" outlined @click="onClickApply"> Apply </v-btn>
       </div>
     </div>
 
     <div v-if="isShowOptions" :key="componentKey" class="control-options">
       <div v-if="selectedStyle.showDirection" class="control-item">
-        <span class="properties-title">Direction</span>
+        <span class="properties-title">Direction:</span>
         <pp-select
           :items="directionOptions"
           :selected-val="selectedDirection"
@@ -57,7 +55,7 @@
 
       <div class="control-item">
         <span class="properties-title" :class="{ disabled: isOrderDisabled }">
-          Order
+          Order:
         </span>
         <pp-combobox
           max-height="200"
@@ -70,7 +68,7 @@
       </div>
 
       <div class="control-item">
-        <span class="properties-title">Duration</span>
+        <span class="properties-title">Duration:</span>
         <pp-input
           suffix="s"
           :value="durationValue"
@@ -80,7 +78,7 @@
       </div>
 
       <div v-if="selectedStyle.showScale" class="control-item">
-        <span class="properties-title">Scale</span>
+        <span class="properties-title">Scale:</span>
         <pp-input
           suffix="%"
           :value="scaleValue"

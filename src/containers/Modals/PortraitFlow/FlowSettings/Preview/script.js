@@ -185,5 +185,8 @@ export default {
       );
       this.portraits = totalPortraits.slice(min, max + 1);
     }
+  },
+  created() {
+    this.updatePreviewData();
   }
 };
