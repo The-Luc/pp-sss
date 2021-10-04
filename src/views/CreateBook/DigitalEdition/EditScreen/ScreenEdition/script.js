@@ -1589,7 +1589,6 @@ export default {
         return;
       if (actionName === ARRANGE_SEND.FORWARD) {
         updateZIndex(currentObjectIndex, currentObjectIndex + 1);
-        return;
       }
     },
 
@@ -2209,7 +2208,7 @@ export default {
      * @param   {Object}  prop        new prop
      * @param   {String}  objectType  object type of selected element
      *
-     * @returns {Object}              property of element after changed
+     * @returns {Promise<Object>}              property of element after changed
      */
     async updateElementProp(element, prop, objectType) {
       if (objectType === OBJECT_TYPE.TEXT) {
@@ -2322,7 +2321,7 @@ export default {
      * @param   {Object}  element selected element
      * @param   {Object}  prop    new prop
      *
-     * @returns {Object}          property of element after changed
+     * @returns {Promise<Object>}          property of element after changed
      */
     async updateVideoElementProp(element, prop) {
       const { border, customThumbnailUrl, thumbnailUrl } = prop;

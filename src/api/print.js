@@ -372,8 +372,6 @@ const printService = {
     const sheets = getSheetsFromStorage();
 
     Object.values(sheets).forEach(s => s._set(data[s.id]));
-
-    return;
   }
 };
 

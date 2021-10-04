@@ -742,8 +742,6 @@ export default {
                 this.awaitingAdd = '';
               }
             );
-
-            return;
           }
         },
         'text:changed': ({ target }) => {
@@ -1597,7 +1595,6 @@ export default {
         return;
       if (actionName === ARRANGE_SEND.FORWARD) {
         updateZIndex(currentObjectIndex, currentObjectIndex + 1);
-        return;
       }
     },
     /**

@@ -58,7 +58,6 @@ export default {
       }
       if (SHEET_TYPE.BACK_COVER === this.currentSheet.type) {
         this.onSelectPageOfLayout('left');
-        return;
       }
     }
   }

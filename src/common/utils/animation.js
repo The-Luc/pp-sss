@@ -873,7 +873,6 @@ const toCanvasElement = (element, blurOffset) => {
   // to objects in this way in order to avoid object trashing.
   canvas._objects = [];
   canvas.dispose();
-  canvas = null;
 
   return canvasEl;
 };

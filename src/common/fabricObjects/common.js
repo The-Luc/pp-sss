@@ -550,7 +550,7 @@ export const moveToCenterPage = (
  * @param   {Object}  elementProperty the fabric property of element
  * @param   {Number}  expectedHeight  the view height of svg element
  * @param   {Number}  expectedWidth   the view width of svg element
- * @returns {Object}                  the svg data
+ * @returns {Promise<Object>}                  the svg data
  */
 export const getSvgData = (
   svgUrl,

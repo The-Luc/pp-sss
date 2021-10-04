@@ -261,8 +261,6 @@ const digitalService = {
     const sheets = getSheetsFromStorage();
 
     Object.values(sheets).forEach(s => s._set(data[s.id]));
-
-    return;
   },
   /**
    * to save sheet media

@@ -47,10 +47,10 @@ export default {
       return this.getSelectedOption(delay);
     },
     playInValue() {
-      return this.framePlayInDuration.toFixed(1) + ' s';
+      return Math.round(this.framePlayInDuration * 10) / 10 + ' s';
     },
     playOutValue() {
-      return this.framePlayOutDuration.toFixed(1) + ' s';
+      return Math.round(this.framePlayOutDuration * 10) / 10 + ' s';
     },
     minDelay() {
       return this.totalVideoDuration || 0;
@@ -81,7 +81,7 @@ export default {
         's'
       );
 
-      if (!isValid) {
+      if (!isValid || this.selectedDelay.value === value) {
         this.forceRenderComponent();
         return;
       }
