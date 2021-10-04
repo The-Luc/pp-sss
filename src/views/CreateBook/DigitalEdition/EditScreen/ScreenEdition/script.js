@@ -272,7 +272,6 @@ export default {
       undoRedoCanvas: null,
       isFrameLoaded: false,
       isScroll: { x: false, y: false },
-      canvasFitSize: { w: 0, h: 0 },
       previousFrameId: null
     };
   },
@@ -452,26 +451,27 @@ export default {
       setCurrentFrameId: DIGITAL_MUTATES.SET_CURRENT_FRAME_ID
     }),
     updateCanvasSize() {
+      const canvasFitSize = { w: 0, h: 0 };
       const canvasMargin = 16;
 
       const isWidthBigger =
         this.containerSize.ratio > DIGITAL_CANVAS_SIZE.RATIO;
 
       if (isWidthBigger) {
-        this.canvasFitSize.h = this.containerSize.height - canvasMargin;
-        this.canvasFitSize.w = this.canvasFitSize.h * DIGITAL_CANVAS_SIZE.RATIO;
+        canvasFitSize.h = this.containerSize.height - canvasMargin;
+        canvasFitSize.w = canvasFitSize.h * DIGITAL_CANVAS_SIZE.RATIO;
       } else {
-        this.canvasFitSize.w = this.containerSize.width - canvasMargin;
-        this.canvasFitSize.h = this.canvasFitSize.w / DIGITAL_CANVAS_SIZE.RATIO;
+        canvasFitSize.w = this.containerSize.width - canvasMargin;
+        canvasFitSize.h = canvasFitSize.w / DIGITAL_CANVAS_SIZE.RATIO;
       }
 
-      this.$emit('canvasSizeChange', { size: this.canvasFitSize });
+      this.$emit('canvasSizeChange', { size: canvasFitSize });
 
       const { WIDTH: realWidth, HEIGHT: realHeight } = DIGITAL_CANVAS_SIZE;
 
       const canvasSize = {
-        width: this.zoom > 0 ? realWidth * this.zoom : this.canvasFitSize.w,
-        height: this.zoom > 0 ? realHeight * this.zoom : this.canvasFitSize.h
+        width: this.zoom > 0 ? realWidth * this.zoom : canvasFitSize.w,
+        height: this.zoom > 0 ? realHeight * this.zoom : canvasFitSize.h
       };
 
       this.isScroll = {
