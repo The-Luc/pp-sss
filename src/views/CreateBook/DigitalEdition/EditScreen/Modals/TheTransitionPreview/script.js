@@ -31,10 +31,6 @@ export default {
     secondImageUrl: {
       type: String,
       required: true
-    },
-    canvasSize: {
-      type: Object,
-      required: true
     }
   },
   data() {

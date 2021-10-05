@@ -462,8 +462,6 @@ export default {
         canvasFitSize.h = canvasFitSize.w / DIGITAL_CANVAS_SIZE.RATIO;
       }
 
-      this.$emit('canvasSizeChange', { size: canvasFitSize });
-
       const { WIDTH: realWidth, HEIGHT: realHeight } = DIGITAL_CANVAS_SIZE;
 
       const canvasSize = {

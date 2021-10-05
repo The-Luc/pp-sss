@@ -229,7 +229,7 @@ export default {
 
       this.preprocessingObjects(objects, fabricObjects);
 
-      canvas.add(...fabricObjects.filter(fb => !isEmpty(fb)));
+      canvas.add(...fabricObjects);
 
       canvas.requestRenderAll();
     },

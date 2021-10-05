@@ -823,14 +823,6 @@ export default {
     onCancelApplyPortrait(isShowApplyPortrait) {
       this.onToggleModal({ modal: MODAL_TYPES.PORTRAIT_FLOW });
       this.setToolNameSelected(isShowApplyPortrait ? '' : TOOL_NAME.PORTRAIT);
-    },
-    /**
-     * Canvas size change event
-     *
-     * @param {Object}  size  new size
-     */
-    onCanvasSizeChange({ size }) {
-      if (!isEmpty(size)) this.canvasSize = size;
     }
   }
 };
