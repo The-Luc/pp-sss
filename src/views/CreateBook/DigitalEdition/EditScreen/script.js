@@ -409,7 +409,7 @@ export default {
      * @param   {Array}  media  selected media
      */
     async handleSelectedMedia(media) {
-      const reversedMedia = media.reverse();
+      const reversedMedia = [...media].reverse();
       await this.updateSheetMedia({ media: reversedMedia });
     },
     /**
@@ -736,6 +736,7 @@ export default {
 
         const currentId = this.currentFrameId;
         const ids = Object.keys(this.listObjects);
+        const { background } = cloneDeep(this.backgroundsProps);
 
         this.setFrames({ framesList: [] });
 
@@ -748,10 +749,12 @@ export default {
 
         this.deleteObjects({ ids });
 
+        const filteredObjects = objects.filter(
+          obj => obj.type !== OBJECT_TYPE.BACKGROUND
+        );
+
         this.addObjecs({
-          objects: objects
-            .filter(obj => obj.type !== OBJECT_TYPE.BACKGROUND)
-            .map(obj => ({ id: obj.id, newObject: obj }))
+          objects: filteredObjects.map(obj => ({ id: obj.id, newObject: obj }))
         });
 
         this.setFrames({ framesList });
@@ -760,7 +763,8 @@ export default {
 
         resetObjects(canvas);
 
-        this.$refs.canvasEditor.drawObjectsOnCanvas(objects);
+        if (!isEmpty(background)) filteredObjects.unshift(background);
+        this.$refs.canvasEditor.drawObjectsOnCanvas(filteredObjects);
 
         canvas.renderAll();
       });

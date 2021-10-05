@@ -7,8 +7,7 @@ import { fabric } from 'fabric';
 
 import {
   imageBorderModifier,
-  useDigitalOverrides,
-  useDoubleStroke,
+  useOverrides,
   useObjectControlsOverride
 } from '@/plugins/fabric';
 import {
@@ -31,16 +30,14 @@ import {
   CANVAS_EVENT_TYPE,
   EVENT_TYPE,
   WINDOW_EVENT_TYPE,
-  CROP_CONTROL,
-  IMAGE_LOCAL,
   PROPERTIES_TOOLS,
   APPLY_MODE,
-  EDITION
+  EDITION,
+  PORTRAIT_IMAGE_MASK
 } from '@/common/constants';
 import {
   addPrintClipArts,
   addPrintShapes,
-  applyShadowToObject,
   applyTextBoxProperties,
   calcScaleElement,
   createTextBox,
@@ -53,8 +50,6 @@ import {
   addDigitalBackground,
   deleteObjectById,
   enableTextEditMode,
-  updateSpecificProp,
-  handleGetSvgData,
   addEventListeners,
   applyBorderToImageObject,
   createBackgroundFabricObject,
@@ -72,7 +67,10 @@ import {
   handleObjectSelected,
   handleObjectDeselected,
   calcAnimationOrder,
-  createPortraitImage
+  createMediaObject,
+  createSvgObject,
+  createPortraitImageObject,
+  createTextBoxObject
 } from '@/common/fabricObjects';
 import { createImage } from '@/common/fabricObjects';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
@@ -108,7 +106,6 @@ import {
   setCanvasUniformScaling,
   isNonElementPropSelected,
   copyPpObject,
-  inToPx,
   pastePpObject,
   isDeleteKey,
   isVideoPlaying,
@@ -507,7 +504,7 @@ export default {
         preserveObjectStacking: true
       });
       setActiveEdition(window.digitalCanvas, EDITION.DIGITAL);
-      useDigitalOverrides(fabric.Object.prototype);
+      useOverrides(fabric.Object.prototype);
       fabric.initFilterBackend();
       this.updateCanvasSize();
       this.digitalCanvas = window.digitalCanvas;
@@ -1306,7 +1303,18 @@ export default {
         }
 
         case OBJECT_TYPE.PORTRAIT_IMAGE: {
-          const prop = { scaleX: target.scaleX, scaleY: target.scaleY };
+          const radius =
+            target.mask === PORTRAIT_IMAGE_MASK.ROUNDED
+              ? currentWidthInch / 10
+              : currentWidthInch / 2;
+          const prop = {
+            width: currentWidthInch,
+            height: currentHeightInch,
+            scaleX: 1,
+            scaleY: 1,
+            rx: radius,
+            ry: radius
+          };
           this.changePortraitImageProperties(prop);
           break;
         }
@@ -1895,39 +1903,9 @@ export default {
      * @returns {Object} a fabric object
      */
     createTextFromPpData(textProperties) {
-      const {
-        coord,
-        size: { height, width }
-      } = textProperties;
-
-      const { object, data: objectData } = createTextBox(
-        inToPx(coord.x),
-        inToPx(coord.y),
-        inToPx(width),
-        inToPx(height),
-        textProperties
-      );
-
-      const {
-        newObject: {
-          shadow,
-          coord: { rotation }
-        }
-      } = objectData;
-
-      updateSpecificProp(object, {
-        coord: {
-          rotation
-        }
-      });
+      const { object, objectData } = createTextBoxObject(textProperties);
 
       this.handleAddTextEventListeners(object, objectData);
-
-      const objects = object.getObjects();
-
-      objects.forEach(obj => {
-        applyShadowToObject(obj, shadow);
-      });
 
       return object;
     },
@@ -1945,47 +1923,10 @@ export default {
         rotated: this.handleRotated,
         moved: this.handleMoved
       };
-
-      const svgObject = {
-        id: objectData.id,
-        object: objectData
-      };
-
-      const svg = await handleGetSvgData({
-        svg: svgObject,
-        svgUrlAttrName:
-          objectData.type === OBJECT_TYPE.CLIP_ART ? 'vector' : 'pathData',
-        expectedHeight: objectData.size.height,
-        expectedWidth: objectData.size.width
-      });
+      const svg = await createSvgObject(objectData);
 
       addEventListeners(svg, eventListeners);
 
-      const {
-        dropShadow,
-        shadowBlur,
-        shadowOffset,
-        shadowOpacity,
-        shadowAngle,
-        shadowColor
-      } = svg;
-
-      updateSpecificProp(svg, {
-        coord: {
-          rotation: objectData.coord.rotation
-        }
-      });
-
-      useObjectControlsOverride(svg);
-
-      applyShadowToObject(svg, {
-        dropShadow,
-        shadowBlur,
-        shadowOffset,
-        shadowOpacity,
-        shadowAngle,
-        shadowColor
-      });
       return svg;
     },
     /**
@@ -2040,66 +1981,12 @@ export default {
         mouseover: handleMouseOver,
         mouseout: handleMouseOut
       };
+      const media = await createMediaObject(
+        mediaProperties,
+        this.videoToggleStatus
+      );
 
-      const mediaObject = await createImage(mediaProperties);
-      const media = mediaObject?.object;
-
-      useObjectControlsOverride(media);
-
-      const {
-        border,
-        hasImage,
-        control,
-        type,
-        imageUrl,
-        thumbnailUrl,
-        customThumbnailUrl
-      } = mediaProperties;
-
-      if (type === OBJECT_TYPE.VIDEO) {
-        const url = customThumbnailUrl || thumbnailUrl;
-
-        await setVideoSrc(media, imageUrl, url, this.videoToggleStatus);
-      }
-
-      imageBorderModifier(media);
       addEventListeners(media, eventListeners);
-
-      const {
-        dropShadow,
-        shadowBlur,
-        shadowOffset,
-        shadowOpacity,
-        shadowAngle,
-        shadowColor
-      } = media;
-
-      applyShadowToObject(media, {
-        dropShadow,
-        shadowBlur,
-        shadowOffset,
-        shadowOpacity,
-        shadowAngle,
-        shadowColor
-      });
-
-      applyBorderToImageObject(media, border);
-
-      updateSpecificProp(media, {
-        coord: {
-          rotation: mediaProperties.coord.rotation
-        },
-        cropInfo: mediaProperties.cropInfo
-      });
-
-      if (type === OBJECT_TYPE.IMAGE && hasImage && !control) {
-        const control = await createMediaOverlay(IMAGE_LOCAL.CONTROL_ICON, {
-          width: CROP_CONTROL.WIDTH,
-          height: CROP_CONTROL.HEIGHT
-        });
-
-        media.set({ control });
-      }
 
       return media;
     },
@@ -2117,19 +2004,9 @@ export default {
         moved: this.handleMoved
       };
 
-      const image = await createPortraitImage(properties);
-
-      const { border, shadow } = properties;
-
-      useDoubleStroke(image);
-
-      useObjectControlsOverride(image);
+      const image = await createPortraitImageObject(properties);
 
       addEventListeners(image, eventListeners);
-
-      applyShadowToObject(image, shadow);
-
-      applyBorderToImageObject(image, border);
 
       return image;
     },
@@ -2227,7 +2104,7 @@ export default {
       }
 
       if (objectType === OBJECT_TYPE.VIDEO) {
-        return await this.updateVideoElementProp(element, prop);
+        return this.updateVideoElementProp(element, prop);
       }
 
       updateElement(element, prop, window.digitalCanvas);
@@ -2304,10 +2181,13 @@ export default {
       }
 
       if (!isEmpty(size)) {
-        const { width, height } = size;
-        prop.scaleX = inToPx(width) / element.width;
-        prop.scaleY = inToPx(height) / element.height;
-        delete prop.size;
+        const { width } = size;
+        const radius =
+          element.mask === PORTRAIT_IMAGE_MASK.ROUNDED ? width / 10 : width / 2;
+        prop.rx = radius;
+        prop.ry = radius;
+        prop.scaleX = 1;
+        prop.scaleY = 1;
       }
 
       updateElement(element, prop, window.digitalCanvas);

@@ -519,3 +519,12 @@ export const getPageSize = isDigital => {
 
   return isDigital ? digitalPageSize : getPagePrintSize().inches;
 };
+
+/**
+ * Stop the execution and wait for the provided duration
+ * @param {Number} mili milisecond
+ * @returns {Promise}
+ */
+export const waitMiliseconds = mili => {
+  return new Promise(r => setTimeout(r, mili));
+};

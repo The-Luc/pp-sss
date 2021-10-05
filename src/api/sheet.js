@@ -39,13 +39,14 @@ const replaceTransition = (transition, sectionIndex, sheetIndex) => {
 
 const getPlaybackDataFromFrames = (frames, transitions) => {
   return frames.map(({ id, frame }, index) => {
-    const { objects, playInIds, playOutIds } = frame;
+    const { objects, playInIds, playOutIds, delay } = frame;
 
     return {
       id,
       objects,
       playInIds,
       playOutIds,
+      delay,
       transition: isEmpty(transitions[index]) ? {} : transitions[index]
     };
   });

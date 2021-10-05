@@ -122,7 +122,6 @@ class MutationClass extends BaseObject {
   SET_PLAY_OUT_ORDER = 'setPlayOutOrder';
   SET_PLAY_IN_IDS = 'setPlayInIds';
   SET_PLAY_OUT_IDS = 'setPlayOutIds';
-  UPDATE_ANIMATION_ORDER = 'updateAnimationOrder';
 
   constructor(props) {
     super(props);

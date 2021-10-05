@@ -65,7 +65,7 @@ export default {
 
       const promises = validEntries.map(this.getFileSyncFromEntry);
 
-      return await Promise.all(promises);
+      return Promise.all(promises);
     },
     /**
      * Handle event drop files and folder to div

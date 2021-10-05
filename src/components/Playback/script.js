@@ -1,11 +1,21 @@
 import { fabric } from 'fabric';
 
-import { createBackgroundFabricObject } from '@/common/fabricObjects';
-import { getRefElement, isEmpty } from '@/common/utils';
+import {
+  createBackgroundFabricObject,
+  createMediaObject,
+  createPortraitImageObject,
+  createSvgObject,
+  createTextBoxObject
+} from '@/common/fabricObjects';
+import {
+  isEmpty,
+  multiObjectsAnimation,
+  waitMiliseconds,
+  getRefElement
+} from '@/common/utils';
 
 import {
   OBJECT_TYPE,
-  PLAY_IN_STYLES,
   THUMBNAIL_IMAGE_CONFIG,
   TRANSITION
 } from '@/common/constants';
@@ -32,7 +42,10 @@ export default {
 
     await this.initCanvases();
 
-    await this.drawInitialObject(this.playbackData[0].objects, this.mainCanvas);
+    await this.drawInitialObjects(
+      this.playbackData[0].objects,
+      this.mainCanvas
+    );
 
     await this.playbackAll();
 
@@ -109,8 +122,6 @@ export default {
      * Playback all frames
      */
     async playbackAll() {
-      if (this.playbackData.length < 2) return;
-
       for (let i = 0; i < this.playbackData.length; i++) {
         if (this.isDestroyed) break;
 
@@ -133,10 +144,10 @@ export default {
         return;
       }
 
-      await Promise.all([
-        this.playAnimation(this.playbackData[index]),
-        this.drawInitialObject(nextObjects, this.secondaryCanvas)
-      ]);
+      this.secondaryCanvas.remove(...this.secondaryCanvas.getObjects());
+      await this.drawInitialObjects(nextObjects, this.secondaryCanvas);
+
+      await this.playAnimation(this.playbackData[index]);
 
       if (this.isDestroyed || isEmpty(this.playbackData[index].transition)) {
         return;
@@ -180,56 +191,95 @@ export default {
      * @param   {Object}  frameData  data of current frame
      * @returns {Promise}
      */
-    playAnimation(frameData) {
-      frameData; // TODO: use for animation
+    async playAnimation(frameData) {
+      const { delay, objects, playInIds, playOutIds } = frameData;
 
-      return new Promise(resolve => setTimeout(resolve, 2000));
+      const delayDuration = delay ?? 3;
+
+      // Handle play in animation
+      await multiObjectsAnimation(objects, this.mainCanvas, playInIds, true);
+
+      await waitMiliseconds(delayDuration * 1000);
+
+      // Handle play out animation
+      await multiObjectsAnimation(objects, this.mainCanvas, playOutIds);
     },
     /**
-     * Draw background and "None Play In Animation" object
+     * Draw objects on canvas
      *
      * @param {Array}   objects list of object of current frame
      * @param {Object}  canvas  canvas is used to draw objects into
      */
-    async drawInitialObject(objects, canvas) {
-      const inititalObjects = objects.filter(({ animationIn }) => {
-        return isEmpty(PLAY_IN_STYLES[animationIn?.style]);
-      });
-
+    async drawInitialObjects(objects, canvas) {
       const drawObjectMethods = {
         [OBJECT_TYPE.BACKGROUND]: this.drawBackground,
-        [OBJECT_TYPE.TEXT]: this.fakeDrawingMethod,
-        [OBJECT_TYPE.SHAPE]: this.fakeDrawingMethod,
-        [OBJECT_TYPE.CLIP_ART]: this.fakeDrawingMethod,
-        [OBJECT_TYPE.IMAGE]: this.fakeDrawingMethod,
-        [OBJECT_TYPE.VIDEO]: this.fakeDrawingMethod,
-        [OBJECT_TYPE.PORTRAIT_IMAGE]: this.fakeDrawingMethod
+        [OBJECT_TYPE.TEXT]: this.drawText,
+        [OBJECT_TYPE.SHAPE]: this.drawSvg,
+        [OBJECT_TYPE.CLIP_ART]: this.drawSvg,
+        [OBJECT_TYPE.IMAGE]: this.drawMedia,
+        [OBJECT_TYPE.VIDEO]: this.drawMedia,
+        [OBJECT_TYPE.PORTRAIT_IMAGE]: this.drawPortraitImage
       };
 
-      const drawObjectPromises = inititalObjects.map(obj => {
+      const drawObjectPromises = objects.map(obj => {
         return drawObjectMethods[obj.type](obj, canvas);
       });
 
       const fabricObjects = await Promise.all(drawObjectPromises);
+
+      this.preprocessingObjects(objects, fabricObjects);
 
       canvas.add(...fabricObjects.filter(fb => !isEmpty(fb)));
 
       canvas.requestRenderAll();
     },
     /**
-     * Draw background and "None Play In Animation" object
+     * Draw background
      *
      * @param {Object}  background  background of current frame
      * @param {Object}  canvas      canvas is used to draw background into
      */
     async drawBackground(background, canvas) {
-      return await createBackgroundFabricObject(background, canvas);
+      return createBackgroundFabricObject(background, canvas);
     },
     /**
-     * Fake drawing method, will be removed after implement real method
+     *  Draw text
+     *
+     * @param {Object} objectData data of textbox
+     * @returns a fabric object
      */
-    fakeDrawingMethod() {
-      return new Promise(resolve => resolve());
+    async drawText(text) {
+      const { object } = createTextBoxObject(text);
+      return object;
+    },
+
+    /**
+     *  Draw shape / clipart object
+     *
+     * @param {Object} objectData data of clipart or shape object
+     * @returns a fabric object
+     */
+    async drawSvg(objectData) {
+      return createSvgObject(objectData);
+    },
+    /**
+     *  Draw video / image
+     *
+     * @param {Object} objectData data of video / image
+     * @returns a fabric object
+     */
+    async drawMedia(media) {
+      return createMediaObject(media);
+    },
+
+    /**
+     *  Draw portrait image
+     *
+     * @param {Object} portrait data of portrait
+     * @returns a fabric object
+     */
+    async drawPortraitImage(portrait) {
+      return createPortraitImageObject(portrait);
     },
     /**
      * Get transition css class
@@ -381,6 +431,21 @@ export default {
 
       this.mainCanvas = secondaryCanvas;
       this.secondaryCanvas = tempCanvas;
+    },
+    /**
+     * To preprocessing object before render on canvas
+     *
+     * @param {Object} objects ppObject data
+     * @param {Object} fbObjects fabric object data
+     */
+    preprocessingObjects(objects, fbObjects) {
+      const nonAnimationObjectIds = Object.values(objects)
+        .filter(o => o?.animationIn?.style)
+        .map(o => o.id);
+
+      fbObjects.forEach(
+        o => nonAnimationObjectIds.includes(o.id) && o.set({ visible: false })
+      );
     }
   }
 };

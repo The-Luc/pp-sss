@@ -26,14 +26,6 @@ export const loadDigitalLayouts = () =>
 export const loadSupplementalLayouts = () =>
   Promise.resolve(supplementalLayouts);
 
-export const loadPrintPpLayouts = () => {
-  return new Promise(resolve => {
-    setTimeout(() => {
-      resolve(window.data.printLayouts);
-    });
-  });
-};
-
 export const setPrintPpLayouts = layout => {
   setTimeout(() => {
     window.data.printSavedLayouts.push(layout);
