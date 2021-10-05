@@ -705,7 +705,6 @@ const animationHandler = (element, config, canvas) => {
  * @param {Object} canvas fabric canvas object
  */
 const playbackHandler = (animateObjects, canvas, isPlayIn) => {
-  console.log('animate objects', animateObjects);
   if (isEmpty(animateObjects)) return;
 
   animateObjects.forEach(({ element, options }) => {
