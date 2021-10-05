@@ -128,6 +128,8 @@ export default {
       const { x, y } = element.getBoundingClientRect();
       this.menuX = x - 82;
       this.menuY = y;
+      this.menuClass = 'pp-menu section-menu';
+
       setTimeout(() => {
         if (windowHeight - elementY < this.currentMenuHeight) {
           this.menuY = y - this.currentMenuHeight - 45;
