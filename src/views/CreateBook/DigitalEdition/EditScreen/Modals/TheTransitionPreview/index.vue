@@ -1,5 +1,5 @@
 <template>
-  <the-preview :width="`${canvasSize.w}px`" :height="`${canvasSize.h}px`">
+  <the-preview>
     <the-content
       v-if="isWipeTransition"
       :transition-type="transitionType"

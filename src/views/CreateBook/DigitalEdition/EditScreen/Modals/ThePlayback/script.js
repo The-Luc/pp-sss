@@ -8,10 +8,6 @@ export default {
     Playback
   },
   props: {
-    canvasSize: {
-      type: Object,
-      required: true
-    },
     playbackData: {
       type: Array,
       default: () => []

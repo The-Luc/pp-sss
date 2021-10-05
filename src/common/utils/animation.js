@@ -1235,6 +1235,9 @@ export const multiObjectsAnimation = (objects, canvas, orders, isPlayIn) => {
     order.forEach(id => {
       // find max duration
       const ppObject = objects.find(o => o.id === id);
+
+      if (!ppObject) return;
+
       const animationOpt = ppObject[animationType];
 
       if (!animationOpt?.style) return;

@@ -1,5 +1,6 @@
 import ThumbnailItem from '@/components/Thumbnail/ThumbnailItem';
 import Action from '@/containers/Menu/Action';
+import PrintPreview from '@/containers/Modals/PrintPreview';
 
 import { mapGetters, mapActions } from 'vuex';
 
@@ -19,6 +20,7 @@ import { useSectionItems } from '@/views/CreateBook/Manager/composables';
 export default {
   components: {
     ThumbnailItem,
+    PrintPreview,
     Action
   },
   setup() {
@@ -47,7 +49,9 @@ export default {
       currentMenuHeight: 0,
       menuX: 0,
       menuY: 0,
-      menuClass: 'pp-menu section-menu'
+      menuClass: 'pp-menu section-menu',
+      previewedSheetId: null,
+      isOpenPreviewModal: false
     };
   },
   computed: {
@@ -102,6 +106,12 @@ export default {
       this.updateSectionLinkStatus({ link: statusLink, sheetId });
     },
     /**
+     * Close print preview modal
+     */
+    onCloseModalPreview() {
+      this.isOpenPreviewModal = false;
+    },
+    /**
      * Toggle menu by set sheet selected id
      * @param  {Object} event fired event
      * @param  {String} sheetId  sheet's id selected
@@ -122,7 +132,8 @@ export default {
      * Preview print edition
      */
     onPreview(sheetId) {
-      console.log(sheetId);
+      this.previewedSheetId = sheetId;
+      this.isOpenPreviewModal = true;
     },
     /**
      * Export pdf

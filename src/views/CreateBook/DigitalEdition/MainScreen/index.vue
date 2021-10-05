@@ -14,7 +14,6 @@
         :is-admin="isAdmin"
         :is-open-menu="selectedSheet === sheet.id"
         @toggleMenu="toggleMenu($event, sheet.id)"
-        @closeMenu="onCloseMenu"
       >
         <action
           :is-open-menu="selectedSheet === sheet.id"

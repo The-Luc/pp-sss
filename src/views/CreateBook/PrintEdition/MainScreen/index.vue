@@ -14,9 +14,6 @@
         :is-enable="section.isAccessible"
         :is-admin="isAdmin"
         :is-open-menu="selectedSheet === sheet.id"
-        @closeMenu="onCloseMenu"
-        @export="onExportPDF"
-        @preview="onPreview(sheet.id)"
         @toggleMenu="toggleMenu($event, sheet.id)"
         @updateLink="changeLinkStatus(sheet.id, sheet.link)"
       >
@@ -34,12 +31,19 @@
           @loaded="onMenuLoaded"
         >
           <div class="menu-button">
-            <button @click="onPreview">Preview</button>
+            <button @click="onPreview(sheet.id)">Preview</button>
             <button @click="onExportPDF">PDF</button>
           </div>
         </action>
       </thumbnail-item>
     </template>
+    <print-preview
+      v-if="isOpenPreviewModal"
+      :is-open-modal="isOpenPreviewModal"
+      :sections="sections"
+      :previewed-sheet-id="previewedSheetId"
+      @cancel="onCloseModalPreview"
+    ></print-preview>
   </div>
 </template>
 
