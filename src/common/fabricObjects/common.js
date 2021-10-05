@@ -245,21 +245,11 @@ export const toFabricShapeProp = (prop, originalElement) => {
       vertical: DEFAULT_RULE_DATA.VERTICAL,
       width: {
         name: 'scaleX',
-        parse: value => {
-          if (originalElement) {
-            return inToPx(value) / originalElement.width;
-          }
-          return 1;
-        }
+        parse: value => widthToScaleX(value, originalElement)
       },
       height: {
         name: 'scaleY',
-        parse: value => {
-          if (originalElement) {
-            return inToPx(value) / originalElement.height;
-          }
-          return 1;
-        }
+        parse: value => heightToScaleY(value, originalElement)
       }
     },
     restrict: ['id', 'name', 'thumbnail', 'pathData', 'border']
@@ -282,21 +272,11 @@ export const toFabricClipArtProp = (prop, originalElement) => {
       y: DEFAULT_RULE_DATA.Y,
       width: {
         name: 'scaleX',
-        parse: value => {
-          if (originalElement) {
-            return inToPx(value) / originalElement.width;
-          }
-          return 1;
-        }
+        parse: value => widthToScaleX(value, originalElement)
       },
       height: {
         name: 'scaleY',
-        parse: value => {
-          if (originalElement) {
-            return inToPx(value) / originalElement.height;
-          }
-          return 1;
-        }
+        parse: value => heightToScaleY(value, originalElement)
       },
       rotation: DEFAULT_RULE_DATA.ROTATION,
       color: DEFAULT_RULE_DATA.COLOR,
@@ -673,7 +653,7 @@ export const handleGetSvgData = async ({
 }) => {
   const fabricProp = getFabricPropByType(svg.object.type, svg.object);
 
-  return await getSvgData(
+  return getSvgData(
     svg.object[svgUrlAttrName],
     { ...fabricProp, id: svg.id },
     expectedHeight,
@@ -1092,4 +1072,20 @@ export const toCssShadow = (prop, previewHeight) => {
     shadowColor,
     dropShadow
   };
+};
+
+const widthToScaleX = (value, originalElement) => {
+  if (originalElement) {
+    return inToPx(value) / originalElement.width;
+  }
+
+  return 1;
+};
+
+const heightToScaleY = (value, originalElement) => {
+  if (originalElement) {
+    return inToPx(value) / originalElement.height;
+  }
+
+  return 1;
 };

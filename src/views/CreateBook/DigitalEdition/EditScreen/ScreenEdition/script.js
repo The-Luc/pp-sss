@@ -7,7 +7,7 @@ import { fabric } from 'fabric';
 
 import {
   imageBorderModifier,
-  useDigitalOverrides,
+  useOverrides,
   useDoubleStroke,
   useObjectControlsOverride
 } from '@/plugins/fabric';
@@ -508,7 +508,7 @@ export default {
         preserveObjectStacking: true
       });
       setActiveEdition(window.digitalCanvas, EDITION.DIGITAL);
-      useDigitalOverrides(fabric.Object.prototype);
+      useOverrides(fabric.Object.prototype);
       fabric.initFilterBackend();
       this.updateCanvasSize();
       this.digitalCanvas = window.digitalCanvas;
@@ -2239,7 +2239,7 @@ export default {
       }
 
       if (objectType === OBJECT_TYPE.VIDEO) {
-        return await this.updateVideoElementProp(element, prop);
+        return this.updateVideoElementProp(element, prop);
       }
 
       updateElement(element, prop, window.digitalCanvas);

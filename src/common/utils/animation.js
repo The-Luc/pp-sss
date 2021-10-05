@@ -916,35 +916,35 @@ export const renderOrderBox = async (data, opacity) => {
     const ele = await createSVGElement(playIn, 'white');
     const radius = inToPx(width) - ele.width * 2;
 
-    rotateIcon(
+    rotateIcon({
       ctx,
-      ele,
-      inToPx(y),
-      inToPx(x),
-      eleWidth,
-      eleHeight,
+      element: ele,
+      top: inToPx(y),
+      left: inToPx(x),
+      width: eleWidth,
+      height: eleHeight,
       zoom,
       angle,
       radius,
       opacity
-    );
+    });
   }
   if (playOut) {
     const ele = await createSVGElement(playOut, 'lightgray');
     const radius = inToPx(width) - eleWidth;
 
-    rotateIcon(
+    rotateIcon({
       ctx,
-      ele,
-      inToPx(y),
-      inToPx(x),
-      eleWidth,
-      eleHeight,
+      element: ele,
+      top: inToPx(y),
+      left: inToPx(x),
+      width: eleWidth,
+      height: eleHeight,
       zoom,
       angle,
       radius,
       opacity
-    );
+    });
   }
 };
 

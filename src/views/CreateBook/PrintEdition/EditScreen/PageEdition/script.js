@@ -5,7 +5,7 @@ import { cloneDeep, merge, debounce } from 'lodash';
 import {
   imageBorderModifier,
   useDoubleStroke,
-  usePrintOverrides
+  useOverrides
 } from '@/plugins/fabric';
 
 import {
@@ -712,7 +712,7 @@ export default {
       });
       window.printCanvas = this.printCanvas;
       setActiveEdition(window.printCanvas, EDITION.PRINT);
-      usePrintOverrides(fabric.Object.prototype);
+      useOverrides(fabric.Object.prototype);
       this.updateCanvasSize();
       window.printCanvas.on({
         'selection:updated': this.objectSelected,
