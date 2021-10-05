@@ -67,15 +67,6 @@ export default {
       }
     }
   },
-  watch: {
-    bookSections: {
-      deep: true,
-      async handler(val, oldVal) {
-        if (val !== oldVal)
-          await this.getBookPrintInfo(this.$route.params.bookId);
-      }
-    }
-  },
   methods: {
     ...mapActions({
       updateSectionLinkStatus: PRINT_ACTIONS.UPDATE_SHEET_LINK_STATUS
