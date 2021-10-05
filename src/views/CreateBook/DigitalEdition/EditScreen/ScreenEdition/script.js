@@ -106,7 +106,6 @@ import {
   setCanvasUniformScaling,
   isNonElementPropSelected,
   copyPpObject,
-  inToPx,
   pastePpObject,
   isDeleteKey,
   isVideoPlaying,
