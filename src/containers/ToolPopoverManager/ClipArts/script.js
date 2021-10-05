@@ -101,6 +101,7 @@ export default {
      * @param {String}  input value to search
      */
     async onSearch(input) {
+      this.selectedClipArtId = [];
       this.clipArtList = await this.searchClipArt(input);
     }
   },
