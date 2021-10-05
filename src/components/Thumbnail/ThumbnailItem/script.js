@@ -82,7 +82,7 @@ export default {
       menuY: 0,
       isOpenMenu: false,
       menuClass: 'pp-menu section-menu',
-      currentMenuHeight: 1
+      currentMenuHeight: 0
     };
   },
   mounted() {
