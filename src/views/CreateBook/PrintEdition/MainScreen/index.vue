@@ -1,14 +1,11 @@
 <template>
   <div v-scroll.self="onCloseMenu" class="row thumbnail-view-row">
     <template v-for="section in sections">
-      <ThumbnailItem
+      <thumbnail-item
         v-for="sheet in section.sheets"
         :key="sheet.id"
-        :sheet-id="sheet.id"
-        :selected-sheet="selectedSheet"
         :name="section.name"
         :color="section.color"
-        :section="section"
         :sheet-type="sheet.type"
         :link-type="sheet.link"
         :thumbnail-url="sheet.thumbnailUrl"
@@ -16,12 +13,32 @@
         :to-link="`/book/${bookId}/edit/print/edit-screen/${sheet.id}`"
         :is-enable="section.isAccessible"
         :is-admin="isAdmin"
+        :is-open-menu="selectedSheet === sheet.id"
         @closeMenu="onCloseMenu"
         @export="onExportPDF"
         @preview="onPreview(sheet.id)"
-        @toggleMenu="toggleMenu(sheet.id)"
+        @toggleMenu="toggleMenu($event, sheet.id)"
         @updateLink="changeLinkStatus(sheet.id, sheet.link)"
-      />
+      >
+        <action
+          :is-open-menu="selectedSheet === sheet.id"
+          :section-id="section.id"
+          :section-name="section.name"
+          :assignee-id="section.assigneeId"
+          :due-date="section.dueDate"
+          :status="section.status"
+          :menu-class="menuClass"
+          :menu-x="menuX"
+          :menu-y="menuY"
+          @closeMenu="onCloseMenu"
+          @loaded="onMenuLoaded"
+        >
+          <div class="menu-button">
+            <button @click="onPreview">Preview</button>
+            <button @click="onExportPDF">PDF</button>
+          </div>
+        </action>
+      </thumbnail-item>
     </template>
   </div>
 </template>
