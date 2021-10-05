@@ -119,8 +119,6 @@ export default {
      * Playback all frames
      */
     async playbackAll() {
-      if (this.playbackData.length < 2) return;
-
       for (let i = 0; i < this.playbackData.length; i++) {
         if (this.isDestroyed) break;
 
@@ -138,14 +136,15 @@ export default {
       const nextObjects = hasNext ? this.playbackData[index + 1].objects : null;
 
       if (isEmpty(nextObjects)) {
-        await this.playAnimation(this.playbackData[index], this.mainCanvas);
+        await this.playAnimation(this.playbackData[index]);
 
         return;
       }
 
+      this.secondaryCanvas.remove(...this.secondaryCanvas.getObjects());
       await this.drawInitialObject(nextObjects, this.secondaryCanvas);
 
-      await this.playAnimation(this.playbackData[index], this.mainCanvas);
+      await this.playAnimation(this.playbackData[index]);
 
       if (this.isDestroyed || isEmpty(this.playbackData[index].transition)) {
         return;
@@ -189,18 +188,18 @@ export default {
      * @param   {Object}  frameData  data of current frame
      * @returns {Promise}
      */
-    async playAnimation(frameData, canvas) {
+    async playAnimation(frameData) {
       const { delay, objects, playInIds, playOutIds } = frameData;
 
       const delayDuration = delay ?? 3;
 
       // Handle play in animation
-      await multiObjectsAnimation(objects, canvas, playInIds, true);
+      await multiObjectsAnimation(objects, this.mainCanvas, playInIds, true);
 
       await waitMiliseconds(delayDuration * 1000);
 
       // Handle play out animation
-      await multiObjectsAnimation(objects, canvas, playOutIds);
+      await multiObjectsAnimation(objects, this.mainCanvas, playOutIds);
     },
     /**
      * Draw objects on canvas
@@ -208,7 +207,7 @@ export default {
      * @param {Array}   objects list of object of current frame
      * @param {Object}  canvas  canvas is used to draw objects into
      */
-    async drawInitialObject(objects, canvas) {
+    async drawInitialObjects(objects, canvas) {
       const drawObjectMethods = {
         [OBJECT_TYPE.BACKGROUND]: this.drawBackground,
         [OBJECT_TYPE.TEXT]: this.drawText,

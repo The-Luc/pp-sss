@@ -25,7 +25,7 @@ import { waitMiliseconds } from './util';
  * @returns {Object} config for anmation
  */
 const getBlurConfig = options => {
-  const { duration, isPlayIn, isPlayOut } = options;
+  const { duration, isPlayIn } = options;
   if (!duration) return;
 
   const croppingOffset = 200; //pixel
@@ -50,8 +50,7 @@ const getBlurConfig = options => {
     croppingOffset,
     isBlur: true,
     duration,
-    isPlayIn: Boolean(isPlayIn),
-    isPlayOut: Boolean(isPlayOut)
+    isPlayIn: Boolean(isPlayIn)
   };
 };
 
@@ -61,7 +60,7 @@ const getBlurConfig = options => {
  * @param {Object} options aniamtion option of an object
  * @returns {Object} config for anmation
  */
-const getFadeInConfig = (element, options) => {
+const getFadeInConfig = (options, element) => {
   return {
     startState: {
       opacity: 0
@@ -79,7 +78,10 @@ const getFadeInConfig = (element, options) => {
  * @param {Object} options aniamtion option of an object
  * @returns {Object} config for anmation
  */
-const getFadeScaleInConfig = (element, options) => {
+const getFadeScaleInConfig = (options, element) => {
+  if (element.hasImage)
+    return getFadeScaleImageConfig({ ...options, isPlayIn: true });
+
   const { scale, duration } = options;
   const center = element.getCenterPoint();
   const originTop = element.top;
@@ -122,7 +124,7 @@ const getFadeScaleInConfig = (element, options) => {
  * @param {Object} options aniamtion option of an object
  * @returns {Object} config for anmation
  */
-const getFadeSlideInConfig = (element, options, canvas) => {
+const getFadeSlideInConfig = (options, element, canvas) => {
   const { direction, duration } = options;
   const { oriPos, startPos, animatePropName } = calcSlideInPosition(
     element,
@@ -149,7 +151,7 @@ const getFadeSlideInConfig = (element, options, canvas) => {
  * @param {Object} options aniamtion option of an object
  * @returns {Object} config for anmation
  */
-const getSlideInConfig = (element, options, canvas) => {
+const getSlideInConfig = (options, element, canvas) => {
   const { duration, direction } = options;
 
   const { oriPos, startPos, animatePropName } = calcSlideInPosition(
@@ -175,7 +177,7 @@ const getSlideInConfig = (element, options, canvas) => {
  * @param {Object} options aniamtion option of an object
  * @returns {Object} config for anmation
  */
-const getFadeOutConfig = (element, options) => {
+const getFadeOutConfig = (options, element) => {
   return {
     animateProps: {
       opacity: 0
@@ -193,7 +195,10 @@ const getFadeOutConfig = (element, options) => {
  * @param {Object} options aniamtion option of an object
  * @returns {Object} config for anmation
  */
-const getFadeScaleOutConfig = (element, options) => {
+const getFadeScaleOutConfig = (options, element) => {
+  if (element.hasImage)
+    return getFadeScaleImageConfig({ ...options, isPlayIn: false });
+
   const { duration, scale } = options;
   const center = element.getCenterPoint();
   const originTop = element.top;
@@ -236,7 +241,7 @@ const getFadeScaleOutConfig = (element, options) => {
  * @param {Object} options aniamtion option of an object
  * @returns {Object} config for anmation
  */
-const getFadeSlideOutConfig = (element, options, canvas) => {
+const getFadeSlideOutConfig = (options, element, canvas) => {
   const { duration, direction } = options;
 
   const { oriPos, endPos, animatePropName } = calcSlideOutPosition(
@@ -264,7 +269,7 @@ const getFadeSlideOutConfig = (element, options, canvas) => {
  * @param {Object} options aniamtion option of an object
  * @returns {Object} config for anmation
  */
-const getSlideOutConfig = (element, options, canvas) => {
+const getSlideOutConfig = (options, element, canvas) => {
   const { duration, direction } = options;
 
   const { oriPos, endPos, animatePropName } = calcSlideOutPosition(
@@ -291,7 +296,7 @@ const getSlideOutConfig = (element, options, canvas) => {
  * @returns {Object} config for anmation
  */
 const getFadeScaleImageConfig = options => {
-  const { scale, isPlayIn, isPlayOut } = options;
+  const { scale, isPlayIn } = options;
 
   const visibleState = {
     opacity: 1,
@@ -309,8 +314,7 @@ const getFadeScaleImageConfig = options => {
     animateProps: isPlayIn ? visibleState : hiddenState,
     startState: isPlayIn ? hiddenState : visibleState,
     duration: options.duration,
-    isPlayIn: Boolean(isPlayIn),
-    isPlayOut: Boolean(isPlayOut)
+    isPlayIn: Boolean(isPlayIn)
   };
 };
 
@@ -325,48 +329,30 @@ const getFadeScaleImageConfig = options => {
  */
 const getAnimationConfig = (element, config, canvas, isPlayIn) => {
   const { style, scale } = config;
-  const options = { ...config, scale: scale / 100 };
+  const options = {
+    ...config,
+    scale: scale / 100,
+    isPlayIn: Boolean(isPlayIn)
+  };
 
-  if (isPlayIn) {
-    if (style === PLAY_IN_STYLES.BLUR) {
-      return getBlurConfig({ ...options, isPlayIn: true });
-    }
+  const playInConfig = {
+    [PLAY_IN_STYLES.BLUR]: getBlurConfig,
+    [PLAY_IN_STYLES.FADE_IN]: getFadeInConfig,
+    [PLAY_IN_STYLES.FADE_SCALE]: getFadeScaleInConfig,
+    [PLAY_IN_STYLES.FADE_SLIDE_IN]: getFadeSlideInConfig,
+    [PLAY_IN_STYLES.SLIDE_IN]: getSlideInConfig
+  };
 
-    if (style === PLAY_IN_STYLES.FADE_IN)
-      return getFadeInConfig(element, options);
+  const playOutConfig = {
+    [PLAY_OUT_STYLES.BLUR]: getBlurConfig,
+    [PLAY_OUT_STYLES.FADE_OUT]: getFadeOutConfig,
+    [PLAY_OUT_STYLES.FADE_SCALE]: getFadeScaleOutConfig,
+    [PLAY_OUT_STYLES.FADE_SLIDE_OUT]: getFadeSlideOutConfig,
+    [PLAY_OUT_STYLES.SLIDE_OUT]: getSlideOutConfig
+  };
+  const animateConfig = isPlayIn ? playInConfig : playOutConfig;
 
-    if (style === PLAY_IN_STYLES.FADE_SCALE) {
-      if (element.hasImage)
-        return getFadeScaleImageConfig({ ...options, isPlayIn: true });
-
-      return getFadeScaleInConfig(element, options);
-    }
-
-    if (style === PLAY_IN_STYLES.FADE_SLIDE_IN)
-      return getFadeSlideInConfig(element, options, canvas);
-
-    if (style === PLAY_IN_STYLES.SLIDE_IN)
-      return getSlideInConfig(element, options, canvas);
-  }
-
-  if (style === PLAY_OUT_STYLES.BLUR)
-    return getBlurConfig({ ...options, isPlayOut: true });
-
-  if (style === PLAY_OUT_STYLES.FADE_OUT)
-    return getFadeOutConfig(element, options);
-
-  if (style === PLAY_OUT_STYLES.FADE_SCALE) {
-    if (element.hasImage)
-      return getFadeScaleImageConfig({ ...options, isPlayOut: true });
-
-    return getFadeScaleOutConfig(element, options);
-  }
-
-  if (style === PLAY_OUT_STYLES.FADE_SLIDE_OUT)
-    return getFadeSlideOutConfig(element, options, canvas);
-
-  if (style === PLAY_OUT_STYLES.SLIDE_OUT)
-    return getSlideOutConfig(element, options, canvas);
+  return animateConfig[style](options, element, canvas);
 };
 
 /**
@@ -379,7 +365,7 @@ const fadeIn = (element, options, canvas) => {
   const { duration } = options;
   if (!duration) return;
 
-  const config = getFadeInConfig(element, options);
+  const config = getFadeInConfig(options, element);
 
   animationHandler(element, config, canvas);
 };
@@ -393,7 +379,7 @@ const fadeIn = (element, options, canvas) => {
 const fadeOut = (element, options, canvas) => {
   if (!options.duration) return;
 
-  const config = getFadeOutConfig(element, options);
+  const config = getFadeOutConfig(options, element);
 
   animationHandler(element, config, canvas);
 };
@@ -413,7 +399,7 @@ const fadeScaleIn = (element, options, canvas) => {
     handleFadeScaleImage(element, options, canvas);
     return;
   }
-  const config = getFadeScaleInConfig(element, options);
+  const config = getFadeScaleInConfig(options, element);
 
   animationHandler(element, config, canvas);
 };
@@ -428,12 +414,12 @@ const fadeScaleOut = (element, options, canvas) => {
   if (!options.duration || typeof options.scale !== 'number') return;
 
   if (element.hasImage) {
-    options.isPlayOut = true;
+    options.isPlayIn = false;
     handleFadeScaleImage(element, options, canvas);
     return;
   }
 
-  const config = getFadeScaleOutConfig(element, options);
+  const config = getFadeScaleOutConfig(options, element);
 
   animationHandler(element, config, canvas);
 };
@@ -447,7 +433,7 @@ const fadeScaleOut = (element, options, canvas) => {
 const slideIn = (element, options, canvas) => {
   if (!options.duration || isEmpty(options.direction)) return;
 
-  const config = getSlideInConfig(element, options, canvas);
+  const config = getSlideInConfig(options, element, canvas);
 
   animationHandler(element, config, canvas);
 };
@@ -461,7 +447,7 @@ const slideIn = (element, options, canvas) => {
 const slideOut = (element, options, canvas) => {
   if (!options.duration || isEmpty(options.direction)) return;
 
-  const config = getSlideOutConfig(element, options, canvas);
+  const config = getSlideOutConfig(options, element, canvas);
 
   animationHandler(element, config, canvas);
 };
@@ -475,7 +461,7 @@ const slideOut = (element, options, canvas) => {
 const fadeSlideIn = (element, options, canvas) => {
   if (!options.duration || isEmpty(options.direction)) return;
 
-  const config = getFadeSlideInConfig(element, options, canvas);
+  const config = getFadeSlideInConfig(options, element, canvas);
 
   animationHandler(element, config, canvas);
 };
@@ -489,7 +475,7 @@ const fadeSlideIn = (element, options, canvas) => {
 const fadeSlideOut = (element, options, canvas) => {
   if (!options.duration || isEmpty(options.direction)) return;
 
-  const config = getFadeSlideOutConfig(element, options, canvas);
+  const config = getFadeSlideOutConfig(options, element, canvas);
   animationHandler(element, config, canvas);
 };
 
@@ -512,7 +498,7 @@ const blurIn = (element, options, canvas) => {
  * @param {Object} canvas fabric canvas
  */
 const blurOut = (element, options, canvas) => {
-  const config = getBlurConfig({ ...options, isPlayOut: true });
+  const config = getBlurConfig({ ...options, isPlayIn: false });
 
   handleEffectOnImage(element, config, canvas);
 };
@@ -562,7 +548,7 @@ const handleEffectOnImage = (element, options, canvas) => {
   if (isBlur) img.filters.push(filter);
 
   element.set({
-    visible: options.isPlayOut ? true : false,
+    visible: !options.isPlayIn ? true : false,
     hasControls: false,
     hasBorders: false
   });
