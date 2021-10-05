@@ -5,7 +5,7 @@
     <span class="first-release">{{ section.dueDate }}</span>
     <img :src="moreIcon" alt="more icon" @click.stop="toggleMenu" />
 
-    <Action
+    <action
       :key="componentKey"
       :is-open-menu="isOpenMenu"
       :section-id="section.id"
@@ -16,7 +16,21 @@
       :menu-class="menuClass"
       :menu-x="menuX"
       :menu-y="menuY"
-    />
+      @closeMenu="onCloseMenu"
+      @loaded="onMenuLoaded"
+    >
+      <button-add
+        v-if="isShowAdd"
+        title="Add a Sheet"
+        @click.native="onAddSheet"
+      ></button-add>
+      <button-delete
+        v-if="isShowDelete"
+        class="btn-delete"
+        title="Delete This Section"
+        @click.native="onOpenModal"
+      ></button-delete>
+    </action>
   </v-col>
 </template>
 

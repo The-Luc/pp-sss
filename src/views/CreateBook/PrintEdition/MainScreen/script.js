@@ -13,6 +13,7 @@ import {
 
 import { LINK_STATUS } from '@/common/constants';
 import { useSaveData, useBookPrintInfo } from './composables';
+import { useSectionItems } from '@/views/CreateBook/Manager/composables';
 
 export default {
   components: {
@@ -22,14 +23,26 @@ export default {
     const { currentUser } = useUser();
     const { savePrintMainScreen, sheets } = useSaveData();
     const { getBookPrintInfo } = useBookPrintInfo();
+    const { sections: bookSections } = useSectionItems();
 
-    return { currentUser, savePrintMainScreen, sheets, getBookPrintInfo };
+    return {
+      currentUser,
+      savePrintMainScreen,
+      sheets,
+      getBookPrintInfo,
+      bookSections
+    };
   },
   async created() {
     await this.getBookPrintInfo(this.$route.params.bookId);
   },
   async beforeDestroy() {
     await this.savePrintMainScreen(this.sheets);
+  },
+  data() {
+    return {
+      selectedSheet: null
+    };
   },
   computed: {
     ...mapGetters({
@@ -40,6 +53,15 @@ export default {
     },
     sections() {
       return getSectionsWithAccessible(this.sectionList, this.currentUser);
+    }
+  },
+  watch: {
+    bookSections: {
+      deep: true,
+      async handler(val, oldVal) {
+        if (val !== oldVal)
+          await this.getBookPrintInfo(this.$route.params.bookId);
+      }
     }
   },
   methods: {
@@ -69,6 +91,37 @@ export default {
       const statusLink =
         link === LINK_STATUS.LINK ? LINK_STATUS.UNLINK : LINK_STATUS.LINK;
       this.updateSectionLinkStatus({ link: statusLink, sheetId });
+    },
+    /**
+     * Toggle menu by set sheet selected id
+     */
+    toggleMenu(sheetId) {
+      if (!this.selectedSheet || this.selectedSheet !== sheetId) {
+        this.selectedSheet = sheetId;
+        return;
+      }
+
+      if (this.selectedSheet && this.selectedSheet === sheetId) {
+        this.onCloseMenu();
+      }
+    },
+    /**
+     * Preview print edition
+     */
+    onPreview(sheetId) {
+      console.log(sheetId);
+    },
+    /**
+     * Export pdf
+     */
+    onExportPDF() {
+      console.log('PDF');
+    },
+    /**
+     * set sheet selected is null and close menu
+     */
+    onCloseMenu() {
+      this.selectedSheet = null;
     }
   }
 };

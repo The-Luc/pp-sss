@@ -11,6 +11,8 @@
         :custom-css-class="customCssClass"
         :total-item="totalItem"
         :is-toggle-content-available="isEditor"
+        :is-open-menu="isOpenMenu"
+        @toggleMenu="toggleMenu"
       />
 
       <Content
@@ -33,6 +35,24 @@
         @updateLink="onUpdateLink"
       />
     </div>
+    <action
+      :is-open-menu="isOpenMenu"
+      :section-id="section.id"
+      :section-name="section.name"
+      :assignee-id="section.assigneeId"
+      :due-date="section.dueDate"
+      :status="section.status"
+      :menu-class="menuClass"
+      :menu-x="menuX"
+      :menu-y="menuY"
+      @closeMenu="onCloseMenu"
+      @loaded="onMenuLoaded"
+    >
+      <div v-if="!isDigital" class="menu-button">
+        <button @click="onPreview">Preview</button>
+        <button @click="onExportPDF">PDF</button>
+      </div>
+    </action>
   </div>
 </template>
 

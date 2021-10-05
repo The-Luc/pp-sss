@@ -19,18 +19,26 @@ export const useBook = () => {
     getBook: BOOK_ACTIONS.GET_BOOK
   });
 
-  const { book } = useGetters({
-    book: BOOK_GETTERS.BOOK_DETAIL
+  const { book, totalInfo, sections, maxPage } = useGetters({
+    book: BOOK_GETTERS.BOOK_DETAIL,
+    totalInfo: BOOK_GETTERS.TOTAL_INFO,
+    sections: BOOK_GETTERS.SECTIONS_NO_SHEET,
+    maxPage: BOOK_GETTERS.GET_MAX_PAGE
   });
 
-  const { setBookId } = useMutations({
-    setBookId: BOOK_MUTATES.SET_BOOK_ID
+  const { setBookId, addSheet } = useMutations({
+    setBookId: BOOK_MUTATES.SET_BOOK_ID,
+    addSheet: BOOK_MUTATES.ADD_SHEET
   });
 
   return {
     book,
     getBook,
-    setBookId
+    setBookId,
+    totalInfo,
+    sections,
+    addSheet,
+    maxPage
   };
 };
 
