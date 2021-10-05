@@ -22,6 +22,13 @@
         @updateLink="changeLinkStatus(sheet.id, sheet.link)"
       />
     </template>
+    <print-preview
+      v-if="isOpenPreviewModal"
+      :is-open-modal="isOpenPreviewModal"
+      :sections="sections"
+      :previewed-sheet-id="previewedSheetId"
+      @cancel="onCloseModalPreview"
+    ></print-preview>
   </div>
 </template>
 

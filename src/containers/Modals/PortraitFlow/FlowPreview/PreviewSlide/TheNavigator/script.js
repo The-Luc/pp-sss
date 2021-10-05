@@ -1,4 +1,4 @@
-import MoveControl from './MoveControl';
+import MoveControl from '@/components/Icon/MoveControl';
 
 import { autoScroll } from '@/common/utils';
 

@@ -1,0 +1,97 @@
+#print-preview {
+  ::v-deep {
+    .v-dialog__content {
+      .pp-modal {
+        height: 744px;
+        min-height: 744px;
+        border-radius: 0;
+        .v-card {
+          .pp-modal-title {
+            margin-left: 29px;
+            margin-right: 29px;
+          }
+
+          .v-card__text {
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            .thumbnail {
+              width: 840px;
+              height: 536px;
+              margin-top: 30px;
+              box-shadow: 0 0 1px $color-gray2;
+              position: relative;
+              img {
+                width: 100%;
+                height: 100%;
+              }
+              &.haft-right::before {
+                content: '';
+                display: block;
+                position: absolute;
+                width: 50%;
+                height: 100%;
+                top: 0;
+                left: 0;
+                background-color: $color-white4;
+              }
+              &.haft-left::before {
+                content: '';
+                display: block;
+                position: absolute;
+                width: 50%;
+                height: 100%;
+                top: 0;
+                right: 0;
+                background-color: $color-white4;
+              }
+            }
+            .navigation {
+              display: flex;
+              align-items: center;
+              margin-bottom: 24px;
+              .selected-page {
+                display: flex;
+                align-items: center;
+                margin: 0 48px;
+                .selected-page-title {
+                  color: $color-stoodio-toolbartext;
+                  font-family: $font-500;
+                  font-size: 11px;
+                }
+                .pp-select {
+                  margin-left: 10px;
+                  width: 74px;
+                  .v-menu__content {
+                    max-height: 206px !important;
+                    top: auto !important;
+                    bottom: 0;
+                  }
+                }
+              }
+            }
+          }
+
+          .pp-modal-footer {
+            border: none;
+            .btn.cancel {
+              margin: 0;
+              height: 32px;
+              width: 100px;
+              border: 1px solid $color-gray2;
+              background-color: $color-white;
+              .v-btn__content {
+                color: $color-stoodio-toolbartext;
+              }
+            }
+            .btn.accept {
+              display: none;
+            }
+          }
+        }
+      }
+    }
+  }
+}

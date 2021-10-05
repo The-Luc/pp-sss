@@ -1,5 +1,5 @@
 import ThumbnailItem from '@/components/Thumbnail/ThumbnailItem';
-
+import PrintPreview from '@/containers/Modals/PrintPreview';
 import { mapGetters, mapActions } from 'vuex';
 
 import { useUser } from '@/hooks';
@@ -17,7 +17,8 @@ import { useSectionItems } from '@/views/CreateBook/Manager/composables';
 
 export default {
   components: {
-    ThumbnailItem
+    ThumbnailItem,
+    PrintPreview
   },
   setup() {
     const { currentUser } = useUser();
@@ -41,7 +42,9 @@ export default {
   },
   data() {
     return {
-      selectedSheet: null
+      selectedSheet: null,
+      previewedSheetId: null,
+      isOpenPreviewModal: false
     };
   },
   computed: {
@@ -93,6 +96,12 @@ export default {
       this.updateSectionLinkStatus({ link: statusLink, sheetId });
     },
     /**
+     * Close print preview modal
+     */
+    onCloseModalPreview() {
+      this.isOpenPreviewModal = false;
+    },
+    /**
      * Toggle menu by set sheet selected id
      */
     toggleMenu(sheetId) {
@@ -109,7 +118,8 @@ export default {
      * Preview print edition
      */
     onPreview(sheetId) {
-      console.log(sheetId);
+      this.previewedSheetId = sheetId;
+      this.isOpenPreviewModal = true;
     },
     /**
      * Export pdf
