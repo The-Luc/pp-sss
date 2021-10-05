@@ -77,7 +77,7 @@ export const setObjectPastetActiveSelection = (listPastedObjects, canvas) => {
  * @param {Boolean} isDigital is digital canvas or print canvas
  * @returns {Arrray} List object(s) pasted
  */
-export const handlePasteItems = async (
+export const handlePasteItems = async ({
   objects,
   sheetId,
   fabricObject,
@@ -87,13 +87,13 @@ export const handlePasteItems = async (
   countPaste,
   createElementFromPpData,
   isDigital
-) => {
+}) => {
   return Promise.all(
     objects.map(async o => {
       const obj = cloneDeep(o);
 
-      const coord = computePastedObjectCoord(
-        obj,
+      const coord = computePastedObjectCoord({
+        data: obj,
         sheetId,
         fabricObject,
         minLeft,
@@ -101,7 +101,7 @@ export const handlePasteItems = async (
         pageSelected,
         countPaste,
         isDigital
-      );
+      });
 
       const newData = {
         ...obj,
@@ -150,17 +150,17 @@ export const pastePpObject = async (
 
   const { minLeft, minTop } = getMinPositionObject(savedFabric);
 
-  const listPastedObjects = await handlePasteItems(
+  const listPastedObjects = await handlePasteItems({
     objects,
     sheetId,
-    savedFabric,
+    fabricObject: savedFabric,
     minLeft,
     minTop,
     pageSelected,
     countPaste,
     createElementFromPpData,
     isDigital
-  );
+  });
 
   canvas.add(...listPastedObjects);
 

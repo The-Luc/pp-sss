@@ -849,7 +849,7 @@ export const useTextOverride = function(text) {
  * @param {Number} radius icon distance
  * @param {Number} opacity icon opacity
  */
-export const rotateIcon = function(
+export const rotateIcon = function({
   ctx,
   element,
   top,
@@ -860,7 +860,7 @@ export const rotateIcon = function(
   angle,
   radius,
   opacity
-) {
+}) {
   const centerX = (Math.cos(angle) * radius + left) * zoom;
   const centerY = (Math.sin(angle) * radius + top) * zoom;
   ctx.save();
@@ -890,34 +890,33 @@ const renderControls = function(ctx, styleOverride) {
   if (this.playIn) {
     const { width, height } = this.playIn;
     const radius = this.width * this.scaleX - width * 2;
-
-    rotateIcon(
+    rotateIcon({
       ctx,
-      this.playIn,
-      this.top,
-      this.left,
+      element: this.playIn,
+      top: this.top,
+      left: this.left,
       width,
       height,
       zoom,
       angle,
       radius
-    );
+    });
   }
   if (this.playOut) {
     const { width, height } = this.playOut;
     const radius = this.width * this.scaleX - width;
 
-    rotateIcon(
+    rotateIcon({
       ctx,
-      this.playOut,
-      this.top,
-      this.left,
+      element: this.playOut,
+      top: this.top,
+      left: this.left,
       width,
       height,
       zoom,
       angle,
       radius
-    );
+    });
   }
 };
 
@@ -1073,21 +1072,10 @@ const commonFabricOverrides = object => {
 };
 
 /**
- * Override Fabric base Object Prototype for Print version
+ * Override Fabric base Object Prototype
  * @param {fabric.Object} object - the object to be prototyped
  */
-export const usePrintOverrides = object => {
-  const objectPrototype = object || fabric.Object.prototype;
-  commonFabricOverrides(objectPrototype);
-  objectPrototype.drawBorders = drawBorders;
-  objectPrototype.drawControls = drawControls;
-};
-
-/**
- * Override Fabric base Object Prototype for Digital version
- * @param {fabric.Object} object - the object to be prototyped
- */
-export const useDigitalOverrides = object => {
+export const useOverrides = object => {
   const objectPrototype = object || fabric.Object.prototype;
   commonFabricOverrides(objectPrototype);
   objectPrototype.drawBorders = drawBorders;

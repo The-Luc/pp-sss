@@ -7,7 +7,7 @@ import { fabric } from 'fabric';
 
 import {
   imageBorderModifier,
-  useDigitalOverrides,
+  useOverrides,
   useDoubleStroke,
   useObjectControlsOverride
 } from '@/plugins/fabric';
@@ -35,7 +35,8 @@ import {
   IMAGE_LOCAL,
   PROPERTIES_TOOLS,
   APPLY_MODE,
-  EDITION
+  EDITION,
+  PORTRAIT_IMAGE_MASK
 } from '@/common/constants';
 import {
   addPrintClipArts,
@@ -507,7 +508,7 @@ export default {
         preserveObjectStacking: true
       });
       setActiveEdition(window.digitalCanvas, EDITION.DIGITAL);
-      useDigitalOverrides(fabric.Object.prototype);
+      useOverrides(fabric.Object.prototype);
       fabric.initFilterBackend();
       this.updateCanvasSize();
       this.digitalCanvas = window.digitalCanvas;
@@ -1306,7 +1307,18 @@ export default {
         }
 
         case OBJECT_TYPE.PORTRAIT_IMAGE: {
-          const prop = { scaleX: target.scaleX, scaleY: target.scaleY };
+          const radius =
+            target.mask === PORTRAIT_IMAGE_MASK.ROUNDED
+              ? currentWidthInch / 10
+              : currentWidthInch / 2;
+          const prop = {
+            width: currentWidthInch,
+            height: currentHeightInch,
+            scaleX: 1,
+            scaleY: 1,
+            rx: radius,
+            ry: radius
+          };
           this.changePortraitImageProperties(prop);
           break;
         }
@@ -2227,7 +2239,7 @@ export default {
       }
 
       if (objectType === OBJECT_TYPE.VIDEO) {
-        return await this.updateVideoElementProp(element, prop);
+        return this.updateVideoElementProp(element, prop);
       }
 
       updateElement(element, prop, window.digitalCanvas);
@@ -2304,10 +2316,13 @@ export default {
       }
 
       if (!isEmpty(size)) {
-        const { width, height } = size;
-        prop.scaleX = inToPx(width) / element.width;
-        prop.scaleY = inToPx(height) / element.height;
-        delete prop.size;
+        const { width } = size;
+        const radius =
+          element.mask === PORTRAIT_IMAGE_MASK.ROUNDED ? width / 10 : width / 2;
+        prop.rx = radius;
+        prop.ry = radius;
+        prop.scaleX = 1;
+        prop.scaleY = 1;
       }
 
       updateElement(element, prop, window.digitalCanvas);

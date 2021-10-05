@@ -23,7 +23,7 @@
         @click="onSelected(asset)"
       >
         <v-icon class="icon-check">done</v-icon>
-        <img :src="asset.thumbUrl" alt="" />
+        <img :src="asset.thumbUrl" alt="thumbnail" />
         <div v-show="asset.inProject" class="indicator">In Project</div>
         <div class="duration">{{ asset.duration }}</div>
       </div>

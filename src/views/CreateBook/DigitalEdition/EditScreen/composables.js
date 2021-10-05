@@ -28,11 +28,11 @@ export const useSaveData = () => {
   };
 
   const saveAnimationConfig = async animationConfig => {
-    return await digitalService.saveAnimationConfig(animationConfig);
+    return digitalService.saveAnimationConfig(animationConfig);
   };
 
   const saveSheetFrames = async (sheetId, frames) => {
-    return await digitalService.updateSheet(sheetId, {
+    return digitalService.updateSheet(sheetId, {
       frames,
       isVisited: true
     });

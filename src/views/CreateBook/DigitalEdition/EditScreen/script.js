@@ -409,7 +409,7 @@ export default {
      * @param   {Array}  media  selected media
      */
     async handleSelectedMedia(media) {
-      const reversedMedia = media.reverse();
+      const reversedMedia = [...media].reverse();
       await this.updateSheetMedia({ media: reversedMedia });
     },
     /**
