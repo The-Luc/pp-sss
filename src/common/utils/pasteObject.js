@@ -167,7 +167,7 @@ const pasteToNewSpread = (
  * @param {Number} countPaste The paste's count
  * @returns {Object} New object coord after caculated
  */
-export const computePastedObjectCoord = (
+export const computePastedObjectCoord = ({
   data,
   sheetId,
   fabricObject,
@@ -176,7 +176,7 @@ export const computePastedObjectCoord = (
   pageSelected,
   countPaste,
   isDigital = false
-) => {
+}) => {
   const isSameSpread = sheetId === pageSelected.id;
   const object = cloneDeep(data);
 

@@ -24,7 +24,7 @@
             <v-icon v-if="isComposition(item.type)" class="type-icon">
               collections_bookmark
             </v-icon>
-            <img :src="item.thumbUrl" alt="" />
+            <img :src="item.thumbUrl" alt="thumbnail" />
             <div v-show="item.inProject" class="indicator">In Project</div>
           </div>
         </Draggable>

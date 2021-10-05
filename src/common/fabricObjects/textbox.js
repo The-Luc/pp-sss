@@ -31,6 +31,7 @@ import {
   useObjectControlsOverride,
   useTextOverride
 } from '@/plugins/fabric';
+import { updateSpecificProp } from '.';
 
 /**
  * Handle creating a TextBox into canvas
@@ -713,4 +714,40 @@ export const enableTextEditMode = (group, onCompleted) => {
 
   textForEditing.enterEditing();
   textForEditing.selectAll();
+};
+
+export const createTextBoxObject = textProperties => {
+  const {
+    coord,
+    size: { height, width }
+  } = textProperties;
+
+  const { object, data: objectData } = createTextBox(
+    inToPx(coord.x),
+    inToPx(coord.y),
+    inToPx(width),
+    inToPx(height),
+    textProperties
+  );
+
+  const {
+    newObject: {
+      shadow,
+      coord: { rotation }
+    }
+  } = objectData;
+
+  updateSpecificProp(object, {
+    coord: {
+      rotation
+    }
+  });
+
+  const objects = object.getObjects();
+
+  objects.forEach(obj => {
+    applyShadowToObject(obj, shadow);
+  });
+
+  return { object, objectData };
 };

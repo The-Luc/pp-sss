@@ -1,4 +1,7 @@
 import { DEFAULT_SHAPE } from '@/common/constants/defaultProperty';
+import { useObjectControlsOverride } from '@/plugins/fabric';
+import { applyShadowToObject, handleGetSvgData, updateSpecificProp } from '.';
+import { OBJECT_TYPE } from '../constants';
 
 import { addPrintSvgs } from './common';
 
@@ -27,4 +30,46 @@ export const addPrintShapes = async (
     isPlaceInLeftPage,
     eventListeners
   );
+};
+
+export const createSvgObject = async objectData => {
+  const svgObject = {
+    id: objectData.id,
+    object: objectData
+  };
+
+  const svg = await handleGetSvgData({
+    svg: svgObject,
+    svgUrlAttrName:
+      objectData.type === OBJECT_TYPE.CLIP_ART ? 'vector' : 'pathData',
+    expectedHeight: objectData.size.height,
+    expectedWidth: objectData.size.width
+  });
+
+  const {
+    dropShadow,
+    shadowBlur,
+    shadowOffset,
+    shadowOpacity,
+    shadowAngle,
+    shadowColor
+  } = svg;
+
+  updateSpecificProp(svg, {
+    coord: {
+      rotation: objectData.coord.rotation
+    }
+  });
+
+  useObjectControlsOverride(svg);
+
+  applyShadowToObject(svg, {
+    dropShadow,
+    shadowBlur,
+    shadowOffset,
+    shadowOpacity,
+    shadowAngle,
+    shadowColor
+  });
+  return svg;
 };
