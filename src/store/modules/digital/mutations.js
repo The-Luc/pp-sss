@@ -57,8 +57,13 @@ export const mutations = {
 
     const objects = {};
 
-    state.playInIds = [[]];
-    state.playOutIds = [[]];
+    if (isEmpty(state.playInIds)) {
+      state.playInIds = [[]];
+    }
+
+    if (isEmpty(state.playOutIds)) {
+      state.playOutIds = [[]];
+    }
 
     objectList.forEach(o => {
       if (o.type === OBJECT_TYPE.BACKGROUND) return;
