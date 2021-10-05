@@ -126,6 +126,14 @@ export const toFabricPortraitImageProp = prop => {
       y: DEFAULT_RULE_DATA.Y,
       width: DEFAULT_RULE_DATA.WIDTH,
       height: DEFAULT_RULE_DATA.HEIGHT,
+      rx: {
+        name: 'rx',
+        parse: inToPx
+      },
+      ry: {
+        name: 'ry',
+        parse: inToPx
+      },
       horizontal: DEFAULT_RULE_DATA.HORIZONTAL,
       vertical: DEFAULT_RULE_DATA.VERTICAL,
       rotation: DEFAULT_RULE_DATA.ROTATION

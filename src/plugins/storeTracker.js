@@ -179,14 +179,11 @@ class StoreTracker {
   };
 
   backToPrevious = async () => {
-    return await this._switchData(this._currentIndex > 0, -1);
+    return this._switchData(this._currentIndex > 0, -1);
   };
 
   moveToNext = async () => {
-    return await this._switchData(
-      this._currentIndex < this._trackList.length - 1,
-      1
-    );
+    return this._switchData(this._currentIndex < this._trackList.length - 1, 1);
   };
 
   isBackAvailable = () => {

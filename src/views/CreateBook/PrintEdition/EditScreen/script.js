@@ -301,7 +301,7 @@ export default {
      * @param   {Array}  images  selected images
      */
     async handleSelectedImages(images) {
-      const reversedImages = images.reverse();
+      const reversedImages = [...images].reverse();
       await this.updateSheetMedia({ images: reversedImages });
     },
     /**
