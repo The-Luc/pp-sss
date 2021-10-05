@@ -42,6 +42,7 @@
       :assignee-id="section.assigneeId"
       :due-date="section.dueDate"
       :status="section.status"
+      :menu-class="menuClass"
       :menu-x="menuX"
       :menu-y="menuY"
       @closeMenu="onCloseMenu"

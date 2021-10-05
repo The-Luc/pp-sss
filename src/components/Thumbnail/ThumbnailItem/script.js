@@ -80,7 +80,9 @@ export default {
       customCssClass: [],
       menuX: 0,
       menuY: 0,
-      isOpenMenu: false
+      isOpenMenu: false,
+      menuClass: 'pp-menu section-menu',
+      currentMenuHeight: 1
     };
   },
   mounted() {
@@ -95,6 +97,13 @@ export default {
       digitalCssClass,
       disabledCssClass
     ].filter(c => !isEmpty(c));
+
+    this.$root.$on('menu', data => {
+      setTimeout(() => {
+        this.currentMenuHeight = data.$el.clientHeight;
+        console.log(this.currentMenuHeight);
+      }, 10);
+    });
   },
   watch: {
     selectedSheet(id) {
@@ -120,9 +129,21 @@ export default {
      */
     toggleMenu(event) {
       const element = event.target;
+      const windowHeight = window.innerHeight;
+      const elementY = event.y;
+
       const { x, y } = element.getBoundingClientRect();
       this.menuX = x - 82;
       this.menuY = y;
+      setTimeout(() => {
+        if (windowHeight - elementY < this.currentMenuHeight) {
+          this.menuY = y - this.currentMenuHeight - 45;
+          this.menuClass = `${this.menuClass} section-menu-top`;
+        } else {
+          this.menuClass = `${this.menuClass} section-menu-bottom`;
+          this.menuY = y;
+        }
+      }, 100);
 
       this.$emit('toggleMenu');
     },
