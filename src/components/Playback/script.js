@@ -240,7 +240,7 @@ export default {
      * @param {Object}  canvas      canvas is used to draw background into
      */
     async drawBackground(background, canvas) {
-      return await createBackgroundFabricObject(background, canvas);
+      return createBackgroundFabricObject(background, canvas);
     },
     /**
      *  Draw text
@@ -248,7 +248,7 @@ export default {
      * @param {Object} objectData data of textbox
      * @returns a fabric object
      */
-    drawText(text) {
+    async drawText(text) {
       const { object } = createTextBoxObject(text);
       return object;
     },
@@ -260,7 +260,7 @@ export default {
      * @returns a fabric object
      */
     async drawSvg(objectData) {
-      return await createSvgObject(objectData);
+      return createSvgObject(objectData);
     },
     /**
      *  Draw video / image
@@ -269,7 +269,7 @@ export default {
      * @returns a fabric object
      */
     async drawMedia(media) {
-      return await createMediaObject(media);
+      return createMediaObject(media);
     },
 
     /**
@@ -279,7 +279,7 @@ export default {
      * @returns a fabric object
      */
     async drawPortraitImage(portrait) {
-      return await createPortraitImageObject(portrait);
+      return createPortraitImageObject(portrait);
     },
     /**
      * Get transition css class
