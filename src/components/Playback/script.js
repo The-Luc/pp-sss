@@ -42,7 +42,10 @@ export default {
 
     await this.initCanvases();
 
-    await this.drawInitialObject(this.playbackData[0].objects, this.mainCanvas);
+    await this.drawInitialObjects(
+      this.playbackData[0].objects,
+      this.mainCanvas
+    );
 
     await this.playbackAll();
 
@@ -142,7 +145,7 @@ export default {
       }
 
       this.secondaryCanvas.remove(...this.secondaryCanvas.getObjects());
-      await this.drawInitialObject(nextObjects, this.secondaryCanvas);
+      await this.drawInitialObjects(nextObjects, this.secondaryCanvas);
 
       await this.playAnimation(this.playbackData[index]);
 
