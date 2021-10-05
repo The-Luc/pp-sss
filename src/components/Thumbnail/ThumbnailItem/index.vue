@@ -46,6 +46,7 @@
       :menu-x="menuX"
       :menu-y="menuY"
       @closeMenu="onCloseMenu"
+      @loaded="onMenuLoaded"
     >
       <div v-if="!isDigital" class="menu-button">
         <button @click="onPreview">Preview</button>

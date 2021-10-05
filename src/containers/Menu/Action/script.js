@@ -288,6 +288,12 @@ export default {
       );
 
       return isEmpty(process) ? PROCESS_STATUS.NOT_STARTED.name : process.name;
+    },
+    /**
+     * Emit  event to parent
+     */
+    onMenuLoaded(event) {
+      this.$emit('loaded', event);
     }
   }
 };

@@ -97,13 +97,6 @@ export default {
       digitalCssClass,
       disabledCssClass
     ].filter(c => !isEmpty(c));
-
-    this.$root.$on('menu', data => {
-      setTimeout(() => {
-        this.currentMenuHeight = data.$el.clientHeight;
-        console.log(this.currentMenuHeight);
-      }, 10);
-    });
   },
   watch: {
     selectedSheet(id) {
@@ -164,6 +157,14 @@ export default {
      */
     onExportPDF() {
       this.$emit('export');
+    },
+    /**
+     * Set current menu height
+     */
+    onMenuLoaded(event) {
+      setTimeout(() => {
+        this.currentMenuHeight = event.$el.clientHeight;
+      }, 10);
     }
   }
 };

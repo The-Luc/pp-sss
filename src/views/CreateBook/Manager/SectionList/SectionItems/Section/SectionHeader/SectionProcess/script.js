@@ -76,12 +76,6 @@ export default {
     this.$root.$on('summary', data => {
       this.summaryEl = data;
     });
-    this.$root.$on('menu', data => {
-      const that = this;
-      setTimeout(() => {
-        that.currentMenuHeight = data.$el.clientHeight;
-      }, 10);
-    });
   },
   methods: {
     onAddSheet() {
@@ -145,6 +139,14 @@ export default {
      */
     onCloseMenu() {
       this.setSectionSelected({ sectionSelected: '' });
+    },
+    /**
+     * Set current menu height
+     */
+    onMenuLoaded(event) {
+      setTimeout(() => {
+        this.currentMenuHeight = event.$el.clientHeight;
+      }, 10);
     }
   }
 };

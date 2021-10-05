@@ -48,6 +48,6 @@ export default {
     }
   },
   mounted() {
-    this.$root.$emit('menu', this.$refs.menu);
+    this.$emit('loaded', this.$refs.menu);
   }
 };

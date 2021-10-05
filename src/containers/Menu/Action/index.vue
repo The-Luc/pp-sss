@@ -10,6 +10,7 @@
       :is-open="isOpenMenu"
       @onClickOutsideMenu="onClickOutsideMenu"
       @onItemClick="onItemClick"
+      @loaded="onMenuLoaded"
     >
       <slot></slot>
     </Menu>

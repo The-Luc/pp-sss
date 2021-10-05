@@ -17,6 +17,7 @@
       :menu-x="menuX"
       :menu-y="menuY"
       @closeMenu="onCloseMenu"
+      @loaded="onMenuLoaded"
     >
       <button-add
         v-if="isShowAdd"
