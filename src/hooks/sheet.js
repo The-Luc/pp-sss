@@ -224,19 +224,21 @@ export const useActionDigitalSheet = () => {
       const transitions = await getTransitions(screenId, sectionId);
 
       return framesObs.value.map(({ id, frame }, index) => {
-        const { objects, playInIds, playOutIds } = frame;
+        const { objects, playInIds, playOutIds, delay } = frame;
         const transition = isEmpty(transitions[index])
           ? {}
           : transitions[index];
 
-        if (`${id}` === currentFrameId) return { ...currentFrame, transition };
+        if (`${id}` === currentFrameId)
+          return { ...currentFrame, delay, transition };
 
         return {
           id: id,
           objects,
           playInIds,
           playOutIds,
-          transition
+          transition,
+          delay
         };
       });
     }

@@ -16,6 +16,7 @@ import {
   PLAY_IN_STYLES,
   PLAY_OUT_STYLES
 } from '@/common/constants/animationProperty';
+import { waitMiliseconds } from './util';
 
 /**
  * To get the config for blur animation
@@ -331,9 +332,8 @@ const getAnimationConfig = (element, config, canvas, isPlayIn) => {
       return getBlurConfig({ ...options, isPlayIn: true });
     }
 
-    if (style === PLAY_IN_STYLES.FADE_IN) {
+    if (style === PLAY_IN_STYLES.FADE_IN)
       return getFadeInConfig(element, options);
-    }
 
     if (style === PLAY_IN_STYLES.FADE_SCALE) {
       if (element.hasImage)
@@ -342,22 +342,18 @@ const getAnimationConfig = (element, config, canvas, isPlayIn) => {
       return getFadeScaleInConfig(element, options);
     }
 
-    if (style === PLAY_IN_STYLES.FADE_SLIDE_IN) {
+    if (style === PLAY_IN_STYLES.FADE_SLIDE_IN)
       return getFadeSlideInConfig(element, options, canvas);
-    }
 
-    if (style === PLAY_IN_STYLES.SLIDE_IN) {
+    if (style === PLAY_IN_STYLES.SLIDE_IN)
       return getSlideInConfig(element, options, canvas);
-    }
   }
 
-  if (style === PLAY_OUT_STYLES.BLUR) {
+  if (style === PLAY_OUT_STYLES.BLUR)
     return getBlurConfig({ ...options, isPlayOut: true });
-  }
 
-  if (style === PLAY_OUT_STYLES.FADE_OUT) {
+  if (style === PLAY_OUT_STYLES.FADE_OUT)
     return getFadeOutConfig(element, options);
-  }
 
   if (style === PLAY_OUT_STYLES.FADE_SCALE) {
     if (element.hasImage)
@@ -366,13 +362,11 @@ const getAnimationConfig = (element, config, canvas, isPlayIn) => {
     return getFadeScaleOutConfig(element, options);
   }
 
-  if (style === PLAY_OUT_STYLES.FADE_SLIDE_OUT) {
+  if (style === PLAY_OUT_STYLES.FADE_SLIDE_OUT)
     return getFadeSlideOutConfig(element, options, canvas);
-  }
 
-  if (style === PLAY_OUT_STYLES.SLIDE_OUT) {
+  if (style === PLAY_OUT_STYLES.SLIDE_OUT)
     return getSlideOutConfig(element, options, canvas);
-  }
 };
 
 /**
@@ -711,6 +705,7 @@ const animationHandler = (element, config, canvas) => {
  * @param {Object} canvas fabric canvas object
  */
 const playbackHandler = (animateObjects, canvas, isPlayIn) => {
+  console.log('animate objects', animateObjects);
   if (isEmpty(animateObjects)) return;
 
   animateObjects.forEach(({ element, options }) => {
@@ -1232,28 +1227,39 @@ export const sortAnimationOrder = (animationOrders, objects) => {
   });
 };
 
-///====================TEMP===========
-const multiObjectsAnimation = (objects, canvas, orders, isPlayIn) => {
+/**
+ * To handle animation for muli-objects
+ *
+ * @param {Object} objects ppData of objects
+ * @param {Object} canvas canvas object
+ * @param {Array} orders array of order of animation
+ * @param {Boolean} isPlayIn indicate whether in playIn animation or playOut animation
+ * @returns {Promise} of waiting time
+ */
+export const multiObjectsAnimation = (objects, canvas, orders, isPlayIn) => {
   const fbObjects = canvas.getObjects();
+  if (isEmpty(objects) || isEmpty(orders)) return;
+
   let timeCounter = 0;
   const animationType = isPlayIn ? 'animationIn' : 'animationOut';
 
-  // loop through orders
   orders.forEach(order => {
     let max = 0;
     const animateObjects = [];
 
     order.forEach(id => {
       // find max duration
-      const animationOpt = objects[id][animationType];
+      const ppObject = objects.find(o => o.id === id);
+      const animationOpt = ppObject[animationType];
 
-      if (!animationOpt.style) return;
+      if (!animationOpt?.style) return;
 
       max = Math.max(animationOpt.duration, max);
 
-      const fbObject = fbObjects.find(o => o.id === id);
+      const fbObject = fbObjects.find(o => o.id == id);
       animateObjects.push({ element: fbObject, options: animationOpt });
     });
+
     // call function to perform animation
     setTimeout(() => {
       playbackHandler(animateObjects, canvas, isPlayIn);
@@ -1263,47 +1269,5 @@ const multiObjectsAnimation = (objects, canvas, orders, isPlayIn) => {
     timeCounter += max;
   });
 
-  return timeCounter;
-};
-
-export const playbackCoordinator = (
-  objects,
-  canvas,
-  playInIds,
-  playOutIds,
-  delay
-) => {
-  const delayDuration = delay || 3;
-
-  preprocessingObjects(objects, canvas);
-
-  // Handle play in animation
-  const playInDuration = multiObjectsAnimation(
-    objects,
-    canvas,
-    playInIds,
-    true
-  );
-
-  const startPlayOut = delayDuration + playInDuration;
-
-  setTimeout(() => {
-    // Handle play out animation
-    multiObjectsAnimation(objects, canvas, playOutIds);
-  }, startPlayOut * 1000);
-};
-
-const preprocessingObjects = (objects, canvas) => {
-  canvas.discardActiveObject();
-
-  const nonAnimationObjectIds = Object.values(objects)
-    .filter(o => o.animationIn.style)
-    .map(o => o.id);
-
-  const fbObjects = canvas.getObjects();
-  fbObjects.forEach(
-    o => nonAnimationObjectIds.includes(o.id) && o.set({ visible: false })
-  );
-
-  canvas.renderAll();
+  return waitMiliseconds(timeCounter * 1000);
 };

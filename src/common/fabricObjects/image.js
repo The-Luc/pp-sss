@@ -21,7 +21,14 @@ import {
   DEFAULT_VIDEO,
   PORTRAIT_IMAGE_MASK
 } from '../constants';
-import { renderImageCropControl, videoInitEvent } from '@/plugins/fabric';
+import {
+  imageBorderModifier,
+  renderImageCropControl,
+  videoInitEvent,
+  useObjectControlsOverride,
+  useDoubleStroke
+} from '@/plugins/fabric';
+import { updateSpecificProp } from '@/common/fabricObjects';
 
 /**
  * Create new fabric image width initial properties
@@ -717,4 +724,86 @@ export const createPortraitImage = async props => {
       resolve(rect);
     });
   });
+};
+
+export const createMediaObject = async (
+  mediaProperties,
+  videoToggleCallback
+) => {
+  const mediaObject = await createImage(mediaProperties);
+  const media = mediaObject?.object;
+
+  useObjectControlsOverride(media);
+
+  const {
+    border,
+    hasImage,
+    control,
+    type,
+    imageUrl,
+    thumbnailUrl,
+    customThumbnailUrl
+  } = mediaProperties;
+
+  if (type === OBJECT_TYPE.VIDEO) {
+    const url = customThumbnailUrl || thumbnailUrl;
+
+    await setVideoSrc(media, imageUrl, url, videoToggleCallback);
+  }
+
+  imageBorderModifier(media);
+
+  const {
+    dropShadow,
+    shadowBlur,
+    shadowOffset,
+    shadowOpacity,
+    shadowAngle,
+    shadowColor
+  } = media;
+
+  applyShadowToObject(media, {
+    dropShadow,
+    shadowBlur,
+    shadowOffset,
+    shadowOpacity,
+    shadowAngle,
+    shadowColor
+  });
+
+  applyBorderToImageObject(media, border);
+
+  updateSpecificProp(media, {
+    coord: {
+      rotation: mediaProperties.coord.rotation
+    },
+    cropInfo: mediaProperties.cropInfo
+  });
+
+  if (type === OBJECT_TYPE.IMAGE && hasImage && !control) {
+    const control = await createMediaOverlay(IMAGE_LOCAL.CONTROL_ICON, {
+      width: CROP_CONTROL.WIDTH,
+      height: CROP_CONTROL.HEIGHT
+    });
+
+    media.set({ control });
+  }
+
+  return media;
+};
+
+export const createPortraitImageObject = async properties => {
+  const image = await createPortraitImage(properties);
+
+  const { border, shadow } = properties;
+
+  useDoubleStroke(image);
+
+  useObjectControlsOverride(image);
+
+  applyShadowToObject(image, shadow);
+
+  applyBorderToImageObject(image, border);
+
+  return image;
 };

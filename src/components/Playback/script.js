@@ -1,9 +1,19 @@
 import { fabric } from 'fabric';
 
-import { createBackgroundFabricObject } from '@/common/fabricObjects';
-import { isEmpty } from '@/common/utils';
+import {
+  createBackgroundFabricObject,
+  createMediaObject,
+  createPortraitImageObject,
+  createSvgObject,
+  createTextBoxObject
+} from '@/common/fabricObjects';
+import {
+  isEmpty,
+  multiObjectsAnimation,
+  waitMiliseconds
+} from '@/common/utils';
 
-import { OBJECT_TYPE, PLAY_IN_STYLES, TRANSITION } from '@/common/constants';
+import { OBJECT_TYPE, TRANSITION } from '@/common/constants';
 
 export default {
   components: {},
@@ -116,15 +126,14 @@ export default {
       const nextObjects = hasNext ? this.playbackData[index + 1].objects : null;
 
       if (isEmpty(nextObjects)) {
-        await this.playAnimation(this.playbackData[index]);
+        await this.playAnimation(this.playbackData[index], this.mainCanvas);
 
         return;
       }
 
-      await Promise.all([
-        this.playAnimation(this.playbackData[index]),
-        this.drawInitialObject(nextObjects, this.secondaryCanvas)
-      ]);
+      await this.drawInitialObject(nextObjects, this.secondaryCanvas);
+
+      await this.playAnimation(this.playbackData[index], this.mainCanvas);
 
       if (isEmpty(this.playbackData[index].transition)) return;
 
@@ -165,44 +174,50 @@ export default {
      * @param   {Object}  frameData  data of current frame
      * @returns {Promise}
      */
-    playAnimation(frameData) {
-      frameData; // TODO: use for animation
+    async playAnimation(frameData, canvas) {
+      const { delay, objects, playInIds, playOutIds } = frameData;
 
-      return new Promise(resolve => setTimeout(resolve, 2000));
+      const delayDuration = delay ?? 3;
+
+      // Handle play in animation
+      await multiObjectsAnimation(objects, canvas, playInIds, true);
+
+      await waitMiliseconds(delayDuration * 1000);
+
+      // Handle play out animation
+      await multiObjectsAnimation(objects, canvas, playOutIds);
     },
     /**
-     * Draw background and "None Play In Animation" object
+     * Draw objects on canvas
      *
      * @param {Array}   objects list of object of current frame
      * @param {Object}  canvas  canvas is used to draw objects into
      */
     async drawInitialObject(objects, canvas) {
-      const inititalObjects = objects.filter(({ animationIn }) => {
-        return isEmpty(PLAY_IN_STYLES[animationIn?.style]);
-      });
-
       const drawObjectMethods = {
         [OBJECT_TYPE.BACKGROUND]: this.drawBackground,
-        [OBJECT_TYPE.TEXT]: this.fakeDrawingMethod,
-        [OBJECT_TYPE.SHAPE]: this.fakeDrawingMethod,
-        [OBJECT_TYPE.CLIP_ART]: this.fakeDrawingMethod,
-        [OBJECT_TYPE.IMAGE]: this.fakeDrawingMethod,
-        [OBJECT_TYPE.VIDEO]: this.fakeDrawingMethod,
-        [OBJECT_TYPE.PORTRAIT_IMAGE]: this.fakeDrawingMethod
+        [OBJECT_TYPE.TEXT]: this.drawText,
+        [OBJECT_TYPE.SHAPE]: this.drawSvg,
+        [OBJECT_TYPE.CLIP_ART]: this.drawSvg,
+        [OBJECT_TYPE.IMAGE]: this.drawMedia,
+        [OBJECT_TYPE.VIDEO]: this.drawMedia,
+        [OBJECT_TYPE.PORTRAIT_IMAGE]: this.drawPortraitImage
       };
 
-      const drawObjectPromises = inititalObjects.map(obj => {
+      const drawObjectPromises = objects.map(obj => {
         return drawObjectMethods[obj.type](obj, canvas);
       });
 
       const fabricObjects = await Promise.all(drawObjectPromises);
+
+      this.preprocessingObjects(objects, fabricObjects);
 
       canvas.add(...fabricObjects.filter(fb => !isEmpty(fb)));
 
       canvas.requestRenderAll();
     },
     /**
-     * Draw background and "None Play In Animation" object
+     * Draw background
      *
      * @param {Object}  background  background of current frame
      * @param {Object}  canvas      canvas is used to draw background into
@@ -211,10 +226,43 @@ export default {
       return await createBackgroundFabricObject(background, canvas);
     },
     /**
-     * Fake drawing method, will be removed after implement real method
+     *  Draw text
+     *
+     * @param {Object} objectData data of textbox
+     * @returns a fabric object
      */
-    fakeDrawingMethod() {
-      return new Promise(resolve => resolve());
+    drawText(text) {
+      const { object } = createTextBoxObject(text);
+      return object;
+    },
+
+    /**
+     *  Draw shape / clipart object
+     *
+     * @param {Object} objectData data of clipart or shape object
+     * @returns a fabric object
+     */
+    async drawSvg(objectData) {
+      return await createSvgObject(objectData);
+    },
+    /**
+     *  Draw video / image
+     *
+     * @param {Object} objectData data of video / image
+     * @returns a fabric object
+     */
+    async drawMedia(media) {
+      return await createMediaObject(media);
+    },
+
+    /**
+     *  Draw portrait image
+     *
+     * @param {Object} portrait data of portrait
+     * @returns a fabric object
+     */
+    async drawPortraitImage(portrait) {
+      return await createPortraitImageObject(portrait);
     },
     /**
      * Get transition css class
@@ -292,6 +340,21 @@ export default {
       this.secondaryCanvas = tempCanvas;
 
       mainContainer.classList.add('preparation');
+    },
+    /**
+     * To preprocessing object before render on canvas
+     *
+     * @param {Object} objects ppObject data
+     * @param {Object} fbObjects fabric object data
+     */
+    preprocessingObjects(objects, fbObjects) {
+      const nonAnimationObjectIds = Object.values(objects)
+        .filter(o => o?.animationIn?.style)
+        .map(o => o.id);
+
+      fbObjects.forEach(
+        o => nonAnimationObjectIds.includes(o.id) && o.set({ visible: false })
+      );
     }
   }
 };
