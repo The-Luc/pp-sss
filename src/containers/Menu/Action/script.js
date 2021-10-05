@@ -3,15 +3,11 @@ import Calendar from './Calendar';
 import SectionStatus from './SectionStatus';
 import Assignee from './Assignee';
 
-import { mapGetters } from 'vuex';
 import moment from 'moment';
 
 import { ICON_LOCAL, DATE_FORMAT, PROCESS_STATUS } from '@/common/constants';
-import { GETTERS } from '@/store/modules/app/const';
-import { GETTERS as BOOK_GETTERS } from '@/store/modules/book/const';
 
 import { useMutationSection } from '@/hooks';
-
 import {
   useSectionActionMenu,
   useAssigneeMenu
@@ -87,10 +83,6 @@ export default {
     };
   },
   computed: {
-    ...mapGetters({
-      sectionSelected: GETTERS.SECTION_SELECTED,
-      maxPage: BOOK_GETTERS.GET_MAX_PAGE
-    }),
     menuItems() {
       const user = this.users.find(({ id }) => id === this.assigneeId);
       const assignee = isEmpty(user) ? 'Unassigned' : user?.name;
@@ -200,9 +192,6 @@ export default {
         default:
           break;
       }
-    },
-    setIsOpenMenu(sectionSelected) {
-      this.isOpenMenu = sectionSelected === this.sectionId;
     },
     /**
      * Fire when user click to select due date

@@ -1,15 +1,10 @@
-import { mapMutations, mapGetters } from 'vuex';
 import ButtonDelete from '@/components/Menu/ButtonDelete';
 import ButtonAdd from '@/components/Menu/ButtonAdd';
 import ProcessBar from '@/components/BarProcesses/ProcessBar';
 import Action from '@/containers/Menu/Action';
 
-import { GETTERS, MUTATES } from '@/store/modules/app/const';
-
-import {
-  GETTERS as BOOK_GETTERS,
-  MUTATES as BOOK_MUTATES
-} from '@/store/modules/book/const';
+import { useBook, useModal } from '@/hooks';
+import { useSectionActionMenu } from '@/views/CreateBook/Manager/composables';
 
 import { ICON_LOCAL, MODAL_TYPES } from '@/common/constants';
 
@@ -37,12 +32,22 @@ export default {
       isOpenMenu: false
     };
   },
+  setup() {
+    const { totalInfo, sections, addSheet, maxPage } = useBook();
+    const { sectionSelected, setSectionSelected } = useSectionActionMenu();
+    const { toggleModal } = useModal();
+
+    return {
+      toggleModal,
+      totalInfo,
+      sections,
+      addSheet,
+      maxPage,
+      sectionSelected,
+      setSectionSelected
+    };
+  },
   computed: {
-    ...mapGetters({
-      sectionSelected: GETTERS.SECTION_SELECTED,
-      sections: BOOK_GETTERS.SECTIONS_NO_SHEET,
-      totalInfo: BOOK_GETTERS.TOTAL_INFO
-    }),
     isShowAdd() {
       let index = this.sections.findIndex(item => item.id === this.section.id);
 
@@ -79,11 +84,6 @@ export default {
     });
   },
   methods: {
-    ...mapMutations({
-      toggleModal: MUTATES.TOGGLE_MODAL,
-      addSheet: BOOK_MUTATES.ADD_SHEET,
-      setSectionSelected: MUTATES.SET_SELECTION_SELECTED
-    }),
     onAddSheet() {
       this.setSectionSelected('');
 

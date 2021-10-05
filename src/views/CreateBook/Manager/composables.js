@@ -7,6 +7,10 @@ import {
   MUTATES as BOOK_MUTATES,
   ACTIONS as BOOK_ACTIONS
 } from '@/store/modules/book/const';
+import {
+  GETTERS as APP_GETTERS,
+  MUTATES as APP_MUTATES
+} from '@/store/modules/app/const';
 
 import { useAppCommon } from '@/hooks';
 
@@ -47,15 +51,20 @@ export const useSummaryInfo = () => {
 };
 
 export const useSectionActionMenu = () => {
-  const { updateSection } = useMutations({
-    updateSection: BOOK_MUTATES.UPDATE_SECTION
+  const { updateSection, setSectionSelected } = useMutations({
+    updateSection: BOOK_MUTATES.UPDATE_SECTION,
+    setSectionSelected: APP_MUTATES.SET_SELECTION_SELECTED
   });
 
   const { updateAssignee } = useActions({
     updateAssignee: BOOK_ACTIONS.UPDATE_ASSIGNEE
   });
 
-  return { updateSection, updateAssignee };
+  const { sectionSelected } = useGetters({
+    sectionSelected: APP_GETTERS.SECTION_SELECTED
+  });
+
+  return { updateSection, updateAssignee, setSectionSelected, sectionSelected };
 };
 
 export const useAssigneeMenu = () => {
