@@ -10,13 +10,17 @@ import {
 import {
   isEmpty,
   multiObjectsAnimation,
-  waitMiliseconds
+  waitMiliseconds,
+  getRefElement
 } from '@/common/utils';
 
-import { OBJECT_TYPE, TRANSITION } from '@/common/constants';
+import {
+  OBJECT_TYPE,
+  THUMBNAIL_IMAGE_CONFIG,
+  TRANSITION
+} from '@/common/constants';
 
 export default {
-  components: {},
   props: {
     playbackData: {
       type: Array,
@@ -27,7 +31,10 @@ export default {
     return {
       mainCanvas: null,
       secondaryCanvas: null,
-      transitionCss: ''
+      mask: null,
+      transitionCss: '',
+      maskUrl: '',
+      isDestroyed: false
     };
   },
   async mounted() {
@@ -42,6 +49,8 @@ export default {
     setTimeout(this.onFinish, 1000);
   },
   beforeDestroy() {
+    this.isDestroyed = true;
+
     window.removeEventListener('resize', this.onResized);
   },
   methods: {
@@ -81,8 +90,9 @@ export default {
      */
     initCanvases() {
       return new Promise(resolve => {
-        this.mainCanvas = this.initCanvas(this.$refs.playbackCanvas1);
-        this.secondaryCanvas = this.initCanvas(this.$refs.playbackCanvas2);
+        this.mainCanvas = this.initCanvas('playbackCanvas1');
+        this.secondaryCanvas = this.initCanvas('playbackCanvas2');
+        this.mask = getRefElement(this.$refs, 'mask');
 
         this.$nextTick(() => {
           this.onResized();
@@ -94,11 +104,11 @@ export default {
     /**
      * Init canvas
      *
-     * @param   {Object}  canvasElement canvas html element
+     * @param   {String}  canvasRefName canvas ref name
      * @returns {Object}                fabric canvas
      */
-    initCanvas(canvasElement) {
-      return new fabric.Canvas(canvasElement, {
+    initCanvas(canvasRefName) {
+      return new fabric.Canvas(getRefElement(this.$refs, canvasRefName), {
         backgroundColor: '#fff',
         preserveObjectStacking: true,
         selectable: false,
@@ -112,6 +122,8 @@ export default {
       if (this.playbackData.length < 2) return;
 
       for (let i = 0; i < this.playbackData.length; i++) {
+        if (this.isDestroyed) break;
+
         await this.playback(i);
       }
     },
@@ -135,7 +147,9 @@ export default {
 
       await this.playAnimation(this.playbackData[index], this.mainCanvas);
 
-      if (isEmpty(this.playbackData[index].transition)) return;
+      if (this.isDestroyed || isEmpty(this.playbackData[index].transition)) {
+        return;
+      }
 
       await this.playTransition(this.playbackData[index].transition);
     },
@@ -157,7 +171,8 @@ export default {
         mainContainer,
         secondaryContainer,
         cssClass,
-        duration
+        duration,
+        transition === TRANSITION.WIPE
       );
 
       return new Promise(resolve => {
@@ -293,27 +308,81 @@ export default {
      * @param   {Object}  secondaryContainer  container of secondary canvas
      * @param   {Object}  cssClass            css class for trainsition
      * @param   {Number}  duration            transition duration
+     * @param   {Boolean} isWipe              is wipe transtion
      * @returns {Promise}
      */
-    beginTransition(mainContainer, secondaryContainer, cssClass, duration) {
+    async beginTransition(
+      mainContainer,
+      secondaryContainer,
+      cssClass,
+      duration,
+      isWipe
+    ) {
       return new Promise(resolve => {
-        secondaryContainer.classList.remove('preparation');
-        secondaryContainer.classList.add(cssClass.enterActive);
-
-        mainContainer.classList.add(cssClass.leaveActive);
+        this.setTransitionActiveStyle(
+          mainContainer,
+          secondaryContainer,
+          cssClass,
+          isWipe
+        );
 
         setTimeout(() => {
           this.transitionCss = isEmpty(duration) ? '' : `all ${duration}s`;
 
           setTimeout(() => {
-            secondaryContainer.classList.add(cssClass.enterTo);
-
-            mainContainer.classList.add(cssClass.leaveTo);
+            this.setTransitionEndStyle(
+              mainContainer,
+              secondaryContainer,
+              cssClass,
+              isWipe
+            );
 
             resolve();
           }, 10);
         }, 10);
       });
+    },
+    /**
+     * Set active transition style
+     *
+     * @param {Object}  mainContainer       container of main canvas
+     * @param {Object}  secondaryContainer  container of secondary canvas
+     * @param {Object}  cssClass            css class for trainsition
+     * @param {Boolean} isWipe              is wipe transtion
+     */
+    setTransitionActiveStyle(
+      mainContainer,
+      secondaryContainer,
+      cssClass,
+      isWipe
+    ) {
+      secondaryContainer.classList.remove('preparation');
+      secondaryContainer.classList.add(cssClass.enterActive);
+
+      mainContainer.classList.add(cssClass.leaveActive);
+
+      if (!isWipe) return;
+
+      this.maskUrl = this.mainCanvas.toDataURL({
+        format: THUMBNAIL_IMAGE_CONFIG.FORMAT
+      });
+
+      this.mask.classList.add(cssClass.enterActive);
+    },
+    /**
+     * Set end transition style
+     *
+     * @param {Object}  mainContainer       container of main canvas
+     * @param {Object}  secondaryContainer  container of secondary canvas
+     * @param {Object}  cssClass            css class for trainsition
+     * @param {Boolean} isWipe              is wipe transtion
+     */
+    setTransitionEndStyle(mainContainer, secondaryContainer, cssClass, isWipe) {
+      secondaryContainer.classList.add(cssClass.enterTo);
+
+      mainContainer.classList.add(cssClass.leaveTo);
+
+      if (isWipe) this.mask.classList.add(cssClass.enterTo);
     },
     /**
      * End transition process
@@ -323,7 +392,22 @@ export default {
      * @param {Object}  cssClass            css class for trainsition
      */
     endTransition(mainContainer, secondaryContainer, cssClass) {
+      this.removeTransition(mainContainer, secondaryContainer, cssClass);
+
+      this.swapCanvas();
+
+      mainContainer.classList.add('preparation');
+    },
+    /**
+     * Remove transition css class
+     *
+     * @param {Object}  mainContainer       container of main canvas
+     * @param {Object}  secondaryContainer  container of secondary canvas
+     * @param {Object}  cssClass            css class for trainsition
+     */
+    removeTransition(mainContainer, secondaryContainer, cssClass) {
       this.transitionCss = '';
+      this.maskUrl = '';
 
       mainContainer.classList.remove(cssClass.leaveActive);
       mainContainer.classList.remove(cssClass.leaveTo);
@@ -331,6 +415,13 @@ export default {
       secondaryContainer.classList.remove(cssClass.enterActive);
       secondaryContainer.classList.remove(cssClass.enterTo);
 
+      this.mask.classList.remove(cssClass.enterActive);
+      this.mask.classList.remove(cssClass.enterTo);
+    },
+    /**
+     * Swap canvas
+     */
+    swapCanvas() {
       const mainCanvas = this.mainCanvas;
       const secondaryCanvas = this.secondaryCanvas;
 
@@ -338,8 +429,6 @@ export default {
 
       this.mainCanvas = secondaryCanvas;
       this.secondaryCanvas = tempCanvas;
-
-      mainContainer.classList.add('preparation');
     },
     /**
      * To preprocessing object before render on canvas
