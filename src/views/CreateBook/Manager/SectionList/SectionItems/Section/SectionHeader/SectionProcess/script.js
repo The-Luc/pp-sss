@@ -2,7 +2,7 @@ import { mapMutations, mapGetters } from 'vuex';
 import ButtonDelete from '@/components/Menu/ButtonDelete';
 import ButtonAdd from '@/components/Menu/ButtonAdd';
 import ProcessBar from '@/components/BarProcesses/ProcessBar';
-import Action from '@/containers/Action';
+import Action from '@/containers/Menu/Action';
 
 import { GETTERS, MUTATES } from '@/store/modules/app/const';
 

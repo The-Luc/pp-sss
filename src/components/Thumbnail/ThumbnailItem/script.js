@@ -1,7 +1,7 @@
 import Header from '../ThumbnailHeader';
 import Content from './ThumbnailContent';
 import Footer from './ThumbnailFooter';
-import Action from '@/containers/Action';
+import Action from '@/containers/Menu/Action';
 
 import { LINK_STATUS, SHEET_TYPE } from '@/common/constants';
 import { isEmpty } from '@/common/utils';
@@ -69,7 +69,7 @@ export default {
       type: Number,
       default: null
     },
-    sheetSelected: {
+    selectedSheet: {
       type: Number,
       default: null
     }
@@ -97,7 +97,7 @@ export default {
     ].filter(c => !isEmpty(c));
   },
   watch: {
-    sheetSelected(id) {
+    selectedSheet(id) {
       this.isOpenMenu = id === this.sheetId;
     }
   },
@@ -141,8 +141,8 @@ export default {
     /**
      * Event fire when click PDF button
      */
-    onPdf() {
-      this.$emit('pdf');
+    onExportPDF() {
+      this.$emit('export');
     }
   }
 };

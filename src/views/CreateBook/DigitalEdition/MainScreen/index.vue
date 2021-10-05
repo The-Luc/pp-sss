@@ -5,7 +5,7 @@
         v-for="sheet in section.sheets"
         :key="sheet.id"
         :sheet-id="sheet.id"
-        :sheet-selected="sheetSelected"
+        :selected-sheet="selectedSheet"
         :section="section"
         :name="section.name"
         :color="section.color"

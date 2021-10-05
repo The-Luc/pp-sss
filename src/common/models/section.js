@@ -1,11 +1,12 @@
 import { BaseEntity } from './base';
+import { PROCESS_STATUS } from '@/common/constants';
 
 export class SectionBase extends BaseEntity {
   name = '';
   assigneeId = null;
   color = '';
   dueDate = null;
-  status = 0;
+  status = PROCESS_STATUS.NOT_STARTED;
 
   /**
    * @param {SectionDetail} props

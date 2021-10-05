@@ -48,7 +48,7 @@
     >
       <div v-if="!isDigital" class="menu-button">
         <button @click="onPreview">Preview</button>
-        <button @click="onPdf">PDF</button>
+        <button @click="onExportPDF">PDF</button>
       </div>
     </action>
   </div>

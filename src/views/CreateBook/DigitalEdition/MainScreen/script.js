@@ -24,7 +24,7 @@ export default {
   },
   data() {
     return {
-      sheetSelected: null
+      selectedSheet: null
     };
   },
   computed: {
@@ -64,12 +64,12 @@ export default {
      * Toggle menu by set sheet selected id
      */
     toggleMenu(sheetId) {
-      if (!this.sheetSelected || this.sheetSelected !== sheetId) {
-        this.sheetSelected = sheetId;
+      if (!this.selectedSheet || this.selectedSheet !== sheetId) {
+        this.selectedSheet = sheetId;
         return;
       }
 
-      if (this.sheetSelected && this.sheetSelected === sheetId) {
+      if (this.selectedSheet && this.selectedSheet === sheetId) {
         this.onCloseMenu();
       }
     },
@@ -77,7 +77,7 @@ export default {
      * set sheet selected is null and close menu
      */
     onCloseMenu() {
-      this.sheetSelected = null;
+      this.selectedSheet = null;
     }
   }
 };
