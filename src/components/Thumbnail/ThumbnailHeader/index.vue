@@ -17,7 +17,10 @@
         </div>
       </div>
 
-      <div :class="['header-more', { active: isOpenMenu }]" @click="toggleMenu">
+      <div
+        :class="['header-more', { active: isOpenMenu, disabled: !isAdmin }]"
+        @click="toggleMenu"
+      >
         <v-icon class="icon-more">more_horiz</v-icon>
       </div>
     </div>

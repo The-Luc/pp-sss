@@ -72,6 +72,10 @@ export default {
     selectedSheet: {
       type: Number,
       default: null
+    },
+    isAdmin: {
+      type: Boolean,
+      default: false
     }
   },
   data() {

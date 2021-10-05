@@ -11,7 +11,7 @@ import {
   GETTERS as PRINT_GETTERS
 } from '@/store/modules/print/const';
 
-import { LINK_STATUS } from '@/common/constants';
+import { LINK_STATUS, ROLE } from '@/common/constants';
 import { useSaveData, useBookPrintInfo } from './composables';
 import { useSectionItems } from '@/views/CreateBook/Manager/composables';
 
@@ -53,6 +53,9 @@ export default {
     },
     sections() {
       return getSectionsWithAccessible(this.sectionList, this.currentUser);
+    },
+    isAdmin() {
+      return this.currentUser.role === ROLE.ADMIN;
     }
   },
   watch: {

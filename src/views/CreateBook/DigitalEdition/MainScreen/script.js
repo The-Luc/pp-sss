@@ -10,6 +10,7 @@ import { GETTERS as DIGITAL_GETTERS } from '@/store/modules/digital/const';
 
 import { useBookDigitalInfo } from './composables';
 import { useSectionItems } from '@/views/CreateBook/Manager/composables';
+import { ROLE } from '@/common/constants';
 
 export default {
   components: {
@@ -36,6 +37,9 @@ export default {
     },
     sections() {
       return getSectionsWithAccessible(this.sectionList, this.currentUser);
+    },
+    isAdmin() {
+      return this.currentUser.role === ROLE.ADMIN;
     }
   },
   async created() {

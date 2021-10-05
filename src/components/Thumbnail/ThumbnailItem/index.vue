@@ -12,6 +12,7 @@
         :total-item="totalItem"
         :is-toggle-content-available="isEditor"
         :is-open-menu="isOpenMenu"
+        :is-admin="isAdmin"
         @toggleMenu="toggleMenu"
       />
 

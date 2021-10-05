@@ -1,5 +1,5 @@
 <template>
-  <div class="row thumbnail-view-row">
+  <div v-scroll.self="onCloseMenu" class="row thumbnail-view-row">
     <template v-for="section in sections">
       <ThumbnailItem
         v-for="sheet in section.sheets"
@@ -14,6 +14,7 @@
         :to-link="`/book/${bookId}/edit/digital/edit-screen/${sheet.id}`"
         :is-enable="section.isAccessible"
         :is-digital="true"
+        :is-admin="isAdmin"
         @toggleMenu="toggleMenu(sheet.id)"
         @closeMenu="onCloseMenu"
       />

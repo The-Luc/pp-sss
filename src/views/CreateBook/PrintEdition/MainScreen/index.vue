@@ -1,5 +1,5 @@
 <template>
-  <div class="row thumbnail-view-row">
+  <div v-scroll.self="onCloseMenu" class="row thumbnail-view-row">
     <template v-for="section in sections">
       <ThumbnailItem
         v-for="sheet in section.sheets"
@@ -15,6 +15,7 @@
         :page-names="getPageNames(sheet)"
         :to-link="`/book/${bookId}/edit/print/edit-screen/${sheet.id}`"
         :is-enable="section.isAccessible"
+        :is-admin="isAdmin"
         @closeMenu="onCloseMenu"
         @export="onExportPDF"
         @preview="onPreview(sheet.id)"
