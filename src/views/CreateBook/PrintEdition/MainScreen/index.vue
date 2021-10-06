@@ -12,8 +12,8 @@
         :page-names="getPageNames(sheet)"
         :to-link="`/book/${bookId}/edit/print/edit-screen/${sheet.id}`"
         :is-enable="section.isAccessible"
-        :is-admin="isAdmin"
-        :is-open-menu="selectedSheet === sheet.id"
+        :is-admin="section.isAdmin"
+        :is-more-activated="selectedSheet === sheet.id"
         @toggleMenu="toggleMenu($event, sheet.id)"
         @updateLink="changeLinkStatus(sheet.id, sheet.link)"
       >

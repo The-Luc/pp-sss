@@ -63,7 +63,7 @@ export default {
       type: Boolean,
       default: false
     },
-    isOpenMenu: {
+    isMoreActivated: {
       type: Boolean,
       default: false
     }

@@ -11,7 +11,7 @@
         :custom-css-class="customCssClass"
         :total-item="totalItem"
         :is-toggle-content-available="isEditor"
-        :is-open-menu="isOpenMenu"
+        :is-more-activated="isMoreActivated"
         :is-admin="isAdmin"
         @toggleMenu="toggleMenu"
       />

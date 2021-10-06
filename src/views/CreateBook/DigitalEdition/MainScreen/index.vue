@@ -11,8 +11,8 @@
         :to-link="`/book/${bookId}/edit/digital/edit-screen/${sheet.id}`"
         :is-enable="section.isAccessible"
         :is-digital="true"
-        :is-admin="isAdmin"
-        :is-open-menu="selectedSheet === sheet.id"
+        :is-admin="section.isAdmin"
+        :is-more-activated="selectedSheet === sheet.id"
         @toggleMenu="toggleMenu($event, sheet.id)"
       >
         <action
