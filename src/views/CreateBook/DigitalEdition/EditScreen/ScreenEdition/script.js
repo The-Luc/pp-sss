@@ -269,7 +269,7 @@ export default {
       undoRedoCanvas: null,
       isFrameLoaded: false,
       isScroll: { x: false, y: false },
-      isAllowUpdateFrameDelay: false
+      previousFrameId: null
     };
   },
   computed: {
@@ -317,9 +317,6 @@ export default {
       }
     },
     async currentFrameId(val, oldVal) {
-      this.isAllowUpdateFrameDelay = false;
-      setTimeout(() => (this.isAllowUpdateFrameDelay = true), 50);
-
       if (!val) {
         resetObjects(this.digitalCanvas);
 
@@ -338,11 +335,13 @@ export default {
       this.setPropertiesObjectType({ type: '' });
       this.setCurrentObject(null);
 
+      this.updatePlayInIds({ playInIds: this.currentFrame.playInIds });
+      this.updatePlayOutIds({ playOutIds: this.currentFrame.playOutIds });
+
       resetObjects(this.digitalCanvas);
 
       this.updateObjectsToStore({ objects: this.currentFrame.objects });
-      this.updatePlayInIds({ playInIds: this.currentFrame.playInIds });
-      this.updatePlayOutIds({ playOutIds: this.currentFrame.playOutIds });
+
       this.handleSwitchFrame(this.currentFrame);
 
       this.undoRedoCanvas.reset();
@@ -401,7 +400,10 @@ export default {
       this.digitalCanvas.renderAll();
     },
     totalVideoDuration(newVal, oldVal) {
-      if (!this.isAllowUpdateFrameDelay) return;
+      if (!this.previousFrameId) this.previousFrameId = this.currentFrameId;
+
+      // this check to make sure that when user switch frame the computation below does not occur.
+      if (this.previousFrameId !== this.currentFrameId) return;
 
       const duration = this.currentFrame.delay + newVal - oldVal || 3;
       this.setFrameDelay({ value: duration });
@@ -461,6 +463,8 @@ export default {
         canvasFitSize.w = this.containerSize.width - canvasMargin;
         canvasFitSize.h = canvasFitSize.w / DIGITAL_CANVAS_SIZE.RATIO;
       }
+
+      this.$emit('canvasSizeChange', { size: canvasFitSize });
 
       const { WIDTH: realWidth, HEIGHT: realHeight } = DIGITAL_CANVAS_SIZE;
 
@@ -559,9 +563,7 @@ export default {
       const textEvents = [
         {
           name: EVENT_TYPE.CHANGE_TEXT_PROPERTIES,
-          handler: prop => {
-            this.changeTextProperties(prop);
-          }
+          handler: this.changeTextProperties
         }
       ];
 
@@ -1109,9 +1111,8 @@ export default {
      * @param {fabric.Object} group - Text Group element
      */
     handleDbClickText(group) {
-      enableTextEditMode(group, prop => {
-        this.changeTextProperties(prop);
-      });
+      this.setPropertiesType({ type: '' });
+      enableTextEditMode(group, this.changeTextProperties);
     },
 
     /**
@@ -2427,7 +2428,11 @@ export default {
      * @returns {Object}        new properties
      */
     getObjectProperties(prop, video) {
-      if (prop.type !== OBJECT_TYPE.VIDEO) return prop;
+      if (
+        prop?.type !== OBJECT_TYPE.VIDEO &&
+        prop?.objectType !== OBJECT_TYPE.VIDEO
+      )
+        return prop;
 
       const isPlaying = isVideoPlaying(video);
 
