@@ -2,7 +2,9 @@
   ::v-deep {
     .pp-modal {
       width: auto !important; // override
+      max-width: none;
       height: auto;
+      max-height: none;
       border-radius: 0;
     }
 
@@ -16,8 +18,15 @@
 
       .content-container {
         display: flex;
+        width: calc(100vw * 0.75);
+        height: calc(100vw * 0.75 * 9 / 16);
         position: relative;
         overflow: hidden;
+
+        &.vertical {
+          width: calc(100vh * 0.75 * 16 / 9);
+          height: calc(100vh * 0.75);
+        }
       }
     }
   }

@@ -13,3 +13,22 @@
     display: none;
   }
 }
+
+.menu-button {
+  border-top: 1px solid $color-gray2;
+  padding: 10px 0 0;
+  margin: 0 10px;
+  display: flex;
+  button {
+    font-family: $font-500;
+    color: $color-gray5;
+    font-size: 13px;
+    background-color: $color-white4;
+    width: 100%;
+    text-align: center;
+    padding: 8px 0;
+    &:last-child {
+      margin-left: 10px;
+    }
+  }
+}

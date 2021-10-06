@@ -81,9 +81,7 @@ export default {
       return !res ? 0 : res;
     },
     colorValue() {
-      const color = this.getProperty('color') || DEFAULT_PROP.COLOR;
-
-      return color;
+      return this.getProperty('color') || DEFAULT_PROP.COLOR;
     },
     currentShadow() {
       return this.getProperty('shadow');

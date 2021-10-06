@@ -26,7 +26,8 @@ import {
   SAVE_STATUS,
   SAVING_DURATION,
   SHEET_TYPE,
-  TOOL_NAME
+  TOOL_NAME,
+  EDITION
 } from '@/common/constants';
 import {
   useLayoutPrompt,
@@ -43,7 +44,6 @@ import {
   useBackgroundProperties,
   usePortrait
 } from '@/hooks';
-import { EDITION } from '@/common/constants';
 import {
   isEmpty,
   getEditionListPath,

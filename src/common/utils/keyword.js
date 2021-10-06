@@ -6,10 +6,8 @@ export const getUniqueKeywords = array => {
     .split(' ')
     .filter(Boolean);
 
-  const uniqListKeyword = uniqBy(listKeyword, toLower).map(keyword => ({
+  return uniqBy(listKeyword, toLower).map(keyword => ({
     value: keyword,
     active: true
   }));
-
-  return uniqListKeyword;
 };

@@ -11,6 +11,9 @@
         :custom-css-class="customCssClass"
         :total-item="totalItem"
         :is-toggle-content-available="isEditor"
+        :is-more-activated="isMoreActivated"
+        :is-admin="isAdmin"
+        @toggleMenu="toggleMenu"
       />
 
       <Content
@@ -33,6 +36,7 @@
         @updateLink="onUpdateLink"
       />
     </div>
+    <slot></slot>
   </div>
 </template>
 

@@ -781,14 +781,12 @@ const getShadowBaseOnConfig = function({
   const offsetX = shadowOffset * Math.sin(rad);
   const offsetY = shadowOffset * Math.cos(rad);
 
-  const shadow = new fabric.Shadow({
+  return new fabric.Shadow({
     color: clr,
     offsetX: ptToPx(offsetX),
     offsetY: ptToPx(offsetY),
     blur: ptToPx(shadowBlur)
   });
-
-  return shadow;
 };
 
 /**
@@ -885,10 +883,10 @@ export const deleteObjectById = (ids, canvas) => {
  * @returns {Number} blur value after scale object
  */
 export const handleObjectBlur = (blurValue, oldScale, newScale) => {
-  const blur =
+  return (
     (blurValue * (oldScale.scaleX + oldScale.scaleY)) /
-    (newScale.scaleX + newScale.scaleY);
-  return blur;
+    (newScale.scaleX + newScale.scaleY)
+  );
 };
 
 /**

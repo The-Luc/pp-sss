@@ -5,14 +5,14 @@ const tokenHandler = config => {
   const token = getItem(LOCAL_STORAGE.TOKEN);
   let Authorization;
   if (token) Authorization = `Bearer ${token}`;
-  const newConfig = {
+
+  return {
     ...config,
     headers: {
       ...config.headers,
       Authorization
     }
   };
-  return newConfig;
 };
 
 export default tokenHandler;

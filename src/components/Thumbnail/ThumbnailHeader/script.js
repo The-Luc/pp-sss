@@ -23,6 +23,14 @@ export default {
     isExpanded: {
       type: Boolean,
       default: true
+    },
+    isMoreActivated: {
+      type: Boolean,
+      default: false
+    },
+    isAdmin: {
+      type: Boolean,
+      default: false
     }
   },
   computed: {
@@ -31,6 +39,15 @@ export default {
     },
     isTotalDisplayed() {
       return this.totalItem > 0;
+    }
+  },
+  methods: {
+    /**
+     * Event fire when click more action
+     * @param {Object} event fired event
+     */
+    toggleMenu(event) {
+      this.$emit('toggleMenu', event);
     }
   }
 };

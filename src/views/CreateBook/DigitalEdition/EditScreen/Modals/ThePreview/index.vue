@@ -8,7 +8,7 @@
       :is-footer-displayed="false"
       @cancel="onClose"
     >
-      <div class="content-container" :style="{ width: width, height: height }">
+      <div class="content-container" :class="{ vertical: isVertical }">
         <slot></slot>
       </div>
     </common-modal>

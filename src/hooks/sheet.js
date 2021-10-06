@@ -15,7 +15,9 @@ import {
 import digitalService from '@/api/digital';
 import printService from '@/api/print';
 
-import { isEmpty, isOk } from '@/common/utils';
+import { merge } from 'lodash';
+
+import { getPlaybackDataFromFrames, isEmpty, isOk } from '@/common/utils';
 
 import {
   GETTERS as PRINT_GETTERS,
@@ -129,9 +131,16 @@ export const useGetterDigitalSheet = () => {
 export const useActionDigitalSheet = () => {
   const { generalInfo: generalInfoObs } = useAppCommon();
 
-  const { sheetLayout: sheetLayoutObs } = useSheet();
+  const {
+    sheetLayout: sheetLayoutObs,
+    currentSheet: currentSheetObs
+  } = useSheet();
 
-  const { currentFrameId: currentFrameIdObs, frames: framesObs } = useFrame();
+  const {
+    currentFrameId: currentFrameIdObs,
+    currentFrame: frameObs,
+    frames: framesObs
+  } = useFrame();
 
   const { playInIds: playInIdsObs, playOutIds: playOutIdsObs } = useAnimation();
 
@@ -191,63 +200,25 @@ export const useActionDigitalSheet = () => {
     updateTriggerTransition();
   };
 
-  const getPlaybackData = async (
-    sectionId = null,
-    screenId = null,
-    frameId = null
-  ) => {
-    const currentFrameId = `${currentFrameIdObs.value}`;
-
-    const currentFrame = {
-      id: currentFrameId,
+  const getCurrentFramePlayback = () => {
+    return {
+      id: `${currentFrameIdObs.value}`,
       objects: sheetLayoutObs.value,
       playInIds: playInIdsObs.value,
       playOutIds: playOutIdsObs.value,
+      delay: frameObs.value.delay,
       transition: {}
     };
+  };
 
-    if ((isEmpty(sectionId) || isEmpty(screenId)) && isEmpty(frameId)) {
-      const bookPlaybackData = await getPlaybackDataApi(getBookId());
-
-      if (!isOk(bookPlaybackData)) return [];
-
-      return bookPlaybackData.data.map(d => {
-        if (`${d.id}` === currentFrameId) {
-          return { ...currentFrame, transition: d.transition };
-        }
-
-        return d;
-      });
-    }
-
-    if (isEmpty(frameId)) {
-      const transitions = await getTransitions(screenId, sectionId);
-
-      return framesObs.value.map(({ id, frame }, index) => {
-        const { objects, playInIds, playOutIds } = frame;
-        const transition = isEmpty(transitions[index])
-          ? {}
-          : transitions[index];
-
-        if (`${id}` === currentFrameId) return { ...currentFrame, transition };
-
-        return {
-          id: id,
-          objects,
-          playInIds,
-          playOutIds,
-          transition
-        };
-      });
-    }
-
-    if (`${frameId}` === currentFrameId) {
-      return [currentFrame];
+  const getFramePlaybackData = async frameId => {
+    if (`${frameId}` === `${currentFrameIdObs.value}`) {
+      return [getCurrentFramePlayback()];
     }
 
     const frame = framesObs.value.find(({ id }) => id === frameId);
 
-    const { objects, playInIds, playOutIds } = frame.frame;
+    const { objects, playInIds, playOutIds, delay } = frame.frame;
 
     return [
       {
@@ -255,9 +226,49 @@ export const useActionDigitalSheet = () => {
         objects,
         playInIds,
         playOutIds,
+        delay,
         transition: {}
       }
     ];
+  };
+
+  const getCurrentScreenPlaybackData = async () => {
+    const currentFrame = getCurrentFramePlayback();
+    const currentFrames = framesObs.value;
+
+    const currentScreenId = currentSheetObs.value.id;
+    const currentSectionId = currentSheetObs.value.sectionId;
+
+    const currentTransitions = await getTransitions(
+      currentScreenId,
+      currentSectionId
+    );
+
+    return getPlaybackDataFromFrames(currentFrames, currentTransitions, [
+      currentFrame
+    ]);
+  };
+
+  const getAllScreenPlaybackData = async () => {
+    const bookPlaybackData = await getPlaybackDataApi(getBookId());
+
+    if (!isOk(bookPlaybackData)) return [];
+
+    const currentScreenPlayback = await getCurrentScreenPlaybackData();
+
+    if (isEmpty(bookPlaybackData.data) && framesObs.value.length > 0) {
+      return currentScreenPlayback;
+    }
+
+    currentScreenPlayback.forEach(d => {
+      const index = bookPlaybackData.data.findIndex(({ id }) => id === d.id);
+
+      if (index < 0) return;
+
+      merge(bookPlaybackData.data[index], d);
+    });
+
+    return bookPlaybackData.data;
   };
 
   return {
@@ -266,6 +277,8 @@ export const useActionDigitalSheet = () => {
     addTransition,
     removeTransition,
     applyTransition,
-    getPlaybackData
+    getAllScreenPlaybackData,
+    getCurrentScreenPlaybackData,
+    getFramePlaybackData
   };
 };

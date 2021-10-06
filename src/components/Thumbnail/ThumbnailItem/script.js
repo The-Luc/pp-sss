@@ -58,6 +58,14 @@ export default {
     isDigital: {
       type: Boolean,
       default: false
+    },
+    isAdmin: {
+      type: Boolean,
+      default: false
+    },
+    isMoreActivated: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -91,6 +99,13 @@ export default {
      */
     onSelect() {
       this.$emit('select');
+    },
+    /**
+     * Event fire when click more action
+     * @param {Object} event fired event
+     */
+    toggleMenu(event) {
+      this.$emit('toggleMenu', event);
     }
   }
 };

@@ -488,7 +488,8 @@ const maskRender = function(ctx) {
   const y = (this.strokeWidth - this.height) / 2;
   const w = this.width - this.strokeWidth;
   const h = this.height - this.strokeWidth;
-  const r = this.mask === PORTRAIT_IMAGE_MASK.ROUNDED ? w / 10 : w / 2;
+  const d = Math.min(w, h);
+  const r = this.mask === PORTRAIT_IMAGE_MASK.ROUNDED ? d / 10 : d / 2;
 
   ctx.save();
   ctx.beginPath();
@@ -532,7 +533,8 @@ const rectRenderStroke = function(ctx) {
   const y = (this.strokeWidth * 0.66 - this.height) / 2;
   const w = this.width - this.strokeWidth * 0.66;
   const h = this.height - this.strokeWidth * 0.66;
-  const r = this.mask === PORTRAIT_IMAGE_MASK.ROUNDED ? w / 10 : w / 2;
+  const d = Math.min(w, h);
+  const r = this.mask === PORTRAIT_IMAGE_MASK.ROUNDED ? d / 10 : d / 2;
 
   ctx.save();
   ctx.beginPath();

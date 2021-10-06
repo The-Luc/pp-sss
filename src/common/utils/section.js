@@ -14,7 +14,8 @@ export const getSectionWithAccessible = (section, { id, role }) => {
 
   return {
     ...section,
-    isAccessible: isAdmin || isAssigned
+    isAccessible: isAdmin || isAssigned,
+    isAdmin
   };
 };
 

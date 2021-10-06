@@ -8,7 +8,6 @@ import { fabric } from 'fabric';
 import {
   imageBorderModifier,
   useOverrides,
-  useDoubleStroke,
   useObjectControlsOverride
 } from '@/plugins/fabric';
 import {
@@ -31,8 +30,6 @@ import {
   CANVAS_EVENT_TYPE,
   EVENT_TYPE,
   WINDOW_EVENT_TYPE,
-  CROP_CONTROL,
-  IMAGE_LOCAL,
   PROPERTIES_TOOLS,
   APPLY_MODE,
   EDITION,
@@ -41,7 +38,6 @@ import {
 import {
   addPrintClipArts,
   addPrintShapes,
-  applyShadowToObject,
   applyTextBoxProperties,
   calcScaleElement,
   createTextBox,
@@ -54,8 +50,6 @@ import {
   addDigitalBackground,
   deleteObjectById,
   enableTextEditMode,
-  updateSpecificProp,
-  handleGetSvgData,
   addEventListeners,
   applyBorderToImageObject,
   createBackgroundFabricObject,
@@ -73,9 +67,12 @@ import {
   handleObjectSelected,
   handleObjectDeselected,
   calcAnimationOrder,
-  createPortraitImage
+  createMediaObject,
+  createSvgObject,
+  createPortraitImageObject,
+  createTextBoxObject,
+  createImage
 } from '@/common/fabricObjects';
-import { createImage } from '@/common/fabricObjects';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
 
 import {
@@ -109,7 +106,6 @@ import {
   setCanvasUniformScaling,
   isNonElementPropSelected,
   copyPpObject,
-  inToPx,
   pastePpObject,
   isDeleteKey,
   isVideoPlaying,
@@ -339,11 +335,13 @@ export default {
       this.setPropertiesObjectType({ type: '' });
       this.setCurrentObject(null);
 
+      this.updatePlayInIds({ playInIds: this.currentFrame.playInIds });
+      this.updatePlayOutIds({ playOutIds: this.currentFrame.playOutIds });
+
       resetObjects(this.digitalCanvas);
 
       this.updateObjectsToStore({ objects: this.currentFrame.objects });
-      this.updatePlayInIds({ playInIds: this.currentFrame.playInIds });
-      this.updatePlayOutIds({ playOutIds: this.currentFrame.playOutIds });
+
       this.handleSwitchFrame(this.currentFrame);
 
       this.undoRedoCanvas.reset();
@@ -565,9 +563,7 @@ export default {
       const textEvents = [
         {
           name: EVENT_TYPE.CHANGE_TEXT_PROPERTIES,
-          handler: prop => {
-            this.changeTextProperties(prop);
-          }
+          handler: this.changeTextProperties
         }
       ];
 
@@ -1115,9 +1111,8 @@ export default {
      * @param {fabric.Object} group - Text Group element
      */
     handleDbClickText(group) {
-      enableTextEditMode(group, prop => {
-        this.changeTextProperties(prop);
-      });
+      this.setPropertiesType({ type: '' });
+      enableTextEditMode(group, this.changeTextProperties);
     },
 
     /**
@@ -1307,10 +1302,11 @@ export default {
         }
 
         case OBJECT_TYPE.PORTRAIT_IMAGE: {
+          const minDimension = Math.min(currentWidthInch, currentHeightInch);
           const radius =
             target.mask === PORTRAIT_IMAGE_MASK.ROUNDED
-              ? currentWidthInch / 10
-              : currentWidthInch / 2;
+              ? minDimension / 10
+              : minDimension / 2;
           const prop = {
             width: currentWidthInch,
             height: currentHeightInch,
@@ -1907,39 +1903,9 @@ export default {
      * @returns {Object} a fabric object
      */
     createTextFromPpData(textProperties) {
-      const {
-        coord,
-        size: { height, width }
-      } = textProperties;
-
-      const { object, data: objectData } = createTextBox(
-        inToPx(coord.x),
-        inToPx(coord.y),
-        inToPx(width),
-        inToPx(height),
-        textProperties
-      );
-
-      const {
-        newObject: {
-          shadow,
-          coord: { rotation }
-        }
-      } = objectData;
-
-      updateSpecificProp(object, {
-        coord: {
-          rotation
-        }
-      });
+      const { object, objectData } = createTextBoxObject(textProperties);
 
       this.handleAddTextEventListeners(object, objectData);
-
-      const objects = object.getObjects();
-
-      objects.forEach(obj => {
-        applyShadowToObject(obj, shadow);
-      });
 
       return object;
     },
@@ -1957,47 +1923,10 @@ export default {
         rotated: this.handleRotated,
         moved: this.handleMoved
       };
-
-      const svgObject = {
-        id: objectData.id,
-        object: objectData
-      };
-
-      const svg = await handleGetSvgData({
-        svg: svgObject,
-        svgUrlAttrName:
-          objectData.type === OBJECT_TYPE.CLIP_ART ? 'vector' : 'pathData',
-        expectedHeight: objectData.size.height,
-        expectedWidth: objectData.size.width
-      });
+      const svg = await createSvgObject(objectData);
 
       addEventListeners(svg, eventListeners);
 
-      const {
-        dropShadow,
-        shadowBlur,
-        shadowOffset,
-        shadowOpacity,
-        shadowAngle,
-        shadowColor
-      } = svg;
-
-      updateSpecificProp(svg, {
-        coord: {
-          rotation: objectData.coord.rotation
-        }
-      });
-
-      useObjectControlsOverride(svg);
-
-      applyShadowToObject(svg, {
-        dropShadow,
-        shadowBlur,
-        shadowOffset,
-        shadowOpacity,
-        shadowAngle,
-        shadowColor
-      });
       return svg;
     },
     /**
@@ -2052,66 +1981,12 @@ export default {
         mouseover: handleMouseOver,
         mouseout: handleMouseOut
       };
+      const media = await createMediaObject(
+        mediaProperties,
+        this.videoToggleStatus
+      );
 
-      const mediaObject = await createImage(mediaProperties);
-      const media = mediaObject?.object;
-
-      useObjectControlsOverride(media);
-
-      const {
-        border,
-        hasImage,
-        control,
-        type,
-        imageUrl,
-        thumbnailUrl,
-        customThumbnailUrl
-      } = mediaProperties;
-
-      if (type === OBJECT_TYPE.VIDEO) {
-        const url = customThumbnailUrl || thumbnailUrl;
-
-        await setVideoSrc(media, imageUrl, url, this.videoToggleStatus);
-      }
-
-      imageBorderModifier(media);
       addEventListeners(media, eventListeners);
-
-      const {
-        dropShadow,
-        shadowBlur,
-        shadowOffset,
-        shadowOpacity,
-        shadowAngle,
-        shadowColor
-      } = media;
-
-      applyShadowToObject(media, {
-        dropShadow,
-        shadowBlur,
-        shadowOffset,
-        shadowOpacity,
-        shadowAngle,
-        shadowColor
-      });
-
-      applyBorderToImageObject(media, border);
-
-      updateSpecificProp(media, {
-        coord: {
-          rotation: mediaProperties.coord.rotation
-        },
-        cropInfo: mediaProperties.cropInfo
-      });
-
-      if (type === OBJECT_TYPE.IMAGE && hasImage && !control) {
-        const control = await createMediaOverlay(IMAGE_LOCAL.CONTROL_ICON, {
-          width: CROP_CONTROL.WIDTH,
-          height: CROP_CONTROL.HEIGHT
-        });
-
-        media.set({ control });
-      }
 
       return media;
     },
@@ -2129,19 +2004,9 @@ export default {
         moved: this.handleMoved
       };
 
-      const image = await createPortraitImage(properties);
-
-      const { border, shadow } = properties;
-
-      useDoubleStroke(image);
-
-      useObjectControlsOverride(image);
+      const image = await createPortraitImageObject(properties);
 
       addEventListeners(image, eventListeners);
-
-      applyShadowToObject(image, shadow);
-
-      applyBorderToImageObject(image, border);
 
       return image;
     },
@@ -2182,11 +2047,10 @@ export default {
      * @returns {Object} a fabric objec
      */
     async createBackgroundFromPpData(backgroundProp) {
-      const image = await createBackgroundFabricObject(
+      return await createBackgroundFabricObject(
         backgroundProp,
         this.digitalCanvas
       );
-      return image;
     },
 
     /**
@@ -2564,7 +2428,11 @@ export default {
      * @returns {Object}        new properties
      */
     getObjectProperties(prop, video) {
-      if (prop.type !== OBJECT_TYPE.VIDEO) return prop;
+      if (
+        prop?.type !== OBJECT_TYPE.VIDEO &&
+        prop?.objectType !== OBJECT_TYPE.VIDEO
+      )
+        return prop;
 
       const isPlaying = isVideoPlaying(video);
 

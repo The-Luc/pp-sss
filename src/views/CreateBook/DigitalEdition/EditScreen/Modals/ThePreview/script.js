@@ -1,22 +1,27 @@
 import CommonModal from '@/components/Modals/CommonModal';
 
+import { DIGITAL_CANVAS_SIZE } from '@/common/constants';
+
 export default {
   components: {
     CommonModal
   },
   props: {
-    width: {
-      type: String,
-      default: '800px'
-    },
-    height: {
-      type: String,
-      default: '450px'
-    },
     canCloseOutside: {
       type: Boolean,
       default: false
     }
+  },
+  data() {
+    return {
+      isVertical: false
+    };
+  },
+  async mounted() {
+    window.addEventListener('resize', this.onResized);
+  },
+  beforeDestroy() {
+    window.removeEventListener('resize', this.onResized);
   },
   methods: {
     /**
@@ -24,6 +29,14 @@ export default {
      */
     onClose() {
       this.$emit('close');
+    },
+    /**
+     * Fire when resize
+     */
+    onResized() {
+      const ratio = window.innerWidth / window.innerHeight;
+
+      this.isVertical = ratio > DIGITAL_CANVAS_SIZE.RATIO;
     }
   }
 };

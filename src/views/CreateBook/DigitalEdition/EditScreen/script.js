@@ -117,7 +117,11 @@ export default {
     const { setInfoBar } = useInfoBar();
     const { updateSheetMedia, deleteSheetMedia } = useActionsEditionSheet();
     const { sheetMedia, currentSheet, getSheets } = useSheet();
-    const { getPlaybackData } = useActionDigitalSheet();
+    const {
+      getAllScreenPlaybackData,
+      getCurrentScreenPlaybackData,
+      getFramePlaybackData
+    } = useActionDigitalSheet();
     const { setPropertyById, setPropOfMultipleObjects } = useProperties();
     const { listObjects } = useObjectProperties();
     const {
@@ -173,7 +177,9 @@ export default {
       saveSheetFrames,
       backgroundsProps,
       saveSelectedPortraitFolders,
-      getPlaybackData
+      getAllScreenPlaybackData,
+      getCurrentScreenPlaybackData,
+      getFramePlaybackData
     };
   },
   data() {
@@ -645,16 +651,15 @@ export default {
      * @returns {Array}                     data
      */
     async getPlayback(playType, frameId) {
-      if (playType === PLAYBACK.ALL) return await this.getPlaybackData();
-
-      if (playType === PLAYBACK.SCREEN) {
-        return await this.getPlaybackData(
-          this.pageSelected.sectionId,
-          this.pageSelected.id
-        );
+      if (playType === PLAYBACK.ALL) {
+        return await this.getAllScreenPlaybackData();
       }
 
-      return await this.getPlaybackData(null, null, frameId);
+      if (playType === PLAYBACK.SCREEN) {
+        return await this.getCurrentScreenPlaybackData();
+      }
+
+      return await this.getFramePlaybackData(frameId);
     },
     /**
      * Open Playback modal with data
@@ -664,6 +669,8 @@ export default {
      */
     async playback({ playType, frameId }) {
       const data = await this.getPlayback(playType, frameId);
+
+      if (isEmpty(data)) return;
 
       this.modal[MODAL_TYPES.PLAYBACK].data = { playbackData: data };
 
@@ -736,6 +743,7 @@ export default {
 
         const currentId = this.currentFrameId;
         const ids = Object.keys(this.listObjects);
+        const { background } = cloneDeep(this.backgroundsProps);
 
         this.setFrames({ framesList: [] });
 
@@ -748,10 +756,12 @@ export default {
 
         this.deleteObjects({ ids });
 
+        const filteredObjects = objects.filter(
+          obj => obj.type !== OBJECT_TYPE.BACKGROUND
+        );
+
         this.addObjecs({
-          objects: objects
-            .filter(obj => obj.type !== OBJECT_TYPE.BACKGROUND)
-            .map(obj => ({ id: obj.id, newObject: obj }))
+          objects: filteredObjects.map(obj => ({ id: obj.id, newObject: obj }))
         });
 
         this.setFrames({ framesList });
@@ -760,7 +770,8 @@ export default {
 
         resetObjects(canvas);
 
-        this.$refs.canvasEditor.drawObjectsOnCanvas(objects);
+        if (!isEmpty(background)) filteredObjects.unshift(background);
+        this.$refs.canvasEditor.drawObjectsOnCanvas(filteredObjects);
 
         canvas.renderAll();
       });
@@ -819,14 +830,6 @@ export default {
     onCancelApplyPortrait(isShowApplyPortrait) {
       this.onToggleModal({ modal: MODAL_TYPES.PORTRAIT_FLOW });
       this.setToolNameSelected(isShowApplyPortrait ? '' : TOOL_NAME.PORTRAIT);
-    },
-    /**
-     * Canvas size change event
-     *
-     * @param {Object}  size  new size
-     */
-    onCanvasSizeChange({ size }) {
-      if (!isEmpty(size)) this.canvasSize = size;
     }
   }
 };

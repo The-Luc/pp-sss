@@ -103,13 +103,12 @@ export const getters = {
     frameIds
   }) => sheetId => {
     const framesArray = frameIds.map(id => ({ id, frame: frames[id] }));
-    const data = {
+
+    return {
       defaultThemeId: book.defaultThemeId,
       sheet: sheets[sheetId],
       frames: framesArray
     };
-
-    return data;
   },
   [DIGITAL._GETTERS.GET_SHEET_MEDIA]: ({ sheets, currentSheetId }) => {
     const media = sheets[currentSheetId]?.media;

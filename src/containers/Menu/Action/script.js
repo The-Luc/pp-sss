@@ -1,27 +1,13 @@
-import ButtonDelete from '@/components/Menu/ButtonDelete';
-import ButtonAdd from '@/components/Menu/ButtonAdd';
 import Menu from '@/components/Menu';
 import Calendar from './Calendar';
 import SectionStatus from './SectionStatus';
 import Assignee from './Assignee';
 
-import { mapGetters, mapMutations } from 'vuex';
 import moment from 'moment';
 
-import {
-  MODAL_TYPES,
-  ICON_LOCAL,
-  DATE_FORMAT,
-  PROCESS_STATUS
-} from '@/common/constants';
-import { GETTERS, MUTATES } from '@/store/modules/app/const';
-import {
-  GETTERS as BOOK_GETTERS,
-  MUTATES as BOOK_MUTATES
-} from '@/store/modules/book/const';
+import { ICON_LOCAL, DATE_FORMAT, PROCESS_STATUS } from '@/common/constants';
 
 import { useMutationSection } from '@/hooks';
-
 import {
   useSectionActionMenu,
   useAssigneeMenu
@@ -34,9 +20,7 @@ export default {
     Menu,
     Calendar,
     SectionStatus,
-    Assignee,
-    ButtonDelete,
-    ButtonAdd
+    Assignee
   },
   props: {
     menuX: {
@@ -95,33 +79,18 @@ export default {
       assigneeWidth: 267,
       subMenuPos: { x: 0, y: 0 },
       minDate: new Date().toISOString().slice(0, 10),
-      users: [],
-      menuItems: [
-        { title: 'Status', value: this.getStatusName(), name: 'status' },
-        { title: 'Due Date', value: this.dueDate, name: 'dueDate' },
-        { title: 'Assigned To', value: 'Unassigned', name: 'assignee' }
-      ]
+      users: []
     };
   },
   computed: {
-    ...mapGetters({
-      sectionSelected: GETTERS.SECTION_SELECTED,
-      sections: BOOK_GETTERS.SECTIONS_NO_SHEET,
-      maxPage: BOOK_GETTERS.GET_MAX_PAGE,
-      totalInfo: BOOK_GETTERS.TOTAL_INFO
-    }),
-    isShowAdd() {
-      let index = this.sections.findIndex(item => item.id === this.sectionId);
-
-      return !(this.totalInfo.totalPages >= this.maxPage || !index);
-    },
-    isShowDelete() {
-      const index = this.sections.findIndex(item => item.id === this.sectionId);
-
-      const isCover = index === 0;
-      const isHalfSheet = index === 1 || index === this.sections.length - 1;
-
-      return !isCover && !isHalfSheet;
+    menuItems() {
+      const user = this.users.find(({ id }) => id === this.assigneeId);
+      const assignee = isEmpty(user) ? 'Unassigned' : user?.name;
+      return [
+        { title: 'Status', value: this.getStatusName(), name: 'status' },
+        { title: 'Due Date', value: this.dueDate, name: 'dueDate' },
+        { title: 'Assigned To', value: assignee, name: 'assignee' }
+      ];
     }
   },
   watch: {
@@ -138,24 +107,8 @@ export default {
     this.moreIcon = ICON_LOCAL.MORE_ICON;
 
     this.users = await this.getUsers();
-
-    this.setAssigneeName();
   },
   methods: {
-    ...mapMutations({
-      toggleModal: MUTATES.TOGGLE_MODAL,
-      addSheet: BOOK_MUTATES.ADD_SHEET,
-      setSectionSelected: MUTATES.SET_SELECTION_SELECTED
-    }),
-    onOpenModal() {
-      this.toggleModal({
-        isOpenModal: true,
-        modalData: {
-          type: MODAL_TYPES.DELETE_SECTION,
-          props: { sectionId: this.sectionId, sectionName: this.sectionName }
-        }
-      });
-    },
     /**
      * Close sub menu calendar when click outside it
      */
@@ -181,7 +134,7 @@ export default {
       const isSubMenuOpen =
         this.isOpenStatus || this.isOpenCalendar || this.isOpenAssignee;
 
-      if (this.isOpenMenu && !isSubMenuOpen) this.setSectionSelected('');
+      if (this.isOpenMenu && !isSubMenuOpen) this.$emit('closeMenu');
     },
     /**
      * Open calendar sub menu
@@ -240,9 +193,6 @@ export default {
           break;
       }
     },
-    setIsOpenMenu(sectionSelected) {
-      this.isOpenMenu = sectionSelected === this.sectionId;
-    },
     /**
      * Fire when user click to select due date
      *
@@ -258,8 +208,6 @@ export default {
       if (!isSuccess) return;
 
       this.updateSection({ id: this.sectionId, dueDate });
-
-      this.menuItems[1].value = dueDate;
 
       setTimeout(() => {
         this.isOpenCalendar = false;
@@ -279,8 +227,6 @@ export default {
 
       this.updateSection({ id: this.sectionId, status: status.value });
 
-      this.menuItems[0].value = status.name;
-
       setTimeout(() => {
         this.isOpenStatus = false;
       }, 0);
@@ -289,27 +235,18 @@ export default {
      * Fire when user click to select a community member to assign
      *
      * @param {String | Number} id    selected community member id
-     * @param {String}          name  selected community member name
      */
-    async onChangeAssignee({ id, name }) {
+    async onChangeAssignee({ id }) {
       const assigneeId = this.assigneeId === id ? -1 : id;
-      const assignee = this.assigneeId === id ? 'Unassigned' : name;
 
       await this.updateAssignee({ id: this.sectionId, assigneeId });
-
-      this.menuItems[2].value = assignee;
 
       setTimeout(() => {
         this.isOpenAssignee = false;
       }, 0);
     },
-    onAddSheet() {
-      this.setSectionSelected('');
-
-      this.addSheet({ sectionId: this.sectionId });
-    },
     onScroll() {
-      if (this.isOpenMenu) this.setSectionSelected('');
+      if (this.isOpenMenu) this.$emit('closeMenu');
     },
     /**
      * Toggle sub menu
@@ -353,14 +290,10 @@ export default {
       return isEmpty(process) ? PROCESS_STATUS.NOT_STARTED.name : process.name;
     },
     /**
-     * Set assignee name to menu item
+     * Emit  event to parent
      */
-    setAssigneeName() {
-      const user = this.users.find(({ id }) => id === this.assigneeId);
-
-      if (isEmpty(user)) return;
-
-      this.menuItems[2].value = user.name;
+    onMenuLoaded(event) {
+      this.$emit('loaded', event);
     }
   }
 };

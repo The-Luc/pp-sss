@@ -31,18 +31,11 @@ export const usePhotos = () => {
   });
 
   const getSmartbox = async (keywords, isGetMedia) => {
-    const listPhotos = isGetMedia
-      ? await getMedia(keywords)
-      : await getPhotos(keywords);
-    return listPhotos;
+    return isGetMedia ? await getMedia(keywords) : await getPhotos(keywords);
   };
 
   const getSearch = async (input, isGetMedia) => {
-    const listPhotos = isGetMedia
-      ? await searchMedia(input)
-      : await searchPhotos(input);
-
-    return listPhotos;
+    return isGetMedia ? await searchMedia(input) : await searchPhotos(input);
   };
 
   return {
@@ -61,10 +54,9 @@ export const usePortraitFlow = () => {
   };
 
   const getSavedSettings = async isDigital => {
-    const savedSettings = isDigital
+    return isDigital
       ? await portraitSevice.getSavedPortraitSettingsDigital()
       : await portraitSevice.getSavedPortraitSettingsPrint();
-    return savedSettings;
   };
 
   return {

@@ -23,10 +23,8 @@ export default {
       const selectedBorderStyle = this.getProperty('border');
       const borderStyleValue =
         selectedBorderStyle?.strokeLineType || BORDER_STYLES.SOLID;
-      const selected = this.options.find(
-        item => item.value === borderStyleValue
-      );
-      return selected;
+
+      return this.options.find(item => item.value === borderStyleValue);
     }
   },
   methods: {

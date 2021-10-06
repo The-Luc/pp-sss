@@ -2,7 +2,6 @@ import { fabric } from 'fabric';
 import { cloneDeep } from 'lodash';
 
 import { BasePosition, TextElementObject } from '../models/element';
-import { applyShadowToObject } from './common';
 
 import {
   isEmpty,
@@ -24,13 +23,15 @@ import {
   getAdjustedObjectDimension,
   toFabricTextProp,
   toFabricTextBorderProp,
-  toFabricTextGroupProp
+  toFabricTextGroupProp,
+  applyShadowToObject
 } from './common';
 import {
   useDoubleStroke,
   useObjectControlsOverride,
   useTextOverride
 } from '@/plugins/fabric';
+import { updateSpecificProp } from '.';
 
 /**
  * Handle creating a TextBox into canvas
@@ -62,7 +63,7 @@ export const createTextBox = (x, y, width, height, textProperties) => {
     top: padding,
     width: width - padding * 2,
     padding,
-    noWrap: true
+    hasBorders: false
   });
 
   updateTextCase(text, dataObject.newObject);
@@ -267,7 +268,8 @@ const applyTextProperties = function(text, prop) {
     !isEmpty(prop.lineSpacing) ||
     !isEmpty(prop.fontFamily) ||
     !isEmpty(prop.letterSpacing) ||
-    !isEmpty(prop.textCase)
+    !isEmpty(prop.textCase) ||
+    !isEmpty(prop.alignment)
   ) {
     if (target.type === FABRIC_OBJECT_TYPE.TEXT) {
       target.fire('changed');
@@ -450,7 +452,9 @@ const applyTextGroupProperties = function(textGroup, prop) {
 export const applyTextBoxProperties = function(textObject, prop) {
   const isModifyPosition = !isNaN(prop?.coord?.x) || !isNaN(prop?.coord?.y);
   const [rect, text] = getObjectsFromTextBox(textObject);
+
   applyTextGroupProperties(textObject, prop);
+
   if (isModifyPosition) {
     textObject?.canvas?.renderAll();
   }
@@ -616,10 +620,12 @@ export const updateTextListeners = (
       textObject
     );
 
+    const heightDiff = textObject.top - rectObject.top;
+
     updateObjectDimensionsIfSmaller(
       rectObject,
       minBoundingWidth,
-      minBoundingHeight
+      minBoundingHeight + heightDiff
     );
 
     canvas.renderAll();
@@ -630,6 +636,7 @@ export const updateTextListeners = (
       if (
         key !== 'id' &&
         !key.startsWith('_') &&
+        !key.startsWith('stroke') &&
         typeof obj[key] !== 'function'
       ) {
         rs[key] = obj[key];
@@ -690,6 +697,10 @@ export const enableTextEditMode = (group, onCompleted) => {
   textForEditing.id = null;
 
   const rectForEditing = cloneDeep(rect);
+  rectForEditing.set({
+    stroke: '#bcbec0',
+    strokeWidth: 1
+  });
   const { flipX, flipY, angle, top, left } = cloneDeep(group);
   const cachedData = { flipX, flipY, angle, top, left };
 
@@ -713,4 +724,40 @@ export const enableTextEditMode = (group, onCompleted) => {
 
   textForEditing.enterEditing();
   textForEditing.selectAll();
+};
+
+export const createTextBoxObject = textProperties => {
+  const {
+    coord,
+    size: { height, width }
+  } = textProperties;
+
+  const { object, data: objectData } = createTextBox(
+    inToPx(coord.x),
+    inToPx(coord.y),
+    inToPx(width),
+    inToPx(height),
+    textProperties
+  );
+
+  const {
+    newObject: {
+      shadow,
+      coord: { rotation }
+    }
+  } = objectData;
+
+  updateSpecificProp(object, {
+    coord: {
+      rotation
+    }
+  });
+
+  const objects = object.getObjects();
+
+  objects.forEach(obj => {
+    applyShadowToObject(obj, shadow);
+  });
+
+  return { object, objectData };
 };

@@ -12,66 +12,77 @@ import { applyTextBoxProperties, createSVGElement } from '../fabricObjects';
 import { isEmpty, getActiveCanvas } from '../utils';
 import { inToPx } from './canvas';
 
+import {
+  PLAY_IN_STYLES,
+  PLAY_OUT_STYLES
+} from '@/common/constants/animationProperty';
+import { waitMiliseconds } from './util';
+
 /**
- * Handle fade animation
- * @param {Object} element fabric object animating
- * @param {Object} options animation option
- * @param {Object} canvas fabric canvas
+ * To get the config for blur animation
+ *
+ * @param {Object} options aniamtion option of an object
+ * @returns {Object} config for anmation
  */
-const fadeIn = (element, options, canvas) => {
-  const { duration } = options;
+const getBlurConfig = options => {
+  const { duration, isPlayIn } = options;
   if (!duration) return;
 
-  const config = {
+  const croppingOffset = 200; //pixel
+
+  const blurOption = isPlayIn
+    ? { blurStart: 1.3, blurEnd: 0, opacityStart: 0, opacityEnd: 1 }
+    : { blurStart: 0, blurEnd: 1.3, opacityStart: 1, opacityEnd: 0 };
+
+  const startState = {
+    blurValue: blurOption.blurStart,
+    opacity: blurOption.opacityStart
+  };
+
+  const animateProps = {
+    blurValue: blurOption.blurEnd,
+    opacity: blurOption.opacityEnd
+  };
+
+  return {
+    startState,
+    animateProps,
+    croppingOffset,
+    isBlur: true,
+    duration,
+    isPlayIn: Boolean(isPlayIn)
+  };
+};
+
+/**
+ * To get the config for fade in animation
+ *
+ * @param {Object} options aniamtion option of an object
+ * @returns {Object} config for anmation
+ */
+const getFadeInConfig = (options, element) => {
+  return {
     startState: {
       opacity: 0
     },
     animateProps: {
       opacity: getOriginalOpacity(element)
     },
-    duration: duration
+    duration: options.duration
   };
-  animationHandler(element, config, canvas);
 };
 
 /**
- * Handle fade animation
- * @param {Object} element fabric object animating
- * @param {Object} options animation option
- * @param {Object} canvas fabric canvas
+ * To get the config for fade and scale in animation
+ *
+ * @param {Object} options aniamtion option of an object
+ * @returns {Object} config for anmation
  */
-const fadeOut = (element, options, canvas) => {
-  const { duration } = options;
-  if (!duration) return;
+const getFadeScaleInConfig = (options, element) => {
+  if (element.hasImage)
+    return getFadeScaleImageConfig({ ...options, isPlayIn: true });
 
-  const config = {
-    animateProps: {
-      opacity: 0
-    },
-    revertedProps: {
-      opacity: getOriginalOpacity(element)
-    },
-    duration: duration
-  };
-  animationHandler(element, config, canvas);
-};
-
-/**
- * Handle fade-scale animation
- * @param {Object} element fabric object animating
- * @param {Object} options animation option
- * @param {Object} canvas fabric canvas
- */
-const fadeScaleIn = (element, options, canvas) => {
-  const { duration, scale } = options;
-  if (!duration || typeof scale !== 'number') return;
-
-  if (element.hasImage) {
-    options.isPlayIn = true;
-    handleFadeScaleImage(element, options, canvas);
-    return;
-  }
-
+  const { scale, duration } = options;
   const center = element.getCenterPoint();
   const originTop = element.top;
   const originLeft = element.left;
@@ -99,32 +110,96 @@ const fadeScaleIn = (element, options, canvas) => {
     left: originLeft
   };
 
-  const config = {
+  return {
     startState,
     animateProps,
     duration,
     revertedProps
   };
-
-  animationHandler(element, config, canvas);
 };
 
 /**
- * Handle fade-scale animation
- * @param {Object} element fabric object animating
- * @param {Object} options animation option
- * @param {Object} canvas fabric canvas
+ * To get the config for fade and slide in animation
+ *
+ * @param {Object} options aniamtion option of an object
+ * @returns {Object} config for anmation
  */
-const fadeScaleOut = (element, options, canvas) => {
+const getFadeSlideInConfig = (options, element, canvas) => {
+  const { direction, duration } = options;
+  const { oriPos, startPos, animatePropName } = calcSlideInPosition(
+    element,
+    direction,
+    canvas
+  );
+
+  return {
+    startState: {
+      [animatePropName]: startPos,
+      opacity: 0
+    },
+    animateProps: {
+      [animatePropName]: oriPos,
+      opacity: getOriginalOpacity(element)
+    },
+    duration
+  };
+};
+
+/**
+ * To get the config for slide in animation
+ *
+ * @param {Object} options aniamtion option of an object
+ * @returns {Object} config for anmation
+ */
+const getSlideInConfig = (options, element, canvas) => {
+  const { duration, direction } = options;
+
+  const { oriPos, startPos, animatePropName } = calcSlideInPosition(
+    element,
+    direction,
+    canvas
+  );
+
+  return {
+    startState: {
+      [animatePropName]: startPos
+    },
+    animateProps: {
+      [animatePropName]: oriPos
+    },
+    duration
+  };
+};
+
+/**
+ * To get the config for fade out animation
+ *
+ * @param {Object} options aniamtion option of an object
+ * @returns {Object} config for anmation
+ */
+const getFadeOutConfig = (options, element) => {
+  return {
+    animateProps: {
+      opacity: 0
+    },
+    revertedProps: {
+      opacity: getOriginalOpacity(element)
+    },
+    duration: options.duration
+  };
+};
+
+/**
+ * To get the config for fade and scale out animation
+ *
+ * @param {Object} options aniamtion option of an object
+ * @returns {Object} config for anmation
+ */
+const getFadeScaleOutConfig = (options, element) => {
+  if (element.hasImage)
+    return getFadeScaleImageConfig({ ...options, isPlayIn: false });
+
   const { duration, scale } = options;
-  if (!duration || typeof scale !== 'number') return;
-
-  if (element.hasImage) {
-    options.isPlayOut = true;
-    handleFadeScaleImage(element, options, canvas);
-    return;
-  }
-
   const center = element.getCenterPoint();
   const originTop = element.top;
   const originLeft = element.left;
@@ -152,54 +227,22 @@ const fadeScaleOut = (element, options, canvas) => {
     left: originLeft
   };
 
-  const config = {
+  return {
     startState,
     animateProps,
     duration,
     revertedProps
   };
-
-  animationHandler(element, config, canvas);
 };
 
 /**
- * Handle slide animation
- * @param {Object} element fabric object animating
- * @param {Object} options animation option
- * @param {Object} canvas fabric canvas
+ * To get the config for fade and slide out animation
+ *
+ * @param {Object} options aniamtion option of an object
+ * @returns {Object} config for anmation
  */
-const slideIn = (element, options, canvas) => {
+const getFadeSlideOutConfig = (options, element, canvas) => {
   const { duration, direction } = options;
-  if (!duration || isEmpty(direction)) return;
-
-  const { oriPos, startPos, animatePropName } = calcSlideInPosition(
-    element,
-    direction,
-    canvas
-  );
-
-  const config = {
-    startState: {
-      [animatePropName]: startPos
-    },
-    animateProps: {
-      [animatePropName]: oriPos
-    },
-    duration
-  };
-
-  animationHandler(element, config, canvas);
-};
-
-/**
- * Handle slide animation
- * @param {Object} element fabric object animating
- * @param {Object} options animation option
- * @param {Object} canvas fabric canvas
- */
-const slideOut = (element, options, canvas) => {
-  const { duration, direction } = options;
-  if (!duration || isEmpty(direction)) return;
 
   const { oriPos, endPos, animatePropName } = calcSlideOutPosition(
     element,
@@ -207,67 +250,7 @@ const slideOut = (element, options, canvas) => {
     canvas
   );
 
-  const config = {
-    animateProps: {
-      [animatePropName]: endPos
-    },
-    revertedProps: {
-      [animatePropName]: oriPos
-    },
-    duration
-  };
-
-  animationHandler(element, config, canvas);
-};
-
-/**
- * Handle fade-slide animation
- * @param {Object} element fabric object animating
- * @param {Object} options animation option
- * @param {Object} canvas fabric canvas
- */
-const fadeSlideIn = (element, options, canvas) => {
-  const { duration, direction } = options;
-  if (!duration || isEmpty(direction)) return;
-
-  const { oriPos, startPos, animatePropName } = calcSlideInPosition(
-    element,
-    direction,
-    canvas
-  );
-
-  const config = {
-    startState: {
-      [animatePropName]: startPos,
-      opacity: 0
-    },
-    animateProps: {
-      [animatePropName]: oriPos,
-      opacity: getOriginalOpacity(element)
-    },
-    duration
-  };
-
-  animationHandler(element, config, canvas);
-};
-
-/**
- * Handle fade-slide animation
- * @param {Object} element fabric object animating
- * @param {Object} options animation option
- * @param {Object} canvas fabric canvas
- */
-const fadeSlideOut = (element, options, canvas) => {
-  const { duration, direction } = options;
-  if (!duration || isEmpty(direction)) return;
-
-  const { oriPos, endPos, animatePropName } = calcSlideOutPosition(
-    element,
-    direction,
-    canvas
-  );
-
-  const config = {
+  return {
     animateProps: {
       [animatePropName]: endPos,
       opacity: 0
@@ -278,91 +261,42 @@ const fadeSlideOut = (element, options, canvas) => {
     },
     duration
   };
-
-  animationHandler(element, config, canvas);
 };
 
 /**
- * Handle blur-in animation
- * @param {Object} element fabric object animating
- * @param {Object} options animation option
- * @param {Object} canvas fabric canvas
+ * To get the config for slide out animation
+ *
+ * @param {Object} options aniamtion option of an object
+ * @returns {Object} config for anmation
  */
-const blurIn = (element, options, canvas) => {
-  const blurOption = {
-    ...options,
-    startValue: 1.3,
-    endValue: 0,
-    opacityStart: 0,
-    opacityEnd: 1,
-    isPlayIn: true
-  };
+const getSlideOutConfig = (options, element, canvas) => {
+  const { duration, direction } = options;
 
-  handleBlurEffect(element, blurOption, canvas);
+  const { oriPos, endPos, animatePropName } = calcSlideOutPosition(
+    element,
+    direction,
+    canvas
+  );
+
+  return {
+    animateProps: {
+      [animatePropName]: endPos
+    },
+    revertedProps: {
+      [animatePropName]: oriPos
+    },
+    duration
+  };
 };
 
 /**
- * Handle blur-out animation
- * @param {Object} element fabric object animating
- * @param {Object} options animation option
- * @param {Object} canvas fabric canvas
+ * To get the config for fade and scale animation on image
+ *
+ * @param {Object} options aniamtion option of an object
+ * @returns {Object} config for anmation
  */
-const blurOut = (element, options, canvas) => {
-  const blurOption = {
-    ...options,
-    startValue: 0,
-    endValue: 1.3,
-    opacityStart: 1,
-    opacityEnd: 0,
-    isPlayOut: true
-  };
-
-  handleBlurEffect(element, blurOption, canvas);
-};
-
-/**
- * Handle blur animation
- * @param {Object} element fabric object animating
- * @param {Object} options animation option
- * @param {Object} canvas fabric canvas
- */
-const handleBlurEffect = (element, options, canvas) => {
-  const { duration, isPlayIn, isPlayOut } = options;
-  if (!duration) return;
-
-  const croppingOffset = 200; //pixel
-
-  const startState = {
-    blurValue: options.startValue,
-    opacity: options.opacityStart
-  };
-
-  const animateProps = {
-    blurValue: options.endValue,
-    opacity: options.opacityEnd
-  };
-
-  const config = {
-    startState,
-    animateProps,
-    croppingOffset,
-    isBlur: true,
-    duration,
-    isPlayIn: Boolean(isPlayIn),
-    isPlayOut: Boolean(isPlayOut)
-  };
-
-  handleEffectOnImage(element, config, canvas);
-};
-
-/**
- * Handle scale in animation of image
- * @param {Object} element fabric object animating
- * @param {Object} options animation option
- * @param {Object} canvas fabric canvas
- */
-const handleFadeScaleImage = (element, options, canvas) => {
-  const { scale, isPlayIn, isPlayOut } = options;
+const getFadeScaleImageConfig = options => {
+  const { scale, isPlayIn } = options;
 
   const visibleState = {
     opacity: 1,
@@ -376,13 +310,207 @@ const handleFadeScaleImage = (element, options, canvas) => {
     scaleY: scale
   };
 
-  const config = {
+  return {
     animateProps: isPlayIn ? visibleState : hiddenState,
     startState: isPlayIn ? hiddenState : visibleState,
     duration: options.duration,
-    isPlayIn: Boolean(isPlayIn),
-    isPlayOut: Boolean(isPlayOut)
+    isPlayIn: Boolean(isPlayIn)
   };
+};
+
+/**
+ * To get config for particular animation
+ *
+ * @param {Object} element fabric element
+ * @param {Object} config option for animation
+ * @param {Object} canvas fabric canvas
+ * @param {Boolean} isPlayIn is play in animation
+ * @returns {Object} config object for selected animation
+ */
+const getAnimationConfig = (element, config, canvas, isPlayIn) => {
+  const { style, scale } = config;
+  const options = {
+    ...config,
+    scale: scale / 100,
+    isPlayIn: Boolean(isPlayIn)
+  };
+
+  const playInConfig = {
+    [PLAY_IN_STYLES.BLUR]: getBlurConfig,
+    [PLAY_IN_STYLES.FADE_IN]: getFadeInConfig,
+    [PLAY_IN_STYLES.FADE_SCALE]: getFadeScaleInConfig,
+    [PLAY_IN_STYLES.FADE_SLIDE_IN]: getFadeSlideInConfig,
+    [PLAY_IN_STYLES.SLIDE_IN]: getSlideInConfig
+  };
+
+  const playOutConfig = {
+    [PLAY_OUT_STYLES.BLUR]: getBlurConfig,
+    [PLAY_OUT_STYLES.FADE_OUT]: getFadeOutConfig,
+    [PLAY_OUT_STYLES.FADE_SCALE]: getFadeScaleOutConfig,
+    [PLAY_OUT_STYLES.FADE_SLIDE_OUT]: getFadeSlideOutConfig,
+    [PLAY_OUT_STYLES.SLIDE_OUT]: getSlideOutConfig
+  };
+  const animateConfig = isPlayIn ? playInConfig : playOutConfig;
+
+  return animateConfig[style](options, element, canvas);
+};
+
+/**
+ * Handle fade animation
+ * @param {Object} element fabric object animating
+ * @param {Object} options animation option
+ * @param {Object} canvas fabric canvas
+ */
+const fadeIn = (element, options, canvas) => {
+  const { duration } = options;
+  if (!duration) return;
+
+  const config = getFadeInConfig(options, element);
+
+  animationHandler(element, config, canvas);
+};
+
+/**
+ * Handle fade animation
+ * @param {Object} element fabric object animating
+ * @param {Object} options animation option
+ * @param {Object} canvas fabric canvas
+ */
+const fadeOut = (element, options, canvas) => {
+  if (!options.duration) return;
+
+  const config = getFadeOutConfig(options, element);
+
+  animationHandler(element, config, canvas);
+};
+
+/**
+ * Handle fade-scale animation
+ * @param {Object} element fabric object animating
+ * @param {Object} options animation option
+ * @param {Object} canvas fabric canvas
+ */
+const fadeScaleIn = (element, options, canvas) => {
+  const { duration, scale } = options;
+  if (!duration || typeof scale !== 'number') return;
+
+  if (element.hasImage) {
+    options.isPlayIn = true;
+    handleFadeScaleImage(element, options, canvas);
+    return;
+  }
+  const config = getFadeScaleInConfig(options, element);
+
+  animationHandler(element, config, canvas);
+};
+
+/**
+ * Handle fade-scale animation
+ * @param {Object} element fabric object animating
+ * @param {Object} options animation option
+ * @param {Object} canvas fabric canvas
+ */
+const fadeScaleOut = (element, options, canvas) => {
+  if (!options.duration || typeof options.scale !== 'number') return;
+
+  if (element.hasImage) {
+    options.isPlayIn = false;
+    handleFadeScaleImage(element, options, canvas);
+    return;
+  }
+
+  const config = getFadeScaleOutConfig(options, element);
+
+  animationHandler(element, config, canvas);
+};
+
+/**
+ * Handle slide animation
+ * @param {Object} element fabric object animating
+ * @param {Object} options animation option
+ * @param {Object} canvas fabric canvas
+ */
+const slideIn = (element, options, canvas) => {
+  if (!options.duration || isEmpty(options.direction)) return;
+
+  const config = getSlideInConfig(options, element, canvas);
+
+  animationHandler(element, config, canvas);
+};
+
+/**
+ * Handle slide animation
+ * @param {Object} element fabric object animating
+ * @param {Object} options animation option
+ * @param {Object} canvas fabric canvas
+ */
+const slideOut = (element, options, canvas) => {
+  if (!options.duration || isEmpty(options.direction)) return;
+
+  const config = getSlideOutConfig(options, element, canvas);
+
+  animationHandler(element, config, canvas);
+};
+
+/**
+ * Handle fade-slide animation
+ * @param {Object} element fabric object animating
+ * @param {Object} options animation option
+ * @param {Object} canvas fabric canvas
+ */
+const fadeSlideIn = (element, options, canvas) => {
+  if (!options.duration || isEmpty(options.direction)) return;
+
+  const config = getFadeSlideInConfig(options, element, canvas);
+
+  animationHandler(element, config, canvas);
+};
+
+/**
+ * Handle fade-slide animation
+ * @param {Object} element fabric object animating
+ * @param {Object} options animation option
+ * @param {Object} canvas fabric canvas
+ */
+const fadeSlideOut = (element, options, canvas) => {
+  if (!options.duration || isEmpty(options.direction)) return;
+
+  const config = getFadeSlideOutConfig(options, element, canvas);
+  animationHandler(element, config, canvas);
+};
+
+/**
+ * Handle blur-in animation
+ * @param {Object} element fabric object animating
+ * @param {Object} options animation option
+ * @param {Object} canvas fabric canvas
+ */
+const blurIn = (element, options, canvas) => {
+  const config = getBlurConfig({ ...options, isPlayIn: true });
+
+  handleEffectOnImage(element, config, canvas);
+};
+
+/**
+ * Handle blur-out animation
+ * @param {Object} element fabric object animating
+ * @param {Object} options animation option
+ * @param {Object} canvas fabric canvas
+ */
+const blurOut = (element, options, canvas) => {
+  const config = getBlurConfig({ ...options, isPlayIn: false });
+
+  handleEffectOnImage(element, config, canvas);
+};
+
+/**
+ * Handle scale in animation of image
+ * @param {Object} element fabric object animating
+ * @param {Object} options animation option
+ * @param {Object} canvas fabric canvas
+ */
+const handleFadeScaleImage = (element, options, canvas) => {
+  const config = getFadeScaleImageConfig(options);
 
   handleEffectOnImage(element, config, canvas);
 };
@@ -420,7 +548,7 @@ const handleEffectOnImage = (element, options, canvas) => {
   if (isBlur) img.filters.push(filter);
 
   element.set({
-    visible: options.isPlayOut ? true : false,
+    visible: !options.isPlayIn ? true : false,
     hasControls: false,
     hasBorders: false
   });
@@ -554,6 +682,92 @@ const animationHandler = (element, config, canvas) => {
       }
     });
   }, DELAY_DURATION);
+};
+
+/**
+ * Handle render element on canvas with animation effects use for playback
+ * @param {Object} element fabric object
+ * @param {Object} config configuration for animation
+ * @param {Object} canvas fabric canvas object
+ */
+const playbackHandler = (animateObjects, canvas, isPlayIn) => {
+  if (isEmpty(animateObjects)) return;
+
+  animateObjects.forEach(({ element, options }) => {
+    const config = getAnimationConfig(element, options, canvas, isPlayIn);
+    const { startState, animateProps, duration } = config;
+
+    if (
+      PLAY_IN_STYLES.BLUR === options.style ||
+      (element.hasImage && PLAY_IN_STYLES.FADE_SCALE === options.style)
+    ) {
+      playbackImageHandler(element, config, canvas);
+      return;
+    }
+
+    element.set(startState);
+    element.set({ visible: true });
+
+    element.animate(animateProps, {
+      duration: duration * 1000,
+      onChange: canvas.renderAll.bind(canvas)
+    });
+  });
+};
+
+/**
+ * Handle animation which only can be done on image object
+ * This function create a image from fabric object, then apply animation on it
+ *
+ * @param {Object} element fabric object animating
+ * @param {Object} options animation option
+ * @param {Object} canvas fabric canvas
+ */
+const playbackImageHandler = (element, options, canvas) => {
+  const { duration, animateProps, startState, isBlur } = options;
+
+  element.set('visible', true);
+  const img = createImage(element, options.croppingOffset);
+  element.set('visible', false);
+
+  const filter = new fabric.Image.filters.Blur({
+    blur: startState.blurValue || 0
+  });
+
+  if (isBlur) img.filters.push(filter);
+
+  const centerPoint = element.getCenterPoint();
+
+  img.set({
+    ...startState,
+    originX: 'center',
+    originY: 'center',
+    top: centerPoint.y,
+    left: centerPoint.x
+  });
+
+  canvas.insertAt(img, canvas.getObjects().indexOf(element));
+  canvas.renderAll();
+
+  img.animate(animateProps, {
+    duration: duration * 1000,
+    onChange: () => {
+      if (options.isBlur) {
+        filter.blur = img.blurValue;
+        img.applyFilters();
+      }
+
+      canvas.renderAll();
+    },
+    onComplete: () => {
+      canvas.remove(img);
+
+      if (options.isPlayIn) {
+        element.set({ visible: true });
+      }
+      canvas.renderAll();
+    }
+  });
 };
 
 /**
@@ -996,4 +1210,52 @@ export const sortAnimationOrder = (animationOrders, objects) => {
       );
     });
   });
+};
+
+/**
+ * To handle animation for muli-objects
+ *
+ * @param {Object} objects ppData of objects
+ * @param {Object} canvas canvas object
+ * @param {Array} orders array of order of animation
+ * @param {Boolean} isPlayIn indicate whether in playIn animation or playOut animation
+ * @returns {Promise} of waiting time
+ */
+export const multiObjectsAnimation = (objects, canvas, orders, isPlayIn) => {
+  const fbObjects = canvas.getObjects();
+  if (isEmpty(objects) || isEmpty(orders)) return;
+
+  let timeCounter = 0;
+  const animationType = isPlayIn ? 'animationIn' : 'animationOut';
+
+  orders.forEach(order => {
+    let max = 0;
+    const animateObjects = [];
+
+    order.forEach(id => {
+      // find max duration
+      const ppObject = objects.find(o => o.id === id);
+
+      if (!ppObject) return;
+
+      const animationOpt = ppObject[animationType];
+
+      if (!animationOpt?.style) return;
+
+      max = Math.max(animationOpt.duration, max);
+
+      const fbObject = fbObjects.find(o => o.id == id);
+      animateObjects.push({ element: fbObject, options: animationOpt });
+    });
+
+    // call function to perform animation
+    setTimeout(() => {
+      playbackHandler(animateObjects, canvas, isPlayIn);
+    }, timeCounter * 1000);
+
+    // keep track of current order moment
+    timeCounter += max;
+  });
+
+  return waitMiliseconds(timeCounter * 1000);
 };

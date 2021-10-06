@@ -1,6 +1,7 @@
 import { TRANSITION, TRANS_TARGET } from '@/common/constants';
 import { getSuccessWithData, Transition } from '@/common/models';
 import {
+  getPlaybackDataFromFrames,
   insertItemsToArray,
   isEmpty,
   mergeArray,
@@ -35,20 +36,6 @@ const replaceTransition = (transition, sectionIndex, sheetIndex) => {
       sheetIndex
     ].digitalData.transitions[i] = transition;
   }
-};
-
-const getPlaybackDataFromFrames = (frames, transitions) => {
-  return frames.map(({ id, frame }, index) => {
-    const { objects, playInIds, playOutIds } = frame;
-
-    return {
-      id,
-      objects,
-      playInIds,
-      playOutIds,
-      transition: isEmpty(transitions[index]) ? {} : transitions[index]
-    };
-  });
 };
 
 export const getTransitionsApi = (bookId, sheetId, sectionId) => {
