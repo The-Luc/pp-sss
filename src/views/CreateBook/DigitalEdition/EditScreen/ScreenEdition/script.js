@@ -269,7 +269,7 @@ export default {
       undoRedoCanvas: null,
       isFrameLoaded: false,
       isScroll: { x: false, y: false },
-      previousFrameId: null
+      isAllowUpdateFrameDelay: false
     };
   },
   computed: {
@@ -317,6 +317,9 @@ export default {
       }
     },
     async currentFrameId(val, oldVal) {
+      this.isAllowUpdateFrameDelay = false;
+      setTimeout(() => (this.isAllowUpdateFrameDelay = true), 50);
+
       if (!val) {
         resetObjects(this.digitalCanvas);
 
@@ -400,10 +403,7 @@ export default {
       this.digitalCanvas.renderAll();
     },
     totalVideoDuration(newVal, oldVal) {
-      if (!this.previousFrameId) this.previousFrameId = this.currentFrameId;
-
-      // this check to make sure that when user switch frame the computation below does not occur.
-      if (this.previousFrameId !== this.currentFrameId) return;
+      if (!this.isAllowUpdateFrameDelay) return;
 
       const duration = this.currentFrame.delay + newVal - oldVal || 3;
       this.setFrameDelay({ value: duration });
