@@ -1,7 +1,6 @@
 import Header from '../ThumbnailHeader';
 import Content from './ThumbnailContent';
 import Footer from './ThumbnailFooter';
-import Action from '@/containers/Menu/Action';
 
 import { LINK_STATUS, SHEET_TYPE } from '@/common/constants';
 import { isEmpty } from '@/common/utils';
@@ -10,14 +9,9 @@ export default {
   components: {
     Header,
     Content,
-    Footer,
-    Action
+    Footer
   },
   props: {
-    section: {
-      type: Object,
-      default: () => ({})
-    },
     name: {
       type: String,
       required: true
@@ -65,24 +59,19 @@ export default {
       type: Boolean,
       default: false
     },
-    sheetId: {
-      type: Number,
-      default: null
+    isAdmin: {
+      type: Boolean,
+      default: false
     },
-    selectedSheet: {
-      type: Number,
-      default: null
+    isMoreActivated: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
     return {
       displayCssClass: '',
-      customCssClass: [],
-      menuX: 0,
-      menuY: 0,
-      isOpenMenu: false,
-      menuClass: 'pp-menu section-menu',
-      currentMenuHeight: 0
+      customCssClass: []
     };
   },
   mounted() {
@@ -97,11 +86,6 @@ export default {
       digitalCssClass,
       disabledCssClass
     ].filter(c => !isEmpty(c));
-  },
-  watch: {
-    selectedSheet(id) {
-      this.isOpenMenu = id === this.sheetId;
-    }
   },
   methods: {
     /**
@@ -121,52 +105,7 @@ export default {
      * @param {Object} event fired event
      */
     toggleMenu(event) {
-      const element = event.target;
-      const windowHeight = window.innerHeight;
-      const elementY = event.y;
-
-      const { x, y } = element.getBoundingClientRect();
-      this.menuX = x - 82;
-      this.menuY = y;
-      this.menuClass = 'pp-menu section-menu';
-
-      setTimeout(() => {
-        if (windowHeight - elementY < this.currentMenuHeight) {
-          this.menuY = y - this.currentMenuHeight - 45;
-          this.menuClass = `${this.menuClass} section-menu-top`;
-        } else {
-          this.menuClass = `${this.menuClass} section-menu-bottom`;
-          this.menuY = y;
-        }
-      }, 100);
-
-      this.$emit('toggleMenu');
-    },
-    /**
-     * Event fire when click outside menu or scroll
-     */
-    onCloseMenu() {
-      this.$emit('closeMenu');
-    },
-    /**
-     * Event fire when click preview button
-     */
-    onPreview() {
-      this.$emit('preview');
-    },
-    /**
-     * Event fire when click PDF button
-     */
-    onExportPDF() {
-      this.$emit('export');
-    },
-    /**
-     * Set current menu height
-     */
-    onMenuLoaded(event) {
-      setTimeout(() => {
-        this.currentMenuHeight = event.$el.clientHeight;
-      }, 10);
+      this.$emit('toggleMenu', event);
     }
   }
 };

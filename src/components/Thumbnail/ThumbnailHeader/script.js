@@ -24,7 +24,11 @@ export default {
       type: Boolean,
       default: true
     },
-    isOpenMenu: {
+    isMoreActivated: {
+      type: Boolean,
+      default: false
+    },
+    isAdmin: {
       type: Boolean,
       default: false
     }
