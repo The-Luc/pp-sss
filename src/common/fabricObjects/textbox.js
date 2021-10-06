@@ -2,7 +2,6 @@ import { fabric } from 'fabric';
 import { cloneDeep } from 'lodash';
 
 import { BasePosition, TextElementObject } from '../models/element';
-import { applyShadowToObject } from './common';
 
 import {
   isEmpty,
@@ -24,7 +23,8 @@ import {
   getAdjustedObjectDimension,
   toFabricTextProp,
   toFabricTextBorderProp,
-  toFabricTextGroupProp
+  toFabricTextGroupProp,
+  applyShadowToObject
 } from './common';
 import {
   useDoubleStroke,

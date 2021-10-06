@@ -1,7 +1,10 @@
 import PpCombobox from '@/components/Selectors/Combobox';
 import PpSelect from '@/components/Selectors/Select';
-import { getSelectedOption } from '@/common/utils';
-import { getValueInput, validateInputOption } from '@/common/utils';
+import {
+  getValueInput,
+  validateInputOption,
+  getSelectedOption
+} from '@/common/utils';
 import {
   ICON_LOCAL,
   TEXT_DISPLAY_OPTION,

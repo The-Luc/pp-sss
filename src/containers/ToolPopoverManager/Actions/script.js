@@ -3,8 +3,12 @@ import { mapGetters } from 'vuex';
 import Item from './Item';
 import { GETTERS } from '@/store/modules/app/const';
 import { isEmpty, parsePasteObject } from '@/common/utils';
-import { MODAL_TYPES } from '@/common/constants';
-import { ACTIONS, EVENT_TYPE, OBJECT_TYPE } from '@/common/constants';
+import {
+  ACTIONS,
+  EVENT_TYPE,
+  OBJECT_TYPE,
+  MODAL_TYPES
+} from '@/common/constants';
 import { COPY_OBJECT_KEY } from '@/common/constants/config';
 import { useTotalObjects, useModal, useToolBar } from '@/hooks';
 

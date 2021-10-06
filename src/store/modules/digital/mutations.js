@@ -1,11 +1,15 @@
 import { cloneDeep, merge } from 'lodash';
 
-import { getUniqueId, moveItem, sortAnimationOrder } from '@/common/utils';
+import {
+  getUniqueId,
+  moveItem,
+  sortAnimationOrder,
+  isEmpty
+} from '@/common/utils';
 
 import { OBJECT_TYPE } from '@/common/constants';
 
 import DIGITAL from './const';
-import { isEmpty } from '@/common/utils';
 import {
   addObject,
   addObjects,
@@ -302,7 +306,9 @@ export const mutations = {
   },
   [DIGITAL._MUTATES.SET_STORE_ANIMATION_PROP](state, { storeAnimationProp }) {
     if (isEmpty(storeAnimationProp)) {
-      return (state.storeAnimationProp = {});
+      state.storeAnimationProp = {};
+
+      return state.storeAnimationProp;
     }
 
     const currentProp = cloneDeep(state.storeAnimationProp);

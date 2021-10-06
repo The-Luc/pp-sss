@@ -74,7 +74,8 @@ import {
   handleMouseMove,
   handleMouseOver,
   handleMouseOut,
-  createPortraitImage
+  createPortraitImage,
+  createImage
 } from '@/common/fabricObjects';
 
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
@@ -113,7 +114,6 @@ import {
   PASTE,
   THUMBNAIL_IMAGE_CONFIG
 } from '@/common/constants/config';
-import { createImage } from '@/common/fabricObjects';
 import { EVENT_TYPE } from '@/common/constants/eventType';
 import { useSaveData } from './composables';
 import { useSavingStatus } from '@/views/CreateBook/composables';
@@ -335,11 +335,10 @@ export default {
      * @returns {Object} a fabric objec
      */
     async createBackgroundFromPpData(backgroundProp) {
-      const image = await createBackgroundFabricObject(
+      return await createBackgroundFabricObject(
         backgroundProp,
         window.printCanvas
       );
-      return image;
     },
 
     /**

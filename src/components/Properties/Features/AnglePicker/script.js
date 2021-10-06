@@ -130,9 +130,9 @@ export default {
      * Handle stop rotation
      */
     stop() {
-      this.currentAngle = numberToPositiveAngle(
-        (this.currentAngle += this.rotation)
-      );
+      this.currentAngle += this.rotation;
+      this.currentAngle = numberToPositiveAngle(this.currentAngle);
+
       this.emitChange(this.currentAngle);
       this.active = false;
     },

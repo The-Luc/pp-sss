@@ -70,9 +70,9 @@ import {
   createMediaObject,
   createSvgObject,
   createPortraitImageObject,
-  createTextBoxObject
+  createTextBoxObject,
+  createImage
 } from '@/common/fabricObjects';
-import { createImage } from '@/common/fabricObjects';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
 
 import {
@@ -2046,11 +2046,10 @@ export default {
      * @returns {Object} a fabric objec
      */
     async createBackgroundFromPpData(backgroundProp) {
-      const image = await createBackgroundFabricObject(
+      return await createBackgroundFabricObject(
         backgroundProp,
         this.digitalCanvas
       );
-      return image;
     },
 
     /**

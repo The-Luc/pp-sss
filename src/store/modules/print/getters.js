@@ -152,13 +152,12 @@ export const getters = {
       ...objectIds.map(id => ({ ...objects[id], id }))
     ];
 
-    const data = {
+    return {
       objects: objectsData,
       pageInfo: book.pageInfo,
       defaultThemeId: book.defaultThemeId,
       sheetProps: sheets[sheetId]
     };
-    return data;
   },
   [PRINT._GETTERS.GET_SHEET_MEDIA]: ({ sheets, currentSheetId }) => {
     const media = sheets[currentSheetId]?.media;

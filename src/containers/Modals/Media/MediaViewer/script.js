@@ -4,8 +4,6 @@ import Smartbox from '@/components/Modals/MediaSelection/Smartbox';
 import TabMedia from '@/components/Modals/MediaSelection/TabMedia';
 import TabSearchPhotos from '@/components/Modals/MediaSelection/TabSearch';
 
-import { getFileExtension } from '@/common/utils';
-
 import {
   useGetterEditionSection,
   useFrame,
@@ -18,7 +16,8 @@ import { usePhotos } from '@/views/CreateBook/composables';
 import {
   insertItemsToArray,
   removeItemsFormArray,
-  getUniqueKeywords
+  getUniqueKeywords,
+  getFileExtension
 } from '@/common/utils';
 import {
   VIDEO_CATEGORIES,

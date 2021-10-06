@@ -126,11 +126,9 @@ const getLineDashes = (x1, y1, x2, y2, dashLength, isSelfClosed) => {
   const remaining = length - calcLineLength;
   const acctualDashLength = remaining / numDashes + dashLength;
 
-  const dashArray = Array(totalBars)
+  return Array(totalBars)
     .fill(0)
     .map((_, idx) => (idx % 2 === 0 ? acctualDashLength : gapLength));
-
-  return dashArray;
 };
 
 /**

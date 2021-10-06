@@ -19,10 +19,8 @@ export default {
   computed: {
     selectedBorderStyle() {
       const borderStyleValue = this.selectedStyle || BORDER_STYLES.SOLID;
-      const selected = this.options.find(
-        item => item.value === borderStyleValue
-      );
-      return selected;
+
+      return this.options.find(item => item.value === borderStyleValue);
     }
   },
   methods: {
