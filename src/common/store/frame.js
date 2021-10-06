@@ -9,7 +9,7 @@ export const calcFrameAnimationDuration = (objects, orders, animationType) => {
           Math.max(
             0,
             ...order.map(id => {
-              const animation = objects[id][animationType];
+              const animation = objects[id] ? objects[id][animationType] : {};
               return animation?.style ? animation.duration : 0;
             })
           ),

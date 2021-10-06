@@ -131,7 +131,11 @@ export const useActionDigitalSheet = () => {
 
   const { sheetLayout: sheetLayoutObs } = useSheet();
 
-  const { currentFrameId: currentFrameIdObs, frames: framesObs } = useFrame();
+  const {
+    currentFrameId: currentFrameIdObs,
+    frames: framesObs,
+    currentFrame: frameObs
+  } = useFrame();
 
   const { playInIds: playInIdsObs, playOutIds: playOutIdsObs } = useAnimation();
 
@@ -203,6 +207,7 @@ export const useActionDigitalSheet = () => {
       objects: sheetLayoutObs.value,
       playInIds: playInIdsObs.value,
       playOutIds: playOutIdsObs.value,
+      delay: frameObs.value.delay,
       transition: {}
     };
 
@@ -249,7 +254,7 @@ export const useActionDigitalSheet = () => {
 
     const frame = framesObs.value.find(({ id }) => id === frameId);
 
-    const { objects, playInIds, playOutIds } = frame.frame;
+    const { objects, playInIds, playOutIds, delay } = frame.frame;
 
     return [
       {
@@ -257,6 +262,7 @@ export const useActionDigitalSheet = () => {
         objects,
         playInIds,
         playOutIds,
+        delay,
         transition: {}
       }
     ];

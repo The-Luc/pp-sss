@@ -698,8 +698,8 @@ const playbackHandler = (animateObjects, canvas, isPlayIn) => {
     const { startState, animateProps, duration } = config;
 
     if (
-      [PLAY_IN_STYLES.BLUR, PLAY_OUT_STYLES.BLUR].includes(options.style) ||
-      element.hasImage
+      PLAY_IN_STYLES.BLUR === options.style ||
+      (element.hasImage && PLAY_IN_STYLES.FADE_SCALE === options.style)
     ) {
       playbackImageHandler(element, config, canvas);
       return;

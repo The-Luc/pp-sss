@@ -11,10 +11,12 @@ import {
   isEmpty,
   multiObjectsAnimation,
   waitMiliseconds,
-  getRefElement
+  getRefElement,
+  setActiveEdition
 } from '@/common/utils';
 
 import {
+  EDITION,
   OBJECT_TYPE,
   THUMBNAIL_IMAGE_CONFIG,
   TRANSITION
@@ -52,9 +54,13 @@ export default {
     setTimeout(this.onFinish, 1000);
   },
   beforeDestroy() {
+    setActiveEdition(window.digitalCanvas, EDITION.DIGITAL);
+
     this.isDestroyed = true;
 
     window.removeEventListener('resize', this.onResized);
+
+    this.getVideoOnCanvas().forEach(v => v.pause());
   },
   methods: {
     /**
@@ -192,12 +198,17 @@ export default {
      * @returns {Promise}
      */
     async playAnimation(frameData) {
+      setActiveEdition(this.mainCanvas, EDITION.DIGITAL);
+
       const { delay, objects, playInIds, playOutIds } = frameData;
 
       const delayDuration = delay ?? 3;
 
       // Handle play in animation
       await multiObjectsAnimation(objects, this.mainCanvas, playInIds, true);
+
+      // play video if existed
+      this.playVideo();
 
       await waitMiliseconds(delayDuration * 1000);
 
@@ -269,7 +280,7 @@ export default {
      * @returns a fabric object
      */
     async drawMedia(media) {
-      return createMediaObject(media);
+      return createMediaObject(media, this.videoCallback);
     },
 
     /**
@@ -280,6 +291,29 @@ export default {
      */
     async drawPortraitImage(portrait) {
       return createPortraitImageObject(portrait);
+    },
+    /**
+     * To get videos on main canvas
+     *
+     * @returns {Array} array of video object on canvas
+     */
+    getVideoOnCanvas() {
+      return this.mainCanvas
+        .getObjects()
+        .filter(o => o.objectType === OBJECT_TYPE.VIDEO);
+    },
+    /**
+     *  To configurate video after playing
+     *
+     * @param {Number} id id of playing video
+     */
+    videoCallback(id) {
+      const video = this.getVideoOnCanvas().find(o => o.id === id);
+
+      video.set({
+        showPlayIcon: false,
+        showThumbnail: false
+      });
     },
     /**
      * Get transition css class
@@ -443,9 +477,27 @@ export default {
         .filter(o => o?.animationIn?.style)
         .map(o => o.id);
 
-      fbObjects.forEach(
-        o => nonAnimationObjectIds.includes(o.id) && o.set({ visible: false })
-      );
+      fbObjects.forEach(o => {
+        o.set({ selectable: false });
+
+        nonAnimationObjectIds.includes(o.id) && o.set({ visible: false });
+
+        if (o.objectType === OBJECT_TYPE.VIDEO) o.set({ showPlayIcon: false });
+      });
+    },
+
+    /**
+     * Handle play video in order
+     */
+    playVideo() {
+      let timeCounter = 0.2;
+
+      this.getVideoOnCanvas().forEach(v => {
+        setTimeout(() => v.play(), timeCounter * 1000);
+
+        const playingDuration = v.endTime - v.startTime;
+        timeCounter += playingDuration;
+      });
     }
   }
 };
