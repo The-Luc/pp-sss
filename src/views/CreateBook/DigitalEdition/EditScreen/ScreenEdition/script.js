@@ -2573,9 +2573,9 @@ export default {
      */
     handleOpenAnimations(event, selectedId) {
       if (event?.target && event.target.objectType !== OBJECT_TYPE.BACKGROUND) {
-        const objects = this.digitalCanvas.getObjects();
+        const canvasObjects = this.digitalCanvas.getObjects();
 
-        objects.forEach(object => {
+        canvasObjects.forEach(object => {
           object.set({
             selectable: object.objectType !== OBJECT_TYPE.BACKGROUND
           });

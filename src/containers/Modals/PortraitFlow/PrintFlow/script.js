@@ -110,8 +110,8 @@ export default {
 
       if (this.isMultiFolder) {
         const { flowOption } = this.flowSettings.flowMultiSettings;
-        const pages = this.getMultiFolderDefaultPages(flowOption);
-        this.flowSettings.flowMultiSettings.pages = pages;
+        const multiFolderPages = this.getMultiFolderDefaultPages(flowOption);
+        this.flowSettings.flowMultiSettings.pages = multiFolderPages;
       }
 
       const pages = this.getSingleFolderDefaultPages();

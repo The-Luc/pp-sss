@@ -331,15 +331,15 @@ export default {
       if (isEmpty(this.flowSettings)) return;
 
       if (this.isMultiFolder) {
-        const folders = cloneDeep(this.flowSettings.folders);
+        const multiFolders = cloneDeep(this.flowSettings.folders);
 
-        folders.forEach(f =>
+        multiFolders.forEach(f =>
           f.assets.sort(sortPortraitByName(this.isFirstLast))
         );
 
         this.onSettingChange({
           ...this.flowSettings,
-          folders
+          multiFolders
         });
         return;
       }

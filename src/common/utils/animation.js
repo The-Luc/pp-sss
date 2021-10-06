@@ -1164,7 +1164,7 @@ export const renderOrderBox = async (data, opacity) => {
 
 export const removeAnimationOrders = (animationOrders, objectIds, objects) => {
   objectIds.forEach(id => {
-    const idsIndex = animationOrders.findIndex(ids => ids.includes(id));
+    const idsIndex = animationOrders.findIndex(item => item.includes(id));
 
     if (idsIndex < 0) return;
 
