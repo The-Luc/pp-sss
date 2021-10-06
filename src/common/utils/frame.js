@@ -20,7 +20,9 @@ export const getPlaybackDataFromFrames = (
 
     const data = currentData.find(data => data.id === id);
 
-    if (!isEmpty(data)) return merge(data, transition);
+    if (!isEmpty(data)) {
+      return merge(data, { transition: { ...transition } });
+    }
 
     const { objects, playInIds, playOutIds, delay } = frame;
 
