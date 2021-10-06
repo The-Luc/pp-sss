@@ -10,6 +10,7 @@
     <teacher-setting
       :teacher-settings="flowSettings.teacherSettings"
       :layout="layout"
+      :is-digital="isDigital"
       :is-single-folder="isSingleFolder"
       :num-of-teachers="numOfTeachers"
       :num-of-asst-teachers="numOfAsstTeachers"
