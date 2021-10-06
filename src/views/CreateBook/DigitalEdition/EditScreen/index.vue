@@ -65,12 +65,11 @@
     ></portrait-folder>
 
     <portrait-flow
+      v-if="modal[modalType.PORTRAIT_FLOW].isOpen"
       container="#editor"
-      :is-open="modal[modalType.PORTRAIT_FLOW].isOpen"
       :selected-folders="modal[modalType.PORTRAIT_FLOW].data.folders"
       @cancel="onClosePortrait"
       @accept="onApplyPortrait"
-      @cancelApplyPortrait="onCancelApplyPortrait"
     ></portrait-flow>
 
     <transition-preview

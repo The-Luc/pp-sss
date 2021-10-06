@@ -83,7 +83,7 @@ export default {
       return this.flowSettings.flowMultiSettings;
     },
     isSmallerNumberOfScreen() {
-      return this.currentSection.sheetIds.length < this.selectedFolders.length;
+      return this.remainingSheetsOfSection < this.selectedFolders.length;
     },
     isSingleScreen() {
       return this.currentSection.sheetIds.length === 1;
@@ -129,6 +129,13 @@ export default {
       });
 
       return dataSelectFrame.map(this.calculateDataFrameOfMulti);
+    },
+
+    remainingSheetsOfSection() {
+      const sheetIndexOfSection = this.currentSection.sheetIds.findIndex(
+        item => item === this.currentSheet.id
+      );
+      return this.currentSection.sheetIds.length - sheetIndexOfSection;
     }
   },
   methods: {
@@ -241,15 +248,17 @@ export default {
      * @returns {Array} screen options
      */
     screenOptions(min) {
-      const totalSheet = this.currentSection.sheetIds.length;
       const startOption = parseInt(this.currentSheet.pageName);
       const screenOptions = Array.from(
-        { length: totalSheet },
-        (_, i) => i + startOption
-      ).map(item => ({
-        id: item,
-        name: 'Screen ' + item
-      }));
+        { length: this.remainingSheetsOfSection },
+        (_, i) => {
+          const id = i + startOption;
+          return {
+            id: id,
+            name: 'Screen ' + id
+          };
+        }
+      );
       return screenOptions.filter(item => {
         return item.id >= min;
       });
