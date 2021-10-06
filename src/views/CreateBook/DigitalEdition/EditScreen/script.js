@@ -823,13 +823,6 @@ export default {
       });
 
       return currentFrames;
-    },
-    /**
-     * Cancel apply warning modal
-     */
-    onCancelApplyPortrait(isShowApplyPortrait) {
-      this.onToggleModal({ modal: MODAL_TYPES.PORTRAIT_FLOW });
-      this.setToolNameSelected(isShowApplyPortrait ? '' : TOOL_NAME.PORTRAIT);
     }
   }
 };
