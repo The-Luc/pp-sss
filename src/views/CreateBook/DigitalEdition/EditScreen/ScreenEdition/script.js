@@ -1302,10 +1302,11 @@ export default {
         }
 
         case OBJECT_TYPE.PORTRAIT_IMAGE: {
+          const minDimension = Math.min(currentWidthInch, currentHeightInch);
           const radius =
             target.mask === PORTRAIT_IMAGE_MASK.ROUNDED
-              ? currentWidthInch / 10
-              : currentWidthInch / 2;
+              ? minDimension / 10
+              : minDimension / 2;
           const prop = {
             width: currentWidthInch,
             height: currentHeightInch,
