@@ -41,50 +41,20 @@
         ></flow-select>
         <div v-if="isShowSelectFrameMulti" class="frame-select">
           <div v-for="(item, index) in dataSelectFrameMulti" :key="index">
-            <div class="select-container">
-              <item-select
-                v-if="index !== 0"
-                :title="`Folder ${index + 1}:`"
-                descript="Portrait flow starts on frame:"
-                :selected-val="item.selectedVal"
-                :items="item.frameOptions"
-                @change="
-                  onFrameSettingChange($event, item.frameIndex, item.screen)
-                "
-              ></item-select>
-              <item-select
-                v-if="index !== 0 && !isSingleScreen"
-                class="screen-select"
-                :title="''"
-                descript="of"
-                :selected-val="item.selectedValScreen"
-                :items="item.screenOptions"
-                @change="
-                  onScreenSettingChange($event, item.frameIndex, item.screen)
-                "
-              ></item-select>
-            </div>
-            <div class="select-container">
-              <item-select
-                v-if="index !== dataSelectFrameMulti.length - 1"
-                :title="index === 0 ? `Folder ${index + 1}:` : ''"
-                descript="Portrait flow ends on frame:"
-                :disabled="true"
-                :selected-val="item.selectedValEndOnFrame"
-                :items="item.endOnFrameOptions"
-              ></item-select>
-              <item-select
-                v-if="
-                  index !== dataSelectFrameMulti.length - 1 && !isSingleScreen
-                "
-                class="screen-select"
-                :title="''"
-                descript="of"
-                :disabled="true"
-                :selected-val="item.selectedValScreen"
-                :items="item.screenOptions"
-              ></item-select>
-            </div>
+            <digital-item-select
+              key="index"
+              :item="item"
+              :index-item="index"
+              :length-data-select="dataSelectFrameMulti.length"
+              :is-single-screen="isSingleScreen"
+              @frameSettingChange="
+                onFrameSettingChange($event, item.frameIndex, item.screen)
+              "
+              @screenSettingChange="
+                onScreenSettingChange($event, item.frameIndex, item.screen)
+              "
+            >
+            </digital-item-select>
           </div>
         </div>
       </div>

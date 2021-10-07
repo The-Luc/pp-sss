@@ -323,7 +323,7 @@ export const mutations = {
 
     const playInIds = cloneDeep(state.playInIds);
 
-    const ids = playInIds.find(ids => ids.includes(id));
+    const ids = playInIds.find(item => item.includes(id));
 
     if (!isEmpty(ids)) {
       const index = ids.findIndex(i => +i === +id);
@@ -339,8 +339,8 @@ export const mutations = {
     const tmpArr = [...playInIds].map(item => item || []);
     const reverseArr = [...tmpArr].reverse();
 
-    reverseArr.forEach(ids => {
-      if (isEmpty(ids)) tmpArr.pop();
+    reverseArr.forEach(item => {
+      if (isEmpty(item)) tmpArr.pop();
       else reverseArr.length = 0;
     });
 
@@ -353,7 +353,7 @@ export const mutations = {
     if (!id || newIndex < 0) return;
 
     const playOutIds = cloneDeep(state.playOutIds);
-    const ids = playOutIds.find(ids => ids.includes(id));
+    const ids = playOutIds.find(item => item.includes(id));
 
     if (!isEmpty(ids)) {
       const index = ids.findIndex(i => +i === +id);
@@ -369,8 +369,8 @@ export const mutations = {
     const tmpArr = [...playOutIds].map(item => item || []);
     const reverseArr = [...tmpArr].reverse();
 
-    reverseArr.forEach(ids => {
-      if (isEmpty(ids)) tmpArr.pop();
+    reverseArr.forEach(item => {
+      if (isEmpty(item)) tmpArr.pop();
       else reverseArr.length = 0;
     });
 

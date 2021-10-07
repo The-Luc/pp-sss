@@ -10,6 +10,7 @@
       :page-number="pageNumber"
       :background-url="backgroundUrl"
       :is-digital="isDigital"
+      :screen-number="screenNumber"
     />
 
     <div class="page-info">

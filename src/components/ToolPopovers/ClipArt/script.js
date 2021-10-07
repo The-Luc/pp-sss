@@ -41,6 +41,11 @@ export default {
       return this.chosenClipArtType.value === CLIP_ART_TYPE.SEARCH.id;
     }
   },
+  watch: {
+    chosenClipArtType(newVal, oldVal) {
+      if (newVal !== oldVal) this.scrollToTop();
+    }
+  },
   methods: {
     /**
      * Emit change event to parent component
@@ -77,8 +82,19 @@ export default {
       this.searchInput = event.target.value;
       this.$emit('search', this.searchInput);
 
+      this.scrollToTop();
       event.target.value = ' ';
       event.target.blur();
+    },
+    /**
+     * Auto scroll to top
+     */
+    scrollToTop() {
+      this.$refs?.clipArtContainer?.scrollTo({
+        behavior: 'smooth',
+        block: 'nearest',
+        top: 0
+      });
     }
   }
 };

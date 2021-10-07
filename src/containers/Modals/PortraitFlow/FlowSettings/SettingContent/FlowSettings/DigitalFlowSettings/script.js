@@ -1,5 +1,6 @@
 import FlowSelect from '../FlowSelect';
 import ItemSelect from '../ItemSelect';
+import DigitalItemSelect from '../DigitalItemSelect';
 import { useSheet, useGetterEditionSection, useFrame } from '@/hooks';
 import {
   DIGITAL_PORTRAIT_FLOW_OPTION_SINGLE,
@@ -11,7 +12,8 @@ import { cloneDeep } from 'lodash';
 export default {
   components: {
     FlowSelect,
-    ItemSelect
+    ItemSelect,
+    DigitalItemSelect
   },
   setup() {
     const { currentSheet, getSheets: sheets } = useSheet();

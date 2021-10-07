@@ -38,6 +38,7 @@
         </div>
         <div
           v-else
+          ref="clipArtContainer"
           :class="[
             'clip-art-item-container',
             { 'search-item': isShowSearchInput }
