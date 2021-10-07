@@ -56,8 +56,10 @@
             :is-favorites="isInFavorites(layout)"
             :is-favorites-disabled="layout.isFavoritesDisabled"
             :is-digital="isDigital"
+            :is-preview-disabled="isOnPreview"
             @click="onSelectLayout"
             @saveToFavorites="onSaveToFavorites"
+            @togglePreview="onTogglePreview"
           />
         </div>
       </template>

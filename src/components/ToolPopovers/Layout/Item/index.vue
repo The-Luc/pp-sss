@@ -7,28 +7,47 @@
   >
     <div class="border-inside"></div>
     <div class="layout-preview-img">
-      <img :src="layout.previewImageUrl" alt="layout-preview" />
+      <img
+        v-if="!isOnPreview"
+        :src="layout.previewImageUrl"
+        alt="layout-preview"
+      />
+
+      <playback
+        v-else
+        :playback-data="previewData"
+        @finish="onFinishPreview"
+      ></playback>
     </div>
     <div class="layout-preview-img-footer">
       <span class="layout-name">{{ layout.name }}</span>
-      <div v-if="isDigital" class="layout-opts">
-        <v-icon class="layout-opts__play-icon">play_circle_outline</v-icon>
-        <span class="layout-opts__preview">Preview</span>
+      <div class="layout-opts">
         <v-icon
-          class="layout-opts__heart-icon"
+          v-if="isDigital"
+          class="layout-opts__play-icon"
+          :class="{ disabled: isPreviewDisabled }"
+          @click="onPreview"
+        >
+          play_circle_outline
+        </v-icon>
+
+        <div
+          v-if="isDigital"
+          class="layout-opts__preview"
+          :class="{ disabled: isPreviewDisabled }"
+          @click="onPreview"
+        >
+          Preview
+        </div>
+
+        <v-icon
+          v-if="!isFavoritesDisabled"
           :class="favoriteData.cssClass"
           @click="onSaveToFavorites"
         >
           {{ favoriteData.iconName }}
         </v-icon>
       </div>
-      <v-icon
-        v-else-if="!isFavoritesDisabled"
-        :class="favoriteData.cssClass"
-        @click="onSaveToFavorites"
-      >
-        {{ favoriteData.iconName }}
-      </v-icon>
     </div>
   </div>
   <div v-else class="layout-item" />
