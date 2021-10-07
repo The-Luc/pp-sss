@@ -2619,6 +2619,8 @@ export default {
      * @param {String} id parallel object's id
      */
     handleSelectAnimationObject(id, event) {
+      this.handleOpenAnimations(event, id);
+
       const objects = this.digitalCanvas.getObjects();
       const ctx = this.digitalCanvas.getContext('2d');
 
@@ -2628,18 +2630,25 @@ export default {
           return;
         }
 
-        const playIn = this.playInIds.findIndex(ids => ids.includes(id)) + 1;
-        const playOut = this.playOutIds.findIndex(ids => ids.includes(id)) + 1;
+        const playInIndex =
+          this.playInIds.findIndex(ids => ids.includes(id)) || 0;
+        const playOutIndex =
+          this.playOutIds.findIndex(ids => ids.includes(id)) || 0;
 
-        object.setControlsVisibility({ mtr: false, playIn, playOut });
+        object.setControlsVisibility({
+          mtr: false
+        });
+
+        object.set({
+          playIn: playInIndex + 1,
+          playOut: playOutIndex + 1
+        });
 
         object._renderControls.call(object, ctx, {
           hasBorders: true,
           hasControls: true
         });
       });
-
-      this.handleOpenAnimations(event, id);
     },
     /**
      * Draw object into canvas
