@@ -394,7 +394,7 @@ const fadeScaleIn = (element, options, canvas) => {
   const { duration, scale } = options;
   if (!duration || typeof scale !== 'number') return;
 
-  if (element.hasImage) {
+  if (element.hasImage || element.objectType === OBJECT_TYPE.TEXT) {
     options.isPlayIn = true;
     handleFadeScaleImage(element, options, canvas);
     return;
@@ -413,7 +413,7 @@ const fadeScaleIn = (element, options, canvas) => {
 const fadeScaleOut = (element, options, canvas) => {
   if (!options.duration || typeof options.scale !== 'number') return;
 
-  if (element.hasImage) {
+  if (element.hasImage || element.objectType === OBJECT_TYPE.TEXT) {
     options.isPlayIn = false;
     handleFadeScaleImage(element, options, canvas);
     return;
