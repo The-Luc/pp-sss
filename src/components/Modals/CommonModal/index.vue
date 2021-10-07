@@ -1,6 +1,8 @@
 <template>
   <v-dialog
     content-class="pp-modal"
+    overlay-color="#000"
+    overlay-opacity="0.7"
     :persistent="!canCloseOutside"
     :value="isOpenModal"
     :width="width"

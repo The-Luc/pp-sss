@@ -1,7 +1,8 @@
 .v-dialog__content {
   overflow: hidden;
 
-  ::v-deep.pp-modal {
+  ::v-deep .pp-modal {
+    max-height: none;
     margin: 0;
   }
 
