@@ -232,8 +232,8 @@ export const renderImageCropControl = function(target) {
 const renderVideoPlayIcon = function(ctx) {
   const { width, height } = this.playIcon;
 
-  const sW = (this.width * this.scaleX) / 3;
-  const sH = (this.height * this.scaleY) / 3;
+  const sW = (this.width * this.scaleX) / 2;
+  const sH = (this.height * this.scaleY) / 2;
 
   const sX = (width / 4 - sW) / 2;
   const sY = (height / 4 - sH) / 2;
