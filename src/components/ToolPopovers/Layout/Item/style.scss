@@ -1,11 +1,11 @@
 .layout-item {
+  width: 228px;
+  position: relative;
   padding: 10px 10px 5px;
   margin-right: 13px;
-  position: relative;
+  margin-bottom: 20px;
   border: 1px solid $color-gray14;
   cursor: pointer;
-  margin-bottom: 20px;
-  width: 228px;
   overflow: hidden;
 
   .border-inside {
@@ -14,8 +14,8 @@
     position: absolute;
     top: 0;
     left: 0;
-    z-index: 1;
     border: 3px solid transparent;
+    overflow: hidden;
   }
 
   &-active {
@@ -29,6 +29,7 @@
     display: flex;
     width: 206px;
     height: 116px;
+    position: relative;
     justify-content: center;
     overflow: hidden;
 
@@ -37,9 +38,8 @@
     }
 
     ::v-deep .virtual {
-      z-index: -1;
-
-      .canvas-wrapper {
+      .thumb,
+      .thumb-mask {
         max-width: 206px;
         max-height: 116px;
       }
