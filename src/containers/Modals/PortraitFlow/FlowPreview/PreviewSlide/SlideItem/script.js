@@ -26,7 +26,7 @@ export default {
     },
     screenNumber: {
       type: Number,
-      default: 2
+      default: null
     },
     isUseMargin: {
       type: Boolean,
