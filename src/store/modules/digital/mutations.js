@@ -218,8 +218,17 @@ export const mutations = {
 
     const newFrames = {};
 
-    framesList.forEach(f => {
-      newFrames[f.id] = f.frame;
+    framesList.forEach(({ id, frame }) => {
+      if (isEmpty(frame.playInIds)) {
+        frame.playInIds = [
+          frame.objects
+            .filter(
+              o => o.type !== OBJECT_TYPE.BACKGROUND && o?.animationIn?.style
+            )
+            .map(f => f.id)
+        ];
+      }
+      newFrames[id] = frame;
     });
 
     state.frameIds = [...newFrameIds, ...supplementFrameIds];

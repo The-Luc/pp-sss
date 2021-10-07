@@ -53,7 +53,6 @@ export const actions = {
     { commit },
     { themeId, layout }
   ) {
-    //
     // Update sheet fields
     commit(DIGITAL._MUTATES.SET_SHEET_DATA, {
       layoutId: layout.id,
