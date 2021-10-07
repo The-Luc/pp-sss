@@ -1,0 +1,24 @@
+.digital-item-select-container {
+  .select-container {
+    display: flex;
+    ::v-deep .page-select-item {
+      .page-select-item-descript {
+        width: 173px;
+      }
+      .page-select-item-title {
+        width: 61px;
+      }
+    }
+    ::v-deep .page-select-item.screen-select {
+      .page-select-item-descript {
+        width: 14px;
+      }
+      .page-select-item-title {
+        display: none;
+      }
+      .v-input__slot {
+        width: 110px;
+      }
+    }
+  }
+}
