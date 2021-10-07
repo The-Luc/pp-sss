@@ -37,6 +37,13 @@ const defaultDigitalLayout = {
   themeId: ''
 };
 
+const makeDefaultFrame = () => {
+  const id = +uniqueId();
+  const defaultFrame = { id, frame: new FrameEntity({ id }) };
+
+  return [defaultFrame];
+};
+
 const book = new BookDetailEntity({
   id: 1719,
   communityId: 28,
@@ -106,7 +113,7 @@ const book = new BookDetailEntity({
             themeId: null,
             layout: defaultDigitalLayout,
             media: [],
-            frames: [new FrameEntity({ id: +uniqueId() })],
+            frames: makeDefaultFrame(),
             transitions: []
           }
         })
@@ -143,7 +150,7 @@ const book = new BookDetailEntity({
             themeId: null,
             layout: defaultDigitalLayout,
             media: [],
-            frames: [new FrameEntity({ id: +uniqueId() })],
+            frames: makeDefaultFrame(),
             transitions: []
           }
         }),
@@ -168,7 +175,7 @@ const book = new BookDetailEntity({
             themeId: null,
             layout: defaultDigitalLayout,
             media: [],
-            frames: [new FrameEntity({ id: +uniqueId() })],
+            frames: makeDefaultFrame(),
             transitions: []
           }
         }),
@@ -193,7 +200,7 @@ const book = new BookDetailEntity({
             themeId: null,
             layout: defaultDigitalLayout,
             media: [],
-            frames: [new FrameEntity({ id: +uniqueId() })],
+            frames: makeDefaultFrame(),
             transitions: []
           }
         }),
@@ -218,7 +225,7 @@ const book = new BookDetailEntity({
             themeId: null,
             layout: defaultDigitalLayout,
             media: [],
-            frames: [new FrameEntity({ id: +uniqueId() })],
+            frames: makeDefaultFrame(),
             transitions: []
           }
         }),
@@ -243,7 +250,7 @@ const book = new BookDetailEntity({
             themeId: null,
             layout: defaultDigitalLayout,
             media: [],
-            frames: [new FrameEntity({ id: +uniqueId() })],
+            frames: makeDefaultFrame(),
             transitions: []
           }
         })
@@ -280,7 +287,7 @@ const book = new BookDetailEntity({
             themeId: null,
             layout: defaultDigitalLayout,
             media: [],
-            frames: [new FrameEntity({ id: +uniqueId() })],
+            frames: makeDefaultFrame(),
             transitions: []
           }
         }),
@@ -305,7 +312,7 @@ const book = new BookDetailEntity({
             themeId: null,
             layout: defaultDigitalLayout,
             media: [],
-            frames: [new FrameEntity({ id: +uniqueId() })],
+            frames: makeDefaultFrame(),
             transitions: []
           }
         }),
@@ -330,7 +337,7 @@ const book = new BookDetailEntity({
             themeId: null,
             layout: defaultDigitalLayout,
             media: [],
-            frames: [new FrameEntity({ id: +uniqueId() })],
+            frames: makeDefaultFrame(),
             transitions: []
           }
         })
@@ -367,7 +374,7 @@ const book = new BookDetailEntity({
             themeId: null,
             layout: defaultDigitalLayout,
             media: [],
-            frames: [new FrameEntity({ id: +uniqueId() })],
+            frames: makeDefaultFrame(),
             transitions: []
           }
         })
@@ -404,7 +411,7 @@ const book = new BookDetailEntity({
             themeId: null,
             layout: defaultDigitalLayout,
             media: [],
-            frames: [new FrameEntity({ id: +uniqueId() })],
+            frames: makeDefaultFrame(),
             transitions: []
           }
         })
