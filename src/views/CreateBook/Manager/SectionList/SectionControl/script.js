@@ -74,9 +74,6 @@ export default {
       const inputName =
         newSection.$refs.header.$refs.name.$refs['input-container'];
       inputName.click();
-
-      // const newSection = document.querySelector(`#section-${sectionId}`);
-      // const inputName = newSection.querySelector('.input-container');
     }
   }
 };
