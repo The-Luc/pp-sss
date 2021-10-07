@@ -152,7 +152,7 @@ export default {
         this.isShowApplyPortrait = true;
         return;
       }
-      this.$emit('accept', this.flowSettings, this.requiredPages);
+      this.$emit('accept', this.flowSettings, this.requiredFrames);
       this.onCancel();
     },
     /**

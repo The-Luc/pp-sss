@@ -1,4 +1,4 @@
-import { rotateIcon } from '@/plugins/fabric';
+import { drawOrderbox } from '@/plugins/fabric';
 import { fabric } from 'fabric';
 import { last } from 'lodash';
 import { OBJECT_TYPE } from '../constants';
@@ -8,7 +8,7 @@ import {
   DELAY_DURATION
 } from '../constants/animationProperty';
 
-import { applyTextBoxProperties, createSVGElement } from '../fabricObjects';
+import { applyTextBoxProperties } from '../fabricObjects';
 import { isEmpty, getActiveCanvas } from '../utils';
 import { inToPx } from './canvas';
 
@@ -1127,12 +1127,11 @@ export const renderOrderBox = async (data, opacity) => {
   const angle = (Math.PI * (rotation % 360)) / 180;
 
   if (playIn) {
-    const ele = await createSVGElement(playIn, 'white');
-    const radius = inToPx(width) - ele.width * 2;
+    const radius = inToPx(width) - eleWidth * 2;
 
-    rotateIcon({
+    drawOrderbox({
       ctx,
-      element: ele,
+      isPlayIn: true,
       top: inToPx(y),
       left: inToPx(x),
       width: eleWidth,
@@ -1140,16 +1139,16 @@ export const renderOrderBox = async (data, opacity) => {
       zoom,
       angle,
       radius,
-      opacity
+      opacity,
+      value: playIn
     });
   }
   if (playOut) {
-    const ele = await createSVGElement(playOut, 'lightgray');
     const radius = inToPx(width) - eleWidth;
 
-    rotateIcon({
+    drawOrderbox({
       ctx,
-      element: ele,
+      isPlayIn: false,
       top: inToPx(y),
       left: inToPx(x),
       width: eleWidth,
@@ -1157,7 +1156,8 @@ export const renderOrderBox = async (data, opacity) => {
       zoom,
       angle,
       radius,
-      opacity
+      opacity,
+      value: playOut
     });
   }
 };
