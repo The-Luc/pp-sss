@@ -66,7 +66,8 @@ export default {
       warningText: '',
       startPage: 1,
       initialLayoutSetting,
-      isShowApplyPortrait: false
+      isShowApplyPortrait: false,
+      isPortraitFlowDisplayed: true
     };
   },
   computed: {
@@ -147,21 +148,19 @@ export default {
      */
     onApply() {
       if (!this.isShowApplyPortrait) {
-        this.onCancelApplyPortrait();
+        this.isPortraitFlowDisplayed = false;
         this.isShowApplyPortrait = true;
         return;
       }
-
       this.$emit('accept', this.flowSettings, this.requiredFrames);
-      this.isShowApplyPortrait = false;
-      this.flowSettings = {};
+      this.onCancel();
     },
     /**
-     * Emit cancel event to parent
+     * Cancel apply portrait
      */
     onCancelApplyPortrait() {
-      this.isShowApplyPortrait = !this.isShowApplyPortrait;
-      this.$emit('cancelApplyPortrait', this.isShowApplyPortrait);
+      this.isPortraitFlowDisplayed = true;
+      this.isShowApplyPortrait = false;
     },
     /**
      * Set new start frame
@@ -294,11 +293,11 @@ export default {
      */
     getMultiFolderDefaultFrames(id) {
       const { startOnPageNumber } = this.flowSettings;
+      const startScreenNo = parseInt(this.currentSheet.pageName);
       if (id !== DIGITAL_PORTRAIT_FLOW_OPTION_MULTI.AUTO_NEXT_SCREEN.id) {
-        const screenNo = parseInt(this.currentSheet.pageName);
         const frames = this.getBaseFrames(this.selectedFolders.length, 1);
         return {
-          [screenNo]: getSelectedDataOfFolders(
+          [startScreenNo]: getSelectedDataOfFolders(
             frames,
             startOnPageNumber,
             this.selectedFolders,
@@ -307,13 +306,9 @@ export default {
         };
       }
 
-      const screenNames = this.currentSection.sheetIds.map(item => {
-        return parseInt(this.getSheets[item].pageName);
-      });
-
       const screen = {};
       this.selectedFolders.forEach((item, index) => {
-        const screenNo = screenNames[index];
+        const screenNo = startScreenNo + index;
         const startNo = !index ? startOnPageNumber : 1;
         const frames = [startNo];
         screen[screenNo] = getSelectedDataOfFolders(

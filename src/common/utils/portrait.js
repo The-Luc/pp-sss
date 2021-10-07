@@ -476,8 +476,11 @@ export const createPortraitObjects = (
     splitAssets.push(assets.splice(0, colCount));
   }
 
+  let lastImageWidth = 0;
+
   splitAssets.forEach((rowAssets, rowIndex) => {
     let textOffsetY = 0;
+
     rowAssets.forEach(
       ({ lastName, firstName, imageUrl, classRole }, colIndex) => {
         if (!imageUrl) return;
@@ -515,9 +518,8 @@ export const createPortraitObjects = (
         const imageWidth = isLargeAsst ? largeTeacherWidth : itemWidth;
         const imageHeight = isLargeAsst ? largeTeacherHeight : itemHeight;
 
-        const x = isOverFlow ? offsetX : tmpX;
-        const y = isOverFlow ? tmpY + itemHeight + rowGap : tmpY;
-        let imageX = x;
+        let imageX = isOverFlow ? offsetX : tmpX;
+        let imageY = isOverFlow ? tmpY + itemHeight + rowGap : tmpY;
 
         if (isLargeAsst) {
           imageX += (itemWidth * 2 + colGap - imageWidth) / 2;
@@ -535,11 +537,22 @@ export const createPortraitObjects = (
           }
         }
 
+        const isFirstImage = imageX < offsetX + itemWidth && rowIndex;
+        const isOverlapX = isLargeAsst && imageX <= lastImageWidth;
+        const isOverlapY = imageX + imageWidth > lastImageWidth - imageWidth;
+
+        if (!isOverFlow && isOverlapX) {
+          imageX += itemWidth + colGap;
+        }
+        if (isLargeAsst && isFirstImage && isOverlapY) {
+          imageY += itemHeight + rowGap;
+        }
+
         const img = new ImageElementObject({
           id: getUniqueId(),
           imageUrl,
           originalUrl: imageUrl,
-          coord: { x: imageX, y },
+          coord: { x: imageX, y: imageY },
           size: {
             width: imageWidth - borderOffset,
             height: imageHeight - borderOffset
@@ -554,28 +567,29 @@ export const createPortraitObjects = (
 
         let textOutsideX = 0;
 
+        lastImageWidth = imageX + imageWidth;
+
+        if (lastImageWidth > totalWidth) lastImageWidth = 0;
+
         if (!isRight) textOutsideX = margins.left;
         else
           textOutsideX = isTextAlignRight
             ? (pageWidth + bleedLeft) * 2 - margins.right - textWidth
             : pageWidth + margins.left + bleedLeft + totalWidth;
 
-        const textOutsideY = y + textOffsetY - defaultTextPadding;
+        const textOutsideY = imageY + textOffsetY - defaultTextPadding;
         textOffsetY += nameGap + nameHeight;
 
         let textX = 0;
         if (isTextAlignRight)
-          textX = x - textWidth + imageWidth + defaultTextPadding;
+          textX = imageX - textWidth + imageWidth + defaultTextPadding;
         else
           textX =
             isTextAlignCenter && textWidth > imageWidth
-              ? x - (textWidth - imageWidth) / 2
-              : x - defaultTextPadding;
-        const textY = y + imageHeight - defaultTextPadding + defaultTextGap;
-
-        if (isLargeAsst) {
-          textX += (itemWidth * 2 + colGap - imageWidth) / 2;
-        }
+              ? imageX - (textWidth - imageWidth) / 2
+              : imageX - defaultTextPadding;
+        const textY =
+          imageY + imageHeight - defaultTextPadding + defaultTextGap;
 
         if (!colGap && !rowGap) {
           textX = isRight

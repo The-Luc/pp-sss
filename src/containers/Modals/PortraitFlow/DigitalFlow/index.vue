@@ -1,8 +1,7 @@
 <template>
   <div>
     <common-flow
-      v-if="isOpen"
-      :is-open="isOpen"
+      :is-open="isPortraitFlowDisplayed"
       :selected-folders="selectedFolders"
       :flow-settings="flowSettings"
       :init-flow-option="initFlowOption"

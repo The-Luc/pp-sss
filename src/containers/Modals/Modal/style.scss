@@ -1,15 +1,16 @@
-.v-dialog__content {
-  .v-dialog.pp-modal {
+::v-deep .pp-modal {
+  max-height: none !important; // overload
+  border-radius: 0;
+  overflow: hidden;
+
+  .v-sheet.v-card {
     border-radius: 0;
 
-    .v-sheet.v-card {
-      border-radius: 0;
+    .v-card__text {
+      padding-top: 20px;
 
-      .v-card__text {
-        padding-top: 20px;
-        &.card-text-theme-modal {
-          padding: 0;
-        }
+      &.card-text-theme-modal {
+        padding: 0;
       }
     }
   }

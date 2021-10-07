@@ -969,10 +969,7 @@ export const createSVGElement = (val, fill) => {
 export const handleObjectSelected = async (target, data) => {
   const playInOrder = data?.playInOrder || target?.playInOrder || 1;
   const playOutOrder = data?.playOutOrder || target?.playOutOrder || 1;
-  const playInEle = createSVGElement(playInOrder, 'white');
-  const playOutEle = createSVGElement(playOutOrder, 'lightgray');
-  const [playIn, playOut] = await Promise.all([playInEle, playOutEle]);
-  target.set({ playIn, playOut, dirty: true });
+  target.set({ playIn: playInOrder, playOut: playOutOrder, dirty: true });
   target.canvas.renderAll();
 };
 

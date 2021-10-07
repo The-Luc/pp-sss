@@ -851,9 +851,9 @@ export const useTextOverride = function(text) {
  * @param {Number} radius icon distance
  * @param {Number} opacity icon opacity
  */
-export const rotateIcon = function({
+export const drawOrderbox = function({
   ctx,
-  element,
+  value,
   top,
   left,
   width,
@@ -861,7 +861,8 @@ export const rotateIcon = function({
   zoom,
   angle,
   radius,
-  opacity
+  opacity,
+  isPlayIn
 }) {
   const centerX = (Math.cos(angle) * radius + left) * zoom;
   const centerY = (Math.sin(angle) * radius + top) * zoom;
@@ -869,13 +870,26 @@ export const rotateIcon = function({
   ctx.translate(centerX, centerY);
   ctx.rotate(angle);
   ctx.globalAlpha = opacity || 1;
-  ctx.drawImage(
-    element,
+  ctx.strokeStyle = 'black';
+  ctx.lineWidth = zoom * 4;
+  ctx.strokeRect(
     (-width / 2) * zoom,
     (-height / 2) * zoom,
     width * zoom,
     height * zoom
   );
+  ctx.fillStyle = isPlayIn ? 'white' : 'lightgray';
+  ctx.fillRect(
+    (-width / 2) * zoom,
+    (-height / 2) * zoom,
+    width * zoom,
+    height * zoom
+  );
+  ctx.fillStyle = 'black';
+  ctx.font = '13px MuseoSans';
+  ctx.textBaseline = 'middle';
+  ctx.textAlign = 'center';
+  ctx.fillText(value, 0, 0);
   ctx.restore();
 };
 
@@ -888,33 +902,35 @@ const renderControls = function(ctx, styleOverride) {
 
   const zoom = this.canvas.getZoom();
   const angle = (Math.PI * (this.angle % 360)) / 180;
+  const eleWidth = 40;
+  const eleHeight = 40;
 
   if (this.playIn) {
-    const { width, height } = this.playIn;
-    const radius = this.width * this.scaleX - width * 2;
-    rotateIcon({
+    const radius = this.width * this.scaleX - eleWidth * 2;
+    drawOrderbox({
       ctx,
-      element: this.playIn,
+      value: this.playIn,
       top: this.top,
       left: this.left,
-      width,
-      height,
+      width: eleWidth,
+      height: eleHeight,
       zoom,
       angle,
-      radius
+      radius,
+      isPlayIn: true
     });
   }
-  if (this.playOut) {
-    const { width, height } = this.playOut;
-    const radius = this.width * this.scaleX - width;
 
-    rotateIcon({
+  if (this.playOut) {
+    const radius = this.width * this.scaleX - eleWidth;
+
+    drawOrderbox({
       ctx,
-      element: this.playOut,
+      value: this.playOut,
       top: this.top,
       left: this.left,
-      width,
-      height,
+      width: eleWidth,
+      height: eleHeight,
       zoom,
       angle,
       radius

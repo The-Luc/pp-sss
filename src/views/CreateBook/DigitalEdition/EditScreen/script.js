@@ -127,7 +127,8 @@ export default {
     const {
       isMediaSidebarOpen,
       updateMediaSidebarOpen,
-      disabledToolbarItems
+      disabledToolbarItems,
+      setPropertiesType
     } = useToolBar();
     const { frames } = useFrame();
 
@@ -179,7 +180,8 @@ export default {
       saveSelectedPortraitFolders,
       getAllScreenPlaybackData,
       getCurrentScreenPlaybackData,
-      getFramePlaybackData
+      getFramePlaybackData,
+      setPropertiesType
     };
   },
   data() {
@@ -668,6 +670,8 @@ export default {
      * @param {Number | String} frameId   id of selected frame
      */
     async playback({ playType, frameId }) {
+      this.setPropertiesType({ type: '' });
+
       const data = await this.getPlayback(playType, frameId);
 
       if (isEmpty(data)) return;
@@ -823,13 +827,6 @@ export default {
       });
 
       return currentFrames;
-    },
-    /**
-     * Cancel apply warning modal
-     */
-    onCancelApplyPortrait(isShowApplyPortrait) {
-      this.onToggleModal({ modal: MODAL_TYPES.PORTRAIT_FLOW });
-      this.setToolNameSelected(isShowApplyPortrait ? '' : TOOL_NAME.PORTRAIT);
     }
   }
 };

@@ -6,6 +6,7 @@ import {
 } from '@/common/constants';
 import {
   BookDetailEntity,
+  FrameEntity,
   SectionEntity,
   SheetEntity
 } from '@/common/models/entities';
@@ -43,7 +44,7 @@ const book = new BookDetailEntity({
   totalPages: 18,
   totalSheets: 11,
   totalScreens: 11,
-  createdDate: '11/27/20',
+  createdDate: '10/27/21',
   deliveryDate: '08/21/22',
   releaseDate: '08/07/22',
   saleDate: '05/16/22',
@@ -105,6 +106,7 @@ const book = new BookDetailEntity({
             themeId: null,
             layout: defaultDigitalLayout,
             media: [],
+            frames: [new FrameEntity({ id: +uniqueId() })],
             transitions: []
           }
         })
@@ -141,6 +143,7 @@ const book = new BookDetailEntity({
             themeId: null,
             layout: defaultDigitalLayout,
             media: [],
+            frames: [new FrameEntity({ id: +uniqueId() })],
             transitions: []
           }
         }),
@@ -165,6 +168,7 @@ const book = new BookDetailEntity({
             themeId: null,
             layout: defaultDigitalLayout,
             media: [],
+            frames: [new FrameEntity({ id: +uniqueId() })],
             transitions: []
           }
         }),
@@ -189,6 +193,7 @@ const book = new BookDetailEntity({
             themeId: null,
             layout: defaultDigitalLayout,
             media: [],
+            frames: [new FrameEntity({ id: +uniqueId() })],
             transitions: []
           }
         }),
@@ -213,6 +218,7 @@ const book = new BookDetailEntity({
             themeId: null,
             layout: defaultDigitalLayout,
             media: [],
+            frames: [new FrameEntity({ id: +uniqueId() })],
             transitions: []
           }
         }),
@@ -237,6 +243,7 @@ const book = new BookDetailEntity({
             themeId: null,
             layout: defaultDigitalLayout,
             media: [],
+            frames: [new FrameEntity({ id: +uniqueId() })],
             transitions: []
           }
         })
@@ -273,6 +280,7 @@ const book = new BookDetailEntity({
             themeId: null,
             layout: defaultDigitalLayout,
             media: [],
+            frames: [new FrameEntity({ id: +uniqueId() })],
             transitions: []
           }
         }),
@@ -297,6 +305,7 @@ const book = new BookDetailEntity({
             themeId: null,
             layout: defaultDigitalLayout,
             media: [],
+            frames: [new FrameEntity({ id: +uniqueId() })],
             transitions: []
           }
         }),
@@ -321,6 +330,7 @@ const book = new BookDetailEntity({
             themeId: null,
             layout: defaultDigitalLayout,
             media: [],
+            frames: [new FrameEntity({ id: +uniqueId() })],
             transitions: []
           }
         })
@@ -357,6 +367,7 @@ const book = new BookDetailEntity({
             themeId: null,
             layout: defaultDigitalLayout,
             media: [],
+            frames: [new FrameEntity({ id: +uniqueId() })],
             transitions: []
           }
         })
@@ -393,6 +404,7 @@ const book = new BookDetailEntity({
             themeId: null,
             layout: defaultDigitalLayout,
             media: [],
+            frames: [new FrameEntity({ id: +uniqueId() })],
             transitions: []
           }
         })
