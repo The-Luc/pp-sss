@@ -72,7 +72,6 @@ export default {
       input.style.width = text.clientWidth + 2 + 'px';
 
       this.isEditMode = true;
-      console.log(1);
 
       setTimeout(() => input.focus(), 20);
     }
