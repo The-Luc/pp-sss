@@ -142,6 +142,7 @@ export const mutations = {
       ...state.sections,
       [newId]: new SectionDetail({
         id: newId,
+        name: 'Untitled',
         color: randomcolor(),
         dueDate: moment(releaseDate).format(DATE_FORMAT.BASE)
       })

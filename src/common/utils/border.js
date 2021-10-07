@@ -144,9 +144,9 @@ const calcDashNumber = (length, dashLength, isSelfClosed) => {
   const isEven = dashNumber % 2 === 0;
 
   if (isSelfClosed) {
-    const totalBars = isEven ? dashNumber : dashNumber + 1;
-    const numDashes = totalBars / 2;
-    return { totalBars, numDashes };
+    const seltClosedTotalBars = isEven ? dashNumber : dashNumber + 1;
+    const seltClosedNumDashes = seltClosedTotalBars / 2;
+    return { totalBars: seltClosedTotalBars, numDashes: seltClosedNumDashes };
   }
 
   const totalBars = isEven ? dashNumber + 1 : dashNumber;

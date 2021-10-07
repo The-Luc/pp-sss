@@ -123,8 +123,8 @@ export default {
 
       if (this.isMultiFolder) {
         const { flowOption } = this.flowSettings.flowMultiSettings;
-        const screen = this.getMultiFolderDefaultFrames(flowOption);
-        this.flowSettings.flowMultiSettings.screen = screen;
+        const multiFolderScreen = this.getMultiFolderDefaultFrames(flowOption);
+        this.flowSettings.flowMultiSettings.screen = multiFolderScreen;
       }
 
       const screen = this.getSingleFolderDefaultFrames();
@@ -316,7 +316,7 @@ export default {
           startNo,
           [item],
           this.maxPortraitPerPage
-        ).map(item => item.startOnPage);
+        ).map(el => el.startOnPage);
       });
       return screen;
     },
@@ -388,7 +388,7 @@ export default {
       flowSettings.screen = dataScreen.reduce((result, item) => {
         return {
           ...result,
-          [item.screen]: item.frames.map(item => item.startOnPage)
+          [item.screen]: item.frames.map(el => el.startOnPage)
         };
       }, {});
       this.onSettingChange({
@@ -435,7 +435,7 @@ export default {
       flowSettings.screen = dataScreen.reduce((result, item) => {
         return {
           ...result,
-          [item.screen]: item.frames.map(item => item.startOnPage)
+          [item.screen]: item.frames.map(el => el.startOnPage)
         };
       }, {});
       this.onSettingChange({
