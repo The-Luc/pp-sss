@@ -11,11 +11,24 @@ export default {
     isEmpty: {
       type: Boolean,
       default: false
+    },
+    isDigital: {
+      type: Boolean,
+      default: false
     }
   },
   computed: {
     isActive() {
       return this.selectedFolderIds.includes(this.portraitFolder.id);
+    },
+    isPrintSelected() {
+      return this.portraitFolder.isSelected.print;
+    },
+    isDigitalSelected() {
+      return this.portraitFolder.isSelected.digital;
+    },
+    isActiveIcon() {
+      return this.isDigital ? this.isDigitalSelected : this.isPrintSelected;
     }
   },
   methods: {

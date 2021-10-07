@@ -82,8 +82,11 @@
       right: 0;
       position: absolute;
       color: $color-white;
-      background-color: $color-green2;
+      background-color: $color-stoodio-toolbartext;
       border-radius: 50%;
+      &.active-icon {
+        background-color: $color-green2;
+      }
     }
   }
 }

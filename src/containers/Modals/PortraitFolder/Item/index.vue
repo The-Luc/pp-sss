@@ -17,8 +17,13 @@
     <div class="item-assets-count">
       {{ portraitFolder.assetsCount }} portraits
       <v-icon
-        v-if="portraitFolder.isSelected"
-        class="selected-icon"
+        v-if="isPrintSelected || isDigitalSelected"
+        :class="[
+          'selected-icon',
+          {
+            'active-icon': isActiveIcon
+          }
+        ]"
         alt="selected-icon"
         >done</v-icon
       >

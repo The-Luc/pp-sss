@@ -74,7 +74,10 @@ export class BookDetailEntity extends BaseEntity {
   digitalData = new BookDigitalData();
   sections = [];
   isPhotoVisited = false;
-  selectedPortraitFolders = [];
+  selectedPortraitFolders = {
+    print: [],
+    digital: []
+  };
 
   /**
    * @param {BookDetailEntity} props - object props to construct new instance of this class

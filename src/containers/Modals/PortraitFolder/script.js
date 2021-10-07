@@ -18,6 +18,10 @@ export default {
     noPortraitFolderLength: {
       type: Number,
       default: 4
+    },
+    isDigital: {
+      type: Boolean,
+      default: false
     }
   },
   setup() {
@@ -48,7 +52,9 @@ export default {
       return isEmpty(this.selectedFolders);
     },
     flowedFolders() {
-      return this.selectedFolders.filter(item => item.isSelected);
+      return this.selectedFolders.filter(
+        item => item.isSelected.print || item.isSelected.digital
+      );
     }
   },
   methods: {
