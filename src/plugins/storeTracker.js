@@ -52,7 +52,9 @@ class StoreTracker {
     return {
       objects: cloneDeep(state[this._edition].objects),
       objectIds: cloneDeep(state[this._edition].objectIds),
-      background: cloneDeep(state[this._edition].background)
+      background: cloneDeep(state[this._edition].background),
+      playInIds: cloneDeep(state[this._edition].playInIds),
+      playOutIds: cloneDeep(state[this._edition].playOutIds)
     };
   };
 
@@ -63,11 +65,15 @@ class StoreTracker {
       this._currentIndex--;
     }
 
-    const data = [
-      cloneDeep(dataToKeep.background.left),
-      cloneDeep(dataToKeep.background.right),
-      ...dataToKeep.objectIds.map(id => ({ ...dataToKeep.objects[id], id }))
-    ];
+    const data = {
+      objects: [
+        cloneDeep(dataToKeep.background.left),
+        cloneDeep(dataToKeep.background.right),
+        ...dataToKeep.objectIds.map(id => ({ ...dataToKeep.objects[id], id }))
+      ],
+      playInIds: cloneDeep(dataToKeep.playInIds),
+      playOutIds: cloneDeep(dataToKeep.playOutIds)
+    };
 
     this._trackList.splice(
       ++this._currentIndex,
@@ -82,16 +88,28 @@ class StoreTracker {
     const MUTATES =
       this._edition === EDITION.PRINT ? PRINT_MUTATES : DIGITAL_MUTATES;
 
-    const data = cloneDeep(this._trackList[this._currentIndex]);
+    const { objects: data, playInIds, playOutIds } = cloneDeep(
+      this._trackList[this._currentIndex]
+    );
 
     const backgrounds = { left: cloneDeep(data[0]), right: cloneDeep(data[1]) };
 
     data.splice(0, 2);
 
-    await Promise.all([
+    const promises = [
       store.commit(MUTATES.SET_BACKGROUNDS, { backgrounds }),
       store.commit(MUTATES.SET_OBJECTS, { objectList: data })
-    ]);
+    ];
+
+    if (this._edition === EDITION.DIGITAL) {
+      promises.push(
+        ...[
+          store.commit(DIGITAL_MUTATES.SET_PLAY_IN_IDS, { playInIds }),
+          store.commit(DIGITAL_MUTATES.SET_PLAY_OUT_IDS, { playOutIds })
+        ]
+      );
+    }
+    await Promise.all(promises);
   };
 
   _compareObject = (obj1, obj2) => obj1.id === obj2.id;
@@ -99,7 +117,9 @@ class StoreTracker {
   _getPreCurrentData = (currentData, isPrevious) => {
     if (this._currentIndex <= 0 || !isPrevious) return [];
 
-    const data = cloneDeep(this._trackList[this._currentIndex - 1]);
+    const { objects: data } = cloneDeep(
+      this._trackList[this._currentIndex - 1]
+    );
 
     data.splice(0, 2);
 
@@ -124,8 +144,10 @@ class StoreTracker {
 
     const objects = store.getters[GETTERS.SHEET_LAYOUT];
 
-    const oldData = cloneDeep(this._trackList[oldIndex]);
-    const currentData = cloneDeep(this._trackList[this._currentIndex]);
+    const { objects: oldData } = cloneDeep(this._trackList[oldIndex]);
+    const { objects: currentData } = cloneDeep(
+      this._trackList[this._currentIndex]
+    );
 
     oldData.splice(0, 2);
     currentData.splice(0, 2);
