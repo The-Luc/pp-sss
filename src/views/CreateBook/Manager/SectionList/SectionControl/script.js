@@ -62,15 +62,21 @@ export default {
         .getElementById('btn-ec-all')
         .setAttribute('data-toggle', this.isCollapse ? COLLAPSE : EXPAND);
     },
-    onAddSection() {
+    async onAddSection() {
       if (this.isDisableAdd) return;
+
       const sectionId = uniqueId();
-      this.addSection({ sectionId });
-      setTimeout(() => {
-        const newSection = document.querySelector(`#section-${sectionId}`);
-        const inputName = newSection.querySelector('.input-container');
-        inputName.click();
-      }, 0);
+      await this.addSection({ sectionId });
+
+      const newSection = this.$parent.$refs.sections.$refs[
+        `section-${sectionId}`
+      ][0];
+      const inputName =
+        newSection.$refs.header.$refs.name.$refs['input-container'];
+      inputName.click();
+
+      // const newSection = document.querySelector(`#section-${sectionId}`);
+      // const inputName = newSection.querySelector('.input-container');
     }
   }
 };

@@ -12,6 +12,7 @@
     >
       <Section
         v-for="(section, index) in sections"
+        :ref="`section-${section.id}`"
         :key="section.id"
         :start-sequence="getStartSeq(index)"
         :section="section"

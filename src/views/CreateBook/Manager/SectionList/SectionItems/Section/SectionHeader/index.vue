@@ -12,6 +12,7 @@
     >
       <v-row>
         <SectionName
+          ref="name"
           :section-id="section.id"
           :section-name="section.name"
           :section-color="section.color"
