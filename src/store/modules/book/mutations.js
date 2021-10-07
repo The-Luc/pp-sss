@@ -133,21 +133,19 @@ export const mutations = {
 
     state.sections[sectionId].sheetIds.splice(moveToIndex, 0, sheetId);
   },
-  [BOOK._MUTATES.ADD_SECTION](state) {
+  [BOOK._MUTATES.ADD_SECTION](state, { sectionId }) {
     const { releaseDate } = state.book;
-
-    const newId = Math.max(...state.sectionIds) + 1;
 
     state.sections = {
       ...state.sections,
-      [newId]: new SectionDetail({
-        id: newId,
+      [sectionId]: new SectionDetail({
+        id: sectionId,
         color: randomcolor(),
         dueDate: moment(releaseDate).format(DATE_FORMAT.BASE)
       })
     };
 
-    state.sectionIds.splice(state.sectionIds.length - 1, 0, newId);
+    state.sectionIds.splice(state.sectionIds.length - 1, 0, sectionId);
   },
   [BOOK._MUTATES.EDIT_SECTION_NAME](state, { sectionId, sectionName }) {
     state.sections[sectionId].name = sectionName;

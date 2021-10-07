@@ -1,6 +1,7 @@
 import { useSectionControl } from '@/views/CreateBook/Manager/composables';
 
 import { ROLE, MAX_SECTION } from '@/common/constants';
+import { uniqueId } from 'lodash';
 
 const COLLAPSE = 'collapse';
 const EXPAND = 'expand';
@@ -62,9 +63,14 @@ export default {
         .setAttribute('data-toggle', this.isCollapse ? COLLAPSE : EXPAND);
     },
     onAddSection() {
-      if (!this.isDisableAdd) {
-        this.addSection();
-      }
+      if (this.isDisableAdd) return;
+      const sectionId = uniqueId();
+      this.addSection({ sectionId });
+      setTimeout(() => {
+        const newSection = document.querySelector(`#section-${sectionId}`);
+        const inputName = newSection.querySelector('.input-container');
+        inputName.click();
+      }, 0);
     }
   }
 };
