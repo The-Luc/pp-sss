@@ -9,6 +9,7 @@
       :background-url="backgroundUrl"
       :flow-settings="flowSettings"
       :is-digital="isDigital"
+      :screen-number="screenNumber"
       :container-name="containerName"
       @moveBack="onMoveToPreviousPage"
       @moveNext="onMoveToNextPage"
