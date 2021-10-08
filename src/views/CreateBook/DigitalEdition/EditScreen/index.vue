@@ -60,6 +60,7 @@
     <portrait-folder
       v-if="modal[toolNames.PORTRAIT].isOpen"
       :is-open-modal="modal[toolNames.PORTRAIT].isOpen"
+      :is-digital="true"
       @cancel="onClosePortrait"
       @select="onSelectPortraitFolders"
     ></portrait-folder>

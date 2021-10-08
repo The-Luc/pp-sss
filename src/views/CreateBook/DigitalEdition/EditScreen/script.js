@@ -31,7 +31,8 @@ import {
   SHEET_TYPE,
   PROPERTIES_TOOLS,
   EVENT_TYPE,
-  PLAYBACK
+  PLAYBACK,
+  ROLE
 } from '@/common/constants';
 import {
   useLayoutPrompt,
@@ -226,11 +227,16 @@ export default {
 
       return !hasEmptyImage;
     },
+    isAdmin() {
+      return this.currentUser.role === ROLE.ADMIN;
+    },
     disabledItems() {
       const transition =
         this.frames.length > 1 ? '' : PROPERTIES_TOOLS.TRANSITION.name;
       const portrait =
-        this.currentSheet.type === SHEET_TYPE.COVER ? TOOL_NAME.PORTRAIT : '';
+        this.currentSheet.type === SHEET_TYPE.COVER || !this.isAdmin
+          ? TOOL_NAME.PORTRAIT
+          : '';
 
       return mergeArrayNonEmpty(this.disabledToolbarItems, [
         transition,
@@ -787,7 +793,7 @@ export default {
         MODAL_TYPES.PORTRAIT_FLOW
       ].data.folders.map(item => item.id);
 
-      this.saveSelectedPortraitFolders(selectedFolderIds);
+      this.saveSelectedPortraitFolders(selectedFolderIds, true);
     },
     /**
      * Get require frame data

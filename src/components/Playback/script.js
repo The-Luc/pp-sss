@@ -144,7 +144,8 @@ export default {
       const hasNext = index < this.playbackData.length - 1;
       const nextObjects = hasNext ? this.playbackData[index + 1].objects : null;
 
-      if (isEmpty(nextObjects)) {
+      // case nextObject = [] should not fall into this if, only for null check
+      if (!nextObjects) {
         await this.playAnimation(this.playbackData[index]);
 
         return;

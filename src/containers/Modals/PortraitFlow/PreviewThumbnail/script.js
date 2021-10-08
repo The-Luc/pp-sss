@@ -52,6 +52,9 @@ export default {
     isDigital: {
       type: Boolean,
       default: false
+    },
+    screenNumber: {
+      type: Number
     }
   },
   data() {
@@ -131,8 +134,22 @@ export default {
       return namePosition?.value === PORTRAIT_NAME_POSITION.CENTERED.value;
     },
     showPageTitile() {
-      if (this.pageNumber !== this.flowSettings.startOnPageNumber) return false;
-      return this.flowSettings.textSettings?.isPageTitleOn;
+      if (isEmpty(this.flowSettings)) return false;
+
+      const {
+        flowMultiSettings,
+        startOnPageNumber,
+        textSettings
+      } = this.flowSettings;
+
+      const isStartPageNumber = this.isDigital
+        ? Object.keys(flowMultiSettings.screen)[0] == this.screenNumber &&
+          this.pageNumber === startOnPageNumber
+        : this.pageNumber === startOnPageNumber;
+
+      if (isStartPageNumber) return textSettings?.isPageTitleOn;
+
+      return false;
     },
     isFirstLastDisplay() {
       const nameDisplay = this.flowSettings.textSettings?.nameDisplay;

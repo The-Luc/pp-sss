@@ -8,7 +8,7 @@
       arrow_right
     </v-icon>
 
-    <div class="input-container" @click="click">
+    <div ref="input-container" class="input-container" @click="click">
       <div v-show="!isEditMode" ref="text" class="text">
         {{ sectionNameCurrent }}
       </div>

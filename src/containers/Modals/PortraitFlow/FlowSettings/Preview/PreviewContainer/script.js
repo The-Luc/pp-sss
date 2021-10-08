@@ -34,6 +34,9 @@ export default {
     },
     containerName: {
       type: String
+    },
+    screenNumber: {
+      type: Number
     }
   },
   data() {

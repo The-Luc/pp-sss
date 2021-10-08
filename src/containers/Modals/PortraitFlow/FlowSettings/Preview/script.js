@@ -49,18 +49,20 @@ export default {
       backgroundUrl: '',
       portraits: [],
       containerName: this.isDigital ? 'Frame' : 'Page',
-      index: 0
+      index: 0,
+      screenNumber: null
     };
   },
   computed: {
     selectedPages() {
       return this.requiredPages.map(p => {
+        const screenNumber = this.isDigital ? p.screen : null;
         const pageNo = this.isDigital ? p.frame : p;
         const backgroundUrl = this.isDigital
           ? this.getFrameBackground(pageNo)
           : this.getPageBackground(pageNo);
 
-        return { pageNo, backgroundUrl };
+        return { screenNumber, pageNo, backgroundUrl };
       });
     },
     startPage() {
@@ -163,6 +165,7 @@ export default {
       const page = isEmpty(this.index) ? {} : this.selectedPages[this.index];
 
       this.pageNo = page.pageNo;
+      this.screenNumber = page.screenNumber;
       this.backgroundUrl = page.backgroundUrl;
 
       const { flowMultiSettings, folders } = this.flowSettings;

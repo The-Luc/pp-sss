@@ -1,11 +1,12 @@
 .layout-item {
+  width: 228px;
+  position: relative;
   padding: 10px 10px 5px;
   margin-right: 13px;
-  position: relative;
+  margin-bottom: 20px;
   border: 1px solid $color-gray14;
   cursor: pointer;
-  margin-bottom: 20px;
-  width: 228px;
+  overflow: hidden;
 
   .border-inside {
     width: 100%;
@@ -14,6 +15,7 @@
     top: 0;
     left: 0;
     border: 3px solid transparent;
+    overflow: hidden;
   }
 
   &-active {
@@ -25,12 +27,22 @@
 
   .layout-preview-img {
     display: flex;
+    width: 206px;
+    height: 116px;
+    position: relative;
     justify-content: center;
-    max-width: 211px;
-    max-height: 140px;
+    overflow: hidden;
 
     img {
       object-fit: contain;
+    }
+
+    ::v-deep .virtual {
+      .thumb,
+      .thumb-mask {
+        max-width: 206px;
+        max-height: 116px;
+      }
     }
   }
 
@@ -65,9 +77,11 @@
     font-size: 9px;
 
     &__preview {
+      z-index: 1;
       margin-left: 2px;
-      padding-right: 7px;
       margin-right: 6px;
+      padding-right: 7px;
+      padding-top: 0.5px;
       border-right: 1px solid $color-gray13;
     }
     &__heart-icon {

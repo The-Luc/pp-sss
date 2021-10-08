@@ -6,7 +6,10 @@ export class PortraitFolder extends BaseEntity {
   thumbUrl = '';
   assetsCount = 0;
   assets = [];
-  isSelected = false;
+  isSelected = {
+    digital: false,
+    print: false
+  };
 
   /**
    * @param {PortraitFolder} props

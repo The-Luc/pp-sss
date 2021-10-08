@@ -79,7 +79,7 @@ const getFadeInConfig = (options, element) => {
  * @returns {Object} config for anmation
  */
 const getFadeScaleInConfig = (options, element) => {
-  if (element.hasImage)
+  if (element.hasImage || element.objectType === OBJECT_TYPE.TEXT)
     return getFadeScaleImageConfig({ ...options, isPlayIn: true });
 
   const { scale, duration } = options;
@@ -196,7 +196,7 @@ const getFadeOutConfig = (options, element) => {
  * @returns {Object} config for anmation
  */
 const getFadeScaleOutConfig = (options, element) => {
-  if (element.hasImage)
+  if (element.hasImage || element.objectType === OBJECT_TYPE.TEXT)
     return getFadeScaleImageConfig({ ...options, isPlayIn: false });
 
   const { duration, scale } = options;
@@ -697,10 +697,12 @@ const playbackHandler = (animateObjects, canvas, isPlayIn) => {
     const config = getAnimationConfig(element, options, canvas, isPlayIn);
     const { startState, animateProps, duration } = config;
 
-    if (
-      PLAY_IN_STYLES.BLUR === options.style ||
-      (element.hasImage && PLAY_IN_STYLES.FADE_SCALE === options.style)
-    ) {
+    const isBlur = PLAY_IN_STYLES.BLUR === options.style;
+    const isFadeScale = PLAY_IN_STYLES.FADE_SCALE === options.style;
+    const isImage = element.hasImage;
+    const isText = element.objectType === OBJECT_TYPE.TEXT;
+
+    if (isBlur || ((isText || isImage) && isFadeScale)) {
       playbackImageHandler(element, config, canvas);
       return;
     }
