@@ -41,6 +41,7 @@
               :key="portraitFolder.id"
               :portrait-folder="portraitFolder"
               :selected-folder-ids="selectedFolderIds"
+              :is-digital="isDigital"
               @click="selectedPortraitFolder"
             />
           </template>

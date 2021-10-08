@@ -27,7 +27,8 @@ import {
   SAVING_DURATION,
   SHEET_TYPE,
   TOOL_NAME,
-  EDITION
+  EDITION,
+  ROLE
 } from '@/common/constants';
 import {
   useLayoutPrompt,
@@ -162,9 +163,14 @@ export default {
 
       return !hasEmptyImage;
     },
+    isAdmin() {
+      return this.currentUser.role === ROLE.ADMIN;
+    },
     disabledItems() {
       const portrait =
-        this.currentSheet.type === SHEET_TYPE.COVER ? TOOL_NAME.PORTRAIT : '';
+        this.currentSheet.type === SHEET_TYPE.COVER || !this.isAdmin
+          ? TOOL_NAME.PORTRAIT
+          : '';
 
       return mergeArrayNonEmpty(this.disabledToolbarItems, [portrait]);
     }
@@ -538,7 +544,7 @@ export default {
 
       const selectedFolderIds = this.selectedFolders.map(item => item.id);
 
-      this.saveSelectedPortraitFolders(selectedFolderIds);
+      this.saveSelectedPortraitFolders(selectedFolderIds, false);
     },
     /**
      * Selected portrait folders

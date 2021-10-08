@@ -64,7 +64,10 @@ const book = new BookDetailEntity({
   insideFrontCoverId: 2,
   insideBackCoverId: 11,
   isPhotoVisited: false,
-  selectedPortraitFolders: [],
+  selectedPortraitFolders: {
+    print: [],
+    digital: []
+  },
   estimatedQuantity: {
     min: 50,
     max: 100
