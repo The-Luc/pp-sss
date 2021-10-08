@@ -152,6 +152,7 @@ export default {
       }
 
       this.secondaryCanvas.remove(...this.secondaryCanvas.getObjects());
+
       await this.drawInitialObjects(nextObjects, this.secondaryCanvas);
 
       await this.playAnimation(this.playbackData[index]);
