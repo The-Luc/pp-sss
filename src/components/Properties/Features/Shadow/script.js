@@ -74,7 +74,11 @@ export default {
      */
     onChange(object) {
       if (object?.shadowColor) {
-        object.shadowOpacity = color(object.shadowColor).alpha();
+        object.shadowOpacity = parseFloat(
+          color(object.shadowColor)
+            .alpha()
+            .toFixed(2)
+        );
       }
 
       this.$emit('change', object);
