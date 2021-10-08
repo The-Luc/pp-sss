@@ -15,7 +15,7 @@ import {
 import digitalService from '@/api/digital';
 import printService from '@/api/print';
 
-import { merge } from 'lodash';
+import { Transition } from '@/common/models';
 
 import { getPlaybackDataFromFrames, isEmpty, isOk } from '@/common/utils';
 
@@ -260,15 +260,22 @@ export const useActionDigitalSheet = () => {
       return currentScreenPlayback;
     }
 
-    currentScreenPlayback.forEach(d => {
-      const index = bookPlaybackData.data.findIndex(({ id }) => id === d.id);
+    const playbackData = [];
 
-      if (index < 0) return;
+    bookPlaybackData.data.forEach(({ screenId, data }, index) => {
+      const useData =
+        screenId === `${currentSheetObs.value.id}`
+          ? currentScreenPlayback
+          : data;
 
-      merge(bookPlaybackData.data[index], d);
+      if (index < bookPlaybackData.data.length - 1) {
+        useData[useData.length - 1].transition = new Transition();
+      }
+
+      useData.forEach(d => playbackData.push(d));
     });
 
-    return bookPlaybackData.data;
+    return playbackData;
   };
 
   return {

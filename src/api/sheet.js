@@ -4,7 +4,6 @@ import {
   getPlaybackDataFromFrames,
   insertItemsToArray,
   isEmpty,
-  mergeArray,
   modifyItemsInArray
 } from '@/common/utils';
 
@@ -255,26 +254,22 @@ export const getPlaybackDataApi = bookId => {
   bookId; // TODO: will use with API
 
   return new Promise(resolve => {
-    let bookFrames = [];
+    const bookSectionsFrames = [];
 
     window.data.book.sections.forEach(section => {
-      section.sheets.forEach(({ digitalData }) => {
+      section.sheets.forEach(({ digitalData, id }) => {
         const { frames, transitions } = digitalData;
 
         if (isEmpty(frames)) return;
 
-        if (!isEmpty(bookFrames)) {
-          bookFrames[bookFrames.length - 1].transition = new Transition();
-        }
-
-        bookFrames = mergeArray(
-          bookFrames,
-          getPlaybackDataFromFrames(frames, transitions)
-        );
+        bookSectionsFrames.push({
+          screenId: `${id}`,
+          data: getPlaybackDataFromFrames(frames, transitions)
+        });
       });
     });
 
-    resolve(getSuccessWithData(bookFrames));
+    resolve(getSuccessWithData(bookSectionsFrames));
   });
 };
 
