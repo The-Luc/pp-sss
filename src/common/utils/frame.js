@@ -18,7 +18,7 @@ export const getPlaybackDataFromFrames = (
   return frames.map(({ id, frame }, index) => {
     const transition = isEmpty(transitions[index]) ? {} : transitions[index];
 
-    const data = currentData.find(data => data.id === id);
+    const data = currentData.find(d => d.id === `${id}`);
 
     if (!isEmpty(data)) {
       return merge(data, { transition: { ...transition } });
