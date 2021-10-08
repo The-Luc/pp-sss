@@ -98,7 +98,8 @@ import {
   SAVE_STATUS,
   IMAGE_LOCAL,
   PROPERTIES_TOOLS,
-  EDITION
+  EDITION,
+  PORTRAIT_IMAGE_MASK
 } from '@/common/constants';
 import SizeWrapper from '@/components/SizeWrapper';
 import PrintCanvasLines from './PrintCanvasLines';
@@ -1283,6 +1284,24 @@ export default {
           this.changeImageProperties(prop);
           break;
         }
+
+        case OBJECT_TYPE.PORTRAIT_IMAGE: {
+          const minDimension = Math.min(currentWidthInch, currentHeightInch);
+          const radius =
+            target.mask === PORTRAIT_IMAGE_MASK.ROUNDED
+              ? minDimension / 10
+              : minDimension / 2;
+          const prop = {
+            width: currentWidthInch,
+            height: currentHeightInch,
+            scaleX: 1,
+            scaleY: 1,
+            rx: radius,
+            ry: radius
+          };
+          this.changePortraitImageProperties(prop);
+          break;
+        }
         default:
           return;
       }
@@ -1371,6 +1390,14 @@ export default {
       this.changeElementProperties(prop, OBJECT_TYPE.IMAGE);
     },
     /**
+     * Event fire when user change any property of selected image box
+     *
+     * @param {Object}  prop  new prop
+     */
+    changePortraitImageProperties(prop) {
+      this.changeElementProperties(prop, OBJECT_TYPE.PORTRAIT_IMAGE);
+    },
+    /**
      * Change properties of current element
      *
      * @param {Object}  prop        new prop
@@ -1402,6 +1429,38 @@ export default {
       }
     },
     /**
+     * Change fabric properties of current image element
+     *
+     * @param   {Object}  element selected element
+     * @param   {Object}  prop    new prop
+     *
+     * @returns {Object}          property of element after changed
+     */
+    updatePortraitImageElementProp(element, prop) {
+      const { border, size } = prop;
+
+      if (!isEmpty(border)) {
+        applyBorderToImageObject(element, border);
+      }
+
+      if (!isEmpty(size)) {
+        const { width } = size;
+        const radius =
+          element.mask === PORTRAIT_IMAGE_MASK.ROUNDED ? width / 10 : width / 2;
+        prop.rx = radius;
+        prop.ry = radius;
+        prop.scaleX = 1;
+        prop.scaleY = 1;
+      }
+
+      updateElement(element, prop, window.printCanvas);
+
+      const newProp = fabricToPpObject(element);
+      merge(prop, newProp);
+
+      return prop;
+    },
+    /**
      * Change fabric properties of current element
      *
      * @param   {Object}  element     selected element
@@ -1417,6 +1476,10 @@ export default {
 
       if (objectType === OBJECT_TYPE.IMAGE) {
         return this.updateImageElementProp(element, prop);
+      }
+
+      if (objectType === OBJECT_TYPE.PORTRAIT_IMAGE) {
+        return this.updatePortraitImageElementProp(element, prop);
       }
 
       updateElement(element, prop, window.printCanvas);
