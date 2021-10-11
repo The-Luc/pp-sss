@@ -5,11 +5,14 @@ import { portraitFolders as mockPortraitFolders } from '@/mock/portraitFolders';
 export const getPortraitFolders = () => {
   return new Promise(resolve => {
     setTimeout(() => {
-      const { selectedPortraitFolders } = window.data.book;
+      const { digital, print } = window.data.book.selectedPortraitFolders;
       const portraitFolders = mockPortraitFolders.map(item => {
         return {
           ...item,
-          isSelected: selectedPortraitFolders.includes(item.id)
+          isSelected: {
+            digital: digital.includes(item.id),
+            print: print.includes(item.id)
+          }
         };
       });
       resolve(portraitFolders);
@@ -17,11 +20,17 @@ export const getPortraitFolders = () => {
   });
 };
 
-export const saveSelectedPortraitFolders = folderIds => {
+export const saveSelectedPortraitFolders = (folderIds, isDigital) => {
   setTimeout(() => {
-    const { selectedPortraitFolders } = window.data.book;
-    window.data.book.selectedPortraitFolders = [
-      ...new Set(selectedPortraitFolders.concat(folderIds))
+    const { digital, print } = window.data.book.selectedPortraitFolders;
+    if (isDigital) {
+      window.data.book.selectedPortraitFolders.digital = [
+        ...new Set(digital.concat(folderIds))
+      ];
+      return;
+    }
+    window.data.book.selectedPortraitFolders.print = [
+      ...new Set(print.concat(folderIds))
     ];
   });
 };

@@ -55,7 +55,8 @@ export default {
       dataUI: null,
       disabledOption: { name: '--', value: '--' },
       rules: {},
-      colRowThreshold: this.isDigital ? 3 : 4
+      colThreshold: 4,
+      rowThreshold: this.isDigital ? 3 : 4
     };
   },
   computed: {
@@ -137,8 +138,8 @@ export default {
         return true;
 
       return (
-        this.layout.col < this.colRowThreshold ||
-        this.layout.row < this.colRowThreshold
+        this.layout.col < this.colThreshold ||
+        this.layout.row < this.rowThreshold
       );
     },
     isDisabledAsstPlacement() {
@@ -326,8 +327,8 @@ export default {
      */
     teacherPortraitSizeRule(isEmit) {
       if (
-        this.layout.col >= this.colRowThreshold &&
-        this.layout.row >= this.colRowThreshold &&
+        this.layout.col >= this.colThreshold &&
+        this.layout.row >= this.rowThreshold &&
         this.teacherSettings.teacherPortraitSize === PORTRAIT_SIZE.LARGE
       )
         return;

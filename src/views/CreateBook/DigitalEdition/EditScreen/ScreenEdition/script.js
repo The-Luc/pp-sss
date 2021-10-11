@@ -2519,16 +2519,22 @@ export default {
 
       this.setPropMultiObjectsBaseOnType(objectType, prop);
 
-      this.frames.forEach(({ frame: { objects, id } }) => {
+      const framesList = cloneDeep(this.frames);
+      const currentId = this.currentFrameId;
+
+      this.setFrames({ framesList: [] });
+
+      framesList.forEach(({ frame: { objects } }) => {
         objects.forEach(obj => {
           if (obj.type === objectType) {
             obj.animationIn = merge(obj.animationIn, prop.animationIn);
             obj.animationOut = merge(obj.animationOut, prop.animationOut);
           }
         });
-
-        this.updateFrameObjects({ frameId: id });
       });
+
+      this.setFrames({ framesList });
+      this.setCurrentFrameId({ id: currentId });
     },
 
     /**

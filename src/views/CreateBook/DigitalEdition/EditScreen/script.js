@@ -31,7 +31,8 @@ import {
   SHEET_TYPE,
   PROPERTIES_TOOLS,
   EVENT_TYPE,
-  PLAYBACK
+  PLAYBACK,
+  ROLE
 } from '@/common/constants';
 import {
   useLayoutPrompt,
@@ -226,11 +227,16 @@ export default {
 
       return !hasEmptyImage;
     },
+    isAdmin() {
+      return this.currentUser.role === ROLE.ADMIN;
+    },
     disabledItems() {
       const transition =
         this.frames.length > 1 ? '' : PROPERTIES_TOOLS.TRANSITION.name;
       const portrait =
-        this.currentSheet.type === SHEET_TYPE.COVER ? TOOL_NAME.PORTRAIT : '';
+        this.currentSheet.type === SHEET_TYPE.COVER || !this.isAdmin
+          ? TOOL_NAME.PORTRAIT
+          : '';
 
       return mergeArrayNonEmpty(this.disabledToolbarItems, [
         transition,
@@ -742,6 +748,10 @@ export default {
             framesList[0].frame.fromLayout = true;
           }
 
+          this.updateVisited({
+            sheetId: screenId
+          });
+
           return this.saveSheetFrames(screenId, framesList);
         }
 
@@ -787,7 +797,7 @@ export default {
         MODAL_TYPES.PORTRAIT_FLOW
       ].data.folders.map(item => item.id);
 
-      this.saveSelectedPortraitFolders(selectedFolderIds);
+      this.saveSelectedPortraitFolders(selectedFolderIds, true);
     },
     /**
      * Get require frame data
@@ -801,6 +811,8 @@ export default {
         length: Math.max(...Object.keys(requiredFrames))
       }).forEach((_, index) => {
         const objects = requiredFrames[index + 1] || [];
+        const orderIds = [objects.map(obj => obj.id)];
+
         if (!currentFrames[index]) {
           const blankFrame = {
             id: getUniqueId(),
@@ -808,7 +820,9 @@ export default {
               id: 0,
               fromLayout: false,
               objects,
-              isVisited: true
+              isVisited: true,
+              playInIds: orderIds,
+              playOutIds: orderIds
             })
           };
 
@@ -824,6 +838,8 @@ export default {
         if (!isEmpty(background)) objects.unshift(background);
 
         currentFrames[index].frame.objects = objects;
+        currentFrames[index].playInIds = orderIds;
+        currentFrames[index].playOutIds = orderIds;
       });
 
       return currentFrames;

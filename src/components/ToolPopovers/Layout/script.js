@@ -72,7 +72,8 @@ export default {
   data() {
     return {
       layoutEmptyLength: 4,
-      selectedLayout: {}
+      selectedLayout: {},
+      isOnPreview: false
     };
   },
   watch: {
@@ -97,6 +98,12 @@ export default {
      */
     onCancel() {
       this.$emit('onClose');
+    },
+    /**
+     * Toggle preview
+     */
+    onTogglePreview() {
+      this.isOnPreview = !this.isOnPreview;
     },
     /**
      * Fired when select btn clicked

@@ -399,11 +399,14 @@ export default {
 
       portraitsEl.style.setProperty('--row-count', this.layout.rowCount);
       portraitsEl.style.setProperty('--col-count', this.layout.colCount);
-      portraitsEl.style.setProperty('--name-height', this.lineHeight + 'px');
+      portraitsEl.style.setProperty(
+        '--name-height',
+        Math.round(this.lineHeight) + 'px'
+      );
 
       portraitsEl.style.setProperty(
         '--portrait-width',
-        this.portraitWidth + 'px'
+        Math.round(this.portraitWidth) + 'px'
       );
 
       if (row === 1 && col === 1) {

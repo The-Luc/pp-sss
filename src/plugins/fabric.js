@@ -206,7 +206,7 @@ export const renderImageCropControl = function(target) {
 
   const { x, y } = target.getCenterPoint();
 
-  const offsetY = (eleHeight - iconHeight) / 2 - 15 * zoom;
+  const offsetY = (eleHeight - iconHeight) / 2 - 10;
 
   const centerX = x * zoom;
   const centerY = y * zoom;

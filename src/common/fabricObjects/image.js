@@ -6,6 +6,7 @@ import {
   inToPx,
   isEmpty,
   mapObject,
+  parseToSecond,
   pxToIn,
   scaleSize
 } from '../utils';
@@ -679,13 +680,21 @@ export const handleChangeMediaSrc = async (
 ) => {
   if (!target) return;
 
-  const { imageUrl, id, mediaUrl, thumbUrl } = options;
+  const { imageUrl, id, mediaUrl, thumbUrl, duration } = options;
+  const durationInSeconds = parseToSecond(duration);
 
   const prop = mediaUrl
     ? await setVideoSrc(target, mediaUrl, thumbUrl, videoToggleStatusCallback)
     : await setImageSrc(target, imageUrl);
 
   prop.imageId = id;
+
+  if (mediaUrl) {
+    prop.volume = DEFAULT_VIDEO.VOLUME;
+    prop.duration = durationInSeconds;
+    prop.endTime = durationInSeconds;
+    prop.startTime = 0;
+  }
 
   return { id: target.id, prop };
 };
