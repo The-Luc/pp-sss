@@ -58,6 +58,7 @@ export class SheetDigitalData extends SheetEditionData {
 }
 
 export class SheetEntity extends BaseEntity {
+  draggable = false;
   type = SHEET_TYPE.NORMAL;
   sectionId = '';
   layoutId = '';
