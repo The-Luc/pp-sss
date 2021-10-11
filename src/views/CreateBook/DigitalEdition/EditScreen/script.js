@@ -748,6 +748,10 @@ export default {
             framesList[0].frame.fromLayout = true;
           }
 
+          this.updateVisited({
+            sheetId: screenId
+          });
+
           return this.saveSheetFrames(screenId, framesList);
         }
 
@@ -807,6 +811,8 @@ export default {
         length: Math.max(...Object.keys(requiredFrames))
       }).forEach((_, index) => {
         const objects = requiredFrames[index + 1] || [];
+        const orderIds = [objects.map(obj => obj.id)];
+
         if (!currentFrames[index]) {
           const blankFrame = {
             id: getUniqueId(),
@@ -814,7 +820,9 @@ export default {
               id: 0,
               fromLayout: false,
               objects,
-              isVisited: true
+              isVisited: true,
+              playInIds: orderIds,
+              playOutIds: orderIds
             })
           };
 
@@ -830,6 +838,8 @@ export default {
         if (!isEmpty(background)) objects.unshift(background);
 
         currentFrames[index].frame.objects = objects;
+        currentFrames[index].playInIds = orderIds;
+        currentFrames[index].playOutIds = orderIds;
       });
 
       return currentFrames;
