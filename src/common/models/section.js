@@ -18,6 +18,7 @@ export class SectionBase extends BaseEntity {
 }
 
 export class SectionDetail extends SectionBase {
+  draggable = true;
   fixed = false;
   sheetIds = [];
 
