@@ -14,7 +14,7 @@
           :key="user.id"
           :ref="`user${user.id}`"
         >
-          <v-list-item-icon>
+          <v-list-item-icon @click="onSelected(user)">
             <v-icon>check_circle</v-icon>
           </v-list-item-icon>
 
