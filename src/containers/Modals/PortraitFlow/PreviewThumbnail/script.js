@@ -138,13 +138,17 @@ export default {
 
       const {
         flowMultiSettings,
+        flowSingleSettings,
         startOnPageNumber,
-        textSettings
+        textSettings,
+        folders
       } = this.flowSettings;
 
+      const isMultiFolder =
+        folders.length > 1 ? flowMultiSettings : flowSingleSettings;
+
       const isStartPageNumber = this.isDigital
-        ? Object.keys(flowMultiSettings.screen)[0] == this.screenNumber &&
-          this.pageNumber === startOnPageNumber
+        ? this.pageNumber === isMultiFolder.screen[this.screenNumber][0]
         : this.pageNumber === startOnPageNumber;
 
       if (isStartPageNumber) return textSettings?.isPageTitleOn;
