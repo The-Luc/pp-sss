@@ -1,8 +1,8 @@
 import dataHandler from './dataHandler';
-import errorHandler from './errorHandler';
+// import errorHandler from './errorHandler';
 
 const configResponse = async response => {
-  response.use(dataHandler, errorHandler);
+  response.use(dataHandler);
 };
 
 export default configResponse;

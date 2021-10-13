@@ -1,7 +1,3 @@
-const dataHandler = response => ({
-  data: response.data?.data || [],
-  method: response.config.method,
-  url: response.config.url
-});
+const dataHandler = response => response.data?.data;
 
 export default dataHandler;
