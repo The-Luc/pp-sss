@@ -66,7 +66,7 @@ export const PRINT_HARDCOVER_PAGE_SIZE = {
   BLEED_BOTTOM: 0.749
 };
 
-export const PRINT_DPI = 300;
+export const PRINT_DPI = 120;
 export const DIGITAL_DPI = 120;
 
 // normal page size
