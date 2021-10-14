@@ -4,7 +4,7 @@ import configResponse from './interceptors/response/config';
 import configRequest from './interceptors/request/config';
 import { print } from 'graphql/language/printer';
 
-const API_ENDPOINT = 'http://development.fluidmedia.com/graphiql';
+const API_ENDPOINT = 'http://development.fluidmedia.com/graphql';
 
 const axiosClient = axios.create({
   baseURL: API_ENDPOINT,
