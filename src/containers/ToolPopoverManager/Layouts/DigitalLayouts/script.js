@@ -200,7 +200,7 @@ export default {
       );
 
       this.layoutId = this.isSupplemental
-        ? currentFrameObj.frame.supplementalLayoutId
+        ? currentFrameObj.supplementalLayoutId
         : this.pageSelected?.layoutId;
     },
     /**

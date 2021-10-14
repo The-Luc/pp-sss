@@ -75,8 +75,8 @@ export const getters = {
   [DIGITAL._GETTERS.DEFAULT_THEME_ID]: ({ book }) => {
     return book.defaultThemeId;
   },
-  [DIGITAL._GETTERS.GET_FRAMES_WIDTH_IDS]: ({ frames, frameIds }) => {
-    return frameIds.map(id => ({ id, frame: frames[id] }));
+  [DIGITAL._GETTERS.GET_ARRAY_FRAMES]: ({ frames, frameIds }) => {
+    return frameIds.map(id => frames[id]);
   },
   [DIGITAL._GETTERS.CURRENT_FRAME_ID]: ({ currentFrameId }) => {
     return currentFrameId;
@@ -102,7 +102,7 @@ export const getters = {
     frames,
     frameIds
   }) => sheetId => {
-    const framesArray = frameIds.map(id => ({ id, frame: frames[id] }));
+    const framesArray = frameIds.map(id => frames[id]);
 
     return {
       defaultThemeId: book.defaultThemeId,

@@ -17,7 +17,6 @@ import {
   setBackgrounds,
   setBookInfo
 } from '@/common/store';
-import { FrameDetail } from '@/common/models';
 
 export const mutations = {
   [DIGITAL._MUTATES.SET_BOOK_ID](state, { bookId }) {
@@ -190,20 +189,6 @@ export const mutations = {
   },
 
   [DIGITAL._MUTATES.SET_FRAMES](state, { framesList }) {
-    if (framesList.length === 0) {
-      const blankFrame = {
-        id: getUniqueId(),
-        frame: new FrameDetail({
-          id: 0,
-          fromLayout: true,
-          isVisited: true
-        })
-      };
-      state.frames = { [blankFrame.id]: blankFrame.frame };
-      state.frameIds = [blankFrame.id];
-      state.currentFrameId = 0;
-      return;
-    }
     // keep supplement frames
     const supplementFrameIds = [];
     const supplementFrames = {};
@@ -218,7 +203,7 @@ export const mutations = {
 
     const newFrames = {};
 
-    framesList.forEach(({ id, frame }) => {
+    framesList.forEach(frame => {
       if (isEmpty(frame.playInIds)) {
         frame.playInIds = [
           frame.objects
@@ -228,7 +213,7 @@ export const mutations = {
             .map(f => f.id)
         ];
       }
-      newFrames[id] = frame;
+      newFrames[frame.id] = frame;
     });
 
     state.frameIds = [...newFrameIds, ...supplementFrameIds];
@@ -242,7 +227,7 @@ export const mutations = {
       while (state.frameIds.includes(id)) id = getUniqueId();
 
       state.frameIds = [...state.frameIds, id];
-      state.frames = { ...state.frames, [id]: frame };
+      state.frames = { ...state.frames, [id]: { ...frame, id } };
     });
   },
   [DIGITAL._MUTATES.REPLACE_SUPPLEMENTAL_FRAME](state, { frame, frameId }) {
@@ -250,7 +235,7 @@ export const mutations = {
 
     state.frameIds = [...state.frameIds];
 
-    state.frames[frameId] = frame;
+    state.frames[frameId] = { ...frame, id: frameId };
   },
   [DIGITAL._MUTATES.REORDER_FRAME_IDS](state, { oldIndex, newIndex }) {
     const [id] = state.frameIds.splice(oldIndex, 1);

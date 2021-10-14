@@ -24,10 +24,10 @@
         @unchoose="onUnchoose"
       >
         <digital-frame
-          v-for="({ id, frame }, index) in frames"
-          :id="id"
-          :key="id"
-          :ref="`frame-${id}`"
+          v-for="(frame, index) in frames"
+          :id="frame.id"
+          :key="frame.id"
+          :ref="`frame-${frame.id}`"
           :index="index"
           :preview-image-url="frame.previewImageUrl"
           :is-package-layout="frame.fromLayout"

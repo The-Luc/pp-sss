@@ -742,10 +742,10 @@ export default {
         const framesList = this.getRequiredFramesData(frames, pages);
 
         if (+screenId !== +this.pageSelected.id) {
-          const hasPackageFrame = framesList.some(f => f.frame.fromLayout);
+          const hasPackageFrame = framesList.some(f => f.fromLayout);
 
-          if (!hasPackageFrame && framesList[0]?.frame) {
-            framesList[0].frame.fromLayout = true;
+          if (!hasPackageFrame && framesList[0]) {
+            framesList[0].fromLayout = true;
           }
 
           this.updateVisited({
@@ -763,10 +763,7 @@ export default {
 
         const currentFrame = framesList.find(f => +f.id === +currentId);
 
-        const {
-          id,
-          frame: { objects }
-        } = currentFrame || framesList[0];
+        const { id, objects } = currentFrame || framesList[0];
 
         this.deleteObjects({ ids });
 
@@ -814,30 +811,27 @@ export default {
         const orderIds = [objects.map(obj => obj.id)];
 
         if (!currentFrames[index]) {
-          const blankFrame = {
+          const blankFrame = new FrameDetail({
             id: getUniqueId(),
-            frame: new FrameDetail({
-              id: 0,
-              fromLayout: false,
-              objects,
-              isVisited: true,
-              playInIds: orderIds,
-              playOutIds: orderIds
-            })
-          };
+            fromLayout: false,
+            objects,
+            isVisited: true,
+            playInIds: orderIds,
+            playOutIds: orderIds
+          });
 
           return currentFrames.push(blankFrame);
         }
 
         if (isEmpty(objects)) return;
 
-        const background = currentFrames[index].frame.objects.find(
+        const background = currentFrames[index].objects.find(
           obj => obj.type === OBJECT_TYPE.BACKGROUND
         );
 
         if (!isEmpty(background)) objects.unshift(background);
 
-        currentFrames[index].frame.objects = objects;
+        currentFrames[index].objects = objects;
         currentFrames[index].playInIds = orderIds;
         currentFrames[index].playOutIds = orderIds;
       });

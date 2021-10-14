@@ -218,7 +218,7 @@ export const useActionDigitalSheet = () => {
 
     const frame = framesObs.value.find(({ id }) => id === frameId);
 
-    const { objects, playInIds, playOutIds, delay } = frame.frame;
+    const { objects, playInIds, playOutIds, delay } = frame;
 
     return [
       {

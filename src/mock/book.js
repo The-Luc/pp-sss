@@ -37,12 +37,9 @@ const defaultDigitalLayout = {
   themeId: ''
 };
 
-const makeDefaultFrame = () => {
-  const id = +uniqueId();
-  const defaultFrame = { id, frame: new FrameEntity({ id, isVisited: true }) };
-
-  return [defaultFrame];
-};
+const makeDefaultFrame = () => [
+  new FrameEntity({ id: +uniqueId(), isVisited: true })
+];
 
 const book = new BookDetailEntity({
   id: 1719,
