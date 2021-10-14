@@ -8,10 +8,7 @@
       >
         <div class="photo-container" :style="imageStyle">
           <div v-show="portrait.imageUrl" class="photo">
-            <div
-              class="img-fake"
-              :style="{ backgroundImage: `url(${portrait.imageUrl})` }"
-            ></div>
+            <img :src="portrait.imageUrl" />
           </div>
         </div>
 

@@ -2,11 +2,15 @@ import axios from 'axios';
 import queryString from 'query-string';
 import configResponse from './interceptors/response/config';
 import configRequest from './interceptors/request/config';
+import { print } from 'graphql/language/printer';
+
+const API_ENDPOINT = 'http://development.fluidmedia.com/graphiql';
 
 const axiosClient = axios.create({
-  baseURL: process.env.REACT_APP_API_URL,
+  baseURL: API_ENDPOINT,
   headers: {
-    'content-type': 'application/json'
+    'content-type': 'application/json',
+    Accept: 'application/json'
   },
   paramsSeriallizer: params => queryString.stringify(params)
 });
@@ -18,4 +22,9 @@ const configInterceptor = axiosObject => {
 
 configInterceptor(axiosClient);
 
-export default axiosClient;
+export default (query, variables = {}) => {
+  return axiosClient.post('', {
+    query: print(query),
+    variables
+  });
+};

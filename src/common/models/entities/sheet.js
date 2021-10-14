@@ -1,5 +1,5 @@
 import { BaseEntity, BaseObject } from '../base';
-import { SHEET_TYPE } from '@/common/constants';
+import { SHEET_TYPE, POSITION_FIXED } from '@/common/constants';
 
 export class SpreadInfo extends BaseObject {
   leftTitle = '';
@@ -58,6 +58,8 @@ export class SheetDigitalData extends SheetEditionData {
 }
 
 export class SheetEntity extends BaseEntity {
+  positionFixed = POSITION_FIXED.NONE;
+  draggable = true;
   type = SHEET_TYPE.NORMAL;
   sectionId = '';
   layoutId = '';

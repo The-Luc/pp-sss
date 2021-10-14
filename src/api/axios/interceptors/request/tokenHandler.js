@@ -3,16 +3,12 @@ import { getItem } from '../../../../common/storage';
 
 const tokenHandler = config => {
   const token = getItem(LOCAL_STORAGE.TOKEN);
-  let Authorization;
-  if (token) Authorization = `Bearer ${token}`;
 
-  return {
-    ...config,
-    headers: {
-      ...config.headers,
-      Authorization
-    }
-  };
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+
+  return config;
 };
 
 export default tokenHandler;

@@ -11,6 +11,7 @@ import {
 import {
   getRectDashes,
   getRectDashesForPortrait,
+  inToPx,
   isEmpty,
   ptToPx,
   videoEndRewindEvent,
@@ -201,12 +202,15 @@ export const renderImageCropControl = function(target) {
   const eleWidth = width * scaleX * zoom;
   const eleHeight = height * scaleY * zoom;
 
-  const iconWidth = Math.min(eleWidth / 3, eleHeight / 1.5);
+  const isHidden =
+    eleWidth < inToPx(1) * zoom || eleHeight < (inToPx(0.5) + 10) * zoom;
+
+  const iconWidth = isHidden ? 0 : inToPx(1) * zoom;
   const iconHeight = iconWidth / 2;
 
   const { x, y } = target.getCenterPoint();
 
-  const offsetY = (eleHeight - iconHeight) / 2 - 15 * zoom;
+  const offsetY = (eleHeight - iconHeight) / 2 - 10;
 
   const centerX = x * zoom;
   const centerY = y * zoom;
