@@ -39,7 +39,7 @@ const defaultDigitalLayout = {
 
 const makeDefaultFrame = () => {
   const id = +uniqueId();
-  const defaultFrame = { id, frame: new FrameEntity({ id }) };
+  const defaultFrame = { id, frame: new FrameEntity({ id, isVisited: true }) };
 
   return [defaultFrame];
 };
