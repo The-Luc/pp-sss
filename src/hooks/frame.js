@@ -25,7 +25,7 @@ export const useFrame = () => {
     frameIds,
     currentFrameIndex
   } = useGetters({
-    frames: DIGITAL_GETTERS.GET_FRAMES_WIDTH_IDS,
+    frames: DIGITAL_GETTERS.GET_ARRAY_FRAMES,
     currentFrame: DIGITAL_GETTERS.CURRENT_FRAME,
     currentFrameId: DIGITAL_GETTERS.CURRENT_FRAME_ID,
     firstFrameThumbnail: DIGITAL_GETTERS.GET_FIRST_FRAME_THUMBNAIL,
@@ -88,7 +88,7 @@ export const useFrameSwitching = () => {
  */
 export const useFrameDelete = () => {
   const { framesInStore } = useGetters({
-    framesInStore: DIGITAL_GETTERS.GET_FRAMES_WIDTH_IDS
+    framesInStore: DIGITAL_GETTERS.GET_ARRAY_FRAMES
   });
 
   const { deleteFrame, setCurrentFrameId } = useMutations({
@@ -149,7 +149,7 @@ export const useFrameReplace = () => {
  */
 export const useFrameAdd = () => {
   const { framesInStore } = useGetters({
-    framesInStore: DIGITAL_GETTERS.GET_FRAMES_WIDTH_IDS
+    framesInStore: DIGITAL_GETTERS.GET_ARRAY_FRAMES
   });
 
   const { addSupplementalFrame, setCurrentFrameId } = useMutations({

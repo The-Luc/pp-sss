@@ -1,15 +1,22 @@
 import { ROLE } from '@/common/constants';
 import { getErrorWithMessages, getSuccessWithData } from '@/common/models';
 import { User } from '@/common/models/user';
+import { getItem } from '@/common/storage';
 
 import { isEmpty } from '@/common/utils';
 
 import { communityUsers } from '@/mock/users';
+import graphqlResquest from '../axios';
+import { loginUserMutation } from './mutations';
 
-export const getCurrentUserApi = () => {
+const logInUser = (email, password) => {
+  return graphqlResquest(loginUserMutation, { email, password });
+};
+
+const getCurrentUserApi = () => {
   return new Promise(resolve => {
-    const id = window.sessionStorage.getItem('userId');
-    const role = window.sessionStorage.getItem('userRole');
+    const id = getItem('userId');
+    const role = getItem('userRole');
 
     if (isEmpty(id)) {
       resolve({});
@@ -21,7 +28,7 @@ export const getCurrentUserApi = () => {
   });
 };
 
-export const getUsersApi = () => {
+const getUsersApi = () => {
   return new Promise(resolve => {
     setTimeout(() => {
       resolve(communityUsers.map(u => new User(u)));
@@ -29,7 +36,7 @@ export const getUsersApi = () => {
   });
 };
 
-export const authenticateApi = (bookId, sheetId) => {
+const authenticateApi = (bookId, sheetId) => {
   return new Promise(resolve => {
     if (isEmpty(bookId)) {
       resolve(getErrorWithMessages(''));
@@ -37,8 +44,8 @@ export const authenticateApi = (bookId, sheetId) => {
       return;
     }
 
-    const id = window.sessionStorage.getItem('userId');
-    const role = window.sessionStorage.getItem('userRole');
+    const id = getItem('userId');
+    const role = getItem('userRole');
 
     if (isEmpty(id)) {
       resolve(getErrorWithMessages(''));
@@ -68,8 +75,9 @@ export const authenticateApi = (bookId, sheetId) => {
   });
 };
 
-export default {
+export const userService = {
   getCurrentUser: getCurrentUserApi,
   getUsers: getUsersApi,
-  authenticate: authenticateApi
+  authenticate: authenticateApi,
+  logIn: logInUser
 };

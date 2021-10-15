@@ -3,5 +3,6 @@ export const ROUTE_NAME = {
   PRINT: 'print',
   DIGITAL: 'digital',
   PRINT_EDIT: 'editPrint',
-  DIGITAL_EDIT: 'editDigital'
+  DIGITAL_EDIT: 'editDigital',
+  PRINT_PAGE: 'printPage'
 };

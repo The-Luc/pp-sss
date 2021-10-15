@@ -24,7 +24,7 @@ class GetterClass extends BaseObject {
   BACKGROUNDS_PROPERTIES = 'getPropertiesOfAllBackgrounds';
   SECTIONS_SHEETS = 'getSectionsAndSheets';
   DEFAULT_THEME_ID = 'getDefaultThemeId';
-  GET_FRAMES_WIDTH_IDS = 'getFramesWithIds';
+  GET_ARRAY_FRAMES = 'getArrayFrames';
   CURRENT_FRAME_ID = 'currentFrameId';
   CURRENT_FRAME = 'getCurrentFrame';
   TOTAL_OBJECT = 'getTotalObject';

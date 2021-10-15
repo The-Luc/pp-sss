@@ -1,6 +1,6 @@
 import { useGetters, useMutations, useActions } from 'vuex-composition-helpers';
 
-import userService from '@/api/user';
+import { userService } from '@/api';
 
 import {
   GETTERS as BOOK_GETTERS,

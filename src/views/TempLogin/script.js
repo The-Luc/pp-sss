@@ -1,9 +1,10 @@
 import PpSelect from '@/components/Selectors/Select';
 import PpButton from '@/components/Buttons/Button';
 
-import { ROLE, COVER_TYPE, ROUTE_NAME } from '@/common/constants';
+import { ROLE, ROUTE_NAME } from '@/common/constants';
 
-import { users } from '@/mock/users';
+import { userService } from '@/api';
+import { setItem } from '@/common/storage';
 
 export default {
   components: {
@@ -11,43 +12,43 @@ export default {
     PpButton
   },
   data() {
-    const covers = Object.keys(COVER_TYPE).map((k, index) => ({
-      name: COVER_TYPE[k],
-      value: index
-    }));
+    const rules = [value => !!value || 'Required.'];
 
     return {
-      users,
-      covers,
-      maxPage: 140,
-      selectedUser: users[1],
-      selectedCover: covers[0]
+      rules,
+      isLoggedIn: false,
+      selectedBookId: null,
+      email: '',
+      password: ''
     };
   },
+  computed: {
+    isDisabledLogin() {
+      return !(this.email && this.password);
+    }
+  },
   methods: {
-    saveUser() {
-      window.sessionStorage.setItem('userId', this.selectedUser.value);
-      window.sessionStorage.setItem('userRole', ROLE[this.selectedUser.role]);
+    saveUser(user) {
+      setItem('userId', user.id);
+      // temporary code, wait to get data from backend
+      // setItem('userRole', ROLE[this.selectedUser.role]);
+      setItem('userRole', ROLE['ADMIN']);
     },
-    saveCover() {
-      window.data.book.coverOption = this.selectedCover.name;
-    },
-    onCancel() {
-      this.$refs.maxPageInput.blur();
-    },
-    onEnter() {
-      this.$refs.maxPageInput.blur();
-    },
-    onSubmit() {
-      if (!String(this.maxPage).trim()) return;
+    async onClickLogin() {
+      const { login_user } = await userService.logIn(this.email, this.password);
 
-      window.data.book.numberMaxPages = parseInt(this.maxPage);
+      if (!login_user) return;
+
+      // save token on localStorage
+      setItem('token', login_user.token);
+      this.saveUser(login_user.user);
+
+      this.isLoggedIn = true;
     },
     goToManager() {
-      this.saveUser();
-      this.saveCover();
+      const bookId = +this.selectedBookId || 2749;
 
-      this.$router.push({ name: ROUTE_NAME.MANAGER, params: { bookId: 1719 } });
+      this.$router.push({ name: ROUTE_NAME.MANAGER, params: { bookId } });
     }
   }
 };

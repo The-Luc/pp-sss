@@ -34,7 +34,7 @@ export const actions = {
     });
   },
   async [DIGITAL._ACTIONS.GET_DATA_CANVAS]({ state, commit }) {
-    // rest the store
+    // clear all objects and backgrounds
     commit(DIGITAL._MUTATES.SET_OBJECTS, { objectList: [] });
     commit(DIGITAL._MUTATES.SET_BACKGROUND, { backgrounds: {} });
 
@@ -61,7 +61,7 @@ export const actions = {
     });
 
     // adding Id to each frame
-    const frames = layout.frames.map(f => ({ id: getUniqueId(), frame: f }));
+    const frames = layout.frames.map(f => ({ ...f, id: getUniqueId() }));
 
     // set the first frame is the active one
     commit(DIGITAL._MUTATES.SET_CURRENT_FRAME_ID, { id: frames[0].id });
