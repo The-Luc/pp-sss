@@ -14,6 +14,7 @@ const DigitalEditScreen = () =>
   import('@/views/CreateBook/DigitalEdition/EditScreen');
 const DigitalEdition = () => import('@/views/CreateBook/DigitalEdition');
 const Login = () => import('@/views/TempLogin');
+const PrintBookScreen = () => import('@/views/PrintBook');
 
 import authGuard from './guards/authGuard';
 import {
@@ -97,6 +98,11 @@ const routes = [
         ...beforeEnterGuard(authGuard)
       }
     ]
+  },
+  {
+    path: '/books/:bookId/pages/:pageId/print',
+    name: ROUTE_NAME.PRINT_PAGE,
+    component: PrintBookScreen
   },
   { path: '*', component: PageNotFound }
 ];
