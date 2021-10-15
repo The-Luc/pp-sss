@@ -3,7 +3,7 @@ import Vue from 'vue';
 export const Notification = ({
   group = 'foo',
   type = 'success',
-  duration = 1000,
+  duration = 5000,
   animation = 'top right',
   title = 'Success Data',
   text = 'Success!!!'
