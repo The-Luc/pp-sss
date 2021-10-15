@@ -42,12 +42,14 @@ export default {
      * @param {String}  name  route name
      */
     checkShowHeader(name) {
-      const isNotPrintEdition = name === ROUTE_NAME.PRINT_EDIT;
-      const isNotDigitalEdition = name === ROUTE_NAME.DIGITAL_EDIT;
+      const isPrintEdition = name === ROUTE_NAME.PRINT_EDIT;
+      const isDigitalEdition = name === ROUTE_NAME.DIGITAL_EDIT;
+      const isPrintPage = name === ROUTE_NAME.PRINT_PAGE;
 
-      this.isHeaderDisplayed = isNotPrintEdition && isNotDigitalEdition;
+      this.isHeaderDisplayed =
+        !isPrintEdition && !isDigitalEdition && !isPrintPage;
 
-      this.isInfoBarDisplayed = name !== ROUTE_NAME.PRINT_PAGE;
+      this.isInfoBarDisplayed = !isPrintPage;
     }
   },
   created() {
