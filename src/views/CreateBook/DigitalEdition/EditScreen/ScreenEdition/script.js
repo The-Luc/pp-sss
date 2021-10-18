@@ -1718,13 +1718,9 @@ export default {
     async addClipArt(clipArts) {
       const toBeAddedClipArts = clipArts.map(c => {
         const id = getUniqueId();
-
-        const vector = c.vector;
-
         const newClipArt = new ClipArtElementObject({
           ...c,
-          id,
-          vector: require(`../../../../../assets/image/clip-art/${vector}`)
+          id
         });
 
         return {

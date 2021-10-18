@@ -28,6 +28,7 @@
         </div>
         <div
           v-if="clipArts.length === 0"
+          ref="clipArtContainer"
           class="clip-art-item-container search-item empty"
         >
           <Item
