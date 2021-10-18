@@ -42,5 +42,6 @@ export const getters = {
   [APP._GETTERS.IS_MEDIA_SIDEBAR_OPEN]: ({ isMediaSidebarOpen }) =>
     isMediaSidebarOpen,
   [APP._GETTERS.DISABLED_TOOLBAR_ITEMS]: ({ disabledToolbarItems }) =>
-    disabledToolbarItems
+    disabledToolbarItems,
+  [APP._GETTERS.IS_LOADING]: ({ isLoading }) => isLoading
 };

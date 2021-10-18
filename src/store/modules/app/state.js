@@ -51,5 +51,6 @@ export const state = {
   savedImageStyles: [],
   savingStatus: '',
   isMediaSidebarOpen: false,
-  disabledToolbarItems: getDefaultDisabledItems()
+  disabledToolbarItems: getDefaultDisabledItems(),
+  isLoading: false
 };

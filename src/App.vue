@@ -13,6 +13,7 @@
       <HeaderControl />
       <router-view></router-view>
     </v-main>
+    <loading v-show="isLoading"></loading>
   </v-app>
 </template>
 
@@ -22,6 +23,7 @@ import { useAppCommon } from '@/hooks/common';
 
 import ModalManager from '@/containers/ModalManager';
 import HeaderControl from '@/views/CreateBook/HeadControl';
+import Loading from '@/components/Modals/Loading';
 import { GETTERS as APP_GETTER } from '@/store/modules/app/const';
 import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 import { ACTIONS } from '@/store/modules/book/const';
@@ -29,12 +31,14 @@ import { ACTIONS } from '@/store/modules/book/const';
 export default {
   components: {
     ModalManager,
-    HeaderControl
+    HeaderControl,
+    Loading
   },
   setup() {
-    const { getAppDetail } = useAppCommon();
+    const { getAppDetail, isLoading } = useAppCommon();
     return {
-      getAppDetail
+      getAppDetail,
+      isLoading
     };
   },
   computed: {
