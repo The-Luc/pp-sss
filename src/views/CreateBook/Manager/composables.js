@@ -1,4 +1,5 @@
 import { useGetters, useMutations, useActions } from 'vuex-composition-helpers';
+import { merge } from 'lodash';
 
 import { userService } from '@/api';
 
@@ -7,33 +8,61 @@ import {
   MUTATES as BOOK_MUTATES,
   ACTIONS as BOOK_ACTIONS
 } from '@/store/modules/book/const';
+
 import {
   GETTERS as APP_GETTERS,
   MUTATES as APP_MUTATES
 } from '@/store/modules/app/const';
 
-import { useAppCommon } from '@/hooks';
+import { useActionBook, useAppCommon } from '@/hooks';
+
+const getSectionSheet = sectionsSheets => {
+  const sectionIds = [];
+  const sections = {};
+  const sheets = {};
+
+  sectionsSheets.forEach(section => {
+    const sectionId = section.sectionDetail.id;
+
+    sections[sectionId] = section.sectionDetail;
+
+    sectionIds.push(sectionId);
+
+    merge(sheets, section.sheets);
+  });
+
+  return { sectionIds, sections, sheets };
+};
 
 export const useManager = () => {
   const { setGeneralInfo } = useAppCommon();
 
-  const { getBookData } = useActions({
-    getBookData: BOOK_ACTIONS.GET_BOOK
+  const { getBookInfo } = useActionBook();
+
+  const { setBook, setSections, setSheets } = useMutations({
+    setBook: BOOK_MUTATES.SET_BOOK,
+    setSections: BOOK_MUTATES.SET_SECTIONS,
+    setSheets: BOOK_MUTATES.SET_SHEETS
   });
 
   const getBook = async ({ bookId }) => {
-    const { title, totalSheet, totalPage, totalScreen } = await getBookData({
-      bookId
-    });
+    const { book, sectionsSheets } = await getBookInfo(bookId);
+
+    setBook({ book });
+
+    const { sectionIds, sections, sheets } = getSectionSheet(sectionsSheets);
+
+    setSections({ sections, sectionIds });
+    setSheets({ sheets });
+
+    const { communityId, title, totalPage, totalSheet, totalScreen } = book;
 
     setGeneralInfo({
-      info: { title, bookId, totalSheet, totalPage, totalScreen }
+      info: { bookId, communityId, title, totalPage, totalSheet, totalScreen }
     });
   };
 
-  return {
-    getBook
-  };
+  return { getBook };
 };
 
 export const useSummaryInfo = () => {

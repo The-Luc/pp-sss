@@ -17,10 +17,11 @@ export class PageInfo extends BaseObject {
 }
 
 export class BookBase extends BaseEntity {
+  communityId = '';
   title = '';
-  totalPages = 0;
-  totalSheets = 0;
-  totalScreens = 0;
+  totalPage = 0;
+  totalSheet = 0;
+  totalScreen = 0;
 
   /**
    * @param {BookBase} props
@@ -60,7 +61,6 @@ export class BookDigitalData extends BookBase {
 
 // TODO: remove later
 export class BookDetail extends BookBase {
-  communityId = null;
   createdDate = null;
   deliveryDate = null;
   releaseDate = null;

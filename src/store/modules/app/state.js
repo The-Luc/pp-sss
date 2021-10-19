@@ -40,6 +40,7 @@ export const state = {
   currentObject: null,
   generalInfo: {
     bookId: '',
+    communityId: '',
     title: '',
     totalSheet: 0,
     totalPage: 0,

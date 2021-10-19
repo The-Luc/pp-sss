@@ -46,7 +46,6 @@ import {
   useProperties,
   useObjectProperties,
   useToolBar,
-  useBook,
   useAnimation,
   useObjects,
   useBackgroundProperties,
@@ -133,8 +132,6 @@ export default {
     } = useToolBar();
     const { frames } = useFrame();
 
-    const { setBookId } = useBook();
-
     const { storeAnimationProp } = useAnimation();
 
     const { addObjecs, deleteObjects } = useObjects();
@@ -168,7 +165,6 @@ export default {
       disabledToolbarItems,
       currentSheet,
       frames,
-      setBookId,
       storeAnimationProp,
       saveAnimationConfig,
       addObjecs,
@@ -268,8 +264,6 @@ export default {
 
         return;
       }
-
-      vm.setBookId({ bookId });
 
       await vm.getBookDigitalInfo(bookId);
 

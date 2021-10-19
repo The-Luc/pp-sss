@@ -1,31 +1,21 @@
 import { useMutationBook, useActionBook, useAppCommon } from '@/hooks';
 
 export const useBookDigitalInfo = () => {
-  const { setSectionsSheets } = useMutationBook(true);
+  const { setSectionsSheets } = useMutationBook();
 
   const { setGeneralInfo } = useAppCommon();
 
-  const { getBookInfo } = useActionBook(true);
+  const { getBookInfo } = useActionBook();
 
   const getBookDigitalInfo = async bookId => {
-    const {
-      title,
-      totalPages,
-      totalSheets,
-      totalScreens,
-      sectionsSheets
-    } = await getBookInfo(bookId);
+    const { book, sectionsSheets } = await getBookInfo(bookId);
 
     setSectionsSheets({ sectionsSheets });
 
+    const { communityId, title, totalPage, totalSheet, totalScreen } = book;
+
     setGeneralInfo({
-      info: {
-        bookId,
-        title,
-        totalPages,
-        totalSheets,
-        totalScreens
-      }
+      info: { bookId, communityId, title, totalPage, totalSheet, totalScreen }
     });
   };
 

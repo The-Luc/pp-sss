@@ -59,7 +59,7 @@ export const useBookDigitalInfo = () => {
 
   const { setGeneralInfo } = useAppCommon();
 
-  const { getBookInfo } = useActionBook(true);
+  const { getBookInfo } = useActionBook();
 
   const getBookDigitalInfo = async bookId => {
     const {
@@ -67,7 +67,7 @@ export const useBookDigitalInfo = () => {
       isPhotoVisited,
       title,
       sectionsSheets
-    } = await getBookInfo(bookId);
+    } = await getBookInfo(bookId, true);
 
     setBookInfo({ info: { defaultThemeId: themeId } });
 

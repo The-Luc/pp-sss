@@ -16,7 +16,7 @@ export const useBookPrintInfo = () => {
       sectionsSheets,
       coverOption,
       numberMaxPages
-    } = await getBookInfo(bookId);
+    } = await getBookInfo(bookId, true);
 
     setBookInfo({ info: { defaultThemeId: themeId, pageInfo } });
 

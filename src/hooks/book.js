@@ -1,7 +1,6 @@
-import { useActions, useGetters, useMutations } from 'vuex-composition-helpers';
+import { useGetters, useMutations } from 'vuex-composition-helpers';
 
 import {
-  ACTIONS as BOOK_ACTIONS,
   GETTERS as BOOK_GETTERS,
   MUTATES as BOOK_MUTATES
 } from '@/store/modules/book/const';
@@ -10,15 +9,16 @@ import { MUTATES as DIGITAL_MUTATES } from '@/store/modules/digital/const';
 
 import bookService from '@/api/book';
 
+// TODO: remove index after remove bookService
+import { getBookDetail } from '@/api/book/index';
+
+import { useAppCommon } from './common';
+
 /**
  * The hook trigger action to get book and get book information from store
  * @return {Object} Sheet;s id selected
  */
 export const useBook = () => {
-  const { getBook } = useActions({
-    getBook: BOOK_ACTIONS.GET_BOOK
-  });
-
   const { book, totalInfo, sections, maxPage } = useGetters({
     book: BOOK_GETTERS.BOOK_DETAIL,
     totalInfo: BOOK_GETTERS.TOTAL_INFO,
@@ -33,7 +33,6 @@ export const useBook = () => {
 
   return {
     book,
-    getBook,
     setBookId,
     totalInfo,
     sections,
@@ -60,7 +59,9 @@ export const useUpdateTitle = () => {
   };
 };
 
-export const useMutationBook = (isDigital = false) => {
+export const useMutationBook = () => {
+  const { value: isDigital } = useAppCommon().isDigitalEdition;
+
   const MUTATES = isDigital ? DIGITAL_MUTATES : PRINT_MUTATES;
 
   const { setBookInfo, setSectionsSheets } = useMutations({
@@ -71,10 +72,12 @@ export const useMutationBook = (isDigital = false) => {
   return { setBookInfo, setSectionsSheets };
 };
 
-export const useActionBook = (isDigital = false) => {
-  const getBookInfo = isDigital
-    ? bookService.getBookDigitalInfo
-    : bookService.getBookPrintInfo;
+export const useActionBook = () => {
+  const { value: activeEdition } = useAppCommon().activeEdition;
+
+  const getBookInfo = async (bookId, isEditor = false) => {
+    return getBookDetail(bookId, activeEdition, isEditor);
+  };
 
   return { getBookInfo };
 };
