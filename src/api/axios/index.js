@@ -1,13 +1,11 @@
 import axios from 'axios';
 import queryString from 'query-string';
-import configResponse from './interceptors/response/config';
-import configRequest from './interceptors/request/config';
+import configResponse from './interceptors/response/configRespone';
+import configRequest from './interceptors/request/configRequest';
 import { print } from 'graphql/language/printer';
 
-const API_ENDPOINT = 'http://development.fluidmedia.com/graphql';
-
 const axiosClient = axios.create({
-  baseURL: API_ENDPOINT,
+  baseURL: process.env.VUE_APP_API_ENDPOINT,
   headers: {
     'content-type': 'application/json',
     Accept: 'application/json'
@@ -22,7 +20,7 @@ const configInterceptor = axiosObject => {
 
 configInterceptor(axiosClient);
 
-export default (query, variables = {}) => {
+export const graphqlRequest = (query, variables = {}) => {
   return axiosClient.post('', {
     query: print(query),
     variables
