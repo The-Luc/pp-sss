@@ -1,8 +1,8 @@
-import graphQLRequest from '../axios';
+import { graphqlRequest } from '../axios';
 import { pageInfoQuery } from './queries';
 
 const sheetService = {
-  getPageData: async id => graphQLRequest(pageInfoQuery, { id })
+  getPageData: async id => graphqlRequest(pageInfoQuery, { id })
 };
 
 export default sheetService;
