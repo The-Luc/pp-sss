@@ -760,10 +760,10 @@ const playbackImageHandler = (element, options, canvas) => {
 
 /**
  * Call the function to render canvas while an object is animated
- * @param {*} img image object
- * @param {*} filter filter that apply on image
- * @param {*} options animation options
- * @param {*} canvas canvas object
+ * @param {Object} img image object
+ * @param {Object} filter filter that apply on image
+ * @param {Object} options animation options
+ * @param {Object} canvas canvas object
  */
 const onChangeAnimation = (img, filter, options, canvas) => {
   if (options.isBlur) {
