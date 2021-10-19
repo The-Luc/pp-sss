@@ -1,6 +1,5 @@
 import APP from './const';
 import styleService from '@/api/style';
-import bookService from '@/api/book';
 import { MODAL_TYPES, OBJECT_TYPE } from '@/common/constants';
 
 export const actions = {
