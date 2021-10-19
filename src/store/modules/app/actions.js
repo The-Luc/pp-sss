@@ -42,10 +42,5 @@ export const actions = {
   async [APP._ACTIONS.GET_SAVED_IMAGE_STYLES]({ commit }) {
     const savedImageStyles = await styleService.getSavedImageStyles();
     commit(APP._MUTATES.SET_SAVED_IMAGE_STYLES, { savedImageStyles });
-  },
-
-  async [APP._ACTIONS.UPDATE_PHOTO_VISITED]({ commit }, { isPhotoVisited }) {
-    await bookService.setIsPhotoVisited(isPhotoVisited);
-    commit(APP._MUTATES.SET_GENERAL_INFO, { info: { isPhotoVisited } });
   }
 };
