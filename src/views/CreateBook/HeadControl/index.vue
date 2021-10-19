@@ -1,6 +1,6 @@
 <template>
   <div>
-    <BookInformation />
+    <BookInformation v-if="isInfoBarDisplayed" />
     <BookControl v-if="isHeaderDisplayed" :book-id="generalInfo.bookId" />
     <BookNumber v-if="isHeaderDisplayed" :number-info="numberInfo" />
   </div>

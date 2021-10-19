@@ -19,7 +19,8 @@ export default {
   },
   data() {
     return {
-      isHeaderDisplayed: true
+      isHeaderDisplayed: true,
+      isInfoBarDisplayed: true
     };
   },
   computed: {
@@ -43,11 +44,15 @@ export default {
     checkShowHeader(name) {
       const isPrintEdition = name === ROUTE_NAME.PRINT_EDIT;
       const isDigitalEdition = name === ROUTE_NAME.DIGITAL_EDIT;
+      const isPrintPage = name === ROUTE_NAME.PRINT_PAGE;
 
-      this.isHeaderDisplayed = !isPrintEdition && !isDigitalEdition;
+      this.isHeaderDisplayed =
+        !isPrintEdition && !isDigitalEdition && !isPrintPage;
+
+      this.isInfoBarDisplayed = !isPrintPage;
     }
   },
   created() {
-    this.checkShowHeader(this.$route.path);
+    this.checkShowHeader(this.$route.name);
   }
 };

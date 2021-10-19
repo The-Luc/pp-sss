@@ -1,9 +1,8 @@
 import { cloneDeep } from 'lodash';
 
 import ClipArtToolPopover from '@/components/ToolPopovers/ClipArt';
-import { loadClipArtCategories } from '@/api/clipArt';
-import { CLIP_ART_TYPE, EVENT_TYPE } from '@/common/constants';
 
+import { CLIP_ART_TYPE, EVENT_TYPE } from '@/common/constants';
 import { useClipArt } from '@/views/CreateBook/composables';
 import { usePopoverCreationTool } from '@/hooks';
 
@@ -21,12 +20,17 @@ export default {
     };
   },
   setup() {
-    const { searchClipArt, getClipArtList } = useClipArt();
+    const {
+      searchClipArt,
+      getClipArtList,
+      loadClipArtCategories
+    } = useClipArt();
     const { setToolNameSelected } = usePopoverCreationTool();
 
     return {
       searchClipArt,
       getClipArtList,
+      loadClipArtCategories,
       setToolNameSelected
     };
   },
@@ -65,7 +69,9 @@ export default {
      * @param {Object} clipArtType - Clip art type and category selected
      */
     async onChangeClipArtType(clipArtType) {
-      this.clipArtList = await this.getClipArtList(clipArtType.sub.value);
+      this.clipArtList = [];
+      if (clipArtType.sub.value)
+        this.clipArtList = await this.getClipArtList(clipArtType.sub.value);
 
       this.chosenClipArtType = {
         value: clipArtType.value,
@@ -78,7 +84,8 @@ export default {
      * Get clip art type from api
      */
     async clipArtTypes() {
-      const CLIP_ART_CATEGORIES = await loadClipArtCategories();
+      const CLIP_ART_CATEGORIES = await this.loadClipArtCategories();
+      this.category = CLIP_ART_CATEGORIES[0].id;
       return Object.keys(CLIP_ART_TYPE).map(k => {
         const clType = {
           ...CLIP_ART_TYPE[k],
@@ -106,8 +113,8 @@ export default {
     }
   },
   async created() {
-    this.clipArtList = await this.getClipArtList(this.category);
     const clipArtTypes = await this.clipArtTypes();
+    this.clipArtList = await this.getClipArtList(this.category);
 
     this.displayClipArtTypes = clipArtTypes.filter(
       b => b.id !== CLIP_ART_TYPE.FAVORITE.id

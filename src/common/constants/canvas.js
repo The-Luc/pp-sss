@@ -68,6 +68,7 @@ export const PRINT_HARDCOVER_PAGE_SIZE = {
 
 export const PRINT_DPI = 120;
 export const DIGITAL_DPI = 120;
+export const PDF_DPI = 300;
 
 // normal page size
 export const PRINT_CANVAS_SIZE = {

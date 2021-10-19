@@ -12,3 +12,9 @@ export const OBJECT_TYPE = {
 export const FABRIC_OBJECT_TYPE = {
   TEXT: 'textbox'
 };
+
+export const SYSTEM_OBJECT_TYPE = {
+  TEXT: 'paragraph',
+  CLIP_ART: 'clipart',
+  IMAGE: 'frame'
+};

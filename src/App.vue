@@ -1,5 +1,11 @@
 <template>
   <v-app>
+    <notifications
+      group="foo"
+      position="top left"
+      style="margin:5px"
+      :max="5"
+    />
     <ModalManager />
     <v-main>
       <v-overlay :value="isPrompt"></v-overlay>

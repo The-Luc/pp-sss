@@ -1,6 +1,6 @@
 import { useMutations, useGetters, useActions } from 'vuex-composition-helpers';
 import { getPhotos, searchPhotos, getMedia, searchMedia } from '@/api/photo';
-import { searchClipArtApi, loadClipArts } from '@/api/clipArt';
+import { clipArtService } from '@/api/clipArt/api';
 import portraitSevice from '@/api/portrait';
 
 import {
@@ -67,17 +67,20 @@ export const usePortraitFlow = () => {
 
 export const useClipArt = () => {
   const searchClipArt = async input => {
-    const listClipArt = await searchClipArtApi(input);
-    return listClipArt;
+    return await clipArtService.searchClipArtApi(input);
   };
 
-  const getClipArtList = async category => {
-    const listClipArt = await loadClipArts();
-    return listClipArt.filter(item => item.category === category);
+  const getClipArtList = async categoryId => {
+    return await clipArtService.loadClipArts(categoryId);
+  };
+
+  const loadClipArtCategories = async () => {
+    return await clipArtService.loadClipArtCategories();
   };
 
   return {
     searchClipArt,
-    getClipArtList
+    getClipArtList,
+    loadClipArtCategories
   };
 };
