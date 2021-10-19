@@ -26,7 +26,6 @@ const bookFragment = gql`
   fragment bookDetail on Book {
     title
     total_pages
-    community_id
     book_sections {
       ...sectionDetail
     }
@@ -53,6 +52,7 @@ export const digitalMainQuery = gql`
 export const digitalEditorQuery = gql`
   query($bookId: ID!) {
     book(id: $bookId) {
+      community_id
       ...bookDetail
     }
   }
@@ -78,6 +78,7 @@ export const printMainQuery = gql`
 export const printEditorQuery = gql`
   query($bookId: ID!) {
     book(id: $bookId) {
+      community_id
       number_max_pages
       yearbook_spec {
         cover_option

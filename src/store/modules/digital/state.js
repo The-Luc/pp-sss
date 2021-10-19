@@ -1,25 +1,12 @@
-import { getNewBackground } from '@/common/models';
+import { merge, cloneDeep } from 'lodash';
 
-export const state = {
-  book: {
-    id: null,
-    defaultThemeId: null
-  },
-  sections: [],
-  sheets: {},
-  currentSheetId: '',
-  currentFrameId: '',
-  objectIds: [],
-  objects: {},
+import { editionDefaultState } from '@/common/store';
+
+const digitalState = {
   frameIds: [],
   frames: {},
-  currentObjectId: '',
-  background: getNewBackground(),
   triggerChange: {
-    text: true,
     background: true,
-    shape: true,
-    clipArt: true,
     applyLayout: true,
     transition: true,
     animation: true
@@ -28,3 +15,5 @@ export const state = {
   playInIds: [],
   playOutIds: []
 };
+
+export const state = merge(cloneDeep(editionDefaultState), digitalState);

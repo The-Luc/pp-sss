@@ -30,6 +30,7 @@ class GetterClass extends BaseObject {
   CURRENT_SECTION = 'getCurrentSection';
   GET_DATA_EDIT_SCREEN = 'getDataEditScreen';
   GET_SHEET_MEDIA = 'getSheetMedia';
+  IS_PHOTO_VISITED = 'isPhotoVisited';
 
   constructor(props) {
     super(props);

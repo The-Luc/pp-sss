@@ -4,8 +4,14 @@ import {
   GETTERS as BOOK_GETTERS,
   MUTATES as BOOK_MUTATES
 } from '@/store/modules/book/const';
-import { MUTATES as PRINT_MUTATES } from '@/store/modules/print/const';
-import { MUTATES as DIGITAL_MUTATES } from '@/store/modules/digital/const';
+import {
+  GETTERS as PRINT_GETTERS,
+  MUTATES as PRINT_MUTATES
+} from '@/store/modules/print/const';
+import {
+  GETTERS as DIGITAL_GETTERS,
+  MUTATES as DIGITAL_MUTATES
+} from '@/store/modules/digital/const';
 
 import bookService from '@/api/book';
 
@@ -19,17 +25,30 @@ import { useAppCommon } from './common';
  * @return {Object} Sheet;s id selected
  */
 export const useBook = () => {
-  const { book, totalInfo, sections, maxPage } = useGetters({
+  const { value: isDigital } = useAppCommon().isDigitalEdition;
+
+  const GETTERS = isDigital ? DIGITAL_GETTERS : PRINT_GETTERS;
+
+  const { book, totalInfo, sections, maxPage, isPhotoVisited } = useGetters({
     book: BOOK_GETTERS.BOOK_DETAIL,
     totalInfo: BOOK_GETTERS.TOTAL_INFO,
     sections: BOOK_GETTERS.SECTIONS_NO_SHEET,
-    maxPage: BOOK_GETTERS.GET_MAX_PAGE
+    maxPage: BOOK_GETTERS.GET_MAX_PAGE,
+    isPhotoVisited: GETTERS.IS_PHOTO_VISITED
   });
+
+  const { setBookInfo } = useMutationBook();
 
   const { setBookId, addSheet } = useMutations({
     setBookId: BOOK_MUTATES.SET_BOOK_ID,
     addSheet: BOOK_MUTATES.ADD_SHEET
   });
+
+  const updatePhotoVisited = async ({ isPhotoVisited }) => {
+    await bookService.setIsPhotoVisited(isPhotoVisited);
+
+    setBookInfo({ info: { isPhotoVisited } });
+  };
 
   return {
     book,
@@ -37,7 +56,9 @@ export const useBook = () => {
     totalInfo,
     sections,
     addSheet,
-    maxPage
+    maxPage,
+    isPhotoVisited,
+    updatePhotoVisited
   };
 };
 

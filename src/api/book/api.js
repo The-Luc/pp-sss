@@ -186,11 +186,13 @@ const getDigitalSheet = (sheet, { id }, index, totalSheet) => {
  * @returns {Object}                      data of sheet of print edition
  */
 const getPrintSheet = (sheet, { id }, index, totalSheet) => {
-  const pageLeftName = getPageLeftName(sheet, index, totalSheet);
-  const pageRightName = getPageRightName(sheet, index, totalSheet);
+  const sheetData = apiSheetToModel(sheet);
+
+  const pageLeftName = getPageLeftName(sheetData, index, totalSheet);
+  const pageRightName = getPageRightName(sheetData, index, totalSheet);
 
   return new SheetPrintDetail({
-    ...apiSheetToModel(sheet),
+    ...sheetData,
     sectionId: id,
     pageLeftName,
     pageRightName
@@ -359,20 +361,27 @@ export const getBookDetail = async (bookId, edition, isEditor) => {
 
   const getSectionFn = getGetSectionMethod(edition);
 
-  const sections = book.book_sections.map(section => {
+  const sections = book.book_sections.map((section, index) => {
     const editionSection = getSectionFn(section, totalSheetUntilNow);
 
-    totalSheetUntilNow += section.sheets.length;
+    if (
+      (edition === EDITION.PRINT && index > 0) ||
+      edition === EDITION.DIGITAL
+    ) {
+      totalSheetUntilNow += section.sheets.length;
+    }
 
     return editionSection;
   });
 
   const bookModel = getBookModel(edition);
 
+  const totalData = isEditor ? {} : getTotalData(book.total_pages);
+
   return {
     book: new bookModel({
       ...apiBookToModel(book),
-      ...getTotalData(book.total_pages)
+      ...totalData
     }),
     sectionsSheets: sections
   };

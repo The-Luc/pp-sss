@@ -40,12 +40,10 @@ export const state = {
   currentObject: null,
   generalInfo: {
     bookId: '',
-    communityId: '',
     title: '',
     totalSheet: 0,
     totalPage: 0,
-    totalScreen: 0,
-    isPhotoVisited: false
+    totalScreen: 0
   },
   user: { id: null, role: null },
   savedTextStyles: [],

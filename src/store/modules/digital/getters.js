@@ -2,7 +2,7 @@ import { isEmpty } from '@/common/utils';
 
 import { OBJECT_TYPE } from '@/common/constants';
 import DIGITAL from './const';
-import { calcFrameAnimationDuration } from '@/common/store';
+import { calcFrameAnimationDuration, isPhotoVisited } from '@/common/store';
 
 export const getters = {
   [DIGITAL._GETTERS.CURRENT_SHEET]: ({ sheets, currentSheetId }) => {
@@ -167,5 +167,6 @@ export const getters = {
         o.type === OBJECT_TYPE.VIDEO ? acc + o.endTime - o.startTime : acc,
       0
     );
-  }
+  },
+  [DIGITAL._GETTERS.IS_PHOTO_VISITED]: isPhotoVisited
 };

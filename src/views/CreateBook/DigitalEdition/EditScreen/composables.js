@@ -62,24 +62,15 @@ export const useBookDigitalInfo = () => {
   const { getBookInfo } = useActionBook();
 
   const getBookDigitalInfo = async bookId => {
-    const {
-      themeId,
-      isPhotoVisited,
-      title,
-      sectionsSheets
-    } = await getBookInfo(bookId, true);
-
-    setBookInfo({ info: { defaultThemeId: themeId } });
+    const { book, sectionsSheets } = await getBookInfo(bookId, true);
 
     setSectionsSheets({ sectionsSheets });
 
-    setGeneralInfo({
-      info: {
-        bookId,
-        title,
-        isPhotoVisited
-      }
-    });
+    const { themeId, isPhotoVisited, title } = book;
+
+    setBookInfo({ info: { defaultThemeId: themeId, isPhotoVisited } });
+
+    setGeneralInfo({ info: { bookId, title } });
   };
 
   return {

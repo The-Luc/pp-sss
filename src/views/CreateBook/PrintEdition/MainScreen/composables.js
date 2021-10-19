@@ -37,10 +37,10 @@ export const useBookPrintInfo = () => {
 
     setSectionsSheets({ sectionsSheets });
 
-    const { communityId, title, totalPage, totalSheet, totalScreen } = book;
+    const { title, totalPage, totalSheet, totalScreen } = book;
 
     setGeneralInfo({
-      info: { bookId, communityId, title, totalPage, totalSheet, totalScreen }
+      info: { bookId, title, totalPage, totalSheet, totalScreen }
     });
   };
 
