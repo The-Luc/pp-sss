@@ -1,20 +1,14 @@
-import graphqlResquest from '../axios';
-
-import { isEmpty } from '@/common/utils';
-
-import {
-  User,
-  getErrorWithMessages,
-  getSuccessWithData
-} from '@/common/models';
+import { graphqlRequest } from '../axios';
 
 import { loginUserMutation } from './mutations';
+
+import { isEmpty } from '@/common/utils';
 
 import { getItem } from '@/common/storage';
 import { communityUsers } from '@/mock/users';
 
 const logInUser = (email, password) => {
-  return graphqlResquest(loginUserMutation, { email, password });
+  return graphqlRequest(loginUserMutation, { email, password });
 };
 
 const getCurrentUserApi = () => {
