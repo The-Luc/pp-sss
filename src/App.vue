@@ -13,6 +13,7 @@
       <HeaderControl />
       <router-view></router-view>
     </v-main>
+    <loading v-show="isLoading"></loading>
   </v-app>
 </template>
 
@@ -21,12 +22,21 @@ import { mapGetters } from 'vuex';
 
 import ModalManager from '@/containers/ModalManager';
 import HeaderControl from '@/views/CreateBook/HeadControl';
+import Loading from '@/components/Modals/Loading';
 import { GETTERS as APP_GETTER } from '@/store/modules/app/const';
+import { useAppCommon } from './hooks';
 
 export default {
   components: {
     ModalManager,
-    HeaderControl
+    HeaderControl,
+    Loading
+  },
+  setup() {
+    const { isLoading } = useAppCommon();
+    return {
+      isLoading
+    };
   },
   computed: {
     ...mapGetters({

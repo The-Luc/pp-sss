@@ -29,6 +29,7 @@ class GetterClass extends BaseObject {
   SAVING_STATUS = 'savingStatus';
   IS_MEDIA_SIDEBAR_OPEN = 'isMediaSidebarOpen';
   DISABLED_TOOLBAR_ITEMS = 'getDisabledToolbarItems';
+  IS_LOADING = 'isLoading';
 
   constructor(props) {
     super(props);
@@ -84,6 +85,8 @@ class MutationClass extends BaseObject {
   UPDATE_SAVING_STATUS = 'updateSavingStatus';
   UPDATE_MEDIA_SIDEBAR_OPEN = 'updateMediaSidebarOpen';
   UPDATE_DISABLED_TOOLBAR_ITEMS = 'updateDisabledToolbarItems';
+  START_LOADING = 'startLoading';
+  END_LOADING = 'endLoading';
 
   constructor(props) {
     super(props);
