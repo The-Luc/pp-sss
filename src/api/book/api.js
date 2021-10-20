@@ -1,4 +1,4 @@
-import graphqlResquest from '../axios';
+import { graphqlRequest } from '../axios';
 
 import {
   getPageLeftName,
@@ -309,7 +309,7 @@ const getBook = async (bookId, edition, isEditor) => {
 
   const query = editionQuery[edition][isEditor ? 'editor' : 'main'];
 
-  const { book } = await graphqlResquest(query, { bookId });
+  const { book } = await graphqlRequest(query, { bookId });
 
   return book;
 };

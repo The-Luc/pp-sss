@@ -2,6 +2,12 @@ import { graphqlRequest } from '../axios';
 
 import { loginUserMutation } from './mutations';
 
+import {
+  User,
+  getErrorWithMessages,
+  getSuccessWithData
+} from '@/common/models';
+
 import { isEmpty } from '@/common/utils';
 
 import { getItem } from '@/common/storage';
