@@ -89,7 +89,6 @@ import {
   useActionDigitalSheet,
   useProperties,
   useGetterEditionSection,
-  useBook,
   useAnimation,
   useFrameDelay
 } from '@/hooks';
@@ -201,7 +200,6 @@ export default {
       updatePlayOutIds,
       updateTriggerAnimation
     } = useAnimation();
-    const { book } = useBook();
 
     const { setToolNameSelected, propertiesType } = useToolBar();
     const { setFrameDelay } = useFrameDelay();
@@ -234,7 +232,6 @@ export default {
       currentSection,
       storeAnimationProp,
       setStoreAnimationProp,
-      book,
       saveAnimationConfig,
       playInOrder,
       playOutOrder,
@@ -1718,13 +1715,9 @@ export default {
     async addClipArt(clipArts) {
       const toBeAddedClipArts = clipArts.map(c => {
         const id = getUniqueId();
-
-        const vector = c.vector;
-
         const newClipArt = new ClipArtElementObject({
           ...c,
-          id,
-          vector: require(`../../../../../assets/image/clip-art/${vector}`)
+          id
         });
 
         return {
@@ -2502,7 +2495,7 @@ export default {
 
       const storeTypeId = {
         [APPLY_MODE.SECTION]: this.pageSelected.sectionId,
-        [APPLY_MODE.BOOK]: this.book.id
+        [APPLY_MODE.BOOK]: this.$route.params.bookId
       };
 
       const storeAnimationProp = {

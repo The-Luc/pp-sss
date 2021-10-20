@@ -1,12 +1,11 @@
 import { cloneDeep } from 'lodash';
-import { getActiveCanvas } from './canvas';
+import { getActiveCanvas, pxToIn } from './canvas';
 import {
   CUSTOM_LAYOUT_TYPE,
   LAYOUT_PAGE_TYPE,
   OBJECT_TYPE,
   SHEET_TYPE
 } from '../constants';
-import { pxToIn } from './canvas';
 import { isEmpty } from './util';
 
 /**

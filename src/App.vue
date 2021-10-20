@@ -8,7 +8,7 @@
     />
     <ModalManager />
     <v-main>
-      <v-overlay :value="!isVisited && isPrompt"></v-overlay>
+      <v-overlay :value="isPrompt"></v-overlay>
 
       <HeaderControl />
       <router-view></router-view>
@@ -18,15 +18,13 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex';
-import { useAppCommon } from '@/hooks/common';
+import { mapGetters } from 'vuex';
 
 import ModalManager from '@/containers/ModalManager';
 import HeaderControl from '@/views/CreateBook/HeadControl';
 import Loading from '@/components/Modals/Loading';
 import { GETTERS as APP_GETTER } from '@/store/modules/app/const';
-import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
-import { ACTIONS } from '@/store/modules/book/const';
+import { useAppCommon } from './hooks';
 
 export default {
   components: {
@@ -35,31 +33,14 @@ export default {
     Loading
   },
   setup() {
-    const { getAppDetail, isLoading } = useAppCommon();
+    const { isLoading } = useAppCommon();
     return {
-      getAppDetail,
       isLoading
     };
   },
   computed: {
     ...mapGetters({
-      pageSelected: PRINT_GETTERS.CURRENT_SHEET,
       isPrompt: APP_GETTER.IS_PROMPT
-    }),
-    isVisited() {
-      return this.pageSelected?.isVisited || false;
-    }
-  },
-  watch: {
-    $route(to) {
-      if (to.name && to.name !== 'login') {
-        this.getBook({ bookId: to.params.bookId });
-      }
-    }
-  },
-  methods: {
-    ...mapActions({
-      getBook: ACTIONS.GET_BOOK
     })
   }
 };

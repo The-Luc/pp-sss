@@ -349,9 +349,11 @@ const bookService = {
   }
 };
 
-export const setIsPhotoVisited = isPhotoVisited => {
+export const setIsPhotoVisited = async isPhotoVisited => {
   setTimeout(() => {
     window.data.book.isPhotoVisited = isPhotoVisited;
+
+    Promise.resolve({});
   });
 };
 

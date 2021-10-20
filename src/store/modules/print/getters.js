@@ -3,6 +3,7 @@ import { isEmpty, isHalfSheet, isHalfLeft } from '@/common/utils';
 import { BACKGROUND_PAGE_TYPE } from '@/common/constants';
 
 import PRINT from './const';
+import { isPhotoVisited } from '@/common/store';
 
 export const getters = {
   [PRINT._GETTERS.CURRENT_SHEET]: ({ sheets, currentSheetId }) => {
@@ -162,5 +163,6 @@ export const getters = {
   [PRINT._GETTERS.GET_SHEET_MEDIA]: ({ sheets, currentSheetId }) => {
     const media = sheets[currentSheetId]?.media;
     return isEmpty(media) ? [] : media;
-  }
+  },
+  [PRINT._GETTERS.IS_PHOTO_VISITED]: isPhotoVisited
 };

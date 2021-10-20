@@ -27,7 +27,6 @@ class GetterClass extends BaseObject {
   SAVED_TEXT_STYLES = 'savedTextStyles';
   SAVED_IMAGE_STYLES = 'savedImageStyles';
   SAVING_STATUS = 'savingStatus';
-  IS_PHOTO_VISITED = 'isPhotoVisited';
   IS_MEDIA_SIDEBAR_OPEN = 'isMediaSidebarOpen';
   DISABLED_TOOLBAR_ITEMS = 'getDisabledToolbarItems';
   IS_LOADING = 'isLoading';

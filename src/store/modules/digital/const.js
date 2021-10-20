@@ -44,6 +44,7 @@ class GetterClass extends BaseObject {
   GET_PLAY_IN_DURATION = 'getPlayInDuration';
   GET_PLAY_OUT_DURATION = 'getPlayOutDuration';
   GET_TOTAL_VIDEO_DURATION = 'getTotalVideoDuration';
+  IS_PHOTO_VISITED = 'isPhotoVisited';
 
   constructor(props) {
     super(props);

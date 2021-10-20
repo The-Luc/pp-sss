@@ -205,14 +205,14 @@ export default {
     isHardCover() {
       const { coverOption } = this.generalInfo;
       return (
-        coverOption === COVER_TYPE.HARD_OVER &&
+        coverOption === COVER_TYPE.HARDCOVER &&
         this.pageSelected?.type === SHEET_TYPE.COVER
       );
     },
     isSoftCover() {
       const { coverOption } = this.generalInfo;
       return (
-        coverOption === COVER_TYPE.SOFT_COVER &&
+        coverOption === COVER_TYPE.SOFTCOVER &&
         this.pageSelected?.type === SHEET_TYPE.COVER
       );
     },
@@ -1085,13 +1085,9 @@ export default {
     async addClipArt(clipArts) {
       const toBeAddedClipArts = clipArts.map(c => {
         const id = getUniqueId();
-
-        const vector = c.vector;
-
         const newClipArt = new ClipArtElementObject({
           ...c,
-          id,
-          vector: require(`../../../../../assets/image/clip-art/${vector}`)
+          id
         });
 
         return {

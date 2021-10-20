@@ -1,16 +1,20 @@
-import { ROLE } from '@/common/constants';
-import { getErrorWithMessages, getSuccessWithData } from '@/common/models';
-import { User } from '@/common/models/user';
-import { getItem } from '@/common/storage';
+import { graphqlRequest } from '../axios';
+
+import { loginUserMutation } from './mutations';
+
+import {
+  User,
+  getErrorWithMessages,
+  getSuccessWithData
+} from '@/common/models';
 
 import { isEmpty } from '@/common/utils';
 
+import { getItem } from '@/common/storage';
 import { communityUsers } from '@/mock/users';
-import graphqlResquest from '../axios';
-import { loginUserMutation } from './mutations';
 
 const logInUser = (email, password) => {
-  return graphqlResquest(loginUserMutation, { email, password });
+  return graphqlRequest(loginUserMutation, { email, password });
 };
 
 const getCurrentUserApi = () => {
@@ -44,34 +48,7 @@ const authenticateApi = (bookId, sheetId) => {
       return;
     }
 
-    const id = getItem('userId');
-    const role = getItem('userRole');
-
-    if (isEmpty(id)) {
-      resolve(getErrorWithMessages(''));
-
-      return;
-    }
-
-    const sectionIndex = window.data.book.sections.findIndex(section => {
-      return section.sheets.findIndex(({ id }) => `${id}` === sheetId) >= 0;
-    });
-
-    if (sectionIndex < 0) {
-      resolve(getErrorWithMessages(''));
-
-      return;
-    }
-
-    const assigneeId = window.data.book.sections[sectionIndex].assigneeId;
-
-    if (role === `${ROLE.ADMIN}` || id === `${assigneeId}`) {
-      resolve(getSuccessWithData({}));
-
-      return;
-    }
-
-    resolve(getErrorWithMessages(''));
+    resolve(getSuccessWithData({ sheetId }));
   });
 };
 
