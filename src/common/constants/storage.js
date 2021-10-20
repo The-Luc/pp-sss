@@ -1,5 +1,5 @@
 export const LOCAL_STORAGE = {
-  TOKEN: 'TOKEN',
+  TOKEN: 'token',
   CURRENT_SCREEN: 'CURRENT_SCREEN'
 };
 

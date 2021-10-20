@@ -1,7 +1,8 @@
 import { useMutations, useGetters } from 'vuex-composition-helpers';
-import { getPhotos, searchPhotos, getMedia, searchMedia } from '@/api/photo';
+import { getPhotos, getMedia } from '@/api/media';
 import { clipArtService } from '@/api/clipArt/api';
 import portraitSevice from '@/api/portrait';
+import { useActionBook, useAppCommon } from '@/hooks';
 
 import {
   MUTATES as APP_MUTATES,
@@ -21,12 +22,21 @@ export const useSavingStatus = () => {
 };
 
 export const usePhotos = () => {
+  const { getBookInfo } = useActionBook();
+  const { generalInfo } = useAppCommon();
+
   const getSmartbox = async (keywords, isGetMedia) => {
-    return isGetMedia ? await getMedia(keywords) : await getPhotos(keywords);
+    const { book } = await getBookInfo(generalInfo.value.bookId, true);
+    return isGetMedia
+      ? await getMedia(book.communityId, keywords)
+      : await getPhotos(book.communityId, keywords);
   };
 
   const getSearch = async (input, isGetMedia) => {
-    return isGetMedia ? await searchMedia(input) : await searchPhotos(input);
+    const { book } = await getBookInfo(generalInfo.value.bookId, true);
+    return isGetMedia
+      ? await getMedia(book.communityId, [input])
+      : await getPhotos(book.communityId, [input]);
   };
 
   return {

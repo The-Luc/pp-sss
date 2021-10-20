@@ -1,6 +1,5 @@
 import { mediaDropdowns, albums as myAlbums } from '@/mock/media';
-import { albums, photoList, mediaList } from '@/mock/photo';
-import { isEmpty } from '@/common/utils';
+import { albums } from '@/mock/photo';
 import { uniqueId } from 'lodash';
 
 export const getAlbums = () => {
@@ -25,14 +24,6 @@ export const getMyAlbums = () => {
       resolve(myAlbums);
     });
   });
-};
-
-export const getPhotos = async (keywords = []) => {
-  const hasNo = keywords.find(keyword => keyword.toLowerCase() === 'no');
-  const photos =
-    hasNo || isEmpty(keywords) ? [] : photoList.sort(() => 0.5 - Math.random());
-
-  return Promise.resolve(photos);
 };
 
 export const prepareUpload = async () => {
@@ -66,28 +57,4 @@ export const createNewAlbum = name => {
       resolve({ id: uniqueId(), name });
     });
   });
-};
-
-export const searchPhotos = async input => {
-  const hasNo = input.toLowerCase() === 'no';
-  const photos =
-    hasNo || isEmpty(input) ? [] : photoList.sort(() => 0.5 - Math.random());
-
-  return Promise.resolve(photos);
-};
-
-export const getMedia = async (keywords = []) => {
-  const hasNo = keywords.find(keyword => keyword.toLowerCase() === 'no');
-  const photos =
-    hasNo || isEmpty(keywords) ? [] : mediaList.sort(() => 0.5 - Math.random());
-
-  return Promise.resolve(photos);
-};
-
-export const searchMedia = async input => {
-  const hasNo = input.toLowerCase() === 'no';
-  const photos =
-    hasNo || isEmpty(input) ? [] : mediaList.sort(() => 0.5 - Math.random());
-
-  return Promise.resolve(photos);
 };
