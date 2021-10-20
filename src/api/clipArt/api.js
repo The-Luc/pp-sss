@@ -1,5 +1,5 @@
 import { isEmpty } from '@/common/utils';
-import graphqlRequest from '../axios';
+import { graphqlRequest } from '../axios';
 import { getClipArts, getClipartCategories } from './queries';
 
 const loadClipArts = async id => {

@@ -6,11 +6,11 @@ import { getItem } from '@/common/storage';
 import { isEmpty } from '@/common/utils';
 
 import { communityUsers } from '@/mock/users';
-import graphqlResquest from '../axios';
+import { graphqlRequest } from '../axios';
 import { loginUserMutation } from './mutations';
 
 const logInUser = (email, password) => {
-  return graphqlResquest(loginUserMutation, { email, password });
+  return graphqlRequest(loginUserMutation, { email, password });
 };
 
 const getCurrentUserApi = () => {

@@ -573,14 +573,7 @@ const handleEffectOnImage = (element, options, canvas) => {
     img.set('visible', true);
     img.animate(animateProps, {
       duration,
-      onChange: () => {
-        if (options.isBlur) {
-          filter.blur = img.blurValue;
-          img.applyFilters();
-        }
-
-        canvas.renderAll();
-      },
+      onChange: () => onChangeAnimation(img, filter, options, canvas),
       onComplete
     });
   }, DELAY_DURATION);
@@ -753,14 +746,7 @@ const playbackImageHandler = (element, options, canvas) => {
 
   img.animate(animateProps, {
     duration: duration * 1000,
-    onChange: () => {
-      if (options.isBlur) {
-        filter.blur = img.blurValue;
-        img.applyFilters();
-      }
-
-      canvas.renderAll();
-    },
+    onChange: () => onChangeAnimation(img, filter, options, canvas),
     onComplete: () => {
       canvas.remove(img);
 
@@ -770,6 +756,22 @@ const playbackImageHandler = (element, options, canvas) => {
       canvas.renderAll();
     }
   });
+};
+
+/**
+ * Call the function to render canvas while an object is animated
+ * @param {Object} img image object
+ * @param {Object} filter filter that apply on image
+ * @param {Object} options animation options
+ * @param {Object} canvas canvas object
+ */
+const onChangeAnimation = (img, filter, options, canvas) => {
+  if (options.isBlur) {
+    filter.blur = img.blurValue;
+    img.applyFilters();
+  }
+
+  canvas.renderAll();
 };
 
 /**
@@ -835,7 +837,7 @@ const calcSlideInPosition = (element, direction, canvas) => {
  *	To calculate ending position of sliding animation
  *
  * @param {Object} element fabric object animating
- * @param {String} direction constant showing animation direction
+ * @param {Number | String} direction constant showing animation direction
  * @param {Object} canvas fabric canvas
  * @returns an objects providing information for slide animation
  */
