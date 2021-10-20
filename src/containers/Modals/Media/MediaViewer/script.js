@@ -9,7 +9,8 @@ import {
   useFrame,
   useSheet,
   useAppCommon,
-  usePhoto
+  usePhoto,
+  useBook
 } from '@/hooks';
 import { usePhotos } from '@/views/CreateBook/composables';
 
@@ -39,13 +40,9 @@ export default {
     const { currentSection } = useGetterEditionSection();
     const { currentFrame } = useFrame();
     const { currentSheet } = useSheet();
-    const {
-      isPhotoVisited,
-      updatePhotoVisited,
-      getSmartbox,
-      getSearch
-    } = usePhotos();
+    const { getSmartbox, getSearch } = usePhotos();
     const { getAlbums, getMediaCategories } = usePhoto();
+    const { isPhotoVisited, updatePhotoVisited } = useBook();
 
     return {
       isPhotoVisited,

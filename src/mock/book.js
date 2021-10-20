@@ -52,7 +52,7 @@ const book = new BookDetailEntity({
   deliveryDate: '08/21/22',
   releaseDate: '08/07/22',
   saleDate: '05/16/22',
-  coverOption: COVER_TYPE.HARD_OVER,
+  coverOption: COVER_TYPE.HARDCOVER,
   numberMaxPages: 48,
   deliveryOption: 'Bulk Ship To School',
   booksSold: 0,
@@ -422,9 +422,9 @@ const book = new BookDetailEntity({
 
 export const modifyBookData = ({ coverType, maxPage }) => {
   book.coverOption =
-    coverType === COVER_TYPE.HARD_OVER
-      ? COVER_TYPE.HARD_OVER
-      : COVER_TYPE.SOFT_COVER;
+    coverType === COVER_TYPE.HARDCOVER
+      ? COVER_TYPE.HARDCOVER
+      : COVER_TYPE.SOFTCOVER;
   book.numberMaxPages = maxPage;
   return book;
 };

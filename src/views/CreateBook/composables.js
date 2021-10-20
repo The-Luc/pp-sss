@@ -1,12 +1,11 @@
-import { useMutations, useGetters, useActions } from 'vuex-composition-helpers';
+import { useMutations, useGetters } from 'vuex-composition-helpers';
 import { getPhotos, searchPhotos, getMedia, searchMedia } from '@/api/photo';
 import { clipArtService } from '@/api/clipArt/api';
 import portraitSevice from '@/api/portrait';
 
 import {
   MUTATES as APP_MUTATES,
-  GETTERS as APP_GETTERS,
-  ACTIONS as APP_ACTIONS
+  GETTERS as APP_GETTERS
 } from '@/store/modules/app/const';
 
 export const useSavingStatus = () => {
@@ -22,14 +21,6 @@ export const useSavingStatus = () => {
 };
 
 export const usePhotos = () => {
-  const { isPhotoVisited } = useGetters({
-    isPhotoVisited: APP_GETTERS.IS_PHOTO_VISITED
-  });
-
-  const { updatePhotoVisited } = useActions({
-    updatePhotoVisited: APP_ACTIONS.UPDATE_PHOTO_VISITED
-  });
-
   const getSmartbox = async (keywords, isGetMedia) => {
     return isGetMedia ? await getMedia(keywords) : await getPhotos(keywords);
   };
@@ -39,8 +30,6 @@ export const usePhotos = () => {
   };
 
   return {
-    isPhotoVisited,
-    updatePhotoVisited,
     getSmartbox,
     getSearch
   };
