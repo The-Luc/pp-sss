@@ -50,28 +50,25 @@ export const createImage = props => {
         ? imageUrl
         : DEFAULT_IMAGE.IMAGE_URL;
 
-    fabric.Image.fromURL(
-      src,
-      image => {
-        const adjustedWidth = inToPx(width) || image.width;
-        const adjustedHeight = inToPx(height) || image.height;
-        const scaleX = adjustedWidth / image.width;
-        const scaleY = adjustedHeight / image.height;
-
-        image.set({ left, top, scaleX, scaleY });
-
-        resolve({
-          object: image,
-          size: { width: pxToIn(adjustedWidth), height: pxToIn(adjustedHeight) }
-        });
-      },
-      {
+    fabric.util.loadImage(src, img => {
+      const image = new fabric.Image(img, {
         ...fabricProp,
         id,
-        lockUniScaling: false,
-        crossOrigin: 'anonymous'
-      }
-    );
+        lockUniScaling: false
+      });
+
+      const adjustedWidth = inToPx(width) || image.width;
+      const adjustedHeight = inToPx(height) || image.height;
+      const scaleX = adjustedWidth / image.width;
+      const scaleY = adjustedHeight / image.height;
+
+      image.set({ left, top, scaleX, scaleY });
+
+      resolve({
+        object: image,
+        size: { width: pxToIn(adjustedWidth), height: pxToIn(adjustedHeight) }
+      });
+    });
   });
 };
 /**

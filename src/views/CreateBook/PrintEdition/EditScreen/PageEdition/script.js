@@ -147,7 +147,7 @@ export default {
     } = useProperties();
     const { updateSavingStatus, savingStatus } = useSavingStatus();
     const { updateSheetThumbnail } = useMutationPrintSheet();
-    const { updateMediaSidebarOpen } = useToolBar();
+    const { updateMediaSidebarOpen, setPropertiesType } = useToolBar();
 
     return {
       generalInfo,
@@ -161,7 +161,8 @@ export default {
       updateSavingStatus,
       savingStatus,
       updateSheetThumbnail,
-      updateMediaSidebarOpen
+      updateMediaSidebarOpen,
+      setPropertiesType
     };
   },
   data() {
@@ -903,6 +904,7 @@ export default {
      * @param {fabric.Object} group - Text Group element
      */
     handleDbClickText(group) {
+      this.setPropertiesType({ type: '' });
       enableTextEditMode(group, prop => {
         this.changeTextProperties(prop);
       });
