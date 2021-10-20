@@ -4,7 +4,6 @@
       <v-progress-circular
         class="circle"
         :size="50"
-        color="red"
         indeterminate
       ></v-progress-circular>
     </v-overlay>
