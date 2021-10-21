@@ -2,4 +2,12 @@
   .pp-select-multi {
     width: 234px;
   }
+  ::v-deep .v-list {
+    .v-list-item {
+      .pp-select-sub {
+        max-height: 300px;
+        overflow: auto;
+      }
+    }
+  }
 }

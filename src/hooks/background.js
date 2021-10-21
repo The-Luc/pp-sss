@@ -1,11 +1,10 @@
 import { useGetters, useMutations } from 'vuex-composition-helpers';
 
-import backgroundService from '@/api/background';
-import themeService from '@/api/themes';
+import { getBackgroundCategories, getBackgrounds } from '@/api/background/api';
+import mockBackgroundService from '@/api/mockBackground';
+import { getThemes } from '@/api/themes';
 
 import { useAppCommon } from './common';
-
-import { isOk } from '@/common/utils';
 
 import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 import { GETTERS as DIGITAL_GETTERS } from '@/store/modules/digital/const';
@@ -47,27 +46,18 @@ export const useBackgroundMenu = () => {
    * Get background type data from API
    */
   const getBackgroundTypeData = async () => {
-    const getCategories = isDigital
-      ? backgroundService.getDigitalCategories
-      : backgroundService.getPrintCategories;
-
-    const getThemes = isDigital
-      ? themeService.getDigitalThemes
-      : themeService.getPrintThemes;
-
     const [categories, themes] = await Promise.all([
-      getCategories(),
+      getBackgroundCategories(),
       getThemes()
     ]);
-
     return {
       [BACKGROUND_TYPE_NAME.THEME]: {
         id: BACKGROUND_TYPE.THEME.id,
-        value: isOk(themes) ? themes.data : []
+        value: themes || []
       },
       [BACKGROUND_TYPE_NAME.CATEGORY]: {
         id: BACKGROUND_TYPE.CATEGORY.id,
-        value: isOk(categories) ? categories.data : []
+        value: categories || []
       },
       [BACKGROUND_TYPE_NAME.CUSTOM]: {
         id: BACKGROUND_TYPE.CUSTOM.id,
@@ -101,13 +91,13 @@ export const usePrintBackgroundMenu = () => {
     backgroundTypeSubId,
     backgroundPageTypeId
   ) => {
-    const backgrounds = await backgroundService.getPrintBackgrounds(
+    const backgrounds = await getBackgrounds(
       backgroundTypeId,
       backgroundTypeSubId,
       backgroundPageTypeId
     );
 
-    return isOk(backgrounds) ? backgrounds.data : [];
+    return backgrounds;
   };
 
   return {
@@ -122,12 +112,12 @@ export const useDigitalBackgroundMenu = () => {
    * Get background data from API
    */
   const getBackgroundData = async (backgroundTypeId, backgroundTypeSubId) => {
-    const backgrounds = await backgroundService.getDigitalBackgrounds(
+    const backgrounds = await getBackgrounds(
       backgroundTypeId,
       backgroundTypeSubId
     );
 
-    return isOk(backgrounds) ? backgrounds.data : [];
+    return backgrounds;
   };
 
   return {
@@ -152,9 +142,9 @@ export const useBackgroundGetter = () => {
 
 export const useBackgroundAction = () => {
   return {
-    getPageBackground: backgroundService.getPageBackground,
-    getPageBackgrounds: backgroundService.getPageBackgrounds,
-    getFrameBackground: backgroundService.getFrameBackground,
-    getFrameBackgrounds: backgroundService.getFrameBackgrounds
+    getPageBackground: mockBackgroundService.getPageBackground,
+    getPageBackgrounds: mockBackgroundService.getPageBackgrounds,
+    getFrameBackground: mockBackgroundService.getFrameBackground,
+    getFrameBackgrounds: mockBackgroundService.getFrameBackgrounds
   };
 };

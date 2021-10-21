@@ -5,7 +5,7 @@ export default {
       require: true
     },
     selectedThemeId: {
-      type: Number,
+      type: [Number, String],
       require: true
     }
   },
