@@ -1,7 +1,7 @@
 import { useGetters, useMutations, useActions } from 'vuex-composition-helpers';
 import { merge } from 'lodash';
 
-import { userService } from '@/api';
+import { userService } from '@/api/user';
 
 import {
   GETTERS as BOOK_GETTERS,
