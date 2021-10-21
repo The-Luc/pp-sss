@@ -12,7 +12,7 @@ import {
  * @param {String} themeId id of a theme
  * @returns array of object containing previewImageUrl of layouts
  */
-const getPrintLayoutsPreview = async themeId => {
+export const getPrintLayoutsPreview = async themeId => {
   if (!themeId) return [];
 
   const res = await graphqlRequest(getLayoutsPreviewQuery, { themeId });
@@ -28,7 +28,7 @@ const getPrintLayoutsPreview = async themeId => {
  * @param {String} themeId id of a theme
  * @returns array of layout types
  */
-const getPrintLayoutTypes = async themeId => {
+export const getPrintLayoutTypes = async themeId => {
   if (!themeId) return [];
 
   const res = await graphqlRequest(getLayoutTypeQuery, { themeId });
@@ -57,7 +57,7 @@ const getPrintLayoutTypes = async themeId => {
  * @param {String} categoryId  id of a category
  * @returns array of layout object
  */
-const getLayoutsByThemeAndType = async (themeId, categoryId) => {
+export const getLayoutsByThemeAndType = async (themeId, categoryId) => {
   const res = await graphqlRequest(getLayoutsQuery, { themeId });
 
   if (!res) return;
@@ -73,10 +73,4 @@ const getLayoutsByThemeAndType = async (themeId, categoryId) => {
     name: t.data.properties.title,
     isFavorites: false
   }));
-};
-
-export const layoutService = {
-  getPrintLayoutTypes,
-  getLayoutsByThemeAndType,
-  getPrintLayoutsPreview
 };

@@ -12,7 +12,7 @@ import Themes from './Themes';
 import Preview from './Preview';
 import { useLayoutPrompt } from '@/hooks';
 import { EDITION } from '@/common/constants';
-import { layoutService } from '@/api/layout';
+import { getPrintLayoutsPreview } from '@/api/layout';
 
 export default {
   setup() {
@@ -96,9 +96,7 @@ export default {
       this.layoutsOfThemePreview = [];
 
       this.selectedThemeId = themeId;
-      this.layoutsOfThemePreview = await layoutService.getPrintLayoutsPreview(
-        themeId
-      );
+      this.layoutsOfThemePreview = await getPrintLayoutsPreview(themeId);
     },
     /**
      * Set preview theme's id empty and close preview
