@@ -23,6 +23,11 @@ const getPrintLayoutsPreview = async themeId => {
   return layoutImageUrls.map(l => ({ previewImageUrl: l.preview_image_url }));
 };
 
+/**
+ * To get layout type of a theme
+ * @param {String} themeId id of a theme
+ * @returns array of layout types
+ */
 const getPrintLayoutTypes = async themeId => {
   if (!themeId) return [];
 
@@ -46,6 +51,12 @@ const getPrintLayoutTypes = async themeId => {
   return types;
 };
 
+/**
+ * To get layout filtered by its themeId and its category
+ * @param {String} themeId     id of a theme
+ * @param {String} categoryId  id of a category
+ * @returns array of layout object
+ */
 const getLayoutsByThemeAndType = async (themeId, categoryId) => {
   const res = await graphqlRequest(getLayoutsQuery, { themeId });
 

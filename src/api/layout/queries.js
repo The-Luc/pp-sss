@@ -43,20 +43,3 @@ export const getLayoutsQuery = gql`
   }
   ${templateFragment}
 `;
-
-export const getAllLayoutsQuery = gql`
-  {
-    templates {
-      id
-      categories {
-        id
-        name
-      }
-      preview_image_url
-      data
-      theme {
-        id
-      }
-    }
-  }
-`;
