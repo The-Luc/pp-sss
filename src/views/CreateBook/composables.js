@@ -1,12 +1,12 @@
-import { useMutations, useGetters, useActions } from 'vuex-composition-helpers';
-import { getPhotos, searchPhotos, getMedia, searchMedia } from '@/api/photo';
+import { useMutations, useGetters } from 'vuex-composition-helpers';
+import { getPhotos, getMedia } from '@/api/media';
 import { clipArtService } from '@/api/clipArt/api';
 import portraitSevice from '@/api/portrait';
+import { useActionBook, useAppCommon } from '@/hooks';
 
 import {
   MUTATES as APP_MUTATES,
-  GETTERS as APP_GETTERS,
-  ACTIONS as APP_ACTIONS
+  GETTERS as APP_GETTERS
 } from '@/store/modules/app/const';
 
 export const useSavingStatus = () => {
@@ -22,25 +22,24 @@ export const useSavingStatus = () => {
 };
 
 export const usePhotos = () => {
-  const { isPhotoVisited } = useGetters({
-    isPhotoVisited: APP_GETTERS.IS_PHOTO_VISITED
-  });
-
-  const { updatePhotoVisited } = useActions({
-    updatePhotoVisited: APP_ACTIONS.UPDATE_PHOTO_VISITED
-  });
+  const { getBookInfo } = useActionBook();
+  const { generalInfo } = useAppCommon();
 
   const getSmartbox = async (keywords, isGetMedia) => {
-    return isGetMedia ? await getMedia(keywords) : await getPhotos(keywords);
+    const { book } = await getBookInfo(generalInfo.value.bookId, true);
+    return isGetMedia
+      ? await getMedia(book.communityId, keywords)
+      : await getPhotos(book.communityId, keywords);
   };
 
   const getSearch = async (input, isGetMedia) => {
-    return isGetMedia ? await searchMedia(input) : await searchPhotos(input);
+    const { book } = await getBookInfo(generalInfo.value.bookId, true);
+    return isGetMedia
+      ? await getMedia(book.communityId, [input])
+      : await getPhotos(book.communityId, [input]);
   };
 
   return {
-    isPhotoVisited,
-    updatePhotoVisited,
     getSmartbox,
     getSearch
   };

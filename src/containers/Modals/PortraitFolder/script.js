@@ -95,6 +95,7 @@ export default {
     }
   },
   async created() {
-    this.portraitFolders = await this.getPortraitFolders();
+    const bookId = this.$route?.params?.bookId;
+    this.portraitFolders = await this.getPortraitFolders({ bookId });
   }
 };

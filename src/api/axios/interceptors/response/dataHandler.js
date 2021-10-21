@@ -2,15 +2,23 @@ import { isEmpty } from '@/common/utils';
 import { Notification } from '@/components/Notification';
 
 const dataHandler = response => {
-  const { data, errors } = response.data;
+  try {
+    const { data, errors } = response.data;
 
-  if (!isEmpty(errors)) {
+    if (!isEmpty(errors)) throw errors;
+
+    return data;
+  } catch (errors) {
     const { code, message } = errors[0];
 
-    Notification({ type: 'error', title: `Error ${code}`, text: message });
-  }
+    const errorMsg = message || 'Something went wrong!';
 
-  return data;
+    Notification({
+      type: 'error',
+      title: `Error ${code || ''}`,
+      text: errorMsg
+    });
+  }
 };
 
 export default dataHandler;

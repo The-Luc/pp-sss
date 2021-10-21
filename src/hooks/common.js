@@ -16,18 +16,24 @@ export const useAppCommon = () => {
     activeEdition,
     isPrintEdition,
     isDigitalEdition,
-    generalInfo
+    generalInfo,
+    isLoading
   } = useGetters({
     activeEdition: APP_GETTERS.ACTIVE_EDITION,
     isPrintEdition: APP_GETTERS.IS_PRINT_ACTIVE,
     isDigitalEdition: APP_GETTERS.IS_DIGITAL_ACTIVE,
-    generalInfo: APP_GETTERS.GENERAL_INFO
+    generalInfo: APP_GETTERS.GENERAL_INFO,
+    isLoading: APP_GETTERS.IS_LOADING
   });
 
-  const { setEdition, setGeneralInfo } = useMutations({
-    setEdition: APP_MUTATES.SET_ACTIVE_EDITION,
-    setGeneralInfo: APP_MUTATES.SET_GENERAL_INFO
-  });
+  const { setEdition, setGeneralInfo, startLoading, endLoading } = useMutations(
+    {
+      setEdition: APP_MUTATES.SET_ACTIVE_EDITION,
+      setGeneralInfo: APP_MUTATES.SET_GENERAL_INFO,
+      startLoading: APP_MUTATES.START_LOADING,
+      endLoading: APP_MUTATES.END_LOADING
+    }
+  );
 
   const setActiveEdition = edition => setEdition({ edition });
 
@@ -38,6 +44,9 @@ export const useAppCommon = () => {
     isDigitalEdition,
     setActiveEdition,
     setGeneralInfo,
-    generalInfo
+    generalInfo,
+    isLoading,
+    startLoading,
+    endLoading
   };
 };

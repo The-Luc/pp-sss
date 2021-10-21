@@ -1,9 +1,9 @@
 import PpSelect from '@/components/Selectors/Select';
 import PpButton from '@/components/Buttons/Button';
 
-import { ROLE, ROUTE_NAME } from '@/common/constants';
+import { LOCAL_STORAGE, ROUTE_NAME } from '@/common/constants';
 
-import { userService } from '@/api';
+import { userService } from '@/api/user';
 import { setItem } from '@/common/storage';
 
 export default {
@@ -29,19 +29,16 @@ export default {
   },
   methods: {
     saveUser(user) {
-      setItem('userId', user.id);
-      // temporary code, wait to get data from backend
-      // setItem('userRole', ROLE[this.selectedUser.role]);
-      setItem('userRole', ROLE['ADMIN']);
+      setItem(LOCAL_STORAGE.COMMUNITY_USER_ID, user.communityUserId);
     },
     async onClickLogin() {
-      const { login_user } = await userService.logIn(this.email, this.password);
+      const user = await userService.logIn(this.email, this.password);
 
-      if (!login_user) return;
+      if (!user) return;
 
       // save token on localStorage
-      setItem('token', login_user.token);
-      this.saveUser(login_user.user);
+      setItem(LOCAL_STORAGE.TOKEN, user.token);
+      this.saveUser(user);
 
       this.isLoggedIn = true;
     },

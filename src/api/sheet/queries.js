@@ -7,3 +7,15 @@ export const pageInfoQuery = gql`
     }
   }
 `;
+
+export const sheetInfoQuery = gql`
+  query($id: ID!) {
+    sheet(id: $id) {
+      pages {
+        is_cover_page
+        page_number
+        layout
+      }
+    }
+  }
+`;

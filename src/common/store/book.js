@@ -11,3 +11,9 @@ export const setBook = (state, { book }) => {
 export const setBookInfo = (state, { info }) => {
   state.book = { ...cloneDeep(state.book), ...info };
 };
+
+export const isPhotoVisited = ({ book }) => book.isPhotoVisited;
+
+export const setIsPhotoVisited = (state, { isPhotoVisited }) => {
+  state.book.isPhotoVisited = isPhotoVisited;
+};

@@ -24,6 +24,12 @@ export default {
     isEditIconDisplayed: {
       type: Boolean,
       default: true
+    },
+    leftThumbnailUrl: {
+      type: String
+    },
+    rightThumbnailUrl: {
+      type: String
     }
   },
   computed: {

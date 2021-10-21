@@ -43,13 +43,13 @@ export const state = {
     title: '',
     totalSheet: 0,
     totalPage: 0,
-    totalScreen: 0,
-    isPhotoVisited: false
+    totalScreen: 0
   },
   user: { id: null, role: null },
   savedTextStyles: [],
   savedImageStyles: [],
   savingStatus: '',
   isMediaSidebarOpen: false,
-  disabledToolbarItems: getDefaultDisabledItems()
+  disabledToolbarItems: getDefaultDisabledItems(),
+  isLoading: false
 };

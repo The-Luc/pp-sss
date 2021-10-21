@@ -1,7 +1,7 @@
 import store from '@/store';
 import { MUTATES } from '@/store/modules/app/const';
 import { isEmpty } from '@/common/utils';
-import { userService } from '@/api';
+import { userService } from '@/api/user';
 
 const authGuard = (to, from, next) => {
   const redirect = async () => {

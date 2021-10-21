@@ -155,6 +155,7 @@ export const mutations = {
     currentSheet.isVisited = true;
   },
   [PRINT._MUTATES.UPDATE_SHEET_THUMBNAIL](state, { thumbnailUrl, sheetId }) {
+    if (isEmpty(thumbnailUrl) || isEmpty(sheetId)) return;
     state.sheets[sheetId].thumbnailUrl = thumbnailUrl;
   },
   [PRINT._MUTATES.REORDER_OBJECT_IDS](state, { oldIndex, newIndex }) {

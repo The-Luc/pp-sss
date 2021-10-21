@@ -1,10 +1,10 @@
 import { BaseEntity } from './base';
-import { PROCESS_STATUS } from '@/common/constants';
+import { DEFAULT_COLOR, PROCESS_STATUS } from '@/common/constants';
 
 export class SectionBase extends BaseEntity {
   name = '';
   assigneeId = null;
-  color = '';
+  color = DEFAULT_COLOR.COLOR;
   dueDate = null;
   status = PROCESS_STATUS.NOT_STARTED.value;
 
@@ -19,7 +19,6 @@ export class SectionBase extends BaseEntity {
 
 export class SectionDetail extends SectionBase {
   draggable = true;
-  fixed = false;
   sheetIds = [];
 
   /**

@@ -8,32 +8,31 @@ export const useBookPrintInfo = () => {
   const { getBookInfo } = useActionBook();
 
   const getBookPrintInfo = async bookId => {
+    const { book, sectionsSheets } = await getBookInfo(bookId, true);
+
+    setSectionsSheets({ sectionsSheets });
+
     const {
       themeId,
       pageInfo,
       isPhotoVisited,
       title,
-      sectionsSheets,
       coverOption,
       numberMaxPages
-    } = await getBookInfo(bookId);
+    } = book;
 
-    setBookInfo({ info: { defaultThemeId: themeId, pageInfo } });
-
-    setSectionsSheets({ sectionsSheets });
-
-    setGeneralInfo({
+    setBookInfo({
       info: {
-        bookId,
-        title,
+        defaultThemeId: themeId,
+        pageInfo,
         isPhotoVisited,
         coverOption,
         numberMaxPages
       }
     });
+
+    setGeneralInfo({ info: { bookId, title } });
   };
 
-  return {
-    getBookPrintInfo
-  };
+  return { getBookPrintInfo };
 };

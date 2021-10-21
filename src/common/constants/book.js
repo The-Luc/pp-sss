@@ -13,6 +13,11 @@ export const SCREEN = {
 export const APPROVAL_DAYS = 10;
 
 export const COVER_TYPE = {
-  HARD_OVER: 'Hard Cover',
-  SOFT_COVER: 'Soft Cover'
+  HARDCOVER: 'Hard Cover',
+  SOFTCOVER: 'Soft Cover'
+};
+
+export const DELIVERY_OPTION = {
+  BULK_SHIPPED: 'Bulk Ship To School',
+  DIRECT_SHIPPED: 'Direct Ship To School'
 };

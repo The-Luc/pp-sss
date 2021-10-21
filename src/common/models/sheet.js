@@ -80,8 +80,6 @@ export class SheetPrintDetail extends SheetEditionDetail {
 
 export class SheetDigitalDetail extends SheetEditionDetail {
   pageName = null;
-  frames = [];
-  transitions = [];
 
   /**
    * @param {SheetDigitalDetail} props

@@ -80,5 +80,11 @@ export const mutations = {
   },
   [APP._MUTATES.UPDATE_DISABLED_TOOLBAR_ITEMS](state, { items }) {
     state.disabledToolbarItems = items;
+  },
+  [APP._MUTATES.START_LOADING](state) {
+    state.isLoading = true;
+  },
+  [APP._MUTATES.END_LOADING](state) {
+    state.isLoading = false;
   }
 };

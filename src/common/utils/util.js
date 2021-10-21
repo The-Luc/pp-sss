@@ -108,7 +108,7 @@ export const mapObject = (sourceObject, rules) => {
 
       const useRules = cloneDeep(rules);
 
-      merge(useRules, subData);
+      merge(useRules.data, subData);
 
       useRules.restrict = mergeArray(useRules.restrict, subRestrict);
 

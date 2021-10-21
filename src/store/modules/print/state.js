@@ -1,22 +1,14 @@
-import { getNewBackground } from '@/common/models';
+import { merge, cloneDeep } from 'lodash';
 
-export const state = {
+import { editionDefaultState } from '@/common/store';
+import { COVER_TYPE } from '@/common/constants';
+
+const printState = {
   book: {
-    id: null,
-    defaultThemeId: '',
+    coverOption: COVER_TYPE.HARDCOVER,
+    numberMaxPages: 0,
     pageInfo: {}
-  },
-  sections: [],
-  sheets: {},
-  currentSheetId: '',
-  objectIds: [],
-  objects: {},
-  currentObjectId: '',
-  background: getNewBackground(),
-  triggerChange: {
-    text: true,
-    background: true,
-    shape: true,
-    clipArt: true
   }
 };
+
+export const state = merge(cloneDeep(editionDefaultState), printState);
