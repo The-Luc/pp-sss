@@ -4,7 +4,6 @@ import { MUTATES } from '@/store/modules/app/const';
 import { MUTATES as PRINT_MUTATES } from '@/store/modules/print/const';
 import {
   GETTERS as THEME_GETTERS,
-  MUTATES as THEME_MUTATES,
   ACTIONS as THEME_ACTIONS
 } from '@/store/modules/theme/const';
 import Modal from '@/containers/Modals/Modal';
@@ -12,8 +11,8 @@ import PpButton from '@/components/Buttons/Button';
 import Themes from './Themes';
 import Preview from './Preview';
 import { useLayoutPrompt } from '@/hooks';
-import { loadLayouts } from '@/api/layouts';
 import { EDITION } from '@/common/constants';
+import { layoutService } from '@/api/layout';
 
 export default {
   setup() {
@@ -31,17 +30,14 @@ export default {
   data() {
     return {
       selectedThemeId: null,
-      isPreviewing: false
+      isPreviewing: false,
+      layoutsOfThemePreview: null
     };
   },
   computed: {
     ...mapGetters({
-      themes: THEME_GETTERS.GET_PRINT_THEMES,
-      layouts: THEME_GETTERS.GET_PRINT_LAYOUTS_BY_THEME_ID
+      themes: THEME_GETTERS.GET_PRINT_THEMES
     }),
-    layoutsOfThemePreview() {
-      return this.layouts(this.selectedThemeId);
-    },
     themeNamePreview() {
       let name = '';
       if (this.isPreviewing) {
@@ -56,7 +52,6 @@ export default {
     }),
     ...mapMutations({
       toggleModal: MUTATES.TOGGLE_MODAL,
-      setPrintLayouts: THEME_MUTATES.PRINT_LAYOUTS,
       selectTheme: PRINT_MUTATES.SET_DEFAULT_THEME_ID
     }),
 
@@ -89,9 +84,21 @@ export default {
      * Set preview theme's id
      * @param  {Number} theme.themeId - Theme's id preview
      */
-    onPreviewTheme({ themeId }) {
+    async onPreviewTheme({ themeId }) {
       this.isPreviewing = true;
+      if (
+        themeId === this.selectedThemeId &&
+        this.layoutsOfThemePreview != null
+      )
+        return;
+
+      // clear previous layout
+      this.layoutsOfThemePreview = [];
+
       this.selectedThemeId = themeId;
+      this.layoutsOfThemePreview = await layoutService.getPrintLayoutsPreview(
+        themeId
+      );
     },
     /**
      * Set preview theme's id empty and close preview
@@ -105,11 +112,5 @@ export default {
       await this.setPrintThemes();
     }
     this.selectedThemeId = this.themes[0]?.id;
-    if (this.layouts().length === 0) {
-      const layouts = await loadLayouts();
-      this.setPrintLayouts({
-        layouts
-      });
-    }
   }
 };
