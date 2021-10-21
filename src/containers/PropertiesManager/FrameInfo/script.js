@@ -2,8 +2,11 @@ import PpCombobox from '@/components/Selectors/Combobox';
 import Properties from '@/components/Properties/BoxProperties';
 import InputTitle from '@/components/Properties/Features/InputTitle';
 
-import { DELAY_OPTION, MAX_PLAYBACK_DELAY } from '@/common/constants';
-import { ICON_LOCAL } from '@/common/constants';
+import {
+  DELAY_OPTION,
+  MAX_PLAYBACK_DELAY,
+  ICON_LOCAL
+} from '@/common/constants';
 import { useFrame, useFrameTitle, useFrameDelay, useAnimation } from '@/hooks';
 import { getValueInput, validateInputOption } from '@/common/utils';
 import { useVideo } from '@/views/CreateBook/DigitalEdition/EditScreen/composables';

@@ -5,6 +5,16 @@
     :style="{ backgroundImage: thumbnailUrl && `url(${thumbnailUrl})` }"
     @click="onSelect"
   >
+    <div
+      v-if="leftThumbnailUrl"
+      class="left-thumbnail"
+      :style="{ backgroundImage: `url(${leftThumbnailUrl})` }"
+    ></div>
+    <div
+      v-if="rightThumbnailUrl"
+      class="right-thumbnail"
+      :style="{ backgroundImage: `url(${leftThumbnailUrl})` }"
+    ></div>
     <div class="border-inside"></div>
 
     <router-link

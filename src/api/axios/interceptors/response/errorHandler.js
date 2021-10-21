@@ -1,4 +1,4 @@
-import { Notification } from '../../../../components/Notification';
+import { Notification } from '@/components/Notification';
 
 const handleBadRequest = () =>
   Notification({ type: 'error', title: '400', text: 'Bad Request' });

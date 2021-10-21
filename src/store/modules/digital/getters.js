@@ -2,7 +2,7 @@ import { isEmpty } from '@/common/utils';
 
 import { OBJECT_TYPE } from '@/common/constants';
 import DIGITAL from './const';
-import { calcFrameAnimationDuration } from '@/common/store';
+import { calcFrameAnimationDuration, isPhotoVisited } from '@/common/store';
 
 export const getters = {
   [DIGITAL._GETTERS.CURRENT_SHEET]: ({ sheets, currentSheetId }) => {
@@ -90,7 +90,7 @@ export const getters = {
   [DIGITAL._GETTERS.CURRENT_SECTION]: ({ sections, currentSheetId }) => {
     if (isEmpty(currentSheetId)) return '';
 
-    return sections.find(s => s.sheetIds.includes(+currentSheetId));
+    return sections.find(s => s.sheetIds.includes(String(currentSheetId)));
   },
   [DIGITAL._GETTERS.GET_FIRST_FRAME_THUMBNAIL]: state => {
     if (isEmpty(state.frameIds)) return;
@@ -167,5 +167,6 @@ export const getters = {
         o.type === OBJECT_TYPE.VIDEO ? acc + o.endTime - o.startTime : acc,
       0
     );
-  }
+  },
+  [DIGITAL._GETTERS.IS_PHOTO_VISITED]: isPhotoVisited
 };

@@ -20,6 +20,8 @@
         :to-link="toLink"
         :sheet-type="sheetType"
         :thumbnail-url="thumbnailUrl"
+        :left-thumbnail-url="leftThumbnailUrl"
+        :right-thumbnail-url="rightThumbnailUrl"
         :custom-css-class="customCssClass"
         :is-active="isActive"
         :is-edit-icon-displayed="!isEditor"

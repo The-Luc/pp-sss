@@ -68,8 +68,13 @@ export default {
      */
     updateCanvasSize() {
       const pageSize = getPagePrintSize();
-      const { sheetWidth, sheetHeight } = pageSize.pixels;
-      const pageWidth = sheetWidth * 0.5;
+      const {
+        sheetWidth,
+        sheetHeight,
+        bleedLeft,
+        bleedRight
+      } = pageSize.pixels;
+      const pageWidth = (sheetWidth + bleedLeft + bleedRight) * 0.5;
 
       const height = sheetHeight * this.zoom;
       const width = pageWidth * this.zoom;
