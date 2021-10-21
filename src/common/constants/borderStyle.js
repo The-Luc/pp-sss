@@ -39,7 +39,7 @@ export const BORDER_STYLE = [
 ];
 
 // these border style are reserved until phase 2
-const reservedBorderStyle = [
+export const reservedBorderStyle = [
   {
     previewImageUrl: IMAGE_LOCAL.ROUGH_THICK,
     value: BORDER_STYLES.ROUGH_THICK,
@@ -56,7 +56,6 @@ const reservedBorderStyle = [
     name: BORDER_STYLES.ROUGH_THIN
   }
 ];
-reservedBorderStyle;
 
 export const HTML_BORDER_STYLE = {
   [BORDER_STYLES.SQUARE]: 'dashed',
