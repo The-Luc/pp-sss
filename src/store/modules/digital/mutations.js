@@ -148,6 +148,7 @@ export const mutations = {
     if (frameId !== state.frameIds[0]) return;
   },
   [DIGITAL._MUTATES.UPDATE_SHEET_THUMBNAIL](state, { thumbnailUrl, sheetId }) {
+    if (isEmpty(thumbnailUrl) || isEmpty(sheetId)) return;
     state.sheets[sheetId].thumbnailUrl = thumbnailUrl;
   },
   [DIGITAL._MUTATES.REORDER_OBJECT_IDS](state, { oldIndex, newIndex }) {

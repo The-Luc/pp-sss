@@ -116,4 +116,20 @@
       }
     }
   }
+
+  .left-thumbnail {
+    position: absolute;
+    width: 50%;
+    height: 100%;
+    left: 0;
+    top: 0;
+  }
+
+  .right-thumbnail {
+    position: absolute;
+    width: 50%;
+    height: 100%;
+    right: 0;
+    top: 0;
+  }
 }

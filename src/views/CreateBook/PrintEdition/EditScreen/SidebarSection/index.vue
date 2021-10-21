@@ -19,6 +19,8 @@
         :color="section.color"
         :sheet-type="sheet.type"
         :thumbnail-url="sheet.thumbnailUrl"
+        :left-thumbnail-url="sheet.leftThumbnailUrl"
+        :right-thumbnail-url="sheet.rightThumbnailUrl"
         :page-names="getPageNames(sheet)"
         :total-item="section.sheets.length"
         :is-active="checkIsActive(sheet)"

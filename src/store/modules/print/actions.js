@@ -14,6 +14,7 @@ import PRINT from './const';
 import { MUTATES as APP_MUTATES } from '../app/const';
 import { cloneDeep } from 'lodash';
 import { getNewBackground } from '@/common/models';
+import { getSheetInfo } from '@/api/sheet/api';
 
 export const actions = {
   async [PRINT._ACTIONS.GET_DATA_MAIN]({ state, commit }) {
@@ -53,15 +54,9 @@ export const actions = {
     commit(PRINT._MUTATES.SET_OBJECTS, { objectList: [] });
     commit(PRINT._MUTATES.SET_BACKGROUNDS, { backgrounds: getNewBackground() });
 
-    const queryObjectResult = await printService.getSheetObjects(
-      state.book.id,
-      state.sheets[state.currentSheetId].sectionId,
-      state.currentSheetId
-    );
+    const data = await getSheetInfo(state.currentSheetId);
 
-    if (isEmpty(queryObjectResult.data)) return;
-
-    const data = queryObjectResult.data;
+    if (isEmpty(data)) return;
 
     const backgrounds = data.filter(o => o.type === OBJECT_TYPE.BACKGROUND);
     const objects = data.filter(o => o.type !== OBJECT_TYPE.BACKGROUND);

@@ -66,6 +66,12 @@ export default {
     isMoreActivated: {
       type: Boolean,
       default: false
+    },
+    leftThumbnailUrl: {
+      type: String
+    },
+    rightThumbnailUrl: {
+      type: String
     }
   },
   data() {
