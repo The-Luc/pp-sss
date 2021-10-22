@@ -23,7 +23,7 @@ import {
 import {
   MODAL_TYPES,
   OBJECT_TYPE,
-  SAVE_STATUS,
+  // SAVE_STATUS,
   SAVING_DURATION,
   SHEET_TYPE,
   TOOL_NAME,
@@ -264,7 +264,7 @@ export default {
       // const data = this.getDataEditScreen(this.pageSelected.id);
       // await this.savePrintEditScreen(data);
 
-      this.updateSavingStatus({ status: SAVE_STATUS.END });
+      // this.updateSavingStatus({ status: SAVE_STATUS.END });
 
       setTimeout(() => {
         this.$router.push(
