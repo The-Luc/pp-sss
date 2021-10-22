@@ -53,11 +53,4 @@ const themes = [
   }
 ];
 
-export const themeOptions = themes.map(t => ({
-  ...t,
-  id: t.id,
-  name: t.name,
-  value: t.id
-}));
-
 export default themes;

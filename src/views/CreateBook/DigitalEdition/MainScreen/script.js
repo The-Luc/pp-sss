@@ -1,13 +1,9 @@
 import ThumbnailItem from '@/components/Thumbnail/ThumbnailItem';
 import Action from '@/containers/Menu/Action';
 
-import { mapGetters } from 'vuex';
-
 import { useUser } from '@/hooks';
 
 import { getSectionsWithAccessible } from '@/common/utils';
-
-import { GETTERS as DIGITAL_GETTERS } from '@/store/modules/digital/const';
 
 import { useBookDigitalInfo } from './composables';
 import { useSectionItems } from '@/views/CreateBook/Manager/composables';
@@ -34,27 +30,15 @@ export default {
     };
   },
   computed: {
-    ...mapGetters({
-      sectionList: DIGITAL_GETTERS.SECTIONS_SHEETS
-    }),
     bookId() {
       return this.$route.params.bookId;
     },
     sections() {
-      return getSectionsWithAccessible(this.sectionList, this.currentUser);
+      return getSectionsWithAccessible(this.bookSections, this.currentUser);
     }
   },
   async created() {
     await this.getBookDigitalInfo(this.$route.params.bookId);
-  },
-  watch: {
-    bookSections: {
-      deep: true,
-      async handler(val, oldVal) {
-        if (val !== oldVal)
-          await this.getBookDigitalInfo(this.$route.params.bookId);
-      }
-    }
   },
   methods: {
     /**

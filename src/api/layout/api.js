@@ -6,6 +6,7 @@ import {
   getLayoutsQuery,
   getLayoutTypeQuery
 } from './queries';
+import { isOk } from '@/common/utils';
 
 /**
  *  To get previewImageUrl of layouts of a theme
@@ -17,9 +18,9 @@ export const getPrintLayoutsPreview = async themeId => {
 
   const res = await graphqlRequest(getLayoutsPreviewQuery, { themeId });
 
-  if (!res) return [];
+  if (!isOk(res)) return [];
 
-  const layoutImageUrls = get(res, 'theme.templates', []);
+  const layoutImageUrls = get(res.data, 'theme.templates', []);
   return layoutImageUrls.map(l => ({ previewImageUrl: l.preview_image_url }));
 };
 
@@ -33,9 +34,9 @@ export const getPrintLayoutTypes = async themeId => {
 
   const res = await graphqlRequest(getLayoutTypeQuery, { themeId });
 
-  if (!res) return [];
+  if (!isOk(res)) return [];
 
-  const templates = get(res, 'theme.templates', []);
+  const templates = get(res.data, 'theme.templates', []);
 
   const ids = [];
   const types = [];
@@ -60,9 +61,9 @@ export const getPrintLayoutTypes = async themeId => {
 export const getLayoutsByThemeAndType = async (themeId, categoryId) => {
   const res = await graphqlRequest(getLayoutsQuery, { themeId });
 
-  if (!res) return;
+  if (!isOk(res)) return [];
 
-  const templates = res.theme.templates.filter(t =>
+  const templates = res.data.theme.templates.filter(t =>
     t.categories.some(c => c.id === categoryId)
   );
   return templates.map(t => ({

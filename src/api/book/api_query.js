@@ -216,9 +216,9 @@ const getBook = async (bookId, edition, isEditor) => {
 
   const query = editionQuery[edition][isEditor ? 'editor' : 'main'];
 
-  const { book } = await graphqlRequest(query, { bookId });
+  const { data } = await graphqlRequest(query, { bookId });
 
-  return book;
+  return data.book;
 };
 
 /**
