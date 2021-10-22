@@ -1,6 +1,6 @@
 import BOOK from './const';
 
-import sectionService from '@/api/section';
+import sectionService from '@/api/sectionService';
 
 import { isEmpty } from '@/common/utils';
 

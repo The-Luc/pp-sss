@@ -1,5 +1,3 @@
-import randomcolor from 'randomcolor';
-import moment from 'moment';
 import { uniqueId } from 'lodash';
 
 import { setBookId, setBook, setSheets } from '@/common/store';
@@ -8,7 +6,6 @@ import { isEmpty, moveItem } from '@/common/utils';
 
 import BOOK from './const';
 
-import { DATE_FORMAT } from '@/common/constants';
 import { SectionDetail, SheetDetail } from '@/common/models';
 
 export const mutations = {
@@ -133,19 +130,13 @@ export const mutations = {
 
     state.sections[sectionId].sheetIds.splice(moveToIndex, 0, sheetId);
   },
-  [BOOK._MUTATES.ADD_SECTION](state, { sectionId }) {
-    const { releaseDate } = state.book;
-
+  [BOOK._MUTATES.ADD_SECTION](state, { id, color, dueDate }) {
     state.sections = {
       ...state.sections,
-      [sectionId]: new SectionDetail({
-        id: sectionId,
-        color: randomcolor(),
-        dueDate: moment(releaseDate).format(DATE_FORMAT.BASE)
-      })
+      [id]: new SectionDetail({ id, color, dueDate })
     };
 
-    state.sectionIds.splice(state.sectionIds.length - 1, 0, sectionId);
+    state.sectionIds.splice(state.sectionIds.length - 1, 0, id);
   },
   [BOOK._MUTATES.EDIT_SECTION_NAME](state, { sectionId, sectionName }) {
     state.sections[sectionId].name = sectionName;

@@ -3,7 +3,7 @@ import { getSuccessWithData, getErrorWithMessages } from '@/common/models';
 import { parseItem } from '@/common/storage/session.helper';
 
 import { isEmpty, getPageLeftName, getPageRightName } from '@/common/utils';
-import bookService from './book';
+import bookService from './bookService';
 import { OBJECT_TYPE } from '@/common/constants';
 
 const printService = {

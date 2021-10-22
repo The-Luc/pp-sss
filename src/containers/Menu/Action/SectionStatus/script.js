@@ -1,4 +1,4 @@
-import { PROCESS_STATUS } from '@/common/constants';
+import { PROCESS_STATUS_OPTIONS } from '@/common/constants';
 
 export default {
   props: {
@@ -20,9 +20,7 @@ export default {
     }
   },
   data() {
-    const statusList = Object.values(PROCESS_STATUS).map(v => v);
-
-    return { statusList };
+    return { statusList: PROCESS_STATUS_OPTIONS };
   },
   methods: {
     /**

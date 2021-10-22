@@ -1,5 +1,11 @@
 import { useGetters, useMutations } from 'vuex-composition-helpers';
 
+import bookService from '@/api/bookService';
+
+import { getBookDetail } from '@/api/book';
+
+import { useAppCommon } from './common';
+
 import {
   GETTERS as BOOK_GETTERS,
   MUTATES as BOOK_MUTATES
@@ -12,13 +18,6 @@ import {
   GETTERS as DIGITAL_GETTERS,
   MUTATES as DIGITAL_MUTATES
 } from '@/store/modules/digital/const';
-
-import bookService from '@/api/book';
-
-// TODO: remove index after remove bookService
-import { getBookDetail } from '@/api/book/index';
-
-import { useAppCommon } from './common';
 
 /**
  * The hook trigger action to get book and get book information from store

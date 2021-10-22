@@ -1,10 +1,11 @@
 import { useGetters } from 'vuex-composition-helpers';
 
+import bookService from '@/api/bookService';
+
+import { useAppCommon } from './common';
+
 import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 import { GETTERS as DIGITAL_GETTERS } from '@/store/modules/digital/const';
-
-import bookService from '@/api/book';
-import { useAppCommon } from './common';
 
 export const useMutationSection = () => {
   const updateSection = async (bookId, sectionId, body) => {
