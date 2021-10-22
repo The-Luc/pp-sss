@@ -36,17 +36,17 @@ const apiMediaToModel = (asset, isPhoto = true) => {
 };
 
 export const getPhotos = async (id, terms = []) => {
-  const photos = await graphqlRequest(getMediaApi, { id, terms });
+  const res = await graphqlRequest(getMediaApi, { id, terms });
 
-  return photos?.search_community_assets
+  return res.data?.search_community_assets
     ?.filter(asset => !asset.is_media)
     .map(asset => new PictureAssetEntity(apiMediaToModel(asset)));
 };
 
 export const getMedia = async (id, terms = []) => {
-  const media = await graphqlRequest(getMediaApi, { id, terms });
+  const res = await graphqlRequest(getMediaApi, { id, terms });
 
-  return media?.search_community_assets.map(asset => {
+  return res.data?.search_community_assets.map(asset => {
     return asset.is_media
       ? new VideoAssetEntity(apiMediaToModel(asset, !asset.is_media))
       : new PictureAssetEntity(apiMediaToModel(asset));

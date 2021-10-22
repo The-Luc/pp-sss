@@ -10,12 +10,15 @@ import { first, get } from 'lodash';
 import { graphqlRequest } from '../axios';
 import { pageInfoQuery, sheetInfoQuery } from './queries';
 
-export const getPageData = async id => graphqlRequest(pageInfoQuery, { id });
+export const getPageData = async id => {
+  const res = await graphqlRequest(pageInfoQuery, { id });
+  return res.data;
+};
 
 export const getSheetInfo = async id => {
   const response = await graphqlRequest(sheetInfoQuery, { id });
 
-  const pages = get(response, 'sheet.pages', []);
+  const pages = get(response.data, 'sheet.pages', []);
 
   const pageObjects = pages.map(page => {
     const isRightPage = get(page, 'page_number', 0) % 2;
