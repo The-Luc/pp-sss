@@ -11,10 +11,6 @@ export default {
     Item
   },
   props: {
-    items: {
-      type: Array,
-      require: true
-    },
     optionThemeSelected: {
       type: Object,
       require: true
@@ -24,7 +20,7 @@ export default {
       require: true
     },
     selectedThemeId: {
-      type: Number,
+      type: String,
       require: true
     }
   },
@@ -75,7 +71,7 @@ export default {
     scrollToElement(el) {
       el.scrollIntoView({
         behavior: 'smooth',
-        block: 'nearest'
+        block: 'center'
       });
     }
   }
