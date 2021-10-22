@@ -258,9 +258,11 @@ export default {
      * Save print canvas and change view
      */
     async onClickSavePrintCanvas() {
-      this.updateSavingStatus({ status: SAVE_STATUS.START });
-      const data = this.getDataEditScreen(this.pageSelected.id);
-      await this.savePrintEditScreen(data);
+      // TODO: revise when mutation DB available
+      // temporary commented for testing
+      // this.updateSavingStatus({ status: SAVE_STATUS.START });
+      // const data = this.getDataEditScreen(this.pageSelected.id);
+      // await this.savePrintEditScreen(data);
 
       this.updateSavingStatus({ status: SAVE_STATUS.END });
 

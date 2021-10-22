@@ -319,14 +319,16 @@ export default {
      * Save digital canvas and change view
      */
     async onClickSaveDigitalCanvas() {
-      this.updateSavingStatus({ status: SAVE_STATUS.START });
+      // TODO: revise when mutation DB available
+      // temporary commented for testing
+      // this.updateSavingStatus({ status: SAVE_STATUS.START });
 
-      this.updateFrameObjects({ frameId: this.currentFrameId });
-      const data = this.getDataEditScreen(this.pageSelected.id);
-      await this.saveEditScreen(data);
-      await this.saveAnimationConfig(this.storeAnimationProp);
+      // this.updateFrameObjects({ frameId: this.currentFrameId });
+      // const data = this.getDataEditScreen(this.pageSelected.id);
+      // await this.saveEditScreen(data);
+      // await this.saveAnimationConfig(this.storeAnimationProp);
 
-      this.updateSavingStatus({ status: SAVE_STATUS.END });
+      // this.updateSavingStatus({ status: SAVE_STATUS.END });
 
       setTimeout(() => {
         this.$router.push(
