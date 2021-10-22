@@ -6,6 +6,7 @@ import {
   getLayoutsQuery,
   getLayoutTypeQuery
 } from './queries';
+import { isOk } from '@/common/utils';
 
 /**
  *  To get previewImageUrl of layouts of a theme
@@ -17,7 +18,7 @@ export const getPrintLayoutsPreview = async themeId => {
 
   const res = await graphqlRequest(getLayoutsPreviewQuery, { themeId });
 
-  if (res.status === STATUS.NG) return [];
+  if (!isOk(res)) return [];
 
   const layoutImageUrls = get(res.data, 'theme.templates', []);
   return layoutImageUrls.map(l => ({ previewImageUrl: l.preview_image_url }));
@@ -33,7 +34,7 @@ export const getPrintLayoutTypes = async themeId => {
 
   const res = await graphqlRequest(getLayoutTypeQuery, { themeId });
 
-  if (res.status === STATUS.NG) return [];
+  if (!isOk(res)) return [];
 
   const templates = get(res.data, 'theme.templates', []);
 
