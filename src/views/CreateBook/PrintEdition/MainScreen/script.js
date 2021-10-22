@@ -2,16 +2,13 @@ import ThumbnailItem from '@/components/Thumbnail/ThumbnailItem';
 import Action from '@/containers/Menu/Action';
 import PrintPreview from '@/containers/Modals/PrintPreview';
 
-import { mapGetters, mapActions } from 'vuex';
+import { mapActions } from 'vuex';
 
 import { useUser } from '@/hooks';
 
 import { getSectionsWithAccessible } from '@/common/utils';
 
-import {
-  ACTIONS as PRINT_ACTIONS,
-  GETTERS as PRINT_GETTERS
-} from '@/store/modules/print/const';
+import { ACTIONS as PRINT_ACTIONS } from '@/store/modules/print/const';
 
 import { LINK_STATUS } from '@/common/constants';
 import { useSaveData, useBookPrintInfo } from './composables';
@@ -55,23 +52,11 @@ export default {
     };
   },
   computed: {
-    ...mapGetters({
-      sectionList: PRINT_GETTERS.SECTIONS_SHEETS
-    }),
     bookId() {
       return this.$route.params.bookId;
     },
     sections() {
-      return getSectionsWithAccessible(this.sectionList, this.currentUser);
-    }
-  },
-  watch: {
-    bookSections: {
-      deep: true,
-      async handler(val, oldVal) {
-        if (val !== oldVal)
-          await this.getBookPrintInfo(this.$route.params.bookId);
-      }
+      return getSectionsWithAccessible(this.bookSections, this.currentUser);
     }
   },
   methods: {

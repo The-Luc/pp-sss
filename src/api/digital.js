@@ -9,7 +9,7 @@ import { parseItem } from '@/common/storage/session.helper';
 import { isEmpty, getPageName } from '@/common/utils';
 import { cloneDeep } from 'lodash';
 
-import bookService from './book';
+import bookService from './bookService';
 
 const digitalService = {
   /**

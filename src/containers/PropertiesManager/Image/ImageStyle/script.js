@@ -115,7 +115,10 @@ export default {
   },
   mounted() {
     window.addEventListener('keydown', e => {
-      if (e.key === 'Escape') {
+      if (
+        (!e.origin || e.origin === window.location.origin) &&
+        e.key === 'Escape'
+      ) {
         this.onCloseDropdown();
       }
     });

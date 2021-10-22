@@ -1,7 +1,8 @@
 import { useSectionControl } from '@/views/CreateBook/Manager/composables';
 
+import { isEmpty } from '@/common/utils';
+
 import { ROLE, MAX_SECTION } from '@/common/constants';
-import { uniqueId } from 'lodash';
 
 const COLLAPSE = 'collapse';
 const EXPAND = 'expand';
@@ -65,12 +66,14 @@ export default {
     async onAddSection() {
       if (this.isDisableAdd) return;
 
-      const sectionId = uniqueId();
-      await this.addSection({ sectionId });
+      const section = await this.addSection();
+
+      if (isEmpty(section)) return;
 
       const newSection = this.$parent.$refs.sections.$refs[
-        `section-${sectionId}`
+        `section-${section.id}`
       ][0];
+
       const inputName =
         newSection.$refs.header.$refs.name.$refs['input-container'];
       inputName.click();

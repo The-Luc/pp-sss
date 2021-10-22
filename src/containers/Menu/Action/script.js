@@ -5,7 +5,11 @@ import Assignee from './Assignee';
 
 import moment from 'moment';
 
-import { ICON_LOCAL, DATE_FORMAT, PROCESS_STATUS } from '@/common/constants';
+import {
+  ICON_LOCAL,
+  DATE_FORMAT,
+  PROCESS_STATUS_OPTIONS
+} from '@/common/constants';
 
 import { useMutationSection } from '@/hooks';
 import {
@@ -283,11 +287,11 @@ export default {
      * @returns {String}  status name
      */
     getStatusName() {
-      const process = Object.values(PROCESS_STATUS).find(
+      const process = PROCESS_STATUS_OPTIONS.find(
         ({ value }) => this.status === value
       );
 
-      return isEmpty(process) ? PROCESS_STATUS.NOT_STARTED.name : process.name;
+      return process?.name;
     },
     /**
      * Emit  event to parent

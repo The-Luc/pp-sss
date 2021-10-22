@@ -28,12 +28,13 @@ import {
   useActionLayout
 } from '@/hooks';
 
-import { getCustom as getCustomLayouts, loadLayouts } from '@/api/layouts';
+import { getCustom as getCustomLayouts } from '@/api/layouts';
 
 import { loadPrintThemes } from '@/api/themes';
 
 import { cloneDeep } from 'lodash';
 import { changeObjectsCoords } from '@/common/utils/layout';
+import { getLayoutsByThemeAndType, getPrintLayoutTypes } from '@/api/layout';
 
 export default {
   components: {
@@ -51,14 +52,16 @@ export default {
       pageSelected,
       themeId: defaultThemeId
     } = useLayoutPrompt(edition);
-    const { getLayoutsByType, updateSheetThemeLayout } = useGetLayouts(edition);
+    const {
+      getLayoutsByType,
+      listLayouts,
+      updateSheetThemeLayout
+    } = useGetLayouts(edition);
 
     const {
       saveToFavorites,
       getFavorites,
-      getPrintLayoutTypes,
       getCustom,
-      getLayoutsByThemeAndType,
       getCustomAndFavoriteLayouts,
       getFavoriteLayoutTypeMenu
     } = useActionLayout();
@@ -71,15 +74,14 @@ export default {
       setIsPrompt,
       pageSelected,
       getLayoutsByType,
+      listLayouts,
       defaultThemeId,
       updateSheetThemeLayout,
       modalData,
       toggleModal,
       saveToFavorites,
       getFavorites,
-      getPrintLayoutTypes,
       getCustom,
-      getLayoutsByThemeAndType,
       getCustomAndFavoriteLayouts,
       getFavoriteLayoutTypeMenu
     };
@@ -159,9 +161,9 @@ export default {
      * Set up inital data to render in view
      */
     async initData() {
+      await this.setThemeSelected(this.themeId);
       await this.setLayoutSelected();
       this.setDisabledLayout(this.pageSelected);
-      this.setThemeSelected(this.themeId);
 
       await this.getLayouts();
     },
@@ -178,20 +180,15 @@ export default {
      */
     async setLayoutSelected() {
       if (isEmpty(this.layoutId)) {
-        const sheetType = this.pageSelected?.type;
-
-        const index = sheetType === SHEET_TYPE.NORMAL ? 1 : 0;
-
-        this.layoutTypeSelected = this.getSelectedType(this.layoutTypes[index]);
+        this.layoutTypeSelected = this.getSelectedType(this.layoutTypes[0]);
 
         return;
       }
 
-      const defaultLayouts = await loadLayouts();
       const customLayouts = await getCustomLayouts();
 
       const layoutOpt = getLayoutOptSelectedById(
-        [...defaultLayouts, ...customLayouts],
+        [...this.layouts, ...customLayouts],
         this.layoutTypes,
         this.layoutId
       );
@@ -223,7 +220,7 @@ export default {
      * Set default selected for theme base on id of sheet. Use default theme when the sheet not have private theme
      * @param  {Number} currentSheetThemeId Theme id of the current sheet
      */
-    setThemeSelected(currentSheetThemeId) {
+    async setThemeSelected(currentSheetThemeId) {
       if (currentSheetThemeId) {
         const themeOpt = getThemeOptSelectedById(
           this.themesOptions,
@@ -236,6 +233,7 @@ export default {
         );
         this.themeSelected = themeSelected;
       }
+      await this.getLayoutTypes();
     },
     /**
      * Set object theme selected from dropdown
@@ -244,6 +242,8 @@ export default {
     async onChangeTheme(theme) {
       this.themeSelected = theme;
 
+      await this.getLayoutTypes();
+      await this.setLayoutSelected();
       await this.getLayouts();
     },
     /**
@@ -441,7 +441,7 @@ export default {
      * Get layout types from API
      */
     async getLayoutTypes() {
-      const layoutTypes = await this.getPrintLayoutTypes();
+      const layoutTypes = await getPrintLayoutTypes(this.themeSelected.id);
 
       this.layoutTypesOrigin = layoutTypes.map(lt => ({
         ...lt,
@@ -474,7 +474,7 @@ export default {
       }
 
       if (isEmpty(this.layoutTypeSelected.sub)) {
-        this.layouts = await this.getLayoutsByThemeAndType(
+        this.layouts = await getLayoutsByThemeAndType(
           this.themeSelected.id,
           this.layoutTypeSelected.value
         );

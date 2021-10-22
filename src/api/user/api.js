@@ -13,7 +13,7 @@ import { isEmpty } from '@/common/utils';
 import { getItem } from '@/common/storage';
 import { communityUsers } from '@/mock/users';
 import { Notification } from '@/components/Notification';
-import { LOCAL_STORAGE, ROLE } from '@/common/constants';
+import { LOCAL_STORAGE, ROLE, STATUS } from '@/common/constants';
 import { getUserRoleQuery } from './queries';
 
 const logInUser = async (email, password) => {
@@ -23,9 +23,9 @@ const logInUser = async (email, password) => {
       password
     });
 
-    if (!res) return;
+    if (res.status === STATUS.NG) return [];
 
-    const user = res.login_user;
+    const user = res.data.login_user;
     const communityUserId = user.communities_users[0]?.id;
 
     return {
@@ -44,14 +44,13 @@ const logInUser = async (email, password) => {
 const getCurrentUserApi = async () => {
   const communityUserId = getItem(LOCAL_STORAGE.COMMUNITY_USER_ID);
 
-  const { communities_user } = await graphqlRequest(getUserRoleQuery, {
+  const res = await graphqlRequest(getUserRoleQuery, {
     id: communityUserId
   });
-  const role = communities_user.admin ? ROLE.ADMIN : ROLE.USER;
 
-  if (isEmpty(communityUserId)) {
-    return {};
-  }
+  if (res.status === STATUS.NG || isEmpty(communityUserId)) return {};
+
+  const role = res.data.communities_user.admin ? ROLE.ADMIN : ROLE.USER;
 
   return new User({
     id: parseInt(communityUserId, 10),

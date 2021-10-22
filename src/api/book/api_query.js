@@ -4,9 +4,10 @@ import {
   getPageLeftName,
   getPageRightName,
   getPageName,
-  mapObject,
-  apiToBaseDate
+  isEmpty
 } from '@/common/utils';
+
+import { bookMapping, sectionMapping, sheetMapping } from '@/common/mapping';
 
 import {
   BookManagerDetail,
@@ -27,133 +28,7 @@ import {
   printMainQuery
 } from './queries';
 
-import {
-  COVER_TYPE,
-  EDITION,
-  POSITION_FIXED,
-  SHEET_TYPE,
-  DELIVERY_OPTION
-} from '@/common/constants';
-
-//#region API DATA MAPPING
-/**
- * Convert book data from API to data of Book Model
- *
- * @param   {Object}  book  book data from API
- * @returns {Object}        book data use by model
- */
-const apiBookToModel = book => {
-  const mapRules = {
-    data: {
-      community_id: {
-        name: 'communityId'
-      },
-      created_at: {
-        name: 'createdDate',
-        parse: value => apiToBaseDate(value)
-      },
-      total_pages: {
-        name: 'totalPage'
-      },
-      number_max_pages: {
-        name: 'numberMaxPages'
-      },
-      yearbook_spec: {
-        data: {
-          cover_option: {
-            name: 'coverOption',
-            parse: value => COVER_TYPE[value]
-          },
-          delivery_option: {
-            name: 'deliveryOption',
-            parse: value => DELIVERY_OPTION[value]
-          },
-          copies_sold: {
-            name: 'booksSold'
-          },
-          fundraising_earned: {
-            name: 'fundraisingEarned'
-          },
-          estimated_quantity_high: {
-            name: 'estimatedQuantity',
-            parse: value => ({ max: value })
-          },
-          estimated_quantity_low: {
-            name: 'estimatedQuantity',
-            parse: value => ({ min: value })
-          },
-          delivery_date: {
-            name: 'deliveryDate',
-            parse: value => apiToBaseDate(value)
-          },
-          release_date: {
-            name: 'releaseDate',
-            parse: value => apiToBaseDate(value)
-          },
-          sale_date: {
-            name: 'saleDate',
-            parse: value => apiToBaseDate(value)
-          }
-        }
-      }
-    },
-    restrict: ['book_sections']
-  };
-
-  return mapObject(book, mapRules);
-};
-
-/**
- * Convert section data from API to data of Section Model
- *
- * @param   {Object}  section section data from API
- * @returns {Object}          section data use by model
- */
-const apiSectionToModel = section => {
-  const mapRules = {
-    data: {
-      due_date: {
-        name: 'dueDate',
-        parse: value => apiToBaseDate(value)
-      },
-      assigned_user: {
-        data: {
-          id: {
-            name: 'assigneeId'
-          }
-        }
-      }
-    },
-    restrict: ['sheets']
-  };
-
-  return mapObject(section, mapRules);
-};
-
-/**
- * Convert sheet data from API to data of Sheet Model
- *
- * @param   {Object}  sheet sheet data from API
- * @returns {Object}        sheet data use by model
- */
-const apiSheetToModel = sheet => {
-  const mapRules = {
-    data: {
-      sheet_type: {
-        name: 'type',
-        parse: value => SHEET_TYPE[value]
-      },
-      fixed_position: {
-        name: 'positionFixed',
-        parse: value => POSITION_FIXED[value.replace(/(POSITION_)/g, '')]
-      }
-    },
-    restrict: []
-  };
-
-  return mapObject(sheet, mapRules);
-};
-//#endregion
+import { EDITION } from '@/common/constants';
 
 // TODO: digital data
 /**
@@ -169,7 +44,7 @@ const getDigitalSheet = (sheet, { id }, index, totalSheet) => {
   const pageName = getPageName(index, totalSheet);
 
   return new SheetDigitalDetail({
-    ...apiSheetToModel(sheet),
+    ...sheetMapping(sheet),
     sectionId: id,
     pageName
   });
@@ -186,7 +61,7 @@ const getDigitalSheet = (sheet, { id }, index, totalSheet) => {
  * @returns {Object}                      data of sheet of print edition
  */
 const getPrintSheet = (sheet, { id }, index, totalSheet) => {
-  const sheetData = apiSheetToModel(sheet);
+  const sheetData = sheetMapping(sheet);
 
   const pageLeftName = getPageLeftName(sheetData, index, totalSheet);
   const pageRightName = getPageRightName(sheetData, index, totalSheet);
@@ -208,7 +83,7 @@ const getPrintSheet = (sheet, { id }, index, totalSheet) => {
  */
 const getManagerSheet = (sheet, { id }) => {
   return new SheetDetail({
-    ...apiSheetToModel(sheet),
+    ...sheetMapping(sheet),
     sectionId: id
   });
 };
@@ -227,7 +102,7 @@ const getDigitalSection = (section, totalSheet) => {
   });
 
   return new SectionEditionDetail({
-    ...apiSectionToModel(section),
+    ...sectionMapping(section),
     sheets
   });
 };
@@ -246,7 +121,7 @@ const getPrintSection = (section, totalSheet) => {
   });
 
   return new SectionEditionDetail({
-    ...apiSectionToModel(section),
+    ...sectionMapping(section),
     sheets
   });
 };
@@ -270,7 +145,7 @@ const getManagerSection = section => {
   });
 
   const sectionDetail = new SectionDetail({
-    ...apiSectionToModel(section),
+    ...sectionMapping(section),
     sheetIds
   });
 
@@ -290,28 +165,6 @@ const getTotalData = totalPage => {
   const total = (totalPage + 4) / 2;
 
   return { totalSheet: total, totalScreen: total };
-};
-
-/**
- * Get book data from API base on book id, current edition
- *
- * @param   {Number | String} bookId    id of selected book
- * @param   {String}          edition   current edition
- * @param   {Boolean}         isEditor  is in editor screen
- * @returns {Object}                    data of book
- */
-const getBook = async (bookId, edition, isEditor) => {
-  const editionQuery = {
-    [EDITION.NONE]: { main: managerQuery, editor: managerQuery },
-    [EDITION.PRINT]: { main: printMainQuery, editor: printEditorQuery },
-    [EDITION.DIGITAL]: { main: digitalMainQuery, editor: digitalEditorQuery }
-  };
-
-  const query = editionQuery[edition][isEditor ? 'editor' : 'main'];
-
-  const { book } = await graphqlRequest(query, { bookId });
-
-  return book;
 };
 
 /**
@@ -354,8 +207,32 @@ const getBookModel = edition => {
  * @param   {Boolean}         isEditor  is in editor screen
  * @returns {Object}                    data of book
  */
+const getBook = async (bookId, edition, isEditor) => {
+  const editionQuery = {
+    [EDITION.NONE]: { main: managerQuery, editor: managerQuery },
+    [EDITION.PRINT]: { main: printMainQuery, editor: printEditorQuery },
+    [EDITION.DIGITAL]: { main: digitalMainQuery, editor: digitalEditorQuery }
+  };
+
+  const query = editionQuery[edition][isEditor ? 'editor' : 'main'];
+
+  const { data } = await graphqlRequest(query, { bookId });
+
+  return data.book;
+};
+
+/**
+ * Get book data from API base on book id, current edition
+ *
+ * @param   {Number | String} bookId    id of selected book
+ * @param   {String}          edition   current edition
+ * @param   {Boolean}         isEditor  is in editor screen
+ * @returns {Object}                    data of book
+ */
 export const getBookDetail = async (bookId, edition, isEditor) => {
   const book = await getBook(bookId, edition, isEditor);
+
+  if (isEmpty(book)) return { book: {}, sectionsSheets: [] };
 
   let totalSheetUntilNow = 0;
 
@@ -380,7 +257,7 @@ export const getBookDetail = async (bookId, edition, isEditor) => {
 
   return {
     book: new bookModel({
-      ...apiBookToModel(book),
+      ...bookMapping(book),
       ...totalData
     }),
     sectionsSheets: sections

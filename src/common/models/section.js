@@ -6,7 +6,7 @@ export class SectionBase extends BaseEntity {
   assigneeId = null;
   color = DEFAULT_COLOR.COLOR;
   dueDate = null;
-  status = PROCESS_STATUS.NOT_STARTED.value;
+  status = PROCESS_STATUS.NOT_STARTED;
 
   /**
    * @param {SectionDetail} props

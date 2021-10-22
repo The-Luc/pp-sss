@@ -144,6 +144,8 @@ export const mutations = {
     currentSheet.isVisited = true;
   },
   [DIGITAL._MUTATES.UPDATE_FRAME_THUMBNAIL](state, { thumbnailUrl, frameId }) {
+    if (!frameId) return;
+
     state.frames[frameId].previewImageUrl = thumbnailUrl;
     if (frameId !== state.frameIds[0]) return;
   },

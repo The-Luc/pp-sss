@@ -1,4 +1,5 @@
 import digitalService from '@/api/digital';
+import { getSheetFrames } from '@/api/frame';
 
 import { STATUS, OBJECT_TYPE } from '@/common/constants';
 import { getUniqueId } from '@/common/utils';
@@ -38,14 +39,7 @@ export const actions = {
     commit(DIGITAL._MUTATES.SET_OBJECTS, { objectList: [] });
     commit(DIGITAL._MUTATES.SET_BACKGROUND, { backgrounds: {} });
 
-    // update frames and frameIds
-    const queryFramesResult = await digitalService.getFrames(
-      state.book.id,
-      state.sheets[state.currentSheetId].sectionId,
-      state.currentSheetId
-    );
-
-    const data = queryFramesResult.data;
+    const data = await getSheetFrames(state.currentSheetId);
 
     commit(DIGITAL._MUTATES.SET_FRAMES, { framesList: data });
   },
