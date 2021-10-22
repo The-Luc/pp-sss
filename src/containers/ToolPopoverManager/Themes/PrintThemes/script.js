@@ -1,6 +1,5 @@
 import { mapActions, mapGetters, mapMutations } from 'vuex';
 
-import { themeOptions } from '@/mock/themes';
 import {
   GETTERS as THEME_GETTERS,
   ACTIONS as THEME_ACTIONS
@@ -22,7 +21,6 @@ export default {
   },
   data() {
     return {
-      items: themeOptions,
       selectedThemeId: null,
       optionThemeSelected: {}
     };
@@ -77,7 +75,7 @@ export default {
      */
     setOptionThemeSelected(themeId) {
       this.optionThemeSelected =
-        this.items.find(item => item.id === themeId) || {};
+        this.themes.find(item => item.id === themeId) || {};
     },
     /**
      * Set selected theme id after change option from select and get theme ref

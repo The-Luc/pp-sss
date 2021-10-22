@@ -5,7 +5,7 @@ export default {
       default: {}
     },
     selectedThemeId: {
-      type: Number,
+      type: String,
       default: null
     }
   },

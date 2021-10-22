@@ -13,7 +13,7 @@
               >Selected Theme:</span
             >
             <PpSelect
-              :items="items"
+              :items="themes"
               :selected-val="optionThemeSelected"
               @change="onChangeTheme"
             />
