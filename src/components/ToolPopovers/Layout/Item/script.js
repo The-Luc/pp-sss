@@ -15,8 +15,8 @@ export default {
       default: () => ({})
     },
     selectedLayoutId: {
-      type: Number,
-      default: 0
+      type: String,
+      default: ''
     },
     isEmpty: {
       type: Boolean,
