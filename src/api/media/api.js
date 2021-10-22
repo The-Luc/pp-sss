@@ -1,4 +1,6 @@
 import { graphqlRequest } from '../axios';
+import { isEmpty } from '@/common/utils';
+import { getMediaApi } from './queries';
 
 import { mediaMapping } from '@/common/mapping';
 
@@ -7,9 +9,9 @@ import {
   VideoAssetEntity
 } from '@/common/models/entities/asset';
 
-import { getMediaApi } from './queries';
-
 export const getPhotos = async (id, terms = []) => {
+  if (isEmpty(terms)) return [];
+
   const res = await graphqlRequest(getMediaApi, { id, terms });
 
   return res.data?.search_community_assets
@@ -18,6 +20,8 @@ export const getPhotos = async (id, terms = []) => {
 };
 
 export const getMedia = async (id, terms = []) => {
+  if (isEmpty(terms)) return [];
+
   const res = await graphqlRequest(getMediaApi, { id, terms });
 
   return res.data?.search_community_assets.map(asset => {
