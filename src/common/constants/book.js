@@ -19,5 +19,5 @@ export const COVER_TYPE = {
 
 export const DELIVERY_OPTION = {
   BULK_SHIPPED: 'Bulk Ship To School',
-  DIRECT_SHIPPED: 'Direct Ship To School'
+  DIRECT_SHIPPED: 'Direct Ship To Home'
 };

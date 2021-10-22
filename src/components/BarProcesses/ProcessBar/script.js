@@ -1,6 +1,6 @@
-import { PROCESS_STATUS } from '@/common/constants';
-
 import BlockBar from '@/components/BarProcesses/BlockBar';
+
+import { PROCESS_STATUS, PROCESS_STATUS_OPTIONS } from '@/common/constants';
 
 export default {
   components: {
@@ -18,23 +18,19 @@ export default {
   },
   computed: {
     isShowDot: function() {
-      return this.status === PROCESS_STATUS.NOT_STARTED.value;
+      return this.status === PROCESS_STATUS.NOT_STARTED;
     },
     processItems: function() {
-      return [
-        {
-          color: this.getColor(PROCESS_STATUS.NOT_STARTED),
-          dataAttributes: [this.getDataAttribute(PROCESS_STATUS.IN_PROCESS)]
-        },
-        {
-          color: this.getColor(PROCESS_STATUS.IN_PROCESS),
-          dataAttributes: [this.getDataAttribute(PROCESS_STATUS.COMPLETED)]
-        },
-        {
-          color: this.getColor(PROCESS_STATUS.COMPLETED),
-          dataAttributes: [this.getDataAttribute(PROCESS_STATUS.APPROVED)]
-        }
-      ];
+      const showProcessItems = PROCESS_STATUS_OPTIONS.filter(
+        ({ value }) => value !== PROCESS_STATUS.NOT_STARTED
+      );
+
+      return showProcessItems.map(({ name }, index) => {
+        return {
+          color: this.getColor(PROCESS_STATUS_OPTIONS[index]?.value),
+          dataAttributes: [this.getDataAttribute(name)]
+        };
+      });
     }
   },
   methods: {
@@ -44,7 +40,7 @@ export default {
      * @returns {String}
      */
     getColor: function(validStatus) {
-      return this.status > validStatus.value ? this.color : null;
+      return this.status > validStatus ? this.color : null;
     },
     /**
      * Get value of data attribute base on process name
@@ -52,7 +48,7 @@ export default {
      * @returns {String}
      */
     getAttrDataValue: function(processStatus) {
-      const lowerCaseName = processStatus.name.toLowerCase();
+      const lowerCaseName = processStatus.toLowerCase();
 
       return lowerCaseName.replace(' ', '-');
     },

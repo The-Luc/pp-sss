@@ -2,7 +2,7 @@ import ProcessItem from '../../ProcessItem';
 import MiniProcess from '@/components/BarProcesses/MiniProcess';
 import ProcessBar from '@/components/BarProcesses/ProcessBar';
 
-import { PROCESS_STATUS } from '@/common/constants';
+import { PROCESS_STATUS_OPTIONS } from '@/common/constants';
 
 export default {
   components: {
@@ -18,11 +18,11 @@ export default {
   },
   computed: {
     status() {
-      const statusValue = Object.keys(PROCESS_STATUS).find(
-        k => PROCESS_STATUS[k].value === this.section.status
+      const process = PROCESS_STATUS_OPTIONS.find(
+        s => s.value === this.section.status
       );
 
-      return PROCESS_STATUS[statusValue].name;
+      return process?.name;
     }
   }
 };

@@ -1,7 +1,13 @@
 import { useGetters, useMutations, useActions } from 'vuex-composition-helpers';
 import { merge } from 'lodash';
 
+import { addNewSection } from '@/api/section';
+
+import { useActionBook, useAppCommon } from '@/hooks';
+
 import { userService } from '@/api/user';
+
+import { isEmpty } from '@/common/utils';
 
 import {
   GETTERS as BOOK_GETTERS,
@@ -13,8 +19,6 @@ import {
   GETTERS as APP_GETTERS,
   MUTATES as APP_MUTATES
 } from '@/store/modules/app/const';
-
-import { useActionBook, useAppCommon } from '@/hooks';
 
 const getSectionSheet = sectionsSheets => {
   const sectionIds = [];
@@ -111,15 +115,25 @@ export const useDueDateMenu = () => {
 };
 
 export const useSectionControl = () => {
-  const { currentUser } = useAppCommon();
+  const { currentUser, generalInfo } = useAppCommon();
 
   const { totalSection } = useGetters({
     totalSection: BOOK_GETTERS.TOTAL_SECTION
   });
 
-  const { addSection } = useMutations({
-    addSection: BOOK_MUTATES.ADD_SECTION
+  const { addSectionToStore } = useMutations({
+    addSectionToStore: BOOK_MUTATES.ADD_SECTION
   });
+
+  const addSection = async () => {
+    const section = await addNewSection(generalInfo.value.bookId);
+
+    if (isEmpty(section)) return;
+
+    const { id, color, dueDate } = section;
+
+    addSectionToStore({ id, color, dueDate });
+  };
 
   return { currentUser, totalSection, addSection };
 };

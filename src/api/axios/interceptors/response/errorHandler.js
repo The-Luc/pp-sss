@@ -6,8 +6,8 @@ const handleBadRequest = () =>
 const handleNetworkError = () =>
   Notification({
     type: 'error',
-    title: 'Disconect Internet',
-    text: 'Net Work Error!!!'
+    title: 'Internet connection problem',
+    text: 'Network Error!!!'
   });
 
 const handleUnauthorized = () =>
