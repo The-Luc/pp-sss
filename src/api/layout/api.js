@@ -1,5 +1,5 @@
 import { get } from 'lodash';
-import { SHEET_TYPE, STATUS } from '@/common/constants';
+import { SHEET_TYPE } from '@/common/constants';
 import { graphqlRequest } from '../axios';
 import {
   getLayoutsPreviewQuery,
@@ -61,7 +61,7 @@ export const getPrintLayoutTypes = async themeId => {
 export const getLayoutsByThemeAndType = async (themeId, categoryId) => {
   const res = await graphqlRequest(getLayoutsQuery, { themeId });
 
-  if (res.status === STATUS.NG) return [];
+  if (!isOk(res)) return [];
 
   const templates = res.data.theme.templates.filter(t =>
     t.categories.some(c => c.id === categoryId)
