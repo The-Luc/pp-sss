@@ -32,10 +32,10 @@ const getBackgroundsOfTheme = async (
   backgroundTypeSubId,
   backgroundPageTypeId
 ) => {
-  const data = await graphqlRequest(backgroundQuery, {
+  const res = await graphqlRequest(backgroundQuery, {
     id: backgroundTypeSubId
   });
-  const backgrounds = data.category.backgrounds.map(
+  const backgrounds = res.data.category.backgrounds.map(
     item =>
       new BackgroundElement({
         ...apiBackgroundToModel(item),
@@ -53,12 +53,12 @@ const getBackgroundsOfCategory = async (
   backgroundTypeSubId,
   backgroundPageTypeId
 ) => {
-  const data = await graphqlRequest(backgroundOfThemeQuery, {
+  const res = await graphqlRequest(backgroundOfThemeQuery, {
     id: backgroundTypeSubId
   });
 
   const backgrounds = [];
-  data.theme.templates.forEach(t => {
+  res.data.theme.templates.forEach(t => {
     t.categories.forEach(c => {
       c.backgrounds.forEach(b => {
         const index = backgrounds.findIndex(item => item.id === b.id);
@@ -105,7 +105,7 @@ export const getBackgrounds = async (
  */
 export const getBackgroundCategories = async () => {
   const res = await graphqlRequest(backgroundCategoriesQuery);
-  return res.categories.map(c => ({
+  return res.data.categories.map(c => ({
     ...c,
     value: c.id
   }));

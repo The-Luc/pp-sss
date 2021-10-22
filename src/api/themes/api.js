@@ -5,7 +5,7 @@ import { themeOptionsQuery } from './queries';
 
 export const loadPrintThemes = async () => {
   const res = await graphqlRequest(themeOptionsQuery);
-  return res.themes.map(item => ({
+  return res.data.themes.map(item => ({
     ...item,
     value: item.id,
     previewImageUrl: PRINT_THEME
@@ -14,7 +14,7 @@ export const loadPrintThemes = async () => {
 
 export const loadDigitalThemes = async () => {
   const res = await graphqlRequest(themeOptionsQuery);
-  return res.themes.map(item => ({
+  return res.data.themes.map(item => ({
     ...item,
     value: item.id,
     previewImageUrl: DIGITAL_THEME
@@ -28,7 +28,7 @@ export const loadDigitalThemes = async () => {
  */
 export const getThemes = async () => {
   const res = await graphqlRequest(themeOptionsQuery);
-  return res.themes.map(item => ({
+  return res.data.themes.map(item => ({
     ...item,
     value: item.id
   }));

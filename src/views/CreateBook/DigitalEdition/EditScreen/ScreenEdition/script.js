@@ -291,7 +291,9 @@ export default {
 
         this.isFrameLoaded = false;
 
-        await this.saveData(oldVal.id, this.currentFrameId);
+        // TODO: revise when mutation DB available
+        // temporary commented for testing
+        // await this.saveData(oldVal.id, this.currentFrameId);
 
         // reset frames, frameIDs, currentFrameId
         this.setFrames({ framesList: [] });

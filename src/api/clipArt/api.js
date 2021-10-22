@@ -3,13 +3,13 @@ import { graphqlRequest } from '../axios';
 import { getClipArts, getClipartCategories } from './queries';
 
 const loadClipArts = async id => {
-  const clipArtList = await graphqlRequest(getClipArts, { id });
-  return clipArtList.category.cliparts;
+  const res = await graphqlRequest(getClipArts, { id });
+  return res.data.category.cliparts;
 };
 
 const loadClipArtCategories = async () => {
-  const clipArtCategories = await graphqlRequest(getClipartCategories);
-  return clipArtCategories.categories;
+  const res = await graphqlRequest(getClipartCategories);
+  return res.data.categories;
 };
 
 const searchClipArtApi = async input => {

@@ -7,7 +7,7 @@ import { portraitFolders } from './queries';
 export const getPortraitFolders = async ({ bookId }) => {
   const response = await graphqlRequest(portraitFolders, { id: bookId });
   const portraitCollections = get(
-    response,
+    response.data,
     'book.community.portrait_collections',
     []
   );

@@ -227,7 +227,9 @@ export default {
       async handler(val, oldVal) {
         if (val?.id === oldVal?.id) return;
 
-        this.saveData(oldVal.id);
+        // TODO: revise when mutation DB available
+        // temporary commented for testing
+        // this.saveData(oldVal.id);
 
         // get data either from API or sessionStorage
         await this.getDataCanvas();
