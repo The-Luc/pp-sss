@@ -8,7 +8,7 @@
       >
         <div class="photo-container" :style="imageStyle">
           <div v-show="portrait.imageUrl" class="photo">
-            <img :src="portrait.imageUrl" />
+            <img alt="Portrait Image" :src="portrait.imageUrl" />
           </div>
         </div>
 

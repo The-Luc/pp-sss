@@ -29,6 +29,7 @@ const apiBackgroundToModel = background => {
 };
 
 const getBackgroundsOfTheme = async (
+  backgroundTypeId,
   backgroundTypeSubId,
   backgroundPageTypeId
 ) => {
@@ -39,7 +40,8 @@ const getBackgroundsOfTheme = async (
     item =>
       new BackgroundElement({
         ...apiBackgroundToModel(item),
-        categoryId: backgroundTypeSubId
+        categoryId: backgroundTypeSubId,
+        backgroundType: backgroundTypeId
       })
   );
   return backgrounds.filter(
@@ -50,6 +52,7 @@ const getBackgroundsOfTheme = async (
 };
 
 const getBackgroundsOfCategory = async (
+  backgroundTypeId,
   backgroundTypeSubId,
   backgroundPageTypeId
 ) => {
@@ -73,8 +76,8 @@ const getBackgroundsOfCategory = async (
       item =>
         new BackgroundElement({
           ...apiBackgroundToModel(item),
-
-          categoryId: backgroundTypeSubId
+          categoryId: backgroundTypeSubId,
+          backgroundType: backgroundTypeId
         })
     )
     .filter(
@@ -94,9 +97,17 @@ export const getBackgrounds = async (
   backgroundPageTypeId
 ) => {
   if (backgroundTypeId === BACKGROUND_TYPE.CATEGORY.id) {
-    return getBackgroundsOfTheme(backgroundTypeSubId, backgroundPageTypeId);
+    return getBackgroundsOfTheme(
+      backgroundTypeId,
+      backgroundTypeSubId,
+      backgroundPageTypeId
+    );
   }
-  return getBackgroundsOfCategory(backgroundTypeSubId, backgroundPageTypeId);
+  return getBackgroundsOfCategory(
+    backgroundTypeId,
+    backgroundTypeSubId,
+    backgroundPageTypeId
+  );
 };
 /**
  * Get background categories for print edition
