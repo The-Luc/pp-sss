@@ -2,7 +2,7 @@ import { STATUS } from '@/common/constants';
 import { isEmpty } from '@/common/utils';
 import { Notification } from '@/components/Notification';
 
-const dataHandler = response => {
+const responseHandler = response => {
   try {
     const { data, error } = response;
 
@@ -12,7 +12,9 @@ const dataHandler = response => {
   } catch (error) {
     const { message } = error;
 
-    const errorMsg = message || 'Something went wrong!';
+    const errorMsg =
+      (message && message.substr(message.indexOf(' '))) ||
+      'Something went wrong!';
 
     Notification({
       type: 'error',
@@ -23,4 +25,4 @@ const dataHandler = response => {
   }
 };
 
-export default dataHandler;
+export default responseHandler;

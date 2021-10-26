@@ -10,9 +10,11 @@ const templateFragment = gql`
 `;
 
 export const getLayoutTypeQuery = gql`
-  query($themeId: ID!) {
+  query getLayoutType($themeId: ID!) {
     theme(id: $themeId) {
+      id
       templates {
+        id
         ...categories
       }
     }
@@ -21,9 +23,11 @@ export const getLayoutTypeQuery = gql`
 `;
 
 export const getLayoutsPreviewQuery = gql`
-  query($themeId: ID!) {
+  query getLayoutsPreview($themeId: ID!) {
     theme(id: $themeId) {
+      id
       templates {
+        id
         preview_image_url
       }
     }
@@ -31,8 +35,9 @@ export const getLayoutsPreviewQuery = gql`
 `;
 
 export const getLayoutsQuery = gql`
-  query($themeId: ID!) {
+  query getLayouts($themeId: ID!) {
     theme(id: $themeId) {
+      id
       templates {
         id
         data
@@ -45,7 +50,7 @@ export const getLayoutsQuery = gql`
 `;
 
 export const getLayoutElementsQuery = gql`
-  query($id: ID!) {
+  query getLayoutElements($id: ID!) {
     template(id: $id) {
       id
       data

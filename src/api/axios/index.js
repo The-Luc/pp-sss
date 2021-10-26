@@ -2,13 +2,11 @@ import { createClient, dedupExchange, fetchExchange } from '@urql/core';
 import { cacheExchange } from '@urql/exchange-graphcache';
 import store from '@/store';
 import { MUTATES as APP_MUTATES } from '@/store/modules/app/const';
-
-let requestCount = 0;
-
 import { getItem } from '@/common/storage';
 import { LOCAL_STORAGE } from '@/common/constants';
-import dataHandler from './dataHandler';
-import errorHandler from './errorHandler';
+import responseHandler from './responseHandler';
+
+let requestCount = 0;
 
 const urqlClient = createClient({
   url: process.env.VUE_APP_API_ENDPOINT,
@@ -22,21 +20,18 @@ const urqlClient = createClient({
 });
 
 export const graphqlRequest = async (query, variables = {}) => {
-  try {
-    const { operation } = query.definitions[0];
+  const { operation } = query.definitions[0];
 
-    // show loading screen
-    store.commit(APP_MUTATES.SET_LOADING_STATE, { value: true });
-    requestCount++;
-    const res = await urqlClient[operation](query, variables).toPromise();
+  // show loading screen
+  store.commit(APP_MUTATES.SET_LOADING_STATE, { value: true });
+  requestCount++;
 
-    // hide loading screen
-    requestCount--;
-    if (requestCount === 0)
-      store.commit(APP_MUTATES.SET_LOADING_STATE, { value: false });
+  const res = await urqlClient[operation](query, variables).toPromise();
 
-    return dataHandler(res);
-  } catch (error) {
-    return errorHandler(error);
-  }
+  // hide loading screen
+  requestCount--;
+  if (requestCount === 0)
+    store.commit(APP_MUTATES.SET_LOADING_STATE, { value: false });
+
+  return responseHandler(res);
 };

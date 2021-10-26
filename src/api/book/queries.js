@@ -34,13 +34,17 @@ const bookFragment = gql`
 `;
 
 export const digitalMainQuery = gql`
-  query($bookId: ID!) {
+  query digitalMain($bookId: ID!) {
     book(id: $bookId) {
+      id
       book_sections {
+        id
         due_date
         status
         sheets {
+          id
           digital_frames {
+            id
             preview_image_url
           }
         }
@@ -54,12 +58,16 @@ export const digitalMainQuery = gql`
 // book: theme_id, is_photo_visited
 // book / book_sections / sheets: theme_id, layout_Id, is_visited, media
 export const digitalEditorQuery = gql`
-  query($bookId: ID!) {
+  query digitalEditor($bookId: ID!) {
     book(id: $bookId) {
+      id
       community_id
       book_sections {
+        id
         sheets {
+          id
           digital_frames {
+            id
             preview_image_url
           }
         }
@@ -72,13 +80,17 @@ export const digitalEditorQuery = gql`
 
 // book_sections / sheets: link
 export const printMainQuery = gql`
-  query($bookId: ID!) {
+  query printMain($bookId: ID!) {
     book(id: $bookId) {
+      id
       book_sections {
+        id
         due_date
         status
         sheets {
+          id
           pages {
+            id
             preview_image_url
           }
         }
@@ -92,16 +104,21 @@ export const printMainQuery = gql`
 // book: theme_id, is_photo_visited, page_info
 // book / book_sections / sheets: theme_id, layout_Id, is_visited, media, spread_info, link
 export const printEditorQuery = gql`
-  query($bookId: ID!) {
+  query printEditor($bookId: ID!) {
     book(id: $bookId) {
+      id
       community_id
       number_max_pages
       yearbook_spec {
+        id
         cover_option
       }
       book_sections {
+        id
         sheets {
+          id
           pages {
+            id
             preview_image_url
           }
         }
@@ -115,9 +132,11 @@ export const printEditorQuery = gql`
 export const managerQuery = gql`
   query($bookId: ID!) {
     book(id: $bookId) {
+      id
       created_at
       number_max_pages
       yearbook_spec {
+        id
         cover_option
         delivery_option
         copies_sold
@@ -128,10 +147,12 @@ export const managerQuery = gql`
         phase_one_start_date
       }
       book_sections {
+        id
         draggable
         due_date
         status
         sheets {
+          id
           draggable
           fixed_position
         }

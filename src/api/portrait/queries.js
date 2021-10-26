@@ -1,8 +1,9 @@
 import { gql } from 'graphql-tag';
 
 export const portraitFolders = gql`
-  query($id: ID!) {
+  query portraitFolders($id: ID!) {
     book(id: $id) {
+      id
       community {
         portrait_collections {
           id
