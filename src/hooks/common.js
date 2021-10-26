@@ -26,14 +26,10 @@ export const useAppCommon = () => {
     isLoading: APP_GETTERS.IS_LOADING
   });
 
-  const { setEdition, setGeneralInfo, startLoading, endLoading } = useMutations(
-    {
-      setEdition: APP_MUTATES.SET_ACTIVE_EDITION,
-      setGeneralInfo: APP_MUTATES.SET_GENERAL_INFO,
-      startLoading: APP_MUTATES.START_LOADING,
-      endLoading: APP_MUTATES.END_LOADING
-    }
-  );
+  const { setEdition, setGeneralInfo } = useMutations({
+    setEdition: APP_MUTATES.SET_ACTIVE_EDITION,
+    setGeneralInfo: APP_MUTATES.SET_GENERAL_INFO
+  });
 
   const setActiveEdition = edition => setEdition({ edition });
 
@@ -45,8 +41,6 @@ export const useAppCommon = () => {
     setActiveEdition,
     setGeneralInfo,
     generalInfo,
-    isLoading,
-    startLoading,
-    endLoading
+    isLoading
   };
 };
