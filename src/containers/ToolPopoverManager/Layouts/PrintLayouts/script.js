@@ -17,15 +17,15 @@ import {
   isEmpty,
   insertItemsToArray,
   removeItemsFormArray,
-  isHalfSheet,
-  entitiesToObjects
+  isHalfSheet
 } from '@/common/utils';
 import {
   usePopoverCreationTool,
   useLayoutPrompt,
   useGetLayouts,
   useModal,
-  useActionLayout
+  useActionLayout,
+  useLayoutElements
 } from '@/hooks';
 
 import { getCustom as getCustomLayouts } from '@/api/layouts';
@@ -58,6 +58,8 @@ export default {
       updateSheetThemeLayout
     } = useGetLayouts(edition);
 
+    const { getLayoutElements } = useLayoutElements();
+
     const {
       saveToFavorites,
       getFavorites,
@@ -83,7 +85,8 @@ export default {
       getFavorites,
       getCustom,
       getCustomAndFavoriteLayouts,
-      getFavoriteLayoutTypeMenu
+      getFavoriteLayoutTypeMenu,
+      getLayoutElements
     };
   },
   data() {
@@ -266,12 +269,12 @@ export default {
      * Trigger mutation to set theme and layout for sheet after that close popover when click Select button
      * @param {Object} layoutData layout that is selected
      */
-    setThemeLayoutForSheet(layoutData) {
+    async setThemeLayoutForSheet(layoutData) {
       if (this.layouts.length === 0) return;
 
       const layout = cloneDeep(layoutData);
 
-      layout.objects = entitiesToObjects(layout.objects);
+      layout.objects = await this.getLayoutElements(layout.id);
 
       // change objects coords if user at FRONT_COVER or BACK_COVER
       if (this.isHalfSheet) {

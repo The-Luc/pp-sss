@@ -1,3 +1,4 @@
+import { updateSection } from '@/api/section';
 import DragDropControl from '@/components/DragDrops/DragDropControl';
 
 import { useSectionName } from '@/views/CreateBook/Manager/composables';
@@ -40,8 +41,10 @@ export default {
     };
   },
   methods: {
-    saveTitle() {
+    async saveTitle() {
       this.sectionNameCurrent = this.sectionNameCurrent.trim() || 'Untitled';
+
+      await updateSection(this.sectionId, { name: this.sectionNameCurrent });
 
       this.changeName({
         sectionName: this.sectionNameCurrent,

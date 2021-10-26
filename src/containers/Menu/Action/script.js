@@ -243,7 +243,7 @@ export default {
     async onChangeAssignee({ id }) {
       const assigneeId = this.assigneeId === id ? -1 : id;
 
-      await this.updateAssignee({ id: this.sectionId, assigneeId });
+      await this.updateAssignee(this.sectionId, assigneeId);
 
       setTimeout(() => {
         this.isOpenAssignee = false;

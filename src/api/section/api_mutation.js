@@ -4,7 +4,11 @@ import { sectionMapping } from '@/common/mapping';
 
 import { SectionDetail } from '@/common/models';
 
-import { addSectionQuery } from './mutations';
+import {
+  addSectionQuery,
+  assignSectionUserMutation,
+  updateSectionMutation
+} from './mutations';
 
 /**
  * Add new section
@@ -28,5 +32,32 @@ export const addNewSection = async bookId => {
     ]
   });
 
+  return new SectionDetail({ ...sectionMapping(data) });
+};
+
+/**
+ * To update assignee of a section
+ *
+ * @param {Object} data including sectionId and assigneeId of a section
+ * @returns object containing info of assignee
+ */
+export const assignSectionUser = async (sectionId, assigneeId) => {
+  return await graphqlRequest(assignSectionUserMutation, {
+    sectionId,
+    params: { assigned_user_id: assigneeId }
+  });
+};
+
+/**
+ * Update section
+ * @param {String} sectionId section's id
+ * @param {Object} params params to update section
+ * @returns section data
+ */
+export const updateSection = async (sectionId, params) => {
+  const data = await graphqlRequest(updateSectionMutation, {
+    sectionId,
+    params
+  });
   return new SectionDetail({ ...sectionMapping(data) });
 };

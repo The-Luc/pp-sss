@@ -12,6 +12,8 @@ import {
   getFavoriteLayoutTypeMenu
 } from '@/api/layouts';
 
+import { getLayoutElements } from '@/api/layout';
+
 import { GETTERS as THEME_GETTERS } from '@/store/modules/theme/const';
 
 import {
@@ -90,6 +92,12 @@ export const useGetLayouts = edition => {
     return getterDigitalLayout();
   }
 };
+
+/**
+ * to get layout elements
+ * @returns layout elements
+ */
+export const useLayoutElements = () => ({ getLayoutElements });
 
 /**
  * to return the getters digital layout

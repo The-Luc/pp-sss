@@ -85,8 +85,7 @@ class MutationClass extends BaseObject {
   UPDATE_SAVING_STATUS = 'updateSavingStatus';
   UPDATE_MEDIA_SIDEBAR_OPEN = 'updateMediaSidebarOpen';
   UPDATE_DISABLED_TOOLBAR_ITEMS = 'updateDisabledToolbarItems';
-  START_LOADING = 'startLoading';
-  END_LOADING = 'endLoading';
+  SET_LOADING_STATE = 'setLoadingState';
 
   constructor(props) {
     super(props);

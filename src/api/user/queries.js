@@ -7,3 +7,17 @@ export const getUserRoleQuery = gql`
     }
   }
 `;
+
+export const getCommunityUsersQuery = gql`
+  query($communityId: ID!) {
+    community(id: $communityId) {
+      communities_users {
+        admin
+        user {
+          name
+          id
+        }
+      }
+    }
+  }
+`;

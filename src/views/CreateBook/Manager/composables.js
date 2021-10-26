@@ -1,24 +1,24 @@
-import { useGetters, useMutations, useActions } from 'vuex-composition-helpers';
+import { useGetters, useMutations } from 'vuex-composition-helpers';
 import { merge } from 'lodash';
 
-import { addNewSection } from '@/api/section';
+import { addNewSection, assignSectionUser } from '@/api/section';
 
 import { useActionBook, useAppCommon } from '@/hooks';
 
-import { userService } from '@/api/user';
+import { getUsersApi } from '@/api/user';
 
 import { isEmpty } from '@/common/utils';
 
 import {
   GETTERS as BOOK_GETTERS,
-  MUTATES as BOOK_MUTATES,
-  ACTIONS as BOOK_ACTIONS
+  MUTATES as BOOK_MUTATES
 } from '@/store/modules/book/const';
 
 import {
   GETTERS as APP_GETTERS,
   MUTATES as APP_MUTATES
 } from '@/store/modules/app/const';
+import { isOk } from '@/common/utils';
 
 const getSectionSheet = sectionsSheets => {
   const sectionIds = [];
@@ -89,10 +89,14 @@ export const useSectionActionMenu = () => {
     setSectionSelected: APP_MUTATES.SET_SELECTION_SELECTED
   });
 
-  const { updateAssignee } = useActions({
-    updateAssignee: BOOK_ACTIONS.UPDATE_ASSIGNEE
-  });
+  const updateAssignee = async (sectionId, assigneeId) => {
+    // update to database
+    const res = await assignSectionUser(sectionId, assigneeId);
 
+    if (!isOk(res)) return;
+    // update to store
+    updateSection({ id: sectionId, assigneeId });
+  };
   const { sectionSelected } = useGetters({
     sectionSelected: APP_GETTERS.SECTION_SELECTED
   });
@@ -101,7 +105,7 @@ export const useSectionActionMenu = () => {
 };
 
 export const useAssigneeMenu = () => {
-  const getUsers = userService.getUsers;
+  const getUsers = getUsersApi;
 
   return { getUsers };
 };
