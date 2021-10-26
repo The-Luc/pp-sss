@@ -15,41 +15,17 @@ import {
   addObjects,
   deleteObjects,
   setBackgrounds,
-  setBookInfo
+  setBookInfo,
+  setBookId,
+  setSectionsWithSheets
 } from '@/common/store';
 
 export const mutations = {
-  [DIGITAL._MUTATES.SET_BOOK_ID](state, { bookId }) {
-    state.book.id = bookId;
-  },
+  [DIGITAL._MUTATES.SET_BOOK_ID]: setBookId,
   [DIGITAL._MUTATES.SET_DEFAULT_THEME_ID](state, { themeId }) {
     state.book.defaultThemeId = themeId;
   },
-  [DIGITAL._MUTATES.SET_SECTIONS_SHEETS](state, { sectionsSheets }) {
-    state.sections = sectionsSheets.map(s => {
-      const section = {
-        ...s,
-        sheetIds: s.sheets.map(sheet => sheet.id)
-      };
-
-      delete section.sheets;
-
-      return section;
-    });
-
-    const sheets = {};
-
-    sectionsSheets.forEach(section => {
-      section.sheets.forEach(sheet => {
-        sheets[sheet.id] = {
-          ...sheet,
-          sectionId: section.id
-        };
-      });
-    });
-
-    state.sheets = sheets;
-  },
+  [DIGITAL._MUTATES.SET_SECTIONS_SHEETS]: setSectionsWithSheets,
   [DIGITAL._MUTATES.SET_OBJECTS](state, { objectList }) {
     if (objectList.length === 0) {
       state.objects = {};

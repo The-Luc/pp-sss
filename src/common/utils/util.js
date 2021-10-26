@@ -14,6 +14,23 @@ import {
   DIGITAL_PAGE_SIZE
 } from '@/common/constants';
 
+const mapSubData = (sourceObject, rules, data) => {
+  const isNoSubRule = isEmpty(data);
+  const isNoSubRuleData = isNoSubRule || isEmpty(data.data);
+  const isNoSubRuleRestrict = isNoSubRule || isEmpty(data.restrict);
+
+  const subData = isNoSubRuleData ? {} : data.data;
+  const subRestrict = isNoSubRuleRestrict ? [] : data.restrict;
+
+  const useRules = cloneDeep(rules);
+
+  merge(useRules.data, subData);
+
+  useRules.restrict = mergeArray(useRules.restrict, subRestrict);
+
+  return mapObject(sourceObject, useRules);
+};
+
 /**
  * Get theme option from list themes option by id
  *
@@ -98,23 +115,7 @@ export const mapObject = (sourceObject, rules) => {
     }
 
     if (typeof sourceObject[k] === 'object') {
-      const isNoSubRule = isEmpty(rules.data[k]);
-      const isNoSubRuleData = isNoSubRule || isEmpty(rules.data[k].data);
-      const isNoSubRuleRestrict =
-        isNoSubRule || isEmpty(rules.data[k].restrict);
-
-      const subData = isNoSubRuleData ? {} : rules.data[k].data;
-      const subRestrict = isNoSubRuleRestrict ? [] : rules.data[k].restrict;
-
-      const useRules = cloneDeep(rules);
-
-      merge(useRules.data, subData);
-
-      useRules.restrict = mergeArray(useRules.restrict, subRestrict);
-
-      const subObject = mapObject(sourceObject[k], useRules);
-
-      merge(resultObject, subObject);
+      merge(resultObject, mapSubData(sourceObject[k], rules, rules.data[k]));
 
       return;
     }
@@ -127,9 +128,23 @@ export const mapObject = (sourceObject, rules) => {
 
     const mapName = rules.data[k].name;
 
-    resultObject[mapName] = isEmpty(rules.data[k].parse)
+    if (isEmpty(rules.data[k].parse)) {
+      resultObject[mapName] = sourceObject[k];
+
+      return;
+    }
+
+    const sourceName = rules.data[k].source;
+
+    const originValue = isEmpty(sourceName)
       ? sourceObject[k]
-      : rules.data[k].parse(sourceObject[k]);
+      : sourceObject[sourceName];
+
+    const value = rules.data[k].parse(originValue);
+
+    resultObject[mapName] = isEmpty(resultObject[mapName])
+      ? value
+      : merge(resultObject[mapName], value);
   });
 
   return resultObject;

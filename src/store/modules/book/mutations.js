@@ -6,7 +6,7 @@ import { isEmpty, moveItem } from '@/common/utils';
 
 import BOOK from './const';
 
-import { SectionDetail, SheetDetail } from '@/common/models';
+import { SectionBase, SheetDetail } from '@/common/models';
 
 export const mutations = {
   [BOOK._MUTATES.SET_BOOK_ID]: setBookId,
@@ -133,7 +133,7 @@ export const mutations = {
   [BOOK._MUTATES.ADD_SECTION](state, { id, color, dueDate }) {
     state.sections = {
       ...state.sections,
-      [id]: new SectionDetail({ id, color, dueDate })
+      [id]: new SectionBase({ id, color, dueDate })
     };
 
     state.sectionIds.splice(state.sectionIds.length - 1, 0, id);
