@@ -1,28 +1,30 @@
-import axios from 'axios';
-import queryString from 'query-string';
-import configResponse from './interceptors/response/configRespone';
-import configRequest from './interceptors/request/configRequest';
-import { print } from 'graphql/language/printer';
+import { createClient, dedupExchange, fetchExchange } from '@urql/core';
+import { cacheExchange } from '@urql/exchange-graphcache';
 
-const axiosClient = axios.create({
-  baseURL: process.env.VUE_APP_API_ENDPOINT,
-  headers: {
-    'content-type': 'application/json',
-    Accept: 'application/json'
-  },
-  paramsSeriallizer: params => queryString.stringify(params)
+import { getItem } from '@/common/storage';
+import { LOCAL_STORAGE } from '@/common/constants';
+import dataHandler from './dataHandler';
+import errorHandler from './errorHandler';
+
+const urqlClient = createClient({
+  url: process.env.VUE_APP_API_ENDPOINT,
+  exchanges: [dedupExchange, cacheExchange({}), fetchExchange],
+  fetchOptions: () => {
+    const token = getItem(LOCAL_STORAGE.TOKEN);
+    return {
+      headers: { authorization: token ? `Bearer ${token}` : '' }
+    };
+  }
 });
 
-const configInterceptor = axiosObject => {
-  configRequest(axiosObject.interceptors.request);
-  configResponse(axiosObject.interceptors.response);
-};
+export const graphqlRequest = async (query, variables = {}) => {
+  try {
+    const { operation } = query.definitions[0];
 
-configInterceptor(axiosClient);
+    const res = await urqlClient[operation](query, variables).toPromise();
 
-export const graphqlRequest = (query, variables = {}) => {
-  return axiosClient.post('', {
-    query: print(query),
-    variables
-  });
+    return dataHandler(res);
+  } catch (error) {
+    return errorHandler(error);
+  }
 };
