@@ -1,7 +1,7 @@
 import store from '@/store';
 import { MUTATES } from '@/store/modules/app/const';
 import { isEmpty } from '@/common/utils';
-import { userService } from '@/api/user';
+import { getCurrentUserApi } from '@/api/user';
 
 const authGuard = (to, from, next) => {
   const redirect = async () => {
@@ -17,7 +17,7 @@ const authGuard = (to, from, next) => {
       return;
     }
 
-    const user = await userService.getCurrentUser();
+    const user = await getCurrentUserApi();
 
     const isUnauthenticated = isEmpty(user);
     const isLoginPage = from?.name === 'login';

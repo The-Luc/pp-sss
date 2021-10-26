@@ -1,4 +1,5 @@
 import { graphqlRequest } from '../axios';
+import { get } from 'lodash';
 
 import { loginUserMutation } from './mutations';
 
@@ -11,12 +12,11 @@ import {
 import { isEmpty } from '@/common/utils';
 
 import { getItem } from '@/common/storage';
-import { communityUsers } from '@/mock/users';
 import { Notification } from '@/components/Notification';
 import { LOCAL_STORAGE, ROLE, STATUS } from '@/common/constants';
-import { getUserRoleQuery } from './queries';
+import { getCommunityUsersQuery, getUserRoleQuery } from './queries';
 
-const logInUser = async (email, password) => {
+export const logInUser = async (email, password) => {
   try {
     const res = await graphqlRequest(loginUserMutation, {
       email,
@@ -41,7 +41,7 @@ const logInUser = async (email, password) => {
   }
 };
 
-const getCurrentUserApi = async () => {
+export const getCurrentUserApi = async () => {
   const communityUserId = getItem(LOCAL_STORAGE.COMMUNITY_USER_ID);
 
   const res = await graphqlRequest(getUserRoleQuery, {
@@ -58,15 +58,31 @@ const getCurrentUserApi = async () => {
   });
 };
 
-const getUsersApi = () => {
-  return new Promise(resolve => {
-    setTimeout(() => {
-      resolve(communityUsers.map(u => new User(u)));
-    });
+export const getUsersApi = async () => {
+  const res = await graphqlRequest(getCommunityUsersQuery, { communityId: 1 });
+
+  if (res.status === STATUS.NG) return [];
+
+  const commUsers = get(res, 'data.community.communities_users', []);
+
+  const users = [];
+  const ids = [];
+  commUsers.forEach(({ admin, user }) => {
+    if (isEmpty(user) || ids.includes(user.id)) return;
+
+    ids.push(user.id);
+    users.push(
+      new User({
+        id: user.id,
+        name: user.name,
+        role: admin ? ROLE.ADMIN : ROLE.USER
+      })
+    );
   });
+  return users;
 };
 
-const authenticateApi = (bookId, sheetId) => {
+export const authenticateApi = (bookId, sheetId) => {
   return new Promise(resolve => {
     if (isEmpty(bookId)) {
       resolve(getErrorWithMessages(''));
@@ -76,11 +92,4 @@ const authenticateApi = (bookId, sheetId) => {
 
     resolve(getSuccessWithData({ sheetId }));
   });
-};
-
-export const userService = {
-  getCurrentUser: getCurrentUserApi,
-  getUsers: getUsersApi,
-  authenticate: authenticateApi,
-  logIn: logInUser
 };
