@@ -1,6 +1,6 @@
 import { isEmpty } from '@/common/utils';
 import { graphqlRequest } from '../axios';
-import { getClipArts, getClipartCategories, searchClipArts } from './queries';
+import { getClipArts, getClipartCategories, searchClipArt } from './queries';
 
 /**
  * To get list clipart by id of caregory
@@ -29,7 +29,7 @@ const loadClipArtCategories = async () => {
 const searchClipArtApi = async keyword => {
   if (isEmpty(keyword)) return [];
 
-  const res = await graphqlRequest(searchClipArts, { keyword });
+  const res = await graphqlRequest(searchClipArt, { keyword });
   const category_keyword = res.data.category_keyword;
 
   return isEmpty(category_keyword) ? [] : category_keyword.cliparts;
