@@ -6,35 +6,12 @@ export class SectionBase extends BaseEntity {
   assigneeId = null;
   color = DEFAULT_COLOR.COLOR;
   dueDate = null;
-  status = PROCESS_STATUS.NOT_STARTED;
-
-  /**
-   * @param {SectionDetail} props
-   */
-  constructor(props) {
-    super(props);
-    this._set(props);
-  }
-}
-
-export class SectionDetail extends SectionBase {
   draggable = true;
+  status = PROCESS_STATUS.NOT_STARTED;
   sheetIds = [];
 
   /**
-   * @param {SectionDetail} props
-   */
-  constructor(props) {
-    super(props);
-    this._set(props);
-  }
-}
-
-export class SectionEditionDetail extends SectionBase {
-  sheets = [];
-
-  /**
-   * @param {SectionEditionDetail} props
+   * @param {SectionBase} props
    */
   constructor(props) {
     super(props);

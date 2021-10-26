@@ -52,11 +52,7 @@ export const bookMapping = book => {
             name: 'deliveryDate',
             parse: value => apiToBaseDate(value)
           },
-          release_date: {
-            name: 'releaseDate',
-            parse: value => apiToBaseDate(value)
-          },
-          sale_date: {
+          phase_one_start_date: {
             name: 'saleDate',
             parse: value => apiToBaseDate(value)
           }

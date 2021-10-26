@@ -33,9 +33,9 @@ export const useBookPrintInfo = () => {
   const { getBookInfo } = useActionBook();
 
   const getBookPrintInfo = async bookId => {
-    const { book, sectionsSheets } = await getBookInfo(bookId);
+    const { book, sections, sheets } = await getBookInfo(bookId);
 
-    setSectionsSheets({ sectionsSheets });
+    setSectionsSheets({ sections, sheets });
 
     const { title, totalPage, totalSheet, totalScreen } = book;
 
@@ -44,7 +44,5 @@ export const useBookPrintInfo = () => {
     });
   };
 
-  return {
-    getBookPrintInfo
-  };
+  return { getBookPrintInfo };
 };

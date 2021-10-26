@@ -10,6 +10,8 @@
     >
       <slot :name="item.slotName"></slot>
     </Block>
+
+    <slot></slot>
   </div>
 </template>
 

@@ -1,29 +1,35 @@
-import { mapGetters } from 'vuex';
-
-import ProcessItem from '../ProcessItem';
 import MiniProcess from '@/components/BarProcesses/MiniProcess';
 
-import { GETTERS } from '@/store/modules/book/const';
+import ProcessItem from '../ProcessItem';
+
+import { useGanttChart } from '../../../composables';
 
 export default {
   components: {
     ProcessItem,
     MiniProcess
   },
+  setup() {
+    const {
+      totalDayToShow,
+      saleDateFromBeginning,
+      releaseDateFromBeginning
+    } = useGanttChart();
+
+    return { totalDayToShow, saleDateFromBeginning, releaseDateFromBeginning };
+  },
   computed: {
-    ...mapGetters({
-      totalDayToShow: GETTERS.TOTAL_DAYS_SHOW_ON_CHART,
-      saleDateFromBeginning: GETTERS.SALE_DATE_FROM_BEGINNING,
-      releaseDateFromBeginning: GETTERS.RELEASE_DATE_FROM_BEGINNING
-    }),
     preSalePosition() {
       return `${(this.saleDateFromBeginning / this.totalDayToShow) * 100}%`;
     },
     preSaleLength() {
-      const diffDate =
-        this.releaseDateFromBeginning - this.saleDateFromBeginning + 1;
+      const salePercent =
+        (this.saleDateFromBeginning / this.totalDayToShow) * 100;
 
-      return `${(diffDate / this.totalDayToShow) * 100}%`;
+      const releaseInPercent =
+        (this.releaseDateFromBeginning / this.totalDayToShow) * 100;
+
+      return `${releaseInPercent - salePercent}%`;
     }
   }
 };

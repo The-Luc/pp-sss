@@ -1,8 +1,15 @@
 import { isEmpty } from '@/common/utils';
 
-import { OBJECT_TYPE } from '@/common/constants';
+import {
+  calcFrameAnimationDuration,
+  isPhotoVisited,
+  sectionsWithSheets,
+  defaultThemeId
+} from '@/common/store';
+
 import DIGITAL from './const';
-import { calcFrameAnimationDuration, isPhotoVisited } from '@/common/store';
+
+import { OBJECT_TYPE } from '@/common/constants';
 
 export const getters = {
   [DIGITAL._GETTERS.CURRENT_SHEET]: ({ sheets, currentSheetId }) => {
@@ -64,17 +71,8 @@ export const getters = {
       ? { isSingle: true, isEmpty: true }
       : { isSingle: true, background: background.left };
   },
-  [DIGITAL._GETTERS.SECTIONS_SHEETS]: ({ sections, sheets }) => {
-    return sections.map(section => {
-      return {
-        ...section,
-        sheets: section.sheetIds.map(sheetId => sheets[sheetId])
-      };
-    });
-  },
-  [DIGITAL._GETTERS.DEFAULT_THEME_ID]: ({ book }) => {
-    return book.defaultThemeId;
-  },
+  [DIGITAL._GETTERS.SECTIONS_SHEETS]: sectionsWithSheets,
+  [DIGITAL._GETTERS.DEFAULT_THEME_ID]: defaultThemeId,
   [DIGITAL._GETTERS.GET_ARRAY_FRAMES]: ({ frames, frameIds }) => {
     return frameIds.map(id => frames[id]);
   },

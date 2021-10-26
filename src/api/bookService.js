@@ -1,12 +1,11 @@
 import {
   BookDetail,
-  SectionDetail,
+  SectionBase,
   BookManagerDetail,
   BookPrintDetail,
   BookDigitalDetail,
   SheetPrintDetail,
   SheetDigitalDetail,
-  SectionEditionDetail,
   SheetDetail
 } from '@/common/models';
 import { SheetEntity } from '@/common/models/entities';
@@ -49,7 +48,7 @@ export const getBookDetail = bookId => {
 
       // adding sheetIds to section
       section.sheetIds = sheetIds;
-      sectionsAsObject[id] = new SectionDetail(section);
+      sectionsAsObject[id] = new SectionBase(section);
     });
 
     sheetData.forEach(sheet => {
@@ -216,7 +215,7 @@ export const getBookPrintInfo = async bookId => {
       totalSheet += section.sheets.length;
     }
 
-    return new SectionEditionDetail({
+    return new SectionBase({
       ...section,
       sheets
     });
@@ -264,7 +263,7 @@ export const getBookDigitalInfo = async bookId => {
 
     totalSheet += section.sheets.length;
 
-    return new SectionEditionDetail({
+    return new SectionBase({
       ...section,
       sheets
     });

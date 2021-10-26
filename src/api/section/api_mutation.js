@@ -2,7 +2,7 @@ import { graphqlRequest } from '../axios';
 
 import { sectionMapping } from '@/common/mapping';
 
-import { SectionDetail } from '@/common/models';
+import { SectionBase } from '@/common/models';
 
 import {
   addSectionQuery,
@@ -22,8 +22,8 @@ export const addNewSection = async bookId => {
     params: [
       {
         assigned_user_id: null,
-        name: null,
-        draggable: null,
+        name: '',
+        draggable: true,
         color: null,
         status: null,
         due_date: null,
@@ -32,7 +32,7 @@ export const addNewSection = async bookId => {
     ]
   });
 
-  return new SectionDetail({ ...sectionMapping(data) });
+  return new SectionBase({ ...sectionMapping(data) });
 };
 
 /**
@@ -59,5 +59,5 @@ export const updateSection = async (sectionId, params) => {
     sectionId,
     params
   });
-  return new SectionDetail({ ...sectionMapping(data) });
+  return new SectionBase({ ...sectionMapping(data) });
 };

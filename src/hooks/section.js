@@ -28,13 +28,12 @@ export const useGetterEditionSection = () => {
   const { value: isDigital } = useAppCommon().isDigitalEdition;
   const GETTERS = isDigital ? DIGITAL_GETTERS : PRINT_GETTERS;
 
-  const { currentSection } = useGetters({
-    currentSection: GETTERS.CURRENT_SECTION
+  const { currentSection, sections } = useGetters({
+    currentSection: GETTERS.CURRENT_SECTION,
+    sections: GETTERS.SECTIONS_SHEETS
   });
 
-  return {
-    currentSection
-  };
+  return { currentSection, sections };
 };
 
 export const useGetterPrintSection = () => {

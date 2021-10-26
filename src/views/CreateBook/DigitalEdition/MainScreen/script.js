@@ -1,12 +1,11 @@
 import ThumbnailItem from '@/components/Thumbnail/ThumbnailItem';
 import Action from '@/containers/Menu/Action';
 
-import { useUser } from '@/hooks';
+import { useUser, useGetterDigitalSection } from '@/hooks';
 
 import { getSectionsWithAccessible } from '@/common/utils';
 
 import { useBookDigitalInfo } from './composables';
-import { useSectionItems } from '@/views/CreateBook/Manager/composables';
 
 export default {
   components: {
@@ -16,7 +15,7 @@ export default {
   setup() {
     const { currentUser } = useUser();
     const { getBookDigitalInfo } = useBookDigitalInfo();
-    const { sections: bookSections } = useSectionItems();
+    const { sections: bookSections } = useGetterDigitalSection();
 
     return { currentUser, getBookDigitalInfo, bookSections };
   },

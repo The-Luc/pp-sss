@@ -59,6 +59,7 @@
     content: '';
     position: absolute;
     top: 0;
+    z-index: 1;
     width: calc(50% + 0.5px);
     height: 100%;
     border-right: 1px solid $color-gray2;
