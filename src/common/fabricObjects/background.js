@@ -106,8 +106,8 @@ export const createBackgroundFabricObject = (
   const isLeftPage = isAddToLeft ?? prop.isLeftPage;
 
   return new Promise(resolve => {
-    fabric.Image.fromURL(prop.imageUrl, img => {
-      img.set({
+    fabric.util.loadImage(prop.imageUrl, img => {
+      const background = new fabric.Image(img, {
         ...fabricProp,
         isLeftPage,
         id,
@@ -118,7 +118,7 @@ export const createBackgroundFabricObject = (
         ...DEFAULT_FABRIC_BACKGROUND
       });
 
-      resolve(img);
+      resolve(background);
     });
   });
 };

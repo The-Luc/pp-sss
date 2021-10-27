@@ -66,8 +66,8 @@ export class SheetEditionDetail extends SheetBase {
 export class SheetPrintDetail extends SheetEditionDetail {
   pageLeftName = null;
   pageRightName = null;
-  thumnailLeftUrl = null;
-  thumnailRightUrl = null;
+  thumbnailLeftUrl = null;
+  thumbnailRightUrl = null;
   spreadInfo = new SpreadInfo();
 
   /**
