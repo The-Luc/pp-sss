@@ -90,15 +90,8 @@ export const usePrintBackgroundMenu = () => {
     backgroundTypeId,
     backgroundTypeSubId,
     backgroundPageTypeId
-  ) => {
-    const backgrounds = await getBackgrounds(
-      backgroundTypeId,
-      backgroundTypeSubId,
-      backgroundPageTypeId
-    );
-
-    return backgrounds;
-  };
+  ) =>
+    getBackgrounds(backgroundTypeId, backgroundTypeSubId, backgroundPageTypeId);
 
   return {
     currentSheet,
@@ -111,14 +104,8 @@ export const useDigitalBackgroundMenu = () => {
   /**
    * Get background data from API
    */
-  const getBackgroundData = async (backgroundTypeId, backgroundTypeSubId) => {
-    const backgrounds = await getBackgrounds(
-      backgroundTypeId,
-      backgroundTypeSubId
-    );
-
-    return backgrounds;
-  };
+  const getBackgroundData = async (backgroundTypeId, backgroundTypeSubId) =>
+    getBackgrounds(backgroundTypeId, backgroundTypeSubId);
 
   return {
     ...useBackgroundMenu(),

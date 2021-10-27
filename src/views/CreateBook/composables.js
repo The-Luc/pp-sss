@@ -28,15 +28,15 @@ export const usePhotos = () => {
   const getSmartbox = async (keywords, isGetMedia) => {
     const { book } = await getBookInfo(generalInfo.value.bookId, true);
     return isGetMedia
-      ? await getMedia(book.communityId, keywords)
-      : await getPhotos(book.communityId, keywords);
+      ? getMedia(book.communityId, keywords)
+      : getPhotos(book.communityId, keywords);
   };
 
   const getSearch = async (input, isGetMedia) => {
     const { book } = await getBookInfo(generalInfo.value.bookId, true);
     return isGetMedia
-      ? await getMedia(book.communityId, [input])
-      : await getPhotos(book.communityId, [input]);
+      ? getMedia(book.communityId, [input])
+      : getPhotos(book.communityId, [input]);
   };
 
   return {
@@ -54,8 +54,8 @@ export const usePortraitFlow = () => {
 
   const getSavedSettings = async isDigital => {
     return isDigital
-      ? await portraitSevice.getSavedPortraitSettingsDigital()
-      : await portraitSevice.getSavedPortraitSettingsPrint();
+      ? portraitSevice.getSavedPortraitSettingsDigital()
+      : portraitSevice.getSavedPortraitSettingsPrint();
   };
 
   return {
@@ -65,17 +65,13 @@ export const usePortraitFlow = () => {
 };
 
 export const useClipArt = () => {
-  const searchClipArt = async input => {
-    return await clipArtService.searchClipArtApi(input);
-  };
+  const searchClipArt = async input => clipArtService.searchClipArtApi(input);
 
-  const getClipArtList = async categoryId => {
-    return await clipArtService.loadClipArts(categoryId);
-  };
+  const getClipArtList = async categoryId =>
+    clipArtService.loadClipArts(categoryId);
 
-  const loadClipArtCategories = async () => {
-    return await clipArtService.loadClipArtCategories();
-  };
+  const loadClipArtCategories = async () =>
+    clipArtService.loadClipArtCategories();
 
   return {
     searchClipArt,

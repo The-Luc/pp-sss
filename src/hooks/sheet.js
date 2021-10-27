@@ -150,36 +150,17 @@ export const useActionDigitalSheet = () => {
     return generalInfoObs.value.bookId;
   };
 
-  const getTransition = async (sheetId, sectionId, transitionIndex) => {
-    return await getTransitionApi(
-      getBookId(),
-      sheetId,
-      sectionId,
-      transitionIndex
-    );
-  };
+  const getTransition = async (sheetId, sectionId, transitionIndex) =>
+    getTransitionApi(getBookId(), sheetId, sectionId, transitionIndex);
 
-  const getTransitions = async (sheetId, sectionId) => {
-    return await getTransitionsApi(getBookId(), sheetId, sectionId);
-  };
+  const getTransitions = async (sheetId, sectionId) =>
+    getTransitionsApi(getBookId(), sheetId, sectionId);
 
-  const addTransition = async (sheetId, sectionId, totalTransition = 1) => {
-    return await addTransitionApi(
-      getBookId(),
-      sheetId,
-      sectionId,
-      totalTransition
-    );
-  };
+  const addTransition = async (sheetId, sectionId, totalTransition = 1) =>
+    addTransitionApi(getBookId(), sheetId, sectionId, totalTransition);
 
-  const removeTransition = async (sheetId, sectionId, totalTransition = 1) => {
-    return await removeTransitionApi(
-      getBookId(),
-      sheetId,
-      sectionId,
-      totalTransition
-    );
-  };
+  const removeTransition = async (sheetId, sectionId, totalTransition = 1) =>
+    removeTransitionApi(getBookId(), sheetId, sectionId, totalTransition);
 
   const applyTransition = async (
     transition,

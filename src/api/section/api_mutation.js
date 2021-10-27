@@ -41,12 +41,11 @@ export const addNewSection = async bookId => {
  * @param {Object} data including sectionId and assigneeId of a section
  * @returns object containing info of assignee
  */
-export const assignSectionUser = async (sectionId, assigneeId) => {
-  return await graphqlRequest(assignSectionUserMutation, {
+export const assignSectionUser = async (sectionId, assigneeId) =>
+  graphqlRequest(assignSectionUserMutation, {
     sectionId,
     params: { assigned_user_id: assigneeId }
   });
-};
 
 /**
  * Update section

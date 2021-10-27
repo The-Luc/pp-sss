@@ -6,7 +6,7 @@ import { useActionBook, useAppCommon } from '@/hooks';
 
 import { getUsersApi } from '@/api/user';
 
-import { isEmpty } from '@/common/utils';
+import { isEmpty, isOk } from '@/common/utils';
 
 import {
   GETTERS as BOOK_GETTERS,
@@ -17,7 +17,6 @@ import {
   GETTERS as APP_GETTERS,
   MUTATES as APP_MUTATES
 } from '@/store/modules/app/const';
-import { isOk } from '@/common/utils';
 
 const getSections = sections => {
   const sectionIds = [];
