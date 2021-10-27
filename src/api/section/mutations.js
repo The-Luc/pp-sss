@@ -23,16 +23,6 @@ export const updateSectionMutation = gql`
       sheets {
         id
       }
-    }
-  }
-`;
-
-export const assignSectionUserMutation = gql`
-  mutation($sectionId: ID!, $params: BookSectionInput) {
-    update_book_section(
-      book_section_id: $sectionId
-      book_section_params: $params
-    ) {
       assigned_user {
         name
         id

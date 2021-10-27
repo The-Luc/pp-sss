@@ -1,6 +1,6 @@
 import { useGetters, useMutations } from 'vuex-composition-helpers';
 
-import { addNewSection, assignSectionUser } from '@/api/section';
+import { addNewSection } from '@/api/section';
 
 import { useActionBook, useAppCommon } from '@/hooks';
 
@@ -14,12 +14,15 @@ import {
   GETTERS as BOOK_GETTERS,
   MUTATES as BOOK_MUTATES
 } from '@/store/modules/book/const';
+import { MUTATES as PRINT_MUTATES } from '@/store/modules/print/const';
+import { MUTATES as DIGITAL_MUTATES } from '@/store/modules/digital/const';
 
 import {
   GETTERS as APP_GETTERS,
   MUTATES as APP_MUTATES
 } from '@/store/modules/app/const';
-import { BASE_SECTION_COLOR } from '@/common/constants';
+import { updateSection as updateSectionDB } from '@/api/section';
+import { EDITION, BASE_SECTION_COLOR } from '@/common/constants';
 
 const getSections = sections => {
   const sectionIds = [];
@@ -82,24 +85,40 @@ export const useSummaryInfo = () => {
 };
 
 export const useSectionActionMenu = () => {
-  const { updateSection, setSectionSelected } = useMutations({
-    updateSection: BOOK_MUTATES.UPDATE_SECTION,
+  const {
+    updateManagerSection,
+    updatePrintSection,
+    updateDigitalSection,
+    setSectionSelected
+  } = useMutations({
+    updateManagerSection: BOOK_MUTATES.UPDATE_SECTION,
+    updatePrintSection: PRINT_MUTATES.UPDATE_SECTION,
+    updateDigitalSection: DIGITAL_MUTATES.UPDATE_SECTION,
     setSectionSelected: APP_MUTATES.SET_SELECTION_SELECTED
   });
 
-  const updateAssignee = async (sectionId, assigneeId) => {
+  const updateSection = async (data, activeEdition) => {
     // update to database
-    const res = await assignSectionUser(sectionId, assigneeId);
+    const res = await updateSectionDB(data.id, data);
 
-    if (!isOk(res)) return;
+    if (res.assigneeId === null) res.assigneeId = -1;
+
     // update to store
-    updateSection({ id: sectionId, assigneeId });
+    if (activeEdition === EDITION.PRINT) {
+      return updatePrintSection(res);
+    }
+    if (activeEdition === EDITION.DIGITAL) {
+      return updateDigitalSection(res);
+    }
+
+    updateManagerSection(res);
   };
+
   const { sectionSelected } = useGetters({
     sectionSelected: APP_GETTERS.SECTION_SELECTED
   });
 
-  return { updateSection, updateAssignee, setSectionSelected, sectionSelected };
+  return { updateSection, setSectionSelected, sectionSelected };
 };
 
 export const useAssigneeMenu = () => {
