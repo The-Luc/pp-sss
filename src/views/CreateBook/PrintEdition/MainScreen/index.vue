@@ -19,6 +19,7 @@
         @updateLink="changeLinkStatus(sheet.id, sheet.link)"
       >
         <action
+          v-if="selectedSheet === sheet.id"
           :is-open-menu="selectedSheet === sheet.id"
           :section-id="section.id"
           :section-name="section.name"

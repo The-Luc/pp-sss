@@ -6,6 +6,7 @@
     <img :src="moreIcon" alt="more icon" @click.stop="toggleMenu" />
 
     <action
+      v-if="isOpenMenu"
       :key="componentKey"
       :is-open-menu="isOpenMenu"
       :section-id="section.id"
