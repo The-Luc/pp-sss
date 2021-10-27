@@ -10,7 +10,18 @@ let requestCount = 0;
 
 const urqlClient = createClient({
   url: process.env.VUE_APP_API_ENDPOINT,
-  exchanges: [dedupExchange, cacheExchange({}), fetchExchange],
+  exchanges: [
+    dedupExchange,
+    cacheExchange({
+      keys: {
+        Page: () => null,
+        YearbookSpec: () => null,
+        Template: () => null,
+        Category: () => null
+      }
+    }),
+    fetchExchange
+  ],
   fetchOptions: () => {
     const token = getItem(LOCAL_STORAGE.TOKEN);
     return {

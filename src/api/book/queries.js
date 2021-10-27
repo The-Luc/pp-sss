@@ -38,13 +38,10 @@ export const digitalMainQuery = gql`
     book(id: $bookId) {
       id
       book_sections {
-        id
         due_date
         status
         sheets {
-          id
           digital_frames {
-            id
             preview_image_url
           }
         }
@@ -63,11 +60,8 @@ export const digitalEditorQuery = gql`
       id
       community_id
       book_sections {
-        id
         sheets {
-          id
           digital_frames {
-            id
             preview_image_url
           }
         }
@@ -84,13 +78,10 @@ export const printMainQuery = gql`
     book(id: $bookId) {
       id
       book_sections {
-        id
         due_date
         status
         sheets {
-          id
           pages {
-            id
             preview_image_url
           }
         }
@@ -110,15 +101,11 @@ export const printEditorQuery = gql`
       community_id
       number_max_pages
       yearbook_spec {
-        id
         cover_option
       }
       book_sections {
-        id
         sheets {
-          id
           pages {
-            id
             preview_image_url
           }
         }
@@ -136,7 +123,6 @@ export const managerQuery = gql`
       created_at
       number_max_pages
       yearbook_spec {
-        id
         cover_option
         delivery_option
         copies_sold
@@ -147,12 +133,10 @@ export const managerQuery = gql`
         phase_one_start_date
       }
       book_sections {
-        id
         draggable
         due_date
         status
         sheets {
-          id
           draggable
           fixed_position
         }
