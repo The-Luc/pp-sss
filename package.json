@@ -12,6 +12,8 @@
     "test": "jest"
   },
   "dependencies": {
+    "@urql/core": "^2.3.3",
+    "@urql/exchange-graphcache": "^4.3.5",
     "@vue/composition-api": "^1.0.0-rc.8",
     "@vuelidate/core": "*",
     "@vuelidate/validators": "*",

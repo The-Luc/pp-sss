@@ -1,7 +1,7 @@
 import { gql } from 'graphql-tag';
 
 export const backgroundCategoriesQuery = gql`
-  {
+  query backgroundCategories {
     categories(item_type: BACKGROUND) {
       id
       name
@@ -10,8 +10,9 @@ export const backgroundCategoriesQuery = gql`
 `;
 
 export const backgroundQuery = gql`
-  query($id: ID!) {
+  query background($id: ID!) {
     category(id: $id) {
+      id
       backgrounds {
         id
         image_url
@@ -24,8 +25,9 @@ export const backgroundQuery = gql`
 `;
 
 export const backgroundOfThemeQuery = gql`
-  query($id: ID!) {
+  query backgroundOfTheme($id: ID!) {
     theme(id: $id) {
+      id
       templates {
         categories {
           backgrounds {

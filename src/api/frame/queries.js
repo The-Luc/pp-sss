@@ -1,7 +1,7 @@
 import { gql } from 'graphql-tag';
 
 export const getSheetFramesQuery = gql`
-  query($sheetId: ID!) {
+  query getSheetFrames($sheetId: ID!) {
     sheet(id: $sheetId) {
       id
       digital_frames {
