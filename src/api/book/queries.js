@@ -4,6 +4,7 @@ const sheetFragment = gql`
   fragment sheetDetail on Sheet {
     id
     sheet_type
+    order
   }
 `;
 
@@ -12,6 +13,7 @@ const sectionFragment = gql`
     id
     name
     color
+    order
     assigned_user {
       id
     }

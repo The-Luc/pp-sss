@@ -6,7 +6,9 @@ import { useActionBook, useAppCommon } from '@/hooks';
 
 import { getUsersApi } from '@/api/user';
 
-import { isEmpty } from '@/common/utils';
+import { isEmpty, isOk, getUniqueColor } from '@/common/utils';
+
+import { SectionBase } from '@/common/models';
 
 import {
   GETTERS as BOOK_GETTERS,
@@ -17,7 +19,7 @@ import {
   GETTERS as APP_GETTERS,
   MUTATES as APP_MUTATES
 } from '@/store/modules/app/const';
-import { isOk } from '@/common/utils';
+import { BASE_SECTION_COLOR } from '@/common/constants';
 
 const getSections = sections => {
   const sectionIds = [];
@@ -116,9 +118,11 @@ export const useDueDateMenu = () => {
 
 export const useSectionControl = () => {
   const { currentUser, generalInfo } = useAppCommon();
+  const { importantDatesInfo } = useSummaryInfo();
 
-  const { totalSection } = useGetters({
-    totalSection: BOOK_GETTERS.TOTAL_SECTION
+  const { totalSection, colors } = useGetters({
+    totalSection: BOOK_GETTERS.TOTAL_SECTION,
+    colors: BOOK_GETTERS.COLORS
   });
 
   const { addSectionToStore } = useMutations({
@@ -126,11 +130,22 @@ export const useSectionControl = () => {
   });
 
   const addSection = async () => {
-    const section = await addNewSection(generalInfo.value.bookId);
+    const color = getUniqueColor(BASE_SECTION_COLOR, colors.value);
 
-    if (isEmpty(section)) return;
+    const dueDate = isEmpty(importantDatesInfo?.value.releaseDate)
+      ? null
+      : importantDatesInfo.value.releaseDate;
 
-    const { id, color, dueDate } = section;
+    const data = {
+      ...new SectionBase({ dueDate, color }),
+      order: totalSection.value - 2
+    };
+
+    const res = await addNewSection(generalInfo.value.bookId, data);
+
+    if (!isOk(res)) return;
+
+    const { id } = res.data.create_book_section;
 
     addSectionToStore({ id, color, dueDate });
   };

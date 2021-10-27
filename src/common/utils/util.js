@@ -108,13 +108,18 @@ export const mapObject = (sourceObject, rules) => {
   Object.keys(sourceObject).forEach(k => {
     if (rules.restrict.indexOf(k) >= 0) return;
 
-    if (Array.isArray(sourceObject[k]) || sourceObject[k] === null) {
+    const isForceMap = !isEmpty(rules.data[k]) && rules.data[k].isForce;
+
+    if (
+      Array.isArray(sourceObject[k]) ||
+      (!isForceMap && sourceObject[k] === null)
+    ) {
       resultObject[k] = sourceObject[k];
 
       return;
     }
 
-    if (typeof sourceObject[k] === 'object') {
+    if (typeof sourceObject[k] === 'object' && sourceObject[k] !== null) {
       merge(resultObject, mapSubData(sourceObject[k], rules, rules.data[k]));
 
       return;
@@ -542,4 +547,21 @@ export const getPageSize = isDigital => {
  */
 export const waitMiliseconds = mili => {
   return new Promise(r => setTimeout(r, mili));
+};
+
+/**
+ * Get unique color from base color
+ *
+ * @param   {Array}   baseColors    base color list
+ * @param   {Array}   currentColors current color list
+ * @returns {String}                unique color
+ */
+export const getUniqueColor = (baseColors, currentColors) => {
+  const availableColors = baseColors.filter(color => {
+    return !currentColors.includes(color);
+  });
+
+  const randomNumber = Math.floor(Math.random() * availableColors.length + 1);
+
+  return availableColors[randomNumber - 1];
 };

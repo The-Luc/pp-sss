@@ -46,6 +46,7 @@ export const sectionMappingToApi = section => {
     [PROCESS_STATUS.COMPLETED]: 'COMPLETED',
     [PROCESS_STATUS.APPROVED]: 'APPROVED'
   };
+
   const mapRules = {
     data: {
       status: {
@@ -55,9 +56,13 @@ export const sectionMappingToApi = section => {
       dueDate: {
         name: 'due_date',
         parse: value => new Date(value)
+      },
+      assigneeId: {
+        name: 'assigned_user_id',
+        isForce: true
       }
     },
-    restrict: ['sheets']
+    restrict: ['id', 'sheets', 'sheetIds']
   };
 
   return mapObject(section, mapRules);

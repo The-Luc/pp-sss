@@ -51,3 +51,4 @@ export * from './portrait';
 export * from './transition';
 export * from './animationProperty';
 export * from './playback';
+export * from './color';
