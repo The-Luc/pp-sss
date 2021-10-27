@@ -1,9 +1,14 @@
+import {
+  isPhotoVisited,
+  sectionsWithSheets,
+  defaultThemeId
+} from '@/common/store';
+
 import { isEmpty, isHalfSheet, isHalfLeft } from '@/common/utils';
 
-import { BACKGROUND_PAGE_TYPE } from '@/common/constants';
-
 import PRINT from './const';
-import { isPhotoVisited } from '@/common/store';
+
+import { BACKGROUND_PAGE_TYPE } from '@/common/constants';
 
 export const getters = {
   [PRINT._GETTERS.CURRENT_SHEET]: ({ sheets, currentSheetId }) => {
@@ -105,20 +110,9 @@ export const getters = {
     };
   },
 
-  [PRINT._GETTERS.SECTIONS_SHEETS]: ({ sections, sheets }) => {
-    return sections.map(section => {
-      return {
-        ...section,
-        sheets: section.sheetIds.map(sheetId => sheets[sheetId])
-      };
-    });
-  },
-  [PRINT._GETTERS.GET_PAGE_INFO]: ({ book }) => {
-    return book.pageInfo;
-  },
-  [PRINT._GETTERS.DEFAULT_THEME_ID]: ({ book }) => {
-    return book.defaultThemeId;
-  },
+  [PRINT._GETTERS.SECTIONS_SHEETS]: sectionsWithSheets,
+  [PRINT._GETTERS.GET_PAGE_INFO]: ({ book }) => book.pageInfo,
+  [PRINT._GETTERS.DEFAULT_THEME_ID]: defaultThemeId,
   [PRINT._GETTERS.TOTAL_OBJECT]: ({ objectIds }) => {
     return objectIds.length;
   },

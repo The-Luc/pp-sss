@@ -8,9 +8,9 @@ export const useBookPrintInfo = () => {
   const { getBookInfo } = useActionBook();
 
   const getBookPrintInfo = async bookId => {
-    const { book, sectionsSheets } = await getBookInfo(bookId, true);
+    const { book, sections, sheets } = await getBookInfo(bookId, true);
 
-    setSectionsSheets({ sectionsSheets });
+    setSectionsSheets({ sections, sheets });
 
     const {
       themeId,

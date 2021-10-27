@@ -32,3 +32,33 @@ export const sectionMapping = section => {
 
   return mapObject(section, mapRules);
 };
+
+/**
+ * Convert section data to data of Api
+ *
+ * @param   {Object}  section section data use by model
+ * @returns {Object}          section data from API
+ */
+export const sectionMappingToApi = section => {
+  const mappingStatus = {
+    [PROCESS_STATUS.NOT_STARTED]: 'NOT_STARTED',
+    [PROCESS_STATUS.IN_PROCESS]: 'IN_PROCESS',
+    [PROCESS_STATUS.COMPLETED]: 'COMPLETED',
+    [PROCESS_STATUS.APPROVED]: 'APPROVED'
+  };
+  const mapRules = {
+    data: {
+      status: {
+        name: 'status',
+        parse: value => mappingStatus[value]
+      },
+      dueDate: {
+        name: 'due_date',
+        parse: value => new Date(value)
+      }
+    },
+    restrict: ['sheets']
+  };
+
+  return mapObject(section, mapRules);
+};

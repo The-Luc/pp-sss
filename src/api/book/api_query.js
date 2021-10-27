@@ -1,4 +1,5 @@
 import { graphqlRequest } from '../axios';
+import { merge } from 'lodash';
 
 import {
   getPageLeftName,
@@ -13,10 +14,9 @@ import {
   BookManagerDetail,
   BookPrintDetail,
   BookDigitalDetail,
+  SectionBase,
   SheetPrintDetail,
   SheetDigitalDetail,
-  SectionEditionDetail,
-  SectionDetail,
   SheetDetail
 } from '@/common/models';
 
@@ -30,6 +30,8 @@ import {
 
 import { EDITION } from '@/common/constants';
 
+const sortByOrder = (item1, item2) => item1.order - item2.order;
+
 // TODO: digital data
 /**
  * Get data of sheet of digital edition
@@ -41,11 +43,16 @@ import { EDITION } from '@/common/constants';
  * @returns {Object}                      data of sheet of digital edition
  */
 const getDigitalSheet = (sheet, { id }, index, totalSheet) => {
+  const thumbnailUrl = isEmpty(sheet?.digital_frames)
+    ? null
+    : sheet.digital_frames[0]?.preview_image_url;
+
   const pageName = getPageName(index, totalSheet);
 
   return new SheetDigitalDetail({
     ...sheetMapping(sheet),
     sectionId: id,
+    thumbnailUrl,
     pageName
   });
 };
@@ -63,12 +70,22 @@ const getDigitalSheet = (sheet, { id }, index, totalSheet) => {
 const getPrintSheet = (sheet, { id }, index, totalSheet) => {
   const sheetData = sheetMapping(sheet);
 
+  const thumnailLeftUrl = isEmpty(sheet?.pages)
+    ? null
+    : sheet.pages[0]?.preview_image_url;
+  const thumnailRightUrl =
+    isEmpty(sheet?.pages) || sheet.pages.length < 2
+      ? null
+      : sheet.pages[1]?.preview_image_url;
+
   const pageLeftName = getPageLeftName(sheetData, index, totalSheet);
   const pageRightName = getPageRightName(sheetData, index, totalSheet);
 
   return new SheetPrintDetail({
     ...sheetData,
     sectionId: id,
+    thumnailLeftUrl,
+    thumnailRightUrl,
     pageLeftName,
     pageRightName
   });
@@ -88,7 +105,34 @@ const getManagerSheet = (sheet, { id }) => {
   });
 };
 
-// TODO: digital data
+/**
+ * Get data of section of edition
+ *
+ * @param   {Object}  section         data of current section
+ * @param   {Number}  totalSheet      total sheet from 1st section to current section
+ * @param   {Object}  getSheetMethod  method use for getting sheet
+ * @returns {Object}                  data of section of edition
+ */
+const getSection = (section, totalSheet, getSheetMethod) => {
+  const sheets = {};
+  const sheetIds = [];
+
+  section.sheets.forEach((sheet, sheetIndex) => {
+    const { id } = sheet;
+
+    sheets[id] = getSheetMethod(sheet, section, sheetIndex, totalSheet);
+
+    sheetIds.push(id);
+  });
+
+  const sectionDetail = new SectionBase({
+    ...sectionMapping(section),
+    sheetIds
+  });
+
+  return { sectionDetail, sheets };
+};
+
 /**
  * Get data of section of digital edition
  *
@@ -97,17 +141,9 @@ const getManagerSheet = (sheet, { id }) => {
  * @returns {Object}              data of section of digital edition
  */
 const getDigitalSection = (section, totalSheet) => {
-  const sheets = section.sheets.map((sheet, sheetIndex) => {
-    return getDigitalSheet(sheet, section, sheetIndex, totalSheet);
-  });
-
-  return new SectionEditionDetail({
-    ...sectionMapping(section),
-    sheets
-  });
+  return getSection(section, totalSheet, getDigitalSheet);
 };
 
-// TODO: print data
 /**
  * Get data of section of print edition
  *
@@ -116,14 +152,7 @@ const getDigitalSection = (section, totalSheet) => {
  * @returns {Object}              data of section of print edition
  */
 const getPrintSection = (section, totalSheet) => {
-  const sheets = section.sheets.map((sheet, sheetIndex) => {
-    return getPrintSheet(sheet, section, sheetIndex, totalSheet);
-  });
-
-  return new SectionEditionDetail({
-    ...sectionMapping(section),
-    sheets
-  });
+  return getSection(section, totalSheet, getPrintSheet);
 };
 
 /**
@@ -132,27 +161,8 @@ const getPrintSection = (section, totalSheet) => {
  * @param   {Object}  section data of current section
  * @returns {Object}          data of section of manager edition
  */
-const getManagerSection = section => {
-  const sheetIds = [];
-  const sheets = {};
-
-  section.sheets.forEach(sheet => {
-    const { id } = sheet;
-
-    sheets[id] = getManagerSheet(sheet, section);
-
-    sheetIds.push(id);
-  });
-
-  const sectionDetail = new SectionDetail({
-    ...sectionMapping(section),
-    sheetIds
-  });
-
-  return {
-    sectionDetail,
-    sheets
-  };
+const getManagerSection = (section, totalSheet) => {
+  return getSection(section, totalSheet, getManagerSheet);
 };
 
 /**
@@ -238,8 +248,15 @@ export const getBookDetail = async (bookId, edition, isEditor) => {
 
   const getSectionFn = getGetSectionMethod(edition);
 
-  const sections = book.book_sections.map((section, index) => {
-    const editionSection = getSectionFn(section, totalSheetUntilNow);
+  book.book_sections.sort(sortByOrder);
+
+  const sections = [];
+  const sheets = {};
+
+  book.book_sections.forEach((section, index) => {
+    section.sheets.sort(sortByOrder);
+
+    const data = getSectionFn(section, totalSheetUntilNow);
 
     if (
       (edition === EDITION.PRINT && index > 0) ||
@@ -248,7 +265,9 @@ export const getBookDetail = async (bookId, edition, isEditor) => {
       totalSheetUntilNow += section.sheets.length;
     }
 
-    return editionSection;
+    sections.push(data.sectionDetail);
+
+    merge(sheets, data.sheets);
   });
 
   const bookModel = getBookModel(edition);
@@ -260,6 +279,7 @@ export const getBookDetail = async (bookId, edition, isEditor) => {
       ...bookMapping(book),
       ...totalData
     }),
-    sectionsSheets: sections
+    sections,
+    sheets
   };
 };

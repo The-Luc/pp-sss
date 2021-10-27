@@ -4,15 +4,15 @@ import PrintPreview from '@/containers/Modals/PrintPreview';
 
 import { mapActions } from 'vuex';
 
-import { useUser } from '@/hooks';
+import { useUser, useGetterPrintSection } from '@/hooks';
+
+import { useSaveData, useBookPrintInfo } from './composables';
 
 import { getSectionsWithAccessible } from '@/common/utils';
 
 import { ACTIONS as PRINT_ACTIONS } from '@/store/modules/print/const';
 
 import { LINK_STATUS } from '@/common/constants';
-import { useSaveData, useBookPrintInfo } from './composables';
-import { useSectionItems } from '@/views/CreateBook/Manager/composables';
 
 export default {
   components: {
@@ -24,7 +24,7 @@ export default {
     const { currentUser } = useUser();
     const { savePrintMainScreen, sheets } = useSaveData();
     const { getBookPrintInfo } = useBookPrintInfo();
-    const { sections: bookSections } = useSectionItems();
+    const { sections: bookSections } = useGetterPrintSection();
 
     return {
       currentUser,

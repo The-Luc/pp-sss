@@ -57,7 +57,8 @@ const getType = (background, backgroundTypes) => {
  * @returns {Object}                        background type
  */
 export const getBackgroundType = (background, backgroundTypes, themeId) => {
-  return isEmpty(background)
+  const backgroundId = background.id;
+  return isEmpty(backgroundId)
     ? getDefaultType(backgroundTypes.THEME.value, themeId)
     : getType(background, backgroundTypes);
 };

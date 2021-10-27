@@ -1,12 +1,19 @@
-import { get } from 'lodash';
-import { SHEET_TYPE } from '@/common/constants';
+import { first, get } from 'lodash';
+import { SHEET_TYPE, SYSTEM_OBJECT_TYPE } from '@/common/constants';
 import { graphqlRequest } from '../axios';
 import {
+  getLayoutElementsQuery,
   getLayoutsPreviewQuery,
   getLayoutsQuery,
   getLayoutTypeQuery
 } from './queries';
-import { isOk } from '@/common/utils';
+import {
+  createBackgroundElement,
+  createClipartElement,
+  createImageElement,
+  createTextElement,
+  isOk
+} from '@/common/utils';
 
 /**
  *  To get previewImageUrl of layouts of a theme
@@ -74,4 +81,27 @@ export const getLayoutsByThemeAndType = async (themeId, categoryId) => {
     name: t.data.properties.title,
     isFavorites: false
   }));
+};
+
+export const getLayoutElements = async id => {
+  const res = await graphqlRequest(getLayoutElementsQuery, { id });
+  const elements = get(res, 'data.template.layout.elements', []);
+  const background = createBackgroundElement(get(res, 'data.template', {}));
+  return [
+    ...elements.map(ele => {
+      const key = first(Object.keys(ele));
+      const value = ele[key];
+
+      if (key === SYSTEM_OBJECT_TYPE.TEXT) {
+        return createTextElement(value);
+      }
+
+      if (key === SYSTEM_OBJECT_TYPE.IMAGE) {
+        return createImageElement(value);
+      }
+
+      return createClipartElement(value);
+    }),
+    background
+  ];
 };

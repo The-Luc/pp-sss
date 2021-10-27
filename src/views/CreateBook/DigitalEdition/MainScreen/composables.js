@@ -8,9 +8,9 @@ export const useBookDigitalInfo = () => {
   const { getBookInfo } = useActionBook();
 
   const getBookDigitalInfo = async bookId => {
-    const { book, sectionsSheets } = await getBookInfo(bookId);
+    const { book, sections, sheets } = await getBookInfo(bookId);
 
-    setSectionsSheets({ sectionsSheets });
+    setSectionsSheets({ sections, sheets });
 
     const { title, totalPage, totalSheet, totalScreen } = book;
 
@@ -19,7 +19,5 @@ export const useBookDigitalInfo = () => {
     });
   };
 
-  return {
-    getBookDigitalInfo
-  };
+  return { getBookDigitalInfo };
 };

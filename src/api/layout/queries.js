@@ -43,3 +43,14 @@ export const getLayoutsQuery = gql`
   }
   ${templateFragment}
 `;
+
+export const getLayoutElementsQuery = gql`
+  query($id: ID!) {
+    template(id: $id) {
+      id
+      data
+      preview_image_url
+      layout
+    }
+  }
+`;

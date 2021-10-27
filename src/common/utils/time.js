@@ -1,7 +1,8 @@
 import moment from 'moment';
 
-import { DATE_FORMAT, MOMENT_TYPE } from '@/common/constants';
 import { isEmpty } from '@/common/utils';
+
+import { DATE_FORMAT, MOMENT_TYPE } from '@/common/constants';
 
 /**
  * Get total different time (base on compare type) between 2 dates (included beginning)
@@ -88,4 +89,15 @@ export const parseToSecond = time => {
   if (isEmpty(time)) return;
 
   return +time.split(':').reduce((acc, val) => 60 * acc + +val);
+};
+
+/**
+ * Convert API date to date in base format
+ * @param   {String}  apiDate api date
+ * @returns {String}          date in base format
+ */
+export const apiToBaseDate = apiDate => {
+  if (isEmpty(apiDate)) return '';
+
+  return moment(new Date(apiDate)).format(DATE_FORMAT.BASE);
 };

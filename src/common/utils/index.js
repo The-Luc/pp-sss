@@ -27,4 +27,3 @@ export * from './event';
 export * from './portrait';
 export * from './validation';
 export * from './frame';
-export * from './dateTime';

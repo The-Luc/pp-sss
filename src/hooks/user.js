@@ -1,6 +1,6 @@
 import { useGetters } from 'vuex-composition-helpers';
 
-import { userService } from '@/api/user';
+import { authenticateApi } from '@/api/user';
 
 import { GETTERS as APP_GETTERS } from '@/store/modules/app/const';
 
@@ -11,6 +11,6 @@ export const useUser = () => {
 
   return {
     currentUser,
-    authenticate: userService.authenticate
+    authenticate: authenticateApi
   };
 };

@@ -8,7 +8,8 @@
         :color="section.color"
         :sheet-type="sheet.type"
         :link-type="sheet.link"
-        :thumbnail-url="sheet.thumbnailUrl"
+        :left-thumbnail-url="sheet.thumnailLeftUrl"
+        :right-thumbnail-url="sheet.thumnailRightUrl"
         :page-names="getPageNames(sheet)"
         :to-link="`/book/${bookId}/edit/print/edit-screen/${sheet.id}`"
         :is-enable="section.isAccessible"
@@ -18,6 +19,7 @@
         @updateLink="changeLinkStatus(sheet.id, sheet.link)"
       >
         <action
+          v-if="selectedSheet === sheet.id"
           :is-open-menu="selectedSheet === sheet.id"
           :section-id="section.id"
           :section-name="section.name"

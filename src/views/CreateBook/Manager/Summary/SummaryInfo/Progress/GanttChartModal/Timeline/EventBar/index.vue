@@ -1,15 +1,13 @@
 <template>
   <BlockBar :items="events" custom-class="events">
-    <template v-for="slot in slots" #[`slot${slot.id}`]>
-      <EventFlag
-        v-for="slotData in slot.slots"
-        :key="slotData.id"
-        :position="slotData.position"
-        :description="slotData.name"
-        :event-date="slotData.value"
-        :is-short="slotData.isShort"
-      />
-    </template>
+    <EventFlag
+      v-for="(eventFlag, index) in eventFlags"
+      :key="`flag-${index}`"
+      :position="eventFlag.position"
+      :description="eventFlag.name"
+      :event-date="eventFlag.value"
+      :is-short="eventFlag.isShort"
+    />
   </BlockBar>
 </template>
 

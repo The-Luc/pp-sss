@@ -1,4 +1,4 @@
-import { cloneDeep } from 'lodash';
+import { cloneDeep, get } from 'lodash';
 import { getActiveCanvas, pxToIn } from './canvas';
 import {
   CUSTOM_LAYOUT_TYPE,
@@ -7,6 +7,13 @@ import {
   SHEET_TYPE
 } from '../constants';
 import { isEmpty } from './util';
+import {
+  BackgroundElementObject,
+  ClipArtElementObject,
+  ImageElementObject,
+  TextElementObject
+} from '../models/element';
+import { getPagePrintSize, pxToPt } from '.';
 
 /**
  * Get layout option from list layouts option by id
@@ -63,4 +70,70 @@ export const changeObjectsCoords = (objects, position) => {
   });
 
   return newObjects;
+};
+
+export const createTextElement = (element, isRightPage) => {
+  const id = get(element, 'properties.guid', '');
+  const text = get(element, 'text.properties.text', '');
+  const { font_size, text_aligment: alignment } = get(element, 'text.view', {});
+
+  return new TextElementObject({
+    ...getElementDimension(element, isRightPage),
+    id,
+    text,
+    fontSize: pxToPt(font_size),
+    alignment
+  });
+};
+
+export const createImageElement = (element, isRightPage) => {
+  const id = get(element, 'properties.guid', '');
+  const { properties } = element?.picture || {};
+  const imageUrl = properties?.url?.startsWith('http') ? properties?.url : '';
+
+  return new ImageElementObject({
+    ...getElementDimension(element, isRightPage),
+    id,
+    imageUrl
+  });
+};
+
+export const createClipartElement = (element, isRightPage) => {
+  const { vector = '', guid: id } = element?.properties || {};
+
+  return new ClipArtElementObject({
+    ...getElementDimension(element, isRightPage),
+    id,
+    vector
+  });
+};
+
+export const createBackgroundElement = page => {
+  const imageUrl = get(page, 'layout.view.background.image_url', '');
+
+  return new BackgroundElementObject({
+    imageUrl
+  });
+};
+
+const getElementDimension = (element, isRightPage) => {
+  const {
+    size: { width, height },
+    position: { top, left },
+    opacity
+  } = element?.view || {};
+
+  const { pageWidth } = getPagePrintSize().inches;
+
+  const size = {
+    width: pxToIn(width),
+    height: pxToIn(height)
+  };
+
+  const coord = {
+    x: isRightPage ? pxToIn(left) + pageWidth : pxToIn(left),
+    y: pxToIn(top)
+  };
+
+  return { size, coord, opacity };
 };

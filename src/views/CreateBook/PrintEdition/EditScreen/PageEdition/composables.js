@@ -25,7 +25,7 @@ export const useSaveData = () => {
   };
 
   const savePortraitObjects = async (sheetId, objects) => {
-    return await printService.saveObjectsAndBackground(sheetId, objects, true);
+    return printService.saveObjectsAndBackground(sheetId, objects, true);
   };
 
   return { savePrintEditScreen, getDataEditScreen, savePortraitObjects };

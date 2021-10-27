@@ -33,13 +33,17 @@ const bookFragment = gql`
   ${sectionFragment}
 `;
 
-// book_sections / sheets: thumbnail_url
 export const digitalMainQuery = gql`
   query($bookId: ID!) {
     book(id: $bookId) {
       book_sections {
         due_date
         status
+        sheets {
+          digital_frames {
+            preview_image_url
+          }
+        }
       }
       ...bookDetail
     }
@@ -48,24 +52,36 @@ export const digitalMainQuery = gql`
 `;
 
 // book: theme_id, is_photo_visited
-// book / book_sections / sheets: theme_id, layout_Id, is_visited, media, thumbnail_url
+// book / book_sections / sheets: theme_id, layout_Id, is_visited, media
 export const digitalEditorQuery = gql`
   query($bookId: ID!) {
     book(id: $bookId) {
       community_id
+      book_sections {
+        sheets {
+          digital_frames {
+            preview_image_url
+          }
+        }
+      }
       ...bookDetail
     }
   }
   ${bookFragment}
 `;
 
-// book_sections / sheets: thumbnail_url, link
+// book_sections / sheets: link
 export const printMainQuery = gql`
   query($bookId: ID!) {
     book(id: $bookId) {
       book_sections {
         due_date
         status
+        sheets {
+          pages {
+            preview_image_url
+          }
+        }
       }
       ...bookDetail
     }
@@ -74,7 +90,7 @@ export const printMainQuery = gql`
 `;
 
 // book: theme_id, is_photo_visited, page_info
-// book / book_sections / sheets: theme_id, layout_Id, is_visited, media, spread_info, thumbnail_url, link
+// book / book_sections / sheets: theme_id, layout_Id, is_visited, media, spread_info, link
 export const printEditorQuery = gql`
   query($bookId: ID!) {
     book(id: $bookId) {
@@ -83,15 +99,19 @@ export const printEditorQuery = gql`
       yearbook_spec {
         cover_option
       }
+      book_sections {
+        sheets {
+          pages {
+            preview_image_url
+          }
+        }
+      }
       ...bookDetail
     }
   }
   ${bookFragment}
 `;
 
-// book: theme_id, is_photo_visited, page_info
-// book or book / yearbook_spec: delivery_date, release_date, sale_date
-// book / book_sections / sheets: theme_id, layout_Id, is_visited, media, spread_info, thumbnail_url, link
 export const managerQuery = gql`
   query($bookId: ID!) {
     book(id: $bookId) {
@@ -105,6 +125,7 @@ export const managerQuery = gql`
         estimated_quantity_high
         estimated_quantity_low
         delivery_date
+        phase_one_start_date
       }
       book_sections {
         draggable
