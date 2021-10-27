@@ -1,7 +1,7 @@
-import { updateSection } from '@/api/section';
 import DragDropControl from '@/components/DragDrops/DragDropControl';
 
 import { useSectionName } from '@/views/CreateBook/Manager/composables';
+import { useMutationSection } from '@/hooks';
 
 export default {
   components: {
@@ -31,8 +31,9 @@ export default {
   },
   setup() {
     const { changeName } = useSectionName();
+    const { updateSection } = useMutationSection();
 
-    return { changeName };
+    return { changeName, updateSection };
   },
   data() {
     return {
@@ -44,7 +45,9 @@ export default {
     async saveTitle() {
       this.sectionNameCurrent = this.sectionNameCurrent.trim() || 'Untitled';
 
-      await updateSection(this.sectionId, { name: this.sectionNameCurrent });
+      await this.updateSection(this.sectionId, {
+        name: this.sectionNameCurrent
+      });
 
       this.changeName({
         sectionName: this.sectionNameCurrent,

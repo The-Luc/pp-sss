@@ -99,7 +99,5 @@ export const parseToSecond = time => {
 export const apiToBaseDate = apiDate => {
   if (isEmpty(apiDate)) return '';
 
-  const [year, month, day] = apiDate.substring(2, 10).split('-');
-
-  return `${month}/${day}/${year}`;
+  return moment(new Date(apiDate)).format(DATE_FORMAT.BASE);
 };

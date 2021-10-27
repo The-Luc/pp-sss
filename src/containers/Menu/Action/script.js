@@ -205,17 +205,15 @@ export default {
     async onChangeDueDate({ date }) {
       const dueDate = moment(date).format(DATE_FORMAT.BASE);
 
-      const { isSuccess } = await this.updateSectionDb(1719, this.sectionId, {
+      const section = await this.updateSectionDb(this.sectionId, {
         dueDate
       });
 
-      if (!isSuccess) return;
+      if (!section) return;
 
       this.updateSection({ id: this.sectionId, dueDate });
 
-      setTimeout(() => {
-        this.isOpenCalendar = false;
-      }, 0);
+      this.isOpenCalendar = false;
     },
     /**
      * Fire when user click to select a status
@@ -223,17 +221,15 @@ export default {
      * @param {Number}  status selected status
      */
     async onChangeStatus({ status }) {
-      const { isSuccess } = await this.updateSectionDb(1719, this.sectionId, {
+      const section = await this.updateSectionDb(this.sectionId, {
         status: status.value
       });
 
-      if (!isSuccess) return;
+      if (!section) return;
 
       this.updateSection({ id: this.sectionId, status: status.value });
 
-      setTimeout(() => {
-        this.isOpenStatus = false;
-      }, 0);
+      this.isOpenStatus = false;
     },
     /**
      * Fire when user click to select a community member to assign

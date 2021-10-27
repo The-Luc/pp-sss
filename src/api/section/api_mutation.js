@@ -1,6 +1,6 @@
 import { graphqlRequest } from '../axios';
 
-import { sectionMapping } from '@/common/mapping';
+import { sectionMapping, sectionMappingToApi } from '@/common/mapping';
 
 import { SectionBase } from '@/common/models';
 
@@ -57,7 +57,7 @@ export const assignSectionUser = async (sectionId, assigneeId) => {
 export const updateSection = async (sectionId, params) => {
   const data = await graphqlRequest(updateSectionMutation, {
     sectionId,
-    params
+    params: sectionMappingToApi(params)
   });
   return new SectionBase({ ...sectionMapping(data) });
 };
