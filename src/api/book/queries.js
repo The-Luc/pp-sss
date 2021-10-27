@@ -24,6 +24,7 @@ const sectionFragment = gql`
 
 const bookFragment = gql`
   fragment bookDetail on Book {
+    id
     title
     total_pages
     book_sections {
@@ -36,7 +37,6 @@ const bookFragment = gql`
 export const digitalMainQuery = gql`
   query digitalMain($bookId: ID!) {
     book(id: $bookId) {
-      id
       book_sections {
         due_date
         status
@@ -57,7 +57,6 @@ export const digitalMainQuery = gql`
 export const digitalEditorQuery = gql`
   query digitalEditor($bookId: ID!) {
     book(id: $bookId) {
-      id
       community_id
       book_sections {
         sheets {
@@ -76,7 +75,6 @@ export const digitalEditorQuery = gql`
 export const printMainQuery = gql`
   query printMain($bookId: ID!) {
     book(id: $bookId) {
-      id
       book_sections {
         due_date
         status
@@ -97,7 +95,6 @@ export const printMainQuery = gql`
 export const printEditorQuery = gql`
   query printEditor($bookId: ID!) {
     book(id: $bookId) {
-      id
       community_id
       number_max_pages
       yearbook_spec {
@@ -119,7 +116,6 @@ export const printEditorQuery = gql`
 export const managerQuery = gql`
   query($bookId: ID!) {
     book(id: $bookId) {
-      id
       created_at
       number_max_pages
       yearbook_spec {
