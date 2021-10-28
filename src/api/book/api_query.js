@@ -70,10 +70,10 @@ const getDigitalSheet = (sheet, { id }, index, totalSheet) => {
 const getPrintSheet = (sheet, { id }, index, totalSheet) => {
   const sheetData = sheetMapping(sheet);
 
-  const thumnailLeftUrl = isEmpty(sheet?.pages)
+  const thumbnailLeftUrl = isEmpty(sheet?.pages)
     ? null
     : sheet.pages[0]?.preview_image_url;
-  const thumnailRightUrl =
+  const thumbnailRightUrl =
     isEmpty(sheet?.pages) || sheet.pages.length < 2
       ? null
       : sheet.pages[1]?.preview_image_url;
@@ -84,8 +84,8 @@ const getPrintSheet = (sheet, { id }, index, totalSheet) => {
   return new SheetPrintDetail({
     ...sheetData,
     sectionId: id,
-    thumnailLeftUrl,
-    thumnailRightUrl,
+    thumbnailLeftUrl,
+    thumbnailRightUrl,
     pageLeftName,
     pageRightName
   });

@@ -451,6 +451,7 @@ const applyTextGroupProperties = function(textGroup, prop) {
  */
 export const applyTextBoxProperties = function(textObject, prop) {
   const isModifyPosition = !isNaN(prop?.coord?.x) || !isNaN(prop?.coord?.y);
+  const isModifySize = !isEmpty(prop?.lineSpacing);
   const [rect, text] = getObjectsFromTextBox(textObject);
 
   applyTextGroupProperties(textObject, prop);
@@ -468,6 +469,10 @@ export const applyTextBoxProperties = function(textObject, prop) {
   if (!prop.border && !prop.size) {
     textObject?.canvas?.renderAll();
     return;
+  }
+
+  if (isModifySize) {
+    textObject?.canvas?.renderAll();
   }
 
   const { minBoundingWidth, minBoundingHeight } = getTextSizeWithPadding(text);
