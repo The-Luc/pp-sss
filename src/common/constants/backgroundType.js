@@ -27,7 +27,7 @@ export const BACKGROUND_TYPE = {
 export const BACKGROUND_PAGE_TYPE = {
   FULL_PAGE: {
     id: 0,
-    name: 'Spread'
+    name: 'General'
   },
   SINGLE_PAGE: {
     id: 1,
