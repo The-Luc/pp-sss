@@ -11,7 +11,7 @@ import {
   PROCESS_STATUS_OPTIONS
 } from '@/common/constants';
 
-import { useMutationSection } from '@/hooks';
+import { useAppCommon } from '@/hooks';
 import {
   useSectionActionMenu,
   useAssigneeMenu
@@ -62,15 +62,14 @@ export default {
     }
   },
   setup() {
-    const { updateSection: updateSectionDb } = useMutationSection();
-    const { updateSection, updateAssignee } = useSectionActionMenu();
+    const { updateSection } = useSectionActionMenu();
     const { getUsers } = useAssigneeMenu();
+    const { activeEdition } = useAppCommon();
 
     return {
-      updateSectionDb,
       updateSection,
-      updateAssignee,
-      getUsers
+      getUsers,
+      activeEdition
     };
   },
   data() {
@@ -205,13 +204,10 @@ export default {
     async onChangeDueDate({ date }) {
       const dueDate = moment(date).format(DATE_FORMAT.BASE);
 
-      const section = await this.updateSectionDb(this.sectionId, {
-        dueDate
-      });
-
-      if (!section) return;
-
-      this.updateSection({ id: this.sectionId, dueDate });
+      await this.updateSection(
+        { id: this.sectionId, dueDate },
+        this.activeEdition
+      );
 
       this.isOpenCalendar = false;
     },
@@ -221,13 +217,10 @@ export default {
      * @param {Number}  status selected status
      */
     async onChangeStatus({ status }) {
-      const section = await this.updateSectionDb(this.sectionId, {
-        status: status.value
-      });
-
-      if (!section) return;
-
-      this.updateSection({ id: this.sectionId, status: status.value });
+      await this.updateSection(
+        { id: this.sectionId, status: status.value },
+        this.activeEdition
+      );
 
       this.isOpenStatus = false;
     },
@@ -239,7 +232,10 @@ export default {
     async onChangeAssignee({ id }) {
       const assigneeId = this.assigneeId === id ? -1 : id;
 
-      await this.updateAssignee(this.sectionId, assigneeId);
+      await this.updateSection(
+        { id: this.sectionId, assigneeId },
+        this.activeEdition
+      );
 
       setTimeout(() => {
         this.isOpenAssignee = false;

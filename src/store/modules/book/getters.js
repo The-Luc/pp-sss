@@ -121,5 +121,8 @@ export const getters = {
     const { createdDate } = book;
 
     return getDiffDaysFOM(createdDate, dueDate);
+  },
+  [BOOK._GETTERS.COLORS]: ({ sections }) => {
+    return Object.values(sections).map(({ color }) => color);
   }
 };

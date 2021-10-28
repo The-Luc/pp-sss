@@ -4,11 +4,7 @@ import { sectionMapping, sectionMappingToApi } from '@/common/mapping';
 
 import { SectionBase } from '@/common/models';
 
-import {
-  addSectionQuery,
-  assignSectionUserMutation,
-  updateSectionMutation
-} from './mutations';
+import { addSectionMutation, updateSectionMutation } from './mutations';
 
 /**
  * Add new section
@@ -16,35 +12,10 @@ import {
  * @param   {Number | String} bookId  id of selected book
  * @returns {Object}                  detail of new section
  */
-export const addNewSection = async bookId => {
-  const data = await graphqlRequest(addSectionQuery, {
+export const addNewSection = async (bookId, section) =>
+  graphqlRequest(addSectionMutation, {
     bookId,
-    params: [
-      {
-        assigned_user_id: null,
-        name: '',
-        draggable: true,
-        color: null,
-        status: null,
-        due_date: null,
-        order: null
-      }
-    ]
-  });
-
-  return new SectionBase({ ...sectionMapping(data) });
-};
-
-/**
- * To update assignee of a section
- *
- * @param {Object} data including sectionId and assigneeId of a section
- * @returns object containing info of assignee
- */
-export const assignSectionUser = async (sectionId, assigneeId) =>
-  graphqlRequest(assignSectionUserMutation, {
-    sectionId,
-    params: { assigned_user_id: assigneeId }
+    params: sectionMappingToApi(section)
   });
 
 /**
@@ -54,9 +25,9 @@ export const assignSectionUser = async (sectionId, assigneeId) =>
  * @returns section data
  */
 export const updateSection = async (sectionId, params) => {
-  const data = await graphqlRequest(updateSectionMutation, {
+  const res = await graphqlRequest(updateSectionMutation, {
     sectionId,
     params: sectionMappingToApi(params)
   });
-  return new SectionBase({ ...sectionMapping(data) });
+  return new SectionBase({ ...sectionMapping(res.data) });
 };

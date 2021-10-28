@@ -1,17 +1,20 @@
 import { gql } from 'graphql-tag';
 
 export const getUserRoleQuery = gql`
-  query($id: ID!) {
+  query getUserRole($id: ID!) {
     communities_user(id: $id) {
+      id
       admin
     }
   }
 `;
 
 export const getCommunityUsersQuery = gql`
-  query($communityId: ID!) {
+  query getCommunityUsers($communityId: ID!) {
     community(id: $communityId) {
+      id
       communities_users {
+        id
         admin
         user {
           name
