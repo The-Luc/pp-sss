@@ -1,23 +1,27 @@
 import { useGetters, useMutations } from 'vuex-composition-helpers';
 
-import { addNewSection, assignSectionUser } from '@/api/section';
+import { getUsersApi } from '@/api/user';
+import { addNewSection } from '@/api/section';
 
 import { useActionBook, useAppCommon } from '@/hooks';
 
-import { getUsersApi } from '@/api/user';
+import { SectionBase } from '@/common/models';
 
-import { isEmpty } from '@/common/utils';
+import { isEmpty, isOk, getUniqueColor } from '@/common/utils';
 
 import {
   GETTERS as BOOK_GETTERS,
   MUTATES as BOOK_MUTATES
 } from '@/store/modules/book/const';
+import { MUTATES as PRINT_MUTATES } from '@/store/modules/print/const';
+import { MUTATES as DIGITAL_MUTATES } from '@/store/modules/digital/const';
 
 import {
   GETTERS as APP_GETTERS,
   MUTATES as APP_MUTATES
 } from '@/store/modules/app/const';
-import { isOk } from '@/common/utils';
+import { updateSection as updateSectionDB } from '@/api/section';
+import { EDITION, BASE_SECTION_COLOR } from '@/common/constants';
 
 const getSections = sections => {
   const sectionIds = [];
@@ -80,24 +84,40 @@ export const useSummaryInfo = () => {
 };
 
 export const useSectionActionMenu = () => {
-  const { updateSection, setSectionSelected } = useMutations({
-    updateSection: BOOK_MUTATES.UPDATE_SECTION,
+  const {
+    updateManagerSection,
+    updatePrintSection,
+    updateDigitalSection,
+    setSectionSelected
+  } = useMutations({
+    updateManagerSection: BOOK_MUTATES.UPDATE_SECTION,
+    updatePrintSection: PRINT_MUTATES.UPDATE_SECTION,
+    updateDigitalSection: DIGITAL_MUTATES.UPDATE_SECTION,
     setSectionSelected: APP_MUTATES.SET_SELECTION_SELECTED
   });
 
-  const updateAssignee = async (sectionId, assigneeId) => {
+  const updateSection = async (data, activeEdition) => {
     // update to database
-    const res = await assignSectionUser(sectionId, assigneeId);
+    const res = await updateSectionDB(data.id, data);
 
-    if (!isOk(res)) return;
+    if (res.assigneeId === null) res.assigneeId = -1;
+
     // update to store
-    updateSection({ id: sectionId, assigneeId });
+    if (activeEdition === EDITION.PRINT) {
+      return updatePrintSection(res);
+    }
+    if (activeEdition === EDITION.DIGITAL) {
+      return updateDigitalSection(res);
+    }
+
+    updateManagerSection(res);
   };
+
   const { sectionSelected } = useGetters({
     sectionSelected: APP_GETTERS.SECTION_SELECTED
   });
 
-  return { updateSection, updateAssignee, setSectionSelected, sectionSelected };
+  return { updateSection, setSectionSelected, sectionSelected };
 };
 
 export const useAssigneeMenu = () => {
@@ -116,9 +136,11 @@ export const useDueDateMenu = () => {
 
 export const useSectionControl = () => {
   const { currentUser, generalInfo } = useAppCommon();
+  const { importantDatesInfo } = useSummaryInfo();
 
-  const { totalSection } = useGetters({
-    totalSection: BOOK_GETTERS.TOTAL_SECTION
+  const { totalSection, colors } = useGetters({
+    totalSection: BOOK_GETTERS.TOTAL_SECTION,
+    colors: BOOK_GETTERS.COLORS
   });
 
   const { addSectionToStore } = useMutations({
@@ -126,11 +148,22 @@ export const useSectionControl = () => {
   });
 
   const addSection = async () => {
-    const section = await addNewSection(generalInfo.value.bookId);
+    const color = getUniqueColor(BASE_SECTION_COLOR, colors.value);
 
-    if (isEmpty(section)) return;
+    const dueDate = isEmpty(importantDatesInfo?.value.releaseDate)
+      ? null
+      : importantDatesInfo.value.releaseDate;
 
-    const { id, color, dueDate } = section;
+    const data = {
+      ...new SectionBase({ dueDate, color }),
+      order: totalSection.value - 2
+    };
+
+    const res = await addNewSection(generalInfo.value.bookId, data);
+
+    if (!isOk(res)) return;
+
+    const { id } = res.data.create_book_section;
 
     addSectionToStore({ id, color, dueDate });
   };

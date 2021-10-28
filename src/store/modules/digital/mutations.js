@@ -17,7 +17,8 @@ import {
   setBackgrounds,
   setBookInfo,
   setBookId,
-  setSectionsWithSheets
+  setSectionsWithSheets,
+  updateSection
 } from '@/common/store';
 
 export const mutations = {
@@ -348,5 +349,6 @@ export const mutations = {
     });
 
     state.playOutIds = sortAnimationOrder(tmpArr, state.objects);
-  }
+  },
+  [DIGITAL._MUTATES.UPDATE_SECTION]: updateSection
 };

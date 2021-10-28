@@ -23,6 +23,7 @@ class GetterClass extends BaseObject {
   IMPORTANT_DATES_INFO = 'getImportantDatesInfo';
   SPECIFICATION_INFO = 'getSpecificationInfo';
   SALE_INFO = 'getSaleInfo';
+  COLORS = 'getCurrentColors';
 
   constructor(props) {
     super(props);

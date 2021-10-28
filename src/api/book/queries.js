@@ -4,6 +4,7 @@ const sheetFragment = gql`
   fragment sheetDetail on Sheet {
     id
     sheet_type
+    order
   }
 `;
 
@@ -12,6 +13,7 @@ const sectionFragment = gql`
     id
     name
     color
+    order
     assigned_user {
       id
     }
@@ -24,6 +26,7 @@ const sectionFragment = gql`
 
 const bookFragment = gql`
   fragment bookDetail on Book {
+    id
     title
     total_pages
     book_sections {
@@ -34,7 +37,7 @@ const bookFragment = gql`
 `;
 
 export const digitalMainQuery = gql`
-  query($bookId: ID!) {
+  query digitalMain($bookId: ID!) {
     book(id: $bookId) {
       book_sections {
         due_date
@@ -54,7 +57,7 @@ export const digitalMainQuery = gql`
 // book: theme_id, is_photo_visited
 // book / book_sections / sheets: theme_id, layout_Id, is_visited, media
 export const digitalEditorQuery = gql`
-  query($bookId: ID!) {
+  query digitalEditor($bookId: ID!) {
     book(id: $bookId) {
       community_id
       book_sections {
@@ -72,7 +75,7 @@ export const digitalEditorQuery = gql`
 
 // book_sections / sheets: link
 export const printMainQuery = gql`
-  query($bookId: ID!) {
+  query printMain($bookId: ID!) {
     book(id: $bookId) {
       book_sections {
         due_date
@@ -92,7 +95,7 @@ export const printMainQuery = gql`
 // book: theme_id, is_photo_visited, page_info
 // book / book_sections / sheets: theme_id, layout_Id, is_visited, media, spread_info, link
 export const printEditorQuery = gql`
-  query($bookId: ID!) {
+  query printEditor($bookId: ID!) {
     book(id: $bookId) {
       community_id
       number_max_pages

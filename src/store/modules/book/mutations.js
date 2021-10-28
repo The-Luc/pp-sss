@@ -1,8 +1,8 @@
 import { uniqueId } from 'lodash';
 
-import { setBookId, setBook, setSheets } from '@/common/store';
+import { setBookId, setBook, setSheets, updateSection } from '@/common/store';
 
-import { isEmpty, moveItem } from '@/common/utils';
+import { moveItem } from '@/common/utils';
 
 import BOOK from './const';
 
@@ -16,13 +16,7 @@ export const mutations = {
     state.sectionIds = sectionIds;
   },
   [BOOK._MUTATES.SET_SHEETS]: setSheets,
-  [BOOK._MUTATES.UPDATE_SECTION](state, { id, status, dueDate, assigneeId }) {
-    if (!isEmpty(status)) state.sections[id].status = status;
-
-    if (!isEmpty(dueDate)) state.sections[id].dueDate = dueDate;
-
-    if (!isEmpty(assigneeId)) state.sections[id].assigneeId = assigneeId;
-  },
+  [BOOK._MUTATES.UPDATE_SECTION]: updateSection,
   [BOOK._MUTATES.UPDATE_SHEETS](state, payload) {
     const { sectionId, sheets } = payload;
 

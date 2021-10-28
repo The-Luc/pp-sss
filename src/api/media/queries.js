@@ -1,7 +1,7 @@
 import { gql } from 'graphql-tag';
 
 export const getMediaApi = gql`
-  query($id: ID!, $terms: [String]) {
+  query getMediaApi($id: ID!, $terms: [String]) {
     search_community_assets(id: $id, terms: $terms) {
       id
       media_file_name

@@ -7,7 +7,8 @@ import {
   setBackgrounds,
   setBookInfo,
   setBookId,
-  setSectionsWithSheets
+  setSectionsWithSheets,
+  updateSection
 } from '@/common/store';
 
 import {
@@ -207,5 +208,6 @@ export const mutations = {
     state.sheets[state.currentSheetId].media = media;
   },
   [PRINT._MUTATES.SET_BACKGROUNDS]: setBackgrounds,
-  [PRINT._MUTATES.SET_BOOK_INFO]: setBookInfo
+  [PRINT._MUTATES.SET_BOOK_INFO]: setBookInfo,
+  [PRINT._MUTATES.UPDATE_SECTION]: updateSection
 };
