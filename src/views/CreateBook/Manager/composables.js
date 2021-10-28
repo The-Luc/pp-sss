@@ -1,14 +1,13 @@
 import { useGetters, useMutations } from 'vuex-composition-helpers';
 
+import { getUsersApi } from '@/api/user';
 import { addNewSection } from '@/api/section';
 
 import { useActionBook, useAppCommon } from '@/hooks';
 
-import { getUsersApi } from '@/api/user';
+import { SectionBase } from '@/common/models';
 
 import { isEmpty, isOk, getUniqueColor } from '@/common/utils';
-
-import { SectionBase } from '@/common/models';
 
 import {
   GETTERS as BOOK_GETTERS,
