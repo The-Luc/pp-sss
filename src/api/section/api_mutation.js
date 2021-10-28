@@ -12,12 +12,11 @@ import { addSectionMutation, updateSectionMutation } from './mutations';
  * @param   {Number | String} bookId  id of selected book
  * @returns {Object}                  detail of new section
  */
-export const addNewSection = async (bookId, section) => {
-  return await graphqlRequest(addSectionMutation, {
+export const addNewSection = async (bookId, section) =>
+  graphqlRequest(addSectionMutation, {
     bookId,
     params: sectionMappingToApi(section)
   });
-};
 
 /**
  * Update section

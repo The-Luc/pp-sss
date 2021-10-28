@@ -2042,10 +2042,7 @@ export default {
      * @returns {Object} a fabric objec
      */
     async createBackgroundFromPpData(backgroundProp) {
-      return await createBackgroundFabricObject(
-        backgroundProp,
-        this.digitalCanvas
-      );
+      return createBackgroundFabricObject(backgroundProp, this.digitalCanvas);
     },
 
     /**

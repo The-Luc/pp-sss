@@ -339,10 +339,7 @@ export default {
      * @returns {Object} a fabric objec
      */
     async createBackgroundFromPpData(backgroundProp) {
-      return await createBackgroundFabricObject(
-        backgroundProp,
-        window.printCanvas
-      );
+      return createBackgroundFabricObject(backgroundProp, window.printCanvas);
     },
 
     /**

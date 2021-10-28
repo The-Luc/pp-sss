@@ -656,14 +656,14 @@ export default {
      */
     async getPlayback(playType, frameId) {
       if (playType === PLAYBACK.ALL) {
-        return await this.getAllScreenPlaybackData();
+        return this.getAllScreenPlaybackData();
       }
 
       if (playType === PLAYBACK.SCREEN) {
-        return await this.getCurrentScreenPlaybackData();
+        return this.getCurrentScreenPlaybackData();
       }
 
-      return await this.getFramePlaybackData(frameId);
+      return this.getFramePlaybackData(frameId);
     },
     /**
      * Open Playback modal with data
