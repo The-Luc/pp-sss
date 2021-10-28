@@ -10,7 +10,7 @@ import { updateBookMutation } from './mutations';
  * @returns {Object}                  detail of new section
  */
 export const updateBookTitle = async (bookId, title) => {
-  return await graphqlRequest(updateBookMutation, {
+  return graphqlRequest(updateBookMutation, {
     bookId,
     params: { title }
   });
