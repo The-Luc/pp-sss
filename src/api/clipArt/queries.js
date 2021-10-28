@@ -38,17 +38,3 @@ export const searchClipArt = gql`
     }
   }
 `;
-
-export const searchClipArt = gql`
-  query($keyword: String!) {
-    category_keyword(keyword: $keyword) {
-      cliparts {
-        id
-        name
-        category
-        thumbnail
-        vector
-      }
-    }
-  }
-`;

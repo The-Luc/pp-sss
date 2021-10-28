@@ -30,35 +30,3 @@ export const updateSectionMutation = gql`
     }
   }
 `;
-export const updateSectionMutation = gql`
-  mutation($sectionId: ID!, $params: BookSectionInput) {
-    update_book_section(
-      book_section_id: $sectionId
-      book_section_params: $params
-    ) {
-      id
-      color
-      name
-      due_date
-      draggable
-      status
-      sheets {
-        id
-      }
-    }
-  }
-`;
-
-export const assignSectionUserMutation = gql`
-  mutation($sectionId: ID!, $params: BookSectionInput) {
-    update_book_section(
-      book_section_id: $sectionId
-      book_section_params: $params
-    ) {
-      assigned_user {
-        name
-        id
-      }
-    }
-  }
-`;
