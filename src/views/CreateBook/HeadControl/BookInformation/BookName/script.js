@@ -1,12 +1,12 @@
-import { useAppCommon } from '@/hooks';
+import { useBookName } from './composables';
 
 import { ROLE } from '@/common/constants';
 
 export default {
   setup() {
-    const { currentUser, generalInfo, setGeneralInfo } = useAppCommon();
+    const { currentUser, generalInfo, updateTitle } = useBookName();
 
-    return { currentUser, generalInfo, setGeneralInfo };
+    return { currentUser, generalInfo, updateTitle };
   },
   data() {
     return {
@@ -46,12 +46,13 @@ export default {
       if (!this.title.trim()) {
         this.title = 'Untitled';
       }
+
       if (this.isCancel || this.title === this.rootTitle) {
         this.isCancel = false;
         return;
       }
 
-      this.setGeneralInfo({ info: { title: this.title } });
+      this.updateTitle(this.title);
     }
   }
 };
