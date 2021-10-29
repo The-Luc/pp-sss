@@ -173,6 +173,8 @@ export const useSectionControl = () => {
     const { id } = res.data.create_book_section;
 
     addSectionToStore({ id, color, dueDate });
+
+    return id;
   };
 
   return { currentUser, totalSection, addSection };
