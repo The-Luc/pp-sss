@@ -12,3 +12,19 @@ export const addSheetMutation = gql`
     }
   }
 `;
+
+export const updateSheetMutation = gql`
+  mutation($sheetId: ID!, $params: SheetInput) {
+    update_sheet(sheet_id: $sheetId, sheet_params: $params) {
+      id
+    }
+  }
+`;
+
+export const deleteSheetMutation = gql`
+  mutation($sheetId: ID!) {
+    delete_sheet(sheet_id: $sheetId) {
+      id
+    }
+  }
+`;

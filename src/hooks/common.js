@@ -26,9 +26,10 @@ export const useAppCommon = () => {
     isLoading: APP_GETTERS.IS_LOADING
   });
 
-  const { setEdition, setGeneralInfo } = useMutations({
+  const { setEdition, setGeneralInfo, toggleModal } = useMutations({
     setEdition: APP_MUTATES.SET_ACTIVE_EDITION,
-    setGeneralInfo: APP_MUTATES.SET_GENERAL_INFO
+    setGeneralInfo: APP_MUTATES.SET_GENERAL_INFO,
+    toggleModal: APP_MUTATES.TOGGLE_MODAL
   });
 
   const setActiveEdition = edition => setEdition({ edition });
@@ -41,6 +42,7 @@ export const useAppCommon = () => {
     setActiveEdition,
     setGeneralInfo,
     generalInfo,
-    isLoading
+    isLoading,
+    toggleModal
   };
 };

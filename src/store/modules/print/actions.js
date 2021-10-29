@@ -14,7 +14,7 @@ import PRINT from './const';
 import { MUTATES as APP_MUTATES } from '../app/const';
 import { cloneDeep } from 'lodash';
 import { getNewBackground } from '@/common/models';
-import { getSheetInfo } from '@/api/sheet/api';
+import { getSheetInfo } from '@/api/sheet';
 
 export const actions = {
   async [PRINT._ACTIONS.GET_DATA_MAIN]({ state, commit }) {

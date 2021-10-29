@@ -10,7 +10,7 @@ import {
   removeTransitionApi,
   applyTransitionApi,
   getPlaybackDataApi
-} from '@/api/sheet';
+} from '@/api/sheetService';
 
 import digitalService from '@/api/digital';
 import printService from '@/api/print';

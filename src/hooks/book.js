@@ -6,7 +6,7 @@ import { getBookDetail } from '@/api/book';
 
 import { useAppCommon } from './common';
 import { SheetDetail } from '@/common/models';
-import { addNewSheet } from '@/api/sheet/api';
+import { addNewSheet } from '@/api/sheet';
 import { isOk } from '@/common/utils';
 
 import {

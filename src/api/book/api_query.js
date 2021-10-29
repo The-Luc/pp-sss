@@ -239,7 +239,7 @@ const getBook = async (bookId, edition, isEditor) => {
 
   const { data } = await graphqlRequest(query, { bookId });
 
-  return data.book;
+  return data?.book;
 };
 
 /**
@@ -253,16 +253,16 @@ const getBook = async (bookId, edition, isEditor) => {
 export const getBookDetail = async (bookId, edition, isEditor) => {
   const book = await getBook(bookId, edition, isEditor);
 
-  if (isEmpty(book)) return { book: {}, sectionsSheets: [] };
+  const sections = [];
+  const sheets = {};
+
+  if (isEmpty(book)) return { book: {}, sections, sheets };
 
   let totalSheetUntilNow = 0;
 
   const getSectionFn = getGetSectionMethod(edition);
 
   book.book_sections.sort(sortByOrder);
-
-  const sections = [];
-  const sheets = {};
 
   book.book_sections.forEach((section, index) => {
     section.sheets.sort(sortByOrder);
