@@ -41,9 +41,9 @@ export const state = {
   generalInfo: {
     bookId: '',
     title: '',
-    totalSheet: 0,
-    totalPage: 0,
-    totalScreen: 0
+    totalSheets: 0,
+    totalPages: 0,
+    totalScreens: 0
   },
   user: { id: null, role: null },
   savedTextStyles: [],

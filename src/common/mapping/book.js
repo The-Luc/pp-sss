@@ -19,7 +19,7 @@ export const bookMapping = book => {
         parse: value => apiToBaseDate(value)
       },
       total_pages: {
-        name: 'totalPage'
+        name: 'totalPages'
       },
       number_max_pages: {
         name: 'numberMaxPages'

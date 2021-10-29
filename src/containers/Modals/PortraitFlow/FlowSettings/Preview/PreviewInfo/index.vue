@@ -3,7 +3,7 @@
     <div class="text">Based on current settings:</div>
 
     <div class="description">
-      {{ totalPortrait }} portraits will require {{ totalPage }}
+      {{ totalPortrait }} portraits will require {{ totalPages }}
       {{ `${containerName.toLowerCase()}(s)` }}
     </div>
 

@@ -309,9 +309,9 @@ export const getPagesOfFolder = (
   startOnPageCurrent,
   maxPortraitPerPage
 ) => {
-  const totalPage = Math.ceil(totalPortraitsCount / maxPortraitPerPage);
+  const totalPages = Math.ceil(totalPortraitsCount / maxPortraitPerPage);
 
-  return [...Array(totalPage).keys()].map(p => {
+  return [...Array(totalPages).keys()].map(p => {
     return p + startOnPageCurrent;
   });
 };

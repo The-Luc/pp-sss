@@ -9,6 +9,8 @@ import {
 import { first, get } from 'lodash';
 import { graphqlRequest } from '../axios';
 import { pageInfoQuery, sheetInfoQuery } from './queries';
+import { addSheetMutation } from './mutations';
+import { sheetMappingToApi } from '@/common/mapping';
 
 export const getPageData = async id => {
   const res = await graphqlRequest(pageInfoQuery, { id });
@@ -44,4 +46,16 @@ export const getSheetInfo = async id => {
     .filter(bg => !isEmpty(bg.imageUrl));
 
   return [].concat(...pageObjects, ...backgrounds);
+};
+
+/**
+ * Add new sheet
+ * @param   {Number | String} sectionId  id of selected section
+ * @returns {Object}                  detail of new sheet
+ */
+export const addNewSheet = async (sectionId, sheet) => {
+  return graphqlRequest(addSheetMutation, {
+    sectionId,
+    params: sheetMappingToApi(sheet)
+  });
 };

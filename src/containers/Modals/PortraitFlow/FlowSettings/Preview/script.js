@@ -76,10 +76,10 @@ export default {
       return this.flowSettings.layoutSettings;
     },
     pages() {
-      const totalSheet = this.isDigital
+      const totalSheets = this.isDigital
         ? this.frameIds.length
         : Object.values(this.getSheets).length * 2 - 4;
-      const pages = Array.from({ length: totalSheet }, (_, i) => i + 1);
+      const pages = Array.from({ length: totalSheets }, (_, i) => i + 1);
       return isEmpty(pages)
         ? [{ name: 1, value: 1 }]
         : pages.map(p => ({ name: p, value: p }));

@@ -81,7 +81,7 @@ export default {
     onAddSheet() {
       this.setSectionSelected('');
 
-      this.addSheet({ sectionId: this.section.id });
+      this.addSheet(this.section.id);
     },
     onOpenModal() {
       this.toggleModal({

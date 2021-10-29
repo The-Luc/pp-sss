@@ -1,9 +1,8 @@
 .menu-button {
-  padding: 15px 0 7px 0 !important;
-
   &.btn-delete {
     border-top: 0.5px solid $color-gray2;
-    margin: 8px 10px 0 10px;
+    margin: 0 10px 0 10px;
+    padding-top: 10px;
   }
 
   button {

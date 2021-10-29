@@ -94,9 +94,9 @@ export default {
     getPageData() {
       const totalItem = this.items.length;
 
-      const totalPage = Math.ceil(totalItem / this.itemPerPage);
+      const totalPages = Math.ceil(totalItem / this.itemPerPage);
 
-      return [...Array(totalPage).keys()].map(indPage => {
+      return [...Array(totalPages).keys()].map(indPage => {
         const minInPage = indPage * this.itemPerPage;
         const estimateMaxInPage = (indPage + 1) * this.itemPerPage - 1;
 

@@ -4,7 +4,7 @@ export default {
       type: Number,
       default: 0
     },
-    totalPage: {
+    totalPages: {
       type: Number,
       default: 0
     },

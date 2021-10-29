@@ -19,9 +19,9 @@ export class PageInfo extends BaseObject {
 export class BookBase extends BaseEntity {
   communityId = '';
   title = '';
-  totalPage = 0;
-  totalSheet = 0;
-  totalScreen = 0;
+  totalPages = 0;
+  totalSheets = 0;
+  totalScreens = 0;
 
   /**
    * @param {BookBase} props

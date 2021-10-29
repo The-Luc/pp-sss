@@ -173,9 +173,9 @@ const printService = {
 
     return {
       title,
-      totalSheet: totalSheets,
-      totalPage: totalPages,
-      totalScreen: totalScreens
+      totalSheets: totalSheets,
+      totalPages: totalPages,
+      totalScreens: totalScreens
     };
   },
   updateSheet(sheetId, props) {

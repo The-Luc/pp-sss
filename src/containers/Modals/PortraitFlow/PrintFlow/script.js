@@ -141,12 +141,12 @@ export default {
         }
         const folderNo = 1;
         const pageNo = first(newVal);
-        const totalPage = newVal.length;
+        const totalPages = newVal.length;
         if (this.isMultiFolder && this.isPortraitFlowDisplayed) {
           this.displayMultiFolderWarning(folderNo, pageNo);
           return;
         }
-        this.displaySingleFolderWarning(totalPage, pageNo);
+        this.displaySingleFolderWarning(totalPages, pageNo);
       }
     }
   },
@@ -304,10 +304,10 @@ export default {
      * @returns {Array} default pages
      */
     getSingleFolderDefaultPages() {
-      const totalPage = this.previewPortraitsRange.length;
+      const totalPages = this.previewPortraitsRange.length;
       const { startOnPageNumber } = this.flowSettings;
 
-      return this.getBasePages(totalPage, startOnPageNumber);
+      return this.getBasePages(totalPages, startOnPageNumber);
     },
 
     /**
@@ -424,15 +424,15 @@ export default {
     },
     /**
      * Open modal warning
-     * @param {Number} totalPage total page
+     * @param {Number} totalPages total page
      * @param {Number} pageNo index of folder
      */
-    displaySingleFolderWarning(totalPage, pageNo) {
+    displaySingleFolderWarning(totalPages, pageNo) {
       this.warningText = `If you begin this portrait flow on page ${pageNo}, 
                                       based on the current settings, 
                                       there are not enough pages available to flow your portraits. 
                                       If you click “Continue” you will need to reconfigure your settings 
-                                      so that the portrait flow takes no more than ${totalPage} pages.`;
+                                      so that the portrait flow takes no more than ${totalPages} pages.`;
       this.isWarningDisplayed = true;
     },
     /**

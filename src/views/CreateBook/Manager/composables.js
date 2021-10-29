@@ -59,10 +59,17 @@ export const useManager = () => {
     setSections({ sections: sectionObject, sectionIds });
     setSheets({ sheets });
 
-    const { communityId, title, totalPage, totalSheet, totalScreen } = book;
+    const { communityId, title, totalPages, totalSheets, totalScreens } = book;
 
     setGeneralInfo({
-      info: { bookId, communityId, title, totalPage, totalSheet, totalScreen }
+      info: {
+        bookId,
+        communityId,
+        title,
+        totalPages,
+        totalSheets,
+        totalScreens
+      }
     });
   };
 

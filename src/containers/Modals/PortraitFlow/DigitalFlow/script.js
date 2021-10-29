@@ -326,11 +326,11 @@ export default {
      * @returns {Array} default frames
      */
     getSingleFolderDefaultFrames() {
-      const totalPage = this.previewPortraitsRange.length;
+      const totalPages = this.previewPortraitsRange.length;
       const screenNo = parseInt(this.currentSheet.pageName);
       const { startOnPageNumber } = this.flowSettings;
       return {
-        [screenNo]: this.getBaseFrames(totalPage, startOnPageNumber)
+        [screenNo]: this.getBaseFrames(totalPages, startOnPageNumber)
       };
     },
     /**

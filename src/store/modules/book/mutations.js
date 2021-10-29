@@ -1,5 +1,3 @@
-import { uniqueId } from 'lodash';
-
 import { setBookId, setBook, setSheets, updateSection } from '@/common/store';
 
 import { moveItem } from '@/common/utils';
@@ -57,21 +55,13 @@ export const mutations = {
       state.sectionIds
     );
   },
-  [BOOK._MUTATES.ADD_SHEET](state, { sectionId }) {
-    const newId = uniqueId(sectionId);
+  [BOOK._MUTATES.ADD_SHEET](state, { sectionId, sheetId, order }) {
+    state.sheets = {
+      ...state.sheets,
+      [sheetId]: new SheetDetail({ id: sheetId })
+    };
 
-    const sectionIndex = state.sectionIds.findIndex(id => id === sectionId);
-
-    const totalSheet = state.sections[sectionId].sheetIds.length;
-
-    const newIndex =
-      sectionIndex === state.sectionIds.length - 1
-        ? totalSheet - 1
-        : totalSheet;
-
-    state.sheets = { ...state.sheets, [newId]: new SheetDetail({ id: newId }) };
-
-    state.sections[sectionId].sheetIds.splice(newIndex, 0, newId);
+    state.sections[sectionId].sheetIds.splice(order, 0, sheetId);
 
     state.book.totalPages += 2;
     state.book.totalSheets += 1;
@@ -80,13 +70,13 @@ export const mutations = {
   [BOOK._MUTATES.DELETE_SECTION](state, { sectionId }) {
     state.sectionIds = state.sectionIds.filter(id => id !== sectionId);
 
-    const totalSheet = state.sections[sectionId].sheetIds.length;
+    const totalSheets = state.sections[sectionId].sheetIds.length;
 
     delete state.sections[sectionId];
 
-    state.book.totalPages -= totalSheet * 2;
-    state.book.totalSheets -= totalSheet;
-    state.book.totalScreens -= totalSheet;
+    state.book.totalPages -= totalSheets * 2;
+    state.book.totalSheets -= totalSheets;
+    state.book.totalScreens -= totalSheets;
   },
   [BOOK._MUTATES.DELETE_SHEET](state, { sheetId, sectionId }) {
     const { totalPages, totalSheets, totalScreens } = state.book;
@@ -115,12 +105,12 @@ export const mutations = {
       id => id === sectionId
     );
 
-    const totalSheet = state.sections[sectionId].sheetIds.length;
+    const totalSheets = state.sections[sectionId].sheetIds.length;
 
     const moveToIndex =
       moveToSectionIndex === state.sectionIds.length - 1
-        ? totalSheet - 1
-        : totalSheet;
+        ? totalSheets - 1
+        : totalSheets;
 
     state.sections[sectionId].sheetIds.splice(moveToIndex, 0, sheetId);
   },
