@@ -540,7 +540,18 @@ export const getSvgData = (
 ) => {
   return new Promise(resolve => {
     fabric.loadSVGFromURL(svgUrl, (objects, options) => {
-      const svg = fabric.util.groupSVGElements(objects, options);
+      const tl = new fabric.Point(0, 0);
+      const br = new fabric.Point(options.viewBoxWidth, options.viewBoxHeight);
+
+      const inViewBoxObjects =
+        objects.length === 1
+          ? objects
+          : objects.filter(
+              o =>
+                o.isContainedWithinRect(tl, br) || o.intersectsWithRect(tl, br)
+            );
+
+      const svg = fabric.util.groupSVGElements(inViewBoxObjects, options);
 
       const scaleY = inToPx(expectedHeight) / svg.height;
       const scaleX = inToPx(expectedWidth) / svg.width;
