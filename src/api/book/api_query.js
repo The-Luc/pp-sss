@@ -17,7 +17,8 @@ import {
   SectionBase,
   SheetPrintDetail,
   SheetDigitalDetail,
-  SheetDetail
+  SheetDetail,
+  SpreadInfo
 } from '@/common/models';
 
 import {
@@ -31,6 +32,15 @@ import {
 import { EDITION } from '@/common/constants';
 
 const sortByOrder = (item1, item2) => item1.order - item2.order;
+
+const getSpreadInfo = (firstPage, secondPage) => {
+  return new SpreadInfo({
+    leftTitle: firstPage.title,
+    rightTitle: secondPage.title,
+    isLeftNumberOn: firstPage.show_page_number,
+    isRightNumberOn: secondPage.show_page_number
+  });
+};
 
 // TODO: digital data
 /**
@@ -68,15 +78,15 @@ const getDigitalSheet = (sheet, { id }, index, totalSheets) => {
  * @returns {Object}                        data of sheet of print edition
  */
 const getPrintSheet = (sheet, { id }, index, totalSheets) => {
-  const sheetData = sheetMapping(sheet);
+  const isNoPage = isEmpty(sheet?.pages);
+  const isOnlyOnePage = isNoPage || sheet.pages.length < 2;
 
-  const thumbnailLeftUrl = isEmpty(sheet?.pages)
-    ? null
-    : sheet.pages[0]?.preview_image_url;
-  const thumbnailRightUrl =
-    isEmpty(sheet?.pages) || sheet.pages.length < 2
-      ? null
-      : sheet.pages[1]?.preview_image_url;
+  const firstPage = isNoPage || isEmpty(sheet.pages[0]) ? {} : sheet.pages[0];
+
+  const secondPage =
+    isOnlyOnePage || isEmpty(sheet.pages[1]) ? {} : sheet.pages[1];
+
+  const sheetData = sheetMapping(sheet);
 
   const pageLeftName = getPageLeftName(sheetData, index, totalSheets);
   const pageRightName = getPageRightName(sheetData, index, totalSheets);
@@ -84,10 +94,11 @@ const getPrintSheet = (sheet, { id }, index, totalSheets) => {
   return new SheetPrintDetail({
     ...sheetData,
     sectionId: id,
-    thumbnailLeftUrl,
-    thumbnailRightUrl,
+    thumbnailLeftUrl: firstPage.preview_image_url,
+    thumbnailRightUrl: secondPage.preview_image_url,
     pageLeftName,
-    pageRightName
+    pageRightName,
+    spreadInfo: getSpreadInfo(firstPage, secondPage)
   });
 };
 
