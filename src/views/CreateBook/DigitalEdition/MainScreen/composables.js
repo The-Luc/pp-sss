@@ -12,10 +12,10 @@ export const useBookDigitalInfo = () => {
 
     setSectionsSheets({ sections, sheets });
 
-    const { title, totalPage, totalSheet, totalScreen } = book;
+    const { title, totalPages, totalSheets, totalScreens } = book;
 
     setGeneralInfo({
-      info: { bookId, title, totalPage, totalSheet, totalScreen }
+      info: { bookId, title, totalPages, totalSheets, totalScreens }
     });
   };
 

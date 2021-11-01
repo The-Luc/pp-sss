@@ -16,7 +16,7 @@ export class ClipArtElementObject extends BaseMoveableElementObject {
   vector = '';
   color = DEFAULT_PROP.COLOR;
   fillMode = SVG_FILL_MODE.FILL;
-  isColorful = false;
+  isColorful = true;
   isConstrain = true;
 
   /**

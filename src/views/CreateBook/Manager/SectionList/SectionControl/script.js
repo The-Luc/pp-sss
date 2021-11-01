@@ -66,12 +66,12 @@ export default {
     async onAddSection() {
       if (this.isDisableAdd) return;
 
-      const section = await this.addSection();
+      const sectionId = await this.addSection();
 
-      if (isEmpty(section)) return;
+      if (isEmpty(sectionId)) return;
 
       const newSection = this.$parent.$refs.sections.$refs[
-        `section-${section.id}`
+        `section-${sectionId}`
       ][0];
 
       const inputName =

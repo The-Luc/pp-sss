@@ -93,7 +93,7 @@ export const printMainQuery = gql`
 `;
 
 // book: theme_id, is_photo_visited, page_info
-// book / book_sections / sheets: theme_id, layout_Id, is_visited, media, spread_info, link
+// book / book_sections / sheets: theme_id, layout_Id, is_visited, media, link
 export const printEditorQuery = gql`
   query printEditor($bookId: ID!) {
     book(id: $bookId) {
@@ -105,7 +105,9 @@ export const printEditorQuery = gql`
       book_sections {
         sheets {
           pages {
+            title
             preview_image_url
+            show_page_number
           }
         }
       }

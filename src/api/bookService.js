@@ -170,7 +170,7 @@ export const getBookPrintInfo = async bookId => {
   // TODO: remove when integrate API
   bookId;
 
-  let totalSheet = 0;
+  let totalSheets = 0;
 
   const coverType = parseItem('bookCoverType');
   const maxPage = parseItem('bookMaxPage');
@@ -193,8 +193,8 @@ export const getBookPrintInfo = async bookId => {
         spreadInfo
       } = sheet.printData;
 
-      const pageLeftName = getPageLeftName(sheet, sheetIndex, totalSheet);
-      const pageRightName = getPageRightName(sheet, sheetIndex, totalSheet);
+      const pageLeftName = getPageLeftName(sheet, sheetIndex, totalSheets);
+      const pageRightName = getPageRightName(sheet, sheetIndex, totalSheets);
 
       return new SheetPrintDetail({
         ...sheet,
@@ -212,7 +212,7 @@ export const getBookPrintInfo = async bookId => {
     });
 
     if (sectionIndex > 0) {
-      totalSheet += section.sheets.length;
+      totalSheets += section.sheets.length;
     }
 
     return new SectionBase({
@@ -233,7 +233,7 @@ export const getBookDigitalInfo = async bookId => {
   // TODO: remove when integrate API
   bookId;
 
-  let totalSheet = 0;
+  let totalSheets = 0;
 
   const { book } = cloneDeep(window.data);
 
@@ -247,7 +247,7 @@ export const getBookDigitalInfo = async bookId => {
         media
       } = sheet.digitalData;
 
-      const pageName = getPageName(sheetIndex, totalSheet);
+      const pageName = getPageName(sheetIndex, totalSheets);
 
       return new SheetDigitalDetail({
         ...sheet,
@@ -261,7 +261,7 @@ export const getBookDigitalInfo = async bookId => {
       });
     });
 
-    totalSheet += section.sheets.length;
+    totalSheets += section.sheets.length;
 
     return new SectionBase({
       ...section,

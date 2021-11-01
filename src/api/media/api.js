@@ -1,4 +1,4 @@
-import { graphqlRequest } from '../axios';
+import { graphqlRequest } from '../urql';
 import { isEmpty } from '@/common/utils';
 import { getMediaApi } from './queries';
 

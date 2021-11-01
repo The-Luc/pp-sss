@@ -1,4 +1,4 @@
-import { graphqlRequest } from '../axios';
+import { graphqlRequest } from '../urql';
 import { merge } from 'lodash';
 
 import {
@@ -17,7 +17,8 @@ import {
   SectionBase,
   SheetPrintDetail,
   SheetDigitalDetail,
-  SheetDetail
+  SheetDetail,
+  SpreadInfo
 } from '@/common/models';
 
 import {
@@ -32,22 +33,31 @@ import { EDITION } from '@/common/constants';
 
 const sortByOrder = (item1, item2) => item1.order - item2.order;
 
+const getSpreadInfo = (firstPage, secondPage) => {
+  return new SpreadInfo({
+    leftTitle: firstPage.title,
+    rightTitle: secondPage.title,
+    isLeftNumberOn: firstPage.show_page_number,
+    isRightNumberOn: secondPage.show_page_number
+  });
+};
+
 // TODO: digital data
 /**
  * Get data of sheet of digital edition
  *
- * @param   {Object}          sheet       data of current sheet
- * @param   {String | Number} id          id of current section
- * @param   {Number}          index       index of current sheet in current section
- * @param   {Number}          totalSheet  total sheet from 1st section to current section
- * @returns {Object}                      data of sheet of digital edition
+ * @param   {Object}          sheet         data of current sheet
+ * @param   {String | Number} id            id of current section
+ * @param   {Number}          index         index of current sheet in current section
+ * @param   {Number}          totalSheets   total sheet from 1st section to current section
+ * @returns {Object}                        data of sheet of digital edition
  */
-const getDigitalSheet = (sheet, { id }, index, totalSheet) => {
+const getDigitalSheet = (sheet, { id }, index, totalSheets) => {
   const thumbnailUrl = isEmpty(sheet?.digital_frames)
     ? null
     : sheet.digital_frames[0]?.preview_image_url;
 
-  const pageName = getPageName(index, totalSheet);
+  const pageName = getPageName(index, totalSheets);
 
   return new SheetDigitalDetail({
     ...sheetMapping(sheet),
@@ -61,33 +71,34 @@ const getDigitalSheet = (sheet, { id }, index, totalSheet) => {
 /**
  * Get data of sheet of print edition
  *
- * @param   {Object}          sheet       data of current sheet
- * @param   {String | Number} id          id of current section
- * @param   {Number}          index       index of current sheet in current section
- * @param   {Number}          totalSheet  total sheet from 1st section to current section
- * @returns {Object}                      data of sheet of print edition
+ * @param   {Object}          sheet         data of current sheet
+ * @param   {String | Number} id            id of current section
+ * @param   {Number}          index         index of current sheet in current section
+ * @param   {Number}          totalSheets   total sheet from 1st section to current section
+ * @returns {Object}                        data of sheet of print edition
  */
-const getPrintSheet = (sheet, { id }, index, totalSheet) => {
+const getPrintSheet = (sheet, { id }, index, totalSheets) => {
+  const isNoPage = isEmpty(sheet?.pages);
+  const isOnlyOnePage = isNoPage || sheet.pages.length < 2;
+
+  const firstPage = isNoPage || isEmpty(sheet.pages[0]) ? {} : sheet.pages[0];
+
+  const secondPage =
+    isOnlyOnePage || isEmpty(sheet.pages[1]) ? {} : sheet.pages[1];
+
   const sheetData = sheetMapping(sheet);
 
-  const thumbnailLeftUrl = isEmpty(sheet?.pages)
-    ? null
-    : sheet.pages[0]?.preview_image_url;
-  const thumbnailRightUrl =
-    isEmpty(sheet?.pages) || sheet.pages.length < 2
-      ? null
-      : sheet.pages[1]?.preview_image_url;
-
-  const pageLeftName = getPageLeftName(sheetData, index, totalSheet);
-  const pageRightName = getPageRightName(sheetData, index, totalSheet);
+  const pageLeftName = getPageLeftName(sheetData, index, totalSheets);
+  const pageRightName = getPageRightName(sheetData, index, totalSheets);
 
   return new SheetPrintDetail({
     ...sheetData,
     sectionId: id,
-    thumbnailLeftUrl,
-    thumbnailRightUrl,
+    thumbnailLeftUrl: firstPage.preview_image_url,
+    thumbnailRightUrl: secondPage.preview_image_url,
     pageLeftName,
-    pageRightName
+    pageRightName,
+    spreadInfo: getSpreadInfo(firstPage, secondPage)
   });
 };
 
@@ -108,19 +119,19 @@ const getManagerSheet = (sheet, { id }) => {
 /**
  * Get data of section of edition
  *
- * @param   {Object}  section         data of current section
- * @param   {Number}  totalSheet      total sheet from 1st section to current section
- * @param   {Object}  getSheetMethod  method use for getting sheet
- * @returns {Object}                  data of section of edition
+ * @param   {Object}  section           data of current section
+ * @param   {Number}  totalSheets       total sheet from 1st section to current section
+ * @param   {Object}  getSheetMethod    method use for getting sheet
+ * @returns {Object}                    data of section of edition
  */
-const getSection = (section, totalSheet, getSheetMethod) => {
+const getSection = (section, totalSheets, getSheetMethod) => {
   const sheets = {};
   const sheetIds = [];
 
   section.sheets.forEach((sheet, sheetIndex) => {
     const { id } = sheet;
 
-    sheets[id] = getSheetMethod(sheet, section, sheetIndex, totalSheet);
+    sheets[id] = getSheetMethod(sheet, section, sheetIndex, totalSheets);
 
     sheetIds.push(id);
   });
@@ -136,23 +147,23 @@ const getSection = (section, totalSheet, getSheetMethod) => {
 /**
  * Get data of section of digital edition
  *
- * @param   {Object}  section     data of current section
- * @param   {Number}  totalSheet  total sheet from 1st section to current section
- * @returns {Object}              data of section of digital edition
+ * @param   {Object}  section       data of current section
+ * @param   {Number}  totalSheets   total sheet from 1st section to current section
+ * @returns {Object}                data of section of digital edition
  */
-const getDigitalSection = (section, totalSheet) => {
-  return getSection(section, totalSheet, getDigitalSheet);
+const getDigitalSection = (section, totalSheets) => {
+  return getSection(section, totalSheets, getDigitalSheet);
 };
 
 /**
  * Get data of section of print edition
  *
- * @param   {Object}  section     data of current section
- * @param   {Number}  totalSheet  total sheet from 1st section to current section
- * @returns {Object}              data of section of print edition
+ * @param   {Object}  section       data of current section
+ * @param   {Number}  totalSheets   total sheet from 1st section to current section
+ * @returns {Object}                data of section of print edition
  */
-const getPrintSection = (section, totalSheet) => {
-  return getSection(section, totalSheet, getPrintSheet);
+const getPrintSection = (section, totalSheets) => {
+  return getSection(section, totalSheets, getPrintSheet);
 };
 
 /**
@@ -161,20 +172,20 @@ const getPrintSection = (section, totalSheet) => {
  * @param   {Object}  section data of current section
  * @returns {Object}          data of section of manager edition
  */
-const getManagerSection = (section, totalSheet) => {
-  return getSection(section, totalSheet, getManagerSheet);
+const getManagerSection = (section, totalSheets) => {
+  return getSection(section, totalSheets, getManagerSheet);
 };
 
 /**
  * Get total screen & total sheet
  *
- * @param   {Number}  totalPage total page of book
- * @returns {Object}            total sheet & total screen
+ * @param   {Number}  totalPages  total page of book
+ * @returns {Object}              total sheet & total screen
  */
-const getTotalData = totalPage => {
-  const total = (totalPage + 4) / 2;
+const getTotalData = totalPages => {
+  const total = (totalPages + 4) / 2;
 
-  return { totalSheet: total, totalScreen: total };
+  return { totalSheets: total, totalScreens: total };
 };
 
 /**
@@ -228,7 +239,7 @@ const getBook = async (bookId, edition, isEditor) => {
 
   const { data } = await graphqlRequest(query, { bookId });
 
-  return data.book;
+  return data?.book;
 };
 
 /**
@@ -242,16 +253,16 @@ const getBook = async (bookId, edition, isEditor) => {
 export const getBookDetail = async (bookId, edition, isEditor) => {
   const book = await getBook(bookId, edition, isEditor);
 
-  if (isEmpty(book)) return { book: {}, sectionsSheets: [] };
+  const sections = [];
+  const sheets = {};
+
+  if (isEmpty(book)) return { book: {}, sections, sheets };
 
   let totalSheetUntilNow = 0;
 
   const getSectionFn = getGetSectionMethod(edition);
 
   book.book_sections.sort(sortByOrder);
-
-  const sections = [];
-  const sheets = {};
 
   book.book_sections.forEach((section, index) => {
     section.sheets.sort(sortByOrder);

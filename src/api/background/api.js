@@ -1,4 +1,4 @@
-import { graphqlRequest } from '../axios';
+import { graphqlRequest } from '../urql';
 import {
   backgroundCategoriesQuery,
   backgroundQuery,
@@ -16,10 +16,12 @@ const apiBackgroundToModel = background => {
       },
       page_type: {
         name: 'pageType',
-        parse: value =>
-          value === BACKGROUND_PAGE_TYPE.SINGLE_PAGE.name
-            ? BACKGROUND_PAGE_TYPE.SINGLE_PAGE.id
-            : BACKGROUND_PAGE_TYPE.FULL_PAGE.id
+        parse: value => {
+          if (value === 'GENERAL') return BACKGROUND_PAGE_TYPE.FULL_PAGE.id;
+          if (value === 'SINGLE_PAGE')
+            return BACKGROUND_PAGE_TYPE.SINGLE_PAGE.id;
+          return value;
+        }
       }
     },
     restrict: []

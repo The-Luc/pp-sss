@@ -1,6 +1,6 @@
 import { get } from 'lodash';
 
-import { graphqlRequest } from '../axios';
+import { graphqlRequest } from '../urql';
 
 import { portraitAssetMapping, portraitMapping } from '@/common/mapping';
 

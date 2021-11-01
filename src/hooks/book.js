@@ -5,6 +5,9 @@ import bookService from '@/api/bookService';
 import { getBookDetail } from '@/api/book';
 
 import { useAppCommon } from './common';
+import { SheetDetail } from '@/common/models';
+import { addNewSheet } from '@/api/sheet';
+import { isOk } from '@/common/utils';
 
 import {
   GETTERS as BOOK_GETTERS,
@@ -18,6 +21,7 @@ import {
   GETTERS as DIGITAL_GETTERS,
   MUTATES as DIGITAL_MUTATES
 } from '@/store/modules/digital/const';
+import { MUTATES as APP_MUTATES } from '@/store/modules/app/const';
 
 /**
  * The hook trigger action to get book and get book information from store
@@ -31,17 +35,49 @@ export const useBook = () => {
   const { book, totalInfo, sections, maxPage, isPhotoVisited } = useGetters({
     book: BOOK_GETTERS.BOOK_DETAIL,
     totalInfo: BOOK_GETTERS.TOTAL_INFO,
-    sections: BOOK_GETTERS.SECTIONS_NO_SHEET,
+    sections: BOOK_GETTERS.SECTIONS,
     maxPage: BOOK_GETTERS.GET_MAX_PAGE,
     isPhotoVisited: GETTERS.IS_PHOTO_VISITED
   });
 
   const { setBookInfo } = useMutationBook();
 
-  const { setBookId, addSheet } = useMutations({
+  const { setBookId, addSheetToStore, setGeneralInfo } = useMutations({
     setBookId: BOOK_MUTATES.SET_BOOK_ID,
-    addSheet: BOOK_MUTATES.ADD_SHEET
+    addSheetToStore: BOOK_MUTATES.ADD_SHEET,
+    setGeneralInfo: APP_MUTATES.SET_GENERAL_INFO
   });
+
+  const addSheet = async sectionId => {
+    const sectionIndex = sections.value.findIndex(
+      section => section.id === sectionId
+    );
+
+    const totalSheetsInSection = sections.value[sectionIndex].sheetIds.length;
+
+    const order =
+      sectionIndex === sections.value.length - 1
+        ? totalSheetsInSection - 1
+        : totalSheetsInSection;
+
+    const res = await addNewSheet(sectionId, {
+      ...new SheetDetail(),
+      order,
+      isVisited: false
+    });
+
+    if (!isOk(res)) return;
+
+    addSheetToStore({
+      sectionId,
+      sheetId: res.data.create_sheet.id,
+      order
+    });
+
+    const { totalSheets, totalPage, totalScreens } = book.value;
+
+    setGeneralInfo({ info: { totalSheets, totalPage, totalScreens } });
+  };
 
   const updatePhotoVisited = async ({ isPhotoVisited }) => {
     await bookService.setIsPhotoVisited(isPhotoVisited);

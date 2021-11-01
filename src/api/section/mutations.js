@@ -30,3 +30,11 @@ export const updateSectionMutation = gql`
     }
   }
 `;
+
+export const deleteSectionMutation = gql`
+  mutation($sectionId: ID!) {
+    delete_sheet(book_section_id: $sectionId) {
+      id
+    }
+  }
+`;

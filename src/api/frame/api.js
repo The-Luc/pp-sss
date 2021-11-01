@@ -2,7 +2,7 @@ import { STATUS } from '@/common/constants';
 import { FrameDetail } from '@/common/models';
 import { mapObject } from '@/common/utils';
 import { get } from 'lodash';
-import { graphqlRequest } from '../axios';
+import { graphqlRequest } from '../urql';
 import { getSheetFramesQuery } from './queries';
 
 export const getSheetFrames = async sheetId => {

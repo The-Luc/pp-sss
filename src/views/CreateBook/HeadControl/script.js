@@ -25,9 +25,9 @@ export default {
   },
   computed: {
     numberInfo() {
-      const { totalSheet, totalPage, totalScreen } = this.generalInfo;
+      const { totalSheets, totalPages, totalScreens } = this.generalInfo;
 
-      return { totalSheet, totalPage, totalScreen };
+      return { totalSheets, totalPages, totalScreens };
     }
   },
   watch: {
