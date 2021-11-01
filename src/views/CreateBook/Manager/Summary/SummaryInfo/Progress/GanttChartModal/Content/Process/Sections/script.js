@@ -24,9 +24,7 @@ export default {
         const { id, name, color, status, dueDate } = s;
 
         const diffDate =
-          this.dueDateFromBeginning(dueDate) -
-          this.createdDateFromBeginning +
-          1;
+          this.dueDateFromBeginning(dueDate) - this.createdDateFromBeginning;
 
         const length = `${(diffDate / this.totalDayToShow) * 100}%`;
 

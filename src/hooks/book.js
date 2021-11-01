@@ -74,9 +74,9 @@ export const useBook = () => {
       order
     });
 
-    const { totalSheets, totalPage, totalScreens } = book.value;
+    const { totalSheets, totalPages, totalScreens } = book.value;
 
-    setGeneralInfo({ info: { totalSheets, totalPage, totalScreens } });
+    setGeneralInfo({ info: { totalSheets, totalPages, totalScreens } });
   };
 
   const updatePhotoVisited = async ({ isPhotoVisited }) => {
