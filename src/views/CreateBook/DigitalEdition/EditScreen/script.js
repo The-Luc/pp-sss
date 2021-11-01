@@ -420,7 +420,7 @@ export default {
      */
     async handleSelectedMedia(media) {
       const reversedMedia = [...media].reverse();
-      await this.updateSheetMedia({ media: reversedMedia });
+      await this.updateSheetMedia(reversedMedia);
     },
     /**
      * Switching tool on Creation Tool by emit

@@ -310,7 +310,7 @@ export default {
      */
     async handleSelectedImages(images) {
       const reversedImages = [...images].reverse();
-      await this.updateSheetMedia({ images: reversedImages });
+      await this.updateSheetMedia(reversedImages);
     },
     /**
      * Close list photo in sidebar

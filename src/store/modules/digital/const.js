@@ -64,7 +64,6 @@ class ActionClass extends BaseObject {
   GET_DATA_CANVAS = 'getDataForCanvas';
   UPDATE_SHEET_THEME_LAYOUT = 'updateSheetThemeLayout';
   UPDATE_OBJECTS_TO_STORE = 'updateObjectsToStore';
-  UPDATE_SHEET_MEDIA = 'updateSheetMedia';
 
   constructor(props) {
     super(props);

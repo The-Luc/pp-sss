@@ -54,7 +54,7 @@ export const actions = {
     commit(PRINT._MUTATES.SET_OBJECTS, { objectList: [] });
     commit(PRINT._MUTATES.SET_BACKGROUNDS, { backgrounds: getNewBackground() });
 
-    const data = await getSheetInfo(state.currentSheetId);
+    const { objects: data, media } = await getSheetInfo(state.currentSheetId);
 
     if (isEmpty(data)) return;
 
@@ -77,6 +77,7 @@ export const actions = {
         right: rightBackground
       }
     });
+    commit(PRINT._MUTATES.SET_SHEET_MEDIA, { media });
   },
   [PRINT._ACTIONS.UPDATE_SHEET_THEME_LAYOUT](
     { state, commit },
@@ -177,11 +178,5 @@ export const actions = {
       },
       { root: true }
     );
-  },
-  async [PRINT._ACTIONS.UPDATE_SHEET_MEDIA]({ commit, state }, { images }) {
-    const media = await printService.getSheetMedia(state.currentSheetId);
-    const newMedia = [...images, ...media];
-    await printService.saveSheetMedia(state.currentSheetId, newMedia);
-    commit(PRINT._MUTATES.SET_SHEET_MEDIA, { media: newMedia });
   }
 };
