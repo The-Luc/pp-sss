@@ -7,7 +7,7 @@ import {
   createBackgroundElement
 } from '@/common/utils';
 import { first, get } from 'lodash';
-import { graphqlRequest } from '../axios';
+import { graphqlRequest } from '../urql';
 import { pageInfoQuery, sheetInfoQuery } from './queries';
 
 export const getPageData = async id => {

@@ -1,6 +1,6 @@
 import PRINT_THEME from '@/assets/image/themes/theme1.jpg';
 import DIGITAL_THEME from '@/assets/image/digital-themes/confetti.jpg';
-import { graphqlRequest } from '../axios';
+import { graphqlRequest } from '../urql';
 import { themeOptionsQuery } from './queries';
 
 export const loadPrintThemes = async () => {

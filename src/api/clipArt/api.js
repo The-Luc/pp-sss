@@ -1,5 +1,5 @@
 import { isEmpty } from '@/common/utils';
-import { graphqlRequest } from '../axios';
+import { graphqlRequest } from '../urql';
 import { getClipArts, getClipartCategories, searchClipArt } from './queries';
 
 /**

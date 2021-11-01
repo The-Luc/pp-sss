@@ -1,6 +1,6 @@
 import { first, get } from 'lodash';
 import { SHEET_TYPE, SYSTEM_OBJECT_TYPE } from '@/common/constants';
-import { graphqlRequest } from '../axios';
+import { graphqlRequest } from '../urql';
 import {
   getLayoutElementsQuery,
   getLayoutsPreviewQuery,

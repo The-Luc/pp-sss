@@ -1,4 +1,4 @@
-import { graphqlRequest } from '../axios';
+import { graphqlRequest } from '../urql';
 
 import { sheetMappingToApi } from '@/common/mapping';
 
