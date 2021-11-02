@@ -1,4 +1,4 @@
-import { useGetters, useMutations, useActions } from 'vuex-composition-helpers';
+import { useGetters, useMutations } from 'vuex-composition-helpers';
 import { useAppCommon } from './common';
 import { useAnimation } from './animation';
 import { useFrame } from './frame';
@@ -14,6 +14,7 @@ import {
 
 import digitalService from '@/api/digital';
 import printService from '@/api/print';
+import { saveSheetMedia } from '@/api/sheet';
 
 import { Transition } from '@/common/models';
 
@@ -21,13 +22,11 @@ import { getPlaybackDataFromFrames, isEmpty, isOk } from '@/common/utils';
 
 import {
   GETTERS as PRINT_GETTERS,
-  MUTATES as PRINT_MUTATES,
-  ACTIONS as PRINT_ACTIONS
+  MUTATES as PRINT_MUTATES
 } from '@/store/modules/print/const';
 import {
   GETTERS as DIGITAL_GETTERS,
-  MUTATES as DIGITAL_MUTATES,
-  ACTIONS as DIGITAL_ACTIONS
+  MUTATES as DIGITAL_MUTATES
 } from '@/store/modules/digital/const';
 
 export const useSheet = () => {
@@ -71,7 +70,6 @@ export const useActionsEditionSheet = () => {
 
   const MUTATES = isDigital ? DIGITAL_MUTATES : PRINT_MUTATES;
   const GETTERS = isDigital ? DIGITAL_GETTERS : PRINT_GETTERS;
-  const ACTIONS = isDigital ? DIGITAL_ACTIONS : PRINT_ACTIONS;
 
   const { currentSheet } = useGetters({
     currentSheet: GETTERS.CURRENT_SHEET
@@ -81,20 +79,24 @@ export const useActionsEditionSheet = () => {
     setSheetMedia: MUTATES.SET_SHEET_MEDIA
   });
 
-  const { updateSheetMedia } = useActions({
-    updateSheetMedia: ACTIONS.UPDATE_SHEET_MEDIA
-  });
+  const updateSheetMedia = async newMedia => {
+    const sheetId = currentSheet.value.id;
+
+    const currentMedia = currentSheet.value.media;
+    const media = [...currentMedia, ...newMedia];
+
+    const res = await saveSheetMedia(sheetId, media);
+    if (!isOk(res)) setSheetMedia({ media: res.data });
+  };
 
   const deleteSheetMedia = async ({ id }) => {
     if (!id) return;
 
-    isDigital
-      ? await digitalService.deleteSheetMediaById(currentSheet.value.id, id)
-      : await printService.deleteSheetMediaById(currentSheet.value.id, id);
+    const sheetId = currentSheet.value.id;
 
-    const media = isDigital
-      ? await digitalService.getSheetMedia(currentSheet.value.id)
-      : await printService.getSheetMedia(currentSheet.value.id);
+    const { media } = isDigital
+      ? await digitalService.deleteSheetMediaById(sheetId)
+      : await printService.deleteSheetMediaById(sheetId);
 
     await setSheetMedia({ media });
   };

@@ -17,7 +17,8 @@ const urqlClient = createClient({
         Page: () => null,
         YearbookSpec: () => null,
         Template: () => null,
-        Category: () => null
+        Category: () => null,
+        DigitalFrame: () => null
       }
     }),
     fetchExchange

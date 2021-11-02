@@ -43,5 +43,11 @@ export const getSheetInfo = async id => {
     .map(createBackgroundElement)
     .filter(bg => !isEmpty(bg.imageUrl));
 
-  return [].concat(...pageObjects, ...backgrounds);
+  const media = pages.reduce(
+    (workshop, p) =>
+      isEmpty(p.workshop) ? workshop : workshop.concat(p.workshop),
+    []
+  );
+  const objects = [].concat(...pageObjects, ...backgrounds);
+  return { objects, media };
 };

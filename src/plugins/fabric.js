@@ -1080,6 +1080,49 @@ const drawControls = function(ctx, styleOverride) {
 };
 
 /**
+ *  To apply pattern for object has transformed gradient
+ *
+ * @param {2D context Object} ctx the object enable to modify context canvas
+ * @param {object} filler  filter that will be converted to pattern
+ */
+function applyPatternForTransformedGradient(ctx, filler) {
+  const dims = this._limitCacheSize(this._getCacheCanvasDimensions());
+  const pCanvas = fabric.util.createCanvasElement();
+  const retinaScaling = this.canvas.getRetinaScaling();
+  const width = dims.width / this.scaleX / retinaScaling;
+  const height = dims.height / this.scaleY / retinaScaling;
+
+  pCanvas.width = width;
+  pCanvas.height = height;
+
+  const pCtx = pCanvas.getContext('2d');
+
+  pCtx.beginPath();
+  pCtx.moveTo(0, 0);
+  pCtx.lineTo(width, 0);
+  pCtx.lineTo(width, height);
+  pCtx.lineTo(0, height);
+  pCtx.closePath();
+  pCtx.translate(width / 2, height / 2);
+  pCtx.scale(
+    dims.zoomX / this.scaleX / retinaScaling,
+    dims.zoomY / this.scaleY / retinaScaling
+  );
+  this._applyPatternGradientTransform(pCtx, filler);
+  pCtx.fillStyle = filler.toLive(ctx);
+  pCtx.fill();
+  ctx.translate(
+    -this.width / 2 - this.strokeWidth / 2,
+    -this.height / 2 - this.strokeWidth / 2
+  );
+  ctx.scale(
+    (retinaScaling * this.scaleX) / dims.zoomX,
+    (retinaScaling * this.scaleY) / dims.zoomY
+  );
+  ctx.strokeStyle = pCtx.createPattern(pCanvas, 'no-repeat');
+}
+
+/**
  * Override Fabric base Object Prototype for Print version
  * @param {fabric.Object} object - the object to be prototyped
  */
@@ -1091,6 +1134,7 @@ const commonFabricOverrides = object => {
   object.cornerStrokeColor = BORDER_COLOR.INNER;
   object.transparentCorners = false;
   object.borderScaleFactor = 1;
+  object._applyPatternForTransformedGradient = applyPatternForTransformedGradient;
 };
 
 /**
