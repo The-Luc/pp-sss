@@ -13,6 +13,9 @@ export default {
     isSpaceByBorder: {
       type: Boolean,
       default: false
+    },
+    specialWidth: {
+      type: Number
     }
   },
   computed: {

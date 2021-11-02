@@ -1,14 +1,14 @@
 <template>
-  <BlockBar :items="events" custom-class="events">
-    <EventFlag
+  <block-bar :items="events" custom-class="events">
+    <event-flag
       v-for="(eventFlag, index) in eventFlags"
       :key="`flag-${index}`"
       :position="eventFlag.position"
       :description="eventFlag.name"
       :event-date="eventFlag.value"
       :is-short="eventFlag.isShort"
-    />
-  </BlockBar>
+    ></event-flag>
+  </block-bar>
 </template>
 
 <script src="./script.js" />

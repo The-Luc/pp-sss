@@ -1,26 +1,33 @@
 import BlockBar from '@/components/BarProcesses/BlockBar';
 
-import { mapGetters } from 'vuex';
 import moment from 'moment';
 
+import { useGanttChart } from '../../composables';
+
 import { DATE_FORMAT } from '@/common/constants';
-import { GETTERS } from '@/store/modules/book/const';
+import { getWidthOfGanttTimeline } from '@/common/utils';
 
 export default {
   components: {
     BlockBar
   },
+  setup() {
+    const { eventDates, totalDayToShow, totalMonthToShow } = useGanttChart();
+
+    return { eventDates, totalDayToShow, totalMonthToShow };
+  },
   computed: {
-    ...mapGetters({
-      eventDates: GETTERS.BOOK_DATES,
-      totalMonthToShow: GETTERS.TOTAL_MONTH_SHOW_ON_CHART
-    }),
     months: function() {
-      return Array.from({ length: this.totalMonthToShow }, (v, index) => {
-        return {
-          isUseBorder: true,
-          slotName: `slot${index}`
-        };
+      const { createdDate } = this.eventDates;
+
+      return Array.from({ length: this.totalMonthToShow }, (_, index) => {
+        const width = getWidthOfGanttTimeline(
+          createdDate,
+          index,
+          this.totalDayToShow
+        );
+
+        return { isUseBorder: true, slotName: `slot${index}`, width };
       });
     },
     slots: function() {
