@@ -6,12 +6,16 @@ import {
   differenceWith
 } from 'lodash';
 
+import moment from 'moment';
+
 import { inToPx, ptToPx, getPagePrintSize } from './canvas';
+import { getDiffDaysFOMToEOM } from './time';
 
 import {
   STATUS,
   DIGITAL_CANVAS_SIZE,
-  DIGITAL_PAGE_SIZE
+  DIGITAL_PAGE_SIZE,
+  DATE_FORMAT
 } from '@/common/constants';
 
 const mapSubData = (sourceObject, rules, data) => {
@@ -564,4 +568,27 @@ export const getUniqueColor = (baseColors, currentColors) => {
   const randomNumber = Math.floor(Math.random() * availableColors.length + 1);
 
   return availableColors[randomNumber - 1];
+};
+
+/**
+ * Get with by time
+ *
+ * @param   {String}  beginDate       the begining date
+ * @param   {Number}  plusMonth       total month will be added to begin date
+ * @param   {Number}  totalTimeInDay  total time to calculate in day
+ * @returns {String}                  width in %
+ */
+export const getWidthOfGanttTimeline = (
+  beginDate,
+  plusMonth,
+  totalTimeInDay
+) => {
+  const currentTime = moment(beginDate, DATE_FORMAT.BASE).add(plusMonth, 'M');
+
+  const totalDays = getDiffDaysFOMToEOM(
+    currentTime.format(DATE_FORMAT.BASE),
+    currentTime.format(DATE_FORMAT.BASE)
+  );
+
+  return (totalDays / totalTimeInDay) * 100;
 };

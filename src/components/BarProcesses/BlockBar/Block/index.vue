@@ -5,7 +5,8 @@
     :style="[
       !!color && {
         backgroundColor: color
-      }
+      },
+      !!specialWidth && { width: `${specialWidth}%` }
     ]"
     v-bind="dataAttrs"
   >

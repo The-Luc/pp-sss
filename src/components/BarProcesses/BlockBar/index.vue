@@ -7,6 +7,7 @@
       :text="item.text"
       :data-attribute="item.dataAttributes"
       :is-space-by-border="item.isUseBorder"
+      :special-width="item.width"
     >
       <slot :name="item.slotName"></slot>
     </Block>
