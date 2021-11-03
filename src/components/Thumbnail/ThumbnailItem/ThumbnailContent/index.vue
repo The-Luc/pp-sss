@@ -6,14 +6,14 @@
     @click="onSelect"
   >
     <div
-      v-if="leftThumbnailUrl"
+      v-if="!thumbnailUrl && thumbnailLeftUrl"
       class="left-thumbnail"
-      :style="{ backgroundImage: `url(${leftThumbnailUrl})` }"
+      :style="{ backgroundImage: `url(${thumbnailLeftUrl})` }"
     ></div>
     <div
-      v-if="rightThumbnailUrl"
+      v-if="!thumbnailUrl && thumbnailRightUrl"
       class="right-thumbnail"
-      :style="{ backgroundImage: `url(${leftThumbnailUrl})` }"
+      :style="{ backgroundImage: `url(${thumbnailRightUrl})` }"
     ></div>
     <div class="border-inside"></div>
 

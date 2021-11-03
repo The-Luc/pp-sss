@@ -28,9 +28,6 @@ export default {
       type: String,
       default: LINK_STATUS.NONE
     },
-    thumbnailUrl: {
-      type: String
-    },
     toLink: {
       type: String,
       default: ''
@@ -67,11 +64,17 @@ export default {
       type: Boolean,
       default: false
     },
-    leftThumbnailUrl: {
-      type: String
+    thumbnailLeftUrl: {
+      type: String,
+      default: ''
     },
-    rightThumbnailUrl: {
-      type: String
+    thumbnailRightUrl: {
+      type: String,
+      default: ''
+    },
+    thumbnailUrl: {
+      type: String,
+      default: ''
     }
   },
   data() {

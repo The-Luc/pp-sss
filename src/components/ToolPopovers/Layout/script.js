@@ -61,8 +61,8 @@ export default {
       default: () => []
     },
     layoutId: {
-      type: Number,
-      default: null
+      type: String,
+      default: ''
     },
     isDigital: {
       type: Boolean,
