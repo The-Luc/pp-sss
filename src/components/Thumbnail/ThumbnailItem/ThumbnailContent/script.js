@@ -10,9 +10,6 @@ export default {
       type: [String, Number],
       default: SHEET_TYPE.NORMAL
     },
-    thumbnailUrl: {
-      type: String
-    },
     customCssClass: {
       type: Array,
       default: () => []
@@ -25,11 +22,17 @@ export default {
       type: Boolean,
       default: true
     },
-    leftThumbnailUrl: {
-      type: String
+    thumbnailLeftUrl: {
+      type: String,
+      default: ''
     },
-    rightThumbnailUrl: {
-      type: String
+    thumbnailRightUrl: {
+      type: String,
+      default: ''
+    },
+    thumbnailUrl: {
+      type: String,
+      default: ''
     }
   },
   computed: {

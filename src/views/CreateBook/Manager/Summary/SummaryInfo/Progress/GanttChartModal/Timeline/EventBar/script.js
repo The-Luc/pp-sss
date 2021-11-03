@@ -5,7 +5,7 @@ import moment from 'moment';
 
 import { useGanttChart } from '../../composables';
 
-import { isEmpty } from '@/common/utils';
+import { isEmpty, getWidthOfGanttTimeline } from '@/common/utils';
 
 import { DATE_FORMAT } from '@/common/constants';
 
@@ -35,8 +35,10 @@ export default {
   },
   computed: {
     events() {
-      return Array.from({ length: this.totalMonthToShow }, (v, index) => {
-        return this.getEventData(index);
+      const { createdDate } = this.eventDates;
+
+      return Array.from({ length: this.totalMonthToShow }, (_, index) => {
+        return this.getEventData(index, createdDate);
       });
     },
     eventFlags() {
@@ -45,14 +47,13 @@ export default {
   },
   methods: {
     /**
-     * getEventData - Get data of month use for generate timeline
+     * Get data of month use for generate timeline
      *
-     * @param   {Number} index index of month in timeline
-     * @returns {Object}       the data of chosen month
+     * @param   {Number} index        index of month in timeline
+     * @param   {Number} createdDate  the created day of book
+     * @returns {Object}              the data of chosen month
      */
-    getEventData(index) {
-      const { createdDate } = this.eventDates;
-
+    getEventData(index, createdDate) {
       const checkTime = moment(createdDate, DATE_FORMAT.BASE).add(index, 'M');
 
       const isShowYear = index === 0 || checkTime.month() === 0;
@@ -60,7 +61,7 @@ export default {
       return {
         text: isShowYear ? checkTime.format('yyyy') : null,
         isUseBorder: true,
-        slotName: `slot${index}`
+        width: getWidthOfGanttTimeline(createdDate, index, this.totalDayToShow)
       };
     },
     /**

@@ -548,7 +548,10 @@ export const getSvgData = (
           ? objects
           : objects.filter(
               o =>
-                o.isContainedWithinRect(tl, br) || o.intersectsWithRect(tl, br)
+                o.isContainedWithinRect(tl, br) ||
+                o.intersectsWithRect(tl, br) ||
+                o.containsPoint(tl) ||
+                o.containsPoint(br)
             );
 
       const svg = fabric.util.groupSVGElements(inViewBoxObjects, options);

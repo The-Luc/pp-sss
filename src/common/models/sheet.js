@@ -51,6 +51,7 @@ export class SheetEditionDetail extends SheetBase {
   themeId = null;
   layoutId = null;
   link = '';
+  thumbnailUrl = null;
   isVisited = false;
   media = [];
 
@@ -81,7 +82,6 @@ export class SheetPrintDetail extends SheetEditionDetail {
 
 export class SheetDigitalDetail extends SheetEditionDetail {
   pageName = null;
-  thumbnailUrl = null;
 
   /**
    * @param {SheetDigitalDetail} props

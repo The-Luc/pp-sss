@@ -12,7 +12,6 @@ import {
 } from '@/common/constants';
 import {
   getThemeOptSelectedById,
-  getLayoutOptSelectedById,
   resetObjects,
   isEmpty,
   insertItemsToArray,
@@ -27,8 +26,6 @@ import {
   useActionLayout,
   useLayoutElements
 } from '@/hooks';
-
-import { getCustom as getCustomLayouts } from '@/api/layouts';
 
 import { loadPrintThemes } from '@/api/themes';
 
@@ -181,22 +178,8 @@ export default {
     /**
      * Set default selected for layout base on id of sheet: Cover, Single Page or Collage
      */
-    async setLayoutSelected() {
-      if (isEmpty(this.layoutId)) {
-        this.layoutTypeSelected = this.getSelectedType(this.layoutTypes[0]);
-
-        return;
-      }
-
-      const customLayouts = await getCustomLayouts();
-
-      const layoutOpt = getLayoutOptSelectedById(
-        [...this.layouts, ...customLayouts],
-        this.layoutTypes,
-        this.layoutId
-      );
-
-      this.layoutTypeSelected = this.getSelectedType(layoutOpt);
+    setLayoutSelected() {
+      this.layoutTypeSelected = this.getSelectedType(this.layoutTypes[0]);
     },
 
     /**
@@ -275,6 +258,7 @@ export default {
       const layout = cloneDeep(layoutData);
 
       layout.objects = await this.getLayoutElements(layout.id);
+      layout.pageType = LAYOUT_PAGE_TYPE.SINGLE_PAGE.id;
 
       // change objects coords if user at FRONT_COVER or BACK_COVER
       if (this.isHalfSheet) {
