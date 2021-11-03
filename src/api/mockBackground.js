@@ -70,7 +70,7 @@ const backgroundService = {
 
         if (categoryId !== backgroundTypeSubId) return false;
 
-        return pageType === BACKGROUND_PAGE_TYPE.FULL_PAGE.id;
+        return pageType === BACKGROUND_PAGE_TYPE.GENERAL.id;
       });
 
       const result = isEmpty(data)

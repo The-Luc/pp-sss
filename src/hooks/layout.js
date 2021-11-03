@@ -182,7 +182,7 @@ const handleDrawBackgroundLayout = (
       const { width, height } = targetCanvas;
       const zoom = targetCanvas.getZoom();
       const scale =
-        backgroundPageType === BACKGROUND_PAGE_TYPE.FULL_PAGE.id ? 1 : 2;
+        backgroundPageType === BACKGROUND_PAGE_TYPE.FULL_PAGE?.id ? 1 : 2;
 
       img.id = id;
       img.selectable = false; // Right now, can not select background from layout, todo later
