@@ -35,11 +35,10 @@ import {
   OBJECT_TYPE,
   TOOL_NAME,
   DEFAULT_FABRIC_BACKGROUND,
-  BACKGROUND_PAGE_TYPE,
   EDITION
 } from '@/common/constants';
 
-import { inToPx } from '@/common/utils';
+import { inToPx, isFullBackground } from '@/common/utils';
 import { createTextBox } from '@/common/fabricObjects';
 
 export const useLayoutPrompt = edition => {
@@ -181,8 +180,7 @@ const handleDrawBackgroundLayout = (
     function(img) {
       const { width, height } = targetCanvas;
       const zoom = targetCanvas.getZoom();
-      const scale =
-        backgroundPageType === BACKGROUND_PAGE_TYPE.FULL_PAGE?.id ? 1 : 2;
+      const scale = isFullBackground({ pageType: backgroundPageType }) ? 1 : 2;
 
       img.id = id;
       img.selectable = false; // Right now, can not select background from layout, todo later

@@ -4,11 +4,14 @@ import {
   defaultThemeId
 } from '@/common/store';
 
-import { isEmpty, isHalfSheet, isHalfLeft } from '@/common/utils';
+import {
+  isEmpty,
+  isHalfSheet,
+  isHalfLeft,
+  isFullBackground
+} from '@/common/utils';
 
 import PRINT from './const';
-
-import { BACKGROUND_PAGE_TYPE } from '@/common/constants';
 
 export const getters = {
   [PRINT._GETTERS.CURRENT_SHEET]: ({ sheets, currentSheetId }) => {
@@ -83,10 +86,7 @@ export const getters = {
       return { isSingle: true, isEmpty: true };
     }
 
-    const isFull =
-      background.left.pageType === BACKGROUND_PAGE_TYPE.FULL_PAGE?.id;
-
-    if (isFull) {
+    if (isFullBackground(background.left)) {
       return {
         isSingle: true,
         background: background.left
