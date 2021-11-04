@@ -18,6 +18,7 @@ export default {
   data() {
     return {
       drag: false,
+      selectedSectionId: null,
       selectedIndex: -1,
       moveToIndex: -1,
       dragTargetBeforeId: null,
@@ -39,9 +40,11 @@ export default {
     onChoose(event) {
       this.moveToIndex = -1;
 
-      this.selectedIndex = this.sections[event.oldIndex].draggable
-        ? event.oldIndex
-        : -1;
+      const { draggable, id } = this.sections[event.oldIndex];
+
+      this.selectedSectionId = draggable ? id : null;
+
+      this.selectedIndex = draggable ? event.oldIndex : -1;
     },
     /**
      * Drag section event
@@ -101,13 +104,16 @@ export default {
         return;
       }
 
-      this.moveSection({
-        moveToIndex: this.moveToIndex,
-        selectedIndex: this.selectedIndex
-      });
+      this.moveSection(
+        this.selectedSectionId,
+        this.moveToIndex,
+        this.selectedIndex
+      );
 
       this.selectedIndex = -1;
       this.moveToIndex = -1;
+
+      this.selectedSectionId = null;
     },
     /**
      * Clear drag target
@@ -154,7 +160,7 @@ export default {
       return this.dragTargetAfterId === id ? 'after' : '';
     },
     /**
-     * Fire when dragging shet target change
+     * Fire when dragging sheet target change
      *
      * @param {String | Number} id        target sheet id
      * @param {String}          position  target location (before or after)

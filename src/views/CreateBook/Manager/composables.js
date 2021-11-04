@@ -183,13 +183,44 @@ export const useSectionControl = () => {
 export const useSectionItems = () => {
   const { currentUser } = useAppCommon();
 
-  const { sections } = useGetters({
-    sections: BOOK_GETTERS.SECTIONS
+  const { sections, sectionIds } = useGetters({
+    sections: BOOK_GETTERS.SECTIONS,
+    sectionIds: BOOK_GETTERS.SECTION_IDS
   });
 
-  const { moveSection } = useMutations({
-    moveSection: BOOK_MUTATES.MOVE_SECTION
+  const { moveSectionInStore } = useMutations({
+    moveSectionInStore: BOOK_MUTATES.MOVE_SECTION
   });
+
+  const moveSection = async (id, moveToIndex, selectedIndex) => {
+    const isMoveForward = moveToIndex > selectedIndex;
+    const affectRange = Math.abs(moveToIndex - selectedIndex);
+    const startIndex = isMoveForward ? selectedIndex + 1 : moveToIndex;
+
+    const affectSectionData = Array.from(
+      { length: affectRange },
+      (_, index) => {
+        return {
+          id: sectionIds.value[index + startIndex],
+          order: index + startIndex + (isMoveForward ? -1 : 1)
+        };
+      }
+    );
+
+    const apiCallPromise = affectSectionData.map(d => {
+      return updateSectionDB(d.id, { order: d.order });
+    });
+
+    apiCallPromise.push(updateSectionDB(id, { order: moveToIndex }));
+
+    await Promise.all(apiCallPromise);
+
+    moveSectionInStore({
+      id,
+      moveToIndex: moveToIndex,
+      selectedIndex: selectedIndex
+    });
+  };
 
   return { currentUser, sections, moveSection };
 };
