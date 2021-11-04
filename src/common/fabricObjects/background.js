@@ -4,13 +4,12 @@ import {
   HALF_SHEET,
   HALF_LEFT,
   OBJECT_TYPE,
-  BACKGROUND_PAGE_TYPE,
   DEFAULT_FABRIC_BACKGROUND
 } from '@/common/constants';
 
 import { toFabricBackgroundProp } from './common';
 
-import { isEmpty } from '@/common/utils';
+import { isEmpty, isFullBackground } from '@/common/utils';
 
 /**
  * Adding background to canvas
@@ -32,12 +31,10 @@ export const addPrintBackground = ({
     .getObjects()
     .filter(o => o.objectType === OBJECT_TYPE.BACKGROUND);
 
-  const isAddingFullBackground =
-    backgroundProp.pageType === BACKGROUND_PAGE_TYPE.FULL_PAGE?.id;
+  const isAddingFullBackground = isFullBackground(backgroundProp);
 
   const isCurrentFullBackground =
-    !isEmpty(currentBackgrounds) &&
-    currentBackgrounds[0].pageType === BACKGROUND_PAGE_TYPE.FULL_PAGE?.id;
+    !isEmpty(currentBackgrounds) && isFullBackground(currentBackgrounds[0]);
 
   const isHalfSheet = HALF_SHEET.indexOf(sheetType) >= 0;
   const isHalfLeft = isHalfSheet && HALF_LEFT.indexOf(sheetType) >= 0;
@@ -100,25 +97,32 @@ export const createBackgroundFabricObject = (
 
   const { width, height } = canvas;
   const zoom = canvas.getZoom();
-  const scaleX = prop.pageType === BACKGROUND_PAGE_TYPE.FULL_PAGE?.id ? 1 : 2;
+  const scaleX = isFullBackground(prop) ? 1 : 2;
 
   const id = newId ?? prop.id;
   const isLeftPage = isAddToLeft ?? prop.isLeftPage;
 
   return new Promise(resolve => {
-    fabric.util.loadImage(prop.imageUrl, img => {
-      const background = new fabric.Image(img, {
-        ...fabricProp,
-        isLeftPage,
-        id,
-        selectable: false,
-        left: isLeftPage ? 0 : width / zoom / 2,
-        scaleX: width / zoom / img.width / scaleX,
-        scaleY: height / zoom / img.height,
-        ...DEFAULT_FABRIC_BACKGROUND
-      });
+    fabric.util.loadImage(
+      prop.imageUrl,
+      img => {
+        const background = new fabric.Image(img, {
+          ...fabricProp,
+          isLeftPage,
+          id,
+          selectable: false,
+          left: isLeftPage ? 0 : width / zoom / 2,
+          scaleX: width / zoom / img.width / scaleX,
+          scaleY: height / zoom / img.height,
+          ...DEFAULT_FABRIC_BACKGROUND
+        });
 
-      resolve(background);
-    });
+        resolve(background);
+      },
+      null,
+      {
+        crossOrigin: 'anonymous'
+      }
+    );
   });
 };
