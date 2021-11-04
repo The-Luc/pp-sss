@@ -33,11 +33,11 @@ export const addPrintBackground = ({
     .filter(o => o.objectType === OBJECT_TYPE.BACKGROUND);
 
   const isAddingFullBackground =
-    backgroundProp.pageType === BACKGROUND_PAGE_TYPE.FULL_PAGE.id;
+    backgroundProp.pageType === BACKGROUND_PAGE_TYPE.FULL_PAGE?.id;
 
   const isCurrentFullBackground =
     !isEmpty(currentBackgrounds) &&
-    currentBackgrounds[0].pageType === BACKGROUND_PAGE_TYPE.FULL_PAGE.id;
+    currentBackgrounds[0].pageType === BACKGROUND_PAGE_TYPE.FULL_PAGE?.id;
 
   const isHalfSheet = HALF_SHEET.indexOf(sheetType) >= 0;
   const isHalfLeft = isHalfSheet && HALF_LEFT.indexOf(sheetType) >= 0;
@@ -100,7 +100,7 @@ export const createBackgroundFabricObject = (
 
   const { width, height } = canvas;
   const zoom = canvas.getZoom();
-  const scaleX = prop.pageType === BACKGROUND_PAGE_TYPE.FULL_PAGE.id ? 1 : 2;
+  const scaleX = prop.pageType === BACKGROUND_PAGE_TYPE.FULL_PAGE?.id ? 1 : 2;
 
   const id = newId ?? prop.id;
   const isLeftPage = isAddToLeft ?? prop.isLeftPage;

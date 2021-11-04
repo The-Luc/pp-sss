@@ -6,7 +6,7 @@ import {
 } from './queries';
 import { BACKGROUND_TYPE, BACKGROUND_PAGE_TYPE } from '@/common/constants';
 import { BackgroundElementEntity as BackgroundElement } from '@/common/models/entities/elements';
-import { mapObject } from '@/common/utils';
+import { mapObject, isEmpty } from '@/common/utils';
 
 const apiBackgroundToModel = background => {
   const mapRules = {
@@ -17,10 +17,9 @@ const apiBackgroundToModel = background => {
       page_type: {
         name: 'pageType',
         parse: value => {
-          if (value === 'GENERAL') return BACKGROUND_PAGE_TYPE.FULL_PAGE.id;
-          if (value === 'SINGLE_PAGE')
-            return BACKGROUND_PAGE_TYPE.SINGLE_PAGE.id;
-          return value;
+          const pageType = BACKGROUND_PAGE_TYPE[value]?.id;
+
+          return isEmpty(pageType) ? value : pageType;
         }
       }
     },
@@ -49,7 +48,7 @@ const getBackgroundsOfTheme = async (
   return backgrounds.filter(
     item =>
       item.pageType ===
-      (backgroundPageTypeId || BACKGROUND_PAGE_TYPE.FULL_PAGE.id)
+      (backgroundPageTypeId || BACKGROUND_PAGE_TYPE.GENERAL.id)
   );
 };
 
@@ -85,7 +84,7 @@ const getBackgroundsOfCategory = async (
     .filter(
       item =>
         item.pageType ===
-        (backgroundPageTypeId || BACKGROUND_PAGE_TYPE.FULL_PAGE.id)
+        (backgroundPageTypeId || BACKGROUND_PAGE_TYPE.GENERAL.id)
     );
 };
 /**

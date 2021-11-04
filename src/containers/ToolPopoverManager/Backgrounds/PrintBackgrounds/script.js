@@ -129,7 +129,7 @@ export default {
       const { pageType: selectedPageType } = background;
 
       const isSinglePageType =
-        selectedPageType === BACKGROUND_PAGE_TYPE.SINGLE_PAGE.id;
+        selectedPageType !== BACKGROUND_PAGE_TYPE.FULL_PAGE?.id;
 
       if (!this.isHalfSheet && isSinglePageType) {
         this.toggleModal({

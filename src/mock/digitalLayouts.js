@@ -117,7 +117,7 @@ const backgroundData = [
 const backgrounds = backgroundData.map(data => {
   return new BackgroundElement({
     id: uniqueId(),
-    pageType: BACKGROUND_PAGE_TYPE.FULL_PAGE.id,
+    pageType: BACKGROUND_PAGE_TYPE.GENERAL.id,
     backgroundType: '',
     category: 'Cover',
     name: 'watercolorbackground.jpg',
