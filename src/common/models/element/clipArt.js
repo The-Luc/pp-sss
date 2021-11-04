@@ -1,6 +1,5 @@
 import {
   DEFAULT_CLIP_ART,
-  DEFAULT_PROP,
   OBJECT_TYPE,
   SVG_FILL_MODE
 } from '@/common/constants';
@@ -14,7 +13,6 @@ export class ClipArtElementObject extends BaseMoveableElementObject {
   });
   category = '';
   vector = '';
-  color = DEFAULT_PROP.COLOR;
   fillMode = SVG_FILL_MODE.FILL;
   isColorful = true;
   isConstrain = true;
