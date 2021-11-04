@@ -24,6 +24,7 @@ class GetterClass extends BaseObject {
   SPECIFICATION_INFO = 'getSpecificationInfo';
   SALE_INFO = 'getSaleInfo';
   COLORS = 'getCurrentColors';
+  SECTION_IDS = 'getSectionIds';
 
   constructor(props) {
     super(props);
