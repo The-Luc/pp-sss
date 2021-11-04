@@ -54,7 +54,7 @@ export const BACKGROUNDS = [
     id: 0,
     categoryId: 1,
     backgroundType: BACKGROUND_TYPE.THEME.id,
-    pageType: BACKGROUND_PAGE_TYPE.FULL_PAGE.id,
+    pageType: BACKGROUND_PAGE_TYPE.GENERAL.id,
     name: 'Comic Too 1',
     thumbnail: THEME_1,
     imageUrl: THEME_1
@@ -63,7 +63,7 @@ export const BACKGROUNDS = [
     id: 1,
     categoryId: 1,
     backgroundType: BACKGROUND_TYPE.THEME.id,
-    pageType: BACKGROUND_PAGE_TYPE.FULL_PAGE.id,
+    pageType: BACKGROUND_PAGE_TYPE.GENERAL.id,
     name: 'Comic Too 2',
     thumbnail: THEME_2,
     imageUrl: THEME_2
@@ -72,7 +72,7 @@ export const BACKGROUNDS = [
     id: 2,
     categoryId: 1,
     backgroundType: BACKGROUND_TYPE.THEME.id,
-    pageType: BACKGROUND_PAGE_TYPE.FULL_PAGE.id,
+    pageType: BACKGROUND_PAGE_TYPE.GENERAL.id,
     name: 'Comic Too 3',
     thumbnail: THEME_3,
     imageUrl: THEME_3
@@ -81,7 +81,7 @@ export const BACKGROUNDS = [
     id: 3,
     categoryId: 1,
     backgroundType: BACKGROUND_TYPE.THEME.id,
-    pageType: BACKGROUND_PAGE_TYPE.FULL_PAGE.id,
+    pageType: BACKGROUND_PAGE_TYPE.GENERAL.id,
     name: 'Comic Too 4',
     thumbnail: THEME_4,
     imageUrl: THEME_4
@@ -90,7 +90,7 @@ export const BACKGROUNDS = [
     id: 4,
     categoryId: 1,
     backgroundType: BACKGROUND_TYPE.THEME.id,
-    pageType: BACKGROUND_PAGE_TYPE.FULL_PAGE.id,
+    pageType: BACKGROUND_PAGE_TYPE.GENERAL.id,
     name: 'Comic Too 5',
     thumbnail: THEME_5,
     imageUrl: THEME_5
@@ -99,7 +99,7 @@ export const BACKGROUNDS = [
     id: 5,
     categoryId: 2,
     backgroundType: BACKGROUND_TYPE.CATEGORY.id,
-    pageType: BACKGROUND_PAGE_TYPE.FULL_PAGE.id,
+    pageType: BACKGROUND_PAGE_TYPE.GENERAL.id,
     name: 'Color 1',
     thumbnail: COLOR_1,
     imageUrl: COLOR_1
@@ -108,7 +108,7 @@ export const BACKGROUNDS = [
     id: 6,
     categoryId: 2,
     backgroundType: BACKGROUND_TYPE.CATEGORY.id,
-    pageType: BACKGROUND_PAGE_TYPE.FULL_PAGE.id,
+    pageType: BACKGROUND_PAGE_TYPE.GENERAL.id,
     name: 'Color 2',
     thumbnail: COLOR_2,
     imageUrl: COLOR_2
@@ -117,7 +117,7 @@ export const BACKGROUNDS = [
     id: 7,
     categoryId: 2,
     backgroundType: BACKGROUND_TYPE.CATEGORY.id,
-    pageType: BACKGROUND_PAGE_TYPE.FULL_PAGE.id,
+    pageType: BACKGROUND_PAGE_TYPE.GENERAL.id,
     name: 'Color 3',
     thumbnail: COLOR_3,
     imageUrl: COLOR_3
@@ -126,7 +126,7 @@ export const BACKGROUNDS = [
     id: 8,
     categoryId: 2,
     backgroundType: BACKGROUND_TYPE.CATEGORY.id,
-    pageType: BACKGROUND_PAGE_TYPE.FULL_PAGE.id,
+    pageType: BACKGROUND_PAGE_TYPE.GENERAL.id,
     name: 'Color 4',
     thumbnail: COLOR_4,
     imageUrl: COLOR_4
@@ -135,7 +135,7 @@ export const BACKGROUNDS = [
     id: 9,
     categoryId: 2,
     backgroundType: BACKGROUND_TYPE.CATEGORY.id,
-    pageType: BACKGROUND_PAGE_TYPE.FULL_PAGE.id,
+    pageType: BACKGROUND_PAGE_TYPE.GENERAL.id,
     name: 'Color 5',
     thumbnail: COLOR_5,
     imageUrl: COLOR_5

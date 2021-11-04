@@ -25,7 +25,7 @@ export const BACKGROUND_TYPE = {
 };
 
 export const BACKGROUND_PAGE_TYPE = {
-  FULL_PAGE: {
+  GENERAL: {
     id: 0,
     name: 'General'
   },

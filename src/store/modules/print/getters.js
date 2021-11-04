@@ -84,7 +84,7 @@ export const getters = {
     }
 
     const isFull =
-      background.left.pageType === BACKGROUND_PAGE_TYPE.FULL_PAGE.id;
+      background.left.pageType === BACKGROUND_PAGE_TYPE.FULL_PAGE?.id;
 
     if (isFull) {
       return {

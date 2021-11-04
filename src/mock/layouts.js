@@ -89,7 +89,7 @@ const bg2 = new BackgroundElement({
 
 const bg3 = new BackgroundElement({
   id: uniqueId(),
-  pageType: BACKGROUND_PAGE_TYPE.FULL_PAGE.id,
+  pageType: BACKGROUND_PAGE_TYPE.GENERAL.id,
   backgroundType: '',
   category: 'Cover',
   name: 'fullbackground.jpg',

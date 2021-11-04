@@ -3,7 +3,7 @@ import { isEmpty, compareByValue } from './util';
 import { BACKGROUND_PAGE_TYPE, BACKGROUND_TYPE } from '@/common/constants';
 
 export const isFullBackground = ({ pageType }) => {
-  return pageType === BACKGROUND_PAGE_TYPE.FULL_PAGE.id;
+  return pageType === BACKGROUND_PAGE_TYPE.FULL_PAGE?.id;
 };
 
 /**
@@ -72,7 +72,7 @@ export const getBackgroundType = (background, backgroundTypes, themeId) => {
 const getDefaultPageType = isHalfSheet => {
   const pageType = isHalfSheet
     ? BACKGROUND_PAGE_TYPE.SINGLE_PAGE
-    : BACKGROUND_PAGE_TYPE.FULL_PAGE;
+    : BACKGROUND_PAGE_TYPE.GENERAL;
 
   return {
     ...pageType,
@@ -101,7 +101,7 @@ const getPageType = (background, isHalfSheet) => {
 
   const selectedPageType = isHalfSheet
     ? BACKGROUND_PAGE_TYPE.SINGLE_PAGE
-    : BACKGROUND_PAGE_TYPE.FULL_PAGE;
+    : BACKGROUND_PAGE_TYPE.GENERAL;
 
   return {
     ...selectedPageType,
