@@ -532,12 +532,7 @@ export const moveToCenterPage = (
  * @param   {Number}  expectedWidth   the view width of svg element
  * @returns {Promise<Object>}                  the svg data
  */
-export const getSvgData = (
-  svgUrl,
-  elementProperty,
-  expectedHeight,
-  expectedWidth
-) => {
+const getSvgData = (svgUrl, elementProperty, expectedHeight, expectedWidth) => {
   return new Promise(resolve => {
     fabric.loadSVGFromURL(svgUrl, (objects, options) => {
       const tl = new fabric.Point(0, 0);
@@ -555,9 +550,10 @@ export const getSvgData = (
             );
 
       const svg = fabric.util.groupSVGElements(inViewBoxObjects, options);
-
-      const scaleY = inToPx(expectedHeight) / svg.height;
       const scaleX = inToPx(expectedWidth) / svg.width;
+      const scaleY = expectedHeight
+        ? inToPx(expectedHeight) / svg.height
+        : scaleX;
 
       svg.set({
         ...elementProperty,
@@ -662,7 +658,7 @@ export const addEventListeners = (element, eventListeners) => {
 export const handleGetSvgData = async ({
   svg,
   svgUrlAttrName,
-  expectedHeight = DEFAULT_SVG.HEIGHT,
+  expectedHeight = null,
   expectedWidth = DEFAULT_SVG.WIDTH
 }) => {
   const fabricProp = getFabricPropByType(svg.object.type, svg.object);
@@ -698,7 +694,6 @@ const handleAddSvgsToCanvas = ({
  *
  * @param {Array}   svgObjects          list of sgv will be added
  * @param {String}  svgUrlAttrName      the attribute name contain svg url
- * @param {Number}  expectedHeight      the attribute name contain svg url
  * @param {Object}  canvas              the canvas contain new sgv
  * @param {Boolean} isAddedToSinglePage is sgv will be added to single page
  * @param {Boolean} isPlaceInLeftPage   is sgv will be added to left page
@@ -707,7 +702,6 @@ const handleAddSvgsToCanvas = ({
 export const addPrintSvgs = async (
   svgObjects,
   svgUrlAttrName,
-  expectedHeight,
   canvas,
   isAddedToSinglePage,
   isPlaceInLeftPage,
@@ -717,8 +711,7 @@ export const addPrintSvgs = async (
     svgObjects.map(s => {
       return handleGetSvgData({
         svg: s,
-        svgUrlAttrName,
-        expectedHeight
+        svgUrlAttrName
       });
     })
   );

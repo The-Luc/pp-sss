@@ -35,6 +35,7 @@ export const updateSection = async (sectionId, params) => {
     sectionId,
     params: sectionMappingToApi(params)
   });
+
   return new SectionBase({ ...sectionMapping(res.data) });
 };
 

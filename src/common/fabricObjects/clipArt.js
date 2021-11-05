@@ -1,5 +1,3 @@
-import { DEFAULT_CLIP_ART } from '@/common/constants/defaultProperty';
-
 import { addPrintSvgs } from './common';
 
 /**
@@ -21,7 +19,6 @@ export const addPrintClipArts = async (
   await addPrintSvgs(
     clipArts,
     'vector',
-    DEFAULT_CLIP_ART.HEIGHT,
     canvas,
     isAddedToSinglePage,
     isPlaceInLeftPage,

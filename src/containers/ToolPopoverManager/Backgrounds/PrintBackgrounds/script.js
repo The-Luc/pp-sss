@@ -1,6 +1,6 @@
 import Backgrounds from '@/components/ToolPopovers/Background';
 
-import { MODAL_TYPES, BACKGROUND_PAGE_TYPE } from '@/common/constants';
+import { MODAL_TYPES } from '@/common/constants';
 
 import { usePopoverCreationTool, usePrintBackgroundMenu } from '@/hooks';
 
@@ -10,7 +10,8 @@ import {
   isEmpty,
   isHalfSheet as isSheetHalfSheet,
   getBackgroundType,
-  getBackgroundPageType
+  getBackgroundPageType,
+  isFullBackground
 } from '@/common/utils';
 
 export default {
@@ -128,8 +129,9 @@ export default {
     onApplyBackground(background) {
       const { pageType: selectedPageType } = background;
 
-      const isSinglePageType =
-        selectedPageType !== BACKGROUND_PAGE_TYPE.FULL_PAGE?.id;
+      const isSinglePageType = !isFullBackground({
+        pageType: selectedPageType
+      });
 
       if (!this.isHalfSheet && isSinglePageType) {
         this.toggleModal({

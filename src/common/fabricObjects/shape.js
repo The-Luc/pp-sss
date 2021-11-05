@@ -1,4 +1,3 @@
-import { DEFAULT_SHAPE } from '@/common/constants/defaultProperty';
 import { useObjectControlsOverride } from '@/plugins/fabric';
 import { applyShadowToObject, handleGetSvgData, updateSpecificProp } from '.';
 import { OBJECT_TYPE } from '../constants';
@@ -24,7 +23,6 @@ export const addPrintShapes = async (
   await addPrintSvgs(
     shapes,
     'pathData',
-    DEFAULT_SHAPE.HEIGHT,
     canvas,
     isAddedToSinglePage,
     isPlaceInLeftPage,

@@ -17,6 +17,8 @@ import {
   DIGITAL_PAGE_SIZE,
   DATE_FORMAT
 } from '@/common/constants';
+import Color from 'color';
+import { BaseShadow } from '../models/element';
 
 const mapSubData = (sourceObject, rules, data) => {
   const isNoSubRule = isEmpty(data);
@@ -591,4 +593,33 @@ export const getWidthOfGanttTimeline = (
   );
 
   return (totalDays / totalTimeInDay) * 100;
+};
+
+/**
+ * To convert color object to hex code
+ *
+ * @param {Object} colorObject color object : e.g. {red: 255, green: 255, blue: 255}
+ * @returns  {String} hex code of the color
+ */
+export const convertAPIColorObjectToHex = colorObject => {
+  const { red: r, blue: b, green: g, alpha } = colorObject;
+  return Color({ r, g, b })
+    .alpha(alpha)
+    .hex();
+};
+
+/**
+ *  To convert shadow object get from API to fronted shadow object
+ * @param {Object} apiShadow shadow object from API
+ * @returns {Object} standard shadow object used in frontend
+ */
+export const parseFromAPIShadow = apiShadow => {
+  const shadowColor = convertAPIColorObjectToHex(apiShadow.color);
+
+  const { h_shadow: x, v_shadow: y } = apiShadow;
+  const dropShadow = x > 0 || y > 0;
+  const shadowAngle = (Math.atan2(y, x) * 180) / Math.PI - 90;
+  const shadowOffset = Math.sqrt(x * x + y * y);
+
+  return new BaseShadow({ dropShadow, shadowOffset, shadowAngle, shadowColor });
 };

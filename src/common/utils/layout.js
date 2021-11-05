@@ -2,6 +2,7 @@ import { cloneDeep, get } from 'lodash';
 import { getActiveCanvas, pxToIn } from './canvas';
 import {
   CUSTOM_LAYOUT_TYPE,
+  DATABASE_DPI,
   LAYOUT_PAGE_TYPE,
   OBJECT_TYPE,
   SHEET_TYPE
@@ -13,7 +14,8 @@ import {
   ImageElementObject,
   TextElementObject
 } from '../models/element';
-import { getPagePrintSize, pxToPt } from '.';
+import { getPagePrintSize } from '.';
+import { textMappingFromAPI } from '../mapping/element';
 
 /**
  * Get layout option from list layouts option by id
@@ -73,16 +75,11 @@ export const changeObjectsCoords = (objects, position) => {
 };
 
 export const createTextElement = (element, isRightPage) => {
-  const id = get(element, 'properties.guid', '');
-  const text = get(element, 'text.properties.text', '');
-  const { font_size, text_aligment: alignment } = get(element, 'text.view', {});
+  const props = textMappingFromAPI(element);
 
   return new TextElementObject({
-    ...getElementDimension(element, isRightPage),
-    id,
-    text,
-    fontSize: pxToPt(font_size),
-    alignment
+    ...props,
+    ...getElementDimension(element, isRightPage)
   });
 };
 
@@ -120,19 +117,23 @@ const getElementDimension = (element, isRightPage) => {
   const {
     size: { width, height },
     position: { top, left },
-    opacity
+    opacity,
+    rotation
   } = element?.view || {};
 
   const { pageWidth } = getPagePrintSize().inches;
 
   const size = {
-    width: pxToIn(width),
-    height: pxToIn(height)
+    width: pxToIn(width, DATABASE_DPI),
+    height: pxToIn(height, DATABASE_DPI)
   };
 
   const coord = {
-    x: isRightPage ? pxToIn(left) + pageWidth : pxToIn(left),
-    y: pxToIn(top)
+    x: isRightPage
+      ? pxToIn(left, DATABASE_DPI) + pageWidth
+      : pxToIn(left, DATABASE_DPI),
+    y: pxToIn(top, DATABASE_DPI),
+    rotation
   };
 
   return { size, coord, opacity };

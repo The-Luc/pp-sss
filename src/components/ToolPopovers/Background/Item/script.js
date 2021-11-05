@@ -1,4 +1,4 @@
-import { BACKGROUND_PAGE_TYPE } from '@/common/constants';
+import { isFullBackground } from '@/common/utils';
 
 export default {
   props: {
@@ -17,7 +17,7 @@ export default {
   },
   computed: {
     isSinglePage() {
-      return this.item.pageType === BACKGROUND_PAGE_TYPE.SINGLE_PAGE.id;
+      return !isFullBackground(this.item.pageType);
     }
   },
   methods: {

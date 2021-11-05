@@ -154,8 +154,10 @@ export const scaleSize = size => (size * getDpi()) / 72;
  *
  * @param   {Number}  size - the size px that need to be converted
  * @returns {Number}  the scaled-size
+ * @returns {Number}  the custom dpi value
  */
-export const unscaleSize = size => (size * 72) / getDpi();
+export const unscaleSize = (size, dpi) =>
+  dpi ? (size * 72) / dpi : (size * 72) / getDpi();
 
 /**
  * Convert pt to px
@@ -170,8 +172,9 @@ export const ptToPx = val => scaleSize(val);
  *
  * @param   {Number}  val - the pt value that need to be converted
  * @returns {Number}  the result pt
+ * @returns {Number}  the custom dpi value
  */
-export const pxToPt = val => unscaleSize(val);
+export const pxToPt = (val, dpi) => unscaleSize(val, dpi);
 
 /**
  * Conver inch to px
@@ -186,8 +189,9 @@ export const inToPx = val => val * getDpi();
  *
  * @param   {Number}  val - the px value that need to be converted
  * @returns {Number}  the result inch
+ * @returns {Number}  the custom dpi value
  */
-export const pxToIn = val => val / getDpi();
+export const pxToIn = (val, dpi) => (dpi ? val / dpi : val / getDpi());
 
 /**
  * To select the last object added into canvas

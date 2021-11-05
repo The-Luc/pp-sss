@@ -111,7 +111,6 @@ export const DEFAULT_CLIP_ART = {
   COORD: {
     ...DEFAULT_COORD
   },
-  COLOR: DEFAULT_PROP.COLOR,
   ORIGIN: {
     ...DEFAULT_ORIGIN
   },
