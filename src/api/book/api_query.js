@@ -42,7 +42,6 @@ const getSpreadInfo = (firstPage, secondPage) => {
   });
 };
 
-// TODO: digital data
 /**
  * Get data of sheet of digital edition
  *
@@ -67,7 +66,6 @@ const getDigitalSheet = (sheet, { id }, index, totalSheets) => {
   });
 };
 
-// TODO: print data
 /**
  * Get data of sheet of print edition
  *
@@ -91,6 +89,8 @@ const getPrintSheet = (sheet, { id }, index, totalSheets) => {
   const pageLeftName = getPageLeftName(sheetData, index, totalSheets);
   const pageRightName = getPageRightName(sheetData, index, totalSheets);
 
+  const pageIds = isNoPage ? [] : sheet.pages.map(p => p.id);
+
   return new SheetPrintDetail({
     ...sheetData,
     sectionId: id,
@@ -98,6 +98,7 @@ const getPrintSheet = (sheet, { id }, index, totalSheets) => {
     thumbnailRightUrl: secondPage.preview_image_url,
     pageLeftName,
     pageRightName,
+    pageIds,
     spreadInfo: getSpreadInfo(firstPage, secondPage)
   });
 };
