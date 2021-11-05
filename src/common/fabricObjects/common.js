@@ -555,10 +555,6 @@ const getSvgData = (svgUrl, elementProperty, expectedHeight, expectedWidth) => {
         ? inToPx(expectedHeight) / svg.height
         : scaleX;
 
-      objects.forEach(o => {
-        o.clipPath = null;
-      });
-
       svg.set({
         ...elementProperty,
         width: svg.width,
