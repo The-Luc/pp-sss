@@ -172,8 +172,6 @@ export default {
      */
     async initPrintData() {
       this.themesOptions = await loadPrintThemes();
-
-      this.layoutId = this.pageSelected?.layoutId;
     },
     /**
      * Set default selected for layout base on id of sheet: Cover, Single Page or Collage
