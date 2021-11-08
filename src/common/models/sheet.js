@@ -69,6 +69,7 @@ export class SheetPrintDetail extends SheetEditionDetail {
   pageRightName = null;
   thumbnailLeftUrl = null;
   thumbnailRightUrl = null;
+  pageIds = [];
   spreadInfo = new SpreadInfo();
 
   /**

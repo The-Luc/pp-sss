@@ -55,13 +55,14 @@ export const digitalMainQuery = gql`
 `;
 
 // book: theme_id, is_photo_visited
-// book / book_sections / sheets: theme_id, layout_Id, is_visited, media
+// book / book_sections / sheets: theme_id, layout_Id
 export const digitalEditorQuery = gql`
   query digitalEditor($bookId: ID!) {
     book(id: $bookId) {
       community_id
       book_sections {
         sheets {
+          is_visited
           digital_frames {
             preview_image_url
           }
@@ -93,7 +94,7 @@ export const printMainQuery = gql`
 `;
 
 // book: theme_id, is_photo_visited, page_info
-// book / book_sections / sheets: theme_id, layout_Id, is_visited, media, link
+// book / book_sections / sheets: theme_id, layout_Id, link
 export const printEditorQuery = gql`
   query printEditor($bookId: ID!) {
     book(id: $bookId) {
@@ -104,6 +105,7 @@ export const printEditorQuery = gql`
       }
       book_sections {
         sheets {
+          is_visited
           pages {
             title
             preview_image_url
