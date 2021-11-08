@@ -127,13 +127,6 @@ export const useActionSection = () => {
     moveToIndex,
     selectedIndex
   ) => {
-    console.log(
-      id,
-      moveToSectionId,
-      selectedSectionId,
-      moveToIndex,
-      selectedIndex
-    );
     if (moveToSectionId === selectedSectionId) {
       return moveSheetLocaly(id, selectedSectionId, moveToIndex, selectedIndex);
     }
