@@ -57,10 +57,8 @@ export const useActionSection = () => {
     const isMoveForward = moveToIndex > selectedIndex;
     const affectRange = Math.abs(moveToIndex - selectedIndex);
     const startIndex = isMoveForward ? selectedIndex + 1 : moveToIndex;
-    console.log(isMoveForward, affectRange, startIndex)
 
     const sheetIds = sectionSheetIds.value[sectionId].sheetIds;
-    console.log(sheetIds)
 
     const affectSheetData = Array.from({ length: affectRange }, (_, index) => {
       return {
@@ -68,7 +66,6 @@ export const useActionSection = () => {
         order: index + startIndex + (isMoveForward ? -1 : 1)
       };
     });
-    console.log(affectSheetData)
 
     const apiCallPromise = affectSheetData.map(d => {
       return updateSheetDb(d.id, { order: d.order });
@@ -130,7 +127,13 @@ export const useActionSection = () => {
     moveToIndex,
     selectedIndex
   ) => {
-    console.log(id, moveToSectionId, selectedSectionId, moveToIndex, selectedIndex)
+    console.log(
+      id,
+      moveToSectionId,
+      selectedSectionId,
+      moveToIndex,
+      selectedIndex
+    );
     if (moveToSectionId === selectedSectionId) {
       return moveSheetLocaly(id, selectedSectionId, moveToIndex, selectedIndex);
     }
