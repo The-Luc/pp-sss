@@ -1,10 +1,8 @@
 import Draggable from 'vuedraggable';
 import Sheet from './Sheet';
 
-import { mapMutations } from 'vuex';
-
 import { POSITION_FIXED } from '@/common/constants';
-import { MUTATES } from '@/store/modules/book/const';
+import { useActionSection } from '../composables';
 
 export default {
   components: {
@@ -30,15 +28,14 @@ export default {
     }
   },
   setup() {
-    return {
-      ...mapMutations({
-        updateSheetPosition: MUTATES.MOVE_SHEET
-      })
-    };
+    const { moveSheet } = useActionSection();
+
+    return { moveSheet };
   },
   data() {
     return {
       drag: false,
+      selectedSheetId: null,
       selectedIndex: -1,
       moveToIndex: -1,
       moveToSectionId: null
@@ -54,9 +51,11 @@ export default {
       this.moveToIndex = -1;
       this.moveToSectionId = null;
 
-      this.selectedIndex = this.sheets[event.oldIndex].draggable
-        ? event.oldIndex
-        : -1;
+      const { draggable, id } = this.sheets[event.oldIndex];
+
+      this.selectedSheetId = draggable ? id : null;
+
+      this.selectedIndex = draggable ? event.oldIndex : -1;
     },
     /**
      * Drag sheet event
@@ -148,25 +147,23 @@ export default {
     onEnd() {
       this.clearDragTarget();
 
-      if (this.selectedIndex < 0 || this.moveToIndex < 0) {
-        this.drag = false;
+      this.drag = false;
 
-        return;
-      }
+      if (this.selectedIndex < 0 || this.moveToIndex < 0) return;
 
-      this.updateSheetPosition({
-        moveToSectionId: this.moveToSectionId,
-        moveToIndex: this.moveToIndex,
-        selectedSectionId: this.sectionId,
-        selectedIndex: this.selectedIndex
-      });
+      this.moveSheet(
+        this.selectedSheetId,
+        this.moveToSectionId,
+        this.sectionId,
+        this.moveToIndex,
+        this.selectedIndex
+      );
 
       this.selectedIndex = -1;
       this.moveToIndex = -1;
 
       this.moveToSectionId = null;
-
-      this.drag = false;
+      this.selectedSheetId = null;
     },
     getMoveToIndex(event, relateSectionId) {
       this.moveToIndex = event.draggedContext.futureIndex;

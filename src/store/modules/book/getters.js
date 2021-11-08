@@ -125,5 +125,14 @@ export const getters = {
   [BOOK._GETTERS.COLORS]: ({ sections }) => {
     return Object.values(sections).map(({ color }) => color);
   },
-  [BOOK._GETTERS.SECTION_IDS]: ({ sectionIds }) => sectionIds
+  [BOOK._GETTERS.SECTION_IDS]: ({ sectionIds }) => sectionIds,
+  [BOOK._GETTERS.SECTION_SHEET_IDS]: ({ sections }) => {
+    const sectionSheets = {};
+
+    Object.keys(sections).forEach(k => {
+      sectionSheets[k] = sections[k].sheetIds;
+    });
+
+    return sectionSheets;
+  }
 };

@@ -215,11 +215,7 @@ export const useSectionItems = () => {
 
     await Promise.all(apiCallPromise);
 
-    moveSectionInStore({
-      id,
-      moveToIndex: moveToIndex,
-      selectedIndex: selectedIndex
-    });
+    moveSectionInStore({ id, moveToIndex, selectedIndex });
   };
 
   return { currentUser, sections, moveSection };

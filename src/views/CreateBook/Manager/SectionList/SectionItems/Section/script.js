@@ -1,6 +1,6 @@
+import DragDropIndicator from '@/components/DragDrops/DragDropIndicator';
 import Header from './SectionHeader';
 import Details from './SectionDetails';
-import DragDropIndicator from '@/components/DragDrops/DragDropIndicator';
 
 import { isEmpty } from '@/common/utils';
 
@@ -36,10 +36,8 @@ export default {
       return isEmpty(this.dragTargetType)
         ? ''
         : `drag-target-${this.dragTargetType}`;
-    }
-  },
-  methods: {
-    getSection: function() {
+    },
+    sectionInfo() {
       const {
         id,
         name,
@@ -51,7 +49,9 @@ export default {
       } = this.section;
 
       return { id, name, color, dueDate, draggable, status, assigneeId };
-    },
+    }
+  },
+  methods: {
     /**
      * Fire when dragging shet target change
      *

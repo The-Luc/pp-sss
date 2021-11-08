@@ -1,7 +1,6 @@
-import { mapMutations } from 'vuex';
+import { useActionSection } from '../../../composables';
 
 import { ICON_LOCAL } from '@/common/constants';
-import { MUTATES as BOOK_MUTATES } from '@/store/modules/book/const';
 
 export default {
   props: {
@@ -29,22 +28,20 @@ export default {
       default: ''
     }
   },
+  setup() {
+    const { moveSheetToSpecificSection } = useActionSection();
+
+    return { moveSheetToSpecificSection };
+  },
+  created() {
+    this.arrowDown = ICON_LOCAL.ARROW_DOWN;
+  },
   methods: {
-    ...mapMutations({
-      moveSheet: BOOK_MUTATES.MOVE_TO_OTHER_SECTION
-    }),
     onChangeStatus() {
       this.$emit('onChangeStatus');
     },
     onMoveSheet(id) {
-      this.moveSheet({
-        sheetId: this.sheetId,
-        currentSectionId: this.sectionId,
-        sectionId: id
-      });
+      this.moveSheetToSpecificSection(this.sheetId, id, this.sectionId);
     }
-  },
-  created() {
-    this.arrowDown = ICON_LOCAL.ARROW_DOWN;
   }
 };
