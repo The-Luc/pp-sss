@@ -43,7 +43,8 @@ import {
   useToolBar,
   useObjects,
   useBackgroundProperties,
-  usePortrait
+  usePortrait,
+  useAppCommon
 } from '@/hooks';
 import {
   isEmpty,
@@ -77,6 +78,8 @@ export default {
     PortraitFolder
   },
   setup() {
+    const { setLoadingState } = useAppCommon();
+
     const { pageSelected, updateVisited } = useLayoutPrompt(EDITION.PRINT);
     const { setToolNameSelected } = usePopoverCreationTool();
     const { setInfoBar } = useInfoBar();
@@ -132,7 +135,8 @@ export default {
       addObjecs,
       deleteObjects,
       backgroundsProps,
-      saveSelectedPortraitFolders
+      saveSelectedPortraitFolders,
+      setLoadingState
     };
   },
   data() {
@@ -378,6 +382,8 @@ export default {
         return;
       }
 
+      this.setLoadingState({ value: true });
+
       const prop = await setImageSrc(target, imageUrl);
 
       prop.imageId = imageId;
@@ -395,6 +401,8 @@ export default {
 
       setTimeout(() => {
         this.$refs.canvasEditor.printCanvas.renderAll();
+
+        this.setLoadingState({ value: false });
       }, 250);
     },
     /**
@@ -497,6 +505,8 @@ export default {
 
       const saveQueue = [];
 
+      this.setLoadingState({ value: true });
+
       Object.values(this.getSheets).forEach(sheet => {
         const leftPageNumber = +sheet?.pageLeftName;
         const rightPageNumber = +sheet?.pageRightName;
@@ -543,6 +553,8 @@ export default {
       });
 
       await Promise.all(saveQueue);
+
+      this.setLoadingState({ value: false });
 
       const selectedFolderIds = this.selectedFolders.map(item => item.id);
 

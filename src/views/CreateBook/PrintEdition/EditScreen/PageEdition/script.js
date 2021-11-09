@@ -137,7 +137,7 @@ export default {
     YRuler
   },
   setup() {
-    const { generalInfo } = useAppCommon();
+    const { generalInfo, setLoadingState } = useAppCommon();
     const { setInfoBar, zoom } = useInfoBar();
     const { onSaveStyle } = useStyle();
     const { savePrintEditScreen, getDataEditScreen } = useSaveData();
@@ -162,7 +162,8 @@ export default {
       savingStatus,
       updateSheetThumbnail,
       updateMediaSidebarOpen,
-      setPropertiesType
+      setPropertiesType,
+      setLoadingState
     };
   },
   data() {
@@ -587,6 +588,9 @@ export default {
      */
     async handlePaste(event) {
       if (this.isProcessingPaste || !isValidTargetToCopyPast()) return;
+
+      this.setLoadingState({ value: true });
+
       this.isProcessingPaste = true;
 
       await pastePpObject(
@@ -602,6 +606,8 @@ export default {
       this.countPaste += 1;
 
       this.setProcessingPaste();
+
+      this.setLoadingState({ value: false });
     },
     /**
      * Function handle to set object(s) to clipboard when user press Ctrl + C (Windows), Command + C (macOS), or from action menu
@@ -959,6 +965,8 @@ export default {
         y: pxToIn(y)
       });
 
+      this.setLoadingState({ value: true });
+
       const newImage = {
         id,
         newObject: new ImageElementObject({
@@ -1002,8 +1010,12 @@ export default {
       imageBorderModifier(image.object);
 
       addEventListeners(image?.object, eventListeners);
+
       window.printCanvas.add(image?.object);
+
       selectLatestObject(window.printCanvas);
+
+      this.setLoadingState({ value: false });
     },
     /**
      * Adding background to canvas & store
@@ -1011,7 +1023,7 @@ export default {
      * @param {Object}  background  the object of adding background
      * @param {Boolean} isLeft      is add to the left page or right page
      */
-    addBackground({ background, isLeft = true }) {
+    async addBackground({ background, isLeft = true }) {
       const id = getUniqueId();
 
       const newBackground = new BackgroundElementObject({
@@ -1021,7 +1033,9 @@ export default {
         isLeftPage: isLeft
       });
 
-      addPrintBackground({
+      this.setLoadingState({ value: true });
+
+      await addPrintBackground({
         id,
         backgroundProp: newBackground,
         isLeftBackground: isLeft,
@@ -1030,6 +1044,8 @@ export default {
       });
 
       this.addNewBackground({ background: newBackground });
+
+      this.setLoadingState({ value: false });
     },
     /**
      * Event fire when user change any property of selected background
@@ -1084,6 +1100,8 @@ export default {
      * @param {Array} clipArts - list clip art add on Canvas
      */
     async addClipArt(clipArts) {
+      this.setLoadingState({ value: true });
+
       const toBeAddedClipArts = clipArts.map(c => {
         const id = getUniqueId();
         const newClipArt = new ClipArtElementObject({
@@ -1142,6 +1160,8 @@ export default {
       } else {
         this.closeProperties();
       }
+
+      this.setLoadingState({ value: false });
     },
     /**
      * Callback function for handle rotated to update
@@ -1309,6 +1329,8 @@ export default {
      * @param {Array} shapes  list of object of adding shapes
      */
     async addShapes(shapes) {
+      this.setLoadingState({ value: true });
+
       const toBeAddedShapes = shapes.map(s => {
         const newShape = new ShapeElementObject({
           ...s,
@@ -1361,6 +1383,8 @@ export default {
       } else {
         this.closeProperties();
       }
+
+      this.setLoadingState({ value: false });
     },
     /**
      * Event fire when user change any property of selected shape
@@ -1783,6 +1807,8 @@ export default {
     async drawObjectsOnCanvas(objects) {
       if (isEmpty(objects)) return;
 
+      this.setLoadingState({ value: true });
+
       const allObjectPromises = objects.map(objectData => {
         if (
           objectData.type === OBJECT_TYPE.SHAPE ||
@@ -1812,6 +1838,8 @@ export default {
 
       window.printCanvas.add(...listFabricObjects);
       window.printCanvas.requestRenderAll();
+
+      this.setLoadingState({ value: false });
     },
     /**
      * Callback function for handle scaled to update text's dimension

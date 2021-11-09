@@ -50,7 +50,8 @@ import {
   useObjects,
   useBackgroundProperties,
   usePortrait,
-  useActionDigitalSheet
+  useActionDigitalSheet,
+  useAppCommon
 } from '@/hooks';
 
 import { useSavingStatus } from '../../composables';
@@ -96,6 +97,8 @@ export default {
     Playback
   },
   setup() {
+    const { setLoadingState } = useAppCommon();
+
     const { pageSelected, updateVisited } = useLayoutPrompt(EDITION.DIGITAL);
     const { setToolNameSelected } = usePopoverCreationTool();
     const { setCurrentSheetId } = useMutationDigitalSheet();
@@ -178,7 +181,8 @@ export default {
       getAllScreenPlaybackData,
       getCurrentScreenPlaybackData,
       getFramePlaybackData,
-      setPropertiesType
+      setPropertiesType,
+      setLoadingState
     };
   },
   data() {
@@ -511,6 +515,8 @@ export default {
         return;
       }
 
+      this.setLoadingState({ value: true });
+
       const prop = mediaUrl
         ? await setVideoSrc(
             target,
@@ -544,6 +550,8 @@ export default {
 
       setTimeout(() => {
         this.$refs.canvasEditor.digitalCanvas.renderAll();
+
+        this.setLoadingState({ value: false });
       }, 250);
     },
 
@@ -719,6 +727,8 @@ export default {
         return obj;
       }, {});
 
+      this.setLoadingState({ value: true });
+
       Object.keys(requiredScreens).forEach((screenId, screenIndex) => {
         const requiredFrames = requiredScreens[screenId];
 
@@ -782,6 +792,8 @@ export default {
 
         canvas.renderAll();
       });
+
+      this.setLoadingState({ value: false });
 
       this.onToggleModal({ modal: '' });
       this.setToolNameSelected('');
