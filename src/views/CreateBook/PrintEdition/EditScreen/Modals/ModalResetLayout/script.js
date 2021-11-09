@@ -77,7 +77,7 @@ export default {
         layout: this.layout,
         positionCenterX
       });
-      resetObjects(window.printCanvas);
+      resetObjects();
       this.$root.$emit('drawLayout');
       this.$root.$emit('pageNumber');
       this.onCancel();

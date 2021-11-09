@@ -20,13 +20,20 @@ import { isEmpty, isFullBackground } from '@/common/utils';
  * @param {String}  sheetType         type of container sheet
  * @param {Object}  canvas            the canvas contain new background
  */
-export const addPrintBackground = ({
+export const addPrintBackground = async ({
   id,
   backgroundProp,
   isLeftBackground,
   sheetType,
   canvas
 }) => {
+  const background = await createBackgroundFabricObject(
+    backgroundProp,
+    canvas,
+    id,
+    isAddToLeft
+  );
+
   const currentBackgrounds = canvas
     .getObjects()
     .filter(o => o.objectType === OBJECT_TYPE.BACKGROUND);
@@ -54,12 +61,8 @@ export const addPrintBackground = ({
     });
   }
 
-  createBackgroundFabricObject(backgroundProp, canvas, id, isAddToLeft).then(
-    img => {
-      canvas.add(img);
-      canvas.sendToBack(img);
-    }
-  );
+  canvas.add(background);
+  canvas.sendToBack(background);
 };
 
 /**
@@ -69,17 +72,22 @@ export const addPrintBackground = ({
  * @param {Object}  backgroundProp  the property of adding background
  * @param {Object}  canvas          the canvas contain new background
  */
-export const addDigitalBackground = ({ id, backgroundProp, canvas }) => {
+export const addDigitalBackground = async ({ id, backgroundProp, canvas }) => {
+  const background = await createBackgroundFabricObject(
+    backgroundProp,
+    canvas,
+    id,
+    true
+  );
+
   const currentBackgrounds = canvas
     .getObjects()
     .filter(o => o.objectType === OBJECT_TYPE.BACKGROUND);
 
   currentBackgrounds.forEach(bg => canvas.remove(bg));
 
-  createBackgroundFabricObject(backgroundProp, canvas, id, true).then(img => {
-    canvas.add(img);
-    canvas.sendToBack(img);
-  });
+  canvas.add(background);
+  canvas.sendToBack(background);
 };
 
 /**
