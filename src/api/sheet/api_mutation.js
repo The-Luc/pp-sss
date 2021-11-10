@@ -31,7 +31,10 @@ export const addNewSheet = async (sectionId, sheet) => {
  * @returns {Object}          mutation result
  */
 export const updateSheet = async (sheetId, params) => {
-  return graphqlRequest(updateSheetMutation, { sheetId, params });
+  return graphqlRequest(updateSheetMutation, {
+    sheetId,
+    params: sheetMappingToApi(params)
+  });
 };
 
 /**

@@ -60,6 +60,9 @@ export const sectionMappingToApi = section => {
       assigneeId: {
         name: 'assigned_user_id',
         isForce: true
+      },
+      order: {
+        name: 'section_order'
       }
     },
     restrict: ['id', 'sheets', 'sheetIds']

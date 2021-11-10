@@ -61,6 +61,9 @@ export const sheetMappingToApi = sheet => {
       },
       isVisited: {
         name: 'is_visited'
+      },
+      order: {
+        name: 'sheet_order'
       }
     },
     restrict: ['id', 'sectionId']

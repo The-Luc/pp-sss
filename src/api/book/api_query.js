@@ -31,8 +31,6 @@ import {
 
 import { EDITION } from '@/common/constants';
 
-const sortByOrder = (item1, item2) => item1.order - item2.order;
-
 const getSpreadInfo = (firstPage, secondPage) => {
   return new SpreadInfo({
     leftTitle: firstPage.title,
@@ -263,10 +261,14 @@ export const getBookDetail = async (bookId, edition, isEditor) => {
 
   const getSectionFn = getGetSectionMethod(edition);
 
-  book.book_sections.sort(sortByOrder);
+  book.book_sections.sort(
+    (item1, item2) => item1.section_order - item2.section_order
+  );
 
   book.book_sections.forEach((section, index) => {
-    section.sheets.sort(sortByOrder);
+    section.sheets.sort(
+      (item1, item2) => item1.sheet_order - item2.sheet_order
+    );
 
     const data = getSectionFn(section, totalSheetUntilNow);
 
