@@ -1,1 +1,2 @@
-export * from './api';
+export * from './api_query';
+export * from './api_mutation';

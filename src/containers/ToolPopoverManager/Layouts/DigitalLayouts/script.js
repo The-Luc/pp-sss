@@ -25,7 +25,10 @@ import {
   useActionLayout
 } from '@/hooks';
 
-import { loadDigitalLayouts, loadSupplementalLayouts } from '@/api/layouts';
+import {
+  loadDigitalLayouts,
+  loadSupplementalLayouts
+} from '@/api/layoutService';
 
 import { loadDigitalThemes } from '@/api/themes';
 

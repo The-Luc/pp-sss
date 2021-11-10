@@ -13,13 +13,10 @@ import SidebarSection from './SidebarSection';
 import TransitionPreview from './Modals/TheTransitionPreview';
 import Playback from './Modals/ThePlayback';
 
-import { mapGetters, mapMutations, mapActions } from 'vuex';
+import { mapGetters, mapMutations } from 'vuex';
 
 import { MUTATES } from '@/store/modules/app/const';
-import {
-  ACTIONS as DIGITAL_ACTIONS,
-  GETTERS as DIGITAL_GETTERS
-} from '@/store/modules/digital/const';
+import { GETTERS as DIGITAL_GETTERS } from '@/store/modules/digital/const';
 import {
   EDITION,
   MODAL_TYPES,
@@ -298,9 +295,6 @@ export default {
     sessionStorage.removeItem(COPY_OBJECT_KEY);
   },
   methods: {
-    ...mapActions({
-      getDataPageEdit: DIGITAL_ACTIONS.GET_DATA_EDIT
-    }),
     ...mapMutations({
       toggleModal: MUTATES.TOGGLE_MODAL,
       setPropertiesObjectType: MUTATES.SET_PROPERTIES_OBJECT_TYPE,

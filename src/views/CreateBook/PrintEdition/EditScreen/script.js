@@ -11,12 +11,11 @@ import ToolBar from './ToolBar';
 import SidebarSection from './SidebarSection';
 import PageEdition from './PageEdition';
 
-import { mapMutations, mapGetters, mapActions } from 'vuex';
+import { mapMutations, mapGetters } from 'vuex';
 
 import { MUTATES } from '@/store/modules/app/const';
 import { MUTATES as BOOK_MUTATES } from '@/store/modules/book/const';
 import {
-  ACTIONS as PRINT_ACTIONS,
   MUTATES as PRINT_MUTATES,
   GETTERS as PRINT_GETTERS
 } from '@/store/modules/print/const';
@@ -225,9 +224,6 @@ export default {
     this.setCurrentSheetId({ id: '' });
   },
   methods: {
-    ...mapActions({
-      getDataPageEdit: PRINT_ACTIONS.GET_DATA_EDIT
-    }),
     ...mapMutations({
       toggleModal: MUTATES.TOGGLE_MODAL,
       resetPrintConfigs: MUTATES.RESET_PRINT_CONFIG,
