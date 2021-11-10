@@ -139,8 +139,8 @@ export default {
      * Event fired when user click on favorite icon
      * @param {Number} Id Id of the layout wish to save
      */
-    onSaveToFavorites({ id }) {
-      this.$emit('onSaveToFavorites', id);
+    onSaveToFavorites({ id, isFavorites }) {
+      this.$emit('onSaveToFavorites', { id, isFavorites });
     },
     /**
      * Check if selected layout is in favorite list

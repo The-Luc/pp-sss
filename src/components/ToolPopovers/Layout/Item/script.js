@@ -68,7 +68,10 @@ export default {
     onSaveToFavorites(event) {
       event.stopPropagation();
 
-      this.$emit('saveToFavorites', { id: this.layout.id });
+      this.$emit('saveToFavorites', {
+        id: this.layout.id,
+        isFavorites: !this.isFavorites
+      });
     },
     /**
      * Preview event

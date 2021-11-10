@@ -24,3 +24,11 @@ export const getCommunityUsersQuery = gql`
     }
   }
 `;
+
+export const getFavoritesQuery = gql`
+  query getFavorites {
+    template_favourites {
+      id
+    }
+  }
+`;

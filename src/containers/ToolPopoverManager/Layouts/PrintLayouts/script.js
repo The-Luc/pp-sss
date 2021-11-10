@@ -344,8 +344,12 @@ export default {
      *
      * @param {String | Number} id id of selected layout
      */
-    async onSaveToFavorites(id) {
-      await this.saveToFavorites(id);
+    async onSaveToFavorites({ id, isFavorites }) {
+      const isSuccess = (await isFavorites)
+        ? this.saveToFavorites(id)
+        : (() => false)(); // will implement when API is ready
+
+      if (!isSuccess) return;
 
       this.modifyFavorites(id);
 

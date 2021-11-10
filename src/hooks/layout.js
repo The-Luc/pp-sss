@@ -2,7 +2,6 @@ import { useMutations, useGetters, useActions } from 'vuex-composition-helpers';
 import { fabric } from 'fabric';
 
 import {
-  getFavorites,
   getPrintLayoutTypes,
   getDigitalLayoutTypes,
   getCustom,
@@ -11,7 +10,11 @@ import {
   getFavoriteLayoutTypeMenu
 } from '@/api/layoutService';
 
-import { getLayoutElements, saveToFavorites } from '@/api/layout';
+import {
+  saveToFavorites as saveToFavoritesApi,
+  getFavorites as getFavoritesApi
+} from '@/api/user';
+import { getLayoutElements } from '@/api/layout';
 
 import { GETTERS as THEME_GETTERS } from '@/store/modules/theme/const';
 
@@ -37,7 +40,7 @@ import {
   EDITION
 } from '@/common/constants';
 
-import { inToPx, isFullBackground } from '@/common/utils';
+import { inToPx, isFullBackground, isOk } from '@/common/utils';
 import { createTextBox } from '@/common/fabricObjects';
 
 export const useLayoutPrompt = edition => {
@@ -250,6 +253,20 @@ export const useDrawLayout = () => {
 };
 
 export const useActionLayout = () => {
+  const saveToFavorites = async id => {
+    const res = await saveToFavoritesApi(id);
+
+    return isOk(res);
+  };
+
+  const getFavorites = async () => {
+    const res = await getFavoritesApi();
+
+    if (!isOk(res)) return [];
+
+    return res.data.template_favourites.map(({ id }) => id);
+  };
+
   return {
     saveToFavorites,
     getFavorites,

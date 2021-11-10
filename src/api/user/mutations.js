@@ -11,3 +11,11 @@ export const loginUserMutation = gql`
     }
   }
 `;
+
+export const saveFavoritesMutation = gql`
+  mutation($id: ID!) {
+    create_template_user(template_id: $id) {
+      id
+    }
+  }
+`;
