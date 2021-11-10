@@ -31,8 +31,6 @@ import {
 
 import { EDITION } from '@/common/constants';
 
-const sortByOrder = (item1, item2) => item1.order - item2.order;
-
 const getSpreadInfo = (firstPage, secondPage) => {
   return new SpreadInfo({
     leftTitle: firstPage.title,
@@ -42,7 +40,6 @@ const getSpreadInfo = (firstPage, secondPage) => {
   });
 };
 
-// TODO: digital data
 /**
  * Get data of sheet of digital edition
  *
@@ -67,7 +64,6 @@ const getDigitalSheet = (sheet, { id }, index, totalSheets) => {
   });
 };
 
-// TODO: print data
 /**
  * Get data of sheet of print edition
  *
@@ -91,6 +87,8 @@ const getPrintSheet = (sheet, { id }, index, totalSheets) => {
   const pageLeftName = getPageLeftName(sheetData, index, totalSheets);
   const pageRightName = getPageRightName(sheetData, index, totalSheets);
 
+  const pageIds = isNoPage ? [] : sheet.pages.map(p => p.id);
+
   return new SheetPrintDetail({
     ...sheetData,
     sectionId: id,
@@ -98,6 +96,7 @@ const getPrintSheet = (sheet, { id }, index, totalSheets) => {
     thumbnailRightUrl: secondPage.preview_image_url,
     pageLeftName,
     pageRightName,
+    pageIds,
     spreadInfo: getSpreadInfo(firstPage, secondPage)
   });
 };
@@ -262,10 +261,14 @@ export const getBookDetail = async (bookId, edition, isEditor) => {
 
   const getSectionFn = getGetSectionMethod(edition);
 
-  book.book_sections.sort(sortByOrder);
+  book.book_sections.sort(
+    (item1, item2) => item1.section_order - item2.section_order
+  );
 
   book.book_sections.forEach((section, index) => {
-    section.sheets.sort(sortByOrder);
+    section.sheets.sort(
+      (item1, item2) => item1.sheet_order - item2.sheet_order
+    );
 
     const data = getSectionFn(section, totalSheetUntilNow);
 

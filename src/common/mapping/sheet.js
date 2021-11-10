@@ -18,9 +18,12 @@ export const sheetMapping = sheet => {
       fixed_position: {
         name: 'positionFixed',
         parse: value => POSITION_FIXED[value.replace(/(POSITION_)/g, '')]
+      },
+      is_visited: {
+        name: 'isVisited'
       }
     },
-    restrict: []
+    restrict: ['pages', 'digital_frames']
   };
 
   return mapObject(sheet, mapRules);
@@ -58,6 +61,9 @@ export const sheetMappingToApi = sheet => {
       },
       isVisited: {
         name: 'is_visited'
+      },
+      order: {
+        name: 'sheet_order'
       }
     },
     restrict: ['id', 'sectionId']

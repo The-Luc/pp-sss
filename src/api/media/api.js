@@ -1,8 +1,12 @@
 import { graphqlRequest } from '../urql';
-import { isEmpty } from '@/common/utils';
-import { getMediaApi } from './queries';
-
-import { mediaMapping } from '@/common/mapping';
+import { get } from 'lodash';
+import { isEmpty, isOk } from '@/common/utils';
+import { getAllAlbumsQuery, getMediaApi } from './queries';
+import {
+  extractAlbumCategories,
+  mediaMapping,
+  parseAPIAlbums
+} from '@/common/mapping';
 
 import {
   PictureAssetEntity,
@@ -29,4 +33,33 @@ export const getMedia = async (id, terms = []) => {
       ? new VideoAssetEntity(mediaMapping(asset, !asset.is_media))
       : new PictureAssetEntity(mediaMapping(asset));
   });
+};
+
+export const getAlbumsAndCategories = async (communityId, mediaType) => {
+  const res = await graphqlRequest(getAllAlbumsQuery, {
+    communityId,
+    mediaType
+  });
+
+  if (!isOk(res)) return;
+
+  const communities = get(res, 'data.community_containers', []);
+  const groups = get(res, 'data.community_group_assets', []);
+  const personalAlbums = get(res, 'data.user_containers', []);
+
+  // mapping list of categories
+  const albumCategories = {
+    communities: extractAlbumCategories(communities),
+    groups: extractAlbumCategories(groups),
+    personalAlbums: extractAlbumCategories(personalAlbums)
+  };
+
+  // normalize albums
+  const albums = {
+    communities: parseAPIAlbums(communities),
+    groups: parseAPIAlbums(groups),
+    personalAlbums: parseAPIAlbums(personalAlbums)
+  };
+
+  return { albumCategories, albums };
 };

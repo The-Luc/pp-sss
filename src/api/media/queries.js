@@ -13,3 +13,34 @@ export const getMediaApi = gql`
     }
   }
 `;
+
+const albumDetailFragment = gql`
+  fragment albumDetail on Container {
+    id
+    title
+    created_at
+    assets {
+      id
+      thumbnail_uri
+    }
+  }
+`;
+
+export const getAllAlbumsQuery = gql`
+  query getAllAlbumsQuery($communityId: ID!, $mediaType: String) {
+    user_containers(media_type: $mediaType) {
+      ...albumDetail
+    }
+    community_containers(id: $communityId, media_type: $mediaType) {
+      ...albumDetail
+    }
+    community_group_assets(id: $communityId, range: ALL) {
+      id
+      name
+      containers {
+        ...albumDetail
+      }
+    }
+  }
+  ${albumDetailFragment}
+`;

@@ -3,7 +3,7 @@
     <v-col>
       <DragDropIndicator custom-class-name="indicator-top" />
 
-      <Header ref="header" :section="getSection()" :is-enable="isEnable" />
+      <Header ref="header" :section="sectionInfo" :is-enable="isEnable" />
 
       <Details
         :start-sequence="startSequence"

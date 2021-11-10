@@ -90,7 +90,8 @@ import {
   useProperties,
   useGetterEditionSection,
   useAnimation,
-  useFrameDelay
+  useFrameDelay,
+  useAppCommon
 } from '@/hooks';
 
 import {
@@ -160,6 +161,7 @@ export default {
     }
   },
   setup() {
+    const { setLoadingState } = useAppCommon();
     const { drawLayout } = useDrawLayout();
     const { setInfoBar, zoom } = useInfoBar();
     const { openPrompt } = useLayoutPrompt();
@@ -206,6 +208,7 @@ export default {
     const { totalVideoDuration } = useVideo();
 
     return {
+      setLoadingState,
       currentFrame,
       currentFrameId,
       drawLayout,
@@ -1407,6 +1410,8 @@ export default {
      * @param {Array} shapes  list of object of adding shapes
      */
     async addShapes(shapes) {
+      this.setLoadingState({ value: true });
+
       const toBeAddedShapes = shapes.map(s => {
         const newShape = new ShapeElementObject({
           ...s,
@@ -1459,6 +1464,8 @@ export default {
       } else {
         this.closeProperties();
       }
+
+      this.setLoadingState({ value: false });
     },
     /**
      * Event fire when user change any property of selected shape
@@ -1618,6 +1625,8 @@ export default {
         y: pxToIn(y)
       });
 
+      this.setLoadingState({ value: true });
+
       const isVideo = options?.type === ASSET_TYPE.VIDEO;
 
       const mediaProp = {
@@ -1683,6 +1692,8 @@ export default {
       this.digitalCanvas.add(image?.object);
 
       selectLatestObject(this.digitalCanvas);
+
+      this.setLoadingState({ value: false });
     },
     /**
      * Event fire when user change any property of selected image box
@@ -1715,6 +1726,8 @@ export default {
      * @param {Array} clipArts - list clip art add on Canvas
      */
     async addClipArt(clipArts) {
+      this.setLoadingState({ value: true });
+
       const toBeAddedClipArts = clipArts.map(c => {
         const id = getUniqueId();
         const newClipArt = new ClipArtElementObject({
@@ -1773,6 +1786,8 @@ export default {
       } else {
         this.closeProperties();
       }
+
+      this.setLoadingState({ value: false });
     },
     /**
      * Adding background to canvas & store
@@ -1782,6 +1797,8 @@ export default {
      */
     addBackground({ background }) {
       const id = getUniqueId();
+
+      this.setLoadingState({ value: true });
 
       const newBackground = new BackgroundElementObject({
         ...background,
@@ -1797,6 +1814,8 @@ export default {
       });
 
       this.addNewBackground({ background: newBackground });
+
+      this.setLoadingState({ value: false });
     },
     /**
      * Event fire when user change any property of selected background
@@ -1870,7 +1889,11 @@ export default {
      */
     async handlePaste(event) {
       if (this.isProcessingPaste || !isValidTargetToCopyPast()) return;
+
+      this.setLoadingState({ value: true });
+
       this.isProcessingPaste = true;
+
       await pastePpObject(
         event,
         this.pageSelected,
@@ -1884,6 +1907,8 @@ export default {
       this.countPaste += 1;
 
       this.setProcessingPaste();
+
+      this.setLoadingState({ value: false });
     },
     /**
      * Set processing paste state when user pasted base on delay time
@@ -2026,6 +2051,8 @@ export default {
     async drawObjectsOnCanvas(objects) {
       if (isEmpty(objects)) return;
 
+      this.setLoadingState({ value: true });
+
       const allObjectPromises = objects.map(objectData => {
         return this.drawObject(objectData);
       });
@@ -2034,6 +2061,8 @@ export default {
 
       this.digitalCanvas.add(...listFabricObjects);
       this.digitalCanvas.requestRenderAll();
+
+      this.setLoadingState({ value: false });
     },
     /**
      * create fabric object

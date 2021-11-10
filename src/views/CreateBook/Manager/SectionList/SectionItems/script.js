@@ -100,6 +100,8 @@ export default {
     onEnd() {
       this.clearDragTarget();
 
+      this.drag = false;
+
       if (this.selectedIndex < 0 || this.moveToIndex < 0) {
         return;
       }

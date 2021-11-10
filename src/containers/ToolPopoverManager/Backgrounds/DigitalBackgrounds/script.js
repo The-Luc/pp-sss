@@ -1,28 +1,20 @@
 import Backgrounds from '@/components/ToolPopovers/Background';
 
-import { usePopoverCreationTool, useDigitalBackgroundMenu } from '@/hooks';
-
 import { cloneDeep } from 'lodash';
-import { isEmpty, getBackgroundType } from '@/common/utils';
+
+import { getBackgroundType } from '@/common/utils';
+
+import { usePopoverCreationTool, useDigitalBackgroundMenu } from '@/hooks';
 
 export default {
   components: {
     Backgrounds
-  },
-  data() {
-    return {
-      backgroundTypes: {},
-      backgrounds: [],
-      noBackgroundLength: 4,
-      selectedType: { sub: {} }
-    };
   },
   setup() {
     const { setToolNameSelected } = usePopoverCreationTool();
 
     const {
       currentThemeId,
-      userSelectedBackground,
       toggleModal,
       getBackgroundTypeData,
       getBackgroundData
@@ -31,21 +23,19 @@ export default {
     return {
       setToolNameSelected,
       currentThemeId,
-      userSelectedBackground,
       toggleModal,
       getBackgroundTypeData,
       getBackgroundData
     };
   },
-  computed: {
-    appliedBackground() {
-      return isEmpty(this.userSelectedBackground)
-        ? {}
-        : {
-            ...this.userSelectedBackground,
-            id: this.userSelectedBackground.backgroundId
-          };
-    }
+  data() {
+    return {
+      backgroundTypes: {},
+      backgrounds: [],
+      noBackgroundLength: 4,
+      selectedType: { sub: {} },
+      appliedBackground: {}
+    };
   },
   mounted() {
     this.initData();

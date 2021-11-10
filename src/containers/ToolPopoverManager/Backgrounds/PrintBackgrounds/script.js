@@ -7,7 +7,6 @@ import { usePopoverCreationTool, usePrintBackgroundMenu } from '@/hooks';
 import { cloneDeep } from 'lodash';
 
 import {
-  isEmpty,
   isHalfSheet as isSheetHalfSheet,
   getBackgroundType,
   getBackgroundPageType,
@@ -18,22 +17,12 @@ export default {
   components: {
     Backgrounds
   },
-  data() {
-    return {
-      backgroundTypes: {},
-      backgrounds: [],
-      noBackgroundLength: 4,
-      selectedType: { sub: '' },
-      selectedPageType: {}
-    };
-  },
   setup() {
     const { setToolNameSelected } = usePopoverCreationTool();
 
     const {
       currentSheet,
       currentThemeId,
-      userSelectedBackground,
       toggleModal,
       getBackgroundTypeData,
       getBackgroundData
@@ -43,23 +32,24 @@ export default {
       setToolNameSelected,
       currentSheet,
       currentThemeId,
-      userSelectedBackground,
       toggleModal,
       getBackgroundTypeData,
       getBackgroundData
     };
   },
+  data() {
+    return {
+      backgroundTypes: {},
+      backgrounds: [],
+      noBackgroundLength: 4,
+      selectedType: { sub: '' },
+      selectedPageType: {},
+      appliedBackground: {}
+    };
+  },
   computed: {
     isHalfSheet() {
       return isSheetHalfSheet(this.currentSheet);
-    },
-    appliedBackground() {
-      return isEmpty(this.userSelectedBackground)
-        ? {}
-        : {
-            ...this.userSelectedBackground[0],
-            id: this.userSelectedBackground[0].backgroundId
-          };
     }
   },
   mounted() {

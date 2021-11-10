@@ -12,7 +12,6 @@ import {
 } from '@/common/constants';
 import {
   getThemeOptSelectedById,
-  getLayoutOptSelectedById,
   resetObjects,
   isEmpty,
   entitiesToObjects
@@ -187,21 +186,6 @@ export default {
         : await loadDigitalLayouts();
 
       this.setDigitalLayouts({ layouts });
-
-      const isAddFrame = this.modalData.props.isAddFrame;
-
-      if (isAddFrame) {
-        this.layoutId = null;
-        return;
-      }
-
-      const currentFrameObj = this.frames.find(
-        f => f.id === this.currentFrameId
-      );
-
-      this.layoutId = this.isSupplemental
-        ? currentFrameObj.supplementalLayoutId
-        : this.pageSelected?.layoutId;
     },
     /**
      * Set default selected for layout base on id of sheet: Cover, Single Page or Collage
@@ -237,24 +221,11 @@ export default {
           break;
         default:
           {
-            // Use default layout if the sheet no have private layout
-            const layoutId = this.pageSelected?.layoutId;
-            const defaultLayouts = await loadDigitalLayouts();
+            const index = this.layoutTypes.length > 1 ? 1 : 0;
 
-            if (layoutId) {
-              const layoutOpt = getLayoutOptSelectedById(
-                defaultLayouts,
-                this.layoutTypes,
-                layoutId
-              );
-              this.layoutTypeSelected = this.getSelectedType(layoutOpt);
-            } else {
-              const index = this.layoutTypes.length > 1 ? 1 : 0;
-
-              this.layoutTypeSelected = this.getSelectedType(
-                this.layoutTypes[index]
-              );
-            }
+            this.layoutTypeSelected = this.getSelectedType(
+              this.layoutTypes[index]
+            );
           }
           break;
       }
@@ -327,53 +298,44 @@ export default {
 
       layout.frames.forEach(f => (f.objects = entitiesToObjects(f.objects)));
 
-      if (layout.type === LAYOUT_TYPES.SUPPLEMENTAL_LAYOUTS.value) {
-        // handle case: user add new suppblemental frame
-        if (this.modalData?.props?.isAddFrame) {
-          this.$emit('addFrame', layout);
+      const isSupplemental =
+        layout.type === LAYOUT_TYPES.SUPPLEMENTAL_LAYOUTS.value;
 
-          return;
-        }
+      const hasPackageFrame = this.frames.some(f => f.fromLayout);
 
-        // handle case: user replace a suppblemental frame
+      if (!isSupplemental && hasPackageFrame) {
+        this.applyLayout(layout);
+
         this.onCancel();
-        this.toggleModal({
-          isOpenModal: true,
-          modalData: {
-            type: MODAL_TYPES.OVERRIDE_LAYOUT,
-            props: {
-              sheetData: {
-                layout,
-                isReplaceFrame: true
-              }
-            }
-          }
-        });
+
         return;
       }
 
-      // Prompt a modal to comfirm overriding layout if layoutId existed
-      if (this.pageSelected?.layoutId) {
-        this.onCancel();
-        this.toggleModal({
-          isOpenModal: true,
-          modalData: {
-            type: MODAL_TYPES.OVERRIDE_LAYOUT,
-            props: {
-              sheetData: {
-                sheetId: this.pageSelected?.id,
-                themeId: this.themeSelected?.id,
-                layout
-              }
-            }
-          }
-        });
+      // handle case: user add new suppblemental frame
+      if (isSupplemental && this.modalData?.props?.isAddFrame) {
+        this.$emit('addFrame', layout);
+
         return;
       }
-
-      this.applyLayout(layout);
 
       this.onCancel();
+
+      const sheetData = isSupplemental
+        ? { isReplaceFrame: true }
+        : { sheetId: this.pageSelected?.id, themeId: this.themeSelected?.id };
+
+      this.toggleModal({
+        isOpenModal: true,
+        modalData: {
+          type: MODAL_TYPES.OVERRIDE_LAYOUT,
+          props: {
+            sheetData: {
+              layout,
+              ...sheetData
+            }
+          }
+        }
+      });
     },
     /**
      * Save objects to store and draw on canvas

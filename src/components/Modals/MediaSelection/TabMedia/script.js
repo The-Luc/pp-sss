@@ -26,8 +26,8 @@ export default {
       required: true
     },
     albums: {
-      type: Array,
-      default: () => []
+      type: Object,
+      default: () => {}
     },
     mediaDropdowns: {
       type: Object,
@@ -53,9 +53,10 @@ export default {
       if (albumId === ALL_MEDIA_SUBCATEGORY_ID)
         return this.getAllSelectedAlbums();
 
-      return this.currentAlbums.filter(item => {
-        return !isEmpty(item.assets) && item.id === albumId;
-      });
+      return this.currentAlbums.filter(item => item.id === albumId);
+    },
+    currentSubAlbums() {
+      return this.albums[this.selectedType.value] || [];
     },
     dropdownOptions() {
       return this.getDropdownOptions();
@@ -175,7 +176,7 @@ export default {
      * Get current video albums
      */
     getCurrentVideoAlbums() {
-      return this.albums.map(item => {
+      return this.currentSubAlbums.map(item => {
         const assets = item.assets.filter(el => el.type === ASSET_TYPE.VIDEO);
         return {
           ...item,
@@ -187,7 +188,7 @@ export default {
      * Get current photo albums
      */
     getCurrentPhotoAlbums() {
-      return this.albums.map(item => {
+      return this.currentSubAlbums.map(item => {
         const assets = item.assets.filter(el => el.type === ASSET_TYPE.PICTURE);
         return {
           ...item,
