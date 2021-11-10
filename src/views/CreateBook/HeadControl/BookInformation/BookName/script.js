@@ -23,15 +23,12 @@ export default {
   watch: {
     generalInfo: {
       deep: true,
+      immediate: true,
       handler(info) {
         this.rootTitle = info.title;
         this.title = info.title;
       }
     }
-  },
-  mounted() {
-    this.title = this.generalInfo.title;
-    this.rootTitle = this.generalInfo.title;
   },
   methods: {
     onCancel() {
@@ -52,7 +49,7 @@ export default {
         return;
       }
 
-      this.updateTitle(this.title);
+      this.updateTitle(this.title.trim());
     }
   }
 };

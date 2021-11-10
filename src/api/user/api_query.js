@@ -1,7 +1,6 @@
-import { graphqlRequest } from '../urql';
 import { get } from 'lodash';
 
-import { loginUserMutation } from './mutations';
+import { graphqlRequest } from '../urql';
 
 import {
   User,
@@ -9,37 +8,17 @@ import {
   getSuccessWithData
 } from '@/common/models';
 
+import { getItem } from '@/common/storage';
+
 import { isEmpty } from '@/common/utils';
 
-import { getItem } from '@/common/storage';
-import { Notification } from '@/components/Notification';
+import {
+  getCommunityUsersQuery,
+  getUserRoleQuery,
+  getFavoritesQuery
+} from './queries';
+
 import { LOCAL_STORAGE, ROLE, STATUS } from '@/common/constants';
-import { getCommunityUsersQuery, getUserRoleQuery } from './queries';
-
-export const logInUser = async (email, password) => {
-  try {
-    const res = await graphqlRequest(loginUserMutation, {
-      email,
-      password
-    });
-
-    if (res.status === STATUS.NG) return [];
-
-    const user = res.data.login_user;
-    const communityUserId = user.communities_users[0]?.id;
-
-    return {
-      token: user.token,
-      communityUserId
-    };
-  } catch (e) {
-    Notification({
-      type: 'error',
-      title: 'Error',
-      text: 'Something went wrong!'
-    });
-  }
-};
 
 export const getCurrentUserApi = async () => {
   const communityUserId = getItem(LOCAL_STORAGE.COMMUNITY_USER_ID);
@@ -92,4 +71,13 @@ export const authenticateApi = (bookId, sheetId) => {
 
     resolve(getSuccessWithData({ sheetId }));
   });
+};
+
+/**
+ * Get list of favorites layout of user
+ *
+ * @returns {Object}  api connection result
+ */
+export const getFavorites = async () => {
+  return graphqlRequest(getFavoritesQuery);
 };

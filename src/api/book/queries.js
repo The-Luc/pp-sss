@@ -55,7 +55,7 @@ export const digitalMainQuery = gql`
 `;
 
 // book: theme_id, is_photo_visited
-// book / book_sections / sheets: theme_id, layout_Id
+// book / book_sections / sheets: theme_id
 export const digitalEditorQuery = gql`
   query digitalEditor($bookId: ID!) {
     book(id: $bookId) {
@@ -94,7 +94,7 @@ export const printMainQuery = gql`
 `;
 
 // book: theme_id, is_photo_visited, page_info
-// book / book_sections / sheets: theme_id, layout_Id, link
+// book / book_sections / sheets: theme_id, link
 export const printEditorQuery = gql`
   query printEditor($bookId: ID!) {
     book(id: $bookId) {
