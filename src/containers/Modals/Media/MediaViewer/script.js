@@ -9,7 +9,6 @@ import {
   useFrame,
   useSheet,
   useAppCommon,
-  usePhoto,
   useBook
 } from '@/hooks';
 import { usePhotos } from '@/views/CreateBook/composables';
@@ -40,8 +39,7 @@ export default {
     const { currentSection } = useGetterEditionSection();
     const { currentFrame } = useFrame();
     const { currentSheet } = useSheet();
-    const { getSmartbox, getSearch } = usePhotos();
-    const { getAlbums, getMediaCategories } = usePhoto();
+    const { getSmartbox, getSearch, getAlbums } = usePhotos();
     const { isPhotoVisited, updatePhotoVisited } = useBook();
 
     return {
@@ -53,8 +51,7 @@ export default {
       generalInfo,
       getSmartbox,
       getSearch,
-      getAlbums,
-      getMediaCategories
+      getAlbums
     };
   },
   data() {
@@ -68,7 +65,7 @@ export default {
         value: PHOTO_CATEGORIES.COMMUNITIES.value,
         sub: { value: ALL_MEDIA_SUBCATEGORY_ID }
       },
-      albums: [],
+      albums: {},
       mediaDropdowns: {},
       isOnlyVideoUploaded: false
     };
@@ -173,10 +170,12 @@ export default {
 
       if (this.currentTab !== 'photos' && this.currentTab !== 'videos') return;
 
-      this.albums = await this.getAlbums();
-      this.mediaDropdowns = await this.getMediaCategories();
+      const { albums, albumCategories } = await this.getAlbums();
+      this.mediaDropdowns = albumCategories;
+      this.albums = albums;
       this.selectedType = this.getSelectedType();
     },
+
     /**
      * Return a selected album type coresponding to the selected album Id
      * @returns {Object} selected album type

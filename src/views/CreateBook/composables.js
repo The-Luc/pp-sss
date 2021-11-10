@@ -1,5 +1,5 @@
 import { useMutations, useGetters } from 'vuex-composition-helpers';
-import { getPhotos, getMedia } from '@/api/media';
+import { getPhotos, getMedia, getAlbumsAndCategories } from '@/api/media';
 import { clipArtService } from '@/api/clipArt/api';
 import portraitSevice from '@/api/portrait';
 import { useActionBook, useAppCommon } from '@/hooks';
@@ -39,9 +39,17 @@ export const usePhotos = () => {
       : getPhotos(book.communityId, [input]);
   };
 
+  const getAlbums = async isGetMedia => {
+    const { book } = await getBookInfo(generalInfo.value.bookId, true);
+    const mediaType = isGetMedia ? 'videos' : 'images';
+
+    return await getAlbumsAndCategories(book.communityId, mediaType);
+  };
+
   return {
     getSmartbox,
-    getSearch
+    getSearch,
+    getAlbums
   };
 };
 

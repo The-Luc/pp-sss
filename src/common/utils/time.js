@@ -101,3 +101,14 @@ export const apiToBaseDate = apiDate => {
 
   return moment(new Date(apiDate)).format(DATE_FORMAT.BASE);
 };
+
+/**
+ * Convert API date to short date format
+ * @param   {String}  apiDate api date
+ * @returns {String}          date in short format
+ */
+export const apiToShortDate = apiDate => {
+  if (isEmpty(apiDate)) return '';
+
+  return moment(new Date(apiDate)).format(DATE_FORMAT.SHORT);
+};

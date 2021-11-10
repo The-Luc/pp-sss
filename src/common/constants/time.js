@@ -14,5 +14,6 @@ export const TIME_FORMAT = {
 };
 
 export const DATE_FORMAT = {
-  BASE: 'MM/DD/YY'
+  BASE: 'MM/DD/YY',
+  SHORT: 'MMM DD, YYYY'
 };
