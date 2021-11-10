@@ -2,7 +2,6 @@ import { useMutations, useGetters, useActions } from 'vuex-composition-helpers';
 import { fabric } from 'fabric';
 
 import {
-  saveToFavorites,
   getFavorites,
   getPrintLayoutTypes,
   getDigitalLayoutTypes,
@@ -10,9 +9,9 @@ import {
   getLayoutsByThemeAndType,
   getCustomAndFavoriteLayouts,
   getFavoriteLayoutTypeMenu
-} from '@/api/layouts';
+} from '@/api/layoutService';
 
-import { getLayoutElements } from '@/api/layout';
+import { getLayoutElements, saveToFavorites } from '@/api/layout';
 
 import { GETTERS as THEME_GETTERS } from '@/store/modules/theme/const';
 

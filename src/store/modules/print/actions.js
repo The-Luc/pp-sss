@@ -1,54 +1,26 @@
-import { getUniqueId, isEmpty } from '@/common/utils';
+import { cloneDeep } from 'lodash';
+
+import { getSheetInfo } from '@/api/sheet';
+
 import printService from '@/api/print';
-import { setPrintPpLayouts } from '@/api/layouts';
+import { setPrintPpLayouts } from '@/api/layoutService';
+
+import { getNewBackground } from '@/common/models';
+
+import { getUniqueId, isEmpty } from '@/common/utils';
+
+import { MUTATES as APP_MUTATES } from '../app/const';
+
+import PRINT from './const';
 
 import {
-  STATUS,
   OBJECT_TYPE,
   SHEET_TYPE,
   MODAL_TYPES,
   LAYOUT_PAGE_TYPE
 } from '@/common/constants';
 
-import PRINT from './const';
-import { MUTATES as APP_MUTATES } from '../app/const';
-import { cloneDeep } from 'lodash';
-import { getNewBackground } from '@/common/models';
-import { getSheetInfo } from '@/api/sheet';
-
 export const actions = {
-  async [PRINT._ACTIONS.GET_DATA_MAIN]({ state, commit }) {
-    const queryResult = await printService.getPrintSectionsSheets(
-      state.book.id
-    );
-
-    if (queryResult.status !== STATUS.OK) return;
-
-    commit(PRINT._MUTATES.SET_SECTIONS_SHEETS, {
-      sectionsSheets: queryResult.data
-    });
-  },
-  async [PRINT._ACTIONS.GET_DATA_EDIT]({ state, commit }) {
-    const queryResults = await Promise.all([
-      printService.getDefaultThemeId(state.book.id),
-      printService.getPrintEditSectionsSheets(state.book.id),
-      printService.getPageInfo(state.book.id)
-    ]);
-
-    if (queryResults[1].status !== STATUS.OK) return;
-
-    commit(PRINT._MUTATES.SET_DEFAULT_THEME_ID, {
-      themeId: queryResults[0].data
-    });
-
-    commit(PRINT._MUTATES.SET_SECTIONS_SHEETS, {
-      sectionsSheets: queryResults[1].data
-    });
-
-    commit(PRINT._MUTATES.SET_PAGE_INFO, {
-      pageInfo: queryResults[2].data
-    });
-  },
   async [PRINT._ACTIONS.GET_DATA_CANVAS]({ state, commit }) {
     // reset the store
     commit(PRINT._MUTATES.SET_OBJECTS, { objectList: [] });

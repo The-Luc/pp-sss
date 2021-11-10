@@ -11,7 +11,7 @@ import PpButton from '@/components/Buttons/Button';
 import Themes from './Themes';
 import Preview from './Preview';
 import { loadDigitalThemes } from '@/api/themes';
-import { loadDigitalLayouts } from '@/api/layouts';
+import { loadDigitalLayouts } from '@/api/layoutService';
 import { useLayoutPrompt } from '@/hooks';
 import { EDITION } from '@/common/constants';
 
