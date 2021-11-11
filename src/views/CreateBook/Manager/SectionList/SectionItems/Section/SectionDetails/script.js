@@ -152,9 +152,9 @@ export default {
       if (this.selectedIndex < 0 || this.moveToIndex < 0) return;
 
       this.moveSheet(
-        this.selectedSheetId,
-        this.moveToSectionId,
-        this.sectionId,
+        `${this.selectedSheetId}`,
+        `${this.moveToSectionId}`,
+        `${this.sectionId}`,
         this.moveToIndex,
         this.selectedIndex
       );
