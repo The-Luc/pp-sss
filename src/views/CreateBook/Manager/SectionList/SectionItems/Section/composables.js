@@ -58,11 +58,9 @@ export const useActionSection = () => {
     const affectRange = Math.abs(moveToIndex - selectedIndex);
     const startIndex = isMoveForward ? selectedIndex + 1 : moveToIndex;
 
-    const sheetIds = sectionSheetIds.value[sectionId].sheetIds;
-
     const affectSheetData = Array.from({ length: affectRange }, (_, index) => {
       return {
-        id: sheetIds[index + startIndex],
+        id: sectionSheetIds.value[sectionId][index + startIndex],
         order: index + startIndex + (isMoveForward ? -1 : 1)
       };
     });
@@ -84,19 +82,18 @@ export const useActionSection = () => {
   };
 
   const moveSheetToOthers = async (
-    id,
     moveToSectionId,
     selectedSectionId,
     moveToIndex,
     selectedIndex
   ) => {
-    const affectCurrentData = sectionSheetIds.value[selectedSectionId].sheetIds
+    const affectCurrentData = sectionSheetIds.value[selectedSectionId]
       .map((sheetId, index) => ({ id: sheetId, order: index + 1 }))
       .filter((_, index) => {
         return index > selectedIndex;
       });
 
-    const affectTargetData = sectionSheetIds.value[moveToSectionId].sheetIds
+    const affectTargetData = sectionSheetIds.value[moveToSectionId]
       .map((sheetId, index) => ({ id: sheetId, order: index + 1 }))
       .filter((_, index) => {
         return index >= moveToIndex;
@@ -132,7 +129,6 @@ export const useActionSection = () => {
     }
 
     return moveSheetToOthers(
-      id,
       moveToSectionId,
       selectedSectionId,
       moveToIndex,
@@ -145,16 +141,16 @@ export const useActionSection = () => {
     moveToSectionId,
     selectedSectionId
   ) => {
-    const selectedIndex = sectionSheetIds.value[
-      selectedSectionId
-    ].sheetIds.findIndex(sheetId => id === sheetId);
-
     const targetSectionIndex = sectionIds.value.findIndex(
       sectionId => sectionId === moveToSectionId
     );
 
+    const selectedIndex = sectionSheetIds.value[selectedSectionId].findIndex(
+      sheetId => id === sheetId
+    );
+
     const moveToIndex =
-      sectionSheetIds.value[moveToSectionId].sheetIds.length -
+      sectionSheetIds.value[moveToSectionId].length -
       (targetSectionIndex === sectionIds.value.length - 1 ? 1 : 0);
 
     return moveSheet(
