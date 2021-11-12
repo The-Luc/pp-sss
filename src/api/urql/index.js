@@ -14,11 +14,9 @@ const urqlClient = createClient({
     dedupExchange,
     cacheExchange({
       keys: {
-        Page: () => null,
         YearbookSpec: () => null,
         Template: () => null,
-        Category: () => null,
-        DigitalFrame: () => null
+        Category: () => null
       }
     }),
     fetchExchange

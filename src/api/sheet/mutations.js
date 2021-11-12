@@ -23,12 +23,3 @@ export const deleteSheetMutation = gql`
     }
   }
 `;
-
-// placeholder code, will be revise when sheet media mutation is ready
-export const saveSheetMediaMutation = gql`
-  mutation saveSheetMediaMutation($sheetId: ID!, $params: JSON) {
-    set_workshop(sheet_id: $sheetId, params: $params) {
-      id
-    }
-  }
-`;

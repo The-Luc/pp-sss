@@ -1,4 +1,5 @@
 import { useGetters, useMutations } from 'vuex-composition-helpers';
+import { get } from 'lodash';
 import { useAppCommon } from './common';
 import { useAnimation } from './animation';
 import { useFrame } from './frame';
@@ -12,9 +13,7 @@ import {
   getPlaybackDataApi
 } from '@/api/sheetService';
 
-import digitalService from '@/api/digital';
-import printService from '@/api/print';
-import { saveSheetMedia } from '@/api/sheet';
+import { updatePageWorkspace } from '@/api/page';
 
 import { Transition } from '@/common/models';
 
@@ -28,6 +27,7 @@ import {
   GETTERS as DIGITAL_GETTERS,
   MUTATES as DIGITAL_MUTATES
 } from '@/store/modules/digital/const';
+import { getAssetById } from '@/api/media';
 
 export const useSheet = () => {
   const { value: isDigital } = useAppCommon().isDigitalEdition;
@@ -75,30 +75,45 @@ export const useActionsEditionSheet = () => {
     currentSheet: GETTERS.CURRENT_SHEET
   });
 
-  const { setSheetMedia } = useMutations({
-    setSheetMedia: MUTATES.SET_SHEET_MEDIA
+  const { setSheetMedia, deleteMedia } = useMutations({
+    setSheetMedia: MUTATES.SET_SHEET_MEDIA,
+    deleteMedia: MUTATES.DELETE_SHEET_MEDIA
   });
 
   const updateSheetMedia = async newMedia => {
-    const sheetId = currentSheet.value.id;
+    const pageId = get(currentSheet, 'value.pageIds', [])[0];
 
-    const currentMedia = currentSheet.value.media;
-    const media = [...currentMedia, ...newMedia];
+    if (!pageId) return;
 
-    const res = await saveSheetMedia(sheetId, media);
-    if (!isOk(res)) setSheetMedia({ media: res.data });
+    const currentMediaIds = currentSheet.value.media.map(m => m.id);
+    const newMediaIds = newMedia.map(m => m.id);
+
+    const assetIds = [...currentMediaIds, ...newMediaIds];
+
+    const res = await updatePageWorkspace(pageId, assetIds);
+
+    if (!isOk(res)) return;
+
+    const mediaPromises = assetIds.map(id => getAssetById(id));
+    const media = await Promise.all(mediaPromises);
+
+    setSheetMedia({ media });
   };
 
   const deleteSheetMedia = async ({ id }) => {
-    if (!id) return;
+    const pageId = get(currentSheet, 'value.pageIds', [])[0];
 
-    const sheetId = currentSheet.value.id;
+    if (!id || !pageId) return;
 
-    const { media } = isDigital
-      ? await digitalService.deleteSheetMediaById(sheetId)
-      : await printService.deleteSheetMediaById(sheetId);
+    const currentMediaIds = currentSheet.value.media.map(m => m.id);
 
-    await setSheetMedia({ media });
+    const assetIds = currentMediaIds.filter(mediaId => mediaId !== id);
+
+    const res = await updatePageWorkspace(pageId, assetIds);
+
+    if (!isOk(res)) return;
+
+    deleteMedia({ id });
   };
 
   return {

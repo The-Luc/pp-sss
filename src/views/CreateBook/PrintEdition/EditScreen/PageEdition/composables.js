@@ -2,6 +2,7 @@ import printService from '@/api/print';
 import { isEmpty } from '@/common/utils';
 import { useGetters } from 'vuex-composition-helpers';
 import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
+import { updatePagesOfSheet } from '@/api/page';
 
 export const useSaveData = () => {
   const { getDataEditScreen } = useGetters({
@@ -11,17 +12,7 @@ export const useSaveData = () => {
   const savePrintEditScreen = async editScreenData => {
     if (isEmpty(editScreenData.sheetProps)) return;
 
-    const sheetId = editScreenData.sheetProps.id;
-
-    const { data, status } = await printService.saveEditScreen(
-      sheetId,
-      editScreenData
-    );
-
-    return {
-      data,
-      status
-    };
+    return await updatePagesOfSheet(editScreenData);
   };
 
   const savePortraitObjects = async (sheetId, objects) => {

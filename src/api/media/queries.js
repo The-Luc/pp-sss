@@ -1,17 +1,32 @@
 import { gql } from 'graphql-tag';
+const assetFragment = gql`
+  fragment assetData on Asset {
+    id
+    media_file_name
+    thumbnail_uri
+    media_url
+    original_height
+    original_width
+    is_media
+  }
+`;
 
 export const getMediaApi = gql`
   query getMediaApi($id: ID!, $terms: [String]) {
     search_community_assets(id: $id, terms: $terms) {
-      id
-      media_file_name
-      thumbnail_uri
-      media_url
-      original_height
-      original_width
-      is_media
+      ...assetData
     }
   }
+  ${assetFragment}
+`;
+
+export const getAssetByIdQuery = gql`
+  query getMediaApi($id: ID!) {
+    asset(id: $id) {
+      ...assetData
+    }
+  }
+  ${assetFragment}
 `;
 
 const albumDetailFragment = gql`

@@ -91,6 +91,7 @@ class MutationClass extends BaseObject {
   UPDATE_SPREAD_INFO = 'updateSpreadInfo';
   CLEAR_BACKGROUNDS = 'clearBackgrounds';
   SET_SHEET_MEDIA = 'setSheetMedia';
+  DELETE_SHEET_MEDIA = 'DeleteSheetMedia';
   SET_BACKGROUNDS = 'setBackgrounds';
   SET_BOOK_INFO = 'setBookInfo';
   UPDATE_SECTION = 'updateSection';

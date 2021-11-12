@@ -1,7 +1,7 @@
 import { graphqlRequest } from '../urql';
 import { get } from 'lodash';
 import { isEmpty, isOk } from '@/common/utils';
-import { getAllAlbumsQuery, getMediaApi } from './queries';
+import { getAllAlbumsQuery, getAssetByIdQuery, getMediaApi } from './queries';
 import {
   extractAlbumCategories,
   mediaMapping,
@@ -33,6 +33,19 @@ export const getMedia = async (id, terms = []) => {
       ? new VideoAssetEntity(mediaMapping(asset, !asset.is_media))
       : new PictureAssetEntity(mediaMapping(asset));
   });
+};
+
+/**
+ * To fetch data of a asset by its id
+ *
+ * @param {String} assetId asset id
+ * @returns {Object} asset data
+ */
+export const getAssetById = async assetId => {
+  const res = await graphqlRequest(getAssetByIdQuery, { id: assetId });
+
+  if (!isOk(res)) return;
+  return mediaMapping(res.data.asset);
 };
 
 export const getAlbumsAndCategories = async (communityId, mediaType) => {

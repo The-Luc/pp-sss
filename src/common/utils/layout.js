@@ -51,9 +51,10 @@ export const getLayoutOptSelectedById = (
  *  to change objects coords to fit the side that use what to render them
  * @param {Object} objects that will be change their coord to place in the right side (left/right)
  * @param {Number | String} position left or right || FRONT_COVER or BACK_COVER
+ * @param {Object} options adding config for the function, available options: moveToLeft
  * @returns an object have coords changed
  */
-export const changeObjectsCoords = (objects, position) => {
+export const changeObjectsCoords = (objects, position, options) => {
   const isLeftPage = position === 'left' || position === SHEET_TYPE.BACK_COVER;
 
   const newObjects = cloneDeep(objects);
@@ -68,7 +69,8 @@ export const changeObjectsCoords = (objects, position) => {
   newObjects.forEach(object => {
     if (object.type === OBJECT_TYPE.BACKGROUND) return;
 
-    object.coord.x += midCanvas;
+    object.coord.x +=
+      options?.moveToLeft && !isLeftPage ? -midCanvas : midCanvas;
   });
 
   return newObjects;

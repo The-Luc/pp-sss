@@ -115,6 +115,7 @@ class MutationClass extends BaseObject {
   SET_BACKGROUNDS = 'setBackgrounds';
   SET_BOOK_INFO = 'setBookInfo';
   SET_SHEET_MEDIA = 'setSheetMedia';
+  DELETE_SHEET_MEDIA = 'deleteSheetMedia';
   UPDATE_TRIGGER_TRANSITION = 'updateTriggerTransition';
   UPDATE_TRIGGER_ANIMATION = 'updateTriggerAnimation';
   SET_STORE_ANIMATION_PROP = 'setStoreAnimationProp';
