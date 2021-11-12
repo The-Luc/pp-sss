@@ -1,4 +1,5 @@
-import { SHEET_TYPE } from '@/common/constants';
+import { OBJECT_TYPE, SHEET_TYPE } from '@/common/constants';
+import { changeObjectsCoords, getPagePrintSize } from '.';
 
 export const isHalfSheet = ({ type }) => {
   return [SHEET_TYPE.FRONT_COVER, SHEET_TYPE.BACK_COVER].indexOf(type) >= 0;
@@ -73,4 +74,37 @@ export const getPageRightName = (
  */
 export const getPageName = (sheetIndex, totalSheetUntilPrevious) => {
   return formatPageNumber(totalSheetUntilPrevious + sheetIndex + 1);
+};
+
+/**
+ * To seperate sheet into 2 pages
+ *
+ * @param {Object} sheet sheet data
+ * @returns {Object} left and right page
+ */
+export const mapSheetToPages = sheet => {
+  const leftPageObjects = [];
+  const rightPageObjects = [];
+
+  const { pageWidth } = getPagePrintSize().inches;
+
+  sheet.objects.map(o => {
+    if (o.type === OBJECT_TYPE.BACKGROUND) {
+      o.isLeftPage ? leftPageObjects.push(o) : rightPageObjects.push(o);
+      return;
+    }
+
+    o.coord.x < pageWidth ? leftPageObjects.push(o) : rightPageObjects.push(o);
+  });
+
+  const leftPage = {
+    elements: leftPageObjects
+  };
+
+  const rightPage = {
+    elements: changeObjectsCoords(rightPageObjects, 'right', {
+      moveToLeft: true
+    })
+  };
+  return { leftPage, rightPage };
 };

@@ -18,7 +18,8 @@ import {
   setBookInfo,
   setBookId,
   setSectionsWithSheets,
-  updateSection
+  updateSection,
+  deleteMedia
 } from '@/common/store';
 
 export const mutations = {
@@ -272,6 +273,7 @@ export const mutations = {
   [DIGITAL._MUTATES.SET_SHEET_MEDIA](state, { media }) {
     state.sheets[state.currentSheetId].media = media;
   },
+  [DIGITAL._MUTATES.DELETE_SHEET_MEDIA]: deleteMedia,
   [DIGITAL._MUTATES.UPDATE_TRIGGER_TRANSITION](state) {
     state.triggerChange.transition = !state.triggerChange.transition;
   },

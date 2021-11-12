@@ -1,12 +1,6 @@
-import { SYSTEM_OBJECT_TYPE } from '@/common/constants';
-import {
-  isEmpty,
-  createTextElement,
-  createImageElement,
-  createClipartElement,
-  createBackgroundElement
-} from '@/common/utils';
-import { first, get } from 'lodash';
+import { changeObjectsCoords, isEmpty } from '@/common/utils';
+import { get } from 'lodash';
+import { getAssetById } from '../media';
 import { graphqlRequest } from '../urql';
 import { pageInfoQuery, sheetInfoQuery } from './queries';
 
@@ -20,34 +14,19 @@ export const getSheetInfo = async id => {
 
   const pages = get(response.data, 'sheet.pages', []);
 
-  const pageObjects = pages.map(page => {
-    const isRightPage = get(page, 'page_number', 0) % 2;
+  const pageObjects = pages.map((page, idx) => {
     const elements = get(page, 'layout.elements', []);
-    return elements.map(ele => {
-      const key = first(Object.keys(ele));
-      const value = ele[key];
-
-      if (key === SYSTEM_OBJECT_TYPE.TEXT) {
-        return createTextElement(value, isRightPage);
-      }
-
-      if (key === SYSTEM_OBJECT_TYPE.IMAGE) {
-        return createImageElement(value, isRightPage);
-      }
-
-      return createClipartElement(value, isRightPage);
-    });
+    return idx === 0 ? elements : changeObjectsCoords(elements, 'right');
   });
 
-  const backgrounds = pages
-    .map(createBackgroundElement)
-    .filter(bg => !isEmpty(bg.imageUrl));
-
-  const media = pages.reduce(
-    (workshop, p) =>
-      isEmpty(p.workshop) ? workshop : workshop.concat(p.workshop),
+  const assetIds = pages.reduce(
+    (acc, { layout }) =>
+      isEmpty(layout.workspace) ? acc : acc.concat(layout.workspace),
     []
   );
-  const objects = [].concat(...pageObjects, ...backgrounds);
-  return { objects, media };
+
+  const mediaPromises = assetIds.map(id => getAssetById(id));
+  const media = await Promise.all(mediaPromises);
+
+  return { objects: pageObjects.flat(), media };
 };

@@ -5,8 +5,7 @@ import { sheetMappingToApi } from '@/common/mapping';
 import {
   addSheetMutation,
   updateSheetMutation,
-  deleteSheetMutation,
-  saveSheetMediaMutation
+  deleteSheetMutation
 } from './mutations';
 
 /**
@@ -45,15 +44,4 @@ export const updateSheet = async (sheetId, params) => {
  */
 export const deleteSheet = async sheetId => {
   return graphqlRequest(deleteSheetMutation, { sheetId });
-};
-
-/**
- * To save sheet media of seleted sheet
- *
- * @param {Sring} sheetId id of seletec sheet
- * @param {Array} params media in seleted sheet
- * @returns {Object}     mutation results
- */
-export const saveSheetMedia = async (sheetId, params) => {
-  return graphqlRequest(saveSheetMediaMutation, { sheetId, params });
 };

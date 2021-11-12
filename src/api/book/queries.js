@@ -82,7 +82,9 @@ export const printMainQuery = gql`
         due_date
         status
         sheets {
+          id
           pages {
+            id
             preview_image_url
           }
         }
@@ -105,8 +107,10 @@ export const printEditorQuery = gql`
       }
       book_sections {
         sheets {
+          id
           is_visited
           pages {
+            id
             title
             preview_image_url
             show_page_number
