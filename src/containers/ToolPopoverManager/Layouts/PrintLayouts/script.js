@@ -31,7 +31,10 @@ import { loadPrintThemes } from '@/api/themes';
 
 import { cloneDeep } from 'lodash';
 import { changeObjectsCoords } from '@/common/utils/layout';
-import { getLayoutsByThemeAndType, getPrintLayoutTypes } from '@/api/layout';
+import {
+  getLayoutsByThemeAndTypeApi,
+  getPrintLayoutTypesApi
+} from '@/api/layout';
 
 export default {
   components: {
@@ -430,7 +433,7 @@ export default {
      * Get layout types from API
      */
     async getLayoutTypes() {
-      const layoutTypes = await getPrintLayoutTypes(this.themeSelected.id);
+      const layoutTypes = await getPrintLayoutTypesApi(this.themeSelected.id);
 
       this.layoutTypesOrigin = layoutTypes.map(lt => ({
         ...lt,
@@ -463,7 +466,7 @@ export default {
       }
 
       if (isEmpty(this.layoutTypeSelected.sub)) {
-        this.layouts = await getLayoutsByThemeAndType(
+        this.layouts = await getLayoutsByThemeAndTypeApi(
           this.themeSelected.id,
           this.layoutTypeSelected.value
         );

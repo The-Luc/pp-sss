@@ -14,7 +14,7 @@ import {
   saveToFavorites as saveToFavoritesApi,
   getFavorites as getFavoritesApi
 } from '@/api/user';
-import { getLayoutElements } from '@/api/layout';
+import { getLayoutElementsApi } from '@/api/layout';
 
 import { GETTERS as THEME_GETTERS } from '@/store/modules/theme/const';
 
@@ -98,7 +98,9 @@ export const useGetLayouts = edition => {
  * to get layout elements
  * @returns layout elements
  */
-export const useLayoutElements = () => ({ getLayoutElements });
+export const useLayoutElements = () => ({
+  getLayoutElements: getLayoutElementsApi
+});
 
 /**
  * to return the getters digital layout

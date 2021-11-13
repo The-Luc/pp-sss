@@ -12,20 +12,20 @@ import Themes from './Themes';
 import Preview from './Preview';
 import { useLayoutPrompt } from '@/hooks';
 import { EDITION } from '@/common/constants';
-import { getPrintLayoutsPreview } from '@/api/layout';
+import { getPrintLayoutsPreviewApi } from '@/api/layout';
 
 export default {
-  setup() {
-    const { openPrompt } = useLayoutPrompt(EDITION.PRINT);
-    return {
-      openPrompt
-    };
-  },
   components: {
     Modal,
     PpButton,
     Themes,
     Preview
+  },
+  setup() {
+    const { openPrompt } = useLayoutPrompt(EDITION.PRINT);
+    return {
+      openPrompt
+    };
   },
   data() {
     return {
@@ -96,7 +96,7 @@ export default {
       this.layoutsOfThemePreview = [];
 
       this.selectedThemeId = themeId;
-      this.layoutsOfThemePreview = await getPrintLayoutsPreview(themeId);
+      this.layoutsOfThemePreview = await getPrintLayoutsPreviewApi(themeId);
     },
     /**
      * Set preview theme's id empty and close preview
