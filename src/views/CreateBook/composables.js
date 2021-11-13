@@ -8,10 +8,7 @@ import {
   searchClipArtApi
 } from '@/api/clipArt';
 import { getPhotos, getMedia, getAlbumsAndCategories } from '@/api/media';
-import {
-  saveSettings as savePortraitSettingsApi,
-  getSettings as getPortraiSettingsApi
-} from '@/api/portrait';
+import { savePortraitSettingsApi, getPortraiSettingsApi } from '@/api/portrait';
 
 import {
   MUTATES as APP_MUTATES,

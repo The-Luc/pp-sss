@@ -40,7 +40,7 @@ export const getPortraitFolders = async ({ bookId }) => {
   });
 };
 
-export const getSettings = async (bookId, isDigital) => {
+export const getPortraiSettingsApi = async (bookId, isDigital) => {
   const query = isDigital ? getDigitalSettingsQuery : getPrintSettingsQuery;
 
   const res = await graphqlRequest(query, { bookId });

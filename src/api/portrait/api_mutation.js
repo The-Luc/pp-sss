@@ -12,7 +12,7 @@ import { isOk } from '@/common/utils';
  * @param   {Number | String} id  id of selected layout
  * @returns {Object}              mutation result
  */
-export const saveSettings = async (bookId, params) => {
+export const savePortraitSettingsApi = async (bookId, params) => {
   const res = await graphqlRequest(saveSettingMutation, {
     bookId,
     params: portraitSettingsMappingToApi(params)
