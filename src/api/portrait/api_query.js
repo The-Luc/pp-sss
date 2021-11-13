@@ -1,5 +1,7 @@
 import { get } from 'lodash';
 
+import UniqueId from '@/plugins/customUniqueId';
+
 import { graphqlRequest } from '../urql';
 
 import {
@@ -8,6 +10,8 @@ import {
   portraitSettingsMapping
 } from '@/common/mapping';
 
+import { isOk } from '@/common/utils';
+
 import { PortraitAsset, PortraitFolder } from '@/common/models';
 
 import {
@@ -15,7 +19,7 @@ import {
   getPrintSettingsQuery,
   getDigitalSettingsQuery
 } from './queries';
-import { isOk, getUniqueId } from '@/common/utils';
+import { EDITION } from '@/common/constants';
 
 const getPortraitAssets = assets => {
   return assets.map(asset => new PortraitAsset(portraitAssetMapping(asset)));
@@ -47,10 +51,12 @@ export const getPortraiSettingsApi = async (bookId, isDigital) => {
 
   if (!isOk(res)) return [];
 
+  const edition = isDigital ? EDITION.DIGITAL : EDITION.PRINT;
+
   return res.data.book.print_portrait_layout_settings.map(s => {
     return {
       ...portraitSettingsMapping(s),
-      id: getUniqueId()
+      id: UniqueId.generateId(`portrait-setting-${edition}-`)
     };
   });
 };
