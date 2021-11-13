@@ -10,7 +10,7 @@ import {
 
 import { getItem } from '@/common/storage';
 
-import { isEmpty } from '@/common/utils';
+import { isEmpty, isOk } from '@/common/utils';
 
 import {
   getCommunityUsersQuery,
@@ -79,5 +79,9 @@ export const authenticateApi = (bookId, sheetId) => {
  * @returns {Object}  api connection result
  */
 export const getFavorites = async () => {
-  return graphqlRequest(getFavoritesQuery);
+  const res = await graphqlRequest(getFavoritesQuery);
+
+  if (!isOk(res)) return [];
+
+  return res.data.template_favourites.map(({ id }) => id);
 };

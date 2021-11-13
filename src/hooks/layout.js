@@ -259,17 +259,9 @@ export const useActionLayout = () => {
     return isOk(res);
   };
 
-  const getFavorites = async () => {
-    const res = await getFavoritesApi();
-
-    if (!isOk(res)) return [];
-
-    return res.data.template_favourites.map(({ id }) => id);
-  };
-
   return {
     saveToFavorites,
-    getFavorites,
+    getFavorites: getFavoritesApi,
     getPrintLayoutTypes,
     getDigitalLayoutTypes,
     getCustom,

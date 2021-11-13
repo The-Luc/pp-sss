@@ -200,25 +200,26 @@ export default {
         textSettings
       } = this.flowSettings;
 
-      await this.saveSettings(
-        {
-          imageSettings,
-          layoutSettings,
-          teacherSettings,
-          textSettings,
-          ...name
-        },
-        this.isDigital
-      );
+      const isSuccess = await this.saveSettings({
+        imageSettings,
+        layoutSettings,
+        teacherSettings,
+        textSettings,
+        ...name
+      });
+
       this.onCancelSaveSettings();
+
+      if (!isSuccess) return;
 
       this.message = this.saveMsg;
       this.isOpenModalSuccess = true;
+
       setTimeout(() => {
         this.isOpenModalSuccess = false;
       }, 2000);
 
-      this.savedSettings = await this.getSavedSettings(this.isDigital);
+      this.savedSettings = await this.getSavedSettings();
     },
     /**
      * Handle flow setting change
@@ -363,10 +364,12 @@ export default {
      */
     onLoadSetting(id) {
       const portraitSetting = this.savedSettings.find(item => item.id === id);
+
       const flowSettings = { ...this.flowSettings, ...portraitSetting };
 
       this.message = this.loadMsg;
       this.isOpenModalSuccess = true;
+
       setTimeout(() => {
         this.isOpenModalSuccess = false;
         this.onSettingChange(flowSettings);

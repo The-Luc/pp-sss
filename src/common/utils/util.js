@@ -125,7 +125,12 @@ export const mapObject = (sourceObject, rules) => {
       return;
     }
 
-    if (typeof sourceObject[k] === 'object' && sourceObject[k] !== null) {
+    const isMappingSub =
+      typeof sourceObject[k] === 'object' &&
+      sourceObject[k] !== null &&
+      !rules.data[k]?.noSub;
+
+    if (isMappingSub) {
       merge(resultObject, mapSubData(sourceObject[k], rules, rules.data[k]));
 
       return;
