@@ -1,7 +1,7 @@
 import { graphqlRequest } from '../urql';
 import { get } from 'lodash';
 import { isEmpty, isOk } from '@/common/utils';
-import { getAllAlbumsQuery, getAssetByIdQuery, getMediaApi } from './queries';
+import { getAllAlbumsQuery, getAssetByIdQuery, getMediaQuery } from './queries';
 import {
   extractAlbumCategories,
   mediaMapping,
@@ -13,22 +13,26 @@ import {
   VideoAssetEntity
 } from '@/common/models/entities/asset';
 
-export const getPhotos = async (id, terms = []) => {
+export const getPhotosApi = async (id, terms = []) => {
   if (isEmpty(terms)) return [];
 
-  const res = await graphqlRequest(getMediaApi, { id, terms });
+  const res = await graphqlRequest(getMediaQuery, { id, terms });
 
-  return res.data?.search_community_assets
+  if (!isOk(res)) return [];
+
+  return res.data.search_community_assets
     ?.filter(asset => !asset.is_media)
     .map(asset => new PictureAssetEntity(mediaMapping(asset)));
 };
 
-export const getMedia = async (id, terms = []) => {
+export const getMediaApi = async (id, terms = []) => {
   if (isEmpty(terms)) return [];
 
-  const res = await graphqlRequest(getMediaApi, { id, terms });
+  const res = await graphqlRequest(getMediaQuery, { id, terms });
 
-  return res.data?.search_community_assets.map(asset => {
+  if (!isOk(res)) return [];
+
+  return res.data.search_community_assets.map(asset => {
     return asset.is_media
       ? new VideoAssetEntity(mediaMapping(asset, !asset.is_media))
       : new PictureAssetEntity(mediaMapping(asset));
@@ -41,14 +45,15 @@ export const getMedia = async (id, terms = []) => {
  * @param {String} assetId asset id
  * @returns {Object} asset data
  */
-export const getAssetById = async assetId => {
+export const getAssetByIdApi = async assetId => {
   const res = await graphqlRequest(getAssetByIdQuery, { id: assetId });
 
   if (!isOk(res)) return;
+
   return mediaMapping(res.data.asset);
 };
 
-export const getAlbumsAndCategories = async (communityId, mediaType) => {
+export const getAlbumsAndCategoriesApi = async (communityId, mediaType) => {
   const res = await graphqlRequest(getAllAlbumsQuery, {
     communityId,
     mediaType

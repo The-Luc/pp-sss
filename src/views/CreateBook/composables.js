@@ -7,7 +7,11 @@ import {
   loadClipArtCategoriesApi,
   searchClipArtApi
 } from '@/api/clipArt';
-import { getPhotos, getMedia, getAlbumsAndCategories } from '@/api/media';
+import {
+  getPhotosApi,
+  getMediaApi,
+  getAlbumsAndCategoriesApi
+} from '@/api/media';
 import { savePortraitSettingsApi, getPortraiSettingsApi } from '@/api/portrait';
 
 import {
@@ -41,20 +45,20 @@ export const usePhotos = () => {
 
   const getSmartbox = async (keywords, isGetMedia) => {
     return isGetMedia
-      ? getMedia(communityId.value, keywords)
-      : getPhotos(communityId.value, keywords);
+      ? getMediaApi(communityId.value, keywords)
+      : getPhotosApi(communityId.value, keywords);
   };
 
   const getSearch = async (input, isGetMedia) => {
     return isGetMedia
-      ? getMedia(communityId.value, [input])
-      : getPhotos(communityId.value, [input]);
+      ? getMediaApi(communityId.value, [input])
+      : getPhotosApi(communityId.value, [input]);
   };
 
   const getAlbums = async isGetMedia => {
     const mediaType = isGetMedia ? 'videos' : 'images';
 
-    return await getAlbumsAndCategories(communityId.value, mediaType);
+    return await getAlbumsAndCategoriesApi(communityId.value, mediaType);
   };
 
   return {
