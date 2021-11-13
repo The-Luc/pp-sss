@@ -5,7 +5,8 @@ import {
   getPageLeftName,
   getPageRightName,
   getPageName,
-  isEmpty
+  isEmpty,
+  isOk
 } from '@/common/utils';
 
 import { bookMapping, sectionMapping, sheetMapping } from '@/common/mapping';
@@ -236,9 +237,9 @@ const getBook = async (bookId, edition, isEditor) => {
 
   const query = editionQuery[edition][isEditor ? 'editor' : 'main'];
 
-  const { data } = await graphqlRequest(query, { bookId });
+  const res = await graphqlRequest(query, { bookId });
 
-  return data?.book;
+  return isOk(res) ? res.data.book : {};
 };
 
 /**
@@ -255,7 +256,7 @@ export const getBookDetail = async (bookId, edition, isEditor) => {
   const sections = [];
   const sheets = {};
 
-  if (isEmpty(book)) return { book: {}, sections, sheets };
+  if (isEmpty(book)) return { book, sections, sheets };
 
   let totalSheetUntilNow = 0;
 

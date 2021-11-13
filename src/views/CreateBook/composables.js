@@ -1,13 +1,25 @@
 import { useMutations, useGetters } from 'vuex-composition-helpers';
+
+import { useAppCommon } from '@/hooks';
+
+import {
+  loadClipArtsApi,
+  loadClipArtCategoriesApi,
+  searchClipArtApi
+} from '@/api/clipArt';
 import { getPhotos, getMedia, getAlbumsAndCategories } from '@/api/media';
-import { clipArtService } from '@/api/clipArt/api';
-import portraitSevice from '@/api/portrait';
-import { useActionBook, useAppCommon } from '@/hooks';
+import {
+  saveSettings as savePortraitSettingsApi,
+  getSettings as getPortraiSettingsApi
+} from '@/api/portrait';
 
 import {
   MUTATES as APP_MUTATES,
   GETTERS as APP_GETTERS
 } from '@/store/modules/app/const';
+
+import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
+import { GETTERS as DIGITAL_GETTERS } from '@/store/modules/digital/const';
 
 export const useSavingStatus = () => {
   const { savingStatus } = useGetters({
@@ -22,28 +34,30 @@ export const useSavingStatus = () => {
 };
 
 export const usePhotos = () => {
-  const { getBookInfo } = useActionBook();
-  const { generalInfo } = useAppCommon();
+  const { value: isDigital } = useAppCommon().isDigitalEdition;
+
+  const GETTERS = isDigital ? DIGITAL_GETTERS : PRINT_GETTERS;
+
+  const { communityId } = useGetters({
+    communityId: GETTERS.COMMUNITY_ID
+  });
 
   const getSmartbox = async (keywords, isGetMedia) => {
-    const { book } = await getBookInfo(generalInfo.value.bookId, true);
     return isGetMedia
-      ? getMedia(book.communityId, keywords)
-      : getPhotos(book.communityId, keywords);
+      ? getMedia(communityId.value, keywords)
+      : getPhotos(communityId.value, keywords);
   };
 
   const getSearch = async (input, isGetMedia) => {
-    const { book } = await getBookInfo(generalInfo.value.bookId, true);
     return isGetMedia
-      ? getMedia(book.communityId, [input])
-      : getPhotos(book.communityId, [input]);
+      ? getMedia(communityId.value, [input])
+      : getPhotos(communityId.value, [input]);
   };
 
   const getAlbums = async isGetMedia => {
-    const { book } = await getBookInfo(generalInfo.value.bookId, true);
     const mediaType = isGetMedia ? 'videos' : 'images';
 
-    return await getAlbumsAndCategories(book.communityId, mediaType);
+    return await getAlbumsAndCategories(communityId.value, mediaType);
   };
 
   return {
@@ -54,16 +68,22 @@ export const usePhotos = () => {
 };
 
 export const usePortraitFlow = () => {
-  const saveSettings = async (flowSettings, isDigital) => {
-    isDigital
-      ? await portraitSevice.savePortraitSettingsDigital(flowSettings)
-      : await portraitSevice.savePortraitSettingsPrint(flowSettings);
+  const { activeEdition, generalInfo, isDigitalEdition } = useAppCommon();
+
+  const saveSettings = async flowSettings => {
+    const settings = {
+      ...flowSettings,
+      layout_type: activeEdition.value.toUpperCase()
+    };
+
+    return savePortraitSettingsApi(generalInfo.value.bookId, settings);
   };
 
-  const getSavedSettings = async isDigital => {
-    return isDigital
-      ? portraitSevice.getSavedPortraitSettingsDigital()
-      : portraitSevice.getSavedPortraitSettingsPrint();
+  const getSavedSettings = async () => {
+    return getPortraiSettingsApi(
+      generalInfo.value.bookId,
+      isDigitalEdition.value
+    );
   };
 
   return {
@@ -73,17 +93,9 @@ export const usePortraitFlow = () => {
 };
 
 export const useClipArt = () => {
-  const searchClipArt = async input => clipArtService.searchClipArtApi(input);
-
-  const getClipArtList = async categoryId =>
-    clipArtService.loadClipArts(categoryId);
-
-  const loadClipArtCategories = async () =>
-    clipArtService.loadClipArtCategories();
-
   return {
-    searchClipArt,
-    getClipArtList,
-    loadClipArtCategories
+    searchClipArt: searchClipArtApi,
+    getClipArtList: loadClipArtsApi,
+    loadClipArtCategories: loadClipArtCategoriesApi
   };
 };

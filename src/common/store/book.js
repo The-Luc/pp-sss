@@ -34,3 +34,5 @@ export const setIsPhotoVisited = (state, { isPhotoVisited }) => {
 };
 
 export const defaultThemeId = ({ book }) => book.defaultThemeId;
+
+export const communityId = ({ book }) => book.communityId;

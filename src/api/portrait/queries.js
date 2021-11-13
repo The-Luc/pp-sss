@@ -22,3 +22,36 @@ export const portraitFolders = gql`
     }
   }
 `;
+
+const settingsFragment = gql`
+  fragment settings on PortraitLayoutSetting {
+    name
+    teacher_settings
+    text_settings
+    image_settings
+    layout_settings
+    created_at
+  }
+`;
+
+export const getPrintSettingsQuery = gql`
+  query($bookId: ID!) {
+    book(id: $bookId) {
+      print_portrait_layout_settings {
+        ...settings
+      }
+    }
+  }
+  ${settingsFragment}
+`;
+
+export const getDigitalSettingsQuery = gql`
+  query($bookId: ID!) {
+    book(id: $bookId) {
+      digital_portrait_layout_settings {
+        ...settings
+      }
+    }
+  }
+  ${settingsFragment}
+`;
