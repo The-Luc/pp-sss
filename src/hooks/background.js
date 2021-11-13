@@ -60,10 +60,7 @@ export const useBackgroundMenu = () => {
       },
       [BACKGROUND_TYPE_NAME.CATEGORY]: {
         id: BACKGROUND_TYPE.CATEGORY.id,
-        value: categories.map(c => ({
-          ...c,
-          value: c.id
-        }))
+        value: categories
       },
       [BACKGROUND_TYPE_NAME.CUSTOM]: {
         id: BACKGROUND_TYPE.CUSTOM.id,

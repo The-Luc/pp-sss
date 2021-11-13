@@ -106,5 +106,10 @@ export const getBackgroundsApi = async (
 export const getBackgroundCategoriesApi = async () => {
   const res = await graphqlRequest(backgroundCategoriesQuery);
 
-  return isOk(res) ? res.data.categories : [];
+  if (!isOk(res)) return [];
+
+  return res.data.categories.map(c => ({
+    ...c,
+    value: c.id
+  }));
 };
