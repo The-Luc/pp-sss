@@ -1,14 +1,13 @@
-import { STATUS } from '@/common/constants';
 import { FrameDetail } from '@/common/models';
-import { mapObject } from '@/common/utils';
+import { mapObject, isOk } from '@/common/utils';
 import { get } from 'lodash';
 import { graphqlRequest } from '../urql';
 import { getSheetFramesQuery } from './queries';
 
-export const getSheetFrames = async sheetId => {
+export const getSheetFramesApi = async sheetId => {
   const res = await graphqlRequest(getSheetFramesQuery, { sheetId });
 
-  if (res.status === STATUS.NG) return [];
+  if (!isOk(res)) return [];
 
   const frames = get(res.data, 'sheet.digital_frames', []);
 

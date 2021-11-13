@@ -1,5 +1,5 @@
 import digitalService from '@/api/digital';
-import { getSheetFrames } from '@/api/frame';
+import { getSheetFramesApi } from '@/api/frame';
 
 import { STATUS, OBJECT_TYPE } from '@/common/constants';
 import { getUniqueId } from '@/common/utils';
@@ -39,7 +39,7 @@ export const actions = {
     commit(DIGITAL._MUTATES.SET_OBJECTS, { objectList: [] });
     commit(DIGITAL._MUTATES.SET_BACKGROUND, { backgrounds: {} });
 
-    const data = await getSheetFrames(state.currentSheetId);
+    const data = await getSheetFramesApi(state.currentSheetId);
 
     commit(DIGITAL._MUTATES.SET_FRAMES, { framesList: data });
   },
