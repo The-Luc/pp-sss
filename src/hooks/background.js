@@ -1,8 +1,8 @@
 import { useGetters, useMutations } from 'vuex-composition-helpers';
 
-import { getBackgroundCategories, getBackgrounds } from '@/api/background/api';
-import mockBackgroundService from '@/api/mockBackground';
+import { getBackgroundCategories, getBackgrounds } from '@/api/background';
 import { getThemes } from '@/api/themes';
+import mockBackgroundService from '@/api/mockBackground';
 
 import { useAppCommon } from './common';
 
