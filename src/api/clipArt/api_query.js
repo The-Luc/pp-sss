@@ -1,4 +1,7 @@
-import { isEmpty } from '@/common/utils';
+import { get } from 'lodash';
+
+import { isEmpty, isOk } from '@/common/utils';
+
 import { graphqlRequest } from '../urql';
 import { getClipArts, getClipartCategories, searchClipArt } from './queries';
 
@@ -18,7 +21,8 @@ export const loadClipArtsApi = async id => {
  */
 export const loadClipArtCategoriesApi = async () => {
   const res = await graphqlRequest(getClipartCategories);
-  return res.data.categories;
+
+  return isOk(res) ? res.data.categories : [];
 };
 
 /**
@@ -30,7 +34,6 @@ export const searchClipArtApi = async keyword => {
   if (isEmpty(keyword)) return [];
 
   const res = await graphqlRequest(searchClipArt, { keyword });
-  const category_keyword = res.data.category_keyword;
 
-  return isEmpty(category_keyword) ? [] : category_keyword.cliparts;
+  return isOk(res) ? get(res.data, 'category_keyword.cliparts', []) : [];
 };
