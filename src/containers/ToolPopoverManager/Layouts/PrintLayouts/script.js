@@ -27,7 +27,7 @@ import {
   useLayoutElements
 } from '@/hooks';
 
-import { loadPrintThemes } from '@/api/themes';
+import { getThemesApi } from '@/api/theme';
 
 import { cloneDeep } from 'lodash';
 import { changeObjectsCoords } from '@/common/utils/layout';
@@ -52,11 +52,7 @@ export default {
       pageSelected,
       themeId: defaultThemeId
     } = useLayoutPrompt(edition);
-    const {
-      getLayoutsByType,
-      listLayouts,
-      updateSheetThemeLayout
-    } = useGetLayouts(edition);
+    const { updateSheetThemeLayout } = useGetLayouts(edition);
 
     const { getLayoutElements } = useLayoutElements();
 
@@ -75,8 +71,6 @@ export default {
       updateVisited,
       setIsPrompt,
       pageSelected,
-      getLayoutsByType,
-      listLayouts,
       defaultThemeId,
       updateSheetThemeLayout,
       modalData,
@@ -174,7 +168,7 @@ export default {
      * Set up inital data to render in view
      */
     async initPrintData() {
-      this.themesOptions = await loadPrintThemes();
+      this.themesOptions = await getThemesApi(true, false);
     },
     /**
      * Set default selected for layout base on id of sheet: Cover, Single Page or Collage

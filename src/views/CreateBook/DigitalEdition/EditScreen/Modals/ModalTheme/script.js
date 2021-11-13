@@ -10,7 +10,7 @@ import Modal from '@/containers/Modals/Modal';
 import PpButton from '@/components/Buttons/Button';
 import Themes from './Themes';
 import Preview from './Preview';
-import { loadDigitalThemes } from '@/api/themes';
+import { getThemesApi } from '@/api/theme';
 import { loadDigitalLayouts } from '@/api/layoutService';
 import { useLayoutPrompt } from '@/hooks';
 import { EDITION } from '@/common/constants';
@@ -100,7 +100,7 @@ export default {
   },
   async created() {
     if (this.themes.length === 0) {
-      const themes = await loadDigitalThemes();
+      const themes = await getThemesApi(true, true);
       this.setDigitalThemes({
         themes
       });

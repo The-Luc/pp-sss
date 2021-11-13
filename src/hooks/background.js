@@ -4,7 +4,7 @@ import {
   getBackgroundCategoriesApi,
   getBackgroundsApi
 } from '@/api/background';
-import { getThemes } from '@/api/themes';
+import { getThemesApi } from '@/api/theme';
 import mockBackgroundService from '@/api/mockBackground';
 
 import { useAppCommon } from './common';
@@ -51,7 +51,7 @@ export const useBackgroundMenu = () => {
   const getBackgroundTypeData = async () => {
     const [categories, themes] = await Promise.all([
       getBackgroundCategoriesApi(),
-      getThemes()
+      getThemesApi()
     ]);
     return {
       [BACKGROUND_TYPE_NAME.THEME]: {
