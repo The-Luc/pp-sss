@@ -15,7 +15,7 @@ import {
   TextElementObject
 } from '../models/element';
 import { getPagePrintSize } from '.';
-import { textMappingFromAPI } from '../mapping/element';
+import { apiTextToModel } from '../mapping';
 
 /**
  * Get layout option from list layouts option by id
@@ -77,7 +77,7 @@ export const changeObjectsCoords = (objects, position, options) => {
 };
 
 export const createTextElement = (element, isRightPage) => {
-  const props = textMappingFromAPI(element);
+  const props = apiTextToModel(element);
 
   return new TextElementObject({
     ...props,

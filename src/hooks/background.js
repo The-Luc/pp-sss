@@ -1,6 +1,9 @@
 import { useGetters, useMutations } from 'vuex-composition-helpers';
 
-import { getBackgroundCategories, getBackgrounds } from '@/api/background';
+import {
+  getBackgroundCategoriesApi,
+  getBackgroundsApi
+} from '@/api/background';
 import { getThemes } from '@/api/themes';
 import mockBackgroundService from '@/api/mockBackground';
 
@@ -47,7 +50,7 @@ export const useBackgroundMenu = () => {
    */
   const getBackgroundTypeData = async () => {
     const [categories, themes] = await Promise.all([
-      getBackgroundCategories(),
+      getBackgroundCategoriesApi(),
       getThemes()
     ]);
     return {
@@ -57,7 +60,10 @@ export const useBackgroundMenu = () => {
       },
       [BACKGROUND_TYPE_NAME.CATEGORY]: {
         id: BACKGROUND_TYPE.CATEGORY.id,
-        value: categories || []
+        value: categories.map(c => ({
+          ...c,
+          value: c.id
+        }))
       },
       [BACKGROUND_TYPE_NAME.CUSTOM]: {
         id: BACKGROUND_TYPE.CUSTOM.id,
@@ -83,33 +89,17 @@ export const usePrintBackgroundMenu = () => {
     currentSheet: PRINT_GETTERS.CURRENT_SHEET
   });
 
-  /**
-   * Get background data from API
-   */
-  const getBackgroundData = async (
-    backgroundTypeId,
-    backgroundTypeSubId,
-    backgroundPageTypeId
-  ) =>
-    getBackgrounds(backgroundTypeId, backgroundTypeSubId, backgroundPageTypeId);
-
   return {
     currentSheet,
-    ...useBackgroundMenu(),
-    getBackgroundData
+    getBackgroundData: getBackgroundsApi,
+    ...useBackgroundMenu()
   };
 };
 
 export const useDigitalBackgroundMenu = () => {
-  /**
-   * Get background data from API
-   */
-  const getBackgroundData = async (backgroundTypeId, backgroundTypeSubId) =>
-    getBackgrounds(backgroundTypeId, backgroundTypeSubId);
-
   return {
     ...useBackgroundMenu(),
-    getBackgroundData
+    getBackgroundData: getBackgroundsApi
   };
 };
 

@@ -1,33 +1,17 @@
 import { graphqlRequest } from '../urql';
+
+import { apiBackgroundToModel } from '@/common/mapping';
+import { isOk } from '@/common/utils';
+
+import { BackgroundElementEntity as BackgroundElement } from '@/common/models/entities/elements';
+
 import {
   backgroundCategoriesQuery,
   backgroundQuery,
   backgroundOfThemeQuery
 } from './queries';
+
 import { BACKGROUND_TYPE, BACKGROUND_PAGE_TYPE } from '@/common/constants';
-import { BackgroundElementEntity as BackgroundElement } from '@/common/models/entities/elements';
-import { mapObject, isEmpty } from '@/common/utils';
-
-const apiBackgroundToModel = background => {
-  const mapRules = {
-    data: {
-      image_url: {
-        name: 'imageUrl'
-      },
-      page_type: {
-        name: 'pageType',
-        parse: value => {
-          const pageType = BACKGROUND_PAGE_TYPE[value]?.id;
-
-          return isEmpty(pageType) ? value : pageType;
-        }
-      }
-    },
-    restrict: []
-  };
-
-  return mapObject(background, mapRules);
-};
 
 const getBackgroundsOfTheme = async (
   backgroundTypeId,
@@ -37,6 +21,9 @@ const getBackgroundsOfTheme = async (
   const res = await graphqlRequest(backgroundQuery, {
     id: backgroundTypeSubId
   });
+
+  if (!isOk(res)) return [];
+
   const backgrounds = res.data.category.backgrounds.map(
     item =>
       new BackgroundElement({
@@ -61,7 +48,10 @@ const getBackgroundsOfCategory = async (
     id: backgroundTypeSubId
   });
 
+  if (!isOk(res)) return [];
+
   const backgrounds = [];
+
   res.data.theme.templates.forEach(t => {
     t.categories.forEach(c => {
       c.backgrounds.forEach(b => {
@@ -92,19 +82,17 @@ const getBackgroundsOfCategory = async (
  *
  * @returns {Object}  query result
  */
-export const getBackgrounds = async (
+export const getBackgroundsApi = async (
   backgroundTypeId,
   backgroundTypeSubId,
   backgroundPageTypeId
 ) => {
-  if (backgroundTypeId === BACKGROUND_TYPE.CATEGORY.id) {
-    return getBackgroundsOfTheme(
-      backgroundTypeId,
-      backgroundTypeSubId,
-      backgroundPageTypeId
-    );
-  }
-  return getBackgroundsOfCategory(
+  const getBackgroundMethod =
+    backgroundTypeId === BACKGROUND_TYPE.CATEGORY.id
+      ? getBackgroundsOfTheme
+      : getBackgroundsOfCategory;
+
+  return await getBackgroundMethod(
     backgroundTypeId,
     backgroundTypeSubId,
     backgroundPageTypeId
@@ -115,10 +103,8 @@ export const getBackgrounds = async (
  *
  * @returns {Object}  query result
  */
-export const getBackgroundCategories = async () => {
+export const getBackgroundCategoriesApi = async () => {
   const res = await graphqlRequest(backgroundCategoriesQuery);
-  return res.data.categories.map(c => ({
-    ...c,
-    value: c.id
-  }));
+
+  return isOk(res) ? res.data.categories : [];
 };
