@@ -15,10 +15,12 @@ import {
   STATUS,
   DIGITAL_CANVAS_SIZE,
   DIGITAL_PAGE_SIZE,
-  DATE_FORMAT
+  DATE_FORMAT,
+  THUMBNAIL_IMAGE_CONFIG
 } from '@/common/constants';
 import Color from 'color';
 import { BaseShadow } from '../models/element';
+import { fabric } from 'fabric';
 
 const mapSubData = (sourceObject, rules, data) => {
   const isNoSubRule = isEmpty(data);
@@ -627,4 +629,46 @@ export const parseFromAPIShadow = apiShadow => {
   const shadowOffset = Math.sqrt(x * x + y * y);
 
   return new BaseShadow({ dropShadow, shadowOffset, shadowAngle, shadowColor });
+};
+
+/**
+ * To split base 64 image into two half
+ *
+ * @param {String} imgUrl base 64 image url
+ * @returns 2 base 64 image url
+ */
+export const splitBase64Image = async imgUrl => {
+  const img = await new Promise(r => {
+    fabric.Image.fromURL(imgUrl, img => r(img));
+  });
+
+  const el = fabric.util.createCanvasElement();
+  const width = img.width;
+  const halfWidth = Math.ceil(width / 2);
+  el.width = width;
+  el.height = img.height;
+
+  const canvas = new fabric.StaticCanvas(el, {
+    enableRetinaScaling: false,
+    renderOnAddRemove: false,
+    skipOffscreen: false
+  });
+  canvas.add(img);
+
+  const getThumb = (canvas, left, cropWidth) =>
+    canvas.toDataURL({
+      quality: THUMBNAIL_IMAGE_CONFIG.QUALITY,
+      format: THUMBNAIL_IMAGE_CONFIG.FORMAT,
+      multiplier: THUMBNAIL_IMAGE_CONFIG.MULTIPLIER,
+      left,
+      width: cropWidth
+    });
+
+  const leftThumb = getThumb(canvas, 0, halfWidth);
+  const rightThumb = getThumb(canvas, halfWidth, width);
+
+  canvas._objects = [];
+  canvas.dispose();
+
+  return { leftThumb, rightThumb };
 };

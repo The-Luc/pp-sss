@@ -85,6 +85,15 @@ export const getPageName = (sheetIndex, totalSheetUntilPrevious) => {
 export const mapSheetToPages = sheet => {
   const leftPageObjects = [];
   const rightPageObjects = [];
+  const {
+    isLeftNumberOn,
+    isRightNumberOn,
+    leftTitle,
+    rightTitle
+  } = sheet.sheetProps.spreadInfo;
+
+  const { media } = sheet.sheetProps;
+  const workspace = media.map(m => m.id);
 
   const { pageWidth } = getPagePrintSize().inches;
 
@@ -98,13 +107,30 @@ export const mapSheetToPages = sheet => {
   });
 
   const leftPage = {
-    elements: leftPageObjects
+    layout: {
+      elements: leftPageObjects,
+      workspace
+    },
+    otherProps: {
+      title: leftTitle,
+      show_page_number: isLeftNumberOn,
+      preview_image_url: ''
+    }
   };
 
   const rightPage = {
-    elements: changeObjectsCoords(rightPageObjects, 'right', {
-      moveToLeft: true
-    })
+    layout: {
+      elements: changeObjectsCoords(rightPageObjects, 'right', {
+        moveToLeft: true
+      }),
+      workspace: []
+    },
+    otherProps: {
+      title: rightTitle,
+      show_page_number: isRightNumberOn,
+      preview_image_url: ''
+    }
   };
+
   return { leftPage, rightPage };
 };
