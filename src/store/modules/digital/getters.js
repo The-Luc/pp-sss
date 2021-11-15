@@ -4,7 +4,8 @@ import {
   calcFrameAnimationDuration,
   isPhotoVisited,
   sectionsWithSheets,
-  defaultThemeId
+  defaultThemeId,
+  communityId
 } from '@/common/store';
 
 import DIGITAL from './const';
@@ -166,5 +167,6 @@ export const getters = {
       0
     );
   },
-  [DIGITAL._GETTERS.IS_PHOTO_VISITED]: isPhotoVisited
+  [DIGITAL._GETTERS.IS_PHOTO_VISITED]: isPhotoVisited,
+  [DIGITAL._GETTERS.COMMUNITY_ID]: communityId
 };

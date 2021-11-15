@@ -27,11 +27,14 @@ import {
   useLayoutElements
 } from '@/hooks';
 
-import { loadPrintThemes } from '@/api/themes';
+import { getThemesApi } from '@/api/theme';
 
 import { cloneDeep } from 'lodash';
 import { changeObjectsCoords } from '@/common/utils/layout';
-import { getLayoutsByThemeAndType, getPrintLayoutTypes } from '@/api/layout';
+import {
+  getLayoutsByThemeAndTypeApi,
+  getPrintLayoutTypesApi
+} from '@/api/layout';
 
 export default {
   components: {
@@ -49,11 +52,7 @@ export default {
       pageSelected,
       themeId: defaultThemeId
     } = useLayoutPrompt(edition);
-    const {
-      getLayoutsByType,
-      listLayouts,
-      updateSheetThemeLayout
-    } = useGetLayouts(edition);
+    const { updateSheetThemeLayout } = useGetLayouts(edition);
 
     const { getLayoutElements } = useLayoutElements();
 
@@ -72,8 +71,6 @@ export default {
       updateVisited,
       setIsPrompt,
       pageSelected,
-      getLayoutsByType,
-      listLayouts,
       defaultThemeId,
       updateSheetThemeLayout,
       modalData,
@@ -171,7 +168,7 @@ export default {
      * Set up inital data to render in view
      */
     async initPrintData() {
-      this.themesOptions = await loadPrintThemes();
+      this.themesOptions = await getThemesApi(true, false);
     },
     /**
      * Set default selected for layout base on id of sheet: Cover, Single Page or Collage
@@ -430,7 +427,7 @@ export default {
      * Get layout types from API
      */
     async getLayoutTypes() {
-      const layoutTypes = await getPrintLayoutTypes(this.themeSelected.id);
+      const layoutTypes = await getPrintLayoutTypesApi(this.themeSelected.id);
 
       this.layoutTypesOrigin = layoutTypes.map(lt => ({
         ...lt,
@@ -463,7 +460,7 @@ export default {
       }
 
       if (isEmpty(this.layoutTypeSelected.sub)) {
-        this.layouts = await getLayoutsByThemeAndType(
+        this.layouts = await getLayoutsByThemeAndTypeApi(
           this.themeSelected.id,
           this.layoutTypeSelected.value
         );

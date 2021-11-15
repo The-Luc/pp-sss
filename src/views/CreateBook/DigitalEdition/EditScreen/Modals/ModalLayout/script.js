@@ -1,7 +1,5 @@
 import Layouts from '@/containers/ToolPopoverManager/Layouts/DigitalLayouts';
 
-import { mapMutations } from 'vuex';
-import { MUTATES } from '@/store/modules/theme/const';
 import { EDITION } from '@/common/constants';
 import { useFrame, useFrameAdd, useFrameReplace, useModal } from '@/hooks';
 
@@ -38,10 +36,6 @@ export default {
     };
   },
   methods: {
-    ...mapMutations({
-      setDigitalLayouts: MUTATES.DIGITAL_LAYOUTS
-    }),
-
     /**
      * Trigger mutation update state to close modal
      */

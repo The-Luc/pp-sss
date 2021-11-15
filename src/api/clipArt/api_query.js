@@ -1,4 +1,7 @@
-import { isEmpty } from '@/common/utils';
+import { get } from 'lodash';
+
+import { isEmpty, isOk } from '@/common/utils';
+
 import { graphqlRequest } from '../urql';
 import { getClipArts, getClipartCategories, searchClipArt } from './queries';
 
@@ -7,7 +10,7 @@ import { getClipArts, getClipartCategories, searchClipArt } from './queries';
  * @param {String} id id of category
  * @returns array of object containing list clipart
  */
-const loadClipArts = async id => {
+export const loadClipArtsApi = async id => {
   const res = await graphqlRequest(getClipArts, { id });
   return res.data.category.cliparts;
 };
@@ -16,9 +19,10 @@ const loadClipArts = async id => {
  * To get list caregory of clipart
  * @returns array of object containing list categories
  */
-const loadClipArtCategories = async () => {
+export const loadClipArtCategoriesApi = async () => {
   const res = await graphqlRequest(getClipartCategories);
-  return res.data.categories;
+
+  return isOk(res) ? res.data.categories : [];
 };
 
 /**
@@ -26,17 +30,10 @@ const loadClipArtCategories = async () => {
  * @param {String} keyword keyword to search
  * @returns array of object containing list clipart
  */
-const searchClipArtApi = async keyword => {
+export const searchClipArtApi = async keyword => {
   if (isEmpty(keyword)) return [];
 
   const res = await graphqlRequest(searchClipArt, { keyword });
-  const category_keyword = res.data.category_keyword;
 
-  return isEmpty(category_keyword) ? [] : category_keyword.cliparts;
-};
-
-export const clipArtService = {
-  loadClipArts,
-  loadClipArtCategories,
-  searchClipArtApi
+  return isOk(res) ? get(res.data, 'category_keyword.cliparts', []) : [];
 };

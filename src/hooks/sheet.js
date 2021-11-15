@@ -27,7 +27,7 @@ import {
   GETTERS as DIGITAL_GETTERS,
   MUTATES as DIGITAL_MUTATES
 } from '@/store/modules/digital/const';
-import { getAssetById } from '@/api/media';
+import { getAssetByIdApi } from '@/api/media';
 
 export const useSheet = () => {
   const { value: isDigital } = useAppCommon().isDigitalEdition;
@@ -94,7 +94,7 @@ export const useActionsEditionSheet = () => {
 
     if (!isOk(res)) return;
 
-    const mediaPromises = assetIds.map(id => getAssetById(id));
+    const mediaPromises = assetIds.map(id => getAssetByIdApi(id));
     const media = await Promise.all(mediaPromises);
 
     setSheetMedia({ media });

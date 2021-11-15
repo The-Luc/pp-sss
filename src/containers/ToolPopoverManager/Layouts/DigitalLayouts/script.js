@@ -30,7 +30,7 @@ import {
   loadSupplementalLayouts
 } from '@/api/layoutService';
 
-import { loadDigitalThemes } from '@/api/themes';
+import { getThemesApi } from '@/api/theme';
 
 // for digital. After implement saving feature, this code can be remove
 import { DIGITAL_LAYOUT_TYPES as LAYOUT_TYPES } from '@/mock/layoutTypes';
@@ -182,7 +182,7 @@ export default {
      * Set up inital data to render in view of digital ediont
      */
     async initDigitalData() {
-      this.themesOptions = await loadDigitalThemes();
+      this.themesOptions = await getThemesApi(true, true);
 
       const layouts = this.isSupplemental
         ? await loadSupplementalLayouts()

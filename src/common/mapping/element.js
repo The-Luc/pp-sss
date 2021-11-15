@@ -1,14 +1,39 @@
+import { get } from 'lodash';
+
 import {
   convertAPIColorObjectToHex,
   mapObject,
   parseFromAPIShadow,
-  pxToPt
+  pxToPt,
+  isEmpty
 } from '@/common/utils';
-import { get } from 'lodash';
-import { DATABASE_DPI } from '../constants';
+
 import { TextAlignment } from '../models/element';
 
-export const textMappingFromAPI = text => {
+import { DATABASE_DPI, BACKGROUND_PAGE_TYPE } from '../constants';
+
+export const apiBackgroundToModel = background => {
+  const mapRules = {
+    data: {
+      image_url: {
+        name: 'imageUrl'
+      },
+      page_type: {
+        name: 'pageType',
+        parse: value => {
+          const pageType = BACKGROUND_PAGE_TYPE[value]?.id;
+
+          return isEmpty(pageType) ? value : pageType;
+        }
+      }
+    },
+    restrict: []
+  };
+
+  return mapObject(background, mapRules);
+};
+
+export const apiTextToModel = text => {
   const apiColor = get(text, 'text.view.font_color', {});
   const color = convertAPIColorObjectToHex(apiColor);
 
