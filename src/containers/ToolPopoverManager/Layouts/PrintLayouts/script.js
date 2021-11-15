@@ -35,6 +35,7 @@ import {
   getLayoutsByThemeAndTypeApi,
   getPrintLayoutTypesApi
 } from '@/api/layout';
+import { SAVED_AND_FAVORITES } from '@/mock/layoutTypes';
 
 export default {
   components: {
@@ -60,8 +61,7 @@ export default {
       saveToFavorites,
       getFavorites,
       getCustom,
-      getCustomAndFavoriteLayouts,
-      getFavoriteLayoutTypeMenu
+      getFavoriteLayouts
     } = useActionLayout();
 
     return {
@@ -78,8 +78,7 @@ export default {
       saveToFavorites,
       getFavorites,
       getCustom,
-      getCustomAndFavoriteLayouts,
-      getFavoriteLayoutTypeMenu,
+      getFavoriteLayouts,
       getLayoutElements
     };
   },
@@ -115,7 +114,7 @@ export default {
       return this.pageSelected?.isVisited;
     },
     themeId() {
-      return this.pageSelected?.themeId || this.defaultThemeId;
+      return this.defaultThemeId;
     },
     isHalfSheet() {
       return isHalfSheet({ type: this.pageSelected?.type });
@@ -214,7 +213,10 @@ export default {
         );
         this.themeSelected = themeSelected;
       }
+
       await this.getLayoutTypes();
+
+      this.filterLayoutType();
     },
     /**
      * Set object theme selected from dropdown
@@ -224,6 +226,9 @@ export default {
       this.themeSelected = theme;
 
       await this.getLayoutTypes();
+
+      this.filterLayoutType();
+
       await this.setLayoutSelected();
       await this.getLayouts();
     },
@@ -392,7 +397,7 @@ export default {
         const layoutTypeOpts = [...this.layoutTypesOrigin];
 
         if (!isEmpty(this.favoriteLayouts) || !isEmpty(this.customLayouts)) {
-          const extraMenu = await this.getFavoriteLayoutTypeMenu(
+          const extraMenu = this.getFavoriteCustomLayoutTypeMenu(
             SHEET_TYPE.NORMAL
           );
 
@@ -414,7 +419,7 @@ export default {
       });
 
       if (!isEmpty(this.favoriteLayouts) || !isEmpty(this.customLayouts)) {
-        const extraMenu = await this.getFavoriteLayoutTypeMenu(
+        const extraMenu = this.getFavoriteCustomLayoutTypeMenu(
           this.pageSelected.type
         );
 
@@ -433,6 +438,7 @@ export default {
         ...lt,
         subItems: []
       }));
+
       this.layoutTypes = this.layoutTypesOrigin;
     },
     /**
@@ -468,11 +474,25 @@ export default {
         return;
       }
 
-      const layouts = await this.getCustomAndFavoriteLayouts(
-        this.layoutTypeSelected.sub
-      );
+      this.layouts = await this.getFavoriteLayouts();
+    },
+    /**
+     * Get favorite & custom layout menu
+     */
+    getFavoriteCustomLayoutTypeMenu() {
+      const menu = cloneDeep(SAVED_AND_FAVORITES);
 
-      this.layouts = layouts.map(l => ({ ...l, isFavoritesDisabled: true }));
+      menu.subItems.forEach(item => {
+        if (item.id === LAYOUT_PAGE_TYPE.FULL_PAGE.id) {
+          item.isDisabled = true; // isHalfSheet({ type: sheetType });
+        }
+
+        if (item.id === LAYOUT_PAGE_TYPE.SINGLE_PAGE.id) {
+          item.isDisabled = false;
+        }
+      });
+
+      return menu;
     }
   }
 };

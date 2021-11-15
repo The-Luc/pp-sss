@@ -4,7 +4,7 @@ import { loginUserMutation, saveFavoritesMutation } from './mutations';
 
 import { STATUS } from '@/common/constants';
 
-export const logInUser = async (email, password) => {
+export const logInUserApi = async (email, password) => {
   const res = await graphqlRequest(loginUserMutation, {
     email,
     password
@@ -27,6 +27,6 @@ export const logInUser = async (email, password) => {
  * @param   {Number | String} id  id of selected layout
  * @returns {Object}              mutation result
  */
-export const saveToFavorites = async id => {
+export const saveToFavoritesApi = async id => {
   return graphqlRequest(saveFavoritesMutation, { id });
 };

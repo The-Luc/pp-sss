@@ -1,4 +1,4 @@
-import { get } from 'lodash';
+import { get, uniqBy } from 'lodash';
 
 import { graphqlRequest } from '../urql';
 
@@ -15,7 +15,8 @@ import { isEmpty, isOk } from '@/common/utils';
 import {
   getCommunityUsersQuery,
   getUserRoleQuery,
-  getFavoritesQuery
+  getFavoriteIdsQuery,
+  getFavoriteLayoutsQuery
 } from './queries';
 
 import { LOCAL_STORAGE, ROLE, STATUS } from '@/common/constants';
@@ -74,14 +75,44 @@ export const authenticateApi = (bookId, sheetId) => {
 };
 
 /**
- * Get list of favorites layout of user
+ * Get list of favorites id of layout of user
  *
- * @returns {Object}  api connection result
+ * @returns {Array}  favorite ids
  */
-export const getFavorites = async () => {
-  const res = await graphqlRequest(getFavoritesQuery);
+export const getFavoritesApi = async () => {
+  const res = await graphqlRequest(getFavoriteIdsQuery);
 
   if (!isOk(res)) return [];
 
   return res.data.template_favourites.map(({ id }) => id);
+};
+
+/**
+ * Get list of favorites layout of user
+ *
+ * @returns {Array}  layouts
+ */
+export const getFavoriteLayoutsApi = async () => {
+  const res = await graphqlRequest(getFavoriteLayoutsQuery);
+
+  if (!isOk(res)) return [];
+
+  const layouts = uniqBy(res.data.template_favourites, 'id');
+
+  return layouts.map(t => {
+    const categoryId =
+      isEmpty(t.categories) && isEmpty(t.categories[0])
+        ? null
+        : t.categories[0].id;
+
+    return {
+      id: t.id,
+      type: categoryId,
+      themeId: get(t, 'theme.id', null),
+      previewImageUrl: t.preview_image_url,
+      name: t.data.properties.title,
+      isFavorites: true,
+      isFavoritesDisabled: true
+    };
+  });
 };
