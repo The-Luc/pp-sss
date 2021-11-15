@@ -1,6 +1,6 @@
 import { changeObjectsCoords, isEmpty } from '@/common/utils';
 import { get } from 'lodash';
-import { getAssetById } from '../media';
+import { getAssetByIdApi } from '../media';
 import { graphqlRequest } from '../urql';
 import { pageInfoQuery, sheetInfoQuery } from './queries';
 
@@ -25,7 +25,7 @@ export const getSheetInfo = async id => {
     []
   );
 
-  const mediaPromises = assetIds.map(id => getAssetById(id));
+  const mediaPromises = assetIds.map(id => getAssetByIdApi(id));
   const media = await Promise.all(mediaPromises);
 
   return { objects: pageObjects.flat(), media };

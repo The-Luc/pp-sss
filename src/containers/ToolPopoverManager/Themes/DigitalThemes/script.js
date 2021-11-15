@@ -15,7 +15,7 @@ import {
   GETTERS as DIGITAL_GETTERS,
   MUTATES as DIGITAL_MUTATES
 } from '@/store/modules/digital/const';
-import { loadDigitalThemes } from '@/api/themes';
+import { getThemesApi } from '@/api/theme';
 
 export default {
   components: {
@@ -108,7 +108,7 @@ export default {
   },
   async created() {
     if (this.themes.length === 0) {
-      const themes = await loadDigitalThemes();
+      const themes = await getThemesApi(true, true);
       this.setDigitalThemes({
         themes
       });

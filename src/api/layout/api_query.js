@@ -20,7 +20,7 @@ import {
  * @param {String} themeId id of a theme
  * @returns array of object containing previewImageUrl of layouts
  */
-export const getPrintLayoutsPreview = async themeId => {
+export const getPrintLayoutsPreviewApi = async themeId => {
   if (!themeId) return [];
 
   const res = await graphqlRequest(getLayoutsPreviewQuery, { themeId });
@@ -28,6 +28,7 @@ export const getPrintLayoutsPreview = async themeId => {
   if (!isOk(res)) return [];
 
   const layoutImageUrls = get(res.data, 'theme.templates', []);
+
   return layoutImageUrls.map(l => ({ previewImageUrl: l.preview_image_url }));
 };
 
@@ -36,7 +37,7 @@ export const getPrintLayoutsPreview = async themeId => {
  * @param {String} themeId id of a theme
  * @returns array of layout types
  */
-export const getPrintLayoutTypes = async themeId => {
+export const getPrintLayoutTypesApi = async themeId => {
   if (!themeId) return [];
 
   const res = await graphqlRequest(getLayoutTypeQuery, { themeId });
@@ -65,7 +66,7 @@ export const getPrintLayoutTypes = async themeId => {
  * @param {String} categoryId  id of a category
  * @returns array of layout object
  */
-export const getLayoutsByThemeAndType = async (themeId, categoryId) => {
+export const getLayoutsByThemeAndTypeApi = async (themeId, categoryId) => {
   const res = await graphqlRequest(getLayoutsQuery, { themeId });
 
   if (!isOk(res)) return [];
@@ -83,10 +84,14 @@ export const getLayoutsByThemeAndType = async (themeId, categoryId) => {
   }));
 };
 
-export const getLayoutElements = async id => {
+export const getLayoutElementsApi = async id => {
   const res = await graphqlRequest(getLayoutElementsQuery, { id });
+
+  if (!isOk(res)) return [];
+
   const elements = get(res, 'data.template.layout.elements', []);
   const background = createBackgroundElement(get(res, 'data.template', {}));
+
   return [
     ...elements.map(ele => {
       const key = first(Object.keys(ele));

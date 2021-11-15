@@ -11,7 +11,7 @@ const assetFragment = gql`
   }
 `;
 
-export const getMediaApi = gql`
+export const getMediaQuery = gql`
   query getMediaApi($id: ID!, $terms: [String]) {
     search_community_assets(id: $id, terms: $terms) {
       ...assetData

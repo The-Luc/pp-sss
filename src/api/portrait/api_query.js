@@ -25,8 +25,11 @@ const getPortraitAssets = assets => {
   return assets.map(asset => new PortraitAsset(portraitAssetMapping(asset)));
 };
 
-export const getPortraitFolders = async ({ bookId }) => {
+export const getPortraitFoldersApi = async ({ bookId }) => {
   const response = await graphqlRequest(portraitFolders, { id: bookId });
+
+  if (!isOk(response)) return [];
+
   const portraitCollections = get(
     response.data,
     'book.community.portrait_collections',
