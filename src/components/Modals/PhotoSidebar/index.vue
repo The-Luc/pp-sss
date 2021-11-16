@@ -15,7 +15,7 @@
       >
         <Draggable :sort="false" @choose="onChoose" @unchoose="onUnchoose">
           <div v-for="(item, i) in media" :key="i" class="media-item">
-            <v-icon class="media-icon" @click="onShowRemoveModal(item)">
+            <v-icon class="media-icon" @click="onShowRemoveModal(item, i)">
               delete_forever
             </v-icon>
             <v-icon v-if="isVideo(item.type)" class="type-icon">

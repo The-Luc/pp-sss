@@ -17,7 +17,7 @@
         :key="asset.id"
         :class="[
           'image-item',
-          { active: isActive(asset.id) },
+          { active: isActive(asset.id, asset.albumId) },
           { 'video-item': isVideo(asset.type) }
         ]"
         @click="onSelected(asset)"

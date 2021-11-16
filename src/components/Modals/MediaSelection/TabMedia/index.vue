@@ -15,13 +15,14 @@
     <div class="content">
       <template v-if="!isEmptyCategory">
         <AlbumItem
-          v-for="album in selectedAlbums"
+          v-for="(album, idx) in selectedAlbums"
           :key="album.id"
+          :ref="`album-${idx}`"
           :name="album.name"
           :display-date="album.displayDate"
           :assets="album.assets"
           :selected-images="selectedMedia"
-          @change="onSelectedMedia"
+          @change="asset => onSelectedMedia(asset, album.id)"
         />
       </template>
 

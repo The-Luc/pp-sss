@@ -77,7 +77,8 @@ export const parseAPIAlbums = albumArr => {
       const assets = mediaAssets.map(({ id, thumbnail_uri, is_media }) => ({
         id,
         thumbUrl: thumbnail_uri,
-        type: is_media ? ASSET_TYPE.VIDEO : ASSET_TYPE.PICTURE
+        type: is_media ? ASSET_TYPE.VIDEO : ASSET_TYPE.PICTURE,
+        albumId: container.id
       }));
 
       return {
