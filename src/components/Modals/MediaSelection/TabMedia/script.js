@@ -1,3 +1,5 @@
+import { get } from 'lodash';
+
 import PpSelect from '@/components/Selectors/SelectMultiLevel';
 import AlbumItem from '../AlbumItem';
 import PopupSelected from '../PopupSelected';
@@ -8,7 +10,7 @@ import {
   ALL_MEDIA_SUBCATEGORY_ID,
   ASSET_TYPE
 } from '@/common/constants';
-import { isEmpty } from '@/common/utils';
+import { isEmpty, scrollToElement } from '@/common/utils';
 
 export default {
   components: {
@@ -84,6 +86,14 @@ export default {
         : this.getCurrentPhotoAlbums();
     }
   },
+  watch: {
+    selectedAlbums() {
+      const el = get({ refs: this.$refs }, 'refs["album-0"][0].$el');
+      if (!el) return;
+
+      scrollToElement(el, { behavior: 'auto', block: 'start' });
+    }
+  },
   methods: {
     /**
      * Change dropdown type to select a album
@@ -95,9 +105,10 @@ export default {
     /**
      * Selected a media and emit parent component
      * @param   {Object}  media  id of asset
+     * @param   {String}  albumId  albumId id of asset
      */
-    onSelectedMedia(media) {
-      this.$emit('change', media);
+    onSelectedMedia(media, albumId) {
+      this.$emit('change', { ...media, albumId });
     },
     /**
      * Get id of selected album

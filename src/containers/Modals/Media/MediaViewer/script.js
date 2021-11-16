@@ -131,7 +131,7 @@ export default {
     },
     /**
      * Selected media and push or remove in array media selected
-     * @param   {Object}  media  id of current book
+     * @param   {Object}  media selected media
      */
     onSelectedMedia(media) {
       if (this.isPosterFrame) {
@@ -139,7 +139,9 @@ export default {
         return;
       }
 
-      const index = this.selectedMedia.findIndex(item => item.id === media.id);
+      const index = this.selectedMedia.findIndex(
+        item => item.id === media.id && item.albumId == media.albumId
+      );
 
       if (index < 0) {
         this.selectedMedia = insertItemsToArray(this.selectedMedia, [

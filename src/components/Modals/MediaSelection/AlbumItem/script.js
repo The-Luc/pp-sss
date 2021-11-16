@@ -27,19 +27,17 @@ export default {
       default: () => ({})
     }
   },
-  computed: {
-    selectedImageIds() {
-      return this.selectedImages.map(item => item.id);
-    }
-  },
   methods: {
     /**
-     * Active image selected
-     * @param   {Number}  id  id of selected image
-     * @returns {Boolean} Image is actived
+     * Active media selected
+     * @param   {Number}  id  id of selected media
+     * @param   {Number}  albumId  id of selected media
+     * @returns {Boolean} is active
      */
-    isActive(id) {
-      return this.selectedImageIds.includes(id);
+    isActive(id, albumId) {
+      return this.selectedImages.some(
+        media => media.id === id && media.albumId === albumId
+      );
     },
     /**
      * Selected a image and emit parent component

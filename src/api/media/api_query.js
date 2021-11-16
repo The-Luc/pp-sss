@@ -12,6 +12,7 @@ import {
   PictureAssetEntity,
   VideoAssetEntity
 } from '@/common/models/entities/asset';
+import { ASSET_TYPE } from '@/common/constants';
 
 export const getPhotosApi = async (id, terms = []) => {
   if (isEmpty(terms)) return [];
@@ -50,7 +51,10 @@ export const getAssetByIdApi = async assetId => {
 
   if (!isOk(res)) return;
 
-  return mediaMapping(res.data.asset);
+  const asset = await mediaMapping(res.data.asset);
+  asset.type = asset.isMedia ? ASSET_TYPE.VIDEO : ASSET_TYPE.PICTURE;
+
+  return asset;
 };
 
 export const getAlbumsAndCategoriesApi = async (communityId, mediaType) => {
