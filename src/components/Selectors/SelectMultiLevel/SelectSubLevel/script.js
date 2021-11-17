@@ -1,5 +1,5 @@
 import { ICON_LOCAL } from '@/common/constants';
-import { isEmpty } from '@/common/utils';
+import { getRefElement, isEmpty } from '@/common/utils';
 
 export default {
   name: 'SubLevel',
@@ -27,6 +27,17 @@ export default {
     selectedVal: {
       type: [String, Number, Object],
       default: ''
+    },
+    isOpen: {
+      type: Boolean,
+      default: false
+    },
+    position: {
+      type: Object,
+      default: () => ({ x: 0, y: 0 })
+    },
+    activator: {
+      type: String
     }
   },
   methods: {
@@ -69,11 +80,15 @@ export default {
      */
     getCustomCssClass({ isDisabled, value }) {
       if (isDisabled) return 'disabled';
+
       const subValue =
         typeof this.selectedVal === 'object'
           ? this.selectedVal.value
           : this.selectedVal;
-      return value === subValue ? 'v-list-item--active' : '';
+
+      const activeCss = value === subValue ? 'v-list-item--active' : '';
+
+      return [activeCss, this.getDataIdByValue(value)];
     },
     /**
      * Get sub level 2 value of selected item
@@ -91,6 +106,28 @@ export default {
      */
     isSubmenuExisted(item) {
       return !isEmpty(item.subItems);
+    },
+    /**
+     * Get data id of the item
+     *
+     * @param   {Object}  item  current item
+     * @returns {String}        the data id
+     */
+    getDataIdByValue(value) {
+      return `select-sub-${value}`;
+    },
+    getSubmenuPosition(item) {
+      const elementDataId = this.getDataIdByValue(item.value);
+
+      const element = getRefElement(this.$refs, elementDataId);
+
+      if (isEmpty(element)) return { x: 0, y: 0 };
+
+      const { x, y, width } = element.getBoundingClientRect();
+
+      const margin = -3;
+
+      return { x: x + width + margin, y };
     }
   }
 };

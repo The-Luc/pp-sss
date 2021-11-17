@@ -4,6 +4,15 @@
     contain: none;
   }
 
+  ::v-deep .v-list-item.v-list-item--link:not(.pp-select-multi--item) {
+    min-height: 20px;
+    padding: 0;
+
+    &:not(:last-child) {
+      margin-bottom: 5px;
+    }
+  }
+
   &--item {
     padding: 0;
 

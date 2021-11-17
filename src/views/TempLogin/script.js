@@ -3,7 +3,7 @@ import PpButton from '@/components/Buttons/Button';
 
 import { LOCAL_STORAGE, ROUTE_NAME } from '@/common/constants';
 
-import { logInUser } from '@/api/user';
+import { logInUserApi } from '@/api/user';
 import { setItem } from '@/common/storage';
 
 export default {
@@ -32,7 +32,7 @@ export default {
       setItem(LOCAL_STORAGE.COMMUNITY_USER_ID, user.communityUserId);
     },
     async onClickLogin() {
-      const user = await logInUser(this.email, this.password);
+      const user = await logInUserApi(this.email, this.password);
 
       if (!user) return;
 

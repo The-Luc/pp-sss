@@ -119,7 +119,7 @@ export default {
       return this.pageSelected?.isVisited;
     },
     themeId() {
-      return this.pageSelected.themeId || this.defaultThemeId;
+      return this.defaultThemeId;
     },
     isSupplemental() {
       return this.initialData.isSupplemental;

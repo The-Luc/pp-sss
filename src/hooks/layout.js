@@ -5,14 +5,13 @@ import {
   getPrintLayoutTypes,
   getDigitalLayoutTypes,
   getCustom,
-  getLayoutsByThemeAndType,
-  getCustomAndFavoriteLayouts,
-  getFavoriteLayoutTypeMenu
+  getLayoutsByThemeAndType
 } from '@/api/layoutService';
 
 import {
-  saveToFavorites as saveToFavoritesApi,
-  getFavorites as getFavoritesApi
+  saveToFavoritesApi,
+  getFavoritesApi,
+  getFavoriteLayoutsApi
 } from '@/api/user';
 import { getLayoutElementsApi } from '@/api/layout';
 
@@ -264,11 +263,10 @@ export const useActionLayout = () => {
   return {
     saveToFavorites,
     getFavorites: getFavoritesApi,
+    getFavoriteLayouts: getFavoriteLayoutsApi,
     getPrintLayoutTypes,
     getDigitalLayoutTypes,
     getCustom,
-    getLayoutsByThemeAndType,
-    getCustomAndFavoriteLayouts,
-    getFavoriteLayoutTypeMenu
+    getLayoutsByThemeAndType
   };
 };
