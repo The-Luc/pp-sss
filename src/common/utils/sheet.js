@@ -97,12 +97,13 @@ export const mapSheetToPages = sheet => {
 
   const { pageWidth } = getPagePrintSize().inches;
 
-  sheet.objects.map(o => {
+  sheet.objects.map((o, index) => {
     if (o.type === OBJECT_TYPE.BACKGROUND) {
       o.isLeftPage ? leftPageObjects.push(o) : rightPageObjects.push(o);
       return;
     }
 
+    o.arrangeOrder = index;
     o.coord.x < pageWidth ? leftPageObjects.push(o) : rightPageObjects.push(o);
   });
 

@@ -322,7 +322,7 @@ export default {
      * @param {Object} photo photo will be removed
      */
     onRemovePhoto(photo) {
-      this.deleteSheetMedia({ id: photo.id });
+      this.deleteSheetMedia({ id: photo.id, index: photo.deleteIndex });
     },
 
     /**

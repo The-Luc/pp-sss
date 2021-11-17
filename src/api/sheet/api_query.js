@@ -1,4 +1,8 @@
-import { changeObjectsCoords, isEmpty } from '@/common/utils';
+import {
+  changeObjectsCoords,
+  entitiesToObjects,
+  isEmpty
+} from '@/common/utils';
 import { get } from 'lodash';
 import { getAssetByIdApi } from '../media';
 import { graphqlRequest } from '../urql';
@@ -19,6 +23,10 @@ export const getSheetInfo = async id => {
     return idx === 0 ? elements : changeObjectsCoords(elements, 'right');
   });
 
+  const objects = pageObjects
+    .flat()
+    .sort((a, b) => a?.arrangeOrder - b?.arrangeOrder);
+
   const assetIds = pages.reduce(
     (acc, { layout }) =>
       isEmpty(layout.workspace) ? acc : acc.concat(layout.workspace),
@@ -28,5 +36,5 @@ export const getSheetInfo = async id => {
   const mediaPromises = assetIds.map(id => getAssetByIdApi(id));
   const media = await Promise.all(mediaPromises);
 
-  return { objects: pageObjects.flat(), media };
+  return { objects: entitiesToObjects(objects), media };
 };

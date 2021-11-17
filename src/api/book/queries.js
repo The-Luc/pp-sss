@@ -64,6 +64,7 @@ export const digitalEditorQuery = gql`
         sheets {
           is_visited
           digital_frames {
+            id
             preview_image_url
           }
         }

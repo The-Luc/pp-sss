@@ -17,7 +17,12 @@ import { updatePageWorkspace } from '@/api/page';
 
 import { Transition } from '@/common/models';
 
-import { getPlaybackDataFromFrames, isEmpty, isOk } from '@/common/utils';
+import {
+  getPlaybackDataFromFrames,
+  isEmpty,
+  isOk,
+  removeItemsFormArray
+} from '@/common/utils';
 
 import {
   GETTERS as PRINT_GETTERS,
@@ -88,7 +93,7 @@ export const useActionsEditionSheet = () => {
     const currentMediaIds = currentSheet.value.media.map(m => m.id);
     const newMediaIds = newMedia.map(m => m.id);
 
-    const assetIds = [...currentMediaIds, ...newMediaIds];
+    const assetIds = [...newMediaIds, ...currentMediaIds];
 
     const res = await updatePageWorkspace(pageId, assetIds);
 
@@ -100,20 +105,20 @@ export const useActionsEditionSheet = () => {
     setSheetMedia({ media });
   };
 
-  const deleteSheetMedia = async ({ id }) => {
+  const deleteSheetMedia = async ({ id, index }) => {
     const pageId = get(currentSheet, 'value.pageIds', [])[0];
 
     if (!id || !pageId) return;
 
     const currentMediaIds = currentSheet.value.media.map(m => m.id);
 
-    const assetIds = currentMediaIds.filter(mediaId => mediaId !== id);
+    const assetIds = removeItemsFormArray(currentMediaIds, [{ index }]);
 
     const res = await updatePageWorkspace(pageId, assetIds);
 
     if (!isOk(res)) return;
 
-    deleteMedia({ id });
+    deleteMedia({ index });
   };
 
   return {
