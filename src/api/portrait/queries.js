@@ -5,6 +5,7 @@ export const portraitFolders = gql`
     book(id: $id) {
       id
       community {
+        id
         portrait_collections {
           id
           name
@@ -35,8 +36,9 @@ const settingsFragment = gql`
 `;
 
 export const getPrintSettingsQuery = gql`
-  query($bookId: ID!) {
+  query getSettingsQuery($bookId: ID!) {
     book(id: $bookId) {
+      id
       print_portrait_layout_settings {
         ...settings
       }
@@ -46,8 +48,9 @@ export const getPrintSettingsQuery = gql`
 `;
 
 export const getDigitalSettingsQuery = gql`
-  query($bookId: ID!) {
+  query getSettingsQuery($bookId: ID!) {
     book(id: $bookId) {
+      id
       digital_portrait_layout_settings {
         ...settings
       }

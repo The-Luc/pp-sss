@@ -12,6 +12,8 @@ export const getSheetFramesQuery = gql`
         title
         is_visited
         preview_image_url
+        play_in_ids
+        play_out_ids
       }
     }
   }
