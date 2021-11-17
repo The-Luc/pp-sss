@@ -44,6 +44,11 @@ export default {
       default: false
     }
   },
+  data() {
+    return {
+      isOverSub: false
+    };
+  },
   computed: {
     selectedValue() {
       const item = this.items.find(
@@ -171,6 +176,19 @@ export default {
      */
     isSubmenuExisted(item) {
       return !isEmpty(item.subItems);
+    },
+    getSubmenuPosition(item) {
+      const elementDataId = this.getDataIdByValue(item);
+
+      const element = getRefElement(this.$refs, elementDataId);
+
+      if (isEmpty(element)) return { x: 0, y: 0 };
+
+      const { x, y, width } = element.getBoundingClientRect();
+
+      const margin = -3;
+
+      return { x: x + width + margin, y };
     }
   }
 };

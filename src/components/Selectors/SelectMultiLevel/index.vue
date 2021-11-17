@@ -27,50 +27,56 @@
     </template>
 
     <template #item="{ item, attrs, on }">
-      <v-list-item
-        v-slot="{ active }"
-        :ref="getDataIdByValue(item)"
-        class="pp-select-multi--item"
-        v-bind="attrs"
-        v-on="on"
-      >
-        <div
-          class="option-wrapper"
-          @click="onItemClick($event, item.subItems, item.value)"
+      <v-hover v-slot="{ hover }">
+        <v-list-item
+          v-slot="{ active }"
+          :ref="getDataIdByValue(item)"
+          class="pp-select-multi--item"
+          :class="getDataIdByValue(item)"
+          v-bind="attrs"
+          v-on="on"
         >
-          <img
-            :style="{ visibility: active ? 'visible' : 'hidden' }"
-            class="icon-ative"
-            :src="activeMenuIcon"
-            alt="icon-active"
-          />
-
-          <v-list-item-content>
-            <v-list-item-title>
-              <v-row no-gutters align="center">
-                <span>{{ item.name }}</span>
-              </v-row>
-            </v-list-item-title>
-          </v-list-item-content>
-
-          <v-icon
-            :style="{
-              visibility: isSubmenuExisted(item) ? 'visible' : 'hidden'
-            }"
-            class="icon-arrow"
+          <div
+            class="option-wrapper"
+            @click="onItemClick($event, item.subItems, item.value)"
           >
-            arrow_right
-          </v-icon>
-        </div>
+            <img
+              :style="{ visibility: active ? 'visible' : 'hidden' }"
+              class="icon-ative"
+              :src="activeMenuIcon"
+              alt="icon-active"
+            />
 
-        <SelectSubLevel
-          v-if="isSubmenuExisted(item)"
-          :items="item.subItems"
-          :parent-value="item.value"
-          :selected-val="getSelectedSub(item)"
-          @change="onChange"
-        />
-      </v-list-item>
+            <v-list-item-content>
+              <v-list-item-title>
+                <v-row no-gutters align="center">
+                  <span>{{ item.name }}</span>
+                  <span class="hide">{{ hover }}</span>
+                </v-row>
+              </v-list-item-title>
+            </v-list-item-content>
+
+            <v-icon
+              :style="{
+                visibility: isSubmenuExisted(item) ? 'visible' : 'hidden'
+              }"
+              class="icon-arrow"
+            >
+              arrow_right
+            </v-icon>
+          </div>
+
+          <SelectSubLevel
+            v-if="isSubmenuExisted(item)"
+            :activator="`.${getDataIdByValue(item)}`"
+            :items="item.subItems"
+            :parent-value="item.value"
+            :selected-val="getSelectedSub(item)"
+            :position="getSubmenuPosition(item)"
+            @change="onChange"
+          />
+        </v-list-item>
+      </v-hover>
     </template>
     <template v-if="prependedIcon" #prepend>
       <img :src="prependedIcon" alt="prepend-icon" class="prepend-icon" />

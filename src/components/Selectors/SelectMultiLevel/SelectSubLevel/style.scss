@@ -1,28 +1,31 @@
-.pp-select-sub {
-  position: absolute;
-  top: 0;
-  left: calc(100% - 2px);
+.pp-select-sub-container {
+  max-height: 304px !important; // override
   z-index: 99999;
-  min-width: 200px;
-  box-shadow: 0 0 6px $color-black !important;
-  cursor: default;
+  overflow-y: auto;
+  box-shadow: 0 0 6px #000000 !important;
 
-  &--item {
-    cursor: pointer;
-    position: relative;
+  .pp-select-sub {
+    z-index: 99999;
+    min-width: 200px;
+    cursor: default;
 
-    &.disabled {
-      pointer-events: none;
+    &--item {
+      cursor: pointer;
+      position: relative;
 
-      span {
-        color: $color-gray22;
+      &.disabled {
+        pointer-events: none;
+
+        span {
+          color: $color-gray22;
+        }
       }
-    }
 
-    &.v-list-item--active,
-    &:not(.item-selected):hover {
-      .icon-arrow {
-        color: $color-white;
+      &.v-list-item--active,
+      &:not(.item-selected):hover {
+        .icon-arrow {
+          color: $color-white;
+        }
       }
     }
   }
