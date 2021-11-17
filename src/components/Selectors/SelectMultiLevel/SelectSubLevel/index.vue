@@ -2,6 +2,8 @@
   <v-menu
     content-class="pp-select-sub-container"
     absolute
+    open-on-hover
+    close-on-click
     close-on-content-click
     :activator="activator"
     :nudge-bottom="position.y"
