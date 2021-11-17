@@ -44,11 +44,6 @@ export default {
       default: false
     }
   },
-  data() {
-    return {
-      isOverSub: false
-    };
-  },
   computed: {
     selectedValue() {
       const item = this.items.find(
