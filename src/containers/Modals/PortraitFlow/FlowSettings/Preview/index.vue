@@ -25,7 +25,7 @@
 
     <PreviewInfo
       :total-portrait="flowSettings.totalPortraitsCount"
-      :total-page="requiredPages.length"
+      :total-pages="requiredPages.length"
       :container-name="containerName"
       @showPreview="onShowPreview"
     />
