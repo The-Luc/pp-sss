@@ -25,10 +25,26 @@ export const getCommunityUsersQuery = gql`
   }
 `;
 
-export const getFavoritesQuery = gql`
+export const getFavoriteIdsQuery = gql`
   query getFavorites {
     template_favourites {
       id
+    }
+  }
+`;
+
+export const getFavoriteLayoutsQuery = gql`
+  query getFavorites {
+    template_favourites {
+      id
+      theme {
+        id
+      }
+      categories {
+        id
+      }
+      preview_image_url
+      data
     }
   }
 `;

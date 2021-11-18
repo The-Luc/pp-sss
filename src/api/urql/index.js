@@ -5,6 +5,7 @@ import { MUTATES as APP_MUTATES } from '@/store/modules/app/const';
 import { getItem } from '@/common/storage';
 import { LOCAL_STORAGE } from '@/common/constants';
 import responseHandler from './responseHandler';
+import { updatePortraitSettingCache } from './cacheUpdater';
 
 let requestCount = 0;
 
@@ -16,7 +17,14 @@ const urqlClient = createClient({
       keys: {
         YearbookSpec: () => null,
         Template: () => null,
-        Category: () => null
+        Category: () => null,
+        PortraitSubject: () => null,
+        PortraitLayoutSetting: res => res['created_at']
+      },
+      updates: {
+        Mutation: {
+          create_portrait_layout_setting: updatePortraitSettingCache
+        }
       }
     }),
     fetchExchange

@@ -50,25 +50,32 @@ export const createImage = props => {
         ? imageUrl
         : DEFAULT_IMAGE.IMAGE_URL;
 
-    fabric.util.loadImage(src, img => {
-      const image = new fabric.Image(img, {
-        ...fabricProp,
-        id,
-        lockUniScaling: false
-      });
+    fabric.util.loadImage(
+      src,
+      img => {
+        const image = new fabric.Image(img, {
+          ...fabricProp,
+          id,
+          lockUniScaling: false
+        });
 
-      const adjustedWidth = inToPx(width) || image.width;
-      const adjustedHeight = inToPx(height) || image.height;
-      const scaleX = adjustedWidth / image.width;
-      const scaleY = adjustedHeight / image.height;
+        const adjustedWidth = inToPx(width) || image.width;
+        const adjustedHeight = inToPx(height) || image.height;
+        const scaleX = adjustedWidth / image.width;
+        const scaleY = adjustedHeight / image.height;
 
-      image.set({ left, top, scaleX, scaleY });
+        image.set({ left, top, scaleX, scaleY });
 
-      resolve({
-        object: image,
-        size: { width: pxToIn(adjustedWidth), height: pxToIn(adjustedHeight) }
-      });
-    });
+        resolve({
+          object: image,
+          size: { width: pxToIn(adjustedWidth), height: pxToIn(adjustedHeight) }
+        });
+      },
+      null,
+      {
+        crossOrigin: 'anonymous'
+      }
+    );
   });
 };
 /**
@@ -202,38 +209,44 @@ export const setImageSrc = async (imageObject, imageSrc) => {
     const src = imageSrc || IMAGE_LOCAL.PLACE_HOLDER;
     const hasImage = !!imageSrc;
 
-    imageObject.setSrc(src, img => {
-      const newScaleX = (width * scaleX) / img.width;
-      const newScaleY = (height * scaleY) / img.height;
+    imageObject.setSrc(
+      src,
+      img => {
+        const newScaleX = (width * scaleX) / img.width;
+        const newScaleY = (height * scaleY) / img.height;
 
-      const newProp = {
-        imageUrl: src,
-        hasImage,
-        scaleX: newScaleX,
-        scaleY: newScaleY,
-        width: img.width,
-        height: img.height,
-        objectType: OBJECT_TYPE.IMAGE,
-        control,
-        showControl: false
-      };
+        const newProp = {
+          imageUrl: src,
+          hasImage,
+          scaleX: newScaleX,
+          scaleY: newScaleY,
+          width: img.width,
+          height: img.height,
+          objectType: OBJECT_TYPE.IMAGE,
+          control,
+          showControl: false
+        };
 
-      img.set(newProp);
+        img.set(newProp);
 
-      applyShadowToObject(img, imageObject);
+        applyShadowToObject(img, imageObject);
 
-      if (hasImage) {
-        centercrop(imageObject);
-        newProp.zoomLevel = img.zoomLevel;
+        if (hasImage) {
+          centercrop(imageObject);
+          newProp.zoomLevel = img.zoomLevel;
+        }
+
+        resolve({
+          type: OBJECT_TYPE.IMAGE,
+          hasImage,
+          imageUrl: src,
+          zoomLevel: newProp.zoomLevel
+        });
+      },
+      {
+        crossOrigin: 'anonymous'
       }
-
-      resolve({
-        type: OBJECT_TYPE.IMAGE,
-        hasImage,
-        imageUrl: src,
-        zoomLevel: newProp.zoomLevel
-      });
-    });
+    );
   });
 };
 

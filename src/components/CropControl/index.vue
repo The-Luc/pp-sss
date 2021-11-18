@@ -20,6 +20,7 @@
         :area="area"
         :handle-zoom-event="handleZoomEvent"
         class="clipper"
+        cross-origin="anonymous"
       >
         <div slot="placeholder">No image</div>
       </clipper-fixed>
