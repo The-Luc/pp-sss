@@ -1,3 +1,4 @@
+import { OBJECT_TYPE } from '@/common/constants';
 import {
   changeObjectsCoords,
   entitiesToObjects,
@@ -23,9 +24,15 @@ export const getSheetInfo = async id => {
     return idx === 0 ? elements : changeObjectsCoords(elements, 'right');
   });
 
-  const objects = pageObjects
-    .flat()
-    .sort((a, b) => a?.arrangeOrder - b?.arrangeOrder);
+  const objects = pageObjects.flat().sort((a, b) => {
+    const isABackground = a.type === OBJECT_TYPE.BACKGROUND;
+    const isBBackground = b.type === OBJECT_TYPE.BACKGROUND;
+
+    if (isABackground || isBBackground) {
+      return Number(isBBackground) - Number(isABackground);
+    }
+    return a?.arrangeOrder - b?.arrangeOrder;
+  });
 
   const assetIds = pages.reduce(
     (acc, { layout }) =>
@@ -35,6 +42,7 @@ export const getSheetInfo = async id => {
 
   const mediaPromises = assetIds.map(id => getAssetByIdApi(id));
   const media = await Promise.all(mediaPromises);
+  console.log(objects);
 
   return { objects: entitiesToObjects(objects), media };
 };
