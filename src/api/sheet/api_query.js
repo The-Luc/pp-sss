@@ -42,7 +42,6 @@ export const getSheetInfo = async id => {
 
   const mediaPromises = assetIds.map(id => getAssetByIdApi(id));
   const media = await Promise.all(mediaPromises);
-  console.log(objects);
 
   return { objects: entitiesToObjects(objects), media };
 };
