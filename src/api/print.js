@@ -1,10 +1,8 @@
-import { cloneDeep } from 'lodash';
 import { getSuccessWithData, getErrorWithMessages } from '@/common/models';
 import { parseItem } from '@/common/storage/session.helper';
 
 import { isEmpty, getPageLeftName, getPageRightName } from '@/common/utils';
 import bookService from './bookService';
-import { OBJECT_TYPE } from '@/common/constants';
 
 const printService = {
   /**
@@ -255,119 +253,6 @@ const printService = {
     return printService.updateSheet(sheetId, { link });
   },
 
-  /**
-   * to save sheet media
-   */
-  saveSheetMedia: (sheetId, media) => {
-    return printService.updateSheet(sheetId, { media });
-  },
-
-  /**
-   * get media of sheet
-   */
-  getSheetMedia: sheetId => {
-    const sheets = cloneDeep(getSheetsFromStorage());
-    const { media } = sheets[sheetId].printData;
-    return media;
-  },
-
-  /**
-   * Delete media from sheet by id
-   * @param {String} sheetId sheet's id to delete media
-   * @param {String} mediaId media's id will be deleted
-   */
-  deleteSheetMediaById: async (sheetId, mediaId) => {
-    try {
-      if (!sheetId || !mediaId) throw false;
-      const sheets = cloneDeep(getSheetsFromStorage());
-      const { media } = sheets[sheetId].printData;
-      const newMedia = media.filter(item => item.id !== mediaId);
-      await printService.updateSheet(sheetId, { media: newMedia });
-      return Promise.resolve({
-        success: true
-      });
-    } catch (err) {
-      return Promise.reject({
-        success: false,
-        error: err
-      });
-    }
-  },
-
-  /**
-   * to saves object and backgrounds
-   */
-  saveObjectsAndBackground: (sheetId, data, isKeepBackground) => {
-    return new Promise(resolve => {
-      if (!sheetId) {
-        resolve();
-        return;
-      }
-      const sheets = getSheetsFromStorage();
-
-      const sheet = sheets[sheetId];
-
-      //TODO: Implement get bacground in api get sheet data and remove this logic
-      if (isKeepBackground) {
-        const backgrounds = cloneDeep(sheet.printData.objects).filter(
-          obj => obj.type === OBJECT_TYPE.BACKGROUND
-        );
-
-        data.unshift(...backgrounds);
-      }
-
-      sheet.printData.objects = data;
-
-      resolve(data);
-    });
-  },
-
-  /**
-   * save sheet's thumbnail
-   */
-  saveSheetThumbnail: (sheetId, thumbnailUrl) => {
-    return printService.updateSheet(sheetId, { thumbnailUrl });
-  },
-
-  /**
-   * save data of Print Edit Screen to database
-   */
-  saveEditScreen: async (sheetId, payload) => {
-    const { objects, defaultThemeId, pageInfo, sheetProps } = payload;
-
-    const saveQueue = [];
-
-    // save objects and backgrounds
-    saveQueue.push(printService.saveObjectsAndBackground(sheetId, objects));
-
-    // save default themeId
-    saveQueue.push(printService.saveDefaultThemeId(defaultThemeId));
-
-    // save pageInfo
-    saveQueue.push(printService.savePageInfo(pageInfo));
-
-    // save other data:
-    //   + sheet's layout and sheet's themeId
-    //   + sheet visite state
-    //   + sheet's thumbnail
-    //   + spreadInfo
-    saveQueue.push(printService.updateSheet(sheetId, sheetProps));
-
-    const response = await Promise.all(saveQueue);
-
-    // TODO: remove when integrate API
-    // Simulate a delay when saving data to API
-    await new Promise(r =>
-      setTimeout(() => {
-        r();
-      }, 300)
-    );
-
-    return {
-      data: response,
-      status: 'OK'
-    };
-  },
   saveMainScreen: async data => {
     const sheets = getSheetsFromStorage();
 

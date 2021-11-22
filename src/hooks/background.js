@@ -5,6 +5,7 @@ import {
   getBackgroundsApi
 } from '@/api/background';
 import { getThemesApi } from '@/api/theme';
+import { getPageLayoutApi } from '@/api/page';
 import mockBackgroundService from '@/api/mockBackground';
 
 import { useAppCommon } from './common';
@@ -13,7 +14,11 @@ import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 import { GETTERS as DIGITAL_GETTERS } from '@/store/modules/digital/const';
 import { MUTATES as APP_MUTATES } from '@/store/modules/app/const';
 
-import { BACKGROUND_TYPE, BACKGROUND_TYPE_NAME } from '@/common/constants';
+import {
+  BACKGROUND_TYPE,
+  BACKGROUND_TYPE_NAME,
+  OBJECT_TYPE
+} from '@/common/constants';
 
 export const useBackgroundProperties = () => {
   const { value: isDigital } = useAppCommon().isDigitalEdition;
@@ -115,9 +120,24 @@ export const useBackgroundGetter = () => {
 };
 
 export const useBackgroundAction = () => {
+  const getPageBackground = async pageId => {
+    const layout = await getPageLayoutApi(pageId);
+
+    return layout.elements.find(o => o.type === OBJECT_TYPE.BACKGROUND) || {};
+  };
+
+  const getPageBackgrounds = async pageIds => {
+    const promises = pageIds.map(id => getPageLayoutApi(id));
+
+    const layouts = await Promise.all(promises);
+
+    return layouts.map(
+      l => l.elements.find(o => o.type === OBJECT_TYPE.BACKGROUND) || {}
+    );
+  };
   return {
-    getPageBackground: mockBackgroundService.getPageBackground,
-    getPageBackgrounds: mockBackgroundService.getPageBackgrounds,
+    getPageBackground,
+    getPageBackgrounds,
     getFrameBackground: mockBackgroundService.getFrameBackground,
     getFrameBackgrounds: mockBackgroundService.getFrameBackgrounds
   };

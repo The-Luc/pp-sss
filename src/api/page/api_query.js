@@ -1,10 +1,10 @@
 import { get } from 'lodash';
 import { graphqlRequest } from '../urql';
-import { getPageAPILayoutQuery } from './query';
+import { getPageLayoutQuery } from './query';
 
-export const getPageAPILayout = async pageId => {
+export const getPageLayoutApi = async pageId => {
   if (!pageId) return;
-  const res = await graphqlRequest(getPageAPILayoutQuery, { pageId });
+  const res = await graphqlRequest(getPageLayoutQuery, { pageId });
 
   return get(res, 'data.page.layout', {});
 };

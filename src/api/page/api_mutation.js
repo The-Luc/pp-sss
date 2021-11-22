@@ -1,7 +1,7 @@
 import { get } from 'lodash';
 import { graphqlRequest } from '../urql';
 import { updatePageMutation } from './mutation';
-import { getPageAPILayoutQuery } from './query';
+import { getPageLayoutQuery } from './query';
 import { STATUS } from '@/common/constants';
 
 /**
@@ -30,7 +30,7 @@ export const updatePageApi = async (pageId, pageData) => {
  * @returns  response page data
  */
 export const updatePageWorkspace = async (pageId, workspace) => {
-  const response = await graphqlRequest(getPageAPILayoutQuery, { pageId });
+  const response = await graphqlRequest(getPageLayoutQuery, { pageId });
 
   const dbLayout = get(response, 'data.page.layout', []);
 
