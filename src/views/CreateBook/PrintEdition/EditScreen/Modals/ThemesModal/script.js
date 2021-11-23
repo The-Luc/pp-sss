@@ -86,11 +86,6 @@ export default {
      */
     async onPreviewTheme({ themeId }) {
       this.isPreviewing = true;
-      if (
-        themeId === this.selectedThemeId &&
-        this.layoutsOfThemePreview != null
-      )
-        return;
 
       // clear previous layout
       this.layoutsOfThemePreview = [];
