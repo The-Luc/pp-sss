@@ -55,7 +55,8 @@ export const sectionMappingToApi = section => {
       },
       dueDate: {
         name: 'due_date',
-        parse: value => new Date(value)
+        parse: value => new Date(value),
+        isForce: true
       },
       assigneeId: {
         name: 'assigned_user_id',
