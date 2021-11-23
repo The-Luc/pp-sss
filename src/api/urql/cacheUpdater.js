@@ -4,6 +4,7 @@ import {
   getPrintSettingsQuery,
   getDigitalSettingsQuery
 } from '../portrait/queries';
+import { getFavoriteLayoutsQuery } from '../user/queries';
 
 export const updatePortraitSettingCache = (result, args, cache) => {
   const layoutType = get(args, 'portrait_layout_setting_params.layout_type');
@@ -22,6 +23,22 @@ export const updatePortraitSettingCache = (result, args, cache) => {
     data => {
       data.book[layout].push(result.create_portrait_layout_setting);
 
+      return data;
+    }
+  );
+};
+
+export const updateTemplateUserCache = (result, args, cache) => {
+  const template = get(result, 'create_template_user.template', {});
+
+  cache.updateQuery(
+    {
+      query: getFavoriteLayoutsQuery
+    },
+    data => {
+      if (!data) return null;
+
+      data.template_favourites.push(template);
       return data;
     }
   );
