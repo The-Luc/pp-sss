@@ -1,9 +1,9 @@
-import printService from '@/api/print';
-import { isEmpty, mapSheetToPages } from '@/common/utils';
+import { isEmpty, mapSheetToPages, pageLayoutsFromSheet } from '@/common/utils';
 import { useGetters } from 'vuex-composition-helpers';
 import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 import { updatePageApi } from '@/api/page';
-import { updateSheet } from '@/api/sheet';
+import { updateSheet, getSheetInfo } from '@/api/sheet';
+import { OBJECT_TYPE } from '@/common/constants';
 
 export const useSaveData = () => {
   const { getDataEditScreen } = useGetters({
@@ -46,8 +46,37 @@ export const useSaveData = () => {
     return await Promise.all(savePromises);
   };
 
+  /**
+   *  To save objects to a sheet
+   *
+   * @param {String} sheetId id of a sheet
+   * @param {Object} objects object will be saved
+   * @returns api response
+   */
   const savePortraitObjects = async (sheetId, objects) => {
-    return printService.saveObjectsAndBackground(sheetId, objects, true);
+    const getSheetDataFnc = getDataEditScreen.value;
+    const sheetData = getSheetDataFnc(sheetId);
+
+    const { pageIds, media } = sheetData.sheetProps;
+    const [leftPageId, rightPageId] = pageIds;
+
+    // keep the current backgrounds
+    const { objects: sheetObjects } = await getSheetInfo(sheetId);
+    const backgrounds = sheetObjects.filter(
+      o => o.type === OBJECT_TYPE.BACKGROUND
+    );
+
+    const { leftLayout, rightLayout } = pageLayoutsFromSheet({
+      media,
+      objects: [...backgrounds, ...objects]
+    });
+
+    const savePromises = [
+      updatePageApi(leftPageId, { layout: leftLayout }),
+      updatePageApi(rightPageId, { layout: rightLayout })
+    ];
+
+    return await Promise.all(savePromises);
   };
 
   return { savePrintEditScreen, getDataEditScreen, savePortraitObjects };

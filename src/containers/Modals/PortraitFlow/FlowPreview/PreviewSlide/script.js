@@ -23,8 +23,7 @@ export default {
     return {
       itemPerPage: this.isDigital ? 4 : 3,
       itemPerRow: this.isDigital ? 2 : 3,
-      currentIndex: 0,
-      pages: [[[]]]
+      currentIndex: 0
     };
   },
   computed: {
@@ -36,10 +35,10 @@ export default {
     },
     isPosibleToNext() {
       return this.currentIndex < this.pages.length - 1;
+    },
+    pages() {
+      return this.getPages() || [[[]]];
     }
-  },
-  mounted() {
-    this.pages = this.getPages();
   },
   methods: {
     /**

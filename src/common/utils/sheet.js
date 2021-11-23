@@ -83,8 +83,6 @@ export const getPageName = (sheetIndex, totalSheetUntilPrevious) => {
  * @returns {Object} left and right page
  */
 export const mapSheetToPages = sheet => {
-  const leftPageObjects = [];
-  const rightPageObjects = [];
   const {
     isLeftNumberOn,
     isRightNumberOn,
@@ -93,11 +91,47 @@ export const mapSheetToPages = sheet => {
   } = sheet.sheetProps.spreadInfo;
 
   const { media } = sheet.sheetProps;
-  const workspace = media.map(m => m.id);
+
+  const { leftLayout, rightLayout } = pageLayoutsFromSheet({
+    media,
+    objects: sheet.objects
+  });
+
+  const leftPage = {
+    layout: leftLayout,
+    otherProps: {
+      title: leftTitle,
+      show_page_number: isLeftNumberOn,
+      preview_image_url: ''
+    }
+  };
+
+  const rightPage = {
+    layout: rightLayout,
+    otherProps: {
+      title: rightTitle,
+      show_page_number: isRightNumberOn,
+      preview_image_url: ''
+    }
+  };
+
+  return { leftPage, rightPage };
+};
+
+/**
+ * To seperate objects and media of sheet into pages
+ *
+ * @param {Object} sheetData sheet data: media and objects
+ * @returns {leftLayout, rightLayout} elements and workspace for each page
+ */
+export const pageLayoutsFromSheet = sheetData => {
+  const leftPageObjects = [];
+  const rightPageObjects = [];
+  const workspace = sheetData.media.map(m => m.id);
 
   const { pageWidth } = getPagePrintSize().inches;
 
-  sheet.objects.map((o, index) => {
+  sheetData.objects.map((o, index) => {
     if (o.type === OBJECT_TYPE.BACKGROUND) {
       o.isLeftPage ? leftPageObjects.push(o) : rightPageObjects.push(o);
       return;
@@ -107,31 +141,31 @@ export const mapSheetToPages = sheet => {
     o.coord.x < pageWidth ? leftPageObjects.push(o) : rightPageObjects.push(o);
   });
 
-  const leftPage = {
-    layout: {
-      elements: leftPageObjects,
-      workspace
-    },
-    otherProps: {
-      title: leftTitle,
-      show_page_number: isLeftNumberOn,
-      preview_image_url: ''
-    }
+  const leftLayout = {
+    elements: leftPageObjects,
+    workspace
   };
 
-  const rightPage = {
-    layout: {
-      elements: changeObjectsCoords(rightPageObjects, 'right', {
-        moveToLeft: true
-      }),
-      workspace: []
-    },
-    otherProps: {
-      title: rightTitle,
-      show_page_number: isRightNumberOn,
-      preview_image_url: ''
-    }
+  const rightLayout = {
+    elements: changeObjectsCoords(rightPageObjects, 'right', {
+      moveToLeft: true
+    }),
+    workspace: []
   };
+  return { leftLayout, rightLayout };
+};
 
-  return { leftPage, rightPage };
+/**
+ *  To get pageId based on page number
+ *
+ * @param {Number} pageNo number of the page will be applied portrait on
+ * @returns {String}  pageId of the pageNo
+ */
+export const getPageIdFromPageNo = (pageNo, sheets, isDigital) => {
+  if (isDigital) return pageNo;
+
+  const sheet = Object.values(sheets).find(
+    s => +s.pageLeftName === pageNo || +s.pageRightName === pageNo
+  );
+  return +sheet.pageLeftName === pageNo ? sheet.pageIds[0] : sheet.pageIds[1];
 };

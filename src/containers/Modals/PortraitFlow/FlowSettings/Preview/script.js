@@ -5,7 +5,7 @@ import PreviewInfo from './PreviewInfo';
 
 import { useBackgroundAction, useSheet, useFrame } from '@/hooks';
 
-import { isEmpty } from '@/common/utils';
+import { getPageIdFromPageNo, isEmpty } from '@/common/utils';
 import { PORTRAIT_FLOW_OPTION_MULTI } from '@/common/constants';
 
 export default {
@@ -55,15 +55,11 @@ export default {
   },
   computed: {
     selectedPages() {
-      return this.requiredPages.map(p => {
-        const screenNumber = this.isDigital ? p.screen : null;
-        const pageNo = this.isDigital ? p.frame : p;
-        const backgroundUrl = this.isDigital
-          ? this.getFrameBackground(pageNo)
-          : this.getPageBackground(pageNo);
-
-        return { screenNumber, pageNo, backgroundUrl };
-      });
+      return this.requiredPages.map(p =>
+        this.isDigital
+          ? { screenNumber: p.screen, pageNo: p.frame }
+          : { screenNumber: null, pageNo: p }
+      );
     },
     startPage() {
       const settingPage = this.flowSettings.startOnPageNumber;
@@ -159,14 +155,24 @@ export default {
      *
      * @param {Number}  selectedPageNo  selected page number
      */
-    updatePreviewData() {
+    async updatePreviewData() {
       if (isEmpty(this.selectedPages)) return;
 
       const page = isEmpty(this.index) ? {} : this.selectedPages[this.index];
 
       this.pageNo = page.pageNo;
       this.screenNumber = page.screenNumber;
-      this.backgroundUrl = page.backgroundUrl;
+
+      const pageId = getPageIdFromPageNo(
+        this.pageNo,
+        this.getSheets,
+        this.isDigital
+      );
+      const background = this.isDigital
+        ? await this.getFrameBackground(pageId)
+        : await this.getPageBackground(pageId);
+
+      this.backgroundUrl = background.imageUrl || '';
 
       const { flowMultiSettings, folders } = this.flowSettings;
       const isContinuousFlow =

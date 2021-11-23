@@ -1,6 +1,6 @@
 import { gql } from 'graphql-tag';
 
-export const getPageAPILayoutQuery = gql`
+export const getPageLayoutQuery = gql`
   query getPageAPILayout($pageId: ID!) {
     page(id: $pageId) {
       id
