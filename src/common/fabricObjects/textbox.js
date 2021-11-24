@@ -466,13 +466,9 @@ export const applyTextBoxProperties = function(textObject, prop) {
 
   applyTextProperties(text, prop);
 
-  if (!prop.border && !prop.size) {
+  if (!prop.border && !prop.size && !isModifySize) {
     textObject?.canvas?.renderAll();
     return;
-  }
-
-  if (isModifySize) {
-    textObject?.canvas?.renderAll();
   }
 
   const { minBoundingWidth, minBoundingHeight } = getTextSizeWithPadding(text);
