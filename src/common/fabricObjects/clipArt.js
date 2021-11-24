@@ -1,4 +1,4 @@
-import { addPrintSvgs } from './common';
+import { addCliparts } from '.';
 
 /**
  * Adding clip art to canvas
@@ -16,9 +16,8 @@ export const addPrintClipArts = async (
   isPlaceInLeftPage = false,
   eventListeners = {}
 ) => {
-  await addPrintSvgs(
+  await addCliparts(
     clipArts,
-    'vector',
     canvas,
     isAddedToSinglePage,
     isPlaceInLeftPage,

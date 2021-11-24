@@ -12,7 +12,9 @@ import { getClipArts, getClipartCategories, searchClipArt } from './queries';
  */
 export const loadClipArtsApi = async id => {
   const res = await graphqlRequest(getClipArts, { id });
-  return res.data.category.cliparts;
+
+  const { cliparts } = res.data.category;
+  return cliparts.map(c => ({ ...c, imageUrl: c.large_url }));
 };
 
 /**
@@ -35,5 +37,10 @@ export const searchClipArtApi = async keyword => {
 
   const res = await graphqlRequest(searchClipArt, { keyword });
 
-  return isOk(res) ? get(res.data, 'category_keyword.cliparts', []) : [];
+  const cliparts = get(res.data, 'category_keyword.cliparts', []).map(c => ({
+    ...c,
+    imageUrl: c.large_url
+  }));
+
+  return isOk(res) ? cliparts : [];
 };

@@ -20,6 +20,7 @@ import {
   createImage,
   createPortraitImage,
   createTextBox,
+  handleGetClipart,
   handleGetSvgData,
   updateSpecificProp
 } from '@/common/fabricObjects';
@@ -94,12 +95,11 @@ export default {
       if (isEmpty(objects)) return;
 
       const allObjectPromises = objects.map(objectData => {
-        if (
-          objectData.type === OBJECT_TYPE.SHAPE ||
-          objectData.type === OBJECT_TYPE.CLIP_ART
-        ) {
+        if (objectData.type === OBJECT_TYPE.SHAPE)
           return this.createSvgFromPpData(objectData);
-        }
+
+        if (objectData.type === OBJECT_TYPE.CLIP_ART)
+          return this.createClipartFromPpData(objectData);
 
         if (objectData.type === OBJECT_TYPE.TEXT) {
           return this.createTextFromPpData(objectData);
@@ -150,6 +150,40 @@ export default {
         svgUrlAttrName,
         expectedHeight,
         expectedWidth
+      });
+
+      const {
+        dropShadow,
+        shadowBlur,
+        shadowOffset,
+        shadowOpacity,
+        shadowAngle,
+        shadowColor
+      } = object;
+
+      applyShadowToObject(object, {
+        dropShadow,
+        shadowBlur,
+        shadowOffset,
+        shadowOpacity,
+        shadowAngle,
+        shadowColor
+      });
+
+      return object;
+    },
+
+    /**
+     * add clipart to the store and create fabric object
+     *
+     * @param {Object} clipart PpData of the of a clipart object {id, size, coord,...}
+     * @returns {Object} a fabric object
+     */
+    async createClipartFromPpData(clipart) {
+      const object = await handleGetClipart({
+        clipart,
+        expectedHeight: clipart.size.height,
+        expectedWidth: clipart.size.width
       });
 
       const {

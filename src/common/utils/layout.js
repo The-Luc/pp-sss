@@ -98,12 +98,12 @@ export const createImageElement = (element, isRightPage) => {
 };
 
 export const createClipartElement = (element, isRightPage) => {
-  const { vector = '', guid: id } = element?.properties || {};
+  const { large = '', guid: id } = element?.properties || {};
 
   return new ClipArtElementObject({
     ...getElementDimension(element, isRightPage),
     id,
-    vector
+    imageUrl: large
   });
 };
 

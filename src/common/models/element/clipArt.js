@@ -13,6 +13,7 @@ export class ClipArtElementObject extends BaseMoveableElementObject {
   });
   category = '';
   vector = '';
+  imageUrl = '';
   fillMode = SVG_FILL_MODE.FILL;
   isColorful = true;
   isConstrain = true;

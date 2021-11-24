@@ -672,6 +672,52 @@ export const handleGetSvgData = async ({
 };
 
 /**
+ * Function handle png clipart data with fabric prop
+ *
+ * @param {Object} clipart - The clipart's data
+ * @param   {Number}  expectedHeight  the view height of svg element
+ * @param   {Number}  expectedWidth   the view width of svg element
+ * @returns {Object} Clipart object
+ */
+export const handleGetClipart = async ({
+  object,
+  expectedHeight = null,
+  expectedWidth = DEFAULT_SVG.WIDTH
+}) => {
+  const fabricProp = getFabricPropByType(object.type, object);
+
+  return new Promise(resolve => {
+    fabric.util.loadImage(
+      fabricProp.imageUrl,
+      img => {
+        const image = new fabric.Image(img, {
+          ...fabricProp,
+          ...(fabricProp.fillMode === 'fill' && {
+            strokeWidth: DEFAULT_SHAPE.BORDER.STROKE_WIDTH
+          }),
+          id: object.id,
+          lockUniScaling: false
+        });
+
+        const scaleX = inToPx(expectedWidth) / image.width;
+        const scaleY = expectedHeight
+          ? inToPx(expectedHeight) / image.height
+          : scaleX;
+
+        image.set({
+          scaleX,
+          scaleY
+        });
+
+        resolve(image);
+      },
+      null,
+      { crossOrigin: 'anynomous' }
+    );
+  });
+};
+
+/**
  * Function add svgs to canvas
  * @param {Array} svgs - list of sgv will be added
  * @param {Ref} canvas - Canvas element
@@ -733,6 +779,45 @@ export const addPrintSvgs = async (
   canvas.renderAll();
 
   return svgs;
+};
+
+/**
+ * Adding clipart to canvas
+ *
+ * @param {Array}   clipartObjects      list of sgv will be added
+ * @param {Object}  canvas              the canvas contain new sgv
+ * @param {Boolean} isAddedToSinglePage is sgv will be added to single page
+ * @param {Boolean} isPlaceInLeftPage   is sgv will be added to left page
+ * @param {Object}  eventListeners      sgv event list {name, eventHandling}
+ */
+export const addCliparts = async (
+  clipartObjects,
+  canvas,
+  isAddedToSinglePage,
+  isPlaceInLeftPage,
+  eventListeners
+) => {
+  const cliparts = await Promise.all(
+    clipartObjects.map(s => handleGetClipart(s))
+  );
+
+  if (isEmpty(cliparts) || cliparts.length != clipartObjects.length) return;
+
+  cliparts.forEach(s => {
+    useObjectControlsOverride(s);
+    addEventListeners(s, eventListeners);
+  });
+
+  handleAddSvgsToCanvas({
+    svgs: cliparts,
+    canvas,
+    isAddedToSinglePage,
+    isPlaceInLeftPage
+  });
+
+  canvas.renderAll();
+
+  return cliparts;
 };
 
 /**
