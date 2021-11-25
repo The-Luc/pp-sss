@@ -6,7 +6,7 @@ import { getBookDetail } from '@/api/book';
 
 import { useAppCommon } from './common';
 import { SheetDetail } from '@/common/models';
-import { addNewSheet } from '@/api/sheet';
+import { addNewSheetApi } from '@/api/sheet';
 import { isOk } from '@/common/utils';
 
 import {
@@ -60,7 +60,7 @@ export const useBook = () => {
         ? totalSheetsInSection - 1
         : totalSheetsInSection;
 
-    const res = await addNewSheet(sectionId, {
+    const res = await addNewSheetApi(sectionId, {
       ...new SheetDetail(),
       order,
       isVisited: false

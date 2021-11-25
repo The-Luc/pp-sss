@@ -1,13 +1,17 @@
 import { useGetters, useMutations } from 'vuex-composition-helpers';
 
 import { getUsersApi } from '@/api/user';
-import { addNewSection } from '@/api/section';
+import {
+  addNewSectionApi,
+  updateSectionApi,
+  updateSectionOrderApi
+} from '@/api/section';
 
 import { useActionBook, useAppCommon } from '@/hooks';
 
 import { SectionBase } from '@/common/models';
 
-import { isEmpty, isOk, getUniqueColor } from '@/common/utils';
+import { isEmpty, isOk, getUniqueColor, moveItem } from '@/common/utils';
 
 import {
   GETTERS as BOOK_GETTERS,
@@ -20,7 +24,7 @@ import {
   GETTERS as APP_GETTERS,
   MUTATES as APP_MUTATES
 } from '@/store/modules/app/const';
-import { updateSection as updateSectionDB } from '@/api/section';
+
 import { EDITION, BASE_SECTION_COLOR } from '@/common/constants';
 
 const getSections = sections => {
@@ -104,7 +108,7 @@ export const useSectionActionMenu = () => {
 
   const updateSection = async (data, activeEdition) => {
     // update to database
-    const res = await updateSectionDB(data.id, data);
+    const res = await updateSectionApi(data.id, data);
 
     if (res.assigneeId === null) res.assigneeId = -1;
 
@@ -165,7 +169,7 @@ export const useSectionControl = () => {
       order: totalSection.value - 2
     };
 
-    const res = await addNewSection(generalInfo.value.bookId, data);
+    const res = await addNewSectionApi(generalInfo.value.bookId, data);
 
     if (!isOk(res)) return;
 
@@ -180,7 +184,7 @@ export const useSectionControl = () => {
 };
 
 export const useSectionItems = () => {
-  const { currentUser } = useAppCommon();
+  const { currentUser, generalInfo } = useAppCommon();
 
   const { sections, sectionIds } = useGetters({
     sections: BOOK_GETTERS.SECTIONS,
@@ -191,30 +195,22 @@ export const useSectionItems = () => {
     moveSectionInStore: BOOK_MUTATES.MOVE_SECTION
   });
 
-  const moveSection = async (id, moveToIndex, selectedIndex) => {
-    const isMoveForward = moveToIndex > selectedIndex;
-    const affectRange = Math.abs(moveToIndex - selectedIndex);
-    const startIndex = isMoveForward ? selectedIndex + 1 : moveToIndex;
-
-    const affectSectionData = Array.from(
-      { length: affectRange },
-      (_, index) => {
-        return {
-          id: sectionIds.value[index + startIndex],
-          order: index + startIndex + (isMoveForward ? -1 : 1)
-        };
-      }
+  const moveSection = async (moveToIndex, selectedIndex) => {
+    const sectionIdsNew = moveItem(
+      sectionIds.value[selectedIndex],
+      selectedIndex,
+      moveToIndex,
+      sectionIds.value
     );
 
-    const apiCallPromise = affectSectionData.map(d => {
-      return updateSectionDB(d.id, { order: d.order });
-    });
+    const isSuccess = await updateSectionOrderApi(
+      generalInfo.value.bookId,
+      sectionIdsNew
+    );
 
-    apiCallPromise.push(updateSectionDB(id, { order: moveToIndex }));
+    if (!isSuccess) return;
 
-    await Promise.all(apiCallPromise);
-
-    moveSectionInStore({ id, moveToIndex, selectedIndex });
+    moveSectionInStore({ sectionIds: sectionIdsNew });
   };
 
   return { currentUser, sections, moveSection };

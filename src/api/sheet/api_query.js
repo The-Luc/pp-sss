@@ -9,12 +9,12 @@ import { getAssetByIdApi } from '../media';
 import { graphqlRequest } from '../urql';
 import { pageInfoQuery, sheetInfoQuery } from './queries';
 
-export const getPageData = async id => {
+export const getPageDataApi = async id => {
   const res = await graphqlRequest(pageInfoQuery, { id });
-  return res.data;
+  return res?.data;
 };
 
-export const getSheetInfo = async id => {
+export const getSheetInfoApi = async id => {
   const response = await graphqlRequest(sheetInfoQuery, { id });
 
   const pages = get(response.data, 'sheet.pages', []);

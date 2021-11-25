@@ -1,14 +1,15 @@
 import { useGetters, useMutations } from 'vuex-composition-helpers';
 
 import {
-  deleteSheet as deleteSheetInDb,
-  updateSheet as updateSheetDb
+  deleteSheetApi,
+  updateSheetApi,
+  updateSheetOrderApi
 } from '@/api/sheet';
-import { deleteSection as deleteSectionInDb } from '@/api/section';
+import { deleteSectionApi } from '@/api/section';
 
 import { useAppCommon } from '@/hooks';
 
-import { isOk } from '@/common/utils';
+import { isOk, moveItem } from '@/common/utils';
 
 import {
   GETTERS as BOOK_GETTERS,
@@ -34,7 +35,7 @@ export const useActionSection = () => {
   });
 
   const deleteSheet = async (sheetId, sectionId) => {
-    const res = await deleteSheetInDb(sheetId);
+    const res = await deleteSheetApi(sheetId);
 
     if (!isOk(res)) return;
 
@@ -44,7 +45,7 @@ export const useActionSection = () => {
   };
 
   const deleteSection = async sectionId => {
-    const res = await deleteSectionInDb(sectionId);
+    const res = await deleteSectionApi(sectionId);
 
     if (!isOk(res)) return;
 
@@ -53,25 +54,19 @@ export const useActionSection = () => {
     toggleModal({ isOpenModal: false });
   };
 
-  const moveSheetLocaly = async (id, sectionId, moveToIndex, selectedIndex) => {
-    const isMoveForward = moveToIndex > selectedIndex;
-    const affectRange = Math.abs(moveToIndex - selectedIndex);
-    const startIndex = isMoveForward ? selectedIndex + 1 : moveToIndex;
+  const moveSheetLocaly = async (sectionId, moveToIndex, selectedIndex) => {
+    const currentSection = sectionSheetIds.value[sectionId];
 
-    const affectSheetData = Array.from({ length: affectRange }, (_, index) => {
-      return {
-        id: sectionSheetIds.value[sectionId][index + startIndex],
-        order: index + startIndex + (isMoveForward ? -1 : 1)
-      };
-    });
+    const sheetIds = moveItem(
+      currentSection[selectedIndex],
+      selectedIndex,
+      moveToIndex,
+      currentSection
+    );
 
-    const apiCallPromise = affectSheetData.map(d => {
-      return updateSheetDb(d.id, { order: d.order });
-    });
+    const isSuccess = await updateSheetOrderApi(sectionId, sheetIds);
 
-    apiCallPromise.push(updateSheetDb(id, { order: moveToIndex }));
-
-    await Promise.all(apiCallPromise);
+    if (!isSuccess) return;
 
     moveSheetInStore({
       moveToSectionId: sectionId,
@@ -100,11 +95,11 @@ export const useActionSection = () => {
       });
 
     const apiCallPromise = affectCurrentData.map(d => {
-      return updateSheetDb(d.id, { order: d.order });
+      return updateSheetApi(d.id, { order: d.order });
     });
 
     affectTargetData.forEeach(d => {
-      apiCallPromise.push(updateSheetDb(d.id, { order: d.order }));
+      apiCallPromise.push(updateSheetApi(d.id, { order: d.order }));
     });
 
     await Promise.all(apiCallPromise);
@@ -125,7 +120,7 @@ export const useActionSection = () => {
     selectedIndex
   ) => {
     if (moveToSectionId === selectedSectionId) {
-      return moveSheetLocaly(id, selectedSectionId, moveToIndex, selectedIndex);
+      return moveSheetLocaly(selectedSectionId, moveToIndex, selectedIndex);
     }
 
     return moveSheetToOthers(
