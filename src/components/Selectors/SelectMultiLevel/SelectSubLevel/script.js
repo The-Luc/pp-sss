@@ -40,6 +40,13 @@ export default {
       type: String
     }
   },
+  data() {
+    return {
+      isSubActivated: false,
+      isHover: false,
+      subActivatorId: null
+    };
+  },
   methods: {
     /**
      * Get option select after change and emit
@@ -87,8 +94,12 @@ export default {
           : this.selectedVal;
 
       const activeCss = value === subValue ? 'v-list-item--active' : '';
+      const subActivated =
+        this.isSubActivated && this.subActivatorId === value
+          ? 'sub-activated'
+          : '';
 
-      return [activeCss, this.getDataIdByValue(value)];
+      return [activeCss, this.getDataIdByValue(value), subActivated];
     },
     /**
      * Get sub level 2 value of selected item
@@ -128,6 +139,31 @@ export default {
       const margin = -3;
 
       return { x: x + width + margin, y };
+    },
+    onMouseEnterMenu() {
+      this.isSubActivated = false;
+      this.isHover = true;
+
+      this.$emit('subEnter', { activator: this.parentValue });
+    },
+    onMouseLeaveMenu() {
+      this.isHover = false;
+
+      this.$emit('subLeave');
+    },
+    onSubEnter({ activator }) {
+      this.isHover = false;
+
+      this.isSubActivated = true;
+
+      this.subActivatorId = activator;
+    },
+    onSubLeave() {
+      this.isSubActivated = false;
+
+      this.subActivatorId = null;
+
+      if (!this.isHover) this.$refs.subMenu.closeMenu();
     }
   }
 };

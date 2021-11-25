@@ -32,7 +32,7 @@
           v-slot="{ active }"
           :ref="getDataIdByValue(item)"
           class="pp-select-multi--item"
-          :class="getDataIdByValue(item)"
+          :class="getCustomCssClass(item)"
           v-bind="attrs"
           v-on="on"
         >
@@ -74,6 +74,8 @@
             :selected-val="getSelectedSub(item)"
             :position="getSubmenuPosition(item)"
             @change="onChange"
+            @subEnter="onSubEnter"
+            @subLeave="onSubLeave"
           />
         </v-list-item>
       </v-hover>
