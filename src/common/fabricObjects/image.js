@@ -3,6 +3,7 @@ import { fabric } from 'fabric';
 import {
   getActiveCanvas,
   getStrokeLineCap,
+  getUniqueUrl,
   inToPx,
   isEmpty,
   mapObject,
@@ -51,7 +52,7 @@ export const createImage = props => {
         : DEFAULT_IMAGE.IMAGE_URL;
 
     fabric.util.loadImage(
-      src,
+      getUniqueUrl(src),
       img => {
         const image = new fabric.Image(img, {
           ...fabricProp,
@@ -210,7 +211,7 @@ export const setImageSrc = async (imageObject, imageSrc) => {
     const hasImage = !!imageSrc;
 
     imageObject.setSrc(
-      src,
+      getUniqueUrl(src),
       img => {
         const newScaleX = (width * scaleX) / img.width;
         const newScaleY = (height * scaleY) / img.height;

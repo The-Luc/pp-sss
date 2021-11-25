@@ -121,6 +121,8 @@ export const useBackgroundGetter = () => {
 
 export const useBackgroundAction = () => {
   const getPageBackground = async pageId => {
+    if (!pageId) return {};
+
     const layout = await getPageLayoutApi(pageId);
 
     return layout.elements.find(o => o.type === OBJECT_TYPE.BACKGROUND) || {};
@@ -132,7 +134,7 @@ export const useBackgroundAction = () => {
     const layouts = await Promise.all(promises);
 
     return layouts.map(
-      l => l.elements.find(o => o.type === OBJECT_TYPE.BACKGROUND) || {}
+      l => l?.elements?.find(o => o.type === OBJECT_TYPE.BACKGROUND) || {}
     );
   };
   return {

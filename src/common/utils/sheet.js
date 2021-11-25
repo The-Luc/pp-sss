@@ -167,5 +167,8 @@ export const getPageIdFromPageNo = (pageNo, sheets, isDigital) => {
   const sheet = Object.values(sheets).find(
     s => +s.pageLeftName === pageNo || +s.pageRightName === pageNo
   );
+
+  if (!sheet) return null;
+
   return +sheet.pageLeftName === pageNo ? sheet.pageIds[0] : sheet.pageIds[1];
 };

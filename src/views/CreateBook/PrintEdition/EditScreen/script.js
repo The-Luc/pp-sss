@@ -335,7 +335,7 @@ export default {
     },
 
     /**
-     * Handle drop photo to canvas
+     * Handle drop media to canvas
      * @param {Object} event fabric object focused
      */
     async onDrop(event) {
@@ -352,6 +352,21 @@ export default {
 
       const target = event.target;
 
+      const { height, width, zoom } = this.$refs.canvasEditor.canvasSize;
+
+      const canvasHeight = height / zoom;
+      const canvasWidth = width / zoom;
+
+      const ratio = Math.max(
+        originalHeight / canvasHeight,
+        originalWidth / canvasWidth,
+        1
+      );
+
+      // set media dimension to fix in the canvas
+      const imgHeight = originalHeight / ratio;
+      const imgWidth = originalWidth / ratio;
+
       const pointer = this.$refs.canvasEditor.printCanvas.getPointer(event.e);
 
       this.dragItem = null;
@@ -363,15 +378,9 @@ export default {
         const x = pointer.x - offsetX * 3;
         const y = pointer.y - offsetY * 3;
 
-        this.$refs.canvasEditor.addImageBox(
-          x,
-          y,
-          originalWidth,
-          originalHeight,
-          {
-            src: imageUrl
-          }
-        );
+        this.$refs.canvasEditor.addImageBox(x, y, imgWidth, imgHeight, {
+          src: imageUrl
+        });
 
         return;
       }
