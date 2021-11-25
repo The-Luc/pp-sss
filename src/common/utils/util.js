@@ -1,11 +1,6 @@
-import {
-  cloneDeep,
-  merge,
-  intersection,
-  uniqueId,
-  differenceWith
-} from 'lodash';
+import { cloneDeep, merge, intersection, differenceWith } from 'lodash';
 
+import { v4 as uuidv4 } from 'uuid';
 import moment from 'moment';
 
 import { inToPx, ptToPx, getPagePrintSize } from './canvas';
@@ -437,7 +432,7 @@ export const getFileExtension = fileName => {
  * @returns {Number}  new id
  */
 export const getUniqueId = () => {
-  return uniqueId();
+  return uuidv4();
 };
 
 /**

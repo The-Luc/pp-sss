@@ -142,6 +142,7 @@ import {
   CONTROL_TYPE,
   PLAY_IN_STYLES
 } from '@/common/constants/animationProperty';
+import { Notification } from '@/components/Notification';
 
 const ELEMENTS = {
   [OBJECT_TYPE.TEXT]: 'a text box',
@@ -2078,7 +2079,15 @@ export default {
         return this.drawObject(objectData);
       });
 
-      const listFabricObjects = await Promise.all(allObjectPromises);
+      const listStatus = await Promise.allSettled(allObjectPromises);
+
+      const listFabricObjects = [];
+
+      listStatus.forEach(item => {
+        item.value && listFabricObjects.push(item.value);
+        item.reason &&
+          Notification({ type: 'error', title: 'Error', text: item.reason });
+      });
 
       this.digitalCanvas.add(...listFabricObjects);
       this.digitalCanvas.requestRenderAll();

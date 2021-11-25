@@ -110,10 +110,15 @@ export const createBackgroundFabricObject = (
   const id = newId ?? prop.id;
   const isLeftPage = isAddToLeft ?? prop.isLeftPage;
 
-  return new Promise(resolve => {
+  return new Promise((resolve, reject) => {
     fabric.util.loadImage(
       prop.imageUrl,
       img => {
+        if (!img) {
+          reject(new Error('Cannot load background'));
+          return;
+        }
+
         const background = new fabric.Image(img, {
           ...fabricProp,
           isLeftPage,

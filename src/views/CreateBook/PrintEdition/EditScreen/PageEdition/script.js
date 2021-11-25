@@ -128,6 +128,7 @@ import {
   ImageElementObject,
   ShapeElementObject
 } from '@/common/models/element';
+import { Notification } from '@/components/Notification';
 
 export default {
   components: {
@@ -1878,7 +1879,15 @@ export default {
         }
       });
 
-      const listFabricObjects = await Promise.all(allObjectPromises);
+      const listStatus = await Promise.allSettled(allObjectPromises);
+
+      const listFabricObjects = [];
+
+      listStatus.forEach(item => {
+        item.value && listFabricObjects.push(item.value);
+        item.reason &&
+          Notification({ type: 'error', title: 'Error', text: item.reason });
+      });
 
       window.printCanvas.add(...listFabricObjects);
       window.printCanvas.requestRenderAll();
