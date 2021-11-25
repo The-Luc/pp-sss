@@ -71,7 +71,8 @@ import {
   createSvgObject,
   createPortraitImageObject,
   createTextBoxObject,
-  createImage
+  createImage,
+  addCliparts
 } from '@/common/fabricObjects';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
 
@@ -141,6 +142,7 @@ import {
   CONTROL_TYPE,
   PLAY_IN_STYLES
 } from '@/common/constants/animationProperty';
+import { Notification } from '@/components/Notification';
 
 const ELEMENTS = {
   [OBJECT_TYPE.TEXT]: 'a text box',
@@ -1949,6 +1951,26 @@ export default {
 
       return svg;
     },
+
+    /**
+     * Add clipart to the store and create fabric object
+     *
+     * @param {Object} objectData PpData of the of a clipart object {id, size, coord,...}
+     * @returns {Object} a fabric object
+     */
+    async createClipartFromPpData(objectData) {
+      const eventListeners = {
+        scaling: this.handleScaling,
+        scaled: this.handleScaled,
+        rotated: this.handleRotated,
+        moved: this.handleMoved
+      };
+      const clipart = await addCliparts(objectData);
+
+      addEventListeners(clipart, eventListeners);
+
+      return clipart;
+    },
     /**
      * Function handle add text event listeners
      * @param {Element} group - Group object contains rect and text object
@@ -2057,7 +2079,15 @@ export default {
         return this.drawObject(objectData);
       });
 
-      const listFabricObjects = await Promise.all(allObjectPromises);
+      const listStatus = await Promise.allSettled(allObjectPromises);
+
+      const listFabricObjects = [];
+
+      listStatus.forEach(item => {
+        item.value && listFabricObjects.push(item.value);
+        item.reason &&
+          Notification({ type: 'error', title: 'Error', text: item.reason });
+      });
 
       this.digitalCanvas.add(...listFabricObjects);
       this.digitalCanvas.requestRenderAll();
@@ -2688,7 +2718,7 @@ export default {
         [OBJECT_TYPE.BACKGROUND]: this.createBackgroundFromPpData,
         [OBJECT_TYPE.TEXT]: this.createTextFromPpData,
         [OBJECT_TYPE.SHAPE]: this.createSvgFromPpData,
-        [OBJECT_TYPE.CLIP_ART]: this.createSvgFromPpData,
+        [OBJECT_TYPE.CLIP_ART]: this.createClipartFromPpData,
         [OBJECT_TYPE.IMAGE]: this.createMediaFromPpData,
         [OBJECT_TYPE.VIDEO]: this.createMediaFromPpData,
         [OBJECT_TYPE.PORTRAIT_IMAGE]: this.createPortraitImageFromPpData

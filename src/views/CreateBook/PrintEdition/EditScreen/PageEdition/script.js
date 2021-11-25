@@ -75,7 +75,8 @@ import {
   handleMouseOver,
   handleMouseOut,
   createPortraitImage,
-  createImage
+  createImage,
+  handleGetClipart
 } from '@/common/fabricObjects';
 
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
@@ -127,6 +128,7 @@ import {
   ImageElementObject,
   ShapeElementObject
 } from '@/common/models/element';
+import { Notification } from '@/components/Notification';
 
 export default {
   components: {
@@ -542,6 +544,49 @@ export default {
       });
       return svg;
     },
+
+    /**
+     * add clipart to the store and create fabric object
+     *
+     * @param {Object} objectData PpData of the of a clipart object {id, size, coord,...}
+     * @returns {Object} a fabric object
+     */
+    async createClipartFromPpData(objectData) {
+      const eventListeners = {
+        scaling: this.handleScaling,
+        scaled: this.handleScaled,
+        rotated: this.handleRotated,
+        moved: this.handleMoved
+      };
+
+      const clipart = await handleGetClipart({
+        object: objectData,
+        expectedHeight: objectData.size.height,
+        expectedWidth: objectData.size.width
+      });
+
+      addEventListeners(clipart, eventListeners);
+
+      const {
+        dropShadow,
+        shadowBlur,
+        shadowOffset,
+        shadowOpacity,
+        shadowAngle,
+        shadowColor
+      } = clipart;
+
+      applyShadowToObject(clipart, {
+        dropShadow,
+        shadowBlur,
+        shadowOffset,
+        shadowOpacity,
+        shadowAngle,
+        shadowColor
+      });
+      return clipart;
+    },
+
     /**
      * Add element to the store and create fabric object
      *
@@ -564,10 +609,11 @@ export default {
         return this.createPortraitImageFromPpData(newData);
       }
 
-      if (
-        newData.type === OBJECT_TYPE.CLIP_ART ||
-        newData.type === OBJECT_TYPE.SHAPE
-      ) {
+      if (newData.type === OBJECT_TYPE.CLIP_ART) {
+        return this.createClipartFromPpData(newData);
+      }
+
+      if (newData.type === OBJECT_TYPE.SHAPE) {
         return this.createSvgFromPpData(newData);
       }
 
@@ -1808,10 +1854,11 @@ export default {
       this.setLoadingState({ value: true });
 
       const allObjectPromises = objects.map(objectData => {
-        if (
-          objectData.type === OBJECT_TYPE.SHAPE ||
-          objectData.type === OBJECT_TYPE.CLIP_ART
-        ) {
+        if (objectData.type === OBJECT_TYPE.CLIP_ART) {
+          return this.createClipartFromPpData(objectData);
+        }
+
+        if (objectData.type === OBJECT_TYPE.SHAPE) {
           return this.createSvgFromPpData(objectData);
         }
 
@@ -1832,7 +1879,15 @@ export default {
         }
       });
 
-      const listFabricObjects = await Promise.all(allObjectPromises);
+      const listStatus = await Promise.allSettled(allObjectPromises);
+
+      const listFabricObjects = [];
+
+      listStatus.forEach(item => {
+        item.value && listFabricObjects.push(item.value);
+        item.reason &&
+          Notification({ type: 'error', title: 'Error', text: item.reason });
+      });
 
       window.printCanvas.add(...listFabricObjects);
       window.printCanvas.requestRenderAll();

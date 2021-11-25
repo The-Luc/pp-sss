@@ -18,7 +18,7 @@ export const getClipArts = gql`
         name
         category
         thumbnail
-        vector
+        large_url
       }
     }
   }
@@ -33,7 +33,7 @@ export const searchClipArt = gql`
         name
         category
         thumbnail
-        vector
+        large_url
       }
     }
   }

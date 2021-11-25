@@ -204,8 +204,7 @@ export const mutations = {
     if (!frames?.length) return;
 
     frames.forEach(frame => {
-      let id = getUniqueId();
-      while (state.frameIds.includes(id)) id = getUniqueId();
+      const id = getUniqueId();
 
       state.frameIds = [...state.frameIds, id];
       state.frames = { ...state.frames, [id]: { ...frame, id } };
