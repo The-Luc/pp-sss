@@ -106,11 +106,7 @@ export default {
         return;
       }
 
-      this.moveSection(
-        this.selectedSectionId,
-        this.moveToIndex,
-        this.selectedIndex
-      );
+      this.moveSection(this.moveToIndex, this.selectedIndex);
 
       this.selectedIndex = -1;
       this.moveToIndex = -1;

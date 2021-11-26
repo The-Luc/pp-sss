@@ -47,13 +47,8 @@ export const mutations = {
 
     state.sections[moveToSectionId].sheetIds.splice(moveToIndex, 0, sheetId);
   },
-  [BOOK._MUTATES.MOVE_SECTION](state, { moveToIndex, selectedIndex }) {
-    state.sectionIds = moveItem(
-      state.sectionIds[selectedIndex],
-      selectedIndex,
-      moveToIndex,
-      state.sectionIds
-    );
+  [BOOK._MUTATES.MOVE_SECTION](state, { sectionIds }) {
+    state.sectionIds = sectionIds;
   },
   [BOOK._MUTATES.ADD_SHEET](state, { sectionId, sheetId, order }) {
     state.sheets = {

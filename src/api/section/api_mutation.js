@@ -7,8 +7,10 @@ import { SectionBase } from '@/common/models';
 import {
   addSectionMutation,
   updateSectionMutation,
-  deleteSectionMutation
+  deleteSectionMutation,
+  updateSectionOrderMutation
 } from './mutations';
+import { isOk } from '@/common/utils';
 
 /**
  * Add new section
@@ -17,7 +19,7 @@ import {
  * @param   {Object}  section data of new section
  * @returns {Object}          mutation result
  */
-export const addNewSection = async (bookId, section) =>
+export const addNewSectionApi = async (bookId, section) =>
   graphqlRequest(addSectionMutation, {
     bookId,
     params: sectionMappingToApi(section)
@@ -30,7 +32,7 @@ export const addNewSection = async (bookId, section) =>
  * @param   {Object}  params    new data of selected section
  * @returns                     mutation result
  */
-export const updateSection = async (sectionId, params) => {
+export const updateSectionApi = async (sectionId, params) => {
   const res = await graphqlRequest(updateSectionMutation, {
     sectionId,
     params: sectionMappingToApi(params)
@@ -40,11 +42,27 @@ export const updateSection = async (sectionId, params) => {
 };
 
 /**
+ * Update order of  sections
+ *
+ * @param   {String}  bookId      id of current bok
+ * @param   {Array}   sectionIds  new order of sections
+ * @returns {Object}              mutation result
+ */
+export const updateSectionOrderApi = async (bookId, sectionIds) => {
+  const res = await graphqlRequest(updateSectionOrderMutation, {
+    bookId,
+    sectionIds: sectionIds.map(id => parseInt(id))
+  });
+
+  return isOk(res);
+};
+
+/**
  * Delete a section
  *
  * @param   {String}  sectionId id of selected section
  * @returns {Object}            mutation result
  */
-export const deleteSection = async sheetId => {
+export const deleteSectionApi = async sheetId => {
   return graphqlRequest(deleteSectionMutation, { sheetId });
 };
