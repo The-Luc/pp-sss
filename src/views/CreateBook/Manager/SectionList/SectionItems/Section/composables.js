@@ -11,6 +11,8 @@ import { useAppCommon } from '@/hooks';
 
 import { isOk, moveItem } from '@/common/utils';
 
+import { MUTATES as APP_MUTATES } from '@/store/modules/app/const';
+
 import {
   GETTERS as BOOK_GETTERS,
   MUTATES as BOOK_MUTATES
@@ -19,7 +21,8 @@ import {
 export const useActionSection = () => {
   const { toggleModal } = useAppCommon();
 
-  const { sectionSheetIds, sectionIds } = useGetters({
+  const { book, sectionSheetIds, sectionIds } = useGetters({
+    book: BOOK_GETTERS.BOOK_DETAIL,
     sectionSheetIds: BOOK_GETTERS.SECTION_SHEET_IDS,
     sectionIds: BOOK_GETTERS.SECTION_IDS
   });
@@ -34,12 +37,20 @@ export const useActionSection = () => {
     moveSheetInStore: BOOK_MUTATES.MOVE_SHEET
   });
 
+  const { setGeneralInfo } = useMutations({
+    setGeneralInfo: APP_MUTATES.SET_GENERAL_INFO
+  });
+
   const deleteSheet = async (sheetId, sectionId) => {
     const isSuccess = await deleteSheetApi(sheetId);
 
     if (!isSuccess) return;
 
     removeSheetInStore({ sheetId, sectionId });
+
+    const { totalSheets, totalPages, totalScreens } = book.value;
+
+    setGeneralInfo({ info: { totalSheets, totalPages, totalScreens } });
 
     toggleModal({ isOpenModal: false });
   };
