@@ -8,6 +8,11 @@ pipeline {
 
     stages {
         stage('Copy Dependencies') {
+            when {
+                anyOf {
+                    expression { params.NodeInstall != true }
+                }
+            }
             steps {
                 script {
                     nodejs(nodeJSInstallationName: 'node14170') {
