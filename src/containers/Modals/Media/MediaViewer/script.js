@@ -23,7 +23,8 @@ import {
   VIDEO_CATEGORIES,
   PHOTO_CATEGORIES,
   ALL_MEDIA_SUBCATEGORY_ID,
-  VIDEO_TYPES
+  VIDEO_TYPES,
+  SHEET_TYPE
 } from '@/common/constants';
 
 export default {
@@ -238,7 +239,9 @@ export default {
 
       const { leftTitle, rightTitle } = this.currentSheet?.spreadInfo;
       const projectTitle =
-        this.currentSection?.name === 'Cover' ? this.generalInfo.title : '';
+        this.currentSheet?.type === SHEET_TYPE.COVER
+          ? this.generalInfo.title
+          : '';
       this.keywords = getUniqueKeywords([
         leftTitle,
         rightTitle,
