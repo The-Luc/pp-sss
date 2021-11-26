@@ -1,5 +1,6 @@
 <template>
   <v-menu
+    ref="subMenu"
     content-class="pp-select-sub-container"
     absolute
     open-on-hover
@@ -8,6 +9,9 @@
     :activator="activator"
     :nudge-bottom="position.y"
     :nudge-right="position.x"
+    :is-sub-activated="isSubActivated"
+    @mouseEnterMenu="onMouseEnterMenu"
+    @mouseLeaveMenu="onMouseLeaveMenu"
   >
     <v-list class="pp-select-sub" @click.native="onSubContainerClick($event)">
       <template v-for="item in items">
@@ -53,6 +57,8 @@
               :selected-val="getSelectedSub(item)"
               :position="getSubmenuPosition(item)"
               @change="onSubClick"
+              @subEnter="onSubEnter"
+              @subLeave="onSubLeave"
             />
           </v-list-item>
         </v-hover>

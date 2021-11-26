@@ -84,7 +84,8 @@ img {
     }
 
     &.v-list-item--active,
-    &:not(.item-selected):hover {
+    &:not(.item-selected):hover,
+    &.sub-activated {
       background-color: $color-stoodio-blue;
     }
 
@@ -131,7 +132,8 @@ img {
     padding: 0 10px;
 
     &.v-list-item--active,
-    &:not(.item-selected):hover {
+    &:not(.item-selected):hover,
+    &.sub-activated {
       @extend %selector-active-item;
     }
   }
