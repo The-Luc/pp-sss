@@ -35,9 +35,9 @@ export const useActionSection = () => {
   });
 
   const deleteSheet = async (sheetId, sectionId) => {
-    const res = await deleteSheetApi(sheetId);
+    const isSuccess = await deleteSheetApi(sheetId);
 
-    if (!isOk(res)) return;
+    if (!isSuccess) return;
 
     removeSheetInStore({ sheetId, sectionId });
 

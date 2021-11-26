@@ -61,5 +61,7 @@ export const updateSheetOrderApi = async (sectionId, sheetIds) => {
  * @returns {Object}          mutation result
  */
 export const deleteSheetApi = async sheetId => {
-  return graphqlRequest(deleteSheetMutation, { sheetId });
+  const res = await graphqlRequest(deleteSheetMutation, { sheetId });
+
+  return isOk(res);
 };
