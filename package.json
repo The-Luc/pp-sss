@@ -36,7 +36,7 @@
     "vue-rx": "^6.2.0",
     "vuedraggable": "github:lnvu1983/Vue.Draggable",
     "vuejs-clipper": "3.1.0",
-    "vuetify": "github:truonggiangdao/vuetify",
+    "vuetify": "github:vuln-successsoftware/vuetify",
     "vuex": "^3.6.2",
     "vuex-composition-helpers": "^1.0.23"
   },

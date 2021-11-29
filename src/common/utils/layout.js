@@ -14,7 +14,7 @@ import {
   ImageElementObject,
   TextElementObject
 } from '../models/element';
-import { getPagePrintSize } from '.';
+import { getPagePrintSize, getUniqueId } from '.';
 import { apiTextToModel } from '../mapping';
 
 /**
@@ -111,6 +111,7 @@ export const createBackgroundElement = page => {
   const imageUrl = get(page, 'layout.view.background.image_url', '');
 
   return new BackgroundElementObject({
+    id: getUniqueId(),
     imageUrl
   });
 };
