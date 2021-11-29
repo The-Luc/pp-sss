@@ -22,7 +22,8 @@
       }
 
       &.v-list-item--active,
-      &:not(.item-selected):hover {
+      &:not(.item-selected):hover,
+      &.sub-activated {
         .icon-arrow {
           color: $color-white;
         }

@@ -44,6 +44,11 @@ export default {
       default: false
     }
   },
+  data() {
+    return {
+      subActivatorId: null
+    };
+  },
   computed: {
     selectedValue() {
       const item = this.items.find(
@@ -129,6 +134,12 @@ export default {
 
       this.$emit('change', { value: data.value, sub: data.sub });
     },
+    onSubEnter({ activator }) {
+      this.subActivatorId = activator;
+    },
+    onSubLeave() {
+      this.subActivatorId = null;
+    },
     /**
      * Event fire when click on item, stop default click if contain subitem
      * or emit change event to parent
@@ -184,6 +195,18 @@ export default {
       const margin = -3;
 
       return { x: x + width + margin, y };
+    },
+    /**
+     * Get css class name
+     *
+     * @param   {Object}  item  value of item
+     * @returns {String}        custom css class name
+     */
+    getCustomCssClass(item) {
+      const subActivated =
+        this.subActivatorId === item.value ? 'sub-activated' : '';
+
+      return [this.getDataIdByValue(item), subActivated];
     }
   }
 };

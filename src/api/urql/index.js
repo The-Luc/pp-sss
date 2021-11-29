@@ -21,6 +21,7 @@ const urqlClient = createClient({
         YearbookSpec: () => null,
         Category: () => null,
         PortraitSubject: () => null,
+        Template: () => null,
         PortraitLayoutSetting: res => res['created_at']
       },
       updates: {

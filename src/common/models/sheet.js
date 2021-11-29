@@ -95,7 +95,7 @@ export class SheetDigitalDetail extends SheetEditionDetail {
 
 export class SheetDetail extends SheetBase {
   draggable = true;
-  positionFixed = POSITION_FIXED.NONE;
+  positionFixed = POSITION_FIXED.ALL;
 
   /**
    * @param {SheetDetail} props

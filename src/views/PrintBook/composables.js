@@ -1,3 +1,3 @@
-import { getPageData } from '@/api/sheet';
+import { getPageDataApi } from '@/api/sheet';
 
-export const usePageApi = () => ({ getPageData });
+export const usePageApi = () => ({ getPageDataApi });

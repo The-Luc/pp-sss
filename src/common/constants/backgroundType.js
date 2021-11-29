@@ -32,5 +32,9 @@ export const BACKGROUND_PAGE_TYPE = {
   SINGLE_PAGE: {
     id: 1,
     name: 'Single Page'
+  },
+  DOUBLE_PAGE: {
+    id: 2,
+    name: 'Spread'
   }
 };

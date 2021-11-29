@@ -31,6 +31,17 @@ export const updateSectionMutation = gql`
   }
 `;
 
+export const updateSectionOrderMutation = gql`
+  mutation($bookId: ID!, $sectionIds: [Int]) {
+    update_book_section_order(
+      book_id: $bookId
+      book_section_order_ids: $sectionIds
+    ) {
+      id
+    }
+  }
+`;
+
 export const deleteSectionMutation = gql`
   mutation($sectionId: ID!) {
     delete_sheet(book_section_id: $sectionId) {

@@ -2,7 +2,7 @@ import { isEmpty, mapSheetToPages, pageLayoutsFromSheet } from '@/common/utils';
 import { useGetters } from 'vuex-composition-helpers';
 import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 import { updatePageApi } from '@/api/page';
-import { updateSheet, getSheetInfo } from '@/api/sheet';
+import { updateSheetApi, getSheetInfoApi } from '@/api/sheet';
 import { OBJECT_TYPE } from '@/common/constants';
 
 export const useSaveData = () => {
@@ -41,7 +41,7 @@ export const useSaveData = () => {
     const savePromises = [
       updatePageApi(leftPageId, leftPage),
       updatePageApi(rightPageId, rightPage),
-      updateSheet(sheetId, { isVisited: false }) // set false until mutation default thumbnail is available
+      updateSheetApi(sheetId, { isVisited: false }) // set false until mutation default thumbnail is available
     ];
     return await Promise.all(savePromises);
   };
@@ -61,7 +61,7 @@ export const useSaveData = () => {
     const [leftPageId, rightPageId] = pageIds;
 
     // keep the current backgrounds
-    const { objects: sheetObjects } = await getSheetInfo(sheetId);
+    const { objects: sheetObjects } = await getSheetInfoApi(sheetId);
     const backgrounds = sheetObjects.filter(
       o => o.type === OBJECT_TYPE.BACKGROUND
     );

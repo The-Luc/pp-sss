@@ -4,11 +4,11 @@ import { useAppCommon } from './common';
 
 import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 import { GETTERS as DIGITAL_GETTERS } from '@/store/modules/digital/const';
-import { updateSection } from '@/api/section';
+import { updateSectionApi } from '@/api/section';
 
 export const useMutationSection = () => {
   return {
-    updateSection
+    updateSection: updateSectionApi
   };
 };
 

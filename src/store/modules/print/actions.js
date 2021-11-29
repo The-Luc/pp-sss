@@ -1,6 +1,6 @@
 import { cloneDeep } from 'lodash';
 
-import { getSheetInfo } from '@/api/sheet';
+import { getSheetInfoApi } from '@/api/sheet';
 
 import printService from '@/api/print';
 import { setPrintPpLayouts } from '@/api/layoutService';
@@ -26,7 +26,9 @@ export const actions = {
     commit(PRINT._MUTATES.SET_OBJECTS, { objectList: [] });
     commit(PRINT._MUTATES.SET_BACKGROUNDS, { backgrounds: getNewBackground() });
 
-    const { objects: data, media } = await getSheetInfo(state.currentSheetId);
+    const { objects: data, media } = await getSheetInfoApi(
+      state.currentSheetId
+    );
 
     if (isEmpty(data)) return;
 

@@ -17,7 +17,7 @@ export default {
   },
   computed: {
     isSinglePage() {
-      return !isFullBackground(this.item.pageType);
+      return !isFullBackground(this.item);
     }
   },
   methods: {
