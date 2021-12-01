@@ -5,7 +5,7 @@ import PreviewInfo from './PreviewInfo';
 
 import { useBackgroundAction, useSheet, useFrame } from '@/hooks';
 
-import { getPageIdFromPageNo, isEmpty } from '@/common/utils';
+import { getPageIdFromPageNo, isEmpty, isFullBackground } from '@/common/utils';
 import { PORTRAIT_FLOW_OPTION_MULTI } from '@/common/constants';
 
 export default {
@@ -47,6 +47,7 @@ export default {
     return {
       pageNo: 1,
       backgroundUrl: '',
+      isFullBackground: false,
       portraits: [],
       containerName: this.isDigital ? 'Frame' : 'Page',
       index: 0,
@@ -170,9 +171,13 @@ export default {
       );
       const background = this.isDigital
         ? await this.getFrameBackground(pageId)
-        : await this.getPageBackground(pageId);
+        : await this.getPrintBackground(pageId);
 
       this.backgroundUrl = background.imageUrl || '';
+
+      this.isFullBackground = this.isDigital
+        ? false
+        : isFullBackground(background);
 
       const { flowMultiSettings, folders } = this.flowSettings;
       const isContinuousFlow =
@@ -193,6 +198,21 @@ export default {
         []
       );
       this.portraits = totalPortraits.slice(min, max + 1);
+    },
+    async getPrintBackground(pageId) {
+      const background = await this.getPageBackground(pageId);
+
+      if (!isEmpty(background)) return background;
+
+      if (this.pageNo === 1 || this.pageNo % 2 === 0) return background;
+
+      const prevPageId = getPageIdFromPageNo(
+        this.pageNo - 1,
+        this.getSheets,
+        false
+      );
+
+      return await this.getPageBackground(prevPageId);
     }
   },
   created() {

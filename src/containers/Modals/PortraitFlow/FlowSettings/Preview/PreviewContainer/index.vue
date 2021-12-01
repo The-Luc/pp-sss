@@ -7,6 +7,7 @@
         :layout="layout"
         :page-number="pageNo"
         :background-url="backgroundUrl"
+        :is-full-background="isFullBackground"
         :flow-settings="flowSettings"
         :is-digital="isDigital"
         :screen-number="screenNumber"

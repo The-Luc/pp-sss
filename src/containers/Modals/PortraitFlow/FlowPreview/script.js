@@ -1,7 +1,7 @@
 import PreviewSlide from './PreviewSlide';
 
 import { useBackgroundAction, useSheet } from '@/hooks';
-import { getPageIdFromPageNo, isEmpty } from '@/common/utils';
+import { getPageIdFromPageNo, isEmpty, isFullBackground } from '@/common/utils';
 
 import { PORTRAIT_FLOW_OPTION_MULTI } from '@/common/constants';
 
@@ -36,10 +36,19 @@ export default {
     };
   },
   setup() {
-    const { getPageBackgrounds, getFrameBackgrounds } = useBackgroundAction();
+    const {
+      getPageBackground,
+      getPageBackgrounds,
+      getFrameBackgrounds
+    } = useBackgroundAction();
     const { getSheets } = useSheet();
 
-    return { getPageBackgrounds, getFrameBackgrounds, getSheets };
+    return {
+      getPageBackground,
+      getPageBackgrounds,
+      getFrameBackgrounds,
+      getSheets
+    };
   },
   async created() {
     this.previewItems = this.isDigital
@@ -53,7 +62,22 @@ export default {
       const pageIds = this.requiredPages.map(p =>
         getPageIdFromPageNo(p, this.getSheets)
       );
+
       const backgrounds = await this.getPageBackgrounds(pageIds);
+
+      const finalBackgrounds = await Promise.all(
+        backgrounds.map(async (bg, index) => {
+          if (!isEmpty(bg)) return bg;
+
+          const pageNo = this.requiredPages[index];
+
+          if (pageNo === 1 || pageNo % 2 === 0) return;
+
+          const pageId = getPageIdFromPageNo(pageNo - 1, this.getSheets, false);
+
+          return await this.getPageBackground(pageId);
+        })
+      );
 
       const { flowMultiSettings, folders } = this.flowSettings;
       const isContinuousFlow =
@@ -72,7 +96,8 @@ export default {
         return {
           portraits,
           layout: this.flowSettings.layoutSettings,
-          backgroundUrl: backgrounds[index].imageUrl,
+          backgroundUrl: finalBackgrounds[index]?.imageUrl || '',
+          isFullBackground: isFullBackground(finalBackgrounds[index]),
           pageNo: p
         };
       });

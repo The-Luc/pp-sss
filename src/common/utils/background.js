@@ -3,7 +3,9 @@ import { isEmpty, compareByValue } from './util';
 import { BACKGROUND_PAGE_TYPE, BACKGROUND_TYPE } from '@/common/constants';
 
 export const isFullBackground = ({ pageType }) => {
-  return pageType === BACKGROUND_PAGE_TYPE.DOUBLE_PAGE?.id;
+  return (
+    !isEmpty(pageType) && pageType === BACKGROUND_PAGE_TYPE.DOUBLE_PAGE?.id
+  );
 };
 
 /**

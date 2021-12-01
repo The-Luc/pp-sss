@@ -41,6 +41,10 @@ export default {
     backgroundUrl: {
       type: String
     },
+    isFullBackground: {
+      type: Boolean,
+      default: false
+    },
     flowSettings: {
       type: Object,
       default: () => ({})

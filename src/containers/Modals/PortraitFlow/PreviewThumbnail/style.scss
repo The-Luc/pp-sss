@@ -12,6 +12,14 @@
     height: 158px;
   }
 
+  &.half {
+    background-position-x: 0;
+
+    &.right {
+      background-position-x: 100%;
+    }
+  }
+
   &.thumb-preview-enter-active {
     position: absolute;
     opacity: 0;

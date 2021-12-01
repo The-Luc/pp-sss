@@ -1,7 +1,11 @@
 <template>
   <div
     class="preview-thumbnail"
-    :class="{ landscape: isDigital }"
+    :class="{
+      landscape: isDigital,
+      half: isFullBackground,
+      right: pageNumber % 2 !== 0
+    }"
     :style="{ backgroundImage: backgroundUrl && `url(${backgroundUrl})` }"
   >
     <div
