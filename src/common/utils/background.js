@@ -1,9 +1,12 @@
+import { isHalfLeft, isHalfRight } from './sheet';
 import { isEmpty, compareByValue } from './util';
 
 import { BACKGROUND_PAGE_TYPE, BACKGROUND_TYPE } from '@/common/constants';
 
 export const isFullBackground = ({ pageType }) => {
-  return pageType === BACKGROUND_PAGE_TYPE.DOUBLE_PAGE?.id;
+  return (
+    !isEmpty(pageType) && pageType === BACKGROUND_PAGE_TYPE.DOUBLE_PAGE?.id
+  );
 };
 
 /**
@@ -174,4 +177,23 @@ export const getDisplayBackgroundPageTypes = () => {
       };
     })
     .sort(compareByValue);
+};
+/**
+ * Get the background of current page using its id
+ *
+ * @param   {Number}  pageId        id of page need to get background
+ * @param   {Object}  currentSheet  current sheet data
+ * @param   {Object}  currentBgs    current backgrounds of current sheet
+ * @returns {Object}                background of selected page
+ */
+export const getCurrentSheetBackground = (pageId, currentSheet, currentBgs) => {
+  if (isHalfLeft(currentSheet)) return currentBgs.left;
+
+  if (isHalfRight(currentSheet)) return currentBgs.right;
+
+  if (currentSheet.pageIds[0] === pageId) return currentBgs.left;
+
+  if (!isEmpty(currentBgs.right)) return currentBgs.right;
+
+  return isFullBackground(currentBgs.left) ? currentBgs.left : {};
 };

@@ -14,6 +14,7 @@
             :portraits="previewData.item.portraits"
             :layout="previewData.item.layout"
             :background-url="previewData.item.backgroundUrl"
+            :is-full-background="previewData.item.isFullBackground"
             :flow-number="previewData.index + 1"
             :page-number="previewData.item.pageNo"
             :screen-number="previewData.item.screenNo"

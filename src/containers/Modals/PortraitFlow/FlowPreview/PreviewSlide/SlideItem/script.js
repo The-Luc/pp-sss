@@ -16,6 +16,10 @@ export default {
     backgroundUrl: {
       type: String
     },
+    isFullBackground: {
+      type: Boolean,
+      default: false
+    },
     flowNumber: {
       type: Number,
       default: 1

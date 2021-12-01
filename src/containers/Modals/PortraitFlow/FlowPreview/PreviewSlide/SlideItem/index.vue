@@ -9,6 +9,7 @@
       :layout="layout"
       :page-number="pageNumber"
       :background-url="backgroundUrl"
+      :is-full-background="isFullBackground"
       :is-digital="isDigital"
       :screen-number="screenNumber"
     />

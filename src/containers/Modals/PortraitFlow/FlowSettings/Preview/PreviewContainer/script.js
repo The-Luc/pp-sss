@@ -17,6 +17,10 @@ export default {
     backgroundUrl: {
       type: String
     },
+    isFullBackground: {
+      type: Boolean,
+      default: false
+    },
     isDisableMoveBack: {
       type: Boolean,
       default: false
