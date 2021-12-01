@@ -5,7 +5,15 @@ import PreviewInfo from './PreviewInfo';
 
 import { useBackgroundAction, useSheet, useFrame } from '@/hooks';
 
-import { getPageIdFromPageNo, isEmpty, isFullBackground } from '@/common/utils';
+import {
+  getCurrentSheetBackground,
+  getPageIdFromPageNo,
+  isEmpty,
+  isFullBackground,
+  isHalfLeft,
+  isHalfRight,
+  isHalfSheet
+} from '@/common/utils';
 import { PORTRAIT_FLOW_OPTION_MULTI } from '@/common/constants';
 
 export default {
@@ -37,11 +45,22 @@ export default {
     }
   },
   setup() {
-    const { getPageBackground, getFrameBackground } = useBackgroundAction();
-    const { getSheets } = useSheet();
+    const {
+      backgrounds,
+      getPageBackground,
+      getFrameBackground
+    } = useBackgroundAction();
+    const { currentSheet, getSheets } = useSheet();
     const { frameIds } = useFrame();
 
-    return { getPageBackground, getFrameBackground, getSheets, frameIds };
+    return {
+      backgrounds,
+      getPageBackground,
+      getFrameBackground,
+      currentSheet,
+      getSheets,
+      frameIds
+    };
   },
   data() {
     return {
@@ -169,6 +188,7 @@ export default {
         this.getSheets,
         this.isDigital
       );
+
       const background = this.isDigital
         ? await this.getFrameBackground(pageId)
         : await this.getPrintBackground(pageId);
@@ -199,7 +219,23 @@ export default {
       );
       this.portraits = totalPortraits.slice(min, max + 1);
     },
+    /**
+     * Get the background of selected page using its id
+     *
+     * @param   {Number}  pageId  id of page need to get background
+     * @returns {Object}          background of selected page
+     */
     async getPrintBackground(pageId) {
+      const isCurrentSheet = this.currentSheet.pageIds.includes(pageId);
+
+      if (isCurrentSheet) {
+        return getCurrentSheetBackground(
+          pageId,
+          this.currentSheet,
+          this.backgrounds
+        );
+      }
+
       const background = await this.getPageBackground(pageId);
 
       if (!isEmpty(background)) return background;
@@ -212,7 +248,9 @@ export default {
         false
       );
 
-      return await this.getPageBackground(prevPageId);
+      const prevBackground = await this.getPageBackground(prevPageId);
+
+      return isFullBackground(prevBackground) ? prevBackground : {};
     }
   },
   created() {

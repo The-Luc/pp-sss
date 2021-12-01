@@ -138,6 +138,7 @@ export const useBackgroundAction = () => {
     );
   };
   return {
+    ...useBackgroundGetter(),
     getPageBackground,
     getPageBackgrounds,
     getFrameBackground: mockBackgroundService.getFrameBackground,
