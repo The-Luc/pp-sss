@@ -44,7 +44,7 @@ export const updateSectionOrderMutation = gql`
 
 export const deleteSectionMutation = gql`
   mutation($sectionId: ID!) {
-    delete_sheet(book_section_id: $sectionId) {
+    delete_book_section(book_section_id: $sectionId) {
       id
     }
   }
