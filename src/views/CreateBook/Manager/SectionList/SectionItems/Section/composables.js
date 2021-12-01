@@ -58,11 +58,11 @@ export const useActionSection = () => {
   const deleteSection = async sectionId => {
     const res = await deleteSectionApi(sectionId);
 
+    toggleModal({ isOpenModal: false });
+
     if (!isOk(res)) return;
 
     removeSectionInStore({ sectionId });
-
-    toggleModal({ isOpenModal: false });
   };
 
   const moveSheetLocaly = async (sectionId, moveToIndex, selectedIndex) => {
