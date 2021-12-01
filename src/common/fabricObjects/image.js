@@ -478,7 +478,7 @@ export const createVideoElement = src =>
  * @return image element
  */
 export const createMediaOverlay = (src, options) => {
-  return new Promise(resolve => {
+  return new Promise((resolve, reject) => {
     const ele = document.createElement('img');
 
     if (options?.width) {
@@ -490,8 +490,10 @@ export const createMediaOverlay = (src, options) => {
     }
 
     ele.onload = () => resolve(ele);
+    ele.onerror = () => reject('Cannot load image');
 
-    ele.src = src;
+    ele.crossOrigin = 'anonymous';
+    ele.src = getUniqueUrl(src);
   });
 };
 
@@ -716,42 +718,44 @@ export const handleChangeMediaSrc = async (
  * @returns {Object} instance of fabric object
  */
 export const createPortraitImage = async props => {
-  return new Promise(resolve => {
-    const {
-      top,
-      left,
-      width,
-      height,
-      mask,
-      imageUrl,
-      objectType,
-      id,
-      fromPortrait
-    } = toFabricPortraitImageProp(props);
+  const {
+    top,
+    left,
+    width,
+    height,
+    mask,
+    imageUrl,
+    objectType,
+    id,
+    fromPortrait
+  } = toFabricPortraitImageProp(props);
 
-    const radiusRatio = mask === PORTRAIT_IMAGE_MASK.ROUNDED ? 10 : 2;
+  const radiusRatio = mask === PORTRAIT_IMAGE_MASK.ROUNDED ? 10 : 2;
 
-    const rect = new fabric.Rect({
-      id,
-      top,
-      left,
-      width,
-      height,
-      rx: width / radiusRatio,
-      ry: width / radiusRatio,
-      mask,
-      objectType,
-      fill: 'transparent',
-      strokeUniform: true,
-      fromPortrait,
-      imageUrl
-    });
-
-    createMediaOverlay(imageUrl).then(img => {
-      rect.set({ img });
-      resolve(rect);
-    });
+  const rect = new fabric.Rect({
+    id,
+    top,
+    left,
+    width,
+    height,
+    rx: width / radiusRatio,
+    ry: width / radiusRatio,
+    mask,
+    objectType,
+    fill: 'transparent',
+    strokeUniform: true,
+    fromPortrait,
+    imageUrl
   });
+
+  try {
+    const img = await createMediaOverlay(imageUrl);
+
+    rect.set({ img });
+    return rect;
+  } catch (error) {
+    throw new Error(error);
+  }
 };
 
 export const createMediaObject = async (
