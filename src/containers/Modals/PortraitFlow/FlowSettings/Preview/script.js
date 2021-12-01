@@ -9,10 +9,7 @@ import {
   getCurrentSheetBackground,
   getPageIdFromPageNo,
   isEmpty,
-  isFullBackground,
-  isHalfLeft,
-  isHalfRight,
-  isHalfSheet
+  isFullBackground
 } from '@/common/utils';
 import { PORTRAIT_FLOW_OPTION_MULTI } from '@/common/constants';
 

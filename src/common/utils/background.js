@@ -1,7 +1,7 @@
+import { isHalfLeft, isHalfRight } from './sheet';
 import { isEmpty, compareByValue } from './util';
 
 import { BACKGROUND_PAGE_TYPE, BACKGROUND_TYPE } from '@/common/constants';
-import { isHalfLeft, isHalfRight } from '.';
 
 export const isFullBackground = ({ pageType }) => {
   return (
