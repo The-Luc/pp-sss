@@ -1,10 +1,4 @@
-import {
-  getPagePrintSize,
-  inToPx,
-  isEmpty,
-  pxToIn,
-  pxToPt
-} from '@/common/utils';
+import { getPagePrintSize, inToPx, isEmpty } from '@/common/utils';
 import {
   imageBorderModifier,
   useDoubleStroke,
@@ -12,7 +6,7 @@ import {
 } from '@/plugins/fabric';
 import { fabric } from 'fabric';
 import { usePageApi } from './composables';
-import { OBJECT_TYPE, SYSTEM_OBJECT_TYPE } from '@/common/constants';
+import { OBJECT_TYPE } from '@/common/constants';
 import {
   applyBorderToImageObject,
   applyShadowToObject,
@@ -24,13 +18,7 @@ import {
   handleGetSvgData,
   updateSpecificProp
 } from '@/common/fabricObjects';
-import { first, get } from 'lodash';
-import {
-  BackgroundElementObject,
-  ClipArtElementObject,
-  ImageElementObject,
-  TextElementObject
-} from '@/common/models/element';
+import { get } from 'lodash';
 
 export default {
   setup() {
@@ -132,24 +120,17 @@ export default {
      * @returns {Object} a fabric object
      */
     async createSvgFromPpData(objectData) {
-      const {
-        id,
-        type,
-        size: { width: expectedWidth, height: expectedHeight }
-      } = objectData;
-      const svg = {
-        id: id,
+      const svgObject = {
+        id: objectData.id,
         object: objectData
       };
 
-      const svgUrlAttrName =
-        type === OBJECT_TYPE.CLIP_ART ? 'vector' : 'pathData';
-
-      const object = await handleGetSvgData({
-        svg,
-        svgUrlAttrName,
-        expectedHeight,
-        expectedWidth
+      const svg = await handleGetSvgData({
+        svg: svgObject,
+        svgUrlAttrName:
+          objectData.type === OBJECT_TYPE.CLIP_ART ? 'vector' : 'pathData',
+        expectedHeight: objectData.size.height,
+        expectedWidth: objectData.size.width
       });
 
       const {
@@ -159,9 +140,9 @@ export default {
         shadowOpacity,
         shadowAngle,
         shadowColor
-      } = object;
+      } = svg;
 
-      applyShadowToObject(object, {
+      applyShadowToObject(svg, {
         dropShadow,
         shadowBlur,
         shadowOffset,
@@ -170,7 +151,7 @@ export default {
         shadowColor
       });
 
-      return object;
+      return svg;
     },
 
     /**
@@ -179,11 +160,11 @@ export default {
      * @param {Object} clipart PpData of the of a clipart object {id, size, coord,...}
      * @returns {Object} a fabric object
      */
-    async createClipartFromPpData(clipart) {
-      const object = await handleGetClipart({
-        clipart,
-        expectedHeight: clipart.size.height,
-        expectedWidth: clipart.size.width
+    async createClipartFromPpData(objectData) {
+      const clipart = await handleGetClipart({
+        object: objectData,
+        expectedHeight: objectData.size.height,
+        expectedWidth: objectData.size.width
       });
 
       const {
@@ -193,9 +174,9 @@ export default {
         shadowOpacity,
         shadowAngle,
         shadowColor
-      } = object;
+      } = clipart;
 
-      applyShadowToObject(object, {
+      applyShadowToObject(clipart, {
         dropShadow,
         shadowBlur,
         shadowOffset,
@@ -204,7 +185,7 @@ export default {
         shadowColor
       });
 
-      return object;
+      return clipart;
     },
 
     /**
@@ -258,8 +239,7 @@ export default {
     async createImageFromPpData(imageProperties) {
       const imageObject = await createImage(imageProperties);
       const image = imageObject?.object;
-
-      const { border } = imageProperties;
+      const { border, cropInfo } = imageProperties;
 
       imageBorderModifier(image);
 
@@ -282,6 +262,10 @@ export default {
       });
 
       applyBorderToImageObject(image, border);
+
+      if (!isEmpty(cropInfo)) {
+        image.set({ cropInfo });
+      }
 
       return image;
     },
@@ -313,7 +297,13 @@ export default {
      * @returns {Object} a fabric objec
      */
     async createBackgroundFromPpData(backgroundProp) {
-      return createBackgroundFabricObject(backgroundProp, this.canvas);
+      return createBackgroundFabricObject(
+        backgroundProp,
+        this.canvas,
+        null,
+        true,
+        1
+      );
     },
 
     /**
@@ -330,134 +320,13 @@ export default {
       });
       document.body.dispatchEvent(event);
     },
-
-    /**
-     * Create page objecs from backend data
-     * @param {Array} elements backend data
-     * @returns list page objects will be rendered to canvas
-     */
-    createElementsFromPpData(elements) {
-      const mapType = {
-        [SYSTEM_OBJECT_TYPE.TEXT]: OBJECT_TYPE.TEXT,
-        [SYSTEM_OBJECT_TYPE.CLIP_ART]: OBJECT_TYPE.CLIP_ART,
-        [SYSTEM_OBJECT_TYPE.IMAGE]: OBJECT_TYPE.IMAGE
-      };
-      return elements.map(ele => {
-        const key = first(Object.keys(ele));
-        const value = ele[key];
-
-        const { size, opacity, coord } = this.getElementDimension(value);
-
-        if (key === SYSTEM_OBJECT_TYPE.TEXT) {
-          const textElement = this.createTextElement(value);
-          textElement.update({ opacity, size, coord });
-          return textElement;
-        }
-
-        if (key === SYSTEM_OBJECT_TYPE.IMAGE) {
-          const imageElement = this.createImageElement(value);
-          imageElement.update({ opacity, size, coord });
-          return imageElement;
-        }
-
-        if (key === SYSTEM_OBJECT_TYPE.CLIP_ART) {
-          const clipartElement = this.createClipartElement(value);
-          clipartElement.update({ opacity, size, coord });
-          return clipartElement;
-        }
-
-        return {
-          type: mapType[key],
-          size,
-          coord,
-          selectable: false
-        };
-      });
-    },
-
-    /**
-     * Create text element from backend data
-     * @param {Obejct} element backend element
-     * @returns parallel object data
-     */
-    createTextElement(element) {
-      const text = get(element, 'text.properties.text', '');
-      const { font_size, text_aligment: alignment } = get(
-        element,
-        'text.view',
-        {}
-      );
-
-      return new TextElementObject({
-        text,
-        fontSize: pxToPt(font_size),
-        alignment,
-        selectable: false
-      });
-    },
-
-    /**
-     * Create image element from backend data
-     * @param {Obejct} element backend element
-     * @returns parallel object data
-     */
-    createImageElement(element) {
-      const { properties } = element?.picture || {};
-      const imageUrl = properties?.url?.startsWith('http')
-        ? properties?.url
-        : '';
-
-      return new ImageElementObject({
-        imageUrl,
-        selectable: false
-      });
-    },
-
-    /**
-     * Create clipart element from backend data
-     * @param {Obejct} element backend element
-     * @returns parallel object data
-     */
-    createClipartElement(element) {
-      const { vector = '' } = element?.properties || {};
-
-      return new ClipArtElementObject({
-        vector,
-        selectable: false
-      });
-    },
-
-    /**
-     * Get element dimension for parallel object
-     * @param {Object} element backend data
-     * @returns parallel object dimension
-     */
-    getElementDimension(element) {
-      const {
-        size: { width, height },
-        position: { top, left },
-        opacity
-      } = element?.view || {};
-
-      const size = {
-        width: pxToIn(width),
-        height: pxToIn(height)
-      };
-
-      const coord = {
-        x: pxToIn(left),
-        y: pxToIn(top)
-      };
-
-      return { size, coord, opacity };
-    },
-
     /**
      * Get scale value
      * @returns scale value
      */
     getScaleValue() {
       const zoom = +get(this.$route, 'query.scale', 1);
+
       if (!zoom || zoom > 1) return 1;
 
       if (zoom < 0.01) return 0.01;
@@ -475,23 +344,12 @@ export default {
 
     try {
       const pageId = get(this.$route, 'params.pageId');
+
       if (isEmpty(pageId)) return;
 
       const data = await this.getPageData(pageId);
 
-      const elements = get(data, 'page.layout.elements', []);
-
-      const imageUrl = get(data, 'page.layout.view.background.image_url', '');
-
-      const objs = this.createElementsFromPpData(elements);
-
-      const backgroundElement = new BackgroundElementObject({
-        imageUrl
-      });
-
-      objs.unshift(backgroundElement);
-
-      this.drawObjectsOnCanvas(objs);
+      this.drawObjectsOnCanvas(get(data, 'page.layout.elements', []));
     } catch (ex) {
       this.dispatchLoadedEvent();
     }

@@ -99,13 +99,14 @@ export const createBackgroundFabricObject = (
   prop,
   canvas,
   newId,
-  isAddToLeft
+  isAddToLeft,
+  scale
 ) => {
   const fabricProp = toFabricBackgroundProp(prop);
 
   const { width, height } = canvas;
   const zoom = canvas.getZoom();
-  const scaleX = isFullBackground(prop) ? 1 : 2;
+  const scaleX = scale ?? isFullBackground(prop) ? 1 : 2;
 
   const id = newId ?? prop.id;
   const isLeftPage = isAddToLeft ?? prop.isLeftPage;
