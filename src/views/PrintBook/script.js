@@ -1,4 +1,9 @@
-import { getPagePrintSize, inToPx, isEmpty } from '@/common/utils';
+import {
+  getPagePrintSize,
+  inToPx,
+  isEmpty,
+  isFullBackground
+} from '@/common/utils';
 import {
   imageBorderModifier,
   useDoubleStroke,
@@ -79,7 +84,7 @@ export default {
      *
      * @param {Object} objects ppObjects that will be rendered
      */
-    async drawObjectsOnCanvas(objects) {
+    async drawObjectsOnCanvas(objects, facingObjects) {
       if (isEmpty(objects)) return;
 
       const allObjectPromises = objects.map(objectData => {
@@ -105,6 +110,19 @@ export default {
           return this.createBackgroundFromPpData(objectData);
         }
       });
+
+      const isEmptyBackground = objects[0].type !== OBJECT_TYPE.BACKGROUND;
+
+      const isFacingBackground =
+        !isEmpty(facingObjects) &&
+        facingObjects[0].type === OBJECT_TYPE.BACKGROUND &&
+        isFullBackground(facingObjects[0]);
+
+      if (isEmptyBackground && isFacingBackground) {
+        allObjectPromises.unshift(
+          this.createBackgroundFromPpData(facingObjects[0], true)
+        );
+      }
 
       const listFabricObjects = await Promise.all(allObjectPromises);
 
@@ -296,13 +314,14 @@ export default {
      * @param {Object} backgroundProp PpData of the of a background object {id, size, coord,...}
      * @returns {Object} a fabric objec
      */
-    async createBackgroundFromPpData(backgroundProp) {
+    async createBackgroundFromPpData(backgroundProp, isFacing = false) {
       return createBackgroundFabricObject(
         backgroundProp,
         this.canvas,
         null,
         true,
-        1
+        isFullBackground(backgroundProp) ? 0.5 : 1,
+        isFacing
       );
     },
 
@@ -349,7 +368,11 @@ export default {
 
       const data = await this.getPageData(pageId);
 
-      this.drawObjectsOnCanvas(get(data, 'page.layout.elements', []));
+      const elements = get(data, 'page.layout.elements', []);
+
+      const facingElements = get(data, 'page.facing_page.layout.elements', []);
+
+      this.drawObjectsOnCanvas(elements, facingElements);
     } catch (ex) {
       this.dispatchLoadedEvent();
     }
