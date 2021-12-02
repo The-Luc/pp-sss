@@ -456,15 +456,15 @@ export const applyTextBoxProperties = function(textObject, prop) {
 
   applyTextGroupProperties(textObject, prop);
 
-  if (isModifyPosition) {
-    textObject?.canvas?.renderAll();
-  }
-
   if (!prop.border && !prop.size) {
     applyTextRectProperties(rect, prop);
   }
 
   applyTextProperties(text, prop);
+
+  if (isModifyPosition || isModifySize) {
+    textObject?.canvas?.renderAll();
+  }
 
   if (!prop.border && !prop.size && !isModifySize) {
     textObject?.canvas?.renderAll();
