@@ -142,7 +142,6 @@ import {
   CONTROL_TYPE,
   PLAY_IN_STYLES
 } from '@/common/constants/animationProperty';
-import { Notification } from '@/components/Notification';
 
 const ELEMENTS = {
   [OBJECT_TYPE.TEXT]: 'a text box',
@@ -2085,8 +2084,6 @@ export default {
 
       listStatus.forEach(item => {
         item.value && listFabricObjects.push(item.value);
-        item.reason &&
-          Notification({ type: 'error', title: 'Error', text: item.reason });
       });
 
       this.digitalCanvas.add(...listFabricObjects);

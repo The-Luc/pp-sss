@@ -2,6 +2,7 @@ import { ImageElementObject, TextElementObject } from '../models/element';
 import { getUniqueId, getPageSize } from './util';
 import {
   CLASS_ROLE,
+  DEFAULT_LINE_HEIGHT,
   OBJECT_TYPE,
   PORTRAIT_ASSISTANT_PLACEMENT,
   PORTRAIT_FLOW_OPTION_MULTI,
@@ -398,8 +399,11 @@ export const createPortraitObjects = (
   const titleLines = Math.ceil(
     titleMeasureWidth / (pageWidth - safeMargin * 2)
   );
+
   const titleHeight =
-    pxToIn(ptToPx(pageTitleFontSettings.fontSize)) * titleLines;
+    pxToIn(ptToPx(pageTitleFontSettings.fontSize)) *
+    titleLines *
+    DEFAULT_LINE_HEIGHT;
 
   const nameHeight = pxToIn(ptToPx(nameTextFontSettings.fontSize)) * nameLines;
   const textHeight = isNameOutSide ? 0 : nameHeight;
@@ -413,6 +417,7 @@ export const createPortraitObjects = (
     (isFirstPage && isPageTitleOn
       ? pageTitleMargins.top + pageTitleMargins.bottom
       : margins.top) + offsetTitle;
+
   const offsetBottom = margins.bottom;
   const offsetRight = margins.right + offsetNameRight;
   const offsetLeft = margins.left + offsetNameLeft;

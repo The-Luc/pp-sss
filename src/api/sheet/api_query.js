@@ -1,4 +1,4 @@
-import { OBJECT_TYPE } from '@/common/constants';
+import { OBJECT_TYPE, SHEET_TYPE } from '@/common/constants';
 import {
   changeObjectsCoords,
   entitiesToObjects,
@@ -18,9 +18,15 @@ export const getSheetInfoApi = async id => {
   const response = await graphqlRequest(sheetInfoQuery, { id });
 
   const pages = get(response.data, 'sheet.pages', []);
+  const sheetType = SHEET_TYPE[response.data.sheet.sheet_type];
 
   const pageObjects = pages.map((page, idx) => {
     const elements = get(page, 'layout.elements', []);
+
+    if (sheetType === SHEET_TYPE.BACK_COVER) return elements;
+    if (sheetType === SHEET_TYPE.FRONT_COVER)
+      return changeObjectsCoords(elements, 'right');
+
     return idx === 0 ? elements : changeObjectsCoords(elements, 'right');
   });
 

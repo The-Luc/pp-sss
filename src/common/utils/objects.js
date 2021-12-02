@@ -116,7 +116,10 @@ export const entityToObject = entity => {
     return new ShapeElementObject(entity);
   }
 
-  if (entity.type === OBJECT_TYPE.IMAGE) {
+  if (
+    entity.type === OBJECT_TYPE.IMAGE ||
+    entity.type === OBJECT_TYPE.PORTRAIT_IMAGE
+  ) {
     return new ImageElementObject(entity);
   }
 

@@ -1,4 +1,9 @@
-import { isEmpty, mapSheetToPages, pageLayoutsFromSheet } from '@/common/utils';
+import {
+  getPageIdsOfSheet,
+  isEmpty,
+  mapSheetToPages,
+  pageLayoutsFromSheet
+} from '@/common/utils';
 import { useGetters } from 'vuex-composition-helpers';
 import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 import { updatePageApi } from '@/api/page';
@@ -33,8 +38,8 @@ export const useSaveData = () => {
   const savePrintEditScreen = async editScreenData => {
     if (isEmpty(editScreenData.sheetProps)) return;
 
-    const { id: sheetId, pageIds } = editScreenData.sheetProps;
-    const [leftPageId, rightPageId] = pageIds;
+    const { id: sheetId, pageIds, type } = editScreenData.sheetProps;
+    const [leftPageId, rightPageId] = getPageIdsOfSheet(pageIds, type);
 
     const { leftPage, rightPage } = mapSheetToPages(editScreenData);
 
