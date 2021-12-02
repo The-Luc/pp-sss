@@ -9,7 +9,7 @@ import { deleteSectionApi } from '@/api/section';
 
 import { useAppCommon } from '@/hooks';
 
-import { isOk, moveItem } from '@/common/utils';
+import { moveItem } from '@/common/utils';
 
 import { MUTATES as APP_MUTATES } from '@/store/modules/app/const';
 
@@ -41,28 +41,34 @@ export const useActionSection = () => {
     setGeneralInfo: APP_MUTATES.SET_GENERAL_INFO
   });
 
+  const updateTotalPage = () => {
+    const { totalSheets, totalPages, totalScreens } = book.value;
+
+    setGeneralInfo({ info: { totalSheets, totalPages, totalScreens } });
+  };
+
   const deleteSheet = async (sheetId, sectionId) => {
     const isSuccess = await deleteSheetApi(sheetId);
+
+    toggleModal({ isOpenModal: false });
 
     if (!isSuccess) return;
 
     removeSheetInStore({ sheetId, sectionId });
 
-    const { totalSheets, totalPages, totalScreens } = book.value;
-
-    setGeneralInfo({ info: { totalSheets, totalPages, totalScreens } });
-
-    toggleModal({ isOpenModal: false });
+    updateTotalPage();
   };
 
   const deleteSection = async sectionId => {
-    const res = await deleteSectionApi(sectionId);
+    const isSuccess = await deleteSectionApi(sectionId);
 
     toggleModal({ isOpenModal: false });
 
-    if (!isOk(res)) return;
+    if (!isSuccess) return;
 
     removeSectionInStore({ sectionId });
+
+    updateTotalPage();
   };
 
   const moveSheetLocaly = async (sectionId, moveToIndex, selectedIndex) => {
