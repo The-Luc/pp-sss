@@ -2,6 +2,7 @@ import { clipperFixed } from 'vuejs-clipper';
 
 import Footer from '@/components/Modals/MediaSelection/Footer';
 import Control from './Control';
+import { getUniqueUrl } from '@/common/utils';
 
 export default {
   components: {
@@ -29,7 +30,7 @@ export default {
     src() {
       if (!this.selectedImage) return '';
       const { originalUrl, imageUrl } = this.selectedImage;
-      return originalUrl || imageUrl;
+      return getUniqueUrl(originalUrl || imageUrl);
     },
     ratio() {
       if (!this.selectedImage) return 1;

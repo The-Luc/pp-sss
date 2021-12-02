@@ -340,7 +340,7 @@ export default {
 
         this.onSettingChange({
           ...this.flowSettings,
-          multiFolders
+          folders: multiFolders
         });
         return;
       }

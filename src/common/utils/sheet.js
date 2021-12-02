@@ -172,3 +172,16 @@ export const getPageIdFromPageNo = (pageNo, sheets, isDigital) => {
 
   return +sheet.pageLeftName === pageNo ? sheet.pageIds[0] : sheet.pageIds[1];
 };
+
+/**
+ *  To get pageIds of sheet
+ *
+ * @param {Array} pageIds page ids of sheet
+ * @param {Number} sheetType sheet type
+ * @returns {Array} array of [leftpageId, rightPageId]
+ */
+export const getPageIdsOfSheet = (pageIds, sheetType) => {
+  if (sheetType === SHEET_TYPE.BACK_COVER) return [pageIds[0], null];
+  if (sheetType === SHEET_TYPE.FRONT_COVER) return [null, pageIds[0]];
+  return pageIds;
+};

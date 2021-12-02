@@ -9,9 +9,9 @@ export default {
     PpButton
   },
   setup() {
-    const { deleteSheet, toggleModal } = useActionSection();
+    const { deleteSection, toggleModal } = useActionSection();
 
-    return { deleteSheet, toggleModal };
+    return { deleteSection, toggleModal };
   },
   computed: {
     sectionId() {

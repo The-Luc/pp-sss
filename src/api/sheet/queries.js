@@ -13,6 +13,7 @@ export const sheetInfoQuery = gql`
   query sheetInfo($id: ID!) {
     sheet(id: $id) {
       id
+      sheet_type
       pages {
         id
         is_cover_page

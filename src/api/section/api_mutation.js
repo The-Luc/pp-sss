@@ -63,6 +63,6 @@ export const updateSectionOrderApi = async (bookId, sectionIds) => {
  * @param   {String}  sectionId id of selected section
  * @returns {Object}            mutation result
  */
-export const deleteSectionApi = async sheetId => {
-  return graphqlRequest(deleteSectionMutation, { sheetId });
+export const deleteSectionApi = async sectionId => {
+  return graphqlRequest(deleteSectionMutation, { sectionId });
 };
