@@ -27,3 +27,21 @@ export const sheetInfoQuery = gql`
     }
   }
 `;
+
+export const printWorkspaceQuery = gql`
+  query digitalWorkspace($id: ID!) {
+    sheet(id: $id) {
+      id
+      workspace
+    }
+  }
+`;
+
+export const digitalWorkspaceQuery = gql`
+  query digitalWorkspace($id: ID!) {
+    sheet(id: $id) {
+      id
+      digital_workspace
+    }
+  }
+`;

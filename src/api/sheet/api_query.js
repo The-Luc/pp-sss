@@ -2,12 +2,18 @@ import { OBJECT_TYPE, SHEET_TYPE } from '@/common/constants';
 import {
   changeObjectsCoords,
   entitiesToObjects,
-  isEmpty
+  isEmpty,
+  isOk
 } from '@/common/utils';
 import { get } from 'lodash';
 import { getAssetByIdApi } from '../media';
 import { graphqlRequest } from '../urql';
-import { pageInfoQuery, sheetInfoQuery } from './queries';
+import {
+  digitalWorkspaceQuery,
+  pageInfoQuery,
+  printWorkspaceQuery,
+  sheetInfoQuery
+} from './queries';
 
 export const getPageDataApi = async id => {
   const res = await graphqlRequest(pageInfoQuery, { id });
@@ -50,4 +56,18 @@ export const getSheetInfoApi = async id => {
   const media = await Promise.all(mediaPromises);
 
   return { objects: entitiesToObjects(objects), media };
+};
+
+export const getWorkspaceApi = async (sheetId, isDigital) => {
+  const query = isDigital ? digitalWorkspaceQuery : printWorkspaceQuery;
+
+  const res = await graphqlRequest(query, { id: sheetId });
+
+  if (!isOk(res)) return [];
+
+  if (isDigital) {
+    return get(res.data, 'sheet.digital_workspace.digital_assets', []);
+  }
+
+  return get(res.data, 'sheet.workspace.assets', []);
 };
