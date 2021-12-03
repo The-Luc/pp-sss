@@ -1,6 +1,6 @@
 import { mapObject } from '@/common/utils';
 
-import { POSITION_FIXED, SHEET_TYPE } from '@/common/constants';
+import { LINK_STATUS, POSITION_FIXED, SHEET_TYPE } from '@/common/constants';
 
 /**
  * Convert sheet data from API to data of Sheet Model
@@ -21,6 +21,14 @@ export const sheetMapping = sheet => {
       },
       is_visited: {
         name: 'isVisited'
+      },
+      linked: {
+        name: 'link',
+        parse: value => {
+          if (sheet.sheet_type !== 'NORMAL') return LINK_STATUS.NONE;
+
+          return value ? LINK_STATUS.LINK : LINK_STATUS.UNLINK;
+        }
       }
     },
     restrict: ['pages', 'digital_frames']
@@ -64,6 +72,10 @@ export const sheetMappingToApi = sheet => {
       },
       order: {
         name: 'sheet_order'
+      },
+      link: {
+        name: 'linked',
+        parse: value => value === LINK_STATUS.LINK
       }
     },
     restrict: ['id', 'sectionId']
