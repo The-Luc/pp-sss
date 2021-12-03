@@ -99,16 +99,19 @@ export const createBackgroundFabricObject = (
   prop,
   canvas,
   newId,
-  isAddToLeft
+  isAddToLeft,
+  scale,
+  isDisplayHalftRight = false
 ) => {
   const fabricProp = toFabricBackgroundProp(prop);
 
   const { width, height } = canvas;
   const zoom = canvas.getZoom();
-  const scaleX = isFullBackground(prop) ? 1 : 2;
+  const scaleX = !isEmpty(scale) ? scale : isFullBackground(prop) ? 1 : 2;
 
   const id = newId ?? prop.id;
   const isLeftPage = isAddToLeft ?? prop.isLeftPage;
+  const left = isLeftPage ? 0 : width / zoom / 2;
 
   return new Promise((resolve, reject) => {
     fabric.util.loadImage(
@@ -124,7 +127,7 @@ export const createBackgroundFabricObject = (
           isLeftPage,
           id,
           selectable: false,
-          left: isLeftPage ? 0 : width / zoom / 2,
+          left: isDisplayHalftRight ? -width / zoom : left,
           scaleX: width / zoom / img.width / scaleX,
           scaleY: height / zoom / img.height,
           ...DEFAULT_FABRIC_BACKGROUND

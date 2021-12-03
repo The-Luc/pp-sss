@@ -170,6 +170,8 @@ export const getPageIdFromPageNo = (pageNo, sheets, isDigital) => {
 
   if (!sheet) return null;
 
+  if (isHalfSheet(sheet)) return sheet.pageIds[0];
+
   return +sheet.pageLeftName === pageNo ? sheet.pageIds[0] : sheet.pageIds[1];
 };
 

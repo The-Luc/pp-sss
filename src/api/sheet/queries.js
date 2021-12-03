@@ -5,6 +5,10 @@ export const pageInfoQuery = gql`
     page(id: $id) {
       id
       layout
+      facing_page {
+        id
+        layout
+      }
     }
   }
 `;
