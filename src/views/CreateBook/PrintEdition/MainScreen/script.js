@@ -2,15 +2,11 @@ import ThumbnailItem from '@/components/Thumbnail/ThumbnailItem';
 import Action from '@/containers/Menu/Action';
 import PrintPreview from '@/containers/Modals/PrintPreview';
 
-import { mapActions } from 'vuex';
-
 import { useUser, useGetterPrintSection } from '@/hooks';
 
 import { useSaveData, useBookPrintInfo } from './composables';
 
 import { getSectionsWithAccessible } from '@/common/utils';
-
-import { ACTIONS as PRINT_ACTIONS } from '@/store/modules/print/const';
 
 import { LINK_STATUS } from '@/common/constants';
 
@@ -23,7 +19,7 @@ export default {
   setup() {
     const { currentUser } = useUser();
     const { savePrintMainScreen, sheets } = useSaveData();
-    const { getBookPrintInfo } = useBookPrintInfo();
+    const { getBookPrintInfo, updateLinkStatus } = useBookPrintInfo();
     const { sections: bookSections } = useGetterPrintSection();
 
     return {
@@ -31,6 +27,7 @@ export default {
       savePrintMainScreen,
       sheets,
       getBookPrintInfo,
+      updateLinkStatus,
       bookSections
     };
   },
@@ -60,9 +57,6 @@ export default {
     }
   },
   methods: {
-    ...mapActions({
-      updateSectionLinkStatus: PRINT_ACTIONS.UPDATE_SHEET_LINK_STATUS
-    }),
     /**
      * Get names of page of selected sheet
      *
@@ -83,9 +77,10 @@ export default {
      * @param  {String} link link status of sheet
      */
     changeLinkStatus(sheetId, link) {
-      const statusLink =
+      const linkStatus =
         link === LINK_STATUS.LINK ? LINK_STATUS.UNLINK : LINK_STATUS.LINK;
-      this.updateSectionLinkStatus({ link: statusLink, sheetId });
+
+      this.updateLinkStatus(sheetId, linkStatus);
     },
     /**
      * Close print preview modal

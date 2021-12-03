@@ -2,7 +2,6 @@ import { cloneDeep } from 'lodash';
 
 import { getSheetInfoApi } from '@/api/sheet';
 
-import printService from '@/api/print';
 import { setPrintPpLayouts } from '@/api/layoutService';
 
 import { getNewBackground } from '@/common/models';
@@ -128,17 +127,6 @@ export const actions = {
       themeId,
       previewImageUrl: layout.previewImageUrl
     });
-  },
-  async [PRINT._ACTIONS.UPDATE_SHEET_LINK_STATUS](
-    { commit },
-    { link, sheetId }
-  ) {
-    await printService.saveSheetLinkStatus(sheetId, link);
-    await printService.saveSpreadInfo(sheetId, {
-      leftTitle: '',
-      rightTitle: ''
-    });
-    commit(PRINT._MUTATES.SET_SHEET_LINK_STATUS, { link, sheetId });
   },
   async [PRINT._ACTIONS.SAVE_LAYOUT]({ commit }, { layout }) {
     await setPrintPpLayouts(layout);
