@@ -1,8 +1,14 @@
 import printService from '@/api/print';
-import { useGetters } from 'vuex-composition-helpers';
-import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
+import { useGetters, useMutations } from 'vuex-composition-helpers';
+import {
+  GETTERS as PRINT_GETTERS,
+  MUTATES as PRINT_MUTATES
+} from '@/store/modules/print/const';
+
+import { updateSheetApi } from '@/api/sheet';
 
 import { useMutationBook, useActionBook, useAppCommon } from '@/hooks';
+import { isOk } from '@/common/utils';
 
 export const useSaveData = () => {
   const { sheets } = useGetters({
@@ -32,6 +38,10 @@ export const useBookPrintInfo = () => {
 
   const { getBookInfo } = useActionBook();
 
+  const { updateLinkStatusToStore } = useMutations({
+    updateLinkStatusToStore: PRINT_MUTATES.SET_SHEET_LINK_STATUS
+  });
+
   const getBookPrintInfo = async bookId => {
     const { book, sections, sheets } = await getBookInfo(bookId);
 
@@ -44,5 +54,13 @@ export const useBookPrintInfo = () => {
     });
   };
 
-  return { getBookPrintInfo };
+  const updateLinkStatus = async (sheetId, linkStatus) => {
+    const res = await updateSheetApi(sheetId, { link: linkStatus });
+
+    if (!isOk(res)) return;
+
+    updateLinkStatusToStore({ link: linkStatus, sheetId });
+  };
+
+  return { getBookPrintInfo, updateLinkStatus };
 };

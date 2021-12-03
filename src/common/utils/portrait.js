@@ -392,7 +392,8 @@ export const createPortraitObjects = (
     pxToIn(
       measureTextWidth(getActiveCanvas(), pageTitle, {
         fontSize: `${ptToPx(pageTitleFontSettings.fontSize)}px`,
-        fontFamily: pageTitleFontSettings.fontFamily
+        fontFamily: pageTitleFontSettings.fontFamily,
+        textCase: pageTitleFontSettings.textCase
       })
     ) +
     bleedLeft * 2;
@@ -513,7 +514,8 @@ export const createPortraitObjects = (
           : `${lastName},${nameSpace}${firstName}`;
         const measureOptions = {
           fontSize: `${ptToPx(nameTextFontSettings.fontSize)}px`,
-          fontFamily: nameTextFontSettings.fontFamily
+          fontFamily: nameTextFontSettings.fontFamily,
+          textCase: nameTextFontSettings.textCase
         };
 
         const textWidth =

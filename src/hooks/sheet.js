@@ -13,6 +13,8 @@ import {
   getPlaybackDataApi
 } from '@/api/sheetService';
 
+import { getWorkspaceApi, updateSheetApi } from '@/api/sheet';
+
 import { updatePageWorkspace } from '@/api/page';
 
 import { Transition } from '@/common/models';
@@ -39,17 +41,15 @@ export const useSheet = () => {
 
   const GETTERS = isDigital ? DIGITAL_GETTERS : PRINT_GETTERS;
 
-  const { sheetLayout, currentSheet, sheetMedia, getSheets } = useGetters({
+  const { sheetLayout, currentSheet, getSheets } = useGetters({
     sheetLayout: GETTERS.SHEET_LAYOUT,
     currentSheet: GETTERS.CURRENT_SHEET,
-    sheetMedia: GETTERS.GET_SHEET_MEDIA,
     getSheets: GETTERS.GET_SHEETS
   });
 
   return {
     sheetLayout,
     currentSheet,
-    sheetMedia,
     getSheets
   };
 };
@@ -84,6 +84,29 @@ export const useActionsEditionSheet = () => {
     setSheetMedia: MUTATES.SET_SHEET_MEDIA,
     deleteMedia: MUTATES.DELETE_SHEET_MEDIA
   });
+
+  const getMedia = async () => {
+    const assetIds = await getWorkspaceApi(currentSheet.value.id, isDigital);
+
+    const promises = assetIds.map(id => getAssetByIdApi(id));
+
+    return await Promise.all(promises);
+  };
+
+  const updateMedia = async media => {
+    const workspace = {
+      digital_properties: {
+        schema: 1
+      },
+      digital_assets: media.map(({ id }) => id)
+    };
+
+    const res = await updateSheetApi(currentSheet.value.id, {
+      digital_workspace: JSON.stringify(workspace)
+    });
+
+    return isOk(res);
+  };
 
   const updateSheetMedia = async newMedia => {
     const pageId = get(currentSheet, 'value.pageIds', [])[0];
@@ -122,6 +145,8 @@ export const useActionsEditionSheet = () => {
   };
 
   return {
+    getMedia,
+    updateMedia,
     updateSheetMedia,
     deleteSheetMedia
   };

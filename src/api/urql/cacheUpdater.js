@@ -4,7 +4,10 @@ import {
   getPrintSettingsQuery,
   getDigitalSettingsQuery
 } from '../portrait/queries';
+import { digitalWorkspaceQuery } from '../sheet/queries';
 import { getFavoriteLayoutsQuery } from '../user/queries';
+
+import { isEmpty } from '@/common/utils';
 
 export const updatePortraitSettingCache = (result, args, cache) => {
   const layoutType = get(args, 'portrait_layout_setting_params.layout_type');
@@ -42,4 +45,26 @@ export const updateTemplateUserCache = (result, args, cache) => {
       return data;
     }
   );
+};
+
+export const updateSheetCache = (_, args, cache) => {
+  const digitalWorkspace = get(args, 'sheet_params.digital_workspace', {});
+
+  if (!isEmpty(digitalWorkspace)) {
+    const assets = get(JSON.parse(digitalWorkspace), 'digital_assets', []);
+
+    cache.updateQuery(
+      {
+        query: digitalWorkspaceQuery,
+        variables: { id: args.sheet_id }
+      },
+      data => {
+        if (!data) return {};
+
+        data.sheet.digital_workspace.digital_assets = assets;
+
+        return data;
+      }
+    );
+  }
 };

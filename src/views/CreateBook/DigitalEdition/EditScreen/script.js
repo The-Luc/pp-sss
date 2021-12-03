@@ -71,7 +71,8 @@ import {
   resetObjects,
   getUniqueId,
   isOk,
-  parseToSecond
+  parseToSecond,
+  mergeArray
 } from '@/common/utils';
 
 import { FrameDetail } from '@/common/models';
@@ -115,8 +116,8 @@ export default {
     const { updateSavingStatus } = useSavingStatus();
     const { getBookDigitalInfo } = useBookDigitalInfo();
     const { setInfoBar } = useInfoBar();
-    const { updateSheetMedia, deleteSheetMedia } = useActionsEditionSheet();
-    const { sheetMedia, currentSheet, getSheets } = useSheet();
+    const { getMedia, updateMedia } = useActionsEditionSheet();
+    const { currentSheet, getSheets } = useSheet();
     const {
       getAllScreenPlaybackData,
       getCurrentScreenPlaybackData,
@@ -154,9 +155,8 @@ export default {
       updateSavingStatus,
       getBookDigitalInfo,
       setInfoBar,
-      updateSheetMedia,
-      deleteSheetMedia,
-      sheetMedia,
+      getMedia,
+      updateMedia,
       setPropertyById,
       setPropOfMultipleObjects,
       listObjects,
@@ -191,6 +191,7 @@ export default {
       toolNames: TOOL_NAME,
       modalType: MODAL_TYPES,
       canvasSize: { w: 800, h: 450 },
+      sheetMedia: [],
       modal: {
         [MODAL_TYPES.TRANSITION_PREVIEW]: {
           isOpen: false,
@@ -248,6 +249,11 @@ export default {
         if (newVal?.id !== oldVal?.id && !isEmpty(this.defaultThemeId)) {
           this.setIsPromptLayout(newVal);
         }
+      }
+    },
+    isMediaSidebarOpen: {
+      async handler(val) {
+        if (val) this.sheetMedia = await this.getMedia();
       }
     }
   },
@@ -417,8 +423,11 @@ export default {
      * @param   {Array}  media  selected media
      */
     async handleSelectedMedia(media) {
-      const reversedMedia = [...media].reverse();
-      await this.updateSheetMedia(reversedMedia);
+      const newMedia = mergeArray(this.sheetMedia, [...media].reverse());
+
+      const isSuccess = await this.updateMedia(newMedia);
+
+      if (isSuccess) this.sheetMedia = newMedia;
     },
     /**
      * Switching tool on Creation Tool by emit
@@ -448,7 +457,9 @@ export default {
      * @param {Object} photo photo will be removed
      */
     onRemovePhoto(media) {
-      this.deleteSheetMedia({ id: media.id, index: media.deleteIndex });
+      this.sheetMedia.splice(media.deleteIndex, 1);
+
+      this.updateMedia(this.sheetMedia);
     },
 
     /**

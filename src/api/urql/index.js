@@ -7,6 +7,7 @@ import { LOCAL_STORAGE } from '@/common/constants';
 import responseHandler from './responseHandler';
 import {
   updatePortraitSettingCache,
+  updateSheetCache,
   updateTemplateUserCache
 } from './cacheUpdater';
 
@@ -27,7 +28,8 @@ const urqlClient = createClient({
       updates: {
         Mutation: {
           create_portrait_layout_setting: updatePortraitSettingCache,
-          create_template_user: updateTemplateUserCache
+          create_template_user: updateTemplateUserCache,
+          update_sheet: updateSheetCache
         }
       }
     }),

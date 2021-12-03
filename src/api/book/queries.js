@@ -84,6 +84,7 @@ export const printMainQuery = gql`
         status
         sheets {
           id
+          linked
           pages {
             id
             preview_image_url
@@ -109,6 +110,7 @@ export const printEditorQuery = gql`
       book_sections {
         sheets {
           id
+          linked
           is_visited
           pages {
             id

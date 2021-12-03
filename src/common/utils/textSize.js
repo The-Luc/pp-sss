@@ -1,3 +1,5 @@
+import { TEXT_CASE } from '../constants';
+
 const createDummyElement = (text, options) => {
   const element = document.createElement('div');
   const textNode = document.createTextNode(text);
@@ -58,11 +60,26 @@ export default (text, options = {}) => {
 export const measureTextWidth = (canvas, text, options) => {
   const ctx = canvas.getContext('2d');
   ctx.save();
+
+  if (!options.textCase) options.textCase = TEXT_CASE.NONE;
+
   const textSplit = text.split('\n').map(value => {
     ctx.font = `${options.fontSize} ${options.fontFamily}`;
-    const { width } = ctx.measureText(value);
+    const transformedText = transformTextCase(value, options.textCase);
+    const { width } = ctx.measureText(transformedText);
     return width;
   });
   ctx.restore();
   return Math.max(...textSplit);
+};
+
+const transformTextCase = (string, textCase = TEXT_CASE.NONE) => {
+  const transformOpt = {
+    [TEXT_CASE.UPPER]: string => string.toUpperCase(),
+    [TEXT_CASE.CAPITALIZE]: string =>
+      string.charAt(0).toUpperCase() + string.slice(1),
+    [TEXT_CASE.LOWER]: string => string.toLowerCase(),
+    [TEXT_CASE.NONE]: string => string
+  };
+  return transformOpt[textCase](string);
 };
