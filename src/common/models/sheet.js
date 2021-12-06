@@ -83,6 +83,7 @@ export class SheetPrintDetail extends SheetEditionDetail {
 
 export class SheetDigitalDetail extends SheetEditionDetail {
   pageName = null;
+  frameIds = [];
 
   /**
    * @param {SheetDigitalDetail} props

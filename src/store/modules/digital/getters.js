@@ -5,7 +5,8 @@ import {
   isPhotoVisited,
   sectionsWithSheets,
   defaultThemeId,
-  communityId
+  communityId,
+  getDigitalBackground
 } from '@/common/store';
 
 import DIGITAL from './const';
@@ -64,9 +65,8 @@ export const getters = {
   [DIGITAL._GETTERS.GET_SHEETS]: ({ sheets }) => {
     return sheets;
   },
-  [DIGITAL._GETTERS.BACKGROUNDS_NO_LAYOUT]: ({ background }) => {
-    return isEmpty(background.left.backgroundType) ? null : background.left;
-  },
+  [DIGITAL._GETTERS.BACKGROUNDS_NO_LAYOUT]: getDigitalBackground,
+  [DIGITAL._GETTERS.BACKGROUNDS]: getDigitalBackground,
   [DIGITAL._GETTERS.BACKGROUNDS_PROPERTIES]: ({ background }) => {
     return isEmpty(background.left)
       ? { isSingle: true, isEmpty: true }

@@ -22,6 +22,7 @@ class GetterClass extends BaseObject {
   GET_DATA_EDIT_SCREEN = 'getDataEditScreen';
   BACKGROUNDS_NO_LAYOUT = 'getUserSelectedBackground';
   BACKGROUNDS_PROPERTIES = 'getPropertiesOfAllBackgrounds';
+  BACKGROUNDS = 'getBackgrounds';
   SECTIONS_SHEETS = 'getSectionsAndSheets';
   DEFAULT_THEME_ID = 'getDefaultThemeId';
   GET_ARRAY_FRAMES = 'getArrayFrames';

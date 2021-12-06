@@ -18,3 +18,12 @@ export const getSheetFramesQuery = gql`
     }
   }
 `;
+
+export const getFrameObjectQuery = gql`
+  query getFrameObject($frameId: ID!) {
+    digital_frame(id: $frameId) {
+      id
+      objects
+    }
+  }
+`;
