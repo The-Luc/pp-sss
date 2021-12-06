@@ -7,7 +7,10 @@ import { useBackgroundAction, useSheet, useFrame } from '@/hooks';
 
 import {
   getCurrentSheetBackground,
+  getFrameBackground,
+  getFrameIdFromFrameNo,
   getPageIdFromPageNo,
+  getScreenInfoFromScreenNo,
   isEmpty,
   isFullBackground
 } from '@/common/utils';
@@ -48,7 +51,7 @@ export default {
       getFrameBackground
     } = useBackgroundAction();
     const { currentSheet, getSheets } = useSheet();
-    const { frameIds } = useFrame();
+    const { frameIds, frames } = useFrame();
 
     return {
       backgrounds,
@@ -56,7 +59,8 @@ export default {
       getFrameBackground,
       currentSheet,
       getSheets,
-      frameIds
+      frameIds,
+      frames
     };
   },
   data() {
@@ -187,8 +191,8 @@ export default {
       );
 
       const background = this.isDigital
-        ? await this.getFrameBackground(pageId)
-        : await this.getPrintBackground(pageId);
+        ? await this.getDigitalBackground(pageId)
+        : await this.getPrintBackground();
 
       this.backgroundUrl = background.imageUrl || '';
 
@@ -219,10 +223,11 @@ export default {
     /**
      * Get the background of selected page using its id
      *
-     * @param   {Number}  pageId  id of page need to get background
-     * @returns {Object}          background of selected page
+     * @returns {Object}  background of selected page
      */
-    async getPrintBackground(pageId) {
+    async getPrintBackground() {
+      const pageId = getPageIdFromPageNo(this.pageNo, this.getSheets);
+
       const isCurrentSheet = this.currentSheet.pageIds.includes(pageId);
 
       if (isCurrentSheet) {
@@ -239,15 +244,39 @@ export default {
 
       if (this.pageNo === 1 || this.pageNo % 2 === 0) return background;
 
-      const prevPageId = getPageIdFromPageNo(
-        this.pageNo - 1,
-        this.getSheets,
-        false
-      );
+      const prevPageId = getPageIdFromPageNo(this.pageNo - 1, this.getSheets);
 
       const prevBackground = await this.getPageBackground(prevPageId);
 
       return isFullBackground(prevBackground) ? prevBackground : {};
+    },
+    /**
+     * Get the background of selected frame using its id
+     *
+     * @returns {Object}  background of selected frame
+     */
+    async getDigitalBackground() {
+      const screenInfo = getScreenInfoFromScreenNo(
+        this.screenNumber,
+        this.getSheets
+      );
+
+      if (isEmpty(screenInfo)) return {};
+
+      const isCurrentScreen = `${this.currentSheet.id}` === `${screenInfo.id}`;
+
+      if (isCurrentScreen && this.pageNo === 1) return this.backgrounds;
+
+      if (isCurrentScreen) return getFrameBackground(this.pageNo, this.frames);
+
+      const frameId = getFrameIdFromFrameNo(
+        this.pageNo,
+        isCurrentScreen ? this.frameIds : screenInfo.frameIds
+      );
+
+      if (isEmpty(frameId)) return {};
+
+      return await this.getFrameBackground(frameId);
     }
   },
   created() {

@@ -6,7 +6,7 @@ import {
 } from '@/api/background';
 import { getThemesApi } from '@/api/theme';
 import { getPageLayoutApi } from '@/api/page';
-import mockBackgroundService from '@/api/mockBackground';
+import { getFrameBackgroundApi } from '@/api/frame';
 
 import { useAppCommon } from './common';
 
@@ -137,11 +137,24 @@ export const useBackgroundAction = () => {
       l => l?.elements?.find(o => o.type === OBJECT_TYPE.BACKGROUND) || {}
     );
   };
+
+  const getFrameBackground = async frameId => {
+    if (!frameId) return {};
+
+    return await getFrameBackgroundApi(frameId);
+  };
+
+  const getFrameBackgrounds = async frameIds => {
+    const promises = frameIds.map(id => getFrameBackgroundApi(id));
+
+    return await Promise.all(promises);
+  };
+
   return {
     ...useBackgroundGetter(),
     getPageBackground,
     getPageBackgrounds,
-    getFrameBackground: mockBackgroundService.getFrameBackground,
-    getFrameBackgrounds: mockBackgroundService.getFrameBackgrounds
+    getFrameBackground,
+    getFrameBackgrounds
   };
 };

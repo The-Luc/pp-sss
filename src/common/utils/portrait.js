@@ -755,6 +755,7 @@ export const getDataScreenOfMultiFolder = (
   maxPortraitPerPage
 ) => {
   let totalLast = 0;
+
   return Object.keys(screens).map(key => {
     const folder = screens[key].map((_, folderInd) => {
       return folders[totalLast + folderInd];

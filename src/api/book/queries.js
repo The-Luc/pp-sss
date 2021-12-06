@@ -54,7 +54,7 @@ export const digitalMainQuery = gql`
   ${bookFragment}
 `;
 
-// book: theme_id, is_photo_visited
+// book: theme_id
 // book / book_sections / sheets: theme_id
 export const digitalEditorQuery = gql`
   query digitalEditor($bookId: ID!) {
@@ -75,7 +75,6 @@ export const digitalEditorQuery = gql`
   ${bookFragment}
 `;
 
-// book_sections / sheets: link
 export const printMainQuery = gql`
   query printMain($bookId: ID!) {
     book(id: $bookId) {
@@ -97,8 +96,8 @@ export const printMainQuery = gql`
   ${bookFragment}
 `;
 
-// book: theme_id, is_photo_visited, page_info
-// book / book_sections / sheets: theme_id, link
+// book: theme_id, page_info
+// book / book_sections / sheets: theme_id
 export const printEditorQuery = gql`
   query printEditor($bookId: ID!) {
     book(id: $bookId) {

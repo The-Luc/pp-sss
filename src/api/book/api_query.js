@@ -51,17 +51,22 @@ const getSpreadInfo = (firstPage, secondPage) => {
  * @returns {Object}                        data of sheet of digital edition
  */
 const getDigitalSheet = (sheet, { id }, index, totalSheets) => {
-  const thumbnailUrl = isEmpty(sheet?.digital_frames)
-    ? null
-    : sheet.digital_frames[0]?.preview_image_url;
+  const isNoFrame = isEmpty(sheet?.digital_frames);
+
+  const thumbnailUrl = isNoFrame
+    ? ''
+    : sheet.digital_frames[0].preview_image_url;
 
   const pageName = getPageName(index, totalSheets);
+
+  const frameIds = isNoFrame ? [] : sheet.digital_frames.map(({ id }) => id);
 
   return new SheetDigitalDetail({
     ...sheetMapping(sheet),
     sectionId: id,
     thumbnailUrl,
-    pageName
+    pageName,
+    frameIds
   });
 };
 

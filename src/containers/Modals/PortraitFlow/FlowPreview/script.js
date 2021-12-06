@@ -1,9 +1,12 @@
 import PreviewSlide from './PreviewSlide';
 
-import { useBackgroundAction, useSheet } from '@/hooks';
+import { useBackgroundAction, useFrame, useSheet } from '@/hooks';
 import {
   getCurrentSheetBackground,
+  getFrameBackground,
+  getFrameIdFromFrameNo,
   getPageIdFromPageNo,
+  getScreenInfoFromScreenNo,
   isEmpty,
   isFullBackground
 } from '@/common/utils';
@@ -44,62 +47,57 @@ export default {
     const {
       backgrounds,
       getPageBackground,
-      getPageBackgrounds,
-      getFrameBackgrounds
+      getFrameBackground
     } = useBackgroundAction();
     const { currentSheet, getSheets } = useSheet();
+    const { frameIds, frames } = useFrame();
 
     return {
       backgrounds,
       getPageBackground,
-      getPageBackgrounds,
-      getFrameBackgrounds,
+      getFrameBackground,
       currentSheet,
-      getSheets
+      getSheets,
+      frameIds,
+      frames
     };
   },
   async created() {
     this.previewItems = this.isDigital
-      ? this.getDigitalPreviewItems()
+      ? await this.getDigitalPreviewItems()
       : await this.getPrintPreviewItems();
   },
   methods: {
     async getPrintPreviewItems() {
       if (isEmpty(this.flowSettings)) return [];
 
-      const pageIds = this.requiredPages.map(p =>
-        getPageIdFromPageNo(p, this.getSheets)
-      );
+      const promises = this.requiredPages.map(async p => {
+        const pageId = getPageIdFromPageNo(p, this.getSheets);
 
-      const backgrounds = await this.getPageBackgrounds(pageIds);
+        const isCurrentSheet = this.currentSheet.pageIds.includes(pageId);
 
-      const finalBackgrounds = await Promise.all(
-        backgrounds.map(async (bg, index) => {
-          const isCurrentSheet = this.currentSheet.pageIds.includes(
-            pageIds[index]
+        if (isCurrentSheet) {
+          return getCurrentSheetBackground(
+            pageId,
+            this.currentSheet,
+            this.backgrounds
           );
+        }
 
-          if (isCurrentSheet) {
-            return getCurrentSheetBackground(
-              pageIds[index],
-              this.currentSheet,
-              this.backgrounds
-            );
-          }
+        const background = await this.getPageBackground(pageId);
 
-          if (!isEmpty(bg)) return bg;
+        if (!isEmpty(background)) return background;
 
-          const pageNo = this.requiredPages[index];
+        if (p === 1 || p % 2 === 0) return background;
 
-          if (pageNo === 1 || pageNo % 2 === 0) return bg;
+        const prevPageId = getPageIdFromPageNo(p - 1, this.getSheets);
 
-          const pageId = getPageIdFromPageNo(pageNo - 1, this.getSheets, false);
+        const prevBackground = await this.getPageBackground(prevPageId);
 
-          const background = await this.getPageBackground(pageId);
+        return isFullBackground(prevBackground) ? prevBackground : {};
+      });
 
-          return isFullBackground(background) ? background : {};
-        })
-      );
+      const backgrounds = await Promise.all(promises);
 
       const { flowMultiSettings, folders } = this.flowSettings;
       const isContinuousFlow =
@@ -118,18 +116,38 @@ export default {
         return {
           portraits,
           layout: this.flowSettings.layoutSettings,
-          backgroundUrl: finalBackgrounds[index]?.imageUrl || '',
-          isFullBackground: isFullBackground(finalBackgrounds[index]),
+          backgroundUrl: backgrounds[index]?.imageUrl || '',
+          isFullBackground: isFullBackground(backgrounds[index]),
           pageNo: p
         };
       });
     },
-    getDigitalPreviewItems() {
+    async getDigitalPreviewItems() {
       if (isEmpty(this.flowSettings)) return [];
 
-      const backgrounds = this.getFrameBackgrounds(
-        this.requiredPages.map(item => item.frame)
-      );
+      const promises = this.requiredPages.map(async rp => {
+        const screenInfo = getScreenInfoFromScreenNo(rp.screen, this.getSheets);
+
+        if (isEmpty(screenInfo)) return {};
+
+        const isCurrentScreen =
+          `${this.currentSheet.id}` === `${screenInfo.id}`;
+
+        if (isCurrentScreen && rp.frame === 1) return this.backgrounds;
+
+        if (isCurrentScreen) return getFrameBackground(rp.frame, this.frames);
+
+        const frameId = getFrameIdFromFrameNo(
+          rp.frame,
+          isCurrentScreen ? this.frameIds : screenInfo.frameIds
+        );
+
+        if (isEmpty(frameId)) return {};
+
+        return await this.getFrameBackground(frameId);
+      });
+
+      const backgrounds = await Promise.all(promises);
 
       const { folders } = this.flowSettings;
 
@@ -142,7 +160,7 @@ export default {
         return {
           portraits,
           layout: this.flowSettings.layoutSettings,
-          backgroundUrl: backgrounds[p.frame],
+          backgroundUrl: backgrounds[index]?.imageUrl,
           pageNo: p.frame,
           screenNo: p.screen
         };
