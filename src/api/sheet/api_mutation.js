@@ -6,7 +6,8 @@ import {
   addSheetMutation,
   updateSheetMutation,
   updateSheetOrderMutation,
-  deleteSheetMutation
+  deleteSheetMutation,
+  moveSheetMutation
 } from './mutations';
 import { isOk } from '@/common/utils';
 
@@ -41,14 +42,32 @@ export const updateSheetApi = async (sheetId, params) => {
 /**
  * Update order of sheets in section
  *
- * @param   {String}  bookId      id of current bok
- * @param   {Array}   sectionIds  new order of sections
- * @returns {Object}              mutation result
+ * @param   {String}  sectionId id of selected section
+ * @param   {Array}   sheetIds  id of sheets in selection section in new order
+ * @returns {Boolean}           success or not
  */
 export const updateSheetOrderApi = async (sectionId, sheetIds) => {
   const res = await graphqlRequest(updateSheetOrderMutation, {
     sectionId,
     sheetIds: sheetIds.map(id => parseInt(id))
+  });
+
+  return isOk(res);
+};
+
+/**
+ * Move sheet to other section
+ *
+ * @param   {String}  sectionId   id of selected section
+ * @param   {Number}  targetIndex new order of sections
+ * @param   {String}  sheetId     id of moving sheet
+ * @returns {Object}              mutation result
+ */
+export const moveSheetApi = async (sectionId, targetIndex, sheetId) => {
+  const res = await graphqlRequest(moveSheetMutation, {
+    sectionId,
+    targetIndex,
+    sheetId
   });
 
   return isOk(res);

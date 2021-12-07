@@ -27,6 +27,18 @@ export const updateSheetOrderMutation = gql`
   }
 `;
 
+export const moveSheetMutation = gql`
+  mutation($sectionId: ID!, $targetIndex: Int!, $sheetId: ID!) {
+    move_sheet(
+      target_book_section_id: $sectionId
+      target_placement: $targetIndex
+      sheet_id: $sheetId
+    ) {
+      id
+    }
+  }
+`;
+
 export const deleteSheetMutation = gql`
   mutation($sheetId: ID!) {
     delete_sheet(sheet_id: $sheetId) {
