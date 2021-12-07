@@ -58,7 +58,7 @@ export const useSaveData = () => {
    * @param {Object} objects object will be saved
    * @returns api response
    */
-  const savePortraitObjects = async (sheetId, objects) => {
+  const savePortraitObjects = async (sheetId, objects, appliedPage) => {
     const getSheetDataFnc = getDataEditScreen.value;
     const sheetData = getSheetDataFnc(sheetId);
 
@@ -77,8 +77,8 @@ export const useSaveData = () => {
     });
 
     const savePromises = [
-      updatePageApi(leftPageId, { layout: leftLayout }),
-      updatePageApi(rightPageId, { layout: rightLayout })
+      appliedPage.isLeft && updatePageApi(leftPageId, { layout: leftLayout }),
+      appliedPage.isRight && updatePageApi(rightPageId, { layout: rightLayout })
     ];
 
     return await Promise.all(savePromises);

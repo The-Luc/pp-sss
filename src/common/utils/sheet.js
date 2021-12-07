@@ -1,5 +1,8 @@
+import { changeObjectsCoords } from './layout';
+import { getPagePrintSize } from './canvas';
+import { isEmpty } from './util';
+
 import { OBJECT_TYPE, SHEET_TYPE } from '@/common/constants';
-import { changeObjectsCoords, getPagePrintSize } from '.';
 
 export const isHalfSheet = ({ type }) => {
   return [SHEET_TYPE.FRONT_COVER, SHEET_TYPE.BACK_COVER].indexOf(type) >= 0;
@@ -125,21 +128,11 @@ export const mapSheetToPages = sheet => {
  * @returns {leftLayout, rightLayout} elements and workspace for each page
  */
 export const pageLayoutsFromSheet = sheetData => {
-  const leftPageObjects = [];
-  const rightPageObjects = [];
   const workspace = sheetData.media.map(m => m.id);
 
-  const { pageWidth } = getPagePrintSize().inches;
-
-  sheetData.objects.map((o, index) => {
-    if (o.type === OBJECT_TYPE.BACKGROUND) {
-      o.isLeftPage ? leftPageObjects.push(o) : rightPageObjects.push(o);
-      return;
-    }
-
-    o.arrangeOrder = index;
-    o.coord.x < pageWidth ? leftPageObjects.push(o) : rightPageObjects.push(o);
-  });
+  const { leftPageObjects, rightPageObjects } = seperateSheetObjectsIntoPages(
+    sheetData.objects
+  );
 
   const leftLayout = {
     elements: leftPageObjects,
@@ -155,15 +148,32 @@ export const pageLayoutsFromSheet = sheetData => {
   return { leftLayout, rightLayout };
 };
 
+export const seperateSheetObjectsIntoPages = objects => {
+  const leftPageObjects = [];
+  const rightPageObjects = [];
+
+  const { pageWidth } = getPagePrintSize().inches;
+
+  objects.map((o, index) => {
+    if (o.type === OBJECT_TYPE.BACKGROUND) {
+      o.isLeftPage ? leftPageObjects.push(o) : rightPageObjects.push(o);
+      return;
+    }
+
+    o.arrangeOrder = index;
+    o.coord.x < pageWidth ? leftPageObjects.push(o) : rightPageObjects.push(o);
+  });
+
+  return { leftPageObjects, rightPageObjects };
+};
+
 /**
  *  To get pageId based on page number
  *
  * @param {Number} pageNo number of the page will be applied portrait on
  * @returns {String}  pageId of the pageNo
  */
-export const getPageIdFromPageNo = (pageNo, sheets, isDigital) => {
-  if (isDigital) return pageNo;
-
+export const getPageIdFromPageNo = (pageNo, sheets) => {
   const sheet = Object.values(sheets).find(
     s => +s.pageLeftName === pageNo || +s.pageRightName === pageNo
   );
@@ -173,6 +183,28 @@ export const getPageIdFromPageNo = (pageNo, sheets, isDigital) => {
   if (isHalfSheet(sheet)) return sheet.pageIds[0];
 
   return +sheet.pageLeftName === pageNo ? sheet.pageIds[0] : sheet.pageIds[1];
+};
+
+/**
+ * Get screen id based on screen number
+ *
+ * @param   {Number} screenNo number of the screen will be applied portrait on
+ * @returns {Object}          screen info of the screenNo
+ */
+export const getScreenInfoFromScreenNo = (screenNo, sheets) => {
+  const sheet = Object.values(sheets).find(s => +s.pageName === screenNo);
+
+  return isEmpty(sheet) ? {} : { id: sheet.id, frameIds: sheet.frameIds };
+};
+
+/**
+ * Get frame id based on frame number
+ *
+ * @param   {Number} frameNo  number of the frame will be applied portrait on
+ * @returns {String}          frame id of the frameNo
+ */
+export const getFrameIdFromFrameNo = (frameNo, frameIds) => {
+  return frameNo >= frameIds.length ? null : frameIds[frameNo - 1];
 };
 
 /**

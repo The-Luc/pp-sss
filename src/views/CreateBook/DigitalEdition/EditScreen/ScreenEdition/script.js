@@ -1796,10 +1796,8 @@ export default {
      * @param {Object}  background  the object of adding background
      * @param {Boolean} isLeft      is add to the left page or right page
      */
-    addBackground({ background }) {
+    async addBackground({ background }) {
       const id = getUniqueId();
-
-      this.setLoadingState({ value: true });
 
       const newBackground = new BackgroundElementObject({
         ...background,
@@ -1808,7 +1806,9 @@ export default {
         isLeftPage: true
       });
 
-      addDigitalBackground({
+      this.setLoadingState({ value: true });
+
+      await addDigitalBackground({
         id,
         backgroundProp: newBackground,
         canvas: window.digitalCanvas

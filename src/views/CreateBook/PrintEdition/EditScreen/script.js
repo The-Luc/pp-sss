@@ -50,7 +50,8 @@ import {
   getEditionListPath,
   mergeArrayNonEmpty,
   resetObjects,
-  isOk
+  isOk,
+  seperateSheetObjectsIntoPages
 } from '@/common/utils';
 
 import { useSaveData } from './PageEdition/composables';
@@ -523,21 +524,34 @@ export default {
 
         this.updateVisited({ sheetId: sheet.id });
 
-        const saveObjetcs = this.savePortraitObjects(sheet.id, objects);
+        const appliedPage = {
+          isLeft: !isEmpty(leftObjects),
+          isRight: !isEmpty(rightObjects)
+        };
+        const saveObjetcs = this.savePortraitObjects(
+          sheet.id,
+          objects,
+          appliedPage
+        );
 
         saveQueue.push(saveObjetcs);
 
         if (sheet.id !== this.pageSelected.id) return;
 
         const canvas = this.$refs.canvasEditor.printCanvas;
+        const sheetObjectArray = Object.values(this.listObjects);
 
-        const ids = Object.keys(this.listObjects);
+        const {
+          leftPageObjects: storeObjectLeft,
+          rightPageObjects: storeObjectRight
+        } = seperateSheetObjectsIntoPages(sheetObjectArray);
 
-        const { left, right, background } = this.backgroundsProps;
+        const removeObject = [
+          ...(appliedPage.isLeft ? storeObjectLeft : []),
+          ...(appliedPage.isRight ? storeObjectRight : [])
+        ];
 
-        const backgrounds = [left, right, background].filter(
-          bg => !isEmpty(bg)
-        );
+        const ids = removeObject.map(o => o.id);
 
         resetObjects(canvas);
 
@@ -547,10 +561,7 @@ export default {
           objects: objects.map(obj => ({ id: obj.id, newObject: obj }))
         });
 
-        this.$refs.canvasEditor.drawObjectsOnCanvas([
-          ...backgrounds,
-          ...objects
-        ]);
+        this.$refs.canvasEditor.drawLayout();
 
         canvas.renderAll();
       });

@@ -1,7 +1,11 @@
 import { isHalfLeft, isHalfRight } from './sheet';
 import { isEmpty, compareByValue } from './util';
 
-import { BACKGROUND_PAGE_TYPE, BACKGROUND_TYPE } from '@/common/constants';
+import {
+  BACKGROUND_PAGE_TYPE,
+  BACKGROUND_TYPE,
+  OBJECT_TYPE
+} from '@/common/constants';
 
 export const isFullBackground = ({ pageType }) => {
   return (
@@ -178,6 +182,7 @@ export const getDisplayBackgroundPageTypes = () => {
     })
     .sort(compareByValue);
 };
+
 /**
  * Get the background of current page using its id
  *
@@ -196,4 +201,23 @@ export const getCurrentSheetBackground = (pageId, currentSheet, currentBgs) => {
   if (!isEmpty(currentBgs.right)) return currentBgs.right;
 
   return isFullBackground(currentBgs.left) ? currentBgs.left : {};
+};
+
+/**
+ * Get the background of current page using its id
+ *
+ * @param   {Number}  frameNo       number of frame need to get background
+ * @param   {Array}   frames        current frames in sheet
+ * @returns {Object}                background of selected frame
+ */
+export const getFrameBackground = (frameNo, frames) => {
+  if (isEmpty(frameNo) || frameNo >= frames.length) return {};
+
+  const objects = frames[frameNo - 1]?.objects;
+
+  const firstObject = isEmpty(objects) ? {} : objects[0];
+
+  return isEmpty(firstObject) || firstObject.type !== OBJECT_TYPE.BACKGROUND
+    ? {}
+    : firstObject;
 };
