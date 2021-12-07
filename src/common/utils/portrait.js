@@ -3,6 +3,7 @@ import { getUniqueId, getPageSize } from './util';
 import {
   CLASS_ROLE,
   DEFAULT_LINE_HEIGHT,
+  DEFAULT_TEXT,
   OBJECT_TYPE,
   PORTRAIT_ASSISTANT_PLACEMENT,
   PORTRAIT_FLOW_OPTION_MULTI,
@@ -406,7 +407,10 @@ export const createPortraitObjects = (
     titleLines *
     DEFAULT_LINE_HEIGHT;
 
-  const nameHeight = pxToIn(ptToPx(nameTextFontSettings.fontSize)) * nameLines;
+  const nameHeight =
+    pxToIn(ptToPx(nameTextFontSettings.fontSize)) *
+    nameLines *
+    DEFAULT_LINE_HEIGHT;
   const textHeight = isNameOutSide ? 0 : nameHeight;
 
   const offsetTitle = isFirstPage && isPageTitleOn ? titleHeight : 0;
@@ -604,6 +608,10 @@ export const createPortraitObjects = (
             : (pageWidth - imageWidth) / 2 - defaultTextPadding;
         }
 
+        const width = isNameOutSide
+          ? Math.max(textWidth, nameWidth + defaultTextPadding)
+          : Math.max(imageWidth + defaultTextPadding * 2, textWidth);
+
         const text = new TextElementObject({
           id: getUniqueId(),
           text: value,
@@ -612,9 +620,7 @@ export const createPortraitObjects = (
             y: isNameOutSide ? textOutsideY : textY
           },
           size: {
-            width: isNameOutSide
-              ? Math.max(textWidth, nameWidth + defaultTextPadding)
-              : Math.max(imageWidth + defaultTextPadding * 2, textWidth),
+            width: width + DEFAULT_TEXT.PADDING * 2,
             height: isNameOutSide ? textHeight : rowGap
           },
           ...nameTextFontSettings
@@ -652,8 +658,8 @@ export const createPortraitObjects = (
 
 /**
  * Create page objects for render portraits
- * @param {*} settings flow settings for portraits
- * @param {*} requiredPages pages are required to render portraits
+ * @param {Object} settings flow settings for portraits
+ * @param {Array} requiredPages pages are required to render portraits
  * @param isDigital flag for digital edition
  * @returns page objects will be stored
  */

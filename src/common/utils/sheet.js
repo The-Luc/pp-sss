@@ -128,21 +128,11 @@ export const mapSheetToPages = sheet => {
  * @returns {leftLayout, rightLayout} elements and workspace for each page
  */
 export const pageLayoutsFromSheet = sheetData => {
-  const leftPageObjects = [];
-  const rightPageObjects = [];
   const workspace = sheetData.media.map(m => m.id);
 
-  const { pageWidth } = getPagePrintSize().inches;
-
-  sheetData.objects.map((o, index) => {
-    if (o.type === OBJECT_TYPE.BACKGROUND) {
-      o.isLeftPage ? leftPageObjects.push(o) : rightPageObjects.push(o);
-      return;
-    }
-
-    o.arrangeOrder = index;
-    o.coord.x < pageWidth ? leftPageObjects.push(o) : rightPageObjects.push(o);
-  });
+  const { leftPageObjects, rightPageObjects } = seperateSheetObjectsIntoPages(
+    sheetData.objects
+  );
 
   const leftLayout = {
     elements: leftPageObjects,
@@ -156,6 +146,25 @@ export const pageLayoutsFromSheet = sheetData => {
     workspace: []
   };
   return { leftLayout, rightLayout };
+};
+
+export const seperateSheetObjectsIntoPages = objects => {
+  const leftPageObjects = [];
+  const rightPageObjects = [];
+
+  const { pageWidth } = getPagePrintSize().inches;
+
+  objects.map((o, index) => {
+    if (o.type === OBJECT_TYPE.BACKGROUND) {
+      o.isLeftPage ? leftPageObjects.push(o) : rightPageObjects.push(o);
+      return;
+    }
+
+    o.arrangeOrder = index;
+    o.coord.x < pageWidth ? leftPageObjects.push(o) : rightPageObjects.push(o);
+  });
+
+  return { leftPageObjects, rightPageObjects };
 };
 
 /**
