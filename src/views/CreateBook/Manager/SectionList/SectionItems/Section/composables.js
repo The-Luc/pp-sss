@@ -1,10 +1,6 @@
 import { useGetters, useMutations } from 'vuex-composition-helpers';
 
-import {
-  deleteSheetApi,
-  updateSheetApi,
-  updateSheetOrderApi
-} from '@/api/sheet';
+import { deleteSheetApi, moveSheetApi, updateSheetOrderApi } from '@/api/sheet';
 import { deleteSectionApi } from '@/api/section';
 
 import { useAppCommon } from '@/hooks';
@@ -94,32 +90,15 @@ export const useActionSection = () => {
   };
 
   const moveSheetToOthers = async (
+    id,
     moveToSectionId,
     selectedSectionId,
     moveToIndex,
     selectedIndex
   ) => {
-    const affectCurrentData = sectionSheetIds.value[selectedSectionId]
-      .map((sheetId, index) => ({ id: sheetId, order: index + 1 }))
-      .filter((_, index) => {
-        return index > selectedIndex;
-      });
+    const isSuccess = await moveSheetApi(moveToSectionId, moveToIndex, id);
 
-    const affectTargetData = sectionSheetIds.value[moveToSectionId]
-      .map((sheetId, index) => ({ id: sheetId, order: index + 1 }))
-      .filter((_, index) => {
-        return index >= moveToIndex;
-      });
-
-    const apiCallPromise = affectCurrentData.map(d => {
-      return updateSheetApi(d.id, { order: d.order });
-    });
-
-    affectTargetData.forEeach(d => {
-      apiCallPromise.push(updateSheetApi(d.id, { order: d.order }));
-    });
-
-    await Promise.all(apiCallPromise);
+    if (!isSuccess) return;
 
     moveSheetInStore({
       moveToSectionId,
@@ -141,6 +120,7 @@ export const useActionSection = () => {
     }
 
     return moveSheetToOthers(
+      id,
       moveToSectionId,
       selectedSectionId,
       moveToIndex,
@@ -165,7 +145,11 @@ export const useActionSection = () => {
       sectionSheetIds.value[moveToSectionId].length -
       (targetSectionIndex === sectionIds.value.length - 1 ? 1 : 0);
 
-    return moveSheet(
+    const isSuccess = await moveSheetApi(moveToSectionId, moveToIndex, id);
+
+    if (!isSuccess) return;
+
+    moveSheet(
       id,
       moveToSectionId,
       selectedSectionId,
