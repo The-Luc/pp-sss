@@ -27,6 +27,38 @@ export const updateSheetOrderMutation = gql`
   }
 `;
 
+export const updateSheetLinkMutation = gql`
+  mutation(
+    $sheetId: ID!
+    $sheetParams: SheetInput
+    $leftPageId: ID!
+    $rightPageId: ID!
+    $pageParams: PageInput!
+  ) {
+    sheet: update_sheet(sheet_id: $sheetId, sheet_params: $sheetParams) {
+      id
+    }
+    leftPage: update_page(page_id: $leftPageId, page_params: $pageParams) {
+      id
+    }
+    rightPage: update_page(page_id: $rightPageId, page_params: $pageParams) {
+      id
+    }
+  }
+`;
+
+export const moveSheetMutation = gql`
+  mutation($sectionId: ID!, $targetIndex: Int!, $sheetId: ID!) {
+    move_sheet(
+      target_book_section_id: $sectionId
+      target_placement: $targetIndex
+      sheet_id: $sheetId
+    ) {
+      id
+    }
+  }
+`;
+
 export const deleteSheetMutation = gql`
   mutation($sheetId: ID!) {
     delete_sheet(sheet_id: $sheetId) {
