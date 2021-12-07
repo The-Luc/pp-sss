@@ -5,10 +5,16 @@ import {
   MUTATES as PRINT_MUTATES
 } from '@/store/modules/print/const';
 
-import { updateSheetApi } from '@/api/sheet';
+import { disableSheetLinkApi, updateSheetApi } from '@/api/sheet';
 
-import { useMutationBook, useActionBook, useAppCommon } from '@/hooks';
-import { isOk } from '@/common/utils';
+import {
+  useMutationBook,
+  useActionBook,
+  useAppCommon,
+  useSheet
+} from '@/hooks';
+import { isEmpty, isOk } from '@/common/utils';
+import { LINK_STATUS } from '@/common/constants';
 
 export const useSaveData = () => {
   const { sheets } = useGetters({
@@ -32,9 +38,10 @@ export const useSaveData = () => {
 };
 
 export const useBookPrintInfo = () => {
-  const { setSectionsSheets } = useMutationBook();
-
   const { setGeneralInfo } = useAppCommon();
+  const { getSheets } = useSheet();
+
+  const { setSectionsSheets } = useMutationBook();
 
   const { getBookInfo } = useActionBook();
 
@@ -55,9 +62,18 @@ export const useBookPrintInfo = () => {
   };
 
   const updateLinkStatus = async (sheetId, linkStatus) => {
-    const res = await updateSheetApi(sheetId, { link: linkStatus });
+    const isLinked = linkStatus === LINK_STATUS.LINK;
 
-    if (!isOk(res)) return;
+    const sheet = isLinked ? {} : getSheets.value[sheetId];
+    const pageIds = isEmpty(sheet) ? [] : sheet.pageIds;
+
+    const res = isLinked
+      ? await updateSheetApi(sheetId, { link: linkStatus })
+      : await disableSheetLinkApi(sheetId, pageIds, linkStatus);
+
+    const isSuccess = (isLinked && isOk(res)) || (!isLinked && res);
+
+    if (!isSuccess) return;
 
     updateLinkStatusToStore({ link: linkStatus, sheetId });
   };

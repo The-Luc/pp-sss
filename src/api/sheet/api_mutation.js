@@ -6,7 +6,9 @@ import {
   addSheetMutation,
   updateSheetMutation,
   updateSheetOrderMutation,
-  deleteSheetMutation
+  deleteSheetMutation,
+  moveSheetMutation,
+  updateSheetLinkMutation
 } from './mutations';
 import { isOk } from '@/common/utils';
 
@@ -41,14 +43,52 @@ export const updateSheetApi = async (sheetId, params) => {
 /**
  * Update order of sheets in section
  *
- * @param   {String}  bookId      id of current bok
- * @param   {Array}   sectionIds  new order of sections
- * @returns {Object}              mutation result
+ * @param   {String}  sectionId id of selected section
+ * @param   {Array}   sheetIds  id of sheets in selection section in new order
+ * @returns {Boolean}           success or not
  */
 export const updateSheetOrderApi = async (sectionId, sheetIds) => {
   const res = await graphqlRequest(updateSheetOrderMutation, {
     sectionId,
     sheetIds: sheetIds.map(id => parseInt(id))
+  });
+
+  return isOk(res);
+};
+
+/**
+ * Update link status of sheet & page title of page
+ *
+ * @param   {String}  sheetId     id of selected sheet
+ * @param   {Array}   pageIds     id of pages of selected sheet
+ * @param   {String}  linkStatus  new data of selected sheet
+ * @returns {Boolean}             is success
+ */
+export const disableSheetLinkApi = async (sheetId, pageIds, linkStatus) => {
+  const res = await graphqlRequest(updateSheetLinkMutation, {
+    sheetId,
+    sheetParams: sheetMappingToApi({ link: linkStatus }),
+    leftPageId: pageIds[0],
+    rightPageId: pageIds[1],
+    pageParams: { title: '' }
+  });
+
+  return isOk(res);
+};
+
+/**
+ * Move sheet to other section
+ *
+ * @param   {String}  sectionId   id of selected section
+ * @param   {Number}  targetIndex new order of sections
+ * @param   {String}  sheetId     id of moving sheet
+ * @returns {Object}              mutation result
+ */
+export const moveSheetApi = async (sectionId, targetIndex, sheetId) => {
+  const res = await graphqlRequest(moveSheetMutation, {
+    sectionId,
+    targetIndex,
+    sheetId
   });
 
   return isOk(res);
