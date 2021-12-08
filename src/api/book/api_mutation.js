@@ -1,6 +1,7 @@
+import { isOk } from '@/common/utils';
 import { graphqlRequest } from '../urql';
 
-import { updateBookMutation } from './mutations';
+import { setPhotoIsVisitedMutation, updateBookMutation } from './mutations';
 
 /**
  * Update book title
@@ -14,4 +15,22 @@ export const updateBookTitle = async (bookId, title) => {
     bookId,
     params: { title }
   });
+};
+
+/**
+ * Set photo is visited
+ *
+ * @param   {String}  bookUserId  id of book user
+ * @param   {Boolean} isDigital   is set for digital or print
+ * @returns {Boolean}             is success
+ */
+export const setPhotoIsVisitedApi = async (bookUserId, isDigital) => {
+  const attrName = isDigital ? 'digital' : 'print';
+
+  const res = await graphqlRequest(setPhotoIsVisitedMutation, {
+    id: bookUserId,
+    params: { [`is_${attrName}_photo_visited`]: true }
+  });
+
+  return isOk(res);
 };

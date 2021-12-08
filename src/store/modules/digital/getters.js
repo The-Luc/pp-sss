@@ -6,7 +6,8 @@ import {
   sectionsWithSheets,
   defaultThemeId,
   communityId,
-  getDigitalBackground
+  getDigitalBackground,
+  bookUserId
 } from '@/common/store';
 
 import DIGITAL from './const';
@@ -168,5 +169,6 @@ export const getters = {
     );
   },
   [DIGITAL._GETTERS.IS_PHOTO_VISITED]: isPhotoVisited,
-  [DIGITAL._GETTERS.COMMUNITY_ID]: communityId
+  [DIGITAL._GETTERS.COMMUNITY_ID]: communityId,
+  [DIGITAL._GETTERS.BOOK_USER_ID]: bookUserId
 };

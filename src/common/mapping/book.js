@@ -24,6 +24,19 @@ export const bookMapping = book => {
       number_max_pages: {
         name: 'numberMaxPages'
       },
+      book_user: {
+        data: {
+          id: {
+            name: 'bookUserId'
+          },
+          is_print_photo_visited: {
+            name: 'isPhotoVisited'
+          },
+          is_digital_photo_visited: {
+            name: 'isPhotoVisited'
+          }
+        }
+      },
       yearbook_spec: {
         data: {
           cover_option: {

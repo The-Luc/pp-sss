@@ -66,13 +66,14 @@ export const useBookDigitalInfo = () => {
 
     setSectionsSheets({ sections, sheets });
 
-    const { communityId, themeId, isPhotoVisited, title } = book;
+    const { communityId, themeId, isPhotoVisited, bookUserId, title } = book;
 
     setBookInfo({
       info: {
         communityId,
         defaultThemeId: themeId,
-        isPhotoVisited
+        isPhotoVisited,
+        bookUserId
       }
     });
 

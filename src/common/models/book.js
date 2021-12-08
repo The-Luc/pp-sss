@@ -114,6 +114,7 @@ export class BookManagerDetail extends BookBase {
 export class BookEditionDetail extends BookBase {
   themeId = null;
   isPhotoVisited = false;
+  bookUserId = null;
 
   /**
    * @param {BookEditionDetail} props
