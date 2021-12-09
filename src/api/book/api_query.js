@@ -59,7 +59,7 @@ const getDigitalSheet = (sheet, { id }, index, totalSheets) => {
 
   const pageName = getPageName(index, totalSheets);
 
-  const frameIds = isNoFrame ? [] : sheet.digital_frames.map(({ id }) => id);
+  const frameIds = isNoFrame ? [] : sheet.digital_frames.map(f => f.id);
 
   return new SheetDigitalDetail({
     ...sheetMapping(sheet),

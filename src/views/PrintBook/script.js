@@ -87,28 +87,17 @@ export default {
     async drawObjectsOnCanvas(objects, facingObjects) {
       if (isEmpty(objects)) return;
 
+      const createObjectMethod = {
+        [OBJECT_TYPE.SHAPE]: this.createSvgFromPpData,
+        [OBJECT_TYPE.CLIP_ART]: this.createClipartFromPpData,
+        [OBJECT_TYPE.TEXT]: this.createTextFromPpData,
+        [OBJECT_TYPE.IMAGE]: this.createImageFromPpData,
+        [OBJECT_TYPE.PORTRAIT_IMAGE]: this.createPortraitImageFromPpData,
+        [OBJECT_TYPE.BACKGROUND]: this.createBackgroundFromPpData
+      };
+
       const allObjectPromises = objects.map(objectData => {
-        if (objectData.type === OBJECT_TYPE.SHAPE)
-          return this.createSvgFromPpData(objectData);
-
-        if (objectData.type === OBJECT_TYPE.CLIP_ART)
-          return this.createClipartFromPpData(objectData);
-
-        if (objectData.type === OBJECT_TYPE.TEXT) {
-          return this.createTextFromPpData(objectData);
-        }
-
-        if (objectData.type === OBJECT_TYPE.IMAGE) {
-          return this.createImageFromPpData(objectData);
-        }
-
-        if (objectData.type === OBJECT_TYPE.PORTRAIT_IMAGE) {
-          return this.createPortraitImageFromPpData(objectData);
-        }
-
-        if (objectData.type === OBJECT_TYPE.BACKGROUND) {
-          return this.createBackgroundFromPpData(objectData);
-        }
+        return createObjectMethod[objectData.type](objectData);
       });
 
       const isEmptyBackground = objects[0].type !== OBJECT_TYPE.BACKGROUND;
