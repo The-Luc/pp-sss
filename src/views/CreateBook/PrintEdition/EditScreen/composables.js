@@ -17,6 +17,7 @@ export const useBookPrintInfo = () => {
       themeId,
       pageInfo,
       isPhotoVisited,
+      bookUserId,
       title,
       coverOption,
       numberMaxPages
@@ -27,6 +28,7 @@ export const useBookPrintInfo = () => {
         communityId,
         defaultThemeId: themeId,
         pageInfo,
+        bookUserId,
         isPhotoVisited,
         coverOption,
         numberMaxPages

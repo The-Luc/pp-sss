@@ -267,7 +267,7 @@ export default {
      * Trigger mutation set photo visited true for current book
      */
     onClickGotIt() {
-      this.updatePhotoVisited({ isPhotoVisited: true });
+      this.updatePhotoVisited();
     },
     /**
      * To search base on value input

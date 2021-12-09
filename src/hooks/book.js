@@ -2,7 +2,7 @@ import { useGetters, useMutations } from 'vuex-composition-helpers';
 
 import bookService from '@/api/bookService';
 
-import { getBookDetail } from '@/api/book';
+import { getBookDetail, setPhotoIsVisitedApi } from '@/api/book';
 
 import { useAppCommon } from './common';
 import { SheetDetail } from '@/common/models';
@@ -32,12 +32,20 @@ export const useBook = () => {
 
   const GETTERS = isDigital ? DIGITAL_GETTERS : PRINT_GETTERS;
 
-  const { book, totalInfo, sections, maxPage, isPhotoVisited } = useGetters({
+  const {
+    book,
+    totalInfo,
+    sections,
+    maxPage,
+    isPhotoVisited,
+    bookUserId
+  } = useGetters({
     book: BOOK_GETTERS.BOOK_DETAIL,
     totalInfo: BOOK_GETTERS.TOTAL_INFO,
     sections: BOOK_GETTERS.SECTIONS,
     maxPage: BOOK_GETTERS.GET_MAX_PAGE,
-    isPhotoVisited: GETTERS.IS_PHOTO_VISITED
+    isPhotoVisited: GETTERS.IS_PHOTO_VISITED,
+    bookUserId: GETTERS.BOOK_USER_ID
   });
 
   const { setBookInfo } = useMutationBook();
@@ -79,10 +87,12 @@ export const useBook = () => {
     setGeneralInfo({ info: { totalSheets, totalPages, totalScreens } });
   };
 
-  const updatePhotoVisited = async ({ isPhotoVisited }) => {
-    await bookService.setIsPhotoVisited(isPhotoVisited);
+  const updatePhotoVisited = async () => {
+    const isSuccess = await setPhotoIsVisitedApi(bookUserId.value, isDigital);
 
-    setBookInfo({ info: { isPhotoVisited } });
+    if (!isSuccess) return;
+
+    setBookInfo({ info: { isPhotoVisited: true } });
   };
 
   return {

@@ -32,6 +32,7 @@ class GetterClass extends BaseObject {
   GET_SHEET_MEDIA = 'getSheetMedia';
   IS_PHOTO_VISITED = 'isPhotoVisited';
   COMMUNITY_ID = 'getCommunityId';
+  BOOK_USER_ID = 'getBookUserId';
 
   constructor(props) {
     super(props);

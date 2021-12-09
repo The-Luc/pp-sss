@@ -47,6 +47,7 @@ class GetterClass extends BaseObject {
   GET_TOTAL_VIDEO_DURATION = 'getTotalVideoDuration';
   IS_PHOTO_VISITED = 'isPhotoVisited';
   COMMUNITY_ID = 'getCommunityId';
+  BOOK_USER_ID = 'getBookUserId';
 
   constructor(props) {
     super(props);

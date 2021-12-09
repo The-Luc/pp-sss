@@ -4,6 +4,7 @@ export const editionDefaultState = {
   book: {
     id: null,
     communityId: '',
+    bookUserId: null,
     defaultThemeId: '',
     isPhotoVisited: false
   },
