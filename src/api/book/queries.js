@@ -60,6 +60,10 @@ export const digitalEditorQuery = gql`
   query digitalEditor($bookId: ID!) {
     book(id: $bookId) {
       community_id
+      book_user {
+        id
+        is_digital_photo_visited
+      }
       book_sections {
         sheets {
           is_visited
@@ -103,6 +107,10 @@ export const printEditorQuery = gql`
     book(id: $bookId) {
       community_id
       number_max_pages
+      book_user {
+        id
+        is_print_photo_visited
+      }
       yearbook_spec {
         cover_option
       }

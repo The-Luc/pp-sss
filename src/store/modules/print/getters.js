@@ -2,7 +2,8 @@ import {
   isPhotoVisited,
   sectionsWithSheets,
   defaultThemeId,
-  communityId
+  communityId,
+  bookUserId
 } from '@/common/store';
 
 import {
@@ -160,5 +161,6 @@ export const getters = {
     return isEmpty(media) ? [] : media;
   },
   [PRINT._GETTERS.IS_PHOTO_VISITED]: isPhotoVisited,
-  [PRINT._GETTERS.COMMUNITY_ID]: communityId
+  [PRINT._GETTERS.COMMUNITY_ID]: communityId,
+  [PRINT._GETTERS.BOOK_USER_ID]: bookUserId
 };
