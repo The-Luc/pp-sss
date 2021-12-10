@@ -4,10 +4,8 @@ import {
   getPrintSettingsQuery,
   getDigitalSettingsQuery
 } from '../portrait/queries';
-import { digitalWorkspaceQuery } from '../sheet/queries';
+import { digitalWorkspaceQuery, printWorkspaceQuery } from '../sheet/queries';
 import { getFavoriteLayoutsQuery } from '../user/queries';
-
-import { isEmpty } from '@/common/utils';
 
 export const updatePortraitSettingCache = (result, args, cache) => {
   const layoutType = get(args, 'portrait_layout_setting_params.layout_type');
@@ -48,23 +46,30 @@ export const updateTemplateUserCache = (result, args, cache) => {
 };
 
 export const updateSheetCache = (_, args, cache) => {
-  const digitalWorkspace = get(args, 'sheet_params.digital_workspace', {});
+  const digitalWorkspace = get(args, 'sheet_params.digital_workspace', null);
+  const printWorkspace = get(args, 'sheet_params.workspace', null);
 
-  if (!isEmpty(digitalWorkspace)) {
-    const assets = get(JSON.parse(digitalWorkspace), 'digital_assets', []);
-
+  const updateCache = (query, prefix, assets) => {
     cache.updateQuery(
       {
-        query: digitalWorkspaceQuery,
+        query,
         variables: { id: args.sheet_id }
       },
       data => {
         if (!data) return {};
 
-        data.sheet.digital_workspace.digital_assets = assets;
+        data.sheet[`${prefix}workspace`][`${prefix}assets`] = assets;
 
         return data;
       }
     );
+  };
+  if (digitalWorkspace) {
+    const assets = get(JSON.parse(digitalWorkspace), 'digital_assets', []);
+    updateCache(digitalWorkspaceQuery, 'digital_', assets);
+  }
+  if (printWorkspace) {
+    const assets = get(JSON.parse(printWorkspace), 'assets', []);
+    updateCache(printWorkspaceQuery, '', assets);
   }
 };
