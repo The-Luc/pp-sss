@@ -51,7 +51,8 @@ import {
   mergeArrayNonEmpty,
   resetObjects,
   isOk,
-  seperateSheetObjectsIntoPages
+  seperateSheetObjectsIntoPages,
+  mergeArray
 } from '@/common/utils';
 
 import { useSaveData } from './PageEdition/composables';
@@ -92,8 +93,8 @@ export default {
     } = useSaveData();
     const { setPropertyById, setPropOfMultipleObjects } = useProperties();
     const { updateSavingStatus } = useSavingStatus();
-    const { sheetMedia, currentSheet, getSheets } = useSheet();
-    const { updateSheetMedia, deleteSheetMedia } = useActionsEditionSheet();
+    const { currentSheet, getSheets } = useSheet();
+    const { updateSheetMedia, getMedia } = useActionsEditionSheet();
     const { getBookPrintInfo } = useBookPrintInfo();
     const { listObjects } = useObjectProperties();
     const {
@@ -120,9 +121,7 @@ export default {
       getDataEditScreen,
       setPropertyById,
       updateSavingStatus,
-      sheetMedia,
       updateSheetMedia,
-      deleteSheetMedia,
       getBookPrintInfo,
       listObjects,
       setPropOfMultipleObjects,
@@ -136,7 +135,8 @@ export default {
       deleteObjects,
       backgroundsProps,
       saveSelectedPortraitFolders,
-      setLoadingState
+      setLoadingState,
+      getMedia
     };
   },
   data() {
@@ -145,6 +145,7 @@ export default {
       isOpenMediaModal: false,
       isOpenCropControl: false,
       selectedImage: null,
+      sheetMedia: [],
       modalDisplay: {
         [TOOL_NAME.PORTRAIT]: false,
         portaitFlow: false
@@ -186,6 +187,11 @@ export default {
         if (newVal?.id !== oldVal?.id && !isEmpty(this.printThemeSelected)) {
           this.setIsPromptLayout(newVal);
         }
+      }
+    },
+    isMediaSidebarOpen: {
+      async handler(val) {
+        if (val) this.sheetMedia = await this.getMedia();
       }
     }
   },
@@ -308,8 +314,11 @@ export default {
      * @param   {Array}  images  selected images
      */
     async handleSelectedImages(images) {
-      const reversedImages = [...images].reverse();
-      await this.updateSheetMedia(reversedImages);
+      const newImages = mergeArray([...images].reverse(), this.sheetMedia);
+
+      const { media, isSuccess } = await this.updateSheetMedia(newImages);
+
+      if (isSuccess) this.sheetMedia = media;
     },
     /**
      * Close list photo in sidebar
@@ -322,8 +331,11 @@ export default {
      * Handle remove photo from sheet
      * @param {Object} photo photo will be removed
      */
-    onRemovePhoto(photo) {
-      this.deleteSheetMedia({ id: photo.id, index: photo.deleteIndex });
+    async onRemovePhoto(photo) {
+      const newImages = this.sheetMedia.filter(m => m.id !== photo.id);
+
+      const { media, isSuccess } = await this.updateSheetMedia(newImages);
+      if (isSuccess) this.sheetMedia = media;
     },
 
     /**

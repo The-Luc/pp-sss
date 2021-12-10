@@ -44,6 +44,7 @@ export const digitalMainQuery = gql`
         status
         sheets {
           digital_frames {
+            id
             preview_image_url
           }
         }

@@ -116,7 +116,7 @@ export default {
     const { updateSavingStatus } = useSavingStatus();
     const { getBookDigitalInfo } = useBookDigitalInfo();
     const { setInfoBar } = useInfoBar();
-    const { getMedia, updateMedia } = useActionsEditionSheet();
+    const { getMedia, updateSheetMedia } = useActionsEditionSheet();
     const { currentSheet, getSheets } = useSheet();
     const {
       getAllScreenPlaybackData,
@@ -156,7 +156,7 @@ export default {
       getBookDigitalInfo,
       setInfoBar,
       getMedia,
-      updateMedia,
+      updateSheetMedia,
       setPropertyById,
       setPropOfMultipleObjects,
       listObjects,
@@ -420,15 +420,30 @@ export default {
     },
     /**
      * Selected media and save in sheet
-     * @param   {Array}  media  selected media
+     * @param   {Array}  newMedia  selected media
      */
-    async handleSelectedMedia(media) {
-      const newMedia = mergeArray(this.sheetMedia, [...media].reverse());
+    async handleSelectedMedia(newMedia) {
+      const mergedMedia = mergeArray([...newMedia].reverse(), this.sheetMedia);
 
-      const isSuccess = await this.updateMedia(newMedia);
+      const { media, isSuccess } = await this.updateSheetMedia(
+        mergedMedia,
+        true
+      );
 
-      if (isSuccess) this.sheetMedia = newMedia;
+      if (isSuccess) this.sheetMedia = media;
     },
+
+    /**
+     * Handle remove photo from sheet
+     * @param {Object} removedMedia photo will be removed
+     */
+    async onRemovePhoto(removedMedia) {
+      const newMedia = this.sheetMedia.filter(m => m.id !== removedMedia.id);
+
+      const { media, isSuccess } = await this.updateSheetMedia(newMedia, true);
+      if (isSuccess) this.sheetMedia = media;
+    },
+
     /**
      * Switching tool on Creation Tool by emit
      *
@@ -450,16 +465,6 @@ export default {
      */
     onZoom({ zoom }) {
       this.setInfoBar({ zoom });
-    },
-
-    /**
-     * Handle remove photo from sheet
-     * @param {Object} photo photo will be removed
-     */
-    onRemovePhoto(media) {
-      this.sheetMedia.splice(media.deleteIndex, 1);
-
-      this.updateMedia(this.sheetMedia);
     },
 
     /**
@@ -492,6 +497,22 @@ export default {
       } = this.dragItem;
 
       const target = event.target;
+
+      const { height, width, zoom } = this.$refs.canvasEditor.canvasSize;
+
+      const canvasHeight = height / zoom;
+      const canvasWidth = width / zoom;
+
+      const ratio = Math.max(
+        originalHeight / canvasHeight,
+        originalWidth / canvasWidth,
+        1
+      );
+
+      // set media dimension to fix in the canvas
+      const imgHeight = originalHeight / ratio;
+      const imgWidth = originalWidth / ratio;
+
       const pointer = this.$refs.canvasEditor.digitalCanvas.getPointer(event.e);
       const durationInSeconds = parseToSecond(duration);
 
@@ -504,18 +525,12 @@ export default {
         const x = pointer.x - offsetX * 3;
         const y = pointer.y - offsetY * 3;
 
-        this.$refs.canvasEditor.addImageBox(
-          x,
-          y,
-          originalWidth,
-          originalHeight,
-          {
-            src: mediaUrl || imageUrl,
-            type,
-            thumbUrl,
-            duration: durationInSeconds
-          }
-        );
+        this.$refs.canvasEditor.addImageBox(x, y, imgWidth, imgHeight, {
+          src: mediaUrl || imageUrl,
+          type,
+          thumbUrl,
+          duration: durationInSeconds
+        });
 
         return;
       }
