@@ -497,6 +497,22 @@ export default {
       } = this.dragItem;
 
       const target = event.target;
+
+      const { height, width, zoom } = this.$refs.canvasEditor.canvasSize;
+
+      const canvasHeight = height / zoom;
+      const canvasWidth = width / zoom;
+
+      const ratio = Math.max(
+        originalHeight / canvasHeight,
+        originalWidth / canvasWidth,
+        1
+      );
+
+      // set media dimension to fix in the canvas
+      const imgHeight = originalHeight / ratio;
+      const imgWidth = originalWidth / ratio;
+
       const pointer = this.$refs.canvasEditor.digitalCanvas.getPointer(event.e);
       const durationInSeconds = parseToSecond(duration);
 
@@ -509,18 +525,12 @@ export default {
         const x = pointer.x - offsetX * 3;
         const y = pointer.y - offsetY * 3;
 
-        this.$refs.canvasEditor.addImageBox(
-          x,
-          y,
-          originalWidth,
-          originalHeight,
-          {
-            src: mediaUrl || imageUrl,
-            type,
-            thumbUrl,
-            duration: durationInSeconds
-          }
-        );
+        this.$refs.canvasEditor.addImageBox(x, y, imgWidth, imgHeight, {
+          src: mediaUrl || imageUrl,
+          type,
+          thumbUrl,
+          duration: durationInSeconds
+        });
 
         return;
       }
