@@ -1636,9 +1636,7 @@ export default {
         coord,
         imageUrl: DEFAULT_IMAGE.IMAGE_URL,
         hasImage: !!options?.src,
-        originalUrl: options?.src,
-        duration: options?.duration,
-        endTime: options?.duration
+        originalUrl: options?.src
       };
 
       const newMedia = {
