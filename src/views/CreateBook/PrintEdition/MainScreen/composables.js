@@ -5,7 +5,7 @@ import {
   MUTATES as PRINT_MUTATES
 } from '@/store/modules/print/const';
 
-import { disableSheetLinkApi, updateSheetApi } from '@/api/sheet';
+import { updateSheetLinkApi } from '@/api/sheet';
 
 import {
   useMutationBook,
@@ -13,8 +13,7 @@ import {
   useAppCommon,
   useSheet
 } from '@/hooks';
-import { isEmpty, isOk } from '@/common/utils';
-import { LINK_STATUS } from '@/common/constants';
+import { isEmpty } from '@/common/utils';
 
 export const useSaveData = () => {
   const { sheets } = useGetters({
@@ -62,16 +61,10 @@ export const useBookPrintInfo = () => {
   };
 
   const updateLinkStatus = async (sheetId, linkStatus) => {
-    const isLinked = linkStatus === LINK_STATUS.LINK;
-
-    const sheet = isLinked ? {} : getSheets.value[sheetId];
+    const sheet = getSheets.value[sheetId];
     const pageIds = isEmpty(sheet) ? [] : sheet.pageIds;
 
-    const res = isLinked
-      ? await updateSheetApi(sheetId, { link: linkStatus })
-      : await disableSheetLinkApi(sheetId, pageIds, linkStatus);
-
-    const isSuccess = (isLinked && isOk(res)) || (!isLinked && res);
+    const isSuccess = await updateSheetLinkApi(sheetId, pageIds, linkStatus);
 
     if (!isSuccess) return;
 
