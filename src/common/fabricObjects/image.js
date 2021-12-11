@@ -7,7 +7,6 @@ import {
   inToPx,
   isEmpty,
   mapObject,
-  parseToSecond,
   pxToIn,
   scaleSize
 } from '../utils';
@@ -670,12 +669,15 @@ export const setVideoSrc = async (
   applyShadowToObject(imageObject, imageObject);
 
   const { zoomLevel } = centercrop(imageObject);
+  const duration = Math.ceil(video.duration);
 
   return {
     type: OBJECT_TYPE.VIDEO,
     imageUrl: videoSrc,
     thumbnailUrl: thumbnailSrc,
-    zoomLevel
+    zoomLevel,
+    duration,
+    endTime: duration
   };
 };
 
@@ -693,8 +695,7 @@ export const handleChangeMediaSrc = async (
 ) => {
   if (!target) return;
 
-  const { imageUrl, id, mediaUrl, thumbUrl, duration } = options;
-  const durationInSeconds = parseToSecond(duration);
+  const { imageUrl, id, mediaUrl, thumbUrl } = options;
 
   const prop = mediaUrl
     ? await setVideoSrc(target, mediaUrl, thumbUrl, videoToggleStatusCallback)
@@ -704,8 +705,7 @@ export const handleChangeMediaSrc = async (
 
   if (mediaUrl) {
     prop.volume = DEFAULT_VIDEO.VOLUME;
-    prop.duration = durationInSeconds;
-    prop.endTime = durationInSeconds;
+    prop.endTime = prop.duration;
     prop.startTime = 0;
   }
 

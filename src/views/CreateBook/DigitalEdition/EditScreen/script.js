@@ -71,7 +71,6 @@ import {
   resetObjects,
   getUniqueId,
   isOk,
-  parseToSecond,
   mergeArray
 } from '@/common/utils';
 
@@ -492,8 +491,7 @@ export default {
         offsetY,
         mediaUrl,
         thumbUrl,
-        type,
-        duration
+        type
       } = this.dragItem;
 
       const target = event.target;
@@ -514,7 +512,6 @@ export default {
       const imgWidth = originalWidth / ratio;
 
       const pointer = this.$refs.canvasEditor.digitalCanvas.getPointer(event.e);
-      const durationInSeconds = parseToSecond(duration);
 
       this.dragItem = null;
 
@@ -528,8 +525,7 @@ export default {
         this.$refs.canvasEditor.addImageBox(x, y, imgWidth, imgHeight, {
           src: mediaUrl || imageUrl,
           type,
-          thumbUrl,
-          duration: durationInSeconds
+          thumbUrl
         });
 
         return;
@@ -557,8 +553,6 @@ export default {
 
       if (mediaUrl) {
         prop.volume = DEFAULT_VIDEO.VOLUME;
-        prop.duration = durationInSeconds;
-        prop.endTime = durationInSeconds;
         prop.startTime = 0;
       }
 

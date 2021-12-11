@@ -51,7 +51,7 @@ export const getAssetByIdApi = async assetId => {
 
   if (!isOk(res)) return;
 
-  const asset = await mediaMapping(res.data.asset);
+  const asset = await mediaMapping(res.data.asset, !res.data.asset.is_media);
   asset.type = asset.isMedia ? ASSET_TYPE.VIDEO : ASSET_TYPE.PICTURE;
 
   return asset;

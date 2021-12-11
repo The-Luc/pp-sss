@@ -62,9 +62,9 @@ export const updateSheetOrderApi = async (sectionId, sheetIds) => {
  * @param   {String}  sheetId     id of selected sheet
  * @param   {Array}   pageIds     id of pages of selected sheet
  * @param   {String}  linkStatus  new data of selected sheet
- * @returns {Boolean}             is success
+ * @returns {Promise<Boolean>}             is success
  */
-export const disableSheetLinkApi = async (sheetId, pageIds, linkStatus) => {
+export const updateSheetLinkApi = async (sheetId, pageIds, linkStatus) => {
   const res = await graphqlRequest(updateSheetLinkMutation, {
     sheetId,
     sheetParams: sheetMappingToApi({ link: linkStatus }),
