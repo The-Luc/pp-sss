@@ -153,7 +153,9 @@ export const getters = {
       objects: objectsData,
       pageInfo: book.pageInfo,
       defaultThemeId: book.defaultThemeId,
-      sheetProps: sheets[sheetId]
+      sheetProps: sheets[sheetId],
+      bookId: book.id,
+      communityId: book.communityId
     };
   },
   [PRINT._GETTERS.GET_SHEET_MEDIA]: ({ sheets, currentSheetId }) => {

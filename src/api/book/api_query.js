@@ -1,5 +1,5 @@
 import { graphqlRequest } from '../urql';
-import { merge } from 'lodash';
+import { merge, pick } from 'lodash';
 
 import {
   getPageLeftName,
@@ -293,11 +293,21 @@ export const getBookDetail = async (bookId, edition, isEditor) => {
   const bookModel = getBookModel(edition);
 
   const totalData = isEditor ? {} : getTotalData(book.total_pages);
+  const mappedBook = bookMapping(book);
+
+  const pageInfo = pick(mappedBook, [
+    'isNumberingOn',
+    'position',
+    'fontFamily',
+    'fontSize',
+    'color'
+  ]);
 
   return {
     book: new bookModel({
-      ...bookMapping(book),
-      ...totalData
+      ...mappedBook,
+      ...totalData,
+      pageInfo
     }),
     sections,
     sheets

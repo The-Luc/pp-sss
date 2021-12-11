@@ -13,6 +13,7 @@ export const useBookPrintInfo = () => {
     setSectionsSheets({ sections, sheets });
 
     const {
+      id,
       communityId,
       themeId,
       pageInfo,
@@ -25,6 +26,7 @@ export const useBookPrintInfo = () => {
 
     setBookInfo({
       info: {
+        id,
         communityId,
         defaultThemeId: themeId,
         pageInfo,
