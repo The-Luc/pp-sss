@@ -38,6 +38,7 @@ export const actions = {
     // clear all objects and backgrounds
     commit(DIGITAL._MUTATES.SET_OBJECTS, { objectList: [] });
     commit(DIGITAL._MUTATES.SET_BACKGROUND, { backgrounds: {} });
+    commit(DIGITAL._MUTATES.CLEAR_ALL_FRAMES);
 
     const data = await getSheetFramesApi(state.currentSheetId);
 
