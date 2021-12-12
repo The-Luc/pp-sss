@@ -11,6 +11,7 @@ import {
 import { MUTATES } from '@/store/modules/app/const';
 import { PROPERTIES_TOOLS } from '@/common/constants';
 import { cloneDeep } from 'lodash';
+import { deleteFrameApi } from '@/api/frame';
 
 /**
  * Get and set common sate of frames
@@ -96,7 +97,11 @@ export const useFrameDelete = () => {
     setCurrentFrameId: DIGITAL_MUTATES.SET_CURRENT_FRAME_ID
   });
 
-  const handleDeleteFrame = id => {
+  const handleDeleteFrame = async id => {
+    const isSuccess = await deleteFrameApi(id);
+
+    if (!isSuccess) return;
+
     const oldIndex = framesInStore.value.findIndex(f => f.id === id);
 
     deleteFrame({ id });

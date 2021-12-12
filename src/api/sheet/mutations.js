@@ -37,12 +37,15 @@ export const updateSheetLinkMutation = gql`
   ) {
     sheet: update_sheet(sheet_id: $sheetId, sheet_params: $sheetParams) {
       id
+      linked
     }
     leftPage: update_page(page_id: $leftPageId, page_params: $pageParams) {
       id
+      title
     }
     rightPage: update_page(page_id: $rightPageId, page_params: $pageParams) {
       id
+      title
     }
   }
 `;

@@ -1,5 +1,6 @@
 import { EDITION } from '@/common/constants';
 import { get } from 'lodash';
+import { getSheetFramesQuery } from '../frame/queries';
 import {
   getPrintSettingsQuery,
   getDigitalSettingsQuery
@@ -72,4 +73,26 @@ export const updateSheetCache = (_, args, cache) => {
     const assets = get(JSON.parse(printWorkspace), 'assets', []);
     updateCache(printWorkspaceQuery, '', assets);
   }
+};
+
+export const updateDeleteFrame = (results, args, cache) => {
+  const frameId = args.digital_frame_id;
+  const sheetId = get(results, 'delete_digital_frame.sheets[0].id', null);
+
+  if (!frameId || !sheetId) return;
+
+  cache.updateQuery(
+    {
+      query: getSheetFramesQuery,
+      variables: { sheetId }
+    },
+    data => {
+      if (!data) return;
+
+      data.sheet.digital_frames = data.sheet.digital_frames.filter(
+        f => f.id !== frameId
+      );
+      return data;
+    }
+  );
 };
