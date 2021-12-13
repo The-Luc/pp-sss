@@ -87,7 +87,7 @@ export const updateDeleteFrame = (results, args, cache) => {
       variables: { sheetId }
     },
     data => {
-      if (!data) return;
+      if (!data) return data;
 
       data.sheet.digital_frames = data.sheet.digital_frames.filter(
         f => f.id !== frameId

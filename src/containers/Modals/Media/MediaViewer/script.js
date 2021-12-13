@@ -173,7 +173,8 @@ export default {
 
       if (this.currentTab !== 'photos' && this.currentTab !== 'videos') return;
 
-      const { albums, albumCategories } = await this.getAlbums();
+      const isGetVideo = this.currentTab === 'videos';
+      const { albums, albumCategories } = await this.getAlbums(isGetVideo);
       this.mediaDropdowns = albumCategories;
       this.albums = albums;
       this.selectedType = this.getSelectedType();

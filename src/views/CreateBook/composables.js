@@ -55,10 +55,8 @@ export const usePhotos = () => {
       : getPhotosApi(communityId.value, [input]);
   };
 
-  const getAlbums = async isGetMedia => {
-    const mediaType = isGetMedia ? 'videos' : 'images';
-
-    return await getAlbumsAndCategoriesApi(communityId.value, mediaType);
+  const getAlbums = async isGetVideo => {
+    return await getAlbumsAndCategoriesApi(communityId.value, isGetVideo);
   };
 
   return {
