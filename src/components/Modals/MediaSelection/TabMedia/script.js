@@ -29,11 +29,11 @@ export default {
     },
     albums: {
       type: Object,
-      default: () => {}
+      default: () => ({})
     },
     mediaDropdowns: {
       type: Object,
-      default: {}
+      default: () => ({})
     },
     isVideo: {
       type: Boolean,

@@ -7,8 +7,10 @@ import {
 import { useGetters } from 'vuex-composition-helpers';
 import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 import { updatePageApi } from '@/api/page';
-import { updateSheetApi, getSheetInfoApi } from '@/api/sheet';
-import { OBJECT_TYPE } from '@/common/constants';
+import { savePrintDataApi } from '@/api/savePrint';
+import { getSheetInfoApi } from '@/api/sheet';
+import { OBJECT_TYPE, SHEET_TYPE } from '@/common/constants';
+import { pageInfoMappingToApi } from '@/common/mapping';
 
 export const useSaveData = () => {
   const { getDataEditScreen } = useGetters({
@@ -28,8 +30,8 @@ export const useSaveData = () => {
    * fields saved on sheet:
    *  is_visited
    *
-   * others:
-   *  pageInfo         #4452
+   * fileds saved on book
+   *  pageInfo
    *  default theme id #4452
    *
    * @param {Object} editScreenData sheet data
@@ -38,17 +40,36 @@ export const useSaveData = () => {
   const savePrintEditScreen = async editScreenData => {
     if (isEmpty(editScreenData.sheetProps)) return;
 
+    const { pageInfo, bookId, communityId } = editScreenData;
+    const sheetParams = { is_visited: false }; // set false until mutation default thumbnail is available
     const { id: sheetId, pageIds, type } = editScreenData.sheetProps;
     const [leftPageId, rightPageId] = getPageIdsOfSheet(pageIds, type);
 
     const { leftPage, rightPage } = mapSheetToPages(editScreenData);
 
-    const savePromises = [
-      updatePageApi(leftPageId, leftPage),
-      updatePageApi(rightPageId, rightPage),
-      updateSheetApi(sheetId, { isVisited: false }) // set false until mutation default thumbnail is available
-    ];
-    return await Promise.all(savePromises);
+    const isUpdatePageInfo = type === SHEET_TYPE.COVER;
+
+    const { bookParams, properties } = pageInfoMappingToApi(
+      pageInfo,
+      communityId
+    );
+
+    const variables = {
+      leftId: leftPageId,
+      leftParams: leftPage,
+      rightId: rightPageId,
+      rightParams: rightPage,
+      sheetId,
+      sheetParams,
+      bookId,
+      bookParams,
+      properties,
+      isUpdatePageInfo
+    };
+
+    const isSuccess = await savePrintDataApi(variables);
+
+    return isSuccess;
   };
 
   /**

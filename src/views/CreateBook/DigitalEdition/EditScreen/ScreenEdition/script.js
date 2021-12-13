@@ -300,7 +300,6 @@ export default {
         // await this.saveData(oldVal.id, this.currentFrameId);
 
         // reset frames, frameIDs, currentFrameId
-        this.setFrames({ framesList: [] });
         this.setSelectedObjectId({ id: '' });
         this.setPropertiesObjectType({ type: '' });
         this.setCurrentObject(null);
@@ -334,7 +333,8 @@ export default {
       );
 
       if (isSwitchFrame) {
-        this.saveData(this.pageSelected.id, oldVal);
+        // TODO: revise when mutation DB available
+        // this.saveData(this.pageSelected.id, oldVal);
       }
 
       this.setSelectedObjectId({ id: '' });
@@ -1636,9 +1636,7 @@ export default {
         coord,
         imageUrl: DEFAULT_IMAGE.IMAGE_URL,
         hasImage: !!options?.src,
-        originalUrl: options?.src,
-        duration: options?.duration,
-        endTime: options?.duration
+        originalUrl: options?.src
       };
 
       const newMedia = {

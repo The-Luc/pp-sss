@@ -122,10 +122,9 @@ export const mutations = {
     currentSheet.isVisited = true;
   },
   [DIGITAL._MUTATES.UPDATE_FRAME_THUMBNAIL](state, { thumbnailUrl, frameId }) {
-    if (!frameId) return;
+    if (!frameId || !state.frames[frameId]) return;
 
     state.frames[frameId].previewImageUrl = thumbnailUrl;
-    if (frameId !== state.frameIds[0]) return;
   },
   [DIGITAL._MUTATES.UPDATE_SHEET_THUMBNAIL](state, { thumbnailUrl, sheetId }) {
     if (isEmpty(thumbnailUrl) || isEmpty(sheetId)) return;
@@ -167,6 +166,11 @@ export const mutations = {
   },
   [DIGITAL._MUTATES.DELETE_BACKGROUND](state) {
     state.background.left = {};
+  },
+
+  [DIGITAL._MUTATES.CLEAR_ALL_FRAMES](state) {
+    state.frames = {};
+    state.frameIds = [];
   },
 
   [DIGITAL._MUTATES.SET_FRAMES](state, { framesList }) {

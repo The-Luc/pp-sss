@@ -12,7 +12,7 @@ const assetFragment = gql`
 `;
 
 export const getMediaQuery = gql`
-  query getMediaApi($id: ID!, $terms: [String]) {
+  query getMediaQuery($id: ID!, $terms: [String]) {
     search_community_assets(id: $id, terms: $terms) {
       ...assetData
     }
@@ -21,7 +21,7 @@ export const getMediaQuery = gql`
 `;
 
 export const getAssetByIdQuery = gql`
-  query getMediaApi($id: ID!) {
+  query getAssetByIdQuery($id: ID!) {
     asset(id: $id) {
       ...assetData
     }

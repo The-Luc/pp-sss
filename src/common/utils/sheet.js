@@ -93,29 +93,20 @@ export const mapSheetToPages = sheet => {
     rightTitle
   } = sheet.sheetProps.spreadInfo;
 
-  const { media } = sheet.sheetProps;
-
-  const { leftLayout, rightLayout } = pageLayoutsFromSheet({
-    media,
-    objects: sheet.objects
-  });
+  const { leftLayout, rightLayout } = pageLayoutsFromSheet(sheet.objects);
 
   const leftPage = {
-    layout: leftLayout,
-    otherProps: {
-      title: leftTitle,
-      show_page_number: isLeftNumberOn,
-      preview_image_url: ''
-    }
+    layout: JSON.stringify(leftLayout),
+    title: leftTitle,
+    show_page_number: isLeftNumberOn,
+    preview_image_url: ''
   };
 
   const rightPage = {
-    layout: rightLayout,
-    otherProps: {
-      title: rightTitle,
-      show_page_number: isRightNumberOn,
-      preview_image_url: ''
-    }
+    layout: JSON.stringify(rightLayout),
+    title: rightTitle,
+    show_page_number: isRightNumberOn,
+    preview_image_url: ''
   };
 
   return { leftPage, rightPage };
@@ -124,19 +115,17 @@ export const mapSheetToPages = sheet => {
 /**
  * To seperate objects and media of sheet into pages
  *
- * @param {Object} sheetData sheet data: media and objects
+ * @param {Object} object sheet objects
  * @returns {leftLayout, rightLayout} elements and workspace for each page
  */
-export const pageLayoutsFromSheet = sheetData => {
-  const workspace = sheetData.media.map(m => m.id);
-
+export const pageLayoutsFromSheet = objects => {
   const { leftPageObjects, rightPageObjects } = seperateSheetObjectsIntoPages(
-    sheetData.objects
+    objects
   );
 
   const leftLayout = {
     elements: leftPageObjects,
-    workspace
+    workspace: []
   };
 
   const rightLayout = {

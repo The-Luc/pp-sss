@@ -37,6 +37,22 @@ export const bookMapping = book => {
           }
         }
       },
+      print_page_numbers: {
+        name: 'isNumberingOn'
+      },
+      page_number_position: {
+        name: 'position'
+      },
+      properties: {
+        data: {
+          font_family: {
+            name: 'fontFamily'
+          },
+          font_size: {
+            name: 'fontSize'
+          }
+        }
+      },
       yearbook_spec: {
         data: {
           cover_option: {
@@ -76,4 +92,27 @@ export const bookMapping = book => {
   };
 
   return mapObject(book, mapRules);
+};
+
+/**
+ * To convert pageInfo to a object that can save to DB
+ * @param {Object} pageInfo FE pageInfo object
+ * @param {Number} communityId Community id
+ * @returns converted object
+ */
+export const pageInfoMappingToApi = (pageInfo, communityId) => {
+  const { isNumberingOn, position, color, fontFamily, fontSize } = pageInfo;
+
+  const bookParams = {
+    print_page_numbers: isNumberingOn,
+    page_number_position: position
+  };
+  const properties = {
+    community_id: communityId,
+    color,
+    font_family: fontFamily,
+    font_size: fontSize
+  };
+
+  return { bookParams, properties };
 };

@@ -44,6 +44,7 @@ export const digitalMainQuery = gql`
         status
         sheets {
           digital_frames {
+            id
             preview_image_url
           }
         }
@@ -114,6 +115,9 @@ export const printEditorQuery = gql`
       yearbook_spec {
         cover_option
       }
+      print_page_numbers
+      page_number_position
+      properties
       book_sections {
         sheets {
           id

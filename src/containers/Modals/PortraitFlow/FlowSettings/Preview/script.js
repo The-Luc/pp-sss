@@ -184,14 +184,8 @@ export default {
       this.pageNo = page.pageNo;
       this.screenNumber = page.screenNumber;
 
-      const pageId = getPageIdFromPageNo(
-        this.pageNo,
-        this.getSheets,
-        this.isDigital
-      );
-
       const background = this.isDigital
-        ? await this.getDigitalBackground(pageId)
+        ? await this.getDigitalBackground()
         : await this.getPrintBackground();
 
       this.backgroundUrl = background.imageUrl || '';

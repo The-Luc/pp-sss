@@ -41,16 +41,18 @@ export const useSheet = () => {
 
   const GETTERS = isDigital ? DIGITAL_GETTERS : PRINT_GETTERS;
 
-  const { sheetLayout, currentSheet, getSheets } = useGetters({
+  const { sheetLayout, currentSheet, getSheets, sheetMedia } = useGetters({
     sheetLayout: GETTERS.SHEET_LAYOUT,
     currentSheet: GETTERS.CURRENT_SHEET,
-    getSheets: GETTERS.GET_SHEETS
+    getSheets: GETTERS.GET_SHEETS,
+    sheetMedia: GETTERS.GET_SHEET_MEDIA
   });
 
   return {
     sheetLayout,
     currentSheet,
-    getSheets
+    getSheets,
+    sheetMedia
   };
 };
 
@@ -93,39 +95,32 @@ export const useActionsEditionSheet = () => {
     return await Promise.all(promises);
   };
 
-  const updateMedia = async media => {
+  /**
+   *  To update media to current sheet
+   * @param {Object} media media object
+   * @param {Boolean} isDigital
+   * @returns
+   */
+  const updateSheetMedia = async (media, isDigital) => {
+    const prefix = isDigital ? 'digital_' : '';
+
     const workspace = {
-      digital_properties: {
+      [`${prefix}properties`]: {
         schema: 1
       },
-      digital_assets: media.map(({ id }) => id)
+      [`${prefix}assets`]: media.map(m => m.id)
     };
 
     const res = await updateSheetApi(currentSheet.value.id, {
-      digital_workspace: JSON.stringify(workspace)
+      [`${prefix}workspace`]: JSON.stringify(workspace)
     });
-
-    return isOk(res);
-  };
-
-  const updateSheetMedia = async newMedia => {
-    const pageId = get(currentSheet, 'value.pageIds', [])[0];
-
-    if (!pageId) return;
-
-    const currentMediaIds = currentSheet.value.media.map(m => m.id);
-    const newMediaIds = newMedia.map(m => m.id);
-
-    const assetIds = [...newMediaIds, ...currentMediaIds];
-
-    const res = await updatePageWorkspace(pageId, assetIds);
 
     if (!isOk(res)) return;
 
-    const mediaPromises = assetIds.map(id => getAssetByIdApi(id));
-    const media = await Promise.all(mediaPromises);
+    const mediaPromises = media.map(m => getAssetByIdApi(m.id));
+    const resMedia = await Promise.all(mediaPromises);
 
-    setSheetMedia({ media });
+    return { media: resMedia, isSuccess: true };
   };
 
   const deleteSheetMedia = async ({ id, index }) => {
@@ -146,9 +141,9 @@ export const useActionsEditionSheet = () => {
 
   return {
     getMedia,
-    updateMedia,
     updateSheetMedia,
-    deleteSheetMedia
+    deleteSheetMedia,
+    setSheetMedia
   };
 };
 

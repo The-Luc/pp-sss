@@ -2,10 +2,10 @@ import { BaseObject, BaseEntity } from './base';
 
 export class PageInfo extends BaseObject {
   isNumberingOn = false;
-  position = '';
-  fontFamily = '';
-  fontSize = 0;
-  color = '';
+  position = 'BOTTOM_CENTER';
+  fontFamily = 'arial';
+  fontSize = 12;
+  color = '#000000';
 
   /**
    * @param {PageInfo} props

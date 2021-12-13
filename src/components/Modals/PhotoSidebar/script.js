@@ -67,10 +67,9 @@ export default {
     /**
      * Hanlde open confirm modal after click remove icon
      * @param {Object} media media will be removed
-     * @param {Number} index index of the media
      */
-    onShowRemoveModal(media, index) {
-      this.selectedItem = { ...media, deleteIndex: index };
+    onShowRemoveModal(media) {
+      this.selectedItem = media;
       this.deleteType = media.type;
       this.showRemoveModal = true;
     },

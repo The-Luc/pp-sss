@@ -105,6 +105,7 @@ class MutationClass extends BaseObject {
   SET_BACKGROUND_PROP = 'setBackgroundProp';
   DELETE_BACKGROUND = 'deleteBackground';
   SET_FRAMES = 'setFrames';
+  CLEAR_ALL_FRAMES = 'clearAllFrames';
   DELETE_FRAME = 'deleteFrame';
   REORDER_FRAME_IDS = 'reorderFrameIds';
   SET_CURRENT_FRAME_ID = 'setCurrentFrameId';
