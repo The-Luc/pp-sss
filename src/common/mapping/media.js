@@ -1,4 +1,4 @@
-import { apiToShortDate, mapObject } from '@/common/utils';
+import { apiToShortDate, mapObject, isEmpty } from '@/common/utils';
 import { ALL_MEDIA_SUBCATEGORY_ID, ASSET_TYPE } from '@/common/constants';
 
 /**
@@ -37,6 +37,7 @@ export const mediaMapping = (asset, isPhoto = true) => {
 };
 
 const addingCategoryAll = category =>
+  !isEmpty(category) &&
   category.unshift({
     id: ALL_MEDIA_SUBCATEGORY_ID,
     name: 'All'
@@ -48,18 +49,25 @@ const addingCategoryAll = category =>
  * @param {Array} albumArr api container data
  * @returnsa {Array} category showed in dropdown menu
  */
-export const extractAlbumCategories = albumArr => {
-  const categories = albumArr.map(a => {
-    if (!a.containers) return { id: a.id, name: a.title };
+export const extractAlbumCategories = (albumArr, isGetVideo) => {
+  const getAlbumCategory = album => {
+    const isSelectedMediaExited = album.assets.some(
+      asset => asset.is_media === Boolean(isGetVideo)
+    );
+    return isSelectedMediaExited ? { id: album.id, name: album.title } : null;
+  };
 
-    const albums = a.containers.map(al => ({ id: al.id, name: al.title }));
+  const categories = albumArr.map(a => {
+    if (!a.containers) return getAlbumCategory(a);
+
+    const albums = a.containers.map(al => getAlbumCategory(al)).filter(Boolean);
     addingCategoryAll(albums);
     return { id: a.id, name: a.name, albums };
   });
 
   categories[0]?.albums || addingCategoryAll(categories);
 
-  return categories;
+  return categories.filter(Boolean);
 };
 
 /**

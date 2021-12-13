@@ -12,7 +12,6 @@ import {
   PictureAssetEntity,
   VideoAssetEntity
 } from '@/common/models/entities/asset';
-import { ASSET_TYPE } from '@/common/constants';
 
 export const getPhotosApi = async (id, terms = []) => {
   if (isEmpty(terms)) return [];
@@ -51,17 +50,14 @@ export const getAssetByIdApi = async assetId => {
 
   if (!isOk(res)) return;
 
-  const asset = await mediaMapping(res.data.asset, !res.data.asset.is_media);
-  asset.type = asset.isMedia ? ASSET_TYPE.VIDEO : ASSET_TYPE.PICTURE;
-
-  return asset;
+  const asset = res.data.asset;
+  return asset.is_media
+    ? new VideoAssetEntity(mediaMapping(asset, !asset.is_media))
+    : new PictureAssetEntity(mediaMapping(asset));
 };
 
-export const getAlbumsAndCategoriesApi = async (communityId, mediaType) => {
-  const res = await graphqlRequest(getAllAlbumsQuery, {
-    communityId,
-    mediaType
-  });
+export const getAlbumsAndCategoriesApi = async (communityId, isGetVideo) => {
+  const res = await graphqlRequest(getAllAlbumsQuery, { communityId });
 
   if (!isOk(res)) return;
 
@@ -71,9 +67,9 @@ export const getAlbumsAndCategoriesApi = async (communityId, mediaType) => {
 
   // mapping list of categories
   const albumCategories = {
-    communities: extractAlbumCategories(communities),
-    groups: extractAlbumCategories(groups),
-    personalAlbums: extractAlbumCategories(personalAlbums)
+    communities: extractAlbumCategories(communities, isGetVideo),
+    groups: extractAlbumCategories(groups, isGetVideo),
+    personalAlbums: extractAlbumCategories(personalAlbums, isGetVideo)
   };
 
   // normalize albums
