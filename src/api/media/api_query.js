@@ -12,7 +12,6 @@ import {
   PictureAssetEntity,
   VideoAssetEntity
 } from '@/common/models/entities/asset';
-import { ASSET_TYPE } from '@/common/constants';
 
 export const getPhotosApi = async (id, terms = []) => {
   if (isEmpty(terms)) return [];
