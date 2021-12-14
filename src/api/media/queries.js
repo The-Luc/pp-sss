@@ -37,16 +37,17 @@ const albumDetailFragment = gql`
     assets {
       id
       thumbnail_uri
+      is_media
     }
   }
 `;
 
 export const getAllAlbumsQuery = gql`
-  query getAllAlbumsQuery($communityId: ID!, $mediaType: String) {
-    user_containers(media_type: $mediaType) {
+  query getAllAlbumsQuery($communityId: ID!) {
+    user_containers {
       ...albumDetail
     }
-    community_containers(id: $communityId, media_type: $mediaType) {
+    community_containers(id: $communityId) {
       ...albumDetail
     }
     community_group_assets(id: $communityId, range: ALL) {

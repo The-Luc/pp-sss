@@ -12,8 +12,11 @@ export const savePrintDataMutation = gql`
     $bookParams: BookInput!
     $properties: BookPropertiesInput
     $isUpdatePageInfo: Boolean!
+    $noLeftPage: Boolean!
+    $noRightPage: Boolean!
   ) {
-    leftPage: update_page(page_id: $leftId, page_params: $leftParams) {
+    leftPage: update_page(page_id: $leftId, page_params: $leftParams)
+      @skip(if: $noLeftPage) {
       id
       is_visited
       layout
@@ -22,7 +25,8 @@ export const savePrintDataMutation = gql`
       show_page_number
       title
     }
-    rightPage: update_page(page_id: $rightId, page_params: $rightParams) {
+    rightPage: update_page(page_id: $rightId, page_params: $rightParams)
+      @skip(if: $noRightPage) {
       id
       is_visited
       layout

@@ -12,6 +12,8 @@ export const setPhotoIsVisitedMutation = gql`
   mutation($id: ID!, $params: BooksUserInput) {
     update_books_user(books_user_id: $id, books_user_params: $params) {
       id
+      is_print_photo_visited
+      is_digital_photo_visited
     }
   }
 `;
