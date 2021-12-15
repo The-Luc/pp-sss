@@ -28,7 +28,8 @@ export default {
      * @param   {Object}   event event change change of input
      */
     onChange(event) {
-      this.$emit('change', event.target.value);
+      this.$emit('change', event.target.value.trim());
+      this.forceRenderComponent();
     },
     /**
      * return previous value when user press Escape

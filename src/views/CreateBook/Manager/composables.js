@@ -148,9 +148,10 @@ export const useSectionControl = () => {
   const { currentUser, generalInfo } = useAppCommon();
   const { importantDatesInfo } = useSummaryInfo();
 
-  const { totalSection, colors } = useGetters({
+  const { totalSection, colors, sectionIds } = useGetters({
     totalSection: BOOK_GETTERS.TOTAL_SECTION,
-    colors: BOOK_GETTERS.COLORS
+    colors: BOOK_GETTERS.COLORS,
+    sectionIds: BOOK_GETTERS.SECTION_IDS
   });
 
   const { addSectionToStore } = useMutations({
@@ -166,10 +167,17 @@ export const useSectionControl = () => {
 
     const data = {
       ...new SectionBase({ dueDate, color }),
-      order: totalSection.value - 2
+      order: totalSection.value - 1 // above the last section
     };
+    const lastSectionId = sectionIds.value[sectionIds.value.length - 1];
+    const lastSectionParams = { order: totalSection.value };
 
-    const res = await addNewSectionApi(generalInfo.value.bookId, data);
+    const res = await addNewSectionApi(
+      generalInfo.value.bookId,
+      data,
+      lastSectionId,
+      lastSectionParams
+    );
 
     if (!isOk(res)) return;
 

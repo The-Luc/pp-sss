@@ -13,16 +13,25 @@ import {
 import { isOk } from '@/common/utils';
 
 /**
- * Add new section
+ * Add new section, and update the last section order
  *
  * @param   {String}  bookId  id of selected book
  * @param   {Object}  section data of new section
+ * @param   {String}  lastSetionId id of the last section
+ * @param   {Object}  lastSectionParams params of the last section
  * @returns {Object}          mutation result
  */
-export const addNewSectionApi = async (bookId, section) =>
+export const addNewSectionApi = async (
+  bookId,
+  section,
+  lastSectionId,
+  lastSectionParams
+) =>
   graphqlRequest(addSectionMutation, {
     bookId,
-    params: sectionMappingToApi(section)
+    params: sectionMappingToApi(section),
+    lastSectionId,
+    lastSectionParams: sectionMappingToApi(lastSectionParams)
   });
 
 /**
