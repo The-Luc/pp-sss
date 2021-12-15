@@ -9,10 +9,6 @@ import { mapObject } from '../utils';
 export const frameMapping = frame => {
   const mapRules = {
     data: {
-      id: {
-        name: 'id',
-        parse: value => value
-      },
       frame_delay: {
         name: 'delay'
       },
@@ -33,6 +29,40 @@ export const frameMapping = frame => {
       }
     },
     restrict: []
+  };
+
+  return mapObject(frame, mapRules);
+};
+
+export const mappingFrameToApi = frame => {
+  const mapRules = {
+    data: {
+      delay: {
+        name: 'frame_delay'
+      },
+      isVisited: {
+        name: 'is_visited'
+      },
+      playInIds: {
+        name: 'play_in_ids',
+        noSub: true
+      },
+      playOutIds: {
+        name: 'play_out_ids',
+        noSub: true
+      },
+      previewImageUrl: {
+        name: 'preview_image_url'
+      }
+    },
+    restrict: [
+      'id',
+      'fromLayout',
+      'playInIds',
+      'playOutIds',
+      'previewImageUrl',
+      'objects'
+    ]
   };
 
   return mapObject(frame, mapRules);

@@ -72,7 +72,7 @@ import {
   createPortraitImageObject,
   createTextBoxObject,
   createImage,
-  addCliparts
+  createClipartObject
 } from '@/common/fabricObjects';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
 
@@ -295,9 +295,7 @@ export default {
 
         this.isFrameLoaded = false;
 
-        // TODO: revise when mutation DB available
-        // temporary commented for testing
-        // await this.saveData(oldVal.id, this.currentFrameId);
+        await this.saveData(this.currentFrameId);
 
         // reset frames, frameIDs, currentFrameId
         this.setSelectedObjectId({ id: '' });
@@ -333,8 +331,7 @@ export default {
       );
 
       if (isSwitchFrame) {
-        // TODO: revise when mutation DB available
-        // this.saveData(this.pageSelected.id, oldVal);
+        this.saveData(oldVal);
       }
 
       this.setSelectedObjectId({ id: '' });
@@ -1962,7 +1959,7 @@ export default {
         rotated: this.handleRotated,
         moved: this.handleMoved
       };
-      const clipart = await addCliparts(objectData);
+      const clipart = await createClipartObject(objectData);
 
       addEventListeners(clipart, eventListeners);
 
@@ -2107,7 +2104,7 @@ export default {
 
       this.updateSavingStatus({ status: SAVE_STATUS.START });
 
-      await this.saveData(this.pageSelected.id, this.currentFrameId);
+      await this.saveData(this.currentFrameId);
 
       this.updateSavingStatus({ status: SAVE_STATUS.END });
 
@@ -2116,12 +2113,11 @@ export default {
 
     /**
      * Save sheet and sheet's frame data to storage
-     * @param {String | Number} sheetId id of sheet
      * @param {String | Number} frameId id of frame
      */
-    async saveData(sheetId, frameId) {
+    async saveData(frameId) {
       this.updateFrameObjects({ frameId });
-      const data = this.getDataEditScreen(sheetId);
+      const data = this.getDataEditScreen(frameId);
       await this.saveEditScreen(data);
       await this.saveAnimationConfig(this.storeAnimationProp);
       this.setStoreAnimationProp({});
