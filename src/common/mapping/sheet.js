@@ -19,6 +19,9 @@ export const sheetMapping = sheet => {
         name: 'positionFixed',
         parse: value => POSITION_FIXED[value.replace(/(POSITION_)/g, '')]
       },
+      is_visited: {
+        name: 'isVisited'
+      },
       linked: {
         name: 'link',
         parse: value => {
