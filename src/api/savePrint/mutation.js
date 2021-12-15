@@ -18,7 +18,6 @@ export const savePrintDataMutation = gql`
     leftPage: update_page(page_id: $leftId, page_params: $leftParams)
       @skip(if: $noLeftPage) {
       id
-      is_visited
       layout
       page_number
       preview_image_url
@@ -28,7 +27,6 @@ export const savePrintDataMutation = gql`
     rightPage: update_page(page_id: $rightId, page_params: $rightParams)
       @skip(if: $noRightPage) {
       id
-      is_visited
       layout
       page_number
       preview_image_url
@@ -37,13 +35,17 @@ export const savePrintDataMutation = gql`
     }
     update_sheet(sheet_id: $sheetId, sheet_params: $sheetParams) {
       id
+      is_visited
     }
-    update_book(book_id: $bookId, book_params: $bookParams)
-      @include(if: $isUpdatePageInfo) {
+    update_book(book_id: $bookId, book_params: $bookParams) {
       id
+      print_theme_id
+      page_number_position
+      print_page_numbers
     }
     update_book_properties(book_id: $bookId, properties: $properties)
       @include(if: $isUpdatePageInfo) {
+      id
       properties
     }
   }

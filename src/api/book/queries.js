@@ -65,12 +65,14 @@ export const digitalEditorQuery = gql`
         id
         is_digital_photo_visited
       }
+      digital_theme_id
       book_sections {
         sheets {
           is_visited
           digital_frames {
             id
             preview_image_url
+            is_visited
           }
         }
       }
@@ -116,6 +118,7 @@ export const printEditorQuery = gql`
         cover_option
       }
       print_page_numbers
+      print_theme_id
       page_number_position
       properties
       book_sections {

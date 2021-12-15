@@ -6,7 +6,11 @@ import { getItem } from '@/common/storage';
 import { LOCAL_STORAGE } from '@/common/constants';
 import responseHandler from './responseHandler';
 import {
+  updateCreateSection,
+  updateCreateSheet,
   updateDeleteFrame,
+  updateDeleteSection,
+  updateDeleteSheet,
   updatePortraitSettingCache,
   updateSheetCache,
   updateTemplateUserCache
@@ -31,7 +35,11 @@ const urqlClient = createClient({
           create_portrait_layout_setting: updatePortraitSettingCache,
           create_template_user: updateTemplateUserCache,
           update_sheet: updateSheetCache,
-          delete_digital_frame: updateDeleteFrame
+          delete_digital_frame: updateDeleteFrame,
+          delete_sheet: updateDeleteSheet,
+          create_sheet: updateCreateSheet,
+          delete_book_section: updateDeleteSection,
+          create_book_section: updateCreateSection
         }
       }
     }),
