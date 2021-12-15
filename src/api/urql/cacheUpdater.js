@@ -1,5 +1,6 @@
 import { EDITION } from '@/common/constants';
 import { get } from 'lodash';
+import { managerQuery } from '../book/queries';
 import { getSheetFramesQuery } from '../frame/queries';
 import {
   getPrintSettingsQuery,
@@ -92,6 +93,113 @@ export const updateDeleteFrame = (results, args, cache) => {
       data.sheet.digital_frames = data.sheet.digital_frames.filter(
         f => f.id !== frameId
       );
+      return data;
+    }
+  );
+};
+
+export const updateCreateSheet = (results, args, cache) => {
+  const sheetId = get(results, 'create_sheet.id', null);
+  const bookId = get(results, 'create_sheet.book.id', null);
+  const { book_section_id, sheet_params } = args;
+
+  if (!sheetId || !bookId || !book_section_id) return;
+
+  cache.updateQuery(
+    {
+      query: managerQuery,
+      variables: { bookId }
+    },
+    data => {
+      if (!data) return data;
+      const sectionIndex = data.book.book_sections.findIndex(
+        section => section.id === book_section_id
+      );
+      data.book.book_sections[sectionIndex].sheets.push({
+        ...sheet_params,
+        id: sheetId,
+        __typename: 'Sheet'
+      });
+
+      return data;
+    }
+  );
+};
+
+export const updateDeleteSheet = (results, _, cache) => {
+  const sheetId = get(results, 'delete_sheet.id', null);
+  const bookId = get(results, 'delete_sheet.book.id', null);
+
+  if (!sheetId || !bookId) return;
+
+  cache.updateQuery(
+    {
+      query: managerQuery,
+      variables: { bookId }
+    },
+    data => {
+      if (!data) return data;
+
+      const sections = data.book.book_sections;
+
+      let sheetIndex = null;
+      const sectionIndex = sections.findIndex(section =>
+        section.sheets.some((sheet, idx) => {
+          if (sheet.id === sheetId) {
+            sheetIndex = idx;
+            return true;
+          }
+        })
+      );
+      sections[sectionIndex].sheets.splice(sheetIndex, 1);
+      return data;
+    }
+  );
+};
+
+export const updateDeleteSection = (results, _, cache) => {
+  const sectionId = get(results, 'delete_book_section.id', null);
+  const bookId = get(results, 'delete_book_section.book.id', null);
+
+  if (!sectionId || !bookId) return;
+
+  cache.updateQuery(
+    {
+      query: managerQuery,
+      variables: { bookId }
+    },
+    data => {
+      if (!data) return data;
+      const sections = data.book.book_sections;
+
+      const sectionIndex = sections.findIndex(
+        section => section.id === sectionId
+      );
+
+      sections.splice(sectionIndex, 1);
+      return data;
+    }
+  );
+};
+
+export const updateCreateSection = (results, args, cache) => {
+  const sectionParams = get(results, 'create_book_section', null);
+  const { book_id: bookId } = args;
+
+  if (!bookId) return;
+
+  cache.updateQuery(
+    {
+      query: managerQuery,
+      variables: { bookId }
+    },
+    data => {
+      if (!data) return data;
+
+      data.book.book_sections.push({
+        ...sectionParams
+      });
+
       return data;
     }
   );
