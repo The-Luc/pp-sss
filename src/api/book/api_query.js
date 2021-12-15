@@ -61,8 +61,13 @@ const getDigitalSheet = (sheet, { id }, index, totalSheets) => {
 
   const frameIds = isNoFrame ? [] : sheet.digital_frames.map(f => f.id);
 
+  // sheet.is_visisted is used for print editor
+  // For digital, if any frame is visited => sheet is visted
+  const isVisited = sheet.digital_frames.some(f => f.is_visited);
+
   return new SheetDigitalDetail({
     ...sheetMapping(sheet),
+    isVisited,
     sectionId: id,
     thumbnailUrl,
     pageName,

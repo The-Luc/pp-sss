@@ -43,6 +43,12 @@ export const bookMapping = book => {
       page_number_position: {
         name: 'position'
       },
+      print_theme_id: {
+        name: 'themeId'
+      },
+      digital_theme_id: {
+        name: 'themeId'
+      },
       properties: {
         data: {
           font_family: {
@@ -100,12 +106,13 @@ export const bookMapping = book => {
  * @param {Number} communityId Community id
  * @returns converted object
  */
-export const pageInfoMappingToApi = (pageInfo, communityId) => {
+export const pageInfoMappingToApi = (pageInfo, communityId, themeId) => {
   const { isNumberingOn, position, color, fontFamily, fontSize } = pageInfo;
 
   const bookParams = {
     print_page_numbers: isNumberingOn,
-    page_number_position: position
+    page_number_position: position,
+    print_theme_id: parseInt(themeId)
   };
   const properties = {
     community_id: communityId,

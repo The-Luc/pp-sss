@@ -32,7 +32,7 @@ export const useSaveData = () => {
    *
    * fileds saved on book
    *  pageInfo
-   *  default theme id #4452
+   *  default theme id
    *
    * @param {Object} editScreenData sheet data
    * @returns api response
@@ -40,9 +40,11 @@ export const useSaveData = () => {
   const savePrintEditScreen = async editScreenData => {
     if (isEmpty(editScreenData.sheetProps)) return;
 
-    const { pageInfo, bookId, communityId } = editScreenData;
-    const sheetParams = { is_visited: false }; // set false until mutation default thumbnail is available
-    const { id: sheetId, pageIds, type } = editScreenData.sheetProps;
+    const { pageInfo, bookId, communityId, defaultThemeId } = editScreenData;
+    const { id: sheetId, pageIds, type, isVisited } = editScreenData.sheetProps;
+
+    const sheetParams = { is_visited: isVisited };
+
     const [leftPageId, rightPageId] = getPageIdsOfSheet(pageIds, type);
 
     const { leftPage, rightPage } = mapSheetToPages(editScreenData);
@@ -51,7 +53,8 @@ export const useSaveData = () => {
 
     const { bookParams, properties } = pageInfoMappingToApi(
       pageInfo,
-      communityId
+      communityId,
+      defaultThemeId
     );
 
     const variables = {

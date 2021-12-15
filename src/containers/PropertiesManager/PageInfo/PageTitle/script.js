@@ -28,10 +28,10 @@ export default {
   },
   methods: {
     onChangeLeftTitle(val) {
-      this.$emit('change', { leftTitle: val.trim() });
+      this.$emit('change', { leftTitle: val });
     },
     onChangeRightTitle(val) {
-      this.$emit('change', { rightTitle: val.trim() });
+      this.$emit('change', { rightTitle: val });
     }
   }
 };
