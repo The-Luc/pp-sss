@@ -22,7 +22,6 @@ export const useSaveData = () => {
    *
    * fields will be saved on page:
    *  layout/elements
-   *  layout/workspace
    *  preview_image_url           # wait to a solution to upload images
    *  show_page_number (spread info)
    *  title (spread info)

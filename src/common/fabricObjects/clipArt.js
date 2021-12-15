@@ -1,4 +1,10 @@
-import { addCliparts } from '.';
+import { useObjectControlsOverride } from '@/plugins/fabric';
+import {
+  addCliparts,
+  applyShadowToObject,
+  handleGetClipart,
+  updateSpecificProp
+} from '.';
 
 /**
  * Adding clip art to canvas
@@ -23,4 +29,39 @@ export const addPrintClipArts = async (
     isPlaceInLeftPage,
     eventListeners
   );
+};
+
+export const createClipartObject = async objectData => {
+  const clipart = await handleGetClipart({
+    object: objectData,
+    expectedHeight: objectData.size.height,
+    expectedWidth: objectData.size.width
+  });
+
+  const {
+    dropShadow,
+    shadowBlur,
+    shadowOffset,
+    shadowOpacity,
+    shadowAngle,
+    shadowColor
+  } = clipart;
+
+  updateSpecificProp(clipart, {
+    coord: {
+      rotation: objectData.coord.rotation
+    }
+  });
+
+  useObjectControlsOverride(clipart);
+
+  applyShadowToObject(clipart, {
+    dropShadow,
+    shadowBlur,
+    shadowOffset,
+    shadowOpacity,
+    shadowAngle,
+    shadowColor
+  });
+  return clipart;
 };
