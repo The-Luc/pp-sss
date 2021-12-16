@@ -36,8 +36,8 @@ const getSpreadInfo = (firstPage, secondPage) => {
   return new SpreadInfo({
     leftTitle: firstPage.title,
     rightTitle: secondPage.title,
-    isLeftNumberOn: firstPage.show_page_number,
-    isRightNumberOn: secondPage.show_page_number
+    isLeftNumberOn: Boolean(firstPage.show_page_number),
+    isRightNumberOn: Boolean(secondPage.show_page_number)
   });
 };
 
