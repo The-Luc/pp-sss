@@ -2,6 +2,7 @@ import { fabric } from 'fabric';
 
 import {
   createBackgroundFabricObject,
+  createClipartObject,
   createMediaObject,
   createPortraitImageObject,
   createSvgObject,
@@ -228,7 +229,7 @@ export default {
         [OBJECT_TYPE.BACKGROUND]: this.drawBackground,
         [OBJECT_TYPE.TEXT]: this.drawText,
         [OBJECT_TYPE.SHAPE]: this.drawSvg,
-        [OBJECT_TYPE.CLIP_ART]: this.drawSvg,
+        [OBJECT_TYPE.CLIP_ART]: this.drawClipart,
         [OBJECT_TYPE.IMAGE]: this.drawMedia,
         [OBJECT_TYPE.VIDEO]: this.drawMedia,
         [OBJECT_TYPE.PORTRAIT_IMAGE]: this.drawPortraitImage
@@ -267,13 +268,22 @@ export default {
     },
 
     /**
-     *  Draw shape / clipart object
+     *  Draw shape object
      *
      * @param {Object} objectData data of clipart or shape object
      * @returns a fabric object
      */
     async drawSvg(objectData) {
       return createSvgObject(objectData);
+    },
+    /**
+     *  Draw  clipart object
+     *
+     * @param {Object} objectData data of clipart or shape object
+     * @returns a fabric object
+     */
+    async drawClipart(objectData) {
+      return createClipartObject(objectData);
     },
     /**
      *  Draw video / image

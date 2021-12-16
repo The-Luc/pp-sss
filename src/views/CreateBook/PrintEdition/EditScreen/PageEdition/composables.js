@@ -22,7 +22,6 @@ export const useSaveData = () => {
    *
    * fields will be saved on page:
    *  layout/elements
-   *  layout/workspace
    *  preview_image_url           # wait to a solution to upload images
    *  show_page_number (spread info)
    *  title (spread info)
@@ -79,14 +78,14 @@ export const useSaveData = () => {
    *  To save objects to a sheet
    *
    * @param {String} sheetId id of a sheet
-   * @param {Object} objects object will be saved
+   * @param {Array} objects object will be saved
    * @returns api response
    */
   const savePortraitObjects = async (sheetId, objects, appliedPage) => {
     const getSheetDataFnc = getDataEditScreen.value;
     const sheetData = getSheetDataFnc(sheetId);
 
-    const { pageIds, media } = sheetData.sheetProps;
+    const { pageIds } = sheetData.sheetProps;
     const [leftPageId, rightPageId] = pageIds;
 
     // keep the current backgrounds
@@ -95,10 +94,10 @@ export const useSaveData = () => {
       o => o.type === OBJECT_TYPE.BACKGROUND
     );
 
-    const { leftLayout, rightLayout } = pageLayoutsFromSheet({
-      media,
-      objects: [...backgrounds, ...objects]
-    });
+    const { leftLayout, rightLayout } = pageLayoutsFromSheet([
+      ...backgrounds,
+      ...objects
+    ]);
 
     const savePromises = [
       appliedPage.isLeft && updatePageApi(leftPageId, { layout: leftLayout }),

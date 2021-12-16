@@ -43,11 +43,6 @@ export default {
       }
     }
   },
-  mounted() {
-    if (this.printThemeSelectedId) {
-      this.initData();
-    }
-  },
   methods: {
     ...mapActions({
       setPrintThemes: THEME_ACTIONS.GET_PRINT_THEMES
@@ -106,6 +101,10 @@ export default {
   async created() {
     if (this.themes.length === 0) {
       await this.setPrintThemes();
+    }
+
+    if (this.printThemeSelectedId) {
+      this.initData();
     }
   }
 };

@@ -5,26 +5,47 @@ import { useMutationBook, useActionBook, useAppCommon } from '@/hooks';
 import { isEmpty } from '@/common/utils';
 import { GETTERS, ACTIONS } from '@/store/modules/digital/const';
 import digitalService from '@/api/digital';
+import { mappingFrameToApi } from '@/common/mapping/frame';
+import { saveDigitalDataApi } from '@/api/saveDigital';
 
 export const useSaveData = () => {
   const { getDataEditScreen } = useGetters({
     getDataEditScreen: GETTERS.GET_DATA_EDIT_SCREEN
   });
 
+  /**
+   * To save digital data to DB
+   *
+   * fields will be saved on frame:
+   *  title
+   *  objects
+   *  preview_image_url   # wait to a solution to upload images
+   *  frame_delay
+   *  is_visited
+   *  play_in_ids
+   *  play_out_ids
+   *  frame_order
+   *
+   * fileds saved on book
+   *  default theme id
+   *
+   * @param {Object} editScreenData sheet data
+   * @returns api response
+   */
   const saveEditScreen = async editScreenData => {
-    if (isEmpty(editScreenData.sheet)) return;
+    const { frame, defaultThemeId, bookId } = editScreenData;
 
-    const sheetId = editScreenData.sheet.id;
+    if (isEmpty(frame)) return;
 
-    const { data, status } = await digitalService.saveEditScreen(
-      sheetId,
-      editScreenData
-    );
-
-    return {
-      data,
-      status
+    const variables = {
+      bookId,
+      bookParams: { digital_theme_id: parseInt(defaultThemeId) },
+      frameId: frame.id,
+      frameParams: mappingFrameToApi(frame)
     };
+    variables.frameParams.objects = frame.objects.map(o => JSON.stringify(o));
+
+    return await saveDigitalDataApi(variables);
   };
 
   const saveAnimationConfig = async animationConfig => {
@@ -70,6 +91,7 @@ export const useBookDigitalInfo = () => {
 
     setBookInfo({
       info: {
+        id: bookId,
         communityId,
         defaultThemeId: themeId,
         isPhotoVisited,
