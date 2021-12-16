@@ -48,11 +48,6 @@ export default {
       }
     }
   },
-  mounted() {
-    if (this.digitalThemeSelectedId) {
-      this.initData();
-    }
-  },
   methods: {
     ...mapMutations({
       triggerThemeIdSelected: DIGITAL_MUTATES.SET_DEFAULT_THEME_ID,
@@ -112,6 +107,9 @@ export default {
       this.setDigitalThemes({
         themes
       });
+    }
+    if (this.digitalThemeSelectedId) {
+      this.initData();
     }
   }
 };
