@@ -115,7 +115,7 @@ export const mapSheetToPages = sheet => {
 /**
  * To seperate objects and media of sheet into pages
  *
- * @param {Object} object sheet objects
+ * @param {Array} objects sheet objects
  * @returns {leftLayout, rightLayout} elements and workspace for each page
  */
 export const pageLayoutsFromSheet = objects => {
