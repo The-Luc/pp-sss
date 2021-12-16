@@ -755,7 +755,7 @@ export default {
         const canvas = this.$refs.canvasEditor.digitalCanvas;
 
         const frames =
-          +screenId === this.pageSelected.id
+          screenId === this.pageSelected.id
             ? cloneDeep(this.frames)
             : cloneDeep(this.getSheets[screenId].frames);
 
@@ -795,7 +795,8 @@ export default {
           objects: filteredObjects.map(obj => ({ id: obj.id, newObject: obj }))
         });
 
-        this.setFrames({ framesList });
+        // TODO: Handle API when available
+        // this.setFrames({ framesList });
 
         this.setCurrentFrameId({ id });
 
