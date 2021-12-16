@@ -38,7 +38,8 @@ export const bookMapping = book => {
         }
       },
       print_page_numbers: {
-        name: 'isNumberingOn'
+        name: 'isNumberingOn',
+        parse: value => Boolean(value)
       },
       page_number_position: {
         name: 'position'
