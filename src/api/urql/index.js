@@ -1,4 +1,5 @@
 import { createClient, dedupExchange, fetchExchange } from '@urql/core';
+import { devtoolsExchange } from '@urql/devtools';
 import { cacheExchange } from '@urql/exchange-graphcache';
 import store from '@/store';
 import { MUTATES as APP_MUTATES } from '@/store/modules/app/const';
@@ -6,12 +7,14 @@ import { getItem } from '@/common/storage';
 import { LOCAL_STORAGE } from '@/common/constants';
 import responseHandler from './responseHandler';
 import {
+  moveSheetCache,
   updateCreateSection,
   updateCreateSheet,
   updateDeleteFrame,
   updateDeleteSection,
   updateDeleteSheet,
   updatePortraitSettingCache,
+  updateSectionCache,
   updateSheetCache,
   updateTemplateUserCache
 } from './cacheUpdater';
@@ -21,6 +24,7 @@ let requestCount = 0;
 const urqlClient = createClient({
   url: process.env.VUE_APP_API_ENDPOINT,
   exchanges: [
+    devtoolsExchange,
     dedupExchange,
     cacheExchange({
       keys: {
@@ -39,7 +43,9 @@ const urqlClient = createClient({
           delete_sheet: updateDeleteSheet,
           create_sheet: updateCreateSheet,
           delete_book_section: updateDeleteSection,
-          create_book_section: updateCreateSection
+          create_book_section: updateCreateSection,
+          update_book_section: updateSectionCache,
+          move_sheet: moveSheetCache
         }
       }
     }),
