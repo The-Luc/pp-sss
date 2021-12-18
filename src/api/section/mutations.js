@@ -1,6 +1,6 @@
 import { gql } from 'graphql-tag';
 
-const sectionFragment = gql`
+export const sectionFragment = gql`
   fragment sectionInfo on BookSection {
     id
     color
@@ -13,7 +13,9 @@ const sectionFragment = gql`
       id
     }
     assigned_user {
-      name
+      id
+    }
+    book {
       id
     }
   }

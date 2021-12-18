@@ -27,7 +27,7 @@ export const sectionMapping = section => {
         }
       }
     },
-    restrict: ['sheets']
+    restrict: ['sheets', 'book']
   };
 
   return mapObject(section, mapRules);
