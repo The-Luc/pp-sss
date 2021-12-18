@@ -59,8 +59,13 @@ const urqlClient = createClient({
   }
 });
 
-export const graphqlRequest = async (query, variables = {}) => {
+export const graphqlRequest = async (query, variables = {}, isHideSpiner) => {
   const { operation } = query.definitions[0];
+
+  if (isHideSpiner) {
+    const res = await urqlClient[operation](query, variables).toPromise();
+    return responseHandler(res);
+  }
 
   // show loading screen
   store.commit(APP_MUTATES.SET_LOADING_STATE, { value: true });
