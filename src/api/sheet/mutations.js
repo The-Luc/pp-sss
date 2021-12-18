@@ -15,6 +15,11 @@ export const updateSheetMutation = gql`
   mutation updateSheet($sheetId: ID!, $params: SheetInput) {
     update_sheet(sheet_id: $sheetId, sheet_params: $params) {
       id
+      is_visited
+      sheet_order
+      workspace
+      digital_workspace
+      linked
     }
   }
 `;
@@ -67,12 +72,19 @@ export const moveSheetMutation = gql`
 `;
 
 export const deleteSheetMutation = gql`
-  mutation deleteSheet($sheetId: ID!) {
+  mutation deleteSheet($sheetId: ID!, $sectionId: ID!, $sheetIds: [Int]) {
     delete_sheet(sheet_id: $sheetId) {
       id
       book {
         id
       }
+    }
+    update_sheet_order(
+      book_section_id: $sectionId
+      sheet_order_ids: $sheetIds
+    ) {
+      id
+      sheet_order
     }
   }
 `;

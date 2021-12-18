@@ -43,8 +43,17 @@ export const useActionSection = () => {
     setGeneralInfo({ info: { totalSheets, totalPages, totalScreens } });
   };
 
+  /**
+   * To remove a sheet and reorder sheet order behind deleted sheet
+   * @param {String} sheetId sheet id
+   * @param {String} sectionId section Id
+   */
   const deleteSheet = async (sheetId, sectionId) => {
-    const isSuccess = await deleteSheetApi(sheetId);
+    const sheetIds = sectionSheetIds.value[sectionId]
+      .filter(id => id !== sheetId)
+      .map(id => parseInt(id));
+
+    const isSuccess = await deleteSheetApi(sheetId, sectionId, sheetIds);
 
     toggleModal({ isOpenModal: false });
 
@@ -56,7 +65,12 @@ export const useActionSection = () => {
   };
 
   const deleteSection = async sectionId => {
-    const isSuccess = await deleteSectionApi(sectionId);
+    const bookId = book.value.id;
+    const newSectionIds = sectionIds.value
+      .filter(id => id !== sectionId)
+      .map(id => Number(id));
+
+    const isSuccess = await deleteSectionApi(sectionId, bookId, newSectionIds);
 
     toggleModal({ isOpenModal: false });
 

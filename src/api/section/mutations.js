@@ -65,12 +65,19 @@ export const updateSectionOrderMutation = gql`
 `;
 
 export const deleteSectionMutation = gql`
-  mutation deleteSection($sectionId: ID!) {
+  mutation deleteSection($sectionId: ID!, $bookId: ID!, $sectionIds: [Int]) {
     delete_book_section(book_section_id: $sectionId) {
       id
       book {
         id
       }
+    }
+    update_book_section_order(
+      book_id: $bookId
+      book_section_order_ids: $sectionIds
+    ) {
+      id
+      section_order
     }
   }
 `;

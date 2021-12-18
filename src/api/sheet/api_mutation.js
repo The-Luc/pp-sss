@@ -100,8 +100,12 @@ export const moveSheetApi = async (sectionId, targetIndex, sheetId) => {
  * @param   {String}  sheetId id of selected sheet
  * @returns {Object}          mutation result
  */
-export const deleteSheetApi = async sheetId => {
-  const res = await graphqlRequest(deleteSheetMutation, { sheetId });
+export const deleteSheetApi = async (sheetId, sectionId, sheetIds) => {
+  const res = await graphqlRequest(deleteSheetMutation, {
+    sheetId,
+    sectionId,
+    sheetIds
+  });
 
   return isOk(res);
 };
