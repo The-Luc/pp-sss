@@ -7,6 +7,7 @@ import { getItem } from '@/common/storage';
 import { LOCAL_STORAGE } from '@/common/constants';
 import responseHandler from './responseHandler';
 import {
+  moveSheetCache,
   updateCreateSection,
   updateCreateSheet,
   updateDeleteFrame,
@@ -43,7 +44,8 @@ const urqlClient = createClient({
           create_sheet: updateCreateSheet,
           delete_book_section: updateDeleteSection,
           create_book_section: updateCreateSection,
-          update_book_section: updateSectionCache
+          update_book_section: updateSectionCache,
+          move_sheet: moveSheetCache
         }
       }
     }),

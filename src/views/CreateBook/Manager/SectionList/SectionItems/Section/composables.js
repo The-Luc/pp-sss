@@ -110,7 +110,14 @@ export const useActionSection = () => {
     moveToIndex,
     selectedIndex
   ) => {
-    const isSuccess = await moveSheetApi(moveToSectionId, moveToIndex, id);
+    const sheetIds = [...sectionSheetIds.value[moveToSectionId]];
+    sheetIds.splice(moveToIndex, 0, id);
+    const isSuccess = await moveSheetApi(
+      moveToSectionId,
+      moveToIndex,
+      id,
+      sheetIds
+    );
 
     if (!isSuccess) return;
 
@@ -159,7 +166,14 @@ export const useActionSection = () => {
       sectionSheetIds.value[moveToSectionId].length -
       (targetSectionIndex === sectionIds.value.length - 1 ? 1 : 0);
 
-    const isSuccess = await moveSheetApi(moveToSectionId, moveToIndex, id);
+    const sheetIds = [...sectionSheetIds.value[moveToSectionId]];
+    sheetIds.splice(moveToIndex, 0, id);
+    const isSuccess = await moveSheetApi(
+      moveToSectionId,
+      moveToIndex,
+      id,
+      sheetIds
+    );
 
     if (!isSuccess) return;
 

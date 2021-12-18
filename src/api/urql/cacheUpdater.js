@@ -237,3 +237,46 @@ export const updateSectionCache = (results, args, cache) => {
     }
   );
 };
+
+export const moveSheetCache = (results, args, cache) => {
+  const bookId = get(results, 'move_sheet[0].book.id');
+  const {
+    target_book_section_id: sectionId,
+    target_placement: targetIndex,
+    sheet_id: sheetId
+  } = args;
+
+  if (!bookId || !sheetId) return;
+  cache.updateQuery(
+    {
+      query: managerQuery,
+      variables: { bookId }
+    },
+    data => {
+      // remove sheet from its original section
+      const sections = data.book.book_sections;
+
+      let sheetIndex = null;
+      const sectionIndex = sections.findIndex(section =>
+        section.sheets.some((sheet, idx) => {
+          if (sheet.id === sheetId) {
+            sheetIndex = idx;
+            return true;
+          }
+        })
+      );
+      const targetSheet = sections[sectionIndex].sheets.splice(
+        sheetIndex,
+        1
+      )[0];
+
+      // insert sheet to target section
+      const targetSectionIndex = sections.findIndex(
+        section => section.id === sectionId
+      );
+      sections[targetSectionIndex].sheets.splice(targetIndex, 0, targetSheet);
+
+      return data;
+    }
+  );
+};

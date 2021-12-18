@@ -60,13 +60,28 @@ export const updateSheetLinkMutation = gql`
 `;
 
 export const moveSheetMutation = gql`
-  mutation moveSheet($sectionId: ID!, $targetIndex: Int!, $sheetId: ID!) {
+  mutation moveSheet(
+    $sectionId: ID!
+    $targetIndex: Int!
+    $sheetId: ID!
+    $sheetIds: [Int]
+  ) {
     move_sheet(
       target_book_section_id: $sectionId
       target_placement: $targetIndex
       sheet_id: $sheetId
     ) {
+      book {
+        id
+      }
       id
+    }
+    update_sheet_order(
+      book_section_id: $sectionId
+      sheet_order_ids: $sheetIds
+    ) {
+      id
+      sheet_order
     }
   }
 `;
