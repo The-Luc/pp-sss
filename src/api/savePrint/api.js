@@ -9,6 +9,6 @@ export const savePrintDataApi = async variables => {
   variables.leftId = variables.leftId || '';
   variables.rightId = variables.rightId || '';
 
-  const res = await graphqlRequest(savePrintDataMutation, variables);
+  const res = await graphqlRequest(savePrintDataMutation, variables, true);
   return isOk(res);
 };
