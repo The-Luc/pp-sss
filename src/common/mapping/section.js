@@ -46,6 +46,7 @@ export const sectionMappingToApi = section => {
     [PROCESS_STATUS.COMPLETED]: 'COMPLETED',
     [PROCESS_STATUS.APPROVED]: 'APPROVED'
   };
+
   const mapRules = {
     data: {
       status: {
