@@ -1,6 +1,12 @@
 .poster-frame-container {
   margin-top: 8px;
   .control-group {
+    // temporary disable this component
+    .pp-range-slider-container {
+      opacity: 0.5;
+    }
+    // END temporary code
+
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;

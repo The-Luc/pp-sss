@@ -1,4 +1,9 @@
 .trim-container {
+  // temporary disable this component
+  & > * {
+    opacity: 0.5;
+  }
+  // END of temporary code
   .control-group {
     display: flex;
     flex-wrap: wrap;

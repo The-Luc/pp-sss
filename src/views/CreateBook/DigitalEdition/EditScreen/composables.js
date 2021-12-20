@@ -7,6 +7,7 @@ import { GETTERS, ACTIONS } from '@/store/modules/digital/const';
 import digitalService from '@/api/digital';
 import { mappingFrameToApi } from '@/common/mapping/frame';
 import { saveDigitalDataApi } from '@/api/saveDigital';
+import { getAssetByIdApi } from '@/api/media';
 
 export const useSaveData = () => {
   const { getDataEditScreen } = useGetters({
@@ -113,4 +114,8 @@ export const useVideo = () => {
   });
 
   return { totalVideoDuration };
+};
+
+export const useAsset = () => {
+  return { getAssetByIdApi };
 };
