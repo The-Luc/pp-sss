@@ -204,3 +204,79 @@ export const updateCreateSection = (results, args, cache) => {
     }
   );
 };
+
+export const updateSectionCache = (results, args, cache) => {
+  const defaultAssignee = { id: -1, __typename: 'User' };
+  const assignedUser = get(results, 'update_book_section.assigned_user', null);
+
+  const sectionId = get(results, 'update_book_section.id', null);
+  const bookId = get(results, 'update_book_section.book.id', null);
+
+  if (!sectionId || !bookId) return;
+
+  cache.updateQuery(
+    {
+      query: managerQuery,
+      variables: { bookId }
+    },
+    data => {
+      // handle assigned_user
+      if (
+        Object.prototype.hasOwnProperty.call(
+          args.book_section_params,
+          'assigned_user_id'
+        )
+      ) {
+        const index = data.book.book_sections.findIndex(
+          s => s.id === sectionId
+        );
+        data.book.book_sections[index].assigned_user =
+          assignedUser || defaultAssignee;
+      }
+      return data;
+    }
+  );
+};
+
+export const moveSheetCache = (results, args, cache) => {
+  const bookId = get(results, 'move_sheet[0].book.id');
+  const {
+    target_book_section_id: sectionId,
+    target_placement: targetIndex,
+    sheet_id: sheetId
+  } = args;
+
+  if (!bookId || !sheetId) return;
+  cache.updateQuery(
+    {
+      query: managerQuery,
+      variables: { bookId }
+    },
+    data => {
+      // remove sheet from its original section
+      const sections = data.book.book_sections;
+
+      let sheetIndex = null;
+      const sectionIndex = sections.findIndex(section =>
+        section.sheets.some((sheet, idx) => {
+          if (sheet.id === sheetId) {
+            sheetIndex = idx;
+            return true;
+          }
+        })
+      );
+      const targetSheet = sections[sectionIndex].sheets.splice(
+        sheetIndex,
+        1
+      )[0];
+
+      // insert sheet to target section
+      const targetSectionIndex = sections.findIndex(
+        section => section.id === sectionId
+      );
+      sections[targetSectionIndex].sheets.splice(targetIndex, 0, targetSheet);
+
+      return data;
+    }
+  );
+};

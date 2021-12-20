@@ -61,18 +61,24 @@ export const useBook = () => {
       section => section.id === sectionId
     );
 
-    const totalSheetsInSection = sections.value[sectionIndex].sheetIds.length;
+    const isAddToLastSection = sectionIndex === sections.value.length - 1;
+    const sheetIds = sections.value[sectionIndex].sheetIds;
+    const lastSheetId = isAddToLastSection ? sheetIds[sheetIds.length - 1] : '';
+    const totalSheetsInSection = sheetIds.length;
 
-    const order =
-      sectionIndex === sections.value.length - 1
-        ? totalSheetsInSection - 1
-        : totalSheetsInSection;
+    const order = isAddToLastSection
+      ? totalSheetsInSection - 1
+      : totalSheetsInSection;
 
-    const res = await addNewSheetApi(sectionId, {
-      ...new SheetDetail(),
-      order,
-      isVisited: false
-    });
+    const res = await addNewSheetApi(
+      sectionId,
+      {
+        ...new SheetDetail(),
+        order,
+        isVisited: false
+      },
+      lastSheetId
+    );
 
     if (!isOk(res)) return;
 

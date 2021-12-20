@@ -27,7 +27,7 @@ export const sectionMapping = section => {
         }
       }
     },
-    restrict: ['sheets']
+    restrict: ['sheets', 'book']
   };
 
   return mapObject(section, mapRules);
@@ -46,6 +46,7 @@ export const sectionMappingToApi = section => {
     [PROCESS_STATUS.COMPLETED]: 'COMPLETED',
     [PROCESS_STATUS.APPROVED]: 'APPROVED'
   };
+
   const mapRules = {
     data: {
       status: {

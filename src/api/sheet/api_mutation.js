@@ -17,12 +17,18 @@ import { isOk } from '@/common/utils';
  *
  * @param   {String}  sectionId id of selected section
  * @param   {Object}  sheet     data of new sheet
+ * @param   {String}  lastSheetId  if of inside backcover sheet if adding to last section
  * @returns {Object}            mutation result
  */
-export const addNewSheetApi = async (sectionId, sheet) => {
+export const addNewSheetApi = async (sectionId, sheet, lastSheetId) => {
+  const isUpdate = Boolean(lastSheetId);
+
   return graphqlRequest(addSheetMutation, {
     sectionId,
-    params: sheetMappingToApi(sheet)
+    createSheetParams: sheetMappingToApi(sheet),
+    sheetId: lastSheetId,
+    updateSheetParams: { sheet_order: sheet.order + 1 },
+    isUpdate
   });
 };
 
@@ -82,13 +88,20 @@ export const updateSheetLinkApi = async (sheetId, pageIds, linkStatus) => {
  * @param   {String}  sectionId   id of selected section
  * @param   {Number}  targetIndex new order of sections
  * @param   {String}  sheetId     id of moving sheet
+ * @param   {Array}  sheetIds     array sheet id of target section
  * @returns {Object}              mutation result
  */
-export const moveSheetApi = async (sectionId, targetIndex, sheetId) => {
+export const moveSheetApi = async (
+  sectionId,
+  targetIndex,
+  sheetId,
+  sheetIds
+) => {
   const res = await graphqlRequest(moveSheetMutation, {
     sectionId,
     targetIndex,
-    sheetId
+    sheetId,
+    sheetIds: sheetIds.map(Number)
   });
 
   return isOk(res);
@@ -100,8 +113,12 @@ export const moveSheetApi = async (sectionId, targetIndex, sheetId) => {
  * @param   {String}  sheetId id of selected sheet
  * @returns {Object}          mutation result
  */
-export const deleteSheetApi = async sheetId => {
-  const res = await graphqlRequest(deleteSheetMutation, { sheetId });
+export const deleteSheetApi = async (sheetId, sectionId, sheetIds) => {
+  const res = await graphqlRequest(deleteSheetMutation, {
+    sheetId,
+    sectionId,
+    sheetIds
+  });
 
   return isOk(res);
 };
