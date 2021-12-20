@@ -17,12 +17,18 @@ import { isOk } from '@/common/utils';
  *
  * @param   {String}  sectionId id of selected section
  * @param   {Object}  sheet     data of new sheet
+ * @param   {String}  lastSheetId  if of inside backcover sheet if adding to last section
  * @returns {Object}            mutation result
  */
-export const addNewSheetApi = async (sectionId, sheet) => {
+export const addNewSheetApi = async (sectionId, sheet, lastSheetId) => {
+  const isUpdate = Boolean(lastSheetId);
+
   return graphqlRequest(addSheetMutation, {
     sectionId,
-    params: sheetMappingToApi(sheet)
+    createSheetParams: sheetMappingToApi(sheet),
+    sheetId: lastSheetId,
+    updateSheetParams: { sheet_order: sheet.order + 1 },
+    isUpdate
   });
 };
 

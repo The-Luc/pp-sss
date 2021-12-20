@@ -1,12 +1,26 @@
 import { gql } from 'graphql-tag';
 
 export const addSheetMutation = gql`
-  mutation addSheet($sectionId: ID!, $params: SheetInput) {
-    create_sheet(book_section_id: $sectionId, sheet_params: $params) {
+  mutation addSheet(
+    $sectionId: ID!
+    $createSheetParams: SheetInput
+    $sheetId: ID!
+    $updateSheetParams: SheetInput
+    $isUpdate: Boolean!
+  ) {
+    create_sheet(
+      book_section_id: $sectionId
+      sheet_params: $createSheetParams
+    ) {
       id
       book {
         id
       }
+    }
+    update_sheet(sheet_id: $sheetId, sheet_params: $updateSheetParams)
+      @include(if: $isUpdate) {
+      id
+      sheet_order
     }
   }
 `;
