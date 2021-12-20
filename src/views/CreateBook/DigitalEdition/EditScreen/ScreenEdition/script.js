@@ -126,7 +126,7 @@ import {
 } from '@/store/modules/digital/const';
 
 import { cloneDeep, debounce, merge } from 'lodash';
-import { useSaveData, useObject, useVideo } from '../composables';
+import { useSaveData, useObject, useVideo, useAsset } from '../composables';
 import { useSavingStatus } from '@/views/CreateBook/composables';
 import UndoRedoCanvas from '@/plugins/undoRedoCanvas';
 import {
@@ -207,6 +207,7 @@ export default {
     const { setToolNameSelected, propertiesType } = useToolBar();
     const { setFrameDelay } = useFrameDelay();
     const { totalVideoDuration } = useVideo();
+    const { getAssetByIdApi } = useAsset();
 
     return {
       setLoadingState,
@@ -250,7 +251,8 @@ export default {
       updateTriggerAnimation,
       setPropertiesType,
       setFrameDelay,
-      totalVideoDuration
+      totalVideoDuration,
+      getAssetByIdApi
     };
   },
   data() {
@@ -1712,8 +1714,15 @@ export default {
      *
      * @param {Object}  prop  new prop
      */
-    changeVideoProperties(prop) {
+    async changeVideoProperties(prop) {
       if (!isEmpty(prop.volume)) this.changeVideoVolume(prop.volume);
+
+      const thumbnailId = prop.customThumbnailId;
+
+      if (!isEmpty(thumbnailId)) {
+        const thumbnailAsset = await this.getAssetByIdApi(thumbnailId);
+        prop.customThumbnailUrl = thumbnailAsset.imageUrl;
+      }
 
       this.changeElementProperties(prop, OBJECT_TYPE.VIDEO);
     },

@@ -39,11 +39,11 @@ export default {
     },
     /**
      * To set thumbnail for the current video
-     * @param {String} img Img url
+     * @param {String} id id of asset that is used as video thumbnail
      */
-    handleSelectedImage([{ imageUrl }]) {
+    handleSelectedImage([{ id }]) {
       this.$root.$emit(EVENT_TYPE.CHANGE_VIDEO_PROPERTIES, {
-        customThumbnailUrl: imageUrl
+        customThumbnailId: id
       });
     },
     /**
