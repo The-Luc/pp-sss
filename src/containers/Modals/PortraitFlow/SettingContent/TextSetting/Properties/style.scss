@@ -1,0 +1,49 @@
+.text-properties {
+  padding-top: 10px;
+  border-top: 1px solid $color-gray17;
+  ::v-deep.properties-title {
+    color: $color-stoodio-toolbartext;
+    font-size: $md-size;
+  }
+  .font {
+    display: flex;
+    margin-bottom: 10px;
+
+    ::v-deep.pp-select {
+      .v-input__control {
+        width: 322px;
+      }
+    }
+    ::v-deep.font-size-container {
+      margin-left: 20px;
+      .pp-combobox {
+        .v-input__control {
+          max-width: 80px;
+          img {
+            width: 30px;
+          }
+        }
+      }
+    }
+    ::v-deep.v-input__slot {
+      height: 30px;
+    }
+  }
+  .effect {
+    display: flex;
+    align-items: baseline;
+    div {
+      margin-right: 23px;
+    }
+    ::v-deep.color-container {
+      .box-color {
+        width: 80px;
+        margin: 0;
+        .box-color-active {
+          height: 13px;
+          width: 65px;
+        }
+      }
+    }
+  }
+}
