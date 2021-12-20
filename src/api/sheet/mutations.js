@@ -106,6 +106,7 @@ export const deleteSheetMutation = gql`
       id
       book {
         id
+        total_pages
       }
     }
     update_sheet_order(

@@ -72,6 +72,7 @@ export const deleteSectionMutation = gql`
       id
       book {
         id
+        total_pages
       }
     }
     update_book_section_order(
