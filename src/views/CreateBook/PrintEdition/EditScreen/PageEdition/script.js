@@ -316,7 +316,7 @@ export default {
 
       this.updateSavingStatus({ status: SAVE_STATUS.START });
 
-      await this.saveData(this.pageSelected.id);
+      await this.saveData(this.pageSelected.id, true);
 
       this.updateSavingStatus({ status: SAVE_STATUS.END });
 
@@ -325,11 +325,13 @@ export default {
     /**
      *
      * @param {String | Number} sheetId id of sheet need to save data
+     * @param {Boolean} isAutosave indicating autosaving or not
+     *
      */
-    async saveData(sheetId) {
+    async saveData(sheetId, isAutosave) {
       const data = this.getDataEditScreen(sheetId);
 
-      await this.savePrintEditScreen(data);
+      await this.savePrintEditScreen(data, isAutosave);
     },
 
     /**

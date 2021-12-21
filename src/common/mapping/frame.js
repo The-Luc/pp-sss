@@ -43,26 +43,11 @@ export const mappingFrameToApi = frame => {
       isVisited: {
         name: 'is_visited'
       },
-      playInIds: {
-        name: 'play_in_ids',
-        noSub: true
-      },
-      playOutIds: {
-        name: 'play_out_ids',
-        noSub: true
-      },
       previewImageUrl: {
         name: 'preview_image_url'
       }
     },
-    restrict: [
-      'id',
-      'fromLayout',
-      'playInIds',
-      'playOutIds',
-      'previewImageUrl',
-      'objects'
-    ]
+    restrict: ['id', 'fromLayout', 'playInIds', 'playOutIds', 'objects']
   };
 
   return mapObject(frame, mapRules);
