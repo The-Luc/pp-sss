@@ -660,7 +660,7 @@ export const splitBase64Image = async imgUrl => {
     });
 
   const leftThumb = getThumb(canvas, 0, halfWidth);
-  const rightThumb = getThumb(canvas, halfWidth, width);
+  const rightThumb = getThumb(canvas, halfWidth, halfWidth);
 
   canvas._objects = [];
   canvas.dispose();

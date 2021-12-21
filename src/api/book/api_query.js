@@ -30,7 +30,7 @@ import {
   printMainQuery
 } from './queries';
 
-import { EDITION } from '@/common/constants';
+import { EDITION, SHEET_TYPE } from '@/common/constants';
 
 const getSpreadInfo = (firstPage, secondPage) => {
   return new SpreadInfo({
@@ -100,11 +100,16 @@ const getPrintSheet = (sheet, { id }, index, totalSheets) => {
 
   const pageIds = isNoPage ? [] : sheet.pages.map(p => p.id);
 
+  const isFrontCover = sheetData.type === SHEET_TYPE.FRONT_COVER;
+  const thumbnailRightUrl = isFrontCover
+    ? firstPage.preview_image_url
+    : secondPage.preview_image_url;
+
   return new SheetPrintDetail({
     ...sheetData,
     sectionId: id,
     thumbnailLeftUrl: firstPage.preview_image_url,
-    thumbnailRightUrl: secondPage.preview_image_url,
+    thumbnailRightUrl,
     pageLeftName,
     pageRightName,
     pageIds,
