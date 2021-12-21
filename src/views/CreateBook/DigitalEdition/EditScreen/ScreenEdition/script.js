@@ -126,7 +126,7 @@ import {
 } from '@/store/modules/digital/const';
 
 import { cloneDeep, debounce, merge } from 'lodash';
-import { useSaveData, useObject, useVideo } from '../composables';
+import { useSaveData, useObject, useVideo, useAsset } from '../composables';
 import { useSavingStatus } from '@/views/CreateBook/composables';
 import UndoRedoCanvas from '@/plugins/undoRedoCanvas';
 import {
@@ -207,6 +207,7 @@ export default {
     const { setToolNameSelected, propertiesType } = useToolBar();
     const { setFrameDelay } = useFrameDelay();
     const { totalVideoDuration } = useVideo();
+    const { getAssetByIdApi } = useAsset();
 
     return {
       setLoadingState,
@@ -250,7 +251,8 @@ export default {
       updateTriggerAnimation,
       setPropertiesType,
       setFrameDelay,
-      totalVideoDuration
+      totalVideoDuration,
+      getAssetByIdApi
     };
   },
   data() {
@@ -270,7 +272,8 @@ export default {
       undoRedoCanvas: null,
       isFrameLoaded: false,
       isScroll: { x: false, y: false },
-      isAllowUpdateFrameDelay: false
+      isAllowUpdateFrameDelay: false,
+      isJustEnteringEditor: false // to prevent save data when entering editor
     };
   },
   computed: {
@@ -294,8 +297,10 @@ export default {
         if (val?.id === oldVal?.id) return;
 
         this.isFrameLoaded = false;
+        if (!this.isJustEnteringEditor)
+          await this.saveData(this.currentFrameId);
 
-        await this.saveData(this.currentFrameId);
+        this.isJustEnteringEditor = false;
 
         // reset frames, frameIDs, currentFrameId
         this.setSelectedObjectId({ id: '' });
@@ -423,6 +428,9 @@ export default {
 
     this.updateMediaSidebarOpen({ isOpen: false });
   },
+  destroyed() {
+    this.setCurrentFrameId({ id: '' });
+  },
   methods: {
     ...mapActions({
       getDataCanvas: DIGITAL_ACTIONS.GET_DATA_CANVAS
@@ -513,6 +521,8 @@ export default {
       this.updateCanvasEventListeners();
       this.updateDigitalEventListeners();
       this.updateWindowEventListeners();
+
+      this.isJustEnteringEditor = true;
 
       this.autoSaveTimer = setInterval(this.handleAutosave, AUTOSAVE_INTERVAL);
 
@@ -1712,8 +1722,15 @@ export default {
      *
      * @param {Object}  prop  new prop
      */
-    changeVideoProperties(prop) {
+    async changeVideoProperties(prop) {
       if (!isEmpty(prop.volume)) this.changeVideoVolume(prop.volume);
+
+      const thumbnailId = prop.customThumbnailId;
+
+      if (!isEmpty(thumbnailId)) {
+        const thumbnailAsset = await this.getAssetByIdApi(thumbnailId);
+        prop.customThumbnailUrl = thumbnailAsset.imageUrl;
+      }
 
       this.changeElementProperties(prop, OBJECT_TYPE.VIDEO);
     },
@@ -2104,7 +2121,7 @@ export default {
 
       this.updateSavingStatus({ status: SAVE_STATUS.START });
 
-      await this.saveData(this.currentFrameId);
+      await this.saveData(this.currentFrameId, true);
 
       this.updateSavingStatus({ status: SAVE_STATUS.END });
 
@@ -2114,11 +2131,12 @@ export default {
     /**
      * Save sheet and sheet's frame data to storage
      * @param {String | Number} frameId id of frame
+     * @param {Boolean} isAutosave indicating autosaving call or not
      */
-    async saveData(frameId) {
+    async saveData(frameId, isAutosave) {
       this.updateFrameObjects({ frameId });
       const data = this.getDataEditScreen(frameId);
-      await this.saveEditScreen(data);
+      await this.saveEditScreen(data, isAutosave);
       await this.saveAnimationConfig(this.storeAnimationProp);
       this.setStoreAnimationProp({});
     },

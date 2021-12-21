@@ -1,3 +1,4 @@
+import { cloneDeep } from 'lodash';
 import { isEmpty } from '@/common/utils';
 
 import {
@@ -96,11 +97,12 @@ export const getters = {
     if (isEmpty(state.frameIds)) return;
     return state.frames[state.frameIds[0]].previewImageUrl;
   },
-  [DIGITAL._GETTERS.GET_DATA_EDIT_SCREEN]: ({ book, frames }) => frameId => ({
-    defaultThemeId: book.defaultThemeId,
-    bookId: book.id,
-    frame: frames[frameId]
-  }),
+  [DIGITAL._GETTERS.GET_DATA_EDIT_SCREEN]: ({ book, frames }) => frameId =>
+    cloneDeep({
+      defaultThemeId: book.defaultThemeId,
+      bookId: book.id,
+      frame: frames[frameId]
+    }),
   [DIGITAL._GETTERS.GET_SHEET_MEDIA]: ({ sheets, currentSheetId }) => {
     const media = sheets[currentSheetId]?.media;
     return isEmpty(media) ? [] : media;

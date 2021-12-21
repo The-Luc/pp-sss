@@ -21,7 +21,7 @@ import {
   EDITION,
   MODAL_TYPES,
   TOOL_NAME,
-  // SAVE_STATUS,
+  SAVE_STATUS,
   SAVING_DURATION,
   OBJECT_TYPE,
   DEFAULT_VIDEO,
@@ -322,16 +322,14 @@ export default {
      * Save digital canvas and change view
      */
     async onClickSaveDigitalCanvas() {
-      // TODO: revise when mutation DB available
-      // temporary commented for testing
-      // this.updateSavingStatus({ status: SAVE_STATUS.START });
+      this.updateSavingStatus({ status: SAVE_STATUS.START });
 
-      // this.updateFrameObjects({ frameId: this.currentFrameId });
-      // const data = this.getDataEditScreen(this.pageSelected.id);
-      // await this.saveEditScreen(data);
-      // await this.saveAnimationConfig(this.storeAnimationProp);
+      this.updateFrameObjects({ frameId: this.currentFrameId });
+      const data = this.getDataEditScreen(this.currentFrameId);
+      await this.saveEditScreen(data);
+      await this.saveAnimationConfig(this.storeAnimationProp);
 
-      // this.updateSavingStatus({ status: SAVE_STATUS.END });
+      this.updateSavingStatus({ status: SAVE_STATUS.END });
 
       setTimeout(() => {
         this.$router.push(

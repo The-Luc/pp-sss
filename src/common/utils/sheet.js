@@ -98,15 +98,13 @@ export const mapSheetToPages = sheet => {
   const leftPage = {
     layout: JSON.stringify(leftLayout),
     title: leftTitle,
-    show_page_number: isLeftNumberOn,
-    preview_image_url: ''
+    show_page_number: isLeftNumberOn
   };
 
   const rightPage = {
     layout: JSON.stringify(rightLayout),
     title: rightTitle,
-    show_page_number: isRightNumberOn,
-    preview_image_url: ''
+    show_page_number: isRightNumberOn
   };
 
   return { leftPage, rightPage };

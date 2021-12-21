@@ -118,19 +118,18 @@
     }
   }
 
-  .left-thumbnail {
+  .left-thumbnail,
+  .right-thumbnail {
     position: absolute;
     width: 50%;
     height: 100%;
     left: 0;
     top: 0;
+    background-size: cover;
   }
 
   .right-thumbnail {
-    position: absolute;
-    width: 50%;
-    height: 100%;
+    left: unset;
     right: 0;
-    top: 0;
   }
 }
