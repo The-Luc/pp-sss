@@ -36,9 +36,10 @@ export const useSaveData = () => {
    *  default theme id
    *
    * @param {Object} editScreenData sheet data
+   * @param {Boolean} isAutosave indicating autosaving or not
    * @returns api response
    */
-  const savePrintEditScreen = async editScreenData => {
+  const savePrintEditScreen = async (editScreenData, isAutosave) => {
     if (isEmpty(editScreenData.sheetProps)) return;
 
     const { pageInfo, bookId, communityId, defaultThemeId } = editScreenData;
@@ -56,8 +57,8 @@ export const useSaveData = () => {
 
     const { leftThumb, rightThumb } = await splitBase64Image(thumbnailUrl);
     const imgUrls = await Promise.all([
-      leftPageId ? uploadBase64ImageApi(leftThumb) : '',
-      rightPageId ? uploadBase64ImageApi(rightThumb) : ''
+      leftPageId ? uploadBase64ImageApi(leftThumb, isAutosave) : '',
+      rightPageId ? uploadBase64ImageApi(rightThumb, isAutosave) : ''
     ]);
 
     const { leftPage, rightPage } = mapSheetToPages(editScreenData);
@@ -85,7 +86,7 @@ export const useSaveData = () => {
       isUpdatePageInfo
     };
 
-    const isSuccess = await savePrintDataApi(variables);
+    const isSuccess = await savePrintDataApi(variables, isAutosave);
 
     return isSuccess;
   };

@@ -8,6 +8,7 @@ import digitalService from '@/api/digital';
 import { mappingFrameToApi } from '@/common/mapping/frame';
 import { saveDigitalDataApi } from '@/api/saveDigital';
 import { getAssetByIdApi } from '@/api/media';
+import { uploadBase64ImageApi } from '@/api/util';
 
 export const useSaveData = () => {
   const { getDataEditScreen } = useGetters({
@@ -20,7 +21,7 @@ export const useSaveData = () => {
    * fields will be saved on frame:
    *  title
    *  objects
-   *  preview_image_url   # wait to a solution to upload images
+   *  preview_image_url
    *  frame_delay
    *  is_visited
    *  play_in_ids
@@ -31,12 +32,19 @@ export const useSaveData = () => {
    *  default theme id
    *
    * @param {Object} editScreenData sheet data
+   * @param {Boolean} isAutosave indicating autosaving call or not
    * @returns api response
    */
-  const saveEditScreen = async editScreenData => {
+  const saveEditScreen = async (editScreenData, isAutosave) => {
     const { frame, defaultThemeId, bookId } = editScreenData;
 
     if (isEmpty(frame)) return;
+
+    const imgUrl = await uploadBase64ImageApi(
+      frame.previewImageUrl,
+      isAutosave
+    );
+    frame.previewImageUrl = imgUrl;
 
     const variables = {
       bookId,
@@ -46,7 +54,7 @@ export const useSaveData = () => {
     };
     variables.frameParams.objects = frame.objects.map(o => JSON.stringify(o));
 
-    return await saveDigitalDataApi(variables);
+    return await saveDigitalDataApi(variables, isAutosave);
   };
 
   const saveAnimationConfig = async animationConfig => {

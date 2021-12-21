@@ -7,6 +7,7 @@ export const getSheetFramesQuery = gql`
       digital_frames {
         id
         frame_delay
+        frame_order
         from_layout
         objects
         title
