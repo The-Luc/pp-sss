@@ -5,7 +5,7 @@ import { getPageLayoutQuery } from './query';
 import { STATUS } from '@/common/constants';
 
 /**
- * To save sheet data to pages
+ * Used to save portrait objects and preview thumbnails
  *
  * @param {Object} sheetData
  * @returns response data
@@ -16,8 +16,8 @@ export const updatePageApi = async (pageId, pageData) => {
   const arg = {
     pageId,
     params: {
-      layout: JSON.stringify(pageData.layout),
-      ...pageData.otherProps
+      ...pageData,
+      layout: JSON.stringify(pageData.layout)
     }
   };
   return await graphqlRequest(updatePageMutation, arg);

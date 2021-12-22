@@ -1,22 +1,28 @@
-import {
-  getPageIdsOfSheet,
-  isEmpty,
-  mapSheetToPages,
-  pageLayoutsFromSheet,
-  splitBase64Image
-} from '@/common/utils';
-import { useGetters } from 'vuex-composition-helpers';
-import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
+import { useGetters, useMutations } from 'vuex-composition-helpers';
+
+import { GETTERS as PRINT_GETTERS, MUTATES } from '@/store/modules/print/const';
 import { updatePageApi } from '@/api/page';
 import { savePrintDataApi } from '@/api/savePrint';
 import { getSheetInfoApi } from '@/api/sheet';
 import { OBJECT_TYPE, SHEET_TYPE } from '@/common/constants';
 import { pageInfoMappingToApi } from '@/common/mapping';
 import { uploadBase64ImageApi } from '@/api/util';
+import {
+  getPageIdsOfSheet,
+  getSheetThumbnail,
+  isEmpty,
+  mapSheetToPages,
+  pageLayoutsFromSheet,
+  splitBase64Image
+} from '@/common/utils';
 
 export const useSaveData = () => {
-  const { getDataEditScreen } = useGetters({
-    getDataEditScreen: PRINT_GETTERS.GET_DATA_EDIT_SCREEN
+  const { getDataEditScreen, currentSheet } = useGetters({
+    getDataEditScreen: PRINT_GETTERS.GET_DATA_EDIT_SCREEN,
+    currentSheet: PRINT_GETTERS.CURRENT_SHEET
+  });
+  const { updateThumbnail } = useMutations({
+    updateThumbnail: MUTATES.UPDATE_SHEET_THUMBNAIL
   });
 
   /**
@@ -96,6 +102,7 @@ export const useSaveData = () => {
    *
    * @param {String} sheetId id of a sheet
    * @param {Array} objects object will be saved
+   * @param {Object} appliedPage indicating whether both pages or one of theme are applied
    * @returns api response
    */
   const savePortraitObjects = async (sheetId, objects, appliedPage) => {
@@ -103,12 +110,19 @@ export const useSaveData = () => {
     const sheetData = getSheetDataFnc(sheetId);
 
     const { pageIds } = sheetData.sheetProps;
-    const [leftPageId, rightPageId] = pageIds;
+    const [leftPageId, rightPageId] = getPageIdsOfSheet(
+      pageIds,
+      sheetData.sheetProps.type
+    );
 
     // keep the current backgrounds
-    const { objects: sheetObjects } = await getSheetInfoApi(sheetId);
+    const { objects: sheetObjects } =
+      currentSheet.value.id === sheetId
+        ? sheetData
+        : await getSheetInfoApi(sheetId);
+
     const backgrounds = sheetObjects.filter(
-      o => o.type === OBJECT_TYPE.BACKGROUND
+      ob => ob && ob.type === OBJECT_TYPE.BACKGROUND
     );
 
     const { leftLayout, rightLayout } = pageLayoutsFromSheet([
@@ -116,12 +130,38 @@ export const useSaveData = () => {
       ...objects
     ]);
 
+    const [leftBase64, rightBase64] = await getSheetThumbnail(
+      leftLayout.elements,
+      rightLayout.elements
+    );
+
+    const [leftUrl, rightUrl] = await Promise.all([
+      uploadBase64ImageApi(leftBase64),
+      uploadBase64ImageApi(rightBase64)
+    ]);
+
+    const handleUpdatePage = async (pageId, layout, imgUrl) => {
+      const params = {
+        layout,
+        preview_image_url: imgUrl
+      };
+      return updatePageApi(pageId, params);
+    };
+
     const savePromises = [
-      appliedPage.isLeft && updatePageApi(leftPageId, { layout: leftLayout }),
-      appliedPage.isRight && updatePageApi(rightPageId, { layout: rightLayout })
+      appliedPage.isLeft && handleUpdatePage(leftPageId, leftLayout, leftUrl),
+      appliedPage.isRight &&
+        handleUpdatePage(rightPageId, rightLayout, rightUrl)
     ];
 
-    return await Promise.all(savePromises);
+    await Promise.all(savePromises);
+
+    // update new thumbnail to store
+    const args = { sheetId };
+    appliedPage.isLeft && (args.thumbnailLeftUrl = leftUrl);
+    appliedPage.isRight && (args.thumbnailRightUrl = rightUrl);
+
+    updateThumbnail(args);
   };
 
   return { savePrintEditScreen, getDataEditScreen, savePortraitObjects };

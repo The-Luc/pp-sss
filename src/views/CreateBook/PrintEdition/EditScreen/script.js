@@ -574,8 +574,6 @@ export default {
         });
 
         this.$refs.canvasEditor.drawLayout();
-
-        canvas.renderAll();
       });
 
       await Promise.all(saveQueue);
