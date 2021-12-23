@@ -18,3 +18,13 @@ export const saveSettingMutation = gql`
     }
   }
 `;
+
+export const addBookPortrait = gql`
+  mutation addBookPotrait($bookPotraitParams: BooksPortraitCollectionsInput) {
+    create_books_portrait_collections(
+      books_portrait_collections_params: $bookPotraitParams
+    ) {
+      id
+    }
+  }
+`;

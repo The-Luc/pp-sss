@@ -582,7 +582,10 @@ export default {
 
       const selectedFolderIds = this.selectedFolders.map(item => item.id);
 
-      this.saveSelectedPortraitFolders(selectedFolderIds, false);
+      this.saveSelectedPortraitFolders(
+        this.$route.params.bookId,
+        selectedFolderIds
+      );
     },
     /**
      * Selected portrait folders

@@ -815,7 +815,10 @@ export default {
         MODAL_TYPES.PORTRAIT_FLOW
       ].data.folders.map(item => item.id);
 
-      this.saveSelectedPortraitFolders(selectedFolderIds, true);
+      this.saveSelectedPortraitFolders(
+        this.$route.params.bookId,
+        selectedFolderIds
+      );
     },
     /**
      * Get require frame data

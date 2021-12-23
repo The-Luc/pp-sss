@@ -58,3 +58,13 @@ export const getDigitalSettingsQuery = gql`
   }
   ${settingsFragment}
 `;
+
+export const PortraitFoldersSelected = gql`
+  query bookPortrait($bookId: ID!) {
+    books_portrait_collections_by_book(book_id: $bookId) {
+      portrait_collection {
+        id
+      }
+    }
+  }
+`;
