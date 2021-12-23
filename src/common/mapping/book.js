@@ -19,7 +19,8 @@ export const bookMapping = book => {
         parse: value => apiToBaseDate(value)
       },
       total_pages: {
-        name: 'totalPages'
+        name: 'totalPages',
+        parse: value => value - 2 // this is because BE return pages including cover pages
       },
       number_max_pages: {
         name: 'numberMaxPages'

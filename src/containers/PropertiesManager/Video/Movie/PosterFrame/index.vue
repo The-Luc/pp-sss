@@ -6,6 +6,7 @@
         v-if="isSliderDisplayed"
         start-line-color="#58595b"
         is-hide-end-thumb
+        disabled
         @change="onSliderChange"
       />
       <div v-if="isSliderDisplayed">00:00.000</div>

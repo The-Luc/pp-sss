@@ -132,9 +132,22 @@ export const mutations = {
     const currentSheet = state.sheets[sheetId];
     currentSheet.isVisited = true;
   },
-  [PRINT._MUTATES.UPDATE_SHEET_THUMBNAIL](state, { thumbnailUrl, sheetId }) {
-    if (isEmpty(thumbnailUrl) || isEmpty(sheetId)) return;
-    state.sheets[sheetId].thumbnailUrl = thumbnailUrl;
+  [PRINT._MUTATES.UPDATE_SHEET_THUMBNAIL](
+    state,
+    { thumbnailUrl, thumbnailLeftUrl, thumbnailRightUrl, sheetId }
+  ) {
+    if (isEmpty(sheetId)) return;
+
+    if (thumbnailUrl) {
+      state.sheets[sheetId].thumbnailUrl = thumbnailUrl;
+      return;
+    }
+
+    if (thumbnailLeftUrl)
+      state.sheets[sheetId].thumbnailLeftUrl = thumbnailLeftUrl;
+    if (thumbnailRightUrl)
+      state.sheets[sheetId].thumbnailRightUrl = thumbnailRightUrl;
+    state.sheets[sheetId].thumbnailUrl = '';
   },
   [PRINT._MUTATES.REORDER_OBJECT_IDS](state, { oldIndex, newIndex }) {
     const [id] = state.objectIds.splice(oldIndex, 1);

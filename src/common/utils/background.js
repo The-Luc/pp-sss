@@ -1,3 +1,4 @@
+import { cloneDeep } from 'lodash';
 import { isHalfLeft, isHalfRight } from './sheet';
 import { isEmpty, compareByValue } from './util';
 
@@ -6,6 +7,7 @@ import {
   BACKGROUND_TYPE,
   OBJECT_TYPE
 } from '@/common/constants';
+import { generateCanvasThumbnail, splitBase64Image } from '.';
 
 export const isFullBackground = ({ pageType }) => {
   return (
@@ -220,4 +222,48 @@ export const getFrameBackground = (frameNo, frames) => {
   return isEmpty(firstObject) || firstObject.type !== OBJECT_TYPE.BACKGROUND
     ? {}
     : firstObject;
+};
+
+/**
+ * To generate thumbnail from sheet object data
+ *
+ * @param {Object} leftObjects objects on left page
+ * @param {Object} rightObjects objects on right page
+ * @returns Array of left and right thumbnails
+ */
+export const getSheetThumbnail = async (leftObjects, rightObjects) => {
+  const isBackground = bg => bg && bg.type === OBJECT_TYPE.BACKGROUND;
+  const modifyBgToRenderOnPage = bg => ({
+    ...bg,
+    pageType: BACKGROUND_PAGE_TYPE.DOUBLE_PAGE.id,
+    isLeftPage: true
+  });
+
+  const isFullBg = leftObjects[0] && isFullBackground(leftObjects[0]);
+
+  let leftElements = cloneDeep(leftObjects);
+  let rightElements = cloneDeep(rightObjects);
+
+  if (isFullBg) {
+    const { leftThumb, rightThumb } = await splitBase64Image(
+      leftObjects[0].imageUrl
+    );
+    const leftBg = cloneDeep(leftObjects[0]);
+    const rightBg = cloneDeep(leftObjects[0]);
+    leftBg.imageUrl = leftThumb;
+    rightBg.imageUrl = rightThumb;
+
+    rightElements = [rightBg, ...rightElements];
+    leftElements = [leftBg, ...leftElements.slice(1)];
+  } else {
+    isBackground(rightElements[0]) &&
+      (rightElements[0] = modifyBgToRenderOnPage(rightElements[0]));
+    isBackground(leftElements[0]) &&
+      (leftElements[0] = modifyBgToRenderOnPage(leftElements[0]));
+  }
+
+  return await Promise.all([
+    generateCanvasThumbnail(leftElements),
+    generateCanvasThumbnail(rightElements)
+  ]);
 };

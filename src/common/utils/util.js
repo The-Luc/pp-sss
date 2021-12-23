@@ -9,13 +9,24 @@ import { getDiffDaysFOMToEOM } from './time';
 import {
   STATUS,
   DIGITAL_CANVAS_SIZE,
+  PRINT_CANVAS_SIZE,
   DIGITAL_PAGE_SIZE,
   DATE_FORMAT,
-  THUMBNAIL_IMAGE_CONFIG
+  THUMBNAIL_IMAGE_CONFIG,
+  OBJECT_TYPE
 } from '@/common/constants';
 import Color from 'color';
 import { BaseShadow } from '../models/element';
 import { fabric } from 'fabric';
+
+import {
+  createBackgroundFabricObject,
+  createClipartObject,
+  createMediaObject,
+  createPortraitImageObject,
+  createSvgObject,
+  createTextBoxObject
+} from '@/common/fabricObjects';
 
 const mapSubData = (sourceObject, rules, data) => {
   const isNoSubRule = isEmpty(data);
@@ -634,7 +645,9 @@ export const parseFromAPIShadow = apiShadow => {
  */
 export const splitBase64Image = async imgUrl => {
   const img = await new Promise(r => {
-    fabric.Image.fromURL(imgUrl, img => r(img));
+    fabric.Image.fromURL(imgUrl, img => r(img), {
+      crossOrigin: 'anonymous'
+    });
   });
 
   const el = fabric.util.createCanvasElement();
@@ -666,4 +679,61 @@ export const splitBase64Image = async imgUrl => {
   canvas.dispose();
 
   return { leftThumb, rightThumb };
+};
+
+export const generateCanvasThumbnail = async (objects, isDigital) => {
+  if (isEmpty(objects)) return '';
+
+  const EDITOR_SIZE = isDigital ? DIGITAL_CANVAS_SIZE : PRINT_CANVAS_SIZE;
+
+  const el = fabric.util.createCanvasElement();
+  el.width = isDigital ? EDITOR_SIZE.WIDTH : EDITOR_SIZE.WIDTH / 2;
+  el.height = EDITOR_SIZE.HEIGHT;
+
+  const canvas = new fabric.StaticCanvas(el, {
+    enableRetinaScaling: false,
+    renderOnAddRemove: false,
+    skipOffscreen: false,
+    backgroundColor: '#fff',
+    evented: false
+  });
+
+  await drawObjectOnCanvas(objects, canvas);
+
+  const thumb = canvas.toDataURL({
+    quality: THUMBNAIL_IMAGE_CONFIG.QUALITY,
+    format: THUMBNAIL_IMAGE_CONFIG.FORMAT,
+    multiplier: THUMBNAIL_IMAGE_CONFIG.MULTIPLIER
+  });
+
+  canvas._objects = [];
+  canvas.dispose();
+
+  return thumb || '';
+};
+
+/**
+ * Draw objects on canvas
+ *
+ * @param {Array}   objects list of object of current frame
+ * @param {Object}  canvas  canvas is used to draw objects into
+ */
+export const drawObjectOnCanvas = async (objects, canvas) => {
+  const drawObjectMethods = {
+    [OBJECT_TYPE.BACKGROUND]: createBackgroundFabricObject,
+    [OBJECT_TYPE.TEXT]: text => createTextBoxObject(text).object,
+    [OBJECT_TYPE.SHAPE]: createSvgObject,
+    [OBJECT_TYPE.CLIP_ART]: createClipartObject,
+    [OBJECT_TYPE.IMAGE]: createMediaObject,
+    [OBJECT_TYPE.VIDEO]: createMediaObject,
+    [OBJECT_TYPE.PORTRAIT_IMAGE]: createPortraitImageObject
+  };
+
+  const drawObjectPromises = objects.map(obj => {
+    return drawObjectMethods[obj.type](obj, canvas);
+  });
+
+  const fabricObjects = await Promise.all(drawObjectPromises);
+
+  canvas.add(...fabricObjects);
 };
