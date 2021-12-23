@@ -2,7 +2,7 @@
   <div class="trim-container">
     <span class="properties-title">Trim:</span>
     <div class="control-group">
-      <RangeSlider @change="onSliderChange" />
+      <RangeSlider disabled @change="onSliderChange" />
       <div class="label-text">
         Start Time: <span class="label-time">00:00.000</span>
       </div>

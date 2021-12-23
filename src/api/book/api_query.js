@@ -302,8 +302,8 @@ export const getBookDetail = async (bookId, edition, isEditor) => {
 
   const bookModel = getBookModel(edition);
 
-  const totalData = isEditor ? {} : getTotalData(book.total_pages);
   const mappedBook = bookMapping(book);
+  const totalData = isEditor ? {} : getTotalData(mappedBook.totalPages);
 
   const pageInfo = pick(mappedBook, [
     'isNumberingOn',
