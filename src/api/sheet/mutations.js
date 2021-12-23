@@ -101,7 +101,12 @@ export const moveSheetMutation = gql`
 `;
 
 export const deleteSheetMutation = gql`
-  mutation deleteSheet($sheetId: ID!, $sectionId: ID!, $sheetIds: [Int]) {
+  mutation deleteSheet(
+    $sheetId: ID!
+    $sectionId: ID!
+    $sheetIds: [Int]
+    $isUpdateOrder: Boolean!
+  ) {
     delete_sheet(sheet_id: $sheetId) {
       id
       book {
@@ -109,10 +114,8 @@ export const deleteSheetMutation = gql`
         total_pages
       }
     }
-    update_sheet_order(
-      book_section_id: $sectionId
-      sheet_order_ids: $sheetIds
-    ) {
+    update_sheet_order(book_section_id: $sectionId, sheet_order_ids: $sheetIds)
+      @include(if: $isUpdateOrder) {
       id
       sheet_order
     }

@@ -10,7 +10,7 @@ import {
   moveSheetMutation,
   updateSheetLinkMutation
 } from './mutations';
-import { isOk } from '@/common/utils';
+import { isEmpty, isOk } from '@/common/utils';
 
 /**
  * Add new sheet
@@ -114,10 +114,13 @@ export const moveSheetApi = async (
  * @returns {Object}          mutation result
  */
 export const deleteSheetApi = async (sheetId, sectionId, sheetIds) => {
+  const isUpdateOrder = !isEmpty(sheetIds);
+
   const res = await graphqlRequest(deleteSheetMutation, {
     sheetId,
     sectionId,
-    sheetIds
+    sheetIds,
+    isUpdateOrder
   });
 
   return isOk(res);
