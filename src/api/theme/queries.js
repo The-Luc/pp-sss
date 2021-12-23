@@ -5,6 +5,7 @@ export const themeOptionsQuery = gql`
     themes {
       id
       name
+      preview_image_url
     }
   }
 `;
