@@ -103,7 +103,7 @@ export default {
   },
   async created() {
     if (this.themes.length === 0) {
-      const themes = await getThemesApi(true, true);
+      const themes = await getThemesApi(true);
       this.setDigitalThemes({
         themes
       });
