@@ -38,20 +38,18 @@ export const saveSelectedPortraitFolders = async (bookId, FolderIds) => {
 
   if (isEmpty(selectedFolderIds)) return;
 
-  return await Promise.all(
-    selectedFolderIds
-      .map(id =>
-        graphqlRequest(
-          addBookPortrait,
-          {
-            bookPotraitParams: {
-              book_id: bookId,
-              portrait_collection_id: id
-            }
-          },
-          true
-        )
-      )
-      .then(res => isOk(res))
+  const promises = selectedFolderIds.map(id =>
+    graphqlRequest(
+      addBookPortrait,
+      {
+        bookPotraitParams: {
+          book_id: bookId,
+          portrait_collection_id: id
+        }
+      },
+      true
+    )
   );
+
+  return await Promise.all(promises).then(res => isOk(res));
 };

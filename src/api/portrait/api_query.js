@@ -51,10 +51,7 @@ export const getPortraitFoldersApi = async ({ bookId }) => {
   return portraitCollections.map(portrait => {
     const portraitSubjects = get(portrait, 'portrait_subjects', []);
     const assets = getPortraitAssets(portraitSubjects);
-    const isSelected = {
-      digital: portraitFoldersIdSelected.includes(portrait.id),
-      print: portraitFoldersIdSelected.includes(portrait.id)
-    };
+    const isSelected = portraitFoldersIdSelected.includes(portrait.id);
 
     return new PortraitFolder({
       ...portraitMapping(portrait),
