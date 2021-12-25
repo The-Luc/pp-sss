@@ -39,7 +39,15 @@ export const portraitAssetMapping = asset => {
         name: 'imageUrl'
       },
       subject_type: {
-        name: 'classRole'
+        name: 'classRole',
+        parse: value => {
+          const mapRoles = {
+            STUDENT: 'STUDENT',
+            TEACHER: 'PRIMARY_TEACHER',
+            ASSISTANT: 'ASSISTANT_TEACHER'
+          };
+          return mapRoles[value];
+        }
       }
     },
     restrict: []

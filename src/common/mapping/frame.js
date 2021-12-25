@@ -13,7 +13,9 @@ export const frameMapping = frame => {
         name: 'delay'
       },
       from_layout: {
-        name: 'fromLayout'
+        name: 'fromLayout',
+        parse: Boolean,
+        isForce: true
       },
       is_visited: {
         name: 'isVisited'
@@ -50,5 +52,10 @@ export const mappingFrameToApi = frame => {
     restrict: ['id', 'fromLayout', 'playInIds', 'playOutIds', 'objects']
   };
 
-  return mapObject(frame, mapRules);
+  const mapFrame = mapObject(frame, mapRules);
+  mapFrame.objects = frame.objects.map(o => JSON.stringify(o));
+  mapFrame.play_in_ids = frame.playInIds;
+  mapFrame.play_out_ids = frame.playOutIds;
+
+  return mapFrame;
 };
