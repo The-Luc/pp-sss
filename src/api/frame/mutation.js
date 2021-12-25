@@ -29,3 +29,15 @@ export const deleteFrameMutation = gql`
     }
   }
 `;
+
+export const updateFrameOrder = gql`
+  mutation updateFrameOrder($sheetId: ID!, $frameOrderIds: [Int]) {
+    update_digital_frame_order(
+      sheet_id: $sheetId
+      digital_frame_order_ids: $frameOrderIds
+    ) {
+      frame_order
+      id
+    }
+  }
+`;

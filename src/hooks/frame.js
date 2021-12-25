@@ -11,7 +11,7 @@ import {
 import { MUTATES } from '@/store/modules/app/const';
 import { PROPERTIES_TOOLS } from '@/common/constants';
 import { cloneDeep } from 'lodash';
-import { deleteFrameApi } from '@/api/frame';
+import { deleteFrameApi, updateFrameOrderApi } from '@/api/frame';
 
 /**
  * Get and set common sate of frames
@@ -177,7 +177,19 @@ export const useFrameOrdering = () => {
     moveFrame: DIGITAL_MUTATES.MOVE_FRAME
   });
 
-  return { moveFrame };
+  const { frameIds } = useGetters({
+    frameIds: DIGITAL_GETTERS.GET_FRAME_IDS
+  });
+
+  const handleUpdateFrameOrder = async (paramsMoveFrame, sheetId) => {
+    moveFrame(paramsMoveFrame);
+
+    const frameOrderIds = frameIds.value.map(id => parseInt(id));
+
+    updateFrameOrderApi(sheetId, frameOrderIds);
+  };
+
+  return { handleUpdateFrameOrder };
 };
 
 export const useFrameTitle = () => {

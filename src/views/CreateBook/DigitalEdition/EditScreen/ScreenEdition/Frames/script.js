@@ -9,7 +9,8 @@ import {
   useFrame,
   useFrameAdd,
   useModal,
-  useToolBar
+  useToolBar,
+  useSheet
 } from '@/hooks';
 
 import { MODAL_TYPES } from '@/common/constants';
@@ -36,16 +37,18 @@ export default {
   },
   setup() {
     const { toggleModal } = useModal();
-    const { moveFrame } = useFrameOrdering();
+    const { handleUpdateFrameOrder } = useFrameOrdering();
     const { setCurrentFrameId } = useFrame();
+    const { currentSheet } = useSheet();
     const { handleAddFrame } = useFrameAdd();
     const { setPropertiesType } = useToolBar();
 
     return {
       toggleModal,
-      moveFrame,
+      handleUpdateFrameOrder,
       handleAddFrame,
       setCurrentFrameId,
+      currentSheet,
       setPropertiesType
     };
   },
@@ -235,10 +238,13 @@ export default {
         return;
       }
 
-      this.moveFrame({
-        moveToIndex: this.moveToIndex,
-        selectedIndex: this.selectedIndex
-      });
+      this.handleUpdateFrameOrder(
+        {
+          moveToIndex: this.moveToIndex,
+          selectedIndex: this.selectedIndex
+        },
+        this.currentSheet.id
+      );
 
       const selectedIndex = this.moveToIndex;
 

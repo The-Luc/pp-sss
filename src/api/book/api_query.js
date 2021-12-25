@@ -53,6 +53,8 @@ const getSpreadInfo = (firstPage, secondPage) => {
 const getDigitalSheet = (sheet, { id }, index, totalSheets) => {
   const isNoFrame = isEmpty(sheet?.digital_frames);
 
+  sheet.digital_frames.sort((ff, sf) => ff.frame_order - sf.frame_order);
+
   const thumbnailUrl = isNoFrame
     ? ''
     : sheet.digital_frames[0].preview_image_url;

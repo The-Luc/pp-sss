@@ -13,7 +13,9 @@ export const getSheetFramesApi = async sheetId => {
 
   const frames = get(res.data, 'sheet.digital_frames', []);
 
-  return frames.map(f => new FrameDetail(frameMapping(f)));
+  return frames
+    .sort((ff, sf) => ff.frame_order - sf.frame_order)
+    .map(f => new FrameDetail(frameMapping(f)));
 };
 
 export const getFrameBackgroundApi = async frameId => {
