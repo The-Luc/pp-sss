@@ -98,7 +98,10 @@ export default {
 
     const { pageSelected, updateVisited } = useLayoutPrompt(EDITION.DIGITAL);
     const { setToolNameSelected } = usePopoverCreationTool();
-    const { setCurrentSheetId } = useMutationDigitalSheet();
+    const {
+      setCurrentSheetId,
+      updateSheetThumbnail
+    } = useMutationDigitalSheet();
     const { currentUser, authenticate } = useUser();
     const {
       currentFrameId,
@@ -151,6 +154,7 @@ export default {
       updateVisited,
       setToolNameSelected,
       setCurrentSheetId,
+      updateSheetThumbnail,
       currentUser,
       authenticate,
       currentFrameId,
@@ -767,17 +771,24 @@ export default {
 
           const frames =
             screenId === this.pageSelected.id
-              ? cloneDeep(this.frames)
+              ? this.frames
               : await this.getSheetFramesApi(screenId);
 
           const framesList = await this.getRequiredFramesData(
-            frames,
+            cloneDeep(frames),
             pages,
             screenId
           );
 
-          if (+screenId !== +this.pageSelected.id)
-            screenWillUpdate.push(screenId);
+          if (+screenId !== +this.pageSelected.id) {
+            const thumbOfOldFrame = frames[0].previewImageUrl;
+            const thumbOfNewFram = framesList[0].previewImageUrl;
+            const previewImageUrl =
+              thumbOfOldFrame !== thumbOfNewFram ? thumbOfNewFram : '';
+            screenWillUpdate.push({ sheetId: screenId, previewImageUrl });
+
+            return;
+          }
 
           const currentId = this.currentFrameId;
           const ids = Object.keys(this.listObjects);
@@ -813,6 +824,13 @@ export default {
         }
       );
       await Promise.all(framePromise);
+
+      // update to vuex store
+      screenWillUpdate.forEach(({ sheetId, previewImageUrl }) => {
+        this.updateVisited({ sheetId });
+        previewImageUrl &&
+          this.updateSheetThumbnail({ sheetId, thumbnailUrl: previewImageUrl });
+      });
 
       this.setLoadingState({ value: false });
 
