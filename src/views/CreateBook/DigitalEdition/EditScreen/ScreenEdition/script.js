@@ -77,7 +77,6 @@ import {
 import { mapGetters, mapActions, mapMutations } from 'vuex';
 
 import {
-  useDrawLayout,
   useInfoBar,
   useLayoutPrompt,
   useFrame,
