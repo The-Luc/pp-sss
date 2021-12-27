@@ -8,7 +8,7 @@ import {
 } from '../portrait/queries';
 import { digitalWorkspaceQuery, printWorkspaceQuery } from '../sheet/queries';
 import { getFavoriteLayoutsQuery } from '../user/queries';
-import { PortraitFoldersSelected } from '../portrait/queries';
+import { portraitFoldersSelectedQuery } from '../portrait/queries';
 
 export const updatePortraitSettingCache = (result, args, cache) => {
   const layoutType = get(args, 'portrait_layout_setting_params.layout_type');
@@ -59,7 +59,7 @@ export const updateBookCollectionCache = (result, args, cache) => {
 
   cache.updateQuery(
     {
-      query: PortraitFoldersSelected,
+      query: portraitFoldersSelectedQuery,
       variables: { bookId }
     },
     data => {
