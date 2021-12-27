@@ -1,6 +1,6 @@
 import { graphqlRequest } from '../urql';
 
-import { saveSettingMutation, addBookPortrait } from './mutations';
+import { saveSettingMutation, addBookPortraitMutation } from './mutations';
 import { getPortraitFoldersIdSelected } from './api_query';
 import { isEmpty } from '@/common/utils';
 
@@ -27,12 +27,12 @@ export const savePortraitSettingsApi = async (bookId, params) => {
  * add folder portrait id to book portrait collections
  *
  * @param   {Number} bookId  id of book
- * @param   {Number} FolderIds  array id of portrait folder selected
+ * @param   {Number} folderIds  array id of portrait folder selected
  * @returns {Object}              mutation result
  */
-export const saveSelectedPortraitFolders = async (bookId, FolderIds) => {
+export const saveSelectedPortraitFolders = async (bookId, folderIds) => {
   const portraitFoldersIdSelected = await getPortraitFoldersIdSelected(bookId);
-  const selectedFolderIds = FolderIds.filter(
+  const selectedFolderIds = folderIds.filter(
     folder => !portraitFoldersIdSelected.includes(folder)
   );
 
@@ -40,7 +40,7 @@ export const saveSelectedPortraitFolders = async (bookId, FolderIds) => {
 
   const promises = selectedFolderIds.map(id =>
     graphqlRequest(
-      addBookPortrait,
+      addBookPortraitMutation,
       {
         bookPotraitParams: {
           book_id: bookId,

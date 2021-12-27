@@ -21,7 +21,7 @@ import {
   portraitFolders,
   getPrintSettingsQuery,
   getDigitalSettingsQuery,
-  PortraitFoldersSelected
+  portraitFoldersSelectedQuery
 } from './queries';
 import { EDITION } from '@/common/constants';
 
@@ -30,7 +30,7 @@ const getPortraitAssets = assets => {
 };
 
 export const getPortraitFoldersIdSelected = async bookId => {
-  const res = await graphqlRequest(PortraitFoldersSelected, { bookId });
+  const res = await graphqlRequest(portraitFoldersSelectedQuery, { bookId });
   return res.data.books_portrait_collections_by_book.map(
     collection => collection.portrait_collection.id
   );
