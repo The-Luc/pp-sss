@@ -5,7 +5,8 @@ import { graphqlRequest } from '../urql';
 import {
   createFrameMutation,
   deleteFrameMutation,
-  updateFrameMutation
+  updateFrameMutation,
+  updateFrameOrderMutation
 } from './mutation';
 
 export const createFrameApi = async (sheetId, frameParams) => {
@@ -19,6 +20,15 @@ export const createFrameApi = async (sheetId, frameParams) => {
 
 export const deleteFrameApi = async frameId => {
   const res = await graphqlRequest(deleteFrameMutation, { frameId });
+
+  return isOk(res);
+};
+
+export const updateFrameOrderApi = async (sheetId, frameOrderIds) => {
+  const res = await graphqlRequest(updateFrameOrderMutation, {
+    sheetId,
+    frameOrderIds
+  });
 
   return isOk(res);
 };

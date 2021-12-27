@@ -46,6 +46,7 @@ export const digitalMainQuery = gql`
           digital_frames {
             id
             preview_image_url
+            frame_order
           }
         }
       }
@@ -73,6 +74,7 @@ export const digitalEditorQuery = gql`
             id
             preview_image_url
             is_visited
+            frame_order
           }
         }
       }
