@@ -21,6 +21,8 @@ import {
 
 import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 import { GETTERS as DIGITAL_GETTERS } from '@/store/modules/digital/const';
+import { uploadBase64ImageApi } from '@/api/util';
+import { generateCanvasThumbnail } from '@/common/utils';
 
 export const useSavingStatus = () => {
   const { savingStatus } = useGetters({
@@ -96,5 +98,33 @@ export const useClipArt = () => {
     searchClipArt: searchClipArtApi,
     getClipArtList: loadClipArtsApi,
     loadClipArtCategories: loadClipArtCategoriesApi
+  };
+};
+
+export const useThumbnail = () => {
+  const generateThumbnail = async (objects, isDigital) => {
+    // generate frame thumbnails
+    const base64Image = await generateCanvasThumbnail(objects, isDigital);
+
+    // upload base64 images and get back url
+    return uploadBase64ImageApi(base64Image);
+  };
+
+  const generateMultiThumbnails = async (objectsArr, isDigital) => {
+    // generate frame thumbnails
+    const base64Images = await Promise.all(
+      objectsArr.map(objects => generateCanvasThumbnail(objects, isDigital))
+    );
+
+    // upload base64 images and get back url
+    return await Promise.all(
+      base64Images.map(img => uploadBase64ImageApi(img))
+    );
+  };
+  return {
+    uploadBase64ImageApi,
+    generateCanvasThumbnail,
+    generateThumbnail,
+    generateMultiThumbnails
   };
 };
