@@ -1,6 +1,6 @@
 import { isOk } from '@/common/utils';
 import { graphqlRequest } from '../urql';
-import { deleteFrameMutation, updateFrameOrder } from './mutation';
+import { deleteFrameMutation, updateFrameOrderMutation } from './mutation';
 
 export const deleteFrameApi = async frameId => {
   const res = await graphqlRequest(deleteFrameMutation, { frameId });
@@ -9,7 +9,7 @@ export const deleteFrameApi = async frameId => {
 };
 
 export const updateFrameOrderApi = async (sheetId, frameOrderIds) => {
-  const res = await graphqlRequest(updateFrameOrder, {
+  const res = await graphqlRequest(updateFrameOrderMutation, {
     sheetId,
     frameOrderIds
   });

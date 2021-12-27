@@ -30,7 +30,7 @@ export const deleteFrameMutation = gql`
   }
 `;
 
-export const updateFrameOrder = gql`
+export const updateFrameOrderMutation = gql`
   mutation updateFrameOrder($sheetId: ID!, $frameOrderIds: [Int]) {
     update_digital_frame_order(
       sheet_id: $sheetId
