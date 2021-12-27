@@ -10,6 +10,7 @@ import {
 
 import {
   saveToFavoritesApi,
+  deleteFavoritesApi,
   getFavoritesApi,
   getFavoriteLayoutsApi
 } from '@/api/user';
@@ -260,8 +261,15 @@ export const useActionLayout = () => {
     return isOk(res);
   };
 
+  const deleteFavorites = async id => {
+    const res = await deleteFavoritesApi(id);
+
+    return isOk(res);
+  };
+
   return {
     saveToFavorites,
+    deleteFavorites,
     getFavorites: getFavoritesApi,
     getFavoriteLayouts: getFavoriteLayoutsApi,
     getPrintLayoutTypes,
