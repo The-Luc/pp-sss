@@ -4,6 +4,7 @@ import { merge, pick } from 'lodash';
 import {
   getPageLeftName,
   getPageRightName,
+  sortFrameByOrder,
   getPageName,
   isEmpty,
   isOk
@@ -53,15 +54,13 @@ const getSpreadInfo = (firstPage, secondPage) => {
 const getDigitalSheet = (sheet, { id }, index, totalSheets) => {
   const isNoFrame = isEmpty(sheet?.digital_frames);
 
-  sheet.digital_frames.sort((ff, sf) => ff.frame_order - sf.frame_order);
+  const frameSorted = sortFrameByOrder(sheet.digital_frames);
 
-  const thumbnailUrl = isNoFrame
-    ? ''
-    : sheet.digital_frames[0].preview_image_url;
+  const thumbnailUrl = isNoFrame ? '' : frameSorted[0].preview_image_url;
 
   const pageName = getPageName(index, totalSheets);
 
-  const frameIds = isNoFrame ? [] : sheet.digital_frames.map(f => f.id);
+  const frameIds = isNoFrame ? [] : frameSorted.map(f => f.id);
 
   // sheet.is_visisted is used for print editor
   // For digital, if any frame is visited => sheet is visted
