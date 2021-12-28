@@ -24,10 +24,10 @@ export const savePortraitSettingsApi = async (bookId, params) => {
 };
 
 /**
- * add folder portrait id to book portrait collections
+ * Add folder portrait id to book portrait collections
  *
- * @param   {Number} bookId  id of book
- * @param   {Number} folderIds  array id of portrait folder selected
+ * @param   {Number | String} bookId  id of book
+ * @param   {Array}           folderIds  array id of portrait folder selected
  * @returns {Object}              mutation result
  */
 export const saveSelectedPortraitFolders = async (bookId, folderIds) => {
@@ -47,5 +47,5 @@ export const saveSelectedPortraitFolders = async (bookId, folderIds) => {
     })
   );
 
-  return await Promise.all(promises).then(res => isOk(res));
+  return await Promise.all(promises);
 };
