@@ -51,6 +51,10 @@ export default {
     isExpandDefault: {
       type: Boolean,
       default: false
+    },
+    id: {
+      type: String,
+      default: ''
     }
   },
   setup() {
@@ -147,6 +151,7 @@ export default {
       if (this.transitionTarget === TRANS_TARGET.NONE) return;
 
       const transition = new Transition({
+        id: this.id,
         transition: this.currentTransition,
         direction: this.currentDirection,
         duration: this.currentDuration
@@ -156,8 +161,7 @@ export default {
         transition,
         this.transitionTarget,
         this.sheetId,
-        this.sectionId,
-        this.transitionIndex
+        this.sectionId
       );
 
       this.isSettingChanged = false;

@@ -52,7 +52,6 @@ export const useSaveData = () => {
       frameId: frame.id,
       frameParams: mappingFrameToApi(frame)
     };
-    variables.frameParams.objects = frame.objects.map(o => JSON.stringify(o));
 
     return await saveDigitalDataApi(variables, isAutosave);
   };

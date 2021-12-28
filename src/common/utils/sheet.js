@@ -3,6 +3,10 @@ import { getPagePrintSize } from './canvas';
 import { isEmpty } from './util';
 
 import { OBJECT_TYPE, SHEET_TYPE } from '@/common/constants';
+import { sortByProperty } from '.';
+import { FrameDetail, Transition } from '../models';
+import { frameMapping } from '../mapping/frame';
+import { transitionMapping } from '../mapping';
 
 export const isHalfSheet = ({ type }) => {
   return [SHEET_TYPE.FRONT_COVER, SHEET_TYPE.BACK_COVER].indexOf(type) >= 0;
@@ -205,4 +209,25 @@ export const getPageIdsOfSheet = (pageIds, sheetType) => {
   if (sheetType === SHEET_TYPE.BACK_COVER) return [pageIds[0], null];
   if (sheetType === SHEET_TYPE.FRONT_COVER) return [null, pageIds[0]];
   return pageIds;
+};
+
+/**
+ * To convert API frames and transition to PP data
+ *
+ * @param {Object} sheet sheet object data
+ * @returns {frames, transitions}
+ */
+export const handleMappingFrameAndTransition = sheet => {
+  const frames = sheet.digital_frames;
+  const sortedFrames = sortByProperty(frames, 'frame_order');
+
+  const transitions = sheet.digital_transitions;
+  const sortedTransitions = sortByProperty(transitions, 'transition_order');
+
+  return {
+    frames: sortedFrames.map(f => new FrameDetail(frameMapping(f))),
+    transitions: sortedTransitions.map(
+      t => new Transition(transitionMapping(t))
+    )
+  };
 };

@@ -59,6 +59,7 @@ export default {
 
     const {
       saveToFavorites,
+      deleteFavorites,
       getFavorites,
       getCustom,
       getFavoriteLayouts
@@ -76,6 +77,7 @@ export default {
       modalData,
       toggleModal,
       saveToFavorites,
+      deleteFavorites,
       getFavorites,
       getCustom,
       getFavoriteLayouts,
@@ -167,7 +169,7 @@ export default {
      * Set up inital data to render in view
      */
     async initPrintData() {
-      this.themesOptions = await getThemesApi(true, false);
+      this.themesOptions = await getThemesApi(false);
     },
     /**
      * Set default selected for layout base on id of sheet: Cover, Single Page or Collage
@@ -349,7 +351,7 @@ export default {
     async onSaveToFavorites({ id, isFavorites }) {
       const isSuccess = (await isFavorites)
         ? this.saveToFavorites(id)
-        : (() => false)(); // will implement when API is ready
+        : this.deleteFavorites(id);
 
       if (!isSuccess) return;
 

@@ -182,7 +182,7 @@ export default {
      * Set up inital data to render in view of digital ediont
      */
     async initDigitalData() {
-      this.themesOptions = await getThemesApi(true, true);
+      this.themesOptions = await getThemesApi(true);
 
       const layouts = this.isSupplemental
         ? await loadSupplementalLayouts()

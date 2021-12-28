@@ -37,3 +37,13 @@ export const getPlaybackDataFromFrames = (
     };
   });
 };
+
+/**
+ * Sort frame by order frame
+ *
+ * @param   {Array} frames      frames data
+ * @returns {Array}             frames sorted
+ */
+export const sortFrameByOrder = frames => {
+  return frames.sort((ff, sf) => ff.frame_order - sf.frame_order);
+};
