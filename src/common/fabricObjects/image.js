@@ -702,6 +702,13 @@ export const handleChangeMediaSrc = async (
     : await setImageSrc(target, imageUrl);
 
   prop.imageId = id;
+  prop.originalUrl = imageUrl;
+
+  target.set({
+    originalUrl: imageUrl,
+    cropInfo: null,
+    fromPortrait: false
+  });
 
   if (mediaUrl) {
     prop.volume = DEFAULT_VIDEO.VOLUME;

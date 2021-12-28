@@ -389,13 +389,19 @@ export default {
           )
       );
 
+      this.setLoadingState({ value: true });
+
       const props = await Promise.all(promises);
 
-      canvas.renderAll();
+      this.setPropOfMultipleObjects({ data: props });
 
       this.$refs.canvasEditor.getThumbnailUrl();
 
-      this.setPropOfMultipleObjects({ data: props });
+      setTimeout(() => {
+        canvas.renderAll();
+
+        this.setLoadingState({ value: false });
+      }, 250);
     },
     /**
      * Use to open modal media
@@ -566,6 +572,7 @@ export default {
 
       if (mediaUrl) {
         prop.volume = DEFAULT_VIDEO.VOLUME;
+        prop.endTime = prop.duration;
         prop.startTime = 0;
       }
 
