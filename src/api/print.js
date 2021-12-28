@@ -190,18 +190,6 @@ const printService = {
   },
 
   /**
-   * save theme id in global book variable
-   * @param {Number} themeId id of theme that will be saved
-   */
-  saveDefaultThemeId: themeId => {
-    return new Promise(resolve => {
-      window.data.book.printData.themeId = themeId;
-
-      resolve();
-    });
-  },
-
-  /**
    * save layout and theme id of a sheet in global book variable
    * @param {Number} sheetId id of sheet
    * @param {Object} layout a layout object
