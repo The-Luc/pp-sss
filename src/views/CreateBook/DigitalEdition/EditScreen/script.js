@@ -61,7 +61,8 @@ import {
   handleChangeMediaSrc,
   getAvailableImages,
   setImageSrc,
-  setVideoSrc
+  setVideoSrc,
+  createMediaOverlay
 } from '@/common/fabricObjects';
 
 import {
@@ -567,6 +568,11 @@ export default {
       if (mediaUrl) {
         prop.volume = DEFAULT_VIDEO.VOLUME;
         prop.startTime = 0;
+      }
+
+      if (target.customThumbnailUrl && mediaUrl) {
+        const img = await createMediaOverlay(target.customThumbnailUrl);
+        target.set({ thumbnail: img });
       }
 
       this.setPropertyById({ id: target.id, prop });

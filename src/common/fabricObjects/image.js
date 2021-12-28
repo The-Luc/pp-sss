@@ -709,6 +709,11 @@ export const handleChangeMediaSrc = async (
     prop.startTime = 0;
   }
 
+  if (target.customThumbnailUrl && mediaUrl) {
+    const img = await createMediaOverlay(target.customThumbnailUrl);
+    target.set({ thumbnail: img });
+  }
+
   return { id: target.id, prop };
 };
 
