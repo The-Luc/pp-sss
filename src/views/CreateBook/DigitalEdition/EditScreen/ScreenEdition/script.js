@@ -86,7 +86,6 @@ import {
   useElementProperties,
   useStyle,
   useToolBar,
-  useActionDigitalSheet,
   useProperties,
   useGetterEditionSection,
   useAnimation,

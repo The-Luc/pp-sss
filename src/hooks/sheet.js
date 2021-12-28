@@ -4,8 +4,6 @@ import { useAppCommon } from './common';
 import { useAnimation } from './animation';
 import { useFrame } from './frame';
 
-import { getPlaybackDataApi } from '@/api/sheetService';
-
 import { getWorkspaceApi, updateSheetApi } from '@/api/sheet';
 
 import { updatePageWorkspace } from '@/api/page';
@@ -30,7 +28,8 @@ import {
 import { getAssetByIdApi } from '@/api/media';
 import { getFramesAndTransitionsApi } from '@/api/frame';
 import { TRANSITION, TRANS_TARGET } from '@/common/constants';
-import { updateTransitionApi } from '@/api/transition';
+import { updateTransitionApi } from '@/api/playback';
+import { getPlaybackDataApi } from '@/api/playback/api_query';
 
 export const useSheet = () => {
   const { value: isDigital } = useAppCommon().isDigitalEdition;
@@ -268,12 +267,8 @@ export const useActionDigitalSheet = () => {
     const currentFrames = framesObs.value;
 
     const currentScreenId = currentSheetObs.value.id;
-    const currentSectionId = currentSheetObs.value.sectionId;
 
-    const currentTransitions = await getTransitions(
-      currentScreenId,
-      currentSectionId
-    );
+    const currentTransitions = await getTransitions(currentScreenId);
 
     return getPlaybackDataFromFrames(currentFrames, currentTransitions, [
       currentFrame

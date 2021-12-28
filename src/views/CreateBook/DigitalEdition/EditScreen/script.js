@@ -683,7 +683,7 @@ export default {
      *
      * @param   {Number}          playType  selected playback type
      * @param   {Number | String} frameId   id of selected frame
-     * @returns {Array}                     data
+     * @returns {Promise<Array>}                     data
      */
     async getPlayback(playType, frameId) {
       if (playType === PLAYBACK.ALL) {

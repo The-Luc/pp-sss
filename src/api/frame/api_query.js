@@ -1,13 +1,5 @@
 import { OBJECT_TYPE } from '@/common/constants';
-import { transitionMapping } from '@/common/mapping';
-import { frameMapping } from '@/common/mapping/frame';
-import { FrameDetail, Transition } from '@/common/models';
-import {
-  isEmpty,
-  isOk,
-  sortByProperty,
-  sortFrameByOrder
-} from '@/common/utils';
+import { handleMappingFrameAndTransition, isEmpty, isOk } from '@/common/utils';
 import { get } from 'lodash';
 import { graphqlRequest } from '../urql';
 import { getFrameObjectQuery, getSheetFramesQuery } from './queries';
@@ -17,18 +9,7 @@ export const getFramesAndTransitionsApi = async sheetId => {
 
   if (!isOk(res)) return [];
 
-  const frames = get(res.data, 'sheet.digital_frames', []);
-  const sortedFrames = sortFrameByOrder(frames);
-
-  const transitions = get(res.data, 'sheet.digital_transitions', []);
-  const sortedTransitions = sortByProperty(transitions, 'transition_order');
-
-  return {
-    frames: sortedFrames.map(f => new FrameDetail(frameMapping(f))),
-    transitions: sortedTransitions.map(
-      t => new Transition(transitionMapping(t))
-    )
-  };
+  return handleMappingFrameAndTransition(res.data.sheet);
 };
 
 export const getFrameBackgroundApi = async frameId => {
