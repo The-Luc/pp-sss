@@ -135,11 +135,7 @@ export default {
       disabledToolbarItems,
       setPropertiesType
     } = useToolBar();
-    const {
-      createFrameApi,
-      updateFrameApi,
-      getSheetFramesApi
-    } = useFrameAction();
+    const { createFrameApi, updateFrameApi, getSheetFrames } = useFrameAction();
     const { storeAnimationProp } = useAnimation();
 
     const { addObjecs, deleteObjects } = useObjects();
@@ -192,7 +188,7 @@ export default {
       setLoadingState,
       createFrameApi,
       updateFrameApi,
-      getSheetFramesApi,
+      getSheetFrames,
       generateMultiThumbnails
     };
   },
@@ -694,7 +690,7 @@ export default {
      *
      * @param   {Number}          playType  selected playback type
      * @param   {Number | String} frameId   id of selected frame
-     * @returns {Array}                     data
+     * @returns {Promise<Array>}                     data
      */
     async getPlayback(playType, frameId) {
       if (playType === PLAYBACK.ALL) {
@@ -779,7 +775,7 @@ export default {
           const frames =
             screenId === this.pageSelected.id
               ? this.frames
-              : await this.getSheetFramesApi(screenId);
+              : await this.getSheetFrames(screenId);
 
           const framesList = await this.getRequiredFramesData(
             cloneDeep(frames),

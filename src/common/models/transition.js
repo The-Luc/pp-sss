@@ -1,4 +1,4 @@
-import { BaseObject } from './base';
+import { BaseEntity } from '.';
 
 import {
   TRANSITION_DEFAULT,
@@ -6,7 +6,7 @@ import {
   TRANS_DURATION_DEFAULT
 } from '../constants';
 
-export class Transition extends BaseObject {
+export class Transition extends BaseEntity {
   transition = TRANSITION_DEFAULT.value;
   direction = TRANS_DIRECTION_DEFAULT.value;
   duration = TRANS_DURATION_DEFAULT;
