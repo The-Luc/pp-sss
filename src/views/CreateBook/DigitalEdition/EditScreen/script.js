@@ -94,7 +94,7 @@ export default {
     Playback
   },
   setup() {
-    const { setLoadingState } = useAppCommon();
+    const { setLoadingState, generalInfo } = useAppCommon();
 
     const { pageSelected, updateVisited } = useLayoutPrompt(EDITION.DIGITAL);
     const { setToolNameSelected } = usePopoverCreationTool();
@@ -186,6 +186,7 @@ export default {
       getFramePlaybackData,
       setPropertiesType,
       setLoadingState,
+      generalInfo,
       createFrameApi,
       updateFrameApi,
       getSheetFrames,
@@ -344,7 +345,7 @@ export default {
 
       setTimeout(() => {
         this.$router.push(
-          getEditionListPath(this.$route.params.bookId, EDITION.DIGITAL)
+          getEditionListPath(this.generalInfo.bookId, EDITION.DIGITAL)
         );
       }, SAVING_DURATION);
     },
@@ -844,7 +845,10 @@ export default {
         MODAL_TYPES.PORTRAIT_FLOW
       ].data.folders.map(item => item.id);
 
-      this.saveSelectedPortraitFolders(selectedFolderIds, true);
+      this.saveSelectedPortraitFolders(
+        this.generalInfo.bookId,
+        selectedFolderIds
+      );
     },
     /**
      * Get require frame data
