@@ -1,7 +1,7 @@
 import { OBJECT_TYPE } from '@/common/constants';
 import { frameMapping } from '@/common/mapping/frame';
 import { FrameDetail } from '@/common/models';
-import { isEmpty, isOk } from '@/common/utils';
+import { isEmpty, isOk, sortFrameByOrder } from '@/common/utils';
 import { get } from 'lodash';
 import { graphqlRequest } from '../urql';
 import { getFrameObjectQuery, getSheetFramesQuery } from './queries';
@@ -13,7 +13,9 @@ export const getSheetFramesApi = async sheetId => {
 
   const frames = get(res.data, 'sheet.digital_frames', []);
 
-  return frames.map(f => new FrameDetail(frameMapping(f)));
+  const frameSorted = sortFrameByOrder(frames);
+
+  return frameSorted.map(f => new FrameDetail(frameMapping(f)));
 };
 
 export const getFrameBackgroundApi = async frameId => {

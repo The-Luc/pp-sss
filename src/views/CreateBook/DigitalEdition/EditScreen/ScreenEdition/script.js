@@ -77,7 +77,6 @@ import {
 import { mapGetters, mapActions, mapMutations } from 'vuex';
 
 import {
-  useDrawLayout,
   useInfoBar,
   useLayoutPrompt,
   useFrame,
@@ -163,7 +162,6 @@ export default {
   },
   setup() {
     const { setLoadingState } = useAppCommon();
-    const { drawLayout } = useDrawLayout();
     const { setInfoBar, zoom } = useInfoBar();
     const { openPrompt } = useLayoutPrompt();
     const { handleSwitchFrame } = useFrameSwitching();
@@ -213,7 +211,6 @@ export default {
       setLoadingState,
       currentFrame,
       currentFrameId,
-      drawLayout,
       setInfoBar,
       zoom,
       openPrompt,

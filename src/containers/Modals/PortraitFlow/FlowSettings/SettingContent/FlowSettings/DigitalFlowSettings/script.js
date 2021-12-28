@@ -274,7 +274,7 @@ export default {
       const totalFramesOfScreens = Object.values(this.sheets).reduce(
         (obj, sheet) => {
           const key = Number(sheet.pageName);
-          obj[key] = sheet.frames.length || 1;
+          obj[key] = sheet.frameIds.length || 1;
           return obj;
         },
         {}

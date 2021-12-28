@@ -6,7 +6,7 @@ export const useGetterTheme = () => {
   const { value: isDigital } = useAppCommon().isDigitalEdition;
 
   const getThemes = async () => {
-    return getThemesApi(true, isDigital);
+    return getThemesApi(isDigital);
   };
 
   return { getThemes };

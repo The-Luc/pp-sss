@@ -48,10 +48,11 @@ import {
   useBackgroundProperties,
   usePortrait,
   useActionDigitalSheet,
-  useAppCommon
+  useAppCommon,
+  useFrameAction
 } from '@/hooks';
 
-import { useSavingStatus } from '../../composables';
+import { useSavingStatus, useThumbnail } from '../../composables';
 import { useSaveData, useBookDigitalInfo } from './composables';
 
 import { cloneDeep } from 'lodash';
@@ -69,7 +70,6 @@ import {
   mergeArrayNonEmpty,
   getPageObjects,
   resetObjects,
-  getUniqueId,
   isOk,
   mergeArray
 } from '@/common/utils';
@@ -98,13 +98,18 @@ export default {
 
     const { pageSelected, updateVisited } = useLayoutPrompt(EDITION.DIGITAL);
     const { setToolNameSelected } = usePopoverCreationTool();
-    const { setCurrentSheetId } = useMutationDigitalSheet();
+    const {
+      setCurrentSheetId,
+      updateSheetThumbnail
+    } = useMutationDigitalSheet();
     const { currentUser, authenticate } = useUser();
     const {
       currentFrameId,
       updateFrameObjects,
       setFrames,
-      setCurrentFrameId
+      setCurrentFrameId,
+      frames,
+      clearAllFrames
     } = useFrame();
     const {
       saveEditScreen,
@@ -130,8 +135,11 @@ export default {
       disabledToolbarItems,
       setPropertiesType
     } = useToolBar();
-    const { frames } = useFrame();
-
+    const {
+      createFrameApi,
+      updateFrameApi,
+      getSheetFramesApi
+    } = useFrameAction();
     const { storeAnimationProp } = useAnimation();
 
     const { addObjecs, deleteObjects } = useObjects();
@@ -139,12 +147,14 @@ export default {
     const { backgroundsProps } = useBackgroundProperties();
 
     const { saveSelectedPortraitFolders } = usePortrait();
+    const { generateMultiThumbnails } = useThumbnail();
 
     return {
       pageSelected,
       updateVisited,
       setToolNameSelected,
       setCurrentSheetId,
+      updateSheetThumbnail,
       currentUser,
       authenticate,
       currentFrameId,
@@ -164,6 +174,7 @@ export default {
       disabledToolbarItems,
       currentSheet,
       frames,
+      clearAllFrames,
       storeAnimationProp,
       saveAnimationConfig,
       addObjecs,
@@ -178,7 +189,11 @@ export default {
       getCurrentScreenPlaybackData,
       getFramePlaybackData,
       setPropertiesType,
-      setLoadingState
+      setLoadingState,
+      createFrameApi,
+      updateFrameApi,
+      getSheetFramesApi,
+      generateMultiThumbnails
     };
   },
   data() {
@@ -740,70 +755,81 @@ export default {
       }, {});
 
       this.setLoadingState({ value: true });
+      const screenWillUpdate = [];
 
-      Object.keys(requiredScreens).forEach((screenId, screenIndex) => {
-        const requiredFrames = requiredScreens[screenId];
+      const framePromise = Object.keys(requiredScreens).map(
+        async (screenId, screenIndex) => {
+          const requiredFrames = requiredScreens[screenId];
 
-        if (isEmpty(requiredFrames)) return;
-        const requiredFolders =
-          Object.values(flowMultiSettings.screen)?.[screenIndex]?.length || 1;
-        const folders = settings.folders.splice(0, requiredFolders);
-        const pages = getPageObjects(settings, requiredFrames, true, folders);
+          if (isEmpty(requiredFrames)) return;
+          const requiredFolders =
+            Object.values(flowMultiSettings.screen)?.[screenIndex]?.length || 1;
+          const folders = settings.folders.splice(0, requiredFolders);
+          const pages = getPageObjects(settings, requiredFrames, true, folders);
 
-        const canvas = this.$refs.canvasEditor.digitalCanvas;
+          const canvas = this.$refs.canvasEditor.digitalCanvas;
 
-        const frames =
-          screenId === this.pageSelected.id
-            ? cloneDeep(this.frames)
-            : cloneDeep(this.getSheets[screenId].frames);
+          const frames =
+            screenId === this.pageSelected.id
+              ? this.frames
+              : await this.getSheetFramesApi(screenId);
 
-        const framesList = this.getRequiredFramesData(frames, pages);
+          const framesList = await this.getRequiredFramesData(
+            cloneDeep(frames),
+            pages,
+            screenId
+          );
 
-        if (+screenId !== +this.pageSelected.id) {
-          const hasPackageFrame = framesList.some(f => f.fromLayout);
+          if (+screenId !== +this.pageSelected.id) {
+            const thumbOfOldFrame = frames[0].previewImageUrl;
+            const thumbOfNewFram = framesList[0].previewImageUrl;
+            const previewImageUrl =
+              thumbOfOldFrame !== thumbOfNewFram ? thumbOfNewFram : '';
+            screenWillUpdate.push({ sheetId: screenId, previewImageUrl });
 
-          if (!hasPackageFrame && framesList[0]) {
-            framesList[0].fromLayout = true;
+            return;
           }
 
-          this.updateVisited({
-            sheetId: screenId
+          const currentId = this.currentFrameId;
+          const ids = Object.keys(this.listObjects);
+          const { background } = cloneDeep(this.backgroundsProps);
+
+          this.clearAllFrames();
+
+          const currentFrame = framesList.find(f => +f.id === +currentId);
+
+          const { id, objects } = currentFrame || framesList[0];
+
+          this.deleteObjects({ ids });
+
+          const filteredObjects = objects.filter(
+            obj => obj.type !== OBJECT_TYPE.BACKGROUND
+          );
+
+          this.addObjecs({
+            objects: filteredObjects.map(obj => ({
+              id: obj.id,
+              newObject: obj
+            }))
           });
 
-          return this.saveSheetFrames(screenId, framesList);
+          this.setFrames({ framesList });
+
+          this.setCurrentFrameId({ id });
+
+          resetObjects(canvas);
+
+          if (!isEmpty(background)) filteredObjects.unshift(background);
+          this.$refs.canvasEditor.drawObjectsOnCanvas(filteredObjects);
         }
+      );
+      await Promise.all(framePromise);
 
-        const currentId = this.currentFrameId;
-        const ids = Object.keys(this.listObjects);
-        const { background } = cloneDeep(this.backgroundsProps);
-
-        this.setFrames({ framesList: [] });
-
-        const currentFrame = framesList.find(f => +f.id === +currentId);
-
-        const { id, objects } = currentFrame || framesList[0];
-
-        this.deleteObjects({ ids });
-
-        const filteredObjects = objects.filter(
-          obj => obj.type !== OBJECT_TYPE.BACKGROUND
-        );
-
-        this.addObjecs({
-          objects: filteredObjects.map(obj => ({ id: obj.id, newObject: obj }))
-        });
-
-        // TODO: Handle API when available
-        // this.setFrames({ framesList });
-
-        this.setCurrentFrameId({ id });
-
-        resetObjects(canvas);
-
-        if (!isEmpty(background)) filteredObjects.unshift(background);
-        this.$refs.canvasEditor.drawObjectsOnCanvas(filteredObjects);
-
-        canvas.renderAll();
+      // update to vuex store
+      screenWillUpdate.forEach(({ sheetId, previewImageUrl }) => {
+        this.updateVisited({ sheetId });
+        previewImageUrl &&
+          this.updateSheetThumbnail({ sheetId, thumbnailUrl: previewImageUrl });
       });
 
       this.setLoadingState({ value: false });
@@ -822,9 +848,13 @@ export default {
      *
      * @param   {Array}   currentFrames   current frames data
      * @param   {Object}  requiredFrames  require frames
-     * @returns {Array}                   frame data
+     * @returns {Promise<Array>}                   frame data
      */
-    getRequiredFramesData(currentFrames, requiredFrames) {
+    async getRequiredFramesData(currentFrames, requiredFrames, screenId) {
+      const createdFrames = [];
+      const updatedFrames = [];
+      const modifiedFrameIdx = [];
+
       Array.from({
         length: Math.max(...Object.keys(requiredFrames))
       }).forEach((_, index) => {
@@ -833,13 +863,14 @@ export default {
 
         if (!currentFrames[index]) {
           const blankFrame = new FrameDetail({
-            id: getUniqueId(),
             fromLayout: false,
             objects,
             isVisited: true,
             playInIds: orderIds,
             playOutIds: orderIds
           });
+          createdFrames.push(blankFrame);
+          modifiedFrameIdx.push(index);
 
           return currentFrames.push(blankFrame);
         }
@@ -852,10 +883,42 @@ export default {
 
         if (!isEmpty(background)) objects.unshift(background);
 
-        currentFrames[index].objects = objects;
-        currentFrames[index].playInIds = orderIds;
-        currentFrames[index].playOutIds = orderIds;
+        currentFrames[index] = {
+          ...currentFrames[index],
+          objects,
+          playInIds: orderIds,
+          playOutIds: orderIds,
+          isVisited: true
+        };
+
+        updatedFrames.push(currentFrames[index]);
+        modifiedFrameIdx.push(index);
       });
+
+      const imageUrls = await this.generateMultiThumbnails(
+        modifiedFrameIdx.map(idx => currentFrames[idx].objects),
+        true
+      );
+
+      // update url into frams
+      modifiedFrameIdx.map(
+        (frameIdx, idx) =>
+          (currentFrames[frameIdx].previewImageUrl = imageUrls[idx])
+      );
+
+      // update frames
+      Promise.all(
+        updatedFrames.map(frame => this.updateFrameApi(frame.id, frame))
+      );
+
+      const responeFrames = await Promise.all(
+        createdFrames.map(frame => this.createFrameApi(screenId, frame))
+      );
+
+      // adding frame id
+      createdFrames.forEach(
+        (frame, index) => (frame.id = responeFrames[index].id)
+      );
 
       return currentFrames;
     }

@@ -11,7 +11,13 @@ import {
 import { MUTATES } from '@/store/modules/app/const';
 import { PROPERTIES_TOOLS } from '@/common/constants';
 import { cloneDeep } from 'lodash';
-import { deleteFrameApi } from '@/api/frame';
+import {
+  createFrameApi,
+  deleteFrameApi,
+  updateFrameApi,
+  getSheetFramesApi,
+  updateFrameOrderApi
+} from '@/api/frame';
 
 /**
  * Get and set common sate of frames
@@ -39,12 +45,14 @@ export const useFrame = () => {
     setSupplementalLayoutId,
     updateFrameObjects,
     setCurrentFrameId,
-    setFrames
+    setFrames,
+    clearAllFrames
   } = useMutations({
     setSupplementalLayoutId: DIGITAL_MUTATES.SET_SUPPLEMENTAL_LAYOUT_ID,
     setCurrentFrameId: DIGITAL_MUTATES.SET_CURRENT_FRAME_ID,
     updateFrameObjects: DIGITAL_MUTATES.UPDATE_OBJECTS_TO_FRAME,
-    setFrames: DIGITAL_MUTATES.SET_FRAMES
+    setFrames: DIGITAL_MUTATES.SET_FRAMES,
+    clearAllFrames: DIGITAL_MUTATES.CLEAR_ALL_FRAMES
   });
 
   return {
@@ -58,7 +66,8 @@ export const useFrame = () => {
     setFrames,
     totalFrame,
     frameIds,
-    currentFrameIndex
+    currentFrameIndex,
+    clearAllFrames
   };
 };
 
@@ -177,7 +186,19 @@ export const useFrameOrdering = () => {
     moveFrame: DIGITAL_MUTATES.MOVE_FRAME
   });
 
-  return { moveFrame };
+  const { frameIds } = useGetters({
+    frameIds: DIGITAL_GETTERS.GET_FRAME_IDS
+  });
+
+  const handleUpdateFrameOrder = async (paramsMoveFrame, sheetId) => {
+    moveFrame(paramsMoveFrame);
+
+    const frameOrderIds = frameIds.value.map(id => parseInt(id));
+
+    updateFrameOrderApi(sheetId, frameOrderIds);
+  };
+
+  return { handleUpdateFrameOrder };
 };
 
 export const useFrameTitle = () => {
@@ -210,5 +231,10 @@ export const useFrameAction = () => {
     return framesObs.value[frameIds[index]]?.previewImageUrl;
   };
 
-  return { getPreviewUrlByIndex };
+  return {
+    getPreviewUrlByIndex,
+    createFrameApi,
+    updateFrameApi,
+    getSheetFramesApi
+  };
 };

@@ -10,7 +10,8 @@ import {
   isHalfSheet as isSheetHalfSheet,
   getBackgroundType,
   getBackgroundPageType,
-  isFullBackground
+  isFullBackground,
+  isHalfRight
 } from '@/common/utils';
 
 export default {
@@ -144,12 +145,14 @@ export default {
         return;
       }
 
+      const isLeft = !isHalfRight(this.currentSheet);
+
       this.$root.$emit('printAddBackground', {
         background: {
           ...cloneDeep(background),
           opacity: 1
         },
-        isLeft: true
+        isLeft
       });
 
       this.onClose();

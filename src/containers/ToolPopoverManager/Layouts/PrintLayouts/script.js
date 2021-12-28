@@ -167,7 +167,7 @@ export default {
      * Set up inital data to render in view
      */
     async initPrintData() {
-      this.themesOptions = await getThemesApi(true, false);
+      this.themesOptions = await getThemesApi(false);
     },
     /**
      * Set default selected for layout base on id of sheet: Cover, Single Page or Collage
