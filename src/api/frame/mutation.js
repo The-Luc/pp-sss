@@ -1,10 +1,11 @@
 import { gql } from 'graphql-tag';
 
-const frameFragment = gql`
+export const frameFragment = gql`
   fragment FrameDetail on DigitalFrame {
     id
     title
     frame_delay
+    frame_order
     objects
     preview_image_url
     from_layout
