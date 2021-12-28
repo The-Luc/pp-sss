@@ -4,14 +4,7 @@ import { useAppCommon } from './common';
 import { useAnimation } from './animation';
 import { useFrame } from './frame';
 
-import {
-  getTransitionApi,
-  getTransitionsApi,
-  addTransitionApi,
-  removeTransitionApi,
-  applyTransitionApi,
-  getPlaybackDataApi
-} from '@/api/sheetService';
+import { getPlaybackDataApi } from '@/api/sheetService';
 
 import { getWorkspaceApi, updateSheetApi } from '@/api/sheet';
 
@@ -35,6 +28,9 @@ import {
   MUTATES as DIGITAL_MUTATES
 } from '@/store/modules/digital/const';
 import { getAssetByIdApi } from '@/api/media';
+import { getFramesAndTransitionsApi } from '@/api/frame';
+import { TRANSITION, TRANS_TARGET } from '@/common/constants';
+import { updateTransitionApi } from '@/api/transition';
 
 export const useSheet = () => {
   const { value: isDigital } = useAppCommon().isDigitalEdition;
@@ -192,33 +188,45 @@ export const useActionDigitalSheet = () => {
     return generalInfoObs.value.bookId;
   };
 
-  const getTransition = async (sheetId, sectionId, transitionIndex) =>
-    getTransitionApi(getBookId(), sheetId, sectionId, transitionIndex);
+  const getTransition = async (sheetId, transitionIndex) => {
+    const { transitions } = await getFramesAndTransitionsApi(sheetId);
+    return transitions[transitionIndex];
+  };
 
-  const getTransitions = async (sheetId, sectionId) =>
-    getTransitionsApi(getBookId(), sheetId, sectionId);
-
-  const addTransition = async (sheetId, sectionId, totalTransition = 1) =>
-    addTransitionApi(getBookId(), sheetId, sectionId, totalTransition);
-
-  const removeTransition = async (sheetId, sectionId, totalTransition = 1) =>
-    removeTransitionApi(getBookId(), sheetId, sectionId, totalTransition);
+  const getTransitions = async sheetId => {
+    const { transitions } = await getFramesAndTransitionsApi(sheetId);
+    return transitions;
+  };
 
   const applyTransition = async (
     transition,
     targetType,
     sheetId,
-    sectionId,
-    transitionIndex
+    sectionId
   ) => {
-    await applyTransitionApi(
-      getBookId(),
+    if (transition.transition === TRANSITION.NONE) {
+      transition.direction = -1;
+      transition.duration = 0;
+    }
+
+    if (transition.transition === TRANSITION.DISSOLVE) {
+      transition.direction = -1;
+    }
+
+    const idOpts = {
+      [TRANS_TARGET.SELF]: transition.id,
+      [TRANS_TARGET.SHEET]: sheetId,
+      [TRANS_TARGET.SECTION]: sectionId,
+      [TRANS_TARGET.ALL]: getBookId()
+    };
+
+    const isSuccess = await updateTransitionApi(
+      idOpts[targetType],
       transition,
-      targetType,
-      sheetId,
-      sectionId,
-      transitionIndex
+      targetType
     );
+
+    if (!isSuccess) return;
 
     updateTriggerTransition();
   };
@@ -304,8 +312,6 @@ export const useActionDigitalSheet = () => {
   return {
     getTransition,
     getTransitions,
-    addTransition,
-    removeTransition,
     applyTransition,
     getAllScreenPlaybackData,
     getCurrentScreenPlaybackData,

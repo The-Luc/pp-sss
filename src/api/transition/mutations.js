@@ -9,9 +9,9 @@ const transitionFragment = gql`
   }
 `;
 
-export const updateSingleTransition = gql`
+export const updateSingleTransitionMutation = gql`
   mutation updateSingleTransition($id: ID!, $params: DigitalTransitionInput) {
-    update_digital_mutation(
+    update_digital_transition(
       digital_transition_id: $id
       digital_transition_params: $params
     ) {
@@ -21,10 +21,34 @@ export const updateSingleTransition = gql`
   ${transitionFragment}
 `;
 
-export const updateSheetTransition = gql`
-  mutation updateSingleTransition($id: ID!, $params: DigitalTransitionInput) {
-    update_digital_mutation_of_sheet(
+export const updateSheetTransitionMutation = gql`
+  mutation updateSheetTransition($id: ID!, $params: DigitalTransitionInput) {
+    update_digital_transitions_of_sheet(
       sheet_id: $id
+      digital_transition_params: $params
+    ) {
+      ...TransitionDetail
+    }
+  }
+  ${transitionFragment}
+`;
+
+export const updateSectionTransitionMutation = gql`
+  mutation updateSectionTransition($id: ID!, $params: DigitalTransitionInput) {
+    update_digital_transitions_of_book_section(
+      book_section_id: $id
+      digital_transition_params: $params
+    ) {
+      ...TransitionDetail
+    }
+  }
+  ${transitionFragment}
+`;
+
+export const updateBookTransitionMutation = gql`
+  mutation updateBookTransition($id: ID!, $params: DigitalTransitionInput) {
+    update_digital_transitions_of_book(
+      book_id: $id
       digital_transition_params: $params
     ) {
       ...TransitionDetail

@@ -16,6 +16,13 @@ export const getSheetFramesQuery = gql`
         play_in_ids
         play_out_ids
       }
+      digital_transitions {
+        id
+        duration
+        direction
+        transition_order
+        transition_type
+      }
     }
   }
 `;

@@ -4,7 +4,8 @@
       <div class="transition-wrapper digital">
         <item
           v-for="(item, index) in transitions"
-          :key="index"
+          :id="item.id"
+          :key="item.id"
           :transition-index="index"
           :sheet-id="sheetId"
           :section-id="sectionId"
