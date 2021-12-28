@@ -541,7 +541,7 @@ export const setVideoSrc = async (
   thumbnailSrc,
   videoToggleStatusCallback
 ) => {
-  const { width, height, scaleX, scaleY } = imageObject;
+  const { width, height, scaleX, scaleY, customThumbnailUrl } = imageObject;
 
   if (imageObject.objectType === OBJECT_TYPE.VIDEO) {
     imageObject.dispose();
@@ -637,7 +637,7 @@ export const setVideoSrc = async (
 
   imageObject.setElement(video);
 
-  const getThumbnail = createMediaOverlay(thumbnailSrc);
+  const getThumbnail = createMediaOverlay(customThumbnailUrl || thumbnailSrc);
 
   const getPlayIcon = createMediaOverlay(IMAGE_LOCAL.PLAY_ICON, {
     width: VIDEO_PLAY_ICON.WIDTH,
@@ -707,11 +707,6 @@ export const handleChangeMediaSrc = async (
     prop.volume = DEFAULT_VIDEO.VOLUME;
     prop.endTime = prop.duration;
     prop.startTime = 0;
-  }
-
-  if (target.customThumbnailUrl && mediaUrl) {
-    const img = await createMediaOverlay(target.customThumbnailUrl);
-    target.set({ thumbnail: img });
   }
 
   return { id: target.id, prop };
