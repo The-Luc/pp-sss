@@ -21,14 +21,8 @@ export default {
     isActive() {
       return this.selectedFolderIds.includes(this.portraitFolder.id);
     },
-    isPrintSelected() {
-      return this.portraitFolder.isSelected.print;
-    },
-    isDigitalSelected() {
-      return this.portraitFolder.isSelected.digital;
-    },
-    isActiveIcon() {
-      return this.isDigital ? this.isDigitalSelected : this.isPrintSelected;
+    isSelected() {
+      return this.portraitFolder.isSelected;
     }
   },
   methods: {

@@ -20,7 +20,8 @@ import { PortraitAsset, PortraitFolder } from '@/common/models';
 import {
   portraitFolders,
   getPrintSettingsQuery,
-  getDigitalSettingsQuery
+  getDigitalSettingsQuery,
+  portraitFoldersSelectedQuery
 } from './queries';
 import { EDITION } from '@/common/constants';
 
@@ -28,8 +29,16 @@ const getPortraitAssets = assets => {
   return assets.map(asset => new PortraitAsset(portraitAssetMapping(asset)));
 };
 
+export const getPortraitFoldersIdSelected = async bookId => {
+  const res = await graphqlRequest(portraitFoldersSelectedQuery, { bookId });
+  return res.data.books_portrait_collections_by_book.map(
+    collection => collection.portrait_collection.id
+  );
+};
+
 export const getPortraitFoldersApi = async ({ bookId }) => {
   const response = await graphqlRequest(portraitFolders, { id: bookId });
+  const portraitFoldersIdSelected = await getPortraitFoldersIdSelected(bookId);
 
   if (!isOk(response)) return [];
 
@@ -42,10 +51,12 @@ export const getPortraitFoldersApi = async ({ bookId }) => {
   return portraitCollections.map(portrait => {
     const portraitSubjects = get(portrait, 'portrait_subjects', []);
     const assets = getPortraitAssets(portraitSubjects);
+    const isSelected = portraitFoldersIdSelected.includes(portrait.id);
 
     return new PortraitFolder({
       ...portraitMapping(portrait),
-      assets
+      assets,
+      isSelected
     });
   });
 };

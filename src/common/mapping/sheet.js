@@ -1,6 +1,12 @@
 import { mapObject } from '@/common/utils';
 
-import { LINK_STATUS, POSITION_FIXED, SHEET_TYPE } from '@/common/constants';
+import {
+  LINK_STATUS,
+  POSITION_FIXED,
+  SHEET_TYPE,
+  TRANSITION,
+  ANIMATION_DIR
+} from '@/common/constants';
 
 /**
  * Convert sheet data from API to data of Sheet Model
@@ -82,4 +88,57 @@ export const sheetMappingToApi = sheet => {
   };
 
   return mapObject(sheet, mapRules);
+};
+
+/**
+ * Convert transition data from API to data of Transition Model
+ *
+ * @param   {Object}  transition transition data from API
+ * @returns {Object}        transition data use by model
+ */
+export const transitionMapping = transition => {
+  const mapRules = {
+    data: {
+      transition_type: {
+        name: 'transition',
+        parse: value => TRANSITION[value === 'NO_TRANSITION' ? 'NONE' : value]
+      },
+      direction: {
+        name: 'direction',
+        parse: value => ANIMATION_DIR[value]
+      }
+    },
+    restrict: ['sheet', 'transition_order']
+  };
+
+  return mapObject(transition, mapRules);
+};
+
+/**
+ * Convert transition data from model to data API
+ * @param   {Object}  transition transition data use by model
+ * @returns {Object}        transition data from API
+ */
+export const transitionMappingToApi = transition => {
+  const mapRules = {
+    data: {
+      transition: {
+        name: 'transition_type',
+        parse: value => {
+          const type = Object.keys(TRANSITION).find(
+            key => TRANSITION[key] === value
+          );
+          return type === TRANSITION.NONE ? 'NO_TRANSITION' : type;
+        }
+      },
+      direction: {
+        name: 'direction',
+        parse: value =>
+          Object.keys(ANIMATION_DIR).find(key => ANIMATION_DIR[key] === value)
+      }
+    },
+    restrict: ['id', 'transitionOrder']
+  };
+
+  return mapObject(transition, mapRules);
 };

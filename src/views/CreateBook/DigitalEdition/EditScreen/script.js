@@ -94,7 +94,7 @@ export default {
     Playback
   },
   setup() {
-    const { setLoadingState } = useAppCommon();
+    const { setLoadingState, generalInfo } = useAppCommon();
 
     const { pageSelected, updateVisited } = useLayoutPrompt(EDITION.DIGITAL);
     const { setToolNameSelected } = usePopoverCreationTool();
@@ -135,11 +135,7 @@ export default {
       disabledToolbarItems,
       setPropertiesType
     } = useToolBar();
-    const {
-      createFrameApi,
-      updateFrameApi,
-      getSheetFramesApi
-    } = useFrameAction();
+    const { createFrameApi, updateFrameApi, getSheetFrames } = useFrameAction();
     const { storeAnimationProp } = useAnimation();
 
     const { addObjecs, deleteObjects } = useObjects();
@@ -190,9 +186,10 @@ export default {
       getFramePlaybackData,
       setPropertiesType,
       setLoadingState,
+      generalInfo,
       createFrameApi,
       updateFrameApi,
-      getSheetFramesApi,
+      getSheetFrames,
       generateMultiThumbnails
     };
   },
@@ -348,7 +345,7 @@ export default {
 
       setTimeout(() => {
         this.$router.push(
-          getEditionListPath(this.$route.params.bookId, EDITION.DIGITAL)
+          getEditionListPath(this.generalInfo.bookId, EDITION.DIGITAL)
         );
       }, SAVING_DURATION);
     },
@@ -389,13 +386,19 @@ export default {
           )
       );
 
+      this.setLoadingState({ value: true });
+
       const props = await Promise.all(promises);
 
-      canvas.renderAll();
+      this.setPropOfMultipleObjects({ data: props });
 
       this.$refs.canvasEditor.getThumbnailUrl();
 
-      this.setPropOfMultipleObjects({ data: props });
+      setTimeout(() => {
+        canvas.renderAll();
+
+        this.setLoadingState({ value: false });
+      }, 250);
     },
     /**
      * Use to open modal media
@@ -566,6 +569,7 @@ export default {
 
       if (mediaUrl) {
         prop.volume = DEFAULT_VIDEO.VOLUME;
+        prop.endTime = prop.duration;
         prop.startTime = 0;
       }
 
@@ -687,7 +691,7 @@ export default {
      *
      * @param   {Number}          playType  selected playback type
      * @param   {Number | String} frameId   id of selected frame
-     * @returns {Array}                     data
+     * @returns {Promise<Array>}                     data
      */
     async getPlayback(playType, frameId) {
       if (playType === PLAYBACK.ALL) {
@@ -772,7 +776,7 @@ export default {
           const frames =
             screenId === this.pageSelected.id
               ? this.frames
-              : await this.getSheetFramesApi(screenId);
+              : await this.getSheetFrames(screenId);
 
           const framesList = await this.getRequiredFramesData(
             cloneDeep(frames),
@@ -841,7 +845,10 @@ export default {
         MODAL_TYPES.PORTRAIT_FLOW
       ].data.folders.map(item => item.id);
 
-      this.saveSelectedPortraitFolders(selectedFolderIds, true);
+      this.saveSelectedPortraitFolders(
+        this.generalInfo.bookId,
+        selectedFolderIds
+      );
     },
     /**
      * Get require frame data

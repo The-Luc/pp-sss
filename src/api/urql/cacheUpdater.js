@@ -8,6 +8,7 @@ import {
 } from '../portrait/queries';
 import { digitalWorkspaceQuery, printWorkspaceQuery } from '../sheet/queries';
 import { getFavoriteLayoutsQuery } from '../user/queries';
+import { portraitFoldersSelectedQuery } from '../portrait/queries';
 
 export const updatePortraitSettingCache = (result, args, cache) => {
   const layoutType = get(args, 'portrait_layout_setting_params.layout_type');
@@ -42,6 +43,31 @@ export const updateTemplateUserCache = (result, args, cache) => {
       if (!data) return null;
 
       data.template_favourites.push(template);
+      return data;
+    }
+  );
+};
+
+export const updateBookCollectionCache = (result, args, cache) => {
+  const collectionId = get(
+    result,
+    'create_books_portrait_collections.id',
+    null
+  );
+
+  const bookId = args.books_portrait_collections_params.book_id;
+
+  cache.updateQuery(
+    {
+      query: portraitFoldersSelectedQuery,
+      variables: { bookId }
+    },
+    data => {
+      if (!data) return null;
+
+      data.books_portrait_collections_by_book.push({
+        portrait_collection: { id: collectionId }
+      });
       return data;
     }
   );

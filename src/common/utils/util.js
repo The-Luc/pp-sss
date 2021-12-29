@@ -737,3 +737,15 @@ export const drawObjectOnCanvas = async (objects, canvas) => {
 
   canvas.add(...fabricObjects);
 };
+
+/**
+ * To sort an array based on sortedBy property
+ * @param {Array} arr array of item will be sorted
+ * @param {String} sortedBy item property`
+ * @returns sorted array
+ */
+export const sortByProperty = (arr, sortedBy) => {
+  return cloneDeep(arr).sort(
+    (a, b) => Number(a[sortedBy]) - Number(b[sortedBy])
+  );
+};
