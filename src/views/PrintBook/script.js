@@ -11,7 +11,7 @@ import {
 } from '@/plugins/fabric';
 import { fabric } from 'fabric';
 import { usePageApi } from './composables';
-import { OBJECT_TYPE } from '@/common/constants';
+import { OBJECT_TYPE, PRINT_DPI, PDF_DPI } from '@/common/constants';
 import {
   applyBorderToImageObject,
   applyShadowToObject,
@@ -335,11 +335,11 @@ export default {
     getScaleValue() {
       const zoom = +get(this.$route, 'query.scale', 1);
 
-      if (!zoom || zoom > 1) return 1;
+      const ratio = PDF_DPI / PRINT_DPI;
 
-      if (zoom < 0.01) return 0.01;
+      if (!zoom || zoom > 1) return ratio;
 
-      return zoom;
+      return zoom < 0.01 ? ratio * 0.01 : zoom * ratio;
     }
   },
   beforeMount() {

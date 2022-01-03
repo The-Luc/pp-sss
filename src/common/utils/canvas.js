@@ -8,7 +8,6 @@ import {
   SOFTCOVER_SPINE_SIZES,
   PRINT_DPI,
   DIGITAL_DPI,
-  PDF_DPI,
   PRINT_PAGE_SIZE,
   PAGE_NUMBER_TYPE,
   EDITION
@@ -21,12 +20,8 @@ let activeCanvas = null;
 
 const getDpi = () => {
   const isDigitalEdition = activeEdition === EDITION.DIGITAL;
-  const isPrintEdition = activeEdition === EDITION.PRINT;
 
-  if (isDigitalEdition) return DIGITAL_DPI;
-  if (isPrintEdition) return PRINT_DPI;
-
-  return PDF_DPI;
+  return isDigitalEdition ? DIGITAL_DPI : PRINT_DPI;
 };
 
 export const setActiveEdition = (canvas, edition) => {
