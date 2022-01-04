@@ -11,6 +11,7 @@
       @onClickOutsideMenu="onClickOutsideMenu"
     >
       <item
+        :id="transition.id"
         :transition-index="index"
         :sheet-id="sheetId"
         :section-id="sectionId"
