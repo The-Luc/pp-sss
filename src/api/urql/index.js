@@ -16,7 +16,8 @@ import {
   updatePortraitSettingCache,
   updateSectionCache,
   updateSheetCache,
-  updateTemplateUserCache
+  updateTemplateUserCache,
+  updateBookCollectionCache
 } from './cacheUpdater';
 
 let requestCount = 0;
@@ -45,7 +46,8 @@ const urqlClient = createClient({
           delete_book_section: updateDeleteSection,
           create_book_section: updateCreateSection,
           update_book_section: updateSectionCache,
-          move_sheet: moveSheetCache
+          move_sheet: moveSheetCache,
+          create_books_portrait_collections: updateBookCollectionCache
         }
       }
     }),

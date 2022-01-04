@@ -1,6 +1,10 @@
 import { graphqlRequest } from '../urql';
 
-import { loginUserMutation, saveFavoritesMutation } from './mutations';
+import {
+  loginUserMutation,
+  saveFavoritesMutation,
+  deleteFavoritesMutation
+} from './mutations';
 
 import { STATUS } from '@/common/constants';
 
@@ -29,4 +33,14 @@ export const logInUserApi = async (email, password) => {
  */
 export const saveToFavoritesApi = async id => {
   return graphqlRequest(saveFavoritesMutation, { id });
+};
+
+/**
+ * delete layout id from favorites
+ *
+ * @param   {Number | String} id  id of selected layout
+ * @returns {Object}              mutation result
+ */
+export const deleteFavoritesApi = async id => {
+  return graphqlRequest(deleteFavoritesMutation, { id });
 };

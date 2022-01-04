@@ -79,7 +79,7 @@ export default {
     PortraitFolder
   },
   setup() {
-    const { setLoadingState } = useAppCommon();
+    const { setLoadingState, generalInfo } = useAppCommon();
 
     const { pageSelected, updateVisited } = useLayoutPrompt(EDITION.PRINT);
     const { setToolNameSelected } = usePopoverCreationTool();
@@ -136,7 +136,8 @@ export default {
       backgroundsProps,
       saveSelectedPortraitFolders,
       setLoadingState,
-      getMedia
+      getMedia,
+      generalInfo
     };
   },
   data() {
@@ -273,7 +274,7 @@ export default {
 
       setTimeout(() => {
         this.$router.push(
-          getEditionListPath(this.$route.params.bookId, EDITION.PRINT)
+          getEditionListPath(this.generalInfo.bookId, EDITION.PRINT)
         );
       }, SAVING_DURATION);
     },
@@ -582,7 +583,10 @@ export default {
 
       const selectedFolderIds = this.selectedFolders.map(item => item.id);
 
-      this.saveSelectedPortraitFolders(selectedFolderIds, false);
+      this.saveSelectedPortraitFolders(
+        this.generalInfo.bookId,
+        selectedFolderIds
+      );
     },
     /**
      * Selected portrait folders

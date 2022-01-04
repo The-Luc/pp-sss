@@ -15,7 +15,7 @@ import {
   createFrameApi,
   deleteFrameApi,
   updateFrameApi,
-  getSheetFramesApi,
+  getFramesAndTransitionsApi,
   updateFrameOrderApi
 } from '@/api/frame';
 
@@ -231,10 +231,16 @@ export const useFrameAction = () => {
     return framesObs.value[frameIds[index]]?.previewImageUrl;
   };
 
+  const getSheetFrames = async sheetId => {
+    const { frames } = await getFramesAndTransitionsApi(sheetId);
+    return frames;
+  };
+
   return {
     getPreviewUrlByIndex,
     createFrameApi,
     updateFrameApi,
-    getSheetFramesApi
+    getSheetFrames,
+    getFramesAndTransitionsApi
   };
 };

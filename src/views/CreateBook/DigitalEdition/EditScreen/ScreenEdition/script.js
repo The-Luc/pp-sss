@@ -86,7 +86,6 @@ import {
   useElementProperties,
   useStyle,
   useToolBar,
-  useActionDigitalSheet,
   useProperties,
   useGetterEditionSection,
   useAnimation,
@@ -184,8 +183,6 @@ export default {
     const { getProperty } = useElementProperties();
     const { updateMediaSidebarOpen, setPropertiesType } = useToolBar();
 
-    const { addTransition, removeTransition } = useActionDigitalSheet();
-
     const { setPropOfMultipleObjects } = useProperties();
     const { currentSection } = useGetterEditionSection();
     const {
@@ -228,8 +225,6 @@ export default {
       firstFrameThumbnail,
       getProperty,
       updateMediaSidebarOpen,
-      addTransition,
-      removeTransition,
       setPropOfMultipleObjects,
       currentSection,
       storeAnimationProp,
@@ -267,7 +262,6 @@ export default {
       isCanvasChanged: false,
       autoSaveTimer: null,
       undoRedoCanvas: null,
-      isFrameLoaded: false,
       isScroll: { x: false, y: false },
       isAllowUpdateFrameDelay: false,
       isJustEnteringEditor: false // to prevent save data when entering editor
@@ -293,7 +287,6 @@ export default {
       async handler(val, oldVal) {
         if (val?.id === oldVal?.id) return;
 
-        this.isFrameLoaded = false;
         if (!this.isJustEnteringEditor)
           await this.saveData(this.currentFrameId);
 
@@ -308,8 +301,6 @@ export default {
         resetObjects(this.digitalCanvas);
 
         await this.getDataCanvas();
-
-        this.isFrameLoaded = true;
 
         this.setCurrentFrameId({ id: this.frames[0].id });
 
@@ -372,24 +363,6 @@ export default {
     },
     zoom(newVal, oldVal) {
       if (newVal !== oldVal) this.updateCanvasSize();
-    },
-    'frames.length'(newVal, oldVal) {
-      if (!this.isFrameLoaded || newVal === oldVal) return;
-
-      const changed = newVal - oldVal;
-
-      if (changed > 0)
-        this.addTransition(
-          this.pageSelected.id,
-          this.pageSelected.sectionId,
-          changed
-        );
-      else
-        this.removeTransition(
-          this.pageSelected.id,
-          this.pageSelected.sectionId,
-          -changed
-        );
     },
     propertiesType(val) {
       if (val === PROPERTIES_TOOLS.ANIMATION.name) {

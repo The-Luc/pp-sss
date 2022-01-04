@@ -86,11 +86,7 @@ export default {
      * Update transition
      */
     async updateTransition() {
-      this.transition = await this.getTransition(
-        this.sheetId,
-        this.sectionId,
-        this.index
-      );
+      this.transition = await this.getTransition(this.sheetId, this.index);
     }
   }
 };

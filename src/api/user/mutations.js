@@ -27,3 +27,19 @@ export const saveFavoritesMutation = gql`
     }
   }
 `;
+
+export const deleteFavoritesMutation = gql`
+  mutation DeleteTemplateUser($id: ID!) {
+    delete_template_user(template_id: $id) {
+      id
+      template {
+        id
+        categories {
+          id
+        }
+        preview_image_url
+        data
+      }
+    }
+  }
+`;
