@@ -18,9 +18,6 @@ export const saveFavoritesMutation = gql`
       id
       template {
         id
-        theme {
-          id
-        }
         categories {
           id
         }

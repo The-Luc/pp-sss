@@ -37,9 +37,6 @@ export const getFavoriteLayoutsQuery = gql`
   query getFavorites {
     template_favourites {
       id
-      theme {
-        id
-      }
       categories {
         id
       }
