@@ -1938,6 +1938,8 @@ export default {
 
         this.setObjectPropById({ id, prop });
       });
+
+      this.handleCanvasChanged();
     },
     /**
      * Fire when height of ruler is change
