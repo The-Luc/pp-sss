@@ -74,6 +74,7 @@ export default {
       const width = pageWidth * this.zoom;
 
       this.canvas.setWidth(width);
+      
       this.canvas.setHeight(height);
 
       this.canvas.setZoom(this.zoom);
