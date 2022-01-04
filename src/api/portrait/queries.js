@@ -62,6 +62,7 @@ export const getDigitalSettingsQuery = gql`
 export const portraitFoldersSelectedQuery = gql`
   query bookPortrait($bookId: ID!) {
     books_portrait_collections_by_book(book_id: $bookId) {
+      id
       portrait_collection {
         id
       }

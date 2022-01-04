@@ -102,6 +102,26 @@ export const updateSheetCache = (_, args, cache) => {
   }
 };
 
+export const updateCreateFrame = (results, args, cache) => {
+  const frame = get(results, 'create_digital_frame', null);
+  const { sheet_id: sheetId } = args;
+
+  if (!sheetId) return;
+
+  cache.updateQuery(
+    {
+      query: getSheetFramesQuery,
+      variables: { sheetId }
+    },
+    data => {
+      if (!data) return data;
+
+      data.sheet.digital_frames.push({ ...frame, __typename: 'DigitalFrame' });
+      return data;
+    }
+  );
+};
+
 export const updateDeleteFrame = (results, args, cache) => {
   const frameId = args.digital_frame_id;
   const sheetId = get(results, 'delete_digital_frame.sheets[0].id', null);
