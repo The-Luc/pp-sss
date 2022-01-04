@@ -8,6 +8,7 @@ import { LOCAL_STORAGE } from '@/common/constants';
 import responseHandler from './responseHandler';
 import {
   moveSheetCache,
+  updateCreateFrame,
   updateCreateSection,
   updateCreateSheet,
   updateDeleteFrame,
@@ -38,16 +39,17 @@ const urqlClient = createClient({
       updates: {
         Mutation: {
           create_portrait_layout_setting: updatePortraitSettingCache,
+          create_books_portrait_collections: updateBookCollectionCache,
           create_template_user: updateTemplateUserCache,
           update_sheet: updateSheetCache,
-          delete_digital_frame: updateDeleteFrame,
           delete_sheet: updateDeleteSheet,
           create_sheet: updateCreateSheet,
+          move_sheet: moveSheetCache,
           delete_book_section: updateDeleteSection,
           create_book_section: updateCreateSection,
           update_book_section: updateSectionCache,
-          move_sheet: moveSheetCache,
-          create_books_portrait_collections: updateBookCollectionCache
+          delete_digital_frame: updateDeleteFrame,
+          create_digital_frame: updateCreateFrame
         }
       }
     }),
