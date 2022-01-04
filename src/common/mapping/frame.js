@@ -54,9 +54,9 @@ export const mappingFrameToApi = frame => {
 
   const mapFrame = mapObject(frame, mapRules);
   mapFrame.objects = frame.objects.map(o => JSON.stringify(o));
-  //TODO: uncomment when API ready
-  // mapFrame.play_in_ids = frame.playInIds;
-  // mapFrame.play_out_ids = frame.playOutIds;
+
+  mapFrame.play_in_ids = frame.playInIds;
+  mapFrame.play_out_ids = frame.playOutIds;
 
   return mapFrame;
 };

@@ -324,7 +324,7 @@ export default {
       );
 
       if (isSwitchFrame) {
-        this.saveData(oldVal);
+        await this.saveData(oldVal);
       }
 
       this.setSelectedObjectId({ id: '' });
