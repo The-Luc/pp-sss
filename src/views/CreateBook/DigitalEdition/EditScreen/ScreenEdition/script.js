@@ -899,6 +899,8 @@ export default {
 
         this.setObjectPropById({ id, prop });
       });
+
+      this.handleCanvasChanged();
     },
 
     /**
