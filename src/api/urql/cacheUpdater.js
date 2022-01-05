@@ -48,6 +48,24 @@ export const updateTemplateUserCache = (result, args, cache) => {
   );
 };
 
+export const updateDeleteTemplateUser = (result, _, cache) => {
+  const templateId = get(result, 'delete_template_user.template.id', null);
+
+  cache.updateQuery(
+    {
+      query: getFavoriteLayoutsQuery
+    },
+    data => {
+      if (!data) return null;
+
+      data.template_favourites = data.template_favourites.filter(
+        template => template.id !== templateId
+      );
+      return data;
+    }
+  );
+};
+
 export const updateBookCollectionCache = (result, args, cache) => {
   const collectionId = get(
     result,

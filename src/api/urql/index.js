@@ -18,6 +18,7 @@ import {
   updateSectionCache,
   updateSheetCache,
   updateTemplateUserCache,
+  updateDeleteTemplateUser,
   updateBookCollectionCache
 } from './cacheUpdater';
 
@@ -41,6 +42,7 @@ const urqlClient = createClient({
           create_portrait_layout_setting: updatePortraitSettingCache,
           create_books_portrait_collections: updateBookCollectionCache,
           create_template_user: updateTemplateUserCache,
+          delete_template_user: updateDeleteTemplateUser,
           update_sheet: updateSheetCache,
           delete_sheet: updateDeleteSheet,
           create_sheet: updateCreateSheet,

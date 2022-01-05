@@ -324,7 +324,7 @@ export default {
       );
 
       if (isSwitchFrame) {
-        this.saveData(oldVal);
+        await this.saveData(oldVal);
       }
 
       this.setSelectedObjectId({ id: '' });
@@ -899,6 +899,8 @@ export default {
 
         this.setObjectPropById({ id, prop });
       });
+
+      this.handleCanvasChanged();
     },
 
     /**
