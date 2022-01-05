@@ -17,14 +17,19 @@
             align-items: center;
             justify-content: space-between;
             .thumbnail {
+              --thumbnail-height: 536px;
               width: 840px;
-              height: 536px;
+              height: var(--thumbnail-height);
               margin-top: 30px;
               box-shadow: 0 0 1px $color-gray2;
               position: relative;
+              display: grid;
+              grid-template-columns: 1fr 1fr;
+              overflow: hidden;
               img {
                 width: 100%;
-                height: 100%;
+                height: var(--thumbnail-height);
+                object-fit: cover;
               }
               &.haft-right::before {
                 content: '';

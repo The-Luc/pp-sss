@@ -22,18 +22,17 @@ export const frameMapping = frame => {
       },
       preview_image_url: {
         name: 'previewImageUrl'
-      },
-      play_in_ids: {
-        name: 'playInIds'
-      },
-      play_out_ids: {
-        name: 'playOutIds'
       }
     },
-    restrict: []
+    restrict: ['play_in_ids', 'play_out_ids']
   };
 
-  return mapObject(frame, mapRules);
+  const mappedFrame = mapObject(frame, mapRules);
+
+  mappedFrame.playInIds = frame.play_in_ids;
+  mappedFrame.playOutIds = frame.play_out_ids;
+
+  return mappedFrame;
 };
 
 export const mappingFrameToApi = frame => {
