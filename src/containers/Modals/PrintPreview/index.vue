@@ -19,8 +19,13 @@
         ]"
       >
         <img
-          v-if="currentSheet.thumbnailUrl"
-          :src="currentSheet.thumbnailUrl"
+          v-if="currentSheet.thumbnailLeftUrl"
+          :src="currentSheet.thumbnailLeftUrl"
+          alt="thumbnail"
+        />
+        <img
+          v-if="currentSheet.thumbnailRightUrl"
+          :src="currentSheet.thumbnailRightUrl"
           alt="thumbnail"
         />
       </div>

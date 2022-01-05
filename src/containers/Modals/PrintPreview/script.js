@@ -14,7 +14,7 @@ export default {
       type: Array
     },
     previewedSheetId: {
-      type: Number,
+      type: String,
       default: null
     }
   },
