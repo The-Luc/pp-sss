@@ -170,3 +170,99 @@ export const portraitFolders = [
   folder9,
   folder10
 ];
+
+const TEACHER1 = {
+  first_name: 'Reese',
+  full_name: 'Reese Braker',
+  last_name: 'Braker',
+  primary_portrait_image:
+    'http://s3.amazonaws.com/fms.prod/media/0ff9bf4ecd4b1f52a17c9699d73cce5a4dd4567f9ef9e97256f4e050c735a110d535805747284aa099945995e9ae71aa7f2de1b4818762d045f81969bb564587/f8306fa7fc8335dcb42c10e783c9e398daniel_original.jpg?1609944705',
+  subject_type: 'TEACHER'
+};
+
+const TEACHER2 = {
+  first_name: 'Lochlan',
+  full_name: 'Lochlan DeBruin',
+  last_name: 'DeBruin',
+  primary_portrait_image:
+    'http://s3.amazonaws.com/fms.prod/media/252d3ddf3fcfe7485c8d0cc4c64b5e9b81cb09620c957df28b8649320ec9b8ccd51265062a2d7d2e280cf987c6827952b7dafd2e9cb20d2d4fd7d561d18cf1df/3a822b24455cfd4989ecd2b58e4f3e16micheal_original.jpg?1610402283',
+  subject_type: 'TEACHER'
+};
+
+const TEACHER3 = {
+  first_name: 'Sara',
+  full_name: 'Sara Tims',
+  last_name: 'Tims',
+  primary_portrait_image:
+    'http://s3.amazonaws.com/fms.prod/media/619f3b6e866986114e9a1fbe1de1ba77ab0f8dd23d42efc97b576e3cf3974f1b982ca61de2fac0727abf906f8d22373597b7587e4b4e3c40627e4830ba9554d0/c289daff09836f324f404ee7937defbbpexels-zen-chung-5745281_original.jpg?1641332078',
+  subject_type: 'TEACHER'
+};
+const ASSISTANT1 = {
+  first_name: 'Gutair',
+  full_name: 'Gutair man',
+  last_name: 'man',
+  primary_portrait_image:
+    'http://s3.amazonaws.com/fms.prod/media/26e862ecceee6f157dbe797ddb341fd6bce66bc250ee2e318d5e3a16bce8e9d7ebdc2b2087290666be8f0264fbee0cab1f8a6f525f518de785975e06bfa181c9/f175f3b3ab9ccffc8a0017833f10c7e3pexels-eren-li-7169607_original.jpg?1641332096',
+  subject_type: 'ASSISTANT'
+};
+
+const ASSISTANT2 = {
+  first_name: 'Kevin',
+  full_name: 'Kevin Ipman',
+  last_name: 'Ipman',
+  primary_portrait_image:
+    'http://s3.amazonaws.com/fms.prod/media/8df92ac3d783a5e2f13a45e067eb5fe3ea39a47ab7e1df405bd469992fb9a5c2b1c056d90f5c9cc09ecfb8aaaef3b5afdd8736b6ba201905bfaeb79cb4ad272a/16985d8662e4044c88c135d421c3cb4dpexels-monstera-5200778_original.jpg?1641331938',
+  subject_type: 'ASSISTANT'
+};
+
+const testFolder1 = {
+  name: 'One Teacher',
+  assets_count: 1,
+  portrait_subjects: [TEACHER1]
+};
+
+const testFolder2 = {
+  name: '1 Teacher and 1 assistant',
+  assets_count: 2,
+  portrait_subjects: [TEACHER1, ASSISTANT1]
+};
+
+const testFolder3 = {
+  name: '1 Teachers and 2 Assistants',
+  assets_count: 3,
+  portrait_subjects: [TEACHER1, ASSISTANT1, ASSISTANT2]
+};
+
+const testFolder4 = {
+  name: '6th Grade with 2 Teachers and 1 Assistant',
+  assets_count: 3,
+  portrait_subjects: [TEACHER1, TEACHER2, ASSISTANT1]
+};
+
+const testFolder5 = {
+  name: '2 Teachers and 2 Assistants',
+  assets_count: 4,
+  portrait_subjects: [TEACHER1, TEACHER2, ASSISTANT1, ASSISTANT2]
+};
+
+const testFolder6 = {
+  name: 'Three Teachers Class',
+  assets_count: 3,
+  portrait_subjects: [TEACHER1, TEACHER2, TEACHER3]
+};
+
+const testFolder7 = {
+  name: '3 Teachers and 1 Assistant',
+  assets_count: 4,
+  portrait_subjects: [TEACHER1, TEACHER2, TEACHER3, ASSISTANT1]
+};
+
+export const testPortraitFolders = [
+  testFolder1,
+  testFolder2,
+  testFolder3,
+  testFolder4,
+  testFolder5,
+  testFolder6,
+  testFolder7
+];
