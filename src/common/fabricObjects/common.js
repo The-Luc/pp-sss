@@ -347,7 +347,15 @@ export const toCssPreview = (prop, previewHeight, isDigital) => {
   };
 
   const cssStyle = mapObject(prop, mapRules);
-  cssStyle.lineHeight = cssStyle.fontSize;
+
+  const titleLineHeight = `${ptToPxPreview(
+    prop.fontSize,
+    previewHeight,
+    isDigital
+  ) * DEFAULT_TEXT.LINE_HEIGHT}px`;
+
+  cssStyle.lineHeight =
+    prop.isPageTitleOn !== null ? titleLineHeight : cssStyle.fontSize;
 
   return cssStyle;
 };
