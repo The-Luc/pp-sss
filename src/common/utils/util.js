@@ -687,7 +687,7 @@ export const generateCanvasThumbnail = async (objects, isDigital) => {
   const EDITOR_SIZE = isDigital ? DIGITAL_CANVAS_SIZE : PRINT_CANVAS_SIZE;
 
   const el = fabric.util.createCanvasElement();
-  el.width = isDigital ? EDITOR_SIZE.WIDTH : EDITOR_SIZE.WIDTH / 2;
+  el.width = isDigital ? EDITOR_SIZE.WIDTH : Math.ceil(EDITOR_SIZE.WIDTH / 2);
   el.height = EDITOR_SIZE.HEIGHT;
 
   const canvas = new fabric.StaticCanvas(el, {
