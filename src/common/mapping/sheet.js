@@ -128,8 +128,6 @@ export const transitionMappingToApi = transition => {
           const type = Object.keys(TRANSITION).find(
             key => TRANSITION[key] === value
           );
-          console.log('value ', value);
-          console.log('type ', type);
           return type === 'NONE' ? 'NO_TRANSITION' : type;
         }
       },
