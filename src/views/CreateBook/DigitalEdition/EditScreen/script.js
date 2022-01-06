@@ -550,7 +550,7 @@ export default {
 
       this.setLoadingState({ value: true });
 
-      // play the video
+      // pause the video if playing
       isVideo && isVideoPlaying(target) && target.pause();
 
       const prop = mediaUrl
