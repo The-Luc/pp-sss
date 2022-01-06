@@ -129,7 +129,7 @@ export const updateCreateFrame = (results, args, cache) => {
   cache.updateQuery(
     {
       query: getSheetFramesQuery,
-      variables: { sheetId }
+      variables: { sheetId: +sheetId }
     },
     data => {
       if (!data) return data;
@@ -149,7 +149,7 @@ export const updateDeleteFrame = (results, args, cache) => {
   cache.updateQuery(
     {
       query: getSheetFramesQuery,
-      variables: { sheetId }
+      variables: { sheetId: +sheetId }
     },
     data => {
       if (!data) return data;

@@ -71,7 +71,8 @@ import {
   getPageObjects,
   resetObjects,
   isOk,
-  mergeArray
+  mergeArray,
+  isVideoPlaying
 } from '@/common/utils';
 
 import { FrameDetail } from '@/common/models';
@@ -548,6 +549,9 @@ export default {
       }
 
       this.setLoadingState({ value: true });
+
+      // pause the video if playing
+      isVideo && isVideoPlaying(target) && target.pause();
 
       const prop = mediaUrl
         ? await setVideoSrc(
