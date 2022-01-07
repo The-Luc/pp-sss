@@ -311,7 +311,6 @@ export default {
     },
     async currentFrameId(val, oldVal) {
       this.isAllowUpdateFrameDelay = false;
-      setTimeout(() => (this.isAllowUpdateFrameDelay = true), 50);
 
       if (!val) {
         resetObjects(this.digitalCanvas);
@@ -345,6 +344,8 @@ export default {
       this.updateMediaSidebarOpen({ isOpen: false });
 
       await this.drawObjectsOnCanvas(this.sheetLayout);
+
+      this.isAllowUpdateFrameDelay = true;
     },
     async triggerApplyLayout() {
       // to render new layout when user replace frame

@@ -358,11 +358,13 @@ export default {
      */
     updatePortraitData() {
       // order of function calls is matter
-      this.setThumbWrapperHeight();
-      this.updateMargins();
-      this.updateLayout();
-      this.setNamesHeight();
-      this.updateLargePortraitSize();
+      this.$nextTick(() => {
+        this.setThumbWrapperHeight();
+        this.updateMargins();
+        this.updateLayout();
+        this.setNamesHeight();
+        this.updateLargePortraitSize();
+      });
     },
 
     /**
