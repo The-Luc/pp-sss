@@ -9,10 +9,14 @@ import {
   updateFrameOrderMutation
 } from './mutation';
 
+// the purpose of the below line is to make sure every request is unique
+let increasement = 0;
+
 export const createFrameApi = async (sheetId, frameParams) => {
   const res = await graphqlRequest(createFrameMutation, {
     sheetId,
-    frameParams: mappingFrameToApi(frameParams)
+    frameParams: mappingFrameToApi(frameParams),
+    uniqueParams: increasement++
   });
 
   return get(res, 'data.create_digital_frame', {});
