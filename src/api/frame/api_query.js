@@ -5,7 +5,9 @@ import { graphqlRequest } from '../urql';
 import { getFrameObjectQuery, getSheetFramesQuery } from './queries';
 
 export const getFramesAndTransitionsApi = async sheetId => {
-  const res = await graphqlRequest(getSheetFramesQuery, { sheetId });
+  const res = await graphqlRequest(getSheetFramesQuery, {
+    sheetId: String(sheetId)
+  });
 
   if (!isOk(res)) return [];
 

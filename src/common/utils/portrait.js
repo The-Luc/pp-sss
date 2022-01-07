@@ -543,7 +543,10 @@ export const createPortraitObjects = (
 
         const isFirstImage = imageX < offsetX + itemWidth && rowIndex;
         const isOverlapX = isLargeAsst && imageX <= lastImageWidth;
-        const isOverlapY = imageX + imageWidth > lastImageWidth - imageWidth;
+        const isOverlapY =
+          lastImageWidth === 0
+            ? false
+            : imageX + imageWidth > lastImageWidth - imageWidth;
 
         if (!isOverFlow && isOverlapX) {
           imageX += itemWidth + colGap;

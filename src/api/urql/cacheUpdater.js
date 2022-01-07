@@ -125,11 +125,12 @@ export const updateCreateFrame = (results, args, cache) => {
   const { sheet_id: sheetId } = args;
 
   if (!sheetId) return;
+  cache.invalidate({ __typename: 'Query' }, 'sheet', { id: sheetId });
 
   cache.updateQuery(
     {
       query: getSheetFramesQuery,
-      variables: { sheetId: +sheetId }
+      variables: { sheetId: sheetId }
     },
     data => {
       if (!data) return data;
@@ -149,14 +150,18 @@ export const updateDeleteFrame = (results, args, cache) => {
   cache.updateQuery(
     {
       query: getSheetFramesQuery,
-      variables: { sheetId: +sheetId }
+      variables: { sheetId: sheetId }
     },
     data => {
       if (!data) return data;
 
+      // remove deleted frames
       data.sheet.digital_frames = data.sheet.digital_frames.filter(
         f => f.id !== frameId
       );
+
+      // remove the last transition
+      data.sheet.digital_transitions.pop();
       return data;
     }
   );
