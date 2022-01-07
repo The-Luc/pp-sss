@@ -136,7 +136,7 @@ export default {
       disabledToolbarItems,
       setPropertiesType
     } = useToolBar();
-    const { createFrameApi, updateFrameApi, getSheetFrames } = useFrameAction();
+    const { createFrame, updateFrameApi, getSheetFrames } = useFrameAction();
     const { storeAnimationProp } = useAnimation();
 
     const { addObjecs, deleteObjects } = useObjects();
@@ -188,7 +188,7 @@ export default {
       setPropertiesType,
       setLoadingState,
       generalInfo,
-      createFrameApi,
+      createFrame,
       updateFrameApi,
       getSheetFrames,
       generateMultiThumbnails
@@ -923,7 +923,7 @@ export default {
       );
 
       const responeFrames = await Promise.all(
-        createdFrames.map(frame => this.createFrameApi(screenId, frame))
+        createdFrames.map(frame => this.createFrame(screenId, frame))
       );
 
       // adding frame id

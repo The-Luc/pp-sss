@@ -3,7 +3,6 @@ import { getUniqueId, getPageSize } from './util';
 import {
   CLASS_ROLE,
   DEFAULT_LINE_HEIGHT,
-  DEFAULT_TEXT,
   OBJECT_TYPE,
   PORTRAIT_ASSISTANT_PLACEMENT,
   PORTRAIT_FLOW_OPTION_MULTI,
@@ -18,7 +17,7 @@ import {
 import { cloneDeep } from 'lodash';
 import { getActiveCanvas, ptToPx, pxToIn } from './canvas';
 import { measureTextWidth } from './textSize';
-
+import { createTextBoxObject } from '@/common/fabricObjects';
 /**
  * Get range of portrait
  *
@@ -374,13 +373,7 @@ export const createPortraitObjects = (
   const isNameOutSide =
     namePosition.value === PORTRAIT_NAME_POSITION.OUTSIDE.value;
 
-  const {
-    safeMargin,
-    pageWidth,
-    pageHeight,
-    bleedLeft,
-    bleedTop
-  } = getPageSize(isDigital);
+  const { pageWidth, pageHeight, bleedLeft, bleedTop } = getPageSize(isDigital);
 
   const isTextAlignRight =
     nameTextFontSettings?.alignment?.horizontal === TEXT_HORIZONTAL_ALIGN.RIGHT;
@@ -389,23 +382,23 @@ export const createPortraitObjects = (
     nameTextFontSettings?.alignment?.horizontal ===
     TEXT_HORIZONTAL_ALIGN.CENTER;
 
-  const titleMeasureWidth =
-    pxToIn(
-      measureTextWidth(getActiveCanvas(), pageTitle, {
-        fontSize: `${ptToPx(pageTitleFontSettings.fontSize)}px`,
-        fontFamily: pageTitleFontSettings.fontFamily,
-        textCase: pageTitleFontSettings.textCase
-      })
-    ) +
-    bleedLeft * 2;
-  const titleLines = Math.ceil(
-    titleMeasureWidth / (pageWidth - safeMargin * 2)
-  );
+  const title = new TextElementObject({
+    text: pageTitle,
+    coord: {
+      x: isRight ? pageTitleMargins.left + pageWidth : pageTitleMargins.left,
+      y: pageTitleMargins.top
+    },
+    size: {
+      width:
+        pageWidth +
+        bleedLeft * 2 -
+        pageTitleMargins.left -
+        pageTitleMargins.right
+    },
+    ...pageTitleFontSettings
+  });
 
-  const titleHeight =
-    pxToIn(ptToPx(pageTitleFontSettings.fontSize)) *
-    titleLines *
-    DEFAULT_LINE_HEIGHT;
+  const titleHeight = pxToIn(createTextBoxObject(title).object.height) - 0.2;
 
   const nameHeight =
     pxToIn(ptToPx(nameTextFontSettings.fontSize)) *
@@ -550,7 +543,10 @@ export const createPortraitObjects = (
 
         const isFirstImage = imageX < offsetX + itemWidth && rowIndex;
         const isOverlapX = isLargeAsst && imageX <= lastImageWidth;
-        const isOverlapY = imageX + imageWidth > lastImageWidth - imageWidth;
+        const isOverlapY =
+          lastImageWidth === 0
+            ? false
+            : imageX + imageWidth > lastImageWidth - imageWidth;
 
         if (!isOverFlow && isOverlapX) {
           imageX += itemWidth + colGap;
@@ -620,7 +616,7 @@ export const createPortraitObjects = (
             y: isNameOutSide ? textOutsideY : textY
           },
           size: {
-            width: width + DEFAULT_TEXT.PADDING * 2,
+            width: width,
             height: isNameOutSide ? textHeight : rowGap
           },
           ...nameTextFontSettings

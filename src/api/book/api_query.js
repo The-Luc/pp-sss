@@ -1,5 +1,5 @@
 import { graphqlRequest } from '../urql';
-import { merge, pick } from 'lodash';
+import { merge, pick, cloneDeep } from 'lodash';
 
 import {
   getPageLeftName,
@@ -255,7 +255,7 @@ const getBook = async (bookId, edition, isEditor) => {
 
   const res = await graphqlRequest(query, { bookId });
 
-  return isOk(res) ? res.data.book : {};
+  return isOk(res) ? cloneDeep(res.data.book) : {};
 };
 
 /**

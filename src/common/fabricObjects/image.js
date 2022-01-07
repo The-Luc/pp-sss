@@ -455,6 +455,7 @@ export const createVideoElement = src =>
     const ele = document.createElement('video');
 
     ele.setAttribute('preload', 'metadata');
+    ele.crossOrigin = 'anonymous';
 
     ele.addEventListener(
       'loadedmetadata',
@@ -467,7 +468,7 @@ export const createVideoElement = src =>
       false
     );
 
-    ele.src = `${src}#t=0.01`;
+    ele.src = `${getUniqueUrl(src)}#t=0.01`;
   });
 
 /**
