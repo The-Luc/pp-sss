@@ -380,7 +380,7 @@ export default {
     totalVideoDuration(newVal, oldVal) {
       if (!this.isAllowUpdateFrameDelay) return;
 
-      const duration = this.currentFrame.delay + newVal - oldVal || 3;
+      const duration = this.currentFrame?.delay + newVal - oldVal || 3;
       this.setFrameDelay({ value: duration });
     }
   },

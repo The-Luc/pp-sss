@@ -117,9 +117,10 @@ export const useThumbnail = () => {
     );
 
     // upload base64 images and get back url
-    return await Promise.all(
+    const res = await Promise.all(
       base64Images.map(img => uploadBase64ImageApi(img))
     );
+    return res.map(url => (typeof url === 'string' ? url : ''));
   };
   return {
     uploadBase64ImageApi,

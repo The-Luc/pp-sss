@@ -236,9 +236,13 @@ export const useFrameAction = () => {
     return frames;
   };
 
+  const createFrame = async (sheetId, params) => {
+    return await createFrameApi(sheetId, params);
+  };
+
   return {
     getPreviewUrlByIndex,
-    createFrameApi,
+    createFrame,
     updateFrameApi,
     getSheetFrames,
     getFramesAndTransitionsApi
