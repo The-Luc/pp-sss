@@ -64,7 +64,7 @@ export const measureTextWidth = (canvas, text, options) => {
   if (!options.textCase) options.textCase = TEXT_CASE.NONE;
 
   const textSplit = text.split('\n').map(value => {
-    ctx.font = `${options.fontSize} ${options.fontFamily}`;
+    ctx.font = `${options.fontWeight} ${options.fontSize} ${options.fontFamily}`;
     const transformedText = transformTextCase(value, options.textCase);
     const { width } = ctx.measureText(transformedText);
     return width;
