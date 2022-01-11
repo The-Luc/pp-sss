@@ -388,6 +388,11 @@ export default {
     }
   },
   beforeDestroy() {
+    const videos = this.digitalCanvas
+      .getObjects()
+      .filter(o => o.objectType === OBJECT_TYPE.VIDEO);
+    videos.forEach(v => v.pause());
+
     this.digitalCanvas = null;
 
     clearInterval(this.autoSaveTimer);
