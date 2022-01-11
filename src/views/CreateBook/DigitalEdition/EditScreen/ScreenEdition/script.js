@@ -291,6 +291,7 @@ export default {
           await this.saveData(this.currentFrameId);
 
         this.isJustEnteringEditor = false;
+        this.isAllowUpdateFrameDelay = false;
 
         // reset frames, frameIDs, currentFrameId
         this.setSelectedObjectId({ id: '' });
@@ -307,6 +308,7 @@ export default {
         this.countPaste = 1;
 
         await this.drawObjectsOnCanvas(this.sheetLayout);
+        this.isAllowUpdateFrameDelay = true;
       }
     },
     async currentFrameId(val, oldVal) {
