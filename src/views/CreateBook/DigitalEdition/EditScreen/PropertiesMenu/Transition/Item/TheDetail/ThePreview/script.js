@@ -2,9 +2,7 @@ import GroupItem from '../GroupItem';
 
 import { useFrameAction } from '@/hooks';
 
-import { isEmpty } from '@/common/utils';
-
-import { EVENT_TYPE, IMAGE_LOCAL } from '@/common/constants';
+import { EVENT_TYPE } from '@/common/constants';
 
 export default {
   components: {
