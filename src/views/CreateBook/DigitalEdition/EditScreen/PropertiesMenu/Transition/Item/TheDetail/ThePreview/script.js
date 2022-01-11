@@ -2,9 +2,7 @@ import GroupItem from '../GroupItem';
 
 import { useFrameAction } from '@/hooks';
 
-import { isEmpty } from '@/common/utils';
-
-import { EVENT_TYPE, IMAGE_LOCAL } from '@/common/constants';
+import { EVENT_TYPE } from '@/common/constants';
 
 export default {
   components: {
@@ -51,9 +49,7 @@ export default {
      * @returns {String}        preview image ulr
      */
     getUrl(index) {
-      const url = this.getPreviewUrlByIndex(index);
-
-      return isEmpty(url) ? IMAGE_LOCAL.EMPTY_PREVIEW_FRAME : url;
+      return this.getPreviewUrlByIndex(index);
     }
   }
 };

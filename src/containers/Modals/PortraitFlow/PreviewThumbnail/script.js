@@ -307,7 +307,8 @@ export default {
         '--double-border-position': doubleBorderPosition,
         '--double-border-width': doubleBorderWidth,
         '--image-height': imageHeight,
-        '--border-radius': borderRadius
+        '--border-radius': borderRadius,
+        '--ratio': parseFloat(imageHeight) / 100
       };
 
       return {
