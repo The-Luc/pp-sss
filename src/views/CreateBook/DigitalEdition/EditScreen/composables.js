@@ -2,7 +2,7 @@ import { useGetters, useActions } from 'vuex-composition-helpers';
 
 import { useMutationBook, useActionBook, useAppCommon } from '@/hooks';
 
-import { isEmpty } from '@/common/utils';
+import { isEmpty, isOk } from '@/common/utils';
 import { GETTERS, ACTIONS } from '@/store/modules/digital/const';
 import digitalService from '@/api/digital';
 import { mappingFrameToApi } from '@/common/mapping/frame';
@@ -44,7 +44,7 @@ export const useSaveData = () => {
       frame.previewImageUrl,
       isAutosave
     );
-    frame.previewImageUrl = imgUrl;
+    frame.previewImageUrl = isOk(imgUrl) ? imgUrl.data : '';
 
     const variables = {
       bookId,

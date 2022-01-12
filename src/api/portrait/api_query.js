@@ -1,4 +1,4 @@
-import { cloneDeep, get } from 'lodash';
+import { get } from 'lodash';
 import moment from 'moment';
 
 import UniqueId from '@/plugins/customUniqueId';
@@ -25,8 +25,6 @@ import {
 } from './queries';
 import { EDITION } from '@/common/constants';
 
-import { testPortraitFolders } from '@/mock/portraitFolders';
-
 const getPortraitAssets = assets => {
   return assets.map(asset => new PortraitAsset(portraitAssetMapping(asset)));
 };
@@ -50,19 +48,7 @@ export const getPortraitFoldersApi = async ({ bookId }) => {
     []
   );
 
-  // Modify portrait folders for test
-  const modifyPortraitFolders = cloneDeep(portraitCollections);
-
-  testPortraitFolders.forEach((item, index) => {
-    const folder = modifyPortraitFolders[index + 1];
-    folder.name = item.name;
-    folder.assets_count = folder.assets_count + item.assets_count;
-    folder.portrait_subjects = folder.portrait_subjects.concat(
-      item.portrait_subjects
-    );
-  });
-
-  return modifyPortraitFolders.map(portrait => {
+  return portraitCollections.map(portrait => {
     const portraitSubjects = get(portrait, 'portrait_subjects', []);
     const assets = getPortraitAssets(portraitSubjects);
     const isSelected = portraitFoldersIdSelected.includes(portrait.id);

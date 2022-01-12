@@ -22,7 +22,7 @@ import {
 import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 import { GETTERS as DIGITAL_GETTERS } from '@/store/modules/digital/const';
 import { uploadBase64ImageApi } from '@/api/util';
-import { generateCanvasThumbnail } from '@/common/utils';
+import { generateCanvasThumbnail, isOk } from '@/common/utils';
 
 export const useSavingStatus = () => {
   const { savingStatus } = useGetters({
@@ -107,7 +107,9 @@ export const useThumbnail = () => {
     const base64Image = await generateCanvasThumbnail(objects, isDigital);
 
     // upload base64 images and get back url
-    return uploadBase64ImageApi(base64Image);
+    const res = await uploadBase64ImageApi(base64Image);
+
+    return isOk(res) ? res.data : '';
   };
 
   const generateMultiThumbnails = async (objectsArr, isDigital) => {
@@ -120,10 +122,15 @@ export const useThumbnail = () => {
     const res = await Promise.all(
       base64Images.map(img => uploadBase64ImageApi(img))
     );
-    return res.map(url => (typeof url === 'string' ? url : ''));
+    return res.map(response => (isOk(response) ? response.data : ''));
+  };
+
+  const uploadBase64Image = async (base64, isAutoSave) => {
+    const res = await uploadBase64ImageApi(base64, isAutoSave);
+    return isOk(res) ? res.data : '';
   };
   return {
-    uploadBase64ImageApi,
+    uploadBase64Image,
     generateCanvasThumbnail,
     generateThumbnail,
     generateMultiThumbnails

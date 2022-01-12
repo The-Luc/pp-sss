@@ -10,7 +10,7 @@ import SOLID from '@/assets/image/border/solid.svg';
 import PLACE_HOLDER from '@/assets/image/content-placeholder.jpg';
 import PLAY_ICON from '@/assets/icons/play.svg';
 import CONTROL_ICON from '@/assets/image/control.png';
-import EMPTY_PREVIEW_FRAME from '@/assets/image/no-preview-frame.png';
+import EMPTY_PREVIEW_FRAME from '@/assets/image/no-preview-frame.jpg';
 
 export const IMAGE_LOCAL = {
   BACKGROUND_WHITE,
