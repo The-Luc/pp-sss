@@ -6,7 +6,6 @@ import { savePrintDataApi } from '@/api/savePrint';
 import { getSheetInfoApi } from '@/api/sheet';
 import { OBJECT_TYPE, SHEET_TYPE } from '@/common/constants';
 import { pageInfoMappingToApi } from '@/common/mapping';
-import { uploadBase64ImageApi } from '@/api/util';
 import {
   getPageIdsOfSheet,
   getSheetThumbnail,
@@ -15,6 +14,7 @@ import {
   pageLayoutsFromSheet,
   splitBase64Image
 } from '@/common/utils';
+import { useThumbnail } from '@/views/CreateBook/composables';
 
 export const useSaveData = () => {
   const { getDataEditScreen, currentSheet } = useGetters({
@@ -24,6 +24,8 @@ export const useSaveData = () => {
   const { updateThumbnail } = useMutations({
     updateThumbnail: MUTATES.UPDATE_SHEET_THUMBNAIL
   });
+
+  const { uploadBase64Image } = useThumbnail();
 
   /**
    * To save print data to DB
@@ -63,8 +65,8 @@ export const useSaveData = () => {
 
     const { leftThumb, rightThumb } = await splitBase64Image(thumbnailUrl);
     const imgUrls = await Promise.all([
-      leftPageId ? uploadBase64ImageApi(leftThumb, isAutosave) : '',
-      rightPageId ? uploadBase64ImageApi(rightThumb, isAutosave) : ''
+      leftPageId ? uploadBase64Image(leftThumb, isAutosave) : '',
+      rightPageId ? uploadBase64Image(rightThumb, isAutosave) : ''
     ]);
 
     const { leftPage, rightPage } = mapSheetToPages(editScreenData);
@@ -136,8 +138,8 @@ export const useSaveData = () => {
     );
 
     const [leftUrl, rightUrl] = await Promise.all([
-      uploadBase64ImageApi(leftBase64),
-      uploadBase64ImageApi(rightBase64)
+      uploadBase64Image(leftBase64),
+      uploadBase64Image(rightBase64)
     ]);
 
     const handleUpdatePage = async (pageId, layout, imgUrl) => {
