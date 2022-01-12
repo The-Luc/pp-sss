@@ -30,8 +30,9 @@
         grid-row: span 2;
 
         .photo-container {
+          --ratio: 1.25;
           width: var(--enlarge-width);
-          padding-top: calc(var(--enlarge-width) * 1.25);
+          padding-top: calc(var(--enlarge-width) * var(--ratio));
         }
       }
 

@@ -143,7 +143,28 @@ export const updateCreateFrame = (results, args, cache) => {
 
 export const updateDeleteFrame = (results, args, cache) => {
   const frameId = args.digital_frame_id;
-  const sheetId = get(results, 'delete_digital_frame.sheets[0].id', null);
+
+  const sheetIds = cache
+    .inspectFields({ __typename: 'Query' })
+    .filter(cache => cache.fieldName === 'sheet')
+    .map(cache => String(cache.arguments.id));
+
+  let sheetId;
+  let counter = 0;
+
+  // getting sheet id
+  while (!sheetId && counter < sheetIds.length) {
+    const { sheet } = cache.readQuery({
+      query: getSheetFramesQuery,
+      variables: { sheetId: sheetIds[counter] }
+    });
+
+    const isIncludedTheFrame = sheet.digital_frames.some(
+      frame => frame.id === frameId
+    );
+    if (isIncludedTheFrame) sheetId = sheet.id;
+    counter++;
+  }
 
   if (!frameId || !sheetId) return;
 

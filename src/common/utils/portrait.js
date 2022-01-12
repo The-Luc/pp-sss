@@ -512,7 +512,8 @@ export const createPortraitObjects = (
         const measureOptions = {
           fontSize: `${ptToPx(nameTextFontSettings.fontSize)}px`,
           fontFamily: nameTextFontSettings.fontFamily,
-          textCase: nameTextFontSettings.textCase
+          textCase: nameTextFontSettings.textCase,
+          fontWeight: nameTextFontSettings.isBold ? 'bold' : 'normal'
         };
 
         const textWidth =
