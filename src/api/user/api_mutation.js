@@ -6,7 +6,7 @@ import {
   deleteFavoritesMutation
 } from './mutations';
 
-import { STATUS } from '@/common/constants';
+import { isOk } from '@/common/utils';
 
 export const logInUserApi = async (email, password) => {
   const res = await graphqlRequest(loginUserMutation, {
@@ -14,7 +14,7 @@ export const logInUserApi = async (email, password) => {
     password
   });
 
-  if (res.status === STATUS.NG) return [];
+  if (!isOk(res)) return;
 
   const user = res.data.login_user;
   const communityUserId = user.communities_users[0]?.id;

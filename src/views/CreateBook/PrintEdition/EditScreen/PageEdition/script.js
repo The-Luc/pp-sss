@@ -229,9 +229,10 @@ export default {
       async handler(val, oldVal) {
         if (val?.id === oldVal?.id) return;
 
-        this.saveData(oldVal.id);
+        clearInterval(this.autoSaveTimer);
+        if (this.isCanvasChanged) await this.saveData(oldVal.id);
 
-        // get data either from API or sessionStorage
+        // get data either from API
         await this.getDataCanvas();
 
         this.undoRedoCanvas.reset();
@@ -250,6 +251,8 @@ export default {
         await this.drawObjectsOnCanvas(this.sheetLayout);
 
         this.addPageNumber();
+        this.setAutosaveTimer();
+        this.isCanvasChanged = false;
       }
     },
     zoom(newVal, oldVal) {
@@ -260,7 +263,7 @@ export default {
     }
   },
   mounted() {
-    this.autoSaveTimer = setInterval(this.handleAutosave, AUTOSAVE_INTERVAL);
+    this.setAutosaveTimer();
 
     window.addEventListener('copy', this.handleCopy);
     window.addEventListener('paste', this.handlePaste);
@@ -2117,6 +2120,12 @@ export default {
       if (!target.isHoverControl) return;
 
       this.$emit('openCropControl');
+    },
+    /**
+     * To set timer for autosaving
+     */
+    setAutosaveTimer() {
+      this.autoSaveTimer = setInterval(this.handleAutosave, AUTOSAVE_INTERVAL);
     }
   }
 };
