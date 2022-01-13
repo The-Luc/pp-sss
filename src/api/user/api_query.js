@@ -38,8 +38,8 @@ export const getCurrentUserApi = async () => {
   });
 };
 
-export const getUsersApi = async () => {
-  const res = await graphqlRequest(getCommunityUsersQuery, { communityId: 1 });
+export const getUsersApi = async communityId => {
+  const res = await graphqlRequest(getCommunityUsersQuery, { communityId });
 
   if (res.status === STATUS.NG) return [];
 

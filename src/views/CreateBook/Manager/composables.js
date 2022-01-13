@@ -63,7 +63,7 @@ export const useManager = () => {
     setSections({ sections: sectionObject, sectionIds });
     setSheets({ sheets });
 
-    const { title, totalPages, totalSheets, totalScreens } = book;
+    const { title, totalPages, totalSheets, totalScreens, communityId } = book;
 
     setGeneralInfo({
       info: {
@@ -71,7 +71,8 @@ export const useManager = () => {
         title,
         totalPages,
         totalSheets,
-        totalScreens
+        totalScreens,
+        communityId
       }
     });
   };
@@ -131,7 +132,12 @@ export const useSectionActionMenu = () => {
 };
 
 export const useAssigneeMenu = () => {
-  const getUsers = getUsersApi;
+  const { generalInfo } = useGetters({
+    generalInfo: APP_GETTERS.GENERAL_INFO
+  });
+
+  const communityId = generalInfo.value.communityId;
+  const getUsers = async () => await getUsersApi(communityId);
 
   return { getUsers };
 };

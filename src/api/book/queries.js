@@ -29,6 +29,7 @@ const bookFragment = gql`
     id
     title
     total_pages
+    community_id
     book_sections {
       ...sectionDetail
     }
@@ -61,7 +62,6 @@ export const digitalMainQuery = gql`
 export const digitalEditorQuery = gql`
   query digitalEditor($bookId: ID!) {
     book(id: $bookId) {
-      community_id
       book_user {
         id
         is_digital_photo_visited
@@ -110,7 +110,6 @@ export const printMainQuery = gql`
 export const printEditorQuery = gql`
   query printEditor($bookId: ID!) {
     book(id: $bookId) {
-      community_id
       number_max_pages
       book_user {
         id
