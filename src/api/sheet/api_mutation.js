@@ -51,7 +51,7 @@ export const updateSheetApi = async (sheetId, params) => {
  *
  * @param   {String}  sectionId id of selected section
  * @param   {Array}   sheetIds  id of sheets in selection section in new order
- * @returns {Boolean}           success or not
+ * @returns {Promise<Boolean>}           success or not
  */
 export const updateSheetOrderApi = async (sectionId, sheetIds) => {
   const res = await graphqlRequest(updateSheetOrderMutation, {

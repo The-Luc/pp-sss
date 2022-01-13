@@ -23,7 +23,7 @@ class GetterClass extends BaseObject {
   CURRENT_OBJECT = 'currentObject';
   SELECT_PROP_CURRENT_OBJECT = 'getSpecificPropertyOfCurrentObject';
   USER = 'getCurrentUser';
-  GENERAL_INFO = 'getGeneralInfo';
+  GENERAL_INFO = 'generalInfo';
   SAVED_TEXT_STYLES = 'savedTextStyles';
   SAVED_IMAGE_STYLES = 'savedImageStyles';
   SAVING_STATUS = 'savingStatus';
