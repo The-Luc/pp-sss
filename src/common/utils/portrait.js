@@ -225,18 +225,13 @@ const isHasLargePortrait = teacherSettings => {
  * @param {Object} b portrait object will be sort
  * @returns value sort junction will consume
  */
-export const sortPortraitByName = isFirstLast => {
-  return (a, b) => {
-    const first = isFirstLast ? 'firstName' : 'lastName';
-    const last = isFirstLast ? 'lastName' : 'firstName';
+export const sortPortraitByName = (a, b) => {
+  const nameA = (a.lastName + a.firstName).toUpperCase();
+  const nameB = (b.lastName + b.firstName).toUpperCase();
 
-    const nameA = (a[first] + a[last]).toUpperCase();
-    const nameB = (b[first] + b[last]).toUpperCase();
+  if (nameA === nameB) return 0;
 
-    if (nameA === nameB) return 0;
-
-    return nameA > nameB ? 1 : -1;
-  };
+  return nameA > nameB ? 1 : -1;
 };
 
 /**

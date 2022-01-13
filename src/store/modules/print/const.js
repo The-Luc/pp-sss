@@ -33,6 +33,7 @@ class GetterClass extends BaseObject {
   IS_PHOTO_VISITED = 'isPhotoVisited';
   COMMUNITY_ID = 'getCommunityId';
   BOOK_USER_ID = 'getBookUserId';
+  GET_BOOK_INFO = 'getBookInfo';
 
   constructor(props) {
     super(props);
