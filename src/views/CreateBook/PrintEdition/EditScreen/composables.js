@@ -1,4 +1,6 @@
 import { useMutationBook, useActionBook, useAppCommon } from '@/hooks';
+import { GETTERS } from '@/store/modules/print/const';
+import { useGetters } from 'vuex-composition-helpers';
 
 export const useBookPrintInfo = () => {
   const { setBookInfo, setSectionsSheets } = useMutationBook();
@@ -6,6 +8,10 @@ export const useBookPrintInfo = () => {
   const { setGeneralInfo } = useAppCommon();
 
   const { getBookInfo } = useActionBook();
+
+  const { getBookInfo: printBookInfo } = useGetters({
+    getBookInfo: GETTERS.GET_BOOK_INFO
+  });
 
   const getBookPrintInfo = async bookId => {
     const { book, sections, sheets } = await getBookInfo(bookId, true);
@@ -40,5 +46,5 @@ export const useBookPrintInfo = () => {
     setGeneralInfo({ info: { bookId, title } });
   };
 
-  return { getBookPrintInfo };
+  return { getBookPrintInfo, printBookInfo };
 };

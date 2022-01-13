@@ -164,5 +164,6 @@ export const getters = {
   },
   [PRINT._GETTERS.IS_PHOTO_VISITED]: isPhotoVisited,
   [PRINT._GETTERS.COMMUNITY_ID]: communityId,
-  [PRINT._GETTERS.BOOK_USER_ID]: bookUserId
+  [PRINT._GETTERS.BOOK_USER_ID]: bookUserId,
+  [PRINT._GETTERS.GET_BOOK_INFO]: ({ book }) => book
 };

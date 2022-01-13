@@ -128,6 +128,7 @@ import {
   ImageElementObject,
   ShapeElementObject
 } from '@/common/models/element';
+import { useBookPrintInfo } from '../composables';
 
 export default {
   components: {
@@ -138,7 +139,8 @@ export default {
     YRuler
   },
   setup() {
-    const { generalInfo, setLoadingState } = useAppCommon();
+    const { printBookInfo: generalInfo } = useBookPrintInfo();
+    const { setLoadingState } = useAppCommon();
     const { setInfoBar, zoom } = useInfoBar();
     const { onSaveStyle } = useStyle();
     const { savePrintEditScreen, getDataEditScreen } = useSaveData();
