@@ -593,6 +593,8 @@ export default {
         this.generalInfo.bookId,
         selectedFolderIds
       );
+      // to get thumbnail generate base64 image
+      this.$refs.canvasEditor.handleCanvasChanged();
     },
     /**
      * Selected portrait folders

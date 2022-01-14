@@ -233,7 +233,7 @@ export default {
 
         clearInterval(this.autoSaveTimer);
 
-        if (this.isCanvasChanged) await this.saveData(oldVal.id);
+        await this.saveData(oldVal.id);
 
         resetObjects(window.printCanvas);
 
@@ -255,7 +255,6 @@ export default {
 
         this.addPageNumber();
         this.setAutosaveTimer();
-        this.isCanvasChanged = false;
       }
     },
     zoom(newVal, oldVal) {
