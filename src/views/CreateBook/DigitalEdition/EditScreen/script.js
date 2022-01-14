@@ -144,7 +144,7 @@ export default {
     const { backgroundsProps } = useBackgroundProperties();
 
     const { saveSelectedPortraitFolders } = usePortrait();
-    const { generateMultiThumbnails } = useThumbnail();
+    const { uploadBase64Image, generateMultiThumbnails } = useThumbnail();
 
     return {
       pageSelected,
@@ -191,7 +191,8 @@ export default {
       createFrame,
       updateFrameApi,
       getSheetFrames,
-      generateMultiThumbnails
+      generateMultiThumbnails,
+      uploadBase64Image
     };
   },
   data() {
@@ -595,12 +596,14 @@ export default {
      * @param {String} value Result image url after croppeed
      */
     async onCrop(value, cropInfo) {
-      const prop = await setImageSrc(this.selectedImage, value);
+      const url = await this.uploadBase64Image(value);
+
+      const prop = await setImageSrc(this.selectedImage, url);
       prop.cropInfo = cropInfo;
       prop.fromPortrait = false;
       this.selectedImage.set({ cropInfo, fromPortrait: false });
       this.setPropertyById({ id: this.selectedImage.id, prop });
-      this.$refs.canvasEditor.getThumbnailUrl();
+      this.$refs.canvasEditor.handleCanvasChanged();
       this.onCancel();
     },
 
