@@ -47,10 +47,10 @@ export const getAllAlbumsQuery = gql`
     user_containers {
       ...albumDetail
     }
-    community_containers(id: $communityId) {
+    community_containers(id: $communityId, media_type: "all") {
       ...albumDetail
     }
-    community_group_assets(id: $communityId, range: ALL) {
+    community_group_assets(id: $communityId, media_type: "all", range: ALL) {
       id
       name
       containers {
