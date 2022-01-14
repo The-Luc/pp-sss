@@ -232,8 +232,12 @@ export default {
         if (val?.id === oldVal?.id) return;
 
         clearInterval(this.autoSaveTimer);
+
         if (this.isCanvasChanged) await this.saveData(oldVal.id);
 
+        resetObjects(window.printCanvas);
+
+        this.updateCanvasSize();
         // get data either from API
         await this.getDataCanvas();
 
@@ -246,9 +250,6 @@ export default {
         this.setSelectedObjectId({ id: '' });
         this.setPropertiesObjectType({ type: '' });
         this.setCurrentObject(null);
-        this.updateCanvasSize();
-
-        resetObjects(window.printCanvas);
 
         await this.drawObjectsOnCanvas(this.sheetLayout);
 
