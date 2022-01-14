@@ -479,6 +479,8 @@ export default {
     async onCrop(value, cropInfo) {
       const url = await this.uploadBase64Image(value);
 
+      if (!url) return this.onCancel();
+
       const prop = await setImageSrc(this.selectedImage, url);
       prop.cropInfo = cropInfo;
       prop.fromPortrait = false;
