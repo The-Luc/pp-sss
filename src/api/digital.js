@@ -18,12 +18,6 @@ const digitalService = {
    * @param   {Number}  bookId  id of current book
    * @returns {Object}          query result
    */
-  getDefaultThemeId: async bookId => {
-    const { book } = await bookService.getBookDigital(bookId);
-    const data = book.themeId;
-
-    return isEmpty(data) ? getErrorWithMessages([]) : getSuccessWithData(data);
-  },
   /**
    * Get list of section & sheets inside each section
    * use in main page

@@ -1,39 +1,40 @@
-import digitalService from '@/api/digital';
+// import digitalService from '@/api/digital';
 import { getFramesAndTransitionsApi } from '@/api/frame';
 
-import { STATUS, OBJECT_TYPE } from '@/common/constants';
+import { OBJECT_TYPE } from '@/common/constants';
+// import { STATUS, OBJECT_TYPE } from '@/common/constants';
 import { getUniqueId } from '@/common/utils';
 
 import DIGITAL from './const';
 
 export const actions = {
-  async [DIGITAL._ACTIONS.GET_DATA_MAIN]({ state, commit }) {
-    const queryResult = await digitalService.getDigitalSectionsSheets(
-      state.book.id
-    );
+  // async [DIGITAL._ACTIONS.GET_DATA_MAIN]({ state, commit }) {
+  //   const queryResult = await digitalService.getDigitalSectionsSheets(
+  //     state.book.id
+  //   );
 
-    if (queryResult.status !== STATUS.OK) return;
+  //   if (queryResult.status !== STATUS.OK) return;
 
-    commit(DIGITAL._MUTATES.SET_SECTIONS_SHEETS, {
-      sectionsSheets: queryResult.data
-    });
-  },
-  async [DIGITAL._ACTIONS.GET_DATA_EDIT]({ state, commit }) {
-    const [themeQuery, sectionsSheetsQuery] = await Promise.all([
-      digitalService.getDefaultThemeId(state.book.id),
-      digitalService.getDigitalEditSectionsSheets(state.book.id)
-    ]);
+  //   commit(DIGITAL._MUTATES.SET_SECTIONS_SHEETS, {
+  //     sectionsSheets: queryResult.data
+  //   });
+  // },
+  // async [DIGITAL._ACTIONS.GET_DATA_EDIT]({ state, commit }) {
+  //   const [themeQuery, sectionsSheetsQuery] = await Promise.all([
+  //     digitalService.getDefaultThemeId(state.book.id),
+  //     digitalService.getDigitalEditSectionsSheets(state.book.id)
+  //   ]);
 
-    if (sectionsSheetsQuery.status !== STATUS.OK) return;
+  //   if (sectionsSheetsQuery.status !== STATUS.OK) return;
 
-    commit(DIGITAL._MUTATES.SET_DEFAULT_THEME_ID, {
-      themeId: themeQuery.data
-    });
+  //   commit(DIGITAL._MUTATES.SET_DEFAULT_THEME_ID, {
+  //     themeId: themeQuery.data
+  //   });
 
-    commit(DIGITAL._MUTATES.SET_SECTIONS_SHEETS, {
-      sectionsSheets: sectionsSheetsQuery.data
-    });
-  },
+  //   commit(DIGITAL._MUTATES.SET_SECTIONS_SHEETS, {
+  //     sectionsSheets: sectionsSheetsQuery.data
+  //   });
+  // },
   async [DIGITAL._ACTIONS.GET_DATA_CANVAS]({ state, commit }) {
     // clear all objects and backgrounds
     commit(DIGITAL._MUTATES.SET_OBJECTS, { objectList: [] });
