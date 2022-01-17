@@ -43,7 +43,6 @@ import {
   useProperties,
   useObjectProperties,
   useToolBar,
-  useAnimation,
   useObjects,
   useBackgroundProperties,
   usePortrait,
@@ -115,7 +114,6 @@ export default {
     const {
       saveEditScreen,
       getDataEditScreen,
-      saveAnimationConfig,
       saveSheetFrames
     } = useSaveData();
     const { updateSavingStatus } = useSavingStatus();
@@ -137,8 +135,6 @@ export default {
       setPropertiesType
     } = useToolBar();
     const { createFrame, updateFrameApi, getSheetFrames } = useFrameAction();
-    const { storeAnimationProp } = useAnimation();
-
     const { addObjecs, deleteObjects } = useObjects();
 
     const { backgroundsProps } = useBackgroundProperties();
@@ -172,8 +168,6 @@ export default {
       currentSheet,
       frames,
       clearAllFrames,
-      storeAnimationProp,
-      saveAnimationConfig,
       addObjecs,
       deleteObjects,
       setFrames,
@@ -340,7 +334,6 @@ export default {
       this.updateFrameObjects({ frameId: this.currentFrameId });
       const data = this.getDataEditScreen(this.currentFrameId);
       await this.saveEditScreen(data);
-      await this.saveAnimationConfig(this.storeAnimationProp);
 
       this.updateSavingStatus({ status: SAVE_STATUS.END });
 

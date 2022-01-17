@@ -4,7 +4,6 @@ import { useMutationBook, useActionBook, useAppCommon } from '@/hooks';
 
 import { isEmpty, isOk } from '@/common/utils';
 import { GETTERS, ACTIONS } from '@/store/modules/digital/const';
-import digitalService from '@/api/digital';
 import { mappingFrameToApi } from '@/common/mapping/frame';
 import { saveDigitalDataApi } from '@/api/saveDigital';
 import { getAssetByIdApi } from '@/api/media';
@@ -56,22 +55,9 @@ export const useSaveData = () => {
     return await saveDigitalDataApi(variables, isAutosave);
   };
 
-  const saveAnimationConfig = async animationConfig => {
-    return digitalService.saveAnimationConfig(animationConfig);
-  };
-
-  const saveSheetFrames = async (sheetId, frames) => {
-    return digitalService.updateSheet(sheetId, {
-      frames,
-      isVisited: true
-    });
-  };
-
   return {
     saveEditScreen,
-    getDataEditScreen,
-    saveAnimationConfig,
-    saveSheetFrames
+    getDataEditScreen
   };
 };
 
