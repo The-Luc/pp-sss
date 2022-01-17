@@ -3,13 +3,7 @@ import { GETTERS, MUTATES } from '@/store/modules/digital/const';
 import { updateAnimationApi } from '@/api/playback';
 
 export const useAnimation = () => {
-  // TODO : Clear store animation
-  const { setStoreAnimationProp } = useMutations({
-    setStoreAnimationProp: MUTATES.SET_STORE_ANIMATION_PROP
-  });
-
-  const { storeAnimationProp, triggerChange } = useGetters({
-    storeAnimationProp: GETTERS.STORE_ANIMATION_PROP,
+  const { triggerChange } = useGetters({
     triggerChange: GETTERS.TRIGGER_ANIMATION
   });
 
@@ -45,8 +39,6 @@ export const useAnimation = () => {
 
   return {
     updateAnimation: updateAnimationApi,
-    storeAnimationProp,
-    setStoreAnimationProp,
     playInIds,
     playOutIds,
     playInOrder,

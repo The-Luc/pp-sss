@@ -111,9 +111,6 @@ export const getters = {
     triggerChange.transition,
   [DIGITAL._GETTERS.TRIGGER_ANIMATION]: ({ triggerChange }) =>
     triggerChange.animation,
-  [DIGITAL._GETTERS.STORE_ANIMATION_PROP]: ({ storeAnimationProp }) => {
-    return storeAnimationProp;
-  },
   [DIGITAL._GETTERS.PLAY_IN_IDS]: ({ playInIds }) => {
     return playInIds;
   },

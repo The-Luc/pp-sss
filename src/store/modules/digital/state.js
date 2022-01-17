@@ -12,7 +12,6 @@ const digitalState = {
     transition: true,
     animation: true
   },
-  storeAnimationProp: {},
   playInIds: [],
   playOutIds: []
 };
