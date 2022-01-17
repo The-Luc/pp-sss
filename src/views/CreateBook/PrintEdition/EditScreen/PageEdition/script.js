@@ -128,6 +128,7 @@ import {
   ImageElementObject,
   ShapeElementObject
 } from '@/common/models/element';
+import { useBookPrintInfo } from '../composables';
 
 export default {
   components: {
@@ -138,7 +139,8 @@ export default {
     YRuler
   },
   setup() {
-    const { generalInfo, setLoadingState } = useAppCommon();
+    const { printBookInfo: generalInfo } = useBookPrintInfo();
+    const { setLoadingState } = useAppCommon();
     const { setInfoBar, zoom } = useInfoBar();
     const { onSaveStyle } = useStyle();
     const { savePrintEditScreen, getDataEditScreen } = useSaveData();
@@ -230,8 +232,12 @@ export default {
         if (val?.id === oldVal?.id) return;
 
         clearInterval(this.autoSaveTimer);
-        if (this.isCanvasChanged) await this.saveData(oldVal.id);
 
+        await this.saveData(oldVal.id);
+
+        resetObjects(window.printCanvas);
+
+        this.updateCanvasSize();
         // get data either from API
         await this.getDataCanvas();
 
@@ -244,15 +250,11 @@ export default {
         this.setSelectedObjectId({ id: '' });
         this.setPropertiesObjectType({ type: '' });
         this.setCurrentObject(null);
-        this.updateCanvasSize();
-
-        resetObjects(window.printCanvas);
 
         await this.drawObjectsOnCanvas(this.sheetLayout);
 
         this.addPageNumber();
         this.setAutosaveTimer();
-        this.isCanvasChanged = false;
       }
     },
     zoom(newVal, oldVal) {

@@ -297,9 +297,9 @@ export default {
         this.selectedFolders[0]
       );
 
-      students.sort(sortPortraitByName(this.isFirstLast));
-      teachers.sort(sortPortraitByName(this.isFirstLast));
-      asstTeachers.sort(sortPortraitByName(this.isFirstLast));
+      students.sort(sortPortraitByName);
+      teachers.sort(sortPortraitByName);
+      asstTeachers.sort(sortPortraitByName);
 
       if (!hasTeacher) {
         return students;
@@ -321,9 +321,7 @@ export default {
         return [...students, ...teacherAndAsst];
       }
 
-      return [...teacherAndAsst, ...students].sort(
-        sortPortraitByName(this.isFirstLast)
-      );
+      return [...teacherAndAsst, ...students].sort(sortPortraitByName);
     },
     /**
      * Update order of portrait in assets
@@ -334,9 +332,7 @@ export default {
       if (this.isMultiFolder) {
         const multiFolders = cloneDeep(this.flowSettings.folders);
 
-        multiFolders.forEach(f =>
-          f.assets.sort(sortPortraitByName(this.isFirstLast))
-        );
+        multiFolders.forEach(f => f.assets.sort(sortPortraitByName));
 
         this.onSettingChange({
           ...this.flowSettings,

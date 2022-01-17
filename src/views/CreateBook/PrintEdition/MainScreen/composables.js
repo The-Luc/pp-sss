@@ -28,10 +28,17 @@ export const useBookPrintInfo = () => {
 
     setSectionsSheets({ sections, sheets });
 
-    const { title, totalPages, totalSheets, totalScreens } = book;
+    const { title, totalPages, totalSheets, totalScreens, communityId } = book;
 
     setGeneralInfo({
-      info: { bookId, title, totalPages, totalSheets, totalScreens }
+      info: {
+        bookId,
+        title,
+        totalPages,
+        totalSheets,
+        totalScreens,
+        communityId
+      }
     });
   };
 

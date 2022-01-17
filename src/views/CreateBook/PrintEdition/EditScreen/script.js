@@ -61,7 +61,7 @@ import {
   getAvailableImages,
   setImageSrc
 } from '@/common/fabricObjects';
-import { useSavingStatus } from '../../composables';
+import { useSavingStatus, useThumbnail } from '../../composables';
 import { useBookPrintInfo } from './composables';
 import { getPageObjects } from '@/common/utils/portrait';
 
@@ -108,6 +108,7 @@ export default {
     const { backgroundsProps } = useBackgroundProperties();
 
     const { saveSelectedPortraitFolders } = usePortrait();
+    const { uploadBase64Image } = useThumbnail();
 
     return {
       pageSelected,
@@ -135,6 +136,7 @@ export default {
       deleteObjects,
       backgroundsProps,
       saveSelectedPortraitFolders,
+      uploadBase64Image,
       setLoadingState,
       getMedia,
       generalInfo
@@ -475,12 +477,16 @@ export default {
      * @param {String} value Result image url after croppeed
      */
     async onCrop(value, cropInfo) {
-      const prop = await setImageSrc(this.selectedImage, value);
+      const url = await this.uploadBase64Image(value);
+
+      if (!url) return this.onCancel();
+
+      const prop = await setImageSrc(this.selectedImage, url);
       prop.cropInfo = cropInfo;
       prop.fromPortrait = false;
       this.selectedImage.set({ cropInfo, fromPortrait: false });
       this.setPropertyById({ id: this.selectedImage.id, prop });
-      this.$refs.canvasEditor.getThumbnailUrl();
+      this.$refs.canvasEditor.handleCanvasChanged();
       this.onCancel();
     },
 
@@ -587,6 +593,8 @@ export default {
         this.generalInfo.bookId,
         selectedFolderIds
       );
+      // to get thumbnail generate base64 image
+      this.$refs.canvasEditor.handleCanvasChanged();
     },
     /**
      * Selected portrait folders

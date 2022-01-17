@@ -280,7 +280,7 @@ export default {
       async handler(val, oldVal) {
         if (val?.id === oldVal?.id) return;
 
-        if (!this.isJustEnteringEditor && this.isCanvasChanged)
+        if (!this.isJustEnteringEditor)
           await this.saveData(this.currentFrameId);
 
         this.isJustEnteringEditor = false;
@@ -302,7 +302,6 @@ export default {
 
         await this.drawObjectsOnCanvas(this.sheetLayout);
         this.isAllowUpdateFrameDelay = true;
-        this.isCanvasChanged = false;
       }
     },
     async currentFrameId(val, oldVal) {
@@ -318,9 +317,7 @@ export default {
         f => String(f.id) === String(oldVal)
       );
 
-      if (isSwitchFrame && this.isCanvasChanged) {
-        await this.saveData(oldVal);
-      }
+      if (isSwitchFrame) await this.saveData(oldVal);
 
       this.setSelectedObjectId({ id: '' });
       this.setPropertiesObjectType({ type: '' });
@@ -344,7 +341,6 @@ export default {
 
       this.isAllowUpdateFrameDelay = true;
       this.setAutosaveTimer();
-      this.isCanvasChanged = false;
     },
     async triggerApplyLayout() {
       // to render new layout when user replace frame
