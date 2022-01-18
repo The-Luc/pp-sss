@@ -1,5 +1,5 @@
-export const getUniqueUrl = originalUrl => {
+export const modifyUrl = originalUrl => {
   if (originalUrl.includes('data:image')) return originalUrl;
 
-  return `${originalUrl}?d=${Date.now()}`;
+  return `${originalUrl.split('?')[0]}?`;
 };
