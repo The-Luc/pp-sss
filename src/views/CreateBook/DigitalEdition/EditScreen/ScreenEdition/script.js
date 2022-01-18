@@ -285,12 +285,14 @@ export default {
 
         this.isJustEnteringEditor = false;
         this.isAllowUpdateFrameDelay = false;
+        this.stopVideos();
 
         // reset frames, frameIDs, currentFrameId
         this.setSelectedObjectId({ id: '' });
         this.setPropertiesObjectType({ type: '' });
         this.setCurrentObject(null);
         this.updateCanvasSize();
+        clearInterval(this.autoSaveTimer);
 
         resetObjects(this.digitalCanvas);
 
@@ -308,6 +310,7 @@ export default {
       this.isAllowUpdateFrameDelay = false;
 
       if (!val) {
+        this.stopVideos();
         resetObjects(this.digitalCanvas);
 
         return;
@@ -319,6 +322,7 @@ export default {
 
       if (isSwitchFrame) await this.saveData(oldVal);
 
+      this.stopVideos();
       this.setSelectedObjectId({ id: '' });
       this.setPropertiesObjectType({ type: '' });
       this.setCurrentObject(null);
@@ -344,6 +348,7 @@ export default {
     },
     async triggerApplyLayout() {
       // to render new layout when user replace frame
+      this.stopVideos();
       this.setSelectedObjectId({ id: '' });
       this.setCurrentObject(null);
 
@@ -381,11 +386,6 @@ export default {
     }
   },
   beforeDestroy() {
-    const videos = this.digitalCanvas
-      .getObjects()
-      .filter(o => o.objectType === OBJECT_TYPE.VIDEO);
-    videos.forEach(v => v.pause());
-
     this.digitalCanvas = null;
 
     clearInterval(this.autoSaveTimer);
@@ -2698,6 +2698,15 @@ export default {
      */
     setAutosaveTimer() {
       this.autoSaveTimer = setInterval(this.handleAutosave, AUTOSAVE_INTERVAL);
+    },
+    /**
+     * To pause all the playing videos on canvas
+     */
+    stopVideos() {
+      const videos = this.digitalCanvas
+        .getObjects()
+        .filter(o => o.objectType === OBJECT_TYPE.VIDEO);
+      videos.forEach(v => v.pause());
     }
   }
 };
