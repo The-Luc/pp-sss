@@ -1,13 +1,9 @@
 import { useGetters, useMutations } from 'vuex-composition-helpers';
 import { GETTERS, MUTATES } from '@/store/modules/digital/const';
+import { updateAnimationApi } from '@/api/playback';
 
 export const useAnimation = () => {
-  const { setStoreAnimationProp } = useMutations({
-    setStoreAnimationProp: MUTATES.SET_STORE_ANIMATION_PROP
-  });
-
-  const { storeAnimationProp, triggerChange } = useGetters({
-    storeAnimationProp: GETTERS.STORE_ANIMATION_PROP,
+  const { triggerChange } = useGetters({
     triggerChange: GETTERS.TRIGGER_ANIMATION
   });
 
@@ -42,8 +38,7 @@ export const useAnimation = () => {
   });
 
   return {
-    storeAnimationProp,
-    setStoreAnimationProp,
+    updateAnimation: updateAnimationApi,
     playInIds,
     playOutIds,
     playInOrder,

@@ -34,7 +34,6 @@ class GetterClass extends BaseObject {
   GET_SHEET_MEDIA = 'getSheetMedia';
   TRIGGER_TRANSITION = 'getTriggerTransition';
   TRIGGER_ANIMATION = 'getTriggerAnimation';
-  STORE_ANIMATION_PROP = 'storeAnimationProp';
   PLAY_IN_IDS = 'playInIds';
   PLAY_OUT_IDS = 'playOutIds';
   PLAY_IN_ORDER = 'playInOrder';
@@ -122,7 +121,6 @@ class MutationClass extends BaseObject {
   DELETE_SHEET_MEDIA = 'deleteSheetMedia';
   UPDATE_TRIGGER_TRANSITION = 'updateTriggerTransition';
   UPDATE_TRIGGER_ANIMATION = 'updateTriggerAnimation';
-  SET_STORE_ANIMATION_PROP = 'setStoreAnimationProp';
   SET_PLAY_IN_ORDER = 'setPlayInOrder';
   SET_PLAY_OUT_ORDER = 'setPlayOutOrder';
   SET_PLAY_IN_IDS = 'setPlayInIds';
