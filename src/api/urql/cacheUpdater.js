@@ -296,36 +296,17 @@ export const updateCreateSection = (results, args, cache) => {
 };
 
 export const updateSectionCache = (results, args, cache) => {
-  const defaultAssignee = { id: -1, __typename: 'User' };
-  const assignedUser = get(results, 'update_book_section.assigned_user', null);
-
   const sectionId = get(results, 'update_book_section.id', null);
   const bookId = get(results, 'update_book_section.book.id', null);
 
-  if (!sectionId || !bookId) return;
-
-  cache.updateQuery(
-    {
-      query: managerQuery,
-      variables: { bookId }
-    },
-    data => {
-      // handle assigned_user
-      if (
-        Object.prototype.hasOwnProperty.call(
-          args.book_section_params,
-          'assigned_user_id'
-        )
-      ) {
-        const index = data.book.book_sections.findIndex(
-          s => s.id === sectionId
-        );
-        data.book.book_sections[index].assigned_user =
-          assignedUser || defaultAssignee;
-      }
-      return data;
-    }
+  const isUpdateAssignee = Object.prototype.hasOwnProperty.call(
+    args.book_section_params,
+    'assigned_user_id'
   );
+
+  if (!sectionId || !bookId || !isUpdateAssignee) return;
+
+  cache.invalidate({ __typename: 'Query' }, 'book', { id: bookId });
 };
 
 export const moveSheetCache = (results, args, cache) => {
