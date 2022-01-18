@@ -283,17 +283,6 @@ export const mutations = {
   [DIGITAL._MUTATES.UPDATE_TRIGGER_ANIMATION](state) {
     state.triggerChange.animation = !state.triggerChange.animation;
   },
-  [DIGITAL._MUTATES.SET_STORE_ANIMATION_PROP](state, { storeAnimationProp }) {
-    if (isEmpty(storeAnimationProp)) {
-      state.storeAnimationProp = {};
-
-      return state.storeAnimationProp;
-    }
-
-    const currentProp = cloneDeep(state.storeAnimationProp);
-
-    state.storeAnimationProp = merge(currentProp, storeAnimationProp);
-  },
   [DIGITAL._MUTATES.SET_PLAY_IN_ORDER](state, order) {
     const id = state.currentObjectId;
     const newIndex = order - 1;
@@ -305,7 +294,7 @@ export const mutations = {
     const ids = playInIds.find(item => item.includes(id));
 
     if (!isEmpty(ids)) {
-      const index = ids.findIndex(i => +i === +id);
+      const index = ids.findIndex(i => i === id);
       ids.splice(index, 1);
     }
 

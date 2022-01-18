@@ -1,9 +1,5 @@
-import printService from '@/api/print';
-import { useGetters, useMutations } from 'vuex-composition-helpers';
-import {
-  GETTERS as PRINT_GETTERS,
-  MUTATES as PRINT_MUTATES
-} from '@/store/modules/print/const';
+import { useMutations } from 'vuex-composition-helpers';
+import { MUTATES as PRINT_MUTATES } from '@/store/modules/print/const';
 
 import { updateSheetLinkApi } from '@/api/sheet';
 
@@ -14,27 +10,6 @@ import {
   useSheet
 } from '@/hooks';
 import { isEmpty } from '@/common/utils';
-
-export const useSaveData = () => {
-  const { sheets } = useGetters({
-    sheets: PRINT_GETTERS.GET_SHEETS
-  });
-
-  const savePrintMainScreen = async sheetsData => {
-    const data = {};
-
-    Object.values(sheetsData).forEach(sheet => {
-      const props = {
-        link: sheet.link
-      };
-
-      data[sheet.id] = props;
-    });
-    await printService.saveMainScreen(data);
-  };
-
-  return { savePrintMainScreen, sheets };
-};
 
 export const useBookPrintInfo = () => {
   const { setGeneralInfo } = useAppCommon();

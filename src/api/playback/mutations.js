@@ -56,3 +56,41 @@ export const updateBookTransitionMutation = gql`
   }
   ${transitionFragment}
 `;
+
+export const updateSectionAnimationMutation = gql`
+  mutation updateSectionAnimation(
+    $id: ID!
+    $params: DigitalFrameObjectAnimationInput!
+    $objectType: ObjectType!
+    $animationType: AnimationType!
+  ) {
+    update_animation_in_book_section(
+      book_section_id: $id
+      object_type: $objectType
+      animation_type: $animationType
+      setting_params: $params
+    ) {
+      id
+      objects
+    }
+  }
+`;
+
+export const updateBookAnimationMutation = gql`
+  mutation updateBookAnimation(
+    $id: ID!
+    $params: DigitalFrameObjectAnimationInput!
+    $objectType: ObjectType!
+    $animationType: AnimationType!
+  ) {
+    update_animation_in_book(
+      book_id: $id
+      object_type: $objectType
+      animation_type: $animationType
+      setting_params: $params
+    ) {
+      id
+      objects
+    }
+  }
+`;

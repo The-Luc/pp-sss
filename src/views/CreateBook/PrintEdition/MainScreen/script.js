@@ -4,7 +4,7 @@ import PrintPreview from '@/containers/Modals/PrintPreview';
 
 import { useUser, useGetterPrintSection } from '@/hooks';
 
-import { useSaveData, useBookPrintInfo } from './composables';
+import { useBookPrintInfo } from './composables';
 
 import { getSectionsWithAccessible } from '@/common/utils';
 
@@ -18,14 +18,11 @@ export default {
   },
   setup() {
     const { currentUser } = useUser();
-    const { savePrintMainScreen, sheets } = useSaveData();
     const { getBookPrintInfo, updateLinkStatus } = useBookPrintInfo();
     const { sections: bookSections } = useGetterPrintSection();
 
     return {
       currentUser,
-      savePrintMainScreen,
-      sheets,
       getBookPrintInfo,
       updateLinkStatus,
       bookSections
@@ -33,9 +30,6 @@ export default {
   },
   async created() {
     await this.getBookPrintInfo(this.$route.params.bookId);
-  },
-  async beforeDestroy() {
-    await this.savePrintMainScreen(this.sheets);
   },
   data() {
     return {

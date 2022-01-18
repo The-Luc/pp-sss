@@ -28,9 +28,15 @@ export const frameMapping = frame => {
   };
 
   const mappedFrame = mapObject(frame, mapRules);
+  const objectIds = mappedFrame.objects.map(o => o.id);
 
-  mappedFrame.playInIds = frame.play_in_ids;
-  mappedFrame.playOutIds = frame.play_out_ids;
+  // remove junk in in play in ids / play out ids
+  const removeJunkIds = animationIds => {
+    return animationIds.map(ids => ids.filter(id => objectIds.includes(id)));
+  };
+
+  mappedFrame.playInIds = removeJunkIds(frame.play_in_ids);
+  mappedFrame.playOutIds = removeJunkIds(frame.play_out_ids);
 
   return mappedFrame;
 };

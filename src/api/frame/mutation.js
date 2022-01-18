@@ -31,9 +31,6 @@ export const deleteFrameMutation = gql`
   mutation deleteFrame($frameId: ID!) {
     delete_digital_frame(digital_frame_id: $frameId) {
       id
-      sheets {
-        id
-      }
     }
   }
 `;

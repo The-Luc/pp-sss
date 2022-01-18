@@ -141,7 +141,7 @@ export const updateCreateFrame = (results, args, cache) => {
   );
 };
 
-export const updateDeleteFrame = (results, args, cache) => {
+export const updateDeleteFrame = (_, args, cache) => {
   const frameId = args.digital_frame_id;
 
   const sheetIds = cache

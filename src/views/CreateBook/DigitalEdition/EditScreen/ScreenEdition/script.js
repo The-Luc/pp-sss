@@ -172,11 +172,7 @@ export default {
     } = useFrame();
     const { toggleModal, modalData } = useModal();
     const { onSaveStyle } = useStyle();
-    const {
-      getDataEditScreen,
-      saveEditScreen,
-      saveAnimationConfig
-    } = useSaveData();
+    const { getDataEditScreen, saveEditScreen } = useSaveData();
     const { updateSavingStatus, savingStatus } = useSavingStatus();
     const { updateObjectsToStore } = useObject();
     const { updateSheetThumbnail } = useMutationDigitalSheet();
@@ -186,8 +182,7 @@ export default {
     const { setPropOfMultipleObjects } = useProperties();
     const { currentSection } = useGetterEditionSection();
     const {
-      storeAnimationProp,
-      setStoreAnimationProp,
+      updateAnimation,
       playInOrder,
       playOutOrder,
       playInIds,
@@ -227,9 +222,7 @@ export default {
       updateMediaSidebarOpen,
       setPropOfMultipleObjects,
       currentSection,
-      storeAnimationProp,
-      setStoreAnimationProp,
-      saveAnimationConfig,
+      updateAnimation,
       playInOrder,
       playOutOrder,
       playInIds,
@@ -292,12 +285,14 @@ export default {
 
         this.isJustEnteringEditor = false;
         this.isAllowUpdateFrameDelay = false;
+        this.stopVideos();
 
         // reset frames, frameIDs, currentFrameId
         this.setSelectedObjectId({ id: '' });
         this.setPropertiesObjectType({ type: '' });
         this.setCurrentObject(null);
         this.updateCanvasSize();
+        clearInterval(this.autoSaveTimer);
 
         resetObjects(this.digitalCanvas);
 
@@ -315,6 +310,7 @@ export default {
       this.isAllowUpdateFrameDelay = false;
 
       if (!val) {
+        this.stopVideos();
         resetObjects(this.digitalCanvas);
 
         return;
@@ -326,6 +322,7 @@ export default {
 
       if (isSwitchFrame) await this.saveData(oldVal);
 
+      this.stopVideos();
       this.setSelectedObjectId({ id: '' });
       this.setPropertiesObjectType({ type: '' });
       this.setCurrentObject(null);
@@ -351,6 +348,7 @@ export default {
     },
     async triggerApplyLayout() {
       // to render new layout when user replace frame
+      this.stopVideos();
       this.setSelectedObjectId({ id: '' });
       this.setCurrentObject(null);
 
@@ -388,11 +386,6 @@ export default {
     }
   },
   beforeDestroy() {
-    const videos = this.digitalCanvas
-      .getObjects()
-      .filter(o => o.objectType === OBJECT_TYPE.VIDEO);
-    videos.forEach(v => v.pause());
-
     this.digitalCanvas = null;
 
     clearInterval(this.autoSaveTimer);
@@ -2117,8 +2110,6 @@ export default {
       this.updateFrameObjects({ frameId });
       const data = this.getDataEditScreen(frameId);
       await this.saveEditScreen(data, isAutosave);
-      await this.saveAnimationConfig(this.storeAnimationProp);
-      this.setStoreAnimationProp({});
     },
     /**
      * Change fabric properties of current element
@@ -2518,7 +2509,12 @@ export default {
      * @param {Object} animationIn config for play in animation
      * @param {Object} animationOut config for play out animation
      */
-    handleApplyAnimation({ objectType, storeType, animationIn, animationOut }) {
+    async handleApplyAnimation({
+      objectType,
+      storeType,
+      animationIn,
+      animationOut
+    }) {
       const animationType = isEmpty(animationIn)
         ? 'animationOut'
         : 'animationIn';
@@ -2545,36 +2541,18 @@ export default {
         [APPLY_MODE.BOOK]: this.$route.params.bookId
       };
 
-      const storeAnimationProp = {
-        [animationType]: {
-          [objectType]: {
-            storeType,
-            storeTypeId: storeTypeId[storeType],
-            setting: animationConfig
-          }
-        }
+      const animationProp = {
+        objectType,
+        storeType,
+        animationType,
+        id: storeTypeId[storeType],
+        setting: animationConfig
       };
 
-      this.setStoreAnimationProp({ storeAnimationProp });
+      // call api to save animation to DB
+      await this.updateAnimation(animationProp);
 
       this.setPropMultiObjectsBaseOnType(objectType, prop);
-
-      const framesList = cloneDeep(this.frames);
-      const currentId = this.currentFrameId;
-
-      this.setFrames({ framesList: [] });
-
-      framesList.forEach(({ frame: { objects } }) => {
-        objects.forEach(obj => {
-          if (obj.type === objectType) {
-            obj.animationIn = merge(obj.animationIn, prop.animationIn);
-            obj.animationOut = merge(obj.animationOut, prop.animationOut);
-          }
-        });
-      });
-
-      this.setFrames({ framesList });
-      this.setCurrentFrameId({ id: currentId });
     },
 
     /**
@@ -2720,6 +2698,15 @@ export default {
      */
     setAutosaveTimer() {
       this.autoSaveTimer = setInterval(this.handleAutosave, AUTOSAVE_INTERVAL);
+    },
+    /**
+     * To pause all the playing videos on canvas
+     */
+    stopVideos() {
+      const videos = this.digitalCanvas
+        .getObjects()
+        .filter(o => o.objectType === OBJECT_TYPE.VIDEO);
+      videos.forEach(v => v.pause());
     }
   }
 };
