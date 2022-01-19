@@ -292,7 +292,7 @@ export default {
         this.setPropertiesObjectType({ type: '' });
         this.setCurrentObject(null);
         this.updateCanvasSize();
-        clearInterval(this.autoSaveTimer);
+        this.setAutosaveTimer();
 
         resetObjects(this.digitalCanvas);
 
@@ -326,7 +326,7 @@ export default {
       this.setSelectedObjectId({ id: '' });
       this.setPropertiesObjectType({ type: '' });
       this.setCurrentObject(null);
-      clearInterval(this.autoSaveTimer);
+      this.setAutosaveTimer();
 
       this.updatePlayInIds({ playInIds: this.currentFrame.playInIds });
       this.updatePlayOutIds({ playOutIds: this.currentFrame.playOutIds });
@@ -344,7 +344,6 @@ export default {
       await this.drawObjectsOnCanvas(this.sheetLayout);
 
       this.isAllowUpdateFrameDelay = true;
-      this.setAutosaveTimer();
     },
     async triggerApplyLayout() {
       // to render new layout when user replace frame
@@ -2697,6 +2696,7 @@ export default {
      * To set timer for autosaving
      */
     setAutosaveTimer() {
+      clearInterval(this.autoSaveTimer);
       this.autoSaveTimer = setInterval(this.handleAutosave, AUTOSAVE_INTERVAL);
     },
     /**

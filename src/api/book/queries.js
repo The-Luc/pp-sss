@@ -142,7 +142,7 @@ export const printEditorQuery = gql`
 `;
 
 export const managerQuery = gql`
-  query($bookId: ID!) {
+  query managerQuery($bookId: ID!) {
     book(id: $bookId) {
       created_at
       number_max_pages

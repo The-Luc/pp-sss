@@ -22,6 +22,7 @@ import {
   THUMBNAIL_IMAGE_CONFIG,
   TRANSITION
 } from '@/common/constants';
+import { useAppCommon } from '@/hooks';
 
 export default {
   props: {
@@ -30,18 +31,24 @@ export default {
       default: () => []
     }
   },
-  data() {
+  setup() {
+    const { setLoadingState } = useAppCommon();
     return {
       mainCanvas: null,
       secondaryCanvas: null,
       mask: null,
       transitionCss: '',
       maskUrl: '',
-      isDestroyed: false
+      isDestroyed: false,
+      setLoadingState
     };
   },
   async mounted() {
     window.addEventListener('resize', this.onResized);
+
+    this.setLoadingState({ value: true });
+    await this.preloadMedia(this.playbackData);
+    this.setLoadingState({ value: false });
 
     await this.initCanvases();
 
@@ -509,6 +516,42 @@ export default {
 
         const playingDuration = v.endTime - v.startTime;
         timeCounter += playingDuration;
+      });
+    },
+    /**
+     * To pre-load all media before the playback happen
+     * @param {Array} media array of frame being display in playback
+     */
+    preloadMedia(media) {
+      /*
+      Fields need to be loaded to keep playback in time
+
+      Background: imageUrl,
+      Clipart: imageUrl,
+      Image, Video: imageUrl
+      */
+
+      return new Promise(resolve => {
+        let totalElements = 0;
+        let loadedElements = 0;
+
+        const imageLoadedCallback = () => {
+          loadedElements++;
+
+          if (loadedElements === totalElements) resolve();
+        };
+
+        media.forEach(frame => {
+          frame.objects.forEach(o => {
+            if (!o.imageUrl) return;
+
+            const img = new Image();
+            img.onload = imageLoadedCallback;
+            img.onerror = imageLoadedCallback;
+            img.src = o.imageUrl;
+            totalElements++;
+          });
+        });
       });
     }
   }
