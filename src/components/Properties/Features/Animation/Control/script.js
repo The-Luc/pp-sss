@@ -230,7 +230,9 @@ export default {
     this.setConfigData(this.config);
   },
   watch: {
-    config(val) {
+    config(val, oldVal) {
+      if (JSON.stringify(val) === JSON.stringify(oldVal)) return;
+
       this.setConfigData(val);
       this.showApplyOptions = false;
     }

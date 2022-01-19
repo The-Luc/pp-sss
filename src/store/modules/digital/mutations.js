@@ -324,7 +324,7 @@ export const mutations = {
     const ids = playOutIds.find(item => item.includes(id));
 
     if (!isEmpty(ids)) {
-      const index = ids.findIndex(i => +i === +id);
+      const index = ids.findIndex(i => i === id);
       ids.splice(index, 1);
     }
 
