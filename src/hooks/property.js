@@ -26,11 +26,13 @@ export const useProperties = () => {
   const {
     setPropertyById,
     setProperty,
-    setPropOfMultipleObjects
+    setPropOfMultipleObjects,
+    setObjectPropOfSheetFrames
   } = useMutations({
     setPropertyById: MUTATES.SET_PROP_BY_ID,
     setProperty: MUTATES.SET_PROP,
-    setPropOfMultipleObjects: MUTATES.SET_PROP_OF_MULIPLE_OBJECTS
+    setPropOfMultipleObjects: MUTATES.SET_PROP_OF_MULIPLE_OBJECTS,
+    setObjectPropOfSheetFrames: MUTATES.SET_OBJECT_PROP_OF_SHEET_FRAMES
   });
 
   const getProperty = prop => {
@@ -41,6 +43,7 @@ export const useProperties = () => {
     getProperty,
     setProperty,
     setPropertyById,
-    setPropOfMultipleObjects
+    setPropOfMultipleObjects,
+    setObjectPropOfSheetFrames
   };
 };

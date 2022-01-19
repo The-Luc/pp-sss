@@ -344,5 +344,16 @@ export const mutations = {
 
     state.playOutIds = sortAnimationOrder(tmpArr, state.objects);
   },
-  [DIGITAL._MUTATES.UPDATE_SECTION]: updateSection
+  [DIGITAL._MUTATES.UPDATE_SECTION]: updateSection,
+  [DIGITAL._MUTATES.SET_OBJECT_PROP_OF_SHEET_FRAMES](state, { prop }) {
+    const { objectType, animationType, setting } = prop;
+
+    Object.values(state.frames).forEach(({ objects }) => {
+      objects.forEach(obj => {
+        if (obj.type === objectType) {
+          obj[animationType] = merge(obj[animationType], setting);
+        }
+      });
+    });
+  }
 };
