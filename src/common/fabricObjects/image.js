@@ -3,7 +3,7 @@ import { fabric } from 'fabric';
 import {
   getActiveCanvas,
   getStrokeLineCap,
-  getUniqueUrl,
+  modifyUrl,
   inToPx,
   isEmpty,
   mapObject,
@@ -51,7 +51,7 @@ export const createImage = props => {
         : DEFAULT_IMAGE.IMAGE_URL;
 
     fabric.util.loadImage(
-      getUniqueUrl(src),
+      modifyUrl(src),
       img => {
         const image = new fabric.Image(img, {
           ...fabricProp,
@@ -210,7 +210,7 @@ export const setImageSrc = async (imageObject, imageSrc) => {
     const hasImage = !!imageSrc;
 
     imageObject.setSrc(
-      getUniqueUrl(src),
+      modifyUrl(src),
       img => {
         const newScaleX = (width * scaleX) / img.width;
         const newScaleY = (height * scaleY) / img.height;
@@ -468,7 +468,7 @@ export const createVideoElement = src =>
       false
     );
 
-    ele.src = `${getUniqueUrl(src)}#t=0.01`;
+    ele.src = `${modifyUrl(src)}#t=0.01`;
   });
 
 /**
@@ -493,7 +493,7 @@ export const createMediaOverlay = (src, options) => {
     ele.onerror = () => reject('Cannot load image');
 
     ele.crossOrigin = 'anonymous';
-    ele.src = getUniqueUrl(src);
+    ele.src = modifyUrl(src);
   });
 };
 

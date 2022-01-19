@@ -231,7 +231,7 @@ export default {
       async handler(val, oldVal) {
         if (val?.id === oldVal?.id) return;
 
-        clearInterval(this.autoSaveTimer);
+        this.setAutosaveTimer();
 
         await this.saveData(oldVal.id);
 
@@ -254,7 +254,6 @@ export default {
         await this.drawObjectsOnCanvas(this.sheetLayout);
 
         this.addPageNumber();
-        this.setAutosaveTimer();
       }
     },
     zoom(newVal, oldVal) {
@@ -2127,6 +2126,7 @@ export default {
      * To set timer for autosaving
      */
     setAutosaveTimer() {
+      clearInterval(this.autoSaveTimer);
       this.autoSaveTimer = setInterval(this.handleAutosave, AUTOSAVE_INTERVAL);
     }
   }
