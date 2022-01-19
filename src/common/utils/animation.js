@@ -1174,7 +1174,7 @@ export const removeAnimationOrders = (animationOrders, objectIds, objects) => {
 
     const ids = animationOrders[idsIndex];
 
-    const index = ids.findIndex(i => +i === +id);
+    const index = ids.findIndex(i => i === id);
     ids.splice(index, 1);
   });
 
