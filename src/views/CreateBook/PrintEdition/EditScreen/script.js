@@ -52,7 +52,8 @@ import {
   resetObjects,
   isOk,
   seperateSheetObjectsIntoPages,
-  mergeArray
+  mergeArray,
+  isHalfSheet
 } from '@/common/utils';
 
 import { useSaveData } from './PageEdition/composables';
@@ -369,9 +370,10 @@ export default {
       const target = event.target;
 
       const { height, width, zoom } = this.$refs.canvasEditor.canvasSize;
+      const sheetTypeFactor = isHalfSheet(this.currentSheet) ? 2 : 1;
 
-      const canvasHeight = height / zoom;
-      const canvasWidth = width / zoom;
+      const canvasHeight = (height / zoom) * 0.9;
+      const canvasWidth = (width / zoom / sheetTypeFactor) * 0.9;
 
       const ratio = Math.max(
         originalHeight / canvasHeight,

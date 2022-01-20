@@ -160,7 +160,7 @@ export default {
      */
     async initData() {
       await this.setThemeSelected(this.themeId);
-      await this.setLayoutSelected();
+      this.setLayoutSelected();
       this.setDisabledLayout(this.pageSelected);
 
       await this.getLayouts();
@@ -231,7 +231,7 @@ export default {
 
       this.filterLayoutType();
 
-      await this.setLayoutSelected();
+      this.setLayoutSelected();
       await this.getLayouts();
     },
     /**
@@ -349,11 +349,18 @@ export default {
      * @param {String | Number} id id of selected layout
      */
     async onSaveToFavorites({ id, isFavorites }) {
-      const isSuccess = (await isFavorites)
-        ? this.saveToFavorites(id)
-        : this.deleteFavorites(id);
+      const isSuccess = isFavorites
+        ? await this.saveToFavorites(id)
+        : await this.deleteFavorites(id);
 
       if (!isSuccess) return;
+
+      await this.getLayouts();
+
+      if (isEmpty(this.layouts)) {
+        this.setLayoutSelected();
+        await this.getLayouts();
+      }
 
       this.modifyFavorites(id);
 
@@ -383,7 +390,8 @@ export default {
      * Get favorites from API
      */
     async getFavoritesData() {
-      this.favoriteLayouts = await this.getFavorites();
+      const favoriteLayouts = await this.getFavoriteLayouts();
+      this.favoriteLayouts = favoriteLayouts.map(({ id }) => id);
     },
     /**
      * Get custom layouts from API
