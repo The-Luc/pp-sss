@@ -652,7 +652,7 @@ export const splitBase64Image = async imgUrl => {
 
   const el = fabric.util.createCanvasElement();
   const width = img.width;
-  const halfWidth = Math.ceil(width / 2);
+  const halfWidth = Math.floor(width / 2);
   el.width = width;
   el.height = img.height;
 

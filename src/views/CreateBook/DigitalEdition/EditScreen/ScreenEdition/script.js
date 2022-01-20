@@ -179,7 +179,10 @@ export default {
     const { getProperty } = useElementProperties();
     const { updateMediaSidebarOpen, setPropertiesType } = useToolBar();
 
-    const { setPropOfMultipleObjects } = useProperties();
+    const {
+      setPropOfMultipleObjects,
+      setObjectPropOfSheetFrames
+    } = useProperties();
     const { currentSection } = useGetterEditionSection();
     const {
       updateAnimation,
@@ -221,6 +224,7 @@ export default {
       getProperty,
       updateMediaSidebarOpen,
       setPropOfMultipleObjects,
+      setObjectPropOfSheetFrames,
       currentSection,
       updateAnimation,
       playInOrder,
@@ -2552,6 +2556,7 @@ export default {
       await this.updateAnimation(animationProp);
 
       this.setPropMultiObjectsBaseOnType(objectType, prop);
+      this.setObjectPropOfSheetFrames({ prop: animationProp });
     },
 
     /**

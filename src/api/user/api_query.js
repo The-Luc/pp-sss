@@ -112,7 +112,7 @@ export const getFavoriteLayoutsApi = async () => {
       previewImageUrl: t.preview_image_url,
       name: t.data.properties.title,
       isFavorites: true,
-      isFavoritesDisabled: true
+      isFavoritesDisabled: false
     };
   });
 };

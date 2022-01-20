@@ -34,6 +34,13 @@ export default {
       visible: false
     };
   },
+  watch: {
+    isScrollY(val) {
+      if (val) return;
+      const wrapper = document.querySelector('.ruler-wrapper');
+      wrapper.scrollIntoView(true);
+    }
+  },
   methods: {
     /**
      * Callback function handle when user click text and image icon on Creation Tool to start draw text/image with instruction

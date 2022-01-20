@@ -43,7 +43,7 @@ export default {
 
       const sectionHeaders = document.getElementsByClassName('section-header');
 
-      sectionHeaders.forEach(sh => {
+      [...sectionHeaders].forEach(sh => {
         if (sh.getAttribute('data-toggle') === collapse) sh.click();
       });
 

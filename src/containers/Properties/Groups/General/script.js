@@ -153,6 +153,8 @@ export default {
 
       if (objectType === OBJECT_TYPE.IMAGE) return 'Image Animation';
 
+      if (objectType === OBJECT_TYPE.PORTRAIT_IMAGE) return 'Image Animation';
+
       return '';
     },
     /**

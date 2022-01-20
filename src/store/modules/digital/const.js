@@ -126,6 +126,7 @@ class MutationClass extends BaseObject {
   SET_PLAY_IN_IDS = 'setPlayInIds';
   SET_PLAY_OUT_IDS = 'setPlayOutIds';
   UPDATE_SECTION = 'updateSection';
+  SET_OBJECT_PROP_OF_SHEET_FRAMES = 'updateObjectPropOfSheetFrame';
 
   constructor(props) {
     super(props);
