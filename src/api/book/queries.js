@@ -170,3 +170,14 @@ export const managerQuery = gql`
   }
   ${bookFragment}
 `;
+
+export const getBookCoverOptionQuery = gql`
+  query getBookCoverOption($bookId: ID!) {
+    book(id: $bookId) {
+      id
+      yearbook_spec {
+        cover_option
+      }
+    }
+  }
+`;

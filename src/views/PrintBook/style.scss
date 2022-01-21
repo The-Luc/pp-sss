@@ -1,6 +1,10 @@
-.canvas-container {
-  height: 100vh;
-  width: 100vw;
-  position: relative;
+.pdf-container {
   overflow: auto;
+}
+.canvas-container {
+  position: relative;
+  overflow: hidden;
+  .page-canvas {
+    margin-left: 0px;
+  }
 }
