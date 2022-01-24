@@ -8,3 +8,18 @@ export const getPageLayoutQuery = gql`
     }
   }
 `;
+
+export const getSheetIdOfPageQuery = gql`
+  query getSheetIdOfPage($pageId: ID!) {
+    page(id: $pageId) {
+      id
+      sheets {
+        id
+        pages {
+          id
+        }
+        sheet_type
+      }
+    }
+  }
+`;

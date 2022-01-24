@@ -698,7 +698,7 @@ export const generateCanvasThumbnail = async (objects, isDigital) => {
     evented: false
   });
 
-  await drawObjectOnCanvas(objects, canvas);
+  await drawObjectsOnCanvas(objects, canvas);
 
   const thumb = canvas.toDataURL({
     quality: THUMBNAIL_IMAGE_CONFIG.QUALITY,
@@ -718,7 +718,7 @@ export const generateCanvasThumbnail = async (objects, isDigital) => {
  * @param {Array}   objects list of object of current frame
  * @param {Object}  canvas  canvas is used to draw objects into
  */
-export const drawObjectOnCanvas = async (objects, canvas) => {
+export const drawObjectsOnCanvas = async (objects, canvas) => {
   const drawObjectMethods = {
     [OBJECT_TYPE.BACKGROUND]: createBackgroundFabricObject,
     [OBJECT_TYPE.TEXT]: text => createTextBoxObject(text).object,

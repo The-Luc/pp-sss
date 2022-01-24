@@ -55,7 +55,7 @@ export const getSheetInfoApi = async id => {
   const mediaPromises = assetIds.map(id => getAssetByIdApi(id));
   const media = await Promise.all(mediaPromises);
 
-  return { objects: entitiesToObjects(objects), media };
+  return { objects: entitiesToObjects(objects), media, sheetType };
 };
 
 export const getWorkspaceApi = async (sheetId, isDigital) => {
