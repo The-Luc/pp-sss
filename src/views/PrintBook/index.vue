@@ -1,6 +1,17 @@
 <template>
-  <div class="canvas-container">
-    <canvas id="canvas" ref="canvas" class="page-canvas"></canvas>
+  <div class="pdf-container" :style="containerCssStyle">
+    <div
+      ref="canvas-container"
+      class="canvas-container"
+      :style="containerCssStyle"
+    >
+      <canvas
+        id="canvas"
+        ref="canvas"
+        class="page-canvas"
+        :style="canvasCssStyle"
+      ></canvas>
+    </div>
   </div>
 </template>
 

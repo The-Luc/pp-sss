@@ -80,7 +80,7 @@ export default {
      */
     onSearch(event) {
       this.searchInput = event.target.value;
-      this.$emit('search', this.searchInput);
+      this.$emit('search', this.searchInput.trim());
 
       this.scrollToTop();
       event.target.value = ' ';

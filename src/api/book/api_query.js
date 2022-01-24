@@ -28,7 +28,8 @@ import {
   digitalMainQuery,
   managerQuery,
   printEditorQuery,
-  printMainQuery
+  printMainQuery,
+  getBookCoverOptionQuery
 } from './queries';
 
 import { EDITION, SHEET_TYPE } from '@/common/constants';
@@ -323,4 +324,13 @@ export const getBookDetail = async (bookId, edition, isEditor) => {
     sections,
     sheets
   };
+};
+
+/**
+ * To get cover option of book, is used in pdf generation
+ * @param {String} bookId ID of book
+ * @returns query data
+ */
+export const getBookCoverOptionApi = bookId => {
+  return graphqlRequest(getBookCoverOptionQuery, { bookId });
 };

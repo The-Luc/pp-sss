@@ -1,35 +1,28 @@
 import {
+  drawObjectsOnCanvas,
+  getCoverPagePrintSize,
   getPagePrintSize,
-  inToPx,
   isEmpty,
-  isFullBackground
+  setActiveEdition
 } from '@/common/utils';
-import {
-  imageBorderModifier,
-  useDoubleStroke,
-  useOverrides
-} from '@/plugins/fabric';
+import { useOverrides } from '@/plugins/fabric';
 import { fabric } from 'fabric';
 import { usePageApi } from './composables';
-import { OBJECT_TYPE, PRINT_DPI, PDF_DPI } from '@/common/constants';
 import {
-  applyBorderToImageObject,
-  applyShadowToObject,
-  createBackgroundFabricObject,
-  createImage,
-  createPortraitImage,
-  createTextBox,
-  handleGetClipart,
-  handleGetSvgData,
-  updateSpecificProp
-} from '@/common/fabricObjects';
+  PRINT_DPI,
+  PDF_DPI,
+  EDITION,
+  SHEET_TYPE,
+  COVER_TYPE
+} from '@/common/constants';
 import { get } from 'lodash';
 
 export default {
   setup() {
-    const { getPageData } = usePageApi();
+    const { getBook, getSheet } = usePageApi();
     return {
-      getPageData
+      getBook,
+      getSheet
     };
   },
   data() {
@@ -39,7 +32,11 @@ export default {
       pageSize: null,
       canvas: null,
       rulerSize: { width: '0', height: '0' },
-      isScroll: { x: false, y: false }
+      isScroll: { x: false, y: false },
+      isCoverPage: null,
+      coverOption: null,
+      containerCssStyle: {},
+      canvasCssStyle: {}
     };
   },
   methods: {
@@ -54,265 +51,34 @@ export default {
         preserveObjectStacking: true
       });
       useOverrides(fabric.Object.prototype);
-      this.updateCanvasSize();
     },
 
     /**
      * Auto resize canvas to fit the container size
      */
     updateCanvasSize() {
-      const pageSize = getPagePrintSize();
-      const {
-        sheetWidth,
-        sheetHeight,
-        bleedLeft,
-        bleedRight
-      } = pageSize.pixels;
-      const pageWidth = (sheetWidth + bleedLeft + bleedRight) * 0.5;
+      const pageSize = this.isCoverPage
+        ? getCoverPagePrintSize(this.coverOption, 0)
+        : getPagePrintSize();
+      const { sheetWidth, sheetHeight, bleedLeft } = pageSize.pixels;
 
-      const height = sheetHeight * this.zoom;
-      const width = pageWidth * this.zoom;
+      this.bleedSize = bleedLeft;
 
-      this.canvas.setWidth(width);
+      this.canvas.setWidth(sheetWidth * this.zoom);
 
-      this.canvas.setHeight(height);
+      this.canvas.setHeight(sheetHeight * this.zoom);
 
       this.canvas.setZoom(this.zoom);
-    },
 
-    /**
-     * Create and render objects on the canvas
-     *
-     * @param {Object} objects ppObjects that will be rendered
-     */
-    async drawObjectsOnCanvas(objects, facingObjects) {
-      if (isEmpty(objects)) return;
+      // set container size
+      const pageFactor = this.isCoverPage ? 0 : bleedLeft;
+      const width = (Math.floor(sheetWidth / 2) + pageFactor) * this.zoom;
+      const canvasMargin = this.isLeftPage ? 0 : sheetWidth * this.zoom - width;
 
-      const createObjectMethod = {
-        [OBJECT_TYPE.SHAPE]: this.createSvgFromPpData,
-        [OBJECT_TYPE.CLIP_ART]: this.createClipartFromPpData,
-        [OBJECT_TYPE.TEXT]: this.createTextFromPpData,
-        [OBJECT_TYPE.IMAGE]: this.createImageFromPpData,
-        [OBJECT_TYPE.PORTRAIT_IMAGE]: this.createPortraitImageFromPpData,
-        [OBJECT_TYPE.BACKGROUND]: this.createBackgroundFromPpData
+      this.containerCssStyle = {
+        width: width + 'px'
       };
-
-      const allObjectPromises = objects.map(objectData => {
-        return createObjectMethod[objectData.type](objectData);
-      });
-
-      const isEmptyBackground = objects[0].type !== OBJECT_TYPE.BACKGROUND;
-
-      const isFacingBackground =
-        !isEmpty(facingObjects) &&
-        facingObjects[0].type === OBJECT_TYPE.BACKGROUND &&
-        isFullBackground(facingObjects[0]);
-
-      if (isEmptyBackground && isFacingBackground) {
-        allObjectPromises.unshift(
-          this.createBackgroundFromPpData(facingObjects[0], true)
-        );
-      }
-
-      const listFabricObjects = await Promise.all(allObjectPromises);
-
-      this.canvas.add(...listFabricObjects);
-      this.canvas.requestRenderAll();
-      this.dispatchLoadedEvent();
-    },
-
-    /**
-     * add shape/ clipart to the store and create fabric object
-     *
-     * @param {Object} objectData PpData of the of a shape object {id, size, coord,...}
-     * @returns {Object} a fabric object
-     */
-    async createSvgFromPpData(objectData) {
-      const svgObject = {
-        id: objectData.id,
-        object: objectData
-      };
-
-      const svg = await handleGetSvgData({
-        svg: svgObject,
-        svgUrlAttrName:
-          objectData.type === OBJECT_TYPE.CLIP_ART ? 'vector' : 'pathData',
-        expectedHeight: objectData.size.height,
-        expectedWidth: objectData.size.width
-      });
-
-      const {
-        dropShadow,
-        shadowBlur,
-        shadowOffset,
-        shadowOpacity,
-        shadowAngle,
-        shadowColor
-      } = svg;
-
-      applyShadowToObject(svg, {
-        dropShadow,
-        shadowBlur,
-        shadowOffset,
-        shadowOpacity,
-        shadowAngle,
-        shadowColor
-      });
-
-      return svg;
-    },
-
-    /**
-     * add clipart to the store and create fabric object
-     *
-     * @param {Object} clipart PpData of the of a clipart object {id, size, coord,...}
-     * @returns {Object} a fabric object
-     */
-    async createClipartFromPpData(objectData) {
-      const clipart = await handleGetClipart({
-        object: objectData,
-        expectedHeight: objectData.size.height,
-        expectedWidth: objectData.size.width
-      });
-
-      const {
-        dropShadow,
-        shadowBlur,
-        shadowOffset,
-        shadowOpacity,
-        shadowAngle,
-        shadowColor
-      } = clipart;
-
-      applyShadowToObject(clipart, {
-        dropShadow,
-        shadowBlur,
-        shadowOffset,
-        shadowOpacity,
-        shadowAngle,
-        shadowColor
-      });
-
-      return clipart;
-    },
-
-    /**
-     * create fabric object
-     *
-     * @param {Object} textProperties PpData of the of a text object {id, size, coord,...}
-     * @returns {Object} a fabric object
-     */
-    createTextFromPpData(textProperties) {
-      const {
-        coord,
-        size: { height, width }
-      } = textProperties;
-
-      const { object, data: objectData } = createTextBox(
-        inToPx(coord.x),
-        inToPx(coord.y),
-        inToPx(width),
-        inToPx(height),
-        textProperties
-      );
-
-      const {
-        newObject: {
-          shadow,
-          coord: { rotation }
-        }
-      } = objectData;
-
-      updateSpecificProp(object, {
-        coord: {
-          rotation
-        }
-      });
-
-      const objects = object.getObjects();
-
-      objects.forEach(obj => {
-        applyShadowToObject(obj, shadow);
-      });
-
-      return object;
-    },
-
-    /**
-     * add image to the store and create fabric object
-     *
-     * @param {Object} imageProperties PpData of the of an image object {id, size, coord,...}
-     * @returns {Object} a fabric object
-     */
-    async createImageFromPpData(imageProperties) {
-      const imageObject = await createImage(imageProperties);
-      const image = imageObject?.object;
-      const { border, cropInfo } = imageProperties;
-
-      imageBorderModifier(image);
-
-      const {
-        dropShadow,
-        shadowBlur,
-        shadowOffset,
-        shadowOpacity,
-        shadowAngle,
-        shadowColor
-      } = image;
-
-      applyShadowToObject(image, {
-        dropShadow,
-        shadowBlur,
-        shadowOffset,
-        shadowOpacity,
-        shadowAngle,
-        shadowColor
-      });
-
-      applyBorderToImageObject(image, border);
-
-      if (!isEmpty(cropInfo)) {
-        image.set({ cropInfo });
-      }
-
-      return image;
-    },
-
-    /**
-     * create fabric object
-     *
-     * @param {Object} properties PpData of the of a background object {id, size, coord,...}
-     * @returns {Object} a fabric objec
-     */
-    async createPortraitImageFromPpData(properties) {
-      const image = await createPortraitImage(properties);
-
-      const { border, shadow } = properties;
-
-      useDoubleStroke(image);
-
-      applyShadowToObject(image, shadow);
-
-      applyBorderToImageObject(image, border);
-
-      return image;
-    },
-
-    /**
-     * create fabric object
-     *
-     * @param {Object} backgroundProp PpData of the of a background object {id, size, coord,...}
-     * @returns {Object} a fabric objec
-     */
-    async createBackgroundFromPpData(backgroundProp, isFacing = false) {
-      return createBackgroundFabricObject(
-        backgroundProp,
-        this.canvas,
-        null,
-        true,
-        isFullBackground(backgroundProp) ? 0.5 : 1,
-        isFacing
-      );
+      this.canvasCssStyle = { 'margin-left': -canvasMargin + 'px' };
     },
 
     /**
@@ -349,20 +115,36 @@ export default {
     sessionStorage.setItem('token', get(this.$route, 'query.token', ''));
   },
   async mounted() {
+    // enable to scroll when canvas is bigger screen size
+    const bodyEl = document.querySelector('body');
+    bodyEl.style.overflow = 'auto';
+
     this.createCanvas();
+    setActiveEdition(this.canvas, EDITION.PRINT);
 
     try {
       const pageId = get(this.$route, 'params.pageId');
+      const bookId = get(this.$route, 'params.bookId');
 
       if (isEmpty(pageId)) return;
 
-      const data = await this.getPageData(pageId);
+      const {
+        sheetType,
+        coverOption,
+        isLeftPage,
+        sheetId
+      } = await this.getBook(bookId, pageId);
 
-      const elements = get(data, 'page.layout.elements', []);
+      this.coverOption = COVER_TYPE[coverOption] === COVER_TYPE.HARDCOVER;
+      this.isCoverPage = SHEET_TYPE.COVER === sheetType;
+      this.isLeftPage = isLeftPage;
 
-      const facingElements = get(data, 'page.facing_page.layout.elements', []);
+      this.updateCanvasSize();
 
-      this.drawObjectsOnCanvas(elements, facingElements);
+      const sheet = await this.getSheet(sheetId);
+
+      drawObjectsOnCanvas(sheet.objects, this.canvas);
+      this.dispatchLoadedEvent();
     } catch (ex) {
       this.dispatchLoadedEvent();
     }
