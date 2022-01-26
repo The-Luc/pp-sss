@@ -56,8 +56,15 @@ export const getAssetByIdApi = async assetId => {
     : new PictureAssetEntity(mediaMapping(asset));
 };
 
-export const getAlbumsAndCategoriesApi = async (communityId, isGetVideo) => {
-  const res = await graphqlRequest(getAllAlbumsQuery, { communityId });
+export const getAlbumsAndCategoriesApi = async (
+  communityId,
+  projectId,
+  isGetVideo
+) => {
+  const res = await graphqlRequest(getAllAlbumsQuery, {
+    communityId,
+    projectId
+  });
 
   if (!isOk(res)) return;
 

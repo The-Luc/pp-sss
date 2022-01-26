@@ -37,7 +37,8 @@ export const useSavingStatus = () => {
 };
 
 export const usePhotos = () => {
-  const { value: isDigital } = useAppCommon().isDigitalEdition;
+  const { isDigitalEdition, generalInfo } = useAppCommon();
+  const isDigital = isDigitalEdition.value;
 
   const GETTERS = isDigital ? DIGITAL_GETTERS : PRINT_GETTERS;
 
@@ -58,7 +59,13 @@ export const usePhotos = () => {
   };
 
   const getAlbums = async isGetVideo => {
-    return await getAlbumsAndCategoriesApi(communityId.value, isGetVideo);
+    const bookId = Number(generalInfo.value.bookId);
+
+    return await getAlbumsAndCategoriesApi(
+      communityId.value,
+      bookId,
+      isGetVideo
+    );
   };
 
   return {

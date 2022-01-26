@@ -32,18 +32,19 @@ export const getAssetByIdQuery = gql`
 const albumDetailFragment = gql`
   fragment albumDetail on Container {
     id
-    title
+    body
     created_at
     assets {
       id
       thumbnail_uri
       is_media
+      in_project(project_id: $projectId, project_type: BOOK)
     }
   }
 `;
 
 export const getAllAlbumsQuery = gql`
-  query getAllAlbumsQuery($communityId: ID!) {
+  query getAllAlbumsQuery($communityId: ID!, $projectId: Int!) {
     user_containers {
       ...albumDetail
     }
