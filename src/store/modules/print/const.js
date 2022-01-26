@@ -34,6 +34,7 @@ class GetterClass extends BaseObject {
   COMMUNITY_ID = 'getCommunityId';
   BOOK_USER_ID = 'getBookUserId';
   GET_BOOK_INFO = 'getBookInfo';
+  GET_MEDIA_OBJECT_IDS = 'getMediaObjectIds';
 
   constructor(props) {
     super(props);

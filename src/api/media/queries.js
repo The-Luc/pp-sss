@@ -8,11 +8,12 @@ const assetFragment = gql`
     original_height
     original_width
     is_media
+    in_project(project_id: $projectId, project_type: BOOK)
   }
 `;
 
 export const getMediaQuery = gql`
-  query getMediaQuery($id: ID!, $terms: [String]) {
+  query getMediaQuery($id: ID!, $terms: [String], $projectId: Int!) {
     search_community_assets(id: $id, terms: $terms) {
       ...assetData
     }
@@ -21,7 +22,7 @@ export const getMediaQuery = gql`
 `;
 
 export const getAssetByIdQuery = gql`
-  query getAssetByIdQuery($id: ID!) {
+  query getAssetByIdQuery($id: ID!, $projectId: Int!) {
     asset(id: $id) {
       ...assetData
     }

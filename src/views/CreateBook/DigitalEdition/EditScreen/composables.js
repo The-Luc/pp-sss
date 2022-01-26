@@ -6,7 +6,6 @@ import { isEmpty, isOk } from '@/common/utils';
 import { GETTERS, ACTIONS } from '@/store/modules/digital/const';
 import { mappingFrameToApi } from '@/common/mapping/frame';
 import { saveDigitalDataApi } from '@/api/saveDigital';
-import { getAssetByIdApi } from '@/api/media';
 import { uploadBase64ImageApi } from '@/api/util';
 
 export const useSaveData = () => {
@@ -107,8 +106,4 @@ export const useVideo = () => {
   });
 
   return { totalVideoDuration };
-};
-
-export const useAsset = () => {
-  return { getAssetByIdApi };
 };

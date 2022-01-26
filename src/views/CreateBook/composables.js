@@ -10,7 +10,8 @@ import {
 import {
   getPhotosApi,
   getMediaApi,
-  getAlbumsAndCategoriesApi
+  getAlbumsAndCategoriesApi,
+  getAssetByIdApi
 } from '@/api/media';
 import { savePortraitSettingsApi, getPortraiSettingsApi } from '@/api/portrait';
 
@@ -22,7 +23,11 @@ import {
 import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 import { GETTERS as DIGITAL_GETTERS } from '@/store/modules/digital/const';
 import { uploadBase64ImageApi } from '@/api/util';
-import { generateCanvasThumbnail, isOk } from '@/common/utils';
+import {
+  generateCanvasThumbnail,
+  isOk,
+  updateAssetInProject
+} from '@/common/utils';
 
 export const useSavingStatus = () => {
   const { savingStatus } = useGetters({
@@ -39,39 +44,58 @@ export const useSavingStatus = () => {
 export const usePhotos = () => {
   const { isDigitalEdition, generalInfo } = useAppCommon();
   const isDigital = isDigitalEdition.value;
+  const bookId = Number(generalInfo.value.bookId);
 
   const GETTERS = isDigital ? DIGITAL_GETTERS : PRINT_GETTERS;
 
-  const { communityId } = useGetters({
-    communityId: GETTERS.COMMUNITY_ID
+  const { communityId, mediaObjectIds } = useGetters({
+    communityId: GETTERS.COMMUNITY_ID,
+    mediaObjectIds: GETTERS.GET_MEDIA_OBJECT_IDS
   });
 
+  const getAssetById = async assetId => {
+    const asset = getAssetByIdApi(assetId, bookId);
+
+    return updateAssetInProject(asset, mediaObjectIds.value);
+  };
+
+  const getAssetByKeywords = async (keywords, isGetMedia) => {
+    const assets = isGetMedia
+      ? await getMediaApi(communityId.value, keywords, bookId)
+      : await getPhotosApi(communityId.value, keywords, bookId);
+
+    return updateAssetInProject(assets, mediaObjectIds.value);
+  };
+
   const getSmartbox = async (keywords, isGetMedia) => {
-    return isGetMedia
-      ? getMediaApi(communityId.value, keywords)
-      : getPhotosApi(communityId.value, keywords);
+    return getAssetByKeywords(keywords, isGetMedia);
   };
 
   const getSearch = async (input, isGetMedia) => {
-    return isGetMedia
-      ? getMediaApi(communityId.value, [input])
-      : getPhotosApi(communityId.value, [input]);
+    return getAssetByKeywords([input], isGetMedia);
   };
 
   const getAlbums = async isGetVideo => {
-    const bookId = Number(generalInfo.value.bookId);
-
-    return await getAlbumsAndCategoriesApi(
+    const data = await getAlbumsAndCategoriesApi(
       communityId.value,
       bookId,
       isGetVideo
     );
+    const albums = data.albums;
+
+    Object.values(albums).forEach(al => {
+      al.forEach(a => {
+        updateAssetInProject(a.assets, mediaObjectIds.value);
+      });
+    });
+    return data;
   };
 
   return {
     getSmartbox,
     getSearch,
-    getAlbums
+    getAlbums,
+    getAssetById
   };
 };
 

@@ -14,7 +14,8 @@ import {
   getPlaybackDataFromFrames,
   isEmpty,
   isOk,
-  removeItemsFormArray
+  removeItemsFormArray,
+  updateAssetInProject
 } from '@/common/utils';
 
 import {
@@ -68,10 +69,16 @@ const useMutationEditionSheet = () => {
 };
 
 export const useActionsEditionSheet = () => {
-  const { value: isDigital } = useAppCommon().isDigitalEdition;
+  const { isDigitalEdition, generalInfo } = useAppCommon();
+
+  const isDigital = isDigitalEdition.value;
 
   const MUTATES = isDigital ? DIGITAL_MUTATES : PRINT_MUTATES;
   const GETTERS = isDigital ? DIGITAL_GETTERS : PRINT_GETTERS;
+
+  const { mediaObjectIds } = useGetters({
+    mediaObjectIds: GETTERS.GET_MEDIA_OBJECT_IDS
+  });
 
   const { currentSheet } = useGetters({
     currentSheet: GETTERS.CURRENT_SHEET
@@ -83,11 +90,16 @@ export const useActionsEditionSheet = () => {
   });
 
   const getMedia = async () => {
+    const bookId = Number(generalInfo.value.bookId);
+    const currentAssetIds = mediaObjectIds.value;
+
     const assetIds = await getWorkspaceApi(currentSheet.value.id, isDigital);
 
-    const promises = assetIds.map(id => getAssetByIdApi(id));
+    const promises = assetIds.map(id => getAssetByIdApi(id, bookId));
 
-    return await Promise.all(promises);
+    const media = await Promise.all(promises);
+
+    return updateAssetInProject(media, currentAssetIds);
   };
 
   /**
@@ -97,6 +109,7 @@ export const useActionsEditionSheet = () => {
    * @returns
    */
   const updateSheetMedia = async (media, isDigital) => {
+    const bookId = Number(generalInfo.value.bookId);
     const prefix = isDigital ? 'digital_' : '';
 
     const workspace = {
@@ -112,7 +125,7 @@ export const useActionsEditionSheet = () => {
 
     if (!isOk(res)) return;
 
-    const mediaPromises = media.map(m => getAssetByIdApi(m.id));
+    const mediaPromises = media.map(m => getAssetByIdApi(m.id, bookId));
     const resMedia = await Promise.all(mediaPromises);
 
     return { media: resMedia, isSuccess: true };

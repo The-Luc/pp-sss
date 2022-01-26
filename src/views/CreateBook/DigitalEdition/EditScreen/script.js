@@ -48,7 +48,8 @@ import {
   usePortrait,
   useActionDigitalSheet,
   useAppCommon,
-  useFrameAction
+  useFrameAction,
+  useMediaObjects
 } from '@/hooks';
 
 import { useSavingStatus, useThumbnail } from '../../composables';
@@ -141,6 +142,7 @@ export default {
 
     const { saveSelectedPortraitFolders } = usePortrait();
     const { uploadBase64Image, generateMultiThumbnails } = useThumbnail();
+    const { mediaObjectIds } = useMediaObjects();
 
     return {
       pageSelected,
@@ -186,7 +188,8 @@ export default {
       updateFrameApi,
       getSheetFrames,
       generateMultiThumbnails,
-      uploadBase64Image
+      uploadBase64Image,
+      mediaObjectIds
     };
   },
   data() {
@@ -259,6 +262,11 @@ export default {
       }
     },
     isMediaSidebarOpen: {
+      async handler(val) {
+        if (val) this.sheetMedia = await this.getMedia();
+      }
+    },
+    mediaObjectIds: {
       async handler(val) {
         if (val) this.sheetMedia = await this.getMedia();
       }

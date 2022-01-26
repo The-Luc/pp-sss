@@ -46,16 +46,7 @@ export const getSheetInfoApi = async id => {
     return a?.arrangeOrder - b?.arrangeOrder;
   });
 
-  const assetIds = pages.reduce(
-    (acc, { layout }) =>
-      isEmpty(layout.workspace) ? acc : acc.concat(layout.workspace),
-    []
-  );
-
-  const mediaPromises = assetIds.map(id => getAssetByIdApi(id));
-  const media = await Promise.all(mediaPromises);
-
-  return { objects: entitiesToObjects(objects), media, sheetType };
+  return { objects: entitiesToObjects(objects), meida: null, sheetType };
 };
 
 export const getWorkspaceApi = async (sheetId, isDigital) => {

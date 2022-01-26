@@ -43,7 +43,8 @@ import {
   useObjects,
   useBackgroundProperties,
   usePortrait,
-  useAppCommon
+  useAppCommon,
+  useMediaObjects
 } from '@/hooks';
 import {
   isEmpty,
@@ -110,6 +111,7 @@ export default {
 
     const { saveSelectedPortraitFolders } = usePortrait();
     const { uploadBase64Image } = useThumbnail();
+    const { mediaObjectIds } = useMediaObjects();
 
     return {
       pageSelected,
@@ -140,7 +142,8 @@ export default {
       uploadBase64Image,
       setLoadingState,
       getMedia,
-      generalInfo
+      generalInfo,
+      mediaObjectIds
     };
   },
   data() {
@@ -194,6 +197,11 @@ export default {
       }
     },
     isMediaSidebarOpen: {
+      async handler(val) {
+        if (val) this.sheetMedia = await this.getMedia();
+      }
+    },
+    mediaObjectIds: {
       async handler(val) {
         if (val) this.sheetMedia = await this.getMedia();
       }
@@ -397,7 +405,8 @@ export default {
         const y = pointer.y - offsetY * 3;
 
         this.$refs.canvasEditor.addImageBox(x, y, imgWidth, imgHeight, {
-          src: imageUrl
+          src: imageUrl,
+          id: imageId
         });
 
         return;

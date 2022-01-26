@@ -28,6 +28,9 @@ export const mediaMapping = (asset, isPhoto = true) => {
       },
       is_media: {
         name: 'isMedia'
+      },
+      in_project: {
+        name: 'inProject'
       }
     },
     restrict: []

@@ -13,10 +13,10 @@ import {
   VideoAssetEntity
 } from '@/common/models/entities/asset';
 
-export const getPhotosApi = async (id, terms = []) => {
+export const getPhotosApi = async (id, terms = [], projectId) => {
   if (isEmpty(terms)) return [];
 
-  const res = await graphqlRequest(getMediaQuery, { id, terms });
+  const res = await graphqlRequest(getMediaQuery, { id, terms, projectId });
 
   if (!isOk(res)) return [];
 
@@ -25,10 +25,10 @@ export const getPhotosApi = async (id, terms = []) => {
     .map(asset => new PictureAssetEntity(mediaMapping(asset)));
 };
 
-export const getMediaApi = async (id, terms = []) => {
+export const getMediaApi = async (id, terms = [], projectId) => {
   if (isEmpty(terms)) return [];
 
-  const res = await graphqlRequest(getMediaQuery, { id, terms });
+  const res = await graphqlRequest(getMediaQuery, { id, terms }, projectId);
 
   if (!isOk(res)) return [];
 
@@ -45,8 +45,11 @@ export const getMediaApi = async (id, terms = []) => {
  * @param {String} assetId asset id
  * @returns {Object} asset data
  */
-export const getAssetByIdApi = async assetId => {
-  const res = await graphqlRequest(getAssetByIdQuery, { id: assetId });
+export const getAssetByIdApi = async (assetId, projectId) => {
+  const res = await graphqlRequest(getAssetByIdQuery, {
+    id: assetId,
+    projectId
+  });
 
   if (!isOk(res)) return;
 
