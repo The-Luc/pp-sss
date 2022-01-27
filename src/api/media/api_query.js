@@ -101,12 +101,15 @@ export const getAlbumsAndCategoriesApi = async (
  * To get in project asset of book and current page / frame
  * @param {String} bookId id of current book
  * @param {String} projectId id of current project (page / frames)
+ * @param {Boolean} isDigital is digital edition or not
  * @returns assets id of current project and of whole book
  */
-export const getInProjectAssetsApi = async (bookId, projectId) => {
+export const getInProjectAssetsApi = async (bookId, projectId, isDigital) => {
+  const type = isDigital ? 'DIGITAL_FRAME' : 'PAGE';
   const res = await graphqlRequest(getInProjectAssetsQuery, {
     bookId,
-    projectId
+    projectId,
+    type
   });
   if (!isOk(res)) return {};
 

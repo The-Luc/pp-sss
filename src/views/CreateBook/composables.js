@@ -58,8 +58,8 @@ export const usePhotos = () => {
     currentFrameId: DIGITAL_GETTERS.CURRENT_FRAME_ID
   });
 
-  const getInProjectAssets = async (bookId, pageId) => {
-    return await getInProjectAssetsApi(bookId, pageId);
+  const getInProjectAssets = async (bookId, projectId) => {
+    return await getInProjectAssetsApi(bookId, projectId, isDigital);
   };
 
   const updateInProjectAssets = async assets => {

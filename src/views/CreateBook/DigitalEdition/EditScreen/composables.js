@@ -1,3 +1,4 @@
+import { difference } from 'lodash';
 import { useGetters, useActions } from 'vuex-composition-helpers';
 
 import { useMutationBook, useActionBook, useAppCommon } from '@/hooks';
@@ -7,11 +8,15 @@ import { GETTERS, ACTIONS } from '@/store/modules/digital/const';
 import { mappingFrameToApi } from '@/common/mapping/frame';
 import { saveDigitalDataApi } from '@/api/saveDigital';
 import { uploadBase64ImageApi } from '@/api/util';
+import { usePhotos } from '../../composables';
+import { updateInProjectApi } from '@/api/savePrint';
 
 export const useSaveData = () => {
-  const { getDataEditScreen } = useGetters({
-    getDataEditScreen: GETTERS.GET_DATA_EDIT_SCREEN
+  const { getDataEditScreen, mediaObjectIds } = useGetters({
+    getDataEditScreen: GETTERS.GET_DATA_EDIT_SCREEN,
+    mediaObjectIds: GETTERS.GET_MEDIA_OBJECT_IDS
   });
+  const { getInProjectAssets } = usePhotos();
 
   /**
    * To save digital data to DB
@@ -51,7 +56,32 @@ export const useSaveData = () => {
       frameParams: mappingFrameToApi(frame)
     };
 
-    return await saveDigitalDataApi(variables, isAutosave);
+    const projectId = +frame.id;
+    const currentAssetIds = mediaObjectIds.value;
+    const { apiPageAssetIds } = await getInProjectAssets(bookId, projectId);
+
+    const addAssetIds = difference(currentAssetIds, apiPageAssetIds);
+
+    const removeAssetIds = difference(apiPageAssetIds, currentAssetIds);
+
+    const inProjectVariables = {
+      bookId: +bookId,
+      projectId,
+      addAssetIds,
+      removeAssetIds
+    };
+
+    // update in project mark of assets
+    const isSuccessOfInProject = await updateInProjectApi(
+      inProjectVariables,
+      isAutosave,
+      true
+    );
+
+    // update objects and other data
+    const isSuccess = await saveDigitalDataApi(variables, isAutosave);
+
+    return isSuccess && isSuccessOfInProject;
   };
 
   return {

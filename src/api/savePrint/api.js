@@ -21,9 +21,9 @@ export const savePrintDataApi = async (variables, isAutosave) => {
   return isOk(res);
 };
 
-export const updateInProjectApi = async (variables, isAutosave) => {
+export const updateInProjectApi = async (variables, isAutosave, isDigital) => {
   const { addAssetIds, removeAssetIds } = variables;
-  variables.type = 'PAGE';
+  variables.type = isDigital ? 'DIGITAL_FRAME' : 'PAGE';
 
   const addingPromise = isEmpty(addAssetIds)
     ? []
@@ -46,5 +46,5 @@ export const updateInProjectApi = async (variables, isAutosave) => {
       );
 
   const res = await Promise.all(addingPromise, removingPromise);
-  console.log('update in project res ', res);
+  return isOk(res);
 };

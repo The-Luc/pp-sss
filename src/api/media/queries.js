@@ -64,12 +64,16 @@ export const getAllAlbumsQuery = gql`
 `;
 
 export const getInProjectAssetsQuery = gql`
-  query getInProjectAssets($bookId: ID!, $projectId: Int!) {
+  query getInProjectAssets(
+    $bookId: ID!
+    $projectId: Int!
+    $type: ProjectTypesType!
+  ) {
     book(id: $bookId) {
       id
       in_project_assets {
         id
-        in_project(project_id: $projectId, project_type: PAGE)
+        in_project(project_id: $projectId, project_type: $type)
       }
     }
   }

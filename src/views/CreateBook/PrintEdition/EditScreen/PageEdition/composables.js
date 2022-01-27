@@ -122,7 +122,6 @@ export const useSaveData = () => {
     const isSuccess = await savePrintDataApi(variables, isAutosave);
 
     return isSuccess && isSuccessOfInProject;
-    // return isSuccess;
   };
 
   /**
