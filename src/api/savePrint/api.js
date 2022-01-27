@@ -1,6 +1,10 @@
-import { isOk } from '@/common/utils';
+import { isEmpty, isOk } from '@/common/utils';
 import { graphqlRequest } from '../urql';
-import { savePrintDataMutation } from './mutation';
+import {
+  addInProjectMutation,
+  removeInProjectMutation,
+  savePrintDataMutation
+} from './mutation';
 
 export const savePrintDataApi = async (variables, isAutosave) => {
   variables.noLeftPage = Boolean(!variables.leftId);
@@ -15,4 +19,32 @@ export const savePrintDataApi = async (variables, isAutosave) => {
     isAutosave
   );
   return isOk(res);
+};
+
+export const updateInProjectApi = async (variables, isAutosave) => {
+  const { addAssetIds, removeAssetIds } = variables;
+  variables.type = 'PAGE';
+
+  const addingPromise = isEmpty(addAssetIds)
+    ? []
+    : addAssetIds.map(id =>
+        graphqlRequest(
+          addInProjectMutation,
+          { ...variables, assetId: id },
+          isAutosave
+        )
+      );
+
+  const removingPromise = isEmpty(removeAssetIds)
+    ? []
+    : removeAssetIds.map(id =>
+        graphqlRequest(
+          removeInProjectMutation,
+          { ...variables, assetId: id },
+          isAutosave
+        )
+      );
+
+  const res = await Promise.all(addingPromise, removingPromise);
+  console.log('update in project res ', res);
 };

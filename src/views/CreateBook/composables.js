@@ -143,7 +143,8 @@ export const usePhotos = () => {
     getSearch,
     getAlbums,
     getAssetById,
-    getMedia
+    getMedia,
+    getInProjectAssets
   };
 };
 

@@ -1,8 +1,9 @@
+import { difference } from 'lodash';
 import { useGetters, useMutations } from 'vuex-composition-helpers';
 
 import { GETTERS as PRINT_GETTERS, MUTATES } from '@/store/modules/print/const';
 import { updatePageApi } from '@/api/page';
-import { savePrintDataApi } from '@/api/savePrint';
+import { savePrintDataApi, updateInProjectApi } from '@/api/savePrint';
 import { getSheetInfoApi } from '@/api/sheet';
 import { OBJECT_TYPE, SHEET_TYPE } from '@/common/constants';
 import { pageInfoMappingToApi } from '@/common/mapping';
@@ -14,18 +15,20 @@ import {
   pageLayoutsFromSheet,
   splitBase64Image
 } from '@/common/utils';
-import { useThumbnail } from '@/views/CreateBook/composables';
+import { useThumbnail, usePhotos } from '@/views/CreateBook/composables';
 
 export const useSaveData = () => {
-  const { getDataEditScreen, currentSheet } = useGetters({
+  const { getDataEditScreen, currentSheet, mediaObjectIds } = useGetters({
     getDataEditScreen: PRINT_GETTERS.GET_DATA_EDIT_SCREEN,
-    currentSheet: PRINT_GETTERS.CURRENT_SHEET
+    currentSheet: PRINT_GETTERS.CURRENT_SHEET,
+    mediaObjectIds: PRINT_GETTERS.GET_MEDIA_OBJECT_IDS
   });
   const { updateThumbnail } = useMutations({
     updateThumbnail: MUTATES.UPDATE_SHEET_THUMBNAIL
   });
 
   const { uploadBase64Image } = useThumbnail();
+  const { getInProjectAssets } = usePhotos();
 
   /**
    * To save print data to DB
@@ -94,9 +97,32 @@ export const useSaveData = () => {
       isUpdatePageInfo
     };
 
+    const projectId = Number(leftPageId || rightPageId);
+    const currentAssetIds = mediaObjectIds.value;
+    const { apiPageAssetIds } = await getInProjectAssets(bookId, projectId);
+
+    const addAssetIds = difference(currentAssetIds, apiPageAssetIds);
+
+    const removeAssetIds = difference(apiPageAssetIds, currentAssetIds);
+
+    const inProjectVariables = {
+      bookId: +bookId,
+      projectId,
+      addAssetIds,
+      removeAssetIds
+    };
+
+    // update in project mark of assets
+    const isSuccessOfInProject = await updateInProjectApi(
+      inProjectVariables,
+      isAutosave
+    );
+
+    // update objects and other data
     const isSuccess = await savePrintDataApi(variables, isAutosave);
 
-    return isSuccess;
+    return isSuccess && isSuccessOfInProject;
+    // return isSuccess;
   };
 
   /**
