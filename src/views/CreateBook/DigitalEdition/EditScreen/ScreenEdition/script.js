@@ -1620,7 +1620,8 @@ export default {
         coord,
         imageUrl: DEFAULT_IMAGE.IMAGE_URL,
         hasImage: !!options?.src,
-        originalUrl: options?.src
+        originalUrl: options?.src,
+        imageId: options?.id
       };
 
       const newMedia = {

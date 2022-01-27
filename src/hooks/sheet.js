@@ -4,7 +4,7 @@ import { useAppCommon } from './common';
 import { useAnimation } from './animation';
 import { useFrame } from './frame';
 
-import { getWorkspaceApi, updateSheetApi } from '@/api/sheet';
+import { updateSheetApi } from '@/api/sheet';
 
 import { updatePageWorkspace } from '@/api/page';
 
@@ -14,8 +14,7 @@ import {
   getPlaybackDataFromFrames,
   isEmpty,
   isOk,
-  removeItemsFormArray,
-  updateAssetInProject
+  removeItemsFormArray
 } from '@/common/utils';
 
 import {
@@ -76,10 +75,6 @@ export const useActionsEditionSheet = () => {
   const MUTATES = isDigital ? DIGITAL_MUTATES : PRINT_MUTATES;
   const GETTERS = isDigital ? DIGITAL_GETTERS : PRINT_GETTERS;
 
-  const { mediaObjectIds } = useGetters({
-    mediaObjectIds: GETTERS.GET_MEDIA_OBJECT_IDS
-  });
-
   const { currentSheet } = useGetters({
     currentSheet: GETTERS.CURRENT_SHEET
   });
@@ -88,19 +83,6 @@ export const useActionsEditionSheet = () => {
     setSheetMedia: MUTATES.SET_SHEET_MEDIA,
     deleteMedia: MUTATES.DELETE_SHEET_MEDIA
   });
-
-  const getMedia = async () => {
-    const bookId = Number(generalInfo.value.bookId);
-    const currentAssetIds = mediaObjectIds.value;
-
-    const assetIds = await getWorkspaceApi(currentSheet.value.id, isDigital);
-
-    const promises = assetIds.map(id => getAssetByIdApi(id, bookId));
-
-    const media = await Promise.all(promises);
-
-    return updateAssetInProject(media, currentAssetIds);
-  };
 
   /**
    *  To update media to current sheet
@@ -148,7 +130,6 @@ export const useActionsEditionSheet = () => {
   };
 
   return {
-    getMedia,
     updateSheetMedia,
     deleteSheetMedia,
     setSheetMedia

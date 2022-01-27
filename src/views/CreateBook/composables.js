@@ -1,3 +1,4 @@
+import { difference } from 'lodash';
 import { useMutations, useGetters } from 'vuex-composition-helpers';
 
 import { useAppCommon } from '@/hooks';
@@ -11,7 +12,8 @@ import {
   getPhotosApi,
   getMediaApi,
   getAlbumsAndCategoriesApi,
-  getAssetByIdApi
+  getAssetByIdApi,
+  getInProjectAssetsApi
 } from '@/api/media';
 import { savePortraitSettingsApi, getPortraiSettingsApi } from '@/api/portrait';
 
@@ -23,11 +25,8 @@ import {
 import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 import { GETTERS as DIGITAL_GETTERS } from '@/store/modules/digital/const';
 import { uploadBase64ImageApi } from '@/api/util';
-import {
-  generateCanvasThumbnail,
-  isOk,
-  updateAssetInProject
-} from '@/common/utils';
+import { generateCanvasThumbnail, isOk } from '@/common/utils';
+import { getWorkspaceApi } from '@/api/sheet';
 
 export const useSavingStatus = () => {
   const { savingStatus } = useGetters({
@@ -44,27 +43,74 @@ export const useSavingStatus = () => {
 export const usePhotos = () => {
   const { isDigitalEdition, generalInfo } = useAppCommon();
   const isDigital = isDigitalEdition.value;
-  const bookId = Number(generalInfo.value.bookId);
 
   const GETTERS = isDigital ? DIGITAL_GETTERS : PRINT_GETTERS;
 
-  const { communityId, mediaObjectIds } = useGetters({
+  const {
+    communityId,
+    mediaObjectIds,
+    currentSheet,
+    currentFrameId
+  } = useGetters({
     communityId: GETTERS.COMMUNITY_ID,
-    mediaObjectIds: GETTERS.GET_MEDIA_OBJECT_IDS
+    mediaObjectIds: GETTERS.GET_MEDIA_OBJECT_IDS,
+    currentSheet: GETTERS.CURRENT_SHEET,
+    currentFrameId: DIGITAL_GETTERS.CURRENT_FRAME_ID
   });
 
+  const getInProjectAssets = async (bookId, pageId) => {
+    return await getInProjectAssetsApi(bookId, pageId);
+  };
+
+  const updateInProjectAssets = async assets => {
+    const bookId = Number(generalInfo.value.bookId);
+    const projectId = isDigital
+      ? currentFrameId.value
+      : currentSheet.value.pageIds[0];
+    const { apiBookAssetIds, apiPageAssetIds } = await getInProjectAssets(
+      bookId,
+      +projectId
+    );
+
+    const currentAssetIds = mediaObjectIds.value;
+    const deletedAssetsId = difference(apiPageAssetIds, currentAssetIds);
+
+    assets.forEach(asset => {
+      if (currentAssetIds.includes(asset.id)) asset.inProject = true;
+      if (
+        deletedAssetsId.includes(asset.id) &&
+        apiBookAssetIds.filter(id => asset.id === id).length < 2
+      )
+        asset.inProject = false;
+    });
+    return assets;
+  };
+
+  const getMedia = async () => {
+    const bookId = Number(generalInfo.value.bookId);
+    const assetIds = await getWorkspaceApi(currentSheet.value.id, isDigital);
+
+    const promises = assetIds.map(id => getAssetByIdApi(id, bookId));
+
+    const media = await Promise.all(promises);
+
+    return updateInProjectAssets(media);
+  };
+
   const getAssetById = async assetId => {
+    const bookId = Number(generalInfo.value.bookId);
     const asset = getAssetByIdApi(assetId, bookId);
 
-    return updateAssetInProject(asset, mediaObjectIds.value);
+    return updateInProjectAssets(asset);
   };
 
   const getAssetByKeywords = async (keywords, isGetMedia) => {
+    const bookId = Number(generalInfo.value.bookId);
     const assets = isGetMedia
       ? await getMediaApi(communityId.value, keywords, bookId)
       : await getPhotosApi(communityId.value, keywords, bookId);
 
-    return updateAssetInProject(assets, mediaObjectIds.value);
+    return updateInProjectAssets(assets);
   };
 
   const getSmartbox = async (keywords, isGetMedia) => {
@@ -76,6 +122,7 @@ export const usePhotos = () => {
   };
 
   const getAlbums = async isGetVideo => {
+    const bookId = Number(generalInfo.value.bookId);
     const data = await getAlbumsAndCategoriesApi(
       communityId.value,
       bookId,
@@ -85,7 +132,7 @@ export const usePhotos = () => {
 
     Object.values(albums).forEach(al => {
       al.forEach(a => {
-        updateAssetInProject(a.assets, mediaObjectIds.value);
+        updateInProjectAssets(a.assets);
       });
     });
     return data;
@@ -95,7 +142,8 @@ export const usePhotos = () => {
     getSmartbox,
     getSearch,
     getAlbums,
-    getAssetById
+    getAssetById,
+    getMedia
   };
 };
 

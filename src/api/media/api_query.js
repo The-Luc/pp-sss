@@ -1,7 +1,12 @@
 import { graphqlRequest } from '../urql';
 import { get } from 'lodash';
 import { isEmpty, isOk } from '@/common/utils';
-import { getAllAlbumsQuery, getAssetByIdQuery, getMediaQuery } from './queries';
+import {
+  getAllAlbumsQuery,
+  getAssetByIdQuery,
+  getInProjectAssetsQuery,
+  getMediaQuery
+} from './queries';
 import {
   extractAlbumCategories,
   mediaMapping,
@@ -28,7 +33,7 @@ export const getPhotosApi = async (id, terms = [], projectId) => {
 export const getMediaApi = async (id, terms = [], projectId) => {
   if (isEmpty(terms)) return [];
 
-  const res = await graphqlRequest(getMediaQuery, { id, terms }, projectId);
+  const res = await graphqlRequest(getMediaQuery, { id, terms, projectId });
 
   if (!isOk(res)) return [];
 
@@ -90,4 +95,26 @@ export const getAlbumsAndCategoriesApi = async (
   };
 
   return { albumCategories, albums };
+};
+
+/**
+ * To get in project asset of book and current page / frame
+ * @param {String} bookId id of current book
+ * @param {String} projectId id of current project (page / frames)
+ * @returns assets id of current project and of whole book
+ */
+export const getInProjectAssetsApi = async (bookId, projectId) => {
+  const res = await graphqlRequest(getInProjectAssetsQuery, {
+    bookId,
+    projectId
+  });
+  if (!isOk(res)) return {};
+
+  const assets = get(res, 'data.book.in_project_assets', []);
+
+  const apiPageAssetIds = assets
+    .filter(asset => asset.in_project)
+    .map(asset => asset.id);
+  const apiBookAssetIds = assets.map(asset => asset.id);
+  return { apiBookAssetIds, apiPageAssetIds };
 };

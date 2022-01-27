@@ -62,3 +62,15 @@ export const getAllAlbumsQuery = gql`
   }
   ${albumDetailFragment}
 `;
+
+export const getInProjectAssetsQuery = gql`
+  query getInProjectAssets($bookId: ID!, $projectId: Int!) {
+    book(id: $bookId) {
+      id
+      in_project_assets {
+        id
+        in_project(project_id: $projectId, project_type: PAGE)
+      }
+    }
+  }
+`;

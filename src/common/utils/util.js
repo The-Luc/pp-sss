@@ -749,10 +749,3 @@ export const sortByProperty = (arr, sortedBy) => {
     (a, b) => Number(a[sortedBy]) - Number(b[sortedBy])
   );
 };
-
-export const updateAssetInProject = (assets, currentAssetIds) => {
-  assets.forEach(asset => {
-    if (currentAssetIds.includes(asset.id)) asset.inProject = true;
-  });
-  return assets;
-};

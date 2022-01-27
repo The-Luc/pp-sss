@@ -63,7 +63,7 @@ import {
   getAvailableImages,
   setImageSrc
 } from '@/common/fabricObjects';
-import { useSavingStatus, useThumbnail } from '../../composables';
+import { usePhotos, useSavingStatus, useThumbnail } from '../../composables';
 import { useBookPrintInfo } from './composables';
 import { getPageObjects } from '@/common/utils/portrait';
 
@@ -96,7 +96,8 @@ export default {
     const { setPropertyById, setPropOfMultipleObjects } = useProperties();
     const { updateSavingStatus } = useSavingStatus();
     const { currentSheet, getSheets } = useSheet();
-    const { updateSheetMedia, getMedia } = useActionsEditionSheet();
+    const { updateSheetMedia } = useActionsEditionSheet();
+    const { getMedia } = usePhotos();
     const { getBookPrintInfo } = useBookPrintInfo();
     const { listObjects } = useObjectProperties();
     const {

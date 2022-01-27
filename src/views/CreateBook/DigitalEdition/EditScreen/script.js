@@ -52,7 +52,7 @@ import {
   useMediaObjects
 } from '@/hooks';
 
-import { useSavingStatus, useThumbnail } from '../../composables';
+import { useSavingStatus, useThumbnail, usePhotos } from '../../composables';
 import { useSaveData, useBookDigitalInfo } from './composables';
 
 import { cloneDeep } from 'lodash';
@@ -120,7 +120,8 @@ export default {
     const { updateSavingStatus } = useSavingStatus();
     const { getBookDigitalInfo } = useBookDigitalInfo();
     const { setInfoBar } = useInfoBar();
-    const { getMedia, updateSheetMedia } = useActionsEditionSheet();
+    const { updateSheetMedia } = useActionsEditionSheet();
+    const { getMedia } = usePhotos();
     const { currentSheet, getSheets } = useSheet();
     const {
       getAllScreenPlaybackData,
@@ -543,6 +544,7 @@ export default {
 
         this.$refs.canvasEditor.addImageBox(x, y, imgWidth, imgHeight, {
           src: mediaUrl || imageUrl,
+          id: imageId,
           type,
           thumbUrl
         });
