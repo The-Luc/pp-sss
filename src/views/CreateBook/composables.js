@@ -66,14 +66,18 @@ export const usePhotos = () => {
     const bookId = Number(generalInfo.value.bookId);
     const projectId = isDigital
       ? currentFrameId.value
-      : currentSheet.value.pageIds[0];
+      : currentSheet.value.pageIds;
     const { apiBookAssetIds, apiPageAssetIds } = await getInProjectAssets(
       bookId,
-      +projectId
+      projectId
     );
 
     const currentAssetIds = mediaObjectIds.value;
     const deletedAssetsId = difference(apiPageAssetIds, currentAssetIds);
+    console.log('apiBookAssetIds:', apiBookAssetIds);
+    console.log('apiPageAssetIds:', apiPageAssetIds);
+    console.log('currentAssetIds:', currentAssetIds);
+    console.log('deletedAssetsId ', deletedAssetsId);
 
     assets.forEach(asset => {
       if (currentAssetIds.includes(asset.id)) asset.inProject = true;

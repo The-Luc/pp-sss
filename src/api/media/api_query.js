@@ -100,20 +100,30 @@ export const getAlbumsAndCategoriesApi = async (
 /**
  * To get in project asset of book and current page / frame
  * @param {String} bookId id of current book
- * @param {String} projectId id of current project (page / frames)
+ * @param {String} projectId id of current project (pages / frame)
  * @param {Boolean} isDigital is digital edition or not
  * @returns assets id of current project and of whole book
  */
 export const getInProjectAssetsApi = async (bookId, projectId, isDigital) => {
   const type = isDigital ? 'DIGITAL_FRAME' : 'PAGE';
-  const res = await graphqlRequest(getInProjectAssetsQuery, {
-    bookId,
-    projectId,
-    type
-  });
-  if (!isOk(res)) return {};
 
-  const assets = get(res, 'data.book.in_project_assets', []);
+  const projectIdsArray = Array.isArray(projectId) ? projectId : [projectId];
+
+  const promises = projectIdsArray.map(id =>
+    graphqlRequest(getInProjectAssetsQuery, {
+      bookId,
+      projectId: +id,
+      type
+    })
+  );
+
+  const res = await Promise.all(promises);
+
+  if (!isOk(res)) return {};
+  const assets = res.reduce((acc, r) => {
+    const inProjectAssets = get(r, 'data.book.in_project_assets', []);
+    return [...acc, ...inProjectAssets];
+  }, []);
 
   const apiPageAssetIds = assets
     .filter(asset => asset.in_project)

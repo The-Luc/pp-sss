@@ -203,8 +203,10 @@ export default {
       }
     },
     mediaObjectIds: {
-      async handler(val) {
-        if (val) this.sheetMedia = await this.getMedia();
+      async handler(val, oldVal) {
+        if (JSON.stringify(val) === JSON.stringify(oldVal) || !val) return;
+
+        this.sheetMedia = await this.getMedia();
       }
     }
   },
@@ -607,6 +609,9 @@ export default {
       );
       // to get thumbnail generate base64 image
       this.$refs.canvasEditor.handleCanvasChanged();
+
+      // update in-project of photoside bar
+      this.sheetMedia = await this.getMedia();
     },
     /**
      * Selected portrait folders

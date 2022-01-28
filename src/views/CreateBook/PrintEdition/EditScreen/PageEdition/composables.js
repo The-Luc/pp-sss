@@ -11,8 +11,10 @@ import {
   getPageIdsOfSheet,
   getSheetThumbnail,
   isEmpty,
+  isOk,
   mapSheetToPages,
   pageLayoutsFromSheet,
+  seperateSheetObjectsIntoPages,
   splitBase64Image
 } from '@/common/utils';
 import { useThumbnail, usePhotos } from '@/views/CreateBook/composables';
@@ -97,31 +99,43 @@ export const useSaveData = () => {
       isUpdatePageInfo
     };
 
-    const projectId = Number(leftPageId || rightPageId);
+    const { leftPageObjects } = seperateSheetObjectsIntoPages(
+      editScreenData.objects
+    );
+    const leftAssetIds = leftPageObjects
+      .filter(o => o.imageId)
+      .map(o => o.imageId);
+
     const currentAssetIds = mediaObjectIds.value;
-    const { apiPageAssetIds } = await getInProjectAssets(bookId, projectId);
+    const { apiPageAssetIds } = await getInProjectAssets(bookId, pageIds);
 
     const addAssetIds = difference(currentAssetIds, apiPageAssetIds);
 
     const removeAssetIds = difference(apiPageAssetIds, currentAssetIds);
 
-    const inProjectVariables = {
+    const inProjectVariablesLeft = {
       bookId: +bookId,
-      projectId,
-      addAssetIds,
-      removeAssetIds
+      projectId: pageIds[0],
+      addAssetIds: addAssetIds.filter(a => leftAssetIds.includes(a)),
+      removeAssetIds: removeAssetIds.filter(a => leftAssetIds.includes(a))
+    };
+    const inProjectVariablesRight = {
+      bookId: +bookId,
+      projectId: pageIds[1],
+      addAssetIds: addAssetIds.filter(a => !leftAssetIds.includes(a)),
+      removeAssetIds: removeAssetIds.filter(a => !leftAssetIds.includes(a))
     };
 
     // update in project mark of assets
-    const isSuccessOfInProject = await updateInProjectApi(
-      inProjectVariables,
-      isAutosave
-    );
+    const resOfInProject = await Promise.all([
+      updateInProjectApi(inProjectVariablesLeft, isAutosave),
+      updateInProjectApi(inProjectVariablesRight, isAutosave)
+    ]);
 
     // update objects and other data
     const isSuccess = await savePrintDataApi(variables, isAutosave);
 
-    return isSuccess && isSuccessOfInProject;
+    return isSuccess && isOk(resOfInProject);
   };
 
   /**
@@ -136,6 +150,8 @@ export const useSaveData = () => {
     const getSheetDataFnc = getDataEditScreen.value;
     const sheetData = getSheetDataFnc(sheetId);
 
+    const { bookId } = sheetData;
+    console.log('bookId', bookId);
     const { pageIds } = sheetData.sheetProps;
     const [leftPageId, rightPageId] = getPageIdsOfSheet(
       pageIds,
@@ -174,12 +190,33 @@ export const useSaveData = () => {
       };
       return updatePageApi(pageId, params);
     };
+    const savePromises = [];
 
-    const savePromises = [
-      appliedPage.isLeft && handleUpdatePage(leftPageId, leftLayout, leftUrl),
-      appliedPage.isRight &&
-        handleUpdatePage(rightPageId, rightLayout, rightUrl)
-    ];
+    if (appliedPage.isLeft) {
+      savePromises.push(handleUpdatePage(leftPageId, leftLayout, leftUrl));
+
+      // remove all in-project assets of the page
+      const { apiPageAssetIds } = await getInProjectAssets(bookId, leftPageId);
+      const inProjectVariables = {
+        bookId: +bookId,
+        projectId: leftPageId,
+        removeAssetIds: apiPageAssetIds
+      };
+      savePromises.push(updateInProjectApi(inProjectVariables));
+    }
+
+    if (appliedPage.isRight) {
+      savePromises.push(handleUpdatePage(rightPageId, rightLayout, rightUrl));
+
+      // remove all in-project assets of the page
+      const { apiPageAssetIds } = await getInProjectAssets(bookId, rightPageId);
+      const inProjectVariables = {
+        bookId: +bookId,
+        projectId: rightPageId,
+        removeAssetIds: apiPageAssetIds
+      };
+      savePromises.push(updateInProjectApi(inProjectVariables));
+    }
 
     await Promise.all(savePromises);
 
