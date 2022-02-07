@@ -74,10 +74,6 @@ export const usePhotos = () => {
 
     const currentAssetIds = mediaObjectIds.value;
     const deletedAssetsId = difference(apiPageAssetIds, currentAssetIds);
-    console.log('apiBookAssetIds:', apiBookAssetIds);
-    console.log('apiPageAssetIds:', apiPageAssetIds);
-    console.log('currentAssetIds:', currentAssetIds);
-    console.log('deletedAssetsId ', deletedAssetsId);
 
     assets.forEach(asset => {
       if (currentAssetIds.includes(asset.id)) asset.inProject = true;
