@@ -57,8 +57,8 @@ export const useTotalObjects = (isDigital = false) => {
 };
 
 /**
- * The hook allow update book objetcs
- * @return {Object} Function to update book objetcs
+ * The hook allow update book objects
+ * @return {Object} Function to update book objects
  */
 export const useObjects = () => {
   const { value: isDigital } = useAppCommon().isDigitalEdition;
@@ -73,5 +73,22 @@ export const useObjects = () => {
   return {
     addObjecs,
     deleteObjects
+  };
+};
+/**
+ * The hook is used to get media / asset objects
+ *
+ */
+export const useMediaObjects = () => {
+  const { value: isDigital } = useAppCommon().isDigitalEdition;
+
+  const GETTERS = isDigital ? DIGITAL_GETTERS : PRINT_GETTERS;
+
+  const { mediaObjectIds } = useGetters({
+    mediaObjectIds: GETTERS.GET_MEDIA_OBJECT_IDS
+  });
+
+  return {
+    mediaObjectIds
   };
 };

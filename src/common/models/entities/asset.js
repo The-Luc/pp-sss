@@ -4,6 +4,7 @@ import { BaseEntity } from '../base';
 export class AssetEntity extends BaseEntity {
   type = '';
   mediaFileName = '';
+  inProject = false;
 
   /**
    * @param {AssetEntity} props

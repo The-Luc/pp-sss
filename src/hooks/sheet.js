@@ -4,7 +4,7 @@ import { useAppCommon } from './common';
 import { useAnimation } from './animation';
 import { useFrame } from './frame';
 
-import { getWorkspaceApi, updateSheetApi } from '@/api/sheet';
+import { updateSheetApi } from '@/api/sheet';
 
 import { updatePageWorkspace } from '@/api/page';
 
@@ -68,7 +68,9 @@ const useMutationEditionSheet = () => {
 };
 
 export const useActionsEditionSheet = () => {
-  const { value: isDigital } = useAppCommon().isDigitalEdition;
+  const { isDigitalEdition, generalInfo } = useAppCommon();
+
+  const isDigital = isDigitalEdition.value;
 
   const MUTATES = isDigital ? DIGITAL_MUTATES : PRINT_MUTATES;
   const GETTERS = isDigital ? DIGITAL_GETTERS : PRINT_GETTERS;
@@ -82,14 +84,6 @@ export const useActionsEditionSheet = () => {
     deleteMedia: MUTATES.DELETE_SHEET_MEDIA
   });
 
-  const getMedia = async () => {
-    const assetIds = await getWorkspaceApi(currentSheet.value.id, isDigital);
-
-    const promises = assetIds.map(id => getAssetByIdApi(id));
-
-    return await Promise.all(promises);
-  };
-
   /**
    *  To update media to current sheet
    * @param {Object} media media object
@@ -97,6 +91,7 @@ export const useActionsEditionSheet = () => {
    * @returns
    */
   const updateSheetMedia = async (media, isDigital) => {
+    const bookId = Number(generalInfo.value.bookId);
     const prefix = isDigital ? 'digital_' : '';
 
     const workspace = {
@@ -112,7 +107,7 @@ export const useActionsEditionSheet = () => {
 
     if (!isOk(res)) return;
 
-    const mediaPromises = media.map(m => getAssetByIdApi(m.id));
+    const mediaPromises = media.map(m => getAssetByIdApi(m.id, bookId));
     const resMedia = await Promise.all(mediaPromises);
 
     return { media: resMedia, isSuccess: true };
@@ -135,7 +130,6 @@ export const useActionsEditionSheet = () => {
   };
 
   return {
-    getMedia,
     updateSheetMedia,
     deleteSheetMedia,
     setSheetMedia

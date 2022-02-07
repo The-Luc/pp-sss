@@ -160,5 +160,10 @@ export const getters = {
   },
   [DIGITAL._GETTERS.IS_PHOTO_VISITED]: isPhotoVisited,
   [DIGITAL._GETTERS.COMMUNITY_ID]: communityId,
-  [DIGITAL._GETTERS.BOOK_USER_ID]: bookUserId
+  [DIGITAL._GETTERS.BOOK_USER_ID]: bookUserId,
+  [DIGITAL._GETTERS.GET_MEDIA_OBJECT_IDS]: ({ objects }) => {
+    return Object.values(objects)
+      .filter(o => o.imageId)
+      .map(o => o.imageId);
+  }
 };

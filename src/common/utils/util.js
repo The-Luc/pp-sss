@@ -249,11 +249,13 @@ export const compareByValue = (item1, item2) => {
 /**
  * Check if status is ok
  *
- * @param   {Number}  status  status to check
+ * @param   {Object || Array}  res response data
  * @returns {Boolean}         status is ok or not
  */
-export const isOk = ({ status }) => {
-  return status === STATUS.OK;
+export const isOk = res => {
+  if (!Array.isArray(res)) return res.status === STATUS.OK;
+
+  return res.every(r => r.status === STATUS.OK);
 };
 
 /**

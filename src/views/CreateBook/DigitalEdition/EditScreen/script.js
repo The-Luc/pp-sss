@@ -48,10 +48,11 @@ import {
   usePortrait,
   useActionDigitalSheet,
   useAppCommon,
-  useFrameAction
+  useFrameAction,
+  useMediaObjects
 } from '@/hooks';
 
-import { useSavingStatus, useThumbnail } from '../../composables';
+import { useSavingStatus, useThumbnail, usePhotos } from '../../composables';
 import { useSaveData, useBookDigitalInfo } from './composables';
 
 import { cloneDeep } from 'lodash';
@@ -77,6 +78,7 @@ import {
 import { FrameDetail } from '@/common/models';
 
 import { COPY_OBJECT_KEY } from '@/common/constants/config';
+import { updateInProjectApi } from '@/api/savePrint';
 
 export default {
   components: {
@@ -119,7 +121,8 @@ export default {
     const { updateSavingStatus } = useSavingStatus();
     const { getBookDigitalInfo } = useBookDigitalInfo();
     const { setInfoBar } = useInfoBar();
-    const { getMedia, updateSheetMedia } = useActionsEditionSheet();
+    const { updateSheetMedia } = useActionsEditionSheet();
+    const { getMedia, getInProjectAssets } = usePhotos();
     const { currentSheet, getSheets } = useSheet();
     const {
       getAllScreenPlaybackData,
@@ -141,6 +144,7 @@ export default {
 
     const { saveSelectedPortraitFolders } = usePortrait();
     const { uploadBase64Image, generateMultiThumbnails } = useThumbnail();
+    const { mediaObjectIds } = useMediaObjects();
 
     return {
       pageSelected,
@@ -186,7 +190,9 @@ export default {
       updateFrameApi,
       getSheetFrames,
       generateMultiThumbnails,
-      uploadBase64Image
+      uploadBase64Image,
+      mediaObjectIds,
+      getInProjectAssets
     };
   },
   data() {
@@ -259,6 +265,11 @@ export default {
       }
     },
     isMediaSidebarOpen: {
+      async handler(val) {
+        if (val) this.sheetMedia = await this.getMedia();
+      }
+    },
+    mediaObjectIds: {
       async handler(val) {
         if (val) this.sheetMedia = await this.getMedia();
       }
@@ -535,6 +546,7 @@ export default {
 
         this.$refs.canvasEditor.addImageBox(x, y, imgWidth, imgHeight, {
           src: mediaUrl || imageUrl,
+          id: imageId,
           type,
           thumbUrl
         });
@@ -918,6 +930,23 @@ export default {
       // update frames
       Promise.all(
         updatedFrames.map(frame => this.updateFrameApi(frame.id, frame))
+      );
+
+      const bookId = this.generalInfo.bookId;
+      const inProjectAssetsOfFrames = await Promise.all(
+        updatedFrames.map(frame => this.getInProjectAssets(bookId, frame.id))
+      );
+
+      // remove all in-project assets of the page
+      Promise.all(
+        updatedFrames.map((frame, idx) => {
+          const inProjectVariables = {
+            bookId: +bookId,
+            projectId: frame.id,
+            removeAssetIds: inProjectAssetsOfFrames[idx].apiPageAssetIds
+          };
+          return updateInProjectApi(inProjectVariables, false, true);
+        })
       );
 
       const responeFrames = await Promise.all(

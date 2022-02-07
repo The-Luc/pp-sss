@@ -1,5 +1,3 @@
-import BACKGROUND_WHITE from '@/assets/image/white.png';
-import THEME from '@/assets/image/theme.jpg';
 import DASHED from '@/assets/image/border/dashed.svg';
 import DOTTED from '@/assets/image/border/dotted.svg';
 import DOUBLE from '@/assets/image/border/double.svg';
@@ -13,8 +11,6 @@ import CONTROL_ICON from '@/assets/image/control.png';
 import EMPTY_PREVIEW_FRAME from '@/assets/image/no-preview-frame.jpg';
 
 export const IMAGE_LOCAL = {
-  BACKGROUND_WHITE,
-  THEME,
   DASHED,
   DOTTED,
   DOUBLE,

@@ -8,11 +8,12 @@ const assetFragment = gql`
     original_height
     original_width
     is_media
+    in_project(project_id: $projectId, project_type: BOOK)
   }
 `;
 
 export const getMediaQuery = gql`
-  query getMediaQuery($id: ID!, $terms: [String]) {
+  query getMediaQuery($id: ID!, $terms: [String], $projectId: Int!) {
     search_community_assets(id: $id, terms: $terms) {
       ...assetData
     }
@@ -21,7 +22,7 @@ export const getMediaQuery = gql`
 `;
 
 export const getAssetByIdQuery = gql`
-  query getAssetByIdQuery($id: ID!) {
+  query getAssetByIdQuery($id: ID!, $projectId: Int!) {
     asset(id: $id) {
       ...assetData
     }
@@ -32,18 +33,19 @@ export const getAssetByIdQuery = gql`
 const albumDetailFragment = gql`
   fragment albumDetail on Container {
     id
-    title
+    body
     created_at
     assets {
       id
       thumbnail_uri
       is_media
+      in_project(project_id: $projectId, project_type: BOOK)
     }
   }
 `;
 
 export const getAllAlbumsQuery = gql`
-  query getAllAlbumsQuery($communityId: ID!) {
+  query getAllAlbumsQuery($communityId: ID!, $projectId: Int!) {
     user_containers {
       ...albumDetail
     }
@@ -59,4 +61,20 @@ export const getAllAlbumsQuery = gql`
     }
   }
   ${albumDetailFragment}
+`;
+
+export const getInProjectAssetsQuery = gql`
+  query getInProjectAssets(
+    $bookId: ID!
+    $projectId: Int!
+    $type: ProjectTypesType!
+  ) {
+    book(id: $bookId) {
+      id
+      in_project_assets {
+        id
+        in_project(project_id: $projectId, project_type: $type)
+      }
+    }
+  }
 `;

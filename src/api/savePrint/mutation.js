@@ -50,3 +50,39 @@ export const savePrintDataMutation = gql`
     }
   }
 `;
+
+export const addInProjectMutation = gql`
+  mutation addInProject(
+    $assetId: ID!
+    $projectId: ID!
+    $bookId: Int!
+    $type: ProjectTypesType!
+  ) {
+    create_asset_designable(
+      asset_id: $assetId
+      designable_id: $projectId
+      designable_type: $type
+    ) {
+      id
+      in_project(project_id: $bookId, project_type: BOOK)
+    }
+  }
+`;
+
+export const removeInProjectMutation = gql`
+  mutation removeInProject(
+    $assetId: ID!
+    $projectId: ID!
+    $bookId: Int!
+    $type: ProjectTypesType!
+  ) {
+    delete_assets_designable(
+      asset_id: $assetId
+      designable_id: $projectId
+      designable_type: $type
+    ) {
+      id
+      in_project(project_id: $bookId, project_type: BOOK)
+    }
+  }
+`;
