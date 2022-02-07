@@ -1,12 +1,6 @@
 import { OBJECT_TYPE, SHEET_TYPE } from '@/common/constants';
-import {
-  changeObjectsCoords,
-  entitiesToObjects,
-  isEmpty,
-  isOk
-} from '@/common/utils';
+import { changeObjectsCoords, entitiesToObjects, isOk } from '@/common/utils';
 import { get } from 'lodash';
-import { getAssetByIdApi } from '../media';
 import { graphqlRequest } from '../urql';
 import {
   digitalWorkspaceQuery,

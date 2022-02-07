@@ -151,7 +151,6 @@ export const useSaveData = () => {
     const sheetData = getSheetDataFnc(sheetId);
 
     const { bookId } = sheetData;
-    console.log('bookId', bookId);
     const { pageIds } = sheetData.sheetProps;
     const [leftPageId, rightPageId] = getPageIdsOfSheet(
       pageIds,

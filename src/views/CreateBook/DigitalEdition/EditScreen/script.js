@@ -78,6 +78,7 @@ import {
 import { FrameDetail } from '@/common/models';
 
 import { COPY_OBJECT_KEY } from '@/common/constants/config';
+import { updateInProjectApi } from '@/api/savePrint';
 
 export default {
   components: {
@@ -121,7 +122,7 @@ export default {
     const { getBookDigitalInfo } = useBookDigitalInfo();
     const { setInfoBar } = useInfoBar();
     const { updateSheetMedia } = useActionsEditionSheet();
-    const { getMedia } = usePhotos();
+    const { getMedia, getInProjectAssets } = usePhotos();
     const { currentSheet, getSheets } = useSheet();
     const {
       getAllScreenPlaybackData,
@@ -190,7 +191,8 @@ export default {
       getSheetFrames,
       generateMultiThumbnails,
       uploadBase64Image,
-      mediaObjectIds
+      mediaObjectIds,
+      getInProjectAssets
     };
   },
   data() {
@@ -928,6 +930,23 @@ export default {
       // update frames
       Promise.all(
         updatedFrames.map(frame => this.updateFrameApi(frame.id, frame))
+      );
+
+      const bookId = this.generalInfo.bookId;
+      const inProjectAssetsOfFrames = await Promise.all(
+        updatedFrames.map(frame => this.getInProjectAssets(bookId, frame.id))
+      );
+
+      // remove all in-project assets of the page
+      Promise.all(
+        updatedFrames.map((frame, idx) => {
+          const inProjectVariables = {
+            bookId: +bookId,
+            projectId: frame.id,
+            removeAssetIds: inProjectAssetsOfFrames[idx].apiPageAssetIds
+          };
+          return updateInProjectApi(inProjectVariables, false, true);
+        })
       );
 
       const responeFrames = await Promise.all(

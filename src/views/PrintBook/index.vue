@@ -1,5 +1,5 @@
 <template>
-  <div class="pdf-container" :style="containerCssStyle">
+  <div id="snapshot-view" class="pdf-container" :style="containerCssStyle">
     <div
       ref="canvas-container"
       class="canvas-container"
