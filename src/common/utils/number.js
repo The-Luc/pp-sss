@@ -17,7 +17,7 @@ export const isPositiveInteger = val => /^(0|[1-9]\d*)$/.test(val);
  * @param {String|Number} val the numeric value to be checked
  * @returns {Boolean} true if the input number is a valid float
  */
-export const isFloat = val => /^-?(0|[1-9]\d*)(\.\d+)?$/.test(val);
+export const isFloat = val => /^-?(0?|[1-9]\d*)(\.\d+)?$/.test(val);
 
 /**
  * Check if the input number is a valid positive float

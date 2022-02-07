@@ -43,7 +43,8 @@ import {
   useObjects,
   useBackgroundProperties,
   usePortrait,
-  useAppCommon
+  useAppCommon,
+  useMediaObjects
 } from '@/hooks';
 import {
   isEmpty,
@@ -62,7 +63,7 @@ import {
   getAvailableImages,
   setImageSrc
 } from '@/common/fabricObjects';
-import { useSavingStatus, useThumbnail } from '../../composables';
+import { usePhotos, useSavingStatus, useThumbnail } from '../../composables';
 import { useBookPrintInfo } from './composables';
 import { getPageObjects } from '@/common/utils/portrait';
 
@@ -95,7 +96,8 @@ export default {
     const { setPropertyById, setPropOfMultipleObjects } = useProperties();
     const { updateSavingStatus } = useSavingStatus();
     const { currentSheet, getSheets } = useSheet();
-    const { updateSheetMedia, getMedia } = useActionsEditionSheet();
+    const { updateSheetMedia } = useActionsEditionSheet();
+    const { getMedia } = usePhotos();
     const { getBookPrintInfo } = useBookPrintInfo();
     const { listObjects } = useObjectProperties();
     const {
@@ -110,6 +112,7 @@ export default {
 
     const { saveSelectedPortraitFolders } = usePortrait();
     const { uploadBase64Image } = useThumbnail();
+    const { mediaObjectIds } = useMediaObjects();
 
     return {
       pageSelected,
@@ -140,7 +143,8 @@ export default {
       uploadBase64Image,
       setLoadingState,
       getMedia,
-      generalInfo
+      generalInfo,
+      mediaObjectIds
     };
   },
   data() {
@@ -196,6 +200,13 @@ export default {
     isMediaSidebarOpen: {
       async handler(val) {
         if (val) this.sheetMedia = await this.getMedia();
+      }
+    },
+    mediaObjectIds: {
+      async handler(val, oldVal) {
+        if (JSON.stringify(val) === JSON.stringify(oldVal) || !val) return;
+
+        this.sheetMedia = await this.getMedia();
       }
     }
   },
@@ -397,7 +408,8 @@ export default {
         const y = pointer.y - offsetY * 3;
 
         this.$refs.canvasEditor.addImageBox(x, y, imgWidth, imgHeight, {
-          src: imageUrl
+          src: imageUrl,
+          id: imageId
         });
 
         return;
@@ -597,6 +609,9 @@ export default {
       );
       // to get thumbnail generate base64 image
       this.$refs.canvasEditor.handleCanvasChanged();
+
+      // update in-project of photoside bar
+      this.sheetMedia = await this.getMedia();
     },
     /**
      * Selected portrait folders

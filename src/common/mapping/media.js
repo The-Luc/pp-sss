@@ -28,6 +28,9 @@ export const mediaMapping = (asset, isPhoto = true) => {
       },
       is_media: {
         name: 'isMedia'
+      },
+      in_project: {
+        name: 'inProject'
       }
     },
     restrict: []
@@ -54,7 +57,7 @@ export const extractAlbumCategories = (albumArr, isGetVideo) => {
     const isSelectedMediaExited = album.assets.some(
       asset => asset.is_media === Boolean(isGetVideo)
     );
-    return isSelectedMediaExited ? { id: album.id, name: album.title } : null;
+    return isSelectedMediaExited ? { id: album.id, name: album.body } : null;
   };
 
   const categories = albumArr.map(a => {
@@ -82,18 +85,21 @@ export const parseAPIAlbums = albumArr => {
 
     return containers.map(container => {
       const mediaAssets = container.assets || [];
-      const assets = mediaAssets.map(({ id, thumbnail_uri, is_media }) => ({
-        id,
-        thumbUrl: thumbnail_uri,
-        type: is_media ? ASSET_TYPE.VIDEO : ASSET_TYPE.PICTURE,
-        albumId: container.id
-      }));
+      const assets = mediaAssets.map(
+        ({ id, thumbnail_uri, is_media, in_project }) => ({
+          id,
+          thumbUrl: thumbnail_uri,
+          type: is_media ? ASSET_TYPE.VIDEO : ASSET_TYPE.PICTURE,
+          albumId: container.id,
+          inProject: in_project
+        })
+      );
 
       return {
         id: container.id,
         assets,
         displayDate: apiToShortDate(container.created_at),
-        name: container.title
+        name: container.body
       };
     });
   });

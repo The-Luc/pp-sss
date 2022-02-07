@@ -124,8 +124,9 @@ import {
 } from '@/store/modules/digital/const';
 
 import { cloneDeep, debounce, merge } from 'lodash';
-import { useSaveData, useObject, useVideo, useAsset } from '../composables';
+import { useSaveData, useObject, useVideo } from '../composables';
 import { useSavingStatus } from '@/views/CreateBook/composables';
+import { usePhotos } from '@/views/CreateBook/composables';
 import UndoRedoCanvas from '@/plugins/undoRedoCanvas';
 import {
   BackgroundElementObject,
@@ -200,7 +201,7 @@ export default {
     const { setToolNameSelected, propertiesType } = useToolBar();
     const { setFrameDelay } = useFrameDelay();
     const { totalVideoDuration } = useVideo();
-    const { getAssetByIdApi } = useAsset();
+    const { getAssetById } = usePhotos();
 
     return {
       setLoadingState,
@@ -241,7 +242,7 @@ export default {
       setPropertiesType,
       setFrameDelay,
       totalVideoDuration,
-      getAssetByIdApi
+      getAssetById
     };
   },
   data() {
@@ -1619,7 +1620,8 @@ export default {
         coord,
         imageUrl: DEFAULT_IMAGE.IMAGE_URL,
         hasImage: !!options?.src,
-        originalUrl: options?.src
+        originalUrl: options?.src,
+        imageId: options?.id
       };
 
       const newMedia = {
@@ -1704,7 +1706,7 @@ export default {
       const thumbnailId = prop.customThumbnailId;
 
       if (!isEmpty(thumbnailId)) {
-        const thumbnailAsset = await this.getAssetByIdApi(thumbnailId);
+        const thumbnailAsset = await this.getAssetById(thumbnailId);
         prop.customThumbnailUrl = thumbnailAsset.imageUrl;
       }
 

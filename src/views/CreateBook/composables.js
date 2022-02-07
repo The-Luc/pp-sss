@@ -1,3 +1,4 @@
+import { difference } from 'lodash';
 import { useMutations, useGetters } from 'vuex-composition-helpers';
 
 import { useAppCommon } from '@/hooks';
@@ -10,7 +11,9 @@ import {
 import {
   getPhotosApi,
   getMediaApi,
-  getAlbumsAndCategoriesApi
+  getAlbumsAndCategoriesApi,
+  getAssetByIdApi,
+  getInProjectAssetsApi
 } from '@/api/media';
 import { savePortraitSettingsApi, getPortraiSettingsApi } from '@/api/portrait';
 
@@ -23,6 +26,7 @@ import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 import { GETTERS as DIGITAL_GETTERS } from '@/store/modules/digital/const';
 import { uploadBase64ImageApi } from '@/api/util';
 import { generateCanvasThumbnail, isOk } from '@/common/utils';
+import { getWorkspaceApi } from '@/api/sheet';
 
 export const useSavingStatus = () => {
   const { savingStatus } = useGetters({
@@ -37,34 +41,114 @@ export const useSavingStatus = () => {
 };
 
 export const usePhotos = () => {
-  const { value: isDigital } = useAppCommon().isDigitalEdition;
+  const { isDigitalEdition, generalInfo } = useAppCommon();
+  const isDigital = isDigitalEdition.value;
 
   const GETTERS = isDigital ? DIGITAL_GETTERS : PRINT_GETTERS;
 
-  const { communityId } = useGetters({
-    communityId: GETTERS.COMMUNITY_ID
+  const {
+    communityId,
+    mediaObjectIds,
+    currentSheet,
+    currentFrameId
+  } = useGetters({
+    communityId: GETTERS.COMMUNITY_ID,
+    mediaObjectIds: GETTERS.GET_MEDIA_OBJECT_IDS,
+    currentSheet: GETTERS.CURRENT_SHEET,
+    currentFrameId: DIGITAL_GETTERS.CURRENT_FRAME_ID
   });
 
+  const getInProjectAssets = async (bookId, projectId) => {
+    return await getInProjectAssetsApi(bookId, projectId, isDigital);
+  };
+
+  const updateInProjectAssets = async assets => {
+    const bookId = Number(generalInfo.value.bookId);
+    const projectId = isDigital
+      ? currentFrameId.value
+      : currentSheet.value.pageIds;
+    const { apiBookAssetIds, apiPageAssetIds } = await getInProjectAssets(
+      bookId,
+      projectId
+    );
+
+    const currentAssetIds = mediaObjectIds.value;
+    const deletedAssetsId = difference(apiPageAssetIds, currentAssetIds);
+    console.log('apiBookAssetIds:', apiBookAssetIds);
+    console.log('apiPageAssetIds:', apiPageAssetIds);
+    console.log('currentAssetIds:', currentAssetIds);
+    console.log('deletedAssetsId ', deletedAssetsId);
+
+    assets.forEach(asset => {
+      if (currentAssetIds.includes(asset.id)) asset.inProject = true;
+      if (
+        deletedAssetsId.includes(asset.id) &&
+        apiBookAssetIds.filter(id => asset.id === id).length < 2
+      )
+        asset.inProject = false;
+    });
+    return assets;
+  };
+
+  const getMedia = async () => {
+    const bookId = Number(generalInfo.value.bookId);
+    const assetIds = await getWorkspaceApi(currentSheet.value.id, isDigital);
+
+    const promises = assetIds.map(id => getAssetByIdApi(id, bookId));
+
+    const media = await Promise.all(promises);
+
+    return updateInProjectAssets(media);
+  };
+
+  const getAssetById = async assetId => {
+    const bookId = Number(generalInfo.value.bookId);
+    const asset = getAssetByIdApi(assetId, bookId);
+
+    return updateInProjectAssets(asset);
+  };
+
+  const getAssetByKeywords = async (keywords, isGetMedia) => {
+    const bookId = Number(generalInfo.value.bookId);
+    const assets = isGetMedia
+      ? await getMediaApi(communityId.value, keywords, bookId)
+      : await getPhotosApi(communityId.value, keywords, bookId);
+
+    return updateInProjectAssets(assets);
+  };
+
   const getSmartbox = async (keywords, isGetMedia) => {
-    return isGetMedia
-      ? getMediaApi(communityId.value, keywords)
-      : getPhotosApi(communityId.value, keywords);
+    return getAssetByKeywords(keywords, isGetMedia);
   };
 
   const getSearch = async (input, isGetMedia) => {
-    return isGetMedia
-      ? getMediaApi(communityId.value, [input])
-      : getPhotosApi(communityId.value, [input]);
+    return getAssetByKeywords([input], isGetMedia);
   };
 
   const getAlbums = async isGetVideo => {
-    return await getAlbumsAndCategoriesApi(communityId.value, isGetVideo);
+    const bookId = Number(generalInfo.value.bookId);
+    const data = await getAlbumsAndCategoriesApi(
+      communityId.value,
+      bookId,
+      isGetVideo
+    );
+    const albums = data.albums;
+
+    Object.values(albums).forEach(al => {
+      al.forEach(a => {
+        updateInProjectAssets(a.assets);
+      });
+    });
+    return data;
   };
 
   return {
     getSmartbox,
     getSearch,
-    getAlbums
+    getAlbums,
+    getAssetById,
+    getMedia,
+    getInProjectAssets
   };
 };
 

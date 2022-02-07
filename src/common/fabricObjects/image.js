@@ -236,12 +236,16 @@ export const setImageSrc = async (imageObject, imageSrc) => {
           newProp.zoomLevel = img.zoomLevel;
         }
 
-        resolve({
+        const props = {
           type: OBJECT_TYPE.IMAGE,
           hasImage,
           imageUrl: src,
           zoomLevel: newProp.zoomLevel
-        });
+        };
+
+        if (src === IMAGE_LOCAL.PLACE_HOLDER) props.imageId = null;
+
+        resolve(props);
       },
       {
         crossOrigin: 'anonymous'
