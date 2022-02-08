@@ -29,6 +29,8 @@
       <template v-else>
         <AlbumItem :empty-category="emptyCategory" />
       </template>
+
+      <div :ref="`loadingMark`"></div>
     </div>
     <PopupSelected v-if="isShowPopupSelected" :amount="selectedMedia.length" />
   </div>

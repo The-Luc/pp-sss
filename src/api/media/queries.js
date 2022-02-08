@@ -43,21 +43,72 @@ const albumDetailFragment = gql`
     }
   }
 `;
+const albumCategoryFragment = gql`
+  fragment albumCategory on Container {
+    id
+    body
+  }
+`;
 
-export const getAllAlbumsQuery = gql`
-  query getAllAlbumsQuery($communityId: ID!, $projectId: Int!) {
+export const getAlbumCategoryQuery = gql`
+  query getAlbumCategoryQuery($communityId: ID!) {
     user_containers {
-      ...albumDetail
+      ...albumCategory
     }
-    community_containers(id: $communityId, media_type: "all") {
-      ...albumDetail
+    community_containers(id: $communityId, media_type: "all", per_page: 99999) {
+      ...albumCategory
     }
     community_group_assets(id: $communityId, media_type: "all", range: ALL) {
       id
       name
       containers {
+        ...albumCategory
+      }
+    }
+  }
+  ${albumCategoryFragment}
+`;
+
+export const getUserAlbumsQuery = gql`
+  query getUserAlbumsQuery($projectId: Int!) {
+    user_containers {
+      ...albumDetail
+    }
+  }
+  ${albumDetailFragment}
+`;
+
+export const getAlbumByIdQuery = gql`
+  query getAlbumById($id: ID!, $projectId: Int!) {
+    container(id: $id) {
+      ...albumDetail
+    }
+  }
+  ${albumDetailFragment}
+`;
+
+export const getQrrentByIdQuery = gql`
+  query getQrrentById($id: ID!, $projectId: Int!) {
+    qrrent(id: $id) {
+      id
+      name
+      containers {
         ...albumDetail
       }
+    }
+  }
+  ${albumDetailFragment}
+`;
+
+export const getCommunityAlbumsQuery = gql`
+  query getCommunityAlbums($communityId: ID!, $projectId: Int!, $page: Int!) {
+    community_containers(
+      id: $communityId
+      media_type: "all"
+      page: $page
+      per_page: 10
+    ) {
+      ...albumDetail
     }
   }
   ${albumDetailFragment}

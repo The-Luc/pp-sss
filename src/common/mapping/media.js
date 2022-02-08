@@ -52,18 +52,11 @@ const addingCategoryAll = category =>
  * @param {Array} albumArr api container data
  * @returnsa {Array} category showed in dropdown menu
  */
-export const extractAlbumCategories = (albumArr, isGetVideo) => {
-  const getAlbumCategory = album => {
-    const isSelectedMediaExited = album.assets.some(
-      asset => asset.is_media === Boolean(isGetVideo)
-    );
-    return isSelectedMediaExited ? { id: album.id, name: album.body } : null;
-  };
-
+export const extractAlbumCategories = albumArr => {
   const categories = albumArr.map(a => {
-    if (!a.containers) return getAlbumCategory(a);
+    if (!a.containers) return { id: a.id, name: a.body };
 
-    const albums = a.containers.map(al => getAlbumCategory(al)).filter(Boolean);
+    const albums = a.containers.map(al => ({ id: al.id, name: al.body }));
     addingCategoryAll(albums);
     return { id: a.id, name: a.name, albums };
   });
@@ -82,26 +75,33 @@ export const extractAlbumCategories = (albumArr, isGetVideo) => {
 export const parseAPIAlbums = albumArr => {
   const parsedAlbums = albumArr.map(al => {
     const containers = al.containers ? al.containers : [al];
-
-    return containers.map(container => {
-      const mediaAssets = container.assets || [];
-      const assets = mediaAssets.map(
-        ({ id, thumbnail_uri, is_media, in_project }) => ({
-          id,
-          thumbUrl: thumbnail_uri,
-          type: is_media ? ASSET_TYPE.VIDEO : ASSET_TYPE.PICTURE,
-          albumId: container.id,
-          inProject: in_project
-        })
-      );
-
-      return {
-        id: container.id,
-        assets,
-        displayDate: apiToShortDate(container.created_at),
-        name: container.body
-      };
-    });
+    return containers.map(c => containerMapping(c));
   });
   return parsedAlbums.flat();
+};
+
+/**
+ * To convert backend a single album to FE structure
+ *
+ * @param {Object} container container/ablum object from API
+ * @returns album that is used in FE
+ */
+export const containerMapping = container => {
+  const mediaAssets = container.assets || [];
+  const assets = mediaAssets.map(
+    ({ id, thumbnail_uri, is_media, in_project }) => ({
+      id,
+      thumbUrl: thumbnail_uri,
+      type: is_media ? ASSET_TYPE.VIDEO : ASSET_TYPE.PICTURE,
+      albumId: container.id,
+      inProject: in_project
+    })
+  );
+
+  return {
+    id: container.id,
+    assets,
+    displayDate: apiToShortDate(container.created_at),
+    name: container.body
+  };
 };
