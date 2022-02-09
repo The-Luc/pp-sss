@@ -14,7 +14,11 @@
         class="sheet-media-container"
       >
         <Draggable :sort="false" @choose="onChoose" @unchoose="onUnchoose">
-          <div v-for="item in media" :key="item.id" class="media-item">
+          <div
+            v-for="(item, idx) in media"
+            :key="`${item.id}-${idx}`"
+            class="media-item"
+          >
             <v-icon class="media-icon" @click="onShowRemoveModal(item)">
               delete_forever
             </v-icon>

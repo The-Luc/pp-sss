@@ -48,6 +48,7 @@
             :media-dropdowns="mediaDropdowns"
             @changeType="onChangeType"
             @change="onSelectedMedia"
+            @loadMoreAssets="onLoadMoreAssets"
           />
         </v-tab-item>
 
@@ -65,6 +66,7 @@
             :is-video="true"
             @changeType="onChangeType"
             @change="onSelectedMedia"
+            @loadMoreAssets="onLoadMoreAssets"
           />
         </v-tab-item>
 

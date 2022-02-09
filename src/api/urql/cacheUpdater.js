@@ -149,6 +149,13 @@ export const updateDeleteFrame = (_, args, cache) => {
     .filter(cache => cache.fieldName === 'sheet')
     .map(cache => String(cache.arguments.id));
 
+  const bookId = cache
+    .inspectFields({ __typename: 'Query' })
+    .filter(cache => cache.fieldName === 'book')
+    .map(cache => String(cache.arguments.id));
+
+  cache.invalidate({ __typename: 'Query' }, 'book', { id: bookId[0] });
+
   let sheetId;
   let counter = 0;
 
@@ -245,6 +252,8 @@ export const updateDeleteSheet = (results, _, cache) => {
       return data;
     }
   );
+  // reset in project mark
+  cache.invalidate({ __typename: 'Query' }, 'book', { id: bookId });
 };
 
 export const updateDeleteSection = (results, _, cache) => {
@@ -270,6 +279,9 @@ export const updateDeleteSection = (results, _, cache) => {
       return data;
     }
   );
+
+  // reset in project mark
+  cache.invalidate({ __typename: 'Query' }, 'book', { id: bookId });
 };
 
 export const updateCreateSection = (results, args, cache) => {

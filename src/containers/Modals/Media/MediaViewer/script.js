@@ -17,7 +17,8 @@ import {
   insertItemsToArray,
   removeItemsFormArray,
   getUniqueKeywords,
-  getFileExtension
+  getFileExtension,
+  isEmpty
 } from '@/common/utils';
 import {
   VIDEO_CATEGORIES,
@@ -40,7 +41,15 @@ export default {
     const { currentSection } = useGetterEditionSection();
     const { currentFrame } = useFrame();
     const { currentSheet } = useSheet();
-    const { getSmartbox, getSearch, getAlbums } = usePhotos();
+    const {
+      getSmartbox,
+      getSearch,
+      getCommunityAlbums,
+      getAlbumCategory,
+      getAlbums,
+      getAlbumById,
+      getQrrentById
+    } = usePhotos();
     const { isPhotoVisited, updatePhotoVisited } = useBook();
 
     return {
@@ -52,7 +61,11 @@ export default {
       generalInfo,
       getSmartbox,
       getSearch,
-      getAlbums
+      getCommunityAlbums,
+      getAlbumCategory,
+      getAlbums,
+      getAlbumById,
+      getQrrentById
     };
   },
   data() {
@@ -68,7 +81,9 @@ export default {
       },
       albums: {},
       mediaDropdowns: {},
-      isOnlyVideoUploaded: false
+      isOnlyVideoUploaded: false,
+      selectedAlbums: [],
+      currentPage: 1
     };
   },
   props: {
@@ -160,6 +175,7 @@ export default {
      */
     async onChangeTab(tab) {
       if (this.currentTab === tab) return;
+      this.currentPage = 1;
       this.currentTab = tab;
 
       this.selectedMedia = [];
@@ -173,10 +189,10 @@ export default {
 
       if (this.currentTab !== 'photos' && this.currentTab !== 'videos') return;
 
-      const isGetVideo = this.currentTab === 'videos';
-      const { albums, albumCategories } = await this.getAlbums(isGetVideo);
+      const albumCategories = await this.getAlbumCategory();
+
+      this.albums = await this.getCommunityAlbums();
       this.mediaDropdowns = albumCategories;
-      this.albums = albums;
       this.selectedType = this.getSelectedType();
     },
 
@@ -196,7 +212,6 @@ export default {
       }
 
       // seek for the selected album in MY ALBUM
-
       const value = PHOTO_CATEGORIES.PERSONAL_ALBUMS.value;
       const isAlbumExisted = this.mediaDropdowns[value].find(
         ab => ab.id === this.selectedAlbumId
@@ -281,7 +296,12 @@ export default {
      * Change dropdown type to select a album
      * @param   {Object}  data  type and album selected
      */
-    onChangeType(data) {
+    async onChangeType(data) {
+      this.currentPage = 1;
+      const albums = await this.fetchAlbums(data);
+
+      if (!isEmpty(albums)) this.albums[data.value] = albums;
+
       this.selectedType = {
         value: data.value,
         sub: {
@@ -291,6 +311,50 @@ export default {
           }
         }
       };
+    },
+
+    /**
+     * To get album based on selected category type
+     *
+     * @param {Object} data data of selected category type
+     */
+    async fetchAlbums(data) {
+      const containerId = data.sub.value;
+      if (isEmpty(containerId)) return;
+
+      const MEDIA_CATEGORIES =
+        this.currentTab === 'videos' ? VIDEO_CATEGORIES : PHOTO_CATEGORIES;
+
+      let albums;
+      if (containerId !== ALL_MEDIA_SUBCATEGORY_ID) {
+        albums =
+          data.value === 'groups'
+            ? await this.getQrrentById(containerId)
+            : await this.getAlbumById(containerId);
+      } else {
+        // fetch all albums of a category (user or community)
+        albums = await this.getAlbums(MEDIA_CATEGORIES, data.value);
+      }
+      return albums;
+    },
+
+    /**
+     * Load more asset when user scroll down
+     */
+    async onLoadMoreAssets() {
+      if (this.currentPage < 0) return;
+      this.currentPage++;
+
+      const albums = await this.getCommunityAlbums(this.currentPage);
+      if (albums.communities.length === 0) {
+        // there is no more assets to fetch
+        this.currentPage = -1;
+      }
+
+      this.albums.communities = [
+        ...this.albums.communities,
+        ...albums.communities
+      ];
     }
   }
 };
