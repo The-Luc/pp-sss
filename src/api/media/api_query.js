@@ -2,12 +2,17 @@ import { graphqlRequest } from '../urql';
 import { get } from 'lodash';
 import { isEmpty, isOk } from '@/common/utils';
 import {
-  getAllAlbumsQuery,
   getAssetByIdQuery,
   getInProjectAssetsQuery,
-  getMediaQuery
+  getMediaQuery,
+  getAlbumCategoryQuery,
+  getUserAlbumsQuery,
+  getCommunityAlbumsQuery,
+  getQrrentByIdQuery,
+  getAlbumByIdQuery
 } from './queries';
 import {
+  containerMapping,
   extractAlbumCategories,
   mediaMapping,
   parseAPIAlbums
@@ -64,37 +69,79 @@ export const getAssetByIdApi = async (assetId, projectId) => {
     : new PictureAssetEntity(mediaMapping(asset));
 };
 
-export const getAlbumsAndCategoriesApi = async (
-  communityId,
-  projectId,
-  isGetVideo
-) => {
-  const res = await graphqlRequest(getAllAlbumsQuery, {
-    communityId,
-    projectId
+export const getAlbumCategoryApi = async communityId => {
+  const res = await graphqlRequest(getAlbumCategoryQuery, {
+    communityId
   });
 
-  if (!isOk(res)) return;
+  if (!isOk(res)) return [];
 
   const communities = get(res, 'data.community_containers', []);
   const groups = get(res, 'data.community_group_assets', []);
   const personalAlbums = get(res, 'data.user_containers', []);
 
   // mapping list of categories
-  const albumCategories = {
-    communities: extractAlbumCategories(communities, isGetVideo),
-    groups: extractAlbumCategories(groups, isGetVideo),
-    personalAlbums: extractAlbumCategories(personalAlbums, isGetVideo)
+  return {
+    communities: extractAlbumCategories(communities),
+    groups: extractAlbumCategories(groups),
+    personalAlbums: extractAlbumCategories(personalAlbums)
   };
+};
 
+export const getUserAlbumsApi = async (communityId, projectId) => {
+  const res = await graphqlRequest(getUserAlbumsQuery, {
+    projectId
+  });
+
+  if (!isOk(res)) return;
+
+  const personalAlbums = get(res, 'data.user_containers', []);
+
+  const albums = parseAPIAlbums(personalAlbums);
+  return { personalAlbums: albums };
+};
+
+export const getCommunityAlbumsApi = async (communityId, projectId, page) => {
+  const res = await graphqlRequest(getCommunityAlbumsQuery, {
+    communityId,
+    projectId,
+    page
+  });
+
+  if (!isOk(res)) return;
+
+  const communities = get(res, 'data.community_containers', []);
+
+  return parseAPIAlbums(communities);
+};
+
+export const getAlbumByIdApi = async (id, projectId) => {
+  const res = await graphqlRequest(getAlbumByIdQuery, {
+    id,
+    projectId
+  });
+
+  if (!isOk(res)) return;
+
+  const album = get(res, 'data.container', []);
   // normalize albums
-  const albums = {
-    communities: parseAPIAlbums(communities),
-    groups: parseAPIAlbums(groups),
-    personalAlbums: parseAPIAlbums(personalAlbums)
-  };
+  return containerMapping(album);
+};
 
-  return { albumCategories, albums };
+/**
+ *  Qrrent is a group of albums
+ */
+export const getQrrentByIdApi = async (id, projectId) => {
+  const res = await graphqlRequest(getQrrentByIdQuery, {
+    id,
+    projectId
+  });
+
+  if (!isOk(res)) return;
+
+  const container = get(res, 'data.qrrent', []);
+  // normalize albums
+  return parseAPIAlbums([container]);
 };
 
 /**

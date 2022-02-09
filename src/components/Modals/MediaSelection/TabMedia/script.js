@@ -45,7 +45,9 @@ export default {
       emptyCategory: {
         name: '',
         type: ''
-      }
+      },
+      observer: null,
+      isJustLoadMore: false
     };
   },
   computed: {
@@ -88,11 +90,41 @@ export default {
   },
   watch: {
     selectedAlbums() {
+      if (this.isJustLoadMore) {
+        this.isJustLoadMore = false;
+        return;
+      }
       const el = get({ refs: this.$refs }, 'refs["album-0"][0].$el');
       if (!el) return;
 
       scrollToElement(el, { behavior: 'auto', block: 'start' });
+    },
+    selectedType: {
+      deep: true,
+      handler() {
+        const isLoadMore =
+          this.selectedType.value === PHOTO_CATEGORIES.COMMUNITIES.value &&
+          this.selectedType.sub.value === ALL_MEDIA_SUBCATEGORY_ID;
+
+        if (!isLoadMore) {
+          this.observer?.disconnect();
+          return;
+        }
+
+        const el = this.$refs['loadingMark'];
+
+        this.observer = new IntersectionObserver(entries => {
+          if (!entries[0].isIntersecting) return;
+          this.$emit('loadMoreAssets');
+          this.isJustLoadMore = true;
+        });
+
+        this.observer.observe(el);
+      }
     }
+  },
+  beforeUnmount() {
+    this.observer?.disconnect();
   },
   methods: {
     /**

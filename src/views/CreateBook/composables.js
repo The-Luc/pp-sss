@@ -11,9 +11,13 @@ import {
 import {
   getPhotosApi,
   getMediaApi,
-  getAlbumsAndCategoriesApi,
+  getCommunityAlbumsApi,
+  getUserAlbumsApi,
+  getQrrentByIdApi,
+  getAlbumByIdApi,
   getAssetByIdApi,
-  getInProjectAssetsApi
+  getInProjectAssetsApi,
+  getAlbumCategoryApi
 } from '@/api/media';
 import { savePortraitSettingsApi, getPortraiSettingsApi } from '@/api/portrait';
 
@@ -25,7 +29,7 @@ import {
 import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 import { GETTERS as DIGITAL_GETTERS } from '@/store/modules/digital/const';
 import { uploadBase64ImageApi } from '@/api/util';
-import { generateCanvasThumbnail, isOk } from '@/common/utils';
+import { generateCanvasThumbnail, isOk, isEmpty } from '@/common/utils';
 import { getWorkspaceApi } from '@/api/sheet';
 
 export const useSavingStatus = () => {
@@ -121,21 +125,62 @@ export const usePhotos = () => {
     return getAssetByKeywords([input], isGetMedia);
   };
 
-  const getAlbums = async isGetVideo => {
+  const getAlbums = async (MEDIA_CATEGORIES, type) => {
     const bookId = Number(generalInfo.value.bookId);
-    const data = await getAlbumsAndCategoriesApi(
-      communityId.value,
-      bookId,
-      isGetVideo
-    );
-    const albums = data.albums;
+
+    // fetch all albums of a category
+    const fetchFn = {
+      [MEDIA_CATEGORIES.COMMUNITIES.value]: getCommunityAlbumsApi,
+      [MEDIA_CATEGORIES.PERSONAL_ALBUMS.value]: getUserAlbumsApi
+    };
+
+    const albums = await fetchFn[type](communityId.value, bookId, 1);
+
+    albums.forEach(a => {
+      updateInProjectAssets(a.assets);
+    });
+    return albums;
+  };
+
+  const getCommunityAlbums = async (page = 1) => {
+    const bookId = Number(generalInfo.value.bookId);
+    const res = await getCommunityAlbumsApi(communityId.value, bookId, page);
+    const albums = { communities: res };
 
     Object.values(albums).forEach(al => {
       al.forEach(a => {
         updateInProjectAssets(a.assets);
       });
     });
-    return data;
+    return albums;
+  };
+
+  const getAlbumById = async id => {
+    const bookId = Number(generalInfo.value.bookId);
+    const album = await getAlbumByIdApi(id, bookId);
+
+    if (isEmpty(album)) return [];
+
+    updateInProjectAssets(album.assets);
+
+    return [album];
+  };
+
+  const getQrrentById = async id => {
+    const bookId = Number(generalInfo.value.bookId);
+    const album = await getQrrentByIdApi(id, bookId);
+
+    if (isEmpty(album)) return [];
+
+    album.forEach(al => {
+      updateInProjectAssets(al.assets);
+    });
+
+    return album;
+  };
+
+  const getAlbumCategory = async () => {
+    return getAlbumCategoryApi(communityId.value);
   };
 
   return {
@@ -144,7 +189,11 @@ export const usePhotos = () => {
     getAlbums,
     getAssetById,
     getMedia,
-    getInProjectAssets
+    getInProjectAssets,
+    getAlbumCategory,
+    getCommunityAlbums,
+    getAlbumById,
+    getQrrentById
   };
 };
 
