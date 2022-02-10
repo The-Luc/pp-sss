@@ -1,6 +1,6 @@
 import { Mix } from 'vue-color';
-import { mapGetters, mapMutations } from 'vuex';
-import { GETTERS, MUTATES } from '@/store/modules/app/const';
+import { useColorPicker } from '@/views/CreateBook/composables';
+import { MAX_COLOR_PICKER_PRESET } from '@/common/constants';
 
 export default {
   components: {
@@ -24,9 +24,15 @@ export default {
       default: 0
     }
   },
+  setup() {
+    const { updateColorPicker, getPresets } = useColorPicker();
+
+    return { updateColorPicker, getPresets };
+  },
   data() {
     return {
-      currentColor: ''
+      currentColor: '',
+      presets: []
     };
   },
   watch: {
@@ -35,9 +41,6 @@ export default {
     }
   },
   computed: {
-    ...mapGetters({
-      presets: GETTERS.COLOR_PICKER_PRESETS
-    }),
     containerStyle() {
       return {
         top: this.top + 'px',
@@ -45,13 +48,11 @@ export default {
       };
     }
   },
-  mounted() {
+  async mounted() {
     this.refreshColorFromState();
+    this.presets = await this.getPresets();
   },
   methods: {
-    ...mapMutations({
-      setPresets: MUTATES.SET_COLOR_PICKER_PRESETS
-    }),
     refreshColorFromState() {
       this.currentColor = this.color;
     },
@@ -69,8 +70,12 @@ export default {
      *
      * @param {String}  preset  new preset added in Color Picker (HEX)
      */
-    addPreset(preset) {
-      this.setPresets({ preset });
+    async addPreset(preset) {
+      this.presets = [preset, ...this.presets].slice(
+        0,
+        MAX_COLOR_PICKER_PRESET
+      );
+      this.updateColorPicker(preset);
     },
     /**
      * Trigger mutation close color picker when click outside

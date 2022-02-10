@@ -1,4 +1,4 @@
-import { difference } from 'lodash';
+import { difference, cloneDeep } from 'lodash';
 import { useMutations, useGetters } from 'vuex-composition-helpers';
 
 import { useAppCommon } from '@/hooks';
@@ -19,6 +19,7 @@ import {
   getInProjectAssetsApi,
   getAlbumCategoryApi
 } from '@/api/media';
+import { savePresetColorPickerApi, getPresetsColorPickerApi } from '@/api/util';
 import { savePortraitSettingsApi, getPortraiSettingsApi } from '@/api/portrait';
 
 import {
@@ -31,6 +32,7 @@ import { GETTERS as DIGITAL_GETTERS } from '@/store/modules/digital/const';
 import { uploadBase64ImageApi } from '@/api/util';
 import { generateCanvasThumbnail, isOk, isEmpty } from '@/common/utils';
 import { getWorkspaceApi } from '@/api/sheet';
+import { MAX_COLOR_PICKER_PRESET } from '@/common/constants';
 
 export const useSavingStatus = () => {
   const { savingStatus } = useGetters({
@@ -264,4 +266,33 @@ export const useThumbnail = () => {
     generateThumbnail,
     generateMultiThumbnails
   };
+};
+
+// is used for color picker cycle
+// let next = 0;
+
+export const useColorPicker = () => {
+  const updateColorPicker = async color => {
+    const colors = await getPresets();
+    // const colors = cloneDeep(await getPresets());
+    // next = colors.length;
+
+    // const max = MAX_COLOR_PICKER_PRESET;
+    // console.log('color ', color);
+
+    // colors.splice(next, 1, color.substring(0, 7));
+
+    // next = next >= max - 1 ? 0 : next + 1;
+
+    // setPresets({ preset: color });
+    // const colors = presets.value;
+
+    savePresetColorPickerApi(
+      [color.substring(0, 7), ...colors].slice(0, MAX_COLOR_PICKER_PRESET)
+    );
+  };
+
+  const getPresets = async () => await getPresetsColorPickerApi();
+
+  return { updateColorPicker, getPresets };
 };
