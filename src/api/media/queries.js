@@ -8,12 +8,11 @@ const assetFragment = gql`
     original_height
     original_width
     is_media
-    in_project(project_id: $projectId, project_type: BOOK)
   }
 `;
 
 export const getMediaQuery = gql`
-  query getMediaQuery($id: ID!, $terms: [String], $projectId: Int!) {
+  query getMediaQuery($id: ID!, $terms: [String]) {
     search_community_assets(id: $id, terms: $terms) {
       ...assetData
     }
@@ -22,7 +21,7 @@ export const getMediaQuery = gql`
 `;
 
 export const getAssetByIdQuery = gql`
-  query getAssetByIdQuery($id: ID!, $projectId: Int!) {
+  query getAssetByIdQuery($id: ID!) {
     asset(id: $id) {
       ...assetData
     }
@@ -39,7 +38,6 @@ const albumDetailFragment = gql`
       id
       thumbnail_uri
       is_media
-      in_project(project_id: $projectId, project_type: BOOK)
     }
   }
 `;
@@ -70,7 +68,7 @@ export const getAlbumCategoryQuery = gql`
 `;
 
 export const getUserAlbumsQuery = gql`
-  query getUserAlbumsQuery($projectId: Int!) {
+  query getUserAlbumsQuery {
     user_containers {
       ...albumDetail
     }
@@ -79,7 +77,7 @@ export const getUserAlbumsQuery = gql`
 `;
 
 export const getAlbumByIdQuery = gql`
-  query getAlbumById($id: ID!, $projectId: Int!) {
+  query getAlbumById($id: ID!) {
     container(id: $id) {
       ...albumDetail
     }
@@ -88,7 +86,7 @@ export const getAlbumByIdQuery = gql`
 `;
 
 export const getQrrentByIdQuery = gql`
-  query getQrrentById($id: ID!, $projectId: Int!) {
+  query getQrrentById($id: ID!) {
     qrrent(id: $id) {
       id
       name
@@ -101,7 +99,7 @@ export const getQrrentByIdQuery = gql`
 `;
 
 export const getCommunityAlbumsQuery = gql`
-  query getCommunityAlbums($communityId: ID!, $projectId: Int!, $page: Int!) {
+  query getCommunityAlbums($communityId: ID!, $page: Int!) {
     community_containers(
       id: $communityId
       media_type: "all"
