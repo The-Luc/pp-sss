@@ -6,6 +6,7 @@ export const themeOptionsQuery = gql`
       id
       name
       preview_image_url
+      digital_preview_image_url
     }
   }
 `;

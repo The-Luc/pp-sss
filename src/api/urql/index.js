@@ -19,7 +19,8 @@ import {
   updateSheetCache,
   updateTemplateUserCache,
   updateDeleteTemplateUser,
-  updateBookCollectionCache
+  updateBookCollectionCache,
+  updatePresentColorPickerCache
 } from './cacheUpdater';
 
 let requestCount = 0;
@@ -51,7 +52,8 @@ const urqlClient = createClient({
           create_book_section: updateCreateSection,
           update_book_section: updateSectionCache,
           delete_digital_frame: updateDeleteFrame,
-          create_digital_frame: updateCreateFrame
+          create_digital_frame: updateCreateFrame,
+          update_user_favourite_colors: updatePresentColorPickerCache
         }
       }
     }),

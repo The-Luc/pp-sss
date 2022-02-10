@@ -24,6 +24,22 @@ export const backgroundQuery = gql`
   }
 `;
 
+// for digital editor
+export const digitalBackgroundQuery = gql`
+  query background($id: ID!) {
+    category(id: $id) {
+      id
+      backgrounds(page_type: DIGITAL) {
+        id
+        image_url
+        name
+        thumbnail
+        page_type
+      }
+    }
+  }
+`;
+
 export const backgroundOfThemeQuery = gql`
   query backgroundOfTheme($id: ID!) {
     theme(id: $id) {

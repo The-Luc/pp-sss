@@ -2,8 +2,20 @@ import { get } from 'lodash';
 import { STATUS } from '@/common/constants';
 import { isOk } from '@/common/utils';
 import { graphqlRequest } from '../urql';
-import { uploadBase64ImageMutation } from './mutations';
 
+import { getPresetColorPickerQuery } from './queries';
+import {
+  savePresetColorPickerMutation,
+  uploadBase64ImageMutation
+} from './mutations';
+
+/**
+ *  To upload base64 images to server and get back url
+ *
+ * @param {String} base64 data of image in base64
+ * @param {Boolean} isAutosave is auto save not not
+ * @returns url of image after uploading on server
+ */
 export const uploadBase64ImageApi = async (base64, isAutosave) => {
   if (!base64 || !base64.startsWith('data:image/')) return base64;
 
@@ -24,4 +36,24 @@ export const uploadBase64ImageApi = async (base64, isAutosave) => {
   } catch (error) {
     return { data: null, status: STATUS.NG };
   }
+};
+
+/**
+ *  To get presets color of color picker
+ *
+ * @returns Array of preset colors of color picker
+ */
+export const getPresetsColorPickerApi = async () => {
+  const res = await graphqlRequest(getPresetColorPickerQuery);
+
+  return get(res, 'data.user_favourite_colors', []);
+};
+
+/**
+ * To save color of color picker to DB
+ *
+ * @param {Array<String>} colors array of string - hex colors
+ */
+export const savePresetColorPickerApi = async colors => {
+  return await graphqlRequest(savePresetColorPickerMutation, { colors }, true);
 };

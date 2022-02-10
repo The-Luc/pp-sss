@@ -8,7 +8,8 @@ import { BackgroundElementEntity as BackgroundElement } from '@/common/models/en
 import {
   backgroundCategoriesQuery,
   backgroundQuery,
-  backgroundOfThemeQuery
+  backgroundOfThemeQuery,
+  digitalBackgroundQuery
 } from './queries';
 
 import { BACKGROUND_TYPE, BACKGROUND_PAGE_TYPE } from '@/common/constants';
@@ -16,9 +17,12 @@ import { BACKGROUND_TYPE, BACKGROUND_PAGE_TYPE } from '@/common/constants';
 const getBackgroundsOfTheme = async (
   backgroundTypeId,
   backgroundTypeSubId,
-  backgroundPageTypeId
+  backgroundPageTypeId,
+  isDigital
 ) => {
-  const res = await graphqlRequest(backgroundQuery, {
+  const query = isDigital ? digitalBackgroundQuery : backgroundQuery;
+
+  const res = await graphqlRequest(query, {
     id: backgroundTypeSubId
   });
 
@@ -32,6 +36,10 @@ const getBackgroundsOfTheme = async (
         backgroundType: backgroundTypeId
       })
   );
+
+  if (isDigital)
+    return backgrounds.map(bg => ({ ...bg, pageType: 2, backgroundType: 1 }));
+
   return backgrounds.filter(
     item =>
       item.pageType ===
@@ -85,7 +93,8 @@ const getBackgroundsOfCategory = async (
 export const getBackgroundsApi = async (
   backgroundTypeId,
   backgroundTypeSubId,
-  backgroundPageTypeId
+  backgroundPageTypeId,
+  isDigital
 ) => {
   const getBackgroundMethod =
     backgroundTypeId === BACKGROUND_TYPE.CATEGORY.id
@@ -95,7 +104,8 @@ export const getBackgroundsApi = async (
   return await getBackgroundMethod(
     backgroundTypeId,
     backgroundTypeSubId,
-    backgroundPageTypeId
+    backgroundPageTypeId,
+    isDigital
   );
 };
 /**

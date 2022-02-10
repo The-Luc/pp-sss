@@ -1,4 +1,3 @@
-import DIGITAL_THEME from '@/assets/image/digital-themes/confetti.jpg';
 import { graphqlRequest } from '../urql';
 import { themeOptionsQuery } from './queries';
 import { isOk } from '@/common/utils';
@@ -16,6 +15,8 @@ export const getThemesApi = async (isDigital = false) => {
   return res.data.themes.map(item => ({
     ...item,
     value: item.id,
-    previewImageUrl: isDigital ? DIGITAL_THEME : item.preview_image_url
+    previewImageUrl: isDigital
+      ? item.digital_preview_image_url
+      : item.preview_image_url
   }));
 };
