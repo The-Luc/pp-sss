@@ -9,6 +9,7 @@ import {
 import { digitalWorkspaceQuery, printWorkspaceQuery } from '../sheet/queries';
 import { getFavoriteLayoutsQuery } from '../user/queries';
 import { portraitFoldersSelectedQuery } from '../portrait/queries';
+import { getPresetColorPickerQuery } from '../util/queries';
 
 export const updatePortraitSettingCache = (result, args, cache) => {
   const layoutType = get(args, 'portrait_layout_setting_params.layout_type');
@@ -362,4 +363,13 @@ export const moveSheetCache = (results, args, cache) => {
       return data;
     }
   );
+};
+
+export const updatePresentColorPickerCache = (_, args, cache) => {
+  const colors = args.colors;
+
+  cache.updateQuery({ query: getPresetColorPickerQuery }, data => {
+    data.user_favourite_colors = colors;
+    return data;
+  });
 };

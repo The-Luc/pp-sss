@@ -5,3 +5,9 @@ export const uploadBase64ImageMutation = gql`
     upload_base64_image(base64: $base64)
   }
 `;
+
+export const savePresetColorPickerMutation = gql`
+  mutation savePresetColorPickerMutation($colors: [String]!) {
+    update_user_favourite_colors(colors: $colors)
+  }
+`;
