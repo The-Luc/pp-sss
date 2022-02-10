@@ -1,3 +1,5 @@
+import { cloneDeep, debounce } from 'lodash';
+
 import PhotoSidebar from '@/components/Modals/PhotoSidebar';
 import CropControl from '@/components/CropControl';
 
@@ -54,8 +56,6 @@ import {
 
 import { useSavingStatus, useThumbnail, usePhotos } from '../../composables';
 import { useSaveData, useBookDigitalInfo } from './composables';
-
-import { cloneDeep } from 'lodash';
 
 import {
   handleChangeMediaSrc,
@@ -270,8 +270,15 @@ export default {
       }
     },
     mediaObjectIds: {
-      async handler(val) {
-        if (val) this.sheetMedia = await this.getMedia();
+      async handler(val, oldVal) {
+        if (
+          JSON.stringify(val) === JSON.stringify(oldVal) ||
+          !val ||
+          !this.isMediaSidebarOpen
+        )
+          return;
+
+        this.getMediaAssets();
       }
     }
   },
@@ -959,6 +966,17 @@ export default {
       );
 
       return currentFrames;
-    }
+    },
+
+    /**
+     * Handle get media assets
+     */
+    getMediaAssets: debounce(
+      async function() {
+        this.sheetMedia = await this.getMedia();
+      },
+      5000,
+      { leading: true, trailing: false }
+    )
   }
 };

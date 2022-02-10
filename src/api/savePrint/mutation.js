@@ -55,7 +55,7 @@ export const addInProjectMutation = gql`
   mutation addInProject(
     $assetId: ID!
     $projectId: ID!
-    $bookId: Int!
+    $projectIdInt: Int!
     $type: ProjectTypesType!
   ) {
     create_asset_designable(
@@ -64,7 +64,7 @@ export const addInProjectMutation = gql`
       designable_type: $type
     ) {
       id
-      in_project(project_id: $bookId, project_type: BOOK)
+      in_project(project_id: $projectIdInt, project_type: $type)
     }
   }
 `;
@@ -73,7 +73,7 @@ export const removeInProjectMutation = gql`
   mutation removeInProject(
     $assetId: ID!
     $projectId: ID!
-    $bookId: Int!
+    $projectIdInt: Int!
     $type: ProjectTypesType!
   ) {
     delete_assets_designable(
@@ -82,7 +82,7 @@ export const removeInProjectMutation = gql`
       designable_type: $type
     ) {
       id
-      in_project(project_id: $bookId, project_type: BOOK)
+      in_project(project_id: $projectIdInt, project_type: $type)
     }
   }
 `;

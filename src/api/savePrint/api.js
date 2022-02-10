@@ -24,6 +24,7 @@ export const savePrintDataApi = async (variables, isAutosave) => {
 export const updateInProjectApi = async (variables, isAutosave, isDigital) => {
   const { addAssetIds, removeAssetIds } = variables;
   variables.type = isDigital ? 'DIGITAL_FRAME' : 'PAGE';
+  variables.projectIdInt = parseInt(variables.projectId);
 
   if (!variables.projectId) return null;
 
