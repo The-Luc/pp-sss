@@ -99,9 +99,10 @@ export const usePrintBackgroundMenu = () => {
 };
 
 export const useDigitalBackgroundMenu = () => {
+  const { value: isDigital } = useAppCommon().isDigitalEdition;
   return {
     ...useBackgroundMenu(),
-    getBackgroundData: getBackgroundsApi
+    getBackgroundData: (...args) => getBackgroundsApi(...args, isDigital)
   };
 };
 

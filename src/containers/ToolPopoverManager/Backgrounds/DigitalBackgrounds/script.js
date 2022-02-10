@@ -61,7 +61,8 @@ export default {
     async getBackgrounds() {
       this.backgrounds = await this.getBackgroundData(
         this.selectedType.value,
-        this.selectedType.sub
+        this.selectedType.sub,
+        null // it's needed
       );
     },
     /**
