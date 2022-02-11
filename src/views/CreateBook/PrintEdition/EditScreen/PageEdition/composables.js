@@ -122,20 +122,6 @@ export const useSaveData = () => {
 
     const removeAssetIdsLeft = difference(leftPageAssetIds, leftAssetIds);
     const removeAssetIdsRight = difference(rightPageAssetIds, rightAssetIds);
-    // console.log('--------------------------');
-    // console.log('current asset ', currentAssetIds);
-    // console.log('left asset ', leftAssetIds);
-    // console.log('right asset ', rightAssetIds);
-    // console.log('--------------------------');
-    // console.log('left page asset ', leftPageAssetIds);
-    // console.log('right page asset ', rightPageAssetIds);
-    // console.log('--------------------------');
-    // console.log('add assets left ', addAssetIdsLeft);
-    // console.log('add assets right ', addAssetIdsRight);
-    // console.log('--------------------------');
-    // console.log('removeAsset left', removeAssetIdsLeft);
-    // console.log('removeAsset right', removeAssetIdsRight);
-    // console.log('--------------------------');
 
     const inProjectVariablesLeft = {
       bookId: +bookId,
