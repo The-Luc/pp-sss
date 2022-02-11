@@ -338,9 +338,9 @@ export default {
     async handleSelectedImages(images) {
       const newImages = mergeArray([...images].reverse(), this.sheetMedia);
 
-      const { media, isSuccess } = await this.updateSheetMedia(newImages);
+      const { isSuccess } = await this.updateSheetMedia(newImages);
 
-      if (isSuccess) this.sheetMedia = media;
+      if (isSuccess) this.sheetMedia = newImages;
     },
     /**
      * Close list photo in sidebar
@@ -637,7 +637,7 @@ export default {
       async function() {
         this.sheetMedia = await this.getMedia();
       },
-      5000,
+      500,
       { leading: true, trailing: false }
     )
   }
