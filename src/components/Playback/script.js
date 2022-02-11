@@ -57,6 +57,9 @@ export default {
       this.mainCanvas
     );
 
+    // prevent blank canvas appear at beginning of the playback
+    this.$emit('showCanvas');
+
     await this.playbackAll();
 
     setTimeout(this.onFinish, 1000);
