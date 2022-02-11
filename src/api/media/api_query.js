@@ -151,30 +151,65 @@ export const getQrrentByIdApi = async (id, projectId) => {
  * @param {Boolean} isDigital is digital edition or not
  * @returns assets id of current project and of whole book
  */
-export const getInProjectAssetsApi = async (bookId, projectId, isDigital) => {
+export const getInProjectAssetsApi = async (
+  bookId,
+  projectId,
+  isDigital,
+  isAutosave
+) => {
   const type = isDigital ? 'DIGITAL_FRAME' : 'PAGE';
 
   const projectIdsArray = Array.isArray(projectId) ? projectId : [projectId];
 
   const promises = projectIdsArray.map(id =>
-    graphqlRequest(getInProjectAssetsQuery, {
-      bookId,
-      projectId: +id,
-      type
-    })
+    graphqlRequest(
+      getInProjectAssetsQuery,
+      {
+        bookId,
+        projectId: +id,
+        type
+      },
+      isAutosave,
+      true
+    )
   );
 
   const res = await Promise.all(promises);
 
   if (!isOk(res)) return {};
-  const assets = res.reduce((acc, r) => {
-    const inProjectAssets = get(r, 'data.book.in_project_assets', []);
-    return [...acc, ...inProjectAssets];
-  }, []);
 
-  const apiPageAssetIds = assets
+  const assets = [];
+  const leftAssets = get(res[0], 'data.book.in_project_assets', []);
+  const rightAssets = get(res[1], 'data.book.in_project_assets', []);
+
+  if (!res[0]) {
+    assets.push(...rightAssets);
+  } else {
+    assets.push(...leftAssets);
+
+    if (res[1]) {
+      // if there is the second page
+      const secondPageAssets = rightAssets.filter(a => a.in_project);
+
+      assets.push(...secondPageAssets);
+    }
+  }
+
+  const leftPageAssetIds = leftAssets
     .filter(asset => asset.in_project)
     .map(asset => asset.id);
-  const apiBookAssetIds = assets.map(asset => asset.id);
-  return { apiBookAssetIds, apiPageAssetIds };
+
+  const rightPageAssetIds = rightAssets
+    .filter(asset => asset.in_project)
+    .map(asset => asset.id);
+
+  const apiPageAssetIds = [...leftPageAssetIds, ...rightPageAssetIds];
+
+  const apiBookAssetIds = leftAssets.map(asset => asset.id);
+  return {
+    apiBookAssetIds,
+    apiPageAssetIds,
+    leftPageAssetIds,
+    rightPageAssetIds
+  };
 };

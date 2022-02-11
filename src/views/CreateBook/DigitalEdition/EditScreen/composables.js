@@ -58,7 +58,11 @@ export const useSaveData = () => {
 
     const projectId = +frame.id;
     const currentAssetIds = mediaObjectIds.value;
-    const { apiPageAssetIds } = await getInProjectAssets(bookId, projectId);
+    const { apiPageAssetIds } = await getInProjectAssets(
+      bookId,
+      projectId,
+      isAutosave
+    );
 
     const addAssetIds = difference(currentAssetIds, apiPageAssetIds);
 

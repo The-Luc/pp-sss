@@ -8,6 +8,7 @@ import { getSheetInfoApi } from '@/api/sheet';
 import { OBJECT_TYPE, SHEET_TYPE } from '@/common/constants';
 import { pageInfoMappingToApi } from '@/common/mapping';
 import {
+  arrayDifference,
   getPageIdsOfSheet,
   getSheetThumbnail,
   isEmpty,
@@ -98,32 +99,55 @@ export const useSaveData = () => {
       properties,
       isUpdatePageInfo
     };
+    const currentAssetIds = mediaObjectIds.value;
 
     const { leftPageObjects } = seperateSheetObjectsIntoPages(
       editScreenData.objects
     );
+
     const leftAssetIds = leftPageObjects
       .filter(o => o.imageId)
       .map(o => o.imageId);
 
-    const currentAssetIds = mediaObjectIds.value;
-    const { apiPageAssetIds } = await getInProjectAssets(bookId, pageIds);
+    const rightAssetIds = arrayDifference(currentAssetIds, leftAssetIds);
 
-    const addAssetIds = difference(currentAssetIds, apiPageAssetIds);
+    const { leftPageAssetIds, rightPageAssetIds } = await getInProjectAssets(
+      bookId,
+      pageIds,
+      isAutosave
+    );
 
-    const removeAssetIds = difference(apiPageAssetIds, currentAssetIds);
+    const addAssetIdsLeft = difference(leftAssetIds, leftPageAssetIds);
+    const addAssetIdsRight = difference(rightAssetIds, rightPageAssetIds);
+
+    const removeAssetIdsLeft = difference(leftPageAssetIds, leftAssetIds);
+    const removeAssetIdsRight = difference(rightPageAssetIds, rightAssetIds);
+    // console.log('--------------------------');
+    // console.log('current asset ', currentAssetIds);
+    // console.log('left asset ', leftAssetIds);
+    // console.log('right asset ', rightAssetIds);
+    // console.log('--------------------------');
+    // console.log('left page asset ', leftPageAssetIds);
+    // console.log('right page asset ', rightPageAssetIds);
+    // console.log('--------------------------');
+    // console.log('add assets left ', addAssetIdsLeft);
+    // console.log('add assets right ', addAssetIdsRight);
+    // console.log('--------------------------');
+    // console.log('removeAsset left', removeAssetIdsLeft);
+    // console.log('removeAsset right', removeAssetIdsRight);
+    // console.log('--------------------------');
 
     const inProjectVariablesLeft = {
       bookId: +bookId,
       projectId: pageIds[0],
-      addAssetIds: addAssetIds.filter(a => leftAssetIds.includes(a)),
-      removeAssetIds: removeAssetIds.filter(a => leftAssetIds.includes(a))
+      addAssetIds: addAssetIdsLeft,
+      removeAssetIds: removeAssetIdsLeft
     };
     const inProjectVariablesRight = {
       bookId: +bookId,
       projectId: pageIds[1],
-      addAssetIds: addAssetIds.filter(a => !leftAssetIds.includes(a)),
-      removeAssetIds: removeAssetIds.filter(a => !leftAssetIds.includes(a))
+      addAssetIds: addAssetIdsRight,
+      removeAssetIds: removeAssetIdsRight
     };
 
     // update in project mark of assets

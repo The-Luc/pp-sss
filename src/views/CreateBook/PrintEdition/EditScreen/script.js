@@ -1,3 +1,5 @@
+import { debounce } from 'lodash';
+
 import PhotoSidebar from '@/components/Modals/PhotoSidebar';
 import CropControl from '@/components/CropControl';
 
@@ -199,14 +201,19 @@ export default {
     },
     isMediaSidebarOpen: {
       async handler(val) {
-        if (val) this.sheetMedia = await this.getMedia();
+        if (val) this.getMediaAssets();
       }
     },
     mediaObjectIds: {
       async handler(val, oldVal) {
-        if (JSON.stringify(val) === JSON.stringify(oldVal) || !val) return;
+        if (
+          JSON.stringify(val) === JSON.stringify(oldVal) ||
+          !val ||
+          !this.isMediaSidebarOpen
+        )
+          return;
 
-        this.sheetMedia = await this.getMedia();
+        this.getMediaAssets();
       }
     }
   },
@@ -621,6 +628,17 @@ export default {
       this.selectedFolders = folders;
       this.modalDisplay[TOOL_NAME.PORTRAIT] = false;
       this.modalDisplay.portaitFlow = true;
-    }
+    },
+
+    /**
+     * Handle get media assets
+     */
+    getMediaAssets: debounce(
+      async function() {
+        this.sheetMedia = await this.getMedia();
+      },
+      5000,
+      { leading: true, trailing: false }
+    )
   }
 };
