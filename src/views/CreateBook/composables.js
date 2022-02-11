@@ -320,7 +320,7 @@ export const useColorPicker = () => {
     const colors = await getPresets();
 
     savePresetColorPickerApi(
-      [color, ...colors].slice(0, MAX_COLOR_PICKER_PRESET)
+      [color.substring(0, 7), ...colors].slice(0, MAX_COLOR_PICKER_PRESET)
     );
   };
 
