@@ -39,7 +39,6 @@ import {
   useUser,
   useProperties,
   useSheet,
-  useActionsEditionSheet,
   useObjectProperties,
   useToolBar,
   useObjects,
@@ -98,8 +97,7 @@ export default {
     const { setPropertyById, setPropOfMultipleObjects } = useProperties();
     const { updateSavingStatus } = useSavingStatus();
     const { currentSheet, getSheets } = useSheet();
-    const { updateSheetMedia } = useActionsEditionSheet();
-    const { getMedia } = usePhotos();
+    const { getMedia, updateSheetMedia } = usePhotos();
     const { getBookPrintInfo } = useBookPrintInfo();
     const { listObjects } = useObjectProperties();
     const {
@@ -339,9 +337,8 @@ export default {
       const newImages = mergeArray([...images].reverse(), this.sheetMedia);
 
       const { media, isSuccess } = await this.updateSheetMedia(newImages);
-      newImages[0] = media[0];
 
-      if (isSuccess) this.sheetMedia = newImages;
+      if (isSuccess) this.sheetMedia = media;
     },
     /**
      * Close list photo in sidebar

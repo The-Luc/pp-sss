@@ -1,21 +1,11 @@
 import { useGetters, useMutations } from 'vuex-composition-helpers';
-import { get } from 'lodash';
 import { useAppCommon } from './common';
 import { useAnimation } from './animation';
 import { useFrame } from './frame';
 
-import { updateSheetApi } from '@/api/sheet';
-
-import { updatePageWorkspace } from '@/api/page';
-
 import { Transition } from '@/common/models';
 
-import {
-  getPlaybackDataFromFrames,
-  isEmpty,
-  isOk,
-  removeItemsFormArray
-} from '@/common/utils';
+import { getPlaybackDataFromFrames, isEmpty, isOk } from '@/common/utils';
 
 import {
   GETTERS as PRINT_GETTERS,
@@ -25,7 +15,6 @@ import {
   GETTERS as DIGITAL_GETTERS,
   MUTATES as DIGITAL_MUTATES
 } from '@/store/modules/digital/const';
-import { getAssetByIdApi } from '@/api/media';
 import { getFramesAndTransitionsApi } from '@/api/frame';
 import { TRANSITION, TRANS_TARGET } from '@/common/constants';
 import { updateTransitionApi } from '@/api/playback';
@@ -68,70 +57,17 @@ const useMutationEditionSheet = () => {
 };
 
 export const useActionsEditionSheet = () => {
-  const { isDigitalEdition, generalInfo } = useAppCommon();
+  const { isDigitalEdition } = useAppCommon();
 
   const isDigital = isDigitalEdition.value;
 
   const MUTATES = isDigital ? DIGITAL_MUTATES : PRINT_MUTATES;
-  const GETTERS = isDigital ? DIGITAL_GETTERS : PRINT_GETTERS;
 
-  const { currentSheet } = useGetters({
-    currentSheet: GETTERS.CURRENT_SHEET
+  const { setSheetMedia } = useMutations({
+    setSheetMedia: MUTATES.SET_SHEET_MEDIA
   });
-
-  const { setSheetMedia, deleteMedia } = useMutations({
-    setSheetMedia: MUTATES.SET_SHEET_MEDIA,
-    deleteMedia: MUTATES.DELETE_SHEET_MEDIA
-  });
-
-  /**
-   *  To update media to current sheet
-   * @param {Object} media media object
-   * @param {Boolean} isDigital
-   * @returns
-   */
-  const updateSheetMedia = async (media, isDigital) => {
-    const bookId = Number(generalInfo.value.bookId);
-    const prefix = isDigital ? 'digital_' : '';
-
-    const workspace = {
-      [`${prefix}properties`]: {
-        schema: 1
-      },
-      [`${prefix}assets`]: media.map(m => m.id)
-    };
-
-    const res = await updateSheetApi(currentSheet.value.id, {
-      [`${prefix}workspace`]: JSON.stringify(workspace)
-    });
-
-    if (!isOk(res)) return;
-
-    const mediaPromises = media.map(m => getAssetByIdApi(m.id, bookId));
-    const resMedia = await Promise.all(mediaPromises);
-
-    return { media: resMedia, isSuccess: true };
-  };
-
-  const deleteSheetMedia = async ({ id, index }) => {
-    const pageId = get(currentSheet, 'value.pageIds', [])[0];
-
-    if (!id || !pageId) return;
-
-    const currentMediaIds = currentSheet.value.media.map(m => m.id);
-
-    const assetIds = removeItemsFormArray(currentMediaIds, [{ index }]);
-
-    const res = await updatePageWorkspace(pageId, assetIds);
-
-    if (!isOk(res)) return;
-
-    deleteMedia({ index });
-  };
 
   return {
-    updateSheetMedia,
-    deleteSheetMedia,
     setSheetMedia
   };
 };

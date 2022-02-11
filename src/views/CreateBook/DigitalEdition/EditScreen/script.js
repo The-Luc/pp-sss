@@ -40,7 +40,6 @@ import {
   useUser,
   useFrame,
   useInfoBar,
-  useActionsEditionSheet,
   useSheet,
   useProperties,
   useObjectProperties,
@@ -121,8 +120,7 @@ export default {
     const { updateSavingStatus } = useSavingStatus();
     const { getBookDigitalInfo } = useBookDigitalInfo();
     const { setInfoBar } = useInfoBar();
-    const { updateSheetMedia } = useActionsEditionSheet();
-    const { getMedia, getInProjectAssets } = usePhotos();
+    const { getMedia, getInProjectAssets, updateSheetMedia } = usePhotos();
     const { currentSheet, getSheets } = useSheet();
     const {
       getAllScreenPlaybackData,
@@ -457,9 +455,8 @@ export default {
         mergedMedia,
         true
       );
-      mergedMedia[0] = media[0];
 
-      if (isSuccess) this.sheetMedia = mergedMedia;
+      if (isSuccess) this.sheetMedia = media;
     },
 
     /**

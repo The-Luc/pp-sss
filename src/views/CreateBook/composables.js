@@ -35,7 +35,7 @@ import {
   isEmpty,
   arrayDifference
 } from '@/common/utils';
-import { getWorkspaceApi } from '@/api/sheet';
+import { getWorkspaceApi, updateSheetApi } from '@/api/sheet';
 import { MAX_COLOR_PICKER_PRESET } from '@/common/constants';
 
 export const useSavingStatus = () => {
@@ -222,6 +222,38 @@ export const usePhotos = () => {
     return getAlbumCategoryApi(communityId.value);
   };
 
+  /**
+   *  To update media to current sheet
+   * @param {Object} media media object
+   * @param {Boolean} isDigital
+   * @returns
+   */
+  const updateSheetMedia = async (media, isDigital) => {
+    const bookId = Number(generalInfo.value.bookId);
+    const prefix = isDigital ? 'digital_' : '';
+
+    const workspace = {
+      [`${prefix}properties`]: {
+        schema: 1
+      },
+      [`${prefix}assets`]: media.map(m => m.id)
+    };
+
+    const res = await updateSheetApi(currentSheet.value.id, {
+      [`${prefix}workspace`]: JSON.stringify(workspace)
+    });
+
+    if (!isOk(res)) return;
+
+    const mediaPromises = media.map(m => getAssetByIdApi(m.id, bookId));
+    const resMedia = await Promise.all(mediaPromises);
+
+    const inProjectIds = await getCurrentInProjectIds();
+    updateInProjectAssets(resMedia, inProjectIds);
+
+    return { media: resMedia, isSuccess: true };
+  };
+
   return {
     getSmartbox,
     getSearch,
@@ -232,7 +264,9 @@ export const usePhotos = () => {
     getAlbumCategory,
     getCommunityAlbums,
     getAlbumById,
-    getQrrentById
+    getQrrentById,
+    getCurrentInProjectIds,
+    updateSheetMedia
   };
 };
 
