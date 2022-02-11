@@ -137,7 +137,7 @@ export const TEXT_MARGIN_OPTION = [
 ];
 
 export const TEXT_POSITION_OPTION = [
-  { name: 'Centered', value: 0 },
+  { name: 'Below Portrait', value: 0 },
   { name: 'Outside', value: 1 }
 ];
 

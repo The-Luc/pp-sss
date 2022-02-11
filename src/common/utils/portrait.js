@@ -568,29 +568,22 @@ export const createPortraitObjects = (
           type: objectType
         });
 
-        let textOutsideX = 0;
-
         lastImageWidth = imageX + imageWidth;
 
         if (lastImageWidth > totalWidth) lastImageWidth = 0;
 
+        let textOutsideX = 0;
         if (!isRight) textOutsideX = margins.left;
-        else
-          textOutsideX = isTextAlignRight
-            ? (pageWidth + bleedLeft) * 2 - margins.right - textWidth
-            : pageWidth + margins.left + bleedLeft + totalWidth;
+        else textOutsideX = pageWidth + margins.left + bleedLeft + totalWidth;
 
         const textOutsideY = imageY + textOffsetY - defaultTextPadding;
         textOffsetY += nameGap + nameHeight;
 
         let textX = 0;
-        if (isTextAlignRight)
-          textX = imageX - textWidth + imageWidth + defaultTextPadding;
-        else
-          textX =
-            isTextAlignCenter && textWidth > imageWidth
-              ? imageX - (textWidth - imageWidth) / 2
-              : imageX - defaultTextPadding;
+        textX =
+          (isTextAlignCenter || isTextAlignRight) && textWidth > imageWidth
+            ? imageX - (textWidth - imageWidth) / 2
+            : imageX - defaultTextPadding;
         const textY =
           imageY + imageHeight - defaultTextPadding + defaultTextGap;
 
@@ -601,7 +594,7 @@ export const createPortraitObjects = (
         }
 
         const width = isNameOutSide
-          ? Math.max(textWidth, nameWidth + defaultTextPadding)
+          ? Math.max(textWidth, nameWidth)
           : Math.max(imageWidth + defaultTextPadding * 2, textWidth);
 
         const text = new TextElementObject({
@@ -612,7 +605,7 @@ export const createPortraitObjects = (
             y: isNameOutSide ? textOutsideY : textY
           },
           size: {
-            width: width,
+            width,
             height: isNameOutSide ? textHeight : rowGap
           },
           ...nameTextFontSettings

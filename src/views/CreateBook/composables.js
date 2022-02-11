@@ -92,13 +92,6 @@ export const usePhotos = () => {
     const currentAssetIds = mediaObjectIds.value;
     const deletedAssetsId = arrayDifference(apiPageAssetIds, currentAssetIds);
 
-    // console.log('======================================');
-    // console.log('current asset id ', currentAssetIds);
-    // console.log('deletedAssetId', deletedAssetsId);
-    // console.log('apiBookAssetIds', apiBookAssetIds);
-    // console.log('apiPageAssetIds', apiPageAssetIds);
-    // console.log('======================================');
-
     assets.forEach(asset => {
       if (apiBookAssetIds.filter(id => asset.id === id).length > 0)
         asset.inProject = true;
