@@ -205,14 +205,9 @@ export default {
      */
     getSingleFolderRequiredFrames() {
       const screenNo = parseInt(this.currentSheet.pageName);
-      return this.flowSettings.flowSingleSettings.screen[screenNo]?.map(
-        item => {
-          return {
-            frame: item,
-            screen: screenNo
-          };
-        }
-      );
+      return this.flowSettings.flowSingleSettings.screen[
+        screenNo
+      ]?.map(item => ({ frame: item, screen: screenNo }));
     },
     /**
      * Get required frames for multi folder

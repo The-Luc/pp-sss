@@ -213,7 +213,7 @@ export const getCurrentSheetBackground = (pageId, currentSheet, currentBgs) => {
  * @returns {Object}                background of selected frame
  */
 export const getFrameBackground = (frameNo, frames) => {
-  if (isEmpty(frameNo) || frameNo >= frames.length) return {};
+  if (isEmpty(frameNo) || frameNo > frames.length) return {};
 
   const objects = frames[frameNo - 1]?.objects;
 

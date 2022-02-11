@@ -50,7 +50,7 @@ export default {
       getFrameBackground
     } = useBackgroundAction();
     const { currentSheet, getSheets } = useSheet();
-    const { frameIds, frames } = useFrame();
+    const { frameIds, frames, currentFrameId } = useFrame();
 
     return {
       backgrounds,
@@ -59,7 +59,8 @@ export default {
       currentSheet,
       getSheets,
       frameIds,
-      frames
+      frames,
+      currentFrameId
     };
   },
   async created() {
@@ -133,7 +134,8 @@ export default {
         const isCurrentScreen =
           `${this.currentSheet.id}` === `${screenInfo.id}`;
 
-        if (isCurrentScreen && rp.frame === 1) return this.backgrounds;
+        if (isCurrentScreen && rp.frame === this.currentFrameId)
+          return this.backgrounds;
 
         if (isCurrentScreen) return getFrameBackground(rp.frame, this.frames);
 
