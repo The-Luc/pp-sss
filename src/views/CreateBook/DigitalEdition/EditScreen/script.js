@@ -453,7 +453,11 @@ export default {
     async handleSelectedMedia(newMedia) {
       const mergedMedia = mergeArray([...newMedia].reverse(), this.sheetMedia);
 
-      const { isSuccess } = await this.updateSheetMedia(mergedMedia, true);
+      const { media, isSuccess } = await this.updateSheetMedia(
+        mergedMedia,
+        true
+      );
+      mergedMedia[0] = media[0];
 
       if (isSuccess) this.sheetMedia = mergedMedia;
     },

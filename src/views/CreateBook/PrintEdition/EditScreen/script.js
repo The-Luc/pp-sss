@@ -338,7 +338,8 @@ export default {
     async handleSelectedImages(images) {
       const newImages = mergeArray([...images].reverse(), this.sheetMedia);
 
-      const { isSuccess } = await this.updateSheetMedia(newImages);
+      const { media, isSuccess } = await this.updateSheetMedia(newImages);
+      newImages[0] = media[0];
 
       if (isSuccess) this.sheetMedia = newImages;
     },
