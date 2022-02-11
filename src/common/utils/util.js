@@ -751,3 +751,29 @@ export const sortByProperty = (arr, sortedBy) => {
     (a, b) => Number(a[sortedBy]) - Number(b[sortedBy])
   );
 };
+
+/**
+ *  To get different element of array a compared to array b
+ *  including duplicate elements
+ * ex: a = [1, 2, 3], b = [1, 2] => res = [3]
+ * ex: a = [2, 2, 3], b = [1, 2] => res = [2, 3]
+ * ex: a = [2, 2], b = [1, 2, 3] => res = [2]
+ *
+ * @param {Array} a array a
+ * @param {Array} b  array b
+ * @returns  Array
+ */
+export const arrayDifference = (a, b) => {
+  if (!Array.isArray(a) || !Array.isArray(b)) return;
+
+  const tmpB = cloneDeep(b);
+
+  return a.filter(el => {
+    const index = tmpB.indexOf(el);
+
+    if (index < 0) return true;
+
+    tmpB.splice(index, 1);
+    return false;
+  });
+};

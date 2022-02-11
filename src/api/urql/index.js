@@ -67,11 +67,39 @@ const urqlClient = createClient({
   }
 });
 
-export const graphqlRequest = async (query, variables = {}, isHideSpiner) => {
+// ignore cache data
+const urqlNetworkClient = createClient({
+  url: process.env.VUE_APP_API_ENDPOINT,
+  requestPolicy: 'network-only',
+  exchanges: [devtoolsExchange, dedupExchange, fetchExchange],
+  fetchOptions: () => {
+    const token = getItem(LOCAL_STORAGE.TOKEN);
+    return {
+      headers: { authorization: token ? `Bearer ${token}` : '' }
+    };
+  }
+});
+
+/**
+ *  To make a request to server
+ *
+ * @param {String} query query or mutation of graphql
+ * @param {Object} variables variables of query or mutations
+ * @param {Boolean} isHideSpiner true if it's autosave
+ * @param {Boolean} isIgnoreCache true if ignore cache data
+ * @returns
+ */
+export const graphqlRequest = async (
+  query,
+  variables = {},
+  isHideSpiner,
+  isIgnoreCache
+) => {
   const { operation } = query.definitions[0];
 
+  const client = isIgnoreCache ? urqlNetworkClient : urqlClient;
   if (isHideSpiner) {
-    const res = await urqlClient[operation](query, variables).toPromise();
+    const res = await client[operation](query, variables).toPromise();
     return responseHandler(res);
   }
 
@@ -79,7 +107,7 @@ export const graphqlRequest = async (query, variables = {}, isHideSpiner) => {
   store.commit(APP_MUTATES.SET_LOADING_STATE, { value: true });
   requestCount++;
 
-  const res = await urqlClient[operation](query, variables).toPromise();
+  const res = await client[operation](query, variables).toPromise();
 
   // hide loading screen
   requestCount--;

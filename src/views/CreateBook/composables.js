@@ -1,4 +1,3 @@
-import { difference } from 'lodash';
 import { useMutations, useGetters } from 'vuex-composition-helpers';
 
 import { useAppCommon } from '@/hooks';
@@ -30,7 +29,12 @@ import {
 import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 import { GETTERS as DIGITAL_GETTERS } from '@/store/modules/digital/const';
 import { uploadBase64ImageApi } from '@/api/util';
-import { generateCanvasThumbnail, isOk, isEmpty } from '@/common/utils';
+import {
+  generateCanvasThumbnail,
+  isOk,
+  isEmpty,
+  arrayDifference
+} from '@/common/utils';
 import { getWorkspaceApi } from '@/api/sheet';
 import { MAX_COLOR_PICKER_PRESET } from '@/common/constants';
 
@@ -64,30 +68,52 @@ export const usePhotos = () => {
     currentFrameId: DIGITAL_GETTERS.CURRENT_FRAME_ID
   });
 
-  const getInProjectAssets = async (bookId, projectId) => {
-    return await getInProjectAssetsApi(bookId, projectId, isDigital);
+  const getInProjectAssets = async (bookId, projectId, isAutosave) => {
+    return await getInProjectAssetsApi(
+      bookId,
+      projectId,
+      isDigital,
+      isAutosave
+    );
   };
 
-  const updateInProjectAssets = async assets => {
+  const getCurrentInProjectIds = async () => {
     const bookId = Number(generalInfo.value.bookId);
     const projectId = isDigital
       ? currentFrameId.value
       : currentSheet.value.pageIds;
-    const { apiBookAssetIds, apiPageAssetIds } = await getInProjectAssets(
-      bookId,
-      projectId
-    );
+
+    return getInProjectAssets(bookId, projectId);
+  };
+
+  const updateInProjectAssets = (assets, inProjectIds) => {
+    const { apiBookAssetIds, apiPageAssetIds } = inProjectIds;
 
     const currentAssetIds = mediaObjectIds.value;
-    const deletedAssetsId = difference(apiPageAssetIds, currentAssetIds);
+    const deletedAssetsId = arrayDifference(apiPageAssetIds, currentAssetIds);
+
+    // console.log('======================================');
+    // console.log('current asset id ', currentAssetIds);
+    // console.log('deletedAssetId', deletedAssetsId);
+    // console.log('apiBookAssetIds', apiBookAssetIds);
+    // console.log('apiPageAssetIds', apiPageAssetIds);
+    // console.log('======================================');
 
     assets.forEach(asset => {
-      if (currentAssetIds.includes(asset.id)) asset.inProject = true;
+      if (apiBookAssetIds.filter(id => asset.id === id).length > 0)
+        asset.inProject = true;
+
+      // if asset isn't in apiBookAsset or
+      // asset in delete array and not in apiBookAsset
+
       if (
-        deletedAssetsId.includes(asset.id) &&
-        apiBookAssetIds.filter(id => asset.id === id).length < 2
+        apiBookAssetIds.filter(id => asset.id === id).length === 0 ||
+        (deletedAssetsId.includes(asset.id) &&
+          apiBookAssetIds.filter(id => asset.id === id).length < 2)
       )
         asset.inProject = false;
+
+      if (currentAssetIds.includes(asset.id)) asset.inProject = true;
     });
     return assets;
   };
@@ -100,14 +126,18 @@ export const usePhotos = () => {
 
     const media = await Promise.all(promises);
 
-    return updateInProjectAssets(media);
+    const inProjectIds = await getCurrentInProjectIds();
+    return updateInProjectAssets(media, inProjectIds);
   };
 
   const getAssetById = async assetId => {
     const bookId = Number(generalInfo.value.bookId);
-    const asset = getAssetByIdApi(assetId, bookId);
+    const asset = await getAssetByIdApi(assetId, bookId);
 
-    return updateInProjectAssets(asset);
+    const inProjectIds = await getCurrentInProjectIds();
+
+    updateInProjectAssets([asset], inProjectIds);
+    return asset;
   };
 
   const getAssetByKeywords = async (keywords, isGetMedia) => {
@@ -116,15 +146,22 @@ export const usePhotos = () => {
       ? await getMediaApi(communityId.value, keywords, bookId)
       : await getPhotosApi(communityId.value, keywords, bookId);
 
-    return updateInProjectAssets(assets);
+    const inProjectIds = await getCurrentInProjectIds();
+    return updateInProjectAssets(assets, inProjectIds);
   };
 
   const getSmartbox = async (keywords, isGetMedia) => {
-    return getAssetByKeywords(keywords, isGetMedia);
+    const assets = await getAssetByKeywords(keywords, isGetMedia);
+
+    const inProjectIds = await getCurrentInProjectIds();
+    return updateInProjectAssets(assets, inProjectIds);
   };
 
   const getSearch = async (input, isGetMedia) => {
-    return getAssetByKeywords([input], isGetMedia);
+    const assets = await getAssetByKeywords([input], isGetMedia);
+
+    const inProjectIds = await getCurrentInProjectIds();
+    return updateInProjectAssets(assets, inProjectIds);
   };
 
   const getAlbums = async (MEDIA_CATEGORIES, type) => {
@@ -138,8 +175,10 @@ export const usePhotos = () => {
 
     const albums = await fetchFn[type](communityId.value, bookId, 1);
 
+    const inProjectIds = await getCurrentInProjectIds();
+
     albums.forEach(a => {
-      updateInProjectAssets(a.assets);
+      updateInProjectAssets(a.assets, inProjectIds);
     });
     return albums;
   };
@@ -149,9 +188,11 @@ export const usePhotos = () => {
     const res = await getCommunityAlbumsApi(communityId.value, bookId, page);
     const albums = { communities: res };
 
+    const inProjectIds = await getCurrentInProjectIds();
+
     Object.values(albums).forEach(al => {
       al.forEach(a => {
-        updateInProjectAssets(a.assets);
+        updateInProjectAssets(a.assets, inProjectIds);
       });
     });
     return albums;
@@ -163,8 +204,9 @@ export const usePhotos = () => {
 
     if (isEmpty(album)) return [];
 
-    updateInProjectAssets(album.assets);
+    const inProjectIds = await getCurrentInProjectIds();
 
+    updateInProjectAssets(album.assets, inProjectIds);
     return [album];
   };
 
@@ -174,8 +216,10 @@ export const usePhotos = () => {
 
     if (isEmpty(album)) return [];
 
+    const inProjectIds = await getCurrentInProjectIds();
+
     album.forEach(al => {
-      updateInProjectAssets(al.assets);
+      updateInProjectAssets(al.assets, inProjectIds);
     });
 
     return album;
@@ -274,18 +318,6 @@ export const useThumbnail = () => {
 export const useColorPicker = () => {
   const updateColorPicker = async color => {
     const colors = await getPresets();
-    // const colors = cloneDeep(await getPresets());
-    // next = colors.length;
-
-    // const max = MAX_COLOR_PICKER_PRESET;
-    // console.log('color ', color);
-
-    // colors.splice(next, 1, color.substring(0, 7));
-
-    // next = next >= max - 1 ? 0 : next + 1;
-
-    // setPresets({ preset: color });
-    // const colors = presets.value;
 
     savePresetColorPickerApi(
       [color.substring(0, 7), ...colors].slice(0, MAX_COLOR_PICKER_PRESET)
