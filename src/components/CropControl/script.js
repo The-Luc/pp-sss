@@ -22,7 +22,7 @@ export default {
   },
   data() {
     return {
-      scale: 2,
+      scale: 1,
       rotate: 0
     };
   },
@@ -38,17 +38,7 @@ export default {
       return (width * scaleX) / (height * scaleY);
     },
     area() {
-      if (!this.selectedImage) return 1;
-      const { width, height, scaleX, scaleY } = this.selectedImage;
-      const objectW = width * scaleX;
-      const objectH = height * scaleY;
-      const ratio = objectW / objectH;
-
-      if (ratio < 0.5 || ratio > 3) return 70;
-
-      if (ratio < 1 || ratio > 2.5) return 60;
-
-      return ratio > 1.5 ? 50 : 30;
+      return this.ratio < 1 ? 90 : 50;
     }
   },
   methods: {
@@ -100,21 +90,52 @@ export default {
      */
     onCancel() {
       this.$emit('cancel');
+    },
+    /**
+     * To calculate clipping dimenstion (white box area)
+     *
+     * @returns clipping area dimension
+     */
+    getClipDimension() {
+      const { clientHeight, clientWidth } = this.$refs['body'];
+
+      if (this.ratio >= 1) {
+        const clipWidth = (this.area / 100) * clientWidth;
+        const clipHeight = clipWidth / this.ratio;
+        return { clipWidth, clipHeight };
+      }
+
+      const clipHeight = (this.area / 100) * clientHeight;
+      const clipWidth = clipHeight * this.ratio;
+      return { clipWidth, clipHeight };
     }
   },
   watch: {
     open(val) {
       if (!val) return;
 
-      const { rotate = 0, scale = 2, translate } =
+      const { rotate = 0, scale, translate } =
         this.selectedImage?.cropInfo || {};
       this.rotate = rotate;
-      this.scale = scale;
-
-      if (!translate) return;
 
       setTimeout(() => {
-        this.$refs?.clipper?.setTL$?.next(translate);
+        const { clientWidth } = this.$refs['body'];
+
+        const imageRatio = this.$refs?.clipper?.imgRatio;
+
+        const { clipWidth, clipHeight } = this.getClipDimension();
+        const imageWidth = clientWidth;
+        const imageHeight = imageWidth / imageRatio;
+
+        const calScale = Math.max(
+          clipWidth / imageWidth,
+          clipHeight / imageHeight
+        );
+
+        this.scale = scale || calScale + 0.1; // 0.1 is padding for cropping area
+
+        translate && this.$refs?.clipper?.setTL$?.next(translate);
+        this.scale && this.$refs?.clipper?.setWH$?.next(this.scale);
       }, 250);
     }
   }
