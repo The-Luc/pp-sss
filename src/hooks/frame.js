@@ -198,7 +198,7 @@ export const useFrameOrdering = () => {
     updateFrameOrderApi(sheetId, frameOrderIds);
   };
 
-  return { handleUpdateFrameOrder };
+  return { handleUpdateFrameOrder, updateFrameOrder: updateFrameOrderApi };
 };
 
 export const useFrameTitle = () => {
