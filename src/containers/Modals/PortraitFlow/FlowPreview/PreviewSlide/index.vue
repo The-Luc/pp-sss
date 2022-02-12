@@ -13,7 +13,7 @@
             :key="`item-${itemIndex}`"
             :portraits="previewData.item.portraits"
             :layout="previewData.item.layout"
-            :background-url="previewData.item.backgroundUrl"
+            :background="previewData.item.background"
             :is-full-background="previewData.item.isFullBackground"
             :flow-number="previewData.index + 1"
             :page-number="previewData.item.pageNo"

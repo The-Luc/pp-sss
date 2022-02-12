@@ -6,7 +6,7 @@
       half: isFullBackground,
       right: pageNumber % 2 !== 0
     }"
-    :style="{ backgroundImage: backgroundUrl && `url(${backgroundUrl})` }"
+    :style="backgroundCssStyle"
   >
     <div
       v-show="showPageTitile"

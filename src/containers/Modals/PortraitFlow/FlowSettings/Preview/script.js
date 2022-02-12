@@ -67,7 +67,7 @@ export default {
   data() {
     return {
       pageNo: 1,
-      backgroundUrl: '',
+      background: {},
       isFullBackground: false,
       portraits: [],
       containerName: this.isDigital ? 'Frame' : 'Page',
@@ -185,15 +185,13 @@ export default {
       this.pageNo = page.pageNo;
       this.screenNumber = page.screenNumber;
 
-      const background = this.isDigital
+      this.background = this.isDigital
         ? await this.getDigitalBackground()
         : await this.getPrintBackground();
 
-      this.backgroundUrl = background.imageUrl || '';
-
       this.isFullBackground = this.isDigital
         ? false
-        : isFullBackground(background);
+        : isFullBackground(this.background);
 
       const { flowMultiSettings, folders } = this.flowSettings;
       const isContinuousFlow =

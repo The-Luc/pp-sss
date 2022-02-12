@@ -14,8 +14,9 @@ export default {
     pageNo: {
       type: Number
     },
-    backgroundUrl: {
-      type: String
+    background: {
+      type: Object,
+      defaut: () => ({})
     },
     isFullBackground: {
       type: Boolean,

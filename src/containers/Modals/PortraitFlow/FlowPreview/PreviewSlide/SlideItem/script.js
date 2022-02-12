@@ -13,8 +13,9 @@ export default {
       type: Object,
       default: () => ({})
     },
-    backgroundUrl: {
-      type: String
+    background: {
+      type: Object,
+      default: () => ({})
     },
     isFullBackground: {
       type: Boolean,
