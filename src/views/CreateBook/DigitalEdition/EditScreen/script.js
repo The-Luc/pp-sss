@@ -936,7 +936,7 @@ export default {
       );
 
       // update frames
-      Promise.all(
+      await Promise.all(
         updatedFrames.map(frame => this.updateFrameApi(frame.id, frame))
       );
 
@@ -946,7 +946,7 @@ export default {
       );
 
       // remove all in-project assets of the page
-      Promise.all(
+      await Promise.all(
         updatedFrames.map((frame, idx) => {
           const inProjectVariables = {
             bookId: +bookId,
