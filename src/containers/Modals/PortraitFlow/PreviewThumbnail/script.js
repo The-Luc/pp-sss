@@ -38,8 +38,9 @@ export default {
       type: Object,
       default: () => ({})
     },
-    backgroundUrl: {
-      type: String
+    background: {
+      type: Object,
+      default: () => ({})
     },
     isFullBackground: {
       type: Boolean,
@@ -325,6 +326,16 @@ export default {
     },
     title() {
       return this.flowSettings.textSettings?.pageTitle;
+    },
+    backgroundCssStyle() {
+      const { imageUrl, opacity } = this.background;
+      const color = `rgba(255,255,255, ${1 - opacity})`;
+
+      if (!imageUrl) return {};
+
+      return {
+        backgroundImage: `linear-gradient(${color},${color}), url(${imageUrl})`
+      };
     }
   },
   watch: {

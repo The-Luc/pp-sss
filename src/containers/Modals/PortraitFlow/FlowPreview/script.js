@@ -117,7 +117,7 @@ export default {
         return {
           portraits,
           layout: this.flowSettings.layoutSettings,
-          backgroundUrl: backgrounds[index]?.imageUrl || '',
+          background: backgrounds[index],
           isFullBackground: isFullBackground(backgrounds[index]),
           pageNo: p
         };
@@ -162,7 +162,7 @@ export default {
         return {
           portraits,
           layout: this.flowSettings.layoutSettings,
-          backgroundUrl: backgrounds[index]?.imageUrl,
+          background: backgrounds[index],
           pageNo: p.frame,
           screenNo: p.screen
         };

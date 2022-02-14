@@ -24,8 +24,12 @@ export const getSheetInfoApi = async id => {
     const elements = get(page, 'layout.elements', []);
 
     if (sheetType === SHEET_TYPE.BACK_COVER) return elements;
-    if (sheetType === SHEET_TYPE.FRONT_COVER)
-      return changeObjectsCoords(elements, 'right');
+    if (sheetType === SHEET_TYPE.FRONT_COVER) {
+      const leftObjects = elements.filter(e => e.isLeftPageObject);
+      const rightObjects = elements.filter(e => !e.isLeftPageObject);
+
+      return [...leftObjects, ...changeObjectsCoords(rightObjects, 'right')];
+    }
 
     return idx === 0 ? elements : changeObjectsCoords(elements, 'right');
   });

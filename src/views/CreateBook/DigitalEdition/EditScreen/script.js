@@ -50,7 +50,8 @@ import {
   useActionDigitalSheet,
   useAppCommon,
   useFrameAction,
-  useMediaObjects
+  useMediaObjects,
+  useFrameOrdering
 } from '@/hooks';
 
 import { useSavingStatus, useThumbnail, usePhotos } from '../../composables';
@@ -112,6 +113,7 @@ export default {
       frames,
       clearAllFrames
     } = useFrame();
+    const { updateFrameOrder } = useFrameOrdering();
     const {
       saveEditScreen,
       getDataEditScreen,
@@ -185,6 +187,7 @@ export default {
       setLoadingState,
       generalInfo,
       createFrame,
+      updateFrameOrder,
       updateFrameApi,
       getSheetFrames,
       generateMultiThumbnails,
@@ -933,7 +936,7 @@ export default {
       );
 
       // update frames
-      Promise.all(
+      await Promise.all(
         updatedFrames.map(frame => this.updateFrameApi(frame.id, frame))
       );
 
@@ -943,7 +946,7 @@ export default {
       );
 
       // remove all in-project assets of the page
-      Promise.all(
+      await Promise.all(
         updatedFrames.map((frame, idx) => {
           const inProjectVariables = {
             bookId: +bookId,
@@ -962,6 +965,10 @@ export default {
       createdFrames.forEach(
         (frame, index) => (frame.id = responeFrames[index].id)
       );
+
+      // update frame orders
+      const frameIds = currentFrames.map(f => parseInt(f.id));
+      await this.updateFrameOrder(screenId, frameIds);
 
       return currentFrames;
     },
