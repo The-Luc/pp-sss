@@ -9,7 +9,7 @@
       Crop Photo
     </div>
 
-    <div class="body">
+    <div ref="body" class="body">
       <clipper-fixed
         ref="clipper"
         bg-color="transparent"

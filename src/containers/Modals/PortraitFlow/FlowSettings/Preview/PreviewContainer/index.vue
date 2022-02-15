@@ -6,7 +6,7 @@
         :portraits="portraits"
         :layout="layout"
         :page-number="pageNo"
-        :background-url="backgroundUrl"
+        :background="background"
         :is-full-background="isFullBackground"
         :flow-settings="flowSettings"
         :is-digital="isDigital"

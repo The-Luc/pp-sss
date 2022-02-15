@@ -99,6 +99,11 @@ export const mapSheetToPages = sheet => {
 
   const { leftLayout, rightLayout } = pageLayoutsFromSheet(sheet.objects);
 
+  // if sheet type is inside-front-cover => move objects of the left page to right page
+  if (isHalfRight(sheet.sheetProps)) {
+    rightLayout.elements.push(...leftLayout.elements);
+  }
+
   const leftPage = {
     layout: JSON.stringify(leftLayout),
     title: leftTitle,
@@ -152,7 +157,9 @@ export const seperateSheetObjectsIntoPages = objects => {
     }
 
     o.arrangeOrder = index;
-    o.coord.x < pageWidth ? leftPageObjects.push(o) : rightPageObjects.push(o);
+    o.coord.x < pageWidth
+      ? leftPageObjects.push({ ...o, isLeftPageObject: true })
+      : rightPageObjects.push(o);
   });
 
   return { leftPageObjects, rightPageObjects };

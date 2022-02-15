@@ -11,7 +11,7 @@ export class ImageCrop extends BaseObject {
   cropBottom = 0;
   cropLeft = 0;
   cropRight = 0;
-  scale = 1;
+  scale = null;
   rotate = 0;
   translate = {
     left: 0,
