@@ -1,7 +1,7 @@
 import { mapMutations, mapGetters } from 'vuex';
 
 import Modal from '@/containers/Modals/Modal';
-import { useDrawLayout, useGetLayouts } from '@/hooks';
+import { useGetLayouts } from '@/hooks';
 import { MUTATES as APP_MUTATES } from '@/store/modules/app/const';
 import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 import { EDITION } from '@/common/constants';
@@ -10,10 +10,8 @@ import { changeObjectsCoords } from '@/common/utils/layout';
 
 export default {
   setup() {
-    const { drawLayout } = useDrawLayout();
     const { updateSheetThemeLayout } = useGetLayouts(EDITION.PRINT);
     return {
-      drawLayout,
       updateSheetThemeLayout
     };
   },

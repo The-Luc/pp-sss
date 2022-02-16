@@ -5,7 +5,7 @@
         v-if="!isHalfSheet"
         is-active
         class="btn-first"
-        @click="onSelectPageOfLayout('full')"
+        @click="onSelectPageOfLayout(sheetId, 'SHEET')"
       >
         Save Spread Layout
       </PpButton>
@@ -20,14 +20,14 @@
       <PpButton
         v-if="!isHalfSheet && !isContainFullBackground"
         is-active
-        @click="onSelectPageOfLayout('left')"
+        @click="onSelectPageOfLayout(leftPageId, 'PAGE')"
       >
         Save Left Hand Page Layout
       </PpButton>
       <PpButton
         v-if="!isHalfSheet && !isContainFullBackground"
         is-active
-        @click="onSelectPageOfLayout('right')"
+        @click="onSelectPageOfLayout(rightPageId, 'PAGE')"
       >
         Save Right Hand Page Layout
       </PpButton>

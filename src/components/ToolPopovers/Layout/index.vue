@@ -54,7 +54,9 @@
             :layout="layout"
             :selected-layout-id="selectedLayout.id"
             :is-favorites="isInFavorites(layout)"
-            :is-favorites-disabled="layout.isFavoritesDisabled"
+            :is-favorites-disabled="
+              layout.isFavoritesDisabled || layout.isCustom
+            "
             :is-digital="isDigital"
             :is-preview-disabled="isOnPreview"
             @click="onSelectLayout"

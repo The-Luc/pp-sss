@@ -17,8 +17,11 @@ export default {
     };
   },
   computed: {
-    pageSelected() {
-      return this.$attrs.props.pageSelected;
+    id() {
+      return this.$attrs.props.id;
+    },
+    type() {
+      return this.$attrs.props.type;
     }
   },
   methods: {
@@ -35,8 +38,9 @@ export default {
      */
     saveLayout() {
       this.$root.$emit(EVENT_TYPE.SAVE_LAYOUT, {
-        layoutName: this.layoutName,
-        pageSelected: this.pageSelected
+        layoutName: this.layoutName?.trim() || 'Untitled',
+        id: this.id,
+        type: this.type
       });
       this.onCancel();
     }

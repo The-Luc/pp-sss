@@ -19,20 +19,6 @@ export const loadDigitalLayouts = () =>
 export const loadSupplementalLayouts = () =>
   Promise.resolve(supplementalLayouts);
 
-export const setPrintPpLayouts = layout => {
-  setTimeout(() => {
-    window.data.printSavedLayouts.push(layout);
-  });
-};
-
-export const getPrintLayoutTypes = () => {
-  return new Promise(resolve => {
-    setTimeout(() => {
-      resolve(window.data.printLayoutTypes);
-    });
-  });
-};
-
 export const getDigitalLayoutTypes = () => {
   return new Promise(resolve => {
     setTimeout(() => {
@@ -78,15 +64,5 @@ export const getFavorites = () => {
 export const getCustom = () => {
   return new Promise(resolve => {
     resolve(window.data.printSavedLayouts);
-  });
-};
-
-export const getLayoutsByThemeAndType = (themeId, layoutTypeId) => {
-  return new Promise(resolve => {
-    const layouts = window.data.printLayouts.filter(
-      l => l.themeId === themeId && l.type === layoutTypeId
-    );
-
-    resolve(layouts);
   });
 };

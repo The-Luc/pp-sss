@@ -44,7 +44,7 @@ export const getSheetInfoApi = async id => {
     return a?.arrangeOrder - b?.arrangeOrder;
   });
 
-  return { objects: entitiesToObjects(objects), meida: null, sheetType };
+  return { objects: entitiesToObjects(objects), sheetType };
 };
 
 export const getWorkspaceApi = async (sheetId, isDigital) => {

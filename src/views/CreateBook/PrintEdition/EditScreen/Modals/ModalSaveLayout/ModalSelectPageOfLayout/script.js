@@ -21,6 +21,15 @@ export default {
     },
     isContainFullBackground() {
       return isFullBackground(this.backgrounds.left);
+    },
+    sheetId() {
+      return this.currentSheet?.id;
+    },
+    leftPageId() {
+      return this.currentSheet?.pageIds[0];
+    },
+    rightPageId() {
+      return this.currentSheet?.pageIds[1];
     }
   },
   methods: {
@@ -34,16 +43,17 @@ export default {
     },
     /**
      * Select page of layout to save layout and open modal set name layout
-     * @param  {String} pageSelected page left, right, full
+     * @param  {String} id id of selected page (sheet, left page or right page)
      */
-    onSelectPageOfLayout(pageSelected) {
+    onSelectPageOfLayout(id, type) {
       this.onCancel();
       this.toggleModal({
         isOpenModal: true,
         modalData: {
           type: MODAL_TYPES.SAVE_LAYOUT,
           props: {
-            pageSelected
+            id,
+            type
           }
         }
       });
@@ -53,11 +63,11 @@ export default {
      */
     onSaveLayoutOfHalfSheet() {
       if (SHEET_TYPE.FRONT_COVER === this.currentSheet.type) {
-        this.onSelectPageOfLayout('right');
+        this.onSelectPageOfLayout(this.rightPageId, 'PAGE');
         return;
       }
       if (SHEET_TYPE.BACK_COVER === this.currentSheet.type) {
-        this.onSelectPageOfLayout('left');
+        this.onSelectPageOfLayout(this.leftPageId, 'PAGE');
       }
     }
   }

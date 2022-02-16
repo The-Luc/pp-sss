@@ -5,8 +5,10 @@ import {
   getLayoutElementsQuery,
   getLayoutsPreviewQuery,
   getLayoutsQuery,
-  getLayoutTypeQuery
+  getLayoutTypeQuery,
+  getUserLayoutsQuery
 } from './queries';
+import { LAYOUT_PAGE_TYPE } from '@/common/constants/layoutTypes';
 import {
   createBackgroundElement,
   createClipartElement,
@@ -15,6 +17,7 @@ import {
   isOk
 } from '@/common/utils';
 
+import { layoutMapping } from '@/common/mapping/layout';
 /**
  *  To get previewImageUrl of layouts of a theme
  * @param {String} themeId id of a theme
@@ -80,7 +83,8 @@ export const getLayoutsByThemeAndTypeApi = async (themeId, categoryId) => {
     themeId,
     previewImageUrl: t.preview_image_url,
     name: t.data.properties.title,
-    isFavorites: false
+    isFavorites: false,
+    pageType: LAYOUT_PAGE_TYPE.SINGLE_PAGE.id
   }));
 };
 
@@ -90,6 +94,10 @@ export const getLayoutElementsApi = async id => {
   if (!isOk(res)) return [];
 
   const elements = get(res, 'data.template.layout.elements', []);
+
+  if (elements[0]?.type) return elements; // PP templates
+
+  // case: legacy templates
   const background = createBackgroundElement(get(res, 'data.template', {}));
 
   return [
@@ -109,4 +117,14 @@ export const getLayoutElementsApi = async id => {
     }),
     background
   ];
+};
+
+export const getCustomPrintLayoutApi = async () => {
+  const res = await graphqlRequest(getUserLayoutsQuery);
+
+  if (!isOk(res)) return;
+
+  const { single_page, double_page } = res.data;
+
+  return [...single_page, ...double_page].map(layout => layoutMapping(layout));
 };
