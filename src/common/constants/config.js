@@ -29,6 +29,8 @@ export const MAX_SAVED_IMAGE_STYLES = 12;
 
 export const MIN_IMAGE_SIZE = 200; //px
 
+export const TIME_PER_PAGE = 1; // minute: time takes to generate 1 page pdf
+
 export const IMAGE_INDICATOR = {
   STROKE: '#42738d',
   STROKE_WIDTH: 10

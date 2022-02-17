@@ -27,7 +27,8 @@ export const useBookPrintInfo = () => {
       bookUserId,
       title,
       coverOption,
-      numberMaxPages
+      numberMaxPages,
+      totalPages
     } = book;
 
     setBookInfo({
@@ -43,7 +44,7 @@ export const useBookPrintInfo = () => {
       }
     });
 
-    setGeneralInfo({ info: { bookId, title } });
+    setGeneralInfo({ info: { bookId, title, totalPages } });
   };
 
   return { getBookPrintInfo, printBookInfo };

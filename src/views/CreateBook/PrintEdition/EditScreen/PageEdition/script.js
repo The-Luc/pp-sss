@@ -129,6 +129,7 @@ import {
   ShapeElementObject
 } from '@/common/models/element';
 import { useBookPrintInfo } from '../composables';
+import { usePdfGeneration } from '../../MainScreen/composables';
 
 export default {
   components: {
@@ -152,6 +153,7 @@ export default {
     const { updateSheetThumbnail } = useMutationPrintSheet();
     const { updateMediaSidebarOpen, setPropertiesType } = useToolBar();
     const { saveCustomPrintLayout } = useCustomLayout();
+    const { generatePdf } = usePdfGeneration();
 
     return {
       generalInfo,
@@ -168,7 +170,8 @@ export default {
       updateMediaSidebarOpen,
       setPropertiesType,
       setLoadingState,
-      saveCustomPrintLayout
+      saveCustomPrintLayout,
+      generatePdf
     };
   },
   data() {
@@ -1829,6 +1832,7 @@ export default {
         [EVENT_TYPE.COPY_OBJ]: this.handleCopy,
         [EVENT_TYPE.PASTE_OBJ]: this.handlePaste,
         [EVENT_TYPE.SAVE_LAYOUT]: this.handleSaveLayout,
+        [EVENT_TYPE.GENERATE_PDF]: this.handleGeneratePDF,
 
         pageNumber: this.addPageNumber,
         drawLayout: this.drawLayout
@@ -1989,6 +1993,10 @@ export default {
       await this.saveData(this.pageSelected.id);
 
       await this.saveCustomPrintLayout(setting);
+    },
+    handleGeneratePDF() {
+      const bookId = this.generalInfo.id;
+      this.generatePdf(bookId);
     },
     async drawLayout() {
       await this.drawObjectsOnCanvas(this.sheetLayout);

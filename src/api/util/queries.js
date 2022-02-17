@@ -5,3 +5,9 @@ export const getPresetColorPickerQuery = gql`
     user_favourite_colors
   }
 `;
+
+export const generateBookPdfQuery = gql`
+  query generatePdfQuery($bookId: ID!) {
+    generate_book_pdf(id: $bookId)
+  }
+`;

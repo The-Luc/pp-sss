@@ -3,7 +3,7 @@ import { STATUS } from '@/common/constants';
 import { isOk } from '@/common/utils';
 import { graphqlRequest } from '../urql';
 
-import { getPresetColorPickerQuery } from './queries';
+import { generateBookPdfQuery, getPresetColorPickerQuery } from './queries';
 import {
   savePresetColorPickerMutation,
   uploadBase64ImageMutation
@@ -56,4 +56,15 @@ export const getPresetsColorPickerApi = async () => {
  */
 export const savePresetColorPickerApi = async colors => {
   return await graphqlRequest(savePresetColorPickerMutation, { colors }, true);
+};
+
+/**
+ *  To trigger pdf generation job
+ *
+ * @param {String} id id of book or page will be created pdf from.
+ * @returns response result
+ */
+export const generatePdfApi = async id => {
+  const res = await graphqlRequest(generateBookPdfQuery, { bookId: id });
+  return isOk(res);
 };

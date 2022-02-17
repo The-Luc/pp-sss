@@ -33,7 +33,8 @@ export const EVENT_TYPE = {
   CHANGE_ANIMATION_ORDER: 'changeAnimationOrder',
   BACKGROUND_SELECT: 'backgroundToggleSelection',
   ANIMATION_SELECT: 'selectAnimationObject',
-  PLAYBACK: 'playback'
+  PLAYBACK: 'playback',
+  GENERATE_PDF: 'generatePdf'
 };
 
 export const CANVAS_EVENT_TYPE = {
