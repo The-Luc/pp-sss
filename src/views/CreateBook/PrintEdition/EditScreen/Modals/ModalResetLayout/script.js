@@ -2,7 +2,7 @@ import { mapMutations } from 'vuex';
 
 import Modal from '@/containers/Modals/Modal';
 import PpButton from '@/components/Buttons/Button';
-import { useDrawLayout, useGetLayouts, useSheet } from '@/hooks';
+import { useGetLayouts, useSheet } from '@/hooks';
 import { MUTATES as APP_MUTATES } from '@/store/modules/app/const';
 import {
   EDITION,
@@ -18,11 +18,9 @@ export default {
     PpButton
   },
   setup() {
-    const { drawLayout } = useDrawLayout();
     const { sheetLayout } = useSheet();
     const { updateSheetThemeLayout } = useGetLayouts(EDITION.PRINT);
     return {
-      drawLayout,
       sheetLayout,
       updateSheetThemeLayout
     };

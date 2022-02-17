@@ -19,7 +19,12 @@ import {
   getFavoriteLayoutsQuery
 } from './queries';
 
-import { LOCAL_STORAGE, ROLE, STATUS } from '@/common/constants';
+import {
+  LAYOUT_PAGE_TYPE,
+  LOCAL_STORAGE,
+  ROLE,
+  STATUS
+} from '@/common/constants';
 
 export const getCurrentUserApi = async () => {
   const communityUserId = getItem(LOCAL_STORAGE.COMMUNITY_USER_ID);
@@ -98,6 +103,8 @@ export const getFavoriteLayoutsApi = async () => {
   if (!isOk(res)) return [];
 
   const layouts = uniqBy(res.data.template_favourites, 'id');
+  const doublePageId = LAYOUT_PAGE_TYPE.FULL_PAGE.id;
+  const singlePageId = LAYOUT_PAGE_TYPE.SINGLE_PAGE.id;
 
   return layouts.map(t => {
     const categoryId =
@@ -112,7 +119,8 @@ export const getFavoriteLayoutsApi = async () => {
       previewImageUrl: t.preview_image_url,
       name: t.data.properties.title,
       isFavorites: true,
-      isFavoritesDisabled: false
+      isFavoritesDisabled: false,
+      pageType: t.layout_type === 'DOUBLE_PAGE' ? doublePageId : singlePageId
     };
   });
 };

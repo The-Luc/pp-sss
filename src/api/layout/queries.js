@@ -59,3 +59,18 @@ export const getLayoutElementsQuery = gql`
     }
   }
 `;
+
+export const getUserLayoutsQuery = gql`
+  query getUserLayouts {
+    double_page: user_saved_print_layouts(layout_type: DOUBLE_PAGE) {
+      id
+      layout_type
+      preview_image_url
+    }
+    single_page: user_saved_print_layouts(layout_type: SINGLE_PAGE) {
+      id
+      layout_type
+      preview_image_url
+    }
+  }
+`;

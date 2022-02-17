@@ -10,6 +10,7 @@ import { digitalWorkspaceQuery, printWorkspaceQuery } from '../sheet/queries';
 import { getFavoriteLayoutsQuery } from '../user/queries';
 import { portraitFoldersSelectedQuery } from '../portrait/queries';
 import { getPresetColorPickerQuery } from '../util/queries';
+import { getUserLayoutsQuery } from '../layout/queries';
 
 export const updatePortraitSettingCache = (result, args, cache) => {
   const layoutType = get(args, 'portrait_layout_setting_params.layout_type');
@@ -370,6 +371,23 @@ export const updatePresentColorPickerCache = (_, args, cache) => {
 
   cache.updateQuery({ query: getPresetColorPickerQuery }, data => {
     data.user_favourite_colors = colors;
+    return data;
+  });
+};
+
+export const createUserCustomPrintTemplate = (results, args, cache) => {
+  const layout = get(results, 'create_user_custom_print_template', null);
+  const saveType = args?.save_type;
+  const saveTypeMapping = {
+    PAGE: 'single_page',
+    SHEET: 'double_page'
+  };
+
+  const category = saveTypeMapping[saveType];
+  cache.updateQuery({ query: getUserLayoutsQuery }, data => {
+    if (!data || !layout) return data;
+
+    data[category].push(layout);
     return data;
   });
 };

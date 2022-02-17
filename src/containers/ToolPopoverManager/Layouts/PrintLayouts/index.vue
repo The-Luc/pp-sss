@@ -1,14 +1,14 @@
 <template>
   <Layouts
     :is-visited="isVisited"
-    :layouts="layouts"
+    :layouts="filteredLayouts"
     :layout-id="layoutId"
     :is-prompt="isPrompt"
     :text-display="textDisplay"
     :themes-options="themesOptions"
     :layout-types="layoutTypes"
     :theme-selected="themeSelected"
-    :disable-theme-opts="disabledTheme"
+    :disabled-theme-opts="disabledTheme"
     :disabled-layout-opts="disabled"
     :layout-type-selected="layoutTypeSelected"
     :favorite-layouts="favoriteLayouts"

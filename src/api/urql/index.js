@@ -20,7 +20,8 @@ import {
   updateTemplateUserCache,
   updateDeleteTemplateUser,
   updateBookCollectionCache,
-  updatePresentColorPickerCache
+  updatePresentColorPickerCache,
+  createUserCustomPrintTemplate
 } from './cacheUpdater';
 
 let requestCount = 0;
@@ -53,7 +54,8 @@ const urqlClient = createClient({
           update_book_section: updateSectionCache,
           delete_digital_frame: updateDeleteFrame,
           create_digital_frame: updateCreateFrame,
-          update_user_favourite_colors: updatePresentColorPickerCache
+          update_user_favourite_colors: updatePresentColorPickerCache,
+          create_user_custom_print_template: createUserCustomPrintTemplate
         }
       }
     }),

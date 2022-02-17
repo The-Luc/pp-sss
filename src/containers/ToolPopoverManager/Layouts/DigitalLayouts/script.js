@@ -22,7 +22,8 @@ import {
   useGetLayouts,
   useFrame,
   useModal,
-  useActionLayout
+  useActionLayout,
+  useCustomLayout
 } from '@/hooks';
 
 import {
@@ -64,10 +65,9 @@ export default {
 
     const {
       getDigitalLayoutTypes,
-      getCustom,
-      getLayoutsByThemeAndType,
       getCustomAndFavoriteLayouts
     } = useActionLayout();
+    const { getCustom } = useCustomLayout();
 
     return {
       isPrompt,
@@ -86,7 +86,6 @@ export default {
       currentFrameId,
       getDigitalLayoutTypes,
       getCustom,
-      getLayoutsByThemeAndType,
       getCustomAndFavoriteLayouts
     };
   },
