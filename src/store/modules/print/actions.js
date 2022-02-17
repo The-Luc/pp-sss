@@ -45,7 +45,6 @@ export const actions = {
     const currentSheet = state.sheets[state.currentSheetId];
 
     const objects = entitiesToObjects(layout.objects);
-    console.log(objects);
     objects.forEach(o => {
       if (o?.coord?.x > 1000) {
         o.coord.x = o.coord.x - 2625 + 8.625;
