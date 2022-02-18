@@ -1,12 +1,6 @@
 import { useMutations, useGetters, useActions } from 'vuex-composition-helpers';
-import { fabric } from 'fabric';
 
-import {
-  getPrintLayoutTypes,
-  getDigitalLayoutTypes,
-  getCustom,
-  getLayoutsByThemeAndType
-} from '@/api/layoutService';
+import { getDigitalLayoutTypes } from '@/api/layoutService';
 
 import {
   saveToFavoritesApi,
@@ -14,7 +8,11 @@ import {
   getFavoritesApi,
   getFavoriteLayoutsApi
 } from '@/api/user';
-import { getLayoutElementsApi } from '@/api/layout';
+import {
+  getLayoutElementsApi,
+  saveCustomPrintLayoutApi,
+  getCustomPrintLayoutApi
+} from '@/api/layout';
 
 import { GETTERS as THEME_GETTERS } from '@/store/modules/theme/const';
 
@@ -33,15 +31,9 @@ import {
   ACTIONS as DIGITAL_ACTIONS
 } from '@/store/modules/digital/const';
 
-import {
-  OBJECT_TYPE,
-  TOOL_NAME,
-  DEFAULT_FABRIC_BACKGROUND,
-  EDITION
-} from '@/common/constants';
+import { TOOL_NAME, EDITION, MODAL_TYPES } from '@/common/constants';
 
-import { inToPx, isFullBackground, isOk } from '@/common/utils';
-import { createTextBox } from '@/common/fabricObjects';
+import { isOk } from '@/common/utils';
 
 export const useLayoutPrompt = edition => {
   const EDITION_GETTERS =
@@ -137,122 +129,6 @@ const getterPrintLayout = () => {
 
   return { sheetLayout, getLayoutsByType, listLayouts, updateSheetThemeLayout };
 };
-/**
- * Draw text by fabric after that add to target canvas
- * @param {Object} textObject - Page objects data
- * @param {Ref} targetCanvas - Target canvas to draw objects
- * @param {Number} index - Index/order of object
- */
-const handleDrawTextLayout = (textObject, targetCanvas, index) => {
-  const {
-    coord: { x, y },
-    size: { width, height }
-  } = textObject;
-  let left = inToPx(x);
-  const { object } = createTextBox(
-    left,
-    inToPx(y),
-    inToPx(width),
-    inToPx(height),
-    textObject
-  );
-  targetCanvas.add(object);
-  targetCanvas.moveTo(object, index);
-};
-
-/**
- * Draw background on target canvas by fabric
- * @param {String} backgroundUrl - Background url
- * @param {String} position - Background's position
- * @param {Ref} targetCanvas - Target canvas to draw objects
- * @param {Number} index - Index/order of object
- */
-const handleDrawBackgroundLayout = (
-  id,
-  backgroundUrl,
-  backgroundPageType,
-  position,
-  targetCanvas,
-  index
-) => {
-  if (!backgroundUrl) {
-    targetCanvas?.clear().renderAll();
-    return;
-  }
-  fabric.Image.fromURL(
-    backgroundUrl,
-    function(img) {
-      const { width, height } = targetCanvas;
-      const zoom = targetCanvas.getZoom();
-      const scale = isFullBackground({ pageType: backgroundPageType }) ? 1 : 2;
-
-      img.id = id;
-      img.selectable = false; // Right now, can not select background from layout, todo later
-      img.left = position === 'right' ? width / zoom / 2 : 0;
-      img.scaleX = width / zoom / img.width / scale;
-      img.scaleY = height / zoom / img.height;
-      img.objectType = OBJECT_TYPE.BACKGROUND;
-      img.opacity = 1;
-      img.isLeftPage = position !== 'right';
-
-      img.set(DEFAULT_FABRIC_BACKGROUND);
-
-      targetCanvas.add(img);
-      targetCanvas.moveTo(img, index);
-    },
-    {
-      crossOrigin: 'anonymous'
-    }
-  );
-};
-
-/**
- * Loop through objects and draw object base on type
- * @param {Array} objects - Sheet's objects
- * @param {Ref} targetCanvas - Target canvas to draw objects
- */
-const handleDrawObjects = (objects, targetCanvas) => {
-  objects.forEach((obj, index) => {
-    if (obj.type === OBJECT_TYPE.BACKGROUND) {
-      const position = obj.isLeftPage ? 'left' : 'right';
-      handleDrawBackgroundLayout(
-        obj.id,
-        obj.imageUrl,
-        obj.pageType,
-        position,
-        targetCanvas,
-        index
-      );
-    }
-
-    if (obj.type === OBJECT_TYPE.TEXT) {
-      handleDrawTextLayout(obj, targetCanvas, index);
-    }
-  });
-};
-
-export const useDrawLayout = () => {
-  /**
-   * Draw layout with layout data or reset canvas when layout not exist
-   * @param {Object} sheetPrintData - Layout object data
-   * @param {Ref} targetCanvas - Target canvas to draw objects
-   */
-  const drawLayout = async (sheetData, edition) => {
-    const targetCanvas =
-      edition === EDITION.DIGITAL ? window.digitalCanvas : window.printCanvas;
-
-    if (sheetData.length === 0) {
-      targetCanvas?.clear().renderAll(); // Clear canvas when click on empty spread
-    } else {
-      if (!targetCanvas) return;
-
-      handleDrawObjects(sheetData, targetCanvas);
-    }
-  };
-  return {
-    drawLayout
-  };
-};
 
 export const useActionLayout = () => {
   const saveToFavorites = async id => {
@@ -272,9 +148,39 @@ export const useActionLayout = () => {
     deleteFavorites,
     getFavorites: getFavoritesApi,
     getFavoriteLayouts: getFavoriteLayoutsApi,
-    getPrintLayoutTypes,
-    getDigitalLayoutTypes,
-    getCustom,
-    getLayoutsByThemeAndType
+    getDigitalLayoutTypes
+  };
+};
+
+export const useCustomLayout = () => {
+  const { toggleModal } = useMutations({
+    toggleModal: APP_MUTATES.TOGGLE_MODAL
+  });
+
+  const saveCustomPrintLayout = async setting => {
+    const { id, type } = setting;
+    const isSuccess = await saveCustomPrintLayoutApi(id, type);
+
+    if (!isSuccess) return;
+
+    toggleModal({
+      isOpenModal: true,
+      modalData: {
+        type: MODAL_TYPES.SAVE_LAYOUT_SUCCESS
+      }
+    });
+  };
+
+  const getCustomPrintLayout = async () => {
+    const layouts = await getCustomPrintLayoutApi();
+    return layouts.map(layout => ({
+      ...layout,
+      isCustom: true
+    }));
+  };
+
+  return {
+    saveCustomPrintLayout,
+    getCustom: getCustomPrintLayout
   };
 };

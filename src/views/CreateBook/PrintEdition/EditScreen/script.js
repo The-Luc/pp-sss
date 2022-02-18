@@ -543,6 +543,9 @@ export default {
      * @param {Array} requiredPages pages to apply portraits
      */
     async onApplyPortrait(settings, requiredPages) {
+      // reset auto save timer
+      this.$refs.canvasEditor.setAutosaveTimer();
+
       const pages = getPageObjects(settings, requiredPages);
 
       const saveQueue = [];

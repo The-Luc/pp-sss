@@ -7,10 +7,11 @@ import {
   ACTIONS,
   EVENT_TYPE,
   OBJECT_TYPE,
-  MODAL_TYPES
+  MODAL_TYPES,
+  ROLE
 } from '@/common/constants';
 import { COPY_OBJECT_KEY } from '@/common/constants/config';
-import { useTotalObjects, useModal, useToolBar } from '@/hooks';
+import { useTotalObjects, useModal, useToolBar, useUser } from '@/hooks';
 
 export default {
   components: {
@@ -24,20 +25,29 @@ export default {
   },
   setup({ isDigital }) {
     const { totalBackground, totalObject } = useTotalObjects(isDigital);
+    const { currentUser } = useUser();
+
     const { toggleModal } = useModal();
     const { setToolNameSelected } = useToolBar();
-    return { totalBackground, totalObject, toggleModal, setToolNameSelected };
+    return {
+      totalBackground,
+      totalObject,
+      toggleModal,
+      setToolNameSelected,
+      currentUser
+    };
   },
   data() {
-    return {
-      items: [
-        { name: 'Copy Selected Item', value: ACTIONS.COPY, disabled: true },
-        { name: 'Paste Copied Item', value: ACTIONS.PASTE, disabled: true },
-        { name: 'Save Layout', value: ACTIONS.SAVE_LAYOUT, disabled: true },
-        { name: 'Save Style', value: ACTIONS.SAVE_STYLE, disabled: true },
-        { name: 'Generate PDF', value: ACTIONS.GENERATE_PDF, disabled: true }
-      ]
-    };
+    const items = [
+      { name: 'Copy Selected Item', value: ACTIONS.COPY, disabled: true },
+      { name: 'Paste Copied Item', value: ACTIONS.PASTE, disabled: true },
+      { name: 'Save Layout', value: ACTIONS.SAVE_LAYOUT, disabled: true },
+      { name: 'Save Style', value: ACTIONS.SAVE_STYLE, disabled: true },
+      { name: 'Generate PDF', value: ACTIONS.GENERATE_PDF, disabled: true }
+    ];
+    if (this.isDigital) items.pop();
+
+    return { items };
   },
   computed: {
     ...mapGetters({
@@ -80,6 +90,7 @@ export default {
     this.setEnablePaste();
     this.setEnableSaveLayout();
     this.setEnableSaveStyle();
+    this.setEnableGeneratePdf();
   },
   methods: {
     /**
@@ -94,6 +105,13 @@ export default {
     setEnableSaveLayout() {
       if (this.isDigital) return;
       this.items[2].disabled = !this.totalObject && !this.totalBackground;
+    },
+    /**
+     * Check whether generate pdf enabled base on user role
+     */
+    setEnableGeneratePdf() {
+      if (this.isDigital) return;
+      this.items[4].disabled = this.currentUser.role !== ROLE.ADMIN;
     },
     /**
      * Callback function to get action value when user click on and emit to parent
@@ -118,6 +136,9 @@ export default {
       }
       if (actionValue === ACTIONS.SAVE_STYLE) {
         this.$root.$emit(EVENT_TYPE.SAVE_STYLE);
+      }
+      if (actionValue === ACTIONS.GENERATE_PDF) {
+        this.$root.$emit(EVENT_TYPE.GENERATE_PDF);
       }
 
       this.setToolNameSelected({

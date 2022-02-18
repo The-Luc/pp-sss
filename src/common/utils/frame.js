@@ -1,6 +1,6 @@
 import { merge } from 'lodash';
 
-import { isEmpty } from './util';
+import { isEmpty, sortByProperty } from './util';
 
 /**
  * Get playback data from frames & transitions
@@ -15,7 +15,9 @@ export const getPlaybackDataFromFrames = (
   transitions,
   currentData = []
 ) => {
-  return frames.map((frame, index) => {
+  const sortedFrames = sortByProperty(frames, 'frame_order');
+
+  return sortedFrames.map((frame, index) => {
     const id = frame.id;
     const transition = isEmpty(transitions[index]) ? {} : transitions[index];
 

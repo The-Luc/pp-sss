@@ -766,6 +766,9 @@ export default {
      * @param {Object} requiredPages pages to apply portraits
      */
     async onApplyPortrait(settings, requiredPages) {
+      // reset auto save timer
+      this.$refs.canvasEditor.setAutosaveTimer();
+
       const { flowMultiSettings } = settings;
       const sheets = Object.values(this.getSheets).reduce((obj, sheet) => {
         const key = Number(sheet.pageName);

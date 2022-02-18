@@ -7,6 +7,7 @@ export const getPlaybackDataQuery = gql`
       id
       book_sections {
         id
+        section_order
         sheets {
           ...SheetInfo
         }

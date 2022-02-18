@@ -14,7 +14,8 @@ import {
   useProperties,
   useAppCommon,
   useStyle,
-  useToolBar
+  useToolBar,
+  useCustomLayout
 } from '@/hooks';
 import { startDrawBox } from '@/common/fabricObjects/drawingBox';
 
@@ -95,7 +96,6 @@ import {
   COVER_TYPE,
   DEFAULT_CLIP_ART,
   DEFAULT_IMAGE,
-  LAYOUT_PAGE_TYPE,
   SAVE_STATUS,
   IMAGE_LOCAL,
   PROPERTIES_TOOLS,
@@ -129,6 +129,7 @@ import {
   ShapeElementObject
 } from '@/common/models/element';
 import { useBookPrintInfo } from '../composables';
+import { usePdfGeneration } from '../../MainScreen/composables';
 
 export default {
   components: {
@@ -151,6 +152,8 @@ export default {
     const { updateSavingStatus, savingStatus } = useSavingStatus();
     const { updateSheetThumbnail } = useMutationPrintSheet();
     const { updateMediaSidebarOpen, setPropertiesType } = useToolBar();
+    const { saveCustomPrintLayout } = useCustomLayout();
+    const { generatePdf } = usePdfGeneration();
 
     return {
       generalInfo,
@@ -166,7 +169,9 @@ export default {
       updateSheetThumbnail,
       updateMediaSidebarOpen,
       setPropertiesType,
-      setLoadingState
+      setLoadingState,
+      saveCustomPrintLayout,
+      generatePdf
     };
   },
   data() {
@@ -293,8 +298,7 @@ export default {
   },
   methods: {
     ...mapActions({
-      getDataCanvas: PRINT_ACTIONS.GET_DATA_CANVAS,
-      saveLayout: PRINT_ACTIONS.SAVE_LAYOUT
+      getDataCanvas: PRINT_ACTIONS.GET_DATA_CANVAS
     }),
     ...mapMutations({
       setBookId: PRINT_MUTATES.SET_BOOK_ID,
@@ -326,8 +330,9 @@ export default {
 
       this.isCanvasChanged = false;
     },
+
     /**
-     *
+     * To save data of current shet
      * @param {String | Number} sheetId id of sheet need to save data
      * @param {Boolean} isAutosave indicating autosaving or not
      *
@@ -1827,6 +1832,7 @@ export default {
         [EVENT_TYPE.COPY_OBJ]: this.handleCopy,
         [EVENT_TYPE.PASTE_OBJ]: this.handlePaste,
         [EVENT_TYPE.SAVE_LAYOUT]: this.handleSaveLayout,
+        [EVENT_TYPE.GENERATE_PDF]: this.handleGeneratePDF,
 
         pageNumber: this.addPageNumber,
         drawLayout: this.drawLayout
@@ -1981,68 +1987,16 @@ export default {
         canvas: window.printCanvas
       });
     },
-    async handleSaveLayout({ pageSelected, layoutName }) {
-      layoutName = layoutName.trim() || 'Untitled';
-      const zoom = window.printCanvas.getZoom();
-      const width = window.printCanvas.width;
+    async handleSaveLayout(setting) {
+      // save data to DB before save layout
+      this.setAutosaveTimer();
+      await this.saveData(this.pageSelected.id);
 
-      const positionCenterX = pxToIn(width / zoom / 2);
-
-      const objects = cloneDeep(Object.values(this.currentObjects));
-      const backgrounds = cloneDeep(this.currentBackgrounds);
-
-      let ppObjects = [...objects];
-      let layout = {
-        id: parseInt(getUniqueId()) + 100,
-        name: layoutName,
-        isFavorites: false,
-        previewImageUrl: window.printCanvas.toDataURL({
-          quality: THUMBNAIL_IMAGE_CONFIG.QUALITY
-        }),
-        pageType: LAYOUT_PAGE_TYPE.FULL_PAGE.id
-      };
-
-      if (pageSelected === 'left') {
-        ppObjects = objects.filter(item => item?.coord?.x < positionCenterX);
-
-        delete backgrounds.right;
-
-        layout = {
-          ...layout,
-          previewImageUrl: window.printCanvas.toDataURL({
-            quality: THUMBNAIL_IMAGE_CONFIG.QUALITY,
-            width: width / 2
-          }),
-          pageType: LAYOUT_PAGE_TYPE.SINGLE_PAGE.id
-        };
-      }
-
-      if (pageSelected === 'right') {
-        ppObjects = objects.filter(item => item?.coord?.x >= positionCenterX);
-        for (const item of ppObjects) {
-          item.coord.x -= positionCenterX;
-        }
-
-        delete backgrounds.left;
-
-        layout = {
-          ...layout,
-          previewImageUrl: window.printCanvas.toDataURL({
-            quality: THUMBNAIL_IMAGE_CONFIG.QUALITY,
-            left: width / 2,
-            width: width / 2
-          }),
-          pageType: LAYOUT_PAGE_TYPE.SINGLE_PAGE.id
-        };
-      }
-
-      const ppBackgrounds = Object.values(backgrounds).filter(
-        item => !isEmpty(item)
-      );
-
-      layout.objects = [...ppBackgrounds, ...ppObjects];
-
-      await this.saveLayout({ layout });
+      await this.saveCustomPrintLayout(setting);
+    },
+    handleGeneratePDF() {
+      const bookId = this.generalInfo.id;
+      this.generatePdf(bookId);
     },
     async drawLayout() {
       await this.drawObjectsOnCanvas(this.sheetLayout);

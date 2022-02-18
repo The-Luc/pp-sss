@@ -24,6 +24,7 @@ import {
   useGetLayouts,
   useModal,
   useActionLayout,
+  useCustomLayout,
   useLayoutElements
 } from '@/hooks';
 
@@ -61,9 +62,9 @@ export default {
       saveToFavorites,
       deleteFavorites,
       getFavorites,
-      getCustom,
       getFavoriteLayouts
     } = useActionLayout();
+    const { getCustom } = useCustomLayout();
 
     return {
       isPrompt,
@@ -104,7 +105,9 @@ export default {
       layoutId: null,
       favoriteLayouts: [],
       customLayouts: [],
-      layouts: []
+      layouts: [],
+      doublePageId: LAYOUT_PAGE_TYPE.FULL_PAGE.id,
+      singlePageId: LAYOUT_PAGE_TYPE.SINGLE_PAGE.id
     };
   },
   computed: {
@@ -120,6 +123,14 @@ export default {
     },
     isHalfSheet() {
       return isHalfSheet({ type: this.pageSelected?.type });
+    },
+    filteredLayouts() {
+      if (this.layoutTypeSelected.value === CUSTOM_LAYOUT_TYPE) {
+        return this.layouts.filter(
+          layout => layout.pageType === this.layoutTypeSelected.sub
+        );
+      }
+      return this.layouts;
     }
   },
   watch: {
@@ -218,7 +229,7 @@ export default {
 
       await this.getLayoutTypes();
 
-      this.filterLayoutType();
+      await this.filterLayoutType();
     },
     /**
      * Set object theme selected from dropdown
@@ -229,7 +240,7 @@ export default {
 
       await this.getLayoutTypes();
 
-      this.filterLayoutType();
+      await this.filterLayoutType();
 
       this.setLayoutSelected();
       await this.getLayouts();
@@ -260,7 +271,6 @@ export default {
       const layout = cloneDeep(layoutData);
 
       layout.objects = await this.getLayoutElements(layout.id);
-      layout.pageType = LAYOUT_PAGE_TYPE.SINGLE_PAGE.id;
 
       // change objects coords if user at FRONT_COVER or BACK_COVER
       if (this.isHalfSheet) {
@@ -366,7 +376,7 @@ export default {
 
       this.setDisabledLayout(this.pageSelected);
 
-      this.filterLayoutType();
+      await this.filterLayoutType();
     },
     /**
      * Modify favorite items list
@@ -407,7 +417,7 @@ export default {
         const layoutTypeOpts = [...this.layoutTypesOrigin];
 
         if (!isEmpty(this.favoriteLayouts) || !isEmpty(this.customLayouts)) {
-          const extraMenu = this.getFavoriteCustomLayoutTypeMenu(
+          const extraMenu = await this.getFavoriteCustomLayoutTypeMenu(
             SHEET_TYPE.NORMAL
           );
 
@@ -429,7 +439,7 @@ export default {
       });
 
       if (!isEmpty(this.favoriteLayouts) || !isEmpty(this.customLayouts)) {
-        const extraMenu = this.getFavoriteCustomLayoutTypeMenu(
+        const extraMenu = await this.getFavoriteCustomLayoutTypeMenu(
           this.pageSelected.type
         );
 
@@ -484,21 +494,38 @@ export default {
         return;
       }
 
-      this.layouts = await this.getFavoriteLayouts();
+      this.layouts = await this.getFavAndCustomLayouts();
+    },
+    /**
+     * To get favorites and custom layouts
+     *
+     * @returns array of layouts
+     */
+    async getFavAndCustomLayouts() {
+      const favLayouts = await this.getFavoriteLayouts();
+      return [...favLayouts, ...this.customLayouts];
     },
     /**
      * Get favorite & custom layout menu
      */
-    getFavoriteCustomLayoutTypeMenu() {
+    async getFavoriteCustomLayoutTypeMenu() {
       const menu = cloneDeep(SAVED_AND_FAVORITES);
 
+      const favCustomLayouts = await this.getFavAndCustomLayouts();
+
       menu.subItems.forEach(item => {
-        if (item.id === LAYOUT_PAGE_TYPE.FULL_PAGE.id) {
-          item.isDisabled = true; // isHalfSheet({ type: sheetType });
+        if (item.id === this.doublePageId) {
+          const isDoublePage = favCustomLayouts.some(
+            ({ pageType }) => pageType === this.doublePageId
+          );
+          item.isDisabled = !isDoublePage || this.isHalfSheet;
         }
 
-        if (item.id === LAYOUT_PAGE_TYPE.SINGLE_PAGE.id) {
-          item.isDisabled = false;
+        if (item.id === this.singlePageId) {
+          const isSinglePage = favCustomLayouts.some(
+            ({ pageType }) => pageType === this.singlePageId
+          );
+          item.isDisabled = !isSinglePage;
         }
       });
 

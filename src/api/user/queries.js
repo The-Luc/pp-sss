@@ -42,6 +42,7 @@ export const getFavoriteLayoutsQuery = gql`
       }
       preview_image_url
       data
+      layout_type
     }
   }
 `;

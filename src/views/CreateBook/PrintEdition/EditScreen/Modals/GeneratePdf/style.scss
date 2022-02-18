@@ -1,0 +1,21 @@
+.modal-generate-pdf {
+  &__title {
+    font-family: $font-500;
+    font-size: 15px;
+    text-align: center;
+    color: #4a4844;
+    margin-top: 20px;
+  }
+  .container-btn {
+    margin-top: 20px;
+    display: grid;
+    place-items: center;
+    .btn-close {
+      margin-top: 10px;
+      .pp-btn {
+        background-color: $color-blue2;
+        border-color: $color-blue2;
+      }
+    }
+  }
+}
