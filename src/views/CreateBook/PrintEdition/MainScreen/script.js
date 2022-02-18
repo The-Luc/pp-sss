@@ -2,9 +2,9 @@ import ThumbnailItem from '@/components/Thumbnail/ThumbnailItem';
 import Action from '@/containers/Menu/Action';
 import PrintPreview from '@/containers/Modals/PrintPreview';
 
-import { useUser, useGetterPrintSection } from '@/hooks';
+import { useUser, useGetterPrintSection, useAppCommon } from '@/hooks';
 
-import { useBookPrintInfo } from './composables';
+import { useBookPrintInfo, usePdfGeneration } from './composables';
 
 import { getSectionsWithAccessible } from '@/common/utils';
 
@@ -18,14 +18,18 @@ export default {
   },
   setup() {
     const { currentUser } = useUser();
+    const { generalInfo } = useAppCommon();
     const { getBookPrintInfo, updateLinkStatus } = useBookPrintInfo();
     const { sections: bookSections } = useGetterPrintSection();
+    const { generatePdf } = usePdfGeneration();
 
     return {
       currentUser,
       getBookPrintInfo,
       updateLinkStatus,
-      bookSections
+      bookSections,
+      generatePdf,
+      generalInfo
     };
   },
   async created() {
@@ -110,7 +114,8 @@ export default {
      * Export pdf
      */
     onExportPDF() {
-      console.log('PDF');
+      const bookId = this.generalInfo.bookId;
+      this.generatePdf(bookId);
     },
     /**
      * set sheet selected is null and close menu

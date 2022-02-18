@@ -19,6 +19,7 @@ import ModalBackgroundSelectPage from '@/containers/ToolPopoverManager/Backgroun
 import SelectTheme from '@/views/CreateBook/PrintEdition/EditScreen/Modals/ThemesModal';
 import ModalSelectPage from '@/views/CreateBook/PrintEdition/EditScreen/Modals/ModalSelectPage';
 import ModalResetLayout from '@/views/CreateBook/PrintEdition/EditScreen/Modals/ModalResetLayout';
+import GeneratePDF from '@/views/CreateBook/PrintEdition/EditScreen/Modals/GeneratePdf';
 import ModalSaveLayout from '@/views/CreateBook/PrintEdition/EditScreen/Modals/ModalSaveLayout/ModalSaveLayout';
 import ModalSelectPageOfLayout from '@/views/CreateBook/PrintEdition/EditScreen/Modals/ModalSaveLayout/ModalSelectPageOfLayout';
 import ModalSaveLayoutSuccess from '@/views/CreateBook/PrintEdition/EditScreen/Modals/ModalSaveLayout/ModalSaveLayoutSuccess';
@@ -46,7 +47,8 @@ const {
   SELECT_PAGE_OF_LAYOUT,
   SAVE_STYLE,
   SAVE_STYLE_SUCCESS,
-  SAVE_LAYOUT_SUCCESS
+  SAVE_LAYOUT_SUCCESS,
+  GENERATE_PDF
 } = MODAL_TYPES;
 
 const ModalList = {
@@ -67,7 +69,8 @@ const ModalList = {
   [SELECT_PAGE_OF_LAYOUT]: SELECT_PAGE_OF_LAYOUT,
   [SAVE_STYLE]: SAVE_STYLE,
   [SAVE_STYLE_SUCCESS]: SAVE_STYLE_SUCCESS,
-  [SAVE_LAYOUT_SUCCESS]: SAVE_LAYOUT_SUCCESS
+  [SAVE_LAYOUT_SUCCESS]: SAVE_LAYOUT_SUCCESS,
+  [GENERATE_PDF]: GENERATE_PDF
 };
 
 export default {
@@ -94,7 +97,8 @@ export default {
     [MODAL_TYPES.SELECT_PAGE_OF_LAYOUT]: ModalSelectPageOfLayout,
     [MODAL_TYPES.SAVE_STYLE]: ModalSaveStyle,
     [MODAL_TYPES.SAVE_STYLE_SUCCESS]: ModalStyleSaved,
-    [MODAL_TYPES.SAVE_LAYOUT_SUCCESS]: ModalSaveLayoutSuccess
+    [MODAL_TYPES.SAVE_LAYOUT_SUCCESS]: ModalSaveLayoutSuccess,
+    [MODAL_TYPES.GENERATE_PDF]: GeneratePDF
   },
   computed: {
     ...mapGetters({

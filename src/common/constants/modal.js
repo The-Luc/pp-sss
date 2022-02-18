@@ -19,5 +19,6 @@ export const MODAL_TYPES = {
   SAVE_LAYOUT_SUCCESS: 'SaveLayoutSuccess',
   TRANSITION_PREVIEW: 'transitionPreview',
   PORTRAIT_FLOW: 'portraitFlow',
-  PLAYBACK: 'playback'
+  PLAYBACK: 'playback',
+  GENERATE_PDF: 'generatePDF'
 };
