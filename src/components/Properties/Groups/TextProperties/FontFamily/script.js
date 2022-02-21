@@ -1,5 +1,5 @@
 import PpSelect from '@/components/Selectors/Select';
-import { FONT_FAMILY } from '@/common/constants';
+import { useText } from '@/views/CreateBook/composables';
 
 export default {
   components: {
@@ -15,10 +15,17 @@ export default {
       default: false
     }
   },
+  setup() {
+    const { getFonts } = useText();
+    return { getFonts };
+  },
   data() {
     return {
-      fontFamily: FONT_FAMILY
+      fontFamily: []
     };
+  },
+  created() {
+    this.fontFamily = this.getFonts();
   },
   methods: {
     /**
@@ -27,7 +34,7 @@ export default {
      */
     onChange(data) {
       this.$emit('change', {
-        fontFamily: data.value
+        fontFamily: data.name
       });
     }
   }

@@ -83,5 +83,8 @@ export const mutations = {
   },
   [APP._MUTATES.SET_LOADING_STATE](state, { value }) {
     state.isLoading = value;
+  },
+  [APP._MUTATES.SET_FONTS](state, { fonts }) {
+    state.fonts = fonts;
   }
 };

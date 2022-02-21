@@ -1,4 +1,6 @@
+import WebFont from 'webfontloader';
 import { TEXT_CASE } from '../constants';
+import { isEmpty } from '@/common/utils';
 
 const createDummyElement = (text, options) => {
   const element = document.createElement('div');
@@ -83,3 +85,30 @@ const transformTextCase = (string, textCase = TEXT_CASE.NONE) => {
   };
   return transformOpt[textCase](string);
 };
+
+export const loadFonts = fonts => {
+  return new Promise((resolve, reject) => {
+    const unavailableFonts = fonts.filter(
+      font => !document.fonts.check(`72px ${font}`)
+    );
+
+    if (isEmpty(unavailableFonts)) {
+      console.log(fonts);
+      console.log('all fonts loaded');
+      resolve();
+      return;
+    }
+
+    console.log(WebFont);
+    console.log('unavailableFonts ', unavailableFonts);
+    WebFont.load({
+      google: {
+        families: unavailableFonts
+      },
+      active: resolve,
+      inactive: reject,
+      timeout: 10 * 1000 // 10 sec
+    });
+  });
+};
+// loadFonts(['Shuzuri', 'Lato', 'Arial', 'Oswald', 'Amatic SC']);

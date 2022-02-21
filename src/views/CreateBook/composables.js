@@ -1,4 +1,5 @@
 import { useMutations, useGetters } from 'vuex-composition-helpers';
+import { uniqBy, sortBy } from 'lodash';
 
 import { useAppCommon } from '@/hooks';
 
@@ -37,6 +38,8 @@ import {
 } from '@/common/utils';
 import { getWorkspaceApi, updateSheetApi } from '@/api/sheet';
 import { MAX_COLOR_PICKER_PRESET } from '@/common/constants';
+import { getFontsApi } from '@/api/text';
+import { loadFonts } from '@/common/utils/text';
 
 export const useSavingStatus = () => {
   const { savingStatus } = useGetters({
@@ -354,4 +357,35 @@ export const useColorPicker = () => {
   const getPresets = async () => await getPresetsColorPickerApi();
 
   return { updateColorPicker, getPresets };
+};
+
+export const useText = () => {
+  const { setFonts } = useMutations({
+    setFonts: APP_MUTATES.SET_FONTS
+  });
+  const { getFonts: getOriginalFonts } = useGetters({
+    getFonts: APP_GETTERS.GET_FONTS
+  });
+
+  const getFonts = () => {
+    const fonts = getOriginalFonts.value;
+    const uniqueFonts = uniqBy(fonts, 'name');
+    const sortedFonts = sortBy(uniqueFonts, 'name');
+
+    return sortedFonts.map(({ name, id }) => ({ name, value: id }));
+  };
+
+  const loadAllFonts = async () => {
+    const fontNames = getFonts().map(font => font.name);
+
+    loadFonts(fontNames);
+  };
+
+  const setFontsToStore = async () => {
+    const fonts = await getFontsApi();
+
+    setFonts({ fonts });
+    loadAllFonts();
+  };
+  return { getFonts, getOriginalFonts, setFontsToStore };
 };

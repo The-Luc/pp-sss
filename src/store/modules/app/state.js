@@ -48,6 +48,7 @@ export const state = {
   user: { id: null, role: null },
   savedTextStyles: [],
   savedImageStyles: [],
+  fonts: [],
   savingStatus: '',
   isMediaSidebarOpen: false,
   disabledToolbarItems: getDefaultDisabledItems(),
