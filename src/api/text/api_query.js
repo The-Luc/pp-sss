@@ -1,6 +1,10 @@
 import { get } from 'lodash';
 import { graphqlRequest } from '../urql';
-import { getFontsQuery, getTextStyleQuery } from './queries';
+import {
+  getFontsQuery,
+  getTextStyleQuery,
+  getUserTextStyleQuery
+} from './queries';
 import { isEmpty } from '@/common/utils';
 import { textStyleMapping } from '@/common/mapping/styles';
 
@@ -16,4 +20,10 @@ export const getFontsApi = async () => {
 export const getTextStyleApi = async () => {
   const res = await graphqlRequest(getTextStyleQuery);
   return res.data.text_styles.map(style => textStyleMapping(style));
+};
+
+export const getUserTextStyleApi = async () => {
+  const res = await graphqlRequest(getUserTextStyleQuery);
+
+  return res.data.user_text_styles.map(style => textStyleMapping(style));
 };

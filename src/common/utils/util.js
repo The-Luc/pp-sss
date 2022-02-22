@@ -624,6 +624,16 @@ export const convertAPIColorObjectToHex = colorObject => {
 };
 
 /**
+ * To convert rgb color to hex color, alpha channel will be discarded
+ *
+ * @param {String} rgb rgb color e.g. rgba(234, 41, 41)
+ * @returns hex value of color
+ */
+export const convertRGBToHex = rgb => {
+  return Color(rgb).hex();
+};
+
+/**
  *  To convert shadow object get from API to fronted shadow object
  * @param {Object} apiShadow shadow object from API
  * @returns {Object} standard shadow object used in frontend
