@@ -1,16 +1,13 @@
 import PpCombobox from '@/components/Selectors/Combobox';
 import PpSelect from '@/components/Selectors/Select';
 import ColorPicker from '@/containers/ColorPicker';
-import {
-  ICON_LOCAL,
-  FONT_SIZE,
-  FONT_FAMILY,
-  DEFAULT_COLOR
-} from '@/common/constants';
+import { ICON_LOCAL, FONT_SIZE, DEFAULT_COLOR } from '@/common/constants';
+import { useText } from '@/views/CreateBook/composables';
 import {
   getValueInput,
   validateInputOption,
-  getSelectedOption
+  getSelectedOption,
+  isEqualString
 } from '@/common/utils';
 
 export default {
@@ -29,18 +26,21 @@ export default {
       required: true
     }
   },
-  data() {
+  setup() {
+    const { getFonts } = useText();
+
     return {
       appendedIcon: ICON_LOCAL.APPENDED_ICON,
       prependedIcon: ICON_LOCAL.PREPENDED_FONT_SIZE,
       fontSize: FONT_SIZE,
-      fontFamily: FONT_FAMILY
+      fontFamily: [],
+      getFonts
     };
   },
   computed: {
     selectedFontFamily() {
-      const font = this.fontFamily.find(
-        item => item.value === this.pageInfo.fontFamily.toLowerCase()
+      const font = this.fontFamily.find(item =>
+        isEqualString(item.name, this.pageInfo.fontFamily)
       );
 
       return { name: font.name, value: font.value };
@@ -58,13 +58,16 @@ export default {
       return this.disabled ? DEFAULT_COLOR.DISABLED_COLOR : this.pageInfo.color;
     }
   },
+  created() {
+    this.fontFamily = this.getFonts();
+  },
   methods: {
     /**
      * Emit font family change to parent
      * @param {Object} fontFamily - value font family selected
      */
     onChangeFontFamily(fontFamily) {
-      this.$emit('change', { fontFamily: fontFamily.value });
+      this.$emit('change', { fontFamily: fontFamily.name });
     },
     /**
      * Emit font size change to parent

@@ -777,3 +777,16 @@ export const arrayDifference = (a, b) => {
     return false;
   });
 };
+
+/**
+ *  To check whether two arrays are equal
+ *
+ * @param {String} a a string to compare
+ * @param {String} b a string to compare
+ * @returns is the two string equal
+ */
+export const isEqualString = (a, b) => {
+  if (typeof a !== 'string' || typeof b !== 'string') return;
+
+  return a.toLowerCase() === b.toLowerCase();
+};

@@ -5,10 +5,10 @@ import TextCase from '@/components/Properties/Groups/TextProperties/TextCase';
 import Alignment from '@/components/Properties/Groups/TextProperties/Alignment';
 import ColorPicker from '@/containers/ColorPicker';
 
-import { getSelectedOption } from '@/common/utils';
+import { getSelectedOption, isEqualString, isEmpty } from '@/common/utils';
+import { useText } from '@/views/CreateBook/composables';
 import {
   FONT_SIZE,
-  FONT_FAMILY,
   PRESENTATION,
   TEXT_HORIZONTAL_ALIGN
 } from '@/common/constants';
@@ -32,10 +32,15 @@ export default {
       default: false
     }
   },
+  setup() {
+    const { getFonts } = useText();
+    return { getFonts };
+  },
   computed: {
     selectedFont() {
-      const selected = FONT_FAMILY.find(
-        font => font.value === this.fontSettings.fontFamily.toLowerCase()
+      if (isEmpty(this.fontFamily)) return {};
+      const selected = this.fontFamily.find(font =>
+        isEqualString(font.name, this.fontSettings.fontFamily)
       );
       return this.disabled
         ? getSelectedOption('')
@@ -75,6 +80,9 @@ export default {
         ? TEXT_HORIZONTAL_ALIGN.JUSTIFY
         : this.fontSettings.alignment.horizontal;
     }
+  },
+  created() {
+    this.fontFamily = this.getFonts();
   },
   methods: {
     /**

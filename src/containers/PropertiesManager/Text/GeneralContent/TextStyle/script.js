@@ -7,40 +7,25 @@ import { EVENT_TYPE } from '@/common/constants/eventType';
 import { useTextStyle } from '@/hooks/style';
 import { useElementProperties, useMenuProperties } from '@/hooks';
 
-import textStyles from '@/mock/style';
-
 export default {
   components: {
     PpSelect,
     SavedTextStylePopover
   },
   data() {
-    const selectBoxItems = textStyles.map(item => {
-      const { name, id, style } = item;
-
-      return {
-        name,
-        id,
-        style,
-        cssStyle: toCssStyle(style)
-      };
-    });
-
     return {
-      items: textStyles,
-      selectBoxItems,
       showSavedStylePopup: false,
       componentKey: true
     };
   },
   setup() {
-    const { savedTextStyles, getSavedTextStyles } = useTextStyle();
+    const { savedTextStyles, textStyles } = useTextStyle();
     const { getProperty } = useElementProperties();
     const { isOpenMenuProperties } = useMenuProperties();
 
     return {
       savedTextStyles,
-      getSavedTextStyles,
+      textStyles,
       getProperty,
       isOpenMenuProperties
     };
@@ -49,6 +34,20 @@ export default {
     selectedItem() {
       const selectedId = this.getProperty('styleId') || 'default';
       return this.selectBoxItems.find(item => item.id === selectedId);
+    },
+    items() {
+      return this.textStyles;
+    },
+    selectBoxItems() {
+      return this.textStyles.map(item => {
+        const { name, id, style } = item;
+        return {
+          name,
+          id,
+          style,
+          cssStyle: { ...toCssStyle(style), maxWidth: '275px' }
+        };
+      });
     }
   },
   methods: {
@@ -105,8 +104,5 @@ export default {
         this.onClose();
       }
     }
-  },
-  created() {
-    this.getSavedTextStyles();
   }
 };

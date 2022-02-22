@@ -33,7 +33,6 @@ export * from './pageNumber';
 export * from './zoom';
 export * from './config';
 export * from './edition';
-export * from './fontFamily';
 export * from './eventType';
 export * from './frame';
 export * from './role';

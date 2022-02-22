@@ -46,8 +46,10 @@ export const state = {
     totalScreens: 0
   },
   user: { id: null, role: null },
-  savedTextStyles: [],
-  savedImageStyles: [],
+  textStyles: [],
+  userTextStyles: [],
+  userImageStyles: [],
+  fonts: [],
   savingStatus: '',
   isMediaSidebarOpen: false,
   disabledToolbarItems: getDefaultDisabledItems(),
