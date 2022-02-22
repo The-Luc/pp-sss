@@ -1,7 +1,7 @@
 import { useMutationBook, useActionBook, useAppCommon } from '@/hooks';
 import { GETTERS } from '@/store/modules/print/const';
 import { useGetters } from 'vuex-composition-helpers';
-import { useText } from '@/views/CreateBook/composables';
+import { useLoadStyles } from '@/views/CreateBook/composables';
 
 export const useBookPrintInfo = () => {
   const { setBookInfo, setSectionsSheets } = useMutationBook();
@@ -10,7 +10,7 @@ export const useBookPrintInfo = () => {
 
   const { getBookInfo } = useActionBook();
 
-  const { setFontsToStore } = useText();
+  const { loadStyles } = useLoadStyles();
 
   const { getBookInfo: printBookInfo } = useGetters({
     getBookInfo: GETTERS.GET_BOOK_INFO
@@ -48,7 +48,7 @@ export const useBookPrintInfo = () => {
     });
 
     setGeneralInfo({ info: { bookId, title, totalPages } });
-    setFontsToStore();
+    loadStyles();
   };
 
   return { getBookPrintInfo, printBookInfo };

@@ -5,3 +5,4 @@ export * from './media';
 export * from './portrait';
 export * from './element';
 export * from './layout';
+export * from './styles';

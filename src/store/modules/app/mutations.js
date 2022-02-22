@@ -66,11 +66,14 @@ export const mutations = {
   [APP._MUTATES.SET_GENERAL_INFO](state, { info }) {
     state.generalInfo = { ...cloneDeep(state.generalInfo), ...info };
   },
-  [APP._MUTATES.SET_SAVED_TEXT_STYLES](state, { savedTextStyles }) {
-    state.savedTextStyles = savedTextStyles;
+  [APP._MUTATES.SET_USER_TEXT_STYLES](state, { styles }) {
+    state.userTextStyles = styles;
   },
-  [APP._MUTATES.SET_SAVED_IMAGE_STYLES](state, { savedImageStyles }) {
-    state.savedImageStyles = savedImageStyles;
+  [APP._MUTATES.SET_TEXT_STYLES](state, { styles }) {
+    state.textStyles = styles;
+  },
+  [APP._MUTATES.SET_USER_IMAGE_STYLES](state, { styles }) {
+    state.userImageStyles = styles;
   },
   [APP._MUTATES.UPDATE_SAVING_STATUS](state, { status }) {
     state.savingStatus = status;

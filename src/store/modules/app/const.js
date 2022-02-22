@@ -24,8 +24,9 @@ class GetterClass extends BaseObject {
   SELECT_PROP_CURRENT_OBJECT = 'getSpecificPropertyOfCurrentObject';
   USER = 'getCurrentUser';
   GENERAL_INFO = 'generalInfo';
-  SAVED_TEXT_STYLES = 'savedTextStyles';
-  SAVED_IMAGE_STYLES = 'savedImageStyles';
+  USER_TEXT_STYLES = 'userTextStyles';
+  USER_IMAGE_STYLES = 'userImageStyles';
+  TEXT_STYLES = 'textStyles';
   SAVING_STATUS = 'savingStatus';
   IS_MEDIA_SIDEBAR_OPEN = 'isMediaSidebarOpen';
   DISABLED_TOOLBAR_ITEMS = 'getDisabledToolbarItems';
@@ -79,10 +80,9 @@ class MutationClass extends BaseObject {
   SET_CURRENT_OBJECT = 'setCurrentObject';
   SET_USER = 'setCurrentUser';
   SET_GENERAL_INFO = 'setGeneralInfo';
-  SET_SAVED_TEXT_STYLES = 'setSavedTextStyle';
-  SET_SAVED_IMAGE_STYLES = 'setSavedImageStyle';
-  SET_SAVED_TEXT_STYLE = 'setSavedTextStyle';
-  SET_SAVED_IMAGE_STYLE = 'setSavedImageStyle';
+  SET_TEXT_STYLES = 'setTextStyles';
+  SET_USER_TEXT_STYLES = 'setSavedTextStyles';
+  SET_USER_IMAGE_STYLES = 'setSavedImageStyles';
   UPDATE_SAVING_STATUS = 'updateSavingStatus';
   UPDATE_MEDIA_SIDEBAR_OPEN = 'updateMediaSidebarOpen';
   UPDATE_DISABLED_TOOLBAR_ITEMS = 'updateDisabledToolbarItems';

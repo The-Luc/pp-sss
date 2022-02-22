@@ -3,6 +3,8 @@ import { useActions, useGetters, useMutations } from 'vuex-composition-helpers';
 import { ACTIONS, GETTERS, MUTATES } from '@/store/modules/app/const';
 import { MODAL_TYPES, OBJECT_TYPE } from '@/common/constants';
 
+import { getTextStyleApi } from '@/api/text';
+
 export const useStyle = () => {
   const { modalData, currentObject } = useGetters({
     modalData: GETTERS.MODAL_DATA,
@@ -102,18 +104,31 @@ export const useStyle = () => {
 };
 
 export const useTextStyle = () => {
-  const { savedTextStyles } = useGetters({
-    savedTextStyles: GETTERS.SAVED_TEXT_STYLES
+  const { userTextStyles, textStyles } = useGetters({
+    userTextStyles: GETTERS.USER_TEXT_STYLES,
+    textStyles: GETTERS.TEXT_STYLES
   });
 
-  const { getSavedTextStyles } = useActions({
-    getSavedTextStyles: ACTIONS.GET_SAVED_TEXT_STYLES
+  const { setTextStyles } = useMutations({
+    setTextStyles: MUTATES.SET_TEXT_STYLES
   });
+
+  // const { getSavedTextStyles } = useActions({
+  //   getSavedTextStyles: ACTIONS.GET_SAVED_TEXT_STYLES
+  // });
+
+  const loadTextStyles = async () => {
+    const styles = await getTextStyleApi();
+
+    setTextStyles({ styles });
+  };
 
   return {
     ...useStyle,
-    savedTextStyles,
-    getSavedTextStyles
+    userTextStyles,
+    // getSavedTextStyles,
+    textStyles,
+    loadTextStyles
   };
 };
 

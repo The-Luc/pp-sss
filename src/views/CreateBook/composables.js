@@ -1,7 +1,7 @@
 import { useMutations, useGetters } from 'vuex-composition-helpers';
 import { uniqBy, sortBy } from 'lodash';
 
-import { useAppCommon } from '@/hooks';
+import { useAppCommon, useTextStyle } from '@/hooks';
 
 import {
   loadClipArtsApi,
@@ -388,4 +388,18 @@ export const useText = () => {
     loadAllFonts();
   };
   return { getFonts, getOriginalFonts, setFontsToStore };
+};
+
+export const useLoadStyles = () => {
+  const { loadTextStyles } = useTextStyle();
+  const { setFontsToStore } = useText();
+
+  const loadStyles = () => {
+    loadTextStyles();
+    setFontsToStore();
+  };
+
+  return {
+    loadStyles
+  };
 };

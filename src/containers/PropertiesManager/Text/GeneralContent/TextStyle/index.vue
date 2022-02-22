@@ -20,4 +20,4 @@
 
 <script src="./script.js" />
 
-<style lang="scss" src="./style.scss" />
+<style scopped lang="scss" src="./style.scss" />

@@ -93,14 +93,10 @@ export const loadFonts = fonts => {
     );
 
     if (isEmpty(unavailableFonts)) {
-      console.log(fonts);
-      console.log('all fonts loaded');
       resolve();
       return;
     }
 
-    console.log(WebFont);
-    console.log('unavailableFonts ', unavailableFonts);
     WebFont.load({
       google: {
         families: unavailableFonts
@@ -111,4 +107,3 @@ export const loadFonts = fonts => {
     });
   });
 };
-// loadFonts(['Shuzuri', 'Lato', 'Arial', 'Oswald', 'Amatic SC']);
