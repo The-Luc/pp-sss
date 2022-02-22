@@ -10,6 +10,7 @@ import { saveDigitalDataApi } from '@/api/saveDigital';
 import { uploadBase64ImageApi } from '@/api/util';
 import { usePhotos } from '../../composables';
 import { updateInProjectApi } from '@/api/savePrint';
+import { useLoadStyles } from '@/views/CreateBook/composables';
 
 export const useSaveData = () => {
   const { getDataEditScreen, mediaObjectIds } = useGetters({
@@ -106,6 +107,7 @@ export const useBookDigitalInfo = () => {
   const { setBookInfo, setSectionsSheets } = useMutationBook(true);
 
   const { setGeneralInfo } = useAppCommon();
+  const { loadStyles } = useLoadStyles();
 
   const { getBookInfo } = useActionBook();
 
@@ -127,6 +129,7 @@ export const useBookDigitalInfo = () => {
     });
 
     setGeneralInfo({ info: { bookId, title } });
+    loadStyles();
   };
 
   return {

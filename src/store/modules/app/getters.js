@@ -35,11 +35,13 @@ export const getters = {
   [APP._GETTERS.USER]: ({ user }) => user,
   [APP._GETTERS.SAVING_STATUS]: ({ savingStatus }) => savingStatus,
   [APP._GETTERS.GENERAL_INFO]: ({ generalInfo }) => generalInfo,
-  [APP._GETTERS.SAVED_TEXT_STYLES]: ({ savedTextStyles }) => savedTextStyles,
-  [APP._GETTERS.SAVED_IMAGE_STYLES]: ({ savedImageStyles }) => savedImageStyles,
+  [APP._GETTERS.USER_TEXT_STYLES]: ({ userTextStyles }) => userTextStyles,
+  [APP._GETTERS.TEXT_STYLES]: ({ textStyles }) => textStyles,
+  [APP._GETTERS.USER_IMAGE_STYLES]: ({ userImageStyles }) => userImageStyles,
   [APP._GETTERS.IS_MEDIA_SIDEBAR_OPEN]: ({ isMediaSidebarOpen }) =>
     isMediaSidebarOpen,
   [APP._GETTERS.DISABLED_TOOLBAR_ITEMS]: ({ disabledToolbarItems }) =>
     disabledToolbarItems,
-  [APP._GETTERS.IS_LOADING]: ({ isLoading }) => isLoading
+  [APP._GETTERS.IS_LOADING]: ({ isLoading }) => isLoading,
+  [APP._GETTERS.GET_FONTS]: ({ fonts }) => fonts
 };

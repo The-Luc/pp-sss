@@ -29,6 +29,10 @@ export default {
       return this.currentSheet?.pageIds[0];
     },
     rightPageId() {
+      if (this.currentSheet?.pageIds?.length === 1) {
+        return this.currentSheet?.pageIds[0];
+      }
+
       return this.currentSheet?.pageIds[1];
     }
   },

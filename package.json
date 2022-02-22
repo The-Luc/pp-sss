@@ -39,7 +39,8 @@
     "vuejs-clipper": "3.1.0",
     "vuetify": "github:truonggiangdao/vuetify",
     "vuex": "^3.6.2",
-    "vuex-composition-helpers": "^1.0.23"
+    "vuex-composition-helpers": "^1.0.23",
+    "webfontloader": "^1.6.28"
   },
   "devDependencies": {
     "@urql/devtools": "^2.0.3",

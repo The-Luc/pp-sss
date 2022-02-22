@@ -16,7 +16,7 @@ import {
 
 import { cloneDeep } from 'lodash';
 import { getActiveCanvas, ptToPx, pxToIn } from './canvas';
-import { measureTextWidth } from './textSize';
+import { measureTextWidth } from './text';
 import { createTextBoxObject } from '@/common/fabricObjects';
 /**
  * Get range of portrait
