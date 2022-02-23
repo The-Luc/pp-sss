@@ -11,6 +11,7 @@ import { getFavoriteLayoutsQuery } from '../user/queries';
 import { portraitFoldersSelectedQuery } from '../portrait/queries';
 import { getPresetColorPickerQuery } from '../util/queries';
 import { getUserLayoutsQuery } from '../layout/queries';
+import { getUserTextStyleQuery } from '../text/queries';
 
 export const updatePortraitSettingCache = (result, args, cache) => {
   const layoutType = get(args, 'portrait_layout_setting_params.layout_type');
@@ -388,6 +389,15 @@ export const createUserCustomPrintTemplate = (results, args, cache) => {
     if (!data || !layout) return data;
 
     data[category].push(layout);
+    return data;
+  });
+};
+
+export const updateTextStyle = (results, _, cache) => {
+  const style = get(results, 'create_text_style');
+  cache.updateQuery({ query: getUserTextStyleQuery }, data => {
+    if (!data || !style) return data;
+    data.user_text_styles.push(style);
     return data;
   });
 };

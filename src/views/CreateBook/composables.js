@@ -391,10 +391,10 @@ export const useLoadStyles = () => {
   const { loadTextStyles, loadUserTextStyles } = useTextStyle();
   const { setFontsToStore } = useText();
 
-  const loadStyles = () => {
+  const loadStyles = async () => {
+    await setFontsToStore();
     loadTextStyles();
     loadUserTextStyles();
-    setFontsToStore();
   };
 
   return {

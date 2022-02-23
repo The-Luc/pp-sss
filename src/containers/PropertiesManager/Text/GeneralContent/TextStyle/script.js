@@ -36,11 +36,11 @@ export default {
       return this.selectBoxItems.find(item => item.id === selectedId);
     },
     items() {
-      const userStyles = this.userTextStyles(style => ({
+      const userStyles = this.userTextStyles.map(style => ({
         ...style,
         isCustom: true
       }));
-      return [...this.textStyles, userStyles];
+      return [...this.textStyles, ...userStyles];
     },
     selectBoxItems() {
       return this.items.map(item => {

@@ -6,7 +6,7 @@ import { convertRGBToHex } from '../utils';
 
 const BORDER_STYLES_API = {
   SOLID: 'solid',
-  DOULBE: 'double',
+  DOUBLE: 'double',
   DASHED: 'square',
   DOTTED: 'round'
 };

@@ -10,6 +10,7 @@ import {
   saveUserTextStyleApi
 } from '@/api/text';
 import { textStyleMappingApi } from '@/common/mapping';
+import { MAX_SAVED_TEXT_STYLES } from '../common/constants/config';
 
 export const useStyle = () => {
   const { modalData, currentObject } = useGetters({
@@ -21,13 +22,12 @@ export const useStyle = () => {
     toggleModal: MUTATES.TOGGLE_MODAL
   });
 
-  const { saveTextStyle, saveImageStyle } = useActions({
-    saveTextStyle: ACTIONS.SAVE_TEXT_STYLE,
+  const { saveImageStyle } = useActions({
     saveImageStyle: ACTIONS.SAVE_IMAGE_STYLE
   });
   const { saveUserTextStyles } = useTextStyle();
 
-  const onSaveStyle = prop => {
+  const onSaveStyle = async prop => {
     const objectType = currentObject?.value?.type;
 
     const isSaveTextModal = [
@@ -58,7 +58,18 @@ export const useStyle = () => {
 
         style.name = prop?.styleName?.trim() || 'Untitled';
 
-        saveUserTextStyles(style);
+        const savedStyle = await saveUserTextStyles(style);
+
+        toggleModal({
+          isOpenModal: true,
+          modalData: {
+            type: MODAL_TYPES.SAVE_STYLE_SUCCESS,
+            props: {
+              styleId: savedStyle?.id,
+              objectType: OBJECT_TYPE.TEXT
+            }
+          }
+        });
       }
     } else {
       if (objectType === OBJECT_TYPE.IMAGE) {
@@ -105,8 +116,22 @@ export const useTextStyle = () => {
     setUserTextStyles: MUTATES.SET_USER_TEXT_STYLES
   });
 
+  const getFontName = id => {
+    const font = fonts.value.find(f => String(f.id) === String(id));
+    return font?.name;
+  };
+
+  const setFontFamily = styles => {
+    styles.forEach(s => {
+      const fontFamily = getFontName(s.style.fontId);
+      s.style.fontFamily = fontFamily;
+    });
+  };
+
   const loadUserTextStyles = async () => {
     const styles = await getUserTextStyleApi();
+
+    setFontFamily(styles);
 
     setUserTextStyles({ styles });
   };
@@ -114,6 +139,7 @@ export const useTextStyle = () => {
   const loadTextStyles = async () => {
     const styles = await getTextStyleApi();
 
+    setFontFamily(styles);
     setTextStyles({ styles });
   };
 
@@ -124,10 +150,16 @@ export const useTextStyle = () => {
 
     const userStyle = await saveUserTextStyleApi(apiStyle);
 
+    if (!userStyle) return;
+
+    userStyle.style.fontFamily = style.fontFamily;
+
     const currentStyles = userTextStyles.value;
 
-    const styles = [...currentStyles, userStyle];
+    const styles = [...currentStyles, userStyle].slice(-MAX_SAVED_TEXT_STYLES);
     setUserTextStyles({ styles });
+
+    return userStyle;
   };
 
   return {

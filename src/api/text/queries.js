@@ -9,11 +9,10 @@ export const getFontsQuery = gql`
   }
 `;
 
-const textStyleFragment = gql`
+export const textStyleFragment = gql`
   fragment textStyle on TextStyle {
     id
     name
-    opacity
     border_color
     border_style
     border_stroke
