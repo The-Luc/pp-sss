@@ -46,8 +46,6 @@ export const GETTERS = new GetterClass(
 );
 
 class ActionClass extends BaseObject {
-  SAVE_TEXT_STYLE = 'saveTextStyle';
-  GET_SAVED_TEXT_STYLES = 'getSavedTextStyles';
   SAVE_IMAGE_STYLE = 'saveImageStyle';
   GET_SAVED_IMAGE_STYLES = 'getSavedImageStyles';
   UPDATE_PHOTO_VISITED = 'updatePhotoVisited';
@@ -81,8 +79,8 @@ class MutationClass extends BaseObject {
   SET_USER = 'setCurrentUser';
   SET_GENERAL_INFO = 'setGeneralInfo';
   SET_TEXT_STYLES = 'setTextStyles';
-  SET_USER_TEXT_STYLES = 'setSavedTextStyles';
-  SET_USER_IMAGE_STYLES = 'setSavedImageStyles';
+  SET_USER_TEXT_STYLES = 'setUserTextStyles';
+  SET_USER_IMAGE_STYLES = 'setUserImageStyles';
   UPDATE_SAVING_STATUS = 'updateSavingStatus';
   UPDATE_MEDIA_SIDEBAR_OPEN = 'updateMediaSidebarOpen';
   UPDATE_DISABLED_TOOLBAR_ITEMS = 'updateDisabledToolbarItems';

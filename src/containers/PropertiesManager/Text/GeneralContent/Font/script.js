@@ -34,7 +34,7 @@ export default {
         isEqualString(font.name, selectedFont)
       );
 
-      return { name: selected.name, value: selected.value };
+      return { name: selected?.name, value: selected?.value };
     },
     selectedSize() {
       const selectedSize = this.getProperty('fontSize') || 60;

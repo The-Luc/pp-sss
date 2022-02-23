@@ -129,7 +129,7 @@ export const useBookDigitalInfo = () => {
     });
 
     setGeneralInfo({ info: { bookId, title } });
-    loadStyles();
+    await loadStyles();
   };
 
   return {

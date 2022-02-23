@@ -19,12 +19,12 @@ export default {
     };
   },
   setup() {
-    const { savedTextStyles, textStyles } = useTextStyle();
+    const { userTextStyles, textStyles } = useTextStyle();
     const { getProperty } = useElementProperties();
     const { isOpenMenuProperties } = useMenuProperties();
 
     return {
-      savedTextStyles,
+      userTextStyles,
       textStyles,
       getProperty,
       isOpenMenuProperties
@@ -36,15 +36,20 @@ export default {
       return this.selectBoxItems.find(item => item.id === selectedId);
     },
     items() {
-      return this.textStyles;
+      const userStyles = this.userTextStyles.map(style => ({
+        ...style,
+        isCustom: true
+      }));
+      return [...this.textStyles, ...userStyles];
     },
     selectBoxItems() {
-      return this.textStyles.map(item => {
-        const { name, id, style } = item;
+      return this.items.map(item => {
+        const { name, id, style, isCustom } = item;
         return {
           name,
           id,
           style,
+          isCustom,
           cssStyle: { ...toCssStyle(style), maxWidth: '275px' }
         };
       });
@@ -72,7 +77,7 @@ export default {
      * Fire when click selectbox
      */
     onClick() {
-      if (!this.savedTextStyles?.length) return;
+      if (!this.userTextStyles?.length) return;
       this.componentKey = !this.componentKey;
       this.showSavedStylePopup = true;
     },
@@ -93,12 +98,6 @@ export default {
     }
   },
   watch: {
-    savedTextStyles(val) {
-      this.selectBoxItems = [...this.items, ...val].map(item => ({
-        ...item,
-        cssStyle: toCssStyle(item.style)
-      }));
-    },
     isOpenMenuProperties(val) {
       if (!val) {
         this.onClose();
