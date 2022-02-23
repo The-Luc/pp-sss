@@ -101,6 +101,10 @@ export const mapSheetToPages = sheet => {
 
   // if sheet type is inside-front-cover => move objects of the left page to right page
   if (isHalfRight(sheet.sheetProps)) {
+    const { pageWidth, bleedLeft } = getPagePrintSize().inches;
+    const halfSheet = pageWidth + bleedLeft;
+
+    leftLayout.elements.forEach(o => (o.coord.x -= halfSheet));
     rightLayout.elements.push(...leftLayout.elements);
   }
 
@@ -148,18 +152,17 @@ export const seperateSheetObjectsIntoPages = objects => {
   const leftPageObjects = [];
   const rightPageObjects = [];
 
-  const { pageWidth } = getPagePrintSize().inches;
+  const { pageWidth, bleedLeft } = getPagePrintSize().inches;
+  const halfSheet = pageWidth + bleedLeft;
 
-  objects.map((o, index) => {
+  objects.forEach((o, index) => {
     if (o.type === OBJECT_TYPE.BACKGROUND) {
       o.isLeftPage ? leftPageObjects.push(o) : rightPageObjects.push(o);
       return;
     }
 
     o.arrangeOrder = index;
-    o.coord.x < pageWidth
-      ? leftPageObjects.push({ ...o, isLeftPageObject: true })
-      : rightPageObjects.push(o);
+    o.coord.x < halfSheet ? leftPageObjects.push(o) : rightPageObjects.push(o);
   });
 
   return { leftPageObjects, rightPageObjects };

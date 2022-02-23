@@ -20,21 +20,20 @@ export const getSheetInfoApi = async id => {
   const pages = get(response.data, 'sheet.pages', []);
   const sheetType = SHEET_TYPE[response.data.sheet.sheet_type];
 
-  const pageObjects = pages.map((page, idx) => {
-    const elements = get(page, 'layout.elements', []);
+  const pageObjects = (() => {
+    const leftObjects = get(pages[0], 'layout.elements', []);
+    const rightObjects = get(pages[1], 'layout.elements', []);
 
-    if (sheetType === SHEET_TYPE.BACK_COVER) return elements;
+    if (sheetType === SHEET_TYPE.BACK_COVER) return leftObjects;
+
     if (sheetType === SHEET_TYPE.FRONT_COVER) {
-      const leftObjects = elements.filter(e => e.isLeftPageObject);
-      const rightObjects = elements.filter(e => !e.isLeftPageObject);
-
-      return [...leftObjects, ...changeObjectsCoords(rightObjects, 'right')];
+      return changeObjectsCoords(leftObjects, 'right');
     }
 
-    return idx === 0 ? elements : changeObjectsCoords(elements, 'right');
-  });
+    return [...leftObjects, ...changeObjectsCoords(rightObjects, 'right')];
+  })();
 
-  const objects = pageObjects.flat().sort((a, b) => {
+  const objects = pageObjects.sort((a, b) => {
     const isABackground = a.type === OBJECT_TYPE.BACKGROUND;
     const isBBackground = b.type === OBJECT_TYPE.BACKGROUND;
 
