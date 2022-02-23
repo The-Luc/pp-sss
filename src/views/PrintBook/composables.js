@@ -3,9 +3,15 @@ import { getSheetIdOfPage } from '@/api/page';
 import { getSheetInfoApi } from '@/api/sheet';
 import { SHEET_TYPE } from '@/common/constants';
 import { getPageIdsOfSheet } from '@/common/utils';
+import { useText } from '../CreateBook/composables';
 
 export const usePageApi = () => {
+  const { setFontsToStore } = useText();
+
   const getBook = async (bookId, pageId) => {
+    // get fonts
+    await setFontsToStore();
+
     const { data } = await getBookCoverOptionApi(bookId);
 
     const coverOption = data.book.yearbook_spec?.cover_option;

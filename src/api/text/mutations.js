@@ -1,3 +1,11 @@
-// import { gql } from 'graphql-tag';
+import { gql } from 'graphql-tag';
+import { textStyleFragment } from './queries';
 
-// export const addSheetMutation = gql``;
+export const saveUserTextStylesMutation = gql`
+  mutation userTextStyle($params: TextStyleInput) {
+    create_text_style(params: $params) {
+      ...textStyle
+    }
+  }
+  ${textStyleFragment}
+`;

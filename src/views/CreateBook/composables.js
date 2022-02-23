@@ -342,9 +342,6 @@ export const useThumbnail = () => {
   };
 };
 
-// is used for color picker cycle
-// let next = 0;
-
 export const useColorPicker = () => {
   const updateColorPicker = async color => {
     const colors = await getPresets();
@@ -391,12 +388,13 @@ export const useText = () => {
 };
 
 export const useLoadStyles = () => {
-  const { loadTextStyles } = useTextStyle();
+  const { loadTextStyles, loadUserTextStyles } = useTextStyle();
   const { setFontsToStore } = useText();
 
-  const loadStyles = () => {
+  const loadStyles = async () => {
+    await setFontsToStore();
     loadTextStyles();
-    setFontsToStore();
+    loadUserTextStyles();
   };
 
   return {

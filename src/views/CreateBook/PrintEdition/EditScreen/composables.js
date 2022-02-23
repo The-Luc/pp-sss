@@ -48,7 +48,7 @@ export const useBookPrintInfo = () => {
     });
 
     setGeneralInfo({ info: { bookId, title, totalPages } });
-    loadStyles();
+    await loadStyles();
   };
 
   return { getBookPrintInfo, printBookInfo };
