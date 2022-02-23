@@ -121,12 +121,12 @@ export const textStyleMappingApi = style => {
 
   const mapStyle = mapObject(style, mapRules);
 
-  const { flip, shadow, border, alignment } = style;
+  const { shadow, border, alignment } = style;
 
-  const flipStyle = {
-    horizontal_flip: flip.horizontal,
-    vertical_flip: flip.vertical
-  };
+  // const flipStyle = {
+  //   horizontal_flip: flip.horizontal,
+  //   vertical_flip: flip.vertical
+  // };
 
   let horiAlign = findKeyByValue(TEXT_HORIZONTAL_ALIGN, alignment.horizontal);
   let vertiAlign = findKeyByValue(TEXT_VERTICAL_ALIGN, alignment.vertical);
