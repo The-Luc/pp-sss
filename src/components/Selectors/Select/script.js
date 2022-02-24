@@ -8,6 +8,10 @@ export default {
       type: Array,
       required: true
     },
+    itemVal: {
+      type: String,
+      default: 'value'
+    },
     prependedIcon: {
       type: String,
       default: ''

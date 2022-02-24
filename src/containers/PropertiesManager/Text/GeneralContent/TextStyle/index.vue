@@ -4,6 +4,7 @@
     <PpSelect
       :key="componentKey"
       :items="selectBoxItems"
+      item-val="id"
       :selected-val="selectedItem"
       @change="onChange"
       @click="onClick"
