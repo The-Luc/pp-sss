@@ -34,7 +34,7 @@ import { updateSpecificProp } from '@/common/fabricObjects';
 /**
  * Create new fabric image width initial properties
  * @param {Object} props initial properties of Image box
- * @returns {Object} instance of Image
+ * @returns {Promise<Object>} instance of Image
  */
 export const createImage = props => {
   return new Promise(resolve => {
@@ -727,7 +727,7 @@ export const handleChangeMediaSrc = async (
 /**
  * Create new fabric object width initial properties
  * @param {Object} props initial properties of portrait image
- * @returns {Object} instance of fabric object
+ * @returns {Promise<Object>} instance of fabric object
  */
 export const createPortraitImage = async props => {
   const {
