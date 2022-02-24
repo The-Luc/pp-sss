@@ -285,6 +285,8 @@ export default {
      * Save print canvas and change view
      */
     async onClickSavePrintCanvas() {
+      this.$refs.canvasEditor.setAutosaveTimer();
+
       this.updateSavingStatus({ status: SAVE_STATUS.START });
       const data = this.getDataEditScreen(this.pageSelected.id);
       await this.savePrintEditScreen(data);

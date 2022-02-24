@@ -392,7 +392,7 @@ export default {
   beforeDestroy() {
     this.digitalCanvas = null;
 
-    clearInterval(this.autoSaveTimer);
+    this.stopAutosaving();
 
     this.updateDigitalEventListeners(false);
     this.updateWindowEventListeners(false);
@@ -2112,6 +2112,8 @@ export default {
      * @param {Boolean} isAutosave indicating autosaving call or not
      */
     async saveData(frameId, isAutosave) {
+      this.setAutosaveTimer();
+
       this.updateFrameObjects({ frameId });
       const data = this.getDataEditScreen(frameId);
       await this.saveEditScreen(data, isAutosave);
@@ -2703,8 +2705,14 @@ export default {
      * To set timer for autosaving
      */
     setAutosaveTimer() {
-      clearInterval(this.autoSaveTimer);
+      this.stopAutosaving();
       this.autoSaveTimer = setInterval(this.handleAutosave, AUTOSAVE_INTERVAL);
+    },
+    /**
+     * To clear the autosaving timer
+     */
+    stopAutosaving() {
+      clearInterval(this.autoSaveTimer);
     },
     /**
      * To pause all the playing videos on canvas
