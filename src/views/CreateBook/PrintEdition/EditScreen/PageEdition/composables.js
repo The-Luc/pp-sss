@@ -1,4 +1,4 @@
-import { difference } from 'lodash';
+import { difference, cloneDeep } from 'lodash';
 import { useGetters, useMutations } from 'vuex-composition-helpers';
 
 import { GETTERS as PRINT_GETTERS, MUTATES } from '@/store/modules/print/const';
@@ -56,14 +56,16 @@ export const useSaveData = () => {
   const savePrintEditScreen = async (editScreenData, isAutosave) => {
     if (isEmpty(editScreenData.sheetProps)) return;
 
-    const { pageInfo, bookId, communityId, defaultThemeId } = editScreenData;
+    const screenData = cloneDeep(editScreenData);
+
+    const { pageInfo, bookId, communityId, defaultThemeId } = screenData;
     const {
       id: sheetId,
       pageIds,
       type,
       isVisited,
       thumbnailUrl
-    } = editScreenData.sheetProps;
+    } = screenData.sheetProps;
 
     const sheetParams = { is_visited: isVisited };
 
@@ -75,7 +77,7 @@ export const useSaveData = () => {
       rightPageId ? uploadBase64Image(rightThumb, isAutosave) : ''
     ]);
 
-    const { leftPage, rightPage } = mapSheetToPages(editScreenData);
+    const { leftPage, rightPage } = mapSheetToPages(screenData);
     leftPage.preview_image_url = imgUrls[0];
     rightPage.preview_image_url = imgUrls[1];
 
@@ -102,7 +104,7 @@ export const useSaveData = () => {
     const currentAssetIds = mediaObjectIds.value;
 
     const { leftPageObjects } = seperateSheetObjectsIntoPages(
-      editScreenData.objects
+      screenData.objects
     );
 
     const leftAssetIds = leftPageObjects
