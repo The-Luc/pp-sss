@@ -216,7 +216,7 @@ export default {
     /**
      * Get the background of selected page using its id
      *
-     * @returns {Object}  background of selected page
+     * @returns {Promise<Object>}  background of selected page
      */
     async getPrintBackground() {
       const pageId = getPageIdFromPageNo(this.pageNo, this.getSheets);
@@ -246,7 +246,7 @@ export default {
     /**
      * Get the background of selected frame using its id
      *
-     * @returns {Object}  background of selected frame
+     * @returns {Promise<Object>}  background of selected frame
      */
     async getDigitalBackground() {
       const screenInfo = getScreenInfoFromScreenNo(

@@ -4,11 +4,11 @@ import { managerQuery } from '../book/queries';
 import { getSheetFramesQuery } from '../frame/queries';
 import {
   getPrintSettingsQuery,
-  getDigitalSettingsQuery
+  getDigitalSettingsQuery,
+  portraitFoldersSelectedQuery
 } from '../portrait/queries';
 import { digitalWorkspaceQuery, printWorkspaceQuery } from '../sheet/queries';
 import { getFavoriteLayoutsQuery } from '../user/queries';
-import { portraitFoldersSelectedQuery } from '../portrait/queries';
 import { getPresetColorPickerQuery } from '../util/queries';
 import { getUserLayoutsQuery } from '../layout/queries';
 import { getUserTextStyleQuery } from '../text/queries';
@@ -149,13 +149,13 @@ export const updateDeleteFrame = (_, args, cache) => {
 
   const sheetIds = cache
     .inspectFields({ __typename: 'Query' })
-    .filter(cache => cache.fieldName === 'sheet')
-    .map(cache => String(cache.arguments.id));
+    .filter(cacheInfo => cacheInfo.fieldName === 'sheet')
+    .map(cacheInfo => String(cacheInfo.arguments.id));
 
   const bookId = cache
     .inspectFields({ __typename: 'Query' })
-    .filter(cache => cache.fieldName === 'book')
-    .map(cache => String(cache.arguments.id));
+    .filter(cacheInfo => cacheInfo.fieldName === 'book')
+    .map(cacheInfo => String(cacheInfo.arguments.id));
 
   cache.invalidate({ __typename: 'Query' }, 'book', { id: bookId[0] });
 
@@ -226,6 +226,20 @@ export const updateCreateSheet = (results, args, cache) => {
   );
 };
 
+const getIndexOfSheetSection = (sections, sheetId) => {
+  let sheetIndex = null;
+  const sectionIndex = sections.findIndex(section =>
+    section.sheets.some((sheet, idx) => {
+      if (sheet.id === sheetId) {
+        sheetIndex = idx;
+        return true;
+      }
+    })
+  );
+
+  return { sheetIndex, sectionIndex };
+};
+
 export const updateDeleteSheet = (results, _, cache) => {
   const sheetId = get(results, 'delete_sheet.id', null);
   const bookId = get(results, 'delete_sheet.book.id', null);
@@ -242,15 +256,11 @@ export const updateDeleteSheet = (results, _, cache) => {
 
       const sections = data.book.book_sections;
 
-      let sheetIndex = null;
-      const sectionIndex = sections.findIndex(section =>
-        section.sheets.some((sheet, idx) => {
-          if (sheet.id === sheetId) {
-            sheetIndex = idx;
-            return true;
-          }
-        })
+      const { sheetIndex, sectionIndex } = getIndexOfSheetSection(
+        sections,
+        sheetId
       );
+
       sections[sectionIndex].sheets.splice(sheetIndex, 1);
       return data;
     }
@@ -271,14 +281,15 @@ export const updateDeleteSection = (results, _, cache) => {
       variables: { bookId }
     },
     data => {
-      if (!data) return data;
-      const sections = data.book.book_sections;
+      if (data) {
+        const sections = data.book.book_sections;
 
-      const sectionIndex = sections.findIndex(
-        section => section.id === sectionId
-      );
+        const sectionIndex = sections.findIndex(
+          section => section.id === sectionId
+        );
 
-      sections.splice(sectionIndex, 1);
+        sections.splice(sectionIndex, 1);
+      }
       return data;
     }
   );
@@ -299,12 +310,11 @@ export const updateCreateSection = (results, args, cache) => {
       variables: { bookId }
     },
     data => {
-      if (!data) return data;
-
-      data.book.book_sections.push({
-        ...sectionParams
-      });
-
+      if (data) {
+        data.book.book_sections.push({
+          ...sectionParams
+        });
+      }
       return data;
     }
   );
@@ -342,15 +352,11 @@ export const moveSheetCache = (results, args, cache) => {
       // remove sheet from its original section
       const sections = data.book.book_sections;
 
-      let sheetIndex = null;
-      const sectionIndex = sections.findIndex(section =>
-        section.sheets.some((sheet, idx) => {
-          if (sheet.id === sheetId) {
-            sheetIndex = idx;
-            return true;
-          }
-        })
+      const { sheetIndex, sectionIndex } = getIndexOfSheetSection(
+        sections,
+        sheetId
       );
+
       const targetSheet = sections[sectionIndex].sheets.splice(
         sheetIndex,
         1

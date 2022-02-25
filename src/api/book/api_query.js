@@ -243,7 +243,7 @@ const getBookModel = edition => {
  * @param   {Number | String} bookId    id of selected book
  * @param   {String}          edition   current edition
  * @param   {Boolean}         isEditor  is in editor screen
- * @returns {Object}                    data of book
+ * @returns {Promise<Object>}                    data of book
  */
 const getBook = async (bookId, edition, isEditor) => {
   const editionQuery = {
@@ -265,7 +265,7 @@ const getBook = async (bookId, edition, isEditor) => {
  * @param   {Number | String} bookId    id of selected book
  * @param   {String}          edition   current edition
  * @param   {Boolean}         isEditor  is in editor screen
- * @returns {Object}                    data of book
+ * @returns {Promise<Object>}                    data of book
  */
 export const getBookDetail = async (bookId, edition, isEditor) => {
   const book = await getBook(bookId, edition, isEditor);

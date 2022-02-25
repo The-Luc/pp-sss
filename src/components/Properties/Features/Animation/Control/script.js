@@ -88,6 +88,9 @@ export default {
         this.showApplyOptions = true;
       }
 
+      if (style.value === NONE_OPTION.value)
+        this.onChangeOrder(this.orderOptions[0]);
+
       this.selectedStyle = style;
 
       this.resetConfig();
@@ -203,8 +206,6 @@ export default {
       this.scaleValue = DEFAULT_ANIMATION.SCALE;
       this.selectedApplyOption = null;
       this.showApplyButton = false;
-
-      this.onChangeOrder(this.orderOptions[0]);
     },
 
     /**
