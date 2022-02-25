@@ -52,7 +52,7 @@ export const getLayoutOptSelectedById = (
  * @param {Object} objects that will be change their coord to place in the right side (left/right)
  * @param {Number | String} position left or right || FRONT_COVER or BACK_COVER
  * @param {Object} options adding config for the function, available options: moveToLeft
- * @returns an object have coords changed
+ * @returns objects have coords changed
  */
 export const changeObjectsCoords = (objects, position, options) => {
   const isLeftPage = position === 'left' || position === SHEET_TYPE.BACK_COVER;

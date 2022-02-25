@@ -3,7 +3,7 @@
     class="pp-select"
     :items="items"
     item-text="name"
-    item-value="value"
+    :item-value="itemVal"
     solo
     :placeholder="placeholder"
     :attach="container"

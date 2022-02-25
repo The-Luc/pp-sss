@@ -27,6 +27,7 @@ export const usePageApi = () => {
 
     return { coverOption, isLeftPage, sheetType, sheetId: sheet.id };
   };
+
   const getSheet = async sheetId => await getSheetInfoApi(sheetId);
   return {
     getBook,

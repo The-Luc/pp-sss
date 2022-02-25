@@ -349,6 +349,8 @@ export default {
      * Save digital canvas and change view
      */
     async onClickSaveDigitalCanvas() {
+      this.$refs.canvasEditor.stopAutosaving();
+
       this.updateSavingStatus({ status: SAVE_STATUS.START });
 
       this.updateFrameObjects({ frameId: this.currentFrameId });

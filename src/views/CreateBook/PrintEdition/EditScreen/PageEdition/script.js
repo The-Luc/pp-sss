@@ -236,8 +236,6 @@ export default {
       async handler(val, oldVal) {
         if (val?.id === oldVal?.id) return;
 
-        this.setAutosaveTimer();
-
         await this.saveData(oldVal.id);
 
         resetObjects(window.printCanvas);
@@ -338,6 +336,8 @@ export default {
      *
      */
     async saveData(sheetId, isAutosave) {
+      this.setAutosaveTimer();
+
       const data = this.getDataEditScreen(sheetId);
 
       await this.savePrintEditScreen(data, isAutosave);
@@ -1988,8 +1988,6 @@ export default {
       });
     },
     async handleSaveLayout(setting) {
-      // save data to DB before save layout
-      this.setAutosaveTimer();
       await this.saveData(this.pageSelected.id);
 
       await this.saveCustomPrintLayout(setting);

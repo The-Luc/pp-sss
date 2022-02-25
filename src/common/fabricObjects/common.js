@@ -661,7 +661,7 @@ export const addEventListeners = (element, eventListeners) => {
  * @param {String} svgUrlAttrName - the attribute name contain svg url
  * @param {Number} expectedHeight - the svg's expected height want to draw
  * @param {Number} expectedWidth - the svg's expected width want to draw
- * @returns {Object} Svg object
+ * @returns {Promise<Object>} Svg object
  */
 export const handleGetSvgData = async ({
   svg,
@@ -685,7 +685,7 @@ export const handleGetSvgData = async ({
  * @param {Object} clipart - The clipart's data
  * @param   {Number}  expectedHeight  the view height of svg element
  * @param   {Number}  expectedWidth   the view width of svg element
- * @returns {Object} Clipart object
+ * @returns {Promise<Object>} Clipart object
  */
 export const handleGetClipart = async ({
   object,
