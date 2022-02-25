@@ -5,14 +5,16 @@
       border-radius: 17px;
     }
   }
-  
+
   &.v-dialog__container {
     display: block;
   }
 
   .saved-message {
+    font-family: $font-500;
+    font-size: 21px;
     text-align: center;
-    padding: 50px;
+    padding: 70px;
     color: $color-stoodio-blue;
   }
 }

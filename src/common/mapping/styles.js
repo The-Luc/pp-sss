@@ -69,9 +69,9 @@ export const textStyleMapping = style => {
     name: style.name,
     id: style.id,
     style: {
-      fontId: style.font_id, // check
+      fontId: style.font_id,
       fontSize: style.font_size,
-      isBold: style.font_weight || false, // check or using text weight
+      isBold: style.text_bold || false,
       isItalic: style.text_italic || false,
       isUnderline: style.text_underline || false,
       color: style.text_color || '#00000000',
