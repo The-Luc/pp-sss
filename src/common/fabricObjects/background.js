@@ -9,7 +9,7 @@ import {
 
 import { toFabricBackgroundProp } from './common';
 
-import { isEmpty, isFullBackground } from '@/common/utils';
+import { isEmpty, isFullBackground, modifyUrl } from '@/common/utils';
 
 /**
  * Adding background to canvas
@@ -115,7 +115,7 @@ export const createBackgroundFabricObject = (
 
   return new Promise((resolve, reject) => {
     fabric.util.loadImage(
-      prop.imageUrl,
+      modifyUrl(prop.imageUrl),
       img => {
         if (!img) {
           reject(new Error('Cannot load background'));

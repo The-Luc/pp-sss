@@ -20,7 +20,8 @@ import {
   scaleSize,
   pxToIn,
   ptToPxPreview,
-  inToPxPreview
+  inToPxPreview,
+  modifyUrl
 } from '@/common/utils';
 import { toFabricMediaProp, toFabricPortraitImageProp } from './image';
 import { useObjectControlsOverride } from '@/plugins/fabric';
@@ -696,7 +697,7 @@ export const handleGetClipart = async ({
 
   return new Promise(resolve => {
     fabric.util.loadImage(
-      fabricProp.imageUrl,
+      modifyUrl(fabricProp.imageUrl),
       img => {
         const image = new fabric.Image(img, {
           ...fabricProp,
