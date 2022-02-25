@@ -2,7 +2,12 @@ import { cloneDeep } from 'lodash';
 
 import { getSheetInfoApi } from '@/api/sheet';
 import { getNewBackground } from '@/common/models';
-import { getUniqueId, isEmpty, entitiesToObjects } from '@/common/utils';
+import {
+  getUniqueId,
+  isEmpty,
+  entitiesToObjects,
+  isHalfSheet
+} from '@/common/utils';
 
 import PRINT from './const';
 
@@ -91,7 +96,7 @@ export const actions = {
       commit(PRINT._MUTATES.SET_BACKGROUND, { background: backgroundObjs[0] });
     }
 
-    if (isFullLayout) {
+    if (isFullLayout || isHalfSheet(currentSheet)) {
       const objectList = objects.map(obj => ({
         ...obj,
         id: getUniqueId()
