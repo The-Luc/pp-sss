@@ -1,7 +1,5 @@
 import { useGetters, useMutations } from 'vuex-composition-helpers';
 
-import bookService from '@/api/bookService';
-
 import { getBookDetail, setPhotoIsVisitedApi } from '@/api/book';
 
 import { useAppCommon } from './common';
@@ -110,24 +108,6 @@ export const useBook = () => {
     maxPage,
     isPhotoVisited,
     updatePhotoVisited
-  };
-};
-
-/**
- * The hook allow update book title
- * @return {Object} Function to update book title
- */
-export const useUpdateTitle = () => {
-  const updateTitle = async (bookId, title) => {
-    const { data, isSuccess } = await bookService.updateTitle(bookId, title);
-    return {
-      data,
-      isSuccess
-    };
-  };
-
-  return {
-    updateTitle
   };
 };
 

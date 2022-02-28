@@ -27,6 +27,13 @@ import {
 
 let requestCount = 0;
 
+const fetchOptions = () => {
+  const token = getItem(LOCAL_STORAGE.TOKEN);
+  return {
+    headers: { authorization: token ? `Bearer ${token}` : '' }
+  };
+};
+
 const urqlClient = createClient({
   url: process.env.VUE_APP_API_ENDPOINT,
   exchanges: [
@@ -63,12 +70,7 @@ const urqlClient = createClient({
     }),
     fetchExchange
   ],
-  fetchOptions: () => {
-    const token = getItem(LOCAL_STORAGE.TOKEN);
-    return {
-      headers: { authorization: token ? `Bearer ${token}` : '' }
-    };
-  }
+  fetchOptions
 });
 
 // ignore cache data
@@ -76,12 +78,7 @@ const urqlNetworkClient = createClient({
   url: process.env.VUE_APP_API_ENDPOINT,
   requestPolicy: 'network-only',
   exchanges: [devtoolsExchange, dedupExchange, fetchExchange],
-  fetchOptions: () => {
-    const token = getItem(LOCAL_STORAGE.TOKEN);
-    return {
-      headers: { authorization: token ? `Bearer ${token}` : '' }
-    };
-  }
+  fetchOptions
 });
 
 /**
@@ -95,23 +92,24 @@ const urqlNetworkClient = createClient({
  */
 export const graphqlRequest = async (
   query,
-  variables = {},
+  variables,
   isHideSpiner,
   isIgnoreCache
 ) => {
   const { operation } = query.definitions[0];
+  const queryVars = variables || {};
 
   const client = isIgnoreCache ? urqlNetworkClient : urqlClient;
   if (isHideSpiner) {
-    const res = await client[operation](query, variables).toPromise();
-    return responseHandler(res);
+    const results = await client[operation](query, queryVars).toPromise();
+    return responseHandler(results);
   }
 
   // show loading screen
   store.commit(APP_MUTATES.SET_LOADING_STATE, { value: true });
   requestCount++;
 
-  const res = await client[operation](query, variables).toPromise();
+  const res = await client[operation](query, queryVars).toPromise();
 
   // hide loading screen
   requestCount--;

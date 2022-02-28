@@ -43,9 +43,8 @@ export const updateTemplateUserCache = (result, args, cache) => {
       query: getFavoriteLayoutsQuery
     },
     data => {
-      if (!data) return null;
+      if (data) data.template_favourites.push(template);
 
-      data.template_favourites.push(template);
       return data;
     }
   );
@@ -59,11 +58,11 @@ export const updateDeleteTemplateUser = (result, _, cache) => {
       query: getFavoriteLayoutsQuery
     },
     data => {
-      if (!data) return null;
-
-      data.template_favourites = data.template_favourites.filter(
-        template => template.id !== templateId
-      );
+      if (data) {
+        data.template_favourites = data.template_favourites.filter(
+          template => template.id !== templateId
+        );
+      }
       return data;
     }
   );
@@ -84,11 +83,12 @@ export const updateBookCollectionCache = (result, args, cache) => {
       variables: { bookId }
     },
     data => {
-      if (!data) return null;
+      if (data) {
+        data.books_portrait_collections_by_book.push({
+          portrait_collection: { id: collectionId }
+        });
+      }
 
-      data.books_portrait_collections_by_book.push({
-        portrait_collection: { id: collectionId }
-      });
       return data;
     }
   );
@@ -105,9 +105,7 @@ export const updateSheetCache = (_, args, cache) => {
         variables: { id: args.sheet_id }
       },
       data => {
-        if (!data) return {};
-
-        data.sheet[`${prefix}workspace`][`${prefix}assets`] = assets;
+        if (data) data.sheet[`${prefix}workspace`][`${prefix}assets`] = assets;
 
         return data;
       }
@@ -136,9 +134,12 @@ export const updateCreateFrame = (results, args, cache) => {
       variables: { sheetId: sheetId }
     },
     data => {
-      if (!data) return data;
+      if (data)
+        data.sheet.digital_frames.push({
+          ...frame,
+          __typename: 'DigitalFrame'
+        });
 
-      data.sheet.digital_frames.push({ ...frame, __typename: 'DigitalFrame' });
       return data;
     }
   );
@@ -184,15 +185,15 @@ export const updateDeleteFrame = (_, args, cache) => {
       variables: { sheetId: sheetId }
     },
     data => {
-      if (!data) return data;
+      if (data) {
+        // remove deleted frames
+        data.sheet.digital_frames = data.sheet.digital_frames.filter(
+          f => f.id !== frameId
+        );
 
-      // remove deleted frames
-      data.sheet.digital_frames = data.sheet.digital_frames.filter(
-        f => f.id !== frameId
-      );
-
-      // remove the last transition
-      data.sheet.digital_transitions.pop();
+        // remove the last transition
+        data.sheet.digital_transitions.pop();
+      }
       return data;
     }
   );
@@ -211,15 +212,16 @@ export const updateCreateSheet = (results, args, cache) => {
       variables: { bookId }
     },
     data => {
-      if (!data) return data;
-      const sectionIndex = data.book.book_sections.findIndex(
-        section => section.id === book_section_id
-      );
-      data.book.book_sections[sectionIndex].sheets.push({
-        ...sheet_params,
-        id: sheetId,
-        __typename: 'Sheet'
-      });
+      if (data) {
+        const sectionIndex = data.book.book_sections.findIndex(
+          section => section.id === book_section_id
+        );
+        data.book.book_sections[sectionIndex].sheets.push({
+          ...sheet_params,
+          id: sheetId,
+          __typename: 'Sheet'
+        });
+      }
 
       return data;
     }
@@ -252,16 +254,17 @@ export const updateDeleteSheet = (results, _, cache) => {
       variables: { bookId }
     },
     data => {
-      if (!data) return data;
+      if (data) {
+        const sections = data.book.book_sections;
 
-      const sections = data.book.book_sections;
+        const { sheetIndex, sectionIndex } = getIndexOfSheetSection(
+          sections,
+          sheetId
+        );
 
-      const { sheetIndex, sectionIndex } = getIndexOfSheetSection(
-        sections,
-        sheetId
-      );
+        sections[sectionIndex].sheets.splice(sheetIndex, 1);
+      }
 
-      sections[sectionIndex].sheets.splice(sheetIndex, 1);
       return data;
     }
   );
@@ -392,9 +395,8 @@ export const createUserCustomPrintTemplate = (results, args, cache) => {
 
   const category = saveTypeMapping[saveType];
   cache.updateQuery({ query: getUserLayoutsQuery }, data => {
-    if (!data || !layout) return data;
+    if (data && layout) data[category].push(layout);
 
-    data[category].push(layout);
     return data;
   });
 };
@@ -402,8 +404,8 @@ export const createUserCustomPrintTemplate = (results, args, cache) => {
 export const updateTextStyle = (results, _, cache) => {
   const style = get(results, 'create_text_style');
   cache.updateQuery({ query: getUserTextStyleQuery }, data => {
-    if (!data || !style) return data;
-    data.user_text_styles.push(style);
+    if (data && style) data.user_text_styles.push(style);
+
     return data;
   });
 };

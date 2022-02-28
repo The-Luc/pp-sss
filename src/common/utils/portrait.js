@@ -617,9 +617,9 @@ export const createPortraitObjects = (
   });
 
   if (isPageTitleOn && isFirstPage) {
-    const title = new TextElementObject({
+    const titleEl = new TextElementObject({
       id: getUniqueId(),
-      text: pageTitle,
+      text: titleEl,
       coord: {
         x: isRight ? pageTitleMargins.left + pageWidth : pageTitleMargins.left,
         y: pageTitleMargins.top
@@ -635,7 +635,7 @@ export const createPortraitObjects = (
       ...pageTitleFontSettings
     });
 
-    objs.push(title);
+    objs.push(titleEl);
   }
 
   return objs;

@@ -77,11 +77,10 @@ export const measureTextWidth = (canvas, text, options) => {
 
 const transformTextCase = (string, textCase = TEXT_CASE.NONE) => {
   const transformOpt = {
-    [TEXT_CASE.UPPER]: string => string.toUpperCase(),
-    [TEXT_CASE.CAPITALIZE]: string =>
-      string.charAt(0).toUpperCase() + string.slice(1),
-    [TEXT_CASE.LOWER]: string => string.toLowerCase(),
-    [TEXT_CASE.NONE]: string => string
+    [TEXT_CASE.UPPER]: str => str.toUpperCase(),
+    [TEXT_CASE.CAPITALIZE]: str => str.charAt(0).toUpperCase() + str.slice(1),
+    [TEXT_CASE.LOWER]: str => str.toLowerCase(),
+    [TEXT_CASE.NONE]: str => str
   };
   return transformOpt[textCase](string);
 };
