@@ -19,7 +19,11 @@ import {
   getInProjectAssetsApi,
   getAlbumCategoryApi
 } from '@/api/media';
-import { savePresetColorPickerApi, getPresetsColorPickerApi } from '@/api/util';
+import {
+  savePresetColorPickerApi,
+  getPresetsColorPickerApi,
+  uploadBase64ImageApi
+} from '@/api/util';
 import { savePortraitSettingsApi, getPortraiSettingsApi } from '@/api/portrait';
 
 import {
@@ -29,7 +33,6 @@ import {
 
 import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 import { GETTERS as DIGITAL_GETTERS } from '@/store/modules/digital/const';
-import { uploadBase64ImageApi } from '@/api/util';
 import {
   generateCanvasThumbnail,
   isOk,
@@ -72,12 +75,7 @@ export const usePhotos = () => {
   });
 
   const getInProjectAssets = async (bookId, projectId, isAutosave) => {
-    return await getInProjectAssetsApi(
-      bookId,
-      projectId,
-      isDigital,
-      isAutosave
-    );
+    return getInProjectAssetsApi(bookId, projectId, isDigital, isAutosave);
   };
 
   const getCurrentInProjectIds = async () => {
@@ -139,8 +137,8 @@ export const usePhotos = () => {
   const getAssetByKeywords = async (keywords, isGetMedia) => {
     const bookId = Number(generalInfo.value.bookId);
     const assets = isGetMedia
-      ? await getMediaApi(communityId.value, keywords, bookId)
-      : await getPhotosApi(communityId.value, keywords, bookId);
+      ? await getMediaApi(communityId.value, bookId, keywords)
+      : await getPhotosApi(communityId.value, bookId, keywords);
 
     const inProjectIds = await getCurrentInProjectIds();
     return updateInProjectAssets(assets, inProjectIds);
@@ -228,12 +226,12 @@ export const usePhotos = () => {
   /**
    *  To update media to current sheet
    * @param {Object} media media object
-   * @param {Boolean} isDigital
+   * @param {Boolean} isDigitalEdition
    * @returns
    */
-  const updateSheetMedia = async (media, isDigital) => {
+  const updateSheetMedia = async (media, isDigitalEdition) => {
     const bookId = Number(generalInfo.value.bookId);
-    const prefix = isDigital ? 'digital_' : '';
+    const prefix = isDigitalEdition ? 'digital_' : '';
 
     const workspace = {
       [`${prefix}properties`]: {
@@ -344,16 +342,14 @@ export const useThumbnail = () => {
 
 export const useColorPicker = () => {
   const updateColorPicker = async color => {
-    const colors = await getPresets();
+    const colors = await getPresetsColorPickerApi();
 
     savePresetColorPickerApi(
       [color, ...colors].slice(0, MAX_COLOR_PICKER_PRESET)
     );
   };
 
-  const getPresets = async () => await getPresetsColorPickerApi();
-
-  return { updateColorPicker, getPresets };
+  return { updateColorPicker, getPresets: getPresetsColorPickerApi };
 };
 
 export const useText = () => {

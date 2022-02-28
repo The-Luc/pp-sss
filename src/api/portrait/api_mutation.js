@@ -2,11 +2,9 @@ import { graphqlRequest } from '../urql';
 
 import { saveSettingMutation, addBookPortraitMutation } from './mutations';
 import { getPortraitFoldersIdSelected } from './api_query';
-import { isEmpty } from '@/common/utils';
+import { isEmpty, isOk } from '@/common/utils';
 
 import { portraitSettingsMappingToApi } from '@/common/mapping';
-
-import { isOk } from '@/common/utils';
 
 /**
  * Save layout id to favorites
@@ -47,5 +45,5 @@ export const saveSelectedPortraitFolders = async (bookId, folderIds) => {
     })
   );
 
-  return await Promise.all(promises);
+  return Promise.all(promises);
 };

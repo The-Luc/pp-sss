@@ -14,6 +14,17 @@ import {
 
 import { BACKGROUND_TYPE, BACKGROUND_PAGE_TYPE } from '@/common/constants';
 
+const mapBackgrounds = (backgrounds, bgTypeSubId, bgTypeId) => {
+  return backgrounds.map(
+    item =>
+      new BackgroundElement({
+        ...apiBackgroundToModel(item),
+        categoryId: bgTypeSubId,
+        backgroundType: bgTypeId
+      })
+  );
+};
+
 const getBackgroundsOfTheme = async (
   backgroundTypeId,
   backgroundTypeSubId,
@@ -28,13 +39,10 @@ const getBackgroundsOfTheme = async (
 
   if (!isOk(res)) return [];
 
-  const backgrounds = res.data.category.backgrounds.map(
-    item =>
-      new BackgroundElement({
-        ...apiBackgroundToModel(item),
-        categoryId: backgroundTypeSubId,
-        backgroundType: backgroundTypeId
-      })
+  const backgrounds = mapBackgrounds(
+    res.data.category.backgrounds,
+    backgroundTypeSubId,
+    backgroundTypeId
   );
 
   if (isDigital)
@@ -69,28 +77,22 @@ const getBackgroundsOfCategory = async (
       });
     });
   });
-
-  return backgrounds
-    .map(
-      item =>
-        new BackgroundElement({
-          ...apiBackgroundToModel(item),
-          categoryId: backgroundTypeSubId,
-          backgroundType: backgroundTypeId
-        })
-    )
-    .filter(
-      item =>
-        item.pageType ===
-        (backgroundPageTypeId || BACKGROUND_PAGE_TYPE.GENERAL.id)
-    );
+  return mapBackgrounds(
+    backgrounds,
+    backgroundTypeSubId,
+    backgroundTypeId
+  ).filter(
+    item =>
+      item.pageType ===
+      (backgroundPageTypeId || BACKGROUND_PAGE_TYPE.GENERAL.id)
+  );
 };
 /**
  * Get background for print edition
  *
  * @returns {Object}  query result
  */
-export const getBackgroundsApi = async (
+export const getBackgroundsApi = (
   backgroundTypeId,
   backgroundTypeSubId,
   backgroundPageTypeId,
@@ -101,7 +103,7 @@ export const getBackgroundsApi = async (
       ? getBackgroundsOfTheme
       : getBackgroundsOfCategory;
 
-  return await getBackgroundMethod(
+  return getBackgroundMethod(
     backgroundTypeId,
     backgroundTypeSubId,
     backgroundPageTypeId,

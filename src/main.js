@@ -12,14 +12,6 @@ import Notifications from 'vue-notification';
 import './plugins/fabric';
 import './scss/_index.scss';
 
-import appService from './api/app';
-
-// check and set mock data to sesstion storage if empty
-appService.initData();
-
-// beforeunload event listener to save data to sessionStorage
-appService.saveOnUnloadEvent();
-
 Vue.prototype.axios = axios;
 
 Vue.config.productionTip = false;

@@ -1,8 +1,7 @@
 import { findKey } from 'lodash';
 import Color from 'color';
 import { TEXT_HORIZONTAL_ALIGN, TEXT_VERTICAL_ALIGN } from '@/common/constants';
-import { mapObject } from '../utils';
-import { convertRGBToHex } from '../utils';
+import { mapObject, convertRGBToHex } from '../utils';
 
 const BORDER_STYLES_API = {
   SOLID: 'solid',
