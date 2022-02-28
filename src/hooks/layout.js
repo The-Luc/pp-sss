@@ -158,8 +158,8 @@ export const useCustomLayout = () => {
   });
 
   const saveCustomPrintLayout = async setting => {
-    const { id, type } = setting;
-    const isSuccess = await saveCustomPrintLayoutApi(id, type);
+    const { id, type, layoutName } = setting;
+    const isSuccess = await saveCustomPrintLayoutApi(id, type, layoutName);
 
     if (!isSuccess) return;
 

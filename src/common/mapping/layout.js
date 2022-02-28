@@ -19,6 +19,10 @@ export const layoutMapping = layout => {
       },
       preview_image_url: {
         name: 'previewImageUrl'
+      },
+      title: {
+        name: 'name',
+        parse: val => val || 'Untitled'
       }
     },
     restrict: ['layout']
