@@ -99,14 +99,16 @@ export default {
     getClipDimension() {
       const { clientHeight, clientWidth } = this.$refs['body'];
 
+      let clipWidth, clipHeight;
+
       if (this.ratio >= 1) {
-        const clipWidth = (this.area / 100) * clientWidth;
-        const clipHeight = clipWidth / this.ratio;
-        return { clipWidth, clipHeight };
+        clipWidth = (this.area / 100) * clientWidth;
+        clipHeight = clipWidth / this.ratio;
+      } else {
+        clipHeight = (this.area / 100) * clientHeight;
+        clipWidth = clipHeight * this.ratio;
       }
 
-      const clipHeight = (this.area / 100) * clientHeight;
-      const clipWidth = clipHeight * this.ratio;
       return { clipWidth, clipHeight };
     }
   },

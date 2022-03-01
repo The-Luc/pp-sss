@@ -66,11 +66,13 @@ export const getUserLayoutsQuery = gql`
       id
       layout_type
       preview_image_url
+      title
     }
     single_page: user_saved_print_layouts(layout_type: SINGLE_PAGE) {
       id
       layout_type
       preview_image_url
+      title
     }
   }
 `;

@@ -657,7 +657,7 @@ export const parseFromAPIShadow = apiShadow => {
  */
 export const splitBase64Image = async imgUrl => {
   const img = await new Promise(r => {
-    fabric.Image.fromURL(imgUrl, img => r(img), {
+    fabric.Image.fromURL(imgUrl, image => r(image), {
       crossOrigin: 'anonymous'
     });
   });
@@ -675,8 +675,8 @@ export const splitBase64Image = async imgUrl => {
   });
   canvas.add(img);
 
-  const getThumb = (canvas, left, cropWidth) =>
-    canvas.toDataURL({
+  const getThumb = (canvasObj, left, cropWidth) =>
+    canvasObj.toDataURL({
       quality: THUMBNAIL_IMAGE_CONFIG.QUALITY,
       format: THUMBNAIL_IMAGE_CONFIG.FORMAT,
       multiplier: THUMBNAIL_IMAGE_CONFIG.MULTIPLIER,

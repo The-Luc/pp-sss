@@ -3,7 +3,7 @@ import moment from 'moment';
 
 import UniqueId from '@/plugins/customUniqueId';
 
-import { MOMENT_TYPE } from '@/common/constants';
+import { MOMENT_TYPE, EDITION } from '@/common/constants';
 
 import { graphqlRequest } from '../urql';
 
@@ -23,7 +23,6 @@ import {
   getDigitalSettingsQuery,
   portraitFoldersSelectedQuery
 } from './queries';
-import { EDITION } from '@/common/constants';
 
 const getPortraitAssets = assets => {
   return assets.map(asset => new PortraitAsset(portraitAssetMapping(asset)));

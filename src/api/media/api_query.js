@@ -23,7 +23,7 @@ import {
   VideoAssetEntity
 } from '@/common/models/entities/asset';
 
-export const getPhotosApi = async (id, terms = [], projectId) => {
+export const getPhotosApi = async (id, projectId, terms = []) => {
   if (isEmpty(terms)) return [];
 
   const res = await graphqlRequest(getMediaQuery, { id, terms, projectId });
@@ -35,7 +35,7 @@ export const getPhotosApi = async (id, terms = [], projectId) => {
     .map(asset => new PictureAssetEntity(mediaMapping(asset)));
 };
 
-export const getMediaApi = async (id, terms = [], projectId) => {
+export const getMediaApi = async (id, projectId, terms = []) => {
   if (isEmpty(terms)) return [];
 
   const res = await graphqlRequest(getMediaQuery, { id, terms, projectId });
@@ -178,22 +178,8 @@ export const getInProjectAssetsApi = async (
 
   if (!isOk(res)) return {};
 
-  const assets = [];
   const leftAssets = get(res[0], 'data.book.in_project_assets', []);
   const rightAssets = get(res[1], 'data.book.in_project_assets', []);
-
-  if (!res[0]) {
-    assets.push(...rightAssets);
-  } else {
-    assets.push(...leftAssets);
-
-    if (res[1]) {
-      // if there is the second page
-      const secondPageAssets = rightAssets.filter(a => a.in_project);
-
-      assets.push(...secondPageAssets);
-    }
-  }
 
   const leftPageAssetIds = leftAssets
     .filter(asset => asset.in_project)

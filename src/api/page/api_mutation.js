@@ -18,5 +18,5 @@ export const updatePageApi = async (pageId, pageData) => {
       layout: JSON.stringify(pageData.layout)
     }
   };
-  return await graphqlRequest(updatePageMutation, arg);
+  return graphqlRequest(updatePageMutation, arg);
 };

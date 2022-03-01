@@ -262,7 +262,7 @@ export const getSheetThumbnail = async (leftObjects, rightObjects) => {
       (leftElements[0] = modifyBgToRenderOnPage(leftElements[0]));
   }
 
-  return await Promise.all([
+  return Promise.all([
     generateCanvasThumbnail(leftElements),
     generateCanvasThumbnail(rightElements)
   ]);

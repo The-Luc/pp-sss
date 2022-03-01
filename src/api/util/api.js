@@ -52,10 +52,10 @@ export const getPresetsColorPickerApi = async () => {
 /**
  * To save color of color picker to DB
  *
- * @param {Array<String>} colors array of string - hex colors
+ * @param {Promise<Array<String>>} colors array of string - hex colors
  */
 export const savePresetColorPickerApi = async colors => {
-  return await graphqlRequest(savePresetColorPickerMutation, { colors }, true);
+  return graphqlRequest(savePresetColorPickerMutation, { colors }, true);
 };
 
 /**
