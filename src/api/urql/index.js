@@ -22,7 +22,8 @@ import {
   updateBookCollectionCache,
   updatePresentColorPickerCache,
   createUserCustomPrintTemplate,
-  updateTextStyle
+  updateTextStyle,
+  updateImageStyle
 } from './cacheUpdater';
 
 let requestCount = 0;
@@ -64,7 +65,8 @@ const urqlClient = createClient({
           create_digital_frame: updateCreateFrame,
           update_user_favourite_colors: updatePresentColorPickerCache,
           create_user_custom_print_template: createUserCustomPrintTemplate,
-          create_text_style: updateTextStyle
+          create_text_style: updateTextStyle,
+          create_image_style: updateImageStyle
         }
       }
     }),

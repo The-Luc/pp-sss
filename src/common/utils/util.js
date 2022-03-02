@@ -626,7 +626,7 @@ export const convertAPIColorObjectToHex = colorObject => {
 /**
  * To convert rgb color to hex color, alpha channel will be discarded
  *
- * @param {String} rgb rgb color e.g. rgba(234, 41, 41)
+ * @param {String} rgb rgb color e.g. rgb(234, 41, 41) or rgba(234, 41, 41,0.3)
  * @returns hex value of color
  */
 export const convertRGBToHex = rgb => {

@@ -28,7 +28,6 @@ export const textStyleMapping = style => {
   if (style.text_alignment_vertical === 'CENTER_VERTICAL')
     style.text_alignment_vertical = 'MIDDLE';
 
-  // const alignHorizontal =
   const alignment = {
     horizontal:
       TEXT_HORIZONTAL_ALIGN[style.text_alignment_horizontal] || 'left',
@@ -36,27 +35,25 @@ export const textStyleMapping = style => {
   };
 
   const flip = {
-    horizontal: style.horizontal_flip || false, // Boolean
-    vertical: style.vertical_flip || false // Boolean
+    horizontal: style.horizontal_flip || false,
+    vertical: style.vertical_flip || false
   };
 
-  const strokeWidth = style.border_stroke || 0;
-  const showBorder = strokeWidth > 0;
   const border = {
-    showBorder,
-    stroke: style.border_color || '#000000', // string of hex color
+    showBorder: style.show_border,
+    stroke: style.border_color || '#000000',
     strokeDashArray: style.stroke_dash_array || [],
     strokeLineType: BORDER_STYLES_API[style.border_style] || 'solid',
-    strokeWidth
+    strokeWidth: style.border_stroke
   };
 
-  const shadowOpacity = style.text_shaw_opacity || 0.5;
+  const shadowOpacity = style.text_shadow_opacity || 0.5;
   const shadowColor = Color(style.text_shadow_color || '#000000')
     .alpha(shadowOpacity)
-    .hex();
+    .string();
 
   const shadow = {
-    dropShadow: true, // ???
+    dropShadow: style.drop_shadow || true,
     shadowAngle: style.text_shadow_angle || 270,
     shadowBlur: style.text_shadow_blur || 5,
     shadowColor,
@@ -122,11 +119,6 @@ export const textStyleMappingApi = style => {
 
   const { shadow, border, alignment } = style;
 
-  // const flipStyle = {
-  //   horizontal_flip: flip.horizontal,
-  //   vertical_flip: flip.vertical
-  // };
-
   let horiAlign = findKeyByValue(TEXT_HORIZONTAL_ALIGN, alignment.horizontal);
   let vertiAlign = findKeyByValue(TEXT_VERTICAL_ALIGN, alignment.vertical);
 
@@ -138,28 +130,105 @@ export const textStyleMappingApi = style => {
     text_alignment_vertical: vertiAlign
   };
 
-  const border_stroke = border.showBorder ? border.strokeWidth : 0;
   const borderStyle = {
+    show_border: border.showBorder,
     border_color: border.stroke,
-    // stroke_dash_array: border.strokeDashArray,
+    stroke_dash_array: border.strokeDashArray,
     border_style: findKeyByValue(BORDER_STYLES_API, border.strokeLineType),
-    border_stroke
+    border_stroke: border.strokeWidth
   };
 
   const shadowStyle = {
+    // drop_shadow: shadow.dropShadow,
     text_shadow_angle: shadow.shadowAngle,
     text_shadow_blur: shadow.shadowBlur,
     text_shadow_color: convertRGBToHex(shadow.shadowColor),
     text_shadow_offset: shadow.shadowOffset,
     text_shadow_opacity: shadow.shadowOpacity
   };
-  // adding drop shadow to turn on / off this function
 
   return {
     ...mapStyle,
-    // ...flipStyle,
     ...alignmentStyle,
     ...borderStyle,
     ...shadowStyle
   };
+};
+
+export const imageStyleMapping = imgStyle => {
+  const {
+    border_color,
+    border_style,
+    border_stroke,
+    stroke_dash_array,
+    drop_shadow_blur,
+    drop_shadow_angle,
+    drop_shadow_color,
+    drop_shadow_offset,
+    drop_shadow_opacity,
+    id
+  } = imgStyle;
+
+  const border = {
+    showBorder: true,
+    stroke: border_color,
+    strokeWidth: border_stroke,
+    strokeDashArray: stroke_dash_array,
+    strokeLineType: border_style
+  };
+
+  const shadow = {
+    dropShadow: true,
+    shadowBlur: drop_shadow_blur,
+    shadowOffset: drop_shadow_offset,
+    shadowOpacity: drop_shadow_opacity,
+    shadowColor: drop_shadow_color,
+    shadowAngle: drop_shadow_angle
+  };
+
+  return {
+    id,
+    style: { border, shadow },
+    isCustom: true
+  };
+};
+
+export const imageStyleMappingApi = style => {
+  const mapRules = {
+    data: {
+      stroke: {
+        name: 'border_color'
+      },
+      strokeWidth: {
+        name: 'border_stroke'
+      },
+      strokeDashArray: {
+        name: 'stroke_dash_array'
+      },
+      strokeLineType: {
+        name: 'border_style'
+      },
+      // adding is-show-shadow field to turn on/off shadow
+
+      shadowBlur: {
+        name: 'drop_shadow_blur'
+      },
+      shadowOffset: {
+        name: 'drop_shadow_offset'
+      },
+      shadowOpacity: {
+        name: 'drop_shadow_opacity'
+      },
+      shadowAngle: {
+        name: 'drop_shadow_angle'
+      },
+      shadowColor: {
+        name: 'drop_shadow_color',
+        parse: convertRGBToHex
+      }
+    },
+    restrict: ['id', 'name', 'dropShadow', 'showBorder', 'strokeDashArray']
+  };
+
+  return mapObject(style, mapRules);
 };

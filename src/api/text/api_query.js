@@ -7,7 +7,7 @@ import {
 } from './queries';
 import { isEmpty } from '@/common/utils';
 import { textStyleMapping } from '@/common/mapping/styles';
-import { MAX_SAVED_TEXT_STYLES } from '../../common/constants/config';
+import { MAX_SAVED_TEXT_STYLES } from '@/common/constants/config';
 
 export const getFontsApi = async () => {
   const res = await graphqlRequest(getFontsQuery);

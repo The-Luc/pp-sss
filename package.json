@@ -7,6 +7,7 @@
     "build": "vue-cli-service build",
     "build-qa": "vue-cli-service build --mode qa",
     "build-prod": "vue-cli-service build --mode production",
+    "build-stage": "vue-cli-service build --mode staging",
     "build-testing": "vue-cli-service build --mode testing",
     "test:unit": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint --max-warnings 0",

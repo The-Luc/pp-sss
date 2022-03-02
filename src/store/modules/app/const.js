@@ -45,23 +45,6 @@ export const GETTERS = new GetterClass(
   prefixObjectValue(_GETTERS, MODULE_NAME)
 );
 
-class ActionClass extends BaseObject {
-  SAVE_IMAGE_STYLE = 'saveImageStyle';
-  GET_SAVED_IMAGE_STYLES = 'getSavedImageStyles';
-  UPDATE_PHOTO_VISITED = 'updatePhotoVisited';
-
-  constructor(props) {
-    super(props);
-    this._set(props);
-  }
-}
-
-const _ACTIONS = new ActionClass();
-
-export const ACTIONS = new ActionClass(
-  prefixObjectValue(_ACTIONS, MODULE_NAME)
-);
-
 class MutationClass extends BaseObject {
   SET_ACTIVE_EDITION = 'setActiveEdition';
   TOGGLE_MODAL = 'toggleModal';
@@ -101,6 +84,5 @@ export const MUTATES = new MutationClass(
 
 export default {
   _GETTERS,
-  _ACTIONS,
   _MUTATES
 };

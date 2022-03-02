@@ -10,7 +10,7 @@ export const saveUserTextStyleApi = async style => {
     params: style
   });
 
-  if (!isOk) return;
+  if (!isOk(res)) return;
 
   const userStyle = get(res, 'data.create_text_style', []);
   return textStyleMapping(userStyle);
