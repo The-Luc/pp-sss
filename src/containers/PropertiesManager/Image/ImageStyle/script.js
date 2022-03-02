@@ -59,7 +59,6 @@ export default {
      */
     onSelect(item) {
       if (+item?.id !== +this.styleSelected) {
-        console.log('item ', item);
         this.$emit('onSelectImageStyle', item);
       }
       this.onCloseDropdown();
