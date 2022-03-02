@@ -12,6 +12,7 @@ import { getFavoriteLayoutsQuery } from '../user/queries';
 import { getPresetColorPickerQuery } from '../util/queries';
 import { getUserLayoutsQuery } from '../layout/queries';
 import { getUserTextStyleQuery } from '../text/queries';
+import { getUserImageStyleQuery } from '../image/queries';
 
 export const updatePortraitSettingCache = (result, args, cache) => {
   const layoutType = get(args, 'portrait_layout_setting_params.layout_type');
@@ -405,6 +406,15 @@ export const updateTextStyle = (results, _, cache) => {
   const style = get(results, 'create_text_style');
   cache.updateQuery({ query: getUserTextStyleQuery }, data => {
     if (data && style) data.user_text_styles.push(style);
+
+    return data;
+  });
+};
+
+export const updateImageStyle = (res, _, cache) => {
+  const style = get(res, 'create_image_style');
+  cache.updateQuery({ query: getUserImageStyleQuery }, data => {
+    if (data && style) data.user_image_styles.push(style);
 
     return data;
   });
