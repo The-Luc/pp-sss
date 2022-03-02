@@ -43,6 +43,7 @@ import { getWorkspaceApi, updateSheetApi } from '@/api/sheet';
 import { MAX_COLOR_PICKER_PRESET } from '@/common/constants';
 import { getFontsApi } from '@/api/text';
 import { loadFonts } from '@/common/utils/text';
+import { useImageStyle } from '@/hooks/style';
 
 export const useSavingStatus = () => {
   const { savingStatus } = useGetters({
@@ -385,12 +386,14 @@ export const useText = () => {
 
 export const useLoadStyles = () => {
   const { loadTextStyles, loadUserTextStyles } = useTextStyle();
+  const { loadUserImageStyles } = useImageStyle();
   const { setFontsToStore } = useText();
 
   const loadStyles = async () => {
     await setFontsToStore();
     loadTextStyles();
     loadUserTextStyles();
+    loadUserImageStyles();
   };
 
   return {

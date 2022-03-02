@@ -13,7 +13,7 @@ export default {
       default: []
     },
     selectedItem: {
-      type: Number,
+      type: Number | String,
       default: null
     }
   },
@@ -120,7 +120,9 @@ export default {
   },
   beforeMount() {
     this.setListItems();
-    const selected = this.items.find(item => item.id === this.selectedItem);
+    const selected = this.items.find(
+      item => String(item.id) === String(this.selectedItem)
+    );
     this.tabActive = selected?.isCustom ? 1 : 0;
     window.document.addEventListener(WINDOW_EVENT_TYPE.KEY_UP, this.onKeypress);
   },

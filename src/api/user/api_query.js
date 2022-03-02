@@ -29,6 +29,8 @@ import {
 export const getCurrentUserApi = async () => {
   const communityUserId = getItem(LOCAL_STORAGE.COMMUNITY_USER_ID);
 
+  if (!communityUserId) return;
+
   const res = await graphqlRequest(getUserRoleQuery, {
     id: communityUserId
   });

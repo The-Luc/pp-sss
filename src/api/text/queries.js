@@ -13,6 +13,7 @@ export const textStyleFragment = gql`
   fragment textStyle on TextStyle {
     id
     name
+    show_border
     border_color
     border_style
     border_stroke

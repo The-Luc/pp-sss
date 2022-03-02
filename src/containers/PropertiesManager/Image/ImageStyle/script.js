@@ -8,8 +8,8 @@ export default {
     SavedImageStylePopover
   },
   setup() {
-    const { savedImageStyles, getSavedImageStyles } = useImageStyle();
-    return { savedImageStyles, getSavedImageStyles };
+    const { userImageStyles } = useImageStyle();
+    return { userImageStyles };
   },
   data() {
     return {
@@ -23,7 +23,7 @@ export default {
       require: true
     },
     styleSelected: {
-      type: Number,
+      type: Number | String,
       default: null
     }
   },
@@ -32,7 +32,7 @@ export default {
       return this.options.slice(0, 4);
     },
     customOptions() {
-      return [...this.options, ...this.savedImageStyles];
+      return [...this.options, ...this.userImageStyles];
     }
   },
   methods: {
@@ -40,7 +40,7 @@ export default {
      * Open dropdown image style
      */
     onOpenDropdown() {
-      if (this.savedImageStyles?.length) {
+      if (this.userImageStyles?.length) {
         this.showSavedStylePopup = true;
         return;
       }
@@ -58,7 +58,8 @@ export default {
      * @param {Number} item - image style
      */
     onSelect(item) {
-      if (item?.id !== this.styleSelected) {
+      if (+item?.id !== +this.styleSelected) {
+        console.log('item ', item);
         this.$emit('onSelectImageStyle', item);
       }
       this.onCloseDropdown();
@@ -122,8 +123,5 @@ export default {
         this.onCloseDropdown();
       }
     });
-  },
-  created() {
-    this.getSavedImageStyles();
   }
 };

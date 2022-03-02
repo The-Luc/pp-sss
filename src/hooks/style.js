@@ -1,6 +1,6 @@
-import { useActions, useGetters, useMutations } from 'vuex-composition-helpers';
+import { useGetters, useMutations } from 'vuex-composition-helpers';
 
-import { ACTIONS, GETTERS, MUTATES } from '@/store/modules/app/const';
+import { GETTERS, MUTATES } from '@/store/modules/app/const';
 import { MODAL_TYPES, OBJECT_TYPE } from '@/common/constants';
 
 import { pick } from 'lodash';
@@ -9,8 +9,12 @@ import {
   getUserTextStyleApi,
   saveUserTextStyleApi
 } from '@/api/text';
-import { textStyleMappingApi } from '@/common/mapping';
-import { MAX_SAVED_TEXT_STYLES } from '../common/constants/config';
+import { imageStyleMappingApi, textStyleMappingApi } from '@/common/mapping';
+import {
+  MAX_SAVED_IMAGE_STYLES,
+  MAX_SAVED_TEXT_STYLES
+} from '../common/constants/config';
+import { getUserImageStyleApi, saveUserImageStyleApi } from '@/api/image';
 
 export const useStyle = () => {
   const { modalData, currentObject } = useGetters({
@@ -22,10 +26,8 @@ export const useStyle = () => {
     toggleModal: MUTATES.TOGGLE_MODAL
   });
 
-  const { saveImageStyle } = useActions({
-    saveImageStyle: ACTIONS.SAVE_IMAGE_STYLE
-  });
   const { saveUserTextStyles } = useTextStyle();
+  const { saveUserImageStyles } = useImageStyle();
 
   const onSaveStyle = async prop => {
     const objectType = currentObject?.value?.type;
@@ -35,68 +37,67 @@ export const useStyle = () => {
       MODAL_TYPES.SAVE_STYLE_SUCCESS
     ].includes(modalData?.value?.type);
 
+    const showModal = (id, type, modalType) => {
+      const props = id ? { objectType: type, styleId: id } : { type };
+
+      toggleModal({
+        isOpenModal: true,
+        modalData: {
+          type: modalType || MODAL_TYPES.SAVE_STYLE_SUCCESS,
+          props
+        }
+      });
+    };
+
     if (isSaveTextModal) {
       toggleModal({ isOpenModal: false });
-      if (!prop) return;
 
-      if (objectType === OBJECT_TYPE.TEXT) {
-        const style = pick(currentObject?.value, [
-          'fontFamily',
-          'fontSize',
-          'isBold',
-          'isItalic',
-          'isUnderline',
-          'color',
-          'alignment',
-          'textCase',
-          'letterSpacing',
-          'lineSpacing',
-          'flip',
-          'border',
-          'shadow'
-        ]);
+      if (!prop || objectType !== OBJECT_TYPE.TEXT) return;
 
-        style.name = prop?.styleName?.trim() || 'Untitled';
+      const style = pick(currentObject?.value, [
+        'fontFamily',
+        'fontSize',
+        'isBold',
+        'isItalic',
+        'isUnderline',
+        'color',
+        'alignment',
+        'textCase',
+        'letterSpacing',
+        'lineSpacing',
+        'flip',
+        'border',
+        'shadow'
+      ]);
 
-        const savedStyle = await saveUserTextStyles(style);
+      style.name = prop?.styleName?.trim() || 'Untitled';
 
-        toggleModal({
-          isOpenModal: true,
-          modalData: {
-            type: MODAL_TYPES.SAVE_STYLE_SUCCESS,
-            props: {
-              styleId: savedStyle?.id,
-              objectType: OBJECT_TYPE.TEXT
-            }
-          }
-        });
-      }
-    } else {
-      if (objectType === OBJECT_TYPE.IMAGE) {
-        const { border, shadow } = currentObject?.value || {};
+      const savedStyle = await saveUserTextStyles(style);
 
-        const imageStyle = {
-          id: Date.now(),
-          style: {
-            border,
-            shadow
-          },
-          isCustom: true
-        };
+      if (!savedStyle) return;
 
-        saveImageStyle({ imageStyle });
-      } else {
-        toggleModal({
-          isOpenModal: true,
-          modalData: {
-            type: MODAL_TYPES.SAVE_STYLE,
-            props: {
-              type: currentObject?.value?.type
-            }
-          }
-        });
-      }
+      showModal(savedStyle?.id, OBJECT_TYPE.TEXT);
+      return;
     }
+
+    if (objectType === OBJECT_TYPE.IMAGE) {
+      const { border, shadow } = currentObject?.value || {};
+
+      const imageStyle = {
+        ...border,
+        ...shadow
+      };
+
+      const savedStyle = await saveUserImageStyles(imageStyle);
+
+      if (!savedStyle) return;
+
+      showModal(savedStyle?.id, OBJECT_TYPE.IMAGE);
+
+      return;
+    }
+
+    showModal(null, currentObject?.value?.type, MODAL_TYPES.SAVE_STYLE);
   };
 
   return {
@@ -173,17 +174,36 @@ export const useTextStyle = () => {
 };
 
 export const useImageStyle = () => {
-  const { savedImageStyles } = useGetters({
-    savedImageStyles: GETTERS.SAVED_IMAGE_STYLES
+  const { userImageStyles } = useGetters({
+    userImageStyles: GETTERS.USER_IMAGE_STYLES
   });
 
-  const { getSavedImageStyles } = useActions({
-    getSavedImageStyles: ACTIONS.GET_SAVED_IMAGE_STYLES
+  const { setUserImageStyles } = useMutations({
+    setUserImageStyles: MUTATES.SET_USER_IMAGE_STYLES
   });
+
+  const loadUserImageStyles = async () => {
+    const styles = await getUserImageStyleApi();
+
+    setUserImageStyles({ styles });
+  };
+
+  const saveUserImageStyles = async style => {
+    const apiStyle = imageStyleMappingApi(style);
+    const userStyle = await saveUserImageStyleApi(apiStyle);
+
+    const currentStyles = userImageStyles.value;
+
+    const styles = [...currentStyles, userStyle].slice(-MAX_SAVED_IMAGE_STYLES);
+    setUserImageStyles({ styles });
+
+    return userStyle;
+  };
 
   return {
     ...useStyle,
-    savedImageStyles,
-    getSavedImageStyles
+    userImageStyles,
+    saveUserImageStyles,
+    loadUserImageStyles
   };
 };
