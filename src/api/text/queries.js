@@ -28,6 +28,7 @@ export const textStyleFragment = gql`
     text_line_spacing
     text_alignment_vertical
     text_alignment_horizontal
+    drop_shadow
     text_shadow_blur
     text_shadow_angle
     text_shadow_opacity

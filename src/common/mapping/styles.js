@@ -53,7 +53,7 @@ export const textStyleMapping = style => {
     .string();
 
   const shadow = {
-    dropShadow: style.drop_shadow || true,
+    dropShadow: style.drop_shadow || false,
     shadowAngle: style.text_shadow_angle || 270,
     shadowBlur: style.text_shadow_blur || 5,
     shadowColor,
@@ -139,7 +139,7 @@ export const textStyleMappingApi = style => {
   };
 
   const shadowStyle = {
-    // drop_shadow: shadow.dropShadow,
+    drop_shadow: shadow.dropShadow,
     text_shadow_angle: shadow.shadowAngle,
     text_shadow_blur: shadow.shadowBlur,
     text_shadow_color: convertRGBToHex(shadow.shadowColor),
