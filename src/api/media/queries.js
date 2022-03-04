@@ -29,7 +29,7 @@ export const getAssetByIdQuery = gql`
   ${assetFragment}
 `;
 
-const albumDetailFragment = gql`
+export const albumDetailFragment = gql`
   fragment albumDetail on Container {
     id
     body
@@ -126,4 +126,13 @@ export const getInProjectAssetsQuery = gql`
       }
     }
   }
+`;
+
+export const getUserAvailableAlbumsQuery = gql`
+  query getUserAvailableAlbumsQuery {
+    user_available_containers {
+      ...albumDetail
+    }
+  }
+  ${albumDetailFragment}
 `;

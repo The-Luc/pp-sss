@@ -7,6 +7,7 @@ import {
   UPLOADING_PROCESS_STATUS,
   UPLOAD_STATUS_DISPLAY_TIME
 } from '@/common/constants';
+import { usePhotos, useUploadAssets } from '@/views/CreateBook/composables';
 
 export default {
   components: {
@@ -15,20 +16,16 @@ export default {
     Title
   },
   setup() {
-    const {
-      addMediaToAlbum,
-      createNewAlbum,
-      getAlbums,
-      getMyAlbums,
-      prepareUpload
-    } = usePhoto();
+    const { addMediaToAlbum, createNewAlbum, prepareUpload } = usePhoto();
+    const { uploadAssetToAlbum } = useUploadAssets();
+    const { getUserAvailableAlbums } = usePhotos();
 
     return {
       addMediaToAlbum,
       createNewAlbum,
-      getAlbums,
-      getMyAlbums,
-      prepareUpload
+      prepareUpload,
+      uploadAssetToAlbum,
+      getUserAvailableAlbums
     };
   },
   props: {
@@ -98,11 +95,6 @@ export default {
      * Flow add media add media to selected album
      */
     async onAddMedia() {
-      if (!this.selectedIdOfAlbum) {
-        const newAlbum = await this.createNewAlbum(this.newAlbumName);
-        this.selectedIdOfAlbum = newAlbum.id;
-      }
-
       this.uploadingStatus = UPLOADING_PROCESS_STATUS.STARTING_UPLOAD;
 
       await this.prepareUpload();
@@ -111,9 +103,25 @@ export default {
 
       this.numberOfFilesUploaded = 0;
 
-      await this.addMediaToAlbum(this.selectedIdOfAlbum, this.files, () => {
-        this.numberOfFilesUploaded++;
-      });
+      // await this.addMediaToAlbum(
+      //   this.selectedIdOfAlbum,
+      //   this.files,
+      //   this.albumName,
+      //   () => {
+      //     this.numberOfFilesUploaded++;
+      //   }
+      // );
+
+      const updatedAlbum = await this.uploadAssetToAlbum(
+        this.selectedIdOfAlbum,
+        this.files,
+        this.newAlbumName
+      );
+      console.log('updated album ', updatedAlbum);
+
+      this.selectedIdOfAlbum = updatedAlbum.id;
+
+      console.log('update album ', updatedAlbum);
 
       await this.finisingUpload();
 
@@ -150,13 +158,7 @@ export default {
       this.uploadingStatus = UPLOADING_PROCESS_STATUS.SELECT_ALBUM;
       this.newAlbumName = 'Untitled';
 
-      const getAlbums = this.getAlbums();
-      const getMyAlbums = this.getMyAlbums();
-
-      const [albums, myAlbums] = await Promise.all([getAlbums, getMyAlbums]);
-
-      const myAlbumIds = myAlbums.map(item => item.id);
-      this.albums = albums.filter(item => myAlbumIds.includes(item.id));
+      this.albums = await this.getUserAvailableAlbums();
     }
   }
 };

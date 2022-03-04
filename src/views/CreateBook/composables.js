@@ -1,5 +1,5 @@
 import { useMutations, useGetters } from 'vuex-composition-helpers';
-import { uniqBy, sortBy } from 'lodash';
+import { uniqBy, sortBy, get } from 'lodash';
 
 import { useAppCommon, useTextStyle } from '@/hooks';
 
@@ -17,12 +17,15 @@ import {
   getAlbumByIdApi,
   getAssetByIdApi,
   getInProjectAssetsApi,
-  getAlbumCategoryApi
+  getAlbumCategoryApi,
+  uploadAssetsApi,
+  getUserAvailableAlbumApi
 } from '@/api/media';
 import {
   savePresetColorPickerApi,
   getPresetsColorPickerApi,
-  uploadBase64ImageApi
+  uploadBase64ImageApi,
+  getUploadTokenApi
 } from '@/api/util';
 import { savePortraitSettingsApi, getPortraiSettingsApi } from '@/api/portrait';
 
@@ -44,6 +47,10 @@ import { MAX_COLOR_PICKER_PRESET } from '@/common/constants';
 import { getFontsApi } from '@/api/text';
 import { loadFonts } from '@/common/utils/text';
 import { useImageStyle } from '@/hooks/style';
+import {
+  createAlbumAssetsApi,
+  updateAlbumAssetsApi
+} from '@/api/media/api_mutation';
 
 export const useSavingStatus = () => {
   const { savingStatus } = useGetters({
@@ -100,7 +107,6 @@ export const usePhotos = () => {
 
       // if asset isn't in apiBookAsset or
       // asset in delete array and not in apiBookAsset
-
       if (
         apiBookAssetIds.filter(id => asset.id === id).length === 0 ||
         (deletedAssetsId.includes(asset.id) &&
@@ -220,6 +226,20 @@ export const usePhotos = () => {
     return album;
   };
 
+  const getUserAvailableAlbums = async () => {
+    const albums = await getUserAvailableAlbumApi();
+
+    if (isEmpty(albums)) return [];
+
+    const inProjectIds = await getCurrentInProjectIds();
+
+    albums.forEach(al => {
+      updateInProjectAssets(al.assets, inProjectIds);
+    });
+
+    return albums;
+  };
+
   const getAlbumCategory = async () => {
     return getAlbumCategoryApi(communityId.value);
   };
@@ -268,7 +288,8 @@ export const usePhotos = () => {
     getAlbumById,
     getQrrentById,
     getCurrentInProjectIds,
-    updateSheetMedia
+    updateSheetMedia,
+    getUserAvailableAlbums
   };
 };
 
@@ -399,4 +420,83 @@ export const useLoadStyles = () => {
   return {
     loadStyles
   };
+};
+
+export const useUploadAssets = () => {
+  const { isDigitalEdition } = useAppCommon();
+  const isDigital = isDigitalEdition.value;
+
+  const GETTERS = isDigital ? DIGITAL_GETTERS : PRINT_GETTERS;
+
+  const { communityId } = useGetters({
+    communityId: GETTERS.COMMUNITY_ID
+  });
+
+  const { getUploadToken: uploadToken } = useGetters({
+    getUploadToken: APP_GETTERS.GET_UPLOAD_TOKEN
+  });
+  const { setUploadToken } = useMutations({
+    setUploadToken: APP_MUTATES.SET_UPLOAD_TOKEN
+  });
+
+  const isValidToken = uploadToken => {
+    const { url, token, expiredAt } = uploadToken;
+    // 60000 milisecond
+    const isExpire = expiredAt && expiredAt > Date.now() + 60000;
+
+    return url && token && !isExpire;
+  };
+
+  const getUploadToken = async () => {
+    const currToken = uploadToken.value;
+
+    if (isValidToken(currToken)) {
+      return currToken;
+    }
+    console.log('get upload token api ');
+    const tokenObject = await getUploadTokenApi();
+
+    const { auth_token_data, upload_url } = tokenObject;
+    const { token, expiry_time_in_minutes } = auth_token_data;
+    const expiredAt = Date.now() + expiry_time_in_minutes * 60 * 1000;
+
+    const apiToken = {
+      token,
+      expiredAt,
+      url: upload_url
+    };
+
+    setUploadToken({ uploadToken: apiToken });
+
+    return apiToken;
+  };
+
+  const uploadAssets = async assets => {
+    const currToken = await getUploadToken();
+
+    const promises = assets.map(asset => uploadAssetsApi(asset, currToken));
+
+    const results = await Promise.all(promises);
+    console.log(results);
+    return results.map(res => res.data);
+  };
+
+  const updateAlbumAssets = async (id, assets) => {
+    return updateAlbumAssetsApi(id, assets);
+  };
+
+  const createAlbumAssets = async (title, assets) => {
+    const params = { body: title, community_id: communityId.value, assets };
+    console.log('params ', params);
+    return createAlbumAssetsApi(params);
+  };
+
+  const uploadAssetToAlbum = async (albumId, files, albumName) => {
+    const assets = await uploadAssets(files);
+    return !albumId
+      ? await createAlbumAssets(albumName, assets)
+      : await updateAlbumAssets(albumId, assets);
+  };
+
+  return { uploadAssetToAlbum };
 };

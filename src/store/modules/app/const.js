@@ -32,6 +32,7 @@ class GetterClass extends BaseObject {
   DISABLED_TOOLBAR_ITEMS = 'getDisabledToolbarItems';
   IS_LOADING = 'isLoading';
   GET_FONTS = 'getFonts';
+  GET_UPLOAD_TOKEN = 'getUploadToken';
 
   constructor(props) {
     super(props);
@@ -69,6 +70,7 @@ class MutationClass extends BaseObject {
   UPDATE_DISABLED_TOOLBAR_ITEMS = 'updateDisabledToolbarItems';
   SET_LOADING_STATE = 'setLoadingState';
   SET_FONTS = 'setFonts';
+  SET_UPLOAD_TOKEN = 'setUploadToken';
 
   constructor(props) {
     super(props);

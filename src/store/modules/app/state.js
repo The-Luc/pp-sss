@@ -53,5 +53,10 @@ export const state = {
   savingStatus: '',
   isMediaSidebarOpen: false,
   disabledToolbarItems: getDefaultDisabledItems(),
-  isLoading: false
+  isLoading: false,
+  uploadToken: {
+    token: null,
+    expiredAt: null,
+    url: ''
+  }
 };

@@ -3,7 +3,11 @@ import { STATUS } from '@/common/constants';
 import { isOk } from '@/common/utils';
 import { graphqlRequest } from '../urql';
 
-import { generateBookPdfQuery, getPresetColorPickerQuery } from './queries';
+import {
+  generateBookPdfQuery,
+  getPresetColorPickerQuery,
+  getUploadTokenQuery
+} from './queries';
 import {
   savePresetColorPickerMutation,
   uploadBase64ImageMutation
@@ -67,4 +71,17 @@ export const savePresetColorPickerApi = async colors => {
 export const generatePdfApi = async id => {
   const res = await graphqlRequest(generateBookPdfQuery, { bookId: id });
   return isOk(res);
+};
+
+/**
+ * To get uploader token to upload assets
+ *
+ * @returns data of Platypus uploader token
+ */
+export const getUploadTokenApi = async () => {
+  const res = await graphqlRequest(getUploadTokenQuery, {}, true);
+
+  if (!isOk(res)) return;
+
+  return res.data.uploader_token;
 };

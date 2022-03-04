@@ -11,3 +11,13 @@ export const generateBookPdfQuery = gql`
     generate_book_pdf(id: $bookId)
   }
 `;
+
+export const getUploadTokenQuery = gql`
+  query getUploaderToken {
+    uploader_token {
+      auth_token_data
+      is_advanced_user
+      upload_url
+    }
+  }
+`;
