@@ -7,7 +7,7 @@ import {
   getMediaCategories
 } from '@/api/photo';
 
-export const usePhoto = () => {
+export const usePhioto = () => {
   return {
     prepareUpload,
     addMediaToAlbum,

@@ -190,10 +190,21 @@ export default {
       if (this.currentTab !== 'photos' && this.currentTab !== 'videos') return;
 
       const albumCategories = await this.getAlbumCategory();
+      this.mediaDropdowns = albumCategories;
+
+      this.selectedType = this.getSelectedType();
+
+      if (this.selectedAlbumId) {
+        const type = this.selectedType.value;
+        this.albums = {
+          ...(this.albums || []),
+          [type]: await this.getAlbumById(this.selectedAlbumId)
+        };
+
+        return;
+      }
 
       this.albums = await this.getCommunityAlbums();
-      this.mediaDropdowns = albumCategories;
-      this.selectedType = this.getSelectedType();
     },
 
     /**
@@ -214,15 +225,15 @@ export default {
       // seek for the selected album in MY ALBUM
       const value = PHOTO_CATEGORIES.PERSONAL_ALBUMS.value;
       const isAlbumExisted = this.mediaDropdowns[value].find(
-        ab => ab.id === this.selectedAlbumId
+        ab => +ab.id === +this.selectedAlbumId
       );
-
-      // reset selected album to null
-      this.$emit('setAlbumId', null);
 
       const subValue = isAlbumExisted
         ? isAlbumExisted.id
         : ALL_MEDIA_SUBCATEGORY_ID;
+
+      // reset selected album to null
+      this.$emit('setAlbumId', isAlbumExisted ? subValue : null);
 
       return {
         value,

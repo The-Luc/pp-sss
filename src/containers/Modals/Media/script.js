@@ -50,7 +50,7 @@ export default {
      * To open uploading modal
      * Fire when user drag or choose a file to upload
      */
-    handleUploadingMedia(files) {
+    async handleUploadingMedia(files) {
       this.files = files;
       this.showUploadModal();
     },

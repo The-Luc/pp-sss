@@ -13,6 +13,7 @@ import { getPresetColorPickerQuery } from '../util/queries';
 import { getUserLayoutsQuery } from '../layout/queries';
 import { getUserTextStyleQuery } from '../text/queries';
 import { getUserImageStyleQuery } from '../image/queries';
+import { getUserAlbumsQuery } from '../media/queries';
 
 export const updatePortraitSettingCache = (result, args, cache) => {
   const layoutType = get(args, 'portrait_layout_setting_params.layout_type');
@@ -415,6 +416,18 @@ export const updateImageStyle = (res, _, cache) => {
   const style = get(res, 'create_image_style');
   cache.updateQuery({ query: getUserImageStyleQuery }, data => {
     if (data && style) data.user_image_styles.push(style);
+
+    return data;
+  });
+};
+
+export const createContainerCache = (res, _, cache) => {
+  const album = res.create_container;
+
+  cache.updateQuery({ query: getUserAlbumsQuery }, data => {
+    if (data && album) {
+      data.user_containers.push(album);
+    }
 
     return data;
   });

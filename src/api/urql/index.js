@@ -23,7 +23,8 @@ import {
   updatePresentColorPickerCache,
   createUserCustomPrintTemplate,
   updateTextStyle,
-  updateImageStyle
+  updateImageStyle,
+  createContainerCache
 } from './cacheUpdater';
 
 let requestCount = 0;
@@ -46,6 +47,7 @@ const urqlClient = createClient({
         Category: () => null,
         PortraitSubject: () => null,
         Template: () => null,
+        UploaderTokenType: () => null,
         PortraitLayoutSetting: res => res['created_at']
       },
       updates: {
@@ -66,7 +68,8 @@ const urqlClient = createClient({
           update_user_favourite_colors: updatePresentColorPickerCache,
           create_user_custom_print_template: createUserCustomPrintTemplate,
           create_text_style: updateTextStyle,
-          create_image_style: updateImageStyle
+          create_image_style: updateImageStyle,
+          create_container: createContainerCache
         }
       }
     }),

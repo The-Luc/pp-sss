@@ -89,5 +89,8 @@ export const mutations = {
   },
   [APP._MUTATES.SET_FONTS](state, { fonts }) {
     state.fonts = fonts;
+  },
+  [APP._MUTATES.SET_UPLOAD_TOKEN](state, { uploadToken }) {
+    state.uploadToken = uploadToken;
   }
 };
