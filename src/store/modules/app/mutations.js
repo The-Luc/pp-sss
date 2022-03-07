@@ -60,8 +60,8 @@ export const mutations = {
     state.currentObject = currentObject;
   },
 
-  [APP._MUTATES.SET_USER](state, { id, role }) {
-    state.user = { id, role };
+  [APP._MUTATES.SET_USER](state, user) {
+    state.user = user;
   },
   [APP._MUTATES.SET_GENERAL_INFO](state, { info }) {
     state.generalInfo = { ...cloneDeep(state.generalInfo), ...info };

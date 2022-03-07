@@ -89,7 +89,7 @@ export const getAlbumCategoryApi = async communityId => {
   return {
     communities: extractAlbumCategories(communities),
     groups: extractAlbumCategories(groups, true),
-    personalAlbums: personalCate
+    personalAlbums: personalCate || []
   };
 };
 
