@@ -13,7 +13,7 @@
       </div>
     </div>
     <div class="content">
-      <template v-if="!isEmptyCategory">
+      <template v-if="!isEmptyCategory && hasAssets">
         <AlbumItem
           v-for="(album, idx) in selectedAlbums"
           :key="album.id"

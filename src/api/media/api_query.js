@@ -9,7 +9,8 @@ import {
   getUserAlbumsQuery,
   getCommunityAlbumsQuery,
   getQrrentByIdQuery,
-  getAlbumByIdQuery
+  getAlbumByIdQuery,
+  getUserAvailableAlbumsQuery
 } from './queries';
 import {
   containerMapping,
@@ -22,6 +23,7 @@ import {
   PictureAssetEntity,
   VideoAssetEntity
 } from '@/common/models/entities/asset';
+import axios from 'axios';
 
 export const getPhotosApi = async (id, projectId, terms = []) => {
   if (isEmpty(terms)) return [];
@@ -80,11 +82,14 @@ export const getAlbumCategoryApi = async communityId => {
   const groups = get(res, 'data.community_group_assets', []);
   const personalAlbums = get(res, 'data.user_containers', []);
 
+  const personalCate = extractAlbumCategories(personalAlbums).reverse();
+  personalCate.unshift(personalCate.pop());
+
   // mapping list of categories
   return {
     communities: extractAlbumCategories(communities),
-    groups: extractAlbumCategories(groups),
-    personalAlbums: extractAlbumCategories(personalAlbums)
+    groups: extractAlbumCategories(groups, true),
+    personalAlbums: personalCate
   };
 };
 
@@ -97,8 +102,7 @@ export const getUserAlbumsApi = async (communityId, projectId) => {
 
   const personalAlbums = get(res, 'data.user_containers', []);
 
-  const albums = parseAPIAlbums(personalAlbums);
-  return { personalAlbums: albums };
+  return parseAPIAlbums(personalAlbums).reverse();
 };
 
 export const getCommunityAlbumsApi = async (communityId, projectId, page) => {
@@ -141,7 +145,7 @@ export const getQrrentByIdApi = async (id, projectId) => {
 
   const container = get(res, 'data.qrrent', []);
   // normalize albums
-  return parseAPIAlbums([container]);
+  return parseAPIAlbums([container]).reverse();
 };
 
 /**
@@ -198,4 +202,31 @@ export const getInProjectAssetsApi = async (
     leftPageAssetIds,
     rightPageAssetIds
   };
+};
+
+export const getUserAvailableAlbumApi = async () => {
+  const res = await graphqlRequest(getUserAvailableAlbumsQuery);
+
+  if (!isOk(res)) return;
+
+  const albums = get(res, 'data.user_available_containers');
+
+  return parseAPIAlbums(albums).reverse();
+};
+
+/**
+ * To upload media file to Platypus
+ *
+ * @param {Object} asset File data
+ * @param {Object} uploadToken upload token
+ * @returns upload asset object
+ */
+export const uploadAssetsApi = async (asset, uploadToken) => {
+  const { url, token } = uploadToken;
+
+  const formData = new FormData();
+  formData.append('upload', asset);
+  formData.append('authenticationToken', token);
+
+  return axios.post(url, formData);
 };

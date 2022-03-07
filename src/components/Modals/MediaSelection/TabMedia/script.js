@@ -57,7 +57,10 @@ export default {
       if (albumId === ALL_MEDIA_SUBCATEGORY_ID)
         return this.getAllSelectedAlbums();
 
-      return this.currentAlbums.filter(item => item.id === albumId);
+      return this.currentAlbums.filter(item => +item.id === +albumId);
+    },
+    hasAssets() {
+      return this.selectedAlbums.some(al => al.assets.length > 0);
     },
     currentSubAlbums() {
       return this.albums[this.selectedType.value] || [];
