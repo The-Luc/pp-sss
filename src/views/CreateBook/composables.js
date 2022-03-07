@@ -453,7 +453,6 @@ export const useUploadAssets = () => {
     if (isValidToken(currToken)) {
       return currToken;
     }
-    console.log('get upload token api ');
     const tokenObject = await getUploadTokenApi();
 
     const { auth_token_data, upload_url } = tokenObject;
@@ -477,7 +476,7 @@ export const useUploadAssets = () => {
     const promises = assets.map(asset => uploadAssetsApi(asset, currToken));
 
     const results = await Promise.all(promises);
-    console.log(results);
+
     return results.map(res => res.data);
   };
 
@@ -487,7 +486,7 @@ export const useUploadAssets = () => {
 
   const createAlbumAssets = async (title, assets) => {
     const params = { body: title, community_id: communityId.value, assets };
-    console.log('params ', params);
+
     return createAlbumAssetsApi(params);
   };
 

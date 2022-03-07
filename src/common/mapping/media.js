@@ -50,13 +50,17 @@ const addingCategoryAll = category =>
  *  To get album categories from API containers
  *
  * @param {Array} albumArr api container data
+ * @param {Boolean} isReverse to reverse album order if needed
  * @returnsa {Array} category showed in dropdown menu
  */
-export const extractAlbumCategories = albumArr => {
+export const extractAlbumCategories = (albumArr, isReverse) => {
   const categories = albumArr.map(a => {
     if (!a.containers) return { id: a.id, name: a.body };
 
     const albums = a.containers.map(al => ({ id: al.id, name: al.body }));
+
+    isReverse && albums.reverse();
+
     addingCategoryAll(albums);
     return { id: a.id, name: a.name, albums };
   });

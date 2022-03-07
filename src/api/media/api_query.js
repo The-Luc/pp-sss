@@ -82,11 +82,14 @@ export const getAlbumCategoryApi = async communityId => {
   const groups = get(res, 'data.community_group_assets', []);
   const personalAlbums = get(res, 'data.user_containers', []);
 
+  const personalCate = extractAlbumCategories(personalAlbums).reverse();
+  personalCate.unshift(personalCate.pop());
+
   // mapping list of categories
   return {
     communities: extractAlbumCategories(communities),
-    groups: extractAlbumCategories(groups),
-    personalAlbums: extractAlbumCategories(personalAlbums)
+    groups: extractAlbumCategories(groups, true),
+    personalAlbums: personalCate
   };
 };
 
@@ -99,7 +102,7 @@ export const getUserAlbumsApi = async (communityId, projectId) => {
 
   const personalAlbums = get(res, 'data.user_containers', []);
 
-  return parseAPIAlbums(personalAlbums);
+  return parseAPIAlbums(personalAlbums).reverse();
 };
 
 export const getCommunityAlbumsApi = async (communityId, projectId, page) => {
@@ -142,7 +145,7 @@ export const getQrrentByIdApi = async (id, projectId) => {
 
   const container = get(res, 'data.qrrent', []);
   // normalize albums
-  return parseAPIAlbums([container]);
+  return parseAPIAlbums([container]).reverse();
 };
 
 /**
@@ -208,7 +211,7 @@ export const getUserAvailableAlbumApi = async () => {
 
   const albums = get(res, 'data.user_available_containers');
 
-  return parseAPIAlbums(albums);
+  return parseAPIAlbums(albums).reverse();
 };
 
 /**
@@ -220,14 +223,10 @@ export const getUserAvailableAlbumApi = async () => {
  */
 export const uploadAssetsApi = async (asset, uploadToken) => {
   const { url, token } = uploadToken;
-  console.log(url, token, uploadToken);
 
   const formData = new FormData();
   formData.append('upload', asset);
   formData.append('authenticationToken', token);
-  console.log(formData);
-
-  // const tmpUrl = 'http://127.0.0.1:8085/platypus.fluidmedia.com/upload';
 
   return axios.post(url, formData);
 };

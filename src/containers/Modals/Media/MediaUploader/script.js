@@ -1,13 +1,13 @@
 import PpButton from '@/components/Buttons/Button';
 import Title from './Title';
 import AlbumAutocomplete from '@/components/AlbumAutocomplete';
-import { usePhoto } from '@/hooks';
 import {
   ICON_LOCAL,
   UPLOADING_PROCESS_STATUS,
   UPLOAD_STATUS_DISPLAY_TIME
 } from '@/common/constants';
 import { usePhotos, useUploadAssets } from '@/views/CreateBook/composables';
+import { waitMiliseconds } from '@/common/utils';
 
 export default {
   components: {
@@ -16,14 +16,10 @@ export default {
     Title
   },
   setup() {
-    const { addMediaToAlbum, createNewAlbum, prepareUpload } = usePhoto();
     const { uploadAssetToAlbum } = useUploadAssets();
     const { getUserAvailableAlbums } = usePhotos();
 
     return {
-      addMediaToAlbum,
-      createNewAlbum,
-      prepareUpload,
       uploadAssetToAlbum,
       getUserAvailableAlbums
     };
@@ -97,31 +93,30 @@ export default {
     async onAddMedia() {
       this.uploadingStatus = UPLOADING_PROCESS_STATUS.STARTING_UPLOAD;
 
-      await this.prepareUpload();
+      await waitMiliseconds(1000);
 
       this.uploadingStatus = UPLOADING_PROCESS_STATUS.UPLOADING;
 
       this.numberOfFilesUploaded = 0;
 
-      // await this.addMediaToAlbum(
-      //   this.selectedIdOfAlbum,
-      //   this.files,
-      //   this.albumName,
-      //   () => {
-      //     this.numberOfFilesUploaded++;
-      //   }
-      // );
+      const numOfFiles = this.files.length;
+
+      const handler = setInterval(() => {
+        if (this.numberOfFilesUploaded < numOfFiles - 1) {
+          this.numberOfFilesUploaded++;
+        }
+      }, 1000);
 
       const updatedAlbum = await this.uploadAssetToAlbum(
         this.selectedIdOfAlbum,
         this.files,
         this.newAlbumName
       );
-      console.log('updated album ', updatedAlbum);
+
+      clearInterval(handler);
+      this.numberOfFilesUploaded = numOfFiles;
 
       this.selectedIdOfAlbum = updatedAlbum.id;
-
-      console.log('update album ', updatedAlbum);
 
       await this.finisingUpload();
 

@@ -7,10 +7,14 @@ import { get } from 'lodash';
 import { parseAPIAlbums } from '@/common/mapping';
 
 export const updateAlbumAssetsApi = async (id, assets) => {
-  const res = await graphqlRequest(updateAlbumAssetsMutation, {
-    containerId: id,
-    assets
-  });
+  const res = await graphqlRequest(
+    updateAlbumAssetsMutation,
+    {
+      containerId: id,
+      assets
+    },
+    true
+  );
 
   const container = get(res, 'data.update_container_assets');
 
