@@ -1,5 +1,5 @@
 import { useMutations, useGetters } from 'vuex-composition-helpers';
-import { uniqBy, sortBy, get } from 'lodash';
+import { uniqBy, sortBy } from 'lodash';
 
 import { useAppCommon, useTextStyle } from '@/hooks';
 
