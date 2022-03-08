@@ -41,7 +41,7 @@ export default {
       numberOfFilesUploaded: 0,
       iconSuccess: ICON_LOCAL.SUCCESS,
       uploadingStatus: UPLOADING_PROCESS_STATUS.SELECT_ALBUM,
-      newAlbumName: 'Untitled'
+      newAlbumName: null
     };
   },
   computed: {
@@ -56,6 +56,12 @@ export default {
     },
     isUploadCompleteProcess() {
       return this.uploadingStatus === UPLOADING_PROCESS_STATUS.UPLOADED_SUCCESS;
+    },
+    modalHeader() {
+      return this.isAlbumSelectionProcess ? 'Add Media' : 'Adding Media';
+    },
+    isAddMediaButtonDisabled() {
+      return !this.newAlbumName && !this.selectedIdOfAlbum;
     }
   },
   watch: {
@@ -91,6 +97,8 @@ export default {
      * Flow add media add media to selected album
      */
     async onAddMedia() {
+      if (this.isAddMediaButtonDisabled) return;
+
       this.uploadingStatus = UPLOADING_PROCESS_STATUS.STARTING_UPLOAD;
 
       await waitMiliseconds(1000);
@@ -110,7 +118,7 @@ export default {
       const updatedAlbum = await this.uploadAssetToAlbum(
         this.selectedIdOfAlbum,
         this.files,
-        this.newAlbumName
+        this.newAlbumName || 'Untitled'
       );
 
       clearInterval(handler);
@@ -151,7 +159,7 @@ export default {
       this.numberOfFilesUploaded = 0;
       this.iconSuccess = ICON_LOCAL.SUCCESS;
       this.uploadingStatus = UPLOADING_PROCESS_STATUS.SELECT_ALBUM;
-      this.newAlbumName = 'Untitled';
+      this.newAlbumName = null;
 
       this.albums = await this.getUserAvailableAlbums();
     }

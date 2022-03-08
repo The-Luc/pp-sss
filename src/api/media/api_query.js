@@ -205,7 +205,12 @@ export const getInProjectAssetsApi = async (
 };
 
 export const getUserAvailableAlbumApi = async () => {
-  const res = await graphqlRequest(getUserAvailableAlbumsQuery);
+  const res = await graphqlRequest(
+    getUserAvailableAlbumsQuery,
+    {},
+    false,
+    true
+  );
 
   if (!isOk(res)) return;
 

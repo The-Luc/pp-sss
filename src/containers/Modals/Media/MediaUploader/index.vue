@@ -7,7 +7,7 @@
     max-width="425"
   >
     <div v-if="!isUploadCompleteProcess" class="header">
-      Add Media
+      {{ modalHeader }}
     </div>
 
     <div v-if="isAlbumSelectionProcess" class="select-album">
@@ -22,7 +22,12 @@
         />
       </div>
       <div class="btn-container">
-        <PpButton class="button" is-active @click.native="onAddMedia">
+        <PpButton
+          class="button"
+          is-active
+          :is-disabled="isAddMediaButtonDisabled"
+          @click.native="onAddMedia"
+        >
           Add Media
         </PpButton>
         <PpButton class="button button-cancel" @click.native="onCancel">

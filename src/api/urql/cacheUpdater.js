@@ -451,6 +451,7 @@ export const createContainerCache = (res, args, cache) => {
           __typename: album.__typename
         };
         data.community_containers.unshift(category);
+        data.user_containers.unshift(category);
       }
 
       return data;
