@@ -96,6 +96,8 @@ export const usePhotos = () => {
   };
 
   const updateInProjectAssets = (assets, inProjectIds) => {
+    if (!assets) return [];
+
     const { apiBookAssetIds, apiPageAssetIds } = inProjectIds;
 
     const currentAssetIds = mediaObjectIds.value;
@@ -196,7 +198,8 @@ export const usePhotos = () => {
         updateInProjectAssets(a.assets, inProjectIds);
       });
     });
-    return albums;
+
+    return albums || [];
   };
 
   const getAlbumById = async id => {

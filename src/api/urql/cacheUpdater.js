@@ -13,7 +13,11 @@ import { getPresetColorPickerQuery } from '../util/queries';
 import { getUserLayoutsQuery } from '../layout/queries';
 import { getUserTextStyleQuery } from '../text/queries';
 import { getUserImageStyleQuery } from '../image/queries';
-import { getUserAlbumsQuery } from '../media/queries';
+import {
+  getAlbumCategoryQuery,
+  getCommunityAlbumsQuery,
+  getUserAlbumsQuery
+} from '../media/queries';
 
 export const updatePortraitSettingCache = (result, args, cache) => {
   const layoutType = get(args, 'portrait_layout_setting_params.layout_type');
@@ -133,7 +137,7 @@ export const updateCreateFrame = (results, args, cache) => {
   cache.updateQuery(
     {
       query: getSheetFramesQuery,
-      variables: { sheetId: sheetId }
+      variables: { sheetId }
     },
     data => {
       if (data)
@@ -421,14 +425,48 @@ export const updateImageStyle = (res, _, cache) => {
   });
 };
 
-export const createContainerCache = (res, _, cache) => {
+export const createContainerCache = (res, args, cache) => {
   const album = res.create_container;
+  const communityId = get(args, 'container_params.community_id');
 
+  if (!album) return;
+
+  // update user containers query
   cache.updateQuery({ query: getUserAlbumsQuery }, data => {
-    if (data && album) {
+    if (data) {
       data.user_containers.push(album);
     }
 
     return data;
   });
+
+  // update category
+  cache.updateQuery(
+    { query: getAlbumCategoryQuery, variables: { communityId } },
+    data => {
+      if (data) {
+        const category = {
+          id: album.id,
+          body: album.body,
+          __typename: album.__typename
+        };
+        data.community_containers.unshift(category);
+      }
+
+      return data;
+    }
+  );
+
+  // update community containers query
+  cache.updateQuery(
+    {
+      query: getCommunityAlbumsQuery,
+      variables: { communityId, page: 1 }
+    },
+    data => {
+      if (data) data.community_containers.unshift(album);
+
+      return data;
+    }
+  );
 };
