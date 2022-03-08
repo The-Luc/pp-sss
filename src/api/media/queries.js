@@ -50,7 +50,7 @@ const albumCategoryFragment = gql`
 
 export const getAlbumCategoryQuery = gql`
   query getAlbumCategoryQuery($communityId: ID!) {
-    user_containers {
+    user_containers(media_type: "all", per_page: 9999) {
       ...albumCategory
     }
     community_containers(id: $communityId, media_type: "all", per_page: 99999) {
@@ -69,7 +69,7 @@ export const getAlbumCategoryQuery = gql`
 
 export const getUserAlbumsQuery = gql`
   query getUserAlbumsQuery {
-    user_containers {
+    user_containers(media_type: "all", per_page: 9999) {
       ...albumDetail
     }
   }

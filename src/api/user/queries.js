@@ -1,12 +1,23 @@
 import { gql } from 'graphql-tag';
 
+const communityUserFragment = gql`
+  fragment communityUserDetail on CommunitiesUser {
+    id
+    admin
+    user {
+      name
+      id
+    }
+  }
+`;
+
 export const getUserRoleQuery = gql`
   query getUserRole($id: ID!) {
     communities_user(id: $id) {
-      id
-      admin
+      ...communityUserDetail
     }
   }
+  ${communityUserFragment}
 `;
 
 export const getCommunityUsersQuery = gql`
@@ -14,15 +25,11 @@ export const getCommunityUsersQuery = gql`
     community(id: $communityId) {
       id
       communities_users {
-        id
-        admin
-        user {
-          name
-          id
-        }
+        ...communityUserDetail
       }
     }
   }
+  ${communityUserFragment}
 `;
 
 export const getFavoriteIdsQuery = gql`

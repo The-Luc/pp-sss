@@ -1,3 +1,4 @@
+import { uniqBy } from 'lodash';
 import Footer from '@/components/Modals/MediaSelection/Footer';
 import TabUploadMedia from '@/components/Modals/MediaSelection/TabUploadMedia';
 import Smartbox from '@/components/Modals/MediaSelection/Smartbox';
@@ -350,10 +351,10 @@ export default {
     },
 
     /**
-     * Load more asset when user scroll down
+     * Load more assets when user scroll down
      */
     async onLoadMoreAssets() {
-      if (this.currentPage < 0) return;
+      if (this.currentPage < 0 || !this.albums?.communities) return;
       this.currentPage++;
 
       const albums = await this.getCommunityAlbums(this.currentPage);
@@ -362,10 +363,11 @@ export default {
         this.currentPage = -1;
       }
 
-      this.albums.communities = [
-        ...this.albums.communities,
+      const mergedAlbums = [
+        ...(this.albums.communities || []),
         ...albums.communities
       ];
+      this.albums.communities = uniqBy(mergedAlbums, al => al.id);
     }
   }
 };
