@@ -54,6 +54,8 @@ const addingCategoryAll = category =>
  * @returnsa {Array} category showed in dropdown menu
  */
 export const extractAlbumCategories = (albumArr, isReverse) => {
+  if (!Array.isArray(albumArr)) return [];
+
   const categories = albumArr.map(a => {
     if (!a.containers) return { id: a.id, name: a.body };
 
@@ -77,6 +79,8 @@ export const extractAlbumCategories = (albumArr, isReverse) => {
  * @returns {Array} array of albums that can be used in FE
  */
 export const parseAPIAlbums = albumArr => {
+  if (!Array.isArray(albumArr)) return [];
+
   const parsedAlbums = albumArr.map(al => {
     const containers = al.containers ? al.containers : [al];
     return containers.map(c => containerMapping(c));

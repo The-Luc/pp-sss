@@ -89,7 +89,7 @@ export const getAlbumCategoryApi = async communityId => {
   return {
     communities: extractAlbumCategories(communities),
     groups: extractAlbumCategories(groups, true),
-    personalAlbums: personalCate
+    personalAlbums: personalCate || []
   };
 };
 
@@ -205,7 +205,12 @@ export const getInProjectAssetsApi = async (
 };
 
 export const getUserAvailableAlbumApi = async () => {
-  const res = await graphqlRequest(getUserAvailableAlbumsQuery);
+  const res = await graphqlRequest(
+    getUserAvailableAlbumsQuery,
+    {},
+    false,
+    true
+  );
 
   if (!isOk(res)) return;
 

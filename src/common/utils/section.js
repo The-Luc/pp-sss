@@ -8,9 +8,9 @@ import { ROLE } from '@/common/constants';
  * @param   {Number}          role    current user's role id
  * @returns {Object}                  section with accessible data
  */
-export const getSectionWithAccessible = (section, { id, role }) => {
-  const isAdmin = role === ROLE.ADMIN;
-  const isAssigned = id === section.assigneeId;
+export const getSectionWithAccessible = (section, user) => {
+  const isAdmin = user.role === ROLE.ADMIN;
+  const isAssigned = user.assigneeId === section.assigneeId;
 
   return {
     ...section,
@@ -27,6 +27,6 @@ export const getSectionWithAccessible = (section, { id, role }) => {
  * @param   {Number}          role      current user's role id
  * @returns {Array}                     sections with accessible data
  */
-export const getSectionsWithAccessible = (sections, { id, role }) => {
-  return sections.map(s => getSectionWithAccessible(s, { id, role }));
+export const getSectionsWithAccessible = (sections, user) => {
+  return sections.map(s => getSectionWithAccessible(s, user));
 };

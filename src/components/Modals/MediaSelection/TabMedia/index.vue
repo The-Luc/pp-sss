@@ -30,7 +30,7 @@
         <AlbumItem :empty-category="emptyCategory" />
       </template>
 
-      <div :ref="`loadingMark`"></div>
+      <div :ref="`loadingMark`">&nbsp;</div>
     </div>
     <PopupSelected v-if="isShowPopupSelected" :amount="selectedMedia.length" />
   </div>

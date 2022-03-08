@@ -38,10 +38,12 @@ export const getCurrentUserApi = async () => {
   if (res.status === STATUS.NG || isEmpty(communityUserId)) return {};
 
   const role = res.data.communities_user.admin ? ROLE.ADMIN : ROLE.USER;
+  const assigneeId = get(res, 'data.communities_user.user.id', null);
 
   return new User({
     id: parseInt(communityUserId, 10),
-    role: parseInt(role, 10)
+    role: parseInt(role, 10),
+    assigneeId
   });
 };
 
