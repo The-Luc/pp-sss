@@ -450,8 +450,8 @@ export const createContainerCache = (res, args, cache) => {
           body: album.body,
           __typename: album.__typename
         };
-        data.community_containers.unshift(category);
-        data.user_containers.unshift(category);
+        data.community_containers?.unshift(category);
+        data.user_containers?.unshift(category);
       }
 
       return data;
@@ -465,7 +465,7 @@ export const createContainerCache = (res, args, cache) => {
       variables: { communityId, page: 1 }
     },
     data => {
-      if (data) data.community_containers.unshift(album);
+      if (data) data.community_containers?.unshift(album);
 
       return data;
     }
