@@ -1,7 +1,11 @@
 import { useGetters, useMutations } from 'vuex-composition-helpers';
 
 import { GETTERS, MUTATES } from '@/store/modules/app/const';
-import { MODAL_TYPES, OBJECT_TYPE } from '@/common/constants';
+import {
+  DEFAULT_TEXT_STYLE_ID,
+  MODAL_TYPES,
+  OBJECT_TYPE
+} from '@/common/constants';
 
 import { pick } from 'lodash';
 import {
@@ -139,6 +143,14 @@ export const useTextStyle = () => {
 
   const loadTextStyles = async () => {
     const styles = await getTextStyleApi();
+
+    // re-order default style to 1st position
+    const defaultIndex = styles.findIndex(
+      style => style.id === DEFAULT_TEXT_STYLE_ID
+    );
+
+    const defaultStyle = styles.splice(defaultIndex, 1)[0];
+    styles.unshift(defaultStyle);
 
     setFontFamily(styles);
     setTextStyles({ styles });

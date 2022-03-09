@@ -82,6 +82,8 @@ export const parseAPIAlbums = albumArr => {
   if (!Array.isArray(albumArr)) return [];
 
   const parsedAlbums = albumArr.map(al => {
+    if (!al) return [];
+
     const containers = al.containers ? al.containers : [al];
     return containers.map(c => containerMapping(c));
   });

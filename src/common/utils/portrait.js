@@ -619,7 +619,7 @@ export const createPortraitObjects = (
   if (isPageTitleOn && isFirstPage) {
     const titleEl = new TextElementObject({
       id: getUniqueId(),
-      text: titleEl,
+      text: pageTitle,
       coord: {
         x: isRight ? pageTitleMargins.left + pageWidth : pageTitleMargins.left,
         y: pageTitleMargins.top
