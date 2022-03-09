@@ -9,6 +9,7 @@ import { SVG_FILL_MODE } from './svgFillMode';
 import { POSITION_ORIGIN } from './origin';
 
 export const OBJECT_MIN_SIZE = 0.5; // inch
+export const DEFAULT_TEXT_STYLE_ID = '122'; // value from BE
 
 export const DEFAULT_SVG = {
   WIDTH: 1.5,
@@ -73,7 +74,7 @@ export const DEFAULT_TEXT = {
     height: 0
   },
   TEXT_CASE: TEXT_CASE.NONE,
-  STYLE_ID: 'default',
+  STYLE_ID: DEFAULT_TEXT_STYLE_ID,
   FONT_FAMILY: 'Open Sans',
   FONT_SIZE: 16,
   COLOR: DEFAULT_PROP.COLOR,

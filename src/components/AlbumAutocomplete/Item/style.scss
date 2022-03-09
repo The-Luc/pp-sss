@@ -23,6 +23,7 @@
     justify-content: center;
     flex-direction: column;
     margin-left: 10px;
+    width: 195px;
     .name {
       color: $color-stoodio-toolbartext;
       font-family: $font-500;
@@ -31,6 +32,9 @@
         background-color: $color-yellow;
         color: $color-stoodio-toolbartext;
       }
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
     .asset {
       color: $color-gray32;
