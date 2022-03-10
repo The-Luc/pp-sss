@@ -1,5 +1,5 @@
 import { useMutations, useGetters } from 'vuex-composition-helpers';
-import { uniqBy, sortBy } from 'lodash';
+import { uniqBy, sortBy, get, cloneDeep } from 'lodash';
 
 import { useAppCommon, useTextStyle } from '@/hooks';
 
@@ -479,6 +479,21 @@ export const useUploadAssets = () => {
     const promises = assets.map(asset => uploadAssetsApi(asset, currToken));
 
     const results = await Promise.all(promises);
+
+    // revise the response structure for videos
+    const videoTypes = ['video/mp4', 'video/quicktime'];
+    results.forEach(({ data }) => {
+      const type = get(data, 'mimetype');
+
+      if (!videoTypes.includes(type)) return;
+
+      const { original } = data.versions;
+      original.height = 0;
+      original.width = 0;
+      delete original.preview_url;
+
+      data.versions.web = cloneDeep(original);
+    });
 
     return results.map(res => res.data);
   };

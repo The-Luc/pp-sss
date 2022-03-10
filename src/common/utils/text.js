@@ -1,6 +1,7 @@
 import WebFont from 'webfontloader';
 import { TEXT_CASE } from '../constants';
 import { isEmpty } from '@/common/utils';
+import { mapObject } from './util';
 
 const createDummyElement = (text, options) => {
   const element = document.createElement('div');
@@ -105,4 +106,33 @@ export const loadFonts = fonts => {
       timeout: 10 * 1000 // 10 sec
     });
   });
+};
+
+/**
+ * Get css style of item base on its style
+ *
+ * @param   {Object} style  style of item
+ * @returns {Object}        css style of item
+ */
+export const getCssTextStyle = cssStyle => {
+  if (isEmpty(cssStyle)) return {};
+
+  const mapRules = {
+    data: {
+      fontSize: {
+        name: 'fontSize',
+        parse: value => {
+          const fontSize = parseInt(value, 10) / 3;
+
+          const calFontSize =
+            fontSize > 50 ? 50 : fontSize < 16 ? 16 : fontSize;
+
+          return `${calFontSize}px`;
+        }
+      }
+    },
+    restrict: []
+  };
+
+  return mapObject(cssStyle, mapRules);
 };

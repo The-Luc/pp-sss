@@ -2,6 +2,8 @@ import { gql } from 'graphql-tag';
 
 export const imageStyleFragment = gql`
   fragment imageStyle on ImageStyle {
+    show_border
+    drop_shadow
     border_color
     border_style
     border_stroke
