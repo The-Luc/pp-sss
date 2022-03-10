@@ -4,14 +4,10 @@ import { albumDetailFragment } from './queries';
 export const updateAlbumAssetsMutation = gql`
   mutation updateAlbumAssets($containerId: ID!, $assets: [AssetInput]) {
     update_container_assets(container_id: $containerId, assets: $assets) {
-      id
-      assets {
-        id
-        thumbnail_uri
-        is_media
-      }
+      ...albumDetail
     }
   }
+  ${albumDetailFragment}
 `;
 
 export const createAlbumAssetsMutation = gql`

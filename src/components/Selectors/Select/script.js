@@ -1,4 +1,5 @@
-import { isEmpty, mapObject } from '@/common/utils';
+import { isEmpty } from '@/common/utils';
+import { getCssTextStyle } from '@/common/utils/text';
 
 import { ICON_LOCAL } from '@/common/constants';
 
@@ -61,25 +62,7 @@ export default {
      * @param   {Object} style  style of item
      * @returns {Object}        css style of item
      */
-    getStyle(cssStyle) {
-      if (isEmpty(cssStyle)) return {};
-
-      const mapRules = {
-        data: {
-          fontSize: {
-            name: 'fontSize',
-            parse: value => {
-              const fontSize = parseInt(value, 10) / 3;
-
-              return `${fontSize > 50 ? 50 : fontSize}px`;
-            }
-          }
-        },
-        restrict: []
-      };
-
-      return mapObject(cssStyle, mapRules);
-    },
+    getStyle: getCssTextStyle,
 
     /**
      * Fire when click event

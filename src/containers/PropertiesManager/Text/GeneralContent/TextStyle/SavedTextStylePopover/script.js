@@ -1,5 +1,6 @@
 import { KEY_CODE, WINDOW_EVENT_TYPE } from '@/common/constants';
-import { isEmpty, mapObject, scrollToElement } from '@/common/utils';
+import { scrollToElement } from '@/common/utils';
+import { getCssTextStyle } from '@/common/utils/text';
 
 export default {
   props: {
@@ -52,25 +53,7 @@ export default {
      * @param   {Object} style  style of item
      * @returns {Object}        css style of item
      */
-    getStyle(cssStyle) {
-      if (isEmpty(cssStyle)) return {};
-
-      const mapRules = {
-        data: {
-          fontSize: {
-            name: 'fontSize',
-            parse: value => {
-              const fontSize = parseInt(value, 10) / 3;
-
-              return `${fontSize > 50 ? 50 : fontSize}px`;
-            }
-          }
-        },
-        restrict: []
-      };
-
-      return mapObject(cssStyle, mapRules);
-    },
+    getStyle: getCssTextStyle,
 
     /**
      * Event fired when user choose an item on list
