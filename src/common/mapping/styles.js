@@ -47,17 +47,26 @@ export const textStyleMapping = style => {
     strokeWidth: style.border_stroke
   };
 
-  const shadowOpacity = style.text_shadow_opacity || 0.5;
+  const shadowOpacity = Number.isFinite(style.text_shadow_opacity)
+    ? style.text_shadow_opacity
+    : 0.5;
+
   const shadowColor = Color(style.text_shadow_color || '#000000')
     .alpha(shadowOpacity)
     .string();
 
   const shadow = {
     dropShadow: style.drop_shadow || false,
-    shadowAngle: style.text_shadow_angle || 270,
-    shadowBlur: style.text_shadow_blur || 5,
+    shadowAngle: Number.isFinite(style.text_shadow_angle)
+      ? style.text_shadow_angle
+      : 270,
+    shadowBlur: Number.isFinite(style.text_shadow_blur)
+      ? style.text_shadow_blur
+      : 5,
     shadowColor,
-    shadowOffset: style.text_shadow_offset || 2,
+    shadowOffset: Number.isFinite(style.text_shadow_offset)
+      ? style.text_shadow_offset
+      : 2,
     shadowOpacity
   };
 
@@ -157,6 +166,8 @@ export const textStyleMappingApi = style => {
 
 export const imageStyleMapping = imgStyle => {
   const {
+    show_border,
+    drop_shadow,
     border_color,
     border_style,
     border_stroke,
@@ -170,19 +181,25 @@ export const imageStyleMapping = imgStyle => {
   } = imgStyle;
 
   const border = {
-    showBorder: true,
+    showBorder: show_border,
     stroke: border_color,
     strokeWidth: border_stroke,
     strokeDashArray: stroke_dash_array,
     strokeLineType: border_style
   };
+  const shadowOpacity = drop_shadow_opacity;
+  const hexOpacity = shadowOpacity
+    ? Math.ceil((255 / shadowOpacity) * shadowOpacity).toString(16)
+    : '00';
+
+  const shadowColor = `${drop_shadow_color + hexOpacity}`;
 
   const shadow = {
-    dropShadow: true,
+    dropShadow: drop_shadow,
     shadowBlur: drop_shadow_blur,
     shadowOffset: drop_shadow_offset,
-    shadowOpacity: drop_shadow_opacity,
-    shadowColor: drop_shadow_color,
+    shadowOpacity,
+    shadowColor,
     shadowAngle: drop_shadow_angle
   };
 
@@ -208,8 +225,12 @@ export const imageStyleMappingApi = style => {
       strokeLineType: {
         name: 'border_style'
       },
-      // adding is-show-shadow field to turn on/off shadow
-
+      dropShadow: {
+        name: 'drop_shadow'
+      },
+      showBorder: {
+        name: 'show_border'
+      },
       shadowBlur: {
         name: 'drop_shadow_blur'
       },
@@ -227,7 +248,7 @@ export const imageStyleMappingApi = style => {
         parse: convertRGBToHex
       }
     },
-    restrict: ['id', 'name', 'dropShadow', 'showBorder', 'strokeDashArray']
+    restrict: ['id', 'name', 'strokeDashArray']
   };
 
   return mapObject(style, mapRules);

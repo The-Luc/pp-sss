@@ -1,4 +1,9 @@
-import { apiToShortDate, mapObject, isEmpty } from '@/common/utils';
+import {
+  apiToShortDate,
+  mapObject,
+  isEmpty,
+  convertToHttp
+} from '@/common/utils';
 import { ALL_MEDIA_SUBCATEGORY_ID, ASSET_TYPE } from '@/common/constants';
 
 /**
@@ -15,7 +20,8 @@ export const mediaMapping = (asset, isPhoto = true) => {
         name: 'mediaFileName'
       },
       thumbnail_uri: {
-        name: 'thumbUrl'
+        name: 'thumbUrl',
+        parse: convertToHttp
       },
       media_url: {
         name: mediaUrl
@@ -101,7 +107,7 @@ export const containerMapping = container => {
   const assets = mediaAssets.map(
     ({ id, thumbnail_uri, is_media, in_project }) => ({
       id,
-      thumbUrl: thumbnail_uri,
+      thumbUrl: convertToHttp(thumbnail_uri),
       type: is_media ? ASSET_TYPE.VIDEO : ASSET_TYPE.PICTURE,
       albumId: container.id,
       inProject: in_project

@@ -150,6 +150,7 @@ export const useTextStyle = () => {
     );
 
     const defaultStyle = styles.splice(defaultIndex, 1)[0];
+    defaultStyle.style.textCase = 'capitalize';
     styles.unshift(defaultStyle);
 
     setFontFamily(styles);
