@@ -7,6 +7,7 @@ import { sortByProperty } from '.';
 import { FrameDetail, Transition } from '../models';
 import { frameMapping } from '../mapping/frame';
 import { transitionMapping } from '../mapping';
+import { convertObjectInchToPx } from './objects';
 
 export const isHalfSheet = ({ type }) => {
   return [SHEET_TYPE.FRONT_COVER, SHEET_TYPE.BACK_COVER].indexOf(type) >= 0;
@@ -107,6 +108,10 @@ export const mapSheetToPages = sheet => {
     leftLayout.elements.forEach(o => (o.coord.x -= halfSheet));
     rightLayout.elements.push(...leftLayout.elements);
   }
+
+  // convert inch to pixels to save to DB
+  convertObjectInchToPx(leftLayout.elements);
+  convertObjectInchToPx(rightLayout.elements);
 
   const leftPage = {
     layout: JSON.stringify(leftLayout),

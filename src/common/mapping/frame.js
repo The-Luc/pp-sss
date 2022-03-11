@@ -1,4 +1,5 @@
 import { mapObject } from '../utils';
+import { convertObjectInchToPx, convertObjectPxToInch } from '../utils/objects';
 
 /**
  * Convert frame data from API to data can be used in FE
@@ -26,6 +27,8 @@ export const frameMapping = frame => {
     },
     restrict: ['play_in_ids', 'play_out_ids']
   };
+
+  convertObjectPxToInch(frame.objects);
 
   const mappedFrame = mapObject(frame, mapRules);
   const objectIds = mappedFrame.objects.map(o => o.id);
@@ -58,6 +61,9 @@ export const mappingFrameToApi = frame => {
   };
 
   const mapFrame = mapObject(frame, mapRules);
+
+  convertObjectInchToPx(frame.objects);
+
   mapFrame.objects = frame.objects.map(o => JSON.stringify(o));
 
   mapFrame.play_in_ids = frame.playInIds;
