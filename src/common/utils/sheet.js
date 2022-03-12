@@ -7,6 +7,7 @@ import { sortByProperty } from '.';
 import { FrameDetail, Transition } from '../models';
 import { frameMapping } from '../mapping/frame';
 import { transitionMapping } from '../mapping';
+import { convertObjectInchToPx } from './objects';
 
 export const isHalfSheet = ({ type }) => {
   return [SHEET_TYPE.FRONT_COVER, SHEET_TYPE.BACK_COVER].indexOf(type) >= 0;
@@ -19,6 +20,8 @@ export const isHalfLeft = ({ type }) => {
 export const isHalfRight = ({ type }) => {
   return type === SHEET_TYPE.FRONT_COVER;
 };
+
+export const isCoverSheet = ({ type }) => type === SHEET_TYPE.COVER;
 
 /**
  * Format page number to name of page
@@ -84,6 +87,27 @@ export const getPageName = (sheetIndex, totalSheetUntilPrevious) => {
 };
 
 /**
+ *  To separate object into left page and right page
+ *
+ * @param {Object} sheet data of sheet
+ * @returns leftLayout and rightLayout
+ */
+export const getPageLayouts = sheet => {
+  const { leftLayout, rightLayout } = pageLayoutsFromSheet(sheet.objects);
+
+  // if sheet type is inside-front-cover => move objects of the left page to right page
+  if (isHalfRight(sheet.sheetProps)) {
+    const { pageWidth, bleedLeft } = getPagePrintSize().inches;
+    const halfSheet = pageWidth + bleedLeft;
+
+    leftLayout.elements.forEach(o => (o.coord.x -= halfSheet));
+    rightLayout.elements.push(...leftLayout.elements);
+  }
+
+  return { leftLayout, rightLayout };
+};
+
+/**
  * To seperate sheet into 2 pages
  *
  * @param {Object} sheet sheet data
@@ -97,16 +121,11 @@ export const mapSheetToPages = sheet => {
     rightTitle
   } = sheet.sheetProps.spreadInfo;
 
-  const { leftLayout, rightLayout } = pageLayoutsFromSheet(sheet.objects);
+  const { leftLayout, rightLayout } = getPageLayouts(sheet);
 
-  // if sheet type is inside-front-cover => move objects of the left page to right page
-  if (isHalfRight(sheet.sheetProps)) {
-    const { pageWidth, bleedLeft } = getPagePrintSize().inches;
-    const halfSheet = pageWidth + bleedLeft;
-
-    leftLayout.elements.forEach(o => (o.coord.x -= halfSheet));
-    rightLayout.elements.push(...leftLayout.elements);
-  }
+  // convert inch to pixels to save to DB
+  convertObjectInchToPx(leftLayout.elements);
+  convertObjectInchToPx(rightLayout.elements);
 
   const leftPage = {
     layout: JSON.stringify(leftLayout),

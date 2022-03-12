@@ -3,13 +3,17 @@ import { cloneDeep, merge, intersection, differenceWith } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 import moment from 'moment';
 
-import { inToPx, ptToPx, getPagePrintSize } from './canvas';
+import {
+  inToPx,
+  ptToPx,
+  getPagePrintSize,
+  getCoverPagePrintSize
+} from './canvas';
 import { getDiffDaysFOMToEOM } from './time';
 
 import {
   STATUS,
   DIGITAL_CANVAS_SIZE,
-  PRINT_CANVAS_SIZE,
   DIGITAL_PAGE_SIZE,
   DATE_FORMAT,
   THUMBNAIL_IMAGE_CONFIG,
@@ -27,6 +31,7 @@ import {
   createSvgObject,
   createTextBoxObject
 } from '@/common/fabricObjects';
+import { isBackground, modifyBgToRenderOnPage } from './background';
 
 const mapSubData = (sourceObject, rules, data) => {
   const isNoSubRule = isEmpty(data);
@@ -693,13 +698,42 @@ export const splitBase64Image = async imgUrl => {
   return { leftThumb, rightThumb };
 };
 
-export const generateCanvasThumbnail = async (objects, isDigital) => {
+/**
+ *  To generate base64 image, could be on half or full canvas
+ *  Supporting varies options which can handle cover sheet case
+ *
+ *
+ * @param {Object} objects elements on canvas
+ * @param {Boolean} isDigital whether print or digital editor
+ * @param {Object} options customzing the generating process
+ * @returns <String> base64 image
+ */
+export const generateCanvasThumbnail = async (objects, isDigital, options) => {
   if (isEmpty(objects)) return '';
+  const { isSpread, isCover, isHardCover } = options;
+
+  const printSize = isCover
+    ? getCoverPagePrintSize(isHardCover)
+    : getPagePrintSize();
+
+  const PRINT_CANVAS_SIZE = {
+    WIDTH: printSize.pixels.sheetWidth,
+    HEIGHT: printSize.pixels.sheetHeight
+  };
 
   const EDITOR_SIZE = isDigital ? DIGITAL_CANVAS_SIZE : PRINT_CANVAS_SIZE;
 
+  // modify backround if render on a page
+  if (!isSpread && isBackground(objects[0]))
+    objects[0] = modifyBgToRenderOnPage(objects[0]);
+
   const el = fabric.util.createCanvasElement();
-  el.width = isDigital ? EDITOR_SIZE.WIDTH : Math.ceil(EDITOR_SIZE.WIDTH / 2);
+
+  el.width =
+    isDigital || isSpread
+      ? EDITOR_SIZE.WIDTH
+      : Math.ceil(EDITOR_SIZE.WIDTH / 2);
+
   el.height = EDITOR_SIZE.HEIGHT;
 
   const canvas = new fabric.StaticCanvas(el, {

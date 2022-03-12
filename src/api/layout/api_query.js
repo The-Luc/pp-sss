@@ -1,4 +1,4 @@
-import { first, get } from 'lodash';
+import { first, get, cloneDeep } from 'lodash';
 import { SHEET_TYPE, SYSTEM_OBJECT_TYPE } from '@/common/constants';
 import { graphqlRequest } from '../urql';
 import {
@@ -10,6 +10,7 @@ import {
 } from './queries';
 import { LAYOUT_PAGE_TYPE } from '@/common/constants/layoutTypes';
 import {
+  convertObjectPxToInch,
   createBackgroundElement,
   createClipartElement,
   createImageElement,
@@ -95,7 +96,13 @@ export const getLayoutElementsApi = async id => {
 
   const elements = get(res, 'data.template.layout.elements', []);
 
-  if (elements[0]?.type) return elements; // PP templates
+  if (elements[0]?.type) {
+    // PP templates
+    const objects = cloneDeep(elements);
+
+    convertObjectPxToInch(objects);
+    return objects;
+  }
 
   // case: legacy templates
   const background = createBackgroundElement(get(res, 'data.template', {}));

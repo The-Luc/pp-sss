@@ -175,9 +175,10 @@ export const pxToPt = (val, dpi) => unscaleSize(val, dpi);
  * Conver inch to px
  *
  * @param   {Number}  val - the inch value that need to be converted
+ * @param   {Number}  the custom dpi value
  * @returns {Number}  the result px
  */
-export const inToPx = val => val * getDpi();
+export const inToPx = (val, dpi) => (dpi ? val * dpi : val * getDpi());
 
 /**
  * Conver px to inch
