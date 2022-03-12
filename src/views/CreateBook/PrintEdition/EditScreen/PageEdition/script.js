@@ -333,6 +333,7 @@ export default {
      * To save data of current shet
      * @param {String | Number} sheetId id of sheet need to save data
      * @param {Boolean} isAutosave indicating autosaving or not
+     * @returns {Promise} saved data
      *
      */
     async saveData(sheetId, isAutosave) {
@@ -341,6 +342,8 @@ export default {
       const data = this.getDataEditScreen(sheetId);
 
       await this.savePrintEditScreen(data, isAutosave);
+
+      return data;
     },
 
     /**
@@ -1988,9 +1991,8 @@ export default {
       });
     },
     async handleSaveLayout(setting) {
-      await this.saveData(this.pageSelected.id);
-
-      await this.saveCustomPrintLayout(setting);
+      const sheetData = await this.saveData(this.pageSelected.id);
+      await this.saveCustomPrintLayout(setting, sheetData);
     },
     handleGeneratePDF() {
       const bookId = this.generalInfo.id;

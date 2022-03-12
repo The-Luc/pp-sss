@@ -16,6 +16,14 @@ export const isFullBackground = ({ pageType }) => {
 };
 
 /**
+ *  To check if an object a background or not
+ *
+ * @param {Object} bg background object
+ * @returns whether an object a backround or not
+ */
+export const isBackground = bg => bg && bg.type === OBJECT_TYPE.BACKGROUND;
+
+/**
  * Get default background type
  *
  * @param   {Array}         themes  list of theme
@@ -225,6 +233,19 @@ export const getFrameBackground = (frameNo, frames) => {
 };
 
 /**
+ *  To modify a background so that it can be render on a page, without this
+ *  the background only rendered half of the width of the page.
+ *
+ * @param {Object} bg background data
+ * @returns modified background
+ */
+export const modifyBgToRenderOnPage = bg => ({
+  ...bg,
+  pageType: BACKGROUND_PAGE_TYPE.DOUBLE_PAGE.id,
+  isLeftPage: true
+});
+
+/**
  * To generate thumbnail from sheet object data
  *
  * @param {Object} leftObjects objects on left page
@@ -232,13 +253,6 @@ export const getFrameBackground = (frameNo, frames) => {
  * @returns Array of left and right thumbnails
  */
 export const getSheetThumbnail = async (leftObjects, rightObjects) => {
-  const isBackground = bg => bg && bg.type === OBJECT_TYPE.BACKGROUND;
-  const modifyBgToRenderOnPage = bg => ({
-    ...bg,
-    pageType: BACKGROUND_PAGE_TYPE.DOUBLE_PAGE.id,
-    isLeftPage: true
-  });
-
   const isFullBg = leftObjects[0] && isFullBackground(leftObjects[0]);
 
   let leftElements = cloneDeep(leftObjects);

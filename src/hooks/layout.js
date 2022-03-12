@@ -31,9 +31,23 @@ import {
   ACTIONS as DIGITAL_ACTIONS
 } from '@/store/modules/digital/const';
 
-import { TOOL_NAME, EDITION, MODAL_TYPES } from '@/common/constants';
+import {
+  TOOL_NAME,
+  EDITION,
+  MODAL_TYPES,
+  OBJECT_TYPE,
+  COVER_TYPE
+} from '@/common/constants';
 
-import { isOk } from '@/common/utils';
+import {
+  generateCanvasThumbnail,
+  getPageLayouts,
+  isCoverSheet,
+  isHalfSheet,
+  isOk
+} from '@/common/utils';
+import { useThumbnail } from '@/views/CreateBook/composables';
+import { cloneDeep } from 'lodash';
 
 export const useLayoutPrompt = edition => {
   const EDITION_GETTERS =
@@ -113,7 +127,7 @@ const getterDigitalLayout = () => {
 };
 
 /**
- * to return the getters print layout
+ * Return the getters print layout
  * @returns getters
  */
 const getterPrintLayout = () => {
@@ -157,9 +171,58 @@ export const useCustomLayout = () => {
     toggleModal: APP_MUTATES.TOGGLE_MODAL
   });
 
-  const saveCustomPrintLayout = async setting => {
+  const { getBookInfo: bookInfo } = useGetters({
+    getBookInfo: PRINT_GETTERS.GET_BOOK_INFO
+  });
+
+  const { uploadBase64Image } = useThumbnail();
+
+  const getLayoutThumbnail = async (objects, options) => {
+    // remove image url in objects
+    objects.forEach(o => {
+      if (o.type !== OBJECT_TYPE.IMAGE) return;
+
+      o.imageUrl = null;
+      o.originalUrl = null;
+    });
+
+    return generateCanvasThumbnail(objects, null, options);
+  };
+
+  const saveCustomPrintLayout = async (setting, data) => {
     const { id, type, layoutName } = setting;
-    const isSuccess = await saveCustomPrintLayoutApi(id, type, layoutName);
+
+    const isSpread = type === 'SHEET';
+
+    let objects = cloneDeep(data.objects);
+
+    if (!(isSpread || isHalfSheet(data.sheetProps))) {
+      const { leftLayout, rightLayout } = getPageLayouts(data);
+      const pageIds = data.sheetProps.pageIds;
+
+      objects = id === pageIds[0] ? leftLayout.elements : rightLayout.elements;
+    }
+
+    const isCover = isCoverSheet(data.sheetProps);
+    const isHardCover =
+      COVER_TYPE.HARDCOVER === bookInfo.value.coverOption && isCover;
+
+    const options = {
+      isSpread,
+      isCover,
+      isHardCover
+    };
+
+    const imageBase64 = await getLayoutThumbnail(objects, options);
+
+    const previewImageUrl = await uploadBase64Image(imageBase64);
+
+    const isSuccess = await saveCustomPrintLayoutApi(
+      id,
+      type,
+      layoutName,
+      previewImageUrl
+    );
 
     if (!isSuccess) return;
 
