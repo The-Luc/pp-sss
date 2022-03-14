@@ -258,9 +258,9 @@ export const compareByValue = (item1, item2) => {
  * @returns {Boolean}         status is ok or not
  */
 export const isOk = res => {
-  if (!Array.isArray(res)) return res.status === STATUS.OK;
+  if (!Array.isArray(res)) return res?.status === STATUS.OK;
 
-  return res.every(r => r.status === STATUS.OK);
+  return res.every(r => r?.status === STATUS.OK);
 };
 
 /**
