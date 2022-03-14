@@ -101,25 +101,29 @@ export const graphqlRequest = async (
   isHideSpiner,
   isIgnoreCache
 ) => {
-  const { operation } = query.definitions[0];
-  const queryVars = variables || {};
+  try {
+    const { operation } = query.definitions[0];
+    const queryVars = variables || {};
 
-  const client = isIgnoreCache ? urqlNetworkClient : urqlClient;
-  if (isHideSpiner) {
-    const results = await client[operation](query, queryVars).toPromise();
-    return responseHandler(results);
+    const client = isIgnoreCache ? urqlNetworkClient : urqlClient;
+    if (isHideSpiner) {
+      const results = await client[operation](query, queryVars).toPromise();
+      return responseHandler(results);
+    }
+
+    // show loading screen
+    store.commit(APP_MUTATES.SET_LOADING_STATE, { value: true });
+    requestCount++;
+
+    const res = await client[operation](query, queryVars).toPromise();
+
+    // hide loading screen
+    requestCount--;
+    if (requestCount === 0)
+      store.commit(APP_MUTATES.SET_LOADING_STATE, { value: false });
+
+    return responseHandler(res);
+  } catch (error) {
+    return responseHandler({ error });
   }
-
-  // show loading screen
-  store.commit(APP_MUTATES.SET_LOADING_STATE, { value: true });
-  requestCount++;
-
-  const res = await client[operation](query, queryVars).toPromise();
-
-  // hide loading screen
-  requestCount--;
-  if (requestCount === 0)
-    store.commit(APP_MUTATES.SET_LOADING_STATE, { value: false });
-
-  return responseHandler(res);
 };
