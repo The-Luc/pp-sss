@@ -1,5 +1,10 @@
 import { OBJECT_TYPE, SHEET_TYPE } from '@/common/constants';
-import { changeObjectsCoords, entitiesToObjects, isOk } from '@/common/utils';
+import {
+  changeObjectsCoords,
+  convertObjectPxToInch,
+  entitiesToObjects,
+  isOk
+} from '@/common/utils';
 import { get } from 'lodash';
 import { graphqlRequest } from '../urql';
 import {
@@ -23,6 +28,10 @@ export const getSheetInfoApi = async id => {
   const pageObjects = (() => {
     const leftObjects = get(pages[0], 'layout.elements', []);
     const rightObjects = get(pages[1], 'layout.elements', []);
+
+    // convert unit from pixels to inch
+    convertObjectPxToInch(leftObjects);
+    convertObjectPxToInch(rightObjects);
 
     if (sheetType === SHEET_TYPE.BACK_COVER) return leftObjects;
 

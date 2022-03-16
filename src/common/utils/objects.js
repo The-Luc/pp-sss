@@ -9,6 +9,7 @@ import {
 
 import { DEBOUNCE_PROPERTIES, OBJECT_TYPE } from '@/common/constants';
 import { isEmpty } from './util';
+import { inToPx, pxToIn } from './canvas';
 
 /**
  * Computed ratio and return coordinate and dimension of object
@@ -175,4 +176,28 @@ export const getOrdeOptions = objects => {
       name: i + 1,
       value: i + 1
     }));
+};
+
+export const convertObjectInchToPx = objects => {
+  if (isEmpty(objects)) return [];
+
+  objects.forEach(o => {
+    if (!o?.coord) return;
+    o.coord.x = inToPx(o.coord.x, 300);
+    o.coord.y = inToPx(o.coord.y, 300);
+    o.size.width = inToPx(o.size.width, 300);
+    o.size.height = inToPx(o.size.height, 300);
+  });
+};
+
+export const convertObjectPxToInch = objects => {
+  if (isEmpty(objects)) return [];
+
+  objects.forEach(o => {
+    if (!o?.size || (o?.size?.height < 13 && o?.size?.width < 20)) return; // temporary solution when converting unit, can be delete later
+    o.coord.x = pxToIn(o.coord.x, 300);
+    o.coord.y = pxToIn(o.coord.y, 300);
+    o.size.width = pxToIn(o.size.width, 300);
+    o.size.height = pxToIn(o.size.height, 300);
+  });
 };
