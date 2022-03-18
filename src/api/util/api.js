@@ -69,7 +69,12 @@ export const savePresetColorPickerApi = async colors => {
  * @returns response result
  */
 export const generatePdfApi = async id => {
-  const res = await graphqlRequest(generateBookPdfQuery, { bookId: id });
+  const res = await graphqlRequest(
+    generateBookPdfQuery,
+    { bookId: id },
+    false,
+    true
+  );
   return isOk(res);
 };
 
