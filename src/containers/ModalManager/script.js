@@ -28,6 +28,7 @@ import SelectThemeDigital from '@/views/CreateBook/DigitalEdition/EditScreen/Mod
 import AddDigitalFrame from '@/views/CreateBook/DigitalEdition/EditScreen/Modals/ModalLayout';
 import OverrideLayout from '@/views/CreateBook/DigitalEdition/EditScreen/Modals/OverrideLayoutModal';
 import DeleteFrame from '@/views/CreateBook/DigitalEdition/EditScreen/Modals/ModalConfirmDelete';
+import SaveDigitalLayout from '@/views/CreateBook/DigitalEdition/EditScreen/Modals/ModalSaveLayout';
 
 const {
   HELP,
@@ -45,6 +46,7 @@ const {
   RESET_LAYOUT,
   SAVE_LAYOUT,
   SELECT_PAGE_OF_LAYOUT,
+  SAVE_DIGITAL_LAYOUT,
   SAVE_STYLE,
   SAVE_STYLE_SUCCESS,
   SAVE_LAYOUT_SUCCESS,
@@ -67,6 +69,7 @@ const ModalList = {
   [RESET_LAYOUT]: RESET_LAYOUT,
   [SAVE_LAYOUT]: SAVE_LAYOUT,
   [SELECT_PAGE_OF_LAYOUT]: SELECT_PAGE_OF_LAYOUT,
+  [SAVE_DIGITAL_LAYOUT]: SAVE_DIGITAL_LAYOUT,
   [SAVE_STYLE]: SAVE_STYLE,
   [SAVE_STYLE_SUCCESS]: SAVE_STYLE_SUCCESS,
   [SAVE_LAYOUT_SUCCESS]: SAVE_LAYOUT_SUCCESS,
@@ -95,6 +98,7 @@ export default {
     [MODAL_TYPES.RESET_LAYOUT]: ModalResetLayout,
     [MODAL_TYPES.SAVE_LAYOUT]: ModalSaveLayout,
     [MODAL_TYPES.SELECT_PAGE_OF_LAYOUT]: ModalSelectPageOfLayout,
+    [MODAL_TYPES.SAVE_DIGITAL_LAYOUT]: SaveDigitalLayout,
     [MODAL_TYPES.SAVE_STYLE]: ModalSaveStyle,
     [MODAL_TYPES.SAVE_STYLE_SUCCESS]: ModalStyleSaved,
     [MODAL_TYPES.SAVE_LAYOUT_SUCCESS]: ModalSaveLayoutSuccess,

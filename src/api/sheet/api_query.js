@@ -52,7 +52,30 @@ export const getSheetInfoApi = async id => {
     return a?.arrangeOrder - b?.arrangeOrder;
   });
 
-  return { objects: entitiesToObjects(objects), sheetType };
+  let pageRight = pages[1];
+
+  if (sheetType === SHEET_TYPE.FRONT_COVER) pageRight = pages[0];
+
+  const leftName = get(pages[0], 'page_number');
+  const rightName = get(pageRight, 'page_number');
+  const pageNumber = {
+    pageLeftName: String(leftName).padStart(2, '0'),
+    pageRightName: String(rightName).padStart(2, '0')
+  };
+
+  const isLeftNumberOn = get(pages[0], 'show_page_number');
+  const isRightNumberOn = get(pageRight, 'show_page_number');
+  const spreadInfo = {
+    isLeftNumberOn,
+    isRightNumberOn
+  };
+
+  return {
+    objects: entitiesToObjects(objects),
+    sheetType,
+    pageNumber,
+    spreadInfo
+  };
 };
 
 export const getWorkspaceApi = async (sheetId, isDigital) => {

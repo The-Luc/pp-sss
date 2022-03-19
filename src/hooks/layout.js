@@ -234,6 +234,10 @@ export const useCustomLayout = () => {
     });
   };
 
+  const saveCustomDigitalLayout = async (setting, data) => {
+    // will be implemented
+  };
+
   const getCustomPrintLayout = async () => {
     const layouts = await getCustomPrintLayoutApi();
     return layouts.map(layout => ({
@@ -244,6 +248,7 @@ export const useCustomLayout = () => {
 
   return {
     saveCustomPrintLayout,
-    getCustom: getCustomPrintLayout
+    getCustom: getCustomPrintLayout,
+    saveCustomDigitalLayout
   };
 };

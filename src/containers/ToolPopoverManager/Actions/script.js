@@ -103,7 +103,6 @@ export default {
      * Check whether save layout enabled base on user has object(s) or not
      */
     setEnableSaveLayout() {
-      if (this.isDigital) return;
       this.items[2].disabled = !this.totalObject && !this.totalBackground;
     },
     /**
@@ -127,10 +126,14 @@ export default {
       }
 
       if (actionValue === ACTIONS.SAVE_LAYOUT) {
+        const modalType = this.isDigital
+          ? MODAL_TYPES.SAVE_DIGITAL_LAYOUT
+          : MODAL_TYPES.SELECT_PAGE_OF_LAYOUT;
+
         this.toggleModal({
           isOpenModal: true,
           modalData: {
-            type: MODAL_TYPES.SELECT_PAGE_OF_LAYOUT
+            type: modalType
           }
         });
       }

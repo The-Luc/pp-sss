@@ -710,7 +710,8 @@ export const splitBase64Image = async imgUrl => {
  */
 export const generateCanvasThumbnail = async (objects, isDigital, options) => {
   if (isEmpty(objects)) return '';
-  const { isSpread, isCover, isHardCover } = options;
+
+  const { isSpread, isCover, isHardCover } = options || {};
 
   const printSize = isCover
     ? getCoverPagePrintSize(isHardCover)

@@ -663,7 +663,8 @@ export default {
         {
           name: EVENT_TYPE.ANIMATION_SELECT,
           handler: this.handleSelectAnimationObject
-        }
+        },
+        { name: EVENT_TYPE.SAVE_LAYOUT, handler: this.handleSaveLayout }
       ];
 
       const events = [
@@ -2681,6 +2682,10 @@ export default {
           hasControls: true
         });
       });
+    },
+
+    async handleSaveLayout(settings) {
+      console.log('setting ', settings);
     },
     /**
      * Draw object into canvas
