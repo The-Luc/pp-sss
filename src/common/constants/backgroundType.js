@@ -36,5 +36,9 @@ export const BACKGROUND_PAGE_TYPE = {
   DOUBLE_PAGE: {
     id: 2,
     name: 'Spread'
+  },
+  DIGITAL: {
+    id: 2,
+    name: 'Digital'
   }
 };

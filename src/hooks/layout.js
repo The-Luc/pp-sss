@@ -1,7 +1,5 @@
 import { useMutations, useGetters, useActions } from 'vuex-composition-helpers';
 
-import { getDigitalLayoutTypes } from '@/api/layoutService';
-
 import {
   saveToFavoritesApi,
   deleteFavoritesApi,
@@ -11,7 +9,8 @@ import {
 import {
   getLayoutElementsApi,
   saveCustomPrintLayoutApi,
-  getCustomPrintLayoutApi
+  getCustomPrintLayoutApi,
+  getCustomDigitalLayoutApi
 } from '@/api/layout';
 
 import { GETTERS as THEME_GETTERS } from '@/store/modules/theme/const';
@@ -113,9 +112,8 @@ export const useLayoutElements = () => ({
  * @returns getters
  */
 const getterDigitalLayout = () => {
-  const { sheetLayout, getLayoutsByType, listLayouts } = useGetters({
+  const { sheetLayout, listLayouts } = useGetters({
     sheetLayout: DIGITAL_GETTERS.SHEET_LAYOUT,
-    getLayoutsByType: THEME_GETTERS.GET_DIGITAL_LAYOUT_BY_TYPE,
     listLayouts: THEME_GETTERS.GET_DIGITAL_LAYOUTS_BY_THEME_ID
   });
 
@@ -123,7 +121,7 @@ const getterDigitalLayout = () => {
     updateSheetThemeLayout: DIGITAL_ACTIONS.UPDATE_SHEET_THEME_LAYOUT
   });
 
-  return { sheetLayout, getLayoutsByType, listLayouts, updateSheetThemeLayout };
+  return { sheetLayout, listLayouts, updateSheetThemeLayout };
 };
 
 /**
@@ -131,7 +129,7 @@ const getterDigitalLayout = () => {
  * @returns getters
  */
 const getterPrintLayout = () => {
-  const { sheetLayout, getLayoutsByType, listLayouts } = useGetters({
+  const { sheetLayout, listLayouts } = useGetters({
     sheetLayout: PRINT_GETTERS.SHEET_LAYOUT,
     getLayoutsByType: THEME_GETTERS.GET_PRINT_LAYOUT_BY_TYPE,
     listLayouts: THEME_GETTERS.GET_PRINT_LAYOUTS_BY_THEME_ID
@@ -141,7 +139,7 @@ const getterPrintLayout = () => {
     updateSheetThemeLayout: PRINT_ACTIONS.UPDATE_SHEET_THEME_LAYOUT
   });
 
-  return { sheetLayout, getLayoutsByType, listLayouts, updateSheetThemeLayout };
+  return { sheetLayout, listLayouts, updateSheetThemeLayout };
 };
 
 export const useActionLayout = () => {
@@ -161,8 +159,7 @@ export const useActionLayout = () => {
     saveToFavorites,
     deleteFavorites,
     getFavorites: getFavoritesApi,
-    getFavoriteLayouts: getFavoriteLayoutsApi,
-    getDigitalLayoutTypes
+    getFavoriteLayouts: getFavoriteLayoutsApi
   };
 };
 
@@ -234,10 +231,6 @@ export const useCustomLayout = () => {
     });
   };
 
-  const saveCustomDigitalLayout = async (setting, data) => {
-    // will be implemented
-  };
-
   const getCustomPrintLayout = async () => {
     const layouts = await getCustomPrintLayoutApi();
     return layouts.map(layout => ({
@@ -245,10 +238,37 @@ export const useCustomLayout = () => {
       isCustom: true
     }));
   };
+  /**
+   * Return package and supplemental layouts that user saved
+   */
+  const getCustomDigitalLayout = async () => {
+    const layouts = await getCustomDigitalLayoutApi();
+    return layouts;
+  };
+
+  const saveCustomDigitalLayout = async setting => {
+    const { id, isSupplemental, layoutName } = setting;
+    console.log('setting ', setting);
+
+    // generate thumbnails
+
+    // call api to create digital custom layout
+
+    // if successed, show the success modal
+    // if (!isSuccess) return;
+
+    toggleModal({
+      isOpenModal: true,
+      modalData: {
+        type: MODAL_TYPES.SAVE_LAYOUT_SUCCESS
+      }
+    });
+  };
 
   return {
     saveCustomPrintLayout,
     getCustom: getCustomPrintLayout,
+    getCustomDigitalLayout,
     saveCustomDigitalLayout
   };
 };

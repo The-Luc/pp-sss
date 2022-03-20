@@ -25,3 +25,7 @@ export const saveCustomPrintLayoutApi = async (
   });
   return isOk(res);
 };
+
+export const saveCustomDigitalLayoutApi = async () => {
+  const res = await graphqlRequest(saveUserLayoutMutation, {});
+};

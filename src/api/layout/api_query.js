@@ -6,6 +6,7 @@ import {
   getLayoutsPreviewQuery,
   getLayoutsQuery,
   getLayoutTypeQuery,
+  getUserDigitalLayoutsQuery,
   getUserLayoutsQuery
 } from './queries';
 import { LAYOUT_PAGE_TYPE } from '@/common/constants/layoutTypes';
@@ -18,7 +19,7 @@ import {
   isOk
 } from '@/common/utils';
 
-import { layoutMapping } from '@/common/mapping/layout';
+import { layoutMapping, digitalLayoutMapping } from '@/common/mapping/layout';
 /**
  *  To get previewImageUrl of layouts of a theme
  * @param {String} themeId id of a theme
@@ -134,4 +135,14 @@ export const getCustomPrintLayoutApi = async () => {
   const { single_page, double_page } = res.data;
 
   return [...single_page, ...double_page].map(layout => layoutMapping(layout));
+};
+
+export const getCustomDigitalLayoutApi = async () => {
+  const res = await graphqlRequest(getUserDigitalLayoutsQuery);
+
+  if (!isOk(res)) return;
+
+  const layouts = get(res, 'data.user_saved_digital_layouts');
+
+  return layouts.map(l => digitalLayoutMapping(l));
 };

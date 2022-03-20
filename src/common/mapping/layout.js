@@ -1,5 +1,6 @@
-import { mapObject } from '@/common/utils';
+import { mapObject, convertObjectPxToInch } from '@/common/utils';
 import { LAYOUT_PAGE_TYPE } from '@/common/constants/layoutTypes';
+import { transitionMapping } from './sheet';
 
 /**
  * Convert layout data from API to FE data structure
@@ -29,4 +30,47 @@ export const layoutMapping = layout => {
   };
 
   return mapObject(layout, mapRules);
+};
+
+export const digitalLayoutMapping = layout => {
+  const mapRules = {
+    data: {
+      preview_image_url: {
+        name: 'previewImageUrl',
+        parse: val => val || '',
+        isForce: true
+      },
+      title: {
+        name: 'name'
+      },
+      is_supplemental: {
+        name: 'isSupplemental',
+        parse: Boolean,
+        isForce: true
+      }
+    },
+    restrict: ['digital_frame_templates', 'digital_transitions', '__typename']
+  };
+
+  const frames = layout.digital_frame_templates.map(frame => {
+    const { objects, play_in_ids, play_out_ids, id } = frame;
+
+    convertObjectPxToInch(objects);
+
+    return {
+      id,
+      objects,
+      playInIds: play_in_ids,
+      playOutId: play_out_ids,
+      isVisited: true
+    };
+  });
+
+  const mappedLayout = mapObject(layout, mapRules);
+
+  mappedLayout.frames = frames;
+
+  mappedLayout.transitions = transitionMapping(layout.digital_transitions);
+
+  return mappedLayout;
 };

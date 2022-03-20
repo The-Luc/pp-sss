@@ -61,13 +61,10 @@ export default {
       pageSelected,
       themeId: defaultThemeId
     } = useLayoutPrompt(edition);
-    const { getLayoutsByType, updateSheetThemeLayout } = useGetLayouts(edition);
+    const { updateSheetThemeLayout } = useGetLayouts(edition);
 
-    const {
-      getDigitalLayoutTypes,
-      getCustomAndFavoriteLayouts
-    } = useActionLayout();
-    const { getCustom } = useCustomLayout();
+    const { getCustomAndFavoriteLayouts } = useActionLayout();
+    const { getCustomDigitalLayout } = useCustomLayout();
 
     return {
       isPrompt,
@@ -77,15 +74,13 @@ export default {
       updateVisited,
       setIsPrompt,
       pageSelected,
-      getLayoutsByType,
       defaultThemeId,
       updateSheetThemeLayout,
       frames,
       currentFrame,
       modalData,
       currentFrameId,
-      getDigitalLayoutTypes,
-      getCustom,
+      getCustomDigitalLayout,
       getCustomAndFavoriteLayouts
     };
   },
@@ -144,7 +139,7 @@ export default {
     layoutTypeSelected: {
       deep: true,
       handler(newVal) {
-        if (newVal.value === CUSTOM_LAYOUT_TYPE) {
+        if (newVal?.value === CUSTOM_LAYOUT_TYPE) {
           this.disabledTheme = true;
           return;
         }
@@ -159,7 +154,7 @@ export default {
       this.getCustomData()
     ]);
 
-    await this.filterLayoutType();
+    this.filterLayoutType();
 
     await this.initData();
   },
@@ -171,7 +166,7 @@ export default {
      * Set up inital data to render in view
      */
     async initData() {
-      await this.setLayoutSelected(this.pageSelected);
+      this.setLayoutSelected();
       this.setDisabledLayout(this.pageSelected);
       this.setThemeSelected(this.themeId);
 
@@ -191,46 +186,47 @@ export default {
     },
     /**
      * Set default selected for layout base on id of sheet: Cover, Single Page or Collage
-     * @param  {Object} pageSelected current selected sheet
      */
-    async setLayoutSelected(pageSelected) {
-      if (this.initialData?.layoutSelected) {
-        this.layoutTypeSelected = this.getSelectedType(
-          this.initialData.layoutSelected
-        );
+    setLayoutSelected() {
+      this.layoutTypeSelected = this.getSelectedType(this.layoutTypes[0]);
 
-        return;
-      }
-      const sheetType = pageSelected.type;
+      // if (this.initialData?.layoutSelected) {
+      //   this.layoutTypeSelected = this.getSelectedType(
+      //     this.initialData.layoutSelected
+      //   );
 
-      switch (sheetType) {
-        case SHEET_TYPE.COVER:
-          {
-            const coverOption = this.layoutTypes.find(
-              l => l.sheetType === SHEET_TYPE.COVER
-            );
-            this.layoutTypeSelected = this.getSelectedType(coverOption);
-          }
-          break;
-        case SHEET_TYPE.FRONT_COVER:
-        case SHEET_TYPE.BACK_COVER:
-          {
-            const singlePageOption = this.layoutTypes.find(
-              l => l.sheetType === SHEET_TYPE.FRONT_COVER
-            );
-            this.layoutTypeSelected = this.getSelectedType(singlePageOption);
-          }
-          break;
-        default:
-          {
-            const index = this.layoutTypes.length > 1 ? 1 : 0;
+      //   return;
+      // }
+      // const sheetType = pageSelected.type;
 
-            this.layoutTypeSelected = this.getSelectedType(
-              this.layoutTypes[index]
-            );
-          }
-          break;
-      }
+      // switch (sheetType) {
+      //   case SHEET_TYPE.COVER:
+      //     {
+      //       const coverOption = this.layoutTypes.find(
+      //         l => l.sheetType === SHEET_TYPE.COVER
+      //       );
+      //       this.layoutTypeSelected = this.getSelectedType(coverOption);
+      //     }
+      //     break;
+      //   case SHEET_TYPE.FRONT_COVER:
+      //   case SHEET_TYPE.BACK_COVER:
+      //     {
+      //       const singlePageOption = this.layoutTypes.find(
+      //         l => l.sheetType === SHEET_TYPE.FRONT_COVER
+      //       );
+      //       this.layoutTypeSelected = this.getSelectedType(singlePageOption);
+      //     }
+      //     break;
+      //   default:
+      //     {
+      //       const index = this.layoutTypes.length > 1 ? 1 : 0;
+
+      //       this.layoutTypeSelected = this.getSelectedType(
+      //         this.layoutTypes[index]
+      //       );
+      //     }
+      //     break;
+      // }
     },
     /**
      * Set disabled select layout base on id of sheet are cover or half-sheet
@@ -263,6 +259,8 @@ export default {
         );
         this.themeSelected = themeSelected;
       }
+
+      this.filterLayoutType();
     },
     /**
      * Set object theme selected from dropdown
@@ -271,6 +269,8 @@ export default {
     async onChangeTheme(theme) {
       this.themeSelected = theme;
 
+      this.filterLayoutType();
+      this.setLayoutSelected();
       await this.getLayouts();
     },
     /**
@@ -369,20 +369,32 @@ export default {
      * Get custom layouts from API
      */
     async getCustomData() {
-      this.customLayouts = await this.getCustom();
+      this.customLayouts = await this.getCustomDigitalLayout();
     },
     /**
      * Filter layout types
      */
-    async filterLayoutType() {
-      this.layoutTypes = this.layoutTypesOrigin;
+    filterLayoutType() {
+      const layoutTypeOpts = [...this.layoutTypesOrigin];
+
+      if (!isEmpty(this.favoriteLayouts) || !isEmpty(this.customLayouts)) {
+        layoutTypeOpts.push({
+          name: 'Saved Layouts/Favorites',
+          id: -999,
+          value: -999
+        });
+      }
+
+      this.layoutTypes = layoutTypeOpts;
     },
 
     /**
      * Get layout types from API
      */
     async getLayoutTypes() {
-      const layoutTypes = await this.getDigitalLayoutTypes();
+      // const layoutTypes = await this.getDigitalLayoutTypes();
+      // call api to get alyout types
+      const layoutTypes = [];
 
       this.layoutTypesOrigin = this.initialData?.isSupplemental
         ? layoutTypes
@@ -414,10 +426,23 @@ export default {
         return;
       }
 
-      this.layouts = await this.getLayoutsByType(
-        this.themeSelected.id,
-        this.layoutTypeSelected.value
-      );
+      // this.layouts = await this.getLayoutsByType(
+      //   this.themeSelected.id,
+      //   this.layoutTypeSelected.value
+      // );
+
+      // call API to get layouts by theme and types
+      // if (isEmpty(this.layoutTypeSelected.sub)) {
+      // this.layouts = await getLayoutsByThemeAndTypeApi(
+      //   this.themeSelected.id,
+      //   this.layoutTypeSelected.value
+      // );
+      //   this.layouts = [];
+
+      //   return;
+      // }
+
+      this.layouts = this.customLayouts;
     },
     /**
      * Save / unsave the selected layout to favorites

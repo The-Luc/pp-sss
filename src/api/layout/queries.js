@@ -76,3 +76,34 @@ export const getUserLayoutsQuery = gql`
     }
   }
 `;
+
+export const getUserDigitalLayoutsQuery = gql`
+  query getUserDigitalTemplate {
+    user_saved_digital_layouts {
+      id
+      title
+      digital_transitions {
+        id
+        duration
+        direction
+        transition_order
+        transition_type
+      }
+      preview_image_url
+      is_supplemental
+      digital_frame_templates {
+        objects
+        play_in_ids
+        play_out_ids
+        id
+        background {
+          id
+          image_url
+          name
+          thumbnail
+          page_type
+        }
+      }
+    }
+  }
+`;
