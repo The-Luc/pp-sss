@@ -424,8 +424,7 @@ export default {
      *
      * @param {String | Number} id id of selected layout
      */
-    async onSaveToFavorites(id) {
-      id;
+    async onSaveToFavorites() {
       // handle save favorite layout
     }
   }

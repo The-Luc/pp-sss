@@ -57,12 +57,13 @@ export const actions = {
 
     // Front cover always has the right page
     // Back cover always has the left page
-    const currentPosition =
-      currentSheet.type === SHEET_TYPE.FRONT_COVER
-        ? 'right'
-        : currentSheet.type === SHEET_TYPE.BACK_COVER
+    const currentPosition = (() => {
+      if (currentSheet.type === SHEET_TYPE.FRONT_COVER) return 'right';
+
+      return currentSheet.type === SHEET_TYPE.BACK_COVER
         ? 'left'
         : pagePosition;
+    })();
 
     const isLeftPage = currentPosition === 'left';
     const isRightPage = currentPosition === 'right';
@@ -92,12 +93,12 @@ export const actions = {
     }
 
     if (isFullLayout || isHalfSheet(currentSheet)) {
-      const objectList = objects.map(obj => ({
+      const objList = objects.map(obj => ({
         ...obj,
         id: getUniqueId()
       }));
 
-      commit(PRINT._MUTATES.SET_OBJECTS, { objectList });
+      commit(PRINT._MUTATES.SET_OBJECTS, { objectList: objList });
       return;
     }
 

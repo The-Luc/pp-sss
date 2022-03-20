@@ -1,4 +1,4 @@
-import { cloneDeep, merge, intersection, differenceWith } from 'lodash';
+import { cloneDeep, merge, intersection, differenceWith, sample } from 'lodash';
 
 import { v4 as uuidv4 } from 'uuid';
 import moment from 'moment';
@@ -439,9 +439,10 @@ export const hasOwnProperty = (object, prop) => {
  * @returns {String}  file type
  */
 export const getFileExtension = fileName => {
-  const result = /[.]/.exec(fileName) ? /[^.]+$/.exec(fileName) : [''];
+  // const result = /[.]/.exec(fileName) ? /[^.]+$/.exec(fileName) : [''];
+  const result = /[.]/.exec(fileName) ? fileName.split('.').pop : '';
 
-  return `.${result[0].toLowerCase()}`;
+  return `.${result.toLowerCase()}`;
 };
 
 /**
@@ -583,13 +584,11 @@ export const waitMiliseconds = mili => {
  * @returns {String}                unique color
  */
 export const getUniqueColor = (baseColors, currentColors) => {
-  const availableColors = baseColors.filter(color => {
-    return !currentColors.includes(color);
-  });
+  const availableColors = baseColors.filter(
+    color => !currentColors.includes(color)
+  );
 
-  const randomNumber = Math.floor(Math.random() * availableColors.length + 1);
-
-  return availableColors[randomNumber - 1];
+  return sample(availableColors);
 };
 
 /**

@@ -7,7 +7,7 @@ import { useBackgroundAction, useSheet, useFrame } from '@/hooks';
 
 import {
   getCurrentSheetBackground,
-  getFrameBackground,
+  getFrameBackgroundUtil,
   getFrameIdFromFrameNo,
   getPageIdFromPageNo,
   getScreenInfoFromScreenNo,
@@ -261,7 +261,8 @@ export default {
       if (isCurrentScreen && this.pageNo === this.currentFrameId)
         return this.backgrounds;
 
-      if (isCurrentScreen) return getFrameBackground(this.pageNo, this.frames);
+      if (isCurrentScreen)
+        return getFrameBackgroundUtil(this.pageNo, this.frames);
 
       const frameId = getFrameIdFromFrameNo(
         this.pageNo,

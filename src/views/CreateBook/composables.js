@@ -250,12 +250,12 @@ export const usePhotos = () => {
   /**
    *  To update media to current sheet
    * @param {Object} media media object
-   * @param {Boolean} isDigitalEdition
+   * @param {Boolean} isDigitalEditor
    * @returns
    */
-  const updateSheetMedia = async (media, isDigitalEdition) => {
+  const updateSheetMedia = async (media, isDigitalEditor) => {
     const bookId = Number(generalInfo.value.bookId);
-    const prefix = isDigitalEdition ? 'digital_' : '';
+    const prefix = isDigitalEditor ? 'digital_' : '';
 
     const workspace = {
       [`${prefix}properties`]: {
@@ -442,8 +442,8 @@ export const useUploadAssets = () => {
     setUploadToken: APP_MUTATES.SET_UPLOAD_TOKEN
   });
 
-  const isValidToken = uploadToken => {
-    const { url, token, expiredAt } = uploadToken;
+  const isValidToken = upToken => {
+    const { url, token, expiredAt } = upToken;
     // 60000 milisecond
     const isExpire = expiredAt && expiredAt > Date.now() + 60000;
 

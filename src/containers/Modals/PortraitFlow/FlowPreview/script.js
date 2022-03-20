@@ -3,7 +3,7 @@ import PreviewSlide from './PreviewSlide';
 import { useBackgroundAction, useFrame, useSheet } from '@/hooks';
 import {
   getCurrentSheetBackground,
-  getFrameBackground,
+  getFrameBackgroundUtil,
   getFrameIdFromFrameNo,
   getPageIdFromPageNo,
   getScreenInfoFromScreenNo,
@@ -137,7 +137,8 @@ export default {
         if (isCurrentScreen && rp.frame === this.currentFrameId)
           return this.backgrounds;
 
-        if (isCurrentScreen) return getFrameBackground(rp.frame, this.frames);
+        if (isCurrentScreen)
+          return getFrameBackgroundUtil(rp.frame, this.frames);
 
         const frameId = getFrameIdFromFrameNo(
           rp.frame,
