@@ -36,7 +36,8 @@ import {
   EDITION,
   MODAL_TYPES,
   OBJECT_TYPE,
-  COVER_TYPE
+  COVER_TYPE,
+  TRANS_TARGET
 } from '@/common/constants';
 
 import {
@@ -48,8 +49,16 @@ import {
 } from '@/common/utils';
 import { useThumbnail } from '@/views/CreateBook/composables';
 import { cloneDeep } from 'lodash';
-import { getFrameObjectsApi } from '@/api/frame';
+import {
+  getFrameObjectsApi,
+  createFrameApi,
+  deleteFrameApi
+} from '@/api/frame';
 import { IMAGE_LOCAL } from '../common/constants/image';
+import { FrameDetail } from '@/common/models';
+import { useFrame, useFrameOrdering } from '@/hooks';
+import { getSheetTransitionApi } from '@/api/playback/api_query';
+import { updateTransitionApi } from '@/api/playback';
 
 export const useLayoutPrompt = edition => {
   const EDITION_GETTERS =
@@ -301,4 +310,83 @@ export const useCustomLayout = () => {
     getCustomDigitalLayout,
     saveCustomDigitalLayout
   };
+};
+
+export const useApplyDigitalLayout = () => {
+  const { currentSheet, frames: storeFrames } = useGetters({
+    currentSheet: DIGITAL_GETTERS.CURRENT_SHEET,
+    frames: DIGITAL_GETTERS.GET_ARRAY_FRAMES
+  });
+
+  const { setFrames, setCurrentFrameId, clearAllFrames } = useFrame();
+  const { updateFrameOrder } = useFrameOrdering();
+
+  const applyDigitalLayout = async layout => {
+    const { id: sheetId } = currentSheet.value;
+    const { isSupplemental, frames: layoutFrames } = layout;
+    const transitions = layoutFrames
+      .map(({ transition }) => (transition ? transition : null))
+      .filter(Boolean);
+
+    // remove all primary frames
+    const frames = cloneDeep(storeFrames.value);
+    const finalFrames = frames.filter(frame => !frame.fromLayout);
+
+    const primaryFrameIds = frames
+      .filter(frame => frame.fromLayout)
+      .map(f => f.id);
+
+    await Promise.all(primaryFrameIds.map(id => deleteFrameApi(id)));
+
+    // add new frames
+    const newFrames = layoutFrames.map(frame => {
+      const { objects, playInIds, playOutIds } = frame;
+
+      // modify object because of BE flaw
+      objects.forEach(o => {
+        if (o.type !== OBJECT_TYPE.VIDEO) return;
+        o.thumbnailUrl = IMAGE_LOCAL.PLACE_HOLDER;
+        o.imageUrl = null;
+      });
+
+      return new FrameDetail({
+        fromLayout: !isSupplemental,
+        objects,
+        isVisited: true,
+        playInIds,
+        playOutIds
+      });
+    });
+
+    const responseFrames = await Promise.all(
+      newFrames.map(frame => createFrameApi(sheetId, frame))
+    );
+
+    // adding frame id
+    newFrames.forEach((frame, index) => (frame.id = responseFrames[index].id));
+
+    // reorder frames
+    finalFrames.unshift(...newFrames);
+    const frameIds = finalFrames.map(f => parseInt(f.id));
+    await updateFrameOrder(sheetId, frameIds);
+
+    // if length of layoutFrames > 1, means that it's package layout and there are transition
+    // update transitions
+    if (layoutFrames.length > 1) {
+      const transitionId = await getSheetTransitionApi(sheetId);
+      await Promise.all(
+        transitions.map((trans, idx) =>
+          updateTransitionApi(transitionId[idx].id, trans, TRANS_TARGET.SELF)
+        )
+      );
+    }
+
+    clearAllFrames();
+    setFrames({ framesList: finalFrames });
+
+    setCurrentFrameId({ id: finalFrames[0].id });
+    return finalFrames;
+  };
+
+  return { applyDigitalLayout };
 };

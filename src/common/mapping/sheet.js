@@ -137,7 +137,7 @@ export const transitionMappingToApi = transition => {
           Object.keys(ANIMATION_DIR).find(key => ANIMATION_DIR[key] === value)
       }
     },
-    restrict: ['id', 'transitionOrder']
+    restrict: ['id', 'transitionOrder', '__typename']
   };
 
   return mapObject(transition, mapRules);

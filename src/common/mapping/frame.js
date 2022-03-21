@@ -1,13 +1,16 @@
 import { mapObject } from '../utils';
 import { convertObjectInchToPx, convertObjectPxToInch } from '../utils/objects';
+import { cloneDeep } from 'lodash';
 
 /**
  * Convert frame data from API to data can be used in FE
  *
- * @param   {Object}  frame  frame data from API
+ * @param   {Object}  frameData  frame data from API
  * @returns {Object}        frame data use by model
  */
-export const frameMapping = frame => {
+export const frameMapping = frameData => {
+  const frame = cloneDeep(frameData);
+
   const mapRules = {
     data: {
       frame_delay: {
@@ -44,7 +47,9 @@ export const frameMapping = frame => {
   return mappedFrame;
 };
 
-export const mappingFrameToApi = frame => {
+export const mappingFrameToApi = frameData => {
+  const frame = cloneDeep(frameData);
+
   const mapRules = {
     data: {
       delay: {
@@ -55,9 +60,13 @@ export const mappingFrameToApi = frame => {
       },
       previewImageUrl: {
         name: 'preview_image_url'
+      },
+      fromLayout: {
+        name: 'from_layout',
+        isForce: true
       }
     },
-    restrict: ['id', 'fromLayout', 'playInIds', 'playOutIds', 'objects']
+    restrict: ['id', 'playInIds', 'playOutIds', 'objects']
   };
 
   const mapFrame = mapObject(frame, mapRules);

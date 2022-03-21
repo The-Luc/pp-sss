@@ -472,7 +472,8 @@ export const createVideoElement = src =>
       false
     );
 
-    ele.src = `${modifyUrl(src)}#t=0.01`;
+    if (src || src !== IMAGE_LOCAL.PLACE_HOLDER)
+      ele.src = `${modifyUrl(src)}#t=0.01`;
   });
 
 /**

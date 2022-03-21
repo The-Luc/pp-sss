@@ -23,7 +23,8 @@ import {
   useFrame,
   useModal,
   useActionLayout,
-  useCustomLayout
+  useCustomLayout,
+  useApplyDigitalLayout
 } from '@/hooks';
 
 import {
@@ -65,6 +66,7 @@ export default {
 
     const { getCustomAndFavoriteLayouts } = useActionLayout();
     const { getCustomDigitalLayout } = useCustomLayout();
+    const { applyDigitalLayout } = useApplyDigitalLayout();
 
     return {
       isPrompt,
@@ -81,7 +83,8 @@ export default {
       modalData,
       currentFrameId,
       getCustomDigitalLayout,
-      getCustomAndFavoriteLayouts
+      getCustomAndFavoriteLayouts,
+      applyDigitalLayout
     };
   },
   data() {
@@ -116,7 +119,7 @@ export default {
       return this.defaultThemeId;
     },
     isSupplemental() {
-      return this.initialData.isSupplemental;
+      return this.initialData?.isSupplemental;
     }
   },
   watch: {
@@ -197,7 +200,7 @@ export default {
     setDisabledLayout(pageSelected) {
       this.disabled =
         this.initialData?.disabled ??
-        this.initialData?.isSupplemental ??
+        this.isSupplemental ??
         [
           SHEET_TYPE.COVER,
           SHEET_TYPE.FRONT_COVER,
@@ -255,20 +258,21 @@ export default {
      * Trigger mutation to set theme and layout for sheet after that close popover when click Select button
      * @param {Object} layoutData layout that is selected
      */
-    setThemeLayoutForSheet(layoutData) {
+    async setThemeLayoutForSheet(layoutData) {
       if (isEmpty(this.layouts)) return;
 
       const layout = cloneDeep(layoutData);
 
       layout.frames.forEach(f => (f.objects = entitiesToObjects(f.objects)));
 
-      const isSupplemental =
-        layout.type === LAYOUT_TYPES.SUPPLEMENTAL_LAYOUTS.value;
+      const isSupplemental = layout.isSupplemental;
 
       const hasPackageFrame = this.frames.some(f => f.fromLayout);
 
       if (!isSupplemental && hasPackageFrame) {
-        this.applyLayout(layout);
+        // this.applyLayout(layout);
+
+        await this.applyDigitalLayout(layout);
 
         this.onCancel();
 
@@ -386,8 +390,13 @@ export default {
 
         return;
       }
-
-      this.layouts = this.customLayouts;
+      const customPackage = this.customLayouts.filter(
+        layout => !layout.isSupplemental
+      );
+      const customSupplemental = this.customLayouts.filter(
+        layout => layout.isSupplemental
+      );
+      this.layouts = this.isSupplemental ? customSupplemental : customPackage;
     },
     /**
      * Save / unsave the selected layout to favorites
