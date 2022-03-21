@@ -6,7 +6,7 @@ import {
 } from '@/api/background';
 import { getThemesApi } from '@/api/theme';
 import { getPageLayoutApi } from '@/api/page';
-import { getFrameBackgroundApi } from '@/api/frame';
+import { getFrameObjectsApi } from '@/api/frame';
 
 import { useAppCommon } from './common';
 
@@ -142,11 +142,12 @@ export const useBackgroundAction = () => {
   const getFrameBackground = async frameId => {
     if (!frameId) return {};
 
-    return await getFrameBackgroundApi(frameId);
+    const objects = await getFrameObjectsApi(frameId);
+    return objects[0].type === OBJECT_TYPE.BACKGROUND ? objects[0] : {};
   };
 
   const getFrameBackgrounds = async frameIds => {
-    const promises = frameIds.map(id => getFrameBackgroundApi(id));
+    const promises = frameIds.map(id => getFrameBackground(id));
 
     return await Promise.all(promises);
   };

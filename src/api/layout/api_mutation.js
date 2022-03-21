@@ -1,5 +1,8 @@
 import { graphqlRequest } from '../urql';
-import { saveUserLayoutMutation } from './mutations';
+import {
+  saveUserDigitalLayoutMutation,
+  saveUserLayoutMutation
+} from './mutations';
 import { isOk } from '@/common/utils';
 
 /**
@@ -26,6 +29,8 @@ export const saveCustomPrintLayoutApi = async (
   return isOk(res);
 };
 
-export const saveCustomDigitalLayoutApi = async () => {
-  const res = await graphqlRequest(saveUserLayoutMutation, {});
+export const saveCustomDigitalLayoutApi = async varibles => {
+  const res = await graphqlRequest(saveUserDigitalLayoutMutation, varibles);
+
+  return isOk(res);
 };

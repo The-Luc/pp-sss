@@ -1,4 +1,5 @@
 import { gql } from 'graphql-tag';
+import { digitalTemplateFragment } from './queries';
 
 export const saveUserLayoutMutation = gql`
   mutation saveUserLayout(
@@ -20,4 +21,23 @@ export const saveUserLayoutMutation = gql`
       preview_image_url
     }
   }
+`;
+
+export const saveUserDigitalLayoutMutation = gql`
+  mutation saveUserDigitalLayout(
+    $ids: [ID!]!
+    $title: String!
+    $isSupplemental: Boolean!
+    $previewUrl: String!
+  ) {
+    create_user_custom_digital_template(
+      digital_frame_ids: $ids
+      title: $title
+      is_supplemental: $isSupplemental
+      preview_image_url: $previewUrl
+    ) {
+      ...digitalTemplate
+    }
+  }
+  ${digitalTemplateFragment}
 `;

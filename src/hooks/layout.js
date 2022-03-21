@@ -10,7 +10,8 @@ import {
   getLayoutElementsApi,
   saveCustomPrintLayoutApi,
   getCustomPrintLayoutApi,
-  getCustomDigitalLayoutApi
+  getCustomDigitalLayoutApi,
+  saveCustomDigitalLayoutApi
 } from '@/api/layout';
 
 import { GETTERS as THEME_GETTERS } from '@/store/modules/theme/const';
@@ -47,6 +48,7 @@ import {
 } from '@/common/utils';
 import { useThumbnail } from '@/views/CreateBook/composables';
 import { cloneDeep } from 'lodash';
+import { getFrameObjectsApi } from '@/api/frame';
 
 export const useLayoutPrompt = edition => {
   const EDITION_GETTERS =
@@ -174,16 +176,20 @@ export const useCustomLayout = () => {
 
   const { uploadBase64Image } = useThumbnail();
 
-  const getLayoutThumbnail = async (objects, options) => {
+  const getLayoutThumbnail = async (objects, options, isDigital) => {
+    const clonedObjects = cloneDeep(objects);
     // remove image url in objects
-    objects.forEach(o => {
+    clonedObjects.forEach(o => {
+      if (o.type === OBJECT_TYPE.VIDEO || o.type === OBJECT_TYPE.PORTRAIT_IMAGE)
+        o.type = OBJECT_TYPE.IMAGE;
+
       if (o.type !== OBJECT_TYPE.IMAGE) return;
 
-      o.imageUrl = null;
-      o.originalUrl = null;
+      o.imageUrl = '';
+      o.originalUrl = '';
     });
 
-    return generateCanvasThumbnail(objects, null, options);
+    return generateCanvasThumbnail(clonedObjects, isDigital, options);
   };
 
   const saveCustomPrintLayout = async (setting, data) => {
@@ -247,15 +253,34 @@ export const useCustomLayout = () => {
   };
 
   const saveCustomDigitalLayout = async setting => {
-    const { id, isSupplemental, layoutName } = setting;
-    console.log('setting ', setting);
+    const { ids, isSupplemental, layoutName } = setting;
+
+    // get frame data
+    const framesObjects = await Promise.all(
+      ids.map(id => getFrameObjectsApi(id))
+    );
 
     // generate thumbnails
+    const imageBase64 = await Promise.all(
+      framesObjects.map(objects => getLayoutThumbnail(objects, {}, true))
+    );
 
+    const previewImageUrls = await Promise.all(
+      imageBase64.map(img => uploadBase64Image(img))
+    );
+
+    // currently save only the thumbanail of the first frame
+    // to make the layout thumbnail
     // call api to create digital custom layout
+    const isSuccess = await saveCustomDigitalLayoutApi({
+      ids,
+      isSupplemental,
+      title: layoutName,
+      previewUrl: previewImageUrls[0]
+    });
 
     // if successed, show the success modal
-    // if (!isSuccess) return;
+    if (!isSuccess) return;
 
     toggleModal({
       isOpenModal: true,
