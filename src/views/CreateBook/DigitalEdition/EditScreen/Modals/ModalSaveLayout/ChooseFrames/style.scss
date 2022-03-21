@@ -10,9 +10,9 @@
       font-size: 13px;
     }
     .checkbox-container {
-      height: 115px;
+      max-height: 115px;
       width: 400px;
-      overflow-y: auto;
+      overflow-y: hidden;
       margin-top: 15px;
       padding-left: 150px;
       font-family: $font-700;

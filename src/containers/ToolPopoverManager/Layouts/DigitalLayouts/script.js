@@ -179,8 +179,8 @@ export default {
       this.themesOptions = await getThemesApi(true);
 
       const layouts = this.isSupplemental
-        ? await loadSupplementalLayouts()
-        : await loadDigitalLayouts();
+        ? loadSupplementalLayouts()
+        : loadDigitalLayouts();
 
       this.setDigitalLayouts({ layouts });
     },
@@ -189,44 +189,6 @@ export default {
      */
     setLayoutSelected() {
       this.layoutTypeSelected = this.getSelectedType(this.layoutTypes[0]);
-
-      // if (this.initialData?.layoutSelected) {
-      //   this.layoutTypeSelected = this.getSelectedType(
-      //     this.initialData.layoutSelected
-      //   );
-
-      //   return;
-      // }
-      // const sheetType = pageSelected.type;
-
-      // switch (sheetType) {
-      //   case SHEET_TYPE.COVER:
-      //     {
-      //       const coverOption = this.layoutTypes.find(
-      //         l => l.sheetType === SHEET_TYPE.COVER
-      //       );
-      //       this.layoutTypeSelected = this.getSelectedType(coverOption);
-      //     }
-      //     break;
-      //   case SHEET_TYPE.FRONT_COVER:
-      //   case SHEET_TYPE.BACK_COVER:
-      //     {
-      //       const singlePageOption = this.layoutTypes.find(
-      //         l => l.sheetType === SHEET_TYPE.FRONT_COVER
-      //       );
-      //       this.layoutTypeSelected = this.getSelectedType(singlePageOption);
-      //     }
-      //     break;
-      //   default:
-      //     {
-      //       const index = this.layoutTypes.length > 1 ? 1 : 0;
-
-      //       this.layoutTypeSelected = this.getSelectedType(
-      //         this.layoutTypes[index]
-      //       );
-      //     }
-      //     break;
-      // }
     },
     /**
      * Set disabled select layout base on id of sheet are cover or half-sheet
@@ -392,7 +354,6 @@ export default {
      * Get layout types from API
      */
     async getLayoutTypes() {
-      // const layoutTypes = await this.getDigitalLayoutTypes();
       // call api to get alyout types
       const layoutTypes = [];
 
@@ -425,22 +386,6 @@ export default {
 
         return;
       }
-
-      // this.layouts = await this.getLayoutsByType(
-      //   this.themeSelected.id,
-      //   this.layoutTypeSelected.value
-      // );
-
-      // call API to get layouts by theme and types
-      // if (isEmpty(this.layoutTypeSelected.sub)) {
-      // this.layouts = await getLayoutsByThemeAndTypeApi(
-      //   this.themeSelected.id,
-      //   this.layoutTypeSelected.value
-      // );
-      //   this.layouts = [];
-
-      //   return;
-      // }
 
       this.layouts = this.customLayouts;
     },

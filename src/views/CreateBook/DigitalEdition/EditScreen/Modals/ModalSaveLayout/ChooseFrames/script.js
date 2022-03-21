@@ -1,6 +1,6 @@
 import Modal from '@/containers/Modals/Modal';
 import PpButton from '@/components/Buttons/Button';
-import { isEmpty } from '@/common/utils';
+import { isEmpty, sortByProperty } from '@/common/utils';
 
 export default {
   components: {
@@ -30,7 +30,16 @@ export default {
      */
     onNext() {
       if (this.isDisabledNextBtn) return;
-      this.$emit('onChooseFrames', this.selectedFrames);
+
+      //re-order frame ids
+      const indexOfIds = this.selectedFrames.map(id => ({
+        id,
+        index: this.frameIds.findIndex(frameId => frameId === id)
+      }));
+
+      const ids = sortByProperty(indexOfIds, 'index').map(f => f.id);
+
+      this.$emit('onChooseFrames', ids);
     }
   }
 };

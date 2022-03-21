@@ -4,7 +4,10 @@
       <div class="input-title">
         Select the frames you would like to save (max. of 4):
       </div>
-      <div class="checkbox-container">
+      <div
+        class="checkbox-container"
+        :style="{ overflowY: frameIds.length > 4 ? 'auto' : 'hidden' }"
+      >
         <div v-for="(id, index) in frameIds" :key="id" class="checkbox">
           <v-checkbox
             v-model="selectedFrames"
