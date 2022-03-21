@@ -480,6 +480,8 @@ export const useUploadAssets = () => {
 
     const results = await Promise.all(promises);
 
+    if (results.some(res => res.status !== 200)) return [];
+
     // revise the response structure for videos
     const videoTypes = ['video/mp4', 'video/quicktime'];
     results.forEach(({ data }) => {
@@ -510,6 +512,9 @@ export const useUploadAssets = () => {
 
   const uploadAssetToAlbum = async (albumId, files, albumName) => {
     const assets = await uploadAssets(files);
+
+    if (isEmpty(assets)) throw new Error('Cannot upload the asset(s)');
+
     return !albumId
       ? await createAlbumAssets(albumName, assets)
       : await updateAlbumAssets(albumId, assets);

@@ -439,8 +439,7 @@ export const hasOwnProperty = (object, prop) => {
  * @returns {String}  file type
  */
 export const getFileExtension = fileName => {
-  // const result = /[.]/.exec(fileName) ? /[^.]+$/.exec(fileName) : [''];
-  const result = /[.]/.exec(fileName) ? fileName.split('.').pop : '';
+  const result = /[.]/.exec(fileName) ? fileName.split('.').pop() : '';
 
   return `.${result.toLowerCase()}`;
 };
