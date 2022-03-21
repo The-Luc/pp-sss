@@ -2688,7 +2688,9 @@ export default {
     },
 
     async handleSaveLayout(settings) {
-      // await this.saveData(this.currentFrameId);
+      if (settings.ids.includes(this.currentFrameId)) {
+        await this.saveData(this.currentFrameId);
+      }
 
       this.saveCustomDigitalLayout(settings);
     },

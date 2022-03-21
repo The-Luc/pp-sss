@@ -61,16 +61,17 @@ export const digitalLayoutMapping = layout => {
       id,
       objects,
       playInIds: play_in_ids,
-      playOutId: play_out_ids,
+      playOutIds: play_out_ids,
       isVisited: true
     };
   });
 
   const mappedLayout = mapObject(layout, mapRules);
 
-  mappedLayout.frames = frames;
+  const transitions = layout.digital_transitions.map(t => transitionMapping(t));
+  frames.forEach((f, idx) => (f.transition = transitions[idx]));
 
-  mappedLayout.transitions = transitionMapping(layout.digital_transitions);
+  mappedLayout.frames = frames;
 
   return mappedLayout;
 };

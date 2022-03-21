@@ -49,6 +49,7 @@ import {
 import { useThumbnail } from '@/views/CreateBook/composables';
 import { cloneDeep } from 'lodash';
 import { getFrameObjectsApi } from '@/api/frame';
+import { IMAGE_LOCAL } from '../common/constants/image';
 
 export const useLayoutPrompt = edition => {
   const EDITION_GETTERS =
@@ -180,13 +181,18 @@ export const useCustomLayout = () => {
     const clonedObjects = cloneDeep(objects);
     // remove image url in objects
     clonedObjects.forEach(o => {
-      if (o.type === OBJECT_TYPE.VIDEO || o.type === OBJECT_TYPE.PORTRAIT_IMAGE)
-        o.type = OBJECT_TYPE.IMAGE;
+      if (o.type === OBJECT_TYPE.VIDEO) {
+        o.thumbnailUrl = IMAGE_LOCAL.PLACE_HOLDER;
+        o.hasImage = false;
+        return;
+      }
 
-      if (o.type !== OBJECT_TYPE.IMAGE) return;
+      if (o.type !== OBJECT_TYPE.IMAGE && o.type !== OBJECT_TYPE.PORTRAIT_IMAGE)
+        return;
 
-      o.imageUrl = '';
-      o.originalUrl = '';
+      o.imageUrl = IMAGE_LOCAL.PLACE_HOLDER;
+      o.hasImage = false;
+      o.zoomLevel = null;
     });
 
     return generateCanvasThumbnail(clonedObjects, isDigital, options);
@@ -271,7 +277,6 @@ export const useCustomLayout = () => {
 
     // currently save only the thumbanail of the first frame
     // to make the layout thumbnail
-    // call api to create digital custom layout
     const isSuccess = await saveCustomDigitalLayoutApi({
       ids,
       isSupplemental,
