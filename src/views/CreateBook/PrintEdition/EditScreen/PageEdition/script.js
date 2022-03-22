@@ -1994,8 +1994,11 @@ export default {
       const sheetData = await this.saveData(this.pageSelected.id);
       await this.saveCustomPrintLayout(setting, sheetData);
     },
-    handleGeneratePDF() {
+    async handleGeneratePDF() {
       const bookId = this.generalInfo.id;
+
+      await this.saveData(this.pageSelected.id);
+
       this.generatePdf(bookId);
     },
     async drawLayout() {

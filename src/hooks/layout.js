@@ -35,7 +35,6 @@ import {
   TOOL_NAME,
   EDITION,
   MODAL_TYPES,
-  OBJECT_TYPE,
   COVER_TYPE,
   TRANS_TARGET
 } from '@/common/constants';
@@ -45,15 +44,15 @@ import {
   getPageLayouts,
   isCoverSheet,
   isHalfSheet,
-  isOk
+  isOk,
+  isEmpty
 } from '@/common/utils';
 import { useThumbnail } from '@/views/CreateBook/composables';
 import { cloneDeep } from 'lodash';
 import { getFrameObjectsApi, deleteFrameApi } from '@/api/frame';
-import { IMAGE_LOCAL } from '../common/constants/image';
 import { useFrame, useFrameOrdering, useFrameAction } from '@/hooks';
-import { getSheetTransitionApi } from '@/api/playback/api_query';
-import { updateTransitionApi } from '@/api/playback';
+import { updateTransitionApi, getSheetTransitionApi } from '@/api/playback';
+import { removeMediaContentWhenCreateThumbnail } from '../common/utils/image';
 
 export const useLayoutPrompt = edition => {
   const EDITION_GETTERS =
@@ -181,25 +180,14 @@ export const useCustomLayout = () => {
 
   const { uploadBase64Image } = useThumbnail();
 
+  /**
+   *  Used to generate thumbnails when saving user custom templates
+   */
   const getLayoutThumbnail = async (objects, options, isDigital) => {
-    const clonedObjects = cloneDeep(objects);
-    // remove image url in objects
-    clonedObjects.forEach(o => {
-      if (o.type === OBJECT_TYPE.VIDEO) {
-        o.thumbnailUrl = IMAGE_LOCAL.PLACE_HOLDER;
-        o.hasImage = false;
-        return;
-      }
+    // remove image url of image object and convert video to image
+    const modifyObjects = removeMediaContentWhenCreateThumbnail(objects);
 
-      if (o.type !== OBJECT_TYPE.IMAGE && o.type !== OBJECT_TYPE.PORTRAIT_IMAGE)
-        return;
-
-      o.imageUrl = IMAGE_LOCAL.PLACE_HOLDER;
-      o.hasImage = false;
-      o.zoomLevel = null;
-    });
-
-    return generateCanvasThumbnail(clonedObjects, isDigital, options);
+    return generateCanvasThumbnail(modifyObjects, isDigital, options);
   };
 
   const saveCustomPrintLayout = async (setting, data) => {
@@ -345,6 +333,9 @@ export const useApplyDigitalLayout = () => {
     // update transitions
     if (layout.frames.length > 1) {
       const transitionId = await getSheetTransitionApi(sheetId);
+
+      if (isEmpty(transitionId)) return;
+
       await Promise.all(
         transitions.map((trans, idx) =>
           updateTransitionApi(transitionId[idx].id, trans, TRANS_TARGET.SELF)

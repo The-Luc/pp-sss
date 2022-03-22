@@ -64,7 +64,7 @@ export const usePdfGeneration = () => {
     toggleModal: APP_MUTATES.TOGGLE_MODAL
   });
   const generatePdf = async id => {
-    // call mutation to kick of the generation job
+    // call mutation to kick off the generation job
     await generatePdfApi(id);
 
     // show info modal
