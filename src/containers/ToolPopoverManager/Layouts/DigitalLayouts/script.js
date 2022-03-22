@@ -270,8 +270,6 @@ export default {
       const hasPackageFrame = this.frames.some(f => f.fromLayout);
 
       if (!isSupplemental && hasPackageFrame) {
-        // this.applyLayout(layout);
-
         await this.applyDigitalLayout(layout);
 
         this.onCancel();

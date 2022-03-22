@@ -66,7 +66,13 @@ export const mappingFrameToApi = frameData => {
         isForce: true
       }
     },
-    restrict: ['id', 'playInIds', 'playOutIds', 'objects']
+    restrict: [
+      'id',
+      'playInIds',
+      'playOutIds',
+      'objects',
+      'supplementalLayoutId'
+    ]
   };
 
   const mapFrame = mapObject(frame, mapRules);

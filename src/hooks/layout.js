@@ -49,14 +49,9 @@ import {
 } from '@/common/utils';
 import { useThumbnail } from '@/views/CreateBook/composables';
 import { cloneDeep } from 'lodash';
-import {
-  getFrameObjectsApi,
-  createFrameApi,
-  deleteFrameApi
-} from '@/api/frame';
+import { getFrameObjectsApi, deleteFrameApi } from '@/api/frame';
 import { IMAGE_LOCAL } from '../common/constants/image';
-import { FrameDetail } from '@/common/models';
-import { useFrame, useFrameOrdering } from '@/hooks';
+import { useFrame, useFrameOrdering, useFrameAction } from '@/hooks';
 import { getSheetTransitionApi } from '@/api/playback/api_query';
 import { updateTransitionApi } from '@/api/playback';
 
@@ -320,11 +315,11 @@ export const useApplyDigitalLayout = () => {
 
   const { setFrames, setCurrentFrameId, clearAllFrames } = useFrame();
   const { updateFrameOrder } = useFrameOrdering();
+  const { createFrames } = useFrameAction();
 
   const applyDigitalLayout = async layout => {
     const { id: sheetId } = currentSheet.value;
-    const { isSupplemental, frames: layoutFrames } = layout;
-    const transitions = layoutFrames
+    const transitions = layout.frames
       .map(({ transition }) => (transition ? transition : null))
       .filter(Boolean);
 
@@ -339,31 +334,7 @@ export const useApplyDigitalLayout = () => {
     await Promise.all(primaryFrameIds.map(id => deleteFrameApi(id)));
 
     // add new frames
-    const newFrames = layoutFrames.map(frame => {
-      const { objects, playInIds, playOutIds } = frame;
-
-      // modify object because of BE flaw
-      objects.forEach(o => {
-        if (o.type !== OBJECT_TYPE.VIDEO) return;
-        o.thumbnailUrl = IMAGE_LOCAL.PLACE_HOLDER;
-        o.imageUrl = null;
-      });
-
-      return new FrameDetail({
-        fromLayout: !isSupplemental,
-        objects,
-        isVisited: true,
-        playInIds,
-        playOutIds
-      });
-    });
-
-    const responseFrames = await Promise.all(
-      newFrames.map(frame => createFrameApi(sheetId, frame))
-    );
-
-    // adding frame id
-    newFrames.forEach((frame, index) => (frame.id = responseFrames[index].id));
+    const newFrames = await createFrames(sheetId, layout);
 
     // reorder frames
     finalFrames.unshift(...newFrames);
@@ -372,7 +343,7 @@ export const useApplyDigitalLayout = () => {
 
     // if length of layoutFrames > 1, means that it's package layout and there are transition
     // update transitions
-    if (layoutFrames.length > 1) {
+    if (layout.frames.length > 1) {
       const transitionId = await getSheetTransitionApi(sheetId);
       await Promise.all(
         transitions.map((trans, idx) =>

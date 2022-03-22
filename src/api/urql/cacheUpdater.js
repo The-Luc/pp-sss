@@ -174,10 +174,13 @@ export const updateDeleteFrame = (_, args, cache) => {
 
   // getting sheet id
   while (!sheetId && counter < sheetIds.length) {
-    const { sheet } = cache.readQuery({
+    const queryData = cache.readQuery({
       query: getSheetFramesQuery,
       variables: { sheetId: sheetIds[counter] }
     });
+    if (!queryData) return;
+
+    const sheet = queryData.sheet;
 
     const isIncludedTheFrame = sheet.digital_frames.some(
       frame => frame.id === frameId
