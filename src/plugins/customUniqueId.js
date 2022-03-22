@@ -8,7 +8,7 @@ class UniqueId {
     if (isEmpty(prefix)) {
       UniqueId.cacheValue++;
 
-      return UniqueId.cacheValue;
+      return `${UniqueId.cacheValue}`;
     }
 
     if (isEmpty(UniqueId.cachePrefix[prefix])) UniqueId.cachePrefix[prefix] = 0;

@@ -16,3 +16,15 @@ export const getPlaybackDataQuery = gql`
   }
   ${digitalSheetFragment}
 `;
+
+export const getSheetTransitionsQuery = gql`
+  query sheetTransitions($sheetId: ID!) {
+    sheet(id: $sheetId) {
+      id
+      digital_transitions {
+        id
+        transition_order
+      }
+    }
+  }
+`;

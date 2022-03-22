@@ -1,11 +1,17 @@
 import { first, get, cloneDeep } from 'lodash';
-import { SHEET_TYPE, SYSTEM_OBJECT_TYPE } from '@/common/constants';
+import {
+  SHEET_TYPE,
+  SYSTEM_OBJECT_TYPE,
+  IMAGE_LOCAL,
+  OBJECT_TYPE
+} from '@/common/constants';
 import { graphqlRequest } from '../urql';
 import {
   getLayoutElementsQuery,
   getLayoutsPreviewQuery,
   getLayoutsQuery,
   getLayoutTypeQuery,
+  getUserDigitalLayoutsQuery,
   getUserLayoutsQuery
 } from './queries';
 import { LAYOUT_PAGE_TYPE } from '@/common/constants/layoutTypes';
@@ -18,7 +24,7 @@ import {
   isOk
 } from '@/common/utils';
 
-import { layoutMapping } from '@/common/mapping/layout';
+import { layoutMapping, digitalLayoutMapping } from '@/common/mapping/layout';
 /**
  *  To get previewImageUrl of layouts of a theme
  * @param {String} themeId id of a theme
@@ -134,4 +140,39 @@ export const getCustomPrintLayoutApi = async () => {
   const { single_page, double_page } = res.data;
 
   return [...single_page, ...double_page].map(layout => layoutMapping(layout));
+};
+
+export const getCustomDigitalLayoutApi = async () => {
+  const res = await graphqlRequest(getUserDigitalLayoutsQuery);
+
+  if (!isOk(res)) return;
+
+  const layouts = get(res, 'data.user_saved_digital_layouts');
+
+  const mappedLayouts = layouts.map(l => digitalLayoutMapping(l));
+
+  // modify object because of BE flaw
+  mappedLayouts.forEach(layout => {
+    layout.frames.forEach(frame => {
+      frame.objects.forEach(o => {
+        if (!o) return;
+
+        if (o.type === OBJECT_TYPE.VIDEO) {
+          o.thumbnailUrl = IMAGE_LOCAL.PLACE_HOLDER;
+          o.imageUrl = '/media/toy.a3ac7dda.mp4';
+          o.hasImage = false;
+        }
+        if (
+          o.type === OBJECT_TYPE.IMAGE ||
+          o.type === OBJECT_TYPE.PORTRAIT_IMAGE
+        ) {
+          o.imageUrl = IMAGE_LOCAL.PLACE_HOLDER;
+          o.hasImage = false;
+          o.zoomLevel = null;
+          o.originalUrl = '';
+        }
+      });
+    });
+  });
+  return mappedLayouts;
 };

@@ -55,6 +55,9 @@
     .layout-name {
       font-size: $xsm-size;
       font-family: $font-300;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
     }
 
     .v-icon {

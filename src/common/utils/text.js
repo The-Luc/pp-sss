@@ -124,8 +124,11 @@ export const getCssTextStyle = cssStyle => {
         parse: value => {
           const fontSize = parseInt(value, 10) / 3;
 
-          const calFontSize =
-            fontSize > 50 ? 50 : fontSize < 16 ? 16 : fontSize;
+          const calFontSize = (() => {
+            if (fontSize > 50) return 50;
+
+            return fontSize < 16 ? 16 : fontSize;
+          })();
 
           return `${calFontSize}px`;
         }

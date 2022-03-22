@@ -22,6 +22,7 @@ import {
   updateBookCollectionCache,
   updatePresentColorPickerCache,
   createUserCustomPrintTemplate,
+  createUserCustomDigitalTemplateCache,
   updateTextStyle,
   updateImageStyle,
   createContainerCache
@@ -67,6 +68,7 @@ const urqlClient = createClient({
           create_digital_frame: updateCreateFrame,
           update_user_favourite_colors: updatePresentColorPickerCache,
           create_user_custom_print_template: createUserCustomPrintTemplate,
+          create_user_custom_digital_template: createUserCustomDigitalTemplateCache,
           create_text_style: updateTextStyle,
           create_image_style: updateImageStyle,
           create_container: createContainerCache

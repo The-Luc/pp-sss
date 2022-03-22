@@ -250,12 +250,12 @@ export const usePhotos = () => {
   /**
    *  To update media to current sheet
    * @param {Object} media media object
-   * @param {Boolean} isDigitalEdition
+   * @param {Boolean} isDigitalEditor
    * @returns
    */
-  const updateSheetMedia = async (media, isDigitalEdition) => {
+  const updateSheetMedia = async (media, isDigitalEditor) => {
     const bookId = Number(generalInfo.value.bookId);
-    const prefix = isDigitalEdition ? 'digital_' : '';
+    const prefix = isDigitalEditor ? 'digital_' : '';
 
     const workspace = {
       [`${prefix}properties`]: {
@@ -442,8 +442,8 @@ export const useUploadAssets = () => {
     setUploadToken: APP_MUTATES.SET_UPLOAD_TOKEN
   });
 
-  const isValidToken = uploadToken => {
-    const { url, token, expiredAt } = uploadToken;
+  const isValidToken = upToken => {
+    const { url, token, expiredAt } = upToken;
     // 60000 milisecond
     const isExpire = expiredAt && expiredAt > Date.now() + 60000;
 
@@ -480,6 +480,8 @@ export const useUploadAssets = () => {
 
     const results = await Promise.all(promises);
 
+    if (results.some(res => res.status !== 200)) return [];
+
     // revise the response structure for videos
     const videoTypes = ['video/mp4', 'video/quicktime'];
     results.forEach(({ data }) => {
@@ -510,6 +512,9 @@ export const useUploadAssets = () => {
 
   const uploadAssetToAlbum = async (albumId, files, albumName) => {
     const assets = await uploadAssets(files);
+
+    if (isEmpty(assets)) throw new Error('Cannot upload the asset(s)');
+
     return !albumId
       ? await createAlbumAssets(albumName, assets)
       : await updateAlbumAssets(albumId, assets);

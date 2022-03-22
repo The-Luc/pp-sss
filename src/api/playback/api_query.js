@@ -6,7 +6,7 @@ import {
   sortByProperty
 } from '@/common/utils';
 import { graphqlRequest } from '../urql';
-import { getPlaybackDataQuery } from './queries';
+import { getPlaybackDataQuery, getSheetTransitionsQuery } from './queries';
 import { getSuccessWithData } from '@/common/models';
 
 export const getPlaybackDataApi = async bookId => {
@@ -30,4 +30,13 @@ export const getPlaybackDataApi = async bookId => {
     });
   });
   return getSuccessWithData(framePlayback);
+};
+
+export const getSheetTransitionApi = async sheetId => {
+  const res = await graphqlRequest(getSheetTransitionsQuery, { sheetId });
+
+  if (!isOk(res)) return [];
+
+  const transitions = res.data.sheet.digital_transitions;
+  return sortByProperty(transitions, 'transition_order');
 };

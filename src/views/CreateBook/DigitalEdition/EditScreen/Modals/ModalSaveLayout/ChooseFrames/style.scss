@@ -1,0 +1,39 @@
+.modal-choosing-frames ::v-deep {
+  .container-input {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 15px;
+    .input-title {
+      color: $color-gray16;
+      font-family: $font-500;
+      font-size: 13px;
+    }
+    .checkbox-container {
+      max-height: 115px;
+      width: 400px;
+      overflow-y: hidden;
+      margin-top: 15px;
+      padding-left: 150px;
+      font-family: $font-700;
+      > * {
+        margin-top: -5px;
+      }
+    }
+    .v-label {
+      font-size: 13px;
+    }
+  }
+  .container-btn {
+    .pp-btn {
+      width: 238px;
+      height: 36px;
+      margin: 15px auto 0;
+    }
+    .btn-first {
+      .pp-btn {
+        margin-top: 25px;
+      }
+    }
+  }
+}

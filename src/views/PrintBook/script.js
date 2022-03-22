@@ -5,6 +5,7 @@ import {
   isEmpty,
   setActiveEdition
 } from '@/common/utils';
+import { addPrintPageNumber } from '@/common/fabricObjects';
 import { useOverrides } from '@/plugins/fabric';
 import { fabric } from 'fabric';
 import { usePageApi } from './composables';
@@ -107,6 +108,16 @@ export default {
       if (!zoom || zoom > 1) return ratio;
 
       return zoom < 0.01 ? ratio * 0.01 : zoom * ratio;
+    },
+    addPageNumber(sheet, pageInfoProp) {
+      const { spreadInfo, pageNumber } = sheet;
+
+      addPrintPageNumber({
+        spreadInfo,
+        pageNumber,
+        canvas: this.canvas,
+        pageInfoProp
+      });
     }
   },
   beforeMount() {
@@ -132,7 +143,8 @@ export default {
         sheetType,
         coverOption,
         isLeftPage,
-        sheetId
+        sheetId,
+        pageInfo
       } = await this.getBook(bookId, pageId);
 
       this.coverOption = COVER_TYPE[coverOption] === COVER_TYPE.HARDCOVER;
@@ -143,7 +155,10 @@ export default {
 
       const sheet = await this.getSheet(sheetId);
 
-      drawObjectsOnCanvas(sheet.objects, this.canvas);
+      await drawObjectsOnCanvas(sheet.objects, this.canvas);
+
+      this.addPageNumber(sheet, pageInfo);
+
       this.dispatchLoadedEvent();
     } catch (ex) {
       this.dispatchLoadedEvent();

@@ -3,7 +3,13 @@ import PpButton from '@/components/Buttons/Button';
 
 import { mapActions } from 'vuex';
 import { ACTIONS as DIGITAL_ACTIONS } from '@/store/modules/digital/const';
-import { useAnimation, useFrame, useFrameReplace, useModal } from '@/hooks';
+import {
+  useAnimation,
+  useApplyDigitalLayout,
+  useFrame,
+  useFrameReplace,
+  useModal
+} from '@/hooks';
 import { useObject } from '../../composables';
 
 export default {
@@ -13,6 +19,7 @@ export default {
     const { toggleModal, modalData } = useModal();
     const { updateObjectsToStore } = useObject();
     const { updatePlayInIds, updatePlayOutIds } = useAnimation();
+    const { applyDigitalLayout } = useApplyDigitalLayout();
 
     return {
       handleReplaceFrame,
@@ -22,7 +29,8 @@ export default {
       toggleModal,
       updateObjectsToStore,
       updatePlayInIds,
-      updatePlayOutIds
+      updatePlayOutIds,
+      applyDigitalLayout
     };
   },
   components: {
@@ -50,7 +58,7 @@ export default {
         return;
       }
 
-      sheetData && this.updateSheeThemeLayout(sheetData);
+      sheetData && this.applyDigitalLayout(sheetData.layout);
       this.onCancel();
     },
 

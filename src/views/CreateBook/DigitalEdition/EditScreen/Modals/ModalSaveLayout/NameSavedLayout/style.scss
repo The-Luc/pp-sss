@@ -1,0 +1,39 @@
+.modal-choosing-name ::v-deep {
+  .container-input {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 15px;
+    .input-title {
+      color: $color-gray16;
+      font-family: $font-500;
+      font-size: 13px;
+    }
+    .input {
+      input {
+        margin-top: 12px;
+        color: $color-gray16;
+        font-family: $font-500;
+        font-size: 13px;
+        width: 262px;
+        height: 32px;
+        border-radius: 6px;
+        border: 1px solid $color-gray17;
+        outline: none;
+        text-align: center;
+      }
+    }
+  }
+  .container-btn {
+    .pp-btn {
+      width: 238px;
+      height: 36px;
+      margin: 15px auto 0;
+    }
+    .btn-first {
+      .pp-btn {
+        margin-top: 25px;
+      }
+    }
+  }
+}

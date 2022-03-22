@@ -3,7 +3,9 @@ import { getSheetIdOfPage } from '@/api/page';
 import { getSheetInfoApi } from '@/api/sheet';
 import { SHEET_TYPE } from '@/common/constants';
 import { getPageIdsOfSheet } from '@/common/utils';
+import { bookMapping } from '../../common/mapping/book';
 import { useText } from '../CreateBook/composables';
+import { pick } from 'lodash';
 
 export const usePageApi = () => {
   const { setFontsToStore } = useText();
@@ -25,7 +27,16 @@ export const usePageApi = () => {
 
     const isLeftPage = leftPageId === pageId;
 
-    return { coverOption, isLeftPage, sheetType, sheetId: sheet.id };
+    const mappedBook = bookMapping(data.book);
+    const pageInfo = pick(mappedBook, [
+      'isNumberingOn',
+      'position',
+      'fontFamily',
+      'fontSize',
+      'color'
+    ]);
+
+    return { coverOption, isLeftPage, sheetType, sheetId: sheet.id, pageInfo };
   };
 
   const getSheet = async sheetId => getSheetInfoApi(sheetId);

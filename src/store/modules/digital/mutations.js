@@ -1,11 +1,6 @@
 import { cloneDeep, merge } from 'lodash';
 
-import {
-  getUniqueId,
-  moveItem,
-  sortAnimationOrder,
-  isEmpty
-} from '@/common/utils';
+import { moveItem, sortAnimationOrder, isEmpty } from '@/common/utils';
 
 import { OBJECT_TYPE } from '@/common/constants';
 
@@ -208,8 +203,7 @@ export const mutations = {
     if (!frames?.length) return;
 
     frames.forEach(frame => {
-      const id = getUniqueId();
-
+      const id = frame.id;
       state.frameIds = [...state.frameIds, id];
       state.frames = { ...state.frames, [id]: { ...frame, id } };
     });
@@ -217,9 +211,12 @@ export const mutations = {
   [DIGITAL._MUTATES.REPLACE_SUPPLEMENTAL_FRAME](state, { frame, frameId }) {
     if (isEmpty(frame) || !frameId) return;
 
-    state.frameIds = [...state.frameIds];
+    state.frameIds = [...state.frameIds]; // to notify watchers
 
-    state.frames[frameId] = { ...frame, id: frameId };
+    state.frames[frameId] = Object.assign(state.frames[frameId], {
+      ...frame,
+      id: frameId
+    });
   },
   [DIGITAL._MUTATES.REORDER_FRAME_IDS](state, { oldIndex, newIndex }) {
     const [id] = state.frameIds.splice(oldIndex, 1);
