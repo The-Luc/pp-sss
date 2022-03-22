@@ -1,0 +1,13 @@
+.modal-save-digital-frames ::v-deep {
+  .pp-btn {
+    width: 238px;
+    height: 36px;
+    margin: 15px auto 0;
+  }
+  .btn-cancel {
+    .pp-btn {
+      background-color: $color-gray13;
+      border-color: $color-gray13;
+    }
+  }
+}

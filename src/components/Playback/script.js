@@ -555,6 +555,8 @@ export default {
             totalElements++;
           });
         });
+        // in case there are nothing to load
+        if (loadedElements === totalElements) resolve();
       });
     }
   }

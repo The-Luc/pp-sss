@@ -375,17 +375,9 @@ export default {
         parseInt(this.currentSheet.pageName) === screen && !frameIndex
           ? id
           : this.flowSettings.startOnPageNumber;
-      const dataScreen = getDataScreenOfMultiFolder(
-        flowSettings.screen,
-        this.selectedFolders,
-        this.maxPortraitPerPage
-      );
-      flowSettings.screen = dataScreen.reduce((result, item) => {
-        return {
-          ...result,
-          [item.screen]: item.frames.map(el => el.startOnPage)
-        };
-      }, {});
+
+      flowSettings.screen = this.calcScreenSettings(flowSettings.screen);
+
       this.onSettingChange({
         setting: {
           flowMultiSettings: flowSettings,
@@ -422,22 +414,32 @@ export default {
       if (isEmpty(flowSettings.screen[oldScreenId])) {
         delete flowSettings.screen[oldScreenId];
       }
-      const dataScreen = getDataScreenOfMultiFolder(
-        flowSettings.screen,
-        this.selectedFolders,
-        this.maxPortraitPerPage
-      );
-      flowSettings.screen = dataScreen.reduce((result, item) => {
-        return {
-          ...result,
-          [item.screen]: item.frames.map(el => el.startOnPage)
-        };
-      }, {});
+      flowSettings.screen = this.calcScreenSettings(flowSettings.screen);
+
       this.onSettingChange({
         setting: {
           flowMultiSettings: flowSettings
         }
       });
+    },
+    /**
+     *  To re-calculate screen data based on new input
+     *
+     * @param {Object} screen screen data
+     * @returns screen data after calculating
+     */
+    calcScreenSettings(screen) {
+      const dataScreen = getDataScreenOfMultiFolder(
+        screen,
+        this.selectedFolders,
+        this.maxPortraitPerPage
+      );
+      return dataScreen.reduce((result, item) => {
+        return {
+          ...result,
+          [item.screen]: item.frames.map(el => el.startOnPage)
+        };
+      }, {});
     },
     /**
      * Get base frames

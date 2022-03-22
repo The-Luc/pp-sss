@@ -4,6 +4,7 @@ import { Transition } from '@/common/models';
 import { BaseAnimation } from '@/common/models/element';
 
 import { ANIMATION_DIR, OBJECT_TYPE, PLAY_IN_STYLES } from '@/common/constants';
+import { isEmpty } from '@/common/utils';
 
 export default {
   components: {
@@ -108,6 +109,9 @@ export default {
       const transition = new Transition({ duration: 1 });
 
       return this.layout.frames.map(({ objects }, index) => {
+        if (!isEmpty(this.layout.frames[index].playInIds))
+          return this.layout.frames[index];
+
         return {
           id: `${index}`,
           objects: this.getObjectAnimation(objects),

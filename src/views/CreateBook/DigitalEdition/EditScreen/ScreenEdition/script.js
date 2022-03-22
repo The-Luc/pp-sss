@@ -90,7 +90,8 @@ import {
   useGetterEditionSection,
   useAnimation,
   useFrameDelay,
-  useAppCommon
+  useAppCommon,
+  useCustomLayout
 } from '@/hooks';
 
 import {
@@ -202,6 +203,7 @@ export default {
     const { setFrameDelay } = useFrameDelay();
     const { totalVideoDuration } = useVideo();
     const { getAssetById } = usePhotos();
+    const { saveCustomDigitalLayout } = useCustomLayout();
 
     return {
       setLoadingState,
@@ -242,7 +244,8 @@ export default {
       setPropertiesType,
       setFrameDelay,
       totalVideoDuration,
-      getAssetById
+      getAssetById,
+      saveCustomDigitalLayout
     };
   },
   data() {
@@ -663,7 +666,8 @@ export default {
         {
           name: EVENT_TYPE.ANIMATION_SELECT,
           handler: this.handleSelectAnimationObject
-        }
+        },
+        { name: EVENT_TYPE.SAVE_LAYOUT, handler: this.handleSaveLayout }
       ];
 
       const events = [
@@ -2681,6 +2685,14 @@ export default {
           hasControls: true
         });
       });
+    },
+
+    async handleSaveLayout(settings) {
+      if (settings.ids.includes(this.currentFrameId)) {
+        await this.saveData(this.currentFrameId);
+      }
+
+      this.saveCustomDigitalLayout(settings);
     },
     /**
      * Draw object into canvas

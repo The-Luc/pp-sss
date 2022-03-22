@@ -1,7 +1,5 @@
 import { useMutations, useGetters, useActions } from 'vuex-composition-helpers';
 
-import { getDigitalLayoutTypes } from '@/api/layoutService';
-
 import {
   saveToFavoritesApi,
   deleteFavoritesApi,
@@ -11,7 +9,9 @@ import {
 import {
   getLayoutElementsApi,
   saveCustomPrintLayoutApi,
-  getCustomPrintLayoutApi
+  getCustomPrintLayoutApi,
+  getCustomDigitalLayoutApi,
+  saveCustomDigitalLayoutApi
 } from '@/api/layout';
 
 import { GETTERS as THEME_GETTERS } from '@/store/modules/theme/const';
@@ -36,7 +36,8 @@ import {
   EDITION,
   MODAL_TYPES,
   OBJECT_TYPE,
-  COVER_TYPE
+  COVER_TYPE,
+  TRANS_TARGET
 } from '@/common/constants';
 
 import {
@@ -48,6 +49,11 @@ import {
 } from '@/common/utils';
 import { useThumbnail } from '@/views/CreateBook/composables';
 import { cloneDeep } from 'lodash';
+import { getFrameObjectsApi, deleteFrameApi } from '@/api/frame';
+import { IMAGE_LOCAL } from '../common/constants/image';
+import { useFrame, useFrameOrdering, useFrameAction } from '@/hooks';
+import { getSheetTransitionApi } from '@/api/playback/api_query';
+import { updateTransitionApi } from '@/api/playback';
 
 export const useLayoutPrompt = edition => {
   const EDITION_GETTERS =
@@ -113,9 +119,8 @@ export const useLayoutElements = () => ({
  * @returns getters
  */
 const getterDigitalLayout = () => {
-  const { sheetLayout, getLayoutsByType, listLayouts } = useGetters({
+  const { sheetLayout, listLayouts } = useGetters({
     sheetLayout: DIGITAL_GETTERS.SHEET_LAYOUT,
-    getLayoutsByType: THEME_GETTERS.GET_DIGITAL_LAYOUT_BY_TYPE,
     listLayouts: THEME_GETTERS.GET_DIGITAL_LAYOUTS_BY_THEME_ID
   });
 
@@ -123,7 +128,7 @@ const getterDigitalLayout = () => {
     updateSheetThemeLayout: DIGITAL_ACTIONS.UPDATE_SHEET_THEME_LAYOUT
   });
 
-  return { sheetLayout, getLayoutsByType, listLayouts, updateSheetThemeLayout };
+  return { sheetLayout, listLayouts, updateSheetThemeLayout };
 };
 
 /**
@@ -131,7 +136,7 @@ const getterDigitalLayout = () => {
  * @returns getters
  */
 const getterPrintLayout = () => {
-  const { sheetLayout, getLayoutsByType, listLayouts } = useGetters({
+  const { sheetLayout, listLayouts } = useGetters({
     sheetLayout: PRINT_GETTERS.SHEET_LAYOUT,
     getLayoutsByType: THEME_GETTERS.GET_PRINT_LAYOUT_BY_TYPE,
     listLayouts: THEME_GETTERS.GET_PRINT_LAYOUTS_BY_THEME_ID
@@ -141,7 +146,7 @@ const getterPrintLayout = () => {
     updateSheetThemeLayout: PRINT_ACTIONS.UPDATE_SHEET_THEME_LAYOUT
   });
 
-  return { sheetLayout, getLayoutsByType, listLayouts, updateSheetThemeLayout };
+  return { sheetLayout, listLayouts, updateSheetThemeLayout };
 };
 
 export const useActionLayout = () => {
@@ -161,8 +166,7 @@ export const useActionLayout = () => {
     saveToFavorites,
     deleteFavorites,
     getFavorites: getFavoritesApi,
-    getFavoriteLayouts: getFavoriteLayoutsApi,
-    getDigitalLayoutTypes
+    getFavoriteLayouts: getFavoriteLayoutsApi
   };
 };
 
@@ -177,16 +181,25 @@ export const useCustomLayout = () => {
 
   const { uploadBase64Image } = useThumbnail();
 
-  const getLayoutThumbnail = async (objects, options) => {
+  const getLayoutThumbnail = async (objects, options, isDigital) => {
+    const clonedObjects = cloneDeep(objects);
     // remove image url in objects
-    objects.forEach(o => {
-      if (o.type !== OBJECT_TYPE.IMAGE) return;
+    clonedObjects.forEach(o => {
+      if (o.type === OBJECT_TYPE.VIDEO) {
+        o.thumbnailUrl = IMAGE_LOCAL.PLACE_HOLDER;
+        o.hasImage = false;
+        return;
+      }
 
-      o.imageUrl = null;
-      o.originalUrl = null;
+      if (o.type !== OBJECT_TYPE.IMAGE && o.type !== OBJECT_TYPE.PORTRAIT_IMAGE)
+        return;
+
+      o.imageUrl = IMAGE_LOCAL.PLACE_HOLDER;
+      o.hasImage = false;
+      o.zoomLevel = null;
     });
 
-    return generateCanvasThumbnail(objects, null, options);
+    return generateCanvasThumbnail(clonedObjects, isDigital, options);
   };
 
   const saveCustomPrintLayout = async (setting, data) => {
@@ -241,9 +254,110 @@ export const useCustomLayout = () => {
       isCustom: true
     }));
   };
+  /**
+   * Return package and supplemental layouts that user saved
+   */
+  const getCustomDigitalLayout = async () => {
+    const layouts = await getCustomDigitalLayoutApi();
+    return layouts;
+  };
+
+  const saveCustomDigitalLayout = async setting => {
+    const { ids, isSupplemental, layoutName } = setting;
+
+    // get frame data
+    const framesObjects = await Promise.all(
+      ids.map(id => getFrameObjectsApi(id))
+    );
+
+    // generate thumbnails
+    const imageBase64 = await Promise.all(
+      framesObjects.map(objects => getLayoutThumbnail(objects, {}, true))
+    );
+
+    const previewImageUrls = await Promise.all(
+      imageBase64.map(img => uploadBase64Image(img))
+    );
+
+    // currently save only the thumbanail of the first frame
+    // to make the layout thumbnail
+    const isSuccess = await saveCustomDigitalLayoutApi({
+      ids,
+      isSupplemental,
+      title: layoutName,
+      previewUrl: previewImageUrls[0]
+    });
+
+    // if successed, show the success modal
+    if (!isSuccess) return;
+
+    toggleModal({
+      isOpenModal: true,
+      modalData: {
+        type: MODAL_TYPES.SAVE_LAYOUT_SUCCESS
+      }
+    });
+  };
 
   return {
     saveCustomPrintLayout,
-    getCustom: getCustomPrintLayout
+    getCustom: getCustomPrintLayout,
+    getCustomDigitalLayout,
+    saveCustomDigitalLayout
   };
+};
+
+export const useApplyDigitalLayout = () => {
+  const { currentSheet, frames: storeFrames } = useGetters({
+    currentSheet: DIGITAL_GETTERS.CURRENT_SHEET,
+    frames: DIGITAL_GETTERS.GET_ARRAY_FRAMES
+  });
+
+  const { setFrames, setCurrentFrameId, clearAllFrames } = useFrame();
+  const { updateFrameOrder } = useFrameOrdering();
+  const { createFrames } = useFrameAction();
+
+  const applyDigitalLayout = async layout => {
+    const { id: sheetId } = currentSheet.value;
+    const transitions = layout.frames
+      .map(({ transition }) => (transition ? transition : null))
+      .filter(Boolean);
+
+    // remove all primary frames
+    const frames = cloneDeep(storeFrames.value);
+    const finalFrames = frames.filter(frame => !frame.fromLayout);
+
+    const primaryFrameIds = frames
+      .filter(frame => frame.fromLayout)
+      .map(f => f.id);
+
+    await Promise.all(primaryFrameIds.map(id => deleteFrameApi(id)));
+
+    // add new frames
+    const newFrames = await createFrames(sheetId, layout);
+
+    // reorder frames
+    finalFrames.unshift(...newFrames);
+    const frameIds = finalFrames.map(f => parseInt(f.id));
+    await updateFrameOrder(sheetId, frameIds);
+
+    // if length of layoutFrames > 1, means that it's package layout and there are transition
+    // update transitions
+    if (layout.frames.length > 1) {
+      const transitionId = await getSheetTransitionApi(sheetId);
+      await Promise.all(
+        transitions.map((trans, idx) =>
+          updateTransitionApi(transitionId[idx].id, trans, TRANS_TARGET.SELF)
+        )
+      );
+    }
+
+    clearAllFrames();
+    setFrames({ framesList: finalFrames });
+
+    setCurrentFrameId({ id: finalFrames[0].id });
+    return finalFrames;
+  };
+
+  return { applyDigitalLayout };
 };

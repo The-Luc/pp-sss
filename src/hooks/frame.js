@@ -11,6 +11,7 @@ import {
 import { MUTATES } from '@/store/modules/app/const';
 import { PROPERTIES_TOOLS } from '@/common/constants';
 import { cloneDeep } from 'lodash';
+import { FrameDetail } from '@/common/models';
 import {
   createFrameApi,
   deleteFrameApi,
@@ -142,13 +143,22 @@ export const useFrameReplace = () => {
     setIsOpenProperties: MUTATES.TOGGLE_MENU_PROPERTIES
   });
 
-  const handleReplaceFrame = ({ frame, frameId }) => {
+  const handleReplaceFrame = async ({ frame, frameId }) => {
     // set the current frame isVisted and open frame info panel
-    frame.isVisited = true;
+    const newFrame = {
+      ...frame,
+      isVisited: true,
+      fromLayout: false,
+      title: '',
+      delay: 3
+    };
+
+    await updateFrameApi(frameId, newFrame);
+
     setPropertiesObjectType({ type: PROPERTIES_TOOLS.FRAME_INFO.type });
     setIsOpenProperties({ isOpen: true });
 
-    replaceFrame({ frame, frameId });
+    replaceFrame({ frame: newFrame, frameId });
 
     // to manually tell the canvas to update itselft because current frame id isn't changed
     triggerApplyLayout();
@@ -162,8 +172,9 @@ export const useFrameReplace = () => {
  * and set the active frame after add
  */
 export const useFrameAdd = () => {
-  const { framesInStore } = useGetters({
-    framesInStore: DIGITAL_GETTERS.GET_ARRAY_FRAMES
+  const { framesInStore, currentSheet } = useGetters({
+    framesInStore: DIGITAL_GETTERS.GET_ARRAY_FRAMES,
+    currentSheet: DIGITAL_GETTERS.CURRENT_SHEET
   });
 
   const { addSupplementalFrame, setCurrentFrameId } = useMutations({
@@ -171,8 +182,16 @@ export const useFrameAdd = () => {
     setCurrentFrameId: DIGITAL_MUTATES.SET_CURRENT_FRAME_ID
   });
 
-  const handleAddFrame = frames => {
-    addSupplementalFrame({ frames: cloneDeep(frames) });
+  const { createFrames } = useFrameAction();
+
+  const handleAddFrame = async frames => {
+    // adding 1 supplemental frame
+    const sheetId = currentSheet.value.id;
+    const layout = { isSupplemental: true, frames };
+
+    const newFrames = await createFrames(sheetId, layout);
+
+    addSupplementalFrame({ frames: newFrames });
 
     const lastAddedFrame = framesInStore.value[framesInStore.value.length - 1];
     setCurrentFrameId({ id: lastAddedFrame.id });
@@ -240,11 +259,38 @@ export const useFrameAction = () => {
     return await createFrameApi(sheetId, params);
   };
 
+  const createFrames = async (sheetId, layout) => {
+    const { isSupplemental } = layout;
+    const layoutFrames = cloneDeep(layout.frames);
+
+    const newFrames = layoutFrames.map(frame => {
+      const { objects, playInIds, playOutIds } = frame;
+
+      return new FrameDetail({
+        fromLayout: !isSupplemental,
+        objects,
+        isVisited: true,
+        playInIds,
+        playOutIds
+      });
+    });
+
+    const responseFrames = await Promise.all(
+      newFrames.map(frame => createFrameApi(sheetId, frame))
+    );
+
+    // adding frame id
+    newFrames.forEach((frame, index) => (frame.id = responseFrames[index].id));
+
+    return newFrames;
+  };
+
   return {
     getPreviewUrlByIndex,
     createFrame,
     updateFrameApi,
     getSheetFrames,
-    getFramesAndTransitionsApi
+    getFramesAndTransitionsApi,
+    createFrames
   };
 };

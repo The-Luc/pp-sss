@@ -21,6 +21,7 @@ export const sheetInfoQuery = gql`
       pages {
         id
         is_cover_page
+        show_page_number
         page_number
         layout
       }

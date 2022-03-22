@@ -25,7 +25,7 @@ const mapBackgrounds = (backgrounds, bgTypeSubId, bgTypeId) => {
   );
 };
 
-const getBackgroundsOfTheme = async (
+const getBackgroundsOfCategory = async (
   backgroundTypeId,
   backgroundTypeSubId,
   backgroundPageTypeId,
@@ -46,7 +46,11 @@ const getBackgroundsOfTheme = async (
   );
 
   if (isDigital)
-    return backgrounds.map(bg => ({ ...bg, pageType: 2, backgroundType: 1 }));
+    return backgrounds.map(bg => ({
+      ...bg,
+      pageType: BACKGROUND_PAGE_TYPE.DIGITAL.id,
+      backgroundType: BACKGROUND_TYPE.CATEGORY.id
+    }));
 
   return backgrounds.filter(
     item =>
@@ -55,7 +59,7 @@ const getBackgroundsOfTheme = async (
   );
 };
 
-const getBackgroundsOfCategory = async (
+const getBackgroundsOfTheme = async (
   backgroundTypeId,
   backgroundTypeSubId,
   backgroundPageTypeId
@@ -100,8 +104,8 @@ export const getBackgroundsApi = (
 ) => {
   const getBackgroundMethod =
     backgroundTypeId === BACKGROUND_TYPE.CATEGORY.id
-      ? getBackgroundsOfTheme
-      : getBackgroundsOfCategory;
+      ? getBackgroundsOfCategory
+      : getBackgroundsOfTheme;
 
   return getBackgroundMethod(
     backgroundTypeId,

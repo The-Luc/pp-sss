@@ -29,8 +29,8 @@ export const setBookInfo = (state, { info }) => {
 
 export const isPhotoVisited = ({ book }) => book.isPhotoVisited;
 
-export const setIsPhotoVisited = (state, { isPhotoVisited }) => {
-  state.book.isPhotoVisited = isPhotoVisited;
+export const setIsPhotoVisited = (state, { isPhotoVisited: isVisited }) => {
+  state.book.isPhotoVisited = isVisited;
 };
 
 export const defaultThemeId = ({ book }) => book.defaultThemeId;

@@ -10,7 +10,10 @@ import {
 import { digitalWorkspaceQuery, printWorkspaceQuery } from '../sheet/queries';
 import { getFavoriteLayoutsQuery } from '../user/queries';
 import { getPresetColorPickerQuery } from '../util/queries';
-import { getUserLayoutsQuery } from '../layout/queries';
+import {
+  getUserDigitalLayoutsQuery,
+  getUserLayoutsQuery
+} from '../layout/queries';
 import { getUserTextStyleQuery } from '../text/queries';
 import { getUserImageStyleQuery } from '../image/queries';
 import {
@@ -171,10 +174,13 @@ export const updateDeleteFrame = (_, args, cache) => {
 
   // getting sheet id
   while (!sheetId && counter < sheetIds.length) {
-    const { sheet } = cache.readQuery({
+    const queryData = cache.readQuery({
       query: getSheetFramesQuery,
       variables: { sheetId: sheetIds[counter] }
     });
+    if (!queryData) return;
+
+    const sheet = queryData.sheet;
 
     const isIncludedTheFrame = sheet.digital_frames.some(
       frame => frame.id === frameId
@@ -402,6 +408,16 @@ export const createUserCustomPrintTemplate = (results, args, cache) => {
   const category = saveTypeMapping[saveType];
   cache.updateQuery({ query: getUserLayoutsQuery }, data => {
     if (data && layout) data[category].push(layout);
+
+    return data;
+  });
+};
+
+export const createUserCustomDigitalTemplateCache = (results, _, cache) => {
+  const layout = get(results, 'create_user_custom_digital_template');
+
+  cache.updateQuery({ query: getUserDigitalLayoutsQuery }, data => {
+    if (data && layout) data.user_saved_digital_layouts.push(layout);
 
     return data;
   });

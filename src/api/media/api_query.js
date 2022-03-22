@@ -24,6 +24,7 @@ import {
   VideoAssetEntity
 } from '@/common/models/entities/asset';
 import axios from 'axios';
+import responseHandler from '../urql/responseHandler';
 
 export const getPhotosApi = async (id, projectId, terms = []) => {
   if (isEmpty(terms)) return [];
@@ -227,11 +228,17 @@ export const getUserAvailableAlbumApi = async () => {
  * @returns upload asset object
  */
 export const uploadAssetsApi = async (asset, uploadToken) => {
-  const { url, token } = uploadToken;
+  try {
+    const { url, token } = uploadToken;
 
-  const formData = new FormData();
-  formData.append('upload', asset);
-  formData.append('authenticationToken', token);
+    const formData = new FormData();
+    formData.append('upload', asset);
+    formData.append('authenticationToken', token);
 
-  return axios.post(url, formData);
+    const res = await axios.post(url, formData);
+    return res;
+  } catch (error) {
+    error.message = ` An error occurred while uploading ${asset.name}`;
+    return responseHandler({ error });
+  }
 };

@@ -472,7 +472,8 @@ export const createVideoElement = src =>
       false
     );
 
-    ele.src = `${modifyUrl(src)}#t=0.01`;
+    if (src || src !== IMAGE_LOCAL.PLACE_HOLDER)
+      ele.src = `${modifyUrl(src)}#t=0.01`;
   });
 
 /**
@@ -825,12 +826,12 @@ export const createMediaObject = async (
   });
 
   if (type === OBJECT_TYPE.IMAGE && hasImage && !control) {
-    const control = await createMediaOverlay(IMAGE_LOCAL.CONTROL_ICON, {
+    const newControl = await createMediaOverlay(IMAGE_LOCAL.CONTROL_ICON, {
       width: CROP_CONTROL.WIDTH,
       height: CROP_CONTROL.HEIGHT
     });
 
-    media.set({ control });
+    media.set({ control: newControl });
   }
 
   return media;

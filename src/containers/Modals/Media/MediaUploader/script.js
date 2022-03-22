@@ -115,20 +115,24 @@ export default {
         }
       }, 1000);
 
-      const updatedAlbum = await this.uploadAssetToAlbum(
-        this.selectedIdOfAlbum,
-        this.files,
-        this.newAlbumName || 'Untitled'
-      );
+      try {
+        const updatedAlbum = await this.uploadAssetToAlbum(
+          this.selectedIdOfAlbum,
+          this.files,
+          this.newAlbumName || 'Untitled'
+        );
 
-      clearInterval(handler);
-      this.numberOfFilesUploaded = numOfFiles;
+        this.numberOfFilesUploaded = numOfFiles;
 
-      this.selectedIdOfAlbum = updatedAlbum.id;
+        this.selectedIdOfAlbum = updatedAlbum.id;
 
-      await this.finisingUpload();
-
-      this.hideUploadMediaModal();
+        await this.finisingUpload();
+      } catch (error) {
+        this.selectedIdOfAlbum = null;
+      } finally {
+        clearInterval(handler);
+        this.hideUploadMediaModal();
+      }
     },
     /**
      * Finish upload process

@@ -1,7 +1,7 @@
 import Layouts from '@/containers/ToolPopoverManager/Layouts/DigitalLayouts';
 
 import { EDITION } from '@/common/constants';
-import { useFrame, useFrameAdd, useFrameReplace, useModal } from '@/hooks';
+import { useFrame, useFrameAdd, useModal } from '@/hooks';
 
 // for digital. After implement saving feature, this code can be remove
 import { DIGITAL_LAYOUT_TYPES as LAYOUT_TYPES } from '@/mock/layoutTypes';
@@ -14,7 +14,6 @@ export default {
   setup() {
     const { toggleModal, modalData } = useModal();
     const { handleAddFrame } = useFrameAdd();
-    const { handleReplaceFrame } = useFrameReplace();
     const { setSupplementalLayoutId } = useFrame();
     const { updateObjectsToStore } = useObject();
 
@@ -22,7 +21,6 @@ export default {
       toggleModal,
       modalData,
       handleAddFrame,
-      handleReplaceFrame,
       setSupplementalLayoutId,
       updateObjectsToStore
     };
