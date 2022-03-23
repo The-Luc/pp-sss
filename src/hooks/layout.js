@@ -44,6 +44,7 @@ import {
   getPageLayouts,
   isCoverSheet,
   isHalfSheet,
+  isHalfRight,
   isOk,
   isEmpty
 } from '@/common/utils';
@@ -53,6 +54,7 @@ import { getFrameObjectsApi, deleteFrameApi } from '@/api/frame';
 import { useFrame, useFrameOrdering, useFrameAction } from '@/hooks';
 import { updateTransitionApi, getSheetTransitionApi } from '@/api/playback';
 import { removeMediaContentWhenCreateThumbnail } from '../common/utils/image';
+import { changeObjectsCoords } from '@/common/utils/layout';
 
 export const useLayoutPrompt = edition => {
   const EDITION_GETTERS =
@@ -202,6 +204,10 @@ export const useCustomLayout = () => {
       const pageIds = data.sheetProps.pageIds;
 
       objects = id === pageIds[0] ? leftLayout.elements : rightLayout.elements;
+    }
+
+    if (isHalfRight(data.sheetProps)) {
+      objects = changeObjectsCoords(objects, 'right', { moveToLeft: true });
     }
 
     const isCover = isCoverSheet(data.sheetProps);
