@@ -12,7 +12,6 @@ import {
 } from '@/common/constants';
 import {
   getThemeOptSelectedById,
-  resetObjects,
   isEmpty,
   entitiesToObjects
 } from '@/common/utils';
@@ -21,10 +20,12 @@ import {
   useLayoutPrompt,
   useGetLayouts,
   useFrame,
+  useFrameAction,
   useModal,
   useActionLayout,
   useCustomLayout,
-  useApplyDigitalLayout
+  useApplyDigitalLayout,
+  useObjectProperties
 } from '@/hooks';
 
 import {
@@ -54,6 +55,7 @@ export default {
 
     const { setToolNameSelected, selectedToolName } = usePopoverCreationTool();
     const { frames, currentFrame, currentFrameId } = useFrame();
+    const { getSheetFrames } = useFrameAction();
     const { toggleModal, modalData } = useModal();
     const {
       isPrompt,
@@ -67,6 +69,7 @@ export default {
     const { getCustomAndFavoriteLayouts } = useActionLayout();
     const { getCustomDigitalLayout } = useCustomLayout();
     const { applyDigitalLayout } = useApplyDigitalLayout();
+    const { listObjects } = useObjectProperties();
 
     return {
       isPrompt,
@@ -84,7 +87,9 @@ export default {
       currentFrameId,
       getCustomDigitalLayout,
       getCustomAndFavoriteLayouts,
-      applyDigitalLayout
+      getSheetFrames,
+      applyDigitalLayout,
+      listObjects
     };
   },
   data() {
@@ -267,9 +272,9 @@ export default {
 
       const isSupplemental = layout.isSupplemental;
 
-      const hasPackageFrame = this.frames.some(f => f.fromLayout);
+      const shouldShowConfirm = await this.shouldShowConfirmationDialog();
 
-      if (!isSupplemental && hasPackageFrame) {
+      if (!isSupplemental && !shouldShowConfirm) {
         await this.applyDigitalLayout(layout);
 
         this.onCancel();
@@ -302,21 +307,6 @@ export default {
           }
         }
       });
-    },
-    /**
-     * Save objects to store and draw on canvas
-     * @param {Object} layout layout will be stored & applied on canvas
-     */
-    applyLayout(layout) {
-      this.updateSheetThemeLayout({
-        sheetId: this.pageSelected?.id,
-        themeId: this.themeSelected?.id,
-        layout
-      });
-
-      resetObjects();
-
-      this.$root.$emit('pageNumber');
     },
     /**
      * Trigger mutation set prompt false and update isVisited true for current sheet
@@ -403,6 +393,27 @@ export default {
      */
     async onSaveToFavorites() {
       // handle save favorite layout
+    },
+
+    /**
+     *  To check whether to show confirmation modal before applying layout or not
+     */
+    async shouldShowConfirmationDialog() {
+      const dbFrames = await this.getSheetFrames(this.pageSelected.id);
+      const originalFrames = dbFrames.filter(
+        frame => frame.fromLayout && frame.id !== this.currentFrameId
+      );
+
+      const isEmptyFramesObject = originalFrames.every(frame =>
+        isEmpty(frame.objects)
+      );
+
+      const isCurrentFrameFromLayout = this.currentFrame.fromLayout;
+
+      const isCurrFrameEmpty =
+        isCurrentFrameFromLayout && isEmpty(this.listObjects);
+
+      return !isCurrFrameEmpty || !isEmptyFramesObject;
     }
   }
 };
