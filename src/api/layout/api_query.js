@@ -1,10 +1,5 @@
 import { first, get, cloneDeep } from 'lodash';
-import {
-  SHEET_TYPE,
-  SYSTEM_OBJECT_TYPE,
-  IMAGE_LOCAL,
-  OBJECT_TYPE
-} from '@/common/constants';
+import { SHEET_TYPE, SYSTEM_OBJECT_TYPE } from '@/common/constants';
 import { graphqlRequest } from '../urql';
 import {
   getLayoutElementsQuery,
@@ -21,7 +16,8 @@ import {
   createClipartElement,
   createImageElement,
   createTextElement,
-  isOk
+  isOk,
+  removeMediaContentWhenCreateThumbnail
 } from '@/common/utils';
 
 import { layoutMapping, digitalLayoutMapping } from '@/common/mapping/layout';
@@ -154,24 +150,7 @@ export const getCustomDigitalLayoutApi = async () => {
   // modify object because of BE flaw
   mappedLayouts.forEach(layout => {
     layout.frames.forEach(frame => {
-      frame.objects.forEach(o => {
-        if (!o) return;
-
-        if (o.type === OBJECT_TYPE.VIDEO) {
-          o.thumbnailUrl = IMAGE_LOCAL.PLACE_HOLDER;
-          o.imageUrl = '/media/toy.a3ac7dda.mp4';
-          o.hasImage = false;
-        }
-        if (
-          o.type === OBJECT_TYPE.IMAGE ||
-          o.type === OBJECT_TYPE.PORTRAIT_IMAGE
-        ) {
-          o.imageUrl = IMAGE_LOCAL.PLACE_HOLDER;
-          o.hasImage = false;
-          o.zoomLevel = null;
-          o.originalUrl = '';
-        }
-      });
+      frame.objects = removeMediaContentWhenCreateThumbnail(frame.objects);
     });
   });
   return mappedLayouts;

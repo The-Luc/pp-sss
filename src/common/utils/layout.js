@@ -48,10 +48,13 @@ export const getLayoutOptSelectedById = (
 };
 
 /**
- *  to change objects coords to fit the side that use what to render them
+ *  To change objects coords to fit the side that use what to render them
+ *
  * @param {Object} objects that will be change their coord to place in the right side (left/right)
  * @param {Number | String} position left or right || FRONT_COVER or BACK_COVER
  * @param {Object} options adding config for the function, available options: moveToLeft
+ *  if moveToLeft is true, the right page objects will be move to left
+ *
  * @returns objects have coords changed
  */
 export const changeObjectsCoords = (objects, position, options) => {

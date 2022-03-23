@@ -12,6 +12,8 @@ import {
 } from './mutations';
 
 export const updateTransitionApi = async (id, params, targetType) => {
+  if (!id) return;
+
   const queryOpts = {
     [TRANS_TARGET.SELF]: updateSingleTransitionMutation,
     [TRANS_TARGET.SHEET]: updateSheetTransitionMutation,

@@ -32,8 +32,13 @@ export const getPlaybackDataApi = async bookId => {
   return getSuccessWithData(framePlayback);
 };
 
-export const getSheetTransitionApi = async sheetId => {
-  const res = await graphqlRequest(getSheetTransitionsQuery, { sheetId });
+export const getSheetTransitionApi = async (sheetId, isIgnoreCache) => {
+  const res = await graphqlRequest(
+    getSheetTransitionsQuery,
+    { sheetId },
+    false,
+    isIgnoreCache
+  );
 
   if (!isOk(res)) return [];
 
