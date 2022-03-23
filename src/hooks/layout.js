@@ -52,9 +52,10 @@ import { useThumbnail } from '@/views/CreateBook/composables';
 import { cloneDeep } from 'lodash';
 import { getFrameObjectsApi, deleteFrameApi } from '@/api/frame';
 import { useFrame, useFrameOrdering, useFrameAction } from '@/hooks';
-import { updateTransitionApi, getSheetTransitionApi } from '@/api/playback';
+import { updateTransitionApi } from '@/api/playback';
 import { removeMediaContentWhenCreateThumbnail } from '../common/utils/image';
 import { changeObjectsCoords } from '@/common/utils/layout';
+import { getSheetTransitionApi } from '@/api/playback/api_query';
 
 export const useLayoutPrompt = edition => {
   const EDITION_GETTERS =
@@ -338,15 +339,17 @@ export const useApplyDigitalLayout = () => {
     // if length of layoutFrames > 1, means that it's package layout and there are transition
     // update transitions
     if (layout.frames.length > 1) {
-      const transitionId = await getSheetTransitionApi(sheetId);
+      setTimeout(async () => {
+        const transitionId = await getSheetTransitionApi(sheetId, true);
 
-      if (isEmpty(transitionId)) return;
+        if (isEmpty(transitionId)) return;
 
-      await Promise.all(
-        transitions.map((trans, idx) =>
-          updateTransitionApi(transitionId[idx].id, trans, TRANS_TARGET.SELF)
-        )
-      );
+        await Promise.all(
+          transitions.map((trans, idx) =>
+            updateTransitionApi(transitionId[idx]?.id, trans, TRANS_TARGET.SELF)
+          )
+        );
+      }, 1000);
     }
 
     clearAllFrames();
