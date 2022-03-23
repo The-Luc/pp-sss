@@ -8,6 +8,7 @@ import { FrameDetail, Transition } from '../models';
 import { frameMapping } from '../mapping/frame';
 import { transitionMapping } from '../mapping';
 import { convertObjectInchToPx } from './objects';
+import { cloneDeep } from 'lodash';
 
 export const isHalfSheet = ({ type }) => {
   return [SHEET_TYPE.FRONT_COVER, SHEET_TYPE.BACK_COVER].indexOf(type) >= 0;
@@ -100,8 +101,10 @@ export const getPageLayouts = sheet => {
     const { pageWidth, bleedLeft } = getPagePrintSize().inches;
     const halfSheet = pageWidth + bleedLeft;
 
-    leftLayout.elements.forEach(o => (o.coord.x -= halfSheet));
-    rightLayout.elements.push(...leftLayout.elements);
+    const leftElements = cloneDeep(leftLayout.elements);
+
+    leftElements.forEach(o => (o.coord.x -= halfSheet));
+    rightLayout.elements.push(...leftElements);
   }
 
   return { leftLayout, rightLayout };
