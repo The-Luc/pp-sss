@@ -1,6 +1,7 @@
 import { mapObject, convertObjectPxToInch } from '@/common/utils';
 import { LAYOUT_PAGE_TYPE } from '@/common/constants/layoutTypes';
 import { transitionMapping } from './sheet';
+import { cloneDeep } from 'lodash';
 
 /**
  * Convert layout data from API to FE data structure
@@ -32,7 +33,9 @@ export const layoutMapping = layout => {
   return mapObject(layout, mapRules);
 };
 
-export const digitalLayoutMapping = layout => {
+export const digitalLayoutMapping = layoutData => {
+  const layout = cloneDeep(layoutData);
+
   const mapRules = {
     data: {
       preview_image_url: {
