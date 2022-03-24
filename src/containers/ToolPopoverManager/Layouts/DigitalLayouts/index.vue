@@ -8,7 +8,7 @@
     :themes-options="themesOptions"
     :layout-types="layoutTypes"
     :theme-selected="themeSelected"
-    :disable-theme-opts="disabledTheme"
+    :disabled-theme-opts="disabledTheme"
     :disabled-layout-opts="disabled"
     :layout-type-selected="layoutTypeSelected"
     :favorite-layouts="favoriteLayouts"
