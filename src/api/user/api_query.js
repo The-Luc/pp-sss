@@ -121,7 +121,7 @@ export const getFavoriteLayoutsApi = async () => {
       type: categoryId,
       themeId: get(t, 'theme.id', null),
       previewImageUrl: t.preview_image_url,
-      name: t.data.properties.title,
+      name: t.title || 'Untitle',
       isFavorites: true,
       isFavoritesDisabled: false,
       pageType: t.layout_type === 'DOUBLE_PAGE' ? doublePageId : singlePageId

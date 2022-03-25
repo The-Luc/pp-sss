@@ -47,6 +47,7 @@ export const getFavoriteLayoutsQuery = gql`
       categories {
         id
       }
+      title
       preview_image_url
       data
       layout_type
