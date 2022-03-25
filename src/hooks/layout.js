@@ -274,10 +274,15 @@ export const useCustomLayout = () => {
       imageBase64.map(img => uploadBase64Image(img))
     );
 
+    const frameSelections = ids.map((id, index) => ({
+      id: +id,
+      preview_image_url: previewImageUrls[index]
+    }));
+
     // currently save only the thumbanail of the first frame
     // to make the layout thumbnail
     const isSuccess = await saveCustomDigitalLayoutApi({
-      ids,
+      frameSelections,
       isSupplemental,
       title: layoutName,
       previewUrl: previewImageUrls[0]

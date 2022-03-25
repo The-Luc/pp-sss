@@ -22,6 +22,12 @@ export const isHalfRight = ({ type }) => {
   return type === SHEET_TYPE.FRONT_COVER;
 };
 
+export const isNormalSheet = layout => {
+  if (!layout) return false;
+
+  return layout.type === SHEET_TYPE.NORMAL;
+};
+
 export const isCoverSheet = ({ type }) => type === SHEET_TYPE.COVER;
 
 /**

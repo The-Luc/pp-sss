@@ -1,11 +1,10 @@
-import { first, get, cloneDeep } from 'lodash';
-import { SHEET_TYPE, SYSTEM_OBJECT_TYPE } from '@/common/constants';
+import { first, get, cloneDeep, findKey } from 'lodash';
+import { SYSTEM_OBJECT_TYPE, LAYOUT_TYPES } from '@/common/constants';
 import { graphqlRequest } from '../urql';
 import {
   getLayoutElementsQuery,
   getLayoutsPreviewQuery,
   getLayoutsQuery,
-  getLayoutTypeQuery,
   getUserDigitalLayoutsQuery,
   getUserLayoutsQuery
 } from './queries';
@@ -39,55 +38,46 @@ export const getPrintLayoutsPreviewApi = async themeId => {
 };
 
 /**
- * To get layout type of a theme
- * @param {String} themeId id of a theme
- * @returns array of layout types
- */
-export const getPrintLayoutTypesApi = async themeId => {
-  if (!themeId) return [];
-
-  const res = await graphqlRequest(getLayoutTypeQuery, { themeId });
-
-  if (!isOk(res)) return [];
-
-  const templates = get(res.data, 'theme.templates', []);
-
-  const ids = [];
-  const types = [];
-  templates.forEach(({ categories }) => {
-    categories.forEach(({ id, name }) => {
-      if (!ids.includes(id)) {
-        ids.push(id);
-        types.push({ name, value: id, sheetType: SHEET_TYPE.FRONT_COVER });
-      }
-    });
-  });
-
-  return types;
-};
-
-/**
  * To get layout filtered by its themeId and its category
  * @param {String} themeId     id of a theme
  * @param {String} categoryId  id of a category
  * @returns array of layout object
  */
-export const getLayoutsByThemeAndTypeApi = async (themeId, categoryId) => {
+export const getLayoutsByThemeAndTypeApi = async (themeId, layoutTypeId) => {
   const res = await graphqlRequest(getLayoutsQuery, { themeId });
 
   if (!isOk(res)) return [];
+  const isGetSingleLayout = layoutTypeId === LAYOUT_TYPES.SINGLE_PAGE.value;
+  const dbTemplates = get(res, 'data.theme.templates', []);
 
-  const templates = res.data.theme.templates.filter(t =>
-    t.categories.some(c => c.id === categoryId)
-  );
+  const layoutType = findKey(LAYOUT_TYPES, o => o.value === layoutTypeId);
+
+  const templates = (() => {
+    if (isGetSingleLayout) {
+      return dbTemplates.filter(t => t.layout_type === 'SINGLE_PAGE');
+    }
+
+    return dbTemplates.filter(
+      t =>
+        t.layout_type === 'DOUBLE_PAGE' &&
+        (t.layout_use === layoutType ||
+          (!t.layout_use && layoutType === 'MISC'))
+    );
+  })();
+
+  const getPageType = layout =>
+    layout.layout_type === 'DOUBLE_PAGE'
+      ? LAYOUT_PAGE_TYPE.FULL_PAGE.id
+      : LAYOUT_PAGE_TYPE.SINGLE_PAGE.id;
+
   return templates.map(t => ({
     id: t.id,
-    type: categoryId,
+    type: layoutType,
     themeId,
     previewImageUrl: t.preview_image_url,
-    name: t.data.properties.title,
+    name: t.title,
     isFavorites: false,
-    pageType: LAYOUT_PAGE_TYPE.SINGLE_PAGE.id
+    pageType: getPageType(t)
   }));
 };
 
@@ -147,7 +137,6 @@ export const getCustomDigitalLayoutApi = async () => {
 
   const mappedLayouts = layouts.map(l => digitalLayoutMapping(l));
 
-  // modify object because of BE flaw
   mappedLayouts.forEach(layout => {
     layout.frames.forEach(frame => {
       frame.objects = removeMediaContentWhenCreateThumbnail(frame.objects);

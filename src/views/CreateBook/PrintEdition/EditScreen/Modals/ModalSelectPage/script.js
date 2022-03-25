@@ -79,6 +79,7 @@ export default {
      */
     drawLayoutSinglePage() {
       this.$root.$emit('drawLayout');
+      this.$root.$emit('pageNumber');
     },
     /**
      * Update layout to sheet, draw layout and then close modal

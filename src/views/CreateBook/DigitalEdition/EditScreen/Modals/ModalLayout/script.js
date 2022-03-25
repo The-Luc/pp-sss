@@ -1,10 +1,11 @@
 import Layouts from '@/containers/ToolPopoverManager/Layouts/DigitalLayouts';
 
-import { EDITION } from '@/common/constants';
+import {
+  EDITION,
+  DIGITAL_LAYOUT_TYPES as LAYOUT_TYPES
+} from '@/common/constants';
 import { useFrame, useFrameAdd, useModal } from '@/hooks';
 
-// for digital. After implement saving feature, this code can be remove
-import { DIGITAL_LAYOUT_TYPES as LAYOUT_TYPES } from '@/mock/layoutTypes';
 import { useObject } from '../../composables';
 
 export default {
