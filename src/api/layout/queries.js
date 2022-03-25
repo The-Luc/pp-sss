@@ -1,27 +1,5 @@
 import { gql } from 'graphql-tag';
 
-const templateFragment = gql`
-  fragment categories on Template {
-    categories {
-      id
-      name
-    }
-  }
-`;
-
-export const getLayoutTypeQuery = gql`
-  query getLayoutType($themeId: ID!) {
-    theme(id: $themeId) {
-      id
-      templates {
-        id
-        ...categories
-      }
-    }
-  }
-  ${templateFragment}
-`;
-
 export const getLayoutsPreviewQuery = gql`
   query getLayoutsPreview($themeId: ID!) {
     theme(id: $themeId) {
@@ -42,11 +20,12 @@ export const getLayoutsQuery = gql`
         id
         data
         preview_image_url
-        ...categories
+        layout_use
+        layout_type
+        title
       }
     }
   }
-  ${templateFragment}
 `;
 
 export const getLayoutElementsQuery = gql`
@@ -94,6 +73,7 @@ export const digitalTemplateFragment = gql`
       objects
       play_in_ids
       play_out_ids
+      preview_image_url
       id
       background {
         id

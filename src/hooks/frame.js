@@ -264,14 +264,15 @@ export const useFrameAction = () => {
     const layoutFrames = cloneDeep(layout.frames);
 
     const newFrames = layoutFrames.map(frame => {
-      const { objects, playInIds, playOutIds } = frame;
+      const { objects, playInIds, playOutIds, previewImageUrl } = frame;
 
       return new FrameDetail({
         fromLayout: !isSupplemental,
         objects,
         isVisited: true,
         playInIds,
-        playOutIds
+        playOutIds,
+        previewImageUrl
       });
     });
 

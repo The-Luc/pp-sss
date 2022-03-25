@@ -56,7 +56,7 @@ export const digitalLayoutMapping = layoutData => {
   };
 
   const frames = layout.digital_frame_templates.map(frame => {
-    const { objects, play_in_ids, play_out_ids, id } = frame;
+    const { objects, play_in_ids, play_out_ids, id, preview_image_url } = frame;
 
     convertObjectPxToInch(objects);
 
@@ -65,7 +65,8 @@ export const digitalLayoutMapping = layoutData => {
       objects,
       playInIds: play_in_ids,
       playOutIds: play_out_ids,
-      isVisited: true
+      isVisited: true,
+      previewImageUrl: preview_image_url || ''
     };
   });
 
