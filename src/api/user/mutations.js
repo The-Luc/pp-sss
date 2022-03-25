@@ -13,7 +13,7 @@ export const loginUserMutation = gql`
 `;
 
 export const saveFavoritesMutation = gql`
-  mutation($id: ID!) {
+  mutation saveFavoriteLayout($id: ID!) {
     create_template_user(template_id: $id) {
       id
       template {
@@ -21,8 +21,10 @@ export const saveFavoritesMutation = gql`
         categories {
           id
         }
+        title
         preview_image_url
         data
+        layout_type
       }
     }
   }
@@ -37,8 +39,10 @@ export const deleteFavoritesMutation = gql`
         categories {
           id
         }
+        title
         preview_image_url
         data
+        layout_type
       }
     }
   }
