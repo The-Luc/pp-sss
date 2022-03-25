@@ -25,16 +25,14 @@ export const saveUserLayoutMutation = gql`
 
 export const saveUserDigitalLayoutMutation = gql`
   mutation saveUserDigitalLayout(
-    $ids: [ID!]!
+    $frameSelections: [CustomDigitalFrameTemplateInput!]!
     $title: String!
     $isSupplemental: Boolean!
-    $previewUrl: String!
   ) {
     create_user_custom_digital_template(
-      digital_frame_ids: $ids
+      digital_frame_selections: $frameSelections
       title: $title
       is_supplemental: $isSupplemental
-      preview_image_url: $previewUrl
     ) {
       ...digitalTemplate
     }

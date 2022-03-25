@@ -26,6 +26,8 @@ export const removeMediaContentWhenCreateThumbnail = objects => {
       const newObject = new ImageElementObject(o);
       newObject.imageUrl = IMAGE_LOCAL.PLACE_HOLDER;
       newObject.type = OBJECT_TYPE.IMAGE;
+      newObject.zoomLevel = null;
+      newObject.hasImage = false;
       clonedObjects[idx] = newObject;
       return;
     }

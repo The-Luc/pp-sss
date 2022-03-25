@@ -1,4 +1,5 @@
 import { mapGetters } from 'vuex';
+import { cloneDeep } from 'lodash';
 
 import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 import Layouts from '@/components/ToolPopovers/Layout';
@@ -8,7 +9,9 @@ import {
   SHEET_TYPE,
   LAYOUT_PAGE_TYPE,
   CUSTOM_LAYOUT_TYPE,
-  EDITION
+  EDITION,
+  LAYOUT_TYPES,
+  SAVED_AND_FAVORITES
 } from '@/common/constants';
 import {
   getThemeOptSelectedById,
@@ -16,7 +19,8 @@ import {
   isEmpty,
   insertItemsToArray,
   removeItemsFormArray,
-  isHalfSheet
+  isHalfSheet,
+  isNormalSheet
 } from '@/common/utils';
 import {
   usePopoverCreationTool,
@@ -29,14 +33,9 @@ import {
 } from '@/hooks';
 
 import { getThemesApi } from '@/api/theme';
+import { getLayoutsByThemeAndTypeApi } from '@/api/layout';
 
-import { cloneDeep } from 'lodash';
 import { changeObjectsCoords } from '@/common/utils/layout';
-import {
-  getLayoutsByThemeAndTypeApi,
-  getPrintLayoutTypesApi
-} from '@/api/layout';
-import { SAVED_AND_FAVORITES } from '@/mock/layoutTypes';
 
 export default {
   components: {
@@ -122,7 +121,7 @@ export default {
       return this.defaultThemeId;
     },
     isHalfSheet() {
-      return isHalfSheet({ type: this.pageSelected?.type });
+      return this.pageSelected && isHalfSheet(this.pageSelected);
     },
     filteredLayouts() {
       if (this.layoutTypeSelected.value === CUSTOM_LAYOUT_TYPE) {
@@ -156,10 +155,11 @@ export default {
   async mounted() {
     await Promise.all([
       this.initPrintData(),
-      this.getLayoutTypes(),
       this.getFavoritesData(),
       this.getCustomData()
     ]);
+
+    this.getLayoutTypes();
 
     await this.filterLayoutType();
 
@@ -186,6 +186,20 @@ export default {
      * Set default selected for layout base on id of sheet: Cover, Single Page or Collage
      */
     setLayoutSelected() {
+      if (isNormalSheet(this.pageSelected)) {
+        const collageId = LAYOUT_TYPES.COLLAGE.value;
+
+        const collageIndex = this.layoutTypes.findIndex(
+          l => l.value === collageId
+        );
+
+        this.layoutTypeSelected = this.getSelectedType(
+          this.layoutTypes[collageIndex]
+        );
+
+        return;
+      }
+
       this.layoutTypeSelected = this.getSelectedType(this.layoutTypes[0]);
     },
 
@@ -227,8 +241,6 @@ export default {
         this.themeSelected = themeSelected;
       }
 
-      await this.getLayoutTypes();
-
       await this.filterLayoutType();
     },
     /**
@@ -237,8 +249,6 @@ export default {
      */
     async onChangeTheme(theme) {
       this.themeSelected = theme;
-
-      await this.getLayoutTypes();
 
       await this.filterLayoutType();
 
@@ -449,12 +459,10 @@ export default {
       this.layoutTypes = opts;
     },
     /**
-     * Get layout types from API
+     * Get layout types
      */
-    async getLayoutTypes() {
-      const layoutTypes = await getPrintLayoutTypesApi(this.themeSelected.id);
-
-      this.layoutTypesOrigin = layoutTypes.map(lt => ({
+    getLayoutTypes() {
+      this.layoutTypesOrigin = Object.values(LAYOUT_TYPES).map(lt => ({
         ...lt,
         subItems: []
       }));

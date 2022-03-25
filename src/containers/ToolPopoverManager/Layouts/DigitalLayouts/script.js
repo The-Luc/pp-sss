@@ -8,7 +8,8 @@ import {
   EDITION,
   MODAL_TYPES,
   SHEET_TYPE,
-  CUSTOM_LAYOUT_TYPE
+  CUSTOM_LAYOUT_TYPE,
+  DIGITAL_LAYOUT_TYPES as LAYOUT_TYPES
 } from '@/common/constants';
 import {
   getThemeOptSelectedById,
@@ -18,7 +19,6 @@ import {
 import {
   usePopoverCreationTool,
   useLayoutPrompt,
-  useGetLayouts,
   useFrame,
   useFrameAction,
   useModal,
@@ -34,9 +34,6 @@ import {
 } from '@/api/layoutService';
 
 import { getThemesApi } from '@/api/theme';
-
-// for digital. After implement saving feature, this code can be remove
-import { DIGITAL_LAYOUT_TYPES as LAYOUT_TYPES } from '@/mock/layoutTypes';
 
 import { cloneDeep } from 'lodash';
 
@@ -64,7 +61,6 @@ export default {
       pageSelected,
       themeId: defaultThemeId
     } = useLayoutPrompt(edition);
-    const { updateSheetThemeLayout } = useGetLayouts(edition);
 
     const { getCustomAndFavoriteLayouts } = useActionLayout();
     const { getCustomDigitalLayout } = useCustomLayout();
@@ -80,7 +76,6 @@ export default {
       setIsPrompt,
       pageSelected,
       defaultThemeId,
-      updateSheetThemeLayout,
       frames,
       currentFrame,
       modalData,
@@ -203,9 +198,11 @@ export default {
      * @param  {Object} pageSelected current selected sheet
      */
     setDisabledLayout(pageSelected) {
+      const isOnlySupplemetal =
+        this.isSupplemental && isEmpty(this.customLayouts);
       this.disabled =
         this.initialData?.disabled ??
-        this.isSupplemental ??
+        isOnlySupplemetal ??
         [
           SHEET_TYPE.COVER,
           SHEET_TYPE.FRONT_COVER,

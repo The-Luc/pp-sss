@@ -9,7 +9,6 @@ export * from './sheet';
 export * from './frame';
 export * from './user';
 export * from './property';
-export * from './photo';
 export * from './common';
 export * from './style';
 export * from './portrait';
