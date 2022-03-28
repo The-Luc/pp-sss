@@ -137,7 +137,7 @@ export const useAssigneeMenu = () => {
   });
 
   const communityId = generalInfo.value.communityId;
-  const getUsers = async () => await getUsersApi(communityId);
+  const getUsers = async () => getUsersApi(communityId);
 
   return { getUsers };
 };

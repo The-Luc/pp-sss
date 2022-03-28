@@ -1,4 +1,4 @@
-import { useMutations, useGetters, useActions } from 'vuex-composition-helpers';
+import { useMutations, useGetters } from 'vuex-composition-helpers';
 
 import {
   saveToFavoritesApi,
@@ -22,8 +22,7 @@ import {
 } from '@/store/modules/app/const';
 import {
   GETTERS as PRINT_GETTERS,
-  MUTATES as PRINT_MUTATES,
-  ACTIONS as PRINT_ACTIONS
+  MUTATES as PRINT_MUTATES
 } from '@/store/modules/print/const';
 import {
   GETTERS as DIGITAL_GETTERS,
@@ -249,8 +248,7 @@ export const useCustomLayout = () => {
    * Return package and supplemental layouts that user saved
    */
   const getCustomDigitalLayout = async () => {
-    const layouts = await getCustomDigitalLayoutApi();
-    return layouts;
+    return getCustomDigitalLayoutApi();
   };
 
   const saveCustomDigitalLayout = async setting => {
