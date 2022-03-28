@@ -535,11 +535,13 @@ export default {
       lastRowCount
     ) {
       const portraitNameArray = [];
+
+      const { flowSingleSettings, startOnPageNumber } = this.flowSettings;
+
       const pages = this.isDigital
         ? Object.values(flowSingleSettings.screen)[0]
         : flowSingleSettings.pages;
 
-      const { flowSingleSettings, startOnPageNumber } = this.flowSettings;
       const { rowCount, colCount } = this.layout;
 
       const isOnStartPage = this.pageNumber === startOnPageNumber;

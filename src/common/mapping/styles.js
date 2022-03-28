@@ -60,14 +60,14 @@ export const textStyleMapping = style => {
   };
 
   const flip = {
-    horizontal: horizontal_flip || false,
-    vertical: vertical_flip || false
+    horizontal: Boolean(horizontal_flip),
+    vertical: Boolean(vertical_flip)
   };
 
   const border = {
     showBorder: show_border,
     stroke: border_color || '#000000',
-    strokeDashArray: stroke_dash_array || [],
+    strokeDashArray: stroke_dash_array,
     strokeLineType: BORDER_STYLES_API[border_style] || 'solid',
     strokeWidth: border_stroke
   };
@@ -81,7 +81,7 @@ export const textStyleMapping = style => {
     .string();
 
   const shadow = {
-    dropShadow: drop_shadow || false,
+    dropShadow: Boolean(drop_shadow),
     shadowAngle: Number.isFinite(text_shadow_angle) ? text_shadow_angle : 270,
     shadowBlur: Number.isFinite(text_shadow_blur) ? text_shadow_blur : 5,
     shadowColor,
@@ -95,9 +95,9 @@ export const textStyleMapping = style => {
     style: {
       fontId: font_id,
       fontSize: font_size,
-      isBold: text_bold || false,
-      isItalic: text_italic || false,
-      isUnderline: text_underline || false,
+      isBold: Boolean(text_bold),
+      isItalic: Boolean(text_italic),
+      isUnderline: Boolean(text_underline),
       color: text_color || '#00000000',
       textCase: TEXT_CASE_OPTS[text_case] || 'none',
       letterSpacing: text_letter_spacing || 0,

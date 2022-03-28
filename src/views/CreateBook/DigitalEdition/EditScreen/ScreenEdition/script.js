@@ -126,8 +126,7 @@ import {
 
 import { cloneDeep, debounce, merge } from 'lodash';
 import { useSaveData, useObject, useVideo } from '../composables';
-import { useSavingStatus } from '@/views/CreateBook/composables';
-import { usePhotos } from '@/views/CreateBook/composables';
+import { useSavingStatus, usePhotos } from '@/views/CreateBook/composables';
 import UndoRedoCanvas from '@/plugins/undoRedoCanvas';
 import {
   BackgroundElementObject,

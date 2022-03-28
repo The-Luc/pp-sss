@@ -1,8 +1,6 @@
 import { get } from 'lodash';
 import moment from 'moment';
 
-import UniqueId from '@/plugins/customUniqueId';
-
 import { MOMENT_TYPE, EDITION } from '@/common/constants';
 
 import { graphqlRequest } from '../urql';
@@ -17,6 +15,7 @@ import { isOk } from '@/common/utils';
 
 import { PortraitAsset, PortraitFolder } from '@/common/models';
 
+import UniqueId from '@/plugins/UniqueId';
 import {
   portraitFolders,
   getPrintSettingsQuery,
