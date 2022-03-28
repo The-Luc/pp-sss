@@ -126,11 +126,7 @@ const getterDigitalLayout = () => {
     listLayouts: THEME_GETTERS.GET_DIGITAL_LAYOUTS_BY_THEME_ID
   });
 
-  const { updateSheetThemeLayout } = useActions({
-    updateSheetThemeLayout: DIGITAL_ACTIONS.UPDATE_SHEET_THEME_LAYOUT
-  });
-
-  return { sheetLayout, listLayouts, updateSheetThemeLayout };
+  return { sheetLayout, listLayouts };
 };
 
 /**
