@@ -35,7 +35,10 @@ import {
   EDITION,
   MODAL_TYPES,
   COVER_TYPE,
-  TRANS_TARGET
+  TRANS_TARGET,
+  SHEET_TYPE,
+  LAYOUT_PAGE_TYPE,
+  OBJECT_TYPE
 } from '@/common/constants';
 
 import {
@@ -45,7 +48,8 @@ import {
   isHalfSheet,
   isHalfRight,
   isOk,
-  isEmpty
+  isEmpty,
+  entitiesToObjects
 } from '@/common/utils';
 import { useThumbnail } from '@/views/CreateBook/composables';
 import { cloneDeep } from 'lodash';
@@ -55,6 +59,7 @@ import { updateTransitionApi } from '@/api/playback';
 import { removeMediaContentWhenCreateThumbnail } from '../common/utils/image';
 import { changeObjectsCoords } from '@/common/utils/layout';
 import { getSheetTransitionApi } from '@/api/playback/api_query';
+import { getUniqueId } from '../common/utils/util';
 
 export const useLayoutPrompt = edition => {
   const EDITION_GETTERS =
@@ -139,11 +144,7 @@ const getterPrintLayout = () => {
     listLayouts: THEME_GETTERS.GET_PRINT_LAYOUTS_BY_THEME_ID
   });
 
-  const { updateSheetThemeLayout } = useActions({
-    updateSheetThemeLayout: PRINT_ACTIONS.UPDATE_SHEET_THEME_LAYOUT
-  });
-
-  return { sheetLayout, listLayouts, updateSheetThemeLayout };
+  return { sheetLayout, listLayouts };
 };
 
 export const useActionLayout = () => {
@@ -300,6 +301,130 @@ export const useCustomLayout = () => {
     getCustomDigitalLayout,
     saveCustomDigitalLayout
   };
+};
+
+export const useApplyPrintLayout = () => {
+  const { currentSheet, getObjects } = useGetters({
+    currentSheet: PRINT_GETTERS.CURRENT_SHEET,
+    getObjects: PRINT_GETTERS.GET_OBJECTS
+  });
+
+  const {
+    clearBackgrounds,
+    setBackground,
+    setObjects,
+    setSheetData
+  } = useMutations({
+    clearBackgrounds: PRINT_MUTATES.CLEAR_BACKGROUNDS,
+    setBackground: PRINT_MUTATES.SET_BACKGROUND,
+    setObjects: PRINT_MUTATES.SET_OBJECTS,
+    setSheetData: PRINT_MUTATES.SET_SHEET_DATA
+  });
+
+  const handleAddingBackgrounds = (
+    objects,
+    isFullLayout,
+    currentPosition,
+    isLeftPage
+  ) => {
+    // Get background object
+    const backgroundObjs = objects.filter(
+      obj => obj.type === OBJECT_TYPE.BACKGROUND
+    );
+
+    if (backgroundObjs.length === 0) {
+      const selectedPosition = isFullLayout ? '' : currentPosition;
+
+      clearBackgrounds(selectedPosition);
+    }
+
+    if (backgroundObjs.length === 2) {
+      backgroundObjs.forEach(bg => {
+        setBackground({ background: bg });
+      });
+    }
+
+    if (backgroundObjs.length === 1) {
+      isFullLayout && clearBackgrounds();
+
+      backgroundObjs[0].isLeftPage = isFullLayout || isLeftPage;
+      setBackground({ background: backgroundObjs[0] });
+    }
+  };
+
+  const applyPrintLayout = async ({
+    themeId,
+    layout,
+    pagePosition,
+    positionCenterX
+  }) => {
+    const sheetType = currentSheet.value.type;
+
+    const objects = entitiesToObjects(layout.objects);
+
+    // Check whether user has add single page or not.
+    //Value: left or right with single page else undefine
+    const isFullLayout = layout.pageType === LAYOUT_PAGE_TYPE.FULL_PAGE.id;
+
+    // Front cover always has the right page
+    // Back cover always has the left page
+    const currentPosition = (() => {
+      if (sheetType === SHEET_TYPE.FRONT_COVER) return 'right';
+
+      return currentSheet.type === SHEET_TYPE.BACK_COVER
+        ? 'left'
+        : pagePosition;
+    })();
+
+    const isLeftPage = currentPosition === 'left';
+    const isRightPage = currentPosition === 'right';
+
+    handleAddingBackgrounds(objects, isFullLayout, currentPosition, isLeftPage);
+
+    if (isFullLayout || isHalfSheet(currentSheet.value)) {
+      const objList = objects.map(obj => ({
+        ...obj,
+        id: getUniqueId()
+      }));
+
+      setObjects({ objectList: objList });
+      return;
+    }
+
+    // Get object(s) rest
+    const restObjs = objects.filter(obj => obj.type !== OBJECT_TYPE.BACKGROUND);
+    const newObjects = restObjs.map(obj => ({
+      ...obj,
+      position: currentPosition,
+      id: getUniqueId()
+    }));
+
+    const storeObjects = Object.values(cloneDeep(getObjects.value)).filter(
+      obj => {
+        if (isEmpty(obj)) return false;
+
+        const x = obj.coord.x;
+
+        const isKeepLeft = isRightPage && x < positionCenterX;
+        const isKeepRight = isLeftPage && x >= positionCenterX;
+
+        return isKeepLeft || isKeepRight;
+      }
+    );
+
+    const objectList = [...newObjects, ...storeObjects];
+
+    setObjects({ objectList });
+
+    // Update sheet fields
+    setSheetData({
+      layoutId: layout.id,
+      themeId,
+      previewImageUrl: layout.previewImageUrl
+    });
+  };
+
+  return { applyPrintLayout };
 };
 
 export const useApplyDigitalLayout = () => {

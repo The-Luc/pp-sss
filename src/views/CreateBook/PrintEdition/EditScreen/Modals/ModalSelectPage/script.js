@@ -1,18 +1,17 @@
 import { mapMutations, mapGetters } from 'vuex';
 
 import Modal from '@/containers/Modals/Modal';
-import { useGetLayouts } from '@/hooks';
+import { useApplyPrintLayout } from '@/hooks';
 import { MUTATES as APP_MUTATES } from '@/store/modules/app/const';
 import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
-import { EDITION } from '@/common/constants';
 import { pxToIn, resetObjects } from '@/common/utils';
 import { changeObjectsCoords } from '@/common/utils/layout';
 
 export default {
   setup() {
-    const { updateSheetThemeLayout } = useGetLayouts(EDITION.PRINT);
+    const { applyPrintLayout } = useApplyPrintLayout();
     return {
-      updateSheetThemeLayout
+      applyPrintLayout
     };
   },
   components: {
@@ -65,7 +64,7 @@ export default {
       const zoom = window.printCanvas.getZoom();
       const width = window.printCanvas.width;
       const positionCenterX = pxToIn(width / zoom / 2);
-      this.updateSheetThemeLayout({
+      this.applyPrintLayout({
         sheetId: this.sheetId,
         themeId: this.themeId,
         layout: this.layout,
