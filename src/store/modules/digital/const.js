@@ -65,7 +65,6 @@ class ActionClass extends BaseObject {
   GET_DATA_MAIN = 'getDataForMainPage';
   GET_DATA_EDIT = 'getDataForEditPage';
   GET_DATA_CANVAS = 'getDataForCanvas';
-  UPDATE_SHEET_THEME_LAYOUT = 'updateSheetThemeLayout';
   UPDATE_OBJECTS_TO_STORE = 'updateObjectsToStore';
 
   constructor(props) {

@@ -27,8 +27,7 @@ import {
 } from '@/store/modules/print/const';
 import {
   GETTERS as DIGITAL_GETTERS,
-  MUTATES as DIGITAL_MUTATES,
-  ACTIONS as DIGITAL_ACTIONS
+  MUTATES as DIGITAL_MUTATES
 } from '@/store/modules/digital/const';
 
 import {
@@ -126,11 +125,7 @@ const getterDigitalLayout = () => {
     listLayouts: THEME_GETTERS.GET_DIGITAL_LAYOUTS_BY_THEME_ID
   });
 
-  const { updateSheetThemeLayout } = useActions({
-    updateSheetThemeLayout: DIGITAL_ACTIONS.UPDATE_SHEET_THEME_LAYOUT
-  });
-
-  return { sheetLayout, listLayouts, updateSheetThemeLayout };
+  return { sheetLayout, listLayouts };
 };
 
 /**
