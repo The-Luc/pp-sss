@@ -86,7 +86,7 @@ export const getLayoutElementsApi = async id => {
 
   if (!isOk(res)) return [];
 
-  const elements = get(res, 'data.template.layout.elements', []);
+  const elements = cloneDeep(get(res, 'data.template.layout.elements', []));
 
   if (elements[0]?.type) {
     // PP templates
@@ -98,12 +98,24 @@ export const getLayoutElementsApi = async id => {
 
   // case: legacy templates
   const background = createBackgroundElement(get(res, 'data.template', {}));
+  const elementsOrder = get(res, 'data.template.layout.elements_order');
+
+  const elementData = elements.map(ele => {
+    const key = first(Object.keys(ele));
+    const value = ele[key];
+    return {
+      id: value.properties.guid,
+      value,
+      key
+    };
+  });
+
+  const inOrderElements = elementsOrder
+    .map(eleId => elementData.find(el => el.id === eleId))
+    .reverse();
 
   return [
-    ...elements.map(ele => {
-      const key = first(Object.keys(ele));
-      const value = ele[key];
-
+    ...inOrderElements.map(({ key, value }) => {
       if (key === SYSTEM_OBJECT_TYPE.TEXT) {
         return createTextElement(value);
       }
