@@ -64,18 +64,13 @@ export const useSavingStatus = () => {
   return { savingStatus, updateSavingStatus };
 };
 
-export const usePhotos = () => {
+export const useAssets = () => {
   const { isDigitalEdition, generalInfo } = useAppCommon();
   const isDigital = isDigitalEdition.value;
 
   const GETTERS = isDigital ? DIGITAL_GETTERS : PRINT_GETTERS;
 
-  const {
-    communityId,
-    mediaObjectIds,
-    currentSheet,
-    currentFrameId
-  } = useGetters({
+  const { mediaObjectIds, currentSheet, currentFrameId } = useGetters({
     communityId: GETTERS.COMMUNITY_ID,
     mediaObjectIds: GETTERS.GET_MEDIA_OBJECT_IDS,
     currentSheet: GETTERS.CURRENT_SHEET,
@@ -94,6 +89,25 @@ export const usePhotos = () => {
 
     return getInProjectAssets(bookId, projectId);
   };
+  const mutateInProject = (
+    asset,
+    apiBookAssetIds,
+    currentAssetIds,
+    deletedAssetsId
+  ) => {
+    const isInBook = apiBookAssetIds.filter(id => asset.id === id).length > 0;
+    if (isInBook) asset.inProject = true;
+
+    // if asset isn't in apiBookAsset or
+    // asset in delete array and not in apiBookAsset
+    const isRemoved =
+      deletedAssetsId.includes(asset.id) &&
+      apiBookAssetIds.filter(id => asset.id === id).length < 2;
+
+    if (!isInBook || isRemoved) asset.inProject = false;
+
+    if (currentAssetIds.includes(asset.id)) asset.inProject = true;
+  };
 
   const updateInProjectAssets = (assets, inProjectIds) => {
     if (!assets) return [];
@@ -103,23 +117,34 @@ export const usePhotos = () => {
     const currentAssetIds = mediaObjectIds.value;
     const deletedAssetsId = arrayDifference(apiPageAssetIds, currentAssetIds);
 
-    assets.forEach(asset => {
-      if (apiBookAssetIds.filter(id => asset.id === id).length > 0)
-        asset.inProject = true;
-
-      // if asset isn't in apiBookAsset or
-      // asset in delete array and not in apiBookAsset
-      if (
-        apiBookAssetIds.filter(id => asset.id === id).length === 0 ||
-        (deletedAssetsId.includes(asset.id) &&
-          apiBookAssetIds.filter(id => asset.id === id).length < 2)
-      )
-        asset.inProject = false;
-
-      if (currentAssetIds.includes(asset.id)) asset.inProject = true;
-    });
+    assets.forEach(asset =>
+      mutateInProject(asset, apiBookAssetIds, currentAssetIds, deletedAssetsId)
+    );
     return assets;
   };
+  return {
+    getCurrentInProjectIds,
+    getInProjectAssets,
+    updateInProjectAssets
+  };
+};
+
+export const usePhotos = () => {
+  const { isDigitalEdition, generalInfo } = useAppCommon();
+  const isDigital = isDigitalEdition.value;
+
+  const GETTERS = isDigital ? DIGITAL_GETTERS : PRINT_GETTERS;
+
+  const { communityId, currentSheet } = useGetters({
+    communityId: GETTERS.COMMUNITY_ID,
+    currentSheet: GETTERS.CURRENT_SHEET
+  });
+
+  const {
+    getCurrentInProjectIds,
+    getInProjectAssets,
+    updateInProjectAssets
+  } = useAssets();
 
   const getMedia = async () => {
     const bookId = Number(generalInfo.value.bookId);
@@ -516,8 +541,8 @@ export const useUploadAssets = () => {
     if (isEmpty(assets)) throw new Error('Cannot upload the asset(s)');
 
     return !albumId
-      ? await createAlbumAssets(albumName, assets)
-      : await updateAlbumAssets(albumId, assets);
+      ? createAlbumAssets(albumName, assets)
+      : updateAlbumAssets(albumId, assets);
   };
 
   return { uploadAssetToAlbum };

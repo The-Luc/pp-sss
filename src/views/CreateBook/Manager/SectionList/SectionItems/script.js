@@ -58,7 +58,9 @@ export default {
         return false;
       }
 
-      if (event.related === null) {
+      const isDragToSheet = !event.related.classList.contains('section-item');
+
+      if (event.related === null || isDragToSheet) {
         return false;
       }
 
@@ -102,7 +104,7 @@ export default {
 
       this.drag = false;
 
-      if (this.selectedIndex < 0 || this.moveToIndex < 0) {
+      if (this.selectedIndex < 0 || this.moveToIndex <= 0) {
         return;
       }
 

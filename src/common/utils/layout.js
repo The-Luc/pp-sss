@@ -16,6 +16,7 @@ import {
 } from '../models/element';
 import { getPagePrintSize, getUniqueId } from '.';
 import { apiTextToModel } from '../mapping';
+import { BACKGROUND_PAGE_TYPE } from '@/common/constants';
 
 /**
  * Get layout option from list layouts option by id
@@ -112,10 +113,17 @@ export const createClipartElement = (element, isRightPage) => {
 
 export const createBackgroundElement = page => {
   const imageUrl = get(page, 'layout.view.background.image_url', '');
+  const viewWidth = get(page, 'layout.view.size.width');
+  const backgroundWidthTheshold = 4000; // max page width = 3000px, full spread width: 6000px
+  const isFullBackground = viewWidth > backgroundWidthTheshold;
+  const pageType = isFullBackground
+    ? BACKGROUND_PAGE_TYPE.DOUBLE_PAGE.id
+    : BACKGROUND_PAGE_TYPE.SINGLE_PAGE.id;
 
   return new BackgroundElementObject({
     id: getUniqueId(),
-    imageUrl
+    imageUrl,
+    pageType
   });
 };
 

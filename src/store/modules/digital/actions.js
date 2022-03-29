@@ -1,7 +1,6 @@
 import { getFramesAndTransitionsApi } from '@/api/frame';
 
 import { OBJECT_TYPE } from '@/common/constants';
-import { getUniqueId } from '@/common/utils';
 
 import DIGITAL from './const';
 
@@ -14,25 +13,6 @@ export const actions = {
 
     const { frames } = await getFramesAndTransitionsApi(state.currentSheetId);
 
-    commit(DIGITAL._MUTATES.SET_FRAMES, { framesList: frames });
-  },
-  [DIGITAL._ACTIONS.UPDATE_SHEET_THEME_LAYOUT](
-    { commit },
-    { themeId, layout }
-  ) {
-    // Update sheet fields
-    commit(DIGITAL._MUTATES.SET_SHEET_DATA, {
-      layoutId: layout.id,
-      themeId,
-      previewImageUrl: layout.previewImageUrl
-    });
-
-    // adding Id to each frame
-    const frames = layout.frames.map(f => ({ ...f, id: getUniqueId() }));
-
-    // set the first frame is the active one
-    commit(DIGITAL._MUTATES.SET_CURRENT_FRAME_ID, { id: frames[0].id });
-    // set Frames, frameIds and activeFrame
     commit(DIGITAL._MUTATES.SET_FRAMES, { framesList: frames });
   },
   [DIGITAL._ACTIONS.UPDATE_OBJECTS_TO_STORE]({ commit }, { objects }) {

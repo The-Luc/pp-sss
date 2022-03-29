@@ -53,7 +53,7 @@ export default {
   },
   methods: {
     /**
-     * Fire when dragging shet target change
+     * Fire when dragging sheet target change
      *
      * @param {String | Number} id        target sheet id
      * @param {String}          position  target location (before or after)

@@ -195,24 +195,13 @@ export default {
     portraitNames() {
       if (isEmpty(this.flowSettings)) return [];
 
-      const {
-        teacherSettings,
-        flowSingleSettings,
-        startOnPageNumber,
-        folders
-      } = this.flowSettings;
+      const { teacherSettings, folders } = this.flowSettings;
 
       const { rowCount, colCount } = this.layout;
       const teacherPlacement = teacherSettings.teacherPlacement;
-      const pages = this.isDigital
-        ? Object.values(flowSingleSettings.screen)[0]
-        : flowSingleSettings.pages;
 
       const numLargePortrait =
         calcAdditionPortraitSlot(teacherSettings, folders[0].assets) / 3;
-
-      const isOnStartPage = this.pageNumber === startOnPageNumber;
-      const isOnLastPage = this.pageNumber === pages[pages.length - 1];
 
       const portraitArray = Object.values(this.portraits);
       const portraitNameArray = [];
@@ -225,33 +214,22 @@ export default {
       const isOneLine =
         lastRowCount > 1 && lastRowCount + numLargePortrait <= colCount;
 
-      if (isOnStartPage && isLargePortraitOnFirst) {
-        for (let i = 1; i <= rowCount; i++) {
-          const numPortraitForRow =
-            i < 3 ? colCount - numLargePortrait * i : colCount;
+      if (isLargePortraitOnFirst) {
+        const portraitNames = this.calcPortraitNameForLargOnFirst(
+          portraitArray,
+          numLargePortrait,
+          isOneLine,
+          lastRowCount
+        );
 
-          portraitNameArray.push(portraitArray.splice(0, numPortraitForRow));
-        }
+        if (portraitNames) return portraitNames;
+      }
 
-        return portraitNameArray;
-      }
-      if (
-        !isOnLastPage ||
-        isLargePortraitOnFirst ||
-        isOneLine ||
-        (lastRowCount === 1 && numLargePortrait < 2)
-      ) {
-        while (portraitArray.length) {
-          portraitNameArray.push(portraitArray.splice(0, colCount));
-        }
-        return portraitNameArray;
-      }
+      const spliceVal = lastRowCount === 1 ? colCount : lastRowCount;
+      const portraitLength = this.portraits.length + numLargePortrait;
+      const lastRow = Math.floor(portraitLength / colCount);
 
       for (let i = 1; i <= rowCount; i++) {
-        const spliceVal = lastRowCount === 1 ? colCount : lastRowCount;
-        const portraitLength = this.portraits.length + numLargePortrait;
-
-        const lastRow = Math.floor(portraitLength / colCount);
         const numPortraitForRow = i === lastRow ? spliceVal - 1 : colCount;
         portraitNameArray.push(portraitArray.splice(0, numPortraitForRow));
       }
@@ -546,6 +524,50 @@ export default {
       const enlargeWidth = Math.min(width, calcImageWidth) + 'px';
 
       portraitsEl.style.setProperty('--enlarge-width', enlargeWidth);
+    },
+    /**
+     *  Calculate portrait name if large portraits on first
+     */
+    calcPortraitNameForLargOnFirst(
+      portraitArray,
+      numLargePortrait,
+      isOneLine,
+      lastRowCount
+    ) {
+      const portraitNameArray = [];
+
+      const { flowSingleSettings, startOnPageNumber } = this.flowSettings;
+
+      const pages = this.isDigital
+        ? Object.values(flowSingleSettings.screen)[0]
+        : flowSingleSettings.pages;
+
+      const { rowCount, colCount } = this.layout;
+
+      const isOnStartPage = this.pageNumber === startOnPageNumber;
+      const isOnLastPage = this.pageNumber === pages[pages.length - 1];
+
+      if (isOnStartPage) {
+        for (let i = 1; i <= rowCount; i++) {
+          const numPortraitForRow =
+            i < 3 ? colCount - numLargePortrait * i : colCount;
+
+          portraitNameArray.push(portraitArray.splice(0, numPortraitForRow));
+        }
+
+        return portraitNameArray;
+      }
+
+      if (
+        !isOnLastPage ||
+        isOneLine ||
+        (lastRowCount === 1 && numLargePortrait < 2)
+      ) {
+        while (portraitArray.length) {
+          portraitNameArray.push(portraitArray.splice(0, colCount));
+        }
+        return portraitNameArray;
+      }
     }
   }
 };

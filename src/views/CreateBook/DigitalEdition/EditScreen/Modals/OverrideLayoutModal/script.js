@@ -1,8 +1,6 @@
 import Modal from '@/containers/Modals/Modal';
 import PpButton from '@/components/Buttons/Button';
 
-import { mapActions } from 'vuex';
-import { ACTIONS as DIGITAL_ACTIONS } from '@/store/modules/digital/const';
 import {
   useAnimation,
   useApplyDigitalLayout,
@@ -38,10 +36,6 @@ export default {
     PpButton
   },
   methods: {
-    ...mapActions({
-      updateSheeThemeLayout: DIGITAL_ACTIONS.UPDATE_SHEET_THEME_LAYOUT
-    }),
-
     onAction() {
       const { sheetData } = this.modalData?.props;
 

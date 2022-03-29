@@ -2,14 +2,9 @@ import { mapMutations } from 'vuex';
 
 import Modal from '@/containers/Modals/Modal';
 import PpButton from '@/components/Buttons/Button';
-import { useGetLayouts, useSheet } from '@/hooks';
+import { useSheet, useApplyPrintLayout } from '@/hooks';
 import { MUTATES as APP_MUTATES } from '@/store/modules/app/const';
-import {
-  EDITION,
-  MODAL_TYPES,
-  SHEET_TYPE,
-  LAYOUT_PAGE_TYPE
-} from '@/common/constants';
+import { MODAL_TYPES, SHEET_TYPE, LAYOUT_PAGE_TYPE } from '@/common/constants';
 import { pxToIn, resetObjects } from '@/common/utils';
 
 export default {
@@ -19,10 +14,10 @@ export default {
   },
   setup() {
     const { sheetLayout } = useSheet();
-    const { updateSheetThemeLayout } = useGetLayouts(EDITION.PRINT);
+    const { applyPrintLayout } = useApplyPrintLayout();
     return {
       sheetLayout,
-      updateSheetThemeLayout
+      applyPrintLayout
     };
   },
   computed: {
@@ -69,12 +64,14 @@ export default {
       const zoom = window.printCanvas.getZoom();
       const width = window.printCanvas.width;
       const positionCenterX = pxToIn(width / zoom / 2);
-      this.updateSheetThemeLayout({
+
+      this.applyPrintLayout({
         sheetId: this.sheetId,
         themeId: this.themeId,
         layout: this.layout,
         positionCenterX
       });
+
       resetObjects();
       this.$root.$emit('drawLayout');
       this.$root.$emit('pageNumber');

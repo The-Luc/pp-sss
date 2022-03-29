@@ -28,45 +28,64 @@ export const textStyleMapping = style => {
   if (style.text_alignment_vertical === 'CENTER_VERTICAL')
     style.text_alignment_vertical = 'MIDDLE';
 
+  const {
+    text_alignment_vertical,
+    text_alignment_horizontal,
+    horizontal_flip,
+    vertical_flip,
+    show_border,
+    border_color,
+    stroke_dash_array,
+    border_style,
+    border_stroke,
+    text_shadow_opacity,
+    text_shadow_color,
+    text_shadow_angle,
+    text_shadow_offset,
+    drop_shadow,
+    text_shadow_blur,
+    font_id,
+    font_size,
+    text_bold,
+    text_italic,
+    text_underline,
+    text_letter_spacing,
+    text_line_spacing,
+    text_case,
+    text_color
+  } = style;
   const alignment = {
-    horizontal:
-      TEXT_HORIZONTAL_ALIGN[style.text_alignment_horizontal] || 'left',
-    vertical: TEXT_VERTICAL_ALIGN[style.text_alignment_vertical] || 'top'
+    horizontal: TEXT_HORIZONTAL_ALIGN[text_alignment_horizontal] || 'left',
+    vertical: TEXT_VERTICAL_ALIGN[text_alignment_vertical] || 'top'
   };
 
   const flip = {
-    horizontal: style.horizontal_flip || false,
-    vertical: style.vertical_flip || false
+    horizontal: Boolean(horizontal_flip),
+    vertical: Boolean(vertical_flip)
   };
 
   const border = {
-    showBorder: style.show_border,
-    stroke: style.border_color || '#000000',
-    strokeDashArray: style.stroke_dash_array || [],
-    strokeLineType: BORDER_STYLES_API[style.border_style] || 'solid',
-    strokeWidth: style.border_stroke
+    showBorder: show_border,
+    stroke: border_color || '#000000',
+    strokeDashArray: stroke_dash_array,
+    strokeLineType: BORDER_STYLES_API[border_style] || 'solid',
+    strokeWidth: border_stroke
   };
 
-  const shadowOpacity = Number.isFinite(style.text_shadow_opacity)
-    ? style.text_shadow_opacity
+  const shadowOpacity = Number.isFinite(text_shadow_opacity)
+    ? text_shadow_opacity
     : 0.5;
 
-  const shadowColor = Color(style.text_shadow_color || '#000000')
+  const shadowColor = Color(text_shadow_color || '#000000')
     .alpha(shadowOpacity)
     .string();
 
   const shadow = {
-    dropShadow: style.drop_shadow || false,
-    shadowAngle: Number.isFinite(style.text_shadow_angle)
-      ? style.text_shadow_angle
-      : 270,
-    shadowBlur: Number.isFinite(style.text_shadow_blur)
-      ? style.text_shadow_blur
-      : 5,
+    dropShadow: Boolean(drop_shadow),
+    shadowAngle: Number.isFinite(text_shadow_angle) ? text_shadow_angle : 270,
+    shadowBlur: Number.isFinite(text_shadow_blur) ? text_shadow_blur : 5,
     shadowColor,
-    shadowOffset: Number.isFinite(style.text_shadow_offset)
-      ? style.text_shadow_offset
-      : 2,
+    shadowOffset: Number.isFinite(text_shadow_offset) ? text_shadow_offset : 2,
     shadowOpacity
   };
 
@@ -74,15 +93,15 @@ export const textStyleMapping = style => {
     name: style.name,
     id: style.id,
     style: {
-      fontId: style.font_id,
-      fontSize: style.font_size,
-      isBold: style.text_bold || false,
-      isItalic: style.text_italic || false,
-      isUnderline: style.text_underline || false,
-      color: style.text_color || '#00000000',
-      textCase: TEXT_CASE_OPTS[style.text_case] || 'none',
-      letterSpacing: style.text_letter_spacing || 0,
-      lineSpacing: style.text_line_spacing || 0,
+      fontId: font_id,
+      fontSize: font_size,
+      isBold: Boolean(text_bold),
+      isItalic: Boolean(text_italic),
+      isUnderline: Boolean(text_underline),
+      color: text_color || '#00000000',
+      textCase: TEXT_CASE_OPTS[text_case] || 'none',
+      letterSpacing: text_letter_spacing || 0,
+      lineSpacing: text_line_spacing || 0,
       lineHeight: 1.2,
       alignment,
       border,

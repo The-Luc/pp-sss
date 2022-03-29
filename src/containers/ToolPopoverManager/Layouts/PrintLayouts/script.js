@@ -25,11 +25,11 @@ import {
 import {
   usePopoverCreationTool,
   useLayoutPrompt,
-  useGetLayouts,
   useModal,
   useActionLayout,
   useCustomLayout,
-  useLayoutElements
+  useLayoutElements,
+  useApplyPrintLayout
 } from '@/hooks';
 
 import { getThemesApi } from '@/api/theme';
@@ -53,7 +53,6 @@ export default {
       pageSelected,
       themeId: defaultThemeId
     } = useLayoutPrompt(edition);
-    const { updateSheetThemeLayout } = useGetLayouts(edition);
 
     const { getLayoutElements } = useLayoutElements();
 
@@ -64,6 +63,7 @@ export default {
       getFavoriteLayouts
     } = useActionLayout();
     const { getCustom } = useCustomLayout();
+    const { applyPrintLayout } = useApplyPrintLayout();
 
     return {
       isPrompt,
@@ -73,7 +73,7 @@ export default {
       setIsPrompt,
       pageSelected,
       defaultThemeId,
-      updateSheetThemeLayout,
+      applyPrintLayout,
       modalData,
       toggleModal,
       saveToFavorites,
@@ -338,7 +338,7 @@ export default {
      * @param {Object} layout layout will be stored & applied on canvas
      */
     applyLayout(layout) {
-      this.updateSheetThemeLayout({
+      this.applyPrintLayout({
         sheetId: this.pageSelected?.id,
         themeId: this.themeSelected?.id,
         layout

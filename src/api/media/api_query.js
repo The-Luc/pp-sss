@@ -235,8 +235,7 @@ export const uploadAssetsApi = async (asset, uploadToken) => {
     formData.append('upload', asset);
     formData.append('authenticationToken', token);
 
-    const res = await axios.post(url, formData);
-    return res;
+    return axios.post(url, formData);
   } catch (error) {
     error.message = ` An error occurred while uploading ${asset.name}`;
     return responseHandler({ error });
