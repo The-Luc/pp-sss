@@ -50,6 +50,14 @@ export const digitalLayoutMapping = layoutData => {
         name: 'isSupplemental',
         parse: Boolean,
         isForce: true
+      },
+      layout_use: {
+        name: 'layoutUse',
+        parse: val => val || 'MISC',
+        isForce: true
+      },
+      layout_type: {
+        name: 'layoutType'
       }
     },
     restrict: ['digital_frame_templates', 'digital_transitions', '__typename']
