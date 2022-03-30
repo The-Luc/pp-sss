@@ -15,7 +15,12 @@ import {
   ImageElementObject,
   TextElementObject
 } from '../models/element';
-import { getPagePrintSize, getUniqueId } from '.';
+import {
+  convertAPIColorObjectToHex,
+  getPagePrintSize,
+  getUniqueId,
+  pxToPt
+} from '.';
 import { apiTextToModel } from '../mapping';
 import { BACKGROUND_PAGE_TYPE } from '@/common/constants';
 import { isNormalSheet } from './sheet';
@@ -96,10 +101,28 @@ export const createImageElement = (element, isRightPage) => {
   const { properties } = element?.picture || {};
   const imageUrl = properties?.url?.startsWith('http') ? properties?.url : '';
 
+  const imageProps = {};
+  const opacity = element?.view?.opacity || 1;
+  imageProps.opacity = opacity;
+
+  // handle border
+  const { color, style, width } = element.view.border;
+  if (width !== 0) {
+    const border = {
+      showBorder: true,
+      stroke: convertAPIColorObjectToHex(color),
+      strokeWidth: pxToPt(width, DATABASE_DPI),
+      strokeDashArray: [],
+      strokeLineType: style
+    };
+    imageProps.border = border;
+  }
+
   return new ImageElementObject({
     ...getElementDimension(element, isRightPage),
     id,
-    imageUrl
+    imageUrl,
+    ...imageProps
   });
 };
 
