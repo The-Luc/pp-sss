@@ -4,6 +4,7 @@ import {
   CUSTOM_LAYOUT_TYPE,
   DATABASE_DPI,
   LAYOUT_PAGE_TYPE,
+  LAYOUT_TYPES,
   OBJECT_TYPE,
   SHEET_TYPE
 } from '../constants';
@@ -17,6 +18,7 @@ import {
 import { getPagePrintSize, getUniqueId } from '.';
 import { apiTextToModel } from '../mapping';
 import { BACKGROUND_PAGE_TYPE } from '@/common/constants';
+import { isNormalSheet } from './sheet';
 
 /**
  * Get layout option from list layouts option by id
@@ -151,4 +153,16 @@ const getElementDimension = (element, isRightPage) => {
   };
 
   return { size, coord, opacity };
+};
+
+export const getLayoutSelected = (sheet, layoutTypes = []) => {
+  if (isNormalSheet(sheet)) {
+    const collageId = LAYOUT_TYPES.COLLAGE.value;
+
+    const collageIndex = layoutTypes.findIndex(l => l.value === collageId);
+
+    return layoutTypes[collageIndex];
+  }
+
+  return layoutTypes[0];
 };

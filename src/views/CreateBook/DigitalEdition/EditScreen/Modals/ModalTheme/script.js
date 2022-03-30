@@ -11,15 +11,16 @@ import PpButton from '@/components/Buttons/Button';
 import Themes from './Themes';
 import Preview from './Preview';
 import { getThemesApi } from '@/api/theme';
-import { loadDigitalLayouts } from '@/api/layoutService';
-import { useLayoutPrompt } from '@/hooks';
+import { useLayoutPrompt, useGetDigitalLayouts } from '@/hooks';
 import { EDITION } from '@/common/constants';
 
 export default {
   setup() {
     const { openPrompt } = useLayoutPrompt(EDITION.DIGITAL);
+    const { getDigitalLayouts } = useGetDigitalLayouts();
     return {
-      openPrompt
+      openPrompt,
+      getDigitalLayouts
     };
   },
   components: {
@@ -107,7 +108,7 @@ export default {
     }
     this.selectedThemeId = this.themes[0]?.id;
     if (this.layouts().length === 0) {
-      const layouts = await loadDigitalLayouts();
+      const layouts = await this.getDigitalLayouts(this.selectedThemeId);
       this.setDigitalLayouts({
         layouts
       });

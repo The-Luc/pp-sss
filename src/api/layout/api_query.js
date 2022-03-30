@@ -2,6 +2,7 @@ import { first, get, cloneDeep, findKey } from 'lodash';
 import { SYSTEM_OBJECT_TYPE, LAYOUT_TYPES } from '@/common/constants';
 import { graphqlRequest } from '../urql';
 import {
+  getDigitalTemplateQuery,
   getLayoutElementsQuery,
   getLayoutsPreviewQuery,
   getLayoutsQuery,
@@ -155,4 +156,14 @@ export const getCustomDigitalLayoutApi = async () => {
     });
   });
   return mappedLayouts;
+};
+
+export const getDigitalLayoutsApi = async themeId => {
+  const res = await graphqlRequest(getDigitalTemplateQuery, { themeId });
+
+  if (!isOk(res)) return;
+
+  const layouts = get(res, 'data.theme.digital_templates');
+
+  return layouts.map(l => digitalLayoutMapping(l));
 };

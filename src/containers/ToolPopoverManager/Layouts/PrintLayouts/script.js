@@ -20,7 +20,7 @@ import {
   insertItemsToArray,
   removeItemsFormArray,
   isHalfSheet,
-  isNormalSheet
+  getLayoutSelected
 } from '@/common/utils';
 import {
   usePopoverCreationTool,
@@ -186,21 +186,8 @@ export default {
      * Set default selected for layout base on id of sheet: Cover, Single Page or Collage
      */
     setLayoutSelected() {
-      if (isNormalSheet(this.pageSelected)) {
-        const collageId = LAYOUT_TYPES.COLLAGE.value;
-
-        const collageIndex = this.layoutTypes.findIndex(
-          l => l.value === collageId
-        );
-
-        this.layoutTypeSelected = this.getSelectedType(
-          this.layoutTypes[collageIndex]
-        );
-
-        return;
-      }
-
-      this.layoutTypeSelected = this.getSelectedType(this.layoutTypes[0]);
+      const type = getLayoutSelected(this.pageSelected, this.layoutTypes);
+      this.layoutTypeSelected = this.getSelectedType(type);
     },
 
     /**
@@ -423,40 +410,26 @@ export default {
      * Filter layout types
      */
     async filterLayoutType() {
-      if (this.pageSelected.type === SHEET_TYPE.NORMAL) {
-        const layoutTypeOpts = [...this.layoutTypesOrigin];
+      let layoutTypeOpts = [...this.layoutTypesOrigin];
 
-        if (!isEmpty(this.favoriteLayouts) || !isEmpty(this.customLayouts)) {
-          const extraMenu = await this.getFavoriteCustomLayoutTypeMenu(
-            SHEET_TYPE.NORMAL
-          );
+      if (this.pageSelected.type !== SHEET_TYPE.NORMAL) {
+        const sheetType =
+          this.pageSelected.type === SHEET_TYPE.BACK_COVER
+            ? SHEET_TYPE.FRONT_COVER
+            : this.pageSelected.type;
 
-          layoutTypeOpts.push(extraMenu);
-        }
-
-        this.layoutTypes = layoutTypeOpts;
-
-        return;
+        layoutTypeOpts = this.layoutTypesOrigin.filter(lo => {
+          return lo.sheetType === sheetType;
+        });
       }
-
-      const sheetType =
-        this.pageSelected.type === SHEET_TYPE.BACK_COVER
-          ? SHEET_TYPE.FRONT_COVER
-          : this.pageSelected.type;
-
-      const opts = this.layoutTypesOrigin.filter(lo => {
-        return lo.sheetType === sheetType;
-      });
 
       if (!isEmpty(this.favoriteLayouts) || !isEmpty(this.customLayouts)) {
-        const extraMenu = await this.getFavoriteCustomLayoutTypeMenu(
-          this.pageSelected.type
-        );
+        const extraMenu = await this.getFavoriteCustomLayoutTypeMenu();
 
-        opts.push(extraMenu);
+        layoutTypeOpts.push(extraMenu);
       }
 
-      this.layoutTypes = opts;
+      this.layoutTypes = layoutTypeOpts;
     },
     /**
      * Get layout types
