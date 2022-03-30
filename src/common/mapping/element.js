@@ -69,7 +69,7 @@ export const apiTextToModel = text => {
               },
               font_size: {
                 name: 'fontSize',
-                parse: val => pxToPt(val, DATABASE_DPI)
+                parse: val => Math.floor(pxToPt(val, DATABASE_DPI))
               },
               line_height: {
                 name: 'lineHeight',
@@ -81,7 +81,6 @@ export const apiTextToModel = text => {
       }
     },
     restrict: [
-      'font_family',
       'line_height',
       'type',
       'red',

@@ -84,6 +84,8 @@ export const changeObjectsCoords = (objects, position, options) => {
 
 export const createTextElement = (element, isRightPage) => {
   const props = apiTextToModel(element);
+  console.log(props);
+  console.log(element);
 
   return new TextElementObject({
     ...props,
