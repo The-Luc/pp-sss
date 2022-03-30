@@ -152,6 +152,19 @@ const getElementDimension = (element, isRightPage) => {
     rotation
   };
 
+  if (rotation !== 0) {
+    const { rx, ry } = getRotatedPoint(
+      coord.x,
+      coord.y,
+      size.width,
+      size.height,
+      rotation
+    );
+
+    coord.x = rx;
+    coord.y = ry;
+  }
+
   return { size, coord, opacity };
 };
 
@@ -165,4 +178,29 @@ export const getLayoutSelected = (sheet, layoutTypes = []) => {
   }
 
   return layoutTypes[0];
+};
+
+export const getRotatedPoint = (x, y, width, height, rotation) => {
+  const angle = (rotation * Math.PI) / 180;
+
+  // get the center of the rectangle (==rotation point)
+  const cx = x + width / 2;
+  const cy = y + height / 2;
+
+  // calc the angle of the unrotated TL corner vs the center point
+  const dx = x - cx;
+  const dy = y - cy;
+  const originalTopLeftAngle = Math.atan2(dy, dx);
+
+  // Add the unrotatedTL + rotationAngle to get total rotation
+  const rotatedTopLeftAngle = originalTopLeftAngle + angle;
+
+  // calc the radius of the rectangle (==diagonalLength/2)
+  const radius = Math.sqrt(width * width + height * height) / 2;
+
+  // calc the rotated top & left corner
+  const rx = cx + radius * Math.cos(rotatedTopLeftAngle);
+  const ry = cy + radius * Math.sin(rotatedTopLeftAngle);
+
+  return { rx, ry };
 };

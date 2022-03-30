@@ -405,7 +405,7 @@ export const useApplyPrintLayout = () => {
       }
     );
 
-    const objectList = [...newObjects, ...storeObjects];
+    const objectList = [...storeObjects, ...newObjects];
 
     setObjects({ objectList });
 
