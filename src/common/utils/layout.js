@@ -4,6 +4,7 @@ import {
   CUSTOM_LAYOUT_TYPE,
   DATABASE_DPI,
   LAYOUT_PAGE_TYPE,
+  LAYOUT_TYPES,
   OBJECT_TYPE,
   SHEET_TYPE
 } from '../constants';
@@ -14,9 +15,15 @@ import {
   ImageElementObject,
   TextElementObject
 } from '../models/element';
-import { getPagePrintSize, getUniqueId } from '.';
+import {
+  convertAPIColorObjectToHex,
+  getPagePrintSize,
+  getUniqueId,
+  pxToPt
+} from '.';
 import { apiTextToModel } from '../mapping';
 import { BACKGROUND_PAGE_TYPE } from '@/common/constants';
+import { isNormalSheet } from './sheet';
 
 /**
  * Get layout option from list layouts option by id
@@ -94,10 +101,28 @@ export const createImageElement = (element, isRightPage) => {
   const { properties } = element?.picture || {};
   const imageUrl = properties?.url?.startsWith('http') ? properties?.url : '';
 
+  const imageProps = {};
+  const opacity = element?.view?.opacity || 1;
+  imageProps.opacity = opacity;
+
+  // handle border
+  const { color, style, width } = element.view.border;
+  if (width !== 0) {
+    const border = {
+      showBorder: true,
+      stroke: convertAPIColorObjectToHex(color),
+      strokeWidth: pxToPt(width, DATABASE_DPI),
+      strokeDashArray: [],
+      strokeLineType: style
+    };
+    imageProps.border = border;
+  }
+
   return new ImageElementObject({
     ...getElementDimension(element, isRightPage),
     id,
-    imageUrl
+    imageUrl,
+    ...imageProps
   });
 };
 
@@ -150,5 +175,55 @@ const getElementDimension = (element, isRightPage) => {
     rotation
   };
 
+  if (rotation !== 0) {
+    const { rx, ry } = getRotatedPoint(
+      coord.x,
+      coord.y,
+      size.width,
+      size.height,
+      rotation
+    );
+
+    coord.x = rx;
+    coord.y = ry;
+  }
+
   return { size, coord, opacity };
+};
+
+export const getLayoutSelected = (sheet, layoutTypes = []) => {
+  if (isNormalSheet(sheet)) {
+    const collageId = LAYOUT_TYPES.COLLAGE.value;
+
+    const collageIndex = layoutTypes.findIndex(l => l.value === collageId);
+
+    return layoutTypes[collageIndex];
+  }
+
+  return layoutTypes[0];
+};
+
+export const getRotatedPoint = (x, y, width, height, rotation) => {
+  const angle = (rotation * Math.PI) / 180;
+
+  // get the center of the rectangle (==rotation point)
+  const cx = x + width / 2;
+  const cy = y + height / 2;
+
+  // calc the angle of the unrotated TL corner vs the center point
+  const dx = x - cx;
+  const dy = y - cy;
+  const originalTopLeftAngle = Math.atan2(dy, dx);
+
+  // Add the unrotatedTL + rotationAngle to get total rotation
+  const rotatedTopLeftAngle = originalTopLeftAngle + angle;
+
+  // calc the radius of the rectangle (==diagonalLength/2)
+  const radius = Math.sqrt(width * width + height * height) / 2;
+
+  // calc the rotated top & left corner
+  const rx = cx + radius * Math.cos(rotatedTopLeftAngle);
+  const ry = cy + radius * Math.sin(rotatedTopLeftAngle);
+
+  return { rx, ry };
 };

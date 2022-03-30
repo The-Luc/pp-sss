@@ -69,6 +69,8 @@ export const digitalTemplateFragment = gql`
     }
     preview_image_url
     is_supplemental
+    layout_use
+    layout_type
     digital_frame_templates {
       objects
       play_in_ids
@@ -86,6 +88,17 @@ export const digitalTemplateFragment = gql`
   }
 `;
 
+export const getDigitalTemplateQuery = gql`
+  query getDigitalTemplate($themeId: ID!) {
+    theme(id: $themeId) {
+      id
+      digital_templates {
+        ...digitalTemplate
+      }
+    }
+  }
+  ${digitalTemplateFragment}
+`;
 export const getUserDigitalLayoutsQuery = gql`
   query getUserDigitalTemplate {
     user_saved_digital_layouts {

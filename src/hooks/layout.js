@@ -11,7 +11,8 @@ import {
   saveCustomPrintLayoutApi,
   getCustomPrintLayoutApi,
   getCustomDigitalLayoutApi,
-  saveCustomDigitalLayoutApi
+  saveCustomDigitalLayoutApi,
+  getDigitalLayoutsApi
 } from '@/api/layout';
 
 import { GETTERS as THEME_GETTERS } from '@/store/modules/theme/const';
@@ -37,7 +38,8 @@ import {
   TRANS_TARGET,
   SHEET_TYPE,
   LAYOUT_PAGE_TYPE,
-  OBJECT_TYPE
+  OBJECT_TYPE,
+  DIGITAL_LAYOUT_TYPES
 } from '@/common/constants';
 
 import {
@@ -51,7 +53,7 @@ import {
   entitiesToObjects
 } from '@/common/utils';
 import { useThumbnail } from '@/views/CreateBook/composables';
-import { cloneDeep } from 'lodash';
+import { cloneDeep, findKey } from 'lodash';
 import { getFrameObjectsApi, deleteFrameApi } from '@/api/frame';
 import { useFrame, useFrameOrdering, useFrameAction } from '@/hooks';
 import { updateTransitionApi } from '@/api/playback';
@@ -98,18 +100,6 @@ export const useLayoutPrompt = edition => {
     themeId
   };
 };
-/**
- * to return the getters of corresponding mode
- * @param {String} edition indicate which mode is currently active (print / digital)
- * @returns getters
- */
-export const useGetLayouts = edition => {
-  if (edition === EDITION.PRINT) {
-    return getterPrintLayout();
-  } else {
-    return getterDigitalLayout();
-  }
-};
 
 /**
  * to get layout elements
@@ -123,27 +113,32 @@ export const useLayoutElements = () => ({
  * to return the getters digital layout
  * @returns getters
  */
-const getterDigitalLayout = () => {
+export const useGetDigitalLayouts = () => {
   const { sheetLayout, listLayouts } = useGetters({
     sheetLayout: DIGITAL_GETTERS.SHEET_LAYOUT,
     listLayouts: THEME_GETTERS.GET_DIGITAL_LAYOUTS_BY_THEME_ID
   });
 
-  return { sheetLayout, listLayouts };
-};
+  const getDigitalLayouts = async (themeId, layoutTypeId) => {
+    const layouts = await getDigitalLayoutsApi(themeId);
 
-/**
- * Return the getters print layout
- * @returns getters
- */
-const getterPrintLayout = () => {
-  const { sheetLayout, listLayouts } = useGetters({
-    sheetLayout: PRINT_GETTERS.SHEET_LAYOUT,
-    getLayoutsByType: THEME_GETTERS.GET_PRINT_LAYOUT_BY_TYPE,
-    listLayouts: THEME_GETTERS.GET_PRINT_LAYOUTS_BY_THEME_ID
-  });
+    const isSupplemental =
+      layoutTypeId === DIGITAL_LAYOUT_TYPES.SUPPLEMENTAL_LAYOUTS.value;
 
-  return { sheetLayout, listLayouts };
+    const layoutUse = findKey(
+      DIGITAL_LAYOUT_TYPES,
+      o => o.value === layoutTypeId
+    );
+
+    // get layouts at the theme preview screen
+    if (!layoutTypeId) return layouts;
+
+    if (isSupplemental) return layouts.filter(l => l.isSupplemental);
+
+    return layouts.filter(l => l.layoutUse === layoutUse && !l.isSupplemental);
+  };
+
+  return { sheetLayout, listLayouts, getDigitalLayouts };
 };
 
 export const useActionLayout = () => {
@@ -410,7 +405,7 @@ export const useApplyPrintLayout = () => {
       }
     );
 
-    const objectList = [...newObjects, ...storeObjects];
+    const objectList = [...storeObjects, ...newObjects];
 
     setObjects({ objectList });
 

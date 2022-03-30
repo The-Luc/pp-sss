@@ -9,12 +9,14 @@ import {
   MODAL_TYPES,
   SHEET_TYPE,
   CUSTOM_LAYOUT_TYPE,
-  DIGITAL_LAYOUT_TYPES as LAYOUT_TYPES
+  DIGITAL_LAYOUT_TYPES as LAYOUT_TYPES,
+  SAVED_AND_FAVORITES
 } from '@/common/constants';
 import {
   getThemeOptSelectedById,
   isEmpty,
-  entitiesToObjects
+  entitiesToObjects,
+  getLayoutSelected
 } from '@/common/utils';
 import {
   usePopoverCreationTool,
@@ -24,14 +26,10 @@ import {
   useModal,
   useActionLayout,
   useCustomLayout,
+  useGetDigitalLayouts,
   useApplyDigitalLayout,
   useObjectProperties
 } from '@/hooks';
-
-import {
-  loadDigitalLayouts,
-  loadSupplementalLayouts
-} from '@/api/layoutService';
 
 import { getThemesApi } from '@/api/theme';
 
@@ -66,6 +64,7 @@ export default {
     const { getCustomDigitalLayout } = useCustomLayout();
     const { applyDigitalLayout } = useApplyDigitalLayout();
     const { listObjects } = useObjectProperties();
+    const { getDigitalLayouts } = useGetDigitalLayouts();
 
     return {
       isPrompt,
@@ -84,7 +83,8 @@ export default {
       getCustomAndFavoriteLayouts,
       getSheetFrames,
       applyDigitalLayout,
-      listObjects
+      listObjects,
+      getDigitalLayouts
     };
   },
   data() {
@@ -151,12 +151,9 @@ export default {
     }
   },
   async mounted() {
-    await Promise.all([
-      this.initDigitalData(),
-      this.getLayoutTypes(),
-      this.getCustomData()
-    ]);
+    await Promise.all([this.initDigitalData(), this.getCustomData()]);
 
+    this.getLayoutTypes();
     this.filterLayoutType();
 
     await this.initData();
@@ -180,29 +177,34 @@ export default {
      */
     async initDigitalData() {
       this.themesOptions = await getThemesApi(true);
-
-      const layouts = this.isSupplemental
-        ? loadSupplementalLayouts()
-        : loadDigitalLayouts();
-
-      this.setDigitalLayouts({ layouts });
     },
     /**
      * Set default selected for layout base on id of sheet: Cover, Single Page or Collage
      */
     setLayoutSelected() {
-      this.layoutTypeSelected = this.getSelectedType(this.layoutTypes[0]);
+      if (this.isSupplemental) {
+        this.layoutTypeSelected = this.getSelectedType(this.layoutTypes[0]);
+        return;
+      }
+
+      const type = getLayoutSelected(this.pageSelected, this.layoutTypes);
+      this.layoutTypeSelected = this.getSelectedType(type);
     },
     /**
      * Set disabled select layout base on id of sheet are cover or half-sheet
      * @param  {Object} pageSelected current selected sheet
      */
     setDisabledLayout(pageSelected) {
-      const isOnlySupplemetal =
-        this.isSupplemental && isEmpty(this.customLayouts);
+      const isCustomExisted = !isEmpty(this.customLayouts);
+
+      if (isCustomExisted) {
+        this.disabled = false;
+        return;
+      }
+
       this.disabled =
         this.initialData?.disabled ??
-        isOnlySupplemetal ??
+        this.isSupplemental ??
         [
           SHEET_TYPE.COVER,
           SHEET_TYPE.FRONT_COVER,
@@ -267,7 +269,7 @@ export default {
 
       layout.frames.forEach(f => (f.objects = entitiesToObjects(f.objects)));
 
-      const isSupplemental = layout.isSupplemental;
+      const isSupplemental = layout.isSupplemental || this.isSupplemental;
 
       const shouldShowConfirm = await this.shouldShowConfirmationDialog();
 
@@ -326,7 +328,23 @@ export default {
      * Filter layout types
      */
     filterLayoutType() {
-      const layoutTypeOpts = [...this.layoutTypesOrigin];
+      let layoutTypeOpts = [...this.layoutTypesOrigin];
+
+      if (this.pageSelected.type !== SHEET_TYPE.NORMAL) {
+        const sheetType =
+          this.pageSelected.type === SHEET_TYPE.BACK_COVER
+            ? SHEET_TYPE.FRONT_COVER
+            : this.pageSelected.type;
+
+        layoutTypeOpts = this.layoutTypesOrigin.filter(
+          lo => lo.sheetType === sheetType
+        );
+      }
+
+      if (this.isSupplemental) {
+        layoutTypeOpts = [];
+        layoutTypeOpts.push(LAYOUT_TYPES.SUPPLEMENTAL_LAYOUTS);
+      }
 
       if (!isEmpty(this.favoriteLayouts) || !isEmpty(this.customLayouts)) {
         layoutTypeOpts.push({
@@ -340,11 +358,13 @@ export default {
     },
 
     /**
-     * Get layout types from API
+     * Get layout types
      */
-    async getLayoutTypes() {
-      // call api to get alyout types
-      const layoutTypes = [];
+    getLayoutTypes() {
+      const layoutTypes = Object.values(LAYOUT_TYPES).map(lt => ({
+        ...lt,
+        subItems: []
+      }));
 
       this.layoutTypesOrigin = this.initialData?.isSupplemental
         ? layoutTypes
@@ -375,6 +395,19 @@ export default {
 
         return;
       }
+
+      const isSelectFavorite =
+        this.layoutTypeSelected.value === SAVED_AND_FAVORITES.value;
+
+      if (!isSelectFavorite) {
+        this.layouts = await this.getDigitalLayouts(
+          this.themeSelected.id,
+          this.layoutTypeSelected.value
+        );
+
+        return;
+      }
+
       const customPackage = this.customLayouts.filter(
         layout => !layout.isSupplemental
       );
