@@ -19,6 +19,7 @@ import {
   convertAPIColorObjectToHex,
   getPagePrintSize,
   getUniqueId,
+  parseFromAPIShadow,
   pxToPt
 } from '.';
 import { apiTextToModel } from '../mapping';
@@ -102,6 +103,7 @@ export const createImageElement = (element, isRightPage) => {
   const imageUrl = properties?.url?.startsWith('http') ? properties?.url : '';
 
   const imageProps = {};
+
   const opacity = element?.view?.opacity || 1;
   imageProps.opacity = opacity;
 
@@ -116,6 +118,14 @@ export const createImageElement = (element, isRightPage) => {
       strokeLineType: style
     };
     imageProps.border = border;
+  }
+
+  // handle shadow
+  const boxShadow = element.view?.box_shadow || {};
+
+  if (!isEmpty(boxShadow)) {
+    const shadow = parseFromAPIShadow(boxShadow[0]);
+    imageProps.shadow = shadow;
   }
 
   return new ImageElementObject({
