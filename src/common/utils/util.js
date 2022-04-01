@@ -646,8 +646,6 @@ export const convertRGBToHex = rgb => {
 export const parseFromAPIShadow = apiShadow => {
   if (isEmpty(apiShadow)) return new BaseShadow();
 
-  const shadowColor = convertAPIColorObjectToHex(apiShadow.color);
-
   const { h_shadow: x, v_shadow: y, blur, color } = apiShadow;
 
   const shadowColor = convertAPIColorObjectToHex(color);

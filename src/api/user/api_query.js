@@ -37,7 +37,7 @@ export const getCurrentUserApi = async () => {
 
   if (res.status === STATUS.NG || isEmpty(communityUserId)) return {};
 
-  const role = res.data.communities_user.admin ? ROLE.ADMIN : ROLE.USER;
+  const role = get(res, 'data.communities_user.admin') ? ROLE.ADMIN : ROLE.USER;
   const assigneeId = get(res, 'data.communities_user.user.id', null);
 
   return new User({
