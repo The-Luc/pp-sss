@@ -92,7 +92,16 @@ export const apiTextToModel = text => {
       'v_shadow'
     ]
   };
+  const { decoration, style, weight } = get(
+    text,
+    'text.view.text_presentation',
+    {}
+  );
+
+  const isBold = weight > 500;
+  const isItalic = style === 'italic' || style === 'oblique';
+  const isUnderline = decoration === 'underline';
 
   const mapData = mapObject(text, mapRules);
-  return { ...mapData, color, shadow };
+  return { ...mapData, color, shadow, isBold, isItalic, isUnderline };
 };
