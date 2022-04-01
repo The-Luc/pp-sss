@@ -64,10 +64,6 @@ export default {
         return this.chosenBackground;
       }
 
-      if (!isEmpty(this.appliedBackground)) {
-        return this.appliedBackground;
-      }
-
       this.chosenBackground =
         this.backgrounds.length > 0 ? this.backgrounds[0] : { id: '' };
 

@@ -644,7 +644,7 @@ export const convertRGBToHex = rgb => {
  * @returns {Object} standard shadow object used in frontend
  */
 export const parseFromAPIShadow = apiShadow => {
-  if (!apiShadow) return new BaseShadow();
+  if (isEmpty(apiShadow)) return new BaseShadow();
 
   const { h_shadow: x, v_shadow: y, blur, color } = apiShadow;
 

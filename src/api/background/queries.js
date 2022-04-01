@@ -58,3 +58,22 @@ export const backgroundOfThemeQuery = gql`
     }
   }
 `;
+
+export const digitalBackgroundByThemeQuery = gql`
+  query digitalBackgroundByTheme {
+    themes {
+      id
+      digital_templates {
+        id
+        title
+        backgrounds {
+          id
+          image_url
+          page_type
+          name
+          thumbnail
+        }
+      }
+    }
+  }
+`;
