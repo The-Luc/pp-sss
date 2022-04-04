@@ -149,7 +149,7 @@ export const useBackgroundAction = () => {
   const getFrameBackgrounds = async frameIds => {
     const promises = frameIds.map(id => getFrameBackground(id));
 
-    return await Promise.all(promises);
+    return Promise.all(promises);
   };
 
   return {

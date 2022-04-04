@@ -6,6 +6,7 @@ import moment from 'moment';
 import {
   inToPx,
   ptToPx,
+  pxToPt,
   getPagePrintSize,
   getCoverPagePrintSize
 } from './canvas';
@@ -32,6 +33,7 @@ import {
   createTextBoxObject
 } from '@/common/fabricObjects';
 import { isBackground, modifyBgToRenderOnPage } from './background';
+import { DATABASE_DPI } from '../constants';
 
 const mapSubData = (sourceObject, rules, data) => {
   const isNoSubRule = isEmpty(data);
@@ -642,14 +644,24 @@ export const convertRGBToHex = rgb => {
  * @returns {Object} standard shadow object used in frontend
  */
 export const parseFromAPIShadow = apiShadow => {
-  const shadowColor = convertAPIColorObjectToHex(apiShadow.color);
+  if (isEmpty(apiShadow)) return new BaseShadow();
 
-  const { h_shadow: x, v_shadow: y } = apiShadow;
-  const dropShadow = x > 0 || y > 0;
+  const { h_shadow: x, v_shadow: y, blur, color } = apiShadow;
+
+  const shadowColor = convertAPIColorObjectToHex(color);
+  const shadowBlur = blur ? Math.floor(pxToPt(+blur, DATABASE_DPI)) : 0;
+  const dropShadow = x > 0 || y > 0 || shadowBlur > 0;
   const shadowAngle = (Math.atan2(y, x) * 180) / Math.PI - 90;
   const shadowOffset = Math.sqrt(x * x + y * y);
 
-  return new BaseShadow({ dropShadow, shadowOffset, shadowAngle, shadowColor });
+  return new BaseShadow({
+    dropShadow,
+    shadowOffset,
+    shadowAngle,
+    shadowColor,
+    shadowOpacity: 1,
+    shadowBlur
+  });
 };
 
 /**

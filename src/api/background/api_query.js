@@ -9,7 +9,8 @@ import {
   backgroundCategoriesQuery,
   backgroundQuery,
   backgroundOfThemeQuery,
-  digitalBackgroundQuery
+  digitalBackgroundQuery,
+  digitalBackgroundByThemeQuery
 } from './queries';
 
 import { BACKGROUND_TYPE, BACKGROUND_PAGE_TYPE } from '@/common/constants';
@@ -26,10 +27,10 @@ const mapBackgrounds = (backgrounds, bgTypeSubId, bgTypeId) => {
 };
 
 const getBackgroundsOfCategory = async (
+  isDigital,
   backgroundTypeId,
   backgroundTypeSubId,
-  backgroundPageTypeId,
-  isDigital
+  backgroundPageTypeId
 ) => {
   const query = isDigital ? digitalBackgroundQuery : backgroundQuery;
 
@@ -45,12 +46,7 @@ const getBackgroundsOfCategory = async (
     backgroundTypeId
   );
 
-  if (isDigital)
-    return backgrounds.map(bg => ({
-      ...bg,
-      pageType: BACKGROUND_PAGE_TYPE.DIGITAL.id,
-      backgroundType: BACKGROUND_TYPE.CATEGORY.id
-    }));
+  if (isDigital) return backgrounds;
 
   return backgrounds.filter(
     item =>
@@ -59,7 +55,13 @@ const getBackgroundsOfCategory = async (
   );
 };
 
-const getBackgroundsOfTheme = async (
+const getBackgroundsOfTheme = async (isDigital, ...args) => {
+  return isDigital
+    ? getDigitalBackgrounds(...args)
+    : getPrintBackgrounds(...args);
+};
+
+const getPrintBackgrounds = async (
   backgroundTypeId,
   backgroundTypeSubId,
   backgroundPageTypeId
@@ -81,6 +83,7 @@ const getBackgroundsOfTheme = async (
       });
     });
   });
+
   return mapBackgrounds(
     backgrounds,
     backgroundTypeSubId,
@@ -91,8 +94,26 @@ const getBackgroundsOfTheme = async (
       (backgroundPageTypeId || BACKGROUND_PAGE_TYPE.GENERAL.id)
   );
 };
+
+const getDigitalBackgrounds = async (bgTypeId, themeId) => {
+  const res = await graphqlRequest(digitalBackgroundByThemeQuery);
+
+  if (!isOk(res)) return [];
+
+  const theme = res.data.themes.find(t => t.id === themeId);
+
+  const backgrounds = theme.digital_templates
+    .map(template => template.backgrounds)
+    .flat();
+
+  return mapBackgrounds(backgrounds, themeId, bgTypeId);
+};
 /**
  * Get background for print edition
+  backgroundTypeId => THEME or CATEGORY OR FAVORITE
+  backgroundTypeSubId => Id of seleted type above
+  backgroundPageTypeId => Print: page type, Digital: null
+  isDigital
  *
  * @returns {Object}  query result
  */
@@ -108,10 +129,10 @@ export const getBackgroundsApi = (
       : getBackgroundsOfTheme;
 
   return getBackgroundMethod(
+    isDigital,
     backgroundTypeId,
     backgroundTypeSubId,
-    backgroundPageTypeId,
-    isDigital
+    backgroundPageTypeId
   );
 };
 /**

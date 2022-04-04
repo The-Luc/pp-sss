@@ -4,7 +4,11 @@ import { cloneDeep } from 'lodash';
 
 import { getBackgroundType } from '@/common/utils';
 
-import { usePopoverCreationTool, useDigitalBackgroundMenu } from '@/hooks';
+import {
+  usePopoverCreationTool,
+  useDigitalBackgroundMenu,
+  useBackgroundGetter
+} from '@/hooks';
 
 export default {
   components: {
@@ -20,12 +24,15 @@ export default {
       getBackgroundData
     } = useDigitalBackgroundMenu();
 
+    const { backgrounds: appliedBackground } = useBackgroundGetter();
+
     return {
       setToolNameSelected,
       currentThemeId,
       toggleModal,
       getBackgroundTypeData,
-      getBackgroundData
+      getBackgroundData,
+      appliedBackground
     };
   },
   data() {
@@ -33,8 +40,7 @@ export default {
       backgroundTypes: {},
       backgrounds: [],
       noBackgroundLength: 4,
-      selectedType: { sub: {} },
-      appliedBackground: {}
+      selectedType: { sub: {} }
     };
   },
   mounted() {
@@ -48,7 +54,7 @@ export default {
       this.backgroundTypes = await this.getBackgroundTypeData();
 
       this.selectedType = getBackgroundType(
-        this.appliedBackground,
+        {}, //this.appliedBackground,
         this.backgroundTypes,
         this.currentThemeId
       );
