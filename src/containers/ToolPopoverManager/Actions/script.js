@@ -43,6 +43,7 @@ export default {
       { name: 'Paste Copied Item', value: ACTIONS.PASTE, disabled: true },
       { name: 'Save Layout', value: ACTIONS.SAVE_LAYOUT, disabled: true },
       { name: 'Save Style', value: ACTIONS.SAVE_STYLE, disabled: true },
+      { name: 'Map a Layout', value: ACTIONS.MAP_LAYOUT, disabled: false },
       { name: 'Generate PDF', value: ACTIONS.GENERATE_PDF, disabled: true }
     ];
     if (this.isDigital) items.pop();
@@ -142,6 +143,15 @@ export default {
       }
       if (actionValue === ACTIONS.GENERATE_PDF) {
         this.$root.$emit(EVENT_TYPE.GENERATE_PDF);
+      }
+
+      if (actionValue === ACTIONS.MAP_LAYOUT) {
+        this.toggleModal({
+          isOpenModal: true,
+          modalData: {
+            type: MODAL_TYPES.MAP_LAYOUT
+          }
+        });
       }
 
       this.setToolNameSelected({

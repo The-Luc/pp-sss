@@ -1,6 +1,7 @@
 .tool-popover {
   &-container {
     width: 563px;
+    position: relative;
   }
 
   &-header {
@@ -49,6 +50,10 @@
     align-items: center;
     justify-content: center;
     border-top: 1px solid $color-gray15;
+
+    &.hide-footer > button {
+      visibility: hidden;
+    }
 
     .footer-btn::v-deep.v-btn {
       width: 100px;

@@ -97,10 +97,14 @@ export const DIGITAL_LAYOUT_TYPES = {
 
 export const CUSTOM_LAYOUT_TYPE = -999;
 
-export const SAVED_AND_FAVORITES = {
+export const SAVED_AND_FAVORITES_TYPE = {
   name: 'Saved Layouts/Favorites',
   id: -999,
-  value: -999,
+  value: -999
+};
+
+export const SAVED_AND_FAVORITES = {
+  ...SAVED_AND_FAVORITES_TYPE,
   subItems: Object.values(LAYOUT_PAGE_TYPE).map(lgt => ({
     ...lgt,
     value: lgt.id,

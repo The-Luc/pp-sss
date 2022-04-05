@@ -3,11 +3,11 @@
     <span class="pp-selector-container-title">{{ title }}</span>
     <PpSelect
       v-if="isDigital"
-      id="layout-type"
+      id="digital-layout-type"
       :items="items"
       :disabled="disabled"
       :selected-val="layoutSelected"
-      container="#layout-type"
+      container="#digital-layout-type"
       @change="onChangeLayout"
     />
     <PpSelectMulti

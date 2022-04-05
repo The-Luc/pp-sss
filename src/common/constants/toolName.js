@@ -27,6 +27,7 @@ export const ACTIONS = {
   PASTE: 'past',
   SAVE_LAYOUT: 'saveLayout',
   SAVE_STYLE: 'saveStyle',
+  MAP_LAYOUT: 'mapLayout',
   GENERATE_PDF: 'generatePdf'
 };
 

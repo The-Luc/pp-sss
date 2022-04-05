@@ -65,6 +65,10 @@ export default {
     isCancelButtonDisplayed: {
       type: Boolean,
       default: true
+    },
+    isDarkHeader: {
+      type: Boolean,
+      default: false
     }
   },
   data() {

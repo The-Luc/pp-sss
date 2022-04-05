@@ -10,3 +10,12 @@ export const themeOptionsQuery = gql`
     }
   }
 `;
+export const getThemeDefaultQuery = gql`
+  query getThemeDefault($bookId: ID!) {
+    book(id: $bookId) {
+      id
+      print_theme_id
+      digital_theme_id
+    }
+  }
+`;
