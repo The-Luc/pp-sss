@@ -1,6 +1,7 @@
 import Layouts from '@/components/ToolPopovers/Layout';
 import PpButton from '@/components/Buttons/Button';
 import CommonModal from '@/components/Modals/CommonModal';
+import MappingPreview from './MappingPreview';
 
 import {
   useModal,
@@ -18,7 +19,7 @@ import {
 import { isEmpty } from '@/common/utils';
 
 export default {
-  components: { Layouts, CommonModal, PpButton },
+  components: { Layouts, CommonModal, PpButton, MappingPreview },
   setup() {
     const { toggleModal } = useModal();
     const { getDefaultThemeId } = useGetterTheme();
@@ -51,8 +52,8 @@ export default {
     return {
       printText,
       digitalText,
-      printSelectedLayout: null,
-      digitalSelectedLayout: null,
+      printLayoutSelected: null,
+      digitalLayoutSelected: null,
       printLayouts: [],
       digitalLayouts: [],
       customPrintLayouts: [],
@@ -73,7 +74,8 @@ export default {
       isDigitalFooterHidden: false,
       isConfirmDisplayed: false,
       isPrintPreviewDisplayed: false,
-      isDigitalPreviewDisplayed: false
+      isDigitalPreviewDisplayed: false,
+      isStepThreeDisplayed: false
     };
   },
   computed: {
@@ -84,10 +86,10 @@ export default {
       return this.isSaveAndFavoriteType(this.digitalLayoutTypeSelected);
     },
     printLayoutId() {
-      return this.printSelectedLayout?.id || null;
+      return this.printLayoutSelected?.id || null;
     },
     digitalLayoutId() {
-      return this.digitalSelectedLayout?.id || null;
+      return this.digitalLayoutSelected?.id || null;
     }
   },
   async mounted() {
@@ -122,13 +124,13 @@ export default {
     onConfirmPrintLayout(layout) {
       if (isEmpty(layout)) return;
 
-      this.printSelectedLayout = layout;
+      this.printLayoutSelected = layout;
       this.handleStepTwo();
     },
     onConfirmDigitalLayout(layout) {
       if (isEmpty(layout)) return;
 
-      this.digitalSelectedLayout = layout;
+      this.digitalLayoutSelected = layout;
       this.handleStepThree();
     },
     async onChangePrintTheme(theme) {
@@ -211,21 +213,30 @@ export default {
       this.isPrintFooterHidden = false;
       this.isPrintPreviewDisplayed = false;
       this.isDigitalPreviewDisplayed = false;
+      this.isStepThreeDisplayed = false;
     },
     handleStepTwo() {
       this.isDigitalOpaque = false;
       this.isDigitalFooterHidden = false;
       this.isPrintFooterHidden = true;
       this.isPrintPreviewDisplayed = true;
+      this.isStepThreeDisplayed = false;
     },
     handleStepThree() {
       this.isConfirmDisplayed = true;
       this.isPrintFooterHidden = true;
       this.isDigitalFooterHidden = true;
       this.isDigitalPreviewDisplayed = true;
+      this.isStepThreeDisplayed = true;
     },
     isSaveAndFavoriteType(type) {
       return type.value === SAVED_AND_FAVORITES_TYPE.value;
+    },
+    editPrintSelection() {
+      this.handleStepOne();
+    },
+    editDigitalSelection() {
+      this.handleStepTwo();
     }
   }
 };

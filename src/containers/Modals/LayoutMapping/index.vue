@@ -13,7 +13,15 @@
       @cancel="onCancel"
       @accept="onConfirm"
     >
-      <div class="layout-mapping__container">
+      <div v-if="isStepThreeDisplayed" class="step-3-container">
+        Step 3: Confirm Selections
+      </div>
+      <div
+        :class="[
+          'layout-mapping__container',
+          { 'show-step-three': isStepThreeDisplayed }
+        ]"
+      >
         <Layouts
           v-if="!isPrintPreviewDisplayed"
           :is-visited="true"
@@ -32,7 +40,11 @@
           @onChangeLayoutType="onChangePrintLayoutType"
           @onClose="onCancel"
         />
-        <div v-else>Review Print</div>
+        <mapping-preview
+          v-else
+          :layout="printLayoutSelected"
+          @onEdit="editPrintSelection"
+        />
         <Layouts
           v-if="!isDigitalPreviewDisplayed"
           :is-visited="true"
@@ -53,14 +65,19 @@
           @onChangeLayoutType="onChangeDigitalLayoutType"
           @onClose="onCancel"
         />
-        <div v-else>Review Print</div>
+        <mapping-preview
+          v-else
+          :is-digital="true"
+          :layout="digitalLayoutSelected"
+          @onEdit="editDigitalSelection"
+        />
       </div>
-      <div v-if="isConfirmDisplayed">
-        <div class="apply-warning-footer">
-          <pp-button class="pp-btn-save" is-active @click="onCancel">
+      <div v-if="isConfirmDisplayed" style="position:relative; z-index:10">
+        <div class="layout-mapping__footer">
+          <pp-button class="footer-btn cancel" @click="onCancel">
             Cancel
           </pp-button>
-          <pp-button class="pp-btn-cancel" @click="onCancel">
+          <pp-button class="footer-btn confirm" @click="onCancel">
             Confirm
           </pp-button>
         </div>
