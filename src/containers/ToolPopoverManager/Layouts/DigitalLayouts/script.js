@@ -10,7 +10,7 @@ import {
   SHEET_TYPE,
   CUSTOM_LAYOUT_TYPE,
   DIGITAL_LAYOUT_TYPES as LAYOUT_TYPES,
-  SAVED_AND_FAVORITES
+  SAVED_AND_FAVORITES_TYPE
 } from '@/common/constants';
 import {
   getThemeOptSelectedById,
@@ -24,9 +24,8 @@ import {
   useFrame,
   useFrameAction,
   useModal,
-  useActionLayout,
   useCustomLayout,
-  useGetDigitalLayouts,
+  useGetLayouts,
   useApplyDigitalLayout,
   useObjectProperties
 } from '@/hooks';
@@ -60,11 +59,10 @@ export default {
       themeId: defaultThemeId
     } = useLayoutPrompt(edition);
 
-    const { getCustomAndFavoriteLayouts } = useActionLayout();
     const { getCustomDigitalLayout } = useCustomLayout();
     const { applyDigitalLayout } = useApplyDigitalLayout();
     const { listObjects } = useObjectProperties();
-    const { getDigitalLayouts } = useGetDigitalLayouts();
+    const { getDigitalLayouts } = useGetLayouts();
 
     return {
       isPrompt,
@@ -80,7 +78,6 @@ export default {
       modalData,
       currentFrameId,
       getCustomDigitalLayout,
-      getCustomAndFavoriteLayouts,
       getSheetFrames,
       applyDigitalLayout,
       listObjects,
@@ -183,12 +180,12 @@ export default {
      */
     setLayoutSelected() {
       if (this.isSupplemental) {
-        this.layoutTypeSelected = this.getSelectedType(this.layoutTypes[0]);
+        this.layoutTypeSelected = this.layoutTypes[0];
         return;
       }
 
       const type = getLayoutSelected(this.pageSelected, this.layoutTypes);
-      this.layoutTypeSelected = this.getSelectedType(type);
+      this.layoutTypeSelected = type;
     },
     /**
      * Set disabled select layout base on id of sheet are cover or half-sheet
@@ -228,8 +225,6 @@ export default {
         );
         this.themeSelected = themeSelected;
       }
-
-      this.filterLayoutType();
     },
     /**
      * Set object theme selected from dropdown
@@ -238,16 +233,15 @@ export default {
     async onChangeTheme(theme) {
       this.themeSelected = theme;
 
-      this.filterLayoutType();
       this.setLayoutSelected();
       await this.getLayouts();
     },
     /**
      * Set object layout selected from dropdown
-     * @param {Object} layout layout type that is selecting in the layout type box
+     * @param {Object} type layout type that is selecting in the layout type box
      */
-    async onChangeLayoutType(layout) {
-      this.layoutTypeSelected = this.getSelectedType(layout);
+    async onChangeLayoutType(type) {
+      this.layoutTypeSelected = type;
 
       await this.getLayouts();
     },
@@ -347,11 +341,7 @@ export default {
       }
 
       if (!isEmpty(this.favoriteLayouts) || !isEmpty(this.customLayouts)) {
-        layoutTypeOpts.push({
-          name: 'Saved Layouts/Favorites',
-          id: -999,
-          value: -999
-        });
+        layoutTypeOpts.push(SAVED_AND_FAVORITES_TYPE);
       }
 
       this.layoutTypes = layoutTypeOpts;
@@ -375,46 +365,14 @@ export default {
       this.layoutTypes = this.layoutTypesOrigin;
     },
     /**
-     * Get page type selected value
-     *
-     * @param   {Object}  selectedData  selected page type data
-     * @returns {Object}                page type value
-     */
-    getSelectedType(selectedData) {
-      return selectedData;
-    },
-    /**
      * Get layout from API
      */
     async getLayouts() {
-      if (
-        isEmpty(this.themeSelected?.id) ||
-        isEmpty(this.layoutTypeSelected?.value)
-      ) {
-        this.layouts = [];
-
-        return;
-      }
-
-      const isSelectFavorite =
-        this.layoutTypeSelected.value === SAVED_AND_FAVORITES.value;
-
-      if (!isSelectFavorite) {
-        this.layouts = await this.getDigitalLayouts(
-          this.themeSelected.id,
-          this.layoutTypeSelected.value
-        );
-
-        return;
-      }
-
-      const customPackage = this.customLayouts.filter(
-        layout => !layout.isSupplemental
+      this.layouts = await this.getDigitalLayouts(
+        this.themeSelected?.id,
+        this.layoutTypeSelected?.value,
+        this.isSupplemental
       );
-      const customSupplemental = this.customLayouts.filter(
-        layout => layout.isSupplemental
-      );
-      this.layouts = this.isSupplemental ? customSupplemental : customPackage;
     },
     /**
      * Save / unsave the selected layout to favorites

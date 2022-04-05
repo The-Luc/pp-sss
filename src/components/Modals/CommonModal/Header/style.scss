@@ -36,9 +36,21 @@
 
   .text-title {
     color: $color-stoodio-blue;
+    text-align: left;
     line-height: 22px;
     font-size: 18px;
     font-family: $font-500;
+  }
+
+  &__dark {
+    background-color: $color-stoodio-blue;
+    justify-content: left;
+    height: 31px;
+    padding: 0 0 0 12px !important;
+    .text-title {
+      color: white;
+      font-size: 13px;
+    }
   }
 }
 

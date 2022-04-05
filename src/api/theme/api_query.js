@@ -1,6 +1,7 @@
 import { graphqlRequest } from '../urql';
-import { themeOptionsQuery } from './queries';
+import { getThemeDefaultQuery, themeOptionsQuery } from './queries';
 import { isOk } from '@/common/utils';
+import { get } from 'lodash';
 
 /**
  * Get list of theme
@@ -19,4 +20,18 @@ export const getThemesApi = async (isDigital = false) => {
       ? item.digital_preview_image_url
       : item.preview_image_url
   }));
+};
+
+export const getDefaultThemeApi = async bookId => {
+  const res = await graphqlRequest(getThemeDefaultQuery, { bookId });
+
+  if (!isOk(res)) return {};
+
+  const printDefaultTheme = get(res, 'data.book.print_theme_id');
+  const digitalDefaultTheme = get(res, 'data.book.digital_theme_id');
+
+  return {
+    printDefaultTheme,
+    digitalDefaultTheme
+  };
 };

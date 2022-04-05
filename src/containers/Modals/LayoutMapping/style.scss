@@ -1,0 +1,54 @@
+$modal-height: 535px;
+$modal-width: 1125px;
+
+#layout-mapping {
+  ::v-deep {
+    .pp-modal {
+      min-width: $modal-width;
+      height: $modal-height;
+      min-height: $modal-height;
+      overflow: hidden;
+    }
+    .v-card__text {
+      padding: 0px;
+    }
+
+    .tool-popover-header {
+      background-color: #fff;
+      height: 46px;
+      display: flex;
+      justify-content: center;
+      p {
+        color: $color-stoodio-toolbartext;
+        margin: 0;
+      }
+    }
+
+    .layout-opts {
+      visibility: hidden;
+    }
+
+    .tool-popover-content {
+      height: 413px;
+      max-height: initial;
+    }
+
+    .layouts-container {
+      position: relative;
+    }
+    .tool-popover-footer {
+      background-color: $color-gray37;
+    }
+
+    .layout-mapping__container {
+      width: 100%;
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+
+      & > div:first-child {
+        border-right: 1px solid $color-stoodio-toolbartext;
+      }
+    }
+  }
+}

@@ -13,6 +13,7 @@ import GanttChartModal from '@/views/CreateBook/Manager/Summary/SummaryInfo/Prog
 import EmptySection from '@/containers/Modals/EmptySection';
 import ModalSaveStyle from '@/containers/Modals/SaveStyle/SaveStyleModal';
 import ModalStyleSaved from '@/containers/Modals/SaveStyle/SavedModal';
+import LayoutMapping from '@/containers/Modals/LayoutMapping';
 
 import ModalBackgroundSelectPage from '@/containers/ToolPopoverManager/Backgrounds/PrintBackgrounds/ModalSelectPage';
 
@@ -50,7 +51,8 @@ const {
   SAVE_STYLE,
   SAVE_STYLE_SUCCESS,
   SAVE_LAYOUT_SUCCESS,
-  GENERATE_PDF
+  GENERATE_PDF,
+  MAP_LAYOUT
 } = MODAL_TYPES;
 
 const ModalList = {
@@ -73,7 +75,8 @@ const ModalList = {
   [SAVE_STYLE]: SAVE_STYLE,
   [SAVE_STYLE_SUCCESS]: SAVE_STYLE_SUCCESS,
   [SAVE_LAYOUT_SUCCESS]: SAVE_LAYOUT_SUCCESS,
-  [GENERATE_PDF]: GENERATE_PDF
+  [GENERATE_PDF]: GENERATE_PDF,
+  [MAP_LAYOUT]: MAP_LAYOUT
 };
 
 export default {
@@ -102,7 +105,8 @@ export default {
     [MODAL_TYPES.SAVE_STYLE]: ModalSaveStyle,
     [MODAL_TYPES.SAVE_STYLE_SUCCESS]: ModalStyleSaved,
     [MODAL_TYPES.SAVE_LAYOUT_SUCCESS]: ModalSaveLayoutSuccess,
-    [MODAL_TYPES.GENERATE_PDF]: GeneratePDF
+    [MODAL_TYPES.GENERATE_PDF]: GeneratePDF,
+    [MODAL_TYPES.MAP_LAYOUT]: LayoutMapping
   },
   computed: {
     ...mapGetters({

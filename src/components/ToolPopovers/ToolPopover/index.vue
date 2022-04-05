@@ -9,7 +9,7 @@
     <div class="tool-popover-content">
       <slot name="content" />
     </div>
-    <div class="tool-popover-footer">
+    <div :class="['tool-popover-footer', { 'hide-footer': isFooterHidden }]">
       <v-btn class="footer-btn cancel" @click="onCancel">Cancel</v-btn>
       <v-btn class="footer-btn action" :disabled="disabled" @click="onAction">{{
         actionText

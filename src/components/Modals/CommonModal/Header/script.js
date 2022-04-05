@@ -11,6 +11,10 @@ export default {
     },
     isBackIconDisplayed: {
       type: Boolean
+    },
+    isDark: {
+      type: Boolean,
+      default: false
     }
   },
   methods: {
