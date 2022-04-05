@@ -1,0 +1,38 @@
+.confirm-action {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  .text {
+    font-size: 15px;
+    font-family: $font-500;
+    color: $color-gray5;
+    margin-bottom: 15px;
+    line-height: 1.5;
+  }
+
+  .btn-container {
+    display: flex;
+    flex-direction: column;
+    row-gap: 10px;
+  }
+
+  .btn {
+    font-size: 11.5px;
+    font-family: $font-500;
+    color: $color-white;
+    background-color: $color-stoodio-blue;
+    border: 1px solid $color-stoodio-blue;
+    border-radius: 6px;
+    box-shadow: none;
+    padding-block: 4px;
+    width: 240px;
+
+    &-cancel {
+      color: $color-stoodio-blue;
+      border-color: $color-stoodio-blue;
+      background-color: $color-white;
+    }
+  }
+}
