@@ -1,13 +1,19 @@
 import { useAppCommon } from './common';
 
-import { getThemesApi } from '@/api/theme';
+import { getDefaultThemeApi, getThemesApi } from '@/api/theme';
 
 export const useGetterTheme = () => {
-  const { value: isDigital } = useAppCommon().isDigitalEdition;
+  const { isDigitalEdition, generalInfo } = useAppCommon();
+  const { value: isDigital } = isDigitalEdition;
 
   const getThemes = async () => {
     return getThemesApi(isDigital);
   };
 
-  return { getThemes };
+  const getDefaultThemeId = async () => {
+    const bookId = generalInfo.value.bookId;
+    return getDefaultThemeApi(bookId);
+  };
+
+  return { getThemes, getDefaultThemeId };
 };

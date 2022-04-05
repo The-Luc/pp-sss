@@ -6,7 +6,10 @@
       'empty-layout-container': layouts.length === 0
     }"
   >
-    <div v-if="!isVisited && isPrompt" class="prompt"></div>
+    <div
+      v-if="(!isVisited && isPrompt) || isTranslucentContent"
+      class="prompt"
+    ></div>
     <GotIt
       v-if="!isVisited && isPrompt"
       :title="textDisplay.promptTitle"
@@ -15,6 +18,7 @@
     />
     <PpToolPopover
       :title="textDisplay.title"
+      :is-footer-hidden="isFooterHidden"
       @cancel="onCancel"
       @change="setThemeLayoutForSheet"
     >

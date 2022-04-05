@@ -17,6 +17,7 @@
         :is-theme-used="isThemeUsed"
         :is-back-icon-displayed="isBackIconDisplayed"
         :is-close-icon-displayed="isCloseIconDisplayed"
+        :is-dark="isDarkHeader"
         @back="onBack"
         @cancel="onCancel"
       />

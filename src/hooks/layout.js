@@ -12,7 +12,8 @@ import {
   getCustomPrintLayoutApi,
   getCustomDigitalLayoutApi,
   saveCustomDigitalLayoutApi,
-  getDigitalLayoutsApi
+  getDigitalLayoutsApi,
+  getLayoutsByThemeAndTypeApi
 } from '@/api/layout';
 
 import { GETTERS as THEME_GETTERS } from '@/store/modules/theme/const';
@@ -39,7 +40,8 @@ import {
   SHEET_TYPE,
   LAYOUT_PAGE_TYPE,
   OBJECT_TYPE,
-  DIGITAL_LAYOUT_TYPES
+  DIGITAL_LAYOUT_TYPES,
+  SAVED_AND_FAVORITES
 } from '@/common/constants';
 
 import {
@@ -294,6 +296,49 @@ export const useCustomLayout = () => {
     getCustomDigitalLayout,
     saveCustomDigitalLayout
   };
+};
+
+export const useGetLayouts = () => {
+  const { getFavoriteLayouts } = useActionLayout();
+  const { getCustom, getCustomDigitalLayout } = useCustomLayout();
+  const { getDigitalLayouts: fetchDigitalLayouts } = useGetDigitalLayouts();
+
+  const getPrintLayouts = async (theme, layoutType, isFavorite) => {
+    if (isEmpty(theme) || isEmpty(layoutType)) {
+      return [];
+    }
+
+    if (!isFavorite) {
+      return getLayoutsByThemeAndTypeApi(theme, layoutType);
+    }
+
+    const layouts = await Promise.all([getFavoriteLayouts(), getCustom()]);
+
+    return layouts.flat();
+  };
+
+  const getDigitalLayouts = async (theme, layoutType, isSupplemental) => {
+    if (isEmpty(theme) || isEmpty(layoutType)) {
+      return [];
+    }
+
+    const isSelectFavorite = layoutType === SAVED_AND_FAVORITES.value;
+    if (!isSelectFavorite) {
+      return fetchDigitalLayouts(theme, layoutType);
+    }
+
+    const customLayouts = await getCustomDigitalLayout();
+
+    const customPackage = customLayouts.filter(
+      layout => !layout.isSupplemental
+    );
+    const customSupplemental = customLayouts.filter(
+      layout => layout.isSupplemental
+    );
+    return isSupplemental ? customSupplemental : customPackage;
+  };
+
+  return { getPrintLayouts, getDigitalLayouts };
 };
 
 export const useApplyPrintLayout = () => {

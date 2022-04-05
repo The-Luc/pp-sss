@@ -11,6 +11,10 @@ export default {
     disabled: {
       type: Boolean,
       default: false
+    },
+    isFooterHidden: {
+      type: Boolean,
+      default: false
     }
   },
   methods: {

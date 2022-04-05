@@ -67,6 +67,14 @@ export default {
     isDigital: {
       type: Boolean,
       default: false
+    },
+    isTranslucentContent: {
+      type: Boolean,
+      default: false
+    },
+    isFooterHidden: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -109,7 +117,9 @@ export default {
      * Fired when select btn clicked
      */
     setThemeLayoutForSheet() {
-      this.$emit('setThemeLayoutForSheet', this.selectedLayout);
+      const layout = isEmpty(this.layouts) ? {} : this.selectedLayout;
+
+      this.$emit('setThemeLayoutForSheet', layout);
     },
 
     /**

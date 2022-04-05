@@ -29,11 +29,11 @@ import {
   useActionLayout,
   useCustomLayout,
   useLayoutElements,
-  useApplyPrintLayout
+  useApplyPrintLayout,
+  useGetLayouts
 } from '@/hooks';
 
 import { getThemesApi } from '@/api/theme';
-import { getLayoutsByThemeAndTypeApi } from '@/api/layout';
 
 import { changeObjectsCoords } from '@/common/utils/layout';
 
@@ -59,11 +59,11 @@ export default {
     const {
       saveToFavorites,
       deleteFavorites,
-      getFavorites,
       getFavoriteLayouts
     } = useActionLayout();
     const { getCustom } = useCustomLayout();
     const { applyPrintLayout } = useApplyPrintLayout();
+    const { getPrintLayouts } = useGetLayouts();
 
     return {
       isPrompt,
@@ -74,11 +74,11 @@ export default {
       pageSelected,
       defaultThemeId,
       applyPrintLayout,
+      getPrintLayouts,
       modalData,
       toggleModal,
       saveToFavorites,
       deleteFavorites,
-      getFavorites,
       getCustom,
       getFavoriteLayouts,
       getLayoutElements
@@ -457,25 +457,12 @@ export default {
      * Get layout from API
      */
     async getLayouts() {
-      if (
-        isEmpty(this.themeSelected?.id) ||
-        isEmpty(this.layoutTypeSelected?.value)
-      ) {
-        this.layouts = [];
-
-        return;
-      }
-
-      if (isEmpty(this.layoutTypeSelected.sub)) {
-        this.layouts = await getLayoutsByThemeAndTypeApi(
-          this.themeSelected.id,
-          this.layoutTypeSelected.value
-        );
-
-        return;
-      }
-
-      this.layouts = await this.getFavAndCustomLayouts();
+      const isFavorite = !isEmpty(this.layoutTypeSelected.sub);
+      this.layouts = await this.getPrintLayouts(
+        this.themeSelected?.id,
+        this.layoutTypeSelected?.value,
+        isFavorite
+      );
     },
     /**
      * To get favorites and custom layouts

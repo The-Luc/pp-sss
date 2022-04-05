@@ -21,5 +21,6 @@ export const MODAL_TYPES = {
   TRANSITION_PREVIEW: 'transitionPreview',
   PORTRAIT_FLOW: 'portraitFlow',
   PLAYBACK: 'playback',
-  GENERATE_PDF: 'generatePDF'
+  GENERATE_PDF: 'generatePDF',
+  MAP_LAYOUT: 'mapLayout'
 };
