@@ -7,7 +7,7 @@
       header="Please Confirm"
       cancel-content="No, return to layout mapping"
       action-content="Yes, cancel mapping"
-      :width="600"
+      width="600"
       @onAccept="onCancel"
       @onCancel="onCloseConfirmCancel"
     >

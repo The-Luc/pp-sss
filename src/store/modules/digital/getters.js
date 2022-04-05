@@ -144,6 +144,7 @@ export const getters = {
   [DIGITAL._GETTERS.GET_FRAME_IDS]: ({ frameIds }) => {
     return frameIds;
   },
+  [DIGITAL._GETTERS.GET_BOOK_INFO]: ({ book }) => book,
   [DIGITAL._GETTERS.CURRENT_FRAME_INDEX]: ({ frameIds, currentFrameId }) => {
     return frameIds.indexOf(currentFrameId);
   },

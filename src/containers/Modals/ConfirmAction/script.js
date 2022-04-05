@@ -20,8 +20,8 @@ export default {
       default: 'Confirm'
     },
     width: {
-      type: Number,
-      default: 424
+      type: String,
+      default: '424'
     }
   },
   methods: {
