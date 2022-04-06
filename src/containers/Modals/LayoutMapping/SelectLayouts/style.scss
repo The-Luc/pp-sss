@@ -1,0 +1,101 @@
+$modal-height: 535px;
+$modal-width: 1125px;
+
+#select-layouts {
+  ::v-deep {
+    .pp-modal {
+      min-width: $modal-width;
+      height: $modal-height;
+      min-height: $modal-height;
+      overflow: hidden;
+      position: relative;
+    }
+    .v-card__text {
+      padding: 0px;
+    }
+
+    .tool-popover-header {
+      background-color: #fff;
+      height: 46px;
+      display: flex;
+      justify-content: center;
+      border-bottom: 1px solid $color-gray36;
+      font-family: $font-500;
+      p {
+        color: $color-stoodio-toolbartext;
+        margin: 0;
+      }
+    }
+
+    .layout-opts {
+      visibility: hidden;
+    }
+
+    .tool-popover-content {
+      height: 413px;
+      max-height: initial;
+    }
+
+    .layouts-container {
+      position: relative;
+    }
+    .tool-popover-footer {
+      background-color: $color-gray37;
+    }
+
+    .select-layouts__container {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      overflow: hidden;
+
+      & > div:first-child {
+        border-right: 1px solid $color-stoodio-toolbartext;
+      }
+
+      &.show-step-three {
+        .mapping-preview__title {
+          padding-top: 10px;
+        }
+      }
+    }
+
+    .select-layouts__footer {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 11px;
+      height: 56px;
+      margin-top: -56px;
+      background-color: #f8f8f8f1;
+      border-top: 1px solid $color-gray36;
+    }
+
+    .footer-btn {
+      .pp-btn {
+        width: 100px;
+        height: 32px;
+        border-radius: 6px;
+        color: white;
+        border: none;
+        opacity: 1;
+      }
+      &.cancel .pp-btn {
+        background-color: $color-gray24;
+      }
+      &.confirm .pp-btn {
+        background-color: $color-stoodio-blue !important;
+      }
+    }
+
+    .step-3-container {
+      width: 100%;
+      height: 46px;
+      display: grid;
+      place-items: center;
+      font-family: $font-500;
+      font-size: 13px;
+      color: $color-stoodio-toolbartext;
+    }
+  }
+}
