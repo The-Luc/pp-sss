@@ -19,6 +19,8 @@ $modal-width: 1125px;
       height: 46px;
       display: flex;
       justify-content: center;
+      border-bottom: 1px solid $color-gray36;
+      font-family: $font-500;
       p {
         color: $color-stoodio-toolbartext;
         margin: 0;
@@ -39,10 +41,6 @@ $modal-width: 1125px;
     }
     .tool-popover-footer {
       background-color: $color-gray37;
-    }
-    .tool-popover-header {
-      border-bottom: 1px solid $color-gray36;
-      font-family: $font-500;
     }
 
     .select-layouts__container {
@@ -80,6 +78,7 @@ $modal-width: 1125px;
         border-radius: 6px;
         color: white;
         border: none;
+        opacity: 1;
       }
       &.cancel .pp-btn {
         background-color: $color-gray24;

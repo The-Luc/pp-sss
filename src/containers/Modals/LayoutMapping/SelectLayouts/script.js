@@ -135,10 +135,12 @@ export default {
     },
     async onChangePrintTheme(theme) {
       this.printThemeSelected = theme;
+      this.printLayoutTypeSelected = this.printLayoutTypes[0];
       this.getPrintLayouts();
     },
     async onChangeDigitalTheme(theme) {
       this.digitalThemeSelected = theme;
+      this.digitalLayoutTypeSelected = this.digitalLayoutTypes[0];
       this.getDigitalLayouts();
     },
     onChangePrintLayoutType(type) {
@@ -153,7 +155,10 @@ export default {
       this.getDigitalLayouts();
     },
     onConfirm() {
-      console.log('on confirm');
+      this.$emit('onConfirm', {
+        printLayout: this.printLayoutSelected,
+        digitalLayout: this.digitalLayoutSelected
+      });
     },
     onCancel() {
       this.$emit('onCancel');

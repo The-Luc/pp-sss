@@ -10,8 +10,6 @@
       :is-accept-button-disabled="false"
       :is-dark-header="true"
       :is-footer-displayed="false"
-      @cancel="onCancel"
-      @accept="onConfirm"
     >
       <div v-if="isStepThreeDisplayed" class="step-3-container">
         Step 3: Confirm Selections
@@ -77,7 +75,7 @@
           <pp-button class="footer-btn cancel" @click="onCancel">
             Cancel
           </pp-button>
-          <pp-button class="footer-btn confirm" @click="onCancel">
+          <pp-button class="footer-btn confirm" @click="onConfirm">
             Confirm
           </pp-button>
         </div>

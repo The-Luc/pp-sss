@@ -1,0 +1,21 @@
+#map-elements {
+  ::v-deep.pp-modal-title {
+    margin-inline: 30px;
+  }
+
+  ::v-deep.pp-modal-footer {
+    display: flex;
+    justify-content: space-between;
+
+    .btn.accept {
+      width: 238px;
+    }
+  }
+
+  .map-elements__container {
+    display: grid;
+    grid-template-columns: 230px 1fr;
+    height: 638px;
+    margin-inline: 30px;
+  }
+}

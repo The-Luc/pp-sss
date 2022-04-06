@@ -1,5 +1,17 @@
+import CommonModal from '@/components/Modals/CommonModal';
+
 export default {
-  components: {},
+  components: { CommonModal },
+  props: {
+    printLayout: {
+      type: Object,
+      default: () => ({})
+    },
+    digitalLayout: {
+      type: Object,
+      default: () => ({})
+    }
+  },
   setup() {
     return {};
   },
@@ -7,5 +19,12 @@ export default {
     return {};
   },
   computed: {},
-  methods: {}
+  methods: {
+    onCancel() {
+      this.$emit('onCancel');
+    },
+    onSave() {
+      console.log('onsave');
+    }
+  }
 };
