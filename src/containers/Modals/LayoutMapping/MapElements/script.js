@@ -5,7 +5,8 @@ import {
   isBackground,
   isSingleLayout,
   modifyBgToRenderOnPage,
-  resetObjects
+  resetObjects,
+  isEmpty
 } from '@/common/utils';
 import CommonModal from '@/components/Modals/CommonModal';
 import PreviewItem from './PreviewItem';
@@ -59,6 +60,15 @@ export default {
       const printObjects = { [this.printLayout.id]: this.printLayout.objects };
       const objects = Object.assign({}, ...digitalObject, printObjects);
       return objects[this.idOfActiveImage];
+    },
+    frameName() {
+      if (this.isPrint) return '';
+
+      const index = this.digitalLayout?.frames.findIndex(
+        f => f.id === this.idOfActiveImage
+      );
+
+      return `Frame ${index + 1}`;
     }
   },
   async mounted() {
@@ -84,6 +94,8 @@ export default {
       this.handleRenderCanvas();
     },
     async handleRenderCanvas() {
+      if (isEmpty(this.activeObjects)) return;
+
       const EDITOR_SIZE = this.isPrint
         ? PRINT_CANVAS_SIZE
         : DIGITAL_CANVAS_SIZE;

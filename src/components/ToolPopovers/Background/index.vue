@@ -7,6 +7,7 @@
   >
     <PpToolPopover
       title="Backgrounds"
+      :disabled="backgrounds.length === 0"
       @cancel="onClose"
       @change="onApplyChosenBackground"
     >
