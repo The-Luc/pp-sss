@@ -231,8 +231,8 @@ export const deleteSelectedObjects = canvas => {
 /**
  * To reset all objects of current sheet, current use for select layout case
  */
-export const resetObjects = () => {
-  const targetCanvas = getActiveCanvas();
+export const resetObjects = canvas => {
+  const targetCanvas = canvas || getActiveCanvas();
   targetCanvas
     .discardActiveObject()
     .remove(...targetCanvas.getObjects())

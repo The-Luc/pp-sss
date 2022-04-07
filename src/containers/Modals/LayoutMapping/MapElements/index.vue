@@ -13,10 +13,36 @@
     >
       <div class="map-elements__container">
         <div class="left-side">
-          left
+          <div class="print-preview">
+            <p class="preview-title">Print</p>
+            <preview-item
+              :images="printPreview"
+              :is-single-layout="isSingleLayout"
+              :id-of-active-image="idOfActiveImage"
+              @change="setActiveImage"
+            />
+          </div>
+          <div class="digital-preview">
+            <p class="preview-title">Digital</p>
+            <preview-item
+              :images="digitalPreview"
+              :is-digital="true"
+              :id-of-active-image="idOfActiveImage"
+              @change="setActiveImage"
+            />
+          </div>
         </div>
         <div class="right-side">
-          right
+          <p class="right-side__title">{{ isPrint ? 'Print' : 'Digital' }}</p>
+          <p class="right-side__note">
+            (Note: Click an image and/or text box to map its position.)
+          </p>
+          <div :class="['layout-canvas-container', { digital: !isPrint }]">
+            <canvas
+              id="layout-mapping-canvas"
+              ref="layout-mapping-canvas"
+            ></canvas>
+          </div>
         </div>
       </div>
     </common-modal>
