@@ -26,6 +26,12 @@ import { apiTextToModel } from '../mapping';
 import { BACKGROUND_PAGE_TYPE } from '@/common/constants';
 import { isNormalSheet } from './sheet';
 
+export const isSingleLayout = layout =>
+  !isEmpty(layout) && layout?.pageType === LAYOUT_PAGE_TYPE.SINGLE_PAGE.id;
+
+export const isFullLayout = layout =>
+  !isEmpty(layout) && layout?.pageType === LAYOUT_PAGE_TYPE.FULL_PAGE.id;
+
 /**
  * Get layout option from list layouts option by id
  *

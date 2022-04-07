@@ -72,10 +72,10 @@ export default {
       isDigitalOpaque: true,
       isPrintFooterHidden: false,
       isDigitalFooterHidden: false,
-      isConfirmDisplayed: false,
       isPrintPreviewDisplayed: false,
       isDigitalPreviewDisplayed: false,
-      isStepThreeDisplayed: false
+      isStepThreeDisplayed: false,
+      isConfirmDisplayed: false
     };
   },
   computed: {
@@ -125,6 +125,7 @@ export default {
       if (isEmpty(layout)) return;
 
       this.printLayoutSelected = layout;
+
       this.handleStepTwo();
     },
     onConfirmDigitalLayout(layout) {
@@ -217,20 +218,35 @@ export default {
       this.isPrintPreviewDisplayed = false;
       this.isDigitalPreviewDisplayed = false;
       this.isStepThreeDisplayed = false;
+
+      if (this.isConfirmDisplayed) {
+        this.handleEditPrint();
+      }
+
+      this.isConfirmDisplayed = false;
     },
     handleStepTwo() {
       this.isDigitalOpaque = false;
-      this.isDigitalFooterHidden = false;
       this.isPrintFooterHidden = true;
       this.isPrintPreviewDisplayed = true;
+
+      if (this.isDigitalPreviewDisplayed) {
+        this.handleStepThree();
+        return;
+      }
+      this.isDigitalFooterHidden = false;
       this.isStepThreeDisplayed = false;
+      this.isConfirmDisplayed = false;
     },
     handleStepThree() {
-      this.isConfirmDisplayed = true;
       this.isPrintFooterHidden = true;
+      this.isConfirmDisplayed = true;
       this.isDigitalFooterHidden = true;
       this.isDigitalPreviewDisplayed = true;
       this.isStepThreeDisplayed = true;
+    },
+    handleEditPrint() {
+      this.isDigitalPreviewDisplayed = true;
     },
     isSaveAndFavoriteType(type) {
       return type.value === SAVED_AND_FAVORITES_TYPE.value;
@@ -239,6 +255,7 @@ export default {
       this.handleStepOne();
     },
     editDigitalSelection() {
+      this.isDigitalPreviewDisplayed = false;
       this.handleStepTwo();
     }
   }

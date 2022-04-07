@@ -775,7 +775,11 @@ export const generateCanvasThumbnail = async (objects, isDigital, options) => {
  * @param {Array}   objects list of object of current frame
  * @param {Object}  canvas  canvas is used to draw objects into
  */
-export const drawObjectsOnCanvas = async (objects, canvas) => {
+export const drawObjectsOnCanvas = async (
+  objects,
+  canvas,
+  preprocessingFunc
+) => {
   const drawObjectMethods = {
     [OBJECT_TYPE.BACKGROUND]: createBackgroundFabricObject,
     [OBJECT_TYPE.TEXT]: text => createTextBoxObject(text).object,
@@ -791,6 +795,8 @@ export const drawObjectsOnCanvas = async (objects, canvas) => {
   });
 
   const fabricObjects = await Promise.all(drawObjectPromises);
+
+  preprocessingFunc && preprocessingFunc(fabricObjects);
 
   canvas.add(...fabricObjects);
 };

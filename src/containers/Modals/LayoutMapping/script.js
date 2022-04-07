@@ -1,13 +1,14 @@
 import SelectLayouts from './SelectLayouts';
 import MapElements from './MapElements';
 import ConfirmAction from '@/containers/Modals/ConfirmAction';
-import { useModal } from '@/hooks';
+import { useModal, useLayoutElements } from '@/hooks';
 
 export default {
   components: { SelectLayouts, ConfirmAction, MapElements },
   setup() {
     const { toggleModal } = useModal();
-    return { toggleModal };
+    const { getLayoutElements } = useLayoutElements();
+    return { toggleModal, getLayoutElements };
   },
   data() {
     return {
@@ -19,8 +20,11 @@ export default {
   },
   computed: {},
   methods: {
-    handleSelectedLayouts({ printLayout, digitalLayout }) {
+    async handleSelectedLayouts({ printLayout, digitalLayout }) {
+      const printObjects = await this.getLayoutElements(printLayout.id);
+
       this.printLayout = printLayout;
+      this.printLayout.objects = printObjects;
       this.digitalLayout = digitalLayout;
       this.isSelectingLayout = false;
     },
