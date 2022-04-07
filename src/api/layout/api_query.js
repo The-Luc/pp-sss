@@ -144,6 +144,14 @@ export const getCustomPrintLayoutApi = async () => {
   return [...single_page, ...double_page].map(layout => layoutMapping(layout));
 };
 
+const removeMediaContent = layouts => {
+  layouts.forEach(layout => {
+    layout.frames.forEach(frame => {
+      frame.objects = removeMediaContentWhenCreateThumbnail(frame.objects);
+    });
+  });
+};
+
 export const getCustomDigitalLayoutApi = async () => {
   const res = await graphqlRequest(getUserDigitalLayoutsQuery);
 
@@ -153,11 +161,8 @@ export const getCustomDigitalLayoutApi = async () => {
 
   const mappedLayouts = layouts.map(l => digitalLayoutMapping(l));
 
-  mappedLayouts.forEach(layout => {
-    layout.frames.forEach(frame => {
-      frame.objects = removeMediaContentWhenCreateThumbnail(frame.objects);
-    });
-  });
+  removeMediaContent(mappedLayouts);
+
   return mappedLayouts;
 };
 
@@ -168,5 +173,9 @@ export const getDigitalLayoutsApi = async themeId => {
 
   const layouts = get(res, 'data.theme.digital_templates');
 
-  return layouts.map(l => digitalLayoutMapping(l));
+  const mappedLayouts = layouts.map(l => digitalLayoutMapping(l));
+
+  removeMediaContent(mappedLayouts);
+
+  return mappedLayouts;
 };

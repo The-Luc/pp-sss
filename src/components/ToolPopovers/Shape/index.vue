@@ -5,7 +5,12 @@
       'empty-shape-container': shapes.length === 0
     }"
   >
-    <PpToolPopover title="Shapes" @cancel="onClose" @change="applyChosenShapes">
+    <PpToolPopover
+      title="Shapes"
+      :disabled="selectedShapes.length === 0"
+      @cancel="onClose"
+      @change="applyChosenShapes"
+    >
       <template #content>
         <div class="shape-item-container">
           <div v-show="shapes.length === 0" class="empty-shape-content">
