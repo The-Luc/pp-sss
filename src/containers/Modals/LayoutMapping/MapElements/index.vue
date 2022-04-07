@@ -43,6 +43,23 @@
               ref="layout-mapping-canvas"
             ></canvas>
           </div>
+          <div
+            :class="[
+              'right-side__canvas-name',
+              { 'single-layout': isSingleLayout && isPrint }
+            ]"
+          >
+            <div v-if="isSingleLayout && isPrint">
+              Single Page
+            </div>
+            <div v-else-if="isPrint" class="right-side__canvas-name--print">
+              <p>Left Page</p>
+              <p>Right Page</p>
+            </div>
+            <div v-else class="right-side__canvas-name--digital">
+              {{ frameName }}
+            </div>
+          </div>
         </div>
       </div>
     </common-modal>

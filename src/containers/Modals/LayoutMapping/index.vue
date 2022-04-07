@@ -1,13 +1,13 @@
 <template>
   <div id="layout-mapping">
     <select-layouts
-      v-if="isSelectingLayout"
+      v-show="isSelectingLayout"
       @onConfirm="handleSelectedLayouts"
       @onCancel="showConfirmCancel"
     />
 
     <map-elements
-      v-else
+      v-if="!isSelectingLayout"
       :print-layout="printLayout"
       :digital-layout="digitalLayout"
       @onCancel="showConfirmCancel"

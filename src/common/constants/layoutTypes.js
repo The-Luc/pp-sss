@@ -30,8 +30,9 @@ export const LAYOUT_TYPES = {
     sheetType: SHEET_TYPE.NORMAL
   },
   ADMIN_STAFF: {
-    id: 4,
-    name: 'Admin & Staff'
+    value: 4,
+    name: 'Admin & Staff',
+    sheetType: SHEET_TYPE.NORMAL
   },
   CLUBS_GROUPS_TEAMS: {
     value: 5,

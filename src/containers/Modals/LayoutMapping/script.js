@@ -32,6 +32,12 @@ export default {
      * Trigger when user click agree to cancel
      */
     onCancel() {
+      if (!this.isSelectingLayout) {
+        this.isSelectingLayout = true;
+        this.isConfirmCancelDisplay = false;
+        return;
+      }
+
       this.toggleModal({
         isOpenModal: false
       });
