@@ -116,7 +116,11 @@ export const getLayoutElementsApi = async id => {
     .reverse();
 
   return [
-    ...inOrderElements.map(({ key, value }) => {
+    background,
+    ...inOrderElements.map(ele => {
+      if (!ele) return;
+
+      const { key, value } = ele;
       if (key === SYSTEM_OBJECT_TYPE.TEXT) {
         return createTextElement(value);
       }
@@ -126,9 +130,8 @@ export const getLayoutElementsApi = async id => {
       }
 
       return createClipartElement(value);
-    }),
-    background
-  ];
+    })
+  ].filter(Boolean);
 };
 
 export const getCustomPrintLayoutApi = async () => {

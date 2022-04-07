@@ -1,21 +1,58 @@
 #map-elements {
-  ::v-deep.pp-modal-title {
-    margin-inline: 30px;
-  }
+  ::v-deep {
+    .v-card__text {
+      padding: 0;
+    }
+    .pp-modal-title {
+      margin-inline: 30px;
+    }
 
-  ::v-deep.pp-modal-footer {
-    display: flex;
-    justify-content: space-between;
+    .pp-modal-footer {
+      display: flex;
+      justify-content: space-between;
 
-    .btn.accept {
-      width: 238px;
+      .btn.accept {
+        width: 238px;
+      }
     }
   }
 
   .map-elements__container {
+    font-family: $font-300;
     display: grid;
     grid-template-columns: 230px 1fr;
     height: 638px;
     margin-inline: 30px;
+    color: $color-stoodio-toolbartext;
+
+    .preview-title {
+      font-size: 14px;
+      font-family: $font-500;
+      padding: 10px;
+      text-align: center;
+      margin-bottom: 0;
+    }
+
+    .left-side {
+      border-right: 1px solid $color-gray17;
+      overflow-y: auto;
+      &::-webkit-scrollbar {
+        display: none;
+      }
+    }
+    .right-side {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .print-preview {
+      background-color: $color-white4;
+      height: 187px;
+    }
+
+    .digital-preview {
+      background-color: $color-gray41;
+    }
   }
 }
