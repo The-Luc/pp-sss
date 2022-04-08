@@ -44,7 +44,7 @@ export const updatePortraitSettingCache = (result, args, cache) => {
   );
 };
 
-export const updateTemplateUserCache = (result, args, cache) => {
+export const updateTemplateUserCache = (result, _, cache) => {
   const template = get(result, 'create_template_user.template', {});
 
   cache.updateQuery(
@@ -467,7 +467,6 @@ export const createContainerCache = (res, args, cache) => {
           __typename: album.__typename
         };
         data.community_containers?.unshift(category);
-        data.user_containers?.unshift(category);
       }
 
       return data;
