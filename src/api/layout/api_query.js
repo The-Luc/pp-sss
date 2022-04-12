@@ -2,6 +2,7 @@ import { first, get, cloneDeep, findKey } from 'lodash';
 import { SYSTEM_OBJECT_TYPE, LAYOUT_TYPES } from '@/common/constants';
 import { graphqlRequest } from '../urql';
 import {
+  getDigitalLayoutQuery,
   getDigitalTemplateQuery,
   getLayoutElementsQuery,
   getLayoutsPreviewQuery,
@@ -159,11 +160,7 @@ export const getCustomDigitalLayoutApi = async () => {
 
   const layouts = get(res, 'data.user_saved_digital_layouts');
 
-  const mappedLayouts = layouts.map(l => digitalLayoutMapping(l));
-
-  removeMediaContent(mappedLayouts);
-
-  return mappedLayouts;
+  return layouts.map(l => digitalLayoutMapping(l));
 };
 
 export const getDigitalLayoutsApi = async themeId => {
@@ -173,9 +170,19 @@ export const getDigitalLayoutsApi = async themeId => {
 
   const layouts = get(res, 'data.theme.digital_templates');
 
-  const mappedLayouts = layouts.map(l => digitalLayoutMapping(l));
+  return layouts.map(l => digitalLayoutMapping(l));
+};
 
-  removeMediaContent(mappedLayouts);
+export const getDigitalLayoutElementApi = async id => {
+  const res = await graphqlRequest(getDigitalLayoutQuery, { id });
 
-  return mappedLayouts;
+  if (!isOk(res)) return;
+
+  const layout = get(res, 'data.digital_template');
+
+  const mappedLayout = digitalLayoutMapping(layout);
+
+  removeMediaContent([mappedLayout]);
+
+  return mappedLayout;
 };

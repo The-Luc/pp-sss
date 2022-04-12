@@ -8,7 +8,8 @@ import {
   useGetterTheme,
   useCustomLayout,
   useActionLayout,
-  useGetLayouts
+  useGetLayouts,
+  useGetDigitalLayouts
 } from '@/hooks';
 import { getThemesApi } from '@/api/theme';
 import {
@@ -30,6 +31,7 @@ export default {
       getDigitalLayouts: fetchDigitalLayouts
     } = useGetLayouts();
 
+    const { getDigitalLayoutElements } = useGetDigitalLayouts();
     return {
       toggleModal,
       getDefaultThemeId,
@@ -37,7 +39,8 @@ export default {
       getCustomDigitalLayout,
       getFavoriteLayouts,
       fetchPrintLayouts,
-      fetchDigitalLayouts
+      fetchDigitalLayouts,
+      getDigitalLayoutElements
     };
   },
   data() {
@@ -128,10 +131,12 @@ export default {
 
       this.handleStepTwo();
     },
-    onConfirmDigitalLayout(layout) {
+    async onConfirmDigitalLayout(layout) {
       if (isEmpty(layout)) return;
 
-      this.digitalLayoutSelected = layout;
+      const layoutEle = await this.getDigitalLayoutElements(layout.id);
+
+      this.digitalLayoutSelected = layoutEle;
       this.handleStepThree();
     },
     async onChangePrintTheme(theme) {

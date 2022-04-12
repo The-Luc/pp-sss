@@ -13,7 +13,8 @@ import {
   getCustomDigitalLayoutApi,
   saveCustomDigitalLayoutApi,
   getDigitalLayoutsApi,
-  getLayoutsByThemeAndTypeApi
+  getLayoutsByThemeAndTypeApi,
+  getDigitalLayoutElementApi
 } from '@/api/layout';
 
 import { GETTERS as THEME_GETTERS } from '@/store/modules/theme/const';
@@ -140,7 +141,14 @@ export const useGetDigitalLayouts = () => {
     return layouts.filter(l => l.layoutUse === layoutUse && !l.isSupplemental);
   };
 
-  return { sheetLayout, listLayouts, getDigitalLayouts };
+  const getDigitalLayoutElements = getDigitalLayoutElementApi;
+
+  return {
+    sheetLayout,
+    listLayouts,
+    getDigitalLayouts,
+    getDigitalLayoutElements
+  };
 };
 
 export const useActionLayout = () => {

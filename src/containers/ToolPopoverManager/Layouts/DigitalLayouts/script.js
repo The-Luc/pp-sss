@@ -27,7 +27,8 @@ import {
   useCustomLayout,
   useGetLayouts,
   useApplyDigitalLayout,
-  useObjectProperties
+  useObjectProperties,
+  useGetDigitalLayouts
 } from '@/hooks';
 
 import { getThemesApi } from '@/api/theme';
@@ -63,6 +64,7 @@ export default {
     const { applyDigitalLayout } = useApplyDigitalLayout();
     const { listObjects } = useObjectProperties();
     const { getDigitalLayouts } = useGetLayouts();
+    const { getDigitalLayoutElements } = useGetDigitalLayouts();
 
     return {
       isPrompt,
@@ -81,7 +83,8 @@ export default {
       getSheetFrames,
       applyDigitalLayout,
       listObjects,
-      getDigitalLayouts
+      getDigitalLayouts,
+      getDigitalLayoutElements
     };
   },
   data() {
@@ -259,7 +262,9 @@ export default {
     async setThemeLayoutForSheet(layoutData) {
       if (isEmpty(this.layouts)) return;
 
-      const layout = cloneDeep(layoutData);
+      const layoutEl = await this.getDigitalLayoutElements(layoutData.id);
+
+      const layout = cloneDeep(layoutEl);
 
       layout.frames.forEach(f => (f.objects = entitiesToObjects(f.objects)));
 
