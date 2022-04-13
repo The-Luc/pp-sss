@@ -1,4 +1,4 @@
-import { mapObject, convertObjectPxToInch } from '@/common/utils';
+import { mapObject, convertObjectPxToInch, isEmpty } from '@/common/utils';
 import { LAYOUT_PAGE_TYPE } from '@/common/constants/layoutTypes';
 import { transitionMapping } from './sheet';
 import { cloneDeep } from 'lodash';
@@ -63,6 +63,12 @@ export const digitalLayoutMapping = layoutData => {
     restrict: ['digital_frame_templates', 'digital_transitions', '__typename']
   };
 
+  const mappedLayout = mapObject(layout, mapRules);
+
+  if (isEmpty(layout.digital_frame_templates)) {
+    return mappedLayout;
+  }
+
   const frames = layout.digital_frame_templates.map(frame => {
     const { objects, play_in_ids, play_out_ids, id, preview_image_url } = frame;
 
@@ -77,8 +83,6 @@ export const digitalLayoutMapping = layoutData => {
       previewImageUrl: preview_image_url || ''
     };
   });
-
-  const mappedLayout = mapObject(layout, mapRules);
 
   const transitions = layout.digital_transitions.map(t => transitionMapping(t));
   frames.forEach((f, idx) => (f.transition = transitions[idx]));

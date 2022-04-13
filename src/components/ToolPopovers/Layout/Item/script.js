@@ -6,6 +6,8 @@ import { BaseAnimation } from '@/common/models/element';
 import { ANIMATION_DIR, OBJECT_TYPE, PLAY_IN_STYLES } from '@/common/constants';
 import { isEmpty } from '@/common/utils';
 
+import { useGetDigitalLayouts } from '@/hooks';
+
 export default {
   components: {
     Playback
@@ -39,6 +41,10 @@ export default {
       type: Boolean,
       default: false
     }
+  },
+  setup() {
+    const { getDigitalLayoutElements } = useGetDigitalLayouts();
+    return { getDigitalLayoutElements };
   },
   data() {
     return {
@@ -79,12 +85,12 @@ export default {
      *
      * @param {Object}  event fired event
      */
-    onPreview(event) {
+    async onPreview(event) {
       event.stopPropagation();
 
       this.$emit('togglePreview');
 
-      this.previewData = this.getPreviewData();
+      this.previewData = await this.getPreviewData();
 
       this.isOnPreview = true;
     },
@@ -103,14 +109,16 @@ export default {
     /**
      * Get preview data
      *
-     * @returns {Array} review data
+     * @returns Promise<Array> review data
      */
-    getPreviewData() {
+    async getPreviewData() {
       const transition = new Transition({ duration: 1 });
 
-      return this.layout.frames.map(({ objects }, index) => {
-        if (!isEmpty(this.layout.frames[index].playInIds))
-          return this.layout.frames[index];
+      const layout = await this.getDigitalLayoutElements(this.layout.id);
+
+      return layout.frames.map(({ objects }, index) => {
+        if (!isEmpty(layout.frames[index].playInIds))
+          return layout.frames[index];
 
         return {
           id: `${index}`,
@@ -118,7 +126,7 @@ export default {
           playInIds: [this.getPlayIn(objects)],
           playOutIds: [],
           delay: 3,
-          transition: index < this.layout.frames.length - 1 ? transition : {}
+          transition: index < layout.frames.length - 1 ? transition : {}
         };
       });
     },

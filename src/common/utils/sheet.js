@@ -10,16 +10,19 @@ import { transitionMapping } from '../mapping';
 import { convertObjectInchToPx } from './objects';
 import { cloneDeep } from 'lodash';
 
-export const isHalfSheet = ({ type }) => {
-  return [SHEET_TYPE.FRONT_COVER, SHEET_TYPE.BACK_COVER].indexOf(type) >= 0;
+export const isHalfSheet = sheet => {
+  return (
+    !isEmpty(sheet) &&
+    [SHEET_TYPE.FRONT_COVER, SHEET_TYPE.BACK_COVER].indexOf(sheet.type) >= 0
+  );
 };
 
-export const isHalfLeft = ({ type }) => {
-  return type === SHEET_TYPE.BACK_COVER;
+export const isHalfLeft = sheet => {
+  return !isEmpty(sheet) && sheet.type === SHEET_TYPE.BACK_COVER;
 };
 
-export const isHalfRight = ({ type }) => {
-  return type === SHEET_TYPE.FRONT_COVER;
+export const isHalfRight = sheet => {
+  return !isEmpty(sheet) && sheet.type === SHEET_TYPE.FRONT_COVER;
 };
 
 export const isNormalSheet = sheet => {
@@ -28,7 +31,8 @@ export const isNormalSheet = sheet => {
   return sheet.type === SHEET_TYPE.NORMAL;
 };
 
-export const isCoverSheet = ({ type }) => type === SHEET_TYPE.COVER;
+export const isCoverSheet = sheet =>
+  !isEmpty(sheet) && sheet.type === SHEET_TYPE.COVER;
 
 /**
  * Format page number to name of page

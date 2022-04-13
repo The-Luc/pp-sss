@@ -13,7 +13,8 @@ import {
   getCustomDigitalLayoutApi,
   saveCustomDigitalLayoutApi,
   getDigitalLayoutsApi,
-  getLayoutsByThemeAndTypeApi
+  getLayoutsByThemeAndTypeApi,
+  getDigitalLayoutElementApi
 } from '@/api/layout';
 
 import { GETTERS as THEME_GETTERS } from '@/store/modules/theme/const';
@@ -41,7 +42,7 @@ import {
   LAYOUT_PAGE_TYPE,
   OBJECT_TYPE,
   DIGITAL_LAYOUT_TYPES,
-  SAVED_AND_FAVORITES
+  SAVED_AND_FAVORITES_TYPE
 } from '@/common/constants';
 
 import {
@@ -140,7 +141,14 @@ export const useGetDigitalLayouts = () => {
     return layouts.filter(l => l.layoutUse === layoutUse && !l.isSupplemental);
   };
 
-  return { sheetLayout, listLayouts, getDigitalLayouts };
+  const getDigitalLayoutElements = getDigitalLayoutElementApi;
+
+  return {
+    sheetLayout,
+    listLayouts,
+    getDigitalLayouts,
+    getDigitalLayoutElements
+  };
 };
 
 export const useActionLayout = () => {
@@ -303,12 +311,14 @@ export const useGetLayouts = () => {
   const { getCustom, getCustomDigitalLayout } = useCustomLayout();
   const { getDigitalLayouts: fetchDigitalLayouts } = useGetDigitalLayouts();
 
-  const getPrintLayouts = async (theme, layoutType, isFavorite) => {
+  const getPrintLayouts = async (theme, layoutType) => {
     if (isEmpty(theme) || isEmpty(layoutType)) {
       return [];
     }
 
-    if (!isFavorite) {
+    const isSelectFavorite = layoutType === SAVED_AND_FAVORITES_TYPE.value;
+
+    if (!isSelectFavorite) {
       return getLayoutsByThemeAndTypeApi(theme, layoutType);
     }
 
@@ -322,7 +332,7 @@ export const useGetLayouts = () => {
       return [];
     }
 
-    const isSelectFavorite = layoutType === SAVED_AND_FAVORITES.value;
+    const isSelectFavorite = layoutType === SAVED_AND_FAVORITES_TYPE.value;
     if (!isSelectFavorite) {
       return fetchDigitalLayouts(theme, layoutType);
     }

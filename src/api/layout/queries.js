@@ -60,31 +60,10 @@ export const digitalTemplateFragment = gql`
   fragment digitalTemplate on DigitalTemplate {
     id
     title
-    digital_transitions {
-      id
-      duration
-      direction
-      transition_order
-      transition_type
-    }
     preview_image_url
     is_supplemental
     layout_use
     layout_type
-    digital_frame_templates {
-      objects
-      play_in_ids
-      play_out_ids
-      preview_image_url
-      id
-      background {
-        id
-        image_url
-        name
-        thumbnail
-        page_type
-      }
-    }
   }
 `;
 
@@ -106,4 +85,38 @@ export const getUserDigitalLayoutsQuery = gql`
     }
   }
   ${digitalTemplateFragment}
+`;
+
+export const getDigitalLayoutQuery = gql`
+  query getDigitalTemplate($id: ID!) {
+    digital_template(id: $id) {
+      id
+      title
+      digital_transitions {
+        id
+        duration
+        direction
+        transition_order
+        transition_type
+      }
+      preview_image_url
+      is_supplemental
+      layout_use
+      layout_type
+      digital_frame_templates {
+        objects
+        play_in_ids
+        play_out_ids
+        preview_image_url
+        id
+        background {
+          id
+          image_url
+          name
+          thumbnail
+          page_type
+        }
+      }
+    }
+  }
 `;

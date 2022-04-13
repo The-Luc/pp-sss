@@ -1,11 +1,8 @@
-import { mapGetters, mapMutations } from 'vuex';
+import { mapMutations } from 'vuex';
 
 import { MUTATES } from '@/store/modules/app/const';
 import { MUTATES as DIGITAL_MUTATES } from '@/store/modules/digital/const';
-import {
-  GETTERS as THEME_GETTERS,
-  MUTATES as THEME_MUTATES
-} from '@/store/modules/theme/const';
+import { MUTATES as THEME_MUTATES } from '@/store/modules/theme/const';
 import Modal from '@/containers/Modals/Modal';
 import PpButton from '@/components/Buttons/Button';
 import Themes from './Themes';
@@ -32,17 +29,12 @@ export default {
   data() {
     return {
       selectedThemeId: null,
-      isPreviewing: false
+      isPreviewing: false,
+      layoutsOfThemePreview: [],
+      themes: []
     };
   },
   computed: {
-    ...mapGetters({
-      themes: THEME_GETTERS.GET_DIGITAL_THEMES,
-      layouts: THEME_GETTERS.GET_DIGITAL_LAYOUTS_BY_THEME_ID
-    }),
-    layoutsOfThemePreview() {
-      return this.layouts(this.selectedThemeId);
-    },
     themeNamePreview() {
       let name = '';
       if (this.isPreviewing) {
@@ -69,9 +61,15 @@ export default {
      * Set preview theme's id
      * @param  {Number} theme.themeId - Theme's id preview
      */
-    onPreviewTheme({ themeId }) {
+    async onPreviewTheme({ themeId }) {
       this.isPreviewing = true;
       this.selectedThemeId = themeId;
+
+      // clear previous layout
+      this.layoutsOfThemePreview = [];
+
+      this.selectedThemeId = themeId;
+      this.layoutsOfThemePreview = await this.getDigitalLayouts(themeId);
     },
     /**
      * Set preview theme's id empty and close preview
@@ -100,18 +98,10 @@ export default {
     }
   },
   async created() {
-    if (this.themes.length === 0) {
-      const themes = await getThemesApi(true);
-      this.setDigitalThemes({
-        themes
-      });
-    }
+    this.themes = await getThemesApi(true);
+
+    this.setDigitalThemes({ themes: this.themes });
+
     this.selectedThemeId = this.themes[0]?.id;
-    if (this.layouts().length === 0) {
-      const layouts = await this.getDigitalLayouts(this.selectedThemeId);
-      this.setDigitalLayouts({
-        layouts
-      });
-    }
   }
 };
