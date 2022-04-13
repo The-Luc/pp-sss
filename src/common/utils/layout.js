@@ -4,7 +4,6 @@ import {
   CUSTOM_LAYOUT_TYPE,
   DATABASE_DPI,
   LAYOUT_PAGE_TYPE,
-  LAYOUT_TYPES,
   OBJECT_TYPE,
   SHEET_TYPE
 } from '../constants';
@@ -24,7 +23,6 @@ import {
 } from '.';
 import { apiTextToModel } from '../mapping';
 import { BACKGROUND_PAGE_TYPE } from '@/common/constants';
-import { isNormalSheet } from './sheet';
 
 export const isSingleLayout = layout =>
   !isEmpty(layout) && layout?.pageType === LAYOUT_PAGE_TYPE.SINGLE_PAGE.id;
@@ -208,15 +206,8 @@ const getElementDimension = (element, isRightPage) => {
 };
 
 export const getLayoutSelected = (sheet, layoutTypes = []) => {
-  if (isNormalSheet(sheet)) {
-    const collageId = LAYOUT_TYPES.COLLAGE.value;
-
-    const collageIndex = layoutTypes.findIndex(l => l.value === collageId);
-
-    return layoutTypes[collageIndex];
-  }
-
-  return layoutTypes[0];
+  const index = layoutTypes.findIndex(l => l.sheetType === sheet.type);
+  return layoutTypes[index];
 };
 
 export const getRotatedPoint = (x, y, width, height, rotation) => {

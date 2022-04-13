@@ -49,23 +49,13 @@ export const getLayoutsByThemeAndTypeApi = async (themeId, layoutTypeId) => {
   const res = await graphqlRequest(getLayoutsQuery, { themeId });
 
   if (!isOk(res)) return [];
-  const isGetSingleLayout = layoutTypeId === LAYOUT_TYPES.SINGLE_PAGE.value;
   const dbTemplates = get(res, 'data.theme.templates', []);
 
   const layoutType = findKey(LAYOUT_TYPES, o => o.value === layoutTypeId);
 
-  const templates = (() => {
-    if (isGetSingleLayout) {
-      return dbTemplates.filter(t => t.layout_type === 'SINGLE_PAGE');
-    }
-
-    return dbTemplates.filter(
-      t =>
-        t.layout_type === 'DOUBLE_PAGE' &&
-        (t.layout_use === layoutType ||
-          (!t.layout_use && layoutType === 'MISC'))
-    );
-  })();
+  const templates = dbTemplates.filter(
+    t => t.layout_use === layoutType || (!t.layout_use && layoutType === 'MISC')
+  );
 
   const getPageType = layout =>
     layout.layout_type === 'DOUBLE_PAGE'

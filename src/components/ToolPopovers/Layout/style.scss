@@ -76,8 +76,45 @@
   .layout-item-container {
     display: flex;
     justify-content: space-between;
-    padding: 20px 25px 65px;
+    padding: 15px 25px 65px;
     min-height: 240px;
     flex-wrap: wrap;
+  }
+  .layout-tab-container {
+    display: flex;
+    align-items: center;
+    height: 36px;
+    padding-left: 13px;
+    border-bottom: 1px solid $color-gray15;
+    & > p {
+      margin: 0;
+    }
+
+    &::v-deep {
+      font-family: $font-300;
+      font-size: 11px;
+
+      .v-slide-group__content {
+        border-bottom: unset;
+        color: $color-stoodio-toolbartext;
+
+        .v-tabs-slider {
+          background-color: unset;
+        }
+        .v-tab {
+          font-size: 11px;
+          text-transform: capitalize;
+          letter-spacing: initial;
+
+          &:last-child {
+            border-left: 1px solid $color-gray31;
+          }
+
+          &--active {
+            font-family: $font-500;
+          }
+        }
+      }
+    }
   }
 }

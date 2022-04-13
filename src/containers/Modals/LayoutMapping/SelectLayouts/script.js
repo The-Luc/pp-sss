@@ -12,12 +12,8 @@ import {
   useGetDigitalLayouts
 } from '@/hooks';
 import { getThemesApi } from '@/api/theme';
-import {
-  LAYOUT_TYPES,
-  SAVED_AND_FAVORITES,
-  SAVED_AND_FAVORITES_TYPE
-} from '@/common/constants';
-import { isEmpty } from '@/common/utils';
+import { LAYOUT_TYPES, SAVED_AND_FAVORITES_TYPE } from '@/common/constants';
+import { isEmpty, isHalfSheet } from '@/common/utils';
 
 export default {
   components: { Layouts, CommonModal, PpButton, MappingPreview },
@@ -93,6 +89,9 @@ export default {
     },
     digitalLayoutId() {
       return this.digitalLayoutSelected?.id || null;
+    },
+    activeTab() {
+      return isHalfSheet ? 1 : 0;
     }
   },
   async mounted() {
@@ -171,10 +170,10 @@ export default {
     },
     updateLayoutTypes() {
       if (
-        !isEmpty(this.customPrintLayouts) &&
+        !isEmpty(this.customPrintLayouts) ||
         !isEmpty(this.favoritePrintLayouts)
       )
-        this.printLayoutTypes.push(SAVED_AND_FAVORITES);
+        this.printLayoutTypes.push(SAVED_AND_FAVORITES_TYPE);
 
       if (!isEmpty(this.customDigitalLayouts))
         this.digitalLayoutTypes.push(SAVED_AND_FAVORITES_TYPE);
@@ -192,21 +191,11 @@ export default {
       this.favoritePrintLayouts = await this.getFavoriteLayouts();
     },
     async getPrintLayouts() {
-      const isFavorite = !isEmpty(this.printLayoutTypeSelected.sub);
       const layouts = await this.fetchPrintLayouts(
         this.printThemeSelected?.id,
-        this.printLayoutTypeSelected?.value,
-        isFavorite
+        this.printLayoutTypeSelected?.value
       );
 
-      if (isFavorite) {
-        const pageType = this.printLayoutTypeSelected.sub;
-        this.printLayouts = layouts.filter(
-          layout => layout.pageType === pageType
-        );
-
-        return;
-      }
       this.printLayouts = layouts;
     },
     async getDigitalLayouts() {

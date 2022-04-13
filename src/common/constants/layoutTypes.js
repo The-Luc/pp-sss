@@ -42,7 +42,7 @@ export const LAYOUT_TYPES = {
   SIGNATURES: {
     value: 6,
     name: 'Signatures',
-    sheetType: SHEET_TYPE.NORMAL
+    sheetType: SHEET_TYPE.BACK_COVER
   },
   AWARDS_SUPERLATIVES: {
     value: 7,
@@ -62,7 +62,7 @@ export const LAYOUT_TYPES = {
   INTRO_OPENING: {
     value: 10,
     name: 'Intro/Opening Page',
-    sheetType: SHEET_TYPE.NORMAL
+    sheetType: SHEET_TYPE.FRONT_COVER
   },
   YEAR_REVIEW: {
     value: 11,
@@ -74,17 +74,17 @@ export const LAYOUT_TYPES = {
     name: 'Simple',
     sheetType: SHEET_TYPE.NORMAL
   },
-  SINGLE_PAGE: {
-    value: 13,
-    name: 'Single Page',
-    sheetType: SHEET_TYPE.FRONT_COVER
-  },
   MISC: {
-    value: 14,
+    value: 13,
     name: 'Misc',
     sheetType: SHEET_TYPE.NORMAL
   }
 };
+
+export const SINGLE_PAGE_LAYOUT_TYPE_IDS = [
+  LAYOUT_TYPES.INTRO_OPENING.value,
+  LAYOUT_TYPES.SIGNATURES.value
+];
 
 export const PRINT_LAYOUT_TYPES = { ...LAYOUT_TYPES };
 
@@ -99,9 +99,10 @@ export const DIGITAL_LAYOUT_TYPES = {
 export const CUSTOM_LAYOUT_TYPE = -999;
 
 export const SAVED_AND_FAVORITES_TYPE = {
-  name: 'Saved Layouts/Favorites',
+  name: 'Saved Favorites',
   id: -999,
-  value: -999
+  value: -999,
+  subItems: []
 };
 
 export const SAVED_AND_FAVORITES = {

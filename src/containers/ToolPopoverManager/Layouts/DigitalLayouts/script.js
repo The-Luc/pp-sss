@@ -167,7 +167,7 @@ export default {
      */
     async initData() {
       this.setLayoutSelected();
-      this.setDisabledLayout(this.pageSelected);
+      this.setDisabledLayout();
       this.setThemeSelected(this.themeId);
 
       await this.getLayouts();
@@ -187,14 +187,15 @@ export default {
         return;
       }
 
-      const type = getLayoutSelected(this.pageSelected, this.layoutTypes);
-      this.layoutTypeSelected = type;
+      this.layoutTypeSelected = getLayoutSelected(
+        this.pageSelected,
+        this.layoutTypes
+      );
     },
     /**
      * Set disabled select layout base on id of sheet are cover or half-sheet
-     * @param  {Object} pageSelected current selected sheet
      */
-    setDisabledLayout(pageSelected) {
+    setDisabledLayout() {
       const isCustomExisted = !isEmpty(this.customLayouts);
 
       if (isCustomExisted) {
@@ -202,14 +203,7 @@ export default {
         return;
       }
 
-      this.disabled =
-        this.initialData?.disabled ??
-        this.isSupplemental ??
-        [
-          SHEET_TYPE.COVER,
-          SHEET_TYPE.FRONT_COVER,
-          SHEET_TYPE.BACK_COVER
-        ].includes(pageSelected.type);
+      this.disabled = this.initialData?.disabled ?? this.isSupplemental;
     },
     /**
      * Set default selected for theme base on id of sheet. Use default theme when the sheet not have private theme

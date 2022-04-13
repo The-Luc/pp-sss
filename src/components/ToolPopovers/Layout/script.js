@@ -4,7 +4,13 @@ import SelectLayout from './SelectLayout';
 import SelectTheme from './SelectTheme';
 import GotIt from '@/components/GotIt';
 import Item from './Item';
-import { isEmpty, scrollToElement } from '@/common/utils';
+import { SINGLE_PAGE_LAYOUT_TYPE_IDS } from '@/common/constants/layoutTypes';
+import {
+  isEmpty,
+  isFullLayout,
+  isSingleLayout,
+  scrollToElement
+} from '@/common/utils';
 
 export default {
   components: {
@@ -78,17 +84,50 @@ export default {
     }
   },
   data() {
+    const tabs = [
+      {
+        label: 'Spread Layouts',
+        value: 'spreadLayouts',
+        items: []
+      },
+      {
+        label: 'Single Page Layouts',
+        value: 'singlePageLayouts',
+        items: []
+      }
+    ];
     return {
       layoutEmptyLength: 4,
       selectedLayout: {},
-      isOnPreview: false
+      isOnPreview: false,
+      tabs,
+      tabActive: 0 // order of tabs: 0 - double, 1 - single
     };
   },
+  computed: {
+    isEmptyTab() {
+      return isEmpty(this.tabs[this.tabActive].items);
+    }
+  },
   watch: {
-    layouts(val) {
-      this.setLayoutActive();
+    layouts: {
+      deep: true,
+      handler(val) {
+        this.setLayoutActive();
+        this.updateTabs();
 
-      if (val.length > 0) this.autoScroll(this.layoutId);
+        if (val.length > 0) this.autoScroll(this.layoutId);
+      }
+    },
+    layoutTypeSelected(type) {
+      if (
+        !this.isDigital &&
+        SINGLE_PAGE_LAYOUT_TYPE_IDS.includes(type?.value)
+      ) {
+        this.tabActive = 1;
+        return;
+      }
+      this.tabActive = 0;
     }
   },
   methods: {
@@ -189,6 +228,23 @@ export default {
 
         scrollToElement(currentLayout[0]?.$el, { block: 'center' });
       }, 20);
+    },
+    /**
+     * To update items array for each tab
+     * So that tab content can be loaded correctly corresponding to selected tab.
+     */
+    updateTabs() {
+      if (this.isDigital) {
+        this.tabs[0].items = this.layouts;
+        return;
+      }
+
+      const singleLayouts = this.layouts.filter(isSingleLayout);
+
+      const fullLayouts = this.layouts.filter(isFullLayout);
+
+      this.tabs[0].items = fullLayouts;
+      this.tabs[1].items = singleLayouts;
     }
   },
   mounted() {
