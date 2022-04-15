@@ -31,6 +31,8 @@ import OverrideLayout from '@/views/CreateBook/DigitalEdition/EditScreen/Modals/
 import DeleteFrame from '@/views/CreateBook/DigitalEdition/EditScreen/Modals/ModalConfirmDelete';
 import SaveDigitalLayout from '@/views/CreateBook/DigitalEdition/EditScreen/Modals/ModalSaveLayout';
 
+import ApplyLayout from '@/views/CreateBook/PrintEdition/EditScreen/Modals/ApplyLayout';
+
 const {
   HELP,
   DELETE_SHEET,
@@ -52,7 +54,8 @@ const {
   SAVE_STYLE_SUCCESS,
   SAVE_LAYOUT_SUCCESS,
   GENERATE_PDF,
-  MAP_LAYOUT
+  MAP_LAYOUT,
+  APPLY_LAYOUT
 } = MODAL_TYPES;
 
 const ModalList = {
@@ -76,7 +79,8 @@ const ModalList = {
   [SAVE_STYLE_SUCCESS]: SAVE_STYLE_SUCCESS,
   [SAVE_LAYOUT_SUCCESS]: SAVE_LAYOUT_SUCCESS,
   [GENERATE_PDF]: GENERATE_PDF,
-  [MAP_LAYOUT]: MAP_LAYOUT
+  [MAP_LAYOUT]: MAP_LAYOUT,
+  [APPLY_LAYOUT]: APPLY_LAYOUT
 };
 
 export default {
@@ -106,6 +110,7 @@ export default {
     [MODAL_TYPES.SAVE_STYLE_SUCCESS]: ModalStyleSaved,
     [MODAL_TYPES.SAVE_LAYOUT_SUCCESS]: ModalSaveLayoutSuccess,
     [MODAL_TYPES.GENERATE_PDF]: GeneratePDF,
+    [MODAL_TYPES.APPLY_LAYOUT]: ApplyLayout,
     [MODAL_TYPES.MAP_LAYOUT]: LayoutMapping
   },
   computed: {

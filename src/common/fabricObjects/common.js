@@ -207,14 +207,15 @@ export const toFabricTextGroupProp = prop => {
 export const toFabricBackgroundProp = prop => {
   const mapRules = {
     data: {
-      type: DEFAULT_RULE_DATA.TYPE
+      type: DEFAULT_RULE_DATA.TYPE,
+      x: DEFAULT_RULE_DATA.X,
+      y: DEFAULT_RULE_DATA.Y
     },
     restrict: [
       'id',
-      'size',
-      'coord',
       'categoryId',
       'name',
+      'size',
       'thumbnail',
       'imageUrl',
       'color',

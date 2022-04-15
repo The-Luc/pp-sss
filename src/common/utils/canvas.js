@@ -363,3 +363,15 @@ export const isEditingActiveObject = () => {
 
   return !!activeObj?.isEditing;
 };
+
+export const activeCanvasInfo = () => {
+  const targetCanvas = getActiveCanvas();
+  const { width, height } = targetCanvas;
+  const zoom = targetCanvas.getZoom();
+
+  const mid = pxToIn(width / zoom / 2);
+  const actualWidth = pxToIn(width / zoom);
+  const actualHeight = pxToIn(height / zoom);
+
+  return { mid, width: actualWidth, height: actualHeight };
+};

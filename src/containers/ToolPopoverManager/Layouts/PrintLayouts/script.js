@@ -5,16 +5,14 @@ import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 import Layouts from '@/components/ToolPopovers/Layout';
 
 import {
-  MODAL_TYPES,
-  LAYOUT_PAGE_TYPE,
   CUSTOM_LAYOUT_TYPE,
   EDITION,
   LAYOUT_TYPES,
-  SAVED_AND_FAVORITES_TYPE
+  SAVED_AND_FAVORITES_TYPE,
+  MODAL_TYPES
 } from '@/common/constants';
 import {
   getThemeOptSelectedById,
-  resetObjects,
   isEmpty,
   insertItemsToArray,
   removeItemsFormArray,
@@ -102,9 +100,7 @@ export default {
       layoutId: null,
       favoriteLayouts: [],
       customLayouts: [],
-      layouts: [],
-      doublePageId: LAYOUT_PAGE_TYPE.FULL_PAGE.id,
-      singlePageId: LAYOUT_PAGE_TYPE.SINGLE_PAGE.id
+      layouts: []
     };
   },
   computed: {
@@ -242,71 +238,23 @@ export default {
       if (this.isHalfSheet) {
         layout.objects = changeObjectsCoords(
           layout.objects,
-          this.pageSelected.type,
-          window.printCanvas
+          this.pageSelected.type
         );
       }
-
-      // confirm reset layout if there are any backgrounds or objects on canvas
-      if (this.totalBackground || !isEmpty(this.printObject)) {
-        this.onCancel();
-        this.toggleModal({
-          isOpenModal: true,
-          modalData: {
-            type: MODAL_TYPES.RESET_LAYOUT,
-            props: {
-              pageSelected: this.pageSelected,
-              sheetId: this.pageSelected?.id,
-              themeId: this.themeSelected?.id,
-              layout
-            }
+      this.toggleModal({
+        isOpenModal: true,
+        modalData: {
+          type: MODAL_TYPES.APPLY_LAYOUT,
+          props: {
+            themeId: this.themeSelected?.id,
+            layout: layout
           }
-        });
-        return;
-      }
-
-      const isSinglePage = layout.pageType === LAYOUT_PAGE_TYPE.SINGLE_PAGE.id;
-
-      if (!this.isHalfSheet && isSinglePage) {
-        this.onCancel();
-        this.toggleModal({
-          isOpenModal: true,
-          modalData: {
-            type: MODAL_TYPES.SELECT_PAGE,
-            props: {
-              numberPageLeft: this.pageSelected?.pageLeftName,
-              numberPageRight: this.pageSelected?.pageRightName,
-              sheetId: this.pageSelected?.id,
-              themeId: this.themeSelected?.id,
-              layout
-            }
-          }
-        });
-        return;
-      }
-
-      this.applyLayout(layout);
+        }
+      });
 
       this.onCancel();
     },
-    /**
-     * Save objects to store and draw on canvas
-     * @param {Object} layout layout will be stored & applied on canvas
-     */
-    applyLayout(layout) {
-      this.applyPrintLayout({
-        sheetId: this.pageSelected?.id,
-        themeId: this.themeSelected?.id,
-        layout
-      });
 
-      resetObjects();
-
-      // draw layout on canvas
-      this.$root.$emit('drawLayout');
-
-      this.$root.$emit('pageNumber');
-    },
     /**
      * Trigger mutation set prompt false and update isVisited true for current sheet
      */

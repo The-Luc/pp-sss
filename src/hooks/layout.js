@@ -42,18 +42,23 @@ import {
   LAYOUT_PAGE_TYPE,
   OBJECT_TYPE,
   DIGITAL_LAYOUT_TYPES,
-  SAVED_AND_FAVORITES_TYPE
+  SAVED_AND_FAVORITES_TYPE,
+  PRINT_PAGE_SIZE
 } from '@/common/constants';
 
 import {
   generateCanvasThumbnail,
   getPageLayouts,
-  isCoverSheet,
+  isCoverSheetChecker,
   isHalfSheet,
   isHalfRight,
   isOk,
   isEmpty,
-  entitiesToObjects
+  entitiesToObjects,
+  getCoverPagePrintSize,
+  isFullBackground,
+  isBackground,
+  activeCanvasInfo
 } from '@/common/utils';
 import { useThumbnail } from '@/views/CreateBook/composables';
 import { cloneDeep, findKey } from 'lodash';
@@ -61,7 +66,10 @@ import { getFrameObjectsApi, deleteFrameApi } from '@/api/frame';
 import { useFrame, useFrameOrdering, useFrameAction } from '@/hooks';
 import { updateTransitionApi } from '@/api/playback';
 import { removeMediaContentWhenCreateThumbnail } from '../common/utils/image';
-import { changeObjectsCoords } from '@/common/utils/layout';
+import {
+  changeObjectsCoords,
+  isCoverLayoutChecker
+} from '@/common/utils/layout';
 import { getSheetTransitionApi } from '@/api/playback/api_query';
 import { getUniqueId } from '../common/utils/util';
 
@@ -211,7 +219,7 @@ export const useCustomLayout = () => {
       objects = changeObjectsCoords(objects, 'right', { moveToLeft: true });
     }
 
-    const isCover = isCoverSheet(data.sheetProps);
+    const isCover = isCoverSheetChecker(data.sheetProps);
     const isHardCover =
       COVER_TYPE.HARDCOVER === bookInfo.value.coverOption && isCover;
 
@@ -352,9 +360,10 @@ export const useGetLayouts = () => {
 };
 
 export const useApplyPrintLayout = () => {
-  const { currentSheet, getObjects } = useGetters({
+  const { currentSheet, getObjects, getBookInfo } = useGetters({
     currentSheet: PRINT_GETTERS.CURRENT_SHEET,
-    getObjects: PRINT_GETTERS.GET_OBJECTS
+    getObjects: PRINT_GETTERS.GET_OBJECTS,
+    getBookInfo: PRINT_GETTERS.GET_BOOK_INFO
   });
 
   const {
@@ -400,13 +409,130 @@ export const useApplyPrintLayout = () => {
     }
   };
 
-  const applyPrintLayout = async ({
-    themeId,
-    layout,
-    pagePosition,
-    positionCenterX
-  }) => {
-    const sheetType = currentSheet.value.type;
+  /**
+   * To fit objects in cover sheet
+   * The function only called when applying layout on cover
+   *
+   * @param {Object} objects objects of layout
+   * @param {Boolean} isRightPage wheter applying single layout on right page
+   * @returns
+   */
+  const handleFitElements = (objects, isRightPage) => {
+    const { coverOption, numberMaxPages } = getBookInfo.value;
+    const isHardCoverBook = coverOption === COVER_TYPE.HARDCOVER;
+
+    // find the inner top lef of the left canvas
+    const canvasSize = getCoverPagePrintSize(isHardCoverBook, numberMaxPages);
+    const {
+      sheetWidth,
+      spineWidth,
+      pageWidth,
+      pageHeight,
+      bleedTop
+    } = canvasSize.inches;
+
+    // find the inner top left of the left canvas
+    const leftX = (sheetWidth - spineWidth) / 2 - pageWidth;
+    const leftY = bleedTop;
+
+    // find the inner top left of the right canvas
+    const rightX = (sheetWidth + spineWidth) / 2;
+    // y = bleedTop
+    const rightY = bleedTop;
+
+    /* To get mid of the current sheet, could be HARDCOVER or SOFTCOVER */
+    const { mid: coverMidCanvas } = activeCanvasInfo();
+
+    // mid of normal canvas
+    const mid = PRINT_PAGE_SIZE.PDF_WIDTH;
+
+    // when applying single layout on right page, need to take out coverMidCanvas from x coordinate
+    // because already called changeCoordObjecs previously to add this coverMid
+    const offset = isRightPage ? coverMidCanvas : mid;
+
+    objects.forEach(o => {
+      if (isBackground(o)) return;
+
+      if (o.coord.x < mid) {
+        // left page objects
+        o.coord.x += leftX;
+        o.coord.y += leftY;
+      } else {
+        // right page objects
+        o.coord.x += rightX - offset;
+        o.coord.y += rightY;
+      }
+    });
+
+    // -- BACKGROUNDS --
+    // Get background objects
+    const backgrounds = objects.filter(isBackground);
+    // case 1: no backgrounds
+    if (backgrounds.lenght === 0) return;
+
+    /*
+    modify background object
+    case 1: full-background
+    case 2: 2 page background
+    case 3: 1 page background (left or right)
+    */
+    backgrounds.forEach(bg => {
+      bg.size.height = pageHeight;
+      bg.size.width = pageWidth;
+
+      if (bg.isLeftPage) {
+        bg.coord.x = leftX;
+        bg.coord.y = leftY;
+      } else {
+        bg.coord.x = rightX;
+        bg.coord.y = rightY;
+      }
+
+      if (isFullBackground(bg)) {
+        bg.size.width = pageWidth * 2;
+      }
+    });
+  };
+
+  /**
+   * To scale objects in cover sheet
+   * The function only called when applying layout on cover
+   *
+   * @param {Object} objects objects of layout
+   * @returns
+   */
+  const handleScaleElements = (objects, isRightPage) => {
+    /* To get mid of the current sheet, could be HARDCOVER or SOFTCOVER */
+    const { width, height, mid: coverMidCanvas } = activeCanvasInfo();
+    const scaleX = width / PRINT_PAGE_SIZE.PDF_DOUBLE_WIDTH;
+    const scaleY = height / PRINT_PAGE_SIZE.PDF_HEIGHT;
+
+    // mid of normal canvas
+    const mid = PRINT_PAGE_SIZE.PDF_WIDTH;
+
+    // when applying single layout on right page, need to take out coverMidCanvas from x coordinate
+    // because already called changeCoordObjecs previously to add this coverMid
+    // const offset = isRightPage ? coverMidCanvas : mid;
+
+    objects.forEach(o => {
+      if (isBackground(o)) return;
+
+      if (isRightPage) {
+        o.coord.x += -coverMidCanvas + mid;
+      }
+      o.coord.x *= scaleX;
+      o.coord.y *= scaleY;
+
+      o.size.width *= scaleX;
+      o.size.height *= scaleY;
+    });
+  };
+
+  const applyPrintLayout = async ({ themeId, layout, pagePosition }) => {
+    const sheet = currentSheet.value;
+    const sheetType = sheet.type;
+    const isCoverSheet = isCoverSheetChecker(sheet);
+    const isCoverLayout = isCoverLayoutChecker(layout);
 
     const objects = entitiesToObjects(layout.objects);
 
@@ -424,10 +550,15 @@ export const useApplyPrintLayout = () => {
         : pagePosition;
     })();
 
-    const isLeftPage = currentPosition === 'left';
-    const isRightPage = currentPosition === 'right';
+    const isLeftPage = currentPosition === 'left'; // true if half-layout applied on left page
+    const isRightPage = currentPosition === 'right'; // true if half-layout applied on right page
 
     handleAddingBackgrounds(objects, isFullLayout, currentPosition, isLeftPage);
+
+    if (!isCoverLayout && isCoverSheet) {
+      // handleFitElements(objects, isRightPage);
+      handleScaleElements(objects, isRightPage);
+    }
 
     if (isFullLayout || isHalfSheet(currentSheet.value)) {
       const objList = objects.map(obj => ({
@@ -447,14 +578,16 @@ export const useApplyPrintLayout = () => {
       id: getUniqueId()
     }));
 
+    const { mid } = activeCanvasInfo();
+
     const storeObjects = Object.values(cloneDeep(getObjects.value)).filter(
       obj => {
         if (isEmpty(obj)) return false;
 
         const x = obj.coord.x;
 
-        const isKeepLeft = isRightPage && x < positionCenterX;
-        const isKeepRight = isLeftPage && x >= positionCenterX;
+        const isKeepLeft = isRightPage && x < mid;
+        const isKeepRight = isLeftPage && x >= mid;
 
         return isKeepLeft || isKeepRight;
       }

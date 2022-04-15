@@ -22,5 +22,6 @@ export const MODAL_TYPES = {
   PORTRAIT_FLOW: 'portraitFlow',
   PLAYBACK: 'playback',
   GENERATE_PDF: 'generatePDF',
-  MAP_LAYOUT: 'mapLayout'
+  MAP_LAYOUT: 'mapLayout',
+  APPLY_LAYOUT: 'applyLayout'
 };
