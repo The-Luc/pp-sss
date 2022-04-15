@@ -6,12 +6,11 @@ import Layouts from '@/components/ToolPopovers/Layout';
 
 import {
   MODAL_TYPES,
-  SHEET_TYPE,
   LAYOUT_PAGE_TYPE,
   CUSTOM_LAYOUT_TYPE,
   EDITION,
   LAYOUT_TYPES,
-  SAVED_AND_FAVORITES
+  SAVED_AND_FAVORITES_TYPE
 } from '@/common/constants';
 import {
   getThemeOptSelectedById,
@@ -96,7 +95,6 @@ export default {
       themesOptions: [],
       layoutTypesOrigin: [],
       layoutTypes: [],
-      disabled: false,
       disabledTheme: false,
       layoutTypeSelected: { sub: '' },
       themeSelected: {},
@@ -123,13 +121,8 @@ export default {
     isHalfSheet() {
       return this.pageSelected && isHalfSheet(this.pageSelected);
     },
-    filteredLayouts() {
-      if (this.layoutTypeSelected.value === CUSTOM_LAYOUT_TYPE) {
-        return this.layouts.filter(
-          layout => layout.pageType === this.layoutTypeSelected.sub
-        );
-      }
-      return this.layouts;
+    tabActive() {
+      return this.isHalfSheet ? 1 : 0;
     }
   },
   watch: {
@@ -172,7 +165,6 @@ export default {
     async initData() {
       await this.setThemeSelected(this.themeId);
       this.setLayoutSelected();
-      this.setDisabledLayout(this.pageSelected);
 
       await this.getLayouts();
     },
@@ -190,26 +182,6 @@ export default {
       this.layoutTypeSelected = this.getSelectedType(type);
     },
 
-    /**
-     * Set disabled select layout base on id of sheet are cover or half-sheet
-     * @param  {Object} pageSelected current selected sheet
-     */
-    setDisabledLayout(pageSelected) {
-      const isFavoritesExisted = !isEmpty(this.favoriteLayouts);
-      const isCustomExisted = !isEmpty(this.customLayouts);
-
-      if (isFavoritesExisted || isCustomExisted) {
-        this.disabled = false;
-
-        return;
-      }
-
-      this.disabled = [
-        SHEET_TYPE.COVER,
-        SHEET_TYPE.FRONT_COVER,
-        SHEET_TYPE.BACK_COVER
-      ].includes(pageSelected.type);
-    },
     /**
      * Set default selected for theme base on id of sheet. Use default theme when the sheet not have private theme
      * @param  {Number} currentSheetThemeId Theme id of the current sheet
@@ -371,8 +343,6 @@ export default {
 
       this.modifyFavorites(id);
 
-      this.setDisabledLayout(this.pageSelected);
-
       await this.filterLayoutType();
     },
     /**
@@ -412,21 +382,8 @@ export default {
     async filterLayoutType() {
       let layoutTypeOpts = [...this.layoutTypesOrigin];
 
-      if (this.pageSelected.type !== SHEET_TYPE.NORMAL) {
-        const sheetType =
-          this.pageSelected.type === SHEET_TYPE.BACK_COVER
-            ? SHEET_TYPE.FRONT_COVER
-            : this.pageSelected.type;
-
-        layoutTypeOpts = this.layoutTypesOrigin.filter(lo => {
-          return lo.sheetType === sheetType;
-        });
-      }
-
       if (!isEmpty(this.favoriteLayouts) || !isEmpty(this.customLayouts)) {
-        const extraMenu = await this.getFavoriteCustomLayoutTypeMenu();
-
-        layoutTypeOpts.push(extraMenu);
+        layoutTypeOpts.push(SAVED_AND_FAVORITES_TYPE);
       }
 
       this.layoutTypes = layoutTypeOpts;
@@ -457,11 +414,9 @@ export default {
      * Get layout from API
      */
     async getLayouts() {
-      const isFavorite = !isEmpty(this.layoutTypeSelected.sub);
       this.layouts = await this.getPrintLayouts(
         this.themeSelected?.id,
-        this.layoutTypeSelected?.value,
-        isFavorite
+        this.layoutTypeSelected?.value
       );
     },
     /**
@@ -472,32 +427,6 @@ export default {
     async getFavAndCustomLayouts() {
       const favLayouts = await this.getFavoriteLayouts();
       return [...favLayouts, ...this.customLayouts];
-    },
-    /**
-     * Get favorite & custom layout menu
-     */
-    async getFavoriteCustomLayoutTypeMenu() {
-      const menu = cloneDeep(SAVED_AND_FAVORITES);
-
-      const favCustomLayouts = await this.getFavAndCustomLayouts();
-
-      menu.subItems.forEach(item => {
-        if (item.id === this.doublePageId) {
-          const isDoublePage = favCustomLayouts.some(
-            ({ pageType }) => pageType === this.doublePageId
-          );
-          item.isDisabled = !isDoublePage || this.isHalfSheet;
-        }
-
-        if (item.id === this.singlePageId) {
-          const isSinglePage = favCustomLayouts.some(
-            ({ pageType }) => pageType === this.singlePageId
-          );
-          item.isDisabled = !isSinglePage;
-        }
-      });
-
-      return menu;
     }
   }
 };

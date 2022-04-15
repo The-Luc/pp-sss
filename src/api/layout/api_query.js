@@ -2,6 +2,7 @@ import { first, get, cloneDeep, findKey } from 'lodash';
 import { SYSTEM_OBJECT_TYPE, LAYOUT_TYPES } from '@/common/constants';
 import { graphqlRequest } from '../urql';
 import {
+  getDigitalLayoutQuery,
   getDigitalTemplateQuery,
   getLayoutElementsQuery,
   getLayoutsPreviewQuery,
@@ -48,23 +49,13 @@ export const getLayoutsByThemeAndTypeApi = async (themeId, layoutTypeId) => {
   const res = await graphqlRequest(getLayoutsQuery, { themeId });
 
   if (!isOk(res)) return [];
-  const isGetSingleLayout = layoutTypeId === LAYOUT_TYPES.SINGLE_PAGE.value;
   const dbTemplates = get(res, 'data.theme.templates', []);
 
   const layoutType = findKey(LAYOUT_TYPES, o => o.value === layoutTypeId);
 
-  const templates = (() => {
-    if (isGetSingleLayout) {
-      return dbTemplates.filter(t => t.layout_type === 'SINGLE_PAGE');
-    }
-
-    return dbTemplates.filter(
-      t =>
-        t.layout_type === 'DOUBLE_PAGE' &&
-        (t.layout_use === layoutType ||
-          (!t.layout_use && layoutType === 'MISC'))
-    );
-  })();
+  const templates = dbTemplates.filter(
+    t => t.layout_use === layoutType || (!t.layout_use && layoutType === 'MISC')
+  );
 
   const getPageType = layout =>
     layout.layout_type === 'DOUBLE_PAGE'
@@ -159,11 +150,7 @@ export const getCustomDigitalLayoutApi = async () => {
 
   const layouts = get(res, 'data.user_saved_digital_layouts');
 
-  const mappedLayouts = layouts.map(l => digitalLayoutMapping(l));
-
-  removeMediaContent(mappedLayouts);
-
-  return mappedLayouts;
+  return layouts.map(l => digitalLayoutMapping(l));
 };
 
 export const getDigitalLayoutsApi = async themeId => {
@@ -173,9 +160,19 @@ export const getDigitalLayoutsApi = async themeId => {
 
   const layouts = get(res, 'data.theme.digital_templates');
 
-  const mappedLayouts = layouts.map(l => digitalLayoutMapping(l));
+  return layouts.map(l => digitalLayoutMapping(l));
+};
 
-  removeMediaContent(mappedLayouts);
+export const getDigitalLayoutElementApi = async id => {
+  const res = await graphqlRequest(getDigitalLayoutQuery, { id });
 
-  return mappedLayouts;
+  if (!isOk(res)) return;
+
+  const layout = get(res, 'data.digital_template');
+
+  const mappedLayout = digitalLayoutMapping(layout);
+
+  removeMediaContent([mappedLayout]);
+
+  return mappedLayout;
 };
