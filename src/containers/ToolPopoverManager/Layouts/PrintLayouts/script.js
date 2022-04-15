@@ -120,6 +120,9 @@ export default {
     },
     isHalfSheet() {
       return this.pageSelected && isHalfSheet(this.pageSelected);
+    },
+    tabActive() {
+      return this.isHalfSheet ? 1 : 0;
     }
   },
   watch: {
