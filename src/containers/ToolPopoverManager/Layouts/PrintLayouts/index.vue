@@ -11,6 +11,7 @@
     :disabled-theme-opts="disabledTheme"
     :layout-type-selected="layoutTypeSelected"
     :favorite-layouts="favoriteLayouts"
+    :tab-index="tabActive"
     @setThemeLayoutForSheet="setThemeLayoutForSheet"
     @onChangeTheme="onChangeTheme"
     @onChangeLayoutType="onChangeLayoutType"

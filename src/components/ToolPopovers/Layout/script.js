@@ -4,7 +4,6 @@ import SelectLayout from './SelectLayout';
 import SelectTheme from './SelectTheme';
 import GotIt from '@/components/GotIt';
 import Item from './Item';
-import { SINGLE_PAGE_LAYOUT_TYPE_IDS } from '@/common/constants/layoutTypes';
 import {
   isEmpty,
   isFullLayout,
@@ -81,6 +80,11 @@ export default {
     isFooterHidden: {
       type: Boolean,
       default: false
+    },
+    tabIndex: {
+      // order of tabs: 0 - double, 1 - single
+      type: Number,
+      default: 0
     }
   },
   data() {
@@ -119,15 +123,11 @@ export default {
         if (val.length > 0) this.autoScroll(this.layoutId);
       }
     },
-    layoutTypeSelected(type) {
-      if (
-        !this.isDigital &&
-        SINGLE_PAGE_LAYOUT_TYPE_IDS.includes(type?.value)
-      ) {
-        this.tabActive = 1;
-        return;
+    tabIndex: {
+      immediate: true,
+      handler(val) {
+        this.tabActive = val;
       }
-      this.tabActive = 0;
     }
   },
   methods: {
