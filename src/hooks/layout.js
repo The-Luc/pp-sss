@@ -447,7 +447,7 @@ export const useApplyPrintLayout = () => {
     const { mid: coverMidCanvas } = activeCanvasInfo();
 
     // mid of normal canvas
-    const mid = PRINT_PAGE_SIZE.PDF_WIDTH;
+    const mid = PRINT_PAGE_SIZE.PDF_WIDTH - PRINT_PAGE_SIZE.BLEED;
 
     // when applying single layout on right page, need to take out coverMidCanvas from x coordinate
     // because already called changeCoordObjecs previously to add this coverMid
@@ -481,7 +481,7 @@ export const useApplyPrintLayout = () => {
     */
     backgrounds.forEach(bg => {
       bg.size.height = pageHeight;
-      bg.size.width = pageWidth;
+      bg.size.width = pageWidth - PRINT_PAGE_SIZE.BLEED;
 
       if (bg.isLeftPage) {
         bg.coord.x = leftX;
@@ -511,12 +511,10 @@ export const useApplyPrintLayout = () => {
     const scaleY = height / PRINT_PAGE_SIZE.PDF_HEIGHT;
 
     // mid of normal canvas
-    const mid = PRINT_PAGE_SIZE.PDF_WIDTH;
+    const mid = PRINT_PAGE_SIZE.PDF_WIDTH - PRINT_PAGE_SIZE.BLEED;
 
     // when applying single layout on right page, need to take out coverMidCanvas from x coordinate
     // because already called changeCoordObjecs previously to add this coverMid
-    // const offset = isRightPage ? coverMidCanvas : mid;
-
     objects.forEach(o => {
       if (isBackground(o)) return;
 
