@@ -237,7 +237,8 @@ export const useCustomLayout = () => {
       id,
       type,
       layoutName,
-      previewImageUrl
+      previewImageUrl,
+      isCover
     );
 
     if (!isSuccess) return;

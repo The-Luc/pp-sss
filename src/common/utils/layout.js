@@ -83,7 +83,10 @@ export const changeObjectsCoords = (objects, position, options) => {
   const { mid: midCanvas } = activeCanvasInfo();
 
   newObjects.forEach(object => {
-    if (object.type === OBJECT_TYPE.BACKGROUND) return;
+    if (object.type === OBJECT_TYPE.BACKGROUND) {
+      object.isLeftPage = false;
+      return;
+    }
 
     object.coord.x +=
       options?.moveToLeft && !isLeftPage ? -midCanvas : midCanvas;
