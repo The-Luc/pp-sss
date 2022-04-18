@@ -5,13 +5,11 @@ export const MODAL_TYPES = {
   EMPTY_SECTION: 'EmptySection',
   SELECT_THEME: 'SelectTheme',
   GANTT_CHART: 'GanttChart',
-  SELECT_PAGE: 'SelectPage',
   BACKGROUND_SELECT_PAGE: 'BackgroundSelectPage',
   SELECT_THEME_DIGITAL: 'SelectThemeDigital',
   ADD_DIGITAL_FRAME: 'AddDigitalFrame',
   OVERRIDE_LAYOUT: 'OverrideLayout',
   DELETE_FRAME: 'DeleteFrame',
-  RESET_LAYOUT: 'ResetLayout',
   SAVE_LAYOUT: 'SaveLayout',
   SELECT_PAGE_OF_LAYOUT: 'SelectPageOfLayout',
   SAVE_DIGITAL_LAYOUT: 'SaveDigitalLayout',
@@ -22,5 +20,6 @@ export const MODAL_TYPES = {
   PORTRAIT_FLOW: 'portraitFlow',
   PLAYBACK: 'playback',
   GENERATE_PDF: 'generatePDF',
-  MAP_LAYOUT: 'mapLayout'
+  MAP_LAYOUT: 'mapLayout',
+  APPLY_LAYOUT: 'applyLayout'
 };

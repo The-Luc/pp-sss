@@ -31,7 +31,7 @@ export const isNormalSheet = sheet => {
   return sheet.type === SHEET_TYPE.NORMAL;
 };
 
-export const isCoverSheet = sheet =>
+export const isCoverSheetChecker = sheet =>
   !isEmpty(sheet) && sheet.type === SHEET_TYPE.COVER;
 
 /**

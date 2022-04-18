@@ -7,7 +7,6 @@ import Layouts from '@/components/ToolPopovers/Layout';
 import {
   EDITION,
   MODAL_TYPES,
-  SHEET_TYPE,
   CUSTOM_LAYOUT_TYPE,
   DIGITAL_LAYOUT_TYPES as LAYOUT_TYPES,
   SAVED_AND_FAVORITES_TYPE
@@ -322,17 +321,6 @@ export default {
      */
     filterLayoutType() {
       let layoutTypeOpts = [...this.layoutTypesOrigin];
-
-      if (this.pageSelected.type !== SHEET_TYPE.NORMAL) {
-        const sheetType =
-          this.pageSelected.type === SHEET_TYPE.BACK_COVER
-            ? SHEET_TYPE.FRONT_COVER
-            : this.pageSelected.type;
-
-        layoutTypeOpts = this.layoutTypesOrigin.filter(
-          lo => lo.sheetType === sheetType
-        );
-      }
 
       if (this.isSupplemental) {
         layoutTypeOpts = [];

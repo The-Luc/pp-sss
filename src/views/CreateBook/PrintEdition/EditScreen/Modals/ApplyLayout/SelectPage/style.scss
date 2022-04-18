@@ -1,0 +1,28 @@
+.selecting-container {
+  display: flex;
+  padding: 30px 10px 20px;
+
+  .left-hand {
+    margin-right: 15px;
+  }
+
+  .page-text {
+    font-size: 12px;
+    font-family: $font-300;
+    margin-bottom: 11px;
+  }
+
+  .action {
+    font-size: 11.5px;
+    font-family: $font-500;
+    cursor: pointer;
+    width: 239px;
+    height: 36px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    background-color: #42738d;
+    border-radius: 6px;
+  }
+}
