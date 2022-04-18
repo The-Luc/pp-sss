@@ -1,25 +1,30 @@
-.modal-reset-layout {
-  .modal-reset-layout-title {
+.modal-adapt-layout {
+  .modal-adapt-layout-title {
     font-family: $font-500;
     font-size: 15px;
     text-align: center;
     color: #4a4844;
-    div {
-      margin-bottom: 18px;
-    }
+    margin-inline: 65px;
+    margin-top: 5px;
+    display: flex;
+    justify-content: center;
   }
   .container-btn {
-    margin-top: 40px;
+    display: flex;
+    gap: 10px;
+    flex-direction: column;
+    margin-top: 25px;
+    margin-bottom: 12px;
     .pp-btn {
       width: 238px;
       height: 36px;
       margin: 0 auto;
     }
     .btn-cancel {
-      margin-top: 10px;
       .pp-btn {
         background-color: $color-gray13;
         border-color: $color-gray13;
+        color: $color-white;
       }
     }
   }

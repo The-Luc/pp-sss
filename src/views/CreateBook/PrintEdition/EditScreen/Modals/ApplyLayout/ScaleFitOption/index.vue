@@ -1,18 +1,20 @@
 <template>
-  <Modal title="Warning" width="560" :is-close-out-side="false">
-    <div class="modal-reset-layout">
-      <div class="modal-reset-layout-title">
+  <Modal title="Warning" width="524" :is-close-out-side="false">
+    <div class="modal-adapt-layout">
+      <div class="modal-adapt-layout-title">
         <div>
-          This will apply a new layout and discard any design you currently
-          have.
+          This template was designed in a different scale. How would you like to
+          apply it?
         </div>
-        <div>Do you wish to proceed?</div>
       </div>
       <div class="container-btn">
-        <PpButton is-active @click="onApplyLayout">
-          Yes, apply layout
+        <PpButton is-active @click="onScale">
+          Scale to Canvas
         </PpButton>
-        <PpButton is-active class="btn-cancel" @click="onCancel">
+        <PpButton is-active @click="onFit">
+          Fit to Canvas
+        </PpButton>
+        <PpButton class="btn-cancel" @click="onCancel">
           Cancel
         </PpButton>
       </div>

@@ -180,7 +180,7 @@ const getElementDimension = element => {
   };
 
   const isRightPage = left > PRINT_PAGE_SIZE.PDF_WIDTH * DATABASE_DPI;
-  const bleedSize = isRightPage ? PRINT_PAGE_SIZE.BLEED * 2 : 0;
+  const bleedSize = isRightPage ? PRINT_PAGE_SIZE.BLEED : 0;
 
   const coord = {
     x: pxToIn(left, DATABASE_DPI) - bleedSize,

@@ -14,15 +14,12 @@ export default {
       currentSheet
     };
   },
-  props: {
-    layout: {
-      type: Object,
-      required: true
-    }
-  },
   methods: {
-    onApplyLayout() {
-      //
+    onScale() {
+      this.$emit('onScale');
+    },
+    onFit() {
+      this.$emit('onFit');
     },
     onCancel() {
       this.$emit('onCancel');

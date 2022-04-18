@@ -10,8 +10,14 @@
       v-if="isSelectPageShown"
       :sheet="currentSheet"
       @onApply="onApplyOfSelectPage"
+      @onCancel="onCancel"
     />
-    <scale-fit-option v-if="isScaleFitShown" />
+    <scale-fit-option
+      v-if="isScaleFitShown"
+      @onScale="onScale"
+      @onFit="onFit"
+      @onCancel="onCancel"
+    />
   </div>
 </template>
 

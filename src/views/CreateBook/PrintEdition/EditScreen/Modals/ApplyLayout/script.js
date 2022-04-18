@@ -7,9 +7,13 @@ import {
   resetObjects,
   isEmpty,
   isHalfSheet,
-  isSingleLayout
+  isSingleLayout,
+  isCoverSheetChecker
 } from '@/common/utils';
-import { changeObjectsCoords } from '@/common/utils/layout';
+import {
+  changeObjectsCoords,
+  isCoverLayoutChecker
+} from '@/common/utils/layout';
 
 export default {
   setup() {
@@ -19,11 +23,12 @@ export default {
     return {
       toggleModal,
       applyPrintLayout,
+      sheetLayout,
+      currentSheet,
       isConfirmApplyShown: false,
       isSelectPageShown: false,
       isScaleFitShown: false,
-      sheetLayout,
-      currentSheet
+      pagePosition: null
     };
   },
   components: { SelectPage, ConfirmApplyLayout, ScaleFitOption },
@@ -39,51 +44,49 @@ export default {
     },
     isHalfSheet() {
       return isHalfSheet(this.currentSheet);
+    },
+    isCoverSheet() {
+      return isCoverSheetChecker(this.currentSheet);
     }
   },
   mounted() {
-    // confirm reset layout if there are any backgrounds or objects on canvas
-    if (!isEmpty(this.sheetLayout)) {
-      this.showConfirmModal();
-      return;
-    }
+    const isConfirm = this.showConfirmModal();
+    if (isConfirm) return;
 
-    // is applying on spread and the layout is single
-    if (!this.isHalfSheet && this.isSingleLayout) {
-      this.onSelectPage();
-      return;
-    }
+    const isSelect = this.showSelectPage();
+    if (isSelect) return;
+
+    const isScaleFit = this.showScaleFitOption();
+    if (isScaleFit) return;
 
     this.onApplyLayout();
   },
   methods: {
-    onSelectPage() {
-      this.isSelectPageShown = true;
-      this.isConfirmApplyShown = false;
-      this.isScaleFitShown = false;
-    },
-    onScaleFitShown() {
-      this.isScaleFitShown = true;
-      this.isSelectPageShown = false;
-      this.isConfirmApplyShown = false;
-    },
     showConfirmModal() {
-      this.isConfirmApplyShown = true;
-      this.isSelectPageShown = false;
-      this.isScaleFitShown = false;
-    },
-    onCancel() {
-      this.toggleModal({
-        isOpenModal: false
-      });
-    },
-    onConfirmApply() {
-      if (!this.isHalfSheet && this.isSingleLayout) {
-        this.onSelectPage();
-        return;
+      if (!isEmpty(this.sheetLayout)) {
+        this.isConfirmApplyShown = true;
+        return true;
       }
+    },
+    /**
+     * Trigger when use agree apply layout on comfirmation modal
+     */
+    onConfirmApply() {
+      this.isConfirmApplyShown = false;
+      const isSelect = this.showSelectPage();
+      if (isSelect) return;
+
+      const isScaleFit = this.showScaleFitOption();
+      if (isScaleFit) return;
 
       this.onApplyLayout();
+    },
+    showSelectPage() {
+      // is applying on spread and the layout is single
+      if (this.isHalfSheet || !this.isSingleLayout) return false;
+
+      this.isSelectPageShown = true;
+      return true;
     },
     /**
      * Trigger when use apply single layout on a spread and choose either left or right page
@@ -91,12 +94,37 @@ export default {
      * @param {String} pagePosition left or right : position wher single layout is applied
      */
     onApplyOfSelectPage(pagePosition) {
+      this.pagePosition = pagePosition;
+      this.isSelectPageShown = false;
+
       this.layout.objects = changeObjectsCoords(
         this.layout.objects,
         pagePosition
       );
 
+      const isScaleFit = this.showScaleFitOption();
+      if (isScaleFit) return;
+
       this.onApplyLayout({ pagePosition });
+    },
+    showScaleFitOption() {
+      if (this.isCoverSheet && !isCoverLayoutChecker(this.layout)) {
+        this.isScaleFitShown = true;
+        return true;
+      }
+    },
+    onScale() {
+      this.isScaleFitShown = false;
+      this.onApplyLayout({ isScale: true });
+    },
+    onFit() {
+      this.isScaleFitShown = false;
+      this.onApplyLayout({ isFit: true });
+    },
+    onCancel() {
+      this.toggleModal({
+        isOpenModal: false
+      });
     },
     /**
      * Save objects to store and draw on canvas
@@ -106,6 +134,7 @@ export default {
         sheetId: this.pageSelected?.id,
         themeId: this.themeSelected?.id,
         layout: this.layout,
+        pagePosition: this.pagePosition,
         ...args
       });
 

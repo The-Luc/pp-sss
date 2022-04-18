@@ -404,7 +404,9 @@ export const useApplyPrintLayout = () => {
     if (backgroundObjs.length === 1) {
       isFullLayout && clearBackgrounds();
 
-      backgroundObjs[0].isLeftPage = isFullLayout || isLeftPage;
+      const isLeftBackground = isLeftPage || backgroundObjs[0].isLeftPage;
+
+      backgroundObjs[0].isLeftPage = isLeftBackground;
       setBackground({ background: backgroundObjs[0] });
     }
   };
@@ -528,7 +530,13 @@ export const useApplyPrintLayout = () => {
     });
   };
 
-  const applyPrintLayout = async ({ themeId, layout, pagePosition }) => {
+  const applyPrintLayout = async ({
+    themeId,
+    layout,
+    pagePosition,
+    isScale,
+    isFit
+  }) => {
     const sheet = currentSheet.value;
     const sheetType = sheet.type;
     const isCoverSheet = isCoverSheetChecker(sheet);
@@ -556,8 +564,8 @@ export const useApplyPrintLayout = () => {
     handleAddingBackgrounds(objects, isFullLayout, currentPosition, isLeftPage);
 
     if (!isCoverLayout && isCoverSheet) {
-      // handleFitElements(objects, isRightPage);
-      handleScaleElements(objects, isRightPage);
+      isFit && handleFitElements(objects, isRightPage);
+      isScale && handleScaleElements(objects, isRightPage);
     }
 
     if (isFullLayout || isHalfSheet(currentSheet.value)) {
