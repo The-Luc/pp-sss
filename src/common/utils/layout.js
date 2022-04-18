@@ -1,10 +1,11 @@
 import { cloneDeep, get } from 'lodash';
-import { getActiveCanvas, pxToIn } from './canvas';
+import { activeCanvasInfo, pxToIn } from './canvas';
 import {
   CUSTOM_LAYOUT_TYPE,
   DATABASE_DPI,
   LAYOUT_PAGE_TYPE,
   OBJECT_TYPE,
+  PRINT_PAGE_SIZE,
   SHEET_TYPE
 } from '../constants';
 import { isEmpty } from './util';
@@ -16,7 +17,6 @@ import {
 } from '../models/element';
 import {
   convertAPIColorObjectToHex,
-  getPagePrintSize,
   getUniqueId,
   parseFromAPIShadow,
   pxToPt
@@ -29,6 +29,9 @@ export const isSingleLayout = layout =>
 
 export const isFullLayout = layout =>
   !isEmpty(layout) && layout?.pageType === LAYOUT_PAGE_TYPE.FULL_PAGE.id;
+
+export const isCoverLayoutChecker = layout =>
+  !isEmpty(layout) && layout?.type === 'COVER';
 
 /**
  * Get layout option from list layouts option by id
@@ -77,13 +80,13 @@ export const changeObjectsCoords = (objects, position, options) => {
 
   if (isLeftPage) return newObjects;
 
-  const targetCanvas = getActiveCanvas();
-  const { width } = targetCanvas;
-  const zoom = targetCanvas.getZoom();
-  const midCanvas = pxToIn(width / zoom / 2);
+  const { mid: midCanvas } = activeCanvasInfo();
 
   newObjects.forEach(object => {
-    if (object.type === OBJECT_TYPE.BACKGROUND) return;
+    if (object.type === OBJECT_TYPE.BACKGROUND) {
+      object.isLeftPage = false;
+      return;
+    }
 
     object.coord.x +=
       options?.moveToLeft && !isLeftPage ? -midCanvas : midCanvas;
@@ -92,16 +95,16 @@ export const changeObjectsCoords = (objects, position, options) => {
   return newObjects;
 };
 
-export const createTextElement = (element, isRightPage) => {
+export const createTextElement = element => {
   const props = apiTextToModel(element);
 
   return new TextElementObject({
     ...props,
-    ...getElementDimension(element, isRightPage)
+    ...getElementDimension(element)
   });
 };
 
-export const createImageElement = (element, isRightPage) => {
+export const createImageElement = element => {
   const id = get(element, 'properties.guid', '');
   const { properties } = element?.picture || {};
   const imageUrl = properties?.url?.startsWith('http') ? properties?.url : '';
@@ -133,18 +136,18 @@ export const createImageElement = (element, isRightPage) => {
   }
 
   return new ImageElementObject({
-    ...getElementDimension(element, isRightPage),
+    ...getElementDimension(element),
     id,
     imageUrl,
     ...imageProps
   });
 };
 
-export const createClipartElement = (element, isRightPage) => {
+export const createClipartElement = element => {
   const { large = '', guid: id } = element?.properties || {};
 
   return new ClipArtElementObject({
-    ...getElementDimension(element, isRightPage),
+    ...getElementDimension(element),
     id,
     imageUrl: large
   });
@@ -166,7 +169,7 @@ export const createBackgroundElement = page => {
   });
 };
 
-const getElementDimension = (element, isRightPage) => {
+const getElementDimension = element => {
   const {
     size: { width, height },
     position: { top, left },
@@ -174,17 +177,16 @@ const getElementDimension = (element, isRightPage) => {
     rotation
   } = element?.view || {};
 
-  const { pageWidth } = getPagePrintSize().inches;
-
   const size = {
     width: pxToIn(width, DATABASE_DPI),
     height: pxToIn(height, DATABASE_DPI)
   };
 
+  const isRightPage = left > PRINT_PAGE_SIZE.PDF_WIDTH * DATABASE_DPI;
+  const bleedSize = isRightPage ? PRINT_PAGE_SIZE.BLEED : 0;
+
   const coord = {
-    x: isRightPage
-      ? pxToIn(left, DATABASE_DPI) + pageWidth
-      : pxToIn(left, DATABASE_DPI),
+    x: pxToIn(left, DATABASE_DPI) - bleedSize,
     y: pxToIn(top, DATABASE_DPI),
     rotation
   };

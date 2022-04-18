@@ -102,6 +102,8 @@ export class BaseElementObject extends BaseEntity {
   type = '';
   opacity = DEFAULT_PROP.OPACITY;
   flip = new BaseFlip();
+  size = new BaseSize();
+  coord = new BasePosition();
   selectable = true;
   name = '';
 
@@ -115,8 +117,6 @@ export class BaseElementObject extends BaseEntity {
 }
 
 export class BaseMoveableElementObject extends BaseElementObject {
-  size = new BaseSize();
-  coord = new BasePosition();
   border = new BaseBorder();
   shadow = new BaseShadow();
   animationIn = new BaseAnimation({

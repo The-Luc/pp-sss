@@ -9,7 +9,7 @@ import {
 
 import { toFabricBackgroundProp } from './common';
 
-import { isEmpty, isFullBackground, modifyUrl } from '@/common/utils';
+import { isEmpty, isFullBackground, modifyUrl, inToPx } from '@/common/utils';
 
 /**
  * Adding background to canvas
@@ -33,7 +33,6 @@ export const addPrintBackground = async ({
     id,
     isAddToLeft
   );
-
   const currentBackgrounds = canvas
     .getObjects()
     .filter(o => o.objectType === OBJECT_TYPE.BACKGROUND);
@@ -103,6 +102,10 @@ export const createBackgroundFabricObject = (
   scale,
   isDisplayHalftRight = false
 ) => {
+  if (prop.size.width) {
+    return createFitBackgrounds(prop, newId);
+  }
+
   const fabricProp = toFabricBackgroundProp(prop);
 
   const { width, height } = canvas;
@@ -132,6 +135,41 @@ export const createBackgroundFabricObject = (
           left: isDisplayHalftRight ? -width / zoom : left,
           scaleX: width / zoom / img.width / scaleX,
           scaleY: height / zoom / img.height,
+          ...DEFAULT_FABRIC_BACKGROUND
+        });
+
+        resolve(background);
+      },
+      null,
+      {
+        crossOrigin: 'anonymous'
+      }
+    );
+  });
+};
+
+const createFitBackgrounds = (prop, newId) => {
+  const fabricProp = toFabricBackgroundProp(prop);
+
+  const id = newId ?? prop.id;
+  const height = inToPx(prop.size.height);
+  const width = inToPx(prop.size.width);
+
+  return new Promise((resolve, reject) => {
+    fabric.util.loadImage(
+      modifyUrl(prop.imageUrl),
+      img => {
+        if (!img) {
+          reject(new Error('Cannot load background'));
+          return;
+        }
+
+        const background = new fabric.Image(img, {
+          ...fabricProp,
+          id,
+          selectable: false,
+          scaleX: width / img.width,
+          scaleY: height / img.height,
           ...DEFAULT_FABRIC_BACKGROUND
         });
 

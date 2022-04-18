@@ -25,6 +25,11 @@ export const layoutMapping = layout => {
       title: {
         name: 'name',
         parse: val => val || 'Untitled'
+      },
+      layout_use: {
+        name: 'type',
+        parse: val => val || 'MISC',
+        isForce: true
       }
     },
     restrict: ['layout']

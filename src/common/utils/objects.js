@@ -7,7 +7,11 @@ import {
   VideoElementObject
 } from '@/common/models/element';
 
-import { DEBOUNCE_PROPERTIES, OBJECT_TYPE } from '@/common/constants';
+import {
+  DEBOUNCE_PROPERTIES,
+  OBJECT_TYPE,
+  DATABASE_DPI
+} from '@/common/constants';
 import { isEmpty } from './util';
 import { inToPx, pxToIn } from './canvas';
 
@@ -183,10 +187,10 @@ export const convertObjectInchToPx = objects => {
 
   objects.forEach(o => {
     if (!o?.coord) return;
-    o.coord.x = inToPx(o.coord.x, 300);
-    o.coord.y = inToPx(o.coord.y, 300);
-    o.size.width = inToPx(o.size.width, 300);
-    o.size.height = inToPx(o.size.height, 300);
+    o.coord.x = inToPx(o.coord.x, DATABASE_DPI);
+    o.coord.y = inToPx(o.coord.y, DATABASE_DPI);
+    o.size.width = inToPx(o.size.width, DATABASE_DPI);
+    o.size.height = inToPx(o.size.height, DATABASE_DPI);
   });
 };
 
@@ -195,9 +199,9 @@ export const convertObjectPxToInch = objects => {
 
   objects.forEach(o => {
     if (!o?.size || (o?.size?.height < 13 && o?.size?.width < 20)) return; // temporary solution when converting unit, can be delete later
-    o.coord.x = pxToIn(o.coord.x, 300);
-    o.coord.y = pxToIn(o.coord.y, 300);
-    o.size.width = pxToIn(o.size.width, 300);
-    o.size.height = pxToIn(o.size.height, 300);
+    o.coord.x = pxToIn(o.coord.x, DATABASE_DPI);
+    o.coord.y = pxToIn(o.coord.y, DATABASE_DPI);
+    o.size.width = pxToIn(o.size.width, DATABASE_DPI);
+    o.size.height = pxToIn(o.size.height, DATABASE_DPI);
   });
 };

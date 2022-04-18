@@ -18,8 +18,6 @@ import LayoutMapping from '@/containers/Modals/LayoutMapping';
 import ModalBackgroundSelectPage from '@/containers/ToolPopoverManager/Backgrounds/PrintBackgrounds/ModalSelectPage';
 
 import SelectTheme from '@/views/CreateBook/PrintEdition/EditScreen/Modals/ThemesModal';
-import ModalSelectPage from '@/views/CreateBook/PrintEdition/EditScreen/Modals/ModalSelectPage';
-import ModalResetLayout from '@/views/CreateBook/PrintEdition/EditScreen/Modals/ModalResetLayout';
 import GeneratePDF from '@/views/CreateBook/PrintEdition/EditScreen/Modals/GeneratePdf';
 import ModalSaveLayout from '@/views/CreateBook/PrintEdition/EditScreen/Modals/ModalSaveLayout/ModalSaveLayout';
 import ModalSelectPageOfLayout from '@/views/CreateBook/PrintEdition/EditScreen/Modals/ModalSaveLayout/ModalSelectPageOfLayout';
@@ -30,6 +28,8 @@ import AddDigitalFrame from '@/views/CreateBook/DigitalEdition/EditScreen/Modals
 import OverrideLayout from '@/views/CreateBook/DigitalEdition/EditScreen/Modals/OverrideLayoutModal';
 import DeleteFrame from '@/views/CreateBook/DigitalEdition/EditScreen/Modals/ModalConfirmDelete';
 import SaveDigitalLayout from '@/views/CreateBook/DigitalEdition/EditScreen/Modals/ModalSaveLayout';
+
+import ApplyLayout from '@/views/CreateBook/PrintEdition/EditScreen/Modals/ApplyLayout';
 
 const {
   HELP,
@@ -52,7 +52,8 @@ const {
   SAVE_STYLE_SUCCESS,
   SAVE_LAYOUT_SUCCESS,
   GENERATE_PDF,
-  MAP_LAYOUT
+  MAP_LAYOUT,
+  APPLY_LAYOUT
 } = MODAL_TYPES;
 
 const ModalList = {
@@ -76,7 +77,8 @@ const ModalList = {
   [SAVE_STYLE_SUCCESS]: SAVE_STYLE_SUCCESS,
   [SAVE_LAYOUT_SUCCESS]: SAVE_LAYOUT_SUCCESS,
   [GENERATE_PDF]: GENERATE_PDF,
-  [MAP_LAYOUT]: MAP_LAYOUT
+  [MAP_LAYOUT]: MAP_LAYOUT,
+  [APPLY_LAYOUT]: APPLY_LAYOUT
 };
 
 export default {
@@ -92,13 +94,11 @@ export default {
     [MODAL_TYPES.EMPTY_SECTION]: EmptySection,
     [MODAL_TYPES.SELECT_THEME]: SelectTheme,
     [MODAL_TYPES.GANTT_CHART]: GanttChartModal,
-    [MODAL_TYPES.SELECT_PAGE]: ModalSelectPage,
     [MODAL_TYPES.BACKGROUND_SELECT_PAGE]: ModalBackgroundSelectPage,
     [MODAL_TYPES.SELECT_THEME_DIGITAL]: SelectThemeDigital,
     [MODAL_TYPES.ADD_DIGITAL_FRAME]: AddDigitalFrame,
     [MODAL_TYPES.OVERRIDE_LAYOUT]: OverrideLayout,
     [MODAL_TYPES.DELETE_FRAME]: DeleteFrame,
-    [MODAL_TYPES.RESET_LAYOUT]: ModalResetLayout,
     [MODAL_TYPES.SAVE_LAYOUT]: ModalSaveLayout,
     [MODAL_TYPES.SELECT_PAGE_OF_LAYOUT]: ModalSelectPageOfLayout,
     [MODAL_TYPES.SAVE_DIGITAL_LAYOUT]: SaveDigitalLayout,
@@ -106,6 +106,7 @@ export default {
     [MODAL_TYPES.SAVE_STYLE_SUCCESS]: ModalStyleSaved,
     [MODAL_TYPES.SAVE_LAYOUT_SUCCESS]: ModalSaveLayoutSuccess,
     [MODAL_TYPES.GENERATE_PDF]: GeneratePDF,
+    [MODAL_TYPES.APPLY_LAYOUT]: ApplyLayout,
     [MODAL_TYPES.MAP_LAYOUT]: LayoutMapping
   },
   computed: {
