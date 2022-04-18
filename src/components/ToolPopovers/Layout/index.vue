@@ -19,7 +19,7 @@
     <PpToolPopover
       :title="textDisplay.title"
       :is-footer-hidden="isFooterHidden"
-      :disabled="layouts.length === 0"
+      :disabled="isEmptyTab"
       @cancel="onCancel"
       @change="setThemeLayoutForSheet"
     >
