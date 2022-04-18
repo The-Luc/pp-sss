@@ -12,7 +12,7 @@ import { isOk } from '@/common/utils';
  * @param {String} type value: SHEET or PAGE
  * @param {String} name custom title of layout
  * @param {String} previewImageUrl thumbnail for saved layout
- * @param {Boolean} isCover weather a cover layout or not
+ * @param {Boolean} isCover whether a cover layout or not
  * @returns mutation results
  */
 export const saveCustomPrintLayoutApi = async (
