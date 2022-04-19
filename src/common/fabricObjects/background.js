@@ -102,7 +102,7 @@ export const createBackgroundFabricObject = (
   scale,
   isDisplayHalftRight = false
 ) => {
-  if (prop.size.width) {
+  if (prop?.size?.width) {
     return createFitBackgrounds(prop, newId);
   }
 

@@ -99,7 +99,7 @@ export const DIGITAL_LAYOUT_TYPES = {
 export const CUSTOM_LAYOUT_TYPE = -999;
 
 export const SAVED_AND_FAVORITES_TYPE = {
-  name: 'Saved Favorites',
+  name: 'Saved Layouts/Favorites',
   id: -999,
   value: -999,
   subItems: []
