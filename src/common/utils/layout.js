@@ -1,12 +1,18 @@
 import { cloneDeep, get } from 'lodash';
-import { activeCanvasInfo, pxToIn } from './canvas';
+import {
+  activeCanvasInfo,
+  getCoverPagePrintSize,
+  pxToIn,
+  getPagePrintSize
+} from './canvas';
 import {
   CUSTOM_LAYOUT_TYPE,
   DATABASE_DPI,
   LAYOUT_PAGE_TYPE,
   OBJECT_TYPE,
   PRINT_PAGE_SIZE,
-  SHEET_TYPE
+  SHEET_TYPE,
+  LAYOUT_SIZE_TYPES
 } from '../constants';
 import { isEmpty } from './util';
 import {
@@ -217,6 +223,16 @@ export const getLayoutSelected = (sheet, layoutTypes = []) => {
   return layoutTypes[index];
 };
 
+/**
+ *  To calculate the position objects after rotation
+ *
+ * @param {Number} x x-pos of object before rotation
+ * @param {Number} y y-pos of object before rotation
+ * @param {Number} width  width of the object
+ * @param {Number} height  height of the object
+ * @param {Number} rotation angle in degree
+ * @returns rx, ry of object after rotation
+ */
 export const getRotatedPoint = (x, y, width, height, rotation) => {
   const angle = (rotation * Math.PI) / 180;
 
@@ -240,4 +256,40 @@ export const getRotatedPoint = (x, y, width, height, rotation) => {
   const ry = cy + radius * Math.sin(rotatedTopLeftAngle);
 
   return { rx, ry };
+};
+
+/**
+ * To seperate object of layout based on the layout size type
+ *
+ * @param {Array} objects object of layout
+ * @param {Number} sizeType layout size type Normal, HardCover, SoftCover
+ * @returns leftObjects and rightObjects
+ */
+export const leftRightObjectsOfLayout = (objects, sizeType) => {
+  const size = sizeType || LAYOUT_SIZE_TYPES.NORMAL;
+  const isHardCover = size === LAYOUT_SIZE_TYPES.HARD;
+  const { sheetWidth: coverWidth } = getCoverPagePrintSize(isHardCover).inches;
+
+  const { sheetWidth: normalWidth } = getPagePrintSize().inches;
+
+  const midOpts = {
+    [LAYOUT_SIZE_TYPES.HARD]: coverWidth / 2,
+    [LAYOUT_SIZE_TYPES.SOFT]: coverWidth / 2,
+    [LAYOUT_SIZE_TYPES.NORMAL]: normalWidth / 2
+  };
+
+  const mid = midOpts[size];
+  const leftObjects = [];
+  const rightObjects = [];
+
+  objects.forEach(o => {
+    if (o.type === OBJECT_TYPE.BACKGROUND) {
+      o.isLeftPage ? leftObjects.push(o) : rightObjects.push(o);
+      return;
+    }
+
+    o.coord.x < mid ? leftObjects.push(o) : rightObjects.push(o);
+  });
+
+  return { leftObjects, rightObjects };
 };
