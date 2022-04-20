@@ -9,7 +9,8 @@ import {
   EDITION,
   LAYOUT_TYPES,
   SAVED_AND_FAVORITES_TYPE,
-  MODAL_TYPES
+  MODAL_TYPES,
+  LAYOUT_SIZE_TYPES
 } from '@/common/constants';
 import {
   getThemeOptSelectedById,
@@ -17,7 +18,9 @@ import {
   insertItemsToArray,
   removeItemsFormArray,
   isHalfSheet,
-  getLayoutSelected
+  isHalfRight,
+  getLayoutSelected,
+  isCoverLayoutChecker
 } from '@/common/utils';
 import {
   usePopoverCreationTool,
@@ -32,7 +35,11 @@ import {
 
 import { getThemesApi } from '@/api/theme';
 
-import { changeObjectsCoords } from '@/common/utils/layout';
+import {
+  changeObjectsCoords,
+  isFullLayout,
+  leftRightObjectsOfLayout
+} from '@/common/utils/layout';
 
 export default {
   components: {
@@ -237,8 +244,25 @@ export default {
 
       layout.objects = await this.getLayoutElements(layout.id);
 
+      const isFullTemplate = isFullLayout(layout);
+
+      if (isFullTemplate && this.isHalfSheet) {
+        // remove left or right objects so that spread layout can be applied on half sheet
+        const isInsideFrontCover = isHalfRight(this.pageSelected);
+        // TODO: when BE provide a way to distinguish SOFT and HARD cover
+        const sizeType = isCoverLayoutChecker(layout)
+          ? LAYOUT_SIZE_TYPES.HARD
+          : LAYOUT_SIZE_TYPES.NORMAL;
+        const { leftObjects, rightObjects } = leftRightObjectsOfLayout(
+          layout.objects,
+          sizeType
+        );
+
+        layout.objects = isInsideFrontCover ? rightObjects : leftObjects;
+      }
+
       // change objects coords if user at FRONT_COVER or BACK_COVER
-      if (this.isHalfSheet) {
+      if (this.isHalfSheet && !isFullTemplate) {
         layout.objects = changeObjectsCoords(
           layout.objects,
           this.pageSelected.type

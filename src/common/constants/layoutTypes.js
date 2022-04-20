@@ -13,6 +13,12 @@ export const LAYOUT_PAGE_TYPE = {
   }
 };
 
+export const LAYOUT_SIZE_TYPES = {
+  HARD: 0,
+  SOFT: 1,
+  NORMAL: 2
+};
+
 export const LAYOUT_TYPES = {
   COVER: {
     value: 1,
