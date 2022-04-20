@@ -121,7 +121,7 @@ export const getPageLayouts = sheet => {
 };
 
 /**
- * To seperate sheet into 2 pages
+ * To seperate sheet into 2 pages for saving data
  *
  * @param {Object} sheet sheet data
  * @returns {Object} left and right page
