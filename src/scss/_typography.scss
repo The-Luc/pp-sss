@@ -1,0 +1,80 @@
+.text {
+  // Font Family
+  &-100 {
+    font-family: $font-100;
+  }
+
+  &-100-italic {
+    font-family: $font-100-italic;
+  }
+
+  &-300 {
+    font-family: $font-300;
+  }
+
+  &-300-italic {
+    font-family: $font-300-italic;
+  }
+
+  &-500 {
+    font-family: $font-500 !important;
+  }
+
+  &-500-italic {
+    font-family: $font-500-italic;
+  }
+
+  &-700 {
+    font-family: $font-700;
+  }
+
+  &-700-italic {
+    font-family: $font-700-italic;
+  }
+
+  &-900 {
+    font-family: $font-900;
+  }
+
+  &-900-talic {
+    font-family: $font-900-talic;
+  }
+
+  // Font Size
+  &-size-xxs {
+    font-size: $xxs-size;
+  }
+
+  &-size-xs {
+    font-size: $xs-size;
+  }
+
+  &-size-sm {
+    font-size: $sm-size;
+  }
+
+  &-size-md {
+    font-size: $md-size !important;
+  }
+
+  &-size-lg {
+    font-size: $lg-size;
+  }
+
+  &-size-xl {
+    font-size: $xl-size;
+  }
+
+  &-size-xsm {
+    font-size: $xsm-size;
+  }
+
+  // Line height
+  &-line-14 {
+    line-height: 14px;
+  }
+
+  &-line-15 {
+    line-height: 15px;
+  }
+}

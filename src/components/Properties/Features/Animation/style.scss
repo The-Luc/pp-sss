@@ -1,0 +1,18 @@
+.animation-container {
+  background-color: $color-stoodio-lightgray;
+  padding: 10px 12px;
+  text-transform: initial;
+
+  .properties-title {
+    color: $color-stoodio-toolbartext;
+    font-family: $font-500;
+    font-size: 11px;
+    margin-bottom: 5px;
+    text-transform: capitalize;
+  }
+
+  .horizontal-line {
+    margin-block: 9px;
+    border-bottom: 1px solid $color-gray15;
+  }
+}

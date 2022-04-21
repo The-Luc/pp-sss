@@ -1,0 +1,52 @@
+::v-deep .flow-warning.v-dialog {
+  border-radius: 0;
+  background-color: $color-white;
+  border-top: 9px solid $color-stoodio-blue;
+  display: flex;
+  flex-direction: column;
+  overflow: visible;
+  .header {
+    height: 55px;
+    font-family: $font-500;
+    font-size: 21px;
+    color: $color-stoodio-blue;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-bottom: 1px solid $color-stoodio-toolbartext;
+    position: relative;
+    .material-icons-outlined.icon.icon-close {
+      top: 10px;
+      right: 10px;
+      position: absolute;
+      color: $color-gray38;
+      font-size: $lg-size;
+      cursor: pointer;
+    }
+  }
+  .content {
+    padding: 34px 38px;
+    .descript {
+      font-family: $font-500;
+      font-size: 15px;
+      color: $color-gray16;
+      text-align: center;
+    }
+    .button {
+      .pp-btn {
+        margin: 24px auto 0;
+        width: 238px;
+        height: 36px;
+      }
+    }
+    .button-cancel {
+      .pp-btn {
+        margin: 10px auto 0;
+        width: 238px;
+        height: 36px;
+        background-color: $color-gray19;
+        border-color: $color-gray19;
+      }
+    }
+  }
+}

@@ -1,0 +1,23 @@
+.margin {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 10px;
+  .text-margin {
+    color: $color-stoodio-toolbartext;
+    font-size: $md-size;
+    font-family: $font-500;
+    padding: 20px 0 0;
+  }
+  ::v-deep.pp-combobox {
+    .v-input__control {
+      max-width: 80px;
+      .v-input__slot {
+        padding: 0;
+      }
+    }
+  }
+  &.disabled {
+    opacity: 0.5;
+  }
+}

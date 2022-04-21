@@ -1,0 +1,42 @@
+.preview-wrapper {
+  display: flex;
+  width: 100%;
+  height: 357px;
+  position: relative;
+  padding: 12px 10px 8px 10px;
+  flex-direction: column;
+  align-items: center;
+  border: 1px solid $color-gray17;
+
+  &.digital {
+    height: 198px;
+    padding: 8px 11px;
+  }
+
+  .pages {
+    display: flex;
+    width: 100%;
+    margin-top: 10px;
+    justify-content: space-between;
+    align-items: center;
+    color: $color-gray5;
+    font-size: $xs-size;
+    font-family: $font-300;
+
+    &.disabled {
+      opacity: 1 !important; // override
+    }
+
+    .text {
+      line-height: 12px;
+    }
+
+    .currentPage {
+      font-family: $font-700;
+    }
+
+    .clickable {
+      cursor: pointer;
+    }
+  }
+}

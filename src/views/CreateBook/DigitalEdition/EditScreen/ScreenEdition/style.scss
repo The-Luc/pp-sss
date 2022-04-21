@@ -1,0 +1,33 @@
+.screen-edition {
+  width: calc(100% - 167px);
+  height: calc(100vh - 161px);
+  padding: 0;
+  border-left: 1px solid $color-gray6;
+  background: $color-white4;
+  display: flex;
+  flex-direction: column;
+
+  .digital-canvas-container {
+    height: calc(100% - 125px);
+    margin: 6px;
+    position: relative;
+    overflow: hidden;
+  
+    &.scroll-x {
+      overflow-x: auto;
+    }
+  
+    &.scroll-y {
+      overflow-y: auto;
+    }
+
+    ::v-deep .canvas-container {
+      margin: 8px;
+      box-shadow: 1px 1px 3px 1px rgba($color-black, 0.25);
+    }
+
+    .digital-canvas {
+      background-color: $color-white;
+    }
+  }
+}

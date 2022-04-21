@@ -1,0 +1,20 @@
+%no-padding-margin {
+  padding: 0;
+  margin: 0;
+}
+
+%selector-active-item {
+  > .v-list-item__content {
+    .v-list-item__title {
+      span {
+        color: $color-white;
+      }
+    }
+  }
+}
+
+%selector-display-item {
+  color: $color-stoodio-toolbartext;
+  font-size: $xsm-size;
+  font-family: $font-500;
+}

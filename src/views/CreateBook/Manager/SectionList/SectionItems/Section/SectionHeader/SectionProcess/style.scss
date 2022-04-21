@@ -1,0 +1,33 @@
+$space: 15px;
+$process-width: 45px;
+
+.manager-main {
+  .manager-section-list {
+    .section-header {
+      .section-process {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+
+        .process-bar {
+          width: ($process-width * 3) + 3;
+          margin-right: $space;
+        }
+
+        .first-release {
+          width: 65px;
+        }
+
+        img {
+          width: 18px;
+          height: 18px;
+          cursor: pointer;
+        }
+
+        .pp-progress {
+          width: 140px;
+        }
+      }
+    }
+  }
+}

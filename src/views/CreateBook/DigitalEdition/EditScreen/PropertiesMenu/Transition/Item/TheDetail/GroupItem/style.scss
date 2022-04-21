@@ -1,0 +1,19 @@
+.group-item {
+  display: flex;
+  flex-direction: column;
+
+  .label {
+    width: 100%;
+    min-height: 11px;
+    margin-bottom: 5px;
+    align-items: center;
+    color: $color-stoodio-toolbartext;
+    line-height: $xsm-size;
+    font-size: $xsm-size;
+    font-family: $font-500;
+  }
+
+  .content {
+    width: 100%;
+  }
+}

@@ -1,0 +1,28 @@
+.start-page {
+  display: flex;
+  width: 100%;
+  height: 25px;
+  margin-top: 11px;
+  margin-bottom: 14px;
+  align-items: center;
+
+  &.digital {
+    margin-bottom: 177px;
+  }
+
+  .label {
+    margin-right: 8px;
+    color: $color-gray5;
+    line-height: 15px;
+    font-size: $md-size;
+    font-family: $font-300;
+  }
+
+  ::v-deep .pp-select {
+    width: 66px;
+    max-width: 66px;
+    .v-menu__content {
+      max-height: 205px !important;
+    }
+  }
+}

@@ -1,0 +1,18 @@
+.digital-themes-tool-popover {
+  .themes-container {
+    .theme-item-container {
+      .theme-item {
+        width: 151px;
+        margin-bottom: 10px;
+
+        &:not(:nth-child(4n)) {
+          margin-right: 0;
+        }
+
+        &:not(:nth-child(3n)) {
+          margin-right: 22px;
+        }
+      }
+    }
+  }
+}

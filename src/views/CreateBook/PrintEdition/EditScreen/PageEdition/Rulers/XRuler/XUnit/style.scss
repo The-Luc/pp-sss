@@ -1,0 +1,42 @@
+.x-unit {
+  display: flex;
+  height: 23px;
+  position: relative;
+  border: 1px solid $color-gray12;
+  border-top-width: 0;
+  border-left-width: 0;
+  border-right-width: 0;
+  align-items: flex-end;
+  font-size: 0;
+
+  .sx-unit {
+    flex: 1;
+    height: 100%;
+  }
+
+  .sx-unit-separator,
+  .sx-unit-separator-mid {
+    width: 1px;
+    height: 40%;
+    background-color: $color-gray12;
+  }
+
+  .sx-unit-separator-mid {
+    height: 66%;
+  }
+
+  .x-unit-number {
+    position: absolute;
+    height: auto;
+    font-size: 7px;
+    line-height: 7px;
+    color: $color-stoodio-toolbartext;
+    top: 3px;
+    left: 7%;
+
+    &.at-end {
+      left: auto;
+      right: 7%;
+    }
+  }
+}

@@ -1,0 +1,12 @@
+.text-case-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.pp-button-group.v-btn-toggle:not(.v-btn-toggle--group)
+  > .v-btn.v-btn--active.not-active {
+  border: 1px solid rgba(0, 0, 0, 0.12) !important;
+}
+.v-btn-toggle > .v-btn.v-btn--active.not-active {
+  opacity: 0.8;
+}

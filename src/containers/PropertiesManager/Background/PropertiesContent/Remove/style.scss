@@ -1,0 +1,36 @@
+.remove-background {
+  display: flex;
+  width: 100%;
+  margin: auto;
+  justify-content: space-around;
+
+  &-button {
+    width: 144px;
+    height: 34px !important; // override
+    position: relative;
+    padding: 0 !important; // override
+    color: $color-stoodio-blue;
+    text-transform: capitalize;
+    line-height: $md-size;
+    letter-spacing: 0.1px;
+    font-size: $xsm-size;
+    font-family: $font-300;
+    background-color: $color-white !important;
+    border-radius: 3px;
+    border: 0.62px solid $color-stoodio-blue;
+    box-shadow: none;
+
+    &::before {
+      display: none;
+    }
+
+    .v-icon {
+      margin-right: 2px;
+      font-size: 14px;
+    }
+
+    .text {
+      padding-top: 1px;
+    }
+  }
+}

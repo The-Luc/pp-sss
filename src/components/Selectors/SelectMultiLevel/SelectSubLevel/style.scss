@@ -1,0 +1,33 @@
+.pp-select-sub-container {
+  max-height: 304px !important; // override
+  z-index: 99999;
+  overflow-y: auto;
+  box-shadow: 0 0 6px #000000 !important;
+
+  .pp-select-sub {
+    z-index: 99999;
+    min-width: 200px;
+    cursor: default;
+
+    &--item {
+      cursor: pointer;
+      position: relative;
+
+      &.disabled {
+        pointer-events: none;
+
+        span {
+          color: $color-gray22;
+        }
+      }
+
+      &.v-list-item--active,
+      &:not(.item-selected):hover,
+      &.sub-activated {
+        .icon-arrow {
+          color: $color-white;
+        }
+      }
+    }
+  }
+}

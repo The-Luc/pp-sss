@@ -1,0 +1,14 @@
+.login-container {
+  width: 500px;
+  margin-inline: auto;
+  margin-top: 50px;
+  font-size: $lg-size;
+  font-family: $font-500;
+
+  .login-content,
+  .select-book {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+  }
+}

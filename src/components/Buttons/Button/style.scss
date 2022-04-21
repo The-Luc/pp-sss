@@ -1,0 +1,23 @@
+.pp-btn {
+  font-size: $sm-size;
+  font-family: $font-500;
+  text-decoration: none;
+  height: 26px;
+  color: $color-stoodio-blue;
+  border: 0.5px solid $color-stoodio-blue;
+  border-radius: 6px;
+  min-width: 120px;
+  opacity: 0.5;
+
+  &.active {
+    font-family: $font-500;
+    color: white;
+    background-color: $color-stoodio-blue;
+    opacity: 1;
+  }
+
+  &.disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+}

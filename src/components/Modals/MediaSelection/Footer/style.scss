@@ -1,0 +1,45 @@
+.modal-footer {
+  background: $color-white;
+  display: flex;
+  justify-content: center;
+  border-top: 2px solid $color-gray11;
+  padding: 20px;
+  .footer-btn::v-deep.v-btn {
+    width: 100px;
+    height: 32px;
+    border-radius: 6px;
+    box-shadow: none;
+    letter-spacing: initial;
+
+    .v-btn__content {
+      font-size: 11.5px;
+      font-family: $font-500;
+      text-transform: initial;
+    }
+
+    &.cancel {
+      margin-right: 18px;
+      background: $color-gray7;
+      color: $color-gray5;
+    }
+    &.action {
+      color: $color-white;
+      background-color: $color-stoodio-blue;
+    }
+    &.theme--light.v-btn.v-btn--disabled.v-btn--has-bg {
+      color: $color-white !important;
+      background: $color-stoodio-blue !important;
+      opacity: 0.4;
+    }
+  }
+}
+
+.modal-footer-tab-add {
+  height: 74px;
+  background-color: $color-white;
+  font-family: $font-300;
+  font-size: 13px;
+  text-align: center;
+  padding-top: 30px;
+  color: $color-gray5;
+}

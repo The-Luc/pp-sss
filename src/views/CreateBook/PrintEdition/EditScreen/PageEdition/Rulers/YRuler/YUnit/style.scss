@@ -1,0 +1,36 @@
+.y-unit {
+  display: flex;
+  flex-direction: column;
+  width: 23px;
+  position: relative;
+  border: 1px solid $color-gray12;
+  border-width: 0;
+  align-items: flex-end;
+  font-size: 0;
+
+  .sy-unit {
+    flex: 1;
+    width: 100%;
+  }
+
+  .sy-unit-separator,
+  .sy-unit-separator-mid {
+    width: 40%;
+    height: 1px;
+    background-color: $color-gray12;
+  }
+
+  .sy-unit-separator-mid {
+    width: 66%;
+  }
+
+  .y-unit-number {
+    position: absolute;
+    height: auto;
+    font-size: 7px;
+    line-height: 7px;
+    color: $color-stoodio-toolbartext;
+    left: 3px;
+    top: 7%;
+  }
+}

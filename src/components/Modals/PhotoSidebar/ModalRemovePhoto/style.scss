@@ -1,0 +1,67 @@
+::v-deep .modal-remove-photo.v-dialog {
+  border-radius: 0;
+  .v-sheet.v-card {
+    border-radius: 0;
+  }
+}
+
+.pp-modal-title {
+  justify-content: center;
+  color: $color-stoodio-blue;
+  font-family: $font-500;
+  border-bottom: 1px solid $color-gray28;
+  padding-top: 26px !important;
+  text-transform: capitalize;
+
+  .top-bg {
+    display: inline-block;
+    background-color: $color-stoodio-blue;
+    height: 9px;
+    width: 100%;
+    position: absolute;
+    top: 0;
+  }
+}
+
+.pp-modal-content::v-deep {
+  &.v-card__text {
+    padding: 25px 50px 0;
+  }
+
+  div {
+    font-size: $md-size;
+    font-family: $font-500;
+    color: $color-gray16;
+    text-align: center;
+    &:last-child {
+      margin-top: 15px;
+      margin-bottom: 25px;
+    }
+  }
+}
+
+.pp-modal-action::v-deep {
+  &.v-card__actions {
+    padding: 0 50px 25px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .pp-btn {
+    margin-top: unset;
+  }
+
+  .remove-btn {
+    text-transform: capitalize;
+  }
+
+  .cancel-btn {
+    .pp-btn {
+      margin-top: 15px;
+      background-color: $color-gray19;
+      border-color: $color-gray19;
+      color: white;
+      opacity: 1;
+    }
+  }
+}

@@ -1,0 +1,33 @@
+.manager-main {
+  .manager-section-list {
+    .section-control {
+      padding-top: 30px;
+      font-family: $font-700;
+      font-size: $sm-size;
+
+      button {
+        height: 32px;
+        margin-right: 20px;
+        color: $color-stoodio-blue;
+        font-size: $sm-size;
+        text-transform: unset;
+        border: 1px solid $color-stoodio-blue;
+        border-radius: 6px;
+        box-shadow: none;
+
+        &.btn-solid {
+          color: $color-white;
+          background-color: $color-stoodio-blue;
+          &.btn-disabled {
+            opacity: 40%;
+            cursor: not-allowed;
+          }
+        }
+
+        img {
+          margin-right: 10px;
+        }
+      }
+    }
+  }
+}

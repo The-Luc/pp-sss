@@ -1,0 +1,9 @@
+.playback-properties-container {
+  .playback-wrapper {
+    @include prop-menu-scrollable(false);
+
+    &.digital {
+      max-height: 250px;
+    }
+  }
+}

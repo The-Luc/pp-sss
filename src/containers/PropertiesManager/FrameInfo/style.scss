@@ -1,0 +1,72 @@
+.frame-info-container {
+  font-size: 11px;
+  color: $color-stoodio-toolbartext;
+  line-height: 13px;
+  font-family: $font-500;
+
+  .frame-text-input {
+    padding: 0 7px;
+    font-family: $font-500;
+    font-size: 11px;
+    color: $color-stoodio-toolbartext;
+    border-radius: 3px;
+    height: 25px;
+    width: 100%;
+    border: 1px solid $color-gray15;
+
+    &:focus-visible {
+      outline: none;
+    }
+    &::placeholder {
+      color: $color-gray15;
+      font-family: $font-300;
+    }
+  }
+  .title-content {
+    padding: 10px 10px 17px 10px;
+    border-bottom: 1px solid $color-gray13;
+  }
+
+  .frame-headline {
+    margin-bottom: 4px;
+  }
+
+  .opts-container {
+    padding: 13px 10px 18px 10px;
+  }
+  .timing-opts {
+    display: flex;
+    column-gap: 15px;
+
+    & > div {
+      flex: 1;
+    }
+  }
+
+  // Increase width of combobox
+  .timing-delay ::v-deep .v-input__control {
+    width: 90px;
+    max-width: 90px;
+
+    .v-input__slot {
+      padding: 0;
+    }
+  }
+
+  // Hide select box pointer when videos exist
+  .timing-delay ::v-deep.hide-pointer {
+    .v-input__slot .pointer {
+      display: none;
+    }
+  }
+
+  .opt-title {
+    display: block;
+    padding-bottom: 4px;
+    color: $color-gray13;
+  }
+}
+.timing-play-in,
+.timing-play-out {
+  filter: opacity(0.4);
+}

@@ -1,0 +1,9 @@
+.background-properties-container {
+  .background-properties-wrapper {
+    @include prop-menu-scrollable(false);
+
+    .v-tab {
+      width: 136px !important;
+    }
+  }
+}

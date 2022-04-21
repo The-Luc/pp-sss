@@ -1,0 +1,31 @@
+.modal-adapt-layout {
+  .modal-adapt-layout-title {
+    font-family: $font-500;
+    font-size: 15px;
+    text-align: center;
+    color: #4a4844;
+    margin-inline: 65px;
+    margin-top: 5px;
+    display: flex;
+    justify-content: center;
+  }
+  .container-btn {
+    display: flex;
+    gap: 10px;
+    flex-direction: column;
+    margin-top: 25px;
+    margin-bottom: 12px;
+    .pp-btn {
+      width: 238px;
+      height: 36px;
+      margin: 0 auto;
+    }
+    .btn-cancel {
+      .pp-btn {
+        background-color: $color-gray13;
+        border-color: $color-gray13;
+        color: $color-white;
+      }
+    }
+  }
+}

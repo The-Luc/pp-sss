@@ -1,0 +1,12 @@
+.book-number-information {
+  width: 120px;
+  font-family: $font-300;
+  color: #42738d;
+  opacity: 0.5;
+
+  &.active {
+    font-family: $font-700;
+    color: #42738d;
+    opacity: 1;
+  }
+}

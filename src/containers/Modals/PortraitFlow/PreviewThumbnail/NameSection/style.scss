@@ -1,0 +1,10 @@
+.name-container {
+  position: absolute;
+  display: flex;
+  z-index: 10;
+  flex-direction: column;
+
+  &.right {
+    right: 0;
+  }
+}

@@ -1,0 +1,45 @@
+.item-dropdown {
+  padding-left: 12px;
+  display: flex;
+  margin: 5px 0;
+  .img-container {
+    display: flex;
+    width: 66px;
+    height: 66px;
+    flex-wrap: wrap;
+    margin: -1px;
+    justify-content: space-between;
+    div {
+      flex: 1;
+      min-width: 30px;
+      min-height: 30px;
+      margin: 1px;
+      background-position: center;
+      background-size: cover;
+    }
+  }
+  .album-info {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    margin-left: 10px;
+    width: 195px;
+    .name {
+      color: $color-stoodio-toolbartext;
+      font-family: $font-500;
+      font-size: 14px;
+      ::v-deep .v-list-item__mask {
+        background-color: $color-yellow;
+        color: $color-stoodio-toolbartext;
+      }
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .asset {
+      color: $color-gray32;
+      font-family: $font-500;
+      font-size: 11px;
+    }
+  }
+}

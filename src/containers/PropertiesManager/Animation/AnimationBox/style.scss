@@ -1,0 +1,99 @@
+.animation-control-container {
+  width: 100%;
+
+  .animation-control-header {
+    width: 100%;
+    height: 30px;
+    padding: 0px 12px;
+    background-color: $color-stoodio-lightgray;
+    display: flex;
+    align-items: center;
+
+    >span {
+      font-size: 11px;
+      font-weight: bold;
+      font-family: $font-500;
+    }
+  }
+
+  .animation-control-body {
+    max-height: 150px;
+    overflow-x: hidden;
+    overflow-y: auto;
+
+    .animation-control-item {
+      width: 100%;
+      height: 30px;
+      border: 1px solid $color-gray7;
+      color: $color-stoodio-toolbartext;
+      display: flex;
+      cursor: pointer;
+
+      &:not(:last-child) {
+        border-bottom: unset;
+      }
+
+      .animation-order {
+        width: 30px;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-right: 1px solid $color-gray7;
+        font-family: $font-500;
+        font-size: 12px;
+        font-weight: 500;
+        background-color: $color-white;
+
+        &.play-out {
+          background-color: $color-gray36;
+        }
+      }
+
+      .animation-name {
+        display: flex;
+        align-items: center;
+        font-weight: bold;
+
+        >span {
+          max-width: 100px;
+          text-overflow: ellipsis;
+          overflow: hidden;
+          white-space: nowrap;
+
+          &.empty-type {
+            max-width: 175px;
+          }
+        }
+      }
+
+      .animation-type {
+        display: flex;
+        align-items: center;
+        padding-left: 5px;
+
+        &:not(:empty) {
+          padding: 0 5px;
+          &::after {
+            content: "\003A";
+          }
+        }
+      }
+
+      .animation-style {
+        margin-left: auto;
+        padding: 0 5px;
+        display: flex;
+        align-items: center;
+        font-size: 11px;
+        font-family: $font-500;
+        color: $color-gray13;
+      }
+
+      &.active {
+        background-color: $color-blue3;
+        color: $color-black7;
+      }
+    }
+  }
+}

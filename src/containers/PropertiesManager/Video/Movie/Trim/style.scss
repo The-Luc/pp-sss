@@ -1,0 +1,25 @@
+.trim-container {
+  // temporary disable this component
+  & > * {
+    opacity: 0.4;
+  }
+  // END of temporary code
+  .control-group {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    font-size: 10px;
+
+    .label-text {
+      font-family: $font-300;
+    }
+    .label-time {
+      font-family: $font-500;
+    }
+  }
+
+  .pp-range-slider-container {
+    width: 100%;
+    margin: 5px 0 13px;
+  }
+}

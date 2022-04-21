@@ -1,0 +1,37 @@
+#apply-warning {
+  ::v-deep .pp-modal {
+    height: 300px !important;
+    .pp-modal-title-theme {
+      height: 65px;
+      margin: 0 !important;
+      padding: 12px 0 4px 0 !important;
+      .text-title {
+        font-size: $xl-size;
+      }
+    }
+    .card-text-theme-modal {
+      height: auto;
+    }
+  }
+  .apply-warning-body {
+    margin: 20px 0 18px;
+    text-align: center;
+    font-family: $font-500;
+    font-size: 15px;
+    color: $color-gray16;
+  }
+
+  .apply-warning-footer {
+    &::v-deep .pp-btn {
+      width: 238px;
+      height: 36px;
+      margin: 10px auto;
+      opacity: 1;
+      &:not(.active) {
+        background-color: $color-gray19;
+        border-color: $color-gray19;
+        color: white;
+      }
+    }
+  }
+}

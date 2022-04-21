@@ -1,0 +1,59 @@
+$padding: 20px;
+$padding-small: 15px;
+
+$width-summary-view: 280px + $width-scroll;
+$width-summary: $width-summary-view + $margin-scroll;
+$width-summary-collapse: 30px;
+$height-header: 132px;
+
+%panel-default-setting {
+  height: 100%;
+  max-height: calc(100vh - #{$height-header});
+  padding: $padding;
+  overflow-x: auto;
+}
+
+.manager-main {
+  position: relative;
+  height: 100%;
+  line-height: 14px;
+  color: #565656;
+  font-family: $font-500;
+  font-size: 12px;
+  background-color: #f4f4f4;
+
+  .manager-section-list {
+    width: calc(100% - #{$width-summary});
+    max-width: calc(100% - #{$width-summary});
+
+    &[data-toggle="collapse"] {
+      width: calc(100% - #{$width-summary-collapse});
+      max-width: calc(100% - #{$width-summary-collapse});
+    }
+
+    .scroll-container {
+      @extend %panel-default-setting;
+
+      padding: $padding $padding-small $padding 37px;
+    }
+  }
+
+  .manager-summary {
+    width: $width-summary;
+
+    &[data-toggle="collapse"] {
+      width: $width-summary-collapse;
+
+      .scroll-container {
+        padding-left: 10px;
+      }
+    }
+
+    .scroll-container {
+      @extend %panel-default-setting;
+
+      width: $width-summary-view;
+      padding: $padding 25px $padding $padding-small;
+    }
+  }
+}

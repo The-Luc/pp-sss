@@ -1,0 +1,30 @@
+.pp-combobox {
+  ::v-deep .v-input__control {
+    max-width: 73px;
+    position: relative;
+
+    .v-input__slot {
+      padding-left: 0 !important;
+
+      .v-select__selection--comma {
+        font-size: $md-size + 1;
+      }
+
+      .v-select__slot {
+        .v-input__append-inner {
+          img {
+            width: 25px;
+          }
+        }
+
+        input {
+          min-width: 43px;
+          padding-left: 5px;
+          font-size: 11px;
+          font-family: $font-500;
+          color: $color-stoodio-toolbartext;
+        }
+      }
+    }
+  }
+}

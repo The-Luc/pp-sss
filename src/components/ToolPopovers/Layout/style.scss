@@ -1,0 +1,120 @@
+.layouts-container {
+  &-prompt {
+    ::v-deep .tool-popover-header {
+      &::before {
+        border-bottom-color: #b3c7d1;
+      }
+    }
+  }
+
+  &.empty-layout-container {
+    font-size: 25px;
+    width: 100%;
+    text-align: center;
+
+    ::v-deep .tool-popover-content {
+      overflow: hidden;
+    }
+
+    .empty-layout-content {
+      display: flex;
+      flex-wrap: wrap;
+
+      .empty-layout-text {
+        font-size: 16px;
+        font-family: $font-500;
+        position: absolute;
+        left: 34%;
+        top: 35%;
+      }
+
+      .layout-item {
+        min-width: 225px;
+        height: 172px;
+        margin-right: 20px;
+        margin-bottom: 20px;
+        opacity: 0.4;
+      }
+    }
+  }
+
+  .prompt {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.6);
+    z-index: 99;
+    border-radius: 4px;
+  }
+
+  ::v-deep .tool-popover-header {
+    &::before {
+      left: 71px;
+    }
+  }
+
+  .pp-layouts-action-container {
+    display: flex;
+    padding: 0 18px 0 10px;
+    height: 45px;
+    justify-content: space-between;
+    border-bottom: 1px solid $color-gray15;
+
+    ::v-deep .pp-selector-container {
+      .pp-select,
+      .pp-select-multi {
+        width: 200px;
+
+        .v-menu__content {
+          max-height: 304px !important; /* override lib setting */
+          overflow: auto;
+        }
+      }
+    }
+  }
+
+  .layout-item-container {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px 25px 65px;
+    min-height: 240px;
+    flex-wrap: wrap;
+  }
+  .layout-tab-container {
+    display: flex;
+    align-items: center;
+    height: 36px;
+    padding-left: 13px;
+    border-bottom: 1px solid $color-gray15;
+    & > p {
+      margin: 0;
+    }
+
+    &::v-deep {
+      font-family: $font-300;
+      font-size: 11px;
+
+      .v-slide-group__content {
+        border-bottom: unset;
+        color: $color-stoodio-toolbartext;
+
+        .v-tabs-slider {
+          background-color: unset;
+        }
+        .v-tab {
+          font-size: 11px;
+          text-transform: capitalize;
+          letter-spacing: initial;
+
+          &:last-child {
+            border-left: 1px solid $color-gray31;
+          }
+
+          &--active {
+            font-family: $font-500;
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,45 @@
+.key-word {
+  width: min-content;
+  position: relative;
+  display: inline-table;
+  padding: 4px;
+
+  .v-chip {
+    position: static;
+    border-radius: 6px !important;
+    margin: 0px !important;
+    border: none;
+    background-color: $color-stoodio-toolbartext !important;
+    &::before {
+      background-color: transparent;
+    }
+    ::v-deep .v-chip__content {
+      font-family: $font-300;
+      color: $color-white;
+      font-size: 15px;
+
+      .v-chip__close.v-icon.v-icon--right {
+        width: 13px;
+        height: 13px;
+        position: absolute;
+        top: 0;
+        right: 5px;
+        background-color: $color-gray26;
+        border-radius: 50%;
+        opacity: 1;
+        &::after {
+          opacity: 1;
+          background-color: transparent;
+        }
+        &::before {
+          font-size: 13px;
+          color: black;
+        }
+      }
+    }
+  }
+  .inactive.v-chip {
+    cursor: pointer;
+    opacity: 0.4;
+  }
+}

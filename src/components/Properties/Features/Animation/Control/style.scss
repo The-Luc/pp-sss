@@ -1,0 +1,91 @@
+$height: 26px;
+
+.control-container {
+  .properties-title {
+    line-height: 1;
+    color: $color-gray13;
+  }
+
+  .control-style {
+    display: flex;
+    align-items: center;
+
+    >div {
+      margin-right: 10px;
+    }
+
+    .v-btn {
+      border-color: $color-gray15;
+      border-radius: 3px;
+      height: $height;
+      text-transform: capitalize;
+      font-size: 11px;
+      font-family: $font-500;
+      color: $color-stoodio-toolbartext;
+      background-color: $color-white;
+      letter-spacing: 0;
+
+      .v-btn__content .v-icon {
+        margin-left: 0;
+        font-size: 15px;
+      }
+    }
+
+    &::v-deep {
+      .pp-select.apply-select {
+        .v-select__selections input::placeholder {
+          color: $color-stoodio-blue;
+          font-size: 11px;
+        }
+
+        .v-input__slot {
+          border-color: $color-stoodio-blue;
+        }
+
+        .item-selected {
+          .v-list-item__title {
+            max-width: 145px;
+
+            span {
+              color: $color-stoodio-blue;
+            }
+          }
+        }
+      }
+    }
+
+    .apply-btn {
+      width: 90px;
+      border-color: $color-stoodio-blue;
+      background-color: $color-stoodio-blue;
+      color: $color-white;
+    }
+  }
+
+  .control-options {
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+
+    .v-input {
+      background-color: $color-white;
+    }
+
+    .control-item {
+      min-width: 56px;
+      margin-right: 10px;
+
+      .v-input {
+        height: $height;
+      }
+
+      .pp-select {
+        max-width: 135px;
+      }
+
+      &::v-deep .pp-number.length-1 input {
+        max-width: 9px !important;
+      }
+    }
+  }
+}

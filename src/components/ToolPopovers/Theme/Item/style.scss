@@ -1,0 +1,30 @@
+.theme-item {
+  width: 100px;
+  margin-bottom: 30px;
+
+  &-name {
+    font-size: 13px;
+    font-family: $font-500;
+    text-align: center;
+  }
+
+  &-active {
+    .theme-item-img {
+      border: 2px solid #42738d;
+    }
+
+    .theme-item-name {
+      color: #42738d;
+      font-family: $font-500;
+    }
+  }
+
+  &-img {
+    border: 2px solid transparent;
+    cursor: pointer;
+  }
+
+  &:not(:nth-child(4n)) {
+    margin-right: 30px;
+  }
+}

@@ -1,0 +1,15 @@
+.process-item {
+  display: flex;
+  width: 100%;
+
+  .process-body-wrapper {
+    display: flex;
+    padding-left: 14px;
+
+    .process-body {
+      display: flex;
+      min-width: 850px;
+      max-width: 850px;
+    }
+  }
+}

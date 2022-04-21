@@ -1,0 +1,43 @@
+.v-tab {
+  position: relative;
+  height: auto;
+  margin: 0 25px 0 29px;
+  padding: 14px 0;
+  justify-content: flex-end;
+  text-transform: capitalize;
+  color: $color-gray29;
+  line-height: 19px;
+  font-family: $font-300;
+  font-size: 15px;
+  letter-spacing: normal;
+
+  &--active {
+    color: $color-gray5;
+    font-family: $font-700;
+    background: none;
+
+    .v-icon {
+      display: block !important; // override
+    }
+  }
+
+  &:hover {
+    background: none;
+  }
+
+  &::before {
+    display: none;
+  }
+
+  &:not(:last-of-type) {
+    border-bottom: 1px solid $color-gray17;
+  }
+
+  .v-icon {
+    display: none;
+    position: absolute;
+    right: -40px;
+    z-index: 2;
+    color: $color-stoodio-blue;
+  }
+}

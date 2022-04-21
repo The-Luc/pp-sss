@@ -1,0 +1,56 @@
+#save-settings {
+  ::v-deep .pp-modal {
+    min-width: 559px !important;
+    height: 308px !important;
+    min-height: 308px !important;
+    .pp-modal-title-theme {
+      height: 65px;
+      margin: 0 !important;
+      padding: 12px 0 4px 0 !important;
+      .text-title {
+        font-size: $xl-size;
+      }
+    }
+    .card-text-theme-modal {
+      display: block !important;
+    }
+  }
+  .save-settings-body {
+    .style-name {
+      width: 60%;
+      margin: 35px auto 25px;
+      text-align: center;
+      label {
+        font-family: $font-500;
+        font-size: $md-size;
+        color: $color-gray16;
+      }
+      input {
+        color: $color-gray16;
+        font-family: $font-500;
+        font-size: 13px;
+        width: 262px;
+        height: 32px;
+        margin-top: 10px;
+        padding: 0 8px;
+        border: 1px solid $color-gray17;
+        border-radius: 6px;
+        outline: none;
+      }
+    }
+  }
+
+  .save-settings-footer {
+    &::v-deep .pp-btn {
+      width: 238px;
+      height: 36px;
+      margin: 15px auto;
+      opacity: 1;
+      &:not(.active) {
+        background-color: $color-gray19;
+        border-color: $color-gray19;
+        color: white;
+      }
+    }
+  }
+}

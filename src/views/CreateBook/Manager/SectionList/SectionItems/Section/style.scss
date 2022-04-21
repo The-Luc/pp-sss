@@ -1,0 +1,27 @@
+.manager-main {
+  .manager-section-list {
+    .section-item {
+      &.drag-target-before {
+        .indicator-top {
+          display: block;
+        }
+      }
+
+      &.drag-target-after {
+        .indicator-bottom {
+          display: block;
+        }
+      }
+
+      .indicator-top {
+        margin-top: -6px;
+        margin-bottom: 4px;
+      }
+
+      .indicator-bottom {
+        margin-top: 4px;
+        margin-bottom: -6px;
+      }
+    }
+  }
+}

@@ -1,0 +1,5 @@
+.transition-properties-container {
+  .transition-wrapper {
+    @include prop-menu-scrollable(false);
+  }
+}

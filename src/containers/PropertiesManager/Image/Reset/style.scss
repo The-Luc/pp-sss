@@ -1,0 +1,10 @@
+.image-reset-container,
+.image-background-container {
+    text-transform: initial;
+    padding: 5.5px 12px 10px;
+    border-bottom: 1px solid #bcbec0;
+    .properties-title {
+        font-family: $font-500;
+        height: 13px;
+    }
+}

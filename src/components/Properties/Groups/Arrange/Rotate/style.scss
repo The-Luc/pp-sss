@@ -1,0 +1,15 @@
+.rotate-container {
+  .item-container {
+    .pp-number {
+      width: 60px;
+      max-width: 60px;
+      height: 25px;
+    }
+    .item-title {
+      color: $color-stoodio-toolbartext;
+      font-size: 10px;
+      height: 12px;
+      margin-bottom: 0;
+    }
+  }
+}

@@ -1,0 +1,145 @@
+.pp-calendar {
+  background-color: white;
+  padding: 16px;
+
+  .v-picker {
+    width: 100%;
+    .v-date-picker-header {
+      padding: 0 5px 0 0;
+      line-height: 0;
+      height: 40px;
+      display: flex;
+      align-items: center;
+
+      .v-btn {
+        .v-icon {
+          font-size: 13px;
+          margin: 0;
+        }
+      }
+
+      .v-date-picker-header__value {
+        position: absolute;
+        font-size: 13px;
+        font-family: $font-700;
+      }
+    }
+
+    .v-date-picker-table {
+      padding-left: 0;
+      overflow: hidden;
+
+      th {
+        color: #565656;
+      }
+      .v-btn {
+        &:hover,
+        &:focus,
+        &--active {
+          background-color: #eaf2f5 !important;
+          border-radius: 0 !important;
+          &::before {
+            background-color: #eaf2f5 !important;
+          }
+        }
+        &--disabled {
+          .v-btn__content {
+            opacity: 0.3;
+          }
+        }
+        &::before {
+          background-color: transparent;
+        }
+
+        &.v-date-picker-table__current {
+          background-color: #f4f4f4;
+          border-radius: 0;
+          border: 0;
+        }
+      }
+    }
+
+    :first-child {
+      margin-left: auto;
+    }
+  }
+
+  .v-btn__content {
+    font-family: $font-700;
+    font-size: 11px;
+    line-height: 13px;
+    color: #565656;
+    text-transform: none;
+  }
+
+  .divider {
+    margin-left: 47px;
+    position: relative;
+    z-index: 99;
+  }
+
+  &-date-picker {
+    .v-date-picker-header__value {
+      pointer-events: none;
+    }
+    .v-picker__body {
+      padding-right: 10px;
+    }
+  }
+
+  &-month {
+    padding-left: 15px;
+    .v-date-picker-header {
+      padding-right: 15px !important;
+    }
+
+    .v-picker__body {
+      padding-right: 20px;
+    }
+
+    .v-date-picker-table {
+      height: auto;
+      tr {
+        td {
+          height: 40px;
+          width: 40px;
+
+          .v-btn {
+            border-radius: 0;
+            height: 40px;
+            padding: 0;
+            min-width: 40px;
+            width: 40px;
+          }
+        }
+      }
+    }
+
+    .v-picker__actions {
+      margin-top: 50px;
+
+      .v-btn {
+        background-color: #0099b3;
+        text-transform: inherit;
+        border-radius: 2px;
+
+        .v-btn__content {
+          color: white !important;
+        }
+      }
+    }
+  }
+
+  .go-today {
+    background-color: #0099b3;
+    text-transform: inherit;
+    border-radius: 2px;
+    position: absolute;
+    bottom: 1rem;
+    right: 1rem;
+
+    .v-btn__content {
+      color: white !important;
+    }
+  }
+}

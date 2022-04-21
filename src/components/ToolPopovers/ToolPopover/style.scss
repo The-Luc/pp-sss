@@ -1,0 +1,81 @@
+.tool-popover {
+  &-container {
+    width: 563px;
+    position: relative;
+  }
+
+  &-header {
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    height: 38px;
+    background-color: $color-stoodio-blue;
+    display: flex;
+    align-items: center;
+
+    &::before {
+      position: absolute;
+      content: '';
+      top: 0;
+      left: 20px;
+      transform: translate(-50%, -100%);
+      width: 2px;
+      height: 10px;
+      border-left: 7px solid transparent;
+      border-right: 7px solid transparent;
+      border-bottom: 10px solid $color-stoodio-blue;
+    }
+
+    p {
+      color: $color-white;
+    }
+  }
+
+  &-content {
+    max-height: 350px;
+    overflow: auto;
+    min-height: 100px;
+    width: 97%;
+  }
+
+  &-footer {
+    border-radius: 0px 0px 4px 4px;
+    height: 55px;
+    background-color: rgba(255, 255, 255, 0.95);
+    opacity: 0.95;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-top: 1px solid $color-gray15;
+
+    &.hide-footer > button {
+      visibility: hidden;
+    }
+
+    .footer-btn::v-deep.v-btn {
+      width: 100px;
+      height: 32px;
+      border-radius: 6px;
+      box-shadow: none;
+      letter-spacing: initial;
+
+      .v-btn__content {
+        color: white;
+        font-size: 11.5px;
+        font-family: $font-500;
+        text-transform: initial;
+      }
+
+      &.cancel {
+        margin-right: 10px;
+        background-color: $color-gray24;
+      }
+      &.action {
+        background-color: $color-stoodio-blue !important;
+      }
+    }
+  }
+}

@@ -1,0 +1,47 @@
+.display,
+.position-content,
+.name-gap,
+.position {
+  display: flex;
+  .title-content {
+    margin-right: 10px;
+  }
+  ::v-deep.pp-combobox,
+  .pp-select {
+    .v-input__control {
+      max-width: 95px;
+      .v-input__slot {
+        padding: 0;
+      }
+    }
+  }
+}
+
+.position-content {
+  justify-content: space-between;
+  padding: 14px 0;
+}
+.display {
+  padding: 20px 0 14px;
+  border-bottom: 1px solid $color-gray17;
+  .title-content {
+    width: 94px;
+  }
+}
+
+.title-content {
+  color: $color-stoodio-toolbartext;
+  font-size: $md-size;
+  font-family: $font-500;
+}
+.name-gap {
+  float: right;
+}
+
+.display-position {
+  ::v-deep.pp-select {
+    .v-input__control {
+      max-width: 126px;
+    }
+  }
+}

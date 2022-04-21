@@ -1,0 +1,30 @@
+$width: 6px;
+$radius: $width / 2;
+
+.process-bar {
+  display: flex;
+  height: $width;
+  align-items: center;
+
+  .dot {
+    z-index: 1;
+  }
+
+  &::v-deep .blocks {
+    &.use-dot {
+      margin-left: -$width;
+    }
+
+    .block {
+      &[data-process='in-process'] {
+        border-top-left-radius: $radius;
+        border-bottom-left-radius: $radius;
+      }
+
+      &[data-process='approved'] {
+        border-top-right-radius: $radius;
+        border-bottom-right-radius: $radius;
+      }
+    }
+  }
+}

@@ -1,0 +1,10 @@
+.pp-select--item::v-deep {
+  .v-icon {
+    font-size: $xsm-size;
+    margin-right: 8px;
+  }
+
+  &.v-list-item--active .v-icon {
+    color: $color-white;
+  }
+}

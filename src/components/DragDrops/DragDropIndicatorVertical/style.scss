@@ -1,0 +1,14 @@
+.indicator {
+  display: none;
+  max-width: 2px;
+  background-color: $color-stoodio-blue;
+  position: relative;
+
+  img {
+    transform: rotate(90deg);
+    width: 4px;
+    position: absolute;
+    top: -2px;
+    left: -1px;
+  }
+}

@@ -1,0 +1,37 @@
+.pp-tab-menu {
+  .v-item-group {
+    &.v-tabs {
+      &-bar {
+        height: auto;
+      }
+    }
+  }
+
+  .v-slide-group {
+    &__content {
+      height: 30px;
+      border-bottom: 1px solid #bcbec0;
+      .v-tabs {
+        &-slider-wrapper {
+          color: #42738d;
+        }
+      }
+
+      .v-tab {
+        width: 90px;
+        background-color: #ffffff;
+        color: #939598;
+        font-size: 11px;
+        font-family: $font-300;
+        text-transform: capitalize;
+        border-right: 1px solid #bcbec0;
+
+        &--active {
+          font-family: $font-500;
+          background-color: #f1f2f2;
+          color: #58595b;
+        }
+      }
+    }
+  }
+}

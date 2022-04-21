@@ -1,0 +1,40 @@
+.teacher-setting-container {
+  padding-top: 22px;
+
+  .intro {
+    font-family: $font-500;
+    font-size: 13px;
+    margin-bottom: 18px;
+  }
+
+  .control-group {
+    display: flex;
+    justify-content: space-between;
+
+    &:not(:last-of-type) {
+      margin-bottom: 10px;
+    }
+
+    ::v-deep .v-input {
+      flex: 0;
+    }
+
+    &:nth-child(3) {
+      margin-bottom: 30px;
+    }
+
+    // Increase width of combobox
+    ::v-deep .v-input__control {
+      width: 80px;
+      max-width: 80px;
+
+      .v-input__slot {
+        padding: 0;
+      }
+    }
+    &:nth-child(n + 4) ::v-deep .v-input__control {
+      width: 196px;
+      max-width: 196px;
+    }
+  }
+}

@@ -1,0 +1,46 @@
+.slide-item {
+  &.use-margin {
+    margin-left: 22px;
+    margin-right: 22px;
+  }
+
+  &.digital {
+    .page-info {
+      margin-top: 6px;
+
+      .right {
+        line-height: $md-size;
+        font-size: $xsm-size;
+      }
+    }
+  }
+
+  .page-info {
+    display: flex;
+    margin-top: 12px;
+    justify-content: flex-end;
+    color: $color-gray5;
+    line-height: 15px;
+    font-size: $md-size;
+
+    .left {
+      font-family: $font-700;
+    }
+
+    .right {
+      font-family: $font-300;
+    }
+  }
+
+  ::v-deep {
+    .preview-thumbnail {
+      width: 329px;
+      height: 429px;
+
+      &.landscape {
+        width: 437px;
+        height: 246px;
+      }
+    }
+  }
+}

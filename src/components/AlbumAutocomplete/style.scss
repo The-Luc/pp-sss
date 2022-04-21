@@ -1,0 +1,47 @@
+.pp-autocomplete {
+  position: relative;
+  ::v-deep .v-input__control {
+    min-height: 28px;
+    width: 290px;
+    .v-input__slot {
+      border: 1px solid $color-gray31;
+      background-color: $color-white !important;
+      margin: 0;
+      .v-select__slot {
+        label {
+          font-size: 12px;
+          color: $color-stoodio-toolbartext;
+          font-family: $font-500;
+        }
+        input {
+          font-size: 12px;
+          font-family: $font-500;
+          color: $color-stoodio-toolbartext;
+        }
+      }
+    }
+  }
+  .dropdown {
+    .v-list {
+      padding: 0;
+      max-height: 148px;
+      overflow: auto;
+      ::v-deep .v-list-item.v-list-item--link.theme--light {
+        display: flex;
+        padding: 0;
+
+        &.v-list-item--active {
+          color: $color-black4 !important;
+        }
+
+        &.v-list-item--highlighted {
+          color: transparent !important;
+        }
+      }
+    }
+  }
+
+  ::v-deep .dropdown {
+    padding-top: 42px;
+  }
+}

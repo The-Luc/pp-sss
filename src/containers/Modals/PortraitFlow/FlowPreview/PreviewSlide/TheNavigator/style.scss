@@ -1,0 +1,32 @@
+.slide-navigator {
+  display: flex;
+  width: 100%;
+  margin-top: 42px;
+  justify-content: space-between;
+
+  &.digital {
+    margin-top: 14px;
+  }
+
+  &.disabled {
+    opacity: 1 !important; // override
+  }
+
+  .paging {
+    display: flex;
+    align-items: center;
+    line-height: 0;
+    overflow-x: auto;
+
+    .item {
+      margin: 2px;
+      font-size: 14px;
+      color: $color-gray11;
+      cursor: pointer;
+
+      &.active {
+        color: $color-stoodio-toolbartext;
+      }
+    }
+  }
+}

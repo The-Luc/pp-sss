@@ -1,0 +1,23 @@
+.frames-container {
+  height: $frame-container-height;
+  min-height: $frame-container-height;
+  border-top: 1px solid $color-gray6;
+
+  .frame-row {
+    display: flex;
+    height: 100%;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+    overflow: hidden;
+
+    &.actual {
+      width: calc(100% - 176px);
+      height: 100%;
+      flex-grow: 0;
+      flex-shrink: 0;
+      justify-content: start;
+      overflow-x: auto;
+    }
+  }
+}

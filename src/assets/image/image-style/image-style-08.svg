@@ -1,0 +1,53 @@
+<svg width="57.5" height="57.5" xmlns="http://www.w3.org/2000/svg">
+ <g>
+  <title>Layer 1</title>
+  <g transform="rotate(90 1.71099 28.567)" stroke="null" id="svg_1">
+   <ellipse stroke="null" cx="-25.41649" cy="28.56704" rx="1.56455" ry="1.585" id="svg_2"/>
+   <ellipse stroke="null" cx="-18.63511" cy="28.56704" rx="1.56455" ry="1.585" id="svg_3"/>
+   <ellipse stroke="null" cx="-11.85275" cy="28.56704" rx="1.56455" ry="1.585" id="svg_4"/>
+   <ellipse stroke="null" cx="-5.07137" cy="28.56704" rx="1.56455" ry="1.585" id="svg_5"/>
+   <ellipse stroke="null" cx="1.71099" cy="28.56704" rx="1.56455" ry="1.585" id="svg_6"/>
+   <ellipse stroke="null" cx="8.49237" cy="28.56704" rx="1.56455" ry="1.585" id="svg_7"/>
+   <ellipse stroke="null" cx="15.27473" cy="28.56704" rx="1.56455" ry="1.585" id="svg_8"/>
+   <ellipse stroke="null" cx="22.0561" cy="28.56704" rx="1.56455" ry="1.585" id="svg_9"/>
+   <ellipse stroke="null" cx="28.83847" cy="28.56704" rx="1.56455" ry="1.585" id="svg_10"/>
+  </g>
+  <g transform="rotate(90 55.7069 28.692)" stroke="null" id="svg_21">
+   <ellipse stroke="null" cx="28.4613" cy="28.69202" rx="1.57137" ry="1.585" id="svg_12"/>
+   <ellipse stroke="null" cx="35.27222" cy="28.69202" rx="1.57137" ry="1.585" id="svg_13"/>
+   <ellipse stroke="null" cx="42.08412" cy="28.69202" rx="1.57137" ry="1.585" id="svg_14"/>
+   <ellipse stroke="null" cx="48.89504" cy="28.69202" rx="1.57137" ry="1.585" id="svg_15"/>
+   <ellipse stroke="null" cx="55.70695" cy="28.69202" rx="1.57137" ry="1.585" id="svg_16"/>
+   <ellipse stroke="null" cx="62.51787" cy="28.69202" rx="1.57137" ry="1.585" id="svg_17"/>
+   <ellipse stroke="null" cx="69.32977" cy="28.69202" rx="1.57137" ry="1.585" id="svg_18"/>
+   <ellipse stroke="null" cx="76.14069" cy="28.69202" rx="1.57137" ry="1.585" id="svg_19"/>
+   <ellipse stroke="null" cx="82.9526" cy="28.69202" rx="1.57137" ry="1.585" id="svg_20"/>
+  </g>
+  <ellipse stroke-width="0" ry="2.37482" rx="3.12477" id="svg_42" cy="2.12269" cx="55.24801" stroke="#000" fill="#fff"/>
+  <g stroke="null" id="svg_31">
+   <ellipse stroke="null" cx="1.58149" cy="1.69405" rx="1.56455" ry="1.585" id="svg_22"/>
+   <ellipse stroke="null" cx="8.36287" cy="1.69405" rx="1.56455" ry="1.585" id="svg_23"/>
+   <ellipse stroke="null" cx="15.14523" cy="1.69405" rx="1.56455" ry="1.585" id="svg_24"/>
+   <ellipse stroke="null" cx="21.9266" cy="1.69405" rx="1.56455" ry="1.585" id="svg_25"/>
+   <ellipse stroke="null" cx="28.70897" cy="1.69405" rx="1.56455" ry="1.585" id="svg_26"/>
+   <ellipse stroke="null" cx="35.49034" cy="1.69405" rx="1.56455" ry="1.585" id="svg_27"/>
+   <ellipse stroke="null" cx="42.2727" cy="1.69405" rx="1.56455" ry="1.585" id="svg_28"/>
+   <ellipse stroke="null" cx="49.05408" cy="1.69405" rx="1.56455" ry="1.585" id="svg_29"/>
+   <ellipse stroke="null" cx="55.83644" cy="1.69405" rx="1.56455" ry="1.585" id="svg_30"/>
+  </g>
+  <rect stroke-width="0" id="svg_43" height="7.62443" width="14.37392" y="52.36892" x="48.7485" stroke="#000" fill="#fff"/>
+  <g stroke="null" id="svg_41">
+   <ellipse stroke="null" cx="1.58149" cy="55.69" rx="1.56455" ry="1.585" id="svg_32"/>
+   <ellipse stroke="null" cx="8.36287" cy="55.69" rx="1.56455" ry="1.585" id="svg_33"/>
+   <ellipse stroke="null" cx="15.14523" cy="55.69" rx="1.56455" ry="1.585" id="svg_34"/>
+   <ellipse stroke="null" cx="21.9266" cy="55.69" rx="1.56455" ry="1.585" id="svg_35"/>
+   <ellipse stroke="null" cx="28.70897" cy="55.69" rx="1.56455" ry="1.585" id="svg_36"/>
+   <ellipse stroke="null" cx="35.49034" cy="55.69" rx="1.56455" ry="1.585" id="svg_37"/>
+   <ellipse stroke="null" cx="42.2727" cy="55.69" rx="1.56455" ry="1.585" id="svg_38"/>
+   <ellipse stroke="null" cx="49.05408" cy="55.69" rx="1.56455" ry="1.585" id="svg_39"/>
+   <ellipse stroke="null" cx="55.83644" cy="55.69" rx="1.56455" ry="1.585" id="svg_40"/>
+  </g>
+  <rect stroke="#000" stroke-width="0" id="svg_44" height="50.12124" width="49.99625" y="3.62257" x="3.75187" fill="#dddddd"/>
+ </g>
+
+</svg>

@@ -1,0 +1,25 @@
+.editor-header {
+  padding: 12px 0 !important;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  span {
+    color: #58595b;
+    font-family: $font-700;
+    text-transform: uppercase;
+  }
+
+  .btn-save {
+    height: 26px !important;
+    position: absolute;
+    left: 20px;
+
+    .pp-btn {
+      opacity: 1;
+      span {
+        font-size: 12px;
+        font-family: $font-500;
+      }
+    }
+  }
+}

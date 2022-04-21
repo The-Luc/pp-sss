@@ -1,0 +1,36 @@
+.color-content {
+  display: flex;
+  position: relative;
+  align-items: center;
+
+  .box-color {
+    border: 1px solid #bcbec0;
+    border-radius: 3px;
+    width: 40px;
+    height: 25px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 5px;
+    &.disabled {
+      pointer-events: none;
+    }
+    &-active {
+      border-radius: 3px;
+      height: 15px;
+      width: 28px;
+    }
+  }
+
+  .v-icon {
+    font-size: 16px;
+    color: $color-stoodio-toolbartext;
+    cursor: pointer;
+    height: 16px;
+  }
+
+  .color-picker-content {
+    height: 360px;
+  }
+}

@@ -1,0 +1,60 @@
+.pp-modal-title {
+  padding: 12px !important; // override
+  padding-bottom: 10px !important; // override
+  justify-content: center;
+  border-bottom: 1px solid $color-gray17;
+
+  .top-bg {
+    display: inline-block;
+    position: absolute;
+    height: 9px;
+    width: 100%;
+    top: 0;
+    background-color: $color-stoodio-blue;
+  }
+
+  .icon {
+    position: absolute;
+    color: $color-gray38;
+    font-size: $lg-size;
+    cursor: pointer;
+
+    &::after {
+      display: none;
+    }
+
+    &-back {
+      top: 9px;
+      left: 17px;
+    }
+
+    &-close {
+      top: 9px;
+      right: 17px;
+    }
+  }
+
+  .text-title {
+    color: $color-stoodio-blue;
+    text-align: left;
+    line-height: 22px;
+    font-size: 18px;
+    font-family: $font-500;
+  }
+
+  &__dark {
+    background-color: $color-stoodio-blue;
+    justify-content: left;
+    height: 31px;
+    padding: 0 0 0 12px !important;
+    .text-title {
+      color: white;
+      font-size: 13px;
+    }
+  }
+}
+
+.pp-modal-title-theme {
+  padding: 8px 0 !important;
+  margin: 0 26px !important;
+}

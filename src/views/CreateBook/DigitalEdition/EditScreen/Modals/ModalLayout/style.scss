@@ -1,0 +1,19 @@
+.layout-modal-container {
+  width: auto;
+  z-index: 100;
+  border-radius: 5px;
+  position: absolute;
+  bottom: 115px;
+  background: #ffffff 0% 0% no-repeat padding-box;
+  box-shadow: 0px 0px 10px #0000009a;
+  .tool-popover-header::before {
+    all: unset;
+  }
+
+  .layout-modal-legend {
+    position: absolute;
+    border: 7px solid transparent;
+    border-top: 10px solid white;
+    right: 50%;
+  }
+}

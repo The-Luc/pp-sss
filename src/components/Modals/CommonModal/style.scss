@@ -1,0 +1,24 @@
+.v-dialog__content {
+  overflow: hidden;
+
+  ::v-deep .pp-modal {
+    max-height: none;
+    margin: 0;
+  }
+
+  .pp-modal {
+    .v-sheet.v-card {
+      height: 100%;
+      border-radius: 0;
+
+      .v-card__text {
+        height: calc(100% - 104px);
+        padding: 12px 0;
+
+        &.card-text-theme-modal {
+          padding: 0;
+        }
+      }
+    }
+  }
+}

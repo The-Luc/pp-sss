@@ -1,0 +1,25 @@
+.title-notification {
+  text-align: center;
+  color: #4a4844;
+  opacity: 1;
+  font-size: 13px;
+}
+.box {
+  border: 1px solid #afafaf;
+  width: 290px;
+  padding: 18px 0;
+  margin: 18px auto;
+  div {
+    text-align: center;
+    color: #42738d;
+    font-family: $font-700;
+  }
+}
+.pp-button .pp-btn {
+  margin: 0 auto;
+  background: #42738d;
+  width: 240px;
+  margin-top: 35px;
+  height: 36px;
+  line-height: 36px;
+}

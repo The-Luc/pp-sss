@@ -1,0 +1,34 @@
+.pp-modal-footer {
+  display: flex;
+  padding: 12px 22px;
+  justify-content: center;
+  align-items: center;
+  background-color: $color-gray39;
+  border-top: 1px solid $color-gray15;
+
+  .btn {
+    &::v-deep.v-btn {
+      width: 101px;
+      height: 32px;
+      letter-spacing: initial;
+      border-radius: 6px;
+      box-shadow: none;
+
+      .v-btn__content {
+        color: $color-white;
+        font-size: 11.5px;
+        font-family: $font-700;
+        text-transform: initial;
+      }
+    }
+
+    &.cancel {
+      margin-right: 10px;
+      background-color: $color-gray24;
+    }
+
+    &.accept {
+      background-color: $color-stoodio-blue;
+    }
+  }
+}

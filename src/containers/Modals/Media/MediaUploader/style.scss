@@ -1,0 +1,101 @@
+::v-deep .modal-add-media.v-dialog {
+  border-radius: 0;
+  background-color: $color-white;
+  border-top: 9px solid $color-stoodio-blue;
+  height: 285px;
+  display: flex;
+  flex-direction: column;
+  overflow: visible;
+  .header {
+    height: 55px;
+    font-family: $font-500;
+    font-size: 21px;
+    color: $color-stoodio-blue;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-bottom: 1px solid $color-stoodio-toolbartext;
+  }
+  .select-album {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    .btn-container {
+      .button {
+        .pp-btn {
+          width: 160px;
+          height: 32px;
+        }
+      }
+      .button-cancel {
+        margin-top: 8px;
+        .pp-btn {
+          opacity: 1;
+          color: $color-stoodio-blue;
+        }
+      }
+    }
+    .title-container {
+      .content {
+        margin: 12px 0;
+        font-size: 13px;
+        width: 272px;
+        color: $color-gray5;
+      }
+    }
+  }
+
+  .starting-upload {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 12px;
+  }
+
+  .uploading {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 12px;
+    flex-direction: column;
+    .bar {
+      width: 300px;
+      height: 8px;
+      border-radius: 4px;
+      background-color: $color-gray34;
+      margin: 21px 0;
+      .bar-content {
+        height: 100%;
+        border-radius: 4px;
+        background-color: $color-gray33;
+        transition: width 1s;
+      }
+    }
+    .total-files {
+      font-family: $font-300;
+      font-size: 15px;
+    }
+  }
+
+  .uploaded-success {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 12px;
+    flex-direction: column;
+    .icon {
+      padding-bottom: 24px;
+      img {
+        width: 50px;
+        height: 50px;
+        vertical-align: middle;
+      }
+    }
+  }
+}

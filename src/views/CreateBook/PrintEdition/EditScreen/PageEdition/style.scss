@@ -1,0 +1,10 @@
+.page-edition {
+  width: calc(100% - 168px);
+  padding: 10px;
+  border-left: 1px solid #808184;
+  position: relative;
+  .print-canvas {
+    box-shadow: 1px 1px 3px 1px rgba(0, 0, 0, 0.25);
+    background-color: white;
+  }
+}

@@ -1,0 +1,16 @@
+.pp-selector-container {
+  .pp-select-multi {
+    width: 234px;
+  }
+}
+
+#clip-art-type {
+  ::v-deep .v-list {
+    .v-list-item {
+      .pp-select-sub {
+        max-height: 300px;
+        overflow: auto;
+      }
+    }
+  }
+}

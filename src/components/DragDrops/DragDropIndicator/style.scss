@@ -1,0 +1,15 @@
+.indicator {
+  display: none;
+
+  > div {
+    height: 2px;
+    background-color: $color-stoodio-blue;
+    position: relative;
+  }
+
+  img {
+    width: 4px;
+    position: absolute;
+    top: -3px;
+  }
+}

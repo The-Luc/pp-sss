@@ -1,0 +1,27 @@
+.page-select-item {
+  display: flex;
+  margin-bottom: 9px;
+  align-items: center;
+  ::v-deep .v-input__slot {
+    width: 65px;
+    height: 30px;
+    color: $color-stoodio-toolbartext;
+  }
+  &.item-disabled {
+    ::v-deep .v-input__slot {
+      opacity: 0.5;
+    }
+  }
+  .page-select-item-title {
+    width: 116px;
+    font-family: $font-500;
+    font-size: 13px;
+    color: $color-stoodio-toolbartext;
+  }
+  .page-select-item-descript {
+    margin: 0 10px;
+    font-family: $font-300;
+    font-size: 13px;
+    color: $color-stoodio-toolbartext;
+  }
+}

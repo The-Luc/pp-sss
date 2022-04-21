@@ -1,0 +1,27 @@
+$border-radius: 6px;
+
+::v-deep {
+  &.events {
+    height: 32px;
+
+    .block {
+      padding: 8px;
+      padding-top: 11px;
+      color: $color-white;
+      line-height: 14px;
+      font-family: $font-700;
+      font-size: $sm-size;
+      background-color: $color-stoodio-blue;
+
+      &:first-of-type {
+        border-top-left-radius: $border-radius;
+        border-bottom-left-radius: $border-radius;
+      }
+
+      &:last-of-type {
+        border-top-right-radius: $border-radius;
+        border-bottom-right-radius: $border-radius;
+      }
+    }
+  }
+}

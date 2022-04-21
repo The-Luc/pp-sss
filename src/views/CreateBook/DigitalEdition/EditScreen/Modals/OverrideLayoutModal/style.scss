@@ -1,0 +1,38 @@
+.override-layout {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  font-family: $font-300;
+  .text {
+    font-size: 15px;
+    color: $color-gray16;
+  }
+
+  .text--2 {
+    margin-top: 25px;
+    margin-bottom: 30px;
+  }
+
+  .btn-container {
+    display: flex;
+    flex-direction: column;
+    row-gap: 10px;
+    width: 240px;
+  }
+  .btn {
+    color: $color-white;
+    border-radius: 6px;
+    box-shadow: none;
+    padding: 10px;
+    width: 100%;
+
+    &-cancel {
+      background-color: $color-gray13;
+    }
+    &-action {
+      background-color: $color-stoodio-blue;
+    }
+  }
+}

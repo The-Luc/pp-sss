@@ -1,0 +1,5 @@
+.thumbnail-view-item {
+  &.disabled {
+    pointer-events: none;
+  }
+}

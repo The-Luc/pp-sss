@@ -1,0 +1,29 @@
+.action-item {
+  font-family: $font-500;
+  font-size: $xsm-size;
+  color: $color-stoodio-toolbartext;
+  height: 20px;
+  padding: 0 15px;
+  display: flex;
+  align-items: center;
+
+  &:not(.disabled) {
+    &:hover {
+      background-color: $color-stoodio-blue;
+      color: $color-white;
+    }
+  }
+
+  &.disabled {
+    label {
+      cursor: initial;
+      opacity: 0.5;
+    }
+  }
+
+  label {
+    cursor: pointer;
+    width: 100%;
+    display: inline-block;
+  }
+}

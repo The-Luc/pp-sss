@@ -1,0 +1,10 @@
+.volume-container {
+  .control-group {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    column-gap: 5px;
+    margin-top: -5px;
+    margin-bottom: -3px;
+  }
+}

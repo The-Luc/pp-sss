@@ -1,0 +1,50 @@
+.item {
+  flex-direction: column;
+  align-items: center;
+  display: flex;
+  margin-right: 15px;
+  width: 38px;
+
+  &.disabled {
+    pointer-events: none;
+    opacity: 0.4;
+  }
+
+  .item-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 24px;
+    cursor: pointer;
+    width: 100%;
+    border: 1px solid $color-gray35;
+    border-radius: 4px;
+    .v-icon {
+      font-size: 18px;
+      color: $color-stoodio-toolbartext;
+    }
+  }
+  p {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-family: $font-300;
+    font-size: $xxs-size;
+    margin-bottom: 0px;
+    color: $color-stoodio-toolbartext;
+  }
+
+  &--active {
+    .item-icon {
+      background-color: $color-stoodio-blue;
+      .v-icon {
+        color: white !important;
+      }
+    }
+  }
+
+  &--prompt {
+    .item-icon {
+      z-index: 99;
+    }
+  }
+}
