@@ -87,18 +87,29 @@ export const LAYOUT_TYPES = {
   }
 };
 
+const ASSORTED_TYPE = {
+  ASSORTED: {
+    value: -998,
+    name: 'Assorted (Not Theme Specific)',
+    sheetType: SHEET_TYPE.NORMAL
+  }
+};
+
 export const SINGLE_PAGE_LAYOUT_TYPE_IDS = [
   LAYOUT_TYPES.INTRO_OPENING.value,
   LAYOUT_TYPES.SIGNATURES.value
 ];
 
-export const PRINT_LAYOUT_TYPES = { ...LAYOUT_TYPES };
+export const PRINT_LAYOUT_TYPES = { ...LAYOUT_TYPES, ...ASSORTED_TYPE };
 
 export const DIGITAL_LAYOUT_TYPES = {
   ...LAYOUT_TYPES,
+  ...ASSORTED_TYPE,
   SUPPLEMENTAL_LAYOUTS: {
     name: 'Supplemental: Digital Only',
-    value: 'Supplemental'
+    value: 'Supplemental',
+    id: 'Supplemental',
+    subItems: []
   }
 };
 

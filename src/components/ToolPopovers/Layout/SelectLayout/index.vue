@@ -1,17 +1,7 @@
 <template>
   <div class="pp-selector-container">
     <span class="pp-selector-container-title">{{ title }}</span>
-    <PpSelect
-      v-if="isDigital"
-      id="digital-layout-type"
-      :items="items"
-      :disabled="disabled"
-      :selected-val="layoutSelected"
-      container="#digital-layout-type"
-      @change="onChangeLayout"
-    />
     <PpSelectMulti
-      v-else
       id="layout-type"
       :items="items"
       :disabled="disabled"

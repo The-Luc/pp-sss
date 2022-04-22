@@ -7,7 +7,7 @@ import Layouts from '@/components/ToolPopovers/Layout';
 import {
   CUSTOM_LAYOUT_TYPE,
   EDITION,
-  LAYOUT_TYPES,
+  PRINT_LAYOUT_TYPES,
   SAVED_AND_FAVORITES_TYPE,
   MODAL_TYPES,
   LAYOUT_SIZE_TYPES
@@ -67,7 +67,7 @@ export default {
     } = useActionLayout();
     const { getCustom } = useCustomLayout();
     const { applyPrintLayout } = useApplyPrintLayout();
-    const { getPrintLayouts } = useGetLayouts();
+    const { getPrintLayouts, getAssortedLayouts } = useGetLayouts();
 
     return {
       isPrompt,
@@ -79,6 +79,7 @@ export default {
       defaultThemeId,
       applyPrintLayout,
       getPrintLayouts,
+      getAssortedLayouts,
       modalData,
       toggleModal,
       saveToFavorites,
@@ -152,7 +153,8 @@ export default {
     await Promise.all([
       this.initPrintData(),
       this.getFavoritesData(),
-      this.getCustomData()
+      this.getCustomData(),
+      this.getAssorted()
     ]);
 
     this.getLayoutTypes();
@@ -202,8 +204,6 @@ export default {
         );
         this.themeSelected = themeSelected;
       }
-
-      await this.filterLayoutType();
     },
     /**
      * Set object theme selected from dropdown
@@ -211,8 +211,6 @@ export default {
      */
     async onChangeTheme(theme) {
       this.themeSelected = theme;
-
-      await this.filterLayoutType();
 
       this.setLayoutSelected();
       await this.getLayouts();
@@ -249,7 +247,7 @@ export default {
       if (isFullTemplate && this.isHalfSheet) {
         // remove left or right objects so that spread layout can be applied on half sheet
         const isInsideFrontCover = isHalfRight(this.pageSelected);
-        // TODO: when BE provide a way to distinguish SOFT and HARD cover
+
         const sizeType = isCoverLayoutChecker(layout)
           ? LAYOUT_SIZE_TYPES.HARD
           : LAYOUT_SIZE_TYPES.NORMAL;
@@ -349,22 +347,43 @@ export default {
       this.customLayouts = await this.getCustom();
     },
     /**
+     * Get assoreted layout
+     */
+    async getAssorted() {
+      this.assortedLayouts = await this.getAssortedLayouts();
+    },
+    /**
      * Filter layout types
      */
     async filterLayoutType() {
       let layoutTypeOpts = [...this.layoutTypesOrigin];
 
       if (!isEmpty(this.favoriteLayouts) || !isEmpty(this.customLayouts)) {
-        layoutTypeOpts.push(SAVED_AND_FAVORITES_TYPE);
+        layoutTypeOpts.splice(
+          layoutTypeOpts.length - 1,
+          0,
+          SAVED_AND_FAVORITES_TYPE
+        );
       }
 
       this.layoutTypes = layoutTypeOpts;
+
+      const assortedType = this.layoutTypes.filter(
+        l => l.value === PRINT_LAYOUT_TYPES.ASSORTED.value
+      )[0];
+
+      assortedType.subItems = this.assortedLayouts.map(({ id, name }) => ({
+        id,
+        name,
+        value: id,
+        shortName: `Assorted: ${name}`
+      }));
     },
     /**
      * Get layout types
      */
     getLayoutTypes() {
-      this.layoutTypesOrigin = Object.values(LAYOUT_TYPES).map(lt => ({
+      this.layoutTypesOrigin = Object.values(PRINT_LAYOUT_TYPES).map(lt => ({
         ...lt,
         subItems: []
       }));
@@ -386,9 +405,21 @@ export default {
      * Get layout from API
      */
     async getLayouts() {
+      if (isEmpty(this.layoutTypeSelected)) return;
+      const typeValue = this.layoutTypeSelected.value;
+      const subValue = this.layoutTypeSelected.sub;
+
+      const isAssorted = typeValue === PRINT_LAYOUT_TYPES.ASSORTED.value;
+
+      if (isAssorted) {
+        this.layouts =
+          this.assortedLayouts.find(l => l.id === subValue)?.templates || [];
+        return;
+      }
+
       this.layouts = await this.getPrintLayouts(
         this.themeSelected?.id,
-        this.layoutTypeSelected?.value
+        typeValue
       );
     },
     /**
