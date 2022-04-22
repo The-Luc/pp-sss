@@ -62,7 +62,7 @@ export default {
     const { getCustomDigitalLayout } = useCustomLayout();
     const { applyDigitalLayout } = useApplyDigitalLayout();
     const { listObjects } = useObjectProperties();
-    const { getDigitalLayouts } = useGetLayouts();
+    const { getDigitalLayouts, getAssortedLayouts } = useGetLayouts();
     const { getDigitalLayoutElements } = useGetDigitalLayouts();
 
     return {
@@ -83,7 +83,8 @@ export default {
       applyDigitalLayout,
       listObjects,
       getDigitalLayouts,
-      getDigitalLayoutElements
+      getDigitalLayoutElements,
+      getAssortedLayouts
     };
   },
   data() {
@@ -92,7 +93,8 @@ export default {
         'The best way to get started is by selecting a screen layout. As a shortcut, the screens from your selecting theme will be presented first.',
       promptTitle: 'Select a Screen Layout',
       title: 'Screen Layouts',
-      optionTitle: 'Screen Type:'
+      optionTitle: 'Screen Type:',
+      assortedLayouts: []
     };
 
     return {
@@ -150,7 +152,11 @@ export default {
     }
   },
   async mounted() {
-    await Promise.all([this.initDigitalData(), this.getCustomData()]);
+    await Promise.all([
+      this.initDigitalData(),
+      this.getCustomData(),
+      this.getAssorted()
+    ]);
 
     this.getLayoutTypes();
     this.filterLayoutType();
@@ -317,6 +323,12 @@ export default {
       this.customLayouts = await this.getCustomDigitalLayout();
     },
     /**
+     * Get assoreted layout
+     */
+    async getAssorted() {
+      this.assortedLayouts = await this.getAssortedLayouts();
+    },
+    /**
      * Filter layout types
      */
     filterLayoutType() {
@@ -328,10 +340,28 @@ export default {
       }
 
       if (!isEmpty(this.favoriteLayouts) || !isEmpty(this.customLayouts)) {
-        layoutTypeOpts.push(SAVED_AND_FAVORITES_TYPE);
+        this.isSupplemental
+          ? layoutTypeOpts.push(SAVED_AND_FAVORITES_TYPE)
+          : layoutTypeOpts.splice(
+              layoutTypeOpts.length - 1,
+              0,
+              SAVED_AND_FAVORITES_TYPE
+            );
       }
 
       this.layoutTypes = layoutTypeOpts;
+      if (this.isSupplemental) return;
+
+      const assortedType = this.layoutTypes.filter(
+        l => l.value === LAYOUT_TYPES.ASSORTED.value
+      )[0];
+
+      assortedType.subItems = this.assortedLayouts.map(({ id, name }) => ({
+        id,
+        name,
+        value: id,
+        shortName: `Assorted: ${name}`
+      }));
     },
 
     /**
@@ -355,6 +385,17 @@ export default {
      * Get layout from API
      */
     async getLayouts() {
+      if (isEmpty(this.layoutTypeSelected)) return;
+
+      const typeValue = this.layoutTypeSelected.value;
+
+      const isAssorted = typeValue === LAYOUT_TYPES.ASSORTED.value;
+
+      if (isAssorted) {
+        this.layouts = [];
+        return;
+      }
+
       this.layouts = await this.getDigitalLayouts(
         this.themeSelected?.id,
         this.layoutTypeSelected?.value,

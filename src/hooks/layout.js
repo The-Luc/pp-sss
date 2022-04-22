@@ -14,7 +14,8 @@ import {
   saveCustomDigitalLayoutApi,
   getDigitalLayoutsApi,
   getLayoutsByThemeAndTypeApi,
-  getDigitalLayoutElementApi
+  getDigitalLayoutElementApi,
+  getAssortedLayoutsApi
 } from '@/api/layout';
 
 import { GETTERS as THEME_GETTERS } from '@/store/modules/theme/const';
@@ -357,7 +358,11 @@ export const useGetLayouts = () => {
     return isSupplemental ? customSupplemental : customPackage;
   };
 
-  return { getPrintLayouts, getDigitalLayouts };
+  return {
+    getPrintLayouts,
+    getDigitalLayouts,
+    getAssortedLayouts: getAssortedLayoutsApi
+  };
 };
 
 export const useApplyPrintLayout = () => {
