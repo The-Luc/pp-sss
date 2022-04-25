@@ -1,4 +1,3 @@
-/* eslint-disable no-unreachable */
 import { debounce } from 'lodash';
 
 import PhotoSidebar from '@/components/Modals/PhotoSidebar';
