@@ -1,6 +1,6 @@
 import SelectSubLevel from './SelectSubLevel';
 
-import { ICON_LOCAL } from '@/common/constants';
+import { ICON_LOCAL, PRINT_LAYOUT_TYPES } from '@/common/constants';
 import { getRefElement, isEmpty } from '@/common/utils';
 
 export default {
@@ -46,11 +46,14 @@ export default {
   },
   data() {
     return {
-      subActivatorId: null
+      subActivatorId: null,
+      isAssorted: false
     };
   },
   computed: {
     selectedValue() {
+      this.isAssorted = false;
+
       const item = this.items.find(
         ({ value }) => value === this.selectedVal.value
       );
@@ -65,6 +68,10 @@ export default {
     },
     displaySelected() {
       const displaySubName = this.getDisplaySubName(this.selectedValue);
+
+      if (this.isAssorted) {
+        return displaySubName;
+      }
 
       const displaySub = isEmpty(displaySubName) ? '' : `: ${displaySubName}`;
 
@@ -89,6 +96,9 @@ export default {
       const subName = this.isUseSubShortName
         ? selectedValue.sub?.shortName
         : selectedValue.sub?.name;
+
+      if (selectedValue.value === PRINT_LAYOUT_TYPES.ASSORTED.value)
+        this.isAssorted = true;
 
       if (!selectedValue.sub?.sub) {
         return isEmpty(subName) ? '' : `${subName}`;

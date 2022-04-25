@@ -12,20 +12,39 @@ export const getLayoutsPreviewQuery = gql`
   }
 `;
 
+const templateFragment = gql`
+  fragment templateDetail on Template {
+    id
+    preview_image_url
+    layout_use
+    layout_type
+    title
+  }
+`;
+
 export const getLayoutsQuery = gql`
   query getLayouts($themeId: ID!) {
     theme(id: $themeId) {
       id
       templates {
-        id
-        data
-        preview_image_url
-        layout_use
-        layout_type
-        title
+        ...templateDetail
       }
     }
   }
+  ${templateFragment}
+`;
+
+export const getAssortedLayoutQuery = gql`
+  query assorted {
+    categories {
+      id
+      name
+      templates {
+        ...templateDetail
+      }
+    }
+  }
+  ${templateFragment}
 `;
 
 export const getLayoutElementsQuery = gql`
@@ -42,20 +61,13 @@ export const getLayoutElementsQuery = gql`
 export const getUserLayoutsQuery = gql`
   query getUserLayouts {
     double_page: user_saved_print_layouts(layout_type: DOUBLE_PAGE) {
-      id
-      layout_type
-      preview_image_url
-      title
-      layout_use
+      ...templateDetail
     }
     single_page: user_saved_print_layouts(layout_type: SINGLE_PAGE) {
-      id
-      layout_type
-      preview_image_url
-      title
-      layout_use
+      ...templateDetail
     }
   }
+  ${templateFragment}
 `;
 
 export const digitalTemplateFragment = gql`

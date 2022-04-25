@@ -14,7 +14,8 @@ import {
   saveCustomDigitalLayoutApi,
   getDigitalLayoutsApi,
   getLayoutsByThemeAndTypeApi,
-  getDigitalLayoutElementApi
+  getDigitalLayoutElementApi,
+  getAssortedLayoutsApi
 } from '@/api/layout';
 
 import { GETTERS as THEME_GETTERS } from '@/store/modules/theme/const';
@@ -357,7 +358,11 @@ export const useGetLayouts = () => {
     return isSupplemental ? customSupplemental : customPackage;
   };
 
-  return { getPrintLayouts, getDigitalLayouts };
+  return {
+    getPrintLayouts,
+    getDigitalLayouts,
+    getAssortedLayouts: getAssortedLayoutsApi
+  };
 };
 
 export const useApplyPrintLayout = () => {
@@ -398,7 +403,7 @@ export const useApplyPrintLayout = () => {
 
     if (backgroundObjs.length === 2) {
       backgroundObjs.forEach(bg => {
-        setBackground({ background: bg });
+        setBackground({ background: { ...bg, id: getUniqueId() } });
       });
     }
 
@@ -408,7 +413,9 @@ export const useApplyPrintLayout = () => {
       const isLeftBackground = isLeftPage || backgroundObjs[0].isLeftPage;
 
       backgroundObjs[0].isLeftPage = isLeftBackground;
-      setBackground({ background: backgroundObjs[0] });
+      setBackground({
+        background: { ...backgroundObjs[0], id: getUniqueId() }
+      });
     }
   };
 

@@ -2,6 +2,7 @@ import { first, get, cloneDeep, findKey } from 'lodash';
 import { SYSTEM_OBJECT_TYPE, LAYOUT_TYPES } from '@/common/constants';
 import { graphqlRequest } from '../urql';
 import {
+  getAssortedLayoutQuery,
   getDigitalLayoutQuery,
   getDigitalTemplateQuery,
   getLayoutElementsQuery,
@@ -18,7 +19,8 @@ import {
   createImageElement,
   createTextElement,
   isOk,
-  removeMediaContentWhenCreateThumbnail
+  removeMediaContentWhenCreateThumbnail,
+  isEmpty
 } from '@/common/utils';
 
 import { layoutMapping, digitalLayoutMapping } from '@/common/mapping/layout';
@@ -125,6 +127,22 @@ export const getLayoutElementsApi = async id => {
   ].filter(Boolean);
 };
 
+export const getAssortedLayoutsApi = async () => {
+  const res = await graphqlRequest(getAssortedLayoutQuery);
+
+  if (!isOk(res)) return;
+
+  const { categories } = res.data;
+
+  return categories
+    .map(({ name, id, templates }) => ({
+      name,
+      id,
+      templates: isEmpty(templates) ? [] : templates.map(layoutMapping)
+    }))
+    .filter(c => !isEmpty(c.templates));
+};
+
 export const getCustomPrintLayoutApi = async () => {
   const res = await graphqlRequest(getUserLayoutsQuery);
 
@@ -132,7 +150,7 @@ export const getCustomPrintLayoutApi = async () => {
 
   const { single_page, double_page } = res.data;
 
-  return [...single_page, ...double_page].map(layout => layoutMapping(layout));
+  return [...single_page, ...double_page].map(layoutMapping);
 };
 
 const removeMediaContent = layouts => {

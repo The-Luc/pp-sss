@@ -1,10 +1,8 @@
 import PpSelectMulti from '@/components/Selectors/SelectMultiLevel';
-import PpSelect from '@/components/Selectors/Select';
 
 export default {
   components: {
-    PpSelectMulti,
-    PpSelect
+    PpSelectMulti
   },
   props: {
     items: {
@@ -22,10 +20,6 @@ export default {
     layoutSelected: {
       type: Object,
       default: () => ({ name: '', value: '' })
-    },
-    isDigital: {
-      type: Boolean,
-      default: false
     }
   },
   methods: {

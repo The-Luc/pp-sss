@@ -36,7 +36,6 @@
             :disabled="disabledLayoutOpts"
             :title="textDisplay.optionTitle"
             :layout-selected="layoutTypeSelected"
-            :is-digital="isDigital"
             @change="onChangeLayoutType"
           />
         </div>
