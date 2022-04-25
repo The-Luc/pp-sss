@@ -403,7 +403,7 @@ export const useApplyPrintLayout = () => {
 
     if (backgroundObjs.length === 2) {
       backgroundObjs.forEach(bg => {
-        setBackground({ background: bg });
+        setBackground({ background: { ...bg, id: getUniqueId() } });
       });
     }
 
@@ -413,7 +413,9 @@ export const useApplyPrintLayout = () => {
       const isLeftBackground = isLeftPage || backgroundObjs[0].isLeftPage;
 
       backgroundObjs[0].isLeftPage = isLeftBackground;
-      setBackground({ background: backgroundObjs[0] });
+      setBackground({
+        background: { ...backgroundObjs[0], id: getUniqueId() }
+      });
     }
   };
 

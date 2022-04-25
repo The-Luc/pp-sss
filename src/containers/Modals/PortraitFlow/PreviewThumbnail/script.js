@@ -186,6 +186,8 @@ export default {
         style.paddingRight = `${gapWidth}px`;
       }
 
+      if (this.isDigital) style.paddingRight = '1px';
+
       style.width = `${this.convertIntoPx(nameWidth)}px`;
 
       if (this.showPageTitile) style.marginTop = '0px';
