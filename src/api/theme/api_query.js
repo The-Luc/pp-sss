@@ -13,12 +13,18 @@ export const getThemesApi = async (isDigital = false) => {
 
   if (!isOk(res)) return [];
 
+  const getPreviewImageUrl = item => {
+    const path = 'template_book_pair.template_book.preview_image_url';
+    const printPreview = get(item, path) || item.preview_image_url;
+
+    return isDigital ? item.digital_preview_image_url : printPreview;
+  };
+
   return res.data.themes.map(item => ({
-    ...item,
+    id: item.id,
+    name: item.name,
     value: item.id,
-    previewImageUrl: isDigital
-      ? item.digital_preview_image_url
-      : item.preview_image_url
+    previewImageUrl: getPreviewImageUrl(item)
   }));
 };
 
