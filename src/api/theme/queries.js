@@ -7,6 +7,13 @@ export const themeOptionsQuery = gql`
       name
       preview_image_url
       digital_preview_image_url
+      template_book_pair {
+        id
+        template_book {
+          id
+          preview_image_url
+        }
+      }
     }
   }
 `;
