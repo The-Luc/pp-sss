@@ -3,7 +3,8 @@
     class="layouts-container"
     :class="{
       'layouts-container-prompt': !isVisited,
-      'empty-layout-container': isEmptyTab
+      'empty-layout-container': isEmptyTab,
+      'digital-layout': isDigital
     }"
   >
     <div
