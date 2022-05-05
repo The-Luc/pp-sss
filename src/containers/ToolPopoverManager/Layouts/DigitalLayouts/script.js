@@ -9,7 +9,8 @@ import {
   MODAL_TYPES,
   CUSTOM_LAYOUT_TYPE,
   DIGITAL_LAYOUT_TYPES as LAYOUT_TYPES,
-  SAVED_AND_FAVORITES_TYPE
+  SAVED_AND_FAVORITES_TYPE,
+  ASSORTED_TYPE_VALUE
 } from '@/common/constants';
 import {
   getThemeOptSelectedById,
@@ -62,7 +63,11 @@ export default {
     const { getCustomDigitalLayout } = useCustomLayout();
     const { applyDigitalLayout } = useApplyDigitalLayout();
     const { listObjects } = useObjectProperties();
-    const { getDigitalLayouts, getAssortedLayouts } = useGetLayouts();
+    const {
+      getDigitalLayouts,
+      getAssortedLayouts,
+      getDigitalLayoutByType
+    } = useGetLayouts();
     const { getDigitalLayoutElements } = useGetDigitalLayouts();
 
     return {
@@ -84,7 +89,8 @@ export default {
       listObjects,
       getDigitalLayouts,
       getDigitalLayoutElements,
-      getAssortedLayouts
+      getAssortedLayouts,
+      getDigitalLayoutByType
     };
   },
   data() {
@@ -109,7 +115,8 @@ export default {
       layoutId: null,
       customLayouts: [],
       layouts: [],
-      favoriteLayouts: []
+      favoriteLayouts: [],
+      extraLayouts: []
     };
   },
   computed: {
@@ -143,7 +150,7 @@ export default {
     layoutTypeSelected: {
       deep: true,
       handler(newVal) {
-        if (newVal?.value === CUSTOM_LAYOUT_TYPE) {
+        if ([CUSTOM_LAYOUT_TYPE, ASSORTED_TYPE_VALUE].includes(newVal?.value)) {
           this.disabledTheme = true;
           return;
         }
@@ -259,7 +266,11 @@ export default {
      * @param {Object} layoutData layout that is selected
      */
     async setThemeLayoutForSheet(layoutData) {
-      if (isEmpty(this.layouts)) return;
+      if (
+        (isEmpty(this.layouts) && isEmpty(this.extraLayouts)) ||
+        !layoutData?.id
+      )
+        return;
 
       const layoutEl = await this.getDigitalLayoutElements(layoutData.id);
 
@@ -400,6 +411,11 @@ export default {
         this.themeSelected?.id,
         this.layoutTypeSelected?.value,
         this.isSupplemental
+      );
+
+      this.extraLayouts = await this.getDigitalLayoutByType(
+        this.themeSelected?.id,
+        this.layoutTypeSelected?.value
       );
     },
     /**

@@ -3,7 +3,8 @@
     class="layouts-container"
     :class="{
       'layouts-container-prompt': !isVisited,
-      'empty-layout-container': isEmptyTab
+      'empty-layout-container': layoutEmptyLength,
+      'prevent-scroll': layoutEmptyLength === 4
     }"
   >
     <div
@@ -49,36 +50,72 @@
 
       <template #content>
         <v-tabs-items v-model="tabActive">
-          <v-tab-item
-            v-for="(tab, idx) in tabs"
-            :key="idx"
-            class="layout-item-container"
-          >
-            <div v-if="tab.items.length === 0" class="empty-layout-content">
-              <p class="empty-layout-text">No Layout Matches</p>
+          <v-tab-item v-for="(tab, idx) in tabs" :key="idx">
+            <!-- DISPLAY EMPTY BLOCKS -->
+            <div v-if="layoutEmptyLength" class="layout-item-container">
+              <div class="empty-layout-content">
+                <p class="empty-layout-text">
+                  No Layout Matches
+                  {{ layoutEmptyLength === 2 ? 'For This Theme' : '' }}
+                </p>
+                <Item
+                  v-for="(layout, index) in layoutEmptyLength"
+                  :key="index"
+                  is-empty
+                />
+              </div>
+            </div>
+            <div v-else class="layout-item-container">
               <Item
-                v-for="(layout, index) in layoutEmptyLength"
-                :key="index"
-                is-empty
+                v-for="layout in tab.items"
+                :ref="`layout${layout.id}`"
+                :key="layout.id"
+                :layout="layout"
+                :selected-layout-id="selectedLayout.id"
+                :is-favorites="isInFavorites(layout)"
+                :is-favorites-disabled="
+                  layout.isFavoritesDisabled || layout.isCustom
+                "
+                :is-digital="isDigital"
+                :is-preview-disabled="isOnPreview"
+                @click="onSelectLayout"
+                @saveToFavorites="onSaveToFavorites"
+                @togglePreview="onTogglePreview"
               />
             </div>
-            <Item
-              v-for="layout in tab.items"
-              v-else
-              :ref="`layout${layout.id}`"
-              :key="layout.id"
-              :layout="layout"
-              :selected-layout-id="selectedLayout.id"
-              :is-favorites="isInFavorites(layout)"
-              :is-favorites-disabled="
-                layout.isFavoritesDisabled || layout.isCustom
-              "
-              :is-digital="isDigital"
-              :is-preview-disabled="isOnPreview"
-              @click="onSelectLayout"
-              @saveToFavorites="onSaveToFavorites"
-              @togglePreview="onTogglePreview"
-            />
+            <!-- DISPLAY SCROLL TO VIEW MORE MESSAGE -->
+            <div
+              v-if="shouldShowLoadMore"
+              :ref="`layout-loadmore-el`"
+              class="layout-loadmore"
+            >
+              <p class="layout-loadmore__title">
+                Continue scrolling to view all “Signatures” layouts
+              </p>
+              <p class="layout-loadmore__info">
+                Note: Layouts below this line do not match the selected theme.
+              </p>
+            </div>
+
+            <!-- DISPLAY LAYOUTS OF OTHER THEMES -->
+            <div v-if="shouldShowLoadMore" class="layout-item-container">
+              <Item
+                v-for="layout in otherLayouts"
+                :ref="`layout${layout.id}`"
+                :key="layout.id"
+                :layout="layout"
+                :selected-layout-id="selectedLayout.id"
+                :is-favorites="isInFavorites(layout)"
+                :is-favorites-disabled="
+                  layout.isFavoritesDisabled || layout.isCustom
+                "
+                :is-digital="isDigital"
+                :is-preview-disabled="isOnPreview"
+                @click="onSelectLayout"
+                @saveToFavorites="onSaveToFavorites"
+                @togglePreview="onTogglePreview"
+              />
+            </div>
           </v-tab-item>
         </v-tabs-items>
       </template>

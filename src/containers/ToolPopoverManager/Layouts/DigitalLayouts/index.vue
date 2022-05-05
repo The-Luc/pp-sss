@@ -13,6 +13,7 @@
     :layout-type-selected="layoutTypeSelected"
     :favorite-layouts="favoriteLayouts"
     :is-digital="true"
+    :extra-layouts="extraLayouts"
     @setThemeLayoutForSheet="setThemeLayoutForSheet"
     @onChangeTheme="onChangeTheme"
     @onChangeLayoutType="onChangeLayoutType"
