@@ -15,7 +15,9 @@ import {
   getDigitalLayoutsApi,
   getLayoutsByThemeAndTypeApi,
   getDigitalLayoutElementApi,
-  getAssortedLayoutsApi
+  getAssortedLayoutsApi,
+  getPrintLayoutsByTypeApi,
+  getDigitalLayoutsByTypeApi
 } from '@/api/layout';
 
 import { GETTERS as THEME_GETTERS } from '@/store/modules/theme/const';
@@ -62,7 +64,7 @@ import {
   activeCanvasInfo
 } from '@/common/utils';
 import { useThumbnail } from '@/views/CreateBook/composables';
-import { cloneDeep, findKey } from 'lodash';
+import { cloneDeep, findKey, uniqBy } from 'lodash';
 import { getFrameObjectsApi, deleteFrameApi } from '@/api/frame';
 import { useFrame, useFrameOrdering, useFrameAction } from '@/hooks';
 import { updateTransitionApi } from '@/api/playback';
@@ -337,6 +339,24 @@ export const useGetLayouts = () => {
     return layouts.flat();
   };
 
+  const getPrintLayoutByType = async (currentThemeId, layoutTypeId) => {
+    if (!layoutTypeId) return [];
+
+    const templates = await getPrintLayoutsByTypeApi(layoutTypeId);
+    const newTemplates = templates.filter(t => t.themeId !== currentThemeId);
+
+    return uniqBy(newTemplates, 'id');
+  };
+
+  const getDigitalLayoutByType = async (currentThemeId, layoutTypeId) => {
+    if (!layoutTypeId) return [];
+
+    const templates = await getDigitalLayoutsByTypeApi(layoutTypeId);
+    const newTemplates = templates.filter(t => t.themeId !== currentThemeId);
+
+    return uniqBy(newTemplates, 'id');
+  };
+
   const getDigitalLayouts = async (theme, layoutType, isSupplemental) => {
     if (isEmpty(theme) || isEmpty(layoutType)) {
       return [];
@@ -361,7 +381,9 @@ export const useGetLayouts = () => {
   return {
     getPrintLayouts,
     getDigitalLayouts,
-    getAssortedLayouts: getAssortedLayoutsApi
+    getAssortedLayouts: getAssortedLayoutsApi,
+    getPrintLayoutByType,
+    getDigitalLayoutByType
   };
 };
 

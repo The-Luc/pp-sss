@@ -34,6 +34,18 @@ export const getLayoutsQuery = gql`
   ${templateFragment}
 `;
 
+export const getLayoutsByTypeQuery = gql`
+  query getLayoutByType($layoutUse: TemplateLayoutUseType!) {
+    themes {
+      id
+      templates(layout_use: $layoutUse) {
+        ...templateDetail
+      }
+    }
+  }
+  ${templateFragment}
+`;
+
 export const getAssortedLayoutQuery = gql`
   query assorted {
     categories {
@@ -92,6 +104,19 @@ export const getDigitalTemplateQuery = gql`
   }
   ${digitalTemplateFragment}
 `;
+
+export const getDigitalTemplateByTypeQuery = gql`
+  query getDigitalTemplateByType($layoutUse: TemplateLayoutUseType) {
+    themes {
+      id
+      digital_templates(layout_use: $layoutUse) {
+        ...digitalTemplate
+      }
+    }
+  }
+  ${digitalTemplateFragment}
+`;
+
 export const getUserDigitalLayoutsQuery = gql`
   query getUserDigitalTemplate {
     user_saved_digital_layouts {
