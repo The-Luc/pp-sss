@@ -12,6 +12,7 @@
     :layout-type-selected="layoutTypeSelected"
     :favorite-layouts="favoriteLayouts"
     :tab-index="tabActive"
+    :extra-layouts="extraLayouts"
     @setThemeLayoutForSheet="setThemeLayoutForSheet"
     @onChangeTheme="onChangeTheme"
     @onChangeLayoutType="onChangeLayoutType"
