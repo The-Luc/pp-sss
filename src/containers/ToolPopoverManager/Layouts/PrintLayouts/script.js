@@ -10,7 +10,8 @@ import {
   PRINT_LAYOUT_TYPES,
   SAVED_AND_FAVORITES_TYPE,
   MODAL_TYPES,
-  LAYOUT_SIZE_TYPES
+  LAYOUT_SIZE_TYPES,
+  ASSORTED_TYPE_VALUE
 } from '@/common/constants';
 import {
   getThemeOptSelectedById,
@@ -67,7 +68,11 @@ export default {
     } = useActionLayout();
     const { getCustom } = useCustomLayout();
     const { applyPrintLayout } = useApplyPrintLayout();
-    const { getPrintLayouts, getAssortedLayouts } = useGetLayouts();
+    const {
+      getPrintLayouts,
+      getAssortedLayouts,
+      getPrintLayoutByType
+    } = useGetLayouts();
 
     return {
       isPrompt,
@@ -80,6 +85,7 @@ export default {
       applyPrintLayout,
       getPrintLayouts,
       getAssortedLayouts,
+      getPrintLayoutByType,
       modalData,
       toggleModal,
       saveToFavorites,
@@ -108,7 +114,8 @@ export default {
       layoutId: null,
       favoriteLayouts: [],
       customLayouts: [],
-      layouts: []
+      layouts: [],
+      extraLayouts: []
     };
   },
   computed: {
@@ -141,7 +148,7 @@ export default {
     layoutTypeSelected: {
       deep: true,
       handler(newVal) {
-        if (newVal.value === CUSTOM_LAYOUT_TYPE) {
+        if ([CUSTOM_LAYOUT_TYPE, ASSORTED_TYPE_VALUE].includes(newVal.value)) {
           this.disabledTheme = true;
           return;
         }
@@ -236,7 +243,11 @@ export default {
      * @param {Object} layoutData layout that is selected
      */
     async setThemeLayoutForSheet(layoutData) {
-      if (this.layouts.length === 0) return;
+      if (
+        (isEmpty(this.layouts) && isEmpty(this.extraLayouts)) ||
+        !layoutData?.id
+      )
+        return;
 
       const layout = cloneDeep(layoutData);
 
@@ -420,6 +431,12 @@ export default {
       this.layouts = await this.getPrintLayouts(
         this.themeSelected?.id,
         typeValue
+      );
+
+      // load more layout of the other themes
+      this.extraLayouts = await this.getPrintLayoutByType(
+        this.themeSelected?.id,
+        this.layoutTypeSelected?.value
       );
     },
     /**
