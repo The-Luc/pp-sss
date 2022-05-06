@@ -1247,7 +1247,7 @@ export const useOverrides = object => {
  * @param {Object} target fabric element
  */
 export const renderObjectOverlay = target => {
-  const { width, height, canvas, scaleX, scaleY, angle, showOverlay } = target;
+  const { width, height, canvas, scaleX, scaleY, showOverlay } = target;
   const zoom = canvas.getZoom();
   const ctx = canvas.getContext('2d');
 

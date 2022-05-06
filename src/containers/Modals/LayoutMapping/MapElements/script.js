@@ -184,7 +184,6 @@ export default {
     },
     handleMouseDown(e) {
       renderObjectOverlay(e.target);
-      // renderImageCropControl(e.target);
       this.updateThumbnails();
     },
     handleMouseOver(e) {
@@ -207,10 +206,6 @@ export default {
         item => item.id === this.idOfActiveImage
       );
       currWorkspace.liveThumbnail = thumbnailUrl;
-
-      // if (this.isPrint) {
-      //   this.printPreview = [currWorkspace];
-      // }
     }
   }
 };

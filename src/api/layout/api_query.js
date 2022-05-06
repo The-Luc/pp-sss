@@ -1,4 +1,4 @@
-import { first, get, cloneDeep, findKey } from 'lodash';
+import { first, get, cloneDeep, findKey, uniqBy } from 'lodash';
 import { SYSTEM_OBJECT_TYPE, LAYOUT_TYPES } from '@/common/constants';
 import { graphqlRequest } from '../urql';
 import {
@@ -178,13 +178,17 @@ export const getAssortedLayoutsApi = async () => {
 
   const { categories } = res.data;
 
-  return categories
+  const assorted = categories
     .map(({ name, id, templates }) => ({
       name,
       id,
-      templates: isEmpty(templates) ? [] : templates.map(layoutMapping)
+      templates: isEmpty(templates)
+        ? []
+        : uniqBy(templates.map(layoutMapping), 'id')
     }))
     .filter(c => !isEmpty(c.templates));
+
+  return uniqBy(assorted, 'id');
 };
 
 /** GET CUSTOM DIGITAL LAYOUTS */
