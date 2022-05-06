@@ -7,7 +7,9 @@ import {
   modifyBgToRenderOnPage,
   resetObjects,
   isEmpty,
-  getMappingColor
+  getMappingColor,
+  isPpTextObject,
+  isPpImageObject
 } from '@/common/utils';
 import CommonModal from '@/components/Modals/CommonModal';
 import PreviewItem from './PreviewItem';
@@ -21,6 +23,7 @@ import {
 } from '@/common/constants';
 import { renderObjectOverlay } from '@/plugins/fabric';
 import { addEventListeners, createMediaOverlay } from '@/common/fabricObjects';
+import { useAppCommon } from '@/hooks';
 
 export default {
   components: { CommonModal, PreviewItem },
@@ -33,6 +36,10 @@ export default {
       type: Object,
       default: () => ({})
     }
+  },
+  setup() {
+    const { setLoadingState } = useAppCommon();
+    return { setLoadingState };
   },
   data() {
     const printPreview = [
@@ -110,6 +117,8 @@ export default {
       );
     },
     async handleRenderCanvas() {
+      this.setLoadingState({ value: true });
+
       if (isEmpty(this.activeObjects)) return;
 
       const EDITOR_SIZE = this.isPrint
@@ -136,8 +145,8 @@ export default {
         return this.isTextImageObject(object) ? 'pointer' : 'default';
       };
 
-      let textNum = 0;
-      let imageNum = 0;
+      let textNum = 1;
+      let imageNum = 1;
       const control = await createMediaOverlay(IMAGE_LOCAL.CONTROL_ICON, {
         width: CROP_CONTROL.WIDTH,
         height: CROP_CONTROL.HEIGHT
@@ -149,10 +158,10 @@ export default {
           o.set({ hoverCursor: isShowPointer(o) });
 
           // is text or image object
-          if (!this.isTextImageObject(o)) return;
+          if (!this.isTextImageObject(o) || !this.isPrint) return;
           const isImage = o.objectType === OBJECT_TYPE.IMAGE;
           const index = isImage ? imageNum++ : textNum++;
-          const color = getMappingColor(index, isImage);
+          const color = getMappingColor(isImage);
 
           addEventListeners(o, {
             mousedown: this.handleMouseDown,
@@ -181,6 +190,8 @@ export default {
       setTimeout(() => {
         this.updateThumbnails();
       }, 10);
+
+      this.setLoadingState({ value: false });
     },
     handleMouseDown(e) {
       renderObjectOverlay(e.target);
@@ -191,6 +202,29 @@ export default {
     },
     handleMouseOut() {
       this.canvas.renderAll();
+    },
+    getMaxIndex() {
+      let numOfPrintTexts = 0;
+      let numOfPrintImages = 0;
+      let numOfDigitalTexts = 0;
+      let numOfDigitalImages = 0;
+
+      this.printLayout.objects.forEach(o => {
+        isPpTextObject(o) && numOfPrintTexts++;
+        isPpImageObject(o) && numOfPrintImages++;
+      });
+
+      this.digitalLayout.frames.forEach(frame => {
+        frame.objects.forEach(o => {
+          isPpTextObject(o) && numOfDigitalTexts++;
+          isPpImageObject(o) && numOfDigitalImages++;
+        });
+      });
+
+      return {
+        maxText: Math.max(numOfPrintTexts, numOfDigitalTexts),
+        maxImage: Math.max(numOfDigitalImages, numOfPrintImages)
+      };
     },
     /**
      * Update left sidebar thumbnails

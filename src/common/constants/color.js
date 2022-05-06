@@ -1,9 +1,5 @@
 export const MAX_COLOR_PICKER_PRESET = 9;
 
-// color used for layout mappings
-export const TEXT_BASE_COLOR = '#048003';
-export const IMAGE_BASE_COLOR = '#8302d9';
-
 export const BASE_SECTION_COLOR = [
   '#925DDB',
   '#89CC79',
