@@ -27,6 +27,7 @@ import {
   applyShadowToObject
 } from './common';
 import {
+  useDisplayOverlay,
   useDoubleStroke,
   useObjectControlsOverride,
   useTextOverride
@@ -119,6 +120,7 @@ export const createTextBox = (x, y, width, height, textProperties) => {
   });
 
   useObjectControlsOverride(group);
+  useDisplayOverlay(group);
 
   const groupProp = toFabricTextGroupProp(dataObject);
   const { flipX, flipY } = groupProp;

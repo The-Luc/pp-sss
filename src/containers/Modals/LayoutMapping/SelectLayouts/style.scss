@@ -1,4 +1,4 @@
-$modal-height: 535px;
+$modal-height: 570px;
 $modal-width: 1125px;
 
 #select-layouts {
@@ -36,6 +36,12 @@ $modal-width: 1125px;
       max-height: initial;
     }
 
+    .digital-layout {
+      .tool-popover-content {
+        height: 448px;
+      }
+    }
+
     .layouts-container {
       position: relative;
     }
@@ -55,7 +61,7 @@ $modal-width: 1125px;
 
       &.show-step-three {
         .mapping-preview__title {
-          padding-top: 10px;
+          padding-top: 30px;
         }
       }
     }
@@ -96,6 +102,7 @@ $modal-width: 1125px;
       font-family: $font-500;
       font-size: 13px;
       color: $color-stoodio-toolbartext;
+      border-bottom: 1px solid $color-gray15;
     }
   }
 }

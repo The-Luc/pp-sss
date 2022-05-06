@@ -24,6 +24,7 @@
           v-if="!isPrintPreviewDisplayed"
           :is-visited="true"
           :layouts="printLayouts"
+          :extra-layouts="extraPrintLayouts"
           :layout-id="printLayoutId"
           :text-display="printText"
           :themes-options="themesOptions"
@@ -45,8 +46,10 @@
         />
         <Layouts
           v-if="!isDigitalPreviewDisplayed"
+          class="digital-layout"
           :is-visited="true"
           :layouts="digitalLayouts"
+          :extra-layouts="extraDigitalLayouts"
           :layout-id="digitalLayoutId"
           :text-display="digitalText"
           :themes-options="themesOptions"

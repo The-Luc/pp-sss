@@ -629,6 +629,44 @@ export const convertAPIColorObjectToHex = colorObject => {
 };
 
 /**
+ *  To get a random int number between min and max
+ * @param {Number} min  min number
+ * @param {Number} max  max number
+ * @returns an integer between min and max numbers
+ */
+const getRandomInt = (min, max) => {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min) + min); //The maximum is exclusive and the minimum is inclusive
+};
+
+/**
+ *  To get random number for text and image mappings
+ *
+ * @param {Boolean} isImage whether to get color for image or text
+ * @returns a random color in shade of green or purple
+ */
+export const getMappingColor = isImage => {
+  const textColor = {
+    h: getRandomInt(100, 140),
+    s: getRandomInt(41, 100),
+    l: getRandomInt(15, 82)
+  };
+  const imageColor = {
+    h: getRandomInt(260, 280),
+    s: getRandomInt(41, 100),
+    l: getRandomInt(15, 82)
+  };
+
+  const { h, s, l } = isImage ? imageColor : textColor;
+
+  return Color(`hsl(${h}, ${s}%, ${l}%)`)
+    .alpha(0.5)
+    .rgb()
+    .toString();
+};
+
+/**
  * To convert rgb color to hex color, alpha channel will be discarded
  *
  * @param {String} rgb rgb color e.g. rgb(234, 41, 41) or rgba(234, 41, 41,0.3)

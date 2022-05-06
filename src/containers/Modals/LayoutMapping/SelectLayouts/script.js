@@ -12,7 +12,11 @@ import {
   useGetDigitalLayouts
 } from '@/hooks';
 import { getThemesApi } from '@/api/theme';
-import { LAYOUT_TYPES, SAVED_AND_FAVORITES_TYPE } from '@/common/constants';
+import {
+  DIGITAL_LAYOUT_TYPES,
+  PRINT_LAYOUT_TYPES,
+  SAVED_AND_FAVORITES_TYPE
+} from '@/common/constants';
 import { isEmpty, isHalfSheet } from '@/common/utils';
 
 export default {
@@ -24,7 +28,10 @@ export default {
     const { getFavoriteLayouts } = useActionLayout();
     const {
       getPrintLayouts: fetchPrintLayouts,
-      getDigitalLayouts: fetchDigitalLayouts
+      getDigitalLayouts: fetchDigitalLayouts,
+      getPrintLayoutByType,
+      getDigitalLayoutByType,
+      getAssortedLayouts
     } = useGetLayouts();
 
     const { getDigitalLayoutElements } = useGetDigitalLayouts();
@@ -36,7 +43,10 @@ export default {
       getFavoriteLayouts,
       fetchPrintLayouts,
       fetchDigitalLayouts,
-      getDigitalLayoutElements
+      getDigitalLayoutElements,
+      getPrintLayoutByType,
+      getDigitalLayoutByType,
+      getAssortedLayouts
     };
   },
   data() {
@@ -55,6 +65,8 @@ export default {
       digitalLayoutSelected: null,
       printLayouts: [],
       digitalLayouts: [],
+      extraPrintLayouts: [],
+      extraDigitalLayouts: [],
       customPrintLayouts: [],
       customDigitalLayouts: [],
       favoritePrintLayouts: [],
@@ -74,7 +86,8 @@ export default {
       isPrintPreviewDisplayed: false,
       isDigitalPreviewDisplayed: false,
       isStepThreeDisplayed: false,
-      isConfirmDisplayed: false
+      isConfirmDisplayed: false,
+      assortedLayouts: []
     };
   },
   computed: {
@@ -95,16 +108,11 @@ export default {
     }
   },
   async mounted() {
-    const fetchData = [this.initData()];
+    const fetchData = [this.initData(), this.getAssorted()];
     await Promise.all(fetchData);
 
-    const layoutTypes = Object.values(LAYOUT_TYPES).map(lt => ({
-      ...lt,
-      subItems: []
-    }));
-
-    this.printLayoutTypes = layoutTypes;
-    this.digitalLayoutTypes = layoutTypes;
+    this.printLayoutTypes = this.handleLayoutTypes();
+    this.digitalLayoutTypes = this.handleLayoutTypes();
 
     this.updateLayoutTypes();
 
@@ -173,10 +181,18 @@ export default {
         !isEmpty(this.customPrintLayouts) ||
         !isEmpty(this.favoritePrintLayouts)
       )
-        this.printLayoutTypes.push(SAVED_AND_FAVORITES_TYPE);
+        this.printLayoutTypes.splice(
+          this.printLayoutTypes.length - 1,
+          0,
+          SAVED_AND_FAVORITES_TYPE
+        );
 
       if (!isEmpty(this.customDigitalLayouts))
-        this.digitalLayoutTypes.push(SAVED_AND_FAVORITES_TYPE);
+        this.digitalLayoutTypes.splice(
+          this.digitalLayoutTypes.length - 1,
+          0,
+          SAVED_AND_FAVORITES_TYPE
+        );
     },
     async initData() {
       this.themesOptions = await getThemesApi();
@@ -191,19 +207,52 @@ export default {
       this.favoritePrintLayouts = await this.getFavoriteLayouts();
     },
     async getPrintLayouts() {
-      const layouts = await this.fetchPrintLayouts(
+      const { value: typeValue, sub: subValue } = this.printLayoutTypeSelected;
+
+      const isAssorted = typeValue === PRINT_LAYOUT_TYPES.ASSORTED.value;
+
+      if (isAssorted) {
+        this.printLayouts =
+          this.assortedLayouts.find(l => l.id === subValue)?.templates || [];
+        return;
+      }
+
+      this.printLayouts = await this.fetchPrintLayouts(
         this.printThemeSelected?.id,
         this.printLayoutTypeSelected?.value
       );
 
-      this.printLayouts = layouts;
+      this.extraPrintLayouts = await this.getPrintLayoutByType(
+        this.printThemeSelected?.id,
+        this.printLayoutTypeSelected?.value
+      );
     },
     async getDigitalLayouts() {
+      const { value: typeValue } = this.digitalLayoutTypeSelected;
+
+      const isAssorted = typeValue === DIGITAL_LAYOUT_TYPES.ASSORTED.value;
+
+      if (isAssorted) {
+        this.digitalLayouts = [];
+        return;
+      }
+
       this.digitalLayouts = await this.fetchDigitalLayouts(
         this.digitalThemeSelected?.id,
         this.digitalLayoutTypeSelected?.value,
         false
       );
+
+      this.extraDigitalLayouts = await this.getDigitalLayoutByType(
+        this.digitalThemeSelected?.id,
+        this.digitalLayoutTypeSelected?.value
+      );
+    },
+    /**
+     * Get assoreted layout
+     */
+    async getAssorted() {
+      this.assortedLayouts = await this.getAssortedLayouts();
     },
     handleStepOne() {
       this.isDigitalOpaque = true;
@@ -251,6 +300,25 @@ export default {
     editDigitalSelection() {
       this.isDigitalPreviewDisplayed = false;
       this.handleStepTwo();
+    },
+    handleLayoutTypes() {
+      const types = Object.values(PRINT_LAYOUT_TYPES).map(lt => ({
+        ...lt,
+        subItems: []
+      }));
+
+      const assortedType = types.filter(
+        l => l.value === PRINT_LAYOUT_TYPES.ASSORTED.value
+      )[0];
+
+      assortedType.subItems = this.assortedLayouts.map(({ id, name }) => ({
+        id,
+        name,
+        value: id,
+        shortName: `Assorted: ${name}`
+      }));
+
+      return types;
     }
   }
 };
