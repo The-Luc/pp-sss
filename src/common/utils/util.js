@@ -18,7 +18,9 @@ import {
   DIGITAL_PAGE_SIZE,
   DATE_FORMAT,
   THUMBNAIL_IMAGE_CONFIG,
-  OBJECT_TYPE
+  OBJECT_TYPE,
+  TEXT_BASE_COLOR,
+  IMAGE_BASE_COLOR
 } from '@/common/constants';
 import Color from 'color';
 import { BaseShadow } from '../models/element';
@@ -626,6 +628,15 @@ export const convertAPIColorObjectToHex = colorObject => {
   return Color({ r, g, b })
     .alpha(alpha)
     .hex();
+};
+
+export const getMappingColor = (index, isImage) => {
+  const baseColor = isImage ? IMAGE_BASE_COLOR : TEXT_BASE_COLOR;
+  return Color(baseColor)
+    .lighten(0.3 + index * 0.1)
+    .alpha(0.4)
+    .rgb()
+    .toString();
 };
 
 /**

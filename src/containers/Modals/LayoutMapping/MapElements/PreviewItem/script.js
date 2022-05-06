@@ -1,5 +1,4 @@
 export default {
-  components: {},
   props: {
     images: {
       type: Array,
@@ -19,9 +18,20 @@ export default {
     }
   },
   data() {
-    return {};
+    return {
+      componentKey: 0
+    };
   },
-  computed: {},
+  watch: {
+    images: {
+      deep: true,
+      immediate: true,
+      handler() {
+        // to force component to rerender
+        this.componentKey += 1;
+      }
+    }
+  },
   methods: {
     onChangeActiveImage(id) {
       this.$emit('change', id);

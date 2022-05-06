@@ -421,7 +421,7 @@ const handleHoverVideo = target => {
 
 /**
  * Handle when hover image
- * @param {*} target - fabric object
+ * @param {Object} target - fabric object
  */
 export const handleMouseOver = ({ target }) => {
   if (target?.objectType !== OBJECT_TYPE.IMAGE) return;
@@ -431,7 +431,7 @@ export const handleMouseOver = ({ target }) => {
 
 /**
  * Handle when leave image
- * @param {*} target - fabric object
+ * @param {Object} target - fabric object
  */
 export const handleMouseOut = ({ target }) => {
   if (

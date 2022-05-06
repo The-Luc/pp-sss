@@ -9,7 +9,11 @@
       ]"
     >
       <button @click="() => onChangeActiveImage(image.id)">
-        <img :src="image.previewImageUrl" alt="preview image" />
+        <img
+          :key="componentKey"
+          :src="image.liveThumbnail || image.previewImageUrl"
+          alt="preview image"
+        />
       </button>
       <div v-if="isSingleLayout" class="preview-image__title single-layout">
         Single Page
