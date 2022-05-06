@@ -90,7 +90,7 @@
               class="layout-loadmore"
             >
               <p class="layout-loadmore__title">
-                Continue scrolling to view all “Signatures” layouts
+                Continue scrolling to view all “{{ layoutTypeName }}” layouts
               </p>
               <p class="layout-loadmore__info">
                 Note: Layouts below this line do not match the selected theme.

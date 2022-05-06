@@ -16,6 +16,24 @@ import { isEmpty } from './util';
 import { inToPx, pxToIn } from './canvas';
 
 /**
+ *  whether an element is text or not
+ * @param {Object} object pp object
+ * @returns Boolean
+ */
+export const isPpTextObject = object => {
+  return object?.type === OBJECT_TYPE.TEXT;
+};
+
+/**
+ *  whether an element is text or not
+ * @param {Object} object pp object
+ * @returns Boolean
+ */
+export const isPpImageObject = object => {
+  return object?.type === OBJECT_TYPE.IMAGE;
+};
+
+/**
  * Computed ratio and return coordinate and dimension of object
  * @param {Object} objCoord - Coordinate of object include x and y
  * @param {Object} objSize - The size of object box include width and height

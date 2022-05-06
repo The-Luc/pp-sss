@@ -6,11 +6,24 @@ import {
   isSingleLayout,
   modifyBgToRenderOnPage,
   resetObjects,
-  isEmpty
+  isEmpty,
+  getMappingColor,
+  isPpTextObject,
+  isPpImageObject
 } from '@/common/utils';
 import CommonModal from '@/components/Modals/CommonModal';
 import PreviewItem from './PreviewItem';
-import { DIGITAL_CANVAS_SIZE, PRINT_CANVAS_SIZE } from '@/common/constants';
+import {
+  DIGITAL_CANVAS_SIZE,
+  PRINT_CANVAS_SIZE,
+  OBJECT_TYPE,
+  IMAGE_LOCAL,
+  CROP_CONTROL,
+  THUMBNAIL_IMAGE_CONFIG
+} from '@/common/constants';
+import { renderObjectOverlay } from '@/plugins/fabric';
+import { addEventListeners, createMediaOverlay } from '@/common/fabricObjects';
+import { useAppCommon } from '@/hooks';
 
 export default {
   components: { CommonModal, PreviewItem },
@@ -25,28 +38,32 @@ export default {
     }
   },
   setup() {
-    return {};
+    const { setLoadingState } = useAppCommon();
+    return { setLoadingState };
   },
   data() {
+    const printPreview = [
+      {
+        id: this.printLayout.id,
+        previewImageUrl: this.printLayout.previewImageUrl,
+        liveThumbnail: ''
+      }
+    ];
+
+    const frames = this.digitalLayout?.frames || [];
+    const digitalPreview = frames.map(f => ({
+      id: f.id,
+      previewImageUrl: f.previewImageUrl,
+      liveThumbnail: ''
+    }));
     return {
       idOfActiveImage: null,
-      canvas: null
+      canvas: null,
+      printPreview,
+      digitalPreview
     };
   },
   computed: {
-    printPreview() {
-      const id = this.printLayout.id;
-      const previewImageUrl = this.printLayout.previewImageUrl;
-
-      return [{ id, previewImageUrl }];
-    },
-    digitalPreview() {
-      const frames = this.digitalLayout?.frames || [];
-      return frames.map(f => ({
-        id: f.id,
-        previewImageUrl: f.previewImageUrl
-      }));
-    },
     isSingleLayout() {
       return isSingleLayout(this.printLayout);
     },
@@ -93,7 +110,15 @@ export default {
       this.idOfActiveImage = id;
       this.handleRenderCanvas();
     },
+    isTextImageObject(object) {
+      return (
+        object.objectType === OBJECT_TYPE.IMAGE ||
+        object.objectType === OBJECT_TYPE.TEXT
+      );
+    },
     async handleRenderCanvas() {
+      this.setLoadingState({ value: true });
+
       if (isEmpty(this.activeObjects)) return;
 
       const EDITOR_SIZE = this.isPrint
@@ -116,9 +141,42 @@ export default {
 
       const objects = cloneDeep(this.activeObjects);
 
+      const isShowPointer = object => {
+        return this.isTextImageObject(object) ? 'pointer' : 'default';
+      };
+
+      let textNum = 1;
+      let imageNum = 1;
+      const control = await createMediaOverlay(IMAGE_LOCAL.CONTROL_ICON, {
+        width: CROP_CONTROL.WIDTH,
+        height: CROP_CONTROL.HEIGHT
+      });
+
       const preprocessingFunc = fbObjects => {
         fbObjects.forEach(o => {
           o.set({ selectable: false });
+          o.set({ hoverCursor: isShowPointer(o) });
+
+          // is text or image object
+          if (!this.isTextImageObject(o) || !this.isPrint) return;
+          const isImage = o.objectType === OBJECT_TYPE.IMAGE;
+          const index = isImage ? imageNum++ : textNum++;
+          const color = getMappingColor(isImage);
+
+          addEventListeners(o, {
+            mousedown: this.handleMouseDown,
+            mouseover: this.handleMouseOver,
+            mouseout: this.handleMouseOut
+          });
+
+          o.set({ control });
+          o.set({
+            showOverlay: {
+              color,
+              isDisplayed: true,
+              value: index
+            }
+          });
         });
       };
 
@@ -127,6 +185,61 @@ export default {
         objects[0] = modifyBgToRenderOnPage(objects[0]);
 
       await drawObjectsOnCanvas(objects, this.canvas, preprocessingFunc);
+
+      // without this timeout, canvas will blank on UI
+      setTimeout(() => {
+        this.updateThumbnails();
+      }, 10);
+
+      this.setLoadingState({ value: false });
+    },
+    handleMouseDown(e) {
+      renderObjectOverlay(e.target);
+      this.updateThumbnails();
+    },
+    handleMouseOver(e) {
+      renderObjectOverlay(e.target);
+    },
+    handleMouseOut() {
+      this.canvas.renderAll();
+    },
+    getMaxIndex() {
+      let numOfPrintTexts = 0;
+      let numOfPrintImages = 0;
+      let numOfDigitalTexts = 0;
+      let numOfDigitalImages = 0;
+
+      this.printLayout.objects.forEach(o => {
+        isPpTextObject(o) && numOfPrintTexts++;
+        isPpImageObject(o) && numOfPrintImages++;
+      });
+
+      this.digitalLayout.frames.forEach(frame => {
+        frame.objects.forEach(o => {
+          isPpTextObject(o) && numOfDigitalTexts++;
+          isPpImageObject(o) && numOfDigitalImages++;
+        });
+      });
+
+      return {
+        maxText: Math.max(numOfPrintTexts, numOfDigitalTexts),
+        maxImage: Math.max(numOfDigitalImages, numOfPrintImages)
+      };
+    },
+    /**
+     * Update left sidebar thumbnails
+     */
+    updateThumbnails() {
+      const thumbnailUrl = this.canvas.toDataURL({
+        quality: THUMBNAIL_IMAGE_CONFIG.QUALITY,
+        format: THUMBNAIL_IMAGE_CONFIG.FORMAT,
+        multiplier: THUMBNAIL_IMAGE_CONFIG.MULTIPLIER
+      });
+
+      const currWorkspace = [...this.printPreview, ...this.digitalPreview].find(
+        item => item.id === this.idOfActiveImage
+      );
+      currWorkspace.liveThumbnail = thumbnailUrl;
     }
   }
 };

@@ -352,7 +352,9 @@ export const useGetLayouts = () => {
     if (!layoutTypeId) return [];
 
     const templates = await getDigitalLayoutsByTypeApi(layoutTypeId);
-    const newTemplates = templates.filter(t => t.themeId !== currentThemeId);
+    const newTemplates = templates.filter(
+      t => t.themeId !== currentThemeId && !t.isSupplemental
+    );
 
     return uniqBy(newTemplates, 'id');
   };

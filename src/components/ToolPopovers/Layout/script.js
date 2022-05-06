@@ -15,6 +15,7 @@ import {
 import {
   ASSORTED_TYPE_VALUE,
   CUSTOM_LAYOUT_TYPE,
+  LAYOUT_TYPES,
   SUPPLEMENTAL_TYPE_VALUE
 } from '@/common/constants';
 
@@ -120,6 +121,11 @@ export default {
     };
   },
   computed: {
+    layoutTypeName() {
+      return Object.values(LAYOUT_TYPES).find(
+        type => type.value === this.layoutTypeSelected.value
+      )?.name;
+    },
     layoutEmptyLength() {
       if (this.isEmptyTab) return 4;
 
