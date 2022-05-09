@@ -210,8 +210,6 @@ export default {
       const { value: typeValue, sub: subValue } = this.printLayoutTypeSelected;
 
       const isAssorted = typeValue === PRINT_LAYOUT_TYPES.ASSORTED.value;
-      /*eslint no-debugger: 'off'*/
-      debugger;
 
       if (isAssorted) {
         this.printLayouts =
