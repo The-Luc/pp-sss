@@ -306,5 +306,6 @@ export default {
   mounted() {
     this.initData();
     this.setLayoutActive();
+    this.updateTabs();
   }
 };

@@ -210,6 +210,8 @@ export default {
       const { value: typeValue, sub: subValue } = this.printLayoutTypeSelected;
 
       const isAssorted = typeValue === PRINT_LAYOUT_TYPES.ASSORTED.value;
+      /*eslint no-debugger: 'off'*/
+      debugger;
 
       if (isAssorted) {
         this.printLayouts =
@@ -296,10 +298,12 @@ export default {
     },
     editPrintSelection() {
       this.handleStepOne();
+      this.getPrintLayouts();
     },
     editDigitalSelection() {
       this.isDigitalPreviewDisplayed = false;
       this.handleStepTwo();
+      this.getDigitalLayouts();
     },
     handleLayoutTypes() {
       const types = Object.values(PRINT_LAYOUT_TYPES).map(lt => ({

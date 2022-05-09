@@ -5,7 +5,8 @@ import {
   DEFAULT_TEXT,
   OBJECT_TYPE,
   VIDEO_MSPF,
-  PORTRAIT_IMAGE_MASK
+  PORTRAIT_IMAGE_MASK,
+  OVERLAY_BACKGROUND_COLOR
 } from '@/common/constants';
 
 import {
@@ -381,7 +382,12 @@ const drawRoundedRect = function(
   const { top, left, width, height } = boundingRect;
 
   ctx.save();
-  ctx.fillStyle = showOverlay.color;
+
+  // render overlay background
+  ctx.fillStyle = showOverlay.value
+    ? showOverlay.color
+    : OVERLAY_BACKGROUND_COLOR;
+
   ctx.fillRect(left, top, width, height);
 
   const x = centerX - w / 2;
@@ -407,17 +413,34 @@ const handleRenderOverlayImage = function(ctx) {
   if (!this?.showOverlay?.isDisplayed) return;
 
   const { width, height } = this.getBoundingRect();
-  const boundingRect = { left: 0, top: 0, width, height };
+  const { a, d } = ctx.getTransform();
+
+  const w = width / a;
+  const h = height / d;
+  const left = -w / 2;
+  const top = -h / 2;
+
+  const boundingRect = { left, top, width: w, height: h, a, d };
   const isImage = true;
 
-  drawRoundedRect(ctx, boundingRect, 0, 0, this.showOverlay, isImage);
+  const centerX = 0;
+  const centerY = 0;
+
+  drawRoundedRect(
+    ctx,
+    boundingRect,
+    centerX,
+    centerY,
+    this.showOverlay,
+    isImage
+  );
 
   ctx.save();
   ctx.fillStyle = 'white';
   ctx.font = '35px "MuseoSans 300"';
   ctx.textBaseline = 'middle';
   ctx.textAlign = 'center';
-  ctx.fillText(`${this.showOverlay.value}`, 0, 0);
+  ctx.fillText(`${this.showOverlay.value}`, centerX, centerY);
   ctx.restore();
 };
 
@@ -431,6 +454,11 @@ const handleRenderOverlayText = function(ctx) {
   drawRoundedRect(ctx, boundingRect, centerX, centerY, this.showOverlay);
 
   ctx.save();
+
+  const { a, b, c, d, e } = ctx.getTransform();
+
+  // move text down a little bit
+  ctx.setTransform(a, b, c, d, e, 1);
   ctx.fillStyle = 'black';
   ctx.font = '35px "MuseoSans 300"';
   ctx.textBaseline = 'middle';
@@ -1247,20 +1275,17 @@ export const useOverrides = object => {
  * @param {Object} target fabric element
  */
 export const renderObjectOverlay = target => {
-  const { width, height, canvas, scaleX, scaleY, showOverlay } = target;
-  const zoom = canvas.getZoom();
+  const { canvas, showOverlay } = target;
   const ctx = canvas.getContext('2d');
 
   if (showOverlay?.isDisplayed) return;
 
   // TODO: handle rotated object
 
-  const eleWidth = width * scaleX * zoom;
-  const eleHeight = height * scaleY * zoom;
-  const { top, left } = target.getBoundingRect();
+  const { top, left, width, height } = target.getBoundingRect();
 
   ctx.save();
   ctx.fillStyle = showOverlay.color;
-  ctx.fillRect(left, top, eleWidth, eleHeight);
+  ctx.fillRect(left, top, width, height);
   ctx.restore();
 };
