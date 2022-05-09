@@ -67,6 +67,11 @@ export default {
     isPrint() {
       return this.idOfActiveImage === this.printLayout.id;
     },
+    /**
+     *  To get objects which will be render on canvas
+     *
+     * @returns array of pp objects
+     */
     activeObjects() {
       const frames = this.digitalLayout?.frames || [];
       const digitalObject = frames.map(f => ({ [f.id]: f.objects }));
@@ -185,10 +190,10 @@ export default {
 
       this.setLoadingState({ value: false });
     },
-    handleMouseDown(e) {
-      this.updateThumbnails();
+    handleMouseDown() {
+      // this.updateThumbnails();
     },
-    handleMouseOver(e) {
+    handleMouseOver() {
       // renderObjectOverlay(e.target);
     },
     handleMouseOut() {
@@ -217,6 +222,7 @@ export default {
         maxImage: Math.max(numOfDigitalImages, numOfPrintImages)
       };
     },
+    initData() {},
     /**
      * Update left sidebar thumbnails
      */
