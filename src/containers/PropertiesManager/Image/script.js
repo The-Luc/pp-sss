@@ -192,7 +192,6 @@ export default {
      */
     onClickBackgroundImage() {
       console.log('onClickBackgroundImage');
-      //TODO
     },
     /**
      * Handle apply animation config

@@ -1,11 +1,13 @@
-import { first, get, cloneDeep, findKey } from 'lodash';
+import { first, get, cloneDeep, findKey, uniqBy } from 'lodash';
 import { SYSTEM_OBJECT_TYPE, LAYOUT_TYPES } from '@/common/constants';
 import { graphqlRequest } from '../urql';
 import {
   getAssortedLayoutQuery,
   getDigitalLayoutQuery,
+  getDigitalTemplateByTypeQuery,
   getDigitalTemplateQuery,
   getLayoutElementsQuery,
+  getLayoutsByTypeQuery,
   getLayoutsPreviewQuery,
   getLayoutsQuery,
   getUserDigitalLayoutsQuery,
@@ -24,6 +26,18 @@ import {
 } from '@/common/utils';
 
 import { layoutMapping, digitalLayoutMapping } from '@/common/mapping/layout';
+
+/**
+ *  To get layout page types whether single or full page layout
+ *
+ * @param {Object} layout
+ * @returns  layout page id
+ */
+const getPageType = layout =>
+  layout.layout_type === 'DOUBLE_PAGE'
+    ? LAYOUT_PAGE_TYPE.FULL_PAGE.id
+    : LAYOUT_PAGE_TYPE.SINGLE_PAGE.id;
+
 /**
  *  To get previewImageUrl of layouts of a theme
  * @param {String} themeId id of a theme
@@ -59,11 +73,6 @@ export const getLayoutsByThemeAndTypeApi = async (themeId, layoutTypeId) => {
     t => t.layout_use === layoutType || (!t.layout_use && layoutType === 'MISC')
   );
 
-  const getPageType = layout =>
-    layout.layout_type === 'DOUBLE_PAGE'
-      ? LAYOUT_PAGE_TYPE.FULL_PAGE.id
-      : LAYOUT_PAGE_TYPE.SINGLE_PAGE.id;
-
   return templates.map(t => ({
     id: t.id,
     type: layoutType,
@@ -75,6 +84,40 @@ export const getLayoutsByThemeAndTypeApi = async (themeId, layoutTypeId) => {
   }));
 };
 
+/**
+ * To get layout filtered by its themeId and its category
+ * @param {String} themeId     id of a theme
+ * @param {String} categoryId  id of a category
+ * @returns array of layout object
+ */
+export const getPrintLayoutsByTypeApi = async layoutTypeId => {
+  const layoutType = findKey(LAYOUT_TYPES, o => o.value === layoutTypeId);
+
+  if (!layoutType) return [];
+
+  const res = await graphqlRequest(getLayoutsByTypeQuery, {
+    layoutUse: layoutType
+  });
+
+  if (!isOk(res)) return [];
+  const dbThemes = get(res, 'data.themes', []);
+
+  return dbThemes
+    .map(theme =>
+      theme.templates.map(t => ({
+        id: t.id,
+        type: layoutType,
+        themeId: theme.id,
+        previewImageUrl: t.preview_image_url,
+        name: t.title,
+        isFavorites: false,
+        pageType: getPageType(t)
+      }))
+    )
+    .flat();
+};
+
+/** GET PRINT LAYOUT ELEMENTS */
 export const getLayoutElementsApi = async id => {
   const res = await graphqlRequest(getLayoutElementsQuery, { id });
 
@@ -127,6 +170,7 @@ export const getLayoutElementsApi = async id => {
   ].filter(Boolean);
 };
 
+/** GET ASSORTED LAYOUTS */
 export const getAssortedLayoutsApi = async () => {
   const res = await graphqlRequest(getAssortedLayoutQuery);
 
@@ -134,15 +178,20 @@ export const getAssortedLayoutsApi = async () => {
 
   const { categories } = res.data;
 
-  return categories
+  const assorted = categories
     .map(({ name, id, templates }) => ({
       name,
       id,
-      templates: isEmpty(templates) ? [] : templates.map(layoutMapping)
+      templates: isEmpty(templates)
+        ? []
+        : uniqBy(templates.map(layoutMapping), 'id')
     }))
     .filter(c => !isEmpty(c.templates));
+
+  return uniqBy(assorted, 'id');
 };
 
+/** GET CUSTOM DIGITAL LAYOUTS */
 export const getCustomPrintLayoutApi = async () => {
   const res = await graphqlRequest(getUserLayoutsQuery);
 
@@ -171,6 +220,7 @@ export const getCustomDigitalLayoutApi = async () => {
   return layouts.map(l => digitalLayoutMapping(l));
 };
 
+/** GET DIGITAL LAYOUTS */
 export const getDigitalLayoutsApi = async themeId => {
   const res = await graphqlRequest(getDigitalTemplateQuery, { themeId });
 
@@ -181,6 +231,30 @@ export const getDigitalLayoutsApi = async themeId => {
   return layouts.map(l => digitalLayoutMapping(l));
 };
 
+/** GET DIGITAL LAYOUTS BY LAYOUT TYPE - LOAD MORE */
+export const getDigitalLayoutsByTypeApi = async layoutTypeId => {
+  const layoutUse = findKey(LAYOUT_TYPES, o => o.value === layoutTypeId);
+
+  if (!layoutUse) return [];
+
+  const res = await graphqlRequest(getDigitalTemplateByTypeQuery, {
+    layoutUse
+  });
+
+  if (!isOk(res)) return [];
+
+  const themes = get(res, 'data.themes', []);
+
+  const layouts = themes
+    .map(theme =>
+      theme.digital_templates.map(tem => ({ ...tem, themeId: theme.id }))
+    )
+    .flat();
+
+  return layouts.map(l => digitalLayoutMapping(l));
+};
+
+/** GET DIGITAL LAYOUT ELEMENTS */
 export const getDigitalLayoutElementApi = async id => {
   const res = await graphqlRequest(getDigitalLayoutQuery, { id });
 

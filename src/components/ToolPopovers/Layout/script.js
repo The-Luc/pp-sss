@@ -1,3 +1,5 @@
+import { differenceBy } from 'lodash';
+
 import PpSelect from '@/components/Selectors/Select';
 import PpToolPopover from '../ToolPopover';
 import SelectLayout from './SelectLayout';
@@ -10,6 +12,12 @@ import {
   isSingleLayout,
   scrollToElement
 } from '@/common/utils';
+import {
+  ASSORTED_TYPE_VALUE,
+  CUSTOM_LAYOUT_TYPE,
+  LAYOUT_TYPES,
+  SUPPLEMENTAL_TYPE_VALUE
+} from '@/common/constants';
 
 export default {
   components: {
@@ -26,6 +34,10 @@ export default {
       default: false
     },
     layouts: {
+      type: Array,
+      default: () => []
+    },
+    extraLayouts: {
       type: Array,
       default: () => []
     },
@@ -101,16 +113,60 @@ export default {
       }
     ];
     return {
-      layoutEmptyLength: 4,
       selectedLayout: {},
       isOnPreview: false,
       tabs,
-      tabActive: 0 // order of tabs: 0 - double, 1 - single
+      tabActive: 0, // order of tabs: 0 - double, 1 - single,
+      isJustLoadMore: false
     };
   },
   computed: {
-    isEmptyTab() {
+    layoutTypeName() {
+      return Object.values(LAYOUT_TYPES).find(
+        type => type.value === this.layoutTypeSelected.value
+      )?.name;
+    },
+    layoutEmptyLength() {
+      if (this.isEmptyTab) return 4;
+
+      if (this.isEmptyLayouts) return 2;
+
+      return 0;
+    },
+    // true if there is no original layout data
+    isEmptyLayouts() {
       return isEmpty(this.tabs[this.tabActive].items);
+    },
+    // true if there is no original layout and extra layouts (layout of the other themes)
+    isEmptyTab() {
+      return (
+        isEmpty(this.tabs[this.tabActive].items) && !this.shouldShowLoadMore
+      );
+    },
+    shouldShowLoadMore() {
+      // only show up if not saved/favorite, assorted, supplemental
+      const type = this.layoutTypeSelected.value;
+      return (
+        type !== ASSORTED_TYPE_VALUE &&
+        type !== CUSTOM_LAYOUT_TYPE &&
+        type !== SUPPLEMENTAL_TYPE_VALUE &&
+        !isEmpty(this.otherLayouts)
+      );
+    },
+    otherLayouts() {
+      if (this.isDigital) {
+        return differenceBy(this.extraLayouts, this.layouts, 'id');
+      }
+
+      const singleLayouts = this.extraLayouts.filter(isSingleLayout);
+
+      const fullLayouts = this.extraLayouts.filter(isFullLayout);
+
+      return differenceBy(
+        [fullLayouts, singleLayouts][this.tabActive],
+        this.layouts,
+        'id'
+      );
     }
   },
   watch: {
@@ -120,7 +176,9 @@ export default {
         this.setLayoutActive();
         this.updateTabs();
 
-        if (val.length > 0) this.autoScroll(this.layoutId);
+        if (this.isJustLoadMore && val.length > 0)
+          this.autoScroll(this.layoutId);
+        this.isJustLoadMore = false;
       }
     },
     tabIndex: {
@@ -156,9 +214,7 @@ export default {
      * Fired when select btn clicked
      */
     setThemeLayoutForSheet() {
-      const layout = isEmpty(this.layouts) ? {} : this.selectedLayout;
-
-      this.$emit('setThemeLayoutForSheet', layout);
+      this.$emit('setThemeLayoutForSheet', this.selectedLayout);
     },
 
     /**

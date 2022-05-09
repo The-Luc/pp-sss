@@ -193,6 +193,7 @@ export const renderImageCropControl = function(target) {
   if (!target.hasImage || !target.selectable) return;
 
   const { width, height, canvas, control, scaleX, scaleY, angle } = target;
+  if (!control) return;
 
   const zoom = canvas.getZoom();
   const ctx = canvas.getContext('2d');
@@ -327,10 +328,11 @@ const renderFill = function(ctx) {
 };
 
 /**
+ *
  * Image Render function with override on clipPath to support double stroke
  * @param {CanvasRenderingContext2D} ctx Context to render on
  */
-const imageRender = function(ctx) {
+const handleRenderBorderImage = function(ctx) {
   this.clipPath = null;
   this.strokeDashArray = [];
 
@@ -362,8 +364,92 @@ const imageRender = function(ctx) {
       this.strokeWidth
     );
   }
+};
+
+const drawRoundedRect = function(
+  ctx,
+  boundingRect,
+  centerX,
+  centerY,
+  showOverlay,
+  isImage
+) {
+  // box size
+  const w = 114;
+  const h = 60;
+
+  const { top, left, width, height } = boundingRect;
+
+  ctx.save();
+  ctx.fillStyle = showOverlay.color;
+  ctx.fillRect(left, top, width, height);
+
+  const x = centerX - w / 2;
+  const y = centerY - h / 2;
+  const r = 18;
+
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.arcTo(x + w, y, x + w, y + h, r);
+  ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r);
+  ctx.arcTo(x, y, x + w, y, r);
+  ctx.closePath();
+  ctx.clip();
+
+  ctx.fillStyle = isImage ? '#58595B' : 'white';
+  ctx.fillRect(centerX - w / 2, centerY - h / 2, w, h);
+
+  ctx.restore();
+};
+
+const handleRenderOverlayImage = function(ctx) {
+  if (!this?.showOverlay?.isDisplayed) return;
+
+  const { width, height } = this.getBoundingRect();
+  const boundingRect = { left: 0, top: 0, width, height };
+  const isImage = true;
+
+  drawRoundedRect(ctx, boundingRect, 0, 0, this.showOverlay, isImage);
+
+  ctx.save();
+  ctx.fillStyle = 'white';
+  ctx.font = '35px "MuseoSans 300"';
+  ctx.textBaseline = 'middle';
+  ctx.textAlign = 'center';
+  ctx.fillText(`${this.showOverlay.value}`, 0, 0);
+  ctx.restore();
+};
+
+const handleRenderOverlayText = function(ctx) {
+  if (!this?.showOverlay?.isDisplayed) return;
+
+  const { width, height } = this.getBoundingRect(true);
+  const { x: centerX, y: centerY } = this.getCenterPoint();
+  const boundingRect = { left: this.left, top: this.top, width, height };
+
+  drawRoundedRect(ctx, boundingRect, centerX, centerY, this.showOverlay);
+
+  ctx.save();
+  ctx.fillStyle = 'black';
+  ctx.font = '35px "MuseoSans 300"';
+  ctx.textBaseline = 'middle';
+  ctx.textAlign = 'center';
+  ctx.fillText(`${this.showOverlay.value}`, centerX, centerY);
+  ctx.restore();
+};
+
+/**
+ * Image Render function with override on clipPath to support double stroke
+ * @param {CanvasRenderingContext2D} ctx Context to render on
+ */
+const imageRender = function(ctx) {
+  handleRenderBorderImage.call(this, ctx);
 
   fabric.Image.prototype._render.call(this, ctx);
+
+  // overlay should be rendered at last
+  handleRenderOverlayImage.call(this, ctx);
 };
 /**
  * this function render a temporary canvas with the clipPath.
@@ -410,9 +496,7 @@ const drawClipPathOnCache = function(ctx, canvas) {
 
 const drawClipPath = function(ctx) {
   const path = this.clipPath;
-  if (!path) {
-    return;
-  }
+  if (!path) return;
 
   path.canvas = this.canvas;
   path.shouldCache();
@@ -564,6 +648,15 @@ export const useDoubleStroke = function(rect) {
     maskRender.call(this, ctx);
   };
   rect._renderStroke = rectRenderStroke;
+};
+
+export const useDisplayOverlay = function(object) {
+  object.render = function(ctx) {
+    fabric.Group.prototype.render.call(this, ctx);
+
+    // overlay should be rendered at last
+    handleRenderOverlayText.call(this, ctx);
+  };
 };
 
 const getTimeToSet = (checkTime, duration) => {
@@ -1146,4 +1239,28 @@ export const useOverrides = object => {
   commonFabricOverrides(objectPrototype);
   objectPrototype.drawBorders = drawBorders;
   objectPrototype.drawControls = drawControls;
+};
+
+/**
+ *  Render a overlay on the object
+ *
+ * @param {Object} target fabric element
+ */
+export const renderObjectOverlay = target => {
+  const { width, height, canvas, scaleX, scaleY, showOverlay } = target;
+  const zoom = canvas.getZoom();
+  const ctx = canvas.getContext('2d');
+
+  if (showOverlay?.isDisplayed) return;
+
+  // TODO: handle rotated object
+
+  const eleWidth = width * scaleX * zoom;
+  const eleHeight = height * scaleY * zoom;
+  const { top, left } = target.getBoundingRect();
+
+  ctx.save();
+  ctx.fillStyle = showOverlay.color;
+  ctx.fillRect(left, top, eleWidth, eleHeight);
+  ctx.restore();
 };

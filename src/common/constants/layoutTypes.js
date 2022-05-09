@@ -87,9 +87,13 @@ export const LAYOUT_TYPES = {
   }
 };
 
-const ASSORTED_TYPE = {
+export const CUSTOM_LAYOUT_TYPE = -999;
+export const ASSORTED_TYPE_VALUE = -998;
+export const SUPPLEMENTAL_TYPE_VALUE = 'Supplemental';
+
+export const ASSORTED_TYPE = {
   ASSORTED: {
-    value: -998,
+    value: ASSORTED_TYPE_VALUE,
     name: 'Assorted (Not Theme Specific)',
     sheetType: SHEET_TYPE.NORMAL
   }
@@ -107,18 +111,16 @@ export const DIGITAL_LAYOUT_TYPES = {
   ...ASSORTED_TYPE,
   SUPPLEMENTAL_LAYOUTS: {
     name: 'Supplemental: Digital Only',
-    value: 'Supplemental',
-    id: 'Supplemental',
+    value: SUPPLEMENTAL_TYPE_VALUE,
+    id: SUPPLEMENTAL_TYPE_VALUE,
     subItems: []
   }
 };
 
-export const CUSTOM_LAYOUT_TYPE = -999;
-
 export const SAVED_AND_FAVORITES_TYPE = {
   name: 'Saved Layouts/Favorites',
-  id: -999,
-  value: -999,
+  id: CUSTOM_LAYOUT_TYPE,
+  value: CUSTOM_LAYOUT_TYPE,
   subItems: []
 };
 
