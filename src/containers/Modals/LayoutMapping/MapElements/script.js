@@ -17,12 +17,9 @@ import {
   DIGITAL_CANVAS_SIZE,
   PRINT_CANVAS_SIZE,
   OBJECT_TYPE,
-  IMAGE_LOCAL,
-  CROP_CONTROL,
   THUMBNAIL_IMAGE_CONFIG
 } from '@/common/constants';
-import { renderObjectOverlay } from '@/plugins/fabric';
-import { addEventListeners, createMediaOverlay } from '@/common/fabricObjects';
+import { addEventListeners } from '@/common/fabricObjects';
 import { useAppCommon } from '@/hooks';
 
 export default {
@@ -70,6 +67,11 @@ export default {
     isPrint() {
       return this.idOfActiveImage === this.printLayout.id;
     },
+    /**
+     *  To get objects which will be render on canvas
+     *
+     * @returns array of pp objects
+     */
     activeObjects() {
       const frames = this.digitalLayout?.frames || [];
       const digitalObject = frames.map(f => ({ [f.id]: f.objects }));
@@ -147,10 +149,6 @@ export default {
 
       let textNum = 1;
       let imageNum = 1;
-      const control = await createMediaOverlay(IMAGE_LOCAL.CONTROL_ICON, {
-        width: CROP_CONTROL.WIDTH,
-        height: CROP_CONTROL.HEIGHT
-      });
 
       const preprocessingFunc = fbObjects => {
         fbObjects.forEach(o => {
@@ -169,7 +167,6 @@ export default {
             mouseout: this.handleMouseOut
           });
 
-          o.set({ control });
           o.set({
             showOverlay: {
               color,
@@ -193,12 +190,11 @@ export default {
 
       this.setLoadingState({ value: false });
     },
-    handleMouseDown(e) {
-      renderObjectOverlay(e.target);
-      this.updateThumbnails();
+    handleMouseDown() {
+      // this.updateThumbnails();
     },
-    handleMouseOver(e) {
-      renderObjectOverlay(e.target);
+    handleMouseOver() {
+      // renderObjectOverlay(e.target);
     },
     handleMouseOut() {
       this.canvas.renderAll();
@@ -226,6 +222,7 @@ export default {
         maxImage: Math.max(numOfDigitalImages, numOfPrintImages)
       };
     },
+    initData() {},
     /**
      * Update left sidebar thumbnails
      */
@@ -239,6 +236,7 @@ export default {
       const currWorkspace = [...this.printPreview, ...this.digitalPreview].find(
         item => item.id === this.idOfActiveImage
       );
+
       currWorkspace.liveThumbnail = thumbnailUrl;
     }
   }
