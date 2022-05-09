@@ -296,10 +296,12 @@ export default {
     },
     editPrintSelection() {
       this.handleStepOne();
+      this.getPrintLayouts();
     },
     editDigitalSelection() {
       this.isDigitalPreviewDisplayed = false;
       this.handleStepTwo();
+      this.getDigitalLayouts();
     },
     handleLayoutTypes() {
       const types = Object.values(PRINT_LAYOUT_TYPES).map(lt => ({
