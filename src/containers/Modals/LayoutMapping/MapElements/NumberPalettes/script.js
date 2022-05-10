@@ -1,3 +1,5 @@
+import { ICON_LOCAL } from '@/common/constants';
+
 export default {
   props: {
     isOpen: {
@@ -17,6 +19,11 @@ export default {
       required: true
     }
   },
+  data() {
+    return {
+      activeMenuIcon: ICON_LOCAL.ACTIVE_MENU_GRAY
+    };
+  },
   methods: {
     /**
      * Fire when user click to select a item on the list
@@ -30,7 +37,12 @@ export default {
      * Fire when user click outside of assignee modal
      */
     onClickOutside() {
+      console.log('on click out side');
       this.$emit('clickOutside');
+    },
+    onChange(e) {
+      console.log('on change ', e);
+      this.$emit('change', this.items[0]);
     }
   }
 };
