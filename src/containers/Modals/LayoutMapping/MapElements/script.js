@@ -306,6 +306,9 @@ export default {
       this.canvas.renderAll();
     },
     onChooseNumber(e) {
+      if (e.value === this.overlayData[this.currentObjectId].value)
+        return this.onCloseNumberMenu();
+
       this.overlayData[this.currentObjectId].value = e.value;
       this.overlayData[this.currentObjectId].isDisplayed = e.value > 0;
 

@@ -37,12 +37,7 @@ export default {
      * Fire when user click outside of assignee modal
      */
     onClickOutside() {
-      console.log('on click out side');
       this.$emit('clickOutside');
-    },
-    onChange(e) {
-      console.log('on change ', e);
-      this.$emit('change', this.items[0]);
     }
   }
 };
