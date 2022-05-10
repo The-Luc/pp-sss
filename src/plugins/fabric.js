@@ -20,6 +20,10 @@ import {
   videoSeekEvent,
   videoToggleStatusEvent
 } from '@/common/utils';
+import {
+  handleRenderOverlayImage,
+  handleRenderOverlayText
+} from './fabricMapping';
 
 const BORDER_COLOR = {
   OUTER: '#ffffff',
@@ -367,106 +371,6 @@ const handleRenderBorderImage = function(ctx) {
   }
 };
 
-const drawRoundedRect = function(
-  ctx,
-  boundingRect,
-  centerX,
-  centerY,
-  showOverlay,
-  isImage
-) {
-  // box size
-  const w = 114;
-  const h = 60;
-
-  const { top, left, width, height } = boundingRect;
-
-  ctx.save();
-
-  // render overlay background
-  ctx.fillStyle = showOverlay.value
-    ? showOverlay.color
-    : OVERLAY_BACKGROUND_COLOR;
-
-  ctx.fillRect(left, top, width, height);
-
-  const x = centerX - w / 2;
-  const y = centerY - h / 2;
-  const r = 18;
-
-  ctx.beginPath();
-  ctx.moveTo(x + r, y);
-  ctx.arcTo(x + w, y, x + w, y + h, r);
-  ctx.arcTo(x + w, y + h, x, y + h, r);
-  ctx.arcTo(x, y + h, x, y, r);
-  ctx.arcTo(x, y, x + w, y, r);
-  ctx.closePath();
-  ctx.clip();
-
-  ctx.fillStyle = isImage ? '#58595B' : 'white';
-  ctx.fillRect(centerX - w / 2, centerY - h / 2, w, h);
-
-  ctx.restore();
-};
-
-const handleRenderOverlayImage = function(ctx) {
-  if (!this?.showOverlay?.isDisplayed) return;
-
-  const { width, height } = this.getBoundingRect();
-  const { a, d } = ctx.getTransform();
-
-  const w = width / a;
-  const h = height / d;
-  const left = -w / 2;
-  const top = -h / 2;
-
-  const boundingRect = { left, top, width: w, height: h, a, d };
-  const isImage = true;
-
-  const centerX = 0;
-  const centerY = 0;
-
-  drawRoundedRect(
-    ctx,
-    boundingRect,
-    centerX,
-    centerY,
-    this.showOverlay,
-    isImage
-  );
-
-  ctx.save();
-  ctx.fillStyle = 'white';
-  ctx.font = '35px "MuseoSans 300"';
-  ctx.textBaseline = 'middle';
-  ctx.textAlign = 'center';
-  ctx.fillText(`${this.showOverlay.value}`, centerX, centerY);
-  ctx.restore();
-};
-
-const handleRenderOverlayText = function(ctx) {
-  if (!this?.showOverlay?.isDisplayed) return;
-
-  const { width, height } = this.getBoundingRect(true);
-  const { x: centerX, y: centerY } = this.getCenterPoint();
-  const boundingRect = { left: this.left, top: this.top, width, height };
-
-  drawRoundedRect(ctx, boundingRect, centerX, centerY, this.showOverlay);
-
-  ctx.save();
-
-  const { a, b, c, d, e } = ctx.getTransform();
-
-  // move text down a little bit
-  ctx.setTransform(a, b, c, d, e, 1);
-  ctx.fillStyle = 'black';
-  ctx.font = '35px "MuseoSans 300"';
-  ctx.textBaseline = 'middle';
-  ctx.textAlign = 'center';
-  ctx.fillText(`${this.showOverlay.value}`, centerX, centerY);
-  ctx.restore();
-};
-
 /**
  * Image Render function with override on clipPath to support double stroke
  * @param {CanvasRenderingContext2D} ctx Context to render on
@@ -479,6 +383,7 @@ const imageRender = function(ctx) {
   // overlay should be rendered at last
   handleRenderOverlayImage.call(this, ctx);
 };
+
 /**
  * this function render a temporary canvas with the clipPath.
  * if not, won't do anything
@@ -1274,7 +1179,7 @@ export const useOverrides = object => {
  *
  * @param {Object} target fabric element
  */
-export const renderObjectOverlay = target => {
+export const renderObjectOverlay = (target, icon) => {
   const { canvas, showOverlay } = target;
   const ctx = canvas.getContext('2d');
 
@@ -1283,9 +1188,42 @@ export const renderObjectOverlay = target => {
   // TODO: handle rotated object
 
   const { top, left, width, height } = target.getBoundingRect();
+  const centerX = left + width / 2;
+  const centerY = top + height / 2;
+
+  // box size
+  const w = 41;
+  const h = 20;
+  const x = centerX - w / 2;
+  const y = centerY - h / 2;
+  const r = 5;
 
   ctx.save();
-  ctx.fillStyle = showOverlay.color;
+  ctx.fillStyle = OVERLAY_BACKGROUND_COLOR;
   ctx.fillRect(left, top, width, height);
+
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.arcTo(x + w, y, x + w, y + h, r);
+  ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r);
+  ctx.arcTo(x, y, x + w, y, r);
+  ctx.closePath();
+  ctx.clip();
+
+  ctx.fillStyle = 'white';
+  ctx.fillRect(centerX - w / 2, centerY - h / 2, w, h);
+
+  const iconWidth = 35;
+  const iconHeight = 14;
+
+  ctx.drawImage(
+    icon,
+    centerX - iconWidth / 2,
+    centerY - iconHeight / 2,
+    iconWidth,
+    iconHeight
+  );
+
   ctx.restore();
 };

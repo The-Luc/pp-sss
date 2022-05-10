@@ -9,21 +9,25 @@ import {
   isEmpty,
   getMappingColor,
   isPpTextObject,
-  isPpImageObject
+  isPpImageObject,
+  isFbTextObject
 } from '@/common/utils';
 import CommonModal from '@/components/Modals/CommonModal';
 import PreviewItem from './PreviewItem';
+import NumberPalettes from './NumberPalettes';
 import {
   DIGITAL_CANVAS_SIZE,
   PRINT_CANVAS_SIZE,
   OBJECT_TYPE,
-  THUMBNAIL_IMAGE_CONFIG
+  THUMBNAIL_IMAGE_CONFIG,
+  IMAGE_LOCAL
 } from '@/common/constants';
-import { addEventListeners } from '@/common/fabricObjects';
+import { addEventListeners, createMediaOverlay } from '@/common/fabricObjects';
 import { useAppCommon } from '@/hooks';
+import { renderObjectOverlay } from '@/plugins/fabric';
 
 export default {
-  components: { CommonModal, PreviewItem },
+  components: { CommonModal, PreviewItem, NumberPalettes },
   props: {
     printLayout: {
       type: Object,
@@ -57,7 +61,17 @@ export default {
       idOfActiveImage: null,
       canvas: null,
       printPreview,
-      digitalPreview
+      digitalPreview,
+      overlayData: {},
+      posX: 0,
+      posY: 0,
+      isOpenMenu: false,
+      numberList: [],
+      currentObjectId: null,
+      textIcon: null,
+      imageIcon: null,
+      textColors: [],
+      imageColors: []
     };
   },
   computed: {
@@ -99,6 +113,20 @@ export default {
       preserveObjectStacking: true
     });
 
+    // load hover icon
+    this.textIcon = await createMediaOverlay(IMAGE_LOCAL.ADD_TEXT_ICON);
+    this.imageIcon = await createMediaOverlay(IMAGE_LOCAL.ADD_IMAGE_ICON);
+
+    // get colors
+    const { maxText, maxImage } = this.getMaxIndex();
+    this.textColors = Array(maxText)
+      .fill(0)
+      .map(() => getMappingColor());
+    this.imageColors = Array(maxImage)
+      .fill(0)
+      .map(() => getMappingColor(true));
+
+    this.initData();
     await this.handleRenderCanvas();
   },
   methods: {
@@ -110,6 +138,7 @@ export default {
     },
     setActiveImage(id) {
       this.idOfActiveImage = id;
+      this.isOpenMenu = false;
       this.handleRenderCanvas();
     },
     isTextImageObject(object) {
@@ -144,35 +173,22 @@ export default {
       const objects = cloneDeep(this.activeObjects);
 
       const isShowPointer = object => {
-        return this.isTextImageObject(object) ? 'pointer' : 'default';
-      };
+        if (!this.isTextImageObject(object)) return 'default';
 
-      let textNum = 1;
-      let imageNum = 1;
+        return 'pointer';
+      };
 
       const preprocessingFunc = fbObjects => {
         fbObjects.forEach(o => {
           o.set({ selectable: false });
-          o.set({ hoverCursor: isShowPointer(o) });
 
-          // is text or image object
-          if (!this.isTextImageObject(o) || !this.isPrint) return;
-          const isImage = o.objectType === OBJECT_TYPE.IMAGE;
-          const index = isImage ? imageNum++ : textNum++;
-          const color = getMappingColor(isImage);
+          o.set({ showOverlay: this.overlayData[o.id] });
+          o.set({ hoverCursor: isShowPointer(o) });
 
           addEventListeners(o, {
             mousedown: this.handleMouseDown,
             mouseover: this.handleMouseOver,
             mouseout: this.handleMouseOut
-          });
-
-          o.set({
-            showOverlay: {
-              color,
-              isDisplayed: true,
-              value: index
-            }
           });
         });
       };
@@ -190,14 +206,83 @@ export default {
 
       this.setLoadingState({ value: false });
     },
-    handleMouseDown() {
-      // this.updateThumbnails();
+    getInUsedValuePrint(isImage) {
+      const isRightType = isImage ? isPpImageObject : isPpTextObject;
+      return this.printLayout.objects
+        .map(o => (isRightType(o) ? this.overlayData[o.id]?.value : null))
+        .filter(Boolean);
     },
-    handleMouseOver() {
-      // renderObjectOverlay(e.target);
+    getInUsedValueDigital(isImage) {
+      const isRightType = isImage ? isPpImageObject : isPpTextObject;
+      return this.digitalLayout.frames
+        .map(frame => {
+          return frame.objects
+            .map(o => (isRightType(o) ? this.overlayData[o.id]?.value : null))
+            .filter(Boolean);
+        })
+        .flat();
+    },
+    getNumberList() {
+      this.numberList = [];
+      const curShowOverlay = this.overlayData[this.currentObjectId];
+      console.log(curShowOverlay);
+      /*eslint no-debugger: 'off'*/
+      debugger;
+      const isImage = curShowOverlay.isImage;
+      const { maxText, maxImage } = this.getMaxIndex();
+      const maxValue = isImage ? maxImage : maxText;
+
+      if (curShowOverlay.value > 0)
+        this.numberList.push({ title: 'Unassign', value: -1 });
+
+      // get list of in used values
+      const inUsedValues = this.isPrint
+        ? this.getInUsedValuePrint(isImage)
+        : this.getInUsedValueDigital(isImage);
+
+      Array.from(Array(maxValue).keys()).forEach(value => {
+        const v = value + 1;
+        if (inUsedValues.includes(v)) return;
+        this.numberList.push({ title: `${v}`, value: v });
+      });
+    },
+    handleMouseDown(e) {
+      if (!this.isTextImageObject(e.target)) return;
+
+      const { clientX, clientY } = e.e;
+
+      this.posX = clientX - 10;
+      this.posY = clientY - 10;
+
+      this.currentObjectId = e.target.id;
+      this.getNumberList();
+      this.isOpenMenu = true;
+    },
+    handleMouseOver({ target }) {
+      if (!this.isTextImageObject(target)) return;
+
+      const icon = isFbTextObject(target) ? this.textIcon : this.imageIcon;
+
+      renderObjectOverlay(target, icon);
     },
     handleMouseOut() {
       this.canvas.renderAll();
+    },
+    onChooseNumber(e) {
+      this.overlayData[this.currentObjectId].value = e.value;
+      this.overlayData[this.currentObjectId].isDisplayed = e.value > 0;
+
+      const isImage = this.overlayData[this.currentObjectId].isImage;
+
+      this.overlayData[this.currentObjectId].color = isImage
+        ? this.imageColors[e.value - 1]
+        : this.textColors[e.value - 1];
+
+      this.onCloseNumberMenu();
+      this.handleRenderCanvas();
+    },
+    onCloseNumberMenu() {
+      this.isOpenMenu = false;
     },
     getMaxIndex() {
       let numOfPrintTexts = 0;
@@ -222,7 +307,47 @@ export default {
         maxImage: Math.max(numOfDigitalImages, numOfPrintImages)
       };
     },
-    initData() {},
+    initData() {
+      let textNum = 1;
+      let imageNum = 1;
+
+      this.overlayData = {};
+
+      this.printLayout.objects.forEach(o => {
+        if (!isPpTextObject(o) && !isPpImageObject(o)) return;
+
+        const isImage = isPpImageObject(o);
+        const index = isImage ? imageNum++ : textNum++;
+        const color = isImage
+          ? this.imageColors[index - 1]
+          : this.textColors[index - 1];
+        const showOverlay = {
+          color,
+          isDisplayed: true,
+          value: index,
+          isImage
+        };
+
+        this.overlayData[o.id] = showOverlay;
+      });
+
+      const frames = this.digitalLayout?.frames || [];
+      const digitalObjects = frames.map(f => f.objects).flat();
+
+      digitalObjects.forEach(o => {
+        if (!isPpTextObject(o) && !isPpImageObject(o)) return;
+
+        const isImage = isPpImageObject(o);
+        const showOverlay = {
+          color: 'black',
+          isDisplayed: false,
+          value: -1,
+          isImage
+        };
+
+        this.overlayData[o.id] = showOverlay;
+      });
+    },
     /**
      * Update left sidebar thumbnails
      */

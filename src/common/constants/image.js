@@ -8,6 +8,8 @@ import SOLID from '@/assets/image/border/solid.svg';
 import PLACE_HOLDER from '@/assets/image/content-placeholder.jpg';
 import PLAY_ICON from '@/assets/icons/play.svg';
 import CONTROL_ICON from '@/assets/image/control.png';
+import ADD_TEXT_ICON from '@/assets/image/add-text.jpg';
+import ADD_IMAGE_ICON from '@/assets/image/add-image.jpg';
 import EMPTY_PREVIEW_FRAME from '@/assets/image/no-preview-frame.jpg';
 
 export const IMAGE_LOCAL = {
@@ -21,5 +23,7 @@ export const IMAGE_LOCAL = {
   PLACE_HOLDER,
   PLAY_ICON,
   CONTROL_ICON,
-  EMPTY_PREVIEW_FRAME
+  EMPTY_PREVIEW_FRAME,
+  ADD_TEXT_ICON,
+  ADD_IMAGE_ICON
 };
