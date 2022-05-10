@@ -61,6 +61,13 @@
             </div>
           </div>
         </div>
+        <number-palettes
+          :pos-x="posX"
+          :pos-y="posY"
+          :items="numberList"
+          :is-open="isOpenMenu"
+          @change="onChooseNumber"
+        ></number-palettes>
       </div>
     </common-modal>
   </div>
