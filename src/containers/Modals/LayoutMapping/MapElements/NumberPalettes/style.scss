@@ -1,9 +1,44 @@
 .pp-number-palettes {
   max-height: 233px;
+  .v-list {
+    .v-list-item {
+      min-height: 20px;
+      padding: 0 10px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
 
-  .v-list-item {
-    min-height: 20px;
-    padding: 0 10px;
-    cursor: pointer;
+      &__title {
+        font-family: $font-500;
+        font-size: 11px;
+        &.bold-title {
+          font-family: $font-900;
+        }
+      }
+
+      &__content {
+        padding-block: 2px;
+      }
+
+      &__icon {
+        min-width: initial;
+        margin: 7px 7px 0 0;
+        img {
+          transform: translateY(-2px);
+        }
+      }
+    }
+  }
+  .icon-active {
+    width: 10px;
+  }
+  .icon-color-indicator {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+
+    &--unassign {
+      border: 1px solid $color-stoodio-toolbartext;
+    }
   }
 }

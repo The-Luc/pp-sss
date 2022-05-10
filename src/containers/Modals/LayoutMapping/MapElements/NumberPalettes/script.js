@@ -1,3 +1,5 @@
+import { ICON_LOCAL } from '@/common/constants';
+
 export default {
   props: {
     isOpen: {
@@ -16,6 +18,11 @@ export default {
       type: Array,
       required: true
     }
+  },
+  data() {
+    return {
+      activeMenuIcon: ICON_LOCAL.ACTIVE_MENU_GRAY
+    };
   },
   methods: {
     /**

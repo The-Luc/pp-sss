@@ -45,7 +45,7 @@ const drawRoundedRect = function(
   ctx.closePath();
   ctx.clip();
 
-  ctx.fillStyle = isImage ? '#58595B' : 'white';
+  ctx.fillStyle = isImage ? 'white' : '#58595B';
   ctx.fillRect(centerX - w / 2, centerY - h / 2, w, h);
 
   ctx.restore();
@@ -68,7 +68,7 @@ export const handleRenderOverlayText = function(ctx) {
 
   // move text down a little bit
   ctx.setTransform(a, b, c, d, e, 2);
-  ctx.fillStyle = 'black';
+  ctx.fillStyle = 'white';
   ctx.font = '35px "MuseoSans 300"';
   ctx.textBaseline = 'middle';
   ctx.textAlign = 'center';
@@ -103,7 +103,7 @@ export const handleRenderOverlayImage = function(ctx) {
   );
 
   ctx.save();
-  ctx.fillStyle = 'white';
+  ctx.fillStyle = 'black';
   ctx.font = '35px "MuseoSans 300"';
   ctx.textBaseline = 'middle';
   ctx.textAlign = 'center';
