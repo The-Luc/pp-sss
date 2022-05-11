@@ -14,3 +14,4 @@ export * from './style';
 export * from './portrait';
 export * from './animation';
 export * from './theme';
+export * from './mapping';

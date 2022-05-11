@@ -23,7 +23,7 @@ import {
   IMAGE_LOCAL
 } from '@/common/constants';
 import { addEventListeners, createMediaOverlay } from '@/common/fabricObjects';
-import { useAppCommon } from '@/hooks';
+import { useAppCommon, useMappingTemplate } from '@/hooks';
 import { renderObjectOverlay } from '@/plugins/fabric';
 
 export default {
@@ -40,7 +40,8 @@ export default {
   },
   setup() {
     const { setLoadingState } = useAppCommon();
-    return { setLoadingState };
+    const { createTemplateMapping } = useMappingTemplate();
+    return { setLoadingState, createTemplateMapping };
   },
   data() {
     const printPreview = [
@@ -134,7 +135,11 @@ export default {
       this.$emit('onCancel');
     },
     onSave() {
-      //
+      this.createTemplateMapping(
+        this.printLayout.id,
+        this.digitalLayout.id,
+        this.overlayData
+      );
     },
     setActiveImage(id) {
       this.idOfActiveImage = id;
@@ -234,7 +239,7 @@ export default {
       const maxValue = isImage ? maxImage : maxText;
 
       const assignedNumbers = Object.values(this.overlayData)
-        .filter(o => isImage && o.isImage)
+        .filter(o => (isImage ? o.isImage : !o.isImage))
         .map(o => o.value);
 
       if (curShowOverlay.value > 0)
@@ -361,10 +366,12 @@ export default {
         const index = isImage ? imageNum++ : textNum++;
         const color = this.getObjectColor(index, isImage);
         const showOverlay = {
+          id: o.id,
           color,
           isDisplayed: true,
           value: index,
-          isImage
+          isImage,
+          isPrint: true
         };
 
         this.overlayData[o.id] = showOverlay;
@@ -378,10 +385,12 @@ export default {
 
         const isImage = isPpImageObject(o);
         const showOverlay = {
+          id: o.id,
           color: 'black',
           isDisplayed: false,
           value: -1,
-          isImage
+          isImage,
+          isPrint: false
         };
 
         this.overlayData[o.id] = showOverlay;
