@@ -222,18 +222,23 @@ export default {
         })
         .flat();
     },
+    /**
+     * Get list of number to display on the dropdown menu
+     */
     getNumberList() {
       this.numberList = [];
       const curShowOverlay = this.overlayData[this.currentObjectId];
-      console.log(curShowOverlay);
-      /*eslint no-debugger: 'off'*/
-      debugger;
+
       const isImage = curShowOverlay.isImage;
       const { maxText, maxImage } = this.getMaxIndex();
       const maxValue = isImage ? maxImage : maxText;
 
+      const assignedNumbers = Object.values(this.overlayData)
+        .filter(o => isImage && o.isImage)
+        .map(o => o.value);
+
       if (curShowOverlay.value > 0)
-        this.numberList.push({ title: 'Unassign', value: -1 });
+        this.numberList.push({ title: 'Unassign', value: -1, color: 'white' });
 
       // get list of in used values
       const inUsedValues = this.isPrint
@@ -243,8 +248,40 @@ export default {
       Array.from(Array(maxValue).keys()).forEach(value => {
         const v = value + 1;
         if (inUsedValues.includes(v)) return;
-        this.numberList.push({ title: `${v}`, value: v });
+        this.numberList.push({
+          title: `${v}`,
+          value: v,
+          color: this.getObjectColor(v, isImage),
+          isBold: assignedNumbers.includes(v)
+        });
       });
+
+      const curValue = this.overlayData[this.currentObjectId].value;
+
+      if (curValue < 0) return;
+
+      this.numberList.push({
+        title: `${curValue}`,
+        value: curValue,
+        active: true,
+        color: this.getObjectColor(curValue, isImage),
+        isBold: assignedNumbers.includes(curValue)
+      });
+
+      const sortList = this.numberList
+        .slice(1)
+        .sort((a, b) => a.value - b.value);
+
+      this.numberList = [this.numberList[0], ...sortList];
+    },
+    /**
+     *  Get color of a object
+     * @param {Number} index index of object
+     * @param {Boolean} isImage is image or text object
+     * @returns color
+     */
+    getObjectColor(index, isImage) {
+      return isImage ? this.imageColors[index - 1] : this.textColors[index - 1];
     },
     handleMouseDown(e) {
       if (!this.isTextImageObject(e.target)) return;
@@ -269,14 +306,18 @@ export default {
       this.canvas.renderAll();
     },
     onChooseNumber(e) {
+      if (e.value === this.overlayData[this.currentObjectId].value)
+        return this.onCloseNumberMenu();
+
       this.overlayData[this.currentObjectId].value = e.value;
       this.overlayData[this.currentObjectId].isDisplayed = e.value > 0;
 
       const isImage = this.overlayData[this.currentObjectId].isImage;
 
-      this.overlayData[this.currentObjectId].color = isImage
-        ? this.imageColors[e.value - 1]
-        : this.textColors[e.value - 1];
+      this.overlayData[this.currentObjectId].color = this.getObjectColor(
+        e.value,
+        isImage
+      );
 
       this.onCloseNumberMenu();
       this.handleRenderCanvas();
@@ -318,9 +359,7 @@ export default {
 
         const isImage = isPpImageObject(o);
         const index = isImage ? imageNum++ : textNum++;
-        const color = isImage
-          ? this.imageColors[index - 1]
-          : this.textColors[index - 1];
+        const color = this.getObjectColor(index, isImage);
         const showOverlay = {
           color,
           isDisplayed: true,
