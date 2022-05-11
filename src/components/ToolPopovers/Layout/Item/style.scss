@@ -25,6 +25,41 @@
     }
   }
 
+  &-mapped {
+    cursor: default;
+    border: 1px solid $color-gray14;
+
+    .border-inside {
+      border: 3px solid transparent;
+    }
+  }
+
+  // OVERLAY SETTING
+  .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba($color-gray5, 0.85);
+    z-index: 1;
+    font-size: 15px;
+    color: $color-white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    p {
+      margin-bottom: 6px;
+      line-height: 1.2;
+    }
+
+    span {
+      font-family: $font-500;
+    }
+  }
+
   .layout-preview-img {
     display: flex;
     width: 206px;

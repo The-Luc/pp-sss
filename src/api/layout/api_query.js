@@ -25,6 +25,8 @@ import {
   isEmpty
 } from '@/common/utils';
 
+import { layoutElementMappings } from '@/common/mapping';
+
 import { layoutMapping, digitalLayoutMapping } from '@/common/mapping/layout';
 
 /**
@@ -80,7 +82,8 @@ export const getLayoutsByThemeAndTypeApi = async (themeId, layoutTypeId) => {
     previewImageUrl: t.preview_image_url,
     name: t.title,
     isFavorites: false,
-    pageType: getPageType(t)
+    pageType: getPageType(t),
+    mappings: layoutElementMappings(t)
   }));
 };
 
@@ -111,7 +114,8 @@ export const getPrintLayoutsByTypeApi = async layoutTypeId => {
         previewImageUrl: t.preview_image_url,
         name: t.title,
         isFavorites: false,
-        pageType: getPageType(t)
+        pageType: getPageType(t),
+        mappings: layoutElementMappings(t)
       }))
     )
     .flat();

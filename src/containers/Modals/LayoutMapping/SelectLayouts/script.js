@@ -132,14 +132,14 @@ export default {
   },
   methods: {
     onConfirmPrintLayout(layout) {
-      if (isEmpty(layout)) return;
+      if (isEmpty(layout) || layout.mappings) return;
 
       this.printLayoutSelected = layout;
 
       this.handleStepTwo();
     },
     async onConfirmDigitalLayout(layout) {
-      if (isEmpty(layout)) return;
+      if (isEmpty(layout) || layout.mappings) return;
 
       const layoutEle = await this.getDigitalLayoutElements(layout.id);
 
