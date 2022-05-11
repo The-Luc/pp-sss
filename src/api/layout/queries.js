@@ -13,7 +13,7 @@ export const getLayoutsPreviewQuery = gql`
   }
 `;
 
-const templateFragment = gql`
+export const templateFragment = gql`
   fragment templateDetail on Template {
     id
     preview_image_url
