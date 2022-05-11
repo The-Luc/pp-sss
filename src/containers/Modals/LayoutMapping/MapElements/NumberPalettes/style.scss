@@ -7,6 +7,14 @@
       cursor: pointer;
       display: flex;
       align-items: center;
+      background: transparent;
+
+      &:hover {
+        background: $color-stoodio-blue;
+      }
+      &:hover .v-list-item__title {
+        color: white;
+      }
 
       &__title {
         font-family: $font-500;
@@ -22,7 +30,7 @@
 
       &__icon {
         min-width: initial;
-        margin: 7px 7px 0 0;
+        margin: 2px 7px 0 0;
         img {
           transform: translateY(-2px);
         }
@@ -36,6 +44,7 @@
     width: 6px;
     height: 6px;
     border-radius: 50%;
+    margin-top: 7px;
 
     &--unassign {
       border: 1px solid $color-stoodio-toolbartext;
