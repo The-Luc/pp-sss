@@ -134,12 +134,18 @@ export default {
     onCancel() {
       this.$emit('onCancel');
     },
-    onSave() {
-      this.createTemplateMapping(
+
+    /**
+     * Call API to save mapping layout when user hit save button
+     */
+    async onSave() {
+      await this.createTemplateMapping(
         this.printLayout.id,
         this.digitalLayout.id,
         this.overlayData
       );
+
+      this.$emit('onClose');
     },
     setActiveImage(id) {
       this.idOfActiveImage = id;

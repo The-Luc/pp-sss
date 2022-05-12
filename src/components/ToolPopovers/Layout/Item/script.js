@@ -40,6 +40,10 @@ export default {
     isPreviewDisabled: {
       type: Boolean,
       default: false
+    },
+    isMappingMode: {
+      type: Boolean,
+      default: false
     }
   },
   setup() {
@@ -58,6 +62,9 @@ export default {
         iconName: this.isFavorites ? 'favorite' : 'favorite_border',
         cssClass: this.isFavorites ? 'favorites' : ''
       };
+    },
+    isMappedLayout() {
+      return this.isMappingMode && this.layout.mappings;
     }
   },
   methods: {

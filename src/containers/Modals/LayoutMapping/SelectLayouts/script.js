@@ -132,14 +132,14 @@ export default {
   },
   methods: {
     onConfirmPrintLayout(layout) {
-      if (isEmpty(layout)) return;
+      if (isEmpty(layout) || layout.mappings) return;
 
       this.printLayoutSelected = layout;
 
       this.handleStepTwo();
     },
     async onConfirmDigitalLayout(layout) {
-      if (isEmpty(layout)) return;
+      if (isEmpty(layout) || layout.mappings) return;
 
       const layoutEle = await this.getDigitalLayoutElements(layout.id);
 
@@ -217,14 +217,17 @@ export default {
         return;
       }
 
+      const isIgnoreCache = true;
       this.printLayouts = await this.fetchPrintLayouts(
         this.printThemeSelected?.id,
-        this.printLayoutTypeSelected?.value
+        this.printLayoutTypeSelected?.value,
+        isIgnoreCache
       );
 
       this.extraPrintLayouts = await this.getPrintLayoutByType(
         this.printThemeSelected?.id,
-        this.printLayoutTypeSelected?.value
+        this.printLayoutTypeSelected?.value,
+        isIgnoreCache
       );
     },
     async getDigitalLayouts() {

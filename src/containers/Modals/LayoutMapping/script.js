@@ -18,7 +18,6 @@ export default {
       digitalLayout: {}
     };
   },
-  computed: {},
   methods: {
     async handleSelectedLayouts({ printLayout, digitalLayout }) {
       const printObjects = await this.getLayoutElements(printLayout.id);
@@ -27,6 +26,14 @@ export default {
       this.printLayout.objects = printObjects;
       this.digitalLayout = digitalLayout;
       this.isSelectingLayout = false;
+    },
+    /**
+     * Close the mapping modal directly
+     */
+    onClose() {
+      this.toggleModal({
+        isOpenModal: false
+      });
     },
     /**
      * Trigger when user click agree to cancel

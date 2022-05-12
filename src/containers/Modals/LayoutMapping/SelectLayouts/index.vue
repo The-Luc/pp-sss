@@ -34,6 +34,7 @@
           :disabled-layout-opts="false"
           :layout-type-selected="printLayoutTypeSelected"
           :is-footer-hidden="isPrintFooterHidden"
+          :is-mapping-mode="true"
           @setThemeLayoutForSheet="onConfirmPrintLayout"
           @onChangeTheme="onChangePrintTheme"
           @onChangeLayoutType="onChangePrintLayoutType"
