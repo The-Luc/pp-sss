@@ -209,7 +209,7 @@ export const getAssortedLayoutsApi = async () => {
   return uniqBy(assorted, 'id');
 };
 
-/** GET CUSTOM DIGITAL LAYOUTS */
+/** GET CUSTOM PRINT LAYOUTS */
 export const getCustomPrintLayoutApi = async isIgnoreCache => {
   const res = await graphqlRequest(
     getUserLayoutsQuery,

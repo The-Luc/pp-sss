@@ -36,8 +36,13 @@ export default {
     /**
      * Fire when user click outside of assignee modal
      */
-    onClickOutside() {
-      this.$emit('clickOutside');
+    onClickOutside(e) {
+      // handle case that user click on a part of the dropdown but not on any item
+      const target = e?.target;
+
+      if (!target || !target.classList.contains('v-list')) return;
+
+      this.$emit('change', null);
     }
   }
 };
