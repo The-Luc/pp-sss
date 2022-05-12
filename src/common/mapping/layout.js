@@ -16,7 +16,7 @@ export const layoutElementMappings = layout => {
     const theOtherLayoutId = get(tempMappings, '[0].digital_frame_template.id');
     const theOtherLayoutTitle = get(
       tempMappings,
-      '[0].digital_template.title',
+      '[0].digital_frame_template.digital_template.title',
       'Unknown'
     );
 

@@ -145,7 +145,7 @@ export default {
         this.overlayData
       );
 
-      this.onCancel();
+      this.$emit('onClose');
     },
     setActiveImage(id) {
       this.idOfActiveImage = id;

@@ -9,7 +9,10 @@ export const templateMappingDetail = gql`
     }
     digital_frame_template {
       id
-      title
+      digital_template {
+        id
+        title
+      }
     }
     digital_element_uid
     print_element_uid

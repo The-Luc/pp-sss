@@ -11,6 +11,7 @@
       :print-layout="printLayout"
       :digital-layout="digitalLayout"
       @onCancel="showConfirmCancel"
+      @onClose="onClose"
     />
 
     <confirm-action

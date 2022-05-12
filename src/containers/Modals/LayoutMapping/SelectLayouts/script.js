@@ -217,14 +217,17 @@ export default {
         return;
       }
 
+      const isIgnoreCache = true;
       this.printLayouts = await this.fetchPrintLayouts(
         this.printThemeSelected?.id,
-        this.printLayoutTypeSelected?.value
+        this.printLayoutTypeSelected?.value,
+        isIgnoreCache
       );
 
       this.extraPrintLayouts = await this.getPrintLayoutByType(
         this.printThemeSelected?.id,
-        this.printLayoutTypeSelected?.value
+        this.printLayoutTypeSelected?.value,
+        isIgnoreCache
       );
     },
     async getDigitalLayouts() {
