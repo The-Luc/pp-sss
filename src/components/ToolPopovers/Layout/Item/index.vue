@@ -12,7 +12,7 @@
     <div v-if="isMappedLayout" class="overlay">
       <p>
         Mapped with <br />
-        digital layout
+        {{ isDigital ? 'print' : 'digital' }} layout
       </p>
       <span>{{ layout.mappings.theOtherLayoutTitle }}</span>
     </div>
