@@ -1,44 +1,68 @@
 import { createTemplateMappingApi } from '@/api/mapping';
+import { cloneDeep } from 'lodash';
 import { isEmpty } from '@/common/utils';
 
 export const useMappingTemplate = () => {
-  const createTemplateMapping = async (printId, digitalId, overlayData) => {
+  const createTemplateMapping = async (printId, frameIds, overlayData) => {
     const textValues = {};
     const imageValues = {};
-    const mappingParams = [];
 
+    // adding print object ids
     Object.values(overlayData).forEach(o => {
-      if (!o.value || o.value === -1) return; // is unassigned option
-
+      if (!o.value || o.value === -1 || !o.isPrint) return; // is unassigned option
       const values = o.isImage ? imageValues : textValues;
-      const index = o.isPrint ? 0 : 1;
 
-      if (!Array.isArray(values[o.value])) {
-        values[o.value] = [];
-      }
-
-      values[o.value][index] = o.id;
+      values[o.value] = [];
+      values[o.value][0] = o.id;
     });
 
-    const addingParams = values => {
-      Object.values(values).forEach(o => {
-        const print_element_uid = o[0];
-        const digital_element_uid = o[1];
+    // adding digital object ids
 
-        if (!print_element_uid || !digital_element_uid) return;
+    const createMappingPromise = frameIds.map(frameId => {
+      const cloneTextValues = cloneDeep(textValues);
+      const cloneImageValues = cloneDeep(imageValues);
+      const mappingParams = [];
 
-        mappingParams.push({ print_element_uid, digital_element_uid });
+      Object.values(overlayData).forEach(o => {
+        if (
+          !o.value ||
+          o.value === -1 ||
+          o.isPrint ||
+          o.containerId !== frameId
+        )
+          return; // is unassigned option
+
+        const values = o.isImage ? cloneImageValues : cloneTextValues;
+
+        if (!Array.isArray(values[o.value])) {
+          values[o.value] = [];
+        }
+
+        values[o.value][1] = o.id;
       });
-    };
 
-    addingParams(textValues);
-    addingParams(imageValues);
+      const addingParams = values => {
+        Object.values(values).forEach(o => {
+          const print_element_uid = o[0];
+          const digital_element_uid = o[1];
 
-    const params = { printId, digitalId, mappingParams };
+          if (!print_element_uid || !digital_element_uid) return;
 
-    if (!printId || !digitalId || isEmpty(mappingParams)) return;
+          mappingParams.push({ print_element_uid, digital_element_uid });
+        });
+      };
 
-    await createTemplateMappingApi(params);
+      addingParams(cloneTextValues);
+      addingParams(cloneImageValues);
+
+      const params = { printId, frameId, mappingParams };
+
+      if (isEmpty(mappingParams)) return [];
+
+      return createTemplateMappingApi(params);
+    });
+
+    await Promise.all(createMappingPromise);
   };
 
   return { createTemplateMapping };

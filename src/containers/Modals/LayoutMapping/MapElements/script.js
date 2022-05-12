@@ -142,9 +142,11 @@ export default {
      * Call API to save mapping layout when user hit save button
      */
     async onSave() {
+      const frameIds = this.digitalLayout.frames.map(f => f.id);
+
       await this.createTemplateMapping(
         this.printLayout.id,
-        this.digitalLayout.id,
+        frameIds,
         this.overlayData
       );
 
@@ -423,29 +425,32 @@ export default {
           isDisplayed: true,
           value: index,
           isImage,
-          isPrint: true
+          isPrint: true,
+          containerId: this.printLayout.id
         };
 
         this.overlayData[o.id] = showOverlay;
       });
 
       const frames = this.digitalLayout?.frames || [];
-      const digitalObjects = frames.map(f => f.objects).flat();
 
-      digitalObjects.forEach(o => {
-        if (!isPpTextObject(o) && !isPpImageObject(o)) return;
+      frames.forEach(frame => {
+        frame.objects.forEach(o => {
+          if (!isPpTextObject(o) && !isPpImageObject(o)) return;
 
-        const isImage = isPpImageObject(o);
-        const showOverlay = {
-          id: o.id,
-          color: 'black',
-          isDisplayed: false,
-          value: -1,
-          isImage,
-          isPrint: false
-        };
+          const isImage = isPpImageObject(o);
+          const showOverlay = {
+            id: o.id,
+            color: 'black',
+            isDisplayed: false,
+            value: -1,
+            isImage,
+            isPrint: false,
+            containerId: frame.id
+          };
 
-        this.overlayData[o.id] = showOverlay;
+          this.overlayData[o.id] = showOverlay;
+        });
       });
     },
     /**

@@ -22,12 +22,12 @@ export const templateMappingDetail = gql`
 export const createTemplateMappingMutation = gql`
   mutation bulkTemplate(
     $printId: ID!
-    $digitalId: ID!
+    $frameId: ID!
     $mappingParams: [ElementMappingUidInput]!
   ) {
     create_bulk_template_element_mapping(
       template_id: $printId
-      digital_frame_template_id: $digitalId
+      digital_frame_template_id: $frameId
       mapping_params: $mappingParams
     ) {
       ...templateMappingDetail
