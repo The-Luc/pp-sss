@@ -254,8 +254,8 @@ export const useCustomLayout = () => {
     });
   };
 
-  const getCustomPrintLayout = async () => {
-    const layouts = await getCustomPrintLayoutApi();
+  const getCustomPrintLayout = async isIgnoreCache => {
+    const layouts = await getCustomPrintLayoutApi(isIgnoreCache);
     return layouts.map(layout => ({
       ...layout,
       isCustom: true
@@ -323,7 +323,7 @@ export const useGetLayouts = () => {
   const { getCustom, getCustomDigitalLayout } = useCustomLayout();
   const { getDigitalLayouts: fetchDigitalLayouts } = useGetDigitalLayouts();
 
-  const getPrintLayouts = async (theme, layoutType) => {
+  const getPrintLayouts = async (theme, layoutType, isIgnoreCache) => {
     if (isEmpty(theme) || isEmpty(layoutType)) {
       return [];
     }
@@ -331,18 +331,28 @@ export const useGetLayouts = () => {
     const isSelectFavorite = layoutType === SAVED_AND_FAVORITES_TYPE.value;
 
     if (!isSelectFavorite) {
-      return getLayoutsByThemeAndTypeApi(theme, layoutType);
+      return getLayoutsByThemeAndTypeApi(theme, layoutType, isIgnoreCache);
     }
 
-    const layouts = await Promise.all([getFavoriteLayouts(), getCustom()]);
+    const layouts = await Promise.all([
+      getFavoriteLayouts(isIgnoreCache),
+      getCustom(isIgnoreCache)
+    ]);
 
     return layouts.flat();
   };
 
-  const getPrintLayoutByType = async (currentThemeId, layoutTypeId) => {
+  const getPrintLayoutByType = async (
+    currentThemeId,
+    layoutTypeId,
+    isIgnoreCache
+  ) => {
     if (!layoutTypeId) return [];
 
-    const templates = await getPrintLayoutsByTypeApi(layoutTypeId);
+    const templates = await getPrintLayoutsByTypeApi(
+      layoutTypeId,
+      isIgnoreCache
+    );
     const newTemplates = templates.filter(t => t.themeId !== currentThemeId);
 
     return uniqBy(newTemplates, 'id');

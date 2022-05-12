@@ -1,4 +1,5 @@
 import { gql } from 'graphql-tag';
+import { templateMappingDetail } from '../mapping/mutations';
 
 export const getLayoutsPreviewQuery = gql`
   query getLayoutsPreview($themeId: ID!) {
@@ -12,14 +13,18 @@ export const getLayoutsPreviewQuery = gql`
   }
 `;
 
-const templateFragment = gql`
+export const templateFragment = gql`
   fragment templateDetail on Template {
     id
     preview_image_url
     layout_use
     layout_type
     title
+    template_element_mappings {
+      ...templateMappingDetail
+    }
   }
+  ${templateMappingDetail}
 `;
 
 export const getLayoutsQuery = gql`
