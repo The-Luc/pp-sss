@@ -19,6 +19,7 @@ import {
   getFavoriteLayoutsQuery
 } from './queries';
 
+import { layoutElementMappings } from '@/common/mapping';
 import {
   LAYOUT_PAGE_TYPE,
   LOCAL_STORAGE,
@@ -129,7 +130,8 @@ export const getFavoriteLayoutsApi = async isIgnoreCache => {
       name: t.title || 'Untitle',
       isFavorites: true,
       isFavoritesDisabled: false,
-      pageType: t.layout_type === 'DOUBLE_PAGE' ? doublePageId : singlePageId
+      pageType: t.layout_type === 'DOUBLE_PAGE' ? doublePageId : singlePageId,
+      mappings: layoutElementMappings(t)
     };
   });
 };

@@ -16,7 +16,8 @@ import {
   getThemeOptSelectedById,
   isEmpty,
   entitiesToObjects,
-  getLayoutSelected
+  getLayoutSelected,
+  getUniqueId
 } from '@/common/utils';
 import {
   usePopoverCreationTool,
@@ -277,6 +278,11 @@ export default {
       const layout = cloneDeep(layoutEl);
 
       layout.frames.forEach(f => (f.objects = entitiesToObjects(f.objects)));
+
+      // generate unique id for objects
+      layout.frames.forEach(frame => {
+        frame.objects = frame.objects.map(o => ({ ...o, id: getUniqueId() }));
+      });
 
       const isSupplemental = layout.isSupplemental || this.isSupplemental;
 

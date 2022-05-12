@@ -62,7 +62,7 @@ export const layoutMapping = layout => {
 
   const mapLayout = mapObject(layout, mapRules);
 
-  mapLayout.mappings = layoutElementMappings(mapLayout);
+  mapLayout.mappings = layoutElementMappings(layout);
 
   return mapLayout;
 };

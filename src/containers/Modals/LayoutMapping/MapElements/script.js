@@ -131,6 +131,9 @@ export default {
     await this.handleRenderCanvas();
   },
   methods: {
+    /**
+     * Close the mapping layout modal
+     */
     onCancel() {
       this.$emit('onCancel');
     },
@@ -208,7 +211,14 @@ export default {
       if (this.isSingleLayout && isBackground(objects[0]))
         objects[0] = modifyBgToRenderOnPage(objects[0]);
 
-      await drawObjectsOnCanvas(objects, this.canvas, preprocessingFunc);
+      const backgrounds = objects.filter(isBackground);
+      const otherObjects = objects.filter(o => !isBackground(o));
+
+      await drawObjectsOnCanvas(
+        [...backgrounds, ...otherObjects],
+        this.canvas,
+        preprocessingFunc
+      );
 
       // without this timeout, canvas will blank on UI
       setTimeout(() => {
@@ -217,12 +227,24 @@ export default {
 
       this.setLoadingState({ value: false });
     },
+    /**
+     *  To get a list of value is in used in print
+     *
+     * @param {Boolean} isImage is image object
+     * @returns array of numbers
+     */
     getInUsedValuePrint(isImage) {
       const isRightType = isImage ? isPpImageObject : isPpTextObject;
       return this.printLayout.objects
         .map(o => (isRightType(o) ? this.overlayData[o.id]?.value : null))
         .filter(Boolean);
     },
+    /**
+     *  To get a list of value is in used in digital
+     *
+     * @param {Boolean} isImage is image object
+     * @returns array of numbers
+     */
     getInUsedValueDigital(isImage) {
       const isRightType = isImage ? isPpImageObject : isPpTextObject;
       return this.digitalLayout.frames
@@ -294,8 +316,16 @@ export default {
     getObjectColor(index, isImage) {
       return isImage ? this.imageColors[index - 1] : this.textColors[index - 1];
     },
+    /**
+     * Trigger when use click on canvas
+     *
+     * @param {Object} e  event object
+     */
     handleMouseDown(e) {
-      if (!this.isTextImageObject(e.target)) return;
+      if (!this.isTextImageObject(e.target)) {
+        this.isOpenMenu = false;
+        return;
+      }
 
       const { clientX, clientY } = e.e;
 
@@ -306,6 +336,11 @@ export default {
       this.getNumberList();
       this.isOpenMenu = true;
     },
+    /**
+     * Trigger when use move the pointer on canvas
+     *
+     * @param {Object} e  event object
+     */
     handleMouseOver({ target }) {
       if (!this.isTextImageObject(target)) return;
 
@@ -313,11 +348,19 @@ export default {
 
       renderObjectOverlay(target, icon);
     },
+    /**
+     * Trigger when use move the pointer out of the canvas
+     *
+     * @param {Object} e  event object
+     */
     handleMouseOut() {
       this.canvas.renderAll();
     },
+    /**
+     *  Trigger when use choose a number on dropdown menu
+     */
     onChooseNumber(e) {
-      if (e.value === this.overlayData[this.currentObjectId].value)
+      if (!e || e.value === this.overlayData[this.currentObjectId].value)
         return this.onCloseNumberMenu();
 
       this.overlayData[this.currentObjectId].value = e.value;
@@ -359,6 +402,9 @@ export default {
         maxImage: Math.max(numOfDigitalImages, numOfPrintImages)
       };
     },
+    /**
+     * Init data of overlayData
+     */
     initData() {
       let textNum = 1;
       let imageNum = 1;
