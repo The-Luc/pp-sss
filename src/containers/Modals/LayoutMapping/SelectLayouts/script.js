@@ -240,15 +240,20 @@ export default {
         return;
       }
 
+      const isIgnoreCache = true;
+
       this.digitalLayouts = await this.fetchDigitalLayouts(
         this.digitalThemeSelected?.id,
         this.digitalLayoutTypeSelected?.value,
-        false
+        false, //is not supplemental
+        isIgnoreCache
       );
+      console.log(this.digitalLayouts);
 
       this.extraDigitalLayouts = await this.getDigitalLayoutByType(
         this.digitalThemeSelected?.id,
-        this.digitalLayoutTypeSelected?.value
+        this.digitalLayoutTypeSelected?.value,
+        isIgnoreCache
       );
     },
     /**
