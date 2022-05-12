@@ -8,8 +8,8 @@
     absolute
     :close-on-click="false"
   >
-    <v-list v-click-outside="onClickOutside" dense>
-      <v-list-item-group>
+    <v-list dense>
+      <v-list-item-group v-click-outside="onClickOutside">
         <v-list-item
           v-for="(item, index) in items"
           :key="index"

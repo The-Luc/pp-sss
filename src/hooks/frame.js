@@ -256,7 +256,7 @@ export const useFrameAction = () => {
   };
 
   const createFrame = async (sheetId, params) => {
-    return await createFrameApi(sheetId, params);
+    return createFrameApi(sheetId, params);
   };
 
   const createFrames = async (sheetId, layout) => {
