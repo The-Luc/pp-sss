@@ -3,7 +3,7 @@ import { LAYOUT_PAGE_TYPE } from '@/common/constants/layoutTypes';
 import { transitionMapping } from './sheet';
 import { cloneDeep, get } from 'lodash';
 
-export const layoutElementMappings = layout => {
+export const layoutElementMappings = (layout, isDigital) => {
   const tempMappings = layout?.template_element_mappings;
 
   if (!isEmpty(tempMappings)) {
@@ -13,10 +13,14 @@ export const layoutElementMappings = layout => {
       digitalElementId: o.digital_element_uid
     }));
 
-    const theOtherLayoutId = get(tempMappings, '[0].digital_frame_template.id');
+    const path = isDigital
+      ? 'template'
+      : 'digital_frame_template.digital_template';
+
+    const theOtherLayoutId = get(tempMappings, `[0].${path}.id`);
     const theOtherLayoutTitle = get(
       tempMappings,
-      '[0].digital_frame_template.digital_template.title',
+      `[0].${path}.title`,
       'Unknown'
     );
 
@@ -118,10 +122,18 @@ export const digitalLayoutMapping = layoutData => {
     };
   });
 
-  const transitions = layout.digital_transitions.map(t => transitionMapping(t));
-  frames.forEach((f, idx) => (f.transition = transitions[idx]));
+  if (layout.digital_transitions) {
+    const transitions = layout.digital_transitions.map(t =>
+      transitionMapping(t)
+    );
+    frames.forEach((f, idx) => (f.transition = transitions[idx]));
+  }
 
   mappedLayout.frames = frames;
+  mappedLayout.mappings = layoutElementMappings(
+    layout.digital_frame_templates[0],
+    true
+  );
 
   return mappedLayout;
 };

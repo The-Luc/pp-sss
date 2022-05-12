@@ -62,6 +62,7 @@
           :is-digital="true"
           :is-translucent-content="isDigitalOpaque"
           :is-footer-hidden="isDigitalFooterHidden"
+          :is-mapping-mode="true"
           @setThemeLayoutForSheet="onConfirmDigitalLayout"
           @onChangeTheme="onChangeDigitalTheme"
           @onChangeLayoutType="onChangeDigitalLayoutType"

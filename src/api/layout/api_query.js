@@ -233,8 +233,13 @@ const removeMediaContent = layouts => {
   });
 };
 
-export const getCustomDigitalLayoutApi = async () => {
-  const res = await graphqlRequest(getUserDigitalLayoutsQuery);
+export const getCustomDigitalLayoutApi = async isIgnoreCache => {
+  const res = await graphqlRequest(
+    getUserDigitalLayoutsQuery,
+    {},
+    false,
+    isIgnoreCache
+  );
 
   if (!isOk(res)) return;
 
@@ -244,8 +249,13 @@ export const getCustomDigitalLayoutApi = async () => {
 };
 
 /** GET DIGITAL LAYOUTS */
-export const getDigitalLayoutsApi = async themeId => {
-  const res = await graphqlRequest(getDigitalTemplateQuery, { themeId });
+export const getDigitalLayoutsApi = async (themeId, isIgnoreCache) => {
+  const res = await graphqlRequest(
+    getDigitalTemplateQuery,
+    { themeId },
+    false,
+    isIgnoreCache
+  );
 
   if (!isOk(res)) return;
 
@@ -255,14 +265,22 @@ export const getDigitalLayoutsApi = async themeId => {
 };
 
 /** GET DIGITAL LAYOUTS BY LAYOUT TYPE - LOAD MORE */
-export const getDigitalLayoutsByTypeApi = async layoutTypeId => {
+export const getDigitalLayoutsByTypeApi = async (
+  layoutTypeId,
+  isIgnoreCache
+) => {
   const layoutUse = findKey(LAYOUT_TYPES, o => o.value === layoutTypeId);
 
   if (!layoutUse) return [];
 
-  const res = await graphqlRequest(getDigitalTemplateByTypeQuery, {
-    layoutUse
-  });
+  const res = await graphqlRequest(
+    getDigitalTemplateByTypeQuery,
+    {
+      layoutUse
+    },
+    false,
+    isIgnoreCache
+  );
 
   if (!isOk(res)) return [];
 

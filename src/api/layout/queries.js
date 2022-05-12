@@ -95,6 +95,18 @@ export const digitalTemplateFragment = gql`
     is_supplemental
     layout_use
     layout_type
+    digital_frame_templates {
+      id
+      template_element_mappings {
+        id
+        print_element_uid
+        digital_element_uid
+        template {
+          id
+          title
+        }
+      }
+    }
   }
 `;
 
@@ -131,6 +143,9 @@ export const getUserDigitalLayoutsQuery = gql`
   ${digitalTemplateFragment}
 `;
 
+/**
+ * Get layout elements
+ */
 export const getDigitalLayoutQuery = gql`
   query getDigitalTemplate($id: ID!) {
     digital_template(id: $id) {
