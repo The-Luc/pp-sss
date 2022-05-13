@@ -13,6 +13,8 @@ import {
 } from '@/hooks';
 import { getThemesApi } from '@/api/theme';
 import {
+  ASSORTED_TYPE_VALUE,
+  CUSTOM_LAYOUT_TYPE,
   DIGITAL_LAYOUT_TYPES,
   PRINT_LAYOUT_TYPES,
   SAVED_AND_FAVORITES_TYPE
@@ -248,7 +250,6 @@ export default {
         false, //is not supplemental
         isIgnoreCache
       );
-      console.log(this.digitalLayouts);
 
       this.extraDigitalLayouts = await this.getDigitalLayoutByType(
         this.digitalThemeSelected?.id,
@@ -300,7 +301,9 @@ export default {
       this.isDigitalPreviewDisplayed = true;
     },
     isSaveAndFavoriteType(type) {
-      return type.value === SAVED_AND_FAVORITES_TYPE.value;
+      return (
+        type.value === CUSTOM_LAYOUT_TYPE || type.value === ASSORTED_TYPE_VALUE
+      );
     },
     editPrintSelection() {
       this.handleStepOne();
