@@ -132,14 +132,14 @@ export default {
   },
   methods: {
     onConfirmPrintLayout(layout) {
-      if (isEmpty(layout)) return;
+      if (isEmpty(layout) || layout.mappings) return;
 
       this.printLayoutSelected = layout;
 
       this.handleStepTwo();
     },
     async onConfirmDigitalLayout(layout) {
-      if (isEmpty(layout)) return;
+      if (isEmpty(layout) || layout.mappings) return;
 
       const layoutEle = await this.getDigitalLayoutElements(layout.id);
 
@@ -217,14 +217,17 @@ export default {
         return;
       }
 
+      const isIgnoreCache = true;
       this.printLayouts = await this.fetchPrintLayouts(
         this.printThemeSelected?.id,
-        this.printLayoutTypeSelected?.value
+        this.printLayoutTypeSelected?.value,
+        isIgnoreCache
       );
 
       this.extraPrintLayouts = await this.getPrintLayoutByType(
         this.printThemeSelected?.id,
-        this.printLayoutTypeSelected?.value
+        this.printLayoutTypeSelected?.value,
+        isIgnoreCache
       );
     },
     async getDigitalLayouts() {
@@ -237,15 +240,20 @@ export default {
         return;
       }
 
+      const isIgnoreCache = true;
+
       this.digitalLayouts = await this.fetchDigitalLayouts(
         this.digitalThemeSelected?.id,
         this.digitalLayoutTypeSelected?.value,
-        false
+        false, //is not supplemental
+        isIgnoreCache
       );
+      console.log(this.digitalLayouts);
 
       this.extraDigitalLayouts = await this.getDigitalLayoutByType(
         this.digitalThemeSelected?.id,
-        this.digitalLayoutTypeSelected?.value
+        this.digitalLayoutTypeSelected?.value,
+        isIgnoreCache
       );
     },
     /**
@@ -296,10 +304,12 @@ export default {
     },
     editPrintSelection() {
       this.handleStepOne();
+      this.getPrintLayouts();
     },
     editDigitalSelection() {
       this.isDigitalPreviewDisplayed = false;
       this.handleStepTwo();
+      this.getDigitalLayouts();
     },
     handleLayoutTypes() {
       const types = Object.values(PRINT_LAYOUT_TYPES).map(lt => ({

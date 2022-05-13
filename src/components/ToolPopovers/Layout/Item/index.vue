@@ -2,10 +2,20 @@
   <div
     v-if="!isEmpty"
     class="layout-item"
-    :class="{ 'layout-item-active': selectedLayoutId === layout.id }"
+    :class="{
+      'layout-item-active': selectedLayoutId === layout.id,
+      'layout-item-mapped': isMappedLayout
+    }"
     @click="onClick"
   >
     <div class="border-inside"></div>
+    <div v-if="isMappedLayout" class="overlay">
+      <p>
+        Mapped with <br />
+        {{ isDigital ? 'print' : 'digital' }} layout
+      </p>
+      <span>{{ layout.mappings.theOtherLayoutTitle }}</span>
+    </div>
     <div class="layout-preview-img">
       <img
         v-if="!isOnPreview"

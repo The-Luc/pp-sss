@@ -19,6 +19,7 @@ import {
   getFavoriteLayoutsQuery
 } from './queries';
 
+import { layoutElementMappings } from '@/common/mapping';
 import {
   LAYOUT_PAGE_TYPE,
   LOCAL_STORAGE,
@@ -101,8 +102,13 @@ export const getFavoritesApi = async () => {
  *
  * @returns {Array}  layouts
  */
-export const getFavoriteLayoutsApi = async () => {
-  const res = await graphqlRequest(getFavoriteLayoutsQuery);
+export const getFavoriteLayoutsApi = async isIgnoreCache => {
+  const res = await graphqlRequest(
+    getFavoriteLayoutsQuery,
+    {},
+    false,
+    isIgnoreCache
+  );
 
   if (!isOk(res)) return [];
 
@@ -124,7 +130,8 @@ export const getFavoriteLayoutsApi = async () => {
       name: t.title || 'Untitle',
       isFavorites: true,
       isFavoritesDisabled: false,
-      pageType: t.layout_type === 'DOUBLE_PAGE' ? doublePageId : singlePageId
+      pageType: t.layout_type === 'DOUBLE_PAGE' ? doublePageId : singlePageId,
+      mappings: layoutElementMappings(t)
     };
   });
 };

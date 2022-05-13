@@ -97,6 +97,10 @@ export default {
       // order of tabs: 0 - double, 1 - single
       type: Number,
       default: 0
+    },
+    isMappingMode: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -306,5 +310,6 @@ export default {
   mounted() {
     this.initData();
     this.setLayoutActive();
+    this.updateTabs();
   }
 };

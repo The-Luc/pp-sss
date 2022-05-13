@@ -1,7 +1,36 @@
 import { mapObject, convertObjectPxToInch, isEmpty } from '@/common/utils';
 import { LAYOUT_PAGE_TYPE } from '@/common/constants/layoutTypes';
 import { transitionMapping } from './sheet';
-import { cloneDeep } from 'lodash';
+import { cloneDeep, get } from 'lodash';
+
+export const layoutElementMappings = (layout, isDigital) => {
+  const tempMappings = layout?.template_element_mappings;
+
+  if (!isEmpty(tempMappings)) {
+    const elementMappings = tempMappings.map(o => ({
+      id: o.id,
+      printElementId: o.print_element_uid,
+      digitalElementId: o.digital_element_uid
+    }));
+
+    const path = isDigital
+      ? 'template'
+      : 'digital_frame_template.digital_template';
+
+    const theOtherLayoutId = get(tempMappings, `[0].${path}.id`);
+    const theOtherLayoutTitle = get(
+      tempMappings,
+      `[0].${path}.title`,
+      'Unknown'
+    );
+
+    return {
+      theOtherLayoutId,
+      theOtherLayoutTitle,
+      elementMappings
+    };
+  }
+};
 
 /**
  * Convert layout data from API to FE data structure
@@ -32,10 +61,14 @@ export const layoutMapping = layout => {
         isForce: true
       }
     },
-    restrict: ['layout']
+    restrict: ['layout', 'template_element_mappings']
   };
 
-  return mapObject(layout, mapRules);
+  const mapLayout = mapObject(layout, mapRules);
+
+  mapLayout.mappings = layoutElementMappings(layout);
+
+  return mapLayout;
 };
 
 export const digitalLayoutMapping = layoutData => {
@@ -89,10 +122,18 @@ export const digitalLayoutMapping = layoutData => {
     };
   });
 
-  const transitions = layout.digital_transitions.map(t => transitionMapping(t));
-  frames.forEach((f, idx) => (f.transition = transitions[idx]));
+  if (layout.digital_transitions) {
+    const transitions = layout.digital_transitions.map(t =>
+      transitionMapping(t)
+    );
+    frames.forEach((f, idx) => (f.transition = transitions[idx]));
+  }
 
   mappedLayout.frames = frames;
+  mappedLayout.mappings = layoutElementMappings(
+    layout.digital_frame_templates[0],
+    true
+  );
 
   return mappedLayout;
 };
