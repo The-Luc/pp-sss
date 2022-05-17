@@ -76,7 +76,8 @@ export default {
       textIcon: null,
       imageIcon: null,
       textColors: [],
-      imageColors: []
+      imageColors: [],
+      isCanvasReady: false // only show canvas when all thumbnail are generated
     };
   },
   computed: {
@@ -110,7 +111,7 @@ export default {
     }
   },
   async mounted() {
-    this.idOfActiveImage = this.printLayout.id;
+    this.setLoadingState({ value: true });
     const el = this.$refs['layout-mapping-canvas'];
 
     this.canvas = new fabric.Canvas(el, {
@@ -132,7 +133,17 @@ export default {
       .map(() => getMappingColor(true));
 
     this.initData();
-    await this.handleRenderCanvas();
+
+    // generate digital thumbnails
+    await this.updateDigitalFramePreview();
+
+    this.idOfActiveImage = this.printLayout.id;
+    await this.handleRenderCanvas(true);
+
+    this.setLoadingState({ value: false });
+
+    // display canvas
+    this.isCanvasReady = true;
   },
   methods: {
     /**
@@ -156,6 +167,11 @@ export default {
 
       this.$emit('onClose');
     },
+    /**
+     * To set which sheet / frame is currently active
+     *
+     * @param {String} id container id
+     */
     setActiveImage(id) {
       this.idOfActiveImage = id;
       this.isOpenMenu = false;
@@ -167,8 +183,13 @@ export default {
         object.objectType === OBJECT_TYPE.TEXT
       );
     },
-    async handleRenderCanvas() {
-      this.setLoadingState({ value: true });
+    /**
+     * Handle render objects on canvas
+     *
+     * @param {Boolean} isHideLoading
+     */
+    async handleRenderCanvas(isHideLoading) {
+      isHideLoading || this.setLoadingState({ value: true });
 
       if (isEmpty(this.activeObjects)) return;
 
@@ -227,11 +248,14 @@ export default {
       );
 
       // without this timeout, canvas will blank on UI
-      setTimeout(() => {
-        this.updateThumbnails();
-      }, 10);
+      await new Promise(resolve => {
+        setTimeout(() => {
+          this.updateThumbnails();
+          resolve();
+        }, 10);
+      });
 
-      this.setLoadingState({ value: false });
+      isHideLoading || this.setLoadingState({ value: false });
     },
     /**
      *  To get a list of value is in used in print
@@ -505,6 +529,19 @@ export default {
       );
 
       currWorkspace.liveThumbnail = thumbnailUrl;
+    },
+    /**
+     * To generate digital frame preview for mapped frames
+     */
+    async updateDigitalFramePreview() {
+      if (isEmpty(this.config)) return;
+
+      const frameIds = this.digitalLayout?.frames.map(f => f.id) || [];
+
+      for (const id of frameIds) {
+        this.setActiveImage(id);
+        await this.handleRenderCanvas();
+      }
     }
   }
 };
