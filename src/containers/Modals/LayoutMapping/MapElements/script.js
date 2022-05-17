@@ -162,7 +162,8 @@ export default {
       await this.createTemplateMapping(
         this.printLayout.id,
         frameIds,
-        this.overlayData
+        this.overlayData,
+        this.config
       );
 
       this.$emit('onClose');
@@ -456,11 +457,24 @@ export default {
         return this.config.elementMappings.map(m => m[att]).includes(id);
       };
 
-      const getIndex = (isImage, isDisplayed) => {
+      const getPrintIndex = (isImage, isDisplayed) => {
         if (isEmpty(this.config) || isDisplayed)
           return isImage ? imageNum++ : textNum++;
 
         return -1;
+      };
+
+      const getDigitalIndex = id => {
+        if (isEmpty(this.config)) return -1;
+
+        const elementMappings = this.config.elementMappings.find(
+          m => m.digitalElementId === id
+        );
+
+        const printElementId = elementMappings?.printElementId || null;
+        if (!printElementId) return -1;
+
+        return this.overlayData[printElementId].value || -1;
       };
 
       this.printLayout.objects.forEach(o => {
@@ -468,7 +482,7 @@ export default {
 
         const isImage = isPpImageObject(o);
         const isDisplayed = getIsDisplay(o.id, true);
-        const index = getIndex(isImage, isDisplayed);
+        const index = getPrintIndex(isImage, isDisplayed);
         const color = this.getObjectColor(index, isImage);
 
         const showOverlay = {
@@ -494,7 +508,7 @@ export default {
 
           const isImage = isPpImageObject(o);
           const isDisplayed = getIsDisplay(o.id, false);
-          const index = getIndex(isImage, isDisplayed);
+          const index = getDigitalIndex(o.id);
           const color = this.getObjectColor(index, isImage);
 
           const props = isDisplayed
