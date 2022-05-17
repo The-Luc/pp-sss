@@ -38,6 +38,9 @@
           @setThemeLayoutForSheet="onConfirmPrintLayout"
           @onChangeTheme="onChangePrintTheme"
           @onChangeLayoutType="onChangePrintLayoutType"
+          @editMap="onEditMap"
+          @reassignMap="onReassignMap"
+          @deleteMap="onDeleteMap"
           @onClose="onCancel"
         />
         <mapping-preview

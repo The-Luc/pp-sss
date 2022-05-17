@@ -1,5 +1,5 @@
 <template>
-  <div id="map-elements">
+  <div v-show="isCanvasReady" id="map-elements">
     <common-modal
       container="#map-elements"
       accept-text="Save"

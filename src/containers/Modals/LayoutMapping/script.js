@@ -15,17 +15,19 @@ export default {
       isConfirmCancelDisplay: false,
       isSelectingLayout: true,
       printLayout: {},
-      digitalLayout: {}
+      digitalLayout: {},
+      mappingConfig: {}
     };
   },
   methods: {
-    async handleSelectedLayouts({ printLayout, digitalLayout }) {
+    async handleSelectedLayouts({ printLayout, digitalLayout, config }) {
       const printObjects = await this.getLayoutElements(printLayout.id);
 
       this.printLayout = printLayout;
       this.printLayout.objects = printObjects;
       this.digitalLayout = digitalLayout;
       this.isSelectingLayout = false;
+      this.mappingConfig = config;
     },
     /**
      * Close the mapping modal directly
