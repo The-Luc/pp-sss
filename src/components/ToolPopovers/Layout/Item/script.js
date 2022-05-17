@@ -114,6 +114,24 @@ export default {
       this.onClick();
     },
     /**
+     * Emit edit map when user click on Edit Map button
+     */
+    onEditMap() {
+      this.$emit('editMap', this.layout);
+    },
+    /**
+     * Emit reassgin event when user click on Reassign button
+     */
+    onReassign() {
+      this.$emit('reassignMap', this.layout);
+    },
+    /**
+     * Emit delete mapping event when user click on Delete Map button
+     */
+    onDeleteMap() {
+      this.$emit('deleteMap', this.layout);
+    },
+    /**
      * Get preview data
      *
      * @returns Promise<Array> review data

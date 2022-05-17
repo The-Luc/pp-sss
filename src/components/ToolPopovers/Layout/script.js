@@ -305,6 +305,24 @@ export default {
 
       this.tabs[0].items = fullLayouts;
       this.tabs[1].items = singleLayouts;
+    },
+    /**
+     * Emit the event to parent components
+     */
+    onEditMap(id) {
+      this.$emit('editMap', id);
+    },
+    /**
+     * Emit the event to parent components
+     */
+    onReassignMap(id) {
+      this.$emit('reassignMap', id);
+    },
+    /**
+     * Emit the event to parent components
+     */
+    onDeleteMap(id) {
+      this.$emit('deleteMap', id);
     }
   },
   mounted() {

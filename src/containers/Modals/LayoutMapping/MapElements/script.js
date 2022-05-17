@@ -36,6 +36,10 @@ export default {
     digitalLayout: {
       type: Object,
       default: () => ({})
+    },
+    config: {
+      type: Object,
+      default: () => ({})
     }
   },
   setup() {
@@ -310,7 +314,8 @@ export default {
       this.numberList = [this.numberList[0], ...sortList];
     },
     /**
-     *  Get color of a object
+     * Get color of a object
+     *
      * @param {Number} index index of object
      * @param {Boolean} isImage is image or text object
      * @returns color
@@ -378,9 +383,15 @@ export default {
       this.onCloseNumberMenu();
       this.handleRenderCanvas();
     },
+    /**
+     * Close dropdow menu
+     */
     onCloseNumberMenu() {
       this.isOpenMenu = false;
     },
+    /**
+     * Get max index of text and image objects
+     */
     getMaxIndex() {
       let numOfPrintTexts = 0;
       let numOfPrintImages = 0;
@@ -413,16 +424,33 @@ export default {
 
       this.overlayData = {};
 
+      const getIsDisplay = (id, isPrint) => {
+        if (isEmpty(this.config)) return isPrint;
+
+        const att = isPrint ? 'printElementId' : 'digitalElementId';
+
+        return this.config.elementMappings.map(m => m[att]).includes(id);
+      };
+
+      const getIndex = (isImage, isDisplayed) => {
+        if (isEmpty(this.config) || isDisplayed)
+          return isImage ? imageNum++ : textNum++;
+
+        return -1;
+      };
+
       this.printLayout.objects.forEach(o => {
         if (!isPpTextObject(o) && !isPpImageObject(o)) return;
 
         const isImage = isPpImageObject(o);
-        const index = isImage ? imageNum++ : textNum++;
+        const isDisplayed = getIsDisplay(o.id, true);
+        const index = getIndex(isImage, isDisplayed);
         const color = this.getObjectColor(index, isImage);
+
         const showOverlay = {
           id: o.id,
           color,
-          isDisplayed: true,
+          isDisplayed,
           value: index,
           isImage,
           isPrint: true,
@@ -432,6 +460,8 @@ export default {
         this.overlayData[o.id] = showOverlay;
       });
 
+      textNum = 1;
+      imageNum = 1;
       const frames = this.digitalLayout?.frames || [];
 
       frames.forEach(frame => {
@@ -439,14 +469,21 @@ export default {
           if (!isPpTextObject(o) && !isPpImageObject(o)) return;
 
           const isImage = isPpImageObject(o);
+          const isDisplayed = getIsDisplay(o.id, false);
+          const index = getIndex(isImage, isDisplayed);
+          const color = this.getObjectColor(index, isImage);
+
+          const props = isDisplayed
+            ? { color, isDisplayed }
+            : { color: 'black', isDisplayed: false };
+
           const showOverlay = {
             id: o.id,
-            color: 'black',
-            isDisplayed: false,
-            value: -1,
             isImage,
             isPrint: false,
-            containerId: frame.id
+            containerId: frame.id,
+            value: index,
+            ...props
           };
 
           this.overlayData[o.id] = showOverlay;

@@ -9,7 +9,8 @@ import {
   useCustomLayout,
   useActionLayout,
   useGetLayouts,
-  useGetDigitalLayouts
+  useGetDigitalLayouts,
+  useLayoutElements
 } from '@/hooks';
 import { getThemesApi } from '@/api/theme';
 import {
@@ -20,6 +21,7 @@ import {
   SAVED_AND_FAVORITES_TYPE
 } from '@/common/constants';
 import { isEmpty, isHalfSheet } from '@/common/utils';
+import { get } from 'lodash';
 
 export default {
   components: { Layouts, CommonModal, PpButton, MappingPreview },
@@ -37,6 +39,8 @@ export default {
     } = useGetLayouts();
 
     const { getDigitalLayoutElements } = useGetDigitalLayouts();
+    const { getLayoutElements } = useLayoutElements();
+
     return {
       toggleModal,
       getDefaultThemeId,
@@ -48,7 +52,8 @@ export default {
       getDigitalLayoutElements,
       getPrintLayoutByType,
       getDigitalLayoutByType,
-      getAssortedLayouts
+      getAssortedLayouts,
+      getLayoutElements
     };
   },
   data() {
@@ -169,10 +174,14 @@ export default {
       this.digitalLayoutTypeSelected = type;
       this.getDigitalLayouts();
     },
-    onConfirm() {
+    onConfirm(print, digital, config) {
+      const printLayout = print || this.printLayoutSelected;
+      const digitalLayout = digital || this.digitalLayoutSelected;
+
       this.$emit('onConfirm', {
-        printLayout: this.printLayoutSelected,
-        digitalLayout: this.digitalLayoutSelected
+        printLayout,
+        digitalLayout,
+        config
       });
     },
     onCancel() {
@@ -208,6 +217,9 @@ export default {
 
       this.favoritePrintLayouts = await this.getFavoriteLayouts();
     },
+    /**
+     * Get digital layouts
+     */
     async getPrintLayouts() {
       const { value: typeValue, sub: subValue } = this.printLayoutTypeSelected;
 
@@ -232,6 +244,9 @@ export default {
         isIgnoreCache
       );
     },
+    /**
+     * Get digital layouts
+     */
     async getDigitalLayouts() {
       const { value: typeValue } = this.digitalLayoutTypeSelected;
 
@@ -305,10 +320,16 @@ export default {
         type.value === CUSTOM_LAYOUT_TYPE || type.value === ASSORTED_TYPE_VALUE
       );
     },
+    /**
+     * Handle login when user click on edit selection on Print layout
+     */
     editPrintSelection() {
       this.handleStepOne();
       this.getPrintLayouts();
     },
+    /**
+     * Handle login when user click on edit selection on Digital layout
+     */
     editDigitalSelection() {
       this.isDigitalPreviewDisplayed = false;
       this.handleStepTwo();
@@ -332,6 +353,25 @@ export default {
       }));
 
       return types;
+    },
+    async onEditMap(layout) {
+      const printLayoutId = layout.id;
+      const digitalLayoutId = get(layout, 'mappings.theOtherLayoutId');
+      const config = layout.mappings;
+
+      const printObjects = await this.getLayoutElements(printLayoutId);
+      const printLayout = { ...layout, objects: printObjects };
+      const digitalLayout = await this.getDigitalLayoutElements(
+        digitalLayoutId
+      );
+
+      this.onConfirm(printLayout, digitalLayout, config);
+    },
+    onReassignMap(id) {
+      console.log('on reassign map', id);
+    },
+    onDeleteMap(id) {
+      console.log('on delete map', id);
     }
   }
 };
