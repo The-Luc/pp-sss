@@ -30,9 +30,11 @@
             Edit Map</v-btn
           >
           <v-btn outlined color="white" @click="onReassign">
-            <v-icon small>
-              mdi-directions-fork
-            </v-icon>
+            <img
+              class="hover-icon"
+              :src="iconLocal.DIRECTIONS"
+              alt="direction icon"
+            />
             Reassign</v-btn
           >
           <v-btn outlined color="white" @click="onDeleteMap">
