@@ -3,7 +3,12 @@ import Playback from '@/components/Playback';
 import { Transition } from '@/common/models';
 import { BaseAnimation } from '@/common/models/element';
 
-import { ANIMATION_DIR, OBJECT_TYPE, PLAY_IN_STYLES } from '@/common/constants';
+import {
+  ANIMATION_DIR,
+  ICON_LOCAL,
+  OBJECT_TYPE,
+  PLAY_IN_STYLES
+} from '@/common/constants';
 import { isEmpty } from '@/common/utils';
 
 import { useGetDigitalLayouts } from '@/hooks';
@@ -53,7 +58,8 @@ export default {
   data() {
     return {
       previewData: [],
-      isOnPreview: false
+      isOnPreview: false,
+      iconLocal: ICON_LOCAL
     };
   },
   computed: {

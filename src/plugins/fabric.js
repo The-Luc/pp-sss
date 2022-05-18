@@ -1180,12 +1180,10 @@ export const useOverrides = object => {
  * @param {Object} target fabric element
  */
 export const renderObjectOverlay = (target, icon) => {
-  const { canvas, showOverlay } = target;
+  const { canvas, showOverlay, angle } = target;
   const ctx = canvas.getContext('2d');
 
   if (showOverlay?.isDisplayed) return;
-
-  // TODO: handle rotated object
 
   const { top, left, width, height } = target.getBoundingRect();
   const centerX = left + width / 2;
@@ -1197,8 +1195,13 @@ export const renderObjectOverlay = (target, icon) => {
   const x = centerX - w / 2;
   const y = centerY - h / 2;
   const r = 5;
+  const calcAngle = (Math.PI * (angle % 360)) / 180;
 
   ctx.save();
+  ctx.translate(centerX, centerY);
+  ctx.rotate(calcAngle);
+  ctx.translate(-centerX, -centerY);
+
   ctx.fillStyle = OVERLAY_BACKGROUND_COLOR;
   ctx.fillRect(left, top, width, height);
 

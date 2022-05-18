@@ -16,6 +16,7 @@ import ACTIVE_MENU_GRAY from '@/assets/icons/active-menu-gray.svg';
 import EYE_DROPPER from '@/assets/icons/eye-dropper.svg';
 import ARROW_RIGHT from '@/assets/icons/collapse.svg';
 import SUCCESS from '@/assets/icons/success.svg';
+import DIRECTIONS from '@/assets/icons/directions.svg';
 
 export const ICON_LOCAL = {
   ARROW_LEFT,
@@ -35,5 +36,6 @@ export const ICON_LOCAL = {
   ACTIVE_MENU_GRAY,
   EYE_DROPPER,
   ARROW_RIGHT,
-  SUCCESS
+  SUCCESS,
+  DIRECTIONS
 };

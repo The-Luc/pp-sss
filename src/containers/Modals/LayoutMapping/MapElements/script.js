@@ -108,6 +108,9 @@ export default {
       );
 
       return `Frame ${index + 1}`;
+    },
+    isAcceptButtonDisabled() {
+      return false;
     }
   },
   async mounted() {

@@ -7,7 +7,7 @@
       title="Layout Mapping"
       width="1162"
       :is-open-modal="true"
-      :is-accept-button-disabled="false"
+      :is-accept-button-disabled="isAcceptButtonDisabled"
       @cancel="onCancel"
       @accept="onSave"
     >

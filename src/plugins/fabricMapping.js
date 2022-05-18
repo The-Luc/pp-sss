@@ -15,26 +15,36 @@ const drawRoundedRect = function(
   centerX,
   centerY,
   showOverlay,
-  isImage
+  isImage,
+  angle
 ) {
   if (!showOverlay?.isDisplayed) return;
-  // box size
-  const w = 114;
-  const h = 60;
 
-  const { top, left, width, height } = boundingRect;
+  const { top, left, width, height, a, d } = boundingRect;
+  const widthForText = 114;
+  const heightForText = 60;
+
+  const widthForImage = 38 / a;
+  const heightForImage = 20 / d;
+
+  const w = isImage ? widthForImage : widthForText;
+  const h = isImage ? heightForImage : heightForText;
 
   ctx.save();
 
+  if (angle) {
+    ctx.translate(centerX, centerY);
+    ctx.rotate(angle);
+    ctx.translate(-centerX, -centerY);
+  }
   // render overlay background
   ctx.fillStyle =
     showOverlay.value > 0 ? showOverlay.color : OVERLAY_BACKGROUND_COLOR;
-
   ctx.fillRect(left, top, width, height);
 
   const x = centerX - w / 2;
   const y = centerY - h / 2;
-  const r = 18;
+  const r = isImage ? 20 / (a + d) / 2 : 18;
 
   ctx.beginPath();
   ctx.moveTo(x + r, y);
@@ -57,14 +67,20 @@ export const handleRenderOverlayText = function(ctx) {
   const { width, height } = this.getBoundingRect(true);
   const { x: centerX, y: centerY } = this.getCenterPoint();
   const boundingRect = { left: this.left, top: this.top, width, height };
+  const angle = (Math.PI * (this.angle % 360)) / 180;
 
-  drawRoundedRect(ctx, boundingRect, centerX, centerY, this.showOverlay);
+  drawRoundedRect(
+    ctx,
+    boundingRect,
+    centerX,
+    centerY,
+    this.showOverlay,
+    false,
+    angle
+  );
 
   ctx.save();
-
   const { a, b, c, d, e } = ctx.getTransform();
-  const textContent =
-    this.showOverlay.value > 0 ? this.showOverlay.value : 'Add';
 
   // move text down a little bit
   ctx.setTransform(a, b, c, d, e, 2);
@@ -72,7 +88,7 @@ export const handleRenderOverlayText = function(ctx) {
   ctx.font = '35px "MuseoSans 300"';
   ctx.textBaseline = 'middle';
   ctx.textAlign = 'center';
-  ctx.fillText(`${textContent}`, centerX, centerY);
+  ctx.fillText(`${this.showOverlay.value}`, centerX, centerY);
   ctx.restore();
 };
 
@@ -102,9 +118,10 @@ export const handleRenderOverlayImage = function(ctx) {
     isImage
   );
 
+  const fontSize = 45 / (a + d) / 2;
   ctx.save();
   ctx.fillStyle = 'black';
-  ctx.font = '35px "MuseoSans 300"';
+  ctx.font = `${fontSize}px "MuseoSans 300"`;
   ctx.textBaseline = 'middle';
   ctx.textAlign = 'center';
   ctx.fillText(`${this.showOverlay.value}`, centerX, centerY);
