@@ -205,12 +205,13 @@ export default {
           currentSheetThemeId
         );
         this.themeSelected = themeOpt;
-      } else {
-        const themeSelected = this.themesOptions.find(
-          t => t.id === this.defaultThemeId
-        );
-        this.themeSelected = themeSelected;
+        return;
       }
+
+      const themeSelected = this.themesOptions.find(
+        t => t.id === this.defaultThemeId
+      );
+      this.themeSelected = themeSelected;
     },
     /**
      * Set object theme selected from dropdown

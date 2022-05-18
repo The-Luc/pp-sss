@@ -1,5 +1,5 @@
 <template>
-  <div id="map-elements">
+  <div v-show="isCanvasReady" id="map-elements">
     <common-modal
       container="#map-elements"
       accept-text="Save"
@@ -7,7 +7,7 @@
       title="Layout Mapping"
       width="1162"
       :is-open-modal="true"
-      :is-accept-button-disabled="false"
+      :is-accept-button-disabled="isAcceptButtonDisabled"
       @cancel="onCancel"
       @accept="onSave"
     >
