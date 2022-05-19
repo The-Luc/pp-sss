@@ -66,6 +66,8 @@ const isUnassigned = o => !o.value || o.value === -1;
 export const useMappingTemplate = () => {
   /* DELETE TEMPLATE MAPPINGS */
   const deleteTemplateMapping = config => {
+    if (!config?.elementMappings) return;
+
     const ids = config.elementMappings.map(el => el.id);
     return deleteTemplateMappingApi(ids);
   };

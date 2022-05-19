@@ -99,8 +99,9 @@ export default {
       isStepThreeDisplayed: false,
       isConfirmDisplayed: false,
       assortedLayouts: [],
-      waitingToDeleteMapping: null,
-      isDeleteMapModalDisplayed: false
+      waitingLayout: null,
+      isDeleteMapModalDisplayed: false,
+      isReassignModalDisplayed: false
     };
   },
   computed: {
@@ -144,6 +145,11 @@ export default {
     this.handleStepOne();
   },
   methods: {
+    isSaveAndFavoriteType(type) {
+      return (
+        type.value === CUSTOM_LAYOUT_TYPE || type.value === ASSORTED_TYPE_VALUE
+      );
+    },
     onConfirmPrintLayout(layout) {
       if (isEmpty(layout) || layout.mappings) return;
 
@@ -180,6 +186,10 @@ export default {
       this.digitalLayoutTypeSelected = type;
       this.getDigitalLayouts();
     },
+    /**
+     *  Trigger when user hit confirm button
+     *  switch to mapping element modal
+     */
     onConfirm(print, digital, config) {
       const printLayout = print || this.printLayoutSelected;
       const digitalLayout = digital || this.digitalLayoutSelected;
@@ -279,11 +289,14 @@ export default {
       );
     },
     /**
-     * Get assoreted layout
+     * Get assoreted layout from server
      */
     async getAssorted() {
       this.assortedLayouts = await this.getAssortedLayouts();
     },
+    /**
+     * Step: Select print layout
+     */
     handleStepOne() {
       this.isDigitalOpaque = true;
       this.isDigitalFooterHidden = true;
@@ -298,6 +311,9 @@ export default {
 
       this.isConfirmDisplayed = false;
     },
+    /**
+     * Step: Select digital layout
+     */
     handleStepTwo() {
       this.isDigitalOpaque = false;
       this.isPrintFooterHidden = true;
@@ -311,6 +327,9 @@ export default {
       this.isStepThreeDisplayed = false;
       this.isConfirmDisplayed = false;
     },
+    /**
+     * Show confirm button, and preview thumbnails of print and digital layouts
+     */
     handleStepThree() {
       this.isPrintFooterHidden = true;
       this.isConfirmDisplayed = true;
@@ -321,20 +340,15 @@ export default {
     handleEditPrint() {
       this.isDigitalPreviewDisplayed = true;
     },
-    isSaveAndFavoriteType(type) {
-      return (
-        type.value === CUSTOM_LAYOUT_TYPE || type.value === ASSORTED_TYPE_VALUE
-      );
-    },
     /**
-     * Handle login when user click on edit selection on Print layout
+     * Handle logic when user click on edit selection on Print layout
      */
     editPrintSelection() {
       this.handleStepOne();
       this.getPrintLayouts();
     },
     /**
-     * Handle login when user click on edit selection on Digital layout
+     * Handle logic when user click on edit selection on Digital layout
      */
     editDigitalSelection() {
       this.isDigitalPreviewDisplayed = false;
@@ -379,8 +393,14 @@ export default {
 
       this.onConfirm(printLayout, digitalLayout, config);
     },
-    onReassignMap(layout) {
-      console.log('on reassign map', layout);
+    async onReassignMap() {
+      this.printLayoutSelected = this.waitingLayout;
+
+      // delete mappings
+      await this.onDeleteMap();
+
+      this.onCloseReassignModal();
+      this.handleStepTwo();
     },
     /**
      * Call api to delete mappings
@@ -390,24 +410,38 @@ export default {
     async onDeleteMap() {
       this.onCloseDeleteConfirmModal();
 
-      await this.deleteTemplateMapping(this.waitingToDeleteMapping.mappings);
+      await this.deleteTemplateMapping(this.waitingLayout.mappings);
       // remove overlay on UI
-      this.waitingToDeleteMapping.mappings = null;
-      this.waitingToDeleteMapping = null;
+      this.waitingLayout.mappings = null;
+      this.waitingLayout = null;
     },
     /**
      * Show confirm model when use hit delete mapping button
      */
     showDeleteMapModal(layout) {
-      this.waitingToDeleteMapping = layout;
+      this.waitingLayout = layout;
 
       this.isDeleteMapModalDisplayed = true;
     },
     /**
-     * Hide confirm model
+     * Hide delete confirm model
      */
     onCloseDeleteConfirmModal() {
       this.isDeleteMapModalDisplayed = false;
+    },
+    /**
+     * Show reassign confirm model when use hit reassign mapping button
+     */
+    showReassignConfirmModal(layout) {
+      this.waitingLayout = layout;
+
+      this.isReassignModalDisplayed = true;
+    },
+    /**
+     * Hide reassign confirm model
+     */
+    onCloseReassignModal() {
+      this.isReassignModalDisplayed = false;
     }
   }
 };
