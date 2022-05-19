@@ -1,5 +1,6 @@
 import {
   createTemplateMappingApi,
+  deleteTemplateMappingApi,
   getMappingConfigApi,
   updateMappingProjectApi
 } from '@/api/mapping';
@@ -63,10 +64,13 @@ const isUnassigned = o => !o.value || o.value === -1;
 
 /* HOOK for MAPPINGS */
 export const useMappingTemplate = () => {
-  const deleteTemplateMapping = async config => {
-    // handle logic here
-    console.log('handle delete mapping ', config);
+  /* DELETE TEMPLATE MAPPINGS */
+  const deleteTemplateMapping = config => {
+    const ids = config.elementMappings.map(el => el.id);
+    return deleteTemplateMappingApi(ids);
   };
+
+  /* CREATE TEMPLATE MAPPINGS */
   const createTemplateMapping = async (
     printId,
     frameIds,
@@ -118,7 +122,7 @@ export const useMappingTemplate = () => {
     await Promise.all(createMappingPromise);
   };
 
-  return { createTemplateMapping };
+  return { createTemplateMapping, deleteTemplateMapping };
 };
 
 export const useMappingProject = () => {

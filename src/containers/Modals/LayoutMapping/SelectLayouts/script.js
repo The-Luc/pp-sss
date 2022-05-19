@@ -2,6 +2,7 @@ import Layouts from '@/components/ToolPopovers/Layout';
 import PpButton from '@/components/Buttons/Button';
 import CommonModal from '@/components/Modals/CommonModal';
 import MappingPreview from './MappingPreview';
+import ConfirmAction from '@/containers/Modals/ConfirmAction';
 
 import {
   useModal,
@@ -10,7 +11,8 @@ import {
   useActionLayout,
   useGetLayouts,
   useGetDigitalLayouts,
-  useLayoutElements
+  useLayoutElements,
+  useMappingTemplate
 } from '@/hooks';
 import { getThemesApi } from '@/api/theme';
 import {
@@ -24,7 +26,7 @@ import { isEmpty, isHalfSheet } from '@/common/utils';
 import { get } from 'lodash';
 
 export default {
-  components: { Layouts, CommonModal, PpButton, MappingPreview },
+  components: { Layouts, CommonModal, PpButton, MappingPreview, ConfirmAction },
   setup() {
     const { toggleModal } = useModal();
     const { getDefaultThemeId } = useGetterTheme();
@@ -40,6 +42,7 @@ export default {
 
     const { getDigitalLayoutElements } = useGetDigitalLayouts();
     const { getLayoutElements } = useLayoutElements();
+    const { deleteTemplateMapping } = useMappingTemplate();
 
     return {
       toggleModal,
@@ -53,7 +56,8 @@ export default {
       getPrintLayoutByType,
       getDigitalLayoutByType,
       getAssortedLayouts,
-      getLayoutElements
+      getLayoutElements,
+      deleteTemplateMapping
     };
   },
   data() {
@@ -94,7 +98,9 @@ export default {
       isDigitalPreviewDisplayed: false,
       isStepThreeDisplayed: false,
       isConfirmDisplayed: false,
-      assortedLayouts: []
+      assortedLayouts: [],
+      waitingToDeleteMapping: null,
+      isDeleteMapModalDisplayed: false
     };
   },
   computed: {
@@ -354,6 +360,12 @@ export default {
 
       return types;
     },
+    /**
+     * Selecte print and digital layouts and
+     * switch to mapping element modal
+     *
+     * @param {Object} layout layout data
+     */
     async onEditMap(layout) {
       const printLayoutId = layout.id;
       const digitalLayoutId = get(layout, 'mappings.theOtherLayoutId');
@@ -367,11 +379,35 @@ export default {
 
       this.onConfirm(printLayout, digitalLayout, config);
     },
-    onReassignMap(id) {
-      console.log('on reassign map', id);
+    onReassignMap(layout) {
+      console.log('on reassign map', layout);
     },
-    onDeleteMap(id) {
-      console.log('on delete map', id);
+    /**
+     * Call api to delete mappings
+     *
+     * @param {Object} layout layout data
+     */
+    async onDeleteMap() {
+      this.onCloseDeleteConfirmModal();
+
+      await this.deleteTemplateMapping(this.waitingToDeleteMapping.mappings);
+      // remove overlay on UI
+      this.waitingToDeleteMapping.mappings = null;
+      this.waitingToDeleteMapping = null;
+    },
+    /**
+     * Show confirm model when use hit delete mapping button
+     */
+    showDeleteMapModal(layout) {
+      this.waitingToDeleteMapping = layout;
+
+      this.isDeleteMapModalDisplayed = true;
+    },
+    /**
+     * Hide confirm model
+     */
+    onCloseDeleteConfirmModal() {
+      this.isDeleteMapModalDisplayed = false;
     }
   }
 };

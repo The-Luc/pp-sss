@@ -40,7 +40,7 @@
           @onChangeLayoutType="onChangePrintLayoutType"
           @editMap="onEditMap"
           @reassignMap="onReassignMap"
-          @deleteMap="onDeleteMap"
+          @deleteMap="showDeleteMapModal"
           @onClose="onCancel"
         />
         <mapping-preview
@@ -89,6 +89,23 @@
         </div>
       </div>
     </common-modal>
+
+    <!-- DELETE MODAL -->
+    <confirm-action
+      v-if="isDeleteMapModalDisplayed"
+      header="Please Confirm"
+      cancel-content="No, keep current layout"
+      action-content="Yes, delete the current map"
+      width="600"
+      @onAccept="onDeleteMap"
+      @onCancel="onCloseDeleteConfirmModal"
+    >
+      Be aware that by selecting “Delete Map” all existing associations <br />
+      to the currently mapped layout will be removed.
+      <p style="margin-top: 20px">
+        Do you wish to proceed?
+      </p>
+    </confirm-action>
   </div>
 </template>
 
