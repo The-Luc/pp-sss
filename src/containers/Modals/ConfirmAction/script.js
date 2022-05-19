@@ -9,7 +9,7 @@ export default {
   props: {
     header: {
       type: String,
-      required: true
+      default: 'Please Confirm'
     },
     cancelContent: {
       type: String,
