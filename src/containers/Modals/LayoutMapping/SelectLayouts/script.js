@@ -2,6 +2,7 @@ import Layouts from '@/components/ToolPopovers/Layout';
 import PpButton from '@/components/Buttons/Button';
 import CommonModal from '@/components/Modals/CommonModal';
 import MappingPreview from './MappingPreview';
+import ConfirmAction from '@/containers/Modals/ConfirmAction';
 
 import {
   useModal,
@@ -10,7 +11,8 @@ import {
   useActionLayout,
   useGetLayouts,
   useGetDigitalLayouts,
-  useLayoutElements
+  useLayoutElements,
+  useMappingTemplate
 } from '@/hooks';
 import { getThemesApi } from '@/api/theme';
 import {
@@ -24,7 +26,7 @@ import { isEmpty, isHalfSheet } from '@/common/utils';
 import { get } from 'lodash';
 
 export default {
-  components: { Layouts, CommonModal, PpButton, MappingPreview },
+  components: { Layouts, CommonModal, PpButton, MappingPreview, ConfirmAction },
   setup() {
     const { toggleModal } = useModal();
     const { getDefaultThemeId } = useGetterTheme();
@@ -40,6 +42,7 @@ export default {
 
     const { getDigitalLayoutElements } = useGetDigitalLayouts();
     const { getLayoutElements } = useLayoutElements();
+    const { deleteTemplateMapping } = useMappingTemplate();
 
     return {
       toggleModal,
@@ -53,7 +56,8 @@ export default {
       getPrintLayoutByType,
       getDigitalLayoutByType,
       getAssortedLayouts,
-      getLayoutElements
+      getLayoutElements,
+      deleteTemplateMapping
     };
   },
   data() {
@@ -94,7 +98,10 @@ export default {
       isDigitalPreviewDisplayed: false,
       isStepThreeDisplayed: false,
       isConfirmDisplayed: false,
-      assortedLayouts: []
+      assortedLayouts: [],
+      waitingLayout: null,
+      isDeleteMapModalDisplayed: false,
+      isReassignModalDisplayed: false
     };
   },
   computed: {
@@ -138,6 +145,11 @@ export default {
     this.handleStepOne();
   },
   methods: {
+    isSaveAndFavoriteType(type) {
+      return (
+        type.value === CUSTOM_LAYOUT_TYPE || type.value === ASSORTED_TYPE_VALUE
+      );
+    },
     onConfirmPrintLayout(layout) {
       if (isEmpty(layout) || layout.mappings) return;
 
@@ -174,6 +186,10 @@ export default {
       this.digitalLayoutTypeSelected = type;
       this.getDigitalLayouts();
     },
+    /**
+     *  Trigger when user hit confirm button
+     *  switch to mapping element modal
+     */
     onConfirm(print, digital, config) {
       const printLayout = print || this.printLayoutSelected;
       const digitalLayout = digital || this.digitalLayoutSelected;
@@ -273,11 +289,14 @@ export default {
       );
     },
     /**
-     * Get assoreted layout
+     * Get assoreted layout from server
      */
     async getAssorted() {
       this.assortedLayouts = await this.getAssortedLayouts();
     },
+    /**
+     * Step: Select print layout
+     */
     handleStepOne() {
       this.isDigitalOpaque = true;
       this.isDigitalFooterHidden = true;
@@ -292,6 +311,9 @@ export default {
 
       this.isConfirmDisplayed = false;
     },
+    /**
+     * Step: Select digital layout
+     */
     handleStepTwo() {
       this.isDigitalOpaque = false;
       this.isPrintFooterHidden = true;
@@ -305,6 +327,9 @@ export default {
       this.isStepThreeDisplayed = false;
       this.isConfirmDisplayed = false;
     },
+    /**
+     * Show confirm button, and preview thumbnails of print and digital layouts
+     */
     handleStepThree() {
       this.isPrintFooterHidden = true;
       this.isConfirmDisplayed = true;
@@ -315,20 +340,15 @@ export default {
     handleEditPrint() {
       this.isDigitalPreviewDisplayed = true;
     },
-    isSaveAndFavoriteType(type) {
-      return (
-        type.value === CUSTOM_LAYOUT_TYPE || type.value === ASSORTED_TYPE_VALUE
-      );
-    },
     /**
-     * Handle login when user click on edit selection on Print layout
+     * Handle logic when user click on edit selection on Print layout
      */
     editPrintSelection() {
       this.handleStepOne();
       this.getPrintLayouts();
     },
     /**
-     * Handle login when user click on edit selection on Digital layout
+     * Handle logic when user click on edit selection on Digital layout
      */
     editDigitalSelection() {
       this.isDigitalPreviewDisplayed = false;
@@ -354,6 +374,12 @@ export default {
 
       return types;
     },
+    /**
+     * Selecte print and digital layouts and
+     * switch to mapping element modal
+     *
+     * @param {Object} layout layout data
+     */
     async onEditMap(layout) {
       const printLayoutId = layout.id;
       const digitalLayoutId = get(layout, 'mappings.theOtherLayoutId');
@@ -367,11 +393,55 @@ export default {
 
       this.onConfirm(printLayout, digitalLayout, config);
     },
-    onReassignMap(id) {
-      console.log('on reassign map', id);
+    async onReassignMap() {
+      this.printLayoutSelected = this.waitingLayout;
+
+      // delete mappings
+      await this.onDeleteMap();
+
+      this.onCloseReassignModal();
+      this.handleStepTwo();
     },
-    onDeleteMap(id) {
-      console.log('on delete map', id);
+    /**
+     * Call api to delete mappings
+     *
+     * @param {Object} layout layout data
+     */
+    async onDeleteMap() {
+      this.onCloseDeleteConfirmModal();
+
+      await this.deleteTemplateMapping(this.waitingLayout.mappings);
+      // remove overlay on UI
+      this.waitingLayout.mappings = null;
+      this.waitingLayout = null;
+    },
+    /**
+     * Show confirm model when use hit delete mapping button
+     */
+    showDeleteMapModal(layout) {
+      this.waitingLayout = layout;
+
+      this.isDeleteMapModalDisplayed = true;
+    },
+    /**
+     * Hide delete confirm model
+     */
+    onCloseDeleteConfirmModal() {
+      this.isDeleteMapModalDisplayed = false;
+    },
+    /**
+     * Show reassign confirm model when use hit reassign mapping button
+     */
+    showReassignConfirmModal(layout) {
+      this.waitingLayout = layout;
+
+      this.isReassignModalDisplayed = true;
+    },
+    /**
+     * Hide reassign confirm model
+     */
+    onCloseReassignModal() {
+      this.isReassignModalDisplayed = false;
     }
   }
 };

@@ -36,6 +36,14 @@ export const createTemplateMappingMutation = gql`
   ${templateMappingDetail}
 `;
 
+export const deleteTemplateElementMutation = gql`
+  mutation deleteTemplateMapping($ids: [ID!]!) {
+    delete_template_element_mappings(template_element_mapping_ids: $ids) {
+      id
+    }
+  }
+`;
+
 export const updateMappingConfigMutation = gql`
   mutation updateMappingConfig(
     $bookId: ID!
