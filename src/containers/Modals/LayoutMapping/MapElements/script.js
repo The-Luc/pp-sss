@@ -77,7 +77,8 @@ export default {
       imageIcon: null,
       textColors: [],
       imageColors: [],
-      isCanvasReady: false // only show canvas when all thumbnail are generated
+      isCanvasReady: false, // only show canvas when all thumbnail are generated
+      isEnableSaveButton: false
     };
   },
   computed: {
@@ -108,9 +109,6 @@ export default {
       );
 
       return `Frame ${index + 1}`;
-    },
-    isAcceptButtonDisabled() {
-      return false;
     }
   },
   async mounted() {
@@ -144,6 +142,7 @@ export default {
     await this.handleRenderCanvas(true);
 
     this.setLoadingState({ value: false });
+    this.handleSaveButtonState();
 
     // display canvas
     this.isCanvasReady = true;
@@ -410,6 +409,7 @@ export default {
 
       this.onCloseNumberMenu();
       this.handleRenderCanvas();
+      this.handleSaveButtonState();
     },
     /**
      * Close dropdow menu
@@ -559,6 +559,33 @@ export default {
         this.setActiveImage(id);
         await this.handleRenderCanvas();
       }
+    },
+    /**
+     * handle enable and disable save button
+     */
+    handleSaveButtonState() {
+      if (isEmpty(this.overlayData)) return false;
+
+      const printObjects = [];
+      const digitalObjects = [];
+
+      Object.values(this.overlayData).forEach(o => {
+        if (o.isPrint) return printObjects.push(o);
+
+        digitalObjects.push(o);
+      });
+
+      const temp = printObjects.some(printOb => {
+        return digitalObjects.some(
+          digiOb =>
+            digiOb.value !== -1 &&
+            printOb.value !== -1 &&
+            digiOb.value === printOb.value &&
+            digiOb.isImage - printOb.isImage === 0
+        );
+      });
+
+      this.isEnableSaveButton = temp;
     }
   }
 };
