@@ -132,7 +132,19 @@ export const useMappingProject = () => {
   const getMappingConfig = async bookId => {
     const res = await getMappingConfigApi(bookId);
 
-    const config = get(res, 'data.book.project_mapping_configuration');
+    let config = get(res, 'data.book.project_mapping_configuration');
+
+    // if config is NULL => need to give it a default value
+    if (!config) {
+      const defaultConfig = {
+        mappingType: 'CUSTOM',
+        primaryMapping: 'PRINT',
+        mappingStatus: true,
+        enableContentMapping: true
+      };
+      config = await updateMappingProject(bookId, defaultConfig);
+    }
+
     return projectMapping(config);
   };
 
@@ -140,7 +152,11 @@ export const useMappingProject = () => {
   const updateMappingProject = async (bookId, config) => {
     const params = projectMappingToApi(config);
 
-    return updateMappingProjectApi(bookId, params);
+    const res = await updateMappingProjectApi(bookId, params);
+
+    const newConfig = get(res, 'data.update_project_mapping_configuration');
+
+    return projectMapping(newConfig);
   };
 
   return { getMappingConfig, updateMappingProject };
