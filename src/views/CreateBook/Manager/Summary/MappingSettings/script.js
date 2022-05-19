@@ -1,7 +1,7 @@
 import Section from '../SummaryInfo/SummarySection';
 import PpSelect from '@/components/Selectors/Select';
 import { PRIMARY_FORMAT_TYPES, MODAL_TYPES } from '@/common/constants';
-import { useModal } from '@/hooks';
+import { useModal, useMappingProject, useBook } from '@/hooks';
 
 export default {
   components: {
@@ -10,8 +10,10 @@ export default {
   },
   setup() {
     const { toggleModal } = useModal();
+    const { getMappingConfig, updateMappingProject } = useMappingProject();
+    const { bookId } = useBook();
 
-    return { toggleModal };
+    return { toggleModal, getMappingConfig, updateMappingProject, bookId };
   },
   data() {
     const primaryTypes = Object.values(PRIMARY_FORMAT_TYPES);
@@ -22,23 +24,44 @@ export default {
 
     return {
       primaryTypes,
-      mappingFuncTypes
+      mappingFuncTypes,
+      mappingConfig: {}
     };
   },
   computed: {
     selectedPrimaryType() {
-      return this.primaryTypes[0];
+      const type = this.primaryTypes?.find(
+        m => m.value === this.mappingConfig.primaryMapping
+      );
+      return type || this.primaryTypes[0];
     },
     selectedMappingFuncType() {
-      return this.mappingFuncTypes[0];
+      const index = this.mappingConfig?.enableContentMapping ? 0 : 1;
+      return this.mappingFuncTypes[index];
     }
+  },
+  watch: {
+    async bookId(val) {
+      if (!val) return;
+      this.updateConfig();
+    }
+  },
+  mounted() {
+    this.updateConfig();
   },
   methods: {
     onChangePrimaryFormat(item) {
-      console.log(item);
+      const config = { primaryMapping: item.value };
+      this.updateMappingProject(this.bookId, config);
     },
     onChangeMappingFunc(item) {
-      console.log(item);
+      const config = { enableContentMapping: item.value };
+      this.updateMappingProject(this.bookId, config);
+    },
+    async updateConfig() {
+      if (!this.bookId) return;
+
+      this.mappingConfig = await this.getMappingConfig(this.bookId);
     },
     /**
      * To show the content mapping overview modal

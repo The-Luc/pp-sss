@@ -5,6 +5,8 @@ import MappingSettings from './MappingSettings';
 import { mapMutations, mapGetters } from 'vuex';
 
 import { GETTERS, MUTATES } from '@/store/modules/app/const';
+import { useUser } from '@/hooks';
+import { isAdmin } from '@/common/utils';
 
 export default {
   components: {
@@ -12,10 +14,18 @@ export default {
     SummaryInfo,
     MappingSettings
   },
+  setup() {
+    const { currentUser } = useUser();
+
+    return { currentUser };
+  },
   computed: {
     ...mapGetters({
       sectionSelected: GETTERS.SECTION_SELECTED
-    })
+    }),
+    isAdminUser() {
+      return isAdmin(this.currentUser);
+    }
   },
   methods: {
     ...mapMutations({

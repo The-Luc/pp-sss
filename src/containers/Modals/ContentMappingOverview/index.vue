@@ -4,8 +4,8 @@
     width="797"
     :is-close-out-side="false"
   >
-    <div class="modal-reset-layout">
-      <div class="modal-reset-layout-title">
+    <div class="content-mapping-overview">
+      <div class="content-mapping-overview-title">
         <div>
           <p>
             <strong>Content Mapping</strong> is a feature that automatically
@@ -70,3 +70,5 @@
 </template>
 
 <script src="./script.js" />
+
+<style lang="scss" src="./style.scss" scoped></style>

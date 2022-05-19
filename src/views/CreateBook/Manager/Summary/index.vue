@@ -6,12 +6,14 @@
   >
     <v-row>
       <v-col class="scroll-container">
-        <Header :show-toggle="true">CONTENT MAPPING SETTINGS</Header>
-        <mapping-settings />
+        <template v-if="isAdminUser">
+          <Header :show-toggle="true">CONTENT MAPPING SETTINGS</Header>
+          <mapping-settings />
 
-        <div class="break-line"></div>
+          <div class="break-line"></div>
+        </template>
 
-        <Header>PROGRAM SUMMARY</Header>
+        <Header :show-toggle="!isAdminUser">PROGRAM SUMMARY</Header>
         <SummaryInfo />
       </v-col>
     </v-row>
