@@ -1,5 +1,6 @@
 import Header from './Header';
 import SummaryInfo from './SummaryInfo';
+import MappingSettings from './MappingSettings';
 
 import { mapMutations, mapGetters } from 'vuex';
 
@@ -8,7 +9,8 @@ import { GETTERS, MUTATES } from '@/store/modules/app/const';
 export default {
   components: {
     Header,
-    SummaryInfo
+    SummaryInfo,
+    MappingSettings
   },
   computed: {
     ...mapGetters({

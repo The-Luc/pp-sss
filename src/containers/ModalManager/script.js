@@ -30,6 +30,7 @@ import DeleteFrame from '@/views/CreateBook/DigitalEdition/EditScreen/Modals/Mod
 import SaveDigitalLayout from '@/views/CreateBook/DigitalEdition/EditScreen/Modals/ModalSaveLayout';
 
 import ApplyLayout from '@/views/CreateBook/PrintEdition/EditScreen/Modals/ApplyLayout';
+import ContentMappingOverview from '@/containers/Modals/ContentMappingOverview';
 
 const {
   HELP,
@@ -53,7 +54,8 @@ const {
   SAVE_LAYOUT_SUCCESS,
   GENERATE_PDF,
   MAP_LAYOUT,
-  APPLY_LAYOUT
+  APPLY_LAYOUT,
+  CONTENT_MAPPING_OVERVIEW
 } = MODAL_TYPES;
 
 const ModalList = {
@@ -78,7 +80,8 @@ const ModalList = {
   [SAVE_LAYOUT_SUCCESS]: SAVE_LAYOUT_SUCCESS,
   [GENERATE_PDF]: GENERATE_PDF,
   [MAP_LAYOUT]: MAP_LAYOUT,
-  [APPLY_LAYOUT]: APPLY_LAYOUT
+  [APPLY_LAYOUT]: APPLY_LAYOUT,
+  [CONTENT_MAPPING_OVERVIEW]: CONTENT_MAPPING_OVERVIEW
 };
 
 export default {
@@ -107,7 +110,8 @@ export default {
     [MODAL_TYPES.SAVE_LAYOUT_SUCCESS]: ModalSaveLayoutSuccess,
     [MODAL_TYPES.GENERATE_PDF]: GeneratePDF,
     [MODAL_TYPES.APPLY_LAYOUT]: ApplyLayout,
-    [MODAL_TYPES.MAP_LAYOUT]: LayoutMapping
+    [MODAL_TYPES.MAP_LAYOUT]: LayoutMapping,
+    [CONTENT_MAPPING_OVERVIEW]: ContentMappingOverview
   },
   computed: {
     ...mapGetters({

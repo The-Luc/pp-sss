@@ -5,7 +5,7 @@ $spacing: 15px;
     position: fixed;
     right: 0;
 
-    &[data-toggle=collapse] {
+    &[data-toggle='collapse'] {
       .summary-title {
         img {
           transform: rotate(-180deg);
@@ -74,6 +74,12 @@ $spacing: 15px;
           border: 0.5px solid $color-gray;
         }
       }
+    }
+    .break-line {
+      border-top: 1px solid $color-gray2;
+      margin-block: 23px;
+      width: 125%;
+      transform: translateX(-4%);
     }
   }
 }
