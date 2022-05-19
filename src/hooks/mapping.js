@@ -1,6 +1,11 @@
-import { createTemplateMappingApi } from '@/api/mapping';
-import { cloneDeep } from 'lodash';
+import {
+  createTemplateMappingApi,
+  getMappingConfigApi,
+  updateMappingProjectApi
+} from '@/api/mapping';
+import { cloneDeep, get } from 'lodash';
 import { isEmpty } from '@/common/utils';
+import { projectMapping, projectMappingToApi } from '@/common/mapping/mapping';
 
 const addingParams = values => {
   const mappingParams = [];
@@ -114,4 +119,23 @@ export const useMappingTemplate = () => {
   };
 
   return { createTemplateMapping };
+};
+
+export const useMappingProject = () => {
+  /* GET CONFIG */
+  const getMappingConfig = async bookId => {
+    const res = await getMappingConfigApi(bookId);
+
+    const config = get(res, 'data.book.project_mapping_configuration');
+    return projectMapping(config);
+  };
+
+  /* UPDATE CONFIG */
+  const updateMappingProject = async (bookId, config) => {
+    const params = projectMappingToApi(config);
+
+    return updateMappingProjectApi(bookId, params);
+  };
+
+  return { getMappingConfig, updateMappingProject };
 };
