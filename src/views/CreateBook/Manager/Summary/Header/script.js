@@ -1,6 +1,9 @@
 const DATA_TOGGLE = 'data-toggle';
 
 export default {
+  props: {
+    showToggle: false
+  },
   methods: {
     toogleSummary: function() {
       const COLLPAPSE = 'collapse';

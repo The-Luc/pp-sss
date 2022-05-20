@@ -36,9 +36,11 @@ export const useBook = () => {
     sections,
     maxPage,
     isPhotoVisited,
-    bookUserId
+    bookUserId,
+    bookId
   } = useGetters({
     book: BOOK_GETTERS.BOOK_DETAIL,
+    bookId: BOOK_GETTERS.BOOK_ID,
     totalInfo: BOOK_GETTERS.TOTAL_INFO,
     sections: BOOK_GETTERS.SECTIONS,
     maxPage: BOOK_GETTERS.GET_MAX_PAGE,
@@ -101,6 +103,7 @@ export const useBook = () => {
 
   return {
     book,
+    bookId,
     setBookId,
     totalInfo,
     sections,

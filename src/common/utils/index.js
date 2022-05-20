@@ -28,3 +28,4 @@ export * from './portrait';
 export * from './validation';
 export * from './frame';
 export * from './image';
+export * from './user';

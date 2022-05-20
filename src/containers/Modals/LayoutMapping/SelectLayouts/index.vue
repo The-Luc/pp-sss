@@ -38,6 +38,9 @@
           @setThemeLayoutForSheet="onConfirmPrintLayout"
           @onChangeTheme="onChangePrintTheme"
           @onChangeLayoutType="onChangePrintLayoutType"
+          @editMap="onEditMap"
+          @reassignMap="showReassignConfirmModal"
+          @deleteMap="showDeleteMapModal"
           @onClose="onCancel"
         />
         <mapping-preview
@@ -86,6 +89,41 @@
         </div>
       </div>
     </common-modal>
+
+    <!-- DELETE MODAL -->
+    <confirm-action
+      v-if="isDeleteMapModalDisplayed"
+      header="Please Confirm"
+      cancel-content="No, keep current layout"
+      action-content="Yes, delete the current map"
+      width="600"
+      @onAccept="onDeleteMap"
+      @onCancel="onCloseDeleteConfirmModal"
+    >
+      Be aware that by selecting “Delete Map” all existing associations <br />
+      to the currently mapped layout will be removed.
+      <p style="margin-top: 20px">
+        Do you wish to proceed?
+      </p>
+    </confirm-action>
+
+    <!-- REASSIGN MODAL -->
+    <confirm-action
+      v-if="isReassignModalDisplayed"
+      header="Please Confirm"
+      cancel-content="No, keep current layout"
+      action-content="Yes, select a new digital layout"
+      width="600"
+      @onAccept="onReassignMap"
+      @onCancel="onCloseReassignModal"
+    >
+      Be aware that selecting a new digital layout will remove all existing
+      <br />
+      connections to the currently mapped layout.
+      <p style="margin-top: 20px">
+        Do you wish to proceed?
+      </p>
+    </confirm-action>
   </div>
 </template>
 

@@ -36,6 +36,10 @@ export default {
     digitalLayout: {
       type: Object,
       default: () => ({})
+    },
+    config: {
+      type: Object,
+      default: () => ({})
     }
   },
   setup() {
@@ -72,7 +76,9 @@ export default {
       textIcon: null,
       imageIcon: null,
       textColors: [],
-      imageColors: []
+      imageColors: [],
+      isCanvasReady: false, // only show canvas when all thumbnail are generated
+      isEnableSaveButton: false
     };
   },
   computed: {
@@ -106,7 +112,7 @@ export default {
     }
   },
   async mounted() {
-    this.idOfActiveImage = this.printLayout.id;
+    this.setLoadingState({ value: true });
     const el = this.$refs['layout-mapping-canvas'];
 
     this.canvas = new fabric.Canvas(el, {
@@ -128,7 +134,18 @@ export default {
       .map(() => getMappingColor(true));
 
     this.initData();
-    await this.handleRenderCanvas();
+
+    // generate digital thumbnails
+    await this.updateDigitalFramePreview();
+
+    this.idOfActiveImage = this.printLayout.id;
+    await this.handleRenderCanvas(true);
+
+    this.setLoadingState({ value: false });
+    this.handleSaveButtonState();
+
+    // display canvas
+    this.isCanvasReady = true;
   },
   methods: {
     /**
@@ -147,11 +164,17 @@ export default {
       await this.createTemplateMapping(
         this.printLayout.id,
         frameIds,
-        this.overlayData
+        this.overlayData,
+        this.config
       );
 
       this.$emit('onClose');
     },
+    /**
+     * To set which sheet / frame is currently active
+     *
+     * @param {String} id container id
+     */
     setActiveImage(id) {
       this.idOfActiveImage = id;
       this.isOpenMenu = false;
@@ -163,8 +186,13 @@ export default {
         object.objectType === OBJECT_TYPE.TEXT
       );
     },
-    async handleRenderCanvas() {
-      this.setLoadingState({ value: true });
+    /**
+     * Handle render objects on canvas
+     *
+     * @param {Boolean} isHideLoading
+     */
+    async handleRenderCanvas(isHideLoading) {
+      isHideLoading || this.setLoadingState({ value: true });
 
       if (isEmpty(this.activeObjects)) return;
 
@@ -223,11 +251,14 @@ export default {
       );
 
       // without this timeout, canvas will blank on UI
-      setTimeout(() => {
-        this.updateThumbnails();
-      }, 10);
+      await new Promise(resolve => {
+        setTimeout(() => {
+          this.updateThumbnails();
+          resolve();
+        }, 10);
+      });
 
-      this.setLoadingState({ value: false });
+      isHideLoading || this.setLoadingState({ value: false });
     },
     /**
      *  To get a list of value is in used in print
@@ -310,7 +341,8 @@ export default {
       this.numberList = [this.numberList[0], ...sortList];
     },
     /**
-     *  Get color of a object
+     * Get color of a object
+     *
      * @param {Number} index index of object
      * @param {Boolean} isImage is image or text object
      * @returns color
@@ -377,10 +409,17 @@ export default {
 
       this.onCloseNumberMenu();
       this.handleRenderCanvas();
+      this.handleSaveButtonState();
     },
+    /**
+     * Close dropdow menu
+     */
     onCloseNumberMenu() {
       this.isOpenMenu = false;
     },
+    /**
+     * Get max index of text and image objects
+     */
     getMaxIndex() {
       let numOfPrintTexts = 0;
       let numOfPrintImages = 0;
@@ -413,16 +452,46 @@ export default {
 
       this.overlayData = {};
 
+      const getIsDisplay = (id, isPrint) => {
+        if (isEmpty(this.config)) return isPrint;
+
+        const att = isPrint ? 'printElementId' : 'digitalElementId';
+
+        return this.config.elementMappings.map(m => m[att]).includes(id);
+      };
+
+      const getPrintIndex = (isImage, isDisplayed) => {
+        if (isEmpty(this.config) || isDisplayed)
+          return isImage ? imageNum++ : textNum++;
+
+        return -1;
+      };
+
+      const getDigitalIndex = id => {
+        if (isEmpty(this.config)) return -1;
+
+        const elementMappings = this.config.elementMappings.find(
+          m => m.digitalElementId === id
+        );
+
+        const printElementId = elementMappings?.printElementId || null;
+        if (!printElementId) return -1;
+
+        return this.overlayData[printElementId].value || -1;
+      };
+
       this.printLayout.objects.forEach(o => {
         if (!isPpTextObject(o) && !isPpImageObject(o)) return;
 
         const isImage = isPpImageObject(o);
-        const index = isImage ? imageNum++ : textNum++;
+        const isDisplayed = getIsDisplay(o.id, true);
+        const index = getPrintIndex(isImage, isDisplayed);
         const color = this.getObjectColor(index, isImage);
+
         const showOverlay = {
           id: o.id,
           color,
-          isDisplayed: true,
+          isDisplayed,
           value: index,
           isImage,
           isPrint: true,
@@ -432,6 +501,8 @@ export default {
         this.overlayData[o.id] = showOverlay;
       });
 
+      textNum = 1;
+      imageNum = 1;
       const frames = this.digitalLayout?.frames || [];
 
       frames.forEach(frame => {
@@ -439,14 +510,21 @@ export default {
           if (!isPpTextObject(o) && !isPpImageObject(o)) return;
 
           const isImage = isPpImageObject(o);
+          const isDisplayed = getIsDisplay(o.id, false);
+          const index = getDigitalIndex(o.id);
+          const color = this.getObjectColor(index, isImage);
+
+          const props = isDisplayed
+            ? { color, isDisplayed }
+            : { color: 'black', isDisplayed: false };
+
           const showOverlay = {
             id: o.id,
-            color: 'black',
-            isDisplayed: false,
-            value: -1,
             isImage,
             isPrint: false,
-            containerId: frame.id
+            containerId: frame.id,
+            value: index,
+            ...props
           };
 
           this.overlayData[o.id] = showOverlay;
@@ -468,6 +546,46 @@ export default {
       );
 
       currWorkspace.liveThumbnail = thumbnailUrl;
+    },
+    /**
+     * To generate digital frame preview for mapped frames
+     */
+    async updateDigitalFramePreview() {
+      if (isEmpty(this.config)) return;
+
+      const frameIds = this.digitalLayout?.frames.map(f => f.id) || [];
+
+      for (const id of frameIds) {
+        this.setActiveImage(id);
+        await this.handleRenderCanvas();
+      }
+    },
+    /**
+     * handle enable and disable save button
+     */
+    handleSaveButtonState() {
+      if (isEmpty(this.overlayData)) return false;
+
+      const printObjects = [];
+      const digitalObjects = [];
+
+      Object.values(this.overlayData).forEach(o => {
+        if (o.isPrint) return printObjects.push(o);
+
+        digitalObjects.push(o);
+      });
+
+      const temp = printObjects.some(printOb => {
+        return digitalObjects.some(
+          digiOb =>
+            digiOb.value !== -1 &&
+            printOb.value !== -1 &&
+            digiOb.value === printOb.value &&
+            digiOb.isImage - printOb.isImage === 0
+        );
+      });
+
+      this.isEnableSaveButton = temp;
     }
   }
 };

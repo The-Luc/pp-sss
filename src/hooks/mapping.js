@@ -1,15 +1,102 @@
-import { createTemplateMappingApi } from '@/api/mapping';
-import { cloneDeep } from 'lodash';
+import {
+  createTemplateMappingApi,
+  deleteTemplateMappingApi,
+  getMappingConfigApi,
+  updateMappingProjectApi
+} from '@/api/mapping';
+import { cloneDeep, get } from 'lodash';
 import { isEmpty } from '@/common/utils';
+import { projectMapping, projectMappingToApi } from '@/common/mapping/mapping';
 
+const addingParams = values => {
+  const mappingParams = [];
+
+  Object.values(values).forEach(o => {
+    const print_element_uid = o[0];
+    const digital_element_uid = o[1];
+
+    if (!print_element_uid || !digital_element_uid) return;
+
+    mappingParams.push({ print_element_uid, digital_element_uid });
+  });
+
+  return mappingParams;
+};
+
+/**
+ *  To create params for creating mapping APIs
+ *
+ * @param {Object} objects
+ * @param {Object} cloneTextValues
+ * @param {Object} cloneImageValues
+ * @param {String} printId  id of print layout
+ * @param {String} frameId  id of digital frame
+ * @returns
+ */
+const getParams = (
+  objects,
+  cloneTextValues,
+  cloneImageValues,
+  printId,
+  frameId
+) => {
+  objects.forEach(o => {
+    if (isUnassigned(o) || o.containerId !== frameId) return; // is unassigned option
+
+    const values = o.isImage ? cloneImageValues : cloneTextValues;
+
+    if (!Array.isArray(values[o.value])) {
+      values[o.value] = [];
+    }
+
+    values[o.value][1] = o.id;
+  });
+
+  const mappingParams = [
+    ...addingParams(cloneTextValues),
+    ...addingParams(cloneImageValues)
+  ];
+
+  return { printId, frameId, mappingParams };
+};
+
+const isUnassigned = o => !o.value || o.value === -1;
+
+/* HOOK for MAPPINGS */
 export const useMappingTemplate = () => {
-  const createTemplateMapping = async (printId, frameIds, overlayData) => {
+  /* DELETE TEMPLATE MAPPINGS */
+  const deleteTemplateMapping = config => {
+    if (!config?.elementMappings) return;
+
+    const ids = config.elementMappings.map(el => el.id);
+    return deleteTemplateMappingApi(ids);
+  };
+
+  /* CREATE TEMPLATE MAPPINGS */
+  const createTemplateMapping = async (
+    printId,
+    frameIds,
+    overlayData,
+    config
+  ) => {
+    // delete exisitng mappings
+    await deleteTemplateMapping(config);
+
     const textValues = {};
     const imageValues = {};
+    const printObjects = [];
+    const digitalObjects = [];
+
+    Object.values(overlayData).forEach(o => {
+      if (o.isPrint) return printObjects.push(o);
+
+      digitalObjects.push(o);
+    });
 
     // adding print object ids
-    Object.values(overlayData).forEach(o => {
-      if (!o.value || o.value === -1 || !o.isPrint) return; // is unassigned option
+    printObjects.forEach(o => {
+      if (isUnassigned(o)) return; // is unassigned option
+
       const values = o.isImage ? imageValues : textValues;
 
       values[o.value] = [];
@@ -17,47 +104,19 @@ export const useMappingTemplate = () => {
     });
 
     // adding digital object ids
-
     const createMappingPromise = frameIds.map(frameId => {
       const cloneTextValues = cloneDeep(textValues);
       const cloneImageValues = cloneDeep(imageValues);
-      const mappingParams = [];
 
-      Object.values(overlayData).forEach(o => {
-        if (
-          !o.value ||
-          o.value === -1 ||
-          o.isPrint ||
-          o.containerId !== frameId
-        )
-          return; // is unassigned option
+      const params = getParams(
+        digitalObjects,
+        cloneTextValues,
+        cloneImageValues,
+        printId,
+        frameId
+      );
 
-        const values = o.isImage ? cloneImageValues : cloneTextValues;
-
-        if (!Array.isArray(values[o.value])) {
-          values[o.value] = [];
-        }
-
-        values[o.value][1] = o.id;
-      });
-
-      const addingParams = values => {
-        Object.values(values).forEach(o => {
-          const print_element_uid = o[0];
-          const digital_element_uid = o[1];
-
-          if (!print_element_uid || !digital_element_uid) return;
-
-          mappingParams.push({ print_element_uid, digital_element_uid });
-        });
-      };
-
-      addingParams(cloneTextValues);
-      addingParams(cloneImageValues);
-
-      const params = { printId, frameId, mappingParams };
-
-      if (isEmpty(mappingParams)) return [];
+      if (isEmpty(params.mappingParams)) return [];
 
       return createTemplateMappingApi(params);
     });
@@ -65,5 +124,40 @@ export const useMappingTemplate = () => {
     await Promise.all(createMappingPromise);
   };
 
-  return { createTemplateMapping };
+  return { createTemplateMapping, deleteTemplateMapping };
+};
+
+export const useMappingProject = () => {
+  /* GET CONFIG */
+  const getMappingConfig = async bookId => {
+    const res = await getMappingConfigApi(bookId);
+
+    let config = get(res, 'data.book.project_mapping_configuration');
+
+    // if config is NULL => need to give it a default value
+    if (!config) {
+      const defaultConfig = {
+        mappingType: 'CUSTOM',
+        primaryMapping: 'PRINT',
+        mappingStatus: true,
+        enableContentMapping: true
+      };
+      config = await updateMappingProject(bookId, defaultConfig);
+    }
+
+    return projectMapping(config);
+  };
+
+  /* UPDATE CONFIG */
+  const updateMappingProject = async (bookId, config) => {
+    const params = projectMappingToApi(config);
+
+    const res = await updateMappingProjectApi(bookId, params);
+
+    const newConfig = get(res, 'data.update_project_mapping_configuration');
+
+    return projectMapping(newConfig);
+  };
+
+  return { getMappingConfig, updateMappingProject };
 };
