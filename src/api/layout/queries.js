@@ -1,4 +1,5 @@
 import { gql } from 'graphql-tag';
+import { templateMappingDetail } from '../mapping/mutations';
 
 export const getLayoutsPreviewQuery = gql`
   query getLayoutsPreview($themeId: ID!) {
@@ -12,14 +13,18 @@ export const getLayoutsPreviewQuery = gql`
   }
 `;
 
-const templateFragment = gql`
+export const templateFragment = gql`
   fragment templateDetail on Template {
     id
     preview_image_url
     layout_use
     layout_type
     title
+    template_element_mappings {
+      ...templateMappingDetail
+    }
   }
+  ${templateMappingDetail}
 `;
 
 export const getLayoutsQuery = gql`
@@ -90,6 +95,18 @@ export const digitalTemplateFragment = gql`
     is_supplemental
     layout_use
     layout_type
+    digital_frame_templates {
+      id
+      template_element_mappings {
+        id
+        print_element_uid
+        digital_element_uid
+        template {
+          id
+          title
+        }
+      }
+    }
   }
 `;
 
@@ -126,6 +143,9 @@ export const getUserDigitalLayoutsQuery = gql`
   ${digitalTemplateFragment}
 `;
 
+/**
+ * Get layout elements
+ */
 export const getDigitalLayoutQuery = gql`
   query getDigitalTemplate($id: ID!) {
     digital_template(id: $id) {

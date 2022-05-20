@@ -15,18 +15,27 @@ export default {
       isConfirmCancelDisplay: false,
       isSelectingLayout: true,
       printLayout: {},
-      digitalLayout: {}
+      digitalLayout: {},
+      mappingConfig: {}
     };
   },
-  computed: {},
   methods: {
-    async handleSelectedLayouts({ printLayout, digitalLayout }) {
+    async handleSelectedLayouts({ printLayout, digitalLayout, config }) {
       const printObjects = await this.getLayoutElements(printLayout.id);
 
       this.printLayout = printLayout;
       this.printLayout.objects = printObjects;
       this.digitalLayout = digitalLayout;
       this.isSelectingLayout = false;
+      this.mappingConfig = config;
+    },
+    /**
+     * Close the mapping modal directly
+     */
+    onClose() {
+      this.toggleModal({
+        isOpenModal: false
+      });
     },
     /**
      * Trigger when user click agree to cancel

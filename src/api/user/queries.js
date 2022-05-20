@@ -1,4 +1,5 @@
 import { gql } from 'graphql-tag';
+import { templateMappingDetail } from '../mapping/mutations';
 
 const communityUserFragment = gql`
   fragment communityUserDetail on CommunitiesUser {
@@ -51,6 +52,10 @@ export const getFavoriteLayoutsQuery = gql`
       preview_image_url
       data
       layout_type
+      template_element_mappings {
+        ...templateMappingDetail
+      }
     }
   }
+  ${templateMappingDetail}
 `;

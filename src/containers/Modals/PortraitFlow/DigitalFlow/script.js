@@ -177,12 +177,6 @@ export default {
       });
     },
     /**
-     * Save settings
-     */
-    onSaveSettings() {
-      console.log('save settings');
-    },
-    /**
      * Update require frames
      */
     onRequireFrameUpdate() {

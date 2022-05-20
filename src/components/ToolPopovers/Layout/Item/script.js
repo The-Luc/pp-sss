@@ -3,7 +3,12 @@ import Playback from '@/components/Playback';
 import { Transition } from '@/common/models';
 import { BaseAnimation } from '@/common/models/element';
 
-import { ANIMATION_DIR, OBJECT_TYPE, PLAY_IN_STYLES } from '@/common/constants';
+import {
+  ANIMATION_DIR,
+  ICON_LOCAL,
+  OBJECT_TYPE,
+  PLAY_IN_STYLES
+} from '@/common/constants';
 import { isEmpty } from '@/common/utils';
 
 import { useGetDigitalLayouts } from '@/hooks';
@@ -40,6 +45,10 @@ export default {
     isPreviewDisabled: {
       type: Boolean,
       default: false
+    },
+    isMappingMode: {
+      type: Boolean,
+      default: false
     }
   },
   setup() {
@@ -49,7 +58,8 @@ export default {
   data() {
     return {
       previewData: [],
-      isOnPreview: false
+      isOnPreview: false,
+      iconLocal: ICON_LOCAL
     };
   },
   computed: {
@@ -58,6 +68,9 @@ export default {
         iconName: this.isFavorites ? 'favorite' : 'favorite_border',
         cssClass: this.isFavorites ? 'favorites' : ''
       };
+    },
+    isMappedLayout() {
+      return this.isMappingMode && this.layout.mappings;
     }
   },
   methods: {
@@ -105,6 +118,24 @@ export default {
       this.$emit('togglePreview');
 
       this.onClick();
+    },
+    /**
+     * Emit edit map when user click on Edit Map button
+     */
+    onEditMap() {
+      this.$emit('editMap', this.layout);
+    },
+    /**
+     * Emit reassgin event when user click on Reassign button
+     */
+    onReassign() {
+      this.$emit('reassignMap', this.layout);
+    },
+    /**
+     * Emit delete mapping event when user click on Delete Map button
+     */
+    onDeleteMap() {
+      this.$emit('deleteMap', this.layout);
     },
     /**
      * Get preview data

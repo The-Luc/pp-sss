@@ -12,9 +12,11 @@ import TEXT_UPPERCASE from '@/assets/icons/text-uppercase.svg';
 import TEXT_LOWERCASE from '@/assets/icons/text-lowercase.svg';
 import TEXT_CAPITALIZE from '@/assets/icons/text-capitalize.svg';
 import ACTIVE_MENU from '@/assets/icons/active-menu.svg';
+import ACTIVE_MENU_GRAY from '@/assets/icons/active-menu-gray.svg';
 import EYE_DROPPER from '@/assets/icons/eye-dropper.svg';
 import ARROW_RIGHT from '@/assets/icons/collapse.svg';
 import SUCCESS from '@/assets/icons/success.svg';
+import DIRECTIONS from '@/assets/icons/directions.svg';
 
 export const ICON_LOCAL = {
   ARROW_LEFT,
@@ -31,7 +33,9 @@ export const ICON_LOCAL = {
   TEXT_LOWERCASE,
   TEXT_CAPITALIZE,
   ACTIVE_MENU,
+  ACTIVE_MENU_GRAY,
   EYE_DROPPER,
   ARROW_RIGHT,
-  SUCCESS
+  SUCCESS,
+  DIRECTIONS
 };

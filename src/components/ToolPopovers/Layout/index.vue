@@ -78,9 +78,13 @@
                 "
                 :is-digital="isDigital"
                 :is-preview-disabled="isOnPreview"
+                :is-mapping-mode="isMappingMode"
                 @click="onSelectLayout"
                 @saveToFavorites="onSaveToFavorites"
                 @togglePreview="onTogglePreview"
+                @editMap="onEditMap"
+                @reassignMap="onReassignMap"
+                @deleteMap="onDeleteMap"
               />
             </div>
             <!-- DISPLAY SCROLL TO VIEW MORE MESSAGE -->
@@ -111,9 +115,13 @@
                 "
                 :is-digital="isDigital"
                 :is-preview-disabled="isOnPreview"
+                :is-mapping-mode="isMappingMode"
                 @click="onSelectLayout"
                 @saveToFavorites="onSaveToFavorites"
                 @togglePreview="onTogglePreview"
+                @editMap="onEditMap"
+                @reassignMap="onReassignMap"
+                @deleteMap="onDeleteMap"
               />
             </div>
           </v-tab-item>

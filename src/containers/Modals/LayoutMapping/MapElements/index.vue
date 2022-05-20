@@ -1,5 +1,5 @@
 <template>
-  <div id="map-elements">
+  <div v-show="isCanvasReady" id="map-elements">
     <common-modal
       container="#map-elements"
       accept-text="Save"
@@ -7,7 +7,7 @@
       title="Layout Mapping"
       width="1162"
       :is-open-modal="true"
-      :is-accept-button-disabled="false"
+      :is-accept-button-disabled="!isEnableSaveButton"
       @cancel="onCancel"
       @accept="onSave"
     >
@@ -61,6 +61,13 @@
             </div>
           </div>
         </div>
+        <number-palettes
+          :pos-x="posX"
+          :pos-y="posY"
+          :items="numberList"
+          :is-open="isOpenMenu"
+          @change="onChooseNumber"
+        ></number-palettes>
       </div>
     </common-modal>
   </div>

@@ -97,6 +97,10 @@ export default {
       // order of tabs: 0 - double, 1 - single
       type: Number,
       default: 0
+    },
+    isMappingMode: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -301,10 +305,29 @@ export default {
 
       this.tabs[0].items = fullLayouts;
       this.tabs[1].items = singleLayouts;
+    },
+    /**
+     * Emit the event to parent components
+     */
+    onEditMap(id) {
+      this.$emit('editMap', id);
+    },
+    /**
+     * Emit the event to parent components
+     */
+    onReassignMap(id) {
+      this.$emit('reassignMap', id);
+    },
+    /**
+     * Emit the event to parent components
+     */
+    onDeleteMap(id) {
+      this.$emit('deleteMap', id);
     }
   },
   mounted() {
     this.initData();
     this.setLayoutActive();
+    this.updateTabs();
   }
 };

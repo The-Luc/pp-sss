@@ -1,0 +1,19 @@
+.content-mapping-overview {
+  .content-mapping-overview-title {
+    font-family: $font-500;
+    font-size: 15px;
+    text-align: center;
+    color: #4a4844;
+    div {
+      margin-bottom: 18px;
+    }
+  }
+  .container-btn {
+    margin-top: 40px;
+    ::v-deep .pp-btn {
+      width: 238px;
+      height: 36px;
+      margin: 0 auto;
+    }
+  }
+}

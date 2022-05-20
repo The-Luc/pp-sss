@@ -33,6 +33,14 @@ export const isPpImageObject = object => {
   return object?.type === OBJECT_TYPE.IMAGE;
 };
 
+export const isFbImageObject = object => {
+  return object?.objectType === OBJECT_TYPE.IMAGE;
+};
+
+export const isFbTextObject = object => {
+  return object?.objectType === OBJECT_TYPE.TEXT;
+};
+
 /**
  * Computed ratio and return coordinate and dimension of object
  * @param {Object} objCoord - Coordinate of object include x and y

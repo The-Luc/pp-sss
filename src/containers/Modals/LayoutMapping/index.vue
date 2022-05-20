@@ -10,7 +10,9 @@
       v-if="!isSelectingLayout"
       :print-layout="printLayout"
       :digital-layout="digitalLayout"
+      :config="mappingConfig"
       @onCancel="showConfirmCancel"
+      @onClose="onClose"
     />
 
     <confirm-action

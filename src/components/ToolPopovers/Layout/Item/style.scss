@@ -25,6 +25,93 @@
     }
   }
 
+  &-mapped {
+    cursor: default;
+    border: 1px solid $color-gray14;
+
+    .border-inside {
+      border: 3px solid transparent;
+    }
+  }
+
+  // OVERLAY SETTING
+  .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba($color-gray5, 0.85);
+    z-index: 1;
+    font-size: 15px;
+    color: $color-white;
+
+    & > div {
+      width: 100%;
+      height: 100%;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    &__info {
+      display: flex;
+
+      p {
+        margin-bottom: 6px;
+        line-height: 1.2;
+        text-align: center;
+      }
+
+      span {
+        font-family: $font-500;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        width: 90%;
+        text-align: center;
+      }
+    }
+    &__btn {
+      display: none;
+      row-gap: 8px;
+
+      i {
+        margin-right: 4px;
+      }
+
+      .hover-icon {
+        height: 14px;
+        width: 14px;
+        margin-right: 4px;
+      }
+
+      button {
+        height: 30px;
+        width: 106px;
+        text-transform: capitalize;
+        font-family: $font-300;
+        font-size: 12px;
+        padding-left: 2px;
+        letter-spacing: normal;
+
+        &:last-child {
+          padding-left: 13px;
+        }
+      }
+    }
+
+    // hover action
+    &.print-edition:hover {
+      .overlay__info {
+        display: none;
+      }
+      .overlay__btn {
+        display: flex;
+      }
+    }
+  }
+
   .layout-preview-img {
     display: flex;
     width: 206px;
