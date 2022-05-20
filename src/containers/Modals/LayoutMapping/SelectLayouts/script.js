@@ -411,7 +411,16 @@ export default {
       this.onCloseDeleteConfirmModal();
 
       await this.deleteTemplateMapping(this.waitingLayout.mappings);
-      // remove overlay on UI
+
+      // remove overlay on UI of digital template
+      const digitalLayout = [
+        ...this.digitalLayouts,
+        ...this.extraDigitalLayouts
+      ].find(lo => lo.id === this.waitingLayout.mappings.theOtherLayoutId);
+
+      if (digitalLayout.mappings) digitalLayout.mappings = null;
+
+      // remove overlay on UI of print template
       this.waitingLayout.mappings = null;
       this.waitingLayout = null;
     },
