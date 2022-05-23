@@ -10,7 +10,7 @@
   }
   .container-btn {
     margin-top: 40px;
-    .pp-btn {
+    ::v-deep .pp-btn {
       width: 238px;
       height: 36px;
       margin: 0 auto;

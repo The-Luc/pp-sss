@@ -10,6 +10,7 @@ import Video from '@/containers/PropertiesManager/Video';
 import Animation from '@/containers/PropertiesManager/Animation';
 import PageInfo from '@/containers/PropertiesManager/PageInfo';
 import FrameInfo from '@/containers/PropertiesManager/FrameInfo';
+import Mapping from '@/containers/PropertiesManager/Mapping';
 import Transition from '@/views/CreateBook/DigitalEdition/EditScreen/PropertiesMenu/Transition';
 import Playback from '@/views/CreateBook/DigitalEdition/EditScreen/PropertiesMenu/Playback';
 
@@ -31,6 +32,7 @@ const FRAME_INFO = PROPERTIES_TOOLS.FRAME_INFO.name;
 const TRANSITION = PROPERTIES_TOOLS.TRANSITION.name;
 const ANIMATION = PROPERTIES_TOOLS.ANIMATION.name;
 const PLAYBACK = PROPERTIES_TOOLS.PLAYBACK.name;
+const MAPPING = PROPERTIES_TOOLS.MAPPING.name;
 
 const MenuList = {
   [TEXT]: TEXT,
@@ -44,7 +46,8 @@ const MenuList = {
   [FRAME_INFO]: FRAME_INFO,
   [TRANSITION]: TRANSITION,
   [ANIMATION]: ANIMATION,
-  [PLAYBACK]: PLAYBACK
+  [PLAYBACK]: PLAYBACK,
+  [MAPPING]: MAPPING
 };
 
 export default {
@@ -78,7 +81,8 @@ export default {
     [FRAME_INFO]: FrameInfo,
     [TRANSITION]: Transition,
     [ANIMATION]: Animation,
-    [PLAYBACK]: Playback
+    [PLAYBACK]: Playback,
+    [MAPPING]: Mapping
   },
   watch: {
     propertiesType(val) {
