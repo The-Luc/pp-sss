@@ -1,0 +1,62 @@
+.content-mapping-menu {
+  font-size: 11px;
+  color: $color-stoodio-toolbartext;
+  line-height: 13px;
+  font-family: $font-700;
+
+  & > div {
+    padding: 10px;
+    padding-right: 20px;
+  }
+
+  /* PROJECT SETTINGS */
+  .project_setting {
+    &__content {
+      margin-top: -5px;
+      display: flex;
+      justify-content: space-between;
+    }
+  }
+
+  /* PAGE SETTINGS */
+  .page_setting {
+    border-top: 1px solid $color-gray13;
+    padding-bottom: 15px;
+  }
+
+  /* LEARN MORE */
+  .learn-more {
+    padding-block: 15px;
+    font-family: $font-300;
+    border-top: 1px solid $color-gray13;
+  }
+
+  .config__line {
+    color: $color-gray42;
+    font-family: $font-500;
+    margin-top: 13px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    span {
+      color: $color-stoodio-toolbartext;
+      font-family: $font-700;
+      padding-left: 2px;
+    }
+
+    &--status {
+      display: flex;
+      align-items: center;
+
+      .selector-container {
+        width: 73px;
+        padding-left: 5px;
+      }
+    }
+  }
+  a {
+    color: $color-stoodio-blue;
+    font-family: $font-500;
+  }
+}

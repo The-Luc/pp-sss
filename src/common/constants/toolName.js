@@ -70,11 +70,17 @@ export const PROPERTIES_TOOLS = {
     name: 'animations',
     title: 'Animations',
     iconName: 'animation'
+  },
+  MAPPING: {
+    name: 'mapping',
+    title: 'Mapping',
+    iconName: 'gps_fixed'
   }
 };
 
 export const PRINT_RIGHT_TOOLS = [
   [
+    PROPERTIES_TOOLS.MAPPING,
     PROPERTIES_TOOLS.PAGE_INFO,
     PROPERTIES_TOOLS.BACKGROUND,
     PROPERTIES_TOOLS.PROPERTIES
@@ -88,6 +94,7 @@ export const DIGITAL_RIGHT_TOOLS = [
     PROPERTIES_TOOLS.ANIMATION
   ],
   [
+    PROPERTIES_TOOLS.MAPPING,
     PROPERTIES_TOOLS.FRAME_INFO,
     PROPERTIES_TOOLS.BACKGROUND,
     PROPERTIES_TOOLS.PROPERTIES
@@ -102,7 +109,8 @@ export const NON_ELEMENT_PROPERTIES_TOOLS = [
   PROPERTIES_TOOLS.FRAME_INFO.name,
   PROPERTIES_TOOLS.ANIMATION.name,
   PROPERTIES_TOOLS.TRANSITION.name,
-  PROPERTIES_TOOLS.PLAYBACK.name
+  PROPERTIES_TOOLS.PLAYBACK.name,
+  PROPERTIES_TOOLS.MAPPING.name
 ];
 
 export const NO_SUBMENU_TOOLS = [
