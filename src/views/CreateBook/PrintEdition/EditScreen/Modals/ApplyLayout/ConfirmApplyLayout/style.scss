@@ -15,7 +15,7 @@
       height: 36px;
       margin: 0 auto;
     }
-    .btn-cancel {
+    ::v-deep .btn-cancel {
       margin-top: 10px;
       .pp-btn {
         background-color: $color-gray13;
