@@ -14,3 +14,14 @@ export const PRIMARY_FORMAT_TYPES = {
     value: 'DIGITAL'
   }
 };
+
+export const MAPPING_TYPES = {
+  LAYOUT: {
+    name: 'Layout Mapping',
+    value: 'LAYOUT'
+  },
+  CUSTOM: {
+    name: 'Custom Mapping',
+    value: 'CUSTOM'
+  }
+};

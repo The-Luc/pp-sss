@@ -418,7 +418,7 @@ export default {
         ...this.extraDigitalLayouts
       ].find(lo => lo.id === this.waitingLayout.mappings.theOtherLayoutId);
 
-      if (digitalLayout.mappings) digitalLayout.mappings = null;
+      if (digitalLayout?.mappings) digitalLayout.mappings = null;
 
       // remove overlay on UI of print template
       this.waitingLayout.mappings = null;

@@ -7,6 +7,7 @@ import {
 import { cloneDeep, get } from 'lodash';
 import { isEmpty } from '@/common/utils';
 import { projectMapping, projectMappingToApi } from '@/common/mapping/mapping';
+import { useAppCommon } from '@/hooks';
 
 const addingParams = values => {
   const mappingParams = [];
@@ -129,7 +130,13 @@ export const useMappingTemplate = () => {
 
 export const useMappingProject = () => {
   /* GET CONFIG */
-  const getMappingConfig = async bookId => {
+  const { generalInfo } = useAppCommon();
+
+  const getMappingConfig = async id => {
+    const bookId = id || generalInfo.value.bookId;
+
+    if (!bookId) return {};
+
     const res = await getMappingConfigApi(bookId);
 
     let config = get(res, 'data.book.project_mapping_configuration');
@@ -149,7 +156,8 @@ export const useMappingProject = () => {
   };
 
   /* UPDATE CONFIG */
-  const updateMappingProject = async (bookId, config) => {
+  const updateMappingProject = async (id, config) => {
+    const bookId = id || generalInfo.value.bookId;
     const params = projectMappingToApi(config);
 
     const res = await updateMappingProjectApi(bookId, params);

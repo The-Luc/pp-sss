@@ -1,7 +1,17 @@
 import ItemTool from './ItemTool';
 
-import { useLayoutPrompt, useToolBar } from '@/hooks';
-import { isEmpty, getRightToolItems, isInstructionTool } from '@/common/utils';
+import {
+  useLayoutPrompt,
+  useToolBar,
+  useMappingProject,
+  useAppCommon
+} from '@/hooks';
+import {
+  isEmpty,
+  getRightToolItems,
+  isInstructionTool,
+  getMappingIconName
+} from '@/common/utils';
 
 import {
   OBJECT_TYPE,
@@ -35,6 +45,8 @@ export default {
       isMediaSidebarOpen,
       setPropertiesType
     } = useToolBar();
+    const { getMappingConfig } = useMappingProject();
+    const { generalInfo } = useAppCommon();
 
     return {
       isPrompt,
@@ -46,7 +58,9 @@ export default {
       togglePropertiesMenu,
       updateMediaSidebarOpen,
       isMediaSidebarOpen,
-      setPropertiesType
+      setPropertiesType,
+      getMappingConfig,
+      generalInfo
     };
   },
   data() {
@@ -54,6 +68,19 @@ export default {
       itemsToolLeft: DIGITAL_CREATION_TOOLS,
       itemsToolRight: getRightToolItems(DIGITAL_RIGHT_TOOLS)
     };
+  },
+  watch: {
+    generalInfo: {
+      deep: true,
+      async handler(info) {
+        const bookId = info?.bookId;
+        if (!bookId) return;
+
+        const config = await this.getMappingConfig(bookId);
+
+        getMappingIconName(config, this.itemsToolRight);
+      }
+    }
   },
   methods: {
     /**

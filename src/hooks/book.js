@@ -23,7 +23,7 @@ import { MUTATES as APP_MUTATES } from '@/store/modules/app/const';
 
 /**
  * The hook trigger action to get book and get book information from store
- * @return {Object} Sheet;s id selected
+ * @return {Object} Sheet's id selected
  */
 export const useBook = () => {
   const { value: isDigital } = useAppCommon().isDigitalEdition;

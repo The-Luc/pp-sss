@@ -29,3 +29,4 @@ export * from './validation';
 export * from './frame';
 export * from './image';
 export * from './user';
+export * from './mappingFeature';
