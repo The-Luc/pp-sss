@@ -46,7 +46,7 @@ export default {
       { name: 'Map a Layout', value: ACTIONS.MAP_LAYOUT, disabled: false },
       { name: 'Generate PDF', value: ACTIONS.GENERATE_PDF, disabled: true }
     ];
-    if (this.isDigital) items.pop();
+    if (this.isDigital) items.pop(); // there is no pdf function in Digital editor
 
     return { items };
   },
@@ -98,27 +98,31 @@ export default {
      * Check whether copy text enabled base on user has select object(s) or not
      */
     setEnableCopy() {
-      this.items[0].disabled = !this.hasActiveObjects;
+      const index = this.getIndexOfAction(ACTIONS.COPY);
+      this.items[index].disabled = !this.hasActiveObjects;
     },
     /**
      * Check whether save layout enabled base on user has object(s) or not
      */
     setEnableSaveLayout() {
-      this.items[2].disabled = !this.totalObject && !this.totalBackground;
+      const index = this.getIndexOfAction(ACTIONS.SAVE_LAYOUT);
+      this.items[index].disabled = !this.totalObject && !this.totalBackground;
     },
     /**
      * Check whether generate pdf enabled base on user role
      */
     setEnableGeneratePdf() {
       if (this.isDigital) return;
-      this.items[4].disabled = this.currentUser.role !== ROLE.ADMIN;
+      const index = this.getIndexOfAction(ACTIONS.GENERATE_PDF);
+      this.items[index].disabled = this.currentUser.role !== ROLE.ADMIN;
     },
     /**
      * Callback function to get action value when user click on and emit to parent
      */
     onClick(actionValue) {
       if (actionValue === ACTIONS.COPY) {
-        this.items[1].disabled = false;
+        const index = this.getIndexOfAction(ACTIONS.PASTE);
+        this.items[index].disabled = false;
         this.$root.$emit(EVENT_TYPE.COPY_OBJ);
       }
 
@@ -163,25 +167,30 @@ export default {
      */
     setEnablePaste() {
       const items = sessionStorage.getItem(COPY_OBJECT_KEY);
+      const index = this.getIndexOfAction(ACTIONS.PASTE);
       if (!items) {
-        this.items[1].disabled = true;
+        this.items[index].disabled = true;
         return;
       }
       const objects = parsePasteObject(items);
-      this.items[1].disabled = isEmpty(objects);
+      this.items[index].disabled = isEmpty(objects);
     },
 
     /**
      * Check whether save text/image style enabled base on user has select object or not
      */
     setEnableSaveStyle() {
+      const index = this.getIndexOfAction(ACTIONS.SAVE_STYLE);
       if (
         [OBJECT_TYPE.TEXT, OBJECT_TYPE.IMAGE].includes(this.currentObject?.type)
       ) {
-        this.items[3].disabled = false;
+        this.items[index].disabled = false;
         return;
       }
-      this.items[3].disabled = true;
+      this.items[index].disabled = true;
+    },
+    getIndexOfAction(action) {
+      return this.items.findIndex(item => item.value === action);
     }
   }
 };
