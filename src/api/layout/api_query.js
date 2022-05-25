@@ -189,8 +189,13 @@ export const getLayoutElementsApi = async id => {
 };
 
 /** GET ASSORTED LAYOUTS */
-export const getAssortedLayoutsApi = async () => {
-  const res = await graphqlRequest(getAssortedLayoutQuery);
+export const getAssortedLayoutsApi = async isIgnoreCache => {
+  const res = await graphqlRequest(
+    getAssortedLayoutQuery,
+    {},
+    false,
+    isIgnoreCache
+  );
 
   if (!isOk(res)) return;
 
