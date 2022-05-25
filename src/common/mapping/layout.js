@@ -130,10 +130,13 @@ export const digitalLayoutMapping = layoutData => {
   }
 
   mappedLayout.frames = frames;
-  mappedLayout.mappings = layoutElementMappings(
-    layout.digital_frame_templates[0],
-    true
-  );
+
+  const tmpLayout = {};
+  tmpLayout.template_element_mappings = layout.digital_frame_templates
+    .map(f => f.template_element_mappings)
+    .flat();
+
+  mappedLayout.mappings = layoutElementMappings(tmpLayout, true);
 
   return mappedLayout;
 };
