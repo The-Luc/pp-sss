@@ -240,14 +240,16 @@ export default {
       const { value: typeValue, sub: subValue } = this.printLayoutTypeSelected;
 
       const isAssorted = typeValue === PRINT_LAYOUT_TYPES.ASSORTED.value;
+      const isIgnoreCache = true;
 
       if (isAssorted) {
+        this.assortedLayouts = await this.getAssortedLayouts(isIgnoreCache);
+
         this.printLayouts =
           this.assortedLayouts.find(l => l.id === subValue)?.templates || [];
         return;
       }
 
-      const isIgnoreCache = true;
       this.printLayouts = await this.fetchPrintLayouts(
         this.printThemeSelected?.id,
         this.printLayoutTypeSelected?.value,
