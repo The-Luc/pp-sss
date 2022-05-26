@@ -185,6 +185,12 @@ export default {
         this.isJustLoadMore = false;
       }
     },
+    otherLayouts: {
+      deep: true,
+      handler() {
+        this.setLayoutActive();
+      }
+    },
     tabIndex: {
       immediate: true,
       handler(val) {
@@ -265,7 +271,14 @@ export default {
      * if any, selected sheet's layout, otherwise selecte the first layout
      */
     setLayoutActive() {
-      if (this.layouts.length === 0) return;
+      const currentLayouts = this.tabs[this.tabActive].items;
+
+      if (currentLayouts.length === 0) {
+        if (this.otherLayouts.length === 0) return;
+
+        this.selectedLayout = this.otherLayouts[0];
+        return;
+      }
 
       this.selectedLayout = this.layouts[0];
 

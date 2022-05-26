@@ -10,12 +10,12 @@
   }
   .container-btn {
     margin-top: 40px;
-    .pp-btn {
+    ::v-deep .pp-btn {
       width: 238px;
       height: 36px;
       margin: 0 auto;
     }
-    .btn-cancel {
+    ::v-deep .btn-cancel {
       margin-top: 10px;
       .pp-btn {
         background-color: $color-gray13;

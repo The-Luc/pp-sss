@@ -65,6 +65,8 @@
                 />
               </div>
             </div>
+
+            <!-- DISPLAY LAYOUTS OF CURRENT THEME -->
             <div v-else class="layout-item-container">
               <Item
                 v-for="layout in tab.items"

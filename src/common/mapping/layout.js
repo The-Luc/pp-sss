@@ -6,30 +6,26 @@ import { cloneDeep, get } from 'lodash';
 export const layoutElementMappings = (layout, isDigital) => {
   const tempMappings = layout?.template_element_mappings;
 
-  if (!isEmpty(tempMappings)) {
-    const elementMappings = tempMappings.map(o => ({
-      id: o.id,
-      printElementId: o.print_element_uid,
-      digitalElementId: o.digital_element_uid
-    }));
+  if (isEmpty(tempMappings)) return;
 
-    const path = isDigital
-      ? 'template'
-      : 'digital_frame_template.digital_template';
+  const elementMappings = tempMappings.map(o => ({
+    id: o.id,
+    printElementId: o.print_element_uid,
+    digitalElementId: o.digital_element_uid
+  }));
 
-    const theOtherLayoutId = get(tempMappings, `[0].${path}.id`);
-    const theOtherLayoutTitle = get(
-      tempMappings,
-      `[0].${path}.title`,
-      'Unknown'
-    );
+  const path = isDigital
+    ? 'template'
+    : 'digital_frame_template.digital_template';
 
-    return {
-      theOtherLayoutId,
-      theOtherLayoutTitle,
-      elementMappings
-    };
-  }
+  const theOtherLayoutId = get(tempMappings, `[0].${path}.id`);
+  const theOtherLayoutTitle = get(tempMappings, `[0].${path}.title`, 'Unknown');
+
+  return {
+    theOtherLayoutId,
+    theOtherLayoutTitle,
+    elementMappings
+  };
 };
 
 /**
@@ -130,10 +126,14 @@ export const digitalLayoutMapping = layoutData => {
   }
 
   mappedLayout.frames = frames;
-  mappedLayout.mappings = layoutElementMappings(
-    layout.digital_frame_templates[0],
-    true
-  );
+
+  const tmpLayout = {};
+  tmpLayout.template_element_mappings = layout.digital_frame_templates
+    .map(f => f.template_element_mappings)
+    .flat()
+    .filter(Boolean);
+
+  mappedLayout.mappings = layoutElementMappings(tmpLayout, true);
 
   return mappedLayout;
 };

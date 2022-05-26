@@ -7,8 +7,18 @@ import {
   EDITION,
   PRINT_CREATION_TOOLS
 } from '@/common/constants';
-import { useLayoutPrompt, useToolBar } from '@/hooks';
-import { isEmpty, getRightToolItems, isInstructionTool } from '@/common/utils';
+import {
+  useLayoutPrompt,
+  useToolBar,
+  useMappingProject,
+  useAppCommon
+} from '@/hooks';
+import {
+  isEmpty,
+  getRightToolItems,
+  isInstructionTool,
+  getMappingIconName
+} from '@/common/utils';
 
 export default {
   components: {
@@ -34,6 +44,9 @@ export default {
       setPropertiesType
     } = useToolBar();
 
+    const { getMappingConfig } = useMappingProject();
+    const { generalInfo } = useAppCommon();
+
     return {
       isPrompt,
       themeId,
@@ -44,7 +57,9 @@ export default {
       togglePropertiesMenu,
       updateMediaSidebarOpen,
       isMediaSidebarOpen,
-      setPropertiesType
+      setPropertiesType,
+      getMappingConfig,
+      generalInfo
     };
   },
   data() {
@@ -52,6 +67,19 @@ export default {
       itemsToolLeft: PRINT_CREATION_TOOLS,
       itemsToolRight: getRightToolItems(PRINT_RIGHT_TOOLS)
     };
+  },
+  watch: {
+    generalInfo: {
+      deep: true,
+      async handler(info) {
+        const bookId = info?.bookId;
+        if (!bookId) return;
+
+        const config = await this.getMappingConfig(bookId);
+
+        getMappingIconName(config, this.itemsToolRight);
+      }
+    }
   },
   methods: {
     /**
