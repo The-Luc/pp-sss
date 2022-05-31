@@ -1,9 +1,11 @@
 import { graphqlRequest } from '../urql';
 
 import {
+  createElementMappingMutation,
   createTemplateMappingMutation,
   deleteTemplateElementMutation,
-  updateMappingConfigMutation
+  updateMappingConfigMutation,
+  updateSheetMappingConfigMutation
 } from './mutations';
 
 export const createTemplateMappingApi = params => {
@@ -16,4 +18,12 @@ export const deleteTemplateMappingApi = ids => {
 
 export const updateMappingProjectApi = (bookId, params) => {
   return graphqlRequest(updateMappingConfigMutation, { bookId, params });
+};
+
+export const createElementMappingApi = params => {
+  return graphqlRequest(createElementMappingMutation, { params });
+};
+
+export const updateSheetMappingConfigApi = (sheetId, params) => {
+  return graphqlRequest(updateSheetMappingConfigMutation, { sheetId, params });
 };

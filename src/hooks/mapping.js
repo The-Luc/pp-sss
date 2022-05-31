@@ -2,11 +2,18 @@ import {
   createTemplateMappingApi,
   deleteTemplateMappingApi,
   getMappingConfigApi,
-  updateMappingProjectApi
+  getSheetMappingConfigApi,
+  updateMappingProjectApi,
+  updateSheetMappingConfigApi
 } from '@/api/mapping';
 import { cloneDeep, get } from 'lodash';
 import { isEmpty } from '@/common/utils';
-import { projectMapping, projectMappingToApi } from '@/common/mapping/mapping';
+import {
+  projectMapping,
+  projectMappingToApi,
+  sheetMappingConfigMapping,
+  sheetMappingConfigToApiMapping
+} from '@/common/mapping/mapping';
 import { useAppCommon } from '@/hooks';
 
 const addingParams = values => {
@@ -144,9 +151,7 @@ export const useMappingProject = () => {
     // if config is NULL => need to give it a default value
     if (!config) {
       const defaultConfig = {
-        mappingType: 'CUSTOM',
         primaryMapping: 'PRINT',
-        mappingStatus: true,
         enableContentMapping: true
       };
       config = await updateMappingProject(bookId, defaultConfig);
@@ -168,4 +173,21 @@ export const useMappingProject = () => {
   };
 
   return { getMappingConfig, updateMappingProject };
+};
+
+export const useMappingSheet = () => {
+  const getSheetMappingConfig = async sheetId => {
+    const res = await getSheetMappingConfigApi(sheetId);
+
+    const config = get(res, 'data.sheet');
+    return sheetMappingConfigMapping(config);
+  };
+
+  const updateSheetMappingConfig = async (sheetId, config) => {
+    const params = sheetMappingConfigToApiMapping(config);
+
+    return updateSheetMappingConfigApi(sheetId, params);
+  };
+
+  return { getSheetMappingConfig, updateSheetMappingConfig };
 };

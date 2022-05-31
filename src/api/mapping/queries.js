@@ -16,11 +16,19 @@ export const getMappingSettingsQuery = gql`
       id
       project_mapping_configuration {
         id
-        mapping_type
         primary_mapping_format
-        mapping_status
         enable_content_mapping
       }
+    }
+  }
+`;
+
+export const getSheetMappingConfigQuery = gql`
+  query getSheetMappingConfigQuery($id: ID!) {
+    sheet(id: $id) {
+      id
+      mapping_type
+      mapping_status
     }
   }
 `;

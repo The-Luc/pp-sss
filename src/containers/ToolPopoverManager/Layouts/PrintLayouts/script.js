@@ -30,7 +30,6 @@ import {
   useActionLayout,
   useCustomLayout,
   useLayoutElements,
-  useApplyPrintLayout,
   useGetLayouts
 } from '@/hooks';
 
@@ -67,7 +66,6 @@ export default {
       getFavoriteLayouts
     } = useActionLayout();
     const { getCustom } = useCustomLayout();
-    const { applyPrintLayout } = useApplyPrintLayout();
     const {
       getPrintLayouts,
       getAssortedLayouts,
@@ -82,7 +80,6 @@ export default {
       setIsPrompt,
       pageSelected,
       defaultThemeId,
-      applyPrintLayout,
       getPrintLayouts,
       getAssortedLayouts,
       getPrintLayoutByType,

@@ -15,9 +15,7 @@ import {
 import {
   getThemeOptSelectedById,
   isEmpty,
-  entitiesToObjects,
-  getLayoutSelected,
-  getUniqueId
+  getLayoutSelected
 } from '@/common/utils';
 import {
   usePopoverCreationTool,
@@ -33,8 +31,6 @@ import {
 } from '@/hooks';
 
 import { getThemesApi } from '@/api/theme';
-
-import { cloneDeep } from 'lodash';
 
 export default {
   components: {
@@ -264,25 +260,11 @@ export default {
     },
     /**
      * Trigger mutation to set theme and layout for sheet after that close popover when click Select button
-     * @param {Object} layoutData layout that is selected
+     * @param {Object} layout layout that is selected
      */
-    async setThemeLayoutForSheet(layoutData) {
-      if (
-        (isEmpty(this.layouts) && isEmpty(this.extraLayouts)) ||
-        !layoutData?.id
-      )
+    async setThemeLayoutForSheet(layout) {
+      if ((isEmpty(this.layouts) && isEmpty(this.extraLayouts)) || !layout?.id)
         return;
-
-      const layoutEl = await this.getDigitalLayoutElements(layoutData.id);
-
-      const layout = cloneDeep(layoutEl);
-
-      layout.frames.forEach(f => (f.objects = entitiesToObjects(f.objects)));
-
-      // generate unique id for objects
-      layout.frames.forEach(frame => {
-        frame.objects = frame.objects.map(o => ({ ...o, id: getUniqueId() }));
-      });
 
       const isSupplemental = layout.isSupplemental || this.isSupplemental;
 

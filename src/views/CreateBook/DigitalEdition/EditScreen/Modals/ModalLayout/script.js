@@ -47,9 +47,7 @@ export default {
      * @param {Object} layout seleted supplemtal layout
      */
     onAddFrame(layout) {
-      const frames = layout?.frames || [];
-
-      this.handleAddFrame(frames);
+      this.handleAddFrame(layout.id);
 
       this.setSupplementalLayoutId({ id: layout.id });
       this.onClose();
