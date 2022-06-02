@@ -1,5 +1,6 @@
 import { useMutations, useGetters } from 'vuex-composition-helpers';
 
+import { cloneDeep, findKey, uniqBy } from 'lodash';
 import {
   saveToFavoritesApi,
   deleteFavoritesApi,
@@ -17,7 +18,8 @@ import {
   getDigitalLayoutElementApi,
   getAssortedLayoutsApi,
   getPrintLayoutsByTypeApi,
-  getDigitalLayoutsByTypeApi
+  getDigitalLayoutsByTypeApi,
+  getPrintLayoutById
 } from '@/api/layout';
 
 import { GETTERS as THEME_GETTERS } from '@/store/modules/theme/const';
@@ -46,7 +48,8 @@ import {
   OBJECT_TYPE,
   DIGITAL_LAYOUT_TYPES,
   SAVED_AND_FAVORITES_TYPE,
-  PRINT_PAGE_SIZE
+  PRINT_PAGE_SIZE,
+  MAPPING_TYPES
 } from '@/common/constants';
 
 import {
@@ -63,23 +66,25 @@ import {
   isBackground,
   activeCanvasInfo,
   isPpTextObject,
-  isPpImageObject
+  isPpImageObject,
+  getUniqueId,
+  removeMediaContentWhenCreateThumbnail
 } from '@/common/utils';
 import { useThumbnail } from '@/views/CreateBook/composables';
-import { cloneDeep, findKey, uniqBy } from 'lodash';
 import { getFrameObjectsApi, deleteFrameApi } from '@/api/frame';
-import { useFrame, useFrameOrdering, useFrameAction } from '@/hooks';
+import {
+  useFrame,
+  useFrameOrdering,
+  useFrameAction,
+  useSavePageData
+} from '@/hooks';
 import { updateTransitionApi } from '@/api/playback';
-import { removeMediaContentWhenCreateThumbnail } from '../common/utils/image';
 import {
   changeObjectsCoords,
   isCoverLayoutChecker
 } from '@/common/utils/layout';
 import { getSheetTransitionApi } from '@/api/playback/api_query';
-import { getUniqueId } from '../common/utils/util';
-import { useMappingProject } from './mapping';
-import { isPpTextOrImage } from '../common/utils/objects';
-import { createElementMappingApi } from '@/api/mapping';
+import { useMappingProject, useMappingSheet } from './mapping';
 
 export const useLayoutPrompt = edition => {
   const EDITION_GETTERS =
@@ -416,33 +421,105 @@ export const useGetLayouts = () => {
   };
 };
 
-export const useApplyPrintLayout = () => {
+export const useLayoutAddingSupport = () => {
+  const { updateFrameOrder } = useFrameOrdering();
+  const { createFrames, getSheetFrames } = useFrameAction();
+  const { getDigitalLayoutElements } = useGetDigitalLayouts();
+
   const { currentSheet, getObjects, getBookInfo } = useGetters({
     currentSheet: PRINT_GETTERS.CURRENT_SHEET,
     getObjects: PRINT_GETTERS.GET_OBJECTS,
     getBookInfo: PRINT_GETTERS.GET_BOOK_INFO
   });
 
-  const {
-    clearBackgrounds,
-    setBackground,
-    setObjects,
-    setSheetData
-  } = useMutations({
+  const { clearBackgrounds, setBackground } = useMutations({
     clearBackgrounds: PRINT_MUTATES.CLEAR_BACKGROUNDS,
-    setBackground: PRINT_MUTATES.SET_BACKGROUND,
-    setObjects: PRINT_MUTATES.SET_OBJECTS,
-    setSheetData: PRINT_MUTATES.SET_SHEET_DATA
+    setBackground: PRINT_MUTATES.SET_BACKGROUND
   });
 
-  const { applyMappedDigitalLayout } = useMappingLayout();
+  /* DIGITAL LAYOUT - START */
+  /**
+   * To get digital layout, make it ready to apply to canvas.
+   * - CAll api to get layout data
+   * - Clone layout
+   * - generate object id
+   *
+   * @param {String} layoutId layout id
+   * @returns modified layout data
+   */
+  const getLayoutFrames = async layoutId => {
+    const layoutEl = await getDigitalLayoutElements(layoutId);
 
+    const layout = cloneDeep(layoutEl);
+
+    layout.frames.map(f => (f.objects = entitiesToObjects(f.objects)));
+
+    // generate unique id for objects
+    layout.frames.forEach(frame => {
+      // copy id to idFromLayout field for text and iamge objects, which is used for layout mapping
+      frame.objects = frame.objects.map(o => {
+        if (isPpTextObject(o) || isPpImageObject(o)) o.idFromLayout = o.id;
+
+        return { ...o, id: getUniqueId() };
+      });
+    });
+    return layout;
+  };
+
+  const addingLayoutFrames = async (sheetId, layoutId) => {
+    const layout = await getLayoutFrames(layoutId);
+
+    const transitions = layout.frames
+      .map(({ transition }) => (transition ? transition : null))
+      .filter(Boolean);
+
+    const frames = await getSheetFrames(sheetId);
+
+    const finalFrames = frames.filter(frame => !frame.fromLayout);
+
+    const primaryFrameIds = frames
+      .filter(frame => frame.fromLayout)
+      .map(f => f.id);
+
+    // remove all primary frames
+    await Promise.all(primaryFrameIds.map(id => deleteFrameApi(id)));
+
+    // add new frames
+    const newFrames = await createFrames(sheetId, layout);
+
+    // reorder frames
+    finalFrames.unshift(...newFrames);
+    const frameIds = finalFrames.map(f => parseInt(f.id));
+    await updateFrameOrder(sheetId, frameIds);
+
+    // if length of layoutFrames > 1, means that it's package layout and there are transition
+    // update transitions
+    if (layout.frames.length > 1) {
+      setTimeout(async () => {
+        const transitionId = await getSheetTransitionApi(sheetId, true);
+
+        if (isEmpty(transitionId)) return;
+
+        await Promise.all(
+          transitions.map((trans, idx) =>
+            updateTransitionApi(transitionId[idx]?.id, trans, TRANS_TARGET.SELF)
+          )
+        );
+      }, 1000);
+    }
+    return finalFrames;
+  };
+  /* DIGITAL LAYOUT - END */
+
+  /* PRINT LAYOUT - START */
   const handleAddingBackgrounds = (
     objects,
     isFullLayout,
     currentPosition,
     isLeftPage
   ) => {
+    let backgrounds = [];
+
     // Get background object
     const backgroundObjs = objects.filter(
       obj => obj.type === OBJECT_TYPE.BACKGROUND
@@ -456,7 +533,9 @@ export const useApplyPrintLayout = () => {
 
     if (backgroundObjs.length === 2) {
       backgroundObjs.forEach(bg => {
-        setBackground({ background: { ...bg, id: getUniqueId() } });
+        const background = { ...bg, id: getUniqueId() };
+        backgrounds.push(background);
+        setBackground({ background });
       });
     }
 
@@ -466,10 +545,13 @@ export const useApplyPrintLayout = () => {
       const isLeftBackground = isLeftPage || backgroundObjs[0].isLeftPage;
 
       backgroundObjs[0].isLeftPage = isLeftBackground;
-      setBackground({
-        background: { ...backgroundObjs[0], id: getUniqueId() }
-      });
+
+      const background = { ...backgroundObjs[0], id: getUniqueId() };
+      backgrounds.push(background);
+      setBackground({ background });
     }
+
+    return backgrounds;
   };
 
   /**
@@ -589,13 +671,7 @@ export const useApplyPrintLayout = () => {
     });
   };
 
-  const applyPrintLayout = async ({
-    themeId,
-    layout,
-    pagePosition,
-    isScale,
-    isFit
-  }) => {
+  const addingLayoutOnPages = (layout, pagePosition, isScale, isFit) => {
     const sheet = currentSheet.value;
     const sheetType = sheet.type;
     const isCoverSheet = isCoverSheetChecker(sheet);
@@ -620,7 +696,12 @@ export const useApplyPrintLayout = () => {
     const isLeftPage = currentPosition === 'left'; // true if half-layout applied on left page
     const isRightPage = currentPosition === 'right'; // true if half-layout applied on right page
 
-    handleAddingBackgrounds(objects, isFullLayout, currentPosition, isLeftPage);
+    const backgrounds = handleAddingBackgrounds(
+      objects,
+      isFullLayout,
+      currentPosition,
+      isLeftPage
+    );
 
     if (!isCoverLayout && isCoverSheet) {
       isFit && handleFitElements(objects, isRightPage);
@@ -628,16 +709,12 @@ export const useApplyPrintLayout = () => {
     }
 
     if (isFullLayout || isHalfSheet(currentSheet.value)) {
-      const objList = objects.map(obj => ({
+      const newObj = objects.map(obj => ({
         ...obj,
         idFromLayout: obj.id,
         id: getUniqueId()
       }));
-
-      setObjects({ objectList: objList });
-      // UPDATE for Mapped Layout
-      await applyMappedDigitalLayout(layout, objList);
-      return;
+      return { objects: newObj, backgrounds };
     }
 
     // Get object(s) rest
@@ -664,7 +741,36 @@ export const useApplyPrintLayout = () => {
       }
     );
 
-    const objectList = [...storeObjects, ...newObjects];
+    return { objects: [...storeObjects, ...newObjects], backgrounds };
+  };
+
+  /* PRINT LAYOUT - END */
+
+  return { getLayoutFrames, addingLayoutFrames, addingLayoutOnPages };
+};
+
+export const useApplyPrintLayout = () => {
+  const { setObjects, setSheetData } = useMutations({
+    setObjects: PRINT_MUTATES.SET_OBJECTS,
+    setSheetData: PRINT_MUTATES.SET_SHEET_DATA
+  });
+
+  const { applyMappedDigitalLayout } = useMappingLayout();
+  const { addingLayoutOnPages } = useLayoutAddingSupport();
+
+  const applyPrintLayout = async ({
+    themeId,
+    layout,
+    pagePosition,
+    isScale,
+    isFit
+  }) => {
+    const { objects: objectList } = addingLayoutOnPages(
+      layout,
+      pagePosition,
+      isScale,
+      isFit
+    );
 
     setObjects({ objectList });
 
@@ -688,81 +794,8 @@ export const useApplyDigitalLayout = () => {
   });
 
   const { setFrames, setCurrentFrameId, clearAllFrames } = useFrame();
-  const { updateFrameOrder } = useFrameOrdering();
-  const { createFrames, getSheetFrames } = useFrameAction();
-  const { getDigitalLayoutElements } = useGetDigitalLayouts();
-
-  /**
-   * To get digital layout, make it ready to apply to canvas.
-   * - CAll api to get layout data
-   * - Clone layout
-   * - generate object id
-   *
-   * @param {String} layoutId layout id
-   * @returns modified layout data
-   */
-  const getLayoutFrames = async layoutId => {
-    const layoutEl = await getDigitalLayoutElements(layoutId);
-
-    const layout = cloneDeep(layoutEl);
-
-    layout.frames.map(f => (f.objects = entitiesToObjects(f.objects)));
-
-    // generate unique id for objects
-    layout.frames.forEach(frame => {
-      // copy id to idFromLayout field for text and iamge objects, which is used for layout mapping
-      frame.objects = frame.objects.map(o => {
-        if (isPpTextObject(o) || isPpImageObject(o)) o.idFromLayout = o.id;
-
-        return { ...o, id: getUniqueId() };
-      });
-    });
-    return layout;
-  };
-
-  const addingLayoutFrames = async (sheetId, layoutId) => {
-    const layout = await getLayoutFrames(layoutId);
-
-    const transitions = layout.frames
-      .map(({ transition }) => (transition ? transition : null))
-      .filter(Boolean);
-
-    const frames = await getSheetFrames(sheetId);
-
-    const finalFrames = frames.filter(frame => !frame.fromLayout);
-
-    const primaryFrameIds = frames
-      .filter(frame => frame.fromLayout)
-      .map(f => f.id);
-
-    // remove all primary frames
-    await Promise.all(primaryFrameIds.map(id => deleteFrameApi(id)));
-
-    // add new frames
-    const newFrames = await createFrames(sheetId, layout);
-
-    // reorder frames
-    finalFrames.unshift(...newFrames);
-    const frameIds = finalFrames.map(f => parseInt(f.id));
-    await updateFrameOrder(sheetId, frameIds);
-
-    // if length of layoutFrames > 1, means that it's package layout and there are transition
-    // update transitions
-    if (layout.frames.length > 1) {
-      setTimeout(async () => {
-        const transitionId = await getSheetTransitionApi(sheetId, true);
-
-        if (isEmpty(transitionId)) return;
-
-        await Promise.all(
-          transitions.map((trans, idx) =>
-            updateTransitionApi(transitionId[idx]?.id, trans, TRANS_TARGET.SELF)
-          )
-        );
-      }, 1000);
-    }
-    return finalFrames;
-  };
+  const { applyMappedPrintLayout } = useMappingLayout(true);
+  const { addingLayoutFrames } = useLayoutAddingSupport();
 
   const applyDigitalLayout = async layout => {
     const { id: sheetId } = currentSheet.value;
@@ -773,62 +806,37 @@ export const useApplyDigitalLayout = () => {
     setFrames({ framesList: finalFrames });
 
     setCurrentFrameId({ id: finalFrames[0].id });
+
+    // UPDATE for Mapped Layout
+    await applyMappedPrintLayout(layout, finalFrames);
+
     return finalFrames;
   };
 
-  return { applyDigitalLayout, addingLayoutFrames, getLayoutFrames };
+  return { applyDigitalLayout, addingLayoutFrames };
 };
 
-export const useMappingLayout = () => {
+export const useMappingLayout = isDigital => {
+  const GETTERS = isDigital ? DIGITAL_GETTERS : PRINT_GETTERS;
+
   const { getMappingConfig } = useMappingProject();
   const { currentSheet } = useGetters({
-    currentSheet: PRINT_GETTERS.CURRENT_SHEET
+    currentSheet: GETTERS.CURRENT_SHEET
   });
-  const { addingLayoutFrames } = useApplyDigitalLayout();
+  const { updateSheetMappingConfig, updateElementMappings } = useMappingSheet();
+  const { addingLayoutFrames, addingLayoutOnPages } = useLayoutAddingSupport();
+  const { savePageData } = useSavePageData();
 
-  const createMappingElements = async (
-    sheetId,
-    mappings,
-    printObjectList,
-    frames
-  ) => {
-    const printMappings = {};
-    const digitalMappings = {};
-
-    printObjectList.filter(isPpTextOrImage).forEach(o => {
-      printMappings[o.idFromLayout] = { print_element_uid: o.id };
-    });
-
-    frames.map(frame => {
-      frame.objects.filter(isPpTextOrImage).forEach(o => {
-        digitalMappings[o.idFromLayout] = {
-          digital_element_uid: o.id,
-          digital_frame_id: frame.id
-        };
-      });
-    });
-
-    const apiMappings = mappings.elementMappings.map(
-      ({ printElementId, digitalElementId }) => {
-        const { print_element_uid } = printMappings[printElementId];
-        const { digital_element_uid, digital_frame_id } = digitalMappings[
-          digitalElementId
-        ];
-        return {
-          sheet_id: sheetId,
-          digital_frame_id,
-          print_element_uid,
-          digital_element_uid
-        };
-      }
-    );
-
-    // call API to create element mappings
-    await Promise.all(
-      apiMappings.map(config => createElementMappingApi(config))
-    );
+  /**
+   * Call API to update a sheet mapping_type to LAYOUT_MAPPING
+   */
+  const updateToLayoutMapping = async sheetId => {
+    const mappingType = MAPPING_TYPES.LAYOUT.value;
+    return updateSheetMappingConfig(sheetId, { mappingType });
   };
 
+  // trigger when use apply a mapped layout on print editor
+  // so then this will apply the digital layout
   const applyMappedDigitalLayout = async (printLayout, printObjectList) => {
     const mappingConfig = await getMappingConfig();
 
@@ -841,7 +849,7 @@ export const useMappingLayout = () => {
     const frames = await addingLayoutFrames(sheetId, layoutId);
 
     // create element mapping
-    await createMappingElements(
+    await updateElementMappings(
       sheetId,
       printLayout.mappings,
       printObjectList,
@@ -849,10 +857,48 @@ export const useMappingLayout = () => {
     );
 
     // call api update mapping type to LAYOUT MAPPING
+    await updateToLayoutMapping(sheetId);
   };
 
-  const applyMappedPrintLayout = async digitalLayout => {
-    //
+  // trigger when use apply a mapped layout on digital editor
+  // so then this will apply the print layout
+  const applyMappedPrintLayout = async (digitalLayout, frames) => {
+    const mappingConfig = await getMappingConfig();
+
+    if (!digitalLayout.mappings || !mappingConfig.enableContentMapping) return;
+
+    const layoutId = digitalLayout.mappings.theOtherLayoutId;
+    const { id: sheetId } = currentSheet.value;
+
+    const printLayout = await getPrintLayoutById(layoutId);
+
+    // apply print layout on digital
+    const { objects, backgrounds } = addingLayoutOnPages(
+      printLayout,
+      'left',
+      true,
+      false
+    );
+
+    const allObjects = [...backgrounds, ...objects];
+
+    const isForceToRight = isHalfRight(currentSheet.value);
+    // mid of normal canvas
+    const midCanvas = PRINT_PAGE_SIZE.PDF_WIDTH - PRINT_PAGE_SIZE.BLEED;
+    const option = { isForceToRight, midCanvas, isMappingMode: true };
+
+    await savePageData(sheetId, allObjects, null, option);
+
+    // create element mapping
+    await updateElementMappings(
+      sheetId,
+      digitalLayout.mappings,
+      allObjects,
+      frames
+    );
+
+    // call api update mapping type to LAYOUT MAPPING
+    // await updateToLayoutMapping(sheetId);
   };
 
   return { applyMappedDigitalLayout, applyMappedPrintLayout };

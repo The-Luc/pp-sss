@@ -25,6 +25,9 @@ export const sheetInfoQuery = gql`
         page_number
         layout
       }
+      book {
+        id
+      }
     }
   }
 `;

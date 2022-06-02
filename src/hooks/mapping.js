@@ -4,10 +4,13 @@ import {
   getMappingConfigApi,
   getSheetMappingConfigApi,
   updateMappingProjectApi,
-  updateSheetMappingConfigApi
+  updateSheetMappingConfigApi,
+  createElementMappingApi,
+  getSheetMappingElementsApi,
+  deleteElementMappingApi
 } from '@/api/mapping';
 import { cloneDeep, get } from 'lodash';
-import { isEmpty } from '@/common/utils';
+import { isEmpty, isPpTextOrImage } from '@/common/utils';
 import {
   projectMapping,
   projectMappingToApi,
@@ -189,5 +192,77 @@ export const useMappingSheet = () => {
     return updateSheetMappingConfigApi(sheetId, params);
   };
 
-  return { getSheetMappingConfig, updateSheetMappingConfig };
+  const getElementMappings = async sheetId => {
+    return getSheetMappingElementsApi(sheetId);
+  };
+
+  const createElementMappings = async (
+    sheetId,
+    mappings,
+    printObjectList,
+    frames
+  ) => {
+    const printMappings = {};
+    const digitalMappings = {};
+
+    printObjectList.filter(isPpTextOrImage).forEach(o => {
+      printMappings[o.idFromLayout] = { print_element_uid: o.id };
+    });
+
+    frames.map(frame => {
+      frame.objects.filter(isPpTextOrImage).forEach(o => {
+        digitalMappings[o.idFromLayout] = {
+          digital_element_uid: o.id,
+          digital_frame_id: frame.id
+        };
+      });
+    });
+
+    const apiMappings = mappings.elementMappings.map(
+      ({ printElementId, digitalElementId }) => {
+        const { print_element_uid } = printMappings[printElementId];
+        const { digital_element_uid, digital_frame_id } = digitalMappings[
+          digitalElementId
+        ];
+        return {
+          sheet_id: sheetId,
+          digital_frame_id,
+          print_element_uid,
+          digital_element_uid
+        };
+      }
+    );
+    // call API to create element mappings
+    await Promise.all(
+      apiMappings.map(config => createElementMappingApi(config))
+    );
+  };
+
+  const deleteElementMappings = async ids => {
+    if (isEmpty(ids)) return;
+
+    return deleteElementMappingApi(ids);
+  };
+
+  const updateElementMappings = async (
+    sheetId,
+    mappings,
+    printObject,
+    frames
+  ) => {
+    // get current element mappings
+    const elementMappings = await getElementMappings(sheetId);
+
+    // delete current element mappings
+    await deleteElementMappings(elementMappings.map(e => e.id));
+
+    // create new element mappings
+    await createElementMappings(sheetId, mappings, printObject, frames);
+  };
+
+  return {
+    getSheetMappingConfig,
+    updateSheetMappingConfig,
+    updateElementMappings
+  };
 };

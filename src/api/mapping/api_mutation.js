@@ -3,6 +3,7 @@ import { graphqlRequest } from '../urql';
 import {
   createElementMappingMutation,
   createTemplateMappingMutation,
+  deleteElementMappingMutation,
   deleteTemplateElementMutation,
   updateMappingConfigMutation,
   updateSheetMappingConfigMutation
@@ -26,4 +27,8 @@ export const createElementMappingApi = params => {
 
 export const updateSheetMappingConfigApi = (sheetId, params) => {
   return graphqlRequest(updateSheetMappingConfigMutation, { sheetId, params });
+};
+
+export const deleteElementMappingApi = ids => {
+  return graphqlRequest(deleteElementMappingMutation, { ids });
 };

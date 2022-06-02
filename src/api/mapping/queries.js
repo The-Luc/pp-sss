@@ -32,3 +32,28 @@ export const getSheetMappingConfigQuery = gql`
     }
   }
 `;
+
+export const elementMappingDetail = gql`
+  fragment elementMappingDetail on ElementMappingType {
+    id
+    digital_frame {
+      id
+    }
+    page {
+      id
+    }
+    digital_element_uid
+    print_element_uid
+  }
+`;
+export const getSheetMappingElementsQuery = gql`
+  query getSheetMappingElements($sheetId: ID!) {
+    sheet(id: $sheetId) {
+      id
+      element_mappings {
+        ...elementMappingDetail
+      }
+    }
+  }
+  ${elementMappingDetail}
+`;

@@ -12,7 +12,7 @@ import { MUTATES } from '@/store/modules/app/const';
 import { PROPERTIES_TOOLS } from '@/common/constants';
 import { cloneDeep } from 'lodash';
 import { FrameDetail } from '@/common/models';
-import { useApplyDigitalLayout } from '@/hooks';
+import { useLayoutAddingSupport } from '@/hooks';
 import {
   createFrameApi,
   deleteFrameApi,
@@ -185,7 +185,7 @@ export const useFrameAdd = () => {
 
   const { createFrames } = useFrameAction();
 
-  const { getLayoutFrames } = useApplyDigitalLayout();
+  const { getLayoutFrames } = useLayoutAddingSupport();
 
   const handleAddFrame = async layoutId => {
     const { frames } = await getLayoutFrames(layoutId);

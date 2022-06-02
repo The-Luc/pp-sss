@@ -33,7 +33,7 @@ import { BACKGROUND_PAGE_TYPE } from '@/common/constants';
 export const isSingleLayout = layout =>
   !isEmpty(layout) && layout?.pageType === LAYOUT_PAGE_TYPE.SINGLE_PAGE.id;
 
-export const isFullLayout = layout =>
+export const isFullLayoutChecker = layout =>
   !isEmpty(layout) && layout?.pageType === LAYOUT_PAGE_TYPE.FULL_PAGE.id;
 
 export const isCoverLayoutChecker = layout =>

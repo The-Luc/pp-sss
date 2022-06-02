@@ -78,6 +78,14 @@ export const createElementMappingMutation = gql`
   }
 `;
 
+export const deleteElementMappingMutation = gql`
+  mutation deleteElementMapping($ids: [ID!]!) {
+    delete_element_mappings(element_mapping_ids: $ids) {
+      id
+    }
+  }
+`;
+
 export const updateSheetMappingConfigMutation = gql`
   mutation updateSheetMappingConfig($sheetId: ID!, $params: SheetInput) {
     update_sheet(sheet_id: $sheetId, sheet_params: $params) {

@@ -37,7 +37,7 @@ import { getThemesApi } from '@/api/theme';
 
 import {
   changeObjectsCoords,
-  isFullLayout,
+  isFullLayoutChecker,
   leftRightObjectsOfLayout
 } from '@/common/utils/layout';
 
@@ -251,7 +251,7 @@ export default {
 
       layout.objects = await this.getLayoutElements(layout.id);
 
-      const isFullTemplate = isFullLayout(layout);
+      const isFullTemplate = isFullLayoutChecker(layout);
 
       if (isFullTemplate && this.isHalfSheet) {
         // remove left or right objects so that spread layout can be applied on half sheet
