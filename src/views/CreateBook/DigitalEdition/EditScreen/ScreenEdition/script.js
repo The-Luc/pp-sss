@@ -2122,8 +2122,8 @@ export default {
         const fbElement = fbObjectsById[objectId];
 
         if (!fbElement) {
-          const printObjectID = el.printElementId;
-          const printObject = this.printObjects[printObjectID];
+          const printObjectId = el.printElementId;
+          const printObject = this.printObjects[printObjectId];
           const isImageObj = isPpImageObject(printObject);
 
           isImageObj ? imageCouter++ : textCounter++;
