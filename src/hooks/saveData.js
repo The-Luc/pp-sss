@@ -14,8 +14,7 @@ export const useSavePageData = () => {
 
   /**
    *
-   * @param {Object} option {midCanvas, isForceToRight}
-   * midCanvas: mid of canvas, this is used when save page from digital (mapping feature)
+   * @param {Object} option {isForceToRight}
    * isForceToRight: true when use apply on inside front cover sheet, so all object must belong to right page
    * @returns
    */
