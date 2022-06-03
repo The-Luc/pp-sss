@@ -23,6 +23,8 @@ export const getSheetInfoApi = async id => {
   const response = await graphqlRequest(sheetInfoQuery, { id });
 
   const pages = get(response.data, 'sheet.pages', []);
+  const bookId = get(response.data, 'sheet.book.id');
+  const pageIds = pages.map(page => page.id);
   const sheetType = SHEET_TYPE[response.data.sheet.sheet_type];
 
   const pageObjects = (() => {
@@ -74,7 +76,9 @@ export const getSheetInfoApi = async id => {
     objects: entitiesToObjects(objects),
     sheetType,
     pageNumber,
-    spreadInfo
+    spreadInfo,
+    pageIds,
+    bookId
   };
 };
 

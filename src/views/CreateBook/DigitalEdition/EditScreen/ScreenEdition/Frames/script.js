@@ -7,7 +7,6 @@ import TransitionProperties from './TransitionProperties';
 import {
   useFrameOrdering,
   useFrame,
-  useFrameAdd,
   useModal,
   useToolBar,
   useSheet
@@ -40,13 +39,11 @@ export default {
     const { handleUpdateFrameOrder } = useFrameOrdering();
     const { setCurrentFrameId } = useFrame();
     const { currentSheet } = useSheet();
-    const { handleAddFrame } = useFrameAdd();
     const { setPropertiesType } = useToolBar();
 
     return {
       toggleModal,
       handleUpdateFrameOrder,
-      handleAddFrame,
       setCurrentFrameId,
       currentSheet,
       setPropertiesType
@@ -196,11 +193,7 @@ export default {
     onMove(event) {
       this.dragTargetId = null;
 
-      if (this.selectedIndex < 0) {
-        return false;
-      }
-
-      if (event.related === null) {
+      if (this.selectedIndex < 0 || event.related === null) {
         return false;
       }
 

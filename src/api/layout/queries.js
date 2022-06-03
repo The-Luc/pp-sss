@@ -64,6 +64,15 @@ export const getAssortedLayoutQuery = gql`
   ${templateFragment}
 `;
 
+export const getPrintLayoutByIdQuery = gql`
+  query getPrintLayoutById($id: ID!) {
+    template(id: $id) {
+      ...templateDetail
+    }
+  }
+  ${templateFragment}
+`;
+
 export const getLayoutElementsQuery = gql`
   query getLayoutElements($id: ID!) {
     template(id: $id) {
