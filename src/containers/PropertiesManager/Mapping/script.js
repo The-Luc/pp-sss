@@ -12,7 +12,8 @@ import {
   useModal,
   useMappingProject,
   useGetterEditionSection,
-  useSheet
+  useSheet,
+  useMappingSheet
 } from '@/hooks';
 
 export default {
@@ -31,13 +32,19 @@ export default {
     const { getMappingConfig, updateMappingProject } = useMappingProject();
     const { currentSection } = useGetterEditionSection();
     const { currentSheet } = useSheet();
+    const {
+      getSheetMappingConfig,
+      updateSheetMappingConfig
+    } = useMappingSheet();
 
     return {
       toggleModal,
       getMappingConfig,
       updateMappingProject,
       currentSection,
-      currentSheet
+      currentSheet,
+      getSheetMappingConfig,
+      updateSheetMappingConfig
     };
   },
   data() {
@@ -79,13 +86,20 @@ export default {
       return `${leftTitle} - ${rightTitle}`;
     }
   },
-  watch: {},
   async mounted() {
-    this.mappingConfig = await this.getMappingConfig();
+    const [projectConfig, sheetConfig] = await Promise.all([
+      this.getMappingConfig(),
+      this.getSheetMappingConfig(this.currentSheet.id)
+    ]);
+
+    this.mappingConfig = { ...projectConfig, ...sheetConfig };
   },
   methods: {
-    onChangeMappingStatus(item) {
-      console.log('item ', item);
+    async onChangeMappingStatus(item) {
+      const mappingStatus = item.value;
+      await this.updateSheetMappingConfig(this.currentSheet.id, {
+        mappingStatus
+      });
     },
 
     /**

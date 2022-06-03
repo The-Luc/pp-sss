@@ -33,7 +33,7 @@ import { BACKGROUND_PAGE_TYPE } from '@/common/constants';
 export const isSingleLayout = layout =>
   !isEmpty(layout) && layout?.pageType === LAYOUT_PAGE_TYPE.SINGLE_PAGE.id;
 
-export const isFullLayout = layout =>
+export const isFullLayoutChecker = layout =>
   !isEmpty(layout) && layout?.pageType === LAYOUT_PAGE_TYPE.FULL_PAGE.id;
 
 export const isCoverLayoutChecker = layout =>
@@ -74,8 +74,9 @@ export const getLayoutOptSelectedById = (
  *
  * @param {Object} objects that will be change their coord to place in the right side (left/right)
  * @param {Number | String} position left or right || FRONT_COVER or BACK_COVER
- * @param {Object} options adding config for the function, available options: moveToLeft
+ * @param {Object} options adding config for the function, available options: moveToLeft, midCanvas
  *  if moveToLeft is true, the right page objects will be move to left
+ *  midCanvas: explicitly declear middle of canvas, is used when in mapping feature
  *
  * @returns objects have coords changed
  */
@@ -86,7 +87,8 @@ export const changeObjectsCoords = (objects, position, options) => {
 
   if (isLeftPage) return newObjects;
 
-  const { mid: midCanvas } = activeCanvasInfo();
+  const { mid: midActiveCanvas } = activeCanvasInfo();
+  const midCanvas = options?.midCanvas || midActiveCanvas;
   const isMoveToLeft = Boolean(options?.moveToLeft);
 
   newObjects.forEach(object => {

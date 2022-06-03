@@ -16,6 +16,7 @@ export class TextAlignment extends BaseObject {
 }
 
 export class TextElementObject extends BaseMoveableElementObject {
+  idFromLayout = null;
   type = OBJECT_TYPE.TEXT;
   color = DEFAULT_PROP.COLOR;
   styleId = DEFAULT_TEXT.STYLE_ID;

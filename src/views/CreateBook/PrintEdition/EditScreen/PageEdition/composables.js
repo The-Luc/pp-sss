@@ -2,7 +2,6 @@ import { difference, cloneDeep } from 'lodash';
 import { useGetters, useMutations } from 'vuex-composition-helpers';
 
 import { GETTERS as PRINT_GETTERS, MUTATES } from '@/store/modules/print/const';
-import { updatePageApi } from '@/api/page';
 import { savePrintDataApi, updateInProjectApi } from '@/api/savePrint';
 import { getSheetInfoApi } from '@/api/sheet';
 import { OBJECT_TYPE, SHEET_TYPE } from '@/common/constants';
@@ -10,15 +9,14 @@ import { pageInfoMappingToApi } from '@/common/mapping';
 import {
   arrayDifference,
   getPageIdsOfSheet,
-  getSheetThumbnail,
   isEmpty,
   isOk,
   mapSheetToPages,
-  pageLayoutsFromSheet,
   seperateSheetObjectsIntoPages,
   splitBase64Image
 } from '@/common/utils';
 import { useThumbnail, usePhotos } from '@/views/CreateBook/composables';
+import { useSavePageData } from '@/hooks';
 
 export const useSaveData = () => {
   const { getDataEditScreen, currentSheet, mediaObjectIds } = useGetters({
@@ -32,6 +30,7 @@ export const useSaveData = () => {
 
   const { uploadBase64Image } = useThumbnail();
   const { getInProjectAssets } = usePhotos();
+  const { savePageData } = useSavePageData();
 
   /**
    * To save print data to DB
@@ -162,13 +161,6 @@ export const useSaveData = () => {
     const getSheetDataFnc = getDataEditScreen.value;
     const sheetData = getSheetDataFnc(sheetId);
 
-    const { bookId } = sheetData;
-    const { pageIds } = sheetData.sheetProps;
-    const [leftPageId, rightPageId] = getPageIdsOfSheet(
-      pageIds,
-      sheetData.sheetProps.type
-    );
-
     // keep the current backgrounds
     const { objects: sheetObjects } =
       currentSheet.value.id === sheetId
@@ -179,57 +171,13 @@ export const useSaveData = () => {
       ob => ob && ob.type === OBJECT_TYPE.BACKGROUND
     );
 
-    const { leftLayout, rightLayout } = pageLayoutsFromSheet([
-      ...backgrounds,
-      ...objects
-    ]);
+    const newObjects = [...backgrounds, ...objects];
 
-    const [leftBase64, rightBase64] = await getSheetThumbnail(
-      leftLayout.elements,
-      rightLayout.elements
+    const { leftUrl, rightUrl } = await savePageData(
+      sheetId,
+      newObjects,
+      appliedPage
     );
-
-    const [leftUrl, rightUrl] = await Promise.all([
-      uploadBase64Image(leftBase64),
-      uploadBase64Image(rightBase64)
-    ]);
-
-    const handleUpdatePage = async (pageId, layout, imgUrl) => {
-      const params = {
-        layout,
-        preview_image_url: imgUrl
-      };
-      return updatePageApi(pageId, params);
-    };
-    const savePromises = [];
-
-    if (appliedPage.isLeft) {
-      savePromises.push(handleUpdatePage(leftPageId, leftLayout, leftUrl));
-
-      // remove all in-project assets of the page
-      const { apiPageAssetIds } = await getInProjectAssets(bookId, leftPageId);
-      const inProjectVariables = {
-        bookId: +bookId,
-        projectId: leftPageId,
-        removeAssetIds: apiPageAssetIds
-      };
-      savePromises.push(updateInProjectApi(inProjectVariables));
-    }
-
-    if (appliedPage.isRight) {
-      savePromises.push(handleUpdatePage(rightPageId, rightLayout, rightUrl));
-
-      // remove all in-project assets of the page
-      const { apiPageAssetIds } = await getInProjectAssets(bookId, rightPageId);
-      const inProjectVariables = {
-        bookId: +bookId,
-        projectId: rightPageId,
-        removeAssetIds: apiPageAssetIds
-      };
-      savePromises.push(updateInProjectApi(inProjectVariables));
-    }
-
-    await Promise.all(savePromises);
 
     // update new thumbnail to store
     const args = { sheetId };

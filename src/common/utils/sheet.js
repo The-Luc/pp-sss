@@ -159,22 +159,31 @@ export const mapSheetToPages = sheet => {
  * To seperate objects and media of sheet into pages
  *
  * @param {Array} objects sheet objects
+ * @param {Object} option {isForceToRight, midCanvas}
+ *    isForceToRight if true, all objects will force to be right page, do not need to calculate their position
+ *
  * @returns {Object} {leftLayout, rightLayout} elements and workspace for each page
  */
-export const pageLayoutsFromSheet = objects => {
-  const { leftPageObjects, rightPageObjects } = seperateSheetObjectsIntoPages(
-    objects
-  );
+export const pageLayoutsFromSheet = (objects, option = {}) => {
+  const { isForceToRight } = option;
+
+  const { leftPageObjects, rightPageObjects } = isForceToRight
+    ? { leftPageObjects: [], rightPageObjects: objects }
+    : seperateSheetObjectsIntoPages(objects);
 
   const leftLayout = {
     elements: leftPageObjects,
     workspace: []
   };
 
+  const rightElements = isForceToRight
+    ? rightPageObjects
+    : changeObjectsCoords(rightPageObjects, 'right', {
+        moveToLeft: true
+      });
+
   const rightLayout = {
-    elements: changeObjectsCoords(rightPageObjects, 'right', {
-      moveToLeft: true
-    }),
+    elements: rightElements,
     workspace: []
   };
   return { leftLayout, rightLayout };

@@ -30,7 +30,6 @@ import {
   useActionLayout,
   useCustomLayout,
   useLayoutElements,
-  useApplyPrintLayout,
   useGetLayouts
 } from '@/hooks';
 
@@ -38,7 +37,7 @@ import { getThemesApi } from '@/api/theme';
 
 import {
   changeObjectsCoords,
-  isFullLayout,
+  isFullLayoutChecker,
   leftRightObjectsOfLayout
 } from '@/common/utils/layout';
 
@@ -67,7 +66,6 @@ export default {
       getFavoriteLayouts
     } = useActionLayout();
     const { getCustom } = useCustomLayout();
-    const { applyPrintLayout } = useApplyPrintLayout();
     const {
       getPrintLayouts,
       getAssortedLayouts,
@@ -82,7 +80,6 @@ export default {
       setIsPrompt,
       pageSelected,
       defaultThemeId,
-      applyPrintLayout,
       getPrintLayouts,
       getAssortedLayouts,
       getPrintLayoutByType,
@@ -254,7 +251,7 @@ export default {
 
       layout.objects = await this.getLayoutElements(layout.id);
 
-      const isFullTemplate = isFullLayout(layout);
+      const isFullTemplate = isFullLayoutChecker(layout);
 
       if (isFullTemplate && this.isHalfSheet) {
         // remove left or right objects so that spread layout can be applied on half sheet
@@ -356,13 +353,13 @@ export default {
      * Get custom layouts from API
      */
     async getCustomData() {
-      this.customLayouts = await this.getCustom();
+      this.customLayouts = await this.getCustom(true);
     },
     /**
      * Get assoreted layout
      */
     async getAssorted() {
-      this.assortedLayouts = await this.getAssortedLayouts();
+      this.assortedLayouts = await this.getAssortedLayouts(true);
     },
     /**
      * Filter layout types
@@ -431,13 +428,15 @@ export default {
 
       this.layouts = await this.getPrintLayouts(
         this.themeSelected?.id,
-        typeValue
+        typeValue,
+        true
       );
 
       // load more layout of the other themes
       this.extraLayouts = await this.getPrintLayoutByType(
         this.themeSelected?.id,
-        this.layoutTypeSelected?.value
+        this.layoutTypeSelected?.value,
+        true
       );
     },
     /**

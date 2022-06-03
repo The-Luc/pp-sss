@@ -15,3 +15,4 @@ export * from './portrait';
 export * from './animation';
 export * from './theme';
 export * from './mapping';
+export * from './saveData';

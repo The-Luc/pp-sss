@@ -8,7 +8,7 @@ import GotIt from '@/components/GotIt';
 import Item from './Item';
 import {
   isEmpty,
-  isFullLayout,
+  isFullLayoutChecker,
   isSingleLayout,
   scrollToElement
 } from '@/common/utils';
@@ -164,7 +164,7 @@ export default {
 
       const singleLayouts = this.extraLayouts.filter(isSingleLayout);
 
-      const fullLayouts = this.extraLayouts.filter(isFullLayout);
+      const fullLayouts = this.extraLayouts.filter(isFullLayoutChecker);
 
       return differenceBy(
         [fullLayouts, singleLayouts][this.tabActive],
@@ -314,7 +314,7 @@ export default {
 
       const singleLayouts = this.layouts.filter(isSingleLayout);
 
-      const fullLayouts = this.layouts.filter(isFullLayout);
+      const fullLayouts = this.layouts.filter(isFullLayoutChecker);
 
       this.tabs[0].items = fullLayouts;
       this.tabs[1].items = singleLayouts;

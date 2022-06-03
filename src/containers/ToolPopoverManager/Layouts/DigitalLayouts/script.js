@@ -15,9 +15,7 @@ import {
 import {
   getThemeOptSelectedById,
   isEmpty,
-  entitiesToObjects,
-  getLayoutSelected,
-  getUniqueId
+  getLayoutSelected
 } from '@/common/utils';
 import {
   usePopoverCreationTool,
@@ -28,13 +26,10 @@ import {
   useCustomLayout,
   useGetLayouts,
   useApplyDigitalLayout,
-  useObjectProperties,
-  useGetDigitalLayouts
+  useObjectProperties
 } from '@/hooks';
 
 import { getThemesApi } from '@/api/theme';
-
-import { cloneDeep } from 'lodash';
 
 export default {
   components: {
@@ -69,7 +64,6 @@ export default {
       getAssortedLayouts,
       getDigitalLayoutByType
     } = useGetLayouts();
-    const { getDigitalLayoutElements } = useGetDigitalLayouts();
 
     return {
       isPrompt,
@@ -89,7 +83,6 @@ export default {
       applyDigitalLayout,
       listObjects,
       getDigitalLayouts,
-      getDigitalLayoutElements,
       getAssortedLayouts,
       getDigitalLayoutByType
     };
@@ -264,25 +257,11 @@ export default {
     },
     /**
      * Trigger mutation to set theme and layout for sheet after that close popover when click Select button
-     * @param {Object} layoutData layout that is selected
+     * @param {Object} layout layout that is selected
      */
-    async setThemeLayoutForSheet(layoutData) {
-      if (
-        (isEmpty(this.layouts) && isEmpty(this.extraLayouts)) ||
-        !layoutData?.id
-      )
+    async setThemeLayoutForSheet(layout) {
+      if ((isEmpty(this.layouts) && isEmpty(this.extraLayouts)) || !layout?.id)
         return;
-
-      const layoutEl = await this.getDigitalLayoutElements(layoutData.id);
-
-      const layout = cloneDeep(layoutEl);
-
-      layout.frames.forEach(f => (f.objects = entitiesToObjects(f.objects)));
-
-      // generate unique id for objects
-      layout.frames.forEach(frame => {
-        frame.objects = frame.objects.map(o => ({ ...o, id: getUniqueId() }));
-      });
 
       const isSupplemental = layout.isSupplemental || this.isSupplemental;
 
@@ -337,7 +316,7 @@ export default {
      * Get custom layouts from API
      */
     async getCustomData() {
-      this.customLayouts = await this.getCustomDigitalLayout();
+      this.customLayouts = await this.getCustomDigitalLayout(true);
     },
     /**
      * Get assoreted layout
@@ -416,12 +395,14 @@ export default {
       this.layouts = await this.getDigitalLayouts(
         this.themeSelected?.id,
         this.layoutTypeSelected?.value,
-        this.isSupplemental
+        this.isSupplemental,
+        true
       );
 
       this.extraLayouts = await this.getDigitalLayoutByType(
         this.themeSelected?.id,
-        this.layoutTypeSelected?.value
+        this.layoutTypeSelected?.value,
+        true
       );
     },
     /**

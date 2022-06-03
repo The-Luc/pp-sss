@@ -12,6 +12,7 @@ import { MUTATES } from '@/store/modules/app/const';
 import { PROPERTIES_TOOLS } from '@/common/constants';
 import { cloneDeep } from 'lodash';
 import { FrameDetail } from '@/common/models';
+import { useLayoutAddingSupport } from '@/hooks';
 import {
   createFrameApi,
   deleteFrameApi,
@@ -184,7 +185,11 @@ export const useFrameAdd = () => {
 
   const { createFrames } = useFrameAction();
 
-  const handleAddFrame = async frames => {
+  const { getLayoutFrames } = useLayoutAddingSupport();
+
+  const handleAddFrame = async layoutId => {
+    const { frames } = await getLayoutFrames(layoutId);
+
     // adding 1 supplemental frame
     const sheetId = currentSheet.value.id;
     const layout = { isSupplemental: true, frames };
