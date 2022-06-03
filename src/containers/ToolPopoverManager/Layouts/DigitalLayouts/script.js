@@ -65,7 +65,6 @@ export default {
       getAssortedLayouts,
       getDigitalLayoutByType
     } = useGetLayouts();
-    const { getDigitalLayoutElements } = useGetDigitalLayouts();
 
     return {
       isPrompt,
@@ -85,7 +84,6 @@ export default {
       applyDigitalLayout,
       listObjects,
       getDigitalLayouts,
-      getDigitalLayoutElements,
       getAssortedLayouts,
       getDigitalLayoutByType
     };
@@ -319,7 +317,7 @@ export default {
      * Get custom layouts from API
      */
     async getCustomData() {
-      this.customLayouts = await this.getCustomDigitalLayout();
+      this.customLayouts = await this.getCustomDigitalLayout(true);
     },
     /**
      * Get assoreted layout
@@ -398,12 +396,14 @@ export default {
       this.layouts = await this.getDigitalLayouts(
         this.themeSelected?.id,
         this.layoutTypeSelected?.value,
-        this.isSupplemental
+        this.isSupplemental,
+        true
       );
 
       this.extraLayouts = await this.getDigitalLayoutByType(
         this.themeSelected?.id,
-        this.layoutTypeSelected?.value
+        this.layoutTypeSelected?.value,
+        true
       );
     },
     /**
