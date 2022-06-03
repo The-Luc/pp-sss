@@ -263,6 +263,7 @@ export const useMappingSheet = () => {
   return {
     getSheetMappingConfig,
     updateSheetMappingConfig,
-    updateElementMappings
+    updateElementMappings,
+    getElementMappings
   };
 };
