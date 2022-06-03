@@ -45,6 +45,10 @@ export const isFbTextObject = object => {
   return object?.objectType === OBJECT_TYPE.TEXT;
 };
 
+export const isFbTextImageObject = object => {
+  return isFbTextObject(object) || isFbImageObject(object);
+};
+
 /**
  * Computed ratio and return coordinate and dimension of object
  * @param {Object} objCoord - Coordinate of object include x and y

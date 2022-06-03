@@ -15,7 +15,9 @@ import {
   useAppCommon,
   useStyle,
   useToolBar,
-  useCustomLayout
+  useCustomLayout,
+  useFrameAction,
+  useMappingSheet
 } from '@/hooks';
 import { startDrawBox } from '@/common/fabricObjects/drawingBox';
 
@@ -40,7 +42,9 @@ import {
   isDeleteKey,
   isValidTargetToCopyPast,
   getUniqueId,
-  isContainDebounceProp
+  isContainDebounceProp,
+  isFbImageObject,
+  isPpImageObject
 } from '@/common/utils';
 
 import {
@@ -130,6 +134,7 @@ import {
 } from '@/common/models/element';
 import { useBookPrintInfo } from '../composables';
 import { usePdfGeneration } from '../../MainScreen/composables';
+import UniqueColor from '@/plugins/UniqueColor';
 
 export default {
   components: {
@@ -154,6 +159,8 @@ export default {
     const { updateMediaSidebarOpen, setPropertiesType } = useToolBar();
     const { saveCustomPrintLayout } = useCustomLayout();
     const { generatePdf } = usePdfGeneration();
+    const { getSheetFrames } = useFrameAction();
+    const { getElementMappings } = useMappingSheet();
 
     return {
       generalInfo,
@@ -171,7 +178,9 @@ export default {
       setPropertiesType,
       setLoadingState,
       saveCustomPrintLayout,
-      generatePdf
+      generatePdf,
+      getSheetFrames,
+      getElementMappings
     };
   },
   data() {
@@ -192,7 +201,8 @@ export default {
       autoSaveTimer: null,
       undoRedoCanvas: null,
       printCanvas: null,
-      isScroll: { x: false, y: false }
+      isScroll: { x: false, y: false },
+      digitalObjects: []
     };
   },
   computed: {
@@ -243,6 +253,9 @@ export default {
         this.updateCanvasSize();
         // get data either from API
         await this.getDataCanvas();
+
+        // get digital object for show mapping icon (when hover)
+        this.digitalObjects = await this.getDigitalObjects();
 
         this.undoRedoCanvas.reset();
 
@@ -369,7 +382,9 @@ export default {
         moved: this.handleMoved,
         scaling: e => handleScalingText(e, text),
         scaled: e => this.handleTextBoxScaled(e, rect, text, data),
-        mousedblclick: ({ target }) => this.handleDbClickText(target)
+        mousedblclick: ({ target }) => this.handleDbClickText(target),
+        mouseover: handleMouseOver,
+        mouseout: handleMouseOut
       });
     },
 
@@ -1902,10 +1917,49 @@ export default {
         item.value && listFabricObjects.push(item.value);
       });
 
+      await this.updateMappingIcon(listFabricObjects);
+
       window.printCanvas.add(...listFabricObjects);
       window.printCanvas.requestRenderAll();
 
       this.setLoadingState({ value: false });
+    },
+
+    /**
+     * To update value and color of map icon on object (text & image) when hover
+     */
+    async updateMappingIcon(fbObjects) {
+      const elementMappings = await this.getElementMappings(
+        this.pageSelected.id
+      );
+
+      // create a object for faster and easier to access later.
+      const fbObjectsById = {};
+      fbObjects.forEach(o => (fbObjectsById[o.id] = o));
+
+      let imageCouter = 1;
+      let textCounter = 1;
+
+      elementMappings.forEach(el => {
+        const objectId = el.printElementId;
+
+        const fbElement = fbObjectsById[objectId];
+
+        if (!fbElement) {
+          const digitalObjectId = el.digitalElementId;
+          const digitalObject = this.digitalObjects[digitalObjectId];
+          const isImageObj = isPpImageObject(digitalObject);
+
+          isImageObj ? imageCouter++ : textCounter++;
+          return;
+        }
+
+        const isImage = isFbImageObject(fbElement);
+        const value = isImage ? imageCouter++ : textCounter++;
+        const color = UniqueColor.generateColor(value - 1, isImage);
+
+        fbElement.mappingInfo = { color, value, id: el.id };
+      });
     },
     /**
      * Callback function for handle scaled to update text's dimension
@@ -2086,6 +2140,20 @@ export default {
     setAutosaveTimer() {
       clearInterval(this.autoSaveTimer);
       this.autoSaveTimer = setInterval(this.handleAutosave, AUTOSAVE_INTERVAL);
+    },
+    /**
+     * Get digital object for show mapping icon
+     */
+    async getDigitalObjects() {
+      //
+      const frames = await this.getSheetFrames(this.pageSelected.id);
+      const list = {};
+
+      frames.forEach(frame => {
+        frame.objects.forEach(o => (list[o.id] = o));
+      });
+
+      return list;
     }
   }
 };

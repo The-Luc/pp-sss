@@ -91,7 +91,8 @@ import {
   useAnimation,
   useFrameDelay,
   useAppCommon,
-  useCustomLayout
+  useCustomLayout,
+  useMappingSheet
 } from '@/hooks';
 
 import {
@@ -114,7 +115,9 @@ import {
   isContainDebounceProp,
   animateIn,
   animateOut,
-  renderOrderBoxes
+  renderOrderBoxes,
+  isFbImageObject,
+  isPpImageObject
 } from '@/common/utils';
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
 
@@ -141,6 +144,8 @@ import {
   CONTROL_TYPE,
   PLAY_IN_STYLES
 } from '@/common/constants/animationProperty';
+import { getSheetInfoApi } from '@/api/sheet';
+import UniqueColor from '@/plugins/UniqueColor';
 
 const ELEMENTS = {
   [OBJECT_TYPE.TEXT]: 'a text box',
@@ -203,6 +208,7 @@ export default {
     const { totalVideoDuration } = useVideo();
     const { getAssetById } = usePhotos();
     const { saveCustomDigitalLayout } = useCustomLayout();
+    const { getElementMappings } = useMappingSheet();
 
     return {
       setLoadingState,
@@ -244,7 +250,8 @@ export default {
       setFrameDelay,
       totalVideoDuration,
       getAssetById,
-      saveCustomDigitalLayout
+      saveCustomDigitalLayout,
+      getElementMappings
     };
   },
   data() {
@@ -264,7 +271,8 @@ export default {
       undoRedoCanvas: null,
       isScroll: { x: false, y: false },
       isAllowUpdateFrameDelay: false,
-      isJustEnteringEditor: false // to prevent save data when entering editor
+      isJustEnteringEditor: false, // to prevent save data when entering editor
+      printObjects: {} // used to calculate mapping value (hover icon)
     };
   },
   computed: {
@@ -304,6 +312,9 @@ export default {
         resetObjects(this.digitalCanvas);
 
         await this.getDataCanvas();
+
+        // get print objects
+        this.printObjects = await this.getPrintObjects(val.id);
 
         this.setCurrentFrameId({ id: this.frames[0].id });
 
@@ -987,7 +998,9 @@ export default {
         scaling: e => handleScalingText(e, text),
         scaled: e => this.handleTextBoxScaled(e, rect, text, data),
         mousedblclick: ({ target }) => this.handleDbClickText(target),
-        deselected: handleObjectDeselected.bind(null, rect)
+        deselected: handleObjectDeselected.bind(null, rect),
+        mouseover: handleMouseOver,
+        mouseout: handleMouseOut
       };
 
       object.on(events);
@@ -1977,7 +1990,9 @@ export default {
         scaling: e => handleScalingText(e, text),
         scaled: e => this.handleTextBoxScaled(e, rect, text, data),
         mousedblclick: ({ target }) => this.handleDbClickText(target),
-        deselected: handleObjectDeselected.bind(null, rect)
+        deselected: handleObjectDeselected.bind(null, rect),
+        mouseover: handleMouseOver,
+        mouseout: handleMouseOut
       });
     },
     /**
@@ -2079,10 +2094,48 @@ export default {
         item.value && listFabricObjects.push(item.value);
       });
 
+      await this.updateMappingIcon(listFabricObjects);
+
       this.digitalCanvas.add(...listFabricObjects);
       this.digitalCanvas.requestRenderAll();
 
       this.setLoadingState({ value: false });
+    },
+    /**
+     * To update value and color of map icon on object (text & image) when hover
+     */
+    async updateMappingIcon(fbObjects) {
+      const elementMappings = await this.getElementMappings(
+        this.pageSelected.id
+      );
+
+      // create a object for faster and easier to access later.
+      const fbObjectsById = {};
+      fbObjects.forEach(o => (fbObjectsById[o.id] = o));
+
+      let imageCouter = 1;
+      let textCounter = 1;
+
+      elementMappings.forEach(el => {
+        const objectId = el.digitalElementId;
+
+        const fbElement = fbObjectsById[objectId];
+
+        if (!fbElement) {
+          const printObjectId = el.printElementId;
+          const printObject = this.printObjects[printObjectId];
+          const isImageObj = isPpImageObject(printObject);
+
+          isImageObj ? imageCouter++ : textCounter++;
+          return;
+        }
+
+        const isImage = isFbImageObject(fbElement);
+        const value = isImage ? imageCouter++ : textCounter++;
+        const color = UniqueColor.generateColor(value - 1, isImage);
+
+        fbElement.mappingInfo = { color, value, id: el.id };
+      });
     },
     /**
      * create fabric object
@@ -2733,6 +2786,18 @@ export default {
         .getObjects()
         .filter(o => o.objectType === OBJECT_TYPE.VIDEO);
       videos.forEach(v => v.pause());
+    },
+    /**
+     * call api to get object on print editor
+     *
+     * @param {String} sheetId
+     * @returns list of print object by id
+     */
+    async getPrintObjects(sheetId) {
+      const printSheet = await getSheetInfoApi(sheetId);
+      const list = {};
+      printSheet.objects.forEach(o => (list[o.id] = o));
+      return list;
     }
   }
 };
