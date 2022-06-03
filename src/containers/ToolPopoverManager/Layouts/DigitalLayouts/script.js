@@ -26,8 +26,7 @@ import {
   useCustomLayout,
   useGetLayouts,
   useApplyDigitalLayout,
-  useObjectProperties,
-  useGetDigitalLayouts
+  useObjectProperties
 } from '@/hooks';
 
 import { getThemesApi } from '@/api/theme';
