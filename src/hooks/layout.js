@@ -68,7 +68,8 @@ import {
   isPpTextObject,
   isPpImageObject,
   getUniqueId,
-  removeMediaContentWhenCreateThumbnail
+  removeMediaContentWhenCreateThumbnail,
+  isSingleLayout
 } from '@/common/utils';
 import { useThumbnail } from '@/views/CreateBook/composables';
 import { getFrameObjectsApi, deleteFrameApi } from '@/api/frame';
@@ -708,8 +709,11 @@ export const useLayoutAddingSupport = () => {
       isScale && handleScaleElements(objects, isRightPage);
     }
 
+    // Get object(s) rest
+    const restObjs = objects.filter(obj => obj.type !== OBJECT_TYPE.BACKGROUND);
+
     if (isFullLayout || isHalfSheet(currentSheet.value)) {
-      const newObj = objects.map(obj => ({
+      const newObj = restObjs.map(obj => ({
         ...obj,
         idFromLayout: obj.id,
         id: getUniqueId()
@@ -717,8 +721,6 @@ export const useLayoutAddingSupport = () => {
       return { objects: newObj, backgrounds };
     }
 
-    // Get object(s) rest
-    const restObjs = objects.filter(obj => obj.type !== OBJECT_TYPE.BACKGROUND);
     const newObjects = restObjs.map(obj => ({
       ...obj,
       position: currentPosition,
@@ -882,10 +884,11 @@ export const useMappingLayout = isDigital => {
 
     const allObjects = [...backgrounds, ...objects];
 
-    const isForceToRight = isHalfRight(currentSheet.value);
+    const isForceToRight =
+      isHalfRight(currentSheet.value) && isSingleLayout(printLayout);
+
     // mid of normal canvas
-    const midCanvas = PRINT_PAGE_SIZE.PDF_WIDTH - PRINT_PAGE_SIZE.BLEED;
-    const option = { isForceToRight, midCanvas, isMappingMode: true };
+    const option = { isForceToRight };
 
     await savePageData(sheetId, allObjects, null, option);
 
@@ -898,7 +901,7 @@ export const useMappingLayout = isDigital => {
     );
 
     // call api update mapping type to LAYOUT MAPPING
-    // await updateToLayoutMapping(sheetId);
+    await updateToLayoutMapping(sheetId);
   };
 
   return { applyMappedDigitalLayout, applyMappedPrintLayout };
