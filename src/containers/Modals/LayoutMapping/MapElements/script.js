@@ -7,7 +7,6 @@ import {
   modifyBgToRenderOnPage,
   resetObjects,
   isEmpty,
-  getMappingColor,
   isPpTextObject,
   isPpImageObject,
   isFbTextObject
@@ -25,6 +24,7 @@ import {
 import { addEventListeners, createMediaOverlay } from '@/common/fabricObjects';
 import { useAppCommon, useMappingTemplate } from '@/hooks';
 import { renderObjectOverlay } from '@/plugins/fabric';
+import UniqueColor from '@/plugins/UniqueColor';
 
 export default {
   components: { CommonModal, PreviewItem, NumberPalettes },
@@ -128,10 +128,10 @@ export default {
     const { maxText, maxImage } = this.getMaxIndex();
     this.textColors = Array(maxText)
       .fill(0)
-      .map(() => getMappingColor());
+      .map((_, index) => UniqueColor.generateColor(index));
     this.imageColors = Array(maxImage)
       .fill(0)
-      .map(() => getMappingColor(true));
+      .map((_, index) => UniqueColor.generateColor(index, true));
 
     this.initData();
 

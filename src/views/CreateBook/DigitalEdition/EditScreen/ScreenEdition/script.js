@@ -117,7 +117,6 @@ import {
   animateOut,
   renderOrderBoxes,
   isFbImageObject,
-  getMappingColor,
   isPpImageObject
 } from '@/common/utils';
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
@@ -146,6 +145,7 @@ import {
   PLAY_IN_STYLES
 } from '@/common/constants/animationProperty';
 import { getSheetInfoApi } from '@/api/sheet';
+import UniqueColor from '@/plugins/UniqueColor';
 
 const ELEMENTS = {
   [OBJECT_TYPE.TEXT]: 'a text box',
@@ -2131,8 +2131,8 @@ export default {
         }
 
         const isImage = isFbImageObject(fbElement);
-        const color = getMappingColor(isImage);
         const value = isImage ? imageCouter++ : textCounter++;
+        const color = UniqueColor.generateColor(value - 1, isImage);
 
         fbElement.mappingInfo = { color, value, id: el.id };
       });
