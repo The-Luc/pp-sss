@@ -15,7 +15,12 @@ export const getSheetMappingConfigApi = sheetId => {
 };
 
 export const getSheetMappingElementsApi = async sheetId => {
-  const res = await graphqlRequest(getSheetMappingElementsQuery, { sheetId });
+  const res = await graphqlRequest(
+    getSheetMappingElementsQuery,
+    { sheetId },
+    false,
+    true
+  );
 
   const elementMappings = get(res, 'data.sheet.element_mappings', []);
 
