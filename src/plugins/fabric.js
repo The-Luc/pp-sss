@@ -1246,12 +1246,16 @@ export const renderMappingIcon = async target => {
 
   if (isEmpty(mappingInfo)) return;
 
-  const icon = await createMediaOverlay(IMAGE_LOCAL.LOCATION);
+  const isTextObject = isFbTextObject(target);
+  const iconSrc = isTextObject
+    ? IMAGE_LOCAL.LOCATION_WHITE
+    : IMAGE_LOCAL.LOCATION_PURPLE;
+  const icon = await createMediaOverlay(iconSrc);
 
   const color = mappingInfo.color;
   const value = mappingInfo.value;
 
-  const [background, foreground] = isFbTextObject(target)
+  const [background, foreground] = isTextObject
     ? [color, 'white']
     : ['white', color];
 
