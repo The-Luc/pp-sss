@@ -74,6 +74,7 @@ export const createElementMappingMutation = gql`
       sheet {
         id
       }
+      mapped
     }
   }
 `;

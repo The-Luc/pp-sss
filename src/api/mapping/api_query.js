@@ -29,6 +29,7 @@ export const getSheetMappingElementsApi = async sheetId => {
     printElementId: el.print_element_uid,
     digitalElementId: el.digital_element_uid,
     printContainerId: sheetId,
-    digitalContainerId: el.digital_frame?.id
+    digitalContainerId: el.digital_frame?.id,
+    mapped: el.mapped
   }));
 };

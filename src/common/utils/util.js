@@ -644,9 +644,10 @@ const getRandomInt = (min, max) => {
  *  To get random number for text and image mappings
  *
  * @param {Boolean} isImage whether to get color for image or text
+ * @param {Number} alpha opacity of the color
  * @returns a random color in shade of green or purple
  */
-export const getMappingColor = isImage => {
+export const getMappingColor = (isImage, alpha = 0.5) => {
   const textColor = {
     h: getRandomInt(100, 140),
     s: getRandomInt(41, 100),
@@ -661,7 +662,7 @@ export const getMappingColor = isImage => {
   const { h, s, l } = isImage ? imageColor : textColor;
 
   return Color(`hsl(${h}, ${s}%, ${l}%)`)
-    .alpha(0.5)
+    .alpha(alpha)
     .rgb()
     .toString();
 };

@@ -86,6 +86,7 @@ import {
 } from '@/common/utils/layout';
 import { getSheetTransitionApi } from '@/api/playback/api_query';
 import { useMappingProject, useMappingSheet } from './mapping';
+import { updateSheetApi } from '@/api/sheet';
 
 export const useLayoutPrompt = edition => {
   const EDITION_GETTERS =
@@ -831,10 +832,14 @@ export const useMappingLayout = isDigital => {
 
   /**
    * Call API to update a sheet mapping_type to LAYOUT_MAPPING
+   * Call API to update a sheet is_visited to TRUE
    */
-  const updateToLayoutMapping = async sheetId => {
+  const updateSheet = async sheetId => {
     const mappingType = MAPPING_TYPES.LAYOUT.value;
-    return updateSheetMappingConfig(sheetId, { mappingType });
+    Promise.all([
+      updateSheetMappingConfig(sheetId, { mappingType }),
+      updateSheetApi({ isVisited: true })
+    ]);
   };
 
   // trigger when use apply a mapped layout on print editor
@@ -858,8 +863,8 @@ export const useMappingLayout = isDigital => {
       frames
     );
 
-    // call api update mapping type to LAYOUT MAPPING
-    await updateToLayoutMapping(sheetId);
+    // call api update mapping type to LAYOUT MAPPING, and isVisited: true
+    await updateSheet(sheetId);
   };
 
   // trigger when use apply a mapped layout on digital editor
@@ -900,8 +905,8 @@ export const useMappingLayout = isDigital => {
       frames
     );
 
-    // call api update mapping type to LAYOUT MAPPING
-    await updateToLayoutMapping(sheetId);
+    // call api update mapping type to LAYOUT MAPPING, and isVisited: true
+    await updateSheet(sheetId);
   };
 
   return { applyMappedDigitalLayout, applyMappedPrintLayout };

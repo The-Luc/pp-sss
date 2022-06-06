@@ -2132,7 +2132,7 @@ export default {
 
         const isImage = isFbImageObject(fbElement);
         const value = isImage ? imageCouter++ : textCounter++;
-        const color = UniqueColor.generateColor(value - 1, isImage);
+        const color = UniqueColor.generateColor(value - 1, isImage, 1);
 
         fbElement.mappingInfo = { color, value, id: el.id };
       });
