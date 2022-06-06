@@ -774,6 +774,9 @@ export const useApplyPrintLayout = () => {
       isFit
     );
 
+    // UPDATE for Mapped Layout
+    await applyMappedDigitalLayout(layout, objectList);
+
     setObjects({ objectList });
 
     // Update sheet fields
@@ -782,9 +785,6 @@ export const useApplyPrintLayout = () => {
       themeId,
       previewImageUrl: layout.previewImageUrl
     });
-
-    // UPDATE for Mapped Layout
-    await applyMappedDigitalLayout(layout, objectList);
   };
 
   return { applyPrintLayout };
@@ -804,13 +804,13 @@ export const useApplyDigitalLayout = () => {
 
     const finalFrames = await addingLayoutFrames(sheetId, layout.id);
 
+    // UPDATE for Mapped Layout
+    await applyMappedPrintLayout(layout, finalFrames);
+
     clearAllFrames();
     setFrames({ framesList: finalFrames });
 
     setCurrentFrameId({ id: finalFrames[0].id });
-
-    // UPDATE for Mapped Layout
-    await applyMappedPrintLayout(layout, finalFrames);
 
     return finalFrames;
   };

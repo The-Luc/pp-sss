@@ -129,8 +129,8 @@ export default {
     /**
      * Save objects to store and draw on canvas
      */
-    onApplyLayout(args) {
-      this.applyPrintLayout({
+    async onApplyLayout(args) {
+      await this.applyPrintLayout({
         sheetId: this.pageSelected?.id,
         themeId: this.themeSelected?.id,
         layout: this.layout,
