@@ -647,7 +647,7 @@ const getRandomInt = (min, max) => {
  * @param {Number} alpha opacity of the color
  * @returns a random color in shade of green or purple
  */
-export const getMappingColor = (isImage, alpha = 0.5) => {
+export const getMappingColor = (isImage, alpha = 1) => {
   const textColor = {
     h: getRandomInt(100, 140),
     s: getRandomInt(41, 100),

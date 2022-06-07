@@ -117,7 +117,8 @@ import {
   animateOut,
   renderOrderBoxes,
   isFbImageObject,
-  isPpImageObject
+  isPpImageObject,
+  getObjectById
 } from '@/common/utils';
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
 
@@ -2132,7 +2133,7 @@ export default {
 
         const isImage = isFbImageObject(fbElement);
         const value = isImage ? imageCouter++ : textCounter++;
-        const color = UniqueColor.generateColor(value - 1, isImage, 1);
+        const color = UniqueColor.generateColor(value - 1, isImage);
 
         fbElement.mappingInfo = { color, value, id: el.id };
       });
@@ -2795,9 +2796,7 @@ export default {
      */
     async getPrintObjects(sheetId) {
       const printSheet = await getSheetInfoApi(sheetId);
-      const list = {};
-      printSheet.objects.forEach(o => (list[o.id] = o));
-      return list;
+      return getObjectById(printSheet.objects);
     }
   }
 };

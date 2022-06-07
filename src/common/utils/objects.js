@@ -10,7 +10,8 @@ import {
 import {
   DEBOUNCE_PROPERTIES,
   OBJECT_TYPE,
-  DATABASE_DPI
+  DATABASE_DPI,
+  IMAGE_LOCAL
 } from '@/common/constants';
 import { isEmpty } from './util';
 import { inToPx, pxToIn } from './canvas';
@@ -238,4 +239,71 @@ export const convertObjectPxToInch = objects => {
     o.size.width = pxToIn(o.size.width, DATABASE_DPI);
     o.size.height = pxToIn(o.size.height, DATABASE_DPI);
   });
+};
+
+/**
+ * To create a structure that can easy get object by its id;
+ * NOTE: the returned objects are still linked to the original objects
+ * so any changes made on the returned objects will reflect to original objects
+ *
+ * @param {Array} objects element of print or digital
+ * @returns object of elemnt by their ids
+ */
+export const getObjectById = objects => {
+  const list = {};
+  objects.forEach(o => (list[o.id] = o));
+  return list;
+};
+
+/**
+ * Get digital object by their ids
+ * To create a structure that can easy get object by its id;
+ * NOTE: the returned objects are still linked to the original objects
+ * so any changes made on the returned objects will reflect to original objects
+
+ * @param {Array} objects element of print or digital
+ * @returns object of elemnt by their ids
+ */
+export const getDigitalObjectById = frames => {
+  const list = {};
+
+  frames.forEach(frame => {
+    frame.objects.forEach(o => (list[o.id] = o));
+  });
+
+  return list;
+};
+
+/**
+ * whether the content of objects are difference
+ *
+ * @param {Object} objA
+ * @param {Object} objB
+ * @returns Boolean
+ */
+export const isContentDifference = (objA, objB) => {
+  if (isPpTextObject(objA)) {
+    // if text object
+    return objA.text !== objB.text;
+  }
+  // if image object
+  const urlObjectA = objA.imageUrl || IMAGE_LOCAL.PLACE_HOLDER;
+  const urlObjectB = objB.imageUrl || IMAGE_LOCAL.PLACE_HOLDER;
+
+  return urlObjectA !== urlObjectB;
+};
+
+/**
+ * To update content of objectA to objectB
+ * @param {Object} objA
+ * @param {Object} objB
+ */
+export const updateContentToObject = (objA, objB) => {
+  if (isPpTextObject(objA)) {
+    // if text object
+    objB.text = objA.text;
+    return;
+  }
+  // if image object
+  objB.imageUrl = objA.imageUrl;
 };

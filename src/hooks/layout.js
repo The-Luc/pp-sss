@@ -49,7 +49,8 @@ import {
   DIGITAL_LAYOUT_TYPES,
   SAVED_AND_FAVORITES_TYPE,
   PRINT_PAGE_SIZE,
-  MAPPING_TYPES
+  MAPPING_TYPES,
+  PRIMARY_FORMAT_TYPES
 } from '@/common/constants';
 
 import {
@@ -69,10 +70,18 @@ import {
   isPpImageObject,
   getUniqueId,
   removeMediaContentWhenCreateThumbnail,
-  isSingleLayout
+  isSingleLayout,
+  getObjectById,
+  getDigitalObjectById,
+  isContentDifference,
+  updateContentToObject
 } from '@/common/utils';
 import { useThumbnail } from '@/views/CreateBook/composables';
-import { getFrameObjectsApi, deleteFrameApi } from '@/api/frame';
+import {
+  getFrameObjectsApi,
+  deleteFrameApi,
+  updateFrameApi
+} from '@/api/frame';
 import {
   useFrame,
   useFrameOrdering,
@@ -838,7 +847,7 @@ export const useMappingLayout = isDigital => {
     const mappingType = MAPPING_TYPES.LAYOUT.value;
     Promise.all([
       updateSheetMappingConfig(sheetId, { mappingType }),
-      updateSheetApi({ isVisited: true })
+      updateSheetApi(sheetId, { isVisited: true })
     ]);
   };
 
@@ -910,4 +919,81 @@ export const useMappingLayout = isDigital => {
   };
 
   return { applyMappedDigitalLayout, applyMappedPrintLayout };
+};
+
+export const useSyncLayoutMapping = () => {
+  const { getMappingConfig } = useMappingProject();
+  const { getSheetFrames } = useFrameAction();
+  const { generateMultiThumbnails } = useThumbnail();
+
+  const syncToDigital = async (sheetId, printObjects, elementMapping) => {
+    // check mapping config
+    const config = await getMappingConfig(sheetId);
+    const isPrintPrimary =
+      config.primaryMapping === PRIMARY_FORMAT_TYPES.PRINT.value;
+
+    if (!isPrintPrimary || !config.enableContentMapping) return;
+
+    // mapping function: update data for digital frames
+    // load all digital frames of current sheet
+    const frames = await getSheetFrames(sheetId);
+
+    const willUpdateFrameIds = [];
+
+    // update content if mapped
+    const printObjectByIds = getObjectById(printObjects);
+    const digitalObjectByIds = getDigitalObjectById(frames);
+
+    elementMapping.forEach(mapping => {
+      if (!mapping.mapped) return;
+
+      // compare content of print object and digital object
+      const {
+        digitalContainerId: frameId,
+        printElementId,
+        digitalElementId
+      } = mapping;
+
+      const printObject = printObjectByIds[printElementId];
+      const digitalObject = digitalObjectByIds[digitalElementId];
+
+      if (!isContentDifference(printObject, digitalObject)) return;
+
+      updateContentToObject(printObject, digitalObject);
+
+      willUpdateFrameIds.push(frameId);
+    });
+
+    // call API to save to DB
+
+    const frameIds = [...new Set(willUpdateFrameIds)];
+    const willUpdateFrames = frames.reduce((acc, curr) => {
+      if (frameIds.includes(curr.id)) {
+        acc.push(curr);
+      }
+      return acc;
+    }, []);
+
+    const imageUrls = await generateMultiThumbnails(
+      willUpdateFrames.map(frame => frame.objects),
+      true
+    );
+
+    // update url into frames
+    willUpdateFrames.forEach(
+      (frame, idx) => (frame.previewImageUrl = imageUrls[idx])
+    );
+
+    // update frames
+    await Promise.all(
+      willUpdateFrames.map(frame => updateFrameApi(frame.id, frame))
+    );
+
+    // remove all in-project assets of the page
+  };
+
+  const syncToPrint = async (sheetId, elementMapping) => {
+    //
+  };
+  return { syncToDigital, syncToPrint };
 };

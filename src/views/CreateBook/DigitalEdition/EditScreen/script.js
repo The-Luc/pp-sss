@@ -934,7 +934,7 @@ export default {
         true
       );
 
-      // update url into frams
+      // update url into frames
       modifiedFrameIdx.forEach(
         (frameIdx, idx) =>
           (currentFrames[frameIdx].previewImageUrl = imageUrls[idx])
