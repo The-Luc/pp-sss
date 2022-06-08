@@ -1922,6 +1922,11 @@ export default {
         item.value && listFabricObjects.push(item.value);
       });
 
+      // get sheet element mappings
+      this.elementMappings = await this.storeElementMappings(
+        this.pageSelected.id
+      );
+
       await this.updateMappingIcon(listFabricObjects);
 
       window.printCanvas.add(...listFabricObjects);
@@ -1940,6 +1945,8 @@ export default {
 
       let imageCouter = 1;
       let textCounter = 1;
+
+      console.log('mapping icon ', this.elementMappings);
 
       this.elementMappings.forEach(el => {
         const objectId = el.printElementId;
@@ -1961,6 +1968,7 @@ export default {
 
         fbElement.mappingInfo = { color, value, id: el.id, mapped: el.mapped };
       });
+      console.log(fbObjects);
     },
     /**
      * Callback function for handle scaled to update text's dimension

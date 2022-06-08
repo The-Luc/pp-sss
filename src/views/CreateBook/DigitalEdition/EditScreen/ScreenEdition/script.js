@@ -364,6 +364,11 @@ export default {
 
       this.updateMediaSidebarOpen({ isOpen: false });
 
+      // get sheet element mappings
+      this.elementMappings = await this.storeElementMappings(
+        this.pageSelected.id
+      );
+
       await this.drawObjectsOnCanvas(this.sheetLayout);
 
       this.isAllowUpdateFrameDelay = true;
@@ -2099,7 +2104,7 @@ export default {
         item.value && listFabricObjects.push(item.value);
       });
 
-      await this.updateMappingIcon(listFabricObjects);
+      this.updateMappingIcon(listFabricObjects);
 
       this.digitalCanvas.add(...listFabricObjects);
       this.digitalCanvas.requestRenderAll();
