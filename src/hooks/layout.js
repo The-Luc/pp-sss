@@ -86,7 +86,8 @@ import {
   useFrame,
   useFrameOrdering,
   useFrameAction,
-  useSavePageData
+  useSavePageData,
+  useAppCommon
 } from '@/hooks';
 import { updateTransitionApi } from '@/api/playback';
 import {
@@ -95,7 +96,7 @@ import {
 } from '@/common/utils/layout';
 import { getSheetTransitionApi } from '@/api/playback/api_query';
 import { useMappingProject, useMappingSheet } from './mapping';
-import { updateSheetApi } from '@/api/sheet';
+import { getSheetInfoApi, updateSheetApi } from '@/api/sheet';
 
 export const useLayoutPrompt = edition => {
   const EDITION_GETTERS =
@@ -925,10 +926,13 @@ export const useSyncLayoutMapping = () => {
   const { getMappingConfig } = useMappingProject();
   const { getSheetFrames } = useFrameAction();
   const { generateMultiThumbnails } = useThumbnail();
+  const { generalInfo } = useAppCommon();
+  const { savePageData } = useSavePageData();
 
   const syncToDigital = async (sheetId, printObjects, elementMapping) => {
+    const bookId = generalInfo.value.bookId;
     // check mapping config
-    const config = await getMappingConfig(sheetId);
+    const config = await getMappingConfig(bookId);
     const isPrintPrimary =
       config.primaryMapping === PRIMARY_FORMAT_TYPES.PRINT.value;
 
@@ -936,17 +940,18 @@ export const useSyncLayoutMapping = () => {
 
     // mapping function: update data for digital frames
     // load all digital frames of current sheet
-    const frames = await getSheetFrames(sheetId);
+    const dbFrames = await getSheetFrames(sheetId);
+    const frames = cloneDeep(dbFrames);
 
     const willUpdateFrameIds = [];
 
-    // update content if mapped
     const printObjectByIds = getObjectById(printObjects);
     const digitalObjectByIds = getDigitalObjectById(frames);
 
     elementMapping.forEach(mapping => {
       if (!mapping.mapped) return;
 
+      // update content if mapped
       // compare content of print object and digital object
       const {
         digitalContainerId: frameId,
@@ -956,6 +961,8 @@ export const useSyncLayoutMapping = () => {
 
       const printObject = printObjectByIds[printElementId];
       const digitalObject = digitalObjectByIds[digitalElementId];
+
+      if (!printObject || !digitalObject) return;
 
       if (!isContentDifference(printObject, digitalObject)) return;
 
@@ -992,8 +999,46 @@ export const useSyncLayoutMapping = () => {
     // remove all in-project assets of the page
   };
 
-  const syncToPrint = async (sheetId, elementMapping) => {
-    //
+  const syncToPrint = async (sheetId, frame, elementMapping) => {
+    const bookId = generalInfo.value.bookId;
+    const config = await getMappingConfig(bookId);
+    const isDigitalPrimary =
+      config.primaryMapping === PRIMARY_FORMAT_TYPES.DIGITAL.value;
+
+    if (!isDigitalPrimary || !config.enableContentMapping) return;
+
+    // mapping function: update data for print spread
+    // load print spread data
+    const sheet = await getSheetInfoApi(sheetId);
+    const { objects: dbObjects } = sheet;
+    const printObjects = cloneDeep(dbObjects);
+
+    const printObjectByIds = getObjectById(printObjects);
+    const digitalObjectByIds = getObjectById(frame.objects);
+    let isNeedToUpdate = false;
+
+    elementMapping.forEach(mapping => {
+      if (!mapping.mapped) return;
+
+      // update content if mapped
+      // compare content of print object and digital object
+      const { printElementId, digitalElementId } = mapping;
+
+      const printObject = printObjectByIds[printElementId];
+      const digitalObject = digitalObjectByIds[digitalElementId];
+
+      if (!printObject || !digitalObject) return;
+
+      if (!isContentDifference(digitalObject, printObject)) return;
+
+      updateContentToObject(digitalObject, printObject);
+      isNeedToUpdate = true;
+    });
+
+    // call API to save to DB
+    if (!isNeedToUpdate) return;
+
+    await savePageData(sheetId, printObjects);
   };
   return { syncToDigital, syncToPrint };
 };

@@ -152,7 +152,7 @@ export const useSaveData = () => {
     // update objects and other data
     const isSuccess = await savePrintDataApi(variables, isAutosave);
 
-    // await syncToDigital(sheetId, screenData.objects, elementMappings);
+    await syncToDigital(sheetId, screenData.objects, elementMappings);
 
     return isSuccess && isOk(resOfInProject);
   };

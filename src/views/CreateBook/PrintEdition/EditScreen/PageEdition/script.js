@@ -161,10 +161,7 @@ export default {
     const { saveCustomPrintLayout } = useCustomLayout();
     const { generatePdf } = usePdfGeneration();
     const { getSheetFrames } = useFrameAction();
-    const {
-      storeElementMappings,
-      getStoredElementMappings
-    } = useMappingSheet();
+    const { storeElementMappings } = useMappingSheet();
 
     return {
       generalInfo,
@@ -184,8 +181,7 @@ export default {
       saveCustomPrintLayout,
       generatePdf,
       getSheetFrames,
-      storeElementMappings,
-      getStoredElementMappings
+      storeElementMappings
     };
   },
   data() {

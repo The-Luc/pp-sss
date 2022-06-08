@@ -89,11 +89,7 @@ export default {
     const { setInfoBar } = useInfoBar();
     const { setCurrentSheetId } = useMutationPrintSheet();
     const { currentUser, authenticate } = useUser();
-    const {
-      savePrintEditScreen,
-      getDataEditScreen,
-      savePortraitObjects
-    } = useSaveData();
+    const { savePortraitObjects } = useSaveData();
     const { setPropertyById, setPropOfMultipleObjects } = useProperties();
     const { updateSavingStatus } = useSavingStatus();
     const { currentSheet, getSheets } = useSheet();
@@ -122,8 +118,6 @@ export default {
       setCurrentSheetId,
       currentUser,
       authenticate,
-      savePrintEditScreen,
-      getDataEditScreen,
       setPropertyById,
       updateSavingStatus,
       updateSheetMedia,

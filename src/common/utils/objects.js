@@ -306,4 +306,11 @@ export const updateContentToObject = (objA, objB) => {
   }
   // if image object
   objB.imageUrl = objA.imageUrl;
+
+  if (!objB || objB.imageUrl === IMAGE_LOCAL.PLACE_HOLDER) {
+    objB.hasImage = false;
+    return;
+  }
+
+  objB.hasImage = true;
 };
