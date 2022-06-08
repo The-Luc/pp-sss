@@ -17,7 +17,8 @@ import {
   useToolBar,
   useCustomLayout,
   useFrameAction,
-  useMappingSheet
+  useMappingSheet,
+  useModal
 } from '@/hooks';
 import { startDrawBox } from '@/common/fabricObjects/drawingBox';
 
@@ -105,13 +106,16 @@ import {
   IMAGE_LOCAL,
   PROPERTIES_TOOLS,
   EDITION,
-  PORTRAIT_IMAGE_MASK
+  PORTRAIT_IMAGE_MASK,
+  CUSTOM_CHANGE_MODAL
 } from '@/common/constants';
 import SizeWrapper from '@/components/SizeWrapper';
 import PrintCanvasLines from './PrintCanvasLines';
 import PageWrapper from './PageWrapper';
 import XRuler from './Rulers/XRuler';
 import YRuler from './Rulers/YRuler';
+import MappingLayoutCustomChange from '@/containers/Modals/MappingLayoutCustomChange';
+import ConfirmAction from '@/containers/Modals/ConfirmAction';
 import {
   AUTOSAVE_INTERVAL,
   COPY_OBJECT_KEY,
@@ -136,6 +140,7 @@ import {
 import { useBookPrintInfo } from '../composables';
 import { usePdfGeneration } from '../../MainScreen/composables';
 import UniqueColor from '@/plugins/UniqueColor';
+import { getItem, setItem } from '@/common/storage';
 
 export default {
   components: {
@@ -143,7 +148,9 @@ export default {
     SizeWrapper,
     PrintCanvasLines,
     XRuler,
-    YRuler
+    YRuler,
+    MappingLayoutCustomChange,
+    ConfirmAction
   },
   setup() {
     const { printBookInfo: generalInfo } = useBookPrintInfo();
@@ -162,6 +169,7 @@ export default {
     const { generatePdf } = usePdfGeneration();
     const { getSheetFrames } = useFrameAction();
     const { storeElementMappings } = useMappingSheet();
+    const { toggleModal } = useModal();
 
     return {
       generalInfo,
@@ -181,7 +189,8 @@ export default {
       saveCustomPrintLayout,
       generatePdf,
       getSheetFrames,
-      storeElementMappings
+      storeElementMappings,
+      toggleModal
     };
   },
   data() {
@@ -204,7 +213,8 @@ export default {
       printCanvas: null,
       isScroll: { x: false, y: false },
       digitalObjects: [],
-      elementMappings: []
+      elementMappings: [],
+      isShowCustomChangesConfirm: false // for editing in mapped layout applied sheet
     };
   },
   computed: {
@@ -291,6 +301,8 @@ export default {
     window.addEventListener('paste', this.handlePaste);
 
     document.body.addEventListener('keyup', this.handleDeleteKey);
+
+    // this.isShowCustomChangesConfirm =
   },
   beforeDestroy() {
     window.removeEventListener('copy', this.handleCopy);
@@ -995,6 +1007,7 @@ export default {
      * Event fire when user click on Text button on Toolbar to add new text on canvas
      */
     addText(x, y, width, height) {
+      this.handleShowCustomChangeModal();
       const { object, data } = createTextBox(x, y, width, height, {});
 
       this.handleAddTextEventListeners(object, data);
@@ -1030,6 +1043,8 @@ export default {
      * Event fire when user click on Image button on Toolbar to add new image on canvas
      */
     async addImageBox(x, y, width, height, options) {
+      this.handleShowCustomChangeModal();
+
       const id = getUniqueId();
 
       const size = new BaseSize({
@@ -1102,6 +1117,7 @@ export default {
      * @param {Boolean} isLeft      is add to the left page or right page
      */
     async addBackground({ background, isLeft = true }) {
+      this.handleShowCustomChangeModal('background');
       const id = getUniqueId();
 
       const newBackground = new BackgroundElementObject({
@@ -1178,6 +1194,7 @@ export default {
      * @param {Array} clipArts - list clip art add on Canvas
      */
     async addClipArt(clipArts) {
+      this.handleShowCustomChangeModal('clipart');
       this.setLoadingState({ value: true });
 
       const toBeAddedClipArts = clipArts.map(c => {
@@ -1407,6 +1424,7 @@ export default {
      * @param {Array} shapes  list of object of adding shapes
      */
     async addShapes(shapes) {
+      this.handleShowCustomChangeModal('shape');
       this.setLoadingState({ value: true });
 
       const toBeAddedShapes = shapes.map(s => {
@@ -2153,6 +2171,34 @@ export default {
     async getDigitalObjects() {
       const frames = await this.getSheetFrames(this.pageSelected.id);
       return getDigitalObjectById(frames);
+    },
+    /**
+     * Show warning modal when having custom changes on renderd mapped layout sheet
+     */
+    handleShowCustomChangeModal() {
+      const isHideMess = getItem(CUSTOM_CHANGE_MODAL) || false;
+
+      if (isHideMess) return;
+
+      this.isShowCustomChangesConfirm = true;
+      this.toggleModal({
+        isOpenModal: true
+      });
+    },
+    /**
+     *  To hide the warning modal and save user setting if any
+     *
+     * @param {Boolean} isHideMess whether user click on the hide message checkbox
+     */
+    onClickGotItCustomChange(isHideMess) {
+      this.isShowCustomChangesConfirm = false;
+      this.toggleModal({
+        isOpenModal: false
+      });
+
+      if (!isHideMess) return;
+
+      setItem(CUSTOM_CHANGE_MODAL, true);
     }
   }
 };

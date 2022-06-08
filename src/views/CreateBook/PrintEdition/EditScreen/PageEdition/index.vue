@@ -33,6 +33,15 @@
         </SizeWrapper>
       </template>
     </PageWrapper>
+    <mapping-layout-custom-change
+      v-if="isShowCustomChangesConfirm"
+      @onAccept="onClickGotItCustomChange"
+    >
+      The Mapping Type for this spread is <strong>Layout Mapping</strong>. That
+      means that only content changes made to the pre-populated image and text
+      boxes will mapped to the digital edition. Custom changes, like adding a
+      new image box, will NOT be reflected in the digital edition.
+    </mapping-layout-custom-change>
   </div>
 </template>
 
