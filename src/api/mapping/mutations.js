@@ -61,3 +61,37 @@ export const updateMappingConfigMutation = gql`
     }
   }
 `;
+
+export const createElementMappingMutation = gql`
+  mutation createElementMapping($params: ElementMappingInput) {
+    create_element_mapping(mapping_params: $params) {
+      id
+      print_element_uid
+      digital_frame {
+        id
+      }
+      digital_element_uid
+      sheet {
+        id
+      }
+    }
+  }
+`;
+
+export const deleteElementMappingMutation = gql`
+  mutation deleteElementMapping($ids: [ID!]!) {
+    delete_element_mappings(element_mapping_ids: $ids) {
+      id
+    }
+  }
+`;
+
+export const updateSheetMappingConfigMutation = gql`
+  mutation updateSheetMappingConfig($sheetId: ID!, $params: SheetInput) {
+    update_sheet(sheet_id: $sheetId, sheet_params: $params) {
+      id
+      mapping_type
+      mapping_status
+    }
+  }
+`;

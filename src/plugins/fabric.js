@@ -6,8 +6,10 @@ import {
   OBJECT_TYPE,
   VIDEO_MSPF,
   PORTRAIT_IMAGE_MASK,
-  OVERLAY_BACKGROUND_COLOR
+  OVERLAY_BACKGROUND_COLOR,
+  IMAGE_LOCAL
 } from '@/common/constants';
+import { createMediaOverlay } from '@/common/fabricObjects';
 
 import {
   getRectDashes,
@@ -18,7 +20,8 @@ import {
   videoEndRewindEvent,
   videoRewindEvent,
   videoSeekEvent,
-  videoToggleStatusEvent
+  videoToggleStatusEvent,
+  isFbTextObject
 } from '@/common/utils';
 import {
   handleRenderOverlayImage,
@@ -1227,6 +1230,78 @@ export const renderObjectOverlay = (target, icon) => {
     iconWidth,
     iconHeight
   );
+
+  ctx.restore();
+};
+
+/**
+ *  Render a overlay on the object
+ *
+ * @param {Object} target fabric element
+ */
+
+export const renderMappingIcon = async target => {
+  const { canvas, mappingInfo, angle } = target;
+  const ctx = canvas.getContext('2d');
+
+  if (isEmpty(mappingInfo)) return;
+
+  const isTextObject = isFbTextObject(target);
+  const iconSrc = isTextObject
+    ? IMAGE_LOCAL.LOCATION_WHITE
+    : IMAGE_LOCAL.LOCATION_PURPLE;
+  const icon = await createMediaOverlay(iconSrc);
+
+  const color = mappingInfo.color;
+  const value = mappingInfo.value;
+
+  const [background, foreground] = isTextObject
+    ? [color, 'white']
+    : ['white', color];
+
+  const { top, left, width, height } = target.getBoundingRect();
+  const centerX = left + width / 2;
+  const centerY = top + height / 2;
+
+  // box size
+  const w = 41;
+  const h = 24;
+  const x = left + 5;
+  const y = top + 5;
+  const r = 5;
+  const calcAngle = (Math.PI * (angle % 360)) / 180;
+
+  ctx.save();
+  ctx.translate(centerX, centerY);
+  ctx.rotate(calcAngle);
+  ctx.translate(-centerX, -centerY);
+
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.arcTo(x + w, y, x + w, y + h, r);
+  ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r);
+  ctx.arcTo(x, y, x + w, y, r);
+  ctx.closePath();
+  ctx.clip();
+
+  ctx.strokeStyle = foreground;
+  ctx.fillStyle = background;
+  ctx.lineWidth = 3;
+  ctx.fill();
+  ctx.stroke();
+
+  const iconWidth = 16;
+  const iconHeight = 16;
+
+  ctx.drawImage(icon, left + 9, top + 9, iconWidth, iconHeight);
+
+  // draw text
+  ctx.font = '12px "MuseoSans 500"';
+  ctx.textBaseline = 'middle';
+  ctx.textAlign = 'center';
+  ctx.fillStyle = foreground;
+  ctx.fillText(`${value}`, left + 33, top + 19);
 
   ctx.restore();
 };

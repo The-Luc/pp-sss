@@ -10,6 +10,7 @@ import {
   getLayoutsByTypeQuery,
   getLayoutsPreviewQuery,
   getLayoutsQuery,
+  getPrintLayoutByIdQuery,
   getUserDigitalLayoutsQuery,
   getUserLayoutsQuery
 } from './queries';
@@ -133,6 +134,17 @@ export const getPrintLayoutsByTypeApi = async (layoutTypeId, isIgnoreCache) => {
       }))
     )
     .flat();
+};
+
+export const getPrintLayoutById = async id => {
+  const layoutPromise = graphqlRequest(getPrintLayoutByIdQuery, { id });
+  const objectPromise = getLayoutElementsApi(id);
+
+  const res = await Promise.all([layoutPromise, objectPromise]);
+  const template = layoutMapping(res[0].data.template);
+  template.objects = res[1];
+
+  return template;
 };
 
 /** GET PRINT LAYOUT ELEMENTS */

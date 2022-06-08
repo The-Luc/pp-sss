@@ -33,12 +33,20 @@ export const isPpImageObject = object => {
   return object?.type === OBJECT_TYPE.IMAGE;
 };
 
+export const isPpTextOrImage = object => {
+  return isPpTextObject(object) || isPpImageObject(object);
+};
+
 export const isFbImageObject = object => {
   return object?.objectType === OBJECT_TYPE.IMAGE;
 };
 
 export const isFbTextObject = object => {
   return object?.objectType === OBJECT_TYPE.TEXT;
+};
+
+export const isFbTextImageObject = object => {
+  return isFbTextObject(object) || isFbImageObject(object);
 };
 
 /**

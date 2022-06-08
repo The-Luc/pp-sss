@@ -28,6 +28,7 @@ export class ImageCrop extends BaseObject {
 }
 
 export class ImageElementObject extends BaseMoveableElementObject {
+  idFromLayout = null;
   type = OBJECT_TYPE.IMAGE;
   styleId = DEFAULT_IMAGE.STYLE_ID;
   imageId = null;

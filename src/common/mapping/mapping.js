@@ -11,17 +11,36 @@ export const projectMapping = data => {
 
   const mapRules = {
     data: {
-      mapping_type: {
-        name: 'mappingType'
-      },
       primary_mapping_format: {
         name: 'primaryMapping'
       },
-      mapping_status: {
-        name: 'mappingStatus'
-      },
       enable_content_mapping: {
         name: 'enableContentMapping'
+      }
+    },
+    restrict: []
+  };
+
+  return mapObject(data, mapRules);
+};
+
+/**
+ * To map API object to structure that can be use on the FE 
+ 
+ * @param {Object} data sheet mapping data from API
+ * return mapped object
+ */
+export const sheetMappingConfigMapping = data => {
+  if (!data) return {};
+
+  const mapRules = {
+    data: {
+      mapping_status: {
+        name: 'mappingStatus',
+        isForce: true
+      },
+      mapping_type: {
+        name: 'mappingType'
       }
     },
     restrict: []
@@ -39,17 +58,34 @@ export const projectMapping = data => {
 export const projectMappingToApi = data => {
   const mapRules = {
     data: {
-      mappingType: {
-        name: 'mapping_type'
-      },
       primaryMapping: {
         name: 'primary_mapping_format'
       },
-      mappingStatus: {
-        name: 'mapping_status'
-      },
       enableContentMapping: {
         name: 'enable_content_mapping'
+      }
+    },
+    restrict: []
+  };
+
+  return mapObject(data, mapRules);
+};
+
+/**
+ * To map FE object to structure that can be sent to server
+ 
+ * @param {Object} data sheet mapping data
+ * return mapped object
+ */
+export const sheetMappingConfigToApiMapping = data => {
+  const mapRules = {
+    data: {
+      mappingStatus: {
+        name: 'mapping_status',
+        isForce: true
+      },
+      mappingType: {
+        name: 'mapping_type'
       }
     },
     restrict: []

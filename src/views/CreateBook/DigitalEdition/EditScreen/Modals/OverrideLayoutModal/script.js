@@ -4,6 +4,7 @@ import PpButton from '@/components/Buttons/Button';
 import {
   useAnimation,
   useApplyDigitalLayout,
+  useLayoutAddingSupport,
   useFrame,
   useFrameReplace,
   useModal
@@ -18,6 +19,7 @@ export default {
     const { updateObjectsToStore } = useObject();
     const { updatePlayInIds, updatePlayOutIds } = useAnimation();
     const { applyDigitalLayout } = useApplyDigitalLayout();
+    const { getLayoutFrames } = useLayoutAddingSupport();
 
     return {
       handleReplaceFrame,
@@ -28,7 +30,8 @@ export default {
       updateObjectsToStore,
       updatePlayInIds,
       updatePlayOutIds,
-      applyDigitalLayout
+      applyDigitalLayout,
+      getLayoutFrames
     };
   },
   components: {
@@ -36,11 +39,12 @@ export default {
     PpButton
   },
   methods: {
-    onAction() {
+    async onAction() {
       const { sheetData } = this.modalData?.props;
 
       if (sheetData.isReplaceFrame) {
-        const frame = sheetData.layout?.frames[0] || [];
+        const layout = await this.getLayoutFrames(sheetData.layout.id);
+        const frame = layout?.frames[0] || [];
 
         this.updateObjectsToStore({ objects: frame.objects });
         this.updatePlayInIds({ playInIds: frame.playInIds });
