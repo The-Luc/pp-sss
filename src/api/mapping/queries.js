@@ -44,6 +44,7 @@ export const elementMappingDetail = gql`
     }
     digital_element_uid
     print_element_uid
+    mapped
   }
 `;
 export const getSheetMappingElementsQuery = gql`

@@ -117,7 +117,8 @@ import {
   animateOut,
   renderOrderBoxes,
   isFbImageObject,
-  isPpImageObject
+  isPpImageObject,
+  getObjectById
 } from '@/common/utils';
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
 
@@ -208,7 +209,7 @@ export default {
     const { totalVideoDuration } = useVideo();
     const { getAssetById } = usePhotos();
     const { saveCustomDigitalLayout } = useCustomLayout();
-    const { getElementMappings } = useMappingSheet();
+    const { storeElementMappings } = useMappingSheet();
 
     return {
       setLoadingState,
@@ -251,7 +252,7 @@ export default {
       totalVideoDuration,
       getAssetById,
       saveCustomDigitalLayout,
-      getElementMappings
+      storeElementMappings
     };
   },
   data() {
@@ -272,7 +273,8 @@ export default {
       isScroll: { x: false, y: false },
       isAllowUpdateFrameDelay: false,
       isJustEnteringEditor: false, // to prevent save data when entering editor
-      printObjects: {} // used to calculate mapping value (hover icon)
+      printObjects: {}, // used to calculate mapping value (hover icon)
+      elementMappings: []
     };
   },
   computed: {
@@ -312,6 +314,9 @@ export default {
         resetObjects(this.digitalCanvas);
 
         await this.getDataCanvas();
+
+        // get sheet element mappings
+        this.elementMappings = await this.storeElementMappings(val.id);
 
         // get print objects
         this.printObjects = await this.getPrintObjects(val.id);
@@ -358,6 +363,11 @@ export default {
       this.undoRedoCanvas.reset();
 
       this.updateMediaSidebarOpen({ isOpen: false });
+
+      // get sheet element mappings
+      this.elementMappings = await this.storeElementMappings(
+        this.pageSelected.id
+      );
 
       await this.drawObjectsOnCanvas(this.sheetLayout);
 
@@ -2094,7 +2104,7 @@ export default {
         item.value && listFabricObjects.push(item.value);
       });
 
-      await this.updateMappingIcon(listFabricObjects);
+      this.updateMappingIcon(listFabricObjects);
 
       this.digitalCanvas.add(...listFabricObjects);
       this.digitalCanvas.requestRenderAll();
@@ -2105,10 +2115,6 @@ export default {
      * To update value and color of map icon on object (text & image) when hover
      */
     async updateMappingIcon(fbObjects) {
-      const elementMappings = await this.getElementMappings(
-        this.pageSelected.id
-      );
-
       // create a object for faster and easier to access later.
       const fbObjectsById = {};
       fbObjects.forEach(o => (fbObjectsById[o.id] = o));
@@ -2116,7 +2122,7 @@ export default {
       let imageCouter = 1;
       let textCounter = 1;
 
-      elementMappings.forEach(el => {
+      this.elementMappings.forEach(el => {
         const objectId = el.digitalElementId;
 
         const fbElement = fbObjectsById[objectId];
@@ -2134,7 +2140,7 @@ export default {
         const value = isImage ? imageCouter++ : textCounter++;
         const color = UniqueColor.generateColor(value - 1, isImage);
 
-        fbElement.mappingInfo = { color, value, id: el.id };
+        fbElement.mappingInfo = { color, value, id: el.id, mapped: el.mapped };
       });
     },
     /**
@@ -2172,7 +2178,7 @@ export default {
 
       this.updateFrameObjects({ frameId });
       const data = this.getDataEditScreen(frameId);
-      await this.saveEditScreen(data, isAutosave);
+      await this.saveEditScreen(data, isAutosave, this.elementMappings);
     },
     /**
      * Change fabric properties of current element
@@ -2795,9 +2801,7 @@ export default {
      */
     async getPrintObjects(sheetId) {
       const printSheet = await getSheetInfoApi(sheetId);
-      const list = {};
-      printSheet.objects.forEach(o => (list[o.id] = o));
-      return list;
+      return getObjectById(printSheet.objects);
     }
   }
 };

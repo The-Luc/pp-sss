@@ -8,7 +8,8 @@ import {
   defaultThemeId,
   communityId,
   getDigitalBackground,
-  bookUserId
+  bookUserId,
+  getElementMappings
 } from '@/common/store';
 
 import DIGITAL from './const';
@@ -97,11 +98,16 @@ export const getters = {
     if (isEmpty(state.frameIds)) return;
     return state.frames[state.frameIds[0]].previewImageUrl;
   },
-  [DIGITAL._GETTERS.GET_DATA_EDIT_SCREEN]: ({ book, frames }) => frameId =>
+  [DIGITAL._GETTERS.GET_DATA_EDIT_SCREEN]: ({
+    book,
+    frames,
+    currentSheetId
+  }) => frameId =>
     cloneDeep({
       defaultThemeId: book.defaultThemeId,
       bookId: book.id,
-      frame: frames[frameId]
+      frame: frames[frameId],
+      sheetId: currentSheetId
     }),
   [DIGITAL._GETTERS.GET_SHEET_MEDIA]: ({ sheets, currentSheetId }) => {
     const media = sheets[currentSheetId]?.media;
@@ -166,5 +172,6 @@ export const getters = {
     return Object.values(objects)
       .filter(o => o.imageId)
       .map(o => o.imageId);
-  }
+  },
+  [DIGITAL._GETTERS.GET_ELEMENT_MAPPINGS]: getElementMappings
 };

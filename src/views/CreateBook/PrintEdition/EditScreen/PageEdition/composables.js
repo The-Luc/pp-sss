@@ -16,7 +16,7 @@ import {
   splitBase64Image
 } from '@/common/utils';
 import { useThumbnail, usePhotos } from '@/views/CreateBook/composables';
-import { useSavePageData } from '@/hooks';
+import { useSavePageData, useSyncLayoutMapping } from '@/hooks';
 
 export const useSaveData = () => {
   const { getDataEditScreen, currentSheet, mediaObjectIds } = useGetters({
@@ -31,6 +31,7 @@ export const useSaveData = () => {
   const { uploadBase64Image } = useThumbnail();
   const { getInProjectAssets } = usePhotos();
   const { savePageData } = useSavePageData();
+  const { syncToDigital } = useSyncLayoutMapping();
 
   /**
    * To save print data to DB
@@ -50,9 +51,14 @@ export const useSaveData = () => {
    *
    * @param {Object} editScreenData sheet data
    * @param {Boolean} isAutosave indicating autosaving or not
+   * @param {Object} elementMappings sheet element mapping data
    * @returns api response
    */
-  const savePrintEditScreen = async (editScreenData, isAutosave) => {
+  const savePrintEditScreen = async (
+    editScreenData,
+    isAutosave,
+    elementMappings
+  ) => {
     if (isEmpty(editScreenData.sheetProps)) return;
 
     const screenData = cloneDeep(editScreenData);
@@ -145,6 +151,8 @@ export const useSaveData = () => {
 
     // update objects and other data
     const isSuccess = await savePrintDataApi(variables, isAutosave);
+
+    await syncToDigital(sheetId, screenData.objects, elementMappings);
 
     return isSuccess && isOk(resOfInProject);
   };

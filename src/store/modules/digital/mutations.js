@@ -14,7 +14,8 @@ import {
   setBookId,
   setSectionsWithSheets,
   updateSection,
-  deleteMedia
+  deleteMedia,
+  setElementMappings
 } from '@/common/store';
 
 export const mutations = {
@@ -352,5 +353,6 @@ export const mutations = {
         }
       });
     });
-  }
+  },
+  [DIGITAL._MUTATES.SET_ELEMENT_MAPPINGS]: setElementMappings
 };

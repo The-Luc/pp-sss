@@ -44,7 +44,8 @@ import {
   getUniqueId,
   isContainDebounceProp,
   isFbImageObject,
-  isPpImageObject
+  isPpImageObject,
+  getDigitalObjectById
 } from '@/common/utils';
 
 import {
@@ -160,7 +161,7 @@ export default {
     const { saveCustomPrintLayout } = useCustomLayout();
     const { generatePdf } = usePdfGeneration();
     const { getSheetFrames } = useFrameAction();
-    const { getElementMappings } = useMappingSheet();
+    const { storeElementMappings } = useMappingSheet();
 
     return {
       generalInfo,
@@ -180,7 +181,7 @@ export default {
       saveCustomPrintLayout,
       generatePdf,
       getSheetFrames,
-      getElementMappings
+      storeElementMappings
     };
   },
   data() {
@@ -202,7 +203,8 @@ export default {
       undoRedoCanvas: null,
       printCanvas: null,
       isScroll: { x: false, y: false },
-      digitalObjects: []
+      digitalObjects: [],
+      elementMappings: []
     };
   },
   computed: {
@@ -253,6 +255,9 @@ export default {
         this.updateCanvasSize();
         // get data either from API
         await this.getDataCanvas();
+
+        // get sheet element mappings
+        this.elementMappings = await this.storeElementMappings(val.id);
 
         // get digital object for show mapping icon (when hover)
         this.digitalObjects = await this.getDigitalObjects();
@@ -354,7 +359,7 @@ export default {
 
       const data = this.getDataEditScreen(sheetId);
 
-      await this.savePrintEditScreen(data, isAutosave);
+      await this.savePrintEditScreen(data, isAutosave, this.elementMappings);
 
       return data;
     },
@@ -1917,6 +1922,11 @@ export default {
         item.value && listFabricObjects.push(item.value);
       });
 
+      // get sheet element mappings
+      this.elementMappings = await this.storeElementMappings(
+        this.pageSelected.id
+      );
+
       await this.updateMappingIcon(listFabricObjects);
 
       window.printCanvas.add(...listFabricObjects);
@@ -1929,10 +1939,6 @@ export default {
      * To update value and color of map icon on object (text & image) when hover
      */
     async updateMappingIcon(fbObjects) {
-      const elementMappings = await this.getElementMappings(
-        this.pageSelected.id
-      );
-
       // create a object for faster and easier to access later.
       const fbObjectsById = {};
       fbObjects.forEach(o => (fbObjectsById[o.id] = o));
@@ -1940,7 +1946,7 @@ export default {
       let imageCouter = 1;
       let textCounter = 1;
 
-      elementMappings.forEach(el => {
+      this.elementMappings.forEach(el => {
         const objectId = el.printElementId;
 
         const fbElement = fbObjectsById[objectId];
@@ -1958,7 +1964,7 @@ export default {
         const value = isImage ? imageCouter++ : textCounter++;
         const color = UniqueColor.generateColor(value - 1, isImage);
 
-        fbElement.mappingInfo = { color, value, id: el.id };
+        fbElement.mappingInfo = { color, value, id: el.id, mapped: el.mapped };
       });
     },
     /**
@@ -2145,15 +2151,8 @@ export default {
      * Get digital object for show mapping icon
      */
     async getDigitalObjects() {
-      //
       const frames = await this.getSheetFrames(this.pageSelected.id);
-      const list = {};
-
-      frames.forEach(frame => {
-        frame.objects.forEach(o => (list[o.id] = o));
-      });
-
-      return list;
+      return getDigitalObjectById(frames);
     }
   }
 };
