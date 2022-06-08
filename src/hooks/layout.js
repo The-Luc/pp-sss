@@ -948,7 +948,10 @@ export const useSyncLayoutMapping = () => {
     const printObjectByIds = getObjectById(printObjects);
     const digitalObjectByIds = getDigitalObjectById(frames);
 
-    elementMapping.forEach(mapping => {
+    await elementMapping.reduce(async (acc, mapping) => {
+      // await for the previous item to finish processing
+      await acc;
+
       if (!mapping.mapped) return;
 
       // update content if mapped
@@ -966,13 +969,12 @@ export const useSyncLayoutMapping = () => {
 
       if (!isContentDifference(printObject, digitalObject)) return;
 
-      updateContentToObject(printObject, digitalObject);
+      await updateContentToObject(printObject, digitalObject);
 
       willUpdateFrameIds.push(frameId);
-    });
+    }, Promise.resolve());
 
     // call API to save to DB
-
     const frameIds = [...new Set(willUpdateFrameIds)];
     const willUpdateFrames = frames.reduce((acc, curr) => {
       if (frameIds.includes(curr.id)) {
@@ -1017,7 +1019,10 @@ export const useSyncLayoutMapping = () => {
     const digitalObjectByIds = getObjectById(frame.objects);
     let isNeedToUpdate = false;
 
-    elementMapping.forEach(mapping => {
+    await elementMapping.reduce(async (acc, mapping) => {
+      // await for the previous item to finish processing
+      await acc;
+
       if (!mapping.mapped) return;
 
       // update content if mapped
@@ -1031,9 +1036,9 @@ export const useSyncLayoutMapping = () => {
 
       if (!isContentDifference(digitalObject, printObject)) return;
 
-      updateContentToObject(digitalObject, printObject);
+      await updateContentToObject(digitalObject, printObject);
       isNeedToUpdate = true;
-    });
+    }, Promise.resolve());
 
     // call API to save to DB
     if (!isNeedToUpdate) return;

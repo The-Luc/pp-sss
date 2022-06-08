@@ -15,6 +15,7 @@ import {
 } from '@/common/constants';
 import { isEmpty } from './util';
 import { inToPx, pxToIn } from './canvas';
+import { centercrop, createImage } from '../fabricObjects';
 
 /**
  *  whether an element is text or not
@@ -298,7 +299,7 @@ export const isContentDifference = (objA, objB) => {
  * @param {Object} objA
  * @param {Object} objB
  */
-export const updateContentToObject = (objA, objB) => {
+export const updateContentToObject = async (objA, objB) => {
   if (isPpTextObject(objA)) {
     // if text object
     objB.text = objA.text;
@@ -306,6 +307,7 @@ export const updateContentToObject = (objA, objB) => {
   }
   // if image object
   objB.imageUrl = objA.imageUrl;
+  objB.originalUrl = objA.originalUrl;
 
   if (!objB || objB.imageUrl === IMAGE_LOCAL.PLACE_HOLDER) {
     objB.hasImage = false;
@@ -313,4 +315,9 @@ export const updateContentToObject = (objA, objB) => {
   }
 
   objB.hasImage = true;
+
+  // set object zoom level
+  const imgObjectB = await createImage(objB);
+  const { zoomLevel } = centercrop(imgObjectB.object);
+  objB.zoomLevel = zoomLevel;
 };
