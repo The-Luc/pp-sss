@@ -1946,8 +1946,6 @@ export default {
       let imageCouter = 1;
       let textCounter = 1;
 
-      console.log('mapping icon ', this.elementMappings);
-
       this.elementMappings.forEach(el => {
         const objectId = el.printElementId;
 
@@ -1968,7 +1966,6 @@ export default {
 
         fbElement.mappingInfo = { color, value, id: el.id, mapped: el.mapped };
       });
-      console.log(fbObjects);
     },
     /**
      * Callback function for handle scaled to update text's dimension
