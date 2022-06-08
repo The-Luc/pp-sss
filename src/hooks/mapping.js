@@ -1,3 +1,12 @@
+import { useGetters, useMutations } from 'vuex-composition-helpers';
+import {
+  GETTERS as PRINT_GETTERS,
+  MUTATES as PRINT_MUTATES
+} from '@/store/modules/print/const';
+import {
+  GETTERS as DIGITAL_GETTERS,
+  MUTATES as DIGITAL_MUTATES
+} from '@/store/modules/digital/const';
 import {
   createTemplateMappingApi,
   deleteTemplateMappingApi,
@@ -18,6 +27,7 @@ import {
   sheetMappingConfigToApiMapping
 } from '@/common/mapping/mapping';
 import { useAppCommon } from '@/hooks';
+import { PRIMARY_FORMAT_TYPES } from '@/common/constants';
 
 const addingParams = values => {
   const mappingParams = [];
@@ -154,9 +164,10 @@ export const useMappingProject = () => {
     // if config is NULL => need to give it a default value
     if (!config) {
       const defaultConfig = {
-        primaryMapping: 'PRINT',
+        primaryMapping: PRIMARY_FORMAT_TYPES.PRINT.value,
         enableContentMapping: true
       };
+
       config = await updateMappingProject(bookId, defaultConfig);
     }
 
@@ -179,6 +190,18 @@ export const useMappingProject = () => {
 };
 
 export const useMappingSheet = () => {
+  const { value: isDigital } = useAppCommon().isDigitalEdition;
+
+  const GETTERS = isDigital ? DIGITAL_GETTERS : PRINT_GETTERS;
+  const MUTATES = isDigital ? DIGITAL_MUTATES : PRINT_MUTATES;
+
+  const { getElementMappings: getStoredElementMappings } = useGetters({
+    getElementMappings: GETTERS.GET_ELEMENT_MAPPINGS
+  });
+  const { setElementMappings } = useMutations({
+    setElementMappings: MUTATES.SET_ELEMENT_MAPPINGS
+  });
+
   const getSheetMappingConfig = async sheetId => {
     const res = await getSheetMappingConfigApi(sheetId);
 
@@ -260,10 +283,20 @@ export const useMappingSheet = () => {
     await createElementMappings(sheetId, mappings, printObject, frames);
   };
 
+  // save sheet element mappings to vuex
+  const storeElementMappings = async sheetId => {
+    const elementMappings = await getElementMappings(sheetId);
+
+    setElementMappings({ elementMappings });
+    return elementMappings;
+  };
+
   return {
     getSheetMappingConfig,
     updateSheetMappingConfig,
     updateElementMappings,
-    getElementMappings
+    getElementMappings,
+    storeElementMappings,
+    getStoredElementMappings
   };
 };

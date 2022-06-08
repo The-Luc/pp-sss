@@ -1247,9 +1247,15 @@ export const renderMappingIcon = async target => {
   if (isEmpty(mappingInfo)) return;
 
   const isTextObject = isFbTextObject(target);
-  const iconSrc = isTextObject
-    ? IMAGE_LOCAL.LOCATION_WHITE
-    : IMAGE_LOCAL.LOCATION_PURPLE;
+  const isMapped = mappingInfo.mapped;
+  const iconOptions = {
+    [`${true}-${true}`]: IMAGE_LOCAL.LOCATION_WHITE,
+    [`${true}-${false}`]: IMAGE_LOCAL.LOCATION_DISABLED_WHITE,
+    [`${false}-${true}`]: IMAGE_LOCAL.LOCATION_PURPLE,
+    [`${false}-${false}`]: IMAGE_LOCAL.LOCATION_DISABLED_PURPLE
+  };
+  const iconSrc = iconOptions[`${isTextObject}-${isMapped}`];
+
   const icon = await createMediaOverlay(iconSrc);
 
   const color = mappingInfo.color;
@@ -1264,7 +1270,7 @@ export const renderMappingIcon = async target => {
   const centerY = top + height / 2;
 
   // box size
-  const w = 41;
+  const w = isMapped ? 41 : 25;
   const h = 24;
   const x = left + 5;
   const y = top + 5;
@@ -1296,12 +1302,14 @@ export const renderMappingIcon = async target => {
 
   ctx.drawImage(icon, left + 9, top + 9, iconWidth, iconHeight);
 
-  // draw text
-  ctx.font = '12px "MuseoSans 500"';
-  ctx.textBaseline = 'middle';
-  ctx.textAlign = 'center';
-  ctx.fillStyle = foreground;
-  ctx.fillText(`${value}`, left + 33, top + 19);
+  if (isMapped) {
+    // draw text
+    ctx.font = '12px "MuseoSans 500"';
+    ctx.textBaseline = 'middle';
+    ctx.textAlign = 'center';
+    ctx.fillStyle = foreground;
+    ctx.fillText(`${value}`, left + 33, top + 19);
+  }
 
   ctx.restore();
 };
