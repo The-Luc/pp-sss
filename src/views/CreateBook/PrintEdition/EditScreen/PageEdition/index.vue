@@ -33,6 +33,7 @@
         </SizeWrapper>
       </template>
     </PageWrapper>
+
     <mapping-layout-custom-change
       v-if="isShowCustomChangesConfirm"
       @onAccept="onClickGotItCustomChange"

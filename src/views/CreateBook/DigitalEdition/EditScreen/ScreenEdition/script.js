@@ -2,6 +2,7 @@ import SizeWrapper from '@/components/SizeWrapper';
 import AddBoxInstruction from '@/components/AddBoxInstruction';
 import Frames from './Frames';
 import TheAnimationOrder from './TheAnimationOrder';
+import MappingLayoutCustomChange from '@/containers/Modals/MappingLayoutCustomChange';
 
 import { fabric } from 'fabric';
 
@@ -33,7 +34,8 @@ import {
   PROPERTIES_TOOLS,
   APPLY_MODE,
   EDITION,
-  PORTRAIT_IMAGE_MASK
+  PORTRAIT_IMAGE_MASK,
+  CUSTOM_CHANGE_MODAL
 } from '@/common/constants';
 import {
   addPrintClipArts,
@@ -92,7 +94,8 @@ import {
   useFrameDelay,
   useAppCommon,
   useCustomLayout,
-  useMappingSheet
+  useMappingSheet,
+  useMappingProject
 } from '@/hooks';
 
 import {
@@ -118,7 +121,8 @@ import {
   renderOrderBoxes,
   isFbImageObject,
   isPpImageObject,
-  getObjectById
+  getObjectById,
+  isAllowSyncData
 } from '@/common/utils';
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
 
@@ -147,6 +151,7 @@ import {
 } from '@/common/constants/animationProperty';
 import { getSheetInfoApi } from '@/api/sheet';
 import UniqueColor from '@/plugins/UniqueColor';
+import { getItem, setItem } from '@/common/storage';
 
 const ELEMENTS = {
   [OBJECT_TYPE.TEXT]: 'a text box',
@@ -158,7 +163,8 @@ export default {
     SizeWrapper,
     AddBoxInstruction,
     Frames,
-    TheAnimationOrder
+    TheAnimationOrder,
+    MappingLayoutCustomChange
   },
   props: {
     frames: {
@@ -209,7 +215,8 @@ export default {
     const { totalVideoDuration } = useVideo();
     const { getAssetById } = usePhotos();
     const { saveCustomDigitalLayout } = useCustomLayout();
-    const { storeElementMappings } = useMappingSheet();
+    const { storeElementMappings, getSheetMappingConfig } = useMappingSheet();
+    const { getMappingConfig } = useMappingProject();
 
     return {
       setLoadingState,
@@ -252,7 +259,9 @@ export default {
       totalVideoDuration,
       getAssetById,
       saveCustomDigitalLayout,
-      storeElementMappings
+      storeElementMappings,
+      getSheetMappingConfig,
+      getMappingConfig
     };
   },
   data() {
@@ -274,7 +283,8 @@ export default {
       isAllowUpdateFrameDelay: false,
       isJustEnteringEditor: false, // to prevent save data when entering editor
       printObjects: {}, // used to calculate mapping value (hover icon)
-      elementMappings: []
+      elementMappings: [],
+      isShowCustomChangesConfirm: false // for editing in mapped layout applied sheet
     };
   },
   computed: {
@@ -998,6 +1008,8 @@ export default {
      * Event fire when user click on Text button on Toolbar to add new text on canvas
      */
     addText(x, y, width, height) {
+      this.handleShowCustomChangeModal();
+
       const { object, data } = createTextBox(x, y, width, height, {});
 
       const [rect, text] = object._objects;
@@ -1421,6 +1433,7 @@ export default {
      * @param {Array} shapes  list of object of adding shapes
      */
     async addShapes(shapes) {
+      this.handleShowCustomChangeModal();
       this.setLoadingState({ value: true });
 
       const toBeAddedShapes = shapes.map(s => {
@@ -1624,6 +1637,7 @@ export default {
      * Event fire when user click on Image button on Toolbar to add new image on canvas
      */
     async addImageBox(x, y, width, height, options) {
+      this.handleShowCustomChangeModal();
       const id = getUniqueId();
 
       const size = new BaseSize({
@@ -1743,6 +1757,7 @@ export default {
      * @param {Array} clipArts - list clip art add on Canvas
      */
     async addClipArt(clipArts) {
+      this.handleShowCustomChangeModal();
       this.setLoadingState({ value: true });
 
       const toBeAddedClipArts = clipArts.map(c => {
@@ -1813,6 +1828,7 @@ export default {
      * @param {Boolean} isLeft      is add to the left page or right page
      */
     async addBackground({ background }) {
+      this.handleShowCustomChangeModal();
       const id = getUniqueId();
 
       const newBackground = new BackgroundElementObject({
@@ -2802,6 +2818,40 @@ export default {
     async getPrintObjects(sheetId) {
       const printSheet = await getSheetInfoApi(sheetId);
       return getObjectById(printSheet.objects);
+    },
+    /**
+     * Show warning modal when having custom changes on renderd mapped layout sheet
+     */
+    async handleShowCustomChangeModal() {
+      const isHideMess = getItem(CUSTOM_CHANGE_MODAL) || false;
+      const bookId = this.$route.params.bookId;
+      const projectConfig = await this.getMappingConfig(bookId);
+      const sheetConfig = await this.getSheetMappingConfig(
+        this.pageSelected.id
+      );
+
+      if (isHideMess || !isAllowSyncData(projectConfig, sheetConfig, true))
+        return;
+
+      this.isShowCustomChangesConfirm = true;
+      this.toggleModal({
+        isOpenModal: true
+      });
+    },
+    /**
+     *  To hide the warning modal and save user setting if any
+     *
+     * @param {Boolean} isHideMess whether user click on the hide message checkbox
+     */
+    onClickGotItCustomChange(isHideMess) {
+      this.isShowCustomChangesConfirm = false;
+      this.toggleModal({
+        isOpenModal: false
+      });
+
+      if (!isHideMess) return;
+
+      setItem(CUSTOM_CHANGE_MODAL, true);
     }
   }
 };

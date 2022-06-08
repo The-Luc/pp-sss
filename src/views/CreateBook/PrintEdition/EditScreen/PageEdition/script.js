@@ -18,7 +18,8 @@ import {
   useCustomLayout,
   useFrameAction,
   useMappingSheet,
-  useModal
+  useModal,
+  useMappingProject
 } from '@/hooks';
 import { startDrawBox } from '@/common/fabricObjects/drawingBox';
 
@@ -46,7 +47,8 @@ import {
   isContainDebounceProp,
   isFbImageObject,
   isPpImageObject,
-  getDigitalObjectById
+  getDigitalObjectById,
+  isAllowSyncData
 } from '@/common/utils';
 
 import {
@@ -168,8 +170,9 @@ export default {
     const { saveCustomPrintLayout } = useCustomLayout();
     const { generatePdf } = usePdfGeneration();
     const { getSheetFrames } = useFrameAction();
-    const { storeElementMappings } = useMappingSheet();
+    const { storeElementMappings, getSheetMappingConfig } = useMappingSheet();
     const { toggleModal } = useModal();
+    const { getMappingConfig } = useMappingProject();
 
     return {
       generalInfo,
@@ -190,7 +193,9 @@ export default {
       generatePdf,
       getSheetFrames,
       storeElementMappings,
-      toggleModal
+      toggleModal,
+      getSheetMappingConfig,
+      getMappingConfig
     };
   },
   data() {
@@ -2175,10 +2180,16 @@ export default {
     /**
      * Show warning modal when having custom changes on renderd mapped layout sheet
      */
-    handleShowCustomChangeModal() {
+    async handleShowCustomChangeModal() {
       const isHideMess = getItem(CUSTOM_CHANGE_MODAL) || false;
 
-      if (isHideMess) return;
+      const bookId = this.$route.params.bookId;
+      const projectConfig = await this.getMappingConfig(bookId);
+      const sheetConfig = await this.getSheetMappingConfig(
+        this.pageSelected.id
+      );
+
+      if (isHideMess || !isAllowSyncData(projectConfig, sheetConfig)) return;
 
       this.isShowCustomChangesConfirm = true;
       this.toggleModal({
