@@ -12,6 +12,23 @@ export const loginUserMutation = gql`
   }
 `;
 
+export const resumeSessionMutation = gql`
+  mutation ResumeSession($sessionToken: String!) {
+    token_session(session_token: $sessionToken) {
+      user {
+        id
+        name
+      }
+      context
+      token
+      communities_users {
+        id
+        admin
+      }
+    }
+  }
+`;
+
 export const saveFavoritesMutation = gql`
   mutation saveFavoriteLayout($id: ID!) {
     create_template_user(template_id: $id) {
