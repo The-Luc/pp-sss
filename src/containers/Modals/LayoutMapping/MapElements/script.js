@@ -128,10 +128,10 @@ export default {
     const { maxText, maxImage } = this.getMaxIndex();
     this.textColors = Array(maxText)
       .fill(0)
-      .map((_, index) => UniqueColor.generateColor(index));
+      .map((_, index) => UniqueColor.generateColor(index, false, 0.5));
     this.imageColors = Array(maxImage)
       .fill(0)
-      .map((_, index) => UniqueColor.generateColor(index, true));
+      .map((_, index) => UniqueColor.generateColor(index, true, 0.5));
 
     this.initData();
 

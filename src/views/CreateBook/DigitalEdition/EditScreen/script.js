@@ -349,13 +349,9 @@ export default {
      * Save digital canvas and change view
      */
     async onClickSaveDigitalCanvas() {
-      this.$refs.canvasEditor.stopAutosaving();
-
       this.updateSavingStatus({ status: SAVE_STATUS.START });
 
-      this.updateFrameObjects({ frameId: this.currentFrameId });
-      const data = this.getDataEditScreen(this.currentFrameId);
-      await this.saveEditScreen(data);
+      await this.$refs.canvasEditor.saveData(this.currentFrameId);
 
       this.updateSavingStatus({ status: SAVE_STATUS.END });
 
@@ -934,7 +930,7 @@ export default {
         true
       );
 
-      // update url into frams
+      // update url into frames
       modifiedFrameIdx.forEach(
         (frameIdx, idx) =>
           (currentFrames[frameIdx].previewImageUrl = imageUrls[idx])

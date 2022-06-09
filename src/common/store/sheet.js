@@ -9,3 +9,10 @@ export const deleteMedia = (state, { index }) => {
     [{ index }]
   );
 };
+
+export const getElementMappings = state => {
+  return state.sheets[state.currentSheetId].mappings || [];
+};
+export const setElementMappings = (state, { elementMappings }) => {
+  state.sheets[state.currentSheetId].mappings = elementMappings;
+};

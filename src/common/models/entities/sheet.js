@@ -21,6 +21,7 @@ export class SheetEditionData extends BaseObject {
   thumbnailUrl = null;
   isVisited = false;
   media = []; // media are store separately for print & digital. Mapping is handled by API.
+  mappings = [];
 
   /**
    * @param {SheetEditionData} props

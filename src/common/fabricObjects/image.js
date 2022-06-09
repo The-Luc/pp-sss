@@ -290,7 +290,7 @@ export const centercrop = imageObject => {
 
 /**
  * Handle when dragging over image box
- * @param {*} target - Image object has applied drag trigger
+ * @param {Object} target - Image object has applied drag trigger
  */
 export const handleDragEnter = ({ target }) => {
   if (target.cachedStrokeData || !target.selectable) return;

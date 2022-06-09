@@ -17,7 +17,9 @@ import {
   useToolBar,
   useCustomLayout,
   useFrameAction,
-  useMappingSheet
+  useMappingSheet,
+  useModal,
+  useMappingProject
 } from '@/hooks';
 import { startDrawBox } from '@/common/fabricObjects/drawingBox';
 
@@ -44,7 +46,9 @@ import {
   getUniqueId,
   isContainDebounceProp,
   isFbImageObject,
-  isPpImageObject
+  isPpImageObject,
+  getDigitalObjectById,
+  isAllowSyncData
 } from '@/common/utils';
 
 import {
@@ -104,13 +108,16 @@ import {
   IMAGE_LOCAL,
   PROPERTIES_TOOLS,
   EDITION,
-  PORTRAIT_IMAGE_MASK
+  PORTRAIT_IMAGE_MASK,
+  CUSTOM_CHANGE_MODAL
 } from '@/common/constants';
 import SizeWrapper from '@/components/SizeWrapper';
 import PrintCanvasLines from './PrintCanvasLines';
 import PageWrapper from './PageWrapper';
 import XRuler from './Rulers/XRuler';
 import YRuler from './Rulers/YRuler';
+import MappingLayoutCustomChange from '@/containers/Modals/MappingLayoutCustomChange';
+import ConfirmAction from '@/containers/Modals/ConfirmAction';
 import {
   AUTOSAVE_INTERVAL,
   COPY_OBJECT_KEY,
@@ -135,6 +142,7 @@ import {
 import { useBookPrintInfo } from '../composables';
 import { usePdfGeneration } from '../../MainScreen/composables';
 import UniqueColor from '@/plugins/UniqueColor';
+import { getItem, setItem } from '@/common/storage';
 
 export default {
   components: {
@@ -142,7 +150,9 @@ export default {
     SizeWrapper,
     PrintCanvasLines,
     XRuler,
-    YRuler
+    YRuler,
+    MappingLayoutCustomChange,
+    ConfirmAction
   },
   setup() {
     const { printBookInfo: generalInfo } = useBookPrintInfo();
@@ -160,7 +170,9 @@ export default {
     const { saveCustomPrintLayout } = useCustomLayout();
     const { generatePdf } = usePdfGeneration();
     const { getSheetFrames } = useFrameAction();
-    const { getElementMappings } = useMappingSheet();
+    const { storeElementMappings, getSheetMappingConfig } = useMappingSheet();
+    const { toggleModal } = useModal();
+    const { getMappingConfig } = useMappingProject();
 
     return {
       generalInfo,
@@ -180,7 +192,10 @@ export default {
       saveCustomPrintLayout,
       generatePdf,
       getSheetFrames,
-      getElementMappings
+      storeElementMappings,
+      toggleModal,
+      getSheetMappingConfig,
+      getMappingConfig
     };
   },
   data() {
@@ -202,7 +217,9 @@ export default {
       undoRedoCanvas: null,
       printCanvas: null,
       isScroll: { x: false, y: false },
-      digitalObjects: []
+      digitalObjects: [],
+      elementMappings: [],
+      isShowCustomChangesConfirm: false // for editing in mapped layout applied sheet
     };
   },
   computed: {
@@ -254,6 +271,9 @@ export default {
         // get data either from API
         await this.getDataCanvas();
 
+        // get sheet element mappings
+        this.elementMappings = await this.storeElementMappings(val.id);
+
         // get digital object for show mapping icon (when hover)
         this.digitalObjects = await this.getDigitalObjects();
 
@@ -286,6 +306,8 @@ export default {
     window.addEventListener('paste', this.handlePaste);
 
     document.body.addEventListener('keyup', this.handleDeleteKey);
+
+    // this.isShowCustomChangesConfirm =
   },
   beforeDestroy() {
     window.removeEventListener('copy', this.handleCopy);
@@ -354,7 +376,7 @@ export default {
 
       const data = this.getDataEditScreen(sheetId);
 
-      await this.savePrintEditScreen(data, isAutosave);
+      await this.savePrintEditScreen(data, isAutosave, this.elementMappings);
 
       return data;
     },
@@ -990,6 +1012,7 @@ export default {
      * Event fire when user click on Text button on Toolbar to add new text on canvas
      */
     addText(x, y, width, height) {
+      this.handleShowCustomChangeModal();
       const { object, data } = createTextBox(x, y, width, height, {});
 
       this.handleAddTextEventListeners(object, data);
@@ -1025,6 +1048,8 @@ export default {
      * Event fire when user click on Image button on Toolbar to add new image on canvas
      */
     async addImageBox(x, y, width, height, options) {
+      this.handleShowCustomChangeModal();
+
       const id = getUniqueId();
 
       const size = new BaseSize({
@@ -1097,6 +1122,7 @@ export default {
      * @param {Boolean} isLeft      is add to the left page or right page
      */
     async addBackground({ background, isLeft = true }) {
+      this.handleShowCustomChangeModal('background');
       const id = getUniqueId();
 
       const newBackground = new BackgroundElementObject({
@@ -1173,6 +1199,7 @@ export default {
      * @param {Array} clipArts - list clip art add on Canvas
      */
     async addClipArt(clipArts) {
+      this.handleShowCustomChangeModal('clipart');
       this.setLoadingState({ value: true });
 
       const toBeAddedClipArts = clipArts.map(c => {
@@ -1402,6 +1429,7 @@ export default {
      * @param {Array} shapes  list of object of adding shapes
      */
     async addShapes(shapes) {
+      this.handleShowCustomChangeModal('shape');
       this.setLoadingState({ value: true });
 
       const toBeAddedShapes = shapes.map(s => {
@@ -1917,6 +1945,11 @@ export default {
         item.value && listFabricObjects.push(item.value);
       });
 
+      // get sheet element mappings
+      this.elementMappings = await this.storeElementMappings(
+        this.pageSelected.id
+      );
+
       await this.updateMappingIcon(listFabricObjects);
 
       window.printCanvas.add(...listFabricObjects);
@@ -1929,10 +1962,6 @@ export default {
      * To update value and color of map icon on object (text & image) when hover
      */
     async updateMappingIcon(fbObjects) {
-      const elementMappings = await this.getElementMappings(
-        this.pageSelected.id
-      );
-
       // create a object for faster and easier to access later.
       const fbObjectsById = {};
       fbObjects.forEach(o => (fbObjectsById[o.id] = o));
@@ -1940,7 +1969,7 @@ export default {
       let imageCouter = 1;
       let textCounter = 1;
 
-      elementMappings.forEach(el => {
+      this.elementMappings.forEach(el => {
         const objectId = el.printElementId;
 
         const fbElement = fbObjectsById[objectId];
@@ -1958,7 +1987,7 @@ export default {
         const value = isImage ? imageCouter++ : textCounter++;
         const color = UniqueColor.generateColor(value - 1, isImage);
 
-        fbElement.mappingInfo = { color, value, id: el.id };
+        fbElement.mappingInfo = { color, value, id: el.id, mapped: el.mapped };
       });
     },
     /**
@@ -2145,15 +2174,42 @@ export default {
      * Get digital object for show mapping icon
      */
     async getDigitalObjects() {
-      //
       const frames = await this.getSheetFrames(this.pageSelected.id);
-      const list = {};
+      return getDigitalObjectById(frames);
+    },
+    /**
+     * Show warning modal when having custom changes on renderd mapped layout sheet
+     */
+    async handleShowCustomChangeModal() {
+      const isHideMess = getItem(CUSTOM_CHANGE_MODAL) || false;
 
-      frames.forEach(frame => {
-        frame.objects.forEach(o => (list[o.id] = o));
+      const bookId = this.$route.params.bookId;
+      const projectConfig = await this.getMappingConfig(bookId);
+      const sheetConfig = await this.getSheetMappingConfig(
+        this.pageSelected.id
+      );
+
+      if (isHideMess || !isAllowSyncData(projectConfig, sheetConfig)) return;
+
+      this.isShowCustomChangesConfirm = true;
+      this.toggleModal({
+        isOpenModal: true
+      });
+    },
+    /**
+     *  To hide the warning modal and save user setting if any
+     *
+     * @param {Boolean} isHideMess whether user click on the hide message checkbox
+     */
+    onClickGotItCustomChange(isHideMess) {
+      this.isShowCustomChangesConfirm = false;
+      this.toggleModal({
+        isOpenModal: false
       });
 
-      return list;
+      if (!isHideMess) return;
+
+      setItem(CUSTOM_CHANGE_MODAL, true);
     }
   }
 };

@@ -9,6 +9,8 @@ import PLACE_HOLDER from '@/assets/image/content-placeholder.jpg';
 import PLAY_ICON from '@/assets/icons/play.svg';
 import LOCATION_PURPLE from '@/assets/icons/location-purple.svg';
 import LOCATION_WHITE from '@/assets/icons/location-white.svg';
+import LOCATION_DISABLED_PURPLE from '@/assets/icons/location-disabled-purple.svg';
+import LOCATION_DISABLED_WHITE from '@/assets/icons/location-disabled-white.svg';
 import CONTROL_ICON from '@/assets/image/control.png';
 import ADD_TEXT_ICON from '@/assets/image/add-text.jpg';
 import ADD_IMAGE_ICON from '@/assets/image/add-image.jpg';
@@ -29,5 +31,7 @@ export const IMAGE_LOCAL = {
   ADD_TEXT_ICON,
   ADD_IMAGE_ICON,
   LOCATION_WHITE,
-  LOCATION_PURPLE
+  LOCATION_PURPLE,
+  LOCATION_DISABLED_WHITE,
+  LOCATION_DISABLED_PURPLE
 };

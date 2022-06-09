@@ -1,7 +1,12 @@
 import { difference } from 'lodash';
 import { useGetters, useActions } from 'vuex-composition-helpers';
 
-import { useMutationBook, useActionBook, useAppCommon } from '@/hooks';
+import {
+  useMutationBook,
+  useActionBook,
+  useAppCommon,
+  useSyncLayoutMapping
+} from '@/hooks';
 
 import { isEmpty, isOk } from '@/common/utils';
 import { GETTERS, ACTIONS } from '@/store/modules/digital/const';
@@ -18,6 +23,7 @@ export const useSaveData = () => {
     mediaObjectIds: GETTERS.GET_MEDIA_OBJECT_IDS
   });
   const { getInProjectAssets } = usePhotos();
+  const { syncToPrint } = useSyncLayoutMapping();
 
   /**
    * To save digital data to DB
@@ -39,8 +45,12 @@ export const useSaveData = () => {
    * @param {Boolean} isAutosave indicating autosaving call or not
    * @returns api response
    */
-  const saveEditScreen = async (editScreenData, isAutosave) => {
-    const { frame, defaultThemeId, bookId } = editScreenData;
+  const saveEditScreen = async (
+    editScreenData,
+    isAutosave,
+    elementMappings
+  ) => {
+    const { frame, defaultThemeId, bookId, sheetId } = editScreenData;
 
     if (isEmpty(frame)) return;
 
@@ -85,6 +95,8 @@ export const useSaveData = () => {
 
     // update objects and other data
     const isSuccess = await saveDigitalDataApi(variables, isAutosave);
+
+    await syncToPrint(sheetId, frame, elementMappings);
 
     return isSuccess && isSuccessOfInProject;
   };

@@ -89,11 +89,7 @@ export default {
     const { setInfoBar } = useInfoBar();
     const { setCurrentSheetId } = useMutationPrintSheet();
     const { currentUser, authenticate } = useUser();
-    const {
-      savePrintEditScreen,
-      getDataEditScreen,
-      savePortraitObjects
-    } = useSaveData();
+    const { savePortraitObjects } = useSaveData();
     const { setPropertyById, setPropOfMultipleObjects } = useProperties();
     const { updateSavingStatus } = useSavingStatus();
     const { currentSheet, getSheets } = useSheet();
@@ -122,8 +118,6 @@ export default {
       setCurrentSheetId,
       currentUser,
       authenticate,
-      savePrintEditScreen,
-      getDataEditScreen,
       setPropertyById,
       updateSavingStatus,
       updateSheetMedia,
@@ -285,11 +279,8 @@ export default {
      * Save print canvas and change view
      */
     async onClickSavePrintCanvas() {
-      this.$refs.canvasEditor.setAutosaveTimer();
-
       this.updateSavingStatus({ status: SAVE_STATUS.START });
-      const data = this.getDataEditScreen(this.pageSelected.id);
-      await this.savePrintEditScreen(data);
+      await this.$refs.canvasEditor.saveData(this.pageSelected.id);
 
       this.updateSavingStatus({ status: SAVE_STATUS.END });
 
