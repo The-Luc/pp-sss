@@ -14,6 +14,7 @@ const DigitalEditScreen = () =>
   import('@/views/CreateBook/DigitalEdition/EditScreen');
 const DigitalEdition = () => import('@/views/CreateBook/DigitalEdition');
 const Login = () => import('@/views/TempLogin');
+const LoginSession = () => import('@/views/LoginSession');
 const PrintBookScreen = () => import('@/views/PrintBook');
 
 import authGuard from './guards/authGuard';
@@ -38,6 +39,11 @@ const routes = [
     path: '/login',
     name: 'login',
     component: Login
+  },
+  {
+    path: '/session',
+    name: 'session',
+    component: LoginSession
   },
   {
     path: '/',
