@@ -190,17 +190,7 @@ export const useMappingProject = () => {
 };
 
 export const useMappingSheet = () => {
-  const { value: isDigital } = useAppCommon().isDigitalEdition;
-
-  const GETTERS = isDigital ? DIGITAL_GETTERS : PRINT_GETTERS;
-  const MUTATES = isDigital ? DIGITAL_MUTATES : PRINT_MUTATES;
-
-  const { getElementMappings: getStoredElementMappings } = useGetters({
-    getElementMappings: GETTERS.GET_ELEMENT_MAPPINGS
-  });
-  const { setElementMappings } = useMutations({
-    setElementMappings: MUTATES.SET_ELEMENT_MAPPINGS
-  });
+  const { getMappingConfig } = useMappingProject();
 
   const getSheetMappingConfig = async sheetId => {
     const res = await getSheetMappingConfigApi(sheetId);
@@ -286,9 +276,25 @@ export const useMappingSheet = () => {
   // save sheet element mappings to vuex
   const storeElementMappings = async sheetId => {
     const elementMappings = await getElementMappings(sheetId);
+    const elementMappingConfig = cloneDeep(elementMappings);
 
-    setElementMappings({ elementMappings });
-    return elementMappings;
+    const sheetConfig = await getSheetMappingConfig(sheetId);
+    const projectConfig = await getMappingConfig();
+
+    const { mappingStatus } = sheetConfig;
+    const { enableContentMapping } = projectConfig;
+
+    elementMappingConfig.forEach(el => {
+      if (!mappingStatus || !enableContentMapping) {
+        el.mapped = false;
+      }
+
+      if (!el.digitalElementId || !el.printElementId) {
+        el.mapped = false;
+      }
+    });
+
+    return elementMappingConfig;
   };
 
   return {
@@ -296,7 +302,6 @@ export const useMappingSheet = () => {
     updateSheetMappingConfig,
     updateElementMappings,
     getElementMappings,
-    storeElementMappings,
-    getStoredElementMappings
+    storeElementMappings
   };
 };

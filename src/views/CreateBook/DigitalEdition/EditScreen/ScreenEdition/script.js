@@ -325,17 +325,11 @@ export default {
 
         await this.getDataCanvas();
 
-        // get sheet element mappings
-        this.elementMappings = await this.storeElementMappings(val.id);
-
-        // get print objects
-        this.printObjects = await this.getPrintObjects(val.id);
-
         this.setCurrentFrameId({ id: this.frames[0].id });
 
         this.countPaste = 1;
 
-        await this.drawObjectsOnCanvas(this.sheetLayout);
+        await this.drawLayout();
         this.isAllowUpdateFrameDelay = true;
       }
     },
@@ -374,14 +368,7 @@ export default {
 
       this.updateMediaSidebarOpen({ isOpen: false });
 
-      // get sheet element mappings
-      this.elementMappings = await this.storeElementMappings(
-        this.pageSelected.id
-      );
-      // get print objects
-      this.printObjects = await this.getPrintObjects(this.pageSelected.id);
-
-      await this.drawObjectsOnCanvas(this.sheetLayout);
+      await this.drawLayout();
 
       this.isAllowUpdateFrameDelay = true;
     },
@@ -699,7 +686,8 @@ export default {
           name: EVENT_TYPE.ANIMATION_SELECT,
           handler: this.handleSelectAnimationObject
         },
-        { name: EVENT_TYPE.SAVE_LAYOUT, handler: this.handleSaveLayout }
+        { name: EVENT_TYPE.SAVE_LAYOUT, handler: this.handleSaveLayout },
+        { name: EVENT_TYPE.DRAW_LAYOUT, handler: this.drawLayout }
       ];
 
       const events = [
@@ -2854,6 +2842,19 @@ export default {
       if (!isHideMess) return;
 
       setItem(CUSTOM_CHANGE_MODAL, true);
+    },
+    /**
+     * Draw objects on canvas with mapping icon and their values
+     */
+    async drawLayout() {
+      // get sheet element mappings
+      this.elementMappings = await this.storeElementMappings(
+        this.pageSelected.id
+      );
+      // get print objects
+      this.printObjects = await this.getPrintObjects(this.pageSelected.id);
+
+      await this.drawObjectsOnCanvas(this.sheetLayout);
     }
   }
 };

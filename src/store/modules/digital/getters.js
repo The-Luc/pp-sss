@@ -172,6 +172,5 @@ export const getters = {
     return Object.values(objects)
       .filter(o => o.imageId)
       .map(o => o.imageId);
-  },
-  [DIGITAL._GETTERS.GET_ELEMENT_MAPPINGS]: getElementMappings
+  }
 };

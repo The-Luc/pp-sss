@@ -353,6 +353,5 @@ export const mutations = {
         }
       });
     });
-  },
-  [DIGITAL._MUTATES.SET_ELEMENT_MAPPINGS]: setElementMappings
+  }
 };

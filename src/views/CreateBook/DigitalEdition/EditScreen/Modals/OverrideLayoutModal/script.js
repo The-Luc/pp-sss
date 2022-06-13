@@ -10,6 +10,7 @@ import {
   useModal
 } from '@/hooks';
 import { useObject } from '../../composables';
+import { EVENT_TYPE } from '@/common/constants';
 
 export default {
   setup() {
@@ -56,7 +57,11 @@ export default {
         return;
       }
 
-      sheetData && this.applyDigitalLayout(sheetData.layout);
+      if (sheetData) {
+        this.applyDigitalLayout(sheetData.layout);
+        this.$root.$emit(EVENT_TYPE.DRAW_LAYOUT);
+      }
+
       this.onCancel();
     },
 
