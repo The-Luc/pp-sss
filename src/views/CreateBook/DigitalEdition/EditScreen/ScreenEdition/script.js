@@ -378,6 +378,8 @@ export default {
       this.elementMappings = await this.storeElementMappings(
         this.pageSelected.id
       );
+      // get print objects
+      this.printObjects = await this.getPrintObjects(this.pageSelected.id);
 
       await this.drawObjectsOnCanvas(this.sheetLayout);
 

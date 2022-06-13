@@ -217,7 +217,7 @@ export default {
       undoRedoCanvas: null,
       printCanvas: null,
       isScroll: { x: false, y: false },
-      digitalObjects: [],
+      digitalObjects: {},
       elementMappings: [],
       isShowCustomChangesConfirm: false // for editing in mapped layout applied sheet
     };
@@ -270,12 +270,6 @@ export default {
         this.updateCanvasSize();
         // get data either from API
         await this.getDataCanvas();
-
-        // get sheet element mappings
-        this.elementMappings = await this.storeElementMappings(val.id);
-
-        // get digital object for show mapping icon (when hover)
-        this.digitalObjects = await this.getDigitalObjects();
 
         this.undoRedoCanvas.reset();
 
@@ -2085,6 +2079,7 @@ export default {
       this.generatePdf(bookId);
     },
     async drawLayout() {
+      await this.updateElementMappings();
       await this.drawObjectsOnCanvas(this.sheetLayout);
     },
 
@@ -2210,6 +2205,22 @@ export default {
       if (!isHideMess) return;
 
       setItem(CUSTOM_CHANGE_MODAL, true);
+    },
+    /**
+     * Trigger when user switch sheet / apply new layout
+     * to update eleementMapping => display mapping icon
+     * and get digital objects
+     */
+    async updateElementMappings() {
+      // get sheet element mappings
+      this.elementMappings = await this.storeElementMappings(
+        this.pageSelected.id
+      );
+
+      // get digital object for show mapping icon (when hover)
+      this.digitalObjects = isEmpty(this.elementMappings)
+        ? {}
+        : await this.getDigitalObjects();
     }
   }
 };
