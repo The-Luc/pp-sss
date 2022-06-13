@@ -5,8 +5,7 @@ import {
   ICON_LOCAL,
   MODAL_TYPES,
   PRIMARY_FORMAT_TYPES,
-  MAPPING_TYPES,
-  LINK_STATUS
+  MAPPING_TYPES
 } from '@/common/constants';
 import {
   useModal,
