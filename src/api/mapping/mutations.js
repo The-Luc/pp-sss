@@ -96,3 +96,13 @@ export const updateSheetMappingConfigMutation = gql`
     }
   }
 `;
+
+export const updateElementMappingMutation = gql`
+  mutation updateElementMapping($id: ID!, $params: ElementMappingInput!) {
+    update_element_mapping(mapping_id: $id, mapping_params: $params) {
+      id
+      print_element_uid
+      digital_element_uid
+    }
+  }
+`;

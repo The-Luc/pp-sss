@@ -14,8 +14,7 @@ import {
   setBookId,
   setSectionsWithSheets,
   updateSection,
-  deleteMedia,
-  setElementMappings
+  deleteMedia
 } from '@/common/store';
 
 export const mutations = {

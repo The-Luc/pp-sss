@@ -1,12 +1,3 @@
-import { useGetters, useMutations } from 'vuex-composition-helpers';
-import {
-  GETTERS as PRINT_GETTERS,
-  MUTATES as PRINT_MUTATES
-} from '@/store/modules/print/const';
-import {
-  GETTERS as DIGITAL_GETTERS,
-  MUTATES as DIGITAL_MUTATES
-} from '@/store/modules/digital/const';
 import {
   createTemplateMappingApi,
   deleteTemplateMappingApi,
@@ -16,7 +7,8 @@ import {
   updateSheetMappingConfigApi,
   createElementMappingApi,
   getSheetMappingElementsApi,
-  deleteElementMappingApi
+  deleteElementMappingApi,
+  updateElementMappingsApi
 } from '@/api/mapping';
 import { cloneDeep, get } from 'lodash';
 import { isEmpty, isPpTextOrImage } from '@/common/utils';
@@ -297,11 +289,22 @@ export const useMappingSheet = () => {
     return elementMappingConfig;
   };
 
+  const updateElementMappingByIds = async (ids, isDigital) => {
+    const prop = isDigital ? 'digitalElementId' : 'printElementId';
+
+    const promises = ids.map(id =>
+      updateElementMappingsApi(id, { [prop]: '' })
+    );
+
+    return Promise.all(promises);
+  };
+
   return {
     getSheetMappingConfig,
     updateSheetMappingConfig,
     updateElementMappings,
     getElementMappings,
-    storeElementMappings
+    storeElementMappings,
+    updateElementMappingByIds
   };
 };

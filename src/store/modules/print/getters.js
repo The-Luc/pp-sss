@@ -3,8 +3,7 @@ import {
   sectionsWithSheets,
   defaultThemeId,
   communityId,
-  bookUserId,
-  getElementMappings
+  bookUserId
 } from '@/common/store';
 
 import {

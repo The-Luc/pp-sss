@@ -170,7 +170,11 @@ export default {
     const { saveCustomPrintLayout } = useCustomLayout();
     const { generatePdf } = usePdfGeneration();
     const { getSheetFrames } = useFrameAction();
-    const { storeElementMappings, getSheetMappingConfig } = useMappingSheet();
+    const {
+      storeElementMappings,
+      getSheetMappingConfig,
+      updateElementMappingByIds
+    } = useMappingSheet();
     const { toggleModal } = useModal();
     const { getMappingConfig } = useMappingProject();
 
@@ -195,6 +199,7 @@ export default {
       storeElementMappings,
       toggleModal,
       getSheetMappingConfig,
+      updateElementMappingByIds,
       getMappingConfig
     };
   },
@@ -369,6 +374,28 @@ export default {
       this.setAutosaveTimer();
 
       const data = this.getDataEditScreen(sheetId);
+
+      // update elementMappings if any objects deleted
+      if (!isEmpty(this.elementMappings)) {
+        const objectIds = data.objects.map(o => o.id);
+        const elementMappingIds = [];
+
+        this.elementMappings.forEach(el => {
+          if (!objectIds.includes(el.printElementId)) {
+            elementMappingIds.push(el.id);
+          }
+        });
+
+        if (!isEmpty(elementMappingIds)) {
+          // update elementMapping
+          await this.updateElementMappingByIds(elementMappingIds);
+
+          this.elementMappings.forEach(el => {
+            if (elementMappingIds.includes(el.printElementId))
+              el.printElementId = '';
+          });
+        }
+      }
 
       await this.savePrintEditScreen(data, isAutosave, this.elementMappings);
 

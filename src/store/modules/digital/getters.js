@@ -8,8 +8,7 @@ import {
   defaultThemeId,
   communityId,
   getDigitalBackground,
-  bookUserId,
-  getElementMappings
+  bookUserId
 } from '@/common/store';
 
 import DIGITAL from './const';

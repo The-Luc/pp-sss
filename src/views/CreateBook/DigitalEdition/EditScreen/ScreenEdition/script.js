@@ -95,7 +95,8 @@ import {
   useAppCommon,
   useCustomLayout,
   useMappingSheet,
-  useMappingProject
+  useMappingProject,
+  useFrameAction
 } from '@/hooks';
 
 import {
@@ -217,6 +218,7 @@ export default {
     const { saveCustomDigitalLayout } = useCustomLayout();
     const { storeElementMappings, getSheetMappingConfig } = useMappingSheet();
     const { getMappingConfig } = useMappingProject();
+    const { getSheetFrames } = useFrameAction();
 
     return {
       setLoadingState,
@@ -261,7 +263,8 @@ export default {
       saveCustomDigitalLayout,
       storeElementMappings,
       getSheetMappingConfig,
-      getMappingConfig
+      getMappingConfig,
+      getSheetFrames
     };
   },
   data() {
@@ -2184,6 +2187,33 @@ export default {
 
       this.updateFrameObjects({ frameId });
       const data = this.getDataEditScreen(frameId);
+
+      // update elementMappings if any objects deleted
+      if (!isEmpty(this.elementMappings)) {
+        const frames = await this.getSheetFrames(this.pageSelected.id);
+
+        const objectIds = frames
+          .map(frame => frame.objects.map(o => o.id))
+          .flat();
+        console.log('object ids ', objectIds);
+        const elementMappingIds = [];
+
+        this.elementMappings.forEach(el => {
+          if (!objectIds.includes(el.digitalElementId)) {
+            elementMappingIds.push(el.id);
+          }
+        });
+
+        if (!isEmpty(elementMappingIds)) {
+          // update elementMapping
+          await this.updateElementMappingByIds(elementMappingIds, true);
+
+          this.elementMappings.forEach(el => {
+            if (elementMappingIds.includes(el.digitalElementId))
+              el.digitalElementId = '';
+          });
+        }
+      }
       await this.saveEditScreen(data, isAutosave, this.elementMappings);
     },
     /**
