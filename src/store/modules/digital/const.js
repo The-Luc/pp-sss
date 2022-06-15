@@ -49,7 +49,6 @@ class GetterClass extends BaseObject {
   BOOK_USER_ID = 'getBookUserId';
   GET_MEDIA_OBJECT_IDS = 'getMediaObjectIds';
   GET_BOOK_INFO = 'getBookInfo';
-  GET_ELEMENT_MAPPINGS = 'getElementMapping';
 
   constructor(props) {
     super(props);
@@ -129,7 +128,6 @@ class MutationClass extends BaseObject {
   SET_PLAY_OUT_IDS = 'setPlayOutIds';
   UPDATE_SECTION = 'updateSection';
   SET_OBJECT_PROP_OF_SHEET_FRAMES = 'updateObjectPropOfSheetFrame';
-  SET_ELEMENT_MAPPINGS = 'setElementSettings';
 
   constructor(props) {
     super(props);

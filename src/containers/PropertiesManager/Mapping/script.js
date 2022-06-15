@@ -95,6 +95,8 @@ export default {
       await this.updateSheetMappingConfig(this.currentSheet.id, {
         mappingStatus
       });
+
+      this.$root.$emit('drawLayout');
     },
 
     /**
