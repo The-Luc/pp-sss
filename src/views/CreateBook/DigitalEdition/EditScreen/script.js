@@ -51,7 +51,8 @@ import {
   useAppCommon,
   useFrameAction,
   useMediaObjects,
-  useFrameOrdering
+  useFrameOrdering,
+  useMappingSheet
 } from '@/hooks';
 
 import { useSavingStatus, useThumbnail, usePhotos } from '../../composables';
@@ -145,6 +146,7 @@ export default {
     const { saveSelectedPortraitFolders } = usePortrait();
     const { uploadBase64Image, generateMultiThumbnails } = useThumbnail();
     const { mediaObjectIds } = useMediaObjects();
+    const { removeElementMapingOfFrames } = useMappingSheet();
 
     return {
       pageSelected,
@@ -193,7 +195,8 @@ export default {
       generateMultiThumbnails,
       uploadBase64Image,
       mediaObjectIds,
-      getInProjectAssets
+      getInProjectAssets,
+      removeElementMapingOfFrames
     };
   },
   data() {
@@ -970,6 +973,13 @@ export default {
       // update frame orders
       const frameIds = currentFrames.map(f => parseInt(f.id));
       await this.updateFrameOrder(screenId, frameIds);
+
+      // remove element mapping connection
+      const mappingFrameIds = [
+        ...updatedFrames.map(f => f.id),
+        ...createdFrames.map(f => f.id)
+      ];
+      await this.removeElementMapingOfFrames(screenId, mappingFrameIds);
 
       return currentFrames;
     },

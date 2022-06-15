@@ -16,7 +16,14 @@ import {
 
 export const getPageDataApi = async id => {
   const res = await graphqlRequest(pageInfoQuery, { id });
-  return res?.data;
+  const page = res?.data?.page;
+
+  if (!page) return;
+
+  return {
+    id: page.id,
+    objects: page.layout.elements
+  };
 };
 
 export const getSheetInfoApi = async id => {
