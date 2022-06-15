@@ -7,10 +7,12 @@ import {
   getSheetThumbnail
 } from '@/common/utils';
 import { useThumbnail, usePhotos } from '@/views/CreateBook/composables';
+import { useMappingSheet } from './mapping';
 
 export const useSavePageData = () => {
   const { uploadBase64Image } = useThumbnail();
   const { getInProjectAssets } = usePhotos();
+  const { removeElementMappingOfPage } = useMappingSheet();
 
   /**
    *
@@ -59,6 +61,9 @@ export const useSavePageData = () => {
         removeAssetIds: apiPageAssetIds
       };
       savePromises.push(updateInProjectApi(inProjectVariables));
+
+      // remove mapping elements on left page
+      savePromises.push(removeElementMappingOfPage(sheetId));
     }
 
     if (isOnRight) {
@@ -72,6 +77,9 @@ export const useSavePageData = () => {
         removeAssetIds: apiPageAssetIds
       };
       savePromises.push(updateInProjectApi(inProjectVariables));
+
+      // remove mapping elements on left page
+      savePromises.push(removeElementMappingOfPage(sheetId));
     }
 
     await Promise.all(savePromises);

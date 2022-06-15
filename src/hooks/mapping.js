@@ -20,6 +20,7 @@ import {
 } from '@/common/mapping/mapping';
 import { useAppCommon } from '@/hooks';
 import { PRIMARY_FORMAT_TYPES } from '@/common/constants';
+import { getPageDataApi, getSheetInfoApi } from '@/api/sheet';
 
 const addingParams = values => {
   const mappingParams = [];
@@ -262,7 +263,7 @@ export const useMappingSheet = () => {
   const updateElementMappings = async (
     sheetId,
     mappings,
-    printObject,
+    printObjects,
     frames
   ) => {
     // get current element mappings
@@ -272,7 +273,8 @@ export const useMappingSheet = () => {
     await deleteElementMappings(elementMappings.map(e => e.id));
 
     // create new element mappings
-    await createElementMappings(sheetId, mappings, printObject, frames);
+    console.log(printObjects);
+    await createElementMappings(sheetId, mappings, printObjects, frames);
   };
 
   // save sheet element mappings to vuex
@@ -299,6 +301,7 @@ export const useMappingSheet = () => {
     return elementMappingConfig;
   };
 
+  // remove mapping either on print objects or digital objects
   const updateElementMappingByIds = async (ids, isDigital) => {
     const prop = isDigital ? 'digitalElementId' : 'printElementId';
 
@@ -309,12 +312,39 @@ export const useMappingSheet = () => {
     return Promise.all(promises);
   };
 
+  /**
+   * Delete element mapping on a page
+   * Used when applying portrait on a page
+   *
+   *  - Get sheet objects and element mappings of sheet
+   *  if printElementIds are not in sheet objects ids => the objects has been removed
+   *       => remove it from the element mappings
+   *
+   */
+  const removeElementMappingOfPage = async sheetId => {
+    const elementMappings = await getElementMappings(sheetId);
+
+    const sheet = await getSheetInfoApi(sheetId);
+
+    const objectIds = sheet.objects.map(o => o.id);
+
+    const mappingIds = elementMappings.reduce((acc, el) => {
+      if (!objectIds.includes(el.printElementId)) acc.push(el.id);
+
+      return acc;
+    }, []);
+
+    // change printElementId of ids in mappingIds to ''
+    await updateElementMappingByIds(mappingIds);
+  };
+
   return {
     getSheetMappingConfig,
     updateSheetMappingConfig,
     updateElementMappings,
     getElementMappings,
     storeElementMappings,
-    updateElementMappingByIds
+    updateElementMappingByIds,
+    removeElementMappingOfPage
   };
 };
