@@ -273,7 +273,6 @@ export const useMappingSheet = () => {
     await deleteElementMappings(elementMappings.map(e => e.id));
 
     // create new element mappings
-    console.log(printObjects);
     await createElementMappings(sheetId, mappings, printObjects, frames);
   };
 
