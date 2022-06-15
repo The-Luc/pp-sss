@@ -62,6 +62,7 @@ export const updateMappingConfigMutation = gql`
   }
 `;
 
+/* ELEMENT MAPPINGS */
 export const createElementMappingMutation = gql`
   mutation createElementMapping($params: ElementMappingInput) {
     create_element_mapping(mapping_params: $params) {
@@ -114,22 +115,22 @@ export const deleteElementMappingMutation = gql`
   }
 `;
 
-export const updateSheetMappingConfigMutation = gql`
-  mutation updateSheetMappingConfig($sheetId: ID!, $params: SheetInput) {
-    update_sheet(sheet_id: $sheetId, sheet_params: $params) {
-      id
-      mapping_type
-      mapping_status
-    }
-  }
-`;
-
 export const updateElementMappingMutation = gql`
   mutation updateElementMapping($id: ID!, $params: ElementMappingInput!) {
     update_element_mapping(mapping_id: $id, mapping_params: $params) {
       id
       print_element_uid
       digital_element_uid
+    }
+  }
+`;
+
+export const updateSheetMappingConfigMutation = gql`
+  mutation updateSheetMappingConfig($sheetId: ID!, $params: SheetInput) {
+    update_sheet(sheet_id: $sheetId, sheet_params: $params) {
+      id
+      mapping_type
+      mapping_status
     }
   }
 `;
