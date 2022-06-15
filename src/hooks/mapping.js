@@ -20,7 +20,7 @@ import {
 } from '@/common/mapping/mapping';
 import { useAppCommon } from '@/hooks';
 import { PRIMARY_FORMAT_TYPES } from '@/common/constants';
-import { getPageDataApi, getSheetInfoApi } from '@/api/sheet';
+import { getSheetInfoApi } from '@/api/sheet';
 
 const addingParams = values => {
   const mappingParams = [];
