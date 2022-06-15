@@ -338,6 +338,24 @@ export const useMappingSheet = () => {
     await updateElementMappingByIds(mappingIds);
   };
 
+  /**
+   * Delete element mapping on frames
+   * Used when applying portrait on frames
+   *
+   * @param {Array} frameIds ids of frames which portraits are applied on
+   *
+   */
+  const removeElementMapingOfFrames = async (sheetId, frameIds) => {
+    const elementMappings = await getElementMappings(sheetId);
+
+    const mappingIds = elementMappings.reduce((acc, el) => {
+      if (frameIds.includes(el.digitalContainerId)) acc.push(el.id);
+      return acc;
+    }, []);
+
+    await updateElementMappingByIds(mappingIds, true);
+  };
+
   return {
     getSheetMappingConfig,
     updateSheetMappingConfig,
@@ -345,6 +363,7 @@ export const useMappingSheet = () => {
     getElementMappings,
     storeElementMappings,
     updateElementMappingByIds,
-    removeElementMappingOfPage
+    removeElementMappingOfPage,
+    removeElementMapingOfFrames
   };
 };

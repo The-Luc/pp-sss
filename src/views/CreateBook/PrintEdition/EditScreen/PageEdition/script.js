@@ -1997,8 +1997,9 @@ export default {
         const fbElement = fbObjectsById[objectId];
 
         if (!fbElement) {
-          const digitalObjectId = el.digitalElementId;
-          const digitalObject = this.digitalObjects[digitalObjectId];
+          if (!el.digitalElementId) return;
+
+          const digitalObject = this.digitalObjects[el.digitalElementId];
           const isImageObj = isPpImageObject(digitalObject);
 
           isImageObj ? imageCouter++ : textCounter++;
