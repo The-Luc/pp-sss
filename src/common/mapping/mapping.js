@@ -95,6 +95,8 @@ export const sheetMappingConfigToApiMapping = data => {
 };
 
 export const elementMappings = data => {
+  if (!data) return;
+
   const mapRules = {
     data: {
       print_element_uid: {
@@ -113,6 +115,8 @@ export const elementMappings = data => {
 };
 
 export const elementMappingToApi = data => {
+  if (!data) return;
+
   const mapRules = {
     data: {
       printElementId: {

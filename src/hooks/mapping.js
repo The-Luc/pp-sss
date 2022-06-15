@@ -214,7 +214,9 @@ export const useMappingSheet = () => {
       printMappings[o.idFromLayout] = { print_element_uid: o.id };
     });
 
-    frames.map(frame => {
+    const frameIds = [];
+    frames.forEach(frame => {
+      frameIds.push(frame.id);
       frame.objects.filter(isPpTextOrImage).forEach(o => {
         digitalMappings[o.idFromLayout] = {
           digital_element_uid: o.id,
@@ -223,24 +225,32 @@ export const useMappingSheet = () => {
       });
     });
 
-    const apiMappings = mappings.elementMappings.map(
-      ({ printElementId, digitalElementId }) => {
-        const { print_element_uid } = printMappings[printElementId];
-        const { digital_element_uid, digital_frame_id } = digitalMappings[
-          digitalElementId
-        ];
-        return {
-          sheet_id: sheetId,
-          digital_frame_id,
-          print_element_uid,
-          digital_element_uid
-        };
-      }
-    );
+    const apiMappings = {};
+
+    mappings.elementMappings.forEach(({ printElementId, digitalElementId }) => {
+      const { print_element_uid } = printMappings[printElementId];
+      const { digital_element_uid, digital_frame_id } = digitalMappings[
+        digitalElementId
+      ];
+
+      if (!apiMappings[digital_frame_id]) apiMappings[digital_frame_id] = [];
+
+      apiMappings[digital_frame_id].push({
+        print_element_uid,
+        digital_element_uid
+      });
+    });
+
     // call API to create element mappings
-    await Promise.all(
-      apiMappings.map(config => createElementMappingApi(config))
-    );
+    await frameIds.reduce(async (acc, frameId) => {
+      await acc;
+
+      const config = apiMappings[frameId];
+
+      if (!config) return;
+
+      await createElementMappingApi(sheetId, frameId, config);
+    }, Promise.resolve());
   };
 
   const deleteElementMappings = async ids => {

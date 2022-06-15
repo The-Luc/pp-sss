@@ -79,6 +79,33 @@ export const createElementMappingMutation = gql`
   }
 `;
 
+export const createBulkElementMappingMutation = gql`
+  mutation createBulkElementMapping(
+    $sheetId: ID!
+    $pageId: ID!
+    $frameId: ID!
+    $params: [ElementMappingUidInput]!
+  ) {
+    create_bulk_element_mapping(
+      sheet_id: $sheetId
+      page_id: $pageId
+      digital_frame_id: $frameId
+      mapping_params: $params
+    ) {
+      id
+      print_element_uid
+      digital_frame {
+        id
+      }
+      digital_element_uid
+      sheet {
+        id
+      }
+      mapped
+    }
+  }
+`;
+
 export const deleteElementMappingMutation = gql`
   mutation deleteElementMapping($ids: [ID!]!) {
     delete_element_mappings(element_mapping_ids: $ids) {

@@ -286,6 +286,7 @@ export default {
         this.setPropertiesObjectType({ type: '' });
         this.setCurrentObject(null);
 
+        await this.updateElementMappings();
         await this.drawObjectsOnCanvas(this.sheetLayout);
 
         this.addPageNumber();

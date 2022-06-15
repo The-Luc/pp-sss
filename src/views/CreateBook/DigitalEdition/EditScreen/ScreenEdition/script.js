@@ -216,7 +216,11 @@ export default {
     const { totalVideoDuration } = useVideo();
     const { getAssetById } = usePhotos();
     const { saveCustomDigitalLayout } = useCustomLayout();
-    const { storeElementMappings, getSheetMappingConfig } = useMappingSheet();
+    const {
+      storeElementMappings,
+      getSheetMappingConfig,
+      updateElementMappingByIds
+    } = useMappingSheet();
     const { getMappingConfig } = useMappingProject();
     const { getSheetFrames } = useFrameAction();
 
@@ -263,6 +267,7 @@ export default {
       saveCustomDigitalLayout,
       storeElementMappings,
       getSheetMappingConfig,
+      updateElementMappingByIds,
       getMappingConfig,
       getSheetFrames
     };
@@ -2192,14 +2197,21 @@ export default {
       if (!isEmpty(this.elementMappings)) {
         const frames = await this.getSheetFrames(this.pageSelected.id);
 
-        const objectIds = frames
+        const currFrame = data.frame;
+
+        const activeFrames = [
+          ...frames.filter(f => f.id !== currFrame.id),
+          { objects: currFrame.objects }
+        ];
+
+        const objectIds = activeFrames
           .map(frame => frame.objects.map(o => o.id))
           .flat();
-        console.log('object ids ', objectIds);
+
         const elementMappingIds = [];
 
         this.elementMappings.forEach(el => {
-          if (!objectIds.includes(el.digitalElementId)) {
+          if (el.digitalElementId && !objectIds.includes(el.digitalElementId)) {
             elementMappingIds.push(el.id);
           }
         });
