@@ -10,7 +10,8 @@ import {
   CUSTOM_LAYOUT_TYPE,
   DIGITAL_LAYOUT_TYPES as LAYOUT_TYPES,
   SAVED_AND_FAVORITES_TYPE,
-  ASSORTED_TYPE_VALUE
+  ASSORTED_TYPE_VALUE,
+  EVENT_TYPE
 } from '@/common/constants';
 import {
   getThemeOptSelectedById,
@@ -270,6 +271,7 @@ export default {
       if (!isSupplemental && !shouldShowConfirm) {
         await this.applyDigitalLayout(layout);
 
+        this.$root.$emit(EVENT_TYPE.DRAW_LAYOUT);
         this.onCancel();
 
         return;

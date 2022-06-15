@@ -5,8 +5,7 @@ import {
   ICON_LOCAL,
   MODAL_TYPES,
   PRIMARY_FORMAT_TYPES,
-  MAPPING_TYPES,
-  LINK_STATUS
+  MAPPING_TYPES
 } from '@/common/constants';
 import {
   useModal,
@@ -75,15 +74,11 @@ export default {
       return MAPPING_TYPES[this.mappingConfig?.mappingType]?.name || '';
     },
     currentContainerTitle() {
-      if (this.isDigital) return 'Screen Title';
+      if (this.isDigital) return this.currentSection.name;
 
-      const { leftTitle, rightTitle } = this.currentSheet.spreadInfo;
+      const { pageLeftName, pageRightName } = this.currentSheet;
 
-      if (!leftTitle && !rightTitle) return this.currentSection.name;
-
-      if (this.currentSheet.link === LINK_STATUS.LINK) return leftTitle;
-
-      return `${leftTitle} - ${rightTitle}`;
+      return `${pageLeftName} - ${pageRightName}`;
     }
   },
   async mounted() {
@@ -100,6 +95,8 @@ export default {
       await this.updateSheetMappingConfig(this.currentSheet.id, {
         mappingStatus
       });
+
+      this.$root.$emit('drawLayout');
     },
 
     /**

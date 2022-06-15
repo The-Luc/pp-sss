@@ -1,12 +1,3 @@
-import { useGetters, useMutations } from 'vuex-composition-helpers';
-import {
-  GETTERS as PRINT_GETTERS,
-  MUTATES as PRINT_MUTATES
-} from '@/store/modules/print/const';
-import {
-  GETTERS as DIGITAL_GETTERS,
-  MUTATES as DIGITAL_MUTATES
-} from '@/store/modules/digital/const';
 import {
   createTemplateMappingApi,
   deleteTemplateMappingApi,
@@ -16,7 +7,8 @@ import {
   updateSheetMappingConfigApi,
   createElementMappingApi,
   getSheetMappingElementsApi,
-  deleteElementMappingApi
+  deleteElementMappingApi,
+  updateElementMappingsApi
 } from '@/api/mapping';
 import { cloneDeep, get } from 'lodash';
 import { isEmpty, isPpTextOrImage } from '@/common/utils';
@@ -190,17 +182,7 @@ export const useMappingProject = () => {
 };
 
 export const useMappingSheet = () => {
-  const { value: isDigital } = useAppCommon().isDigitalEdition;
-
-  const GETTERS = isDigital ? DIGITAL_GETTERS : PRINT_GETTERS;
-  const MUTATES = isDigital ? DIGITAL_MUTATES : PRINT_MUTATES;
-
-  const { getElementMappings: getStoredElementMappings } = useGetters({
-    getElementMappings: GETTERS.GET_ELEMENT_MAPPINGS
-  });
-  const { setElementMappings } = useMutations({
-    setElementMappings: MUTATES.SET_ELEMENT_MAPPINGS
-  });
+  const { getMappingConfig } = useMappingProject();
 
   const getSheetMappingConfig = async sheetId => {
     const res = await getSheetMappingConfigApi(sheetId);
@@ -232,7 +214,9 @@ export const useMappingSheet = () => {
       printMappings[o.idFromLayout] = { print_element_uid: o.id };
     });
 
-    frames.map(frame => {
+    const frameIds = [];
+    frames.forEach(frame => {
+      frameIds.push(frame.id);
       frame.objects.filter(isPpTextOrImage).forEach(o => {
         digitalMappings[o.idFromLayout] = {
           digital_element_uid: o.id,
@@ -241,24 +225,32 @@ export const useMappingSheet = () => {
       });
     });
 
-    const apiMappings = mappings.elementMappings.map(
-      ({ printElementId, digitalElementId }) => {
-        const { print_element_uid } = printMappings[printElementId];
-        const { digital_element_uid, digital_frame_id } = digitalMappings[
-          digitalElementId
-        ];
-        return {
-          sheet_id: sheetId,
-          digital_frame_id,
-          print_element_uid,
-          digital_element_uid
-        };
-      }
-    );
+    const apiMappings = {};
+
+    mappings.elementMappings.forEach(({ printElementId, digitalElementId }) => {
+      const { print_element_uid } = printMappings[printElementId];
+      const { digital_element_uid, digital_frame_id } = digitalMappings[
+        digitalElementId
+      ];
+
+      if (!apiMappings[digital_frame_id]) apiMappings[digital_frame_id] = [];
+
+      apiMappings[digital_frame_id].push({
+        print_element_uid,
+        digital_element_uid
+      });
+    });
+
     // call API to create element mappings
-    await Promise.all(
-      apiMappings.map(config => createElementMappingApi(config))
-    );
+    await frameIds.reduce(async (acc, frameId) => {
+      await acc;
+
+      const config = apiMappings[frameId];
+
+      if (!config) return;
+
+      await createElementMappingApi(sheetId, frameId, config);
+    }, Promise.resolve());
   };
 
   const deleteElementMappings = async ids => {
@@ -286,9 +278,35 @@ export const useMappingSheet = () => {
   // save sheet element mappings to vuex
   const storeElementMappings = async sheetId => {
     const elementMappings = await getElementMappings(sheetId);
+    const elementMappingConfig = cloneDeep(elementMappings);
 
-    setElementMappings({ elementMappings });
-    return elementMappings;
+    const sheetConfig = await getSheetMappingConfig(sheetId);
+    const projectConfig = await getMappingConfig();
+
+    const { mappingStatus } = sheetConfig;
+    const { enableContentMapping } = projectConfig;
+
+    elementMappingConfig.forEach(el => {
+      if (!mappingStatus || !enableContentMapping) {
+        el.mapped = false;
+      }
+
+      if (!el.digitalElementId || !el.printElementId) {
+        el.mapped = false;
+      }
+    });
+
+    return elementMappingConfig;
+  };
+
+  const updateElementMappingByIds = async (ids, isDigital) => {
+    const prop = isDigital ? 'digitalElementId' : 'printElementId';
+
+    const promises = ids.map(id =>
+      updateElementMappingsApi(id, { [prop]: '' })
+    );
+
+    return Promise.all(promises);
   };
 
   return {
@@ -297,6 +315,6 @@ export const useMappingSheet = () => {
     updateElementMappings,
     getElementMappings,
     storeElementMappings,
-    getStoredElementMappings
+    updateElementMappingByIds
   };
 };
