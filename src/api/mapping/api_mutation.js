@@ -42,6 +42,8 @@ export const deleteElementMappingApi = ids => {
 };
 
 export const updateElementMappingsApi = async (id, data) => {
+  if (!id) return;
+
   const params = elementMappingToApi(data);
 
   const res = await graphqlRequest(updateElementMappingMutation, {

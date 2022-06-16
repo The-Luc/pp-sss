@@ -33,6 +33,20 @@ export const getSheetMappingConfigQuery = gql`
   }
 `;
 
+export const getBookConnectionsQuery = gql`
+  query getBookConnectionsQuery($bookId: ID!) {
+    book(id: $bookId) {
+      id
+      sheets {
+        id
+        element_mappings {
+          id
+        }
+      }
+    }
+  }
+`;
+
 export const elementMappingDetail = gql`
   fragment elementMappingDetail on ElementMappingType {
     id

@@ -8,7 +8,8 @@ import {
   createElementMappingApi,
   getSheetMappingElementsApi,
   deleteElementMappingApi,
-  updateElementMappingsApi
+  updateElementMappingsApi,
+  getBookConnectionsApi
 } from '@/api/mapping';
 import { cloneDeep, get } from 'lodash';
 import { isEmpty, isPpTextOrImage } from '@/common/utils';
@@ -144,6 +145,7 @@ export const useMappingTemplate = () => {
 export const useMappingProject = () => {
   /* GET CONFIG */
   const { generalInfo } = useAppCommon();
+  const { breakAllConnections } = useBreakConnections();
 
   const getMappingConfig = async id => {
     const bookId = id || generalInfo.value.bookId;
@@ -173,6 +175,11 @@ export const useMappingProject = () => {
     const params = projectMappingToApi(config);
 
     const res = await updateMappingProjectApi(bookId, params);
+
+    if (!config.enableContentMapping) {
+      // if use set mapping functionality is OFF => set `mapped` field of element mapping to FALSE
+      await breakAllConnections(bookId);
+    }
 
     const newConfig = get(res, 'data.update_project_mapping_configuration');
 
@@ -365,4 +372,17 @@ export const useMappingSheet = () => {
     removeElementMappingOfPage,
     removeElementMapingOfFrames
   };
+};
+
+export const useBreakConnections = () => {
+  const breakAllConnections = async bookId => {
+    const connectionIds = await getBookConnectionsApi(bookId);
+
+    if (isEmpty(connectionIds)) return;
+
+    await Promise.all(
+      connectionIds.map(id => updateElementMappingsApi(id, { mapped: false }))
+    );
+  };
+  return { breakAllConnections };
 };
