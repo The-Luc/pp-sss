@@ -3,7 +3,8 @@ import { graphqlRequest } from '../urql';
 import {
   loginUserMutation,
   saveFavoritesMutation,
-  deleteFavoritesMutation
+  deleteFavoritesMutation,
+  resumeSessionMutation
 } from './mutations';
 
 import { isOk } from '@/common/utils';
@@ -22,6 +23,20 @@ export const logInUserApi = async (email, password) => {
   return {
     token: user.token,
     communityUserId
+  };
+};
+
+export const resumSessionApi = async sessionToken => {
+  const res = await graphqlRequest(resumeSessionMutation, { sessionToken });
+
+  if (!isOk(res) || !res.data.token_session) return {};
+
+  const { token, context, communities_users } = res.data.token_session;
+
+  return {
+    token,
+    bookId: context.book_id,
+    communityUserId: communities_users.id
   };
 };
 

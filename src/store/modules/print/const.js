@@ -35,7 +35,6 @@ class GetterClass extends BaseObject {
   BOOK_USER_ID = 'getBookUserId';
   GET_BOOK_INFO = 'getBookInfo';
   GET_MEDIA_OBJECT_IDS = 'getMediaObjectIds';
-  GET_ELEMENT_MAPPINGS = 'getElementMappings';
 
   constructor(props) {
     super(props);
@@ -97,7 +96,6 @@ class MutationClass extends BaseObject {
   SET_BACKGROUNDS = 'setBackgrounds';
   SET_BOOK_INFO = 'setBookInfo';
   UPDATE_SECTION = 'updateSection';
-  SET_ELEMENT_MAPPINGS = 'setElementSettings';
 
   constructor(props) {
     super(props);

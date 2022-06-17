@@ -1,6 +1,7 @@
 import { graphqlRequest } from '../urql';
 import { get } from 'lodash';
 import {
+  getBookConnectionsQuery,
   getMappingSettingsQuery,
   getSheetMappingConfigQuery,
   getSheetMappingElementsQuery
@@ -32,4 +33,12 @@ export const getSheetMappingElementsApi = async sheetId => {
     digitalContainerId: el.digital_frame?.id,
     mapped: el.mapped
   }));
+};
+
+export const getBookConnectionsApi = async bookId => {
+  const res = await graphqlRequest(getBookConnectionsQuery, { bookId });
+
+  const sheets = get(res, 'data.book.sheets');
+
+  return sheets.map(sheet => sheet.element_mappings.map(el => el.id)).flat();
 };

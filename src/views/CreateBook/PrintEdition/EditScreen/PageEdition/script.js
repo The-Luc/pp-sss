@@ -170,7 +170,11 @@ export default {
     const { saveCustomPrintLayout } = useCustomLayout();
     const { generatePdf } = usePdfGeneration();
     const { getSheetFrames } = useFrameAction();
-    const { storeElementMappings, getSheetMappingConfig } = useMappingSheet();
+    const {
+      storeElementMappings,
+      getSheetMappingConfig,
+      updateElementMappingByIds
+    } = useMappingSheet();
     const { toggleModal } = useModal();
     const { getMappingConfig } = useMappingProject();
 
@@ -195,6 +199,7 @@ export default {
       storeElementMappings,
       toggleModal,
       getSheetMappingConfig,
+      updateElementMappingByIds,
       getMappingConfig
     };
   },
@@ -217,7 +222,7 @@ export default {
       undoRedoCanvas: null,
       printCanvas: null,
       isScroll: { x: false, y: false },
-      digitalObjects: [],
+      digitalObjects: {},
       elementMappings: [],
       isShowCustomChangesConfirm: false // for editing in mapped layout applied sheet
     };
@@ -271,12 +276,6 @@ export default {
         // get data either from API
         await this.getDataCanvas();
 
-        // get sheet element mappings
-        this.elementMappings = await this.storeElementMappings(val.id);
-
-        // get digital object for show mapping icon (when hover)
-        this.digitalObjects = await this.getDigitalObjects();
-
         this.undoRedoCanvas.reset();
 
         this.updateMediaSidebarOpen({ isOpen: false });
@@ -287,6 +286,7 @@ export default {
         this.setPropertiesObjectType({ type: '' });
         this.setCurrentObject(null);
 
+        await this.updateElementMappings();
         await this.drawObjectsOnCanvas(this.sheetLayout);
 
         this.addPageNumber();
@@ -375,6 +375,28 @@ export default {
       this.setAutosaveTimer();
 
       const data = this.getDataEditScreen(sheetId);
+
+      // update elementMappings if any objects deleted
+      if (!isEmpty(this.elementMappings)) {
+        const objectIds = data.objects.map(o => o.id);
+        const elementMappingIds = [];
+
+        this.elementMappings.forEach(el => {
+          if (!objectIds.includes(el.printElementId)) {
+            elementMappingIds.push(el.id);
+          }
+        });
+
+        if (!isEmpty(elementMappingIds)) {
+          // update elementMapping
+          await this.updateElementMappingByIds(elementMappingIds);
+
+          this.elementMappings.forEach(el => {
+            if (elementMappingIds.includes(el.printElementId))
+              el.printElementId = '';
+          });
+        }
+      }
 
       await this.savePrintEditScreen(data, isAutosave, this.elementMappings);
 
@@ -1975,8 +1997,9 @@ export default {
         const fbElement = fbObjectsById[objectId];
 
         if (!fbElement) {
-          const digitalObjectId = el.digitalElementId;
-          const digitalObject = this.digitalObjects[digitalObjectId];
+          if (!el.digitalElementId) return;
+
+          const digitalObject = this.digitalObjects[el.digitalElementId];
           const isImageObj = isPpImageObject(digitalObject);
 
           isImageObj ? imageCouter++ : textCounter++;
@@ -2085,6 +2108,7 @@ export default {
       this.generatePdf(bookId);
     },
     async drawLayout() {
+      await this.updateElementMappings();
       await this.drawObjectsOnCanvas(this.sheetLayout);
     },
 
@@ -2210,6 +2234,22 @@ export default {
       if (!isHideMess) return;
 
       setItem(CUSTOM_CHANGE_MODAL, true);
+    },
+    /**
+     * Trigger when user switch sheet / apply new layout
+     * to update eleementMapping => display mapping icon
+     * and get digital objects
+     */
+    async updateElementMappings() {
+      // get sheet element mappings
+      this.elementMappings = await this.storeElementMappings(
+        this.pageSelected.id
+      );
+
+      // get digital object for show mapping icon (when hover)
+      this.digitalObjects = isEmpty(this.elementMappings)
+        ? {}
+        : await this.getDigitalObjects();
     }
   }
 };

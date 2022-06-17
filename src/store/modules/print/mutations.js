@@ -9,8 +9,7 @@ import {
   setBookId,
   setSectionsWithSheets,
   updateSection,
-  deleteMedia,
-  setElementMappings
+  deleteMedia
 } from '@/common/store';
 
 import {
@@ -225,6 +224,5 @@ export const mutations = {
   [PRINT._MUTATES.DELETE_SHEET_MEDIA]: deleteMedia,
   [PRINT._MUTATES.SET_BACKGROUNDS]: setBackgrounds,
   [PRINT._MUTATES.SET_BOOK_INFO]: setBookInfo,
-  [PRINT._MUTATES.UPDATE_SECTION]: updateSection,
-  [PRINT._MUTATES.SET_ELEMENT_MAPPINGS]: setElementMappings
+  [PRINT._MUTATES.UPDATE_SECTION]: updateSection
 };

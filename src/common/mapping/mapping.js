@@ -93,3 +93,43 @@ export const sheetMappingConfigToApiMapping = data => {
 
   return mapObject(data, mapRules);
 };
+
+export const elementMappings = data => {
+  if (!data) return;
+
+  const mapRules = {
+    data: {
+      print_element_uid: {
+        name: 'printElementId',
+        isForce: true
+      },
+      digital_element_uid: {
+        name: 'digitalElementId',
+        isForce: true
+      }
+    },
+    restrict: []
+  };
+
+  return mapObject(data, mapRules);
+};
+
+export const elementMappingToApi = data => {
+  if (!data) return;
+
+  const mapRules = {
+    data: {
+      printElementId: {
+        name: 'print_element_uid',
+        isForce: true
+      },
+      digitalElementId: {
+        name: 'digital_element_uid',
+        isForce: true
+      }
+    },
+    restrict: []
+  };
+
+  return mapObject(data, mapRules);
+};

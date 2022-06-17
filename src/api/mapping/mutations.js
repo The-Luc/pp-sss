@@ -62,9 +62,37 @@ export const updateMappingConfigMutation = gql`
   }
 `;
 
+/* ELEMENT MAPPINGS */
 export const createElementMappingMutation = gql`
   mutation createElementMapping($params: ElementMappingInput) {
     create_element_mapping(mapping_params: $params) {
+      id
+      print_element_uid
+      digital_frame {
+        id
+      }
+      digital_element_uid
+      sheet {
+        id
+      }
+      mapped
+    }
+  }
+`;
+
+export const createBulkElementMappingMutation = gql`
+  mutation createBulkElementMapping(
+    $sheetId: ID!
+    $pageId: ID!
+    $frameId: ID!
+    $params: [ElementMappingUidInput]!
+  ) {
+    create_bulk_element_mapping(
+      sheet_id: $sheetId
+      page_id: $pageId
+      digital_frame_id: $frameId
+      mapping_params: $params
+    ) {
       id
       print_element_uid
       digital_frame {
@@ -83,6 +111,17 @@ export const deleteElementMappingMutation = gql`
   mutation deleteElementMapping($ids: [ID!]!) {
     delete_element_mappings(element_mapping_ids: $ids) {
       id
+    }
+  }
+`;
+
+export const updateElementMappingMutation = gql`
+  mutation updateElementMapping($id: ID!, $params: ElementMappingInput!) {
+    update_element_mapping(mapping_id: $id, mapping_params: $params) {
+      id
+      print_element_uid
+      digital_element_uid
+      mapped
     }
   }
 `;

@@ -1,12 +1,3 @@
-import { useGetters, useMutations } from 'vuex-composition-helpers';
-import {
-  GETTERS as PRINT_GETTERS,
-  MUTATES as PRINT_MUTATES
-} from '@/store/modules/print/const';
-import {
-  GETTERS as DIGITAL_GETTERS,
-  MUTATES as DIGITAL_MUTATES
-} from '@/store/modules/digital/const';
 import {
   createTemplateMappingApi,
   deleteTemplateMappingApi,
@@ -16,7 +7,9 @@ import {
   updateSheetMappingConfigApi,
   createElementMappingApi,
   getSheetMappingElementsApi,
-  deleteElementMappingApi
+  deleteElementMappingApi,
+  updateElementMappingsApi,
+  getBookConnectionsApi
 } from '@/api/mapping';
 import { cloneDeep, get } from 'lodash';
 import { isEmpty, isPpTextOrImage } from '@/common/utils';
@@ -28,6 +21,7 @@ import {
 } from '@/common/mapping/mapping';
 import { useAppCommon } from '@/hooks';
 import { PRIMARY_FORMAT_TYPES } from '@/common/constants';
+import { getSheetInfoApi } from '@/api/sheet';
 
 const addingParams = values => {
   const mappingParams = [];
@@ -151,6 +145,7 @@ export const useMappingTemplate = () => {
 export const useMappingProject = () => {
   /* GET CONFIG */
   const { generalInfo } = useAppCommon();
+  const { breakAllConnections } = useBreakConnections();
 
   const getMappingConfig = async id => {
     const bookId = id || generalInfo.value.bookId;
@@ -181,6 +176,11 @@ export const useMappingProject = () => {
 
     const res = await updateMappingProjectApi(bookId, params);
 
+    if (!config.enableContentMapping) {
+      // if use set mapping functionality is OFF => set `mapped` field of element mapping to FALSE
+      await breakAllConnections(bookId);
+    }
+
     const newConfig = get(res, 'data.update_project_mapping_configuration');
 
     return projectMapping(newConfig);
@@ -190,17 +190,7 @@ export const useMappingProject = () => {
 };
 
 export const useMappingSheet = () => {
-  const { value: isDigital } = useAppCommon().isDigitalEdition;
-
-  const GETTERS = isDigital ? DIGITAL_GETTERS : PRINT_GETTERS;
-  const MUTATES = isDigital ? DIGITAL_MUTATES : PRINT_MUTATES;
-
-  const { getElementMappings: getStoredElementMappings } = useGetters({
-    getElementMappings: GETTERS.GET_ELEMENT_MAPPINGS
-  });
-  const { setElementMappings } = useMutations({
-    setElementMappings: MUTATES.SET_ELEMENT_MAPPINGS
-  });
+  const { getMappingConfig } = useMappingProject();
 
   const getSheetMappingConfig = async sheetId => {
     const res = await getSheetMappingConfigApi(sheetId);
@@ -232,7 +222,9 @@ export const useMappingSheet = () => {
       printMappings[o.idFromLayout] = { print_element_uid: o.id };
     });
 
-    frames.map(frame => {
+    const frameIds = [];
+    frames.forEach(frame => {
+      frameIds.push(frame.id);
       frame.objects.filter(isPpTextOrImage).forEach(o => {
         digitalMappings[o.idFromLayout] = {
           digital_element_uid: o.id,
@@ -241,24 +233,32 @@ export const useMappingSheet = () => {
       });
     });
 
-    const apiMappings = mappings.elementMappings.map(
-      ({ printElementId, digitalElementId }) => {
-        const { print_element_uid } = printMappings[printElementId];
-        const { digital_element_uid, digital_frame_id } = digitalMappings[
-          digitalElementId
-        ];
-        return {
-          sheet_id: sheetId,
-          digital_frame_id,
-          print_element_uid,
-          digital_element_uid
-        };
-      }
-    );
+    const apiMappings = {};
+
+    mappings.elementMappings.forEach(({ printElementId, digitalElementId }) => {
+      const { print_element_uid } = printMappings[printElementId];
+      const { digital_element_uid, digital_frame_id } = digitalMappings[
+        digitalElementId
+      ];
+
+      if (!apiMappings[digital_frame_id]) apiMappings[digital_frame_id] = [];
+
+      apiMappings[digital_frame_id].push({
+        print_element_uid,
+        digital_element_uid
+      });
+    });
+
     // call API to create element mappings
-    await Promise.all(
-      apiMappings.map(config => createElementMappingApi(config))
-    );
+    await frameIds.reduce(async (acc, frameId) => {
+      await acc;
+
+      const config = apiMappings[frameId];
+
+      if (!config) return;
+
+      await createElementMappingApi(sheetId, frameId, config);
+    }, Promise.resolve());
   };
 
   const deleteElementMappings = async ids => {
@@ -270,7 +270,7 @@ export const useMappingSheet = () => {
   const updateElementMappings = async (
     sheetId,
     mappings,
-    printObject,
+    printObjects,
     frames
   ) => {
     // get current element mappings
@@ -280,15 +280,86 @@ export const useMappingSheet = () => {
     await deleteElementMappings(elementMappings.map(e => e.id));
 
     // create new element mappings
-    await createElementMappings(sheetId, mappings, printObject, frames);
+    await createElementMappings(sheetId, mappings, printObjects, frames);
   };
 
   // save sheet element mappings to vuex
   const storeElementMappings = async sheetId => {
     const elementMappings = await getElementMappings(sheetId);
+    const elementMappingConfig = cloneDeep(elementMappings);
 
-    setElementMappings({ elementMappings });
-    return elementMappings;
+    const sheetConfig = await getSheetMappingConfig(sheetId);
+    const projectConfig = await getMappingConfig();
+
+    const { mappingStatus } = sheetConfig;
+    const { enableContentMapping } = projectConfig;
+
+    elementMappingConfig.forEach(el => {
+      if (!mappingStatus || !enableContentMapping) {
+        el.mapped = false;
+      }
+
+      if (!el.digitalElementId || !el.printElementId) {
+        el.mapped = false;
+      }
+    });
+
+    return elementMappingConfig;
+  };
+
+  // remove mapping either on print objects or digital objects
+  const updateElementMappingByIds = async (ids, isDigital) => {
+    const prop = isDigital ? 'digitalElementId' : 'printElementId';
+
+    const promises = ids.map(id =>
+      updateElementMappingsApi(id, { [prop]: '' })
+    );
+
+    return Promise.all(promises);
+  };
+
+  /**
+   * Delete element mapping on a page
+   * Used when applying portrait on a page
+   *
+   *  - Get sheet objects and element mappings of sheet
+   *  if printElementIds are not in sheet objects ids => the objects has been removed
+   *       => remove it from the element mappings
+   *
+   */
+  const removeElementMappingOfPage = async sheetId => {
+    const elementMappings = await getElementMappings(sheetId);
+
+    const sheet = await getSheetInfoApi(sheetId);
+
+    const objectIds = sheet.objects.map(o => o.id);
+
+    const mappingIds = elementMappings.reduce((acc, el) => {
+      if (!objectIds.includes(el.printElementId)) acc.push(el.id);
+
+      return acc;
+    }, []);
+
+    // change printElementId of ids in mappingIds to ''
+    await updateElementMappingByIds(mappingIds);
+  };
+
+  /**
+   * Delete element mapping on frames
+   * Used when applying portrait on frames
+   *
+   * @param {Array} frameIds ids of frames which portraits are applied on
+   *
+   */
+  const removeElementMapingOfFrames = async (sheetId, frameIds) => {
+    const elementMappings = await getElementMappings(sheetId);
+
+    const mappingIds = elementMappings.reduce((acc, el) => {
+      if (frameIds.includes(el.digitalContainerId)) acc.push(el.id);
+      return acc;
+    }, []);
+
+    await updateElementMappingByIds(mappingIds, true);
   };
 
   return {
@@ -297,6 +368,21 @@ export const useMappingSheet = () => {
     updateElementMappings,
     getElementMappings,
     storeElementMappings,
-    getStoredElementMappings
+    updateElementMappingByIds,
+    removeElementMappingOfPage,
+    removeElementMapingOfFrames
   };
+};
+
+export const useBreakConnections = () => {
+  const breakAllConnections = async bookId => {
+    const connectionIds = await getBookConnectionsApi(bookId);
+
+    if (isEmpty(connectionIds)) return;
+
+    await Promise.all(
+      connectionIds.map(id => updateElementMappingsApi(id, { mapped: false }))
+    );
+  };
+  return { breakAllConnections };
 };

@@ -95,7 +95,8 @@ import {
   useAppCommon,
   useCustomLayout,
   useMappingSheet,
-  useMappingProject
+  useMappingProject,
+  useFrameAction
 } from '@/hooks';
 
 import {
@@ -119,10 +120,10 @@ import {
   animateIn,
   animateOut,
   renderOrderBoxes,
-  isFbImageObject,
   isPpImageObject,
   getObjectById,
-  isAllowSyncData
+  isAllowSyncData,
+  getDigitalObjectById
 } from '@/common/utils';
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
 
@@ -215,8 +216,13 @@ export default {
     const { totalVideoDuration } = useVideo();
     const { getAssetById } = usePhotos();
     const { saveCustomDigitalLayout } = useCustomLayout();
-    const { storeElementMappings, getSheetMappingConfig } = useMappingSheet();
+    const {
+      storeElementMappings,
+      getSheetMappingConfig,
+      updateElementMappingByIds
+    } = useMappingSheet();
     const { getMappingConfig } = useMappingProject();
+    const { getSheetFrames } = useFrameAction();
 
     return {
       setLoadingState,
@@ -261,7 +267,9 @@ export default {
       saveCustomDigitalLayout,
       storeElementMappings,
       getSheetMappingConfig,
-      getMappingConfig
+      updateElementMappingByIds,
+      getMappingConfig,
+      getSheetFrames
     };
   },
   data() {
@@ -325,17 +333,11 @@ export default {
 
         await this.getDataCanvas();
 
-        // get sheet element mappings
-        this.elementMappings = await this.storeElementMappings(val.id);
-
-        // get print objects
-        this.printObjects = await this.getPrintObjects(val.id);
-
         this.setCurrentFrameId({ id: this.frames[0].id });
 
         this.countPaste = 1;
 
-        await this.drawObjectsOnCanvas(this.sheetLayout);
+        await this.drawLayout();
         this.isAllowUpdateFrameDelay = true;
       }
     },
@@ -374,12 +376,7 @@ export default {
 
       this.updateMediaSidebarOpen({ isOpen: false });
 
-      // get sheet element mappings
-      this.elementMappings = await this.storeElementMappings(
-        this.pageSelected.id
-      );
-
-      await this.drawObjectsOnCanvas(this.sheetLayout);
+      await this.drawLayout();
 
       this.isAllowUpdateFrameDelay = true;
     },
@@ -697,7 +694,8 @@ export default {
           name: EVENT_TYPE.ANIMATION_SELECT,
           handler: this.handleSelectAnimationObject
         },
-        { name: EVENT_TYPE.SAVE_LAYOUT, handler: this.handleSaveLayout }
+        { name: EVENT_TYPE.SAVE_LAYOUT, handler: this.handleSaveLayout },
+        { name: EVENT_TYPE.DRAW_LAYOUT, handler: this.drawLayout }
       ];
 
       const events = [
@@ -2131,6 +2129,10 @@ export default {
      * To update value and color of map icon on object (text & image) when hover
      */
     async updateMappingIcon(fbObjects) {
+      const ppObjectByIdsOfAllFrames = isEmpty(this.elementMappings)
+        ? {}
+        : await this.getDigitalObjects();
+
       // create a object for faster and easier to access later.
       const fbObjectsById = {};
       fbObjects.forEach(o => (fbObjectsById[o.id] = o));
@@ -2142,20 +2144,23 @@ export default {
         const objectId = el.digitalElementId;
 
         const fbElement = fbObjectsById[objectId];
+        const ppElement = ppObjectByIdsOfAllFrames[objectId];
 
-        if (!fbElement) {
-          const printObjectId = el.printElementId;
-          const printObject = this.printObjects[printObjectId];
+        if (!ppElement) {
+          if (!el.printElementId) return;
+
+          const printObject = this.printObjects[el.printElementId];
           const isImageObj = isPpImageObject(printObject);
 
           isImageObj ? imageCouter++ : textCounter++;
           return;
         }
 
-        const isImage = isFbImageObject(fbElement);
+        const isImage = isPpImageObject(ppElement);
         const value = isImage ? imageCouter++ : textCounter++;
         const color = UniqueColor.generateColor(value - 1, isImage);
 
+        if (!fbElement) return;
         fbElement.mappingInfo = { color, value, id: el.id, mapped: el.mapped };
       });
     },
@@ -2194,6 +2199,40 @@ export default {
 
       this.updateFrameObjects({ frameId });
       const data = this.getDataEditScreen(frameId);
+
+      // update elementMappings if any objects deleted
+      if (!isEmpty(this.elementMappings)) {
+        const frames = await this.getSheetFrames(this.pageSelected.id);
+
+        const currFrame = data.frame;
+
+        const activeFrames = [
+          ...frames.filter(f => f.id !== currFrame.id),
+          { objects: currFrame.objects }
+        ];
+
+        const objectIds = activeFrames
+          .map(frame => frame.objects.map(o => o.id))
+          .flat();
+
+        const elementMappingIds = [];
+
+        this.elementMappings.forEach(el => {
+          if (el.digitalElementId && !objectIds.includes(el.digitalElementId)) {
+            elementMappingIds.push(el.id);
+          }
+        });
+
+        if (!isEmpty(elementMappingIds)) {
+          // update elementMapping
+          await this.updateElementMappingByIds(elementMappingIds, true);
+
+          this.elementMappings.forEach(el => {
+            if (elementMappingIds.includes(el.digitalElementId))
+              el.digitalElementId = '';
+          });
+        }
+      }
       await this.saveEditScreen(data, isAutosave, this.elementMappings);
     },
     /**
@@ -2852,6 +2891,26 @@ export default {
       if (!isHideMess) return;
 
       setItem(CUSTOM_CHANGE_MODAL, true);
+    },
+    /**
+     * Draw objects on canvas with mapping icon and their values
+     */
+    async drawLayout() {
+      // get sheet element mappings
+      this.elementMappings = await this.storeElementMappings(
+        this.pageSelected.id
+      );
+      // get print objects
+      this.printObjects = await this.getPrintObjects(this.pageSelected.id);
+
+      await this.drawObjectsOnCanvas(this.sheetLayout);
+    },
+    /**
+     * Get digital object for show mapping icon
+     */
+    async getDigitalObjects() {
+      const frames = await this.getSheetFrames(this.pageSelected.id);
+      return getDigitalObjectById(frames);
     }
   }
 };

@@ -8,8 +8,7 @@ import {
   defaultThemeId,
   communityId,
   getDigitalBackground,
-  bookUserId,
-  getElementMappings
+  bookUserId
 } from '@/common/store';
 
 import DIGITAL from './const';
@@ -161,7 +160,7 @@ export const getters = {
   [DIGITAL._GETTERS.GET_TOTAL_VIDEO_DURATION]: ({ objects }) => {
     return Object.values(objects).reduce(
       (acc, o) =>
-        o.type === OBJECT_TYPE.VIDEO ? acc + o.endTime - o.startTime : acc,
+        o?.type === OBJECT_TYPE.VIDEO ? acc + o.endTime - o.startTime : acc,
       0
     );
   },
@@ -170,8 +169,7 @@ export const getters = {
   [DIGITAL._GETTERS.BOOK_USER_ID]: bookUserId,
   [DIGITAL._GETTERS.GET_MEDIA_OBJECT_IDS]: ({ objects }) => {
     return Object.values(objects)
-      .filter(o => o.imageId)
+      .filter(o => o?.imageId)
       .map(o => o.imageId);
-  },
-  [DIGITAL._GETTERS.GET_ELEMENT_MAPPINGS]: getElementMappings
+  }
 };
