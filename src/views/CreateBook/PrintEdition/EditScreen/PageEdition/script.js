@@ -306,8 +306,6 @@ export default {
     window.addEventListener('paste', this.handlePaste);
 
     document.body.addEventListener('keyup', this.handleDeleteKey);
-
-    // this.isShowCustomChangesConfirm =
   },
   beforeDestroy() {
     window.removeEventListener('copy', this.handleCopy);
@@ -1972,7 +1970,7 @@ export default {
         this.pageSelected.id
       );
 
-      await this.updateMappingIcon(listFabricObjects);
+      this.updateMappingIcon(listFabricObjects);
 
       window.printCanvas.add(...listFabricObjects);
       window.printCanvas.requestRenderAll();
@@ -1983,7 +1981,7 @@ export default {
     /**
      * To update value and color of map icon on object (text & image) when hover
      */
-    async updateMappingIcon(fbObjects) {
+    updateMappingIcon(fbObjects) {
       // create a object for faster and easier to access later.
       const fbObjectsById = {};
       fbObjects.forEach(o => (fbObjectsById[o.id] = o));
@@ -2108,6 +2106,8 @@ export default {
       this.generatePdf(bookId);
     },
     async drawLayout() {
+      resetObjects(window.printCanvas);
+
       await this.updateElementMappings();
       await this.drawObjectsOnCanvas(this.sheetLayout);
     },

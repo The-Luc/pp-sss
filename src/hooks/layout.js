@@ -96,7 +96,11 @@ import {
 } from '@/common/utils/layout';
 import { getSheetTransitionApi } from '@/api/playback/api_query';
 import { useMappingProject, useMappingSheet } from './mapping';
-import { getSheetInfoApi, updateSheetApi } from '@/api/sheet';
+import {
+  getSheetInfoApi,
+  getSheetPreviewInfoApi,
+  updateSheetApi
+} from '@/api/sheet';
 
 export const useLayoutPrompt = edition => {
   const EDITION_GETTERS =
@@ -875,6 +879,9 @@ export const useMappingLayout = isDigital => {
 
     // call api update mapping type to LAYOUT MAPPING, and isVisited: true
     await updateSheet(sheetId);
+
+    // call api to get sheet data - update local cache
+    await getSheetPreviewInfoApi(sheetId);
   };
 
   // trigger when use apply a mapped layout on digital editor

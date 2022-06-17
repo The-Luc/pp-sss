@@ -9,6 +9,7 @@ import { get } from 'lodash';
 import { graphqlRequest } from '../urql';
 import {
   digitalWorkspaceQuery,
+  getSheetPreviewInfoQuery,
   pageInfoQuery,
   printWorkspaceQuery,
   sheetInfoQuery
@@ -101,4 +102,9 @@ export const getWorkspaceApi = async (sheetId, isDigital) => {
   }
 
   return get(res.data, 'sheet.workspace.assets', []);
+};
+
+// is use to update cache when apply mapped layout on print editor
+export const getSheetPreviewInfoApi = async sheetId => {
+  return graphqlRequest(getSheetPreviewInfoQuery, { id: sheetId });
 };
