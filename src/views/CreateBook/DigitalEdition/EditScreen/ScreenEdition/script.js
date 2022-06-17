@@ -2118,7 +2118,7 @@ export default {
         item.value && listFabricObjects.push(item.value);
       });
 
-      this.updateMappingIcon(listFabricObjects);
+      await this.updateMappingIcon(listFabricObjects);
 
       this.digitalCanvas.add(...listFabricObjects);
       this.digitalCanvas.requestRenderAll();
@@ -2903,6 +2903,7 @@ export default {
       // get print objects
       this.printObjects = await this.getPrintObjects(this.pageSelected.id);
 
+      resetObjects(this.digitalCanvas);
       await this.drawObjectsOnCanvas(this.sheetLayout);
     },
     /**
