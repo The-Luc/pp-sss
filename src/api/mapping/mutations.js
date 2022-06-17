@@ -121,6 +121,7 @@ export const updateElementMappingMutation = gql`
       id
       print_element_uid
       digital_element_uid
+      mapped
     }
   }
 `;

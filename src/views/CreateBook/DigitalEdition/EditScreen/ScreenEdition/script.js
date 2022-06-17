@@ -120,10 +120,10 @@ import {
   animateIn,
   animateOut,
   renderOrderBoxes,
-  isFbImageObject,
   isPpImageObject,
   getObjectById,
-  isAllowSyncData
+  isAllowSyncData,
+  getDigitalObjectById
 } from '@/common/utils';
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
 
@@ -2129,6 +2129,10 @@ export default {
      * To update value and color of map icon on object (text & image) when hover
      */
     async updateMappingIcon(fbObjects) {
+      const ppObjectByIdsOfAllFrames = isEmpty(this.elementMappings)
+        ? {}
+        : await this.getDigitalObjects();
+
       // create a object for faster and easier to access later.
       const fbObjectsById = {};
       fbObjects.forEach(o => (fbObjectsById[o.id] = o));
@@ -2140,8 +2144,9 @@ export default {
         const objectId = el.digitalElementId;
 
         const fbElement = fbObjectsById[objectId];
+        const ppElement = ppObjectByIdsOfAllFrames[objectId];
 
-        if (!fbElement) {
+        if (!ppElement) {
           if (!el.printElementId) return;
 
           const printObject = this.printObjects[el.printElementId];
@@ -2151,10 +2156,11 @@ export default {
           return;
         }
 
-        const isImage = isFbImageObject(fbElement);
+        const isImage = isPpImageObject(ppElement);
         const value = isImage ? imageCouter++ : textCounter++;
         const color = UniqueColor.generateColor(value - 1, isImage);
 
+        if (!fbElement) return;
         fbElement.mappingInfo = { color, value, id: el.id, mapped: el.mapped };
       });
     },
@@ -2898,6 +2904,13 @@ export default {
       this.printObjects = await this.getPrintObjects(this.pageSelected.id);
 
       await this.drawObjectsOnCanvas(this.sheetLayout);
+    },
+    /**
+     * Get digital object for show mapping icon
+     */
+    async getDigitalObjects() {
+      const frames = await this.getSheetFrames(this.pageSelected.id);
+      return getDigitalObjectById(frames);
     }
   }
 };
