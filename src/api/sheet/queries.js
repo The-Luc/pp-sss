@@ -45,3 +45,16 @@ export const digitalWorkspaceQuery = gql`
     }
   }
 `;
+
+export const getSheetPreviewInfoQuery = gql`
+  query getSheetPreviewInfo($id: ID!) {
+    sheet(id: $id) {
+      id
+      digital_frames {
+        id
+        preview_image_url
+        frame_order
+      }
+    }
+  }
+`;
