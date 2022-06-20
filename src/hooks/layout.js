@@ -810,6 +810,10 @@ export const useApplyDigitalLayout = () => {
     currentSheet: DIGITAL_GETTERS.CURRENT_SHEET
   });
 
+  const { setSheetData } = useMutations({
+    setSheetData: DIGITAL_MUTATES.SET_SHEET_DATA
+  });
+
   const { setFrames, setCurrentFrameId, clearAllFrames } = useFrame();
   const { applyMappedPrintLayout } = useMappingLayout(true);
   const { addingLayoutFrames } = useLayoutAddingSupport();
@@ -826,6 +830,11 @@ export const useApplyDigitalLayout = () => {
     setFrames({ framesList: finalFrames });
 
     setCurrentFrameId({ id: finalFrames[0].id });
+
+    // Update sheet fields
+    setSheetData({
+      layoutId: layout.id
+    });
 
     return finalFrames;
   };

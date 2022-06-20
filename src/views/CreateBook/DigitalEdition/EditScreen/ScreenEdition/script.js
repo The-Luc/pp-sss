@@ -2869,7 +2869,15 @@ export default {
         this.pageSelected.id
       );
 
-      if (isHideMess || !isAllowSyncData(projectConfig, sheetConfig, true))
+      const isSupplemental = !this.currentFrame.fromLayout;
+      const nonConnections = this.elementMappings.length === 0;
+
+      if (
+        isHideMess ||
+        !isAllowSyncData(projectConfig, sheetConfig, true) ||
+        isSupplemental ||
+        nonConnections
+      )
         return;
 
       this.isShowCustomChangesConfirm = true;
