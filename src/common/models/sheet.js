@@ -49,7 +49,6 @@ export class SheetBase extends BaseEntity {
 
 export class SheetEditionDetail extends SheetBase {
   themeId = null;
-  layoutId = null;
   link = '';
   thumbnailUrl = null;
   isVisited = false;
@@ -71,6 +70,7 @@ export class SheetPrintDetail extends SheetEditionDetail {
   thumbnailRightUrl = null;
   pageIds = [];
   spreadInfo = new SpreadInfo();
+  printLayoutId = null;
 
   /**
    * @param {SheetPrintDetail} props
@@ -82,6 +82,7 @@ export class SheetPrintDetail extends SheetEditionDetail {
 }
 
 export class SheetDigitalDetail extends SheetEditionDetail {
+  digitalLayoutId = null;
   pageName = null;
   frameIds = [];
 

@@ -157,7 +157,7 @@ export const mutations = {
     state,
     { layoutId, themeId, previewImageUrl }
   ) {
-    state.sheets[state.currentSheetId].layoutId = layoutId;
+    state.sheets[state.currentSheetId].printLayoutId = layoutId;
     state.sheets[state.currentSheetId].themeId = themeId;
     state.sheets[state.currentSheetId].thumbnailUrl = previewImageUrl;
   },

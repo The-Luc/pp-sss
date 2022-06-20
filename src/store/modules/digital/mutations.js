@@ -133,9 +133,13 @@ export const mutations = {
     state,
     { layoutId, themeId, previewImageUrl }
   ) {
-    state.sheets[state.currentSheetId].layoutId = layoutId;
-    state.sheets[state.currentSheetId].themeId = themeId;
-    state.sheets[state.currentSheetId].thumbnailUrl = previewImageUrl;
+    state.sheets[state.currentSheetId].digitalLayoutId = layoutId;
+
+    if (themeId !== undefined)
+      state.sheets[state.currentSheetId].themeId = themeId;
+
+    if (previewImageUrl !== undefined)
+      state.sheets[state.currentSheetId].thumbnailUrl = previewImageUrl;
   },
   [DIGITAL._MUTATES.SET_SUPPLEMENTAL_LAYOUT_ID](
     { frames, currentFrameId },
