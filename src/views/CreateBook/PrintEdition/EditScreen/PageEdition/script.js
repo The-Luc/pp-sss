@@ -2213,7 +2213,14 @@ export default {
         this.pageSelected.id
       );
 
-      if (isHideMess || !isAllowSyncData(projectConfig, sheetConfig)) return;
+      const nonConnections = this.elementMappings.length === 0;
+
+      if (
+        isHideMess ||
+        !isAllowSyncData(projectConfig, sheetConfig) ||
+        nonConnections
+      )
+        return;
 
       this.isShowCustomChangesConfirm = true;
       this.toggleModal({
