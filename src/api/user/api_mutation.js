@@ -36,7 +36,7 @@ export const resumSessionApi = async sessionToken => {
   return {
     token,
     bookId: context.book_id,
-    communityUserId: communities_users.id
+    communityUserId: communities_users[0].id
   };
 };
 
