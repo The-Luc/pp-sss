@@ -26,4 +26,5 @@ export const MAPPING_TYPES = {
   }
 };
 
-export const CUSTOM_CHANGE_MODAL = 'customChangeModal';
+export const CUSTOM_CHANGE_MODAL = 'custom_change_modal';
+export const CONTENT_CHANGE_MODAL = 'content_change_modal';

@@ -19,6 +19,14 @@ export const getMappingIconName = (config, itemsTool) => {
   mapping.iconName = contentMapping ? 'gps_fixed' : 'location_disabled';
 };
 
+/**
+ *  Allowing sync data condition:
+ * - Current editor is PRIMARY FORMAT
+ * - MAPPING FUNCTIONALITY is on
+ * - MAPPING STATUS is on
+ * - MAPPING TYPE is LAYOUT
+ *
+ */
 export const isAllowSyncData = (projectConfig, sheetConfig, isDigital) => {
   const { enableContentMapping, primaryMapping } = projectConfig;
 
@@ -33,4 +41,12 @@ export const isAllowSyncData = (projectConfig, sheetConfig, isDigital) => {
   return (
     isPrimaryFormat && enableContentMapping && mappingStatus && isLayoutMapping
   );
+};
+
+export const isSecondaryFormat = (projectConfig, isDigital) => {
+  const { primaryMapping } = projectConfig;
+
+  return isDigital
+    ? PRIMARY_FORMAT_TYPES.PRINT.value === primaryMapping
+    : PRIMARY_FORMAT_TYPES.DIGITAL.value === primaryMapping;
 };
