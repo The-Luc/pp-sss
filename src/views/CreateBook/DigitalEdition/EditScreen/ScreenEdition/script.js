@@ -35,7 +35,8 @@ import {
   APPLY_MODE,
   EDITION,
   PORTRAIT_IMAGE_MASK,
-  CUSTOM_CHANGE_MODAL
+  CUSTOM_CHANGE_MODAL,
+  CONTENT_CHANGE_MODAL
 } from '@/common/constants';
 import {
   addPrintClipArts,
@@ -96,7 +97,9 @@ import {
   useCustomLayout,
   useMappingSheet,
   useMappingProject,
-  useFrameAction
+  useFrameAction,
+  useBreakConnections,
+  useContentChanges
 } from '@/hooks';
 
 import {
@@ -223,6 +226,8 @@ export default {
     } = useMappingSheet();
     const { getMappingConfig } = useMappingProject();
     const { getSheetFrames } = useFrameAction();
+    const { breakSingleConnection } = useBreakConnections();
+    const { handleTextContentChange } = useContentChanges();
 
     return {
       setLoadingState,
@@ -269,7 +274,9 @@ export default {
       getSheetMappingConfig,
       updateElementMappingByIds,
       getMappingConfig,
-      getSheetFrames
+      getSheetFrames,
+      breakSingleConnection,
+      handleTextContentChange
     };
   },
   data() {
@@ -292,8 +299,8 @@ export default {
       isJustEnteringEditor: false, // to prevent save data when entering editor
       printObjects: {}, // used to calculate mapping value (hover icon)
       elementMappings: [],
-      renderOne: false,
       isShowCustomChangesConfirm: false, // for editing in mapped layout applied sheet
+      isShowMappingContentChange: false, // for editing content of text/image
       isRenderingObjects: null
     };
   },
@@ -1130,7 +1137,7 @@ export default {
      */
     handleDbClickText(group) {
       this.setPropertiesType({ type: '' });
-      enableTextEditMode(group, this.changeTextProperties);
+      enableTextEditMode(group, prop => this.changeTextProperties(prop, group));
     },
 
     /**
@@ -1138,8 +1145,10 @@ export default {
      *
      * @param {Object}  style  new style
      */
-    changeTextProperties(prop) {
+    changeTextProperties(prop, group) {
       this.changeElementProperties(prop, OBJECT_TYPE.TEXT);
+
+      this.mappingHandleTextContentChange(prop, group);
     },
 
     /**
@@ -2097,6 +2106,8 @@ export default {
      * @param {Object} objects ppObjects that will be rendered
      */
     async drawObjectsOnCanvas(objects) {
+      resetObjects(this.digitalCanvas);
+
       if (isEmpty(objects)) return;
 
       this.setLoadingState({ value: true });
@@ -2899,6 +2910,22 @@ export default {
       setItem(CUSTOM_CHANGE_MODAL, true);
     },
     /**
+     *  Mapping content change modal
+     *  To hide the warning modal and save user setting if any
+     *
+     * @param {Boolean} isHideMess whether user click on the hide message checkbox
+     */
+    onClickGotItContentChange(isHideMess) {
+      this.isShowMappingContentChange = false;
+      this.toggleModal({
+        isOpenModal: false
+      });
+
+      if (!isHideMess) return;
+
+      setItem(CONTENT_CHANGE_MODAL, true);
+    },
+    /**
      * Draw objects on canvas with mapping icon and their values
      */
     async drawLayout() {
@@ -2923,6 +2950,27 @@ export default {
     async getDigitalObjects() {
       const frames = await this.getSheetFrames(this.pageSelected.id);
       return getDigitalObjectById(frames);
+    },
+    /**
+     * Hanlde break mapping connection when content change, if digital is the 2ndary editor
+     * Handle break connection and update UI
+     */
+    async mappingHandleTextContentChange(prop, group) {
+      if (!group) return;
+
+      const res = await this.handleTextContentChange(
+        this.elementMappings,
+        prop,
+        group.id,
+        true
+      );
+      if (!res) return;
+
+      const { isDrawObjects, elementMappings, isShowModal } = res;
+
+      elementMappings && (this.elementMappings = elementMappings);
+      this.isShowMappingContentChange = Boolean(isShowModal);
+      isDrawObjects && (await this.drawObjectsOnCanvas(this.sheetLayout));
     }
   }
 };
