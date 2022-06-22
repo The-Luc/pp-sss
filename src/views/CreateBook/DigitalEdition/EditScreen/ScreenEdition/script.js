@@ -2830,8 +2830,6 @@ export default {
         [OBJECT_TYPE.VIDEO]: this.createMediaFromPpData,
         [OBJECT_TYPE.PORTRAIT_IMAGE]: this.createPortraitImageFromPpData
       };
-      console.log(objectData);
-      console.trace();
 
       return drawObjectMethods[objectData.type](objectData);
     },
