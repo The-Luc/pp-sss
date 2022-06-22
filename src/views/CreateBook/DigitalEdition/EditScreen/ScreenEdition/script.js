@@ -292,7 +292,9 @@ export default {
       isJustEnteringEditor: false, // to prevent save data when entering editor
       printObjects: {}, // used to calculate mapping value (hover icon)
       elementMappings: [],
-      isShowCustomChangesConfirm: false // for editing in mapped layout applied sheet
+      renderOne: false,
+      isShowCustomChangesConfirm: false, // for editing in mapped layout applied sheet
+      isRenderingObjects: null
     };
   },
   computed: {
@@ -329,14 +331,11 @@ export default {
         this.updateCanvasSize();
         this.setAutosaveTimer();
 
-        resetObjects(this.digitalCanvas);
-
         await this.getDataCanvas();
 
         this.setCurrentFrameId({ id: this.frames[0].id });
 
         this.countPaste = 1;
-
         await this.drawLayout();
         this.isAllowUpdateFrameDelay = true;
       }
@@ -366,8 +365,6 @@ export default {
       this.updatePlayInIds({ playInIds: this.currentFrame.playInIds });
       this.updatePlayOutIds({ playOutIds: this.currentFrame.playOutIds });
 
-      resetObjects(this.digitalCanvas);
-
       this.updateObjectsToStore({ objects: this.currentFrame.objects });
 
       this.handleSwitchFrame(this.currentFrame);
@@ -385,8 +382,6 @@ export default {
       this.stopVideos();
       this.setSelectedObjectId({ id: '' });
       this.setCurrentObject(null);
-
-      resetObjects(this.digitalCanvas);
 
       await this.drawObjectsOnCanvas(this.sheetLayout);
     },
@@ -2120,6 +2115,7 @@ export default {
 
       await this.updateMappingIcon(listFabricObjects);
 
+      resetObjects(this.digitalCanvas);
       this.digitalCanvas.add(...listFabricObjects);
       this.digitalCanvas.requestRenderAll();
 
@@ -2823,6 +2819,8 @@ export default {
         [OBJECT_TYPE.VIDEO]: this.createMediaFromPpData,
         [OBJECT_TYPE.PORTRAIT_IMAGE]: this.createPortraitImageFromPpData
       };
+      console.log(objectData);
+      console.trace();
 
       return drawObjectMethods[objectData.type](objectData);
     },
@@ -2904,6 +2902,10 @@ export default {
      * Draw objects on canvas with mapping icon and their values
      */
     async drawLayout() {
+      if (this.isRenderingObjects) return;
+
+      this.isRenderingObjects = true;
+
       // get sheet element mappings
       this.elementMappings = await this.storeElementMappings(
         this.pageSelected.id
@@ -2911,8 +2913,9 @@ export default {
       // get print objects
       this.printObjects = await this.getPrintObjects(this.pageSelected.id);
 
-      resetObjects(this.digitalCanvas);
       await this.drawObjectsOnCanvas(this.sheetLayout);
+
+      this.isRenderingObjects = false;
     },
     /**
      * Get digital object for show mapping icon
