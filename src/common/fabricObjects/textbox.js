@@ -615,6 +615,7 @@ export const updateTextListeners = (
   const [rect, text] = group._objects;
 
   let currentText = textObject.get('text');
+  const oldText = currentText;
 
   const onTextChanged = () => {
     currentText = textObject.get('text');
@@ -676,7 +677,8 @@ export const updateTextListeners = (
 
     group.set(cachedData);
 
-    onCompleted && onCompleted({ text: currentText });
+    const isTextChanged = oldText !== currentText;
+    onCompleted && isTextChanged && onCompleted({ text: currentText });
 
     canvas.renderAll();
   };

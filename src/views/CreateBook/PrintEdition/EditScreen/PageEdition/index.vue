@@ -43,6 +43,20 @@
       boxes will mapped to the digital edition. Custom changes, like adding a
       new image box, will NOT be reflected in the digital edition.
     </mapping-layout-custom-change>
+
+    <mapping-layout-custom-change
+      v-if="isShowMappingContentChange"
+      header="Layout Mapping: Digital to Print"
+      @onAccept="onClickGotItContentChange"
+      >The Primary Format listed for this project is “Digital”. This means the
+      mapping only goes from the digital edition to the print edition. Changes
+      made to the print edition will not be reflected in the digital edition.
+      <br />
+      <br />
+      Additionally, content changes made to image and text boxes will disable
+      the mapping connection for those edited
+      items.</mapping-layout-custom-change
+    >
   </div>
 </template>
 

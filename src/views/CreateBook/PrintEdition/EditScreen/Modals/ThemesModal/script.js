@@ -10,7 +10,7 @@ import Modal from '@/containers/Modals/Modal';
 import PpButton from '@/components/Buttons/Button';
 import Themes from './Themes';
 import Preview from './Preview';
-import { useLayoutPrompt } from '@/hooks';
+import { useLayoutPrompt, useSheet } from '@/hooks';
 import { EDITION } from '@/common/constants';
 import { getPrintLayoutsPreviewApi } from '@/api/layout';
 
@@ -23,8 +23,10 @@ export default {
   },
   setup() {
     const { openPrompt } = useLayoutPrompt(EDITION.PRINT);
+    const { currentSheet } = useSheet();
     return {
-      openPrompt
+      openPrompt,
+      currentSheet
     };
   },
   data() {
@@ -78,6 +80,9 @@ export default {
         themeId: this.selectedThemeId
       });
       this.onCloseModal();
+
+      if (this.currentSheet.isVisited) return;
+
       this.openPrompt(EDITION.PRINT);
     },
     /**

@@ -12,16 +12,17 @@ import {
   getBookConnectionsApi
 } from '@/api/mapping';
 import { cloneDeep, get } from 'lodash';
-import { isEmpty, isPpTextOrImage } from '@/common/utils';
+import { isEmpty, isPpTextOrImage, isSecondaryFormat } from '@/common/utils';
 import {
   projectMapping,
   projectMappingToApi,
   sheetMappingConfigMapping,
   sheetMappingConfigToApiMapping
 } from '@/common/mapping/mapping';
-import { useAppCommon } from '@/hooks';
-import { PRIMARY_FORMAT_TYPES } from '@/common/constants';
+import { useAppCommon, useModal } from '@/hooks';
+import { CONTENT_CHANGE_MODAL, PRIMARY_FORMAT_TYPES } from '@/common/constants';
 import { getSheetInfoApi } from '@/api/sheet';
+import { getItem } from '@/common/storage';
 
 const addingParams = values => {
   const mappingParams = [];
@@ -176,7 +177,7 @@ export const useMappingProject = () => {
 
     const res = await updateMappingProjectApi(bookId, params);
 
-    if (!config.enableContentMapping) {
+    if (config.enableContentMapping === false) {
       // if use set mapping functionality is OFF => set `mapped` field of element mapping to FALSE
       await breakAllConnections(bookId);
     }
@@ -223,26 +224,30 @@ export const useMappingSheet = () => {
     });
 
     const frameIds = [];
-    frames.forEach(frame => {
-      frameIds.push(frame.id);
-      frame.objects.filter(isPpTextOrImage).forEach(o => {
-        digitalMappings[o.idFromLayout] = {
-          digital_element_uid: o.id,
-          digital_frame_id: frame.id
-        };
+    frames
+      .filter(frame => frame.fromLayout)
+      .forEach(frame => {
+        frameIds.push(frame.id);
+        frame.objects.filter(isPpTextOrImage).forEach(o => {
+          digitalMappings[o.idFromLayout] = {
+            digital_element_uid: o.id,
+            digital_frame_id: frame.id
+          };
+        });
       });
-    });
 
     const apiMappings = {};
 
     mappings.elementMappings.forEach(({ printElementId, digitalElementId }) => {
-      const { print_element_uid } = printMappings[printElementId];
-      const { digital_element_uid, digital_frame_id } = digitalMappings[
-        digitalElementId
-      ];
+      const { print_element_uid } = printMappings[printElementId] || {};
+      const { digital_element_uid, digital_frame_id } =
+        digitalMappings[digitalElementId] || {};
+
+      if (!print_element_uid || !digital_element_uid) return;
 
       if (!apiMappings[digital_frame_id]) apiMappings[digital_frame_id] = [];
 
+      // group mapping by digital frame id
       apiMappings[digital_frame_id].push({
         print_element_uid,
         digital_element_uid
@@ -384,5 +389,63 @@ export const useBreakConnections = () => {
       connectionIds.map(id => updateElementMappingsApi(id, { mapped: false }))
     );
   };
-  return { breakAllConnections };
+
+  const breakSingleConnection = async id => {
+    return updateElementMappingsApi(id, { mapped: false });
+  };
+
+  return { breakAllConnections, breakSingleConnection };
+};
+
+export const useContentChanges = () => {
+  const { generalInfo } = useAppCommon();
+  const { breakSingleConnection } = useBreakConnections();
+  const { toggleModal } = useModal();
+  const { getMappingConfig } = useMappingProject();
+
+  const handleTextContentChange = async (
+    elementMappings,
+    prop,
+    elementId,
+    isDigital
+  ) => {
+    if (!Object.prototype.hasOwnProperty.call(prop, 'text')) return;
+
+    const bookId = generalInfo.value.bookId;
+    const projectConfig = await getMappingConfig(bookId);
+    const attName = isDigital ? 'digitalElementId' : 'printElementId';
+
+    // show warning modal
+    const eleMappings = cloneDeep(elementMappings);
+    const mapping = eleMappings.find(el => el[attName] === elementId);
+
+    if (!mapping) return;
+
+    // only show modal when user in seconday format and the element is mapped
+    const shouldBreakConnection =
+      isSecondaryFormat(projectConfig, isDigital) && mapping.mapped;
+
+    if (!shouldBreakConnection) return;
+
+    // call API to break connection
+    mapping.mapped = false;
+    await breakSingleConnection(mapping.id);
+
+    const isHideMess = getItem(CONTENT_CHANGE_MODAL) || false;
+
+    if (isHideMess)
+      return { isDrawObjects: true, elementMappings: eleMappings };
+
+    toggleModal({
+      isOpenModal: true
+    });
+
+    return {
+      isDrawObjects: true,
+      elementMappings: eleMappings,
+      isShowModal: true
+    };
+  };
+
+  return { handleTextContentChange };
 };

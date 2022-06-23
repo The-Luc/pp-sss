@@ -35,7 +35,8 @@ import {
   APPLY_MODE,
   EDITION,
   PORTRAIT_IMAGE_MASK,
-  CUSTOM_CHANGE_MODAL
+  CUSTOM_CHANGE_MODAL,
+  CONTENT_CHANGE_MODAL
 } from '@/common/constants';
 import {
   addPrintClipArts,
@@ -96,7 +97,9 @@ import {
   useCustomLayout,
   useMappingSheet,
   useMappingProject,
-  useFrameAction
+  useFrameAction,
+  useBreakConnections,
+  useContentChanges
 } from '@/hooks';
 
 import {
@@ -223,6 +226,8 @@ export default {
     } = useMappingSheet();
     const { getMappingConfig } = useMappingProject();
     const { getSheetFrames } = useFrameAction();
+    const { breakSingleConnection } = useBreakConnections();
+    const { handleTextContentChange } = useContentChanges();
 
     return {
       setLoadingState,
@@ -269,7 +274,9 @@ export default {
       getSheetMappingConfig,
       updateElementMappingByIds,
       getMappingConfig,
-      getSheetFrames
+      getSheetFrames,
+      breakSingleConnection,
+      handleTextContentChange
     };
   },
   data() {
@@ -292,7 +299,9 @@ export default {
       isJustEnteringEditor: false, // to prevent save data when entering editor
       printObjects: {}, // used to calculate mapping value (hover icon)
       elementMappings: [],
-      isShowCustomChangesConfirm: false // for editing in mapped layout applied sheet
+      isShowCustomChangesConfirm: false, // for editing in mapped layout applied sheet
+      isShowMappingContentChange: false, // for editing content of text/image
+      isRenderingObjects: null
     };
   },
   computed: {
@@ -329,14 +338,11 @@ export default {
         this.updateCanvasSize();
         this.setAutosaveTimer();
 
-        resetObjects(this.digitalCanvas);
-
         await this.getDataCanvas();
 
         this.setCurrentFrameId({ id: this.frames[0].id });
 
         this.countPaste = 1;
-
         await this.drawLayout();
         this.isAllowUpdateFrameDelay = true;
       }
@@ -366,8 +372,6 @@ export default {
       this.updatePlayInIds({ playInIds: this.currentFrame.playInIds });
       this.updatePlayOutIds({ playOutIds: this.currentFrame.playOutIds });
 
-      resetObjects(this.digitalCanvas);
-
       this.updateObjectsToStore({ objects: this.currentFrame.objects });
 
       this.handleSwitchFrame(this.currentFrame);
@@ -385,8 +389,6 @@ export default {
       this.stopVideos();
       this.setSelectedObjectId({ id: '' });
       this.setCurrentObject(null);
-
-      resetObjects(this.digitalCanvas);
 
       await this.drawObjectsOnCanvas(this.sheetLayout);
     },
@@ -1135,7 +1137,7 @@ export default {
      */
     handleDbClickText(group) {
       this.setPropertiesType({ type: '' });
-      enableTextEditMode(group, this.changeTextProperties);
+      enableTextEditMode(group, prop => this.changeTextProperties(prop, group));
     },
 
     /**
@@ -1143,8 +1145,10 @@ export default {
      *
      * @param {Object}  style  new style
      */
-    changeTextProperties(prop) {
+    changeTextProperties(prop, group) {
       this.changeElementProperties(prop, OBJECT_TYPE.TEXT);
+
+      this.mappingHandleTextContentChange(prop, group);
     },
 
     /**
@@ -2102,6 +2106,8 @@ export default {
      * @param {Object} objects ppObjects that will be rendered
      */
     async drawObjectsOnCanvas(objects) {
+      resetObjects(this.digitalCanvas);
+
       if (isEmpty(objects)) return;
 
       this.setLoadingState({ value: true });
@@ -2120,6 +2126,7 @@ export default {
 
       await this.updateMappingIcon(listFabricObjects);
 
+      resetObjects(this.digitalCanvas);
       this.digitalCanvas.add(...listFabricObjects);
       this.digitalCanvas.requestRenderAll();
 
@@ -2869,7 +2876,15 @@ export default {
         this.pageSelected.id
       );
 
-      if (isHideMess || !isAllowSyncData(projectConfig, sheetConfig, true))
+      const isSupplemental = !this.currentFrame.fromLayout;
+      const nonConnections = this.elementMappings.length === 0;
+
+      if (
+        isHideMess ||
+        !isAllowSyncData(projectConfig, sheetConfig, true) ||
+        isSupplemental ||
+        nonConnections
+      )
         return;
 
       this.isShowCustomChangesConfirm = true;
@@ -2893,9 +2908,29 @@ export default {
       setItem(CUSTOM_CHANGE_MODAL, true);
     },
     /**
+     *  Mapping content change modal
+     *  To hide the warning modal and save user setting if any
+     *
+     * @param {Boolean} isHideMess whether user click on the hide message checkbox
+     */
+    onClickGotItContentChange(isHideMess) {
+      this.isShowMappingContentChange = false;
+      this.toggleModal({
+        isOpenModal: false
+      });
+
+      if (!isHideMess) return;
+
+      setItem(CONTENT_CHANGE_MODAL, true);
+    },
+    /**
      * Draw objects on canvas with mapping icon and their values
      */
     async drawLayout() {
+      if (this.isRenderingObjects) return;
+
+      this.isRenderingObjects = true;
+
       // get sheet element mappings
       this.elementMappings = await this.storeElementMappings(
         this.pageSelected.id
@@ -2903,8 +2938,9 @@ export default {
       // get print objects
       this.printObjects = await this.getPrintObjects(this.pageSelected.id);
 
-      resetObjects(this.digitalCanvas);
       await this.drawObjectsOnCanvas(this.sheetLayout);
+
+      this.isRenderingObjects = false;
     },
     /**
      * Get digital object for show mapping icon
@@ -2912,6 +2948,27 @@ export default {
     async getDigitalObjects() {
       const frames = await this.getSheetFrames(this.pageSelected.id);
       return getDigitalObjectById(frames);
+    },
+    /**
+     * Hanlde break mapping connection when content change, if digital is the 2ndary editor
+     * Handle break connection and update UI
+     */
+    async mappingHandleTextContentChange(prop, group) {
+      if (!group) return;
+
+      const res = await this.handleTextContentChange(
+        this.elementMappings,
+        prop,
+        group.id,
+        true
+      );
+      if (!res) return;
+
+      const { isDrawObjects, elementMappings, isShowModal } = res;
+
+      elementMappings && (this.elementMappings = elementMappings);
+      this.isShowMappingContentChange = Boolean(isShowModal);
+      isDrawObjects && (await this.drawObjectsOnCanvas(this.sheetLayout));
     }
   }
 };

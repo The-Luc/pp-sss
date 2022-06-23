@@ -19,7 +19,8 @@ import {
   useFrameAction,
   useMappingSheet,
   useModal,
-  useMappingProject
+  useMappingProject,
+  useContentChanges
 } from '@/hooks';
 import { startDrawBox } from '@/common/fabricObjects/drawingBox';
 
@@ -109,7 +110,8 @@ import {
   PROPERTIES_TOOLS,
   EDITION,
   PORTRAIT_IMAGE_MASK,
-  CUSTOM_CHANGE_MODAL
+  CUSTOM_CHANGE_MODAL,
+  CONTENT_CHANGE_MODAL
 } from '@/common/constants';
 import SizeWrapper from '@/components/SizeWrapper';
 import PrintCanvasLines from './PrintCanvasLines';
@@ -177,6 +179,7 @@ export default {
     } = useMappingSheet();
     const { toggleModal } = useModal();
     const { getMappingConfig } = useMappingProject();
+    const { handleTextContentChange } = useContentChanges();
 
     return {
       generalInfo,
@@ -200,7 +203,8 @@ export default {
       toggleModal,
       getSheetMappingConfig,
       updateElementMappingByIds,
-      getMappingConfig
+      getMappingConfig,
+      handleTextContentChange
     };
   },
   data() {
@@ -224,6 +228,7 @@ export default {
       isScroll: { x: false, y: false },
       digitalObjects: {},
       elementMappings: [],
+      isShowMappingContentChange: false, // for editing content of text/image
       isShowCustomChangesConfirm: false // for editing in mapped layout applied sheet
     };
   },
@@ -269,8 +274,6 @@ export default {
         if (val?.id === oldVal?.id) return;
 
         await this.saveData(oldVal.id);
-
-        resetObjects(window.printCanvas);
 
         this.updateCanvasSize();
         // get data either from API
@@ -1025,7 +1028,7 @@ export default {
     handleDbClickText(group) {
       this.setPropertiesType({ type: '' });
       enableTextEditMode(group, prop => {
-        this.changeTextProperties(prop);
+        this.changeTextProperties(prop, group);
       });
     },
     /**
@@ -1054,8 +1057,10 @@ export default {
      *
      * @param {Object}  style  new style
      */
-    changeTextProperties(prop) {
+    changeTextProperties(prop, group) {
       this.changeElementProperties(prop, OBJECT_TYPE.TEXT);
+
+      this.mappingHandleTextContentChange(prop, group);
     },
 
     /**
@@ -1927,6 +1932,8 @@ export default {
      * @param {Object} objects ppObjects that will be rendered
      */
     async drawObjectsOnCanvas(objects) {
+      resetObjects(window.printCanvas);
+
       if (isEmpty(objects)) return;
 
       this.setLoadingState({ value: true });
@@ -2106,8 +2113,6 @@ export default {
       this.generatePdf(bookId);
     },
     async drawLayout() {
-      resetObjects(window.printCanvas);
-
       await this.updateElementMappings();
       await this.drawObjectsOnCanvas(this.sheetLayout);
     },
@@ -2213,7 +2218,14 @@ export default {
         this.pageSelected.id
       );
 
-      if (isHideMess || !isAllowSyncData(projectConfig, sheetConfig)) return;
+      const nonConnections = this.elementMappings.length === 0;
+
+      if (
+        isHideMess ||
+        !isAllowSyncData(projectConfig, sheetConfig) ||
+        nonConnections
+      )
+        return;
 
       this.isShowCustomChangesConfirm = true;
       this.toggleModal({
@@ -2221,6 +2233,7 @@ export default {
       });
     },
     /**
+     *   Custom adding object on mapped sheet
      *  To hide the warning modal and save user setting if any
      *
      * @param {Boolean} isHideMess whether user click on the hide message checkbox
@@ -2234,6 +2247,22 @@ export default {
       if (!isHideMess) return;
 
       setItem(CUSTOM_CHANGE_MODAL, true);
+    },
+    /**
+     *  Mapping content change modal
+     *  To hide the warning modal and save user setting if any
+     *
+     * @param {Boolean} isHideMess whether user click on the hide message checkbox
+     */
+    onClickGotItContentChange(isHideMess) {
+      this.isShowMappingContentChange = false;
+      this.toggleModal({
+        isOpenModal: false
+      });
+
+      if (!isHideMess) return;
+
+      setItem(CONTENT_CHANGE_MODAL, true);
     },
     /**
      * Trigger when user switch sheet / apply new layout
@@ -2250,6 +2279,27 @@ export default {
       this.digitalObjects = isEmpty(this.elementMappings)
         ? {}
         : await this.getDigitalObjects();
+    },
+    /**
+     * Hanlde break mapping connection when text content change,
+     * if print is the 2ndary editor
+     */
+    async mappingHandleTextContentChange(prop, group) {
+      if (!group) return;
+
+      const res = await this.handleTextContentChange(
+        this.elementMappings,
+        prop,
+        group.id
+      );
+
+      if (!res) return;
+
+      const { isDrawObjects, elementMappings, isShowModal } = res;
+
+      elementMappings && (this.elementMappings = elementMappings);
+      this.isShowMappingContentChange = Boolean(isShowModal);
+      isDrawObjects && (await this.drawObjectsOnCanvas(this.sheetLayout));
     }
   }
 };
