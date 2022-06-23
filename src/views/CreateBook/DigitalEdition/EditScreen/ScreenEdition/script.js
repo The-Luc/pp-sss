@@ -126,7 +126,8 @@ import {
   isPpImageObject,
   getObjectById,
   isAllowSyncData,
-  getDigitalObjectById
+  getDigitalObjectById,
+  isSecondaryFormat
 } from '@/common/utils';
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
 
@@ -2883,7 +2884,8 @@ export default {
         isHideMess ||
         !isAllowSyncData(projectConfig, sheetConfig, true) ||
         isSupplemental ||
-        nonConnections
+        nonConnections ||
+        !isSecondaryFormat(projectConfig, true)
       )
         return;
 
