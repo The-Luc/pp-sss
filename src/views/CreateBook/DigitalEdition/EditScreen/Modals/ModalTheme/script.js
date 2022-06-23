@@ -8,16 +8,18 @@ import PpButton from '@/components/Buttons/Button';
 import Themes from './Themes';
 import Preview from './Preview';
 import { getThemesApi } from '@/api/theme';
-import { useLayoutPrompt, useGetDigitalLayouts } from '@/hooks';
+import { useLayoutPrompt, useGetDigitalLayouts, useSheet } from '@/hooks';
 import { EDITION } from '@/common/constants';
 
 export default {
   setup() {
     const { openPrompt } = useLayoutPrompt(EDITION.DIGITAL);
     const { getDigitalLayouts } = useGetDigitalLayouts();
+    const { currentSheet } = useSheet();
     return {
       openPrompt,
-      getDigitalLayouts
+      getDigitalLayouts,
+      currentSheet
     };
   },
   components: {
@@ -86,6 +88,8 @@ export default {
         themeId: this.selectedThemeId
       });
       this.onCloseModal();
+      if (this.currentSheet.isVisited) return;
+
       this.openPrompt();
     },
     /**

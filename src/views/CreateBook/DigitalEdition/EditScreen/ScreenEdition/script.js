@@ -300,7 +300,8 @@ export default {
       printObjects: {}, // used to calculate mapping value (hover icon)
       elementMappings: [],
       isShowCustomChangesConfirm: false, // for editing in mapped layout applied sheet
-      isShowMappingContentChange: false // for editing content of text/image
+      isShowMappingContentChange: false, // for editing content of text/image
+      isRenderingObjects: null
     };
   },
   computed: {
@@ -337,14 +338,11 @@ export default {
         this.updateCanvasSize();
         this.setAutosaveTimer();
 
-        resetObjects(this.digitalCanvas);
-
         await this.getDataCanvas();
 
         this.setCurrentFrameId({ id: this.frames[0].id });
 
         this.countPaste = 1;
-
         await this.drawLayout();
         this.isAllowUpdateFrameDelay = true;
       }
@@ -373,8 +371,6 @@ export default {
 
       this.updatePlayInIds({ playInIds: this.currentFrame.playInIds });
       this.updatePlayOutIds({ playOutIds: this.currentFrame.playOutIds });
-
-      resetObjects(this.digitalCanvas);
 
       this.updateObjectsToStore({ objects: this.currentFrame.objects });
 
@@ -2130,6 +2126,7 @@ export default {
 
       await this.updateMappingIcon(listFabricObjects);
 
+      resetObjects(this.digitalCanvas);
       this.digitalCanvas.add(...listFabricObjects);
       this.digitalCanvas.requestRenderAll();
 
@@ -2930,6 +2927,10 @@ export default {
      * Draw objects on canvas with mapping icon and their values
      */
     async drawLayout() {
+      if (this.isRenderingObjects) return;
+
+      this.isRenderingObjects = true;
+
       // get sheet element mappings
       this.elementMappings = await this.storeElementMappings(
         this.pageSelected.id
@@ -2938,6 +2939,8 @@ export default {
       this.printObjects = await this.getPrintObjects(this.pageSelected.id);
 
       await this.drawObjectsOnCanvas(this.sheetLayout);
+
+      this.isRenderingObjects = false;
     },
     /**
      * Get digital object for show mapping icon
