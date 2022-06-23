@@ -49,7 +49,8 @@ import {
   isFbImageObject,
   isPpImageObject,
   getDigitalObjectById,
-  isAllowSyncData
+  isAllowSyncData,
+  isSecondaryFormat
 } from '@/common/utils';
 
 import {
@@ -2223,7 +2224,8 @@ export default {
       if (
         isHideMess ||
         !isAllowSyncData(projectConfig, sheetConfig) ||
-        nonConnections
+        nonConnections ||
+        !isSecondaryFormat(projectConfig)
       )
         return;
 
