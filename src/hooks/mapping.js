@@ -237,13 +237,15 @@ export const useMappingSheet = () => {
     const apiMappings = {};
 
     mappings.elementMappings.forEach(({ printElementId, digitalElementId }) => {
-      const { print_element_uid } = printMappings[printElementId];
-      const { digital_element_uid, digital_frame_id } = digitalMappings[
-        digitalElementId
-      ];
+      const { print_element_uid } = printMappings[printElementId] || {};
+      const { digital_element_uid, digital_frame_id } =
+        digitalMappings[digitalElementId] || {};
+
+      if (!print_element_uid || !digital_element_uid) return;
 
       if (!apiMappings[digital_frame_id]) apiMappings[digital_frame_id] = [];
 
+      // group mapping by digital frame id
       apiMappings[digital_frame_id].push({
         print_element_uid,
         digital_element_uid
