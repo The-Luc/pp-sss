@@ -224,15 +224,17 @@ export const useMappingSheet = () => {
     });
 
     const frameIds = [];
-    frames.forEach(frame => {
-      frameIds.push(frame.id);
-      frame.objects.filter(isPpTextOrImage).forEach(o => {
-        digitalMappings[o.idFromLayout] = {
-          digital_element_uid: o.id,
-          digital_frame_id: frame.id
-        };
+    frames
+      .filter(frame => frame.fromLayout)
+      .forEach(frame => {
+        frameIds.push(frame.id);
+        frame.objects.filter(isPpTextOrImage).forEach(o => {
+          digitalMappings[o.idFromLayout] = {
+            digital_element_uid: o.id,
+            digital_frame_id: frame.id
+          };
+        });
       });
-    });
 
     const apiMappings = {};
 
