@@ -294,6 +294,7 @@ export default {
         await this.drawObjectsOnCanvas(this.sheetLayout);
 
         this.addPageNumber();
+        this.resetCanvasChanges();
       }
     },
     zoom(newVal, oldVal) {
@@ -362,12 +363,13 @@ export default {
       await this.saveData(this.pageSelected.id, true);
 
       this.updateSavingStatus({ status: SAVE_STATUS.END });
-
-      this.isCanvasChanged = false;
     },
 
     /**
-     * To save data of current shet
+     * To save data of current sheet
+     *
+     * ONLY generate thumbnails and save objects when isCanvasChanged is true
+     *
      * @param {String | Number} sheetId id of sheet need to save data
      * @param {Boolean} isAutosave indicating autosaving or not
      * @returns {Promise} saved data
@@ -378,8 +380,8 @@ export default {
 
       const data = this.getDataEditScreen(sheetId);
 
-      // update elementMappings if any objects deleted
-      if (!isEmpty(this.elementMappings)) {
+      // update elementMappings if any objects deleted and isCanvasChanged = TRUE
+      if (!isEmpty(this.elementMappings) && this.isCanvasChanged) {
         const objectIds = data.objects.map(o => o.id);
         const elementMappingIds = [];
 
@@ -400,7 +402,14 @@ export default {
         }
       }
 
-      await this.savePrintEditScreen(data, isAutosave, this.elementMappings);
+      await this.savePrintEditScreen(
+        data,
+        isAutosave,
+        this.elementMappings,
+        this.isCanvasChanged
+      );
+
+      this.resetCanvasChanges();
 
       return data;
     },
@@ -802,7 +811,7 @@ export default {
         this.getThumbnailUrl();
 
         // set state change for autosave
-        this.isCanvasChanged = true;
+        this.canvasDidChanged();
 
         resolve();
       });
@@ -2109,7 +2118,7 @@ export default {
     async handleGeneratePDF() {
       const bookId = this.generalInfo.id;
 
-      await this.saveData(this.pageSelected.id);
+      if (this.isCanvasChanged) await this.saveData(this.pageSelected.id);
 
       this.generatePdf(bookId);
     },
@@ -2127,7 +2136,7 @@ export default {
       activeObject.canvas.renderAll();
       this.setObjectPropById({ id: activeObject.id, prop });
       this.setCurrentObject(this.currentObjects[activeObject.id]);
-      this.getThumbnailUrl();
+      this.handleCanvasChanged();
     },
 
     /**
@@ -2302,6 +2311,18 @@ export default {
       elementMappings && (this.elementMappings = elementMappings);
       this.isShowMappingContentChange = Boolean(isShowModal);
       isDrawObjects && (await this.drawObjectsOnCanvas(this.sheetLayout));
+    },
+    /**
+     * Trigger after save / auto save, apply portrait, layout
+     */
+    resetCanvasChanges() {
+      this.isCanvasChanged = false;
+    },
+    /**
+     * Trigger when any change on canvas
+     */
+    canvasDidChanged() {
+      this.isCanvasChanged = true;
     }
   }
 };

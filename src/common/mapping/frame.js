@@ -47,23 +47,13 @@ export const frameMapping = frameData => {
   return mappedFrame;
 };
 
-export const mappingFrameToApi = frameData => {
+export const mappingFrameObjectsToApi = frameData => {
   const frame = cloneDeep(frameData);
 
   const mapRules = {
     data: {
-      delay: {
-        name: 'frame_delay'
-      },
-      isVisited: {
-        name: 'is_visited'
-      },
       previewImageUrl: {
         name: 'preview_image_url'
-      },
-      fromLayout: {
-        name: 'from_layout',
-        isForce: true
       }
     },
     restrict: [
@@ -71,7 +61,10 @@ export const mappingFrameToApi = frameData => {
       'playInIds',
       'playOutIds',
       'objects',
-      'supplementalLayoutId'
+      'supplementalLayoutId',
+      'delay',
+      'isVisited',
+      'fromLayout'
     ]
   };
 
@@ -85,4 +78,31 @@ export const mappingFrameToApi = frameData => {
   mapFrame.play_out_ids = frame.playOutIds;
 
   return mapFrame;
+};
+
+export const mappingFrameConfigToApi = frameData => {
+  const mapRules = {
+    data: {
+      delay: {
+        name: 'frame_delay'
+      },
+      isVisited: {
+        name: 'is_visited'
+      },
+      fromLayout: {
+        name: 'from_layout',
+        isForce: true
+      }
+    },
+    restrict: [
+      'id',
+      'playInIds',
+      'playOutIds',
+      'objects',
+      'supplementalLayoutId',
+      'previewImageUrl'
+    ]
+  };
+
+  return mapObject(frameData, mapRules);
 };

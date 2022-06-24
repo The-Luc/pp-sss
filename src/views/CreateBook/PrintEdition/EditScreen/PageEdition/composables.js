@@ -2,7 +2,11 @@ import { difference, cloneDeep } from 'lodash';
 import { useGetters, useMutations } from 'vuex-composition-helpers';
 
 import { GETTERS as PRINT_GETTERS, MUTATES } from '@/store/modules/print/const';
-import { savePrintDataApi, updateInProjectApi } from '@/api/savePrint';
+import {
+  savePrintConfigApi,
+  savePrintObjectApi,
+  updateInProjectApi
+} from '@/api/savePrint';
 import { getSheetInfoApi } from '@/api/sheet';
 import { OBJECT_TYPE, SHEET_TYPE } from '@/common/constants';
 import { pageInfoMappingToApi } from '@/common/mapping';
@@ -37,8 +41,6 @@ export const useSaveData = () => {
    * To save print data to DB
    *
    * fields will be saved on page:
-   *  layout/elements
-   *  preview_image_url
    *  show_page_number (spread info)
    *  title (spread info)
    *
@@ -54,40 +56,36 @@ export const useSaveData = () => {
    * @param {Object} elementMappings sheet element mapping data
    * @returns api response
    */
-  const savePrintEditScreen = async (
-    editScreenData,
-    isAutosave,
-    elementMappings
-  ) => {
+  const savePrintConfig = async (editScreenData, isAutosave) => {
     if (isEmpty(editScreenData.sheetProps)) return;
 
     const screenData = cloneDeep(editScreenData);
 
     const { pageInfo, bookId, communityId, defaultThemeId } = screenData;
-    const {
-      id: sheetId,
-      pageIds,
-      type,
-      isVisited,
-      thumbnailUrl
-    } = screenData.sheetProps;
-
-    const sheetParams = { is_visited: isVisited };
+    const { id: sheetId, pageIds, type, isVisited } = screenData.sheetProps;
 
     const [leftPageId, rightPageId] = getPageIdsOfSheet(pageIds, type);
 
-    const { leftThumb, rightThumb } = await splitBase64Image(thumbnailUrl);
-    const imgUrls = await Promise.all([
-      leftPageId ? uploadBase64Image(leftThumb, isAutosave) : '',
-      rightPageId ? uploadBase64Image(rightThumb, isAutosave) : ''
-    ]);
+    const {
+      isLeftNumberOn,
+      isRightNumberOn,
+      leftTitle,
+      rightTitle
+    } = editScreenData.sheetProps.spreadInfo;
 
-    const { leftPage, rightPage } = mapSheetToPages(screenData);
-    leftPage.preview_image_url = imgUrls[0];
-    rightPage.preview_image_url = imgUrls[1];
+    const leftPage = {
+      title: leftTitle,
+      show_page_number: isLeftNumberOn
+    };
+
+    const rightPage = {
+      title: rightTitle,
+      show_page_number: isRightNumberOn
+    };
+
+    const sheetParams = { is_visited: isVisited };
 
     const isUpdatePageInfo = type === SHEET_TYPE.COVER;
-
     const { bookParams, properties } = pageInfoMappingToApi(
       pageInfo,
       communityId,
@@ -105,6 +103,67 @@ export const useSaveData = () => {
       bookParams,
       properties,
       isUpdatePageInfo
+    };
+
+    return savePrintConfigApi(variables, isAutosave);
+  };
+
+  const savePrintEditScreen = async (
+    editScreenData,
+    isAutosave,
+    elementMappings,
+    isContentChange
+  ) => {
+    if (isEmpty(editScreenData.sheetProps)) return;
+
+    const promise = [savePrintConfig(editScreenData, isAutosave)];
+
+    isContentChange &&
+      promise.push(
+        savePrintObjects(editScreenData, isAutosave, elementMappings)
+      );
+    return Promise.all(promise);
+  };
+
+  /**
+   * To save print data to DB
+   *
+   * fields will be saved on page:
+   *  layout/elements
+   *  preview_image_url
+   *
+   * @param {Object} editScreenData sheet data
+   * @param {Boolean} isAutosave indicating autosaving or not
+   * @param {Object} elementMappings sheet element mapping data
+   * @returns api response
+   */
+  const savePrintObjects = async (
+    editScreenData,
+    isAutosave,
+    elementMappings
+  ) => {
+    const screenData = cloneDeep(editScreenData);
+
+    const { bookId } = screenData;
+    const { id: sheetId, pageIds, type, thumbnailUrl } = screenData.sheetProps;
+
+    const [leftPageId, rightPageId] = getPageIdsOfSheet(pageIds, type);
+
+    const { leftThumb, rightThumb } = await splitBase64Image(thumbnailUrl);
+    const imgUrls = await Promise.all([
+      leftPageId ? uploadBase64Image(leftThumb, isAutosave) : '',
+      rightPageId ? uploadBase64Image(rightThumb, isAutosave) : ''
+    ]);
+
+    const { leftPage, rightPage } = mapSheetToPages(screenData);
+    leftPage.preview_image_url = imgUrls[0];
+    rightPage.preview_image_url = imgUrls[1];
+
+    const variables = {
+      leftId: leftPageId,
+      leftParams: leftPage,
+      rightId: rightPageId,
+      rightParams: rightPage
     };
     const currentAssetIds = mediaObjectIds.value;
 
@@ -150,7 +209,7 @@ export const useSaveData = () => {
     ]);
 
     // update objects and other data
-    const isSuccess = await savePrintDataApi(variables, isAutosave);
+    const isSuccess = await savePrintObjectApi(variables, isAutosave);
 
     await syncToDigital(sheetId, screenData.objects, elementMappings);
 
