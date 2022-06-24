@@ -18,18 +18,12 @@ export const savePrintDataMutation = gql`
     leftPage: update_page(page_id: $leftId, page_params: $leftParams)
       @skip(if: $noLeftPage) {
       id
-      layout
-      page_number
-      preview_image_url
       show_page_number
       title
     }
     rightPage: update_page(page_id: $rightId, page_params: $rightParams)
       @skip(if: $noRightPage) {
       id
-      layout
-      page_number
-      preview_image_url
       show_page_number
       title
     }
@@ -47,6 +41,30 @@ export const savePrintDataMutation = gql`
       @include(if: $isUpdatePageInfo) {
       id
       properties
+    }
+  }
+`;
+
+export const savePrintObjectMutation = gql`
+  mutation savePrintData(
+    $leftId: ID!
+    $leftParams: PageInput!
+    $rightId: ID!
+    $rightParams: PageInput!
+    $noLeftPage: Boolean!
+    $noRightPage: Boolean!
+  ) {
+    leftPage: update_page(page_id: $leftId, page_params: $leftParams)
+      @skip(if: $noLeftPage) {
+      id
+      layout
+      preview_image_url
+    }
+    rightPage: update_page(page_id: $rightId, page_params: $rightParams)
+      @skip(if: $noRightPage) {
+      id
+      layout
+      preview_image_url
     }
   }
 `;

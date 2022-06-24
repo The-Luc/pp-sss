@@ -346,6 +346,7 @@ export default {
         this.countPaste = 1;
         await this.drawLayout();
         this.isAllowUpdateFrameDelay = true;
+        this.resetCanvasChanges();
       }
     },
     async currentFrameId(val, oldVal) {
@@ -384,6 +385,7 @@ export default {
       await this.drawLayout();
 
       this.isAllowUpdateFrameDelay = true;
+      this.resetCanvasChanges();
     },
     async triggerApplyLayout() {
       // to render new layout when user replace frame
@@ -392,6 +394,7 @@ export default {
       this.setCurrentObject(null);
 
       await this.drawObjectsOnCanvas(this.sheetLayout);
+      this.resetCanvasChanges();
     },
     firstFrameThumbnail(val) {
       this.updateSheetThumbnail({
@@ -1161,7 +1164,7 @@ export default {
         this.getThumbnailUrl();
 
         // set state change for autosave
-        this.isCanvasChanged = true;
+        this.canvasDidChanged();
 
         resolve();
       });
@@ -2193,8 +2196,6 @@ export default {
       await this.saveData(this.currentFrameId, true);
 
       this.updateSavingStatus({ status: SAVE_STATUS.END });
-
-      this.isCanvasChanged = false;
     },
 
     /**
@@ -2241,7 +2242,14 @@ export default {
           });
         }
       }
-      await this.saveEditScreen(data, isAutosave, this.elementMappings);
+      await this.saveEditScreen(
+        data,
+        isAutosave,
+        this.elementMappings,
+        this.isCanvasChanged
+      );
+
+      this.resetCanvasChanges();
     },
     /**
      * Change fabric properties of current element
@@ -2809,7 +2817,7 @@ export default {
     },
 
     async handleSaveLayout(settings) {
-      if (settings.ids.includes(this.currentFrameId)) {
+      if (settings.ids.includes(this.currentFrameId) && this.isCanvasChanged) {
         await this.saveData(this.currentFrameId);
       }
 
@@ -2882,7 +2890,7 @@ export default {
 
       if (
         isHideMess ||
-        !isAllowSyncData(projectConfig, sheetConfig, true) ||
+        !isAllowSyncData(projectConfig, sheetConfig) ||
         isSupplemental ||
         nonConnections ||
         !isSecondaryFormat(projectConfig, true)
@@ -2971,6 +2979,18 @@ export default {
       elementMappings && (this.elementMappings = elementMappings);
       this.isShowMappingContentChange = Boolean(isShowModal);
       isDrawObjects && (await this.drawObjectsOnCanvas(this.sheetLayout));
+    },
+    /**
+     * Trigger after save / auto save, apply portrait, layout
+     */
+    resetCanvasChanges() {
+      this.isCanvasChanged = false;
+    },
+    /**
+     * Trigger when any change on canvas
+     */
+    canvasDidChanged() {
+      this.isCanvasChanged = true;
     }
   }
 };

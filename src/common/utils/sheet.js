@@ -127,13 +127,6 @@ export const getPageLayouts = sheet => {
  * @returns {Object} left and right page
  */
 export const mapSheetToPages = sheet => {
-  const {
-    isLeftNumberOn,
-    isRightNumberOn,
-    leftTitle,
-    rightTitle
-  } = sheet.sheetProps.spreadInfo;
-
   const { leftLayout, rightLayout } = getPageLayouts(sheet);
 
   // convert inch to pixels to save to DB
@@ -141,15 +134,11 @@ export const mapSheetToPages = sheet => {
   convertObjectInchToPx(rightLayout.elements);
 
   const leftPage = {
-    layout: JSON.stringify(leftLayout),
-    title: leftTitle,
-    show_page_number: isLeftNumberOn
+    layout: JSON.stringify(leftLayout)
   };
 
   const rightPage = {
-    layout: JSON.stringify(rightLayout),
-    title: rightTitle,
-    show_page_number: isRightNumberOn
+    layout: JSON.stringify(rightLayout)
   };
 
   return { leftPage, rightPage };
