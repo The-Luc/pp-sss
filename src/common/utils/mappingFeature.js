@@ -44,6 +44,14 @@ export const isSecondaryFormat = (projectConfig, isDigital) => {
     : PRIMARY_FORMAT_TYPES.DIGITAL.value === primaryMapping;
 };
 
+export const isPrimaryFormat = (projectConfig, isDigital) => {
+  const { primaryMapping } = projectConfig;
+
+  return isDigital
+    ? PRIMARY_FORMAT_TYPES.DIGITAL.value === primaryMapping
+    : PRIMARY_FORMAT_TYPES.PRINT.value === primaryMapping;
+};
+
 /**
  * update canvas objects `mapping info` to display mapping icon correctly
  */

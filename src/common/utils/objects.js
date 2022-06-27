@@ -39,6 +39,10 @@ export const isPpVideoObject = object => {
   return object?.type === OBJECT_TYPE.VIDEO;
 };
 
+export const isPpMediaObject = object => {
+  return isPpImageObject(object) || isPpVideoObject(object);
+};
+
 export const isPpTextOrImage = object => {
   return isPpTextObject(object) || isPpImageObject(object);
 };

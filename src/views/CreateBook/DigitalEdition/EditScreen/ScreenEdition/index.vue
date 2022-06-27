@@ -20,6 +20,7 @@
     />
     <AddBoxInstruction v-if="visible" :element="element" :x="x" :y="y" />
 
+    <!-- CUSTOM CHANGE MODAL -->
     <mapping-layout-custom-change
       v-if="isShowCustomChangesConfirm"
       @onAccept="onClickGotItCustomChange"
@@ -30,6 +31,7 @@
       image box, will NOT be reflected in the print edition.
     </mapping-layout-custom-change>
 
+    <!-- CONTENT CHANGE MODAL -->
     <mapping-layout-custom-change
       v-if="isShowMappingContentChange"
       header="Layout Mapping: Print to Digital"
@@ -42,6 +44,18 @@
       <br />
       Additionally, content changes made to image and text boxes will disable
       the mapping connection for those edited items.
+    </mapping-layout-custom-change>
+
+    <!-- ADDING VIDEO TO PRIMARY FORAMT MODAL -->
+    <mapping-layout-custom-change
+      v-if="isShowMappingVideoContentChange"
+      header="Video Mapping"
+      @onAccept="onClickGotItVideoContentChange"
+    >
+      A video has been placed in a mapped image box. As a result, the connection
+      between this image box and the corresponding image box on the print side
+      has been disabled. Any edits or changes made to these image boxes moving
+      forward will only be reflected in the edition where the are made.
     </mapping-layout-custom-change>
   </div>
 </template>

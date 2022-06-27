@@ -36,7 +36,8 @@ import {
   EDITION,
   PORTRAIT_IMAGE_MASK,
   CUSTOM_CHANGE_MODAL,
-  CONTENT_CHANGE_MODAL
+  CONTENT_CHANGE_MODAL,
+  CONTENT_VIDEO_CHANGE_MODAL
 } from '@/common/constants';
 import {
   addPrintClipArts,
@@ -129,7 +130,8 @@ import {
   getDigitalObjectById,
   isSecondaryFormat,
   updateCanvasMapping,
-  isPpVideoObject
+  isPpVideoObject,
+  isPpMediaObject
 } from '@/common/utils';
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
 
@@ -308,6 +310,7 @@ export default {
       elementMappings: [],
       isShowCustomChangesConfirm: false, // for editing in mapped layout applied sheet
       isShowMappingContentChange: false, // for editing content of text/image
+      isShowMappingVideoContentChange: false, // for adding video when digital is the primary format
       isRenderingObjects: null
     };
   },
@@ -2944,6 +2947,22 @@ export default {
       setItem(CONTENT_CHANGE_MODAL, true);
     },
     /**
+     *  Mapping content change modal
+     *  To hide the warning modal and save user setting if any
+     *
+     * @param {Boolean} isHideMess whether user click on the hide message checkbox
+     */
+    onClickGotItVideoContentChange(isHideMess) {
+      this.isShowMappingVideoContentChange = false;
+      this.toggleModal({
+        isOpenModal: false
+      });
+
+      if (!isHideMess) return;
+
+      setItem(CONTENT_VIDEO_CHANGE_MODAL, true);
+    },
+    /**
      * Draw objects on canvas with mapping icon and their values
      */
     async drawLayout() {
@@ -2988,6 +3007,7 @@ export default {
 
       elementMappings && (this.elementMappings = elementMappings);
       this.isShowMappingContentChange = Boolean(isShowModal);
+
       // update canvas
       if (isDrawObjects) {
         updateCanvasMapping(group.id, window.digitalCanvas);
@@ -3002,18 +3022,20 @@ export default {
 
       const props = prop.data ? prop.data : [prop];
 
-      const mediaIds = props
-        .filter(
-          el =>
-            (isPpImageObject(el.prop) || isPpVideoObject(el.prop)) &&
-            el.prop.imageUrl
-        )
-        .map(el => el.id);
+      const mediaIds = [];
+      const videoIds = [];
+
+      props.forEach(el => {
+        if (isPpMediaObject(el.prop) && el.prop.imageUrl) mediaIds.push(el.id);
+
+        if (isPpVideoObject(el.prop)) videoIds.push(el.id);
+      });
 
       const res = await this.handleImageContentChange(
         this.elementMappings,
         mediaIds,
-        true
+        true,
+        videoIds
       );
 
       if (!res) return;
@@ -3022,16 +3044,17 @@ export default {
         isDrawObjects,
         elementMappings,
         isShowModal,
+        isShowVideoModal,
         changeMappingIds
       } = res;
 
       elementMappings && (this.elementMappings = elementMappings);
       this.isShowMappingContentChange = Boolean(isShowModal);
+      this.isShowMappingVideoContentChange = Boolean(isShowVideoModal);
 
       // update canvas
-      if (isDrawObjects) {
+      if (isDrawObjects)
         updateCanvasMapping(changeMappingIds, window.digitalCanvas);
-      }
     },
     /**
      * Trigger after save / auto save, apply portrait, layout
