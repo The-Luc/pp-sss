@@ -43,3 +43,26 @@ export const isSecondaryFormat = (projectConfig, isDigital) => {
     ? PRIMARY_FORMAT_TYPES.PRINT.value === primaryMapping
     : PRIMARY_FORMAT_TYPES.DIGITAL.value === primaryMapping;
 };
+
+export const isPrimaryFormat = (projectConfig, isDigital) => {
+  const { primaryMapping } = projectConfig;
+
+  return isDigital
+    ? PRIMARY_FORMAT_TYPES.DIGITAL.value === primaryMapping
+    : PRIMARY_FORMAT_TYPES.PRINT.value === primaryMapping;
+};
+
+/**
+ * update canvas objects `mapping info` to display mapping icon correctly
+ */
+export const updateCanvasMapping = (elementIds, canvas) => {
+  const ids = Array.isArray(elementIds) ? elementIds : [elementIds];
+
+  const fbObjects = canvas.getObjects();
+
+  fbObjects.forEach(fb => {
+    if (ids.includes(fb.id)) fb.mappingInfo.mapped = false;
+  });
+
+  canvas.renderAll();
+};

@@ -12,7 +12,7 @@ import { isEmpty, isOk } from '@/common/utils';
 import { GETTERS, ACTIONS } from '@/store/modules/digital/const';
 import {
   mappingFrameConfigToApi,
-  mappingFrameObjectsToApi
+  mappingFrameToApi
 } from '@/common/mapping/frame';
 import { saveDigitalConfigApi, saveDigitalObjectsApi } from '@/api/saveDigital';
 import { uploadBase64ImageApi } from '@/api/util';
@@ -107,7 +107,7 @@ export const useSaveData = () => {
 
     const variables = {
       frameId: frame.id,
-      frameParams: mappingFrameObjectsToApi(frame)
+      frameParams: mappingFrameToApi(frame)
     };
 
     const projectId = +frame.id;
