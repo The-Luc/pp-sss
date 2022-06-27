@@ -35,6 +35,10 @@ export const isPpImageObject = object => {
   return object?.type === OBJECT_TYPE.IMAGE;
 };
 
+export const isPpVideoObject = object => {
+  return object?.type === OBJECT_TYPE.VIDEO;
+};
+
 export const isPpTextOrImage = object => {
   return isPpTextObject(object) || isPpImageObject(object);
 };
@@ -43,12 +47,22 @@ export const isFbImageObject = object => {
   return object?.objectType === OBJECT_TYPE.IMAGE;
 };
 
+export const isFbVideoObject = object => {
+  return object?.objectType === OBJECT_TYPE.VIDEO;
+};
+
 export const isFbTextObject = object => {
   return object?.objectType === OBJECT_TYPE.TEXT;
 };
 
 export const isFbTextImageObject = object => {
   return isFbTextObject(object) || isFbImageObject(object);
+};
+
+export const isFbTextMediaObject = object => {
+  return (
+    isFbTextObject(object) || isFbImageObject(object) || isFbVideoObject(object)
+  );
 };
 
 /**

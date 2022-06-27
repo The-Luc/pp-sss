@@ -127,7 +127,9 @@ import {
   getObjectById,
   isAllowSyncData,
   getDigitalObjectById,
-  isSecondaryFormat
+  isSecondaryFormat,
+  updateCanvasMapping,
+  isPpVideoObject
 } from '@/common/utils';
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
 
@@ -228,7 +230,10 @@ export default {
     const { getMappingConfig } = useMappingProject();
     const { getSheetFrames } = useFrameAction();
     const { breakSingleConnection } = useBreakConnections();
-    const { handleTextContentChange } = useContentChanges();
+    const {
+      handleTextContentChange,
+      handleImageContentChange
+    } = useContentChanges();
 
     return {
       setLoadingState,
@@ -277,7 +282,8 @@ export default {
       getMappingConfig,
       getSheetFrames,
       breakSingleConnection,
-      handleTextContentChange
+      handleTextContentChange,
+      handleImageContentChange
     };
   },
   data() {
@@ -2167,9 +2173,10 @@ export default {
           return;
         }
 
-        const isImage = isPpImageObject(ppElement);
-        const value = isImage ? imageCouter++ : textCounter++;
-        const color = UniqueColor.generateColor(value - 1, isImage);
+        const isMedia =
+          isPpImageObject(ppElement) || isPpVideoObject(ppElement);
+        const value = isMedia ? imageCouter++ : textCounter++;
+        const color = UniqueColor.generateColor(value - 1, isMedia);
 
         if (!fbElement) return;
         fbElement.mappingInfo = { color, value, id: el.id, mapped: el.mapped };
@@ -2482,7 +2489,9 @@ export default {
       const prop = await setImageSrc(activeObject, null);
       activeObject.canvas.renderAll();
 
-      this.setObjectPropById({ id: activeObject.id, prop });
+      const imgProp = { id: activeObject.id, prop };
+      this.setObjectPropById(imgProp);
+      await this.mappingHandleImageContentChange(imgProp);
 
       this.setCurrentObject(this.currentObjects[activeObject.id]);
 
@@ -2497,7 +2506,8 @@ export default {
       const prop = centercrop(activeObject);
       activeObject.canvas.renderAll();
 
-      this.setObjectPropById({ id: activeObject.id, prop });
+      const imgProp = { id: activeObject.id, prop };
+      this.setObjectPropById(imgProp);
     },
     /**
      * Play / pause current video
@@ -2978,7 +2988,50 @@ export default {
 
       elementMappings && (this.elementMappings = elementMappings);
       this.isShowMappingContentChange = Boolean(isShowModal);
-      isDrawObjects && (await this.drawObjectsOnCanvas(this.sheetLayout));
+      // update canvas
+      if (isDrawObjects) {
+        updateCanvasMapping(group.id, window.digitalCanvas);
+      }
+    },
+    /**
+     * Handle break mapping connection when image content change,
+     * if print is the 2ndary editor
+     */
+    async mappingHandleImageContentChange(prop) {
+      this.canvasDidChanged();
+
+      const props = prop.data ? prop.data : [prop];
+
+      const mediaIds = props
+        .filter(
+          el =>
+            (isPpImageObject(el.prop) || isPpVideoObject(el.prop)) &&
+            el.prop.imageUrl
+        )
+        .map(el => el.id);
+
+      const res = await this.handleImageContentChange(
+        this.elementMappings,
+        mediaIds,
+        true
+      );
+
+      if (!res) return;
+
+      const {
+        isDrawObjects,
+        elementMappings,
+        isShowModal,
+        changeMappingIds
+      } = res;
+
+      elementMappings && (this.elementMappings = elementMappings);
+      this.isShowMappingContentChange = Boolean(isShowModal);
+
+      // update canvas
+      if (isDrawObjects) {
+        updateCanvasMapping(changeMappingIds, window.digitalCanvas);
+      }
     },
     /**
      * Trigger after save / auto save, apply portrait, layout
