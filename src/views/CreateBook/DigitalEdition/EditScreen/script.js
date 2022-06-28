@@ -406,6 +406,7 @@ export default {
       const props = await Promise.all(promises);
 
       this.setPropOfMultipleObjects({ data: props });
+      this.$refs.canvasEditor.mappingHandleImageContentChange({ data: props });
 
       this.$refs.canvasEditor.getThumbnailUrl();
 
@@ -592,7 +593,9 @@ export default {
         prop.startTime = 0;
       }
 
-      this.setPropertyById({ id: target.id, prop });
+      const imgProp = { id: target.id, prop };
+      this.setPropertyById(imgProp);
+      this.$refs.canvasEditor.mappingHandleImageContentChange(imgProp);
 
       this.$refs.canvasEditor.getThumbnailUrl();
 

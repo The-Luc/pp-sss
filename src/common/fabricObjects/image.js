@@ -9,7 +9,7 @@ import {
   mapObject,
   pxToIn,
   scaleSize,
-  isFbTextImageObject
+  isFbTextMediaObject
 } from '../utils';
 import { DEFAULT_RULE_DATA, applyShadowToObject } from './common';
 import {
@@ -426,7 +426,7 @@ const handleHoverVideo = target => {
  * @param {Object} target - fabric object
  */
 export const handleMouseOver = ({ target }) => {
-  if (isFbTextImageObject(target)) {
+  if (isFbTextMediaObject(target)) {
     renderMappingIcon(target);
   }
 
@@ -441,7 +441,7 @@ export const handleMouseOver = ({ target }) => {
  * @param {Object} target - fabric object
  */
 export const handleMouseOut = ({ target }) => {
-  if (isFbTextImageObject(target)) target.canvas.renderAll();
+  if (isFbTextMediaObject(target)) target.canvas.renderAll();
 
   if (
     target?.objectType !== OBJECT_TYPE.IMAGE ||

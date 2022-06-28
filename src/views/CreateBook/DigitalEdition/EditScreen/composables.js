@@ -10,8 +10,11 @@ import {
 
 import { isEmpty, isOk } from '@/common/utils';
 import { GETTERS, ACTIONS } from '@/store/modules/digital/const';
-import { mappingFrameToApi } from '@/common/mapping/frame';
-import { saveDigitalDataApi } from '@/api/saveDigital';
+import {
+  mappingFrameConfigToApi,
+  mappingFrameToApi
+} from '@/common/mapping/frame';
+import { saveDigitalConfigApi, saveDigitalObjectsApi } from '@/api/saveDigital';
 import { uploadBase64ImageApi } from '@/api/util';
 import { usePhotos } from '../../composables';
 import { updateInProjectApi } from '@/api/savePrint';
@@ -25,17 +28,29 @@ export const useSaveData = () => {
   const { getInProjectAssets } = usePhotos();
   const { syncToPrint } = useSyncLayoutMapping();
 
+  const saveEditScreen = async (
+    data,
+    isAutosave,
+    elementMappings,
+    isContentChange
+  ) => {
+    if (isEmpty(data.frame)) return;
+
+    const promise = [saveDigitalConfig(data, isAutosave)];
+
+    isContentChange &&
+      promise.push(saveDigitalObjects(data, isAutosave, elementMappings));
+
+    return Promise.all(promise);
+  };
+
   /**
    * To save digital data to DB
    *
    * fields will be saved on frame:
    *  title
-   *  objects
-   *  preview_image_url
    *  frame_delay
    *  is_visited
-   *  play_in_ids
-   *  play_out_ids
    *  frame_order
    *
    * fileds saved on book
@@ -45,12 +60,42 @@ export const useSaveData = () => {
    * @param {Boolean} isAutosave indicating autosaving call or not
    * @returns api response
    */
-  const saveEditScreen = async (
+  const saveDigitalConfig = async (editScreenData, isAutosave) => {
+    const { frame, defaultThemeId, bookId } = editScreenData;
+
+    if (isEmpty(frame)) return;
+
+    const variables = {
+      bookId,
+      bookParams: { digital_theme_id: parseInt(defaultThemeId) },
+      frameId: frame.id,
+      frameParams: mappingFrameConfigToApi(frame)
+    };
+
+    // update objects and other data
+    return saveDigitalConfigApi(variables, isAutosave);
+  };
+
+  /**
+   * To save digital data to DB
+   *
+   * fields will be saved on frame:
+   *  objects
+   *  preview_image_url
+   *  play_in_ids
+   *  play_out_ids
+   *
+   *
+   * @param {Object} editScreenData sheet data
+   * @param {Boolean} isAutosave indicating autosaving call or not
+   * @returns api response
+   */
+  const saveDigitalObjects = async (
     editScreenData,
     isAutosave,
     elementMappings
   ) => {
-    const { frame, defaultThemeId, bookId, sheetId } = editScreenData;
+    const { frame, bookId, sheetId } = editScreenData;
 
     if (isEmpty(frame)) return;
 
@@ -61,8 +106,6 @@ export const useSaveData = () => {
     frame.previewImageUrl = isOk(imgUrl) ? imgUrl.data : '';
 
     const variables = {
-      bookId,
-      bookParams: { digital_theme_id: parseInt(defaultThemeId) },
       frameId: frame.id,
       frameParams: mappingFrameToApi(frame)
     };
@@ -94,7 +137,7 @@ export const useSaveData = () => {
     );
 
     // update objects and other data
-    const isSuccess = await saveDigitalDataApi(variables, isAutosave);
+    const isSuccess = await saveDigitalObjectsApi(variables, isAutosave);
 
     await syncToPrint(sheetId, frame, elementMappings);
 

@@ -321,6 +321,7 @@ export default {
       this.$refs.canvasEditor.getThumbnailUrl();
 
       this.setPropOfMultipleObjects({ data: props });
+      this.$refs.canvasEditor.mappingHandleImageContentChange({ data: props });
     },
     /**
      * Selected images and save in sheet
@@ -426,7 +427,10 @@ export default {
         fromPortrait: false
       });
 
-      this.setPropertyById({ id: target.id, prop });
+      const imgProp = { id: target.id, prop };
+      this.setPropertyById(imgProp);
+      this.$refs.canvasEditor.mappingHandleImageContentChange(imgProp);
+
       this.$refs.canvasEditor.getThumbnailUrl();
       this.$refs.canvasEditor.printCanvas.setActiveObject(target);
 
@@ -497,7 +501,10 @@ export default {
       prop.cropInfo = cropInfo;
       prop.fromPortrait = false;
       this.selectedImage.set({ cropInfo, fromPortrait: false });
-      this.setPropertyById({ id: this.selectedImage.id, prop });
+
+      const imgProp = { id: this.selectedImage.id, prop };
+      this.setPropertyById(imgProp);
+
       this.$refs.canvasEditor.handleCanvasChanged();
       this.onCancel();
     },

@@ -3,18 +3,35 @@ import { graphqlRequest } from '../urql';
 import {
   addInProjectMutation,
   removeInProjectMutation,
-  savePrintDataMutation
+  savePrintDataMutation,
+  savePrintObjectMutation
 } from './mutation';
 
-export const savePrintDataApi = async (variables, isAutosave) => {
+const updatePageIdVariables = variables => {
   variables.noLeftPage = Boolean(!variables.leftId);
   variables.noRightPage = Boolean(!variables.rightId);
 
   variables.leftId = variables.leftId || '';
   variables.rightId = variables.rightId || '';
+};
+
+export const savePrintConfigApi = async (variables, isAutosave) => {
+  updatePageIdVariables(variables);
 
   const res = await graphqlRequest(
     savePrintDataMutation,
+    variables,
+    isAutosave
+  );
+
+  return isOk(res);
+};
+
+export const savePrintObjectApi = async (variables, isAutosave) => {
+  updatePageIdVariables(variables);
+
+  const res = await graphqlRequest(
+    savePrintObjectMutation,
     variables,
     isAutosave
   );

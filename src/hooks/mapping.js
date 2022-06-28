@@ -12,7 +12,12 @@ import {
   getBookConnectionsApi
 } from '@/api/mapping';
 import { cloneDeep, get } from 'lodash';
-import { isEmpty, isPpTextOrImage, isSecondaryFormat } from '@/common/utils';
+import {
+  isEmpty,
+  isPpTextOrImage,
+  isPrimaryFormat,
+  isSecondaryFormat
+} from '@/common/utils';
 import {
   projectMapping,
   projectMappingToApi,
@@ -20,7 +25,11 @@ import {
   sheetMappingConfigToApiMapping
 } from '@/common/mapping/mapping';
 import { useAppCommon, useModal } from '@/hooks';
-import { CONTENT_CHANGE_MODAL, PRIMARY_FORMAT_TYPES } from '@/common/constants';
+import {
+  CONTENT_CHANGE_MODAL,
+  CONTENT_VIDEO_CHANGE_MODAL,
+  PRIMARY_FORMAT_TYPES
+} from '@/common/constants';
 import { getSheetInfoApi } from '@/api/sheet';
 import { getItem } from '@/common/storage';
 
@@ -414,18 +423,14 @@ export const useContentChanges = () => {
     const bookId = generalInfo.value.bookId;
     const projectConfig = await getMappingConfig(bookId);
     const attName = isDigital ? 'digitalElementId' : 'printElementId';
+    if (!isSecondaryFormat(projectConfig, isDigital)) return;
 
     // show warning modal
     const eleMappings = cloneDeep(elementMappings);
     const mapping = eleMappings.find(el => el[attName] === elementId);
 
-    if (!mapping) return;
-
     // only show modal when user in seconday format and the element is mapped
-    const shouldBreakConnection =
-      isSecondaryFormat(projectConfig, isDigital) && mapping.mapped;
-
-    if (!shouldBreakConnection) return;
+    if (!mapping || !mapping.mapped) return;
 
     // call API to break connection
     mapping.mapped = false;
@@ -447,5 +452,108 @@ export const useContentChanges = () => {
     };
   };
 
-  return { handleTextContentChange };
+  const handleImageContentChange = async (
+    elementMappings,
+    elementIds,
+    isDigital,
+    videoIds
+  ) => {
+    const bookId = generalInfo.value.bookId;
+    const projectConfig = await getMappingConfig(bookId);
+    const attName = isDigital ? 'digitalElementId' : 'printElementId';
+
+    /* 
+      if DIGITAL is PRIMARY FORMAT:
+        check if there are videos, break connnection these videos and
+    */
+    if (isDigital && isPrimaryFormat(projectConfig, isDigital)) {
+      return handleVideoContentChange(elementMappings, videoIds);
+    }
+
+    if (!isSecondaryFormat(projectConfig, isDigital)) return;
+
+    // show warning modal
+    const eleMappings = cloneDeep(elementMappings);
+    const breakingPromises = [];
+    const changeMappingIds = [];
+
+    elementIds.forEach(imgElementId => {
+      const mapping = eleMappings.find(el => el[attName] === imgElementId);
+
+      // only show modal when user in seconday format and the element is mapped
+      if (!mapping || !mapping.mapped) return;
+
+      // call API to break connection
+      mapping.mapped = false;
+      breakingPromises.push(breakSingleConnection(mapping.id));
+      changeMappingIds.push(imgElementId);
+    });
+
+    if (isEmpty(breakingPromises)) return;
+
+    await Promise.all(breakingPromises);
+
+    const isHideMess = getItem(CONTENT_CHANGE_MODAL) || false;
+    if (isHideMess)
+      return {
+        isDrawObjects: true,
+        elementMappings: eleMappings,
+        changeMappingIds
+      };
+
+    toggleModal({
+      isOpenModal: true
+    });
+    return {
+      isDrawObjects: true,
+      elementMappings: eleMappings,
+      isShowModal: true,
+      changeMappingIds
+    };
+  };
+
+  // for primary format
+  const handleVideoContentChange = async (elementMappings, videoIds) => {
+    if (isEmpty(videoIds)) return;
+
+    const eleMappings = cloneDeep(elementMappings);
+    const breakingPromises = [];
+    const changeMappingIds = [];
+
+    videoIds.forEach(videoId => {
+      const mapping = eleMappings.find(el => el.digitalElementId === videoId);
+
+      // only show modal when user in the element is mapped
+      if (!mapping || !mapping.mapped) return;
+
+      // call API to break connection
+      mapping.mapped = false;
+      breakingPromises.push(breakSingleConnection(mapping.id));
+      changeMappingIds.push(videoId);
+    });
+
+    if (isEmpty(breakingPromises)) return;
+
+    await Promise.all(breakingPromises);
+
+    const isHideMess = getItem(CONTENT_VIDEO_CHANGE_MODAL) || false;
+    if (isHideMess)
+      return {
+        isDrawObjects: true,
+        elementMappings: eleMappings,
+        changeMappingIds
+      };
+
+    toggleModal({
+      isOpenModal: true
+    });
+    return {
+      isDrawObjects: true,
+      elementMappings: eleMappings,
+      isShowVideoModal: true,
+      changeMappingIds
+    };
+  };
+
+  return { handleTextContentChange, handleImageContentChange };
 };

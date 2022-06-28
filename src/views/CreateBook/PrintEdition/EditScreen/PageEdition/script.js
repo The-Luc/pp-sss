@@ -49,7 +49,9 @@ import {
   isFbImageObject,
   isPpImageObject,
   getDigitalObjectById,
-  isAllowSyncData
+  isAllowSyncData,
+  isSecondaryFormat,
+  updateCanvasMapping
 } from '@/common/utils';
 
 import {
@@ -179,7 +181,10 @@ export default {
     } = useMappingSheet();
     const { toggleModal } = useModal();
     const { getMappingConfig } = useMappingProject();
-    const { handleTextContentChange } = useContentChanges();
+    const {
+      handleTextContentChange,
+      handleImageContentChange
+    } = useContentChanges();
 
     return {
       generalInfo,
@@ -204,7 +209,8 @@ export default {
       getSheetMappingConfig,
       updateElementMappingByIds,
       getMappingConfig,
-      handleTextContentChange
+      handleTextContentChange,
+      handleImageContentChange
     };
   },
   data() {
@@ -292,7 +298,7 @@ export default {
         await this.updateElementMappings();
         await this.drawObjectsOnCanvas(this.sheetLayout);
 
-        this.addPageNumber();
+        this.resetCanvasChanges();
       }
     },
     zoom(newVal, oldVal) {
@@ -361,12 +367,13 @@ export default {
       await this.saveData(this.pageSelected.id, true);
 
       this.updateSavingStatus({ status: SAVE_STATUS.END });
-
-      this.isCanvasChanged = false;
     },
 
     /**
-     * To save data of current shet
+     * To save data of current sheet
+     *
+     * ONLY generate thumbnails and save objects when isCanvasChanged is true
+     *
      * @param {String | Number} sheetId id of sheet need to save data
      * @param {Boolean} isAutosave indicating autosaving or not
      * @returns {Promise} saved data
@@ -377,8 +384,8 @@ export default {
 
       const data = this.getDataEditScreen(sheetId);
 
-      // update elementMappings if any objects deleted
-      if (!isEmpty(this.elementMappings)) {
+      // update elementMappings if any objects deleted and isCanvasChanged = TRUE
+      if (!isEmpty(this.elementMappings) && this.isCanvasChanged) {
         const objectIds = data.objects.map(o => o.id);
         const elementMappingIds = [];
 
@@ -399,7 +406,14 @@ export default {
         }
       }
 
-      await this.savePrintEditScreen(data, isAutosave, this.elementMappings);
+      await this.savePrintEditScreen(
+        data,
+        isAutosave,
+        this.elementMappings,
+        this.isCanvasChanged
+      );
+
+      this.resetCanvasChanges();
 
       return data;
     },
@@ -801,7 +815,7 @@ export default {
         this.getThumbnailUrl();
 
         // set state change for autosave
-        this.isCanvasChanged = true;
+        this.canvasDidChanged();
 
         resolve();
       });
@@ -1982,6 +1996,8 @@ export default {
       window.printCanvas.add(...listFabricObjects);
       window.printCanvas.requestRenderAll();
 
+      this.addPageNumber();
+
       this.setLoadingState({ value: false });
     },
 
@@ -2108,7 +2124,7 @@ export default {
     async handleGeneratePDF() {
       const bookId = this.generalInfo.id;
 
-      await this.saveData(this.pageSelected.id);
+      if (this.isCanvasChanged) await this.saveData(this.pageSelected.id);
 
       this.generatePdf(bookId);
     },
@@ -2124,9 +2140,14 @@ export default {
       const activeObject = window.printCanvas.getActiveObject();
       const prop = await setImageSrc(activeObject, null);
       activeObject.canvas.renderAll();
-      this.setObjectPropById({ id: activeObject.id, prop });
+
+      const imgProp = { id: activeObject.id, prop };
+      this.setObjectPropById(imgProp);
+
+      await this.mappingHandleImageContentChange(imgProp);
+
       this.setCurrentObject(this.currentObjects[activeObject.id]);
-      this.getThumbnailUrl();
+      this.handleCanvasChanged();
     },
 
     /**
@@ -2139,6 +2160,7 @@ export default {
       activeObject.canvas.renderAll();
 
       this.setObjectPropById({ id: activeObject.id, prop });
+      this.canvasDidChanged();
     },
     /**
      * Undo user action
@@ -2223,7 +2245,8 @@ export default {
       if (
         isHideMess ||
         !isAllowSyncData(projectConfig, sheetConfig) ||
-        nonConnections
+        nonConnections ||
+        !isSecondaryFormat(projectConfig)
       )
         return;
 
@@ -2281,7 +2304,7 @@ export default {
         : await this.getDigitalObjects();
     },
     /**
-     * Hanlde break mapping connection when text content change,
+     * Handle break mapping connection when text content change,
      * if print is the 2ndary editor
      */
     async mappingHandleTextContentChange(prop, group) {
@@ -2299,7 +2322,58 @@ export default {
 
       elementMappings && (this.elementMappings = elementMappings);
       this.isShowMappingContentChange = Boolean(isShowModal);
-      isDrawObjects && (await this.drawObjectsOnCanvas(this.sheetLayout));
+
+      // update canvas
+      if (isDrawObjects) {
+        updateCanvasMapping(group.id, window.printCanvas);
+      }
+    },
+    /**
+     * Handle break mapping connection when image content change,
+     * if print is the 2ndary editor
+     */
+    async mappingHandleImageContentChange(prop) {
+      this.canvasDidChanged();
+
+      const props = prop.data ? prop.data : [prop];
+
+      const imageIds = props
+        .filter(el => isPpImageObject(el.prop) && el.prop.imageUrl)
+        .map(el => el.id);
+
+      const res = await this.handleImageContentChange(
+        this.elementMappings,
+        imageIds
+      );
+
+      if (!res) return;
+
+      const {
+        isDrawObjects,
+        elementMappings,
+        isShowModal,
+        changeMappingIds
+      } = res;
+
+      elementMappings && (this.elementMappings = elementMappings);
+      this.isShowMappingContentChange = Boolean(isShowModal);
+
+      // update canvas
+      if (isDrawObjects) {
+        updateCanvasMapping(changeMappingIds, window.printCanvas);
+      }
+    },
+    /**
+     * Trigger after save / auto save, apply portrait, layout
+     */
+    resetCanvasChanges() {
+      this.isCanvasChanged = false;
+    },
+    /**
+     * Trigger when any change on canvas
+     */
+    canvasDidChanged() {
+      this.isCanvasChanged = true;
     }
   }
 };

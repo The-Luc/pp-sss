@@ -52,14 +52,14 @@ export const mappingFrameToApi = frameData => {
 
   const mapRules = {
     data: {
+      previewImageUrl: {
+        name: 'preview_image_url'
+      },
       delay: {
         name: 'frame_delay'
       },
       isVisited: {
         name: 'is_visited'
-      },
-      previewImageUrl: {
-        name: 'preview_image_url'
       },
       fromLayout: {
         name: 'from_layout',
@@ -85,4 +85,31 @@ export const mappingFrameToApi = frameData => {
   mapFrame.play_out_ids = frame.playOutIds;
 
   return mapFrame;
+};
+
+export const mappingFrameConfigToApi = frameData => {
+  const mapRules = {
+    data: {
+      delay: {
+        name: 'frame_delay'
+      },
+      isVisited: {
+        name: 'is_visited'
+      },
+      fromLayout: {
+        name: 'from_layout',
+        isForce: true
+      }
+    },
+    restrict: [
+      'id',
+      'playInIds',
+      'playOutIds',
+      'objects',
+      'supplementalLayoutId',
+      'previewImageUrl'
+    ]
+  };
+
+  return mapObject(frameData, mapRules);
 };

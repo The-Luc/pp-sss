@@ -1,10 +1,23 @@
 import { isOk } from '@/common/utils';
 import { graphqlRequest } from '../urql';
-import { saveDigitalDataMutation } from './mutation';
+import {
+  saveDigitalConfigMutation,
+  saveDigitalObjectsMuataion
+} from './mutation';
 
-export const saveDigitalDataApi = async (variables, isAutosave) => {
+export const saveDigitalObjectsApi = async (variables, isAutosave) => {
   const res = await graphqlRequest(
-    saveDigitalDataMutation,
+    saveDigitalObjectsMuataion,
+    variables,
+    isAutosave
+  );
+
+  return isOk(res);
+};
+
+export const saveDigitalConfigApi = async (variables, isAutosave) => {
+  const res = await graphqlRequest(
+    saveDigitalConfigMutation,
     variables,
     isAutosave
   );

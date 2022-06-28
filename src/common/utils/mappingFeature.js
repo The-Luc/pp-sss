@@ -21,26 +21,19 @@ export const getMappingIconName = (config, itemsTool) => {
 
 /**
  *  Allowing sync data condition:
- * - Current editor is PRIMARY FORMAT
  * - MAPPING FUNCTIONALITY is on
  * - MAPPING STATUS is on
  * - MAPPING TYPE is LAYOUT
  *
  */
-export const isAllowSyncData = (projectConfig, sheetConfig, isDigital) => {
-  const { enableContentMapping, primaryMapping } = projectConfig;
+export const isAllowSyncData = (projectConfig, sheetConfig) => {
+  const { enableContentMapping } = projectConfig;
 
   const { mappingType, mappingStatus } = sheetConfig;
 
   const isLayoutMapping = mappingType === MAPPING_TYPES.LAYOUT.value;
 
-  const isPrimaryFormat = isDigital
-    ? PRIMARY_FORMAT_TYPES.DIGITAL.value === primaryMapping
-    : PRIMARY_FORMAT_TYPES.PRINT.value === primaryMapping;
-
-  return (
-    isPrimaryFormat && enableContentMapping && mappingStatus && isLayoutMapping
-  );
+  return enableContentMapping && mappingStatus && isLayoutMapping;
 };
 
 export const isSecondaryFormat = (projectConfig, isDigital) => {
@@ -49,4 +42,27 @@ export const isSecondaryFormat = (projectConfig, isDigital) => {
   return isDigital
     ? PRIMARY_FORMAT_TYPES.PRINT.value === primaryMapping
     : PRIMARY_FORMAT_TYPES.DIGITAL.value === primaryMapping;
+};
+
+export const isPrimaryFormat = (projectConfig, isDigital) => {
+  const { primaryMapping } = projectConfig;
+
+  return isDigital
+    ? PRIMARY_FORMAT_TYPES.DIGITAL.value === primaryMapping
+    : PRIMARY_FORMAT_TYPES.PRINT.value === primaryMapping;
+};
+
+/**
+ * update canvas objects `mapping info` to display mapping icon correctly
+ */
+export const updateCanvasMapping = (elementIds, canvas) => {
+  const ids = Array.isArray(elementIds) ? elementIds : [elementIds];
+
+  const fbObjects = canvas.getObjects();
+
+  fbObjects.forEach(fb => {
+    if (ids.includes(fb.id)) fb.mappingInfo.mapped = false;
+  });
+
+  canvas.renderAll();
 };
