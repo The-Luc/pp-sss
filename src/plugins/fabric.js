@@ -1245,6 +1245,7 @@ export const renderMappingIcon = async target => {
   const ctx = canvas.getContext('2d');
 
   if (isEmpty(mappingInfo)) return;
+  console.log(mappingInfo);
 
   const isTextObject = isFbTextObject(target);
   const isMapped = mappingInfo.mapped;
@@ -1254,7 +1255,11 @@ export const renderMappingIcon = async target => {
     [`${false}-${true}`]: IMAGE_LOCAL.LOCATION_PURPLE,
     [`${false}-${false}`]: IMAGE_LOCAL.LOCATION_DISABLED_PURPLE
   };
-  const iconSrc = iconOptions[`${isTextObject}-${isMapped}`];
+  const customIcon = IMAGE_LOCAL.LOCATION_DISABLED_GRAY;
+
+  const iconSrc = mappingInfo.isCustom
+    ? customIcon
+    : iconOptions[`${isTextObject}-${isMapped}`];
 
   const icon = await createMediaOverlay(iconSrc);
 

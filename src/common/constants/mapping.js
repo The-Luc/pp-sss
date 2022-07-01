@@ -3,6 +3,7 @@ export const MAPPING_OBJECT_STATE_MAPPING = 'MAPPING';
 export const MAPPING_OBJECT_STATE_MAPPED = 'MAPPED';
 
 export const OVERLAY_BACKGROUND_COLOR = 'rgba(88,89,91,0.4)';
+export const CUSTOM_MAPPING_ICON_COLOR = '#58595B';
 
 export const PRIMARY_FORMAT_TYPES = {
   PRINT: {

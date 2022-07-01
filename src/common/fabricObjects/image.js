@@ -426,9 +426,7 @@ const handleHoverVideo = target => {
  * @param {Object} target - fabric object
  */
 export const handleMouseOver = ({ target }) => {
-  if (isFbTextMediaObject(target)) {
-    renderMappingIcon(target);
-  }
+  renderMappingIcon(target);
 
   // handle render crop control icon
   if (target?.objectType !== OBJECT_TYPE.IMAGE) return;
@@ -441,14 +439,16 @@ export const handleMouseOver = ({ target }) => {
  * @param {Object} target - fabric object
  */
 export const handleMouseOut = ({ target }) => {
-  if (isFbTextMediaObject(target)) target.canvas.renderAll();
+  // if (isFbTextMediaObject(target)) target.canvas.renderAll();
 
   if (
     target?.objectType !== OBJECT_TYPE.IMAGE ||
     !target.hasImage ||
     !target.selectable
-  )
+  ) {
+    target?.canvas.renderAll();
     return;
+  }
 
   target.set({
     showControl: false,
