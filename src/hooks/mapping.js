@@ -1,3 +1,5 @@
+import { useGetters } from 'vuex-composition-helpers';
+import { GETTERS as PRINT_GETTERS } from '@/store/modules/print/const';
 import {
   createTemplateMappingApi,
   deleteTemplateMappingApi,
@@ -13,10 +15,14 @@ import {
 } from '@/api/mapping';
 import { cloneDeep, get } from 'lodash';
 import {
+  divideObjectsIntoQuadrants,
   isEmpty,
+  isLayoutMappingChecker,
   isPpTextOrImage,
   isPrimaryFormat,
-  isSecondaryFormat
+  isSecondaryFormat,
+  mappingQuadrantFrames,
+  modifyQuadrantObjects
 } from '@/common/utils';
 import {
   projectMapping,
@@ -24,10 +30,16 @@ import {
   sheetMappingConfigMapping,
   sheetMappingConfigToApiMapping
 } from '@/common/mapping/mapping';
-import { useAppCommon, useModal } from '@/hooks';
+import {
+  useAppCommon,
+  useModal,
+  useSyncLayoutMapping,
+  useFrameAction
+} from '@/hooks';
 import {
   CONTENT_CHANGE_MODAL,
   CONTENT_VIDEO_CHANGE_MODAL,
+  COVER_TYPE,
   PRIMARY_FORMAT_TYPES
 } from '@/common/constants';
 import { getSheetInfoApi } from '@/api/sheet';
@@ -556,4 +568,112 @@ export const useContentChanges = () => {
   };
 
   return { handleTextContentChange, handleImageContentChange };
+};
+
+export const useQuadrantMapping = () => {
+  const { updateFramesAndThumbnails, getSheetFrames } = useFrameAction();
+  const { getBookInfo, currentSheet } = useGetters({
+    getBookInfo: PRINT_GETTERS.GET_BOOK_INFO,
+    currentSheet: PRINT_GETTERS.CURRENT_SHEET
+  });
+
+  const quadrantSyncToDigital = async (sheetId, pObjects, elementMappings) => {
+    console.log('elementMappings ', elementMappings);
+    const objects = cloneDeep(pObjects);
+
+    const frames = await getSheetFrames(sheetId);
+    const frameIds = frames
+      .filter(f => f.fromLayout)
+      .map(f => f.id)
+      .sort((a, b) => Number(a) - Number(b));
+
+    const { coverOption } = getBookInfo.value;
+    const isHardCover = coverOption === COVER_TYPE.HARDCOVER;
+
+    const sheet = { isHardCover, type: currentSheet.value.type };
+
+    // Divide into 4 quadrants (1 quadrant = 1/2 page);
+    // `quadrants`: [q1, q2, q3, q4]
+    const quadrants = divideObjectsIntoQuadrants(sheet, objects);
+
+    // modify object's positions and dimensions based on theirs quadrant
+    modifyQuadrantObjects(sheet, objects);
+
+    // expected there are enough orginal frames (2-4 frames)
+    // mapping frames id and quadrants
+    // `quadrantFrames`: [{objects: q1, frameId: 123}]
+    const quadrantFrames = mappingQuadrantFrames(quadrants, sheet, frameIds);
+
+    // // update frames objects, and visited
+    const willUpdateFrames = quadrantFrames.map(qd => ({
+      id: qd.frameId,
+      objects: qd.objects,
+      isVisited: true
+    }));
+
+    await updateFramesAndThumbnails(willUpdateFrames);
+  };
+
+  const quadrantSyncToPrint = async (sheetId, frame, elementMappings) => {
+    console.log('quadrantSyncToPrint =====================');
+    console.log('sheetId', sheetId);
+    console.log('objects ', frame);
+    console.log('element mappings ', elementMappings);
+    //
+  };
+
+  return { quadrantSyncToDigital, quadrantSyncToPrint };
+};
+
+export const useSyncData = () => {
+  const { generalInfo } = useAppCommon();
+  const { getMappingConfig } = useMappingProject();
+  const { getSheetMappingConfig } = useMappingSheet();
+  const { syncLayoutToDigital, syncLayoutToPrint } = useSyncLayoutMapping();
+  const { quadrantSyncToDigital, quadrantSyncToPrint } = useQuadrantMapping();
+
+  const syncToDigital = async (sheetId, objects, elementMappings) => {
+    const bookId = generalInfo.value.bookId;
+
+    // check mapping config
+    const config = await getMappingConfig(bookId);
+    const sheetConfig = await getSheetMappingConfig(sheetId);
+
+    const isPrintPrimary = isPrimaryFormat(config);
+    const isLayoutMapping = isLayoutMappingChecker(sheetConfig);
+
+    if (!isPrintPrimary || !config.enableContentMapping) return;
+
+    if (isLayoutMapping) {
+      // layout mapping
+      return syncLayoutToDigital(sheetId, objects, elementMappings);
+    }
+
+    // custom mapping
+    return quadrantSyncToDigital(sheetId, objects, elementMappings);
+  };
+
+  const syncToPrint = async (sheetId, frame, elementMappings) => {
+    const bookId = generalInfo.value.bookId;
+
+    // check mapping config
+    const config = await getMappingConfig(bookId);
+    const sheetConfig = await getSheetMappingConfig(sheetId);
+
+    const isDigitalPrimary = isPrimaryFormat(config, true);
+    const isLayoutMapping = isLayoutMappingChecker(sheetConfig);
+
+    if (!isDigitalPrimary || !config.enableContentMapping) return;
+
+    if (isLayoutMapping) {
+      // layout mapping
+      return syncLayoutToPrint(sheetId, frame, elementMappings);
+    }
+
+    // custom mapping
+    return quadrantSyncToPrint(sheetId, frame, elementMappings);
+    //
+  };
+
+  return { syncToDigital, syncToPrint };
 };
