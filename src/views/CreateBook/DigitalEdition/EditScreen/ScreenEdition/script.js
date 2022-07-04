@@ -38,7 +38,7 @@ import {
   CUSTOM_CHANGE_MODAL,
   CONTENT_CHANGE_MODAL,
   CONTENT_VIDEO_CHANGE_MODAL,
-  CUSTOM_MAPPING_ICON_COLOR
+  CUSTOM_MAPPING_MODAL
 } from '@/common/constants';
 import {
   addPrintClipArts,
@@ -127,13 +127,16 @@ import {
   renderOrderBoxes,
   isPpImageObject,
   getObjectById,
-  isAllowSyncData,
+  isAllowSyncLayoutData,
   getDigitalObjectById,
   isSecondaryFormat,
   updateCanvasMapping,
   isPpVideoObject,
   isPpMediaObject,
-  isLayoutMappingChecker
+  isLayoutMappingChecker,
+  isAllowSyncCustomData,
+  isCustomMappingChecker,
+  getBrokenCustomMapping
 } from '@/common/utils';
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
 
@@ -143,7 +146,7 @@ import {
   MUTATES as DIGITAL_MUTATES
 } from '@/store/modules/digital/const';
 
-import { cloneDeep, debounce, merge } from 'lodash';
+import { cloneDeep, debounce, merge, difference } from 'lodash';
 import { useSaveData, useObject, useVideo } from '../composables';
 import { useSavingStatus, usePhotos } from '@/views/CreateBook/composables';
 import UndoRedoCanvas from '@/plugins/undoRedoCanvas';
@@ -229,7 +232,8 @@ export default {
     const {
       storeElementMappings,
       getSheetMappingConfig,
-      updateElementMappingByIds
+      updateElementMappingByIds,
+      createSingleElementMapping
     } = useMappingSheet();
     const { getMappingConfig } = useMappingProject();
     const { getSheetFrames } = useFrameAction();
@@ -283,6 +287,7 @@ export default {
       storeElementMappings,
       getSheetMappingConfig,
       updateElementMappingByIds,
+      createSingleElementMapping,
       getMappingConfig,
       getSheetFrames,
       breakSingleConnection,
@@ -312,8 +317,10 @@ export default {
       elementMappings: [],
       isShowCustomChangesConfirm: false, // for editing in mapped layout applied sheet
       isShowMappingContentChange: false, // for editing content of text/image
+      isShowCustomMappingModal: false, // for editing object or adding new object on custom mapping mode
       isShowMappingVideoContentChange: false, // for adding video when digital is the primary format
-      isRenderingObjects: null
+      isRenderingObjects: null,
+      sheetMappingConfig: {}
     };
   },
   computed: {
@@ -351,6 +358,7 @@ export default {
         this.setAutosaveTimer();
 
         await this.getDataCanvas();
+        this.sheetMappingConfig = await this.getSheetMappingConfig(val.id);
 
         this.setCurrentFrameId({ id: this.frames[0].id });
 
@@ -1048,6 +1056,9 @@ export default {
 
       setCanvasUniformScaling(this.digitalCanvas, isConstrain);
 
+      // handle show broken custom mapping icon for text
+      this.addingObjectsEvent([object]);
+
       this.digitalCanvas.add(object);
 
       setTimeout(() => {
@@ -1496,6 +1507,9 @@ export default {
 
         s.object.update({ coord });
 
+        // handle show broken custom mapping icon for shapes
+        this.addingObjectsEvent([fabricObject]);
+
         this.addNewObject({
           id: s.id,
           newObject: s.object
@@ -1548,6 +1562,8 @@ export default {
       if (isEmpty(element) || element.objectType !== objectType) return;
 
       const newProp = await this.updateElementProp(element, prop, objectType);
+
+      this.modifyObjectsEvent(element);
 
       this.updateCurrentObject(element, newProp);
 
@@ -1732,6 +1748,9 @@ export default {
 
       addEventListeners(image?.object, eventListeners);
 
+      // handle show broken custom mapping icon image
+      this.addingObjectsEvent([image?.object]);
+
       this.digitalCanvas.add(image?.object);
 
       selectLatestObject(this.digitalCanvas);
@@ -1827,6 +1846,9 @@ export default {
         });
 
         s.object.update({ coord, size });
+
+        // handle show broken custom mapping icon for clipart
+        this.addingObjectsEvent([fabricObject]);
 
         this.addNewObject({
           id: s.id,
@@ -2161,11 +2183,7 @@ export default {
      * To update value and color of map icon on object (text & image) when hover
      */
     async updateMappingIcon(fbObjects) {
-      const sheetConfig = await this.getSheetMappingConfig(
-        this.pageSelected.id
-      );
-
-      if (isLayoutMappingChecker(sheetConfig)) {
+      if (isLayoutMappingChecker(this.sheetMappingConfig)) {
         // handle case layout mapping
         await this.iconLayoutMapping(fbObjects);
         return;
@@ -2183,17 +2201,24 @@ export default {
      * @param {Array} fbObjects fabric objects
      */
     iconCustomMapping(fbObjects) {
+      if (isLayoutMappingChecker(this.sheetMappingConfig)) return;
+
+      const mappingElementIds = this.elementMappings.map(
+        el => el.digitalElementId
+      );
+
       const printIds = Object.keys(this.printObjects);
 
-      fbObjects.forEach(o => {
-        if (printIds.includes(o.id)) return;
+      const mappingIds = difference(printIds, mappingElementIds);
 
-        o.mappingInfo = {
-          color: CUSTOM_MAPPING_ICON_COLOR,
-          id: o.id,
-          mapped: false,
-          isCustom: true
-        };
+      // the broken icons will show when:
+      // -  if an objects are not in print spread
+      // -  object in `elementMappings`
+
+      fbObjects.forEach(o => {
+        if (mappingIds.includes(o.id)) return;
+
+        o.mappingInfo = getBrokenCustomMapping(o);
       });
     },
 
@@ -2946,16 +2971,13 @@ export default {
       const isHideMess = getItem(CUSTOM_CHANGE_MODAL) || false;
       const bookId = this.$route.params.bookId;
       const projectConfig = await this.getMappingConfig(bookId);
-      const sheetConfig = await this.getSheetMappingConfig(
-        this.pageSelected.id
-      );
 
       const isSupplemental = !this.currentFrame.fromLayout;
       const nonConnections = this.elementMappings.length === 0;
 
       if (
         isHideMess ||
-        !isAllowSyncData(projectConfig, sheetConfig) ||
+        !isAllowSyncLayoutData(projectConfig, this.sheetMappingConfig) ||
         isSupplemental ||
         nonConnections ||
         !isSecondaryFormat(projectConfig, true)
@@ -2963,6 +2985,30 @@ export default {
         return;
 
       this.isShowCustomChangesConfirm = true;
+      this.toggleModal({
+        isOpenModal: true
+      });
+    },
+
+    /**
+     * Handle to show custom mapping modal when editing / adding objects
+     */
+    async handleShowCustomMappingModal() {
+      const isHideMess = getItem(CUSTOM_MAPPING_MODAL) || false;
+      const bookId = this.$route.params.bookId;
+      const projectConfig = await this.getMappingConfig(bookId);
+
+      const isSupplemental = !this.currentFrame.fromLayout;
+
+      if (
+        isHideMess ||
+        !isAllowSyncCustomData(projectConfig, this.sheetMappingConfig) ||
+        isSupplemental ||
+        !isSecondaryFormat(projectConfig, true)
+      )
+        return;
+
+      this.isShowCustomMappingModal = true;
       this.toggleModal({
         isOpenModal: true
       });
@@ -3013,6 +3059,22 @@ export default {
       if (!isHideMess) return;
 
       setItem(CONTENT_VIDEO_CHANGE_MODAL, true);
+    },
+    /**
+     *  Custom mapping modal when edit object or adding new objects
+     *  To hide the warning modal and save user setting if any
+     *
+     * @param {Boolean} isHideMess whether user click on the hide message checkbox
+     */
+    onClickGotItCustomMappingModal(isHideMess) {
+      this.isShowCustomMappingModal = false;
+      this.toggleModal({
+        isOpenModal: false
+      });
+
+      if (!isHideMess) return;
+
+      setItem(CUSTOM_MAPPING_MODAL, true);
     },
     /**
      * Draw objects on canvas with mapping icon and their values
@@ -3119,6 +3181,44 @@ export default {
      */
     canvasDidChanged() {
       this.isCanvasChanged = true;
+    },
+    /**
+     * The function is triggered when new objects are added on canvas via creation tool
+     *
+     * @param {Array} objects fabric array of objects adding on canvas
+     */
+    addingObjectsEvent(objects) {
+      this.iconCustomMapping(objects);
+      this.handleShowCustomMappingModal();
+    },
+
+    /**
+     * The function is triggered when objects are modified
+     *
+     */
+    modifyObjectsEvent(element) {
+      const isNonMappedElement = element?.mappingInfo?.mapped === false;
+
+      if (
+        !isCustomMappingChecker(this.sheetMappingConfig) ||
+        isNonMappedElement
+      )
+        return;
+
+      this.handleShowCustomMappingModal();
+
+      // break the connection
+      element.mappingInfo = getBrokenCustomMapping(element);
+
+      this.digitalCanvas.requestRenderAll();
+
+      this.createSingleElementMapping(
+        this.pageSelected.id,
+        this.currentFrameId,
+        element.id, // print element id
+        element.id, // digital element id
+        false // mapped
+      );
     }
   }
 };
