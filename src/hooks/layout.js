@@ -49,8 +49,7 @@ import {
   DIGITAL_LAYOUT_TYPES,
   SAVED_AND_FAVORITES_TYPE,
   PRINT_PAGE_SIZE,
-  MAPPING_TYPES,
-  PRIMARY_FORMAT_TYPES
+  MAPPING_TYPES
 } from '@/common/constants';
 
 import {
@@ -77,17 +76,13 @@ import {
   updateContentToObject
 } from '@/common/utils';
 import { useThumbnail } from '@/views/CreateBook/composables';
-import {
-  getFrameObjectsApi,
-  deleteFrameApi,
-  updateFrameApi
-} from '@/api/frame';
+import { getFrameObjectsApi, deleteFrameApi } from '@/api/frame';
 import {
   useFrame,
   useFrameOrdering,
   useFrameAction,
   useSavePageData,
-  useAppCommon
+  useMappingSheet
 } from '@/hooks';
 import { updateTransitionApi } from '@/api/playback';
 import {
@@ -95,7 +90,7 @@ import {
   isCoverLayoutChecker
 } from '@/common/utils/layout';
 import { getSheetTransitionApi } from '@/api/playback/api_query';
-import { useMappingProject, useMappingSheet } from './mapping';
+import { useMappingProject } from './mapping';
 import {
   getSheetInfoApi,
   getSheetPreviewInfoApi,
@@ -939,21 +934,10 @@ export const useMappingLayout = isDigital => {
 };
 
 export const useSyncLayoutMapping = () => {
-  const { getMappingConfig } = useMappingProject();
-  const { getSheetFrames } = useFrameAction();
-  const { generateMultiThumbnails } = useThumbnail();
-  const { generalInfo } = useAppCommon();
+  const { getSheetFrames, updateFramesAndThumbnails } = useFrameAction();
   const { savePageData } = useSavePageData();
 
-  const syncToDigital = async (sheetId, printObjects, elementMapping) => {
-    const bookId = generalInfo.value.bookId;
-    // check mapping config
-    const config = await getMappingConfig(bookId);
-    const isPrintPrimary =
-      config.primaryMapping === PRIMARY_FORMAT_TYPES.PRINT.value;
-
-    if (!isPrintPrimary || !config.enableContentMapping) return;
-
+  const syncLayoutToDigital = async (sheetId, printObjects, elementMapping) => {
     // mapping function: update data for digital frames
     // load all digital frames of current sheet
     const dbFrames = await getSheetFrames(sheetId);
@@ -992,39 +976,14 @@ export const useSyncLayoutMapping = () => {
 
     // call API to save to DB
     const frameIds = [...new Set(willUpdateFrameIds)];
-    const willUpdateFrames = frames.reduce((acc, curr) => {
-      if (frameIds.includes(curr.id)) {
-        acc.push(curr);
-      }
-      return acc;
-    }, []);
-
-    const imageUrls = await generateMultiThumbnails(
-      willUpdateFrames.map(frame => frame.objects),
-      true
+    const willUpdateFrames = frames.filter(frame =>
+      frameIds.includes(frame.id)
     );
 
-    // update url into frames
-    willUpdateFrames.forEach(
-      (frame, idx) => (frame.previewImageUrl = imageUrls[idx])
-    );
-
-    // update frames
-    await Promise.all(
-      willUpdateFrames.map(frame => updateFrameApi(frame.id, frame))
-    );
-
-    // remove all in-project assets of the page
+    await updateFramesAndThumbnails(willUpdateFrames);
   };
 
-  const syncToPrint = async (sheetId, frame, elementMapping) => {
-    const bookId = generalInfo.value.bookId;
-    const config = await getMappingConfig(bookId);
-    const isDigitalPrimary =
-      config.primaryMapping === PRIMARY_FORMAT_TYPES.DIGITAL.value;
-
-    if (!isDigitalPrimary || !config.enableContentMapping) return;
-
+  const syncLayoutToPrint = async (sheetId, frame, elementMapping) => {
     // mapping function: update data for print spread
     // load print spread data
     const sheet = await getSheetInfoApi(sheetId);
@@ -1053,6 +1012,7 @@ export const useSyncLayoutMapping = () => {
       if (!isContentDifference(digitalObject, printObject)) return;
 
       await updateContentToObject(digitalObject, printObject);
+
       isNeedToUpdate = true;
     }, Promise.resolve());
 
@@ -1061,5 +1021,5 @@ export const useSyncLayoutMapping = () => {
 
     await savePageData(sheetId, printObjects);
   };
-  return { syncToDigital, syncToPrint };
+  return { syncLayoutToDigital, syncLayoutToPrint };
 };

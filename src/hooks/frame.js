@@ -13,6 +13,7 @@ import { PROPERTIES_TOOLS } from '@/common/constants';
 import { cloneDeep } from 'lodash';
 import { FrameDetail } from '@/common/models';
 import { useLayoutAddingSupport } from '@/hooks';
+import { useThumbnail } from '@/views/CreateBook/composables';
 import {
   createFrameApi,
   deleteFrameApi,
@@ -247,6 +248,8 @@ export const useFrameAction = () => {
     'frames'
   ]);
 
+  const { generateMultiThumbnails } = useThumbnail();
+
   const getPreviewUrlByIndex = index => {
     const frameIds = frameIdsObs.value;
 
@@ -281,14 +284,34 @@ export const useFrameAction = () => {
       });
     });
 
-    const responseFrames = await Promise.all(
-      newFrames.map(frame => createFrameApi(sheetId, frame))
-    );
+    const responseFrames = [];
+
+    // frames should be created in order so that frame ids will be incrementing numbers
+    await newFrames.reduce(async (acc, f) => {
+      // await for the previous item to finish processing
+      await acc;
+
+      const frame = await createFrameApi(sheetId, f);
+      responseFrames.push(frame);
+    }, Promise.resolve());
 
     // adding frame id
     newFrames.forEach((frame, index) => (frame.id = responseFrames[index].id));
 
     return newFrames;
+  };
+
+  const updateFramesAndThumbnails = async frames => {
+    const imageUrls = await generateMultiThumbnails(
+      frames.map(frame => frame.objects),
+      true
+    );
+
+    // update url into frames
+    frames.forEach((frame, idx) => (frame.previewImageUrl = imageUrls[idx]));
+
+    // update frames
+    await Promise.all(frames.map(frame => updateFrameApi(frame.id, frame)));
   };
 
   return {
@@ -297,6 +320,7 @@ export const useFrameAction = () => {
     updateFrameApi,
     getSheetFrames,
     getFramesAndTransitionsApi,
-    createFrames
+    createFrames,
+    updateFramesAndThumbnails
   };
 };
