@@ -37,7 +37,8 @@ import {
   PORTRAIT_IMAGE_MASK,
   CUSTOM_CHANGE_MODAL,
   CONTENT_CHANGE_MODAL,
-  CONTENT_VIDEO_CHANGE_MODAL
+  CONTENT_VIDEO_CHANGE_MODAL,
+  CUSTOM_MAPPING_ICON_COLOR
 } from '@/common/constants';
 import {
   addPrintClipArts,
@@ -131,7 +132,8 @@ import {
   isSecondaryFormat,
   updateCanvasMapping,
   isPpVideoObject,
-  isPpMediaObject
+  isPpMediaObject,
+  isLayoutMappingChecker
 } from '@/common/utils';
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
 
@@ -1467,7 +1469,9 @@ export default {
         scaling: this.handleScaling,
         scaled: this.handleScaled,
         rotated: this.handleRotated,
-        moved: this.handleMoved
+        moved: this.handleMoved,
+        mouseover: handleMouseOver,
+        mouseout: handleMouseOut
       };
 
       await addPrintShapes(
@@ -1791,6 +1795,8 @@ export default {
       const eventListeners = {
         scaling: this.handleScaling,
         scaled: this.handleScaled,
+        mouseover: handleMouseOver,
+        mouseout: handleMouseOut,
         rotated: this.handleRotated,
         moved: this.handleMoved
       };
@@ -1989,7 +1995,9 @@ export default {
         scaling: this.handleScaling,
         scaled: this.handleScaled,
         rotated: this.handleRotated,
-        moved: this.handleMoved
+        moved: this.handleMoved,
+        mouseover: handleMouseOver,
+        mouseout: handleMouseOut
       };
       const svg = await createSvgObject(objectData);
 
@@ -2009,7 +2017,9 @@ export default {
         scaling: this.handleScaling,
         scaled: this.handleScaled,
         rotated: this.handleRotated,
-        moved: this.handleMoved
+        moved: this.handleMoved,
+        mouseover: handleMouseOver,
+        mouseout: handleMouseOut
       };
       const clipart = await createClipartObject(objectData);
 
@@ -2091,7 +2101,9 @@ export default {
         scaling: this.handleScaling,
         scaled: this.handleScaled,
         rotated: this.handleRotated,
-        moved: this.handleMoved
+        moved: this.handleMoved,
+        mouseover: handleMouseOver,
+        mouseout: handleMouseOut
       };
 
       const image = await createPortraitImageObject(properties);
@@ -2149,6 +2161,46 @@ export default {
      * To update value and color of map icon on object (text & image) when hover
      */
     async updateMappingIcon(fbObjects) {
+      const sheetConfig = await this.getSheetMappingConfig(
+        this.pageSelected.id
+      );
+
+      if (isLayoutMappingChecker(sheetConfig)) {
+        // handle case layout mapping
+        await this.iconLayoutMapping(fbObjects);
+        return;
+      }
+
+      // handle case custom mapping
+      this.iconCustomMapping(fbObjects);
+    },
+
+    /**
+     * To check if disable icon mapping should show or not
+     * if an object has id differ from ids of print objects => object was create in Digital
+     * so display broken icon
+     *
+     * @param {Array} fbObjects fabric objects
+     */
+    iconCustomMapping(fbObjects) {
+      const printIds = Object.keys(this.printObjects);
+
+      fbObjects.forEach(o => {
+        if (printIds.includes(o.id)) return;
+
+        o.mappingInfo = {
+          color: CUSTOM_MAPPING_ICON_COLOR,
+          id: o.id,
+          mapped: false,
+          isCustom: true
+        };
+      });
+    },
+
+    /**
+     * To update value and color of map icon on object (text & image) when hover
+     */
+    async iconLayoutMapping(fbObjects) {
       const ppObjectByIdsOfAllFrames = isEmpty(this.elementMappings)
         ? {}
         : await this.getDigitalObjects();

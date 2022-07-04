@@ -1254,7 +1254,11 @@ export const renderMappingIcon = async target => {
     [`${false}-${true}`]: IMAGE_LOCAL.LOCATION_PURPLE,
     [`${false}-${false}`]: IMAGE_LOCAL.LOCATION_DISABLED_PURPLE
   };
-  const iconSrc = iconOptions[`${isTextObject}-${isMapped}`];
+  const customIcon = IMAGE_LOCAL.LOCATION_DISABLED_GRAY;
+
+  const iconSrc = mappingInfo.isCustom
+    ? customIcon
+    : iconOptions[`${isTextObject}-${isMapped}`];
 
   const icon = await createMediaOverlay(iconSrc);
 

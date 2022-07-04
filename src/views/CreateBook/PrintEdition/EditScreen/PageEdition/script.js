@@ -341,7 +341,6 @@ export default {
       getDataCanvas: PRINT_ACTIONS.GET_DATA_CANVAS
     }),
     ...mapMutations({
-      setBookId: PRINT_MUTATES.SET_BOOK_ID,
       setIsOpenProperties: MUTATES.TOGGLE_MENU_PROPERTIES,
       setToolNameSelected: MUTATES.SET_TOOL_NAME_SELECTED,
       setObjectTypeSelected: MUTATES.SET_OBJECT_TYPE_SELECTED,
