@@ -133,8 +133,7 @@ import {
   updateCanvasMapping,
   isPpVideoObject,
   isPpMediaObject,
-  isLayoutMappingChecker,
-  isFbTextMediaObject
+  isLayoutMappingChecker
 } from '@/common/utils';
 import { GETTERS as APP_GETTERS, MUTATES } from '@/store/modules/app/const';
 

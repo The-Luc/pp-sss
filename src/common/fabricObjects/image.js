@@ -8,8 +8,7 @@ import {
   isEmpty,
   mapObject,
   pxToIn,
-  scaleSize,
-  isFbTextMediaObject
+  scaleSize
 } from '../utils';
 import { DEFAULT_RULE_DATA, applyShadowToObject } from './common';
 import {
@@ -439,8 +438,6 @@ export const handleMouseOver = ({ target }) => {
  * @param {Object} target - fabric object
  */
 export const handleMouseOut = ({ target }) => {
-  // if (isFbTextMediaObject(target)) target.canvas.renderAll();
-
   if (
     target?.objectType !== OBJECT_TYPE.IMAGE ||
     !target.hasImage ||

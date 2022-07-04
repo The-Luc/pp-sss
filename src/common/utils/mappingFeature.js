@@ -171,3 +171,26 @@ export const mappingQuadrantFrames = (quadrants, sheet, frameIds) => {
     objects: notNullQuadrants[idx] || []
   }));
 };
+
+/**
+ * To adding broken objects back to synced data from print
+ *
+ * @param {Array} quadrants quadrant array [{objects: {}, frameId: 123}]
+ * @param {Array} frames array of frame data
+ */
+export const keepBrokenObjectsOfFrames = (quadrants, frames) => {
+  frames.forEach(f => {
+    const quadrant = quadrants.find(q => q.frameId === f.id);
+
+    if (quadrant === undefined) return;
+
+    const frameObjects = f.objects;
+    const objectIds = quadrant.objects.map(o => o.id);
+
+    frameObjects.forEach((o, idx) => {
+      if (!objectIds.includes(o.id)) {
+        quadrant.objects.splice(idx, 0, o);
+      }
+    });
+  });
+};

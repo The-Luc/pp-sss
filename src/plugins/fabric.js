@@ -1245,7 +1245,6 @@ export const renderMappingIcon = async target => {
   const ctx = canvas.getContext('2d');
 
   if (isEmpty(mappingInfo)) return;
-  console.log(mappingInfo);
 
   const isTextObject = isFbTextObject(target);
   const isMapped = mappingInfo.mapped;

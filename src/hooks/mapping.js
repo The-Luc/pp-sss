@@ -21,6 +21,7 @@ import {
   isPpTextOrImage,
   isPrimaryFormat,
   isSecondaryFormat,
+  keepBrokenObjectsOfFrames,
   mappingQuadrantFrames,
   modifyQuadrantObjects
 } from '@/common/utils';
@@ -578,7 +579,7 @@ export const useQuadrantMapping = () => {
   });
 
   const quadrantSyncToDigital = async (sheetId, pObjects, elementMappings) => {
-    console.log('elementMappings ', elementMappings);
+    elementMappings;
     const objects = cloneDeep(pObjects);
 
     const frames = await getSheetFrames(sheetId);
@@ -603,6 +604,9 @@ export const useQuadrantMapping = () => {
     // mapping frames id and quadrants
     // `quadrantFrames`: [{objects: q1, frameId: 123}]
     const quadrantFrames = mappingQuadrantFrames(quadrants, sheet, frameIds);
+
+    // keep broken objects of digital frames
+    keepBrokenObjectsOfFrames(quadrantFrames, frames);
 
     // // update frames objects, and visited
     const willUpdateFrames = quadrantFrames.map(qd => ({
