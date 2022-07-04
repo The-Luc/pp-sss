@@ -335,7 +335,19 @@ export const updateContentToObject = async (objA, objB) => {
   objB.hasImage = true;
 
   // set object zoom level
-  const imgObjectB = await createImage(objB);
-  const { zoomLevel } = centercrop(imgObjectB.object);
-  objB.zoomLevel = zoomLevel;
+  await updateImageZoomLevel(objB);
+};
+
+/**
+ * To center crop image without rendering on canvas
+ *
+ * @param {Object} object image object
+ */
+export const updateImageZoomLevel = async object => {
+  if (!object.hasImage) return;
+
+  // set object zoom level
+  const fbObject = await createImage(object);
+  const { zoomLevel } = centercrop(fbObject.object);
+  object.zoomLevel = zoomLevel;
 };

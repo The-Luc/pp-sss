@@ -5,6 +5,7 @@ import { isOk } from '@/common/utils';
 import {
   createBulkElementMappingMutation,
   createTemplateMappingMutation,
+  createElementMappingMutation,
   deleteElementMappingMutation,
   deleteTemplateElementMutation,
   updateElementMappingMutation,
@@ -31,6 +32,25 @@ export const createElementMappingApi = (sheetId, frameId, params) => {
     params,
     pageId: ''
   });
+};
+
+export const createSingleElementMappingApi = (
+  sheetId,
+  frameId,
+  printId,
+  digitalId,
+  mapped
+) => {
+  const params = {
+    sheet_id: sheetId,
+    digital_frame_id: frameId,
+    page_id: '',
+    print_element_uid: printId,
+    digital_element_uid: digitalId,
+    mapped
+  };
+
+  return graphqlRequest(createElementMappingMutation, { params });
 };
 
 export const updateSheetMappingConfigApi = (sheetId, params) => {

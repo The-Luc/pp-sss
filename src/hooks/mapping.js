@@ -11,7 +11,8 @@ import {
   getSheetMappingElementsApi,
   deleteElementMappingApi,
   updateElementMappingsApi,
-  getBookConnectionsApi
+  getBookConnectionsApi,
+  createSingleElementMappingApi
 } from '@/api/mapping';
 import { cloneDeep, get } from 'lodash';
 import {
@@ -23,7 +24,9 @@ import {
   isSecondaryFormat,
   keepBrokenObjectsOfFrames,
   mappingQuadrantFrames,
-  modifyQuadrantObjects
+  modifyQuadrantObjects,
+  updateImageZoomLevel,
+  deleteNonMappedObjects
 } from '@/common/utils';
 import {
   projectMapping,
@@ -288,6 +291,11 @@ export const useMappingSheet = () => {
     }, Promise.resolve());
   };
 
+  // params: {sheetId, frameId, printId, digitalId}
+  const createSingleElementMapping = async (...params) => {
+    return createSingleElementMappingApi(...params);
+  };
+
   const deleteElementMappings = async ids => {
     if (isEmpty(ids)) return;
 
@@ -393,6 +401,7 @@ export const useMappingSheet = () => {
     getSheetMappingConfig,
     updateSheetMappingConfig,
     updateElementMappings,
+    createSingleElementMapping,
     getElementMappings,
     storeElementMappings,
     updateElementMappingByIds,
@@ -579,7 +588,6 @@ export const useQuadrantMapping = () => {
   });
 
   const quadrantSyncToDigital = async (sheetId, pObjects, elementMappings) => {
-    elementMappings;
     const objects = cloneDeep(pObjects);
 
     const frames = await getSheetFrames(sheetId);
@@ -593,6 +601,9 @@ export const useQuadrantMapping = () => {
 
     const sheet = { isHardCover, type: currentSheet.value.type };
 
+    // remove objects that are not mapping
+    deleteNonMappedObjects(objects, elementMappings);
+
     // Divide into 4 quadrants (1 quadrant = 1/2 page);
     // `quadrants`: [q1, q2, q3, q4]
     const quadrants = divideObjectsIntoQuadrants(sheet, objects);
@@ -600,13 +611,16 @@ export const useQuadrantMapping = () => {
     // modify object's positions and dimensions based on theirs quadrant
     modifyQuadrantObjects(sheet, objects);
 
+    // update image zoom level
+    await Promise.all(objects.map(o => updateImageZoomLevel(o)));
+
     // expected there are enough orginal frames (2-4 frames)
     // mapping frames id and quadrants
     // `quadrantFrames`: [{objects: q1, frameId: 123}]
     const quadrantFrames = mappingQuadrantFrames(quadrants, sheet, frameIds);
 
     // keep broken objects of digital frames
-    keepBrokenObjectsOfFrames(quadrantFrames, frames);
+    keepBrokenObjectsOfFrames(quadrantFrames, frames, elementMappings);
 
     // // update frames objects, and visited
     const willUpdateFrames = quadrantFrames.map(qd => ({
