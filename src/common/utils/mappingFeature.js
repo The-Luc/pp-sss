@@ -1,12 +1,18 @@
 import { intersection } from 'lodash';
-import { DIGITAL_PAGE_SIZE, PROPERTIES_TOOLS } from '@/common/constants';
+import {
+  DIGITAL_PAGE_SIZE,
+  PROPERTIES_TOOLS,
+  PRIMARY_FORMAT_TYPES,
+  CUSTOM_MAPPING_CONVERT_RATIO,
+  CUSTOM_MAPPING_ICON_COLOR,
+  MAPPING_TYPES
+} from '@/common/constants';
 import {
   isEmpty,
   getPrintCanvasSize,
   isBackground,
   isCoverSheetChecker
 } from '@/common/utils';
-import { MAPPING_TYPES, PRIMARY_FORMAT_TYPES } from '../constants/mapping';
 
 /**
  * Mutate the items tool to update the mapping icon
@@ -31,6 +37,12 @@ export const isLayoutMappingChecker = sheetConfig => {
   return mappingType === MAPPING_TYPES.LAYOUT.value;
 };
 
+export const isCustomMappingChecker = sheetConfig => {
+  const { mappingType } = sheetConfig;
+
+  return mappingType === MAPPING_TYPES.CUSTOM.value;
+};
+
 /**
  *  Allowing sync data condition:
  * - MAPPING FUNCTIONALITY is on
@@ -38,13 +50,30 @@ export const isLayoutMappingChecker = sheetConfig => {
  * - MAPPING TYPE is LAYOUT
  *
  */
-export const isAllowSyncData = (projectConfig, sheetConfig) => {
+export const isAllowSyncLayoutData = (projectConfig, sheetConfig) => {
   const { enableContentMapping } = projectConfig;
 
   const { mappingStatus } = sheetConfig;
 
   return (
     enableContentMapping && mappingStatus && isLayoutMappingChecker(sheetConfig)
+  );
+};
+
+/**
+ *  Allowing sync data condition:
+ * - MAPPING FUNCTIONALITY is on
+ * - MAPPING STATUS is on
+ * - MAPPING TYPE is CUSTOM
+ *
+ */
+export const isAllowSyncCustomData = (projectConfig, sheetConfig) => {
+  const { enableContentMapping } = projectConfig;
+
+  const { mappingStatus } = sheetConfig;
+
+  return (
+    enableContentMapping && mappingStatus && isCustomMappingChecker(sheetConfig)
   );
 };
 
@@ -145,8 +174,8 @@ export const modifyQuadrantObjects = (sheet, objects) => {
     if (!o.coord || isBackground(o)) return;
 
     // update object dimensions
-    o.size.width = o.size.width * 1.8;
-    o.size.height = o.size.height * 1.8;
+    o.size.width = o.size.width * CUSTOM_MAPPING_CONVERT_RATIO;
+    o.size.height = o.size.height * CUSTOM_MAPPING_CONVERT_RATIO;
 
     // update object coordinate
     o.coord.x = o.coord.x * ratioX;
@@ -193,4 +222,25 @@ export const keepBrokenObjectsOfFrames = (quadrants, frames) => {
       }
     });
   });
+};
+
+export const deleteNonMappedObjects = (objects, elementMappings) => {
+  elementMappings.forEach(el => {
+    const index = objects.findIndex(o => o.id === el.printElementId);
+
+    if (index < 0) return;
+    objects.splice(index, 1);
+  });
+};
+
+/**
+ * get mapping info for custom mapping
+ */
+export const getBrokenCustomMapping = el => {
+  return {
+    color: CUSTOM_MAPPING_ICON_COLOR,
+    id: el.id,
+    mapped: false,
+    isCustom: true
+  };
 };

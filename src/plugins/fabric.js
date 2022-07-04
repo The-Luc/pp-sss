@@ -1265,9 +1265,8 @@ export const renderMappingIcon = async target => {
   const color = mappingInfo.color;
   const value = mappingInfo.value;
 
-  const [background, foreground] = isTextObject
-    ? [color, 'white']
-    : ['white', color];
+  const [background, foreground] =
+    !isTextObject || mappingInfo.isCustom ? ['white', color] : [color, 'white'];
 
   const { top, left, width, height } = target.getBoundingRect();
   const centerX = left + width / 2;

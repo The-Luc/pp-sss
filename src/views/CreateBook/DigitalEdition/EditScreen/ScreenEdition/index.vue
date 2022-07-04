@@ -31,7 +31,7 @@
       image box, will NOT be reflected in the print edition.
     </mapping-layout-custom-change>
 
-    <!-- CONTENT CHANGE MODAL -->
+    <!-- LAYOUT MAPPING: CONTENT CHANGE MODAL -->
     <mapping-layout-custom-change
       v-if="isShowMappingContentChange"
       header="Layout Mapping: Print to Digital"
@@ -44,6 +44,23 @@
       <br />
       Additionally, content changes made to image and text boxes will disable
       the mapping connection for those edited items.
+    </mapping-layout-custom-change>
+
+    <!-- CUSTOM MAPPING MODAL -->
+    <mapping-layout-custom-change
+      v-if="isShowCustomMappingModal"
+      header="Custom Mapping: Print to Digital"
+      @onAccept="onClickGotItCustomMappingModal"
+    >
+      The Primary Format listed for this project is "Print". This means the
+      mapping only goes from the print edition to the digital edition. Any
+      changes or additions made to your digital edition will not be reflected in
+      the print edition.
+      <br />
+      <br />
+      Additionally, the mapped connections established when elements like text
+      and image boxes were added to your print edition are broken when the
+      element is edited in the digital edition.
     </mapping-layout-custom-change>
 
     <!-- ADDING VIDEO TO PRIMARY FORAMT MODAL -->

@@ -1,6 +1,6 @@
 import { mapGetters, mapMutations, mapActions } from 'vuex';
 import { fabric } from 'fabric';
-import { cloneDeep, merge, debounce } from 'lodash';
+import { cloneDeep, merge, debounce, difference } from 'lodash';
 
 import {
   imageBorderModifier,
@@ -49,9 +49,11 @@ import {
   isFbImageObject,
   isPpImageObject,
   getDigitalObjectById,
-  isAllowSyncData,
+  isAllowSyncLayoutData,
   isSecondaryFormat,
-  updateCanvasMapping
+  updateCanvasMapping,
+  isLayoutMappingChecker,
+  getBrokenCustomMapping
 } from '@/common/utils';
 
 import {
@@ -235,7 +237,8 @@ export default {
       digitalObjects: {},
       elementMappings: [],
       isShowMappingContentChange: false, // for editing content of text/image
-      isShowCustomChangesConfirm: false // for editing in mapped layout applied sheet
+      isShowCustomChangesConfirm: false, // for editing in mapped layout applied sheet
+      sheetMappingConfig: {}
     };
   },
   computed: {
@@ -284,6 +287,8 @@ export default {
         this.updateCanvasSize();
         // get data either from API
         await this.getDataCanvas();
+
+        this.sheetMappingConfig = await this.getSheetMappingConfig(val.id);
 
         this.undoRedoCanvas.reset();
 
@@ -521,7 +526,9 @@ export default {
         scaling: this.handleScaling,
         scaled: this.handleScaled,
         rotated: this.handleRotated,
-        moved: this.handleMoved
+        moved: this.handleMoved,
+        mouseover: handleMouseOver,
+        mouseout: handleMouseOut
       };
       const image = await createPortraitImage(properties);
 
@@ -593,7 +600,9 @@ export default {
         scaling: this.handleScaling,
         scaled: this.handleScaled,
         rotated: this.handleRotated,
-        moved: this.handleMoved
+        moved: this.handleMoved,
+        mouseover: handleMouseOver,
+        mouseout: handleMouseOut
       };
 
       const svgObject = {
@@ -642,7 +651,9 @@ export default {
         scaling: this.handleScaling,
         scaled: this.handleScaled,
         rotated: this.handleRotated,
-        moved: this.handleMoved
+        moved: this.handleMoved,
+        mouseover: handleMouseOver,
+        mouseout: handleMouseOut
       };
 
       const clipart = await handleGetClipart({
@@ -1257,7 +1268,9 @@ export default {
         scaling: this.handleScaling,
         scaled: this.handleScaled,
         rotated: this.handleRotated,
-        moved: this.handleMoved
+        moved: this.handleMoved,
+        mouseover: handleMouseOver,
+        mouseout: handleMouseOut
       };
 
       await addPrintClipArts(
@@ -1486,7 +1499,9 @@ export default {
         scaling: this.handleScaling,
         scaled: this.handleScaled,
         rotated: this.handleRotated,
-        moved: this.handleMoved
+        moved: this.handleMoved,
+        mouseover: handleMouseOver,
+        mouseout: handleMouseOut
       };
 
       await addPrintShapes(
@@ -1990,7 +2005,7 @@ export default {
         this.pageSelected.id
       );
 
-      this.updateMappingIcon(listFabricObjects);
+      await this.updateMappingIcon(listFabricObjects);
 
       window.printCanvas.add(...listFabricObjects);
       window.printCanvas.requestRenderAll();
@@ -2003,7 +2018,50 @@ export default {
     /**
      * To update value and color of map icon on object (text & image) when hover
      */
-    updateMappingIcon(fbObjects) {
+    async updateMappingIcon(fbObjects) {
+      if (isLayoutMappingChecker(this.sheetMappingConfig)) {
+        // handle case layout mapping
+        this.iconLayoutMapping(fbObjects);
+        return;
+      }
+
+      // handle case custom mapping
+      this.iconCustomMapping(fbObjects);
+    },
+
+    /**
+     * To check if disable icon mapping should show or not
+     * if an object has id differ from ids of print objects => object was create in Digital
+     * so display broken icon
+     *
+     * @param {Array} fbObjects fabric objects
+     */
+    iconCustomMapping(fbObjects) {
+      if (isLayoutMappingChecker(this.sheetMappingConfig)) return;
+
+      const mappingElementIds = this.elementMappings.map(
+        el => el.digitalElementId
+      );
+
+      const printIds = Object.keys(this.digitalObjects);
+
+      const mappingIds = difference(printIds, mappingElementIds);
+
+      // the broken icons will show when:
+      // -  if an objects are not in print spread
+      // -  object in `elementMappings`
+
+      fbObjects.forEach(o => {
+        if (mappingIds.includes(o.id)) return;
+
+        o.mappingInfo = getBrokenCustomMapping(o);
+      });
+    },
+
+    /**
+     * To update value and color of map icon on object (text & image) when hover
+     */
+    iconLayoutMapping(fbObjects) {
       // create a object for faster and easier to access later.
       const fbObjectsById = {};
       fbObjects.forEach(o => (fbObjectsById[o.id] = o));
@@ -2243,7 +2301,7 @@ export default {
 
       if (
         isHideMess ||
-        !isAllowSyncData(projectConfig, sheetConfig) ||
+        !isAllowSyncLayoutData(projectConfig, sheetConfig) ||
         nonConnections ||
         !isSecondaryFormat(projectConfig)
       )
