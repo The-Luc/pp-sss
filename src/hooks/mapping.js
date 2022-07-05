@@ -587,15 +587,18 @@ export const useContentChanges = () => {
 export const useQuadrantMapping = () => {
   const { updateFramesAndThumbnails, getSheetFrames } = useFrameAction();
   const { savePageData } = useSavePageData();
-  const { getBookInfo, currentSheet } = useGetters({
-    getBookInfo: PRINT_GETTERS.GET_BOOK_INFO,
-    currentSheet: PRINT_GETTERS.CURRENT_SHEET
+  const { getBookInfo } = useGetters({
+    getBookInfo: PRINT_GETTERS.GET_BOOK_INFO
   });
 
   const quadrantSyncToDigital = async (sheetId, pObjects, elementMappings) => {
     const objects = cloneDeep(pObjects);
 
-    const frames = await getSheetFrames(sheetId);
+    const [frames, sheet] = await Promise.all([
+      getSheetFrames(sheetId),
+      getSheetInfoApi(sheetId)
+    ]);
+
     const frameIds = frames
       .filter(f => f.fromLayout)
       .map(f => f.id)
@@ -604,14 +607,12 @@ export const useQuadrantMapping = () => {
     const { coverOption } = getBookInfo.value;
     const isHardCover = coverOption === COVER_TYPE.HARDCOVER;
 
-    const sheet = { isHardCover, type: currentSheet.value.type };
-
     // remove PRINT objects that are not mapping, meaning not sync these objects
     deleteNonMappedObjects(objects, elementMappings);
 
     // Divide into 4 quadrants (1 quadrant = 1/2 page);
     // `quadrants`: [q1, q2, q3, q4]
-    const quadrants = divideObjectsIntoQuadrants(sheet, objects);
+    const quadrants = divideObjectsIntoQuadrants(sheet, objects, isHardCover);
 
     // modify object's positions and dimensions based on theirs quadrant
     modifyQuadrantObjects(sheet, objects);
@@ -641,7 +642,10 @@ export const useQuadrantMapping = () => {
     // if this is supplemental frame => no mapping need
     if (frame.isSupplemental) return;
 
-    const frames = await getSheetFrames(sheetId);
+    const [frames, sheet] = await Promise.all([
+      getSheetFrames(sheetId),
+      getSheetInfoApi(sheetId)
+    ]);
 
     const { coverOption } = getBookInfo.value;
     const isHardCover = coverOption === COVER_TYPE.HARDCOVER;
@@ -650,7 +654,6 @@ export const useQuadrantMapping = () => {
      Get print objects & MUTATE this `printObjects` array to update objects from digital frame
      Then call mutation to generate thumbnail & save data of this array as spread data
     */
-    const sheet = await getSheetInfoApi(sheetId);
     const printObjects = cloneDeep(sheet.objects);
     const fObjects = cloneDeep(frame.objects);
 

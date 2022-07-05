@@ -118,14 +118,14 @@ export const updateCanvasMapping = (elementIds, canvas) => {
  * @param {Object} objects pp objects
  * @returns array of quadrants [q1, q2, q3, q4]
  */
-export const divideObjectsIntoQuadrants = (sheet, objects) => {
-  const { isHardCover, type } = sheet;
+export const divideObjectsIntoQuadrants = (sheet, objects, isHardCover) => {
+  const { type } = sheet;
   const { sheetWidth, sheetHeight } = getPrintCanvasSize(type, isHardCover);
 
   const midX = sheetWidth / 2;
   const midY = sheetHeight / 2;
 
-  const quadrants = [];
+  const quadrants = Array(4).fill(null);
 
   objects.forEach(o => {
     if (!o.coord || isBackground(o)) return;
@@ -161,8 +161,8 @@ export const divideObjectsIntoQuadrants = (sheet, objects) => {
 };
 
 // modify object's positions and dimensions based on theirs quadrant
-export const modifyQuadrantObjects = (sheet, objects) => {
-  const { isHardCover, type } = sheet;
+export const modifyQuadrantObjects = (sheet, objects, isHardCover) => {
+  const { type } = sheet;
   const { sheetWidth, sheetHeight } = getPrintCanvasSize(type, isHardCover);
 
   const midX = sheetWidth / 2;
@@ -225,20 +225,13 @@ export const modifyDigitalQuadrantObjects = (
  * @return: [{objects: q1, frameId: 123}]
  */
 export const mappingQuadrantFrames = (quadrants, sheet, frameIds) => {
-  const isCoverSheet = isCoverSheetChecker(sheet);
+  let order = [0, 1, 2, 3];
+  // front cover first then back cover
+  if (isCoverSheetChecker(sheet) || isHalfRight(sheet)) order = [2, 3, 0, 1];
 
-  if (isCoverSheet) {
-    const coverOrders = [2, 3, 0, 1]; // front cover first then back cover
-    return frameIds.map((frameId, idx) => ({
-      frameId,
-      objects: quadrants[coverOrders[idx]]
-    }));
-  }
-
-  const notNullQuadrants = quadrants.filter(Boolean);
   return frameIds.map((frameId, idx) => ({
     frameId,
-    objects: notNullQuadrants[idx] || []
+    objects: quadrants[order[idx]] || []
   }));
 };
 
